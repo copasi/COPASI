@@ -1080,7 +1080,8 @@ bool CMathEventN::compile(CEvent * pDataEvent,
 
 void CMathEventN::createUpdateSequences()
 {
-  const CObjectInterface::ObjectSet & Changed = mpContainer->getSimulationUpToDateObjects();
+  const CObjectInterface::ObjectSet & Changed = mpContainer->getStateObjects();
+  const CObjectInterface::ObjectSet & Calculated = mpContainer->getSimulationUpToDateObjects();
 
   if (mDelayAssignment)
     {
@@ -1090,7 +1091,7 @@ void CMathEventN::createUpdateSequences()
     {
       CObjectInterface::ObjectSet Requested;
       Requested.insert(mpDelay);
-      mpContainer->getTransientDependencies().getUpdateSequence(CMath::Default, Changed, Requested, mCreateCalculationActionSequence);
+      mpContainer->getTransientDependencies().getUpdateSequence(mCreateCalculationActionSequence, CMath::Default, Changed, Requested, Calculated);
     }
 
   CObjectInterface::ObjectSet Requested;
@@ -1109,7 +1110,7 @@ void CMathEventN::createUpdateSequences()
       Requested.insert(pAssignment->getAssignment());
     }
 
-  mpContainer->getTransientDependencies().getUpdateSequence(CMath::Default, Changed, Requested, mTargetValuesSequence);
+  mpContainer->getTransientDependencies().getUpdateSequence(mTargetValuesSequence, CMath::Default, Changed, Requested, Calculated);
 }
 
 void CMathEventN::fire(const bool & equality)
@@ -1186,6 +1187,11 @@ const bool & CMathEventN::delayAssignment() const
   return mDelayAssignment;
 }
 
+const bool & CMathEventN::fireAtInitialTime() const
+{
+  return mFireAtInitialTime;
+}
+
 void CMathEventN::setTriggerExpression(const std::string & infix, CMathContainer & container)
 {
   mTrigger.setExpression(infix, container);
@@ -1227,7 +1233,8 @@ const CMathObject * CMathEventN::getPriority() const
 
 C_FLOAT64 CMathEventN::getCalculationTime() const
 {
-  if (mDelayAssignment)
+  if (mDelayAssignment ||
+      isnan(* (C_FLOAT64 *) mpDelay->getValuePointer()))
     {
       return *mpTime;
     }
@@ -1237,12 +1244,13 @@ C_FLOAT64 CMathEventN::getCalculationTime() const
 
 C_FLOAT64 CMathEventN::getExecutionTime() const
 {
-  if (mDelayAssignment)
+  if (!mDelayAssignment ||
+      isnan(* (C_FLOAT64 *) mpDelay->getValuePointer()))
     {
-      return *mpTime + * (C_FLOAT64 *) mpDelay->getValuePointer();
+      return *mpTime;
     }
 
-  return *mpTime;
+  return *mpTime + * (C_FLOAT64 *) mpDelay->getValuePointer();
 }
 
 const CEvent::Type & CMathEventN::getType() const

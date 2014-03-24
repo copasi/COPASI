@@ -1193,7 +1193,7 @@ void CHybridMethodODE45::setupDependencyGraph()
           CObjectInterface::ObjectSet Requested;
           Requested.insert(mReactions[j].getPropensityObject());
 
-          mpContainer->getTransientDependencies().getUpdateSequence(CMath::Default, Changed, Requested, *itUpdateSequence);
+          mpContainer->getTransientDependencies().getUpdateSequence(*itUpdateSequence, CMath::Default, Changed, Requested);
 
           if (itUpdateSequence->size() > 0)
             {

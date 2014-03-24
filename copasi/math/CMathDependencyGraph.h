@@ -1,4 +1,4 @@
-// Copyright (C) 2011 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -48,15 +48,17 @@ public:
   /**
    * Construct a update sequence for the given context
    * @param const CMath::SimulationContextFlag & context
+   * @param CObjectInterface::UpdateSequence & updateSequence)
    * @param const CObjectInterface::ObjectSet & changedObjects
    * @param const CObjectInterface::ObjectSet & requestedObjects
-   * @param CObjectInterface::UpdateSequence & updateSequence)
+   * @param const CObjectInterface::ObjectSet & calculatedObjects (default: none)
    * @return bool success
    */
-  bool getUpdateSequence(const CMath::SimulationContextFlag & context,
+  bool getUpdateSequence(CObjectInterface::UpdateSequence & updateSequence,
+                         const CMath::SimulationContextFlag & context,
                          const CObjectInterface::ObjectSet & changedObjects,
                          const CObjectInterface::ObjectSet & requestedObjects,
-                         CObjectInterface::UpdateSequence & updateSequence);
+                         const CObjectInterface::ObjectSet & calculatedObjects = CObjectInterface::ObjectSet());
 
   void exportDOTFormat(std::ostream & os, const std::string & name) const;
 

@@ -333,6 +333,12 @@ public:
   const bool & delayAssignment() const;
 
   /**
+   * Check whether the event may fire at initial time.
+   * @return const bool & fireAtInitialTime
+   */
+  const bool & fireAtInitialTime() const;
+
+  /**
    * Set the trigger expression
    * @param const std::string & infix
    * @param CMathContainer & container

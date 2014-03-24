@@ -1,4 +1,4 @@
-// Copyright (C) 2011 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -79,6 +79,15 @@ public:
                                const CObjectInterface::ObjectSet & changedObjects);
 
   /**
+   * Update the state of all prerequisites (and prerequisites thereof) to calculate.
+   * @param const CMath::SimulationContextFlag & context
+   * @param const CObjectInterface::ObjectSet & changedObjects
+   * @return bool success
+   */
+  bool updateCalculatedState(const CMath::SimulationContextFlag & context,
+                             const CObjectInterface::ObjectSet & changedObjects);
+
+  /**
    * Build the sequence of objects which need to be updated to calculate the object value.
    * @param const CMath::SimulationContextFlag & context
    * @param CObjectInterface::UpdateSequence & updateSequence
@@ -110,6 +119,11 @@ public:
    * @param const bool & isRequested
    */
   const bool & isRequested() const;
+
+  /**
+   * Reset the flags requested and changed
+   */
+  void reset();
 
   // Attributes
 private:

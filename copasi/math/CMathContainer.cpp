@@ -526,8 +526,14 @@ void CMathContainer::applyInitialValues()
 
   applyUpdateSequence(mApplyInitialValuesSequence);
 
-  // The root states are not automatically evaluated by the above sequence. We
-  // do it manually.
+  // Start the process queue
+  mpProcessQueue->start();
+
+  // Calculate the current root derivatives
+  CVector< C_FLOAT64 > RootDerivatives;
+  calculateRootDerivatives(RootDerivatives);
+
+  // Determine the initial root states.
   CMathEventN::CTrigger::CRootProcessor ** pRoot = mRootProcessors.array();
   CMathEventN::CTrigger::CRootProcessor ** pRootEnd = pRoot + mRootProcessors.size();
 
@@ -536,10 +542,64 @@ void CMathContainer::applyInitialValues()
       (*pRoot)->calculateTrueValue();
     }
 
-  // TODO CRITICAL The above does not suffice for roots which initial value is zero
+  // Determine the trigger values
+  CMathObject * pTriggerObject = getMathObject(mEventTriggers.array());
+  CMathObject * pTriggerObjectEnd = pTriggerObject + mEventTriggers.size();
 
-  // TODO CRITICAL We need to decide when to call this.
-  mpProcessQueue->start();
+  for (; pTriggerObject != pTriggerObjectEnd; ++pTriggerObject)
+    {
+      pTriggerObject->calculate();
+    }
+
+  // Fire events which triggers are true and which may fire at the initial time
+  C_FLOAT64 * pTrigger = mEventTriggers.array();
+  C_FLOAT64 * pTriggerEnd = pTrigger + mEventTriggers.size();
+  CMathEventN * pEvent = mEvents.array();
+
+  for (; pTrigger != pTriggerEnd; ++pTrigger, ++pEvent)
+    {
+      if (*pTrigger > 0.5 &&
+          pEvent->fireAtInitialTime())
+        {
+          pEvent->fire(true);
+        }
+    }
+
+  // Determine roots which change state at the initial time point, i.e., roots which may have
+  // a value of zero and a non zero derivative and check
+  CVector< C_INT > FoundRoots(mEventRoots.size());
+  C_INT * pFoundRoot = FoundRoots.array();
+  C_FLOAT64 * pRootValue = mEventRoots.array();
+  C_FLOAT64 * pRootDerivative = RootDerivatives.array();
+  pRoot = mRootProcessors.array();
+
+  for (; pRoot != pRootEnd; ++pRoot, ++pFoundRoot, ++pRootValue, ++pRootDerivative)
+    {
+      // Assume the root is not found.
+      *pFoundRoot = 0;
+
+      if (*pRootValue != 0.0)
+        {
+          continue;
+        }
+
+      if ((*pRoot)->isEquality())
+        {
+          if (*pRootDerivative < 0.0)
+            {
+              *pFoundRoot = 1;
+            }
+        }
+      else
+        {
+          if (*pRootDerivative > 0.0)
+            {
+              *pFoundRoot = 1;
+            }
+        }
+    }
+
+  processRoots(false, FoundRoots);
 
   return;
 }
@@ -756,9 +816,6 @@ void CMathContainer::init()
   initializeObjects(Pointers);
   initializeEvents(Pointers);
 
-  compileObjects();
-  compileEvents();
-
   mInitialState.initialize(mInitialExtensiveRates.array() - mValues.array(),
                            mValues.array());
   mState.initialize(mEventTargetCount + 1 + mODECount + mIndependentCount + mDependentCount,
@@ -769,6 +826,9 @@ void CMathContainer::init()
                    mExtensiveRates.array() + mFixedCount);
   mRateReduced.initialize(mStateReduced.size(),
                           mExtensiveRates.array() + mFixedCount);
+
+  compileObjects();
+  compileEvents();
 
   // These are only used during initialization for setting up the tracking of
   // discontinuities and are cleared afterwards.
@@ -883,6 +943,16 @@ CMathDependencyGraph & CMathContainer::getInitialDependencies()
 CMathDependencyGraph & CMathContainer::getTransientDependencies()
 {
   return mTransientDependencies;
+}
+
+const CObjectInterface::ObjectSet & CMathContainer::getStateObjects(const bool & reduced) const
+{
+  if (reduced)
+    {
+      return mReducedStateValues;
+    }
+
+  return mStateValues;
 }
 
 const CObjectInterface::ObjectSet & CMathContainer::getSimulationUpToDateObjects() const
@@ -1487,6 +1557,7 @@ void CMathContainer::createDependencyGraphs()
   createSynchronizeInitialValuesSequence();
   createApplyInitialValuesSequence();
   createUpdateSimulationValuesSequence();
+  createEventSimulationValuesSequence();
 
   return;
 }
@@ -1549,14 +1620,14 @@ void CMathContainer::createSynchronizeInitialValuesSequence()
     }
 
   // Build the update sequence
-  mInitialDependencies.getUpdateSequence(CMath::UpdateMoieties,
+  mInitialDependencies.getUpdateSequence(mSynchronizeInitialValuesSequenceExtensive,
+                                         CMath::UpdateMoieties,
                                          mInitialStateValueExtensive,
-                                         RequestedExtensive,
-                                         mSynchronizeInitialValuesSequenceExtensive);
-  mInitialDependencies.getUpdateSequence(CMath::UpdateMoieties,
+                                         RequestedExtensive);
+  mInitialDependencies.getUpdateSequence(mSynchronizeInitialValuesSequenceIntensive,
+                                         CMath::UpdateMoieties,
                                          mInitialStateValueIntensive,
-                                         RequestedIntensive,
-                                         mSynchronizeInitialValuesSequenceIntensive);
+                                         RequestedIntensive);
 }
 
 void CMathContainer::createApplyInitialValuesSequence()
@@ -1580,7 +1651,7 @@ void CMathContainer::createApplyInitialValuesSequence()
     }
 
   // Build the update sequence
-  mTransientDependencies.getUpdateSequence(CMath::Default, Changed, Requested, mApplyInitialValuesSequence);
+  mTransientDependencies.getUpdateSequence(mApplyInitialValuesSequence, CMath::Default, Changed, Requested);
 }
 
 void CMathContainer::createUpdateSimulationValuesSequence()
@@ -1599,6 +1670,7 @@ void CMathContainer::createUpdateSimulationValuesSequence()
     {
       switch (pObject->getSimulationType())
         {
+          case CMath::EventTarget:
           case CMath::Time:
           case CMath::ODE:
           case CMath::Independent:
@@ -1635,8 +1707,8 @@ void CMathContainer::createUpdateSimulationValuesSequence()
     }
 
   // Build the update sequence
-  mTransientDependencies.getUpdateSequence(CMath::Default, mStateValues, mSimulationRequiredValues, mSimulationValuesSequence);
-  mTransientDependencies.getUpdateSequence(CMath::UseMoieties, mReducedStateValues, mSimulationRequiredValues, mSimulationValuesSequenceReduced);
+  mTransientDependencies.getUpdateSequence(mSimulationValuesSequence, CMath::Default, mStateValues, mSimulationRequiredValues);
+  mTransientDependencies.getUpdateSequence(mSimulationValuesSequenceReduced, CMath::UseMoieties, mReducedStateValues, mSimulationRequiredValues);
 }
 
 void CMathContainer::createEventSimulationValuesSequence()
@@ -1665,7 +1737,7 @@ void CMathContainer::createEventSimulationValuesSequence()
       Requested.insert(pObject);
     }
 
-  mTransientDependencies.getUpdateSequence(CMath::UpdateMoieties, Changed, Requested, mEventSimulationValuesSequence);
+  mTransientDependencies.getUpdateSequence(mEventSimulationValuesSequence, CMath::UpdateMoieties, Changed, Requested);
 
   return;
 }
@@ -1697,7 +1769,7 @@ void CMathContainer::analyzeRoots()
       Requested.insert(pRoot);
       CObjectInterface::UpdateSequence UpdateSequence;
 
-      mTransientDependencies.getUpdateSequence(CMath::Default, ContinousStateValues, Requested, UpdateSequence);
+      mTransientDependencies.getUpdateSequence(UpdateSequence, CMath::Default, ContinousStateValues, Requested);
       *pIsDiscrete = (UpdateSequence.size() == 0);
     }
 
@@ -1841,6 +1913,8 @@ bool CMathContainer::processQueue(const bool & equality)
 void CMathContainer::processRoots(const bool & equality,
                                   const CVector< C_INT > & rootsFound)
 {
+  std::cout << rootsFound << std::endl;
+
   // Reevaluate all non found roots.
   CMathEventN::CTrigger::CRootProcessor ** pRoot = mRootProcessors.array();
   CMathEventN::CTrigger::CRootProcessor ** pRootEnd = pRoot + mRootProcessors.size();
@@ -1848,7 +1922,7 @@ void CMathContainer::processRoots(const bool & equality,
 
   for (; pRoot != pRootEnd; ++pRoot, ++pRootFound)
     {
-      if (!pRootFound)
+      if (!*pRootFound)
         {
           (*pRoot)->calculateTrueValue();
         }
@@ -1873,7 +1947,7 @@ void CMathContainer::processRoots(const bool & equality,
 
   for (; pRoot != pRootEnd; ++pRoot, ++pRootFound)
     {
-      if (pRootFound)
+      if (*pRootFound)
         {
           (*pRoot)->toggle(Time, equality);
         }
@@ -1929,7 +2003,7 @@ void CMathContainer::processRoots(const CVector< C_INT > & rootsFound)
 
   for (; pRoot != pRootEnd; ++pRoot, ++pRootFound)
     {
-      if (pRootFound)
+      if (*pRootFound)
         {
           (*pRoot)->toggle(Time);
         }

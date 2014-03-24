@@ -159,6 +159,7 @@ void CLsodaMethod::stateChanged()
 
 CTrajectoryMethod::Status CLsodaMethod::step(const double & deltaT)
 {
+  C_FLOAT64 StartTime = mTime;
   C_FLOAT64 EndTime = mTime + deltaT;
 
   if (mTargetTime != EndTime)
@@ -189,6 +190,8 @@ CTrajectoryMethod::Status CLsodaMethod::step(const double & deltaT)
 
   if (mRoots.size() > 0)
     {
+      mLastSuccessState = mContainerState;
+
       mLSODAR(&EvalF, //  1. evaluate F
               &mData.dim, //  2. number of variables
               mY, //  3. the array of current concentrations
@@ -216,7 +219,7 @@ CTrajectoryMethod::Status CLsodaMethod::step(const double & deltaT)
       // we reset short before we reach the internal step limit.
       if (mLsodaStatus == 3 &&
           (mRootCounter > 0.99 * *mpMaxInternalSteps ||
-           mTime == *mpContainerStateTime))
+           mTime == StartTime))
         {
           mLsodaStatus = -33;
           mRootCounter = 0;
@@ -366,8 +369,6 @@ void CLsodaMethod::start(CVectorCore< C_FLOAT64 > & initialState)
   mContainerState = initialState;
   mTime = *mpContainerStateTime;
 
-  mLastSuccessState = mContainerState;
-
   mTargetTime = mTime;
   mRootCounter = 0;
 
@@ -417,6 +418,9 @@ void CLsodaMethod::evalF(const C_FLOAT64 * t, const C_FLOAT64 * /* y */, C_FLOAT
   mpContainer->updateSimulatedValues(*mpReducedModel);
   memcpy(ydot, mpContainer->getRate(*mpReducedModel).array(), mData.dim * sizeof(C_FLOAT64));
 
+  std::cout << "State: " << mpContainer->getState(*mpReducedModel) << std::endl;
+  std::cout << "Rate:  " << mpContainer->getRate(*mpReducedModel) << std::endl;
+
   return;
 }
 
@@ -433,10 +437,15 @@ void CLsodaMethod::evalR(const C_FLOAT64 *  t, const C_FLOAT64 *  /* y */,
   CVectorCore< C_FLOAT64 > RootValues(*nr, r);
   RootValues = mpContainer->getRoots();
 
+  std::cout << "State: " << mpContainer->getState(*mpReducedModel) << std::endl;
+  std::cout << "Roots: " << RootValues << std::endl;
+
   if (mRootMasking != NONE)
     {
       maskRoots(RootValues);
     }
+
+  std::cout << "Roots: " << RootValues << std::endl;
 };
 
 // static

@@ -1,4 +1,4 @@
-// Copyright (C) 2011 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -139,6 +139,48 @@ bool CMathDependencyNode::updatePrerequisiteState(const CMath::SimulationContext
   return itNode.state() == CMathDependencyNodeIterator::End;
 }
 
+bool CMathDependencyNode::updateCalculatedState(const CMath::SimulationContextFlag & context,
+    const CObjectInterface::ObjectSet & changedObjects)
+{
+  CMathDependencyNodeIterator itNode(this, CMathDependencyNodeIterator::Prerequisites);
+  itNode.setProcessingModes(CMathDependencyNodeIterator::Before);
+
+  while (itNode.next())
+    {
+      // If we have a recursive dependency we need make sure that this is due to
+      // an intensive/extensive value pair
+      if (itNode.state() == CMathDependencyNodeIterator::Recursive)
+        {
+          if (itNode.parent()->getObject()->isPrerequisiteForContext(itNode->getObject(), context, changedObjects))
+            {
+              return false;
+            }
+
+          continue;
+        }
+
+      // The node itself is not modified.
+      if (*itNode == this)
+        {
+          continue;
+        }
+
+      // We are guaranteed that the current node has a parent as the only node without is this,
+      // which is handled above.
+      if (itNode->isChanged() &&
+          itNode.parent()->getObject()->isPrerequisiteForContext(itNode->getObject(), context, changedObjects))
+        {
+          itNode->setChanged(false);
+        }
+      else
+        {
+          itNode.skipChildren();
+        }
+    }
+
+  return itNode.state() == CMathDependencyNodeIterator::End;
+}
+
 bool CMathDependencyNode::buildUpdateSequence(const CMath::SimulationContextFlag & context,
     CObjectInterface::UpdateSequence & updateSequence)
 {
@@ -224,4 +266,10 @@ void CMathDependencyNode::setRequested(const bool & requested)
 const bool & CMathDependencyNode::isRequested() const
 {
   return mRequested;
+}
+
+void CMathDependencyNode::reset()
+{
+  mChanged = false;
+  mRequested = false;
 }

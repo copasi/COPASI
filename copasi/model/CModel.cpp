@@ -1744,10 +1744,10 @@ bool CModel::getUpdateSequence(CMathDependencyGraph & dependencyGraph,
 
   CObjectInterface::UpdateSequence UpdateSequence;
 
-  if (!dependencyGraph.getUpdateSequence(context,
+  if (!dependencyGraph.getUpdateSequence(UpdateSequence,
+                                         context,
                                          *reinterpret_cast< const CObjectInterface::ObjectSet *>(&changedObjects),
-                                         *reinterpret_cast< const CObjectInterface::ObjectSet *>(&requestedObjects),
-                                         UpdateSequence))
+                                         *reinterpret_cast< const CObjectInterface::ObjectSet *>(&requestedObjects)))
     {
       return false;
     }

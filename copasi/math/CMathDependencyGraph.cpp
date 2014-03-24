@@ -67,10 +67,11 @@ CMathDependencyGraph::iterator CMathDependencyGraph::addObject(const CObjectInte
   return found;
 }
 
-bool CMathDependencyGraph::getUpdateSequence(const CMath::SimulationContextFlag & context,
+bool CMathDependencyGraph::getUpdateSequence(CObjectInterface::UpdateSequence & updateSequence,
+    const CMath::SimulationContextFlag & context,
     const CObjectInterface::ObjectSet & changedObjects,
     const CObjectInterface::ObjectSet & requestedObjects,
-    CObjectInterface::UpdateSequence & updateSequence)
+    const CObjectInterface::ObjectSet & calculatedObjects)
 {
 
   bool success = true;
@@ -83,12 +84,15 @@ bool CMathDependencyGraph::getUpdateSequence(const CMath::SimulationContextFlag 
   CObjectInterface::ObjectSet::const_iterator it = changedObjects.begin();
   CObjectInterface::ObjectSet::const_iterator end = changedObjects.end();
 
-  const_iterator itCheck = mObjects2Nodes.begin();
-  const_iterator endCheck = mObjects2Nodes.end();
-
   // Mark all nodes which are changed or need to be calculated
   for (; it != end && success; ++it)
     {
+      // We may have data objects which are ignored as they are always up to date
+      if ((*it)->getDataObject() == *it)
+        {
+          continue;
+        }
+
       found = mObjects2Nodes.find(*it);
 
       if (found != notFound)
@@ -97,14 +101,35 @@ bool CMathDependencyGraph::getUpdateSequence(const CMath::SimulationContextFlag 
           continue;
         }
 
-      // We may have data objects which are ignored as they are always up to date
-      if ((*it)->getDataObject() != *it)
-        {
-          success = false;
-        }
+      success = false;
     }
 
   if (!success) goto finish;
+
+  // Mark all nodes which have already been calculated and its prerequisites as not changed.
+  it = calculatedObjects.begin();
+  end = calculatedObjects.end();
+
+  // Mark all nodes which are requested and its prerequisites.
+  for (; it != end && success; ++it)
+    {
+      // We may have data objects which are ignored as they are always up to date
+      if ((*it)->getDataObject() == *it)
+        {
+          continue;
+        }
+
+      found = mObjects2Nodes.find(*it);
+
+      if (found != notFound)
+        {
+          found->second->setChanged(false);
+          success &= found->second->updateCalculatedState(context, changedObjects);
+          continue;
+        }
+
+      success = false;
+    }
 
   it = requestedObjects.begin();
   end = requestedObjects.end();
@@ -112,6 +137,12 @@ bool CMathDependencyGraph::getUpdateSequence(const CMath::SimulationContextFlag 
   // Mark all nodes which are requested and its prerequisites.
   for (; it != end && success; ++it)
     {
+      // We may have data objects which are ignored as they are always up to date
+      if ((*it)->getDataObject() == *it)
+        {
+          continue;
+        }
+
       found = mObjects2Nodes.find(*it);
 
       if (found != notFound)
@@ -121,11 +152,7 @@ bool CMathDependencyGraph::getUpdateSequence(const CMath::SimulationContextFlag 
           continue;
         }
 
-      // We may have data objects which are ignored as they are always up to date
-      if ((*it)->getDataObject() != *it)
-        {
-          success = false;
-        }
+      success = false;
     }
 
 #ifdef COPASI_DEBUG_TRACE
@@ -143,6 +170,12 @@ bool CMathDependencyGraph::getUpdateSequence(const CMath::SimulationContextFlag 
 
   for (; it != end && success; ++it)
     {
+      // We may have data objects which are ignored as they are always up to date
+      if ((*it)->getDataObject() == *it)
+        {
+          continue;
+        }
+
       found = mObjects2Nodes.find(*it);
 
       if (found != notFound)
@@ -156,14 +189,15 @@ bool CMathDependencyGraph::getUpdateSequence(const CMath::SimulationContextFlag 
 
   if (!success) goto finish;
 
+finish:
+  const_iterator itCheck = mObjects2Nodes.begin();
+  const_iterator endCheck = mObjects2Nodes.end();
+
   for (; itCheck != endCheck; ++itCheck)
     {
       // Reset the dependency nodes for the next call.
-      itCheck->second->setChanged(false);
-      itCheck->second->setRequested(false);
+      itCheck->second->reset();
     }
-
-finish:
 
   if (!success)
     {
@@ -320,8 +354,9 @@ std::string CMathDependencyGraph::getDOTNodeId(const CObjectInterface * pObject)
         }
       else
         {
-          os << "::"  << mObject2Index.size();
-          mObject2Index[pMathObject] = mObject2Index.size();
+          size_t Index = mObject2Index.size();
+          os << "::"  << Index;
+          mObject2Index[pMathObject] = Index;
         }
 
       return os.str();

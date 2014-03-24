@@ -273,6 +273,9 @@ bool CMathEventQueue::process(const bool & priorToOutput)
   *mpRootValuesBefore = mpContainer->getRoots();
   iterator itAction = getAction();
 
+  std::cout << "State: " << mpContainer->getState() << std::endl;
+  std::cout << "Roots: " << mpContainer->getRoots() << std::endl;
+
   // The algorithm below will work properly for user ordered events
   // as the queue enforces the proper ordering.
   while (success &&
@@ -284,6 +287,9 @@ bool CMathEventQueue::process(const bool & priorToOutput)
           itAction = getAction();
           continue;
         }
+
+      std::cout << "State: " << mpContainer->getState() << std::endl;
+      std::cout << "Roots: " << mpContainer->getRoots() << std::endl;
 
       stateChanged = true;
 

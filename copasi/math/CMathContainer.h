@@ -380,7 +380,14 @@ public:
   CMathDependencyGraph & getTransientDependencies();
 
   /**
-   * Retrieve the objects which are ip to date after a call to updateSimulatedValues.
+   * Retrieve the objects which represent the state or reduced state.
+   * @param const bool & reduced (default: false)
+   * @return CObjectInterface::ObjectSet & stateObjects
+   */
+  const CObjectInterface::ObjectSet & getStateObjects(const bool & reduced = false) const;
+
+  /**
+   * Retrieve the objects which are up to date after a call to updateSimulatedValues.
    * @return CObjectInterface::ObjectSet & imulationUpToDateObjects
    */
   const CObjectInterface::ObjectSet & getSimulationUpToDateObjects() const;

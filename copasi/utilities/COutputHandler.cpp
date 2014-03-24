@@ -182,7 +182,9 @@ void COutputHandler::applyUpdateSequence()
 
 bool COutputHandler::compileUpdateSequence(const std::vector< CCopasiContainer * > & listOfContainer, const CCopasiDataModel* pDataModel)
 {
-  mpContainer->getTransientDependencies().getUpdateSequence(CMath::Default, mpContainer->getSimulationUpToDateObjects(), mObjects, mUpdateSequence);
+
+  mpContainer->getTransientDependencies().getUpdateSequence(mUpdateSequence, CMath::Default, mpContainer->getStateObjects(), mObjects,
+      mpContainer->getSimulationUpToDateObjects());
 
   CObjectInterface::ObjectSet::const_iterator it = mObjects.begin();
   CObjectInterface::ObjectSet::const_iterator end = mObjects.end();

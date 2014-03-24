@@ -547,7 +547,7 @@ void CTrajectoryMethodDsaLsodar::start(CVectorCore< C_FLOAT64 > & initialState)
         }
 
       pUpdateSequence->clear();
-      mpContainer->getTransientDependencies().getUpdateSequence(CMath::Default, Changed, Requested, *pUpdateSequence);
+      mpContainer->getTransientDependencies().getUpdateSequence(*pUpdateSequence, CMath::Default, Changed, Requested);
     }
 
   mPartition.intialize(mpContainer, *mpLowerLimit, *mpUpperLimit);
