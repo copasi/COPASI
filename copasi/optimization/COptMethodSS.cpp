@@ -89,6 +89,7 @@ bool COptMethodSS::elevateChildren()
   removeParameter("Random Number Generator");
   removeParameter("Seed");
 #endif
+  return true;
 }
 
 void COptMethodSS::initObjects()
