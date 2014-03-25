@@ -46,7 +46,8 @@ public:
   iterator addObject(const CObjectInterface * pObject);
 
   /**
-   * Construct a update sequence for the given context
+   * Construct a update sequence for the given context. Please note the calculated objects
+   * must be calculated based on the same changed values and context.
    * @param const CMath::SimulationContextFlag & context
    * @param CObjectInterface::UpdateSequence & updateSequence)
    * @param const CObjectInterface::ObjectSet & changedObjects

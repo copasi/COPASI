@@ -181,6 +181,9 @@ void CMathEventN::CTrigger::CRootProcessor::calculateTrueValue()
     {
       *mpRootStateValue = 1.0;
     }
+
+  // We advanced in time past the last continuous toggle time and can therefore reset it.
+  mLastToggleTime = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
 }
 
 void CMathEventN::CTrigger::CRootProcessor::initialize(CMath::sPointers & pointers)

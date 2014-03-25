@@ -519,12 +519,15 @@ void CMathContainer::updateInitialValues(const CModelParameter::Framework & fram
 
 void CMathContainer::applyInitialValues()
 {
+  std::cout << "Container Values: " << mValues << std::endl;
   C_FLOAT64 * pInitial = mInitialExtensiveValues.array();
   C_FLOAT64 * pTransient = mExtensiveValues.array();
 
   memcpy(pTransient, pInitial, (pTransient - pInitial) * sizeof(C_FLOAT64));
+  std::cout << "Container Values: " << mValues << std::endl;
 
   applyUpdateSequence(mApplyInitialValuesSequence);
+  std::cout << "Container Values: " << mValues << std::endl;
 
   // Start the process queue
   mpProcessQueue->start();
@@ -565,6 +568,8 @@ void CMathContainer::applyInitialValues()
         }
     }
 
+  std::cout << "Container Values: " << mValues << std::endl;
+
   // Determine roots which change state at the initial time point, i.e., roots which may have
   // a value of zero and a non zero derivative and check
   CVector< C_INT > FoundRoots(mEventRoots.size());
@@ -600,6 +605,7 @@ void CMathContainer::applyInitialValues()
     }
 
   processRoots(false, FoundRoots);
+  std::cout << "Container Values: " << mValues << std::endl;
 
   return;
 }
