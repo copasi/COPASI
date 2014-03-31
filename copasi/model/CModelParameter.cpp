@@ -1,7 +1,7 @@
-// Copyright (C) 2011 - 2014 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2011 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 #include <limits>
 
@@ -173,8 +173,11 @@ const std::string CModelParameter::getUnit(const Framework & framework) const
                               pModel->getTimeUnit().isDimensionless(),
                               pModel->getAreaUnit().isDimensionless(),
                               pModel->getLengthUnit().isDimensionless());
+
         Units.setUseHeuristics(true);
+
         Units.setChemicalEquation(&pReaction->getChemEq());
+
         Units.findDimensions(pReaction->getCompartmentNumber() > 1);
 
         return Units.getDimensions()[pReaction->getParameterIndex(getName())].getDisplayString(pModel);
@@ -438,10 +441,11 @@ const CModelParameter::CompareResult & CModelParameter::diff(const CModelParamet
       case Compartment:
       case Species:
       case ModelValue:
+
         if (other.getObject() != NULL &&
             mpObject != NULL &&
             static_cast< CModelEntity *>(mpObject)->getStatus() == CModelEntity::ASSIGNMENT &&
-            (getValue(ParticleNumbers) != other.getValue(ParticleNumbers) ||
+            (fabs(getValue(ParticleNumbers) - other.getValue(ParticleNumbers)) > 50 * (fabs(getValue(ParticleNumbers)) + fabs(other.getValue(ParticleNumbers))) * std::numeric_limits< C_FLOAT64 >::epsilon() ||
              getInitialExpression() != ""))
           {
             mCompareResult = Conflict;
@@ -455,7 +459,7 @@ const CModelParameter::CompareResult & CModelParameter::diff(const CModelParamet
     }
 
   if (getInitialExpression() != other.getInitialExpression() ||
-      getValue(framework) != other.getValue(framework))
+      fabs(getValue(framework) - other.getValue(framework)) > 50 * (fabs(getValue(framework)) + fabs(other.getValue(framework))) * std::numeric_limits< C_FLOAT64 >::epsilon())
     {
       mCompareResult = Modified;
     }
