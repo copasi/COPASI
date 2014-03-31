@@ -34,9 +34,9 @@ public class example5
      // get the model from the datamodel
      CModel model = dataModel.getModel();
      assert model != null;
-     model.setVolumeUnit(CUnit.fl);
-     model.setTimeUnit(CUnit.s);
-     model.setQuantityUnit(CUnit.fMol);
+     model.setVolumeUnit(CModel.fl);
+     model.setTimeUnit(CModel.s);
+     model.setQuantityUnit(CModel.fMol);
      CModelValue fixedModelValue=model.createModelValue("F");
      assert fixedModelValue != null;
      fixedModelValue.setStatus(CModelEntity.FIXED);
