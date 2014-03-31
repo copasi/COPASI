@@ -1,4 +1,4 @@
-// Copyright (C) 2012 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -74,6 +74,7 @@ bool CQParameterOverviewWidget::update(ListViews::ObjectType objectType, ListVie
         break;
 
       case ListViews::MODEL:
+
         if (action == ListViews::ADD ||
             action == ListViews::DELETE)
           {
@@ -87,6 +88,7 @@ bool CQParameterOverviewWidget::update(ListViews::ObjectType objectType, ListVie
 
       case ListViews::PARAMETEROVERVIEW:
       case ListViews::MODELPARAMETERSET:
+
         if (mKey == key)
           {
             switch (action)
@@ -298,8 +300,8 @@ void CQParameterOverviewWidget::slotBtnNew()
   if (CQMessageBox::question(this, "Save current Model Parameters?",
                              "You are about to overwrite the current model values.\n"
                              "Do you want to save them?",
-                             QMessageBox::Ok | QMessageBox::Cancel,
-                             QMessageBox::Ok) == QMessageBox::Ok)
+                             QMessageBox::Save | QMessageBox::Discard,
+                             QMessageBox::Save) == QMessageBox::Save)
     {
       // Save the parameter set to a new or existing set
       CQNameSelectionDialog Dialog(this);
