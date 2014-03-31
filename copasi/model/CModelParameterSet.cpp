@@ -211,7 +211,11 @@ bool CModelParameterSet::updateModel()
 
   compile();
 
-  return CModelParameterGroup::updateModel();
+  bool success = CModelParameterGroup::updateModel();
+
+  mpModel->updateInitialValues();
+
+  return success;
 }
 
 bool CModelParameterSet::isActive() const
