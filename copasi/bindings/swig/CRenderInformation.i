@@ -4,6 +4,7 @@
 // All rights reserved. 
 
 
+
 %ignore GlobalRenderInformation;
 %ignore GlobalStyle;
 %ignore GradientBase;
@@ -26,6 +27,25 @@
 %ignore sbmlEllipse;
 %ignore sbmlPolygon;
 %ignore sbmlRectangle;
+
+
+#if SWIGCSHARP
+
+%csmethodmodifiers  CLColorDefinition::getKey  "public new"
+%csmethodmodifiers  CLEllipse::getKey  "public new"
+%csmethodmodifiers  CLStyle::getKey  "public new"
+%csmethodmodifiers  CLGradientBase::getKey  "public new"
+%csmethodmodifiers  CLGradientStop::getKey  "public new"
+%csmethodmodifiers  CLGroup::getKey  "public new"
+%csmethodmodifiers  CLImage::getKey  "public new"
+%csmethodmodifiers  CLLineEnding::getKey  "public new"
+%csmethodmodifiers  CLPolygon::getKey  "public new"
+%csmethodmodifiers  CLRenderInformationBase::getKey  "public new"
+%csmethodmodifiers  CLRectangle::getKey  "public new"
+%csmethodmodifiers  CLRenderCurve::getKey  "public new"
+%csmethodmodifiers  CLText::getKey  "public new"
+
+#endif
 
 %ignore CLLocalStyle::isInKeyList;
 %ignore CLRectangle::CLRectangle(const sbmlRectangle& source, CCopasiContainer* pParent = NULL);
