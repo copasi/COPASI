@@ -4,6 +4,7 @@
 // All rights reserved. 
 
 
+
 %ignore GlobalRenderInformation;
 %ignore GlobalStyle;
 %ignore GradientBase;
