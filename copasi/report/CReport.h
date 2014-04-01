@@ -65,9 +65,9 @@ private:
   bool mAppend;
   bool mConfirmOverwrite;
 
-  std::vector< CCopasiObject * > mFooterObjectList;
-  std::vector< CCopasiObject * > mBodyObjectList;
-  std::vector< CCopasiObject * > mHeaderObjectList;
+  std::vector< CObjectInterface * > mFooterObjectList;
+  std::vector< CObjectInterface * > mBodyObjectList;
+  std::vector< CObjectInterface * > mHeaderObjectList;
 
   CReport * mpHeader;
   CReport * mpBody;
@@ -206,7 +206,7 @@ private:
    * transfer every individual object list from name vector
    */
   void generateObjectsFromName(const std::vector< CCopasiContainer * > * pListOfContainer,
-                               std::vector< CCopasiObject * > & objectList,
+                               std::vector< CObjectInterface * > & objectList,
                                CReport *& pReport,
                                const std::vector<CRegisteredObjectName>* nameVector);
 

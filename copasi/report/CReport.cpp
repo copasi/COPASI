@@ -182,8 +182,8 @@ void CReport::printHeader()
 
   mState = HeaderFooter;
 
-  std::vector< CCopasiObject * >::iterator it = mHeaderObjectList.begin();
-  std::vector< CCopasiObject * >::iterator end = mHeaderObjectList.end();
+  std::vector< CObjectInterface * >::iterator it = mHeaderObjectList.begin();
+  std::vector< CObjectInterface * >::iterator end = mHeaderObjectList.end();
 
   if (it == end) return;
 
@@ -233,12 +233,15 @@ void CReport::printBody()
 
   mState = BodyBody;
 
-  std::vector< CCopasiObject * >::iterator it = mBodyObjectList.begin();
-  std::vector< CCopasiObject * >::iterator end = mBodyObjectList.end();
+  std::vector< CObjectInterface * >::iterator it = mBodyObjectList.begin();
+  std::vector< CObjectInterface * >::iterator end = mBodyObjectList.end();
 
   if (it == end) return;
 
-  for (; it != end; ++it)(*it)->print(mpOstream);
+  for (; it != end; ++it)
+    {
+      (*it)->print(mpOstream);
+    }
 
   (*mpOstream) << std::endl;
 }
@@ -282,8 +285,8 @@ void CReport::printFooter()
 
   if (mState != FooterFooter) return;
 
-  std::vector< CCopasiObject * >::iterator it = mFooterObjectList.begin();
-  std::vector< CCopasiObject * >::iterator end = mFooterObjectList.end();
+  std::vector< CObjectInterface * >::iterator it = mFooterObjectList.begin();
+  std::vector< CObjectInterface * >::iterator end = mFooterObjectList.end();
 
   if (it == end) return;
 
@@ -392,27 +395,27 @@ std::ostream * CReport::getStream() const {return mpOstream;}
 
 // make to support parallel tasks
 void CReport::generateObjectsFromName(const std::vector< CCopasiContainer * > * pListOfContainer,
-                                      std::vector< CCopasiObject * > & objectList,
+                                      std::vector< CObjectInterface * > & objectList,
                                       CReport *& pReport,
                                       const std::vector<CRegisteredObjectName>* nameVector)
 {
   objectList.clear();
 
   unsigned C_INT32 i;
-  CObjectInterface * pSelected;
+  CObjectInterface * pObjectInterface;
   CReportDefinition * pReportDefinition;
 
   for (i = 0; i < nameVector->size(); i++)
     {
-      pSelected = mpDataModel->ObjectFromCN(*pListOfContainer, (*nameVector)[i]);
+      pObjectInterface = mpDataModel->ObjectFromCN(*pListOfContainer, (*nameVector)[i]);
 
-      if (CObjectInterface::DataObject(pSelected) == NULL)
+      if (pObjectInterface == NULL)
         {
           CCopasiMessage(CCopasiMessage::WARNING, MCCopasiTask + 6, (*nameVector)[i].c_str());
           continue;
         }
 
-      if (!i && (pReportDefinition = dynamic_cast< CReportDefinition * >(pSelected)) != NULL)
+      if (!i && (pReportDefinition = dynamic_cast< CReportDefinition * >(pObjectInterface)) != NULL)
         {
           pReport = new CReport();
           pReport->setReportDefinition(pReportDefinition);
@@ -420,8 +423,8 @@ void CReport::generateObjectsFromName(const std::vector< CCopasiContainer * > * 
           return;
         }
 
-      mObjects.insert(pSelected);
-      objectList.push_back(const_cast< CCopasiObject * >(pSelected->getDataObject()));
+      mObjects.insert(pObjectInterface);
+      objectList.push_back(pObjectInterface);
     }
 }
 

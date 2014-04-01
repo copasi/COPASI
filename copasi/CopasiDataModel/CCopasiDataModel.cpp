@@ -1889,7 +1889,7 @@ CObjectInterface * CCopasiDataModel::ObjectFromCN(const std::vector< CCopasiCont
 
   //favor to search the list of container first
   for (containerIndex = 0;
-       containerIndex < listOfContainer.size() && !pObject;
+       containerIndex < listOfContainer.size() && pObject == NULL;
        containerIndex++)
     {
       pContainer = listOfContainer[containerIndex];
