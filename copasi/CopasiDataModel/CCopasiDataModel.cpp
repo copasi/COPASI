@@ -20,8 +20,6 @@
 #include <sedml/SedDocument.h>
 #include "sedml/SEDMLImporter.h"
 #include "sedml/CSEDMLExporter.h"
-#include "trajectory/CTrajectoryProblem.h"
-#include "trajectory/CTrajectoryTask.h"
 #endif
 
 #include "copasi.h"
@@ -59,7 +57,8 @@
 #include "tss/CODEExporterBM.h"
 #include "tss/CODEExporterXPPAUT.h"
 #include "moieties/CMoietiesTask.h"
-
+#include "trajectory/CTrajectoryProblem.h"
+#include "trajectory/CTrajectoryTask.h"
 #include "utilities/CCopasiException.h"
 #include "utilities/CCopasiProblem.h"
 #include "utilities/CCopasiTask.h"
