@@ -187,6 +187,11 @@ private:
    */
   unsigned C_INT32 mRootCounter;
 
+  /**
+   * A Boolean indicating whether we are in peekAhead mode
+   */
+  bool mPeekAheadMode;
+
   // Operations
 protected:
   /**
@@ -286,7 +291,7 @@ private:
   /**
    * Peek ahead to detect simultaneous roots.
    */
-  void peekAhead();
+  Status peekAhead();
 
 protected:
   /**

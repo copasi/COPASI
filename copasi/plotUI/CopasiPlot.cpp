@@ -122,13 +122,13 @@ QwtDoubleRect C2DCurveData::boundingRect() const
 
       if (!isnan(xv))
         {
-          if (xv < mMinX || MinXisNaN)
+          if ((xv < mMinX || MinXisNaN) && xv > -std::numeric_limits< double >::infinity())
             {
               mMinX = xv;
               MinXisNaN = false;
             }
 
-          if (xv > mMaxX || MaxXisNaN)
+          if ((xv > mMaxX || MaxXisNaN) && xv < std::numeric_limits< double >::infinity())
             {
               mMaxX = xv;
               MaxXisNaN = false;
@@ -139,13 +139,13 @@ QwtDoubleRect C2DCurveData::boundingRect() const
 
       if (!isnan(yv))
         {
-          if (yv < mMinY || MinYisNaN)
+          if ((yv < mMinY || MinYisNaN) && yv > -std::numeric_limits< double >::infinity())
             {
               mMinY = yv;
               MinYisNaN = false;
             }
 
-          if (yv > mMaxY || MaxYisNaN)
+          if ((yv > mMaxY  || MaxYisNaN) && yv < std::numeric_limits< double >::infinity())
             {
               mMaxY = yv;
               MaxYisNaN = false;
@@ -1367,7 +1367,7 @@ void CopasiPlot::resizeCurveData(const size_t & activity)
   // It is now save to delete the old data since the GUI thread has been notified.
   for (itOld = OldData.begin(); itOld != endOld; ++itOld)
     {
-      pdelete(*itOld);
+      // pdelete(*itOld);
     }
 }
 
