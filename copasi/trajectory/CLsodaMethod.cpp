@@ -660,7 +660,7 @@ CTrajectoryMethod::Status CLsodaMethod::peekAhead()
 
             for (; pOld != pOldEnd; ++pOld, ++pNew, ++pAtol)
               {
-                if ((2.0 * fabs(*pNew - *pOld) / fabs(*pNew + *pOld) > *mpRelativeTolerance) &&
+                if ((2.0 * fabs(*pNew - *pOld) > (fabs(*pNew) + fabs(*pOld)) * *mpRelativeTolerance) &&
                     fabs(*pNew) > *pAtol &&
                     fabs(*pOld) > *pAtol)
                   {
