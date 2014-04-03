@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -26,13 +26,13 @@
 #include "lapack/blaswrap.h"
 #include "lapack/lapackwrap.h"
 
-#define dls001_1 (mpdls001_->_1)
-#define dls001_2 (mpdls001_->_2)
-#define dls001_3 (mpdls001_->_3)
+#define dls001_1 (mdls001_._1)
+#define dls001_2 (mdls001_._2)
+#define dls001_3 (mdls001_._3)
 
-#define dlsr01_1 (mpdlsr01_->_1)
-#define dlsr01_2 (mpdlsr01_->_2)
-#define dlsr01_3 (mpdlsr01_->_3)
+#define dlsr01_1 (mdlsr01_._1)
+#define dlsr01_2 (mdlsr01_._2)
+#define dlsr01_3 (mdlsr01_._3)
 
 double d_sign(const double & a, const double & b);
 

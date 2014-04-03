@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -35,9 +35,9 @@ double d_sign(const double & a, const double & b);
 #include "dmnorm.h"
 #include "dewset.h"
 
-#define dls001_1 (mpdls001_->lsoda)
-#define dlsa01_1 (mpdlsa01_->lsoda)
-#define dlsr01_1 (mpdlsr01_->lsodar)
+#define dls001_1 (mdls001_.lsoda)
+#define dlsa01_1 (mdlsa01_.lsoda)
+#define dlsr01_1 (mdlsr01_.lsodar)
 
 static const double c_b76 = 0.0;
 
@@ -102,18 +102,21 @@ CLSODAR::CLSODAR() :
   mpPJAC(NULL),
   mpSLVS(NULL)
 {
-  mpdls001_ = new dls001;
-  mpdlsa01_ = new dlsa01;
-  mpdlsr01_ = new dlsr01;
   mpPJAC = new PJACFunctor<CLSODAR>(this, &CLSODAR::dprja_);
   mpSLVS = new SLVSFunctor<CLSODAR>(this, &CLSODAR::dsolsy_);
 }
 
 CLSODAR::~CLSODAR()
 {
-  if (mpPJAC != NULL) {delete mpPJAC; mpPJAC = NULL;}
+  if (mpPJAC != NULL)
+    {
+      delete mpPJAC; mpPJAC = NULL;
+    }
 
-  if (mpSLVS != NULL) {delete mpSLVS; mpSLVS = NULL;}
+  if (mpSLVS != NULL)
+    {
+      delete mpSLVS; mpSLVS = NULL;
+    }
 }
 
 /* DECK DLSODAR */

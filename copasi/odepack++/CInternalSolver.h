@@ -71,9 +71,9 @@ protected:
 
 protected:
   Cxerrwd mxerrwd;
-  dls001 * mpdls001_;
-  dlsa01 * mpdlsa01_;
-  dlsr01 * mpdlsr01_;
+  dls001 mdls001_;
+  dlsa01 mdlsa01_;
+  dlsr01 mdlsr01_;
   State mState;
 };
 

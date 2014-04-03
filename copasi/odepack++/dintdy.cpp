@@ -1,17 +1,14 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/odepack++/dintdy.cpp,v $
-   $Revision: 1.6 $
-   $Name:  $
-   $Author: ssahle $
-   $Date: 2012/04/22 14:54:53 $
-   End CVS Header */
-
-// Copyright (C) 2012 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2006 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -29,13 +26,13 @@
 #include "CInternalSolver.h"
 #include "Cxerrwd.h"
 
-#define dls001_1 (mpdls001_->_1)
-#define dls001_2 (mpdls001_->_2)
-#define dls001_3 (mpdls001_->_3)
+#define dls001_1 (mdls001_._1)
+#define dls001_2 (mdls001_._2)
+#define dls001_3 (mdls001_._3)
 
-#define dlsa01_1 (mpdlsa01_->_1)
-#define dlsa01_2 (mpdlsa01_->_2)
-#define dlsa01_3 (mpdlsa01_->_3)
+#define dlsa01_1 (mdlsa01_._1)
+#define dlsa01_2 (mdlsa01_._2)
+#define dlsa01_3 (mdlsa01_._3)
 
 double d_sign(const double & a, const double & b);
 
@@ -128,7 +125,7 @@ C_INT CInternalSolver::dintdy_(double *t, const C_INT *k, double *yh,
   d__1 = fabs(dls001_1.tn) + fabs(dls001_1.hu);
   tp = dls001_1.tn - dls001_1.hu - dls001_1.uround * 100. * d_sign(d__1, dls001_1.hu);
 
-  if ((*t - tp) *(*t - dls001_1.tn) > 0.)
+  if ((*t - tp) * (*t - dls001_1.tn) > 0.)
     {
       goto L90;
     }

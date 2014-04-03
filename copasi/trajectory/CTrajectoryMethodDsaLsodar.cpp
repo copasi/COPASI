@@ -1,12 +1,4 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryMethodDsaLsodar.cpp,v $
-//   $Revision: 1.5 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/06/04 17:37:43 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -48,29 +40,29 @@
 #include "copasi/utilities/CVersion.h"
 
 CTrajectoryMethodDsaLsodar::CReactionDependencies::CReactionDependencies():
-    mSpeciesMultiplier(0),
-    mMethodSpecies(0),
-    mModelSpecies(0),
-    mCalculations(),
-    mDependentReactions(0),
-    mSubstrateMultiplier(0),
-    mMethodSubstrates(0),
-    mModelSubstrates(0),
-    mpParticleFlux(NULL),
-    mSpeciesIndex(0)
+  mSpeciesMultiplier(0),
+  mMethodSpecies(0),
+  mModelSpecies(0),
+  mCalculations(),
+  mDependentReactions(0),
+  mSubstrateMultiplier(0),
+  mMethodSubstrates(0),
+  mModelSubstrates(0),
+  mpParticleFlux(NULL),
+  mSpeciesIndex(0)
 {}
 
 CTrajectoryMethodDsaLsodar::CReactionDependencies::CReactionDependencies(const CReactionDependencies & src):
-    mSpeciesMultiplier(src.mSpeciesMultiplier),
-    mMethodSpecies(src.mMethodSpecies),
-    mModelSpecies(src.mModelSpecies),
-    mCalculations(src.mCalculations),
-    mDependentReactions(src.mDependentReactions),
-    mSubstrateMultiplier(src.mSubstrateMultiplier),
-    mMethodSubstrates(src.mMethodSubstrates),
-    mModelSubstrates(src.mModelSubstrates),
-    mpParticleFlux(src.mpParticleFlux),
-    mSpeciesIndex(src.mSpeciesIndex)
+  mSpeciesMultiplier(src.mSpeciesMultiplier),
+  mMethodSpecies(src.mMethodSpecies),
+  mModelSpecies(src.mModelSpecies),
+  mCalculations(src.mCalculations),
+  mDependentReactions(src.mDependentReactions),
+  mSubstrateMultiplier(src.mSubstrateMultiplier),
+  mMethodSubstrates(src.mMethodSubstrates),
+  mModelSubstrates(src.mModelSubstrates),
+  mpParticleFlux(src.mpParticleFlux),
+  mSpeciesIndex(src.mSpeciesIndex)
 {}
 
 CTrajectoryMethodDsaLsodar::CReactionDependencies::~CReactionDependencies()
@@ -93,33 +85,33 @@ CTrajectoryMethodDsaLsodar::CReactionDependencies & CTrajectoryMethodDsaLsodar::
 }
 
 CTrajectoryMethodDsaLsodar::CPartition::CPartition():
-    mSpeciesToReactions(),
-    mLowerThreshold(),
-    mUpperThreshold(),
-    mFirstReactionSpeciesIndex(C_INVALID_INDEX),
-    mNumReactionSpecies(0),
-    mStochasticReactions(0),
-    mDeterministicReactions(0),
-    mStochasticSpecies(0),
-    mHasStochastic(false),
-    mHasDeterministic(false),
-    mNumLowSpecies(0),
-    mLowSpecies(0)
+  mSpeciesToReactions(),
+  mLowerThreshold(),
+  mUpperThreshold(),
+  mFirstReactionSpeciesIndex(C_INVALID_INDEX),
+  mNumReactionSpecies(0),
+  mStochasticReactions(0),
+  mDeterministicReactions(0),
+  mStochasticSpecies(0),
+  mHasStochastic(false),
+  mHasDeterministic(false),
+  mNumLowSpecies(0),
+  mLowSpecies(0)
 {}
 
 CTrajectoryMethodDsaLsodar::CPartition::CPartition(const CTrajectoryMethodDsaLsodar::CPartition & src):
-    mSpeciesToReactions(src.mSpeciesToReactions),
-    mLowerThreshold(src.mLowerThreshold),
-    mUpperThreshold(src.mUpperThreshold),
-    mFirstReactionSpeciesIndex(C_INVALID_INDEX),
-    mNumReactionSpecies(src.mNumReactionSpecies),
-    mStochasticReactions(src.mStochasticReactions),
-    mDeterministicReactions(src.mDeterministicReactions),
-    mStochasticSpecies(src.mStochasticSpecies),
-    mHasStochastic(src.mHasStochastic),
-    mHasDeterministic(src.mHasDeterministic),
-    mNumLowSpecies(src.mNumLowSpecies),
-    mLowSpecies(src.mLowSpecies)
+  mSpeciesToReactions(src.mSpeciesToReactions),
+  mLowerThreshold(src.mLowerThreshold),
+  mUpperThreshold(src.mUpperThreshold),
+  mFirstReactionSpeciesIndex(C_INVALID_INDEX),
+  mNumReactionSpecies(src.mNumReactionSpecies),
+  mStochasticReactions(src.mStochasticReactions),
+  mDeterministicReactions(src.mDeterministicReactions),
+  mStochasticSpecies(src.mStochasticSpecies),
+  mHasStochastic(src.mHasStochastic),
+  mHasDeterministic(src.mHasDeterministic),
+  mNumLowSpecies(src.mNumLowSpecies),
+  mLowSpecies(src.mLowSpecies)
 {}
 
 CTrajectoryMethodDsaLsodar::CPartition::~CPartition()
@@ -323,13 +315,12 @@ void CTrajectoryMethodDsaLsodar::CPartition::determineStochasticSpecies()
     }
 }
 
-
 /**
  *   Default constructor.
  */
 CTrajectoryMethodDsaLsodar::CTrajectoryMethodDsaLsodar(const CCopasiMethod::SubType & subType,
     const CCopasiContainer * pParent):
-    CLsodaMethod(subType, pParent)
+  CLsodaMethod(subType, pParent)
 {
   mpRandomGenerator = CRandom::createGenerator(CRandom::mt19937);
   initializeParameter();
@@ -337,7 +328,7 @@ CTrajectoryMethodDsaLsodar::CTrajectoryMethodDsaLsodar(const CCopasiMethod::SubT
 
 CTrajectoryMethodDsaLsodar::CTrajectoryMethodDsaLsodar(const CTrajectoryMethodDsaLsodar & src,
     const CCopasiContainer * pParent):
-    CLsodaMethod(src, pParent)
+  CLsodaMethod(src, pParent)
 {
   mpRandomGenerator = CRandom::createGenerator(CRandom::mt19937);
   initializeParameter();
@@ -681,12 +672,10 @@ void CTrajectoryMethodDsaLsodar::start(const CState * initialState)
             }
         }
 
-
       itDependencies->mSpeciesIndex.resize(SpeciesIndexSet.size());
       size_t * pSpeciesIndex = itDependencies->mSpeciesIndex.array();
       std::set< size_t >::const_iterator itSet = SpeciesIndexSet.begin();
       std::set< size_t >::const_iterator endSet = SpeciesIndexSet.end();
-
 
       for (; itSet != endSet; ++itSet, ++pSpeciesIndex)
         {
@@ -775,11 +764,9 @@ void CTrajectoryMethodDsaLsodar::evalF(const C_FLOAT64 * t, const C_FLOAT64 * /*
 // virtual
 void CTrajectoryMethodDsaLsodar::evalR(const C_FLOAT64 * /* t */, const C_FLOAT64 * /* y */, const C_INT * /* nr */, C_FLOAT64 * /* r */)
 {
-
 }
 
 /* PROTECTED METHODS *********************************************************/
-
 
 /**
  *  Cleans up memory, etc.
@@ -875,7 +862,6 @@ void CTrajectoryMethodDsaLsodar::fireReaction(const size_t & index)
   mLsodaStatus = 1;
 
   destroyRootMask();
-  mRootMasking = NONE;
 
   return;
 }
@@ -956,7 +942,8 @@ void CTrajectoryMethodDsaLsodar::calculateAmu(const size_t & index)
 }
 
 void CTrajectoryMethodDsaLsodar::calculatePropensities()
-{  // It suffices to recalculate the propensities for stochastic reactions.
+{
+  // It suffices to recalculate the propensities for stochastic reactions.
   CReactionDependencies **ppStochastic = mPartition.mStochasticReactions.array();
 
   for (size_t Index = 0; Index != this->mNumReactions; ++Index, ++ppStochastic)
@@ -1099,4 +1086,3 @@ bool CTrajectoryMethodDsaLsodar::isValidProblem(const CCopasiProblem * pProblem)
 
   return true;
 }
-
