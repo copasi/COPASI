@@ -1,17 +1,14 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/odepack++/CLSODA.cpp,v $
-   $Revision: 1.12 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2012/04/23 21:11:03 $
-   End CVS Header */
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2006 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -36,8 +33,8 @@ double d_sign(const double & a, const double & b);
 #include "dmnorm.h"
 #include "dewset.h"
 
-#define dls001_1 (mpdls001_->lsoda)
-#define dlsa01_1 (mpdlsa01_->lsoda)
+#define dls001_1 (mdls001_.lsoda)
+#define dlsa01_1 (mdlsa01_.lsoda)
 
 static const double c_b76 = 0.0;
 
@@ -96,21 +93,25 @@ const C_INT CLSODA::mxhnl0 = 10;
 const C_INT CLSODA::mord[] = {12, 5};
 
 CLSODA::CLSODA() :
-    CInternalSolver(),
-    mpPJAC(NULL),
-    mpSLVS(NULL)
+  CInternalSolver(),
+  mpPJAC(NULL),
+  mpSLVS(NULL)
 {
-  mpdls001_ = new dls001;
-  mpdlsa01_ = new dlsa01;
   mpPJAC = new PJACFunctor<CLSODA>(this, &CLSODA::dprja_);
   mpSLVS = new SLVSFunctor<CLSODA>(this, &CLSODA::dsolsy_);
 }
 
 CLSODA::~CLSODA()
 {
-  if (mpPJAC != NULL) {delete mpPJAC; mpPJAC = NULL;}
+  if (mpPJAC != NULL)
+    {
+      delete mpPJAC; mpPJAC = NULL;
+    }
 
-  if (mpSLVS != NULL) {delete mpSLVS; mpSLVS = NULL;}
+  if (mpSLVS != NULL)
+    {
+      delete mpSLVS; mpSLVS = NULL;
+    }
 }
 
 /* DECK DLSODA */
@@ -1588,7 +1589,7 @@ L100:
 
   tcrit = rwork[1];
 
-  if ((tcrit - *tout) *(*tout - *t) < 0.)
+  if ((tcrit - *tout) * (*tout - *t) < 0.)
     {
       goto L625;
     }

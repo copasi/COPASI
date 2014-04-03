@@ -29,7 +29,8 @@ CLsodaMethod::CLsodaMethod(const CCopasiMethod::SubType & subType,
   mY(NULL),
   mRootMask(),
   mTargetTime(0.0),
-  mRootCounter(0)
+  mRootCounter(0),
+  mPeekAheadMode(false)
 {
   assert((void *) &mData == (void *) &mData.dim);
 
@@ -42,7 +43,10 @@ CLsodaMethod::CLsodaMethod(const CLsodaMethod & src,
   CTrajectoryMethod(src, pParent),
   mMethodState(),
   mY(NULL),
-  mRootMask(src.mRootMask)
+  mRootMask(src.mRootMask),
+  mTargetTime(src.mTargetTime),
+  mRootCounter(src.mRootCounter),
+  mPeekAheadMode(src.mPeekAheadMode)
 {
   assert((void *) &mData == (void *) &mData.dim);
 
@@ -166,8 +170,6 @@ void CLsodaMethod::stateChanged()
           if (*pMethod != *pCurrent)
             {
               mLsodaStatus = 1;
-              mMethodState = *mpCurrentState;
-              mTime = mMethodState.getTime();
 
               break;
             }
@@ -202,14 +204,12 @@ void CLsodaMethod::stateChanged()
             }
         }
     }
-  else
-    {
-      mMethodState = *mpCurrentState;
-      mTime = mMethodState.getTime();
-    }
 
+  mMethodState = *mpCurrentState;
+  mTime = mMethodState.getTime();
+
+  mPeekAheadMode = false;
   destroyRootMask();
-  mRootMasking = NONE;
 }
 
 CTrajectoryMethod::Status CLsodaMethod::step(const double & deltaT)
@@ -324,7 +324,10 @@ CTrajectoryMethod::Status CLsodaMethod::step(const double & deltaT)
 
             // To detect simultaneous roots we have to peek ahead, i.e., continue
             // integration until the state changes are larger that the relative
-            peekAhead();
+            if (!mPeekAheadMode)
+              {
+                Status = peekAhead();
+              }
 
             // The break statement is intentionally missing since we
             // have to continue to check the root masking state.
@@ -402,17 +405,23 @@ CTrajectoryMethod::Status CLsodaMethod::step(const double & deltaT)
   // if (mLsodaStatus == -1) mLsodaStatus = 2;
 
   mMethodState.setTime(mTime);
-  *mpCurrentState = mMethodState;
+
+  if (!mPeekAheadMode)
+    {
+      *mpCurrentState = mMethodState;
+    }
 
   if ((mLsodaStatus <= 0))
     {
       Status = FAILURE;
+      mPeekAheadMode = false;
       CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 6, mErrorMsg.str().c_str());
     }
 
-  if (!mpCurrentState->isValid())
+  if (!mMethodState.isValid())
     {
       Status = FAILURE;
+      mPeekAheadMode = false;
       CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 25, mTime);
     }
 
@@ -435,11 +444,11 @@ void CLsodaMethod::start(const CState * initialState)
   mTime = mMethodState.getTime();
   mTargetTime = mTime;
   mRootCounter = 0;
+  mPeekAheadMode = false;
 
   mNumRoots = (C_INT) mpModel->getNumRoots();
   mRoots.resize(mNumRoots);
   destroyRootMask();
-  mRootMasking = NONE;
 
   if (*mpReducedModel)
     mData.dim = (C_INT) mMethodState.getNumIndependent();
@@ -618,61 +627,102 @@ void CLsodaMethod::destroyRootMask()
   mRootMasking = NONE;
 }
 
-void CLsodaMethod::peekAhead()
+CTrajectoryMethod::Status CLsodaMethod::peekAhead()
 {
   // Save the current state
   mMethodState.setTime(mTime);
-  CState SavedState = mMethodState;
+
+  CState StartState = mMethodState;
+
+  CState ResetState = mMethodState;
   mLSODAR.saveState();
+  CVector< C_FLOAT64 > ResetDWork = mDWork;
+  CVector< C_INT > ResetIWork = mIWork;
+
+  mPeekAheadMode = true;
+  Status PeekAheadStatus = ROOT;
 
   CVector< C_INT > CombinedRoots = mRoots;
 
-  C_FLOAT64 DeltaT = mTime * *mpRelativeTolerance;
+  C_FLOAT64 MaxPeekAheadTime = std::max(mTargetTime, mTime * (1.0 + 2.0 * *mpRelativeTolerance));
 
-  if (step(DeltaT) == ROOT)
+  while (mPeekAheadMode)
     {
-
-      // Check whether the new state is within the tolerances
-      C_FLOAT64 * pOld = SavedState.beginIndependent();
-      C_FLOAT64 * pOldEnd = pOld + mData.dim;
-      C_FLOAT64 * pNew = mMethodState.beginIndependent();
-      C_FLOAT64 * pAtol = mAtol.array();
-
-      for (; pOld != pOldEnd; ++pOld, ++pNew, ++pAtol)
+      switch (step(MaxPeekAheadTime - mTime))
         {
-          if ((2.0 * fabs(*pNew - *pOld) / fabs(*pNew + *pOld) > *mpRelativeTolerance) &&
-              fabs(*pNew) > *pAtol &&
-              fabs(*pOld) > *pAtol)
-            {
-              break;
-            }
-        }
+          case ROOT:
+          {
+            // Check whether the new state is within the tolerances
+            C_FLOAT64 * pOld = StartState.beginIndependent();
+            C_FLOAT64 * pOldEnd = pOld + mData.dim;
+            C_FLOAT64 * pNew = mMethodState.beginIndependent();
+            C_FLOAT64 * pAtol = mAtol.array();
 
-      if (pOld == pOldEnd)
-        {
-          // Save the state
-          SavedState = mMethodState;
-          mLSODAR.saveState();
+            for (; pOld != pOldEnd; ++pOld, ++pNew, ++pAtol)
+              {
+                if ((2.0 * fabs(*pNew - *pOld) / fabs(*pNew + *pOld) > *mpRelativeTolerance) &&
+                    fabs(*pNew) > *pAtol &&
+                    fabs(*pOld) > *pAtol)
+                  {
+                    break;
+                  }
+              }
 
-          // Combine all the roots
-          C_INT * pRoot = mRoots.array();
-          C_INT * pRootEnd = pRoot + mRoots.size();
-          C_INT * pCombinedRoot = CombinedRoots.array();
+            if (pOld != pOldEnd ||
+                mTime > StartState.getTime() * (1.0 + *mpRelativeTolerance))
+              {
+                mPeekAheadMode = false;
+              }
+            else
+              {
+                ResetState = mMethodState;
+                mLSODAR.saveState();
+                ResetDWork = mDWork;
+                ResetIWork = mIWork;
 
-          for (; pRoot != pRootEnd; ++pRoot, ++pCombinedRoot)
-            {
-              if (pRoot > 0)
-                {
-                  *pCombinedRoot = 1;
-                }
-            }
+                // Combine all the roots
+                C_INT * pRoot = mRoots.array();
+                C_INT * pRootEnd = pRoot + mRoots.size();
+                C_INT * pCombinedRoot = CombinedRoots.array();
+
+                for (; pRoot != pRootEnd; ++pRoot, ++pCombinedRoot)
+                  {
+                    if (*pRoot > 0)
+                      {
+                        *pCombinedRoot = 1;
+                      }
+                  }
+              }
+          }
+
+          break;
+
+          case FAILURE:
+            mPeekAheadMode = false;
+            PeekAheadStatus = FAILURE;
+            break;
+
+          case NORMAL:
+
+            if (mRootMasking != ALL)
+              {
+                mPeekAheadMode = false;
+              }
+
+            break;
         }
     }
 
   // Reset the integrator to the saved state
-  mMethodState = SavedState;
+  mMethodState = ResetState;
   mTime = mMethodState.getTime();
   mLSODAR.resetState();
+  mDWork = ResetDWork;
+  mIWork = ResetIWork;
+
+  mPeekAheadMode = false;
 
   mRoots = CombinedRoots;
+
+  return PeekAheadStatus;
 }
