@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -369,6 +369,7 @@ void CQExpressionWidget::keyPressEvent(QKeyEvent * e)
   switch (e->key())
     {
       case Qt::Key_Backspace:
+
         if (isAdvancedEditing) break;
 
         mCursor = textCursor();
@@ -392,6 +393,7 @@ void CQExpressionWidget::keyPressEvent(QKeyEvent * e)
         break;
 
       case Qt::Key_Delete:
+
         if (isAdvancedEditing) break;
 
         mCursor = textCursor();
@@ -415,6 +417,7 @@ void CQExpressionWidget::keyPressEvent(QKeyEvent * e)
         break;
 
       case Qt::Key_Left:
+
         if (isAdvancedEditing) break;
 
         mCursor = textCursor();
@@ -434,6 +437,7 @@ void CQExpressionWidget::keyPressEvent(QKeyEvent * e)
         break;
 
       case Qt::Key_Right:
+
         if (isAdvancedEditing) break;
 
         mCursor = textCursor();
@@ -454,6 +458,7 @@ void CQExpressionWidget::keyPressEvent(QKeyEvent * e)
 
       case Qt::Key_BraceLeft:
       case Qt::Key_BraceRight:
+
         if (isAdvancedEditing) break;
 
         e->ignore();
@@ -492,9 +497,6 @@ void CQExpressionWidget::slotTextChanged()
 
   int pos = 0;
   QString Input = toPlainText();
-  QPalette palette;
-  palette.setColor(backgroundRole(), QColor(255, 0, 0));
-  setPalette(palette);
 
   emit valid(pValidator->validate(Input, pos) == QValidator::Acceptable);
 }

@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -72,17 +72,13 @@ void MyLineEdit::slotTextChanged(const QString & /* text */)
 
 void MyLineEdit::updateColor()
 {
-  QPalette palette;
-
   if (isModified())
     {
-      palette.setColor(backgroundRole(), mNewColor);
-      setPalette(palette);
+      setStyleSheet("background-color:" + mNewColor.name() + ";");
     }
   else
     {
-      palette.setColor(backgroundRole(), mOldColor);
-      setPalette(palette);
+      setStyleSheet("background-color:" + mOldColor.name() + ";");
     }
 
   const QValidator * val = validator();
@@ -94,9 +90,7 @@ void MyLineEdit::updateColor()
   if (val)
     if (val->validate(ttt, dummy) == QValidator::Intermediate)
       {
-        QPalette palette;
-        palette.setColor(backgroundRole(), mErrorColor);
-        setPalette(palette);
+        setStyleSheet("background-color:" + mErrorColor.name() + ";");
       }
 }
 
