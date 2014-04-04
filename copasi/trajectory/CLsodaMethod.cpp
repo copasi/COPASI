@@ -26,9 +26,30 @@
 CLsodaMethod::CLsodaMethod(const CCopasiMethod::SubType & subType,
                            const CCopasiContainer * pParent):
   CTrajectoryMethod(subType, pParent),
-  mY(NULL),
+  mpReducedModel(NULL),
+  mpRelativeTolerance(NULL),
+  mpAbsoluteTolerance(NULL),
+  mpMaxInternalSteps(NULL),
+  mData(),
+  mpY(NULL),
+  mpYdot(NULL),
+  mNumRoots(0),
+  mTime(),
+  mLsodaStatus(1),
+  mLastSuccessState(),
+  mAtol(),
+  mpAtol(NULL),
+  mErrorMsg(),
+  mLSODA(),
+  mLSODAR(),
+  mTask(),
+  mDWork(),
+  mIWork(),
+  mJType(),
   mRootMask(),
-  mTargetTime(0.0),
+  mDiscreteRoots(),
+  mRootMasking(CLsodaMethod::NONE),
+  mTargetTime(),
   mRootCounter(0),
   mPeekAheadMode(false)
 {
@@ -41,8 +62,29 @@ CLsodaMethod::CLsodaMethod(const CCopasiMethod::SubType & subType,
 CLsodaMethod::CLsodaMethod(const CLsodaMethod & src,
                            const CCopasiContainer * pParent):
   CTrajectoryMethod(src, pParent),
-  mY(NULL),
+  mpReducedModel(NULL),
+  mpRelativeTolerance(NULL),
+  mpAbsoluteTolerance(NULL),
+  mpMaxInternalSteps(NULL),
+  mData(src.mData),
+  mpY(NULL),
+  mpYdot(NULL),
+  mNumRoots(src.mNumRoots),
+  mTime(src.mTime),
+  mLsodaStatus(src.mLsodaStatus),
+  mLastSuccessState(src.mLastSuccessState),
+  mAtol(src.mAtol),
+  mpAtol(NULL),
+  mErrorMsg(src.mErrorMsg.str()),
+  mLSODA(),
+  mLSODAR(),
+  mTask(src.mTask),
+  mDWork(src.mDWork),
+  mIWork(src.mIWork),
+  mJType(src.mJType),
   mRootMask(src.mRootMask),
+  mDiscreteRoots(),
+  mRootMasking(src.mRootMasking),
   mTargetTime(src.mTargetTime),
   mRootCounter(src.mRootCounter),
   mPeekAheadMode(src.mPeekAheadMode)
@@ -197,13 +239,13 @@ CTrajectoryMethod::Status CLsodaMethod::step(const double & deltaT)
 
       mLSODAR(&EvalF, //  1. evaluate F
               &mData.dim, //  2. number of variables
-              mY, //  3. the array of current concentrations
+              mpY, //  3. the array of current concentrations
               &mTime, //  4. the current time
               &EndTime, //  5. the final time
               &ITOL, //  6. error control
-              &mRtol, //  7. relative tolerance array
-              mAtol.array(), //  8. absolute tolerance array
-              &mState, //  9. output by overshoot & interpolation
+              mpRelativeTolerance, //  7. relative tolerance array
+              mpAtol, //  8. absolute tolerance array
+              &mTask, //  9. output by overshoot & interpolation
               &mLsodaStatus, // 10. the state control variable
               &one, // 11. further options (one)
               mDWork.array(), // 12. the double work array
@@ -326,13 +368,13 @@ CTrajectoryMethod::Status CLsodaMethod::step(const double & deltaT)
     {
       mLSODA(&EvalF, //  1. evaluate F
              &mData.dim, //  2. number of variables
-             mY, //  3. the array of current concentrations
+             mpY, //  3. the array of current concentrations
              &mTime, //  4. the current time
              &EndTime, //  5. the final time
              &ITOL, //  6. error control
-             &mRtol, //  7. relative tolerance array
-             mAtol.array(), //  8. absolute tolerance array
-             &mState, //  9. output by overshoot & interpolation
+             mpRelativeTolerance, //  7. relative tolerance array
+             mpAtol, //  8. absolute tolerance array
+             &mTask, //  9. output by overshoot & interpolation
              &mLsodaStatus, // 10. the state control variable
              &one, // 11. further options (one)
              mDWork.array(), // 12. the double work array
@@ -342,11 +384,6 @@ CTrajectoryMethod::Status CLsodaMethod::step(const double & deltaT)
              EvalJ, // 16. evaluate J (not given)
              &mJType);        // 17. the type of jacobian calculate (2)
     }
-
-  // Why did we ignore this error?
-  // if (mLsodaStatus == -1) mLsodaStatus = 2;
-
-  *mpContainerStateTime = mTime;
 
   if ((mLsodaStatus <= 0))
     {
@@ -369,7 +406,7 @@ void CLsodaMethod::start(CVectorCore< C_FLOAT64 > & initialState)
 {
   /* Reset lsoda */
   mLsodaStatus = 1;
-  mState = 1;
+  mTask = 1;
   mJType = 2;
   mErrorMsg.str("");
 
@@ -385,16 +422,15 @@ void CLsodaMethod::start(CVectorCore< C_FLOAT64 > & initialState)
   mRoots.resize(mNumRoots);
   destroyRootMask();
 
-  mData.dim = (C_INT) mContainerState.size();
-
   mAtol = mpContainer->initializeAtolVector(*mpAbsoluteTolerance, *mpReducedModel);
-  mY = mContainerState.array();
 
-  mYdot.resize(mData.dim);
+  // We ignore fixed event targets
+  mData.dim = (C_INT)(mContainerState.size() - mpContainer->getCountFixedEventTargets());
+  mpY = mpContainerStateTime;
+  mpYdot = mpContainer->getRate(*mpReducedModel).array() + mpContainer->getTimeIndex();
+  mpAtol = mAtol.array() + mpContainer->getTimeIndex();
 
   /* Configure lsoda(r) */
-  mRtol = *mpRelativeTolerance;
-
   mDWork.resize(22 + mData.dim * std::max<C_INT>(16, mData.dim + 9) + 3 * mNumRoots);
   mDWork[4] = mDWork[5] = mDWork[6] = mDWork[7] = mDWork[8] = mDWork[9] = 0.0;
   mIWork.resize(20 + mData.dim);
@@ -420,11 +456,10 @@ void CLsodaMethod::start(CVectorCore< C_FLOAT64 > & initialState)
 void CLsodaMethod::EvalF(const C_INT * n, const C_FLOAT64 * t, const C_FLOAT64 * y, C_FLOAT64 * ydot)
 {static_cast<Data *>((void *) n)->pMethod->evalF(t, y, ydot);}
 
-void CLsodaMethod::evalF(const C_FLOAT64 * t, const C_FLOAT64 * /* y */, C_FLOAT64 * ydot)
+void CLsodaMethod::evalF(const C_FLOAT64 * /* t */, const C_FLOAT64 * /* y */, C_FLOAT64 * ydot)
 {
-  *mpContainerStateTime = *t;
   mpContainer->updateSimulatedValues(*mpReducedModel);
-  memcpy(ydot, mpContainer->getRate(*mpReducedModel).array(), mData.dim * sizeof(C_FLOAT64));
+  memcpy(ydot, mpYdot, mData.dim * sizeof(C_FLOAT64));
 
   std::cout << "State: " << mpContainer->getState(*mpReducedModel) << std::endl;
   std::cout << "Rate:  " << mpContainer->getRate(*mpReducedModel) << std::endl;
@@ -436,10 +471,10 @@ void CLsodaMethod::EvalR(const C_INT * n, const C_FLOAT64 * t, const C_FLOAT64 *
                          const C_INT * nr, C_FLOAT64 * r)
 {static_cast<Data *>((void *) n)->pMethod->evalR(t, y, nr, r);}
 
-void CLsodaMethod::evalR(const C_FLOAT64 *  t, const C_FLOAT64 *  /* y */,
+void CLsodaMethod::evalR(const C_FLOAT64 *  /* t */, const C_FLOAT64 *  /* y */,
                          const C_INT *  nr, C_FLOAT64 * r)
 {
-  *mpContainerStateTime = *t;
+  // *mpContainerStateTime = *t;
   mpContainer->updateSimulatedValues(*mpReducedModel);
 
   CVectorCore< C_FLOAT64 > RootValues(*nr, r);

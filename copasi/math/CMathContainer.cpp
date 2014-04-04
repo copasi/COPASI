@@ -427,13 +427,14 @@ CVector< C_FLOAT64 > CMathContainer::initializeAtolVector(const C_FLOAT64 & atol
 
   C_FLOAT64 * pAtol = Atol.array();
   C_FLOAT64 * pAtolEnd = pAtol + Atol.size();
-  const CMathObject * pObject = getMathObject(mInitialState.array() + mFixedCount);
+  const C_FLOAT64 * pInitialValue = mInitialState.array() + mFixedCount;
+  const CMathObject * pObject = getMathObject(getState(reduced).array());
 
-  for (; pAtol != pAtolEnd; ++pAtol, ++pObject)
+  for (; pAtol != pAtolEnd; ++pAtol, ++pObject, ++pInitialValue)
     {
       *pAtol = atol;
 
-      C_FLOAT64 InitialValue = fabs(* (C_FLOAT64 *) pObject->getValuePointer());
+      C_FLOAT64 InitialValue = fabs(*pInitialValue);
 
       switch (pObject->getEntityType())
         {

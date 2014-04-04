@@ -76,14 +76,14 @@ protected:
 
 private:
   /**
-   *  Pointer to the array with left hand side values.
+   * Pointer to the array with left hand side values of the math container.
    */
-  C_FLOAT64 * mY;
+  C_FLOAT64 * mpY;
 
   /**
-   * Vector containing the derivatives after calling eval
+   * Pointer to the array with right hand side values of the math container.
    */
-  CVector< C_FLOAT64 > mYdot;
+  const C_FLOAT64 * mpYdot;
 
   /**
    * Number of roots
@@ -108,14 +108,14 @@ protected:
 
 private:
   /**
-   * Relative tolerance.
-   */
-  C_FLOAT64 mRtol;
-
-  /**
    * A vector of absolute tolerances.
    */
   CVector< C_FLOAT64 > mAtol;
+
+  /**
+   * A pointer to the absolute tolerances excluding fixed event targets.
+   */
+  C_FLOAT64 * mpAtol;
 
   /**
    * Stream to capture LSODA error messages
@@ -133,9 +133,9 @@ private:
   CLSODAR mLSODAR;
 
   /**
-   * The state of the integrator
+   * The task instructions to the integrator
    */
-  C_INT mState;
+  C_INT mTask;
 
   /**
    * LSODA C_FLOAT64 work area
@@ -153,11 +153,6 @@ private:
   C_INT mJType;
 
 private:
-  /**
-   * A dummy variable if we do not have any ODEs
-   */
-  C_FLOAT64 mDummy;
-
   /**
    * A mask which hides all roots being constant and zero.
    */
