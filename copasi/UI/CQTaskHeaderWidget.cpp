@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -48,45 +48,36 @@ bool CQTaskHeaderWidget::setTaskName(const std::string & name)
 void CQTaskHeaderWidget::saved()
 {
   mUpdateChanged = false;
-  QPalette palette;
-  palette.setColor(mpUpdateModel->backgroundRole(), mSavedColor);
-  mpUpdateModel->setPalette(palette);
+  mpUpdateModel->setStyleSheet("background-color:" + mSavedColor.name() + ";");
 
   mExecutableChanged = false;
-  palette.setColor(mpBoxExecutable->backgroundRole(), mSavedColor);
-  mpBoxExecutable->setPalette(palette);
+  mpBoxExecutable->setStyleSheet("background-color:" + mSavedColor.name() + ";");
 }
 
 void CQTaskHeaderWidget::slotUpdate()
 {
   mUpdateChanged = !mUpdateChanged;
-  QPalette palette;
 
   if (mUpdateChanged)
     {
-      palette.setColor(mpUpdateModel->backgroundRole(), mChangedColor);
-      mpUpdateModel->setPalette(palette);
+      mpUpdateModel->setStyleSheet("background-color:" + mChangedColor.name() + ";");
     }
   else
     {
-      palette.setColor(mpUpdateModel->backgroundRole(), mSavedColor);
-      mpUpdateModel->setPalette(palette);
+      mpUpdateModel->setStyleSheet("background-color:" + mSavedColor.name() + ";");
     }
 }
 
 void CQTaskHeaderWidget::slotExecutable()
 {
   mExecutableChanged = !mExecutableChanged;
-  QPalette palette;
 
   if (mExecutableChanged)
     {
-      palette.setColor(mpBoxExecutable->backgroundRole(), mChangedColor);
-      mpBoxExecutable->setPalette(palette);
+      mpBoxExecutable->setStyleSheet("background-color:" + mChangedColor.name() + ";");
     }
   else
     {
-      palette.setColor(mpBoxExecutable->backgroundRole(), mSavedColor);
-      mpBoxExecutable->setPalette(palette);
+      mpBoxExecutable->setStyleSheet("background-color:" + mSavedColor.name() + ";");
     }
 }

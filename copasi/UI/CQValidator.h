@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -52,22 +52,11 @@ public:
   {
     if (input == mLastAccepted)
       {
-        QPalette palette;
-        QBrush brush;
-        brush.setStyle(Qt::SolidPattern);
-        brush.setColor(mSavedColor);
-        palette.setBrush(QPalette::Active, QPalette::Base, brush);
-        mpContainer->setPalette(palette);
+        mpContainer->setStyleSheet("background-color:" + mSavedColor.name() + ";");
       }
     else
       setColor(Acceptable);
 
-    /*
-        if (input == mLastAccepted)
-          mpLineEdit->setPaletteBackgroundColor(mSavedColor);
-        else
-          setColor(Acceptable);
-    */
     return Acceptable;
   }
 
@@ -94,44 +83,14 @@ public:
 protected:
   State setColor(const State & state) const
   {
-#ifdef DEBUG_UI
-    int h, s, v;
-#endif
-
-    QPalette palette;
-    QBrush brush;
-    brush.setStyle(Qt::SolidPattern);
-
-#ifdef DEBUG_UI
-    qDebug() << "---------------------";
-    qDebug() << "-- on CQValidator --";
-#endif
-
     if (state == Invalid)
       {
-//      mpLineEdit->setPaletteBackgroundColor(mErrorColor);
-        brush.setColor(mErrorColor);
-
-#ifdef DEBUG_UI
-        mErrorColor.getHsv(&h, &s, &v);
-        qDebug() << "mErrorColor : h = " << h << " - s = " << s << " - v = " << v;
-        qDebug() << "---------------------";
-#endif
+        mpContainer->setStyleSheet("background-color:" + mErrorColor.name() + ";");
       }
     else
       {
-//      mpLineEdit->setPaletteBackgroundColor(mAcceptableColor);
-        brush.setColor(mAcceptableColor);
-
-#ifdef DEBUG_UI
-        mAcceptableColor.getHsv(&h, &s, &v);
-        qDebug() << "mAcceptableColor : h = " << h << " - s = " << s << " - v = " << v;
-        qDebug() << "---------------------";
-#endif
+        mpContainer->setStyleSheet("background-color:" + mAcceptableColor.name() + ";");
       }
-
-    palette.setBrush(QPalette::Active, QPalette::Base, brush);
-    mpContainer->setPalette(palette);
 
     return state;
   }

@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -38,9 +38,7 @@ CQTSSATimeScaleWidget::CQTSSATimeScaleWidget(QWidget* parent, const char* name, 
   mpVLayout->addWidget(mpPaintWidget);
   mpVLayout->addWidget(mpSlider);
 
-  QPalette palette;
-  palette.setColor(mpPaintWidget->backgroundRole(), Qt::white);
-  mpPaintWidget->setPalette(palette);
+  mpPaintWidget->setStyleSheet("background-color:" + QColor(Qt::white).name() + ";");
   mpPaintWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
   mpSlider->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
 

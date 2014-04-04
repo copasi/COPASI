@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -138,19 +138,16 @@ void CQFittingItemWidget::slotCheckLowerInf(bool checked)
   mpEditLower->setEnabled(!checked);
 
   mLowerInfChanged = !mLowerInfChanged;
-  QPalette palette;
 
   if (mLowerInfChanged)
     {
-      palette.setColor(mpCheckLowerInf->backgroundRole(), mChangedColor);
-      mpCheckLowerInf->setPalette(palette);
+      mpCheckLowerInf->setStyleSheet("background-color:" + mChangedColor.name() + ";");
 
       if (mpEditLower->isEnabled()) mpLowerValidator->revalidate();
     }
   else
     {
-      palette.setColor(mpCheckLowerInf->backgroundRole(), mSavedColor);
-      mpCheckLowerInf->setPalette(palette);
+      mpCheckLowerInf->setStyleSheet("background-color:" + mSavedColor.name() + ";");
     }
 
   std::string Number;
@@ -178,19 +175,16 @@ void CQFittingItemWidget::slotCheckUpperInf(bool checked)
   mpEditUpper->setEnabled(!checked);
 
   mUpperInfChanged = !mUpperInfChanged;
-  QPalette palette;
 
   if (mUpperInfChanged)
     {
-      palette.setColor(mpCheckUpperInf->backgroundRole(), mChangedColor);
-      mpCheckUpperInf->setPalette(palette);
+      mpCheckUpperInf->setStyleSheet("background-color:" + mChangedColor.name() + ";");
 
       if (mpEditUpper->isEnabled()) mpUpperValidator->revalidate();
     }
   else
     {
-      palette.setColor(mpCheckUpperInf->backgroundRole(), mSavedColor);
-      mpCheckUpperInf->setPalette(palette);
+      mpCheckUpperInf->setStyleSheet("background-color:" + mSavedColor.name() + ";");
     }
 
   std::string Number;
@@ -1480,14 +1474,11 @@ void CQFittingItemWidget::loadSelection()
 
   mpLowerValidator->saved();
   mpUpperValidator->saved();
-  QPalette palette;
 
-  palette.setColor(mpCheckLowerInf->backgroundRole(), mSavedColor);
-  mpCheckLowerInf->setPalette(palette);
+  mpCheckLowerInf->setStyleSheet("background-color:" + mSavedColor.name() + ";");
   mLowerInfChanged = false;
 
-  palette.setColor(mpCheckUpperInf->backgroundRole(), mSavedColor);
-  mpCheckUpperInf->setPalette(palette);
+  mpCheckUpperInf->setStyleSheet("background-color:" + mSavedColor.name() + ";");
   mUpperInfChanged = false;
 }
 
@@ -1515,13 +1506,10 @@ void CQFittingItemWidget::saveSelection()
       if (isNumber(TO_UTF8(mpEditStart->text())))
         pItem->setStartValue(mpEditStart->text().toDouble());
 
-      QPalette palette;
-      palette.setColor(mpCheckLowerInf->backgroundRole(), mSavedColor);
-      mpCheckLowerInf->setPalette(palette);
+      mpCheckLowerInf->setStyleSheet("background-color:" + mSavedColor.name() + ";");
       mLowerInfChanged = false;
 
-      palette.setColor(mpCheckUpperInf->backgroundRole(), mSavedColor);
-      mpCheckUpperInf->setPalette(palette);
+      mpCheckUpperInf->setStyleSheet("background-color:" + mSavedColor.name() + ";");
       mUpperInfChanged = false;
       mpObjectValidator->saved();
       mpLowerValidator->saved();
