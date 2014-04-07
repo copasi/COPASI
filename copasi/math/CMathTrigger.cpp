@@ -1,4 +1,4 @@
-// Copyright (C) 2011 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -349,6 +349,27 @@ bool CMathTrigger::compile(const CEvaluationNode * pNode,
           {
             case CEvaluationNodeVariable::ANY:
               success = compileVARIABLE(pNode, pTrueExpression);
+              break;
+
+            default:
+              success = false;
+              break;
+          }
+
+        break;
+
+      case CEvaluationNode::CONSTANT:
+
+        switch ((int) CEvaluationNode::subType(Type))
+          {
+            case CEvaluationNodeConstant::TRUE:
+              pTrueExpression = new CEvaluationNodeConstant(CEvaluationNodeConstant::TRUE, "TRUE");
+              success = true;
+              break;
+
+            case CEvaluationNodeConstant::FALSE:
+              pTrueExpression = new CEvaluationNodeConstant(CEvaluationNodeConstant::FALSE, "FALSE");
+              success = true;
               break;
 
             default:
