@@ -267,6 +267,9 @@ CopasiUI3Window::CopasiUI3Window():
 
   // drop acceptance
   setAcceptDrops(true);
+
+  // This appears to load the fonts, etc. from the previous configuration.
+  qApp->setStyleSheet("");
 }
 
 CopasiUI3Window::~CopasiUI3Window()
@@ -2171,6 +2174,11 @@ void CopasiUI3Window::slotFontSelection()
   if (ok)
     {
       qApp->setFont(Font);
+
+      // This appears to reload the font from setFont into the style.
+      // The stylesheet (set in CQCopasiApplication.cpp) is apparently overriding
+      // in newer versions of Qt
+      qApp->setStyleSheet(" * {font : }");
 
       QString ApplicationFont = Font.family() + "; " + QString::number(Font.pointSize());
       CCopasiRootContainer::getConfiguration()->setApplicationFont(TO_UTF8(ApplicationFont));
