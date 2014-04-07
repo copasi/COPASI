@@ -1,4 +1,4 @@
-// Copyright (C) 2012 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -171,6 +171,13 @@ bool CQTabWidget::save()
 
   if (mpObject == NULL) return false;
 
+  // We need to tell the sub-widgets to ignore all notifications
+  std::vector< CopasiWidget * >::iterator it = mPages.begin();
+  std::vector< CopasiWidget * >::iterator end = mPages.end();
+
+  for (; it != end; ++it)
+    (*it)->setIgnoreUpdates(true);
+
   if (mpObject->getObjectName() != TO_UTF8(mpEditName->text()))
     {
       if (!mpObject->setObjectName(TO_UTF8(mpEditName->text())))
@@ -196,6 +203,13 @@ bool CQTabWidget::save()
             }
         }
     }
+
+  // We need to tell the sub-widgets to accept notifications again
+  it = mPages.begin();
+  end = mPages.end();
+
+  for (; it != end; ++it)
+    (*it)->setIgnoreUpdates(false);
 
   return true;
 }
