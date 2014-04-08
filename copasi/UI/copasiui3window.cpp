@@ -267,9 +267,6 @@ CopasiUI3Window::CopasiUI3Window():
 
   // drop acceptance
   setAcceptDrops(true);
-
-  // This appears to load the fonts, etc. from the previous configuration.
-  qApp->setStyleSheet("");
 }
 
 CopasiUI3Window::~CopasiUI3Window()
@@ -1524,10 +1521,10 @@ void CopasiUI3Window::slotExportSBML()
 
       if ((*CCopasiRootContainer::getDatamodelList())[0]->getFileName() != "")
         Default
-          = FROM_UTF8(CDirEntry::dirName((*CCopasiRootContainer::getDatamodelList())[0]->getFileName())
-                      + CDirEntry::Separator
-                      + CDirEntry::baseName((*CCopasiRootContainer::getDatamodelList())[0]->getFileName())
-                      + ".xml");
+        = FROM_UTF8(CDirEntry::dirName((*CCopasiRootContainer::getDatamodelList())[0]->getFileName())
+                    + CDirEntry::Separator
+                    + CDirEntry::baseName((*CCopasiRootContainer::getDatamodelList())[0]->getFileName())
+                    + ".xml");
       else
         {
           Default = "untitled.xml";
@@ -1594,9 +1591,9 @@ void CopasiUI3Window::slotExportMathModel()
 
       if (pDataModel->getFileName() != "")
         Default
-          = FROM_UTF8(CDirEntry::dirName(pDataModel->getFileName())
-                      + CDirEntry::Separator
-                      + CDirEntry::baseName(pDataModel->getFileName()));
+        = FROM_UTF8(CDirEntry::dirName(pDataModel->getFileName())
+                    + CDirEntry::Separator
+                    + CDirEntry::baseName(pDataModel->getFileName()));
       else
         Default = "untitled.c";
 
@@ -2219,6 +2216,9 @@ void CopasiUI3Window::setApplicationFont()
   int FontSize = FROM_UTF8(ApplicationFont).remove(0, FontFamily.length() + 2).toInt();
 
   qApp->setFont(QFont(FontFamily, FontSize));
+
+  // This appears to load the fonts, etc. from the previous configuration.
+  qApp->setStyleSheet(" * {font : }");
 }
 
 #include "UI/CQExpandModelData.h"
@@ -3032,10 +3032,10 @@ void CopasiUI3Window::slotExportSEDML()
 
       if ((*CCopasiRootContainer::getDatamodelList())[0]->getFileName() != "")
         Default
-          = FROM_UTF8(CDirEntry::dirName((*CCopasiRootContainer::getDatamodelList())[0]->getFileName())
-                      + CDirEntry::Separator
-                      + CDirEntry::baseName((*CCopasiRootContainer::getDatamodelList())[0]->getFileName())
-                      + ".sedml");
+        = FROM_UTF8(CDirEntry::dirName((*CCopasiRootContainer::getDatamodelList())[0]->getFileName())
+                    + CDirEntry::Separator
+                    + CDirEntry::baseName((*CCopasiRootContainer::getDatamodelList())[0]->getFileName())
+                    + ".sedml");
       else
         {
           Default = "untitled.sedml";
