@@ -2205,9 +2205,11 @@ void CopasiUI3Window::slotFontSelection()
     {
       qApp->setFont(Font);
 
-      // This appears to reload the font from setFont into the style.
       // The stylesheet (set in CQCopasiApplication.cpp) is apparently overriding
       // in newer versions of Qt
+      // This appears to reload the font from setFont into the style.
+      // Two calls so that the tabwidget labels are correct
+      qApp->setStyleSheet(" * {font : }");
       qApp->setStyleSheet(" * {font : }");
 
       QString ApplicationFont = Font.family() + "; " + QString::number(Font.pointSize());
@@ -2251,6 +2253,8 @@ void CopasiUI3Window::setApplicationFont()
   qApp->setFont(QFont(FontFamily, FontSize));
 
   // This appears to load the fonts, etc. from the previous configuration.
+  // Two calls so that the tabwidget labels are correct
+  qApp->setStyleSheet(" * {font : }");
   qApp->setStyleSheet(" * {font : }");
 }
 
