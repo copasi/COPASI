@@ -1,406 +1,2221 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created by XMLPrettyPrinter on 27/10/03 from JDesigner 1.8k -->
-<sbml level = "1" version = "1" xmlns = "http://www.sbml.org/sbml/level1">
-   <!--                     -->
-   <!--  Model Starts Here  -->
-   <!--                     -->
-   <model name = "untitled">
-      <listOfCompartments>
-         <compartment name = "compartment" volume = "1"/>
-      </listOfCompartments>
-      <listOfSpecies>
-         <specie boundaryCondition = "false" compartment = "compartment" initialAmount = "1" name = "x_CO2"/>
-         <specie boundaryCondition = "false" compartment = "compartment" initialAmount = "0.33644" name = "RuBP_ch"/>
-         <specie boundaryCondition = "false" compartment = "compartment" initialAmount = "3.35479" name = "PGA_ch"/>
-         <specie boundaryCondition = "false" compartment = "compartment" initialAmount = "0.49806" name = "ATP_ch"/>
-         <specie boundaryCondition = "false" compartment = "compartment" initialAmount = "0.14825" name = "BPGA_ch"/>
-         <specie boundaryCondition = "false" compartment = "compartment" initialAmount = "0.21" name = "x_NADPH_ch"/>
-         <specie boundaryCondition = "false" compartment = "compartment" initialAmount = "0.01334" name = "GAP_ch"/>
-         <specie boundaryCondition = "false" compartment = "compartment" initialAmount = "1.5662" name = "Pi_ch"/>
-         <specie boundaryCondition = "false" compartment = "compartment" initialAmount = "0.29345" name = "DHAP_ch"/>
-         <specie boundaryCondition = "false" compartment = "compartment" initialAmount = "0.02776" name = "FBP_ch"/>
-         <specie boundaryCondition = "false" compartment = "compartment" initialAmount = "1.36481" name = "F6P_ch"/>
-         <specie boundaryCondition = "false" compartment = "compartment" initialAmount = "0.41021" name = "E4P_ch"/>
-         <specie boundaryCondition = "false" compartment = "compartment" initialAmount = "0.00363" name = "X5P_ch"/>
-         <specie boundaryCondition = "false" compartment = "compartment" initialAmount = "1.56486" name = "SBP_ch"/>
-         <specie boundaryCondition = "false" compartment = "compartment" initialAmount = "0.00541" name = "S7P_ch"/>
-         <specie boundaryCondition = "false" compartment = "compartment" initialAmount = "0.00599" name = "R5P_ch"/>
-         <specie boundaryCondition = "false" compartment = "compartment" initialAmount = "0.00235" name = "Ru5P_ch"/>
-         <specie boundaryCondition = "false" compartment = "compartment" initialAmount = "0.5" name = "x_Pi_cyt"/>
-         <specie boundaryCondition = "false" compartment = "compartment" initialAmount = "1" name = "x_GAP_cyt"/>
-         <specie boundaryCondition = "false" compartment = "compartment" initialAmount = "3.1396" name = "G6P_ch"/>
-         <specie boundaryCondition = "false" compartment = "compartment" initialAmount = "0.29" name = "x_NADP_ch"/>
-         <specie boundaryCondition = "false" compartment = "compartment" initialAmount = "1" name = "x_PGA_cyt"/>
-         <specie boundaryCondition = "false" compartment = "compartment" initialAmount = "0.00149" name = "ADP_ch"/>
-         <specie boundaryCondition = "false" compartment = "compartment" initialAmount = "1" name = "x_DHAP_cyt"/>
-         <specie boundaryCondition = "false" compartment = "compartment" initialAmount = "1.26E-5" name = "x_Proton_ch"/>
-         <specie boundaryCondition = "false" compartment = "compartment" initialAmount = "0.18206" name = "G1P_ch"/>
-         <specie boundaryCondition = "false" compartment = "compartment" initialAmount = "1" name = "x_Starch_ch"/>
-      </listOfSpecies>
-      <listOfReactions>
-         <reaction name = "J0" reversible = "false">
-            <listOfReactants>
-               <specieReference specie = "RuBP_ch" stoichiometry = "1"/>
-               <specieReference specie = "x_CO2" stoichiometry = "1"/>
-            </listOfReactants>
-            <listOfProducts>
-               <specieReference specie = "PGA_ch" stoichiometry = "2"/>
-            </listOfProducts>
-            <kineticLaw formula = "Light_on*Rbco_vm*RuBP_ch/(RuBP_ch+Rbco_km*(1+PGA_ch/Rbco_KiPGA+FBP_ch/Rbco_KiFBP+SBP_ch/Rbco_KiSBP+Pi_ch/Rbco_KiPi+x_NADPH_ch/Rbco_KiNADPH))">
-               <listOfParameters>
-                  <parameter name = "Light_on" value = "1"/>
-                  <parameter name = "Rbco_vm" value = "340"/>
-                  <parameter name = "Rbco_km" value = "0.02"/>
-                  <parameter name = "Rbco_KiPGA" value = "0.84"/>
-                  <parameter name = "Rbco_KiFBP" value = "0.04"/>
-                  <parameter name = "Rbco_KiSBP" value = "0.075"/>
-                  <parameter name = "Rbco_KiPi" value = "0.9"/>
-                  <parameter name = "Rbco_KiNADPH" value = "0.07"/>
-               </listOfParameters>
-            </kineticLaw>
-         </reaction>
-         <reaction name = "J1" reversible = "true">
-            <listOfReactants>
-               <specieReference specie = "GAP_ch" stoichiometry = "1"/>
-            </listOfReactants>
-            <listOfProducts>
-               <specieReference specie = "DHAP_ch" stoichiometry = "1"/>
-            </listOfProducts>
-            <kineticLaw formula = "TPI_v*(GAP_ch-DHAP_ch/q4)">
-               <listOfParameters>
-                  <parameter name = "TPI_v" value = "5000000000"/>
-                  <parameter name = "q4" value = "1"/>
-               </listOfParameters>
-            </kineticLaw>
-         </reaction>
-         <reaction name = "J2" reversible = "true">
-            <listOfReactants>
-               <specieReference specie = "GAP_ch" stoichiometry = "1"/>
-               <specieReference specie = "DHAP_ch" stoichiometry = "1"/>
-            </listOfReactants>
-            <listOfProducts>
-               <specieReference specie = "FBP_ch" stoichiometry = "1"/>
-            </listOfProducts>
-            <kineticLaw formula = "F_Aldo_v*(DHAP_ch*GAP_ch-FBP_ch/q5)">
-               <listOfParameters>
-                  <parameter name = "F_Aldo_v" value = "5000000000"/>
-                  <parameter name = "q5" value = "1"/>
-               </listOfParameters>
-            </kineticLaw>
-         </reaction>
-         <reaction name = "J3" reversible = "true">
-            <listOfReactants>
-               <specieReference specie = "GAP_ch" stoichiometry = "1"/>
-               <specieReference specie = "F6P_ch" stoichiometry = "1"/>
-            </listOfReactants>
-            <listOfProducts>
-               <specieReference specie = "X5P_ch" stoichiometry = "1"/>
-               <specieReference specie = "E4P_ch" stoichiometry = "1"/>
-            </listOfProducts>
-            <kineticLaw formula = "F_TKL_v*(F6P_ch*GAP_ch-E4P_ch*X5P_ch/q7)">
-               <listOfParameters>
-                  <parameter name = "F_TKL_v" value = "5000000000"/>
-                  <parameter name = "q7" value = "1"/>
-               </listOfParameters>
-            </kineticLaw>
-         </reaction>
-         <reaction name = "J4" reversible = "true">
-            <listOfReactants>
-               <specieReference specie = "DHAP_ch" stoichiometry = "1"/>
-               <specieReference specie = "E4P_ch" stoichiometry = "1"/>
-            </listOfReactants>
-            <listOfProducts>
-               <specieReference specie = "SBP_ch" stoichiometry = "1"/>
-            </listOfProducts>
-            <kineticLaw formula = "E_Aldo_v*(E4P_ch*DHAP_ch-SBP_ch/q8)">
-               <listOfParameters>
-                  <parameter name = "E_Aldo_v" value = "5000000000"/>
-                  <parameter name = "q8" value = "13"/>
-               </listOfParameters>
-            </kineticLaw>
-         </reaction>
-         <reaction name = "J5" reversible = "true">
-            <listOfReactants>
-               <specieReference specie = "S7P_ch" stoichiometry = "1"/>
-               <specieReference specie = "GAP_ch" stoichiometry = "1"/>
-            </listOfReactants>
-            <listOfProducts>
-               <specieReference specie = "R5P_ch" stoichiometry = "1"/>
-               <specieReference specie = "X5P_ch" stoichiometry = "1"/>
-            </listOfProducts>
-            <kineticLaw formula = "G_TKL_v*(GAP_ch*S7P_ch-X5P_ch*R5P_ch/q10)">
-               <listOfParameters>
-                  <parameter name = "G_TKL_v" value = "5000000000"/>
-                  <parameter name = "q10" value = "1"/>
-               </listOfParameters>
-            </kineticLaw>
-         </reaction>
-         <reaction name = "J6" reversible = "true">
-            <listOfReactants>
-               <specieReference specie = "R5P_ch" stoichiometry = "1"/>
-            </listOfReactants>
-            <listOfProducts>
-               <specieReference specie = "Ru5P_ch" stoichiometry = "1"/>
-            </listOfProducts>
-            <kineticLaw formula = "R5Piso_v*(R5P_ch-Ru5P_ch/q11)">
-               <listOfParameters>
-                  <parameter name = "R5Piso_v" value = "5000000000"/>
-                  <parameter name = "q11" value = "1"/>
-               </listOfParameters>
-            </kineticLaw>
-         </reaction>
-         <reaction name = "J7" reversible = "true">
-            <listOfReactants>
-               <specieReference specie = "X5P_ch" stoichiometry = "1"/>
-            </listOfReactants>
-            <listOfProducts>
-               <specieReference specie = "Ru5P_ch" stoichiometry = "1"/>
-            </listOfProducts>
-            <kineticLaw formula = "X5Pepi_v*(X5P_ch-Ru5P_ch/q12)">
-               <listOfParameters>
-                  <parameter name = "X5Pepi_v" value = "5000000000"/>
-                  <parameter name = "q12" value = "1"/>
-               </listOfParameters>
-            </kineticLaw>
-         </reaction>
-         <reaction name = "J8" reversible = "false">
-            <listOfReactants>
-               <specieReference specie = "x_Pi_cyt" stoichiometry = "1"/>
-               <specieReference specie = "PGA_ch" stoichiometry = "1"/>
-            </listOfReactants>
-            <listOfProducts>
-               <specieReference specie = "x_PGA_cyt" stoichiometry = "1"/>
-               <specieReference specie = "Pi_ch" stoichiometry = "1"/>
-            </listOfProducts>
-            <kineticLaw formula = "PGA_xpMult*TP_Piap_vm*PGA_ch/(TP_Piap_kPGA_ch*(1+(1+TP_Piap_kPi_cyt/x_Pi_cyt)*(Pi_ch/TP_Piap_kPi_ch+PGA_ch/TP_Piap_kPGA_ch+DHAP_ch/TP_Piap_kDHAP_ch+GAP_ch/TP_Piap_kGAP_ch)))">
-               <listOfParameters>
-                  <parameter name = "PGA_xpMult" value = "0.2"/>
-                  <parameter name = "TP_Piap_vm" value = "250"/>
-                  <parameter name = "TP_Piap_kPGA_ch" value = "0.25"/>
-                  <parameter name = "TP_Piap_kPi_cyt" value = "0.74"/>
-                  <parameter name = "TP_Piap_kPi_ch" value = "0.63"/>
-                  <parameter name = "TP_Piap_kDHAP_ch" value = "0.077"/>
-                  <parameter name = "TP_Piap_kGAP_ch" value = "0.075"/>
-               </listOfParameters>
-            </kineticLaw>
-         </reaction>
-         <reaction name = "J9" reversible = "false">
-            <listOfReactants>
-               <specieReference specie = "x_Pi_cyt" stoichiometry = "1"/>
-               <specieReference specie = "GAP_ch" stoichiometry = "1"/>
-            </listOfReactants>
-            <listOfProducts>
-               <specieReference specie = "x_GAP_cyt" stoichiometry = "1"/>
-               <specieReference specie = "Pi_ch" stoichiometry = "1"/>
-            </listOfProducts>
-            <kineticLaw formula = "TP_Piap_vm*GAP_ch/(TP_Piap_kGAP_ch*(1+(1+TP_Piap_kPi_cyt/x_Pi_cyt)*(Pi_ch/TP_Piap_kPi_ch+PGA_ch/TP_Piap_kPGA_ch+DHAP_ch/TP_Piap_kDHAP_ch+GAP_ch/TP_Piap_kGAP_ch)))">
-               <listOfParameters>
-                  <parameter name = "TP_Piap_vm" value = "0"/>
-                  <parameter name = "TP_Piap_kGAP_ch" value = "1"/>
-                  <parameter name = "TP_Piap_kPi_cyt" value = "1"/>
-                  <parameter name = "TP_Piap_kPi_ch" value = "1"/>
-                  <parameter name = "TP_Piap_kPGA_ch" value = "1"/>
-                  <parameter name = "TP_Piap_kDHAP_ch" value = "1"/>
-               </listOfParameters>
-            </kineticLaw>
-         </reaction>
-         <reaction name = "J10" reversible = "true">
-            <listOfReactants>
-               <specieReference specie = "F6P_ch" stoichiometry = "1"/>
-            </listOfReactants>
-            <listOfProducts>
-               <specieReference specie = "G6P_ch" stoichiometry = "1"/>
-            </listOfProducts>
-            <kineticLaw formula = "PGI_v*(F6P_ch-G6P_ch/q14)">
-               <listOfParameters>
-                  <parameter name = "PGI_v" value = "5000000000"/>
-                  <parameter name = "q14" value = "1"/>
-               </listOfParameters>
-            </kineticLaw>
-         </reaction>
-         <reaction name = "J11" reversible = "true">
-            <listOfReactants>
-               <specieReference specie = "G6P_ch" stoichiometry = "1"/>
-            </listOfReactants>
-            <listOfProducts>
-               <specieReference specie = "G1P_ch" stoichiometry = "1"/>
-            </listOfProducts>
-            <kineticLaw formula = "PGM_v*(G6P_ch-G1P_ch/q15)">
-               <listOfParameters>
-                  <parameter name = "PGM_v" value = "5000000000"/>
-                  <parameter name = "q15" value = "1"/>
-               </listOfParameters>
-            </kineticLaw>
-         </reaction>
-         <reaction name = "J12" reversible = "false">
-            <listOfReactants>
-               <specieReference specie = "Pi_ch" stoichiometry = "1"/>
-               <specieReference specie = "ADP_ch" stoichiometry = "1"/>
-            </listOfReactants>
-            <listOfProducts>
-               <specieReference specie = "ATP_ch" stoichiometry = "1"/>
-            </listOfProducts>
-            <kineticLaw formula = "Light_on*LR_vm*ADP_ch*Pi_ch/((ADP_ch+LR_kmADP)*(Pi_ch+LR_kmPi))">
-               <listOfParameters>
-                  <parameter name = "Light_on" value = "0"/>
-                  <parameter name = "LR_vm" value = "1500"/>
-                  <parameter name = "LR_kmADP" value = "0.014"/>
-                  <parameter name = "LR_kmPi" value = "0.3"/>
-               </listOfParameters>
-            </kineticLaw>
-         </reaction>
-         <reaction name = "J13" reversible = "false">
-            <listOfReactants>
-               <specieReference specie = "Ru5P_ch" stoichiometry = "1"/>
-               <specieReference specie = "ATP_ch" stoichiometry = "1"/>
-            </listOfReactants>
-            <listOfProducts>
-               <specieReference specie = "RuBP_ch" stoichiometry = "1"/>
-               <specieReference specie = "ADP_ch" stoichiometry = "1"/>
-            </listOfProducts>
-            <kineticLaw formula = "Light_on*Ru5Pk_ch_vm*Ru5P_ch*ATP_ch/((Ru5P_ch+Ru5Pk_ch_km1*(1+PGA_ch/Ru5Pk_ch_KiPGA+RuBP_ch/Ru5Pk_ch_KiRuBP+Pi_ch/Ru5Pk_ch_KiPi))*(ATP_ch*(1+ADP_ch/Ru5Pk_ch_KiADP1)+Ru5Pk_ch_km2*(1+ADP_ch/Ru5Pk_ch_KiADP2)))">
-               <listOfParameters>
-                  <parameter name = "Light_on" value = "0"/>
-                  <parameter name = "Ru5Pk_ch_vm" value = "10000"/>
-                  <parameter name = "Ru5Pk_ch_km1" value = "0.05"/>
-                  <parameter name = "Ru5Pk_ch_KiPGA" value = "2"/>
-                  <parameter name = "Ru5Pk_ch_KiRuBP" value = "0.7"/>
-                  <parameter name = "Ru5Pk_ch_KiPi" value = "4"/>
-                  <parameter name = "Ru5Pk_ch_KiADP1" value = "2.5"/>
-                  <parameter name = "Ru5Pk_ch_km2" value = "0.05"/>
-                  <parameter name = "Ru5Pk_ch_KiADP2" value = "0.4"/>
-               </listOfParameters>
-            </kineticLaw>
-         </reaction>
-         <reaction name = "J14" reversible = "false">
-            <listOfReactants>
-               <specieReference specie = "PGA_ch" stoichiometry = "1"/>
-               <specieReference specie = "ATP_ch" stoichiometry = "1"/>
-            </listOfReactants>
-            <listOfProducts>
-               <specieReference specie = "BPGA_ch" stoichiometry = "1"/>
-               <specieReference specie = "ADP_ch" stoichiometry = "1"/>
-            </listOfProducts>
-            <kineticLaw formula = "Light_on*PGK_v*(PGA_ch*ATP_ch-BPGA_ch*ADP_ch/q2)">
-               <listOfParameters>
-                  <parameter name = "Light_on" value = "0"/>
-                  <parameter name = "PGK_v" value = "5000000000"/>
-                  <parameter name = "q2" value = "0.00031"/>
-               </listOfParameters>
-            </kineticLaw>
-         </reaction>
-         <reaction name = "J15" reversible = "false">
-            <listOfReactants>
-               <specieReference specie = "ATP_ch" stoichiometry = "1"/>
-               <specieReference specie = "G1P_ch" stoichiometry = "1"/>
-            </listOfReactants>
-            <listOfProducts>
-               <specieReference specie = "x_Starch_ch" stoichiometry = "1"/>
-               <specieReference specie = "ADP_ch" stoichiometry = "1"/>
-               <specieReference specie = "Pi_ch" stoichiometry = "1"/>
-            </listOfProducts>
-            <kineticLaw formula = "StSyn_vm*G1P_ch*ATP_ch/((G1P_ch+stsyn_ch_km1)*(1+ADP_ch/stsyn_ch_Ki)*(ATP_ch+stsyn_ch_km2)+stsyn_ch_km2*Pi_ch/(stsyn_ch_ka1*PGA_ch)+(stsyn_ch_ka2*F6P_ch)+(stsyn_ch_ka3*FBP_ch))">
-               <listOfParameters>
-                  <parameter name = "StSyn_vm" value = "40"/>
-                  <parameter name = "stsyn_ch_km1" value = "0.08"/>
-                  <parameter name = "stsyn_ch_Ki" value = "10"/>
-                  <parameter name = "stsyn_ch_km2" value = "0.08"/>
-                  <parameter name = "stsyn_ch_ka1" value = "0.1"/>
-                  <parameter name = "stsyn_ch_ka2" value = "0.02"/>
-                  <parameter name = "stsyn_ch_ka3" value = "0.02"/>
-               </listOfParameters>
-            </kineticLaw>
-         </reaction>
-         <reaction name = "J16" reversible = "false">
-            <listOfReactants>
-               <specieReference specie = "x_Starch_ch" stoichiometry = "1"/>
-               <specieReference specie = "Pi_ch" stoichiometry = "1"/>
-            </listOfReactants>
-            <listOfProducts>
-               <specieReference specie = "G1P_ch" stoichiometry = "1"/>
-            </listOfProducts>
-            <kineticLaw formula = "StPase_Vm*Pi_ch/(Pi_ch+StPase_km*(1+G1P_ch/StPase_kiG1P))">
-               <listOfParameters>
-                  <parameter name = "StPase_Vm" value = "40"/>
-                  <parameter name = "StPase_km" value = "5"/>
-                  <parameter name = "StPase_kiG1P" value = "3.12"/>
-               </listOfParameters>
-            </kineticLaw>
-         </reaction>
-         <reaction name = "J17" reversible = "false">
-            <listOfReactants>
-               <specieReference specie = "FBP_ch" stoichiometry = "1"/>
-               <specieReference specie = "Pi_ch" stoichiometry = "1"/>
-            </listOfReactants>
-            <listOfProducts>
-               <specieReference specie = "F6P_ch" stoichiometry = "1"/>
-            </listOfProducts>
-            <kineticLaw formula = "Light_on*FBPase_ch_vm*FBP_ch/(FBP_ch+FBPase_ch_km*(1+F6P_ch/FBPase_ch_KiF6P+Pi_ch/FBPase_ch_KiPi))">
-               <listOfParameters>
-                  <parameter name = "Light_on" value = "0"/>
-                  <parameter name = "FBPase_ch_vm" value = "200"/>
-                  <parameter name = "FBPase_ch_km" value = "0.03"/>
-                  <parameter name = "FBPase_ch_KiF6P" value = "0.7"/>
-                  <parameter name = "FBPase_ch_KiPi" value = "12"/>
-               </listOfParameters>
-            </kineticLaw>
-         </reaction>
-         <reaction name = "J18" reversible = "false">
-            <listOfReactants>
-               <specieReference specie = "x_Pi_cyt" stoichiometry = "1"/>
-               <specieReference specie = "DHAP_ch" stoichiometry = "1"/>
-            </listOfReactants>
-            <listOfProducts>
-               <specieReference specie = "x_DHAP_cyt" stoichiometry = "1"/>
-               <specieReference specie = "Pi_ch" stoichiometry = "1"/>
-            </listOfProducts>
-            <kineticLaw formula = "TP_Piap_vm*DHAP_ch/(TP_Piap_kDHAP_ch*(1+(1+TP_Piap_kPi_cyt/x_Pi_cyt)*(Pi_ch/TP_Piap_kPi_ch+PGA_ch/TP_Piap_kPGA_ch+DHAP_ch/TP_Piap_kDHAP_ch+GAP_ch/TP_Piap_kGAP_ch)))">
-               <listOfParameters>
-                  <parameter name = "TP_Piap_vm" value = "0"/>
-                  <parameter name = "TP_Piap_kDHAP_ch" value = "1"/>
-                  <parameter name = "TP_Piap_kPi_cyt" value = "1"/>
-                  <parameter name = "TP_Piap_kPi_ch" value = "1"/>
-                  <parameter name = "TP_Piap_kPGA_ch" value = "1"/>
-                  <parameter name = "TP_Piap_kGAP_ch" value = "1"/>
-               </listOfParameters>
-            </kineticLaw>
-         </reaction>
-         <reaction name = "J19" reversible = "false">
-            <listOfReactants>
-               <specieReference specie = "x_NADPH_ch" stoichiometry = "1"/>
-               <specieReference specie = "BPGA_ch" stoichiometry = "1"/>
-               <specieReference specie = "x_Proton_ch" stoichiometry = "1"/>
-            </listOfReactants>
-            <listOfProducts>
-               <specieReference specie = "x_NADP_ch" stoichiometry = "1"/>
-               <specieReference specie = "GAP_ch" stoichiometry = "1"/>
-               <specieReference specie = "Pi_ch" stoichiometry = "1"/>
-            </listOfProducts>
-            <kineticLaw formula = "Light_on*G3Pdh_v*(BPGA_ch*x_NADPH_ch*x_Proton_ch-x_NADP_ch*GAP_ch*Pi_ch/q3)">
-               <listOfParameters>
-                  <parameter name = "Light_on" value = "0"/>
-                  <parameter name = "G3Pdh_v" value = "5000000000"/>
-                  <parameter name = "q3" value = "1"/>
-               </listOfParameters>
-            </kineticLaw>
-         </reaction>
-         <reaction name = "J20" reversible = "false">
-            <listOfReactants>
-               <specieReference specie = "SBP_ch" stoichiometry = "1"/>
-            </listOfReactants>
-            <listOfProducts>
-               <specieReference specie = "Pi_ch" stoichiometry = "1"/>
-               <specieReference specie = "S7P_ch" stoichiometry = "1"/>
-            </listOfProducts>
-            <kineticLaw formula = "Light_on*SBPase_ch_vm*SBP_ch/(SBP_ch+SBPase_ch_km*(1+Pi_ch/SBPase_ch_KiPi))">
-               <listOfParameters>
-                  <parameter name = "Light_on" value = "0"/>
-                  <parameter name = "SBPase_ch_vm" value = "40"/>
-                  <parameter name = "SBPase_ch_km" value = "0.013"/>
-                  <parameter name = "SBPase_ch_KiPi" value = "12"/>
-               </listOfParameters>
-            </kineticLaw>
-         </reaction>
-      </listOfReactions>
-   </model>
+<!-- Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual -->
+<!-- Properties, Inc., University of Heidelberg, and The University -->
+<!-- of Manchester. -->
+<!-- All rights reserved. -->
+
+<!-- Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual -->
+<!-- Properties, Inc., EML Research, gGmbH, University of Heidelberg, -->
+<!-- and The University of Manchester. -->
+<!-- All rights reserved. -->
+
+<!-- Copyright (C) 2004 - 2007 by Pedro Mendes, Virginia Tech Intellectual -->
+<!-- Properties, Inc. and EML Research, gGmbH. -->
+<!-- All rights reserved. -->
+
+<!-- Created by COPASI version 4.12 (Build 79) on 2014-04-15 09:58 with libSBML version 5.9.0. -->
+<sbml xmlns="http://www.sbml.org/sbml/level2" level="2" version="1">
+  <model metaid="COPASI0" id="untitled" name="CalvinCycle">
+    <notes>
+      <body xmlns="http://www.w3.org/1999/xhtml">
+        <div>
+          <h3>Calvin Cycle</h3>
+This model implements the Calvin Cycle (Petterssons original). This version was originally transcribed by Mark Poolman (Oxford Brookes) to SCAMP, and later translated into SBML using JDesigner.
+</div>
+      </body>
+    </notes>
+    <annotation>
+      <COPASI xmlns="http://www.copasi.org/static/sbml">
+        <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+          <rdf:Description rdf:about="#COPASI0">
+            <dcterms:created>
+              <rdf:Description>
+                <dcterms:W3CDTF>2014-04-15T09:36:33Z</dcterms:W3CDTF>
+              </rdf:Description>
+            </dcterms:created>
+          </rdf:Description>
+        </rdf:RDF>
+      </COPASI>
+    </annotation>
+    <listOfFunctionDefinitions>
+      <functionDefinition id="Function_for_J3_0" name="Function for J3">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <lambda>
+            <bvar>
+              <ci> E4P_ch </ci>
+            </bvar>
+            <bvar>
+              <ci> F6P_ch </ci>
+            </bvar>
+            <bvar>
+              <ci> F_TKL_v </ci>
+            </bvar>
+            <bvar>
+              <ci> GAP_ch </ci>
+            </bvar>
+            <bvar>
+              <ci> X5P_ch </ci>
+            </bvar>
+            <bvar>
+              <ci> compartment </ci>
+            </bvar>
+            <bvar>
+              <ci> q7 </ci>
+            </bvar>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> F_TKL_v </ci>
+                <apply>
+                  <minus/>
+                  <apply>
+                    <times/>
+                    <ci> F6P_ch </ci>
+                    <ci> GAP_ch </ci>
+                  </apply>
+                  <apply>
+                    <divide/>
+                    <apply>
+                      <times/>
+                      <ci> E4P_ch </ci>
+                      <ci> X5P_ch </ci>
+                    </apply>
+                    <ci> q7 </ci>
+                  </apply>
+                </apply>
+              </apply>
+              <ci> compartment </ci>
+            </apply>
+          </lambda>
+        </math>
+      </functionDefinition>
+      <functionDefinition id="Function_for_J0_0" name="Function for J0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <lambda>
+            <bvar>
+              <ci> FBP_ch </ci>
+            </bvar>
+            <bvar>
+              <ci> Light_on </ci>
+            </bvar>
+            <bvar>
+              <ci> PGA_ch </ci>
+            </bvar>
+            <bvar>
+              <ci> Pi_ch </ci>
+            </bvar>
+            <bvar>
+              <ci> Rbco_KiFBP </ci>
+            </bvar>
+            <bvar>
+              <ci> Rbco_KiNADPH </ci>
+            </bvar>
+            <bvar>
+              <ci> Rbco_KiPGA </ci>
+            </bvar>
+            <bvar>
+              <ci> Rbco_KiPi </ci>
+            </bvar>
+            <bvar>
+              <ci> Rbco_KiSBP </ci>
+            </bvar>
+            <bvar>
+              <ci> Rbco_km </ci>
+            </bvar>
+            <bvar>
+              <ci> Rbco_vm </ci>
+            </bvar>
+            <bvar>
+              <ci> RuBP_ch </ci>
+            </bvar>
+            <bvar>
+              <ci> SBP_ch </ci>
+            </bvar>
+            <bvar>
+              <ci> compartment </ci>
+            </bvar>
+            <bvar>
+              <ci> x_NADPH_ch </ci>
+            </bvar>
+            <apply>
+              <divide/>
+              <apply>
+                <divide/>
+                <apply>
+                  <times/>
+                  <ci> Light_on </ci>
+                  <ci> Rbco_vm </ci>
+                  <ci> RuBP_ch </ci>
+                </apply>
+                <apply>
+                  <plus/>
+                  <ci> RuBP_ch </ci>
+                  <apply>
+                    <times/>
+                    <ci> Rbco_km </ci>
+                    <apply>
+                      <plus/>
+                      <cn type="integer"> 1 </cn>
+                      <apply>
+                        <divide/>
+                        <ci> PGA_ch </ci>
+                        <ci> Rbco_KiPGA </ci>
+                      </apply>
+                      <apply>
+                        <divide/>
+                        <ci> FBP_ch </ci>
+                        <ci> Rbco_KiFBP </ci>
+                      </apply>
+                      <apply>
+                        <divide/>
+                        <ci> SBP_ch </ci>
+                        <ci> Rbco_KiSBP </ci>
+                      </apply>
+                      <apply>
+                        <divide/>
+                        <ci> Pi_ch </ci>
+                        <ci> Rbco_KiPi </ci>
+                      </apply>
+                      <apply>
+                        <divide/>
+                        <ci> x_NADPH_ch </ci>
+                        <ci> Rbco_KiNADPH </ci>
+                      </apply>
+                    </apply>
+                  </apply>
+                </apply>
+              </apply>
+              <ci> compartment </ci>
+            </apply>
+          </lambda>
+        </math>
+      </functionDefinition>
+      <functionDefinition id="Function_for_J1_0" name="Function for J1">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <lambda>
+            <bvar>
+              <ci> DHAP_ch </ci>
+            </bvar>
+            <bvar>
+              <ci> GAP_ch </ci>
+            </bvar>
+            <bvar>
+              <ci> TPI_v </ci>
+            </bvar>
+            <bvar>
+              <ci> compartment </ci>
+            </bvar>
+            <bvar>
+              <ci> q4 </ci>
+            </bvar>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> TPI_v </ci>
+                <apply>
+                  <minus/>
+                  <ci> GAP_ch </ci>
+                  <apply>
+                    <divide/>
+                    <ci> DHAP_ch </ci>
+                    <ci> q4 </ci>
+                  </apply>
+                </apply>
+              </apply>
+              <ci> compartment </ci>
+            </apply>
+          </lambda>
+        </math>
+      </functionDefinition>
+      <functionDefinition id="Function_for_J2_0" name="Function for J2">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <lambda>
+            <bvar>
+              <ci> DHAP_ch </ci>
+            </bvar>
+            <bvar>
+              <ci> FBP_ch </ci>
+            </bvar>
+            <bvar>
+              <ci> F_Aldo_v </ci>
+            </bvar>
+            <bvar>
+              <ci> GAP_ch </ci>
+            </bvar>
+            <bvar>
+              <ci> compartment </ci>
+            </bvar>
+            <bvar>
+              <ci> q5 </ci>
+            </bvar>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> F_Aldo_v </ci>
+                <apply>
+                  <minus/>
+                  <apply>
+                    <times/>
+                    <ci> DHAP_ch </ci>
+                    <ci> GAP_ch </ci>
+                  </apply>
+                  <apply>
+                    <divide/>
+                    <ci> FBP_ch </ci>
+                    <ci> q5 </ci>
+                  </apply>
+                </apply>
+              </apply>
+              <ci> compartment </ci>
+            </apply>
+          </lambda>
+        </math>
+      </functionDefinition>
+      <functionDefinition id="Function_for_J10_0" name="Function for J10">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <lambda>
+            <bvar>
+              <ci> F6P_ch </ci>
+            </bvar>
+            <bvar>
+              <ci> G6P_ch </ci>
+            </bvar>
+            <bvar>
+              <ci> PGI_v </ci>
+            </bvar>
+            <bvar>
+              <ci> compartment </ci>
+            </bvar>
+            <bvar>
+              <ci> q14 </ci>
+            </bvar>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> PGI_v </ci>
+                <apply>
+                  <minus/>
+                  <ci> F6P_ch </ci>
+                  <apply>
+                    <divide/>
+                    <ci> G6P_ch </ci>
+                    <ci> q14 </ci>
+                  </apply>
+                </apply>
+              </apply>
+              <ci> compartment </ci>
+            </apply>
+          </lambda>
+        </math>
+      </functionDefinition>
+      <functionDefinition id="Function_for_J19_0" name="Function for J19">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <lambda>
+            <bvar>
+              <ci> BPGA_ch </ci>
+            </bvar>
+            <bvar>
+              <ci> G3Pdh_v </ci>
+            </bvar>
+            <bvar>
+              <ci> GAP_ch </ci>
+            </bvar>
+            <bvar>
+              <ci> Light_on </ci>
+            </bvar>
+            <bvar>
+              <ci> Pi_ch </ci>
+            </bvar>
+            <bvar>
+              <ci> compartment </ci>
+            </bvar>
+            <bvar>
+              <ci> q3 </ci>
+            </bvar>
+            <bvar>
+              <ci> x_NADPH_ch </ci>
+            </bvar>
+            <bvar>
+              <ci> x_NADP_ch </ci>
+            </bvar>
+            <bvar>
+              <ci> x_Proton_ch </ci>
+            </bvar>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> Light_on </ci>
+                <ci> G3Pdh_v </ci>
+                <apply>
+                  <minus/>
+                  <apply>
+                    <times/>
+                    <ci> BPGA_ch </ci>
+                    <ci> x_NADPH_ch </ci>
+                    <ci> x_Proton_ch </ci>
+                  </apply>
+                  <apply>
+                    <divide/>
+                    <apply>
+                      <times/>
+                      <ci> x_NADP_ch </ci>
+                      <ci> GAP_ch </ci>
+                      <ci> Pi_ch </ci>
+                    </apply>
+                    <ci> q3 </ci>
+                  </apply>
+                </apply>
+              </apply>
+              <ci> compartment </ci>
+            </apply>
+          </lambda>
+        </math>
+      </functionDefinition>
+      <functionDefinition id="Function_for_J16_0" name="Function for J16">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <lambda>
+            <bvar>
+              <ci> G1P_ch </ci>
+            </bvar>
+            <bvar>
+              <ci> Pi_ch </ci>
+            </bvar>
+            <bvar>
+              <ci> StPase_Vm </ci>
+            </bvar>
+            <bvar>
+              <ci> StPase_kiG1P </ci>
+            </bvar>
+            <bvar>
+              <ci> StPase_km </ci>
+            </bvar>
+            <bvar>
+              <ci> compartment </ci>
+            </bvar>
+            <apply>
+              <divide/>
+              <apply>
+                <divide/>
+                <apply>
+                  <times/>
+                  <ci> StPase_Vm </ci>
+                  <ci> Pi_ch </ci>
+                </apply>
+                <apply>
+                  <plus/>
+                  <ci> Pi_ch </ci>
+                  <apply>
+                    <times/>
+                    <ci> StPase_km </ci>
+                    <apply>
+                      <plus/>
+                      <cn type="integer"> 1 </cn>
+                      <apply>
+                        <divide/>
+                        <ci> G1P_ch </ci>
+                        <ci> StPase_kiG1P </ci>
+                      </apply>
+                    </apply>
+                  </apply>
+                </apply>
+              </apply>
+              <ci> compartment </ci>
+            </apply>
+          </lambda>
+        </math>
+      </functionDefinition>
+      <functionDefinition id="Function_for_J5_0" name="Function for J5">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <lambda>
+            <bvar>
+              <ci> GAP_ch </ci>
+            </bvar>
+            <bvar>
+              <ci> G_TKL_v </ci>
+            </bvar>
+            <bvar>
+              <ci> R5P_ch </ci>
+            </bvar>
+            <bvar>
+              <ci> S7P_ch </ci>
+            </bvar>
+            <bvar>
+              <ci> X5P_ch </ci>
+            </bvar>
+            <bvar>
+              <ci> compartment </ci>
+            </bvar>
+            <bvar>
+              <ci> q10 </ci>
+            </bvar>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> G_TKL_v </ci>
+                <apply>
+                  <minus/>
+                  <apply>
+                    <times/>
+                    <ci> GAP_ch </ci>
+                    <ci> S7P_ch </ci>
+                  </apply>
+                  <apply>
+                    <divide/>
+                    <apply>
+                      <times/>
+                      <ci> X5P_ch </ci>
+                      <ci> R5P_ch </ci>
+                    </apply>
+                    <ci> q10 </ci>
+                  </apply>
+                </apply>
+              </apply>
+              <ci> compartment </ci>
+            </apply>
+          </lambda>
+        </math>
+      </functionDefinition>
+      <functionDefinition id="Function_for_J7_0" name="Function for J7">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <lambda>
+            <bvar>
+              <ci> Ru5P_ch </ci>
+            </bvar>
+            <bvar>
+              <ci> X5P_ch </ci>
+            </bvar>
+            <bvar>
+              <ci> X5Pepi_v </ci>
+            </bvar>
+            <bvar>
+              <ci> compartment </ci>
+            </bvar>
+            <bvar>
+              <ci> q12 </ci>
+            </bvar>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> X5Pepi_v </ci>
+                <apply>
+                  <minus/>
+                  <ci> X5P_ch </ci>
+                  <apply>
+                    <divide/>
+                    <ci> Ru5P_ch </ci>
+                    <ci> q12 </ci>
+                  </apply>
+                </apply>
+              </apply>
+              <ci> compartment </ci>
+            </apply>
+          </lambda>
+        </math>
+      </functionDefinition>
+      <functionDefinition id="Function_for_J9_0" name="Function for J9">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <lambda>
+            <bvar>
+              <ci> DHAP_ch </ci>
+            </bvar>
+            <bvar>
+              <ci> GAP_ch </ci>
+            </bvar>
+            <bvar>
+              <ci> PGA_ch </ci>
+            </bvar>
+            <bvar>
+              <ci> Pi_ch </ci>
+            </bvar>
+            <bvar>
+              <ci> TP_Piap_kDHAP_ch </ci>
+            </bvar>
+            <bvar>
+              <ci> TP_Piap_kGAP_ch </ci>
+            </bvar>
+            <bvar>
+              <ci> TP_Piap_kPGA_ch </ci>
+            </bvar>
+            <bvar>
+              <ci> TP_Piap_kPi_ch </ci>
+            </bvar>
+            <bvar>
+              <ci> TP_Piap_kPi_cyt </ci>
+            </bvar>
+            <bvar>
+              <ci> TP_Piap_vm </ci>
+            </bvar>
+            <bvar>
+              <ci> compartment </ci>
+            </bvar>
+            <bvar>
+              <ci> x_Pi_cyt </ci>
+            </bvar>
+            <apply>
+              <divide/>
+              <apply>
+                <divide/>
+                <apply>
+                  <times/>
+                  <ci> TP_Piap_vm </ci>
+                  <ci> GAP_ch </ci>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> TP_Piap_kGAP_ch </ci>
+                  <apply>
+                    <plus/>
+                    <cn type="integer"> 1 </cn>
+                    <apply>
+                      <times/>
+                      <apply>
+                        <plus/>
+                        <cn type="integer"> 1 </cn>
+                        <apply>
+                          <divide/>
+                          <ci> TP_Piap_kPi_cyt </ci>
+                          <ci> x_Pi_cyt </ci>
+                        </apply>
+                      </apply>
+                      <apply>
+                        <plus/>
+                        <apply>
+                          <divide/>
+                          <ci> Pi_ch </ci>
+                          <ci> TP_Piap_kPi_ch </ci>
+                        </apply>
+                        <apply>
+                          <divide/>
+                          <ci> PGA_ch </ci>
+                          <ci> TP_Piap_kPGA_ch </ci>
+                        </apply>
+                        <apply>
+                          <divide/>
+                          <ci> DHAP_ch </ci>
+                          <ci> TP_Piap_kDHAP_ch </ci>
+                        </apply>
+                        <apply>
+                          <divide/>
+                          <ci> GAP_ch </ci>
+                          <ci> TP_Piap_kGAP_ch </ci>
+                        </apply>
+                      </apply>
+                    </apply>
+                  </apply>
+                </apply>
+              </apply>
+              <ci> compartment </ci>
+            </apply>
+          </lambda>
+        </math>
+      </functionDefinition>
+      <functionDefinition id="Function_for_J11_0" name="Function for J11">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <lambda>
+            <bvar>
+              <ci> G1P_ch </ci>
+            </bvar>
+            <bvar>
+              <ci> G6P_ch </ci>
+            </bvar>
+            <bvar>
+              <ci> PGM_v </ci>
+            </bvar>
+            <bvar>
+              <ci> compartment </ci>
+            </bvar>
+            <bvar>
+              <ci> q15 </ci>
+            </bvar>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> PGM_v </ci>
+                <apply>
+                  <minus/>
+                  <ci> G6P_ch </ci>
+                  <apply>
+                    <divide/>
+                    <ci> G1P_ch </ci>
+                    <ci> q15 </ci>
+                  </apply>
+                </apply>
+              </apply>
+              <ci> compartment </ci>
+            </apply>
+          </lambda>
+        </math>
+      </functionDefinition>
+      <functionDefinition id="Function_for_J4_0" name="Function for J4">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <lambda>
+            <bvar>
+              <ci> DHAP_ch </ci>
+            </bvar>
+            <bvar>
+              <ci> E4P_ch </ci>
+            </bvar>
+            <bvar>
+              <ci> E_Aldo_v </ci>
+            </bvar>
+            <bvar>
+              <ci> SBP_ch </ci>
+            </bvar>
+            <bvar>
+              <ci> compartment </ci>
+            </bvar>
+            <bvar>
+              <ci> q8 </ci>
+            </bvar>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> E_Aldo_v </ci>
+                <apply>
+                  <minus/>
+                  <apply>
+                    <times/>
+                    <ci> E4P_ch </ci>
+                    <ci> DHAP_ch </ci>
+                  </apply>
+                  <apply>
+                    <divide/>
+                    <ci> SBP_ch </ci>
+                    <ci> q8 </ci>
+                  </apply>
+                </apply>
+              </apply>
+              <ci> compartment </ci>
+            </apply>
+          </lambda>
+        </math>
+      </functionDefinition>
+      <functionDefinition id="Function_for_J8_0" name="Function for J8">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <lambda>
+            <bvar>
+              <ci> DHAP_ch </ci>
+            </bvar>
+            <bvar>
+              <ci> GAP_ch </ci>
+            </bvar>
+            <bvar>
+              <ci> PGA_ch </ci>
+            </bvar>
+            <bvar>
+              <ci> PGA_xpMult </ci>
+            </bvar>
+            <bvar>
+              <ci> Pi_ch </ci>
+            </bvar>
+            <bvar>
+              <ci> TP_Piap_kDHAP_ch </ci>
+            </bvar>
+            <bvar>
+              <ci> TP_Piap_kGAP_ch </ci>
+            </bvar>
+            <bvar>
+              <ci> TP_Piap_kPGA_ch </ci>
+            </bvar>
+            <bvar>
+              <ci> TP_Piap_kPi_ch </ci>
+            </bvar>
+            <bvar>
+              <ci> TP_Piap_kPi_cyt </ci>
+            </bvar>
+            <bvar>
+              <ci> TP_Piap_vm </ci>
+            </bvar>
+            <bvar>
+              <ci> compartment </ci>
+            </bvar>
+            <bvar>
+              <ci> x_Pi_cyt </ci>
+            </bvar>
+            <apply>
+              <divide/>
+              <apply>
+                <divide/>
+                <apply>
+                  <times/>
+                  <ci> PGA_xpMult </ci>
+                  <ci> TP_Piap_vm </ci>
+                  <ci> PGA_ch </ci>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> TP_Piap_kPGA_ch </ci>
+                  <apply>
+                    <plus/>
+                    <cn type="integer"> 1 </cn>
+                    <apply>
+                      <times/>
+                      <apply>
+                        <plus/>
+                        <cn type="integer"> 1 </cn>
+                        <apply>
+                          <divide/>
+                          <ci> TP_Piap_kPi_cyt </ci>
+                          <ci> x_Pi_cyt </ci>
+                        </apply>
+                      </apply>
+                      <apply>
+                        <plus/>
+                        <apply>
+                          <divide/>
+                          <ci> Pi_ch </ci>
+                          <ci> TP_Piap_kPi_ch </ci>
+                        </apply>
+                        <apply>
+                          <divide/>
+                          <ci> PGA_ch </ci>
+                          <ci> TP_Piap_kPGA_ch </ci>
+                        </apply>
+                        <apply>
+                          <divide/>
+                          <ci> DHAP_ch </ci>
+                          <ci> TP_Piap_kDHAP_ch </ci>
+                        </apply>
+                        <apply>
+                          <divide/>
+                          <ci> GAP_ch </ci>
+                          <ci> TP_Piap_kGAP_ch </ci>
+                        </apply>
+                      </apply>
+                    </apply>
+                  </apply>
+                </apply>
+              </apply>
+              <ci> compartment </ci>
+            </apply>
+          </lambda>
+        </math>
+      </functionDefinition>
+      <functionDefinition id="Function_for_J12_0" name="Function for J12">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <lambda>
+            <bvar>
+              <ci> ADP_ch </ci>
+            </bvar>
+            <bvar>
+              <ci> LR_kmADP </ci>
+            </bvar>
+            <bvar>
+              <ci> LR_kmPi </ci>
+            </bvar>
+            <bvar>
+              <ci> LR_vm </ci>
+            </bvar>
+            <bvar>
+              <ci> Light_on </ci>
+            </bvar>
+            <bvar>
+              <ci> Pi_ch </ci>
+            </bvar>
+            <bvar>
+              <ci> compartment </ci>
+            </bvar>
+            <apply>
+              <divide/>
+              <apply>
+                <divide/>
+                <apply>
+                  <times/>
+                  <ci> Light_on </ci>
+                  <ci> LR_vm </ci>
+                  <ci> ADP_ch </ci>
+                  <ci> Pi_ch </ci>
+                </apply>
+                <apply>
+                  <times/>
+                  <apply>
+                    <plus/>
+                    <ci> ADP_ch </ci>
+                    <ci> LR_kmADP </ci>
+                  </apply>
+                  <apply>
+                    <plus/>
+                    <ci> Pi_ch </ci>
+                    <ci> LR_kmPi </ci>
+                  </apply>
+                </apply>
+              </apply>
+              <ci> compartment </ci>
+            </apply>
+          </lambda>
+        </math>
+      </functionDefinition>
+      <functionDefinition id="Function_for_J14_0" name="Function for J14">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <lambda>
+            <bvar>
+              <ci> ADP_ch </ci>
+            </bvar>
+            <bvar>
+              <ci> ATP_ch </ci>
+            </bvar>
+            <bvar>
+              <ci> BPGA_ch </ci>
+            </bvar>
+            <bvar>
+              <ci> Light_on </ci>
+            </bvar>
+            <bvar>
+              <ci> PGA_ch </ci>
+            </bvar>
+            <bvar>
+              <ci> PGK_v </ci>
+            </bvar>
+            <bvar>
+              <ci> compartment </ci>
+            </bvar>
+            <bvar>
+              <ci> q2 </ci>
+            </bvar>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> Light_on </ci>
+                <ci> PGK_v </ci>
+                <apply>
+                  <minus/>
+                  <apply>
+                    <times/>
+                    <ci> PGA_ch </ci>
+                    <ci> ATP_ch </ci>
+                  </apply>
+                  <apply>
+                    <divide/>
+                    <apply>
+                      <times/>
+                      <ci> BPGA_ch </ci>
+                      <ci> ADP_ch </ci>
+                    </apply>
+                    <ci> q2 </ci>
+                  </apply>
+                </apply>
+              </apply>
+              <ci> compartment </ci>
+            </apply>
+          </lambda>
+        </math>
+      </functionDefinition>
+      <functionDefinition id="Function_for_J6_0" name="Function for J6">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <lambda>
+            <bvar>
+              <ci> R5P_ch </ci>
+            </bvar>
+            <bvar>
+              <ci> R5Piso_v </ci>
+            </bvar>
+            <bvar>
+              <ci> Ru5P_ch </ci>
+            </bvar>
+            <bvar>
+              <ci> compartment </ci>
+            </bvar>
+            <bvar>
+              <ci> q11 </ci>
+            </bvar>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> R5Piso_v </ci>
+                <apply>
+                  <minus/>
+                  <ci> R5P_ch </ci>
+                  <apply>
+                    <divide/>
+                    <ci> Ru5P_ch </ci>
+                    <ci> q11 </ci>
+                  </apply>
+                </apply>
+              </apply>
+              <ci> compartment </ci>
+            </apply>
+          </lambda>
+        </math>
+      </functionDefinition>
+      <functionDefinition id="Function_for_J15_0" name="Function for J15">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <lambda>
+            <bvar>
+              <ci> ADP_ch </ci>
+            </bvar>
+            <bvar>
+              <ci> ATP_ch </ci>
+            </bvar>
+            <bvar>
+              <ci> F6P_ch </ci>
+            </bvar>
+            <bvar>
+              <ci> FBP_ch </ci>
+            </bvar>
+            <bvar>
+              <ci> G1P_ch </ci>
+            </bvar>
+            <bvar>
+              <ci> PGA_ch </ci>
+            </bvar>
+            <bvar>
+              <ci> Pi_ch </ci>
+            </bvar>
+            <bvar>
+              <ci> StSyn_vm </ci>
+            </bvar>
+            <bvar>
+              <ci> compartment </ci>
+            </bvar>
+            <bvar>
+              <ci> stsyn_ch_Ki </ci>
+            </bvar>
+            <bvar>
+              <ci> stsyn_ch_ka1 </ci>
+            </bvar>
+            <bvar>
+              <ci> stsyn_ch_ka2 </ci>
+            </bvar>
+            <bvar>
+              <ci> stsyn_ch_ka3 </ci>
+            </bvar>
+            <bvar>
+              <ci> stsyn_ch_km1 </ci>
+            </bvar>
+            <bvar>
+              <ci> stsyn_ch_km2 </ci>
+            </bvar>
+            <apply>
+              <divide/>
+              <apply>
+                <divide/>
+                <apply>
+                  <times/>
+                  <ci> StSyn_vm </ci>
+                  <ci> G1P_ch </ci>
+                  <ci> ATP_ch </ci>
+                </apply>
+                <apply>
+                  <plus/>
+                  <apply>
+                    <times/>
+                    <apply>
+                      <plus/>
+                      <ci> G1P_ch </ci>
+                      <ci> stsyn_ch_km1 </ci>
+                    </apply>
+                    <apply>
+                      <plus/>
+                      <cn type="integer"> 1 </cn>
+                      <apply>
+                        <divide/>
+                        <ci> ADP_ch </ci>
+                        <ci> stsyn_ch_Ki </ci>
+                      </apply>
+                    </apply>
+                    <apply>
+                      <plus/>
+                      <ci> ATP_ch </ci>
+                      <ci> stsyn_ch_km2 </ci>
+                    </apply>
+                  </apply>
+                  <apply>
+                    <divide/>
+                    <apply>
+                      <times/>
+                      <ci> stsyn_ch_km2 </ci>
+                      <ci> Pi_ch </ci>
+                    </apply>
+                    <apply>
+                      <times/>
+                      <ci> stsyn_ch_ka1 </ci>
+                      <ci> PGA_ch </ci>
+                    </apply>
+                  </apply>
+                  <apply>
+                    <times/>
+                    <ci> stsyn_ch_ka2 </ci>
+                    <ci> F6P_ch </ci>
+                  </apply>
+                  <apply>
+                    <times/>
+                    <ci> stsyn_ch_ka3 </ci>
+                    <ci> FBP_ch </ci>
+                  </apply>
+                </apply>
+              </apply>
+              <ci> compartment </ci>
+            </apply>
+          </lambda>
+        </math>
+      </functionDefinition>
+      <functionDefinition id="Function_for_J17_0" name="Function for J17">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <lambda>
+            <bvar>
+              <ci> F6P_ch </ci>
+            </bvar>
+            <bvar>
+              <ci> FBP_ch </ci>
+            </bvar>
+            <bvar>
+              <ci> FBPase_ch_KiF6P </ci>
+            </bvar>
+            <bvar>
+              <ci> FBPase_ch_KiPi </ci>
+            </bvar>
+            <bvar>
+              <ci> FBPase_ch_km </ci>
+            </bvar>
+            <bvar>
+              <ci> FBPase_ch_vm </ci>
+            </bvar>
+            <bvar>
+              <ci> Light_on </ci>
+            </bvar>
+            <bvar>
+              <ci> Pi_ch </ci>
+            </bvar>
+            <bvar>
+              <ci> compartment </ci>
+            </bvar>
+            <apply>
+              <divide/>
+              <apply>
+                <divide/>
+                <apply>
+                  <times/>
+                  <ci> Light_on </ci>
+                  <ci> FBPase_ch_vm </ci>
+                  <ci> FBP_ch </ci>
+                </apply>
+                <apply>
+                  <plus/>
+                  <ci> FBP_ch </ci>
+                  <apply>
+                    <times/>
+                    <ci> FBPase_ch_km </ci>
+                    <apply>
+                      <plus/>
+                      <cn type="integer"> 1 </cn>
+                      <apply>
+                        <divide/>
+                        <ci> F6P_ch </ci>
+                        <ci> FBPase_ch_KiF6P </ci>
+                      </apply>
+                      <apply>
+                        <divide/>
+                        <ci> Pi_ch </ci>
+                        <ci> FBPase_ch_KiPi </ci>
+                      </apply>
+                    </apply>
+                  </apply>
+                </apply>
+              </apply>
+              <ci> compartment </ci>
+            </apply>
+          </lambda>
+        </math>
+      </functionDefinition>
+      <functionDefinition id="Function_for_J18_0" name="Function for J18">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <lambda>
+            <bvar>
+              <ci> DHAP_ch </ci>
+            </bvar>
+            <bvar>
+              <ci> GAP_ch </ci>
+            </bvar>
+            <bvar>
+              <ci> PGA_ch </ci>
+            </bvar>
+            <bvar>
+              <ci> Pi_ch </ci>
+            </bvar>
+            <bvar>
+              <ci> TP_Piap_kDHAP_ch </ci>
+            </bvar>
+            <bvar>
+              <ci> TP_Piap_kGAP_ch </ci>
+            </bvar>
+            <bvar>
+              <ci> TP_Piap_kPGA_ch </ci>
+            </bvar>
+            <bvar>
+              <ci> TP_Piap_kPi_ch </ci>
+            </bvar>
+            <bvar>
+              <ci> TP_Piap_kPi_cyt </ci>
+            </bvar>
+            <bvar>
+              <ci> TP_Piap_vm </ci>
+            </bvar>
+            <bvar>
+              <ci> compartment </ci>
+            </bvar>
+            <bvar>
+              <ci> x_Pi_cyt </ci>
+            </bvar>
+            <apply>
+              <divide/>
+              <apply>
+                <divide/>
+                <apply>
+                  <times/>
+                  <ci> TP_Piap_vm </ci>
+                  <ci> DHAP_ch </ci>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> TP_Piap_kDHAP_ch </ci>
+                  <apply>
+                    <plus/>
+                    <cn type="integer"> 1 </cn>
+                    <apply>
+                      <times/>
+                      <apply>
+                        <plus/>
+                        <cn type="integer"> 1 </cn>
+                        <apply>
+                          <divide/>
+                          <ci> TP_Piap_kPi_cyt </ci>
+                          <ci> x_Pi_cyt </ci>
+                        </apply>
+                      </apply>
+                      <apply>
+                        <plus/>
+                        <apply>
+                          <divide/>
+                          <ci> Pi_ch </ci>
+                          <ci> TP_Piap_kPi_ch </ci>
+                        </apply>
+                        <apply>
+                          <divide/>
+                          <ci> PGA_ch </ci>
+                          <ci> TP_Piap_kPGA_ch </ci>
+                        </apply>
+                        <apply>
+                          <divide/>
+                          <ci> DHAP_ch </ci>
+                          <ci> TP_Piap_kDHAP_ch </ci>
+                        </apply>
+                        <apply>
+                          <divide/>
+                          <ci> GAP_ch </ci>
+                          <ci> TP_Piap_kGAP_ch </ci>
+                        </apply>
+                      </apply>
+                    </apply>
+                  </apply>
+                </apply>
+              </apply>
+              <ci> compartment </ci>
+            </apply>
+          </lambda>
+        </math>
+      </functionDefinition>
+      <functionDefinition id="Function_for_J13_0" name="Function for J13">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <lambda>
+            <bvar>
+              <ci> ADP_ch </ci>
+            </bvar>
+            <bvar>
+              <ci> ATP_ch </ci>
+            </bvar>
+            <bvar>
+              <ci> Light_on </ci>
+            </bvar>
+            <bvar>
+              <ci> PGA_ch </ci>
+            </bvar>
+            <bvar>
+              <ci> Pi_ch </ci>
+            </bvar>
+            <bvar>
+              <ci> Ru5P_ch </ci>
+            </bvar>
+            <bvar>
+              <ci> Ru5Pk_ch_KiADP1 </ci>
+            </bvar>
+            <bvar>
+              <ci> Ru5Pk_ch_KiADP2 </ci>
+            </bvar>
+            <bvar>
+              <ci> Ru5Pk_ch_KiPGA </ci>
+            </bvar>
+            <bvar>
+              <ci> Ru5Pk_ch_KiPi </ci>
+            </bvar>
+            <bvar>
+              <ci> Ru5Pk_ch_KiRuBP </ci>
+            </bvar>
+            <bvar>
+              <ci> Ru5Pk_ch_km1 </ci>
+            </bvar>
+            <bvar>
+              <ci> Ru5Pk_ch_km2 </ci>
+            </bvar>
+            <bvar>
+              <ci> Ru5Pk_ch_vm </ci>
+            </bvar>
+            <bvar>
+              <ci> RuBP_ch </ci>
+            </bvar>
+            <bvar>
+              <ci> compartment </ci>
+            </bvar>
+            <apply>
+              <divide/>
+              <apply>
+                <divide/>
+                <apply>
+                  <times/>
+                  <ci> Light_on </ci>
+                  <ci> Ru5Pk_ch_vm </ci>
+                  <ci> Ru5P_ch </ci>
+                  <ci> ATP_ch </ci>
+                </apply>
+                <apply>
+                  <times/>
+                  <apply>
+                    <plus/>
+                    <ci> Ru5P_ch </ci>
+                    <apply>
+                      <times/>
+                      <ci> Ru5Pk_ch_km1 </ci>
+                      <apply>
+                        <plus/>
+                        <cn type="integer"> 1 </cn>
+                        <apply>
+                          <divide/>
+                          <ci> PGA_ch </ci>
+                          <ci> Ru5Pk_ch_KiPGA </ci>
+                        </apply>
+                        <apply>
+                          <divide/>
+                          <ci> RuBP_ch </ci>
+                          <ci> Ru5Pk_ch_KiRuBP </ci>
+                        </apply>
+                        <apply>
+                          <divide/>
+                          <ci> Pi_ch </ci>
+                          <ci> Ru5Pk_ch_KiPi </ci>
+                        </apply>
+                      </apply>
+                    </apply>
+                  </apply>
+                  <apply>
+                    <plus/>
+                    <apply>
+                      <times/>
+                      <ci> ATP_ch </ci>
+                      <apply>
+                        <plus/>
+                        <cn type="integer"> 1 </cn>
+                        <apply>
+                          <divide/>
+                          <ci> ADP_ch </ci>
+                          <ci> Ru5Pk_ch_KiADP1 </ci>
+                        </apply>
+                      </apply>
+                    </apply>
+                    <apply>
+                      <times/>
+                      <ci> Ru5Pk_ch_km2 </ci>
+                      <apply>
+                        <plus/>
+                        <cn type="integer"> 1 </cn>
+                        <apply>
+                          <divide/>
+                          <ci> ADP_ch </ci>
+                          <ci> Ru5Pk_ch_KiADP2 </ci>
+                        </apply>
+                      </apply>
+                    </apply>
+                  </apply>
+                </apply>
+              </apply>
+              <ci> compartment </ci>
+            </apply>
+          </lambda>
+        </math>
+      </functionDefinition>
+      <functionDefinition id="Function_for_J20_0" name="Function for J20">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <lambda>
+            <bvar>
+              <ci> Light_on </ci>
+            </bvar>
+            <bvar>
+              <ci> Pi_ch </ci>
+            </bvar>
+            <bvar>
+              <ci> SBP_ch </ci>
+            </bvar>
+            <bvar>
+              <ci> SBPase_ch_KiPi </ci>
+            </bvar>
+            <bvar>
+              <ci> SBPase_ch_km </ci>
+            </bvar>
+            <bvar>
+              <ci> SBPase_ch_vm </ci>
+            </bvar>
+            <bvar>
+              <ci> compartment </ci>
+            </bvar>
+            <apply>
+              <divide/>
+              <apply>
+                <divide/>
+                <apply>
+                  <times/>
+                  <ci> Light_on </ci>
+                  <ci> SBPase_ch_vm </ci>
+                  <ci> SBP_ch </ci>
+                </apply>
+                <apply>
+                  <plus/>
+                  <ci> SBP_ch </ci>
+                  <apply>
+                    <times/>
+                    <ci> SBPase_ch_km </ci>
+                    <apply>
+                      <plus/>
+                      <cn type="integer"> 1 </cn>
+                      <apply>
+                        <divide/>
+                        <ci> Pi_ch </ci>
+                        <ci> SBPase_ch_KiPi </ci>
+                      </apply>
+                    </apply>
+                  </apply>
+                </apply>
+              </apply>
+              <ci> compartment </ci>
+            </apply>
+          </lambda>
+        </math>
+      </functionDefinition>
+    </listOfFunctionDefinitions>
+    <listOfCompartments>
+      <compartment id="compartment" name="compartment" spatialDimensions="3" size="1" constant="true"/>
+    </listOfCompartments>
+    <listOfSpecies>
+      <species id="x_CO2" name="x_CO2" compartment="compartment" initialAmount="1" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="RuBP_ch" name="RuBP_ch" compartment="compartment" initialAmount="0.33644" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="PGA_ch" name="PGA_ch" compartment="compartment" initialAmount="3.35479" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="ATP_ch" name="ATP_ch" compartment="compartment" initialAmount="0.49806" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="BPGA_ch" name="BPGA_ch" compartment="compartment" initialAmount="0.14825" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="x_NADPH_ch" name="x_NADPH_ch" compartment="compartment" initialAmount="0.21" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="GAP_ch" name="GAP_ch" compartment="compartment" initialAmount="0.01334" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="Pi_ch" name="Pi_ch" compartment="compartment" initialAmount="1.5662" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="DHAP_ch" name="DHAP_ch" compartment="compartment" initialAmount="0.29345" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="FBP_ch" name="FBP_ch" compartment="compartment" initialAmount="0.02776" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="F6P_ch" name="F6P_ch" compartment="compartment" initialAmount="1.36481" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="E4P_ch" name="E4P_ch" compartment="compartment" initialAmount="0.41021" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="X5P_ch" name="X5P_ch" compartment="compartment" initialAmount="0.00363" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="SBP_ch" name="SBP_ch" compartment="compartment" initialAmount="1.56486" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="S7P_ch" name="S7P_ch" compartment="compartment" initialAmount="0.00541" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="R5P_ch" name="R5P_ch" compartment="compartment" initialAmount="0.00599" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="Ru5P_ch" name="Ru5P_ch" compartment="compartment" initialAmount="0.00235" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="x_Pi_cyt" name="x_Pi_cyt" compartment="compartment" initialAmount="0.5" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="x_GAP_cyt" name="x_GAP_cyt" compartment="compartment" initialAmount="1" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="G6P_ch" name="G6P_ch" compartment="compartment" initialAmount="3.1396" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="x_NADP_ch" name="x_NADP_ch" compartment="compartment" initialAmount="0.29" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="x_PGA_cyt" name="x_PGA_cyt" compartment="compartment" initialAmount="1" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="ADP_ch" name="ADP_ch" compartment="compartment" initialAmount="0.00149" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="x_DHAP_cyt" name="x_DHAP_cyt" compartment="compartment" initialAmount="1" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="x_Proton_ch" name="x_Proton_ch" compartment="compartment" initialAmount="1.26e-005" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="G1P_ch" name="G1P_ch" compartment="compartment" initialAmount="0.18206" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="x_Starch_ch" name="x_Starch_ch" compartment="compartment" initialAmount="1" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+    </listOfSpecies>
+    <listOfReactions>
+      <reaction metaid="COPASI1" id="J0" name="J0" reversible="false">
+        <annotation>
+          <COPASI xmlns="http://www.copasi.org/static/sbml">
+            <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+              <rdf:Description rdf:about="#COPASI1">
+                <dcterms:created>
+                  <rdf:Description>
+                    <dcterms:W3CDTF>2014-04-15T09:52:09Z</dcterms:W3CDTF>
+                  </rdf:Description>
+                </dcterms:created>
+              </rdf:Description>
+            </rdf:RDF>
+          </COPASI>
+        </annotation>
+        <listOfReactants>
+          <speciesReference species="RuBP_ch" stoichiometry="1"/>
+          <speciesReference species="x_CO2" stoichiometry="1"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="PGA_ch" stoichiometry="2"/>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference species="FBP_ch"/>
+          <modifierSpeciesReference species="SBP_ch"/>
+          <modifierSpeciesReference species="Pi_ch"/>
+          <modifierSpeciesReference species="x_NADPH_ch"/>
+        </listOfModifiers>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> compartment </ci>
+              <apply>
+                <ci> Function_for_J0_0 </ci>
+                <ci> FBP_ch </ci>
+                <ci> Light_on </ci>
+                <ci> PGA_ch </ci>
+                <ci> Pi_ch </ci>
+                <ci> Rbco_KiFBP </ci>
+                <ci> Rbco_KiNADPH </ci>
+                <ci> Rbco_KiPGA </ci>
+                <ci> Rbco_KiPi </ci>
+                <ci> Rbco_KiSBP </ci>
+                <ci> Rbco_km </ci>
+                <ci> Rbco_vm </ci>
+                <ci> RuBP_ch </ci>
+                <ci> SBP_ch </ci>
+                <ci> compartment </ci>
+                <ci> x_NADPH_ch </ci>
+              </apply>
+            </apply>
+          </math>
+          <listOfParameters>
+            <parameter id="Light_on" name="Light_on" value="1"/>
+            <parameter id="Rbco_KiFBP" name="Rbco_KiFBP" value="0.04"/>
+            <parameter id="Rbco_KiNADPH" name="Rbco_KiNADPH" value="0.07"/>
+            <parameter id="Rbco_KiPGA" name="Rbco_KiPGA" value="0.84"/>
+            <parameter id="Rbco_KiPi" name="Rbco_KiPi" value="0.9"/>
+            <parameter id="Rbco_KiSBP" name="Rbco_KiSBP" value="0.075"/>
+            <parameter id="Rbco_km" name="Rbco_km" value="0.02"/>
+            <parameter id="Rbco_vm" name="Rbco_vm" value="340"/>
+          </listOfParameters>
+        </kineticLaw>
+      </reaction>
+      <reaction id="J1" name="J1" reversible="true">
+        <listOfReactants>
+          <speciesReference species="GAP_ch" stoichiometry="1"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="DHAP_ch" stoichiometry="1"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> compartment </ci>
+              <apply>
+                <ci> Function_for_J1_0 </ci>
+                <ci> DHAP_ch </ci>
+                <ci> GAP_ch </ci>
+                <ci> TPI_v </ci>
+                <ci> compartment </ci>
+                <ci> q4 </ci>
+              </apply>
+            </apply>
+          </math>
+          <listOfParameters>
+            <parameter id="TPI_v" name="TPI_v" value="5000000000"/>
+            <parameter id="q4" name="q4" value="1"/>
+          </listOfParameters>
+        </kineticLaw>
+      </reaction>
+      <reaction id="J2" name="J2" reversible="true">
+        <listOfReactants>
+          <speciesReference species="GAP_ch" stoichiometry="1"/>
+          <speciesReference species="DHAP_ch" stoichiometry="1"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="FBP_ch" stoichiometry="1"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> compartment </ci>
+              <apply>
+                <ci> Function_for_J2_0 </ci>
+                <ci> DHAP_ch </ci>
+                <ci> FBP_ch </ci>
+                <ci> F_Aldo_v </ci>
+                <ci> GAP_ch </ci>
+                <ci> compartment </ci>
+                <ci> q5 </ci>
+              </apply>
+            </apply>
+          </math>
+          <listOfParameters>
+            <parameter id="F_Aldo_v" name="F_Aldo_v" value="5000000000"/>
+            <parameter id="q5" name="q5" value="1"/>
+          </listOfParameters>
+        </kineticLaw>
+      </reaction>
+      <reaction id="J3" name="J3" reversible="true">
+        <listOfReactants>
+          <speciesReference species="GAP_ch" stoichiometry="1"/>
+          <speciesReference species="F6P_ch" stoichiometry="1"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="X5P_ch" stoichiometry="1"/>
+          <speciesReference species="E4P_ch" stoichiometry="1"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> compartment </ci>
+              <apply>
+                <ci> Function_for_J3_0 </ci>
+                <ci> E4P_ch </ci>
+                <ci> F6P_ch </ci>
+                <ci> F_TKL_v </ci>
+                <ci> GAP_ch </ci>
+                <ci> X5P_ch </ci>
+                <ci> compartment </ci>
+                <ci> q7 </ci>
+              </apply>
+            </apply>
+          </math>
+          <listOfParameters>
+            <parameter id="F_TKL_v" name="F_TKL_v" value="5000000000"/>
+            <parameter id="q7" name="q7" value="1"/>
+          </listOfParameters>
+        </kineticLaw>
+      </reaction>
+      <reaction id="J4" name="J4" reversible="true">
+        <listOfReactants>
+          <speciesReference species="DHAP_ch" stoichiometry="1"/>
+          <speciesReference species="E4P_ch" stoichiometry="1"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="SBP_ch" stoichiometry="1"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> compartment </ci>
+              <apply>
+                <ci> Function_for_J4_0 </ci>
+                <ci> DHAP_ch </ci>
+                <ci> E4P_ch </ci>
+                <ci> E_Aldo_v </ci>
+                <ci> SBP_ch </ci>
+                <ci> compartment </ci>
+                <ci> q8 </ci>
+              </apply>
+            </apply>
+          </math>
+          <listOfParameters>
+            <parameter id="E_Aldo_v" name="E_Aldo_v" value="5000000000"/>
+            <parameter id="q8" name="q8" value="13"/>
+          </listOfParameters>
+        </kineticLaw>
+      </reaction>
+      <reaction id="J5" name="J5" reversible="true">
+        <listOfReactants>
+          <speciesReference species="S7P_ch" stoichiometry="1"/>
+          <speciesReference species="GAP_ch" stoichiometry="1"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="R5P_ch" stoichiometry="1"/>
+          <speciesReference species="X5P_ch" stoichiometry="1"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> compartment </ci>
+              <apply>
+                <ci> Function_for_J5_0 </ci>
+                <ci> GAP_ch </ci>
+                <ci> G_TKL_v </ci>
+                <ci> R5P_ch </ci>
+                <ci> S7P_ch </ci>
+                <ci> X5P_ch </ci>
+                <ci> compartment </ci>
+                <ci> q10 </ci>
+              </apply>
+            </apply>
+          </math>
+          <listOfParameters>
+            <parameter id="G_TKL_v" name="G_TKL_v" value="5000000000"/>
+            <parameter id="q10" name="q10" value="1"/>
+          </listOfParameters>
+        </kineticLaw>
+      </reaction>
+      <reaction id="J6" name="J6" reversible="true">
+        <listOfReactants>
+          <speciesReference species="R5P_ch" stoichiometry="1"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="Ru5P_ch" stoichiometry="1"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> compartment </ci>
+              <apply>
+                <ci> Function_for_J6_0 </ci>
+                <ci> R5P_ch </ci>
+                <ci> R5Piso_v </ci>
+                <ci> Ru5P_ch </ci>
+                <ci> compartment </ci>
+                <ci> q11 </ci>
+              </apply>
+            </apply>
+          </math>
+          <listOfParameters>
+            <parameter id="R5Piso_v" name="R5Piso_v" value="5000000000"/>
+            <parameter id="q11" name="q11" value="1"/>
+          </listOfParameters>
+        </kineticLaw>
+      </reaction>
+      <reaction id="J7" name="J7" reversible="true">
+        <listOfReactants>
+          <speciesReference species="X5P_ch" stoichiometry="1"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="Ru5P_ch" stoichiometry="1"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> compartment </ci>
+              <apply>
+                <ci> Function_for_J7_0 </ci>
+                <ci> Ru5P_ch </ci>
+                <ci> X5P_ch </ci>
+                <ci> X5Pepi_v </ci>
+                <ci> compartment </ci>
+                <ci> q12 </ci>
+              </apply>
+            </apply>
+          </math>
+          <listOfParameters>
+            <parameter id="X5Pepi_v" name="X5Pepi_v" value="5000000000"/>
+            <parameter id="q12" name="q12" value="1"/>
+          </listOfParameters>
+        </kineticLaw>
+      </reaction>
+      <reaction id="J8" name="J8" reversible="false">
+        <listOfReactants>
+          <speciesReference species="x_Pi_cyt" stoichiometry="1"/>
+          <speciesReference species="PGA_ch" stoichiometry="1"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="x_PGA_cyt" stoichiometry="1"/>
+          <speciesReference species="Pi_ch" stoichiometry="1"/>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference species="DHAP_ch"/>
+          <modifierSpeciesReference species="GAP_ch"/>
+        </listOfModifiers>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> compartment </ci>
+              <apply>
+                <ci> Function_for_J8_0 </ci>
+                <ci> DHAP_ch </ci>
+                <ci> GAP_ch </ci>
+                <ci> PGA_ch </ci>
+                <ci> PGA_xpMult </ci>
+                <ci> Pi_ch </ci>
+                <ci> TP_Piap_kDHAP_ch </ci>
+                <ci> TP_Piap_kGAP_ch </ci>
+                <ci> TP_Piap_kPGA_ch </ci>
+                <ci> TP_Piap_kPi_ch </ci>
+                <ci> TP_Piap_kPi_cyt </ci>
+                <ci> TP_Piap_vm </ci>
+                <ci> compartment </ci>
+                <ci> x_Pi_cyt </ci>
+              </apply>
+            </apply>
+          </math>
+          <listOfParameters>
+            <parameter id="PGA_xpMult" name="PGA_xpMult" value="0.2"/>
+            <parameter id="TP_Piap_kDHAP_ch" name="TP_Piap_kDHAP_ch" value="0.077"/>
+            <parameter id="TP_Piap_kGAP_ch" name="TP_Piap_kGAP_ch" value="0.075"/>
+            <parameter id="TP_Piap_kPGA_ch" name="TP_Piap_kPGA_ch" value="0.25"/>
+            <parameter id="TP_Piap_kPi_ch" name="TP_Piap_kPi_ch" value="0.63"/>
+            <parameter id="TP_Piap_kPi_cyt" name="TP_Piap_kPi_cyt" value="0.74"/>
+            <parameter id="TP_Piap_vm" name="TP_Piap_vm" value="250"/>
+          </listOfParameters>
+        </kineticLaw>
+      </reaction>
+      <reaction id="J9" name="J9" reversible="false">
+        <listOfReactants>
+          <speciesReference species="x_Pi_cyt" stoichiometry="1"/>
+          <speciesReference species="GAP_ch" stoichiometry="1"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="x_GAP_cyt" stoichiometry="1"/>
+          <speciesReference species="Pi_ch" stoichiometry="1"/>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference species="PGA_ch"/>
+          <modifierSpeciesReference species="DHAP_ch"/>
+        </listOfModifiers>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> compartment </ci>
+              <apply>
+                <ci> Function_for_J9_0 </ci>
+                <ci> DHAP_ch </ci>
+                <ci> GAP_ch </ci>
+                <ci> PGA_ch </ci>
+                <ci> Pi_ch </ci>
+                <ci> TP_Piap_kDHAP_ch </ci>
+                <ci> TP_Piap_kGAP_ch </ci>
+                <ci> TP_Piap_kPGA_ch </ci>
+                <ci> TP_Piap_kPi_ch </ci>
+                <ci> TP_Piap_kPi_cyt </ci>
+                <ci> TP_Piap_vm </ci>
+                <ci> compartment </ci>
+                <ci> x_Pi_cyt </ci>
+              </apply>
+            </apply>
+          </math>
+          <listOfParameters>
+            <parameter id="TP_Piap_kDHAP_ch" name="TP_Piap_kDHAP_ch" value="1"/>
+            <parameter id="TP_Piap_kGAP_ch" name="TP_Piap_kGAP_ch" value="1"/>
+            <parameter id="TP_Piap_kPGA_ch" name="TP_Piap_kPGA_ch" value="1"/>
+            <parameter id="TP_Piap_kPi_ch" name="TP_Piap_kPi_ch" value="1"/>
+            <parameter id="TP_Piap_kPi_cyt" name="TP_Piap_kPi_cyt" value="1"/>
+            <parameter id="TP_Piap_vm" name="TP_Piap_vm" value="0"/>
+          </listOfParameters>
+        </kineticLaw>
+      </reaction>
+      <reaction id="J10" name="J10" reversible="true">
+        <listOfReactants>
+          <speciesReference species="F6P_ch" stoichiometry="1"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="G6P_ch" stoichiometry="1"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> compartment </ci>
+              <apply>
+                <ci> Function_for_J10_0 </ci>
+                <ci> F6P_ch </ci>
+                <ci> G6P_ch </ci>
+                <ci> PGI_v </ci>
+                <ci> compartment </ci>
+                <ci> q14 </ci>
+              </apply>
+            </apply>
+          </math>
+          <listOfParameters>
+            <parameter id="PGI_v" name="PGI_v" value="5000000000"/>
+            <parameter id="q14" name="q14" value="1"/>
+          </listOfParameters>
+        </kineticLaw>
+      </reaction>
+      <reaction id="J11" name="J11" reversible="true">
+        <listOfReactants>
+          <speciesReference species="G6P_ch" stoichiometry="1"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="G1P_ch" stoichiometry="1"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> compartment </ci>
+              <apply>
+                <ci> Function_for_J11_0 </ci>
+                <ci> G1P_ch </ci>
+                <ci> G6P_ch </ci>
+                <ci> PGM_v </ci>
+                <ci> compartment </ci>
+                <ci> q15 </ci>
+              </apply>
+            </apply>
+          </math>
+          <listOfParameters>
+            <parameter id="PGM_v" name="PGM_v" value="5000000000"/>
+            <parameter id="q15" name="q15" value="1"/>
+          </listOfParameters>
+        </kineticLaw>
+      </reaction>
+      <reaction id="J12" name="J12" reversible="false">
+        <listOfReactants>
+          <speciesReference species="Pi_ch" stoichiometry="1"/>
+          <speciesReference species="ADP_ch" stoichiometry="1"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="ATP_ch" stoichiometry="1"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> compartment </ci>
+              <apply>
+                <ci> Function_for_J12_0 </ci>
+                <ci> ADP_ch </ci>
+                <ci> LR_kmADP </ci>
+                <ci> LR_kmPi </ci>
+                <ci> LR_vm </ci>
+                <ci> Light_on </ci>
+                <ci> Pi_ch </ci>
+                <ci> compartment </ci>
+              </apply>
+            </apply>
+          </math>
+          <listOfParameters>
+            <parameter id="LR_kmADP" name="LR_kmADP" value="0.014"/>
+            <parameter id="LR_kmPi" name="LR_kmPi" value="0.3"/>
+            <parameter id="LR_vm" name="LR_vm" value="1500"/>
+            <parameter id="Light_on" name="Light_on" value="0"/>
+          </listOfParameters>
+        </kineticLaw>
+      </reaction>
+      <reaction id="J13" name="J13" reversible="false">
+        <listOfReactants>
+          <speciesReference species="Ru5P_ch" stoichiometry="1"/>
+          <speciesReference species="ATP_ch" stoichiometry="1"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="RuBP_ch" stoichiometry="1"/>
+          <speciesReference species="ADP_ch" stoichiometry="1"/>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference species="PGA_ch"/>
+          <modifierSpeciesReference species="Pi_ch"/>
+        </listOfModifiers>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> compartment </ci>
+              <apply>
+                <ci> Function_for_J13_0 </ci>
+                <ci> ADP_ch </ci>
+                <ci> ATP_ch </ci>
+                <ci> Light_on </ci>
+                <ci> PGA_ch </ci>
+                <ci> Pi_ch </ci>
+                <ci> Ru5P_ch </ci>
+                <ci> Ru5Pk_ch_KiADP1 </ci>
+                <ci> Ru5Pk_ch_KiADP2 </ci>
+                <ci> Ru5Pk_ch_KiPGA </ci>
+                <ci> Ru5Pk_ch_KiPi </ci>
+                <ci> Ru5Pk_ch_KiRuBP </ci>
+                <ci> Ru5Pk_ch_km1 </ci>
+                <ci> Ru5Pk_ch_km2 </ci>
+                <ci> Ru5Pk_ch_vm </ci>
+                <ci> RuBP_ch </ci>
+                <ci> compartment </ci>
+              </apply>
+            </apply>
+          </math>
+          <listOfParameters>
+            <parameter id="Light_on" name="Light_on" value="0"/>
+            <parameter id="Ru5Pk_ch_KiADP1" name="Ru5Pk_ch_KiADP1" value="2.5"/>
+            <parameter id="Ru5Pk_ch_KiADP2" name="Ru5Pk_ch_KiADP2" value="0.4"/>
+            <parameter id="Ru5Pk_ch_KiPGA" name="Ru5Pk_ch_KiPGA" value="2"/>
+            <parameter id="Ru5Pk_ch_KiPi" name="Ru5Pk_ch_KiPi" value="4"/>
+            <parameter id="Ru5Pk_ch_KiRuBP" name="Ru5Pk_ch_KiRuBP" value="0.7"/>
+            <parameter id="Ru5Pk_ch_km1" name="Ru5Pk_ch_km1" value="0.05"/>
+            <parameter id="Ru5Pk_ch_km2" name="Ru5Pk_ch_km2" value="0.05"/>
+            <parameter id="Ru5Pk_ch_vm" name="Ru5Pk_ch_vm" value="10000"/>
+          </listOfParameters>
+        </kineticLaw>
+      </reaction>
+      <reaction id="J14" name="J14" reversible="false">
+        <listOfReactants>
+          <speciesReference species="PGA_ch" stoichiometry="1"/>
+          <speciesReference species="ATP_ch" stoichiometry="1"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="BPGA_ch" stoichiometry="1"/>
+          <speciesReference species="ADP_ch" stoichiometry="1"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> compartment </ci>
+              <apply>
+                <ci> Function_for_J14_0 </ci>
+                <ci> ADP_ch </ci>
+                <ci> ATP_ch </ci>
+                <ci> BPGA_ch </ci>
+                <ci> Light_on </ci>
+                <ci> PGA_ch </ci>
+                <ci> PGK_v </ci>
+                <ci> compartment </ci>
+                <ci> q2 </ci>
+              </apply>
+            </apply>
+          </math>
+          <listOfParameters>
+            <parameter id="Light_on" name="Light_on" value="0"/>
+            <parameter id="PGK_v" name="PGK_v" value="5000000000"/>
+            <parameter id="q2" name="q2" value="0.00031"/>
+          </listOfParameters>
+        </kineticLaw>
+      </reaction>
+      <reaction id="J15" name="J15" reversible="false">
+        <listOfReactants>
+          <speciesReference species="ATP_ch" stoichiometry="1"/>
+          <speciesReference species="G1P_ch" stoichiometry="1"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="x_Starch_ch" stoichiometry="1"/>
+          <speciesReference species="ADP_ch" stoichiometry="1"/>
+          <speciesReference species="Pi_ch" stoichiometry="1"/>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference species="PGA_ch"/>
+          <modifierSpeciesReference species="F6P_ch"/>
+          <modifierSpeciesReference species="FBP_ch"/>
+        </listOfModifiers>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> compartment </ci>
+              <apply>
+                <ci> Function_for_J15_0 </ci>
+                <ci> ADP_ch </ci>
+                <ci> ATP_ch </ci>
+                <ci> F6P_ch </ci>
+                <ci> FBP_ch </ci>
+                <ci> G1P_ch </ci>
+                <ci> PGA_ch </ci>
+                <ci> Pi_ch </ci>
+                <ci> StSyn_vm </ci>
+                <ci> compartment </ci>
+                <ci> stsyn_ch_Ki </ci>
+                <ci> stsyn_ch_ka1 </ci>
+                <ci> stsyn_ch_ka2 </ci>
+                <ci> stsyn_ch_ka3 </ci>
+                <ci> stsyn_ch_km1 </ci>
+                <ci> stsyn_ch_km2 </ci>
+              </apply>
+            </apply>
+          </math>
+          <listOfParameters>
+            <parameter id="StSyn_vm" name="StSyn_vm" value="40"/>
+            <parameter id="stsyn_ch_Ki" name="stsyn_ch_Ki" value="10"/>
+            <parameter id="stsyn_ch_ka1" name="stsyn_ch_ka1" value="0.1"/>
+            <parameter id="stsyn_ch_ka2" name="stsyn_ch_ka2" value="0.02"/>
+            <parameter id="stsyn_ch_ka3" name="stsyn_ch_ka3" value="0.02"/>
+            <parameter id="stsyn_ch_km1" name="stsyn_ch_km1" value="0.08"/>
+            <parameter id="stsyn_ch_km2" name="stsyn_ch_km2" value="0.08"/>
+          </listOfParameters>
+        </kineticLaw>
+      </reaction>
+      <reaction id="J16" name="J16" reversible="false">
+        <listOfReactants>
+          <speciesReference species="x_Starch_ch" stoichiometry="1"/>
+          <speciesReference species="Pi_ch" stoichiometry="1"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="G1P_ch" stoichiometry="1"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> compartment </ci>
+              <apply>
+                <ci> Function_for_J16_0 </ci>
+                <ci> G1P_ch </ci>
+                <ci> Pi_ch </ci>
+                <ci> StPase_Vm </ci>
+                <ci> StPase_kiG1P </ci>
+                <ci> StPase_km </ci>
+                <ci> compartment </ci>
+              </apply>
+            </apply>
+          </math>
+          <listOfParameters>
+            <parameter id="StPase_Vm" name="StPase_Vm" value="40"/>
+            <parameter id="StPase_kiG1P" name="StPase_kiG1P" value="3.12"/>
+            <parameter id="StPase_km" name="StPase_km" value="5"/>
+          </listOfParameters>
+        </kineticLaw>
+      </reaction>
+      <reaction id="J17" name="J17" reversible="false">
+        <listOfReactants>
+          <speciesReference species="FBP_ch" stoichiometry="1"/>
+          <speciesReference species="Pi_ch" stoichiometry="1"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="F6P_ch" stoichiometry="1"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> compartment </ci>
+              <apply>
+                <ci> Function_for_J17_0 </ci>
+                <ci> F6P_ch </ci>
+                <ci> FBP_ch </ci>
+                <ci> FBPase_ch_KiF6P </ci>
+                <ci> FBPase_ch_KiPi </ci>
+                <ci> FBPase_ch_km </ci>
+                <ci> FBPase_ch_vm </ci>
+                <ci> Light_on </ci>
+                <ci> Pi_ch </ci>
+                <ci> compartment </ci>
+              </apply>
+            </apply>
+          </math>
+          <listOfParameters>
+            <parameter id="FBPase_ch_KiF6P" name="FBPase_ch_KiF6P" value="0.7"/>
+            <parameter id="FBPase_ch_KiPi" name="FBPase_ch_KiPi" value="12"/>
+            <parameter id="FBPase_ch_km" name="FBPase_ch_km" value="0.03"/>
+            <parameter id="FBPase_ch_vm" name="FBPase_ch_vm" value="200"/>
+            <parameter id="Light_on" name="Light_on" value="0"/>
+          </listOfParameters>
+        </kineticLaw>
+      </reaction>
+      <reaction id="J18" name="J18" reversible="false">
+        <listOfReactants>
+          <speciesReference species="x_Pi_cyt" stoichiometry="1"/>
+          <speciesReference species="DHAP_ch" stoichiometry="1"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="x_DHAP_cyt" stoichiometry="1"/>
+          <speciesReference species="Pi_ch" stoichiometry="1"/>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference species="PGA_ch"/>
+          <modifierSpeciesReference species="GAP_ch"/>
+        </listOfModifiers>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> compartment </ci>
+              <apply>
+                <ci> Function_for_J18_0 </ci>
+                <ci> DHAP_ch </ci>
+                <ci> GAP_ch </ci>
+                <ci> PGA_ch </ci>
+                <ci> Pi_ch </ci>
+                <ci> TP_Piap_kDHAP_ch </ci>
+                <ci> TP_Piap_kGAP_ch </ci>
+                <ci> TP_Piap_kPGA_ch </ci>
+                <ci> TP_Piap_kPi_ch </ci>
+                <ci> TP_Piap_kPi_cyt </ci>
+                <ci> TP_Piap_vm </ci>
+                <ci> compartment </ci>
+                <ci> x_Pi_cyt </ci>
+              </apply>
+            </apply>
+          </math>
+          <listOfParameters>
+            <parameter id="TP_Piap_kDHAP_ch" name="TP_Piap_kDHAP_ch" value="1"/>
+            <parameter id="TP_Piap_kGAP_ch" name="TP_Piap_kGAP_ch" value="1"/>
+            <parameter id="TP_Piap_kPGA_ch" name="TP_Piap_kPGA_ch" value="1"/>
+            <parameter id="TP_Piap_kPi_ch" name="TP_Piap_kPi_ch" value="1"/>
+            <parameter id="TP_Piap_kPi_cyt" name="TP_Piap_kPi_cyt" value="1"/>
+            <parameter id="TP_Piap_vm" name="TP_Piap_vm" value="0"/>
+          </listOfParameters>
+        </kineticLaw>
+      </reaction>
+      <reaction id="J19" name="J19" reversible="false">
+        <listOfReactants>
+          <speciesReference species="x_NADPH_ch" stoichiometry="1"/>
+          <speciesReference species="BPGA_ch" stoichiometry="1"/>
+          <speciesReference species="x_Proton_ch" stoichiometry="1"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="x_NADP_ch" stoichiometry="1"/>
+          <speciesReference species="GAP_ch" stoichiometry="1"/>
+          <speciesReference species="Pi_ch" stoichiometry="1"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> compartment </ci>
+              <apply>
+                <ci> Function_for_J19_0 </ci>
+                <ci> BPGA_ch </ci>
+                <ci> G3Pdh_v </ci>
+                <ci> GAP_ch </ci>
+                <ci> Light_on </ci>
+                <ci> Pi_ch </ci>
+                <ci> compartment </ci>
+                <ci> q3 </ci>
+                <ci> x_NADPH_ch </ci>
+                <ci> x_NADP_ch </ci>
+                <ci> x_Proton_ch </ci>
+              </apply>
+            </apply>
+          </math>
+          <listOfParameters>
+            <parameter id="G3Pdh_v" name="G3Pdh_v" value="5000000000"/>
+            <parameter id="Light_on" name="Light_on" value="0"/>
+            <parameter id="q3" name="q3" value="1"/>
+          </listOfParameters>
+        </kineticLaw>
+      </reaction>
+      <reaction id="J20" name="J20" reversible="false">
+        <listOfReactants>
+          <speciesReference species="SBP_ch" stoichiometry="1"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="Pi_ch" stoichiometry="1"/>
+          <speciesReference species="S7P_ch" stoichiometry="1"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> compartment </ci>
+              <apply>
+                <ci> Function_for_J20_0 </ci>
+                <ci> Light_on </ci>
+                <ci> Pi_ch </ci>
+                <ci> SBP_ch </ci>
+                <ci> SBPase_ch_KiPi </ci>
+                <ci> SBPase_ch_km </ci>
+                <ci> SBPase_ch_vm </ci>
+                <ci> compartment </ci>
+              </apply>
+            </apply>
+          </math>
+          <listOfParameters>
+            <parameter id="Light_on" name="Light_on" value="0"/>
+            <parameter id="SBPase_ch_KiPi" name="SBPase_ch_KiPi" value="12"/>
+            <parameter id="SBPase_ch_km" name="SBPase_ch_km" value="0.013"/>
+            <parameter id="SBPase_ch_vm" name="SBPase_ch_vm" value="40"/>
+          </listOfParameters>
+        </kineticLaw>
+      </reaction>
+    </listOfReactions>
+  </model>
 </sbml>

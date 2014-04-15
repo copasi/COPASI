@@ -1,9 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- generated with COPASI 4.6.34 (development) (http://www.copasi.org) at 2011-01-13 17:27:07 UTC -->
+<!-- generated with COPASI 4.12 (Build 79) (http://www.copasi.org) at 2014-04-15 07:36:25 UTC -->
 <?oxygen RNGSchema="http://www.copasi.org/static/schema/CopasiML.rng" type="xml"?>
-<COPASI xmlns="http://www.copasi.org/static/schema" versionMajor="1" versionMinor="0" versionDevel="34">
+<COPASI xmlns="http://www.copasi.org/static/schema" versionMajor="4" versionMinor="12" versionDevel="79" copasiSourcesModified="0">
   <ListOfFunctions>
     <Function key="Function_13" name="Mass action (irreversible)" type="MassAction" reversible="false">
+      <MiriamAnnotation>
+<rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+   <rdf:Description rdf:about="#Function_13">
+   <CopasiMT:is rdf:resource="urn:miriam:obo.sbo:SBO:0000041" />
+   </rdf:Description>
+   </rdf:RDF>
+      </MiriamAnnotation>
+      <Comment>
+        <body xmlns="http://www.w3.org/1999/xhtml">
+<b>Mass action rate law for first order irreversible reactions</b>
+<p>
+Reaction scheme where the products are created from the reactants and the change of a product quantity is proportional to the product of reactant activities. The reaction scheme does not include any reverse process that creates the reactants from the products. The change of a product quantity is proportional to the quantity of one reactant.
+</p>
+</body>
+      </Comment>
       <Expression>
         k1*PRODUCT&lt;substrate_i&gt;
       </Expression>
@@ -13,6 +28,21 @@
       </ListOfParameterDescriptions>
     </Function>
     <Function key="Function_14" name="Mass action (reversible)" type="MassAction" reversible="true">
+      <MiriamAnnotation>
+<rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+   <rdf:Description rdf:about="#Function_14">
+   <CopasiMT:is rdf:resource="urn:miriam:obo.sbo:SBO:0000042" />
+   </rdf:Description>
+   </rdf:RDF>
+      </MiriamAnnotation>
+      <Comment>
+        <body xmlns="http://www.w3.org/1999/xhtml">
+<b>Mass action rate law for reversible reactions</b>
+<p>
+Reaction scheme where the products are created from the reactants and the change of a product quantity is proportional to the product of reactant activities. The reaction scheme does include a reverse process that creates the reactants from the products.
+</p>
+</body>
+      </Comment>
       <Expression>
         k1*PRODUCT&lt;substrate_i&gt;-k2*PRODUCT&lt;product_j&gt;
       </Expression>
@@ -24,14 +54,14 @@
       </ListOfParameterDescriptions>
     </Function>
   </ListOfFunctions>
-  <Model key="Model_1" name="MAPK cascade" simulationType="time" timeUnit="s" volumeUnit="l" areaUnit="m²" lengthUnit="m" quantityUnit="µmol" type="deterministic" avogadroConstant="6.0221415e+23">
+  <Model key="Model_11" name="MAPK cascade" simulationType="time" timeUnit="s" volumeUnit="l" areaUnit="m²" lengthUnit="m" quantityUnit="µmol" type="deterministic" avogadroConstant="6.0221415e+023">
     <MiriamAnnotation>
 <rdf:RDF
    xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#"
    xmlns:dcterms="http://purl.org/dc/terms/"
    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
    xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#">
-  <rdf:Description rdf:about="#Model_1">
+  <rdf:Description rdf:about="#Model_11">
     <dcterms:bibliographicCitation>
       <rdf:Description>
         <CopasiMT:isDescribedBy rdf:resource="urn:miriam:pubmed:8816754"/>
@@ -105,126 +135,126 @@
 </body></html>
     </Comment>
     <ListOfCompartments>
-      <Compartment key="Compartment_0" name="compartment" simulationType="fixed" dimensionality="3">
+      <Compartment key="Compartment_6" name="compartment" simulationType="fixed" dimensionality="3">
       </Compartment>
     </ListOfCompartments>
     <ListOfMetabolites>
-      <Metabolite key="Metabolite_0" name="E1" simulationType="reactions" compartment="Compartment_0">
+      <Metabolite key="Metabolite_33" name="E1" simulationType="reactions" compartment="Compartment_6">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Metabolite_0">
+  <rdf:Description rdf:about="#Metabolite_33">
     <CopasiMT:isVersionOf rdf:resource="urn:miriam:interpro:IPR003577" />
   </rdf:Description>
 </rdf:RDF>
         </MiriamAnnotation>
       </Metabolite>
-      <Metabolite key="Metabolite_1" name="E2" simulationType="reactions" compartment="Compartment_0">
+      <Metabolite key="Metabolite_29" name="E2" simulationType="reactions" compartment="Compartment_6">
       </Metabolite>
-      <Metabolite key="Metabolite_2" name="MAPKKK" simulationType="reactions" compartment="Compartment_0">
-        <MiriamAnnotation>
-<rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Metabolite_2">
-    <CopasiMT:isVersionOf rdf:resource="urn:miriam:uniprot:P12965" />
-  </rdf:Description>
-</rdf:RDF>
-        </MiriamAnnotation>
-      </Metabolite>
-      <Metabolite key="Metabolite_3" name="P-MAPKKK" simulationType="reactions" compartment="Compartment_0">
-        <MiriamAnnotation>
-<rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Metabolite_3">
-    <CopasiMT:isVersionOf rdf:resource="urn:miriam:uniprot:P12965" />
-  </rdf:Description>
-</rdf:RDF>
-        </MiriamAnnotation>
-      </Metabolite>
-      <Metabolite key="Metabolite_4" name="MAPKK" simulationType="reactions" compartment="Compartment_0">
-        <MiriamAnnotation>
-<rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Metabolite_4">
-    <CopasiMT:isVersionOf rdf:resource="urn:miriam:uniprot:Q05116" />
-  </rdf:Description>
-</rdf:RDF>
-        </MiriamAnnotation>
-      </Metabolite>
-      <Metabolite key="Metabolite_5" name="P-MAPKK" simulationType="reactions" compartment="Compartment_0">
-        <MiriamAnnotation>
-<rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Metabolite_5">
-    <CopasiMT:isVersionOf rdf:resource="urn:miriam:uniprot:Q05116" />
-  </rdf:Description>
-</rdf:RDF>
-        </MiriamAnnotation>
-      </Metabolite>
-      <Metabolite key="Metabolite_6" name="PP-MAPKK" simulationType="reactions" compartment="Compartment_0">
-        <MiriamAnnotation>
-<rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Metabolite_6">
-    <CopasiMT:isVersionOf rdf:resource="urn:miriam:uniprot:Q05116" />
-  </rdf:Description>
-</rdf:RDF>
-        </MiriamAnnotation>
-      </Metabolite>
-      <Metabolite key="Metabolite_7" name="MAPK" simulationType="reactions" compartment="Compartment_0">
-        <MiriamAnnotation>
-<rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Metabolite_7">
-    <CopasiMT:isVersionOf rdf:resource="urn:miriam:uniprot:P26696" />
-  </rdf:Description>
-</rdf:RDF>
-        </MiriamAnnotation>
-      </Metabolite>
-      <Metabolite key="Metabolite_8" name="P-MAPK" simulationType="reactions" compartment="Compartment_0">
-        <MiriamAnnotation>
-<rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Metabolite_8">
-    <CopasiMT:isVersionOf rdf:resource="urn:miriam:uniprot:P26696" />
-  </rdf:Description>
-</rdf:RDF>
-        </MiriamAnnotation>
-      </Metabolite>
-      <Metabolite key="Metabolite_9" name="PP-MAPK" simulationType="reactions" compartment="Compartment_0">
+      <Metabolite key="Metabolite_9" name="MAPKKK" simulationType="reactions" compartment="Compartment_6">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
   <rdf:Description rdf:about="#Metabolite_9">
+    <CopasiMT:isVersionOf rdf:resource="urn:miriam:uniprot:P12965" />
+  </rdf:Description>
+</rdf:RDF>
+        </MiriamAnnotation>
+      </Metabolite>
+      <Metabolite key="Metabolite_15" name="P-MAPKKK" simulationType="reactions" compartment="Compartment_6">
+        <MiriamAnnotation>
+<rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+  <rdf:Description rdf:about="#Metabolite_15">
+    <CopasiMT:isVersionOf rdf:resource="urn:miriam:uniprot:P12965" />
+  </rdf:Description>
+</rdf:RDF>
+        </MiriamAnnotation>
+      </Metabolite>
+      <Metabolite key="Metabolite_23" name="MAPKK" simulationType="reactions" compartment="Compartment_6">
+        <MiriamAnnotation>
+<rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+  <rdf:Description rdf:about="#Metabolite_23">
+    <CopasiMT:isVersionOf rdf:resource="urn:miriam:uniprot:Q05116" />
+  </rdf:Description>
+</rdf:RDF>
+        </MiriamAnnotation>
+      </Metabolite>
+      <Metabolite key="Metabolite_49" name="P-MAPKK" simulationType="reactions" compartment="Compartment_6">
+        <MiriamAnnotation>
+<rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+  <rdf:Description rdf:about="#Metabolite_49">
+    <CopasiMT:isVersionOf rdf:resource="urn:miriam:uniprot:Q05116" />
+  </rdf:Description>
+</rdf:RDF>
+        </MiriamAnnotation>
+      </Metabolite>
+      <Metabolite key="Metabolite_51" name="PP-MAPKK" simulationType="reactions" compartment="Compartment_6">
+        <MiriamAnnotation>
+<rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+  <rdf:Description rdf:about="#Metabolite_51">
+    <CopasiMT:isVersionOf rdf:resource="urn:miriam:uniprot:Q05116" />
+  </rdf:Description>
+</rdf:RDF>
+        </MiriamAnnotation>
+      </Metabolite>
+      <Metabolite key="Metabolite_53" name="MAPK" simulationType="reactions" compartment="Compartment_6">
+        <MiriamAnnotation>
+<rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+  <rdf:Description rdf:about="#Metabolite_53">
     <CopasiMT:isVersionOf rdf:resource="urn:miriam:uniprot:P26696" />
   </rdf:Description>
 </rdf:RDF>
         </MiriamAnnotation>
       </Metabolite>
-      <Metabolite key="Metabolite_10" name="MAPK-Pase" simulationType="reactions" compartment="Compartment_0">
+      <Metabolite key="Metabolite_55" name="P-MAPK" simulationType="reactions" compartment="Compartment_6">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Metabolite_10">
+  <rdf:Description rdf:about="#Metabolite_55">
+    <CopasiMT:isVersionOf rdf:resource="urn:miriam:uniprot:P26696" />
+  </rdf:Description>
+</rdf:RDF>
+        </MiriamAnnotation>
+      </Metabolite>
+      <Metabolite key="Metabolite_57" name="PP-MAPK" simulationType="reactions" compartment="Compartment_6">
+        <MiriamAnnotation>
+<rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+  <rdf:Description rdf:about="#Metabolite_57">
+    <CopasiMT:isVersionOf rdf:resource="urn:miriam:uniprot:P26696" />
+  </rdf:Description>
+</rdf:RDF>
+        </MiriamAnnotation>
+      </Metabolite>
+      <Metabolite key="Metabolite_59" name="MAPK-Pase" simulationType="reactions" compartment="Compartment_6">
+        <MiriamAnnotation>
+<rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+  <rdf:Description rdf:about="#Metabolite_59">
     <CopasiMT:is rdf:resource="urn:miriam:uniprot:Q90W58" />
   </rdf:Description>
 </rdf:RDF>
         </MiriamAnnotation>
       </Metabolite>
-      <Metabolite key="Metabolite_11" name="MAPKK-Pase" simulationType="reactions" compartment="Compartment_0">
+      <Metabolite key="Metabolite_61" name="MAPKK-Pase" simulationType="reactions" compartment="Compartment_6">
       </Metabolite>
-      <Metabolite key="Metabolite_12" name="MAPKKK_E1" simulationType="reactions" compartment="Compartment_0">
+      <Metabolite key="Metabolite_63" name="MAPKKK_E1" simulationType="reactions" compartment="Compartment_6">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Metabolite_12">
+  <rdf:Description rdf:about="#Metabolite_63">
     <CopasiMT:isVersionOf rdf:resource="urn:miriam:uniprot:P12965" />
   </rdf:Description>
 </rdf:RDF>
         </MiriamAnnotation>
       </Metabolite>
-      <Metabolite key="Metabolite_13" name="P-MAPKKK_E2" simulationType="reactions" compartment="Compartment_0">
+      <Metabolite key="Metabolite_65" name="P-MAPKKK_E2" simulationType="reactions" compartment="Compartment_6">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Metabolite_13">
+  <rdf:Description rdf:about="#Metabolite_65">
     <CopasiMT:isVersionOf rdf:resource="urn:miriam:uniprot:P12965" />
   </rdf:Description>
 </rdf:RDF>
         </MiriamAnnotation>
       </Metabolite>
-      <Metabolite key="Metabolite_14" name="P-MAPKKK_MAPKK" simulationType="reactions" compartment="Compartment_0">
+      <Metabolite key="Metabolite_67" name="P-MAPKKK_MAPKK" simulationType="reactions" compartment="Compartment_6">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Metabolite_14">
+  <rdf:Description rdf:about="#Metabolite_67">
     <CopasiMT:hasPart>
       <rdf:Bag>
         <rdf:li rdf:resource="urn:miriam:uniprot:P12965" />
@@ -235,10 +265,10 @@
 </rdf:RDF>
         </MiriamAnnotation>
       </Metabolite>
-      <Metabolite key="Metabolite_15" name="P-MAPKKK_P-MAPKK" simulationType="reactions" compartment="Compartment_0">
+      <Metabolite key="Metabolite_69" name="P-MAPKKK_P-MAPKK" simulationType="reactions" compartment="Compartment_6">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Metabolite_15">
+  <rdf:Description rdf:about="#Metabolite_69">
     <CopasiMT:hasPart>
       <rdf:Bag>
         <rdf:li rdf:resource="urn:miriam:uniprot:P12965" />
@@ -249,10 +279,10 @@
 </rdf:RDF>
         </MiriamAnnotation>
       </Metabolite>
-      <Metabolite key="Metabolite_16" name="PP-MAPKK_MAPK" simulationType="reactions" compartment="Compartment_0">
+      <Metabolite key="Metabolite_71" name="PP-MAPKK_MAPK" simulationType="reactions" compartment="Compartment_6">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Metabolite_16">
+  <rdf:Description rdf:about="#Metabolite_71">
     <CopasiMT:hasPart>
       <rdf:Bag>
         <rdf:li rdf:resource="urn:miriam:uniprot:P26696" />
@@ -263,10 +293,10 @@
 </rdf:RDF>
         </MiriamAnnotation>
       </Metabolite>
-      <Metabolite key="Metabolite_17" name="PP-MAPKK_P-MAPK" simulationType="reactions" compartment="Compartment_0">
+      <Metabolite key="Metabolite_73" name="PP-MAPKK_P-MAPK" simulationType="reactions" compartment="Compartment_6">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Metabolite_17">
+  <rdf:Description rdf:about="#Metabolite_73">
     <CopasiMT:hasPart>
       <rdf:Bag>
         <rdf:li rdf:resource="urn:miriam:uniprot:P26696" />
@@ -277,28 +307,28 @@
 </rdf:RDF>
         </MiriamAnnotation>
       </Metabolite>
-      <Metabolite key="Metabolite_18" name="MAPKK-Pase_PP-MAPKK" simulationType="reactions" compartment="Compartment_0">
+      <Metabolite key="Metabolite_75" name="MAPKK-Pase_PP-MAPKK" simulationType="reactions" compartment="Compartment_6">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Metabolite_18">
+  <rdf:Description rdf:about="#Metabolite_75">
     <CopasiMT:hasPart rdf:resource="urn:miriam:uniprot:Q05116" />
   </rdf:Description>
 </rdf:RDF>
         </MiriamAnnotation>
       </Metabolite>
-      <Metabolite key="Metabolite_19" name="MAPKK-Pase_P-MAPKK" simulationType="reactions" compartment="Compartment_0">
+      <Metabolite key="Metabolite_77" name="MAPKK-Pase_P-MAPKK" simulationType="reactions" compartment="Compartment_6">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Metabolite_19">
+  <rdf:Description rdf:about="#Metabolite_77">
     <CopasiMT:hasPart rdf:resource="urn:miriam:uniprot:Q05116" />
   </rdf:Description>
 </rdf:RDF>
         </MiriamAnnotation>
       </Metabolite>
-      <Metabolite key="Metabolite_20" name="MAPK-Pase_PP-MAPK" simulationType="reactions" compartment="Compartment_0">
+      <Metabolite key="Metabolite_79" name="MAPK-Pase_PP-MAPK" simulationType="reactions" compartment="Compartment_6">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Metabolite_20">
+  <rdf:Description rdf:about="#Metabolite_79">
     <CopasiMT:hasPart>
       <rdf:Bag>
         <rdf:li rdf:resource="urn:miriam:uniprot:P26696" />
@@ -309,10 +339,10 @@
 </rdf:RDF>
         </MiriamAnnotation>
       </Metabolite>
-      <Metabolite key="Metabolite_21" name="MAPK-Pase_P-MAPK" simulationType="reactions" compartment="Compartment_0">
+      <Metabolite key="Metabolite_81" name="MAPK-Pase_P-MAPK" simulationType="reactions" compartment="Compartment_6">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Metabolite_21">
+  <rdf:Description rdf:about="#Metabolite_81">
     <CopasiMT:hasPart>
       <rdf:Bag>
         <rdf:li rdf:resource="urn:miriam:uniprot:P26696" />
@@ -325,55 +355,55 @@
       </Metabolite>
     </ListOfMetabolites>
     <ListOfModelValues>
-      <ModelValue key="ModelValue_0" name="MAPKKK_phosphorylation_ratio" simulationType="assignment">
+      <ModelValue key="ModelValue_15" name="MAPKKK_phosphorylation_ratio" simulationType="assignment">
         <Expression>
           &lt;CN=Root,Model=MAPK cascade,Vector=Compartments[compartment],Vector=Metabolites[P-MAPKKK],Reference=Concentration&gt;/(&lt;CN=Root,Model=MAPK cascade,Vector=Compartments[compartment],Vector=Metabolites[P-MAPKKK],Reference=Concentration&gt;+&lt;CN=Root,Model=MAPK cascade,Vector=Compartments[compartment],Vector=Metabolites[MAPKKK],Reference=Concentration&gt;)
         </Expression>
       </ModelValue>
     </ListOfModelValues>
     <ListOfReactions>
-      <Reaction key="Reaction_0" name="binding of MAPKKK activator" reversible="true">
+      <Reaction key="Reaction_11" name="binding of MAPKKK activator" reversible="true" fast="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Reaction_0">
+  <rdf:Description rdf:about="#Reaction_11">
     <CopasiMT:isHomologTo rdf:resource="urn:miriam:reactome:REACT_996" />
     <CopasiMT:isVersionOf rdf:resource="urn:miriam:obo.go:GO:0031435" />
   </rdf:Description>
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_2" stoichiometry="1"/>
-          <Substrate metabolite="Metabolite_0" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_9" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_33" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
-          <Product metabolite="Metabolite_12" stoichiometry="1"/>
+          <Product metabolite="Metabolite_63" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_1067" name="k1" value="1000"/>
-          <Constant key="Parameter_1066" name="k2" value="150"/>
+          <Constant key="Parameter_4271" name="k1" value="1000"/>
+          <Constant key="Parameter_4269" name="k2" value="150"/>
         </ListOfConstants>
         <KineticLaw function="Function_14">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_62">
-              <SourceParameter reference="Parameter_1067"/>
+              <SourceParameter reference="Parameter_4271"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_39">
-              <SourceParameter reference="Metabolite_2"/>
-              <SourceParameter reference="Metabolite_0"/>
+              <SourceParameter reference="Metabolite_9"/>
+              <SourceParameter reference="Metabolite_33"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_67">
-              <SourceParameter reference="Parameter_1066"/>
+              <SourceParameter reference="Parameter_4269"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_71">
-              <SourceParameter reference="Metabolite_12"/>
+              <SourceParameter reference="Metabolite_63"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_1" name="MAPKKK activation" reversible="false">
+      <Reaction key="Reaction_10" name="MAPKKK activation" reversible="false" fast="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Reaction_1">
+  <rdf:Description rdf:about="#Reaction_10">
     <CopasiMT:isHomologTo rdf:resource="urn:miriam:reactome:REACT_525" />
     <CopasiMT:isVersionOf>
       <rdf:Bag>
@@ -386,67 +416,67 @@
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_12" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_63" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
-          <Product metabolite="Metabolite_0" stoichiometry="1"/>
-          <Product metabolite="Metabolite_3" stoichiometry="1"/>
+          <Product metabolite="Metabolite_33" stoichiometry="1"/>
+          <Product metabolite="Metabolite_15" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_1065" name="k1" value="150"/>
+          <Constant key="Parameter_4267" name="k1" value="150"/>
         </ListOfConstants>
         <KineticLaw function="Function_13">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Parameter_1065"/>
+              <SourceParameter reference="Parameter_4267"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_79">
-              <SourceParameter reference="Metabolite_12"/>
+              <SourceParameter reference="Metabolite_63"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_2" name="binding of MAPKKK inactivator" reversible="true">
+      <Reaction key="Reaction_9" name="binding of MAPKKK inactivator" reversible="true" fast="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Reaction_2">
+  <rdf:Description rdf:about="#Reaction_9">
     <CopasiMT:isVersionOf rdf:resource="urn:miriam:obo.go:GO:0031435" />
   </rdf:Description>
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_3" stoichiometry="1"/>
-          <Substrate metabolite="Metabolite_1" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_15" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_29" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
-          <Product metabolite="Metabolite_13" stoichiometry="1"/>
+          <Product metabolite="Metabolite_65" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_1064" name="k1" value="1000"/>
-          <Constant key="Parameter_1063" name="k2" value="150"/>
+          <Constant key="Parameter_4268" name="k1" value="1000"/>
+          <Constant key="Parameter_4266" name="k2" value="150"/>
         </ListOfConstants>
         <KineticLaw function="Function_14">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_62">
-              <SourceParameter reference="Parameter_1064"/>
+              <SourceParameter reference="Parameter_4268"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_39">
-              <SourceParameter reference="Metabolite_3"/>
-              <SourceParameter reference="Metabolite_1"/>
+              <SourceParameter reference="Metabolite_15"/>
+              <SourceParameter reference="Metabolite_29"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_67">
-              <SourceParameter reference="Parameter_1063"/>
+              <SourceParameter reference="Parameter_4266"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_71">
-              <SourceParameter reference="Metabolite_13"/>
+              <SourceParameter reference="Metabolite_65"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_3" name="MAPKKK inactivation" reversible="false">
+      <Reaction key="Reaction_8" name="MAPKKK inactivation" reversible="false" fast="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Reaction_3">
+  <rdf:Description rdf:about="#Reaction_8">
     <CopasiMT:isVersionOf>
       <rdf:Bag>
         <rdf:li rdf:resource="urn:miriam:ec-code:3.1.3.16" />
@@ -458,30 +488,30 @@
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_13" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_65" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
-          <Product metabolite="Metabolite_1" stoichiometry="1"/>
-          <Product metabolite="Metabolite_2" stoichiometry="1"/>
+          <Product metabolite="Metabolite_29" stoichiometry="1"/>
+          <Product metabolite="Metabolite_9" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_1062" name="k1" value="150"/>
+          <Constant key="Parameter_4265" name="k1" value="150"/>
         </ListOfConstants>
         <KineticLaw function="Function_13">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Parameter_1062"/>
+              <SourceParameter reference="Parameter_4265"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_79">
-              <SourceParameter reference="Metabolite_13"/>
+              <SourceParameter reference="Metabolite_65"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_4" name="binding P-MAPKKK and MAPKK" reversible="true">
+      <Reaction key="Reaction_7" name="binding P-MAPKKK and MAPKK" reversible="true" fast="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Reaction_4">
+  <rdf:Description rdf:about="#Reaction_7">
     <CopasiMT:isHomologTo rdf:resource="urn:miriam:reactome:REACT_143" />
     <CopasiMT:isVersionOf>
       <rdf:Bag>
@@ -493,38 +523,38 @@
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_4" stoichiometry="1"/>
-          <Substrate metabolite="Metabolite_3" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_23" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_15" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
-          <Product metabolite="Metabolite_14" stoichiometry="1"/>
+          <Product metabolite="Metabolite_67" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_1061" name="k1" value="1000"/>
-          <Constant key="Parameter_1060" name="k2" value="150"/>
+          <Constant key="Parameter_4276" name="k1" value="1000"/>
+          <Constant key="Parameter_4275" name="k2" value="150"/>
         </ListOfConstants>
         <KineticLaw function="Function_14">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_62">
-              <SourceParameter reference="Parameter_1061"/>
+              <SourceParameter reference="Parameter_4276"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_39">
-              <SourceParameter reference="Metabolite_4"/>
-              <SourceParameter reference="Metabolite_3"/>
+              <SourceParameter reference="Metabolite_23"/>
+              <SourceParameter reference="Metabolite_15"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_67">
-              <SourceParameter reference="Parameter_1060"/>
+              <SourceParameter reference="Parameter_4275"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_71">
-              <SourceParameter reference="Metabolite_14"/>
+              <SourceParameter reference="Metabolite_67"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_5" name="phosphorylation of MAPKK" reversible="false">
+      <Reaction key="Reaction_6" name="phosphorylation of MAPKK" reversible="false" fast="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Reaction_5">
+  <rdf:Description rdf:about="#Reaction_6">
     <CopasiMT:isHomologTo rdf:resource="urn:miriam:reactome:REACT_614" />
     <CopasiMT:isVersionOf>
       <rdf:Bag>
@@ -537,67 +567,67 @@
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_14" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_67" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
-          <Product metabolite="Metabolite_5" stoichiometry="1"/>
-          <Product metabolite="Metabolite_3" stoichiometry="1"/>
+          <Product metabolite="Metabolite_49" stoichiometry="1"/>
+          <Product metabolite="Metabolite_15" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_1059" name="k1" value="150"/>
+          <Constant key="Parameter_4274" name="k1" value="150"/>
         </ListOfConstants>
         <KineticLaw function="Function_13">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Parameter_1059"/>
+              <SourceParameter reference="Parameter_4274"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_79">
-              <SourceParameter reference="Metabolite_14"/>
+              <SourceParameter reference="Metabolite_67"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_6" name="binding MAPKK-Pase and P-MAPKK" reversible="true">
+      <Reaction key="Reaction_5" name="binding MAPKK-Pase and P-MAPKK" reversible="true" fast="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Reaction_6">
+  <rdf:Description rdf:about="#Reaction_5">
     <CopasiMT:isVersionOf rdf:resource="urn:miriam:obo.go:GO:0031434" />
   </rdf:Description>
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_5" stoichiometry="1"/>
-          <Substrate metabolite="Metabolite_11" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_49" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_61" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
-          <Product metabolite="Metabolite_19" stoichiometry="1"/>
+          <Product metabolite="Metabolite_77" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_1058" name="k1" value="1000"/>
-          <Constant key="Parameter_1057" name="k2" value="150"/>
+          <Constant key="Parameter_4273" name="k1" value="1000"/>
+          <Constant key="Parameter_4272" name="k2" value="150"/>
         </ListOfConstants>
         <KineticLaw function="Function_14">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_62">
-              <SourceParameter reference="Parameter_1058"/>
+              <SourceParameter reference="Parameter_4273"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_39">
-              <SourceParameter reference="Metabolite_5"/>
-              <SourceParameter reference="Metabolite_11"/>
+              <SourceParameter reference="Metabolite_49"/>
+              <SourceParameter reference="Metabolite_61"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_67">
-              <SourceParameter reference="Parameter_1057"/>
+              <SourceParameter reference="Parameter_4272"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_71">
-              <SourceParameter reference="Metabolite_19"/>
+              <SourceParameter reference="Metabolite_77"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_7" name="dephosphorylation of P-MAPKK" reversible="false">
+      <Reaction key="Reaction_4" name="dephosphorylation of P-MAPKK" reversible="false" fast="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Reaction_7">
+  <rdf:Description rdf:about="#Reaction_4">
     <CopasiMT:isVersionOf>
       <rdf:Bag>
         <rdf:li rdf:resource="urn:miriam:ec-code:3.1.3.16" />
@@ -608,30 +638,30 @@
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_19" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_77" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
-          <Product metabolite="Metabolite_4" stoichiometry="1"/>
-          <Product metabolite="Metabolite_11" stoichiometry="1"/>
+          <Product metabolite="Metabolite_23" stoichiometry="1"/>
+          <Product metabolite="Metabolite_61" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_1056" name="k1" value="150"/>
+          <Constant key="Parameter_4270" name="k1" value="150"/>
         </ListOfConstants>
         <KineticLaw function="Function_13">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Parameter_1056"/>
+              <SourceParameter reference="Parameter_4270"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_79">
-              <SourceParameter reference="Metabolite_19"/>
+              <SourceParameter reference="Metabolite_77"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_8" name="binding P-MAPKKK and P-MAPKK" reversible="true">
+      <Reaction key="Reaction_3" name="binding P-MAPKKK and P-MAPKK" reversible="true" fast="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Reaction_8">
+  <rdf:Description rdf:about="#Reaction_3">
     <CopasiMT:isHomologTo rdf:resource="urn:miriam:reactome:REACT_143" />
     <CopasiMT:isVersionOf>
       <rdf:Bag>
@@ -643,38 +673,38 @@
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_5" stoichiometry="1"/>
-          <Substrate metabolite="Metabolite_3" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_49" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_15" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
-          <Product metabolite="Metabolite_15" stoichiometry="1"/>
+          <Product metabolite="Metabolite_69" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_1055" name="k1" value="1000"/>
-          <Constant key="Parameter_1054" name="k2" value="150"/>
+          <Constant key="Parameter_4282" name="k1" value="1000"/>
+          <Constant key="Parameter_4281" name="k2" value="150"/>
         </ListOfConstants>
         <KineticLaw function="Function_14">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_62">
-              <SourceParameter reference="Parameter_1055"/>
+              <SourceParameter reference="Parameter_4282"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_39">
-              <SourceParameter reference="Metabolite_5"/>
-              <SourceParameter reference="Metabolite_3"/>
+              <SourceParameter reference="Metabolite_49"/>
+              <SourceParameter reference="Metabolite_15"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_67">
-              <SourceParameter reference="Parameter_1054"/>
+              <SourceParameter reference="Parameter_4281"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_71">
-              <SourceParameter reference="Metabolite_15"/>
+              <SourceParameter reference="Metabolite_69"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_9" name="phosphorylation of P-MAPKK" reversible="false">
+      <Reaction key="Reaction_2" name="phosphorylation of P-MAPKK" reversible="false" fast="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Reaction_9">
+  <rdf:Description rdf:about="#Reaction_2">
     <CopasiMT:isHomologTo rdf:resource="urn:miriam:reactome:REACT_614" />
     <CopasiMT:isVersionOf>
       <rdf:Bag>
@@ -688,67 +718,67 @@
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_15" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_69" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
-          <Product metabolite="Metabolite_6" stoichiometry="1"/>
-          <Product metabolite="Metabolite_3" stoichiometry="1"/>
+          <Product metabolite="Metabolite_51" stoichiometry="1"/>
+          <Product metabolite="Metabolite_15" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_1053" name="k1" value="150"/>
+          <Constant key="Parameter_4278" name="k1" value="150"/>
         </ListOfConstants>
         <KineticLaw function="Function_13">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Parameter_1053"/>
+              <SourceParameter reference="Parameter_4278"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_79">
-              <SourceParameter reference="Metabolite_15"/>
+              <SourceParameter reference="Metabolite_69"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_10" name="binding MAPKK-Pase and PP-MAPKK" reversible="true">
+      <Reaction key="Reaction_1" name="binding MAPKK-Pase and PP-MAPKK" reversible="true" fast="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Reaction_10">
+  <rdf:Description rdf:about="#Reaction_1">
     <CopasiMT:isVersionOf rdf:resource="urn:miriam:obo.go:GO:0031434" />
   </rdf:Description>
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_6" stoichiometry="1"/>
-          <Substrate metabolite="Metabolite_11" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_51" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_61" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
-          <Product metabolite="Metabolite_18" stoichiometry="1"/>
+          <Product metabolite="Metabolite_75" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_1052" name="k1" value="1000"/>
-          <Constant key="Parameter_1051" name="k2" value="150"/>
+          <Constant key="Parameter_4279" name="k1" value="1000"/>
+          <Constant key="Parameter_4277" name="k2" value="150"/>
         </ListOfConstants>
         <KineticLaw function="Function_14">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_62">
-              <SourceParameter reference="Parameter_1052"/>
+              <SourceParameter reference="Parameter_4279"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_39">
-              <SourceParameter reference="Metabolite_6"/>
-              <SourceParameter reference="Metabolite_11"/>
+              <SourceParameter reference="Metabolite_51"/>
+              <SourceParameter reference="Metabolite_61"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_67">
-              <SourceParameter reference="Parameter_1051"/>
+              <SourceParameter reference="Parameter_4277"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_71">
-              <SourceParameter reference="Metabolite_18"/>
+              <SourceParameter reference="Metabolite_75"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_11" name="dephosphorylation of PP-MAPKK" reversible="false">
+      <Reaction key="Reaction_0" name="dephosphorylation of PP-MAPKK" reversible="false" fast="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Reaction_11">
+  <rdf:Description rdf:about="#Reaction_0">
     <CopasiMT:isVersionOf>
       <rdf:Bag>
         <rdf:li rdf:resource="urn:miriam:ec-code:3.1.3.16" />
@@ -760,27 +790,27 @@
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_18" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_75" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
-          <Product metabolite="Metabolite_5" stoichiometry="1"/>
-          <Product metabolite="Metabolite_11" stoichiometry="1"/>
+          <Product metabolite="Metabolite_49" stoichiometry="1"/>
+          <Product metabolite="Metabolite_61" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_1050" name="k1" value="150"/>
+          <Constant key="Parameter_4280" name="k1" value="150"/>
         </ListOfConstants>
         <KineticLaw function="Function_13">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Parameter_1050"/>
+              <SourceParameter reference="Parameter_4280"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_79">
-              <SourceParameter reference="Metabolite_18"/>
+              <SourceParameter reference="Metabolite_75"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_12" name="binding MAPK and PP-MAPKK" reversible="true">
+      <Reaction key="Reaction_12" name="binding MAPK and PP-MAPKK" reversible="true" fast="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
   <rdf:Description rdf:about="#Reaction_12">
@@ -800,35 +830,35 @@
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_7" stoichiometry="1"/>
-          <Substrate metabolite="Metabolite_6" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_53" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_51" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
-          <Product metabolite="Metabolite_16" stoichiometry="1"/>
+          <Product metabolite="Metabolite_71" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_1049" name="k1" value="1000"/>
-          <Constant key="Parameter_1048" name="k2" value="150"/>
+          <Constant key="Parameter_4288" name="k1" value="1000"/>
+          <Constant key="Parameter_4287" name="k2" value="150"/>
         </ListOfConstants>
         <KineticLaw function="Function_14">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_62">
-              <SourceParameter reference="Parameter_1049"/>
+              <SourceParameter reference="Parameter_4288"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_39">
-              <SourceParameter reference="Metabolite_7"/>
-              <SourceParameter reference="Metabolite_6"/>
+              <SourceParameter reference="Metabolite_53"/>
+              <SourceParameter reference="Metabolite_51"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_67">
-              <SourceParameter reference="Parameter_1048"/>
+              <SourceParameter reference="Parameter_4287"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_71">
-              <SourceParameter reference="Metabolite_16"/>
+              <SourceParameter reference="Metabolite_71"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_13" name="phosphorylation of MAPK" reversible="false">
+      <Reaction key="Reaction_13" name="phosphorylation of MAPK" reversible="false" fast="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
   <rdf:Description rdf:about="#Reaction_13">
@@ -849,27 +879,27 @@
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_16" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_71" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
-          <Product metabolite="Metabolite_8" stoichiometry="1"/>
-          <Product metabolite="Metabolite_6" stoichiometry="1"/>
+          <Product metabolite="Metabolite_55" stoichiometry="1"/>
+          <Product metabolite="Metabolite_51" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_1047" name="k1" value="150"/>
+          <Constant key="Parameter_4286" name="k1" value="150"/>
         </ListOfConstants>
         <KineticLaw function="Function_13">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Parameter_1047"/>
+              <SourceParameter reference="Parameter_4286"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_79">
-              <SourceParameter reference="Metabolite_16"/>
+              <SourceParameter reference="Metabolite_71"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_14" name="binding MAPK-Pase and P-MAPK" reversible="true">
+      <Reaction key="Reaction_14" name="binding MAPK-Pase and P-MAPK" reversible="true" fast="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
   <rdf:Description rdf:about="#Reaction_14">
@@ -878,35 +908,35 @@
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_8" stoichiometry="1"/>
-          <Substrate metabolite="Metabolite_10" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_55" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_59" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
-          <Product metabolite="Metabolite_21" stoichiometry="1"/>
+          <Product metabolite="Metabolite_81" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_1046" name="k1" value="1000"/>
-          <Constant key="Parameter_1045" name="k2" value="150"/>
+          <Constant key="Parameter_4285" name="k1" value="1000"/>
+          <Constant key="Parameter_4284" name="k2" value="150"/>
         </ListOfConstants>
         <KineticLaw function="Function_14">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_62">
-              <SourceParameter reference="Parameter_1046"/>
+              <SourceParameter reference="Parameter_4285"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_39">
-              <SourceParameter reference="Metabolite_8"/>
-              <SourceParameter reference="Metabolite_10"/>
+              <SourceParameter reference="Metabolite_55"/>
+              <SourceParameter reference="Metabolite_59"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_67">
-              <SourceParameter reference="Parameter_1045"/>
+              <SourceParameter reference="Parameter_4284"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_71">
-              <SourceParameter reference="Metabolite_21"/>
+              <SourceParameter reference="Metabolite_81"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_15" name="dephosphorylation of P-MAPK" reversible="false">
+      <Reaction key="Reaction_15" name="dephosphorylation of P-MAPK" reversible="false" fast="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
   <rdf:Description rdf:about="#Reaction_15">
@@ -920,27 +950,27 @@
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_21" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_81" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
-          <Product metabolite="Metabolite_7" stoichiometry="1"/>
-          <Product metabolite="Metabolite_10" stoichiometry="1"/>
+          <Product metabolite="Metabolite_53" stoichiometry="1"/>
+          <Product metabolite="Metabolite_59" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_1044" name="k1" value="150"/>
+          <Constant key="Parameter_4283" name="k1" value="150"/>
         </ListOfConstants>
         <KineticLaw function="Function_13">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Parameter_1044"/>
+              <SourceParameter reference="Parameter_4283"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_79">
-              <SourceParameter reference="Metabolite_21"/>
+              <SourceParameter reference="Metabolite_81"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_16" name="binding PP-MAPKK and P-MAPK" reversible="true">
+      <Reaction key="Reaction_16" name="binding PP-MAPKK and P-MAPK" reversible="true" fast="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
   <rdf:Description rdf:about="#Reaction_16">
@@ -960,35 +990,35 @@
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_8" stoichiometry="1"/>
-          <Substrate metabolite="Metabolite_6" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_55" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_51" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
-          <Product metabolite="Metabolite_17" stoichiometry="1"/>
+          <Product metabolite="Metabolite_73" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_1043" name="k1" value="1000"/>
-          <Constant key="Parameter_1042" name="k2" value="150"/>
+          <Constant key="Parameter_4102" name="k1" value="1000"/>
+          <Constant key="Parameter_4103" name="k2" value="150"/>
         </ListOfConstants>
         <KineticLaw function="Function_14">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_62">
-              <SourceParameter reference="Parameter_1043"/>
+              <SourceParameter reference="Parameter_4102"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_39">
-              <SourceParameter reference="Metabolite_8"/>
-              <SourceParameter reference="Metabolite_6"/>
+              <SourceParameter reference="Metabolite_55"/>
+              <SourceParameter reference="Metabolite_51"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_67">
-              <SourceParameter reference="Parameter_1042"/>
+              <SourceParameter reference="Parameter_4103"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_71">
-              <SourceParameter reference="Metabolite_17"/>
+              <SourceParameter reference="Metabolite_73"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_17" name="phosphorylation of P-MAPK" reversible="false">
+      <Reaction key="Reaction_17" name="phosphorylation of P-MAPK" reversible="false" fast="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
   <rdf:Description rdf:about="#Reaction_17">
@@ -1010,27 +1040,27 @@
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_17" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_73" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
-          <Product metabolite="Metabolite_6" stoichiometry="1"/>
-          <Product metabolite="Metabolite_9" stoichiometry="1"/>
+          <Product metabolite="Metabolite_51" stoichiometry="1"/>
+          <Product metabolite="Metabolite_57" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_1041" name="k1" value="150"/>
+          <Constant key="Parameter_3861" name="k1" value="150"/>
         </ListOfConstants>
         <KineticLaw function="Function_13">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Parameter_1041"/>
+              <SourceParameter reference="Parameter_3861"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_79">
-              <SourceParameter reference="Metabolite_17"/>
+              <SourceParameter reference="Metabolite_73"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_18" name="binding MAPK-Pase and PP-MAPK" reversible="true">
+      <Reaction key="Reaction_18" name="binding MAPK-Pase and PP-MAPK" reversible="true" fast="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
   <rdf:Description rdf:about="#Reaction_18">
@@ -1039,35 +1069,35 @@
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_9" stoichiometry="1"/>
-          <Substrate metabolite="Metabolite_10" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_57" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_59" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
-          <Product metabolite="Metabolite_20" stoichiometry="1"/>
+          <Product metabolite="Metabolite_79" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_1040" name="k1" value="1000"/>
-          <Constant key="Parameter_1039" name="k2" value="150"/>
+          <Constant key="Parameter_3862" name="k1" value="1000"/>
+          <Constant key="Parameter_3863" name="k2" value="150"/>
         </ListOfConstants>
         <KineticLaw function="Function_14">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_62">
-              <SourceParameter reference="Parameter_1040"/>
+              <SourceParameter reference="Parameter_3862"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_39">
-              <SourceParameter reference="Metabolite_9"/>
-              <SourceParameter reference="Metabolite_10"/>
+              <SourceParameter reference="Metabolite_57"/>
+              <SourceParameter reference="Metabolite_59"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_67">
-              <SourceParameter reference="Parameter_1039"/>
+              <SourceParameter reference="Parameter_3863"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_71">
-              <SourceParameter reference="Metabolite_20"/>
+              <SourceParameter reference="Metabolite_79"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_19" name="dephosphorylation of PP-MAPK" reversible="false">
+      <Reaction key="Reaction_19" name="dephosphorylation of PP-MAPK" reversible="false" fast="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
   <rdf:Description rdf:about="#Reaction_19">
@@ -1082,67 +1112,176 @@
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_20" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_79" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
-          <Product metabolite="Metabolite_8" stoichiometry="1"/>
-          <Product metabolite="Metabolite_10" stoichiometry="1"/>
+          <Product metabolite="Metabolite_55" stoichiometry="1"/>
+          <Product metabolite="Metabolite_59" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_1038" name="k1" value="150"/>
+          <Constant key="Parameter_3864" name="k1" value="150"/>
         </ListOfConstants>
         <KineticLaw function="Function_13">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Parameter_1038"/>
+              <SourceParameter reference="Parameter_3864"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_79">
-              <SourceParameter reference="Metabolite_20"/>
+              <SourceParameter reference="Metabolite_79"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
     </ListOfReactions>
+    <ListOfModelParameterSets activeSet="ModelParameterSet_1">
+      <ModelParameterSet key="ModelParameterSet_1" name="Initial State">
+        <ModelParameterGroup cn="String=Initial Time" type="Group">
+          <ModelParameter cn="CN=Root,Model=MAPK cascade" value="0" type="Model" simulationType="time"/>
+        </ModelParameterGroup>
+        <ModelParameterGroup cn="String=Initial Compartment Sizes" type="Group">
+          <ModelParameter cn="CN=Root,Model=MAPK cascade,Vector=Compartments[compartment]" value="4e-012" type="Compartment" simulationType="fixed"/>
+        </ModelParameterGroup>
+        <ModelParameterGroup cn="String=Initial Species Values" type="Group">
+          <ModelParameter cn="CN=Root,Model=MAPK cascade,Vector=Compartments[compartment],Vector=Metabolites[E1]" value="72.265698" type="Species" simulationType="reactions"/>
+          <ModelParameter cn="CN=Root,Model=MAPK cascade,Vector=Compartments[compartment],Vector=Metabolites[E2]" value="722.6569799999999" type="Species" simulationType="reactions"/>
+          <ModelParameter cn="CN=Root,Model=MAPK cascade,Vector=Compartments[compartment],Vector=Metabolites[MAPKKK]" value="7226.569799999999" type="Species" simulationType="reactions"/>
+          <ModelParameter cn="CN=Root,Model=MAPK cascade,Vector=Compartments[compartment],Vector=Metabolites[P-MAPKKK]" value="0" type="Species" simulationType="reactions"/>
+          <ModelParameter cn="CN=Root,Model=MAPK cascade,Vector=Compartments[compartment],Vector=Metabolites[MAPKK]" value="2890627.92" type="Species" simulationType="reactions"/>
+          <ModelParameter cn="CN=Root,Model=MAPK cascade,Vector=Compartments[compartment],Vector=Metabolites[P-MAPKK]" value="0" type="Species" simulationType="reactions"/>
+          <ModelParameter cn="CN=Root,Model=MAPK cascade,Vector=Compartments[compartment],Vector=Metabolites[PP-MAPKK]" value="0" type="Species" simulationType="reactions"/>
+          <ModelParameter cn="CN=Root,Model=MAPK cascade,Vector=Compartments[compartment],Vector=Metabolites[MAPK]" value="2890627.92" type="Species" simulationType="reactions"/>
+          <ModelParameter cn="CN=Root,Model=MAPK cascade,Vector=Compartments[compartment],Vector=Metabolites[P-MAPK]" value="0" type="Species" simulationType="reactions"/>
+          <ModelParameter cn="CN=Root,Model=MAPK cascade,Vector=Compartments[compartment],Vector=Metabolites[PP-MAPK]" value="0" type="Species" simulationType="reactions"/>
+          <ModelParameter cn="CN=Root,Model=MAPK cascade,Vector=Compartments[compartment],Vector=Metabolites[MAPK-Pase]" value="289062.792" type="Species" simulationType="reactions"/>
+          <ModelParameter cn="CN=Root,Model=MAPK cascade,Vector=Compartments[compartment],Vector=Metabolites[MAPKK-Pase]" value="722.6569799999999" type="Species" simulationType="reactions"/>
+          <ModelParameter cn="CN=Root,Model=MAPK cascade,Vector=Compartments[compartment],Vector=Metabolites[MAPKKK_E1]" value="0" type="Species" simulationType="reactions"/>
+          <ModelParameter cn="CN=Root,Model=MAPK cascade,Vector=Compartments[compartment],Vector=Metabolites[P-MAPKKK_E2]" value="0" type="Species" simulationType="reactions"/>
+          <ModelParameter cn="CN=Root,Model=MAPK cascade,Vector=Compartments[compartment],Vector=Metabolites[P-MAPKKK_MAPKK]" value="0" type="Species" simulationType="reactions"/>
+          <ModelParameter cn="CN=Root,Model=MAPK cascade,Vector=Compartments[compartment],Vector=Metabolites[P-MAPKKK_P-MAPKK]" value="0" type="Species" simulationType="reactions"/>
+          <ModelParameter cn="CN=Root,Model=MAPK cascade,Vector=Compartments[compartment],Vector=Metabolites[PP-MAPKK_MAPK]" value="0" type="Species" simulationType="reactions"/>
+          <ModelParameter cn="CN=Root,Model=MAPK cascade,Vector=Compartments[compartment],Vector=Metabolites[PP-MAPKK_P-MAPK]" value="0" type="Species" simulationType="reactions"/>
+          <ModelParameter cn="CN=Root,Model=MAPK cascade,Vector=Compartments[compartment],Vector=Metabolites[MAPKK-Pase_PP-MAPKK]" value="0" type="Species" simulationType="reactions"/>
+          <ModelParameter cn="CN=Root,Model=MAPK cascade,Vector=Compartments[compartment],Vector=Metabolites[MAPKK-Pase_P-MAPKK]" value="0" type="Species" simulationType="reactions"/>
+          <ModelParameter cn="CN=Root,Model=MAPK cascade,Vector=Compartments[compartment],Vector=Metabolites[MAPK-Pase_PP-MAPK]" value="0" type="Species" simulationType="reactions"/>
+          <ModelParameter cn="CN=Root,Model=MAPK cascade,Vector=Compartments[compartment],Vector=Metabolites[MAPK-Pase_P-MAPK]" value="0" type="Species" simulationType="reactions"/>
+        </ModelParameterGroup>
+        <ModelParameterGroup cn="String=Initial Global Quantities" type="Group">
+          <ModelParameter cn="CN=Root,Model=MAPK cascade,Vector=Values[MAPKKK_phosphorylation_ratio]" value="0" type="ModelValue" simulationType="assignment"/>
+        </ModelParameterGroup>
+        <ModelParameterGroup cn="String=Kinetic Parameters" type="Group">
+          <ModelParameterGroup cn="CN=Root,Model=MAPK cascade,Vector=Reactions[binding of MAPKKK activator]" type="Reaction">
+            <ModelParameter cn="CN=Root,Model=MAPK cascade,Vector=Reactions[binding of MAPKKK activator],ParameterGroup=Parameters,Parameter=k1" value="1000" type="ReactionParameter" simulationType="fixed"/>
+            <ModelParameter cn="CN=Root,Model=MAPK cascade,Vector=Reactions[binding of MAPKKK activator],ParameterGroup=Parameters,Parameter=k2" value="150" type="ReactionParameter" simulationType="fixed"/>
+          </ModelParameterGroup>
+          <ModelParameterGroup cn="CN=Root,Model=MAPK cascade,Vector=Reactions[MAPKKK activation]" type="Reaction">
+            <ModelParameter cn="CN=Root,Model=MAPK cascade,Vector=Reactions[MAPKKK activation],ParameterGroup=Parameters,Parameter=k1" value="150" type="ReactionParameter" simulationType="fixed"/>
+          </ModelParameterGroup>
+          <ModelParameterGroup cn="CN=Root,Model=MAPK cascade,Vector=Reactions[binding of MAPKKK inactivator]" type="Reaction">
+            <ModelParameter cn="CN=Root,Model=MAPK cascade,Vector=Reactions[binding of MAPKKK inactivator],ParameterGroup=Parameters,Parameter=k1" value="1000" type="ReactionParameter" simulationType="fixed"/>
+            <ModelParameter cn="CN=Root,Model=MAPK cascade,Vector=Reactions[binding of MAPKKK inactivator],ParameterGroup=Parameters,Parameter=k2" value="150" type="ReactionParameter" simulationType="fixed"/>
+          </ModelParameterGroup>
+          <ModelParameterGroup cn="CN=Root,Model=MAPK cascade,Vector=Reactions[MAPKKK inactivation]" type="Reaction">
+            <ModelParameter cn="CN=Root,Model=MAPK cascade,Vector=Reactions[MAPKKK inactivation],ParameterGroup=Parameters,Parameter=k1" value="150" type="ReactionParameter" simulationType="fixed"/>
+          </ModelParameterGroup>
+          <ModelParameterGroup cn="CN=Root,Model=MAPK cascade,Vector=Reactions[binding P-MAPKKK and MAPKK]" type="Reaction">
+            <ModelParameter cn="CN=Root,Model=MAPK cascade,Vector=Reactions[binding P-MAPKKK and MAPKK],ParameterGroup=Parameters,Parameter=k1" value="1000" type="ReactionParameter" simulationType="fixed"/>
+            <ModelParameter cn="CN=Root,Model=MAPK cascade,Vector=Reactions[binding P-MAPKKK and MAPKK],ParameterGroup=Parameters,Parameter=k2" value="150" type="ReactionParameter" simulationType="fixed"/>
+          </ModelParameterGroup>
+          <ModelParameterGroup cn="CN=Root,Model=MAPK cascade,Vector=Reactions[phosphorylation of MAPKK]" type="Reaction">
+            <ModelParameter cn="CN=Root,Model=MAPK cascade,Vector=Reactions[phosphorylation of MAPKK],ParameterGroup=Parameters,Parameter=k1" value="150" type="ReactionParameter" simulationType="fixed"/>
+          </ModelParameterGroup>
+          <ModelParameterGroup cn="CN=Root,Model=MAPK cascade,Vector=Reactions[binding MAPKK-Pase and P-MAPKK]" type="Reaction">
+            <ModelParameter cn="CN=Root,Model=MAPK cascade,Vector=Reactions[binding MAPKK-Pase and P-MAPKK],ParameterGroup=Parameters,Parameter=k1" value="1000" type="ReactionParameter" simulationType="fixed"/>
+            <ModelParameter cn="CN=Root,Model=MAPK cascade,Vector=Reactions[binding MAPKK-Pase and P-MAPKK],ParameterGroup=Parameters,Parameter=k2" value="150" type="ReactionParameter" simulationType="fixed"/>
+          </ModelParameterGroup>
+          <ModelParameterGroup cn="CN=Root,Model=MAPK cascade,Vector=Reactions[dephosphorylation of P-MAPKK]" type="Reaction">
+            <ModelParameter cn="CN=Root,Model=MAPK cascade,Vector=Reactions[dephosphorylation of P-MAPKK],ParameterGroup=Parameters,Parameter=k1" value="150" type="ReactionParameter" simulationType="fixed"/>
+          </ModelParameterGroup>
+          <ModelParameterGroup cn="CN=Root,Model=MAPK cascade,Vector=Reactions[binding P-MAPKKK and P-MAPKK]" type="Reaction">
+            <ModelParameter cn="CN=Root,Model=MAPK cascade,Vector=Reactions[binding P-MAPKKK and P-MAPKK],ParameterGroup=Parameters,Parameter=k1" value="1000" type="ReactionParameter" simulationType="fixed"/>
+            <ModelParameter cn="CN=Root,Model=MAPK cascade,Vector=Reactions[binding P-MAPKKK and P-MAPKK],ParameterGroup=Parameters,Parameter=k2" value="150" type="ReactionParameter" simulationType="fixed"/>
+          </ModelParameterGroup>
+          <ModelParameterGroup cn="CN=Root,Model=MAPK cascade,Vector=Reactions[phosphorylation of P-MAPKK]" type="Reaction">
+            <ModelParameter cn="CN=Root,Model=MAPK cascade,Vector=Reactions[phosphorylation of P-MAPKK],ParameterGroup=Parameters,Parameter=k1" value="150" type="ReactionParameter" simulationType="fixed"/>
+          </ModelParameterGroup>
+          <ModelParameterGroup cn="CN=Root,Model=MAPK cascade,Vector=Reactions[binding MAPKK-Pase and PP-MAPKK]" type="Reaction">
+            <ModelParameter cn="CN=Root,Model=MAPK cascade,Vector=Reactions[binding MAPKK-Pase and PP-MAPKK],ParameterGroup=Parameters,Parameter=k1" value="1000" type="ReactionParameter" simulationType="fixed"/>
+            <ModelParameter cn="CN=Root,Model=MAPK cascade,Vector=Reactions[binding MAPKK-Pase and PP-MAPKK],ParameterGroup=Parameters,Parameter=k2" value="150" type="ReactionParameter" simulationType="fixed"/>
+          </ModelParameterGroup>
+          <ModelParameterGroup cn="CN=Root,Model=MAPK cascade,Vector=Reactions[dephosphorylation of PP-MAPKK]" type="Reaction">
+            <ModelParameter cn="CN=Root,Model=MAPK cascade,Vector=Reactions[dephosphorylation of PP-MAPKK],ParameterGroup=Parameters,Parameter=k1" value="150" type="ReactionParameter" simulationType="fixed"/>
+          </ModelParameterGroup>
+          <ModelParameterGroup cn="CN=Root,Model=MAPK cascade,Vector=Reactions[binding MAPK and PP-MAPKK]" type="Reaction">
+            <ModelParameter cn="CN=Root,Model=MAPK cascade,Vector=Reactions[binding MAPK and PP-MAPKK],ParameterGroup=Parameters,Parameter=k1" value="1000" type="ReactionParameter" simulationType="fixed"/>
+            <ModelParameter cn="CN=Root,Model=MAPK cascade,Vector=Reactions[binding MAPK and PP-MAPKK],ParameterGroup=Parameters,Parameter=k2" value="150" type="ReactionParameter" simulationType="fixed"/>
+          </ModelParameterGroup>
+          <ModelParameterGroup cn="CN=Root,Model=MAPK cascade,Vector=Reactions[phosphorylation of MAPK]" type="Reaction">
+            <ModelParameter cn="CN=Root,Model=MAPK cascade,Vector=Reactions[phosphorylation of MAPK],ParameterGroup=Parameters,Parameter=k1" value="150" type="ReactionParameter" simulationType="fixed"/>
+          </ModelParameterGroup>
+          <ModelParameterGroup cn="CN=Root,Model=MAPK cascade,Vector=Reactions[binding MAPK-Pase and P-MAPK]" type="Reaction">
+            <ModelParameter cn="CN=Root,Model=MAPK cascade,Vector=Reactions[binding MAPK-Pase and P-MAPK],ParameterGroup=Parameters,Parameter=k1" value="1000" type="ReactionParameter" simulationType="fixed"/>
+            <ModelParameter cn="CN=Root,Model=MAPK cascade,Vector=Reactions[binding MAPK-Pase and P-MAPK],ParameterGroup=Parameters,Parameter=k2" value="150" type="ReactionParameter" simulationType="fixed"/>
+          </ModelParameterGroup>
+          <ModelParameterGroup cn="CN=Root,Model=MAPK cascade,Vector=Reactions[dephosphorylation of P-MAPK]" type="Reaction">
+            <ModelParameter cn="CN=Root,Model=MAPK cascade,Vector=Reactions[dephosphorylation of P-MAPK],ParameterGroup=Parameters,Parameter=k1" value="150" type="ReactionParameter" simulationType="fixed"/>
+          </ModelParameterGroup>
+          <ModelParameterGroup cn="CN=Root,Model=MAPK cascade,Vector=Reactions[binding PP-MAPKK and P-MAPK]" type="Reaction">
+            <ModelParameter cn="CN=Root,Model=MAPK cascade,Vector=Reactions[binding PP-MAPKK and P-MAPK],ParameterGroup=Parameters,Parameter=k1" value="1000" type="ReactionParameter" simulationType="fixed"/>
+            <ModelParameter cn="CN=Root,Model=MAPK cascade,Vector=Reactions[binding PP-MAPKK and P-MAPK],ParameterGroup=Parameters,Parameter=k2" value="150" type="ReactionParameter" simulationType="fixed"/>
+          </ModelParameterGroup>
+          <ModelParameterGroup cn="CN=Root,Model=MAPK cascade,Vector=Reactions[phosphorylation of P-MAPK]" type="Reaction">
+            <ModelParameter cn="CN=Root,Model=MAPK cascade,Vector=Reactions[phosphorylation of P-MAPK],ParameterGroup=Parameters,Parameter=k1" value="150" type="ReactionParameter" simulationType="fixed"/>
+          </ModelParameterGroup>
+          <ModelParameterGroup cn="CN=Root,Model=MAPK cascade,Vector=Reactions[binding MAPK-Pase and PP-MAPK]" type="Reaction">
+            <ModelParameter cn="CN=Root,Model=MAPK cascade,Vector=Reactions[binding MAPK-Pase and PP-MAPK],ParameterGroup=Parameters,Parameter=k1" value="1000" type="ReactionParameter" simulationType="fixed"/>
+            <ModelParameter cn="CN=Root,Model=MAPK cascade,Vector=Reactions[binding MAPK-Pase and PP-MAPK],ParameterGroup=Parameters,Parameter=k2" value="150" type="ReactionParameter" simulationType="fixed"/>
+          </ModelParameterGroup>
+          <ModelParameterGroup cn="CN=Root,Model=MAPK cascade,Vector=Reactions[dephosphorylation of PP-MAPK]" type="Reaction">
+            <ModelParameter cn="CN=Root,Model=MAPK cascade,Vector=Reactions[dephosphorylation of PP-MAPK],ParameterGroup=Parameters,Parameter=k1" value="150" type="ReactionParameter" simulationType="fixed"/>
+          </ModelParameterGroup>
+        </ModelParameterGroup>
+      </ModelParameterSet>
+    </ListOfModelParameterSets>
     <StateTemplate>
-      <StateTemplateVariable objectReference="Model_1"/>
-      <StateTemplateVariable objectReference="Metabolite_3"/>
-      <StateTemplateVariable objectReference="Metabolite_6"/>
-      <StateTemplateVariable objectReference="Metabolite_10"/>
-      <StateTemplateVariable objectReference="Metabolite_11"/>
-      <StateTemplateVariable objectReference="Metabolite_8"/>
-      <StateTemplateVariable objectReference="Metabolite_5"/>
-      <StateTemplateVariable objectReference="Metabolite_2"/>
-      <StateTemplateVariable objectReference="Metabolite_14"/>
-      <StateTemplateVariable objectReference="Metabolite_7"/>
-      <StateTemplateVariable objectReference="Metabolite_1"/>
-      <StateTemplateVariable objectReference="Metabolite_17"/>
-      <StateTemplateVariable objectReference="Metabolite_18"/>
-      <StateTemplateVariable objectReference="Metabolite_20"/>
+      <StateTemplateVariable objectReference="Model_11"/>
       <StateTemplateVariable objectReference="Metabolite_15"/>
-      <StateTemplateVariable objectReference="Metabolite_4"/>
-      <StateTemplateVariable objectReference="Metabolite_16"/>
-      <StateTemplateVariable objectReference="Metabolite_0"/>
+      <StateTemplateVariable objectReference="Metabolite_51"/>
+      <StateTemplateVariable objectReference="Metabolite_59"/>
+      <StateTemplateVariable objectReference="Metabolite_61"/>
+      <StateTemplateVariable objectReference="Metabolite_55"/>
+      <StateTemplateVariable objectReference="Metabolite_49"/>
       <StateTemplateVariable objectReference="Metabolite_9"/>
-      <StateTemplateVariable objectReference="Metabolite_21"/>
-      <StateTemplateVariable objectReference="Metabolite_19"/>
-      <StateTemplateVariable objectReference="Metabolite_12"/>
-      <StateTemplateVariable objectReference="Metabolite_13"/>
-      <StateTemplateVariable objectReference="ModelValue_0"/>
-      <StateTemplateVariable objectReference="Compartment_0"/>
+      <StateTemplateVariable objectReference="Metabolite_67"/>
+      <StateTemplateVariable objectReference="Metabolite_57"/>
+      <StateTemplateVariable objectReference="Metabolite_29"/>
+      <StateTemplateVariable objectReference="Metabolite_71"/>
+      <StateTemplateVariable objectReference="Metabolite_75"/>
+      <StateTemplateVariable objectReference="Metabolite_79"/>
+      <StateTemplateVariable objectReference="Metabolite_69"/>
+      <StateTemplateVariable objectReference="Metabolite_53"/>
+      <StateTemplateVariable objectReference="Metabolite_23"/>
+      <StateTemplateVariable objectReference="Metabolite_33"/>
+      <StateTemplateVariable objectReference="Metabolite_81"/>
+      <StateTemplateVariable objectReference="Metabolite_73"/>
+      <StateTemplateVariable objectReference="Metabolite_77"/>
+      <StateTemplateVariable objectReference="Metabolite_63"/>
+      <StateTemplateVariable objectReference="Metabolite_65"/>
+      <StateTemplateVariable objectReference="ModelValue_15"/>
+      <StateTemplateVariable objectReference="Compartment_6"/>
     </StateTemplate>
     <InitialState type="initialState">
-      0 0 0 289062.792 722.6569799999999 0 0 7226.569799999999 0 2890627.92 722.6569799999999 0 0 0 0 2890627.92 0 72.265698 0 0 0 0 0 0 4e-12 
+      0 0 0 289062.792 722.6569799999999 0 0 7226.569799999999 0 0 722.6569799999999 0 0 0 0 2890627.92 2890627.92 72.265698 0 0 0 0 0 0 4e-012 
     </InitialState>
   </Model>
   <ListOfTasks>
-    <Task key="Task_12" name="Steady-State" type="steadyState" scheduled="false" updateModel="false">
-      <Report reference="Report_8" target="" append="1"/>
+    <Task key="Task_26" name="Steady-State" type="steadyState" scheduled="false" updateModel="false">
+      <Report reference="Report_9" target="" append="1" confirmOverwrite="0"/>
       <Problem>
         <Parameter name="JacobianRequested" type="bool" value="1"/>
         <Parameter name="StabilityAnalysisRequested" type="bool" value="1"/>
       </Problem>
       <Method name="Enhanced Newton" type="EnhancedNewton">
-        <Parameter name="Resolution" type="unsignedFloat" value="1e-09"/>
+        <Parameter name="Resolution" type="unsignedFloat" value="1e-009"/>
         <Parameter name="Derivation Factor" type="unsignedFloat" value="0.001"/>
         <Parameter name="Use Newton" type="bool" value="1"/>
         <Parameter name="Use Integration" type="bool" value="1"/>
@@ -1153,22 +1292,24 @@
         <Parameter name="Maximum duration for backward integration" type="unsignedFloat" value="1000000"/>
       </Method>
     </Task>
-    <Task key="Task_13" name="Time-Course" type="timeCourse" scheduled="false" updateModel="false">
+    <Task key="Task_15" name="Time-Course" type="timeCourse" scheduled="false" updateModel="false">
       <Problem>
         <Parameter name="StepNumber" type="unsignedInteger" value="100"/>
         <Parameter name="StepSize" type="float" value="1"/>
         <Parameter name="Duration" type="float" value="100"/>
         <Parameter name="TimeSeriesRequested" type="bool" value="1"/>
         <Parameter name="OutputStartTime" type="float" value="0"/>
+        <Parameter name="Output Event" type="bool" value="0"/>
+        <Parameter name="Continue on Simultaneous Events" type="bool" value="0"/>
       </Problem>
       <Method name="Deterministic (LSODA)" type="Deterministic(LSODA)">
         <Parameter name="Integrate Reduced Model" type="bool" value="0"/>
-        <Parameter name="Relative Tolerance" type="unsignedFloat" value="1e-06"/>
-        <Parameter name="Absolute Tolerance" type="unsignedFloat" value="1e-12"/>
+        <Parameter name="Relative Tolerance" type="unsignedFloat" value="1e-006"/>
+        <Parameter name="Absolute Tolerance" type="unsignedFloat" value="1e-012"/>
         <Parameter name="Max Internal Steps" type="unsignedInteger" value="10000"/>
       </Method>
     </Task>
-    <Task key="Task_14" name="Scan" type="scan" scheduled="false" updateModel="false">
+    <Task key="Task_16" name="Scan" type="scan" scheduled="false" updateModel="false">
       <Problem>
         <Parameter name="Subtask" type="unsignedInteger" value="1"/>
         <ParameterGroup name="ScanItems">
@@ -1179,15 +1320,15 @@
       <Method name="Scan Framework" type="ScanFramework">
       </Method>
     </Task>
-    <Task key="Task_15" name="Elementary Flux Modes" type="fluxMode" scheduled="false" updateModel="false">
-      <Report reference="Report_9" target="" append="1"/>
+    <Task key="Task_17" name="Elementary Flux Modes" type="fluxMode" scheduled="false" updateModel="false">
+      <Report reference="Report_10" target="" append="1" confirmOverwrite="0"/>
       <Problem>
       </Problem>
       <Method name="EFM Algorithm" type="EFMAlgorithm">
       </Method>
     </Task>
-    <Task key="Task_16" name="Optimization" type="optimization" scheduled="false" updateModel="false">
-      <Report reference="Report_10" target="" append="1"/>
+    <Task key="Task_18" name="Optimization" type="optimization" scheduled="false" updateModel="false">
+      <Report reference="Report_11" target="" append="1" confirmOverwrite="0"/>
       <Problem>
         <Parameter name="Subtask" type="cn" value="CN=Root,Vector=TaskList[Steady-State]"/>
         <ParameterText name="ObjectiveExpression" type="expression">
@@ -1207,8 +1348,8 @@
         <Parameter name="Seed" type="unsignedInteger" value="0"/>
       </Method>
     </Task>
-    <Task key="Task_17" name="Parameter Estimation" type="parameterFitting" scheduled="false" updateModel="false">
-      <Report reference="Report_11" target="" append="1"/>
+    <Task key="Task_19" name="Parameter Estimation" type="parameterFitting" scheduled="false" updateModel="false">
+      <Report reference="Report_12" target="" append="1" confirmOverwrite="0"/>
       <Problem>
         <Parameter name="Maximize" type="bool" value="0"/>
         <Parameter name="Randomize Start Values" type="bool" value="0"/>
@@ -1221,6 +1362,10 @@
         <Parameter name="Time-Course" type="cn" value="CN=Root,Vector=TaskList[Time-Course]"/>
         <ParameterGroup name="Experiment Set">
         </ParameterGroup>
+        <ParameterGroup name="Validation Set">
+          <Parameter name="Threshold" type="unsignedInteger" value="5"/>
+          <Parameter name="Weight" type="unsignedFloat" value="1"/>
+        </ParameterGroup>
       </Problem>
       <Method name="Evolutionary Programming" type="EvolutionaryProgram">
         <Parameter name="Number of Generations" type="unsignedInteger" value="200"/>
@@ -1229,17 +1374,17 @@
         <Parameter name="Seed" type="unsignedInteger" value="0"/>
       </Method>
     </Task>
-    <Task key="Task_18" name="Metabolic Control Analysis" type="metabolicControlAnalysis" scheduled="false" updateModel="false">
-      <Report reference="Report_12" target="" append="1"/>
+    <Task key="Task_20" name="Metabolic Control Analysis" type="metabolicControlAnalysis" scheduled="false" updateModel="false">
+      <Report reference="Report_13" target="" append="1" confirmOverwrite="0"/>
       <Problem>
-        <Parameter name="Steady-State" type="key" value="Task_12"/>
+        <Parameter name="Steady-State" type="key" value="Task_26"/>
       </Problem>
       <Method name="MCA Method (Reder)" type="MCAMethod(Reder)">
-        <Parameter name="Modulation Factor" type="unsignedFloat" value="1e-09"/>
+        <Parameter name="Modulation Factor" type="unsignedFloat" value="1e-009"/>
       </Method>
     </Task>
-    <Task key="Task_19" name="Lyapunov Exponents" type="lyapunovExponents" scheduled="false" updateModel="false">
-      <Report reference="Report_13" target="" append="1"/>
+    <Task key="Task_21" name="Lyapunov Exponents" type="lyapunovExponents" scheduled="false" updateModel="false">
+      <Report reference="Report_14" target="" append="1" confirmOverwrite="0"/>
       <Problem>
         <Parameter name="ExponentNumber" type="unsignedInteger" value="3"/>
         <Parameter name="DivergenceRequested" type="bool" value="1"/>
@@ -1248,13 +1393,13 @@
       <Method name="Wolf Method" type="WolfMethod">
         <Parameter name="Orthonormalization Interval" type="unsignedFloat" value="1"/>
         <Parameter name="Overall time" type="unsignedFloat" value="1000"/>
-        <Parameter name="Relative Tolerance" type="unsignedFloat" value="1e-06"/>
-        <Parameter name="Absolute Tolerance" type="unsignedFloat" value="1e-12"/>
+        <Parameter name="Relative Tolerance" type="unsignedFloat" value="1e-006"/>
+        <Parameter name="Absolute Tolerance" type="unsignedFloat" value="1e-012"/>
         <Parameter name="Max Internal Steps" type="unsignedInteger" value="10000"/>
       </Method>
     </Task>
-    <Task key="Task_20" name="Time Scale Separation Analysis" type="timeScaleSeparationAnalysis" scheduled="false" updateModel="false">
-      <Report reference="Report_14" target="" append="1"/>
+    <Task key="Task_22" name="Time Scale Separation Analysis" type="timeScaleSeparationAnalysis" scheduled="false" updateModel="false">
+      <Report reference="Report_15" target="" append="1" confirmOverwrite="0"/>
       <Problem>
         <Parameter name="StepNumber" type="unsignedInteger" value="100"/>
         <Parameter name="StepSize" type="float" value="0.01"/>
@@ -1263,11 +1408,11 @@
         <Parameter name="OutputStartTime" type="float" value="0"/>
       </Problem>
       <Method name="ILDM (LSODA,Deuflhard)" type="TimeScaleSeparation(ILDM,Deuflhard)">
-        <Parameter name="Deuflhard Tolerance" type="unsignedFloat" value="1e-06"/>
+        <Parameter name="Deuflhard Tolerance" type="unsignedFloat" value="1e-006"/>
       </Method>
     </Task>
-    <Task key="Task_21" name="Sensitivities" type="sensitivities" scheduled="false" updateModel="false">
-      <Report reference="Report_15" target="" append="1"/>
+    <Task key="Task_23" name="Sensitivities" type="sensitivities" scheduled="false" updateModel="false">
+      <Report reference="Report_16" target="" append="1" confirmOverwrite="0"/>
       <Problem>
         <Parameter name="SubtaskType" type="unsignedInteger" value="1"/>
         <ParameterGroup name="TargetFunctions">
@@ -1283,18 +1428,58 @@
       </Problem>
       <Method name="Sensitivities Method" type="SensitivitiesMethod">
         <Parameter name="Delta factor" type="unsignedFloat" value="0.001"/>
-        <Parameter name="Delta minimum" type="unsignedFloat" value="1e-12"/>
+        <Parameter name="Delta minimum" type="unsignedFloat" value="1e-012"/>
       </Method>
     </Task>
-    <Task key="Task_22" name="Moieties" type="moieties" scheduled="false" updateModel="false">
+    <Task key="Task_24" name="Moieties" type="moieties" scheduled="false" updateModel="false">
       <Problem>
       </Problem>
       <Method name="Householder Reduction" type="Householder">
       </Method>
     </Task>
+    <Task key="Task_25" name="Cross Section" type="crosssection" scheduled="false" updateModel="false">
+      <Problem>
+        <Parameter name="StepNumber" type="unsignedInteger" value="100"/>
+        <Parameter name="StepSize" type="float" value="0.01"/>
+        <Parameter name="Duration" type="float" value="1"/>
+        <Parameter name="TimeSeriesRequested" type="bool" value="1"/>
+        <Parameter name="OutputStartTime" type="float" value="0"/>
+        <Parameter name="Output Event" type="bool" value="0"/>
+        <Parameter name="Continue on Simultaneous Events" type="bool" value="0"/>
+        <Parameter name="LimitCrossings" type="bool" value="0"/>
+        <Parameter name="NumCrossingsLimit" type="unsignedInteger" value="0"/>
+        <Parameter name="LimitOutTime" type="bool" value="0"/>
+        <Parameter name="LimitOutCrossings" type="bool" value="0"/>
+        <Parameter name="PositiveDirection" type="bool" value="1"/>
+        <Parameter name="NumOutCrossingsLimit" type="unsignedInteger" value="0"/>
+        <Parameter name="LimitUntilConvergence" type="bool" value="0"/>
+        <Parameter name="ConvergenceTolerance" type="float" value="1e-006"/>
+        <Parameter name="Threshold" type="float" value="0"/>
+        <Parameter name="DelayOutputUntilConvergence" type="bool" value="0"/>
+        <Parameter name="OutputConvergenceTolerance" type="float" value="1e-006"/>
+        <ParameterText name="TriggerExpression" type="expression">
+          
+        </ParameterText>
+        <Parameter name="SingleVariable" type="cn" value=""/>
+      </Problem>
+      <Method name="Deterministic (LSODA)" type="Deterministic(LSODA)">
+        <Parameter name="Integrate Reduced Model" type="bool" value="0"/>
+        <Parameter name="Relative Tolerance" type="unsignedFloat" value="1e-006"/>
+        <Parameter name="Absolute Tolerance" type="unsignedFloat" value="1e-012"/>
+        <Parameter name="Max Internal Steps" type="unsignedInteger" value="10000"/>
+      </Method>
+    </Task>
+    <Task key="Task_27" name="Linear Noise Approximation" type="linearNoiseApproximation" scheduled="false" updateModel="false">
+      <Report reference="Report_17" target="" append="1" confirmOverwrite="1"/>
+      <Problem>
+        <Parameter name="Steady-State" type="key" value="Task_26"/>
+      </Problem>
+      <Method name="Linear Noise Approximation" type="LinearNoiseApproximation">
+      </Method>
+    </Task>
   </ListOfTasks>
   <ListOfReports>
-    <Report key="Report_8" name="Steady-State" taskType="steadyState" separator="&#x09;" precision="6">
+    <Report key="Report_9" name="Steady-State" taskType="steadyState" separator="&#x09;" precision="6">
       <Comment>
         <body xmlns="http://www.w3.org/1999/xhtml">
           Automatically generated report.
@@ -1304,7 +1489,7 @@
         <Object cn="CN=Root,Vector=TaskList[Steady-State]"/>
       </Footer>
     </Report>
-    <Report key="Report_9" name="Elementary Flux Modes" taskType="fluxMode" separator="&#x09;" precision="6">
+    <Report key="Report_10" name="Elementary Flux Modes" taskType="fluxMode" separator="&#x09;" precision="6">
       <Comment>
         <body xmlns="http://www.w3.org/1999/xhtml">
           Automatically generated report.
@@ -1314,7 +1499,7 @@
         <Object cn="CN=Root,Vector=TaskList[Elementary Flux Modes],Object=Result"/>
       </Footer>
     </Report>
-    <Report key="Report_10" name="Optimization" taskType="optimization" separator="&#x09;" precision="6">
+    <Report key="Report_11" name="Optimization" taskType="optimization" separator="&#x09;" precision="6">
       <Comment>
         <body xmlns="http://www.w3.org/1999/xhtml">
           Automatically generated report.
@@ -1340,7 +1525,7 @@
         <Object cn="CN=Root,Vector=TaskList[Optimization],Object=Result"/>
       </Footer>
     </Report>
-    <Report key="Report_11" name="Parameter Estimation" taskType="parameterFitting" separator="&#x09;" precision="6">
+    <Report key="Report_12" name="Parameter Estimation" taskType="parameterFitting" separator="&#x09;" precision="6">
       <Comment>
         <body xmlns="http://www.w3.org/1999/xhtml">
           Automatically generated report.
@@ -1366,7 +1551,7 @@
         <Object cn="CN=Root,Vector=TaskList[Parameter Estimation],Object=Result"/>
       </Footer>
     </Report>
-    <Report key="Report_12" name="Metabolic Control Analysis" taskType="metabolicControlAnalysis" separator="&#x09;" precision="6">
+    <Report key="Report_13" name="Metabolic Control Analysis" taskType="metabolicControlAnalysis" separator="&#x09;" precision="6">
       <Comment>
         <body xmlns="http://www.w3.org/1999/xhtml">
           Automatically generated report.
@@ -1380,7 +1565,7 @@
         <Object cn="CN=Root,Vector=TaskList[Metabolic Control Analysis],Object=Result"/>
       </Footer>
     </Report>
-    <Report key="Report_13" name="Lyapunov Exponents" taskType="lyapunovExponents" separator="&#x09;" precision="6">
+    <Report key="Report_14" name="Lyapunov Exponents" taskType="lyapunovExponents" separator="&#x09;" precision="6">
       <Comment>
         <body xmlns="http://www.w3.org/1999/xhtml">
           Automatically generated report.
@@ -1394,7 +1579,7 @@
         <Object cn="CN=Root,Vector=TaskList[Lyapunov Exponents],Object=Result"/>
       </Footer>
     </Report>
-    <Report key="Report_14" name="Time Scale Separation Analysis" taskType="timeScaleSeparationAnalysis" separator="&#x09;" precision="6">
+    <Report key="Report_15" name="Time Scale Separation Analysis" taskType="timeScaleSeparationAnalysis" separator="&#x09;" precision="6">
       <Comment>
         <body xmlns="http://www.w3.org/1999/xhtml">
           Automatically generated report.
@@ -1408,7 +1593,7 @@
         <Object cn="CN=Root,Vector=TaskList[Time Scale Separation Analysis],Object=Result"/>
       </Footer>
     </Report>
-    <Report key="Report_15" name="Sensitivities" taskType="sensitivities" separator="&#x09;" precision="6">
+    <Report key="Report_16" name="Sensitivities" taskType="sensitivities" separator="&#x09;" precision="6">
       <Comment>
         <body xmlns="http://www.w3.org/1999/xhtml">
           Automatically generated report.
@@ -1422,1101 +1607,1113 @@
         <Object cn="CN=Root,Vector=TaskList[Sensitivities],Object=Result"/>
       </Footer>
     </Report>
+    <Report key="Report_17" name="Linear Noise Approximation" taskType="linearNoiseApproximation" separator="&#x09;" precision="6">
+      <Comment>
+        Automatically generated report.
+      </Comment>
+      <Header>
+        <Object cn="CN=Root,Vector=TaskList[Linear Noise Approximation],Object=Description"/>
+      </Header>
+      <Footer>
+        <Object cn="String=&#x0a;"/>
+        <Object cn="CN=Root,Vector=TaskList[Linear Noise Approximation],Object=Result"/>
+      </Footer>
+    </Report>
   </ListOfReports>
   <GUI>
   </GUI>
   <ListOfLayouts xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-    <Layout key="Layout_2" name="layout_0">
-      <Dimensions width="1567.82" height="966.604"/>
+    <Layout key="Layout_140" name="layout_0">
+      <Dimensions width="924.8503771136993" height="742.5632675405108"/>
       <ListOfMetabGlyphs>
-        <MetaboliteGlyph key="Layout_3" name="sGlyph_0" metabolite="Metabolite_0">
+        <MetaboliteGlyph key="Layout_2" name="sGlyph_0" metabolite="Metabolite_33">
           <BoundingBox>
-            <Position x="473.524" y="187.128"/>
+            <Position x="296.2970630279131" y="88.34966316248098"/>
             <Dimensions width="41" height="25"/>
           </BoundingBox>
         </MetaboliteGlyph>
-        <MetaboliteGlyph key="Layout_4" name="sGlyph_1" metabolite="Metabolite_1">
+        <MetaboliteGlyph key="Layout_4" name="sGlyph_1" metabolite="Metabolite_29">
           <BoundingBox>
-            <Position x="555.84" y="185.604"/>
+            <Position x="373.3214208477608" y="155.9030708831204"/>
             <Dimensions width="41" height="25"/>
           </BoundingBox>
         </MetaboliteGlyph>
-        <MetaboliteGlyph key="Layout_5" name="sGlyph_2" metabolite="Metabolite_2">
+        <MetaboliteGlyph key="Layout_6" name="sGlyph_2" metabolite="Metabolite_9">
           <BoundingBox>
-            <Position x="508.91" y="50"/>
+            <Position x="334.8806978727152" y="0"/>
             <Dimensions width="73" height="25"/>
           </BoundingBox>
         </MetaboliteGlyph>
-        <MetaboliteGlyph key="Layout_6" name="sGlyph_3" metabolite="Metabolite_3">
+        <MetaboliteGlyph key="Layout_8" name="sGlyph_3" metabolite="Metabolite_15">
           <BoundingBox>
-            <Position x="465.283" y="370.031"/>
+            <Position x="289.4537483815041" y="286.9616708655706"/>
             <Dimensions width="89" height="25"/>
           </BoundingBox>
         </MetaboliteGlyph>
-        <MetaboliteGlyph key="Layout_7" name="sGlyph_4" metabolite="Metabolite_4">
+        <MetaboliteGlyph key="Layout_10" name="sGlyph_4" metabolite="Metabolite_23">
           <BoundingBox>
-            <Position x="114.538" y="515.231"/>
+            <Position x="102.9045723194321" y="465.986786497818"/>
             <Dimensions width="65" height="25"/>
           </BoundingBox>
         </MetaboliteGlyph>
-        <MetaboliteGlyph key="Layout_8" name="sGlyph_5" metabolite="Metabolite_5">
+        <MetaboliteGlyph key="Layout_12" name="sGlyph_5" metabolite="Metabolite_49">
           <BoundingBox>
-            <Position x="459.904" y="601.12"/>
+            <Position x="207.1799601310985" y="446.0135355708081"/>
             <Dimensions width="81" height="25"/>
           </BoundingBox>
         </MetaboliteGlyph>
-        <MetaboliteGlyph key="Layout_9" name="sGlyph_6" metabolite="Metabolite_6">
+        <MetaboliteGlyph key="Layout_14" name="sGlyph_6" metabolite="Metabolite_51">
           <BoundingBox>
-            <Position x="759.604" y="573.269"/>
+            <Position x="480.7684650375474" y="510.0723007241212"/>
             <Dimensions width="89" height="25"/>
           </BoundingBox>
         </MetaboliteGlyph>
-        <MetaboliteGlyph key="Layout_10" name="sGlyph_7" metabolite="Metabolite_7">
+        <MetaboliteGlyph key="Layout_16" name="sGlyph_7" metabolite="Metabolite_53">
           <BoundingBox>
-            <Position x="1104.97" y="782.6"/>
+            <Position x="681.7200427387072" y="673.7508193326802"/>
             <Dimensions width="57" height="25"/>
           </BoundingBox>
         </MetaboliteGlyph>
-        <MetaboliteGlyph key="Layout_11" name="sGlyph_8" metabolite="Metabolite_8">
+        <MetaboliteGlyph key="Layout_18" name="sGlyph_8" metabolite="Metabolite_55">
           <BoundingBox>
-            <Position x="1161.02" y="661.008"/>
+            <Position x="672.6619627073005" y="566.6902994637381"/>
             <Dimensions width="73" height="25"/>
           </BoundingBox>
         </MetaboliteGlyph>
-        <MetaboliteGlyph key="Layout_12" name="sGlyph_9" metabolite="Metabolite_9">
+        <MetaboliteGlyph key="Layout_20" name="sGlyph_9" metabolite="Metabolite_57">
           <BoundingBox>
-            <Position x="1129.6" y="497.679"/>
+            <Position x="690.8328812568292" y="290.166672928395"/>
             <Dimensions width="81" height="25"/>
           </BoundingBox>
         </MetaboliteGlyph>
-        <MetaboliteGlyph key="Layout_13" name="sGlyph_10" metabolite="Metabolite_10">
+        <MetaboliteGlyph key="Layout_24" name="sGlyph_10" metabolite="Metabolite_59">
           <BoundingBox>
-            <Position x="1420.82" y="673.556"/>
+            <Position x="829.5429520541562" y="520.0930352556493"/>
             <Dimensions width="97" height="25"/>
           </BoundingBox>
         </MetaboliteGlyph>
-        <MetaboliteGlyph key="Layout_14" name="sGlyph_11" metabolite="Metabolite_11">
+        <MetaboliteGlyph key="Layout_28" name="sGlyph_11" metabolite="Metabolite_61">
           <BoundingBox>
-            <Position x="439.679" y="864.604"/>
+            <Position x="221.1045850264778" y="633.8044484649134"/>
             <Dimensions width="105" height="25"/>
           </BoundingBox>
         </MetaboliteGlyph>
-        <MetaboliteGlyph key="Layout_15" name="sGlyph_12" metabolite="Metabolite_12">
+        <MetaboliteGlyph key="Layout_31" name="sGlyph_12" metabolite="Metabolite_63">
           <BoundingBox>
-            <Position x="267.667" y="190.419"/>
+            <Position x="141.0196229998448" y="88.71491496538314"/>
             <Dimensions width="97" height="25"/>
           </BoundingBox>
         </MetaboliteGlyph>
-        <MetaboliteGlyph key="Layout_16" name="sGlyph_13" metabolite="Metabolite_13">
+        <MetaboliteGlyph key="Layout_37" name="sGlyph_13" metabolite="Metabolite_65">
           <BoundingBox>
-            <Position x="697.745" y="180.92"/>
+            <Position x="465.2483264022186" y="182.1359716170413"/>
             <Dimensions width="113" height="25"/>
           </BoundingBox>
         </MetaboliteGlyph>
-        <MetaboliteGlyph key="Layout_17" name="sGlyph_14" metabolite="Metabolite_14">
+        <MetaboliteGlyph key="Layout_43" name="sGlyph_14" metabolite="Metabolite_67">
           <BoundingBox>
-            <Position x="267.74" y="568.438"/>
+            <Position x="66.07729152763226" y="297.3201612924149"/>
             <Dimensions width="137" height="25"/>
           </BoundingBox>
         </MetaboliteGlyph>
-        <MetaboliteGlyph key="Layout_18" name="sGlyph_15" metabolite="Metabolite_15">
+        <MetaboliteGlyph key="Layout_49" name="sGlyph_15" metabolite="Metabolite_69">
           <BoundingBox>
-            <Position x="565.788" y="535.446"/>
+            <Position x="332.444825635915" y="442.2855459870744"/>
             <Dimensions width="153" height="25"/>
           </BoundingBox>
         </MetaboliteGlyph>
-        <MetaboliteGlyph key="Layout_19" name="sGlyph_16" metabolite="Metabolite_16">
+        <MetaboliteGlyph key="Layout_52" name="sGlyph_16" metabolite="Metabolite_71">
           <BoundingBox>
-            <Position x="826.2" y="764.861"/>
+            <Position x="516.6006843339268" y="712.9404976509535"/>
             <Dimensions width="129" height="25"/>
           </BoundingBox>
         </MetaboliteGlyph>
-        <MetaboliteGlyph key="Layout_20" name="sGlyph_17" metabolite="Metabolite_17">
+        <MetaboliteGlyph key="Layout_57" name="sGlyph_17" metabolite="Metabolite_73">
           <BoundingBox>
-            <Position x="960.356" y="402.019"/>
+            <Position x="571.2022145852193" y="434.7015994753957"/>
             <Dimensions width="145" height="25"/>
           </BoundingBox>
         </MetaboliteGlyph>
-        <MetaboliteGlyph key="Layout_21" name="sGlyph_18" metabolite="Metabolite_18">
+        <MetaboliteGlyph key="Layout_78" name="sGlyph_18" metabolite="Metabolite_75">
           <BoundingBox>
-            <Position x="591.581" y="783.394"/>
+            <Position x="312.8651749768973" y="524.5169790192297"/>
             <Dimensions width="177" height="25"/>
           </BoundingBox>
         </MetaboliteGlyph>
-        <MetaboliteGlyph key="Layout_22" name="sGlyph_19" metabolite="Metabolite_19">
+        <MetaboliteGlyph key="Layout_85" name="sGlyph_19" metabolite="Metabolite_77">
           <BoundingBox>
-            <Position x="50" y="735.145"/>
+            <Position x="0" y="571.6918474406065"/>
             <Dimensions width="169" height="25"/>
           </BoundingBox>
         </MetaboliteGlyph>
-        <MetaboliteGlyph key="Layout_23" name="sGlyph_20" metabolite="Metabolite_20">
+        <MetaboliteGlyph key="Layout_92" name="sGlyph_20" metabolite="Metabolite_79">
           <BoundingBox>
-            <Position x="1290.36" y="399.986"/>
+            <Position x="667.3840431843846" y="403.0350631470209"/>
             <Dimensions width="161" height="25"/>
           </BoundingBox>
         </MetaboliteGlyph>
-        <MetaboliteGlyph key="Layout_24" name="sGlyph_21" metabolite="Metabolite_21">
+        <MetaboliteGlyph key="Layout_96" name="sGlyph_21" metabolite="Metabolite_81">
           <BoundingBox>
-            <Position x="1248.89" y="891.604"/>
+            <Position x="760.2622897819249" y="716.5047253834395"/>
             <Dimensions width="153" height="25"/>
           </BoundingBox>
         </MetaboliteGlyph>
       </ListOfMetabGlyphs>
       <ListOfReactionGlyphs>
-        <ReactionGlyph key="Layout_25" name="rGlyph_0" reaction="Reaction_0">
+        <ReactionGlyph key="Layout_100" name="rGlyph_0" reaction="Reaction_11">
           <Curve>
             <ListOfCurveSegments>
               <CurveSegment xsi:type="LineSegment">
-                <Start x="447.248" y="133.142"/>
-                <End x="447.248" y="133.142"/>
+                <Start x="269.980054248107" y="15.58649979450822"/>
+                <End x="254.5231285030601" y="20.04050813292248"/>
               </CurveSegment>
             </ListOfCurveSegments>
           </Curve>
           <ListOfMetaboliteReferenceGlyphs>
-            <MetaboliteReferenceGlyph key="Layout_26" name="curve00" metaboliteGlyph="Layout_5" role="substrate">
+            <MetaboliteReferenceGlyph key="Layout_104" name="curve00" metaboliteGlyph="Layout_6" role="substrate">
               <Curve>
                 <ListOfCurveSegments>
                   <CurveSegment xsi:type="CubicBezier">
-                    <Start x="526.915" y="81.9409"/>
-                    <End x="447.248" y="133.142"/>
-                    <BasePoint1 x="510.09" y="92.75409999999999"/>
-                    <BasePoint2 x="472.243" y="132.629"/>
+                    <Start x="269.980054248107" y="15.58649979450822"/>
+                    <End x="329.8806978727152" y="11.83966546977138"/>
+                    <BasePoint1 x="285.4369799931539" y="11.13249145609395"/>
+                    <BasePoint2 x="311.5230703691963" y="10.3725763783291"/>
                   </CurveSegment>
                 </ListOfCurveSegments>
               </Curve>
             </MetaboliteReferenceGlyph>
-            <MetaboliteReferenceGlyph key="Layout_27" name="curve01" metaboliteGlyph="Layout_3" role="substrate">
+            <MetaboliteReferenceGlyph key="Layout_108" name="curve01" metaboliteGlyph="Layout_2" role="substrate">
               <Curve>
                 <ListOfCurveSegments>
                   <CurveSegment xsi:type="CubicBezier">
-                    <Start x="487.112" y="177.647"/>
-                    <End x="447.248" y="133.142"/>
-                    <BasePoint1 x="473.768" y="162.749"/>
-                    <BasePoint2 x="472.243" y="132.629"/>
+                    <Start x="269.980054248107" y="15.58649979450822"/>
+                    <End x="310.6800461551084" y="83.34966316248098"/>
+                    <BasePoint1 x="285.4369799931539" y="11.13249145609395"/>
+                    <BasePoint2 x="301.9227445103929" y="46.1275752246839"/>
                   </CurveSegment>
                 </ListOfCurveSegments>
               </Curve>
             </MetaboliteReferenceGlyph>
-            <MetaboliteReferenceGlyph key="Layout_28" name="curve00" metaboliteGlyph="Layout_15" role="product">
+            <MetaboliteReferenceGlyph key="Layout_112" name="curve00" metaboliteGlyph="Layout_31" role="product">
               <Curve>
                 <ListOfCurveSegments>
                   <CurveSegment xsi:type="CubicBezier">
-                    <Start x="447.248" y="133.142"/>
-                    <End x="344.562" y="185.585"/>
-                    <BasePoint1 x="422.254" y="133.656"/>
-                    <BasePoint2 x="362.374" y="176.489"/>
+                    <Start x="254.5231285030601" y="20.04050813292248"/>
+                    <End x="200.8212476366776" y="83.71491496538314"/>
+                    <BasePoint1 x="239.0662027580131" y="24.49451647133675"/>
+                    <BasePoint2 x="216.0794937610837" y="55.21821780296352"/>
                   </CurveSegment>
                 </ListOfCurveSegments>
               </Curve>
             </MetaboliteReferenceGlyph>
           </ListOfMetaboliteReferenceGlyphs>
         </ReactionGlyph>
-        <ReactionGlyph key="Layout_29" name="rGlyph_1" reaction="Reaction_1">
+        <ReactionGlyph key="Layout_119" name="rGlyph_1" reaction="Reaction_10">
           <Curve>
             <ListOfCurveSegments>
               <CurveSegment xsi:type="LineSegment">
-                <Start x="452.248" y="291.142"/>
-                <End x="452.248" y="291.142"/>
+                <Start x="257.4573105818026" y="185.3693817267073"/>
+                <End x="271.042888852289" y="195.2634569315716"/>
               </CurveSegment>
             </ListOfCurveSegments>
           </Curve>
           <ListOfMetaboliteReferenceGlyphs>
-            <MetaboliteReferenceGlyph key="Layout_30" name="curve10" metaboliteGlyph="Layout_15" role="substrate">
+            <MetaboliteReferenceGlyph key="Layout_130" name="curve10" metaboliteGlyph="Layout_31" role="substrate">
               <Curve>
                 <ListOfCurveSegments>
                   <CurveSegment xsi:type="CubicBezier">
-                    <Start x="343.672" y="221.531"/>
-                    <End x="452.248" y="291.142"/>
-                    <BasePoint1 x="360.509" y="232.326"/>
-                    <BasePoint2 x="431.259" y="277.561"/>
+                    <Start x="257.4573105818026" y="185.3693817267073"/>
+                    <End x="202.3280918621129" y="118.7149149653831"/>
+                    <BasePoint1 x="243.8717323113163" y="175.4753065218431"/>
+                    <BasePoint2 x="219.703517519093" y="144.621591942397"/>
                   </CurveSegment>
                 </ListOfCurveSegments>
               </Curve>
             </MetaboliteReferenceGlyph>
-            <MetaboliteReferenceGlyph key="Layout_31" name="curve10" metaboliteGlyph="Layout_3" role="product">
+            <MetaboliteReferenceGlyph key="Layout_23" name="curve10" metaboliteGlyph="Layout_2" role="product">
               <Curve>
                 <ListOfCurveSegments>
                   <CurveSegment xsi:type="CubicBezier">
-                    <Start x="452.248" y="291.142"/>
-                    <End x="490.237" y="221.938"/>
-                    <BasePoint1 x="473.238" y="304.723"/>
-                    <BasePoint2 x="480.613" y="239.47"/>
+                    <Start x="271.042888852289" y="195.2634569315716"/>
+                    <End x="311.4000547880029" y="118.349663162481"/>
+                    <BasePoint1 x="284.6284671227754" y="205.1575321364358"/>
+                    <BasePoint2 x="301.4106555230108" y="164.2271164506745"/>
                   </CurveSegment>
                 </ListOfCurveSegments>
               </Curve>
             </MetaboliteReferenceGlyph>
-            <MetaboliteReferenceGlyph key="Layout_32" name="curve11" metaboliteGlyph="Layout_6" role="product">
+            <MetaboliteReferenceGlyph key="Layout_19" name="curve11" metaboliteGlyph="Layout_8" role="product">
               <Curve>
                 <ListOfCurveSegments>
                   <CurveSegment xsi:type="CubicBezier">
-                    <Start x="452.248" y="291.142"/>
-                    <End x="499.965" y="361.106"/>
-                    <BasePoint1 x="473.238" y="304.723"/>
-                    <BasePoint2 x="488.696" y="344.583"/>
+                    <Start x="271.042888852289" y="195.2634569315716"/>
+                    <End x="324.8004658887064" y="281.9616708655706"/>
+                    <BasePoint1 x="284.6284671227754" y="205.1575321364358"/>
+                    <BasePoint2 x="308.1108610733625" y="246.0331203022193"/>
                   </CurveSegment>
                 </ListOfCurveSegments>
               </Curve>
             </MetaboliteReferenceGlyph>
           </ListOfMetaboliteReferenceGlyphs>
         </ReactionGlyph>
-        <ReactionGlyph key="Layout_33" name="rGlyph_2" reaction="Reaction_2">
+        <ReactionGlyph key="Layout_21" name="rGlyph_2" reaction="Reaction_9">
           <Curve>
             <ListOfCurveSegments>
               <CurveSegment xsi:type="LineSegment">
-                <Start x="600.248" y="301.142"/>
-                <End x="600.248" y="301.142"/>
+                <Start x="430.0275119374917" y="258.6307688806719"/>
+                <End x="445.8135861162504" y="254.7011289549415"/>
               </CurveSegment>
             </ListOfCurveSegments>
           </Curve>
           <ListOfMetaboliteReferenceGlyphs>
-            <MetaboliteReferenceGlyph key="Layout_34" name="curve20" metaboliteGlyph="Layout_6" role="substrate">
+            <MetaboliteReferenceGlyph key="Layout_27" name="curve20" metaboliteGlyph="Layout_8" role="substrate">
               <Curve>
                 <ListOfCurveSegments>
                   <CurveSegment xsi:type="CubicBezier">
-                    <Start x="526.265" y="362.155"/>
-                    <End x="600.248" y="301.142"/>
-                    <BasePoint1 x="541.6950000000001" y="349.43"/>
-                    <BasePoint2 x="575.669" y="296.574"/>
+                    <Start x="430.0275119374917" y="258.6307688806719"/>
+                    <End x="372.0292635725197" y="281.9616708655706"/>
+                    <BasePoint1 x="414.2414377587331" y="262.5604088064023"/>
+                    <BasePoint2 x="389.1888321209367" y="273.243449817419"/>
                   </CurveSegment>
                 </ListOfCurveSegments>
               </Curve>
             </MetaboliteReferenceGlyph>
-            <MetaboliteReferenceGlyph key="Layout_35" name="curve21" metaboliteGlyph="Layout_4" role="substrate">
+            <MetaboliteReferenceGlyph key="Layout_25" name="curve21" metaboliteGlyph="Layout_4" role="substrate">
               <Curve>
                 <ListOfCurveSegments>
                   <CurveSegment xsi:type="CubicBezier">
-                    <Start x="577.063" y="221.14"/>
-                    <End x="600.248" y="301.142"/>
-                    <BasePoint1 x="582.63" y="240.35"/>
-                    <BasePoint2 x="575.669" y="296.574"/>
+                    <Start x="430.0275119374917" y="258.6307688806719"/>
+                    <End x="397.6166672281669" y="185.9030708831204"/>
+                    <BasePoint1 x="414.2414377587331" y="262.5604088064023"/>
+                    <BasePoint2 x="401.9825339487603" y="225.214149826194"/>
                   </CurveSegment>
                 </ListOfCurveSegments>
               </Curve>
             </MetaboliteReferenceGlyph>
-            <MetaboliteReferenceGlyph key="Layout_36" name="curve20" metaboliteGlyph="Layout_16" role="product">
+            <MetaboliteReferenceGlyph key="Layout_22" name="curve20" metaboliteGlyph="Layout_37" role="product">
               <Curve>
                 <ListOfCurveSegments>
                   <CurveSegment xsi:type="CubicBezier">
-                    <Start x="600.248" y="301.142"/>
-                    <End x="733.649" y="212.642"/>
-                    <BasePoint1 x="624.827" y="305.71"/>
-                    <BasePoint2 x="716.9829999999999" y="223.698"/>
+                    <Start x="445.8135861162504" y="254.7011289549415"/>
+                    <End x="502.9972449942119" y="212.1359716170413"/>
+                    <BasePoint1 x="461.599660295009" y="250.771489029211"/>
+                    <BasePoint2 x="486.2449711893001" y="230.4713203416935"/>
                   </CurveSegment>
                 </ListOfCurveSegments>
               </Curve>
             </MetaboliteReferenceGlyph>
           </ListOfMetaboliteReferenceGlyphs>
         </ReactionGlyph>
-        <ReactionGlyph key="Layout_37" name="rGlyph_3" reaction="Reaction_3">
+        <ReactionGlyph key="Layout_33" name="rGlyph_3" reaction="Reaction_8">
           <Curve>
             <ListOfCurveSegments>
               <CurveSegment xsi:type="LineSegment">
-                <Start x="627.248" y="129.142"/>
-                <End x="627.248" y="129.142"/>
+                <Start x="469.3633190831844" y="96.39655463761595"/>
+                <End x="455.4485923789864" y="85.97811102006783"/>
               </CurveSegment>
             </ListOfCurveSegments>
           </Curve>
           <ListOfMetaboliteReferenceGlyphs>
-            <MetaboliteReferenceGlyph key="Layout_38" name="curve30" metaboliteGlyph="Layout_16" role="substrate">
+            <MetaboliteReferenceGlyph key="Layout_29" name="curve30" metaboliteGlyph="Layout_37" role="substrate">
               <Curve>
                 <ListOfCurveSegments>
                   <CurveSegment xsi:type="CubicBezier">
-                    <Start x="720.337" y="176.604"/>
-                    <End x="627.248" y="129.142"/>
-                    <BasePoint1 x="702.519" y="167.52"/>
-                    <BasePoint2 x="649.503" y="140.532"/>
+                    <Start x="469.3633190831844" y="96.39655463761595"/>
+                    <End x="514.0823909771407" y="177.1359716170413"/>
+                    <BasePoint1 x="483.2780457873825" y="106.8149982551641"/>
+                    <BasePoint2 x="502.1589000583111" y="144.5800958404897"/>
                   </CurveSegment>
                 </ListOfCurveSegments>
               </Curve>
             </MetaboliteReferenceGlyph>
-            <MetaboliteReferenceGlyph key="Layout_39" name="curve30" metaboliteGlyph="Layout_4" role="product">
+            <MetaboliteReferenceGlyph key="Layout_26" name="curve30" metaboliteGlyph="Layout_4" role="product">
               <Curve>
                 <ListOfCurveSegments>
                   <CurveSegment xsi:type="CubicBezier">
-                    <Start x="627.248" y="129.142"/>
-                    <End x="585.404" y="176.653"/>
-                    <BasePoint1 x="604.994" y="117.752"/>
-                    <BasePoint2 x="598.623" y="161.644"/>
+                    <Start x="455.4485923789864" y="85.97811102006783"/>
+                    <End x="402.8147122736556" y="150.9030708831204"/>
+                    <BasePoint1 x="441.5338656747883" y="75.55966740251972"/>
+                    <BasePoint2 x="418.6956072981724" y="110.626758238433"/>
                   </CurveSegment>
                 </ListOfCurveSegments>
               </Curve>
             </MetaboliteReferenceGlyph>
-            <MetaboliteReferenceGlyph key="Layout_40" name="curve31" metaboliteGlyph="Layout_5" role="product">
+            <MetaboliteReferenceGlyph key="Layout_32" name="curve31" metaboliteGlyph="Layout_6" role="product">
               <Curve>
                 <ListOfCurveSegments>
                   <CurveSegment xsi:type="CubicBezier">
-                    <Start x="627.248" y="129.142"/>
-                    <End x="566.566" y="81.958"/>
-                    <BasePoint1 x="604.994" y="117.752"/>
-                    <BasePoint2 x="582.354" y="94.2346"/>
+                    <Start x="455.4485923789864" y="85.97811102006783"/>
+                    <End x="390.8492502312267" y="30"/>
+                    <BasePoint1 x="441.5338656747883" y="75.55966740251972"/>
+                    <BasePoint2 x="412.712876276958" y="50.17522279687283"/>
                   </CurveSegment>
                 </ListOfCurveSegments>
               </Curve>
             </MetaboliteReferenceGlyph>
           </ListOfMetaboliteReferenceGlyphs>
         </ReactionGlyph>
-        <ReactionGlyph key="Layout_41" name="rGlyph_4" reaction="Reaction_4">
+        <ReactionGlyph key="Layout_36" name="rGlyph_4" reaction="Reaction_7">
           <Curve>
             <ListOfCurveSegments>
               <CurveSegment xsi:type="LineSegment">
-                <Start x="327.248" y="468.142"/>
-                <End x="327.248" y="468.142"/>
+                <Start x="202.6941730168981" y="382.7237341018961"/>
+                <End x="192.6839861346146" y="374.8083273629682"/>
               </CurveSegment>
             </ListOfCurveSegments>
           </Curve>
           <ListOfMetaboliteReferenceGlyphs>
-            <MetaboliteReferenceGlyph key="Layout_42" name="curve40" metaboliteGlyph="Layout_7" role="substrate">
+            <MetaboliteReferenceGlyph key="Layout_34" name="curve40" metaboliteGlyph="Layout_10" role="substrate">
               <Curve>
                 <ListOfCurveSegments>
                   <CurveSegment xsi:type="CubicBezier">
-                    <Start x="184.299" y="511.889"/>
-                    <End x="327.248" y="468.142"/>
-                    <BasePoint1 x="203.423" y="506.037"/>
-                    <BasePoint2 x="330.227" y="443.32"/>
+                    <Start x="202.6941730168981" y="382.7237341018961"/>
+                    <End x="150.8033490598753" y="460.986786497818"/>
+                    <BasePoint1 x="212.7043598991817" y="390.639140840824"/>
+                    <BasePoint2 x="184.2564012000994" y="427.791815354053"/>
                   </CurveSegment>
                 </ListOfCurveSegments>
               </Curve>
             </MetaboliteReferenceGlyph>
-            <MetaboliteReferenceGlyph key="Layout_43" name="curve41" metaboliteGlyph="Layout_6" role="substrate">
+            <MetaboliteReferenceGlyph key="Layout_30" name="curve41" metaboliteGlyph="Layout_8" role="substrate">
               <Curve>
                 <ListOfCurveSegments>
                   <CurveSegment xsi:type="CubicBezier">
-                    <Start x="465.758" y="398.295"/>
-                    <End x="327.248" y="468.142"/>
-                    <BasePoint1 x="447.9" y="407.3"/>
-                    <BasePoint2 x="330.227" y="443.32"/>
+                    <Start x="202.6941730168981" y="382.7237341018961"/>
+                    <End x="310.6819434167849" y="316.9616708655706"/>
+                    <BasePoint1 x="212.7043598991817" y="390.639140840824"/>
+                    <BasePoint2 x="264.1956983785542" y="355.7792575379293"/>
                   </CurveSegment>
                 </ListOfCurveSegments>
               </Curve>
             </MetaboliteReferenceGlyph>
-            <MetaboliteReferenceGlyph key="Layout_44" name="curve40" metaboliteGlyph="Layout_17" role="product">
+            <MetaboliteReferenceGlyph key="Layout_40" name="curve40" metaboliteGlyph="Layout_43" role="product">
               <Curve>
                 <ListOfCurveSegments>
                   <CurveSegment xsi:type="CubicBezier">
-                    <Start x="327.248" y="468.142"/>
-                    <End x="333.803" y="558.247"/>
-                    <BasePoint1 x="324.27" y="492.964"/>
-                    <BasePoint2 x="332.352" y="538.3"/>
+                    <Start x="192.6839861346146" y="374.8083273629682"/>
+                    <End x="149.3249381289037" y="327.3201612924149"/>
+                    <BasePoint1 x="182.673799252331" y="366.8929206240402"/>
+                    <BasePoint2 x="163.4968219700465" y="345.1276892734956"/>
                   </CurveSegment>
                 </ListOfCurveSegments>
               </Curve>
             </MetaboliteReferenceGlyph>
           </ListOfMetaboliteReferenceGlyphs>
         </ReactionGlyph>
-        <ReactionGlyph key="Layout_45" name="rGlyph_5" reaction="Reaction_5">
+        <ReactionGlyph key="Layout_38" name="rGlyph_5" reaction="Reaction_6">
           <Curve>
             <ListOfCurveSegments>
               <CurveSegment xsi:type="LineSegment">
-                <Start x="377.248" y="514.1420000000001"/>
-                <End x="377.248" y="514.1420000000001"/>
+                <Start x="235.5958849151992" y="325.6549423940193"/>
+                <End x="251.2198411880661" y="332.5716865865967"/>
               </CurveSegment>
             </ListOfCurveSegments>
           </Curve>
           <ListOfMetaboliteReferenceGlyphs>
-            <MetaboliteReferenceGlyph key="Layout_46" name="curve50" metaboliteGlyph="Layout_17" role="substrate">
+            <MetaboliteReferenceGlyph key="Layout_35" name="curve50" metaboliteGlyph="Layout_43" role="substrate">
               <Curve>
                 <ListOfCurveSegments>
                   <CurveSegment xsi:type="CubicBezier">
-                    <Start x="349.422" y="559.585"/>
-                    <End x="377.248" y="514.1420000000001"/>
-                    <BasePoint1 x="359.866" y="542.528"/>
-                    <BasePoint2 x="364.056" y="535.378"/>
+                    <Start x="235.5958849151992" y="325.6549423940193"/>
+                    <End x="208.0772915276323" y="317.4960029489942"/>
+                    <BasePoint1 x="219.9719286423323" y="318.7381982014418"/>
+                    <BasePoint2 x="210.1186210167656" y="316.3879145270736"/>
                   </CurveSegment>
                 </ListOfCurveSegments>
               </Curve>
             </MetaboliteReferenceGlyph>
-            <MetaboliteReferenceGlyph key="Layout_47" name="curve50" metaboliteGlyph="Layout_8" role="product">
+            <MetaboliteReferenceGlyph key="Layout_45" name="curve50" metaboliteGlyph="Layout_12" role="product">
               <Curve>
                 <ListOfCurveSegments>
                   <CurveSegment xsi:type="CubicBezier">
-                    <Start x="377.248" y="514.1420000000001"/>
-                    <End x="483.435" y="592.822"/>
-                    <BasePoint1 x="390.44" y="492.906"/>
-                    <BasePoint2 x="467.366" y="580.915"/>
+                    <Start x="251.2198411880661" y="332.5716865865967"/>
+                    <End x="250.497577085599" y="441.0135355708081"/>
+                    <BasePoint1 x="266.8437974609331" y="339.4884307791741"/>
+                    <BasePoint2 x="262.5766763414828" y="391.9801692231355"/>
                   </CurveSegment>
                 </ListOfCurveSegments>
               </Curve>
             </MetaboliteReferenceGlyph>
-            <MetaboliteReferenceGlyph key="Layout_48" name="curve51" metaboliteGlyph="Layout_6" role="product">
+            <MetaboliteReferenceGlyph key="Layout_41" name="curve51" metaboliteGlyph="Layout_8" role="product">
               <Curve>
                 <ListOfCurveSegments>
                   <CurveSegment xsi:type="CubicBezier">
-                    <Start x="377.248" y="514.1420000000001"/>
-                    <End x="490.841" y="401.86"/>
-                    <BasePoint1 x="390.44" y="492.906"/>
-                    <BasePoint2 x="476.617" y="415.92"/>
+                    <Start x="251.2198411880661" y="332.5716865865967"/>
+                    <End x="304.612773902307" y="316.9616708655706"/>
+                    <BasePoint1 x="266.8437974609331" y="339.4884307791741"/>
+                    <BasePoint2 x="289.6342747498367" y="329.9542368705166"/>
                   </CurveSegment>
                 </ListOfCurveSegments>
               </Curve>
             </MetaboliteReferenceGlyph>
           </ListOfMetaboliteReferenceGlyphs>
         </ReactionGlyph>
-        <ReactionGlyph key="Layout_49" name="rGlyph_6" reaction="Reaction_6">
+        <ReactionGlyph key="Layout_39" name="rGlyph_6" reaction="Reaction_5">
           <Curve>
             <ListOfCurveSegments>
               <CurveSegment xsi:type="LineSegment">
-                <Start x="392.248" y="695.1420000000001"/>
-                <End x="392.248" y="695.1420000000001"/>
+                <Start x="211.4027403094528" y="556.5921285796901"/>
+                <End x="193.7885130515739" y="559.7704141219647"/>
               </CurveSegment>
             </ListOfCurveSegments>
           </Curve>
           <ListOfMetaboliteReferenceGlyphs>
-            <MetaboliteReferenceGlyph key="Layout_50" name="curve60" metaboliteGlyph="Layout_8" role="substrate">
+            <MetaboliteReferenceGlyph key="Layout_44" name="curve60" metaboliteGlyph="Layout_12" role="substrate">
               <Curve>
                 <ListOfCurveSegments>
                   <CurveSegment xsi:type="CubicBezier">
-                    <Start x="482.47" y="632.494"/>
-                    <End x="392.248" y="695.1420000000001"/>
-                    <BasePoint1 x="466.042" y="643.901"/>
-                    <BasePoint2 x="414.842" y="705.8440000000001"/>
+                    <Start x="211.4027403094528" y="556.5921285796901"/>
+                    <End x="244.2384289223525" y="476.0135355708081"/>
+                    <BasePoint1 x="229.0169675673316" y="553.4138430374155"/>
+                    <BasePoint2 x="241.0312550593118" y="513.9191179185432"/>
                   </CurveSegment>
                 </ListOfCurveSegments>
               </Curve>
             </MetaboliteReferenceGlyph>
-            <MetaboliteReferenceGlyph key="Layout_51" name="curve61" metaboliteGlyph="Layout_14" role="substrate">
+            <MetaboliteReferenceGlyph key="Layout_48" name="curve61" metaboliteGlyph="Layout_28" role="substrate">
               <Curve>
                 <ListOfCurveSegments>
                   <CurveSegment xsi:type="CubicBezier">
-                    <Start x="483.089" y="855.048"/>
-                    <End x="392.248" y="695.1420000000001"/>
-                    <BasePoint1 x="473.21" y="837.658"/>
-                    <BasePoint2 x="414.842" y="705.8440000000001"/>
+                    <Start x="211.4027403094528" y="556.5921285796901"/>
+                    <End x="265.204561128" y="628.8044484649134"/>
+                    <BasePoint1 x="229.0169675673316" y="553.4138430374155"/>
+                    <BasePoint2 x="251.5143211621355" y="590.3145743655958"/>
                   </CurveSegment>
                 </ListOfCurveSegments>
               </Curve>
             </MetaboliteReferenceGlyph>
-            <MetaboliteReferenceGlyph key="Layout_52" name="curve60" metaboliteGlyph="Layout_22" role="product">
+            <MetaboliteReferenceGlyph key="Layout_46" name="curve60" metaboliteGlyph="Layout_85" role="product">
               <Curve>
                 <ListOfCurveSegments>
                   <CurveSegment xsi:type="CubicBezier">
-                    <Start x="392.248" y="695.1420000000001"/>
-                    <End x="189.908" y="732.556"/>
-                    <BasePoint1 x="369.655" y="684.4400000000001"/>
-                    <BasePoint2 x="209.575" y="728.92"/>
+                    <Start x="193.7885130515739" y="559.7704141219647"/>
+                    <End x="160.0208229156336" y="566.6918474406065"/>
+                    <BasePoint1 x="176.1742857936951" y="562.9486996642393"/>
+                    <BasePoint2 x="163.6939975401947" y="565.6148449379915"/>
                   </CurveSegment>
                 </ListOfCurveSegments>
               </Curve>
             </MetaboliteReferenceGlyph>
           </ListOfMetaboliteReferenceGlyphs>
         </ReactionGlyph>
-        <ReactionGlyph key="Layout_53" name="rGlyph_7" reaction="Reaction_7">
+        <ReactionGlyph key="Layout_42" name="rGlyph_7" reaction="Reaction_4">
           <Curve>
             <ListOfCurveSegments>
               <CurveSegment xsi:type="LineSegment">
-                <Start x="229.248" y="686.1420000000001"/>
-                <End x="229.248" y="686.1420000000001"/>
+                <Start x="155.6545879272855" y="620.9906844751805"/>
+                <End x="167.655045794581" y="618.8110614792564"/>
               </CurveSegment>
             </ListOfCurveSegments>
           </Curve>
           <ListOfMetaboliteReferenceGlyphs>
-            <MetaboliteReferenceGlyph key="Layout_54" name="curve70" metaboliteGlyph="Layout_22" role="substrate">
+            <MetaboliteReferenceGlyph key="Layout_53" name="curve70" metaboliteGlyph="Layout_85" role="substrate">
               <Curve>
                 <ListOfCurveSegments>
                   <CurveSegment xsi:type="CubicBezier">
-                    <Start x="162.613" y="729.663"/>
-                    <End x="229.248" y="686.1420000000001"/>
-                    <BasePoint1 x="179.358" y="718.726"/>
-                    <BasePoint2 x="208.277" y="699.751"/>
+                    <Start x="155.6545879272855" y="620.9906844751805"/>
+                    <End x="111.0581881695647" y="601.6918474406065"/>
+                    <BasePoint1 x="143.65413005999" y="623.1703074711046"/>
+                    <BasePoint2 x="124.3560446479535" y="612.9759832048366"/>
                   </CurveSegment>
                 </ListOfCurveSegments>
               </Curve>
             </MetaboliteReferenceGlyph>
-            <MetaboliteReferenceGlyph key="Layout_55" name="curve70" metaboliteGlyph="Layout_7" role="product">
+            <MetaboliteReferenceGlyph key="Layout_50" name="curve70" metaboliteGlyph="Layout_10" role="product">
               <Curve>
                 <ListOfCurveSegments>
                   <CurveSegment xsi:type="CubicBezier">
-                    <Start x="229.248" y="686.1420000000001"/>
-                    <End x="162.036" y="548.297"/>
-                    <BasePoint1 x="250.22" y="672.533"/>
-                    <BasePoint2 x="170.802" y="566.274"/>
+                    <Start x="167.655045794581" y="618.8110614792564"/>
+                    <End x="141.0102276044009" y="495.986786497818"/>
+                    <BasePoint1 x="179.6555036618765" y="616.6314384833323"/>
+                    <BasePoint2 x="163.3329800999626" y="555.7642067415942"/>
                   </CurveSegment>
                 </ListOfCurveSegments>
               </Curve>
             </MetaboliteReferenceGlyph>
-            <MetaboliteReferenceGlyph key="Layout_56" name="curve71" metaboliteGlyph="Layout_14" role="product">
+            <MetaboliteReferenceGlyph key="Layout_47" name="curve71" metaboliteGlyph="Layout_28" role="product">
               <Curve>
                 <ListOfCurveSegments>
                   <CurveSegment xsi:type="CubicBezier">
-                    <Start x="229.248" y="686.1420000000001"/>
-                    <End x="471.578" y="857.725"/>
-                    <BasePoint1 x="250.22" y="672.533"/>
-                    <BasePoint2 x="455.256" y="846.168"/>
+                    <Start x="167.655045794581" y="618.8110614792564"/>
+                    <End x="218.1970303193191" y="628.8044484649134"/>
+                    <BasePoint1 x="179.6555036618765" y="616.6314384833323"/>
+                    <BasePoint2 x="201.9263814574217" y="622.1730377251419"/>
                   </CurveSegment>
                 </ListOfCurveSegments>
               </Curve>
             </MetaboliteReferenceGlyph>
           </ListOfMetaboliteReferenceGlyphs>
         </ReactionGlyph>
-        <ReactionGlyph key="Layout_57" name="rGlyph_8" reaction="Reaction_8">
+        <ReactionGlyph key="Layout_51" name="rGlyph_8" reaction="Reaction_3">
           <Curve>
             <ListOfCurveSegments>
               <CurveSegment xsi:type="LineSegment">
-                <Start x="524.248" y="485.142"/>
-                <End x="524.248" y="485.142"/>
+                <Start x="323.6029481526172" y="395.8061890698089"/>
+                <End x="335.4157452905786" y="403.3859833466973"/>
               </CurveSegment>
             </ListOfCurveSegments>
           </Curve>
           <ListOfMetaboliteReferenceGlyphs>
-            <MetaboliteReferenceGlyph key="Layout_58" name="curve80" metaboliteGlyph="Layout_8" role="substrate">
+            <MetaboliteReferenceGlyph key="Layout_54" name="curve80" metaboliteGlyph="Layout_12" role="substrate">
               <Curve>
                 <ListOfCurveSegments>
                   <CurveSegment xsi:type="CubicBezier">
-                    <Start x="502.402" y="590.143"/>
-                    <End x="524.248" y="485.142"/>
-                    <BasePoint1 x="506.476" y="570.563"/>
-                    <BasePoint2 x="503.793" y="499.516"/>
+                    <Start x="323.6029481526172" y="395.8061890698089"/>
+                    <End x="263.6420312588405" y="441.0135355708081"/>
+                    <BasePoint1 x="311.7901510146559" y="388.2263947929204"/>
+                    <BasePoint2 x="284.7628918522578" y="412.7250166126421"/>
                   </CurveSegment>
                 </ListOfCurveSegments>
               </Curve>
             </MetaboliteReferenceGlyph>
-            <MetaboliteReferenceGlyph key="Layout_59" name="curve81" metaboliteGlyph="Layout_6" role="substrate">
+            <MetaboliteReferenceGlyph key="Layout_55" name="curve81" metaboliteGlyph="Layout_8" role="substrate">
               <Curve>
                 <ListOfCurveSegments>
                   <CurveSegment xsi:type="CubicBezier">
-                    <Start x="509.631" y="405.123"/>
-                    <End x="524.248" y="485.142"/>
-                    <BasePoint1 x="513.225" y="424.798"/>
-                    <BasePoint2 x="503.793" y="499.516"/>
+                    <Start x="323.6029481526172" y="395.8061890698089"/>
+                    <End x="329.5841865019753" y="316.9616708655706"/>
+                    <BasePoint1 x="311.7901510146559" y="388.2263947929204"/>
+                    <BasePoint2 x="317.7339694738253" y="350.6990842600233"/>
                   </CurveSegment>
                 </ListOfCurveSegments>
               </Curve>
             </MetaboliteReferenceGlyph>
-            <MetaboliteReferenceGlyph key="Layout_60" name="curve80" metaboliteGlyph="Layout_18" role="product">
+            <MetaboliteReferenceGlyph key="Layout_60" name="curve80" metaboliteGlyph="Layout_49" role="product">
               <Curve>
                 <ListOfCurveSegments>
                   <CurveSegment xsi:type="CubicBezier">
-                    <Start x="524.248" y="485.142"/>
-                    <End x="620.327" y="529.039"/>
-                    <BasePoint1 x="544.703" y="470.769"/>
-                    <BasePoint2 x="602.136" y="520.727"/>
+                    <Start x="335.4157452905786" y="403.3859833466973"/>
+                    <End x="384.2976173903103" y="437.2855459870744"/>
+                    <BasePoint1 x="347.22854242854" y="410.9657776235858"/>
+                    <BasePoint2 x="368.7162791939155" y="426.0206103745524"/>
                   </CurveSegment>
                 </ListOfCurveSegments>
               </Curve>
             </MetaboliteReferenceGlyph>
           </ListOfMetaboliteReferenceGlyphs>
         </ReactionGlyph>
-        <ReactionGlyph key="Layout_61" name="rGlyph_9" reaction="Reaction_9">
+        <ReactionGlyph key="Layout_58" name="rGlyph_9" reaction="Reaction_2">
           <Curve>
             <ListOfCurveSegments>
               <CurveSegment xsi:type="LineSegment">
-                <Start x="721.248" y="436.142"/>
-                <End x="721.248" y="436.142"/>
+                <Start x="453.4604758662262" y="389.1308472290932"/>
+                <End x="455.5271039735873" y="384.7539912098704"/>
               </CurveSegment>
             </ListOfCurveSegments>
           </Curve>
           <ListOfMetaboliteReferenceGlyphs>
-            <MetaboliteReferenceGlyph key="Layout_62" name="curve90" metaboliteGlyph="Layout_18" role="substrate">
+            <MetaboliteReferenceGlyph key="Layout_59" name="curve90" metaboliteGlyph="Layout_49" role="substrate">
               <Curve>
                 <ListOfCurveSegments>
                   <CurveSegment xsi:type="CubicBezier">
-                    <Start x="657.958" y="526.932"/>
-                    <End x="721.248" y="436.142"/>
-                    <BasePoint1 x="669.395" y="510.525"/>
-                    <BasePoint2 x="706.875" y="456.597"/>
+                    <Start x="453.4604758662262" y="389.1308472290932"/>
+                    <End x="421.0676069537659" y="437.2855459870744"/>
+                    <BasePoint1 x="451.3938477588652" y="393.507703248316"/>
+                    <BasePoint2 x="435.7140703294753" y="416.490838622501"/>
                   </CurveSegment>
                 </ListOfCurveSegments>
               </Curve>
             </MetaboliteReferenceGlyph>
-            <MetaboliteReferenceGlyph key="Layout_63" name="curve90" metaboliteGlyph="Layout_9" role="product">
+            <MetaboliteReferenceGlyph key="Layout_63" name="curve90" metaboliteGlyph="Layout_14" role="product">
               <Curve>
                 <ListOfCurveSegments>
                   <CurveSegment xsi:type="CubicBezier">
-                    <Start x="721.248" y="436.142"/>
-                    <End x="796.451" y="563.891"/>
-                    <BasePoint1 x="735.622" y="415.687"/>
-                    <BasePoint2 x="786.3049999999999" y="546.6559999999999"/>
+                    <Start x="455.5271039735873" y="384.7539912098704"/>
+                    <End x="516.9397161500777" y="505.0723007241212"/>
+                    <BasePoint1 x="457.5937320809484" y="380.3771351906474"/>
+                    <BasePoint2 x="487.7833811423533" y="441.6305039525786"/>
                   </CurveSegment>
                 </ListOfCurveSegments>
               </Curve>
             </MetaboliteReferenceGlyph>
-            <MetaboliteReferenceGlyph key="Layout_64" name="curve91" metaboliteGlyph="Layout_6" role="product">
+            <MetaboliteReferenceGlyph key="Layout_56" name="curve91" metaboliteGlyph="Layout_8" role="product">
               <Curve>
                 <ListOfCurveSegments>
                   <CurveSegment xsi:type="CubicBezier">
-                    <Start x="721.248" y="436.142"/>
-                    <End x="565.149" y="391.544"/>
-                    <BasePoint1 x="735.622" y="415.687"/>
-                    <BasePoint2 x="584.38" y="397.039"/>
+                    <Start x="455.5271039735873" y="384.7539912098704"/>
+                    <End x="360.6939980085425" y="316.9616708655706"/>
+                    <BasePoint1 x="457.5937320809484" y="380.3771351906474"/>
+                    <BasePoint2 x="409.6605220715857" y="347.5751890233033"/>
                   </CurveSegment>
                 </ListOfCurveSegments>
               </Curve>
             </MetaboliteReferenceGlyph>
           </ListOfMetaboliteReferenceGlyphs>
         </ReactionGlyph>
-        <ReactionGlyph key="Layout_65" name="rGlyph_10" reaction="Reaction_10">
+        <ReactionGlyph key="Layout_62" name="rGlyph_10" reaction="Reaction_1">
           <Curve>
             <ListOfCurveSegments>
               <CurveSegment xsi:type="LineSegment">
-                <Start x="680.248" y="712.1420000000001"/>
-                <End x="680.248" y="712.1420000000001"/>
+                <Start x="410.3524554768237" y="624.1484489778526"/>
+                <End x="410.5453204713121" y="619.4063094203237"/>
               </CurveSegment>
             </ListOfCurveSegments>
           </Curve>
           <ListOfMetaboliteReferenceGlyphs>
-            <MetaboliteReferenceGlyph key="Layout_66" name="curve100" metaboliteGlyph="Layout_9" role="substrate">
+            <MetaboliteReferenceGlyph key="Layout_66" name="curve100" metaboliteGlyph="Layout_14" role="substrate">
               <Curve>
                 <ListOfCurveSegments>
                   <CurveSegment xsi:type="CubicBezier">
-                    <Start x="784.0119999999999" y="605.044"/>
-                    <End x="680.248" y="712.1420000000001"/>
-                    <BasePoint1 x="770.095" y="619.408"/>
-                    <BasePoint2 x="658.605" y="724.655"/>
+                    <Start x="410.3524554768237" y="624.1484489778526"/>
+                    <End x="506.3215336470396" y="540.0723007241212"/>
+                    <BasePoint1 x="410.1595904823352" y="628.8905885353813"/>
+                    <BasePoint2 x="458.1923458160653" y="585.6669795191334"/>
                   </CurveSegment>
                 </ListOfCurveSegments>
               </Curve>
             </MetaboliteReferenceGlyph>
-            <MetaboliteReferenceGlyph key="Layout_67" name="curve101" metaboliteGlyph="Layout_14" role="substrate">
+            <MetaboliteReferenceGlyph key="Layout_61" name="curve101" metaboliteGlyph="Layout_28" role="substrate">
               <Curve>
                 <ListOfCurveSegments>
                   <CurveSegment xsi:type="CubicBezier">
-                    <Start x="512.646" y="857.414"/>
-                    <End x="680.248" y="712.1420000000001"/>
-                    <BasePoint1 x="527.759" y="844.314"/>
-                    <BasePoint2 x="658.605" y="724.655"/>
+                    <Start x="410.3524554768237" y="624.1484489778526"/>
+                    <End x="331.1045850264778" y="638.97189450539"/>
+                    <BasePoint1 x="410.1595904823352" y="628.8905885353813"/>
+                    <BasePoint2 x="370.5838715057844" y="635.1167764097678"/>
                   </CurveSegment>
                 </ListOfCurveSegments>
               </Curve>
             </MetaboliteReferenceGlyph>
-            <MetaboliteReferenceGlyph key="Layout_68" name="curve100" metaboliteGlyph="Layout_21" role="product">
+            <MetaboliteReferenceGlyph key="Layout_65" name="curve100" metaboliteGlyph="Layout_78" role="product">
               <Curve>
                 <ListOfCurveSegments>
                   <CurveSegment xsi:type="CubicBezier">
-                    <Start x="680.248" y="712.1420000000001"/>
-                    <End x="685.427" y="773.3819999999999"/>
-                    <BasePoint1 x="701.8920000000001" y="699.63"/>
-                    <BasePoint2 x="683.742" y="753.454"/>
+                    <Start x="410.5453204713121" y="619.4063094203237"/>
+                    <End x="403.4776491279103" y="554.5169790192297"/>
+                    <BasePoint1 x="410.7381854658005" y="614.664169862795"/>
+                    <BasePoint2 x="407.1561335454775" y="583.4050395516301"/>
                   </CurveSegment>
                 </ListOfCurveSegments>
               </Curve>
             </MetaboliteReferenceGlyph>
           </ListOfMetaboliteReferenceGlyphs>
         </ReactionGlyph>
-        <ReactionGlyph key="Layout_69" name="rGlyph_11" reaction="Reaction_11">
+        <ReactionGlyph key="Layout_69" name="rGlyph_11" reaction="Reaction_0">
           <Curve>
             <ListOfCurveSegments>
               <CurveSegment xsi:type="LineSegment">
-                <Start x="573.248" y="696.1420000000001"/>
-                <End x="573.248" y="696.1420000000001"/>
+                <Start x="312.8098452782629" y="548.7468644687774"/>
+                <End x="298.7375550384519" y="550.2860657686406"/>
               </CurveSegment>
             </ListOfCurveSegments>
           </Curve>
           <ListOfMetaboliteReferenceGlyphs>
-            <MetaboliteReferenceGlyph key="Layout_70" name="curve110" metaboliteGlyph="Layout_21" role="substrate">
+            <MetaboliteReferenceGlyph key="Layout_64" name="curve110" metaboliteGlyph="Layout_78" role="substrate">
               <Curve>
                 <ListOfCurveSegments>
                   <CurveSegment xsi:type="CubicBezier">
-                    <Start x="660.865" y="776.398"/>
-                    <End x="573.248" y="696.1420000000001"/>
-                    <BasePoint1 x="646.117" y="762.889"/>
-                    <BasePoint2 x="591.599" y="713.121"/>
+                    <Start x="312.8098452782629" y="548.7468644687774"/>
+                    <End x="307.8651749768973" y="549.8095419291022"/>
+                    <BasePoint1 x="326.8821355180738" y="547.2076631689143"/>
+                    <BasePoint2 x="320.8917278074383" y="548.1238022240425"/>
                   </CurveSegment>
                 </ListOfCurveSegments>
               </Curve>
             </MetaboliteReferenceGlyph>
-            <MetaboliteReferenceGlyph key="Layout_71" name="curve110" metaboliteGlyph="Layout_8" role="product">
+            <MetaboliteReferenceGlyph key="Layout_68" name="curve110" metaboliteGlyph="Layout_12" role="product">
               <Curve>
                 <ListOfCurveSegments>
                   <CurveSegment xsi:type="CubicBezier">
-                    <Start x="573.248" y="696.1420000000001"/>
-                    <End x="518.4450000000001" y="632.991"/>
-                    <BasePoint1 x="554.898" y="679.164"/>
-                    <BasePoint2 x="531.553" y="648.096"/>
+                    <Start x="298.7375550384519" y="550.2860657686406"/>
+                    <End x="254.6163101622624" y="476.0135355708081"/>
+                    <BasePoint1 x="284.665264798641" y="551.8252670685037"/>
+                    <BasePoint2 x="266.1227149204989" y="514.3042016446217"/>
                   </CurveSegment>
                 </ListOfCurveSegments>
               </Curve>
             </MetaboliteReferenceGlyph>
-            <MetaboliteReferenceGlyph key="Layout_72" name="curve111" metaboliteGlyph="Layout_14" role="product">
+            <MetaboliteReferenceGlyph key="Layout_72" name="curve111" metaboliteGlyph="Layout_28" role="product">
               <Curve>
                 <ListOfCurveSegments>
                   <CurveSegment xsi:type="CubicBezier">
-                    <Start x="573.248" y="696.1420000000001"/>
-                    <End x="499.271" y="854.61"/>
-                    <BasePoint1 x="554.898" y="679.164"/>
-                    <BasePoint2 x="507.731" y="836.487"/>
+                    <Start x="298.7375550384519" y="550.2860657686406"/>
+                    <End x="275.653310398057" y="628.8044484649134"/>
+                    <BasePoint1 x="284.665264798641" y="551.8252670685037"/>
+                    <BasePoint2 x="276.6412150383962" y="590.6996580916743"/>
                   </CurveSegment>
                 </ListOfCurveSegments>
               </Curve>
             </MetaboliteReferenceGlyph>
           </ListOfMetaboliteReferenceGlyphs>
         </ReactionGlyph>
-        <ReactionGlyph key="Layout_73" name="rGlyph_12" reaction="Reaction_12">
+        <ReactionGlyph key="Layout_67" name="rGlyph_12" reaction="Reaction_12">
           <Curve>
             <ListOfCurveSegments>
               <CurveSegment xsi:type="LineSegment">
-                <Start x="921.248" y="678.1420000000001"/>
-                <End x="921.248" y="678.1420000000001"/>
+                <Start x="567.4628301523653" y="641.7248936804648"/>
+                <End x="563.7984731969452" y="653.82778744272"/>
               </CurveSegment>
             </ListOfCurveSegments>
           </Curve>
           <ListOfMetaboliteReferenceGlyphs>
-            <MetaboliteReferenceGlyph key="Layout_74" name="curve120" metaboliteGlyph="Layout_10" role="substrate">
+            <MetaboliteReferenceGlyph key="Layout_71" name="curve120" metaboliteGlyph="Layout_16" role="substrate">
               <Curve>
                 <ListOfCurveSegments>
                   <CurveSegment xsi:type="CubicBezier">
-                    <Start x="1104.62" y="777.092"/>
-                    <End x="921.248" y="678.1420000000001"/>
-                    <BasePoint1 x="1087.02" y="767.5940000000001"/>
-                    <BasePoint2 x="945.546" y="684.025"/>
+                    <Start x="567.4628301523653" y="641.7248936804648"/>
+                    <End x="676.7200427387072" y="672.6119775547921"/>
+                    <BasePoint1 x="571.1271871077854" y="629.6219999182096"/>
+                    <BasePoint2 x="624.8397041621013" y="648.091265295937"/>
                   </CurveSegment>
                 </ListOfCurveSegments>
               </Curve>
             </MetaboliteReferenceGlyph>
-            <MetaboliteReferenceGlyph key="Layout_75" name="curve121" metaboliteGlyph="Layout_9" role="substrate">
+            <MetaboliteReferenceGlyph key="Layout_75" name="curve121" metaboliteGlyph="Layout_14" role="substrate">
               <Curve>
                 <ListOfCurveSegments>
                   <CurveSegment xsi:type="CubicBezier">
-                    <Start x="831.432" y="603.889"/>
-                    <End x="921.248" y="678.1420000000001"/>
-                    <BasePoint1 x="846.846" y="616.633"/>
-                    <BasePoint2 x="945.546" y="684.025"/>
+                    <Start x="567.4628301523653" y="641.7248936804648"/>
+                    <End x="532.7652412290819" y="540.0723007241212"/>
+                    <BasePoint1 x="571.1271871077854" y="629.6219999182096"/>
+                    <BasePoint2 x="552.8623034072887" y="581.8214268806015"/>
                   </CurveSegment>
                 </ListOfCurveSegments>
               </Curve>
             </MetaboliteReferenceGlyph>
-            <MetaboliteReferenceGlyph key="Layout_76" name="curve120" metaboliteGlyph="Layout_19" role="product">
+            <MetaboliteReferenceGlyph key="Layout_70" name="curve120" metaboliteGlyph="Layout_52" role="product">
               <Curve>
                 <ListOfCurveSegments>
                   <CurveSegment xsi:type="CubicBezier">
-                    <Start x="921.248" y="678.1420000000001"/>
-                    <End x="892.759" y="754.155"/>
-                    <BasePoint1 x="896.95" y="672.259"/>
-                    <BasePoint2 x="899.778" y="735.427"/>
+                    <Start x="563.7984731969452" y="653.82778744272"/>
+                    <End x="574.9350638778444" y="707.9404976509535"/>
+                    <BasePoint1 x="560.1341162415251" y="665.9306812049753"/>
+                    <BasePoint2 x="566.6185008208297" y="689.9613128685282"/>
                   </CurveSegment>
                 </ListOfCurveSegments>
               </Curve>
             </MetaboliteReferenceGlyph>
           </ListOfMetaboliteReferenceGlyphs>
         </ReactionGlyph>
-        <ReactionGlyph key="Layout_77" name="rGlyph_13" reaction="Reaction_13">
+        <ReactionGlyph key="Layout_74" name="rGlyph_13" reaction="Reaction_13">
           <Curve>
             <ListOfCurveSegments>
               <CurveSegment xsi:type="LineSegment">
-                <Start x="996.248" y="678.1420000000001"/>
-                <End x="996.248" y="678.1420000000001"/>
+                <Start x="608.4544778659215" y="615.8988243878376"/>
+                <End x="612.0659308197712" y="598.4429046321353"/>
               </CurveSegment>
             </ListOfCurveSegments>
           </Curve>
           <ListOfMetaboliteReferenceGlyphs>
-            <MetaboliteReferenceGlyph key="Layout_78" name="curve130" metaboliteGlyph="Layout_19" role="substrate">
+            <MetaboliteReferenceGlyph key="Layout_79" name="curve130" metaboliteGlyph="Layout_52" role="substrate">
               <Curve>
                 <ListOfCurveSegments>
                   <CurveSegment xsi:type="CubicBezier">
-                    <Start x="912.514" y="757.271"/>
-                    <End x="996.248" y="678.1420000000001"/>
-                    <BasePoint1 x="927.05" y="743.535"/>
-                    <BasePoint2 x="978.059" y="695.292"/>
+                    <Start x="608.4544778659215" y="615.8988243878376"/>
+                    <End x="585.6126847714764" y="707.9404976509535"/>
+                    <BasePoint1 x="604.8430249120718" y="633.35474414354"/>
+                    <BasePoint2 x="594.3249916033117" y="675.0116008361723"/>
                   </CurveSegment>
                 </ListOfCurveSegments>
               </Curve>
             </MetaboliteReferenceGlyph>
-            <MetaboliteReferenceGlyph key="Layout_79" name="curve130" metaboliteGlyph="Layout_11" role="product">
+            <MetaboliteReferenceGlyph key="Layout_73" name="curve130" metaboliteGlyph="Layout_18" role="product">
               <Curve>
                 <ListOfCurveSegments>
                   <CurveSegment xsi:type="CubicBezier">
-                    <Start x="996.248" y="678.1420000000001"/>
-                    <End x="1150.27" y="669.516"/>
-                    <BasePoint1 x="1014.44" y="660.992"/>
-                    <BasePoint2 x="1130.3" y="670.634"/>
+                    <Start x="612.0659308197712" y="598.4429046321353"/>
+                    <End x="667.6619627073005" y="579.9878903121681"/>
+                    <BasePoint1 x="615.6773837736209" y="580.986984876433"/>
+                    <BasePoint2 x="642.5725364789232" y="576.1234576553749"/>
                   </CurveSegment>
                 </ListOfCurveSegments>
               </Curve>
             </MetaboliteReferenceGlyph>
-            <MetaboliteReferenceGlyph key="Layout_80" name="curve131" metaboliteGlyph="Layout_9" role="product">
+            <MetaboliteReferenceGlyph key="Layout_77" name="curve131" metaboliteGlyph="Layout_14" role="product">
               <Curve>
                 <ListOfCurveSegments>
                   <CurveSegment xsi:type="CubicBezier">
-                    <Start x="996.248" y="678.1420000000001"/>
-                    <End x="850.648" y="601.553"/>
-                    <BasePoint1 x="1014.44" y="660.992"/>
-                    <BasePoint2 x="868.349" y="610.864"/>
+                    <Start x="612.0659308197712" y="598.4429046321353"/>
+                    <End x="552.3533684456688" y="540.0723007241212"/>
+                    <BasePoint1 x="615.6773837736209" y="580.986984876433"/>
+                    <BasePoint2 x="584.9182393481074" y="556.1656628613515"/>
                   </CurveSegment>
                 </ListOfCurveSegments>
               </Curve>
             </MetaboliteReferenceGlyph>
           </ListOfMetaboliteReferenceGlyphs>
         </ReactionGlyph>
-        <ReactionGlyph key="Layout_81" name="rGlyph_14" reaction="Reaction_14">
+        <ReactionGlyph key="Layout_82" name="rGlyph_14" reaction="Reaction_14">
           <Curve>
             <ListOfCurveSegments>
               <CurveSegment xsi:type="LineSegment">
-                <Start x="1349.25" y="715.1420000000001"/>
-                <End x="1349.25" y="715.1420000000001"/>
+                <Start x="800.2421449846121" y="602.8715386623337"/>
+                <End x="804.5581282247318" y="620.1828444647083"/>
               </CurveSegment>
             </ListOfCurveSegments>
           </Curve>
           <ListOfMetaboliteReferenceGlyphs>
-            <MetaboliteReferenceGlyph key="Layout_82" name="curve140" metaboliteGlyph="Layout_11" role="substrate">
+            <MetaboliteReferenceGlyph key="Layout_76" name="curve140" metaboliteGlyph="Layout_18" role="substrate">
               <Curve>
                 <ListOfCurveSegments>
                   <CurveSegment xsi:type="CubicBezier">
-                    <Start x="1243.15" y="678.559"/>
-                    <End x="1349.25" y="715.1420000000001"/>
-                    <BasePoint1 x="1262.06" y="685.079"/>
-                    <BasePoint2 x="1339.09" y="692.297"/>
+                    <Start x="800.2421449846121" y="602.8715386623337"/>
+                    <End x="750.6619627073005" y="582.2370887947831"/>
+                    <BasePoint1 x="795.9261617444925" y="585.5602328599591"/>
+                    <BasePoint2 x="772.2150664158665" y="579.5708343767775"/>
                   </CurveSegment>
                 </ListOfCurveSegments>
               </Curve>
             </MetaboliteReferenceGlyph>
-            <MetaboliteReferenceGlyph key="Layout_83" name="curve141" metaboliteGlyph="Layout_13" role="substrate">
+            <MetaboliteReferenceGlyph key="Layout_81" name="curve141" metaboliteGlyph="Layout_24" role="substrate">
               <Curve>
                 <ListOfCurveSegments>
                   <CurveSegment xsi:type="CubicBezier">
-                    <Start x="1410.27" y="687.776"/>
-                    <End x="1349.25" y="715.1420000000001"/>
-                    <BasePoint1 x="1392.02" y="695.96"/>
-                    <BasePoint2 x="1339.09" y="692.297"/>
+                    <Start x="800.2421449846121" y="602.8715386623337"/>
+                    <End x="850.9121258935102" y="550.0930352556493"/>
+                    <BasePoint1 x="795.9261617444925" y="585.5602328599591"/>
+                    <BasePoint2 x="822.3401480089714" y="563.4988076072106"/>
                   </CurveSegment>
                 </ListOfCurveSegments>
               </Curve>
             </MetaboliteReferenceGlyph>
-            <MetaboliteReferenceGlyph key="Layout_84" name="curve140" metaboliteGlyph="Layout_24" role="product">
+            <MetaboliteReferenceGlyph key="Layout_86" name="curve140" metaboliteGlyph="Layout_96" role="product">
               <Curve>
                 <ListOfCurveSegments>
                   <CurveSegment xsi:type="CubicBezier">
-                    <Start x="1349.25" y="715.1420000000001"/>
-                    <End x="1329.3" y="881.355"/>
-                    <BasePoint1 x="1359.4" y="737.987"/>
-                    <BasePoint2 x="1331.69" y="861.498"/>
+                    <Start x="804.5581282247318" y="620.1828444647083"/>
+                    <End x="831.4291015692157" y="711.5047253834395"/>
+                    <BasePoint1 x="808.8741114648515" y="637.4941502670829"/>
+                    <BasePoint2 x="821.2306023270635" y="678.8272642758549"/>
                   </CurveSegment>
                 </ListOfCurveSegments>
               </Curve>
             </MetaboliteReferenceGlyph>
           </ListOfMetaboliteReferenceGlyphs>
         </ReactionGlyph>
-        <ReactionGlyph key="Layout_85" name="rGlyph_15" reaction="Reaction_15">
+        <ReactionGlyph key="Layout_80" name="rGlyph_15" reaction="Reaction_15">
           <Curve>
             <ListOfCurveSegments>
               <CurveSegment xsi:type="LineSegment">
-                <Start x="1264.25" y="818.1420000000001"/>
-                <End x="1264.25" y="818.1420000000001"/>
+                <Start x="857.9090850208559" y="655.5020888131076"/>
+                <End x="853.6460057823065" y="643.5438090041801"/>
               </CurveSegment>
             </ListOfCurveSegments>
           </Curve>
           <ListOfMetaboliteReferenceGlyphs>
-            <MetaboliteReferenceGlyph key="Layout_86" name="curve150" metaboliteGlyph="Layout_24" role="substrate">
+            <MetaboliteReferenceGlyph key="Layout_84" name="curve150" metaboliteGlyph="Layout_96" role="substrate">
               <Curve>
                 <ListOfCurveSegments>
                   <CurveSegment xsi:type="CubicBezier">
-                    <Start x="1310.46" y="882.989"/>
-                    <End x="1264.25" y="818.1420000000001"/>
-                    <BasePoint1 x="1298.85" y="866.702"/>
-                    <BasePoint2 x="1278.82" y="838.453"/>
+                    <Start x="857.9090850208559" y="655.5020888131076"/>
+                    <End x="843.9875306773625" y="711.5047253834395"/>
+                    <BasePoint1 x="862.1721642594051" y="667.4603686220351"/>
+                    <BasePoint2 x="854.1456172780212" y="692.4721169549691"/>
                   </CurveSegment>
                 </ListOfCurveSegments>
               </Curve>
             </MetaboliteReferenceGlyph>
-            <MetaboliteReferenceGlyph key="Layout_87" name="curve150" metaboliteGlyph="Layout_10" role="product">
+            <MetaboliteReferenceGlyph key="Layout_89" name="curve150" metaboliteGlyph="Layout_16" role="product">
               <Curve>
                 <ListOfCurveSegments>
                   <CurveSegment xsi:type="CubicBezier">
-                    <Start x="1264.25" y="818.1420000000001"/>
-                    <End x="1171.24" y="794.559"/>
-                    <BasePoint1 x="1249.67" y="797.831"/>
-                    <BasePoint2 x="1190.63" y="799.475"/>
+                    <Start x="853.6460057823065" y="643.5438090041801"/>
+                    <End x="743.7200427387072" y="673.0915115522433"/>
+                    <BasePoint1 x="849.3829265437572" y="631.5855291952526"/>
+                    <BasePoint2 x="795.4857148315948" y="649.3489504215161"/>
                   </CurveSegment>
                 </ListOfCurveSegments>
               </Curve>
             </MetaboliteReferenceGlyph>
-            <MetaboliteReferenceGlyph key="Layout_88" name="curve151" metaboliteGlyph="Layout_13" role="product">
+            <MetaboliteReferenceGlyph key="Layout_83" name="curve151" metaboliteGlyph="Layout_24" role="product">
               <Curve>
                 <ListOfCurveSegments>
                   <CurveSegment xsi:type="CubicBezier">
-                    <Start x="1264.25" y="818.1420000000001"/>
-                    <End x="1433.37" y="702.739"/>
-                    <BasePoint1 x="1249.67" y="797.831"/>
-                    <BasePoint2 x="1416.85" y="714.0119999999999"/>
+                    <Start x="853.6460057823065" y="643.5438090041801"/>
+                    <End x="872.9764017888605" y="550.0930352556493"/>
+                    <BasePoint1 x="849.3829265437572" y="631.5855291952526"/>
+                    <BasePoint2 x="860.1138943566715" y="587.8497122732191"/>
                   </CurveSegment>
                 </ListOfCurveSegments>
               </Curve>
             </MetaboliteReferenceGlyph>
           </ListOfMetaboliteReferenceGlyphs>
         </ReactionGlyph>
-        <ReactionGlyph key="Layout_89" name="rGlyph_16" reaction="Reaction_16">
+        <ReactionGlyph key="Layout_88" name="rGlyph_16" reaction="Reaction_16">
           <Curve>
             <ListOfCurveSegments>
               <CurveSegment xsi:type="LineSegment">
-                <Start x="1019.25" y="564.1420000000001"/>
-                <End x="1019.25" y="564.1420000000001"/>
+                <Start x="617.5708893955695" y="530.5793931328043"/>
+                <End x="620.219589466849" y="520.2114230709509"/>
               </CurveSegment>
             </ListOfCurveSegments>
           </Curve>
           <ListOfMetaboliteReferenceGlyphs>
-            <MetaboliteReferenceGlyph key="Layout_90" name="curve160" metaboliteGlyph="Layout_11" role="substrate">
+            <MetaboliteReferenceGlyph key="Layout_93" name="curve160" metaboliteGlyph="Layout_18" role="substrate">
               <Curve>
                 <ListOfCurveSegments>
                   <CurveSegment xsi:type="CubicBezier">
-                    <Start x="1161.15" y="655.994"/>
-                    <End x="1019.25" y="564.1420000000001"/>
-                    <BasePoint1 x="1144.36" y="645.126"/>
-                    <BasePoint2 x="1012.4" y="588.187"/>
+                    <Start x="617.5708893955695" y="530.5793931328043"/>
+                    <End x="667.6619627073005" y="562.3494073627289"/>
+                    <BasePoint1 x="614.9221893242899" y="540.9473631946577"/>
+                    <BasePoint2 x="640.6299009979753" y="554.2403777941566"/>
                   </CurveSegment>
                 </ListOfCurveSegments>
               </Curve>
             </MetaboliteReferenceGlyph>
-            <MetaboliteReferenceGlyph key="Layout_91" name="curve161" metaboliteGlyph="Layout_9" role="substrate">
+            <MetaboliteReferenceGlyph key="Layout_87" name="curve161" metaboliteGlyph="Layout_14" role="substrate">
               <Curve>
                 <ListOfCurveSegments>
                   <CurveSegment xsi:type="CubicBezier">
-                    <Start x="859.247" y="585.329"/>
-                    <End x="1019.25" y="564.1420000000001"/>
-                    <BasePoint1 x="879.073" y="582.703"/>
-                    <BasePoint2 x="1012.4" y="588.187"/>
+                    <Start x="617.5708893955695" y="530.5793931328043"/>
+                    <End x="574.7684650375475" y="532.7176192764489"/>
+                    <BasePoint1 x="614.9221893242899" y="540.9473631946577"/>
+                    <BasePoint2 x="594.1831521630988" y="539.4244837510166"/>
                   </CurveSegment>
                 </ListOfCurveSegments>
               </Curve>
             </MetaboliteReferenceGlyph>
-            <MetaboliteReferenceGlyph key="Layout_92" name="curve160" metaboliteGlyph="Layout_20" role="product">
+            <MetaboliteReferenceGlyph key="Layout_91" name="curve160" metaboliteGlyph="Layout_57" role="product">
               <Curve>
                 <ListOfCurveSegments>
                   <CurveSegment xsi:type="CubicBezier">
-                    <Start x="1019.25" y="564.1420000000001"/>
-                    <End x="1030.79" y="437.132"/>
-                    <BasePoint1 x="1026.09" y="540.097"/>
-                    <BasePoint2 x="1028.98" y="457.05"/>
+                    <Start x="620.219589466849" y="520.2114230709509"/>
+                    <End x="637.8819256289238" y="464.7015994753957"/>
+                    <BasePoint1 x="622.8682895381286" y="509.8434530090975"/>
+                    <BasePoint2 x="631.0372826013461" y="484.6805337267833"/>
                   </CurveSegment>
                 </ListOfCurveSegments>
               </Curve>
             </MetaboliteReferenceGlyph>
           </ListOfMetaboliteReferenceGlyphs>
         </ReactionGlyph>
-        <ReactionGlyph key="Layout_93" name="rGlyph_17" reaction="Reaction_17">
+        <ReactionGlyph key="Layout_97" name="rGlyph_17" reaction="Reaction_17">
           <Curve>
             <ListOfCurveSegments>
               <CurveSegment xsi:type="LineSegment">
-                <Start x="923.248" y="504.142"/>
-                <End x="923.248" y="504.142"/>
+                <Start x="603.2785351157932" y="379.6464975299589"/>
+                <End x="601.73838097199" y="376.1882862650451"/>
               </CurveSegment>
             </ListOfCurveSegments>
           </Curve>
           <ListOfMetaboliteReferenceGlyphs>
-            <MetaboliteReferenceGlyph key="Layout_94" name="curve170" metaboliteGlyph="Layout_20" role="substrate">
+            <MetaboliteReferenceGlyph key="Layout_90" name="curve170" metaboliteGlyph="Layout_57" role="substrate">
               <Curve>
                 <ListOfCurveSegments>
                   <CurveSegment xsi:type="CubicBezier">
-                    <Start x="1009.51" y="433.482"/>
-                    <End x="923.248" y="504.142"/>
-                    <BasePoint1 x="994.043" y="446.155"/>
-                    <BasePoint2 x="942.6130000000001" y="488.331"/>
+                    <Start x="603.2785351157932" y="379.6464975299589"/>
+                    <End x="633.0860725856016" y="429.7015994753957"/>
+                    <BasePoint1 x="604.8186892595962" y="383.1047087948726"/>
+                    <BasePoint2 x="619.3374194585497" y="407.2677069513626"/>
                   </CurveSegment>
                 </ListOfCurveSegments>
               </Curve>
             </MetaboliteReferenceGlyph>
-            <MetaboliteReferenceGlyph key="Layout_95" name="curve170" metaboliteGlyph="Layout_9" role="product">
+            <MetaboliteReferenceGlyph key="Layout_95" name="curve170" metaboliteGlyph="Layout_14" role="product">
               <Curve>
                 <ListOfCurveSegments>
                   <CurveSegment xsi:type="CubicBezier">
-                    <Start x="923.248" y="504.142"/>
-                    <End x="831.596" y="567.636"/>
-                    <BasePoint1 x="903.884" y="519.954"/>
-                    <BasePoint2 x="848.0359999999999" y="556.247"/>
+                    <Start x="601.73838097199" y="376.1882862650451"/>
+                    <End x="534.019475141679" y="505.0723007241212"/>
+                    <BasePoint1 x="600.1982268281869" y="372.7300750001314"/>
+                    <BasePoint2 x="566.7238124489821" y="438.0366350458978"/>
                   </CurveSegment>
                 </ListOfCurveSegments>
               </Curve>
             </MetaboliteReferenceGlyph>
-            <MetaboliteReferenceGlyph key="Layout_96" name="curve171" metaboliteGlyph="Layout_12" role="product">
+            <MetaboliteReferenceGlyph key="Layout_101" name="curve171" metaboliteGlyph="Layout_20" role="product">
               <Curve>
                 <ListOfCurveSegments>
                   <CurveSegment xsi:type="CubicBezier">
-                    <Start x="923.248" y="504.142"/>
-                    <End x="1119.25" y="513.444"/>
-                    <BasePoint1 x="903.884" y="519.954"/>
-                    <BasePoint2 x="1099.28" y="512.496"/>
+                    <Start x="601.73838097199" y="376.1882862650451"/>
+                    <End x="698.5788843819474" y="320.166672928395"/>
+                    <BasePoint1 x="600.1982268281869" y="372.7300750001314"/>
+                    <BasePoint2 x="649.0035170691164" y="345.5838211480348"/>
                   </CurveSegment>
                 </ListOfCurveSegments>
               </Curve>
             </MetaboliteReferenceGlyph>
           </ListOfMetaboliteReferenceGlyphs>
         </ReactionGlyph>
-        <ReactionGlyph key="Layout_97" name="rGlyph_18" reaction="Reaction_18">
+        <ReactionGlyph key="Layout_94" name="rGlyph_18" reaction="Reaction_18">
           <Curve>
             <ListOfCurveSegments>
               <CurveSegment xsi:type="LineSegment">
-                <Start x="1305.25" y="544.1420000000001"/>
-                <End x="1305.25" y="544.1420000000001"/>
+                <Start x="839.7120563595134" y="396.3002466055332"/>
+                <End x="834.0316690124026" y="396.0907675110331"/>
               </CurveSegment>
             </ListOfCurveSegments>
           </Curve>
           <ListOfMetaboliteReferenceGlyphs>
-            <MetaboliteReferenceGlyph key="Layout_98" name="curve180" metaboliteGlyph="Layout_12" role="substrate">
+            <MetaboliteReferenceGlyph key="Layout_99" name="curve180" metaboliteGlyph="Layout_20" role="substrate">
               <Curve>
                 <ListOfCurveSegments>
                   <CurveSegment xsi:type="CubicBezier">
-                    <Start x="1206.55" y="526.8200000000001"/>
-                    <End x="1305.25" y="544.1420000000001"/>
-                    <BasePoint1 x="1226.25" y="530.277"/>
-                    <BasePoint2 x="1311.52" y="568.342"/>
+                    <Start x="839.7120563595134" y="396.3002466055332"/>
+                    <End x="752.6028877615053" y="320.166672928395"/>
+                    <BasePoint1 x="845.3924437066243" y="396.5097257000333"/>
+                    <BasePoint2 x="800.4177625708425" y="358.3905690878391"/>
                   </CurveSegment>
                 </ListOfCurveSegments>
               </Curve>
             </MetaboliteReferenceGlyph>
-            <MetaboliteReferenceGlyph key="Layout_99" name="curve181" metaboliteGlyph="Layout_13" role="substrate">
+            <MetaboliteReferenceGlyph key="Layout_105" name="curve181" metaboliteGlyph="Layout_24" role="substrate">
               <Curve>
                 <ListOfCurveSegments>
                   <CurveSegment xsi:type="CubicBezier">
-                    <Start x="1445.21" y="667.197"/>
-                    <End x="1305.25" y="544.1420000000001"/>
-                    <BasePoint1 x="1430.19" y="653.991"/>
-                    <BasePoint2 x="1311.52" y="568.342"/>
+                    <Start x="839.7120563595134" y="396.3002466055332"/>
+                    <End x="873.8441719249274" y="515.0930352556493"/>
+                    <BasePoint1 x="845.3924437066243" y="396.5097257000333"/>
+                    <BasePoint2 x="861.0384046525535" y="455.8537502514663"/>
                   </CurveSegment>
                 </ListOfCurveSegments>
               </Curve>
             </MetaboliteReferenceGlyph>
-            <MetaboliteReferenceGlyph key="Layout_100" name="curve180" metaboliteGlyph="Layout_23" role="product">
+            <MetaboliteReferenceGlyph key="Layout_98" name="curve180" metaboliteGlyph="Layout_92" role="product">
               <Curve>
                 <ListOfCurveSegments>
                   <CurveSegment xsi:type="CubicBezier">
-                    <Start x="1305.25" y="544.1420000000001"/>
-                    <End x="1356.7" y="433.46"/>
-                    <BasePoint1 x="1298.97" y="519.942"/>
-                    <BasePoint2 x="1348.27" y="451.596"/>
+                    <Start x="834.0316690124026" y="396.0907675110331"/>
+                    <End x="819.5332145382945" y="398.0350631470209"/>
+                    <BasePoint1 x="828.3512816652918" y="395.8812884165329"/>
+                    <BasePoint2 x="822.5221512650155" y="396.9058060081519"/>
                   </CurveSegment>
                 </ListOfCurveSegments>
               </Curve>
             </MetaboliteReferenceGlyph>
           </ListOfMetaboliteReferenceGlyphs>
         </ReactionGlyph>
-        <ReactionGlyph key="Layout_101" name="rGlyph_19" reaction="Reaction_19">
+        <ReactionGlyph key="Layout_103" name="rGlyph_19" reaction="Reaction_19">
           <Curve>
             <ListOfCurveSegments>
               <CurveSegment xsi:type="LineSegment">
-                <Start x="1365.25" y="622.1420000000001"/>
-                <End x="1365.25" y="622.1420000000001"/>
+                <Start x="781.4950585424741" y="496.1508011865695"/>
+                <End x="786.0668999621086" y="510.1864616078368"/>
               </CurveSegment>
             </ListOfCurveSegments>
           </Curve>
           <ListOfMetaboliteReferenceGlyphs>
-            <MetaboliteReferenceGlyph key="Layout_102" name="curve190" metaboliteGlyph="Layout_23" role="substrate">
+            <MetaboliteReferenceGlyph key="Layout_106" name="curve190" metaboliteGlyph="Layout_92" role="substrate">
               <Curve>
                 <ListOfCurveSegments>
                   <CurveSegment xsi:type="CubicBezier">
-                    <Start x="1369.05" y="435.14"/>
-                    <End x="1365.25" y="622.1420000000001"/>
-                    <BasePoint1 x="1368.64" y="455.136"/>
-                    <BasePoint2 x="1365.85" y="597.149"/>
+                    <Start x="781.4950585424741" y="496.1508011865695"/>
+                    <End x="755.5167399624885" y="433.0350631470209"/>
+                    <BasePoint1 x="776.9232171228398" y="482.1151407653023"/>
+                    <BasePoint2 x="765.0770181877556" y="454.0661868508447"/>
                   </CurveSegment>
                 </ListOfCurveSegments>
               </Curve>
             </MetaboliteReferenceGlyph>
-            <MetaboliteReferenceGlyph key="Layout_103" name="curve190" metaboliteGlyph="Layout_11" role="product">
+            <MetaboliteReferenceGlyph key="Layout_102" name="curve190" metaboliteGlyph="Layout_18" role="product">
               <Curve>
                 <ListOfCurveSegments>
                   <CurveSegment xsi:type="CubicBezier">
-                    <Start x="1365.25" y="622.1420000000001"/>
-                    <End x="1243.13" y="665.6369999999999"/>
-                    <BasePoint1 x="1364.65" y="647.135"/>
-                    <BasePoint2 x="1261.97" y="658.926"/>
+                    <Start x="786.0668999621086" y="510.1864616078368"/>
+                    <End x="735.1014006393349" y="561.6902994637381"/>
+                    <BasePoint1 x="790.6387413817429" y="524.2221220291041"/>
+                    <BasePoint2 x="764.0130313654474" y="546.465125851738"/>
                   </CurveSegment>
                 </ListOfCurveSegments>
               </Curve>
             </MetaboliteReferenceGlyph>
-            <MetaboliteReferenceGlyph key="Layout_104" name="curve191" metaboliteGlyph="Layout_13" role="product">
+            <MetaboliteReferenceGlyph key="Layout_107" name="curve191" metaboliteGlyph="Layout_24" role="product">
               <Curve>
                 <ListOfCurveSegments>
                   <CurveSegment xsi:type="CubicBezier">
-                    <Start x="1365.25" y="622.1420000000001"/>
-                    <End x="1427.83" y="669.77"/>
-                    <BasePoint1 x="1364.65" y="647.135"/>
-                    <BasePoint2 x="1411.92" y="657.658"/>
+                    <Start x="786.0668999621086" y="510.1864616078368"/>
+                    <End x="824.5429520541562" y="527.4692105088226"/>
+                    <BasePoint1 x="790.6387413817429" y="524.2221220291041"/>
+                    <BasePoint2 x="808.7338070728581" y="529.3545813742802"/>
                   </CurveSegment>
                 </ListOfCurveSegments>
               </Curve>
@@ -2525,135 +2722,135 @@
         </ReactionGlyph>
       </ListOfReactionGlyphs>
       <ListOfTextGlyphs>
-        <TextGlyph key="Layout_105" name="tGlyph_0" graphicalObject="Layout_3" originOfText="Metabolite_0">
+        <TextGlyph key="Layout_109" name="tGlyph_0" graphicalObject="Layout_2" originOfText="Metabolite_33">
           <BoundingBox>
-            <Position x="473.524" y="187.128"/>
+            <Position x="296.2970630279131" y="88.34966316248098"/>
             <Dimensions width="41" height="25"/>
           </BoundingBox>
         </TextGlyph>
-        <TextGlyph key="Layout_106" name="tGlyph_1" graphicalObject="Layout_4" originOfText="Metabolite_1">
+        <TextGlyph key="Layout_115" name="tGlyph_1" graphicalObject="Layout_4" originOfText="Metabolite_29">
           <BoundingBox>
-            <Position x="555.84" y="185.604"/>
+            <Position x="373.3214208477608" y="155.9030708831204"/>
             <Dimensions width="41" height="25"/>
           </BoundingBox>
         </TextGlyph>
-        <TextGlyph key="Layout_107" name="tGlyph_2" graphicalObject="Layout_5" text="MAPKKK">
+        <TextGlyph key="Layout_111" name="tGlyph_2" graphicalObject="Layout_6" text="MAPKKK">
           <BoundingBox>
-            <Position x="508.91" y="50"/>
+            <Position x="334.8806978727152" y="0"/>
             <Dimensions width="73" height="25"/>
           </BoundingBox>
         </TextGlyph>
-        <TextGlyph key="Layout_108" name="tGlyph_3" graphicalObject="Layout_6" text="P-MAPKKK">
+        <TextGlyph key="Layout_113" name="tGlyph_3" graphicalObject="Layout_8" text="P-MAPKKK">
           <BoundingBox>
-            <Position x="465.283" y="370.031"/>
+            <Position x="289.4537483815041" y="286.9616708655706"/>
             <Dimensions width="89" height="25"/>
           </BoundingBox>
         </TextGlyph>
-        <TextGlyph key="Layout_109" name="tGlyph_4" graphicalObject="Layout_7" text="MAPKK">
+        <TextGlyph key="Layout_110" name="tGlyph_4" graphicalObject="Layout_10" text="MAPKK">
           <BoundingBox>
-            <Position x="114.538" y="515.231"/>
+            <Position x="102.9045723194321" y="465.986786497818"/>
             <Dimensions width="65" height="25"/>
           </BoundingBox>
         </TextGlyph>
-        <TextGlyph key="Layout_110" name="tGlyph_5" graphicalObject="Layout_8" text="P-MAPKK">
+        <TextGlyph key="Layout_118" name="tGlyph_5" graphicalObject="Layout_12" text="P-MAPKK">
           <BoundingBox>
-            <Position x="459.904" y="601.12"/>
+            <Position x="207.1799601310985" y="446.0135355708081"/>
             <Dimensions width="81" height="25"/>
           </BoundingBox>
         </TextGlyph>
-        <TextGlyph key="Layout_111" name="tGlyph_6" graphicalObject="Layout_9" text="PP-MAPKK">
+        <TextGlyph key="Layout_116" name="tGlyph_6" graphicalObject="Layout_14" text="PP-MAPKK">
           <BoundingBox>
-            <Position x="759.604" y="573.269"/>
+            <Position x="480.7684650375474" y="510.0723007241212"/>
             <Dimensions width="89" height="25"/>
           </BoundingBox>
         </TextGlyph>
-        <TextGlyph key="Layout_112" name="tGlyph_7" graphicalObject="Layout_10" text="MAPK">
+        <TextGlyph key="Layout_114" name="tGlyph_7" graphicalObject="Layout_16" text="MAPK">
           <BoundingBox>
-            <Position x="1104.97" y="782.6"/>
+            <Position x="681.7200427387072" y="673.7508193326802"/>
             <Dimensions width="57" height="25"/>
           </BoundingBox>
         </TextGlyph>
-        <TextGlyph key="Layout_113" name="tGlyph_8" graphicalObject="Layout_11" text="P-MAPK">
+        <TextGlyph key="Layout_123" name="tGlyph_8" graphicalObject="Layout_18" text="P-MAPK">
           <BoundingBox>
-            <Position x="1161.02" y="661.008"/>
+            <Position x="672.6619627073005" y="566.6902994637381"/>
             <Dimensions width="73" height="25"/>
           </BoundingBox>
         </TextGlyph>
-        <TextGlyph key="Layout_114" name="tGlyph_9" graphicalObject="Layout_12" text="PP-MAPK">
+        <TextGlyph key="Layout_120" name="tGlyph_9" graphicalObject="Layout_20" text="PP-MAPK">
           <BoundingBox>
-            <Position x="1129.6" y="497.679"/>
+            <Position x="690.8328812568292" y="290.166672928395"/>
             <Dimensions width="81" height="25"/>
           </BoundingBox>
         </TextGlyph>
-        <TextGlyph key="Layout_115" name="tGlyph_10" graphicalObject="Layout_13" text="MAPK-Pase">
+        <TextGlyph key="Layout_117" name="tGlyph_10" graphicalObject="Layout_24" text="MAPK-Pase">
           <BoundingBox>
-            <Position x="1420.82" y="673.556"/>
+            <Position x="829.5429520541562" y="520.0930352556493"/>
             <Dimensions width="97" height="25"/>
           </BoundingBox>
         </TextGlyph>
-        <TextGlyph key="Layout_116" name="tGlyph_11" graphicalObject="Layout_14" text="MAPKK-Pase">
+        <TextGlyph key="Layout_122" name="tGlyph_11" graphicalObject="Layout_28" text="MAPKK-Pase">
           <BoundingBox>
-            <Position x="439.679" y="864.604"/>
+            <Position x="221.1045850264778" y="633.8044484649134"/>
             <Dimensions width="105" height="25"/>
           </BoundingBox>
         </TextGlyph>
-        <TextGlyph key="Layout_117" name="tGlyph_12" graphicalObject="Layout_15" text="MAPKKK_E1">
+        <TextGlyph key="Layout_126" name="tGlyph_12" graphicalObject="Layout_31" text="MAPKKK_E1">
           <BoundingBox>
-            <Position x="267.667" y="190.419"/>
+            <Position x="141.0196229998448" y="88.71491496538314"/>
             <Dimensions width="97" height="25"/>
           </BoundingBox>
         </TextGlyph>
-        <TextGlyph key="Layout_118" name="tGlyph_13" graphicalObject="Layout_16" text="P-MAPKKK_E2">
+        <TextGlyph key="Layout_124" name="tGlyph_13" graphicalObject="Layout_37" text="P-MAPKKK_E2">
           <BoundingBox>
-            <Position x="697.745" y="180.92"/>
+            <Position x="465.2483264022186" y="182.1359716170413"/>
             <Dimensions width="113" height="25"/>
           </BoundingBox>
         </TextGlyph>
-        <TextGlyph key="Layout_119" name="tGlyph_14" graphicalObject="Layout_17" text="P-MAPKKK_MAPKK">
+        <TextGlyph key="Layout_121" name="tGlyph_14" graphicalObject="Layout_43" text="P-MAPKKK_MAPKK">
           <BoundingBox>
-            <Position x="267.74" y="568.438"/>
+            <Position x="66.07729152763226" y="297.3201612924149"/>
             <Dimensions width="137" height="25"/>
           </BoundingBox>
         </TextGlyph>
-        <TextGlyph key="Layout_120" name="tGlyph_15" graphicalObject="Layout_18" text="P-MAPKKK_P-MAPKK">
+        <TextGlyph key="Layout_129" name="tGlyph_15" graphicalObject="Layout_49" text="P-MAPKKK_P-MAPKK">
           <BoundingBox>
-            <Position x="565.788" y="535.446"/>
+            <Position x="332.444825635915" y="442.2855459870744"/>
             <Dimensions width="153" height="25"/>
           </BoundingBox>
         </TextGlyph>
-        <TextGlyph key="Layout_121" name="tGlyph_16" graphicalObject="Layout_19" text="PP-MAPKK_MAPK">
+        <TextGlyph key="Layout_127" name="tGlyph_16" graphicalObject="Layout_52" text="PP-MAPKK_MAPK">
           <BoundingBox>
-            <Position x="826.2" y="764.861"/>
+            <Position x="516.6006843339268" y="712.9404976509535"/>
             <Dimensions width="129" height="25"/>
           </BoundingBox>
         </TextGlyph>
-        <TextGlyph key="Layout_122" name="tGlyph_17" graphicalObject="Layout_20" text="PP-MAPKK_P-MAPK">
+        <TextGlyph key="Layout_125" name="tGlyph_17" graphicalObject="Layout_57" text="PP-MAPKK_P-MAPK">
           <BoundingBox>
-            <Position x="960.356" y="402.019"/>
+            <Position x="571.2022145852193" y="434.7015994753957"/>
             <Dimensions width="145" height="25"/>
           </BoundingBox>
         </TextGlyph>
-        <TextGlyph key="Layout_123" name="tGlyph_18" graphicalObject="Layout_21" text="MAPKK-Pase_PP-MAPKK">
+        <TextGlyph key="Layout_134" name="tGlyph_18" graphicalObject="Layout_78" text="MAPKK-Pase_PP-MAPKK">
           <BoundingBox>
-            <Position x="591.581" y="783.394"/>
+            <Position x="312.8651749768973" y="524.5169790192297"/>
             <Dimensions width="177" height="25"/>
           </BoundingBox>
         </TextGlyph>
-        <TextGlyph key="Layout_124" name="tGlyph_19" graphicalObject="Layout_22" text="MAPKK-Pase_P-MAPKK">
+        <TextGlyph key="Layout_131" name="tGlyph_19" graphicalObject="Layout_85" text="MAPKK-Pase_P-MAPKK">
           <BoundingBox>
-            <Position x="50" y="735.145"/>
+            <Position x="0" y="571.6918474406065"/>
             <Dimensions width="169" height="25"/>
           </BoundingBox>
         </TextGlyph>
-        <TextGlyph key="Layout_125" name="tGlyph_20" graphicalObject="Layout_23" text="MAPK-Pase_PP-MAPK">
+        <TextGlyph key="Layout_128" name="tGlyph_20" graphicalObject="Layout_92" text="MAPK-Pase_PP-MAPK">
           <BoundingBox>
-            <Position x="1290.36" y="399.986"/>
+            <Position x="667.3840431843846" y="403.0350631470209"/>
             <Dimensions width="161" height="25"/>
           </BoundingBox>
         </TextGlyph>
-        <TextGlyph key="Layout_126" name="tGlyph_21" graphicalObject="Layout_24" text="MAPK-Pase_P-MAPK">
+        <TextGlyph key="Layout_133" name="tGlyph_21" graphicalObject="Layout_96" text="MAPK-Pase_P-MAPK">
           <BoundingBox>
-            <Position x="1248.89" y="891.604"/>
+            <Position x="760.2622897819249" y="716.5047253834395"/>
             <Dimensions width="153" height="25"/>
           </BoundingBox>
         </TextGlyph>
@@ -2661,44 +2858,44 @@
     </Layout>
   </ListOfLayouts>
   <SBMLReference file="MAPK-HF96-layout.xml">
-    <SBMLMap SBMLid="E1" COPASIkey="Metabolite_0"/>
-    <SBMLMap SBMLid="E1_KKK" COPASIkey="Metabolite_12"/>
-    <SBMLMap SBMLid="E2" COPASIkey="Metabolite_1"/>
-    <SBMLMap SBMLid="E2_P_KKK" COPASIkey="Metabolite_13"/>
-    <SBMLMap SBMLid="K" COPASIkey="Metabolite_7"/>
-    <SBMLMap SBMLid="KK" COPASIkey="Metabolite_4"/>
-    <SBMLMap SBMLid="KKK" COPASIkey="Metabolite_2"/>
-    <SBMLMap SBMLid="KKPase" COPASIkey="Metabolite_11"/>
-    <SBMLMap SBMLid="KKPase_PP_KK" COPASIkey="Metabolite_18"/>
-    <SBMLMap SBMLid="KKPase_P_KK" COPASIkey="Metabolite_19"/>
-    <SBMLMap SBMLid="KPase" COPASIkey="Metabolite_10"/>
-    <SBMLMap SBMLid="KPase_PP_K" COPASIkey="Metabolite_20"/>
-    <SBMLMap SBMLid="KPase_P_K" COPASIkey="Metabolite_21"/>
-    <SBMLMap SBMLid="PP_K" COPASIkey="Metabolite_9"/>
-    <SBMLMap SBMLid="PP_KK" COPASIkey="Metabolite_6"/>
-    <SBMLMap SBMLid="PP_KK_K" COPASIkey="Metabolite_16"/>
-    <SBMLMap SBMLid="PP_KK_P_K" COPASIkey="Metabolite_17"/>
-    <SBMLMap SBMLid="P_K" COPASIkey="Metabolite_8"/>
-    <SBMLMap SBMLid="P_KK" COPASIkey="Metabolite_5"/>
-    <SBMLMap SBMLid="P_KKK" COPASIkey="Metabolite_3"/>
-    <SBMLMap SBMLid="P_KKK_KK" COPASIkey="Metabolite_14"/>
-    <SBMLMap SBMLid="P_KKK_P_KK" COPASIkey="Metabolite_15"/>
-    <SBMLMap SBMLid="compartment" COPASIkey="Compartment_0"/>
-    <SBMLMap SBMLid="parameter_1" COPASIkey="ModelValue_0"/>
+    <SBMLMap SBMLid="E1" COPASIkey="Metabolite_33"/>
+    <SBMLMap SBMLid="E1_KKK" COPASIkey="Metabolite_63"/>
+    <SBMLMap SBMLid="E2" COPASIkey="Metabolite_29"/>
+    <SBMLMap SBMLid="E2_P_KKK" COPASIkey="Metabolite_65"/>
+    <SBMLMap SBMLid="K" COPASIkey="Metabolite_53"/>
+    <SBMLMap SBMLid="KK" COPASIkey="Metabolite_23"/>
+    <SBMLMap SBMLid="KKK" COPASIkey="Metabolite_9"/>
+    <SBMLMap SBMLid="KKPase" COPASIkey="Metabolite_61"/>
+    <SBMLMap SBMLid="KKPase_PP_KK" COPASIkey="Metabolite_75"/>
+    <SBMLMap SBMLid="KKPase_P_KK" COPASIkey="Metabolite_77"/>
+    <SBMLMap SBMLid="KPase" COPASIkey="Metabolite_59"/>
+    <SBMLMap SBMLid="KPase_PP_K" COPASIkey="Metabolite_79"/>
+    <SBMLMap SBMLid="KPase_P_K" COPASIkey="Metabolite_81"/>
+    <SBMLMap SBMLid="PP_K" COPASIkey="Metabolite_57"/>
+    <SBMLMap SBMLid="PP_KK" COPASIkey="Metabolite_51"/>
+    <SBMLMap SBMLid="PP_KK_K" COPASIkey="Metabolite_71"/>
+    <SBMLMap SBMLid="PP_KK_P_K" COPASIkey="Metabolite_73"/>
+    <SBMLMap SBMLid="P_K" COPASIkey="Metabolite_55"/>
+    <SBMLMap SBMLid="P_KK" COPASIkey="Metabolite_49"/>
+    <SBMLMap SBMLid="P_KKK" COPASIkey="Metabolite_15"/>
+    <SBMLMap SBMLid="P_KKK_KK" COPASIkey="Metabolite_67"/>
+    <SBMLMap SBMLid="P_KKK_P_KK" COPASIkey="Metabolite_69"/>
+    <SBMLMap SBMLid="compartment" COPASIkey="Compartment_6"/>
+    <SBMLMap SBMLid="parameter_1" COPASIkey="ModelValue_15"/>
     <SBMLMap SBMLid="r10a" COPASIkey="Reaction_18"/>
     <SBMLMap SBMLid="r10b" COPASIkey="Reaction_19"/>
-    <SBMLMap SBMLid="r1a" COPASIkey="Reaction_0"/>
-    <SBMLMap SBMLid="r1b" COPASIkey="Reaction_1"/>
-    <SBMLMap SBMLid="r2a" COPASIkey="Reaction_2"/>
-    <SBMLMap SBMLid="r2b" COPASIkey="Reaction_3"/>
-    <SBMLMap SBMLid="r3a" COPASIkey="Reaction_4"/>
-    <SBMLMap SBMLid="r3b" COPASIkey="Reaction_5"/>
-    <SBMLMap SBMLid="r4a" COPASIkey="Reaction_6"/>
-    <SBMLMap SBMLid="r4b" COPASIkey="Reaction_7"/>
-    <SBMLMap SBMLid="r5a" COPASIkey="Reaction_8"/>
-    <SBMLMap SBMLid="r5b" COPASIkey="Reaction_9"/>
-    <SBMLMap SBMLid="r6a" COPASIkey="Reaction_10"/>
-    <SBMLMap SBMLid="r6b" COPASIkey="Reaction_11"/>
+    <SBMLMap SBMLid="r1a" COPASIkey="Reaction_11"/>
+    <SBMLMap SBMLid="r1b" COPASIkey="Reaction_10"/>
+    <SBMLMap SBMLid="r2a" COPASIkey="Reaction_9"/>
+    <SBMLMap SBMLid="r2b" COPASIkey="Reaction_8"/>
+    <SBMLMap SBMLid="r3a" COPASIkey="Reaction_7"/>
+    <SBMLMap SBMLid="r3b" COPASIkey="Reaction_6"/>
+    <SBMLMap SBMLid="r4a" COPASIkey="Reaction_5"/>
+    <SBMLMap SBMLid="r4b" COPASIkey="Reaction_4"/>
+    <SBMLMap SBMLid="r5a" COPASIkey="Reaction_3"/>
+    <SBMLMap SBMLid="r5b" COPASIkey="Reaction_2"/>
+    <SBMLMap SBMLid="r6a" COPASIkey="Reaction_1"/>
+    <SBMLMap SBMLid="r6b" COPASIkey="Reaction_0"/>
     <SBMLMap SBMLid="r7a" COPASIkey="Reaction_12"/>
     <SBMLMap SBMLid="r7b" COPASIkey="Reaction_13"/>
     <SBMLMap SBMLid="r8a" COPASIkey="Reaction_14"/>
