@@ -2212,8 +2212,7 @@ void CopasiUI3Window::slotFontSelection()
       qApp->setStyleSheet(" * {font : }");
       qApp->setStyleSheet(" * {font : }");
 
-      QString ApplicationFont = Font.family() + "; " + QString::number(Font.pointSize());
-      CCopasiRootContainer::getConfiguration()->setApplicationFont(TO_UTF8(ApplicationFont));
+      CCopasiRootContainer::getConfiguration()->setApplicationFont(TO_UTF8(Font.toString()));
 
       TaskWidget *pTaskWidget = dynamic_cast< TaskWidget * >(mpListView->getCurrentWidget());
 
@@ -2236,9 +2235,8 @@ void CopasiUI3Window::setApplicationFont()
     }
 
   QFont Font = qApp->font();
-  QString qApplicationFont = Font.family() + "; " + QString::number(Font.pointSize());
 
-  if (ApplicationFont == TO_UTF8(qApplicationFont))
+  if (ApplicationFont == TO_UTF8(Font.toString()))
     {
       // We are using the default
       CCopasiRootContainer::getConfiguration()->setApplicationFont("");
@@ -2246,11 +2244,8 @@ void CopasiUI3Window::setApplicationFont()
     }
 
   // The user has chosen another font
-  QString FontFamily = FROM_UTF8(ApplicationFont);
-  FontFamily.remove(QRegExp("; [0-9]*"));
-  int FontSize = FROM_UTF8(ApplicationFont).remove(0, FontFamily.length() + 2).toInt();
-
-  qApp->setFont(QFont(FontFamily, FontSize));
+  Font.fromString(FROM_UTF8(ApplicationFont));
+  qApp->setFont(Font);
 
   // This appears to load the fonts, etc. from the previous configuration.
   // Two calls so that the tabwidget labels are correct
