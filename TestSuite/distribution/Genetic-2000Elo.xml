@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual -->
+<!-- Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual -->
 <!-- Properties, Inc., University of Heidelberg, and The University -->
 <!-- of Manchester. -->
 <!-- All rights reserved. -->
@@ -13,43 +13,42 @@
 <!-- Properties, Inc. and EML Research, gGmbH. -->
 <!-- All rights reserved. -->
 
-<sbml xmlns="http://www.sbml.org/sbml/level1" level="1" version="1">
-<model name="repressilator">
-	<notes>
-		<body xmlns="http://www.w3.org/1999/xhtml">
-			<h1>Repressilator: A synthetic oscillatory network of transcriptional 
+<!-- Created by COPASI version 4.12 (Build 79) on 2014-04-15 09:22 with libSBML version 5.9.0. -->
+<sbml xmlns="http://www.sbml.org/sbml/level2" level="2" version="1">
+  <model metaid="COPASI0" id="repressilator" name="NoName">
+    <notes>
+      <body xmlns="http://www.w3.org/1999/xhtml">
+        <h1>Repressilator: A synthetic oscillatory network of transcriptional 
 			regulators</h1>
-
-			<table border="0" cellspacing="0" cellpadding="2" >
-				<thead>
-					<tr>
-						<th align="left" valign="middle" bgcolor="#eeeeee">Citation</th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr>
-						<td>Elowitz MB, Leibler S (2000)
+        <table border="0" cellspacing="0" cellpadding="2">
+          <thead>
+            <tr>
+              <th align="left" valign="middle" bgcolor="#eeeeee">Citation</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Elowitz MB, Leibler S (2000)
 							 A synthetic oscillatory network of transcriptional regulators.Nature.403 :
 							 335 - 338.
-						<a href="http://www.nature.com/cgi-taf/
-							DynaPage.taf?file=/nature/journal/v403/n6767/full/403335a0_fs.html">
+						<a href="http://www.nature.com/cgi-taf/        DynaPage.taf?file=/nature/journal/v403/n6767/full/403335a0_fs.html">
 							http://
 							www.nature.com/cgi-taf/DynaPage.taf?file=/nature/journal/v403/n6767/full/
 							403335a0_fs.html
-						</a></td>
-					</tr>
-				</tbody>
-			</table>
-			
-			<table border="0" cellspacing="0" cellpadding="2" >
-				<thead>
-					<tr>
-						<th align="left" valign="middle" bgcolor="#eeeeee">Description</th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr>
-						<td>
+						</a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <table border="0" cellspacing="0" cellpadding="2">
+      <thead>
+        <tr>
+          <th align="left" valign="middle" bgcolor="#eeeeee">Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
 							This file describes the repressilator system. The authors of this model (
 							see reference)
 							 use three transcriptional repressor systems that are not part of any natural biological clock to build an oscillating network that they called the repressilator.  The model system was induced in Escherichia coli.In this system,
@@ -61,343 +60,1558 @@
 							. Protein tetR inhibits the gene Cl from phage Lambda (
 							Z, PZ: mRNA, protein),
 							 and protein Cl inhibits lacI expression. With appropriate parameter values this system oscillates.</td>
-					</tr>
-				</tbody>
-			</table>
-			
-			<table border="0" cellspacing="0" cellpadding="2" >
-				<thead>
-					<tr>
-						<th align="left" valign="middle" bgcolor="#eeeeee">Rate&#160;constant&#160;&#160;&#160;&#160;&#160;&#160;</th>
-						<th align="left" valign="middle" bgcolor="#eeeeee">Reaction</th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr>
-						<td>k1&#160;=&#160;1</td>
-						<td>X&#160;->&#160;EmptySet</td>
-					</tr>
-					<tr>
-						<td>k1&#160;=&#160;1</td>
-						<td>Y&#160;->&#160;EmptySet</td>
-					</tr>
-					<tr>
-						<td>k1&#160;=&#160;1</td>
-						<td>Z&#160;->&#160;EmptySet</td>
-					</tr>
-					<tr>
-						<td>K&#160;=&#160;1&#160;(hill&#160;khalf)</td>
-						<td>PX&#160;|->&#160;Y</td>
-					</tr>
-					<tr>
-						<td>K&#160;=&#160;1&#160;(hill&#160;khalf)</td>
-						<td>PY&#160;|->&#160;Z</td>
-					</tr>
-					<tr>
-						<td>K&#160;=&#160;1&#160;(hill&#160;khalf)</td>
-						<td>PZ&#160;|->&#160;X</td>
-					</tr>
-					<tr>
-						<td>n&#160;=&#160;2.1&#160;(hill&#160;nhill)</td>
-						<td>PX&#160;|->&#160;Y</td>
-					</tr>
-					<tr>
-						<td>n&#160;=&#160;2.1&#160;(hill&#160;nhill)</td>
-						<td>PY&#160;|->&#160;Z</td>
-					</tr>
-					<tr>
-						<td>n&#160;=&#160;2.1&#160;(hill&#160;nhill)</td>
-						<td>PZ&#160;|->&#160;X</td>
-					</tr>
-					<tr>
-						<td>{alpha0,&#160;alpha}&#160;=&#160;{0,&#160;250}&#160;(hill&#160;basalRate)</td>
-						<td>PX&#160;|->&#160;Y</td>
-					</tr>
-					<tr>
-						<td>{alpha0,&#160;alpha}&#160;=&#160;{0,&#160;250}&#160;(hill&#160;basalRate)</td>
-						<td>PY&#160;|->&#160;Z</td>
-					</tr>
-					<tr>
-						<td>{alpha0,&#160;alpha}&#160;=&#160;{0,&#160;250}&#160;(hill&#160;basalRate)</td>
-						<td>PZ&#160;|->&#160;X</td>
-					</tr>
-					<tr>
-						<td>alpha1&#160;=&#160;0&#160;(hill&#160;vmax)</td>
-						<td>PX&#160;|->&#160;Y</td>
-					</tr>
-					<tr>
-						<td>alpha1&#160;=&#160;0&#160;(hill&#160;vmax)</td>
-						<td>PY&#160;|->&#160;Z</td>
-					</tr>
-					<tr>
-						<td>alpha1&#160;=&#160;0&#160;(hill&#160;vmax)</td>
-						<td>PZ&#160;|->&#160;X</td>
-					</tr>
-					<tr>
-						<td>beta&#160;=&#160;5</td>
-						<td>PX&#160;->&#160;EmptySet</td>
-					</tr>
-					<tr>
-						<td>beta&#160;=&#160;5</td>
-						<td>PY&#160;->&#160;EmptySet</td>
-					</tr>
-					<tr>
-						<td>beta&#160;=&#160;5</td>
-						<td>PZ&#160;->&#160;EmptySet</td>
-					</tr>
-					<tr>
-						<td>beta&#160;=&#160;5</td>
-						<td>X&#160;+&#160;EmptySet&#160;->&#160;PX&#160;+&#160;X</td>
-					</tr>
-					<tr>
-						<td>beta&#160;=&#160;5</td>
-						<td>Y&#160;+&#160;EmptySet&#160;->&#160;PY&#160;+&#160;Y</td>
-					</tr>
-					<tr>
-						<td>beta&#160;=&#160;5</td>
-						<td>Z&#160;+&#160;EmptySet&#160;->&#160;PZ&#160;+&#160;Z</td>
-					</tr>
-				</tbody>
-			</table>
-
-			<table border="0" cellspacing="0" cellpadding="2" >
-				<thead>
-					<tr>
-						<th align="left" valign="middle" bgcolor="#eeeeee">Variable</th>
-						<th align="left" valign="middle" bgcolor="#eeeeee">IC&#160;&#160;</th>
-						<th align="left" valign="middle" bgcolor="#eeeeee">ODE</th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr>
-						<td>PX</td>
-						<td>5</td>
-						<td>PX'[t]&#160;==&#160;-(beta*PX[t])&#160;+&#160;beta*X[t]</td>
-					</tr>
-					<tr>
-						<td>PY</td>
-						<td>0</td>
-						<td>PY'[t]&#160;==&#160;-(beta*PY[t])&#160;+&#160;beta*Y[t]</td>
-					</tr>
-					<tr>
-						<td>PZ</td>
-						<td>15</td>
-						<td>PZ'[t]&#160;==&#160;-(beta*PZ[t])&#160;+&#160;beta*Z[t]</td>
-					</tr>
-					<tr>
-						<td>X</td>
-						<td>0</td>
-						<td>X'[t]&#160;==&#160;alpha0&#160;+&#160;(alpha&#160;+&#160;alpha1*PZ[t]^n)/(K^n&#160;+
-							&#160;PZ[t]^n)&#160;-&#160;k1*X[t]</td>
-					</tr>
-					<tr>
-						<td>Y</td>
-						<td>0</td>
-						<td>Y'[t]&#160;==&#160;alpha0&#160;+&#160;(alpha&#160;+&#160;alpha1*PX[t]^n)/(K^n&#160;+
-							&#160;PX[t]^n)&#160;-&#160;k1*Y[t]</td>
-					</tr>
-					<tr>
-						<td>Z</td>
-						<td>0</td>
-						<td>Z'[t]&#160;==&#160;alpha0&#160;+&#160;(alpha&#160;+&#160;alpha1*PY[t]^n)/(K^n&#160;+
-							&#160;PY[t]^n)&#160;-&#160;k1*Z[t]</td>
-					</tr>
-				</tbody>
-			</table>
-			<p>Generated by Cellerator Version 1.0 update 2.1127 using Mathematica 4.2 for 
+        </tr>
+      </tbody>
+    </table>
+    <table border="0" cellspacing="0" cellpadding="2">
+      <thead>
+        <tr>
+          <th align="left" valign="middle" bgcolor="#eeeeee">Rate constant      </th>
+          <th align="left" valign="middle" bgcolor="#eeeeee">Reaction</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>k1 = 1</td>
+          <td>X -&gt; EmptySet</td>
+        </tr>
+        <tr>
+          <td>k1 = 1</td>
+          <td>Y -&gt; EmptySet</td>
+        </tr>
+        <tr>
+          <td>k1 = 1</td>
+          <td>Z -&gt; EmptySet</td>
+        </tr>
+        <tr>
+          <td>K = 1 (hill khalf)</td>
+          <td>PX |-&gt; Y</td>
+        </tr>
+        <tr>
+          <td>K = 1 (hill khalf)</td>
+          <td>PY |-&gt; Z</td>
+        </tr>
+        <tr>
+          <td>K = 1 (hill khalf)</td>
+          <td>PZ |-&gt; X</td>
+        </tr>
+        <tr>
+          <td>n = 2.1 (hill nhill)</td>
+          <td>PX |-&gt; Y</td>
+        </tr>
+        <tr>
+          <td>n = 2.1 (hill nhill)</td>
+          <td>PY |-&gt; Z</td>
+        </tr>
+        <tr>
+          <td>n = 2.1 (hill nhill)</td>
+          <td>PZ |-&gt; X</td>
+        </tr>
+        <tr>
+          <td>{alpha0, alpha} = {0, 250} (hill basalRate)</td>
+          <td>PX |-&gt; Y</td>
+        </tr>
+        <tr>
+          <td>{alpha0, alpha} = {0, 250} (hill basalRate)</td>
+          <td>PY |-&gt; Z</td>
+        </tr>
+        <tr>
+          <td>{alpha0, alpha} = {0, 250} (hill basalRate)</td>
+          <td>PZ |-&gt; X</td>
+        </tr>
+        <tr>
+          <td>alpha1 = 0 (hill vmax)</td>
+          <td>PX |-&gt; Y</td>
+        </tr>
+        <tr>
+          <td>alpha1 = 0 (hill vmax)</td>
+          <td>PY |-&gt; Z</td>
+        </tr>
+        <tr>
+          <td>alpha1 = 0 (hill vmax)</td>
+          <td>PZ |-&gt; X</td>
+        </tr>
+        <tr>
+          <td>beta = 5</td>
+          <td>PX -&gt; EmptySet</td>
+        </tr>
+        <tr>
+          <td>beta = 5</td>
+          <td>PY -&gt; EmptySet</td>
+        </tr>
+        <tr>
+          <td>beta = 5</td>
+          <td>PZ -&gt; EmptySet</td>
+        </tr>
+        <tr>
+          <td>beta = 5</td>
+          <td>X + EmptySet -&gt; PX + X</td>
+        </tr>
+        <tr>
+          <td>beta = 5</td>
+          <td>Y + EmptySet -&gt; PY + Y</td>
+        </tr>
+        <tr>
+          <td>beta = 5</td>
+          <td>Z + EmptySet -&gt; PZ + Z</td>
+        </tr>
+      </tbody>
+    </table>
+    <table border="0" cellspacing="0" cellpadding="2">
+      <thead>
+        <tr>
+          <th align="left" valign="middle" bgcolor="#eeeeee">Variable</th>
+          <th align="left" valign="middle" bgcolor="#eeeeee">IC  </th>
+          <th align="left" valign="middle" bgcolor="#eeeeee">ODE</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>PX</td>
+          <td>5</td>
+          <td>PX&apos;[t] == -(beta*PX[t]) + beta*X[t]</td>
+        </tr>
+        <tr>
+          <td>PY</td>
+          <td>0</td>
+          <td>PY&apos;[t] == -(beta*PY[t]) + beta*Y[t]</td>
+        </tr>
+        <tr>
+          <td>PZ</td>
+          <td>15</td>
+          <td>PZ&apos;[t] == -(beta*PZ[t]) + beta*Z[t]</td>
+        </tr>
+        <tr>
+          <td>X</td>
+          <td>0</td>
+          <td>X&apos;[t] == alpha0 + (alpha + alpha1*PZ[t]^n)/(K^n +
+							 PZ[t]^n) - k1*X[t]</td>
+        </tr>
+        <tr>
+          <td>Y</td>
+          <td>0</td>
+          <td>Y&apos;[t] == alpha0 + (alpha + alpha1*PX[t]^n)/(K^n +
+							 PX[t]^n) - k1*Y[t]</td>
+        </tr>
+        <tr>
+          <td>Z</td>
+          <td>0</td>
+          <td>Z&apos;[t] == alpha0 + (alpha + alpha1*PY[t]^n)/(K^n +
+							 PY[t]^n) - k1*Z[t]</td>
+        </tr>
+      </tbody>
+    </table>
+    <p>Generated by Cellerator Version 1.0 update 2.1127 using Mathematica 4.2 for 
 				Mac OS X (June 4, 2002), November 27, 2002 12:15:32, using (PowerMac,PowerPC,
 				Mac OS X,MacOSX,Darwin)</p>
-			<p>author=B.E.Shapiro</p>
-
-		</body>
-	</notes>
-	<listOfCompartments>
-		<compartment name="cell"/>
-	</listOfCompartments>
-	<listOfSpecies>
-		<specie name="EmptySet" initialAmount="0" boundaryCondition="true" compartment="cell"/>
-		<specie name="PX" initialAmount="5" compartment="cell"/>
-		<specie name="PY" initialAmount="0" compartment="cell"/>
-		<specie name="PZ" initialAmount="15" compartment="cell"/>
-		<specie name="X" initialAmount="0" compartment="cell"/>
-		<specie name="Y" initialAmount="0" compartment="cell"/>
-		<specie name="Z" initialAmount="0" compartment="cell"/>
-	</listOfSpecies>
-	<listOfReactions>
-		<reaction name="Reaction1" reversible="false">
-			<listOfReactants>
-				<specieReference specie="X" />
-			</listOfReactants>
-			<listOfProducts>
-				<specieReference specie="EmptySet" />
-			</listOfProducts>
-			<kineticLaw formula="k1*X">
-				<listOfParameters>
-					<parameter name="k1" value="1" />
-				</listOfParameters>
-			</kineticLaw>
-		</reaction>
-		<reaction name="Reaction2" reversible="false">
-			<listOfReactants>
-				<specieReference specie="Y" />
-			</listOfReactants>
-			<listOfProducts>
-				<specieReference specie="EmptySet" />
-			</listOfProducts>
-			<kineticLaw formula="k1*Y">
-				<listOfParameters>
-					<parameter name="k1" value="1" />
-				</listOfParameters>
-			</kineticLaw>
-		</reaction>
-		<reaction name="Reaction3" reversible="false">
-			<listOfReactants>
-				<specieReference specie="Z" />
-			</listOfReactants>
-			<listOfProducts>
-				<specieReference specie="EmptySet" />
-			</listOfProducts>
-			<kineticLaw formula="k1*Z">
-				<listOfParameters>
-					<parameter name="k1" value="1" />
-				</listOfParameters>
-			</kineticLaw>
-		</reaction>
-		<reaction name="Reaction4" reversible="false">
-			<listOfReactants>
-				<specieReference specie="EmptySet" />
-				<specieReference specie="X" />
-			</listOfReactants>
-			<listOfProducts>
-				<specieReference specie="PX" />
-				<specieReference specie="X" />
-			</listOfProducts>
-			<kineticLaw formula="X*beta">
-				<listOfParameters>
-					<parameter name="beta" value="5" />
-				</listOfParameters>
-			</kineticLaw>
-		</reaction>
-		<reaction name="Reaction5" reversible="false">
-			<listOfReactants>
-				<specieReference specie="EmptySet" />
-				<specieReference specie="Y" />
-			</listOfReactants>
-			<listOfProducts>
-				<specieReference specie="PY" />
-				<specieReference specie="Y" />
-			</listOfProducts>
-			<kineticLaw formula="Y*beta">
-				<listOfParameters>
-					<parameter name="beta" value="5" />
-				</listOfParameters>
-			</kineticLaw>
-		</reaction>
-		<reaction name="Reaction6" reversible="false">
-			<listOfReactants>
-				<specieReference specie="EmptySet" />
-				<specieReference specie="Z" />
-			</listOfReactants>
-			<listOfProducts>
-				<specieReference specie="PZ" />
-				<specieReference specie="Z" />
-			</listOfProducts>
-			<kineticLaw formula="Z*beta">
-				<listOfParameters>
-					<parameter name="beta" value="5" />
-				</listOfParameters>
-			</kineticLaw>
-		</reaction>
-		<reaction name="Reaction7" reversible="false">
-			<listOfReactants>
-				<specieReference specie="PX" />
-			</listOfReactants>
-			<listOfProducts>
-				<specieReference specie="EmptySet" />
-			</listOfProducts>
-			<kineticLaw formula="PX*beta">
-				<listOfParameters>
-					<parameter name="beta" value="5" />
-				</listOfParameters>
-			</kineticLaw>
-		</reaction>
-		<reaction name="Reaction8" reversible="false">
-			<listOfReactants>
-				<specieReference specie="PY" />
-			</listOfReactants>
-			<listOfProducts>
-				<specieReference specie="EmptySet" />
-			</listOfProducts>
-			<kineticLaw formula="PY*beta">
-				<listOfParameters>
-					<parameter name="beta" value="5" />
-				</listOfParameters>
-			</kineticLaw>
-		</reaction>
-		<reaction name="Reaction9" reversible="false">
-			<listOfReactants>
-				<specieReference specie="PZ" />
-			</listOfReactants>
-			<listOfProducts>
-				<specieReference specie="EmptySet" />
-			</listOfProducts>
-			<kineticLaw formula="PZ*beta">
-				<listOfParameters>
-					<parameter name="beta" value="5" />
-				</listOfParameters>
-			</kineticLaw>
-		</reaction>
-		<reaction name="Reaction10" reversible="false">
-			<listOfReactants>
-				<specieReference specie="EmptySet" />
-			</listOfReactants>
-			<listOfProducts>
-				<specieReference specie="X" />
-			</listOfProducts>
-			<kineticLaw formula="alpha0 + (alpha + PZ^n*alpha1)/(K^n + PZ^n)">
-				<listOfParameters>
-					<parameter name="alpha1" value="0" />
-					<parameter name="n" value="2.1" />
-					<parameter name="K" value="1" />
-					<parameter name="alpha0" value="0" />
-					<parameter name="alpha" value="250" />
-				</listOfParameters>
-			</kineticLaw>
-		</reaction>
-		<reaction name="Reaction11" reversible="false">
-			<listOfReactants>
-				<specieReference specie="EmptySet" />
-			</listOfReactants>
-			<listOfProducts>
-				<specieReference specie="Y" />
-			</listOfProducts>
-			<kineticLaw formula="alpha0 + (alpha + PX^n*alpha1)/(K^n + PX^n)">
-				<listOfParameters>
-					<parameter name="alpha1" value="0" />
-					<parameter name="n" value="2.1" />
-					<parameter name="K" value="1" />
-					<parameter name="alpha0" value="0" />
-					<parameter name="alpha" value="250" />
-				</listOfParameters>
-			</kineticLaw>
-		</reaction>
-		<reaction name="Reaction12" reversible="false">
-			<listOfReactants>
-				<specieReference specie="EmptySet" />
-			</listOfReactants>
-			<listOfProducts>
-				<specieReference specie="Z" />
-			</listOfProducts>
-			<kineticLaw formula="alpha0 + (alpha + PY^n*alpha1)/(K^n + PY^n)">
-				<listOfParameters>
-					<parameter name="alpha1" value="0" />
-					<parameter name="n" value="2.1" />
-					<parameter name="K" value="1" />
-					<parameter name="alpha0" value="0" />
-					<parameter name="alpha" value="250" />
-				</listOfParameters>
-			</kineticLaw>
-		</reaction>
-	</listOfReactions>
+    <p>author=B.E.Shapiro</p>
+  </body>
+</notes><annotation>
+  <COPASI xmlns="http://www.copasi.org/static/sbml">
+    <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+      <rdf:Description rdf:about="#COPASI0">
+        <dcterms:created>
+          <rdf:Description>
+            <dcterms:W3CDTF>2014-04-15T09:18:41Z</dcterms:W3CDTF>
+          </rdf:Description>
+        </dcterms:created>
+      </rdf:Description>
+    </rdf:RDF>
+  </COPASI>
+  <layout:listOfLayouts xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:layout="http://projects.eml.org/bcb/sbml/level2">
+    <layout:layout layout:id="layout_0">
+      <layout:dimensions layout:width="318.239677594806" layout:height="350.91723954904"/>
+      <layout:listOfSpeciesGlyphs>
+        <layout:speciesGlyph layout:id="layout_glyph_0" layout:species="Y">
+          <layout:boundingBox>
+            <layout:position layout:x="149.004705495735" layout:y="0"/>
+            <layout:dimensions layout:width="28" layout:height="28"/>
+          </layout:boundingBox>
+        </layout:speciesGlyph>
+        <layout:speciesGlyph layout:id="layout_glyph_1" layout:species="Z">
+          <layout:boundingBox>
+            <layout:position layout:x="299.878392056188" layout:y="233.835356954252"/>
+            <layout:dimensions layout:width="28" layout:height="28"/>
+          </layout:boundingBox>
+        </layout:speciesGlyph>
+        <layout:speciesGlyph layout:id="layout_glyph_2" layout:species="PY">
+          <layout:boundingBox>
+            <layout:position layout:x="280.661665163673" layout:y="57.5922721649722"/>
+            <layout:dimensions layout:width="36" layout:height="28"/>
+          </layout:boundingBox>
+        </layout:speciesGlyph>
+        <layout:speciesGlyph layout:id="layout_glyph_3" layout:species="PZ">
+          <layout:boundingBox>
+            <layout:position layout:x="178.160003617721" layout:y="322.493789244311"/>
+            <layout:dimensions layout:width="36" layout:height="28"/>
+          </layout:boundingBox>
+        </layout:speciesGlyph>
+        <layout:speciesGlyph layout:id="layout_glyph_4" layout:species="X">
+          <layout:boundingBox>
+            <layout:position layout:x="21.9769343516068" layout:y="247.594071943713"/>
+            <layout:dimensions layout:width="28" layout:height="28"/>
+          </layout:boundingBox>
+        </layout:speciesGlyph>
+        <layout:speciesGlyph layout:id="layout_glyph_5" layout:species="PX">
+          <layout:boundingBox>
+            <layout:position layout:x="0" layout:y="101.336783953309"/>
+            <layout:dimensions layout:width="36" layout:height="28"/>
+          </layout:boundingBox>
+        </layout:speciesGlyph>
+        <layout:speciesGlyph layout:id="layout_glyph_6" layout:species="EmptySet">
+          <layout:boundingBox>
+            <layout:position layout:x="104.9620692926" layout:y="160.457600979421"/>
+            <layout:dimensions layout:width="132" layout:height="28"/>
+          </layout:boundingBox>
+        </layout:speciesGlyph>
+      </layout:listOfSpeciesGlyphs>
+      <layout:listOfReactionGlyphs>
+        <layout:reactionGlyph layout:id="layout_glyph_7" layout:reaction="Reaction12">
+          <layout:curve>
+            <layout:listOfCurveSegments>
+              <layout:curveSegment xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="LineSegment">
+                <layout:start layout:x="275.531969401681" layout:y="166.465161053905"/>
+                <layout:end layout:x="289.82360167804" layout:y="173.802936651388"/>
+              </layout:curveSegment>
+            </layout:listOfCurveSegments>
+          </layout:curve>
+          <layout:listOfSpeciesReferenceGlyphs>
+            <layout:speciesReferenceGlyph layout:id="layout_glyph_8" layout:speciesGlyph="layout_glyph_6" layout:role="substrate">
+              <layout:curve>
+                <layout:listOfCurveSegments>
+                  <layout:curveSegment xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="CubicBezier">
+                    <layout:start layout:x="275.531969401681" layout:y="166.465161053905"/>
+                    <layout:end layout:x="241.9620692926" layout:y="162.401041540889"/>
+                    <layout:basePoint1 layout:x="261.240337125322" layout:y="159.127385456422"/>
+                    <layout:basePoint2 layout:x="248.028295139871" layout:y="158.929769599285"/>
+                  </layout:curveSegment>
+                </layout:listOfCurveSegments>
+              </layout:curve>
+            </layout:speciesReferenceGlyph>
+            <layout:speciesReferenceGlyph layout:id="layout_glyph_9" layout:speciesGlyph="layout_glyph_1" layout:role="product">
+              <layout:curve>
+                <layout:listOfCurveSegments>
+                  <layout:curveSegment xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="CubicBezier">
+                    <layout:start layout:x="289.82360167804" layout:y="173.802936651388"/>
+                    <layout:end layout:x="311.097059240736" layout:y="228.835356954252"/>
+                    <layout:basePoint1 layout:x="304.115233954399" layout:y="181.140712248871"/>
+                    <layout:basePoint2 layout:x="311.179054666657" layout:y="206.822478500932"/>
+                  </layout:curveSegment>
+                </layout:listOfCurveSegments>
+              </layout:curve>
+            </layout:speciesReferenceGlyph>
+            <layout:speciesReferenceGlyph layout:id="layout_glyph_10" layout:speciesGlyph="layout_glyph_2" layout:role="modifier">
+              <layout:curve>
+                <layout:listOfCurveSegments>
+                  <layout:curveSegment xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="CubicBezier">
+                    <layout:start layout:x="296.242011881841" layout:y="90.5922721649722"/>
+                    <layout:end layout:x="287.245255724336" layout:y="161.238082569329"/>
+                    <layout:basePoint1 layout:x="291.743633803089" layout:y="125.915177367151"/>
+                    <layout:basePoint2 layout:x="291.812725908812" layout:y="152.342116286011"/>
+                  </layout:curveSegment>
+                </layout:listOfCurveSegments>
+              </layout:curve>
+            </layout:speciesReferenceGlyph>
+          </layout:listOfSpeciesReferenceGlyphs>
+        </layout:reactionGlyph>
+        <layout:reactionGlyph layout:id="layout_glyph_11" layout:reaction="Reaction7">
+          <layout:curve>
+            <layout:listOfCurveSegments>
+              <layout:curveSegment xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="LineSegment">
+                <layout:start layout:x="83.2604807989941" layout:y="132.567860787021"/>
+                <layout:end layout:x="98.5566877282541" layout:y="138.479942489633"/>
+              </layout:curveSegment>
+            </layout:listOfCurveSegments>
+          </layout:curve>
+          <layout:listOfSpeciesReferenceGlyphs>
+            <layout:speciesReferenceGlyph layout:id="layout_glyph_12" layout:speciesGlyph="layout_glyph_5" layout:role="substrate">
+              <layout:curve>
+                <layout:listOfCurveSegments>
+                  <layout:curveSegment xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="CubicBezier">
+                    <layout:start layout:x="83.2604807989941" layout:y="132.567860787021"/>
+                    <layout:end layout:x="41" layout:y="120.547244705607"/>
+                    <layout:basePoint1 layout:x="67.9642738697342" layout:y="126.65577908441"/>
+                    <layout:basePoint2 layout:x="50.6580852025521" layout:y="122.123491469356"/>
+                  </layout:curveSegment>
+                </layout:listOfCurveSegments>
+              </layout:curve>
+            </layout:speciesReferenceGlyph>
+            <layout:speciesReferenceGlyph layout:id="layout_glyph_13" layout:speciesGlyph="layout_glyph_6" layout:role="product">
+              <layout:curve>
+                <layout:listOfCurveSegments>
+                  <layout:curveSegment xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="CubicBezier">
+                    <layout:start layout:x="98.5566877282541" layout:y="138.479942489633"/>
+                    <layout:end layout:x="134.871814788339" layout:y="155.457600979421"/>
+                    <layout:basePoint1 layout:x="113.852894657514" layout:y="144.392024192244"/>
+                    <layout:basePoint2 layout:x="128.186406455241" layout:y="151.402833011485"/>
+                  </layout:curveSegment>
+                </layout:listOfCurveSegments>
+              </layout:curve>
+            </layout:speciesReferenceGlyph>
+          </layout:listOfSpeciesReferenceGlyphs>
+        </layout:reactionGlyph>
+        <layout:reactionGlyph layout:id="layout_glyph_14" layout:reaction="Reaction8">
+          <layout:curve>
+            <layout:listOfCurveSegments>
+              <layout:curveSegment xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="LineSegment">
+                <layout:start layout:x="251.088546915609" layout:y="119.473494713877"/>
+                <layout:end layout:x="238.318587328502" layout:y="129.760027595322"/>
+              </layout:curveSegment>
+            </layout:listOfCurveSegments>
+          </layout:curve>
+          <layout:listOfSpeciesReferenceGlyphs>
+            <layout:speciesReferenceGlyph layout:id="layout_glyph_15" layout:speciesGlyph="layout_glyph_2" layout:role="substrate">
+              <layout:curve>
+                <layout:listOfCurveSegments>
+                  <layout:curveSegment xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="CubicBezier">
+                    <layout:start layout:x="251.088546915609" layout:y="119.473494713877"/>
+                    <layout:end layout:x="281.072478488446" layout:y="90.5922721649722"/>
+                    <layout:basePoint1 layout:x="263.858506502717" layout:y="109.186961832432"/>
+                    <layout:basePoint2 layout:x="275.657982392358" layout:y="97.3179837783409"/>
+                  </layout:curveSegment>
+                </layout:listOfCurveSegments>
+              </layout:curve>
+            </layout:speciesReferenceGlyph>
+            <layout:speciesReferenceGlyph layout:id="layout_glyph_16" layout:speciesGlyph="layout_glyph_6" layout:role="product">
+              <layout:curve>
+                <layout:listOfCurveSegments>
+                  <layout:curveSegment xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="CubicBezier">
+                    <layout:start layout:x="238.318587328502" layout:y="129.760027595322"/>
+                    <layout:end layout:x="201.101948685293" layout:y="155.457600979421"/>
+                    <layout:basePoint1 layout:x="225.548627741395" layout:y="140.046560476767"/>
+                    <layout:basePoint2 layout:x="210.132798316567" layout:y="150.323713948455"/>
+                  </layout:curveSegment>
+                </layout:listOfCurveSegments>
+              </layout:curve>
+            </layout:speciesReferenceGlyph>
+          </layout:listOfSpeciesReferenceGlyphs>
+        </layout:reactionGlyph>
+        <layout:reactionGlyph layout:id="layout_glyph_17" layout:reaction="Reaction9">
+          <layout:curve>
+            <layout:listOfCurveSegments>
+              <layout:curveSegment xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="LineSegment">
+                <layout:start layout:x="178.511211132831" layout:y="271.340417465632"/>
+                <layout:end layout:x="175.991417700319" layout:y="255.136798639143"/>
+              </layout:curveSegment>
+            </layout:listOfCurveSegments>
+          </layout:curve>
+          <layout:listOfSpeciesReferenceGlyphs>
+            <layout:speciesReferenceGlyph layout:id="layout_glyph_18" layout:speciesGlyph="layout_glyph_3" layout:role="substrate">
+              <layout:curve>
+                <layout:listOfCurveSegments>
+                  <layout:curveSegment xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="CubicBezier">
+                    <layout:start layout:x="178.511211132831" layout:y="271.340417465632"/>
+                    <layout:end layout:x="190.287635226486" layout:y="317.493789244311"/>
+                    <layout:basePoint1 layout:x="181.031004565343" layout:y="287.544036292121"/>
+                    <layout:basePoint2 layout:x="186.289268254042" layout:y="306.569817474838"/>
+                  </layout:curveSegment>
+                </layout:listOfCurveSegments>
+              </layout:curve>
+            </layout:speciesReferenceGlyph>
+            <layout:speciesReferenceGlyph layout:id="layout_glyph_19" layout:speciesGlyph="layout_glyph_6" layout:role="product">
+              <layout:curve>
+                <layout:listOfCurveSegments>
+                  <layout:curveSegment xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="CubicBezier">
+                    <layout:start layout:x="175.991417700319" layout:y="255.136798639143"/>
+                    <layout:end layout:x="171.70159804739" layout:y="193.457600979421"/>
+                    <layout:basePoint1 layout:x="173.471624267806" layout:y="238.933179812654"/>
+                    <layout:basePoint2 layout:x="171.95666279947" layout:y="212.144485689415"/>
+                  </layout:curveSegment>
+                </layout:listOfCurveSegments>
+              </layout:curve>
+            </layout:speciesReferenceGlyph>
+          </layout:listOfSpeciesReferenceGlyphs>
+        </layout:reactionGlyph>
+        <layout:reactionGlyph layout:id="layout_glyph_20" layout:reaction="Reaction10">
+          <layout:curve>
+            <layout:listOfCurveSegments>
+              <layout:curveSegment xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="LineSegment">
+                <layout:start layout:x="125.607250485311" layout:y="269.026431441305"/>
+                <layout:end layout:x="112.108736991211" layout:y="277.740078537734"/>
+              </layout:curveSegment>
+            </layout:listOfCurveSegments>
+          </layout:curve>
+          <layout:listOfSpeciesReferenceGlyphs>
+            <layout:speciesReferenceGlyph layout:id="layout_glyph_21" layout:speciesGlyph="layout_glyph_6" layout:role="substrate">
+              <layout:curve>
+                <layout:listOfCurveSegments>
+                  <layout:curveSegment xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="CubicBezier">
+                    <layout:start layout:x="125.607250485311" layout:y="269.026431441305"/>
+                    <layout:end layout:x="163.912176936372" layout:y="193.457600979421"/>
+                    <layout:basePoint1 layout:x="139.10576397941" layout:y="260.312784344876"/>
+                    <layout:basePoint2 layout:x="154.883598831416" layout:y="224.706780888041"/>
+                  </layout:curveSegment>
+                </layout:listOfCurveSegments>
+              </layout:curve>
+            </layout:speciesReferenceGlyph>
+            <layout:speciesReferenceGlyph layout:id="layout_glyph_22" layout:speciesGlyph="layout_glyph_4" layout:role="product">
+              <layout:curve>
+                <layout:listOfCurveSegments>
+                  <layout:curveSegment xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="CubicBezier">
+                    <layout:start layout:x="112.108736991211" layout:y="277.740078537734"/>
+                    <layout:end layout:x="54.9769343516068" layout:y="269.135323992943"/>
+                    <layout:basePoint1 layout:x="98.6102234971121" layout:y="286.453725634163"/>
+                    <layout:basePoint2 layout:x="73.4189505508346" layout:y="279.972936587661"/>
+                  </layout:curveSegment>
+                </layout:listOfCurveSegments>
+              </layout:curve>
+            </layout:speciesReferenceGlyph>
+            <layout:speciesReferenceGlyph layout:id="layout_glyph_23" layout:speciesGlyph="layout_glyph_3" layout:role="modifier">
+              <layout:curve>
+                <layout:listOfCurveSegments>
+                  <layout:curveSegment xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="CubicBezier">
+                    <layout:start layout:x="173.160003617721" layout:y="318.987791081502"/>
+                    <layout:end layout:x="124.281428330141" layout:y="281.78482372563"/>
+                    <layout:basePoint1 layout:x="148.720715973931" layout:y="300.386307403566"/>
+                    <layout:basePoint2 layout:x="129.704862922022" layout:y="290.186392461741"/>
+                  </layout:curveSegment>
+                </layout:listOfCurveSegments>
+              </layout:curve>
+            </layout:speciesReferenceGlyph>
+          </layout:listOfSpeciesReferenceGlyphs>
+        </layout:reactionGlyph>
+        <layout:reactionGlyph layout:id="layout_glyph_24" layout:reaction="Reaction11">
+          <layout:curve>
+            <layout:listOfCurveSegments>
+              <layout:curveSegment xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="LineSegment">
+                <layout:start layout:x="111.726586346624" layout:y="87.9041632496321"/>
+                <layout:end layout:x="110.930849966937" layout:y="71.85840315169"/>
+              </layout:curveSegment>
+            </layout:listOfCurveSegments>
+          </layout:curve>
+          <layout:listOfSpeciesReferenceGlyphs>
+            <layout:speciesReferenceGlyph layout:id="layout_glyph_25" layout:speciesGlyph="layout_glyph_6" layout:role="substrate">
+              <layout:curve>
+                <layout:listOfCurveSegments>
+                  <layout:curveSegment xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="CubicBezier">
+                    <layout:start layout:x="111.726586346624" layout:y="87.9041632496321"/>
+                    <layout:end layout:x="155.214065358089" layout:y="155.457600979421"/>
+                    <layout:basePoint1 layout:x="112.52232272631" layout:y="103.949923347574"/>
+                    <layout:basePoint2 layout:x="134.067128137122" layout:y="133.715202187983"/>
+                  </layout:curveSegment>
+                </layout:listOfCurveSegments>
+              </layout:curve>
+            </layout:speciesReferenceGlyph>
+            <layout:speciesReferenceGlyph layout:id="layout_glyph_26" layout:speciesGlyph="layout_glyph_0" layout:role="product">
+              <layout:curve>
+                <layout:listOfCurveSegments>
+                  <layout:curveSegment xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="CubicBezier">
+                    <layout:start layout:x="110.930849966937" layout:y="71.85840315169"/>
+                    <layout:end layout:x="144.004705495735" layout:y="29.0264110113876"/>
+                    <layout:basePoint1 layout:x="110.135113587251" layout:y="55.8126430537479"/>
+                    <layout:basePoint2 layout:x="126.870975446571" layout:y="38.4080870080822"/>
+                  </layout:curveSegment>
+                </layout:listOfCurveSegments>
+              </layout:curve>
+            </layout:speciesReferenceGlyph>
+            <layout:speciesReferenceGlyph layout:id="layout_glyph_27" layout:speciesGlyph="layout_glyph_5" layout:role="modifier">
+              <layout:curve>
+                <layout:listOfCurveSegments>
+                  <layout:curveSegment xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="CubicBezier">
+                    <layout:start layout:x="41" layout:y="105.688657539345"/>
+                    <layout:end layout:x="101.340992201093" layout:y="80.3765914219462"/>
+                    <layout:basePoint1 layout:x="71.1704961005463" layout:y="93.0326244806456"/>
+                    <layout:basePoint2 layout:x="91.3532662454044" layout:y="80.8718996432314"/>
+                  </layout:curveSegment>
+                </layout:listOfCurveSegments>
+              </layout:curve>
+            </layout:speciesReferenceGlyph>
+          </layout:listOfSpeciesReferenceGlyphs>
+        </layout:reactionGlyph>
+        <layout:reactionGlyph layout:id="layout_glyph_28" layout:reaction="Reaction3">
+          <layout:curve>
+            <layout:listOfCurveSegments>
+              <layout:curveSegment xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="LineSegment">
+                <layout:start layout:x="253.702687765079" layout:y="214.317374240819"/>
+                <layout:end layout:x="239.41105548872" layout:y="206.979598643336"/>
+              </layout:curveSegment>
+            </layout:listOfCurveSegments>
+          </layout:curve>
+          <layout:listOfSpeciesReferenceGlyphs>
+            <layout:speciesReferenceGlyph layout:id="layout_glyph_29" layout:speciesGlyph="layout_glyph_1" layout:role="substrate">
+              <layout:curve>
+                <layout:listOfCurveSegments>
+                  <layout:curveSegment xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="CubicBezier">
+                    <layout:start layout:x="253.702687765079" layout:y="214.317374240819"/>
+                    <layout:end layout:x="294.878392056188" layout:y="236.9944722341"/>
+                    <layout:basePoint1 layout:x="267.994320041438" layout:y="221.655149838302"/>
+                    <layout:basePoint2 layout:x="285.009264117902" layout:y="231.159254935572"/>
+                  </layout:curveSegment>
+                </layout:listOfCurveSegments>
+              </layout:curve>
+            </layout:speciesReferenceGlyph>
+            <layout:speciesReferenceGlyph layout:id="layout_glyph_30" layout:speciesGlyph="layout_glyph_6" layout:role="product">
+              <layout:curve>
+                <layout:listOfCurveSegments>
+                  <layout:curveSegment xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="CubicBezier">
+                    <layout:start layout:x="239.41105548872" layout:y="206.979598643336"/>
+                    <layout:end layout:x="211.820576724799" layout:y="193.457600979421"/>
+                    <layout:basePoint1 layout:x="225.119423212361" layout:y="199.641823045853"/>
+                    <layout:basePoint2 layout:x="214.89709189949" layout:y="194.715268113266"/>
+                  </layout:curveSegment>
+                </layout:listOfCurveSegments>
+              </layout:curve>
+            </layout:speciesReferenceGlyph>
+          </layout:listOfSpeciesReferenceGlyphs>
+        </layout:reactionGlyph>
+        <layout:reactionGlyph layout:id="layout_glyph_31" layout:reaction="Reaction4">
+          <layout:curve>
+            <layout:listOfCurveSegments>
+              <layout:curveSegment xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="LineSegment">
+                <layout:start layout:x="63.1755796138939" layout:y="188.5328796473"/>
+                <layout:end layout:x="55.5274761492639" layout:y="185.576838795994"/>
+              </layout:curveSegment>
+            </layout:listOfCurveSegments>
+          </layout:curve>
+          <layout:listOfSpeciesReferenceGlyphs>
+            <layout:speciesReferenceGlyph layout:id="layout_glyph_32" layout:speciesGlyph="layout_glyph_6" layout:role="substrate">
+              <layout:curve>
+                <layout:listOfCurveSegments>
+                  <layout:curveSegment xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="CubicBezier">
+                    <layout:start layout:x="63.1755796138939" layout:y="188.5328796473"/>
+                    <layout:end layout:x="99.9620692925996" layout:y="186.533126974787"/>
+                    <layout:basePoint1 layout:x="70.8236830785239" layout:y="191.488920498605"/>
+                    <layout:basePoint2 layout:x="87.3049020517193" layout:y="189.750033949523"/>
+                  </layout:curveSegment>
+                </layout:listOfCurveSegments>
+              </layout:curve>
+            </layout:speciesReferenceGlyph>
+            <layout:speciesReferenceGlyph layout:id="layout_glyph_33" layout:speciesGlyph="layout_glyph_4" layout:role="substrate">
+              <layout:curve>
+                <layout:listOfCurveSegments>
+                  <layout:curveSegment xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="CubicBezier">
+                    <layout:start layout:x="63.1755796138939" layout:y="188.5328796473"/>
+                    <layout:end layout:x="45.4211508202045" layout:y="242.594071943713"/>
+                    <layout:basePoint1 layout:x="70.8236830785239" layout:y="191.488920498605"/>
+                    <layout:basePoint2 layout:x="60.0344428155217" layout:y="217.780506433986"/>
+                  </layout:curveSegment>
+                </layout:listOfCurveSegments>
+              </layout:curve>
+            </layout:speciesReferenceGlyph>
+            <layout:speciesReferenceGlyph layout:id="layout_glyph_34" layout:speciesGlyph="layout_glyph_5" layout:role="product">
+              <layout:curve>
+                <layout:listOfCurveSegments>
+                  <layout:curveSegment xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="CubicBezier">
+                    <layout:start layout:x="55.5274761492639" layout:y="185.576838795994"/>
+                    <layout:end layout:x="26.4374883026566" layout:y="134.336783953309"/>
+                    <layout:basePoint1 layout:x="47.879372684634" layout:y="182.620797944689"/>
+                    <layout:basePoint2 layout:x="35.2464046274878" layout:y="157.739780736173"/>
+                  </layout:curveSegment>
+                </layout:listOfCurveSegments>
+              </layout:curve>
+            </layout:speciesReferenceGlyph>
+            <layout:speciesReferenceGlyph layout:id="layout_glyph_35" layout:speciesGlyph="layout_glyph_4" layout:role="product">
+              <layout:curve>
+                <layout:listOfCurveSegments>
+                  <layout:curveSegment xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="CubicBezier">
+                    <layout:start layout:x="55.5274761492639" layout:y="185.576838795994"/>
+                    <layout:end layout:x="38.8405148627847" layout:y="242.594071943713"/>
+                    <layout:basePoint1 layout:x="47.879372684634" layout:y="182.620797944689"/>
+                    <layout:basePoint2 layout:x="41.4479179075518" layout:y="211.868424731374"/>
+                  </layout:curveSegment>
+                </layout:listOfCurveSegments>
+              </layout:curve>
+            </layout:speciesReferenceGlyph>
+          </layout:listOfSpeciesReferenceGlyphs>
+        </layout:reactionGlyph>
+        <layout:reactionGlyph layout:id="layout_glyph_36" layout:reaction="Reaction5">
+          <layout:curve>
+            <layout:listOfCurveSegments>
+              <layout:curveSegment xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="LineSegment">
+                <layout:start layout:x="212.675934942602" layout:y="74.0896581951422"/>
+                <layout:end layout:x="219.060914736156" layout:y="68.9463917544197"/>
+              </layout:curveSegment>
+            </layout:listOfCurveSegments>
+          </layout:curve>
+          <layout:listOfSpeciesReferenceGlyphs>
+            <layout:speciesReferenceGlyph layout:id="layout_glyph_37" layout:speciesGlyph="layout_glyph_6" layout:role="substrate">
+              <layout:curve>
+                <layout:listOfCurveSegments>
+                  <layout:curveSegment xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="CubicBezier">
+                    <layout:start layout:x="212.675934942602" layout:y="74.0896581951422"/>
+                    <layout:end layout:x="178.011175228657" layout:y="155.457600979421"/>
+                    <layout:basePoint1 layout:x="206.290955149049" layout:y="79.2329246358646"/>
+                    <layout:basePoint2 layout:x="190.554820240465" layout:y="118.631079417823"/>
+                  </layout:curveSegment>
+                </layout:listOfCurveSegments>
+              </layout:curve>
+            </layout:speciesReferenceGlyph>
+            <layout:speciesReferenceGlyph layout:id="layout_glyph_38" layout:speciesGlyph="layout_glyph_0" layout:role="substrate">
+              <layout:curve>
+                <layout:listOfCurveSegments>
+                  <layout:curveSegment xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="CubicBezier">
+                    <layout:start layout:x="212.675934942602" layout:y="74.0896581951422"/>
+                    <layout:end layout:x="175.612430015276" layout:y="33"/>
+                    <layout:basePoint1 layout:x="206.290955149049" layout:y="79.2329246358646"/>
+                    <layout:basePoint2 layout:x="189.355447633774" layout:y="57.4022789281129"/>
+                  </layout:curveSegment>
+                </layout:listOfCurveSegments>
+              </layout:curve>
+            </layout:speciesReferenceGlyph>
+            <layout:speciesReferenceGlyph layout:id="layout_glyph_39" layout:speciesGlyph="layout_glyph_2" layout:role="product">
+              <layout:curve>
+                <layout:listOfCurveSegments>
+                  <layout:curveSegment xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="CubicBezier">
+                    <layout:start layout:x="219.060914736156" layout:y="68.9463917544197"/>
+                    <layout:end layout:x="275.661665163673" layout:y="69.1453898057743"/>
+                    <layout:basePoint1 layout:x="225.44589452971" layout:y="63.8031253136973"/>
+                    <layout:basePoint2 layout:x="252.15002479508" layout:y="65.1884409495552"/>
+                  </layout:curveSegment>
+                </layout:listOfCurveSegments>
+              </layout:curve>
+            </layout:speciesReferenceGlyph>
+            <layout:speciesReferenceGlyph layout:id="layout_glyph_40" layout:speciesGlyph="layout_glyph_0" layout:role="product">
+              <layout:curve>
+                <layout:listOfCurveSegments>
+                  <layout:curveSegment xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="CubicBezier">
+                    <layout:start layout:x="219.060914736156" layout:y="68.9463917544197"/>
+                    <layout:end layout:x="182.004705495735" layout:y="29.1544100232521"/>
+                    <layout:basePoint1 layout:x="225.44589452971" layout:y="63.8031253136973"/>
+                    <layout:basePoint2 layout:x="205.321544961111" layout:y="45.1929510582941"/>
+                  </layout:curveSegment>
+                </layout:listOfCurveSegments>
+              </layout:curve>
+            </layout:speciesReferenceGlyph>
+          </layout:listOfSpeciesReferenceGlyphs>
+        </layout:reactionGlyph>
+        <layout:reactionGlyph layout:id="layout_glyph_41" layout:reaction="Reaction6">
+          <layout:curve>
+            <layout:listOfCurveSegments>
+              <layout:curveSegment xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="LineSegment">
+                <layout:start layout:x="237.002603745476" layout:y="260.787137031772"/>
+                <layout:end layout:x="238.262500461732" layout:y="268.888946445017"/>
+              </layout:curveSegment>
+            </layout:listOfCurveSegments>
+          </layout:curve>
+          <layout:listOfSpeciesReferenceGlyphs>
+            <layout:speciesReferenceGlyph layout:id="layout_glyph_42" layout:speciesGlyph="layout_glyph_6" layout:role="substrate">
+              <layout:curve>
+                <layout:listOfCurveSegments>
+                  <layout:curveSegment xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="CubicBezier">
+                    <layout:start layout:x="237.002603745476" layout:y="260.787137031772"/>
+                    <layout:end layout:x="186.696031787433" layout:y="193.457600979421"/>
+                    <layout:basePoint1 layout:x="235.74270702922" layout:y="252.685327618528"/>
+                    <layout:basePoint2 layout:x="210.904395229262" layout:y="221.046011945663"/>
+                  </layout:curveSegment>
+                </layout:listOfCurveSegments>
+              </layout:curve>
+            </layout:speciesReferenceGlyph>
+            <layout:speciesReferenceGlyph layout:id="layout_glyph_43" layout:speciesGlyph="layout_glyph_1" layout:role="substrate">
+              <layout:curve>
+                <layout:listOfCurveSegments>
+                  <layout:curveSegment xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="CubicBezier">
+                    <layout:start layout:x="237.002603745476" layout:y="260.787137031772"/>
+                    <layout:end layout:x="294.878392056188" layout:y="249.014708521842"/>
+                    <layout:basePoint1 layout:x="235.74270702922" layout:y="252.685327618528"/>
+                    <layout:basePoint2 layout:x="264.99557536364" layout:y="248.824565716874"/>
+                  </layout:curveSegment>
+                </layout:listOfCurveSegments>
+              </layout:curve>
+            </layout:speciesReferenceGlyph>
+            <layout:speciesReferenceGlyph layout:id="layout_glyph_44" layout:speciesGlyph="layout_glyph_3" layout:role="product">
+              <layout:curve>
+                <layout:listOfCurveSegments>
+                  <layout:curveSegment xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="CubicBezier">
+                    <layout:start layout:x="238.262500461732" layout:y="268.888946445017"/>
+                    <layout:end layout:x="210.006112475731" layout:y="317.493789244311"/>
+                    <layout:basePoint1 layout:x="239.522397177988" layout:y="276.990755858261"/>
+                    <layout:basePoint2 layout:x="225.079229005923" layout:y="299.267724904597"/>
+                  </layout:curveSegment>
+                </layout:listOfCurveSegments>
+              </layout:curve>
+            </layout:speciesReferenceGlyph>
+            <layout:speciesReferenceGlyph layout:id="layout_glyph_45" layout:speciesGlyph="layout_glyph_1" layout:role="product">
+              <layout:curve>
+                <layout:listOfCurveSegments>
+                  <layout:curveSegment xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="CubicBezier">
+                    <layout:start layout:x="238.262500461732" layout:y="268.888946445017"/>
+                    <layout:end layout:x="294.878392056188" layout:y="255.285362566894"/>
+                    <layout:basePoint1 layout:x="239.522397177988" layout:y="276.990755858261"/>
+                    <layout:basePoint2 layout:x="267.515368796152" layout:y="268.163511565889"/>
+                  </layout:curveSegment>
+                </layout:listOfCurveSegments>
+              </layout:curve>
+            </layout:speciesReferenceGlyph>
+          </layout:listOfSpeciesReferenceGlyphs>
+        </layout:reactionGlyph>
+        <layout:reactionGlyph layout:id="layout_glyph_46" layout:reaction="Reaction1">
+          <layout:curve>
+            <layout:listOfCurveSegments>
+              <layout:curveSegment xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="LineSegment">
+                <layout:start layout:x="95.0755996910241" layout:y="226.202106447106"/>
+                <layout:end layout:x="108.574113185123" layout:y="217.488459350677"/>
+              </layout:curveSegment>
+            </layout:listOfCurveSegments>
+          </layout:curve>
+          <layout:listOfSpeciesReferenceGlyphs>
+            <layout:speciesReferenceGlyph layout:id="layout_glyph_47" layout:speciesGlyph="layout_glyph_4" layout:role="substrate">
+              <layout:curve>
+                <layout:listOfCurveSegments>
+                  <layout:curveSegment xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="CubicBezier">
+                    <layout:start layout:x="95.0755996910241" layout:y="226.202106447106"/>
+                    <layout:end layout:x="54.9769343516068" layout:y="250.478142959029"/>
+                    <layout:basePoint1 layout:x="81.5770861969248" layout:y="234.915753543535"/>
+                    <layout:basePoint2 layout:x="64.902381900741" layout:y="244.875360025389"/>
+                  </layout:curveSegment>
+                </layout:listOfCurveSegments>
+              </layout:curve>
+            </layout:speciesReferenceGlyph>
+            <layout:speciesReferenceGlyph layout:id="layout_glyph_48" layout:speciesGlyph="layout_glyph_6" layout:role="product">
+              <layout:curve>
+                <layout:listOfCurveSegments>
+                  <layout:curveSegment xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="CubicBezier">
+                    <layout:start layout:x="108.574113185123" layout:y="217.488459350677"/>
+                    <layout:end layout:x="143.894036222688" layout:y="193.457600979421"/>
+                    <layout:basePoint1 layout:x="122.072626679223" layout:y="208.774812254248"/>
+                    <layout:basePoint2 layout:x="136.35795982448" layout:y="198.937794842727"/>
+                  </layout:curveSegment>
+                </layout:listOfCurveSegments>
+              </layout:curve>
+            </layout:speciesReferenceGlyph>
+          </layout:listOfSpeciesReferenceGlyphs>
+        </layout:reactionGlyph>
+        <layout:reactionGlyph layout:id="layout_glyph_49" layout:reaction="Reaction2">
+          <layout:curve>
+            <layout:listOfCurveSegments>
+              <layout:curveSegment xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="LineSegment">
+                <layout:start layout:x="164.088420007142" layout:y="82.8689683571431"/>
+                <layout:end layout:x="164.884156386829" layout:y="98.9147284550852"/>
+              </layout:curveSegment>
+            </layout:listOfCurveSegments>
+          </layout:curve>
+          <layout:listOfSpeciesReferenceGlyphs>
+            <layout:speciesReferenceGlyph layout:id="layout_glyph_50" layout:speciesGlyph="layout_glyph_0" layout:role="substrate">
+              <layout:curve>
+                <layout:listOfCurveSegments>
+                  <layout:curveSegment xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="CubicBezier">
+                    <layout:start layout:x="164.088420007142" layout:y="82.8689683571431"/>
+                    <layout:end layout:x="163.108288460175" layout:y="33"/>
+                    <layout:basePoint1 layout:x="163.292683627456" layout:y="66.823208259201"/>
+                    <layout:basePoint2 layout:x="163.001551948894" layout:y="45.900164105115"/>
+                  </layout:curveSegment>
+                </layout:listOfCurveSegments>
+              </layout:curve>
+            </layout:speciesReferenceGlyph>
+            <layout:speciesReferenceGlyph layout:id="layout_glyph_51" layout:speciesGlyph="layout_glyph_6" layout:role="product">
+              <layout:curve>
+                <layout:listOfCurveSegments>
+                  <layout:curveSegment xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="CubicBezier">
+                    <layout:start layout:x="164.884156386829" layout:y="98.9147284550852"/>
+                    <layout:end layout:x="169.275241984472" layout:y="155.457600979421"/>
+                    <layout:basePoint1 layout:x="165.679892766515" layout:y="114.960488553027"/>
+                    <layout:basePoint2 layout:x="167.676501470415" layout:y="139.22048479071"/>
+                  </layout:curveSegment>
+                </layout:listOfCurveSegments>
+              </layout:curve>
+            </layout:speciesReferenceGlyph>
+          </layout:listOfSpeciesReferenceGlyphs>
+        </layout:reactionGlyph>
+      </layout:listOfReactionGlyphs>
+      <layout:listOfTextGlyphs>
+        <layout:textGlyph layout:id="layout_glyph_52" layout:originOfText="Y" layout:graphicalObject="layout_glyph_0">
+          <layout:boundingBox>
+            <layout:position layout:x="149.004705495735" layout:y="0"/>
+            <layout:dimensions layout:width="24" layout:height="24"/>
+          </layout:boundingBox>
+        </layout:textGlyph>
+        <layout:textGlyph layout:id="layout_glyph_53" layout:originOfText="Z" layout:graphicalObject="layout_glyph_1">
+          <layout:boundingBox>
+            <layout:position layout:x="299.878392056188" layout:y="233.835356954252"/>
+            <layout:dimensions layout:width="24" layout:height="24"/>
+          </layout:boundingBox>
+        </layout:textGlyph>
+        <layout:textGlyph layout:id="layout_glyph_54" layout:originOfText="PY" layout:graphicalObject="layout_glyph_2">
+          <layout:boundingBox>
+            <layout:position layout:x="280.661665163673" layout:y="57.5922721649722"/>
+            <layout:dimensions layout:width="32" layout:height="24"/>
+          </layout:boundingBox>
+        </layout:textGlyph>
+        <layout:textGlyph layout:id="layout_glyph_55" layout:originOfText="PZ" layout:graphicalObject="layout_glyph_3">
+          <layout:boundingBox>
+            <layout:position layout:x="178.160003617721" layout:y="322.493789244311"/>
+            <layout:dimensions layout:width="32" layout:height="24"/>
+          </layout:boundingBox>
+        </layout:textGlyph>
+        <layout:textGlyph layout:id="layout_glyph_56" layout:originOfText="X" layout:graphicalObject="layout_glyph_4">
+          <layout:boundingBox>
+            <layout:position layout:x="21.9769343516068" layout:y="247.594071943713"/>
+            <layout:dimensions layout:width="24" layout:height="24"/>
+          </layout:boundingBox>
+        </layout:textGlyph>
+        <layout:textGlyph layout:id="layout_glyph_57" layout:originOfText="PX" layout:graphicalObject="layout_glyph_5">
+          <layout:boundingBox>
+            <layout:position layout:x="0" layout:y="101.336783953309"/>
+            <layout:dimensions layout:width="32" layout:height="24"/>
+          </layout:boundingBox>
+        </layout:textGlyph>
+        <layout:textGlyph layout:id="layout_glyph_58" layout:originOfText="EmptySet" layout:graphicalObject="layout_glyph_6">
+          <layout:boundingBox>
+            <layout:position layout:x="104.9620692926" layout:y="160.457600979421"/>
+            <layout:dimensions layout:width="128" layout:height="24"/>
+          </layout:boundingBox>
+        </layout:textGlyph>
+      </layout:listOfTextGlyphs>
+    </layout:layout>
+  </layout:listOfLayouts>
+</annotation><listOfFunctionDefinitions>
+  <functionDefinition id="Function_for_Reaction2" name="Function for Reaction2">
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <lambda>
+        <bvar>
+          <ci> Y </ci>
+        </bvar>
+        <bvar>
+          <ci> cell </ci>
+        </bvar>
+        <bvar>
+          <ci> k1 </ci>
+        </bvar>
+        <apply>
+          <divide/>
+          <apply>
+            <times/>
+            <ci> k1 </ci>
+            <ci> Y </ci>
+          </apply>
+          <ci> cell </ci>
+        </apply>
+      </lambda>
+    </math>
+  </functionDefinition>
+  <functionDefinition id="Function_for_Reaction1" name="Function for Reaction1">
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <lambda>
+        <bvar>
+          <ci> X </ci>
+        </bvar>
+        <bvar>
+          <ci> cell </ci>
+        </bvar>
+        <bvar>
+          <ci> k1 </ci>
+        </bvar>
+        <apply>
+          <divide/>
+          <apply>
+            <times/>
+            <ci> k1 </ci>
+            <ci> X </ci>
+          </apply>
+          <ci> cell </ci>
+        </apply>
+      </lambda>
+    </math>
+  </functionDefinition>
+  <functionDefinition id="Function_for_Reaction12" name="Function for Reaction12">
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <lambda>
+        <bvar>
+          <ci> K </ci>
+        </bvar>
+        <bvar>
+          <ci> PY </ci>
+        </bvar>
+        <bvar>
+          <ci> alpha </ci>
+        </bvar>
+        <bvar>
+          <ci> alpha0 </ci>
+        </bvar>
+        <bvar>
+          <ci> alpha1 </ci>
+        </bvar>
+        <bvar>
+          <ci> cell </ci>
+        </bvar>
+        <bvar>
+          <ci> n </ci>
+        </bvar>
+        <apply>
+          <divide/>
+          <apply>
+            <plus/>
+            <ci> alpha0 </ci>
+            <apply>
+              <divide/>
+              <apply>
+                <plus/>
+                <ci> alpha </ci>
+                <apply>
+                  <times/>
+                  <apply>
+                    <power/>
+                    <ci> PY </ci>
+                    <ci> n </ci>
+                  </apply>
+                  <ci> alpha1 </ci>
+                </apply>
+              </apply>
+              <apply>
+                <plus/>
+                <apply>
+                  <power/>
+                  <ci> K </ci>
+                  <ci> n </ci>
+                </apply>
+                <apply>
+                  <power/>
+                  <ci> PY </ci>
+                  <ci> n </ci>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+          <ci> cell </ci>
+        </apply>
+      </lambda>
+    </math>
+  </functionDefinition>
+  <functionDefinition id="Function_for_Reaction3" name="Function for Reaction3">
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <lambda>
+        <bvar>
+          <ci> Z </ci>
+        </bvar>
+        <bvar>
+          <ci> cell </ci>
+        </bvar>
+        <bvar>
+          <ci> k1 </ci>
+        </bvar>
+        <apply>
+          <divide/>
+          <apply>
+            <times/>
+            <ci> k1 </ci>
+            <ci> Z </ci>
+          </apply>
+          <ci> cell </ci>
+        </apply>
+      </lambda>
+    </math>
+  </functionDefinition>
+  <functionDefinition id="Function_for_Reaction4" name="Function for Reaction4">
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <lambda>
+        <bvar>
+          <ci> X </ci>
+        </bvar>
+        <bvar>
+          <ci> beta </ci>
+        </bvar>
+        <bvar>
+          <ci> cell </ci>
+        </bvar>
+        <apply>
+          <divide/>
+          <apply>
+            <times/>
+            <ci> X </ci>
+            <ci> beta </ci>
+          </apply>
+          <ci> cell </ci>
+        </apply>
+      </lambda>
+    </math>
+  </functionDefinition>
+  <functionDefinition id="Function_for_Reaction7" name="Function for Reaction7">
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <lambda>
+        <bvar>
+          <ci> PX </ci>
+        </bvar>
+        <bvar>
+          <ci> beta </ci>
+        </bvar>
+        <bvar>
+          <ci> cell </ci>
+        </bvar>
+        <apply>
+          <divide/>
+          <apply>
+            <times/>
+            <ci> PX </ci>
+            <ci> beta </ci>
+          </apply>
+          <ci> cell </ci>
+        </apply>
+      </lambda>
+    </math>
+  </functionDefinition>
+  <functionDefinition id="Function_for_Reaction9" name="Function for Reaction9">
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <lambda>
+        <bvar>
+          <ci> PZ </ci>
+        </bvar>
+        <bvar>
+          <ci> beta </ci>
+        </bvar>
+        <bvar>
+          <ci> cell </ci>
+        </bvar>
+        <apply>
+          <divide/>
+          <apply>
+            <times/>
+            <ci> PZ </ci>
+            <ci> beta </ci>
+          </apply>
+          <ci> cell </ci>
+        </apply>
+      </lambda>
+    </math>
+  </functionDefinition>
+  <functionDefinition id="Function_for_Reaction11" name="Function for Reaction11">
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <lambda>
+        <bvar>
+          <ci> K </ci>
+        </bvar>
+        <bvar>
+          <ci> PX </ci>
+        </bvar>
+        <bvar>
+          <ci> alpha </ci>
+        </bvar>
+        <bvar>
+          <ci> alpha0 </ci>
+        </bvar>
+        <bvar>
+          <ci> alpha1 </ci>
+        </bvar>
+        <bvar>
+          <ci> cell </ci>
+        </bvar>
+        <bvar>
+          <ci> n </ci>
+        </bvar>
+        <apply>
+          <divide/>
+          <apply>
+            <plus/>
+            <ci> alpha0 </ci>
+            <apply>
+              <divide/>
+              <apply>
+                <plus/>
+                <ci> alpha </ci>
+                <apply>
+                  <times/>
+                  <apply>
+                    <power/>
+                    <ci> PX </ci>
+                    <ci> n </ci>
+                  </apply>
+                  <ci> alpha1 </ci>
+                </apply>
+              </apply>
+              <apply>
+                <plus/>
+                <apply>
+                  <power/>
+                  <ci> K </ci>
+                  <ci> n </ci>
+                </apply>
+                <apply>
+                  <power/>
+                  <ci> PX </ci>
+                  <ci> n </ci>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+          <ci> cell </ci>
+        </apply>
+      </lambda>
+    </math>
+  </functionDefinition>
+  <functionDefinition id="Function_for_Reaction8" name="Function for Reaction8">
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <lambda>
+        <bvar>
+          <ci> PY </ci>
+        </bvar>
+        <bvar>
+          <ci> beta </ci>
+        </bvar>
+        <bvar>
+          <ci> cell </ci>
+        </bvar>
+        <apply>
+          <divide/>
+          <apply>
+            <times/>
+            <ci> PY </ci>
+            <ci> beta </ci>
+          </apply>
+          <ci> cell </ci>
+        </apply>
+      </lambda>
+    </math>
+  </functionDefinition>
+  <functionDefinition id="Function_for_Reaction5" name="Function for Reaction5">
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <lambda>
+        <bvar>
+          <ci> Y </ci>
+        </bvar>
+        <bvar>
+          <ci> beta </ci>
+        </bvar>
+        <bvar>
+          <ci> cell </ci>
+        </bvar>
+        <apply>
+          <divide/>
+          <apply>
+            <times/>
+            <ci> Y </ci>
+            <ci> beta </ci>
+          </apply>
+          <ci> cell </ci>
+        </apply>
+      </lambda>
+    </math>
+  </functionDefinition>
+  <functionDefinition id="Function_for_Reaction10" name="Function for Reaction10">
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <lambda>
+        <bvar>
+          <ci> K </ci>
+        </bvar>
+        <bvar>
+          <ci> PZ </ci>
+        </bvar>
+        <bvar>
+          <ci> alpha </ci>
+        </bvar>
+        <bvar>
+          <ci> alpha0 </ci>
+        </bvar>
+        <bvar>
+          <ci> alpha1 </ci>
+        </bvar>
+        <bvar>
+          <ci> cell </ci>
+        </bvar>
+        <bvar>
+          <ci> n </ci>
+        </bvar>
+        <apply>
+          <divide/>
+          <apply>
+            <plus/>
+            <ci> alpha0 </ci>
+            <apply>
+              <divide/>
+              <apply>
+                <plus/>
+                <ci> alpha </ci>
+                <apply>
+                  <times/>
+                  <apply>
+                    <power/>
+                    <ci> PZ </ci>
+                    <ci> n </ci>
+                  </apply>
+                  <ci> alpha1 </ci>
+                </apply>
+              </apply>
+              <apply>
+                <plus/>
+                <apply>
+                  <power/>
+                  <ci> K </ci>
+                  <ci> n </ci>
+                </apply>
+                <apply>
+                  <power/>
+                  <ci> PZ </ci>
+                  <ci> n </ci>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+          <ci> cell </ci>
+        </apply>
+      </lambda>
+    </math>
+  </functionDefinition>
+  <functionDefinition id="Function_for_Reaction6" name="Function for Reaction6">
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <lambda>
+        <bvar>
+          <ci> Z </ci>
+        </bvar>
+        <bvar>
+          <ci> beta </ci>
+        </bvar>
+        <bvar>
+          <ci> cell </ci>
+        </bvar>
+        <apply>
+          <divide/>
+          <apply>
+            <times/>
+            <ci> Z </ci>
+            <ci> beta </ci>
+          </apply>
+          <ci> cell </ci>
+        </apply>
+      </lambda>
+    </math>
+  </functionDefinition>
+</listOfFunctionDefinitions><listOfCompartments>
+  <compartment id="cell" name="cell" spatialDimensions="3" size="1" constant="true"/>
+</listOfCompartments><listOfSpecies>
+  <species id="EmptySet" name="EmptySet" compartment="cell" initialAmount="0" hasOnlySubstanceUnits="false" boundaryCondition="true" constant="true"/>
+  <species id="PX" name="PX" compartment="cell" initialAmount="5" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+  <species id="PY" name="PY" compartment="cell" initialAmount="0" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+  <species id="PZ" name="PZ" compartment="cell" initialAmount="15" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+  <species id="X" name="X" compartment="cell" initialAmount="0" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+  <species id="Y" name="Y" compartment="cell" initialAmount="0" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+  <species id="Z" name="Z" compartment="cell" initialAmount="0" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+</listOfSpecies><listOfReactions>
+  <reaction id="Reaction1" name="Reaction1" reversible="false">
+    <listOfReactants>
+      <speciesReference species="X" stoichiometry="1"/>
+    </listOfReactants>
+    <listOfProducts>
+      <speciesReference species="EmptySet" stoichiometry="1"/>
+    </listOfProducts>
+    <kineticLaw>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <times/>
+          <ci> cell </ci>
+          <apply>
+            <ci> Function_for_Reaction1 </ci>
+            <ci> X </ci>
+            <ci> cell </ci>
+            <ci> k1 </ci>
+          </apply>
+        </apply>
+      </math>
+      <listOfParameters>
+        <parameter id="k1" name="k1" value="1"/>
+      </listOfParameters>
+    </kineticLaw>
+  </reaction>
+  <reaction id="Reaction2" name="Reaction2" reversible="false">
+    <listOfReactants>
+      <speciesReference species="Y" stoichiometry="1"/>
+    </listOfReactants>
+    <listOfProducts>
+      <speciesReference species="EmptySet" stoichiometry="1"/>
+    </listOfProducts>
+    <kineticLaw>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <times/>
+          <ci> cell </ci>
+          <apply>
+            <ci> Function_for_Reaction2 </ci>
+            <ci> Y </ci>
+            <ci> cell </ci>
+            <ci> k1 </ci>
+          </apply>
+        </apply>
+      </math>
+      <listOfParameters>
+        <parameter id="k1" name="k1" value="1"/>
+      </listOfParameters>
+    </kineticLaw>
+  </reaction>
+  <reaction id="Reaction3" name="Reaction3" reversible="false">
+    <listOfReactants>
+      <speciesReference species="Z" stoichiometry="1"/>
+    </listOfReactants>
+    <listOfProducts>
+      <speciesReference species="EmptySet" stoichiometry="1"/>
+    </listOfProducts>
+    <kineticLaw>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <times/>
+          <ci> cell </ci>
+          <apply>
+            <ci> Function_for_Reaction3 </ci>
+            <ci> Z </ci>
+            <ci> cell </ci>
+            <ci> k1 </ci>
+          </apply>
+        </apply>
+      </math>
+      <listOfParameters>
+        <parameter id="k1" name="k1" value="1"/>
+      </listOfParameters>
+    </kineticLaw>
+  </reaction>
+  <reaction id="Reaction4" name="Reaction4" reversible="false">
+    <listOfReactants>
+      <speciesReference species="EmptySet" stoichiometry="1"/>
+      <speciesReference species="X" stoichiometry="1"/>
+    </listOfReactants>
+    <listOfProducts>
+      <speciesReference species="PX" stoichiometry="1"/>
+      <speciesReference species="X" stoichiometry="1"/>
+    </listOfProducts>
+    <kineticLaw>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <times/>
+          <ci> cell </ci>
+          <apply>
+            <ci> Function_for_Reaction4 </ci>
+            <ci> X </ci>
+            <ci> beta </ci>
+            <ci> cell </ci>
+          </apply>
+        </apply>
+      </math>
+      <listOfParameters>
+        <parameter id="beta" name="beta" value="5"/>
+      </listOfParameters>
+    </kineticLaw>
+  </reaction>
+  <reaction id="Reaction5" name="Reaction5" reversible="false">
+    <listOfReactants>
+      <speciesReference species="EmptySet" stoichiometry="1"/>
+      <speciesReference species="Y" stoichiometry="1"/>
+    </listOfReactants>
+    <listOfProducts>
+      <speciesReference species="PY" stoichiometry="1"/>
+      <speciesReference species="Y" stoichiometry="1"/>
+    </listOfProducts>
+    <kineticLaw>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <times/>
+          <ci> cell </ci>
+          <apply>
+            <ci> Function_for_Reaction5 </ci>
+            <ci> Y </ci>
+            <ci> beta </ci>
+            <ci> cell </ci>
+          </apply>
+        </apply>
+      </math>
+      <listOfParameters>
+        <parameter id="beta" name="beta" value="5"/>
+      </listOfParameters>
+    </kineticLaw>
+  </reaction>
+  <reaction id="Reaction6" name="Reaction6" reversible="false">
+    <listOfReactants>
+      <speciesReference species="EmptySet" stoichiometry="1"/>
+      <speciesReference species="Z" stoichiometry="1"/>
+    </listOfReactants>
+    <listOfProducts>
+      <speciesReference species="PZ" stoichiometry="1"/>
+      <speciesReference species="Z" stoichiometry="1"/>
+    </listOfProducts>
+    <kineticLaw>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <times/>
+          <ci> cell </ci>
+          <apply>
+            <ci> Function_for_Reaction6 </ci>
+            <ci> Z </ci>
+            <ci> beta </ci>
+            <ci> cell </ci>
+          </apply>
+        </apply>
+      </math>
+      <listOfParameters>
+        <parameter id="beta" name="beta" value="5"/>
+      </listOfParameters>
+    </kineticLaw>
+  </reaction>
+  <reaction id="Reaction7" name="Reaction7" reversible="false">
+    <listOfReactants>
+      <speciesReference species="PX" stoichiometry="1"/>
+    </listOfReactants>
+    <listOfProducts>
+      <speciesReference species="EmptySet" stoichiometry="1"/>
+    </listOfProducts>
+    <kineticLaw>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <times/>
+          <ci> cell </ci>
+          <apply>
+            <ci> Function_for_Reaction7 </ci>
+            <ci> PX </ci>
+            <ci> beta </ci>
+            <ci> cell </ci>
+          </apply>
+        </apply>
+      </math>
+      <listOfParameters>
+        <parameter id="beta" name="beta" value="5"/>
+      </listOfParameters>
+    </kineticLaw>
+  </reaction>
+  <reaction id="Reaction8" name="Reaction8" reversible="false">
+    <listOfReactants>
+      <speciesReference species="PY" stoichiometry="1"/>
+    </listOfReactants>
+    <listOfProducts>
+      <speciesReference species="EmptySet" stoichiometry="1"/>
+    </listOfProducts>
+    <kineticLaw>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <times/>
+          <ci> cell </ci>
+          <apply>
+            <ci> Function_for_Reaction8 </ci>
+            <ci> PY </ci>
+            <ci> beta </ci>
+            <ci> cell </ci>
+          </apply>
+        </apply>
+      </math>
+      <listOfParameters>
+        <parameter id="beta" name="beta" value="5"/>
+      </listOfParameters>
+    </kineticLaw>
+  </reaction>
+  <reaction id="Reaction9" name="Reaction9" reversible="false">
+    <listOfReactants>
+      <speciesReference species="PZ" stoichiometry="1"/>
+    </listOfReactants>
+    <listOfProducts>
+      <speciesReference species="EmptySet" stoichiometry="1"/>
+    </listOfProducts>
+    <kineticLaw>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <times/>
+          <ci> cell </ci>
+          <apply>
+            <ci> Function_for_Reaction9 </ci>
+            <ci> PZ </ci>
+            <ci> beta </ci>
+            <ci> cell </ci>
+          </apply>
+        </apply>
+      </math>
+      <listOfParameters>
+        <parameter id="beta" name="beta" value="5"/>
+      </listOfParameters>
+    </kineticLaw>
+  </reaction>
+  <reaction id="Reaction10" name="Reaction10" reversible="false">
+    <listOfReactants>
+      <speciesReference species="EmptySet" stoichiometry="1"/>
+    </listOfReactants>
+    <listOfProducts>
+      <speciesReference species="X" stoichiometry="1"/>
+    </listOfProducts>
+    <listOfModifiers>
+      <modifierSpeciesReference species="PZ"/>
+    </listOfModifiers>
+    <kineticLaw>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <times/>
+          <ci> cell </ci>
+          <apply>
+            <ci> Function_for_Reaction10 </ci>
+            <ci> K </ci>
+            <ci> PZ </ci>
+            <ci> alpha </ci>
+            <ci> alpha0 </ci>
+            <ci> alpha1 </ci>
+            <ci> cell </ci>
+            <ci> n </ci>
+          </apply>
+        </apply>
+      </math>
+      <listOfParameters>
+        <parameter id="K" name="K" value="1"/>
+        <parameter id="alpha" name="alpha" value="250"/>
+        <parameter id="alpha0" name="alpha0" value="0"/>
+        <parameter id="alpha1" name="alpha1" value="0"/>
+        <parameter id="n" name="n" value="2.1"/>
+      </listOfParameters>
+    </kineticLaw>
+  </reaction>
+  <reaction id="Reaction11" name="Reaction11" reversible="false">
+    <listOfReactants>
+      <speciesReference species="EmptySet" stoichiometry="1"/>
+    </listOfReactants>
+    <listOfProducts>
+      <speciesReference species="Y" stoichiometry="1"/>
+    </listOfProducts>
+    <listOfModifiers>
+      <modifierSpeciesReference species="PX"/>
+    </listOfModifiers>
+    <kineticLaw>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <times/>
+          <ci> cell </ci>
+          <apply>
+            <ci> Function_for_Reaction11 </ci>
+            <ci> K </ci>
+            <ci> PX </ci>
+            <ci> alpha </ci>
+            <ci> alpha0 </ci>
+            <ci> alpha1 </ci>
+            <ci> cell </ci>
+            <ci> n </ci>
+          </apply>
+        </apply>
+      </math>
+      <listOfParameters>
+        <parameter id="K" name="K" value="1"/>
+        <parameter id="alpha" name="alpha" value="250"/>
+        <parameter id="alpha0" name="alpha0" value="0"/>
+        <parameter id="alpha1" name="alpha1" value="0"/>
+        <parameter id="n" name="n" value="2.1"/>
+      </listOfParameters>
+    </kineticLaw>
+  </reaction>
+  <reaction id="Reaction12" name="Reaction12" reversible="false">
+    <listOfReactants>
+      <speciesReference species="EmptySet" stoichiometry="1"/>
+    </listOfReactants>
+    <listOfProducts>
+      <speciesReference species="Z" stoichiometry="1"/>
+    </listOfProducts>
+    <listOfModifiers>
+      <modifierSpeciesReference species="PY"/>
+    </listOfModifiers>
+    <kineticLaw>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <times/>
+          <ci> cell </ci>
+          <apply>
+            <ci> Function_for_Reaction12 </ci>
+            <ci> K </ci>
+            <ci> PY </ci>
+            <ci> alpha </ci>
+            <ci> alpha0 </ci>
+            <ci> alpha1 </ci>
+            <ci> cell </ci>
+            <ci> n </ci>
+          </apply>
+        </apply>
+      </math>
+      <listOfParameters>
+        <parameter id="K" name="K" value="1"/>
+        <parameter id="alpha" name="alpha" value="250"/>
+        <parameter id="alpha0" name="alpha0" value="0"/>
+        <parameter id="alpha1" name="alpha1" value="0"/>
+        <parameter id="n" name="n" value="2.1"/>
+      </listOfParameters>
+    </kineticLaw>
+  </reaction>
+</listOfReactions>
 </model>
 </sbml>
