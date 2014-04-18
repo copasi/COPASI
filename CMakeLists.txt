@@ -270,7 +270,7 @@ else()
   if (CYGWIN)
     add_definitions(-DCygwin)
   else()
-    add_definitions(-DWin32)
+    add_definitions(-DWIN32)
   endif()
 endif()
 
