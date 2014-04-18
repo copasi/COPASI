@@ -1363,7 +1363,7 @@ void CopasiPlot::resizeCurveData(const size_t & activity)
   // It is now save to delete the old data since the GUI thread has been notified.
   for (itOld = OldData.begin(); itOld != endOld; ++itOld)
     {
-      // pdelete(*itOld);
+      pdelete(*itOld);
     }
 }
 

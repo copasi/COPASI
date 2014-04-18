@@ -184,6 +184,8 @@ bool CCrossSectionTask::initialize(const OutputFlag & of,
       mTimeSeries.clear();
     }
 
+  createEvent();
+
   if (!CCopasiTask::initialize(of, pOutputHandler, pOstream)) success = false;
 
   return success;
@@ -216,10 +218,9 @@ void CCrossSectionTask::createEvent()
                  << mpCrossSectionProblem->getThreshold();
 
       mpEvent ->setTriggerExpression(expression.str());
-    }
 
-  pModel->setCompileFlag();
-  pModel->compileIfNecessary(NULL);
+      pModel->compileIfNecessary(NULL);
+    }
 }
 
 void CCrossSectionTask::removeEvent()
@@ -234,8 +235,6 @@ void CCrossSectionTask::removeEvent()
 
 bool CCrossSectionTask::process(const bool & useInitialValues)
 {
-  createEvent();
-
   processStart(useInitialValues);
 
   //this instructs the process queue to call back whenever an event is
