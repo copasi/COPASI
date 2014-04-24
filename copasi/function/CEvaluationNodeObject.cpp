@@ -89,6 +89,8 @@ bool CEvaluationNodeObject::compile(const CEvaluationTree * pTree)
             // We may have some container objects for which the value is an included
             // reference. For the math model to work this needs to be corrected.
             const CObjectInterface * pObject = pDataObject->getValueObject();
+            if(!pObject)
+              return false;
 
             if (mpObject != pObject && pObject != NULL)
               {
