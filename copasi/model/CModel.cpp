@@ -359,6 +359,13 @@ C_INT32 CModel::load(CReadConfig & configBuffer)
 
 bool CModel::compile()
 {
+  bool success = true;
+
+  if (CCopasiObject::smpRenameHandler != NULL)
+    {
+      CCopasiObject::smpRenameHandler->setEnabled(false);
+    }
+
   mpValueReference->addDirectDependency(this);
 
   CMatrix< C_FLOAT64 > LU;
@@ -384,34 +391,56 @@ bool CModel::compile()
 
   CompileStep = 0;
 
-  if (mpCompileHandler && !mpCompileHandler->progressItem(hCompileStep)) return false;
+  if (mpCompileHandler && !mpCompileHandler->progressItem(hCompileStep))
+    {
+      success = false;
+      goto finish;
+    }
 
   buildStoi();
   CompileStep = 1;
 
-  if (mpCompileHandler && !mpCompileHandler->progressItem(hCompileStep)) return false;
+  if (mpCompileHandler && !mpCompileHandler->progressItem(hCompileStep))
+    {
+      success = false;
+      goto finish;
+    }
 
   buildLinkZero();
   CompileStep = 2;
 
-  if (mpCompileHandler && !mpCompileHandler->progressItem(hCompileStep)) return false;
+  if (mpCompileHandler && !mpCompileHandler->progressItem(hCompileStep))
+    {
+      success = false;
+      goto finish;
+    }
 
   buildRedStoi();
   CompileStep = 3;
 
-  if (mpCompileHandler && !mpCompileHandler->progressItem(hCompileStep)) return false;
+  if (mpCompileHandler && !mpCompileHandler->progressItem(hCompileStep))
+    {
+      success = false;
+      goto finish;
+    }
 
   buildMoieties();
   CompileStep = 4;
 
-  if (mpCompileHandler && !mpCompileHandler->progressItem(hCompileStep)) return false;
+  if (mpCompileHandler && !mpCompileHandler->progressItem(hCompileStep))
+    {
+      success = false;
+      goto finish;
+    }
 
   buildStateTemplate();
   CompileStep = 5;
 
-  if (mpCompileHandler && !mpCompileHandler->progressItem(hCompileStep)) return false;
-
-  bool success = true;
+  if (mpCompileHandler && !mpCompileHandler->progressItem(hCompileStep))
+    {
+      success = false;
+      goto finish;
+    }
 
   try
     {
@@ -427,19 +456,25 @@ bool CModel::compile()
 
   CompileStep = 6;
 
-  if (mpCompileHandler && !mpCompileHandler->progressItem(hCompileStep)) return false;
+  if (mpCompileHandler && !mpCompileHandler->progressItem(hCompileStep))
+    {
+      success = false;
+      goto finish;
+    }
 
   buildUserOrder();
 
   if (mpCompileHandler) mpCompileHandler->finishItem(hCompileStep);
 
-  CCopasiVector< CMetab >::iterator itSpecies = mMetabolitesX.begin();
-  CCopasiVector< CMetab >::iterator endSpecies = mMetabolitesX.end();
+  {
+    CCopasiVector< CMetab >::iterator itSpecies = mMetabolitesX.begin();
+    CCopasiVector< CMetab >::iterator endSpecies = mMetabolitesX.end();
 
-  for (; itSpecies != endSpecies; ++itSpecies)
-    {
-      (*itSpecies)->compileIsInitialConcentrationChangeAllowed();
-    }
+    for (; itSpecies != endSpecies; ++itSpecies)
+      {
+        (*itSpecies)->compileIsInitialConcentrationChangeAllowed();
+      }
+  }
 
   //update annotations
   updateMatrixAnnotations();
@@ -470,6 +505,15 @@ bool CModel::compile()
 
   // Update the parameter set
   mParameterSet.createFromModel();
+
+finish:
+
+  if (CCopasiObject::smpRenameHandler != NULL)
+    {
+      CCopasiObject::smpRenameHandler->setEnabled(true);
+    }
+
+  mCompileIsNecessary = !success;
 
   return success;
 }
@@ -2972,6 +3016,7 @@ CModel::createEventsForTimeseries(CExperiment* experiment/* = NULL*/)
         }
 
       const CFitProblem *problem = static_cast<const CFitProblem*>(task->getProblem());
+
       const CExperimentSet& experiments = problem->getExperiementSet();
 
       // find first time course experiment
