@@ -49,6 +49,7 @@
 #include "lna/CLNAProblem.h"
 #include "steadystate/CSteadyStateTask.h"
 #include "trajectory/CTrajectoryTask.h"
+#include "trajectory/CTrajectoryProblem.h"
 #include "sensitivities/CSensTask.h"
 #include "tssanalysis/CTSSATask.h"
 #include "crosssection/CCrossSectionTask.h"
