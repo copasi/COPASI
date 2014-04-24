@@ -52,7 +52,7 @@ public:
   {
     if (input == mLastAccepted)
       {
-        mpContainer->setStyleSheet("background-color:" + mSavedColor.name() + ";");
+        mpContainer->setStyleSheet(QString(mpContainer->metaObject()->className()) + " {background-color:" + mSavedColor.name() + ";}");
       }
     else
       setColor(Acceptable);
@@ -85,11 +85,11 @@ protected:
   {
     if (state == Invalid)
       {
-        mpContainer->setStyleSheet("background-color:" + mErrorColor.name() + ";");
+        mpContainer->setStyleSheet(QString(mpContainer->metaObject()->className()) + " {background-color:" + mErrorColor.name() + ";}");
       }
     else
       {
-        mpContainer->setStyleSheet("background-color:" + mAcceptableColor.name() + ";");
+        mpContainer->setStyleSheet(QString(mpContainer->metaObject()->className()) + " {background-color:" + mAcceptableColor.name() + ";}");
       }
 
     return state;

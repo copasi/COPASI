@@ -141,13 +141,13 @@ void CQFittingItemWidget::slotCheckLowerInf(bool checked)
 
   if (mLowerInfChanged)
     {
-      mpCheckLowerInf->setStyleSheet("background-color:" + mChangedColor.name() + ";");
+      mpCheckLowerInf->setStyleSheet(QString(mpCheckLowerInf->metaObject()->className()) + " {background-color:" + mChangedColor.name() + ";}");
 
       if (mpEditLower->isEnabled()) mpLowerValidator->revalidate();
     }
   else
     {
-      mpCheckLowerInf->setStyleSheet("background-color:" + mSavedColor.name() + ";");
+      mpCheckLowerInf->setStyleSheet(QString(mpCheckLowerInf->metaObject()->className()) + " {background-color:" + mSavedColor.name() + ";}");
     }
 
   std::string Number;
@@ -178,13 +178,13 @@ void CQFittingItemWidget::slotCheckUpperInf(bool checked)
 
   if (mUpperInfChanged)
     {
-      mpCheckUpperInf->setStyleSheet("background-color:" + mChangedColor.name() + ";");
+      mpCheckUpperInf->setStyleSheet(QString(mpCheckUpperInf->metaObject()->className()) + " {background-color:" + mChangedColor.name() + ";}");
 
       if (mpEditUpper->isEnabled()) mpUpperValidator->revalidate();
     }
   else
     {
-      mpCheckUpperInf->setStyleSheet("background-color:" + mSavedColor.name() + ";");
+      mpCheckUpperInf->setStyleSheet(QString(mpCheckUpperInf->metaObject()->className()) + " {background-color:" + mSavedColor.name() + ";}");
     }
 
   std::string Number;
@@ -1475,10 +1475,10 @@ void CQFittingItemWidget::loadSelection()
   mpLowerValidator->saved();
   mpUpperValidator->saved();
 
-  mpCheckLowerInf->setStyleSheet("background-color:" + mSavedColor.name() + ";");
+  mpCheckLowerInf->setStyleSheet(QString(mpCheckLowerInf->metaObject()->className()) + " {background-color:" + mSavedColor.name() + ";}");
   mLowerInfChanged = false;
 
-  mpCheckUpperInf->setStyleSheet("background-color:" + mSavedColor.name() + ";");
+  mpCheckUpperInf->setStyleSheet(QString(mpCheckUpperInf->metaObject()->className()) + " {background-color:" + mSavedColor.name() + ";}");
   mUpperInfChanged = false;
 }
 
@@ -1506,10 +1506,10 @@ void CQFittingItemWidget::saveSelection()
       if (isNumber(TO_UTF8(mpEditStart->text())))
         pItem->setStartValue(mpEditStart->text().toDouble());
 
-      mpCheckLowerInf->setStyleSheet("background-color:" + mSavedColor.name() + ";");
+      mpCheckLowerInf->setStyleSheet(QString(mpCheckLowerInf->metaObject()->className()) + " {background-color:" + mSavedColor.name() + ";}");
       mLowerInfChanged = false;
 
-      mpCheckUpperInf->setStyleSheet("background-color:" + mSavedColor.name() + ";");
+      mpCheckUpperInf->setStyleSheet(QString(mpCheckUpperInf->metaObject()->className()) + " {background-color:" + mSavedColor.name() + ";}");
       mUpperInfChanged = false;
       mpObjectValidator->saved();
       mpLowerValidator->saved();

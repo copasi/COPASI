@@ -424,14 +424,14 @@ void CQScreenshotOptionsDialog::slotFramesTextEdited(const QString& /*text*/)
   if (this->mpFramesEdit->hasAcceptableInput() && this->mFramesEditHighlighted == true)
     {
       // set background to normal
-      this->mpFramesEdit->setStyleSheet("background-color:" + mDefaultColor.name() + ";");
-      this->mFramesEditHighlighted = false;
+      mpFramesEdit->setStyleSheet(QString(mpFramesEdit->metaObject()->className()) + " {background-color:" + mDefaultColor.name() + ";}");
+      mFramesEditHighlighted = false;
     }
   else if (!this->mpFramesEdit->hasAcceptableInput() && this->mFramesEditHighlighted == false)
     {
       // set background to red
-      this->mpFramesEdit->setStyleSheet("background-color:" + mHighlightColor.name() + ";");
-      this->mFramesEditHighlighted = true;
+      mpFramesEdit->setStyleSheet(QString(mpFramesEdit->metaObject()->className()) + " {background-color:" + mHighlightColor.name() + ";}");
+      mFramesEditHighlighted = true;
     }
 }
 

@@ -38,7 +38,7 @@ CQTSSATimeScaleWidget::CQTSSATimeScaleWidget(QWidget* parent, const char* name, 
   mpVLayout->addWidget(mpPaintWidget);
   mpVLayout->addWidget(mpSlider);
 
-  mpPaintWidget->setStyleSheet("background-color:" + QColor(Qt::white).name() + ";");
+  mpPaintWidget->setStyleSheet(QString(mpPaintWidget->metaObject()->className()) + " {background-color:" + QColor(Qt::white).name() + ";}");
   mpPaintWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
   mpSlider->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
 
