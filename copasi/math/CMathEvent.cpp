@@ -112,7 +112,7 @@ void CMathEventN::CTrigger::CRootProcessor::toggle(const C_FLOAT64 & time,
   // value of the root expression changes sign. In that case it is save
   // to toggle the state.
 
-  if (!isnan(mLastToggleTime) &&
+  if (!std::isnan(mLastToggleTime) &&
       mLastToggleTime == time)
     {
       return;
@@ -1237,7 +1237,7 @@ const CMathObject * CMathEventN::getPriority() const
 C_FLOAT64 CMathEventN::getCalculationTime() const
 {
   if (mDelayAssignment ||
-      isnan(* (C_FLOAT64 *) mpDelay->getValuePointer()))
+      std::isnan(* (C_FLOAT64 *) mpDelay->getValuePointer()))
     {
       return *mpTime;
     }
@@ -1248,7 +1248,7 @@ C_FLOAT64 CMathEventN::getCalculationTime() const
 C_FLOAT64 CMathEventN::getExecutionTime() const
 {
   if (!mDelayAssignment ||
-      isnan(* (C_FLOAT64 *) mpDelay->getValuePointer()))
+      std::isnan(* (C_FLOAT64 *) mpDelay->getValuePointer()))
     {
       return *mpTime;
     }

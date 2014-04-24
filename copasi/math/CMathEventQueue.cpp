@@ -195,7 +195,7 @@ bool CMathEventQueue::addAssignment(const C_FLOAT64 & executionTime,
   // If the assignment is in the future or it has a priority the
   // cascading level must be zero.
   if (executionTime > *mpTime ||
-      !isnan(* (C_FLOAT64 *) pEvent->getPriority()->getValuePointer()))
+      !std::isnan(* (C_FLOAT64 *) pEvent->getPriority()->getValuePointer()))
     CascadingLevel = 0;
 
   pEvent->addPendingAction(mActions.insert(std::make_pair(CKey(executionTime, equality, CascadingLevel),
@@ -216,7 +216,7 @@ bool CMathEventQueue::addCalculation(const C_FLOAT64 & executionTime,
   // If the assignment is in the future or it has a priority the
   // cascading level must be zero.
   if (executionTime > *mpTime ||
-      !isnan(* (C_FLOAT64 *) pEvent->getPriority()->getValuePointer()))
+      !std::isnan(* (C_FLOAT64 *) pEvent->getPriority()->getValuePointer()))
     CascadingLevel = 0;
 
   pEvent->addPendingAction(mActions.insert(std::make_pair(CKey(executionTime, equality, CascadingLevel),
