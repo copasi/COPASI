@@ -39,7 +39,7 @@ class CDerive
     static CEvaluationNode* subtract(CEvaluationNode* n1, CEvaluationNode* n2, bool simplify);
     static CEvaluationNode* power(CEvaluationNode* n1, CEvaluationNode* n2, bool simplify);
   
-    static CEvaluationNode * copyBranch_var2obj(const CEvaluationNode* node, std::vector<const CEvaluationNode*> & env);
+    //static CEvaluationNode * copyBranch_var2obj(const CEvaluationNode* node, std::vector<const CEvaluationNode*> & env);
 
   
   /**
