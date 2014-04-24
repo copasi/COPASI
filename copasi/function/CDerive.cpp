@@ -252,7 +252,7 @@ CEvaluationNode* CDerive::power(CEvaluationNode* n1, CEvaluationNode* n2, bool s
 
 //TODO remove pModel
 CEvaluationNode* CDerive::deriveBranch(const CEvaluationNode* node, const CCopasiObject * pObject,
-                                       std::vector<const CEvaluationNode*>& env,
+                                       //std::vector<const CEvaluationNode*>& env,
                                        //std::vector<const CCopasiObject*>& objenv,
                                        const CEvaluationTree* pTree,
                                        bool simplify)
@@ -265,11 +265,11 @@ CEvaluationNode* CDerive::deriveBranch(const CEvaluationNode* node, const CCopas
     {
       if (!pENO->getLeft() || !pENO->getRight()) return NULL;
 
-      CEvaluationNode * pLeftDeriv = deriveBranch(pENO->getLeft(), pObject, env, pTree, simplify);
+      CEvaluationNode * pLeftDeriv = deriveBranch(pENO->getLeft(), pObject, pTree, simplify);
 
       if (!pLeftDeriv) return NULL;
 
-      CEvaluationNode * pRightDeriv = deriveBranch(pENO->getRight(), pObject, env, pTree, simplify);
+      CEvaluationNode * pRightDeriv = deriveBranch(pENO->getRight(), pObject, pTree, simplify);
 
       if (!pRightDeriv) {delete pLeftDeriv; return NULL;}
 
@@ -363,11 +363,8 @@ CEvaluationNode* CDerive::deriveBranch(const CEvaluationNode* node, const CCopas
 
   if (pENV)
     {
-    if (!env[pENV->getIndex()])
-      return NULL;
-    
-    //basically just expand the tree. 
-    return deriveBranch(env[pENV->getIndex()], pObject, env, pTree, simplify);
+    //variable nodes are not supported here
+    return NULL;
     }
 
   const CEvaluationNodeNumber * pENN = dynamic_cast<const CEvaluationNodeNumber*>(node);
@@ -408,8 +405,8 @@ CEvaluationNode* CDerive::deriveBranch(const CEvaluationNode* node, const CCopas
         CEvaluationNodeObject* volume2 = new CEvaluationNodeObject(CEvaluationNodeObject::CN, tmpstr); //we need this node twice
         volume2->compile(pTree);
         
-        CEvaluationNode* damount = deriveBranch(amount, pObject, env, pTree, simplify);
-        CEvaluationNode* dvolume = deriveBranch(volume, pObject, env, pTree, simplify);
+        CEvaluationNode* damount = deriveBranch(amount, pObject, pTree, simplify);
+        CEvaluationNode* dvolume = deriveBranch(volume, pObject, pTree, simplify);
         
         // A´/V - A*V´/V^2
         return

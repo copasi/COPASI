@@ -53,7 +53,7 @@ class CDerive
    *    dependent species, reactions. 
    */
   static CEvaluationNode* deriveBranch(const CEvaluationNode* node, const CCopasiObject * pObject,
-                                       std::vector<const CEvaluationNode*>& env,
+                                       //std::vector<const CEvaluationNode*>& env,
                                        //std::vector<const CCopasiObject*>& objenv,
                                        const CEvaluationTree* pTree,
                                        bool simplify);
