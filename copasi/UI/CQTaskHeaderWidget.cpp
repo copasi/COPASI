@@ -48,10 +48,10 @@ bool CQTaskHeaderWidget::setTaskName(const std::string & name)
 void CQTaskHeaderWidget::saved()
 {
   mUpdateChanged = false;
-  mpUpdateModel->setStyleSheet("background-color:" + mSavedColor.name() + ";");
+  mpUpdateModel->setStyleSheet(QString(mpUpdateModel->metaObject()->className()) + " {background-color:" + mSavedColor.name() + ";}");
 
   mExecutableChanged = false;
-  mpBoxExecutable->setStyleSheet("background-color:" + mSavedColor.name() + ";");
+  mpBoxExecutable->setStyleSheet(QString(mpBoxExecutable->metaObject()->className()) + " {background-color:" + mSavedColor.name() + ";}");
 }
 
 void CQTaskHeaderWidget::slotUpdate()
@@ -60,11 +60,11 @@ void CQTaskHeaderWidget::slotUpdate()
 
   if (mUpdateChanged)
     {
-      mpUpdateModel->setStyleSheet("background-color:" + mChangedColor.name() + ";");
+      mpUpdateModel->setStyleSheet(QString(mpUpdateModel->metaObject()->className()) + " {background-color:" + mChangedColor.name() + ";}");
     }
   else
     {
-      mpUpdateModel->setStyleSheet("background-color:" + mSavedColor.name() + ";");
+      mpUpdateModel->setStyleSheet(QString(mpUpdateModel->metaObject()->className()) + " {background-color:" + mSavedColor.name() + ";}");
     }
 }
 
@@ -74,10 +74,10 @@ void CQTaskHeaderWidget::slotExecutable()
 
   if (mExecutableChanged)
     {
-      mpBoxExecutable->setStyleSheet("background-color:" + mChangedColor.name() + ";");
+      mpBoxExecutable->setStyleSheet(QString(mpBoxExecutable->metaObject()->className()) + " {background-color:" + mChangedColor.name() + ";}");
     }
   else
     {
-      mpBoxExecutable->setStyleSheet("background-color:" + mSavedColor.name() + ";");
+      mpBoxExecutable->setStyleSheet(QString(mpBoxExecutable->metaObject()->className()) + " {background-color:" + mSavedColor.name() + ";}");
     }
 }
