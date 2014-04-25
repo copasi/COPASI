@@ -52,7 +52,7 @@ class CDerive
    *  - However, the derivation of objects is expanded, for entities with assignments, concentrations,
    *    dependent species, reactions. 
    */
-  static CEvaluationNode* deriveBranch(const CEvaluationNode* node, const CCopasiObject * pObject,
+  static CEvaluationNode* deriveBranch(const CEvaluationNode* node, const double * pObject,
                                        //std::vector<const CEvaluationNode*>& env,
                                        //std::vector<const CCopasiObject*>& objenv,
                                        const CEvaluationTree* pTree,
