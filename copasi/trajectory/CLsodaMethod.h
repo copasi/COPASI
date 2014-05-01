@@ -243,6 +243,12 @@ public:
   virtual void start(CVectorCore< C_FLOAT64 > & initialState);
 
   /**
+   * Set the math container used for calculations
+   * @param CMathContainer * pContainer
+   */
+  virtual void setContainer(CMathContainer * pContainer);
+
+  /**
    *  This evaluates the derivatives
    */
   static void EvalF(const C_INT * n, const C_FLOAT64 * t, const C_FLOAT64 * y, C_FLOAT64 * ydot);

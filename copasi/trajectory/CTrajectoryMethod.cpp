@@ -126,14 +126,13 @@ CTrajectoryMethod::CTrajectoryMethod(const CTrajectoryMethod & src,
 CTrajectoryMethod::~CTrajectoryMethod()
 {DESTRUCTOR_TRACE;}
 
-void CTrajectoryMethod::setContainer(CMathContainer * pContainer,
-                                     const bool & reduced)
+void CTrajectoryMethod::setContainer(CMathContainer * pContainer)
 {
   mpContainer = pContainer;
 
   if (mpContainer != NULL)
     {
-      mContainerState.initialize(mpContainer->getState(reduced));
+      mContainerState.initialize(mpContainer->getState());
       mpContainerStateTime = mContainerState.array() + mpContainer->getTimeIndex();
     }
   else

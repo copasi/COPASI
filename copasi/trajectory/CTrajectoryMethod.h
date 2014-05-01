@@ -87,10 +87,8 @@ public:
   /**
    * Set the math container used for calculations
    * @param CMathContainer * pContainer
-   * @param const bool & reduced = false
    */
-  void setContainer(CMathContainer * pContainer,
-                    const bool & reduced = false);
+  virtual void setContainer(CMathContainer * pContainer);
 
   /**
    *  Set a pointer to the problem.

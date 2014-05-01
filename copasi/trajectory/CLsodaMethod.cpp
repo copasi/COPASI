@@ -455,6 +455,23 @@ void CLsodaMethod::start(CVectorCore< C_FLOAT64 > & initialState)
   return;
 }
 
+// virtual
+void CLsodaMethod::setContainer(CMathContainer * pContainer)
+{
+  mpContainer = pContainer;
+
+  if (mpContainer != NULL)
+    {
+      mContainerState.initialize(mpContainer->getState(*mpReducedModel));
+      mpContainerStateTime = mContainerState.array() + mpContainer->getTimeIndex();
+    }
+  else
+    {
+      mContainerState.initialize(0, NULL);
+      mpContainerStateTime = NULL;
+    }
+}
+
 void CLsodaMethod::EvalF(const C_INT * n, const C_FLOAT64 * t, const C_FLOAT64 * y, C_FLOAT64 * ydot)
 {static_cast<Data *>((void *) n)->pMethod->evalF(t, y, ydot);}
 
