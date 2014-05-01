@@ -40,7 +40,7 @@
 const C_FLOAT64 CCopasiObject::DummyValue = 0.0;
 
 //static
-const CRenameHandler * CCopasiObject::smpRenameHandler = NULL;
+CRenameHandler * CCopasiObject::smpRenameHandler = NULL;
 
 //static
 UpdateMethod CCopasiObject::mDefaultUpdateMethod;

@@ -72,15 +72,24 @@ CProcessQueue::CAction::CAction(const CAction & src) :
 
 CProcessQueue::CAction::CAction(CMathEvent * pEvent,
                                 CProcessQueue * pProcessQueue) :
-  mType(),
+  mType(CProcessQueue::CAction::Calculation),
   mValues(),
+  mpEvent(pEvent),
+  mpProcessQueue(pProcessQueue)
+{}
+
+CProcessQueue::CAction::CAction(const CVector< C_FLOAT64 > & values,
+                                CMathEvent * pEvent,
+                                CProcessQueue * pProcessQueue) :
+  mType(),
+  mValues(values),
   mpEvent(pEvent),
   mpProcessQueue(pProcessQueue)
 {
   switch (pEvent->getType())
     {
       case CEvent::Assignment:
-        mType = Calculation;
+        mType = Assignment;
         break;
 
       case CEvent::Callback:
@@ -88,15 +97,6 @@ CProcessQueue::CAction::CAction(CMathEvent * pEvent,
         break;
     }
 }
-
-CProcessQueue::CAction::CAction(const CVector< C_FLOAT64 > & values,
-                                CMathEvent * pEvent,
-                                CProcessQueue * pProcessQueue) :
-  mType(CProcessQueue::CAction::Assignment),
-  mValues(values),
-  mpEvent(pEvent),
-  mpProcessQueue(pProcessQueue)
-{}
 
 CProcessQueue::CAction::~CAction()
 {}

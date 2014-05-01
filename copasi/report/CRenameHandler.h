@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -23,6 +23,12 @@ public:
   virtual ~CRenameHandler() {};
 
   virtual void handle(const std::string & oldCN, const std::string & newCN) const = 0;
+
+  /**
+   * Enable and disable the rename handler
+   * @param const bool & enabled
+   */
+  virtual void setEnabled(const bool & enabled) = 0;
 };
 
 #endif

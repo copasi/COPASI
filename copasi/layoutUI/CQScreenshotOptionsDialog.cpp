@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -424,18 +424,14 @@ void CQScreenshotOptionsDialog::slotFramesTextEdited(const QString& /*text*/)
   if (this->mpFramesEdit->hasAcceptableInput() && this->mFramesEditHighlighted == true)
     {
       // set background to normal
-      QPalette palette = this->mpFramesEdit->palette();
-      palette.setColor(this->mpFramesEdit->backgroundRole(), this->mDefaultColor);
-      this->mpFramesEdit->setPalette(palette);
-      this->mFramesEditHighlighted = false;
+      mpFramesEdit->setStyleSheet(QString(mpFramesEdit->metaObject()->className()) + " {background-color:" + mDefaultColor.name() + ";}");
+      mFramesEditHighlighted = false;
     }
   else if (!this->mpFramesEdit->hasAcceptableInput() && this->mFramesEditHighlighted == false)
     {
       // set background to red
-      QPalette palette = this->mpFramesEdit->palette();
-      palette.setColor(this->mpFramesEdit->backgroundRole(), this->mHighlightColor);
-      this->mpFramesEdit->setPalette(palette);
-      this->mFramesEditHighlighted = true;
+      mpFramesEdit->setStyleSheet(QString(mpFramesEdit->metaObject()->className()) + " {background-color:" + mHighlightColor.name() + ";}");
+      mFramesEditHighlighted = true;
     }
 }
 

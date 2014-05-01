@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -369,6 +369,22 @@ bool CExperimentSet::hasDataForTaskType(const CCopasiTask::Type & type) const
   for (; it != end; ++it)
     {
       if ((*it)->getExperimentType() == type)
+        {
+          return true;
+        }
+    }
+
+  return false;
+}
+
+bool CExperimentSet::hasStartInSteadyState() const
+{
+  std::vector< CExperiment * >::const_iterator it = mpExperiments->begin() + mNonExperiments;
+  std::vector< CExperiment * >::const_iterator end = mpExperiments->end();
+
+  for (; it != end; ++it)
+    {
+      if ((*it)->getStartInSteadyState())
         {
           return true;
         }

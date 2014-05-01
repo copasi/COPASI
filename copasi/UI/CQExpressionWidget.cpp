@@ -497,9 +497,6 @@ void CQExpressionWidget::slotTextChanged()
 
   int pos = 0;
   QString Input = toPlainText();
-  QPalette palette;
-  palette.setColor(backgroundRole(), QColor(255, 0, 0));
-  setPalette(palette);
 
   emit valid(pValidator->validate(Input, pos) == QValidator::Acceptable);
 }

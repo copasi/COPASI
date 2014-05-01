@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateTask.cpp,v $
-//   $Revision: 1.87 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/05/10 16:03:12 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2002 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -46,14 +38,14 @@
 #define XXXX_Reporting
 
 CSteadyStateTask::CSteadyStateTask(const CCopasiContainer * pParent):
-    CCopasiTask(CCopasiTask::steadyState, pParent),
-    mpSteadyState(NULL),
-    mJacobian(),
-    mJacobianX(),
-    mpJacobianAnn(NULL),
-    mpJacobianXAnn(NULL),
-    mEigenValues("Eigenvalues of Jacobian", this),
-    mEigenValuesX("Eigenvalues of reduced system Jacobian", this)
+  CCopasiTask(CCopasiTask::steadyState, pParent),
+  mpSteadyState(NULL),
+  mJacobian(),
+  mJacobianX(),
+  mpJacobianAnn(NULL),
+  mpJacobianXAnn(NULL),
+  mEigenValues("Eigenvalues of Jacobian", this),
+  mEigenValuesX("Eigenvalues of reduced system Jacobian", this)
 {
   mpProblem = new CSteadyStateProblem(this);
 
@@ -65,14 +57,14 @@ CSteadyStateTask::CSteadyStateTask(const CCopasiContainer * pParent):
 
 CSteadyStateTask::CSteadyStateTask(const CSteadyStateTask & src,
                                    const CCopasiContainer * pParent):
-    CCopasiTask(src, pParent),
-    mpSteadyState(src.mpSteadyState),
-    mJacobian(src.mJacobian),
-    mJacobianX(src.mJacobianX),
-    mpJacobianAnn(NULL),
-    mpJacobianXAnn(NULL),
-    mEigenValues(src.mEigenValues, this),
-    mEigenValuesX(src.mEigenValuesX, this)
+  CCopasiTask(src, pParent),
+  mpSteadyState(src.mpSteadyState),
+  mJacobian(src.mJacobian),
+  mJacobianX(src.mJacobianX),
+  mpJacobianAnn(NULL),
+  mpJacobianXAnn(NULL),
+  mEigenValues(src.mEigenValues, this),
+  mEigenValuesX(src.mEigenValuesX, this)
 {
   mpProblem =
     new CSteadyStateProblem(*(CSteadyStateProblem *) src.mpProblem, this);
@@ -339,23 +331,26 @@ bool CSteadyStateTask::process(const bool & useInitialValues)
     restore();
 
   //update jacobian
-  if (pProblem->isJacobianRequested() ||
-      pProblem->isStabilityAnalysisRequested())
+  if (mpSteadyState->isValid())
     {
-      pMethod->doJacobian(mJacobian, mJacobianX);
-    }
+      if (pProblem->isJacobianRequested() ||
+          pProblem->isStabilityAnalysisRequested())
+        {
+          pMethod->doJacobian(mJacobian, mJacobianX);
+        }
 
-  //mpProblem->getModel()->setState(mpSteadyState);
-  //mpProblem->getModel()->updateRates();
+      //mpProblem->getModel()->setState(mpSteadyState);
+      //mpProblem->getModel()->updateRates();
 
-  //calculate eigenvalues
-  if (pProblem->isStabilityAnalysisRequested())
-    {
-      mEigenValues.calcEigenValues(mJacobian);
-      mEigenValuesX.calcEigenValues(mJacobianX);
+      //calculate eigenvalues
+      if (pProblem->isStabilityAnalysisRequested())
+        {
+          mEigenValues.calcEigenValues(mJacobian);
+          mEigenValuesX.calcEigenValues(mJacobianX);
 
-      mEigenValues.stabilityAnalysis(pMethod->getStabilityResolution());
-      mEigenValuesX.stabilityAnalysis(pMethod->getStabilityResolution());
+          mEigenValues.stabilityAnalysis(pMethod->getStabilityResolution());
+          mEigenValuesX.stabilityAnalysis(pMethod->getStabilityResolution());
+        }
     }
 
   // Reset the time.

@@ -54,7 +54,6 @@ CTrajectoryMethodDsaLsodar::CPartition::CPartition():
   mNumLowSpecies(0),
   mpContainer(NULL),
   mpFirstReactionSpecies(NULL)
-
 {}
 
 CTrajectoryMethodDsaLsodar::CPartition::CPartition(const CTrajectoryMethodDsaLsodar::CPartition & src):

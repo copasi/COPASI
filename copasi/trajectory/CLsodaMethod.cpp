@@ -199,6 +199,8 @@ void CLsodaMethod::stateChanged()
 {
   mLsodaStatus = 1;
   mTime = *mpContainerStateTime;
+  mPeekAheadMode = false;
+
   destroyRootMask();
 }
 
@@ -573,7 +575,12 @@ CTrajectoryMethod::Status CLsodaMethod::peekAhead()
       switch (step(MaxPeekAheadTime - mTime))
         {
           case NORMAL:
-            mPeekAheadMode = false;
+
+            if (mRootMasking != ALL)
+              {
+                mPeekAheadMode = false;
+              }
+
             break;
 
           case ROOT:

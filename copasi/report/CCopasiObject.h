@@ -294,7 +294,7 @@ private:
   static UpdateMethod mDefaultUpdateMethod;
 
 protected:
-  static const CRenameHandler * smpRenameHandler;
+  static CRenameHandler * smpRenameHandler;
 
   //Operations
   CCopasiObject();

@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -49,9 +49,7 @@ CQExpressionMmlStackedWidget::CQExpressionMmlStackedWidget(QWidget* parent)
   mpBtnEditExpression->setIcon(CQIconResource::icon(CQIconResource::edit));
   mpBtnSaveExpression->setIcon(CQIconResource::icon(CQIconResource::fileExport));
 
-  QPalette Palette;
-  Palette.setColor(mpMmlScrollView->backgroundRole(), QColor(Qt::white));
-  mpMmlScrollView->setPalette(Palette);
+  mpMmlScrollView->setStyleSheet(QString(mpMmlScrollView->widget()->metaObject()->className()) + "{background-color:" + QColor(Qt::white).name() + ";}");
 
 #ifdef WIN32
   // on windows there ought to be a border around the MML widget

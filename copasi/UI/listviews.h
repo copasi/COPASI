@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -22,6 +22,7 @@
 #include <set>
 #include <QtGui/QSplitter>
 #include <QtGui/QTreeView>
+#include <QtGui/QStackedWidget>
 
 #include "copasi.h"
 
@@ -187,6 +188,7 @@ private:
 
   //the widgets
   CQBrowserPane *mpTreeView;
+  QStackedWidget *mpStackedWidget;
 
   CMCAResultWidget* mpCMCAResultWidget;
   CQMCAWidget* mpCQMCAWidget;

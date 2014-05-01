@@ -1525,10 +1525,10 @@ void CopasiUI3Window::slotExportSBML()
 
       if ((*CCopasiRootContainer::getDatamodelList())[0]->getFileName() != "")
         Default
-          = FROM_UTF8(CDirEntry::dirName((*CCopasiRootContainer::getDatamodelList())[0]->getFileName())
-                      + CDirEntry::Separator
-                      + CDirEntry::baseName((*CCopasiRootContainer::getDatamodelList())[0]->getFileName())
-                      + ".xml");
+        = FROM_UTF8(CDirEntry::dirName((*CCopasiRootContainer::getDatamodelList())[0]->getFileName())
+                    + CDirEntry::Separator
+                    + CDirEntry::baseName((*CCopasiRootContainer::getDatamodelList())[0]->getFileName())
+                    + ".xml");
       else
         {
           Default = "untitled.xml";
@@ -1595,9 +1595,9 @@ void CopasiUI3Window::slotExportMathModel()
 
       if (pDataModel->getFileName() != "")
         Default
-          = FROM_UTF8(CDirEntry::dirName(pDataModel->getFileName())
-                      + CDirEntry::Separator
-                      + CDirEntry::baseName(pDataModel->getFileName()));
+        = FROM_UTF8(CDirEntry::dirName(pDataModel->getFileName())
+                    + CDirEntry::Separator
+                    + CDirEntry::baseName(pDataModel->getFileName()));
       else
         Default = "untitled.c";
 
@@ -2205,8 +2205,14 @@ void CopasiUI3Window::slotFontSelection()
     {
       qApp->setFont(Font);
 
-      QString ApplicationFont = Font.family() + "; " + QString::number(Font.pointSize());
-      CCopasiRootContainer::getConfiguration()->setApplicationFont(TO_UTF8(ApplicationFont));
+      // The stylesheet (set in CQCopasiApplication.cpp) is apparently overriding
+      // in newer versions of Qt
+      // This appears to reload the font from setFont into the style.
+      // Two calls so that the tabwidget labels are correct
+      qApp->setStyleSheet(" * {font : }");
+      qApp->setStyleSheet(" * {font : }");
+
+      CCopasiRootContainer::getConfiguration()->setApplicationFont(TO_UTF8(Font.toString()));
 
       TaskWidget *pTaskWidget = dynamic_cast< TaskWidget * >(mpListView->getCurrentWidget());
 
@@ -2229,9 +2235,8 @@ void CopasiUI3Window::setApplicationFont()
     }
 
   QFont Font = qApp->font();
-  QString qApplicationFont = Font.family() + "; " + QString::number(Font.pointSize());
 
-  if (ApplicationFont == TO_UTF8(qApplicationFont))
+  if (ApplicationFont == TO_UTF8(Font.toString()))
     {
       // We are using the default
       CCopasiRootContainer::getConfiguration()->setApplicationFont("");
@@ -2239,11 +2244,13 @@ void CopasiUI3Window::setApplicationFont()
     }
 
   // The user has chosen another font
-  QString FontFamily = FROM_UTF8(ApplicationFont);
-  FontFamily.remove(QRegExp("; [0-9]*"));
-  int FontSize = FROM_UTF8(ApplicationFont).remove(0, FontFamily.length() + 2).toInt();
+  Font.fromString(FROM_UTF8(ApplicationFont));
+  qApp->setFont(Font);
 
-  qApp->setFont(QFont(FontFamily, FontSize));
+  // This appears to load the fonts, etc. from the previous configuration.
+  // Two calls so that the tabwidget labels are correct
+  qApp->setStyleSheet(" * {font : }");
+  qApp->setStyleSheet(" * {font : }");
 }
 
 #include "UI/CQExpandModelData.h"
@@ -3057,10 +3064,10 @@ void CopasiUI3Window::slotExportSEDML()
 
       if ((*CCopasiRootContainer::getDatamodelList())[0]->getFileName() != "")
         Default
-          = FROM_UTF8(CDirEntry::dirName((*CCopasiRootContainer::getDatamodelList())[0]->getFileName())
-                      + CDirEntry::Separator
-                      + CDirEntry::baseName((*CCopasiRootContainer::getDatamodelList())[0]->getFileName())
-                      + ".sedml");
+        = FROM_UTF8(CDirEntry::dirName((*CCopasiRootContainer::getDatamodelList())[0]->getFileName())
+                    + CDirEntry::Separator
+                    + CDirEntry::baseName((*CCopasiRootContainer::getDatamodelList())[0]->getFileName())
+                    + ".sedml");
       else
         {
           Default = "untitled.sedml";

@@ -136,10 +136,9 @@ bool CCrossSectionTask::initialize(const OutputFlag & of,
   mStatesRing.resize(RING_SIZE);
   mStatesRingCounter = 0;
 
-  bool success = CTrajectoryTask::initialize(of, pOutputHandler, pOstream);
+  createEvent();
 
-  mpTrajectoryMethod->setProblem(mpCrossSectionProblem);
-  success &= mpMethod->isValidProblem(mpProblem);
+  bool success = CTrajectoryTask::initialize(of, pOutputHandler, pOstream);
 
   return success;
 }
@@ -182,8 +181,6 @@ void CCrossSectionTask::removeEvent()
 
 bool CCrossSectionTask::process(const bool & useInitialValues)
 {
-  createEvent();
-
   processStart(useInitialValues);
 
   mPreviousCrossingTime = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
