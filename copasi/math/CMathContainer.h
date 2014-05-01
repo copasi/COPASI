@@ -145,6 +145,12 @@ public:
   const CVectorCore< C_FLOAT64 > & getRate(const bool & reduced = false) const;
 
   /**
+   * Retrieve the total masses of the moieties.
+   * @return const CVectorCore< C_FLOAT64 > & totalMasses
+   */
+  const CVectorCore< C_FLOAT64 > & getTotalMasses() const;
+
+  /**
    * Retrieve reaction particle fluxes.
    * @return const CVectorCore< C_FLOAT64 > & particleFluxes
    */
@@ -192,11 +198,6 @@ public:
    * @param const bool & useMoieties
    */
   void updateSimulatedValues(const bool & useMoieties);
-
-  /**
-   * Calculate all values required for simulation based on the current state
-   */
-  void updateEventSimulatedValues();
 
   /**
    * Apply the given update sequence to the mathematical objects in the container
@@ -559,12 +560,6 @@ private:
   void createUpdateSimulationValuesSequence();
 
   /**
-   * Create the update sequences used to calculate all values required for simulation
-   * after an discrete event
-   */
-  void createEventSimulationValuesSequence();
-
-  /**
    * Determine the entity type of an entity
    * @param const CModelEntity * pEntity
    * @return CMath::EntityType entityType
@@ -764,13 +759,6 @@ private:
    * on the assumption that all state values may have changed
    */
   CObjectInterface::UpdateSequence mSimulationValuesSequenceReduced;
-
-  /**
-   * The sequence of updates needed to calculate all simulation required values based
-   * on the assumption that all state values may have changed and the total moieties
-   * may have changed
-   */
-  CObjectInterface::UpdateSequence mEventSimulationValuesSequence;
 
   /**
    * The set of objects which determine the initial state of the model based on extensive

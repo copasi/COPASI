@@ -67,7 +67,6 @@ CMathContainer::CMathContainer():
   mApplyInitialValuesSequence(),
   mSimulationValuesSequence(),
   mSimulationValuesSequenceReduced(),
-  mEventSimulationValuesSequence(),
   mInitialStateValueExtensive(),
   mInitialStateValueIntensive(),
   mStateValues(),
@@ -134,7 +133,6 @@ CMathContainer::CMathContainer(CModel & model):
   mApplyInitialValuesSequence(),
   mSimulationValuesSequence(),
   mSimulationValuesSequenceReduced(),
-  mEventSimulationValuesSequence(),
   mInitialStateValueExtensive(),
   mInitialStateValueIntensive(),
   mStateValues(),
@@ -479,6 +477,11 @@ const CVectorCore< C_FLOAT64 > & CMathContainer::getRate(const bool & reduced) c
   return mRate;
 }
 
+const CVectorCore< C_FLOAT64 > & CMathContainer::getTotalMasses() const
+{
+  return mTotalMasses;
+}
+
 const CVectorCore< C_FLOAT64 > & CMathContainer::getParticleFluxes() const
 {
   return mParticleFluxes;
@@ -623,11 +626,6 @@ void CMathContainer::updateSimulatedValues(const bool & useMoieties)
     {
       applyUpdateSequence(mSimulationValuesSequence);
     }
-}
-
-void CMathContainer::updateEventSimulatedValues()
-{
-  applyUpdateSequence(mEventSimulationValuesSequence);
 }
 
 void CMathContainer::applyUpdateSequence(const CObjectInterface::UpdateSequence & updateSequence)
@@ -1564,7 +1562,6 @@ void CMathContainer::createDependencyGraphs()
   createSynchronizeInitialValuesSequence();
   createApplyInitialValuesSequence();
   createUpdateSimulationValuesSequence();
-  createEventSimulationValuesSequence();
 
   return;
 }
@@ -1667,6 +1664,9 @@ void CMathContainer::createUpdateSimulationValuesSequence()
   mReducedStateValues.clear();
   mSimulationRequiredValues.clear();
 
+  // For the reduced model we force the values of the dependent variables to be calculated.
+  CObjectInterface::ObjectSet ReducedSimulationRequiredValues;
+
   // Collect all the state objects, which are transient values of simulation type:
   //   Time, ODE, Independent, and Dependent (not for reduced model)
 
@@ -1687,6 +1687,7 @@ void CMathContainer::createUpdateSimulationValuesSequence()
 
           case CMath::Dependent:
             mStateValues.insert(pObject);
+            ReducedSimulationRequiredValues.insert(pObject);
             break;
 
           default:
@@ -1703,6 +1704,7 @@ void CMathContainer::createUpdateSimulationValuesSequence()
   for (; pObject != pObjectEnd; ++pObject)
     {
       mSimulationRequiredValues.insert(pObject);
+      ReducedSimulationRequiredValues.insert(pObject);
     }
 
   pObject = mObjects.array() + (mEventRoots.array() - mValues.array());
@@ -1711,42 +1713,12 @@ void CMathContainer::createUpdateSimulationValuesSequence()
   for (; pObject != pObjectEnd; ++pObject)
     {
       mSimulationRequiredValues.insert(pObject);
+      ReducedSimulationRequiredValues.insert(pObject);
     }
 
   // Build the update sequence
   mTransientDependencies.getUpdateSequence(mSimulationValuesSequence, CMath::Default, mStateValues, mSimulationRequiredValues);
-  mTransientDependencies.getUpdateSequence(mSimulationValuesSequenceReduced, CMath::UseMoieties, mReducedStateValues, mSimulationRequiredValues);
-}
-
-void CMathContainer::createEventSimulationValuesSequence()
-{
-  // Changed objects are all state values including the fixed event targets
-  CObjectInterface::ObjectSet Changed;
-
-  const CMathObject * pObject = getMathObject(mState.array());
-  const CMathObject * pObjectEnd = pObject + mState.size();
-
-  for (; pObject != pObjectEnd; ++pObject)
-    {
-      Changed.insert(pObject);
-    }
-
-  // Collect all objects required for simulation, which are transient rates values of simulation type:
-  //   ODE, Independent, and Dependent, EventRoots, and additionally the TotalMass of moieties
-  // In other words the simulation required values plus the total mass.
-  CObjectInterface::ObjectSet Requested = mSimulationRequiredValues;
-
-  pObject = getMathObject(mTotalMasses.array());
-  pObjectEnd = pObject + mTotalMasses.size();
-
-  for (; pObject != pObjectEnd; ++pObject)
-    {
-      Requested.insert(pObject);
-    }
-
-  mTransientDependencies.getUpdateSequence(mEventSimulationValuesSequence, CMath::UpdateMoieties, Changed, Requested);
-
-  return;
+  mTransientDependencies.getUpdateSequence(mSimulationValuesSequenceReduced, CMath::UseMoieties, mReducedStateValues, ReducedSimulationRequiredValues);
 }
 
 void CMathContainer::analyzeRoots()

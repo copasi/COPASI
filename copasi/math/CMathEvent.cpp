@@ -965,6 +965,7 @@ CMathEventN::CMathEventN():
   mTargetPointers(),
   mCreateCalculationActionSequence(),
   mTargetValuesSequence(),
+  mPostAssignmentSequence(),
   mFireAtInitialTime(false),
   mPersistentTrigger(false),
   mDelayAssignment(true),
@@ -1104,16 +1105,29 @@ void CMathEventN::createUpdateSequences()
       Requested.insert(mpDelay);
     }
 
+  CObjectInterface::ObjectSet EventTargets;
   const CAssignment * pAssignment = mAssignments.array();
-
   const CAssignment * pAssignmentEnd = pAssignment + mAssignments.size();
 
   for (; pAssignment != pAssignmentEnd; ++pAssignment)
     {
       Requested.insert(pAssignment->getAssignment());
+      EventTargets.insert(pAssignment->getTarget());
     }
 
   mpContainer->getTransientDependencies().getUpdateSequence(mTargetValuesSequence, CMath::Default, Changed, Requested, Calculated);
+
+  // We need to add the total mass of the moieties to the state values.
+  CObjectInterface::ObjectSet StateValues = mpContainer->getStateObjects();
+  const CMathObject * pTotalMass = mpContainer->getMathObject(mpContainer->getTotalMasses().array());
+  const CMathObject * pTotalMassEnd = pTotalMass + mpContainer->getTotalMasses().size();
+
+  for (; pTotalMass != pTotalMassEnd; ++pTotalMass)
+    {
+      StateValues.insert(pTotalMass);
+    }
+
+  mpContainer->getTransientDependencies().getUpdateSequence(mPostAssignmentSequence, CMath::UpdateMoieties, EventTargets, StateValues);
 }
 
 void CMathEventN::fire(const bool & equality)
@@ -1174,7 +1188,8 @@ bool CMathEventN::setTargetValues(const CVectorCore< C_FLOAT64 > & values)
 
   if (StateChanged)
     {
-      mpContainer->updateEventSimulatedValues();
+      mpContainer->applyUpdateSequence(mPostAssignmentSequence);
+      mpContainer->updateSimulatedValues(false);
     }
 
   return StateChanged;

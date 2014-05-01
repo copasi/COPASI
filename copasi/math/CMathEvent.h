@@ -456,6 +456,11 @@ private:
   CObjectInterface::UpdateSequence mTargetValuesSequence;
 
   /**
+   * The update sequence executed after the new values are assigned to update the state.
+   */
+  CObjectInterface::UpdateSequence mPostAssignmentSequence;
+
+  /**
    * A Boolean flag indicating whether the event may fire at the initial time.
    */
   bool mFireAtInitialTime;
