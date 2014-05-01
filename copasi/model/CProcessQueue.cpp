@@ -499,16 +499,6 @@ const bool & CProcessQueue::getContinueSimultaneousEvents() const
   return mContinueSimultaneousEvents;
 }
 
-void CProcessQueue::setContinueSimultaneousEvents(const bool & continueSimultaneousEvents)
-{
-  mContinueSimultaneousEvents = continueSimultaneousEvents;
-}
-
-const bool & CProcessQueue::getContinueSimultaneousEvents() const
-{
-  return mContinueSimultaneousEvents;
-}
-
 void CProcessQueue::setEventCallBack(void* pTask, EventCallBack ecb)
 {
   mpCallbackTask = pTask;

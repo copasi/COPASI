@@ -34,8 +34,6 @@
 #include "model/CModel.h"
 #include "model/CMathModel.h"
 #include "model/CModel.h"
-#include "model/CMathModel.h"
-#include "model/CModel.h"
 #include "model/CState.h"
 #include "report/CKeyFactory.h"
 #include "report/CReport.h"
@@ -242,8 +240,6 @@ bool CTrajectoryTask::initialize(const OutputFlag & of,
     {
       mTimeSeries.clear();
     }
-
-  mpTrajectoryProblem->getModel()->getMathModel()->getProcessQueue().setContinueSimultaneousEvents(mpTrajectoryProblem->getContinueSimultaneousEvents());
 
   if (!CCopasiTask::initialize(of, pOutputHandler, pOstream)) success = false;
 

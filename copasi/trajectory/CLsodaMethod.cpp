@@ -555,7 +555,8 @@ CTrajectoryMethod::Status CLsodaMethod::peekAhead()
 {
   // Save the current state
   *mpContainerStateTime = mTime;
-  CVector< C_FLOAT64 > SavedState = mContainerState;
+  CVector< C_FLOAT64 > StartState = mContainerState;
+  CVector< C_FLOAT64 > ResetState = mContainerState;
   mLSODAR.saveState();
   CVector< C_FLOAT64 > ResetDWork = mDWork;
   CVector< C_INT > ResetIWork = mIWork;
@@ -571,17 +572,21 @@ CTrajectoryMethod::Status CLsodaMethod::peekAhead()
     {
       switch (step(MaxPeekAheadTime - mTime))
         {
+          case NORMAL:
+            mPeekAheadMode = false;
+            break;
+
           case ROOT:
           {
             // Check whether the new state is within the tolerances
-            C_FLOAT64 * pOld = StartState.beginIndependent();
+            C_FLOAT64 * pOld = StartState.array();
             C_FLOAT64 * pOldEnd = pOld + mData.dim;
-            C_FLOAT64 * pNew = mMethodState.beginIndependent();
+            C_FLOAT64 * pNew = mContainerState.array();
             C_FLOAT64 * pAtol = mAtol.array();
 
             for (; pOld != pOldEnd; ++pOld, ++pNew, ++pAtol)
               {
-                if ((2.0 * fabs(*pNew - *pOld) > (fabs(*pNew) + fabs(*pOld)) * *mpRelativeTolerance) &&
+                if ((2.0 * fabs(*pNew - *pOld) / fabs(*pNew + *pOld) > *mpRelativeTolerance) &&
                     fabs(*pNew) > *pAtol &&
                     fabs(*pOld) > *pAtol)
                   {
@@ -589,14 +594,13 @@ CTrajectoryMethod::Status CLsodaMethod::peekAhead()
                   }
               }
 
-            if (pOld != pOldEnd ||
-                mTime > StartState.getTime() * (1.0 + *mpRelativeTolerance))
+            if (pOld != pOldEnd)
               {
                 mPeekAheadMode = false;
               }
             else
               {
-                ResetState = mMethodState;
+                ResetState = mContainerState;
                 mLSODAR.saveState();
                 ResetDWork = mDWork;
                 ResetIWork = mIWork;
@@ -615,41 +619,21 @@ CTrajectoryMethod::Status CLsodaMethod::peekAhead()
                   }
               }
           }
-
-      // Check whether the new state is within the tolerances
-      C_FLOAT64 * pOld = SavedState.array();
-      C_FLOAT64 * pOldEnd = pOld + mData.dim;
-      C_FLOAT64 * pNew = mContainerState.array();
-      C_FLOAT64 * pAtol = mAtol.array();
+          break;
 
           case FAILURE:
-            mPeekAheadMode = false;
             PeekAheadStatus = FAILURE;
-            break;
-
-      if (pOld == pOldEnd)
-        {
-          // Save the state
-          SavedState = mContainerState;
-          mLSODAR.saveState();
-
-            if (mRootMasking != ALL)
-              {
-                mPeekAheadMode = false;
-              }
-
+            mPeekAheadMode = false;
             break;
         }
     }
 
   // Reset the integrator to the saved state
-  mContainerState = SavedState;
+  mContainerState = ResetState;
   mTime = *mpContainerStateTime;
   mLSODAR.resetState();
   mDWork = ResetDWork;
   mIWork = ResetIWork;
-
-  mPeekAheadMode = false;
 
   mRoots = CombinedRoots;
 

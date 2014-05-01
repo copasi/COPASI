@@ -202,9 +202,6 @@ void SEDMLImporter::readListOfPlotsFromSedMLOutput(
                 const SedDataGenerator* xGenerator = pSEDMLDocument->getDataGenerator(xDataReference);
                 const SedDataGenerator* yGenerator = pSEDMLDocument->getDataGenerator(yDataReference);
 
-                const SedDataGenerator* xGenerator = pSEDMLDocument->getDataGenerator(xDataReference);
-                const SedDataGenerator* yGenerator = pSEDMLDocument->getDataGenerator(yDataReference);
-
                 //create the curves
                 const CCopasiObject * tmpX = SEDMLUtils::resolveDatagenerator(pModel, xGenerator);
                 const CCopasiObject * tmpY = SEDMLUtils::resolveDatagenerator(pModel, yGenerator);
