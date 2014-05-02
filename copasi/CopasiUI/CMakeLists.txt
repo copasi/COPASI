@@ -96,6 +96,19 @@ if (ENABLE_SBW_INTEGRATION)
 target_link_libraries(CopasiUI ${SBW_LIBRARIES})
 endif(ENABLE_SBW_INTEGRATION)
 
+# On some linux systems we do require a link against the pthread library
+# as well as the libz library
+if (UNIX AND NOT APPLE)
+  find_package(Threads)
+  find_package(ZLIB)
+  if (CMAKE_USE_PTHREADS_INIT)
+    target_link_libraries(CopasiUI ${CMAKE_THREAD_LIBS_INIT})
+  endif()
+  if (ZLIB_FOUND)
+    target_link_libraries(CopasiUI ${ZLIB_LIBRARIES})
+  endif()
+endif()
+
 if(NOT APPLE)
     SET(APPS "\${CMAKE_INSTALL_PREFIX}/bin/CopasiUI${CMAKE_EXECUTABLE_SUFFIX}" CACHE INTERNAL "")
     install(TARGETS CopasiUI DESTINATION bin)
