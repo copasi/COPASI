@@ -343,7 +343,7 @@ add_definitions(-DUSE_SBMLUNIT)
 endif(ENABLE_USE_SBMLUNIT)
 
 #Option for the COPASI support for SEDML currently being developed by Joseph 
-option (ENABLE_COPASI_SEDML "Enables SEDML support." OFF)
+option (ENABLE_COPASI_SEDML "Enables SEDML support." ON)
 mark_as_advanced(ENABLE_COPASI_SEDML)
 if(ENABLE_COPASI_SEDML)
   add_definitions(-DCOPASI_SEDML)
