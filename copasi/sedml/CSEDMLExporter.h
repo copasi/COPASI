@@ -105,7 +105,9 @@ public:
   /**
    * Creates the data generators for SEDML.
    */
-  void createDataGenerators(CCopasiDataModel & dataModel, std::string & taskId);
+  void createDataGenerators(CCopasiDataModel & dataModel,
+                            std::string & taskId,
+                            CCopasiTask* task = NULL);
 
   /**
    * Creates the Tasks for SEDML.
