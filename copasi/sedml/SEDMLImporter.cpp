@@ -101,12 +101,14 @@ void SEDMLImporter::updateCopasiTaskForSimulation(SedSimulation* sedmlsim,
       {
 
         CTrajectoryTask *tTask = static_cast<CTrajectoryTask*>((*mpDataModel->getTaskList())["Time-Course"]);
+        tTask->setScheduled(true);
 
         CTrajectoryProblem* tProblem = static_cast<CTrajectoryProblem*>(tTask->getProblem());
         SedUniformTimeCourse* tc = static_cast<SedUniformTimeCourse*>(sedmlsim);
         tProblem->setOutputStartTime(tc->getOutputStartTime());
         tProblem->setDuration(tc->getOutputEndTime() - tc->getOutputStartTime());
         tProblem->setStepNumber(tc->getNumberOfPoints());
+        tProblem->setContinueSimultaneousEvents(true);
 
         // TODO read kisao terms
         if (tc->isSetAlgorithm())
@@ -129,6 +131,7 @@ void SEDMLImporter::updateCopasiTaskForSimulation(SedSimulation* sedmlsim,
       {
 
         CTrajectoryTask *tTask = static_cast<CTrajectoryTask*>((*mpDataModel->getTaskList())["Time-Course"]);
+        tTask->setScheduled(true);
 
         CTrajectoryProblem* tProblem = static_cast<CTrajectoryProblem*>(tTask->getProblem());
         SedOneStep* step = static_cast<SedOneStep*>(sedmlsim);
@@ -145,6 +148,7 @@ void SEDMLImporter::updateCopasiTaskForSimulation(SedSimulation* sedmlsim,
       {
         // nothing to be done for this one
         CSteadyStateTask *tTask = static_cast<CSteadyStateTask*>((*mpDataModel->getTaskList())["Steady-State"]);
+        tTask->setScheduled(true);
 
         // TODO read kisao terms
         //CCopasiProblem* tProblem = static_cast<CCopasiProblem*>(tTask->getProblem());
@@ -640,6 +644,7 @@ SEDMLImporter::importTasks(std::map<CCopasiObject*, SedBase*>& copasi2sedmlmap)
 
             SedUniformRange* urange = static_cast<SedUniformRange*>(range);
             CScanTask *tTask = static_cast<CScanTask*>((*mpDataModel->getTaskList())["Scan"]);
+            tTask->setScheduled(true);
             CScanProblem *pProblem = static_cast<CScanProblem*>(tTask->getProblem());
 
             if (urange != NULL && repeat->getNumTaskChanges() == 0)
