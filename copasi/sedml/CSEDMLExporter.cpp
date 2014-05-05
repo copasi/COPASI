@@ -37,6 +37,7 @@
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "plot/COutputDefinitionVector.h"
 #include "plot/CPlotSpecification.h"
+#include "report/CReportDefinition.h"
 #include "model/CModel.h"
 #include "model/CCompartment.h"
 #include "model/CModelValue.h"
@@ -375,12 +376,12 @@ void CSEDMLExporter::createTasks(CCopasiDataModel& dataModel, std::string & mode
   std::string modelId = modelRef.substr(0, modelRef.length() - 4);
   // create time course task
   std::string taskId = createTimeCourseTask(dataModel, modelId);
-  createDataGenerators(dataModel, taskId);
+  createDataGenerators(dataModel, taskId, (*dataModel.getTaskList())["Time-Course"]);
 
   taskId = createScanTask(dataModel, modelId);
 
   if (!taskId.empty())
-    createDataGenerators(dataModel, taskId);
+    createDataGenerators(dataModel, taskId, (*dataModel.getTaskList())["Scan"]);
 }
 
 SedDataGenerator * createDataGenerator(
@@ -427,13 +428,15 @@ SedDataGenerator * createDataGenerator(
 /**
  * Creates the data generators for SEDML.
  */
-void CSEDMLExporter::createDataGenerators(CCopasiDataModel & dataModel, std::string & taskId)
+void CSEDMLExporter::createDataGenerators(CCopasiDataModel & dataModel,
+    std::string & taskId,
+    CCopasiTask* task)
 {
   const CModel* pModel = dataModel.getModel();
   std::vector<std::string> stringsContainer; //split string container
 
   if (pModel == NULL)
-    CCopasiMessage(CCopasiMessage::ERROR, "No model for this SEDML document. An SBML model must exist for every SEDML document.");
+    CCopasiMessage(CCopasiMessage::ERROR, "No model for this SED-ML document. An SBML model must exist for every SED-ML document.");
 
   SedPlot2D* pPSedPlot;
   SedCurve* pCurve; // = pPSedPlot->createCurve();
@@ -452,9 +455,78 @@ void CSEDMLExporter::createDataGenerators(CCopasiDataModel & dataModel, std::str
   size_t i, imax = dataModel.getPlotDefinitionList()->size();
   SedDataGenerator *pPDGen;
 
-  if (!imax)
-    CCopasiMessage(CCopasiMessage::ERROR, "No plot definition for this SEDML document.");
+  if (imax == 0 && (task == NULL || task->getReport().getTarget().empty()))
+    CCopasiMessage(CCopasiMessage::ERROR, "No plot/report definition for this SED-ML document.");
 
+  // export report
+  if (task != NULL && !task->getReport().getTarget().empty())
+    {
+      CReportDefinition* def = task->getReport().getReportDefinition();
+
+      if (def != NULL)
+        {
+          SedReport* pReport = mpSEDMLDocument->createReport();
+          std::string name = def->getObjectName();
+          SEDMLUtils::removeCharactersFromString(name, "[]");
+          //
+          pReport->setId(SEDMLUtils::getNextId("report", mpSEDMLDocument->getNumOutputs()));
+          pReport->setName(name);
+
+          std::vector<CRegisteredObjectName> header = *def->getHeaderAddr();
+          std::vector<CRegisteredObjectName> body =
+            def->isTable() ? *def->getTableAddr() :
+            *def->getBodyAddr();
+
+          int dsCount = 0;
+
+          for (size_t i = 0; i < body.size(); ++i)
+            {
+              CRegisteredObjectName& current = body[i];
+
+              if (current == def->getSeparator().getCN()) continue;
+
+              CCopasiObject *object = dataModel.getDataObject(current);
+
+              if (object == NULL) continue;
+
+              const std::string& typeX = object->getObjectName();
+              std::string xAxis = object->getObjectDisplayName();
+              std::string targetXPathStringX = SEDMLUtils::getXPathAndName(xAxis, typeX,
+                                               pModel, dataModel);
+
+              if (object->getCN() == pTime->getCN())
+                pPDGen = pTimeDGenp;
+              else
+                pPDGen = createDataGenerator(
+                           this->mpSEDMLDocument,
+                           xAxis,
+                           targetXPathStringX,
+                           taskId,
+                           i,
+                           0
+                         );
+
+              SedDataSet* pDS = pReport->createDataSet();
+              pDS->setId(SEDMLUtils::getNextId("ds", ++dsCount));
+
+              if (def->isTable())
+                {
+                  CCopasiObject *headerObj = dataModel.getDataObject(header[i]);
+
+                  if (headerObj != NULL)
+                    pDS->setLabel(headerObj->getObjectDisplayName());
+                  else
+                    pDS->setLabel(xAxis);
+                }
+              else
+                pDS->setLabel(xAxis);
+
+              pDS->setDataReference(pPDGen->getId());
+            }
+        }
+    }
+
+  // export plots
   for (i = 0; i < imax; i++)
     {
       pPSedPlot = this->mpSEDMLDocument->createPlot2D();
