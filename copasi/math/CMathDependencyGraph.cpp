@@ -98,10 +98,7 @@ bool CMathDependencyGraph::getUpdateSequence(CObjectInterface::UpdateSequence & 
       if (found != notFound)
         {
           success &= found->second->updateDependentState(context, changedObjects);
-          continue;
         }
-
-      success = false;
     }
 
   if (!success) goto finish;
@@ -125,10 +122,7 @@ bool CMathDependencyGraph::getUpdateSequence(CObjectInterface::UpdateSequence & 
         {
           found->second->setChanged(false);
           success &= found->second->updateCalculatedState(context, changedObjects);
-          continue;
         }
-
-      success = false;
     }
 
   it = requestedObjects.begin();
@@ -149,10 +143,7 @@ bool CMathDependencyGraph::getUpdateSequence(CObjectInterface::UpdateSequence & 
         {
           found->second->setRequested(true);
           success &= found->second->updatePrerequisiteState(context, changedObjects);
-          continue;
         }
-
-      success = false;
     }
 
 #ifdef COPASI_DEBUG_TRACE
