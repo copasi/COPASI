@@ -32,6 +32,7 @@ class CMetab;
 class Model;
 class CProcessReport;
 class CPlotSpecification;
+class CReportDefinition;
 
 class SEDMLImporter
 {
@@ -50,9 +51,12 @@ protected:
   unsigned int mLevel;
   unsigned int mOriginalLevel;
   unsigned int mVersion;
+
   CCopasiDataModel * mpDataModel;
   CModel* mpCopasiModel;
+
   SedDocument* mpSEDMLDocument;
+
   CProcessReport* mpImportHandler;
   unsigned C_INT32 mImportStep;
   size_t mhImportStep;
@@ -62,6 +66,8 @@ protected:
   bool mUsedSEDMLIdsPopulated;
 
   std::string mImportedModel;
+
+  std::map<CReportDefinition*, std::string> mReportMap;
 
 public:
   SEDMLImporter();
