@@ -1571,56 +1571,69 @@ void CMathContainer::createSynchronizeInitialValuesSequence()
   // TODO CRITICAL Issue 1170: We need to add elements of the stoichiometry, reduced stoichiometry,
   // and link matrices.
 
-  // Collect all the changed objects, which are all transient values
+  // Collect all the changed objects, which are all initial state values
   mInitialStateValueExtensive.clear();
   mInitialStateValueIntensive.clear();
-  const CMathObject * pObject = mObjects.array();
-  const CMathObject * pObjectEnd = pObject + (mInitialExtensiveRates.array() - mValues.array());
-
-  for (; pObject != pObjectEnd; ++pObject)
-    {
-      if (pObject->getEntityType() != CMath::Species)
-        {
-          mInitialStateValueExtensive.insert(pObject);
-          mInitialStateValueIntensive.insert(pObject);
-        }
-      else if (pObject->isIntensiveProperty())
-        {
-          mInitialStateValueIntensive.insert(pObject);
-        }
-      else
-        {
-          mInitialStateValueExtensive.insert(pObject);
-        }
-    }
 
   // Collect all the requested objects
   CObjectInterface::ObjectSet RequestedExtensive;
   CObjectInterface::ObjectSet RequestedIntensive;
-  pObject = mObjects.array();
+
+  const CMathObject * pObject = mObjects.array();
+  const CMathObject * pObjectEnd = getMathObject(mExtensiveValues.array());
 
   for (; pObject != pObjectEnd; ++pObject)
     {
-      if (pObject->getEntityType() != CMath::Species)
+      switch (pObject->getValueType())
         {
-          continue;
-        }
-      else if (pObject->isIntensiveProperty())
-        {
-          RequestedExtensive.insert(pObject);
-        }
-      else
-        {
-          RequestedIntensive.insert(pObject);
-        }
-    }
+          case CMath::Value:
 
-  pObjectEnd = mObjects.array() + (mExtensiveValues.array() - mValues.array());
+            switch (pObject->getSimulationType())
+              {
+                case CMath::Fixed:
+                case CMath::Time:
+                  mInitialStateValueExtensive.insert(pObject);
+                  mInitialStateValueIntensive.insert(pObject);
+                  break;
 
-  for (; pObject != pObjectEnd; ++pObject)
-    {
-      RequestedExtensive.insert(pObject);
-      RequestedIntensive.insert(pObject);
+                case CMath::EventTarget:
+                case CMath::ODE:
+                case CMath::Independent:
+                case CMath::Dependent:
+                case CMath::Conversion:
+
+                  if (pObject->getEntityType() != CMath::Species)
+                    {
+                      mInitialStateValueExtensive.insert(pObject);
+                      mInitialStateValueIntensive.insert(pObject);
+                    }
+                  else if (pObject->isIntensiveProperty())
+                    {
+                      mInitialStateValueIntensive.insert(pObject);
+                      RequestedExtensive.insert(pObject);
+                    }
+                  else
+                    {
+                      mInitialStateValueExtensive.insert(pObject);
+                      RequestedIntensive.insert(pObject);
+                    }
+
+                  break;
+
+                case CMath::Assignment:
+                  RequestedExtensive.insert(pObject);
+                  RequestedIntensive.insert(pObject);
+                  break;
+              }
+
+            break;
+
+            // Everything which is not a value must be calculated.
+          default:
+            RequestedExtensive.insert(pObject);
+            RequestedIntensive.insert(pObject);
+            break;
+        }
     }
 
   // Build the update sequence
@@ -1636,26 +1649,78 @@ void CMathContainer::createSynchronizeInitialValuesSequence()
 
 void CMathContainer::createApplyInitialValuesSequence()
 {
-  // Collect all the changed objects, which are all transient values
-  CObjectInterface::ObjectSet Changed;
-  const CMathObject * pObject = mObjects.array() + (mExtensiveValues.array() - mValues.array());
-  const CMathObject * pObjectEnd = mObjects.array() + mObjects.size();
+  // At this point all initial values as well as their transient counterparts are calculated
+  CObjectInterface::ObjectSet Calculated;
+  const CMathObject * pObject = mObjects.array();
+  const CMathObject * pObjectEnd = getMathObject(mExtensiveValues.array());
+  size_t TransientOffset = pObjectEnd - pObject;
 
-  for (; pObject != pObjectEnd && pObject->getSimulationType() != CMath::Assignment; ++pObject)
+  for (; pObject != pObjectEnd; ++pObject)
     {
-      Changed.insert(pObject);
+      Calculated.insert(pObject);
+      Calculated.insert(pObject + TransientOffset);
     }
+
+  // Collect all the changed objects, which are all initial and transient state values
+  CObjectInterface::ObjectSet Changed = mInitialStateValueExtensive;
+  // Initial state values
 
   // Collect all the requested objects
   CObjectInterface::ObjectSet Requested;
 
+  pObject = getMathObject(mExtensiveValues.array());
+  pObjectEnd = mObjects.array() + mObjects.size();
+
   for (; pObject != pObjectEnd; ++pObject)
     {
-      Requested.insert(pObject);
+      switch (pObject->getValueType())
+        {
+          case CMath::Value:
+
+            switch (pObject->getSimulationType())
+              {
+                case CMath::Fixed:
+                case CMath::Time:
+                  Changed.insert(pObject);
+                  break;
+
+                case CMath::EventTarget:
+                case CMath::ODE:
+                case CMath::Independent:
+                case CMath::Dependent:
+                case CMath::Conversion:
+
+                  if (pObject->getEntityType() != CMath::Species)
+                    {
+                      Changed.insert(pObject);
+                    }
+                  else if (pObject->isIntensiveProperty())
+                    {
+                      Requested.insert(pObject);
+                    }
+                  else
+                    {
+                      Changed.insert(pObject);
+                    }
+
+                  break;
+
+                case CMath::Assignment:
+                  Requested.insert(pObject);
+                  break;
+              }
+
+            break;
+
+            // Everything which is not a value must be calculated.
+          default:
+            Requested.insert(pObject);
+            break;
+        }
     }
 
   // Build the update sequence
-  mTransientDependencies.getUpdateSequence(mApplyInitialValuesSequence, CMath::Default, Changed, Requested);
+  mTransientDependencies.getUpdateSequence(mApplyInitialValuesSequence, CMath::Default, Changed, Requested, Calculated);
 }
 
 void CMathContainer::createUpdateSimulationValuesSequence()
