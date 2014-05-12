@@ -347,9 +347,9 @@ bool CTrajectoryMethodDsaLsodar::elevateChildren()
 }
 
 // virtual
-void CTrajectoryMethodDsaLsodar::stateChanged()
+void CTrajectoryMethodDsaLsodar::stateChange(const CMath::StateChange & change)
 {
-  CLsodaMethod::stateChanged();
+  CLsodaMethod::stateChange(change);
 
   calculatePropensities();
   calculateTotalPropensity();
@@ -463,7 +463,7 @@ C_FLOAT64 CTrajectoryMethodDsaLsodar::doSingleStep(C_FLOAT64 curTime, C_FLOAT64 
         {
           if (mPartition.rePartition(mContainerState))
             {
-              stateChanged();
+              stateChange(CMath::ContinuousSimulation);
             }
 
           mStepsAfterPartitionSystem = 0;
@@ -640,7 +640,7 @@ void CTrajectoryMethodDsaLsodar::fireReaction(const size_t & index)
   mNextReactionTime = std::numeric_limits< C_FLOAT64 >::infinity();
   mNextReactionIndex = C_INVALID_INDEX;
 
-  CLsodaMethod::stateChanged();
+  CLsodaMethod::stateChange(CMath::ContinuousSimulation);
 
   return;
 }

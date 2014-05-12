@@ -76,10 +76,12 @@ CMathEventQueue::CAction::CAction(CMathEventN * pEvent,
   mpEvent(pEvent),
   mpProcessQueue(pProcessQueue)
 {
+  mpPriority = (const C_FLOAT64 *) pEvent->getPriority()->getValuePointer();
+
   switch (pEvent->getType())
     {
       case CEvent::Assignment:
-        mpPriority = (const C_FLOAT64 *) pEvent->getPriority()->getValuePointer();
+      case CEvent::Discontinuity:
         mType = Calculation;
         break;
 
@@ -104,10 +106,10 @@ CMathEventQueue::CAction::CAction(const CVector< C_FLOAT64 > & values,
 CMathEventQueue::CAction::~CAction()
 {}
 
-bool CMathEventQueue::CAction::process()
+CMath::StateChange CMathEventQueue::CAction::process()
 {
   // Assume that nothing is changed
-  bool StateChanged = false;
+  CMath::StateChange StateChange = CMath::NoChange;
 
   switch (mType)
     {
@@ -122,13 +124,13 @@ bool CMathEventQueue::CAction::process()
           }
         else
           {
-            StateChanged = mpEvent->executeAssignment();
+            StateChange = mpEvent->executeAssignment();
           }
 
         break;
 
       case Assignment:
-        StateChanged = mpEvent->setTargetValues(mValues);
+        StateChange = mpEvent->setTargetValues(mValues);
         break;
 
       case Callback:
@@ -136,7 +138,7 @@ bool CMathEventQueue::CAction::process()
         break;
     }
 
-  return StateChanged;
+  return StateChange;
 }
 
 CMathEventN * CMathEventQueue::CAction::getEvent() const {return mpEvent;}
@@ -258,7 +260,7 @@ void CMathEventQueue::start()
   return;
 }
 
-bool CMathEventQueue::process(const bool & priorToOutput)
+CMath::StateChange CMathEventQueue::process(const bool & priorToOutput)
 {
   if (getProcessQueueExecutionTime() > *mpTime)
     return false;
@@ -268,7 +270,7 @@ bool CMathEventQueue::process(const bool & priorToOutput)
   mCascadingLevel = 0;
 
   bool success = true;
-  bool stateChanged = false;
+  CMath::StateChange StateChange = CMath::NoChange;
 
   *mpRootValuesBefore = mpContainer->getRoots();
   iterator itAction = getAction();
@@ -282,16 +284,12 @@ bool CMathEventQueue::process(const bool & priorToOutput)
          itAction != mActions.end() &&
          mCascadingLevel != std::numeric_limits<size_t>::max())
     {
-      if (!executeAction(itAction))
-        {
-          itAction = getAction();
-          continue;
-        }
+      StateChange |= executeAction(itAction);
 
+      // State change does not indicate whether we have any root changes. We need to
+      // explicitly check for it.
       std::cout << "State: " << mpContainer->getState() << std::endl;
       std::cout << "Roots: " << mpContainer->getRoots() << std::endl;
-
-      stateChanged = true;
 
       // We switch to the next cascading level so that events triggered by the
       // execution of assignments are properly scheduled.
@@ -330,7 +328,7 @@ bool CMathEventQueue::process(const bool & priorToOutput)
         }
     }
 
-  return stateChanged;
+  return StateChange;
 }
 
 CMathEventQueue::iterator CMathEventQueue::getAction()
@@ -351,7 +349,7 @@ CMathEventQueue::iterator CMathEventQueue::getAction()
   for (; itAction != PendingActions.second; ++itAction)
     {
       // Events without priority are ignored
-      if (itAction->second.getPriority() < HighestPriority)
+      if (std::isnan(itAction->second.getPriority()))
         {
           continue;
         }
@@ -399,21 +397,18 @@ CMathEventQueue::iterator CMathEventQueue::getAction()
   return mActions.end();
 }
 
-bool CMathEventQueue::executeAction(CMathEventQueue::iterator itAction)
+CMath::StateChange CMathEventQueue::executeAction(CMathEventQueue::iterator itAction)
 {
   // Notify the event that the pending action is executed.
   itAction->second.getEvent()->removePendingAction();
 
-  bool StateChanged = itAction->second.process();
+  CMath::StateChange StateChange = itAction->second.process();
 
-  if (StateChanged)
-    {
-      mExecutionCounter++;
-    }
+  mExecutionCounter++;
 
   mActions.erase(itAction);
 
-  return StateChanged;
+  return StateChange;
 }
 
 bool CMathEventQueue::rootsFound()

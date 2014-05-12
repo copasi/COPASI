@@ -1949,7 +1949,7 @@ void CMathContainer::calculateRootJacobian(CMatrix< C_FLOAT64 > & jacobian)
   updateSimulatedValues(false);
 }
 
-bool CMathContainer::processQueue(const bool & equality)
+CMath::StateChange CMathContainer::processQueue(const bool & equality)
 {
   return mpProcessQueue->process(equality);
 }

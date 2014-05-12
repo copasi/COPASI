@@ -137,6 +137,7 @@ bool CTimeSeries::compile(std::vector< CCopasiContainer * > listOfContainer,
   size_t Assignment = EventTarget + pContainer->getCountFixedEventTargets();
   size_t Fixed = Assignment + pContainer->getCountAssignments();
   size_t i, imax = Fixed + pContainer->getCountFixed();
+  size_t EventTargetCount = 0;
 
   mContainerValues.initialize(imax, const_cast< C_FLOAT64 * >(pContainer->getState().array()) - pContainer->getCountFixed());
 
@@ -175,6 +176,7 @@ bool CTimeSeries::compile(std::vector< CCopasiContainer * > listOfContainer,
             break;
 
           case CMath::EventTarget:
+            EventTargetCount++;
             mPivot[EventTarget++] = i;
             break;
 
@@ -193,6 +195,20 @@ bool CTimeSeries::compile(std::vector< CCopasiContainer * > listOfContainer,
 
           case CMath::Assignment:
             mPivot[Assignment++] = i;
+            break;
+
+          case CMath::Conversion:
+
+            if (EventTargetCount < pContainer->getCountFixedEventTargets())
+              {
+                EventTargetCount++;
+                mPivot[EventTarget++] = i;
+              }
+            else
+              {
+                mPivot[Assignment++] = i;
+              }
+
             break;
         }
 

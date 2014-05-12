@@ -316,15 +316,15 @@ public:
   /**
    * Set the target values
    * @param const CVectorCore< C_FLOAT64 > & targetValues
-   * @return bool stateChanged
+   * @return CMath::StateChange stateChanged
    */
-  bool setTargetValues(const CVectorCore< C_FLOAT64 > & targetValues);
+  CMath::StateChange setTargetValues(const CVectorCore< C_FLOAT64 > & targetValues);
 
   /**
    * Calculate and assign the new target values
-   * @return bool stateChanged
+   * @return CMath::StateChange stateChanged
    */
-  bool executeAssignment();
+  CMath::StateChange executeAssignment();
 
   /**
    * Check whether to delay the assignment
@@ -444,6 +444,11 @@ private:
    * Vector of pointers to targets
    */
   CVector< C_FLOAT64 * > mTargetPointers;
+
+  /**
+   * Flag indicating whether the event effects the discrete and/or the continuous state values.
+   */
+  CMath::StateChange mEffectsSimulation;
 
   /**
    * The update sequence executed prior to creating calculation actions.

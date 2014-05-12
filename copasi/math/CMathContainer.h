@@ -215,9 +215,9 @@ public:
    * Process events scheduled at the given which a are checked for
    * equality or not
    * @param const bool & equality
-   * @return bool stateChanged
+   * @return CMath::StateChange stateChange
    */
-  bool processQueue(const bool & equality);
+  CMath::StateChange processQueue(const bool & equality);
 
   /**
    * Check whether the roots which have value 1 lead to firing of

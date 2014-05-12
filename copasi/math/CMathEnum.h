@@ -207,6 +207,16 @@ public:
     Event
   };
 
+  enum eStateChange
+  {
+    NoChange = 0x0,
+    State = 0x1,
+    EventSimulation = 0x2,
+    ContinuousSimulation = 0x4
+  };
+
+  typedef CMathFlags< eStateChange > StateChange;
+
   template < class Type > class Variables: public std::vector< Type >
   {
   public:

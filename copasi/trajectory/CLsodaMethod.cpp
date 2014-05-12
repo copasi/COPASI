@@ -195,13 +195,16 @@ bool CLsodaMethod::elevateChildren()
 }
 
 // virtual
-void CLsodaMethod::stateChanged()
+void CLsodaMethod::stateChange(const CMath::StateChange & change)
 {
-  mLsodaStatus = 1;
-  mTime = *mpContainerStateTime;
-  mPeekAheadMode = false;
+  if (change & CMath::ContinuousSimulation)
+    {
+      mLsodaStatus = 1;
+      mTime = *mpContainerStateTime;
+      mPeekAheadMode = false;
 
-  destroyRootMask();
+      destroyRootMask();
+    }
 }
 
 CTrajectoryMethod::Status CLsodaMethod::step(const double & deltaT)
@@ -309,7 +312,7 @@ CTrajectoryMethod::Status CLsodaMethod::step(const double & deltaT)
               }
 
             // To detect simultaneous roots we have to peek ahead, i.e., continue
-            // integration until the state changes are larger that the relative
+            // integration until the state changes are larger than the relative tolerances
             if (!mPeekAheadMode)
               {
                 Status = peekAhead();
@@ -394,6 +397,8 @@ CTrajectoryMethod::Status CLsodaMethod::step(const double & deltaT)
       CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 6, mErrorMsg.str().c_str());
     }
 
+  *mpContainerStateTime = mTime;
+
   if (!mpContainer->isStateValid())
     {
       Status = FAILURE;
@@ -475,8 +480,10 @@ void CLsodaMethod::setContainer(CMathContainer * pContainer)
 void CLsodaMethod::EvalF(const C_INT * n, const C_FLOAT64 * t, const C_FLOAT64 * y, C_FLOAT64 * ydot)
 {static_cast<Data *>((void *) n)->pMethod->evalF(t, y, ydot);}
 
-void CLsodaMethod::evalF(const C_FLOAT64 * /* t */, const C_FLOAT64 * /* y */, C_FLOAT64 * ydot)
+void CLsodaMethod::evalF(const C_FLOAT64 * t , const C_FLOAT64 * /* y */, C_FLOAT64 * ydot)
 {
+  *mpContainerStateTime = *t;
+
   mpContainer->updateSimulatedValues(*mpReducedModel);
   memcpy(ydot, mpYdot, mData.dim * sizeof(C_FLOAT64));
 
@@ -490,10 +497,10 @@ void CLsodaMethod::EvalR(const C_INT * n, const C_FLOAT64 * t, const C_FLOAT64 *
                          const C_INT * nr, C_FLOAT64 * r)
 {static_cast<Data *>((void *) n)->pMethod->evalR(t, y, nr, r);}
 
-void CLsodaMethod::evalR(const C_FLOAT64 *  /* t */, const C_FLOAT64 *  /* y */,
+void CLsodaMethod::evalR(const C_FLOAT64 * t, const C_FLOAT64 *  /* y */,
                          const C_INT *  nr, C_FLOAT64 * r)
 {
-  // *mpContainerStateTime = *t;
+  *mpContainerStateTime = *t;
   mpContainer->updateSimulatedValues(*mpReducedModel);
 
   CVectorCore< C_FLOAT64 > RootValues(*nr, r);
@@ -597,6 +604,33 @@ CTrajectoryMethod::Status CLsodaMethod::peekAhead()
               {
                 mPeekAheadMode = false;
               }
+            else
+              {
+                // We need to remove the masked root
+                const bool *pMask = mRootMask.array();
+                const bool *pMaskEnd = pMask + mRootMask.size();
+                C_INT * pCombinedRoot = CombinedRoots.array();
+
+                PeekAheadStatus = NORMAL;
+
+                for (; pMask != pMaskEnd; ++pMask, ++pCombinedRoot)
+                  {
+                    if (*pMask)
+                      {
+                        *pCombinedRoot = 0;
+                      }
+
+                    if (*pCombinedRoot)
+                      {
+                        PeekAheadStatus = ROOT;
+                      }
+                  }
+
+                // No we reset the integrator to the start state with root masking enabled
+                mLsodaStatus = 1;
+                mContainerState = StartState;
+                mTime = *mpContainerStateTime;
+              }
 
             break;
 
@@ -610,7 +644,7 @@ CTrajectoryMethod::Status CLsodaMethod::peekAhead()
 
             for (; pOld != pOldEnd; ++pOld, ++pNew, ++pAtol)
               {
-                if ((2.0 * fabs(*pNew - *pOld) / fabs(*pNew + *pOld) > *mpRelativeTolerance) &&
+                if ((2.0 * fabs(*pNew - *pOld) > fabs(*pNew + *pOld) * *mpRelativeTolerance) &&
                     fabs(*pNew) > *pAtol &&
                     fabs(*pOld) > *pAtol)
                   {

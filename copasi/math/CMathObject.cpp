@@ -198,6 +198,10 @@ bool CMathObject::isPrerequisiteForContext(const CObjectInterface * pObject,
             if (changedObjects.find(mpIntensiveProperty) != changedObjects.end())
               return true;
 
+            // If the concentration is calculated by an assignment we need to recalculate.
+            if (mpIntensiveProperty->getSimulationType() == CMath::Assignment)
+              return true;
+
             return false;
           }
 

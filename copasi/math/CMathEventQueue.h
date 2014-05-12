@@ -139,9 +139,9 @@ public:
 
     /**
      * Process the action
-     * @return bool stateChanged
+     * @return CMath::StateChange stateChanged
      */
-    bool process();
+    CMath::StateChange process();
 
     /**
      * Retrieve the event id
@@ -257,9 +257,9 @@ public:
   /**
    * Process the queue.
    * @param const bool & priorToOutput
-   * @return bool stateChanged
+   * @return CMath::StateChange stateChange
    */
-  bool process(const bool & priorToOutput);
+  CMath::StateChange process(const bool & priorToOutput);
 
   /**
    * Retrieve the next execution time scheduled in the process queue
@@ -284,9 +284,9 @@ private:
   /**
    * Execute the calculations
    * @param CMathEventQueue::iterator itAction
-   * @return bool success
+   * @return CMath::StateChange stateChange
    */
-  bool executeAction(CMathEventQueue::iterator itAction);
+  CMath::StateChange executeAction(CMathEventQueue::iterator itAction);
 
   /**
    * Check whether the executions of assignment lead to newly found roots

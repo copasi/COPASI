@@ -151,7 +151,7 @@ void CTrajectoryMethod::setProblem(CTrajectoryProblem * problem)
 {mpProblem = problem;}
 
 // virtual
-void CTrajectoryMethod::stateChanged()
+void CTrajectoryMethod::stateChange(const CMath::StateChange & change)
 {}
 
 /**
