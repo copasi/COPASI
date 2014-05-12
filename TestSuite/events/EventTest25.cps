@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- generated with COPASI 4.12.78+ (Debug) (http://www.copasi.org) at 2014-04-03 18:41:28 UTC -->
+<!-- generated with COPASI 4.12 (Build 81) (http://www.copasi.org) at 2014-05-09 17:13:02 UTC -->
 <?oxygen RNGSchema="http://www.copasi.org/static/schema/CopasiML.rng" type="xml"?>
-<COPASI xmlns="http://www.copasi.org/static/schema" versionMajor="4" versionMinor="12" versionDevel="77" copasiSourcesModified="0">
+<COPASI xmlns="http://www.copasi.org/static/schema" versionMajor="4" versionMinor="12" versionDevel="81" copasiSourcesModified="0">
   <ListOfFunctions>
     <Function key="Function_40" name="mass action arrheinius [1] [1]" type="UserDefined" reversible="unspecified">
       <MiriamAnnotation>
@@ -206,11 +206,6 @@
     </dcterms:modified>
     <CopasiMT:is>
       <rdf:Bag>
-        <rdf:li rdf:resource="urn:miriam:biomodels.db:BIOMD0000000170"/>
-      </rdf:Bag>
-    </CopasiMT:is>
-    <CopasiMT:is>
-      <rdf:Bag>
         <rdf:li rdf:resource="urn:miriam:biomodels.db:MODEL8378813456"/>
       </rdf:Bag>
     </CopasiMT:is>
@@ -218,6 +213,11 @@
       <rdf:Bag>
         <rdf:li rdf:resource="urn:miriam:obo.go:GO%3A0007623"/>
         <rdf:li rdf:resource="urn:miriam:taxonomy:40674"/>
+      </rdf:Bag>
+    </CopasiMT:is>
+    <CopasiMT:is>
+      <rdf:Bag>
+        <rdf:li rdf:resource="urn:miriam:biomodels.db:BIOMD0000000170"/>
       </rdf:Bag>
     </CopasiMT:is>
     <CopasiMT:isPartOf>
@@ -639,15 +639,15 @@
           <Modifier metabolite="Metabolite_1" stoichiometry="1"/>
         </ListOfModifiers>
         <ListOfConstants>
-          <Constant key="Parameter_4067" name="v1b" value="9"/>
-          <Constant key="Parameter_4068" name="c" value="0.1"/>
-          <Constant key="Parameter_4069" name="k1b" value="1"/>
-          <Constant key="Parameter_4070" name="k1i" value="0.56"/>
-          <Constant key="Parameter_4071" name="n" value="8"/>
-          <Constant key="Parameter_4072" name="E_diff" value="76601"/>
-          <Constant key="Parameter_4073" name="a" value="1"/>
-          <Constant key="Parameter_4074" name="T2" value="288"/>
-          <Constant key="Parameter_4075" name="T1" value="288"/>
+          <Constant key="Parameter_4315" name="v1b" value="9"/>
+          <Constant key="Parameter_4316" name="c" value="0.1"/>
+          <Constant key="Parameter_4317" name="k1b" value="1"/>
+          <Constant key="Parameter_4318" name="k1i" value="0.56"/>
+          <Constant key="Parameter_4319" name="n" value="8"/>
+          <Constant key="Parameter_4320" name="E_diff" value="76601"/>
+          <Constant key="Parameter_4321" name="a" value="1"/>
+          <Constant key="Parameter_4322" name="T2" value="288"/>
+          <Constant key="Parameter_4323" name="T1" value="288"/>
         </ListOfConstants>
         <KineticLaw function="Function_44">
           <ListOfCallParameters>
@@ -658,7 +658,7 @@
               <SourceParameter reference="Metabolite_5"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_298">
-              <SourceParameter reference="Parameter_4068"/>
+              <SourceParameter reference="Parameter_4316"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_300">
               <SourceParameter reference="ModelValue_3"/>
@@ -673,7 +673,7 @@
               <SourceParameter reference="ModelValue_5"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_288">
-              <SourceParameter reference="Parameter_4072"/>
+              <SourceParameter reference="Parameter_4320"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_262">
               <SourceParameter reference="ModelValue_26"/>
@@ -708,11 +708,11 @@
           <Substrate metabolite="Metabolite_7" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfConstants>
-          <Constant key="Parameter_4076" name="v" value="0.12"/>
-          <Constant key="Parameter_4077" name="a" value="1"/>
-          <Constant key="Parameter_4078" name="T2" value="288"/>
-          <Constant key="Parameter_4079" name="T1" value="288"/>
-          <Constant key="Parameter_4080" name="E_diff" value="-60000"/>
+          <Constant key="Parameter_4324" name="v" value="0.12"/>
+          <Constant key="Parameter_4325" name="a" value="1"/>
+          <Constant key="Parameter_4326" name="T2" value="288"/>
+          <Constant key="Parameter_4327" name="T1" value="288"/>
+          <Constant key="Parameter_4328" name="E_diff" value="-60000"/>
         </ListOfConstants>
         <KineticLaw function="Function_40">
           <ListOfCallParameters>
@@ -732,7 +732,7 @@
               <SourceParameter reference="Metabolite_7"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_254">
-              <SourceParameter reference="Parameter_4080"/>
+              <SourceParameter reference="Parameter_4328"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
@@ -761,12 +761,12 @@
           <Modifier metabolite="Metabolite_7" stoichiometry="1"/>
         </ListOfModifiers>
         <ListOfConstants>
-          <Constant key="Parameter_4081" name="k2b" value="0.3"/>
-          <Constant key="Parameter_4082" name="q" value="2"/>
-          <Constant key="Parameter_4083" name="E_diff" value="-54973"/>
-          <Constant key="Parameter_4084" name="a" value="1"/>
-          <Constant key="Parameter_4085" name="T2" value="288"/>
-          <Constant key="Parameter_4086" name="T1" value="288"/>
+          <Constant key="Parameter_4329" name="k2b" value="0.3"/>
+          <Constant key="Parameter_4330" name="q" value="2"/>
+          <Constant key="Parameter_4331" name="E_diff" value="-54973"/>
+          <Constant key="Parameter_4332" name="a" value="1"/>
+          <Constant key="Parameter_4333" name="T2" value="288"/>
+          <Constant key="Parameter_4334" name="T1" value="288"/>
         </ListOfConstants>
         <KineticLaw function="Function_43">
           <ListOfCallParameters>
@@ -780,7 +780,7 @@
               <SourceParameter reference="ModelValue_12"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_281">
-              <SourceParameter reference="Parameter_4083"/>
+              <SourceParameter reference="Parameter_4331"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_269">
               <SourceParameter reference="ModelValue_26"/>
@@ -815,11 +815,11 @@
           <Substrate metabolite="Metabolite_9" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfConstants>
-          <Constant key="Parameter_4087" name="v" value="0.05"/>
-          <Constant key="Parameter_4088" name="a" value="1"/>
-          <Constant key="Parameter_4089" name="T2" value="288"/>
-          <Constant key="Parameter_4090" name="T1" value="288"/>
-          <Constant key="Parameter_4091" name="E_diff" value="-60000"/>
+          <Constant key="Parameter_4335" name="v" value="0.05"/>
+          <Constant key="Parameter_4336" name="a" value="1"/>
+          <Constant key="Parameter_4337" name="T2" value="288"/>
+          <Constant key="Parameter_4338" name="T1" value="288"/>
+          <Constant key="Parameter_4339" name="E_diff" value="-60000"/>
         </ListOfConstants>
         <KineticLaw function="Function_40">
           <ListOfCallParameters>
@@ -839,7 +839,7 @@
               <SourceParameter reference="Metabolite_9"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_254">
-              <SourceParameter reference="Parameter_4091"/>
+              <SourceParameter reference="Parameter_4339"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
@@ -868,11 +868,11 @@
           <Product metabolite="Metabolite_1" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_4092" name="v" value="0.24"/>
-          <Constant key="Parameter_4093" name="E_diff" value="-60000"/>
-          <Constant key="Parameter_4094" name="a" value="1"/>
-          <Constant key="Parameter_4097" name="T2" value="288"/>
-          <Constant key="Parameter_4096" name="T1" value="288"/>
+          <Constant key="Parameter_4340" name="v" value="0.24"/>
+          <Constant key="Parameter_4341" name="E_diff" value="-60000"/>
+          <Constant key="Parameter_4342" name="a" value="1"/>
+          <Constant key="Parameter_4345" name="T2" value="288"/>
+          <Constant key="Parameter_4344" name="T1" value="288"/>
         </ListOfConstants>
         <KineticLaw function="Function_42">
           <ListOfCallParameters>
@@ -883,7 +883,7 @@
               <SourceParameter reference="ModelValue_14"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_265">
-              <SourceParameter reference="Parameter_4093"/>
+              <SourceParameter reference="Parameter_4341"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_278">
               <SourceParameter reference="ModelValue_26"/>
@@ -924,11 +924,11 @@
           <Product metabolite="Metabolite_9" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_4098" name="v" value="0.02"/>
-          <Constant key="Parameter_4095" name="E_diff" value="-59999"/>
-          <Constant key="Parameter_4099" name="a" value="1"/>
-          <Constant key="Parameter_4100" name="T2" value="288"/>
-          <Constant key="Parameter_4101" name="T1" value="288"/>
+          <Constant key="Parameter_4346" name="v" value="0.02"/>
+          <Constant key="Parameter_4343" name="E_diff" value="-59999"/>
+          <Constant key="Parameter_4347" name="a" value="1"/>
+          <Constant key="Parameter_4348" name="T2" value="288"/>
+          <Constant key="Parameter_4349" name="T1" value="288"/>
         </ListOfConstants>
         <KineticLaw function="Function_42">
           <ListOfCallParameters>
@@ -939,7 +939,7 @@
               <SourceParameter reference="ModelValue_15"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_265">
-              <SourceParameter reference="Parameter_4095"/>
+              <SourceParameter reference="Parameter_4343"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_278">
               <SourceParameter reference="ModelValue_26"/>
@@ -977,11 +977,11 @@
           <Substrate metabolite="Metabolite_1" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfConstants>
-          <Constant key="Parameter_4102" name="v" value="0.12"/>
-          <Constant key="Parameter_4103" name="a" value="1"/>
-          <Constant key="Parameter_4104" name="T2" value="288"/>
-          <Constant key="Parameter_4105" name="T1" value="288"/>
-          <Constant key="Parameter_4106" name="E_diff" value="-60000"/>
+          <Constant key="Parameter_4350" name="v" value="0.12"/>
+          <Constant key="Parameter_4351" name="a" value="1"/>
+          <Constant key="Parameter_4352" name="T2" value="288"/>
+          <Constant key="Parameter_4353" name="T1" value="288"/>
+          <Constant key="Parameter_4354" name="E_diff" value="-60000"/>
         </ListOfConstants>
         <KineticLaw function="Function_40">
           <ListOfCallParameters>
@@ -1001,7 +1001,7 @@
               <SourceParameter reference="Metabolite_1"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_254">
-              <SourceParameter reference="Parameter_4106"/>
+              <SourceParameter reference="Parameter_4354"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
@@ -1030,13 +1030,13 @@
           <Modifier metabolite="Metabolite_1" stoichiometry="1"/>
         </ListOfModifiers>
         <ListOfConstants>
-          <Constant key="Parameter_4107" name="v4b" value="3.6"/>
-          <Constant key="Parameter_4108" name="a" value="1"/>
-          <Constant key="Parameter_4109" name="E_diff" value="35954"/>
-          <Constant key="Parameter_4110" name="T2" value="288"/>
-          <Constant key="Parameter_4111" name="T1" value="288"/>
-          <Constant key="Parameter_4112" name="r" value="3"/>
-          <Constant key="Parameter_4113" name="k4b" value="2.16"/>
+          <Constant key="Parameter_4355" name="v4b" value="3.6"/>
+          <Constant key="Parameter_4356" name="a" value="1"/>
+          <Constant key="Parameter_4357" name="E_diff" value="35954"/>
+          <Constant key="Parameter_4358" name="T2" value="288"/>
+          <Constant key="Parameter_4359" name="T1" value="288"/>
+          <Constant key="Parameter_4360" name="r" value="3"/>
+          <Constant key="Parameter_4361" name="k4b" value="2.16"/>
         </ListOfConstants>
         <KineticLaw function="Function_45">
           <ListOfCallParameters>
@@ -1047,7 +1047,7 @@
               <SourceParameter reference="ModelValue_26"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_299">
-              <SourceParameter reference="Parameter_4109"/>
+              <SourceParameter reference="Parameter_4357"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_295">
               <SourceParameter reference="ModelValue_27"/>
@@ -1088,11 +1088,11 @@
           <Substrate metabolite="Metabolite_11" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfConstants>
-          <Constant key="Parameter_4114" name="v" value="0.75"/>
-          <Constant key="Parameter_4119" name="a" value="1"/>
-          <Constant key="Parameter_4118" name="T2" value="288"/>
-          <Constant key="Parameter_4117" name="T1" value="288"/>
-          <Constant key="Parameter_4115" name="E_diff" value="-59500"/>
+          <Constant key="Parameter_4362" name="v" value="0.75"/>
+          <Constant key="Parameter_4367" name="a" value="1"/>
+          <Constant key="Parameter_4366" name="T2" value="288"/>
+          <Constant key="Parameter_4365" name="T1" value="288"/>
+          <Constant key="Parameter_4363" name="E_diff" value="-59500"/>
         </ListOfConstants>
         <KineticLaw function="Function_40">
           <ListOfCallParameters>
@@ -1112,7 +1112,7 @@
               <SourceParameter reference="Metabolite_11"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_254">
-              <SourceParameter reference="Parameter_4115"/>
+              <SourceParameter reference="Parameter_4363"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
@@ -1141,11 +1141,11 @@
           <Modifier metabolite="Metabolite_11" stoichiometry="1"/>
         </ListOfModifiers>
         <ListOfConstants>
-          <Constant key="Parameter_4116" name="v" value="0.24"/>
-          <Constant key="Parameter_4120" name="a" value="1"/>
-          <Constant key="Parameter_4121" name="T2" value="288"/>
-          <Constant key="Parameter_4124" name="T1" value="288"/>
-          <Constant key="Parameter_4123" name="E_diff" value="30721"/>
+          <Constant key="Parameter_4364" name="v" value="0.24"/>
+          <Constant key="Parameter_4368" name="a" value="1"/>
+          <Constant key="Parameter_4369" name="T2" value="288"/>
+          <Constant key="Parameter_4372" name="T1" value="288"/>
+          <Constant key="Parameter_4371" name="E_diff" value="30721"/>
         </ListOfConstants>
         <KineticLaw function="Function_41">
           <ListOfCallParameters>
@@ -1165,7 +1165,7 @@
               <SourceParameter reference="Metabolite_11"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_246">
-              <SourceParameter reference="Parameter_4123"/>
+              <SourceParameter reference="Parameter_4371"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
@@ -1191,11 +1191,11 @@
           <Substrate metabolite="Metabolite_13" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfConstants>
-          <Constant key="Parameter_4122" name="v" value="0.06"/>
-          <Constant key="Parameter_4125" name="a" value="1"/>
-          <Constant key="Parameter_4126" name="T2" value="288"/>
-          <Constant key="Parameter_4127" name="T1" value="288"/>
-          <Constant key="Parameter_4128" name="E_diff" value="-51846"/>
+          <Constant key="Parameter_4370" name="v" value="0.06"/>
+          <Constant key="Parameter_4373" name="a" value="1"/>
+          <Constant key="Parameter_4374" name="T2" value="288"/>
+          <Constant key="Parameter_4375" name="T1" value="288"/>
+          <Constant key="Parameter_4376" name="E_diff" value="-51846"/>
         </ListOfConstants>
         <KineticLaw function="Function_40">
           <ListOfCallParameters>
@@ -1215,7 +1215,7 @@
               <SourceParameter reference="Metabolite_13"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_254">
-              <SourceParameter reference="Parameter_4128"/>
+              <SourceParameter reference="Parameter_4376"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
@@ -1244,11 +1244,11 @@
           <Product metabolite="Metabolite_3" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_4129" name="v" value="0.45"/>
-          <Constant key="Parameter_4130" name="E_diff" value="-59672"/>
-          <Constant key="Parameter_4131" name="a" value="1"/>
-          <Constant key="Parameter_4132" name="T2" value="288"/>
-          <Constant key="Parameter_4133" name="T1" value="288"/>
+          <Constant key="Parameter_4377" name="v" value="0.45"/>
+          <Constant key="Parameter_4378" name="E_diff" value="-59672"/>
+          <Constant key="Parameter_4379" name="a" value="1"/>
+          <Constant key="Parameter_4380" name="T2" value="288"/>
+          <Constant key="Parameter_4381" name="T1" value="288"/>
         </ListOfConstants>
         <KineticLaw function="Function_42">
           <ListOfCallParameters>
@@ -1259,7 +1259,7 @@
               <SourceParameter reference="ModelValue_20"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_265">
-              <SourceParameter reference="Parameter_4130"/>
+              <SourceParameter reference="Parameter_4378"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_278">
               <SourceParameter reference="ModelValue_26"/>
@@ -1300,11 +1300,11 @@
           <Product metabolite="Metabolite_13" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_4134" name="v" value="0.06"/>
-          <Constant key="Parameter_4135" name="E_diff" value="18466"/>
-          <Constant key="Parameter_4136" name="a" value="1"/>
-          <Constant key="Parameter_4137" name="T2" value="288"/>
-          <Constant key="Parameter_4138" name="T1" value="288"/>
+          <Constant key="Parameter_4382" name="v" value="0.06"/>
+          <Constant key="Parameter_4383" name="E_diff" value="18466"/>
+          <Constant key="Parameter_4384" name="a" value="1"/>
+          <Constant key="Parameter_4385" name="T2" value="288"/>
+          <Constant key="Parameter_4386" name="T1" value="288"/>
         </ListOfConstants>
         <KineticLaw function="Function_42">
           <ListOfCallParameters>
@@ -1315,7 +1315,7 @@
               <SourceParameter reference="ModelValue_21"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_265">
-              <SourceParameter reference="Parameter_4135"/>
+              <SourceParameter reference="Parameter_4383"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_278">
               <SourceParameter reference="ModelValue_26"/>
@@ -1353,11 +1353,11 @@
           <Substrate metabolite="Metabolite_3" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfConstants>
-          <Constant key="Parameter_4139" name="v" value="0.12"/>
-          <Constant key="Parameter_4140" name="a" value="1"/>
-          <Constant key="Parameter_4141" name="T2" value="288"/>
-          <Constant key="Parameter_4142" name="T1" value="288"/>
-          <Constant key="Parameter_4143" name="E_diff" value="-58029"/>
+          <Constant key="Parameter_4387" name="v" value="0.12"/>
+          <Constant key="Parameter_4388" name="a" value="1"/>
+          <Constant key="Parameter_4389" name="T2" value="288"/>
+          <Constant key="Parameter_4390" name="T1" value="288"/>
+          <Constant key="Parameter_4391" name="E_diff" value="-58029"/>
         </ListOfConstants>
         <KineticLaw function="Function_40">
           <ListOfCallParameters>
@@ -1377,7 +1377,7 @@
               <SourceParameter reference="Metabolite_3"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_254">
-              <SourceParameter reference="Parameter_4143"/>
+              <SourceParameter reference="Parameter_4391"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
@@ -1406,11 +1406,11 @@
           <Product metabolite="Metabolite_5" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_4144" name="v" value="0.09"/>
-          <Constant key="Parameter_4145" name="a" value="0.24"/>
-          <Constant key="Parameter_4146" name="T2" value="288"/>
-          <Constant key="Parameter_4147" name="T1" value="288"/>
-          <Constant key="Parameter_4148" name="E_diff" value="-57837"/>
+          <Constant key="Parameter_4392" name="v" value="0.09"/>
+          <Constant key="Parameter_4393" name="a" value="0.24"/>
+          <Constant key="Parameter_4394" name="T2" value="288"/>
+          <Constant key="Parameter_4395" name="T1" value="288"/>
+          <Constant key="Parameter_4396" name="E_diff" value="-57837"/>
         </ListOfConstants>
         <KineticLaw function="Function_40">
           <ListOfCallParameters>
@@ -1430,7 +1430,7 @@
               <SourceParameter reference="Metabolite_3"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_254">
-              <SourceParameter reference="Parameter_4148"/>
+              <SourceParameter reference="Parameter_4396"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
@@ -1459,11 +1459,11 @@
           <Product metabolite="Metabolite_3" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_4149" name="v" value="0.003"/>
-          <Constant key="Parameter_4172" name="a" value="1"/>
-          <Constant key="Parameter_4173" name="T2" value="288"/>
-          <Constant key="Parameter_4174" name="T1" value="288"/>
-          <Constant key="Parameter_4175" name="E_diff" value="-16478"/>
+          <Constant key="Parameter_4397" name="v" value="0.003"/>
+          <Constant key="Parameter_4420" name="a" value="1"/>
+          <Constant key="Parameter_4421" name="T2" value="288"/>
+          <Constant key="Parameter_4422" name="T1" value="288"/>
+          <Constant key="Parameter_4423" name="E_diff" value="-16478"/>
         </ListOfConstants>
         <KineticLaw function="Function_40">
           <ListOfCallParameters>
@@ -1483,7 +1483,7 @@
               <SourceParameter reference="Metabolite_5"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_254">
-              <SourceParameter reference="Parameter_4175"/>
+              <SourceParameter reference="Parameter_4423"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
@@ -1509,11 +1509,11 @@
           <Substrate metabolite="Metabolite_5" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfConstants>
-          <Constant key="Parameter_4176" name="v" value="0.09"/>
-          <Constant key="Parameter_4177" name="a" value="1"/>
-          <Constant key="Parameter_4055" name="T2" value="288"/>
-          <Constant key="Parameter_4056" name="T1" value="288"/>
-          <Constant key="Parameter_4057" name="E_diff" value="-57534"/>
+          <Constant key="Parameter_4424" name="v" value="0.09"/>
+          <Constant key="Parameter_4425" name="a" value="1"/>
+          <Constant key="Parameter_4303" name="T2" value="288"/>
+          <Constant key="Parameter_4304" name="T1" value="288"/>
+          <Constant key="Parameter_4305" name="E_diff" value="-57534"/>
         </ListOfConstants>
         <KineticLaw function="Function_40">
           <ListOfCallParameters>
@@ -1533,7 +1533,7 @@
               <SourceParameter reference="Metabolite_5"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_254">
-              <SourceParameter reference="Parameter_4057"/>
+              <SourceParameter reference="Parameter_4305"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
@@ -2153,11 +2153,11 @@
       </Method>
     </Task>
     <Task key="Task_11" name="Time-Course" type="timeCourse" scheduled="true" updateModel="false">
-      <Report reference="Report_17" target="EventTest25.1.txt" append="0" confirmOverwrite="0"/>
+      <Report reference="Report_18" target="EventTest25.1.txt" append="0" confirmOverwrite="0"/>
       <Problem>
-        <Parameter name="StepNumber" type="unsignedInteger" value="100000"/>
+        <Parameter name="StepNumber" type="unsignedInteger" value="30000"/>
         <Parameter name="StepSize" type="float" value="0.02"/>
-        <Parameter name="Duration" type="float" value="2000"/>
+        <Parameter name="Duration" type="float" value="600"/>
         <Parameter name="TimeSeriesRequested" type="bool" value="1"/>
         <Parameter name="OutputStartTime" type="float" value="0"/>
         <Parameter name="Output Event" type="bool" value="0"/>
@@ -2165,7 +2165,7 @@
       </Problem>
       <Method name="Deterministic (LSODA)" type="Deterministic(LSODA)">
         <Parameter name="Integrate Reduced Model" type="bool" value="0"/>
-        <Parameter name="Relative Tolerance" type="unsignedFloat" value="1e-07"/>
+        <Parameter name="Relative Tolerance" type="unsignedFloat" value="1e-08"/>
         <Parameter name="Absolute Tolerance" type="unsignedFloat" value="1e-12"/>
         <Parameter name="Max Internal Steps" type="unsignedInteger" value="10000"/>
       </Method>
@@ -2472,7 +2472,7 @@
         <Object cn="CN=Root,Vector=TaskList[Linear Noise Approximation],Object=Result"/>
       </Footer>
     </Report>
-    <Report key="Report_17" name="Time, Concentrations, Volumes, and Global Quantity Values" taskType="timeCourse" separator="&#x09;" precision="7">
+    <Report key="Report_18" name="Time, Concentrations, Volumes, and Global Quantity Values" taskType="timeCourse" separator="&#x09;" precision="7">
       <Comment>
         A table of time, variable species concentrations, variable compartment volumes, and variable global quantity values.
       </Comment>

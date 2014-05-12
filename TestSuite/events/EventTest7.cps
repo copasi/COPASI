@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- generated with COPASI 4.9.37+ (Debug) (http://www.copasi.org) at 2012-10-09 18:05:35 UTC -->
+<!-- generated with COPASI 4.12 (Build 81) (http://www.copasi.org) at 2014-05-06 17:36:06 UTC -->
 <?oxygen RNGSchema="http://www.copasi.org/static/schema/CopasiML.rng" type="xml"?>
-<COPASI xmlns="http://www.copasi.org/static/schema" versionMajor="4" versionMinor="9" versionDevel="37" copasiSourcesModified="1">
+<COPASI xmlns="http://www.copasi.org/static/schema" versionMajor="4" versionMinor="12" versionDevel="81" copasiSourcesModified="0">
   <ListOfFunctions>
     <Function key="Function_13" name="Mass action (irreversible)" type="MassAction" reversible="false">
       <MiriamAnnotation>
@@ -28,12 +28,12 @@ Reaction scheme where the products are created from the reactants and the change
       </ListOfParameterDescriptions>
     </Function>
   </ListOfFunctions>
-  <Model key="Model_1" name="NF-kB signaling" simulationType="time" timeUnit="s" volumeUnit="ml" areaUnit="m²" lengthUnit="m" quantityUnit="µmol" type="deterministic" avogadroConstant="6.0221415e+23">
+  <Model key="Model_4" name="NF-kB signaling" simulationType="time" timeUnit="s" volumeUnit="ml" areaUnit="m²" lengthUnit="m" quantityUnit="µmol" type="deterministic" avogadroConstant="6.0221415e+23">
     <MiriamAnnotation>
 <rdf:RDF
    xmlns:dcterms="http://purl.org/dc/terms/"
    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Model_1">
+  <rdf:Description rdf:about="#Model_4">
     <dcterms:created>
       <rdf:Description>
         <dcterms:W3CDTF>2010-01-30T15:14:17Z</dcterms:W3CDTF>
@@ -56,72 +56,72 @@ Reaction scheme where the products are created from the reactants and the change
 </body></html>
     </Comment>
     <ListOfCompartments>
-      <Compartment key="Compartment_0" name="compartment" simulationType="fixed" dimensionality="3">
+      <Compartment key="Compartment_1" name="compartment" simulationType="fixed" dimensionality="3">
       </Compartment>
-      <Compartment key="Compartment_1" name="cytoplasm" simulationType="fixed" dimensionality="3">
+      <Compartment key="Compartment_3" name="cytoplasm" simulationType="fixed" dimensionality="3">
       </Compartment>
-      <Compartment key="Compartment_2" name="nucleus" simulationType="fixed" dimensionality="3">
+      <Compartment key="Compartment_5" name="nucleus" simulationType="fixed" dimensionality="3">
       </Compartment>
     </ListOfCompartments>
     <ListOfMetabolites>
-      <Metabolite key="Metabolite_24" name="IkBa" simulationType="reactions" compartment="Compartment_0">
+      <Metabolite key="Metabolite_1" name="IkBa" simulationType="reactions" compartment="Compartment_1">
       </Metabolite>
-      <Metabolite key="Metabolite_8" name="NF-kB" simulationType="reactions" compartment="Compartment_0">
+      <Metabolite key="Metabolite_3" name="NF-kB" simulationType="reactions" compartment="Compartment_1">
       </Metabolite>
-      <Metabolite key="Metabolite_9" name="IkBa-NF-kB" simulationType="reactions" compartment="Compartment_0">
+      <Metabolite key="Metabolite_5" name="IkBa-NF-kB" simulationType="reactions" compartment="Compartment_1">
       </Metabolite>
-      <Metabolite key="Metabolite_25" name="IkBb" simulationType="reactions" compartment="Compartment_0">
+      <Metabolite key="Metabolite_7" name="IkBb" simulationType="reactions" compartment="Compartment_1">
       </Metabolite>
-      <Metabolite key="Metabolite_26" name="IkBb-NF-kB" simulationType="reactions" compartment="Compartment_0">
+      <Metabolite key="Metabolite_9" name="IkBb-NF-kB" simulationType="reactions" compartment="Compartment_1">
       </Metabolite>
-      <Metabolite key="Metabolite_23" name="IkBe" simulationType="reactions" compartment="Compartment_0">
+      <Metabolite key="Metabolite_11" name="IkBe" simulationType="reactions" compartment="Compartment_1">
       </Metabolite>
-      <Metabolite key="Metabolite_22" name="IkBe-NF-kB" simulationType="reactions" compartment="Compartment_0">
+      <Metabolite key="Metabolite_13" name="IkBe-NF-kB" simulationType="reactions" compartment="Compartment_1">
       </Metabolite>
-      <Metabolite key="Metabolite_21" name="IKKIkBa" simulationType="reactions" compartment="Compartment_0">
+      <Metabolite key="Metabolite_15" name="IKKIkBa" simulationType="reactions" compartment="Compartment_1">
       </Metabolite>
-      <Metabolite key="Metabolite_20" name="IKKIkBa-NF-kB" simulationType="reactions" compartment="Compartment_0">
+      <Metabolite key="Metabolite_17" name="IKKIkBa-NF-kB" simulationType="reactions" compartment="Compartment_1">
       </Metabolite>
-      <Metabolite key="Metabolite_19" name="IKK" simulationType="reactions" compartment="Compartment_0">
+      <Metabolite key="Metabolite_19" name="IKK" simulationType="reactions" compartment="Compartment_1">
       </Metabolite>
-      <Metabolite key="Metabolite_18" name="IKKIkBb" simulationType="reactions" compartment="Compartment_0">
+      <Metabolite key="Metabolite_21" name="IKKIkBb" simulationType="reactions" compartment="Compartment_1">
       </Metabolite>
-      <Metabolite key="Metabolite_17" name="IKKIkBb-NF-kB" simulationType="reactions" compartment="Compartment_0">
+      <Metabolite key="Metabolite_23" name="IKKIkBb-NF-kB" simulationType="reactions" compartment="Compartment_1">
       </Metabolite>
-      <Metabolite key="Metabolite_16" name="IKKIkBe" simulationType="reactions" compartment="Compartment_0">
+      <Metabolite key="Metabolite_25" name="IKKIkBe" simulationType="reactions" compartment="Compartment_1">
       </Metabolite>
-      <Metabolite key="Metabolite_15" name="IKKIkBe-NF-kB" simulationType="reactions" compartment="Compartment_0">
+      <Metabolite key="Metabolite_27" name="IKKIkBe-NF-kB" simulationType="reactions" compartment="Compartment_1">
       </Metabolite>
-      <Metabolite key="Metabolite_14" name="NF-kBn" simulationType="reactions" compartment="Compartment_0">
+      <Metabolite key="Metabolite_29" name="NF-kBn" simulationType="reactions" compartment="Compartment_1">
       </Metabolite>
-      <Metabolite key="Metabolite_13" name="IkBan" simulationType="reactions" compartment="Compartment_0">
+      <Metabolite key="Metabolite_31" name="IkBan" simulationType="reactions" compartment="Compartment_1">
       </Metabolite>
-      <Metabolite key="Metabolite_12" name="IkBan-NF-kBn" simulationType="reactions" compartment="Compartment_0">
+      <Metabolite key="Metabolite_33" name="IkBan-NF-kBn" simulationType="reactions" compartment="Compartment_1">
       </Metabolite>
-      <Metabolite key="Metabolite_11" name="IkBbn" simulationType="reactions" compartment="Compartment_0">
+      <Metabolite key="Metabolite_35" name="IkBbn" simulationType="reactions" compartment="Compartment_1">
       </Metabolite>
-      <Metabolite key="Metabolite_10" name="IkBbn-NF-kBn" simulationType="reactions" compartment="Compartment_0">
+      <Metabolite key="Metabolite_37" name="IkBbn-NF-kBn" simulationType="reactions" compartment="Compartment_1">
       </Metabolite>
-      <Metabolite key="Metabolite_7" name="IkBen" simulationType="reactions" compartment="Compartment_0">
+      <Metabolite key="Metabolite_39" name="IkBen" simulationType="reactions" compartment="Compartment_1">
       </Metabolite>
-      <Metabolite key="Metabolite_6" name="IkBen-NF-kBn" simulationType="reactions" compartment="Compartment_0">
+      <Metabolite key="Metabolite_41" name="IkBen-NF-kBn" simulationType="reactions" compartment="Compartment_1">
       </Metabolite>
-      <Metabolite key="Metabolite_5" name="IkBa-t" simulationType="reactions" compartment="Compartment_0">
+      <Metabolite key="Metabolite_43" name="IkBa-t" simulationType="reactions" compartment="Compartment_1">
       </Metabolite>
-      <Metabolite key="Metabolite_4" name="IkBb-t" simulationType="reactions" compartment="Compartment_0">
+      <Metabolite key="Metabolite_45" name="IkBb-t" simulationType="reactions" compartment="Compartment_1">
       </Metabolite>
-      <Metabolite key="Metabolite_3" name="IkBe-t" simulationType="reactions" compartment="Compartment_0">
+      <Metabolite key="Metabolite_47" name="IkBe-t" simulationType="reactions" compartment="Compartment_1">
       </Metabolite>
-      <Metabolite key="Metabolite_2" name="sink" simulationType="fixed" compartment="Compartment_0">
+      <Metabolite key="Metabolite_49" name="sink" simulationType="fixed" compartment="Compartment_1">
       </Metabolite>
-      <Metabolite key="Metabolite_1" name="source" simulationType="fixed" compartment="Compartment_0">
+      <Metabolite key="Metabolite_51" name="source" simulationType="fixed" compartment="Compartment_1">
       </Metabolite>
     </ListOfMetabolites>
     <ListOfModelValues>
-      <ModelValue key="ModelValue_49" name="PeakTime" simulationType="fixed">
+      <ModelValue key="ModelValue_0" name="PeakTime" simulationType="fixed">
         <MiriamAnnotation>
 <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#ModelValue_49">
+  <rdf:Description rdf:about="#ModelValue_0">
     <dcterms:created>
       <rdf:Description>
         <dcterms:W3CDTF>2010-01-30T15:15:29Z</dcterms:W3CDTF>
@@ -131,10 +131,10 @@ Reaction scheme where the products are created from the reactants and the change
 </rdf:RDF>
         </MiriamAnnotation>
       </ModelValue>
-      <ModelValue key="ModelValue_50" name="PeakValue" simulationType="fixed">
+      <ModelValue key="ModelValue_1" name="PeakValue" simulationType="fixed">
         <MiriamAnnotation>
 <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#ModelValue_50">
+  <rdf:Description rdf:about="#ModelValue_1">
     <dcterms:created>
       <rdf:Description>
         <dcterms:W3CDTF>2010-01-30T15:17:01Z</dcterms:W3CDTF>
@@ -146,640 +146,44 @@ Reaction scheme where the products are created from the reactants and the change
       </ModelValue>
     </ListOfModelValues>
     <ListOfReactions>
-      <Reaction key="Reaction_17" name="IkBaNF-kB association" reversible="false">
-        <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_24" stoichiometry="1"/>
-          <Substrate metabolite="Metabolite_8" stoichiometry="1"/>
-        </ListOfSubstrates>
-        <ListOfProducts>
-          <Product metabolite="Metabolite_9" stoichiometry="1"/>
-        </ListOfProducts>
-        <ListOfConstants>
-          <Constant key="Parameter_1264" name="k1" value="0.5"/>
-        </ListOfConstants>
-        <KineticLaw function="Function_13">
-          <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Parameter_1264"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_79">
-              <SourceParameter reference="Metabolite_24"/>
-              <SourceParameter reference="Metabolite_8"/>
-            </CallParameter>
-          </ListOfCallParameters>
-        </KineticLaw>
-      </Reaction>
-      <Reaction key="Reaction_15" name="IkBa-NF-kB dissociation" reversible="false">
-        <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_9" stoichiometry="1"/>
-        </ListOfSubstrates>
-        <ListOfProducts>
-          <Product metabolite="Metabolite_8" stoichiometry="1"/>
-          <Product metabolite="Metabolite_24" stoichiometry="1"/>
-        </ListOfProducts>
-        <ListOfConstants>
-          <Constant key="Parameter_1265" name="k1" value="0.0005"/>
-        </ListOfConstants>
-        <KineticLaw function="Function_13">
-          <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Parameter_1265"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_79">
-              <SourceParameter reference="Metabolite_9"/>
-            </CallParameter>
-          </ListOfCallParameters>
-        </KineticLaw>
-      </Reaction>
-      <Reaction key="Reaction_16" name="IkBb-NF-kB association" reversible="false">
-        <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_25" stoichiometry="1"/>
-          <Substrate metabolite="Metabolite_8" stoichiometry="1"/>
-        </ListOfSubstrates>
-        <ListOfProducts>
-          <Product metabolite="Metabolite_26" stoichiometry="1"/>
-        </ListOfProducts>
-        <ListOfConstants>
-          <Constant key="Parameter_1648" name="k1" value="0.5"/>
-        </ListOfConstants>
-        <KineticLaw function="Function_13">
-          <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Parameter_1648"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_79">
-              <SourceParameter reference="Metabolite_25"/>
-              <SourceParameter reference="Metabolite_8"/>
-            </CallParameter>
-          </ListOfCallParameters>
-        </KineticLaw>
-      </Reaction>
-      <Reaction key="Reaction_18" name="IkBb-NF-kB dissociation" reversible="false">
-        <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_26" stoichiometry="1"/>
-        </ListOfSubstrates>
-        <ListOfProducts>
-          <Product metabolite="Metabolite_8" stoichiometry="1"/>
-          <Product metabolite="Metabolite_25" stoichiometry="1"/>
-        </ListOfProducts>
-        <ListOfConstants>
-          <Constant key="Parameter_1537" name="k1" value="0.0005"/>
-        </ListOfConstants>
-        <KineticLaw function="Function_13">
-          <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Parameter_1537"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_79">
-              <SourceParameter reference="Metabolite_26"/>
-            </CallParameter>
-          </ListOfCallParameters>
-        </KineticLaw>
-      </Reaction>
-      <Reaction key="Reaction_38" name="IkBe-NF-kB association" reversible="false">
-        <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_23" stoichiometry="1"/>
-          <Substrate metabolite="Metabolite_8" stoichiometry="1"/>
-        </ListOfSubstrates>
-        <ListOfProducts>
-          <Product metabolite="Metabolite_22" stoichiometry="1"/>
-        </ListOfProducts>
-        <ListOfConstants>
-          <Constant key="Parameter_1536" name="k1" value="0.5"/>
-        </ListOfConstants>
-        <KineticLaw function="Function_13">
-          <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Parameter_1536"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_79">
-              <SourceParameter reference="Metabolite_23"/>
-              <SourceParameter reference="Metabolite_8"/>
-            </CallParameter>
-          </ListOfCallParameters>
-        </KineticLaw>
-      </Reaction>
-      <Reaction key="Reaction_37" name="IkBe-NF-kB dissociation" reversible="false">
-        <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_22" stoichiometry="1"/>
-        </ListOfSubstrates>
-        <ListOfProducts>
-          <Product metabolite="Metabolite_8" stoichiometry="1"/>
-          <Product metabolite="Metabolite_23" stoichiometry="1"/>
-        </ListOfProducts>
-        <ListOfConstants>
-          <Constant key="Parameter_1533" name="k1" value="0.0005"/>
-        </ListOfConstants>
-        <KineticLaw function="Function_13">
-          <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Parameter_1533"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_79">
-              <SourceParameter reference="Metabolite_22"/>
-            </CallParameter>
-          </ListOfCallParameters>
-        </KineticLaw>
-      </Reaction>
-      <Reaction key="Reaction_36" name="IKKIkBa-NF-kB association" reversible="false">
-        <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_21" stoichiometry="1"/>
-          <Substrate metabolite="Metabolite_8" stoichiometry="1"/>
-        </ListOfSubstrates>
-        <ListOfProducts>
-          <Product metabolite="Metabolite_20" stoichiometry="1"/>
-        </ListOfProducts>
-        <ListOfConstants>
-          <Constant key="Parameter_1535" name="k1" value="0.5"/>
-        </ListOfConstants>
-        <KineticLaw function="Function_13">
-          <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Parameter_1535"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_79">
-              <SourceParameter reference="Metabolite_21"/>
-              <SourceParameter reference="Metabolite_8"/>
-            </CallParameter>
-          </ListOfCallParameters>
-        </KineticLaw>
-      </Reaction>
-      <Reaction key="Reaction_35" name="IKKIkBa-NF-kB dissociation" reversible="false">
-        <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_20" stoichiometry="1"/>
-        </ListOfSubstrates>
-        <ListOfProducts>
-          <Product metabolite="Metabolite_8" stoichiometry="1"/>
-          <Product metabolite="Metabolite_21" stoichiometry="1"/>
-        </ListOfProducts>
-        <ListOfConstants>
-          <Constant key="Parameter_1534" name="k1" value="0.0005"/>
-        </ListOfConstants>
-        <KineticLaw function="Function_13">
-          <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Parameter_1534"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_79">
-              <SourceParameter reference="Metabolite_20"/>
-            </CallParameter>
-          </ListOfCallParameters>
-        </KineticLaw>
-      </Reaction>
-      <Reaction key="Reaction_34" name="IKKIkBa-NF-kB catalysis" reversible="false">
-        <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_20" stoichiometry="1"/>
-        </ListOfSubstrates>
-        <ListOfProducts>
-          <Product metabolite="Metabolite_19" stoichiometry="1"/>
-          <Product metabolite="Metabolite_8" stoichiometry="1"/>
-        </ListOfProducts>
-        <ListOfConstants>
-          <Constant key="Parameter_1641" name="k1" value="0.0204"/>
-        </ListOfConstants>
-        <KineticLaw function="Function_13">
-          <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Parameter_1641"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_79">
-              <SourceParameter reference="Metabolite_20"/>
-            </CallParameter>
-          </ListOfCallParameters>
-        </KineticLaw>
-      </Reaction>
-      <Reaction key="Reaction_33" name="IKKIkBb-NF-kB association" reversible="false">
-        <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_18" stoichiometry="1"/>
-          <Substrate metabolite="Metabolite_8" stoichiometry="1"/>
-        </ListOfSubstrates>
-        <ListOfProducts>
-          <Product metabolite="Metabolite_17" stoichiometry="1"/>
-        </ListOfProducts>
-        <ListOfConstants>
-          <Constant key="Parameter_1640" name="k1" value="0.5"/>
-        </ListOfConstants>
-        <KineticLaw function="Function_13">
-          <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Parameter_1640"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_79">
-              <SourceParameter reference="Metabolite_18"/>
-              <SourceParameter reference="Metabolite_8"/>
-            </CallParameter>
-          </ListOfCallParameters>
-        </KineticLaw>
-      </Reaction>
-      <Reaction key="Reaction_32" name="IKKIkBb-NF-kB dissociation" reversible="false">
-        <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_17" stoichiometry="1"/>
-        </ListOfSubstrates>
-        <ListOfProducts>
-          <Product metabolite="Metabolite_8" stoichiometry="1"/>
-          <Product metabolite="Metabolite_18" stoichiometry="1"/>
-        </ListOfProducts>
-        <ListOfConstants>
-          <Constant key="Parameter_1442" name="k1" value="0.0005"/>
-        </ListOfConstants>
-        <KineticLaw function="Function_13">
-          <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Parameter_1442"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_79">
-              <SourceParameter reference="Metabolite_17"/>
-            </CallParameter>
-          </ListOfCallParameters>
-        </KineticLaw>
-      </Reaction>
-      <Reaction key="Reaction_31" name="IKKIkBb-NF-kB catalysis" reversible="false">
-        <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_17" stoichiometry="1"/>
-        </ListOfSubstrates>
-        <ListOfProducts>
-          <Product metabolite="Metabolite_19" stoichiometry="1"/>
-          <Product metabolite="Metabolite_8" stoichiometry="1"/>
-        </ListOfProducts>
-        <ListOfConstants>
-          <Constant key="Parameter_1441" name="k1" value="0.0075"/>
-        </ListOfConstants>
-        <KineticLaw function="Function_13">
-          <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Parameter_1441"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_79">
-              <SourceParameter reference="Metabolite_17"/>
-            </CallParameter>
-          </ListOfCallParameters>
-        </KineticLaw>
-      </Reaction>
-      <Reaction key="Reaction_30" name="IKKIkBe-NF-kB association" reversible="false">
-        <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_16" stoichiometry="1"/>
-          <Substrate metabolite="Metabolite_8" stoichiometry="1"/>
-        </ListOfSubstrates>
-        <ListOfProducts>
-          <Product metabolite="Metabolite_15" stoichiometry="1"/>
-        </ListOfProducts>
-        <ListOfConstants>
-          <Constant key="Parameter_1440" name="k1" value="0.5"/>
-        </ListOfConstants>
-        <KineticLaw function="Function_13">
-          <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Parameter_1440"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_79">
-              <SourceParameter reference="Metabolite_16"/>
-              <SourceParameter reference="Metabolite_8"/>
-            </CallParameter>
-          </ListOfCallParameters>
-        </KineticLaw>
-      </Reaction>
-      <Reaction key="Reaction_29" name="IKKIkBe-NF-kB dissociation" reversible="false">
-        <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_15" stoichiometry="1"/>
-        </ListOfSubstrates>
-        <ListOfProducts>
-          <Product metabolite="Metabolite_8" stoichiometry="1"/>
-          <Product metabolite="Metabolite_16" stoichiometry="1"/>
-        </ListOfProducts>
-        <ListOfConstants>
-          <Constant key="Parameter_1443" name="k1" value="0.0005"/>
-        </ListOfConstants>
-        <KineticLaw function="Function_13">
-          <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Parameter_1443"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_79">
-              <SourceParameter reference="Metabolite_15"/>
-            </CallParameter>
-          </ListOfCallParameters>
-        </KineticLaw>
-      </Reaction>
-      <Reaction key="Reaction_28" name="IKKIkBe-NF-kB catalysis" reversible="false">
-        <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_15" stoichiometry="1"/>
-        </ListOfSubstrates>
-        <ListOfProducts>
-          <Product metabolite="Metabolite_19" stoichiometry="1"/>
-          <Product metabolite="Metabolite_8" stoichiometry="1"/>
-        </ListOfProducts>
-        <ListOfConstants>
-          <Constant key="Parameter_1444" name="k1" value="0.011"/>
-        </ListOfConstants>
-        <KineticLaw function="Function_13">
-          <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Parameter_1444"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_79">
-              <SourceParameter reference="Metabolite_15"/>
-            </CallParameter>
-          </ListOfCallParameters>
-        </KineticLaw>
-      </Reaction>
-      <Reaction key="Reaction_27" name="IkBa constituitive degradation (complexed to NF-kB)" reversible="false">
-        <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_9" stoichiometry="1"/>
-        </ListOfSubstrates>
-        <ListOfProducts>
-          <Product metabolite="Metabolite_8" stoichiometry="1"/>
-        </ListOfProducts>
-        <ListOfConstants>
-          <Constant key="Parameter_1445" name="k1" value="2.25e-05"/>
-        </ListOfConstants>
-        <KineticLaw function="Function_13">
-          <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Parameter_1445"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_79">
-              <SourceParameter reference="Metabolite_9"/>
-            </CallParameter>
-          </ListOfCallParameters>
-        </KineticLaw>
-      </Reaction>
-      <Reaction key="Reaction_26" name="IkBb constituitive degradation (complexed to NF-kB)" reversible="false">
-        <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_26" stoichiometry="1"/>
-        </ListOfSubstrates>
-        <ListOfProducts>
-          <Product metabolite="Metabolite_8" stoichiometry="1"/>
-        </ListOfProducts>
-        <ListOfConstants>
-          <Constant key="Parameter_1446" name="k1" value="2.25e-05"/>
-        </ListOfConstants>
-        <KineticLaw function="Function_13">
-          <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Parameter_1446"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_79">
-              <SourceParameter reference="Metabolite_26"/>
-            </CallParameter>
-          </ListOfCallParameters>
-        </KineticLaw>
-      </Reaction>
-      <Reaction key="Reaction_25" name="IkBe constituitive degradation (complexed to NF-kB)" reversible="false">
-        <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_22" stoichiometry="1"/>
-        </ListOfSubstrates>
-        <ListOfProducts>
-          <Product metabolite="Metabolite_8" stoichiometry="1"/>
-        </ListOfProducts>
-        <ListOfConstants>
-          <Constant key="Parameter_1447" name="k1" value="2.25e-05"/>
-        </ListOfConstants>
-        <KineticLaw function="Function_13">
-          <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Parameter_1447"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_79">
-              <SourceParameter reference="Metabolite_22"/>
-            </CallParameter>
-          </ListOfCallParameters>
-        </KineticLaw>
-      </Reaction>
-      <Reaction key="Reaction_24" name="NF-kB nuclear import" reversible="false">
-        <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_8" stoichiometry="1"/>
-        </ListOfSubstrates>
-        <ListOfProducts>
-          <Product metabolite="Metabolite_14" stoichiometry="1"/>
-        </ListOfProducts>
-        <ListOfConstants>
-          <Constant key="Parameter_1448" name="k1" value="0.09"/>
-        </ListOfConstants>
-        <KineticLaw function="Function_13">
-          <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Parameter_1448"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_79">
-              <SourceParameter reference="Metabolite_8"/>
-            </CallParameter>
-          </ListOfCallParameters>
-        </KineticLaw>
-      </Reaction>
-      <Reaction key="Reaction_23" name="NF-kB nuclear export" reversible="false">
-        <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_14" stoichiometry="1"/>
-        </ListOfSubstrates>
-        <ListOfProducts>
-          <Product metabolite="Metabolite_8" stoichiometry="1"/>
-        </ListOfProducts>
-        <ListOfConstants>
-          <Constant key="Parameter_1449" name="k1" value="8e-05"/>
-        </ListOfConstants>
-        <KineticLaw function="Function_13">
-          <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Parameter_1449"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_79">
-              <SourceParameter reference="Metabolite_14"/>
-            </CallParameter>
-          </ListOfCallParameters>
-        </KineticLaw>
-      </Reaction>
-      <Reaction key="Reaction_22" name="IkBa-NF-kB nuclear association" reversible="false">
-        <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_13" stoichiometry="1"/>
-          <Substrate metabolite="Metabolite_14" stoichiometry="1"/>
-        </ListOfSubstrates>
-        <ListOfProducts>
-          <Product metabolite="Metabolite_12" stoichiometry="1"/>
-        </ListOfProducts>
-        <ListOfConstants>
-          <Constant key="Parameter_1450" name="k1" value="0.5"/>
-        </ListOfConstants>
-        <KineticLaw function="Function_13">
-          <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Parameter_1450"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_79">
-              <SourceParameter reference="Metabolite_13"/>
-              <SourceParameter reference="Metabolite_14"/>
-            </CallParameter>
-          </ListOfCallParameters>
-        </KineticLaw>
-      </Reaction>
-      <Reaction key="Reaction_21" name="IkBa-NF-kB nuclear dissociation" reversible="false">
-        <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_12" stoichiometry="1"/>
-        </ListOfSubstrates>
-        <ListOfProducts>
-          <Product metabolite="Metabolite_14" stoichiometry="1"/>
-          <Product metabolite="Metabolite_13" stoichiometry="1"/>
-        </ListOfProducts>
-        <ListOfConstants>
-          <Constant key="Parameter_1451" name="k1" value="0.0005"/>
-        </ListOfConstants>
-        <KineticLaw function="Function_13">
-          <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Parameter_1451"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_79">
-              <SourceParameter reference="Metabolite_12"/>
-            </CallParameter>
-          </ListOfCallParameters>
-        </KineticLaw>
-      </Reaction>
-      <Reaction key="Reaction_20" name="IkBb-NF-kB nuclear association" reversible="false">
-        <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_11" stoichiometry="1"/>
-          <Substrate metabolite="Metabolite_14" stoichiometry="1"/>
-        </ListOfSubstrates>
-        <ListOfProducts>
-          <Product metabolite="Metabolite_10" stoichiometry="1"/>
-        </ListOfProducts>
-        <ListOfConstants>
-          <Constant key="Parameter_1452" name="k1" value="0.5"/>
-        </ListOfConstants>
-        <KineticLaw function="Function_13">
-          <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Parameter_1452"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_79">
-              <SourceParameter reference="Metabolite_11"/>
-              <SourceParameter reference="Metabolite_14"/>
-            </CallParameter>
-          </ListOfCallParameters>
-        </KineticLaw>
-      </Reaction>
-      <Reaction key="Reaction_19" name="IkBb-NF-kB nuclear dissociation" reversible="false">
-        <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_10" stoichiometry="1"/>
-        </ListOfSubstrates>
-        <ListOfProducts>
-          <Product metabolite="Metabolite_14" stoichiometry="1"/>
-          <Product metabolite="Metabolite_11" stoichiometry="1"/>
-        </ListOfProducts>
-        <ListOfConstants>
-          <Constant key="Parameter_1453" name="k1" value="0.0005"/>
-        </ListOfConstants>
-        <KineticLaw function="Function_13">
-          <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Parameter_1453"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_79">
-              <SourceParameter reference="Metabolite_10"/>
-            </CallParameter>
-          </ListOfCallParameters>
-        </KineticLaw>
-      </Reaction>
-      <Reaction key="Reaction_14" name="IkBe-NF-kB nuclear association" reversible="false">
-        <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_7" stoichiometry="1"/>
-          <Substrate metabolite="Metabolite_14" stoichiometry="1"/>
-        </ListOfSubstrates>
-        <ListOfProducts>
-          <Product metabolite="Metabolite_6" stoichiometry="1"/>
-        </ListOfProducts>
-        <ListOfConstants>
-          <Constant key="Parameter_1454" name="k1" value="0.5"/>
-        </ListOfConstants>
-        <KineticLaw function="Function_13">
-          <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Parameter_1454"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_79">
-              <SourceParameter reference="Metabolite_7"/>
-              <SourceParameter reference="Metabolite_14"/>
-            </CallParameter>
-          </ListOfCallParameters>
-        </KineticLaw>
-      </Reaction>
-      <Reaction key="Reaction_13" name="IkBe-NF-kB nuclear dissociation" reversible="false">
-        <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_6" stoichiometry="1"/>
-        </ListOfSubstrates>
-        <ListOfProducts>
-          <Product metabolite="Metabolite_14" stoichiometry="1"/>
-          <Product metabolite="Metabolite_7" stoichiometry="1"/>
-        </ListOfProducts>
-        <ListOfConstants>
-          <Constant key="Parameter_1455" name="k1" value="0.0005"/>
-        </ListOfConstants>
-        <KineticLaw function="Function_13">
-          <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Parameter_1455"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_79">
-              <SourceParameter reference="Metabolite_6"/>
-            </CallParameter>
-          </ListOfCallParameters>
-        </KineticLaw>
-      </Reaction>
-      <Reaction key="Reaction_12" name="constituitive IkBa mRNA synthesis" reversible="false">
+      <Reaction key="Reaction_0" name="IkBaNF-kB association" reversible="false" fast="false">
         <ListOfSubstrates>
           <Substrate metabolite="Metabolite_1" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_3" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
           <Product metabolite="Metabolite_5" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_1456" name="k1" value="1.54e-06"/>
+          <Constant key="Parameter_4315" name="k1" value="0.5"/>
         </ListOfConstants>
         <KineticLaw function="Function_13">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Parameter_1456"/>
+              <SourceParameter reference="Parameter_4315"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_79">
               <SourceParameter reference="Metabolite_1"/>
+              <SourceParameter reference="Metabolite_3"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_11" name="IkBa Inducible mRNA synthesis" reversible="false">
-        <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_14" stoichiometry="2"/>
-        </ListOfSubstrates>
-        <ListOfProducts>
-          <Product metabolite="Metabolite_5" stoichiometry="1"/>
-          <Product metabolite="Metabolite_14" stoichiometry="2"/>
-        </ListOfProducts>
-        <ListOfConstants>
-          <Constant key="Parameter_1457" name="k1" value="0.0165"/>
-        </ListOfConstants>
-        <KineticLaw function="Function_13">
-          <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Parameter_1457"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_79">
-              <SourceParameter reference="Metabolite_14"/>
-              <SourceParameter reference="Metabolite_14"/>
-            </CallParameter>
-          </ListOfCallParameters>
-        </KineticLaw>
-      </Reaction>
-      <Reaction key="Reaction_10" name="IkBa mRNA degradation" reversible="false">
+      <Reaction key="Reaction_1" name="IkBa-NF-kB dissociation" reversible="false" fast="false">
         <ListOfSubstrates>
           <Substrate metabolite="Metabolite_5" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
-          <Product metabolite="Metabolite_2" stoichiometry="1"/>
+          <Product metabolite="Metabolite_3" stoichiometry="1"/>
+          <Product metabolite="Metabolite_1" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_1458" name="k1" value="0.00028"/>
+          <Constant key="Parameter_4316" name="k1" value="0.0005"/>
         </ListOfConstants>
         <KineticLaw function="Function_13">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Parameter_1458"/>
+              <SourceParameter reference="Parameter_4316"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_79">
               <SourceParameter reference="Metabolite_5"/>
@@ -787,213 +191,89 @@ Reaction scheme where the products are created from the reactants and the change
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_9" name="constituitive IkBb mRNA synthesis" reversible="false">
+      <Reaction key="Reaction_2" name="IkBb-NF-kB association" reversible="false" fast="false">
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_1" stoichiometry="1"/>
-        </ListOfSubstrates>
-        <ListOfProducts>
-          <Product metabolite="Metabolite_4" stoichiometry="1"/>
-        </ListOfProducts>
-        <ListOfConstants>
-          <Constant key="Parameter_1459" name="k1" value="1.78e-07"/>
-        </ListOfConstants>
-        <KineticLaw function="Function_13">
-          <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Parameter_1459"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_79">
-              <SourceParameter reference="Metabolite_1"/>
-            </CallParameter>
-          </ListOfCallParameters>
-        </KineticLaw>
-      </Reaction>
-      <Reaction key="Reaction_8" name="IkBb mRNA degradation" reversible="false">
-        <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_4" stoichiometry="1"/>
-        </ListOfSubstrates>
-        <ListOfProducts>
-          <Product metabolite="Metabolite_2" stoichiometry="1"/>
-        </ListOfProducts>
-        <ListOfConstants>
-          <Constant key="Parameter_1460" name="k1" value="0.00028"/>
-        </ListOfConstants>
-        <KineticLaw function="Function_13">
-          <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Parameter_1460"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_79">
-              <SourceParameter reference="Metabolite_4"/>
-            </CallParameter>
-          </ListOfCallParameters>
-        </KineticLaw>
-      </Reaction>
-      <Reaction key="Reaction_7" name="constituitive IkBe mRNA synthesis" reversible="false">
-        <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_1" stoichiometry="1"/>
-        </ListOfSubstrates>
-        <ListOfProducts>
-          <Product metabolite="Metabolite_3" stoichiometry="1"/>
-        </ListOfProducts>
-        <ListOfConstants>
-          <Constant key="Parameter_1461" name="k1" value="1.27e-07"/>
-        </ListOfConstants>
-        <KineticLaw function="Function_13">
-          <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Parameter_1461"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_79">
-              <SourceParameter reference="Metabolite_1"/>
-            </CallParameter>
-          </ListOfCallParameters>
-        </KineticLaw>
-      </Reaction>
-      <Reaction key="Reaction_6" name="IkBe mRNA degradation" reversible="false">
-        <ListOfSubstrates>
+          <Substrate metabolite="Metabolite_7" stoichiometry="1"/>
           <Substrate metabolite="Metabolite_3" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
-          <Product metabolite="Metabolite_2" stoichiometry="1"/>
+          <Product metabolite="Metabolite_9" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_1462" name="k1" value="0.00028"/>
+          <Constant key="Parameter_4317" name="k1" value="0.5"/>
         </ListOfConstants>
         <KineticLaw function="Function_13">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Parameter_1462"/>
+              <SourceParameter reference="Parameter_4317"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_79">
+              <SourceParameter reference="Metabolite_7"/>
               <SourceParameter reference="Metabolite_3"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_5" name="IKKIkBa association" reversible="false">
+      <Reaction key="Reaction_3" name="IkBb-NF-kB dissociation" reversible="false" fast="false">
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_19" stoichiometry="1"/>
-          <Substrate metabolite="Metabolite_24" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_9" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
-          <Product metabolite="Metabolite_21" stoichiometry="1"/>
+          <Product metabolite="Metabolite_3" stoichiometry="1"/>
+          <Product metabolite="Metabolite_7" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_1215" name="k1" value="0.0225"/>
+          <Constant key="Parameter_4318" name="k1" value="0.0005"/>
         </ListOfConstants>
         <KineticLaw function="Function_13">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Parameter_1215"/>
+              <SourceParameter reference="Parameter_4318"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_79">
-              <SourceParameter reference="Metabolite_19"/>
-              <SourceParameter reference="Metabolite_24"/>
+              <SourceParameter reference="Metabolite_9"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_4" name="IKKIkBa dissociation" reversible="false">
+      <Reaction key="Reaction_4" name="IkBe-NF-kB association" reversible="false" fast="false">
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_21" stoichiometry="1"/>
-        </ListOfSubstrates>
-        <ListOfProducts>
-          <Product metabolite="Metabolite_19" stoichiometry="1"/>
-          <Product metabolite="Metabolite_24" stoichiometry="1"/>
-        </ListOfProducts>
-        <ListOfConstants>
-          <Constant key="Parameter_1340" name="k1" value="0.00125"/>
-        </ListOfConstants>
-        <KineticLaw function="Function_13">
-          <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Parameter_1340"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_79">
-              <SourceParameter reference="Metabolite_21"/>
-            </CallParameter>
-          </ListOfCallParameters>
-        </KineticLaw>
-      </Reaction>
-      <Reaction key="Reaction_3" name="IkBa translation rate" reversible="false">
-        <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_5" stoichiometry="1"/>
-        </ListOfSubstrates>
-        <ListOfProducts>
-          <Product metabolite="Metabolite_24" stoichiometry="1"/>
-          <Product metabolite="Metabolite_5" stoichiometry="1"/>
-        </ListOfProducts>
-        <ListOfConstants>
-          <Constant key="Parameter_1341" name="k1" value="0.00408"/>
-        </ListOfConstants>
-        <KineticLaw function="Function_13">
-          <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Parameter_1341"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_79">
-              <SourceParameter reference="Metabolite_5"/>
-            </CallParameter>
-          </ListOfCallParameters>
-        </KineticLaw>
-      </Reaction>
-      <Reaction key="Reaction_2" name="constitutive IkBa degradation (free)" reversible="false">
-        <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_24" stoichiometry="1"/>
-        </ListOfSubstrates>
-        <ListOfProducts>
-          <Product metabolite="Metabolite_2" stoichiometry="1"/>
-        </ListOfProducts>
-        <ListOfConstants>
-          <Constant key="Parameter_1334" name="k1" value="0.000113"/>
-        </ListOfConstants>
-        <KineticLaw function="Function_13">
-          <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Parameter_1334"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_79">
-              <SourceParameter reference="Metabolite_24"/>
-            </CallParameter>
-          </ListOfCallParameters>
-        </KineticLaw>
-      </Reaction>
-      <Reaction key="Reaction_1" name="IkBa nuclear import" reversible="false">
-        <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_24" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_11" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_3" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
           <Product metabolite="Metabolite_13" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_1263" name="k1" value="0.0003"/>
+          <Constant key="Parameter_4319" name="k1" value="0.5"/>
         </ListOfConstants>
         <KineticLaw function="Function_13">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Parameter_1263"/>
+              <SourceParameter reference="Parameter_4319"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_79">
-              <SourceParameter reference="Metabolite_24"/>
+              <SourceParameter reference="Metabolite_11"/>
+              <SourceParameter reference="Metabolite_3"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_0" name="IkBa nuclear export" reversible="false">
+      <Reaction key="Reaction_5" name="IkBe-NF-kB dissociation" reversible="false" fast="false">
         <ListOfSubstrates>
           <Substrate metabolite="Metabolite_13" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
-          <Product metabolite="Metabolite_24" stoichiometry="1"/>
+          <Product metabolite="Metabolite_3" stoichiometry="1"/>
+          <Product metabolite="Metabolite_11" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_1327" name="k1" value="0.0002"/>
+          <Constant key="Parameter_4320" name="k1" value="0.0005"/>
         </ListOfConstants>
         <KineticLaw function="Function_13">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Parameter_1327"/>
+              <SourceParameter reference="Parameter_4320"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_79">
               <SourceParameter reference="Metabolite_13"/>
@@ -1001,196 +281,284 @@ Reaction scheme where the products are created from the reactants and the change
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_39" name="IKKIkBb association" reversible="false">
+      <Reaction key="Reaction_6" name="IKKIkBa-NF-kB association" reversible="false" fast="false">
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_19" stoichiometry="1"/>
-          <Substrate metabolite="Metabolite_25" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_15" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_3" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
-          <Product metabolite="Metabolite_18" stoichiometry="1"/>
+          <Product metabolite="Metabolite_17" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_1339" name="k1" value="0.006"/>
+          <Constant key="Parameter_4321" name="k1" value="0.5"/>
         </ListOfConstants>
         <KineticLaw function="Function_13">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Parameter_1339"/>
+              <SourceParameter reference="Parameter_4321"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_79">
-              <SourceParameter reference="Metabolite_19"/>
-              <SourceParameter reference="Metabolite_25"/>
+              <SourceParameter reference="Metabolite_15"/>
+              <SourceParameter reference="Metabolite_3"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_40" name="IKKIkBb dissociation" reversible="false">
+      <Reaction key="Reaction_7" name="IKKIkBa-NF-kB dissociation" reversible="false" fast="false">
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_18" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_17" stoichiometry="1"/>
+        </ListOfSubstrates>
+        <ListOfProducts>
+          <Product metabolite="Metabolite_3" stoichiometry="1"/>
+          <Product metabolite="Metabolite_15" stoichiometry="1"/>
+        </ListOfProducts>
+        <ListOfConstants>
+          <Constant key="Parameter_4322" name="k1" value="0.0005"/>
+        </ListOfConstants>
+        <KineticLaw function="Function_13">
+          <ListOfCallParameters>
+            <CallParameter functionParameter="FunctionParameter_81">
+              <SourceParameter reference="Parameter_4322"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_79">
+              <SourceParameter reference="Metabolite_17"/>
+            </CallParameter>
+          </ListOfCallParameters>
+        </KineticLaw>
+      </Reaction>
+      <Reaction key="Reaction_8" name="IKKIkBa-NF-kB catalysis" reversible="false" fast="false">
+        <ListOfSubstrates>
+          <Substrate metabolite="Metabolite_17" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
           <Product metabolite="Metabolite_19" stoichiometry="1"/>
-          <Product metabolite="Metabolite_25" stoichiometry="1"/>
+          <Product metabolite="Metabolite_3" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_1338" name="k1" value="0.00175"/>
+          <Constant key="Parameter_4323" name="k1" value="0.0204"/>
         </ListOfConstants>
         <KineticLaw function="Function_13">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Parameter_1338"/>
+              <SourceParameter reference="Parameter_4323"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_79">
-              <SourceParameter reference="Metabolite_18"/>
+              <SourceParameter reference="Metabolite_17"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_41" name="IkBb translation rate" reversible="false">
+      <Reaction key="Reaction_9" name="IKKIkBb-NF-kB association" reversible="false" fast="false">
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_4" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_21" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_3" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
-          <Product metabolite="Metabolite_25" stoichiometry="1"/>
-          <Product metabolite="Metabolite_4" stoichiometry="1"/>
+          <Product metabolite="Metabolite_23" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_1337" name="k1" value="0.00408"/>
+          <Constant key="Parameter_4324" name="k1" value="0.5"/>
         </ListOfConstants>
         <KineticLaw function="Function_13">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Parameter_1337"/>
+              <SourceParameter reference="Parameter_4324"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_79">
-              <SourceParameter reference="Metabolite_4"/>
+              <SourceParameter reference="Metabolite_21"/>
+              <SourceParameter reference="Metabolite_3"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_42" name="constitutive IkBb degradation (free)" reversible="false">
+      <Reaction key="Reaction_10" name="IKKIkBb-NF-kB dissociation" reversible="false" fast="false">
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_25" stoichiometry="1"/>
-        </ListOfSubstrates>
-        <ListOfProducts>
-          <Product metabolite="Metabolite_2" stoichiometry="1"/>
-        </ListOfProducts>
-        <ListOfConstants>
-          <Constant key="Parameter_1336" name="k1" value="0.000113"/>
-        </ListOfConstants>
-        <KineticLaw function="Function_13">
-          <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Parameter_1336"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_79">
-              <SourceParameter reference="Metabolite_25"/>
-            </CallParameter>
-          </ListOfCallParameters>
-        </KineticLaw>
-      </Reaction>
-      <Reaction key="Reaction_43" name="IkBb nuclear import" reversible="false">
-        <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_25" stoichiometry="1"/>
-        </ListOfSubstrates>
-        <ListOfProducts>
-          <Product metabolite="Metabolite_11" stoichiometry="1"/>
-        </ListOfProducts>
-        <ListOfConstants>
-          <Constant key="Parameter_1335" name="k1" value="0.00015"/>
-        </ListOfConstants>
-        <KineticLaw function="Function_13">
-          <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Parameter_1335"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_79">
-              <SourceParameter reference="Metabolite_25"/>
-            </CallParameter>
-          </ListOfCallParameters>
-        </KineticLaw>
-      </Reaction>
-      <Reaction key="Reaction_44" name="IkBb nuclear export" reversible="false">
-        <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_11" stoichiometry="1"/>
-        </ListOfSubstrates>
-        <ListOfProducts>
-          <Product metabolite="Metabolite_25" stoichiometry="1"/>
-        </ListOfProducts>
-        <ListOfConstants>
-          <Constant key="Parameter_1399" name="k1" value="0.0001"/>
-        </ListOfConstants>
-        <KineticLaw function="Function_13">
-          <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Parameter_1399"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_79">
-              <SourceParameter reference="Metabolite_11"/>
-            </CallParameter>
-          </ListOfCallParameters>
-        </KineticLaw>
-      </Reaction>
-      <Reaction key="Reaction_45" name="IKKIkBe association" reversible="false">
-        <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_19" stoichiometry="1"/>
           <Substrate metabolite="Metabolite_23" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
-          <Product metabolite="Metabolite_16" stoichiometry="1"/>
+          <Product metabolite="Metabolite_3" stoichiometry="1"/>
+          <Product metabolite="Metabolite_21" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_1398" name="k1" value="0.009"/>
+          <Constant key="Parameter_4325" name="k1" value="0.0005"/>
         </ListOfConstants>
         <KineticLaw function="Function_13">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Parameter_1398"/>
+              <SourceParameter reference="Parameter_4325"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_79">
-              <SourceParameter reference="Metabolite_19"/>
               <SourceParameter reference="Metabolite_23"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_46" name="IKKIkBe dissociation" reversible="false">
+      <Reaction key="Reaction_11" name="IKKIkBb-NF-kB catalysis" reversible="false" fast="false">
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_16" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_23" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
           <Product metabolite="Metabolite_19" stoichiometry="1"/>
-          <Product metabolite="Metabolite_23" stoichiometry="1"/>
+          <Product metabolite="Metabolite_3" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_1397" name="k1" value="0.00175"/>
+          <Constant key="Parameter_4326" name="k1" value="0.0075"/>
         </ListOfConstants>
         <KineticLaw function="Function_13">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Parameter_1397"/>
+              <SourceParameter reference="Parameter_4326"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_79">
-              <SourceParameter reference="Metabolite_16"/>
+              <SourceParameter reference="Metabolite_23"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_47" name="IkBe translation rate" reversible="false">
+      <Reaction key="Reaction_12" name="IKKIkBe-NF-kB association" reversible="false" fast="false">
         <ListOfSubstrates>
+          <Substrate metabolite="Metabolite_25" stoichiometry="1"/>
           <Substrate metabolite="Metabolite_3" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
-          <Product metabolite="Metabolite_23" stoichiometry="1"/>
-          <Product metabolite="Metabolite_3" stoichiometry="1"/>
+          <Product metabolite="Metabolite_27" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_1396" name="k1" value="0.00408"/>
+          <Constant key="Parameter_4327" name="k1" value="0.5"/>
         </ListOfConstants>
         <KineticLaw function="Function_13">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Parameter_1396"/>
+              <SourceParameter reference="Parameter_4327"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_79">
+              <SourceParameter reference="Metabolite_25"/>
+              <SourceParameter reference="Metabolite_3"/>
+            </CallParameter>
+          </ListOfCallParameters>
+        </KineticLaw>
+      </Reaction>
+      <Reaction key="Reaction_13" name="IKKIkBe-NF-kB dissociation" reversible="false" fast="false">
+        <ListOfSubstrates>
+          <Substrate metabolite="Metabolite_27" stoichiometry="1"/>
+        </ListOfSubstrates>
+        <ListOfProducts>
+          <Product metabolite="Metabolite_3" stoichiometry="1"/>
+          <Product metabolite="Metabolite_25" stoichiometry="1"/>
+        </ListOfProducts>
+        <ListOfConstants>
+          <Constant key="Parameter_4328" name="k1" value="0.0005"/>
+        </ListOfConstants>
+        <KineticLaw function="Function_13">
+          <ListOfCallParameters>
+            <CallParameter functionParameter="FunctionParameter_81">
+              <SourceParameter reference="Parameter_4328"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_79">
+              <SourceParameter reference="Metabolite_27"/>
+            </CallParameter>
+          </ListOfCallParameters>
+        </KineticLaw>
+      </Reaction>
+      <Reaction key="Reaction_14" name="IKKIkBe-NF-kB catalysis" reversible="false" fast="false">
+        <ListOfSubstrates>
+          <Substrate metabolite="Metabolite_27" stoichiometry="1"/>
+        </ListOfSubstrates>
+        <ListOfProducts>
+          <Product metabolite="Metabolite_19" stoichiometry="1"/>
+          <Product metabolite="Metabolite_3" stoichiometry="1"/>
+        </ListOfProducts>
+        <ListOfConstants>
+          <Constant key="Parameter_4329" name="k1" value="0.011"/>
+        </ListOfConstants>
+        <KineticLaw function="Function_13">
+          <ListOfCallParameters>
+            <CallParameter functionParameter="FunctionParameter_81">
+              <SourceParameter reference="Parameter_4329"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_79">
+              <SourceParameter reference="Metabolite_27"/>
+            </CallParameter>
+          </ListOfCallParameters>
+        </KineticLaw>
+      </Reaction>
+      <Reaction key="Reaction_15" name="IkBa constituitive degradation (complexed to NF-kB)" reversible="false" fast="false">
+        <ListOfSubstrates>
+          <Substrate metabolite="Metabolite_5" stoichiometry="1"/>
+        </ListOfSubstrates>
+        <ListOfProducts>
+          <Product metabolite="Metabolite_3" stoichiometry="1"/>
+        </ListOfProducts>
+        <ListOfConstants>
+          <Constant key="Parameter_4330" name="k1" value="2.25e-05"/>
+        </ListOfConstants>
+        <KineticLaw function="Function_13">
+          <ListOfCallParameters>
+            <CallParameter functionParameter="FunctionParameter_81">
+              <SourceParameter reference="Parameter_4330"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_79">
+              <SourceParameter reference="Metabolite_5"/>
+            </CallParameter>
+          </ListOfCallParameters>
+        </KineticLaw>
+      </Reaction>
+      <Reaction key="Reaction_16" name="IkBb constituitive degradation (complexed to NF-kB)" reversible="false" fast="false">
+        <ListOfSubstrates>
+          <Substrate metabolite="Metabolite_9" stoichiometry="1"/>
+        </ListOfSubstrates>
+        <ListOfProducts>
+          <Product metabolite="Metabolite_3" stoichiometry="1"/>
+        </ListOfProducts>
+        <ListOfConstants>
+          <Constant key="Parameter_4331" name="k1" value="2.25e-05"/>
+        </ListOfConstants>
+        <KineticLaw function="Function_13">
+          <ListOfCallParameters>
+            <CallParameter functionParameter="FunctionParameter_81">
+              <SourceParameter reference="Parameter_4331"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_79">
+              <SourceParameter reference="Metabolite_9"/>
+            </CallParameter>
+          </ListOfCallParameters>
+        </KineticLaw>
+      </Reaction>
+      <Reaction key="Reaction_17" name="IkBe constituitive degradation (complexed to NF-kB)" reversible="false" fast="false">
+        <ListOfSubstrates>
+          <Substrate metabolite="Metabolite_13" stoichiometry="1"/>
+        </ListOfSubstrates>
+        <ListOfProducts>
+          <Product metabolite="Metabolite_3" stoichiometry="1"/>
+        </ListOfProducts>
+        <ListOfConstants>
+          <Constant key="Parameter_4332" name="k1" value="2.25e-05"/>
+        </ListOfConstants>
+        <KineticLaw function="Function_13">
+          <ListOfCallParameters>
+            <CallParameter functionParameter="FunctionParameter_81">
+              <SourceParameter reference="Parameter_4332"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_79">
+              <SourceParameter reference="Metabolite_13"/>
+            </CallParameter>
+          </ListOfCallParameters>
+        </KineticLaw>
+      </Reaction>
+      <Reaction key="Reaction_18" name="NF-kB nuclear import" reversible="false" fast="false">
+        <ListOfSubstrates>
+          <Substrate metabolite="Metabolite_3" stoichiometry="1"/>
+        </ListOfSubstrates>
+        <ListOfProducts>
+          <Product metabolite="Metabolite_29" stoichiometry="1"/>
+        </ListOfProducts>
+        <ListOfConstants>
+          <Constant key="Parameter_4333" name="k1" value="0.09"/>
+        </ListOfConstants>
+        <KineticLaw function="Function_13">
+          <ListOfCallParameters>
+            <CallParameter functionParameter="FunctionParameter_81">
+              <SourceParameter reference="Parameter_4333"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_79">
               <SourceParameter reference="Metabolite_3"/>
@@ -1198,62 +566,522 @@ Reaction scheme where the products are created from the reactants and the change
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_48" name="constitutive IkBe degradation (free)" reversible="false">
+      <Reaction key="Reaction_19" name="NF-kB nuclear export" reversible="false" fast="false">
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_23" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_29" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
-          <Product metabolite="Metabolite_2" stoichiometry="1"/>
+          <Product metabolite="Metabolite_3" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_1395" name="k1" value="0.000113"/>
+          <Constant key="Parameter_4334" name="k1" value="8e-05"/>
         </ListOfConstants>
         <KineticLaw function="Function_13">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Parameter_1395"/>
+              <SourceParameter reference="Parameter_4334"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_79">
-              <SourceParameter reference="Metabolite_23"/>
+              <SourceParameter reference="Metabolite_29"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_49" name="IkBe nuclear import" reversible="false">
+      <Reaction key="Reaction_20" name="IkBa-NF-kB nuclear association" reversible="false" fast="false">
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_23" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_31" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_29" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
+          <Product metabolite="Metabolite_33" stoichiometry="1"/>
+        </ListOfProducts>
+        <ListOfConstants>
+          <Constant key="Parameter_4335" name="k1" value="0.5"/>
+        </ListOfConstants>
+        <KineticLaw function="Function_13">
+          <ListOfCallParameters>
+            <CallParameter functionParameter="FunctionParameter_81">
+              <SourceParameter reference="Parameter_4335"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_79">
+              <SourceParameter reference="Metabolite_31"/>
+              <SourceParameter reference="Metabolite_29"/>
+            </CallParameter>
+          </ListOfCallParameters>
+        </KineticLaw>
+      </Reaction>
+      <Reaction key="Reaction_21" name="IkBa-NF-kB nuclear dissociation" reversible="false" fast="false">
+        <ListOfSubstrates>
+          <Substrate metabolite="Metabolite_33" stoichiometry="1"/>
+        </ListOfSubstrates>
+        <ListOfProducts>
+          <Product metabolite="Metabolite_29" stoichiometry="1"/>
+          <Product metabolite="Metabolite_31" stoichiometry="1"/>
+        </ListOfProducts>
+        <ListOfConstants>
+          <Constant key="Parameter_4336" name="k1" value="0.0005"/>
+        </ListOfConstants>
+        <KineticLaw function="Function_13">
+          <ListOfCallParameters>
+            <CallParameter functionParameter="FunctionParameter_81">
+              <SourceParameter reference="Parameter_4336"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_79">
+              <SourceParameter reference="Metabolite_33"/>
+            </CallParameter>
+          </ListOfCallParameters>
+        </KineticLaw>
+      </Reaction>
+      <Reaction key="Reaction_22" name="IkBb-NF-kB nuclear association" reversible="false" fast="false">
+        <ListOfSubstrates>
+          <Substrate metabolite="Metabolite_35" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_29" stoichiometry="1"/>
+        </ListOfSubstrates>
+        <ListOfProducts>
+          <Product metabolite="Metabolite_37" stoichiometry="1"/>
+        </ListOfProducts>
+        <ListOfConstants>
+          <Constant key="Parameter_4337" name="k1" value="0.5"/>
+        </ListOfConstants>
+        <KineticLaw function="Function_13">
+          <ListOfCallParameters>
+            <CallParameter functionParameter="FunctionParameter_81">
+              <SourceParameter reference="Parameter_4337"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_79">
+              <SourceParameter reference="Metabolite_35"/>
+              <SourceParameter reference="Metabolite_29"/>
+            </CallParameter>
+          </ListOfCallParameters>
+        </KineticLaw>
+      </Reaction>
+      <Reaction key="Reaction_23" name="IkBb-NF-kB nuclear dissociation" reversible="false" fast="false">
+        <ListOfSubstrates>
+          <Substrate metabolite="Metabolite_37" stoichiometry="1"/>
+        </ListOfSubstrates>
+        <ListOfProducts>
+          <Product metabolite="Metabolite_29" stoichiometry="1"/>
+          <Product metabolite="Metabolite_35" stoichiometry="1"/>
+        </ListOfProducts>
+        <ListOfConstants>
+          <Constant key="Parameter_4338" name="k1" value="0.0005"/>
+        </ListOfConstants>
+        <KineticLaw function="Function_13">
+          <ListOfCallParameters>
+            <CallParameter functionParameter="FunctionParameter_81">
+              <SourceParameter reference="Parameter_4338"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_79">
+              <SourceParameter reference="Metabolite_37"/>
+            </CallParameter>
+          </ListOfCallParameters>
+        </KineticLaw>
+      </Reaction>
+      <Reaction key="Reaction_24" name="IkBe-NF-kB nuclear association" reversible="false" fast="false">
+        <ListOfSubstrates>
+          <Substrate metabolite="Metabolite_39" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_29" stoichiometry="1"/>
+        </ListOfSubstrates>
+        <ListOfProducts>
+          <Product metabolite="Metabolite_41" stoichiometry="1"/>
+        </ListOfProducts>
+        <ListOfConstants>
+          <Constant key="Parameter_4339" name="k1" value="0.5"/>
+        </ListOfConstants>
+        <KineticLaw function="Function_13">
+          <ListOfCallParameters>
+            <CallParameter functionParameter="FunctionParameter_81">
+              <SourceParameter reference="Parameter_4339"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_79">
+              <SourceParameter reference="Metabolite_39"/>
+              <SourceParameter reference="Metabolite_29"/>
+            </CallParameter>
+          </ListOfCallParameters>
+        </KineticLaw>
+      </Reaction>
+      <Reaction key="Reaction_25" name="IkBe-NF-kB nuclear dissociation" reversible="false" fast="false">
+        <ListOfSubstrates>
+          <Substrate metabolite="Metabolite_41" stoichiometry="1"/>
+        </ListOfSubstrates>
+        <ListOfProducts>
+          <Product metabolite="Metabolite_29" stoichiometry="1"/>
+          <Product metabolite="Metabolite_39" stoichiometry="1"/>
+        </ListOfProducts>
+        <ListOfConstants>
+          <Constant key="Parameter_4340" name="k1" value="0.0005"/>
+        </ListOfConstants>
+        <KineticLaw function="Function_13">
+          <ListOfCallParameters>
+            <CallParameter functionParameter="FunctionParameter_81">
+              <SourceParameter reference="Parameter_4340"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_79">
+              <SourceParameter reference="Metabolite_41"/>
+            </CallParameter>
+          </ListOfCallParameters>
+        </KineticLaw>
+      </Reaction>
+      <Reaction key="Reaction_26" name="constituitive IkBa mRNA synthesis" reversible="false" fast="false">
+        <ListOfSubstrates>
+          <Substrate metabolite="Metabolite_51" stoichiometry="1"/>
+        </ListOfSubstrates>
+        <ListOfProducts>
+          <Product metabolite="Metabolite_43" stoichiometry="1"/>
+        </ListOfProducts>
+        <ListOfConstants>
+          <Constant key="Parameter_4341" name="k1" value="1.54e-06"/>
+        </ListOfConstants>
+        <KineticLaw function="Function_13">
+          <ListOfCallParameters>
+            <CallParameter functionParameter="FunctionParameter_81">
+              <SourceParameter reference="Parameter_4341"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_79">
+              <SourceParameter reference="Metabolite_51"/>
+            </CallParameter>
+          </ListOfCallParameters>
+        </KineticLaw>
+      </Reaction>
+      <Reaction key="Reaction_27" name="IkBa Inducible mRNA synthesis" reversible="false" fast="false">
+        <ListOfSubstrates>
+          <Substrate metabolite="Metabolite_29" stoichiometry="2"/>
+        </ListOfSubstrates>
+        <ListOfProducts>
+          <Product metabolite="Metabolite_43" stoichiometry="1"/>
+          <Product metabolite="Metabolite_29" stoichiometry="2"/>
+        </ListOfProducts>
+        <ListOfConstants>
+          <Constant key="Parameter_4342" name="k1" value="0.0165"/>
+        </ListOfConstants>
+        <KineticLaw function="Function_13">
+          <ListOfCallParameters>
+            <CallParameter functionParameter="FunctionParameter_81">
+              <SourceParameter reference="Parameter_4342"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_79">
+              <SourceParameter reference="Metabolite_29"/>
+              <SourceParameter reference="Metabolite_29"/>
+            </CallParameter>
+          </ListOfCallParameters>
+        </KineticLaw>
+      </Reaction>
+      <Reaction key="Reaction_28" name="IkBa mRNA degradation" reversible="false" fast="false">
+        <ListOfSubstrates>
+          <Substrate metabolite="Metabolite_43" stoichiometry="1"/>
+        </ListOfSubstrates>
+        <ListOfProducts>
+          <Product metabolite="Metabolite_49" stoichiometry="1"/>
+        </ListOfProducts>
+        <ListOfConstants>
+          <Constant key="Parameter_4345" name="k1" value="0.00028"/>
+        </ListOfConstants>
+        <KineticLaw function="Function_13">
+          <ListOfCallParameters>
+            <CallParameter functionParameter="FunctionParameter_81">
+              <SourceParameter reference="Parameter_4345"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_79">
+              <SourceParameter reference="Metabolite_43"/>
+            </CallParameter>
+          </ListOfCallParameters>
+        </KineticLaw>
+      </Reaction>
+      <Reaction key="Reaction_29" name="constituitive IkBb mRNA synthesis" reversible="false" fast="false">
+        <ListOfSubstrates>
+          <Substrate metabolite="Metabolite_51" stoichiometry="1"/>
+        </ListOfSubstrates>
+        <ListOfProducts>
+          <Product metabolite="Metabolite_45" stoichiometry="1"/>
+        </ListOfProducts>
+        <ListOfConstants>
+          <Constant key="Parameter_4344" name="k1" value="1.78e-07"/>
+        </ListOfConstants>
+        <KineticLaw function="Function_13">
+          <ListOfCallParameters>
+            <CallParameter functionParameter="FunctionParameter_81">
+              <SourceParameter reference="Parameter_4344"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_79">
+              <SourceParameter reference="Metabolite_51"/>
+            </CallParameter>
+          </ListOfCallParameters>
+        </KineticLaw>
+      </Reaction>
+      <Reaction key="Reaction_30" name="IkBb mRNA degradation" reversible="false" fast="false">
+        <ListOfSubstrates>
+          <Substrate metabolite="Metabolite_45" stoichiometry="1"/>
+        </ListOfSubstrates>
+        <ListOfProducts>
+          <Product metabolite="Metabolite_49" stoichiometry="1"/>
+        </ListOfProducts>
+        <ListOfConstants>
+          <Constant key="Parameter_4346" name="k1" value="0.00028"/>
+        </ListOfConstants>
+        <KineticLaw function="Function_13">
+          <ListOfCallParameters>
+            <CallParameter functionParameter="FunctionParameter_81">
+              <SourceParameter reference="Parameter_4346"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_79">
+              <SourceParameter reference="Metabolite_45"/>
+            </CallParameter>
+          </ListOfCallParameters>
+        </KineticLaw>
+      </Reaction>
+      <Reaction key="Reaction_31" name="constituitive IkBe mRNA synthesis" reversible="false" fast="false">
+        <ListOfSubstrates>
+          <Substrate metabolite="Metabolite_51" stoichiometry="1"/>
+        </ListOfSubstrates>
+        <ListOfProducts>
+          <Product metabolite="Metabolite_47" stoichiometry="1"/>
+        </ListOfProducts>
+        <ListOfConstants>
+          <Constant key="Parameter_4343" name="k1" value="1.27e-07"/>
+        </ListOfConstants>
+        <KineticLaw function="Function_13">
+          <ListOfCallParameters>
+            <CallParameter functionParameter="FunctionParameter_81">
+              <SourceParameter reference="Parameter_4343"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_79">
+              <SourceParameter reference="Metabolite_51"/>
+            </CallParameter>
+          </ListOfCallParameters>
+        </KineticLaw>
+      </Reaction>
+      <Reaction key="Reaction_32" name="IkBe mRNA degradation" reversible="false" fast="false">
+        <ListOfSubstrates>
+          <Substrate metabolite="Metabolite_47" stoichiometry="1"/>
+        </ListOfSubstrates>
+        <ListOfProducts>
+          <Product metabolite="Metabolite_49" stoichiometry="1"/>
+        </ListOfProducts>
+        <ListOfConstants>
+          <Constant key="Parameter_4347" name="k1" value="0.00028"/>
+        </ListOfConstants>
+        <KineticLaw function="Function_13">
+          <ListOfCallParameters>
+            <CallParameter functionParameter="FunctionParameter_81">
+              <SourceParameter reference="Parameter_4347"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_79">
+              <SourceParameter reference="Metabolite_47"/>
+            </CallParameter>
+          </ListOfCallParameters>
+        </KineticLaw>
+      </Reaction>
+      <Reaction key="Reaction_33" name="IKKIkBa association" reversible="false" fast="false">
+        <ListOfSubstrates>
+          <Substrate metabolite="Metabolite_19" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_1" stoichiometry="1"/>
+        </ListOfSubstrates>
+        <ListOfProducts>
+          <Product metabolite="Metabolite_15" stoichiometry="1"/>
+        </ListOfProducts>
+        <ListOfConstants>
+          <Constant key="Parameter_4348" name="k1" value="0.0225"/>
+        </ListOfConstants>
+        <KineticLaw function="Function_13">
+          <ListOfCallParameters>
+            <CallParameter functionParameter="FunctionParameter_81">
+              <SourceParameter reference="Parameter_4348"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_79">
+              <SourceParameter reference="Metabolite_19"/>
+              <SourceParameter reference="Metabolite_1"/>
+            </CallParameter>
+          </ListOfCallParameters>
+        </KineticLaw>
+      </Reaction>
+      <Reaction key="Reaction_34" name="IKKIkBa dissociation" reversible="false" fast="false">
+        <ListOfSubstrates>
+          <Substrate metabolite="Metabolite_15" stoichiometry="1"/>
+        </ListOfSubstrates>
+        <ListOfProducts>
+          <Product metabolite="Metabolite_19" stoichiometry="1"/>
+          <Product metabolite="Metabolite_1" stoichiometry="1"/>
+        </ListOfProducts>
+        <ListOfConstants>
+          <Constant key="Parameter_4349" name="k1" value="0.00125"/>
+        </ListOfConstants>
+        <KineticLaw function="Function_13">
+          <ListOfCallParameters>
+            <CallParameter functionParameter="FunctionParameter_81">
+              <SourceParameter reference="Parameter_4349"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_79">
+              <SourceParameter reference="Metabolite_15"/>
+            </CallParameter>
+          </ListOfCallParameters>
+        </KineticLaw>
+      </Reaction>
+      <Reaction key="Reaction_35" name="IkBa translation rate" reversible="false" fast="false">
+        <ListOfSubstrates>
+          <Substrate metabolite="Metabolite_43" stoichiometry="1"/>
+        </ListOfSubstrates>
+        <ListOfProducts>
+          <Product metabolite="Metabolite_1" stoichiometry="1"/>
+          <Product metabolite="Metabolite_43" stoichiometry="1"/>
+        </ListOfProducts>
+        <ListOfConstants>
+          <Constant key="Parameter_4350" name="k1" value="0.00408"/>
+        </ListOfConstants>
+        <KineticLaw function="Function_13">
+          <ListOfCallParameters>
+            <CallParameter functionParameter="FunctionParameter_81">
+              <SourceParameter reference="Parameter_4350"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_79">
+              <SourceParameter reference="Metabolite_43"/>
+            </CallParameter>
+          </ListOfCallParameters>
+        </KineticLaw>
+      </Reaction>
+      <Reaction key="Reaction_36" name="constitutive IkBa degradation (free)" reversible="false" fast="false">
+        <ListOfSubstrates>
+          <Substrate metabolite="Metabolite_1" stoichiometry="1"/>
+        </ListOfSubstrates>
+        <ListOfProducts>
+          <Product metabolite="Metabolite_49" stoichiometry="1"/>
+        </ListOfProducts>
+        <ListOfConstants>
+          <Constant key="Parameter_4351" name="k1" value="0.000113"/>
+        </ListOfConstants>
+        <KineticLaw function="Function_13">
+          <ListOfCallParameters>
+            <CallParameter functionParameter="FunctionParameter_81">
+              <SourceParameter reference="Parameter_4351"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_79">
+              <SourceParameter reference="Metabolite_1"/>
+            </CallParameter>
+          </ListOfCallParameters>
+        </KineticLaw>
+      </Reaction>
+      <Reaction key="Reaction_37" name="IkBa nuclear import" reversible="false" fast="false">
+        <ListOfSubstrates>
+          <Substrate metabolite="Metabolite_1" stoichiometry="1"/>
+        </ListOfSubstrates>
+        <ListOfProducts>
+          <Product metabolite="Metabolite_31" stoichiometry="1"/>
+        </ListOfProducts>
+        <ListOfConstants>
+          <Constant key="Parameter_4352" name="k1" value="0.0003"/>
+        </ListOfConstants>
+        <KineticLaw function="Function_13">
+          <ListOfCallParameters>
+            <CallParameter functionParameter="FunctionParameter_81">
+              <SourceParameter reference="Parameter_4352"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_79">
+              <SourceParameter reference="Metabolite_1"/>
+            </CallParameter>
+          </ListOfCallParameters>
+        </KineticLaw>
+      </Reaction>
+      <Reaction key="Reaction_38" name="IkBa nuclear export" reversible="false" fast="false">
+        <ListOfSubstrates>
+          <Substrate metabolite="Metabolite_31" stoichiometry="1"/>
+        </ListOfSubstrates>
+        <ListOfProducts>
+          <Product metabolite="Metabolite_1" stoichiometry="1"/>
+        </ListOfProducts>
+        <ListOfConstants>
+          <Constant key="Parameter_4353" name="k1" value="0.0002"/>
+        </ListOfConstants>
+        <KineticLaw function="Function_13">
+          <ListOfCallParameters>
+            <CallParameter functionParameter="FunctionParameter_81">
+              <SourceParameter reference="Parameter_4353"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_79">
+              <SourceParameter reference="Metabolite_31"/>
+            </CallParameter>
+          </ListOfCallParameters>
+        </KineticLaw>
+      </Reaction>
+      <Reaction key="Reaction_39" name="IKKIkBb association" reversible="false" fast="false">
+        <ListOfSubstrates>
+          <Substrate metabolite="Metabolite_19" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_7" stoichiometry="1"/>
+        </ListOfSubstrates>
+        <ListOfProducts>
+          <Product metabolite="Metabolite_21" stoichiometry="1"/>
+        </ListOfProducts>
+        <ListOfConstants>
+          <Constant key="Parameter_4354" name="k1" value="0.006"/>
+        </ListOfConstants>
+        <KineticLaw function="Function_13">
+          <ListOfCallParameters>
+            <CallParameter functionParameter="FunctionParameter_81">
+              <SourceParameter reference="Parameter_4354"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_79">
+              <SourceParameter reference="Metabolite_19"/>
+              <SourceParameter reference="Metabolite_7"/>
+            </CallParameter>
+          </ListOfCallParameters>
+        </KineticLaw>
+      </Reaction>
+      <Reaction key="Reaction_40" name="IKKIkBb dissociation" reversible="false" fast="false">
+        <ListOfSubstrates>
+          <Substrate metabolite="Metabolite_21" stoichiometry="1"/>
+        </ListOfSubstrates>
+        <ListOfProducts>
+          <Product metabolite="Metabolite_19" stoichiometry="1"/>
           <Product metabolite="Metabolite_7" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_1267" name="k1" value="0.00015"/>
+          <Constant key="Parameter_4355" name="k1" value="0.00175"/>
         </ListOfConstants>
         <KineticLaw function="Function_13">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Parameter_1267"/>
+              <SourceParameter reference="Parameter_4355"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_79">
-              <SourceParameter reference="Metabolite_23"/>
+              <SourceParameter reference="Metabolite_21"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_50" name="IkBe nuclear export" reversible="false">
+      <Reaction key="Reaction_41" name="IkBb translation rate" reversible="false" fast="false">
+        <ListOfSubstrates>
+          <Substrate metabolite="Metabolite_45" stoichiometry="1"/>
+        </ListOfSubstrates>
+        <ListOfProducts>
+          <Product metabolite="Metabolite_7" stoichiometry="1"/>
+          <Product metabolite="Metabolite_45" stoichiometry="1"/>
+        </ListOfProducts>
+        <ListOfConstants>
+          <Constant key="Parameter_4356" name="k1" value="0.00408"/>
+        </ListOfConstants>
+        <KineticLaw function="Function_13">
+          <ListOfCallParameters>
+            <CallParameter functionParameter="FunctionParameter_81">
+              <SourceParameter reference="Parameter_4356"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_79">
+              <SourceParameter reference="Metabolite_45"/>
+            </CallParameter>
+          </ListOfCallParameters>
+        </KineticLaw>
+      </Reaction>
+      <Reaction key="Reaction_42" name="constitutive IkBb degradation (free)" reversible="false" fast="false">
         <ListOfSubstrates>
           <Substrate metabolite="Metabolite_7" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
-          <Product metabolite="Metabolite_23" stoichiometry="1"/>
+          <Product metabolite="Metabolite_49" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_1266" name="k1" value="0.0001"/>
+          <Constant key="Parameter_4357" name="k1" value="0.000113"/>
         </ListOfConstants>
         <KineticLaw function="Function_13">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Parameter_1266"/>
+              <SourceParameter reference="Parameter_4357"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_79">
               <SourceParameter reference="Metabolite_7"/>
@@ -1261,21 +1089,259 @@ Reaction scheme where the products are created from the reactants and the change
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_51" name="IKK-IkBaNF-kB association" reversible="false">
+      <Reaction key="Reaction_43" name="IkBb nuclear import" reversible="false" fast="false">
+        <ListOfSubstrates>
+          <Substrate metabolite="Metabolite_7" stoichiometry="1"/>
+        </ListOfSubstrates>
+        <ListOfProducts>
+          <Product metabolite="Metabolite_35" stoichiometry="1"/>
+        </ListOfProducts>
+        <ListOfConstants>
+          <Constant key="Parameter_4358" name="k1" value="0.00015"/>
+        </ListOfConstants>
+        <KineticLaw function="Function_13">
+          <ListOfCallParameters>
+            <CallParameter functionParameter="FunctionParameter_81">
+              <SourceParameter reference="Parameter_4358"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_79">
+              <SourceParameter reference="Metabolite_7"/>
+            </CallParameter>
+          </ListOfCallParameters>
+        </KineticLaw>
+      </Reaction>
+      <Reaction key="Reaction_44" name="IkBb nuclear export" reversible="false" fast="false">
+        <ListOfSubstrates>
+          <Substrate metabolite="Metabolite_35" stoichiometry="1"/>
+        </ListOfSubstrates>
+        <ListOfProducts>
+          <Product metabolite="Metabolite_7" stoichiometry="1"/>
+        </ListOfProducts>
+        <ListOfConstants>
+          <Constant key="Parameter_4359" name="k1" value="0.0001"/>
+        </ListOfConstants>
+        <KineticLaw function="Function_13">
+          <ListOfCallParameters>
+            <CallParameter functionParameter="FunctionParameter_81">
+              <SourceParameter reference="Parameter_4359"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_79">
+              <SourceParameter reference="Metabolite_35"/>
+            </CallParameter>
+          </ListOfCallParameters>
+        </KineticLaw>
+      </Reaction>
+      <Reaction key="Reaction_45" name="IKKIkBe association" reversible="false" fast="false">
+        <ListOfSubstrates>
+          <Substrate metabolite="Metabolite_19" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_11" stoichiometry="1"/>
+        </ListOfSubstrates>
+        <ListOfProducts>
+          <Product metabolite="Metabolite_25" stoichiometry="1"/>
+        </ListOfProducts>
+        <ListOfConstants>
+          <Constant key="Parameter_4360" name="k1" value="0.009"/>
+        </ListOfConstants>
+        <KineticLaw function="Function_13">
+          <ListOfCallParameters>
+            <CallParameter functionParameter="FunctionParameter_81">
+              <SourceParameter reference="Parameter_4360"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_79">
+              <SourceParameter reference="Metabolite_19"/>
+              <SourceParameter reference="Metabolite_11"/>
+            </CallParameter>
+          </ListOfCallParameters>
+        </KineticLaw>
+      </Reaction>
+      <Reaction key="Reaction_46" name="IKKIkBe dissociation" reversible="false" fast="false">
+        <ListOfSubstrates>
+          <Substrate metabolite="Metabolite_25" stoichiometry="1"/>
+        </ListOfSubstrates>
+        <ListOfProducts>
+          <Product metabolite="Metabolite_19" stoichiometry="1"/>
+          <Product metabolite="Metabolite_11" stoichiometry="1"/>
+        </ListOfProducts>
+        <ListOfConstants>
+          <Constant key="Parameter_4361" name="k1" value="0.00175"/>
+        </ListOfConstants>
+        <KineticLaw function="Function_13">
+          <ListOfCallParameters>
+            <CallParameter functionParameter="FunctionParameter_81">
+              <SourceParameter reference="Parameter_4361"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_79">
+              <SourceParameter reference="Metabolite_25"/>
+            </CallParameter>
+          </ListOfCallParameters>
+        </KineticLaw>
+      </Reaction>
+      <Reaction key="Reaction_47" name="IkBe translation rate" reversible="false" fast="false">
+        <ListOfSubstrates>
+          <Substrate metabolite="Metabolite_47" stoichiometry="1"/>
+        </ListOfSubstrates>
+        <ListOfProducts>
+          <Product metabolite="Metabolite_11" stoichiometry="1"/>
+          <Product metabolite="Metabolite_47" stoichiometry="1"/>
+        </ListOfProducts>
+        <ListOfConstants>
+          <Constant key="Parameter_4362" name="k1" value="0.00408"/>
+        </ListOfConstants>
+        <KineticLaw function="Function_13">
+          <ListOfCallParameters>
+            <CallParameter functionParameter="FunctionParameter_81">
+              <SourceParameter reference="Parameter_4362"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_79">
+              <SourceParameter reference="Metabolite_47"/>
+            </CallParameter>
+          </ListOfCallParameters>
+        </KineticLaw>
+      </Reaction>
+      <Reaction key="Reaction_48" name="constitutive IkBe degradation (free)" reversible="false" fast="false">
+        <ListOfSubstrates>
+          <Substrate metabolite="Metabolite_11" stoichiometry="1"/>
+        </ListOfSubstrates>
+        <ListOfProducts>
+          <Product metabolite="Metabolite_49" stoichiometry="1"/>
+        </ListOfProducts>
+        <ListOfConstants>
+          <Constant key="Parameter_4367" name="k1" value="0.000113"/>
+        </ListOfConstants>
+        <KineticLaw function="Function_13">
+          <ListOfCallParameters>
+            <CallParameter functionParameter="FunctionParameter_81">
+              <SourceParameter reference="Parameter_4367"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_79">
+              <SourceParameter reference="Metabolite_11"/>
+            </CallParameter>
+          </ListOfCallParameters>
+        </KineticLaw>
+      </Reaction>
+      <Reaction key="Reaction_49" name="IkBe nuclear import" reversible="false" fast="false">
+        <ListOfSubstrates>
+          <Substrate metabolite="Metabolite_11" stoichiometry="1"/>
+        </ListOfSubstrates>
+        <ListOfProducts>
+          <Product metabolite="Metabolite_39" stoichiometry="1"/>
+        </ListOfProducts>
+        <ListOfConstants>
+          <Constant key="Parameter_4366" name="k1" value="0.00015"/>
+        </ListOfConstants>
+        <KineticLaw function="Function_13">
+          <ListOfCallParameters>
+            <CallParameter functionParameter="FunctionParameter_81">
+              <SourceParameter reference="Parameter_4366"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_79">
+              <SourceParameter reference="Metabolite_11"/>
+            </CallParameter>
+          </ListOfCallParameters>
+        </KineticLaw>
+      </Reaction>
+      <Reaction key="Reaction_50" name="IkBe nuclear export" reversible="false" fast="false">
+        <ListOfSubstrates>
+          <Substrate metabolite="Metabolite_39" stoichiometry="1"/>
+        </ListOfSubstrates>
+        <ListOfProducts>
+          <Product metabolite="Metabolite_11" stoichiometry="1"/>
+        </ListOfProducts>
+        <ListOfConstants>
+          <Constant key="Parameter_4365" name="k1" value="0.0001"/>
+        </ListOfConstants>
+        <KineticLaw function="Function_13">
+          <ListOfCallParameters>
+            <CallParameter functionParameter="FunctionParameter_81">
+              <SourceParameter reference="Parameter_4365"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_79">
+              <SourceParameter reference="Metabolite_39"/>
+            </CallParameter>
+          </ListOfCallParameters>
+        </KineticLaw>
+      </Reaction>
+      <Reaction key="Reaction_51" name="IKK-IkBaNF-kB association" reversible="false" fast="false">
+        <ListOfSubstrates>
+          <Substrate metabolite="Metabolite_19" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_5" stoichiometry="1"/>
+        </ListOfSubstrates>
+        <ListOfProducts>
+          <Product metabolite="Metabolite_17" stoichiometry="1"/>
+        </ListOfProducts>
+        <ListOfConstants>
+          <Constant key="Parameter_4363" name="k1" value="0.185"/>
+        </ListOfConstants>
+        <KineticLaw function="Function_13">
+          <ListOfCallParameters>
+            <CallParameter functionParameter="FunctionParameter_81">
+              <SourceParameter reference="Parameter_4363"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_79">
+              <SourceParameter reference="Metabolite_19"/>
+              <SourceParameter reference="Metabolite_5"/>
+            </CallParameter>
+          </ListOfCallParameters>
+        </KineticLaw>
+      </Reaction>
+      <Reaction key="Reaction_52" name="IKK-IkBaNF-kB dissociation" reversible="false" fast="false">
+        <ListOfSubstrates>
+          <Substrate metabolite="Metabolite_17" stoichiometry="1"/>
+        </ListOfSubstrates>
+        <ListOfProducts>
+          <Product metabolite="Metabolite_19" stoichiometry="1"/>
+          <Product metabolite="Metabolite_5" stoichiometry="1"/>
+        </ListOfProducts>
+        <ListOfConstants>
+          <Constant key="Parameter_4364" name="k1" value="0.00125"/>
+        </ListOfConstants>
+        <KineticLaw function="Function_13">
+          <ListOfCallParameters>
+            <CallParameter functionParameter="FunctionParameter_81">
+              <SourceParameter reference="Parameter_4364"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_79">
+              <SourceParameter reference="Metabolite_17"/>
+            </CallParameter>
+          </ListOfCallParameters>
+        </KineticLaw>
+      </Reaction>
+      <Reaction key="Reaction_53" name="IkBa-NF-kB nuclear export" reversible="false" fast="false">
+        <ListOfSubstrates>
+          <Substrate metabolite="Metabolite_33" stoichiometry="1"/>
+        </ListOfSubstrates>
+        <ListOfProducts>
+          <Product metabolite="Metabolite_5" stoichiometry="1"/>
+        </ListOfProducts>
+        <ListOfConstants>
+          <Constant key="Parameter_4368" name="k1" value="0.0138"/>
+        </ListOfConstants>
+        <KineticLaw function="Function_13">
+          <ListOfCallParameters>
+            <CallParameter functionParameter="FunctionParameter_81">
+              <SourceParameter reference="Parameter_4368"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_79">
+              <SourceParameter reference="Metabolite_33"/>
+            </CallParameter>
+          </ListOfCallParameters>
+        </KineticLaw>
+      </Reaction>
+      <Reaction key="Reaction_54" name="IKK-IkBbNF-kB association" reversible="false" fast="false">
         <ListOfSubstrates>
           <Substrate metabolite="Metabolite_19" stoichiometry="1"/>
           <Substrate metabolite="Metabolite_9" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
-          <Product metabolite="Metabolite_20" stoichiometry="1"/>
+          <Product metabolite="Metabolite_23" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_1361" name="k1" value="0.185"/>
+          <Constant key="Parameter_4369" name="k1" value="0.048"/>
         </ListOfConstants>
         <KineticLaw function="Function_13">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Parameter_1361"/>
+              <SourceParameter reference="Parameter_4369"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_79">
               <SourceParameter reference="Metabolite_19"/>
@@ -1284,153 +1350,150 @@ Reaction scheme where the products are created from the reactants and the change
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_52" name="IKK-IkBaNF-kB dissociation" reversible="false">
+      <Reaction key="Reaction_55" name="IKK-IkBbNF-kB dissociation" reversible="false" fast="false">
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_20" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_23" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
           <Product metabolite="Metabolite_19" stoichiometry="1"/>
           <Product metabolite="Metabolite_9" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_1358" name="k1" value="0.00125"/>
+          <Constant key="Parameter_4372" name="k1" value="0.00175"/>
         </ListOfConstants>
         <KineticLaw function="Function_13">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Parameter_1358"/>
+              <SourceParameter reference="Parameter_4372"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_79">
-              <SourceParameter reference="Metabolite_20"/>
+              <SourceParameter reference="Metabolite_23"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_53" name="IkBa-NF-kB nuclear export" reversible="false">
+      <Reaction key="Reaction_56" name="IkBb-NF-kB nuclear export" reversible="false" fast="false">
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_12" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_37" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
           <Product metabolite="Metabolite_9" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_1363" name="k1" value="0.0138"/>
+          <Constant key="Parameter_4371" name="k1" value="0.0052"/>
         </ListOfConstants>
         <KineticLaw function="Function_13">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Parameter_1363"/>
+              <SourceParameter reference="Parameter_4371"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_79">
-              <SourceParameter reference="Metabolite_12"/>
+              <SourceParameter reference="Metabolite_37"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_54" name="IKK-IkBbNF-kB association" reversible="false">
+      <Reaction key="Reaction_57" name="IKK-IkBeNF-kB association" reversible="false" fast="false">
         <ListOfSubstrates>
           <Substrate metabolite="Metabolite_19" stoichiometry="1"/>
-          <Substrate metabolite="Metabolite_26" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_13" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
-          <Product metabolite="Metabolite_17" stoichiometry="1"/>
+          <Product metabolite="Metabolite_27" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_1360" name="k1" value="0.048"/>
+          <Constant key="Parameter_4370" name="k1" value="0.07"/>
         </ListOfConstants>
         <KineticLaw function="Function_13">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Parameter_1360"/>
+              <SourceParameter reference="Parameter_4370"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_79">
               <SourceParameter reference="Metabolite_19"/>
-              <SourceParameter reference="Metabolite_26"/>
+              <SourceParameter reference="Metabolite_13"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_55" name="IKK-IkBbNF-kB dissociation" reversible="false">
+      <Reaction key="Reaction_58" name="IKK-IkBeNF-kB dissociation" reversible="false" fast="false">
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_17" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_27" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
           <Product metabolite="Metabolite_19" stoichiometry="1"/>
-          <Product metabolite="Metabolite_26" stoichiometry="1"/>
+          <Product metabolite="Metabolite_13" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_1359" name="k1" value="0.00175"/>
+          <Constant key="Parameter_4373" name="k1" value="0.00175"/>
         </ListOfConstants>
         <KineticLaw function="Function_13">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Parameter_1359"/>
+              <SourceParameter reference="Parameter_4373"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_79">
-              <SourceParameter reference="Metabolite_17"/>
+              <SourceParameter reference="Metabolite_27"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_56" name="IkBb-NF-kB nuclear export" reversible="false">
+      <Reaction key="Reaction_59" name="IkBe-NF-kB nuclear export" reversible="false" fast="false">
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_10" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_41" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
-          <Product metabolite="Metabolite_26" stoichiometry="1"/>
+          <Product metabolite="Metabolite_13" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_1368" name="k1" value="0.0052"/>
+          <Constant key="Parameter_4374" name="k1" value="0.0052"/>
         </ListOfConstants>
         <KineticLaw function="Function_13">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Parameter_1368"/>
+              <SourceParameter reference="Parameter_4374"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_79">
-              <SourceParameter reference="Metabolite_10"/>
+              <SourceParameter reference="Metabolite_41"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_57" name="IKK-IkBeNF-kB association" reversible="false">
+      <Reaction key="Reaction_60" name="slow adaptation " reversible="false" fast="false">
         <ListOfSubstrates>
           <Substrate metabolite="Metabolite_19" stoichiometry="1"/>
-          <Substrate metabolite="Metabolite_22" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
-          <Product metabolite="Metabolite_15" stoichiometry="1"/>
+          <Product metabolite="Metabolite_49" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_1367" name="k1" value="0.07"/>
+          <Constant key="Parameter_4375" name="k1" value="0.00012"/>
         </ListOfConstants>
         <KineticLaw function="Function_13">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Parameter_1367"/>
+              <SourceParameter reference="Parameter_4375"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_79">
               <SourceParameter reference="Metabolite_19"/>
-              <SourceParameter reference="Metabolite_22"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_58" name="IKK-IkBeNF-kB dissociation" reversible="false">
+      <Reaction key="Reaction_61" name="IKKIkBa catalysis" reversible="false" fast="false">
         <ListOfSubstrates>
           <Substrate metabolite="Metabolite_15" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
           <Product metabolite="Metabolite_19" stoichiometry="1"/>
-          <Product metabolite="Metabolite_22" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_1366" name="k1" value="0.00175"/>
+          <Constant key="Parameter_4376" name="k1" value="0.00407"/>
         </ListOfConstants>
         <KineticLaw function="Function_13">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Parameter_1366"/>
+              <SourceParameter reference="Parameter_4376"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_79">
               <SourceParameter reference="Metabolite_15"/>
@@ -1438,49 +1501,7 @@ Reaction scheme where the products are created from the reactants and the change
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_59" name="IkBe-NF-kB nuclear export" reversible="false">
-        <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_6" stoichiometry="1"/>
-        </ListOfSubstrates>
-        <ListOfProducts>
-          <Product metabolite="Metabolite_22" stoichiometry="1"/>
-        </ListOfProducts>
-        <ListOfConstants>
-          <Constant key="Parameter_1364" name="k1" value="0.0052"/>
-        </ListOfConstants>
-        <KineticLaw function="Function_13">
-          <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Parameter_1364"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_79">
-              <SourceParameter reference="Metabolite_6"/>
-            </CallParameter>
-          </ListOfCallParameters>
-        </KineticLaw>
-      </Reaction>
-      <Reaction key="Reaction_60" name="slow adaptation " reversible="false">
-        <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_19" stoichiometry="1"/>
-        </ListOfSubstrates>
-        <ListOfProducts>
-          <Product metabolite="Metabolite_2" stoichiometry="1"/>
-        </ListOfProducts>
-        <ListOfConstants>
-          <Constant key="Parameter_1365" name="k1" value="0.00012"/>
-        </ListOfConstants>
-        <KineticLaw function="Function_13">
-          <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Parameter_1365"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_79">
-              <SourceParameter reference="Metabolite_19"/>
-            </CallParameter>
-          </ListOfCallParameters>
-        </KineticLaw>
-      </Reaction>
-      <Reaction key="Reaction_61" name="IKKIkBa catalysis" reversible="false">
+      <Reaction key="Reaction_62" name="IKKIkBb catalysis" reversible="false" fast="false">
         <ListOfSubstrates>
           <Substrate metabolite="Metabolite_21" stoichiometry="1"/>
         </ListOfSubstrates>
@@ -1488,12 +1509,12 @@ Reaction scheme where the products are created from the reactants and the change
           <Product metabolite="Metabolite_19" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_1369" name="k1" value="0.00407"/>
+          <Constant key="Parameter_4377" name="k1" value="0.0015"/>
         </ListOfConstants>
         <KineticLaw function="Function_13">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Parameter_1369"/>
+              <SourceParameter reference="Parameter_4377"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_79">
               <SourceParameter reference="Metabolite_21"/>
@@ -1501,61 +1522,40 @@ Reaction scheme where the products are created from the reactants and the change
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_62" name="IKKIkBb catalysis" reversible="false">
+      <Reaction key="Reaction_63" name="IKKIkBe catalysis" reversible="false" fast="false">
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_18" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_25" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
           <Product metabolite="Metabolite_19" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_1370" name="k1" value="0.0015"/>
+          <Constant key="Parameter_4378" name="k1" value="0.0022"/>
         </ListOfConstants>
         <KineticLaw function="Function_13">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Parameter_1370"/>
+              <SourceParameter reference="Parameter_4378"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_79">
-              <SourceParameter reference="Metabolite_18"/>
-            </CallParameter>
-          </ListOfCallParameters>
-        </KineticLaw>
-      </Reaction>
-      <Reaction key="Reaction_63" name="IKKIkBe catalysis" reversible="false">
-        <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_16" stoichiometry="1"/>
-        </ListOfSubstrates>
-        <ListOfProducts>
-          <Product metabolite="Metabolite_19" stoichiometry="1"/>
-        </ListOfProducts>
-        <ListOfConstants>
-          <Constant key="Parameter_1371" name="k1" value="0.0022"/>
-        </ListOfConstants>
-        <KineticLaw function="Function_13">
-          <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Parameter_1371"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_79">
-              <SourceParameter reference="Metabolite_16"/>
+              <SourceParameter reference="Metabolite_25"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
     </ListOfReactions>
     <ListOfEvents>
-      <Event key="Event_4" name="PeakDetection" fireAtInitialTime="0" persistentTrigger="0">
+      <Event key="Event_0" name="PeakDetection" fireAtInitialTime="0" persistentTrigger="0">
         <TriggerExpression>
           &lt;CN=Root,Model=NF-kB signaling,Vector=Compartments[compartment],Vector=Metabolites[IkBa],Reference=Rate&gt; lt 0 and &lt;CN=Root,Model=NF-kB signaling,Vector=Values[PeakTime],Reference=Value&gt; eq 0
         </TriggerExpression>
         <ListOfAssignments>
-          <Assignment targetKey="ModelValue_49">
+          <Assignment targetKey="ModelValue_0">
             <Expression>
               &lt;CN=Root,Model=NF-kB signaling,Reference=Time&gt;
             </Expression>
           </Assignment>
-          <Assignment targetKey="ModelValue_50">
+          <Assignment targetKey="ModelValue_1">
             <Expression>
               &lt;CN=Root,Model=NF-kB signaling,Vector=Compartments[compartment],Vector=Metabolites[IkBa],Reference=Concentration&gt;
             </Expression>
@@ -1563,47 +1563,285 @@ Reaction scheme where the products are created from the reactants and the change
         </ListOfAssignments>
       </Event>
     </ListOfEvents>
+    <ListOfModelParameterSets activeSet="ModelParameterSet_0">
+      <ModelParameterSet key="ModelParameterSet_0" name="Initial State">
+        <ModelParameterGroup cn="String=Initial Time" type="Group">
+          <ModelParameter cn="CN=Root,Model=NF-kB signaling" value="0" type="Model" simulationType="time"/>
+        </ModelParameterGroup>
+        <ModelParameterGroup cn="String=Initial Compartment Sizes" type="Group">
+          <ModelParameter cn="CN=Root,Model=NF-kB signaling,Vector=Compartments[compartment]" value="1" type="Compartment" simulationType="fixed"/>
+          <ModelParameter cn="CN=Root,Model=NF-kB signaling,Vector=Compartments[cytoplasm]" value="1" type="Compartment" simulationType="fixed"/>
+          <ModelParameter cn="CN=Root,Model=NF-kB signaling,Vector=Compartments[nucleus]" value="1" type="Compartment" simulationType="fixed"/>
+        </ModelParameterGroup>
+        <ModelParameterGroup cn="String=Initial Species Values" type="Group">
+          <ModelParameter cn="CN=Root,Model=NF-kB signaling,Vector=Compartments[compartment],Vector=Metabolites[IkBa]" value="1.142181436469596e+17" type="Species" simulationType="reactions"/>
+          <ModelParameter cn="CN=Root,Model=NF-kB signaling,Vector=Compartments[compartment],Vector=Metabolites[NF-kB]" value="151003436170486.9" type="Species" simulationType="reactions"/>
+          <ModelParameter cn="CN=Root,Model=NF-kB signaling,Vector=Compartments[compartment],Vector=Metabolites[IkBa-NF-kB]" value="5.018415300625579e+16" type="Species" simulationType="reactions"/>
+          <ModelParameter cn="CN=Root,Model=NF-kB signaling,Vector=Compartments[compartment],Vector=Metabolites[IkBb]" value="1.302896374584552e+16" type="Species" simulationType="reactions"/>
+          <ModelParameter cn="CN=Root,Model=NF-kB signaling,Vector=Compartments[compartment],Vector=Metabolites[IkBb-NF-kB]" value="5001281570759049" type="Species" simulationType="reactions"/>
+          <ModelParameter cn="CN=Root,Model=NF-kB signaling,Vector=Compartments[compartment],Vector=Metabolites[IkBe]" value="9295946043384088" type="Species" simulationType="reactions"/>
+          <ModelParameter cn="CN=Root,Model=NF-kB signaling,Vector=Compartments[compartment],Vector=Metabolites[IkBe-NF-kB]" value="3568330109474252" type="Species" simulationType="reactions"/>
+          <ModelParameter cn="CN=Root,Model=NF-kB signaling,Vector=Compartments[compartment],Vector=Metabolites[IKKIkBa]" value="0" type="Species" simulationType="reactions"/>
+          <ModelParameter cn="CN=Root,Model=NF-kB signaling,Vector=Compartments[compartment],Vector=Metabolites[IKKIkBa-NF-kB]" value="0" type="Species" simulationType="reactions"/>
+          <ModelParameter cn="CN=Root,Model=NF-kB signaling,Vector=Compartments[compartment],Vector=Metabolites[IKK]" value="6.0221415e+16" type="Species" simulationType="reactions"/>
+          <ModelParameter cn="CN=Root,Model=NF-kB signaling,Vector=Compartments[compartment],Vector=Metabolites[IKKIkBb]" value="0" type="Species" simulationType="reactions"/>
+          <ModelParameter cn="CN=Root,Model=NF-kB signaling,Vector=Compartments[compartment],Vector=Metabolites[IKKIkBb-NF-kB]" value="0" type="Species" simulationType="reactions"/>
+          <ModelParameter cn="CN=Root,Model=NF-kB signaling,Vector=Compartments[compartment],Vector=Metabolites[IKKIkBe]" value="0" type="Species" simulationType="reactions"/>
+          <ModelParameter cn="CN=Root,Model=NF-kB signaling,Vector=Compartments[compartment],Vector=Metabolites[IKKIkBe-NF-kB]" value="0" type="Species" simulationType="reactions"/>
+          <ModelParameter cn="CN=Root,Model=NF-kB signaling,Vector=Compartments[compartment],Vector=Metabolites[NF-kBn]" value="130693678930243.6" type="Species" simulationType="reactions"/>
+          <ModelParameter cn="CN=Root,Model=NF-kB signaling,Vector=Compartments[compartment],Vector=Metabolites[IkBan]" value="1.135765465584134e+17" type="Species" simulationType="reactions"/>
+          <ModelParameter cn="CN=Root,Model=NF-kB signaling,Vector=Compartments[compartment],Vector=Metabolites[IkBan-NF-kBn]" value="861803796660524.4" type="Species" simulationType="reactions"/>
+          <ModelParameter cn="CN=Root,Model=NF-kB signaling,Vector=Compartments[compartment],Vector=Metabolites[IkBbn]" value="9939445415584982" type="Species" simulationType="reactions"/>
+          <ModelParameter cn="CN=Root,Model=NF-kB signaling,Vector=Compartments[compartment],Vector=Metabolites[IkBbn-NF-kBn]" value="189175715302730.4" type="Species" simulationType="reactions"/>
+          <ModelParameter cn="CN=Root,Model=NF-kB signaling,Vector=Compartments[compartment],Vector=Metabolites[IkBen]" value="7091626785276905" type="Species" simulationType="reactions"/>
+          <ModelParameter cn="CN=Root,Model=NF-kB signaling,Vector=Compartments[compartment],Vector=Metabolites[IkBen-NF-kBn]" value="134973684513639.8" type="Species" simulationType="reactions"/>
+          <ModelParameter cn="CN=Root,Model=NF-kB signaling,Vector=Compartments[compartment],Vector=Metabolites[IkBa-t]" value="3313802111159246" type="Species" simulationType="reactions"/>
+          <ModelParameter cn="CN=Root,Model=NF-kB signaling,Vector=Compartments[compartment],Vector=Metabolites[IkBb-t]" value="382836138214284.7" type="Species" simulationType="reactions"/>
+          <ModelParameter cn="CN=Root,Model=NF-kB signaling,Vector=Compartments[compartment],Vector=Metabolites[IkBe-t]" value="273147132321427.9" type="Species" simulationType="reactions"/>
+          <ModelParameter cn="CN=Root,Model=NF-kB signaling,Vector=Compartments[compartment],Vector=Metabolites[sink]" value="0" type="Species" simulationType="fixed"/>
+          <ModelParameter cn="CN=Root,Model=NF-kB signaling,Vector=Compartments[compartment],Vector=Metabolites[source]" value="6.0221415e+17" type="Species" simulationType="fixed"/>
+        </ModelParameterGroup>
+        <ModelParameterGroup cn="String=Initial Global Quantities" type="Group">
+          <ModelParameter cn="CN=Root,Model=NF-kB signaling,Vector=Values[PeakTime]" value="0" type="ModelValue" simulationType="fixed"/>
+          <ModelParameter cn="CN=Root,Model=NF-kB signaling,Vector=Values[PeakValue]" value="0" type="ModelValue" simulationType="fixed"/>
+        </ModelParameterGroup>
+        <ModelParameterGroup cn="String=Kinetic Parameters" type="Group">
+          <ModelParameterGroup cn="CN=Root,Model=NF-kB signaling,Vector=Reactions[IkBaNF-kB association]" type="Reaction">
+            <ModelParameter cn="CN=Root,Model=NF-kB signaling,Vector=Reactions[IkBaNF-kB association],ParameterGroup=Parameters,Parameter=k1" value="0.5" type="ReactionParameter" simulationType="fixed"/>
+          </ModelParameterGroup>
+          <ModelParameterGroup cn="CN=Root,Model=NF-kB signaling,Vector=Reactions[IkBa-NF-kB dissociation]" type="Reaction">
+            <ModelParameter cn="CN=Root,Model=NF-kB signaling,Vector=Reactions[IkBa-NF-kB dissociation],ParameterGroup=Parameters,Parameter=k1" value="0.0005" type="ReactionParameter" simulationType="fixed"/>
+          </ModelParameterGroup>
+          <ModelParameterGroup cn="CN=Root,Model=NF-kB signaling,Vector=Reactions[IkBb-NF-kB association]" type="Reaction">
+            <ModelParameter cn="CN=Root,Model=NF-kB signaling,Vector=Reactions[IkBb-NF-kB association],ParameterGroup=Parameters,Parameter=k1" value="0.5" type="ReactionParameter" simulationType="fixed"/>
+          </ModelParameterGroup>
+          <ModelParameterGroup cn="CN=Root,Model=NF-kB signaling,Vector=Reactions[IkBb-NF-kB dissociation]" type="Reaction">
+            <ModelParameter cn="CN=Root,Model=NF-kB signaling,Vector=Reactions[IkBb-NF-kB dissociation],ParameterGroup=Parameters,Parameter=k1" value="0.0005" type="ReactionParameter" simulationType="fixed"/>
+          </ModelParameterGroup>
+          <ModelParameterGroup cn="CN=Root,Model=NF-kB signaling,Vector=Reactions[IkBe-NF-kB association]" type="Reaction">
+            <ModelParameter cn="CN=Root,Model=NF-kB signaling,Vector=Reactions[IkBe-NF-kB association],ParameterGroup=Parameters,Parameter=k1" value="0.5" type="ReactionParameter" simulationType="fixed"/>
+          </ModelParameterGroup>
+          <ModelParameterGroup cn="CN=Root,Model=NF-kB signaling,Vector=Reactions[IkBe-NF-kB dissociation]" type="Reaction">
+            <ModelParameter cn="CN=Root,Model=NF-kB signaling,Vector=Reactions[IkBe-NF-kB dissociation],ParameterGroup=Parameters,Parameter=k1" value="0.0005" type="ReactionParameter" simulationType="fixed"/>
+          </ModelParameterGroup>
+          <ModelParameterGroup cn="CN=Root,Model=NF-kB signaling,Vector=Reactions[IKKIkBa-NF-kB association]" type="Reaction">
+            <ModelParameter cn="CN=Root,Model=NF-kB signaling,Vector=Reactions[IKKIkBa-NF-kB association],ParameterGroup=Parameters,Parameter=k1" value="0.5" type="ReactionParameter" simulationType="fixed"/>
+          </ModelParameterGroup>
+          <ModelParameterGroup cn="CN=Root,Model=NF-kB signaling,Vector=Reactions[IKKIkBa-NF-kB dissociation]" type="Reaction">
+            <ModelParameter cn="CN=Root,Model=NF-kB signaling,Vector=Reactions[IKKIkBa-NF-kB dissociation],ParameterGroup=Parameters,Parameter=k1" value="0.0005" type="ReactionParameter" simulationType="fixed"/>
+          </ModelParameterGroup>
+          <ModelParameterGroup cn="CN=Root,Model=NF-kB signaling,Vector=Reactions[IKKIkBa-NF-kB catalysis]" type="Reaction">
+            <ModelParameter cn="CN=Root,Model=NF-kB signaling,Vector=Reactions[IKKIkBa-NF-kB catalysis],ParameterGroup=Parameters,Parameter=k1" value="0.0204" type="ReactionParameter" simulationType="fixed"/>
+          </ModelParameterGroup>
+          <ModelParameterGroup cn="CN=Root,Model=NF-kB signaling,Vector=Reactions[IKKIkBb-NF-kB association]" type="Reaction">
+            <ModelParameter cn="CN=Root,Model=NF-kB signaling,Vector=Reactions[IKKIkBb-NF-kB association],ParameterGroup=Parameters,Parameter=k1" value="0.5" type="ReactionParameter" simulationType="fixed"/>
+          </ModelParameterGroup>
+          <ModelParameterGroup cn="CN=Root,Model=NF-kB signaling,Vector=Reactions[IKKIkBb-NF-kB dissociation]" type="Reaction">
+            <ModelParameter cn="CN=Root,Model=NF-kB signaling,Vector=Reactions[IKKIkBb-NF-kB dissociation],ParameterGroup=Parameters,Parameter=k1" value="0.0005" type="ReactionParameter" simulationType="fixed"/>
+          </ModelParameterGroup>
+          <ModelParameterGroup cn="CN=Root,Model=NF-kB signaling,Vector=Reactions[IKKIkBb-NF-kB catalysis]" type="Reaction">
+            <ModelParameter cn="CN=Root,Model=NF-kB signaling,Vector=Reactions[IKKIkBb-NF-kB catalysis],ParameterGroup=Parameters,Parameter=k1" value="0.0075" type="ReactionParameter" simulationType="fixed"/>
+          </ModelParameterGroup>
+          <ModelParameterGroup cn="CN=Root,Model=NF-kB signaling,Vector=Reactions[IKKIkBe-NF-kB association]" type="Reaction">
+            <ModelParameter cn="CN=Root,Model=NF-kB signaling,Vector=Reactions[IKKIkBe-NF-kB association],ParameterGroup=Parameters,Parameter=k1" value="0.5" type="ReactionParameter" simulationType="fixed"/>
+          </ModelParameterGroup>
+          <ModelParameterGroup cn="CN=Root,Model=NF-kB signaling,Vector=Reactions[IKKIkBe-NF-kB dissociation]" type="Reaction">
+            <ModelParameter cn="CN=Root,Model=NF-kB signaling,Vector=Reactions[IKKIkBe-NF-kB dissociation],ParameterGroup=Parameters,Parameter=k1" value="0.0005" type="ReactionParameter" simulationType="fixed"/>
+          </ModelParameterGroup>
+          <ModelParameterGroup cn="CN=Root,Model=NF-kB signaling,Vector=Reactions[IKKIkBe-NF-kB catalysis]" type="Reaction">
+            <ModelParameter cn="CN=Root,Model=NF-kB signaling,Vector=Reactions[IKKIkBe-NF-kB catalysis],ParameterGroup=Parameters,Parameter=k1" value="0.011" type="ReactionParameter" simulationType="fixed"/>
+          </ModelParameterGroup>
+          <ModelParameterGroup cn="CN=Root,Model=NF-kB signaling,Vector=Reactions[IkBa constituitive degradation (complexed to NF-kB)]" type="Reaction">
+            <ModelParameter cn="CN=Root,Model=NF-kB signaling,Vector=Reactions[IkBa constituitive degradation (complexed to NF-kB)],ParameterGroup=Parameters,Parameter=k1" value="2.25e-05" type="ReactionParameter" simulationType="fixed"/>
+          </ModelParameterGroup>
+          <ModelParameterGroup cn="CN=Root,Model=NF-kB signaling,Vector=Reactions[IkBb constituitive degradation (complexed to NF-kB)]" type="Reaction">
+            <ModelParameter cn="CN=Root,Model=NF-kB signaling,Vector=Reactions[IkBb constituitive degradation (complexed to NF-kB)],ParameterGroup=Parameters,Parameter=k1" value="2.25e-05" type="ReactionParameter" simulationType="fixed"/>
+          </ModelParameterGroup>
+          <ModelParameterGroup cn="CN=Root,Model=NF-kB signaling,Vector=Reactions[IkBe constituitive degradation (complexed to NF-kB)]" type="Reaction">
+            <ModelParameter cn="CN=Root,Model=NF-kB signaling,Vector=Reactions[IkBe constituitive degradation (complexed to NF-kB)],ParameterGroup=Parameters,Parameter=k1" value="2.25e-05" type="ReactionParameter" simulationType="fixed"/>
+          </ModelParameterGroup>
+          <ModelParameterGroup cn="CN=Root,Model=NF-kB signaling,Vector=Reactions[NF-kB nuclear import]" type="Reaction">
+            <ModelParameter cn="CN=Root,Model=NF-kB signaling,Vector=Reactions[NF-kB nuclear import],ParameterGroup=Parameters,Parameter=k1" value="0.09" type="ReactionParameter" simulationType="fixed"/>
+          </ModelParameterGroup>
+          <ModelParameterGroup cn="CN=Root,Model=NF-kB signaling,Vector=Reactions[NF-kB nuclear export]" type="Reaction">
+            <ModelParameter cn="CN=Root,Model=NF-kB signaling,Vector=Reactions[NF-kB nuclear export],ParameterGroup=Parameters,Parameter=k1" value="8.000000000000001e-05" type="ReactionParameter" simulationType="fixed"/>
+          </ModelParameterGroup>
+          <ModelParameterGroup cn="CN=Root,Model=NF-kB signaling,Vector=Reactions[IkBa-NF-kB nuclear association]" type="Reaction">
+            <ModelParameter cn="CN=Root,Model=NF-kB signaling,Vector=Reactions[IkBa-NF-kB nuclear association],ParameterGroup=Parameters,Parameter=k1" value="0.5" type="ReactionParameter" simulationType="fixed"/>
+          </ModelParameterGroup>
+          <ModelParameterGroup cn="CN=Root,Model=NF-kB signaling,Vector=Reactions[IkBa-NF-kB nuclear dissociation]" type="Reaction">
+            <ModelParameter cn="CN=Root,Model=NF-kB signaling,Vector=Reactions[IkBa-NF-kB nuclear dissociation],ParameterGroup=Parameters,Parameter=k1" value="0.0005" type="ReactionParameter" simulationType="fixed"/>
+          </ModelParameterGroup>
+          <ModelParameterGroup cn="CN=Root,Model=NF-kB signaling,Vector=Reactions[IkBb-NF-kB nuclear association]" type="Reaction">
+            <ModelParameter cn="CN=Root,Model=NF-kB signaling,Vector=Reactions[IkBb-NF-kB nuclear association],ParameterGroup=Parameters,Parameter=k1" value="0.5" type="ReactionParameter" simulationType="fixed"/>
+          </ModelParameterGroup>
+          <ModelParameterGroup cn="CN=Root,Model=NF-kB signaling,Vector=Reactions[IkBb-NF-kB nuclear dissociation]" type="Reaction">
+            <ModelParameter cn="CN=Root,Model=NF-kB signaling,Vector=Reactions[IkBb-NF-kB nuclear dissociation],ParameterGroup=Parameters,Parameter=k1" value="0.0005" type="ReactionParameter" simulationType="fixed"/>
+          </ModelParameterGroup>
+          <ModelParameterGroup cn="CN=Root,Model=NF-kB signaling,Vector=Reactions[IkBe-NF-kB nuclear association]" type="Reaction">
+            <ModelParameter cn="CN=Root,Model=NF-kB signaling,Vector=Reactions[IkBe-NF-kB nuclear association],ParameterGroup=Parameters,Parameter=k1" value="0.5" type="ReactionParameter" simulationType="fixed"/>
+          </ModelParameterGroup>
+          <ModelParameterGroup cn="CN=Root,Model=NF-kB signaling,Vector=Reactions[IkBe-NF-kB nuclear dissociation]" type="Reaction">
+            <ModelParameter cn="CN=Root,Model=NF-kB signaling,Vector=Reactions[IkBe-NF-kB nuclear dissociation],ParameterGroup=Parameters,Parameter=k1" value="0.0005" type="ReactionParameter" simulationType="fixed"/>
+          </ModelParameterGroup>
+          <ModelParameterGroup cn="CN=Root,Model=NF-kB signaling,Vector=Reactions[constituitive IkBa mRNA synthesis]" type="Reaction">
+            <ModelParameter cn="CN=Root,Model=NF-kB signaling,Vector=Reactions[constituitive IkBa mRNA synthesis],ParameterGroup=Parameters,Parameter=k1" value="1.54e-06" type="ReactionParameter" simulationType="fixed"/>
+          </ModelParameterGroup>
+          <ModelParameterGroup cn="CN=Root,Model=NF-kB signaling,Vector=Reactions[IkBa Inducible mRNA synthesis]" type="Reaction">
+            <ModelParameter cn="CN=Root,Model=NF-kB signaling,Vector=Reactions[IkBa Inducible mRNA synthesis],ParameterGroup=Parameters,Parameter=k1" value="0.0165" type="ReactionParameter" simulationType="fixed"/>
+          </ModelParameterGroup>
+          <ModelParameterGroup cn="CN=Root,Model=NF-kB signaling,Vector=Reactions[IkBa mRNA degradation]" type="Reaction">
+            <ModelParameter cn="CN=Root,Model=NF-kB signaling,Vector=Reactions[IkBa mRNA degradation],ParameterGroup=Parameters,Parameter=k1" value="0.00028" type="ReactionParameter" simulationType="fixed"/>
+          </ModelParameterGroup>
+          <ModelParameterGroup cn="CN=Root,Model=NF-kB signaling,Vector=Reactions[constituitive IkBb mRNA synthesis]" type="Reaction">
+            <ModelParameter cn="CN=Root,Model=NF-kB signaling,Vector=Reactions[constituitive IkBb mRNA synthesis],ParameterGroup=Parameters,Parameter=k1" value="1.78e-07" type="ReactionParameter" simulationType="fixed"/>
+          </ModelParameterGroup>
+          <ModelParameterGroup cn="CN=Root,Model=NF-kB signaling,Vector=Reactions[IkBb mRNA degradation]" type="Reaction">
+            <ModelParameter cn="CN=Root,Model=NF-kB signaling,Vector=Reactions[IkBb mRNA degradation],ParameterGroup=Parameters,Parameter=k1" value="0.00028" type="ReactionParameter" simulationType="fixed"/>
+          </ModelParameterGroup>
+          <ModelParameterGroup cn="CN=Root,Model=NF-kB signaling,Vector=Reactions[constituitive IkBe mRNA synthesis]" type="Reaction">
+            <ModelParameter cn="CN=Root,Model=NF-kB signaling,Vector=Reactions[constituitive IkBe mRNA synthesis],ParameterGroup=Parameters,Parameter=k1" value="1.27e-07" type="ReactionParameter" simulationType="fixed"/>
+          </ModelParameterGroup>
+          <ModelParameterGroup cn="CN=Root,Model=NF-kB signaling,Vector=Reactions[IkBe mRNA degradation]" type="Reaction">
+            <ModelParameter cn="CN=Root,Model=NF-kB signaling,Vector=Reactions[IkBe mRNA degradation],ParameterGroup=Parameters,Parameter=k1" value="0.00028" type="ReactionParameter" simulationType="fixed"/>
+          </ModelParameterGroup>
+          <ModelParameterGroup cn="CN=Root,Model=NF-kB signaling,Vector=Reactions[IKKIkBa association]" type="Reaction">
+            <ModelParameter cn="CN=Root,Model=NF-kB signaling,Vector=Reactions[IKKIkBa association],ParameterGroup=Parameters,Parameter=k1" value="0.0225" type="ReactionParameter" simulationType="fixed"/>
+          </ModelParameterGroup>
+          <ModelParameterGroup cn="CN=Root,Model=NF-kB signaling,Vector=Reactions[IKKIkBa dissociation]" type="Reaction">
+            <ModelParameter cn="CN=Root,Model=NF-kB signaling,Vector=Reactions[IKKIkBa dissociation],ParameterGroup=Parameters,Parameter=k1" value="0.00125" type="ReactionParameter" simulationType="fixed"/>
+          </ModelParameterGroup>
+          <ModelParameterGroup cn="CN=Root,Model=NF-kB signaling,Vector=Reactions[IkBa translation rate]" type="Reaction">
+            <ModelParameter cn="CN=Root,Model=NF-kB signaling,Vector=Reactions[IkBa translation rate],ParameterGroup=Parameters,Parameter=k1" value="0.00408" type="ReactionParameter" simulationType="fixed"/>
+          </ModelParameterGroup>
+          <ModelParameterGroup cn="CN=Root,Model=NF-kB signaling,Vector=Reactions[constitutive IkBa degradation (free)]" type="Reaction">
+            <ModelParameter cn="CN=Root,Model=NF-kB signaling,Vector=Reactions[constitutive IkBa degradation (free)],ParameterGroup=Parameters,Parameter=k1" value="0.000113" type="ReactionParameter" simulationType="fixed"/>
+          </ModelParameterGroup>
+          <ModelParameterGroup cn="CN=Root,Model=NF-kB signaling,Vector=Reactions[IkBa nuclear import]" type="Reaction">
+            <ModelParameter cn="CN=Root,Model=NF-kB signaling,Vector=Reactions[IkBa nuclear import],ParameterGroup=Parameters,Parameter=k1" value="0.0003" type="ReactionParameter" simulationType="fixed"/>
+          </ModelParameterGroup>
+          <ModelParameterGroup cn="CN=Root,Model=NF-kB signaling,Vector=Reactions[IkBa nuclear export]" type="Reaction">
+            <ModelParameter cn="CN=Root,Model=NF-kB signaling,Vector=Reactions[IkBa nuclear export],ParameterGroup=Parameters,Parameter=k1" value="0.0002" type="ReactionParameter" simulationType="fixed"/>
+          </ModelParameterGroup>
+          <ModelParameterGroup cn="CN=Root,Model=NF-kB signaling,Vector=Reactions[IKKIkBb association]" type="Reaction">
+            <ModelParameter cn="CN=Root,Model=NF-kB signaling,Vector=Reactions[IKKIkBb association],ParameterGroup=Parameters,Parameter=k1" value="0.006" type="ReactionParameter" simulationType="fixed"/>
+          </ModelParameterGroup>
+          <ModelParameterGroup cn="CN=Root,Model=NF-kB signaling,Vector=Reactions[IKKIkBb dissociation]" type="Reaction">
+            <ModelParameter cn="CN=Root,Model=NF-kB signaling,Vector=Reactions[IKKIkBb dissociation],ParameterGroup=Parameters,Parameter=k1" value="0.00175" type="ReactionParameter" simulationType="fixed"/>
+          </ModelParameterGroup>
+          <ModelParameterGroup cn="CN=Root,Model=NF-kB signaling,Vector=Reactions[IkBb translation rate]" type="Reaction">
+            <ModelParameter cn="CN=Root,Model=NF-kB signaling,Vector=Reactions[IkBb translation rate],ParameterGroup=Parameters,Parameter=k1" value="0.00408" type="ReactionParameter" simulationType="fixed"/>
+          </ModelParameterGroup>
+          <ModelParameterGroup cn="CN=Root,Model=NF-kB signaling,Vector=Reactions[constitutive IkBb degradation (free)]" type="Reaction">
+            <ModelParameter cn="CN=Root,Model=NF-kB signaling,Vector=Reactions[constitutive IkBb degradation (free)],ParameterGroup=Parameters,Parameter=k1" value="0.000113" type="ReactionParameter" simulationType="fixed"/>
+          </ModelParameterGroup>
+          <ModelParameterGroup cn="CN=Root,Model=NF-kB signaling,Vector=Reactions[IkBb nuclear import]" type="Reaction">
+            <ModelParameter cn="CN=Root,Model=NF-kB signaling,Vector=Reactions[IkBb nuclear import],ParameterGroup=Parameters,Parameter=k1" value="0.00015" type="ReactionParameter" simulationType="fixed"/>
+          </ModelParameterGroup>
+          <ModelParameterGroup cn="CN=Root,Model=NF-kB signaling,Vector=Reactions[IkBb nuclear export]" type="Reaction">
+            <ModelParameter cn="CN=Root,Model=NF-kB signaling,Vector=Reactions[IkBb nuclear export],ParameterGroup=Parameters,Parameter=k1" value="0.0001" type="ReactionParameter" simulationType="fixed"/>
+          </ModelParameterGroup>
+          <ModelParameterGroup cn="CN=Root,Model=NF-kB signaling,Vector=Reactions[IKKIkBe association]" type="Reaction">
+            <ModelParameter cn="CN=Root,Model=NF-kB signaling,Vector=Reactions[IKKIkBe association],ParameterGroup=Parameters,Parameter=k1" value="0.008999999999999999" type="ReactionParameter" simulationType="fixed"/>
+          </ModelParameterGroup>
+          <ModelParameterGroup cn="CN=Root,Model=NF-kB signaling,Vector=Reactions[IKKIkBe dissociation]" type="Reaction">
+            <ModelParameter cn="CN=Root,Model=NF-kB signaling,Vector=Reactions[IKKIkBe dissociation],ParameterGroup=Parameters,Parameter=k1" value="0.00175" type="ReactionParameter" simulationType="fixed"/>
+          </ModelParameterGroup>
+          <ModelParameterGroup cn="CN=Root,Model=NF-kB signaling,Vector=Reactions[IkBe translation rate]" type="Reaction">
+            <ModelParameter cn="CN=Root,Model=NF-kB signaling,Vector=Reactions[IkBe translation rate],ParameterGroup=Parameters,Parameter=k1" value="0.00408" type="ReactionParameter" simulationType="fixed"/>
+          </ModelParameterGroup>
+          <ModelParameterGroup cn="CN=Root,Model=NF-kB signaling,Vector=Reactions[constitutive IkBe degradation (free)]" type="Reaction">
+            <ModelParameter cn="CN=Root,Model=NF-kB signaling,Vector=Reactions[constitutive IkBe degradation (free)],ParameterGroup=Parameters,Parameter=k1" value="0.000113" type="ReactionParameter" simulationType="fixed"/>
+          </ModelParameterGroup>
+          <ModelParameterGroup cn="CN=Root,Model=NF-kB signaling,Vector=Reactions[IkBe nuclear import]" type="Reaction">
+            <ModelParameter cn="CN=Root,Model=NF-kB signaling,Vector=Reactions[IkBe nuclear import],ParameterGroup=Parameters,Parameter=k1" value="0.00015" type="ReactionParameter" simulationType="fixed"/>
+          </ModelParameterGroup>
+          <ModelParameterGroup cn="CN=Root,Model=NF-kB signaling,Vector=Reactions[IkBe nuclear export]" type="Reaction">
+            <ModelParameter cn="CN=Root,Model=NF-kB signaling,Vector=Reactions[IkBe nuclear export],ParameterGroup=Parameters,Parameter=k1" value="0.0001" type="ReactionParameter" simulationType="fixed"/>
+          </ModelParameterGroup>
+          <ModelParameterGroup cn="CN=Root,Model=NF-kB signaling,Vector=Reactions[IKK-IkBaNF-kB association]" type="Reaction">
+            <ModelParameter cn="CN=Root,Model=NF-kB signaling,Vector=Reactions[IKK-IkBaNF-kB association],ParameterGroup=Parameters,Parameter=k1" value="0.185" type="ReactionParameter" simulationType="fixed"/>
+          </ModelParameterGroup>
+          <ModelParameterGroup cn="CN=Root,Model=NF-kB signaling,Vector=Reactions[IKK-IkBaNF-kB dissociation]" type="Reaction">
+            <ModelParameter cn="CN=Root,Model=NF-kB signaling,Vector=Reactions[IKK-IkBaNF-kB dissociation],ParameterGroup=Parameters,Parameter=k1" value="0.00125" type="ReactionParameter" simulationType="fixed"/>
+          </ModelParameterGroup>
+          <ModelParameterGroup cn="CN=Root,Model=NF-kB signaling,Vector=Reactions[IkBa-NF-kB nuclear export]" type="Reaction">
+            <ModelParameter cn="CN=Root,Model=NF-kB signaling,Vector=Reactions[IkBa-NF-kB nuclear export],ParameterGroup=Parameters,Parameter=k1" value="0.0138" type="ReactionParameter" simulationType="fixed"/>
+          </ModelParameterGroup>
+          <ModelParameterGroup cn="CN=Root,Model=NF-kB signaling,Vector=Reactions[IKK-IkBbNF-kB association]" type="Reaction">
+            <ModelParameter cn="CN=Root,Model=NF-kB signaling,Vector=Reactions[IKK-IkBbNF-kB association],ParameterGroup=Parameters,Parameter=k1" value="0.048" type="ReactionParameter" simulationType="fixed"/>
+          </ModelParameterGroup>
+          <ModelParameterGroup cn="CN=Root,Model=NF-kB signaling,Vector=Reactions[IKK-IkBbNF-kB dissociation]" type="Reaction">
+            <ModelParameter cn="CN=Root,Model=NF-kB signaling,Vector=Reactions[IKK-IkBbNF-kB dissociation],ParameterGroup=Parameters,Parameter=k1" value="0.00175" type="ReactionParameter" simulationType="fixed"/>
+          </ModelParameterGroup>
+          <ModelParameterGroup cn="CN=Root,Model=NF-kB signaling,Vector=Reactions[IkBb-NF-kB nuclear export]" type="Reaction">
+            <ModelParameter cn="CN=Root,Model=NF-kB signaling,Vector=Reactions[IkBb-NF-kB nuclear export],ParameterGroup=Parameters,Parameter=k1" value="0.0052" type="ReactionParameter" simulationType="fixed"/>
+          </ModelParameterGroup>
+          <ModelParameterGroup cn="CN=Root,Model=NF-kB signaling,Vector=Reactions[IKK-IkBeNF-kB association]" type="Reaction">
+            <ModelParameter cn="CN=Root,Model=NF-kB signaling,Vector=Reactions[IKK-IkBeNF-kB association],ParameterGroup=Parameters,Parameter=k1" value="0.07000000000000001" type="ReactionParameter" simulationType="fixed"/>
+          </ModelParameterGroup>
+          <ModelParameterGroup cn="CN=Root,Model=NF-kB signaling,Vector=Reactions[IKK-IkBeNF-kB dissociation]" type="Reaction">
+            <ModelParameter cn="CN=Root,Model=NF-kB signaling,Vector=Reactions[IKK-IkBeNF-kB dissociation],ParameterGroup=Parameters,Parameter=k1" value="0.00175" type="ReactionParameter" simulationType="fixed"/>
+          </ModelParameterGroup>
+          <ModelParameterGroup cn="CN=Root,Model=NF-kB signaling,Vector=Reactions[IkBe-NF-kB nuclear export]" type="Reaction">
+            <ModelParameter cn="CN=Root,Model=NF-kB signaling,Vector=Reactions[IkBe-NF-kB nuclear export],ParameterGroup=Parameters,Parameter=k1" value="0.0052" type="ReactionParameter" simulationType="fixed"/>
+          </ModelParameterGroup>
+          <ModelParameterGroup cn="CN=Root,Model=NF-kB signaling,Vector=Reactions[slow adaptation ]" type="Reaction">
+            <ModelParameter cn="CN=Root,Model=NF-kB signaling,Vector=Reactions[slow adaptation ],ParameterGroup=Parameters,Parameter=k1" value="0.00012" type="ReactionParameter" simulationType="fixed"/>
+          </ModelParameterGroup>
+          <ModelParameterGroup cn="CN=Root,Model=NF-kB signaling,Vector=Reactions[IKKIkBa catalysis]" type="Reaction">
+            <ModelParameter cn="CN=Root,Model=NF-kB signaling,Vector=Reactions[IKKIkBa catalysis],ParameterGroup=Parameters,Parameter=k1" value="0.00407" type="ReactionParameter" simulationType="fixed"/>
+          </ModelParameterGroup>
+          <ModelParameterGroup cn="CN=Root,Model=NF-kB signaling,Vector=Reactions[IKKIkBb catalysis]" type="Reaction">
+            <ModelParameter cn="CN=Root,Model=NF-kB signaling,Vector=Reactions[IKKIkBb catalysis],ParameterGroup=Parameters,Parameter=k1" value="0.0015" type="ReactionParameter" simulationType="fixed"/>
+          </ModelParameterGroup>
+          <ModelParameterGroup cn="CN=Root,Model=NF-kB signaling,Vector=Reactions[IKKIkBe catalysis]" type="Reaction">
+            <ModelParameter cn="CN=Root,Model=NF-kB signaling,Vector=Reactions[IKKIkBe catalysis],ParameterGroup=Parameters,Parameter=k1" value="0.0022" type="ReactionParameter" simulationType="fixed"/>
+          </ModelParameterGroup>
+        </ModelParameterGroup>
+      </ModelParameterSet>
+    </ListOfModelParameterSets>
     <StateTemplate>
-      <StateTemplateVariable objectReference="Model_1"/>
-      <StateTemplateVariable objectReference="Metabolite_8"/>
+      <StateTemplateVariable objectReference="Model_4"/>
+      <StateTemplateVariable objectReference="Metabolite_3"/>
       <StateTemplateVariable objectReference="Metabolite_19"/>
-      <StateTemplateVariable objectReference="Metabolite_14"/>
-      <StateTemplateVariable objectReference="Metabolite_25"/>
-      <StateTemplateVariable objectReference="Metabolite_23"/>
-      <StateTemplateVariable objectReference="Metabolite_24"/>
-      <StateTemplateVariable objectReference="Metabolite_22"/>
-      <StateTemplateVariable objectReference="Metabolite_9"/>
-      <StateTemplateVariable objectReference="Metabolite_26"/>
-      <StateTemplateVariable objectReference="Metabolite_18"/>
-      <StateTemplateVariable objectReference="Metabolite_20"/>
-      <StateTemplateVariable objectReference="Metabolite_5"/>
-      <StateTemplateVariable objectReference="Metabolite_16"/>
-      <StateTemplateVariable objectReference="Metabolite_13"/>
+      <StateTemplateVariable objectReference="Metabolite_29"/>
       <StateTemplateVariable objectReference="Metabolite_7"/>
       <StateTemplateVariable objectReference="Metabolite_11"/>
-      <StateTemplateVariable objectReference="Metabolite_4"/>
-      <StateTemplateVariable objectReference="Metabolite_3"/>
+      <StateTemplateVariable objectReference="Metabolite_1"/>
+      <StateTemplateVariable objectReference="Metabolite_13"/>
+      <StateTemplateVariable objectReference="Metabolite_9"/>
+      <StateTemplateVariable objectReference="Metabolite_5"/>
+      <StateTemplateVariable objectReference="Metabolite_15"/>
+      <StateTemplateVariable objectReference="Metabolite_23"/>
+      <StateTemplateVariable objectReference="Metabolite_43"/>
+      <StateTemplateVariable objectReference="Metabolite_25"/>
+      <StateTemplateVariable objectReference="Metabolite_35"/>
+      <StateTemplateVariable objectReference="Metabolite_31"/>
+      <StateTemplateVariable objectReference="Metabolite_39"/>
+      <StateTemplateVariable objectReference="Metabolite_45"/>
+      <StateTemplateVariable objectReference="Metabolite_47"/>
       <StateTemplateVariable objectReference="Metabolite_17"/>
       <StateTemplateVariable objectReference="Metabolite_21"/>
-      <StateTemplateVariable objectReference="Metabolite_6"/>
-      <StateTemplateVariable objectReference="Metabolite_10"/>
-      <StateTemplateVariable objectReference="Metabolite_15"/>
-      <StateTemplateVariable objectReference="Metabolite_12"/>
-      <StateTemplateVariable objectReference="Metabolite_2"/>
-      <StateTemplateVariable objectReference="Metabolite_1"/>
-      <StateTemplateVariable objectReference="Compartment_0"/>
+      <StateTemplateVariable objectReference="Metabolite_41"/>
+      <StateTemplateVariable objectReference="Metabolite_37"/>
+      <StateTemplateVariable objectReference="Metabolite_33"/>
+      <StateTemplateVariable objectReference="Metabolite_27"/>
+      <StateTemplateVariable objectReference="Metabolite_49"/>
+      <StateTemplateVariable objectReference="Metabolite_51"/>
       <StateTemplateVariable objectReference="Compartment_1"/>
-      <StateTemplateVariable objectReference="Compartment_2"/>
-      <StateTemplateVariable objectReference="ModelValue_49"/>
-      <StateTemplateVariable objectReference="ModelValue_50"/>
+      <StateTemplateVariable objectReference="Compartment_3"/>
+      <StateTemplateVariable objectReference="Compartment_5"/>
+      <StateTemplateVariable objectReference="ModelValue_0"/>
+      <StateTemplateVariable objectReference="ModelValue_1"/>
     </StateTemplate>
     <InitialState type="initialState">
-      0 151003436170486.9 6.0221415e+16 130693678930243.6 1.302896374584552e+16 9295946043384088 1.142181436469596e+17 3568330109474252 5.018415300625579e+16 5001281570759049 0 0 3313802111159246 0 1.135765465584134e+17 7091626785276905 9939445415584982 382836138214284.7 273147132321427.9 0 0 134973684513639.8 189175715302730.4 0 861803796660524.4 0 6.0221415e+17 1 1 1 0 0 
+      0 151003436170486.9 6.0221415e+16 130693678930243.6 1.302896374584552e+16 9295946043384088 1.142181436469596e+17 3568330109474252 5001281570759049 5.018415300625579e+16 0 0 3313802111159246 0 9939445415584982 1.135765465584134e+17 7091626785276905 382836138214284.7 273147132321427.9 0 0 134973684513639.8 189175715302730.4 861803796660524.4 0 0 6.0221415e+17 1 1 1 0 0 
     </InitialState>
   </Model>
   <ListOfTasks>
-    <Task key="Task_14" name="Steady-State" type="steadyState" scheduled="false" updateModel="false">
-      <Report reference="Report_19" target="" append="1" confirmOverwrite="0"/>
+    <Task key="Task_12" name="Steady-State" type="steadyState" scheduled="false" updateModel="false">
+      <Report reference="Report_8" target="" append="1" confirmOverwrite="0"/>
       <Problem>
         <Parameter name="JacobianRequested" type="bool" value="1"/>
         <Parameter name="StabilityAnalysisRequested" type="bool" value="1"/>
@@ -1620,8 +1858,8 @@ Reaction scheme where the products are created from the reactants and the change
         <Parameter name="Maximum duration for backward integration" type="unsignedFloat" value="1000000"/>
       </Method>
     </Task>
-    <Task key="Task_15" name="Time-Course" type="timeCourse" scheduled="true" updateModel="false">
-      <Report reference="Report_12" target="EventTest7.1.txt" append="0" confirmOverwrite="0"/>
+    <Task key="Task_11" name="Time-Course" type="timeCourse" scheduled="true" updateModel="false">
+      <Report reference="Report_4" target="EventTest7.1.txt" append="0" confirmOverwrite="0"/>
       <Problem>
         <Parameter name="StepNumber" type="unsignedInteger" value="216"/>
         <Parameter name="StepSize" type="float" value="100"/>
@@ -1629,15 +1867,16 @@ Reaction scheme where the products are created from the reactants and the change
         <Parameter name="TimeSeriesRequested" type="bool" value="1"/>
         <Parameter name="OutputStartTime" type="float" value="0"/>
         <Parameter name="Output Event" type="bool" value="0"/>
+        <Parameter name="Continue on Simultaneous Events" type="bool" value="0"/>
       </Problem>
       <Method name="Deterministic (LSODA)" type="Deterministic(LSODA)">
-        <Parameter name="Integrate Reduced Model" type="bool" value="1"/>
-        <Parameter name="Relative Tolerance" type="unsignedFloat" value="1e-07"/>
+        <Parameter name="Integrate Reduced Model" type="bool" value="0"/>
+        <Parameter name="Relative Tolerance" type="unsignedFloat" value="1e-08"/>
         <Parameter name="Absolute Tolerance" type="unsignedFloat" value="1e-12"/>
-        <Parameter name="Max Internal Steps" type="unsignedInteger" value="10000"/>
+        <Parameter name="Max Internal Steps" type="unsignedInteger" value="100000"/>
       </Method>
     </Task>
-    <Task key="Task_16" name="Scan" type="scan" scheduled="false" updateModel="false">
+    <Task key="Task_10" name="Scan" type="scan" scheduled="false" updateModel="false">
       <Problem>
         <Parameter name="Subtask" type="unsignedInteger" value="1"/>
         <ParameterGroup name="ScanItems">
@@ -1648,8 +1887,8 @@ Reaction scheme where the products are created from the reactants and the change
       <Method name="Scan Framework" type="ScanFramework">
       </Method>
     </Task>
-    <Task key="Task_17" name="Optimization" type="optimization" scheduled="false" updateModel="false">
-      <Report reference="Report_9" target="" append="1" confirmOverwrite="0"/>
+    <Task key="Task_9" name="Optimization" type="optimization" scheduled="false" updateModel="false">
+      <Report reference="Report_7" target="" append="1" confirmOverwrite="0"/>
       <Problem>
         <Parameter name="Subtask" type="cn" value="Vector=TaskList[Time-Course]"/>
         <ParameterText name="ObjectiveExpression" type="expression">
@@ -1669,8 +1908,8 @@ Reaction scheme where the products are created from the reactants and the change
         <Parameter name="Seed" type="unsignedInteger" value="0"/>
       </Method>
     </Task>
-    <Task key="Task_18" name="Parameter Estimation" type="parameterFitting" scheduled="false" updateModel="false">
-      <Report reference="Report_10" target="" append="1" confirmOverwrite="0"/>
+    <Task key="Task_8" name="Parameter Estimation" type="parameterFitting" scheduled="false" updateModel="false">
+      <Report reference="Report_6" target="" append="1" confirmOverwrite="0"/>
       <Problem>
         <Parameter name="Maximize" type="bool" value="0"/>
         <Parameter name="Randomize Start Values" type="bool" value="0"/>
@@ -1683,7 +1922,7 @@ Reaction scheme where the products are created from the reactants and the change
         <Parameter name="Time-Course" type="cn" value="CN=Root,Vector=TaskList[Time-Course]"/>
         <ParameterGroup name="Experiment Set">
         </ParameterGroup>
-        <ParameterGroup name="Cross Validation Set">
+        <ParameterGroup name="Validation Set">
           <Parameter name="Threshold" type="unsignedInteger" value="5"/>
           <Parameter name="Weight" type="unsignedFloat" value="1"/>
         </ParameterGroup>
@@ -1695,17 +1934,17 @@ Reaction scheme where the products are created from the reactants and the change
         <Parameter name="Seed" type="unsignedInteger" value="0"/>
       </Method>
     </Task>
-    <Task key="Task_19" name="Metabolic Control Analysis" type="metabolicControlAnalysis" scheduled="false" updateModel="false">
-      <Report reference="Report_14" target="" append="1" confirmOverwrite="0"/>
+    <Task key="Task_7" name="Metabolic Control Analysis" type="metabolicControlAnalysis" scheduled="false" updateModel="false">
+      <Report reference="Report_2" target="" append="1" confirmOverwrite="0"/>
       <Problem>
-        <Parameter name="Steady-State" type="key" value="Task_20"/>
+        <Parameter name="Steady-State" type="key" value="Task_6"/>
       </Problem>
       <Method name="MCA Method (Reder)" type="MCAMethod(Reder)">
         <Parameter name="Modulation Factor" type="unsignedFloat" value="1e-09"/>
       </Method>
     </Task>
-    <Task key="Task_20" name="Lyapunov Exponents" type="lyapunovExponents" scheduled="false" updateModel="false">
-      <Report reference="Report_11" target="" append="1" confirmOverwrite="0"/>
+    <Task key="Task_6" name="Lyapunov Exponents" type="lyapunovExponents" scheduled="false" updateModel="false">
+      <Report reference="Report_5" target="" append="1" confirmOverwrite="0"/>
       <Problem>
         <Parameter name="ExponentNumber" type="unsignedInteger" value="3"/>
         <Parameter name="DivergenceRequested" type="bool" value="1"/>
@@ -1719,15 +1958,15 @@ Reaction scheme where the products are created from the reactants and the change
         <Parameter name="Max Internal Steps" type="unsignedInteger" value="10000"/>
       </Method>
     </Task>
-    <Task key="Task_21" name="Elementary Flux Modes" type="fluxMode" scheduled="false" updateModel="false">
-      <Report reference="Report_13" target="" append="1" confirmOverwrite="0"/>
+    <Task key="Task_5" name="Elementary Flux Modes" type="fluxMode" scheduled="false" updateModel="false">
+      <Report reference="Report_3" target="" append="1" confirmOverwrite="0"/>
       <Problem>
       </Problem>
       <Method name="EFM Algorithm" type="EFMAlgorithm">
       </Method>
     </Task>
-    <Task key="Task_22" name="Time Scale Separation Analysis" type="timeScaleSeparationAnalysis" scheduled="false" updateModel="false">
-      <Report reference="Report_15" target="" append="1" confirmOverwrite="0"/>
+    <Task key="Task_4" name="Time Scale Separation Analysis" type="timeScaleSeparationAnalysis" scheduled="false" updateModel="false">
+      <Report reference="Report_1" target="" append="1" confirmOverwrite="0"/>
       <Problem>
         <Parameter name="StepNumber" type="unsignedInteger" value="100"/>
         <Parameter name="StepSize" type="float" value="0.01"/>
@@ -1739,8 +1978,8 @@ Reaction scheme where the products are created from the reactants and the change
         <Parameter name="Deuflhard Tolerance" type="unsignedFloat" value="1e-06"/>
       </Method>
     </Task>
-    <Task key="Task_23" name="Sensitivities" type="sensitivities" scheduled="false" updateModel="false">
-      <Report reference="Report_16" target="" append="1" confirmOverwrite="0"/>
+    <Task key="Task_3" name="Sensitivities" type="sensitivities" scheduled="false" updateModel="false">
+      <Report reference="Report_0" target="" append="1" confirmOverwrite="0"/>
       <Problem>
         <Parameter name="SubtaskType" type="unsignedInteger" value="1"/>
         <ParameterGroup name="TargetFunctions">
@@ -1759,13 +1998,13 @@ Reaction scheme where the products are created from the reactants and the change
         <Parameter name="Delta minimum" type="unsignedFloat" value="1e-12"/>
       </Method>
     </Task>
-    <Task key="Task_24" name="Moieties" type="moieties" scheduled="false" updateModel="false">
+    <Task key="Task_2" name="Moieties" type="moieties" scheduled="false" updateModel="false">
       <Problem>
       </Problem>
       <Method name="Householder Reduction" type="Householder">
       </Method>
     </Task>
-    <Task key="Task_25" name="Cross Section" type="crosssection" scheduled="false" updateModel="false">
+    <Task key="Task_1" name="Cross Section" type="crosssection" scheduled="false" updateModel="false">
       <Problem>
         <Parameter name="StepNumber" type="unsignedInteger" value="100"/>
         <Parameter name="StepSize" type="float" value="0.01"/>
@@ -1773,12 +2012,23 @@ Reaction scheme where the products are created from the reactants and the change
         <Parameter name="TimeSeriesRequested" type="bool" value="1"/>
         <Parameter name="OutputStartTime" type="float" value="0"/>
         <Parameter name="Output Event" type="bool" value="0"/>
+        <Parameter name="Continue on Simultaneous Events" type="bool" value="0"/>
         <Parameter name="LimitCrossings" type="bool" value="0"/>
         <Parameter name="NumCrossingsLimit" type="unsignedInteger" value="0"/>
-        <Parameter name="LimitTime" type="bool" value="1"/>
+        <Parameter name="LimitOutTime" type="bool" value="0"/>
+        <Parameter name="LimitOutCrossings" type="bool" value="0"/>
+        <Parameter name="PositiveDirection" type="bool" value="1"/>
+        <Parameter name="NumOutCrossingsLimit" type="unsignedInteger" value="0"/>
+        <Parameter name="LimitUntilConvergence" type="bool" value="0"/>
+        <Parameter name="ConvergenceTolerance" type="float" value="1e-06"/>
+        <Parameter name="Threshold" type="float" value="0"/>
+        <Parameter name="DelayOutputUntilConvergence" type="bool" value="0"/>
+        <Parameter name="OutputConvergenceTolerance" type="float" value="1e-06"/>
         <ParameterText name="TriggerExpression" type="expression">
           
         </ParameterText>
+        <Parameter name="SingleVariable" type="cn" value=""/>
+        <Parameter name="LimitTime" type="bool" value="1"/>
       </Problem>
       <Method name="Deterministic (LSODA)" type="Deterministic(LSODA)">
         <Parameter name="Integrate Reduced Model" type="bool" value="0"/>
@@ -1787,17 +2037,17 @@ Reaction scheme where the products are created from the reactants and the change
         <Parameter name="Max Internal Steps" type="unsignedInteger" value="10000"/>
       </Method>
     </Task>
-    <Task key="Task_26" name="Linear Noise Approximation" type="linearNoiseApproximation" scheduled="false" updateModel="false">
-      <Report reference="Report_7" target="" append="1" confirmOverwrite="1"/>
+    <Task key="Task_13" name="Linear Noise Approximation" type="linearNoiseApproximation" scheduled="false" updateModel="false">
+      <Report reference="Report_19" target="" append="1" confirmOverwrite="1"/>
       <Problem>
-        <Parameter name="Steady-State" type="key" value="Task_14"/>
+        <Parameter name="Steady-State" type="key" value="Task_12"/>
       </Problem>
       <Method name="Linear Noise Approximation" type="LinearNoiseApproximation">
       </Method>
     </Task>
   </ListOfTasks>
   <ListOfReports>
-    <Report key="Report_19" name="Steady-State" taskType="steadyState" separator="&#x09;" precision="6">
+    <Report key="Report_8" name="Steady-State" taskType="steadyState" separator="&#x09;" precision="6">
       <Comment>
         <html xmlns="http://www.w3.org/1999/xhtml"><head><meta name="qrichtext" content="1" /></head><body style="font-size:8pt;font-family:MS Shell Dlg">
 <p>Automatically generated report. </p>
@@ -1807,7 +2057,7 @@ Reaction scheme where the products are created from the reactants and the change
         <Object cn="CN=Root,Vector=TaskList[Steady-State]"/>
       </Footer>
     </Report>
-    <Report key="Report_9" name="Optimization" taskType="optimization" separator="&#x09;" precision="6">
+    <Report key="Report_7" name="Optimization" taskType="optimization" separator="&#x09;" precision="6">
       <Comment>
         <body xmlns="http://www.w3.org/1999/xhtml">
           Automatically generated report.
@@ -1833,7 +2083,7 @@ Reaction scheme where the products are created from the reactants and the change
         <Object cn="CN=Root,Vector=TaskList[Optimization],Object=Result"/>
       </Footer>
     </Report>
-    <Report key="Report_10" name="Parameter Estimation" taskType="parameterFitting" separator="&#x09;" precision="6">
+    <Report key="Report_6" name="Parameter Estimation" taskType="parameterFitting" separator="&#x09;" precision="6">
       <Comment>
         <body xmlns="http://www.w3.org/1999/xhtml">
           Automatically generated report.
@@ -1859,7 +2109,7 @@ Reaction scheme where the products are created from the reactants and the change
         <Object cn="CN=Root,Vector=TaskList[Parameter Estimation],Object=Result"/>
       </Footer>
     </Report>
-    <Report key="Report_11" name="Lyapunov Exponents" taskType="lyapunovExponents" separator="&#x09;" precision="6">
+    <Report key="Report_5" name="Lyapunov Exponents" taskType="lyapunovExponents" separator="&#x09;" precision="6">
       <Comment>
         <body xmlns="http://www.w3.org/1999/xhtml">
           Automatically generated report.
@@ -1873,7 +2123,7 @@ Reaction scheme where the products are created from the reactants and the change
         <Object cn="CN=Root,Vector=TaskList[Lyapunov Exponents],Object=Result"/>
       </Footer>
     </Report>
-    <Report key="Report_12" name="Table of concentrations and fluxes with time" taskType="timeCourse" separator="&#x09;" precision="7">
+    <Report key="Report_4" name="Table of concentrations and fluxes with time" taskType="timeCourse" separator="&#x09;" precision="7">
       <Comment>
         <body xmlns="http://www.w3.org/1999/xhtml">
           A table of the concentrations of the variable metabolites, the fluxes of all reactions, and time. Fluxes are in concentration/time unit.
@@ -1971,7 +2221,7 @@ Reaction scheme where the products are created from the reactants and the change
         <Object cn="CN=Root,Model=NF-kB signaling,Vector=Reactions[IKKIkBe catalysis],Reference=Flux"/>
       </Table>
     </Report>
-    <Report key="Report_13" name="Elementary Flux Modes" taskType="fluxMode" separator="&#x09;" precision="6">
+    <Report key="Report_3" name="Elementary Flux Modes" taskType="fluxMode" separator="&#x09;" precision="6">
       <Comment>
         <body xmlns="http://www.w3.org/1999/xhtml">
           Automatically generated report.
@@ -1981,7 +2231,7 @@ Reaction scheme where the products are created from the reactants and the change
         <Object cn="CN=Root,Vector=TaskList[Elementary Flux Modes],Object=Result"/>
       </Footer>
     </Report>
-    <Report key="Report_14" name="Metabolic Control Analysis" taskType="metabolicControlAnalysis" separator="&#x09;" precision="6">
+    <Report key="Report_2" name="Metabolic Control Analysis" taskType="metabolicControlAnalysis" separator="&#x09;" precision="6">
       <Comment>
         <body xmlns="http://www.w3.org/1999/xhtml">
           Automatically generated report.
@@ -1995,7 +2245,7 @@ Reaction scheme where the products are created from the reactants and the change
         <Object cn="CN=Root,Vector=TaskList[Metabolic Control Analysis],Object=Result"/>
       </Footer>
     </Report>
-    <Report key="Report_15" name="Time Scale Separation Analysis" taskType="timeScaleSeparationAnalysis" separator="&#x09;" precision="6">
+    <Report key="Report_1" name="Time Scale Separation Analysis" taskType="timeScaleSeparationAnalysis" separator="&#x09;" precision="6">
       <Comment>
         <body xmlns="http://www.w3.org/1999/xhtml">
           Automatically generated report.
@@ -2009,7 +2259,7 @@ Reaction scheme where the products are created from the reactants and the change
         <Object cn="CN=Root,Vector=TaskList[Time Scale Separation Analysis],Object=Result"/>
       </Footer>
     </Report>
-    <Report key="Report_16" name="Sensitivities" taskType="sensitivities" separator="&#x09;" precision="6">
+    <Report key="Report_0" name="Sensitivities" taskType="sensitivities" separator="&#x09;" precision="6">
       <Comment>
         <body xmlns="http://www.w3.org/1999/xhtml">
           Automatically generated report.
@@ -2023,7 +2273,7 @@ Reaction scheme where the products are created from the reactants and the change
         <Object cn="CN=Root,Vector=TaskList[Sensitivities],Object=Result"/>
       </Footer>
     </Report>
-    <Report key="Report_8" name="Trajectory" taskType="timeCourse" separator="&#x09;" precision="7">
+    <Report key="Report_18" name="Trajectory" taskType="timeCourse" separator="&#x09;" precision="7">
       <Comment>
         <body xmlns="http://www.w3.org/1999/xhtml">
           
@@ -2037,7 +2287,7 @@ Reaction scheme where the products are created from the reactants and the change
         <Object cn="CN=Root,Model=NF-kB signaling,Vector=Values[PeakValue],Reference=Value"/>
       </Table>
     </Report>
-    <Report key="Report_7" name="Linear Noise Approximation" taskType="linearNoiseApproximation" separator="&#x09;" precision="6">
+    <Report key="Report_19" name="Linear Noise Approximation" taskType="linearNoiseApproximation" separator="&#x09;" precision="6">
       <Comment>
         Automatically generated report.
       </Comment>
