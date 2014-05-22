@@ -1192,7 +1192,9 @@ void CMathEventN::createUpdateSequences()
 
 void CMathEventN::fire(const bool & equality)
 {
-  if (mTrigger.isTrue())
+  // Discontinuities have to be fired also when the trigger switches to false.
+
+  if (mTrigger.isTrue() || mType == CEvent::Discontinuity)
     {
       if (mDelayAssignment)
         {
