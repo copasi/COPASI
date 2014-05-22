@@ -35,7 +35,7 @@ private:
   struct sDiscontinuous
   {
   public:
-    CMathEventN * pEvent;
+    CMathEvent * pEvent;
     CMathObject * pDiscontinuous;
   };
 
@@ -177,7 +177,7 @@ public:
   /**
    * Retrieve a vector of pointers to root processors
    */
-  CVector< CMathEventN::CTrigger::CRootProcessor * > & getRootProcessors();
+  CVector< CMathEvent::CTrigger::CRootProcessor * > & getRootProcessors();
 
   /**
    * Calculate all dependent initial values based on initial extensive
@@ -366,7 +366,7 @@ public:
    * Retrieve the events
    * @return const CVector< CMathEventN > & events
    */
-  const CVector< CMathEventN > & getEvents() const;
+  const CVector< CMathEvent > & getEvents() const;
 
   /**
    * Retrieve the initial dependencies
@@ -441,13 +441,13 @@ public:
    * @param const CEvent & dataEvent
    * @return CMathEventN * pMathEvent
    */
-  CMathEventN * addEvent(const CEvent & dataEvent);
+  CMathEvent * addEvent(const CEvent & dataEvent);
 
   /**
    * Remove the event from the container
    * @param CMathEventN * pMathEvent
    */
-  void removeEvent(CMathEventN * pMathEvent);
+  void removeEvent(CMathEvent * pMathEvent);
 
   /**
    * Retrieve the random number generator.
@@ -797,7 +797,7 @@ private:
   /**
    * A vector containing all math events.
    */
-  CVector< CMathEventN > mEvents;
+  CVector< CMathEvent > mEvents;
 
   /**
    * A vector containing all math reactions.
@@ -813,7 +813,7 @@ private:
   /**
    * A vector of pointers to all objects values CMathEventN::CTrigger::CRootProcessor
    */
-  CVector< CMathEventN::CTrigger::CRootProcessor * > mRootProcessors;
+  CVector< CMathEvent::CTrigger::CRootProcessor * > mRootProcessors;
 
   /**
    * Structure of pointers used for creating discontinuities.
@@ -845,7 +845,7 @@ private:
    * A map from the discontinuity trigger infix of to event
    * representing it.
    */
-  std::map< std::string,  CMathEventN * > mTriggerInfix2Event;
+  std::map< std::string,  CMathEvent * > mTriggerInfix2Event;
 };
 
 #endif // COPASI_CMathContainer

@@ -32,7 +32,6 @@
 #include "CTrajectoryMethod.h"
 #include "math/CMathContainer.h"
 #include "model/CModel.h"
-#include "model/CMathModel.h"
 #include "model/CModel.h"
 #include "model/CState.h"
 #include "report/CKeyFactory.h"

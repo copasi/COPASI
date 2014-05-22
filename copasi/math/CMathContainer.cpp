@@ -321,9 +321,9 @@ CMathContainer::CMathContainer(const CMathContainer & src):
       pObject->copy(*pObjectSrc, *this, ValueOffset, ObjectOffset);
     }
 
-  CMathEventN * pEvent = mEvents.array();
-  CMathEventN * pEventEnd = pEvent + mEvents.size();
-  const CMathEventN * pEventSrc = src.mEvents.array();
+  CMathEvent * pEvent = mEvents.array();
+  CMathEvent * pEventEnd = pEvent + mEvents.size();
+  const CMathEvent * pEventSrc = src.mEvents.array();
 
   for (; pEvent != pEventEnd; ++pEvent, ++pEventSrc)
     {
@@ -502,7 +502,7 @@ const CVectorCore< bool > & CMathContainer::getRootIsDiscrete() const
   return mRootIsDiscrete;
 }
 
-CVector< CMathEventN::CTrigger::CRootProcessor * > & CMathContainer::getRootProcessors()
+CVector< CMathEvent::CTrigger::CRootProcessor * > & CMathContainer::getRootProcessors()
 {
   return mRootProcessors;
 }
@@ -541,8 +541,8 @@ void CMathContainer::applyInitialValues()
   calculateRootDerivatives(RootDerivatives);
 
   // Determine the initial root states.
-  CMathEventN::CTrigger::CRootProcessor ** pRoot = mRootProcessors.array();
-  CMathEventN::CTrigger::CRootProcessor ** pRootEnd = pRoot + mRootProcessors.size();
+  CMathEvent::CTrigger::CRootProcessor ** pRoot = mRootProcessors.array();
+  CMathEvent::CTrigger::CRootProcessor ** pRootEnd = pRoot + mRootProcessors.size();
 
   for (; pRoot != pRootEnd; ++pRoot)
     {
@@ -561,7 +561,7 @@ void CMathContainer::applyInitialValues()
   // Fire events which triggers are true and which may fire at the initial time
   C_FLOAT64 * pTrigger = mEventTriggers.array();
   C_FLOAT64 * pTriggerEnd = pTrigger + mEventTriggers.size();
-  CMathEventN * pEvent = mEvents.array();
+  CMathEvent * pEvent = mEvents.array();
 
   for (; pTrigger != pTriggerEnd; ++pTrigger, ++pEvent)
     {
@@ -860,8 +860,8 @@ void CMathContainer::init()
         }
     }
 
-  CMathEventN * pEvent = mEvents.array();
-  CMathEventN * pEventEnd = pEvent + mEvents.size();
+  CMathEvent * pEvent = mEvents.array();
+  CMathEvent * pEventEnd = pEvent + mEvents.size();
 
   for (; pEvent != pEventEnd; ++pEvent)
     {
@@ -935,7 +935,7 @@ const CVector< CMathReaction > & CMathContainer::getReactions() const
   return mReactions;
 }
 
-const CVector< CMathEventN > & CMathContainer::getEvents() const
+const CVector< CMathEvent > & CMathContainer::getEvents() const
 {
   return mEvents;
 }
@@ -1127,11 +1127,11 @@ CMathContainer::replaceDiscontinuousNode(const CEvaluationNode * pSrc,
   success &= static_cast< CEvaluationTree * >(pExpression)->setRoot(pNode);
   success &= pDiscontinuity->setExpressionPtr(pExpression);
 
-  CMathEventN * pEvent = NULL;
+  CMathEvent * pEvent = NULL;
 
   // Check whether we have already an event with the current trigger
   std::string TriggerInfix = createDiscontinuityTriggerInfix(pNode);
-  std::map< std::string, CMathEventN * >::iterator itEvent = mTriggerInfix2Event.find(TriggerInfix);
+  std::map< std::string, CMathEvent * >::iterator itEvent = mTriggerInfix2Event.find(TriggerInfix);
 
   // We need to create an event.
   if (itEvent == mTriggerInfix2Event.end())
@@ -1200,11 +1200,11 @@ void CMathContainer::allocate()
   nEvents += Events.size();
   mEvents.resize(nEvents);
 
-  CMathEventN * pEvent = mEvents.array();
+  CMathEvent * pEvent = mEvents.array();
 
   for (; itEvent != endEvent; ++itEvent, ++pEvent)
     {
-      CMathEventN::allocate(pEvent, *itEvent, *this);
+      CMathEvent::allocate(pEvent, *itEvent, *this);
 
       nEventRoots += pEvent->getTrigger().getRoots().size();
       nEventAssignments += pEvent->getAssignments().size();
@@ -1215,7 +1215,7 @@ void CMathContainer::allocate()
 
   for (; itEvent != endEvent; ++itEvent, ++pEvent)
     {
-      CMathEventN::allocate(pEvent, *itEvent, *this);
+      CMathEvent::allocate(pEvent, *itEvent, *this);
       nEventRoots += pEvent->getTrigger().getRoots().size();
 
       // We do not have to allocate an assignment as discontinuity object suffices
@@ -1432,8 +1432,8 @@ void CMathContainer::initializeObjects(CMath::sPointers & p)
 void CMathContainer::initializeEvents(CMath::sPointers & p)
 {
   // Initialize events.
-  CMathEventN * pEvent = mEvents.array();
-  CMathEventN * pEventEnd = pEvent + mEvents.size();
+  CMathEvent * pEvent = mEvents.array();
+  CMathEvent * pEventEnd = pEvent + mEvents.size();
 
   for (; pEvent != pEventEnd; ++pEvent)
     {
@@ -1462,7 +1462,7 @@ bool CMathContainer::compileEvents()
 {
   bool success = true;
 
-  CMathEventN * pItEvent = mEvents.array();
+  CMathEvent * pItEvent = mEvents.array();
 
   CCopasiVector< CEvent >::const_iterator itEvent = mpModel->getEvents().begin();
   CCopasiVector< CEvent >::const_iterator endEvent = mpModel->getEvents().end();
@@ -1823,15 +1823,15 @@ void CMathContainer::analyzeRoots()
 
   mRootProcessors.resize(RootCount);
 
-  CMathEventN * pEvent = mEvents.array();
-  CMathEventN * pEventEnd = pEvent + mEvents.size();
+  CMathEvent * pEvent = mEvents.array();
+  CMathEvent * pEventEnd = pEvent + mEvents.size();
   pRoot = getMathObject(mEventRoots.array());
-  CMathEventN::CTrigger::CRootProcessor ** pRootProcessorPtr = mRootProcessors.array();
+  CMathEvent::CTrigger::CRootProcessor ** pRootProcessorPtr = mRootProcessors.array();
 
   for (; pEvent != pEventEnd; ++pEvent)
     {
-      CMathEventN::CTrigger::CRootProcessor * pRootProcessor = const_cast< CMathEventN::CTrigger::CRootProcessor * >(pEvent->getTrigger().getRoots().array());
-      CMathEventN::CTrigger::CRootProcessor * pRootProcessorEnd = pRootProcessor + pEvent->getTrigger().getRoots().size();
+      CMathEvent::CTrigger::CRootProcessor * pRootProcessor = const_cast< CMathEvent::CTrigger::CRootProcessor * >(pEvent->getTrigger().getRoots().array());
+      CMathEvent::CTrigger::CRootProcessor * pRootProcessorEnd = pRootProcessor + pEvent->getTrigger().getRoots().size();
 
       for (; pRootProcessor != pRootProcessorEnd; ++pRootProcessor, ++pRoot, ++pRootProcessorPtr)
         {
@@ -1960,8 +1960,8 @@ void CMathContainer::processRoots(const bool & equality,
   std::cout << rootsFound << std::endl;
 
   // Reevaluate all non found roots.
-  CMathEventN::CTrigger::CRootProcessor ** pRoot = mRootProcessors.array();
-  CMathEventN::CTrigger::CRootProcessor ** pRootEnd = pRoot + mRootProcessors.size();
+  CMathEvent::CTrigger::CRootProcessor ** pRoot = mRootProcessors.array();
+  CMathEvent::CTrigger::CRootProcessor ** pRootEnd = pRoot + mRootProcessors.size();
   const C_INT * pRootFound = rootsFound.array();
 
   for (; pRoot != pRootEnd; ++pRoot, ++pRootFound)
@@ -2008,8 +2008,8 @@ void CMathContainer::processRoots(const bool & equality,
   // Find out which events fire and add them to the process queue
   C_FLOAT64 * pBefore = Before.array();
   C_FLOAT64 * pAfter = mEventTriggers.array();
-  CMathEventN * pEvent = mEvents.array();
-  CMathEventN * pEventEnd = pEvent + mEvents.size();
+  CMathEvent * pEvent = mEvents.array();
+  CMathEvent * pEventEnd = pEvent + mEvents.size();
 
   // Compare Before and the current mEventTriggers
   for (; pEvent != pEventEnd; ++pEvent, ++pBefore, ++pAfter)
@@ -2040,8 +2040,8 @@ void CMathContainer::processRoots(const CVector< C_INT > & rootsFound)
   CVector< C_FLOAT64 > Before = mEventTriggers;
 
   // Toggle all found roots.
-  CMathEventN::CTrigger::CRootProcessor ** pRoot = mRootProcessors.array();
-  CMathEventN::CTrigger::CRootProcessor ** pRootEnd = pRoot + mRootProcessors.size();
+  CMathEvent::CTrigger::CRootProcessor ** pRoot = mRootProcessors.array();
+  CMathEvent::CTrigger::CRootProcessor ** pRootEnd = pRoot + mRootProcessors.size();
   const C_INT * pRootFound = rootsFound.array();
   C_FLOAT64 & Time = mState[mEventTargetCount];
 
@@ -2066,8 +2066,8 @@ void CMathContainer::processRoots(const CVector< C_INT > & rootsFound)
   // Find out which events fire and add them to the process queue
   C_FLOAT64 * pBefore = Before.array();
   C_FLOAT64 * pAfter = mEventTriggers.array();
-  CMathEventN * pEvent = mEvents.array();
-  CMathEventN * pEventEnd = pEvent + mEvents.size();
+  CMathEvent * pEvent = mEvents.array();
+  CMathEvent * pEventEnd = pEvent + mEvents.size();
 
   // Compare Before and the current mEventTriggers
   for (; pEvent != pEventEnd; ++pEvent, ++pBefore, ++pAfter)
@@ -2515,7 +2515,7 @@ C_FLOAT64 * CMathContainer::getInitialValuePointer(const C_FLOAT64 * pValue) con
   return const_cast< C_FLOAT64 * >(pInitialValue);
 }
 
-CMathEventN * CMathContainer::addEvent(const CEvent & dataEvent)
+CMathEvent * CMathContainer::addEvent(const CEvent & dataEvent)
 {
   // TODO CRITICAL Implement me!
   fatalError();
@@ -2523,7 +2523,7 @@ CMathEventN * CMathContainer::addEvent(const CEvent & dataEvent)
   return NULL;
 }
 
-void CMathContainer::removeEvent(CMathEventN * pMathEvent)
+void CMathContainer::removeEvent(CMathEvent * pMathEvent)
 {
   // TODO CRITICAL Implement me!
   fatalError();

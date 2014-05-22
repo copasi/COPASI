@@ -24,7 +24,7 @@
 
 class CCrossSectionProblem;
 class CState;
-class CMathEventN;
+class CMathEvent;
 class CCallbackInterface;
 
 class CCrossSectionTask : public CTrajectoryTask
@@ -163,7 +163,7 @@ private:
   /**
    * Pointer to the event representing the cut plane
    */
-  CMathEventN * mpEvent;
+  CMathEvent * mpEvent;
 
   /**
    * A pointer to the callback register with the event.

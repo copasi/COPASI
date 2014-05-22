@@ -21,7 +21,6 @@
 //#include "CCrossSectionMethod.h"
 #include "math/CMathContainer.h"
 #include "model/CModel.h"
-#include "model/CMathModel.h"
 #include "model/CState.h"
 #include "report/CKeyFactory.h"
 #include "report/CReport.h"

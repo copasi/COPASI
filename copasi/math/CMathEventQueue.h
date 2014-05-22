@@ -13,7 +13,7 @@
 #include "copasi/utilities/CVector.h"
 
 class CExpression;
-class CMathEventN;
+class CMathEvent;
 class CMathContainer;
 
 class CMathEventQueue
@@ -119,7 +119,7 @@ public:
      * @param CMathEventN * pEvent
      * @param CMathEventQueue * pProcessQueue
      */
-    CAction(CMathEventN * pEvent,
+    CAction(CMathEvent * pEvent,
             CMathEventQueue * pProcessQueue);
 
     /**
@@ -129,7 +129,7 @@ public:
      * @param CMathEventQueue * pProcessQueue
      */
     CAction(const CVector< C_FLOAT64 > & values,
-            CMathEventN * pEvent,
+            CMathEvent * pEvent,
             CMathEventQueue * pProcessQueue);
 
     /**
@@ -147,7 +147,7 @@ public:
      * Retrieve the event id
      * @return CMathEventN * pEvent
      */
-    CMathEventN * getEvent() const;
+    CMathEvent * getEvent() const;
 
     /**
      * Retrieve the type of action
@@ -182,7 +182,7 @@ public:
     /**
      * The event associated with this action
      */
-    CMathEventN * mpEvent;
+    CMathEvent * mpEvent;
 
     /**
      * A pointer to the process queue to which a subsequent assignment must be added if
@@ -235,7 +235,7 @@ public:
   bool addAssignment(const C_FLOAT64 & executionTime,
                      const bool & equality,
                      const CVectorCore< C_FLOAT64 > & values,
-                     CMathEventN * pEvent);
+                     CMathEvent * pEvent);
 
   /**
    * Add a calculation to the process queue.
@@ -246,7 +246,7 @@ public:
    */
   bool addCalculation(const C_FLOAT64 & executionTime,
                       const bool & equality,
-                      CMathEventN * pEvent);
+                      CMathEvent * pEvent);
 
   /**
    * Remove an action from queue

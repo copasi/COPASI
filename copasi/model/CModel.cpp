@@ -46,7 +46,6 @@
 #include "CReactionInterface.h"
 #include "utilities/CAnnotatedMatrix.h"
 #include "CMetabNameInterface.h"
-#include "CMathModel.h"
 
 #include "math/CMathContainer.h"
 

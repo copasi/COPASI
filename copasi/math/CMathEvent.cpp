@@ -12,7 +12,6 @@
 #include "CMathExpression.h"
 #include "CMathEventQueue.h"
 
-#include "model/CMathModel.h"
 #include "model/CEvent.h"
 
 #include "function/CFunction.h"
@@ -20,15 +19,15 @@
 #include "utilities/CNodeIterator.h"
 #include "utilities/CCallback.h"
 
-CMathEventN::CAssignment::CAssignment():
+CMathEvent::CAssignment::CAssignment():
   mpTarget(NULL),
   mpAssignment(NULL)
 {}
 
-CMathEventN::CAssignment::~CAssignment()
+CMathEvent::CAssignment::~CAssignment()
 {}
 
-void CMathEventN::CAssignment::initialize(CMath::sPointers & pointers)
+void CMathEvent::CAssignment::initialize(CMath::sPointers & pointers)
 {
   // Initialize the assignment object
   mpAssignment = pointers.pEventAssignmentsObject;
@@ -37,17 +36,17 @@ void CMathEventN::CAssignment::initialize(CMath::sPointers & pointers)
                           false, false, NULL);
 }
 
-void CMathEventN::CAssignment::copy(const CMathEventN::CAssignment & src,
-                                    CMathContainer & /* container */,
-                                    const size_t & /* valueOffset */,
-                                    const size_t & objectOffset)
+void CMathEvent::CAssignment::copy(const CMathEvent::CAssignment & src,
+                                   CMathContainer & /* container */,
+                                   const size_t & /* valueOffset */,
+                                   const size_t & objectOffset)
 {
   mpTarget = src.mpTarget + objectOffset;
   mpAssignment = src.mpAssignment + objectOffset;
 }
 
-bool CMathEventN::CAssignment::compile(CEventAssignment * pDataAssignment,
-                                       CMathContainer & container)
+bool CMathEvent::CAssignment::compile(CEventAssignment * pDataAssignment,
+                                      CMathContainer & container)
 {
   // A compiled pDataAssignment is prerequisite.
   bool success = true;
@@ -72,27 +71,27 @@ bool CMathEventN::CAssignment::compile(CEventAssignment * pDataAssignment,
   return success;
 }
 
-void CMathEventN::CAssignment::setTarget(CMathObject * pTarget)
+void CMathEvent::CAssignment::setTarget(CMathObject * pTarget)
 {
   mpTarget = pTarget;
 }
 
-const CMathObject * CMathEventN::CAssignment::getTarget() const
+const CMathObject * CMathEvent::CAssignment::getTarget() const
 {
   return mpTarget;
 }
 
-void CMathEventN::CAssignment::setAssignment(CMathObject * pExpression)
+void CMathEvent::CAssignment::setAssignment(CMathObject * pExpression)
 {
   mpAssignment = pExpression;
 }
 
-const CMathObject * CMathEventN::CAssignment::getAssignment() const
+const CMathObject * CMathEvent::CAssignment::getAssignment() const
 {
   return mpAssignment;
 }
 
-CMathEventN::CTrigger::CRootProcessor::CRootProcessor():
+CMathEvent::CTrigger::CRootProcessor::CRootProcessor():
   mpRoot(NULL),
   mpRootState(NULL),
   mEquality(false),
@@ -102,10 +101,10 @@ CMathEventN::CTrigger::CRootProcessor::CRootProcessor():
   mpRootStateValue(NULL)
 {}
 
-CMathEventN::CTrigger::CRootProcessor::~CRootProcessor()
+CMathEvent::CTrigger::CRootProcessor::~CRootProcessor()
 {}
 
-void CMathEventN::CTrigger::CRootProcessor::toggle(const C_FLOAT64 & time,
+void CMathEvent::CTrigger::CRootProcessor::toggle(const C_FLOAT64 & time,
     const bool & equality)
 {
   // This function must only be called if we found a root, i.e., the
@@ -141,7 +140,7 @@ void CMathEventN::CTrigger::CRootProcessor::toggle(const C_FLOAT64 & time,
   return;
 }
 
-void CMathEventN::CTrigger::CRootProcessor::toggle(const C_FLOAT64 & time)
+void CMathEvent::CTrigger::CRootProcessor::toggle(const C_FLOAT64 & time)
 {
   // This function must only be called if we found a root, i.e., the
   // value of the root expression changes sign. In that case it is save
@@ -154,23 +153,23 @@ void CMathEventN::CTrigger::CRootProcessor::toggle(const C_FLOAT64 & time)
   return;
 }
 
-const bool & CMathEventN::CTrigger::CRootProcessor::isEquality() const
+const bool & CMathEvent::CTrigger::CRootProcessor::isEquality() const
 {
   return mEquality;
 }
 
-bool CMathEventN::CTrigger::CRootProcessor::isTrue() const
+bool CMathEvent::CTrigger::CRootProcessor::isTrue() const
 {
   return *mpRootStateValue > 0.5 ? true : false;
 }
 
-void CMathEventN::CTrigger::CRootProcessor::applyInitialValues()
+void CMathEvent::CTrigger::CRootProcessor::applyInitialValues()
 {
   calculateTrueValue();
   mLastToggleTime = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
 }
 
-void CMathEventN::CTrigger::CRootProcessor::calculateTrueValue()
+void CMathEvent::CTrigger::CRootProcessor::calculateTrueValue()
 {
   if ((*mpRootValue < 0.0) ||
       ((*mpRootValue <= 0.0) && !mEquality))
@@ -186,7 +185,7 @@ void CMathEventN::CTrigger::CRootProcessor::calculateTrueValue()
   mLastToggleTime = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
 }
 
-void CMathEventN::CTrigger::CRootProcessor::initialize(CMath::sPointers & pointers)
+void CMathEvent::CTrigger::CRootProcessor::initialize(CMath::sPointers & pointers)
 {
   // Initialize the root object!
   mpRoot = pointers.pEventRootsObject;
@@ -205,7 +204,7 @@ void CMathEventN::CTrigger::CRootProcessor::initialize(CMath::sPointers & pointe
                           false, false, NULL);
 }
 
-void CMathEventN::CTrigger::CRootProcessor::copy(const CMathEventN::CTrigger::CRootProcessor & src,
+void CMathEvent::CTrigger::CRootProcessor::copy(const CMathEvent::CTrigger::CRootProcessor & src,
     CMathContainer & /* container */,
     const size_t & valueOffset,
     const size_t & objectOffset)
@@ -219,7 +218,7 @@ void CMathEventN::CTrigger::CRootProcessor::copy(const CMathEventN::CTrigger::CR
   mpRootStateValue = src.mpRootStateValue + valueOffset;
 }
 
-bool CMathEventN::CTrigger::CRootProcessor::compile(CEvaluationNode * pRootNode,
+bool CMathEvent::CTrigger::CRootProcessor::compile(CEvaluationNode * pRootNode,
     const bool & equality,
     CMathContainer & container)
 {
@@ -249,23 +248,23 @@ bool CMathEventN::CTrigger::CRootProcessor::compile(CEvaluationNode * pRootNode,
 }
 
 // static
-CEvaluationNode * CMathEventN::CTrigger::CRootProcessor::createTriggerExpressionNode() const
+CEvaluationNode * CMathEvent::CTrigger::CRootProcessor::createTriggerExpressionNode() const
 {
   return  new CEvaluationNodeObject((C_FLOAT64 *) mpRootState->getValuePointer());
 }
 
-CMathEventN::CTrigger::CTrigger():
+CMathEvent::CTrigger::CTrigger():
   mpTrigger(NULL),
   mpInitialTrigger(NULL),
   mRoots(),
   mDualAction(false)
 {}
 
-CMathEventN::CTrigger::~CTrigger()
+CMathEvent::CTrigger::~CTrigger()
 {}
 
-void CMathEventN::CTrigger::allocate(const CEvent * pDataEvent,
-                                     const CMathContainer & container)
+void CMathEvent::CTrigger::allocate(const CEvent * pDataEvent,
+                                    const CMathContainer & container)
 {
   // Determine the number of roots.
   CMath::Variables< size_t > Variables;
@@ -295,18 +294,18 @@ void CMathEventN::CTrigger::allocate(const CEvent * pDataEvent,
   return;
 }
 
-void CMathEventN::CTrigger::allocateDiscontinuous(const size_t & nRoots,
+void CMathEvent::CTrigger::allocateDiscontinuous(const size_t & nRoots,
     const CMathContainer & /* container */)
 {
   mRoots.resize(nRoots);
 }
 
-bool CMathEventN::CTrigger::isTrue() const
+bool CMathEvent::CTrigger::isTrue() const
 {
   return * (C_FLOAT64 *) mpTrigger->getValuePointer() > 0.5 ? true : false;
 }
 
-void CMathEventN::CTrigger::initialize(CMath::sPointers & pointers)
+void CMathEvent::CTrigger::initialize(CMath::sPointers & pointers)
 {
   // Initialize trigger object.
   mpTrigger = pointers.pEventTriggersObject;
@@ -332,10 +331,10 @@ void CMathEventN::CTrigger::initialize(CMath::sPointers & pointers)
     }
 }
 
-void CMathEventN::CTrigger::copy(const CMathEventN::CTrigger & src,
-                                 CMathContainer & container,
-                                 const size_t & valueOffset,
-                                 const size_t & objectOffset)
+void CMathEvent::CTrigger::copy(const CMathEvent::CTrigger & src,
+                                CMathContainer & container,
+                                const size_t & valueOffset,
+                                const size_t & objectOffset)
 {
   mpTrigger = src.mpTrigger + objectOffset;
   mpInitialTrigger = src.mpInitialTrigger + objectOffset;
@@ -353,8 +352,8 @@ void CMathEventN::CTrigger::copy(const CMathEventN::CTrigger & src,
   mDualAction = src.mDualAction;
 }
 
-bool CMathEventN::CTrigger::compile(CEvent * pDataEvent,
-                                    CMathContainer & container)
+bool CMathEvent::CTrigger::compile(CEvent * pDataEvent,
+                                   CMathContainer & container)
 {
   bool success = true;
 
@@ -393,12 +392,12 @@ bool CMathEventN::CTrigger::compile(CEvent * pDataEvent,
   return success;
 }
 
-const CVector< CMathEventN::CTrigger::CRootProcessor > & CMathEventN::CTrigger::getRoots() const
+const CVector< CMathEvent::CTrigger::CRootProcessor > & CMathEvent::CTrigger::getRoots() const
 {
   return mRoots;
 }
 
-void CMathEventN::CTrigger::setExpression(const std::string & infix,
+void CMathEvent::CTrigger::setExpression(const std::string & infix,
     CMathContainer & container)
 {
   assert(mpTrigger != NULL);
@@ -421,8 +420,8 @@ void CMathEventN::CTrigger::setExpression(const std::string & infix,
 }
 
 // static
-size_t CMathEventN::CTrigger::countRoots(const CEvaluationNode * pNode,
-    const CMath::Variables< size_t > & variables)
+size_t CMathEvent::CTrigger::countRoots(const CEvaluationNode * pNode,
+                                        const CMath::Variables< size_t > & variables)
 {
   size_t RootCount = 0;
 
@@ -537,7 +536,7 @@ size_t CMathEventN::CTrigger::countRoots(const CEvaluationNode * pNode,
 }
 
 // static
-size_t CMathEventN::CTrigger::countRootsDefault(const std::vector< size_t > & children)
+size_t CMathEvent::CTrigger::countRootsDefault(const std::vector< size_t > & children)
 {
   size_t RootCount = 0;
 
@@ -553,7 +552,7 @@ size_t CMathEventN::CTrigger::countRootsDefault(const std::vector< size_t > & ch
 }
 
 // static
-size_t CMathEventN::CTrigger::countRootsEQ(const CEvaluationNode * pNode,
+size_t CMathEvent::CTrigger::countRootsEQ(const CEvaluationNode * pNode,
     const std::vector< size_t > & children)
 {
   size_t nRoots = children[0] + children[1];
@@ -572,7 +571,7 @@ size_t CMathEventN::CTrigger::countRootsEQ(const CEvaluationNode * pNode,
 }
 
 // static
-size_t CMathEventN::CTrigger::countRootsFUNCTION(const CEvaluationNode * pNode,
+size_t CMathEvent::CTrigger::countRootsFUNCTION(const CEvaluationNode * pNode,
     const std::vector< size_t > & children)
 {
   const CEvaluationNode * pTreeRoot =
@@ -584,7 +583,7 @@ size_t CMathEventN::CTrigger::countRootsFUNCTION(const CEvaluationNode * pNode,
 }
 
 // static
-size_t CMathEventN::CTrigger::countRootsVARIABLE(const CEvaluationNode * pNode,
+size_t CMathEvent::CTrigger::countRootsVARIABLE(const CEvaluationNode * pNode,
     const CMath::Variables< size_t > & variables)
 {
   size_t Index =
@@ -599,9 +598,9 @@ size_t CMathEventN::CTrigger::countRootsVARIABLE(const CEvaluationNode * pNode,
 }
 
 // static
-CEvaluationNode * CMathEventN::CTrigger::compile(const CEvaluationNode * pTriggerNode,
+CEvaluationNode * CMathEvent::CTrigger::compile(const CEvaluationNode * pTriggerNode,
     const CMath::Variables< CEvaluationNode * > & variables,
-    CMathEventN::CTrigger::CRootProcessor *& pRoot,
+    CMathEvent::CTrigger::CRootProcessor *& pRoot,
     CMathContainer & container)
 {
   CEvaluationNode * pNode = NULL;
@@ -725,10 +724,10 @@ CEvaluationNode * CMathEventN::CTrigger::compile(const CEvaluationNode * pTrigge
 }
 
 // static
-CEvaluationNode * CMathEventN::CTrigger::compileAND(const CEvaluationNode * pTriggerNode,
+CEvaluationNode * CMathEvent::CTrigger::compileAND(const CEvaluationNode * pTriggerNode,
     const std::vector< CEvaluationNode * > & children,
     const CMath::Variables< CEvaluationNode * > & /* variables */,
-    CMathEventN::CTrigger::CRootProcessor *& /* pRoot */,
+    CMathEvent::CTrigger::CRootProcessor *& /* pRoot */,
     CMathContainer & /* container */)
 {
   CEvaluationNode * pNode = NULL;
@@ -761,10 +760,10 @@ CEvaluationNode * CMathEventN::CTrigger::compileAND(const CEvaluationNode * pTri
 }
 
 // static
-CEvaluationNode * CMathEventN::CTrigger::compileEQ(const CEvaluationNode * pTriggerNode,
+CEvaluationNode * CMathEvent::CTrigger::compileEQ(const CEvaluationNode * pTriggerNode,
     const std::vector< CEvaluationNode * > & children,
     const CMath::Variables< CEvaluationNode * > & variables,
-    CMathEventN::CTrigger::CRootProcessor *& pRoot,
+    CMathEvent::CTrigger::CRootProcessor *& pRoot,
     CMathContainer & container)
 {
   CEvaluationNode * pNode = NULL;
@@ -799,10 +798,10 @@ CEvaluationNode * CMathEventN::CTrigger::compileEQ(const CEvaluationNode * pTrig
 }
 
 // static
-CEvaluationNode * CMathEventN::CTrigger::compileNE(const CEvaluationNode * /* pTriggerNode */,
+CEvaluationNode * CMathEvent::CTrigger::compileNE(const CEvaluationNode * /* pTriggerNode */,
     const std::vector< CEvaluationNode * > & children,
     const CMath::Variables< CEvaluationNode * > & variables,
-    CMathEventN::CTrigger::CRootProcessor *& pRoot,
+    CMathEvent::CTrigger::CRootProcessor *& pRoot,
     CMathContainer & container)
 {
   CEvaluationNode * pNode = NULL;
@@ -828,10 +827,10 @@ CEvaluationNode * CMathEventN::CTrigger::compileNE(const CEvaluationNode * /* pT
 }
 
 // static
-CEvaluationNode * CMathEventN::CTrigger::compileLE(const CEvaluationNode * pTriggerNode,
+CEvaluationNode * CMathEvent::CTrigger::compileLE(const CEvaluationNode * pTriggerNode,
     const std::vector< CEvaluationNode * > & children,
     const CMath::Variables< CEvaluationNode * > & /* variables */,
-    CMathEventN::CTrigger::CRootProcessor *& pRoot,
+    CMathEvent::CTrigger::CRootProcessor *& pRoot,
     CMathContainer & container)
 {
   CEvaluationNode * pNode = NULL;
@@ -880,10 +879,10 @@ CEvaluationNode * CMathEventN::CTrigger::compileLE(const CEvaluationNode * pTrig
 }
 
 // static
-CEvaluationNode * CMathEventN::CTrigger::compileNOT(const CEvaluationNode * /* pTriggerNode */,
+CEvaluationNode * CMathEvent::CTrigger::compileNOT(const CEvaluationNode * /* pTriggerNode */,
     const std::vector< CEvaluationNode * > & children,
     const CMath::Variables< CEvaluationNode * > & /* variables */,
-    CMathEventN::CTrigger::CRootProcessor *& /* pRoot */,
+    CMathEvent::CTrigger::CRootProcessor *& /* pRoot */,
     CMathContainer & /* container */)
 {
   CEvaluationNode * pNode = NULL;
@@ -895,10 +894,10 @@ CEvaluationNode * CMathEventN::CTrigger::compileNOT(const CEvaluationNode * /* p
 }
 
 // static
-CEvaluationNode * CMathEventN::CTrigger::compileFUNCTION(const CEvaluationNode * pTriggerNode,
+CEvaluationNode * CMathEvent::CTrigger::compileFUNCTION(const CEvaluationNode * pTriggerNode,
     const std::vector< CEvaluationNode * > & children,
     const CMath::Variables< CEvaluationNode * > & /* variables */,
-    CMathEventN::CTrigger::CRootProcessor *& pRoot,
+    CMathEvent::CTrigger::CRootProcessor *& pRoot,
     CMathContainer & container)
 {
   const CEvaluationNode * pCalledNode =
@@ -919,10 +918,10 @@ CEvaluationNode * CMathEventN::CTrigger::compileFUNCTION(const CEvaluationNode *
 }
 
 // static
-CEvaluationNode * CMathEventN::CTrigger::compileVARIABLE(const CEvaluationNode * pTriggerNode,
+CEvaluationNode * CMathEvent::CTrigger::compileVARIABLE(const CEvaluationNode * pTriggerNode,
     const std::vector< CEvaluationNode * > & /* children */,
     const CMath::Variables< CEvaluationNode * > & variables,
-    CMathEventN::CTrigger::CRootProcessor *& /* pRoot */,
+    CMathEvent::CTrigger::CRootProcessor *& /* pRoot */,
     CMathContainer & /* container */)
 {
   // We need to mimic the process in CMathContainer::copyBranch;
@@ -944,15 +943,15 @@ CEvaluationNode * CMathEventN::CTrigger::compileVARIABLE(const CEvaluationNode *
 }
 
 // static
-void CMathEventN::allocate(CMathEventN * pEvent,
-                           const CEvent * pDataEvent,
-                           const CMathContainer & container)
+void CMathEvent::allocate(CMathEvent * pEvent,
+                          const CEvent * pDataEvent,
+                          const CMathContainer & container)
 {
   pEvent->mTrigger.allocate(pDataEvent, container);
   pEvent->mAssignments.resize(pDataEvent->getAssignments().size());
 }
 
-CMathEventN::CMathEventN():
+CMathEvent::CMathEvent():
   mpContainer(NULL),
   mpTime(NULL),
   mType(CEvent::Assignment),
@@ -976,17 +975,17 @@ CMathEventN::CMathEventN():
 /**
  * Destructor
  */
-CMathEventN::~CMathEventN()
+CMathEvent::~CMathEvent()
 {
   pdelete(mpPendingAction);
 }
 
-const CMathEventN::CTrigger & CMathEventN::getTrigger() const
+const CMathEvent::CTrigger & CMathEvent::getTrigger() const
 {
   return mTrigger;
 }
 
-void CMathEventN::initialize(CMath::sPointers & pointers)
+void CMathEvent::initialize(CMath::sPointers & pointers)
 {
   mTrigger.initialize(pointers);
 
@@ -1012,7 +1011,7 @@ void CMathEventN::initialize(CMath::sPointers & pointers)
                           false, false, NULL);
 }
 
-void CMathEventN::copy(const CMathEventN & src, CMathContainer & container, const size_t & valueOffset, const size_t & objectOffset)
+void CMathEvent::copy(const CMathEvent & src, CMathContainer & container, const size_t & valueOffset, const size_t & objectOffset)
 {
   mType = src.mType;
   mTrigger.copy(src.mTrigger, container, valueOffset, objectOffset);
@@ -1034,8 +1033,8 @@ void CMathEventN::copy(const CMathEventN & src, CMathContainer & container, cons
   mDelayAssignment = src.mDelayAssignment;
 }
 
-bool CMathEventN::compile(CEvent * pDataEvent,
-                          CMathContainer & container)
+bool CMathEvent::compile(CEvent * pDataEvent,
+                         CMathContainer & container)
 {
   bool success = true;
 
@@ -1091,7 +1090,7 @@ bool CMathEventN::compile(CEvent * pDataEvent,
   return success;
 }
 
-void CMathEventN::createUpdateSequences()
+void CMathEvent::createUpdateSequences()
 {
   mEffectsSimulation = CMath::NoChange;
 
@@ -1190,7 +1189,7 @@ void CMathEventN::createUpdateSequences()
     }
 }
 
-void CMathEventN::fire(const bool & equality)
+void CMathEvent::fire(const bool & equality)
 {
   // Discontinuities have to be fired also when the trigger switches to false.
 
@@ -1212,7 +1211,7 @@ void CMathEventN::fire(const bool & equality)
     }
 }
 
-void CMathEventN::addPendingAction(const CMathEventQueue::iterator & pendingAction)
+void CMathEvent::addPendingAction(const CMathEventQueue::iterator & pendingAction)
 {
   if (mPersistentTrigger)
     {
@@ -1222,19 +1221,19 @@ void CMathEventN::addPendingAction(const CMathEventQueue::iterator & pendingActi
     }
 }
 
-void CMathEventN::removePendingAction()
+void CMathEvent::removePendingAction()
 {
   pdelete(mpPendingAction);
 }
 
-const CVectorCore< C_FLOAT64 > & CMathEventN::getTargetValues()
+const CVectorCore< C_FLOAT64 > & CMathEvent::getTargetValues()
 {
   mpContainer->applyUpdateSequence(mTargetValuesSequence);
 
   return mTargetValues;
 }
 
-CMath::StateChange CMathEventN::setTargetValues(const CVectorCore< C_FLOAT64 > & values)
+CMath::StateChange CMathEvent::setTargetValues(const CVectorCore< C_FLOAT64 > & values)
 {
   bool ValuesChanged = false;
   CMath::StateChange StateChange = CMath::NoChange;
@@ -1262,41 +1261,41 @@ CMath::StateChange CMathEventN::setTargetValues(const CVectorCore< C_FLOAT64 > &
   return StateChange;
 }
 
-CMath::StateChange CMathEventN::executeAssignment()
+CMath::StateChange CMathEvent::executeAssignment()
 {
   return setTargetValues(getTargetValues());
 }
 
-const bool & CMathEventN::delayAssignment() const
+const bool & CMathEvent::delayAssignment() const
 {
   return mDelayAssignment;
 }
 
-const bool & CMathEventN::fireAtInitialTime() const
+const bool & CMathEvent::fireAtInitialTime() const
 {
   return mFireAtInitialTime;
 }
 
-void CMathEventN::setTriggerExpression(const std::string & infix, CMathContainer & container)
+void CMathEvent::setTriggerExpression(const std::string & infix, CMathContainer & container)
 {
   mTrigger.setExpression(infix, container);
 }
 
-void CMathEventN::setDelayExpression(const std::string & infix, CMathContainer & container)
+void CMathEvent::setDelayExpression(const std::string & infix, CMathContainer & container)
 {
   assert(mpDelay != NULL);
 
   mpDelay->setExpression(infix, false, container);
 }
 
-void CMathEventN::setPriorityExpression(const std::string & infix, CMathContainer & container)
+void CMathEvent::setPriorityExpression(const std::string & infix, CMathContainer & container)
 {
   assert(mpPriority != NULL);
 
   mpPriority->setExpression(infix, false, container);
 }
 
-void CMathEventN::addAssignment(CMathObject * pTarget, CMathObject * pExpression)
+void CMathEvent::addAssignment(CMathObject * pTarget, CMathObject * pExpression)
 {
   size_t OldSize = mAssignments.size();
   mAssignments.resize(OldSize + 1, true);
@@ -1306,17 +1305,17 @@ void CMathEventN::addAssignment(CMathObject * pTarget, CMathObject * pExpression
   Assignment.setAssignment(pExpression);
 }
 
-const CVector< CMathEventN::CAssignment > & CMathEventN::getAssignments() const
+const CVector< CMathEvent::CAssignment > & CMathEvent::getAssignments() const
 {
   return mAssignments;
 }
 
-const CMathObject * CMathEventN::getPriority() const
+const CMathObject * CMathEvent::getPriority() const
 {
   return mpPriority;
 }
 
-C_FLOAT64 CMathEventN::getCalculationTime() const
+C_FLOAT64 CMathEvent::getCalculationTime() const
 {
   if (mDelayAssignment ||
       std::isnan(* (C_FLOAT64 *) mpDelay->getValuePointer()))
@@ -1327,7 +1326,7 @@ C_FLOAT64 CMathEventN::getCalculationTime() const
   return *mpTime + * (C_FLOAT64 *) mpDelay->getValuePointer();
 }
 
-C_FLOAT64 CMathEventN::getExecutionTime() const
+C_FLOAT64 CMathEvent::getExecutionTime() const
 {
   if (!mDelayAssignment ||
       std::isnan(* (C_FLOAT64 *) mpDelay->getValuePointer()))
@@ -1338,326 +1337,20 @@ C_FLOAT64 CMathEventN::getExecutionTime() const
   return *mpTime + * (C_FLOAT64 *) mpDelay->getValuePointer();
 }
 
-const CEvent::Type & CMathEventN::getType() const
+const CEvent::Type & CMathEvent::getType() const
 {
   return mType;
 }
 
-void CMathEventN::setCallback(CCallbackInterface * pCallback)
+void CMathEvent::setCallback(CCallbackInterface * pCallback)
 {
   mpCallback = pCallback;
 }
 
-void CMathEventN::executeCallback(void * pCaller)
+void CMathEvent::executeCallback(void * pCaller)
 {
   if (mpCallback != NULL)
     {
       (*mpCallback)(this, pCaller);
     }
-}
-
-CMathEvent::CAssignment::CAssignment(const CCopasiContainer * pParent) :
-  CCopasiContainer("MathEventAssignment", pParent),
-  mpTarget(NULL),
-  mExpression("Expression", this)
-{}
-
-CMathEvent::CAssignment::CAssignment(const CMathEvent::CAssignment & src,
-                                     const CCopasiContainer * pParent) :
-  CCopasiContainer(src, pParent),
-  mpTarget(src.mpTarget),
-  mExpression(src.mExpression, this)
-{}
-
-CMathEvent::CAssignment::~CAssignment()
-{}
-
-bool CMathEvent::CAssignment::compile(const CEventAssignment * pAssignment,
-                                      std::vector< CCopasiContainer * > listOfContainer)
-{
-  if (pAssignment == NULL)
-    return false;
-
-  bool success = true;
-
-  mpTarget = NULL;
-
-  if (pAssignment->getTargetObject() != NULL)
-    {
-      mpTarget = (C_FLOAT64 *) pAssignment->getTargetObject()->getValuePointer();
-    }
-
-  if (mpTarget == NULL)
-    success = false;
-
-  success &= mExpression.setInfix(pAssignment->getExpression());
-  success &= mExpression.compile(listOfContainer);
-
-  setDirectDependencies(mExpression.getDirectDependencies());
-
-  return success;
-}
-
-CMathEvent::CMathEvent(const CCopasiContainer * pParent) :
-  CCopasiContainer("MathEvent", pParent, "MathEvent"),
-  mTrigger(this),
-  mOrder(false),
-  mHaveDelay(false),
-  mDelay("DelayExpression", this),
-  mDelayAssignment(true),
-  mAssignments("ListOfMathEventAssignment", this),
-  mDelayValueRefreshes(),
-  mAssignmentValueRefreshes(),
-  mDependentValueRefreshes(),
-  mType(CEvent::Assignment)
-{}
-
-CMathEvent::CMathEvent(const CMathEvent & src,
-                       const CCopasiContainer * pParent) :
-  CCopasiContainer(src, pParent),
-  mTrigger(src.mTrigger, this),
-  mOrder(src.mOrder),
-  mHaveDelay(src.mHaveDelay),
-  mDelay(src.mDelay, this),
-  mDelayAssignment(src.mDelayAssignment),
-  mAssignments(src.mAssignments, this),
-  mDelayValueRefreshes(src.mDelayValueRefreshes),
-  mAssignmentValueRefreshes(src.mAssignmentValueRefreshes),
-  mDependentValueRefreshes(src.mDependentValueRefreshes),
-  mType(src.mType)
-{}
-
-CMathEvent::~CMathEvent()
-{}
-
-bool CMathEvent::compile(const CEvent * pEvent,
-                         std::vector< CCopasiContainer * > listOfContainer)
-{
-  // A CMathEvent must be part of CMathModel to be compiled.
-  CMathModel * pMathModel = dynamic_cast< CMathModel *>(getObjectAncestor("CMathModel"));
-
-  if (pMathModel == NULL)
-    return false;
-
-  bool success = true;
-
-  success &= mTrigger.compile(pEvent->getTriggerExpressionPtr(), listOfContainer);
-
-  success &= mDelay.setInfix(pEvent->getDelayExpression());
-  success &= mDelay.compile(listOfContainer);
-
-  mHaveDelay = (mDelay.getInfix() != "");
-
-  mType = pEvent->getType();
-
-  // Build the list of refresh calls needed to assure that the delay expression
-  // can be calculated.
-
-  mDelayValueRefreshes = pMathModel->buildRequiredRefreshList(mDelay.getDirectDependencies());
-
-  mDelayAssignment = pEvent->getDelayAssignment();
-
-  mAssignments.clear();
-
-  CCopasiVectorN< CEventAssignment >::const_iterator it = pEvent->getAssignments().begin();
-  CCopasiVectorN< CEventAssignment >::const_iterator end = pEvent->getAssignments().end();
-
-  std::set< const CCopasiObject * > Assignments;
-  std::set< const CCopasiObject * > Targets;
-
-  for (; it != end; ++it)
-    {
-      CAssignment * pAssignment = new CAssignment();
-
-      mAssignments.add(pAssignment, true);
-      success &= pAssignment->compile(*it, listOfContainer);
-
-      Assignments.insert(pAssignment);
-      Targets.insert((*it)->getTargetObject());
-    }
-
-  // Build the list of refresh calls needed to assure that the assignment expressions
-  // can be calculated.
-  mAssignmentValueRefreshes = pMathModel->buildRequiredRefreshList(Assignments);
-
-  // Build the list of refresh calls needed to assure that all dependent model values
-  // are updated after the assignments are executed.
-  mDependentValueRefreshes = pMathModel->buildDependendRefreshList(Targets);
-
-  return success;
-}
-
-void CMathEvent::fire(const C_FLOAT64 & time,
-                      const bool & equality,
-                      CProcessQueue & processQueue)
-{
-  if (mDelayAssignment)
-    {
-      processQueue.addAssignment(getAssignmentTime(time), equality, getTargetValues(), this);
-    }
-  else
-    {
-      processQueue.addCalculation(getCalculationTime(time), equality, this);
-    }
-}
-
-CVector< C_FLOAT64 > CMathEvent::getTargetValues()
-{
-  applyValueRefreshes();
-
-  CVector< C_FLOAT64 > Values(mAssignments.size());
-  C_FLOAT64 * pValue = Values.array();
-  CCopasiVector< CAssignment >::iterator itAssignment = mAssignments.begin();
-  CCopasiVector< CAssignment >::iterator endAssignment = mAssignments.end();
-
-  for (; itAssignment != endAssignment; ++itAssignment, ++pValue)
-    {
-      *pValue = (*itAssignment)->mExpression.calcValue();
-    }
-
-  return Values;
-}
-
-bool CMathEvent::setTargetValues(const CVector< C_FLOAT64 > & values)
-{
-  bool StateChanged = false;
-
-  const C_FLOAT64 * pValue = values.array();
-  CCopasiVector< CAssignment >::iterator itAssignment = mAssignments.begin();
-  CCopasiVector< CAssignment >::iterator endAssignment = mAssignments.end();
-
-  for (; itAssignment != endAssignment; ++itAssignment, ++pValue)
-    {
-      if (*(*itAssignment)->mpTarget != *pValue)
-        {
-          StateChanged = true;
-          *(*itAssignment)->mpTarget = *pValue;
-        }
-    }
-
-  if (StateChanged)
-    {
-      applyDependentRefreshes();
-    }
-
-  return StateChanged;
-}
-
-bool CMathEvent::executeAssignment()
-{
-  return setTargetValues(getTargetValues());
-}
-
-void CMathEvent::applyDelayRefreshes()
-{
-  std::vector< Refresh * >::const_iterator itRefresh = mDelayValueRefreshes.begin();
-  std::vector< Refresh * >::const_iterator endRefresh = mDelayValueRefreshes.end();
-
-  while (itRefresh != endRefresh)
-    (**itRefresh++)();
-
-  return;
-}
-
-void CMathEvent::applyValueRefreshes()
-{
-  std::vector< Refresh * >::const_iterator itRefresh = mAssignmentValueRefreshes.begin();
-  std::vector< Refresh * >::const_iterator endRefresh = mAssignmentValueRefreshes.end();
-
-  while (itRefresh != endRefresh)
-    (**itRefresh++)();
-
-  return;
-}
-
-void CMathEvent::applyDependentRefreshes()
-{
-  std::vector< Refresh * >::const_iterator itRefresh = mDependentValueRefreshes.begin();
-  std::vector< Refresh * >::const_iterator endRefresh = mDependentValueRefreshes.end();
-
-  while (itRefresh != endRefresh)
-    (**itRefresh++)();
-
-  return;
-}
-
-CMathTrigger & CMathEvent::getMathTrigger()
-{
-  return mTrigger;
-}
-
-const size_t & CMathEvent::getOrder() const
-{
-  return mOrder;
-}
-
-const bool & CMathEvent::delayAssignment() const
-{
-  return mDelayAssignment;
-}
-
-C_FLOAT64 CMathEvent::getCalculationTime(const C_FLOAT64 & currentTime)
-{
-  if (mDelayAssignment)
-    {
-      return currentTime;
-    }
-
-  return calculateDelayedTime(currentTime);
-}
-
-C_FLOAT64 CMathEvent::getAssignmentTime(const C_FLOAT64 & currentTime)
-{
-  if (!mDelayAssignment)
-    {
-      return currentTime;
-    }
-
-  return calculateDelayedTime(currentTime);
-}
-
-C_FLOAT64 CMathEvent::calculateDelayedTime(const C_FLOAT64 & currentTime)
-{
-  if (mDelay.getInfix() == "")
-    {
-      return currentTime;
-    }
-
-  // We make sure everything is up to date.
-  applyDelayRefreshes();
-
-  C_FLOAT64 DelayedTime = currentTime + mDelay.calcValue();
-
-  // Events are only allowed in forward integration. Thus the ExecutionTime
-  // must not be less than the time.
-  if (DelayedTime - currentTime < 0.0)
-    {
-      // We allow small numerical errors.
-      C_FLOAT64 Scale =
-        (fabs(DelayedTime) + fabs(currentTime)) * 50.0 * std::numeric_limits< C_FLOAT64 >::epsilon();
-
-      // Both are approximately zero
-      if (Scale < 100.0 * std::numeric_limits< C_FLOAT64 >::min())
-        {
-          DelayedTime = currentTime;
-        }
-      // The difference is small compared to the scale
-      else if (fabs(DelayedTime - currentTime) < Scale)
-        {
-          DelayedTime = currentTime;
-        }
-      // The execution time is definitely in the past
-      else
-        {
-          // Create an error message and throw an exception.
-          CCopasiMessage(CCopasiMessage::EXCEPTION, MCMathModel + 2, DelayedTime, currentTime);
-        }
-    }
-
-  return DelayedTime;
-}
-
-const CEvent::Type & CMathEvent::getType() const
-{
-  return mType;
 }

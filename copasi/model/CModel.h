@@ -26,7 +26,6 @@
 #include "copasi/model/CReaction.h"
 #include "copasi/model/CEvent.h"
 #include "copasi/model/CMoiety.h"
-#include "copasi/model/CProcessQueue.h"
 #include "copasi/model/CModelParameterSet.h"
 
 #include "copasi/utilities/CVector.h"

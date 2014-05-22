@@ -68,7 +68,7 @@ CMathEventQueue::CAction::CAction(const CAction & src):
   mpProcessQueue(src.mpProcessQueue)
 {}
 
-CMathEventQueue::CAction::CAction(CMathEventN * pEvent,
+CMathEventQueue::CAction::CAction(CMathEvent * pEvent,
                                   CMathEventQueue * pProcessQueue):
   mType(),
   mValues(),
@@ -92,7 +92,7 @@ CMathEventQueue::CAction::CAction(CMathEventN * pEvent,
 }
 
 CMathEventQueue::CAction::CAction(const CVector< C_FLOAT64 > & values,
-                                  CMathEventN * pEvent,
+                                  CMathEvent * pEvent,
                                   CMathEventQueue * pProcessQueue) :
   mType(CMathEventQueue::CAction::Assignment),
   mpPriority(NULL),
@@ -141,7 +141,7 @@ CMath::StateChange CMathEventQueue::CAction::process()
   return StateChange;
 }
 
-CMathEventN * CMathEventQueue::CAction::getEvent() const {return mpEvent;}
+CMathEvent * CMathEventQueue::CAction::getEvent() const {return mpEvent;}
 
 const CMathEventQueue::CAction::Type & CMathEventQueue::CAction::getType() const {return mType;}
 
@@ -187,7 +187,7 @@ CMathEventQueue::~CMathEventQueue()
 bool CMathEventQueue::addAssignment(const C_FLOAT64 & executionTime,
                                     const bool & equality,
                                     const CVectorCore< C_FLOAT64 > & values,
-                                    CMathEventN * pEvent)
+                                    CMathEvent * pEvent)
 {
   // It is not possible to proceed backwards in time.
   if (executionTime < *mpTime) return false;
@@ -208,7 +208,7 @@ bool CMathEventQueue::addAssignment(const C_FLOAT64 & executionTime,
 
 bool CMathEventQueue::addCalculation(const C_FLOAT64 & executionTime,
                                      const bool & equality,
-                                     CMathEventN * pEvent)
+                                     CMathEvent * pEvent)
 {
   // It is not possible to proceed backwards in time.
   if (executionTime < *mpTime) return false;
@@ -423,7 +423,7 @@ bool CMathEventQueue::rootsFound()
   C_INT * pRootEnd = pRootFound + mRootsFound.size();
   C_FLOAT64 * pValueBefore = mpRootValuesBefore->array();
   C_FLOAT64 * pValueAfter = mpRootValuesAfter->array();
-  CMathEventN::CTrigger::CRootProcessor ** ppRootProcessor = mpContainer->getRootProcessors().array();
+  CMathEvent::CTrigger::CRootProcessor ** ppRootProcessor = mpContainer->getRootProcessors().array();
 
   for (; pRootFound != pRootEnd; ++pRootFound, ++pValueBefore, ++pValueAfter, ++ppRootProcessor)
     {
@@ -527,7 +527,7 @@ std::ostream &operator<<(std::ostream &os, const CMathEventQueue & o)
 
       os << std::endl;
 
-      CMathEventN * pEvent = it->second.getEvent();
+      CMathEvent * pEvent = it->second.getEvent();
 
       os << "pEvent: 0x" << pEvent << ", Action: ";
 
