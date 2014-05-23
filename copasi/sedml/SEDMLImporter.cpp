@@ -743,6 +743,65 @@ SEDMLImporter::importTasks(std::map<CCopasiObject*, SedBase*>& copasi2sedmlmap)
     }
 }
 
+bool applyValueToModelParameter(CModelParameter* modelParameter, CCopasiObject *obj, double newValue)
+{
+  if (modelParameter == NULL || obj == NULL) return false;
+
+  auto numChilren = modelParameter->getNumChildren();
+
+  const CCopasiObjectName& cn = modelParameter->getCN();
+  const CCopasiObjectName& targetCN = obj->getCN();
+
+  if (cn == targetCN)
+    {
+      modelParameter->setValue(newValue, CModelParameter::Concentration);
+      return true;
+    }
+
+  for (unsigned int i = 0; i < numChilren; ++i)
+    {
+      CModelParameter* current = const_cast<CModelParameter* >(modelParameter->getChild(i));
+
+      if (applyValueToModelParameter(current, obj, newValue))
+        return true;
+    }
+
+  return false;
+}
+
+bool applyValueToParameterSet(CModelParameterSet& set, CCopasiObject *obj, double newValue)
+{
+  auto& it = set.begin();
+
+  while (it != set.end())
+    {
+      if (applyValueToModelParameter(*it, obj, newValue))
+        return true;
+
+      ++it;
+    }
+
+  return false;
+}
+
+bool applyAttributeChange(CModel* pCopasiModel, CModelParameterSet& set, const std::string& target, const std::string&  newValue)
+{
+  CCopasiObject *obj = const_cast<CCopasiObject*>(SEDMLUtils::resolveXPath(pCopasiModel, target, true));
+
+  if (obj == NULL)
+    return false;
+
+  // convert the string to double
+  std::stringstream str;
+  str << newValue;
+  double result;
+  str >> result;
+
+  // set the value
+  applyValueToParameterSet(set, obj->getObjectParent(), result);
+  return true;
+}
+
 CModel* SEDMLImporter::importFirstSBMLModel(CProcessReport* pImportHandler,
     SBMLDocument *& pSBMLDocument,
     std::map<CCopasiObject*, SBase*>& copasi2sbmlmap,
@@ -765,10 +824,11 @@ CModel* SEDMLImporter::importFirstSBMLModel(CProcessReport* pImportHandler,
 
   std::string modelSource = ""; //must be taken from SEDML document.
   std::string modelId = ""; // to ensure only one model is imported since only one model in SEDML file is supported
+  SedModel* sedmlModel = NULL;
 
   for (ii = 0; ii < iiMax; ++ii)
     {
-      SedModel* sedmlModel = mpSEDMLDocument->getModel(ii);
+      sedmlModel = mpSEDMLDocument->getModel(ii);
 
       // need to also allow for the specific urns like
       // urn:sedml:language:sbml.level-3.version-1
@@ -781,10 +841,11 @@ CModel* SEDMLImporter::importFirstSBMLModel(CProcessReport* pImportHandler,
           modelId = sedmlModel->getId();
 
           if ((sedmlModel->getListOfChanges()->size()) > 0)
-            CCopasiMessage(CCopasiMessage::WARNING, "Currently no support for"
-                           " changing model entities. Changes will not be made to the imported model.");
+            CCopasiMessage(CCopasiMessage::WARNING, "Currently there is only limited support for "
+                           "changing model entities. Only value changes are imported into the model.");
 
           modelSource = sedmlModel->getSource();
+          break;
         }
     }
 
@@ -860,6 +921,28 @@ CModel* SEDMLImporter::importFirstSBMLModel(CProcessReport* pImportHandler,
     }
 
   mImportedModel = modelId;
+
+  // apply possible changes to the model
+  if (sedmlModel != NULL && sedmlModel->getNumChanges() > 0)
+    {
+      CModelParameterSet& set = mpCopasiModel->getModelParameterSet();
+      bool valueChanged = false;
+
+      for (unsigned int i = 0; i < sedmlModel->getNumChanges(); ++i)
+        {
+          SedChangeAttribute* change = dynamic_cast<SedChangeAttribute*>(sedmlModel->getChange(i));
+
+          if (change == NULL) continue;
+
+          const std::string& target = change->getTarget();
+          const std::string& newValue = change->getNewValue();
+
+          if (!applyAttributeChange(mpCopasiModel, set, target, newValue))
+            {
+              CCopasiMessage(CCopasiMessage::WARNING, "Could not apply change for target: '%s'", target.c_str());
+            }
+        }
+    }
 
   return mpCopasiModel;
 }
