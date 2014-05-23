@@ -199,10 +199,12 @@ SEDMLUtils::translateTargetXpathInSBMLId(const std::string &xpath, std::string& 
   nextString = xpathStrings[xpathStrings.size() - 1];
 
   splitStrings(nextString, '=', xpathStrings);
-  id = xpathStrings[xpathStrings.size() - 1];
+  nextString = xpathStrings[xpathStrings.size() - 1];
+  splitStrings(nextString, ']', xpathStrings);
+  id = xpathStrings[0];
 
   //remove the remaining unwanted characters
-  removeCharactersFromString(id, "']");
+  removeCharactersFromString(id, "\"']");
   return id;
 }
 
