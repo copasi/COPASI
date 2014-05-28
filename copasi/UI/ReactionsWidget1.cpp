@@ -1,16 +1,16 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-// and The University of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2002 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc. and EML Research, gGmbH. 
-// All rights reserved. 
+// Copyright (C) 2002 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 /*********************************************************************
  **  $ CopasiUI/ReactionsWidget1.cpp
@@ -515,6 +515,14 @@ void ReactionsWidget1::slotTableChanged(int index, int sub, QString newValue)
         }
     }
 
+  // if we don't stop here, we loose changes!
+  // instead just prevent updating, that way the user has a chance to correct the reaction,
+  // only if the user selects another reaction (or somehow else leaves the editing,
+  // the changes will be lost)
+  //
+  if (!mpRi->isValid())
+    return;
+
   // update the widget
   int rrr = table->currentRow();
   int ccc = table->currentColumn();
@@ -562,7 +570,7 @@ void ReactionsWidget1::slotNewFunction()
   std::string nname = name;
   size_t i = 0;
   CCopasiVectorN<CFunction>& FunctionList
-  = CCopasiRootContainer::getFunctionList()->loadedFunctions();
+    = CCopasiRootContainer::getFunctionList()->loadedFunctions();
   CFunction* pFunc;
 
   while (FunctionList.getIndex(nname) != C_INVALID_INDEX)
