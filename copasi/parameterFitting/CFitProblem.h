@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -255,6 +255,18 @@ public:
    */
   void fixBuild55();
 
+  /**
+   * Sets the 'Create Parameter Sets' parameter. When set it will create new model parameter
+   * sets for each experiment after a run.
+   */
+  void setCreateParameterSets(const bool & create);
+
+  /**
+   * @return the value of the 'Create Parameter Sets' parameter that controls whether parameter
+   * sets should be created automatically.
+   */
+  const bool & getCreateParameterSets() const;
+
 private:
   /**
    * Allocates all group parameters and assures that they are
@@ -472,6 +484,11 @@ private:
   CMatrix< C_FLOAT64 > mCorrelation;
   CCopasiMatrixInterface< CMatrix< C_FLOAT64 > > * mpCorrelationMatrixInterface;
   CArrayAnnotation * mpCorrelationMatrix;
+
+  /**
+   * A pointer to the value of the CCopasiParameter holding Create Parameter Sets
+   */
+  bool * mpCreateParameterSets;
 };
 
 #endif  // COPASI_CFitProblem
