@@ -1,7 +1,7 @@
-// Copyright (C) 2011 - 2014 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
+// Copyright (C) 2011 - 2014 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
 #include <limits>
 
@@ -168,12 +168,11 @@ const std::string CModelParameter::getUnit(const Framework & framework) const
         const CModel * pModel = getModel();
 
         CFindDimensions Units(pReaction->getFunction(),
-                              pModel->getQuantityUnit().isDimensionless(),
-                              pModel->getVolumeUnit().isDimensionless(),
-                              pModel->getTimeUnit().isDimensionless(),
-                              pModel->getAreaUnit().isDimensionless(),
-                              pModel->getLengthUnit().isDimensionless());
-
+                              pModel->getQuantityUnit()->isDimensionless(),
+                              pModel->getVolumeUnit()->isDimensionless(),
+                              pModel->getTimeUnit()->isDimensionless(),
+                              pModel->getAreaUnit()->isDimensionless(),
+                              pModel->getLengthUnit()->isDimensionless());
         Units.setUseHeuristics(true);
 
         Units.setChemicalEquation(&pReaction->getChemEq());

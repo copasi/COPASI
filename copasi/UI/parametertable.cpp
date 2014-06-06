@@ -1,16 +1,16 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
-// All rights reserved.
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+// and The University of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2003 - 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
-// All rights reserved.
+// Copyright (C) 2003 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc. and EML Research, gGmbH. 
+// All rights reserved. 
 
 #include <QtGui/QTableWidgetItem>
 #include <QtCore/QStringList>
@@ -166,11 +166,11 @@ void ParameterTable::updateTable(const CReactionInterface & ri, const CReaction 
   CModel * pModel = dynamic_cast< CModel * >(pReaction->getObjectAncestor("Model"));
 
   //first get the units strings
-  CFindDimensions units(ri.getFunction(), pModel->getQuantityUnit().isDimensionless(),
-                        pModel->getVolumeUnit().isDimensionless(),
-                        pModel->getTimeUnit().isDimensionless(),
-                        pModel->getAreaUnit().isDimensionless(),
-                        pModel->getLengthUnit().isDimensionless()
+  CFindDimensions units(ri.getFunction(), pModel->getQuantityUnit()->isDimensionless(),
+                        pModel->getVolumeUnit()->isDimensionless(),
+                        pModel->getTimeUnit()->isDimensionless(),
+                        pModel->getAreaUnit()->isDimensionless(),
+                        pModel->getLengthUnit()->isDimensionless()
                        );
   units.setUseHeuristics(true);
   units.setMolecularitiesForMassAction(ri.getChemEqInterface().getMolecularity(CFunctionParameter::SUBSTRATE),

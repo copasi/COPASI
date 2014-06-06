@@ -1,16 +1,16 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
-// All rights reserved.
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+// and The University of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
-// All rights reserved.
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc. and EML Research, gGmbH. 
+// All rights reserved. 
 
 #ifndef COPASI_CModel
 #define COPASI_CModel
@@ -577,7 +577,7 @@ public:
    * Get the current volume unit of the model
    * @return const CUnit & volumeunit
    */
-  const CUnit & getVolumeUnit() const;
+  const CUnit * getVolumeUnit() const;
 
   /**
    * Get the unit for volumes
@@ -609,7 +609,7 @@ public:
    * Get the current area unit of the model
    * @return const CUnit & areaunit
    */
-  const CUnit & getAreaUnit() const;
+  const CUnit * getAreaUnit() const;
 
   /**
    * Get the unit for areas
@@ -641,7 +641,7 @@ public:
    * Get the current length unit of the model
    * @return const CUnit & lengthunit
    */
-  const CUnit & getLengthUnit() const;
+  const CUnit * getLengthUnit() const;
 
   /**
    * Get the unit for lengths
@@ -677,7 +677,7 @@ public:
    * Get the current time unit of the model
    * @return const CUnit & timeunit
    */
-  const CUnit & getTimeUnit() const;
+  const CUnit * getTimeUnit() const;
 
   /**
    * Get the unit for time
@@ -713,7 +713,7 @@ public:
    * Get the current quantity unit of the model
    * @return const CUnit & quantityunit
    */
-  const CUnit & getQuantityUnit() const;
+  const CUnit * getQuantityUnit() const;
 
   /**
    * Get the unit for quantities
@@ -1242,27 +1242,27 @@ private:
   /**
    * The volume unit used in the Model
    */
-  CUnit mVolumeUnit;
+  CUnit * mpVolumeUnit;
 
   /**
    * The volume unit used in the Model
    */
-  CUnit mAreaUnit;
+  CUnit * mpAreaUnit;
 
   /**
    * The volume unit used in the Model
    */
-  CUnit mLengthUnit;
+  CUnit * mpLengthUnit;
 
   /**
    * The time unit used in the Model
    */
-  CUnit mTimeUnit;
+  CUnit * mpTimeUnit;
 
   /**
    * The quantity unit used in the Model
    */
-  CUnit mQuantityUnit;
+  CUnit * mpQuantityUnit;
 
   /**
    * The type of the model
@@ -1313,6 +1313,11 @@ private:
    * Vector of parameter sets
    */
   CCopasiVectorN< CModelParameterSet > mParameterSets;
+
+  /**
+   * Vector of defined unit
+   */
+  CCopasiVectorN< CUnit > mListOfUnits;
 
   /**
    * The key of the currently active parameter set.

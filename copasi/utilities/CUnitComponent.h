@@ -20,7 +20,15 @@ public:
   CUnitComponent(CBaseUnit::Kind kind = CBaseUnit::item,
                  double multiplier = 1,
                  int scale = 0,
-                 double exponent = 1);
+                 double exponent = 1,
+                 bool isMultiplierAvogadro = false);
+
+  /**
+   * Copy constructor
+   * @param const CUnitComponent & src
+   * @param const CCopasiContainer * pParent (default: NULL)
+   */
+  CUnitComponent(const CUnitComponent & src);
 
   CBaseUnit::Kind getKind() const;
   double getMultiplier() const;
@@ -33,12 +41,15 @@ public:
   void setExponent(double exponent);
   bool operator<(const CUnitComponent& rightSide) const;
 
+  ~CUnitComponent();
+
 private:
 
   CBaseUnit::Kind mKind;
   double mMultiplier;
   int mScale;
   double mExponent;
+  bool mIsMultiplierAvogadro;
 };
 
 #endif // CUNITCOMPONENT_H

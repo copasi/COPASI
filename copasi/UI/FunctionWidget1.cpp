@@ -125,11 +125,11 @@ bool FunctionWidget1::loadParameterTable()
   CModel * pModel = pDataModel->getModel();
   assert(pModel != NULL);
 
-  CFindDimensions ddd(mpFunction, pModel->getQuantityUnit().isDimensionless(),
-                      pModel->getVolumeUnit().isDimensionless(),
-                      pModel->getTimeUnit().isDimensionless(),
-                      pModel->getAreaUnit().isDimensionless(),
-                      pModel->getLengthUnit().isDimensionless()
+  CFindDimensions ddd(mpFunction, pModel->getQuantityUnit()->isDimensionless(),
+                      pModel->getVolumeUnit()->isDimensionless(),
+                      pModel->getTimeUnit()->isDimensionless(),
+                      pModel->getAreaUnit()->isDimensionless(),
+                      pModel->getLengthUnit()->isDimensionless()
                      );
 
   ddd.setUseHeuristics(true);

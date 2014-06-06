@@ -22,6 +22,8 @@ class CUnit : public CCopasiContainer
   
 public:
 
+  static C_FLOAT64 Avogadro;
+
   // Enum of valid volume units
   enum VolumeUnit {dimensionlessVolume = 0, m3, l, ml, microl, nl, pl, fl};
 
@@ -57,12 +59,29 @@ public:
   static const char * QuantityUnitNames[];
 
   // constructors
-  CUnit();
-  CUnit(VolumeUnit volEnum);
-  CUnit(AreaUnit areaEnum);
-  CUnit(LengthUnit lengthEnum);
-  CUnit(TimeUnit timeEnum);
-  CUnit(QuantityUnit quantityEnum);
+  /**
+   * Default constructor
+   * @param const std::string & name (default: "NoName")
+   * @param const CCopasiContainer * pParent (default: NULL)
+   */
+  CUnit(const std::string & name = "NoName",
+        const CCopasiContainer * pParent = NULL);
+
+  /**
+   * Copy constructor
+   * @param const CUnit & src
+   * @param const CCopasiContainer * pParent (default: NULL)
+   */
+  CUnit(const CUnit & src,
+        const CCopasiContainer * pParent = NULL);
+
+  ~CUnit();
+
+  void fromEnum(VolumeUnit volEnum);
+  void fromEnum(AreaUnit areaEnum);
+  void fromEnum(LengthUnit lengthEnum);
+  void fromEnum(TimeUnit timeEnum);
+  void fromEnum(QuantityUnit quantityEnum);
 
   void setSymbol(std::string symbol);
   std::string getSymbol() const;

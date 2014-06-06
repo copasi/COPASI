@@ -8,13 +8,25 @@
 CUnitComponent::CUnitComponent(CBaseUnit::Kind kind,
                                double multiplier,
                                int scale,
-                               double exponent):
+                               double exponent,
+                               bool isMultiplierAvogadro):
   mKind(kind),
   mMultiplier(multiplier),
   mScale(scale),
-  mExponent(exponent)
-{
-}
+  mExponent(exponent),
+  mIsMultiplierAvogadro(isMultiplierAvogadro)
+{}
+
+// copy constructor
+CUnitComponent::CUnitComponent(const CUnitComponent & src):
+  mKind(src.mKind),
+  mMultiplier(src.mMultiplier),
+  mScale(src.mScale),
+  mExponent(src.mExponent),
+  mIsMultiplierAvogadro(src.mIsMultiplierAvogadro)
+{}
+
+CUnitComponent::~CUnitComponent() {}
 
 CBaseUnit::Kind CUnitComponent::getKind() const
 {
