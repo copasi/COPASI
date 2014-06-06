@@ -747,7 +747,7 @@ bool applyValueToModelParameter(CModelParameter* modelParameter, CCopasiObject *
 {
   if (modelParameter == NULL || obj == NULL) return false;
 
-  auto numChilren = modelParameter->getNumChildren();
+  size_t numChilren = modelParameter->getNumChildren();
 
   const CCopasiObjectName& cn = modelParameter->getCN();
   const CCopasiObjectName& targetCN = obj->getCN();
@@ -771,7 +771,7 @@ bool applyValueToModelParameter(CModelParameter* modelParameter, CCopasiObject *
 
 bool applyValueToParameterSet(CModelParameterSet& set, CCopasiObject *obj, double newValue)
 {
-  auto& it = set.begin();
+  CModelParameterGroup::iterator it = set.begin();
 
   while (it != set.end())
     {
