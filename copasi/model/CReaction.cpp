@@ -433,7 +433,7 @@ const std::vector<std::string> & CReaction::getParameterMapping(const size_t & i
 {
   if (!mpFunction) fatalError();
 
-  if (C_INVALID_INDEX == index || index == mMetabKeyMap.size())
+  if (C_INVALID_INDEX == index || index >= mMetabKeyMap.size())
     return mMetabKeyMap[0]; //TODO this is kind of ugly!
 
   return mMetabKeyMap[index];
