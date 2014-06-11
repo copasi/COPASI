@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiParameterGroup.cpp,v $
-//   $Revision: 1.24 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/11/29 14:45:29 $
-// End CVS Header
-
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2003 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -38,12 +30,12 @@
 #include "utilities/utility.h"
 
 CCopasiParameterGroup::CCopasiParameterGroup():
-    CCopasiParameter("NoName", GROUP)
+  CCopasiParameter("NoName", GROUP)
 {}
 
 CCopasiParameterGroup::CCopasiParameterGroup(const CCopasiParameterGroup & src,
     const CCopasiContainer * pParent):
-    CCopasiParameter(src, pParent)
+  CCopasiParameter(src, pParent)
 {
   *this = src;
 }
@@ -51,7 +43,7 @@ CCopasiParameterGroup::CCopasiParameterGroup(const CCopasiParameterGroup & src,
 CCopasiParameterGroup::CCopasiParameterGroup(const std::string & name,
     const CCopasiContainer * pParent,
     const std::string & objectType):
-    CCopasiParameter(name, CCopasiParameter::GROUP, NULL, pParent, objectType)
+  CCopasiParameter(name, CCopasiParameter::GROUP, NULL, pParent, objectType)
 {}
 
 CCopasiParameterGroup::~CCopasiParameterGroup()
@@ -94,7 +86,6 @@ const CObjectInterface * CCopasiParameterGroup::getObject(const CCopasiObjectNam
 
   return NULL;
 }
-
 
 bool CCopasiParameterGroup::elevateChildren() {return true;}
 
@@ -264,6 +255,8 @@ bool CCopasiParameterGroup::addParameter(const CCopasiParameter & parameter)
 
 void CCopasiParameterGroup::addParameter(CCopasiParameter * pParameter)
 {
+  if (pParameter == NULL) return;
+
   CCopasiContainer::add(pParameter, true);
   mValue.pGROUP->push_back(pParameter);
 }
@@ -350,8 +343,8 @@ bool CCopasiParameterGroup::removeParameter(const size_t & index)
 CCopasiParameter * CCopasiParameterGroup::getParameter(const std::string & name)
 {
   std::pair < CCopasiContainer::objectMap::const_iterator,
-  CCopasiContainer::objectMap::const_iterator > range =
-    getObjects().equal_range(name);
+      CCopasiContainer::objectMap::const_iterator > range =
+        getObjects().equal_range(name);
 
   if (range.first == range.second) return NULL;
 
@@ -362,8 +355,8 @@ CCopasiParameter * CCopasiParameterGroup::getParameter(const std::string & name)
 const CCopasiParameter * CCopasiParameterGroup::getParameter(const std::string & name) const
 {
   std::pair < CCopasiContainer::objectMap::const_iterator,
-  CCopasiContainer::objectMap::const_iterator > range =
-    getObjects().equal_range(name);
+      CCopasiContainer::objectMap::const_iterator > range =
+        getObjects().equal_range(name);
 
   if (range.first == range.second) return NULL;
 
@@ -576,6 +569,3 @@ std::string CCopasiParameterGroup::getUniqueParameterName(const CCopasiParameter
 
   return UniqueName.str();
 }
-
-
-
