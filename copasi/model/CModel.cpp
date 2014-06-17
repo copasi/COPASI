@@ -1,16 +1,16 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-// and The University of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc. and EML Research, gGmbH. 
-// All rights reserved. 
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 //
 
@@ -2256,10 +2256,13 @@ bool CModel::setQuantityUnit(const std::string & name)
 
 bool CModel::setQuantityUnit(const CUnit::QuantityUnit & unitEnum)
 {
-  // if it is already there and set properly . . .
-  if (mpQuantityUnit != NULL) // &&
-//      *mpQuantityUnit == unitEnum) //create appropriate comparison operator
-    return true;
+  // TODO: Commented out the code below, to allow the quantity unit to be set again
+  //       but this needs to be solved correctly.
+  //
+  //   // if it is already there and set properly . . .
+  //   if (mpQuantityUnit != NULL) // &&
+  // //      *mpQuantityUnit == unitEnum) //create appropriate comparison operator
+  //     return true;
 
   mpQuantityUnit->fromEnum(unitEnum);
 
