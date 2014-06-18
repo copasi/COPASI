@@ -367,24 +367,28 @@ void ParameterTable::updateTable(const CReactionInterface & ri, const CReaction 
 
               // add lines for vector parameters
               jmax = metabNames->size();
-              setRowCount(rowCount() + (int)(jmax - 1));
 
-              item((int) rowCounter, 2)->setText(FROM_UTF8((*metabNames)[0]));
-
-              for (j = 1; j < jmax; ++j)
+              if (jmax > 0)
                 {
-                  ++rowCounter;
+                  setRowCount(rowCount() + (int)(jmax - 1));
 
-                  for (int k = 0; k < 5; k++)
+                  item((int) rowCounter, 2)->setText(FROM_UTF8((*metabNames)[0]));
+
+                  for (j = 1; j < jmax; ++j)
                     {
-                      pItem = new QTableWidgetItem("");
-                      pItem->setFlags(pItem->flags() & (~Qt::ItemIsEditable));
-                      pItem->setBackgroundColor(color);
-                      setItem((int) rowCounter, k, pItem);
-                    }
+                      ++rowCounter;
 
-                  item((int) rowCounter, 2)->setText(FROM_UTF8((*metabNames)[j]));
-                  item((int) rowCounter, 4)->setText(theseUnits);
+                      for (int k = 0; k < 5; k++)
+                        {
+                          pItem = new QTableWidgetItem("");
+                          pItem->setFlags(pItem->flags() & (~Qt::ItemIsEditable));
+                          pItem->setBackgroundColor(color);
+                          setItem((int) rowCounter, k, pItem);
+                        }
+
+                      item((int) rowCounter, 2)->setText(FROM_UTF8((*metabNames)[j]));
+                      item((int) rowCounter, 4)->setText(theseUnits);
+                    }
                 }
             }
         }
