@@ -40,7 +40,7 @@ const char * CUnit::QuantityUnitNames[] =
 CUnit::CUnit(const std::string & name,
              const CCopasiContainer * pParent):
   CCopasiContainer(name, pParent, "Unit"),
-  mSymbol(),
+  mSymbol("none"),
   mKey(),
   mComponents()
 {
@@ -63,12 +63,16 @@ CUnit::~CUnit()
   CCopasiRootContainer::getKeyFactory()->remove(mKey);
 }
 
+void CUnit::setup()
+{
+  mKey = CCopasiRootContainer::getKeyFactory()->add("Unit", this);
+}
+
 void CUnit::fromEnum(VolumeUnit volEnum)
 {
   mComponents.clear();
 
   mSymbol = VolumeUnitNames[volEnum];
-  // setup();
 
   if( volEnum == CUnit::dimensionlessVolume )
     return; // no need to add component
@@ -115,7 +119,6 @@ void CUnit::fromEnum(AreaUnit areaEnum)
   mComponents.clear();
 
   mSymbol = AreaUnitNames[areaEnum];
-  setup();
 
   if( areaEnum == CUnit::dimensionlessArea )
     return; // no need to add component
@@ -166,7 +169,6 @@ void CUnit::fromEnum(LengthUnit lengthEnum)
   mComponents.clear();
 
   mSymbol = LengthUnitNames[lengthEnum];
-  setup();
 
   if( lengthEnum == CUnit::dimensionlessLength )
     return; // no need to add component
@@ -216,7 +218,6 @@ void CUnit::fromEnum(TimeUnit timeEnum)
   mComponents.clear();
 
   mSymbol = TimeUnitNames[timeEnum];
-  setup();
 
   if( timeEnum == CUnit::dimensionlessTime )
     return; // no need to add component
@@ -266,7 +267,6 @@ void CUnit::fromEnum(QuantityUnit quantityEnum)
   mComponents.clear();
 
   mSymbol = QuantityUnitNames[quantityEnum];
-  setup();
 
   if( quantityEnum == CUnit::dimensionlessQuantity )
     return; // no need to add component
@@ -318,12 +318,6 @@ void CUnit::fromEnum(QuantityUnit quantityEnum)
   }
 
   addComponent(tmpComponent);
-}
-
-void CUnit::setup()
-{
-  mKey = CCopasiRootContainer::getKeyFactory()->add("Unit", this);
-  setSymbol("tmp");
 }
 
 void CUnit::setSymbol(std::string symbol)
