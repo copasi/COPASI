@@ -97,11 +97,35 @@ void CMathObject::copy(const CMathObject & src, CMathContainer & container, cons
       mPrerequisites.insert((CMathObject *)((size_t) *it + objectOffset));
     }
 
-  if (mpExpression != NULL &&
-      mPrerequisites.empty())
+  // We do not need to calculate since the value has been copied.
+}
+
+void CMathObject::reallocate(CMathContainer & container, const size_t & valueOffset, const size_t & objectOffset)
+{
+  mpValue = (C_FLOAT64 *)((size_t) mpValue + valueOffset);
+
+  if (mpIntensiveProperty != NULL)
     {
-      calculate();
+      mpIntensiveProperty = (CMathObject *)((size_t) mpIntensiveProperty + objectOffset);
     }
+
+  if (mpExpression != NULL)
+    {
+      mpExpression->reallocate(container, valueOffset, objectOffset);
+    }
+
+  ObjectSet OldPrerequisites = mPrerequisites;
+  mPrerequisites.clear();
+
+  ObjectSet::const_iterator it = OldPrerequisites.begin();
+  ObjectSet::const_iterator end = OldPrerequisites.end();
+
+  for (; it != end; ++it)
+    {
+      mPrerequisites.insert((CMathObject *)((size_t) *it + objectOffset));
+    }
+
+  // We do not need to calculate since the value has been copied during reallocation.
 }
 
 // virtual
@@ -244,6 +268,17 @@ bool CMathObject::isPrerequisiteForContext(const CObjectInterface * pObject,
         return true;
         break;
 
+      case CMath::Delay:
+
+        if (context & CMath::EventHandling)
+          {
+            return true;
+          }
+
+        return (mValueType == CMath::DelayLag);
+
+        break;
+
       default:
         return true;
     }
@@ -380,6 +415,44 @@ bool CMathObject::setExpressionPtr(CMathExpression * pMathExpression)
 const CMathExpression * CMathObject::getExpressionPtr() const
 {
   return mpExpression;
+}
+
+void CMathObject::appendDelays(CMath::DelayData & Delays) const
+{
+  if (mpExpression == NULL)
+    {
+      return;
+    }
+
+  std::vector< CEvaluationNode * >::const_iterator it = mpExpression->getNodeList().begin();
+  std::vector< CEvaluationNode * >::const_iterator end = mpExpression->getNodeList().end();
+
+  for (; it != end; ++it)
+    {
+      switch (CEvaluationNode::type((*it)->getType()))
+        {
+          case CEvaluationNode::DELAY:
+          {
+            CEvaluationNode * pValueExpression = static_cast< CEvaluationNode * >((*it)->getChild());
+            std::string LagExpression = static_cast< CEvaluationNode * >(pValueExpression->getSibling())->buildInfix();
+
+            CMath::DelayData::iterator found = Delays.find(LagExpression);
+
+            if (found == Delays.end())
+              {
+                found = Delays.insert(std::make_pair(LagExpression, CMath::DelayValueData()));
+              }
+
+            found->second.insert(std::make_pair(pValueExpression->buildInfix(), std::make_pair(*it, const_cast< CMathObject * >(this))));
+          }
+          break;
+
+          default:
+            break;
+        }
+    }
+
+  return;
 }
 
 bool CMathObject::compile(CMathContainer & container)

@@ -251,7 +251,6 @@ public:
     CMathObject * mpTrigger;
     CMathObject * mpInitialTrigger;
     CVector< CRootProcessor > mRoots;
-    bool mDualAction;
   };
 
   /**
@@ -272,7 +271,7 @@ public:
 
   /**
    * Copy an existing object
-   * @param const CMathEventN & src
+   * @param const CMathEvent & src
    * @param CMathContainer & container
    * @param const size_t & valueOffset
    * @param const size_t & objectOffset

@@ -83,6 +83,9 @@ private:
 class CMath
 {
 public:
+  typedef std::multimap< std::string, std::pair< CEvaluationNode *, CMathObject * > > DelayValueData;
+  typedef std::multimap< std::string, DelayValueData > DelayData;
+
   struct sPointers
   {
   public:
@@ -112,6 +115,8 @@ public:
     C_FLOAT64 * pPropensities;
     C_FLOAT64 * pDependentMasses;
     C_FLOAT64 * pDiscontinuous;
+    C_FLOAT64 * pDelayValue;
+    C_FLOAT64 * pDelayLag;
 
     CMathObject * pInitialExtensiveValuesObject;
     CMathObject * pInitialIntensiveValuesObject;
@@ -139,6 +144,8 @@ public:
     CMathObject * pPropensitiesObject;
     CMathObject * pDependentMassesObject;
     CMathObject * pDiscontinuousObject;
+    CMathObject * pDelayValueObject;
+    CMathObject * pDelayLagObject;
   };
 
 public:
@@ -155,7 +162,9 @@ public:
     // This is used to indicate stochastic simulation
     // Stochastic = 0x8,
     // Event handling
-    EventHandling = 0x10
+    EventHandling = 0x10,
+    // This is used to detect whether a delay value depends on other delay values.
+    DelayValues = 0x20
   };
 
   typedef CMathFlags< SimulationContext > SimulationContextFlag;
@@ -176,7 +185,9 @@ public:
     EventAssignment,
     EventTrigger,
     EventRoot,
-    EventRootState
+    EventRootState,
+    DelayValue,
+    DelayLag
   };
 
   enum SimulationType
@@ -204,7 +215,8 @@ public:
     StoichiometricCoefficients,
     Reaction,
     Moiety,
-    Event
+    Event,
+    Delay
   };
 
   enum eStateChange

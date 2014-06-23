@@ -1,12 +1,4 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeDelay.cpp,v $
-//   $Revision: 1.11 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/05/16 23:11:31 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -22,16 +14,16 @@
 #include "copasi/report/CCopasiRootContainer.h"
 
 CEvaluationNodeDelay::CEvaluationNodeDelay():
-    CEvaluationNode(CEvaluationNode::INVALID, ""),
-    mpDelayedObject(NULL),
-    mpDeltaT(NULL)
+  CEvaluationNode(CEvaluationNode::INVALID, ""),
+  mpDelayValue(NULL),
+  mpDelayLag(NULL)
 {mPrecedence = PRECEDENCE_NUMBER;}
 
 CEvaluationNodeDelay::CEvaluationNodeDelay(const SubType & subType,
     const Data & /* data */):
-    CEvaluationNode((Type)(CEvaluationNode::DELAY | subType), "delay"),
-    mpDelayedObject(NULL),
-    mpDeltaT(NULL)
+  CEvaluationNode((Type)(CEvaluationNode::DELAY | subType), "delay"),
+  mpDelayValue(NULL),
+  mpDelayLag(NULL)
 {
   switch (subType)
     {
@@ -48,9 +40,9 @@ CEvaluationNodeDelay::CEvaluationNodeDelay(const SubType & subType,
 }
 
 CEvaluationNodeDelay::CEvaluationNodeDelay(const CEvaluationNodeDelay & src):
-    CEvaluationNode(src),
-    mpDelayedObject(NULL),
-    mpDeltaT(NULL)
+  CEvaluationNode(src),
+  mpDelayValue(NULL),
+  mpDelayLag(NULL)
 {}
 
 CEvaluationNodeDelay::~CEvaluationNodeDelay() {}
@@ -62,15 +54,15 @@ bool CEvaluationNodeDelay::compile(const CEvaluationTree * /*pTree*/)
   switch (mType & 0x00FFFFFF)
     {
       case DELAY:
-        mpDelayedObject = static_cast<CEvaluationNode *>(getChild());
+        mpDelayValue = static_cast<CEvaluationNode *>(getChild());
 
-        if (mpDelayedObject == NULL) return false;
+        if (mpDelayValue == NULL) return false;
 
-        mpDeltaT = static_cast<CEvaluationNode *>(mpDelayedObject->getSibling());
+        mpDelayLag = static_cast<CEvaluationNode *>(mpDelayValue->getSibling());
 
-        if (mpDeltaT == NULL) return false;
+        if (mpDelayLag == NULL) return false;
 
-        return (mpDeltaT->getSibling() == NULL); // We must have exactly 2 children
+        return (mpDelayLag->getSibling() == NULL); // We must have exactly 2 children
 
         break;
 

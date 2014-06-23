@@ -1,12 +1,4 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeDelay.h,v $
-//   $Revision: 1.9 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/05/16 23:11:31 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -129,8 +121,8 @@ public:
   virtual std::string getInfix(const std::vector< std::string > & children) const;
 
 private:
-  CEvaluationNode * mpDelayedObject;
-  CEvaluationNode * mpDeltaT;
+  CEvaluationNode * mpDelayValue;
+  CEvaluationNode * mpDelayLag;
 };
 
 #endif // COPASI_CEvaluationNodeDelay

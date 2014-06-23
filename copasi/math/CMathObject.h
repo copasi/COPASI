@@ -44,6 +44,14 @@ public:
   void copy(const CMathObject & src, CMathContainer & container, const size_t & valueOffset, const size_t & objectOffset);
 
   /**
+   * Copy an existing object
+   * @param CMathContainer & container
+   * @param const size_t & valueOffset
+   * @param const size_t & objectOffset
+   */
+  void reallocate(CMathContainer & container, const size_t & valueOffset, const size_t & objectOffset);
+
+  /**
    * Retrieve the CN of the object
    * @return CCopasiObjectName
    */
@@ -194,6 +202,12 @@ public:
    * @return const CMathExpression * pExpression
    */
   const CMathExpression * getExpressionPtr() const;
+
+  /**
+   * Retrieve the number of delays involved in calculating the expression
+   * @param CMath::DelayData & Delays
+   */
+  void appendDelays(CMath::DelayData & Delays) const;
 
 private:
   /**

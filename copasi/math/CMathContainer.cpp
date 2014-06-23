@@ -49,6 +49,8 @@ CMathContainer::CMathContainer():
   mPropensities(),
   mDependentMasses(),
   mDiscontinuous(),
+  mDelayValues(),
+  mDelayLags(),
   mFixedCount(0),
   mEventTargetCount(0),
   mODECount(0),
@@ -58,6 +60,8 @@ CMathContainer::CMathContainer():
   mInitialState(),
   mState(),
   mStateReduced(),
+  mHistory(),
+  mHistoryReduced(),
   mRate(),
   mRateReduced(),
   mInitialDependencies(),
@@ -80,7 +84,8 @@ CMathContainer::CMathContainer():
   mDataValue2MathObject(),
   mDiscontinuityEvents("Discontinuities", this),
   mDiscontinuityInfix2Object(),
-  mTriggerInfix2Event()
+  mTriggerInfix2Event(),
+  mDelays()
 {}
 
 CMathContainer::CMathContainer(CModel & model):
@@ -115,6 +120,8 @@ CMathContainer::CMathContainer(CModel & model):
   mPropensities(),
   mDependentMasses(),
   mDiscontinuous(),
+  mDelayValues(),
+  mDelayLags(),
   mFixedCount(0),
   mEventTargetCount(0),
   mODECount(0),
@@ -124,6 +131,8 @@ CMathContainer::CMathContainer(CModel & model):
   mInitialState(),
   mState(),
   mStateReduced(),
+  mHistory(),
+  mHistoryReduced(),
   mRate(),
   mRateReduced(),
   mInitialDependencies(),
@@ -146,7 +155,8 @@ CMathContainer::CMathContainer(CModel & model):
   mDataValue2MathObject(),
   mDiscontinuityEvents("Discontinuities", this),
   mDiscontinuityInfix2Object(),
-  mTriggerInfix2Event()
+  mTriggerInfix2Event(),
+  mDelays()
 {
   // We do not want the model to know about the math container therefore we
   // do not use &model in the constructor of CCopasiContainer
@@ -190,6 +200,8 @@ CMathContainer::CMathContainer(const CMathContainer & src):
   mPropensities(),
   mDependentMasses(),
   mDiscontinuous(),
+  mDelayValues(),
+  mDelayLags(),
   mFixedCount(src.mFixedCount),
   mEventTargetCount(src.mEventTargetCount),
   mODECount(src.mODECount),
@@ -199,6 +211,8 @@ CMathContainer::CMathContainer(const CMathContainer & src):
   mInitialState(),
   mState(),
   mStateReduced(),
+  mHistory(src.mHistory),
+  mHistoryReduced(),
   mRate(),
   mRateReduced(),
   mInitialDependencies(),
@@ -221,7 +235,8 @@ CMathContainer::CMathContainer(const CMathContainer & src):
   mDataValue2MathObject(),
   mDiscontinuityEvents("Discontinuities", this),
   mDiscontinuityInfix2Object(),
-  mTriggerInfix2Event()
+  mTriggerInfix2Event(),
+  mDelays(src.mDelays.size())
 {
   // We do not want the model to know about the math container therefore we
   // do not use &model in the constructor of CCopasiContainer
@@ -282,6 +297,10 @@ CMathContainer::CMathContainer(const CMathContainer & src):
                               (C_FLOAT64 *)((size_t) src.mDependentMasses.array() + ValueOffset));
   mDiscontinuous.initialize(src.mDiscontinuous.size(),
                             (C_FLOAT64 *)((size_t) src.mDiscontinuous.array() + ValueOffset));
+  mDelayValues.initialize(src.mDelayValues.size(),
+                          (C_FLOAT64 *)((size_t) src.mDelayValues.array() + ValueOffset));
+  mDelayLags.initialize(src.mDelayLags.size(),
+                        (C_FLOAT64 *)((size_t) src.mDelayLags.array() + ValueOffset));
 
   mInitialState.initialize(src.mInitialState.size(),
                            (C_FLOAT64 *)((size_t) src.mInitialState.array() + ValueOffset));
@@ -293,6 +312,8 @@ CMathContainer::CMathContainer(const CMathContainer & src):
                    (C_FLOAT64 *)((size_t) src.mRate.array() + ValueOffset));
   mRateReduced.initialize(src.mRateReduced.size(),
                           (C_FLOAT64 *)((size_t) src.mRateReduced.array() + ValueOffset));
+
+  mHistoryReduced.initialize(mDelayLags.size(), mStateReduced.size(), mState.size(), mHistory.array());
 
   // Update the mappings
   std::map< CCopasiObject *, CMathObject * >::const_iterator itData = src.mDataObject2MathObject.begin();
@@ -337,6 +358,15 @@ CMathContainer::CMathContainer(const CMathContainer & src):
   for (; pReaction != pReactionEnd; ++pReaction, ++pReactionSrc)
     {
       pReaction->copy(*pReactionSrc, *this, ValueOffset, ObjectOffset);
+    }
+
+  CMathDelay * pDelay = mDelays.array();
+  CMathDelay * pDelayEnd = pDelay + mDelays.size();
+  const CMathDelay * pDelaySrc = src.mDelays.array();
+
+  for (; pDelay != pDelayEnd; ++pDelay, ++pDelaySrc)
+    {
+      pDelay->copy(*pDelaySrc, *this, ValueOffset, ObjectOffset);
     }
 
   createDependencyGraphs();
@@ -415,6 +445,38 @@ bool CMathContainer::isStateValid() const
     }
 
   return true;
+}
+
+const CMathHistoryCore & CMathContainer::getHistory(const bool & reduced) const
+{
+  if (reduced)
+    {
+      return mHistoryReduced;
+    }
+
+  return mHistory;
+}
+
+void CMathContainer::setHistory(const CMathHistoryCore & history)
+{
+  assert(history.size() == mHistory.size() &&
+         history.rows() == mHistory.rows() &&
+         (history.cols() == mHistory.cols() ||
+          history.cols() == mHistoryReduced.cols()));
+
+  if (history.cols() < mHistory.cols())
+    {
+      mHistoryReduced = history;
+    }
+  else
+    {
+      mHistory = history;
+    }
+}
+
+const CVectorCore< C_FLOAT64 > & CMathContainer::getDelayLags() const
+{
+  return mDelayLags;
 }
 
 CVector< C_FLOAT64 > CMathContainer::initializeAtolVector(const C_FLOAT64 & atol, const bool & reduced) const
@@ -625,6 +687,20 @@ void CMathContainer::updateSimulatedValues(const bool & useMoieties)
   else
     {
       applyUpdateSequence(mSimulationValuesSequence);
+    }
+}
+
+void CMathContainer::updateHistoryValues(const bool & useMoieties)
+{
+  CMathHistoryCore * pHistory = (useMoieties) ? &mHistoryReduced : &mHistory;
+  CMathDelay * pDelay = mDelays.array();
+  CMathDelay * pDelayEnd = pDelay + mDelays.size();
+  size_t lag = 0;
+
+  for (; pDelay != pDelayEnd; ++lag, ++pDelay)
+    {
+      setState(pHistory->getRow(lag));
+      pDelay->calculateDelayValues(useMoieties);
     }
 }
 
@@ -841,6 +917,9 @@ void CMathContainer::init()
   mDiscontinuityInfix2Object.clear();
   mTriggerInfix2Event.clear();
 
+  // Create eventual delays
+  createDelays();
+
   createDependencyGraphs();
 
   updateInitialValues(CModelParameter::ParticleNumbers);
@@ -871,6 +950,36 @@ void CMathContainer::init()
   // TODO We may have unused event triggers and roots due to optimization
   // in the discontinuities.
   analyzeRoots();
+
+  CMathDelay * pDelay = mDelays.array();
+  CMathDelay * pDelayEnd = pDelay + mDelays.size();
+
+  for (; pDelay != pDelayEnd; ++pDelay)
+    {
+      pDelay->createUpdateSequences();
+    }
+
+  // Check whether we have recursive delay value definitions
+  {
+    CObjectInterface::ObjectSet Changed;
+
+    CMathObject *pObject = getMathObject(mDelayValues.array());
+    CMathObject *pObjectEnd = pObject + mDelayValues.size();
+
+    for (; pObject != pObjectEnd; ++pObject)
+      {
+        Changed.insert(pObject);
+      }
+
+    CObjectInterface::UpdateSequence Sequence;
+    mTransientDependencies.getUpdateSequence(Sequence, CMath::DelayValues, Changed, Changed);
+
+    if (!Sequence.empty())
+      {
+        // TODO CRITICAL Create a meaningful error message.
+        fatalError();
+      }
+  }
 
 #ifdef COPASI_DEBUG
   CMathObject *pObject = mObjects.array();
@@ -1222,11 +1331,17 @@ void CMathContainer::allocate()
       // as target and assignment expression.
     }
 
+  // The number of delays is only determined after the math container objects have been
+  // constructed. At that point values and objects are reallocated.
+  size_t nDelays = 0;
+
   mValues.resize(4 * (nExtensiveValues + nIntensiveValues) +
                  5 * nReactions +
                  3 * nMoieties +
                  nDiscontinuities +
-                 4 * nEvents + nEventAssignments + 2 * nEventRoots);
+                 4 * nEvents + nEventAssignments + 2 * nEventRoots +
+                 2 * nDelays);
+
   mValues = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
 
   C_FLOAT64 * pArray = mValues.array();
@@ -1281,6 +1396,10 @@ void CMathContainer::allocate()
   pArray += nMoieties;
   mDiscontinuous.initialize(nDiscontinuities, pArray);
   pArray += nDiscontinuities;
+  mDelayValues.initialize(nDelays, pArray);
+  pArray += nDelays;
+  mDelayLags.initialize(nDelays, pArray);
+  pArray += nDelays;
 
   assert(pArray == mValues.array() + mValues.size());
 
@@ -1427,6 +1546,8 @@ void CMathContainer::initializeObjects(CMath::sPointers & p)
                               CMath::Discontinuous, CMath::Event, CMath::SimulationTypeUndefined,
                               false, false, NULL);
     }
+
+  // Delay objects are allocated after all other objects are compiled.
 }
 
 void CMathContainer::initializeEvents(CMath::sPointers & p)
@@ -1712,7 +1833,11 @@ void CMathContainer::createApplyInitialValuesSequence()
 
             break;
 
-            // Everything which is not a value must be calculated.
+            // Delay values are always calculate in a separate step
+          case CMath::DelayValue:
+            break;
+
+            // Everything else must be calculated.
           default:
             Requested.insert(pObject);
             break;
@@ -1755,6 +1880,16 @@ void CMathContainer::createUpdateSimulationValuesSequence()
             ReducedSimulationRequiredValues.insert(pObject);
             break;
 
+          case CMath::SimulationTypeUndefined:
+
+            if (pObject->getValueType() == CMath::DelayValue)
+              {
+                mStateValues.insert(pObject);
+                mReducedStateValues.insert(pObject);
+              }
+
+            break;
+
           default:
             break;
         }
@@ -1774,6 +1909,15 @@ void CMathContainer::createUpdateSimulationValuesSequence()
 
   pObject = mObjects.array() + (mEventRoots.array() - mValues.array());
   pObjectEnd = mObjects.array() + (mEventRootStates.array() - mValues.array());
+
+  for (; pObject != pObjectEnd; ++pObject)
+    {
+      mSimulationRequiredValues.insert(pObject);
+      ReducedSimulationRequiredValues.insert(pObject);
+    }
+
+  pObject = mObjects.array() + (mDelayLags.array() - mValues.array());
+  pObject = pObject + mDelayLags.size();
 
   for (; pObject != pObjectEnd; ++pObject)
     {
@@ -2122,6 +2266,8 @@ void CMathContainer::initializePointers(CMath::sPointers & p)
   p.pPropensities = mPropensities.array();
   p.pDependentMasses = mDependentMasses.array();
   p.pDiscontinuous = mDiscontinuous.array();
+  p.pDelayValue = mDelayValues.array();
+  p.pDelayLag = mDelayLags.array();
 
   C_FLOAT64 * pValues = mValues.array();
   CMathObject * pObjects = mObjects.array();
@@ -2152,6 +2298,8 @@ void CMathContainer::initializePointers(CMath::sPointers & p)
   p.pPropensitiesObject = pObjects + (p.pPropensities - pValues);
   p.pDependentMassesObject = pObjects + (p.pDependentMasses - pValues);
   p.pDiscontinuousObject = pObjects + (p.pDiscontinuous - pValues);
+  p.pDelayValueObject = pObjects + (p.pDelayValue - pValues);
+  p.pDelayLagObject = pObjects + (p.pDelayLag - pValues);
 }
 
 #ifdef COPASI_DEBUG
@@ -2209,6 +2357,10 @@ void CMathContainer::printPointers(CMath::sPointers & p)
   std::cout << "  mDependentMasses:[" << Index << "]" << ((mDependentMasses.size() <= Index) ? " Error" : "") << std::endl;
   Index = p.pDiscontinuous - mDiscontinuous.array();
   std::cout << "  mDiscontinuous:[" << Index << "]" << ((mDiscontinuous.size() <= Index) ? " Error" : "") << std::endl;
+  Index = p.pDelayValue - mDelayValues.array();
+  std::cout << "  mDelayValue:[" << Index << "]" << ((mDelayValues.size() <= Index) ? " Error" : "") << std::endl;
+  Index = p.pDelayLag - mDelayLags.array();
+  std::cout << "  mDelayLag:[" << Index << "]" << ((mDelayLags.size() <= Index) ? " Error" : "") << std::endl;
   std::cout << std::endl;
 }
 #endif // COAPSI_DEBUG
@@ -2626,4 +2778,221 @@ std::string CMathContainer::createDiscontinuityTriggerInfix(const CEvaluationNod
     }
 
   return TriggerInfix;
+}
+
+void CMathContainer::createDelays()
+{
+  // We check all transient objects for the occurrences of delays
+  CMathObject * pObject = getMathObject(mExtensiveValues.array());
+  CMathObject * pObjectEnd = getMathObject(mDelayValues.array());
+
+  CMath::DelayData DelayData;
+
+  for (; pObject != pObjectEnd; ++pObject)
+    {
+      pObject->appendDelays(DelayData);
+    }
+
+  if (DelayData.size() == 0)
+    {
+      mHistory.resize(0, 0, 0);
+
+      return;
+    }
+
+  size_t nDelayLags = 0;
+  size_t nDelayValues = 0;
+
+  CMath::DelayData::iterator itDelayLag = DelayData.begin();
+  CMath::DelayData::iterator endDelayLag = DelayData.end();
+  std::string LagKey = "";
+  std::vector< size_t > LagValueCounts;
+  std::vector< size_t >::reverse_iterator itCurrentLagValueCount;
+
+  for (; itDelayLag != endDelayLag; ++itDelayLag)
+    {
+      if (itDelayLag->first != LagKey)
+        {
+          LagKey = itDelayLag->first;
+          nDelayLags++;
+          LagValueCounts.push_back((size_t) 0);
+          itCurrentLagValueCount = LagValueCounts.rbegin();
+        }
+
+      CMath::DelayValueData::iterator itDelayValue = itDelayLag->second.begin();
+      CMath::DelayValueData::iterator endDelayValue = itDelayLag->second.end();
+      std::string ValueKey = "";
+
+      for (; itDelayValue != endDelayValue; ++itDelayValue)
+        {
+          if (itDelayValue->first != ValueKey)
+            {
+              ValueKey = itDelayValue->first;
+              nDelayValues++;
+              (*itCurrentLagValueCount)++;
+            }
+        }
+    }
+
+  std::pair< size_t, size_t > Offsets = resize(mValues.size() + nDelayLags + nDelayValues);
+
+  // Update the mappings of the delays
+  for (itDelayLag = DelayData.begin(); itDelayLag != endDelayLag; ++itDelayLag)
+    {
+      CMath::DelayValueData::iterator itDelayValue = itDelayLag->second.begin();
+      CMath::DelayValueData::iterator endDelayValue = itDelayLag->second.end();
+
+      for (; itDelayValue != endDelayValue; ++itDelayValue)
+        {
+          itDelayValue->second.second = itDelayValue->second.second + Offsets.second;
+        }
+    }
+
+  mDelayValues.initialize(nDelayValues, mDelayValues.array());
+  mDelayLags.initialize(nDelayLags, mDelayValues.array() + nDelayValues);
+
+  pObject = getMathObject(mDelayValues.array());
+  pObjectEnd = pObject + mDelayValues.size();
+  C_FLOAT64 * pValue = mDelayValues.array();
+
+  while (pObject != pObjectEnd)
+    {
+      CMathObject::initialize(pObject, pValue, CMath::DelayValue, CMath::Delay,
+                              CMath::SimulationTypeUndefined, false, false, NULL);
+    }
+
+  pObjectEnd += nDelayLags;
+
+  while (pObject != pObjectEnd)
+    {
+      CMathObject::initialize(pObject, pValue, CMath::DelayLag, CMath::Delay,
+                              CMath::SimulationTypeUndefined, false, false, NULL);
+    }
+
+  mDelays.resize(nDelayLags);
+  CMathDelay * pDelay = mDelays.array();
+  CMathObject * pDelayValueObject = getMathObject(mDelayValues.array());
+  CMathObject * pDelayLagObject = getMathObject(mDelayLags.array());
+  std::vector< size_t >::const_iterator itLagValueCount = LagValueCounts.begin();
+
+  itDelayLag = DelayData.begin();
+  LagKey = "";
+
+  for (; itDelayLag != endDelayLag; ++itDelayLag)
+    {
+      // If we have a new key we create a new delay
+      if (itDelayLag->first != LagKey)
+        {
+          // Advance the pointers except for the first time
+          if (LagKey != "")
+            {
+              ++pDelay;
+              ++pDelayLagObject;
+              ++itLagValueCount;
+              ++pDelayValueObject;
+            }
+
+          LagKey = itDelayLag->first;
+          pDelay->create(itDelayLag, *itLagValueCount, *this, pDelayLagObject);
+        }
+
+      CMath::DelayValueData::iterator itDelayValue = itDelayLag->second.begin();
+      CMath::DelayValueData::iterator endDelayValue = itDelayLag->second.end();
+      std::string ValueKey = "";
+      size_t index = 0;
+
+      for (; itDelayValue != endDelayValue; ++itDelayValue)
+        {
+          if (itDelayValue->first != ValueKey)
+            {
+              ValueKey = itDelayValue->first;
+              ++pDelayValueObject;
+              ++index;
+
+              pDelay->addValueObject(itDelayValue, index, pDelayValueObject);
+            }
+
+          // Update the expression in which the delay occurred.
+          pDelay->modifyMathObject(itDelayValue, index);
+        }
+    }
+}
+
+std::pair< size_t, size_t > CMathContainer::resize(const size_t & size)
+{
+  // Determine the offsets
+  // We have to cast all pointers to size_t to avoid pointer overflow.
+  size_t OldValues = (size_t) mValues.array();
+  size_t OldObjects = (size_t) mObjects.array();
+
+  mValues.resize(size, true);
+  mObjects.resize(size, true);
+
+  size_t ValueOffset = ((size_t) mValues.array()) - OldValues;
+  size_t ObjectOffset = ((size_t) mObjects.array()) - OldObjects;
+
+  mInitialExtensiveValues.initialize(mInitialExtensiveValues.size(), (C_FLOAT64 *)((size_t) mInitialExtensiveValues.array() + ValueOffset));
+  mInitialIntensiveValues.initialize(mInitialIntensiveValues.size(), (C_FLOAT64 *)((size_t) mInitialIntensiveValues.array() + ValueOffset));
+  mInitialExtensiveRates.initialize(mInitialExtensiveRates.size(), (C_FLOAT64 *)((size_t) mInitialExtensiveRates.array() + ValueOffset));
+  mInitialIntensiveRates.initialize(mInitialIntensiveRates.size(), (C_FLOAT64 *)((size_t) mInitialIntensiveRates.array() + ValueOffset));
+  mInitialParticleFluxes.initialize(mInitialParticleFluxes.size(), (C_FLOAT64 *)((size_t) mInitialParticleFluxes.array() + ValueOffset));
+  mInitialFluxes.initialize(mInitialFluxes.size(), (C_FLOAT64 *)((size_t) mInitialFluxes.array() + ValueOffset));
+  mInitialTotalMasses.initialize(mInitialTotalMasses.size(), (C_FLOAT64 *)((size_t) mInitialTotalMasses.array() + ValueOffset));
+  mInitialEventTriggers.initialize(mInitialEventTriggers.size(), (C_FLOAT64 *)((size_t) mInitialEventTriggers.array() + ValueOffset));
+
+  mExtensiveValues.initialize(mExtensiveValues.size(), (C_FLOAT64 *)((size_t) mExtensiveValues.array() + ValueOffset));
+  mIntensiveValues.initialize(mIntensiveValues.size(), (C_FLOAT64 *)((size_t) mIntensiveValues.array() + ValueOffset));
+  mExtensiveRates.initialize(mExtensiveRates.size(), (C_FLOAT64 *)((size_t) mExtensiveRates.array() + ValueOffset));
+  mIntensiveRates.initialize(mIntensiveRates.size(), (C_FLOAT64 *)((size_t) mIntensiveRates.array() + ValueOffset));
+  mParticleFluxes.initialize(mParticleFluxes.size(), (C_FLOAT64 *)((size_t) mParticleFluxes.array() + ValueOffset));
+  mFluxes.initialize(mFluxes.size(), (C_FLOAT64 *)((size_t) mFluxes.array() + ValueOffset));
+  mTotalMasses.initialize(mTotalMasses.size(), (C_FLOAT64 *)((size_t) mTotalMasses.array() + ValueOffset));
+  mEventTriggers.initialize(mEventTriggers.size(), (C_FLOAT64 *)((size_t) mEventTriggers.array() + ValueOffset));
+
+  mEventDelays.initialize(mEventDelays.size(), (C_FLOAT64 *)((size_t) mEventDelays.array() + ValueOffset));
+  mEventPriorities.initialize(mEventPriorities.size(), (C_FLOAT64 *)((size_t) mEventPriorities.array() + ValueOffset));
+  mEventAssignments.initialize(mEventAssignments.size(), (C_FLOAT64 *)((size_t) mEventAssignments.array() + ValueOffset));
+  mEventRoots.initialize(mEventRoots.size(), (C_FLOAT64 *)((size_t) mEventRoots.array() + ValueOffset));
+  mEventRootStates.initialize(mEventRootStates.size(), (C_FLOAT64 *)((size_t) mEventRootStates.array() + ValueOffset));
+  mPropensities.initialize(mPropensities.size(), (C_FLOAT64 *)((size_t) mPropensities.array() + ValueOffset));
+  mDependentMasses.initialize(mDependentMasses.size(), (C_FLOAT64 *)((size_t) mDependentMasses.array() + ValueOffset));
+  mDiscontinuous.initialize(mDiscontinuous.size(), (C_FLOAT64 *)((size_t) mDiscontinuous.array() + ValueOffset));
+  mDelayValues.initialize(mDelayValues.size(), (C_FLOAT64 *)((size_t) mDelayValues.array() + ValueOffset));
+  mDelayLags.initialize(mDelayLags.size(), (C_FLOAT64 *)((size_t) mDelayLags.array() + ValueOffset));
+
+  mInitialState.initialize(mInitialState.size(), (C_FLOAT64 *)((size_t) mInitialState.array() + ValueOffset));
+  mState.initialize(mState.size(), (C_FLOAT64 *)((size_t) mState.array() + ValueOffset));
+  mStateReduced.initialize(mStateReduced.size(), (C_FLOAT64 *)((size_t) mStateReduced.array() + ValueOffset));
+  mRate.initialize(mRate.size(), (C_FLOAT64 *)((size_t) mRate.array() + ValueOffset));
+  mRateReduced.initialize(mRateReduced.size(), (C_FLOAT64 *)((size_t) mRateReduced.array() + ValueOffset));
+
+  mHistory.resize(mDelayLags.size(), mState.size(), mState.size());
+
+  // Update the mappings
+  std::map< CCopasiObject *, CMathObject * >::iterator itData = mDataObject2MathObject.begin();
+  std::map< CCopasiObject *, CMathObject * >::iterator endData = mDataObject2MathObject.end();
+
+  for (; itData != endData; ++itData)
+    {
+      itData->second = (CMathObject *)(((size_t) itData->second) + ObjectOffset);
+    }
+
+  std::map< C_FLOAT64 *, CMathObject * >::iterator itValue = mDataValue2MathObject.begin();
+  std::map< C_FLOAT64 *, CMathObject * >::iterator endValue = mDataValue2MathObject.end();
+
+  for (; itValue != endValue; ++itValue)
+    {
+      itValue->second = (CMathObject *)(((size_t) itValue->second) + ObjectOffset);
+    }
+
+  // Reallocate the objects
+  CMathObject * pObject = mObjects.array();
+  CMathObject * pObjectEnd = pObject + mObjects.size();
+
+  for (; pObject != pObjectEnd; ++pObject)
+    {
+      pObject->reallocate(*this, ValueOffset, ObjectOffset);
+    }
+
+  return std::make_pair(ValueOffset, ObjectOffset);
 }

@@ -256,8 +256,7 @@ CEvaluationNode * CMathEvent::CTrigger::CRootProcessor::createTriggerExpressionN
 CMathEvent::CTrigger::CTrigger():
   mpTrigger(NULL),
   mpInitialTrigger(NULL),
-  mRoots(),
-  mDualAction(false)
+  mRoots()
 {}
 
 CMathEvent::CTrigger::~CTrigger()
@@ -348,8 +347,6 @@ void CMathEvent::CTrigger::copy(const CMathEvent::CTrigger & src,
     {
       pRoot->copy(*pRootSrc, container, valueOffset, objectOffset);
     }
-
-  mDualAction = src.mDualAction;
 }
 
 bool CMathEvent::CTrigger::compile(CEvent * pDataEvent,
@@ -368,7 +365,6 @@ bool CMathEvent::CTrigger::compile(CEvent * pDataEvent,
   if (pDataEvent != NULL)
     {
       DataTrigger.setInfix(pDataEvent->getTriggerExpression());
-      mDualAction = false;
     }
   else
     {

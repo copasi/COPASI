@@ -33,6 +33,8 @@ std::ostream &operator<<(std::ostream &os, const CVectorCore< CType > & A);
 
 template <class CType> class CVectorCore
 {
+  friend class CMathHistoryCore;
+
 public:
   typedef CType elementType;
 

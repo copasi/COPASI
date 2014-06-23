@@ -14,6 +14,8 @@
 #include "copasi/math/CMathEvent.h"
 #include "copasi/math/CMathDependencyGraph.h"
 #include "copasi/math/CMathReaction.h"
+#include "copasi/math/CMathDelay.h"
+#include "copasi/math/CMathHistory.h"
 
 #include "copasi/utilities/CVector.h"
 #include "copasi/utilities/CMatrix.h"
@@ -128,6 +130,27 @@ public:
   bool isStateValid() const;
 
   /**
+   * Retrieves the state values, i.e., all values of objects of
+   * simulation type EventTarget, Time, ODE, Dependent, and Independent. It includes only
+   * extensive values for species.
+   * @param const bool & reduced = false
+   * @return const CMathHistoryCore & history
+   */
+  const CMathHistoryCore & getHistory(const bool & reduced = false) const;
+
+  /**
+   * Set all the history values needed for calculation.
+   * @param const CMathHistoryCore & history
+   */
+  void setHistory(const CMathHistoryCore & history);
+
+  /**
+   * Retrieve the vector of delay lags
+   * @return const CVectorCore< C_FLOAT64 > & delayLags
+   */
+  const CVectorCore< C_FLOAT64 > & getDelayLags() const;
+
+  /**
    * Initialize a vector of individual absolute tolerances
    * @param const C_FLOAT64 & baseTolerance
    * @param const bool & reduced = false
@@ -198,6 +221,12 @@ public:
    * @param const bool & useMoieties
    */
   void updateSimulatedValues(const bool & useMoieties);
+
+  /**
+   * Calculate all historic values required for delayed differential equations
+   * @param const bool & useMoieties
+   */
+  void updateHistoryValues(const bool & useMoieties);
 
   /**
    * Apply the given update sequence to the mathematical objects in the container
@@ -466,6 +495,13 @@ private:
   void allocate();
 
   /**
+   * Resize the container
+   * @param const size_t & size
+   * @return std::pair< size_t, size_t > offsets
+   */
+  std::pair< size_t, size_t > resize(const size_t & size);
+
+  /**
    * Initialize the pointers
    * @param sPointers & pointers
    */
@@ -641,6 +677,11 @@ private:
   std::string createDiscontinuityTriggerInfix(const CEvaluationNode * pNode);
 
   /**
+   * Create all delays
+   */
+  void createDelays();
+
+  /**
    * Calculate the Jacobian for the roots.
    * @param CMatrix< C_FLOAT64 > & jacobian
    * @param const CVector< C_FLOAT64 > & rates
@@ -688,6 +729,8 @@ private:
   CVectorCore< C_FLOAT64 > mPropensities;
   CVectorCore< C_FLOAT64 > mDependentMasses;
   CVectorCore< C_FLOAT64 > mDiscontinuous;
+  CVectorCore< C_FLOAT64 > mDelayValues;
+  CVectorCore< C_FLOAT64 > mDelayLags;
 
   size_t mFixedCount;
   size_t mEventTargetCount;
@@ -695,6 +738,7 @@ private:
   size_t mIndependentCount;
   size_t mDependentCount;
   size_t mAssignmentCount;
+  size_t mDelayCount;
 
   /**
    * The initial state contains also all fixed values
@@ -710,6 +754,16 @@ private:
    * The reduced state contains values of type EventTarget, Time, ODE, Independent
    */
   CVectorCore< C_FLOAT64 > mStateReduced;
+
+  /**
+   * The full history needed for the calculation of delayed differential equations
+   */
+  CMathHistory mHistory;
+
+  /**
+   * The reduced history needed for the calculation of delayed differential equations
+   */
+  CMathHistoryCore mHistoryReduced;
 
   /**
    * The rate contains derivatives for values of type EventTarget, Time, ODE, Independent, and Dependent
@@ -846,6 +900,11 @@ private:
    * representing it.
    */
   std::map< std::string,  CMathEvent * > mTriggerInfix2Event;
+
+  /**
+   * A vector of delays
+   */
+  CVector< CMathDelay > mDelays;
 };
 
 #endif // COPASI_CMathContainer

@@ -127,9 +127,17 @@ CMathExpression * CMathExpression::copy(const CMathExpression & src,
   CMathExpression * pExpression = new CMathExpression(src.getObjectName(), container);
 
   pExpression->setRoot(src.getRoot()->copyBranch());
+  pExpression->reallocate(container, valueOffset, objectOffset);
 
+  return pExpression;
+}
+
+void CMathExpression::reallocate(CMathContainer & container,
+                                 const size_t & valueOffset,
+                                 const size_t & objectOffset)
+{
   // Apply the offset to all nodes
-  CCopasiTree<CEvaluationNode>::iterator it = pExpression->getRoot();
+  CCopasiTree<CEvaluationNode>::iterator it = getRoot();
   CCopasiTree<CEvaluationNode>::iterator end = NULL;
 
   for (; it != end; ++it)
@@ -141,9 +149,7 @@ CMathExpression * CMathExpression::copy(const CMathExpression & src,
         }
     }
 
-  pExpression->compile();
-
-  return pExpression;
+  compile();
 }
 
 const C_FLOAT64 & CMathExpression::value()
