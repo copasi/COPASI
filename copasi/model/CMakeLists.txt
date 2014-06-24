@@ -43,7 +43,7 @@ if (ENABLE_FLEX_BISON)
   set(COPASI_SOURCES ${COPASI_SOURCES} ${COPASI_SOURCE_DIR}/model/CChemEqParser_lex.cpp)
 endif (ENABLE_FLEX_BISON)
 
-file(GLOB HEADERS_MODEL model/*.h)
+file(GLOB HEADERS_MODEL model/*.h model/*.hpp)
 file(GLOB SOURCES_MODEL model/*.cpp)
 
 # create source group for IDEs
