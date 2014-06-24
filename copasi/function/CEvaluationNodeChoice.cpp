@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -257,12 +257,11 @@ std::string CEvaluationNodeChoice::getMMLString(const std::vector< std::string >
       out << "<mtr>" << std::endl;
 
       out << "<mtd>" << std::endl;
-      out << children[2];
-      out << "<mo> , </mo>" << std::endl;
+      out << "<mo> else, </mo>" << std::endl;
 
       out << "</mtd>" << std::endl;
       out << "<mtd>" << std::endl;
-      out << "<mo> else </mo>" << std::endl;
+      out << children[2];
       out << "</mtd>" << std::endl;
 
       out << "</mtr>" << std::endl;
