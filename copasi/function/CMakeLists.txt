@@ -41,7 +41,7 @@ if (ENABLE_FLEX_BISON)
   set(COPASI_SOURCES ${COPASI_SOURCES} ${COPASI_SOURCE_DIR}/function/CEvaluationLexer_lex.cpp)
 endif (ENABLE_FLEX_BISON)
 
-file(GLOB HEADERS_FUN function/*.h)
+file(GLOB HEADERS_FUN function/*.h function/*.hpp)
 file(GLOB SOURCES_FUN function/*.cpp)
 
 # create source group for IDEs

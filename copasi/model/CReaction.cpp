@@ -882,10 +882,15 @@ void CReaction::setScalingFactor()
 
   if (1 == getCompartmentNumber())
     {
+      const CMetab *pMetab = NULL;
+
       if (mChemEq.getSubstrates().size())
-        pCompartment = mChemEq.getSubstrates()[0]->getMetabolite()->getCompartment();
+        pMetab = mChemEq.getSubstrates()[0]->getMetabolite();
       else if (mChemEq.getProducts().size())
-        pCompartment = mChemEq.getProducts()[0]->getMetabolite()->getCompartment();
+        pMetab = mChemEq.getProducts()[0]->getMetabolite();
+
+      if (pMetab != NULL)
+        pCompartment = pMetab->getCompartment();
     }
 
   if (pCompartment != NULL)
