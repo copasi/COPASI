@@ -201,6 +201,16 @@ endif(ENABLE_USE_MATH_CONTAINER)
 
 option (BUILD_GUI "Disable this if you do not want to build the COPASI GUI (CopasiUI)." ON)
 
+option(ENABLE_FLEX_BISON "Enable the use of fleex and bison to create parsers." OFF)
+if (ENABLE_FLEX_BISON)
+  find_package(FLEX)
+  find_package(BISON)
+  set(FLEX_BINARY ${FLEX_EXECUTABLE})
+  set(FLEX_EXECUTABLE "${COPASI_SOURCE_DIR}/admin/flex.sh")
+  set(BISON_BINARY ${BISON_EXECUTABLE})
+  set(BISON_EXECUTABLE "${COPASI_SOURCE_DIR}/admin/yacc.sh")
+endif (ENABLE_FLEX_BISON)
+
 find_package(OpenGL)
 
 if ( NOT CLAPACK_FOUND )
