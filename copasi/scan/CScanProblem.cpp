@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -17,6 +17,7 @@
  */
 
 #include <string>
+#include <cmath>
 
 #include "copasi.h"
 #include "CScanProblem.h"
@@ -183,4 +184,59 @@ CCopasiParameterGroup* CScanProblem::createScanItem(CScanProblem::Type type, siz
 void CScanProblem::clearScanItems()
 {
   mpScanItems->clear();
+}
+
+void CScanProblem::fixBuild81()
+{
+  CCopasiParameterGroup::index_iterator it = mpScanItems->beginIndex();
+  CCopasiParameterGroup::index_iterator end = mpScanItems->endIndex();
+
+  for (; it != end; ++it)
+    {
+      if ((*it)->getType() != CCopasiParameter::GROUP)
+        {
+          continue;
+        }
+
+      CCopasiParameterGroup * pGroup = static_cast< CCopasiParameterGroup * >(*it);
+      CCopasiParameter * pParam = pGroup->getParameter("Type");
+
+      if (pParam == NULL || * (Type *) pParam->getValue().pUINT != SCAN_RANDOM)
+        {
+          continue;
+        }
+
+      // Check whether distribution type is set and not uniform
+      pParam = pGroup->getParameter("Distribution type");
+
+      if (pParam == NULL || * (Type *) pParam->getValue().pUINT == 0)
+        {
+          continue;
+        }
+
+      // Check whether log is set and true
+      pParam = pGroup->getParameter("log");
+
+      if (pParam == NULL || * pParam->getValue().pBOOL == false)
+        {
+          continue;
+        }
+
+      // We need to fix min and max
+      pParam = pGroup->getParameter("Minimum");
+
+      if (pParam != NULL)
+        {
+          pParam->setValue(log(*pParam->getValue().pDOUBLE));
+        }
+
+      pParam = pGroup->getParameter("Maximum");
+
+      if (pParam != NULL)
+        {
+          pParam->setValue(log(*pParam->getValue().pDOUBLE));
+        }
+    }
+
+  return;
 }
