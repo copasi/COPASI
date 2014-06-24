@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -317,4 +317,15 @@ bool CScanTask::initSubtask(const OutputFlag & /* of */,
     return mpSubtask->initialize(NO_OUTPUT, pOutputHandler, pOstream);
 
   return true;
+}
+
+void CScanTask::fixBuild81()
+{
+  CScanProblem * pProblem = dynamic_cast< CScanProblem * >(mpProblem);
+
+  if (pProblem == NULL) return;
+
+  pProblem->fixBuild81();
+
+  return;
 }
