@@ -1,6 +1,5 @@
 /* scanner for kinetic functions */
 
-%option outfile="CEvaluationLexer_lex.cpp"
 %option prefix="CEvaluation"
 %option never-interactive
 %option c++
@@ -13,7 +12,7 @@
 #include "copasi.h"
 #include "CEvaluationNode.h"
 #include "CEvaluationLexer.h"
-#include "CEvaluationParser_yacc.h"
+#include "CEvaluationParser_yacc.hpp"
 
 #ifndef YYERRCODE
 #define YYERRCODE 256

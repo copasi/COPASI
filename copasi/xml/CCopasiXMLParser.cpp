@@ -1643,7 +1643,7 @@ void CCopasiXMLParser::ModelElement::start(const XML_Char *pszName,
         ModelType = toEnum(mParser.getAttributeValue("type", papszAttrs, "deterministic"),
                            CModel::ModelTypeNames, CModel::deterministic);
 
-        Avogadro = CCopasiXMLInterface::DBL(mParser.getAttributeValue("avogadroConstant", papszAttrs, "6.0221415e23"));
+        Avogadro = CCopasiXMLInterface::DBL(mParser.getAttributeValue("avogadroConstant", papszAttrs, CUnit::Avogadro));
 
         if (!mCommon.pModel) mCommon.pModel = new CModel(mCommon.pDataModel);
 

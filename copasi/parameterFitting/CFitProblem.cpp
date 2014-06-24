@@ -86,7 +86,8 @@ CFitProblem::CFitProblem(const CCopasiTask::Type & type,
   mpFisherScaledEigenvectorsMatrix(NULL),
   mCorrelation(0, 0),
   mpCorrelationMatrixInterface(NULL),
-  mpCorrelationMatrix(NULL)
+  mpCorrelationMatrix(NULL),
+  mpCreateParameterSets(NULL)
 {
   initObjects();
   initializeParameter();
@@ -140,7 +141,8 @@ CFitProblem::CFitProblem(const CFitProblem& src,
   mpFisherScaledEigenvectorsMatrix(NULL),
   mCorrelation(src.mCorrelation),
   mpCorrelationMatrixInterface(NULL),
-  mpCorrelationMatrix(NULL)
+  mpCorrelationMatrix(NULL),
+  mpCreateParameterSets(NULL)
 {
   initObjects();
   initializeParameter();
@@ -237,12 +239,21 @@ void CFitProblem::initializeParameter()
   mpParmTimeCourseCN =
     assertParameter("Time-Course", CCopasiParameter::CN, CCopasiObjectName(""))->getValue().pCN;
 
+  mpCreateParameterSets =
+    assertParameter("Create Parameter Sets", CCopasiParameter::BOOL, false)-> getValue().pBOOL;
+
   assertGroup("Experiment Set");
 
   assertGroup("Validation Set");
 
   elevateChildren();
 }
+
+void CFitProblem::setCreateParameterSets(const bool & create)
+{*mpCreateParameterSets = create;}
+
+const bool & CFitProblem::getCreateParameterSets() const
+{return *mpCreateParameterSets;}
 
 bool CFitProblem::elevateChildren()
 {
@@ -781,6 +792,29 @@ bool CFitProblem::checkFunctionalConstraints()
   return true;
 }
 
+/**
+ * Utility function creating a parameter set for each experiment
+ */
+void createParameterSetsForExperiment(CExperiment* pExp)
+{
+  if (pExp == NULL) return;
+
+  CModel* model = pExp->getObjectDataModel()->getModel();
+  std::string origname = "PE: "  + UTCTimeStamp() + " Exp: " + pExp->getObjectName();
+  std::string name = origname;
+  int count = 0;
+
+  while (model->getModelParameterSets().getIndex(name) != C_INVALID_INDEX)
+    {
+      std::stringstream str; str << origname << " (" << ++count << ")";
+      name = str.str();
+    }
+
+  CModelParameterSet* set = new CModelParameterSet(name);
+  model->getModelParameterSets().add(set, true);
+  set->createFromModel();
+}
+
 bool CFitProblem::calculate()
 {
   mCounter += 1;
@@ -876,6 +910,11 @@ bool CFitProblem::calculate()
                       mCalculateValue += pExp->sumOfSquares(j, Residuals);
                   }
 
+                if (mStoreResults && *mpCreateParameterSets)
+                  {
+                    createParameterSetsForExperiment(pExp);
+                  }
+
                 break;
 
               case CCopasiTask::timeCourse:
@@ -964,6 +1003,11 @@ bool CFitProblem::calculate()
                         //additionally also store the the simulation result for the extended time series
                         pExp->storeExtendedTimeSeriesData(pExp->getTimeData()[j]);
                       }
+                  }
+
+                if (mStoreResults && *mpCreateParameterSets)
+                  {
+                    createParameterSetsForExperiment(pExp);
                   }
 
                 break;

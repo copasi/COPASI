@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -37,6 +37,9 @@
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "utilities/CCopasiException.h"
 #include "report/CCopasiRootContainer.h"
+
+#include <copasi/parameterFitting/CFitTask.h>
+#include <copasi/model/CModel.h>
 
 /*
  *  Constructs a CQFittingWidget which is a child of 'parent', with the
@@ -195,6 +198,12 @@ bool CQFittingWidget::saveTask()
       pProblem->setRandomizeStartValues(mpCheckRandomize->isChecked());
     }
 
+  if (mpCreateParameterSets->isChecked() != pProblem->getCreateParameterSets())
+    {
+      mChanged = true;
+      pProblem->setCreateParameterSets(mpCreateParameterSets->isChecked());
+    }
+
   if (mpCheckStatistics->isChecked() != pProblem->getCalculateStatistics())
     {
       mChanged = true;
@@ -252,6 +261,7 @@ bool CQFittingWidget::loadTask()
       mpCrossValidationSet->getExperiment(i)->CCopasiParameter::getKey();
 
   mpCheckRandomize->setChecked(pProblem->getRandomizeStartValues());
+  mpCreateParameterSets->setChecked(pProblem->getCreateParameterSets());
   mpCheckStatistics->setChecked(pProblem->getCalculateStatistics());
 
   mpParameters->load(mpDataModel, pProblem->getGroup("OptimizationItemList"), &mExperimentKeyMap, &mCrossValidationKeyMap);
@@ -286,11 +296,32 @@ bool CQFittingWidget::runTask()
 
   if (!pTask) return false;
 
+  mnParamterSetsBeforeRun = pTask->getObjectDataModel()->getModel()->getModelParameterSets().size();
+
   if (!commonBeforeRunTask()) return false;
 
   bool success = commonRunTask();
 
   return success;
+}
+
+bool CQFittingWidget::taskFinishedEvent()
+{
+  bool result = TaskWidget::taskFinishedEvent();
+
+  CFitTask * pTask =
+    dynamic_cast< CFitTask * >(CCopasiRootContainer::getKeyFactory()->get(mKey));
+
+  if (!pTask) return false;
+
+  size_t finalCount = pTask->getObjectDataModel()->getModel()->getModelParameterSets().size();
+
+  for (size_t i = mnParamterSetsBeforeRun; i < finalCount; ++i)
+    {
+      protectedNotify(ListViews::MODELPARAMETERSET, ListViews::ADD, pTask->getObjectDataModel()->getModel()->getModelParameterSets()[i]->getKey());
+    }
+
+  return true;
 }
 
 void CQFittingWidget::slotExperimentData()

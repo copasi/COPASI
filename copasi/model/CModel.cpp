@@ -73,11 +73,12 @@ CModel::CModel(CCopasiContainer* pParent):
   mTransientDependencies(),
   mPhysicalDependencies(),
   mpMathContainer(NULL),
-  mVolumeUnit(CUnit::ml),
-  mAreaUnit(CUnit::m2),
-  mLengthUnit(CUnit::m),
-  mTimeUnit(CUnit::s),
-  mQuantityUnit(CUnit::mMol),
+  mListOfUnits("Units", this),
+  mpVolumeUnit(NULL),
+  mpAreaUnit(NULL),
+  mpLengthUnit(NULL),
+  mpTimeUnit(NULL),
+  mpQuantityUnit(NULL),
   mType(deterministic),
   mCompartments("Compartments", this),
   mMetabolites("Metabolites", this),
@@ -103,7 +104,7 @@ CModel::CModel(CCopasiContainer* pParent):
   mL(),
   mpLinkMatrixAnnotation(NULL),
   mLView(mL),
-  mAvogadro(6.02214179e23),
+  mAvogadro(CUnit::Avogadro),
   mQuantity2NumberFactor(1.0),
   mNumber2QuantityFactor(1.0),
   mpCompileHandler(NULL),
@@ -135,8 +136,10 @@ CModel::CModel(CCopasiContainer* pParent):
   /* This following 2 lines added by Liang Xu
   Because of the failure to initialize the parameter when creating a new models
   */
-  setQuantityUnit(mQuantityUnit.getSymbol()); // set the factors
-  setVolumeUnit(mVolumeUnit.getSymbol()); // set the factors
+//  setQuantityUnit(mpQuantityUnit->getSymbol()); // set the factors
+//  setVolumeUnit(mpVolumeUnit->getSymbol()); // set the factors
+  setQuantityUnit("mol");
+  setVolumeUnit("ml");
 
   CONSTRUCTOR_TRACE;
 }
@@ -2127,23 +2130,23 @@ bool CModel::setVolumeUnit(const std::string & name)
 
 bool CModel::setVolumeUnit(const CUnit::VolumeUnit & unitEnum)
 {
-  mVolumeUnit.setSymbol(CUnit::VolumeUnitNames[unitEnum]);
+  mpVolumeUnit->setSymbol(CUnit::VolumeUnitNames[unitEnum]);
   return true;
 }
 
-const CUnit & CModel::getVolumeUnit() const
+const CUnit * CModel::getVolumeUnit() const
 {
-  return mVolumeUnit;
+  return mpVolumeUnit;
 }
 
 std::string CModel::getVolumeUnitName() const
 {
-  return mVolumeUnit.getSymbol();
+  return mpVolumeUnit->getSymbol();
 }
 
 CUnit::VolumeUnit CModel::getVolumeUnitEnum() const
 {
-  return toEnum(mVolumeUnit.getSymbol().c_str(), CUnit::VolumeUnitNames, CUnit::ml);
+  return toEnum(mpVolumeUnit->getSymbol().c_str(), CUnit::VolumeUnitNames, CUnit::ml);
 }
 
 //****
@@ -2155,23 +2158,23 @@ bool CModel::setAreaUnit(const std::string & name)
 
 bool CModel::setAreaUnit(const CUnit::AreaUnit & unitEnum)
 {
-  mAreaUnit.setSymbol(CUnit::AreaUnitNames[unitEnum]);
+  mpAreaUnit->setSymbol(CUnit::AreaUnitNames[unitEnum]);
   return true;
 }
 
-const CUnit & CModel::getAreaUnit() const
+const CUnit * CModel::getAreaUnit() const
 {
-  return mAreaUnit;
+  return mpAreaUnit;
 }
 
 std::string CModel::getAreaUnitName() const
 {
-  return mAreaUnit.getSymbol();
+  return mpAreaUnit->getSymbol();
 }
 
 CUnit::AreaUnit CModel::getAreaUnitEnum() const
 {
-  return toEnum(mAreaUnit.getSymbol().c_str(), CUnit::AreaUnitNames, CUnit::m2);
+  return toEnum(mpAreaUnit->getSymbol().c_str(), CUnit::AreaUnitNames, CUnit::m2);
 }
 
 //****
@@ -2182,23 +2185,23 @@ bool CModel::setLengthUnit(const std::string & name)
 
 bool CModel::setLengthUnit(const CUnit::LengthUnit & unitEnum)
 {
-  mLengthUnit.setSymbol(CUnit::LengthUnitNames[unitEnum]);
+  mpLengthUnit->setSymbol(CUnit::LengthUnitNames[unitEnum]);
   return true;
 }
 
-const CUnit & CModel::getLengthUnit() const
+const CUnit * CModel::getLengthUnit() const
 {
-  return mLengthUnit;
+  return mpLengthUnit;
 }
 
 std::string CModel::getLengthUnitName() const
 {
-  return mLengthUnit.getSymbol();
+  return mpLengthUnit->getSymbol();
 }
 
 CUnit::LengthUnit CModel::getLengthUnitEnum() const
 {
-  return toEnum(mLengthUnit.getSymbol().c_str(), CUnit::LengthUnitNames, CUnit::m);
+  return toEnum(mpLengthUnit->getSymbol().c_str(), CUnit::LengthUnitNames, CUnit::m);
 }
 
 //****
@@ -2210,23 +2213,23 @@ bool CModel::setTimeUnit(const std::string & name)
 
 bool CModel::setTimeUnit(const CUnit::TimeUnit & unitEnum)
 {
-  mTimeUnit.setSymbol(CUnit::TimeUnitNames[unitEnum]);
+  mpTimeUnit->setSymbol(CUnit::TimeUnitNames[unitEnum]);
   return true;
 }
 
-const CUnit & CModel::getTimeUnit() const
+const CUnit * CModel::getTimeUnit() const
 {
-  return mTimeUnit;
+  return mpTimeUnit;
 }
 
 std::string CModel::getTimeUnitName() const
 {
-  return mTimeUnit.getSymbol();
+  return mpTimeUnit->getSymbol();
 }
 
 CUnit::TimeUnit CModel::getTimeUnitEnum() const
 {
-  return toEnum(mTimeUnit.getSymbol().c_str(), CUnit::TimeUnitNames, CUnit::s);
+  return toEnum(mpTimeUnit->getSymbol().c_str(), CUnit::TimeUnitNames, CUnit::s);
 }
 
 //****
@@ -2243,8 +2246,20 @@ bool CModel::setQuantityUnit(const std::string & name)
 
 bool CModel::setQuantityUnit(const CUnit::QuantityUnit & unitEnum)
 {
+  // TODO: Commented out the code below, to allow the quantity unit to be set again
+  //       but this needs to be solved correctly.
+  //
+  //   // if it is already there and set properly . . .
+  //   if (mpQuantityUnit != NULL) // &&
+  // //      *mpQuantityUnit == unitEnum) //create appropriate comparison operator
+  //     return true;
+
+  mpQuantityUnit->fromEnum(unitEnum);
+
+  if (mListOfUnits.getIndex(mpQuantityUnit->getObjectName()) == C_INVALID_INDEX)   // if one has already been added to the list of units, use that one
+    mListOfUnits.add(mpQuantityUnit, true);
+
   bool success = true;
-  mQuantityUnit = unitEnum;
 
   switch (unitEnum)
     {
@@ -2281,7 +2296,7 @@ bool CModel::setQuantityUnit(const CUnit::QuantityUnit & unitEnum)
         break;
 
       default:
-        mQuantityUnit.setSymbol("number");
+        mpQuantityUnit->setSymbol("number");
         mQuantity2NumberFactor = 1.0;
         success = false;
         break;
@@ -2302,24 +2317,24 @@ bool CModel::setQuantityUnit(const CUnit::QuantityUnit & unitEnum)
   return success;
 }
 
-const CUnit & CModel::getQuantityUnit() const
+const CUnit * CModel::getQuantityUnit() const
 {
-  return mQuantityUnit;
+  return mpQuantityUnit;
 }
 
 std::string CModel::getQuantityUnitName() const
 {
-  return mQuantityUnit.getSymbol();
+  return mpQuantityUnit->getSymbol();
 }
 
 std::string CModel::getQuantityUnitOldXMLName() const
 {
-  return mQuantityUnit.getSymbol();
+  return mpQuantityUnit->getSymbol();
 }
 
 CUnit::QuantityUnit CModel::getQuantityUnitEnum() const
 {
-  return toEnum(mQuantityUnit.getSymbol().c_str(), CUnit::QuantityUnitNames, CUnit::mMol);
+  return toEnum(mpQuantityUnit->getSymbol().c_str(), CUnit::QuantityUnitNames, CUnit::mMol);
 }
 
 void CModel::setModelType(const CModel::ModelType & modelType)
@@ -3574,6 +3589,28 @@ void CModel::initObjects()
   *mpIValue = InitialValue;
   *mpValue = Value;
 
+  // units
+
+  mpVolumeUnit = new CUnit("ml");
+  mListOfUnits.add(mpVolumeUnit, true);
+  mpVolumeUnit->fromEnum(CUnit::ml);
+
+  mpAreaUnit = new CUnit("m2");
+  mListOfUnits.add(mpAreaUnit, true);
+  mpAreaUnit->fromEnum(CUnit::m2);
+
+  mpLengthUnit = new CUnit("m");
+  mListOfUnits.add(mpLengthUnit, true);
+  mpLengthUnit->fromEnum(CUnit::m);
+
+  mpTimeUnit = new CUnit("s");
+  mListOfUnits.add(mpTimeUnit, true);
+  mpTimeUnit->fromEnum(CUnit::s);
+
+  mpQuantityUnit = new CUnit("mMol");
+  mListOfUnits.add(mpQuantityUnit, true);
+  mpQuantityUnit->fromEnum(CUnit::mMol);
+
   mpIValueReference->setObjectName("Initial Time");
   mpValueReference->setObjectName("Time");
 
@@ -3589,7 +3626,7 @@ void CModel::initObjects()
   addMatrixReference("Reduced Model Stoichiometry", mRedStoi, CCopasiObject::ValueDbl);
 
   addMatrixReference("Link Matrix"   , mLView, CCopasiObject::ValueDbl);
-  addObjectReference("Quantity Unit", mQuantityUnit);
+  addObjectReference("Quantity Unit", mpQuantityUnit);
   addObjectReference("Quantity Conversion Factor", mQuantity2NumberFactor, CCopasiObject::ValueDbl);
   addObjectReference("Avogadro Constant", mAvogadro, CCopasiObject::ValueDbl);
 
@@ -4192,11 +4229,11 @@ std::string CModel::printParameterOverview()
           oss << reac->getObjectName() << "\n";
 
           //calculate units
-          CFindDimensions units(reac->getFunction(), getQuantityUnit().isDimensionless(),
-                                getVolumeUnit().isDimensionless(),
-                                getTimeUnit().isDimensionless(),
-                                getAreaUnit().isDimensionless(),
-                                getLengthUnit().isDimensionless());
+          CFindDimensions units(reac->getFunction(), getQuantityUnit()->isDimensionless(),
+                                getVolumeUnit()->isDimensionless(),
+                                getTimeUnit()->isDimensionless(),
+                                getAreaUnit()->isDimensionless(),
+                                getLengthUnit()->isDimensionless());
           units.setUseHeuristics(true);
           units.setChemicalEquation(&reac->getChemEq());
           units.findDimensions(reac->getCompartmentNumber() > 1);
@@ -4242,148 +4279,148 @@ std::string CModel::printParameterOverview()
 
 std::string CModel::getTimeUnitsDisplayString() const
 {
-  if (mTimeUnit.isDimensionless())
+  if (mpTimeUnit->isDimensionless())
     return "";
 
-  return mTimeUnit.getSymbol();
+  return mpTimeUnit->getSymbol();
 }
 
 std::string CModel::getFrequencyUnitsDisplayString() const
 {
-  if (mTimeUnit.isDimensionless())
+  if (mpTimeUnit->isDimensionless())
     return "";
 
-  return std::string("1/") + mTimeUnit.getSymbol();
+  return std::string("1/") + mpTimeUnit->getSymbol();
 }
 
 std::string CModel::getVolumeUnitsDisplayString() const
 {
-  if (getVolumeUnit().isDimensionless())
+  if (getVolumeUnit()->isDimensionless())
     return "";
 
-  return mVolumeUnit.getSymbol();
+  return mpVolumeUnit->getSymbol();
 }
 
 std::string CModel::getAreaUnitsDisplayString() const
 {
-  if (mAreaUnit.isDimensionless())
+  if (mpAreaUnit->isDimensionless())
     return "";
 
-  return mAreaUnit.getSymbol();
+  return mpAreaUnit->getSymbol();
 }
 
 std::string CModel::getLengthUnitsDisplayString() const
 {
-  if (mLengthUnit.isDimensionless())
+  if (mpLengthUnit->isDimensionless())
     return "";
 
-  return mLengthUnit.getSymbol();
+  return mpLengthUnit->getSymbol();
 }
 
 std::string CModel::getVolumeRateUnitsDisplayString() const
 {
   if (getVolumeUnitEnum() == CUnit::dimensionlessVolume)
     {
-      if (mTimeUnit.isDimensionless())
+      if (mpTimeUnit->isDimensionless())
         return "";
 
-      return std::string("1/") + mTimeUnit.getSymbol();
+      return std::string("1/") + mpTimeUnit->getSymbol();
     }
 
-  if (mTimeUnit.isDimensionless())
-    return mVolumeUnit.getSymbol();
+  if (mpTimeUnit->isDimensionless())
+    return mpVolumeUnit->getSymbol();
 
-  return mVolumeUnit.getSymbol() + "/" + mTimeUnit.getSymbol();
+  return mpVolumeUnit->getSymbol() + "/" + mpTimeUnit->getSymbol();
 }
 
 std::string CModel::getConcentrationUnitsDisplayString() const
 {
   std::string Units;
 
-  if (mQuantityUnit.isDimensionless())
+  if (mpQuantityUnit->isDimensionless())
     {
       if (getVolumeUnitEnum() == CUnit::dimensionlessVolume)
         return "";
 
-      return std::string("1/") + mVolumeUnit.getSymbol();
+      return std::string("1/") + mpVolumeUnit->getSymbol();
     }
 
-  Units = mQuantityUnit.getSymbol();
+  Units = mpQuantityUnit->getSymbol();
 
   if (getVolumeUnitEnum() == CUnit::dimensionlessVolume)
     return Units;
 
-  return Units + "/" + mVolumeUnit.getSymbol();
+  return Units + "/" + mpVolumeUnit->getSymbol();
 }
 
 std::string CModel::getConcentrationRateUnitsDisplayString() const
 {
   std::string Units;
 
-  if (mQuantityUnit.isDimensionless())
+  if (mpQuantityUnit->isDimensionless())
     {
       Units = "1";
 
       if (getVolumeUnitEnum() == CUnit::dimensionlessVolume)
         {
-          if (mTimeUnit.isDimensionless())
+          if (mpTimeUnit->isDimensionless())
             return "";
 
-          return Units + "/" + mTimeUnit.getSymbol();
+          return Units + "/" + mpTimeUnit->getSymbol();
         }
       else
         {
-          if (mTimeUnit.isDimensionless())
-            return Units + "/" + mVolumeUnit.getSymbol();
+          if (mpTimeUnit->isDimensionless())
+            return Units + "/" + mpVolumeUnit->getSymbol();
 
-          return Units + "/(" + mVolumeUnit.getSymbol() + "*" + mTimeUnit.getSymbol() + ")";
+          return Units + "/(" + mpVolumeUnit->getSymbol() + "*" + mpTimeUnit->getSymbol() + ")";
         }
     }
 
-  Units = mQuantityUnit.getSymbol();
+  Units = mpQuantityUnit->getSymbol();
 
   if (getVolumeUnitEnum() == CUnit::dimensionlessVolume)
     {
-      if (mTimeUnit.isDimensionless())
+      if (mpTimeUnit->isDimensionless())
         return Units;
 
-      return Units + "/" + mTimeUnit.getSymbol();
+      return Units + "/" + mpTimeUnit->getSymbol();
     }
 
-  if (mTimeUnit.isDimensionless())
-    return Units + "/" + mVolumeUnit.getSymbol();
+  if (mpTimeUnit->isDimensionless())
+    return Units + "/" + mpVolumeUnit->getSymbol();
 
-  return Units + "/(" + mVolumeUnit.getSymbol() + "*" + mTimeUnit.getSymbol() + ")";
+  return Units + "/(" + mpVolumeUnit->getSymbol() + "*" + mpTimeUnit->getSymbol() + ")";
 }
 
 std::string CModel::getQuantityUnitsDisplayString() const
 {
-  if (mQuantityUnit.isDimensionless())
+  if (mpQuantityUnit->isDimensionless())
     {
       return "";
     }
 
-  return mQuantityUnit.getSymbol();
+  return mpQuantityUnit->getSymbol();
 }
 
 std::string CModel::getQuantityRateUnitsDisplayString() const
 {
   std::string Units;
 
-  if (mQuantityUnit.isDimensionless())
+  if (mpQuantityUnit->isDimensionless())
     {
-      if (mTimeUnit.isDimensionless())
+      if (mpTimeUnit->isDimensionless())
         return "";
 
-      return std::string("1/") + mTimeUnit.getSymbol();
+      return std::string("1/") + mpTimeUnit->getSymbol();
     }
 
-  Units = mQuantityUnit.getSymbol();
+  Units = mpQuantityUnit->getSymbol();
 
-  if (mTimeUnit.isDimensionless())
+  if (mpTimeUnit->isDimensionless())
     return Units;
 
-  return Units + "/" + mTimeUnit.getSymbol();
+  return Units + "/" + mpTimeUnit->getSymbol();
 }
 
 /****** Below will be removed when the math model completed ******/

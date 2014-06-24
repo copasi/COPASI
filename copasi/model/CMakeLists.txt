@@ -34,6 +34,15 @@
 # )
 # 
 
+if (ENABLE_FLEX_BISON)
+  BISON_TARGET(CChemEqParser model/CChemEqParser.ypp ${COPASI_SOURCE_DIR}/model/CChemEqParser_yacc.cpp COMPILE_FLAGS ${BISON_BINARY})
+  set(COPASI_SOURCES ${COPASI_SOURCES} ${COPASI_SOURCE_DIR}/model/CChemEqParser_yacc.cpp)
+  set(COPASI_HEADERS ${COPASI_HEADERS} ${COPASI_SOURCE_DIR}/model/CChemEqParser_yacc.hpp)
+  
+  FLEX_TARGET(CChemEqParser model/CChemEqParser.lpp ${COPASI_SOURCE_DIR}/model/CChemEqParser_lex.cpp COMPILE_FLAGS ${FLEX_BINARY})
+  set(COPASI_SOURCES ${COPASI_SOURCES} ${COPASI_SOURCE_DIR}/model/CChemEqParser_lex.cpp)
+endif (ENABLE_FLEX_BISON)
+
 file(GLOB HEADERS_MODEL model/*.h)
 file(GLOB SOURCES_MODEL model/*.cpp)
 
@@ -43,8 +52,3 @@ source_group(model FILES ${SOURCES_MODEL} ${HEADERS_MODEL})
 # add files to main COPASI sources
 set(COPASI_SOURCES ${COPASI_SOURCES} ${SOURCES_MODEL})
 set(COPASI_HEADERS ${COPASI_HEADERS} ${HEADERS_MODEL})
-
-list(REMOVE_ITEM SOURCES_MODEL model/CMathModel.cpp)
-list(REMOVE_ITEM SOURCES_MODEL model/CProcessQueue.cpp)
-
-list(REMOVE_ITEM SOURCES_MODEL model/CProcessQueue.cpp)

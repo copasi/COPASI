@@ -1,20 +1,32 @@
-// Copyright (C) 2014 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 #include "copasi/utilities/CUnitComponent.h"
 
 CUnitComponent::CUnitComponent(CBaseUnit::Kind kind,
                                double multiplier,
                                int scale,
-                               double exponent):
+                               double exponent,
+                               bool isMultiplierAvogadro):
   mKind(kind),
   mMultiplier(multiplier),
   mScale(scale),
-  mExponent(exponent)
-{
-}
+  mExponent(exponent),
+  mIsMultiplierAvogadro(isMultiplierAvogadro)
+{}
+
+// copy constructor
+CUnitComponent::CUnitComponent(const CUnitComponent & src):
+  mKind(src.mKind),
+  mMultiplier(src.mMultiplier),
+  mScale(src.mScale),
+  mExponent(src.mExponent),
+  mIsMultiplierAvogadro(src.mIsMultiplierAvogadro)
+{}
+
+CUnitComponent::~CUnitComponent() {}
 
 CBaseUnit::Kind CUnitComponent::getKind() const
 {

@@ -196,6 +196,16 @@ endif(ENABLE_PE_EVENT_CREATION)
 
 option (BUILD_GUI "Disable this if you do not want to build the COPASI GUI (CopasiUI)." ON)
 
+option(ENABLE_FLEX_BISON "Enable the use of fleex and bison to create parsers." OFF)
+if (ENABLE_FLEX_BISON)
+  find_package(FLEX)
+  find_package(BISON)
+  set(FLEX_BINARY ${FLEX_EXECUTABLE})
+  set(FLEX_EXECUTABLE "${COPASI_SOURCE_DIR}/admin/flex.sh")
+  set(BISON_BINARY ${BISON_EXECUTABLE})
+  set(BISON_EXECUTABLE "${COPASI_SOURCE_DIR}/admin/yacc.sh")
+endif (ENABLE_FLEX_BISON)
+
 find_package(OpenGL)
 
 if ( NOT CLAPACK_FOUND )
@@ -338,7 +348,7 @@ add_definitions(-DUSE_SBMLUNIT)
 endif(ENABLE_USE_SBMLUNIT)
 
 #Option for the COPASI support for SEDML currently being developed by Joseph 
-option (ENABLE_COPASI_SEDML "Enables SEDML support." OFF)
+option (ENABLE_COPASI_SEDML "Enables SEDML support." ON)
 mark_as_advanced(ENABLE_COPASI_SEDML)
 if(ENABLE_COPASI_SEDML)
   add_definitions(-DCOPASI_SEDML)

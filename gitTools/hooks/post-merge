@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 GitTools=`git config copasi.gittools`
 . ${GitTools}/functions

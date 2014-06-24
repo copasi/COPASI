@@ -168,11 +168,11 @@ const std::string CModelParameter::getUnit(const Framework & framework) const
         const CModel * pModel = getModel();
 
         CFindDimensions Units(pReaction->getFunction(),
-                              pModel->getQuantityUnit().isDimensionless(),
-                              pModel->getVolumeUnit().isDimensionless(),
-                              pModel->getTimeUnit().isDimensionless(),
-                              pModel->getAreaUnit().isDimensionless(),
-                              pModel->getLengthUnit().isDimensionless());
+                              pModel->getQuantityUnit()->isDimensionless(),
+                              pModel->getVolumeUnit()->isDimensionless(),
+                              pModel->getTimeUnit()->isDimensionless(),
+                              pModel->getAreaUnit()->isDimensionless(),
+                              pModel->getLengthUnit()->isDimensionless());
 
         Units.setUseHeuristics(true);
 

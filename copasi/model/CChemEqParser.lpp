@@ -10,7 +10,7 @@
 
 #include "copasi.h"
 #include "CChemEqParser.h"
-#include "CChemEqParser_yacc.h"
+#include "CChemEqParser_yacc.hpp"
 
 #include "utilities/CCopasiMessage.h"
 #include "utilities/utility.h"

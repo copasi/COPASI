@@ -63,6 +63,8 @@
 #include "plot/COutputDefinitionVector.h"
 #include "plot/CPlotSpecification.h"
 
+#include "report/CReportDefinitionVector.h"
+
 #include <steadystate/CSteadyStateTask.h>
 #include <scan/CScanTask.h>
 
@@ -99,12 +101,14 @@ void SEDMLImporter::updateCopasiTaskForSimulation(SedSimulation* sedmlsim,
       {
 
         CTrajectoryTask *tTask = static_cast<CTrajectoryTask*>((*mpDataModel->getTaskList())["Time-Course"]);
+        tTask->setScheduled(true);
 
         CTrajectoryProblem* tProblem = static_cast<CTrajectoryProblem*>(tTask->getProblem());
         SedUniformTimeCourse* tc = static_cast<SedUniformTimeCourse*>(sedmlsim);
         tProblem->setOutputStartTime(tc->getOutputStartTime());
         tProblem->setDuration(tc->getOutputEndTime() - tc->getOutputStartTime());
         tProblem->setStepNumber(tc->getNumberOfPoints());
+        tProblem->setContinueSimultaneousEvents(true);
 
         // TODO read kisao terms
         if (tc->isSetAlgorithm())
@@ -127,6 +131,7 @@ void SEDMLImporter::updateCopasiTaskForSimulation(SedSimulation* sedmlsim,
       {
 
         CTrajectoryTask *tTask = static_cast<CTrajectoryTask*>((*mpDataModel->getTaskList())["Time-Course"]);
+        tTask->setScheduled(true);
 
         CTrajectoryProblem* tProblem = static_cast<CTrajectoryProblem*>(tTask->getProblem());
         SedOneStep* step = static_cast<SedOneStep*>(sedmlsim);
@@ -143,6 +148,7 @@ void SEDMLImporter::updateCopasiTaskForSimulation(SedSimulation* sedmlsim,
       {
         // nothing to be done for this one
         CSteadyStateTask *tTask = static_cast<CSteadyStateTask*>((*mpDataModel->getTaskList())["Steady-State"]);
+        tTask->setScheduled(true);
 
         // TODO read kisao terms
         //CCopasiProblem* tProblem = static_cast<CCopasiProblem*>(tTask->getProblem());
@@ -157,6 +163,73 @@ void SEDMLImporter::updateCopasiTaskForSimulation(SedSimulation* sedmlsim,
     }
 }
 
+bool isTC(const SedTask* task)
+{
+  if (task == NULL || task->getSedDocument() == NULL) return false;
+
+  const SedDocument* doc = task->getSedDocument();
+
+  if (task->isSetSimulationReference())
+    {
+      const SedSimulation* sim = doc->getSimulation(task->getSimulationReference());
+
+      if (sim != NULL && (
+            sim->getTypeCode() == SEDML_SIMULATION_UNIFORMTIMECOURSE))
+        return true;
+    }
+
+  return false;
+}
+
+bool isScan(const SedTask* task)
+{
+
+  if (task == NULL || task->getSedDocument() == NULL) return false;
+
+  const SedDocument* doc = task->getSedDocument();
+
+  if (task->isSetSimulationReference())
+    {
+      const SedSimulation* sim = doc->getSimulation(task->getSimulationReference());
+
+      if (sim != NULL && (
+            sim->getTypeCode() == SEDML_SIMULATION_STEADYSTATE ||
+            sim->getTypeCode() == SEDML_SIMULATION_ONESTEP ||
+            sim->getTypeCode() == SEDML_SIMULATION_UNIFORMTIMECOURSE))
+        return true;
+    }
+
+  return false;
+}
+
+bool isScan(const SedRepeatedTask* task)
+{
+  if (task == NULL || task->getSedDocument() == NULL) return false;
+
+  const SedDocument* doc = task->getSedDocument();
+
+  if (task->isSetSimulationReference())
+    {
+      const SedSimulation* sim = doc->getSimulation(task->getSimulationReference());
+
+      if (sim != NULL && (
+            sim->getTypeCode() == SEDML_SIMULATION_STEADYSTATE ||
+            sim->getTypeCode() == SEDML_SIMULATION_ONESTEP ||
+            sim->getTypeCode() == SEDML_SIMULATION_UNIFORMTIMECOURSE))
+        return true;
+    }
+
+  for (size_t i = 0; i < task->getNumSubTasks(); ++i)
+    {
+      const SedSubTask* subTask = task->getSubTask(i);
+      const SedTask* t = doc->getTask(subTask->getTask());
+
+      if (isScan(t)) return true;
+    }
+
+  return false;
+}
+
 void SEDMLImporter::readListOfPlotsFromSedMLOutput(
   COutputDefinitionVector *pLotList, CModel* pModel,
   SedDocument *pSEDMLDocument,
@@ -166,12 +239,81 @@ void SEDMLImporter::readListOfPlotsFromSedMLOutput(
 
   std::map<CCopasiObject*, SBase*>& copasiMap = pModel->getObjectDataModel()->getCopasi2SBMLMap();
 
+  CReportDefinitionVector* pReports = mpDataModel->getReportDefinitionList();
+
   for (i = 0; i < numOutput; ++i)
     {
       SedOutput* current = pSEDMLDocument->getOutput(i);
 
       switch (current->getTypeCode())
         {
+          case SEDML_OUTPUT_REPORT:
+          {
+            SedReport* r = static_cast<SedReport*>(current);
+            std::string name = current->isSetName() ? current->getName() : current->getId();
+            CReportDefinition* def = new CReportDefinition(name);
+            int count = 0;
+
+            // creation fails on duplicated name!
+            while (def == NULL)
+              {
+                def = new CReportDefinition(SEDMLUtils::getNextId(name + " ", ++count));
+              }
+
+            def->setComment("Import from SED-ML");
+
+            def->setIsTable(false);
+            def->setSeparator(CCopasiReportSeparator(", "));
+
+            std::vector<CRegisteredObjectName>* pHeader = def->getHeaderAddr();
+            std::vector<CRegisteredObjectName>* pBody = def->getBodyAddr();
+
+            bool isTimeCourse = false;
+            bool isScanTask = false;
+
+            for (size_t i = 0; i < r->getNumDataSets(); ++i)
+              {
+                SedDataSet* ds = r->getDataSet(i);
+                const SedDataGenerator* generator = pSEDMLDocument->getDataGenerator(ds->getDataReference());
+                const CCopasiObject * tmp = SEDMLUtils::resolveDatagenerator(pModel, generator);
+
+                if (generator == NULL || tmp == NULL) continue;
+
+                std::string title = ds->isSetLabel() ? ds->getLabel() : generator->isSetName() ? generator->getName() : ds->getId();
+
+                pHeader->push_back(CCopasiStaticString(title).getCN());
+                pHeader->push_back(def->getSeparator().getCN());
+
+                pBody->push_back(tmp->getCN());
+                pBody->push_back(def->getSeparator().getCN());
+
+                if (!isTimeCourse && !isScanTask)
+                  for (size_t j = 0; j < generator->getNumVariables(); ++j)
+                    {
+                      const SedTask* t = mpSEDMLDocument->getTask(generator->getVariable(j)->getTaskReference());
+
+                      if (t == NULL) continue;
+
+                      isScanTask = t->getTypeCode() == SEDML_TASK_REPEATEDTASK && isScan((const SedRepeatedTask*)t);
+                      isTimeCourse = isTC(t);
+                    }
+              }
+
+            // assign report to scan task
+            if (isScanTask)
+              {
+                mReportMap[def] = "Scan";
+              }
+
+            // assign report to Timecourse task
+            if (isTimeCourse)
+              {
+                mReportMap[def] = "Time-Course";
+              }
+
+            break;
+          }
+
           case SEDML_OUTPUT_PLOT2D: //get the curves data
           {
             SedPlot2D* p = static_cast<SedPlot2D*>(current);
@@ -299,7 +441,7 @@ SEDMLImporter::parseSEDML(const std::string& sedmlDocumentText,
                           COutputDefinitionVector * & pPlotList,
                           CCopasiDataModel* pDataModel)
 {
-
+  mReportMap.clear();
   this->mUsedSEDMLIdsPopulated = false;
 
   mpDataModel = pDataModel;
@@ -501,6 +643,7 @@ SEDMLImporter::importTasks(std::map<CCopasiObject*, SedBase*>& copasi2sedmlmap)
 
             SedUniformRange* urange = static_cast<SedUniformRange*>(range);
             CScanTask *tTask = static_cast<CScanTask*>((*mpDataModel->getTaskList())["Scan"]);
+            tTask->setScheduled(true);
             CScanProblem *pProblem = static_cast<CScanProblem*>(tTask->getProblem());
 
             if (urange != NULL && repeat->getNumTaskChanges() == 0)
@@ -585,6 +728,77 @@ SEDMLImporter::importTasks(std::map<CCopasiObject*, SedBase*>& copasi2sedmlmap)
           }
         }
     }
+
+  std::map<CReportDefinition*, std::string>::const_iterator it = mReportMap.begin();
+
+  for (; it != mReportMap.end(); ++it)
+    {
+      mpDataModel->getReportDefinitionList()->add(it->first);
+      CReport& report = ((*mpDataModel->getTaskList())[it->second])->getReport();
+      report.setReportDefinition(it->first);
+      report.setTarget(it->second + ".txt");
+      report.setConfirmOverwrite(false);
+      report.setAppend(false);
+    }
+}
+
+bool applyValueToModelParameter(CModelParameter* modelParameter, CCopasiObject *obj, double newValue)
+{
+  if (modelParameter == NULL || obj == NULL) return false;
+
+  size_t numChilren = modelParameter->getNumChildren();
+
+  const CCopasiObjectName& cn = modelParameter->getCN();
+  const CCopasiObjectName& targetCN = obj->getCN();
+
+  if (cn == targetCN)
+    {
+      modelParameter->setValue(newValue, CModelParameter::Concentration);
+      return true;
+    }
+
+  for (unsigned int i = 0; i < numChilren; ++i)
+    {
+      CModelParameter* current = const_cast<CModelParameter* >(modelParameter->getChild(i));
+
+      if (applyValueToModelParameter(current, obj, newValue))
+        return true;
+    }
+
+  return false;
+}
+
+bool applyValueToParameterSet(CModelParameterSet& set, CCopasiObject *obj, double newValue)
+{
+  CModelParameterGroup::iterator it = set.begin();
+
+  while (it != set.end())
+    {
+      if (applyValueToModelParameter(*it, obj, newValue))
+        return true;
+
+      ++it;
+    }
+
+  return false;
+}
+
+bool applyAttributeChange(CModel* pCopasiModel, CModelParameterSet& set, const std::string& target, const std::string&  newValue)
+{
+  CCopasiObject *obj = const_cast<CCopasiObject*>(SEDMLUtils::resolveXPath(pCopasiModel, target, true));
+
+  if (obj == NULL)
+    return false;
+
+  // convert the string to double
+  std::stringstream str;
+  str << newValue;
+  double result;
+  str >> result;
+
+  // set the value
+  applyValueToParameterSet(set, obj->getObjectParent(), result);
+  return true;
 }
 
 CModel* SEDMLImporter::importFirstSBMLModel(CProcessReport* pImportHandler,
@@ -609,10 +823,11 @@ CModel* SEDMLImporter::importFirstSBMLModel(CProcessReport* pImportHandler,
 
   std::string modelSource = ""; //must be taken from SEDML document.
   std::string modelId = ""; // to ensure only one model is imported since only one model in SEDML file is supported
+  SedModel* sedmlModel = NULL;
 
   for (ii = 0; ii < iiMax; ++ii)
     {
-      SedModel* sedmlModel = mpSEDMLDocument->getModel(ii);
+      sedmlModel = mpSEDMLDocument->getModel(ii);
 
       // need to also allow for the specific urns like
       // urn:sedml:language:sbml.level-3.version-1
@@ -625,10 +840,11 @@ CModel* SEDMLImporter::importFirstSBMLModel(CProcessReport* pImportHandler,
           modelId = sedmlModel->getId();
 
           if ((sedmlModel->getListOfChanges()->size()) > 0)
-            CCopasiMessage(CCopasiMessage::WARNING, "Currently no support for"
-                           " changing model entities. Changes will not be made to the imported model.");
+            CCopasiMessage(CCopasiMessage::WARNING, "Currently there is only limited support for "
+                           "changing model entities. Only value changes are imported into the model.");
 
           modelSource = sedmlModel->getSource();
+          break;
         }
     }
 
@@ -705,6 +921,28 @@ CModel* SEDMLImporter::importFirstSBMLModel(CProcessReport* pImportHandler,
 
   mImportedModel = modelId;
 
+  // apply possible changes to the model
+  if (sedmlModel != NULL && sedmlModel->getNumChanges() > 0)
+    {
+      CModelParameterSet& set = mpCopasiModel->getModelParameterSet();
+      bool valueChanged = false;
+
+      for (unsigned int i = 0; i < sedmlModel->getNumChanges(); ++i)
+        {
+          SedChangeAttribute* change = dynamic_cast<SedChangeAttribute*>(sedmlModel->getChange(i));
+
+          if (change == NULL) continue;
+
+          const std::string& target = change->getTarget();
+          const std::string& newValue = change->getNewValue();
+
+          if (!applyAttributeChange(mpCopasiModel, set, target, newValue))
+            {
+              CCopasiMessage(CCopasiMessage::WARNING, "Could not apply change for target: '%s'", target.c_str());
+            }
+        }
+    }
+
   return mpCopasiModel;
 }
 
@@ -726,7 +964,8 @@ SEDMLImporter::SEDMLImporter():
   mTotalSteps(0),
   mUsedSEDMLIds(),
   mUsedSEDMLIdsPopulated(false),
-  mImportedModel()
+  mImportedModel(),
+  mReportMap()
 {
 
   this->mIgnoredSEDMLMessages.insert(10501);
@@ -741,6 +980,7 @@ void SEDMLImporter::restoreFunctionDB()
  */
 SEDMLImporter::~SEDMLImporter()
 {
+  mReportMap.clear();
 }
 
 void SEDMLImporter::deleteCopasiModel()

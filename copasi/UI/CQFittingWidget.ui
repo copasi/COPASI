@@ -1,5 +1,5 @@
 <ui version="4.0" >
-<comment> Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual </comment>
+<comment> Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual </comment>
 <comment> Properties, Inc., University of Heidelberg, and The University </comment>
 <comment> of Manchester. </comment>
 <comment> All rights reserved. </comment>
@@ -12,6 +12,10 @@
 <comment> Copyright (C) 2005 - 2007 by Pedro Mendes, Virginia Tech Intellectual </comment>
 <comment> Properties, Inc. and EML Research, gGmbH. </comment>
 <comment> All rights reserved. </comment>
+
+
+
+
 
  <comment> All rights reserved. </comment>
  <class>CQFittingWidget</class>
@@ -68,6 +72,13 @@
       <widget class="QCheckBox" name="mpCheckRandomize" >
        <property name="text" >
         <string>Randomize Start Values</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QCheckBox" name="mpCreateParameterSets" >
+       <property name="text" >
+        <string>Create Parameter Sets</string>
        </property>
       </widget>
      </item>
