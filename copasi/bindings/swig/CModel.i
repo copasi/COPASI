@@ -16,6 +16,9 @@
 
 
 
+
+
+
 %{
 
 #include <copasi/utilities/CUnit.h>
@@ -97,219 +100,239 @@ typedef std::vector<CCopasiObject*> ObjectStdVector;
 
 %extend CModel
 {
-    /**
-     *  Get the number of compartments 
-     *  @return C_INT32 getCompartments().size()
-     */
-    unsigned C_INT32 getNumCompartments() const
-    {
-      return self->getCompartments().size();
-    }
+    
+   /**
+    *  Get the number of compartments 
+    *  @return C_INT32 getCompartments().size()
+    */
+   unsigned C_INT32 getNumCompartments() const
+   {
+     return self->getCompartments().size();
+   }
+   
+   /**
+    *  Get the number of reactions
+    *  @return C_INT32 getReactions().size()
+    */
+   unsigned C_INT32 getNumReactions() const
+   {
+     return self->getReactions().size();
+   }
+   
+   CReaction* getReaction(unsigned C_INT32 index)
+   {
+     if (index >= self->getReactions().size())
+       return NULL;
+     try
+     {
+       return self->getReactions()[index];
+     }
+     catch (...)
+     {
+       return NULL;
+     }
+   }
+   
+   CReaction* getReaction(const std::string& name)
+   {
+     try
+     {
+       return self->getReactions()[name];
+     }
+     catch (...)
+     {
+       return NULL;
+     }
+   }
+   
+   CCompartment* getCompartment(unsigned C_INT32 index)
+   {
+     if (index >= self->getCompartments().size())
+       return NULL;
+   
+     try
+     {
+       return self->getCompartments()[index];
+     }
+     catch (...)
+     {
+       return NULL;
+     }
+   }
+   
+   CCompartment* getCompartment(const std::string& name)
+   {
+     try
+     {
+       return self->getCompartments()[name];
+     }
+     catch (...)
+     {
+       return NULL;
+     }
+   }
+   
+   
+   CMetab* getMetabolite(unsigned C_INT32 index)
+   {  
+     if (index >= self->getMetabolites().size())
+       return NULL;
+   
+     try
+     {
+       return self->getMetabolites()[index];
+     }
+     catch (...)
+     {
+       return NULL;
+     }
+   }
+   
+   CMetab* getMetabolite(const std::string& name)
+   {  
+   
+     try
+     {   
+       unsigned C_INT32 index = $self->findMetabByName(name);
+       if (index >= self->getMetabolites().size())
+         return NULL;
 
-    /**
-     *  Get the number of reactions
-     *  @return C_INT32 getReactions().size()
-     */
-    unsigned C_INT32 getNumReactions() const
-    {
-      return self->getReactions().size();
-    }
-
-    CReaction* getReaction(unsigned C_INT32 index)
-    {
-	   try
-	   {
-        return self->getReactions()[index];
-	   }
-	   catch (...)
-	   {
-		return NULL;
-	   }
-    }
-	
-	 CReaction* getReaction(const std::string& name)
-    {
-	   try
-	   {
-        return self->getReactions()[name];
-	   }
-	   catch (...)
-	   {
-		return NULL;
-	   }
-    }
-
-    CCompartment* getCompartment(unsigned C_INT32 index)
-    {
-	   try
-	   {
-        return self->getCompartments()[index];
-		}
-	   catch (...)
-	   {
-		return NULL;
-	   }
-    }
-
-	CCompartment* getCompartment(const std::string& name)
-    {
-	   try
-	   {
-        return self->getCompartments()[name];
-		}
-	   catch (...)
-	   {
-		return NULL;
-	   }
-    }
-
-	
-    CMetab* getMetabolite(unsigned C_INT32 index)
-    {	
-		try
-		{
-        return self->getMetabolites()[index];
-		}
-	   catch (...)
-	   {
-		return NULL;
-	   }
-    }
-	
-	CMetab* getMetabolite(const std::string& name)
-    {	
-		try
-		{
-        return self->getMetabolites()[$self->findMetabByName(name)];
-		}
-	   catch (...)
-	   {
-		return NULL;
-	   }
-    }
-
-    CModelValue* getModelValue(unsigned C_INT32 index)
-    {
-		try
-		{
-        return self->getModelValues()[index];
-		}
-	   catch (...)
-	   {
-		return NULL;
-	   }
-    }
-
-    CMoiety* getMoiety(unsigned C_INT32 index)
-    {
-		try
-		{
-        return self->getMoieties()[index];
-		}
-	   catch (...)
-	   {
-		return NULL;
-	   }
-    }
-
-    bool forceCompile()
-    {
-        return $self->forceCompile(NULL);
-    };
-
-    bool compileIfNecessary()
-    {
-        return $self->compileIfNecessary(NULL);
-    };
-
-    void applyInitialValues()
-    {
-        $self->compileIfNecessary(NULL);
-        $self->applyInitialValues();
-        $self->updateNonSimulatedValues();
-    }
-
-    void updateInitialValues(const std::vector<CCopasiObject*>& v)
-    {
-        std::set<const CCopasiObject*> changedObjects;
-        changedObjects.insert(v.begin(),v.end());
-        std::vector<Refresh*> refreshes=$self->buildInitialRefreshSequence(changedObjects);
-        std::vector<Refresh*>::iterator refreshIt = refreshes.begin(), refreshEndit = refreshes.end();
-        while (refreshIt != refreshEndit)
-            (**refreshIt++)();
-    };
-
-    CModelValue* getModelValue(const std::string& name)
-    {
-		try
-		{
-        return $self->getModelValues()[name];
-		}
-		catch(...)
-		{
-		return NULL;
-		}
-    }
-	
-	CEvent* getEvent(const std::string& name)
-    {
-		try
-		{
-        return $self->getEvents()[name];
-		}
-		catch(...)
-		{
-		return NULL;
-		}
-    }
-
-    // for backwards compatibility
+	    return self->getMetabolites()[index];
+     }
+     catch (...)
+     {
+       return NULL;
+     }
+   }
+   
+   CModelValue* getModelValue(unsigned C_INT32 index)
+   {
+     if (index >= self->getModelValues().size())
+       return NULL;
+   
+     try
+     {
+       return self->getModelValues()[index];
+     }
+     catch (...)
+     {
+       return NULL;
+     }
+   }
+   
+   CMoiety* getMoiety(unsigned C_INT32 index)
+   {
+     if (index >= self->getMoieties().size())
+       return NULL;
+   
+     try
+     {
+       return self->getMoieties()[index];
+     }
+     catch (...)
+     {
+       return NULL;
+     }
+   }
+   
+   bool forceCompile()
+   {
+     return $self->forceCompile(NULL);
+   }
+   
+   bool compileIfNecessary()
+   {
+     return $self->compileIfNecessary(NULL);
+   }
+   
+   void applyInitialValues()
+   {
+     $self->compileIfNecessary(NULL);
+     $self->applyInitialValues();
+     $self->updateNonSimulatedValues();
+   }
+   
+   void updateInitialValues(const std::vector<CCopasiObject*>& v)
+   {
+     std::set<const CCopasiObject*> changedObjects;
+     changedObjects.insert(v.begin(),v.end());
+     std::vector<Refresh*> refreshes=$self->buildInitialRefreshSequence(changedObjects);
+     std::vector<Refresh*>::iterator refreshIt = refreshes.begin(), refreshEndit = refreshes.end();
+     while (refreshIt != refreshEndit)
+       (**refreshIt++)();
+   };
+   
+   CModelValue* getModelValue(const std::string& name)
+   {
+     try
+     {
+       return $self->getModelValues()[name];
+     }
+     catch(...)
+     {
+       return NULL;
+     }
+   }
+   
+   CEvent* getEvent(const std::string& name)
+   {
+     try
+     {
+       return $self->getEvents()[name];
+     }
+     catch(...)
+     {
+       return NULL;
+     }
+   }
+   
+   // for backwards compatibility
    unsigned C_INT32 getNumIndependentMetabs() const 
    {
-       std::cerr << "Calling getNumIndependentMetabs on CModel instances is obsolete, please use getNumIndependentReactionMetabs instead." << std::endl;
-        return $self->getNumIndependentReactionMetabs();
+     std::cerr << "Calling getNumIndependentMetabs on CModel instances is obsolete, please use getNumIndependentReactionMetabs instead." << std::endl;
+     return $self->getNumIndependentReactionMetabs();
    }
-
-    // for backwards compatibility
+   
+   // for backwards compatibility
    unsigned C_INT32 getNumDependentMetabs() const 
    {
-       std::cerr << "Calling getNumDependentMetabs on CModel instances is obsolete, please use getNumDependentReactionMetabs instead." << std::endl;
-        return $self->getNumDependentReactionMetabs();
+     std::cerr << "Calling getNumDependentMetabs on CModel instances is obsolete, please use getNumDependentReactionMetabs instead." << std::endl;
+     return $self->getNumDependentReactionMetabs();
    }
-
+   
    // for backward compatibility
    void setComments(const std::string& notes)
    {
-      std::cerr << "Calling setComments on CModel instances is obsolete, please use setNotes instead." << std::endl;
-      self->setNotes(notes);
+     std::cerr << "Calling setComments on CModel instances is obsolete, please use setNotes instead." << std::endl;
+     self->setNotes(notes);
    }
-
+   
    // for backward compatibility
    const std::string& getComments() const
    {
      std::cerr << "Calling getComments on CModel instances is obsolete, please use getNotes instead." << std::endl;
      return self->getNotes();
    }
-
+   
    // more convenience methods
    unsigned C_INT32 getNumEvents() const
    {
-        return $self->getEvents().size();
+     return $self->getEvents().size();
    }
-
+   
    CEvent* getEvent(unsigned C_INT32 index)
    {
-		try
-		{
-        return $self->getEvents()[index];
-		}
-		catch(...)
-		{
-		return NULL;
-		}
-		
+     if (index >= self->getEvents().size())
+       return NULL;
+   
+     try
+     {
+       return $self->getEvents()[index];
+     }
+     catch(...)
+     {
+       return NULL;
+     }
+   
    }
 }
-
-
-
