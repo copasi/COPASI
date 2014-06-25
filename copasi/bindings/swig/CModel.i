@@ -19,6 +19,9 @@
 
 
 
+
+
+
 %{
 
 #include <copasi/utilities/CUnit.h>
@@ -28,6 +31,14 @@
 
 %template(ObjectStdVector) std::vector<CCopasiObject*>;
 typedef std::vector<CCopasiObject*> ObjectStdVector;
+
+%ignore CUnit::VolumeUnitNames;
+%ignore CUnit::AreaUnitNames;
+%ignore CUnit::LengthUnitNames;
+%ignore CUnit::TimeUnitNames;
+%ignore CUnit::QuantityUnitOldXMLNames;
+%ignore CUnit::QuantityUnitNames;
+%ignore CUnit::fromEnum;
 
 %ignore CModel::load;
 %ignore CModel::compileIfNecessary(CProcessReport* pProcessReport);
@@ -107,7 +118,7 @@ typedef std::vector<CCopasiObject*> ObjectStdVector;
     */
    unsigned C_INT32 getNumCompartments() const
    {
-     return self->getCompartments().size();
+     return (unsigned C_INT32)self->getCompartments().size();
    }
    
    /**
@@ -116,7 +127,7 @@ typedef std::vector<CCopasiObject*> ObjectStdVector;
     */
    unsigned C_INT32 getNumReactions() const
    {
-     return self->getReactions().size();
+     return (unsigned C_INT32)self->getReactions().size();
    }
    
    CReaction* getReaction(unsigned C_INT32 index)
@@ -193,7 +204,7 @@ typedef std::vector<CCopasiObject*> ObjectStdVector;
    
      try
      {   
-       unsigned C_INT32 index = $self->findMetabByName(name);
+       unsigned C_INT32 index = (unsigned C_INT32)$self->findMetabByName(name);
        if (index >= self->getMetabolites().size())
          return NULL;
 
@@ -290,14 +301,14 @@ typedef std::vector<CCopasiObject*> ObjectStdVector;
    unsigned C_INT32 getNumIndependentMetabs() const 
    {
      std::cerr << "Calling getNumIndependentMetabs on CModel instances is obsolete, please use getNumIndependentReactionMetabs instead." << std::endl;
-     return $self->getNumIndependentReactionMetabs();
+     return (unsigned C_INT32)$self->getNumIndependentReactionMetabs();
    }
    
    // for backwards compatibility
    unsigned C_INT32 getNumDependentMetabs() const 
    {
      std::cerr << "Calling getNumDependentMetabs on CModel instances is obsolete, please use getNumDependentReactionMetabs instead." << std::endl;
-     return $self->getNumDependentReactionMetabs();
+     return (unsigned C_INT32)$self->getNumDependentReactionMetabs();
    }
    
    // for backward compatibility
@@ -317,7 +328,7 @@ typedef std::vector<CCopasiObject*> ObjectStdVector;
    // more convenience methods
    unsigned C_INT32 getNumEvents() const
    {
-     return $self->getEvents().size();
+     return (unsigned C_INT32)$self->getEvents().size();
    }
    
    CEvent* getEvent(unsigned C_INT32 index)

@@ -1,7 +1,9 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., University of Heidelberg, and The University 
 // of Manchester. 
 // All rights reserved. 
+
+
 
 
 %{
@@ -38,6 +40,6 @@ typedef CCallParameters<CCopasiObject> ObjectCallParameters;
 {
   unsigned C_INT32 findParameterbyName(const std::string& name, CFunctionParameter::DataType dataType)
   {
-    return $self->findParameterByName(name,dataType);
+    return (unsigned C_INT32)$self->findParameterByName(name,dataType);
   }
 }

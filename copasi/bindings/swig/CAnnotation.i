@@ -1,13 +1,16 @@
-// Copyright (C) 2011 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2011 - 2014 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., University of Heidelberg, and The University 
 // of Manchester. 
 // All rights reserved. 
 
 
 
+
+
 %ignore CAnnotation::operator==;
 %ignore CAnnotation::getUnsupportedAnnotations() const;
 %ignore CAnnotation::getUnsupportedAnnotations();
+%ignore CAnnotation::castObject(const CCopasiObject * pObject);
 
 %{
 

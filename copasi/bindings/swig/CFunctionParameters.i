@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., University of Heidelberg, and The University 
 // of Manchester. 
 // All rights reserved. 
@@ -11,6 +11,10 @@
 // Copyright (C) 2006 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc. and EML Research, gGmbH. 
 // All rights reserved. 
+
+
+
+
 
 
 %{
@@ -65,7 +69,7 @@
     unsigned C_INT32 findParameterByName(const std::string & name, int dataType) const
     {
         CFunctionParameter::DataType type=(CFunctionParameter::DataType)dataType;
-        return $self->findParameterByName(name,type);
+        return (unsigned C_INT32)$self->findParameterByName(name,type);
     }
 
     CFunctionParameter* getParameter(unsigned C_INT32 index)

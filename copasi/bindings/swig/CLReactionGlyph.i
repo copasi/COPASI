@@ -1,15 +1,9 @@
-// Begin CVS Header 
-//   $Source: /fs/turing/cvs/copasi_dev/copasi/bindings/swig/CLReactionGlyph.i,v $ 
-//   $Revision: 1.2 $ 
-//   $Name:  $ 
-//   $Author: shoops $ 
-//   $Date: 2010/07/16 18:56:26 $ 
-// End CVS Header 
-
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., University of Heidelberg, and The University 
 // of Manchester. 
 // All rights reserved. 
+
+
 
 
 
@@ -19,6 +13,7 @@
 
 %}
 
+%ignore operator=;
 %ignore operator<<;
 
 %ignore CLMetabReferenceGlyph::operator= (const CLMetabReferenceGlyph&);
@@ -33,6 +28,7 @@
 
 %ignore CLReactionGlyph::operator= (const CLReactionGlyph&);
 %ignore operator<< (std::ostream&,const CLReactionGlyph&);
+%ignore CLGlyphWithCurve::getCurve() const;
 %ignore CLReactionGlyph::getCurve() const;
 %ignore CLReactionGlyph::print;
 %ignore CLReactionGlyph::exportToSBML;
