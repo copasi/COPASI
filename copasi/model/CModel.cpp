@@ -2337,6 +2337,8 @@ const CModel::ModelType & CModel::getModelType() const
 void CModel::setAvogadro(const C_FLOAT64 & avogadro)
 {
   mAvogadro = avogadro;
+
+  setQuantityUnit(mQuantityUnit);
 }
 
 const C_FLOAT64 & CModel::getAvogadro() const
