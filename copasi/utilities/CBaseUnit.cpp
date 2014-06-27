@@ -5,13 +5,32 @@
 
 #include "copasi/utilities/CBaseUnit.h"
 
-const std::string CBaseUnit::mSymbol[] =
+const std::string CBaseUnit::getSymbol(Kind kind)
 {
-  "m",
-  "kg",
-  "s",
-  "A",
-  "K",
-  "mol",
-  "cd"
-};
+  switch (kind)
+  {
+    case meter:
+      return "m";
+
+    case kilogram:
+      return "kg";
+
+    case second:
+      return "s";
+
+    case ampere:
+      return "A";
+
+    case kelvin:
+      return "K";
+
+    case item:
+      return "mol";
+
+    case candela:
+      return "cd";
+
+    default:
+      return "";
+  }
+}

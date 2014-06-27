@@ -27,7 +27,8 @@ public:
     item = 13,  // mole can be derived with the current value of Avagadro's Number
     candela = 17
   };
-  static const std::string mSymbol[];
+
+  static const std::string getSymbol(Kind kind);
 };
 
 #endif // CBASEUNIT_H
