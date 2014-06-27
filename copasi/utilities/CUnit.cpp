@@ -373,25 +373,25 @@ bool CUnit::simplifyComponents()
   std::sort(mComponents.begin(), mComponents.end()); // make same Kinds adjacent
 
   for (; it != mComponents.end(); it++)
-    {
-      tempComponent = (*it);
+  {
+    tempComponent = (*it);
 
-      while (it != mComponents.end() && tempComponent.getKind() == (*(it + 1)).getKind())
-        {
-          tempComponent.setExponent((tempComponent.getExponent()) + (*(it + 1)).getExponent());
-          tempComponent.setScale(tempComponent.getScale() + (*(it + 1)).getScale());
-          tempComponent.setMultiplier(tempComponent.getMultiplier() * (*(it + 1)).getMultiplier());
-          didSimplify = true;
-          it++;
-        }
+    while (it != mComponents.end() && tempComponent.getKind() == (*(it + 1)).getKind())
+    {
+      tempComponent.setExponent((tempComponent.getExponent()) + (*(it + 1)).getExponent());
+      tempComponent.setScale(tempComponent.getScale() + (*(it + 1)).getScale());
+      tempComponent.setMultiplier(tempComponent.getMultiplier() * (*(it + 1)).getMultiplier());
+      didSimplify = true;
+      it++;
+    }
 
       replacementVector.push_back(tempComponent);
-    }
+  }
 
   if (didSimplify)
-    {
-      mComponents = replacementVector;
-    }
+  {
+    mComponents = replacementVector;
+  }
 
   return didSimplify;
 }
