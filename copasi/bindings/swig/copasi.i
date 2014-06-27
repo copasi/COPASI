@@ -19,9 +19,15 @@
 
 
 
+
+
+
 %module COPASI
 
 %warnfilter(402) CCopasiObjectName;
+// cannot do anything about warnings due to multiple inheritance
+// so hide those errors
+#pragma SWIG nowarn=314,402,813;
 
 // more elements to ignore
 %ignore create_expression(const ASTNode* pSource, const ListOfFunctionDefinitions* pFunctions);

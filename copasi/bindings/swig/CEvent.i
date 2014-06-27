@@ -7,6 +7,7 @@
 
 
 
+
 %{
 
 #include "model/CEvent.h"
@@ -190,7 +191,7 @@ typedef CExpression DisownedExpression;
   std::string getUnsupportedAnnotation(int index)
   {		
   	std::map< std::string, std::string > &anot = $self->getUnsupportedAnnotations();
-  	if (index >= anot.size()) 
+  	if (index >= (int)anot.size()) 
   		return "";
   	std::map< std::string, std::string >::iterator iter = anot.begin();
   	for (int i = 0; i < index; ++i)
@@ -201,7 +202,7 @@ typedef CExpression DisownedExpression;
   std::string getUnsupportedAnnotationName(int index)
   {		
   	std::map< std::string, std::string > &anot = $self->getUnsupportedAnnotations();
-  	if (index >= anot.size()) 
+  	if (index >= (int)anot.size()) 
   		return "";
   	std::map< std::string, std::string >::iterator iter = anot.begin();
   	for (int i = 0; i < index; ++i)
