@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., University of Heidelberg, and The University 
 // of Manchester. 
 // All rights reserved. 
@@ -11,6 +11,10 @@
 // Copyright (C) 2006 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc. and EML Research, gGmbH. 
 // All rights reserved. 
+
+
+
+
 
 
 
@@ -49,6 +53,10 @@
 %ignore CCopasiVectorS::load;
 %ignore CCopasiVectorNS::load;
 %ignore CCopasiVector::CCopasiVector;
+%ignore CObjectLists::ListTypeName;
+%ignore CObjectLists::getListOfObjects;
+%ignore CObjectLists::getListOfConstObjects;
+%ignore CObjectLists::getEventTargets;
 
 #if (defined SWIGJAVA || defined SWIGCSHARP)
 // disable some operator for Java to get rid of the warnings

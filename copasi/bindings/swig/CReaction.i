@@ -26,6 +26,9 @@
 
 
 
+
+
+
 %{
 
 #include "model/CReaction.h"
@@ -185,6 +188,6 @@
 // suppress warnings on multiple inheritance
 %warnfilter(813) CReaction;
 
-
+%ignore CReaction::getParameterIndex;
 %include "model/CReaction.h"
 

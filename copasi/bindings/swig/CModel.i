@@ -22,8 +22,12 @@
 
 
 
+
+
+
 %{
 
+#include <copasi/utilities/CUnitComponent.h>
 #include <copasi/utilities/CUnit.h>
 #include "model/CModel.h"
 
@@ -40,6 +44,8 @@ typedef std::vector<CCopasiObject*> ObjectStdVector;
 %ignore CUnit::QuantityUnitNames;
 %ignore CUnit::fromEnum;
 
+%ignore CModel::getInitialUpdateSequence;
+%ignore CModel::getTransientUpdateSequence;
 %ignore CModel::load;
 %ignore CModel::compileIfNecessary(CProcessReport* pProcessReport);
 %ignore CModel::forceCompile(CProcessReport* pProcessReport);
@@ -98,6 +104,15 @@ typedef std::vector<CCopasiObject*> ObjectStdVector;
 %rename (setQuantityUnitFromString) CModel::setQuantityUnit(const std::string & name);
 #endif // SWIGR
 
+%ignore operator<;
+%ignore   CUnitComponent::CUnitComponent(CBaseUnit::Kind kind = CBaseUnit::item,
+                 double multiplier = 1,
+                 int scale = 0,
+                 double exponent = 1,
+                 bool isMultiplierAvogadro = false);
+%ignore CUnitComponent::getKind;
+%ignore CUnitComponent::setKind;
+%include <copasi/utilities/CUnitComponent.h>
 %include <copasi/utilities/CUnit.h>
 %include "model/CModel.h"
 

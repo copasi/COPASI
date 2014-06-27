@@ -5,6 +5,7 @@
 
 
 
+
 %{
 
 #include "MIRIAM/CConstants.h"  
@@ -13,6 +14,10 @@
 %}
 
 %nodefaultctor CBiologicalDescription;
+
+%ignore CMIRIAMResourceObject::CMIRIAMResourceObject(CRDFNode * pNode);
+%ignore CMIRIAMResourceObject::setNode;
+%ignore CMIRIAMResourceObject::getNode;
 
 %include "MIRIAM/CBiologicalDescription.h"
 %include "MIRIAM/CConstants.h"

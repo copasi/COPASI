@@ -5,6 +5,7 @@
 
 
 
+
 %ignore GlobalRenderInformation;
 %ignore GlobalStyle;
 %ignore GradientBase;
@@ -50,6 +51,9 @@
 %ignore operator/;
 %ignore operator!=;
 %ignore CLLocalStyle::isInKeyList;
+%ignore CLLocalStyle::mKeyList;
+%ignore CLLocalStyle::getKeyList;
+%ignore CLLocalStyle::setKeyList;
 %ignore CLRectangle::CLRectangle(const sbmlRectangle& source, CCopasiContainer* pParent = NULL);
 %ignore CLRectangle::toSBML;
 %ignore CLEllipse::CLEllipse(const sbmlEllipse& source, CCopasiContainer* pParent = NULL);
@@ -170,6 +174,12 @@
 %ignore CLRenderPoint::CLRenderPoint(const RenderPoint& source);
 %ignore CLStyle::CLStyle(const Style& source, const std::string& name, CCopasiContainer* pParent = NULL);
 %ignore CLStyle::addSBMLAttributes;
+%ignore CLStyle::setRoleList;
+%ignore CLStyle::setTypeList;
+%ignore CLStyle::getRoleList;
+%ignore CLStyle::getTypeList;
+%ignore CLStyle::readIntoSet;
+%ignore CLStyle::createStringFromSet;
 %ignore CLStyle::getGroup() const;
 %ignore CLText::toSBML;
 %ignore CLText::getX() const;
@@ -177,7 +187,18 @@
 %ignore CLText::getZ() const;
 %ignore CLText::getFontSize() const;
 %ignore CLText::CLText(const Text& source, CCopasiContainer* pParent = NULL);
-
+%ignore CLTransformation::IDENTITY3D;
+%ignore CLTransformation::getIdentityMatrix;
+%ignore CLTransformation::CLTransformation(const double matrix[12]);
+%ignore CLTransformation::getMatrix;
+%ignore CLTransformation::setMatrix;
+%ignore CLTransformation2D::IDENTITY2D;
+%ignore CLTransformation2D::getIdentityMatrix2D;
+%ignore CLTransformation2D::CLTransformation2D(const Transformation2D& source);
+%ignore CLTransformation2D::CLTransformation2D(const double m[6]);
+%ignore CLTransformation2D::setMatrix2D;
+%ignore CLTransformation2D::setMatrix;
+%ignore CLTransformation2D::getMatrix2D;
 
 %{
 

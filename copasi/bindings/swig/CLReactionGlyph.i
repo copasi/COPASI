@@ -8,6 +8,7 @@
 
 
 
+
 %{
 
 #include "layout/CLReactionGlyph.h"
@@ -30,6 +31,7 @@
 %ignore CLReactionGlyph::operator= (const CLReactionGlyph&);
 %ignore operator<< (std::ostream&,const CLReactionGlyph&);
 %ignore CLGlyphWithCurve::getCurve() const;
+%ignore CLGlyphWithCurve::CLGlyphWithCurve(const GraphicalObject &,const std::map<std::string, std::string> &,                   std::map<std::string, std::string> &,                   const CCopasiContainer * pParent = NULL);
 %ignore CLReactionGlyph::getCurve() const;
 %ignore CLReactionGlyph::print;
 %ignore CLReactionGlyph::exportToSBML;

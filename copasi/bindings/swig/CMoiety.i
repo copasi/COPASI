@@ -1,23 +1,20 @@
-// Begin CVS Header 
-//   $Source: /fs/turing/cvs/copasi_dev/copasi/bindings/swig/CMoiety.i,v $ 
-//   $Revision: 1.7 $ 
-//   $Name:  $ 
-//   $Author: shoops $ 
-//   $Date: 2009/01/07 18:51:30 $ 
-// End CVS Header 
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
 // and The University of Manchester. 
 // All rights reserved. 
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2006 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc. and EML Research, gGmbH. 
 // All rights reserved. 
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
-// All rights reserved.
+
+
+
 
 %{
 
@@ -27,6 +24,13 @@
 
 %nodefaultctor CMoiety;
 %nodefaultdtor CMoiety;
+
+%ignore CTotalNumberReference::CTotalNumberReference(const std::string & name,
+                        const CCopasiContainer * pParent,
+                        C_FLOAT64 & reference);
+%ignore CDependentNumberReference::CDependentNumberReference(const std::string & name,
+                            const CCopasiContainer * pParent,
+                            C_FLOAT64 & reference);
 
 %include "model/CMoiety.h"
 
