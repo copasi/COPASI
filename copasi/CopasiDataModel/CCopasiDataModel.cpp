@@ -400,6 +400,9 @@ bool CCopasiDataModel::saveModel(const std::string & fileName, CProcessReport* p
       // We do not care whether the model compiles or not
       // We just save as much as we can
       mData.pModel->compileIfNecessary(pProcessReport);
+
+      // Assure that the parameter set reflects all changes made to the model.
+      mData.pModel->getModelParameterSet().refreshFromModel(false);
     }
 
   catch (...)
