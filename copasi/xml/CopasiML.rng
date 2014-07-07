@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<!-- Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual -->
+<!-- Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual -->
 <!-- Properties, Inc., University of Heidelberg, and The University -->
 <!-- of Manchester. -->
 <!-- All rights reserved. -->
@@ -44,6 +44,11 @@
       <optional>
         <element name="ListOfFunctions">
           <ref name="listOfFunctions.datatype"/>
+        </element>
+      </optional>
+      <optional>
+        <element name="ListOfUnits">
+          <ref name="listOfUnits.datatype"/>
         </element>
       </optional>
       <optional>
@@ -347,6 +352,23 @@
     <empty/>
   </define>
 
+  <define name="listOfUnits.datatype">
+    <oneOrMore>
+      <ref name="unit.datatype"></ref>
+    </oneOrMore>
+  </define>
+  
+  <define name="unit.datatype">
+    <element name="Unit">
+      <ref name="name.attribute"/>
+      <attribute name="key">
+        <data type="ID">
+          <param name="pattern">Unit_\d+</param>
+        </data>
+      </attribute>
+    </element>
+  </define>
+  
   <define name="listOfFunctions.datatype">
     <oneOrMore>
       <ref name="function.datatype"/>
