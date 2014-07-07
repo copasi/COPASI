@@ -14,6 +14,7 @@
     <xs:complexType>
       <xs:sequence>
         <xs:element minOccurs="0" ref="schema:ListOfFunctions"/>
+        <xs:element minOccurs="0" ref="schema:ListOfUnits"/>
         <xs:element minOccurs="0" ref="schema:Model"/>
         <xs:element minOccurs="0" ref="schema:ListOfTasks"/>
         <xs:element minOccurs="0" ref="schema:ListOfReports"/>
@@ -36,6 +37,7 @@
     </xs:complexType>
   </xs:element>
   <xs:element name="ListOfFunctions" type="schema:listOfFunctions.datatype"/>
+  <xs:element name="ListOfUnits" type="schema:listOfUnits.datatype"/>
   <xs:element name="Model" type="schema:model.datatype"/>
   <xs:element name="ListOfTasks" type="schema:listOfTasks.datatype"/>
   <xs:element name="ListOfReports" type="schema:listOfReportSpecifications.datatype"/>
@@ -225,6 +227,23 @@
   <xs:element name="html">
     <xs:complexType>
       <xs:group ref="schema:xhtml.datatype"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:complexType name="listOfUnits.datatype">
+    <xs:sequence>
+      <xs:element maxOccurs="unbounded" ref="schema:Unit"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="Unit">
+    <xs:complexType>
+      <xs:attributeGroup ref="schema:name.attribute"/>
+      <xs:attribute name="key" use="required">
+        <xs:simpleType>
+          <xs:restriction base="xs:ID">
+            <xs:pattern value="Unit_\d+"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
     </xs:complexType>
   </xs:element>
   <xs:complexType name="listOfFunctions.datatype">
