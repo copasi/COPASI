@@ -87,7 +87,9 @@ CFitProblem::CFitProblem(const CCopasiTask::Type & type,
   mCorrelation(0, 0),
   mpCorrelationMatrixInterface(NULL),
   mpCorrelationMatrix(NULL),
-  mpCreateParameterSets(NULL)
+  mpCreateParameterSets(NULL),
+  mTrajectoryUpdate(false)
+
 {
   initObjects();
   initializeParameter();
@@ -142,7 +144,8 @@ CFitProblem::CFitProblem(const CFitProblem& src,
   mCorrelation(src.mCorrelation),
   mpCorrelationMatrixInterface(NULL),
   mpCorrelationMatrix(NULL),
-  mpCreateParameterSets(NULL)
+  mpCreateParameterSets(NULL),
+  mTrajectoryUpdate(false)
 {
   initObjects();
   initializeParameter();
@@ -477,6 +480,11 @@ bool CFitProblem::initialize()
       if (mpTrajectory == NULL) fatalError();
 
       *mpParmTimeCourseCN = mpTrajectory->getCN();
+
+      // do not update initial values when running fit
+      mTrajectoryUpdate = mpTrajectory->isUpdateModel();
+      mpTrajectory->setUpdateModel(false);
+
       mpTrajectory->initialize(CCopasiTask::NO_OUTPUT, NULL, NULL);
 
       mpTrajectoryProblem =
@@ -1104,7 +1112,10 @@ bool CFitProblem::restore(const bool & updateModel)
   bool success = true;
 
   if (mpTrajectory != NULL)
-    success &= mpTrajectory->restore();
+    {
+      success &= mpTrajectory->restore();
+      mpTrajectory->setUpdateModel(mTrajectoryUpdate);
+    }
 
   if (mpSteadyState != NULL)
     success &= mpSteadyState->restore();
