@@ -23,7 +23,7 @@
    <item row="0" column="0" colspan="2">
     <widget class="QLabel" name="mpLblRows">
      <property name="text">
-      <string>Rows (observables)</string>
+      <string>Rows (effect)</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -118,7 +118,7 @@
    <item row="1" column="0" colspan="2">
     <widget class="QLabel" name="mpLblColumns">
      <property name="text">
-      <string>Columns (parameters)</string>
+      <string>Columns (cause)</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
