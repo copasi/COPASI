@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
-<comment> Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual </comment>
+<comment> Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual </comment>
 <comment> Properties, Inc., University of Heidelberg, and The University </comment>
 <comment> of Manchester. </comment>
 <comment> All rights reserved. </comment>
@@ -86,6 +86,9 @@
        </property>
        <item>
         <widget class="QTableWidget" name="mpTblMetabolites">
+         <property name="sortingEnabled">
+          <bool>true</bool>
+         </property>
          <property name="numRows" stdset="0">
           <number>0</number>
          </property>
@@ -144,6 +147,9 @@
        </property>
        <item>
         <widget class="QTableWidget" name="mpTblCompartments">
+         <property name="sortingEnabled">
+          <bool>true</bool>
+         </property>
          <property name="numRows" stdset="0">
           <number>0</number>
          </property>
@@ -187,6 +193,9 @@
        </property>
        <item>
         <widget class="QTableWidget" name="mpTblModelValues">
+         <property name="sortingEnabled">
+          <bool>true</bool>
+         </property>
          <property name="numRows" stdset="0">
           <number>0</number>
          </property>
@@ -227,6 +236,9 @@
        </property>
        <item>
         <widget class="QTableWidget" name="mpTblReactions">
+         <property name="sortingEnabled">
+          <bool>true</bool>
+         </property>
          <property name="numRows" stdset="0">
           <number>0</number>
          </property>
@@ -341,6 +353,9 @@
                <horstretch>0</horstretch>
                <verstretch>0</verstretch>
               </sizepolicy>
+             </property>
+             <property name="sortingEnabled">
+              <bool>true</bool>
              </property>
              <property name="numRows" stdset="0">
               <number>0</number>
@@ -469,6 +484,9 @@
                <horstretch>0</horstretch>
                <verstretch>0</verstretch>
               </sizepolicy>
+             </property>
+             <property name="sortingEnabled">
+              <bool>true</bool>
              </property>
              <property name="numRows" stdset="0">
               <number>0</number>
