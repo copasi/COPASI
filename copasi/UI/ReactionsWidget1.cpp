@@ -77,6 +77,11 @@ bool ReactionsWidget1::loadFromReaction(const CReaction* reaction)
 {
   if (!reaction) return false;
 
+  // this function is also called via notify, when the control has
+  // not been entered, thus we need to ensure we are pointing to the
+  // right object
+  mpObject = const_cast<CReaction*>(reaction);
+
   // this loads the reaction into a CReactionInterface object.
   // the gui works on this object and later writes back the changes to the reaction
   pdelete(mpRi);
