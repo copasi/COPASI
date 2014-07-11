@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -83,6 +83,20 @@ public:
       names.push_back("2nd order edge strength");
       values.push_back(0.1);
       min.push_back(1e-3);
+      max.push_back(1e3);
+      isLog.push_back(true);
+
+      //6
+      names.push_back("compartment strength on species");
+      values.push_back(4.0);
+      min.push_back(1e-2);
+      max.push_back(1e3);
+      isLog.push_back(true);
+
+      //7
+      names.push_back("compartment strength on reactions");
+      values.push_back(0.2);
+      min.push_back(1e-2);
       max.push_back(1e3);
       isLog.push_back(true);
 
