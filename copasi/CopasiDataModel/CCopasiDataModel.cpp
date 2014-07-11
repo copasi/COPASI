@@ -2173,7 +2173,16 @@ void CCopasiDataModel::commonAfterLoad(CProcessReport* pProcessReport,
     {
       try
         {
+          // need initialize, so that all objects are created for the
+          // object browser
           (*it)->initialize(CCopasiTask::NO_OUTPUT, NULL, NULL);
+
+          // but we should restore any possible changes made to the model
+          // by the task, without updating the model
+          bool update = (*it)->isUpdateModel();
+          (*it)->setUpdateModel(false);
+          (*it)->restore();
+          (*it)->setUpdateModel(update);
         }
 
       catch (...) {}
