@@ -817,6 +817,15 @@ std::string CQExpressionWidget::getExpression() const
 
       if (itObject == mParseList.end() && CCopasiRootContainer::getConfiguration()->useAdvancedEditing())
         {
+
+          // the object pattern does not match the species name if
+          // the species is in a different compartment, in that case we
+          // have to remove the backslash in the displayname.
+          std::string::size_type bsPos = DisplayName.find("\\}");
+
+          if (bsPos != std::string::npos)
+            DisplayName.erase(bsPos, 1);
+
           // here we don't have an object recognized, what we ought to do is to find it in the model
           const CCopasiObject* object = findObjectByDisplayName(
                                           mpCurrentObject != NULL ? mpCurrentObject->getObjectDataModel() : (*CCopasiRootContainer::getDatamodelList())[0],
