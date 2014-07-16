@@ -1,16 +1,16 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
-// All rights reserved.
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+// and The University of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2006 - 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
-// All rights reserved.
+// Copyright (C) 2006 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc. and EML Research, gGmbH. 
+// All rights reserved. 
 
 /*
  *  CQFittingResult.cpp
@@ -182,12 +182,14 @@ bool CQFittingResult::enterProtected()
         }
 
       //3rd column: start value
-      pItem = new QTableWidgetItem(QString::number(current->getLastStartValue()));
+      pItem = new QTableWidgetItem(QVariant::Double);
+      pItem->setData(Qt::DisplayRole, current->getLastStartValue());
       pItem->setForeground(QColor(120, 120, 140));
       mpParameters->setItem((int) i, 2, pItem);
 
       //4th column: solution value
-      pItem = new QTableWidgetItem(QString::number(Solution));
+      pItem = new QTableWidgetItem(QVariant::Double);
+      pItem->setData(Qt::DisplayRole, Solution);
       mpParameters->setItem((int) i, 3, pItem);
 
       //5th column: upper bound
@@ -201,16 +203,16 @@ bool CQFittingResult::enterProtected()
 
       const C_FLOAT64 & StdDeviation = i < StdDeviations.size() ?  StdDeviations[i] : std::numeric_limits<double>::quiet_NaN();
 
-      pItem = new QTableWidgetItem(QString::number(StdDeviation));
-
+      pItem = new QTableWidgetItem(QVariant::Double);
+      pItem->setData(Qt::DisplayRole, StdDeviation);
       mpParameters->setItem((int) i, 5, pItem);
 
-      pItem = new QTableWidgetItem(QString::number(fabs(100.0 * StdDeviation / Solution)));
-
+      pItem = new QTableWidgetItem(QVariant::Double);
+      pItem->setData(Qt::DisplayRole, fabs(100.0 * StdDeviation / Solution));
       mpParameters->setItem((int) i, 6, pItem);
 
-      pItem = new QTableWidgetItem(QString::number(i < Gradients.size() ? Gradients[i] : std::numeric_limits<double>::quiet_NaN()));
-
+      pItem = new QTableWidgetItem(QVariant::Double);
+      pItem->setData(Qt::DisplayRole, i < Gradients.size() ? Gradients[i] : std::numeric_limits<double>::quiet_NaN());
       mpParameters->setItem((int) i, 7, pItem);
     }
 
@@ -230,15 +232,24 @@ bool CQFittingResult::enterProtected()
   for (i = 0; i != imax; i++)
     {
       const CExperiment & Experiment = * Experiments.getExperiment(i);
+
       pItem = new QTableWidgetItem(FROM_UTF8(Experiment.getObjectName()));
       mpExperiments->setItem((int) i, 0, pItem);
-      pItem = new QTableWidgetItem(QString::number(Experiment.getObjectiveValue()));
+
+      pItem = new QTableWidgetItem(QVariant::Double);
+      pItem->setData(Qt::DisplayRole, Experiment.getObjectiveValue());
       mpExperiments->setItem((int) i, 1, pItem);
-      pItem = new QTableWidgetItem(QString::number(Experiment.getRMS()));
+
+      pItem = new QTableWidgetItem(QVariant::Double);
+      pItem->setData(Qt::DisplayPropertyRole, Experiment.getRMS());
       mpExperiments->setItem((int) i, 2, pItem);
-      pItem = new QTableWidgetItem(QString::number(Experiment.getErrorMean()));
+
+      pItem = new QTableWidgetItem(QVariant::Double);
+      pItem->setData(Qt::DisplayRole, Experiment.getErrorMean());
       mpExperiments->setItem((int) i, 3, pItem);
-      pItem = new QTableWidgetItem(QString::number(Experiment.getErrorMeanSD()));
+
+      pItem = new QTableWidgetItem(QVariant::Double);
+      pItem->setData(Qt::DisplayRole, Experiment.getErrorMeanSD());
       mpExperiments->setItem((int) i, 4, pItem);
     }
 
@@ -264,13 +275,20 @@ bool CQFittingResult::enterProtected()
 
       mpValues->setItem((int) i, 0, pItem);
 
-      pItem = new QTableWidgetItem(QString::number(Experiments.getDependentObjectiveValues()[i]));
+      pItem = new QTableWidgetItem(QVariant::Double);
+      pItem->setData(Qt::DisplayRole, Experiments.getDependentObjectiveValues()[i]);
       mpValues->setItem((int) i, 1, pItem);
-      pItem = new QTableWidgetItem(QString::number(Experiments.getDependentRMS()[i]));
+
+      pItem = new QTableWidgetItem(QVariant::Double);
+      pItem->setData(Qt::DisplayRole, Experiments.getDependentRMS()[i]);
       mpValues->setItem((int) i, 2, pItem);
-      pItem = new QTableWidgetItem(QString::number(Experiments.getDependentErrorMean()[i]));
+
+      pItem = new QTableWidgetItem(QVariant::Double);
+      pItem->setData(Qt::DisplayRole, Experiments.getDependentErrorMean()[i]);
       mpValues->setItem((int) i, 3, pItem);
-      pItem = new QTableWidgetItem(QString::number(Experiments.getDependentErrorMeanSD()[i]));
+
+      pItem = new QTableWidgetItem(QVariant::Double);
+      pItem->setData(Qt::DisplayRole, Experiments.getDependentErrorMeanSD()[i]);
       mpValues->setItem((int) i, 4, pItem);
     }
 
@@ -340,15 +358,24 @@ bool CQFittingResult::enterProtected()
   for (i = 0; i != imax; i++)
     {
       const CExperiment & Experiment = * CrossValidations.getExperiment(i);
+
       pItem = new QTableWidgetItem(FROM_UTF8(Experiment.getObjectName()));
       mpCrossValidations->setItem(i, 0, pItem);
-      pItem = new QTableWidgetItem(QString::number(Experiment.getObjectiveValue()));
+
+      pItem = new QTableWidgetItem(QVariant::Double);
+      pItem->setData(Qt::DisplayRole, Experiment.getObjectiveValue());
       mpCrossValidations->setItem(i, 1, pItem);
-      pItem = new QTableWidgetItem(QString::number(Experiment.getRMS()));
+
+      pItem = new QTableWidgetItem(QVariant::Double);
+      pItem->setData(Qt::DisplayRole, Experiment.getRMS());
       mpCrossValidations->setItem(i, 2, pItem);
-      pItem = new QTableWidgetItem(QString::number(Experiment.getErrorMean()));
+
+      pItem = new QTableWidgetItem(QVariant::Double);
+      pItem->setData(Qt::DisplayRole, Experiment.getErrorMean());
       mpCrossValidations->setItem(i, 3, pItem);
-      pItem = new QTableWidgetItem(QString::number(Experiment.getErrorMeanSD()));
+
+      pItem = new QTableWidgetItem(QVariant::Double);
+      pItem->setData(Qt::DisplayRole, Experiment.getErrorMeanSD());
       mpCrossValidations->setItem(i, 4, pItem);
     }
 
@@ -373,13 +400,21 @@ bool CQFittingResult::enterProtected()
         pItem = new QTableWidgetItem("Not Found");
 
       mpCrossValidationValues->setItem(i, 0, pItem);
-      pItem = new QTableWidgetItem(QString::number(CrossValidations.getDependentObjectiveValues()[i]));
+
+      pItem = new QTableWidgetItem(QVariant::Double);
+      pItem->setData(Qt::DisplayRole, CrossValidations.getDependentObjectiveValues()[i]);
       mpCrossValidationValues->setItem(i, 1, pItem);
-      pItem = new QTableWidgetItem(QString::number(CrossValidations.getDependentRMS()[i]));
+
+      pItem = new QTableWidgetItem(QVariant::Double);
+      pItem->setData(Qt::DisplayRole, CrossValidations.getDependentRMS()[i]);
       mpCrossValidationValues->setItem(i, 2, pItem);
-      pItem = new QTableWidgetItem(QString::number(CrossValidations.getDependentErrorMean()[i]));
+
+      pItem = new QTableWidgetItem(QVariant::Double);
+      pItem->setData(Qt::DisplayRole, CrossValidations.getDependentErrorMean()[i]);
       mpCrossValidationValues->setItem(i, 3, pItem);
-      pItem = new QTableWidgetItem(QString::number(CrossValidations.getDependentErrorMeanSD()[i]));
+
+      pItem = new QTableWidgetItem(QVariant::Double);
+      pItem->setData(Qt::DisplayRole, CrossValidations.getDependentErrorMeanSD()[i]);
       mpCrossValidationValues->setItem(i, 4, pItem);
     }
 
