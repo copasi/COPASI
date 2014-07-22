@@ -1,3 +1,8 @@
+# Copyright (C) 2012 - 2014 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., University of Heidelberg, and The University 
+# of Manchester. 
+# All rights reserved. 
+
 include(${QT_USE_FILE})
 
 if (ENABLE_SBW_INTEGRATION)
@@ -14,3 +19,6 @@ include_directories(BEFORE ${QWT_INCLUDE_DIR})
 set(UI_LIBS ${QWTPLOT3D_LIBRARY} ${UI_LIBS})
 include_directories(BEFORE ${QWTPLOT3D_INCLUDE_DIR})
 
+if (ENABLE_GPROF)
+  set(UI_LIBS -${UI_LIBS} c_p}
+endif (ENABLE_GPROF)
