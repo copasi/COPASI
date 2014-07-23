@@ -65,7 +65,7 @@ int compare(const void *r1, const void *r2);
 class CExpRKMethod
 {
   /*============Functions============*/
- public:
+public:
 
   //*********************************//
   //* Constructor and Destructor    *//
@@ -89,6 +89,8 @@ class CExpRKMethod
    * Main function processing integration along time 
    */
   void integrate();
+
+private:
 
   /**
    * Check status of this ODE solver
