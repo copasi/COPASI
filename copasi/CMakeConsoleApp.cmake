@@ -44,7 +44,3 @@ else (APPLE)
 
 endif (APPLE)
 
-if (ENABLE_GPROF)
-  set(SE_LIBS ${SE_LIBS} c_p)
-endif (ENABLE_GPROF)
-
