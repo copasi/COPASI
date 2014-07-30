@@ -377,9 +377,7 @@ void CHybridMethodODE45::setupReactionFlags()
     mReactionFlags.resize(mNumReactions);
 
     for (size_t rct = 0; rct < mNumReactions; rct++)
-    {
-        mReactionFlags[rct] = FAST;
-        /*
+    { 
         if ((*mpReactions)[rct]->isFast())
         {
             mReactionFlags[rct] = FAST;
@@ -390,10 +388,8 @@ void CHybridMethodODE45::setupReactionFlags()
             mReactionFlags[rct] = SLOW;
             mHasStoiReaction = true;
         }
-        */
     }
 
-    mHasDetermReaction = true;
     return;
 }
 
@@ -475,16 +471,16 @@ CTrajectoryMethod::Status CHybridMethodODE45::step(const double & deltaT)
     }
     
     endTime = mTimeRecord;
-
+    
     for (size_t i = 0; ((mRootCounter < mMaxSteps) && (time < endTime)); i++)
     {
         time = doSingleStep(endTime);
-        //std::cout << "time " << time << std::endl;
+        
         if (mSysStatus == SYS_EVENT)
 	{
             *mpCurrentState = mpModel->getState();
             mRootCounter++;
-            //std::cout << "Return time: " << time << std::endl;
+
             return ROOT;
 	}
         else if(mSysStatus == SYS_CONT)
@@ -492,7 +488,7 @@ CTrajectoryMethod::Status CHybridMethodODE45::step(const double & deltaT)
         else if(mSysStatus == SYS_ERR)
             return FAILURE;
     }
-
+    
     // Warning Message
     if ((mRootCounter >= mMaxSteps) && (!mMaxStepsReached))
     {
@@ -500,7 +496,7 @@ CTrajectoryMethod::Status CHybridMethodODE45::step(const double & deltaT)
         CCopasiMessage(CCopasiMessage::WARNING, "maximum number of reaction events was reached in at least one simulation step.\nThat means time intervals in the output may not be what you requested.");
     }
 
-    *mpCurrentState = mpModel->getState();
+    *mpCurrentState = mpModel->getState(); 
     return NORMAL;
 }
 
@@ -515,7 +511,7 @@ C_FLOAT64 CHybridMethodODE45::doSingleStep(C_FLOAT64 endTime)
 {
     C_FLOAT64 ds     = 0.0;
     size_t    rIndex = 0; 
-
+    
     integrateDeterministicPart(endTime);      
     ds = mODE45.mT;
 
@@ -589,7 +585,7 @@ C_FLOAT64 CHybridMethodODE45::doSingleStep(C_FLOAT64 endTime)
     if((mSysStatus == SYS_EVENT) && mHasSlow) //only deal with system roots
     { 
         fireSlowReaction4Hybrid();
-
+        
         //metab related to slow reactions have been updated,
         //then update ASSIGNMENT values
         mpModel->updateSimulatedValues(false);
@@ -663,7 +659,7 @@ void CHybridMethodODE45::integrateDeterministicPart(C_FLOAT64 endTime)
     //=(3)= set time and old time
     mODE45.mT    = mpState->getTime();
     mODE45.mTEnd = endTime;
-
+ 
     //=(4)= set y and ode status
     if(mSysStatus == SYS_NEW)
     {
@@ -685,7 +681,7 @@ void CHybridMethodODE45::integrateDeterministicPart(C_FLOAT64 endTime)
     {
         std::cout << "Wrong mSysStatus = " << mSysStatus << std::endl;
     }
-
+    
     //3----If time increment is too small, do nothing
     C_FLOAT64 tdist , d__1, d__2, w0;
     tdist = fabs(mODE45.mTEnd-mODE45.mT); //absolute time increment
@@ -710,10 +706,10 @@ void CHybridMethodODE45::integrateDeterministicPart(C_FLOAT64 endTime)
         mpModel->setTime(mODE45.mTEnd);
         return;
     }
-
+    
     //5----do interpolation
     mODE45.integrate();
-
+    
     //6----check status
     if(mODE45.mODEState == ODE_ERR)
     {

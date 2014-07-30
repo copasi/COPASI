@@ -141,7 +141,7 @@ CExpRKMethod::~CExpRKMethod()
 
     if(mK)
     {
-        for(int i=mStage; i>=0; i--)
+        for(int i= (int)mStage; i>=0; i--)
             delete [] mK[i];
       
         delete [] mK;
@@ -231,16 +231,15 @@ void CExpRKMethod::integrate()
     {
         mInitTCp = mT;
         mTOld    = mT;
-        allocateSpace(); 
+        allocateSpace();
         setInitialStepSize();
         mDerivFunc(mDim, &mTOld, mYOld, mK[0]);//record derivative to
-        //calculate mRootValueOld
-
+ 
+        //Calculate root at initial time
         if(mHasEvent)
             (*mEventFunc)(mDim, &mTOld, mYOld, &mRootNum, mRootValueOld);
 
         mHasMultipleRoots = false;
-
     }
     else if (mODEState == 3) // has event
     {
@@ -353,7 +352,7 @@ void CExpRKMethod::integrate()
             calculateRootState();
             return;
 	}
-	 
+
         //~~~~~~~~~~~~~~~~~~~~~~//
         // (5) Advance New Step //
         //~~~~~~~~~~~~~~~~~~~~~~//
@@ -366,7 +365,7 @@ void CExpRKMethod::integrate()
 
     mODEState = 4;
     mT = mTEnd;
-    for(int i=0; i<*mDim; i++)
+    for(size_t i=0; i<*mDim; i++)
         mY[i] = mYNew[i];
 
     return;
@@ -448,17 +447,17 @@ void CExpRKMethod::doOneStep()
 {
     C_FLOAT64 t;
     // (1) Calculate mK[1] to mK[mStage-1]
-    for(int s=1; s<mStage; s++)
+    for(size_t s=1; s<mStage; s++)
     {
         t = mTOld + mh*mC[s];//tmp time
 
-        for(int i=0; i<*mDim; i++)// tmp Y
+        for(size_t i=0; i<*mDim; i++)// tmp Y
             mZ1[i] = mYOld[i];
 
-        for(int i=0; i<s; i++) //tmp Y + Yp*h
+        for(size_t i=0; i<s; i++) //tmp Y + Yp*h
 	{
             C_FLOAT64 a = mA[s][i] * mh;
-            for (int j=0; j<*mDim; j++)
+            for (size_t j=0; j<*mDim; j++)
                 mZ1[j] += mK[i][j] * a;
 	}
 
@@ -471,13 +470,13 @@ void CExpRKMethod::doOneStep()
     mTNew = mTOld + mh;
   
     // (3) New Y, mYNew
-    for(int i=0; i<*mDim; i++)
+    for(size_t i=0; i<*mDim; i++)
         mYNew[i] = mYOld[i];
   
-    for(int s=0; s<mStage; s++)
+    for(size_t s=0; s<mStage; s++)
     {
         C_FLOAT64 b = mB[s] * mh;
-        for (int i=0; i<*mDim; i++)
+        for (size_t i=0; i<*mDim; i++)
             mYNew[i] += b * mK[s][i];
     }
 
@@ -496,24 +495,24 @@ void CExpRKMethod::doOneStep()
 C_FLOAT64 CExpRKMethod::estimateError()
 {
     // (1) Calculate |ynew - ynew*| in terms of mE
-    for (int i=0; i<*mDim; i++)
+    for (size_t i=0; i<*mDim; i++)
         mZ2[i] = 0;
 
-    for(int s=0; s<mStage+1; s++)
+    for(size_t s=0; s<mStage+1; s++)
     {
         C_FLOAT64 e = mE[s] * mh;
-        for(int i=0; i<*mDim; i++)
+        for(size_t i=0; i<*mDim; i++)
             mZ2[i] += e * mK[s][i];
     }
 
 
     // (2) Calculate Standard sc=Atol + max(|y|,|ynew|)*Rtol
-    for(int i=0; i<*mDim; i++)
+    for(size_t i=0; i<*mDim; i++)
         mZ3[i] = mAbsTol + dmax(dabs(mYOld[i]), dabs(mYNew[i]))*mRelTol;
 
     // (3) Calculate Error
     C_FLOAT64 error = 0, tmp;
-    for (int i=0; i<*mDim; i++)
+    for (size_t i=0; i<*mDim; i++)
     {
         tmp = mZ2[i]/mZ3[i];
         error += tmp*tmp;
@@ -533,15 +532,15 @@ C_FLOAT64 CExpRKMethod::estimateError()
 void CExpRKMethod::advanceStep()
 {
     mTOld = mTNew;
-    for(int i=0; i<*mDim; i++)
+    for(size_t i=0; i<*mDim; i++)
         mYOld[i] = mYNew[i];
 
-    for(int i=0; i<*mDim; i++)
+    for(size_t i=0; i<*mDim; i++)
         mK[0][i] = mK[mStage][i];
 
     if(mEventFunc)
     {
-        for(int i=0; i<mRootNum; i++)
+        for(size_t i=0; i<mRootNum; i++)
             mRootValueOld[i] = mRootValue[i];
     }
 
@@ -576,7 +575,7 @@ void CExpRKMethod::initialize()
     }
     else
     {
-        mHasEvent     = true;
+        mHasEvent = true;
 
         if (mRootValueOld)
             delete [] mRootValueOld;
@@ -601,16 +600,16 @@ void CExpRKMethod::allocateSpace()
     //----Set mK----
     if(mK)
     {
-        for(int i=mStage; i>=0; i--)
+        for(int i = (int)mStage; i >= 0; i--)
             delete [] mK[i];
       
         delete [] mK;
     }
 
     mK = new C_FLOAT64*[mStage+1];
-    for (int r=0; r<mStage+1; r++)
+    for (size_t r = 0; r < mStage+1; r++)
         mK[r] = new C_FLOAT64[*mDim];
-
+    
     //----Set mYNew----
     if(mYNew)
         delete [] mYNew;
@@ -622,9 +621,9 @@ void CExpRKMethod::allocateSpace()
         delete [] mYOld;
 
     mYOld = new C_FLOAT64[*mDim];
-    for (size_t i=0; i<*mDim; ++i)
+    for (size_t i = 0; i < *mDim; ++i)
         mYOld[i] = mY[i];
-
+    
     // ----(2)----
     size_t size = (*mDim>mRootNum) ? *mDim : mRootNum;
     size = (size>(MAX_STAGE+2)) ? size : (MAX_STAGE+2);
@@ -699,25 +698,25 @@ void CExpRKMethod::setCoeff()
         { 9017./3168,     -355./33, 46732./5247,   49./176, -5103./18656,  0}
     };
   
-    for(int r=0; r<mStage; r++)
+    for(size_t r=0; r<mStage; r++)
     {
-        for (int c=0; c<mStage; c++)
+        for (size_t c=0; c<mStage; c++)
             mA[r][c] = A[r][c];
     }
 
     //----Set mC----
     C_FLOAT64 C[6] = {0, 1./5, 3./10, 4./5, 8./9, 1.};
-    for(int c=0; c<mStage; c++)
+    for(size_t c=0; c<mStage; c++)
         mC[c] = C[c];
 
     //----Set mB----
     C_FLOAT64 B[6] = {35./384, 0, 500./1113, 125./192, -2187./6784, 11./84};
-    for(int c=0; c<mStage; c++)
+    for(size_t c=0; c<mStage; c++)
         mB[c] = B[c];
 
     //----Set mE----
     C_FLOAT64 E[7] = {71./57600, 0, -71./16695, 71./1920, -17253./339200, 22./525, -1./40};
-    for(int c=0; c<mStage+1; c++)
+    for(size_t c=0; c<mStage+1; c++)
         mE[c] = E[c];
 
     //----Set mI----
@@ -731,9 +730,9 @@ void CExpRKMethod::setCoeff()
         {0,       3./2,        -4.,        5./2}
     };
 
-    for(int r=0; r<mStage+1; r++)
+    for(size_t r=0; r<mStage+1; r++)
     {
-        for(int c=0; c<mOrderY; c++)
+        for(size_t c=0; c<mOrderY; c++)
             mI[r][c] = I[r][c];
     }
 
@@ -827,18 +826,18 @@ void CExpRKMethod::interpolation(const C_FLOAT64 tInterp, C_FLOAT64 *yInterp)
     C_FLOAT64 S[MAX_STAGE];
 
     S[0] = tmp * (mTNew-mTOld);
-    for(int i=1; i<mOrderY; i++)
+    for(size_t i=1; i<mOrderY; i++)
         S[i] = S[i-1]*tmp;
 
-    for(int d=0; d< (*mDim); d++)
+    for(size_t d=0; d< (*mDim); d++)
     {
         yInterp[d] = mYOld[d];
       
-        for(int s=0; s<mOrderY; s++)
+        for(size_t s=0; s<mOrderY; s++)
 	{
             tmp = 0;
 	  
-            for(int j=0; j<mStage+1; j++)
+            for(size_t j=0; j<mStage+1; j++)
                 tmp += mK[j][d] * mI[j][s];
 	    
             yInterp[d] += tmp * S[s];
@@ -876,7 +875,7 @@ void CExpRKMethod::checkRoots()
         (*mEventFunc)(mDim, &mtArray[3], interY, &mRootNum, mIn3);
         mrEvalNum += 3;
   
-        for(int r=0; r<mRootNum; ++r)
+        for(size_t r=0; r<mRootNum; ++r)
 	{
             if(mRootValueOld[r]*mIn1[r]<=0 || mIn1[r]*mIn2[r]<=0 ||
                mIn2[r]*mIn3[r]<=0 || mIn3[r]*mRootValue[r]<=0)
@@ -906,10 +905,10 @@ void CExpRKMethod::findRoots()
     C_FLOAT64 tol = deps(dabs(mTOld)) * 128;
     C_FLOAT64 leftV, rightV, leftT, rightT;
 
-    for (int r=0; r<mRootNum; ++r)
+    for (size_t r=0; r<mRootNum; ++r)
     {      
         count = 0;
-        for (int s=0; s<4; ++s)
+        for (size_t s=0; s<4; ++s)
 	{
             leftT = mtArray[s]; rightT = mtArray[s+1];
             switch(s)
@@ -1118,7 +1117,7 @@ void CExpRKMethod::findSlowReaction()
     // Record t and y
     tArray[0] = mTOld;
     yArray[0] = mYOld[*mDim-1];
-    for (int i=1; i<mStage; i++)
+    for (size_t i=1; i<mStage; i++)
     {
         if (mC[i]>0 && mC[i]<1)
 	{
@@ -1135,7 +1134,7 @@ void CExpRKMethod::findSlowReaction()
     // check whether yArray[i] is close to 0
     SRoot root;
 
-    for(int i=0; i<cnt; ++i)
+    for(size_t i=0; i<cnt; ++i)
     {
         if(dabs(yArray[i]) < deps(0))
 	{
@@ -1148,10 +1147,10 @@ void CExpRKMethod::findSlowReaction()
 
     // Do Inverse Interpolation
     C_FLOAT64 t = 0, localT;
-    for(int i=0; i<cnt; i++)
+    for(size_t i=0; i<cnt; i++)
     {
         localT = 1;
-        for(int j=0; j<cnt; j++)
+        for(size_t j=0; j<cnt; j++)
 	{
             if(i != j)
                 localT *= yArray[j] / (yArray[j]-yArray[i]);
@@ -1188,7 +1187,8 @@ void CExpRKMethod::calculateRootState()
     mODEState = 3;
     mODEStateRecord = mODEState;
 
-    (*mEventFunc)(mDim, &mT, mY, &mRootNum, mZ2);
+    //if (mRootId != -1)
+    //    (*mEventFunc)(mDim, &mT, mY, &mRootNum, mZ2);
 
     return;
 }
