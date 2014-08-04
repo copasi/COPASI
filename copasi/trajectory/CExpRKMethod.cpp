@@ -43,7 +43,7 @@ int compare(const void *r1, const void *r2)
  * Default Constructor
  */
 CExpRKMethod::CExpRKMethod()
-{
+{  
     // Default error tolerances
     mAbsTol = 1e-12;
     mRelTol = 1e-10;
@@ -209,7 +209,6 @@ CExpRKMethod::~CExpRKMethod()
         delete [] mtArray;
         mtArray = NULL;
     }
-
     return;
 }
 
@@ -231,7 +230,9 @@ void CExpRKMethod::integrate()
     {
         mInitTCp = mT;
         mTOld    = mT;
-        allocateSpace();
+        for (size_t i = 0; i < *mDim; ++i)
+            mYOld[i] = mY[i];
+        //allocateSpace();
         setInitialStepSize();
         mDerivFunc(mDim, &mTOld, mYOld, mK[0]);//record derivative to
  
@@ -588,6 +589,8 @@ void CExpRKMethod::initialize()
         clearQueue();
     }
 
+    allocateSpace();
+
     return;
 }
 
@@ -621,9 +624,7 @@ void CExpRKMethod::allocateSpace()
         delete [] mYOld;
 
     mYOld = new C_FLOAT64[*mDim];
-    for (size_t i = 0; i < *mDim; ++i)
-        mYOld[i] = mY[i];
-    
+        
     // ----(2)----
     size_t size = (*mDim>mRootNum) ? *mDim : mRootNum;
     size = (size>(MAX_STAGE+2)) ? size : (MAX_STAGE+2);

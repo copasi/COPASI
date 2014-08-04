@@ -27,12 +27,14 @@
 #endif // WIN32
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <limits.h>
 #include <iterator>
 #include <iostream>
 #include <algorithm>
 #include <new>
 #include <cmath>
+#include <fstream>
 
 #include "copasi.h"
 #include "CTrajectoryProblem.h"
@@ -59,7 +61,7 @@
  */
 CHybridMethodODE45::CHybridMethodODE45(const CCopasiContainer * pParent):
     CTrajectoryMethod(CCopasiMethod::hybridODE45, pParent)
-{
+{   
     assert((void *) &mData == (void *) &mData.dim);
     mData.pMethod = this;
 
@@ -85,7 +87,7 @@ CHybridMethodODE45::CHybridMethodODE45(const CHybridMethodODE45 & src,
  * Destructor.
  */
 CHybridMethodODE45::~CHybridMethodODE45()
-{
+{   
     cleanup();
     DESTRUCTOR_TRACE;
 }
@@ -143,7 +145,7 @@ bool CHybridMethodODE45::isValidProblem(const CCopasiProblem * pProblem)
  * Intialize the method parameter
  */
 void CHybridMethodODE45::initializeParameter()
-{
+{   
     CCopasiParameter *pParm;
 
     assertParameter("Max Internal Steps", CCopasiParameter::UINT, (unsigned C_INT32) MAX_STEPS_ODE);
@@ -190,7 +192,7 @@ void CHybridMethodODE45::initializeParameter()
  * @param "const CState *" initialState
  */
 void CHybridMethodODE45::start(const CState * initialState)
-{
+{   
     //set the mpModel
     mpModel = mpProblem->getModel();
     assert(mpModel);
@@ -480,7 +482,6 @@ CTrajectoryMethod::Status CHybridMethodODE45::step(const double & deltaT)
 	{
             *mpCurrentState = mpModel->getState();
             mRootCounter++;
-
             return ROOT;
 	}
         else if(mSysStatus == SYS_CONT)
@@ -668,7 +669,8 @@ void CHybridMethodODE45::integrateDeterministicPart(C_FLOAT64 endTime)
         for (size_t i = 0; i < mData.dim - 1; i++)
             mY[i] = stateY[i];
       
-        mY[mData.dim-1] = log(mpRandomGenerator->getRandomOO());
+        C_FLOAT64 randNum = mpRandomGenerator->getRandomOO();
+        mY[mData.dim-1] = log(randNum);
 
         if(mODE45.mODEState != ODE_INIT)
             mODE45.mODEState = ODE_NEW;
@@ -914,6 +916,7 @@ size_t CHybridMethodODE45::getReactionIndex4Hybrid()
         if (mReactionFlags[i] == SLOW)
             mAmuSum += mAmu[i];
     }
+    std::cout << std::endl;
 
     //get the threshold
     C_FLOAT64 rand2 = mpRandomGenerator->getRandomOO();
