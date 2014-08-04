@@ -916,7 +916,6 @@ size_t CHybridMethodODE45::getReactionIndex4Hybrid()
         if (mReactionFlags[i] == SLOW)
             mAmuSum += mAmu[i];
     }
-    std::cout << std::endl;
 
     //get the threshold
     C_FLOAT64 rand2 = mpRandomGenerator->getRandomOO();
