@@ -42,6 +42,8 @@ class ListViews;
 class CCopasiDataModel;
 class CCopasiObject;
 
+class QUndoStack;
+
 class CopasiWidget : public QWidget
 {
   Q_OBJECT
@@ -56,8 +58,17 @@ public:
   void setIgnoreUpdates(bool v);
   CCopasiDataModel * getDataModel();
 
+#ifdef COPASI_UNDO
+  void setUndoStack(QUndoStack* undoStack);
+  QUndoStack* getUndoStack();
+#endif
+
 protected:
   virtual bool enterProtected();
+
+#ifdef COPASI_UNDO
+   QUndoStack *mpUndoStack;
+#endif
 
   ListViews * mpListView;
   std::string mKey;
@@ -69,6 +80,7 @@ protected:
 
 protected slots:
   virtual bool protectedNotify(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key = "");
+
 };
 
 #endif // !defined(COPASI_WIDGET_H)

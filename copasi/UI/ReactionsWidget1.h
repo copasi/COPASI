@@ -36,6 +36,12 @@ class ReactionsWidget1 : public CopasiWidget, public Ui::ReactionsWidget1
 {
   Q_OBJECT
 
+#ifdef COPASI_UNDO
+  friend class DeleteReactionCommand;
+  friend class CreateNewReactionCommand;
+  friend class ReactionLineEditChangedCommand;
+#endif
+
 public:
   ReactionsWidget1(QWidget* parent = 0, const char* name = 0, Qt::WFlags fl = 0);
   ~ReactionsWidget1();
@@ -66,6 +72,16 @@ protected:
   void FillWidgetFromRI();
 
   CReactionInterface * mpRi;
+
+  //additional functions for UNDO framework
+#ifdef COPASI_UNDO
+  void lineEditChanged();
+  void restoreLineEditChanged(std::string & eq, std::string & funcName);
+  void deleteReaction();
+  void addReaction(std::string & reaObjectName, CReactionInterface *pRi);
+  void createNewReaction();
+  void deleteReaction(CReaction *pReaction);
+#endif
 };
 
 #endif // REACTIONSWIDGET1_H

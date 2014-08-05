@@ -154,6 +154,10 @@ if(BUILD_GUI)
   include(wizard/CMakeLists.txt)
   include(UI/CMakeLists.txt)
 
+# add the directory for UNDO framework
+if(ENABLE_COPASI_UNDO)
+include(undoFramework/CMakeLists.txt)
+endif()
 
 set(COPASI_UI_MOC_OPTIONS)
 if (ENABLE_SBW_INTEGRATION)

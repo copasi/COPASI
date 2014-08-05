@@ -17,6 +17,10 @@
 //////////////////////////////////////////////////////////////////////
 #include <QtGui/QApplication>
 
+#ifdef COPASI_UNDO
+#include <QUndoStack>
+#endif
+
 #include "copasi/UI/copasiWidget.h"
 #include "copasi/UI/listviews.h"
 #include "copasi/UI/DataModelGUI.h"
@@ -106,3 +110,12 @@ CCopasiDataModel * CopasiWidget::getDataModel()
 {
   return mpDataModel;
 }
+
+#ifdef COPASI_UNDO
+void CopasiWidget::setUndoStack(QUndoStack* undoStack){
+	mpUndoStack= undoStack;
+}
+QUndoStack* CopasiWidget::getUndoStack(){
+	return mpUndoStack;
+}
+#endif

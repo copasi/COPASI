@@ -33,6 +33,11 @@ class CQReactionDM : public CQBaseDataModel
 {
   Q_OBJECT
 
+#ifdef COPASI_UNDO
+  friend class CCopasiInsertRowsCommand;
+  friend class ReactionDataChangeCommand;
+#endif
+
 public:
   CQReactionDM(QObject *parent = 0);
   virtual int rowCount(const QModelIndex &parent = QModelIndex()) const;
@@ -45,6 +50,18 @@ public:
                int role = Qt::EditRole);
   bool removeRows(QModelIndexList rows, const QModelIndex &index = QModelIndex());
 
+  //TODO Undo
+#ifdef COPASI_UNDO
+  bool reactionDataChange(const QModelIndex &index, const QVariant &value, int role, QString &funcName);
+  void insertNewReactionRow(int position, int rows, const QModelIndex&);
+  void addReactionRow(CReaction *pReaction);
+  void deleteReactionRow(CReaction *pReaction);
+  bool updateReactionWithFunctionName(CReaction *pRea, QString &funcName);
+
+  signals:
+  void changeWidget(const size_t & id);
+#endif
+
 protected:
   bool insertRows(int position, int rows, const QModelIndex &index = QModelIndex());
   bool removeRows(int position, int rows, const QModelIndex &index = QModelIndex());
@@ -53,6 +70,7 @@ private:
   void setEquation(const CReaction *pRea, const QModelIndex& index, const QVariant &value);
 
   QString mNewEquation;
+
 };
 
 #endif //CQReactionDM_H

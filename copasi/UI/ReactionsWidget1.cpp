@@ -44,6 +44,13 @@
 #include "report/CKeyFactory.h"
 #include "model/CModelExpansion.h"    //for Copy button and options
 
+//UNDO framework
+#ifdef COPASI_UNDO
+#include "undoFramework/DeleteReactionCommand.h"
+#include "undoFramework/CreateNewReactionCommand.h"
+#include "undoFramework/ReactionLineEditChangedCommand.h"
+#include "copasiui3window.h"
+#endif
 /*
  *  Constructs a ReactionsWidget which is a child of 'parent', with the
  *  name 'name' and widget flags set to 'f'.
@@ -65,6 +72,11 @@ ReactionsWidget1::ReactionsWidget1(QWidget *parent, const char * name, Qt::WFlag
 
 #ifndef COPASI_DEBUG
   mpFast->hide();
+#endif
+
+#ifdef COPASI_UNDO
+  CopasiUI3Window *  pWindow = dynamic_cast<CopasiUI3Window * >(parent->parent());
+  setUndoStack(pWindow->getUndoStack());
 #endif
 }
 
@@ -227,6 +239,9 @@ void ReactionsWidget1::slotComboBoxSelectionChanged(const QString & p2)
 /*This function is called when the "Chemical Reaction" LineEdit is changed.*/
 void ReactionsWidget1::slotLineEditChanged()
 {
+#ifdef COPASI_UNDO
+	mpUndoStack->push(new ReactionLineEditChangedCommand(this));
+#else
   //std::string rName = TO_UTF8(LineEdit1->text());
 
   std::string eq = TO_UTF8(LineEdit2->text());
@@ -244,11 +259,15 @@ void ReactionsWidget1::slotLineEditChanged()
 
   // update the widget
   FillWidgetFromRI();
+#endif
 }
 
 // added 5/19/04
 void ReactionsWidget1::slotBtnNew()
 {
+#ifdef COPASI_UNDO
+	mpUndoStack->push(new CreateNewReactionCommand(this));
+#else
   std::string name = "reaction_1";
   size_t i = 1;
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
@@ -266,6 +285,7 @@ void ReactionsWidget1::slotBtnNew()
   protectedNotify(ListViews::REACTION, ListViews::ADD, key);
 //  enter(key);
   mpListView->switchToOtherWidget(C_INVALID_INDEX, key);
+#endif
 }
 
 void ReactionsWidget1::copy()
@@ -403,6 +423,9 @@ void ReactionsWidget1::copy()
 // Just added 5/18/04
 void ReactionsWidget1::slotBtnDelete()
 {
+#ifdef COPASI_UNDO
+	mpUndoStack->push(new DeleteReactionCommand(this));
+#else
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
   assert(pDataModel != NULL);
@@ -437,6 +460,7 @@ void ReactionsWidget1::slotBtnDelete()
       default:                                                     // No or Escape
         break;
     }
+  #endif
 }
 
 void ReactionsWidget1::FillWidgetFromRI()
@@ -671,3 +695,130 @@ void ReactionsWidget1::setFramework(int framework)
         break;
     }
 }
+
+//Undo methods
+#ifdef COPASI_UNDO
+void ReactionsWidget1::lineEditChanged()
+{
+  //std::string rName = TO_UTF8(LineEdit1->text());
+
+  std::string eq = TO_UTF8(LineEdit2->text());
+
+  //first check if the string is a valid equation
+  if (!CChemEqInterface::isValidEq(eq))
+    {
+      return;  // abort further processing
+    }
+
+  // tell the reaction interface
+  //mpRi->setReactionName(rName);
+
+  mpRi->setChemEqString(eq, "");
+
+  // update the widget
+  FillWidgetFromRI();
+  mpListView->switchToOtherWidget(C_INVALID_INDEX, mKey);
+}
+void ReactionsWidget1::restoreLineEditChanged(std::string & eq, std::string &funcName)
+{
+
+	//first check if the string is a valid equation
+	if (!CChemEqInterface::isValidEq(eq))
+	{
+		return;  // abort further processing
+	}
+
+	CReaction *pRea = dynamic_cast< CReaction * >(mpObject);
+	std::string key = pRea->getKey();
+	mpRi->setChemEqString(eq, funcName);
+	mpRi->writeBackToReaction(NULL);
+
+	// update the widget
+	FillWidgetFromRI();
+	mpListView->switchToOtherWidget(C_INVALID_INDEX, key); //switch to reaction widget
+}
+
+void ReactionsWidget1::createNewReaction()
+{
+	std::string name = "reaction_1";
+	size_t i = 1;
+	assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+	CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
+	assert(pDataModel != NULL);
+
+	while (!pDataModel->getModel()->createReaction(name))
+	{
+		i++;
+		name = "reaction_";
+		name += TO_UTF8(QString::number(i));
+	}
+
+	std::string key = pDataModel->getModel()->getReactions()[name]->getKey();
+	protectedNotify(ListViews::REACTION, ListViews::ADD, key);
+
+	mpListView->switchToOtherWidget(C_INVALID_INDEX, key);
+}
+
+void ReactionsWidget1::deleteReaction(){
+	assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+	CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
+	assert(pDataModel != NULL);
+	CModel * pModel = pDataModel->getModel();
+
+	if (pModel == NULL)
+		return;
+
+	CReaction * pReaction =
+			dynamic_cast< CReaction * >(CCopasiRootContainer::getKeyFactory()->get(mKey));
+
+	if (pReaction == NULL) return;
+
+	QMessageBox::StandardButton choice =
+			CQMessageBox::confirmDelete(NULL, "reaction",
+					FROM_UTF8(pReaction->getObjectName()),
+					pReaction->getDeletedObjects());
+
+	switch (choice)
+	{
+	case QMessageBox::Ok:                                                     // Yes or Enter
+	{
+		pDataModel->getModel()->removeReaction(mKey);
+
+		mpRi->setFunctionWithEmptyMapping("");
+
+		protectedNotify(ListViews::REACTION, ListViews::DELETE, mKey);
+		protectedNotify(ListViews::REACTION, ListViews::DELETE, "");//Refresh all as there may be dependencies.
+		mpListView->switchToOtherWidget(114, "");
+		break;
+	}
+
+	default:                                                     // No or Escape
+		break;
+	}
+}
+
+void ReactionsWidget1::deleteReaction(CReaction *pReaction){
+	assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+	CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
+	assert(pDataModel != NULL);
+
+	std::string key = pDataModel->getModel()->getReactions()[pReaction->getObjectName()]->getKey();
+	pDataModel->getModel()->removeReaction(key);
+	protectedNotify(ListViews::REACTION, ListViews::DELETE, key);
+
+	mpListView->switchToOtherWidget(114, "");
+}
+
+void ReactionsWidget1::addReaction(std::string & reaObjectName, CReactionInterface *pRi){
+	assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+	CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
+	assert(pDataModel != NULL);
+
+	CReaction *pRea = pDataModel->getModel()->createReaction(reaObjectName);
+	std::string key = pRea->getKey();
+	protectedNotify(ListViews::REACTION, ListViews::ADD, key);
+	pRi->writeBackToReaction(pRea);
+
+	mpListView->switchToOtherWidget(C_INVALID_INDEX, key);
+}
+#endif

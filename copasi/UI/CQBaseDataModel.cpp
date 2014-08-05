@@ -16,12 +16,15 @@
 // and The University of Manchester.
 // All rights reserved.
 
+#ifdef COPASI_UNDO
+#include <QUndoStack>
+#endif
+
 #include "copasi.h"
 #include "CQBaseDataModel.h"
 
 CQBaseDataModel::CQBaseDataModel(QObject *parent)
     : QAbstractTableModel(parent)
-
 {}
 
 Qt::ItemFlags CQBaseDataModel::flags(const QModelIndex &index) const
@@ -82,3 +85,12 @@ QString CQBaseDataModel::createNewName(const QString name, const int nameCol)
 
   return nname;
 }
+
+#ifdef COPASI_UNDO
+void CQBaseDataModel::setUndoStack(QUndoStack* undoStack){
+	mpUndoStack= undoStack;
+}
+QUndoStack* CQBaseDataModel::getUndoStack(){
+	return mpUndoStack;
+}
+#endif

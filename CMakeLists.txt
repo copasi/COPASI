@@ -359,6 +359,13 @@ if(ENABLE_COPASI_SEDML)
   add_definitions(-DCOPASI_SEDML)
 endif(ENABLE_COPASI_SEDML)
 
+#Option for the COPASI support for UNDO Framework currently being developed by Joseph 
+option (ENABLE_COPASI_UNDO "Enables UNDO support." OFF)
+mark_as_advanced(ENABLE_COPASI_UNDO)
+if(ENABLE_COPASI_UNDO)
+  add_definitions(-DCOPASI_UNDO)
+endif(ENABLE_COPASI_UNDO)
+
 # if the MML widget is available, we need to enable "HAVE_MML"
 
 option(ENABLE_MML "Enable the MML widget" ON)
