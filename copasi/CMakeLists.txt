@@ -156,7 +156,8 @@ if(BUILD_GUI)
 
 # add the directory for UNDO framework
 if(ENABLE_COPASI_UNDO)
-include(undoFramework/CMakeLists.txt)
+ include(undoFramework/CMakeLists.txt)
+ set(COPASI_UI_MOC_OPTIONS ${COPASI_UI_MOC_OPTIONS} -DCOPASI_UNDO=1)
 endif()
 
 set(COPASI_UI_MOC_OPTIONS)
