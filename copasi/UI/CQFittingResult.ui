@@ -92,6 +92,9 @@
       <property name="editTriggers">
        <set>QAbstractItemView::NoEditTriggers</set>
       </property>
+      <property name="sortingEnabled">
+       <bool>true</bool>
+      </property>
       <attribute name="title">
        <string>Parameters</string>
       </attribute>
@@ -140,6 +143,9 @@
       <property name="editTriggers">
        <set>QAbstractItemView::NoEditTriggers</set>
       </property>
+      <property name="sortingEnabled">
+       <bool>true</bool>
+      </property>
       <attribute name="title">
        <string>Experiments</string>
       </attribute>
@@ -172,6 +178,9 @@
      <widget class="QTableWidget" name="mpValues">
       <property name="editTriggers">
        <set>QAbstractItemView::NoEditTriggers</set>
+      </property>
+      <property name="sortingEnabled">
+       <bool>true</bool>
       </property>
       <attribute name="title">
        <string>Fitted Values</string>
@@ -218,8 +227,8 @@
        <property name="geometry">
         <rect>
          <x>0</x>
-         <y>-116</y>
-         <width>423</width>
+         <y>0</y>
+         <width>478</width>
          <height>2400</height>
         </rect>
        </property>
@@ -350,6 +359,9 @@
       <property name="editTriggers">
        <set>QAbstractItemView::NoEditTriggers</set>
       </property>
+      <property name="sortingEnabled">
+       <bool>true</bool>
+      </property>
       <attribute name="title">
        <string>Validation Experiments</string>
       </attribute>
@@ -382,6 +394,9 @@
      <widget class="QTableWidget" name="mpCrossValidationValues">
       <property name="editTriggers">
        <set>QAbstractItemView::NoEditTriggers</set>
+      </property>
+      <property name="sortingEnabled">
+       <bool>true</bool>
       </property>
       <attribute name="title">
        <string>Validation Fitted Values</string>

@@ -1,16 +1,16 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-// and The University of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc. and EML Research, gGmbH. 
-// All rights reserved. 
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 #ifndef COPASI_CModel
 #define COPASI_CModel
@@ -1058,6 +1058,30 @@ public:
    * @return std::vector< Refresh * > initialRefreshSequence
    */
   std::vector< Refresh * > buildInitialRefreshSequence(std::set< const CCopasiObject * > & changedObjects);
+
+  /**
+   * Builds and executes the the update sequence used to calculate all initial
+   * values depending on the changed objects. For metabolites the initial particle
+   * number is updated by default unless itself is in the list of changed objects. In
+   * that case the initial concentration is updated.
+   *
+   * @param std::set< const CCopasiObject * > & changedObjects
+
+   * @see buildInitialRefreshSequence(std::set< const CCopasiObject * > & changedObjects)
+   */
+  void updateInitialValues(std::set< const CCopasiObject * > & changedObjects);
+
+  /**
+   * Builds and executes the the update sequence used to calculate all initial
+   * values depending on the changed objects For metabolites the initial particle
+   * number is updated by default unless itself is in the list of changed objects. In
+   * that case the initial concentration is updated.
+   *
+   * @param std::set< const CCopasiObject * > & changedObjects
+
+   * @see updateInitialValues(std::set< const CCopasiObject * > & changedObjects)
+   */
+  void updateInitialValues(const CCopasiObject * changedObject);
 
   /**
    * Initialize a vector of individual absolute tolerances

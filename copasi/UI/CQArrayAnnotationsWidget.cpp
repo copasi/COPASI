@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., University of Heidelberg, and The University 
 // of Manchester. 
 // All rights reserved. 
@@ -438,7 +438,8 @@ void CQArrayAnnotationsWidget::fillTableN(size_t rowIndex, size_t colIndex,
         Index[rowIndex] = i;
         Index[colIndex] = j;
 
-        QTableWidgetItem * pItem = new QTableWidgetItem(QString::number((*mpArray->array())[Index]));
+        QTableWidgetItem * pItem = new QTableWidgetItem(QVariant::Double);
+        pItem->setData(Qt::DisplayRole, (*mpArray->array())[Index]);
         mpContentTable->setItem((int) i, (int) j, pItem);
 
         if (mpColorScale != NULL)

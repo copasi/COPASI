@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
-<comment> Copyright (C) 2011 - 2013 by Pedro Mendes, Virginia Tech Intellectual </comment>
+<comment> Copyright (C) 2011 - 2014 by Pedro Mendes, Virginia Tech Intellectual </comment>
 <comment> Properties, Inc., University of Heidelberg, and The University </comment>
 <comment> of Manchester. </comment>
 <comment> All rights reserved. </comment>
@@ -23,7 +23,7 @@
    <item row="0" column="0" colspan="2">
     <widget class="QLabel" name="mpLblRows">
      <property name="text">
-      <string>Rows (parameters)</string>
+      <string>Rows (effect)</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -72,6 +72,9 @@
       <property name="horizontalScrollMode">
        <enum>QAbstractItemView::ScrollPerPixel</enum>
       </property>
+      <property name="sortingEnabled">
+       <bool>true</bool>
+      </property>
       <attribute name="verticalHeaderVisible">
        <bool>true</bool>
       </attribute>
@@ -118,7 +121,7 @@
    <item row="1" column="0" colspan="2">
     <widget class="QLabel" name="mpLblColumns">
      <property name="text">
-      <string>Columns (observables)</string>
+      <string>Columns (cause)</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>

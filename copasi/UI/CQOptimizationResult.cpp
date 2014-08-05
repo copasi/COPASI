@@ -1,12 +1,12 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2009 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
-// All rights reserved.
+// Copyright (C) 2009 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+// and The University of Manchester. 
+// All rights reserved. 
 
 #include "CQOptimizationResult.h"
 
@@ -137,12 +137,14 @@ bool CQOptimizationResult::enterProtected()
         }
 
       //3rd column: start value
-      pItem = new QTableWidgetItem(QString::number(Items[i]->getLastStartValue()));
+      pItem = new QTableWidgetItem(QVariant::Double);
+      pItem->setData(Qt::DisplayRole, Items[i]->getLastStartValue());
       pItem->setForeground(QColor(120, 120, 140));
       mpParameters->setItem((int) i, 2, pItem);
 
       //4th column: solution value
-      pItem = new QTableWidgetItem(QString::number(Solution));
+      pItem = new QTableWidgetItem(QVariant::Double);
+      pItem->setData(Qt::DisplayRole, Solution);
       mpParameters->setItem((int) i, 3, pItem);
 
       //5th column: upper bound
@@ -154,7 +156,8 @@ bool CQOptimizationResult::enterProtected()
           pItem->setBackgroundColor(BackgroundColor);
         }
 
-      pItem = new QTableWidgetItem(QString::number(Gradients[i]));
+      pItem = new QTableWidgetItem(QVariant::Double);
+      pItem->setData(Qt::DisplayRole, Gradients[i]);
       mpParameters->setItem((int) i, 5,  pItem);
     }
 

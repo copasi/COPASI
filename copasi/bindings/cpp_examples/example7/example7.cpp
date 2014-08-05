@@ -164,15 +164,7 @@ int main()
 
   // now that we are done building the model, we have to make sure all
   // initial values are updated according to their dependencies
-  std::vector<Refresh*> refreshes = pModel->buildInitialRefreshSequence(changedObjects);
-  std::vector<Refresh*>::iterator it2 = refreshes.begin(), endit2 = refreshes.end();
-
-  while (it2 != endit2)
-    {
-      // call each refresh
-      (**it2)();
-      ++it2;
-    }
+  pModel->updateInitialValues(changedObjects);
 
   // save the model to a COPASI file
   // we save to a file named example1.cps, we don't want a progress report

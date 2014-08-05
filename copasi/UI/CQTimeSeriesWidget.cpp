@@ -1,13 +1,14 @@
-// Copyright (C) 2011 - 2013 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
+// Copyright (C) 2011 - 2014 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
 #include "CQTimeSeriesWidget.h"
 #include "CQTimeSeriesDM.h"
 #include "CopasiFileDialog.h"
 #include "CQMessageBox.h"
 #include "qtUtilities.h"
+#include <QSortFilterProxyModel>
 
 #include "trajectory/CTrajectoryTask.h"
 #include "crosssection/CCrossSectionTask.h"
@@ -20,7 +21,12 @@ CQTimeSeriesWidget::CQTimeSeriesWidget(QWidget* parent):
   setupUi(this);
 
   mpDataModel = new CQTimeSeriesDM(this);
-  mpTableView->setModel(mpDataModel);
+
+  // Allow for a sorted view of mpDataModel
+  QSortFilterProxyModel * sortProxyModel = new QSortFilterProxyModel(parent);
+  sortProxyModel->setSourceModel(mpDataModel);
+
+  mpTableView->setModel(sortProxyModel);
 }
 
 CQTimeSeriesWidget::~CQTimeSeriesWidget()

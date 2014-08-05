@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., University of Heidelberg, and The University 
 // of Manchester. 
 // All rights reserved. 
@@ -168,11 +168,13 @@ void CQMoietiesTaskResult::load()
       pItem = new QTableWidgetItem(FROM_UTF8((*it)->getObjectName()));
       mpMoieties->setItem(i, COL_SPECIES, pItem);;
 
-      pItem = new QTableWidgetItem(QString::number((*it)->getNumber()));
+      pItem = new QTableWidgetItem(QVariant::Double);
+      pItem->setData(Qt::DisplayRole, (*it)->getNumber());
       mpMoieties->setItem(i, COL_NUMBER, pItem);
 
       (*it)->refreshAmount();
-      pItem = new QTableWidgetItem(QString::number((*it)->getAmount()));
+      pItem = new QTableWidgetItem(QVariant::Double);
+      pItem->setData(Qt::DisplayRole, (*it)->getAmount());
       mpMoieties->setItem(i, COL_AMOUNT, pItem);
 
       pItem = new QTableWidgetItem("");

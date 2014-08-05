@@ -1,4 +1,4 @@
-# Copyright (C) 2012 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2012 - 2014 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and The University 
 # of Manchester. 
 # All rights reserved. 
@@ -43,3 +43,4 @@ else (APPLE)
   endif (MKL_FOUND)
 
 endif (APPLE)
+

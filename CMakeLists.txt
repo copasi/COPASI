@@ -211,6 +211,12 @@ if (ENABLE_FLEX_BISON)
   set(BISON_EXECUTABLE "${COPASI_SOURCE_DIR}/admin/yacc.sh")
 endif (ENABLE_FLEX_BISON)
 
+option(ENABLE_GPROF "Enable comiling and linking for gprof analysis." OFF)
+if (ENABLE_GPROF)
+  set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-pg")
+  set(CMAKE_EXE_LINKER_FLAGS "-pg")
+endif (ENABLE_GPROF)
+  
 find_package(OpenGL)
 
 if ( NOT CLAPACK_FOUND )
@@ -606,7 +612,7 @@ message(STATUS "-----------------------------------------------------------
    SBML Unit                = ${ENABLE_USE_SBMLUNIT}
    Model Merging            = ${ENABLE_WITH_MERGEMODEL}
    SEDML support            = ${ENABLE_COPASI_SEDML}
-
+   GPROF support            = ${ENABLE_GPROF}
    Additional Defines       = ${DirDefs}
 
   Language Bindings:
