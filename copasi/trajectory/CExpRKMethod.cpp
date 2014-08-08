@@ -22,6 +22,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <iomanip>
+#include <string.h>
 
 
 int compare(const void *r1, const void *r2)
@@ -230,9 +231,12 @@ void CExpRKMethod::integrate()
     {
         mInitTCp = mT;
         mTOld    = mT;
+        /*
         for (size_t i = 0; i < *mDim; ++i)
             mYOld[i] = mY[i];
-        //allocateSpace();
+        */
+        memcpy(mYOld, mY, (*mDim)*sizeof(C_FLOAT64));
+
         setInitialStepSize();
         mDerivFunc(mDim, &mTOld, mYOld, mK[0]);//record derivative to
  
@@ -254,9 +258,7 @@ void CExpRKMethod::integrate()
 	{ //no roots
             mODEState = 1;
             advanceStep();
-            mHasMultipleRoots = false;
-            
-            
+            mHasMultipleRoots = false;    
 	}
     }
     else if(mODEState == -2)//has error
@@ -366,8 +368,11 @@ void CExpRKMethod::integrate()
 
     mODEState = 4;
     mT = mTEnd;
+    /*
     for(size_t i=0; i<*mDim; i++)
         mY[i] = mYNew[i];
+    */
+    memcpy(mY, mYNew, (*mDim)*sizeof(C_FLOAT64));
 
     return;
 }
@@ -451,9 +456,12 @@ void CExpRKMethod::doOneStep()
     for(size_t s=1; s<mStage; s++)
     {
         t = mTOld + mh*mC[s];//tmp time
-
+        
+        /*
         for(size_t i=0; i<*mDim; i++)// tmp Y
             mZ1[i] = mYOld[i];
+        */
+        memcpy(mZ1, mYOld, (*mDim)*sizeof(C_FLOAT64));
 
         for(size_t i=0; i<s; i++) //tmp Y + Yp*h
 	{
@@ -471,9 +479,12 @@ void CExpRKMethod::doOneStep()
     mTNew = mTOld + mh;
   
     // (3) New Y, mYNew
+    /*
     for(size_t i=0; i<*mDim; i++)
         mYNew[i] = mYOld[i];
-  
+    */
+    memcpy(mYNew, mYOld, (*mDim)*sizeof(C_FLOAT64));
+
     for(size_t s=0; s<mStage; s++)
     {
         C_FLOAT64 b = mB[s] * mh;
@@ -533,16 +544,25 @@ C_FLOAT64 CExpRKMethod::estimateError()
 void CExpRKMethod::advanceStep()
 {
     mTOld = mTNew;
+    /*
     for(size_t i=0; i<*mDim; i++)
         mYOld[i] = mYNew[i];
+    */
+    memcpy(mYOld, mYNew, (*mDim)*sizeof(C_FLOAT64));
 
+    /*
     for(size_t i=0; i<*mDim; i++)
         mK[0][i] = mK[mStage][i];
+    */
+    memcpy(mK[0], mK[mStage], (*mDim)*sizeof(C_FLOAT64));
 
     if(mEventFunc)
     {
+        /*
         for(size_t i=0; i<mRootNum; i++)
             mRootValueOld[i] = mRootValue[i];
+        */
+        memcpy(mRootValueOld, mRootValue, (mRootNum)*sizeof(C_FLOAT64));
     }
 
     clearQueue();
@@ -1276,7 +1296,7 @@ C_FLOAT64 CExpRKMethod::infNorm(const size_t &len, const C_FLOAT64 *y)
 /**
  * Calculate the maxinum element of an array
  */
-C_FLOAT64 CExpRKMethod::dmax(const C_FLOAT64 &x1, const C_FLOAT64 &x2)
+inline C_FLOAT64 CExpRKMethod::dmax(const C_FLOAT64 &x1, const C_FLOAT64 &x2)
 {
     return (x1>x2)?x1:x2;
 }
@@ -1284,7 +1304,7 @@ C_FLOAT64 CExpRKMethod::dmax(const C_FLOAT64 &x1, const C_FLOAT64 &x2)
 /**
  * Calculate the minimum element of an array
  */
-C_FLOAT64 CExpRKMethod::dmin(const C_FLOAT64 &x1, const C_FLOAT64 &x2)
+inline C_FLOAT64 CExpRKMethod::dmin(const C_FLOAT64 &x1, const C_FLOAT64 &x2)
 {
     return (x1>x2)?x2:x1;
 }
@@ -1292,7 +1312,7 @@ C_FLOAT64 CExpRKMethod::dmin(const C_FLOAT64 &x1, const C_FLOAT64 &x2)
 /**
  * Calculate absolute value
  */
-C_FLOAT64 CExpRKMethod::dabs(const C_FLOAT64 &x)
+inline C_FLOAT64 CExpRKMethod::dabs(const C_FLOAT64 &x)
 {
     return (x>0)?x:(-1*x);
 }
@@ -1300,7 +1320,7 @@ C_FLOAT64 CExpRKMethod::dabs(const C_FLOAT64 &x)
 /**
  * Calculate eps of a given value
  */
-C_FLOAT64 CExpRKMethod::deps(const C_FLOAT64 &x)
+inline C_FLOAT64 CExpRKMethod::deps(const C_FLOAT64 &x)
 {
     return (x==0)? EPS0 : dabs(x)*EPS1;
 }
@@ -1308,7 +1328,7 @@ C_FLOAT64 CExpRKMethod::deps(const C_FLOAT64 &x)
 /**
  * Clear queue that records roots
  */
-void CExpRKMethod::clearQueue()
+inline void CExpRKMethod::clearQueue()
 {
     mQueueLen = 0; mQueueSite = 0;
     return;
@@ -1317,7 +1337,7 @@ void CExpRKMethod::clearQueue()
 /**
  * Check whether a queue is empty
  */
-bool CExpRKMethod::queueIsEmpty()
+inline bool CExpRKMethod::queueIsEmpty()
 {
     return (mQueueSite >= mQueueLen);
 }
@@ -1343,7 +1363,7 @@ void CExpRKMethod::queuePop()
 /**
  * Push an element into the queue
  */
-void CExpRKMethod::queuePush(const SRoot &root)
+inline void CExpRKMethod::queuePush(const SRoot &root)
 {
     mRootQueue[mQueueLen++] = root;
     return;
@@ -1386,12 +1406,17 @@ void CExpRKMethod::shrinkQueue()
             mDerivFunc(mDim, &mTNew, mZ3, mK[0]);
 
             (*mEventFunc)(mDim, &mTNew, mZ3, &mRootNum, mZ2);
+            /*
             for(int i=0; i<mRootNum; i++)
                 mRootValueOld[i] = mZ2[i];
+            */
+            memcpy(mRootValueOld, mZ2, mRootNum*sizeof(C_FLOAT64));
+
 
             for (size_t i = 0; i < *mDim; i++)
                 mYNew[i] = mZ3[i];
-            
+            memcpy(mYNew, mZ3, (*mDim)*sizeof(C_FLOAT64));
+
             break;
 	}
 

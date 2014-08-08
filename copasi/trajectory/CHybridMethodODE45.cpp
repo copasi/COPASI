@@ -790,8 +790,12 @@ void CHybridMethodODE45::evalF(const C_FLOAT64 * t, const C_FLOAT64 * y, C_FLOAT
     mpState->setTime(*t);
     C_FLOAT64 * tmpY = mpState->beginIndependent();//mpState is a local copy
 
+    /*
     for (i = 0; i < mData.dim-1; ++i)
         tmpY[i] = y[i];
+    */
+    memcpy(tmpY, y, (mDim.dim-1)*sizeof(C_FLOAT64));
+
 
     mpModel->setState(*mpState);
     mpModel->updateSimulatedValues(false); //update ASSIGNMENT values in model
