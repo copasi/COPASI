@@ -791,6 +791,7 @@ void CHybridMethodODE45::evalF(const C_FLOAT64 * t, const C_FLOAT64 * y, C_FLOAT
     // requires functions called from the model class.
     mpState->setTime(*t);
     C_FLOAT64 * tmpY = mpState->beginIndependent();//mpState is a local copy
+
     memcpy(tmpY, y, (mData.dim-1)*sizeof(C_FLOAT64));
 
     mpModel->setState(*mpState);
@@ -830,6 +831,7 @@ void CHybridMethodODE45::evalF(const C_FLOAT64 * t, const C_FLOAT64 * y, C_FLOAT
             ydot[metabIndex] -= metabIt->mMultiplicity * mAmu[i];
         }
     }
+
     return;
 }
 
