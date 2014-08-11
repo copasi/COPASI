@@ -831,7 +831,6 @@ void CHybridMethodODE45::evalF(const C_FLOAT64 * t, const C_FLOAT64 * y, C_FLOAT
             ydot[metabIndex] -= metabIt->mMultiplicity * mAmu[i];
         }
     }
-
     return;
 }
 

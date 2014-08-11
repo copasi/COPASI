@@ -555,7 +555,6 @@ add_subdirectory(steady_state_test_wrapper)
 endif (BUILD_STEADY_STATE_RUNNER)
 
 if(BUILD_HYB_ODE_TESTS)
-
 if (EXISTS ${CMAKE_SOURCE_DIR}/hyb-ode-test-suite)
 add_subdirectory(hyb-ode-test-suite)
 endif()
