@@ -797,7 +797,7 @@ void CHybridMethodODE45::evalF(const C_FLOAT64 * t, const C_FLOAT64 * y, C_FLOAT
     mpModel->setState(*mpState);
     mpModel->updateSimulatedValues(false); //update ASSIGNMENT values in model
   
-    //(2) calculate derivatives
+    //(2) Calculate derivatives
     size_t reactID;
     mpModel->calculateDerivatives(ydot);
     ydot[mData.dim-1] = 0;
@@ -809,6 +809,28 @@ void CHybridMethodODE45::evalF(const C_FLOAT64 * t, const C_FLOAT64 * y, C_FLOAT
         ydot[mData.dim-1] += mAmu[i];
     }
 
+
+    //(3) Modify fast reactions
+    // update derivatives
+    // This part is based on the assumption that number of slow reactions is much less than 
+    // fast reactions. If number of slow reactions is dominate, little difference is there
+    // compared to previous version.
+    std::vector <CHybridODE45Balance>::iterator metabIt;
+    std::vector <CHybridODE45Balance>::iterator metabEndIt;
+    size_t metabIndex;
+
+    for (i = 0; i < mNumSlowReactions; i++)
+    {
+        reactID    = mSlowIndex[i];
+        metabIt    = mLocalBalances[reactID].begin();
+        metabEndIt = mLocalBalances[reactID].end();
+
+        for (; metabIt != metabEndIt; metabIt++)
+        {
+            metabIndex = metabIt->mIndex + mFirstMetabIndex - 1; // mReactMetabId;
+            ydot[metabIndex] -= metabIt->mMultiplicity * mAmu[i];
+        }
+    }
     return;
 }
 
