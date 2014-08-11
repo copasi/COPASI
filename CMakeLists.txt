@@ -396,6 +396,13 @@ mark_as_advanced(BUILD_SBML_TESTSUITE)
 mark_as_advanced(BUILD_STOCHASTIC_TESTSUITE)
 mark_as_advanced(BUILD_FRANKS_TESTSUITE)
 
+option (BUILD_HYB_ODE_TESTS "Hybrid ODE Test." ON)
+mark_as_advanced(BUILD_HYB_ODE_TESTS)
+
+option (BUILD_HYB_TESTS "Hybrid Test." ON)
+mark_as_advanced(BUILD_HYB_TESTS)
+
+
 set(FILE_SEP)
 set(PATH_SEP)
 if(UNIX OR CYGWIN)
@@ -546,6 +553,15 @@ endif (BUILD_FRANKS_TESTSUITE)
 if(BUILD_STEADY_STATE_RUNNER)
 add_subdirectory(steady_state_test_wrapper)
 endif (BUILD_STEADY_STATE_RUNNER)
+
+if(BUILD_HYB_ODE_TESTS)
+add_subdirectory(hyb-ode-test-suite)
+endif (BUILD_HYB_ODE_TESTS)
+
+if(BUILD_HYB_TESTS)
+add_subdirectory(hyb-test-suite)
+endif (BUILD_HYB_TESTS)
+
 
 # also install additional files and examples
 file(GLOB_RECURSE WIZARD_HELP_FILES "${PROJECT_SOURCE_DIR}/copasi/wizard/help_html" copasi/wizard/help_html/*.html)
