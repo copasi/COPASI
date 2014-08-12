@@ -19,9 +19,12 @@
 
 
 
+
+
+
 %{
 
-#include <copasi/utilities/CUnit.h>
+//#include <copasi/utilities/CUnit.h>
 #include "model/CModel.h"
 
 %}
@@ -87,7 +90,7 @@ typedef std::vector<CCopasiObject*> ObjectStdVector;
 %rename (setQuantityUnitFromString) CModel::setQuantityUnit(const std::string & name);
 #endif // SWIGR
 
-%include <copasi/utilities/CUnit.h>
+//%include <copasi/utilities/CUnit.h>
 %include "model/CModel.h"
 
 
