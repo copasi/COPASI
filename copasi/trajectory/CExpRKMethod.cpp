@@ -456,11 +456,6 @@ void CExpRKMethod::doOneStep()
     for(size_t s=1; s<mStage; s++)
     {
         t = mTOld + mh*mC[s];//tmp time
-        
-        /*
-        for(size_t i=0; i<*mDim; i++)// tmp Y
-            mZ1[i] = mYOld[i];
-        */
         memcpy(mZ1, mYOld, (*mDim)*sizeof(C_FLOAT64));
 
         for(size_t i=0; i<s; i++) //tmp Y + Yp*h
@@ -473,16 +468,11 @@ void CExpRKMethod::doOneStep()
         mDerivFunc(mDim, &t, mZ1, mK[s]);
     }
 
-
     // (2) New Time, mTNew
     size_t s = mStage-1;
     mTNew = mTOld + mh;
   
     // (3) New Y, mYNew
-    /*
-    for(size_t i=0; i<*mDim; i++)
-        mYNew[i] = mYOld[i];
-    */
     memcpy(mYNew, mYOld, (*mDim)*sizeof(C_FLOAT64));
 
     for(size_t s=0; s<mStage; s++)
@@ -544,26 +534,11 @@ C_FLOAT64 CExpRKMethod::estimateError()
 void CExpRKMethod::advanceStep()
 {
     mTOld = mTNew;
-    /*
-    for(size_t i=0; i<*mDim; i++)
-        mYOld[i] = mYNew[i];
-    */
     memcpy(mYOld, mYNew, (*mDim)*sizeof(C_FLOAT64));
-
-    /*
-    for(size_t i=0; i<*mDim; i++)
-        mK[0][i] = mK[mStage][i];
-    */
     memcpy(mK[0], mK[mStage], (*mDim)*sizeof(C_FLOAT64));
 
     if(mEventFunc)
-    {
-        /*
-        for(size_t i=0; i<mRootNum; i++)
-            mRootValueOld[i] = mRootValue[i];
-        */
         memcpy(mRootValueOld, mRootValue, (mRootNum)*sizeof(C_FLOAT64));
-    }
 
     clearQueue();
     return;
@@ -846,25 +821,23 @@ void CExpRKMethod::interpolation(const C_FLOAT64 tInterp, C_FLOAT64 *yInterp)
     C_FLOAT64 tmp = (tInterp-mTOld) / (mTNew-mTOld);
     C_FLOAT64 S[MAX_STAGE];
 
-    S[0] = tmp * (mTNew-mTOld);
-    for(size_t i=1; i<mOrderY; i++)
+    //S[0] = tmp * (mTNew-mTOld);
+    S[0] = tInterp - mTOld;
+    for(size_t i = 1; i < mOrderY; i++)
         S[i] = S[i-1]*tmp;
 
-    for(size_t d=0; d< (*mDim); d++)
+    memcpy(yInterp, mYOld, (*mDim)*sizeof(C_FLOAT64));
+
+    for (size_t s = 0; s < mStage+1; s++)
     {
-        yInterp[d] = mYOld[d];
-      
-        for(size_t s=0; s<mOrderY; s++)
-	{
-            tmp = 0;
-	  
-            for(size_t j=0; j<mStage+1; j++)
-                tmp += mK[j][d] * mI[j][s];
-	    
-            yInterp[d] += tmp * S[s];
-	}
+        tmp = 0;
+        for (size_t j = 0; j < mOrderY; j++)
+            tmp += S[j] * mI[s][j];
+
+        for (size_t d = 0; d < (*mDim); d++)            
+            yInterp[d] += tmp * mK[s][d];
     }
-  
+
     return;
 }
 
