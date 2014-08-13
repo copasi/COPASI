@@ -124,7 +124,7 @@ public:
   {
     size_t endpos = str.find_last_not_of(" \t");
 
-    if (string::npos != endpos)
+    if (std::string::npos != endpos)
       {
         str = str.substr(0, endpos + 1);
       }
