@@ -1,12 +1,12 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2009 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-// and The University of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
 
 #include <QtGui/QComboBox>
 #include <QtGui/QSortFilterProxyModel>
@@ -15,11 +15,12 @@
 
 #include "copasi.h"
 
-CQComboDelegate::CQComboDelegate(const QStringList *pComboItems, QObject *parent):
+CQComboDelegate::CQComboDelegate(const QStringList *pComboItems, QObject *parent, bool commitOnSelect):
   QItemDelegate(parent),
   mpComboItems(pComboItems),
   mEditorToIndex(),
-  mRowToItems()
+  mRowToItems(),
+  mCommitOnSelect(commitOnSelect)
 {}
 
 CQComboDelegate::~CQComboDelegate()
@@ -111,7 +112,9 @@ void CQComboDelegate::slotCurrentIndexChanged(int index)
       if (found != mEditorToIndex.end())
         {
           emit currentIndexChanged(found.value().row(), index);
-          commitData(pEditor);
+
+          if (mCommitOnSelect)
+            commitData(pEditor);
         }
     }
 }
@@ -119,6 +122,18 @@ void CQComboDelegate::slotCurrentIndexChanged(int index)
 void CQComboDelegate::slotEditorDeleted(QObject * pObject)
 {
   mEditorToIndex.remove(static_cast< QWidget * >(pObject));
+}
+
+bool
+CQComboDelegate::isCommitOnSelect() const
+{
+  return mCommitOnSelect;
+}
+
+void
+CQComboDelegate::setCommitOnSelect(bool commitOnSelect)
+{
+  mCommitOnSelect = commitOnSelect;
 }
 
 CQIndexComboDelegate::CQIndexComboDelegate(const QStringList *pComboItems, QObject *parent)

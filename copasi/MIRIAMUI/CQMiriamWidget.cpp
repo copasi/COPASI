@@ -1,12 +1,12 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2009 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-// and The University of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
 
 #include "CQMiriamWidget.h"
 
@@ -53,13 +53,13 @@ CQMiriamWidget::CQMiriamWidget(QWidget* parent, const char* name)
   mpModifiedPDM = new CQSortFilterProxyModel();
 
   //Create Required Delegates
-  mpResourceDelegate1 = new CQComboDelegate(&mResources, this);
+  mpResourceDelegate1 = new CQComboDelegate(&mResources, this, false);
   mpTblReferences->setItemDelegateForColumn(COL_RESOURCE_REFERENCE, mpResourceDelegate1);
 
-  mpResourceDelegate2 = new CQComboDelegate(&mReferences, this);
+  mpResourceDelegate2 = new CQComboDelegate(&mReferences, this, false);
   mpTblDescription->setItemDelegateForColumn(COL_RESOURCE_BD, mpResourceDelegate2);
 
-  mpPredicateDelegate = new CQComboDelegate(&mPredicates, this);
+  mpPredicateDelegate = new CQComboDelegate(&mPredicates, this, false);
   mpTblDescription->setItemDelegateForColumn(COL_RELATIONSHIP, mpPredicateDelegate);
 
   mWidgets.push_back(mpTblAuthors); mDMs.push_back(mpCreatorDM); mProxyDMs.push_back(mpCreatorPDM);
@@ -326,7 +326,7 @@ bool CQMiriamWidget::enterProtected()
 
   CCopasiMessage::clearDeque();
 
-  if(mKeyToCopy != "")
+  if (mKeyToCopy != "")
     {
       CAnnotation * pAnnotation = CAnnotation::castObject(dynamic_cast< CCopasiObject * >(CCopasiRootContainer::getKeyFactory()->get(mKeyToCopy)));
 
