@@ -13,7 +13,7 @@
  *   Author: Shuo Wang
  *   Email: shuowang.learner@gmail.com
  *
- *   Last change: 27, Jun 2014
+ *   Last change: 11, Aug 2014
  *
  */
 
@@ -228,8 +228,6 @@ void CHybridMethodODE45::initMethod(C_FLOAT64 start_time)
     //(1)----set attributes related with REACTIONS
     mpReactions   = &mpModel->getReactions();
     mNumReactions = mpReactions->size();
- 
-    mAmu.resize(mNumReactions);
 
     setupReactionFlags();
 
@@ -289,10 +287,6 @@ void CHybridMethodODE45::initMethod(C_FLOAT64 start_time)
     mY = new C_FLOAT64[mData.dim];
     mODE45.mY = mY;
     mODE45.mDerivFunc = &CHybridMethodODE45::EvalF;
-
-    //first calculate propensities
-    for (size_t i = 0; i < mNumReactions; i++)
-        calculateAmu(i);
 
     //(7)----set attributes for Event Roots
     mRootNum        = mpModel->getNumRoots();
@@ -376,20 +370,28 @@ void CHybridMethodODE45::setupReactionFlags()
 {
     mHasStoiReaction   = false;
     mHasDetermReaction = false;
-    mReactionFlags.resize(mNumReactions);
+
+    mNumSlowReactions = 0;
 
     for (size_t rct = 0; rct < mNumReactions; rct++)
     { 
         if ((*mpReactions)[rct]->isFast())
-        {
-            mReactionFlags[rct] = FAST;
             mHasDetermReaction = true;
-        }
         else
         {
-            mReactionFlags[rct] = SLOW;
+            mNumSlowReactions++;
             mHasStoiReaction = true;
         }
+    }
+
+    size_t count = 0;
+    mAmu.resize(mNumSlowReactions);
+    mSlowIndex.resize(mNumSlowReactions);
+
+    for (size_t rct = 0; rct < mNumReactions; rct++)
+    { 
+        if (!((*mpReactions)[rct]->isFast()))
+            mSlowIndex[count++] = rct;
     }
 
     return;
@@ -631,8 +633,8 @@ void CHybridMethodODE45::stateChanged()
 void CHybridMethodODE45::fireSlowReaction4Hybrid()
 {
     size_t id;
-    for (id=0; id < mNumReactions; id++)
-        calculateAmu(id);
+    for (id = 0; id < mNumSlowReactions; id++)
+        mAmu[id] = calculateAmu(mSlowIndex[id]);
     id = getReactionIndex4Hybrid();
     fireReaction(id); //Directly update current state in global view
     *mpState = mpModel->getState();
@@ -790,44 +792,43 @@ void CHybridMethodODE45::evalF(const C_FLOAT64 * t, const C_FLOAT64 * y, C_FLOAT
     mpState->setTime(*t);
     C_FLOAT64 * tmpY = mpState->beginIndependent();//mpState is a local copy
 
-    for (i = 0; i < mData.dim-1; ++i)
-        tmpY[i] = y[i];
+    memcpy(tmpY, y, (mData.dim-1)*sizeof(C_FLOAT64));
 
     mpModel->setState(*mpState);
     mpModel->updateSimulatedValues(false); //update ASSIGNMENT values in model
   
-    //(2)Calculate propensities.
+    //(2) Calculate derivatives
     size_t reactID;
-    for (reactID = 0; reactID<mNumReactions; reactID++)
-        calculateAmu(reactID);
-
-    //2====calculate derivative
-    //(1) deal with parameters and compartment ode
     mpModel->calculateDerivatives(ydot);
+    ydot[mData.dim-1] = 0;
 
-    //(2) deal with independent metabs
-    for (i = mReactMetabId; i < mData.dim; i++)
-        ydot[i] = 0.0;
+    for (i = 0; i < mNumSlowReactions; i++) 
+    {
+        reactID = mSlowIndex[i];
+        mAmu[i] = calculateAmu(reactID);
+        ydot[mData.dim-1] += mAmu[i];
+    }
 
-    //update derivatives
+
+    //(3) Modify fast reactions
+    // update derivatives
+    // This part is based on the assumption that number of slow reactions is much less than 
+    // fast reactions. If number of slow reactions is dominate, little difference is there
+    // compared to previous version.
     std::vector <CHybridODE45Balance>::iterator metabIt;
     std::vector <CHybridODE45Balance>::iterator metabEndIt;
     size_t metabIndex;
 
-    for (i = 0; i < mNumReactions; i++)
+    for (i = 0; i < mNumSlowReactions; i++)
     {
-        if (mReactionFlags[i] == SLOW) //slow reaction
-            ydot[mData.dim-1] += mAmu[i];
-        else //fast reaction
-        {
-            metabIt    = mLocalBalances[i].begin();
-            metabEndIt = mLocalBalances[i].end();
+        reactID    = mSlowIndex[i];
+        metabIt    = mLocalBalances[reactID].begin();
+        metabEndIt = mLocalBalances[reactID].end();
 
-            for (; metabIt != metabEndIt; metabIt++)
-            {
-                metabIndex = metabIt->mIndex + mFirstMetabIndex - 1; // mReactMetabId;
-                ydot[metabIndex] += metabIt->mMultiplicity * mAmu[i];
-            }
+        for (; metabIt != metabEndIt; metabIt++)
+        {
+            metabIndex = metabIt->mIndex + mFirstMetabIndex - 1; // mReactMetabId;
+            ydot[metabIndex] -= metabIt->mMultiplicity * mAmu[i];
         }
     }
     return;
@@ -865,10 +866,9 @@ void CHybridMethodODE45::evalR(const C_FLOAT64 *t, const C_FLOAT64 *y,
  *
  * @param rIndex A size_t specifying the reaction to be updated
  */
-void CHybridMethodODE45::calculateAmu(size_t rIndex)
+C_FLOAT64 CHybridMethodODE45::calculateAmu(size_t rIndex)
 {
-    mAmu[rIndex] = (*mpReactions)[rIndex]->calculateParticleFlux();
-    return;
+    return (*mpReactions)[rIndex]->calculateParticleFlux();;
 }
 
 
@@ -911,30 +911,23 @@ size_t CHybridMethodODE45::getReactionIndex4Hybrid()
     //calculate sum of amu
     C_FLOAT64 mAmuSum = 0.0;
 
-    for (int i = 0; i < mNumReactions; i++)
-    {
-        if (mReactionFlags[i] == SLOW)
+    for (int i = 0; i < mNumSlowReactions; i++)
             mAmuSum += mAmu[i];
-    }
 
     //get the threshold
     C_FLOAT64 rand2 = mpRandomGenerator->getRandomOO();
     C_FLOAT64 threshold = mAmuSum * rand2;
 
     //get the reaction index
-    size_t rIndex;
     C_FLOAT64 tmp = 0.0;
 
     //is there some algorithm that can get a log() complex?
-    for (rIndex = 0; rIndex < mNumReactions; rIndex++)
+    for (size_t i = 0; i < mNumSlowReactions; i++)
     {
-        if (mReactionFlags[rIndex] == SLOW)
-        {
-            tmp += mAmu[rIndex];
+        tmp += mAmu[i];
 
-            if (tmp >= threshold)
-                return rIndex;
-        }
+        if (tmp >= threshold)
+            return mSlowIndex[i];
     }
 }
 
@@ -1026,87 +1019,6 @@ C_INT32 CHybridMethodODE45::checkModel(CModel * model)
     return 1; // Model is appropriate for hybrid simulation
 }
 
-/**
- *   Prints out various data on standard output for debugging purposes.
- */
-void CHybridMethodODE45::outputDebug(std::ostream & os, size_t level)
-{
-    size_t i, j;
-    std::set< size_t >::iterator iter, iterEnd;
-
-    os << "outputDebug(" << level << ") *********************************************** BEGIN" << std::endl;
-
-    switch (level)
-    {
-    case 0:                              // Everything !!!
-        os << " Name: " << CCopasiParameter::getObjectName() << std::endl;
-        os << "current time: " << mpCurrentState->getTime() << std::endl;
-        os << "mNumReactMetabs: " << mNumReactMetabs << std::endl;
-        os << "mMaxSteps: " << mMaxSteps << std::endl;
-        os << "mMaxBalance: " << mMaxBalance << std::endl;
-        os << "mpReactions.size(): " << mpReactions->size() << std::endl;
-
-        for (i = 0; i < mpReactions->size(); i++)
-            os << *(*mpReactions)[i] << std::endl;
-
-        os << "mStoi: " << std::endl;
-
-        for (i = 0; i < mStoi.numRows(); i++)
-        {
-            for (j = 0; j < mStoi.numCols(); j++)
-                os << mStoi[i][j] << " ";
-
-            os << std::endl;
-        }
-
-        os << "mReactionFlags: " << std::endl;
-
-        for (i = 0; i < mLocalBalances.size(); i++)
-            os << mReactionFlags[i];
-
-        os << "mLocalBalances: " << std::endl;
-        os << "mAmu: " << std::endl;
-
-        for (i = 0; i < mpReactions->size(); i++)
-            os << mAmu[i] << " ";
-
-        os << std::endl;
-
-        os << "mpRandomGenerator: " << mpRandomGenerator << std::endl;
-        os << "Particle numbers: " << std::endl;
-
-        os << std::endl;
-        break;
-
-    case 1:                               // Variable values only
-        os << "current time: " << mpCurrentState->getTime() << std::endl;
-        os << "mReactionFlags: " << std::endl;
-
-        for (i = 0; i < mLocalBalances.size(); i++)
-            os << mReactionFlags[i];
-
-        os << "mAmu: " << std::endl;
-
-        for (i = 0; i < mpReactions->size(); i++)
-            os << mAmu[i] << " ";
-
-        os << std::endl;
-
-        os << "Particle numbers: " << std::endl;
-
-        os << std::endl;
-        break;
-
-    case 2:
-        break;
-
-    default:
-        ;
-    }
-
-    os << "outputDebug(" << level << ") ************************************************* END" << std::endl;
-    return;
-}
 
 /**
  *   Prints out data on standard output. Deprecated.
@@ -1130,10 +1042,10 @@ void CHybridMethodODE45::outputData()
     std::cout << "============Reaction============" << std::endl;
 
     std::cout << "~~~~mNumReactions:~~~~ " << mNumReactions << std::endl;
-    for (size_t i=0; i<mNumReactions; ++i)
-    {
-        std::cout << "Reaction #: " << i << " Flag: " << mReactionFlags[i] << std::endl;
-    }
+    //for (size_t i=0; i<mNumReactions; ++i)
+    //{
+    //    std::cout << "Reaction #: " << i << " Flag: " << mReactionFlags[i] << std::endl;
+    //}
     std::cout << "~~~~mLocalBalances:~~~~ " << std::endl;
     for (size_t i=0; i<mLocalBalances.size(); ++i)
     {

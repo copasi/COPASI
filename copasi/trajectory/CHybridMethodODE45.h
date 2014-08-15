@@ -13,7 +13,7 @@
  *   Author: Shuo Wang
  *   Email: shuowang.learner@gmail.com
  *
- *   Last change: 27, Jun 2014
+ *   Last change: 11, Aug 2014
  *
  *   Partition the system into a deterministic part and a stochastic part.
  *   That is, every reaction is either classified deterministic or
@@ -285,7 +285,7 @@ protected:
      *
      * @param rIndex A size_t specifying the reaction to be updated
      */
-    void calculateAmu(size_t rIndex);
+    C_FLOAT64 calculateAmu(size_t rIndex);
 
 
     /**
@@ -354,11 +354,6 @@ protected:
     void outputState(const CState * pS);
 
     /**
-     * Prints out various data on standard output for debugging purposes.
-     */
-    void outputDebug(std::ostream & os, size_t level);
-
-    /**
      * tests if the model contains a global value with an assignment rule that is
      * used in calculations
      */
@@ -419,10 +414,14 @@ private:
     size_t mNumReactions;
 
     /**
-     * Fast reactions are set FAST and
-     * slow ones are SLOW
+     * Number of Slow Reactions
      */
-    CVector <bool> mReactionFlags;
+    size_t mNumSlowReactions;
+
+    /**
+     * Index of Slow Reactions
+     */
+    CVector <size_t> mSlowIndex;
 
     /**
      *   A pointer to the reactions of the model.

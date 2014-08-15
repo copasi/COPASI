@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -211,5 +211,6 @@ extern std::ofstream DebugFile;
 // suppress unused parameter warnings
 #define C_UNUSED(p)
 #define COPASI_DEPRECATED
+#define NOMINMAX
 #define C_INVALID_INDEX (std::numeric_limits< size_t >::max())
 #endif // COPASI_copasi
