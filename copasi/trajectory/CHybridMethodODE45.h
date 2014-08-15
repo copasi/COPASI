@@ -281,11 +281,9 @@ protected:
     C_FLOAT64 doSingleStep(C_FLOAT64 endTime);
 
     /**
-     * Calculates an amu value for a given reaction.
-     *
-     * @param rIndex A size_t specifying the reaction to be updated
+     * Calculates amu values of slow reactions.
      */
-    C_FLOAT64 calculateAmu(size_t rIndex);
+    void calculateAmu();
 
 
     /**
@@ -424,9 +422,14 @@ private:
     CVector <size_t> mSlowIndex;
 
     /**
-     *   A pointer to the reactions of the model.
+     * A pointer to the reactions of the model.
      */
     const CCopasiVectorNS <CReaction> * mpReactions;
+
+    /**
+     * A vector recording CReaction points to slow reactions
+     */
+    CVector < CReaction* > mSlowReactionPointer;
 
     /**
      * Internal representation of the balances of each reaction. The index of

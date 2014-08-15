@@ -387,11 +387,14 @@ void CHybridMethodODE45::setupReactionFlags()
     size_t count = 0;
     mAmu.resize(mNumSlowReactions);
     mSlowIndex.resize(mNumSlowReactions);
-
+    mSlowReactionPointer.resize(mNumSlowReactions);
     for (size_t rct = 0; rct < mNumReactions; rct++)
     { 
         if (!((*mpReactions)[rct]->isFast()))
+        {
+            mSlowReactionPointer[count] = (*mpReactions)[rct];
             mSlowIndex[count++] = rct;
+        }
     }
 
     return;
@@ -633,8 +636,8 @@ void CHybridMethodODE45::stateChanged()
 void CHybridMethodODE45::fireSlowReaction4Hybrid()
 {
     size_t id;
-    for (id = 0; id < mNumSlowReactions; id++)
-        mAmu[id] = calculateAmu(mSlowIndex[id]);
+    calculateAmu();
+    
     id = getReactionIndex4Hybrid();
     fireReaction(id); //Directly update current state in global view
     *mpState = mpModel->getState();
@@ -801,14 +804,12 @@ void CHybridMethodODE45::evalF(const C_FLOAT64 * t, const C_FLOAT64 * y, C_FLOAT
     size_t reactID;
     mpModel->calculateDerivatives(ydot);
     ydot[mData.dim-1] = 0;
+    size_t    *pId  = mSlowIndex.array();
+    C_FLOAT64 *pAmu = mAmu.array();
 
-    for (i = 0; i < mNumSlowReactions; i++) 
-    {
-        reactID = mSlowIndex[i];
-        mAmu[i] = calculateAmu(reactID);
-        ydot[mData.dim-1] += mAmu[i];
-    }
-
+    calculateAmu();
+    for (i = 0; i < mNumSlowReactions; i++, pAmu++) 
+        ydot[mData.dim-1] += *pAmu;
 
     //(3) Modify fast reactions
     // update derivatives
@@ -818,17 +819,19 @@ void CHybridMethodODE45::evalF(const C_FLOAT64 * t, const C_FLOAT64 * y, C_FLOAT
     std::vector <CHybridODE45Balance>::iterator metabIt;
     std::vector <CHybridODE45Balance>::iterator metabEndIt;
     size_t metabIndex;
-
-    for (i = 0; i < mNumSlowReactions; i++)
+    pId  = mSlowIndex.array();
+    pAmu = mAmu.array(); 
+    
+    for (i = 0; i < mNumSlowReactions; i++, pId++, pAmu++)
     {
-        reactID    = mSlowIndex[i];
+        reactID    = *pId;
         metabIt    = mLocalBalances[reactID].begin();
         metabEndIt = mLocalBalances[reactID].end();
 
         for (; metabIt != metabEndIt; metabIt++)
         {
             metabIndex = metabIt->mIndex + mFirstMetabIndex - 1; // mReactMetabId;
-            ydot[metabIndex] -= metabIt->mMultiplicity * mAmu[i];
+            ydot[metabIndex] -= metabIt->mMultiplicity * (*pAmu);
         }
     }
     return;
@@ -852,7 +855,6 @@ void CHybridMethodODE45::evalR(const C_FLOAT64 *t, const C_FLOAT64 *y,
     CVectorCore< C_FLOAT64 > rootValues(*nr, r);
     mpModel->evaluateRoots(rootValues, true);
 
-
     if(mRootMasking != NONE)
         maskRoots(rootValues);
 
@@ -862,13 +864,16 @@ void CHybridMethodODE45::evalR(const C_FLOAT64 *t, const C_FLOAT64 *y,
 
 //========Function for Stoichastic========
 /**
- * Calculates an amu value for a given reaction.
+ * Calculates amu values of all slow reactions.
  *
- * @param rIndex A size_t specifying the reaction to be updated
  */
-C_FLOAT64 CHybridMethodODE45::calculateAmu(size_t rIndex)
+void CHybridMethodODE45::calculateAmu()
 {
-    return (*mpReactions)[rIndex]->calculateParticleFlux();;
+    C_FLOAT64 *pAmu = mAmu.array();
+    CReaction **pRct = mSlowReactionPointer.array();
+
+    for (size_t id = 0; id < mNumSlowReactions; id++, pRct++, pAmu++)
+        *pAmu = (*pRct)->calculateParticleFlux();
 }
 
 
@@ -910,9 +915,10 @@ size_t CHybridMethodODE45::getReactionIndex4Hybrid()
 {
     //calculate sum of amu
     C_FLOAT64 mAmuSum = 0.0;
-
-    for (int i = 0; i < mNumSlowReactions; i++)
-            mAmuSum += mAmu[i];
+    C_FLOAT64 *pAmu   = mAmu.array();
+    size_t    *pId;
+    for (int i = 0; i < mNumSlowReactions; i++, pAmu++)
+            mAmuSum += *pAmu;
 
     //get the threshold
     C_FLOAT64 rand2 = mpRandomGenerator->getRandomOO();
@@ -922,12 +928,14 @@ size_t CHybridMethodODE45::getReactionIndex4Hybrid()
     C_FLOAT64 tmp = 0.0;
 
     //is there some algorithm that can get a log() complex?
-    for (size_t i = 0; i < mNumSlowReactions; i++)
+    pAmu = mAmu.array();
+    pId  = mSlowIndex.array();
+    for (size_t i = 0; i < mNumSlowReactions; i++, pAmu++, pId++)
     {
-        tmp += mAmu[i];
+        tmp += *pAmu;
 
         if (tmp >= threshold)
-            return mSlowIndex[i];
+            return *pId;
     }
 }
 
