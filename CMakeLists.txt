@@ -206,6 +206,12 @@ if (ENABLE_FLEX_BISON)
   set(BISON_EXECUTABLE "${COPASI_SOURCE_DIR}/admin/yacc.sh")
 endif (ENABLE_FLEX_BISON)
 
+option(ENABLE_GPROF "Enable comiling and linking for gprof analysis." OFF)
+if (ENABLE_GPROF)
+  set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-pg")
+  set(CMAKE_EXE_LINKER_FLAGS "-pg")
+endif (ENABLE_GPROF)
+  
 find_package(OpenGL)
 
 if ( NOT CLAPACK_FOUND )
@@ -354,6 +360,13 @@ if(ENABLE_COPASI_SEDML)
   add_definitions(-DCOPASI_SEDML)
 endif(ENABLE_COPASI_SEDML)
 
+#Option for the COPASI support for UNDO Framework currently being developed by Joseph 
+option (ENABLE_COPASI_UNDO "Enables UNDO support." OFF)
+mark_as_advanced(ENABLE_COPASI_UNDO)
+if(ENABLE_COPASI_UNDO)
+  add_definitions(-DCOPASI_UNDO)
+endif(ENABLE_COPASI_UNDO)
+
 # if the MML widget is available, we need to enable "HAVE_MML"
 
 option(ENABLE_MML "Enable the MML widget" ON)
@@ -377,6 +390,13 @@ mark_as_advanced(BUILD_STEADY_STATE_RUNNER)
 mark_as_advanced(BUILD_SBML_TESTSUITE)
 mark_as_advanced(BUILD_STOCHASTIC_TESTSUITE)
 mark_as_advanced(BUILD_FRANKS_TESTSUITE)
+
+option (BUILD_HYB_ODE_TESTS "Hybrid ODE Test." ON)
+mark_as_advanced(BUILD_HYB_ODE_TESTS)
+
+option (BUILD_HYB_TESTS "Hybrid Test." ON)
+mark_as_advanced(BUILD_HYB_TESTS)
+
 
 set(FILE_SEP)
 set(PATH_SEP)
@@ -529,6 +549,19 @@ if(BUILD_STEADY_STATE_RUNNER)
 add_subdirectory(steady_state_test_wrapper)
 endif (BUILD_STEADY_STATE_RUNNER)
 
+if(BUILD_HYB_ODE_TESTS)
+if (EXISTS ${CMAKE_SOURCE_DIR}/hyb-ode-test-suite)
+add_subdirectory(hyb-ode-test-suite)
+endif()
+endif (BUILD_HYB_ODE_TESTS)
+
+if(BUILD_HYB_TESTS)
+if (EXISTS ${CMAKE_SOURCE_DIR}/hyb-test-suite)
+add_subdirectory(hyb-test-suite)
+endif()
+endif (BUILD_HYB_TESTS)
+
+
 # also install additional files and examples
 file(GLOB_RECURSE WIZARD_HELP_FILES "${PROJECT_SOURCE_DIR}/copasi/wizard/help_html" copasi/wizard/help_html/*.html)
 file(GLOB_RECURSE WIZARD_IMAGE_FILES "${PROJECT_SOURCE_DIR}/copasi/wizard/help_html/figures" copasi/wizard/help_html/figures/*.png)
@@ -593,7 +626,7 @@ message(STATUS "-----------------------------------------------------------
    SBML Unit                = ${ENABLE_USE_SBMLUNIT}
    Model Merging            = ${ENABLE_WITH_MERGEMODEL}
    SEDML support            = ${ENABLE_COPASI_SEDML}
-
+   GPROF support            = ${ENABLE_GPROF}
    Additional Defines       = ${DirDefs}
 
   Language Bindings:

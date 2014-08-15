@@ -138,6 +138,8 @@ protected:
   };
 
   //================Function for Class================
+
+  //================Function for Class================
 protected:
   /**
    * Default Constructor

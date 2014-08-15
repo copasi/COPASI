@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -116,6 +116,12 @@ public:
    */
   void load(CReadConfig & configBuffer,
             CReadConfig::Mode mode = CReadConfig::NEXT);
+
+  /**
+   * Fix files written with Version 4.12.81 and earlier, which wrote the exp(mean) and exp(std. deviation) for
+   * normal random distributions in the scan task.
+   */
+  void fixBuild81();
 
 private:
   /**

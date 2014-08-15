@@ -2346,6 +2346,8 @@ const CModel::ModelType & CModel::getModelType() const
 void CModel::setAvogadro(const C_FLOAT64 & avogadro)
 {
   mAvogadro = avogadro;
+
+  setQuantityUnit(mpQuantityUnit->getSymbol());
 }
 
 const C_FLOAT64 & CModel::getAvogadro() const
@@ -3908,6 +3910,24 @@ const std::vector< Refresh * > & CModel::getListOfConstantRefreshes() const
 
 const std::vector< Refresh * > & CModel::getListOfNonSimulatedRefreshes() const
 {return mNonSimulatedRefreshes;}
+
+void
+CModel::updateInitialValues(std::set< const CCopasiObject * > & changedObjects)
+{
+  std::vector< Refresh * > refreshes = buildInitialRefreshSequence(changedObjects);
+  std::vector< Refresh * >::iterator it = refreshes.begin(), endIt = refreshes.end();
+
+  while (it != endIt)
+    (**it++)();
+}
+
+void
+CModel::updateInitialValues(const CCopasiObject* changedObject)
+{
+  std::set<const CCopasiObject*> changedObjects;
+  changedObjects.insert(changedObject);
+  updateInitialValues(changedObjects);
+}
 
 std::vector< Refresh * >
 CModel::buildInitialRefreshSequence(std::set< const CCopasiObject * > & changedObjects)

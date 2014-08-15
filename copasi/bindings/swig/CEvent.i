@@ -1,7 +1,10 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., University of Heidelberg, and The University 
 // of Manchester. 
 // All rights reserved. 
+
+
+
 
 
 
@@ -123,7 +126,7 @@ typedef CExpression DisownedExpression;
   // more convenience methods
   unsigned C_INT32 getNumAssignments() const
   {
-       return $self->getAssignments().size();
+       return (unsigned C_INT32)$self->getAssignments().size();
   }
 
   CEventAssignment* getAssignment(unsigned C_INT32 index)
@@ -188,7 +191,7 @@ typedef CExpression DisownedExpression;
   std::string getUnsupportedAnnotation(int index)
   {		
   	std::map< std::string, std::string > &anot = $self->getUnsupportedAnnotations();
-  	if (index >= anot.size()) 
+  	if (index >= (int)anot.size()) 
   		return "";
   	std::map< std::string, std::string >::iterator iter = anot.begin();
   	for (int i = 0; i < index; ++i)
@@ -199,7 +202,7 @@ typedef CExpression DisownedExpression;
   std::string getUnsupportedAnnotationName(int index)
   {		
   	std::map< std::string, std::string > &anot = $self->getUnsupportedAnnotations();
-  	if (index >= anot.size()) 
+  	if (index >= (int)anot.size()) 
   		return "";
   	std::map< std::string, std::string >::iterator iter = anot.begin();
   	for (int i = 0; i < index; ++i)

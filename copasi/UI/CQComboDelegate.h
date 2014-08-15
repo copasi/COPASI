@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -19,7 +19,7 @@ class CQComboDelegate : public QItemDelegate
 
 public:
   CQComboDelegate(const QStringList* pComboItems,
-                  QObject *parent = NULL);
+                  QObject *parent = NULL, bool commitOnSelect = true);
 
   virtual ~CQComboDelegate();
 
@@ -42,6 +42,9 @@ public:
 
   const QStringList *getItems(int row) const;
 
+  bool isCommitOnSelect() const;
+  void setCommitOnSelect(bool commitOnSelect);
+
 protected slots:
   void slotCurrentIndexChanged(int index);
   void slotEditorDeleted(QObject * pObject);
@@ -54,6 +57,8 @@ private:
 
   mutable QMap< QWidget * , QModelIndex > mEditorToIndex;
   mutable QMap< int, const QStringList * > mRowToItems;
+
+  bool mCommitOnSelect;
 };
 
 class CQIndexComboDelegate : public CQComboDelegate

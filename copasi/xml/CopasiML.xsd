@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Copyright (C) 2011 - 2012 by Pedro Mendes, Virginia Tech Intellectual -->
+<!-- Copyright (C) 2011 - 2014 by Pedro Mendes, Virginia Tech Intellectual -->
 <!-- Properties, Inc., University of Heidelberg, and The University -->
 <!-- of Manchester. -->
 <!-- All rights reserved. -->
 
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://www.copasi.org/static/schema" xmlns:schema="http://www.copasi.org/static/schema">
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://www.copasi.org/static/schema" xmlns:x="http://www.w3.org/2001/XMLSchema-instance" xmlns:schema="http://www.copasi.org/static/schema">
+  <xs:import namespace="http://www.w3.org/2001/XMLSchema-instance" schemaLocation="x.xsd"/>
   <xs:element name="COPASI">
     <xs:annotation>
       <xs:documentation> This is the only top element of a CopasiML file. It contains the models as
@@ -13,6 +14,7 @@
     <xs:complexType>
       <xs:sequence>
         <xs:element minOccurs="0" ref="schema:ListOfFunctions"/>
+        <xs:element minOccurs="0" ref="schema:ListOfUnits"/>
         <xs:element minOccurs="0" ref="schema:Model"/>
         <xs:element minOccurs="0" ref="schema:ListOfTasks"/>
         <xs:element minOccurs="0" ref="schema:ListOfReports"/>
@@ -30,10 +32,12 @@
       <xs:attribute name="versionMajor" use="required" type="xs:integer"/>
       <xs:attribute name="versionMinor" use="required" type="xs:integer"/>
       <xs:attribute name="versionDevel" use="required" type="xs:integer"/>
+      <xs:attribute name="copasiSourcesModified" use="required" type="xs:boolean"/>
       <xs:anyAttribute namespace="##other" processContents="skip"/>
     </xs:complexType>
   </xs:element>
   <xs:element name="ListOfFunctions" type="schema:listOfFunctions.datatype"/>
+  <xs:element name="ListOfUnits" type="schema:listOfUnits.datatype"/>
   <xs:element name="Model" type="schema:model.datatype"/>
   <xs:element name="ListOfTasks" type="schema:listOfTasks.datatype"/>
   <xs:element name="ListOfReports" type="schema:listOfReportSpecifications.datatype"/>
@@ -163,7 +167,7 @@
     <xs:complexType>
       <xs:complexContent>
         <xs:extension base="schema:UnsupportedAnnotation.datatype">
-          <xs:attribute name="Name" use="required"/>
+          <xs:attribute name="name" use="required"/>
         </xs:extension>
       </xs:complexContent>
     </xs:complexType>
@@ -187,7 +191,7 @@
     </xs:sequence>
   </xs:group>
   <!--
-      <define name="rdf.datatype">
+    <define name="rdf.datatype">
       <grammar>
         <include href="http://www.copasi.org/static/schema/rdfxml.rng" ns="http://relaxng.org/ns/structure/1.0"/>
       </grammar>
@@ -223,6 +227,23 @@
   <xs:element name="html">
     <xs:complexType>
       <xs:group ref="schema:xhtml.datatype"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:complexType name="listOfUnits.datatype">
+    <xs:sequence>
+      <xs:element maxOccurs="unbounded" ref="schema:Unit"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="Unit">
+    <xs:complexType>
+      <xs:attributeGroup ref="schema:name.attribute"/>
+      <xs:attribute name="key" use="required">
+        <xs:simpleType>
+          <xs:restriction base="xs:ID">
+            <xs:pattern value="Unit_\d+"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
     </xs:complexType>
   </xs:element>
   <xs:complexType name="listOfFunctions.datatype">
@@ -595,6 +616,14 @@
     <xs:complexType>
       <xs:group ref="schema:modelParameterGroup.datatype"/>
       <xs:attribute name="cn" use="required" type="xs:string"/>
+      <xs:attribute name="type" use="required">
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:enumeration value="Reaction"/>
+            <xs:enumeration value="Group"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
     </xs:complexType>
   </xs:element>
   <xs:element name="ModelParameter" type="schema:modelParameter.datatype"/>
@@ -612,6 +641,17 @@
           <xs:enumeration value="Species"/>
           <xs:enumeration value="ModelValue"/>
           <xs:enumeration value="ReactionParameter"/>
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:attribute>
+    <xs:attribute name="simulationType" use="required">
+      <xs:simpleType>
+        <xs:restriction base="xs:string">
+          <xs:enumeration value="time"/>
+          <xs:enumeration value="ode"/>
+          <xs:enumeration value="assignment"/>
+          <xs:enumeration value="reactions"/>
+          <xs:enumeration value="fixed"/>
         </xs:restriction>
       </xs:simpleType>
     </xs:attribute>
@@ -640,6 +680,7 @@
     </xs:attribute>
     <xs:attributeGroup ref="schema:name.attribute"/>
     <xs:attribute name="reversible" use="required" type="xs:boolean"/>
+    <xs:attribute name="fast" use="required" type="xs:boolean"/>
   </xs:complexType>
   <xs:element name="ListOfSubstrates">
     <xs:complexType>
@@ -763,7 +804,8 @@
       </xs:simpleType>
     </xs:attribute>
     <xs:attributeGroup ref="schema:name.attribute"/>
-    <xs:attribute name="order" use="required" type="xs:nonNegativeInteger"/>
+    <xs:attribute name="fireAtInitialTime" use="required" type="xs:boolean"/>
+    <xs:attribute name="persistentTrigger" use="required" type="xs:boolean"/>
     <xs:attribute name="delayAssignment" type="xs:boolean"/>
   </xs:complexType>
   <xs:element name="TriggerExpression" type="schema:expression.simpletype"/>
@@ -835,7 +877,7 @@
         </xs:restriction>
       </xs:simpleType>
     </xs:attribute>
-    <xs:attribute name="target" use="required" type="xs:anyURI"/>
+    <xs:attribute name="target" use="required" type="xs:string"/>
     <xs:attribute name="append" use="required" type="xs:boolean"/>
     <xs:attribute name="confirmOverwrite" use="required" type="xs:boolean"/>
   </xs:attributeGroup>
@@ -1097,9 +1139,32 @@
       <xs:attributeGroup ref="schema:layoutPoint.datatype"/>
     </xs:complexType>
   </xs:element>
-  <xs:element name="curveSegment.element" abstract="true" type="schema:lineSegment.datatype"/>
-  <xs:element name="LineSegment" substitutionGroup="schema:curveSegment.element"/>
-  <xs:element name="CubicBezier" substitutionGroup="schema:curveSegment.element" type="schema:cubicBezier.datatype"/>
+  <xs:group name="curveSegment.element">
+    <xs:choice>
+      <xs:element ref="schema:LineSegment"/>
+      <xs:element name="CurveSegment">
+        <xs:complexType>
+          <xs:complexContent>
+            <xs:extension base="schema:lineSegment.datatype">
+              <xs:attributeGroup ref="x:type"/>
+            </xs:extension>
+          </xs:complexContent>
+        </xs:complexType>
+      </xs:element>
+      <xs:element ref="schema:CubicBezier"/>
+      <xs:element name="CurveSegment">
+        <xs:complexType>
+          <xs:complexContent>
+            <xs:extension base="schema:cubicBezier.datatype">
+              <xs:attributeGroup ref="x:type1"/>
+            </xs:extension>
+          </xs:complexContent>
+        </xs:complexType>
+      </xs:element>
+    </xs:choice>
+  </xs:group>
+  <xs:element name="LineSegment" type="schema:lineSegment.datatype"/>
+  <xs:element name="CubicBezier" type="schema:cubicBezier.datatype"/>
   <xs:complexType name="layoutCurve.datatype">
     <xs:sequence>
       <xs:element ref="schema:ListOfCurveSegments"/>
@@ -1107,9 +1172,7 @@
   </xs:complexType>
   <xs:element name="ListOfCurveSegments">
     <xs:complexType>
-      <xs:sequence>
-        <xs:element maxOccurs="unbounded" ref="schema:curveSegment.element"/>
-      </xs:sequence>
+      <xs:group maxOccurs="unbounded" ref="schema:curveSegment.element"/>
     </xs:complexType>
   </xs:element>
   <xs:attributeGroup name="transformation.datatype">

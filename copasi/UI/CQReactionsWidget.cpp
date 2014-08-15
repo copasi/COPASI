@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -22,6 +22,10 @@
 #include "model/CModel.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "report/CCopasiRootContainer.h"
+
+#ifdef COPASI_UNDO
+#include "copasiui3window.h"
+#endif
 
 /*
  *  Constructs a CQReactionsWidget which is a child of 'parent', with the
@@ -53,6 +57,13 @@ CQReactionsWidget::CQReactionsWidget(QWidget* parent, const char* name)
           this, SLOT(dataChanged(const QModelIndex&, const QModelIndex&)));
   connect(mpLEFilter, SIGNAL(textChanged(const QString &)),
           this, SLOT(slotFilterChanged()));
+
+#ifdef COPASI_UNDO
+  CopasiUI3Window *  pWindow = dynamic_cast<CopasiUI3Window * >(parent->parent());
+  mpReactionDM->setUndoStack(pWindow->getUndoStack());
+  connect(mpReactionDM, SIGNAL(changeWidget(const size_t&)),
+          this, SLOT(slotChangeWidget(const size_t&)));
+#endif
 }
 
 /*
@@ -77,27 +88,6 @@ void CQReactionsWidget::slotBtnDeleteClicked()
     {deleteSelectedReactions();}
 
   updateDeleteBtns();
-}
-
-void CQReactionsWidget::deleteSelectedReactions()
-{
-  const QItemSelectionModel * pSelectionModel = mpTblReactions->selectionModel();
-
-  QModelIndexList mappedSelRows;
-  size_t i, imax = mpReactionDM->rowCount();
-
-  for (i = 0; i < imax; i++)
-    {
-      if (pSelectionModel->isRowSelected((int) i, QModelIndex()))
-        {
-          mappedSelRows.append(mpProxyModel->mapToSource(mpProxyModel->index((int) i, 0)));
-        }
-    }
-
-  if (mappedSelRows.empty())
-    {return;}
-
-  mpReactionDM->removeRows(mappedSelRows);
 }
 
 void CQReactionsWidget::slotBtnClearClicked()
@@ -276,3 +266,32 @@ void CQReactionsWidget::setFramework(int framework)
         break;
     }
 }
+
+//UNDO section
+void CQReactionsWidget::deleteSelectedReactions()
+{
+  const QItemSelectionModel * pSelectionModel = mpTblReactions->selectionModel();
+
+  QModelIndexList mappedSelRows;
+  size_t i, imax = mpReactionDM->rowCount();
+
+  for (i = 0; i < imax; i++)
+    {
+      if (pSelectionModel->isRowSelected((int) i, QModelIndex()))
+        {
+          mappedSelRows.append(mpProxyModel->mapToSource(mpProxyModel->index((int) i, 0)));
+        }
+    }
+
+  if (mappedSelRows.empty())
+    {return;}
+
+  mpReactionDM->removeRows(mappedSelRows);
+}
+
+#ifdef COPASI_UNDO
+void CQReactionsWidget:: slotChangeWidget(const size_t & id)
+{
+  mpListView->switchToOtherWidget(id, "");
+}
+#endif

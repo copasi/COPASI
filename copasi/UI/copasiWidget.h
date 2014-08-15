@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiWidget.h,v $
-//   $Revision: 1.28 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/10/14 15:24:29 $
-// End CVS Header
-
-// Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2003 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -42,6 +34,8 @@ class ListViews;
 class CCopasiDataModel;
 class CCopasiObject;
 
+class QUndoStack;
+
 class CopasiWidget : public QWidget
 {
   Q_OBJECT
@@ -56,8 +50,17 @@ public:
   void setIgnoreUpdates(bool v);
   CCopasiDataModel * getDataModel();
 
+#ifdef COPASI_UNDO
+  void setUndoStack(QUndoStack* undoStack);
+  QUndoStack* getUndoStack();
+#endif
+
 protected:
   virtual bool enterProtected();
+
+#ifdef COPASI_UNDO
+  QUndoStack *mpUndoStack;
+#endif
 
   ListViews * mpListView;
   std::string mKey;

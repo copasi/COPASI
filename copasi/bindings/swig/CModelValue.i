@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., University of Heidelberg, and The University 
 // of Manchester. 
 // All rights reserved. 
@@ -11,6 +11,10 @@
 // Copyright (C) 2006 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc. and EML Research, gGmbH. 
 // All rights reserved. 
+
+
+
+
 
 
 
@@ -172,7 +176,7 @@ typedef CExpression DisownedExpression;
   std::string getUnsupportedAnnotation(int index)
   {		
   	std::map< std::string, std::string > &anot = $self->getUnsupportedAnnotations();
-  	if (index >= anot.size()) 
+  	if (index >= (int)anot.size()) 
   		return "";
   	std::map< std::string, std::string >::iterator iter = anot.begin();
   	for (int i = 0; i < index; ++i)
@@ -183,7 +187,7 @@ typedef CExpression DisownedExpression;
   std::string getUnsupportedAnnotationName(int index)
   {		
   	std::map< std::string, std::string > &anot = $self->getUnsupportedAnnotations();
-  	if (index >= anot.size()) 
+  	if (index >= (int)anot.size()) 
   		return "";
   	std::map< std::string, std::string >::iterator iter = anot.begin();
   	for (int i = 0; i < index; ++i)

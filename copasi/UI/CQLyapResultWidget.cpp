@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -97,13 +97,14 @@ bool CQLyapResultWidget::loadFromBackend()
 
       if (pItem == NULL)
         {
-          pItem = new QTableWidgetItem(QString::number(mpTask->exponents()[i]));
+          pItem = new QTableWidgetItem(QVariant::Double);
+          pItem->setData(Qt::DisplayRole, mpTask->exponents()[i]);
           pItem->setFlags(Qt::ItemIsDragEnabled | Qt::ItemIsUserCheckable | Qt::ItemIsEnabled);
           mTableExponents->setItem(i, 0, pItem);
         }
       else
         {
-          pItem->setText(QString::number(mpTask->exponents()[i]));
+          pItem->setData(Qt::DisplayRole, mpTask->exponents()[i]);
         }
     }
 

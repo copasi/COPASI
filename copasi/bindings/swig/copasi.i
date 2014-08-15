@@ -19,9 +19,18 @@
 
 
 
+
+
+
+
+
+
 %module COPASI
 
 %warnfilter(402) CCopasiObjectName;
+// cannot do anything about warnings due to multiple inheritance
+// so hide those errors
+#pragma SWIG nowarn=314,402,813;
 
 // more elements to ignore
 %ignore create_expression(const ASTNode* pSource, const ListOfFunctionDefinitions* pFunctions);
@@ -127,6 +136,12 @@ size_t INVALID_INDEX();
 %include "COutputHandler.i"
 %include "CReport.i"
 %include "CCopasiTask.i"
+
+%ignore CPlotItem::getChannels() const;
+%ignore CPlotItem::XMLRecordingActivity;
+%ignore CPlotItem::getRecordingActivityName;
+
+
 %include "CPlotItem.i"
 %include "CPlotColors.i"
 %include "CPlotSpecification.i"
@@ -186,6 +201,11 @@ size_t INVALID_INDEX();
 
 %include "CRenderInformation.i"
 
+%ignore CFluxMode::CFluxMode(const std::map< size_t, C_FLOAT64 > & reactions,const bool & reversible);
+%ignore CFluxMode::CFluxMode(const CTableauLine * line);
+%ignore CEFMProblem::getReorderedReactions;
+%ignore CEFMTask::getSpeciesChanges;
+
 %include <copasi/elementaryFluxModes/CFluxMode.h>
 %include <copasi/elementaryFluxModes/CEFMTask.h>
 %include <copasi/elementaryFluxModes/CEFMMethod.h>
@@ -199,9 +219,14 @@ size_t INVALID_INDEX();
 %include <copasi/moieties/CMoietiesProblem.h>
 %include <copasi/moieties/CMoietiesMethod.h>
 
+%ignore CLNAProblem::load;
+%ignore CLNATask::load;
+
 %include <copasi/lna/CLNATask.h>
 %include <copasi/lna/CLNAProblem.h>
 %include <copasi/lna/CLNAMethod.h>
+
+%ignore CTSSATask::mapTableToName;
 
 %include <copasi/tssanalysis/CTSSATask.h>
 %include <copasi/tssanalysis/CTSSAProblem.h>

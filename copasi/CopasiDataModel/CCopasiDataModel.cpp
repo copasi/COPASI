@@ -401,6 +401,9 @@ bool CCopasiDataModel::saveModel(const std::string & fileName, CProcessReport* p
       // We do not care whether the model compiles or not
       // We just save as much as we can
       mData.pModel->compileIfNecessary(pProcessReport);
+
+      // Assure that the parameter set reflects all changes made to the model.
+      mData.pModel->getModelParameterSet().refreshFromModel(false);
     }
 
   catch (...)
@@ -2164,7 +2167,16 @@ void CCopasiDataModel::commonAfterLoad(CProcessReport* pProcessReport,
     {
       try
         {
+          // need initialize, so that all objects are created for the
+          // object browser
           (*it)->initialize(CCopasiTask::NO_OUTPUT, NULL, NULL);
+
+          // but we should restore any possible changes made to the model
+          // by the task, without updating the model
+          bool update = (*it)->isUpdateModel();
+          (*it)->setUpdateModel(false);
+          (*it)->restore();
+          (*it)->setUpdateModel(update);
         }
 
       catch (...) {}

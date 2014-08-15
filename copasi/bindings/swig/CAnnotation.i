@@ -1,13 +1,17 @@
-// Copyright (C) 2011 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2011 - 2014 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., University of Heidelberg, and The University 
 // of Manchester. 
 // All rights reserved. 
 
 
 
+
+
+
 %ignore CAnnotation::operator==;
 %ignore CAnnotation::getUnsupportedAnnotations() const;
 %ignore CAnnotation::getUnsupportedAnnotations();
+%ignore CAnnotation::castObject(const CCopasiObject * pObject);
 
 %{
 
@@ -39,7 +43,7 @@
 	std::string getUnsupportedAnnotation(int index)
 	{		
 		std::map< std::string, std::string > &anot = $self->getUnsupportedAnnotations();
-		if (index >= anot.size()) 
+		if (index >= (int)anot.size()) 
 			return "";
 		std::map< std::string, std::string >::iterator iter = anot.begin();
 		for (int i = 0; i < index; ++i)
@@ -50,7 +54,7 @@
 	std::string getUnsupportedAnnotationName(int index)
 	{		
 		std::map< std::string, std::string > &anot = $self->getUnsupportedAnnotations();
-		if (index >= anot.size()) 
+		if (index >= (int)anot.size()) 
 			return "";
 		std::map< std::string, std::string >::iterator iter = anot.begin();
 		for (int i = 0; i < index; ++i)

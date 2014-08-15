@@ -1,27 +1,22 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQBaseDataModel.cpp,v $
-//   $Revision: 1.10 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/03/19 12:20:16 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
+
+#ifdef COPASI_UNDO
+#include <QUndoStack>
+#endif
 
 #include "copasi.h"
 #include "CQBaseDataModel.h"
 
 CQBaseDataModel::CQBaseDataModel(QObject *parent)
-    : QAbstractTableModel(parent)
-
+  : QAbstractTableModel(parent)
 {}
 
 Qt::ItemFlags CQBaseDataModel::flags(const QModelIndex &index) const
@@ -82,3 +77,14 @@ QString CQBaseDataModel::createNewName(const QString name, const int nameCol)
 
   return nname;
 }
+
+#ifdef COPASI_UNDO
+void CQBaseDataModel::setUndoStack(QUndoStack* undoStack)
+{
+  mpUndoStack = undoStack;
+}
+QUndoStack* CQBaseDataModel::getUndoStack()
+{
+  return mpUndoStack;
+}
+#endif

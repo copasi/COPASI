@@ -1,19 +1,15 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/StateSubwidget.cpp,v $
-//   $Revision: 1.35 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/05/10 16:03:10 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2004 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
 #include "StateSubwidget.h"
@@ -42,7 +38,7 @@
  *  name 'name'.'
  */
 StateSubwidget::StateSubwidget(QWidget* parent, const char* name)
-    : CopasiWidget(parent, name)
+  : CopasiWidget(parent, name)
 {
   setupUi(this);
 
@@ -76,17 +72,35 @@ void StateSubwidget::loadMetabolites()
 
   mpTblMetabolites->setRowCount((int) mpModel->getMetabolites().size());
 
+  QTableWidgetItem * pItem;  // for use with setData method, to set numberical sorting of appropriate columns
+
   for (; it != end; ++it)
     if ((*it)->getStatus() == CModelEntity::ODE ||
         ((*it)->getStatus() == CModelEntity::REACTIONS && (*it)->isUsed()))
       {
         mpTblMetabolites->setItem(i, 0, new QTableWidgetItem(FROM_UTF8(CMetabNameInterface::getDisplayName(mpModel, **it, false))));
+
         mpTblMetabolites->setItem(i, 1, new QTableWidgetItem(FROM_UTF8(CModelEntity::StatusName[(*it)->getStatus()])));
-        mpTblMetabolites->setItem(i, 2, new QTableWidgetItem(QString::number((*it)->getConcentration())));
-        mpTblMetabolites->setItem(i, 3, new QTableWidgetItem(QString::number((*it)->getValue())));
-        mpTblMetabolites->setItem(i, 4, new QTableWidgetItem(QString::number((*it)->getConcentrationRate())));
-        mpTblMetabolites->setItem(i, 5, new QTableWidgetItem(QString::number((*it)->getRate())));
-        mpTblMetabolites->setItem(i, 6, new QTableWidgetItem(QString::number((*it)->getTransitionTime())));
+
+        pItem = new QTableWidgetItem(QVariant::Double);
+        pItem->setData(Qt::DisplayRole, (*it)->getConcentration());
+        mpTblMetabolites->setItem(i, 2, pItem);
+
+        pItem = new QTableWidgetItem(QVariant::Double);
+        pItem->setData(Qt::DisplayRole, (*it)->getValue());
+        mpTblMetabolites->setItem(i, 3, pItem);
+
+        pItem = new QTableWidgetItem(QVariant::Double);
+        pItem->setData(Qt::DisplayRole, (*it)->getConcentrationRate());
+        mpTblMetabolites->setItem(i, 4, pItem);
+
+        pItem = new QTableWidgetItem(QVariant::Double);
+        pItem->setData(Qt::DisplayRole, (*it)->getRate());
+        mpTblMetabolites->setItem(i, 5, pItem);
+
+        pItem = new QTableWidgetItem(QVariant::Double);
+        pItem->setData(Qt::DisplayRole, (*it)->getTransitionTime());
+        mpTblMetabolites->setItem(i, 6, pItem);
 
         i++;
       }
@@ -104,13 +118,22 @@ void StateSubwidget::loadCompartments()
 
   mpTblCompartments->setRowCount((int) mpModel->getCompartments().size());
 
+  QTableWidgetItem * pItem;
+
   for (; it != end; ++it)
     if ((*it)->getStatus() == CModelEntity::ODE)
       {
         mpTblCompartments->setItem(i, 0, new QTableWidgetItem(FROM_UTF8((*it)->getObjectName())));
         mpTblCompartments->setItem(i, 1, new QTableWidgetItem(FROM_UTF8(CModelEntity::StatusName[(*it)->getStatus()])));
-        mpTblCompartments->setItem(i, 2, new QTableWidgetItem(QString::number((*it)->getValue())));
-        mpTblCompartments->setItem(i, 3, new QTableWidgetItem(QString::number((*it)->getRate())));
+
+        pItem = new QTableWidgetItem(QVariant::Double);
+        pItem->setData(Qt::DisplayRole, (*it)->getValue());
+        mpTblCompartments->setItem(i, 2, pItem);
+
+        pItem = new QTableWidgetItem(QVariant::Double);
+        pItem->setData(Qt::DisplayRole, (*it)->getRate());
+        mpTblCompartments->setItem(i, 3, pItem);
+
         i++;
       }
 
@@ -128,11 +151,20 @@ void StateSubwidget::loadReactions()
 
   mpTblReactions->setRowCount((int) mpModel->getReactions().size());
 
+  QTableWidgetItem * pItem;
+
   for (; it != end; ++it)
     {
       mpTblReactions->setItem(i, 0, new QTableWidgetItem(FROM_UTF8((*it)->getObjectName())));
-      mpTblReactions->setItem(i, 1, new QTableWidgetItem(QString::number((*it)->getFlux())));
-      mpTblReactions->setItem(i, 2, new QTableWidgetItem(QString::number((*it)->getParticleFlux())));
+
+      pItem = new QTableWidgetItem(QVariant::Double);
+      pItem->setData(Qt::DisplayRole, (*it)->getFlux());
+      mpTblReactions->setItem(i, 1, pItem);
+
+      pItem = new QTableWidgetItem(QVariant::Double);
+      pItem->setData(Qt::DisplayRole, (*it)->getParticleFlux());
+      mpTblReactions->setItem(i, 2, pItem);
+
       mpTblReactions->setItem(i, 3, new QTableWidgetItem(FROM_UTF8(CChemEqInterface::getChemEqString(mpModel, **it, false))));
 
       i++;
@@ -150,13 +182,22 @@ void StateSubwidget::loadModelValues()
 
   mpTblModelValues->setRowCount((int) mpModel->getModelValues().size());
 
+  QTableWidgetItem * pItem;
+
   for (; it != end; ++it)
     if ((*it)->getStatus() == CModelEntity::ODE)
       {
         mpTblModelValues->setItem(i, 0, new QTableWidgetItem(FROM_UTF8((*it)->getObjectName())));
         mpTblModelValues->setItem(i, 1, new QTableWidgetItem(FROM_UTF8(CModelEntity::StatusName[(*it)->getStatus()])));
-        mpTblModelValues->setItem(i, 2, new QTableWidgetItem(QString::number((*it)->getValue())));
-        mpTblModelValues->setItem(i, 3, new QTableWidgetItem(QString::number((*it)->getRate())));
+
+        pItem = new QTableWidgetItem(QVariant::Double);
+        pItem->setData(Qt::DisplayRole, (*it)->getValue());
+        mpTblModelValues->setItem(i, 2, pItem);
+
+        pItem = new QTableWidgetItem(QVariant::Double);
+        pItem->setData(Qt::DisplayRole, (*it)->getRate());
+        mpTblModelValues->setItem(i, 3, pItem);
+
         i++;
       }
 
@@ -175,17 +216,24 @@ void StateSubwidget::loadJacobian()
   mpJacobianAnnotationWidget->setLegendEnabled(false);
   mpJacobianAnnotationWidget->setArrayAnnotation(JacAnn);
 
+  QTableWidgetItem * pItem;
+
   //Eigenvalues...
-  const CVector< C_FLOAT64 > & eigen_i = mpTask->getEigenValues().getI();
   const CVector< C_FLOAT64 > & eigen_r = mpTask->getEigenValues().getR();
+  const CVector< C_FLOAT64 > & eigen_i = mpTask->getEigenValues().getI();
 
   size_t i, imax = eigen_i.size();
   tableEigenValues->setRowCount((int) imax);
 
   for (i = 0; i < imax; ++i)
     {
-      tableEigenValues->setItem((int) i, 0, new QTableWidgetItem(QString::number(eigen_r[i])));
-      tableEigenValues->setItem((int) i, 1, new QTableWidgetItem(QString::number(eigen_i[i])));
+      pItem = new QTableWidgetItem(QVariant::Double);
+      pItem->setData(Qt::DisplayRole, eigen_r[i]);
+      tableEigenValues->setItem((int) i, 0, pItem);
+
+      pItem = new QTableWidgetItem(QVariant::Double);
+      pItem->setData(Qt::DisplayRole, eigen_i[i]);
+      tableEigenValues->setItem((int) i, 1, pItem);
     }
 
   tableEigenValues->resizeColumnsToContents();
@@ -210,8 +258,13 @@ void StateSubwidget::loadJacobian()
 
   for (i = 0; i < imax; ++i)
     {
-      tableEigenValuesX->setItem((int) i, 0, new QTableWidgetItem(QString::number(eigen_rX[i])));
-      tableEigenValuesX->setItem((int) i, 1, new QTableWidgetItem(QString::number(eigen_iX[i])));
+      pItem = new QTableWidgetItem(QVariant::Double);
+      pItem->setData(Qt::DisplayRole, eigen_rX[i]);
+      tableEigenValuesX->setItem((int) i, 0, pItem);
+
+      pItem = new QTableWidgetItem(QVariant::Double);
+      pItem->setData(Qt::DisplayRole, eigen_iX[i]);
+      tableEigenValuesX->setItem((int) i, 1, pItem);
     }
 
   tableEigenValuesX->resizeColumnsToContents();
@@ -444,4 +497,3 @@ bool StateSubwidget::update(ListViews::ObjectType objectType,
 
   return true;
 }
-

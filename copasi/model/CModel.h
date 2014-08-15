@@ -1055,6 +1055,30 @@ public:
   std::vector< Refresh * > buildInitialRefreshSequence(std::set< const CCopasiObject * > & changedObjects);
 
   /**
+   * Builds and executes the the update sequence used to calculate all initial
+   * values depending on the changed objects. For metabolites the initial particle
+   * number is updated by default unless itself is in the list of changed objects. In
+   * that case the initial concentration is updated.
+   *
+   * @param std::set< const CCopasiObject * > & changedObjects
+
+   * @see buildInitialRefreshSequence(std::set< const CCopasiObject * > & changedObjects)
+   */
+  void updateInitialValues(std::set< const CCopasiObject * > & changedObjects);
+
+  /**
+   * Builds and executes the the update sequence used to calculate all initial
+   * values depending on the changed objects For metabolites the initial particle
+   * number is updated by default unless itself is in the list of changed objects. In
+   * that case the initial concentration is updated.
+   *
+   * @param std::set< const CCopasiObject * > & changedObjects
+
+   * @see updateInitialValues(std::set< const CCopasiObject * > & changedObjects)
+   */
+  void updateInitialValues(const CCopasiObject * changedObject);
+
+  /**
    * Initialize a vector of individual absolute tolerances
    * @param const C_FLOAT64 & baseTolerance
    * @param const bool & reducedModel

@@ -1,17 +1,9 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQReactionDM.h,v $
-//   $Revision: 1.8 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/03/07 19:38:01 $
-// End CVS Header
-
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
@@ -29,9 +21,18 @@
 #define COL_PARTICLE_FLUX    5
 #define TOTAL_COLS_REACTIONS 6
 
+#ifdef COPASI_UNDO
+class CReactionInterface;
+class UndoReactionData;
+#endif
+
 class CQReactionDM : public CQBaseDataModel
 {
   Q_OBJECT
+
+#ifdef COPASI_UNDO
+  friend class ReactionDataChangeCommand;
+#endif
 
 public:
   CQReactionDM(QObject *parent = 0);
@@ -44,6 +45,23 @@ public:
   bool setData(const QModelIndex &index, const QVariant &value,
                int role = Qt::EditRole);
   bool removeRows(QModelIndexList rows, const QModelIndex &index = QModelIndex());
+
+  //TODO Undo
+#ifdef COPASI_UNDO
+  bool reactionDataChange(const QModelIndex &index, const QVariant &value, int role, QString &funcName);
+  void insertNewReactionRow(int position, int rows, const QModelIndex&);
+  void addReactionRow(CReaction *pReaction);
+  void deleteReactionRow(CReaction *pReaction);
+  bool updateReactionWithFunctionName(CReaction *pRea, QString &funcName);
+  bool removeReactionRows(QModelIndexList rows, const QModelIndex&);
+  bool insertReactionRows(QList <UndoReactionData *> pReaData);
+  void deleteReactionRows(QList <UndoReactionData *> pReaData);
+  bool removeAllReactionRows();
+  bool clear();
+
+signals:
+  void changeWidget(const size_t & id);
+#endif
 
 protected:
   bool insertRows(int position, int rows, const QModelIndex &index = QModelIndex());

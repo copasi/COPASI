@@ -88,6 +88,7 @@ public:
   bool isDimensionless() const;
   void addComponent(const CUnitComponent & component);
   bool simplifyComponents();
+  std::string prefixFromScale(int scale);
 
 private:
 

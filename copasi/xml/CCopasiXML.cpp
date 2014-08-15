@@ -53,6 +53,7 @@
 #include "plot/CPlotItem.h"
 #include "layout/CListOfLayouts.h"
 #include "parameterFitting/CFitTask.h"
+#include "scan/CScanTask.h"
 
 #include "copasi/layout/CLLocalRenderInformation.h"
 #include "copasi/layout/CLGlobalRenderInformation.h"
@@ -237,6 +238,11 @@ bool CCopasiXML::load(std::istream & is,
   if (36 <= FileVersion.getVersionDevel() && FileVersion.getVersionDevel() <= 58)
     {
       fixBuild55();
+    }
+
+  if (FileVersion.getVersionDevel() <= 81)
+    {
+      fixBuild81();
     }
 
   if (!CVersion::VERSION.isCompatible(FileVersion))
@@ -1885,11 +1891,28 @@ void CCopasiXML::fixBuild55()
 
   if (Index == C_INVALID_INDEX) return;
 
-  CFitTask * pFitTask = dynamic_cast< CFitTask * >((*mpTaskList)[Index]);
+  CFitTask * pTask = dynamic_cast< CFitTask * >((*mpTaskList)[Index]);
 
-  if (pFitTask == NULL) return;
+  if (pTask == NULL) return;
 
-  pFitTask->fixBuild55();
+  pTask->fixBuild55();
+
+  return;
+}
+
+void CCopasiXML::fixBuild81()
+{
+  if (mpTaskList == NULL) return;
+
+  size_t Index = mpTaskList->getIndex("Scan");
+
+  if (Index == C_INVALID_INDEX) return;
+
+  CScanTask * pTask = dynamic_cast< CScanTask * >((*mpTaskList)[Index]);
+
+  if (pTask == NULL) return;
+
+  pTask->fixBuild81();
 
   return;
 }

@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., University of Heidelberg, and The University 
 // of Manchester. 
 // All rights reserved. 
@@ -11,6 +11,10 @@
 // Copyright (C) 2006 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc. and EML Research, gGmbH. 
 // All rights reserved. 
+
+
+
+
 
 
 
@@ -41,6 +45,8 @@
 
 %ignore CCopasiDataModel::CCopasiDataModel(const bool);
 %ignore CCopasiDataModel::autoSave();
+%ignore CCopasiDataModel::mLastAddedObjects;
+%ignore CCopasiDataModel::pOldMetabolites;
 %ignore CCopasiDataModel::print;
 %ignore CCopasiDataModel::loadModel(const std::string& fileName,CProcessReport* pProcessReport,
                  const bool & deleteOldData = true);

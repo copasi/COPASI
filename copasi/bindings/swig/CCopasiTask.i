@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., University of Heidelberg, and The University 
 // of Manchester. 
 // All rights reserved. 
@@ -11,6 +11,10 @@
 // Copyright (C) 2006 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc. and EML Research, gGmbH. 
 // All rights reserved. 
+
+
+
+
 
 
 
@@ -131,7 +135,7 @@
           }
         }
 
-        catch (CCopasiException & Exception)
+        catch (CCopasiException &)
         {
           if (CCopasiMessage::peekLastMessage().getNumber() != MCCopasiMessage + 1)
           {
@@ -157,7 +161,7 @@
           success = self->process(useInitialValues);
         }
         
-        catch (CCopasiException & Exception)
+        catch (CCopasiException &)
         {
           success = false;
         }
@@ -182,7 +186,7 @@
           self->restore();
         }
 
-        catch (CCopasiException & Exception)
+        catch (CCopasiException &)
         {
           if (CCopasiMessage::peekLastMessage().getNumber() != MCCopasiMessage + 1)
           { 
@@ -224,7 +228,7 @@
           }
         }
 
-        catch (CCopasiException & Exception)
+        catch (CCopasiException &)
         {
           if (CCopasiMessage::peekLastMessage().getNumber() != MCCopasiMessage + 1)
           {
@@ -250,7 +254,7 @@
           success = self->process(useInitialValues);
         }
         
-        catch (CCopasiException & Exception)
+        catch (CCopasiException &)
         {
           success = false;
         }
@@ -275,7 +279,7 @@
           self->restore();
         }
 
-        catch (CCopasiException & Exception)
+        catch (CCopasiException &)
         {
           if (CCopasiMessage::peekLastMessage().getNumber() != MCCopasiMessage + 1)
           { 

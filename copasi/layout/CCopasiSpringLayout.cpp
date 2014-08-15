@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -807,7 +807,7 @@ double CCopasiSpringLayout::getPotential()
       CLCompartmentGlyph* tmpCG = mapIt->second;
 
       if (tmpCG) //the species glyph is inside a compartment glyph
-        tmp += 0.2 * potSpeciesCompartment(*tmpMG, *tmpCG);
+        tmp +=  mpPar->values[6] * potSpeciesCompartment(*tmpMG, *tmpCG);
     }
 
   //force to keep reaction nodes in compartment
@@ -828,7 +828,7 @@ double CCopasiSpringLayout::getPotential()
       CLCompartmentGlyph* tmpCG = mapIt->second;
 
       if (tmpCG) //the reaction glyph is inside a compartment glyph
-        tmp += 0.2 * potReactionCompartment(*tmpRG, *tmpCG);
+        tmp += mpPar->values[7] * potReactionCompartment(*tmpRG, *tmpCG);
     }
 
   /*

@@ -51,6 +51,10 @@ class QEvent;
 class QActionGroup;
 class QThread;
 
+#ifdef COPASI_UNDO
+class QUndoStack;
+#endif
+
 class CopasiUI3Window : public QMainWindow
 #ifdef COPASI_SBW_INTEGRATION
   // A SBW listener can catch messages from SBW ... used here to allow COPASI to be shut down
@@ -104,6 +108,11 @@ public:
   void importSEDMLFromString(const std::string & sedmlDocumentText);
 
   void exportSEDMLToString(std::string & SEDML);
+#endif
+
+  //UNDO framework
+#ifdef COPASI_UNDO
+  QUndoStack *getUndoStack();
 #endif
 
   void addWindow(QMainWindow * pWindow);
@@ -218,6 +227,10 @@ protected slots:
   void slotOpenRecentSEDMLFile(QAction * pAction);
 #endif
 
+#ifdef COPASI_UNDO
+  void slotUndoHistory();
+#endif
+
 private:
   CopasiUI3Window();
 
@@ -312,6 +325,14 @@ private:
   QMap< QAction *, int > mRecentSEDMLFilesActionMap;
   QActionGroup * mpRecentSEDMLFilesActionGroup;
   void refreshRecentSEDMLFileMenu();
+#endif
+
+  //TODO UNDO Framework
+#ifdef COPASI_UNDO
+  QAction* mpaUndo;
+  QAction* mpaRedo;
+  QAction* mpaUndoHistory;
+  QUndoStack *mpUndoStack;
 #endif
 
 #ifdef COPASI_SBW_INTEGRATION

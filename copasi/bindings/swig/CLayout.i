@@ -1,7 +1,9 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., University of Heidelberg, and The University 
 // of Manchester. 
 // All rights reserved. 
+
+
 
 
 
@@ -32,6 +34,9 @@ typedef CCopasiVector<CLGraphicalObject> GraphicalObjectVector;
 %ignore CLayout::CLayout(const Layout & , std::map<std::string, std::string> & , const CCopasiContainer * pParent = NULL);
 %ignore CLayout::exportToSBML;
 %ignore CLayout::print;
+%ignore CLayout::getListOfCompartmentGlyphs() const;
+%ignore CLayout::getListOfReactionGlyphs() const;
+%ignore CLayout::getListOfGeneralGlyphs() const;
 %ignore CLayout::exportToDotFile;
 %ignore CLayout::getListOfLocalRenderInformationObjects;
 %ignore CLayout::getListOfMetaboliteGlyphs;

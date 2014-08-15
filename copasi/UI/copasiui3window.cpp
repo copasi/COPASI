@@ -18,6 +18,10 @@
 #include <sedml/SedDocument.h>
 #endif
 
+#ifdef COPASI_UNDO
+#include <QUndoStack>
+#endif
+
 #include <QtCore/QEvent>
 #include <QtGui/QMenuBar>
 #include <QtCore/QTimer>
@@ -208,6 +212,11 @@ CopasiUI3Window::CopasiUI3Window():
   FixedTitle += FROM_UTF8(CVersion::VERSION.getVersion());
   updateTitle();
 
+  //initialise Undo stack
+#ifdef COPASI_UNDO
+  mpUndoStack = new QUndoStack(this);
+#endif
+
   createActions();
   createToolBar(); // creates a tool bar
   createMenuBar();  // creates a menu bar
@@ -396,6 +405,14 @@ void CopasiUI3Window::createActions()
   connect(mpaFunctionDBLoad, SIGNAL(activated()), this, SLOT(slotFunctionDBLoad()));
   mpaFunctionDBSave =  new QAction(CQIconResource::icon(CQIconResource::fileSaveas), "Save Function DB...", this);
   connect(mpaFunctionDBSave, SIGNAL(activated()), this, SLOT(slotFunctionDBSave()));
+
+  //TODO UNDO framework
+#ifdef COPASI_UNDO
+  mpaUndo = new QAction(this);
+  mpaRedo = new QAction(this);
+  mpaUndoHistory = new QAction("&Undo History", this);
+  connect(mpaUndoHistory, SIGNAL(activated()), this, SLOT(slotUndoHistory()));
+#endif
 }
 
 void CopasiUI3Window::slotFunctionDBSave(QString dbFile)
@@ -537,6 +554,14 @@ void CopasiUI3Window::createMenuBar()
   pFileMenu->addSeparator();
 
   pFileMenu->addAction(mpaQuit);
+
+  //********** edit menu ************
+#ifdef COPASI_UNDO
+  QMenu * pEditMenu = menuBar()->addMenu("&Edit");
+  pEditMenu->insertAction(mpaUndo, mpUndoStack->createUndoAction(this));
+  pEditMenu->insertAction(mpaRedo, mpUndoStack->createRedoAction(this));
+  pEditMenu->addAction(mpaUndoHistory);
+#endif
 
   //****** tools menu **************
 
@@ -872,6 +897,10 @@ void CopasiUI3Window::slotFileOpen(QString file)
       connect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(slotFileOpenFinished(bool)));
       mpDataModelGUI->loadModel(TO_UTF8(newFile));
     }
+
+#ifdef COPASI_UNDO
+  mpUndoStack->clear();
+#endif
 }
 
 void CopasiUI3Window::slotFileOpenFinished(bool success)
@@ -1911,6 +1940,11 @@ void CopasiUI3Window::refreshRecentSBMLFileMenu()
       mpMenuRecentSBMLFiles->addAction(pAction);
       mRecentSBMLFilesActionMap[pAction] = Index;
     }
+
+  //clear the Undo stack
+#ifdef COPASI_UNDO
+  mpUndoStack->clear();
+#endif
 }
 
 void CopasiUI3Window::exportSBMLToString(std::string & SBML)
@@ -3006,6 +3040,11 @@ void CopasiUI3Window::refreshRecentSEDMLFileMenu()
       mpMenuRecentSEDMLFiles->addAction(pAction);
       mRecentSEDMLFilesActionMap[pAction] = Index;
     }
+
+  //clear the Undo stack
+#ifdef COPASI_UNDO
+  mpUndoStack->clear();
+#endif
 }
 
 //TODO
@@ -3116,4 +3155,12 @@ void CopasiUI3Window::slotOpenRecentSEDMLFile(QAction * pAction)
 
   slotImportSEDML(FROM_UTF8(FileName));
 }
+#endif
+
+#ifdef COPASI_UNDO
+void CopasiUI3Window::slotUndoHistory()
+{
+  ;
+}
+QUndoStack *CopasiUI3Window::getUndoStack() {return mpUndoStack; };
 #endif

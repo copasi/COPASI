@@ -6584,6 +6584,11 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CCopasiObject* pCOPASIObject, S
           modelHistory.addCreator(&modelCreator);
         }
 
+      if (modelHistory.getNumCreators() < 1)
+        {
+          CCopasiMessage(CCopasiMessage::WARNING, "The ModelHistory cannot be exported to SBML, as no author has been defined.");
+        }
+
       // now set the creation date
       std::string creationDateString = miriamInfo.getCreatedDT();
 
@@ -6592,6 +6597,11 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CCopasiObject* pCOPASIObject, S
           Date creationDate = Date(creationDateString);
           modelHistory.setCreatedDate(&creationDate);
           modified = true;
+        }
+
+      if (!modelHistory.isSetCreatedDate())
+        {
+          CCopasiMessage(CCopasiMessage::WARNING, "The ModelHistory cannot be exported to SBML, as no creation date has been defined.");
         }
 
       // Since SBML can have only one modification time, and we can have several,
@@ -6622,6 +6632,16 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CCopasiObject* pCOPASIObject, S
 
           Date modifiedDate(lastDateString);
           modelHistory.setModifiedDate(&modifiedDate);
+        }
+      else if (modelHistory.isSetCreatedDate())
+        {
+          // a model history is only valid if it has a modifiedData
+          modelHistory.setModifiedDate(modelHistory.getCreatedDate());
+        }
+
+      if (!modelHistory.isSetModifiedDate())
+        {
+          CCopasiMessage(CCopasiMessage::WARNING, "The ModelHistory cannot be exported to SBML, as no modification date has been defined.");
         }
 
 #if LIBSBML_VERSION >= 40100

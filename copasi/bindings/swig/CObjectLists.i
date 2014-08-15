@@ -1,15 +1,9 @@
-// Begin CVS Header 
-//   $Source: /fs/turing/cvs/copasi_dev/copasi/bindings/swig/CObjectLists.i,v $ 
-//   $Revision: 1.2 $ 
-//   $Name:  $ 
-//   $Author: shoops $ 
-//   $Date: 2011/12/19 16:20:17 $ 
-// End CVS Header 
-
-// Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2011 - 2014 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., University of Heidelberg, and The University 
 // of Manchester. 
 // All rights reserved. 
+
+
 
 %{
 
@@ -18,7 +12,9 @@
 %}
 
 %ignore CObjectLists::ListTypeName;
-
+%ignore CObjectLists::getListOfObjects;
+%ignore CObjectLists::getListOfConstObjects;
+%ignore CObjectLists::getEventTargets;
 
 %include "model/CObjectLists.h"
 
