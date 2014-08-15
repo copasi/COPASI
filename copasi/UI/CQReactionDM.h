@@ -29,12 +29,16 @@
 #define COL_PARTICLE_FLUX    5
 #define TOTAL_COLS_REACTIONS 6
 
+#ifdef COPASI_UNDO
+class CReactionInterface;
+class UndoReactionData;
+#endif
+
 class CQReactionDM : public CQBaseDataModel
 {
   Q_OBJECT
 
 #ifdef COPASI_UNDO
-  friend class CCopasiInsertRowsCommand;
   friend class ReactionDataChangeCommand;
 #endif
 
@@ -57,6 +61,11 @@ public:
   void addReactionRow(CReaction *pReaction);
   void deleteReactionRow(CReaction *pReaction);
   bool updateReactionWithFunctionName(CReaction *pRea, QString &funcName);
+  bool removeReactionRows(QModelIndexList rows, const QModelIndex&);
+  bool insertReactionRows(QList <UndoReactionData *> pReaData);
+  void deleteReactionRows(QList <UndoReactionData *> pReaData);
+  bool removeAllReactionRows();
+  bool clear();
 
   signals:
   void changeWidget(const size_t & id);

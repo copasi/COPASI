@@ -43,5 +43,5 @@ void insertReactionRowsCommand::undo(){
 }
 
 QString insertReactionRowsCommand::insertRowsText() const {
-	return QObject::tr(": Insert New Reaction");
+	return QObject::tr(": Inserted New Reaction");
 }

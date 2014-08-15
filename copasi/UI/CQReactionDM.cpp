@@ -23,7 +23,10 @@
 
 #ifdef COPASI_UNDO
 #include "undoFramework/insertReactionRowsCommand.h"
+#include "undoFramework/RemoveReactionRowsCommand.h"
+#include "undoFramework/RemoveAllReactionRowsCommand.h"
 #include "undoFramework/ReactionDataChangeCommand.h"
+#include "undoFramework/UndoReactionData.h"
 #endif
 
 CQReactionDM::CQReactionDM(QObject *parent):
@@ -388,6 +391,9 @@ bool CQReactionDM::removeRows(int position, int rows, const QModelIndex&)
 
 bool CQReactionDM::removeRows(QModelIndexList rows, const QModelIndex&)
 {
+#ifdef COPASI_UNDO
+	mpUndoStack->push(new RemoveReactionRowsCommand(rows, this, QModelIndex()));
+#else
   if (rows.isEmpty())
     return false;
 
@@ -432,6 +438,7 @@ bool CQReactionDM::removeRows(QModelIndexList rows, const QModelIndex&)
     }
 
   return true;
+#endif
 }
 
 #ifdef COPASI_UNDO
@@ -514,5 +521,112 @@ void CQReactionDM::deleteReactionRow(CReaction *pReaction){
 	emit notifyGUI(ListViews::REACTION, ListViews::DELETE, key);
 	emit notifyGUI(ListViews::REACTION, ListViews::DELETE, "");//Refresh all as there may be dependencies.
 	endRemoveRows();
+}
+
+bool CQReactionDM::removeReactionRows(QModelIndexList rows, const QModelIndex&)
+{
+  if (rows.isEmpty())
+    return false;
+
+  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
+  assert(pDataModel != NULL);
+  CModel * pModel = pDataModel->getModel();
+
+  if (pModel == NULL)
+    return false;
+
+//Build the list of pointers to items to be deleted
+//before actually deleting any item.
+  QList <CReaction *> pReactions;
+  QModelIndexList::const_iterator i;
+
+  for (i = rows.begin(); i != rows.end(); ++i)
+  {
+	  if (!isDefaultRow(*i) && pModel->getReactions()[(*i).row()]){
+		  pReactions.append(pModel->getReactions()[(*i).row()]);
+	  }
+  }
+
+  QList <CReaction *>::const_iterator j;
+
+  for (j = pReactions.begin(); j != pReactions.end(); ++j)
+    {
+      CReaction * pReaction = *j;
+
+      size_t delRow =
+        pModel->getReactions().CCopasiVector< CReaction >::getIndex(pReaction);
+
+      if (delRow != C_INVALID_INDEX)
+        {
+          QMessageBox::StandardButton choice =
+            CQMessageBox::confirmDelete(NULL, "reaction",
+                                        FROM_UTF8(pReaction->getObjectName()),
+                                        pReaction->getDeletedObjects());
+
+          if (choice == QMessageBox::Ok)
+            removeRow((int) delRow);
+        }
+    }
+
+  return true;
+}
+
+bool CQReactionDM::insertReactionRows(QList <UndoReactionData *> pData){
+
+	assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+	CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
+	assert(pDataModel != NULL);
+	CModel * pModel = pDataModel->getModel();
+
+	if (pModel == NULL)
+		return false;
+
+
+	QList <UndoReactionData *>::const_iterator j;
+	for (j =pData.begin(); j != pData.end(); ++j)
+	{
+		UndoReactionData * data = *j;
+		beginInsertRows(QModelIndex(), 1, 1);
+		CReaction *pRea =  pModel->createReaction(data->getName());
+		data->getRi()->writeBackToReaction(pRea);
+		emit notifyGUI(ListViews::REACTION, ListViews::ADD, pRea->getKey());
+		endInsertRows();
+
+	}
+
+	return true;
+}
+void CQReactionDM::deleteReactionRows(QList <UndoReactionData *> pData){
+	assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+	CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
+	assert(pDataModel != NULL);
+
+	CModel * pModel = pDataModel->getModel();
+
+	QList <UndoReactionData *>::const_iterator j;
+	for (j =pData.begin(); j != pData.end(); ++j)
+	{
+		UndoReactionData * data = *j;
+		CReaction *pReaction =  pModel->getReactions()[data->getName()];
+		std::string key = pReaction->getKey();
+		beginRemoveRows(QModelIndex(), 1, 1);
+		pModel->removeReaction(pReaction->getKey());
+		emit notifyGUI(ListViews::REACTION, ListViews::DELETE, key);
+		emit notifyGUI(ListViews::REACTION, ListViews::DELETE, "");//Refresh all as there may be dependencies.
+		endRemoveRows();
+	}
+}
+
+bool CQReactionDM::clear()
+{
+ mpUndoStack->push(new RemoveAllReactionRowsCommand(this, QModelIndex()));
+  return true;
+}
+
+bool CQReactionDM::removeAllReactionRows()
+{
+	return removeRows(0, rowCount() - 1);
+
 }
 #endif
