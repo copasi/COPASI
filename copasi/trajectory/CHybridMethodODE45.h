@@ -13,10 +13,8 @@
  *   Author: Shuo Wang
  *   Email: shuowang.learner@gmail.com
  *
- *   Last change: 26, Aug 2013
+ *   Last change: 11, Aug 2014
  *
- */
-/**
  *   Partition the system into a deterministic part and a stochastic part.
  *   That is, every reaction is either classified deterministic or
  *   stochastic. Deterministic reactions involve only those metabolites (on
@@ -42,62 +40,26 @@
 #include <new>
 
 #include "copasi/trajectory/CTrajectoryMethod.h"
-
 #include "copasi/utilities/CVersion.h"
 #include "copasi/utilities/CMatrix.h"
-#include "copasi/utilities/CDependencyGraph.h"
-#include "copasi/utilities/CIndexedPriorityQueue.h"
 #include "copasi/utilities/CCopasiVector.h"
 #include "CExpRKMethod.h"
 
 /* DEFINE ********************************************************************/
-#define MAX_STEPS                    1000000
+#define MAX_STEPS_ODE                10000
 #define INT_EPSILON                  0.1
-//#define LOWER_STOCH_LIMIT            800 //800
-//#define UPPER_STOCH_LIMIT            1000 //1000
-//#define RUNGE_KUTTA_STEPSIZE         0.001
-
-//#define PARTITIONING_STEPSIZE        0.001
-//#define PARTITIONING_INTERVAL        1
-//#define OUTPUT_COUNTER               100
-
-//#define DEFAULT_OUTPUT_FILE          "hybrid_lsoda.output"
 #define SUBTYPE                      1
 #define USE_RANDOM_SEED              false
 #define RANDOM_SEED                  1
 
 //Simulation Part
-#define SLOW                         0
-#define FAST                         1
-
-//Method Used
-#define STOCHASTIC                   0
-#define DETERMINISTIC                1
-#define HYBRID                       2
-
-//Interpolation Part
-#define ODE_ERR                     -2
-#define ODE_INIT                     0
-#define ODE_NEW                      1
-#define ODE_CONT                     2
-#define ODE_EVENT                    3
-#define ODE_FINISH                   4
-
-//mSysStatus Part
-#define SYS_ERR                     -2
-#define SYS_NEW                      1
-#define SYS_CONT                     2
-#define SYS_EVENT                    3
-#define SYS_END                      5
+#define SLOW                         false
+#define FAST                         true
 
 //Event Flag
 #define SLOW_REACT                  -1
 
-/* Function Pointer **********************************************************/
-//typedef void (*pEvalF)(const C_INT*, const double*, const double*, double*);
-
 /* CLASSES *******************************************************************/
-
 class CMetab;
 class CTrajectoryProblem;
 class CState;
@@ -107,6 +69,7 @@ class CReaction;
 class CRandom;
 class CIndexedPriorityQueue;
 class CDependencyGraph;
+class CModelEntity;
 
 /**
  * Internal representation of the balances of each reaction.
@@ -116,11 +79,8 @@ class CHybridODE45Balance
 {
 public:
   size_t  mIndex;
-  C_INT32 mMultiplicity;
+  C_FLOAT64 mMultiplicity;
   CMetab *mpMetabolite;
-
-  // insert operator
-  //friend std::ostream & operator<<(std::ostream & os, const CHybridODE45Balance & d);
 };
 
 /**
@@ -129,12 +89,6 @@ public:
  *        metab participates
  * @param flag, if set is empty -> false, else, -> true
  */
-class CHybridODE45MetabFlag
-{
-public:
-  std::set<size_t> mFastReactions;
-  size_t mFlag;
-};
 
 class CHybridMethodODE45 : public CTrajectoryMethod
 {
@@ -147,6 +101,40 @@ public:
   {
     size_t dim;
     CHybridMethodODE45 * pMethod;
+  };
+
+protected:
+  enum RootMasking
+  {
+    NONE = 0,
+    ALL,
+    DISCRETE
+  };
+
+  enum MethodUsed
+  {
+    STOCHASTIC,
+    DETERMINISTIC,
+    HYBRID
+  };
+
+  enum ODEState
+  {
+    ODE_ERR = -2,
+    ODE_INIT = 0,
+    ODE_NEW  = 1,
+    ODE_CONT = 2,
+    ODE_EVENT = 3,
+    ODE_FINISH = 4
+  };
+
+  enum SystemStatus
+  {
+    SYS_ERR = -2,
+    SYS_NEW = 1,
+    SYS_CONT = 2,
+    SYS_EVENT = 3,
+    SYS_END = 5
   };
 
   //================Function for Class================
@@ -165,7 +153,7 @@ public:
   CHybridMethodODE45(const CHybridMethodODE45 & src,
                      const CCopasiContainer * pParent = NULL);
   /**
-   *   Destructor.
+   * Destructor.
    */
   ~CHybridMethodODE45();
 
@@ -173,9 +161,9 @@ public:
 public:
 
   /**
-  * Check if the method is suitable for this problem
-  * @return bool suitability of the method
-  */
+   * Check if the method is suitable for this problem
+   * @return bool suitability of the method
+   */
   virtual bool isValidProblem(const CCopasiProblem * pProblem);
 
   /**
@@ -190,7 +178,7 @@ public:
    * starting with the initialState given.
    * @param "const CState *" initialState
    */
-  virtual void start(CVectorCore< C_FLOAT64 > & initialState);
+  virtual void start(const CState * initialState);
 
 protected:
   /**
@@ -215,24 +203,15 @@ public:
 
 protected:
   /**
-   * setup mMetabFlags
-   */
-  void setupMetabFlags();
-
-  /**
-   * setup mReactionFlags
+   * Check whether a function is fast or not.
    */
   void setupReactionFlags();
 
   /**
-   * setup mMethod
+   * Setup mMethod, switching between Deterministic Method and
+   * Hybrid Method
    */
   void setupMethod();
-
-  /**
-   *
-   */
-  void setupCalculateSet();
 
   /**
    * Sets up an internal representation of the balances for each reaction.
@@ -242,20 +221,11 @@ protected:
    */
   void setupBalances();
 
-  /**
-   * Sets up an internal representation of the balances for each reaction.
-   * This is done in order to be able to deal with fixed metabolites and
-   * to avoid a time consuming search for the indices of metabolites in the
-   * model.
-   */
-  void setupMetab2React();
-
-  void setupReactAffect();
-
   //================Function for ODE45================
 public:
 
 protected:
+
   /**
    * Integrates the deterministic reactions of the system over the
    * specified time interval.
@@ -270,13 +240,13 @@ protected:
   static void EvalF(const size_t * n, const C_FLOAT64 * t, const C_FLOAT64 * y, C_FLOAT64 * ydot);
 
   /**
-     * Dummy Function for calculating roots value
-     */
+   * Dummy Function for calculating roots value
+   */
   static void EvalR(const size_t * n, const C_FLOAT64 * t, const C_FLOAT64 * y,
                     const size_t * nr, C_FLOAT64 * r);
 
   /**
-   *  This evaluates the derivatives for the complete model
+   * This evaluates the derivatives for the complete model
    */
   void evalF(const C_FLOAT64 * t, const C_FLOAT64 * y, C_FLOAT64 * ydot);
 
@@ -288,39 +258,32 @@ protected:
   //================Function for Simulation================
 public:
   /**
-   *  This instructs the method to calculate a time step of deltaT
-   *  starting with the current state, i.e., the result of the previous
-   *  step.
-   *  The new state (after deltaT) is expected in the current state.
-   *  The return value is the actual timestep taken.
-   *  @param "const double &" deltaT
-   *  @return Status status
+   * This instructs the method to calculate a time step of deltaT
+   * starting with the current state, i.e., the result of the previous
+   * step.
+   * The new state (after deltaT) is expected in the current state.
+   * The return value is the actual timestep taken.
+   * @param "const double &" deltaT
+   * @return Status status
    */
   virtual Status step(const double & deltaT);
 
 protected:
   /**
-   *  Simulates the system over the next interval of time. The current time
-   *  and the end time of the current step() are given as arguments.
+   * Simulates the system over the next interval of time. The current time
+   * and the end time of the current step() are given as arguments.
    *
-   *  @param  currentTime A C_FLOAT64 specifying the current time
-   *  @param  endTime A C_FLOAT64 specifying the end time of the step()
-   *  @return A C_FLOAT giving the new time
+   * @param  endTime A C_FLOAT64 specifying the end time of the step()
+   * @return A C_FLOAT giving the new time
    */
-  C_FLOAT64 doSingleStep(C_FLOAT64 currentTime, C_FLOAT64 endTime);
+  C_FLOAT64 doSingleStep(C_FLOAT64 endTime);
 
   /**
    * Calculates an amu value for a given reaction.
    *
    * @param rIndex A size_t specifying the reaction to be updated
    */
-  void calculateAmu(size_t rIndex);
-
-  /**
-   * Do inverse interpolation to find the state when a slow reaction
-   * is fired.
-   */
-  void doInverseInterpolation(const C_FLOAT64 time);
+  C_FLOAT64 calculateAmu(size_t rIndex);
 
   /**
    * Fire slow reaction and update populations and propensities
@@ -337,26 +300,6 @@ protected:
 protected:
 
   /**
-   * Sets up the dependency graph
-   */
-  void setupDependencyGraph();
-
-  /**
-   * Sets up the priority queue.
-   *
-   * @param startTime The time at which the simulation starts.
-   */
-  void setupPriorityQueue(C_FLOAT64 startTime = 0.0);
-
-  /**
-   * Updates the priority queue.
-   *
-   * @param rIndex A size_t giving the index of the fired reaction
-   * @param time A C_FLOAT64 holding the time taken by this reaction
-   */
-  void updatePriorityQueue(size_t rIndex, C_FLOAT64 time);
-
-  /**
    * Executes the specified reaction in the system once.
    *
    * @param rIndex A size_t specifying the index of the reaction, which
@@ -370,53 +313,20 @@ protected:
    */
   size_t getReactionIndex4Hybrid();
 
-  /**
-   * Find the reaction index and the reaction time of the stochastic (!)
-   * reaction with the lowest reaction time.
-   *
-   * @param ds A reference to a C_FLOAT64. The putative reaction time for
-   *           the first stochastic reaction is written into this variable.
-   * @param rIndex A reference to a size_t. The index of the first
-   *               stochastic reaction is written into this variable.
-   */
-  void getStochTimeAndIndex(C_FLOAT64 & ds, size_t & rIndex);
-
-  /**
-   * Generates a putative reaction time for the given reaction.
-   *
-   * @param rIndex A size_t specifying the index of the reaction
-   * @return A C_FLOAT64 holding the calculated reaction time
-   */
-  C_FLOAT64 generateReactionTime(size_t rIndex);
-
-  /**
-   *   Updates the putative reaction time of a stochastic reaction in the
-   *   priority queue. The corresponding amu and amu_old must be set prior to
-   *   the call of this method.
-   *
-   *   @param rIndex A size_t specifying the index of the reaction
-   *   @param time A C_FLOAT64 specifying the current time
-   */
-  void updateTauMu(size_t rIndex, C_FLOAT64 time);
-
+  //================Function for Root==============
 private:
   /**
-   * Gets the set of metabolites which change number when a given
-   * reaction is executed.
-   *
-   * @param rIndex The index of the reaction being executed.
-   * @return The set of affected metabolites.
-   */
-  std::set <std::string> *getAffects(size_t rIndex);
-
-  //================Function for Root Interpolation==============
-private:
-  /**
-   *
-   *
-   *
+   * Function called from TrajectoryMethod which update
+   * system state and inform ODE solver to restart
+   * integration.
    */
   virtual void stateChanged();
+
+  void maskRoots(CVectorCore<C_FLOAT64> & rootValues);
+
+  void createRootMask();
+
+  void destroyRootMask();
 
   //================Help Functions================
 protected:
@@ -430,40 +340,65 @@ protected:
   C_INT32 checkModel(CModel * model);
 
   /**
-   * Prints out data on standard output.
+   * Print out data on standard output.
    */
-  //void outputData(std::ostream & os, C_INT32 mode);
   void outputData();
 
   /**
-   * Prints out various data on standard output for debugging purposes.
+   * Print out System state
    */
-  void outputDebug(std::ostream & os, size_t level);
+  void outputState(const CState * pS);
+
+  /**
+   * tests if the model contains a global value with an assignment rule that is
+   * used in calculations
+   */
+  static bool modelHasAssignments(const CModel* pModel);
+
+  /**
+   * Print out system state given in array y
+   */
+  void outputY(C_FLOAT64 *y);
 
 //Attributes:
   //================Model Related================
+private:
+  //~~~~~~~~Model Describtion~~~~~~~~
+  /**
+   * Pointer to the model
+   */
+  CModel * mpModel;
 
   /**
-   *   A pointer to the reactions of the model.
+   *   The stoichometry matrix of the model.
    */
-  CVectorCore< CMathReaction > mReactions;
+  CMatrix <C_FLOAT64> mStoi;
 
   /**
-   *
+   * indicates if the correction N^2 -> N*(N-1) should be performed
    */
-  //bool mReducedModel;
+  bool mDoCorrection;
 
   //~~~~~~~~Metabs Related~~~~~~~~
   /**
-   * Dimension of the system. Total number of metabolites.
+   * Index of Reaction Metabs in CState
    */
-  size_t mNumReactionSpecies;
+  size_t mReactMetabId;
 
   /**
-   * Vector holding information on the status of metabolites. They can
-   * be FAST or SLOW.
+   * Dimension of the system. Total number of metabolites.
    */
-  std::vector<CHybridODE45MetabFlag> mMetabFlags;
+  size_t mNumReactMetabs;
+
+  /**
+   * A pointer to the metabolites of the model.
+   */
+  CCopasiVector <CMetab> * mpMetabolites;
+
+  /**
+   * index of the first metab in CState
+   */
+  size_t mFirstMetabIndex;
 
   //~~~~~~~~Reaction Related~~~~~~~~
   /**
@@ -472,10 +407,19 @@ protected:
   size_t mNumReactions;
 
   /**
-   * Fast reactions are set FAST and
-   * slow ones are SLOW
+   * Number of Slow Reactions
    */
-  CVector <size_t> mReactionFlags;
+  size_t mNumSlowReactions;
+
+  /**
+   * Index of Slow Reactions
+   */
+  CVector <size_t> mSlowIndex;
+
+  /**
+   *   A pointer to the reactions of the model.
+   */
+  const CCopasiVectorNS <CReaction> * mpReactions;
 
   /**
    * Internal representation of the balances of each reaction. The index of
@@ -484,30 +428,9 @@ protected:
   std::vector <std::vector <CHybridODE45Balance> > mLocalBalances;
 
   /**
-   * Internal representation of the substrates of each reaction. The index
-   * of each substrate-metabolite is provided.
-   */
-  std::vector <std::vector <CHybridODE45Balance> > mLocalSubstrates;
-
-  /**
-   *   Vector of relations between metabolites with reactions.
-   */
-  std::vector <std::set <size_t> > mMetab2React;
-
-  /**
-   * Vector of sets that the indeces of propencities which should be
-   * updated after one reaction has been fired
-   */
-  std::vector <std::set<size_t> > mReactAffect;
-
-  /**
    * Bool value
    */
   bool mHasStoiReaction;
-
-  /**
-   *
-   */
   bool mHasDetermReaction;
 
   /**
@@ -516,9 +439,14 @@ protected:
    * 1 == Deterministic
    * 2 == Hybrid
    */
-  size_t mMethod;
+  MethodUsed mMethod;
 
   //================Attributes for State================
+  /**
+   *  A pointer to the current state in complete model view.
+   */
+  CState * mpState;
+
   /**
    * Time Record
    */
@@ -530,15 +458,19 @@ protected:
    */
   CExpRKMethod mODE45;
 
+  /**
+   * Record whether ODE solver has been initialized
+   */
   bool mODEInitalized;
 
   /**
    *   Max number of doSingleStep() per step()
    */
   size_t mMaxSteps;
+  size_t mRootCounter;
   bool   mMaxStepsReached;
 
-  /** Is this useful in my method?
+  /**
    * maximal increase of a particle number in one step.
    */
   size_t mMaxBalance;
@@ -555,12 +487,6 @@ protected:
    */
   C_FLOAT64 * mY;
 
-  //  /**
-  //   * ODE45 state, corresponding to iflag in rkf45, an ODE45
-  //   * solver argument
-  //   */
-  C_INT mODEState;
-
   /**
    * state of ODE45, indicating what to do next in the step part
    * -1, error emerge
@@ -568,24 +494,16 @@ protected:
    *  1, finish one step integration
    *  2, has event
    */
-  C_INT mSysStatus;
+  ODEState mODEState;
 
-  C_FLOAT64 mDefaultAtolValue;
+  SystemStatus mSysStatus;
 
   /**
    * The propensities of the stochastic reactions.
    */
   CVector <C_FLOAT64> mAmu;
-  CVector <C_FLOAT64> mAmuOld;
 
-  /**
-   * Set of the reactions, which must be updated.
-   * Reactions have at lease one fast metab as subtract with
-   * non-zero balance
-   */
-  std::set <size_t> mCalculateSet;
-
-  //================Attributes for Root Interpolation================
+  //================Attributes for Root================
   /**
    * Status of Root and Slow Event
    */
@@ -597,15 +515,37 @@ protected:
    */
   size_t mRootNum;
 
-  //=================Root Dealing Part for Stochastic Part================
-  CVector< C_FLOAT64 > mOldRoot;
+  /**
+   * A mask which hides all roots being constant and zero.
+   */
+  CVector< bool > mRootMask;
 
-  std::queue<SRoot> mRootQueue;
+  /**
+   * A which indicates whether roots change only discretely.
+   */
+  CVector< bool > mDiscreteRoots;
+
+  /**
+   * Root counter to determine whether the internal
+   * step limit is exceeded.
+   */
+  //size_t mRootCounter;
+
+protected:
+  /**
+   * A Boolean flag indicating whether we should try masking roots
+   */
+  RootMasking mRootMasking;
+
+  //=================Root Dealing Part for Stochastic Part================
+private:
 
   /**
    * Value of Roots
    */
-  CVectorCore< C_FLOAT64 > mRootValues;
+  CVectorCore< C_FLOAT64 > *mpRootValue;
+
+  C_FLOAT64 * mpRT;
 
   //================Stochastic Related================
   /**
@@ -624,37 +564,6 @@ protected:
    */
   unsigned C_INT32 mRandomSeed;
 
-  /**
-   * The graph of reactions and their dependent reactions.
-   * When a reaction is executed, the propensities for each of
-   * its dependents must be updated.
-   */
-  CDependencyGraph mDG;
-
-  /**
-   * The calculations required for individual reactions to update all simulation values.
-   */
-  std::vector< std::vector< CObjectInterface * > > mUpdateSequences;
-
-  /**
-   * The set of putative stochastic (!) reactions and associated times at
-   * which each reaction occurs. This is represented as a priority queue,
-   * sorted by the reaction time. This heap changes dynamically as
-   * stochastic reactions become deterministic (delete this reaction from
-   * the queue) or vice versa (insert a new reaction into the queue).
-   */
-  CIndexedPriorityQueue mPQ;
-
-  /**
-   * A pointer to the first species controlled by reactions
-   */
-  const CObjectInterface * mpFirstSpecies;
-
-  /**
-   * A pointer to the value of the first species controlled by reactions.
-   */
-  C_FLOAT64 * mpFirstSpeciesValue;
-
   //========System Related========
   /**
    * File output stream to write data.
@@ -672,9 +581,22 @@ protected:
   size_t mOutputCounter;
 
   /**
+   * Indicates whether the model has global quantities
+   * with assignment rules.
+   * If it has, we will use a less efficient way to update the model
+   * state to handle this.
+   */
+  bool mHasAssignments;
+
+  /**
    *
    */
   std::ostringstream mErrorMsg;
+
+  /**
+   *
+   */
+  C_FLOAT64 mFactor;
 };
 
 #endif // COPASI_CHybridMethodODE45
