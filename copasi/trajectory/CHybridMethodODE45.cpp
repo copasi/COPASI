@@ -122,6 +122,13 @@ bool CHybridMethodODE45::isValidProblem(const CCopasiProblem * pProblem)
         return false;
     }
 
+    if (pTP->getModel()->getTotSteps() < 1)
+    {
+        //at least one reaction necessary
+        CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 17);
+        return false;
+    }
+
     if (pTP->getModel()->getReactions().size() <= 0)
     {
         //No Metabolites
@@ -228,7 +235,7 @@ void CHybridMethodODE45::initMethod(C_FLOAT64 start_time)
     //(1)----set attributes related with REACTIONS
     mpReactions   = &mpModel->getReactions();
     mNumReactions = mpReactions->size();
-
+    
     setupReactionFlags();
 
     //(2)----set attributes related with METABS
@@ -363,8 +370,38 @@ void CHybridMethodODE45::setupReactionFlags()
     mHasStoiReaction   = false;
     mHasDetermReaction = false;
 
-    mNumSlowReactions = 0;
+    // check for ODE global quantity, compartment and species
+    const CStateTemplate & StateTemplate = mpModel->getStateTemplate();
+    CModelEntity *const* ppEntity = StateTemplate.beginIndependent();
+    CModelEntity *const* ppEntityEnd = StateTemplate.endIndependent();
 
+    for (; ppEntity != ppEntityEnd; ++ppEntity)
+    {
+        if ((*ppEntity)->getStatus() == CModelEntity::ODE)
+        {
+            if (dynamic_cast<const CModelValue *>(*ppEntity) != NULL)
+            {
+                // global quantity ode rule found
+                mHasDetermReaction = true;
+                break;
+            }
+            else if (dynamic_cast<const CCompartment *>(*ppEntity) != NULL)
+            {
+                // compartment ode rule found
+                mHasDetermReaction = true;
+                break;
+            }
+            else
+            {
+                // species ode rule found
+                mHasDetermReaction = true;
+                break;
+            }
+        }
+    }
+    
+    // Check reactions 
+    mNumSlowReactions = 0;
     for (size_t rct = 0; rct < mNumReactions; rct++)
     { 
         if ((*mpReactions)[rct]->isFast())
@@ -376,6 +413,7 @@ void CHybridMethodODE45::setupReactionFlags()
         }
     }
 
+    // Record slow reactions
     size_t count = 0;
     mAmu.resize(mNumSlowReactions);
     mSlowIndex.resize(mNumSlowReactions);
