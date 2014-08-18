@@ -554,7 +554,6 @@ private:
     /**
      * Value of Roots
      */
-    CVectorCore< C_FLOAT64 > *mpRootValue;
   
     C_FLOAT64 * mpRT;
 

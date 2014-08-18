@@ -302,7 +302,6 @@ void CHybridMethodODE45::initMethod(C_FLOAT64 start_time)
 
         mODE45.mEventFunc = &CHybridMethodODE45::EvalR;
         mpRT        = new C_FLOAT64[mRootNum];
-        mpRootValue = new CVectorCore< C_FLOAT64 >(mRootNum, mpRT);
       
         mDiscreteRoots.resize(mRootNum);
         CMathTrigger::CRootFinder *const*ppRootFinder    = mpModel->getRootFinders().array();
@@ -315,7 +314,6 @@ void CHybridMethodODE45::initMethod(C_FLOAT64 start_time)
     {
         mODE45.mEventFunc = NULL;
         mpRT        = NULL;
-        mpRootValue = NULL;
 
         mRoots.resize(0);
         mDiscreteRoots.resize(0); 
@@ -350,12 +348,6 @@ void CHybridMethodODE45::cleanup()
     {
         delete [] mpRT;
         mpRT = NULL;
-    }
-
-    if(mpRootValue)
-    {
-        delete mpRootValue;
-        mpRootValue = NULL;
     }
 
     return;
@@ -804,34 +796,40 @@ void CHybridMethodODE45::evalF(const C_FLOAT64 * t, const C_FLOAT64 * y, C_FLOAT
     size_t reactID;
     mpModel->calculateDerivatives(ydot);
     ydot[mData.dim-1] = 0;
-    size_t    *pId  = mSlowIndex.array();
-    C_FLOAT64 *pAmu = mAmu.array();
 
-    calculateAmu();
-    for (i = 0; i < mNumSlowReactions; i++, pAmu++) 
-        ydot[mData.dim-1] += *pAmu;
-
-    //(3) Modify fast reactions
-    // update derivatives
-    // This part is based on the assumption that number of slow reactions is much less than 
-    // fast reactions. If number of slow reactions is dominate, little difference is there
-    // compared to previous version.
-    std::vector <CHybridODE45Balance>::iterator metabIt;
-    std::vector <CHybridODE45Balance>::iterator metabEndIt;
-    size_t metabIndex;
-    pId  = mSlowIndex.array();
-    pAmu = mAmu.array(); 
-    
-    for (i = 0; i < mNumSlowReactions; i++, pId++, pAmu++)
+    //(3) Deal with slow reactions
+    if (mMethod == HYBRID) 
     {
-        reactID    = *pId;
-        metabIt    = mLocalBalances[reactID].begin();
-        metabEndIt = mLocalBalances[reactID].end();
+        C_FLOAT64 *pAmu = mAmu.array();
+        calculateAmu();
+        for (i = 0; i < mNumSlowReactions; i++, pAmu++) 
+            ydot[mData.dim-1] += *pAmu;
 
-        for (; metabIt != metabEndIt; metabIt++)
+        // Modify fast reactions
+        // update derivatives
+        // This part is based on the assumption that number of slow reactions is much less than 
+        // fast reactions. If number of slow reactions is dominate, little difference is there
+        // compared to previous version.
+        std::vector <CHybridODE45Balance>::iterator metabIt;
+        std::vector <CHybridODE45Balance>::iterator metabEndIt;
+        size_t metabIndex;
+        size_t    *pId  = mSlowIndex.array();
+
+
+        pId  = mSlowIndex.array();
+        pAmu = mAmu.array(); 
+    
+        for (i = 0; i < mNumSlowReactions; i++, pId++, pAmu++)
         {
-            metabIndex = metabIt->mIndex + mFirstMetabIndex - 1; // mReactMetabId;
-            ydot[metabIndex] -= metabIt->mMultiplicity * (*pAmu);
+            reactID    = *pId;
+            metabIt    = mLocalBalances[reactID].begin();
+            metabEndIt = mLocalBalances[reactID].end();
+
+            for (; metabIt != metabEndIt; metabIt++)
+            {
+                metabIndex = metabIt->mIndex + mFirstMetabIndex - 1; // mReactMetabId;
+                ydot[metabIndex] -= metabIt->mMultiplicity * (*pAmu);
+            }
         }
     }
     return;
@@ -847,8 +845,8 @@ void CHybridMethodODE45::evalR(const C_FLOAT64 *t, const C_FLOAT64 *y,
 
     mpState->setTime(*t);
     C_FLOAT64 *stateY = mpState->beginIndependent();
-    for (size_t i = 0; i < mData.dim-1; i++)
-        stateY[i] = y[i]; //write result into mpState
+    memcpy(stateY, y, (mData.dim-1)*sizeof(C_FLOAT64));
+   
     mpModel->setState(*mpState);
 
     mpModel->updateSimulatedValues(false); //really?  
@@ -857,7 +855,7 @@ void CHybridMethodODE45::evalR(const C_FLOAT64 *t, const C_FLOAT64 *y,
 
     if(mRootMasking != NONE)
         maskRoots(rootValues);
-
+        
     return;
 }
 
