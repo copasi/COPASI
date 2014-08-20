@@ -176,11 +176,11 @@ public:
   virtual bool elevateChildren();
 
   /**
-   * This instructs the method to prepare for integration
-   * starting with the initialState given.
-   * @param "const CState *" initialState
+   *  This instructs the method to prepare for integration
+   *  starting with the initialState given.
+   *  @param "const CState *" initialState
    */
-  virtual void start(const CState * initialState);
+  virtual void start(CVectorCore< C_FLOAT64 > & initialState);
 
 protected:
   /**
@@ -214,14 +214,6 @@ protected:
    * Hybrid Method
    */
   void setupMethod();
-
-  /**
-   * Sets up an internal representation of the balances for each reaction.
-   * This is done in order to be able to deal with fixed metabolites and
-   * to avoid a time consuming search for the indices of metabolites in the
-   * model.
-   */
-  void setupBalances();
 
   //================Function for ODE45================
 public:
@@ -281,11 +273,9 @@ protected:
   C_FLOAT64 doSingleStep(C_FLOAT64 endTime);
 
   /**
-   * Calculates an amu value for a given reaction.
-   *
-   * @param rIndex A size_t specifying the reaction to be updated
+   * Update all propensities and calculate the total,
    */
-  C_FLOAT64 calculateAmu(size_t rIndex);
+  void updatePropensities();
 
   /**
    * Fire slow reaction and update populations and propensities
@@ -302,27 +292,20 @@ protected:
 protected:
 
   /**
-   * Executes the specified reaction in the system once.
-   *
-   * @param rIndex A size_t specifying the index of the reaction, which
-   *               will be fired.
-   */
-  void fireReaction(size_t rIndex);
-
-  /**
    * Function return a reaction index which is a slow reaction firing
    * at the event time.
+   * @return CMathReaction * pReaction
    */
-  size_t getReactionIndex4Hybrid();
+  CMathReaction * getReaction4Hybrid();
 
   //================Function for Root==============
 private:
   /**
-   * Function called from TrajectoryMethod which update
-   * system state and inform ODE solver to restart
-   * integration.
+   * Inform the trajectory method that the state has changed outside
+   * its control
+   * @param const CMath::StateChange & change
    */
-  virtual void stateChanged();
+  virtual void stateChange(const CMath::StateChange & change);
 
   void maskRoots(CVectorCore<C_FLOAT64> & rootValues);
 
@@ -341,93 +324,19 @@ protected:
    */
   C_INT32 checkModel(CModel * model);
 
-  /**
-   * Print out data on standard output.
-   */
-  void outputData();
-
-  /**
-   * Print out System state
-   */
-  void outputState(const CState * pS);
-
-  /**
-   * tests if the model contains a global value with an assignment rule that is
-   * used in calculations
-   */
-  static bool modelHasAssignments(const CModel* pModel);
-
-  /**
-   * Print out system state given in array y
-   */
-  void outputY(C_FLOAT64 *y);
-
 //Attributes:
   //================Model Related================
 private:
-  //~~~~~~~~Model Describtion~~~~~~~~
-  /**
-   * Pointer to the model
-   */
-  CModel * mpModel;
-
-  /**
-   *   The stoichometry matrix of the model.
-   */
-  CMatrix <C_FLOAT64> mStoi;
-
-  /**
-   * indicates if the correction N^2 -> N*(N-1) should be performed
-   */
-  bool mDoCorrection;
-
-  //~~~~~~~~Metabs Related~~~~~~~~
-  /**
-   * Index of Reaction Metabs in CState
-   */
-  size_t mReactMetabId;
-
-  /**
-   * Dimension of the system. Total number of metabolites.
-   */
-  size_t mNumReactMetabs;
-
-  /**
-   * A pointer to the metabolites of the model.
-   */
-  CCopasiVector <CMetab> * mpMetabolites;
-
-  /**
-   * index of the first metab in CState
-   */
-  size_t mFirstMetabIndex;
-
   //~~~~~~~~Reaction Related~~~~~~~~
   /**
-   * Number of Reactions
+   * Vector containing pointers to the slow of the model.
    */
-  size_t mNumReactions;
+  CVector< CMathReaction * >  mSlowReactions;
 
   /**
-   * Number of Slow Reactions
+   * A pointer to the first species controlled by reactions
    */
-  size_t mNumSlowReactions;
-
-  /**
-   * Index of Slow Reactions
-   */
-  CVector <size_t> mSlowIndex;
-
-  /**
-   *   A pointer to the reactions of the model.
-   */
-  const CCopasiVectorNS <CReaction> * mpReactions;
-
-  /**
-   * Internal representation of the balances of each reaction. The index of
-   * each metabolite in the reaction is provided.
-   */
-  std::vector <std::vector <CHybridODE45Balance> > mLocalBalances;
+  const CObjectInterface * mpFirstOdeVariable;
 
   /**
    * Bool value
@@ -447,7 +356,7 @@ private:
   /**
    *  A pointer to the current state in complete model view.
    */
-  CState * mpState;
+  CVector< C_FLOAT64 > mLastSuccessState;
 
   /**
    * Time Record
@@ -505,6 +414,8 @@ private:
    */
   CVector <C_FLOAT64> mAmu;
 
+  C_FLOAT64 mAmuSum;
+
   //================Attributes for Root================
   /**
    * Status of Root and Slow Event
@@ -515,7 +426,7 @@ private:
   /**
    * Number of Roots
    */
-  size_t mRootNum;
+  size_t mNumRoots;
 
   /**
    * A mask which hides all roots being constant and zero.
@@ -525,7 +436,7 @@ private:
   /**
    * A which indicates whether roots change only discretely.
    */
-  CVector< bool > mDiscreteRoots;
+  CVectorCore< bool >  mDiscreteRoots;
 
   /**
    * Root counter to determine whether the internal
@@ -583,22 +494,9 @@ private:
   size_t mOutputCounter;
 
   /**
-   * Indicates whether the model has global quantities
-   * with assignment rules.
-   * If it has, we will use a less efficient way to update the model
-   * state to handle this.
-   */
-  bool mHasAssignments;
-
-  /**
    *
    */
   std::ostringstream mErrorMsg;
-
-  /**
-   *
-   */
-  C_FLOAT64 mFactor;
 };
 
 #endif // COPASI_CHybridMethodODE45

@@ -92,6 +92,12 @@ public:
    */
   const CReaction * getModelReaction() const;
 
+  /**
+   * Check whether the reaction is fast
+   * @return bool isFast
+   */
+  bool isFast() const;
+
 private:
   /**
    * A pointer to model reaction.

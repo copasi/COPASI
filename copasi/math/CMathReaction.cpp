@@ -133,3 +133,8 @@ const CReaction * CMathReaction::getModelReaction() const
 {
   return mpReaction;
 }
+
+bool CMathReaction::isFast() const
+{
+  return (mpReaction != NULL && mpReaction->isFast());
+}

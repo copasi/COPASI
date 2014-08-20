@@ -51,7 +51,7 @@
 #include "utilities/CIndexedPriorityQueue.h"
 #include "utilities/CVersion.h"
 #include "randomGenerator/CRandom.h"
-
+#include "math/CMathContainer.h"
 #include "CExpRKMethod.h"
 #include "CHybridMethodODE45.h"
 
@@ -189,29 +189,14 @@ void CHybridMethodODE45::initializeParameter()
  * starting with the initialState given.
  * @param "const CState *" initialState
  */
-void CHybridMethodODE45::start(const CState * initialState)
+void CHybridMethodODE45::start(CVectorCore< C_FLOAT64 > & initialState)
 {
-  //set the mpModel
-  mpModel = mpProblem->getModel();
-  assert(mpModel);
-
-  //set inital state
-  mpModel->setState(*initialState);
-
-  //set mpState
-  mpState = new CState(*initialState);
-
-  //set mDoCorrection
-  if (mpModel->getModelType() == CModel::deterministic)
-    mDoCorrection = true;
-  else
-    mDoCorrection = false;
-
-  //set mHasAssignments
-  mHasAssignments = modelHasAssignments(mpModel);
+  /* Release previous state and make the initialState the current */
+  mContainerState = initialState;
+  mLastSuccessState = mContainerState;
 
   // Call initMethod function
-  initMethod(mpModel->getTime());
+  initMethod(*mpContainerStateTime);
 
   return;
 }
@@ -223,30 +208,14 @@ void CHybridMethodODE45::start(const CState * initialState)
 void CHybridMethodODE45::initMethod(C_FLOAT64 start_time)
 {
   //(1)----set attributes related with REACTIONS
-  mpReactions   = &mpModel->getReactions();
-  mNumReactions = mpReactions->size();
+  mpFirstOdeVariable = mpContainer->getMathObject(mpContainerStateTime + 1);
 
   setupReactionFlags();
 
-  //(2)----set attributes related with METABS
-  mpMetabolites = &(const_cast < CCopasiVector < CMetab > & >(mpModel->getMetabolitesX()));
-
-  size_t numReactIndepMetabs = static_cast<size_t>(mpModel->getNumIndependentReactionMetabs());
-
-  mNumReactMetabs = numReactIndepMetabs
-                    + mpModel->getNumDependentReactionMetabs();
-
-  //one more for sum of propensities
-  mData.dim = (size_t)(mpState->getNumIndependent()
-                       + mpModel->getNumDependentReactionMetabs() + 1);
-
-  mReactMetabId = mpState->getNumIndependent() - numReactIndepMetabs;
-  setupBalances();    //initialize mLocalBalances
-
-  //set mFirstMetabIndex
-  mFirstMetabIndex = mpModel->getStateTemplate().getIndex(mpModel->getMetabolitesX()[0]);
-
   //(4)----set attributes related with SYSTEM
+  // We ignore fixed event targets and time and add one for sum of propensities
+  mData.dim = (C_INT)(mContainerState.size() - mpContainer->getCountFixedEventTargets());
+
   mTimeRecord = start_time;
   mMaxSteps   = * getValue("Max Internal Steps").pUINT;
   mRootCounter = 0;
@@ -257,7 +226,7 @@ void CHybridMethodODE45::initMethod(C_FLOAT64 start_time)
   if (mMethod == STOCHASTIC)
     {
       std::cerr << "At Least One Reaction should be set FAST" << std::endl;
-      return; //need error massige here......
+      return; //need error message here......
     }
 
   //(5)----set attributes related with STOCHASTIC
@@ -266,9 +235,6 @@ void CHybridMethodODE45::initMethod(C_FLOAT64 start_time)
 
   if (mUseRandomSeed)
     mpRandomGenerator->initialize(mRandomSeed);
-
-  //mStoi = mpModel->getStoiReordered();
-  mStoi = mpModel->getStoi();
 
   //(6)----set attributes for ODE45
   mSysStatus = SYS_NEW;
@@ -287,29 +253,23 @@ void CHybridMethodODE45::initMethod(C_FLOAT64 start_time)
   mODE45.mDerivFunc = &CHybridMethodODE45::EvalF;
 
   //(7)----set attributes for Event Roots
-  mRootNum        = mpModel->getNumRoots();
-  mODE45.mRootNum = mRootNum;
+  mNumRoots        = mpContainer->getRoots().size();
+  mODE45.mRootNum = mNumRoots;
   mRootMasking    = NONE;
 
   //================================
-  if (mRootNum > 0)
+  if (mNumRoots > 0)
     {
-      mRoots.resize(mRootNum);
+      mRoots.resize(mNumRoots);
 
-      for (size_t i = 0; i < mRootNum; ++i)
+      for (size_t i = 0; i < mNumRoots; ++i)
         (mRoots.array())[i] = 0;
 
       mODE45.mEventFunc = &CHybridMethodODE45::EvalR;
-      mpRT        = new C_FLOAT64[mRootNum];
-      mpRootValue = new CVectorCore< C_FLOAT64 >(mRootNum, mpRT);
+      mpRT        = new C_FLOAT64[mNumRoots];
+      mpRootValue = new CVectorCore< C_FLOAT64 >(mNumRoots, mpRT);
 
-      mDiscreteRoots.resize(mRootNum);
-      CMathTrigger::CRootFinder *const*ppRootFinder    = mpModel->getRootFinders().array();
-      CMathTrigger::CRootFinder *const*ppRootFinderEnd = ppRootFinder + mRootNum;
-      bool * pDiscrete = mDiscreteRoots.array();
-
-      for (; ppRootFinder != ppRootFinderEnd; ++ppRootFinder, ++pDiscrete)
-        *pDiscrete = (*ppRootFinder)->isDiscrete();
+      mDiscreteRoots.initialize(mpContainer->getRootIsDiscrete());
     }
   else
     {
@@ -318,10 +278,8 @@ void CHybridMethodODE45::initMethod(C_FLOAT64 start_time)
       mpRootValue = NULL;
 
       mRoots.resize(0);
-      mDiscreteRoots.resize(0);
     }
 
-  mFactor = mpModel->getQuantity2NumberFactor();
   return;
 }
 
@@ -332,18 +290,11 @@ void CHybridMethodODE45::cleanup()
 {
   delete mpRandomGenerator;
   mpRandomGenerator = NULL;
-  mpModel = NULL;
 
   if (mY)
     {
       delete [] mY;
       mY = NULL;
-    }
-
-  if (mpState)
-    {
-      delete mpState;
-      mpState = NULL;
     }
 
   if (mpRT)
@@ -368,30 +319,40 @@ void CHybridMethodODE45::cleanup()
  */
 void CHybridMethodODE45::setupReactionFlags()
 {
-  mHasStoiReaction   = false;
-  mHasDetermReaction = false;
+  CMathReaction * pReaction = mpContainer->getReactions().array();
+  CMathReaction * pReactionEnd = pReaction + mpContainer->getReactions().size();
 
-  mNumSlowReactions = 0;
+  size_t nFast = 0;
+  size_t nSlow = 0;
 
-  for (size_t rct = 0; rct < mNumReactions; rct++)
+  for (; pReaction != pReactionEnd; ++pReaction)
     {
-      if ((*mpReactions)[rct]->isFast())
-        mHasDetermReaction = true;
+      if (pReaction->isFast())
+        {
+          nFast++;
+        }
       else
         {
-          mNumSlowReactions++;
-          mHasStoiReaction = true;
+          nSlow++;
         }
     }
 
-  size_t count = 0;
-  mAmu.resize(mNumSlowReactions);
-  mSlowIndex.resize(mNumSlowReactions);
+  mHasStoiReaction   = (nSlow > 0);
+  mHasDetermReaction = (nFast > 0);
 
-  for (size_t rct = 0; rct < mNumReactions; rct++)
+  mSlowReactions.resize(nSlow);
+  CMathReaction ** ppSlowReaction = mSlowReactions.array();
+  mAmu.resize(nSlow);
+
+  pReaction = mpContainer->getReactions().array();
+
+  for (; pReaction != pReactionEnd; ++pReaction)
     {
-      if (!((*mpReactions)[rct]->isFast()))
-        mSlowIndex[count++] = rct;
+      if (!pReaction->isFast())
+        {
+          *ppSlowReaction = pReaction;
+          ++ppSlowReaction;
+        }
     }
 
   return;
@@ -413,47 +374,6 @@ void CHybridMethodODE45::setupMethod()
   return;
 }
 
-/**
- * Sets up an internal representation of the balances for each reaction.
- * This is done in order to be able to deal with fixed metabolites and
- * to avoid a time consuming search for the indices of metabolites in the
- * model.
- */
-void CHybridMethodODE45::setupBalances()
-{
-  size_t i, j;
-  CHybridODE45Balance newElement;
-  size_t maxBalance = 0;
-
-  mLocalBalances.clear();
-  mLocalBalances.resize(mNumReactions);
-
-  for (i = 0; i < mNumReactions; i++)
-    {
-      const CCopasiVector <CChemEqElement> * balances =
-        &(*mpReactions)[i]->getChemEq().getBalances();
-
-      for (j = 0; j < balances->size(); j++)
-        {
-          newElement.mpMetabolite = const_cast < CMetab* >((*balances)[j]->getMetabolite());
-          newElement.mIndex = mpModel->getMetabolitesX().getIndex(newElement.mpMetabolite);
-          newElement.mMultiplicity = (*balances)[j]->getMultiplicity();
-
-          if ((newElement.mpMetabolite->getStatus()) == CModelEntity::REACTIONS)
-            {
-              if (newElement.mMultiplicity > maxBalance) maxBalance = newElement.mMultiplicity;
-
-              mLocalBalances[i].push_back(newElement); // element is copied for the push_back
-            }
-        }
-
-      balances = &(*mpReactions)[i]->getChemEq().getSubstrates();
-    }
-
-  mMaxBalance = maxBalance;
-  return;
-}
-
 //========Function for Simulation========
 /**
  *  This instructs the method to calculate a time step of deltaT
@@ -467,7 +387,7 @@ void CHybridMethodODE45::setupBalances()
 CTrajectoryMethod::Status CHybridMethodODE45::step(const double & deltaT)
 {
   // do several steps
-  C_FLOAT64 time    = mpState->getTime();
+  C_FLOAT64 time    = *mpContainerStateTime;
   C_FLOAT64 endTime;
 
   if (time == mTimeRecord) //new time step
@@ -478,13 +398,13 @@ CTrajectoryMethod::Status CHybridMethodODE45::step(const double & deltaT)
 
   endTime = mTimeRecord;
 
-  for (size_t i = 0; ((mRootCounter < mMaxSteps) && (time < endTime)); i++)
+  while (mRootCounter < mMaxSteps && time < endTime)
     {
       time = doSingleStep(endTime);
 
       if (mSysStatus == SYS_EVENT)
         {
-          *mpCurrentState = mpModel->getState();
+          mLastSuccessState = mContainerState;
           mRootCounter++;
           return ROOT;
         }
@@ -501,7 +421,7 @@ CTrajectoryMethod::Status CHybridMethodODE45::step(const double & deltaT)
       CCopasiMessage(CCopasiMessage::WARNING, "maximum number of reaction events was reached in at least one simulation step.\nThat means time intervals in the output may not be what you requested.");
     }
 
-  *mpCurrentState = mpModel->getState();
+  mLastSuccessState = mContainerState;
   return NORMAL;
 }
 
@@ -524,14 +444,14 @@ C_FLOAT64 CHybridMethodODE45::doSingleStep(C_FLOAT64 endTime)
   if (mSysStatus == SYS_EVENT && mHasRoot)
     {
       if (mRootCounter > 0.99 * mMaxSteps
-          || mODE45.mT == mpCurrentState->getTime()) //oscillation around roots
+          || mODE45.mT == *mpContainerStateTime) //oscillation around roots
         {
           switch (mRootMasking)
             {
               case NONE:
               case DISCRETE:
               {
-                *mpState  = *mpCurrentState;
+                mLastSuccessState  = mContainerState;
                 createRootMask();
                 mSysStatus = SYS_NEW;
                 break;
@@ -561,7 +481,7 @@ C_FLOAT64 CHybridMethodODE45::doSingleStep(C_FLOAT64 endTime)
           {
             const bool *pDiscrete = mDiscreteRoots.array();
             bool *pMask = mRootMask.array();
-            bool const * const pMaskEnd = pMask + mRootNum;
+            bool const * const pMaskEnd = pMask + mNumRoots;
             bool destroy = true;
 
             for (; pMask != pMaskEnd; ++pMask, ++pDiscrete)
@@ -590,10 +510,6 @@ C_FLOAT64 CHybridMethodODE45::doSingleStep(C_FLOAT64 endTime)
   if ((mSysStatus == SYS_EVENT) && mHasSlow) //only deal with system roots
     {
       fireSlowReaction4Hybrid();
-
-      //metab related to slow reactions have been updated,
-      //then update ASSIGNMENT values
-      mpModel->updateSimulatedValues(false);
       mSysStatus = SYS_NEW;
     }
   else if (mSysStatus == SYS_END) //finish this step
@@ -610,20 +526,15 @@ C_FLOAT64 CHybridMethodODE45::doSingleStep(C_FLOAT64 endTime)
   return ds;
 }
 
-/**
- * Function called from TrajectoryMethod which update
- * system state and inform ODE solver to restart
- * integration.
- */
-void CHybridMethodODE45::stateChanged()
+void CHybridMethodODE45::stateChange(const CMath::StateChange & change)
 {
-  *mpState = *mpCurrentState;
-  mpModel->setState(*mpState);
-  (mRoots.array())[mODE45.mRootId] = 0;
-  mSysStatus = SYS_NEW;
+  if (change & CMath::ContinuousSimulation)
+    {
+      (mRoots.array())[mODE45.mRootId] = 0;
+      mSysStatus = SYS_NEW;
+      destroyRootMask();
+    }
 
-  destroyRootMask();
-  mRootMasking = NONE;
   return;
 }
 
@@ -633,14 +544,13 @@ void CHybridMethodODE45::stateChanged()
  */
 void CHybridMethodODE45::fireSlowReaction4Hybrid()
 {
-  size_t id;
+  updatePropensities();
 
-  for (id = 0; id < mNumSlowReactions; id++)
-    mAmu[id] = calculateAmu(mSlowIndex[id]);
+  CMathReaction * pReaction = getReaction4Hybrid();
+  pReaction->fire();
 
-  id = getReactionIndex4Hybrid();
-  fireReaction(id); //Directly update current state in global view
-  *mpState = mpModel->getState();
+  // Update all values needed for simulation.
+  mpContainer->updateSimulatedValues(false);
 
   return;
 }
@@ -658,18 +568,15 @@ void CHybridMethodODE45::integrateDeterministicPart(C_FLOAT64 endTime)
   //=(1)= solver error message
   mErrorMsg.str("");
 
-  //=(2)= set state
-  *mpState = mpModel->getState();
-
   //=(3)= set time and old time
-  mODE45.mT    = mpState->getTime();
+  mODE45.mT    = *mpContainerStateTime;
   mODE45.mTEnd = endTime;
 
   //=(4)= set y and ode status
   if (mSysStatus == SYS_NEW)
     {
       //only when starts a new step, we should copy state into ode solver
-      C_FLOAT64 * stateY = mpState->beginIndependent();
+      C_FLOAT64 * stateY = mpContainerStateTime + 1; // The first value determined by an ODE or reaction.
 
       for (size_t i = 0; i < mData.dim - 1; i++)
         mY[i] = stateY[i];
@@ -699,8 +606,7 @@ void CHybridMethodODE45::integrateDeterministicPart(C_FLOAT64 endTime)
     {
       mODE45.mT  = mODE45.mTEnd;
       mSysStatus = SYS_END;
-      mpState->setTime(mODE45.mTEnd);
-      mpModel->setState(*mpState);
+      *mpContainerStateTime = mODE45.mTEnd;
       std::cout << "delta is too small" << std::endl;
       return;
     }
@@ -710,7 +616,7 @@ void CHybridMethodODE45::integrateDeterministicPart(C_FLOAT64 endTime)
     {
       mODE45.mT = mODE45.mTEnd;
       mSysStatus = SYS_END;
-      mpModel->setTime(mODE45.mTEnd);
+      *mpContainerStateTime = mODE45.mTEnd;
       return;
     }
 
@@ -738,17 +644,18 @@ void CHybridMethodODE45::integrateDeterministicPart(C_FLOAT64 endTime)
   else
     mSysStatus = SYS_END;
 
-  //7----Record State to Model
-  C_FLOAT64 *stateY = mpState->beginIndependent();
+  //7----Record State to Container
+
+  *mpContainerStateTime = mODE45.mTEnd;
+
+  //only when starts a new step, we should copy state into ode solver
+  C_FLOAT64 * stateY = mpContainerStateTime + 1; // The first value determined by an ODE or reaction.
 
   for (size_t i = 0; i < mData.dim - 1; i++)
-    stateY[i] = mY[i]; //write result into mpState
+    stateY[i] = mY[i];
 
-  mpState->setTime(mODE45.mT);
-  mpModel->setState(*mpState);
-
-  //Dependent Reaction Metabs have been updated by ODE slover
-  mpModel->updateSimulatedValues(false);
+  //Dependent Reaction Metabs have been updated by ODE solver
+  mpContainer->updateSimulatedValues(false);
   return;
 }
 
@@ -757,9 +664,9 @@ void CHybridMethodODE45::integrateDeterministicPart(C_FLOAT64 endTime)
  */
 void CHybridMethodODE45::setRoot(const size_t id)
 {
-  assert(id < mRootNum && id >= 0);
+  assert(id < mNumRoots && id >= 0);
 
-  for (size_t i = 0; i < mRootNum; i++)
+  for (size_t i = 0; i < mNumRoots; i++)
     (mRoots.array())[i] = 0;
 
   (mRoots.array())[id] = 1;
@@ -791,47 +698,38 @@ void CHybridMethodODE45::evalF(const C_FLOAT64 * t, const C_FLOAT64 * y, C_FLOAT
   //1====calculate propensities
 
   //(1)Put current time *t and independent values *y into model.
-  // This step seemes necessary, since propensity calculation process
+  // This step seems necessary, since propensity calculation process
   // requires functions called from the model class.
-  mpState->setTime(*t);
-  C_FLOAT64 * tmpY = mpState->beginIndependent();//mpState is a local copy
+  *mpContainerStateTime = *t;
+  C_FLOAT64 * tmpY = mpContainerStateTime + 1; // The first value determined by an ODE or reaction.
+  memcpy(tmpY, y, (mData.dim - 1) * sizeof(C_FLOAT64));
 
-  memcpy(tmpY, y, (mData.dim - 1)*sizeof(C_FLOAT64));
-
-  mpModel->setState(*mpState);
-  mpModel->updateSimulatedValues(false); //update ASSIGNMENT values in model
+  mpContainer->updateSimulatedValues(false);
 
   //(2) Calculate derivatives
-  size_t reactID;
-  mpModel->calculateDerivatives(ydot);
-  ydot[mData.dim - 1] = 0;
-
-  for (i = 0; i < mNumSlowReactions; i++)
-    {
-      reactID = mSlowIndex[i];
-      mAmu[i] = calculateAmu(reactID);
-      ydot[mData.dim - 1] += mAmu[i];
-    }
+  updatePropensities();
+  ydot[mData.dim - 1] = mAmuSum;
 
   //(3) Modify fast reactions
   // update derivatives
   // This part is based on the assumption that number of slow reactions is much less than
   // fast reactions. If number of slow reactions is dominate, little difference is there
   // compared to previous version.
-  std::vector <CHybridODE45Balance>::iterator metabIt;
-  std::vector <CHybridODE45Balance>::iterator metabEndIt;
-  size_t metabIndex;
+  memcpy(ydot, mpContainer->getRate(false).array() + 1, (mData.dim - 1) * sizeof(C_FLOAT64));
 
-  for (i = 0; i < mNumSlowReactions; i++)
+  CMathReaction ** ppReaction = mSlowReactions.array();
+  CMathReaction ** ppReactionEnd = ppReaction + mSlowReactions.size();
+
+  for (; ppReaction != ppReactionEnd; ++ppReaction)
     {
-      reactID    = mSlowIndex[i];
-      metabIt    = mLocalBalances[reactID].begin();
-      metabEndIt = mLocalBalances[reactID].end();
+      CMathReaction::Balance::const_iterator it = (*ppReaction)->getBalance().begin();
+      CMathReaction::Balance::const_iterator end = (*ppReaction)->getBalance().end();
 
-      for (; metabIt != metabEndIt; metabIt++)
+      C_FLOAT64 * pParticleFlux = (C_FLOAT64 *)(*ppReaction)->getParticleFluxObject()->getValuePointer();
+
+      for (; it != end; ++it)
         {
-          metabIndex = metabIt->mIndex + mFirstMetabIndex - 1; // mReactMetabId;
-          ydot[metabIndex] -= metabIt->mMultiplicity * mAmu[i];
+          ydot[it->first - mpFirstOdeVariable] -= it->second * *pParticleFlux;
         }
     }
 
@@ -844,79 +742,49 @@ void CHybridMethodODE45::evalF(const C_FLOAT64 * t, const C_FLOAT64 * y, C_FLOAT
 void CHybridMethodODE45::evalR(const C_FLOAT64 *t, const C_FLOAT64 *y,
                                const size_t *nr, C_FLOAT64 *r)
 {
-  assert(*nr == (C_INT)mRoots.size());
+  *mpContainerStateTime = *t;
+  mpContainer->updateSimulatedValues(false);
 
-  mpState->setTime(*t);
-  C_FLOAT64 *stateY = mpState->beginIndependent();
+  CVectorCore< C_FLOAT64 > RootValues(*nr, r);
+  RootValues = mpContainer->getRoots();
 
-  for (size_t i = 0; i < mData.dim - 1; i++)
-    stateY[i] = y[i]; //write result into mpState
-
-  mpModel->setState(*mpState);
-
-  mpModel->updateSimulatedValues(false); //really?
-  CVectorCore< C_FLOAT64 > rootValues(*nr, r);
-  mpModel->evaluateRoots(rootValues, true);
+  std::cout << "State: " << mpContainer->getState(false) << std::endl;
+  std::cout << "Roots: " << RootValues << std::endl;
 
   if (mRootMasking != NONE)
-    maskRoots(rootValues);
+    {
+      maskRoots(RootValues);
+    }
+
+  std::cout << "Roots: " << RootValues << std::endl;
 
   return;
 }
 
 //========Function for Stoichastic========
-/**
- * Calculates an amu value for a given reaction.
- *
- * @param rIndex A size_t specifying the reaction to be updated
- */
-C_FLOAT64 CHybridMethodODE45::calculateAmu(size_t rIndex)
+void CHybridMethodODE45::updatePropensities()
 {
-  return (*mpReactions)[rIndex]->calculateParticleFlux();;
-}
+  mAmuSum = 0.0;
 
-/**
- *   Executes the specified reaction in the system once.
- *
- *   @param rIndex A size_t specifying the index of the reaction, which
- *                 will be fired.
- */
-void CHybridMethodODE45::fireReaction(size_t rIndex)
-{
-  // Change the particle numbers according to which step took place.
-  // First, get the vector of balances in the reaction we've got.
-  // (This vector expresses the number change of each metabolite
-  // in the reaction.) Then step through each balance, using its
-  // multiplicity to calculate a new value for the associated
-  // metabolite. Finally, update the metabolite.
+  C_FLOAT64 * pAmu = mAmu.array();
+  C_FLOAT64 * pAmuEnd = pAmu + mAmu.size();
+  CMathReaction ** ppReaction = mSlowReactions.array();
 
-  size_t i;
-  C_FLOAT64 newNumber;
-  CMetab    *pMetab;
-
-  for (i = 0; i < mLocalBalances[rIndex].size(); i++)
+  for (; pAmu != pAmuEnd; ++pAmu, ++ppReaction)
     {
-      pMetab = mLocalBalances[rIndex][i].mpMetabolite;
-      newNumber = pMetab->getValue() + mLocalBalances[rIndex][i].mMultiplicity;
+      CMathObject * pPropensity = const_cast< CMathObject * >((*ppReaction)->getPropensityObject());
 
-      pMetab->setValue(newNumber);
-      pMetab->refreshConcentration();
+      pPropensity->calculate();
+      *pAmu = * (C_FLOAT64 *) pPropensity->getValuePointer();
+      mAmuSum += *pAmu;
     }
-
-  return;
 }
 
 /**
  * Calculate which slow reaction fires
  */
-size_t CHybridMethodODE45::getReactionIndex4Hybrid()
+CMathReaction * CHybridMethodODE45::getReaction4Hybrid()
 {
-  //calculate sum of amu
-  C_FLOAT64 mAmuSum = 0.0;
-
-  for (int i = 0; i < mNumSlowReactions; i++)
-    mAmuSum += mAmu[i];
-
   //get the threshold
   C_FLOAT64 rand2 = mpRandomGenerator->getRandomOO();
   C_FLOAT64 threshold = mAmuSum * rand2;
@@ -925,13 +793,21 @@ size_t CHybridMethodODE45::getReactionIndex4Hybrid()
   C_FLOAT64 tmp = 0.0;
 
   //is there some algorithm that can get a log() complex?
-  for (size_t i = 0; i < mNumSlowReactions; i++)
+  C_FLOAT64 * pAmu = mAmu.array();
+  C_FLOAT64 * pAmuEnd = pAmu + mAmu.size();
+  CMathReaction ** ppReaction = mSlowReactions.array();
+
+  for (; pAmu != pAmuEnd; ++pAmu, ++ppReaction)
     {
-      tmp += mAmu[i];
+      tmp += *pAmu;
 
       if (tmp >= threshold)
-        return mSlowIndex[i];
+        {
+          break;
+        }
     }
+
+  return *ppReaction;
 }
 
 //========Root Masking========
@@ -955,23 +831,30 @@ void CHybridMethodODE45::maskRoots(CVectorCore<C_FLOAT64 > & rootValues)
 void CHybridMethodODE45::createRootMask()
 {
   double absoluteTolerance = 1.e-12;
-  mRootMask.resize(mRootNum);
-  CVector<C_FLOAT64> rootDerivatives;
-  rootDerivatives.resize(mRootNum);
 
-  mpModel->setState(*mpState);
-  mpModel->calculateRootDerivatives(rootDerivatives);
+  size_t NumRoots = mRoots.size();
+  mRootMask.resize(NumRoots);
+  CVector< C_FLOAT64 > RootValues;
+  RootValues.resize(NumRoots);
+  CVector< C_FLOAT64 > RootDerivatives;
+  RootDerivatives.resize(NumRoots);
 
-  bool *pMask    = mRootMask.array();
+  mpContainer->updateSimulatedValues(false);
+  RootValues = mpContainer->getRoots();
+  mpContainer->calculateRootDerivatives(RootDerivatives);
+
+  bool *pMask = mRootMask.array();
   bool *pMaskEnd = pMask + mRootMask.size();
+  C_FLOAT64 * pRootValue = RootValues.array();
+  C_FLOAT64 * pRootDerivative = RootDerivatives.array();
 
-  C_FLOAT64 *pRootDerivative = rootDerivatives.array();
-
-  for (; pMask != pMaskEnd; ++pMask, ++pRootDerivative)
-    *pMask = (fabs(*pRootDerivative) < absoluteTolerance) ? true : false;
+  for (; pMask != pMaskEnd; ++pMask, ++pRootValue, ++pRootDerivative)
+    {
+      *pMask = (fabs(*pRootDerivative) < absoluteTolerance ||
+                fabs(*pRootValue) < 1e3 * std::numeric_limits< C_FLOAT64 >::min()) ? true : false;
+    }
 
   mRootMasking = ALL;
-  return;
 }
 
 void CHybridMethodODE45::destroyRootMask()
@@ -1020,185 +903,4 @@ C_INT32 CHybridMethodODE45::checkModel(CModel * model)
     }
 
   return 1; // Model is appropriate for hybrid simulation
-}
-
-/**
- *   Prints out data on standard output. Deprecated.
- */
-void CHybridMethodODE45::outputData()
-{
-  std::cout << "============Boolean============" << std::endl;
-
-  if (mDoCorrection)
-    std::cout << "mDoCorrection: Yes" << std::endl;
-  else
-    std::cout << "mDoCorrection: No" << std::endl;
-
-  std::cout << std::endl;
-
-  std::cout << "============Metab============" << std::endl;
-
-  std::cout << "~~~~mNumReactMetabs:~~~~ " << mNumReactMetabs << std::endl;
-
-  std::cout << "============Reaction============" << std::endl;
-
-  std::cout << "~~~~mNumReactions:~~~~ " << mNumReactions << std::endl;
-  //for (size_t i=0; i<mNumReactions; ++i)
-  //{
-  //    std::cout << "Reaction #: " << i << " Flag: " << mReactionFlags[i] << std::endl;
-  //}
-  std::cout << "~~~~mLocalBalances:~~~~ " << std::endl;
-
-  for (size_t i = 0; i < mLocalBalances.size(); ++i)
-    {
-      std::cout << "Reaction: " << i << std::endl;
-
-      for (size_t j = 0; j < mLocalBalances[i].size(); ++j)
-        {
-          std::cout << "Index: " << mLocalBalances[i][j].mIndex << std::endl;
-          std::cout << "mMultiplicity: " << mLocalBalances[i][j].mMultiplicity << std::endl;
-          std::cout << "mpMetablite: " << mLocalBalances[i][j].mpMetabolite << std::endl;
-        }
-    }
-
-  if (mHasStoiReaction)
-    std::cout << "mHasStoiReaction: Yes" << std::endl;
-  else
-    std::cout << "mHasStoiReaction: No" << std::endl;
-
-  if (mHasDetermReaction)
-    std::cout << "mHasDetermReaction: Yes" << std::endl;
-  else
-    std::cout << "mHasDetermReaction: No" << std::endl;
-
-  getchar();
-  return;
-}
-
-/**
- * Print State Data for Debug
- */
-void CHybridMethodODE45::outputState(const CState* mpState)
-{
-  std::cout << "NumMetabs     " << mpModel->getNumMetabs() << std::endl;
-  std::cout << "NumODEMetabs  " << mpModel->getNumODEMetabs() << std::endl;
-  std::cout << "NumIndpMetabs " << mpModel->getNumIndependentReactionMetabs() << std::endl;
-  std::cout << "NumDepnMetabs " << mpModel->getNumDependentReactionMetabs() << std::endl;
-  std::cout << "NumAgnMetabs  " << mpModel->getNumAssignmentMetabs() << std::endl;
-
-  C_FLOAT64 factor = mpModel->getQuantity2NumberFactor();
-  size_t count = -1;
-
-  count++;
-  const C_FLOAT64 time = mpState->getTime();
-  std::cout << "**State Output**" << std::endl;
-  std::cout << "Time: " << time << std::endl;
-
-  std::cout << "Indep #: " << mpState->getNumIndependent() << " Id: ";
-  std::cout << std::endl;
-  const C_FLOAT64 *pIt = mpState->beginIndependent();
-  const C_FLOAT64 *pEnd = mpState->endIndependent();
-
-  for (; pIt != pEnd; pIt++)
-    {
-      count++;
-
-      if ((count >= mFirstMetabIndex) && (count < mReactMetabId + 1 + mNumReactMetabs))
-        std::cout << "R " << (*pIt) / factor << " ";
-      else
-        std::cout << *pIt << " ";
-    }
-
-  std::cout << std::endl;
-
-  std::cout << "Dep #: " << mpState->getNumDependent() << " Id: ";
-  std::cout << std::endl;
-  pIt = mpState->beginDependent();
-  pEnd = mpState->endDependent();
-
-  for (; pIt != pEnd; pIt++)
-    {
-      count++;
-
-      if ((count >= mFirstMetabIndex) && (count < mReactMetabId + 1 + mNumReactMetabs))
-        std::cout << "R " << (*pIt) / factor << " ";
-      else
-        std::cout << *pIt << " ";
-    }
-
-  std::cout << std::endl;
-
-  std::cout << "Fix #: " << mpState->getNumIndependent() << " Id: ";
-  std::cout << std::endl;
-  pIt = mpState->beginFixed();
-  pEnd = mpState->endFixed();
-
-  for (; pIt != pEnd; pIt++)
-    std::cout << *pIt << " ";
-
-  std::cout << std::endl;
-
-  getchar();
-  return;
-}
-
-bool CHybridMethodODE45::modelHasAssignments(const CModel* pModel)
-{
-  size_t i, imax = pModel->getNumModelValues();
-
-  for (i = 0; i < imax; ++i)
-    {
-      if (pModel->getModelValues()[i]->getStatus() == CModelEntity::ASSIGNMENT)
-        if (pModel->getModelValues()[i]->isUsed())
-          {
-            //used assignment found
-            return true;
-          }
-    }
-
-  imax = pModel->getNumMetabs();
-
-  for (i = 0; i < imax; ++i)
-    {
-      if (pModel->getMetabolites()[i]->getStatus() == CModelEntity::ASSIGNMENT)
-        if (pModel->getMetabolites()[i]->isUsed())
-          {
-            //used assignment found
-            return true;
-          }
-    }
-
-  imax = pModel->getCompartments().size();
-
-  for (i = 0; i < imax; ++i)
-    {
-      if (pModel->getCompartments()[i]->getStatus() == CModelEntity::ASSIGNMENT)
-        if (pModel->getCompartments()[i]->isUsed())
-          {
-            //used assignment found
-            return true;
-          }
-    }
-
-  return false;
-}
-
-/**
- * Print out system state given in array y
- */
-void CHybridMethodODE45::outputY(C_FLOAT64 *y)
-{
-  std::cout << "y " << std::endl;
-
-  for (size_t i = 0; i <= mData.dim - 1; i++)
-    {
-      if (i >= mFirstMetabIndex - 1 && i < (mReactMetabId + mNumReactMetabs))
-        std::cout << y[i] / mFactor << " ";
-      else
-        std::cout << y[i] << " ";
-    }
-
-  std::cout << std::endl;
-  getchar();
-  return;
 }
