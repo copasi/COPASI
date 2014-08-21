@@ -265,6 +265,11 @@ protected:
 
   //========Arguments for Roots========
   /**
+   * A double value recording time at which step() stops
+   */
+   C_FLOAT64 mTimeRecord;
+  
+  /**
    * An integer, referring number of roots
    */
   size_t mNumRoot;
