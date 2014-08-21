@@ -189,6 +189,16 @@ private:
    */
   void initializeParameter();
 
+  /**
+   * Check whether finds a root
+   */
+  bool checkRoots();
+
+  /**
+   * Reset model status if State changed
+   */
+  void stateChanged();
+
 protected:
 
   /**
@@ -251,6 +261,35 @@ protected:
    * is used to avoid multiple messages.
    */
   bool mMaxStepsReached;
+
+
+  //========Arguments for Roots========
+  /**
+   * A double value recording time at which step() stops
+   */
+   C_FLOAT64 mTimeRecord;
+  
+  /**
+   * An integer, referring number of roots
+   */
+  size_t mNumRoot;
+
+  /**
+   * A copasi vector recording root values
+   */
+  CVectorCore< C_FLOAT64 > *mpRootValueOld;
+  CVectorCore< C_FLOAT64 > *mpRootValueNew;
+
+  /**
+   * A C_FLOAT64 pointer for usage of calculating new root values
+   */
+  C_FLOAT64 *mpRootNew;
+
+  /**
+   * A C_FLOAT64 pointer for usage of calculating new root values
+   */
+  C_FLOAT64 *mpRootOld;
+
 };
 
 #endif // COPASI_CStochDirectMethod
