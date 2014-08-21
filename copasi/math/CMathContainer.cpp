@@ -2786,6 +2786,12 @@ void CMathContainer::createDelays()
   CMathObject * pObject = getMathObject(mExtensiveValues.array());
   CMathObject * pObjectEnd = getMathObject(mDelayValues.array());
 
+  // The above returns NULL if no delays are present.
+  if (pObjectEnd == NULL)
+    {
+      pObjectEnd = const_cast< CMathObject * >(mObjects.array() + mObjects.size());
+    }
+
   CMath::DelayData DelayData;
 
   for (; pObject != pObjectEnd; ++pObject)

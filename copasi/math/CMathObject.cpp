@@ -37,6 +37,9 @@ void CMathObject::initialize(CMathObject *& pObject,
   pObject->mIsInitialValue = isInitialValue;
   pObject->mpDataObject = pDataObject;
 
+  pObject->mpExpression = NULL;
+  pObject->mpIntensiveProperty = NULL;
+
   pObject++;
   pValue++;
 }
