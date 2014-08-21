@@ -1917,7 +1917,7 @@ void CMathContainer::createUpdateSimulationValuesSequence()
     }
 
   pObject = mObjects.array() + (mDelayLags.array() - mValues.array());
-  pObject = pObject + mDelayLags.size();
+  pObjectEnd = pObject + mDelayLags.size();
 
   for (; pObject != pObjectEnd; ++pObject)
     {
