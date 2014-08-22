@@ -387,8 +387,8 @@ void CStochDirectMethod::start(const CState * initialState)
     if (mNumRoot > 0)
     {
         mRoots.resize(mNumRoot);
-        long int *it = mRoots.array();
-        const long int *const itEnd = it + mNumRoot; 
+        C_INT32 *it = mRoots.array();
+        const C_INT32 *const itEnd = it + mNumRoot;
         for (; it != itEnd; it++)
             *it = 0;
 
@@ -675,7 +675,7 @@ bool CStochDirectMethod::checkRoots()
 
     C_FLOAT64 *pRTOld = mpRootOld;
     C_FLOAT64 *pRTNew = mpRootNew;
-    long int  *pRT    = mRoots.array();
+    C_INT32  *pRT    = mRoots.array();
     for (size_t i = 0; i < mNumRoot; pRTOld++, pRTNew++, pRT++, i++)
     {
         if ( (*pRTNew) == 0 || (*pRTOld) * (*pRTNew) < 0.0)
