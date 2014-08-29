@@ -4817,16 +4817,16 @@ void SBMLImporter::replaceAmountReferences(ConverterASTNode* pASTNode, Model* pS
                         {
                           if (it->first->getId() == id1)
                             {
-                              // now we know that we can change the current node
-                              // to represent the species
-                              itNode->setType(AST_NAME);
-                              itNode->setName(id1.c_str());
-                              itNode.skipChildren();
                               // delete the two children
                               itNode->removeChild(1);
                               itNode->removeChild(0);
                               pdelete(pChild1);
                               pdelete(pChild2);
+                              // now we know that we can change the current node
+                              // to represent the species
+                              itNode->setType(AST_NAME);
+                              itNode->setName(id1.c_str());
+                              itNode.skipChildren();
                               break;
                             }
 
@@ -4861,16 +4861,16 @@ void SBMLImporter::replaceAmountReferences(ConverterASTNode* pASTNode, Model* pS
                     {
                       if (it->first->getId() == id)
                         {
-                          // now we know that we can change the current node
-                          // to represent the species
-                          itNode->setType(AST_NAME);
-                          itNode->setName(id.c_str());
-                          itNode.skipChildren();
                           // delete the two children
                           itNode->removeChild(1);
                           itNode->removeChild(0);
                           pdelete(pChild1);
                           pdelete(pChild2);
+                          // now we know that we can change the current node
+                          // to represent the species
+                          itNode->setType(AST_NAME);
+                          itNode->setName(id.c_str());
+                          itNode.skipChildren();
                           break;
                         }
 
@@ -9160,15 +9160,15 @@ void SBMLImporter::multiplySubstanceOnlySpeciesByVolume(ConverterASTNode* pASTNo
 
                   if (it != endit && it->second->getSpatialDimensions() != 0 && pChild2->getName() == it->second->getId())
                     {
-                      // change the current node to represent the species
-                      itNode->setType(AST_NAME);
-                      itNode->setName(pChild1->getName());
-                      itNode.skipChildren();
                       // delete the children
                       itNode->removeChild(1);
                       itNode->removeChild(0);
                       pdelete(pChild1);
                       pdelete(pChild2);
+                      // change the current node to represent the species
+                      itNode->setType(AST_NAME);
+                      itNode->setName(id.c_str());
+                      itNode.skipChildren();
                     }
                 }
             }
