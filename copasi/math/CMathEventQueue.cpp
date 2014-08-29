@@ -273,6 +273,8 @@ CMath::StateChange CMathEventQueue::process(const bool & priorToOutput)
   CMath::StateChange StateChange = CMath::NoChange;
 
   *mpRootValuesBefore = mpContainer->getRoots();
+  mpContainer->updatePriorityValues();
+
   iterator itAction = getAction();
 
   std::cout << "State: " << mpContainer->getState() << std::endl;
@@ -284,7 +286,13 @@ CMath::StateChange CMathEventQueue::process(const bool & priorToOutput)
          itAction != mActions.end() &&
          mCascadingLevel != std::numeric_limits<size_t>::max())
     {
-      StateChange |= executeAction(itAction);
+      CMath::StateChange ActionStateChange = executeAction(itAction);
+      StateChange |= ActionStateChange;
+
+      if (ActionStateChange != CMath::NoChange)
+        {
+          mpContainer->updatePriorityValues();
+        }
 
       // State change does not indicate whether we have any root changes. We need to
       // explicitly check for it.

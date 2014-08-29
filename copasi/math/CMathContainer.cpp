@@ -71,6 +71,7 @@ CMathContainer::CMathContainer():
   mApplyInitialValuesSequence(),
   mSimulationValuesSequence(),
   mSimulationValuesSequenceReduced(),
+  mPrioritySequence(),
   mInitialStateValueExtensive(),
   mInitialStateValueIntensive(),
   mStateValues(),
@@ -142,6 +143,7 @@ CMathContainer::CMathContainer(CModel & model):
   mApplyInitialValuesSequence(),
   mSimulationValuesSequence(),
   mSimulationValuesSequenceReduced(),
+  mPrioritySequence(),
   mInitialStateValueExtensive(),
   mInitialStateValueIntensive(),
   mStateValues(),
@@ -222,6 +224,7 @@ CMathContainer::CMathContainer(const CMathContainer & src):
   mApplyInitialValuesSequence(),
   mSimulationValuesSequence(),
   mSimulationValuesSequenceReduced(),
+  mPrioritySequence(),
   mInitialStateValueExtensive(),
   mInitialStateValueIntensive(),
   mStateValues(),
@@ -702,6 +705,11 @@ void CMathContainer::updateHistoryValues(const bool & useMoieties)
       setState(pHistory->getRow(lag));
       pDelay->calculateDelayValues(useMoieties);
     }
+}
+
+void CMathContainer::updatePriorityValues()
+{
+  applyUpdateSequence(mPrioritySequence);
 }
 
 void CMathContainer::applyUpdateSequence(const CObjectInterface::UpdateSequence & updateSequence)
@@ -1215,7 +1223,12 @@ CMathContainer::replaceDiscontinuousNode(const CEvaluationNode * pSrc,
       CMathObject * pDiscontinuity = itObject->second;
 
       // We need to advance both creation pointer to assure that we have the correct allocation
+      // Mark the discontinuity objects as unused
+      mCreateDiscontinuousPointer.pDiscontinuous->setValueType(CMath::ValueTypeUndefined);
       mCreateDiscontinuousPointer.pDiscontinuous += 1;
+
+      // Mark the event as unused by setting the trigger to ''
+      mCreateDiscontinuousPointer.pEvent->setTriggerExpression("", *this);
       mCreateDiscontinuousPointer.pEvent += 1;
 
       pdelete(pNode);
@@ -1256,6 +1269,9 @@ CMathContainer::replaceDiscontinuousNode(const CEvaluationNode * pSrc,
   else
     {
       pEvent = itEvent->second;
+
+      // Mark the event as unused by setting the trigger to ''
+      mCreateDiscontinuousPointer.pEvent->setTriggerExpression("", *this);
     }
 
   mCreateDiscontinuousPointer.pEvent += 1;
@@ -1599,7 +1615,7 @@ bool CMathContainer::compileEvents()
 
   for (; itEvent != endEvent; ++pItEvent, ++itEvent)
     {
-      success &= pItEvent->compile(*itEvent, *this);
+      success &= pItEvent->compile(*this);
     }
 
   return success;
@@ -1846,6 +1862,43 @@ void CMathContainer::createApplyInitialValuesSequence()
 
   // Build the update sequence
   mTransientDependencies.getUpdateSequence(mApplyInitialValuesSequence, CMath::Default, Changed, Requested, Calculated);
+
+  // It is possible that discontinuities only depend on constant values. Since discontinuities do not exist in the initial values
+  // these are never calculate. It is save to prepend all discontinuities which are not already in the sequence
+  if (mDiscontinuous.size() > 0)
+    {
+      // Find all discontinuities which are updated
+      UpdateSequence::const_iterator it = mApplyInitialValuesSequence.begin();
+      UpdateSequence::const_iterator end = mApplyInitialValuesSequence.end();
+
+      CObjectInterface::ObjectSet UpdatedDiscontinuities;
+
+      for (; it != end; ++it)
+        {
+          if (static_cast< CMathObject * >(*it)->getValueType() == CMath::Discontinuous)
+            {
+              UpdatedDiscontinuities.insert(*it);
+            }
+        }
+
+      CObjectInterface * pDiscontinuity = getMathObject(mDiscontinuous.array());
+      CObjectInterface * pDiscontinuityEnd = pDiscontinuity + mDiscontinuous.size();
+      std::set< CObjectInterface * > OutofDateDiscontinuities;
+
+      for (; pDiscontinuity != pDiscontinuityEnd; ++pDiscontinuity)
+        {
+          if (static_cast< CMathObject * >(pDiscontinuity)->getValueType() == CMath::Discontinuous &&
+              UpdatedDiscontinuities.find(pDiscontinuity) == UpdatedDiscontinuities.end())
+            {
+              OutofDateDiscontinuities.insert(pDiscontinuity);
+            }
+        }
+
+      if (OutofDateDiscontinuities.size() > 0)
+        {
+          mApplyInitialValuesSequence.insert(mApplyInitialValuesSequence.begin(), OutofDateDiscontinuities.begin(), OutofDateDiscontinuities.end());
+        }
+    }
 }
 
 void CMathContainer::createUpdateSimulationValuesSequence()
@@ -1928,6 +1981,18 @@ void CMathContainer::createUpdateSimulationValuesSequence()
   // Build the update sequence
   mTransientDependencies.getUpdateSequence(mSimulationValuesSequence, CMath::Default, mStateValues, mSimulationRequiredValues);
   mTransientDependencies.getUpdateSequence(mSimulationValuesSequenceReduced, CMath::UseMoieties, mReducedStateValues, ReducedSimulationRequiredValues);
+
+  // Build the update sequence used to calculate the priorities in the event process queue.
+  CObjectInterface::ObjectSet PriorityRequiredValues;
+  pObject = getMathObject(mEventPriorities.array());
+  pObjectEnd = pObject + mEventPriorities.size();
+
+  for (; pObject != pObjectEnd; ++pObject)
+    {
+      PriorityRequiredValues.insert(pObject);
+    }
+
+  mTransientDependencies.getUpdateSequence(mPrioritySequence, CMath::Default, mStateValues, PriorityRequiredValues);
 }
 
 void CMathContainer::analyzeRoots()
@@ -1942,15 +2007,16 @@ void CMathContainer::analyzeRoots()
     }
 
   size_t RootCount = 0;
-  CMathObject * pRoot = getMathObject(mEventRoots.array());
+  C_FLOAT64 * pRootValue = mEventRoots.array();
+  CMathObject * pRoot = getMathObject(pRootValue);
   CMathObject * pRootEnd = pRoot + mEventRoots.size();
   bool * pIsDiscrete = mRootIsDiscrete.array();
 
-  for (; pRoot != pRootEnd; ++pRoot, ++RootCount, ++pIsDiscrete)
+  for (; pRoot != pRootEnd; ++pRoot, ++RootCount, ++pIsDiscrete, ++pRootValue)
     {
       if (pRoot->getExpressionPtr() == NULL)
         {
-          break;
+          *pRootValue = 1;
         }
 
       CObjectInterface::ObjectSet Requested;
@@ -2448,8 +2514,7 @@ void CMathContainer::initializeMathObjects(const std::vector<const CModelEntity*
       SimulationType = simulationType;
 
       if (EntityType == CMath::Species &&
-          (simulationType == CMath::EventTarget ||
-           simulationType == CMath::Assignment))
+          simulationType == CMath::Assignment)
         {
           SimulationType = CMath::Conversion;
         }
@@ -2501,8 +2566,7 @@ void CMathContainer::initializeMathObjects(const std::vector<const CModelEntity*
           // Intensive Value
           SimulationType = CMath::Conversion;
 
-          if (simulationType == CMath::EventTarget ||
-              simulationType == CMath::Assignment)
+          if (simulationType == CMath::Assignment)
             {
               SimulationType = simulationType;
             }

@@ -12,6 +12,9 @@
 #include "CMathExpression.h"
 #include "CMathEventQueue.h"
 
+#include "model/CMetab.h"
+#include "model/CCompartment.h"
+#include "model/CModel.h"
 #include "model/CEvent.h"
 
 #include "function/CFunction.h"
@@ -50,21 +53,55 @@ bool CMathEvent::CAssignment::compile(CEventAssignment * pDataAssignment,
 {
   // A compiled pDataAssignment is prerequisite.
   bool success = true;
+  bool MultiplyByVolume = false;
 
   // Determine the target object
   mpTarget = container.getMathObject(pDataAssignment->getTargetObject());
 
-  if (mpTarget != NULL &&
-      mpTarget->getSimulationType() == CMath::Fixed)
+  if (mpTarget != NULL)
     {
-      mpTarget->setSimulationType(CMath::EventTarget);
+      if (mpTarget->getEntityType() == CMath::Species)
+        {
+          assert(mpTarget->isIntensiveProperty());
+
+          MultiplyByVolume = true;
+          mpTarget = const_cast< CMathObject * >(mpTarget->getCorrespondingProperty());
+        }
+
+      if (mpTarget->getSimulationType() == CMath::Fixed)
+        {
+          mpTarget->setSimulationType(CMath::EventTarget);
+        }
     }
 
   std::vector< CCopasiContainer * > ListOfContainer;
 
   // Compile the assignment object in the model context
   CExpression AssignmentExpression("AssignmentExpression", &container);
-  success &= AssignmentExpression.setInfix(pDataAssignment->getExpression());
+
+  if (MultiplyByVolume)
+    {
+      // We are sure that we have a species
+      const  CMetab * pSpecies = static_cast< CMetab * >(mpTarget->getDataObject()->getObjectParent());
+
+      std::ostringstream Infix;
+      Infix.imbue(std::locale::classic());
+      Infix.precision(16);
+
+      Infix << container.getModel().getQuantity2NumberFactor();
+      Infix << "*<";
+      Infix << pSpecies->getCompartment()->getValueReference()->getCN();
+      Infix << ">*(";
+      Infix << pDataAssignment->getExpression();
+      Infix << ")";
+
+      success &= AssignmentExpression.setInfix(Infix.str());
+    }
+  else
+    {
+      success &= AssignmentExpression.setInfix(pDataAssignment->getExpression());
+    }
+
   success &= AssignmentExpression.compile(ListOfContainer);
   success &= mpAssignment->setExpression(AssignmentExpression, container);
 
@@ -256,7 +293,8 @@ CEvaluationNode * CMathEvent::CTrigger::CRootProcessor::createTriggerExpressionN
 CMathEvent::CTrigger::CTrigger():
   mpTrigger(NULL),
   mpInitialTrigger(NULL),
-  mRoots()
+  mRoots(),
+  mInfix()
 {}
 
 CMathEvent::CTrigger::~CTrigger()
@@ -286,6 +324,16 @@ void CMathEvent::CTrigger::allocate(const CEvent * pDataEvent,
       if (TriggerFunction.setInfix(pDataEvent->getTriggerExpression()))
         {
           TriggerFunction.compile();
+
+          Variables.resize(TriggerFunction.getVariables().size());
+          CMath::Variables< size_t >::iterator it = Variables.begin();
+          CMath::Variables< size_t >::iterator end = Variables.end();
+
+          for (; it != end; ++it)
+            {
+              *it = 0;
+            }
+
           mRoots.resize(countRoots(TriggerFunction.getRoot(), Variables));
         }
     }
@@ -335,6 +383,7 @@ void CMathEvent::CTrigger::copy(const CMathEvent::CTrigger & src,
                                 const size_t & valueOffset,
                                 const size_t & objectOffset)
 {
+  mInfix = src.mInfix;
   mpTrigger = src.mpTrigger + objectOffset;
   mpInitialTrigger = src.mpInitialTrigger + objectOffset;
 
@@ -364,12 +413,10 @@ bool CMathEvent::CTrigger::compile(CEvent * pDataEvent,
 
   if (pDataEvent != NULL)
     {
-      DataTrigger.setInfix(pDataEvent->getTriggerExpression());
+      mInfix = pDataEvent->getTriggerExpression();
     }
-  else
-    {
-      DataTrigger.setInfix(mpTrigger->getExpressionPtr()->getInfix());
-    }
+
+  DataTrigger.setInfix(mInfix);
 
   success &= DataTrigger.compile();
 
@@ -378,7 +425,7 @@ bool CMathEvent::CTrigger::compile(CEvent * pDataEvent,
 
   pTriggerRoot = compile(DataTrigger.getRoot(), Variables, pRoot, container);
 
-  assert(pRoot == mRoots.array() + mRoots.size());
+  assert(pRoot <= mRoots.array() + mRoots.size());
 
   CMathExpression * pTrigger = new CMathExpression("EventTrigger", container);
   success &= static_cast< CEvaluationTree * >(pTrigger)->setRoot(pTriggerRoot);
@@ -397,7 +444,7 @@ void CMathEvent::CTrigger::setExpression(const std::string & infix,
     CMathContainer & container)
 {
   assert(mpTrigger != NULL);
-
+  mInfix = infix;
   mpTrigger->setExpression(infix, true, container);
 
   compile(NULL, container);
@@ -794,30 +841,24 @@ CEvaluationNode * CMathEvent::CTrigger::compileEQ(const CEvaluationNode * pTrigg
 }
 
 // static
-CEvaluationNode * CMathEvent::CTrigger::compileNE(const CEvaluationNode * /* pTriggerNode */,
+CEvaluationNode * CMathEvent::CTrigger::compileNE(const CEvaluationNode * pTriggerNode,
     const std::vector< CEvaluationNode * > & children,
     const CMath::Variables< CEvaluationNode * > & variables,
     CMathEvent::CTrigger::CRootProcessor *& pRoot,
     CMathContainer & container)
 {
-  CEvaluationNode * pNode = NULL;
-
   // We treat this as NOT and EQ.
   // For this we create a modified copy of the current node.
 
-  CEvaluationNode * pNotNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::NOT, "NOT");
+  CEvaluationNode * pNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::NOT, "NOT");
 
   CEvaluationNodeLogical EqNode(CEvaluationNodeLogical::EQ, "EQ");
 
-  EqNode.addChild(children[0]);
-  EqNode.addChild(children[1]);
+  EqNode.addChild(children[0]->copyBranch());
+  EqNode.addChild(children[1]->copyBranch());
 
   CEvaluationNode * pEqNode = compileEQ(&EqNode, children, variables, pRoot, container);
-  pNotNode->addChild(pEqNode);
-
-  // We need to remove the children since the ownership has been transferred to pEqNode.
-  EqNode.removeChild(children[0]);
-  EqNode.removeChild(children[1]);
+  pNode->addChild(pEqNode);
 
   return pNode;
 }
@@ -1001,7 +1042,7 @@ void CMathEvent::initialize(CMath::sPointers & pointers)
                           false, false, NULL);
 
   // Initialize priority object.
-  mpPriority = pointers.pEventDelaysObject;
+  mpPriority = pointers.pEventPrioritiesObject;
   CMathObject::initialize(pointers.pEventPrioritiesObject, pointers.pEventPriorities,
                           CMath::EventPriority, CMath::Event, CMath::SimulationTypeUndefined,
                           false, false, NULL);
@@ -1050,8 +1091,16 @@ bool CMathEvent::compile(CEvent * pDataEvent,
   CCopasiVector< CEventAssignment >::const_iterator itAssignment = pDataEvent->getAssignments().begin();
   CCopasiVector< CEventAssignment >::const_iterator endAssignment = pDataEvent->getAssignments().end();
 
-  mTargetValues.initialize(mAssignments.size(),
-                           (C_FLOAT64 *) pAssignment->getAssignment()->getValuePointer());
+  if (pAssignment != NULL)
+    {
+      mTargetValues.initialize(mAssignments.size(),
+                               (C_FLOAT64 *) pAssignment->getAssignment()->getValuePointer());
+    }
+  else
+    {
+      mTargetValues.initialize(0, NULL);
+    }
+
   mTargetPointers.resize(mAssignments.size());
   C_FLOAT64 ** ppTarget = mTargetPointers.array();
 
@@ -1080,6 +1129,38 @@ bool CMathEvent::compile(CEvent * pDataEvent,
   // Compile the priority object.
   CExpression PriorityExpression("PriorityExpression", &container);
   success &= PriorityExpression.setInfix(pDataEvent->getPriorityExpression());
+  success &= PriorityExpression.compile(ListOfContainer);
+  success &= mpPriority->setExpression(PriorityExpression, container);
+
+  return success;
+}
+
+bool CMathEvent::compile(CMathContainer & container)
+{
+  bool success = true;
+
+  mpContainer = &container;
+  mpTime = container.getState().array() + container.getTimeIndex();
+
+  mType = CEvent::Discontinuity;
+  mFireAtInitialTime = false;
+  mPersistentTrigger = false;
+  mDelayAssignment = false;
+
+  // Compile Trigger
+  success &= mTrigger.compile(NULL, container);
+
+  std::vector< CCopasiContainer * > ListOfContainer;
+
+  // Compile the delay object.
+  CExpression DelayExpression("DelayExpression", &container);
+  success &= DelayExpression.setInfix("");
+  success &= DelayExpression.compile(ListOfContainer);
+  success &= mpDelay->setExpression(DelayExpression, container);
+
+  // Compile the priority object.
+  CExpression PriorityExpression("PriorityExpression", &container);
+  success &= PriorityExpression.setInfix("");
   success &= PriorityExpression.compile(ListOfContainer);
   success &= mpPriority->setExpression(PriorityExpression, container);
 
@@ -1200,7 +1281,7 @@ void CMathEvent::fire(const bool & equality)
           mpContainer->getProcessQueue().addCalculation(getCalculationTime(), equality, this);
         }
     }
-  else if (mPersistentTrigger && mpPendingAction)
+  else if (!mPersistentTrigger && mpPendingAction)
     {
       mpContainer->getProcessQueue().removeAction(*mpPendingAction);
       pdelete(mpPendingAction);
@@ -1209,7 +1290,7 @@ void CMathEvent::fire(const bool & equality)
 
 void CMathEvent::addPendingAction(const CMathEventQueue::iterator & pendingAction)
 {
-  if (mPersistentTrigger)
+  if (!mPersistentTrigger)
     {
       assert(mpPendingAction == NULL);
 

@@ -244,49 +244,6 @@ public:
     {}
   };
 
-  class CVariableStack
-  {
-  public:
-    typedef std::vector< const CEvaluationNode * > StackElement;
-    typedef std::vector< StackElement > Buffer;
-
-    friend std::ostream & operator << (std::ostream & os, const CVariableStack & s);
-
-    enum Context
-    {
-      Variable,
-      Body
-    };
-
-  private:
-    CVariableStack();
-
-  public:
-    CVariableStack(Buffer & stack);
-
-    CVariableStack(const CVariableStack & src);
-
-    ~CVariableStack();
-
-    void push(const StackElement & stackElement);
-
-    void pop();
-
-    size_t size() const;
-
-    const CEvaluationNode * operator [](const size_t & index) const;
-
-  private:
-    Buffer * mpStack;
-
-  private:
-    Context mContext;
-
-    size_t mVariableLevel;
-
-    size_t mBodyLevel;
-  };
-
   class CAllocationStack
   {
   public:
@@ -350,8 +307,6 @@ public:
     size_t mBodyLevel;
   };
 };
-
-std::ostream & operator << (std::ostream & os, const CMath::CVariableStack & s);
 
 std::ostream & operator << (std::ostream & os, const CMath::CAllocationStack::CAllocation & s);
 

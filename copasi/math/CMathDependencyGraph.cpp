@@ -84,6 +84,8 @@ bool CMathDependencyGraph::getUpdateSequence(CObjectInterface::UpdateSequence & 
   CObjectInterface::ObjectSet::const_iterator it = changedObjects.begin();
   CObjectInterface::ObjectSet::const_iterator end = changedObjects.end();
 
+  std::cout << "Changed:" << std::endl;
+
   // Mark all nodes which are changed or need to be calculated
   for (; it != end && success; ++it)
     {
@@ -93,6 +95,7 @@ bool CMathDependencyGraph::getUpdateSequence(CObjectInterface::UpdateSequence & 
           continue;
         }
 
+      std::cout << *static_cast< const CMathObject * >(*it) << std::endl;
       found = mObjects2Nodes.find(*it);
 
       if (found != notFound)
@@ -107,6 +110,8 @@ bool CMathDependencyGraph::getUpdateSequence(CObjectInterface::UpdateSequence & 
   it = calculatedObjects.begin();
   end = calculatedObjects.end();
 
+  std::cout << "Up To Date:" << std::endl;
+
   // Mark all nodes which are requested and its prerequisites.
   for (; it != end && success; ++it)
     {
@@ -116,6 +121,7 @@ bool CMathDependencyGraph::getUpdateSequence(CObjectInterface::UpdateSequence & 
           continue;
         }
 
+      std::cout << *static_cast< const CMathObject * >(*it) << std::endl;
       found = mObjects2Nodes.find(*it);
 
       if (found != notFound)
@@ -128,6 +134,8 @@ bool CMathDependencyGraph::getUpdateSequence(CObjectInterface::UpdateSequence & 
   it = requestedObjects.begin();
   end = requestedObjects.end();
 
+  std::cout << "Requested:" << std::endl;
+
   // Mark all nodes which are requested and its prerequisites.
   for (; it != end && success; ++it)
     {
@@ -137,6 +145,7 @@ bool CMathDependencyGraph::getUpdateSequence(CObjectInterface::UpdateSequence & 
           continue;
         }
 
+      std::cout << *static_cast< const CMathObject * >(*it) << std::endl;
       found = mObjects2Nodes.find(*it);
 
       if (found != notFound)

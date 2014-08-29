@@ -141,6 +141,12 @@ public:
   const CMath::ValueType & getValueType() const;
 
   /**
+   * Set the value type
+   * @param const CMath::ValueType & valueType
+   */
+  void setValueType(const CMath::ValueType & valueType);
+
+  /**
    * Retrieve the entity type
    * @return const CMath::EntityType & entityType
    */
@@ -169,6 +175,12 @@ public:
    * @return const bool & isInitialValue
    */
   const bool & isInitialValue() const;
+
+  /**
+   * Retrieve the corresponding extensive or intensive property
+   * @return const CMathObject * correspondingProperty
+   */
+  const CMathObject * getCorrespondingProperty() const;
 
   /**
    * Set the expression's infix  and compile the object.
@@ -371,9 +383,9 @@ private:
   bool mIsInitialValue;
 
   /**
-   * A pointer to the corresponding intensive property if it exists otherwise NULL
+   * A pointer to the corresponding intensive or extensive property if it exists otherwise NULL
    */
-  const CMathObject * mpIntensiveProperty;
+  const CMathObject * mpCorrespondingProperty;
 
   /**
    * A pointer to the data object

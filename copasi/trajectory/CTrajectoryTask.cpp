@@ -299,6 +299,9 @@ bool CTrajectoryTask::process(const bool & useInitialValues)
       return false;
     }
 
+  // We need to execute any scheduled events for T_0
+  mpContainer->processQueue(true);;
+
   output(COutputInterface::BEFORE);
 
   bool flagProceed = true;

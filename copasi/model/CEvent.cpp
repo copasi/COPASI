@@ -423,7 +423,15 @@ const bool & CEvent::getDelayAssignment() const
 
 void CEvent::setFireAtInitialTime(const bool & fireAtInitialTime)
 {
-  mFireAtInitialTime = fireAtInitialTime;
+  if (mFireAtInitialTime != fireAtInitialTime)
+    {
+      mFireAtInitialTime = fireAtInitialTime;
+
+      if (mpModel != NULL)
+        {
+          mpModel->setCompileFlag(true);
+        }
+    }
 }
 
 const bool & CEvent::getFireAtInitialTime() const
@@ -433,7 +441,15 @@ const bool & CEvent::getFireAtInitialTime() const
 
 void CEvent::setPersistentTrigger(const bool & persistentTrigger)
 {
-  mPersistentTrigger = persistentTrigger;
+  if (mPersistentTrigger != persistentTrigger)
+    {
+      mPersistentTrigger = persistentTrigger;
+
+      if (mpModel != NULL)
+        {
+          mpModel->setCompileFlag(true);
+        }
+    }
 }
 
 const bool & CEvent::getPersistentTrigger() const

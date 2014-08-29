@@ -1466,21 +1466,6 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
       CCopasiMessage Message(CCopasiMessage::WARNING, MCSBML + 100);
     }
 
-  if (this->mEventPrioritiesIgnored == true)
-    {
-      CCopasiMessage Message(CCopasiMessage::WARNING, MCSBML + 98);
-    }
-
-  if (this->mInitialTriggerValues == true)
-    {
-      CCopasiMessage Message(CCopasiMessage::WARNING, MCSBML + 97);
-    }
-
-  if (this->mNonPersistentTriggerFound == true)
-    {
-      CCopasiMessage Message(CCopasiMessage::WARNING, MCSBML + 99);
-    }
-
   if (mpImportHandler)
     {
       mpImportHandler->finishItem(hStep);
@@ -3046,12 +3031,7 @@ SBMLImporter::SBMLImporter():
   mSBMLSpeciesReferenceIds(),
   mRateRuleForSpeciesReferenceIgnored(false),
   mEventAssignmentForSpeciesReferenceIgnored(false),
-  mConversionFactorFound(false),
-# if LIBSBML_VERSION >= 40200
-  mEventPrioritiesIgnored(false),
-  mInitialTriggerValues(false),
-  mNonPersistentTriggerFound(false)
-# endif // LIBSBML_VERSION >= 40200
+  mConversionFactorFound(false)
 #endif // LIBSBML_VERSION >= 40100
 {
   this->speciesMap = std::map<std::string, CMetab*>();
@@ -3074,9 +3054,6 @@ SBMLImporter::SBMLImporter():
   this->mRateRuleForSpeciesReferenceIgnored = false;
   this->mEventAssignmentForSpeciesReferenceIgnored = false;
   this->mConversionFactorFound = false;
-  this->mEventPrioritiesIgnored = false;
-  this->mInitialTriggerValues = false;
-  this->mNonPersistentTriggerFound = false;
 
   this->mIgnoredSBMLMessages.insert(10501);
   this->mIgnoredSBMLMessages.insert(10512);
@@ -4966,9 +4943,9 @@ void SBMLImporter::replaceTimeAndAvogadroNodeNames(ASTNode* pASTNode)
               this->mAvogadroSet = true;
               assert(this->mpDataModel != NULL && this->mpDataModel->getModel() != NULL);
 
-              if (this->mpDataModel != NULL && this->mpDataModel->getModel() != NULL)
+              if (mpCopasiModel != NULL)
                 {
-                  this->mpDataModel->getModel()->setAvogadro(itNode->getReal());
+                  mpCopasiModel->setAvogadro(itNode->getReal());
                 }
 
               // to be consistent, we also have to set the number on the
@@ -9561,12 +9538,6 @@ void SBMLImporter::importEvent(const Event* pEvent, Model* pSBMLModel, CModel* p
 {
   if (pEvent == NULL) return;
 
-  // create a warning if the priority is set
-  if (pEvent->isSetPriority())
-    {
-      this->mEventPrioritiesIgnored = true;
-    }
-
   /* Check if the name of the reaction is unique. */
   std::string eventName = "Event";
 
@@ -9603,20 +9574,22 @@ void SBMLImporter::importEvent(const Event* pEvent, Model* pSBMLModel, CModel* p
   const Trigger* pTrigger = pEvent->getTrigger();
   assert(pTrigger != NULL);
 
-  // create a warning if the initialValue is set
-  // We only need to consider the case where the initial value is false
-  // because that would enable the trigger to fire at t=0 which we can't handle yet.
-  if (pTrigger->isSetInitialValue() && pTrigger->getInitialValue() == false)
+  if (pTrigger->isSetInitialValue())
     {
-      this->mInitialTriggerValues = true;
+      pCOPASIEvent->setFireAtInitialTime(!pTrigger->getInitialValue());
+    }
+  else
+    {
+      pCOPASIEvent->setFireAtInitialTime(false);
     }
 
-  // create a warning if the persistent flag is set to false
-  // We only need to consider the case where the flag is set to false
-  // because that would mean that we have to recheck the trigger after it fired
-  if (pTrigger->isSetPersistent() && pTrigger->getPersistent() == false)
+  if (pTrigger->isSetPersistent())
     {
-      this->mNonPersistentTriggerFound = true;
+      pCOPASIEvent->setPersistentTrigger(pTrigger->getPersistent());
+    }
+  else
+    {
+      pCOPASIEvent->setPersistentTrigger(true);
     }
 
   if (!pTrigger->isSetMath())
@@ -9653,7 +9626,59 @@ void SBMLImporter::importEvent(const Event* pEvent, Model* pSBMLModel, CModel* p
 
   pCOPASIEvent->setTriggerExpressionPtr(pExpression);
 
+  // import the priority
+  if (pEvent->isSetPriority())
+    {
+      const Priority * pPriority = pEvent->getPriority();
+
+      if (!pPriority->isSetMath())
+        {
+          fatalError();
+        }
+
+      pMath = pPriority->getMath();
+      assert(pMath != NULL);
+
+      // check for references to species references in the expression because we don't support them yet
+      if (!SBMLImporter::findIdInASTTree(pMath, this->mSBMLSpeciesReferenceIds).empty())
+        {
+          CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 95);
+        }
+
+      // convert and set math expression
+      pTmpNode = new ConverterASTNode(*pMath);
+      this->preprocessNode(pTmpNode, pSBMLModel, copasi2sbmlmap);
+      // replace the object names
+      this->replaceObjectNames(pTmpNode, copasi2sbmlmap);
+      // now we convert the node to a CEvaluationNode
+      CExpression* pExpression = new CExpression;
+      pExpression->setTree(*pTmpNode);
+      delete pTmpNode;
+      pCOPASIEvent->setPriorityExpressionPtr(pExpression);
+    }
+
   // import the delay
+  // check for useValuesFromTriggerTime
+  if ((this->mLevel == 2 && this->mVersion >= 4) || this->mLevel > 2)
+    {
+      // it has exactly the same meaning as the delayAssignment flag in
+      // COPASI, just a different name
+      if (pEvent->getUseValuesFromTriggerTime() == true)
+        {
+          pCOPASIEvent->setDelayAssignment(true);
+        }
+      else
+        {
+          pCOPASIEvent->setDelayAssignment(false);
+        }
+    }
+  else
+    {
+      // SBML version prior to L2V4 didn't have the flag and the default
+      // behavior was the same as if the flag was set to true
+      pCOPASIEvent->setDelayAssignment(true);
+    }
+
   if (pEvent->isSetDelay())
     {
       const Delay* pDelay = pEvent->getDelay();
@@ -9682,33 +9707,10 @@ void SBMLImporter::importEvent(const Event* pEvent, Model* pSBMLModel, CModel* p
       pExpression->setTree(*pTmpNode);
       delete pTmpNode;
       pCOPASIEvent->setDelayExpressionPtr(pExpression);
-
-      // check for useValuesFromTriggerTime
-      if ((this->mLevel == 2 && this->mVersion >= 4) || this->mLevel > 2)
-        {
-          // it has exactly the same meaning as the delayAssignment flag in
-          // COPASI, just a different name
-          if (pEvent->getUseValuesFromTriggerTime() == true)
-            {
-              pCOPASIEvent->setDelayAssignment(true);
-            }
-          else
-            {
-              pCOPASIEvent->setDelayAssignment(false);
-            }
-        }
-      else
-        {
-          // SBML version prior to L2V4 didn't have the flag and the default
-          // behavior was the same as if the flag was set to true
-          pCOPASIEvent->setDelayAssignment(true);
-        }
     }
-  else
+  else if (pCOPASIEvent->getDelayAssignment())
     {
-      // actually the flag does not have any meaning without a delay, but we set
-      // it anyway to the default value
-      pCOPASIEvent->setDelayAssignment(true);
+      pCOPASIEvent->setDelayExpression("0");
     }
 
   // the check if the time units are correct has already been made elsewhere

@@ -197,7 +197,7 @@ bool CLsodaMethod::elevateChildren()
 // virtual
 void CLsodaMethod::stateChange(const CMath::StateChange & change)
 {
-  if (change & CMath::ContinuousSimulation)
+  if (change & (CMath::ContinuousSimulation | CMath::State))
     {
       mLsodaStatus = 1;
       mTime = *mpContainerStateTime;
@@ -238,10 +238,10 @@ CTrajectoryMethod::Status CLsodaMethod::step(const double & deltaT)
   // The return status of the integrator.
   Status Status = NORMAL;
 
+  mLastSuccessState = mContainerState;
+
   if (mRoots.size() > 0)
     {
-      mLastSuccessState = mContainerState;
-
       mLSODAR(&EvalF, //  1. evaluate F
               &mData.dim, //  2. number of variables
               mpY, //  3. the array of current concentrations
@@ -273,6 +273,40 @@ CTrajectoryMethod::Status CLsodaMethod::step(const double & deltaT)
         {
           mLsodaStatus = -33;
           mRootCounter = 0;
+        }
+
+      if ((mLsodaStatus <= 0 && mLsodaStatus != -33) ||
+          !mpContainer->isStateValid())
+        {
+          if (mTask != 1)
+            {
+              Status = FAILURE;
+              mPeekAheadMode = false;
+
+              if (mLsodaStatus <= 0)
+                {
+                  CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 6, mErrorMsg.str().c_str());
+                }
+              else
+                {
+                  CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 25, mTime);
+                }
+            }
+
+          // We try to recover by preventing overshooting.
+          std::cout << "State: " << mpContainer->getState(*mpReducedModel) << std::endl;
+          mContainerState = mLastSuccessState;
+          std::cout << "State: " << mpContainer->getState(*mpReducedModel) << std::endl;
+
+          mTime = *mpContainerStateTime;
+          mTask = 4;
+          mDWork[0] = EndTime;
+          stateChange(CMath::State);
+
+          Status = step(deltaT);
+          mTask = 1;
+
+          return Status;
         }
 
       switch (mLsodaStatus)
@@ -388,23 +422,43 @@ CTrajectoryMethod::Status CLsodaMethod::step(const double & deltaT)
              &ISize, // 15. the int work array size
              EvalJ, // 16. evaluate J (not given)
              &mJType);        // 17. the type of jacobian calculate (2)
-    }
 
-  if ((mLsodaStatus <= 0))
-    {
-      Status = FAILURE;
-      mPeekAheadMode = false;
-      CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 6, mErrorMsg.str().c_str());
+      if (mLsodaStatus <= 0 ||
+          !mpContainer->isStateValid())
+        {
+          if (mTask != 1)
+            {
+              Status = FAILURE;
+              mPeekAheadMode = false;
+
+              if (mLsodaStatus <= 0)
+                {
+                  CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 6, mErrorMsg.str().c_str());
+                }
+              else
+                {
+                  CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 25, mTime);
+                }
+            }
+
+          // We try to recover by preventing overshooting.
+          std::cout << "State: " << mpContainer->getState(*mpReducedModel) << std::endl;
+          mContainerState = mLastSuccessState;
+          std::cout << "State: " << mpContainer->getState(*mpReducedModel) << std::endl;
+
+          mTime = *mpContainerStateTime;
+          mTask = 4;
+          mDWork[0] = EndTime;
+          stateChange(CMath::State);
+
+          Status = step(deltaT);
+          mTask = 1;
+
+          return Status;
+        }
     }
 
   *mpContainerStateTime = mTime;
-
-  if (!mpContainer->isStateValid())
-    {
-      Status = FAILURE;
-      mPeekAheadMode = false;
-      CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 25, mTime);
-    }
 
   return Status;
 }
@@ -638,7 +692,7 @@ CTrajectoryMethod::Status CLsodaMethod::peekAhead()
           {
             // Check whether the new state is within the tolerances
             C_FLOAT64 * pOld = StartState.array();
-            C_FLOAT64 * pOldEnd = pOld + mData.dim;
+            C_FLOAT64 * pOldEnd = pOld + StartState.size();
             C_FLOAT64 * pNew = mContainerState.array();
             C_FLOAT64 * pAtol = mAtol.array();
 

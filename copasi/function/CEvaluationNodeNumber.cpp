@@ -66,11 +66,13 @@ CEvaluationNodeNumber::CEvaluationNodeNumber(const SubType & subType,
 CEvaluationNodeNumber::CEvaluationNodeNumber(const C_FLOAT64 & number):
   CEvaluationNode((Type)(CEvaluationNode::NUMBER | CEvaluationNodeNumber::DOUBLE), "")
 {
+  mValue = number;
+
   std::ostringstream Data;
 
   Data.imbue(std::locale::classic());
   Data.precision(16);
-  Data << number;
+  Data << mValue;
 
   mData = Data.str();
   mPrecedence = PRECEDENCE_NUMBER;

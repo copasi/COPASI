@@ -21,9 +21,6 @@
 #ifndef COPASI_copasi
 #define COPASI_copasi
 
-/* #define AVOGADRO 6.0221367e23 */
-#define AVOGADRO 6.0221415e23
-
 #ifdef WIN32
 # pragma warning (disable: 4786)
 # pragma warning (disable: 4243)

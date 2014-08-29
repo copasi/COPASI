@@ -1,12 +1,4 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/math/CMathEnum.cpp,v $
-//   $Revision: 1.2 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/06/07 19:59:41 $
-// End CVS Header
-
-// Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -15,97 +7,16 @@
 
 #include "CMathEnum.h"
 
-CMath::CVariableStack::CVariableStack():
-    mpStack(NULL),
-    mContext(Body),
-    mVariableLevel(C_INVALID_INDEX),
-    mBodyLevel(C_INVALID_INDEX)
-{}
-
-CMath::CVariableStack::CVariableStack(CMath::CVariableStack::Buffer & stack):
-    mpStack(&stack),
-    mContext(Body),
-    mVariableLevel(C_INVALID_INDEX),
-    mBodyLevel(C_INVALID_INDEX)
-{}
-
-CMath::CVariableStack::CVariableStack(const CMath::CVariableStack & src):
-    mpStack(src.mpStack),
-    mContext(src.mContext),
-    mVariableLevel(src.mVariableLevel),
-    mBodyLevel(src.mBodyLevel)
-{}
-
-CMath::CVariableStack::~CVariableStack()
-{}
-
-void CMath::CVariableStack::push(const CMath::CVariableStack::StackElement & stackElement)
-{
-  mpStack->push_back(stackElement);
-  mBodyLevel++;
-}
-
-void CMath::CVariableStack::pop()
-{
-  mpStack->pop_back();
-  mBodyLevel--;
-}
-
-size_t CMath::CVariableStack::size() const
-{
-  return mpStack->size();
-}
-
-const CEvaluationNode * CMath::CVariableStack::operator [](const size_t & index) const
-{
-  size_t Level = C_INVALID_INDEX;
-
-  switch (mContext)
-    {
-      case Variable:
-        Level = mVariableLevel;
-        break;
-
-      case Body:
-        Level = mBodyLevel;
-
-        break;
-    }
-
-  assert(Level < mpStack->size());
-  assert(index < mpStack->at(Level).size());
-
-  return mpStack->at(Level)[index];
-}
-
-std::ostream & operator << (std::ostream & os, const CMath::CVariableStack & s)
-{
-  switch (s.mContext)
-    {
-      case CMath::CVariableStack::Variable:
-        os << "Context: variable ";
-        break;
-
-      case CMath::CVariableStack::Body:
-        os << "Context: body ";
-        break;
-    }
-
-  os << "Variable Level: " << s.mVariableLevel << " Body Level: " << s.mBodyLevel;
-
-  return os;
-}
-
 CMath::CAllocationStack::CAllocation::CAllocation():
-    nDiscontinuous(0),
-    nTotalRoots(0),
-    nRootsPerDiscontinuity()
+  nDiscontinuous(0),
+  nTotalRoots(0),
+  nRootsPerDiscontinuity()
 {}
 
 CMath::CAllocationStack::CAllocation::CAllocation(const CMath::CAllocationStack::CAllocation & src):
-    nDiscontinuous(src.nDiscontinuous),
-    nTotalRoots(src.nTotalRoots),
-    nRootsPerDiscontinuity(src.nRootsPerDiscontinuity)
+  nDiscontinuous(src.nDiscontinuous),
+  nTotalRoots(src.nTotalRoots),
+  nRootsPerDiscontinuity(src.nRootsPerDiscontinuity)
 {}
 
 CMath::CAllocationStack::CAllocation::~CAllocation()
@@ -134,24 +45,24 @@ CMath::CAllocationStack::CAllocation::operator += (const CMath::CAllocationStack
 }
 
 CMath::CAllocationStack::CAllocationStack():
-    mpStack(NULL),
-    mContext(Body),
-    mVariableLevel(C_INVALID_INDEX),
-    mBodyLevel(C_INVALID_INDEX)
+  mpStack(NULL),
+  mContext(Body),
+  mVariableLevel(C_INVALID_INDEX),
+  mBodyLevel(C_INVALID_INDEX)
 {}
 
 CMath::CAllocationStack::CAllocationStack(CMath::CAllocationStack::Buffer & stack):
-    mpStack(&stack),
-    mContext(Body),
-    mVariableLevel(C_INVALID_INDEX),
-    mBodyLevel(C_INVALID_INDEX)
+  mpStack(&stack),
+  mContext(Body),
+  mVariableLevel(C_INVALID_INDEX),
+  mBodyLevel(C_INVALID_INDEX)
 {}
 
 CMath::CAllocationStack::CAllocationStack(const CMath::CAllocationStack & src):
-    mpStack(src.mpStack),
-    mContext(src.mContext),
-    mVariableLevel(src.mVariableLevel),
-    mBodyLevel(src.mBodyLevel)
+  mpStack(src.mpStack),
+  mContext(src.mContext),
+  mVariableLevel(src.mVariableLevel),
+  mBodyLevel(src.mBodyLevel)
 {}
 
 CMath::CAllocationStack::~CAllocationStack()
@@ -202,4 +113,3 @@ std::ostream & operator << (std::ostream & os, const CMath::CAllocationStack::CA
   os << "Discontinuities: " << s.nDiscontinuous;
   return os;
 }
-

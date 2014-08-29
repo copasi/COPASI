@@ -251,6 +251,7 @@ public:
     CMathObject * mpTrigger;
     CMathObject * mpInitialTrigger;
     CVector< CRootProcessor > mRoots;
+    std::string mInfix;
   };
 
   /**
@@ -280,6 +281,8 @@ public:
 
   bool compile(CEvent * pDataEvent,
                CMathContainer & container);
+
+  bool compile(CMathContainer & container);
 
   /**
    * Create the update sequences required for event processing.

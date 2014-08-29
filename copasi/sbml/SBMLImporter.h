@@ -112,12 +112,6 @@ protected:
   bool mRateRuleForSpeciesReferenceIgnored;
   bool mEventAssignmentForSpeciesReferenceIgnored;
   bool mConversionFactorFound;
-#if LIBSBML_VERSION >= 40200
-  bool mEventPrioritiesIgnored;
-  bool mInitialTriggerValues;
-  bool mNonPersistentTriggerFound;
-#endif // LIBSBML_VERSION >= 40200
-
 #endif // LIBSBML_VERSION >= 40100
 
   /**

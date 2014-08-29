@@ -188,6 +188,10 @@ bool CQEventWidget1::loadFromEvent()
   mpExpressionTrigger->mpExpressionWidget->setExpression(mpEvent->getTriggerExpression());
   mpExpressionTrigger->updateWidget();    // bring into view mode
 
+  // *** Expression of Priority
+  mpExpressionPriority->mpExpressionWidget->setExpression(mpEvent->getPriorityExpression());
+  mpExpressionPriority->updateWidget();    // bring into view mode
+
   // *** Expression of Delay
   mpExpressionDelay->mpExpressionWidget->setExpression(mpEvent->getDelayExpression());
   mpExpressionDelay->updateWidget();    // bring into view mode
@@ -204,6 +208,9 @@ bool CQEventWidget1::loadFromEvent()
     {
       mpComboBoxDelay->setCurrentIndex(1); // Calculation and Assignment
     }
+
+  mpFireAtInitialTime->setChecked(mpEvent->getFireAtInitialTime());
+  mpTriggerPersistent->setChecked(!mpEvent->getPersistentTrigger());
 
   // copy assignment from event
   CCopasiVectorN< CEventAssignment >::const_iterator it = mpEvent->getAssignments().begin();
@@ -280,6 +287,12 @@ void CQEventWidget1::saveToEvent()
       mChanged = true;
     }
 
+  if (mpEvent->getPriorityExpression() != mpExpressionPriority->mpExpressionWidget->getExpression())
+    {
+      mpEvent->setPriorityExpression(mpExpressionPriority->mpExpressionWidget->getExpression());
+      mChanged = true;
+    }
+
   switch (mpComboBoxDelay->currentIndex())
     {
       case 0:
@@ -324,6 +337,18 @@ void CQEventWidget1::saveToEvent()
           }
 
         break;
+    }
+
+  if (mpEvent->getFireAtInitialTime() != mpFireAtInitialTime->isChecked())
+    {
+      mpEvent->setFireAtInitialTime(mpFireAtInitialTime->isChecked());
+      mChanged = true;
+    }
+
+  if (mpEvent->getPersistentTrigger() == mpTriggerPersistent->isChecked())
+    {
+      mpEvent->setPersistentTrigger(!mpTriggerPersistent->isChecked());
+      mChanged = true;
     }
 
   // Save the event assignments

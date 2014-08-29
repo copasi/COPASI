@@ -38,7 +38,7 @@ void CMathObject::initialize(CMathObject *& pObject,
   pObject->mpDataObject = pDataObject;
 
   pObject->mpExpression = NULL;
-  pObject->mpIntensiveProperty = NULL;
+  pObject->mpCorrespondingProperty = NULL;
 
   pObject++;
   pValue++;
@@ -54,7 +54,7 @@ CMathObject::CMathObject():
   mSimulationType(CMath::SimulationTypeUndefined),
   mIsIntensiveProperty(false),
   mIsInitialValue(false),
-  mpIntensiveProperty(NULL),
+  mpCorrespondingProperty(NULL),
   mpDataObject(NULL)
 {}
 
@@ -74,13 +74,13 @@ void CMathObject::copy(const CMathObject & src, CMathContainer & container, cons
   mIsInitialValue = src.mIsInitialValue;
   mpDataObject = src.mpDataObject;
 
-  if (src.mpIntensiveProperty != NULL)
+  if (src.mpCorrespondingProperty != NULL)
     {
-      mpIntensiveProperty = (CMathObject *)((size_t) src.mpIntensiveProperty + objectOffset);
+      mpCorrespondingProperty = (CMathObject *)((size_t) src.mpCorrespondingProperty + objectOffset);
     }
   else
     {
-      mpIntensiveProperty = NULL;
+      mpCorrespondingProperty = NULL;
     }
 
   if (src.mpExpression != NULL)
@@ -107,9 +107,9 @@ void CMathObject::reallocate(CMathContainer & container, const size_t & valueOff
 {
   mpValue = (C_FLOAT64 *)((size_t) mpValue + valueOffset);
 
-  if (mpIntensiveProperty != NULL)
+  if (mpCorrespondingProperty != NULL)
     {
-      mpIntensiveProperty = (CMathObject *)((size_t) mpIntensiveProperty + objectOffset);
+      mpCorrespondingProperty = (CMathObject *)((size_t) mpCorrespondingProperty + objectOffset);
     }
 
   if (mpExpression != NULL)
@@ -198,7 +198,7 @@ bool CMathObject::isPrerequisiteForContext(const CObjectInterface * pObject,
             mSimulationType == CMath::Dependent &&
             !mIsIntensiveProperty)
           {
-            if (mpIntensiveProperty != pObject)
+            if (mpCorrespondingProperty != pObject)
               {
                 return true;
               }
@@ -222,11 +222,11 @@ bool CMathObject::isPrerequisiteForContext(const CObjectInterface * pObject,
               return true;
 
             // If the concentration was changed in the context we need to recalculate.
-            if (changedObjects.find(mpIntensiveProperty) != changedObjects.end())
+            if (changedObjects.find(mpCorrespondingProperty) != changedObjects.end())
               return true;
 
             // If the concentration is calculated by an assignment we need to recalculate.
-            if (mpIntensiveProperty->getSimulationType() == CMath::Assignment)
+            if (mpCorrespondingProperty->getSimulationType() == CMath::Assignment)
               return true;
 
             return false;
@@ -341,6 +341,11 @@ const CMath::ValueType & CMathObject::getValueType() const
   return mValueType;
 }
 
+void CMathObject::setValueType(const CMath::ValueType & valueType)
+{
+  mValueType = valueType;
+}
+
 const CMath::EntityType & CMathObject::getEntityType() const
 {
   return mEntityType;
@@ -364,6 +369,11 @@ const bool & CMathObject::isIntensiveProperty() const
 const bool & CMathObject::isInitialValue() const
 {
   return mIsInitialValue;
+}
+
+const CMathObject * CMathObject::getCorrespondingProperty() const
+{
+  return mpCorrespondingProperty;
 }
 
 bool CMathObject::setExpression(const std::string & infix,
@@ -539,12 +549,25 @@ bool CMathObject::compileInitialValue(CMathContainer & container)
   mPrerequisites.clear();
 
   const CModelEntity * pEntity = dynamic_cast< const CModelEntity * >(mpDataObject->getObjectParent());
+  const CMetab * pSpecies = NULL;
+
+  // Only species have corresponding properties (extensive vs intensive).
+  if (mEntityType == CMath::Species)
+    {
+      pSpecies = static_cast< const CMetab * >(pEntity);
+
+      if (mIsIntensiveProperty)
+        {
+          mpCorrespondingProperty = container.getMathObject(pSpecies->getInitialValueReference());
+        }
+      else
+        {
+          mpCorrespondingProperty = container.getMathObject(pSpecies->getInitialConcentrationReference());
+        }
+    }
 
   if (mIsIntensiveProperty)
     {
-      // Only species have intensive properties (concentration and concentration rate).
-      const CMetab * pSpecies = static_cast< const CMetab * >(pEntity);
-
       switch (mSimulationType)
         {
           case CMath::EventTarget:
@@ -581,8 +604,6 @@ bool CMathObject::compileInitialValue(CMathContainer & container)
 
           case CMath::Conversion:
           {
-            const CMetab * pSpecies = static_cast< const CMetab * >(pEntity);
-            mpIntensiveProperty = container.getMathObject(pSpecies->getInitialConcentrationReference());
             success &= createExtensiveValueExpression(pSpecies, container);
           }
           break;
@@ -611,11 +632,31 @@ bool CMathObject::compileValue(CMathContainer & container)
   // Reset the prerequisites
   mPrerequisites.clear();
 
+  const CModelEntity * pEntity = NULL;
+  const CMetab * pSpecies = NULL;
+
+  if (mpDataObject != NULL)
+    {
+      pEntity = dynamic_cast< const CModelEntity * >(mpDataObject->getObjectParent());
+    }
+
+  // Only species have corresponding properties (extensive vs intensive).
+  if (mEntityType == CMath::Species)
+    {
+      pSpecies = static_cast< const CMetab * >(pEntity);
+
+      if (mIsIntensiveProperty)
+        {
+          mpCorrespondingProperty = container.getMathObject(pSpecies->getValueReference());
+        }
+      else
+        {
+          mpCorrespondingProperty = container.getMathObject(pSpecies->getConcentrationReference());
+        }
+    }
+
   if (mIsIntensiveProperty)
     {
-      // Only species have intensive properties.
-      const CMetab * pSpecies = static_cast< const CMetab * >(mpDataObject->getObjectParent());
-
       switch (mSimulationType)
         {
           case CMath::Assignment:
@@ -641,12 +682,8 @@ bool CMathObject::compileValue(CMathContainer & container)
     {
       // Species need an additional conversion since the event targets the
       // intensive property.
-      const CMetab * pSpecies = NULL;
-
       if (mEntityType == CMath::Species)
         {
-          pSpecies = static_cast< const CMetab * >(mpDataObject->getObjectParent());
-          mpIntensiveProperty = container.getMathObject(pSpecies->getConcentrationReference());
           success &= createExtensiveValueExpression(pSpecies, container);
         }
 
@@ -698,11 +735,23 @@ bool CMathObject::compileRate(CMathContainer & container)
   // Reset the prerequisites
   mPrerequisites.clear();
 
+  const CModelEntity * pEntity = NULL;
+  const CMetab * pSpecies = NULL;
+
+  if (mpDataObject != NULL)
+    {
+      pEntity = dynamic_cast< const CModelEntity * >(mpDataObject->getObjectParent());
+    }
+
+  // Only species have corresponding properties (extensive vs intensive).
+  if (mEntityType == CMath::Species)
+    {
+      pSpecies = static_cast< const CMetab * >(pEntity);
+    }
+
   if (mIsIntensiveProperty)
     {
       // Only species have intensive properties.
-      const CMetab * pSpecies = static_cast< const CMetab * >(mpDataObject->getObjectParent());
-
       switch (mSimulationType)
         {
           case CMath::Assignment:
@@ -738,12 +787,10 @@ bool CMathObject::compileRate(CMathContainer & container)
 
             if (mEntityType == CMath::Species)
               {
-                const CMetab * pSpecies = static_cast< const CMetab * >(mpDataObject->getObjectParent());
                 success &= createExtensiveODERateExpression(pSpecies, container);
               }
             else
               {
-                const CModelEntity * pEntity = static_cast< const CModelEntity * >(mpDataObject->getObjectParent());
                 success &= createConvertedExpression(pEntity->getExpressionPtr(), container);
               }
 
@@ -752,7 +799,6 @@ bool CMathObject::compileRate(CMathContainer & container)
           case CMath::Independent:
           case CMath::Dependent:
           {
-            const CMetab * pSpecies = static_cast< const CMetab * >(mpDataObject->getObjectParent());
             success &= createExtensiveReactionRateExpression(pSpecies, container);
           }
           break;
@@ -1074,7 +1120,9 @@ bool CMathObject::createConvertedExpression(const CExpression * pExpression,
   bool ReplaceDiscontinousNodes =
     !mIsInitialValue &&
     mValueType != CMath::Discontinuous &&
-    mValueType != CMath::EventAssignment;
+    mValueType != CMath::EventAssignment &&
+    mValueType != CMath::EventPriority &&
+    mValueType != CMath::EventDelay;
 
   mpExpression = new CMathExpression(*pExpression, container, ReplaceDiscontinousNodes);
   compileExpression();
@@ -1219,8 +1267,9 @@ bool CMathObject::createExtensiveODERateExpression(const CMetab * pSpecies,
   Infix << container.getModel().getQuantity2NumberFactor();
   Infix << "*<";
   Infix << pSpecies->getCompartment()->getValueReference()->getCN();
-  Infix << ">*";
+  Infix << ">*(";
   Infix << pSpecies->getExpression();
+  Infix << ")";
 
   CExpression E("ExtensiveODERateExpression", &container);
 
@@ -1480,9 +1529,9 @@ std::ostream &operator<<(std::ostream &os, const CMathObject & o)
 
   os << "  Intensive Property:    ";
 
-  if (o.mpIntensiveProperty != NULL)
+  if (o.mpCorrespondingProperty != NULL)
     {
-      os << o.mpIntensiveProperty->getCN() << std::endl;
+      os << o.mpCorrespondingProperty->getCN() << std::endl;
     }
   else
     {

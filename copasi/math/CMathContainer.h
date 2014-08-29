@@ -229,6 +229,12 @@ public:
   void updateHistoryValues(const bool & useMoieties);
 
   /**
+   * Calculate all dependent initial values based on initial extensive
+   * or intensive values
+   */
+  void updatePriorityValues();
+
+  /**
    * Apply the given update sequence to the mathematical objects in the container
    * @param const CObjectInterface::UpdateSequence & updateSequence
    */
@@ -813,6 +819,12 @@ private:
    * on the assumption that all state values may have changed
    */
   CObjectInterface::UpdateSequence mSimulationValuesSequenceReduced;
+
+  /**
+   * The sequence of updates needed to calculate all priorities
+   * on the assumption that all state values may have changed
+   */
+  CObjectInterface::UpdateSequence mPrioritySequence;
 
   /**
    * The set of objects which determine the initial state of the model based on extensive
