@@ -15,10 +15,11 @@
 #include <string>
 #include <iostream>
 #include "sbml/util/List.h"
+#include "sbml/common/libsbml-config-common.h"
 
 #include "ConverterASTNode.h"
 
-#if LIBSBML_VERSION >= 50903
+#ifndef LIBSBML_USE_LEGACY_MATH
 
 /**
  * Standard constructor
@@ -326,4 +327,4 @@ ASTNode* ConverterASTNode::shallowCopy(const ASTNode* pOrig)
   return pCopy;
 };
 
-#endif // LIBSBML_VERSION
+#endif // LIBSBML_USE_LEGACY_MATH
