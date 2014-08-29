@@ -697,21 +697,37 @@ bool CStochDirectMethod::checkRoots()
  */
 void CStochDirectMethod::stateChanged()
 {
-  mMethodState = *mpCurrentState;
-  const CStateTemplate & StateTemplate = mpModel->getStateTemplate();
-  CModelEntity *const* ppEntity  = StateTemplate.beginIndependent();
-  CModelEntity *const* endEntity = StateTemplate.endFixed();
-  C_FLOAT64 * pValue = mMethodState.beginIndependent();
-
-  for (; ppEntity != endEntity; ++ppEntity, ++pValue)
+    mMaxStepsReached = false;
+    mMethodState = *mpCurrentState;
+    const CStateTemplate & StateTemplate = mpModel->getStateTemplate();
+    CModelEntity *const* ppEntity  = StateTemplate.beginIndependent();
+    CModelEntity *const* endEntity = StateTemplate.endFixed();
+    C_FLOAT64 * pValue = mMethodState.beginIndependent();
+    for (; ppEntity != endEntity; ++ppEntity, ++pValue)
     {
       if (dynamic_cast< const CMetab * >(*ppEntity) != NULL)
         *pValue = floor(*pValue + 0.5);
     }
 
-  mpModel->setState(mMethodState);
-  mpModel->updateSimulatedValues(false); //for assignments
+    mpModel->setState(mMethodState);
+    mpModel->updateSimulatedValues(false); //for assignments
 
-  // recalculate roots
-  mpModel->evaluateRoots(*mpRootValueOld, true);
+    // recalculate amu;
+    size_t i;
+    for (i = 0; i < mNumReactions; i++)
+        calculateAmu(i);
+
+    // calculate the total propensity
+    C_FLOAT64 * pAmu   = mAmu.array();
+    C_FLOAT64 * endAmu = pAmu + mNumReactions;
+
+    mA0 = 0.0;
+
+    for (; pAmu != endAmu; ++pAmu)
+        mA0 += *pAmu;
+
+    mNextReactionIndex = C_INVALID_INDEX;
+   
+    // recalculate roots
+    mpModel->evaluateRoots(*mpRootValueOld, true);
 }
