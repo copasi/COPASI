@@ -4964,11 +4964,12 @@ void SBMLImporter::replaceTimeAndAvogadroNodeNames(ASTNode* pASTNode)
           if (!this->mAvogadroSet)
             {
               this->mAvogadroSet = true;
-              assert(this->mpDataModel != NULL && this->mpDataModel->getModel() != NULL);
 
-              if (this->mpDataModel != NULL && this->mpDataModel->getModel() != NULL)
+              assert(mpCopasiModel != NULL);
+
+              if (mpCopasiModel != NULL)
                 {
-                  this->mpDataModel->getModel()->setAvogadro(itNode->getReal());
+                  mpCopasiModel->setAvogadro(itNode->getReal());
                 }
 
               // to be consistent, we also have to set the number on the
@@ -5825,6 +5826,7 @@ void SBMLImporter::doMapping(CReaction* pCopasiReaction, const CEvaluationNodeCa
           pCopasiReaction->setParameterMapping(i, objectKey);
 
           const CChemEq& eqn = pCopasiReaction->getChemEq();
+
           bool reversible = eqn.getReversibility();
 
           // We guess what the role of a variable of newly imported function is:
