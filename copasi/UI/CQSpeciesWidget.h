@@ -63,6 +63,10 @@ protected slots:
   virtual void dataChanged(const QModelIndex& topLeft,
                            const QModelIndex& bottomRight);
   virtual void slotFilterChanged();
+
+#ifdef COPASI_UNDO
+  virtual void slotChangeWidget(const size_t & id);
+#endif
 };
 
 #endif // CQSpeciesWidget_h
