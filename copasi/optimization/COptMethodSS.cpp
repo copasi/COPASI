@@ -312,6 +312,7 @@ bool COptMethodSS::localmin(CVector< C_FLOAT64 > & solution, C_FLOAT64 & fval)
 
   // reset the function counter of the local minimizer
   mpOptProblemLocal->resetEvaluations();
+
   // run it
   Running &= mpLocalMinimizer->optimise();
   // add the function evaluations taken in local to the global problem
@@ -1209,9 +1210,14 @@ bool COptMethodSS::optimise()
 
   // the best ever might not be what is on position 0, so bring it back
   *mRefSet[0] = mpOptProblem->getSolutionVariables();
+
   // now let's do a final local minimisation with a tighter tolerance
-  mpLocalMinimizer->setValue("Tolerance", (C_FLOAT64) 1.e-006);
-  Running &= localmin(*(mRefSet[0]), mRefSetVal[0]);
+
+  if (Running)
+    {
+      mpLocalMinimizer->setValue("Tolerance", (C_FLOAT64) 1.e-006);
+      Running &= localmin(*(mRefSet[0]), mRefSetVal[0]);
+    }
 
   // has it improved?
   if (mRefSetVal[0] < mBestValue)
