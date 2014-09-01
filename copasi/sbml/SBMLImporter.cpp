@@ -4954,11 +4954,12 @@ void SBMLImporter::replaceTimeAndAvogadroNodeNames(ASTNode* pASTNode)
           if (!this->mAvogadroSet)
             {
               this->mAvogadroSet = true;
-              assert(this->mpDataModel != NULL && this->mpDataModel->getModel() != NULL);
 
-              if (this->mpDataModel != NULL && this->mpDataModel->getModel() != NULL)
+              assert(mpCopasiModel != NULL);
+
+              if (mpCopasiModel != NULL)
                 {
-                  this->mpDataModel->getModel()->setAvogadro(itNode->getReal());
+                  mpCopasiModel->setAvogadro(itNode->getReal());
                 }
 
               // to be consistent, we also have to set the number on the
