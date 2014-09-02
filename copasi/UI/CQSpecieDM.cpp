@@ -349,7 +349,10 @@ bool CQSpecieDM::setData(const QModelIndex &index, const QVariant &value,
                          int role)
 {
 #ifdef COPASI_UNDO
-  mpUndoStack->push(new SpecieDataChangeCommand(index, value, role, this));
+	if (index.data() == value)
+		return false;
+	else
+		mpUndoStack->push(new SpecieDataChangeCommand(index, value, role, this));
 #else
   if (index.isValid() && role == Qt::EditRole)
     {
