@@ -62,7 +62,7 @@ be done with:
 
 
 ### Feedback
-To submit feedback, or bug reports, please use the [COPASI Tracker](www.copasi.org/tracker/), 
+To submit feedback, or bug reports, please use the [COPASI Tracker](http://www.copasi.org/tracker/), 
 or our [mailing list](https://groups.google.com/forum/#!forum/copasi-user-forum). 
 
 ### License
