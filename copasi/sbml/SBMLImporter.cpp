@@ -273,6 +273,9 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
   // for SBML L3 files the default units are defined on the model
   if (this->mLevel > 2)
     {
+      this->mpCopasiModel->setAvogadro(6.02214179e23);
+      this->mAvogadroSet = true;
+
       // we make copies of the unit definitions so that we do not have to remember
       // if we created them or not
       std::string units;
@@ -4959,26 +4962,6 @@ void SBMLImporter::replaceTimeAndAvogadroNodeNames(ASTNode* pASTNode)
       else if (itNode->getType() == AST_NAME_AVOGADRO)
         {
           itNode->setName(this->mpCopasiModel->getObject(CCopasiObjectName("Reference=Avogadro Constant"))->getCN().c_str());
-
-          // when we do this the first time, we have to set the avogadro number on the model
-          if (!this->mAvogadroSet)
-            {
-              this->mAvogadroSet = true;
-
-              assert(mpCopasiModel != NULL);
-
-              if (mpCopasiModel != NULL)
-                {
-                  mpCopasiModel->setAvogadro(itNode->getReal());
-                }
-
-              // to be consistent, we also have to set the number on the
-              // avogadro parameter we created
-              if (this->mAvogadroCreated)
-                {
-                  const_cast<Parameter*>(*this->mPotentialAvogadroNumbers.begin())->setValue(itNode->getReal());
-                }
-            }
         }
     }
 }

@@ -669,7 +669,9 @@ CTrajectoryMethod::Status CLsodaMethod::peekAhead()
               }
 
             if (pOld != pOldEnd ||
-                mTime > StartState.getTime() * (1.0 + *mpRelativeTolerance))
+                (mTime > StartState.getTime() * (1.0 + *mpRelativeTolerance) &&
+                 fabs(mTime) > *mpAbsoluteTolerance &&
+                 fabs(StartState.getTime()) > *mpAbsoluteTolerance))
               {
                 mPeekAheadMode = false;
               }
