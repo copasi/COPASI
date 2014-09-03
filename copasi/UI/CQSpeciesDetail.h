@@ -15,12 +15,21 @@
 
 #include "ui_CQSpeciesDetail.h"
 
+#ifdef COPASI_UNDO
+class UndoSpecieData;
+#endif
+
 class CMetab;
 class CCompartment;
 
 class CQSpeciesDetail : public CopasiWidget, public Ui::CQSpeciesDetail
 {
   Q_OBJECT
+
+#ifdef COPASI_UNDO
+  friend class DeleteSpecieCommand;
+  friend class CreateNewSpecieCommand;
+#endif
 
 public:
   CQSpeciesDetail(QWidget* parent = 0, const char* name = 0);
@@ -63,6 +72,14 @@ private slots:
   void slotInitialExpressionValid(bool valid);
   void slotSwitchToReaction(int row, int column);
   void slotInitialValueLostFocus();
+
+  //additional functions for UNDO framework
+#ifdef COPASI_UNDO
+  void deleteSpecie();
+  void addSpecie(UndoSpecieData *pSData);
+  void createNewSpecie();
+  void deleteSpecie(UndoSpecieData *pSData);
+#endif
 };
 
 #endif // CQSpeciesDetail_h
