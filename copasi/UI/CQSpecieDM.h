@@ -1,17 +1,9 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQSpecieDM.h,v $
-//   $Revision: 1.6 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/10/07 16:28:57 $
-// End CVS Header
-
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
@@ -22,6 +14,11 @@
 #include "model/CModel.h"
 #include "listviews.h"
 #include "CQBaseDataModel.h"
+
+#ifdef COPASI_UNDO
+class UndoSpecieData;
+class UndoReactionData;
+#endif
 
 #define COL_NAME_SPECIES          1
 #define COL_COMPARTMENT           2
@@ -40,6 +37,11 @@ class CQSpecieDM : public CQBaseDataModel
 {
   Q_OBJECT
 
+#ifdef COPASI_UNDO
+  friend class SpecieDataChangeCommand;
+  friend class InsertSpecieRowsCommand;
+#endif
+
 public:
   CQSpecieDM(QObject *parent = 0);
   virtual int rowCount(const QModelIndex &parent = QModelIndex()) const;
@@ -55,6 +57,21 @@ public:
   const std::vector< unsigned C_INT32 >& getItemToType();
   bool removeRows(QModelIndexList rows, const QModelIndex &index = QModelIndex());
 
+  //TODO Undo
+#ifdef COPASI_UNDO
+  bool specieDataChange(const QModelIndex &index, const QVariant &value, int role);
+  void insertNewSpecieRow(int position, int rows, const QModelIndex&);
+  void addSpecieRow(UndoSpecieData *pSpecieData);
+  void deleteSpecieRow(UndoSpecieData *pSpecieData);
+  bool removeSpecieRows(QModelIndexList rows, const QModelIndex&);
+  bool insertSpecieRows(QList <UndoSpecieData *> pReaData);
+  void deleteSpecieRows(QList <UndoSpecieData *> pReaData);
+  bool removeAllSpecieRows();
+  bool clear();
+
+signals:
+  void changeWidget(const size_t & id);
+#endif
 protected:
   bool mFlagConc;
   QStringList mTypes;

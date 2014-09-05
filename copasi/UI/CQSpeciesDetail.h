@@ -1,12 +1,12 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2009 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-// and The University of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
 
 #ifndef CQSpeciesDetail_h
 #define CQSpeciesDetail_h
@@ -15,12 +15,21 @@
 
 #include "ui_CQSpeciesDetail.h"
 
+#ifdef COPASI_UNDO
+class UndoSpecieData;
+#endif
+
 class CMetab;
 class CCompartment;
 
 class CQSpeciesDetail : public CopasiWidget, public Ui::CQSpeciesDetail
 {
   Q_OBJECT
+
+#ifdef COPASI_UNDO
+  friend class DeleteSpecieCommand;
+  friend class CreateNewSpecieCommand;
+#endif
 
 public:
   CQSpeciesDetail(QWidget* parent = 0, const char* name = 0);
@@ -53,7 +62,7 @@ private:
 
 private slots:
   void slotBtnNew();
-  void slotBtnCopy(){};
+  void slotBtnCopy() {};
   void slotBtnDelete();
   void slotCompartmentChanged(int compartment);
   void slotTypeChanged(int type);
@@ -63,6 +72,14 @@ private slots:
   void slotInitialExpressionValid(bool valid);
   void slotSwitchToReaction(int row, int column);
   void slotInitialValueLostFocus();
+
+  //additional functions for UNDO framework
+#ifdef COPASI_UNDO
+  void deleteSpecie();
+  void addSpecie(UndoSpecieData *pSData);
+  void createNewSpecie();
+  void deleteSpecie(UndoSpecieData *pSData);
+#endif
 };
 
 #endif // CQSpeciesDetail_h

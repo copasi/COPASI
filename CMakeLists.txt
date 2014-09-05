@@ -559,6 +559,7 @@ if(BUILD_HYB_TESTS)
 if (EXISTS ${CMAKE_SOURCE_DIR}/hyb-test-suite)
 add_subdirectory(hyb-test-suite)
 endif()
+
 endif (BUILD_HYB_TESTS)
 
 

@@ -273,6 +273,9 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
   // for SBML L3 files the default units are defined on the model
   if (this->mLevel > 2)
     {
+      this->mpCopasiModel->setAvogadro(6.02214179e23);
+      this->mAvogadroSet = true;
+
       // we make copies of the unit definitions so that we do not have to remember
       // if we created them or not
       std::string units;
@@ -4794,16 +4797,16 @@ void SBMLImporter::replaceAmountReferences(ConverterASTNode* pASTNode, Model* pS
                         {
                           if (it->first->getId() == id1)
                             {
-                              // now we know that we can change the current node
-                              // to represent the species
-                              itNode->setType(AST_NAME);
-                              itNode->setName(id1.c_str());
-                              itNode.skipChildren();
                               // delete the two children
                               itNode->removeChild(1);
                               itNode->removeChild(0);
                               pdelete(pChild1);
                               pdelete(pChild2);
+                              // now we know that we can change the current node
+                              // to represent the species
+                              itNode->setType(AST_NAME);
+                              itNode->setName(id1.c_str());
+                              itNode.skipChildren();
                               break;
                             }
 
@@ -4838,16 +4841,16 @@ void SBMLImporter::replaceAmountReferences(ConverterASTNode* pASTNode, Model* pS
                     {
                       if (it->first->getId() == id)
                         {
-                          // now we know that we can change the current node
-                          // to represent the species
-                          itNode->setType(AST_NAME);
-                          itNode->setName(id.c_str());
-                          itNode.skipChildren();
                           // delete the two children
                           itNode->removeChild(1);
                           itNode->removeChild(0);
                           pdelete(pChild1);
                           pdelete(pChild2);
+                          // now we know that we can change the current node
+                          // to represent the species
+                          itNode->setType(AST_NAME);
+                          itNode->setName(id.c_str());
+                          itNode.skipChildren();
                           break;
                         }
 
@@ -4936,25 +4939,6 @@ void SBMLImporter::replaceTimeAndAvogadroNodeNames(ASTNode* pASTNode)
       else if (itNode->getType() == AST_NAME_AVOGADRO)
         {
           itNode->setName(this->mpCopasiModel->getObject(CCopasiObjectName("Reference=Avogadro Constant"))->getCN().c_str());
-
-          // when we do this the first time, we have to set the avogadro number on the model
-          if (!this->mAvogadroSet)
-            {
-              this->mAvogadroSet = true;
-              assert(this->mpDataModel != NULL && this->mpDataModel->getModel() != NULL);
-
-              if (mpCopasiModel != NULL)
-                {
-                  mpCopasiModel->setAvogadro(itNode->getReal());
-                }
-
-              // to be consistent, we also have to set the number on the
-              // avogadro parameter we created
-              if (this->mAvogadroCreated)
-                {
-                  const_cast<Parameter*>(*this->mPotentialAvogadroNumbers.begin())->setValue(itNode->getReal());
-                }
-            }
         }
     }
 }
@@ -9138,15 +9122,15 @@ void SBMLImporter::multiplySubstanceOnlySpeciesByVolume(ConverterASTNode* pASTNo
 
                   if (it != endit && it->second->getSpatialDimensions() != 0 && pChild2->getName() == it->second->getId())
                     {
-                      // change the current node to represent the species
-                      itNode->setType(AST_NAME);
-                      itNode->setName(pChild1->getName());
-                      itNode.skipChildren();
                       // delete the children
                       itNode->removeChild(1);
                       itNode->removeChild(0);
                       pdelete(pChild1);
                       pdelete(pChild2);
+                      // change the current node to represent the species
+                      itNode->setType(AST_NAME);
+                      itNode->setName(id.c_str());
+                      itNode.skipChildren();
                     }
                 }
             }

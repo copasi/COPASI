@@ -240,7 +240,7 @@ CTrajectoryMethod::Status CLsodaMethod::step(const double & deltaT)
 
   mLastSuccessState = mContainerState;
 
-  if (mRoots.size() > 0)
+  if (mRootsFound.size() > 0)
     {
       mLSODAR(&EvalF, //  1. evaluate F
               &mData.dim, //  2. number of variables
@@ -261,7 +261,7 @@ CTrajectoryMethod::Status CLsodaMethod::step(const double & deltaT)
               &mJType, // 17. type of j evaluation 2 internal full matrix
               &EvalR, // 18. evaluate constraint functions
               &mNumRoots, // 19. number of constraint functions g(i)
-              mRoots.array()); // 20. integer array of length NG for output of root information
+              mRootsFound.array()); // 20. integer array of length NG for output of root information
 
       // There exist situations where LSODAR reports status = 3, which are actually status = -33
       // Obviously the trivial case is where LSODAR did not advance at all, i.e, the start time
@@ -480,7 +480,7 @@ void CLsodaMethod::start(CVectorCore< C_FLOAT64 > & initialState)
   mPeekAheadMode = false;
 
   mNumRoots = (C_INT) mpContainer->getRoots().size();
-  mRoots.resize(mNumRoots);
+  mRootsFound.resize(mNumRoots);
   destroyRootMask();
 
   mAtol = mpContainer->initializeAtolVector(*mpAbsoluteTolerance, *mpReducedModel);
@@ -600,7 +600,7 @@ void CLsodaMethod::maskRoots(CVectorCore< C_FLOAT64 > & rootValues)
 
 void CLsodaMethod::createRootMask()
 {
-  size_t NumRoots = mRoots.size();
+  size_t NumRoots = mRootsFound.size();
   mRootMask.resize(NumRoots);
   CVector< C_FLOAT64 > RootValues;
   RootValues.resize(NumRoots);
@@ -644,7 +644,7 @@ CTrajectoryMethod::Status CLsodaMethod::peekAhead()
   mPeekAheadMode = true;
   Status PeekAheadStatus = ROOT;
 
-  CVector< C_INT > CombinedRoots = mRoots;
+  CVector< C_INT > CombinedRoots = mRootsFound;
 
   C_FLOAT64 MaxPeekAheadTime = std::max(mTargetTime, mTime * (1.0 + 2.0 * *mpRelativeTolerance));
 
@@ -718,8 +718,8 @@ CTrajectoryMethod::Status CLsodaMethod::peekAhead()
                 ResetIWork = mIWork;
 
                 // Combine all the roots
-                C_INT * pRoot = mRoots.array();
-                C_INT * pRootEnd = pRoot + mRoots.size();
+                C_INT * pRoot = mRootsFound.array();
+                C_INT * pRootEnd = pRoot + mRootsFound.size();
                 C_INT * pCombinedRoot = CombinedRoots.array();
 
                 for (; pRoot != pRootEnd; ++pRoot, ++pCombinedRoot)
@@ -747,7 +747,7 @@ CTrajectoryMethod::Status CLsodaMethod::peekAhead()
   mDWork = ResetDWork;
   mIWork = ResetIWork;
 
-  mRoots = CombinedRoots;
+  mRootsFound = CombinedRoots;
 
   return PeekAheadStatus;
 }

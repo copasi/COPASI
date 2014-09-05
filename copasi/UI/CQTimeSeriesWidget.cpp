@@ -25,6 +25,8 @@ CQTimeSeriesWidget::CQTimeSeriesWidget(QWidget* parent):
   // Allow for a sorted view of mpDataModel
   QSortFilterProxyModel * sortProxyModel = new QSortFilterProxyModel(parent);
   sortProxyModel->setSourceModel(mpDataModel);
+  connect(mpDataModel, SIGNAL(dataChanged(QModelIndex, QModelIndex)),
+          sortProxyModel, SIGNAL(dataChanged(QModelIndex, QModelIndex)));
 
   mpTableView->setModel(sortProxyModel);
 }

@@ -260,10 +260,10 @@ void CHybridMethodODE45::initMethod(C_FLOAT64 start_time)
   //================================
   if (mNumRoots > 0)
     {
-      mRoots.resize(mNumRoots);
+      mRootsFound.resize(mNumRoots);
 
       for (size_t i = 0; i < mNumRoots; ++i)
-        (mRoots.array())[i] = 0;
+        (mRootsFound.array())[i] = 0;
 
       mODE45.mEventFunc = &CHybridMethodODE45::EvalR;
       mpRT        = new C_FLOAT64[mNumRoots];
@@ -277,7 +277,7 @@ void CHybridMethodODE45::initMethod(C_FLOAT64 start_time)
       mpRT        = NULL;
       mpRootValue = NULL;
 
-      mRoots.resize(0);
+      mRootsFound.resize(0);
     }
 
   return;
@@ -530,7 +530,7 @@ void CHybridMethodODE45::stateChange(const CMath::StateChange & change)
 {
   if (change & CMath::ContinuousSimulation)
     {
-      (mRoots.array())[mODE45.mRootId] = 0;
+      (mRootsFound.array())[mODE45.mRootId] = 0;
       mSysStatus = SYS_NEW;
       destroyRootMask();
     }
@@ -667,9 +667,9 @@ void CHybridMethodODE45::setRoot(const size_t id)
   assert(id < mNumRoots && id >= 0);
 
   for (size_t i = 0; i < mNumRoots; i++)
-    (mRoots.array())[i] = 0;
+    (mRootsFound.array())[i] = 0;
 
-  (mRoots.array())[id] = 1;
+  (mRootsFound.array())[id] = 1;
   return;
 }
 
@@ -717,19 +717,22 @@ void CHybridMethodODE45::evalF(const C_FLOAT64 * t, const C_FLOAT64 * y, C_FLOAT
   // compared to previous version.
   memcpy(ydot, mpContainer->getRate(false).array() + 1, (mData.dim - 1) * sizeof(C_FLOAT64));
 
-  CMathReaction ** ppReaction = mSlowReactions.array();
-  CMathReaction ** ppReactionEnd = ppReaction + mSlowReactions.size();
-
-  for (; ppReaction != ppReactionEnd; ++ppReaction)
+  if (mHasSlow)
     {
-      CMathReaction::Balance::const_iterator it = (*ppReaction)->getBalance().begin();
-      CMathReaction::Balance::const_iterator end = (*ppReaction)->getBalance().end();
+      CMathReaction ** ppReaction = mSlowReactions.array();
+      CMathReaction ** ppReactionEnd = ppReaction + mSlowReactions.size();
 
-      C_FLOAT64 * pParticleFlux = (C_FLOAT64 *)(*ppReaction)->getParticleFluxObject()->getValuePointer();
-
-      for (; it != end; ++it)
+      for (; ppReaction != ppReactionEnd; ++ppReaction)
         {
-          ydot[it->first - mpFirstOdeVariable] -= it->second * *pParticleFlux;
+          CMathReaction::Balance::const_iterator it = (*ppReaction)->getBalance().begin();
+          CMathReaction::Balance::const_iterator end = (*ppReaction)->getBalance().end();
+
+          C_FLOAT64 * pParticleFlux = (C_FLOAT64 *)(*ppReaction)->getParticleFluxObject()->getValuePointer();
+
+          for (; it != end; ++it)
+            {
+              ydot[it->first - mpFirstOdeVariable] -= it->second * *pParticleFlux;
+            }
         }
     }
 
@@ -832,7 +835,7 @@ void CHybridMethodODE45::createRootMask()
 {
   double absoluteTolerance = 1.e-12;
 
-  size_t NumRoots = mRoots.size();
+  size_t NumRoots = mRootsFound.size();
   mRootMask.resize(NumRoots);
   CVector< C_FLOAT64 > RootValues;
   RootValues.resize(NumRoots);

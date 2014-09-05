@@ -26,12 +26,13 @@ public:
   void undo();
   QString deleteReactionText(std::string &name) const;
 
+  virtual ~DeleteReactionCommand();
+
 private:
   std::string mReaObjectName;
   CReactionInterface *mpRi;
   CReaction *mpReaction;
   ReactionsWidget1* mpReactionWidget;
-  virtual ~DeleteReactionCommand();
 };
 
 #endif /* DELETEREACTIONCOMMAND_H_ */

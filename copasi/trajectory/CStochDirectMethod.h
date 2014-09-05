@@ -95,11 +95,23 @@ public:
   */
   virtual bool isValidProblem(const CCopasiProblem * pProblem);
 
+  /**
+   * Inform the trajectory method that the state has changed outside
+   * its control
+   * @param const CMath::StateChange & change
+   */
+  virtual void stateChange(const CMath::StateChange & change);
+
 private:
   /**
    * Initialize the method parameter
    */
   void initializeParameter();
+
+  /**
+   * Check whether finds a root
+   */
+  bool checkRoots();
 
 protected:
 
@@ -158,6 +170,33 @@ protected:
    * is used to avoid multiple messages.
    */
   bool mMaxStepsReached;
+
+  //========Arguments for Roots========
+  /**
+   * A double value recording time at which step() stops
+   */
+  C_FLOAT64 mTargetTime;
+
+  /**
+   * An integer, referring number of roots
+   */
+  size_t mNumRoot;
+
+  /**
+   * 2 Vector for storing root value
+   */
+  CVector< C_FLOAT64 > mRootsA;
+  CVector< C_FLOAT64 > mRootsB;
+
+  /**
+   * Pointer to the vector holding the previously calculated roots
+   */
+  CVector< C_FLOAT64 > *mpRootValueOld;
+
+  /**
+   * Pointer to the vector holding the newly calculated roots
+   */
+  CVector< C_FLOAT64 > *mpRootValueNew;
 };
 
 #endif // COPASI_CStochDirectMethod

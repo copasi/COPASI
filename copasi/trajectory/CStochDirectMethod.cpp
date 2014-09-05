@@ -97,15 +97,25 @@ bool CStochDirectMethod::elevateChildren()
 
 CTrajectoryMethod::Status CStochDirectMethod::step(const double & deltaT)
 {
-  // do several steps
-  C_FLOAT64 Time = *mpContainerStateTime;
-  C_FLOAT64 EndTime = Time + deltaT;
+  C_FLOAT64 &Time = *mpContainerStateTime;
+  C_FLOAT64 EndTime = *mpContainerStateTime + deltaT;
+
+  if (mTargetTime != EndTime)
+    {
+      // We have a new end time and reset the root counter.
+      mTargetTime = EndTime;
+    }
 
   size_t Steps = 0;
 
   while (Time < EndTime)
     {
       Time += doSingleStep(Time, EndTime);
+
+      if (mNumRoot > 0 && checkRoots())
+        {
+          return ROOT;
+        }
 
       if (++Steps > mMaxSteps)
         {
@@ -132,20 +142,22 @@ void CStochDirectMethod::start(CVectorCore< C_FLOAT64 > & initialState)
   //stochastic solver, but it is used for returning the result after each step.
   mContainerState = initialState;
 
-  // Create a local copy of the state where the particle number species determined
-  // by reactions are rounded to integers.
-  C_FLOAT64 * pValue = mContainerState.array() + mpContainer->getCountFixedEventTargets() + 1 /* Time */ + mpContainer->getCountODEs();
-  C_FLOAT64 * pValueEnd = pValue + mpContainer->getCountIndependentSpecies() + mpContainer->getCountDependentSpecies();
+  //========Initialize Roots Related Arguments========
+  mNumRoot = mpContainer->getRoots().size();
+  mRootsA.resize(mNumRoot);
+  mRootsB.resize(mNumRoot);
+  mpRootValueNew = &mRootsA;
+  mpRootValueOld = &mRootsB;
 
-  for (; pValue != pValueEnd; ++pValue)
+  CMathObject * pRootObject = mpContainer->getMathObject(mpContainer->getRoots().array());
+  CMathObject * pRootObjectEnd = pRootObject + mNumRoot;
+
+  CObjectInterface::ObjectSet Requested;
+
+  for (; pRootObject != pRootObjectEnd; ++pRootObject)
     {
-      *pValue = floor(*pValue + 0.5);
+      Requested.insert(pRootObject);
     }
-
-  // The container state is now up to date we just need to calculate all values needed for simulation.
-  mpContainer->updateSimulatedValues(false); //for assignments
-
-  CObjectInterface * pTimeObject = mpContainer->getMathObject(mpContainer->getModel().getValueReference());
 
   // Build the reaction dependencies
   mReactions.initialize(mpContainer->getReactions());
@@ -154,16 +166,11 @@ void CStochDirectMethod::start(CVectorCore< C_FLOAT64 > & initialState)
   mPropensityObjects.initialize(mAmu.size(), mpContainer->getMathObject(mAmu.array()));
   mUpdateSequences.resize(mNumReactions);
 
-  C_FLOAT64 * pAmu = mAmu.array();
-  mA0 = 0.0;
-
   CMathReaction * pReaction = mReactions.array();
   CMathReaction * pReactionEnd = pReaction + mNumReactions;
   CObjectInterface::UpdateSequence * pUpdateSequence;
   CMathObject * pPropensityObject = mPropensityObjects.array();
   CMathObject * pPropensityObjectEnd = pPropensityObject + mPropensityObjects.size();
-
-  CObjectInterface::ObjectSet Requested;
 
   for (; pPropensityObject != pPropensityObjectEnd; ++pPropensityObject)
     {
@@ -171,13 +178,10 @@ void CStochDirectMethod::start(CVectorCore< C_FLOAT64 > & initialState)
     }
 
   pPropensityObject = mPropensityObjects.array();
+  CObjectInterface * pTimeObject = mpContainer->getMathObject(mpContainerStateTime);
 
-  for (; pReaction  != pReactionEnd; ++pReaction, ++pUpdateSequence, ++pPropensityObject, ++pAmu)
+  for (; pReaction  != pReactionEnd; ++pReaction, ++pUpdateSequence, ++pPropensityObject)
     {
-      // Update the propensity
-      pPropensityObject->calculate();
-      mA0 += *pAmu;
-
       CObjectInterface::ObjectSet Changed;
 
       // The time is always updated
@@ -199,6 +203,8 @@ void CStochDirectMethod::start(CVectorCore< C_FLOAT64 > & initialState)
 
   mNextReactionTime = *mpContainerStateTime;
   mNextReactionIndex = C_INVALID_INDEX;
+
+  stateChange(CMath::State);
 
   return;
 }
@@ -273,12 +279,13 @@ bool CStochDirectMethod::isValidProblem(const CCopasiProblem * pProblem)
     }
 
   //events are not supported at the moment
-  if (pTP->getModel()->getEvents().size() > 0)
+  /*
+    if (pTP->getModel()->getEvents().size() > 0)
     {
-      CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 23);
-      return false;
+    CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 23);
+    return false;
     }
-
+  */
   return true;
 }
 
@@ -298,6 +305,9 @@ C_FLOAT64 CStochDirectMethod::doSingleStep(const C_FLOAT64 & curTime, const C_FL
         }
 
       mNextReactionTime = curTime - log(mpRandomGenerator->getRandomOO()) / mA0;
+
+      // TODO CRITICAL Check whether any time dependent root changes sign in curTime, mNextReactionTime.
+      // If we need to interpolate return with that time value without firing any reaction
 
       // We are sure that we have at least 1 reaction
       mNextReactionIndex = 0;
@@ -339,4 +349,83 @@ C_FLOAT64 CStochDirectMethod::doSingleStep(const C_FLOAT64 & curTime, const C_FL
   mNextReactionIndex = C_INVALID_INDEX;
 
   return mNextReactionTime - curTime;
+}
+
+/**
+ * Check whether a root has been found
+ */
+bool CStochDirectMethod::checkRoots()
+{
+  bool hasRoots = false;
+
+  // calculate roots
+  mpContainer->updateSimulatedValues(false);
+  *mpRootValueNew = mpContainer->getRoots();
+
+  std::cout << "State: " << mpContainer->getState(false) << std::endl;
+  std::cout << "Roots: " << *mpRootValueNew << std::endl;
+
+  C_FLOAT64 *pRootValueOld = mpRootValueOld->array();
+  C_FLOAT64 *pRootValueNew = mpRootValueNew->array();
+
+  C_INT *pRootFound    = mRootsFound.array();
+  C_INT *pRootFoundEnd    = pRootFound + mRootsFound.size();
+
+  for (; pRootFound != pRootFoundEnd; pRootValueOld++, pRootValueNew++, pRootFound++)
+    {
+      if ((*pRootValueOld) * (*pRootValueNew) < 0.0 ||
+          (*pRootValueNew) == 0.0)
+        {
+          // These root changes are not caused by the time alone as those are handled in do single step.
+          hasRoots = true;
+          *pRootFound = 1;
+        }
+      else
+        *pRootFound = 0;
+    }
+
+  // Swap old an new for the next call.
+  CVector< C_FLOAT64 > * pTmp = mpRootValueOld;
+  mpRootValueOld = mpRootValueNew;
+  mpRootValueNew = pTmp;
+
+  return hasRoots;
+}
+
+/**
+ * Update model state after one events happened
+ */
+void CStochDirectMethod::stateChange(const CMath::StateChange & change)
+{
+  if (change & (CMath::ContinuousSimulation | CMath::State))
+    {
+      // Create a local copy of the state where the particle number species determined
+      // by reactions are rounded to integers.
+      C_FLOAT64 * pValue = mContainerState.array() + mpContainer->getCountFixedEventTargets() + 1 /* Time */ + mpContainer->getCountODEs();
+      C_FLOAT64 * pValueEnd = pValue + mpContainer->getCountIndependentSpecies() + mpContainer->getCountDependentSpecies();
+
+      for (; pValue != pValueEnd; ++pValue)
+        {
+          *pValue = floor(*pValue + 0.5);
+        }
+
+      // The container state is now up to date we just need to calculate all values needed for simulation.
+      mpContainer->updateSimulatedValues(false); //for assignments
+
+      CMathObject * pPropensityObject = mPropensityObjects.array();
+      CMathObject * pPropensityObjectEnd = pPropensityObject + mPropensityObjects.size();
+      C_FLOAT64 * pAmu = mAmu.array();
+      mA0 = 0.0;
+
+      // Update the propensity
+      for (; pPropensityObject != pPropensityObjectEnd; ++pPropensityObject)
+        {
+          pPropensityObject->calculate();
+          mA0 += *pAmu;
+        }
+
+      *mpRootValueNew = mpContainer->getRoots();
+    }
+
+  mMaxStepsReached = false;
 }

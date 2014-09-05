@@ -191,7 +191,12 @@ bool CQReactionDM::setData(const QModelIndex &index, const QVariant &value,
                            int role)
 {
 #ifdef COPASI_UNDO
-  mpUndoStack->push(new ReactionDataChangeCommand(index, value, role, this));
+
+  if (index.data() == value)
+    return false;
+  else
+    mpUndoStack->push(new ReactionDataChangeCommand(index, value, role, this));
+
 #else
 
   if (index.isValid() && role == Qt::EditRole)
@@ -395,6 +400,7 @@ bool CQReactionDM::removeRows(QModelIndexList rows, const QModelIndex&)
 {
 #ifdef COPASI_UNDO
   mpUndoStack->push(new RemoveReactionRowsCommand(rows, this, QModelIndex()));
+  return true;
 #else
 
   if (rows.isEmpty())

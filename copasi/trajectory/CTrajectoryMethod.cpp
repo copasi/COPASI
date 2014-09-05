@@ -103,7 +103,7 @@ CTrajectoryMethod::CTrajectoryMethod(const CCopasiMethod::SubType & subType,
   mContainerState(),
   mpProblem(NULL),
   mpContainerStateTime(NULL),
-  mRoots(0)
+  mRootsFound(0)
 {CONSTRUCTOR_TRACE;}
 
 /**
@@ -117,7 +117,7 @@ CTrajectoryMethod::CTrajectoryMethod(const CTrajectoryMethod & src,
   mContainerState(),
   mpContainerStateTime(NULL),
   mpProblem(NULL),
-  mRoots(0)
+  mRootsFound(0)
 {}
 
 /**
@@ -196,5 +196,5 @@ bool CTrajectoryMethod::isValidProblem(const CCopasiProblem * pProblem)
 
 const CVector< C_INT > & CTrajectoryMethod::getRoots() const
 {
-  return mRoots;
+  return mRootsFound;
 }

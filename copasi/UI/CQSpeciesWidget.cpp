@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -22,6 +22,10 @@
 #include "model/CModel.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "report/CCopasiRootContainer.h"
+
+#ifdef COPASI_UNDO
+#include "copasiui3window.h"
+#endif
 
 /*
  *  Constructs a CQSpeciesWidget which is a child of 'parent', with the
@@ -62,6 +66,12 @@ CQSpeciesWidget::CQSpeciesWidget(QWidget* parent, const char* name)
           this, SLOT(dataChanged(const QModelIndex&, const QModelIndex&)));
   connect(mpLEFilter, SIGNAL(textChanged(const QString &)),
           this, SLOT(slotFilterChanged()));
+
+#ifdef COPASI_UNDO
+  CopasiUI3Window *  pWindow = dynamic_cast<CopasiUI3Window * >(parent->parent());
+  mpSpecieDM->setUndoStack(pWindow->getUndoStack());
+  connect(mpSpecieDM, SIGNAL(changeWidget(const size_t&)), this, SLOT(slotChangeWidget(const size_t&)));
+#endif
 }
 
 /*
@@ -314,3 +324,10 @@ void CQSpeciesWidget::refreshCompartments()
   for (unsigned C_INT32 jj = 0; jj < compartments.size(); jj++)
     mCompartments.push_back(FROM_UTF8(compartments[jj]->getObjectName()));
 }
+
+#ifdef COPASI_UNDO
+void CQSpeciesWidget:: slotChangeWidget(const size_t & id)
+{
+  mpListView->switchToOtherWidget(id, "");
+}
+#endif

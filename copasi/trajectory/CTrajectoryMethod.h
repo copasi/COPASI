@@ -161,7 +161,7 @@ protected:
   /**
    * Vector containing information on the current roots
    */
-  CVector< C_INT > mRoots;
+  CVector< C_INT > mRootsFound;
 };
 
 #endif // COPASI_CTrajectoryMethod
