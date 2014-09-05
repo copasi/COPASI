@@ -29,6 +29,7 @@ class CQSpeciesDetail : public CopasiWidget, public Ui::CQSpeciesDetail
 #ifdef COPASI_UNDO
   friend class DeleteSpecieCommand;
   friend class CreateNewSpecieCommand;
+  friend class SpecieTypeChangeCommand;
 #endif
 
 public:
@@ -79,6 +80,7 @@ private slots:
   void addSpecie(UndoSpecieData *pSData);
   void createNewSpecie();
   void deleteSpecie(UndoSpecieData *pSData);
+  void specieTypeChanged(int type);
 #endif
 };
 

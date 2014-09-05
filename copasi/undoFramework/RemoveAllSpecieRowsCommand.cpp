@@ -36,7 +36,7 @@ RemoveAllSpecieRowsCommand::RemoveAllSpecieRowsCommand(CQSpecieDM * pSpecieDM, c
 
 		if (pModel->getMetabolites()[i]){
 			data->setName(pModel->getMetabolites()[i]->getObjectName());
-			data->setSpecie(pModel->getMetabolites()[i]);
+		//	data->setSpecie(pModel->getMetabolites()[i]);
 			data->setIConc(pModel->getMetabolites()[i]->getInitialConcentration());
 			data->setCompartment(pModel->getMetabolites()[i]->getCompartment()->getObjectName());
 			data->setStatus(pModel->getMetabolites()[i]->getStatus());

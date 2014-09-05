@@ -40,16 +40,6 @@ void UndoSpecieData::setIConc(double iConc)
     mIConc = iConc;
 }
 
-CMetab *UndoSpecieData::getSpecie() const
-{
-    return mpSpecie;
-}
-
-void UndoSpecieData::setSpecie(CMetab *mpSpecie)
-{
-    this->mpSpecie = mpSpecie;
-}
-
 CModelEntity::Status UndoSpecieData::getStatus() const
 {
     return mStatus;
@@ -69,6 +59,28 @@ void UndoSpecieData::setDependencyObjects(QList<UndoReactionData*> dependencyObj
 {
     mDependencyObjects = dependencyObjects;
 }
+
+std::string UndoSpecieData::getExpression() const
+{
+    return mExpression;
+}
+
+std::string UndoSpecieData::getInitialExpression() const
+{
+    return mInitialExpression;
+}
+
+void UndoSpecieData::setExpression(std::string expression)
+{
+    mExpression = expression;
+}
+
+void UndoSpecieData::setInitialExpression(std::string initialExpression)
+{
+    mInitialExpression = initialExpression;
+}
+
+
 
 
 

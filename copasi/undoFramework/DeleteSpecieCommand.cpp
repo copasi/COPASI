@@ -21,11 +21,14 @@
 
 DeleteSpecieCommand::DeleteSpecieCommand(CQSpeciesDetail *pSpecieDetail) {
 	mpSpecieDetail = pSpecieDetail;
+	mFirstTime = true;
 	mpSpecieData = new UndoSpecieData();
 	std::string sName = mpSpecieDetail->mpMetab->getObjectName();
 	mpSpecieData->setName(sName);
 	mpSpecieData->setIConc(mpSpecieDetail->mpMetab->getInitialConcentration());
 	mpSpecieData->setCompartment(mpSpecieDetail->mpMetab->getCompartment()->getObjectName());
+	//mpSpecieData->setInitialExpression(mpSpecieDetail->mpInitialExpressionEMW->mpExpressionWidget->getExpression());
+	//mpSpecieData->setExpression(mpSpecieDetail->mpExpressionEMW->mpExpressionWidget->getExpression());
 	mpSpecieData->setStatus(mpSpecieDetail->mpMetab->getStatus());
 
 	//store the to be deleted data
@@ -37,7 +40,12 @@ DeleteSpecieCommand::DeleteSpecieCommand(CQSpeciesDetail *pSpecieDetail) {
 }
 
 void DeleteSpecieCommand::redo(){
-	mpSpecieDetail->deleteSpecie();
+	if(mFirstTime){
+		mpSpecieDetail->deleteSpecie();
+		mFirstTime = false;
+	}else{
+		mpSpecieDetail->deleteSpecie(mpSpecieData);
+	}
 }
 
 void DeleteSpecieCommand::undo(){

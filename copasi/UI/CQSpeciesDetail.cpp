@@ -23,6 +23,7 @@
 #include "model/CReactionInterface.h"
 #include "undoFramework/DeleteSpecieCommand.h"
 #include "undoFramework/CreateNewSpecieCommand.h"
+#include "undoFramework/SpecieTypeChangeCommand.h"
 #include "undoFramework/UndoSpecieData.h"
 #include "undoFramework/UndoReactionData.h"
 #include "copasiui3window.h"
@@ -753,6 +754,14 @@ void CQSpeciesDetail::slotSwitchToReaction(int row, int /* column */)
 
 void CQSpeciesDetail::slotTypeChanged(int type)
 {
+#ifdef COPASI_UNDO
+	if ((CModelEntity::Status) mItemToType[type] == mpMetab->getStatus())
+		specieTypeChanged(type);
+	else{
+		mpUndoStack->push(new SpecieTypeChangeCommand(type, this));
+	}
+#else
+
   switch ((CModelEntity::Status) mItemToType[type])
     {
       case CModelEntity::FIXED:
@@ -795,8 +804,11 @@ void CQSpeciesDetail::slotTypeChanged(int type)
         break;
     }
 
+
   // This will update the unit display.
   setFramework(mFramework);
+#endif
+
 }
 
 //Undo methods
@@ -873,6 +885,8 @@ void CQSpeciesDetail::deleteSpecie(){
 	default:
 		break;
 	}
+
+	mpListView->switchToOtherWidget(112, "");
 }
 
 void CQSpeciesDetail::deleteSpecie(UndoSpecieData *pSData){
@@ -883,13 +897,15 @@ void CQSpeciesDetail::deleteSpecie(UndoSpecieData *pSData){
 	CModel * pModel = pDataModel->getModel();
 	assert(pModel!= NULL);
 
-
 	size_t index = pModel->findMetabByName(pSData->getName());
 	CMetab *pSpecie = pModel->getMetabolites()[(int) index];
 	std::string key = pSpecie->getKey();
+
 	pModel->removeMetabolite(key);
 
-	protectedNotify(ListViews::METABOLITE, ListViews::DELETE, key);
+#undef DELETE
+	protectedNotify(ListViews::METABOLITE, ListViews::DELETE, mKey);
+	protectedNotify(ListViews::METABOLITE, ListViews::DELETE, "");//Refresh all as there may be dependencies.
 
 	mpListView->switchToOtherWidget(112, "");
 }
@@ -904,8 +920,10 @@ void CQSpeciesDetail::addSpecie(UndoSpecieData *pSData){
 
 	//reinsert the species
 	CMetab *pSpecie =  pModel->createMetabolite(pSData->getName(), pSData->getCompartment(), pSData->getIConc(), pSData->getStatus());
+	//pSpecie->setInitialExpression(pSData->getInitialExpression());
+	//pSpecie->setExpression(pSData->getExpression());
 	std::string key = pSpecie->getKey();
-	protectedNotify(ListViews::METABOLITE, ListViews::ADD, pSpecie->getKey());
+	protectedNotify(ListViews::METABOLITE, ListViews::ADD, key);
 
 	//restore the reactions the species dependent on
 	QList <UndoReactionData *> reactionData = pSData->getDependencyObjects();
@@ -934,8 +952,55 @@ void CQSpeciesDetail::addSpecie(UndoSpecieData *pSData){
 
 	}
 
-
 	mpListView->switchToOtherWidget(C_INVALID_INDEX, key);
+}
+
+void CQSpeciesDetail::specieTypeChanged(int type)
+{
+  switch ((CModelEntity::Status) mItemToType[type])
+    {
+      case CModelEntity::FIXED:
+        mpLblExpression->hide();
+        mpExpressionEMW->hide();
+
+        mpBoxUseInitialExpression->setEnabled(true);
+        slotInitialTypeChanged(mpBoxUseInitialExpression->isChecked());
+        break;
+
+      case CModelEntity::ASSIGNMENT:
+        mpLblExpression->show();
+        mpExpressionEMW->show();
+
+        mpBoxUseInitialExpression->setEnabled(false);
+        slotInitialTypeChanged(false);
+
+        mpExpressionEMW->updateWidget();
+        break;
+
+      case CModelEntity::ODE:
+        mpLblExpression->show();
+        mpExpressionEMW->show();
+
+        mpBoxUseInitialExpression->setEnabled(true);
+        slotInitialTypeChanged(mpBoxUseInitialExpression->isChecked());
+
+        mpExpressionEMW->updateWidget();
+        break;
+
+      case CModelEntity::REACTIONS:
+        mpLblExpression->hide();
+        mpExpressionEMW->hide();
+
+        mpBoxUseInitialExpression->setEnabled(true);
+        slotInitialTypeChanged(mpBoxUseInitialExpression->isChecked());
+        break;
+
+      default:
+        break;
+    }
+
+  // This will update the unit display.
+    setFramework(mFramework);
 }
 #endif
 

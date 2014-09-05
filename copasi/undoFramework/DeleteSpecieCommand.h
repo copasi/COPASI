@@ -28,6 +28,7 @@ public:
 	virtual ~DeleteSpecieCommand();
 
 private:
+	bool mFirstTime;
 	UndoSpecieData *mpSpecieData;
 	CQSpeciesDetail* mpSpecieDetail;
 };
