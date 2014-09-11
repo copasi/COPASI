@@ -1,65 +1,60 @@
 /*
- * DeleteSpecieCommand.cpp
+ * DeleteGlobalQuantityCommand.cpp
  *
- *  Created on: 2 Sep 2014
+ *  Created on: 11 Sep 2014
  *      Author: dada
  */
 
 #include "report/CCopasiRootContainer.h"
-#include "model/CMetab.h"
+#include "model/CModelValue.h"
 #include "model/CReactionInterface.h"
 #include "model/CModel.h"
-#include "CQSpecieDM.h"
 #include "function/CFunctionDB.h"
-#include "UI/CQSpeciesDetail.h"
+#include "UI/CQModelValue.h"
 
-#include "UndoSpecieData.h"
+#include "UndoGlobalQuantityData.h"
 #include "UndoReactionData.h"
 
+#include "DeleteGlobalQuantityCommand.h"
 
-#include "DeleteSpecieCommand.h"
-
-DeleteSpecieCommand::DeleteSpecieCommand(CQSpeciesDetail *pSpecieDetail) {
-	mpSpecieDetail = pSpecieDetail;
+DeleteGlobalQuantityCommand::DeleteGlobalQuantityCommand(CQModelValue *pModelValue) {
+	mpModelValue = pModelValue;
 	mFirstTime = true;
-	mpSpecieData = new UndoSpecieData();
-	std::string sName = mpSpecieDetail->mpMetab->getObjectName();
-	mpSpecieData->setName(sName);
-	mpSpecieData->setIConc(mpSpecieDetail->mpMetab->getInitialConcentration());
-	mpSpecieData->setCompartment(mpSpecieDetail->mpMetab->getCompartment()->getObjectName());
-	//mpSpecieData->setInitialExpression(mpSpecieDetail->mpInitialExpressionEMW->mpExpressionWidget->getExpression());
-	//mpSpecieData->setExpression(mpSpecieDetail->mpExpressionEMW->mpExpressionWidget->getExpression());
-	mpSpecieData->setStatus(mpSpecieDetail->mpMetab->getStatus());
+	mpGlobalQuantityData = new UndoGlobalQuantityData();
+	std::string sName = mpModelValue->mpModelValue->getObjectName();
+	mpGlobalQuantityData->setName(sName);
+	mpGlobalQuantityData->setInitialValue(mpModelValue->mpModelValue->getInitialValue());
+	mpGlobalQuantityData->setStatus(mpModelValue->mpModelValue->getStatus());
 
 	//store to be deleted data
 	QList<UndoReactionData*> dependencyObjects;
-	setDependentObjects(mpSpecieDetail->mpMetab->getDeletedObjects(), &dependencyObjects);
-	mpSpecieData->setDependencyObjects(dependencyObjects);
+	setDependentObjects(mpModelValue->mpModelValue->getDeletedObjects(), &dependencyObjects);
+	mpGlobalQuantityData->setDependencyObjects(dependencyObjects);
 
-	this->setText(deleteSpecieText(sName));
+	this->setText(deleteGlobalQuantityText(sName));
 }
 
-void DeleteSpecieCommand::redo(){
+void DeleteGlobalQuantityCommand::redo(){
 	if(mFirstTime){
-		mpSpecieDetail->deleteSpecie();
+		mpModelValue->deleteGlobalQuantity();
 		mFirstTime = false;
 	}else{
-		mpSpecieDetail->deleteSpecie(mpSpecieData);
+		mpModelValue->deleteGlobalQuantity(mpGlobalQuantityData);
 	}
 }
 
-void DeleteSpecieCommand::undo(){
-	mpSpecieDetail->addSpecie(mpSpecieData);
+void DeleteGlobalQuantityCommand::undo(){
+	mpModelValue->addGlobalQuantity(mpGlobalQuantityData);
 }
 
-QString DeleteSpecieCommand::deleteSpecieText(std::string &name) const {
-	std::string myEntityName (": Delete Species "+name);
+QString DeleteGlobalQuantityCommand::deleteGlobalQuantityText(std::string &name) const {
+	std::string myEntityName (": Delete Global Quantity "+name);
 	char* entityName = (char*)myEntityName.c_str();
 	return QObject::tr(entityName);
 
 }
 
-void DeleteSpecieCommand::setDependentObjects(const std::set< const CCopasiObject * > & deletedObjects, QList<UndoReactionData*> *dependencyObjects)
+void DeleteGlobalQuantityCommand::setDependentObjects(const std::set< const CCopasiObject * > & deletedObjects, QList<UndoReactionData*> *dependencyObjects)
 {
 
 
@@ -86,7 +81,7 @@ void DeleteSpecieCommand::setDependentObjects(const std::set< const CCopasiObjec
 		pFunctionDB = CCopasiRootContainer::getFunctionList();
 	}
 
-	//TODO presently assume only reaction objects can be deleted when species is deleted
+	//TODO presently assume only reaction objects can be deleted when GlobalQuantity is deleted
 	std::set< const CCopasiObject * > Functions;
 	std::set< const CCopasiObject * > Reactions;
 	std::set< const CCopasiObject * > Metabolites;
@@ -148,7 +143,7 @@ void DeleteSpecieCommand::setDependentObjects(const std::set< const CCopasiObjec
 	}
 }
 
-DeleteSpecieCommand::~DeleteSpecieCommand() {
+DeleteGlobalQuantityCommand::~DeleteGlobalQuantityCommand() {
 	// TODO Auto-generated destructor stub
 }
 

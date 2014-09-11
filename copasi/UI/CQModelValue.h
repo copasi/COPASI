@@ -15,6 +15,10 @@
 #ifndef CQMODELVALUE_H
 #define CQMODELVALUE_H
 
+#ifdef COPASI_UNDO
+class UndoGlobalQuantityData;
+#endif
+
 class CQExpressionWidget;
 class CModelValue;
 class CExpression;
@@ -28,6 +32,13 @@ class CExpression;
 class CQModelValue : public CopasiWidget, public Ui::CQModelValue
 {
   Q_OBJECT
+
+
+#ifdef COPASI_UNDO
+  friend class DeleteGlobalQuantityCommand;
+  friend class CreateNewGlobalQuantityCommand;
+//  friend class GlobalQuantityTypeChangeCommand;
+#endif
 
 public:
   CQModelValue(QWidget* parent = 0, const char* name = 0);
@@ -62,6 +73,15 @@ private slots:
   void slotExpressionValid(bool valid);
   void slotInitialExpressionValid(bool valid);
   void slotInitialTypeChanged(bool useInitialAssignment);
+
+  //additional functions for UNDO framework
+#ifdef COPASI_UNDO
+  void deleteGlobalQuantity();
+  void addGlobalQuantity(UndoGlobalQuantityData *pSData);
+  void createNewGlobalQuantity();
+  void deleteGlobalQuantity(UndoGlobalQuantityData *pSData);
+  void globalQuantityTypeChanged(int type);
+#endif
 };
 
 #endif // CQMODELVALUE_H
