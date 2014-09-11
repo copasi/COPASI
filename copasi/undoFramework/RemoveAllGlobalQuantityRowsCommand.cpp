@@ -1,25 +1,25 @@
 /*
- * RemoveAllSpecieRowsCommand.cpp
+ * RemoveAllGlobalQuantityRowsCommand.cpp
  *
- *  Created on: 26 Aug 2014
+ *  Created on: 11 Sep 2014
  *      Author: dada
  */
 
 #include "report/CCopasiRootContainer.h"
-#include "model/CMetab.h"
+#include "model/CModelValue.h"
 #include "model/CModel.h"
-#include "UI/CQSpecieDM.h"
+#include "UI/CQGlobalQuantityDM.h"
 #include "function/CFunctionDB.h"
 
 #include "model/CReaction.h"
 #include "model/CReactionInterface.h"
 
-#include "RemoveAllSpecieRowsCommand.h"
-#include "UndoSpecieData.h"
+#include "UndoGlobalQuantityData.h"
 #include "UndoReactionData.h"
+#include "RemoveAllGlobalQuantityRowsCommand.h"
 
-RemoveAllSpecieRowsCommand::RemoveAllSpecieRowsCommand(CQSpecieDM * pSpecieDM, const QModelIndex&) {
-	mpSpecieDM = pSpecieDM;
+RemoveAllGlobalQuantityRowsCommand::RemoveAllGlobalQuantityRowsCommand(CQGlobalQuantityDM * pGlobalQuantityDM, const QModelIndex&) {
+	mpGlobalQuantityDM = pGlobalQuantityDM;
 
 	assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
 	CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
@@ -28,45 +28,43 @@ RemoveAllSpecieRowsCommand::RemoveAllSpecieRowsCommand(CQSpecieDM * pSpecieDM, c
 
 	assert(pModel != NULL);
 
-	for (int i = 0; i != pSpecieDM->rowCount()-1; ++i)
+	for (int i = 0; i != pGlobalQuantityDM->rowCount()-1; ++i)
 	{
 
-		UndoSpecieData *data = new UndoSpecieData();
+		UndoGlobalQuantityData *data = new UndoGlobalQuantityData();
 
 
-		if (pModel->getMetabolites()[i]){
-			data->setName(pModel->getMetabolites()[i]->getObjectName());
-		//	data->setSpecie(pModel->getMetabolites()[i]);
-			data->setIConc(pModel->getMetabolites()[i]->getInitialConcentration());
-			data->setCompartment(pModel->getMetabolites()[i]->getCompartment()->getObjectName());
-			data->setStatus(pModel->getMetabolites()[i]->getStatus());
+		if (pModel->getModelValues()[i]){
+			data->setName(pModel->getModelValues()[i]->getObjectName());
+			data->setInitialValue(pModel->getModelValues()[i]->getInitialValue());
+			data->setStatus(pModel->getModelValues()[i]->getStatus());
 
 			QList<UndoReactionData*> dependencyObjects;
-			setDependentObjects(pModel->getMetabolites()[i]->getDeletedObjects(), &dependencyObjects);
+			setDependentObjects(pModel->getModelValues()[i]->getDeletedObjects(), &dependencyObjects);
 			data->setDependencyObjects(dependencyObjects);
 
-			mpSpecieData.append(data);
+			mpGlobalQuantityData.append(data);
 		}
 
 
 	}
 
-	this->setText(removeAllSpecieRowsText());
+	this->setText(removeAllGlobalQuantityRowsText());
 }
 
-void RemoveAllSpecieRowsCommand::redo(){
-	mpSpecieDM->removeAllSpecieRows();
+void RemoveAllGlobalQuantityRowsCommand::redo(){
+	mpGlobalQuantityDM->removeAllGlobalQuantityRows();
 }
 
-void RemoveAllSpecieRowsCommand::undo(){
-	mpSpecieDM->insertSpecieRows(mpSpecieData);
+void RemoveAllGlobalQuantityRowsCommand::undo(){
+	mpGlobalQuantityDM->insertGlobalQuantityRows(mpGlobalQuantityData);
 }
 
-QString RemoveAllSpecieRowsCommand::removeAllSpecieRowsText() const {
-	return QObject::tr(": Removed All Specie Rows");
+QString RemoveAllGlobalQuantityRowsCommand::removeAllGlobalQuantityRowsText() const {
+	return QObject::tr(": Removed All Global Quantities");
 }
 
-void RemoveAllSpecieRowsCommand::setDependentObjects(const std::set< const CCopasiObject * > & deletedObjects, QList<UndoReactionData*> *dependencyObjects)
+void RemoveAllGlobalQuantityRowsCommand::setDependentObjects(const std::set< const CCopasiObject * > & deletedObjects, QList<UndoReactionData*> *dependencyObjects)
 {
 	if (deletedObjects.size() == 0)
 		return;
@@ -91,7 +89,7 @@ void RemoveAllSpecieRowsCommand::setDependentObjects(const std::set< const CCopa
 		pFunctionDB = CCopasiRootContainer::getFunctionList();
 	}
 
-	//TODO presently assume only reaction objects can be deleted when species is deleted
+	//TODO presently assume only reaction objects can be deleted when Global Quantities is deleted
 	std::set< const CCopasiObject * > Functions;
 	std::set< const CCopasiObject * > Reactions;
 	std::set< const CCopasiObject * > Metabolites;
@@ -151,7 +149,7 @@ void RemoveAllSpecieRowsCommand::setDependentObjects(const std::set< const CCopa
 	}
 }
 
-RemoveAllSpecieRowsCommand::~RemoveAllSpecieRowsCommand() {
+RemoveAllGlobalQuantityRowsCommand::~RemoveAllGlobalQuantityRowsCommand() {
 	// TODO Auto-generated destructor stub
 }
 

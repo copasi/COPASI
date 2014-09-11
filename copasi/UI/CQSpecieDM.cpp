@@ -894,7 +894,7 @@ bool CQSpecieDM::insertSpecieRows(QList <UndoSpecieData *> pData){
 
 			UndoReactionData * rData = *j;
 
-			//TODO check if reaction already exist in the model, better ideal may be implemented in the future
+			//TODO check if reaction already exist in the model, better idea may be implemented in the future
 			bool exist = false;
 			for(int ii = 0; ii<pModel->getReactions().size(); ii++){
 				if(pModel->getReactions()[ii]->getObjectName() == rData->getName()){

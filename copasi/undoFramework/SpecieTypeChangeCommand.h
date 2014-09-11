@@ -14,7 +14,7 @@ class CQSpeciesDetail;
 
 class SpecieTypeChangeCommand: public CCopasiUndoCommand {
 public:
-	SpecieTypeChangeCommand(int type, CQSpeciesDetail *pSpecieDetail);
+	SpecieTypeChangeCommand(int type, int currentType, CQSpeciesDetail *pSpecieDetail);
 	void redo();
 	void undo();
 	QString specieTypeChangeText(std::string &name) const;
@@ -24,6 +24,8 @@ public:
 private:
 	int mNewType, mOldType;
 	CQSpeciesDetail* mpSpecieDetail;
+	bool mFirstTime;
+	bool useInitialExpression;
 };
 
 #endif /* SPECIETYPECHANGECOMMAND_H_ */

@@ -755,10 +755,24 @@ void CQSpeciesDetail::slotSwitchToReaction(int row, int /* column */)
 void CQSpeciesDetail::slotTypeChanged(int type)
 {
 #ifdef COPASI_UNDO
-	if ((CModelEntity::Status) mItemToType[type] == mpMetab->getStatus())
+	/*	int currentIndex;
+	if ((CModelEntity::Status)mpMetab->getStatus() == CModelEntity::ASSIGNMENT){
+		currentIndex = 1;
+	}else if ((CModelEntity::Status)mpMetab->getStatus() == CModelEntity::REACTIONS){
+		std::cout<<"Inside: "<<mpMetab->getStatus()<<std::endl;
+		currentIndex = 4;
+	}else if ((CModelEntity::Status)mpMetab->getStatus() == CModelEntity::FIXED){
+		currentIndex = 0;
+	} else{
+		currentIndex = 3;
+	}*/
+	if (type == mpMetab->getStatus()) //currentIndex) //((CModelEntity::Status) mItemToType[type] == mpMetab->getStatus())
+	{
+	//	std::cout<<"Inside: ======= "<<mpMetab->getStatus()<<std::endl;
 		specieTypeChanged(type);
+	}
 	else{
-		mpUndoStack->push(new SpecieTypeChangeCommand(type, this));
+		mpUndoStack->push(new SpecieTypeChangeCommand(type, mpMetab->getStatus(), this));
 	}
 #else
 
@@ -957,50 +971,52 @@ void CQSpeciesDetail::addSpecie(UndoSpecieData *pSData){
 
 void CQSpeciesDetail::specieTypeChanged(int type)
 {
-  switch ((CModelEntity::Status) mItemToType[type])
-    {
-      case CModelEntity::FIXED:
-        mpLblExpression->hide();
-        mpExpressionEMW->hide();
+	switch ((CModelEntity::Status) mItemToType[type])
+	{
+	case CModelEntity::FIXED:
+		mpLblExpression->hide();
+		mpExpressionEMW->hide();
 
-        mpBoxUseInitialExpression->setEnabled(true);
-        slotInitialTypeChanged(mpBoxUseInitialExpression->isChecked());
-        break;
+		mpBoxUseInitialExpression->setEnabled(true);
+		slotInitialTypeChanged(mpBoxUseInitialExpression->isChecked());
+		break;
 
-      case CModelEntity::ASSIGNMENT:
-        mpLblExpression->show();
-        mpExpressionEMW->show();
+	case CModelEntity::ASSIGNMENT:
+		mpLblExpression->show();
+		mpExpressionEMW->show();
 
-        mpBoxUseInitialExpression->setEnabled(false);
-        slotInitialTypeChanged(false);
+		mpBoxUseInitialExpression->setEnabled(false);
+		slotInitialTypeChanged(false);
 
-        mpExpressionEMW->updateWidget();
-        break;
+		mpExpressionEMW->updateWidget();
+		break;
 
-      case CModelEntity::ODE:
-        mpLblExpression->show();
-        mpExpressionEMW->show();
+	case CModelEntity::ODE:
+		mpLblExpression->show();
+		mpExpressionEMW->show();
 
-        mpBoxUseInitialExpression->setEnabled(true);
-        slotInitialTypeChanged(mpBoxUseInitialExpression->isChecked());
+		mpBoxUseInitialExpression->setEnabled(true);
+		slotInitialTypeChanged(mpBoxUseInitialExpression->isChecked());
 
-        mpExpressionEMW->updateWidget();
-        break;
+		mpExpressionEMW->updateWidget();
+		break;
 
-      case CModelEntity::REACTIONS:
-        mpLblExpression->hide();
-        mpExpressionEMW->hide();
+	case CModelEntity::REACTIONS:
+		mpLblExpression->hide();
+		mpExpressionEMW->hide();
 
-        mpBoxUseInitialExpression->setEnabled(true);
-        slotInitialTypeChanged(mpBoxUseInitialExpression->isChecked());
-        break;
+		mpBoxUseInitialExpression->setEnabled(false);
+		slotInitialTypeChanged(mpBoxUseInitialExpression->isChecked());
+		break;
 
-      default:
-        break;
-    }
+	default:
+		break;
+	}
 
+	//mpComboBoxType->setCurrentIndex(mpComboBoxType->findText(FROM_UTF8(CModelEntity::StatusName[type])));
   // This will update the unit display.
-    setFramework(mFramework);
+   setFramework(mFramework);
+ //  save();
 }
 #endif
 

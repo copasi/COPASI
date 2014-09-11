@@ -1,25 +1,25 @@
 /*
- * RemoveAllSpecieRowsCommand.cpp
+ * RemoveGlobalQuantityRowsCommand.cpp
  *
- *  Created on: 26 Aug 2014
+ *  Created on: 11 Sep 2014
  *      Author: dada
  */
 
 #include "report/CCopasiRootContainer.h"
-#include "model/CMetab.h"
+#include "model/CModelValue.h"
+#include "model/CReactionInterface.h"
 #include "model/CModel.h"
-#include "UI/CQSpecieDM.h"
+#include "CQGlobalQuantityDM.h"
 #include "function/CFunctionDB.h"
 
-#include "model/CReaction.h"
-#include "model/CReactionInterface.h"
-
-#include "RemoveAllSpecieRowsCommand.h"
-#include "UndoSpecieData.h"
+#include "UndoGlobalQuantityData.h"
 #include "UndoReactionData.h"
+#include "RemoveGlobalQuantityRowsCommand.h"
 
-RemoveAllSpecieRowsCommand::RemoveAllSpecieRowsCommand(CQSpecieDM * pSpecieDM, const QModelIndex&) {
-	mpSpecieDM = pSpecieDM;
+RemoveGlobalQuantityRowsCommand::RemoveGlobalQuantityRowsCommand(QModelIndexList rows, CQGlobalQuantityDM * pGlobalQuantityDM, const QModelIndex&) {
+	mpGlobalQuantityDM = pGlobalQuantityDM;
+	mRows = rows;
+	mFirstTime = true;
 
 	assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
 	CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
@@ -28,46 +28,49 @@ RemoveAllSpecieRowsCommand::RemoveAllSpecieRowsCommand(CQSpecieDM * pSpecieDM, c
 
 	assert(pModel != NULL);
 
-	for (int i = 0; i != pSpecieDM->rowCount()-1; ++i)
+	QModelIndexList::const_iterator i;
+
+	for (i = rows.begin(); i != rows.end(); ++i)
 	{
+		UndoGlobalQuantityData *data = new UndoGlobalQuantityData();
 
-		UndoSpecieData *data = new UndoSpecieData();
-
-
-		if (pModel->getMetabolites()[i]){
-			data->setName(pModel->getMetabolites()[i]->getObjectName());
-		//	data->setSpecie(pModel->getMetabolites()[i]);
-			data->setIConc(pModel->getMetabolites()[i]->getInitialConcentration());
-			data->setCompartment(pModel->getMetabolites()[i]->getCompartment()->getObjectName());
-			data->setStatus(pModel->getMetabolites()[i]->getStatus());
+		if (!pGlobalQuantityDM->isDefaultRow(*i) && pModel->getModelValues()[(*i).row()]){
+			data->setName(pModel->getModelValues()[(*i).row()]->getObjectName());
+			data->setInitialValue(pModel->getModelValues()[(*i).row()]->getInitialValue());
+			data->setStatus(pModel->getModelValues()[(*i).row()]->getStatus());
 
 			QList<UndoReactionData*> dependencyObjects;
-			setDependentObjects(pModel->getMetabolites()[i]->getDeletedObjects(), &dependencyObjects);
+			setDependentObjects(pModel->getModelValues()[(*i).row()]->getDeletedObjects(), &dependencyObjects);
 			data->setDependencyObjects(dependencyObjects);
 
-			mpSpecieData.append(data);
+			mpGlobalQuantityData.append(data);
 		}
-
-
 	}
-
-	this->setText(removeAllSpecieRowsText());
+	this->setText(removeGlobalQuantityRowsText());
 }
 
-void RemoveAllSpecieRowsCommand::redo(){
-	mpSpecieDM->removeAllSpecieRows();
+void RemoveGlobalQuantityRowsCommand::redo(){
+	if(mFirstTime){
+		mpGlobalQuantityDM->removeGlobalQuantityRows(mRows, QModelIndex());
+		mFirstTime = false;
+	}
+	else{
+		mpGlobalQuantityDM->deleteGlobalQuantityRows(mpGlobalQuantityData);
+	}
 }
 
-void RemoveAllSpecieRowsCommand::undo(){
-	mpSpecieDM->insertSpecieRows(mpSpecieData);
+void RemoveGlobalQuantityRowsCommand::undo(){
+	mpGlobalQuantityDM->insertGlobalQuantityRows(mpGlobalQuantityData);
 }
 
-QString RemoveAllSpecieRowsCommand::removeAllSpecieRowsText() const {
-	return QObject::tr(": Removed All Specie Rows");
+QString RemoveGlobalQuantityRowsCommand::removeGlobalQuantityRowsText() const {
+	return QObject::tr(": Removed Global Quantity Rows");
 }
 
-void RemoveAllSpecieRowsCommand::setDependentObjects(const std::set< const CCopasiObject * > & deletedObjects, QList<UndoReactionData*> *dependencyObjects)
+void RemoveGlobalQuantityRowsCommand::setDependentObjects(const std::set< const CCopasiObject * > & deletedObjects, QList<UndoReactionData*> *dependencyObjects)
 {
+
+
 	if (deletedObjects.size() == 0)
 		return;
 
@@ -91,7 +94,7 @@ void RemoveAllSpecieRowsCommand::setDependentObjects(const std::set< const CCopa
 		pFunctionDB = CCopasiRootContainer::getFunctionList();
 	}
 
-	//TODO presently assume only reaction objects can be deleted when species is deleted
+	//TODO presently assume only reaction objects can be deleted when GlobalQuantity is deleted
 	std::set< const CCopasiObject * > Functions;
 	std::set< const CCopasiObject * > Reactions;
 	std::set< const CCopasiObject * > Metabolites;
@@ -118,7 +121,9 @@ void RemoveAllSpecieRowsCommand::setDependentObjects(const std::set< const CCopa
 		}
 	}
 
+
 	const CModel * pModel = NULL;
+
 	if (pDataModel != NULL)
 	{
 		pModel = pDataModel->getModel();
@@ -143,7 +148,7 @@ void RemoveAllSpecieRowsCommand::setDependentObjects(const std::set< const CCopa
 				ri->initFromReaction((*it)->getKey());
 				data->setName((*it)->getObjectName());
 				data->setRi(ri);
-				dependencyObjects->append(data);
+				dependencyObjects->append(data); //FROM_UTF8((*it)->getObjectName()));
 			}
 
 		}
@@ -151,7 +156,7 @@ void RemoveAllSpecieRowsCommand::setDependentObjects(const std::set< const CCopa
 	}
 }
 
-RemoveAllSpecieRowsCommand::~RemoveAllSpecieRowsCommand() {
+RemoveGlobalQuantityRowsCommand::~RemoveGlobalQuantityRowsCommand() {
 	// TODO Auto-generated destructor stub
 }
 
