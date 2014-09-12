@@ -198,6 +198,12 @@ public:
   const CVectorCore< bool > & getRootIsDiscrete() const;
 
   /**
+   * Retrieve a vector of Boolean values indicating whether a root
+   * time dependent
+   */
+  const CVectorCore< bool > & getRootIsTimeDependent() const;
+
+  /**
    * Retrieve a vector of pointers to root processors
    */
   CVector< CMathEvent::CTrigger::CRootProcessor * > & getRootProcessors();
@@ -489,12 +495,12 @@ public:
    */
   CRandom & getRandomGenerator();
 
-private:
   /**
-   * Initialize the mathematical model
+   * Compile the mathematical model
    */
-  void init();
+  void compile();
 
+private:
   /**
    * Allocate the memory for objects and values
    */
@@ -875,6 +881,12 @@ private:
    * continuously or only during discrete event processing.
    */
   CVector< bool > mRootIsDiscrete;
+
+  /**
+   * A vector of Boolean values indicating whether a root is non time
+   * dependent.
+   */
+  CVector< bool > mRootIsTimeDependent;
 
   /**
    * A vector of pointers to all objects values CMathEventN::CTrigger::CRootProcessor

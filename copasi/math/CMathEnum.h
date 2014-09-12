@@ -227,6 +227,14 @@ public:
     ContinuousSimulation = 0x4
   };
 
+  enum RootToggleType
+  {
+    NoToggle = 0x0,
+    ToggleBoth = 0x1,
+    ToggleEquality = 0x2,
+    ToggleInequality = 0x3
+  };
+
   typedef CMathFlags< eStateChange > StateChange;
 
   template < class Type > class Variables: public std::vector< Type >

@@ -42,9 +42,11 @@
 #include "model/CCompartment.h"
 #include "model/CModel.h"
 
+#include "optimization/FminBrent.h"
+
 CStochDirectMethod::CStochDirectMethod(const CCopasiContainer * pParent):
   CTrajectoryMethod(CCopasiMethod::directMethod, pParent),
-  mpRandomGenerator(CRandom::createGenerator(CRandom::mt19937)),
+  mpRandomGenerator(NULL),
   mNumReactions(0),
   mMaxSteps(1000000),
   mNextReactionTime(0.0),
@@ -54,6 +56,9 @@ CStochDirectMethod::CStochDirectMethod(const CCopasiContainer * pParent):
   mPropensityObjects(),
   mAmu(),
   mUpdateSequences(),
+  mUpdateTimeDependentRoots(),
+  mHaveTimeDependentRoots(false),
+  mpRootValueCalculator(NULL),
   mMaxStepsReached(false)
 {
   initializeParameter();
@@ -62,7 +67,7 @@ CStochDirectMethod::CStochDirectMethod(const CCopasiContainer * pParent):
 CStochDirectMethod::CStochDirectMethod(const CStochDirectMethod & src,
                                        const CCopasiContainer * pParent):
   CTrajectoryMethod(src, pParent),
-  mpRandomGenerator(CRandom::createGenerator(CRandom::mt19937)),
+  mpRandomGenerator(NULL),
   mNumReactions(0),
   mMaxSteps(1000000),
   mNextReactionTime(0.0),
@@ -72,21 +77,24 @@ CStochDirectMethod::CStochDirectMethod(const CStochDirectMethod & src,
   mPropensityObjects(),
   mAmu(),
   mUpdateSequences(),
+  mUpdateTimeDependentRoots(),
+  mHaveTimeDependentRoots(false),
+  mpRootValueCalculator(NULL),
   mMaxStepsReached(false)
 {
   initializeParameter();
 }
 
 CStochDirectMethod::~CStochDirectMethod()
-{
-  pdelete(mpRandomGenerator);
-}
+{}
 
 void CStochDirectMethod::initializeParameter()
 {
   assertParameter("Max Internal Steps", CCopasiParameter::INT, (C_INT32) 1000000);
   assertParameter("Use Random Seed", CCopasiParameter::BOOL, false);
   assertParameter("Random Seed", CCopasiParameter::UINT, (unsigned C_INT32) 1);
+
+  mpRootValueCalculator = new FDescentTemplate< CStochDirectMethod >(this, &CStochDirectMethod::rootValue);
 }
 
 bool CStochDirectMethod::elevateChildren()
@@ -97,27 +105,27 @@ bool CStochDirectMethod::elevateChildren()
 
 CTrajectoryMethod::Status CStochDirectMethod::step(const double & deltaT)
 {
-  C_FLOAT64 &Time = *mpContainerStateTime;
   C_FLOAT64 EndTime = *mpContainerStateTime + deltaT;
 
   if (mTargetTime != EndTime)
     {
       // We have a new end time and reset the root counter.
       mTargetTime = EndTime;
+      mSteps = 0;
     }
 
-  size_t Steps = 0;
-
-  while (Time < EndTime)
+  while (*mpContainerStateTime < EndTime)
     {
-      Time += doSingleStep(Time, EndTime);
+      // The Container State Time is updated during the reaction firing or root interpolation
+      doSingleStep(*mpContainerStateTime, EndTime);
 
-      if (mNumRoot > 0 && checkRoots())
+      if (mStatus == ROOT ||
+          (mNumRoot > 0 && checkRoots()))
         {
           return ROOT;
         }
 
-      if (++Steps > mMaxSteps)
+      if (++mSteps > mMaxSteps)
         {
           CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 12);
         }
@@ -133,6 +141,8 @@ void CStochDirectMethod::start(CVectorCore< C_FLOAT64 > & initialState)
   /* get configuration data */
   mMaxSteps = * getValue("Max Internal Steps").pINT;
 
+  mpRandomGenerator = &mpContainer->getRandomGenerator();
+
   bool useRandomSeed = * getValue("Use Random Seed").pBOOL;
   unsigned C_INT32 randomSeed = * getValue("Random Seed").pUINT;
 
@@ -144,10 +154,13 @@ void CStochDirectMethod::start(CVectorCore< C_FLOAT64 > & initialState)
 
   //========Initialize Roots Related Arguments========
   mNumRoot = mpContainer->getRoots().size();
+  mRootsFound.resize(mNumRoot);
   mRootsA.resize(mNumRoot);
   mRootsB.resize(mNumRoot);
   mpRootValueNew = &mRootsA;
   mpRootValueOld = &mRootsB;
+  mRootsNonZero.resize(mNumRoot);
+  mRootsNonZero = 0.0;
 
   CMathObject * pRootObject = mpContainer->getMathObject(mpContainer->getRoots().array());
   CMathObject * pRootObjectEnd = pRootObject + mNumRoot;
@@ -159,6 +172,16 @@ void CStochDirectMethod::start(CVectorCore< C_FLOAT64 > & initialState)
       Requested.insert(pRootObject);
     }
 
+  CObjectInterface::ObjectSet Changed;
+
+  // Determine whether we have time dependent roots;
+
+  CObjectInterface * pTimeObject = mpContainer->getMathObject(mpContainerStateTime);
+  Changed.insert(pTimeObject);
+
+  mpContainer->getTransientDependencies().getUpdateSequence(mUpdateTimeDependentRoots, CMath::Default, Changed, Requested);
+  mHaveTimeDependentRoots = (mUpdateTimeDependentRoots.size() > 0);
+
   // Build the reaction dependencies
   mReactions.initialize(mpContainer->getReactions());
   mNumReactions = mReactions.size();
@@ -168,7 +191,7 @@ void CStochDirectMethod::start(CVectorCore< C_FLOAT64 > & initialState)
 
   CMathReaction * pReaction = mReactions.array();
   CMathReaction * pReactionEnd = pReaction + mNumReactions;
-  CObjectInterface::UpdateSequence * pUpdateSequence;
+  CObjectInterface::UpdateSequence * pUpdateSequence = mUpdateSequences.array();
   CMathObject * pPropensityObject = mPropensityObjects.array();
   CMathObject * pPropensityObjectEnd = pPropensityObject + mPropensityObjects.size();
 
@@ -178,22 +201,13 @@ void CStochDirectMethod::start(CVectorCore< C_FLOAT64 > & initialState)
     }
 
   pPropensityObject = mPropensityObjects.array();
-  CObjectInterface * pTimeObject = mpContainer->getMathObject(mpContainerStateTime);
 
   for (; pReaction  != pReactionEnd; ++pReaction, ++pUpdateSequence, ++pPropensityObject)
     {
-      CObjectInterface::ObjectSet Changed;
+      Changed = pReaction->getChangedObjects();
 
       // The time is always updated
       Changed.insert(pTimeObject);
-
-      CMathReaction::Balance::const_iterator itBalance = pReaction->getBalance().begin();
-      CMathReaction::Balance::const_iterator endBalance = pReaction->getBalance().end();
-
-      for (; itBalance != endBalance; ++itBalance)
-        {
-          Changed.insert(itBalance->first);
-        }
 
       pUpdateSequence->clear();
       mpContainer->getTransientDependencies().getUpdateSequence(*pUpdateSequence, CMath::Default, Changed, Requested);
@@ -289,13 +303,14 @@ bool CStochDirectMethod::isValidProblem(const CCopasiProblem * pProblem)
   return true;
 }
 
-C_FLOAT64 CStochDirectMethod::doSingleStep(const C_FLOAT64 & curTime, const C_FLOAT64 & endTime)
+C_FLOAT64 CStochDirectMethod::doSingleStep(C_FLOAT64 startTime, const C_FLOAT64 & endTime)
 {
   if (mNextReactionIndex == C_INVALID_INDEX)
     {
       if (mA0 == 0)
         {
-          return endTime - curTime;
+          *mpContainerStateTime = endTime;
+          return endTime - startTime;
         }
 
       // We need to throw an exception if mA0 is NaN
@@ -304,10 +319,7 @@ C_FLOAT64 CStochDirectMethod::doSingleStep(const C_FLOAT64 & curTime, const C_FL
           CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 27);
         }
 
-      mNextReactionTime = curTime - log(mpRandomGenerator->getRandomOO()) / mA0;
-
-      // TODO CRITICAL Check whether any time dependent root changes sign in curTime, mNextReactionTime.
-      // If we need to interpolate return with that time value without firing any reaction
+      mNextReactionTime = startTime - log(mpRandomGenerator->getRandomOO()) / mA0;
 
       // We are sure that we have at least 1 reaction
       mNextReactionIndex = 0;
@@ -326,12 +338,66 @@ C_FLOAT64 CStochDirectMethod::doSingleStep(const C_FLOAT64 & curTime, const C_FL
       mNextReactionIndex--;
     }
 
-  if (mNextReactionTime >= endTime)
+  *mpContainerStateTime = mNextReactionTime;
+
+  // Check whether any time dependent root changes sign in curTime, mNextReactionTime.
+  // If we need to interpolate return with that time value without firing any reaction
+
+  if (mHaveTimeDependentRoots)
     {
-      return endTime - curTime;
+      mpContainer->applyUpdateSequence(mUpdateTimeDependentRoots);
+
+      if (checkRoots())
+        {
+          // Interpolate to find the first root
+          C_FLOAT64 RootTime;
+          C_FLOAT64 RootValue;
+          Brent(startTime, mNextReactionTime, mpRootValueCalculator, &RootTime, &RootValue, 1e-6 * startTime, 0);
+
+          if (RootTime > endTime)
+            {
+              *mpContainerStateTime = endTime;
+              mpContainer->applyUpdateSequence(mUpdateTimeDependentRoots);
+              *mpRootValueNew = mpContainer->getRoots();
+              mStatus = NORMAL;
+
+              return endTime - startTime;
+            }
+
+          *mpContainerStateTime = RootTime;
+          mpContainer->applyUpdateSequence(mUpdateTimeDependentRoots);
+          *mpRootValueNew = mpContainer->getRoots();
+
+          // Mark the appropriate root
+          C_INT * pRootFound = mRootsFound.array();
+          C_INT * pRootFoundEnd = pRootFound + mNumRoot;
+          C_FLOAT64 * pRootValue = mpRootValueNew->array();
+
+          for (; pRootFound != pRootFoundEnd; ++pRootFound, ++pRootValue)
+            {
+              if (*pRootValue == RootValue || *pRootValue == -RootValue)
+                {
+                  *pRootFound = CMath::ToggleBoth;
+                }
+              else
+                {
+                  *pRootFound = CMath::NoToggle;
+                }
+            }
+
+          mStatus = ROOT;
+
+          return RootTime - startTime;
+        }
     }
 
-  *mpContainerStateTime = mNextReactionTime;
+  if (mNextReactionTime >= endTime)
+    {
+      *mpContainerStateTime = endTime;
+      mStatus = NORMAL;
+      return endTime - startTime;
+    }
+
   mReactions[mNextReactionIndex].fire();
   mpContainer->applyUpdateSequence(mUpdateSequences[mNextReactionIndex]);
 
@@ -347,8 +413,9 @@ C_FLOAT64 CStochDirectMethod::doSingleStep(const C_FLOAT64 & curTime, const C_FL
     }
 
   mNextReactionIndex = C_INVALID_INDEX;
+  mStatus = NORMAL;
 
-  return mNextReactionTime - curTime;
+  return mNextReactionTime - startTime;
 }
 
 /**
@@ -358,36 +425,51 @@ bool CStochDirectMethod::checkRoots()
 {
   bool hasRoots = false;
 
-  // calculate roots
-  mpContainer->updateSimulatedValues(false);
-  *mpRootValueNew = mpContainer->getRoots();
-
-  std::cout << "State: " << mpContainer->getState(false) << std::endl;
-  std::cout << "Roots: " << *mpRootValueNew << std::endl;
-
-  C_FLOAT64 *pRootValueOld = mpRootValueOld->array();
-  C_FLOAT64 *pRootValueNew = mpRootValueNew->array();
-
-  C_INT *pRootFound    = mRootsFound.array();
-  C_INT *pRootFoundEnd    = pRootFound + mRootsFound.size();
-
-  for (; pRootFound != pRootFoundEnd; pRootValueOld++, pRootValueNew++, pRootFound++)
-    {
-      if ((*pRootValueOld) * (*pRootValueNew) < 0.0 ||
-          (*pRootValueNew) == 0.0)
-        {
-          // These root changes are not caused by the time alone as those are handled in do single step.
-          hasRoots = true;
-          *pRootFound = 1;
-        }
-      else
-        *pRootFound = 0;
-    }
-
   // Swap old an new for the next call.
   CVector< C_FLOAT64 > * pTmp = mpRootValueOld;
   mpRootValueOld = mpRootValueNew;
   mpRootValueNew = pTmp;
+
+  *mpRootValueNew = mpContainer->getRoots();
+
+  C_FLOAT64 *pRootValueOld = mpRootValueOld->array();
+  C_FLOAT64 *pRootValueNew = mpRootValueNew->array();
+  C_FLOAT64 *pRootNonZero = mRootsNonZero.array();
+
+  C_INT *pRootFound    = mRootsFound.array();
+  C_INT *pRootFoundEnd    = pRootFound + mRootsFound.size();
+
+  const bool * pIsDiscrete = mpContainer->getRootIsDiscrete().array();
+  const bool * pIsTimeDependent = mpContainer->getRootIsTimeDependent().array();
+
+  for (; pRootFound != pRootFoundEnd; pRootValueOld++, pRootValueNew++, pRootFound++, pRootNonZero++)
+    {
+      if (*pRootValueOld * *pRootValueNew < 0.0 ||
+          (*pRootValueNew == 0.0 && *pIsTimeDependent && !*pIsDiscrete))
+        {
+          // These root changes are not caused by the time alone as those are handled in do single step.
+          hasRoots = true;
+          *pRootFound = CMath::ToggleBoth;
+        }
+      else if (*pRootValueNew == 0.0 &&
+               *pRootValueOld != 0.0)
+        {
+          hasRoots = true;
+          *pRootFound = CMath::ToggleEquality; // toggle only equality
+          *pRootNonZero = *pRootValueOld;
+        }
+      else if (*pRootValueNew != 0.0 &&
+               *pRootValueOld == 0.0 &&
+               *pRootValueNew * *pRootNonZero < 0.0)
+        {
+          hasRoots = true;
+          *pRootFound = CMath::ToggleInequality; // toggle only inequality
+        }
+      else
+        {
+          *pRootFound = CMath::NoToggle;
+        }
+    }
 
   return hasRoots;
 }
@@ -418,14 +500,44 @@ void CStochDirectMethod::stateChange(const CMath::StateChange & change)
       mA0 = 0.0;
 
       // Update the propensity
-      for (; pPropensityObject != pPropensityObjectEnd; ++pPropensityObject)
+      for (; pPropensityObject != pPropensityObjectEnd; ++pPropensityObject, ++pAmu)
         {
           pPropensityObject->calculate();
           mA0 += *pAmu;
         }
 
+      mNextReactionIndex = C_INVALID_INDEX;
       *mpRootValueNew = mpContainer->getRoots();
     }
 
   mMaxStepsReached = false;
+}
+
+C_FLOAT64 CStochDirectMethod::rootValue(const C_FLOAT64 & time)
+{
+  *mpContainerStateTime = time;
+  mpContainer->applyUpdateSequence(mUpdateTimeDependentRoots);
+
+  const C_FLOAT64 * pRoot = mpContainer->getRoots().array();
+  const C_FLOAT64 * pRootEnd = pRoot + mNumRoot;
+  const C_FLOAT64 * pRootOld = mpRootValueOld->array();
+  const C_FLOAT64 * pRootNew = mpRootValueNew->array();
+
+  C_FLOAT64 MaxRootValue = - std::numeric_limits< C_FLOAT64 >::infinity();
+
+  for (; pRoot != pRootEnd; ++pRoot, ++pRootOld, ++pRootNew)
+    {
+      // We are only looking for roots which change sign in [pOld, pNew]
+      if (*pRootOld * *pRootNew < 0)
+        {
+          C_FLOAT64 RootValue = (*pRootNew > 0) ? *pRoot : -*pRoot;
+
+          if (RootValue > MaxRootValue)
+            {
+              MaxRootValue = RootValue;
+            }
+        }
+    }
+
+  return MaxRootValue;
 }

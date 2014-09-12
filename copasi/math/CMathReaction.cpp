@@ -15,6 +15,7 @@ CMathReaction::CMathReaction():
   mpParticleFlux(NULL),
   mpFlux(NULL),
   mpPropensity(NULL),
+  mChangedSpecies(),
   mBalance(),
   mStepUpdates()
 {}
@@ -24,6 +25,7 @@ CMathReaction::CMathReaction(const CMathReaction & src):
   mpParticleFlux(src.mpParticleFlux),
   mpFlux(src.mpFlux),
   mpPropensity(src.mpPropensity),
+  mChangedSpecies(src.mChangedSpecies),
   mBalance(src.mBalance),
   mStepUpdates(src.mStepUpdates)
 {}
@@ -44,16 +46,26 @@ void CMathReaction::initialize(const CReaction * pReaction, CMathContainer & con
 
   mStepUpdates.resize(mpReaction->getChemEq().getBalances().size());
   std::pair< C_FLOAT64, C_FLOAT64 * > * pStepUpdate = mStepUpdates.array();
-  std::pair< C_FLOAT64, C_FLOAT64 * > * pStepUpdateEnd = pStepUpdate + mStepUpdates.size();
   CCopasiVector < CChemEqElement >::const_iterator it = mpReaction->getChemEq().getBalances().begin();
+  CCopasiVector < CChemEqElement >::const_iterator end = mpReaction->getChemEq().getBalances().end();
 
-  for (; pStepUpdate != pStepUpdateEnd; ++pStepUpdate, ++it)
+  for (; it != end; ++it)
     {
       CMathObject * pParticleNumber = container.getMathObject((*it)->getMetabolite()->getValueReference());
-      mBalance.insert(std::pair < const CObjectInterface *, C_FLOAT64 >(pParticleNumber, (*it)->getMultiplicity()));
-      pStepUpdate->first = (*it)->getMultiplicity();
-      pStepUpdate->second = (C_FLOAT64 *) pParticleNumber->getValuePointer();
+
+      if (pParticleNumber->getSimulationType() == CMath::Independent ||
+          pParticleNumber->getSimulationType() == CMath::Dependent)
+        {
+          mChangedSpecies.insert(pParticleNumber);
+          mBalance.insert(std::pair < const CObjectInterface *, C_FLOAT64 >(pParticleNumber, (*it)->getMultiplicity()));
+          pStepUpdate->first = (*it)->getMultiplicity();
+          pStepUpdate->second = (C_FLOAT64 *) pParticleNumber->getValuePointer();
+
+          ++pStepUpdate;
+        }
     }
+
+  mStepUpdates.resize(mChangedSpecies.size(), true);
 }
 
 void CMathReaction::copy(const CMathReaction & src,
@@ -122,6 +134,11 @@ const CMathObject * CMathReaction::getFluxObject() const
 const CMathObject * CMathReaction::getPropensityObject() const
 {
   return mpPropensity;
+}
+
+const CObjectInterface::ObjectSet & CMathReaction::getChangedObjects() const
+{
+  return mChangedSpecies;
 }
 
 const std::set< std::pair < const CObjectInterface *, C_FLOAT64 > > & CMathReaction::getBalance() const

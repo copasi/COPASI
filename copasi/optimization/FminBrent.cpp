@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/FminBrent.cpp,v $
-//   $Revision: 1.8 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/04/23 21:11:20 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2005 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -27,6 +19,7 @@
 #include "FminBrent.h"
 
 #define SQRT_EPSILON sqrt(std::numeric_limits< C_FLOAT64 >::epsilon())
+
 int FminBrent(double a,                 /* Left border      */
               double b,                 /* Right border      */
               FDescent * pF,            /* Functor for function under investigation  */
@@ -58,7 +51,7 @@ int FminBrent(double a,                 /* Left border      */
         SQRT_EPSILON * fabs(x) + tol / 3;
       double new_step;                /* Step at this iteration   */
 
-      if (fabs(x - middle_range) + range / 2 <= 2*tol_act)
+      if (fabs(x - middle_range) + range / 2 <= 2 * tol_act)
         {
           *min = x; *fmin = fx;       /* Store the solution    */
           return 0;                   /* Acceptable approx. is found  */
@@ -71,7 +64,8 @@ int FminBrent(double a,                 /* Left border      */
 
       /* can be tried      */
       if (fabs(x - w) >= tol_act)     /* If x and w are distinct          */
-        {/* interpolatiom may be tried  */
+        {
+          /* interpolatiom may be tried  */
           double p;                   /* Interpolation step is calculated */
           double q;                   /* as p/q; division operation  */
           double t;                   /* is delayed until last moment  */
@@ -86,9 +80,9 @@ int FminBrent(double a,                 /* Left border      */
           else                        /* and assign possible minus to  */
             q = -q;                   /* p        */
 
-          if (fabs(p) < fabs(new_step*q) &&    /* If x+p/q falls in [a,b]   */
-              p > q*(a - x + 2*tol_act) &&         /* not too close to a and   */
-              p < q*(b - x - 2*tol_act))      /* b, and isn't too large   */
+          if (fabs(p) < fabs(new_step * q) &&  /* If x+p/q falls in [a,b]   */
+              p > q * (a - x + 2 * tol_act) &&     /* not too close to a and   */
+              p < q * (b - x - 2 * tol_act))  /* b, and isn't too large   */
             new_step = p / q;                 /* it is accepted     */
 
           /* If p/q is too large then the  */
@@ -106,12 +100,14 @@ int FminBrent(double a,                 /* Left border      */
         }
 
       /* Obtain the next approximation to */
-      {/* min & reduce the enveloping range*/
+      {
+        /* min & reduce the enveloping range*/
         double t = x + new_step;  /* Tentative point for the min  */
         double ft = (*pF)(t);
 
         if (ft <= fx)
-          {/* t is a better approximation  */
+          {
+            /* t is a better approximation  */
             if (t < x)                /* Reduce the range so that   */
               b = x;                   /* t would fall within it   */
             else
@@ -143,4 +139,110 @@ int FminBrent(double a,                 /* Left border      */
 
   *min = x; *fmin = fx;                /* Store the best value    */
   return 3;                            /* Too many iterations    */
+}
+
+bool Brent(double a,               /* Left border      */
+           double b,                /* Right border      */
+           FDescent * pF,           /* Functor for function under investigation  */
+           double *min,             /* Location of root    */
+           double *fmin,            /* Value at root     */
+           double tol,              /* Acceptable tolerance    */
+           int maxiter)             /* Maximum number of iterations  */
+{
+  double fa = (*pF)(a);
+  double fb = (*pF)(b);
+
+  if (fa * fb > 0)
+    return false;
+
+  if (fabs(fa) < fabs(fb))
+    {
+      double tmp = a;
+      a = b;
+      b = tmp;
+
+      tmp = fa;
+      fa = fb;
+      fb = tmp;
+    }
+
+  double c = a;
+  double fc = fa;
+  double s;
+  double fs = fb;
+  double d;
+
+  bool mflag = true;
+
+  while (fabs(b - a) > tol && fb != 0.0 && fs != 0.0)
+    {
+      if (fa != fc && fb != fc)
+        {
+          // inverse quadratic interpolation
+          s = (a * fb * fc) / ((fa - fb) * (fa - fc))
+              + (b * fa * fc) / ((fb - fa) * (fb - fc))
+              + (c * fa * fb) / ((fc - fa) * (fc - fb));
+        }
+      else
+        {
+          // secant method
+          s = b - fb * (b - a) / (fb - fa);
+        }
+
+      if ((s < std::min((3.0 * a + b) / 4.0, b) || std::max((3.0 * a + b) / 4.0, b) < s) ||
+          (mflag && fabs(s - b) >= fabs(b - c) / 2.0) ||
+          (!mflag && fabs(s - b) >= fabs(c - d) / 2.0) ||
+          (mflag && fabs(b - c) < tol) ||
+          (!mflag && fabs(c - d) < tol))
+        {
+          // bisection method
+          s = (a + b) / 2.0;
+          mflag = true;
+        }
+      else
+        {
+          mflag = false;
+        }
+
+      fs = (*pF)(s);
+
+      d = c;
+      c = b;
+
+      if (fa * fs < 0)
+        {
+          b = s;
+          fb = fs;
+        }
+      else
+        {
+          a = s;
+          fa = fs;
+        }
+
+      if (fabs(fa) < fabs(fb))
+        {
+          double tmp = a;
+          a = b;
+          b = tmp;
+
+          tmp = fa;
+          fa = fb;
+          fb = tmp;
+        }
+    }
+
+  // return the smaller value of fa and fb
+  if (fabs(fa) < fabs(fb))
+    {
+      *min = a;
+      *fmin = fa;
+    }
+  else
+    {
+      *min = b;
+      *fmin = fb;
+    }
+
+  return 0;
 }

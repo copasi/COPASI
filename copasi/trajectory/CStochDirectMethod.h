@@ -28,6 +28,7 @@ class CMetab;
 class CTrajectoryProblem;
 class CRandom;
 class CMathReaction;
+class FDescent;
 
 class CStochDirectMethod : public CTrajectoryMethod
 {
@@ -44,11 +45,11 @@ protected:
 
   /**
    * Fire the next reaction if it fire before the endTime
-   * @param const C_FLOAT64 & curTime
+   * @param C_FLOAT64 startTime
    * @param const C_FLOAT64 & endTime
-   * @return C_FLOAT64 timeAfterStep
+   * @return C_FLOAT64 deltaT
    */
-  C_FLOAT64 doSingleStep(const C_FLOAT64 & curTime, const C_FLOAT64 & endTime);
+  C_FLOAT64 doSingleStep(C_FLOAT64 startTime, const C_FLOAT64 & endTime);
 
 public:
   /**
@@ -102,6 +103,13 @@ public:
    */
   virtual void stateChange(const CMath::StateChange & change);
 
+  /**
+   * Calculate the root value for the given time
+   * @param const C_FLOAT64 & time
+   * @return const C_FLOAT64 rootValue
+   */
+  C_FLOAT64 rootValue(const C_FLOAT64 & time);
+
 private:
   /**
    * Initialize the method parameter
@@ -126,9 +134,14 @@ protected:
   size_t mNumReactions;
 
   /**
+   * the number of internal steps to done in one step()
+   */
+  size_t mSteps;
+
+  /**
    * max number of single stochastic steps to do in one step()
    */
-  unsigned C_INT32 mMaxSteps;
+  size_t mMaxSteps;
 
   /**
    * The time the next reaction fires
@@ -166,10 +179,30 @@ protected:
   CVector< CObjectInterface::UpdateSequence > mUpdateSequences;
 
   /**
+   * The sequence required to update time dependent roots.
+   */
+  CObjectInterface::UpdateSequence mUpdateTimeDependentRoots;
+
+  /**
+   * Boolean value indicating whether we have time dependent roots
+   */
+  bool mHaveTimeDependentRoots;
+
+  /**
+   * Functor pointing to the Brent root finding method.
+   */
+  FDescent * mpRootValueCalculator;
+
+  /**
    * A boolean flag indicating whether the maximum steps have been reached. This
    * is used to avoid multiple messages.
    */
   bool mMaxStepsReached;
+
+  /**
+   * The status of the integrator
+   */
+  Status mStatus;
 
   //========Arguments for Roots========
   /**
@@ -187,6 +220,7 @@ protected:
    */
   CVector< C_FLOAT64 > mRootsA;
   CVector< C_FLOAT64 > mRootsB;
+  CVector< C_FLOAT64 > mRootsNonZero;
 
   /**
    * Pointer to the vector holding the previously calculated roots

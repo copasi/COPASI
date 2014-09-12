@@ -81,6 +81,12 @@ public:
   const CMathObject * getPropensityObject() const;
 
   /**
+   * Retrieve the set of particle number objects changed when the reaction fires.
+   * @return const CObjectInterface::ObjectSet & changedObjects
+   */
+  const CObjectInterface::ObjectSet & getChangedObjects() const;
+
+  /**
    * Retrieve the set of modified species
    * @return const std::set< std::pair < const CObjectInterface *, C_FLOAT64 > > & balance
    */
@@ -118,6 +124,11 @@ private:
    * A pointer to the mathematical propensity.
    */
   CMathObject * mpPropensity;
+
+  /**
+   * The set of changed species
+   */
+  CObjectInterface::ObjectSet mChangedSpecies;
 
   /**
    * The set of modified species and their change per reaction event

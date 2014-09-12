@@ -1557,15 +1557,15 @@ public:
 
   /**
    * Retrieve the container of all mathematical objects
-   * @return const CMathContainer * pMathContainer
+   * @return const CMathContainer & mathContainer
    */
-  const CMathContainer * getMathContainer() const;
+  const CMathContainer & getMathContainer() const;
 
   /**
    * Retrieve the container of all mathematical objects
-   * @return CMathContainer * pMathContainer
+   * @return CMathContainer & mathContainer
    */
-  CMathContainer * getMathContainer();
+  CMathContainer & getMathContainer();
 };
 
 #endif // CModel

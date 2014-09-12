@@ -219,12 +219,6 @@ bool CTrajectoryTask::initialize(const OutputFlag & of,
   else
     mUpdateMoieties = false;
 
-  mpContainer = mpTrajectoryProblem->getModel()->getMathContainer();
-
-  mCurrentState.initialize(mpContainer->getState(mUpdateMoieties));
-  mpCurrentStateTime = mCurrentState.array() + mpContainer->getTimeIndex();
-  mpTrajectoryMethod->setContainer(mpContainer);
-
   // Handle the time series as a regular output.
   mTimeSeriesRequested = mpTrajectoryProblem->timeSeriesRequested();
 
@@ -240,7 +234,14 @@ bool CTrajectoryTask::initialize(const OutputFlag & of,
       mTimeSeries.clear();
     }
 
-  if (!CCopasiTask::initialize(of, pOutputHandler, pOstream)) success = false;
+  success &= CCopasiTask::initialize(of, pOutputHandler, pOstream);
+
+  mpContainer = &mpTrajectoryProblem->getModel()->getMathContainer();
+
+  mCurrentState.initialize(mpContainer->getState(mUpdateMoieties));
+  mpCurrentStateTime = mCurrentState.array() + mpContainer->getTimeIndex();
+
+  mpTrajectoryMethod->setContainer(mpContainer);
 
   return success;
 }

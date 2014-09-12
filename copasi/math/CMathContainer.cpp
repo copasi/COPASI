@@ -80,6 +80,9 @@ CMathContainer::CMathContainer():
   mObjects(),
   mEvents(),
   mReactions(),
+  mRootIsDiscrete(),
+  mRootIsTimeDependent(),
+  mRootProcessors(),
   mCreateDiscontinuousPointer(),
   mDataObject2MathObject(),
   mDataValue2MathObject(),
@@ -153,6 +156,8 @@ CMathContainer::CMathContainer(CModel & model):
   mEvents(),
   mReactions(),
   mRootIsDiscrete(),
+  mRootIsTimeDependent(),
+  mRootProcessors(),
   mDataObject2MathObject(),
   mDataValue2MathObject(),
   mDiscontinuityEvents("Discontinuities", this),
@@ -166,8 +171,6 @@ CMathContainer::CMathContainer(CModel & model):
 
   mpAvogadro = mpModel->getObject(CCopasiObjectName("Reference=Avogadro Constant"));
   mpQuantity2NumberFactor = mpModel->getObject(CCopasiObjectName("Reference=Quantity Conversion Factor"));
-
-  init();
 }
 
 CMathContainer::CMathContainer(const CMathContainer & src):
@@ -234,6 +237,8 @@ CMathContainer::CMathContainer(const CMathContainer & src):
   mEvents(src.mEvents.size()),
   mReactions(src.mReactions.size()),
   mRootIsDiscrete(src.mRootIsDiscrete),
+  mRootIsTimeDependent(src.mRootIsTimeDependent),
+  mRootProcessors(src.mRootProcessors),
   mDataObject2MathObject(),
   mDataValue2MathObject(),
   mDiscontinuityEvents("Discontinuities", this),
@@ -375,11 +380,14 @@ CMathContainer::CMathContainer(const CMathContainer & src):
   createDependencyGraphs();
 
   // TODO CRITICAL Fix me!
-  // See init() after createDependencyGraph() what needs to be done.
+  // See compile() after createDependencyGraph() what needs to be done.
 }
 
 CMathContainer::~CMathContainer()
-{}
+{
+  pdelete(mpProcessQueue);
+  pdelete(mpRandomGenerator);
+}
 
 const CVectorCore< C_FLOAT64 > & CMathContainer::getValues() const
 {
@@ -567,6 +575,11 @@ const CVectorCore< bool > & CMathContainer::getRootIsDiscrete() const
   return mRootIsDiscrete;
 }
 
+const CVectorCore< bool > & CMathContainer::getRootIsTimeDependent() const
+{
+  return mRootIsTimeDependent;
+}
+
 CVector< CMathEvent::CTrigger::CRootProcessor * > & CMathContainer::getRootProcessors()
 {
   return mRootProcessors;
@@ -681,8 +694,6 @@ void CMathContainer::applyInitialValues()
 
 void CMathContainer::updateSimulatedValues(const bool & useMoieties)
 {
-  // std::cout << "State: " << mState << std::endl;
-
   if (useMoieties)
     {
       applyUpdateSequence(mSimulationValuesSequenceReduced);
@@ -720,8 +731,6 @@ void CMathContainer::applyUpdateSequence(const CObjectInterface::UpdateSequence 
   for (; it != end; ++it)
     {
       static_cast< CMathObject * >(*it)->calculate();
-
-      // std::cout <<  static_cast< CMathObject * >(*it)->getDataObject()->getObjectDisplayName() << ": " << * (C_FLOAT64 *) static_cast< CMathObject * >(*it)->getValuePointer() << std::endl;
     }
 }
 
@@ -890,8 +899,12 @@ CMathObject * CMathContainer::getMathObject(const CCopasiObjectName & cn) const
   return getMathObject(mpModel->getObject(cn));
 }
 
-void CMathContainer::init()
+void CMathContainer::compile()
 {
+  // Clear old maps before allocation
+  mDataObject2MathObject.clear();
+  mDataValue2MathObject.clear();
+
   allocate();
 
   CMath::sPointers Pointers;
@@ -1421,6 +1434,7 @@ void CMathContainer::allocate()
 
   mObjects.resize(mValues.size());
   mRootIsDiscrete.resize(nEventRoots);
+  mRootIsTimeDependent.resize(nEventRoots);
 }
 
 void CMathContainer::initializeObjects(CMath::sPointers & p)
@@ -1997,6 +2011,9 @@ void CMathContainer::createUpdateSimulationValuesSequence()
 
 void CMathContainer::analyzeRoots()
 {
+  CObjectInterface::ObjectSet TimeValue;
+  TimeValue.insert(getMathObject(mState.array() + getTimeIndex()));
+
   CObjectInterface::ObjectSet ContinousStateValues;
   const CMathObject * pStateObject = getMathObject(mState.array() + mEventTargetCount);
   const CMathObject * pStateObjectEnd = getMathObject(mState.array() + mState.size());
@@ -2011,6 +2028,7 @@ void CMathContainer::analyzeRoots()
   CMathObject * pRoot = getMathObject(pRootValue);
   CMathObject * pRootEnd = pRoot + mEventRoots.size();
   bool * pIsDiscrete = mRootIsDiscrete.array();
+  bool * pIsTimeDependent = mRootIsTimeDependent.array();
 
   for (; pRoot != pRootEnd; ++pRoot, ++RootCount, ++pIsDiscrete, ++pRootValue)
     {
@@ -2025,11 +2043,15 @@ void CMathContainer::analyzeRoots()
 
       mTransientDependencies.getUpdateSequence(UpdateSequence, CMath::Default, ContinousStateValues, Requested);
       *pIsDiscrete = (UpdateSequence.size() == 0);
+
+      mTransientDependencies.getUpdateSequence(UpdateSequence, CMath::Default, TimeValue, Requested);
+      *pIsTimeDependent = (UpdateSequence.size() != 0);
     }
 
   mEventRoots.initialize(RootCount, mEventRoots.array());
   mEventRootStates.initialize(RootCount, mEventRootStates.array());
   mRootIsDiscrete.resize(RootCount, true);
+  mRootIsTimeDependent.resize(RootCount, true);
 
   mRootProcessors.resize(RootCount);
 
@@ -2176,7 +2198,7 @@ void CMathContainer::processRoots(const bool & equality,
 
   for (; pRoot != pRootEnd; ++pRoot, ++pRootFound)
     {
-      if (!*pRootFound)
+      if (*pRootFound == CMath::NoToggle)
         {
           (*pRoot)->calculateTrueValue();
         }
@@ -2201,7 +2223,9 @@ void CMathContainer::processRoots(const bool & equality,
 
   for (; pRoot != pRootEnd; ++pRoot, ++pRootFound)
     {
-      if (*pRootFound)
+      if (*pRootFound == CMath::ToggleBoth ||
+          (*pRootFound == CMath::ToggleEquality && equality) ||
+          (*pRootFound == CMath::ToggleInequality && !equality))
         {
           (*pRoot)->toggle(Time, equality);
         }

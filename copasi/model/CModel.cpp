@@ -72,7 +72,6 @@ CModel::CModel(CCopasiContainer* pParent):
   mInitialDependencies(),
   mTransientDependencies(),
   mPhysicalDependencies(),
-  mpMathContainer(NULL),
   mListOfUnits("Units", this),
   mpVolumeUnit(NULL),
   mpAreaUnit(NULL),
@@ -114,7 +113,8 @@ CModel::CModel(CCopasiContainer* pParent):
   mNonSimulatedRefreshes(),
   mReorderNeeded(false),
   mIsAutonomous(true),
-  mBuildInitialSequence(true)
+  mBuildInitialSequence(true),
+  mpMathContainer(NULL)
 {
   initObjects();
 
@@ -131,17 +131,12 @@ CModel::CModel(CCopasiContainer* pParent):
 
   initializeMetabolites();
 
-  forceCompile(NULL);
-
-  /* This following 2 lines added by Liang Xu
-  Because of the failure to initialize the parameter when creating a new models
-  */
-//  setQuantityUnit(mpQuantityUnit->getSymbol()); // set the factors
-//  setVolumeUnit(mpVolumeUnit->getSymbol()); // set the factors
   setQuantityUnit("mol");
   setVolumeUnit("ml");
 
-  CONSTRUCTOR_TRACE;
+  mpMathContainer = new CMathContainer(*this);
+
+  forceCompile(NULL);
 }
 
 // CModel::CModel(const CModel & src):
@@ -491,8 +486,7 @@ bool CModel::compile()
 
   buildDependencyGraphs();
 
-  pdelete(mpMathContainer);
-  mpMathContainer = new CMathContainer(*this);
+  mpMathContainer->compile();
 
   // CMathContainer CopyModel(MathModel);
 
@@ -596,6 +590,8 @@ bool CModel::compileIfNecessary(CProcessReport* pProcessReport)
 
       mpCompileHandler = NULL;
     }
+
+  mpMathContainer->fetchInitialState();
 
   return success;
 }
@@ -4496,8 +4492,8 @@ CMathModel* CModel::getMathModel()
 {return mpMathModel;}
 #endif // XXXX
 
-const CMathContainer* CModel::getMathContainer() const
-{return mpMathContainer;}
+const CMathContainer & CModel::getMathContainer() const
+{return *mpMathContainer;}
 
-CMathContainer* CModel::getMathContainer()
-{return mpMathContainer;}
+CMathContainer & CModel::getMathContainer()
+{return *mpMathContainer;}
