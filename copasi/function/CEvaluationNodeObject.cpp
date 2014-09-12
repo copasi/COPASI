@@ -41,8 +41,22 @@ CEvaluationNodeObject::CEvaluationNodeObject(const SubType & subType,
     const Data & data):
   CEvaluationNode((Type)(CEvaluationNode::OBJECT | subType), data),
   mpObject(NULL),
-  mRegisteredObjectCN(data.substr(1, data.length() - 2))
+  mRegisteredObjectCN()
 {
+  switch (subType)
+    {
+      case INVALID:
+        break;
+
+      case CN:
+        mRegisteredObjectCN = data.substr(1, data.length() - 2);
+        break;
+
+      case POINTER:
+        mpValue = (const C_FLOAT64 *) stringToPointer(data);
+        break;
+    }
+
   mPrecedence = PRECEDENCE_NUMBER;
 }
 
@@ -89,7 +103,8 @@ bool CEvaluationNodeObject::compile(const CEvaluationTree * pTree)
             // We may have some container objects for which the value is an included
             // reference. For the math model to work this needs to be corrected.
             const CObjectInterface * pObject = pDataObject->getValueObject();
-            if(!pObject)
+
+            if (!pObject)
               return false;
 
             if (mpObject != pObject && pObject != NULL)

@@ -15,7 +15,7 @@
 #include "model/CCompartment.h"
 #include "model/CModel.h"
 #include "function/CExpression.h"
-
+#include "utilities/utility.h"
 // static
 C_FLOAT64 CMathObject::InvalidValue = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
 
@@ -840,9 +840,8 @@ bool CMathObject::compileParticleFlux(CMathContainer & container)
   Infix.precision(16);
 
   Infix << container.getModel().getQuantity2NumberFactor();
-  Infix << "*<";
-  Infix << pReaction->getFluxReference()->getCN();
-  Infix << ">";
+  Infix << "*";
+  Infix << pointerToString(container.getMathObject(pReaction->getFluxReference())->getValuePointer());
 
   CExpression E("ParticleExpression", &container);
 
@@ -881,7 +880,7 @@ bool CMathObject::compileFlux(CMathContainer & container)
     {
       CExpression Tmp(mpExpression->getObjectName(), &container);
 
-      std::string Infix = "<" + (*Compartments.begin())->getValueReference()->getCN() + ">*(" + mpExpression->getInfix() + ")";
+      std::string Infix = pointerToString(container.getMathObject((*Compartments.begin())->getValueReference())->getValuePointer()) + "*(" + mpExpression->getInfix() + ")";
       success &= Tmp.setInfix(Infix);
       success &= Tmp.compile();
 
@@ -915,63 +914,64 @@ bool CMathObject::compilePropensity(CMathContainer & container)
     {
       Infix << "NAN";
     }
-  else if (container.getModel().getModelType() == CModel::deterministic)
-    {
-      Infix << "<" << pReaction->getParticleFluxReference()->getCN() << ">";
-
-      std::ostringstream Divisor;
-      Divisor.imbue(std::locale::classic());
-      Divisor.precision(16);
-
-      const CCopasiVector<CChemEqElement> & Substrates = pReaction->getChemEq().getSubstrates();
-      CCopasiVector< CChemEqElement >::const_iterator itSubstrate = Substrates.begin();
-      CCopasiVector< CChemEqElement >::const_iterator endSubstrate = Substrates.end();
-      bool first = true;
-
-      for (; itSubstrate != endSubstrate; ++itSubstrate)
-        {
-          const std::string NumberCN = (*itSubstrate)->getMetabolite()->getValueReference()->getCN();
-          C_FLOAT64 Multiplicity = (*itSubstrate)->getMultiplicity();
-
-          Multiplicity -= 1.0; // Nothing to correct if the multiplicity is 1.
-
-          if (Multiplicity > 2.0 - 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon())
-            {
-              if (!first)
-                {
-                  Divisor << "*";
-                }
-
-              first = false;
-              Divisor << "<" << NumberCN << ">^" << Multiplicity;
-            }
-          else if (Multiplicity > 1.0 - 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon())
-            {
-              if (!first)
-                {
-                  Divisor << "*";
-                }
-
-              first = false;
-              Divisor << "<" << NumberCN << ">";
-            }
-
-          while (Multiplicity > 1.0 - 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon())
-            {
-              Infix << "*(<" << NumberCN << ">-" << Multiplicity << ")";
-              Multiplicity -= 1.0;
-            }
-        }
-
-      if (Divisor.str() != "")
-        {
-          Infix << "/(" << Divisor.str() << ")";
-        }
-    }
   else
     {
       // Propensity is the same as the flux.
-      Infix << "<" << pReaction->getParticleFluxReference()->getCN() << ">";
+      Infix << pointerToString(container.getMathObject(pReaction->getParticleFluxReference())->getValuePointer());
+
+      // Apply correction for deterministic models
+      if (container.getModel().getModelType() == CModel::deterministic)
+        {
+          std::ostringstream Divisor;
+          Divisor.imbue(std::locale::classic());
+          Divisor.precision(16);
+
+          const CCopasiVector<CChemEqElement> & Substrates = pReaction->getChemEq().getSubstrates();
+          CCopasiVector< CChemEqElement >::const_iterator itSubstrate = Substrates.begin();
+          CCopasiVector< CChemEqElement >::const_iterator endSubstrate = Substrates.end();
+          bool first = true;
+
+          for (; itSubstrate != endSubstrate; ++itSubstrate)
+            {
+              const std::string NumberPointer = pointerToString(container.getMathObject((*itSubstrate)->getMetabolite()->getValueReference())->getValuePointer());
+
+              C_FLOAT64 Multiplicity = (*itSubstrate)->getMultiplicity();
+
+              Multiplicity -= 1.0; // Nothing to correct if the multiplicity is 1.
+
+              if (Multiplicity > 2.0 - 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon())
+                {
+                  if (!first)
+                    {
+                      Divisor << "*";
+                    }
+
+                  first = false;
+                  Divisor << NumberPointer << "^" << Multiplicity;
+                }
+              else if (Multiplicity > 1.0 - 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon())
+                {
+                  if (!first)
+                    {
+                      Divisor << "*";
+                    }
+
+                  first = false;
+                  Divisor << NumberPointer;
+                }
+
+              while (Multiplicity > 1.0 - 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon())
+                {
+                  Infix << "*(" << NumberPointer << "-" << Multiplicity << ")";
+                  Multiplicity -= 1.0;
+                }
+            }
+
+          if (Divisor.str() != "")
+            {
+              Infix << "/(" << Divisor.str() << ")";
+            }
+        }
     }
 
   CExpression E("PropensityExpression", &container);
@@ -1019,9 +1019,8 @@ bool CMathObject::compileTotalMass(CMathContainer & container)
 
       First = false;
 
-      Infix << "*<";
-      Infix << it->second->getValueReference()->getCN();
-      Infix << ">";
+      Infix << "*";
+      Infix << pointerToString(container.getMathObject(it->second->getValueReference())->getValuePointer());
     }
 
   CExpression E("TotalMass", &container);
@@ -1050,7 +1049,7 @@ bool CMathObject::compileDependentMass(CMathContainer & container)
   Infix.imbue(std::locale::classic());
   Infix.precision(16);
 
-  Infix << "<" << pMoiety->getTotalNumberReference()->getCN() << ">";
+  Infix << pointerToString(container.getMathObject(pMoiety->getTotalNumberReference())->getValuePointer());
 
   std::vector< std::pair< C_FLOAT64, CMetab * > >::const_iterator it = pMoiety->getEquation().begin();
   std::vector< std::pair< C_FLOAT64, CMetab * > >::const_iterator end = pMoiety->getEquation().end();
@@ -1077,9 +1076,8 @@ bool CMathObject::compileDependentMass(CMathContainer & container)
 
       First = false;
 
-      Infix << "*<";
-      Infix << it->second->getValueReference()->getCN();
-      Infix << ">";
+      Infix << "*";
+      Infix << pointerToString(container.getMathObject(it->second->getValueReference())->getValuePointer());
     }
 
   CExpression E("DependentMass", &container);
@@ -1155,11 +1153,10 @@ bool CMathObject::createIntensiveValueExpression(const CMetab * pSpecies,
   Infix.precision(16);
 
   Infix << container.getModel().getNumber2QuantityFactor();
-  Infix << "*<";
-  Infix << pNumber->getCN();
-  Infix << ">/<";
-  Infix << pCompartment->getCN();
-  Infix << ">";
+  Infix << "*";
+  Infix << pointerToString(container.getMathObject(pNumber)->getValuePointer());
+  Infix << "/";
+  Infix << pointerToString(container.getMathObject(pCompartment)->getValuePointer());;
 
   CExpression E("IntensiveValueExpression", &container);
 
@@ -1197,11 +1194,10 @@ bool CMathObject::createExtensiveValueExpression(const CMetab * pSpecies,
   Infix.precision(16);
 
   Infix << container.getModel().getQuantity2NumberFactor();
-  Infix << "*<";
-  Infix << pDensity->getCN();
-  Infix << ">*<";
-  Infix << pCompartment->getCN();
-  Infix << ">";
+  Infix << "*";
+  Infix << pointerToString(container.getMathObject(pDensity)->getValuePointer());
+  Infix << "*";
+  Infix << pointerToString(container.getMathObject(pCompartment)->getValuePointer());
 
   CExpression E("ExtensiveValueExpression", &container);
 
@@ -1228,17 +1224,16 @@ bool CMathObject::createIntensiveRateExpression(const CMetab * pSpecies,
   Infix.imbue(std::locale::classic());
   Infix.precision(16);
 
-  Infix << "(<";
-  Infix << pSpecies->getRateReference()->getCN();
-  Infix << ">*";
+  Infix << "(";
+  Infix << pointerToString(container.getMathObject(pSpecies->getRateReference())->getValuePointer());
+  Infix << "*";
   Infix << container.getModel().getNumber2QuantityFactor();
-  Infix << "-<";
-  Infix << pSpecies->getCompartment()->getValueReference()->getCN();
-  Infix << ">*<";
-  Infix << pSpecies->getCompartment()->getRateReference()->getCN();
-  Infix << ">)/<";
-  Infix << pSpecies->getCompartment()->getValueReference()->getCN();
-  Infix << ">";
+  Infix << "-";
+  Infix << pointerToString(container.getMathObject(pSpecies->getCompartment()->getValueReference())->getValuePointer());
+  Infix << "*";
+  Infix << pointerToString(container.getMathObject(pSpecies->getCompartment()->getRateReference())->getValuePointer());
+  Infix << ")/";
+  Infix << pointerToString(container.getMathObject(pSpecies->getCompartment()->getValueReference())->getValuePointer());
 
   CExpression E("IntensiveRateExpression", &container);
 
@@ -1265,9 +1260,9 @@ bool CMathObject::createExtensiveODERateExpression(const CMetab * pSpecies,
   Infix.precision(16);
 
   Infix << container.getModel().getQuantity2NumberFactor();
-  Infix << "*<";
-  Infix << pSpecies->getCompartment()->getValueReference()->getCN();
-  Infix << ">*(";
+  Infix << "*";
+  Infix << pointerToString(container.getMathObject(pSpecies->getCompartment()->getValueReference())->getValuePointer());
+  Infix << "*(";
   Infix << pSpecies->getExpression();
   Infix << ")";
 
@@ -1340,9 +1335,8 @@ bool CMathObject::createExtensiveReactionRateExpression(const CMetab * pSpecies,
 
           First = false;
 
-          Infix << "*<";
-          Infix << (*it)->getParticleFluxReference()->getCN();
-          Infix << ">";
+          Infix << "*";
+          Infix << pointerToString(container.getMathObject((*it)->getParticleFluxReference())->getValuePointer());
         }
     }
 

@@ -134,6 +134,7 @@ const MESSAGES Messages[] =
   {MCTrajectoryMethod + 25, "CTrajectoryMethod (25): Invalid state at time '%f'."},
   {MCTrajectoryMethod + 26, "CTrajectoryMethod (26): A tau-Leap step encountered numerical problems.\nPlease check whether some particle numbers are large."},
   {MCTrajectoryMethod + 27, "CTrajectoryMethod (27): Numerical problem: a propensity is NaN."},
+  {MCTrajectoryMethod + 28, "CTrajectoryMethod (28): The model contains an ODE rule.\nStochastic simulation is not possible."},
 
   // XML Package
   {MCXML + 1, "XML (1): Required attribute '%s' not found (line: '%d')."},

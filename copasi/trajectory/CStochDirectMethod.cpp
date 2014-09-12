@@ -237,41 +237,10 @@ bool CStochDirectMethod::isValidProblem(const CCopasiProblem * pProblem)
       return false;
     }
 
-  if (pTP->getModel()->getTotSteps() < 1)
-    {
-      //at least one reaction necessary
-      CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 17);
-      return false;
-    }
-
   // check for ODEs
-  const CStateTemplate & StateTemplate = pTP->getModel()->getStateTemplate();
-  CModelEntity *const* ppEntity = StateTemplate.beginIndependent();
-  CModelEntity *const* ppEntityEnd = StateTemplate.endIndependent();
-
-  for (; ppEntity != ppEntityEnd; ++ppEntity)
+  if (pTP->getModel()->getMathContainer().getCountODEs() > 0)
     {
-      if ((*ppEntity)->getStatus() == CModelEntity::ODE)
-        {
-          if (dynamic_cast<const CModelValue *>(*ppEntity) != NULL)
-            {
-              // global quantity ode rule found
-              CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 18);
-              return false;
-            }
-          else if (dynamic_cast<const CCompartment *>(*ppEntity) != NULL)
-            {
-              // compartment ode rule found
-              CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 21);
-              return false;
-            }
-          else
-            {
-              // species ode rule found
-              CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 20);
-              return false;
-            }
-        }
+      CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 28);
     }
 
   //TODO: rewrite CModel::suitableForStochasticSimulation() to use
@@ -292,14 +261,6 @@ bool CStochDirectMethod::isValidProblem(const CCopasiProblem * pProblem)
       return false;
     }
 
-  //events are not supported at the moment
-  /*
-    if (pTP->getModel()->getEvents().size() > 0)
-    {
-    CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 23);
-    return false;
-    }
-  */
   return true;
 }
 
