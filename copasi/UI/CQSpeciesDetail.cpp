@@ -940,11 +940,10 @@ void CQSpeciesDetail::addSpecie(UndoSpecieData *pSData){
 	protectedNotify(ListViews::METABOLITE, ListViews::ADD, key);
 
 	//restore the reactions the species dependent on
-	QList <UndoReactionData *> reactionData = pSData->getDependencyObjects();
-
+	QList <UndoReactionData *> *reactionData = pSData->getReactionDependencyObjects();
 
 	QList <UndoReactionData *>::const_iterator j;
-	for (j = reactionData.begin(); j != reactionData.end(); ++j)
+	for (j = reactionData->begin(); j != reactionData->end(); ++j)
 	{
 		UndoReactionData * rData = *j;
 

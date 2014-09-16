@@ -16,10 +16,6 @@ public:
 	void redo();
 	void undo();
 
-	/**
-	 * Method for handling the GlobalQuantity dependency objects
-	 */
-	void setDependentObjects(const std::set< const CCopasiObject * > & deletedObjects, QList<UndoReactionData*> * dependencyObjects);
 	QString removeGlobalQuantityRowsText() const;
 	virtual ~RemoveGlobalQuantityRowsCommand();
 

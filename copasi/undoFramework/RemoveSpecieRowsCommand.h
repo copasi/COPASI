@@ -21,10 +21,6 @@ public:
 	void redo();
 	void undo();
 
-	/**
-	 * Method for handling the species dependency objects
-	 */
-	void setDependentObjects(const std::set< const CCopasiObject * > & deletedObjects, QList<UndoReactionData*> * dependencyObjects);
 	QString removeSpecieRowsText() const;
 	virtual ~RemoveSpecieRowsCommand();
 

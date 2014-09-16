@@ -18,11 +18,6 @@ UndoGlobalQuantityData::UndoGlobalQuantityData() {
 
 }
 
-QList<UndoReactionData*> UndoGlobalQuantityData::getDependencyObjects() const
-{
-	return mDependencyObjects;
-}
-
 double UndoGlobalQuantityData::getInitialValue() const
 {
 	return mInitialValue;
@@ -31,11 +26,6 @@ double UndoGlobalQuantityData::getInitialValue() const
 CModelEntity::Status UndoGlobalQuantityData::getStatus() const
 {
 	return mStatus;
-}
-
-void UndoGlobalQuantityData::setDependencyObjects(QList<UndoReactionData*> dependencyObjects)
-{
-	mDependencyObjects = dependencyObjects;
 }
 
 void UndoGlobalQuantityData::setInitialValue(double initialValue)
@@ -51,4 +41,19 @@ void UndoGlobalQuantityData::setStatus(CModelEntity::Status status)
 UndoGlobalQuantityData::~UndoGlobalQuantityData() {
 	// TODO Auto-generated destructor stub
 }
+
+QList<UndoReactionData*> *UndoGlobalQuantityData::getReactionDependencyObjects() const
+{
+    return mReactionDependencyObjects;
+}
+
+void UndoGlobalQuantityData::setReactionDependencyObjects(QList<UndoReactionData*> *reactionDependencyObjects)
+{
+    mReactionDependencyObjects = reactionDependencyObjects;
+}
+
+
+
+
+
 

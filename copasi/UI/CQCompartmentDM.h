@@ -23,6 +23,11 @@
 
 #include "copasi/UI/CQBaseDataModel.h"
 
+#ifdef COPASI_UNDO
+class UndoCompartmentData;
+class UndoReactionData;
+#endif
+
 #define COL_NAME_COMPARTMENTS         1
 #define COL_TYPE_COMPARTMENTS         2
 #define COL_IVOLUME                   3
@@ -35,6 +40,11 @@
 class CQCompartmentDM : public CQBaseDataModel
 {
   Q_OBJECT
+
+#ifdef COPASI_UNDO
+  friend class CompartmentDataChangeCommand;
+  friend class InsertCompartmentRowsCommand;
+#endif
 
 public:
   CQCompartmentDM(QObject *parent = 0);
@@ -49,6 +59,22 @@ public:
   virtual bool setData(const QModelIndex &index, const QVariant &value,
                        int role = Qt::EditRole);
   bool removeRows(QModelIndexList rows, const QModelIndex &index = QModelIndex());
+
+  //TODO Undo
+ #ifdef COPASI_UNDO
+   bool compartmentDataChange(const QModelIndex &index, const QVariant &value, int role);
+   void insertNewCompartmentRow(int position, int rows, const QModelIndex&);
+   void addCompartmentRow(UndoCompartmentData *pCompartmentData);
+   void deleteCompartmentRow(UndoCompartmentData *pCompartmentData);
+   bool removeCompartmentRows(QModelIndexList rows, const QModelIndex&);
+   bool insertCompartmentRows(QList <UndoCompartmentData *> pCompartmentData);
+   void deleteCompartmentRows(QList <UndoCompartmentData *> pCompartmentData);
+   bool removeAllCompartmentRows();
+   bool clear();
+
+   signals:
+   void changeWidget(const size_t & id);
+ #endif
 
 protected:
   QStringList mTypes;

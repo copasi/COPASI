@@ -23,8 +23,6 @@ public:
 	void undo();
 	QString deleteGlobalQuantityText(std::string &name) const;
 
-	void setDependentObjects(const std::set< const CCopasiObject * > & deletedObjects, QList<UndoReactionData*> *dependencyObjects);
-
 	virtual ~DeleteGlobalQuantityCommand();
 
 private:

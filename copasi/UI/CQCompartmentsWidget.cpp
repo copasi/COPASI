@@ -22,6 +22,10 @@
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "report/CCopasiRootContainer.h"
 
+#ifdef COPASI_UNDO
+#include "copasiui3window.h"
+#endif
+
 /*
  *  Constructs a CQCompartmentsWidget which is a child of 'parent', with the
  *  name 'name'.'
@@ -54,6 +58,12 @@ CQCompartmentsWidget::CQCompartmentsWidget(QWidget* parent, const char* name)
           this, SLOT(dataChanged(const QModelIndex&, const QModelIndex&)));
   connect(mpLEFilter, SIGNAL(textChanged(const QString &)),
           this, SLOT(slotFilterChanged()));
+
+#ifdef COPASI_UNDO
+  CopasiUI3Window *  pWindow = dynamic_cast<CopasiUI3Window * >(parent->parent());
+  mpCompartmentDM->setUndoStack(pWindow->getUndoStack());
+  connect(mpCompartmentDM, SIGNAL(changeWidget(const size_t&)), this, SLOT(slotChangeWidget(const size_t&)));
+#endif
 }
 
 /*
@@ -257,3 +267,10 @@ void CQCompartmentsWidget::slotFilterChanged()
   QRegExp regExp(mpLEFilter->text() + "|New Compartment", Qt::CaseInsensitive, QRegExp::RegExp);
   mpProxyModel->setFilterRegExp(regExp);
 }
+
+#ifdef COPASI_UNDO
+void CQCompartmentsWidget:: slotChangeWidget(const size_t & id){
+	mpListView->switchToOtherWidget(id, "");
+}
+#endif
+

@@ -12,8 +12,15 @@
 #ifndef CCOPASIUNDOCOMMAND_H_
 #define CCOPASIUNDOCOMMAND_H_
 
-	typedef QPair<int, int> PathItem;
-	typedef QList<PathItem> Path;
+#include <set>
+
+typedef QPair<int, int> PathItem;
+typedef QList<PathItem> Path;
+
+class UndoData;
+class UndoSpecieData;
+class UndoReactionData;
+
 class CCopasiUndoCommand : public QUndoCommand {
 public:
 	CCopasiUndoCommand();
@@ -22,6 +29,18 @@ public:
 	virtual void redo()=0;
 	Path pathFromIndex(const QModelIndex &index);
 	QModelIndex pathToIndex(const Path &path, const QAbstractItemModel *model);
+	void setDependentObjects(const std::set< const CCopasiObject * > & deletedObjects);
+
+	QList<UndoReactionData*> *getReactionData() const;
+    QList<UndoSpecieData*> *getSpecieData() const;
+    void setReactionData(QList<UndoReactionData*> *reactionData);
+    void setSpecieData(QList<UndoSpecieData*> *specieData);
+	
+
+private:
+	QList <UndoSpecieData *> *mpSpecieData;
+	QList <UndoReactionData*> *mpReactionData;
+
 };
 
 #endif /* CCOPASIUNDOCOMMAND_H_ */

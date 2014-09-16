@@ -531,18 +531,12 @@ void CQModelValue::deleteGlobalQuantity(UndoGlobalQuantityData *pGlobalQuantityD
 	assert(pModel!= NULL);
 
 	CModelValue * pGQ = pModel->getModelValues()[pGlobalQuantityData->getName()];
-	//size_t index = pModel->getModelValues().CCopasiVector< CModelValue >::getIndex(pGQ);
-	//removeRow((int) index);
-
-	//size_t index = pModel->findMetabByName(pSData->getName());
-
-//	CModelValue *pGlobalQuantity = pModel->getModelValues[(int) index];
 	std::string key = pGQ->getKey();
-
-	pModel->removeMetabolite(key);
+	pModel->removeModelValue(key);
+	mpModelValue = NULL;
 
 #undef DELETE
-	protectedNotify(ListViews::MODELVALUE, ListViews::DELETE, mKey);
+	protectedNotify(ListViews::MODELVALUE, ListViews::DELETE, key);
 	protectedNotify(ListViews::MODELVALUE, ListViews::DELETE, "");//Refresh all as there may be dependencies.
 
 	mpListView->switchToOtherWidget(115, "");
@@ -558,19 +552,16 @@ void CQModelValue::addGlobalQuantity(UndoGlobalQuantityData *pSData){
 
 	//reinsert the Global Quantity
 	CModelValue *pGlobalQuantity =  pModel->createModelValue(pSData->getName(), pSData->getInitialValue());
-	std::cout<<"=====Testing 1111111 ==== "<<pSData->getName()<<std::endl;
-	//pGlobalQuantity->setStatus(pSData->getStatus());
+	pGlobalQuantity->setStatus(pSData->getStatus());
 	std::string key = pGlobalQuantity->getKey();
-	std::cout<<"=====Testing==== "<<key<<std::endl;
-
 	protectedNotify(ListViews::MODELVALUE, ListViews::ADD, key);
 
 	//restore the reactions the Global Quantity dependent on
-	QList <UndoReactionData *> reactionData = pSData->getDependencyObjects();
+	QList <UndoReactionData *> *reactionData = pSData->getReactionDependencyObjects();
 
 
 	QList <UndoReactionData *>::const_iterator j;
-	for (j = reactionData.begin(); j != reactionData.end(); ++j)
+	for (j = reactionData->begin(); j != reactionData->end(); ++j)
 	{
 		UndoReactionData * rData = *j;
 

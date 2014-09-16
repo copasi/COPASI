@@ -886,10 +886,10 @@ bool CQSpecieDM::insertSpecieRows(QList <UndoSpecieData *> pData){
 	for (k = pData.begin(); k != pData.end(); ++k)
 	{
 		UndoSpecieData * data = *k;
-		QList <UndoReactionData *> reactionData = data->getDependencyObjects();
+		QList <UndoReactionData *> *reactionData = data->getReactionDependencyObjects();
 
 		QList <UndoReactionData *>::const_iterator j;
-		for (j = reactionData.begin(); j != reactionData.end(); ++j)
+		for (j = reactionData->begin(); j != reactionData->end(); ++j)
 		{
 
 			UndoReactionData * rData = *j;

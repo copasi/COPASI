@@ -50,16 +50,6 @@ void UndoSpecieData::setStatus(CModelEntity::Status status)
     mStatus = status;
 }
 
-QList<UndoReactionData*> UndoSpecieData::getDependencyObjects() const
-{
-    return mDependencyObjects;
-}
-
-void UndoSpecieData::setDependencyObjects(QList<UndoReactionData*> dependencyObjects)
-{
-    mDependencyObjects = dependencyObjects;
-}
-
 std::string UndoSpecieData::getExpression() const
 {
     return mExpression;
@@ -79,6 +69,20 @@ void UndoSpecieData::setInitialExpression(std::string initialExpression)
 {
     mInitialExpression = initialExpression;
 }
+
+QList<UndoReactionData*> *UndoSpecieData::getReactionDependencyObjects() const
+{
+    return mReactionDependencyObjects;
+}
+
+void UndoSpecieData::setReactionDependencyObjects(QList<UndoReactionData*> *reactionDependencyObjects)
+{
+    mReactionDependencyObjects = reactionDependencyObjects;
+}
+
+
+
+
 
 
 

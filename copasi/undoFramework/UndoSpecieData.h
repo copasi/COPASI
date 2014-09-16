@@ -16,6 +16,7 @@
 class CMetab;
 class UndoReactionData;
 
+
 class UndoSpecieData: public UndoData {
 public:
 	UndoSpecieData();
@@ -29,43 +30,35 @@ public:
 	std::string getInitialExpression() const;
 	void setExpression(std::string expression);
 	void setInitialExpression(std::string initialExpression);
-
 	CModelEntity::Status getStatus() const;
 	void setStatus(CModelEntity::Status status);
-	QList<UndoReactionData*> getDependencyObjects() const;
-	void setDependencyObjects(QList<UndoReactionData*> dependencyObjects);
-
+    QList<UndoReactionData*> *getReactionDependencyObjects() const;
+    void setReactionDependencyObjects(QList<UndoReactionData*> *reactionDependencyObjects);
 private:
     /**
      *  Initial concentration of the species as double
      */
     double mIConc;
-
     /**
      *  The compartment the species is located in.
      */
     std::string mCompartment;
-
     /**
      * The status of the metabolite
      */
     CModelEntity::Status mStatus;
-
     /**
      * the initial expression if it exist
      */
     std::string mInitialExpression;
-
     /**
      *  the expression if it exist
      */
     std::string mExpression;
-
     /**
      * Pointer to species dependency objects
      */
-    QList<UndoReactionData*> mDependencyObjects;
-
+    QList<UndoReactionData*> *mReactionDependencyObjects;
 };
 
 #endif /* UNDOSPECIEDATA_H_ */

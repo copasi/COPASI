@@ -17,31 +17,27 @@ class UndoGlobalQuantityData: public UndoData {
 public:
 	UndoGlobalQuantityData();
 	virtual ~UndoGlobalQuantityData();
-
-    QList<UndoReactionData*> getDependencyObjects() const;
     double getInitialValue() const;
     CModelEntity::Status getStatus() const;
-
-    void setDependencyObjects(QList<UndoReactionData*> dependencyObjects);
     void setInitialValue(double initialValue);
     void setStatus(CModelEntity::Status status);
+    QList<UndoReactionData*> *getReactionDependencyObjects() const;
+    void setReactionDependencyObjects(QList<UndoReactionData*> *reactionDependencyObjects);
 
 private:
     /**
 	 *  Initial value of the global quantity as double
 	 */
     double mInitialValue;
-
     /**
 	 * The status of the quantity
 	 */
     CModelEntity::Status mStatus;
 
     /**
-	 * Pointer to global quantity dependency objects
-	 */
-    QList<UndoReactionData*> mDependencyObjects;
-
+     * Pointer to species dependency objects
+     */
+    QList<UndoReactionData*> *mReactionDependencyObjects;
 };
 
 #endif /* UNDOGLOBALQUANTITYDATA_H_ */
