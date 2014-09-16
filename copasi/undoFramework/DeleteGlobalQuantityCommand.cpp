@@ -9,7 +9,6 @@
 #include "model/CModelValue.h"
 #include "model/CReactionInterface.h"
 #include "model/CModel.h"
-#include "function/CFunctionDB.h"
 #include "UI/CQModelValue.h"
 
 #include "UndoGlobalQuantityData.h"

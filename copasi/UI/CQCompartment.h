@@ -15,6 +15,10 @@
 #ifndef CQCOMPARTMENT_H
 #define CQCOMPARTMENT_H
 
+#ifdef COPASI_UNDO
+class UndoCompartmentData;
+#endif
+
 #include <QtCore/QVariant>
 
 #include "copasi/UI/ui_CQCompartment.h"
@@ -26,6 +30,12 @@ class CCompartment;
 class CQCompartment : public CopasiWidget, public Ui::CQCompartment
 {
   Q_OBJECT
+
+#ifdef COPASI_UNDO
+  friend class DeleteCompartmentCommand;
+  friend class CreateNewCompartmentCommand;
+//  friend class CompartmentTypeChangeCommand;
+#endif
 
 public:
   CQCompartment(QWidget* parent = 0, const char* name = 0);
@@ -62,6 +72,15 @@ private slots:
   void slotExpressionValid(bool valid);
   void slotInitialExpressionValid(bool valid);
   void slotMetaboliteTableCurrentChanged(int row, int col);
+
+  //additional functions for UNDO framework
+ #ifdef COPASI_UNDO
+   void deleteCompartment();
+   void addCompartment(UndoCompartmentData *pSData);
+   void createNewCompartment();
+   void deleteCompartment(UndoCompartmentData *pSData);
+   void CompartmentTypeChanged(int type);
+ #endif
 };
 
 #endif // CQCOMPARTMENT_H

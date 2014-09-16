@@ -442,7 +442,7 @@ bool CQCompartmentDM::compartmentDataChange(const QModelIndex &index, const QVar
 		emit notifyGUI(ListViews::COMPARTMENT, ListViews::CHANGE, pComp->getKey());
 	}
 
-	emit changeWidget(112);
+	emit changeWidget(111);
 
 	return true;
 }
@@ -552,6 +552,7 @@ bool CQCompartmentDM::insertCompartmentRows(QList <UndoCompartmentData *> pData)
 		UndoCompartmentData * data = *i;
 		beginInsertRows(QModelIndex(), 1, 1);
 		CCompartment *pCompartment =  pModel->createCompartment(data->getName());
+		pCompartment->setInitialValue(data->getInitialValue());
 		pCompartment->setStatus(data->getStatus());
 		emit notifyGUI(ListViews::COMPARTMENT, ListViews::ADD, pCompartment->getKey());
 		endInsertRows();
