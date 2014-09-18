@@ -755,24 +755,12 @@ void CQSpeciesDetail::slotSwitchToReaction(int row, int /* column */)
 void CQSpeciesDetail::slotTypeChanged(int type)
 {
 #ifdef COPASI_UNDO
-	/*	int currentIndex;
-	if ((CModelEntity::Status)mpMetab->getStatus() == CModelEntity::ASSIGNMENT){
-		currentIndex = 1;
-	}else if ((CModelEntity::Status)mpMetab->getStatus() == CModelEntity::REACTIONS){
-		std::cout<<"Inside: "<<mpMetab->getStatus()<<std::endl;
-		currentIndex = 4;
-	}else if ((CModelEntity::Status)mpMetab->getStatus() == CModelEntity::FIXED){
-		currentIndex = 0;
-	} else{
-		currentIndex = 3;
-	}*/
-	if (type == mpMetab->getStatus()) //currentIndex) //((CModelEntity::Status) mItemToType[type] == mpMetab->getStatus())
+	if (mItemToType[type] == mpMetab->getStatus())
 	{
-	//	std::cout<<"Inside: ======= "<<mpMetab->getStatus()<<std::endl;
 		specieTypeChanged(type);
 	}
 	else{
-		mpUndoStack->push(new SpecieTypeChangeCommand(type, mpMetab->getStatus(), this));
+		mpUndoStack->push(new SpecieTypeChangeCommand(mItemToType[type], mpMetab->getStatus(), this));
 	}
 #else
 
@@ -817,7 +805,6 @@ void CQSpeciesDetail::slotTypeChanged(int type)
       default:
         break;
     }
-
 
   // This will update the unit display.
   setFramework(mFramework);
@@ -1004,18 +991,38 @@ void CQSpeciesDetail::specieTypeChanged(int type)
 		mpLblExpression->hide();
 		mpExpressionEMW->hide();
 
-		mpBoxUseInitialExpression->setEnabled(false);
+		mpBoxUseInitialExpression->setEnabled(true);
 		slotInitialTypeChanged(mpBoxUseInitialExpression->isChecked());
 		break;
 
 	default:
 		break;
 	}
+	// This will update the unit display.
+	  setFramework(mFramework);
+}
 
-	//mpComboBoxType->setCurrentIndex(mpComboBoxType->findText(FROM_UTF8(CModelEntity::StatusName[type])));
-  // This will update the unit display.
-   setFramework(mFramework);
- //  save();
+void CQSpeciesDetail::specieTypeChanged(UndoSpecieData *pSData, int type){
+
+	assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+	CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
+	assert(pDataModel != NULL);
+
+	CModel * pModel = pDataModel->getModel();
+	assert(pModel!= NULL);
+
+	//find the species of interest and switch to its widget
+	size_t index = pModel->findMetabByName(pSData->getName());
+	CMetab *pSpecie = pModel->getMetabolites()[(int) index];
+	std::string key = pSpecie->getKey();
+	mpListView->switchToOtherWidget(C_INVALID_INDEX, key);
+
+	//set the species index
+	mpComboBoxType->setCurrentIndex(mpComboBoxType->findText(FROM_UTF8(CModelEntity::StatusName[type])));
+	mpMetab->setStatus((CModelEntity::Status)mItemToType[mpComboBoxType->currentIndex()]);
+	specieTypeChanged(mpComboBoxType->currentIndex());
+
+
 }
 #endif
 

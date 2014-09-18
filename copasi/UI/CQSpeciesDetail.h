@@ -81,6 +81,7 @@ private slots:
   void createNewSpecie();
   void deleteSpecie(UndoSpecieData *pSData);
   void specieTypeChanged(int type);
+  void specieTypeChanged(UndoSpecieData *pSData, int type);
 #endif
 };
 

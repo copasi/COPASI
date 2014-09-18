@@ -9,42 +9,40 @@
 
 #include "model/CMetab.h"
 #include "UI/CQSpeciesDetail.h"
+#include "model/CCompartment.h"
+
+#include "UndoSpecieData.h"
 
 #include "SpecieTypeChangeCommand.h"
 
 SpecieTypeChangeCommand::SpecieTypeChangeCommand(int type, int currentType, CQSpeciesDetail *pSpecieDetail) {
 	mpSpecieDetail = pSpecieDetail;
 	mOldType = currentType;
-	//std::cout<<"Old Type 1: "<<mOldType<<" === "<<CModelEntity::StatusName[mOldType]<<std::endl;
 	mNewType = type;
 	mFirstTime = true;
 
+	mpSpecieData = new UndoSpecieData();
 	std::string sName = mpSpecieDetail->mpMetab->getObjectName();
+	mpSpecieData->setName(sName);
+	mpSpecieData->setIConc(mpSpecieDetail->mpMetab->getInitialConcentration());
+	mpSpecieData->setCompartment(mpSpecieDetail->mpMetab->getCompartment()->getObjectName());
+	//mpSpecieData->setInitialExpression(mpSpecieDetail->mpInitialExpressionEMW->mpExpressionWidget->getExpression());
+	//mpSpecieData->setExpression(mpSpecieDetail->mpExpressionEMW->mpExpressionWidget->getExpression());
+	mpSpecieData->setStatus((CModelEntity::Status)type);
+
 	this->setText(specieTypeChangeText(sName));
 }
 void SpecieTypeChangeCommand::redo(){
 	if(mFirstTime){
-		mpSpecieDetail->mpComboBoxType->setCurrentIndex(mpSpecieDetail->mpComboBoxType->findText(FROM_UTF8(CModelEntity::StatusName[mNewType])));
-		mpSpecieDetail->specieTypeChanged(mNewType);
-		mpSpecieDetail->mpMetab->setStatus((CModelEntity::Status)mNewType);
-		//std::cout<<"New Type 1: "<<mNewType<<" === "<<CModelEntity::StatusName[mNewType]<<std::endl;
+		mpSpecieDetail->specieTypeChanged(mpSpecieDetail->mpComboBoxType->currentIndex());
 		mFirstTime = false;
 	}else{
-		//	std::cout<<"New Type 2: "<<mNewType<<" === "<<CModelEntity::StatusName[mNewType]<<std::endl;
-		mpSpecieDetail->mpComboBoxType->setCurrentIndex(mpSpecieDetail->mpComboBoxType->findText(FROM_UTF8(CModelEntity::StatusName[mNewType])));
-		mpSpecieDetail->specieTypeChanged(mNewType);
-		mpSpecieDetail->mpMetab->setStatus((CModelEntity::Status)mNewType);
+		mpSpecieDetail->specieTypeChanged(mpSpecieData, mNewType);
 	}
 }
-
 void SpecieTypeChangeCommand::undo(){
-
-	//std::cout<<"Old Type 2: "<<mOldType<<" === "<<CModelEntity::StatusName[mOldType]<<std::endl;
-	mpSpecieDetail->mpComboBoxType->setCurrentIndex(mpSpecieDetail->mpComboBoxType->findText(FROM_UTF8(CModelEntity::StatusName[mOldType])));
-	mpSpecieDetail->specieTypeChanged(mOldType);
-	mpSpecieDetail->mpMetab->setStatus((CModelEntity::Status)mOldType);
+	mpSpecieDetail->specieTypeChanged(mpSpecieData, mOldType);
 }
-
 QString SpecieTypeChangeCommand::specieTypeChangeText(std::string &name) const {
 	std::string myEntityName (": Species Type Change for "+name);
 	char* entityName = (char*)myEntityName.c_str();

@@ -11,6 +11,7 @@
 #include "CCopasiUndoCommand.h"
 
 class CQSpeciesDetail;
+class UndoSpecieData;
 
 class SpecieTypeChangeCommand: public CCopasiUndoCommand {
 public:
@@ -24,6 +25,7 @@ public:
 private:
 	int mNewType, mOldType;
 	CQSpeciesDetail* mpSpecieDetail;
+	UndoSpecieData *mpSpecieData;
 	bool mFirstTime;
 	bool useInitialExpression;
 };
