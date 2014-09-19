@@ -30,6 +30,7 @@ class CQSpeciesDetail : public CopasiWidget, public Ui::CQSpeciesDetail
   friend class DeleteSpecieCommand;
   friend class CreateNewSpecieCommand;
   friend class SpecieTypeChangeCommand;
+  friend class SpecieInitialValueLostFocusCommand;
 #endif
 
 public:
@@ -82,6 +83,8 @@ private slots:
   void deleteSpecie(UndoSpecieData *pSData);
   void specieTypeChanged(int type);
   void specieTypeChanged(UndoSpecieData *pSData, int type);
+  void specieInitialValueLostFocus();
+  void specieInitialValueLostFocus(UndoSpecieData *pSData);
 #endif
 };
 

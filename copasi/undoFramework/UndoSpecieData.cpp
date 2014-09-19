@@ -80,6 +80,18 @@ void UndoSpecieData::setReactionDependencyObjects(QList<UndoReactionData*> *reac
     mReactionDependencyObjects = reactionDependencyObjects;
 }
 
+double UndoSpecieData::getINumber() const
+{
+    return mINumber;
+}
+
+void UndoSpecieData::setINumber(double iNumber)
+{
+    mINumber = iNumber;
+}
+
+
+
 
 
 

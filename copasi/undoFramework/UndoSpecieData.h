@@ -34,11 +34,17 @@ public:
 	void setStatus(CModelEntity::Status status);
     QList<UndoReactionData*> *getReactionDependencyObjects() const;
     void setReactionDependencyObjects(QList<UndoReactionData*> *reactionDependencyObjects);
+    double getINumber() const;
+    void setINumber(double iNumber);
 private:
     /**
      *  Initial concentration of the species as double
      */
     double mIConc;
+    /**
+     *  Initial particle numbers of the species as double
+     */
+    double mINumber;
     /**
      *  The compartment the species is located in.
      */
