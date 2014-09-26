@@ -920,6 +920,11 @@ CCopasiTask* SliderDialog::getTaskForFolderId(size_t folderId)
 
 void SliderDialog::updateAllSliders()
 {
+  if (!isVisible())
+    {
+      return;
+    }
+
   // this method might not always do what we want
   // e.g. if we change a volume via a slider, the initial amount/concentrations
   // of the species are updated automatically, but if there is a slider for the
@@ -1252,7 +1257,7 @@ bool SliderDialog::setCorrectSliderObject(CopasiSlider* pSlider)
 void SliderDialog::showEvent(QShowEvent* pEvent)
 {
   // make sure only valid sliders are shown
-  this->deleteInvalidSliders();
+  updateAllSliders();
   this->CWindowInterface::showEvent(pEvent);
 }
 
