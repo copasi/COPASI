@@ -3438,15 +3438,6 @@ SBMLImporter::parseSBML(const std::string& sbmlDocumentText,
 
               CCopasiMessage(CCopasiMessage::EXCEPTION, message.c_str());
             }
-
-#if LIBSBML_VERSION >= 50903
-
-          if (mPlug != NULL)
-            {
-              mPlug->unsetTransformer();
-            }
-
-#endif //LIBSBML_VERSION >= 50903
         }
 
 #endif
