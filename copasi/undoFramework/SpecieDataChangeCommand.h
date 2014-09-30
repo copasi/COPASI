@@ -24,8 +24,6 @@ private:
 	CQSpecieDM *mpSpecieDM;
 	int mRole;
 	Path mPathIndex;
-//	QString mOldFunctionName, mNewFunctionName;
-
 };
 
 #endif /* SPECIEDATACHANGECOMMAND_H_ */
