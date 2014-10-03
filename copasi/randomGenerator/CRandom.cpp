@@ -14,11 +14,13 @@
 
 #include <time.h>
 #ifdef WIN32
+# define _USE_MATH_DEFINES
 # include <Windows.h>
 #else
 # include <unistd.h>
 # include <sys/syscall.h>
 #endif // WIN32
+
 #include <cmath>
 #include <algorithm>
 #include <string.h>
