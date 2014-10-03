@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -501,4 +501,73 @@ S70:
 
   vare.sexpo = vare.a + vare.umin**vare.q1;
   return vare.sexpo;
+}
+
+C_FLOAT64 CRandom::getRandomStdGamma(C_FLOAT64 a)
+{
+  if (a < 1.0)
+    {
+      C_FLOAT64 v1, v2, v3;
+      C_FLOAT64 x, e;
+
+      C_FLOAT64 v0 = M_E / (M_E + a);
+
+      do
+        {
+          v1 = 1.0 - getRandomCO();
+          v2 = 1.0 - getRandomCO();
+          v3 = 1.0 - getRandomCO();
+
+          if (v1 <= v0)
+            {
+              x = pow(v2, (1.0 / a));
+              e = v3 *  pow(x, (a - 1.0));
+            }
+          else
+            {
+              x = 1 - log(v2);
+              e = v3 * exp(-x);
+            }
+        }
+      while (e > pow(x, (a - 1.0)) * exp(-x));
+
+      return x;
+    }
+  else
+    {
+      C_FLOAT64 d, c, x, v, u;
+
+      d = a - 1.0 / 3.0;
+      c = 1.0 / sqrt(9.0 * d);
+
+      while (true)
+        {
+          do
+            {
+              x = getRandomNormal01();
+              v = 1.0 + c * x;
+            }
+          while (v <= 0.0);
+
+          v = v * v * v;
+          u = getRandomOO();
+
+          if (u < 1.0 - 0.0331 * (x * x) * (x * x))
+            {
+              break;
+            }
+
+          if (log(u) < 0.5 * x * x + d * (1.0 - v + log(v)))
+            {
+              break;
+            }
+        }
+
+      return (d * v);
+    }
+}
+
+C_FLOAT64 CRandom::getRandomGamma(C_FLOAT64 shape, C_FLOAT64 scale)
+{
+  return scale * getRandomStdGamma(shape);
 }
