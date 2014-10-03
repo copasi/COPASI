@@ -1,19 +1,15 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CScanWidgetRandom.cpp,v $
-//   $Revision: 1.19 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/03/21 15:41:54 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2005 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
 #include <iostream>
@@ -35,8 +31,8 @@
  *  name 'name' and widget flags set to 'f'.
  */
 CScanWidgetRandom::CScanWidgetRandom(QWidget* parent) :
-    QWidget(parent),
-    CScanItemData(CScanProblem::SCAN_RANDOM)
+  QWidget(parent),
+  CScanItemData(CScanProblem::SCAN_RANDOM)
 {
   setupUi(this);
   buttonObject->setIcon(CQIconResource::icon(CQIconResource::copasi));
@@ -45,8 +41,8 @@ CScanWidgetRandom::CScanWidgetRandom(QWidget* parent) :
 }
 
 CScanWidgetRandom::CScanWidgetRandom(const CScanWidgetRandom & src, QWidget * parent) :
-    QWidget(parent),
-    CScanItemData(src)
+  QWidget(parent),
+  CScanItemData(src)
 {
   setupUi(this);
   buttonObject->setIcon(CQIconResource::icon(CQIconResource::copasi));
@@ -54,7 +50,6 @@ CScanWidgetRandom::CScanWidgetRandom(const CScanWidgetRandom & src, QWidget * pa
   load(mpData);
   retranslateUi(this);
 }
-
 
 /*
  *  Destroys the object and frees any allocated resources
@@ -78,9 +73,9 @@ void CScanWidgetRandom::slotChooseObject()
 {
   const CCopasiObject * pObject =
     CCopasiSelectionDialog::getObjectSingle(this,
-                                            CQSimpleSelectionTree::InitialTime |
-                                            CQSimpleSelectionTree::Parameters,
-                                            mpObject);
+        CQSimpleSelectionTree::InitialTime |
+        CQSimpleSelectionTree::Parameters,
+        mpObject);
 
   if (mpObject != pObject) // Object selection changed.
     initFromObject(pObject);
@@ -101,14 +96,14 @@ void CScanWidgetRandom::initFromObject(const CCopasiObject *obj)
 
           if (type == 0) //uniform
             {
-              lineEditMin->setText(QString::number(value*0.5));
-              lineEditMax->setText(QString::number(value*2));
+              lineEditMin->setText(QString::number(value * 0.5));
+              lineEditMax->setText(QString::number(value * 2));
             }
 
           if (type == 1) //normal
             {
               lineEditMin->setText(QString::number(value));
-              lineEditMax->setText(QString::number(value*0.1));
+              lineEditMax->setText(QString::number(value * 0.1));
             }
 
           if (type == 2) //poisson
@@ -216,62 +211,82 @@ void CScanWidgetRandom::changeType()
   if (mpObject != NULL)
     value = *(C_FLOAT64*)mpObject->getValuePointer();
 
-  if (type == 0) //uniform
+  switch (type)
     {
-      lineEditMin->setEnabled(true);
-      lineEditMax->setEnabled(true);
+      case 0: // uniform
+        lineEditMin->setEnabled(true);
+        lineEditMax->setEnabled(true);
 
-      labelMin->setText("min");
-      labelMax->setText("max");
+        labelMin->setText("min");
+        labelMax->setText("max");
 
-      if (mpObject != NULL)
-        {
-          lineEditMin->setText(QString::number(value*0.5));
-          lineEditMax->setText(QString::number(value*2));
-        }
-      else
-        {
-          lineEditMin->setText("");
-          lineEditMax->setText("");
-        }
-    }
+        if (mpObject != NULL)
+          {
+            lineEditMin->setText(QString::number(value * 0.5));
+            lineEditMax->setText(QString::number(value * 2));
+          }
+        else
+          {
+            lineEditMin->setText("");
+            lineEditMax->setText("");
+          }
 
-  if (type == 1) //normal
-    {
-      lineEditMin->setEnabled(true);
-      lineEditMax->setEnabled(true);
+        break;
 
-      labelMin->setText("mean");
-      labelMax->setText("standard deviation");
+      case 1: // normal
+        lineEditMin->setEnabled(true);
+        lineEditMax->setEnabled(true);
 
-      if (mpObject != NULL)
-        {
+        labelMin->setText("mean");
+        labelMax->setText("standard deviation");
+
+        if (mpObject != NULL)
+          {
+            lineEditMin->setText(QString::number(value));
+            lineEditMax->setText(QString::number(value * 0.1));
+          }
+        else
+          {
+            lineEditMin->setText("");
+            lineEditMax->setText("");
+          }
+
+        break;
+
+      case 2: // Poisson
+        lineEditMin->setEnabled(true);
+        lineEditMax->setEnabled(false);
+
+        labelMin->setText("mean");
+        labelMax->setText("");
+
+        if (mpObject != NULL)
           lineEditMin->setText(QString::number(value));
-          lineEditMax->setText(QString::number(value*0.1));
-        }
-      else
-        {
+        else
           lineEditMin->setText("");
-          lineEditMax->setText("");
-        }
+
+        lineEditMax->setText("");
+
+        break;
+
+      case 3: // Gamma
+        lineEditMin->setEnabled(true);
+        lineEditMax->setEnabled(true);
+
+        labelMin->setText("shape");
+        labelMax->setText("scale");
+
+        if (mpObject != NULL)
+          {
+            lineEditMin->setText(QString::number(1.0 * value));
+            lineEditMax->setText(QString::number(0.1));
+          }
+        else
+          {
+            lineEditMin->setText("");
+            lineEditMax->setText("");
+          }
+
+        break;
     }
-
-  if (type == 2) //Poisson
-    {
-      lineEditMin->setEnabled(true);
-      lineEditMax->setEnabled(false);
-
-      labelMin->setText("mean");
-      labelMax->setText("");
-
-      if (mpObject != NULL)
-        lineEditMin->setText(QString::number(value));
-      else
-        lineEditMin->setText("");
-
-      lineEditMax->setText("");
-    }
-
-  //TODO: handle log: rename standard deviation -> sd factor,
-  //                  disable Poisson?
 }

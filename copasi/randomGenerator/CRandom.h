@@ -1,16 +1,16 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-// and The University of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2002 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc. and EML Research, gGmbH. 
-// All rights reserved. 
+// Copyright (C) 2002 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 #ifndef COPASI_CRandom
 #define COPASI_CRandom
@@ -112,7 +112,7 @@ private:
   PoissonVars varp;
   ExpVars vare;
   C_FLOAT64 fsign(C_FLOAT64 num, C_FLOAT64 sign);
-    unsigned int& syscall(int arg1);
+  unsigned int& syscall(int arg1);
 
   // Operations
 protected:
@@ -243,14 +243,17 @@ public:
                                        const C_FLOAT64 & sd);
 
   /**
-      * Produces a Poisson distributed random number with Mean=mean
+   * Produces a Poisson distributed random number with Mean=mean
    * @param const C_FLOAT64 & mean
-      * @return C_FLOAT64 random
-      */
+   * @return C_FLOAT64 random
+   */
 
   virtual C_FLOAT64 getRandomPoisson(const C_FLOAT64 & mean);
   virtual C_FLOAT64 getRandomExp();
   /* Added on  Jan 31, 2005 */
+
+  virtual C_FLOAT64 getRandomGamma(C_FLOAT64 shape, C_FLOAT64 scale);
+  virtual C_FLOAT64 getRandomStdGamma(C_FLOAT64 shape);
 
 protected:
 
