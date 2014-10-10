@@ -211,62 +211,82 @@ void CScanWidgetRandom::changeType()
   if (mpObject != NULL)
     value = *(C_FLOAT64*)mpObject->getValuePointer();
 
-  if (type == 0) //uniform
+  switch (type)
     {
-      lineEditMin->setEnabled(true);
-      lineEditMax->setEnabled(true);
+      case 0: // uniform
+        lineEditMin->setEnabled(true);
+        lineEditMax->setEnabled(true);
 
-      labelMin->setText("min");
-      labelMax->setText("max");
+        labelMin->setText("min");
+        labelMax->setText("max");
 
-      if (mpObject != NULL)
-        {
-          lineEditMin->setText(QString::number(value * 0.5));
-          lineEditMax->setText(QString::number(value * 2));
-        }
-      else
-        {
-          lineEditMin->setText("");
-          lineEditMax->setText("");
-        }
-    }
+        if (mpObject != NULL)
+          {
+            lineEditMin->setText(QString::number(value * 0.5));
+            lineEditMax->setText(QString::number(value * 2));
+          }
+        else
+          {
+            lineEditMin->setText("");
+            lineEditMax->setText("");
+          }
 
-  if (type == 1) //normal
-    {
-      lineEditMin->setEnabled(true);
-      lineEditMax->setEnabled(true);
+        break;
 
-      labelMin->setText("mean");
-      labelMax->setText("standard deviation");
+      case 1: // normal
+        lineEditMin->setEnabled(true);
+        lineEditMax->setEnabled(true);
 
-      if (mpObject != NULL)
-        {
+        labelMin->setText("mean");
+        labelMax->setText("standard deviation");
+
+        if (mpObject != NULL)
+          {
+            lineEditMin->setText(QString::number(value));
+            lineEditMax->setText(QString::number(value * 0.1));
+          }
+        else
+          {
+            lineEditMin->setText("");
+            lineEditMax->setText("");
+          }
+
+        break;
+
+      case 2: // Poisson
+        lineEditMin->setEnabled(true);
+        lineEditMax->setEnabled(false);
+
+        labelMin->setText("mean");
+        labelMax->setText("");
+
+        if (mpObject != NULL)
           lineEditMin->setText(QString::number(value));
-          lineEditMax->setText(QString::number(value * 0.1));
-        }
-      else
-        {
+        else
           lineEditMin->setText("");
-          lineEditMax->setText("");
-        }
+
+        lineEditMax->setText("");
+
+        break;
+
+      case 3: // Gamma
+        lineEditMin->setEnabled(true);
+        lineEditMax->setEnabled(true);
+
+        labelMin->setText("shape");
+        labelMax->setText("scale");
+
+        if (mpObject != NULL)
+          {
+            lineEditMin->setText(QString::number(1.0 * value));
+            lineEditMax->setText(QString::number(0.1));
+          }
+        else
+          {
+            lineEditMin->setText("");
+            lineEditMax->setText("");
+          }
+
+        break;
     }
-
-  if (type == 2) //Poisson
-    {
-      lineEditMin->setEnabled(true);
-      lineEditMax->setEnabled(false);
-
-      labelMin->setText("mean");
-      labelMax->setText("");
-
-      if (mpObject != NULL)
-        lineEditMin->setText(QString::number(value));
-      else
-        lineEditMin->setText("");
-
-      lineEditMax->setText("");
-    }
-
-  //TODO: handle log: rename standard deviation -> sd factor,
-  //                  disable Poisson?
 }

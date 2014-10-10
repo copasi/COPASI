@@ -17,6 +17,12 @@
 #include "function/CExpression.h"
 #include "resourcesUI/CQIconResource.h"
 
+#ifdef COPASI_UNDO
+#include <QUndoStack>
+#include "model/CModel.h"
+#include "undoFramework/ParameterOverviewDataChangeCommand.h"
+#endif
+
 #define COL_NAME       0
 #define COL_DIFF       1
 #define COL_TYPE       2
@@ -229,6 +235,16 @@ int CQParameterOverviewDM::rowCount(const QModelIndex & parent) const
 // virtual
 bool CQParameterOverviewDM::setData(const QModelIndex &_index, const QVariant &value, int role)
 {
+#ifdef COPASI_UNDO
+
+  if (role != Qt::EditRole) return false;
+
+  if (_index.data(Qt::EditRole) == value)
+    return false;
+  else
+    mpUndoStack->push(new ParameterOverviewDataChangeCommand(_index, value, role, this));
+
+#else
   CModelParameter * pNode = nodeFromIndex(_index);
   bool success = false;
 
@@ -262,6 +278,7 @@ bool CQParameterOverviewDM::setData(const QModelIndex &_index, const QVariant &v
     }
 
   return success;
+#endif
 }
 
 void CQParameterOverviewDM::setModelParameterset(CModelParameterSet * pModelParameterSet)
@@ -519,3 +536,53 @@ QVariant CQParameterOverviewDM::assignmentData(const CModelParameter * pNode, in
 
   return QVariant();
 }
+
+#ifdef COPASI_UNDO
+bool CQParameterOverviewDM::parameterOverviewDataChange(const QModelIndex& _index, const QVariant &value, int role)
+{
+  CModelParameter * pNode = nodeFromIndex(_index);
+  bool success = false;
+
+  if (pNode != NULL &&
+      role == Qt::EditRole)
+    {
+      switch (_index.column())
+        {
+          case COL_VALUE:
+            pNode->setValue(value.toDouble(), static_cast< CModelParameter::Framework >(mFramework));
+            success = true;
+            break;
+
+          case COL_ASSIGNMENT:
+          {
+            CModelParameter * pGlobalQuantity = pNode->getSet()->getModelParameter(TO_UTF8(value.toString()), CModelParameter::ModelValue);
+
+            if (pGlobalQuantity != NULL)
+              {
+                static_cast< CModelParameterReactionParameter * >(pNode)->setGlobalQuantityCN(pGlobalQuantity->getCN());
+              }
+            else
+              {
+                static_cast< CModelParameterReactionParameter * >(pNode)->setGlobalQuantityCN("");
+              }
+          }
+
+          success = true;
+          break;
+        }
+    }
+
+  emit changeWidget(118);
+
+  return success;
+}
+
+void CQParameterOverviewDM::setUndoStack(QUndoStack* undoStack)
+{
+  mpUndoStack = undoStack;
+}
+QUndoStack* CQParameterOverviewDM::getUndoStack()
+{
+  return mpUndoStack;
+}
+#endif

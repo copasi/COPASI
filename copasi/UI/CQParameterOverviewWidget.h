@@ -1,4 +1,4 @@
-// Copyright (C) 2012 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -42,6 +42,10 @@ protected slots:
   void slotOpenEditor(const QModelIndex & index);
   void slotCloseEditor(const QModelIndex & index);
   void slotResolve(const QModelIndex & index);
+
+#ifdef COPASI_UNDO
+  virtual void slotChangeWidget(const size_t & id);
+#endif
 
 private:
   CModelParameterSet * mpParameterSet;

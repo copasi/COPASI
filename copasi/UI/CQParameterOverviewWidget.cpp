@@ -21,6 +21,10 @@
 #include "report/CCopasiRootContainer.h"
 #include "report/CCopasiStaticString.h"
 
+#ifdef COPASI_UNDO
+#include "copasiui3window.h"
+#endif
+
 CQParameterOverviewWidget::CQParameterOverviewWidget(QWidget* parent, const char* name):
   CopasiWidget(parent, name),
   mpParameterSet(NULL),
@@ -52,6 +56,12 @@ CQParameterOverviewWidget::CQParameterOverviewWidget(QWidget* parent, const char
 
   connect(mpParameterSetDM, SIGNAL(signalOpenEditor(const QModelIndex &)), this, SLOT(slotOpenEditor(const QModelIndex &)));
   connect(mpParameterSetDM, SIGNAL(signalCloseEditor(const QModelIndex &)), this, SLOT(slotCloseEditor(const QModelIndex &)));
+
+#ifdef COPASI_UNDO
+  CopasiUI3Window *  pWindow = dynamic_cast<CopasiUI3Window * >(parent->parent());
+  mpParameterSetDM->setUndoStack(pWindow->getUndoStack());
+  connect(mpParameterSetDM, SIGNAL(changeWidget(const size_t&)), this, SLOT(slotChangeWidget(const size_t&)));
+#endif
 }
 
 CQParameterOverviewWidget::~CQParameterOverviewWidget()
@@ -556,3 +566,12 @@ void CQParameterOverviewWidget::slotResolve(const QModelIndex & index)
   mpTreeView->expandAll();
   mpTreeView->resizeColumnToContents(3);
 }
+
+#ifdef COPASI_UNDO
+void CQParameterOverviewWidget:: slotChangeWidget(const size_t & id)
+{
+  leave();
+  enterProtected();
+  mpListView->switchToOtherWidget(id, "");
+}
+#endif

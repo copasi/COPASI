@@ -46,16 +46,6 @@ void UndoSpecieData::setIConc(double iConc)
   mIConc = iConc;
 }
 
-CMetab *UndoSpecieData::getSpecie() const
-{
-  return mpSpecie;
-}
-
-void UndoSpecieData::setSpecie(CMetab *mpSpecie)
-{
-  this->mpSpecie = mpSpecie;
-}
-
 CModelEntity::Status UndoSpecieData::getStatus() const
 {
   return mStatus;
@@ -66,12 +56,42 @@ void UndoSpecieData::setStatus(CModelEntity::Status status)
   mStatus = status;
 }
 
-QList<UndoReactionData*> UndoSpecieData::getDependencyObjects() const
+std::string UndoSpecieData::getExpression() const
 {
-  return mDependencyObjects;
+  return mExpression;
 }
 
-void UndoSpecieData::setDependencyObjects(QList<UndoReactionData*> dependencyObjects)
+std::string UndoSpecieData::getInitialExpression() const
 {
-  mDependencyObjects = dependencyObjects;
+  return mInitialExpression;
+}
+
+void UndoSpecieData::setExpression(std::string expression)
+{
+  mExpression = expression;
+}
+
+void UndoSpecieData::setInitialExpression(std::string initialExpression)
+{
+  mInitialExpression = initialExpression;
+}
+
+QList<UndoReactionData*> *UndoSpecieData::getReactionDependencyObjects() const
+{
+  return mReactionDependencyObjects;
+}
+
+void UndoSpecieData::setReactionDependencyObjects(QList<UndoReactionData*> *reactionDependencyObjects)
+{
+  mReactionDependencyObjects = reactionDependencyObjects;
+}
+
+double UndoSpecieData::getINumber() const
+{
+  return mINumber;
+}
+
+void UndoSpecieData::setINumber(double iNumber)
+{
+  mINumber = iNumber;
 }

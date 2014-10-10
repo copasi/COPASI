@@ -34,7 +34,9 @@ class ListViews;
 class CCopasiDataModel;
 class CCopasiObject;
 
+#ifdef COPASI_UNDO
 class QUndoStack;
+#endif
 
 class CopasiWidget : public QWidget
 {

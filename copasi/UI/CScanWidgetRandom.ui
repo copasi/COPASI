@@ -14,6 +14,7 @@
 <comment> Properties, Inc. and EML Research, gGmbH. </comment>
 <comment> All rights reserved. </comment>
 
+ <comment> All rights reserved. </comment>
  <class>CScanWidgetRandom</class>
  <widget class="QWidget" name="CScanWidgetRandom">
   <property name="geometry">
@@ -271,6 +272,11 @@
           <item>
            <property name="text">
             <string>Poisson distribution</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Gamma distribution</string>
            </property>
           </item>
          </widget>

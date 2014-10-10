@@ -265,7 +265,7 @@ void CScanItemRandom::step()
 
       switch (mRandomType)
         {
-          case 0:             //uniform
+          case 0: // uniform
             Value = mMin + mRg->getRandomCC() * mFaktor;
 
             if (mLog)
@@ -273,7 +273,7 @@ void CScanItemRandom::step()
 
             break;
 
-          case 1:             //normal
+          case 1: // normal
             tmpF = mRg->getRandomNormal01();
             Value = mMin + tmpF * mMax;
 
@@ -282,12 +282,20 @@ void CScanItemRandom::step()
 
             break;
 
-          case 2:             //poisson
+          case 2: // poisson
 
             if (mMin < 0)
               CCopasiMessage(CCopasiMessage::WARNING, "Invalid ScanItem: Requested Poisson random variable for negative argument: %lf", mMin);
 
             Value = mRg->getRandomPoisson(mMin);
+
+            break;
+
+          case 3: // gamma
+            Value = mRg->getRandomGamma(mMin, mMax);
+
+            if (mLog)
+              Value = exp(Value);
 
             break;
         }

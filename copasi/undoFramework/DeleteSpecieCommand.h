@@ -29,11 +29,10 @@ public:
   void undo();
   QString deleteSpecieText(std::string &name) const;
 
-  void setDependentObjects(const std::set< const CCopasiObject * > & deletedObjects, QList<UndoReactionData*> *dependencyObjects);
-
   virtual ~DeleteSpecieCommand();
 
 private:
+  bool mFirstTime;
   UndoSpecieData *mpSpecieData;
   CQSpeciesDetail* mpSpecieDetail;
 };

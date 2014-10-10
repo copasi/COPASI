@@ -893,16 +893,16 @@ bool CQSpecieDM::insertSpecieRows(QList <UndoSpecieData *> pData)
   for (k = pData.begin(); k != pData.end(); ++k)
     {
       UndoSpecieData * data = *k;
-      QList <UndoReactionData *> reactionData = data->getDependencyObjects();
+      QList <UndoReactionData *> *reactionData = data->getReactionDependencyObjects();
 
       QList <UndoReactionData *>::const_iterator j;
 
-      for (j = reactionData.begin(); j != reactionData.end(); ++j)
+      for (j = reactionData->begin(); j != reactionData->end(); ++j)
         {
 
           UndoReactionData * rData = *j;
 
-          //TODO check if reaction already exist in the model, better ideal may be implemented in the future
+          //TODO check if reaction already exist in the model, better idea may be implemented in the future
           bool exist = false;
 
           for (int ii = 0; ii < pModel->getReactions().size(); ii++)

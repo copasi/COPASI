@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -26,14 +26,12 @@
 # include <ieeefp.h>
 #endif
 
+#ifdef WIN32
+# define _USE_MATH_DEFINES
+#endif
+
 #include <cmath>
 #include <complex>
-#ifndef M_PI
-#define M_PI           3.14159265358979323846  /* pi */
-#endif // not M_PI
-#ifndef M_E
-#define M_E            2.7182818284590452354   /* e */
-#endif // not M_E
 
 #include "copasi.h"
 

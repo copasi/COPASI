@@ -1,16 +1,16 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-// and The University of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2006 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc. and EML Research, gGmbH. 
-// All rights reserved. 
+// Copyright (C) 2006 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 #include "CQModelValue.h"
 
@@ -25,6 +25,17 @@
 #include "report/CKeyFactory.h"
 #include "report/CCopasiRootContainer.h"
 
+//UNDO framework classes
+#ifdef COPASI_UNDO
+#include "model/CReactionInterface.h"
+#include "undoFramework/DeleteGlobalQuantityCommand.h"
+#include "undoFramework/CreateNewGlobalQuantityCommand.h"
+//#include "undoFramework/GlobalQuantityTypeChangeCommand.h"
+#include "undoFramework/UndoGlobalQuantityData.h"
+#include "undoFramework/UndoReactionData.h"
+#include "copasiui3window.h"
+#endif
+
 /*
  *  Constructs a CQModelValue which is a child of 'parent', with the
  *  name 'name'.'
@@ -36,6 +47,11 @@ CQModelValue::CQModelValue(QWidget* parent, const char* name)
   setupUi(this);
 
   init();
+
+#ifdef COPASI_UNDO
+  CopasiUI3Window *  pWindow = dynamic_cast<CopasiUI3Window * >(parent->parent());
+  setUndoStack(pWindow->getUndoStack());
+#endif
 }
 
 /*
@@ -50,6 +66,9 @@ CQModelValue::~CQModelValue()
 /// Slot to create a new quantity; activated whenever the New button is clicked
 void CQModelValue::slotBtnNew()
 {
+#ifdef COPASI_UNDO
+  mpUndoStack->push(new CreateNewGlobalQuantityCommand(this));
+#else
   // save the current setting values
   leave();
 
@@ -71,6 +90,7 @@ void CQModelValue::slotBtnNew()
   std::string key = mpModelValue->getKey();
   protectedNotify(ListViews::MODELVALUE, ListViews::ADD, key);
   mpListView->switchToOtherWidget(C_INVALID_INDEX, key);
+#endif
 }
 
 void CQModelValue::slotBtnCopy()
@@ -80,6 +100,9 @@ void CQModelValue::slotBtnCopy()
 
 void CQModelValue::slotBtnDelete()
 {
+#ifdef COPASI_UNDO
+  mpUndoStack->push(new DeleteGlobalQuantityCommand(this));
+#else
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
   assert(pDataModel != NULL);
@@ -112,6 +135,8 @@ void CQModelValue::slotBtnDelete()
       default:
         break;
     }
+
+#endif
 }
 
 /*!
@@ -285,9 +310,9 @@ bool CQModelValue::enterProtected()
     }
 
   load();
-  
+
   mpModelValue = dynamic_cast<CModelValue *>(mpObject);
-  
+
   return true;
 }
 
@@ -429,3 +454,148 @@ void CQModelValue::slotInitialTypeChanged(bool useInitialAssignment)
       // we don't need to update the Initial Expression Widget
     }
 }
+
+//Undo methods
+#ifdef COPASI_UNDO
+
+void CQModelValue::createNewGlobalQuantity()
+{
+  // save the current setting values
+  leave();
+
+  // standard name
+  std::string name = "quantity_1";
+
+  // if the standard name already exists then creating the new event will fail
+  // thus, a growing index will automatically be added to the standard name
+  int i = 1;
+  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+
+  while (!(mpModelValue = (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->createModelValue(name)))
+    {
+      i++;
+      name = "quantity_";
+      name += TO_UTF8(QString::number(i));
+    }
+
+  std::string key = mpModelValue->getKey();
+  protectedNotify(ListViews::MODELVALUE, ListViews::ADD, key);
+  mpListView->switchToOtherWidget(C_INVALID_INDEX, key);
+}
+
+void CQModelValue::deleteGlobalQuantity()
+{
+
+  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
+  assert(pDataModel != NULL);
+  CModel * pModel = pDataModel->getModel();
+
+  if (pModel == NULL)
+    return;
+
+  if (mpModelValue == NULL)
+    return;
+
+  QMessageBox::StandardButton choice =
+    CQMessageBox::confirmDelete(this, "quantity",
+                                FROM_UTF8(mpModelValue->getObjectName()),
+                                mpModelValue->getDeletedObjects());
+
+  switch (choice)
+    {
+      case QMessageBox::Ok:
+      {
+        pDataModel->getModel()->removeModelValue(mKey);
+        mpModelValue = NULL;
+
+#undef DELETE
+        protectedNotify(ListViews::MODELVALUE, ListViews::DELETE, mKey);
+        protectedNotify(ListViews::MODELVALUE, ListViews::DELETE, "");//Refresh all as there may be dependencies.
+        break;
+      }
+
+      default:
+        break;
+    }
+
+  mpListView->switchToOtherWidget(115, "");
+}
+
+void CQModelValue::deleteGlobalQuantity(UndoGlobalQuantityData *pGlobalQuantityData)
+{
+  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
+  assert(pDataModel != NULL);
+
+  CModel * pModel = pDataModel->getModel();
+  assert(pModel != NULL);
+
+  CModelValue * pGQ = pModel->getModelValues()[pGlobalQuantityData->getName()];
+  std::string key = pGQ->getKey();
+  pModel->removeModelValue(key);
+  mpModelValue = NULL;
+
+#undef DELETE
+  protectedNotify(ListViews::MODELVALUE, ListViews::DELETE, key);
+  protectedNotify(ListViews::MODELVALUE, ListViews::DELETE, "");//Refresh all as there may be dependencies.
+
+  mpListView->switchToOtherWidget(115, "");
+}
+
+void CQModelValue::addGlobalQuantity(UndoGlobalQuantityData *pSData)
+{
+  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
+  assert(pDataModel != NULL);
+
+  CModel * pModel = pDataModel->getModel();
+  assert(pModel != NULL);
+
+  //reinsert the Global Quantity
+  CModelValue *pGlobalQuantity =  pModel->createModelValue(pSData->getName(), pSData->getInitialValue());
+  pGlobalQuantity->setStatus(pSData->getStatus());
+  std::string key = pGlobalQuantity->getKey();
+  protectedNotify(ListViews::MODELVALUE, ListViews::ADD, key);
+
+  //restore the reactions the Global Quantity dependent on
+  QList <UndoReactionData *> *reactionData = pSData->getReactionDependencyObjects();
+
+  QList <UndoReactionData *>::const_iterator j;
+
+  for (j = reactionData->begin(); j != reactionData->end(); ++j)
+    {
+      UndoReactionData * rData = *j;
+
+      //TODO check if reaction already exist in the model, better ideal may be implemented in the future
+      bool exist = false;
+
+      for (int ii = 0; ii < pModel->getReactions().size(); ii++)
+        {
+          if (pModel->getReactions()[ii]->getObjectName() == rData->getName())
+            {
+              exist = true;
+              ii = ii + pModel->getReactions().size() + 1; //jump out of the loop reaction exist already
+            }
+          else
+            {
+              exist = false;
+            }
+        }
+
+      if (!exist)
+        {
+          CReaction *pRea =  pModel->createReaction(rData->getName());
+          rData->getRi()->writeBackToReaction(pRea);
+          protectedNotify(ListViews::REACTION, ListViews::ADD, pRea->getKey());
+        }
+    }
+
+  mpListView->switchToOtherWidget(C_INVALID_INDEX, key);
+}
+
+void CQModelValue::globalQuantityTypeChanged(int type)
+{
+  ; //TODO
+}
+#endif

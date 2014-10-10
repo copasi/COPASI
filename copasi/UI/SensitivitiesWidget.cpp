@@ -387,8 +387,7 @@ SensitivitiesWidget::slotChooseSingleFunction()
   const CCopasiObject * pObject =
     CCopasiSelectionDialog::getObjectSingle(this,
         CQSimpleSelectionTree::Variables |
-        CQSimpleSelectionTree::ObservedValues |
-        CQSimpleSelectionTree::ObservedConstants);
+        CQSimpleSelectionTree::ObservedValues);
 
   if (pObject)
     {

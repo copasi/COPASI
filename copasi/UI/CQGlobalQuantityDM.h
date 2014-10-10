@@ -1,17 +1,9 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQGlobalQuantityDM.h,v $
-//   $Revision: 1.2 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/03/07 19:37:59 $
-// End CVS Header
-
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
@@ -21,6 +13,12 @@
 
 #include "model/CModel.h"
 #include "CQBaseDataModel.h"
+
+#ifdef COPASI_UNDO
+class UndoGlobalQuantityData;
+class UndoSpecieData;
+class UndoReactionData;
+#endif
 
 #define COL_NAME_GQ         1
 #define COL_TYPE_GQ         2
@@ -35,6 +33,11 @@ class CQGlobalQuantityDM : public CQBaseDataModel
 {
   Q_OBJECT
 
+#ifdef COPASI_UNDO
+  friend class GlobalQuantityDataChangeCommand;
+  friend class InsertGlobalQuantityRowsCommand;
+#endif
+
 public:
   CQGlobalQuantityDM(QObject *parent = 0);
   const QStringList& getTypes();
@@ -48,6 +51,22 @@ public:
   bool setData(const QModelIndex &index, const QVariant &value,
                int role = Qt::EditRole);
   bool removeRows(QModelIndexList rows, const QModelIndex &index = QModelIndex());
+
+  //TODO Undo
+#ifdef COPASI_UNDO
+  bool globalQuantityDataChange(const QModelIndex &index, const QVariant &value, int role);
+  void insertNewGlobalQuantityRow(int position, int rows, const QModelIndex&);
+  void addGlobalQuantityRow(UndoGlobalQuantityData *pGlobalQuantityData);
+  void deleteGlobalQuantityRow(UndoGlobalQuantityData *pGlobalQuantityData);
+  bool removeGlobalQuantityRows(QModelIndexList rows, const QModelIndex&);
+  bool insertGlobalQuantityRows(QList <UndoGlobalQuantityData *> pGlobalQuatityData);
+  void deleteGlobalQuantityRows(QList <UndoGlobalQuantityData *> pGlobalQuantityData);
+  bool removeAllGlobalQuantityRows();
+  bool clear();
+
+signals:
+  void changeWidget(const size_t & id);
+#endif
 
 protected:
   QStringList mTypes;
