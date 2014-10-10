@@ -509,31 +509,8 @@ C_FLOAT64 CRandom::getRandomStdGamma(C_FLOAT64 a)
 {
   if (a < 1.0)
     {
-      C_FLOAT64 v1, v2, v3;
-      C_FLOAT64 x, e;
-
-      C_FLOAT64 v0 = M_E / (M_E + a);
-
-      do
-        {
-          v1 = 1.0 - getRandomCO();
-          v2 = 1.0 - getRandomCO();
-          v3 = 1.0 - getRandomCO();
-
-          if (v1 <= v0)
-            {
-              x = pow(v2, (1.0 / a));
-              e = v3 *  pow(x, (a - 1.0));
-            }
-          else
-            {
-              x = 1 - log(v2);
-              e = v3 * exp(-x);
-            }
-        }
-      while (e > pow(x, (a - 1.0)) * exp(-x));
-
-      return x;
+      // gamma(a) = gamma(1+a) getRandomOO^(1/a)
+      return getRandomStdGamma(1.0 + a) * pow(getRandomOO(), 1.0 / a);
     }
   else
     {
