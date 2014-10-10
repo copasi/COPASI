@@ -131,7 +131,10 @@ void CQReportDefinition::btnAdvancedClicked()
       mChanged = true;
       save();
 
-      mpReportDefinition->preCompileTable();
+      CObjectInterface::ContainerList ListOfContainer;
+      ListOfContainer.push_back(mpDataModel);
+
+      mpReportDefinition->preCompileTable(ListOfContainer);
       mpReportDefinition->setIsTable(false);
 
       load();

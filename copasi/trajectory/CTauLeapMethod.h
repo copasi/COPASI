@@ -74,9 +74,8 @@ public:
   /**
    *  This instructs the method to prepare for integration
    *  starting with the initialState given.
-   *  @param "const CState *" initialState
    */
-  virtual void start(CVectorCore< C_FLOAT64 > & initialState);
+  virtual void start();
 
   /**
    * Check if the method is suitable for this problem
@@ -92,11 +91,6 @@ protected:
    * @param const CCopasiContainer * pParent (default: NULL)
    */
   CTauLeapMethod(const CCopasiContainer * pParent = NULL);
-
-  /**
-   *   Cleans up memory, etc.
-   */
-  void cleanup();
 
   /**
    *  Simulates the system over the next interval of time. The timestep

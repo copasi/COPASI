@@ -45,9 +45,9 @@ public:
 
     /**
      * Compile the root finder
-     * @param std::vector< CCopasiContainer * > listOfContainer
+     * @param CObjectInterface::ContainerList listOfContainer
      */
-    bool compile(std::vector< CCopasiContainer * > listOfContainer);
+    bool compile(CObjectInterface::ContainerList listOfContainer);
 
     /**
      * Determine whether the root only changes during discrete events.
@@ -192,11 +192,11 @@ public:
   /**
    * Compile the trigger
    * @param const CExpression * pTriggerExpression
-   * @param std::vector< CCopasiContainer * > listOfContainer
+   * @param CObjectInterface::ContainerList listOfContainer
    * @return bool success
    */
   bool compile(const CExpression * pTriggerExpression,
-               std::vector< CCopasiContainer * > listOfContainer);
+               CObjectInterface::ContainerList listOfContainer);
 
   /**
    * Retrieve  the list of root finders

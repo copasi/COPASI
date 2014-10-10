@@ -116,12 +116,4 @@ int FminBrent(double a,                /* Left border      */
               double tol,              /* Acceptable tolerance    */
               int maxiter);           /* Maximum number of iterations  */
 
-bool Brent(double a,                /* Left border      */
-           double b,                /* Right border      */
-           FDescent * pF,           /* Functor for function under investigation  */
-           double *min,             /* Location of minimum    */
-           double *fmin,            /* Value of minimum     */
-           double tol,              /* Acceptable tolerance    */
-           int maxiter);           /* Maximum number of iterations  */
-
 #endif // COAPSI_FminBrent

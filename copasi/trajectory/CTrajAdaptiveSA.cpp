@@ -20,59 +20,16 @@
 #include <cmath>
 
 #include "copasi.h"
+
 #include "CTrajAdaptiveSA.h"
+#include "CTrajectoryProblem.h"
+
 #include "utilities/CCopasiVector.h"
 #include "function/CFunction.h"
 #include "randomGenerator/CRandom.h"
-#include "CTrajectoryProblem.h"
 #include "math/CMathContainer.h"
-#include "model/CState.h"
-#include "model/CCompartment.h"
+#include "math/CMathReaction.h"
 #include "model/CModel.h"
-
-CTrajAdaptiveSA::CReactionDependencies::CReactionDependencies():
-  mMethodSpeciesIndex(0),
-  mSpeciesMultiplier(0),
-  mMethodSpecies(0),
-  mModelSpecies(0),
-  mCalculations(),
-  mDependentReactions(0),
-  mSubstrateMultiplier(0),
-  mMethodSubstrates(0),
-  mModelSubstrates(0),
-  mpParticleFlux(NULL)
-{}
-
-CTrajAdaptiveSA::CReactionDependencies::CReactionDependencies(const CReactionDependencies & src):
-  mMethodSpeciesIndex(src.mMethodSpeciesIndex),
-  mSpeciesMultiplier(src.mSpeciesMultiplier),
-  mMethodSpecies(src.mMethodSpecies),
-  mModelSpecies(src.mModelSpecies),
-  mCalculations(src.mCalculations),
-  mDependentReactions(src.mDependentReactions),
-  mSubstrateMultiplier(src.mSubstrateMultiplier),
-  mMethodSubstrates(src.mMethodSubstrates),
-  mModelSubstrates(src.mModelSubstrates),
-  mpParticleFlux(src.mpParticleFlux)
-{}
-
-CTrajAdaptiveSA::CReactionDependencies::~CReactionDependencies()
-{}
-
-CTrajAdaptiveSA::CReactionDependencies & CTrajAdaptiveSA::CReactionDependencies::operator = (const CTrajAdaptiveSA::CReactionDependencies & rhs)
-{
-  mSpeciesMultiplier = rhs.mSpeciesMultiplier;
-  mMethodSpecies = rhs.mMethodSpecies;
-  mModelSpecies = rhs.mModelSpecies;
-  mCalculations = rhs.mCalculations;
-  mDependentReactions = rhs.mDependentReactions;
-  mSubstrateMultiplier = rhs.mSubstrateMultiplier;
-  mMethodSubstrates = rhs.mMethodSubstrates;
-  mModelSubstrates = rhs.mModelSubstrates;
-  mpParticleFlux = rhs.mpParticleFlux;
-
-  return * this;
-}
 
 // static
 CTrajAdaptiveSA * CTrajAdaptiveSA::createTauLeapMethod()
@@ -85,26 +42,22 @@ CTrajAdaptiveSA * CTrajAdaptiveSA::createTauLeapMethod()
 }
 
 CTrajAdaptiveSA::CTrajAdaptiveSA(const CCopasiContainer * pParent):
-  CTrajectoryMethod(CCopasiMethod::adaptiveSA, pParent),
+  CTrajectoryMethod(CCopasiTask::timeCourse, CCopasiMethod::adaptiveSA, pParent),
   mMaxReactionFiring(0),
   mReactionFiring(0),
   mPartitionedReactionFiring(0),
   mAvgDX(0),
   mSigDX(0),
   mpMethodSpecies(NULL),
-  mSpeciesAfterTau(0),
-  mpRandomGenerator(CRandom::createGenerator(CRandom::mt19937)),
-  mpModel(NULL),
+  mpRandomGenerator(NULL),
   mNumReactions(0),
-  mNumSpecies(0),
+  mNumReactionSpecies(0),
   mMaxSteps(1000000),
   mNextReactionTime(0.0),
   mNextReactionIndex(C_INVALID_INDEX),
-  mDoCorrection(true),
   mAmu(0),
   mPartitionedAmu(0),
   mMethodState(),
-  mReactionDependencies(0),
   mPartitionedDependencies(0),
   mA0(0.0),
   mMaxStepsReached(false)
@@ -121,19 +74,17 @@ CTrajAdaptiveSA::CTrajAdaptiveSA(const CTrajAdaptiveSA & src,
   mAvgDX(src.mAvgDX),
   mSigDX(src.mSigDX),
   mpMethodSpecies(src.mpMethodSpecies),
-  mSpeciesAfterTau(src.mSpeciesAfterTau),
-  mpRandomGenerator(CRandom::createGenerator(CRandom::mt19937)),
-  mpModel(src.mpModel),
+  mpRandomGenerator(NULL),
   mNumReactions(src.mNumReactions),
-  mNumSpecies(src.mNumSpecies),
+  mNumReactionSpecies(src.mNumReactionSpecies),
   mMaxSteps(src.mMaxSteps),
   mNextReactionTime(src.mNextReactionTime),
   mNextReactionIndex(src.mNextReactionIndex),
-  mDoCorrection(src.mDoCorrection),
-  mAmu(src.mAmu),
+  mReactions(),
+  mPropensityObjects(),
+  mAmu(),
   mPartitionedAmu(src.mPartitionedAmu),
   mMethodState(src.mMethodState),
-  mReactionDependencies(src.mReactionDependencies),
   mPartitionedDependencies(src.mPartitionedDependencies),
   mA0(src.mA0),
   mMaxStepsReached(src.mMaxStepsReached)
@@ -142,9 +93,7 @@ CTrajAdaptiveSA::CTrajAdaptiveSA(const CTrajAdaptiveSA & src,
 }
 
 CTrajAdaptiveSA::~CTrajAdaptiveSA()
-{
-  pdelete(mpRandomGenerator);
-}
+{}
 
 void CTrajAdaptiveSA::initializeParameter()
 {
@@ -186,40 +135,66 @@ CTrajectoryMethod::Status CTrajAdaptiveSA::step(const double & deltaT)
         }
     }
 
-  mContainerState = mpContainer->getState();
   *mpContainerStateTime = Time;
 
   return NORMAL;
 }
 
-void CTrajAdaptiveSA::start(CVectorCore< C_FLOAT64 > & initialState)
+void CTrajAdaptiveSA::start()
 {
+  CTrajectoryMethod::start();
+
   /* get configuration data */
-  mMaxSteps = * getValue("Max Internal Steps").pINT;
-  mEpsilon = * getValue("Epsilon").pDOUBLE;
+
+  mpRandomGenerator = &mpContainer->getRandomGenerator();
 
   bool useRandomSeed = * getValue("Use Random Seed").pBOOL;
   unsigned C_INT32 randomSeed = * getValue("Random Seed").pUINT;
 
   if (useRandomSeed) mpRandomGenerator->initialize(randomSeed);
 
-  //mpCurrentState is initialized. This state is not used internally in the
-  //stochastic solver, but it is used for returning the result after each step.
-  mContainerState = initialState;
-
-  mpModel = mpProblem->getModel();
-  assert(mpModel);
-
-  if (mpModel->getModelType() == CModel::deterministic)
-    mDoCorrection = true;
-  else
-    mDoCorrection = false;
+  mMaxSteps = * getValue("Max Internal Steps").pINT;
+  mEpsilon = * getValue("Epsilon").pDOUBLE;
 
   //initialize the vector of ints that contains the particle numbers
   //for the discrete simulation. This also floors all particle numbers in the model.
 
-  mNumReactions = mpModel->getReactions().size();
-  mNumSpecies = mpModel->getMetabolitesX().size();
+  // Size the arrays
+  mReactions.initialize(mpContainer->getReactions());
+  mNumReactions = mReactions.size();
+  mAmu.initialize(mpContainer->getPropensities());
+  mPropensityObjects.initialize(mAmu.size(), mpContainer->getMathObject(mAmu.array()));
+  mUpdateSequences.resize(mNumReactions);
+
+  CMathReaction * pReaction = mReactions.array();
+  CMathReaction * pReactionEnd = pReaction + mNumReactions;
+  CObjectInterface::UpdateSequence * pUpdateSequence = mUpdateSequences.array();
+  CMathObject * pPropensityObject = mPropensityObjects.array();
+  CMathObject * pPropensityObjectEnd = pPropensityObject + mPropensityObjects.size();
+  CObjectInterface::ObjectSet Requested;
+
+  for (; pPropensityObject != pPropensityObjectEnd; ++pPropensityObject)
+    {
+      Requested.insert(pPropensityObject);
+    }
+
+  CObjectInterface::ObjectSet Changed;
+  CObjectInterface * pTimeObject = mpContainer->getMathObject(mpContainerStateTime);
+  pPropensityObject = mPropensityObjects.array();
+
+  for (; pReaction  != pReactionEnd; ++pReaction, ++pUpdateSequence, ++pPropensityObject)
+    {
+      Changed = pReaction->getChangedObjects();
+
+      // The time is always updated
+      Changed.insert(pTimeObject);
+
+      pUpdateSequence->clear();
+      mpContainer->getTransientDependencies().getUpdateSequence(*pUpdateSequence, CMath::Default, Changed, Requested);
+    }
+
+  mNumReactionSpecies = mpContainer->getCountIndependentSpecies() + mpContainer->getCountDependentSpecies();
+  mFirstReactionSpeciesIndex = mpContainer->getTimeIndex() + mpContainer->getCountODEs();
 
   mPartitionedDependencies.resize(mNumReactions);
   mMaxReactionFiring.resize(mNumReactions);
@@ -227,176 +202,31 @@ void CTrajAdaptiveSA::start(CVectorCore< C_FLOAT64 > & initialState)
   mReactionFiring.resize(mNumReactions);
   mPartitionedReactionFiring.resize(mNumReactions);
 
-  mReactionDependencies.resize(mNumReactions);
-  mAmu.resize(mNumReactions);
   mAmu = 0.0;
-
-  mNumReactionSpecies = mpModel->getNumIndependentReactionMetabs() + mpModel->getNumDependentReactionMetabs();
-
-  mSpeciesAfterTau.resize(mNumReactionSpecies);
 
   mAvgDX.resize(mNumReactionSpecies);
   mSigDX.resize(mNumReactionSpecies);
 
-  // Initialize the
-  // Create a local copy of the state where the particle number are rounded to integers
-  mMethodState = mpModel->getState();
+  C_FLOAT64 * pSpecies = mContainerState.array() + mFirstReactionSpeciesIndex;
+  C_FLOAT64 * pSpeciesEnd = pSpecies + mNumReactionSpecies;
 
-  const CStateTemplate & StateTemplate = mpModel->getStateTemplate();
-
-  CModelEntity *const* ppEntity = StateTemplate.beginIndependent();
-  CModelEntity *const* endEntity = StateTemplate.endFixed();
-  C_FLOAT64 * pValue = mMethodState.beginIndependent();
-
-  mFirstReactionSpeciesIndex = 0;
-  size_t Index = 1;
-
-  C_FLOAT64 * pSpeciesAfterTau = mSpeciesAfterTau.array();
-
-  for (; ppEntity != endEntity; ++ppEntity, ++pValue, ++Index)
+  for (; pSpecies != pSpeciesEnd; ++pSpecies)
     {
-      if (dynamic_cast< const CMetab * >(*ppEntity) != NULL)
-        {
-          *pValue = floor(*pValue + 0.5);
-
-          if ((*ppEntity)->getStatus() == CModelEntity::REACTIONS &&
-              (*ppEntity)->isUsed())
-            {
-              *pSpeciesAfterTau = *pValue;
-              pSpeciesAfterTau++;
-
-              if (mFirstReactionSpeciesIndex == 0)
-                {
-                  mFirstReactionSpeciesIndex = Index;
-                  mpMethodSpecies = pValue;
-                }
-            }
-        }
+      *pSpecies = floor(*pSpecies + 0.5);
     }
 
-  // Update the model state so that the species are all represented by integers.
-  mpModel->setState(mMethodState);
-  mpModel->updateSimulatedValues(false); //for assignments
+  // The container state is now up to date we just need to calculate all values needed for simulation.
+  mpContainer->updateSimulatedValues(false); //for assignments
 
-  // TODO handle species of type ASSIGNMENT.
-  // These need to be checked whether they are sufficiently close to an integer
+  pPropensityObject = mPropensityObjects.array();
+  C_FLOAT64 * pAmu = mAmu.array();
+  mA0 = 0.0;
 
-  C_FLOAT64 * pMethodStateValue = mMethodState.beginIndependent() - 1;
-
-  // Build the reaction dependencies
-  size_t NumReactions = 0;
-
-  CCopasiVector< CReaction >::const_iterator it = mpModel->getReactions().begin();
-  CCopasiVector< CReaction >::const_iterator end = mpModel->getReactions().end();
-  std::vector< CReactionDependencies >::iterator itDependencies = mReactionDependencies.begin();
-
-  for (; it  != end; ++it)
+  // Update the propensity
+  for (; pPropensityObject != pPropensityObjectEnd; ++pPropensityObject, ++pAmu)
     {
-      const CCopasiVector<CChemEqElement> & Balances = (*it)->getChemEq().getBalances();
-      const CCopasiVector<CChemEqElement> & Substrates = (*it)->getChemEq().getSubstrates();
-
-      // This reactions does not change anything we ignore it
-      if (Balances.size() == 0 && Substrates.size() == 0)
-        {
-          continue;
-        }
-
-      itDependencies->mpParticleFlux = (C_FLOAT64 *)(*it)->getParticleFluxReference()->getValuePointer();
-
-      itDependencies->mMethodSpeciesIndex.resize(Balances.size());
-      itDependencies->mSpeciesMultiplier.resize(Balances.size());
-      itDependencies->mMethodSpecies.resize(Balances.size());
-      itDependencies->mModelSpecies.resize(Balances.size());
-
-      std::set< const CCopasiObject * > changed;
-
-      // The time is always updated
-      changed.insert(mpModel->getValueReference());
-
-      CCopasiVector< CChemEqElement >::const_iterator itBalance = Balances.begin();
-      CCopasiVector< CChemEqElement >::const_iterator endBalance = Balances.end();
-
-      size_t Index = 0;
-
-      for (; itBalance != endBalance; ++itBalance)
-        {
-          const CMetab * pMetab = (*itBalance)->getMetabolite();
-
-          if (pMetab->getStatus() == CModelEntity::REACTIONS)
-            {
-              itDependencies->mMethodSpeciesIndex[Index] = StateTemplate.getIndex(pMetab) - mFirstReactionSpeciesIndex;
-              itDependencies->mSpeciesMultiplier[Index] = floor((*itBalance)->getMultiplicity() + 0.5);
-              itDependencies->mMethodSpecies[Index] = pMethodStateValue + StateTemplate.getIndex(pMetab);
-              itDependencies->mModelSpecies[Index] = (C_FLOAT64 *) pMetab->getValueReference()->getValuePointer();
-
-              changed.insert(pMetab->getValueReference());
-
-              Index++;
-            }
-        }
-
-      // Correct allocation for metabolites which are not determined by reactions
-      itDependencies->mMethodSpeciesIndex.resize(Index, true);
-      itDependencies->mSpeciesMultiplier.resize(Index, true);
-      itDependencies->mMethodSpecies.resize(Index, true);
-      itDependencies->mModelSpecies.resize(Index, true);
-
-      itDependencies->mSubstrateMultiplier.resize(Substrates.size());
-      itDependencies->mMethodSubstrates.resize(Substrates.size());
-      itDependencies->mModelSubstrates.resize(Substrates.size());
-
-      CCopasiVector< CChemEqElement >::const_iterator itSubstrate = Substrates.begin();
-      CCopasiVector< CChemEqElement >::const_iterator endSubstrate = Substrates.end();
-
-      Index = 0;
-
-      for (; itSubstrate != endSubstrate; ++itSubstrate, ++Index)
-        {
-          const CMetab * pMetab = (*itSubstrate)->getMetabolite();
-
-          itDependencies->mSubstrateMultiplier[Index] = floor((*itSubstrate)->getMultiplicity() + 0.5);
-          itDependencies->mMethodSubstrates[Index] = pMethodStateValue + StateTemplate.getIndex(pMetab);
-          itDependencies->mModelSubstrates[Index] = (C_FLOAT64 *) pMetab->getValueReference()->getValuePointer();
-        }
-
-      std::set< const CCopasiObject * > dependend;
-
-      CCopasiVector< CReaction >::const_iterator itReaction = mpModel->getReactions().begin();
-      itDependencies->mDependentReactions.resize(mNumReactions);
-
-      Index = 0;
-      size_t Count = 0;
-
-      for (; itReaction != end; ++itReaction, ++Index)
-        {
-          if ((*itReaction)->getParticleFluxReference()->dependsOn(changed))
-            {
-              dependend.insert((*itReaction)->getParticleFluxReference());
-              itDependencies->mDependentReactions[Count] = Index;
-
-              Count++;
-            }
-        }
-
-      itDependencies->mDependentReactions.resize(Count, true);
-
-      itDependencies->mCalculations = CCopasiObject::buildUpdateSequence(dependend, changed);
-
-      ++itDependencies;
-      ++NumReactions;
-    }
-
-  mNumReactions = NumReactions;
-
-  mReactionDependencies.resize(mNumReactions);
-  mAmu.resize(mNumReactions, true);
-
-  mA0 = 0;
-  size_t i;
-
-  for (i = 0; i < mNumReactions; i++)
-    {
-      mA0 += calculateAmu(i);
+      pPropensityObject->calculate();
+      mA0 += *pAmu;
     }
 
   mMaxStepsReached = false;
@@ -422,7 +252,7 @@ bool CTrajAdaptiveSA::isValidProblem(const CCopasiProblem * pProblem)
       return false;
     }
 
-  if (pTP->getModel()->getTotSteps() < 1)
+  if (mpContainer->getReactions().size() < 1)
     {
       //at least one reaction necessary
       CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 17);
@@ -430,38 +260,14 @@ bool CTrajAdaptiveSA::isValidProblem(const CCopasiProblem * pProblem)
     }
 
   // check for ODEs
-  const CStateTemplate & StateTemplate = pTP->getModel()->getStateTemplate();
-  CModelEntity *const* ppEntity = StateTemplate.beginIndependent();
-  CModelEntity *const* ppEntityEnd = StateTemplate.endIndependent();
-
-  for (; ppEntity != ppEntityEnd; ++ppEntity)
+  if (mpContainer->getCountODEs() > 0)
     {
-      if ((*ppEntity)->getStatus() == CModelEntity::ODE)
-        {
-          if (dynamic_cast<const CModelValue *>(*ppEntity) != NULL)
-            {
-              // global quantity ode rule found
-              CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 18);
-              return false;
-            }
-          else if (dynamic_cast<const CCompartment *>(*ppEntity) != NULL)
-            {
-              // compartment ode rule found
-              CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 21);
-              return false;
-            }
-          else
-            {
-              // species ode rule found
-              CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 20);
-              return false;
-            }
-        }
+      CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 28);
     }
 
   //TODO: rewrite CModel::suitableForStochasticSimulation() to use
   //      CCopasiMessage
-  std::string message = pTP->getModel()->suitableForStochasticSimulation();
+  std::string message = mpContainer->getModel().suitableForStochasticSimulation();
 
   if (message != "")
     {
@@ -482,25 +288,24 @@ bool CTrajAdaptiveSA::isValidProblem(const CCopasiProblem * pProblem)
 
 C_FLOAT64 CTrajAdaptiveSA::doSingleTauLeapStep(const C_FLOAT64 & curTime, const C_FLOAT64 & endTime)
 {
-  std::vector< CReactionDependencies >::const_iterator itDependencies = mReactionDependencies.begin();
-  std::vector< CReactionDependencies >::const_iterator endDependencies = mReactionDependencies.end();
+  CMathReaction * pReaction = mReactions.array();
+  CMathReaction * pReactionEnd = pReaction + mReactions.size();
   size_t * pMaxReactionFiring = mMaxReactionFiring.array();
 
-  for (; itDependencies != endDependencies; ++itDependencies, ++pMaxReactionFiring)
+  for (; pReaction != pReactionEnd; ++pReaction, ++pMaxReactionFiring)
     {
-      C_FLOAT64 *const* ppModelSpecies = itDependencies->mModelSpecies.array();
-      const C_FLOAT64 * pMultiplicity = itDependencies->mSpeciesMultiplier.array();
-      const C_FLOAT64 * pMultiplicityEnd = pMultiplicity + itDependencies->mSpeciesMultiplier.size();
-
       *pMaxReactionFiring = std::numeric_limits< size_t >::max(); // Assigned a maximum value
 
-      for (; pMultiplicity != pMultiplicityEnd; pMultiplicity++, ppModelSpecies++)
+      const CMathReaction::SpeciesBalance * it = pReaction->getNumberBalance().array();
+      const CMathReaction::SpeciesBalance * end = it + pReaction->getNumberBalance().size();
+
+      for (; it != end; ++it)
         {
-          if (*pMultiplicity < 0)
+          if (it->second < 0)
             {
               size_t TmpMax;
 
-              if ((TmpMax = (size_t) fabs(**ppModelSpecies / *pMultiplicity)) < *pMaxReactionFiring)
+              if ((TmpMax = (size_t) fabs(*it->first / it->second)) < *pMaxReactionFiring)
                 {
                   *pMaxReactionFiring = TmpMax;
                 }
@@ -511,27 +316,26 @@ C_FLOAT64 CTrajAdaptiveSA::doSingleTauLeapStep(const C_FLOAT64 & curTime, const 
   size_t NonCriticalReactions = 0;
   size_t InsertCritical = mNumReactions - 1;
 
+  pReaction = mReactions.array();
   pMaxReactionFiring = mMaxReactionFiring.array();
+  C_FLOAT64 * pReactionFiring = mReactionFiring.array();
   const C_FLOAT64 * pAmu = mAmu.array();
 
-  itDependencies = mReactionDependencies.begin();
-  C_FLOAT64 * pReactionFiring = mReactionFiring.array();
-
-  for (; itDependencies != endDependencies; ++itDependencies, ++pAmu, ++pMaxReactionFiring, ++pReactionFiring)
+  for (; pReaction != pReactionEnd; ++pReaction, ++pMaxReactionFiring, ++pAmu, ++pReactionFiring)
     {
       *pReactionFiring = 0;
 
       if (*pAmu == 0 ||
           *pMaxReactionFiring > UPPER_LIMIT)
         {
-          mPartitionedDependencies[NonCriticalReactions] = &(*itDependencies);
+          mPartitionedDependencies[NonCriticalReactions] = pReaction;
           mPartitionedAmu[NonCriticalReactions] = pAmu;
           mPartitionedReactionFiring[NonCriticalReactions] = pReactionFiring;
           NonCriticalReactions++;
         }
       else
         {
-          mPartitionedDependencies[InsertCritical] = &(*itDependencies);
+          mPartitionedDependencies[InsertCritical] = pReaction;
           mPartitionedAmu[InsertCritical] = pAmu;
           mPartitionedReactionFiring[InsertCritical] = pReactionFiring;
           InsertCritical--;
@@ -541,20 +345,20 @@ C_FLOAT64 CTrajAdaptiveSA::doSingleTauLeapStep(const C_FLOAT64 & curTime, const 
   mAvgDX = 0.0;
   mSigDX = 0.0;
 
-  const CReactionDependencies **ppOrderedReactions = mPartitionedDependencies.array();
+  CMathReaction **ppOrderedReactions = mPartitionedDependencies.array();
   const C_FLOAT64 ** ppOrderedAmu = mPartitionedAmu.array();
   const C_FLOAT64 ** ppOrderedAmuEnd = ppOrderedAmu + NonCriticalReactions;
+  const C_FLOAT64 * pFirstSpecies = mContainerState.array() + mFirstReactionSpeciesIndex;
 
   for (; ppOrderedAmu != ppOrderedAmuEnd; ++ppOrderedReactions, ++ppOrderedAmu)
     {
-      const C_FLOAT64 * pMultiplicity = (*ppOrderedReactions)->mSpeciesMultiplier.array();
-      const C_FLOAT64 * pMultiplicityEnd = pMultiplicity + (*ppOrderedReactions)->mSpeciesMultiplier.size();
-      const size_t * pIndex = (*ppOrderedReactions)->mMethodSpeciesIndex.array();
+      const CMathReaction::SpeciesBalance * it = (*ppOrderedReactions)->getNumberBalance().array();
+      const CMathReaction::SpeciesBalance * end = it + (*ppOrderedReactions)->getNumberBalance().size();
 
-      for (; pMultiplicity != pMultiplicityEnd; pMultiplicity++, pIndex++)
+      for (; it != end; ++it)
         {
-          mAvgDX[*pIndex] += **ppOrderedAmu * *pMultiplicity;
-          mSigDX[*pIndex] += **ppOrderedAmu * *pMultiplicity * *pMultiplicity;
+          mAvgDX[it->first - pFirstSpecies] += **ppOrderedAmu * it->second;
+          mSigDX[it->first - pFirstSpecies] += **ppOrderedAmu * it->second * it->second;
         }
     }
 
@@ -566,16 +370,21 @@ C_FLOAT64 CTrajAdaptiveSA::doSingleTauLeapStep(const C_FLOAT64 & curTime, const 
     }
   else
     {
+      const C_FLOAT64 * pSpecies = mContainerState.array() + mFirstReactionSpeciesIndex;
+      const C_FLOAT64 * pSpeciesEnd = pSpecies + mNumReactionSpecies;
+      C_FLOAT64 * pAvgDX = mAvgDX.array();
+      C_FLOAT64 * pSigDX = mSigDX.array();
+
       C_FLOAT64 ex, t1, t2;
       t1 = t2 = std::numeric_limits< C_FLOAT64 >::infinity();
 
-      for (size_t i = 0; i < mNumReactionSpecies; i++)
+      for (; pSpecies != pSpeciesEnd; ++pSpecies, ++pAvgDX, ++pSigDX)
         {
           C_FLOAT64 t3, t4, t5, t6;
 
-          ex = (*(mpMethodSpecies + i) * mEpsilon) + 1.0;
-          t3 = fabs(mAvgDX[i]);
-          t4 = mSigDX[i];
+          ex = (*pSpecies * mEpsilon) + 1.0;
+          t3 = fabs(*pAvgDX);
+          t4 = *pSigDX;
           t5 = ex / t3;
           t6 = ex * ex / t4;
 
@@ -594,8 +403,6 @@ C_FLOAT64 CTrajAdaptiveSA::doSingleTauLeapStep(const C_FLOAT64 & curTime, const 
       MaxTau == std::numeric_limits< C_FLOAT64 >::infinity())
     {
       mSSAStepCounter = SSA_UPPER_NUM;
-      mpModel->setState(mMethodState);
-      mpModel->updateSimulatedValues(false);
 
       return 0;
     }
@@ -667,85 +474,60 @@ C_FLOAT64 CTrajAdaptiveSA::doSingleTauLeapStep(const C_FLOAT64 & curTime, const 
           CriticalReactionIndex--;
         }
 
-      C_FLOAT64 * pSpeciesAfterTau = mSpeciesAfterTau.array();
-      C_FLOAT64 * pSpeciesAfterTauEnd = pSpeciesAfterTau + mNumReactionSpecies;
-      C_FLOAT64 * pMethodSpecies = mpMethodSpecies;
-
-      for (; pSpeciesAfterTau != pSpeciesAfterTauEnd; ++pSpeciesAfterTau, ++pMethodSpecies)
-        {
-          *pSpeciesAfterTau = *pMethodSpecies;
-        }
-
       ppOrderedReactions = mPartitionedDependencies.array();
-      const CReactionDependencies **ppOrderedReactionsEnd = ppOrderedReactions + NonCriticalReactions;
+      CMathReaction **ppOrderedReactionsEnd = ppOrderedReactions + NonCriticalReactions;
       ppOrderedReactionFiring = mPartitionedReactionFiring.array();
+
+      // Before we fire any reaction we save state so that we can undo for the case that
+      // we encountered negative particle numbers.
+      mMethodState = mpContainer->getState(false);
 
       for (; ppOrderedReactions != ppOrderedReactionsEnd; ++ppOrderedReactions, ++ppOrderedReactionFiring)
         {
-          const C_FLOAT64 * pMultiplicity = (*ppOrderedReactions)->mSpeciesMultiplier.array();
-          const C_FLOAT64 * pMultiplicityEnd = pMultiplicity + (*ppOrderedReactions)->mSpeciesMultiplier.size();
-          const size_t *pIndex = (*ppOrderedReactions)->mMethodSpeciesIndex.array();
-
-          for (; pMultiplicity != pMultiplicityEnd;  pMultiplicity++, pIndex++)
-            {
-              mSpeciesAfterTau[*pIndex] += (*pMultiplicity * **ppOrderedReactionFiring);
-            }
-
+          (*ppOrderedReactions)->fireMultiple(**ppOrderedReactionFiring);
           **ppOrderedReactionFiring = 0.0;
         }
 
       if (CriticalReactionIndex != C_INVALID_INDEX)
         {
-          const CReactionDependencies * pCriticalReaction = mPartitionedDependencies[CriticalReactionIndex];
-
-          const C_FLOAT64 * pMultiplicity = pCriticalReaction->mSpeciesMultiplier.array();
-          const C_FLOAT64 * pMultiplicityEnd = pMultiplicity + pCriticalReaction->mSpeciesMultiplier.size();
-          const size_t *pIndex = pCriticalReaction->mMethodSpeciesIndex.array();
-
-          for (; pMultiplicity != pMultiplicityEnd;  pMultiplicity++, pIndex++)
-            {
-              mSpeciesAfterTau[*pIndex] += *pMultiplicity;
-            }
+          mPartitionedDependencies[CriticalReactionIndex]->fire();
         }
 
-      pSpeciesAfterTau = mSpeciesAfterTau.array();
+      const C_FLOAT64 * pSpecies = mContainerState.array() + mFirstReactionSpeciesIndex;
 
-      for (; pSpeciesAfterTau != pSpeciesAfterTauEnd; ++pSpeciesAfterTau)
+      const C_FLOAT64 * pSpeciesEnd = pSpecies + mNumReactionSpecies;
+
+      for (; pSpecies != pSpeciesEnd; ++pSpecies)
         {
-          if (*pSpeciesAfterTau < 0)
+          if (*pSpecies < 0)
             break;
         }
 
-      if (pSpeciesAfterTau != pSpeciesAfterTauEnd)
+      if (pSpecies != pSpeciesEnd)
         {
           isUpdated = false;
           MaxTau = MaxTau / 2.0;
+
+          mpContainer->setState(mMethodState);
         }
       else
         {
           isUpdated = true;
-
-          pSpeciesAfterTau = mSpeciesAfterTau.array();
-          pMethodSpecies = mpMethodSpecies;
-
-          for (; pSpeciesAfterTau != pSpeciesAfterTauEnd; ++pSpeciesAfterTau, ++pMethodSpecies)
-            {
-              *pMethodSpecies = *pSpeciesAfterTau;
-            }
         }
     }
 
   // Update the model time (for explicitly time dependent models)
-  mMethodState.setTime(curTime + Tau);
-  mpModel->setState(mMethodState);
-  mpModel->updateSimulatedValues(false);
-
+  *mpContainerStateTime = curTime + Tau;
   mA0 = 0;
-  size_t i;
 
-  for (i = 0; i < mNumReactions; i++)
+  CMathObject * pPropensity = mPropensityObjects.array();
+  CMathObject * pPropensityEnd = pPropensity + mNumReactions;
+  pAmu = mAmu.array();
+
+  for (; pPropensity != pPropensityEnd; ++pPropensity, ++pAmu)
     {
-      mA0 += calculateAmu(i);
+      pPropensity->calculate();
+      mA0 += *pAmu;
     }
 
   return Tau;
@@ -757,6 +539,7 @@ C_FLOAT64 CTrajAdaptiveSA::doSingleSSAStep(const C_FLOAT64 & curTime, const C_FL
     {
       if (mA0 == 0)
         {
+          *mpContainerStateTime = endTime;
           return endTime - curTime;
         }
 
@@ -767,72 +550,41 @@ C_FLOAT64 CTrajAdaptiveSA::doSingleSSAStep(const C_FLOAT64 & curTime, const C_FL
         }
 
       mNextReactionTime = curTime - log(mpRandomGenerator->getRandomOO()) / mA0;
+
+      // We are sure that we have at least 1 reaction
+      mNextReactionIndex = 0;
+
+      C_FLOAT64 sum = 0.0;
+      C_FLOAT64 rand = mpRandomGenerator->getRandomOO() * mA0;
+
+      const C_FLOAT64 * pAmu = mAmu.array();
+      const C_FLOAT64 * pAmuEnd = pAmu + mNumReactions;
+
+      for (; (sum < rand) && (pAmu != pAmuEnd); ++pAmu, ++mNextReactionIndex)
+        {
+          sum += *pAmu;
+        }
+
+      mNextReactionIndex--;
     }
+
+  *mpContainerStateTime = mNextReactionTime;
 
   if (mNextReactionTime >= endTime)
     {
       return endTime - curTime;
     }
 
-  // Update the model time (for explicitly time dependent models)
-  mpModel->setTime(mNextReactionTime);
-
-  // We are sure that we have at least 1 reaction
-  mNextReactionIndex = 0;
-
-  C_FLOAT64 sum = 0.0;
-  C_FLOAT64 rand = mpRandomGenerator->getRandomOO() * mA0;
-
-  C_FLOAT64 * pAmu = mAmu.array();
-  C_FLOAT64 * endAmu = pAmu + mNumReactions;
-
-  for (; (sum < rand) && (pAmu != endAmu); ++pAmu, ++mNextReactionIndex)
-    {
-      sum += *pAmu;
-    }
-
-  mNextReactionIndex--;
-
-  CReactionDependencies & Dependencies = mReactionDependencies[mNextReactionIndex];
-
-  // Update the method internal and model species numbers
-  C_FLOAT64 ** ppModelSpecies = Dependencies.mModelSpecies.array();
-  C_FLOAT64 ** ppLocalSpecies = Dependencies.mMethodSpecies.array();
-  C_FLOAT64 * pMultiplicity = Dependencies.mSpeciesMultiplier.array();
-  C_FLOAT64 * pMultiplicityEnd = pMultiplicity + Dependencies.mSpeciesMultiplier.size();
-  //if(mAmu.array()[mNextReactionIndex]==0) //Important check
-  //  printf("Error 0\n");
-
-  for (; pMultiplicity != pMultiplicityEnd; ++pMultiplicity, ++ppLocalSpecies, ++ppModelSpecies)
-    {
-      **ppLocalSpecies += *pMultiplicity;
-      **ppModelSpecies = **ppLocalSpecies;
-    }
-
-  // Calculate all values which depend on the firing reaction
-  std::vector< Refresh * >::const_iterator itCalcualtion =  Dependencies.mCalculations.begin();
-  std::vector< Refresh * >::const_iterator endCalcualtion =  Dependencies.mCalculations.end();
-
-  while (itCalcualtion != endCalcualtion)
-    {
-      (**itCalcualtion++)();
-    }
-
-  // calculate the propensities which depend on the firing reaction
-  size_t * pDependentReaction = Dependencies.mDependentReactions.array();
-  size_t * endDependentReactions = pDependentReaction + Dependencies.mDependentReactions.size();
-
-  for (; pDependentReaction != endDependentReactions; ++pDependentReaction)
-    {
-      calculateAmu(*pDependentReaction);
-    }
+  mReactions[mNextReactionIndex].fire();
+  mpContainer->applyUpdateSequence(mUpdateSequences[mNextReactionIndex]);
 
   // calculate the total propensity
-  pAmu = mAmu.array();
-
   mA0 = 0.0;
 
-  for (; pAmu != endAmu; ++pAmu)
+  const C_FLOAT64 * pAmu = mAmu.array();
+  const C_FLOAT64 * pAmuEnd = pAmu + mNumReactions;
+
+  for (; pAmu != pAmuEnd; ++pAmu)
     {
       mA0 += *pAmu;
     }
@@ -840,73 +592,4 @@ C_FLOAT64 CTrajAdaptiveSA::doSingleSSAStep(const C_FLOAT64 & curTime, const C_FL
   mNextReactionIndex = C_INVALID_INDEX;
 
   return mNextReactionTime - curTime;
-}
-
-const C_FLOAT64 & CTrajAdaptiveSA::calculateAmu(const size_t & index)
-{
-  const CReactionDependencies & Dependencies = mReactionDependencies[index];
-  C_FLOAT64 & Amu = mAmu[index];
-
-  Amu = *Dependencies.mpParticleFlux;
-
-  if (Amu < 0.0)
-    {
-      // TODO CRITICAL Create a warning message
-      Amu = 0.0;
-    }
-
-  if (!mDoCorrection)
-    {
-      return Amu;
-    }
-
-  C_FLOAT64 SubstrateMultiplier = 1.0;
-  C_FLOAT64 SubstrateDevisor = 1.0;
-  C_FLOAT64 Multiplicity;
-  C_FLOAT64 LowerBound;
-  C_FLOAT64 Number;
-
-  bool ApplyCorrection = false;
-
-  const C_FLOAT64 * pMultiplicity = Dependencies.mSubstrateMultiplier.array();
-  const C_FLOAT64 * pEndMultiplicity = pMultiplicity + Dependencies.mSubstrateMultiplier.size();
-  C_FLOAT64 *const* ppLocalSubstrate = Dependencies.mMethodSubstrates.array();
-  C_FLOAT64 *const* ppModelSubstrate = Dependencies.mModelSubstrates.array();
-
-  for (; pMultiplicity != pEndMultiplicity; ++pMultiplicity, ++ppLocalSubstrate, ++ppModelSubstrate)
-    {
-      Multiplicity = *pMultiplicity;
-
-      // TODO We should check the error introduced through rounding.
-      **ppLocalSubstrate = floor(**ppModelSubstrate + 0.5);
-
-      if (Multiplicity > 1.01)
-        {
-          ApplyCorrection = true;
-
-          Number = **ppLocalSubstrate;
-
-          LowerBound = Number - Multiplicity;
-          SubstrateDevisor *= pow(Number, Multiplicity - 1.0);  //optimization
-          Number -= 1.0;
-
-          while (Number > LowerBound)
-            {
-              SubstrateMultiplier *= Number;
-              Number -= 1.0;
-            }
-        }
-    }
-
-  // at least one substrate particle number is zero
-  if (SubstrateMultiplier < 0.5 || SubstrateDevisor < 0.5)
-    {
-      Amu = 0.0;
-    }
-  else if (ApplyCorrection)
-    {
-      Amu *= SubstrateMultiplier / SubstrateDevisor;
-    }
-
-  return Amu;
 }

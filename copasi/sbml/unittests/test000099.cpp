@@ -31,7 +31,7 @@ void test000099::test_bug1675()
 {
   CPPUNIT_ASSERT(pDataModel != NULL);
   CModel* pModel = NULL;
-  std::vector< CCopasiContainer * > listOfContainer;
+  CObjectInterface::ContainerList listOfContainer;
 
   // try to import the file which should lead to an exception
   try
@@ -45,7 +45,7 @@ void test000099::test_bug1675()
     {
       CPPUNIT_ASSERT(pModel == NULL);
       const CModel * pModel2 =
-        dynamic_cast< const CModel * >(pDataModel->ObjectFromCN(listOfContainer, CCopasiObjectName("CN=Root,Model=my test model")));
+        dynamic_cast< const CModel * >(pDataModel->getObjectFromCN(listOfContainer, CCopasiObjectName("CN=Root,Model=my test model")));
       CPPUNIT_ASSERT(pModel2 == NULL);
     }
 
@@ -64,7 +64,7 @@ void test000099::test_bug1675()
   pModel = pDataModel->getModel();
   CPPUNIT_ASSERT(pModel != NULL);
   const CModel * pModel2 =
-    dynamic_cast< const CModel * >(pDataModel->ObjectFromCN(listOfContainer, pDataModel->getModel()->getCN()));
+    dynamic_cast< const CModel * >(pDataModel->getObjectFromCN(listOfContainer, pDataModel->getModel()->getCN()));
   CPPUNIT_ASSERT(pModel == pModel2);
 }
 

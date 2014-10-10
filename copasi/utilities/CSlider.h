@@ -66,11 +66,11 @@ public:
 
   /**
    * Compile, i.e., find the objects pointed to by the CN.
-   * @param const std::vector< CCopasiContainer * > & listOfContainer
+   * @param const CObjectInterface::ContainerList & listOfContainer
    *  (default: CCopasiContainer::EmptyList)
    * @return bool success
    */
-  bool compile(const std::vector< CCopasiContainer * > & listOfContainer = CCopasiContainer::EmptyList);
+  bool compile(const CObjectInterface::ContainerList & listOfContainer = CCopasiContainer::EmptyList);
 
   /**
    * Retrieve the key

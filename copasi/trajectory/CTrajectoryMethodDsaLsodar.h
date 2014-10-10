@@ -142,7 +142,7 @@ private:
     /**
      * A pointer to the first species determined by reactions
      */
-    const CObjectInterface * mpFirstReactionSpecies;
+    const C_FLOAT64 * mpFirstReactionValue;
   };
 
 protected:
@@ -196,9 +196,8 @@ public:
   /**
    *  This instructs the method to prepare for integration
    *  starting with the initialState given.
-   *  @param "const CState *" initialState
    */
-  virtual void start(CVectorCore< C_FLOAT64 > & initialState);
+  virtual void start();
 
   /**
    *  This evaluates the derivatives
@@ -364,7 +363,4 @@ protected:
    */
   CTrajectoryMethod::Status mStatus;
 };
-
-#include "CHybridNextReactionRKMethod.h"
-
 #endif // COPASI_CTrajectoryMethodDsaLsodar

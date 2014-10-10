@@ -57,6 +57,7 @@ CMathContainer::CMathContainer():
   mIndependentCount(0),
   mDependentCount(0),
   mAssignmentCount(0),
+  mDelayCount(0),
   mInitialState(),
   mState(),
   mStateReduced(),
@@ -72,8 +73,10 @@ CMathContainer::CMathContainer():
   mSimulationValuesSequence(),
   mSimulationValuesSequenceReduced(),
   mPrioritySequence(),
+  mTransientDataObjectSequence(),
   mInitialStateValueExtensive(),
   mInitialStateValueIntensive(),
+  mInitialStateValueAll(),
   mStateValues(),
   mReducedStateValues(),
   mSimulationRequiredValues(),
@@ -89,7 +92,8 @@ CMathContainer::CMathContainer():
   mDiscontinuityEvents("Discontinuities", this),
   mDiscontinuityInfix2Object(),
   mTriggerInfix2Event(),
-  mDelays()
+  mDelays(),
+  mIsAutonomous(true)
 {}
 
 CMathContainer::CMathContainer(CModel & model):
@@ -132,6 +136,7 @@ CMathContainer::CMathContainer(CModel & model):
   mIndependentCount(0),
   mDependentCount(0),
   mAssignmentCount(0),
+  mDelayCount(0),
   mInitialState(),
   mState(),
   mStateReduced(),
@@ -147,8 +152,10 @@ CMathContainer::CMathContainer(CModel & model):
   mSimulationValuesSequence(),
   mSimulationValuesSequenceReduced(),
   mPrioritySequence(),
+  mTransientDataObjectSequence(),
   mInitialStateValueExtensive(),
   mInitialStateValueIntensive(),
+  mInitialStateValueAll(),
   mStateValues(),
   mReducedStateValues(),
   mSimulationRequiredValues(),
@@ -163,7 +170,8 @@ CMathContainer::CMathContainer(CModel & model):
   mDiscontinuityEvents("Discontinuities", this),
   mDiscontinuityInfix2Object(),
   mTriggerInfix2Event(),
-  mDelays()
+  mDelays(),
+  mIsAutonomous(true)
 {
   // We do not want the model to know about the math container therefore we
   // do not use &model in the constructor of CCopasiContainer
@@ -213,6 +221,7 @@ CMathContainer::CMathContainer(const CMathContainer & src):
   mIndependentCount(src.mIndependentCount),
   mDependentCount(src.mDependentCount),
   mAssignmentCount(src.mAssignmentCount),
+  mDelayCount(src.mDelayCount),
   mInitialState(),
   mState(),
   mStateReduced(),
@@ -228,8 +237,10 @@ CMathContainer::CMathContainer(const CMathContainer & src):
   mSimulationValuesSequence(),
   mSimulationValuesSequenceReduced(),
   mPrioritySequence(),
+  mTransientDataObjectSequence(),
   mInitialStateValueExtensive(),
   mInitialStateValueIntensive(),
+  mInitialStateValueAll(),
   mStateValues(),
   mReducedStateValues(),
   mSimulationRequiredValues(),
@@ -244,7 +255,8 @@ CMathContainer::CMathContainer(const CMathContainer & src):
   mDiscontinuityEvents("Discontinuities", this),
   mDiscontinuityInfix2Object(),
   mTriggerInfix2Event(),
-  mDelays(src.mDelays.size())
+  mDelays(src.mDelays.size()),
+  mIsAutonomous(src.mIsAutonomous)
 {
   // We do not want the model to know about the math container therefore we
   // do not use &model in the constructor of CCopasiContainer
@@ -418,9 +430,17 @@ CVectorCore< C_FLOAT64 > & CMathContainer::getInitialState()
 
 void CMathContainer::setInitialState(const CVectorCore< C_FLOAT64 > & initialState)
 {
-  assert(mInitialState.size() == initialState.size());
+  assert(mInitialState.size() == initialState.size() ||
+         mState.size()  == initialState.size());
 
-  memcpy(mInitialState.array(), initialState.array(), mInitialState.size() * sizeof(C_FLOAT64));
+  if (mInitialState.size() == initialState.size())
+    {
+      memcpy(mInitialState.array(), initialState.array(), initialState.size() * sizeof(C_FLOAT64));
+    }
+  else
+    {
+      memcpy(mInitialState.array() + mFixedCount, initialState.array(), initialState.size() * sizeof(C_FLOAT64));
+    }
 }
 
 const CVectorCore< C_FLOAT64 > & CMathContainer::getState(const bool & reduced) const
@@ -456,6 +476,11 @@ bool CMathContainer::isStateValid() const
     }
 
   return true;
+}
+
+const bool & CMathContainer::isAutonomous() const
+{
+  return mIsAutonomous;
 }
 
 const CMathHistoryCore & CMathContainer::getHistory(const bool & reduced) const
@@ -704,6 +729,11 @@ void CMathContainer::updateSimulatedValues(const bool & useMoieties)
     }
 }
 
+void CMathContainer::updateTransientDataValues()
+{
+  applyUpdateSequence(mTransientDataObjectSequence);
+}
+
 void CMathContainer::updateHistoryValues(const bool & useMoieties)
 {
   CMathHistoryCore * pHistory = (useMoieties) ? &mHistoryReduced : &mHistory;
@@ -803,7 +833,26 @@ void CMathContainer::pushState()
 {
   C_FLOAT64 * pValue = mState.array();
   C_FLOAT64 * pValueEnd = pValue + mState.size();
-  CMathObject * pObject = mObjects.array();
+  CMathObject * pObject = getMathObject(pValue);
+
+  for (; pValue != pValueEnd; ++pValue, ++pObject)
+    {
+      const CCopasiObject * pDataObject = pObject->getDataObject();
+
+      if (pDataObject != NULL)
+        {
+          *(C_FLOAT64 *)pDataObject->getValuePointer() = *pValue;
+        }
+    }
+
+  return;
+}
+
+void CMathContainer::pushAllTransientValues()
+{
+  C_FLOAT64 * pValue = mExtensiveValues.array();
+  C_FLOAT64 * pValueEnd = mValues.array() + mValues.size();
+  CMathObject * pObject = getMathObject(pValue);
 
   for (; pValue != pValueEnd; ++pValue, ++pObject)
     {
@@ -827,19 +876,27 @@ CCopasiObjectName CMathContainer::getCN() const
 // virtual
 const CObjectInterface * CMathContainer::getObject(const CCopasiObjectName & cn) const
 {
-  std::vector< CCopasiContainer * > ListOfContainer;
-  ListOfContainer.push_back(mpModel);
+  // Since the CN should be relative we check in the model first
+  const CObjectInterface * pObject = mpModel->getObject(cn);
 
-  const CObjectInterface * pObject = NULL;
-  CCopasiObjectName ModelCN = mpModel->getCN();
+  if (pObject == NULL)
+    {
+      std::cout << "Data Object " << cn << " not found in model." << std::endl;
 
-  if (cn.getPrimary() != ModelCN.getPrimary())
-    {
-      pObject = mpModel->getObjectDataModel()->ObjectFromCN(ListOfContainer, ModelCN + "," + cn);
-    }
-  else
-    {
-      pObject = mpModel->getObjectDataModel()->ObjectFromCN(ListOfContainer, cn);
+      CObjectInterface::ContainerList ListOfContainer;
+      ListOfContainer.push_back(mpModel);
+      ListOfContainer.push_back(mpModel->getObjectDataModel());
+
+      CCopasiObjectName ModelCN = mpModel->getCN();
+
+      if (cn.getPrimary() != ModelCN.getPrimary())
+        {
+          pObject = CObjectInterface::GetObjectFromCN(ListOfContainer, ModelCN + "," + cn);
+        }
+      else
+        {
+          pObject = CObjectInterface::GetObjectFromCN(ListOfContainer, cn);
+        }
     }
 
   const CMathObject * pMathObject = getMathObject(pObject);
@@ -852,6 +909,16 @@ const CObjectInterface * CMathContainer::getObject(const CCopasiObjectName & cn)
   std::cout << "Data Object " << cn << " (0x" << pObject << ") has no corresponding Math Object." << std::endl;
 
   return pObject;
+}
+
+const CObjectInterface * CMathContainer::getObjectFromCN(const CCopasiObjectName & cn) const
+{
+  CObjectInterface::ContainerList ListOfContainer;
+  ListOfContainer.push_back(this);
+  ListOfContainer.push_back(mpModel);
+  ListOfContainer.push_back(mpModel->getObjectDataModel());
+
+  return CObjectInterface::GetObjectFromCN(ListOfContainer, cn);
 }
 
 CMathObject * CMathContainer::getMathObject(const CObjectInterface * pObject) const
@@ -1065,19 +1132,38 @@ const CVector< CMathReaction > & CMathContainer::getReactions() const
   return mReactions;
 }
 
+const CMatrix< C_FLOAT64 > & CMathContainer::getStoichiometry(const bool & reduced) const
+{
+  if (reduced)
+    {
+      return mpModel->getRedStoi();
+    }
+
+  return mpModel->getStoi();
+}
+
 const CVector< CMathEvent > & CMathContainer::getEvents() const
 {
   return mEvents;
 }
 
-CMathDependencyGraph & CMathContainer::getInitialDependencies()
+const CMathDependencyGraph & CMathContainer::getInitialDependencies() const
 {
   return mInitialDependencies;
 }
 
-CMathDependencyGraph & CMathContainer::getTransientDependencies()
+const CMathDependencyGraph & CMathContainer::getTransientDependencies() const
 {
   return mTransientDependencies;
+}
+
+/**
+ * Retrieve the objects which represent the initial state.
+ * @return CObjectInterface::ObjectSet & stateObjects
+ */
+const CObjectInterface::ObjectSet & CMathContainer::getInitialStateObjects() const
+{
+  return mInitialStateValueAll;
 }
 
 const CObjectInterface::ObjectSet & CMathContainer::getStateObjects(const bool & reduced) const
@@ -1713,7 +1799,7 @@ void CMathContainer::createDependencyGraphs()
   createSynchronizeInitialValuesSequence();
   createApplyInitialValuesSequence();
   createUpdateSimulationValuesSequence();
-
+  createUpdateAllTransientDataValuesSequence();
   return;
 }
 
@@ -1723,6 +1809,7 @@ void CMathContainer::createSynchronizeInitialValuesSequence()
   // and link matrices.
 
   // Collect all the changed objects, which are all initial state values
+  mInitialStateValueAll.clear();
   mInitialStateValueExtensive.clear();
   mInitialStateValueIntensive.clear();
 
@@ -1735,6 +1822,8 @@ void CMathContainer::createSynchronizeInitialValuesSequence()
 
   for (; pObject != pObjectEnd; ++pObject)
     {
+      mInitialStateValueAll.insert(pObject);
+
       switch (pObject->getValueType())
         {
           case CMath::Value:
@@ -1996,6 +2085,13 @@ void CMathContainer::createUpdateSimulationValuesSequence()
   mTransientDependencies.getUpdateSequence(mSimulationValuesSequence, CMath::Default, mStateValues, mSimulationRequiredValues);
   mTransientDependencies.getUpdateSequence(mSimulationValuesSequenceReduced, CMath::UseMoieties, mReducedStateValues, ReducedSimulationRequiredValues);
 
+  // Determine whether the model is autonomous, i.e., no simulation required value depends on time.
+  CObjectInterface::ObjectSet TimeObject;
+  TimeObject.insert(getMathObject(mState.array() + getTimeIndex()));
+  CObjectInterface::UpdateSequence TimeChange;
+  mTransientDependencies.getUpdateSequence(TimeChange, CMath::Default, TimeObject, mSimulationRequiredValues);
+  mIsAutonomous = (TimeChange.size() == 0);
+
   // Build the update sequence used to calculate the priorities in the event process queue.
   CObjectInterface::ObjectSet PriorityRequiredValues;
   pObject = getMathObject(mEventPriorities.array());
@@ -2007,6 +2103,25 @@ void CMathContainer::createUpdateSimulationValuesSequence()
     }
 
   mTransientDependencies.getUpdateSequence(mPrioritySequence, CMath::Default, mStateValues, PriorityRequiredValues);
+}
+
+void CMathContainer::createUpdateAllTransientDataValuesSequence()
+{
+  // Collect all transient objects that have a data object associated
+  CObjectInterface::ObjectSet TransientDataObjects;
+
+  const CMathObject * pObject = mObjects.array() + (mExtensiveValues.array() - mValues.array());
+  const CMathObject * pObjectEnd = mObjects.array() + mObjects.size();
+
+  for (; pObject != pObjectEnd; ++pObject)
+    {
+      if (pObject->getDataObject() != NULL)
+        {
+          TransientDataObjects.insert(pObject);
+        }
+    }
+
+  mTransientDependencies.getUpdateSequence(mTransientDataObjectSequence, CMath::Default, mStateValues, TransientDataObjects, mSimulationRequiredValues);
 }
 
 void CMathContainer::analyzeRoots()
@@ -2179,6 +2294,80 @@ void CMathContainer::calculateRootJacobian(CMatrix< C_FLOAT64 > & jacobian)
 
   // Undo the changes.
   updateSimulatedValues(false);
+}
+
+void CMathContainer::calculateJacobian(CMatrix< C_FLOAT64 > & jacobian,
+                                       const C_FLOAT64 & derivationFactor,
+                                       const bool & reduced)
+{
+  C_FLOAT64 DerivationFactor = std::max(derivationFactor, 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon());
+
+  CVectorCore< C_FLOAT64 > State(getState(reduced).size() - getTimeIndex() - 1,
+                                 mState.array() + getTimeIndex() + 1);
+
+  size_t Dim = State.size();
+  size_t Col;
+
+  jacobian.resize(Dim, Dim);
+
+  C_FLOAT64 Store;
+  C_FLOAT64 X1;
+  C_FLOAT64 X2;
+  C_FLOAT64 InvDelta;
+
+  CVector< C_FLOAT64 > Y1(Dim);
+  CVector< C_FLOAT64 > Y2(Dim);
+
+  C_FLOAT64 * pY1;
+  C_FLOAT64 * pY2;
+
+  C_FLOAT64 * pX = State.array();
+  C_FLOAT64 * pXEnd = pX + Dim;
+
+  C_FLOAT64 * pJacobian;
+  C_FLOAT64 * pJacobianEnd = jacobian.array() + Dim * Dim;
+
+  for (Col = 0; pX != pXEnd; ++pX, ++Col)
+    {
+      Store = *pX;
+
+      // We only need to make sure that we do not have an underflow problem
+      if (fabs(Store) < DerivationFactor)
+        {
+          X1 = 0.0;
+
+          if (Store < 0.0)
+            X2 = -2.0 * DerivationFactor;
+          else
+            X2 = 2.0 * DerivationFactor;;
+        }
+      else
+        {
+          X1 = Store * (1.0 + DerivationFactor);
+          X2 = Store * (1.0 - DerivationFactor);
+        }
+
+      InvDelta = 1.0 / (X2 - X1);
+
+      *pX = X1;
+      updateSimulatedValues(reduced);
+      memcpy(Y1.array(), mRate.array(), Dim * sizeof(C_FLOAT64));
+
+      *pX = X2;
+      updateSimulatedValues(reduced);
+      memcpy(Y2.array(), mRate.array(), Dim * sizeof(C_FLOAT64));
+
+      *pX = Store;
+
+      pJacobian = jacobian.array() + Col;
+      pY1 = Y1.array();
+      pY2 = Y2.array();
+
+      for (; pJacobian < pJacobianEnd; pJacobian += Dim, ++pY1, ++pY2)
+        * pJacobian = (*pY2 - *pY1) * InvDelta;
+    }
+
+  updateSimulatedValues(reduced);
 }
 
 CMath::StateChange CMathContainer::processQueue(const bool & equality)
@@ -2768,7 +2957,7 @@ void CMathContainer::removeEvent(CMathEvent * pMathEvent)
   // TODO CRITICAL Implement me!
   fatalError();
 }
-CRandom & CMathContainer::getRandomGenerator()
+CRandom & CMathContainer::getRandomGenerator() const
 {
   return * mpRandomGenerator;
 }

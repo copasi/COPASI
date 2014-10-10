@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -17,19 +17,21 @@
 #include "copasi.h"
 #include "CStochNextReactionMethod.h"
 #include "CTrajectoryMethod.h"
-#include "model/CCompartment.h"
-#include "model/CModel.h"
+
+#include "math/CMathContainer.h"
 
 CStochNextReactionMethod::CStochNextReactionMethod()
   : CStochMethod()
 {}
 
-void CStochNextReactionMethod::initMethod(C_FLOAT64 start_time)
+void CStochNextReactionMethod::initMethod()
 {
-  setupPriorityQueue(start_time);
+  setupPriorityQueue(*mpContainerStateTime);
+
+  mAmuOld = mAmu;
 }
 
-C_FLOAT64 CStochNextReactionMethod::doSingleStep(C_FLOAT64 C_UNUSED(time), C_FLOAT64 endTime)
+C_FLOAT64 CStochNextReactionMethod::doSingleStep(C_FLOAT64 /* time */, C_FLOAT64 endTime)
 {
   C_FLOAT64 steptime = mPQ.topKey();
 
@@ -46,9 +48,13 @@ C_FLOAT64 CStochNextReactionMethod::doSingleStep(C_FLOAT64 C_UNUSED(time), C_FLO
   else
     {
       size_t reaction_index = mPQ.topIndex();
-      updateSystemState(reaction_index, steptime);
+
+      *mpContainerStateTime = steptime;
+      mReactions[reaction_index].fire();
+      mpContainer->applyUpdateSequence(mUpdateSequences[reaction_index]);
+
       updatePriorityQueue(reaction_index, steptime);
-      //printDebugInfo();
+
       return steptime;
     }
 }
@@ -64,7 +70,7 @@ void CStochNextReactionMethod::setupPriorityQueue(C_FLOAT64 start_time)
 
   mPQ.clear();
 
-  for (size_t i = 0; i < mpModel->getReactions().size(); i++)
+  for (size_t i = 0; i < mNumReactions; i++)
     {
       time = start_time + generateReactionTime(i);
       mPQ.pushPair(i, time);
@@ -77,61 +83,34 @@ void CStochNextReactionMethod::updatePriorityQueue(size_t reaction_index, C_FLOA
 {
   //first the new time for the currently fired reaction
   C_FLOAT64 new_time = time + generateReactionTime(reaction_index);
+  mAmuOld[reaction_index] = mAmu[reaction_index];
   mPQ.updateNode(reaction_index, new_time);
 
   //now the updates for the other reactions (whose propensities may have changed)
 
-  //if the model contains assignment we use a less efficient loop over all reactions since
+  // if the model contains assignment we use a less efficient loop over all reactions since
   // we do not know the exact dependencies
-  if (mHasAssignments)
+  const std::set<size_t> & dep_nodes = mDG.getDependents(reaction_index);
+  std::set<size_t>::const_iterator di;
+
+  for (di = dep_nodes.begin(); di != dep_nodes.end(); ++di)
     {
-      size_t i;
-
-      for (i = 0; i < mNumReactions; ++i)
+      if (*di != reaction_index)
         {
-          if (i != reaction_index)
+          size_t index = *di;
+          C_FLOAT64 new_time;
+
+          if (mAmuOld[index] > 0)
             {
-              if (mAmu[i] == mAmuOld[i])
-                continue;
-
-              C_FLOAT64 new_time;
-
-              if (mAmuOld[i] > 0)
-                {
-                  new_time = time + (mAmuOld[i] / mAmu[i]) * (mPQ.getKey(i) - time);
-                }
-              else
-                {
-                  new_time = time + generateReactionTime(i);
-                }
-
-              mPQ.updateNode(i, new_time);
+              new_time = time + (mAmuOld[index] / mAmu[index]) * (mPQ.getKey(index) - time);
             }
-        }
-    }
-  else
-    {
-      const std::set<size_t> & dep_nodes = mDG.getDependents(reaction_index);
-      std::set<size_t>::const_iterator di;
-
-      for (di = dep_nodes.begin(); di != dep_nodes.end(); ++di)
-        {
-          if (*di != reaction_index)
+          else
             {
-              size_t index = *di;
-              C_FLOAT64 new_time;
-
-              if (mAmuOld[index] > 0)
-                {
-                  new_time = time + (mAmuOld[index] / mAmu[index]) * (mPQ.getKey(index) - time);
-                }
-              else
-                {
-                  new_time = time + generateReactionTime(index);
-                }
-
-              mPQ.updateNode(index, new_time);
+              new_time = time + generateReactionTime(index);
             }
+
+          mAmuOld[index] = mAmu[index];
+          mPQ.updateNode(index, new_time);
         }
     }
 }

@@ -1,22 +1,14 @@
-/* Begin CVS Header
-  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CEFMMethod.cpp,v $
-  $Revision: 1.14 $
-  $Name:  $
-  $Author: heilmand $
-  $Date: 2010/08/02 15:12:41 $
-  End CVS Header */
-
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001-2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2006 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -42,6 +34,7 @@
 # include "CSSAMethod.h"
 #endif
 
+#include "math/CMathContainer.h"
 #include "model/CModel.h"
 
 CEFMMethod * CEFMMethod::createMethod(CCopasiMethod::SubType subType)
@@ -78,24 +71,24 @@ CEFMMethod * CEFMMethod::createMethod(CCopasiMethod::SubType subType)
 
 // Default constructor
 CEFMMethod::CEFMMethod():
-    CCopasiMethod(CCopasiTask::fluxMode, CCopasiMethod::unset),
-    mpFluxModes(NULL),
-    mpReorderedReactions(NULL)
+  CCopasiMethod(CCopasiTask::fluxMode, CCopasiMethod::unset),
+  mpFluxModes(NULL),
+  mpReorderedReactions(NULL)
 {CONSTRUCTOR_TRACE;}
 
 CEFMMethod::CEFMMethod(const CCopasiTask::Type & taskType,
                        const CEFMMethod::SubType & subType,
                        const CCopasiContainer * pParent):
-    CCopasiMethod(taskType, subType, pParent),
-    mpFluxModes(NULL),
-    mpReorderedReactions(NULL)
+  CCopasiMethod(taskType, subType, pParent),
+  mpFluxModes(NULL),
+  mpReorderedReactions(NULL)
 {CONSTRUCTOR_TRACE;}
 
 CEFMMethod::CEFMMethod(const CEFMMethod & src,
                        const CCopasiContainer * pParent):
-    CCopasiMethod(src, pParent),
-    mpFluxModes(src.mpFluxModes),
-    mpReorderedReactions(src.mpReorderedReactions)
+  CCopasiMethod(src, pParent),
+  mpFluxModes(src.mpFluxModes),
+  mpReorderedReactions(src.mpReorderedReactions)
 {CONSTRUCTOR_TRACE;}
 
 CEFMMethod::~CEFMMethod()
@@ -142,17 +135,14 @@ bool CEFMMethod::isValidProblem(const CCopasiProblem * pProblem)
       return false;
     }
 
-  const CModel * pModel = pProblem ->getModel();
-
-  if (pModel == NULL)
-    {
-      return false;
-    }
+  const CModel & Model = mpContainer->getModel();
 
   // Check that the stoichiometry matrix contains only integers.
 
-  const CMatrix< C_FLOAT64 > & RedStoi = pModel->getRedStoi();
+  const CMatrix< C_FLOAT64 > & RedStoi = Model.getRedStoi();
+
   const C_FLOAT64 * pValue = RedStoi.array();
+
   const C_FLOAT64 * pValueEnd = pValue + RedStoi.size();
 
   for (; pValue != pValueEnd; ++pValue)
@@ -165,7 +155,7 @@ bool CEFMMethod::isValidProblem(const CCopasiProblem * pProblem)
 
   if (pValue != pValueEnd)
     {
-      const CReaction * pReaction = pModel->getReactions()[(pValue - RedStoi.array()) % RedStoi.numCols()];
+      const CReaction * pReaction = Model.getReactions()[(pValue - RedStoi.array()) % RedStoi.numCols()];
 
       CCopasiMessage(CCopasiMessage::ERROR, MCEFMAnalysis + 3, pReaction->getObjectName().c_str());
 

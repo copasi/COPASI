@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/lyap/CLyapTask.h,v $
-//   $Revision: 1.15 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/03/07 19:30:20 $
-// End CVS Header
-
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2006 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -84,12 +76,20 @@ private:
   size_t mModelVariablesInResult;
   size_t mNumExponentsCalculated;
 
+private:
+  /**
+   * Default constructor
+   */
+  CLyapTask();
+
 public:
   /**
    * Default constructor
-   * @param const CCopasiContainer * pParent (default: NULL)
+   * @param const CCopasiContainer * pParent
+   * @param const  CCopasiTask::Type & type (default: lyap)
    */
-  CLyapTask(const CCopasiContainer * pParent = NULL);
+  CLyapTask(const CCopasiContainer * pParent,
+            const CCopasiTask::Type & type = CCopasiTask::lyap);
 
   /**
    * Destructor

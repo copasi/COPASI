@@ -38,6 +38,7 @@
 #include "steadystate/CSteadyStateProblem.h"
 #include "trajectory/CTrajectoryProblem.h"
 
+#include "math/CMathContainer.h"
 #include "model/CModel.h"
 #include "model/CCompartment.h"
 
@@ -63,13 +64,13 @@ COptProblem::COptProblem(const CCopasiTask::Type & type,
   mpConstraintItems(NULL),
   mpSubtask(NULL),
   mpObjectiveExpression(NULL),
-  mUpdateMethods(),
-  mInitialRefreshMethods(),
-  mRefreshMethods(),
-  mRefreshConstraints(),
+  mInitialRefreshSequence(),
+  mUpdateObjectiveFunction(),
+  mUpdateConstraints(),
   mCalculateValue(0),
   mSolutionVariables(),
   mOriginalVariables(),
+  mContainerVariables(),
   mSolutionValue(0),
   mCounter(0),
   mFailedCounter(0),
@@ -102,13 +103,13 @@ COptProblem::COptProblem(const COptProblem& src,
   mpConstraintItems(NULL),
   mpSubtask(NULL),
   mpObjectiveExpression(NULL),
-  mUpdateMethods(),
-  mInitialRefreshMethods(),
-  mRefreshMethods(),
-  mRefreshConstraints(),
+  mInitialRefreshSequence(),
+  mUpdateObjectiveFunction(),
+  mUpdateConstraints(),
   mCalculateValue(src.mCalculateValue),
   mSolutionVariables(src.mSolutionVariables),
   mOriginalVariables(src.mOriginalVariables),
+  mContainerVariables(src.mContainerVariables),
   mSolutionValue(src.mSolutionValue),
   mCounter(0),
   mFailedCounter(0),
@@ -244,12 +245,6 @@ bool COptProblem::elevateChildren()
   return true;
 }
 
-bool COptProblem::setModel(CModel * pModel)
-{
-  mpModel = pModel;
-  return true;
-}
-
 void COptProblem::reset()
 {
   mSolutionValue = (*mpParmMaximize ? - std::numeric_limits<C_FLOAT64>::infinity() : std::numeric_limits<C_FLOAT64>::infinity());
@@ -288,10 +283,9 @@ bool COptProblem::initializeSubtaskBeforeOutput()
 {
   if (mpParmSubtaskCN != NULL)
     {
-      std::vector< CCopasiContainer * > ListOfContainer;
+      CObjectInterface::ContainerList ListOfContainer;
       ListOfContainer.push_back(getObjectAncestor("Vector"));
-      mpSubtask =
-        dynamic_cast< CCopasiTask * >(getObjectDataModel()->ObjectFromCN(ListOfContainer, *mpParmSubtaskCN));
+      mpSubtask = dynamic_cast< CCopasiTask * >(CObjectInterface::GetObjectFromCN(ListOfContainer, *mpParmSubtaskCN));
 
       try
         {
@@ -313,9 +307,7 @@ bool COptProblem::initialize()
 {
   mWorstValue = (*mpParmMaximize ? - std::numeric_limits<C_FLOAT64>::infinity() : std::numeric_limits<C_FLOAT64>::infinity());
 
-  if (!mpModel) return false;
-
-  mpModel->compileIfNecessary(mpCallBack);
+  if (mpContainer == NULL) return false;
 
   bool success = true;
 
@@ -327,8 +319,8 @@ bool COptProblem::initialize()
 
   mSolutionValue = mWorstValue;
 
-  std::vector< CCopasiContainer * > ContainerList;
-  ContainerList.push_back(mpModel);
+  CObjectInterface::ContainerList ContainerList;
+  ContainerList.push_back(mpContainer);
 
   COptTask * pTask = dynamic_cast<COptTask *>(getObjectParent());
 
@@ -346,9 +338,9 @@ bool COptProblem::initialize()
   size_t i;
   size_t Size = mpOptItems->size();
 
-  mUpdateMethods.resize(Size);
   mSolutionVariables.resize(Size);
   mOriginalVariables.resize(Size);
+  mContainerVariables.resize(Size);
 
   mSolutionVariables = std::numeric_limits<C_FLOAT64>::quiet_NaN();
   mOriginalVariables = std::numeric_limits<C_FLOAT64>::quiet_NaN();
@@ -362,101 +354,65 @@ bool COptProblem::initialize()
       return false;
     }
 
-  std::set< const CCopasiObject * > changedObjects;
+  CObjectInterface::ObjectSet changedObjects;
 
   for (i = 0; it != end; ++it, i++)
     {
       success &= (*it)->compile(ContainerList);
 
-      mUpdateMethods[i] = (*it)->getUpdateMethod();
       changedObjects.insert((*it)->getObject());
-      mOriginalVariables[i] = *(*it)->COptItem::getObjectValue();
+      mContainerVariables[i] = (C_FLOAT64 *)(*it)->getObject()->getValuePointer();
+      mOriginalVariables[i] = *mContainerVariables[i];
     }
 
   changedObjects.erase(NULL);
-  mInitialRefreshMethods = mpModel->buildInitialRefreshSequence(changedObjects);
+  mpContainer->getInitialDependencies().getUpdateSequence(mInitialRefreshSequence, CMath::UpdateMoieties, changedObjects, mpContainer->getInitialStateObjects());
 
   it = mpConstraintItems->begin();
   end = mpConstraintItems->end();
 
   // We need to build a refresh sequence so the constraint values are updated
-  std::set< const CCopasiObject * > Objects;
+  CObjectInterface::ObjectSet Objects;
 
   for (i = 0; it != end; ++it, i++)
     {
       if (!(*it)->compile(ContainerList)) return false;
 
-      Objects.insert((*it)->getDirectDependencies().begin(),
-                     (*it)->getDirectDependencies().end());
+      Objects.insert((*it)->getObject());
     }
 
-  mRefreshConstraints = CCopasiObject::buildUpdateSequence(Objects, mpModel->getUptoDateObjects());
+  mpContainer->getTransientDependencies().getUpdateSequence(mUpdateConstraints, CMath::Default, mpContainer->getStateObjects(false), Objects, mpContainer->getSimulationUpToDateObjects());
 
   mCPUTime.start();
 
+  // TODO CRITICAL Add the objective expression to the math container
   if (mpObjectiveExpression == NULL ||
       mpObjectiveExpression->getInfix() == "" ||
       !mpObjectiveExpression->compile(ContainerList))
     {
-      mRefreshMethods.clear();
+      mUpdateObjectiveFunction.clear();
       CCopasiMessage(CCopasiMessage::ERROR, MCOptimization + 5);
       return false;
     }
 
-  mRefreshMethods = CCopasiObject::buildUpdateSequence(mpObjectiveExpression->getDirectDependencies(), mpModel->getUptoDateObjects());
+  mpContainer->getTransientDependencies().getUpdateSequence(mUpdateObjectiveFunction, CMath::Default, mpContainer->getStateObjects(false), Objects, mpContainer->getSimulationUpToDateObjects());
 
   return success;
 }
 
 void COptProblem::restoreModel(const bool & updateModel)
 {
-  std::vector<COptItem * >::iterator it = mpOptItems->begin();
-  std::vector<COptItem * >::iterator end = mpOptItems->end();
-  const C_FLOAT64 * pTmp;
-  std::set< const CCopasiObject * > ChangedObjects;
+  C_FLOAT64 **ppContainerVariable = mContainerVariables.array();
+  C_FLOAT64 **ppContainerVariableEnd = ppContainerVariable + mContainerVariables.size();
+  C_FLOAT64 *pRestore = (updateModel && mSolutionValue != mWorstValue) ? mSolutionVariables.array() : mOriginalVariables.array();
 
-  if (updateModel && mSolutionValue != mWorstValue)
+  for (; ppContainerVariable != ppContainerVariableEnd; ++ppContainerVariable, ++pRestore)
     {
-      // Set the model values and start values to the solution values
-      pTmp = mSolutionVariables.array();
-
-      for (; it != end; ++it, pTmp++)
-        {
-          if ((*it)->getObject())
-            {
-              (*(*it)->COptItem::getUpdateMethod())(*pTmp);
-              (*it)->setStartValue(*pTmp);
-
-              ChangedObjects.insert((*it)->getObject());
-            }
-        }
-    }
-  else
-    {
-      // Reset the model values to the original values
-      pTmp = mOriginalVariables.array();
-
-      for (; it != end; ++it, pTmp++)
-        {
-          if ((*it)->getObject())
-            {
-              if (!isnan(*pTmp))
-                (*(*it)->COptItem::getUpdateMethod())(*pTmp);
-
-              ChangedObjects.insert((*it)->getObject());
-            }
-        }
+      **ppContainerVariable = *pRestore;
     }
 
-  // We need to update the dependent initial values
-  std::vector< Refresh * > UpdateSequence = mpModel->buildInitialRefreshSequence(ChangedObjects);
-  std::vector< Refresh * >::iterator itUpdate = UpdateSequence.begin();
-  std::vector< Refresh * >::iterator endUpdate = UpdateSequence.end();
-
-  for (; itUpdate != endUpdate; ++itUpdate)
-    {
-      (**itUpdate)();
-    }
+  mpContainer->applyUpdateSequence(mInitialRefreshSequence);
+  mpContainer->pushInitialState();
 }
 
 bool COptProblem::restore(const bool & updateModel)
@@ -491,11 +447,7 @@ bool COptProblem::checkParametricConstraints()
 bool COptProblem::checkFunctionalConstraints()
 {
   // Make sure the constraint values are up to date.
-  std::vector< Refresh *>::const_iterator itRefresh = mRefreshConstraints.begin();
-  std::vector< Refresh *>::const_iterator endRefresh = mRefreshConstraints.end();
-
-  for (; itRefresh != endRefresh; ++itRefresh)
-    (**itRefresh)();
+  mpContainer->applyUpdateSequence(mUpdateConstraints);
 
   std::vector< COptItem * >::const_iterator it = mpConstraintItems->begin();
   std::vector< COptItem * >::const_iterator end = mpConstraintItems->end();
@@ -539,22 +491,14 @@ bool COptProblem::calculate()
 
   try
     {
+      mpContainer->applyUpdateSequence(mInitialRefreshSequence);
       // Update all initial values which depend on the optimization items.
-      std::vector< Refresh * >::const_iterator it = mInitialRefreshMethods.begin();
-      std::vector< Refresh * >::const_iterator end = mInitialRefreshMethods.end();
-
-      for (; it != end; ++it)
-        (**it)();
 
       success = mpSubtask->process(true);
 
-      // Refresh all values needed to calculate the objective function.
-      it = mRefreshMethods.begin();
-      end = mRefreshMethods.end();
+      mpContainer->applyUpdateSequence(mUpdateObjectiveFunction);
 
-      for (; it != end; ++it)
-        (**it)();
-
+      // TODO CRITICAL We need to point to the created container objective function
       mCalculateValue = *mpParmMaximize ? -mpObjectiveExpression->calcValue() : mpObjectiveExpression->calcValue();
     }
 
@@ -599,9 +543,16 @@ bool COptProblem::calculateStatistics(const C_FLOAT64 & factor,
   mGradient.resize(imax);
   mGradient = std::numeric_limits<C_FLOAT64>::quiet_NaN();
 
-  // Recalculate the best solution.
-  for (i = 0; i < imax; i++)
-    (*mUpdateMethods[i])(mSolutionVariables[i]);
+  C_FLOAT64 **ppContainerVariable = mContainerVariables.array();
+  C_FLOAT64 **ppContainerVariableEnd = ppContainerVariable + mContainerVariables.size();
+  C_FLOAT64 *pSolution = mSolutionVariables.array();
+
+  for (; ppContainerVariable != ppContainerVariableEnd; ++ppContainerVariable, ++pSolution)
+    {
+      **ppContainerVariable = *pSolution;
+    }
+
+  mpContainer->applyUpdateSequence(mInitialRefreshSequence);
 
   // This is necessary so that the result can be displayed.
   mStoreResults = true;
@@ -622,29 +573,36 @@ bool COptProblem::calculateStatistics(const C_FLOAT64 & factor,
       C_FLOAT64 Delta;
 
       // Calculate the gradient
-      for (i = 0; i < imax; i++)
+      ppContainerVariable = mContainerVariables.array();
+      pSolution = mSolutionVariables.array();
+      C_FLOAT64 * pGradient = mGradient.array();
+
+      for (; ppContainerVariable != ppContainerVariableEnd; ++ppContainerVariable, ++pSolution, ++pGradient)
         {
-          Current = mSolutionVariables[i];
+          Current = * pSolution;
 
           if (fabs(Current) > resolution)
             {
-              (*mUpdateMethods[i])(Current * (1.0 + factor));
+              **ppContainerVariable = Current * (1.0 + factor);
               Delta = 1.0 / (Current * factor);
             }
           else
             {
-              (*mUpdateMethods[i])(resolution);
+              **ppContainerVariable = resolution;
               Delta = 1.0 / resolution;
             }
 
+          mpContainer->applyUpdateSequence(mInitialRefreshSequence);
+
           calculate();
 
-          mGradient[i] = ((*mpParmMaximize ? -mCalculateValue : mCalculateValue) - mSolutionValue) * Delta;
+          *pGradient = ((*mpParmMaximize ? -mCalculateValue : mCalculateValue) - mSolutionValue) * Delta;
 
           // Restore the value
-          (*mUpdateMethods[i])(Current);
+          **ppContainerVariable = Current;
         }
 
+      mpContainer->applyUpdateSequence(mInitialRefreshSequence);
       calculate();
 
       // Make sure the timer is accurate.
@@ -715,8 +673,8 @@ const std::vector< COptItem * > & COptProblem::getOptItemList() const
 const std::vector< COptItem * > & COptProblem::getConstraintList() const
 {return *mpConstraintItems;}
 
-const std::vector< UpdateMethod * > & COptProblem::getCalculateVariableUpdateMethods() const
-{return mUpdateMethods;}
+CVectorCore< C_FLOAT64 * > & COptProblem::getContainerVariables() const
+{return mContainerVariables;}
 
 bool COptProblem::setObjectiveFunction(const std::string & infix)
 {
@@ -764,10 +722,9 @@ bool COptProblem::setSubtaskType(const CCopasiTask::Type & subtaskType)
 
 CCopasiTask::Type COptProblem::getSubtaskType() const
 {
-  std::vector< CCopasiContainer * > ListOfContainer;
+  CObjectInterface::ContainerList ListOfContainer;
   ListOfContainer.push_back(getObjectAncestor("Vector"));
-  mpSubtask =
-    dynamic_cast< CCopasiTask * >(const_cast< CObjectInterface *>(getObjectDataModel()->ObjectFromCN(ListOfContainer, *mpParmSubtaskCN)));
+  mpSubtask = dynamic_cast< CCopasiTask * >(CObjectInterface::GetObjectFromCN(ListOfContainer, *mpParmSubtaskCN));
 
   if (mpSubtask == NULL)
     return CCopasiTask::unset;
@@ -796,7 +753,7 @@ void COptProblem::randomizeStartValues()
 
       for (; it != end; ++it)
         {
-          (*it)->setStartValue((*it)->getRandomValue());
+          (*it)->setStartValue((*it)->getRandomValue(mpContainer->getRandomGenerator()));
         }
     }
 

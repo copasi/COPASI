@@ -249,11 +249,11 @@ public:
 
   /**
    * compile the object list from name vector
-   * @param std::vector< CCopasiContainer * > listOfContainer
+   * @param CObjectInterface::ContainerList listOfContainer
    * @param  const CCopasiDataModel* pDataModel
    * @return bool success
    */
-  virtual bool compile(std::vector< CCopasiContainer * > listOfContainer, const CCopasiDataModel* pDataModel);
+  virtual bool compile(CObjectInterface::ContainerList listOfContainer);
 
   /**
    * Perform an output event for the current activity

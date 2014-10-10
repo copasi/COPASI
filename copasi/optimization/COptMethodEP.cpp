@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -282,7 +282,7 @@ bool COptMethodEP::creation()
 
       // We need to set the value here so that further checks take
       // account of the value.
-      (*(*mpSetCalculateVariable)[i])(mut);
+      *mContainerVariables[i] = mut;
 
       // Set the variance for this parameter.
       (*mVariance[0])[i] = fabs(mut) * 0.5;
@@ -394,7 +394,7 @@ bool COptMethodEP::creation()
 
           // We need to set the value here so that further checks take
           // account of the value.
-          (*(*mpSetCalculateVariable)[j])(mut);
+          *mContainerVariables[j] = mut;
 
           // Set the variance for this parameter.
           (*mVariance[i])[j] = fabs(mut) * 0.5;
@@ -553,7 +553,7 @@ bool COptMethodEP::mutate(size_t i)
 
       // We need to set the value here so that further checks take
       // account of the value.
-      (*(*mpSetCalculateVariable)[j])(mut);
+      *mContainerVariables[j] = mut;
     }
 
   // calculate its fitness

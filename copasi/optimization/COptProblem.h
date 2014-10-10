@@ -82,17 +82,10 @@ public:
   virtual bool elevateChildren();
 
   /**
-   * Set the model of the problem
-   * @param CModel * pModel
-   * @result bool success
-   */
-  virtual bool setModel(CModel * pModel);
-
-  /**
-   * Set the call back of the problem
-   * @param CProcessReport * pCallBack
-   * @result bool success
-   */
+  * Set the call back of the problem
+  * @param CProcessReport * pCallBack
+  * @result bool success
+  */
   virtual bool setCallBack(CProcessReport * pCallBack);
 
   /**
@@ -177,7 +170,7 @@ public:
    * Retrieve the update methods for the variables for calculation.
    * @return const std::vector< UpdateMethod * > & updateMethods
    */
-  const std::vector< UpdateMethod * > & getCalculateVariableUpdateMethods() const;
+  CVectorCore< C_FLOAT64 * > & getContainerVariables() const;
 
   /**
    * Retrieve the result of a calculation
@@ -443,27 +436,22 @@ protected:
   CExpression * mpObjectiveExpression;
 
   /**
-   * A vector of update method to the values of the optimization items.
-   */
-  std::vector< UpdateMethod * > mUpdateMethods;
-
-  /**
    * A vector of refresh methods which need to be called update all initial
    * values which depend on the optimization items.
    */
-  std::vector< Refresh * > mInitialRefreshMethods;
+  CObjectInterface::UpdateSequence mInitialRefreshSequence;
 
   /**
    * A vector of refresh methods which need to be called retrieve the value
    * of the objective function.
    */
-  std::vector< Refresh * > mRefreshMethods;
+  CObjectInterface::UpdateSequence  mUpdateObjectiveFunction;
 
   /**
    * A vector of refresh methods which need to be called retrieve the values
    * of constraints.
    */
-  std::vector< Refresh * > mRefreshConstraints;
+  CObjectInterface::UpdateSequence mUpdateConstraints;
 
   /**
    * A vector of results for calculate
@@ -479,6 +467,11 @@ protected:
    * A vector of solution variables
    */
   CVector< C_FLOAT64 > mOriginalVariables;
+
+  /**
+   * A vector of pointer to the container variables
+   */
+  mutable CVector< C_FLOAT64 * > mContainerVariables;
 
   /**
    * A vector of solution results

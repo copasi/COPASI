@@ -35,8 +35,9 @@ const unsigned int CCrossSectionTask::ValidMethods[] =
   CCopasiMethod::unset
 };
 
-CCrossSectionTask::CCrossSectionTask(const CCopasiContainer * pParent):
-  CTrajectoryTask(CCopasiTask::crosssection, pParent),
+CCrossSectionTask::CCrossSectionTask(const CCopasiContainer * pParent,
+                                     const CCopasiTask::Type & type):
+  CTrajectoryTask(pParent, type),
   mpCrossSectionProblem(NULL),
   mStartTime(0.0),
   mNumCrossings(0),
@@ -158,7 +159,7 @@ void CCrossSectionTask::createEvent()
 
       Event.setTriggerExpression(expression.str());
 
-      Event.compile(std::vector< CCopasiContainer * >());
+      Event.compile(CObjectInterface::ContainerList());
 
       mpEvent = mpContainer->addEvent(Event);
     }
@@ -196,17 +197,17 @@ bool CCrossSectionTask::process(const bool & useInitialValues)
   //the output starts only after "outputStartTime" has passed
   if (mpCrossSectionProblem->getFlagLimitOutTime())
     {
-      mOutputStartTime = *mpCurrentStateTime + mpCrossSectionProblem->getOutputStartTime();
+      mOutputStartTime = *mpContainerStateTime + mpCrossSectionProblem->getOutputStartTime();
       MaxDuration += mpCrossSectionProblem->getOutputStartTime();
     }
   else
     {
-      mOutputStartTime = *mpCurrentStateTime;
+      mOutputStartTime = *mpContainerStateTime;
     }
 
-  const C_FLOAT64 EndTime = *mpCurrentStateTime + MaxDuration;
+  const C_FLOAT64 EndTime = *mpContainerStateTime + MaxDuration;
 
-  mStartTime = *mpCurrentStateTime;
+  mStartTime = *mpContainerStateTime;
 
   // It suffices to reach the end time within machine precision
   C_FLOAT64 CompareEndTime = mOutputStartTime - 100.0 * (fabs(EndTime) * std::numeric_limits< C_FLOAT64 >::epsilon() + std::numeric_limits< C_FLOAT64 >::min());
@@ -247,12 +248,12 @@ bool CCrossSectionTask::process(const bool & useInitialValues)
         {
           flagProceed &= processStep(EndTime);
         }
-      while ((*mpCurrentStateTime < CompareEndTime) && flagProceed);
+      while ((*mpContainerStateTime < CompareEndTime) && flagProceed);
     }
 
   catch (int)
     {
-      mpContainer->setState(mCurrentState);
+      mpContainer->setState(mContainerState);
       mpContainer->updateSimulatedValues(mUpdateMoieties);
       mpContainer->pushState();
 
@@ -262,7 +263,7 @@ bool CCrossSectionTask::process(const bool & useInitialValues)
 
   catch (CCopasiException & Exception)
     {
-      mpContainer->setState(mCurrentState);
+      mpContainer->setState(mContainerState);
       mpContainer->updateSimulatedValues(mUpdateMoieties);
       mpContainer->pushState();
 
@@ -293,7 +294,7 @@ bool CCrossSectionTask::restore()
 
 const CState * CCrossSectionTask::getState()
 {
-  mpContainer->setState(mCurrentState);
+  mpContainer->setState(mContainerState);
   mpContainer->updateSimulatedValues(mUpdateMoieties);
   mpContainer->pushState();
 
@@ -327,7 +328,7 @@ void CCrossSectionTask::eventCallBack(void * /* pData */, void * /* pCaller */)
   //do progress reporting
   if (mpCallBack != NULL)
     {
-      mProgressValue = (*mpCurrentStateTime - mStartTime) * mProgressFactor;
+      mProgressValue = (*mpContainerStateTime - mStartTime) * mProgressFactor;
 
       if (!mpCallBack->progressItem(mhProgress))
         {
@@ -336,7 +337,7 @@ void CCrossSectionTask::eventCallBack(void * /* pData */, void * /* pCaller */)
         }
     }
 
-  mpContainer->setState(mCurrentState);
+  mpContainer->setState(mContainerState);
   mpContainer->updateSimulatedValues(mUpdateMoieties);
 
   // count the crossings
@@ -354,7 +355,7 @@ void CCrossSectionTask::eventCallBack(void * /* pData */, void * /* pCaller */)
         {
           mState = MAIN;
         }
-      else if (mpCrossSectionProblem->getFlagLimitOutTime() && *mpCurrentStateTime >= mOutputStartTime)
+      else if (mpCrossSectionProblem->getFlagLimitOutTime() && *mpContainerStateTime >= mOutputStartTime)
         {
           mState = MAIN;
         }
@@ -370,12 +371,12 @@ void CCrossSectionTask::eventCallBack(void * /* pData */, void * /* pCaller */)
           for (i = mStatesRingCounter - 1; i >= 0 && i >= ((int) mStatesRingCounter) - RING_SIZE; --i)
             {
               C_FLOAT64 tmp = relativeDifferenceOfStates(mStatesRing[i % RING_SIZE],
-                              mCurrentState);
+                              mContainerState);
 
               if (tmp < mpCrossSectionProblem->getConvergenceOutTolerance())
                 {
                   mPeriodicity = mStatesRingCounter - i;
-                  mPeriod = *mpCurrentStateTime - mStatesRing[i % RING_SIZE][mpContainer->getTimeIndex()];
+                  mPeriod = *mpContainerStateTime - mStatesRing[i % RING_SIZE][mpContainer->getTimeIndex()];
                   mFreq = 1 / mPeriod;
                   mAveragePeriod = mPeriod / ((C_FLOAT64)mPeriodicity);
                   mAverageFreq = 1 / mAveragePeriod;
@@ -405,12 +406,12 @@ void CCrossSectionTask::eventCallBack(void * /* pData */, void * /* pCaller */)
           for (i = mStatesRingCounter - 1; i >= 0 && i >= ((int) mStatesRingCounter) - RING_SIZE; --i)
             {
               C_FLOAT64 tmp = relativeDifferenceOfStates(mStatesRing[i % RING_SIZE],
-                              mCurrentState);
+                              mContainerState);
 
               if (tmp < mpCrossSectionProblem->getConvergenceTolerance())
                 {
                   mPeriodicity = mStatesRingCounter - i;
-                  mPeriod = *mpCurrentStateTime - mStatesRing[i % RING_SIZE][mpContainer->getTimeIndex()];
+                  mPeriod = *mpContainerStateTime - mStatesRing[i % RING_SIZE][mpContainer->getTimeIndex()];
                   mFreq = 1 / mPeriod;
                   mAveragePeriod = mPeriod / ((C_FLOAT64)mPeriodicity);
                   mAverageFreq = 1 / mAveragePeriod;
@@ -427,7 +428,7 @@ void CCrossSectionTask::eventCallBack(void * /* pData */, void * /* pCaller */)
 
       if (!isnan(mPreviousCrossingTime))
         {
-          mLastPeriod = *mpCurrentStateTime - mPreviousCrossingTime;
+          mLastPeriod = *mpContainerStateTime - mPreviousCrossingTime;
         }
 
       mLastFreq = 1 / mLastPeriod;
@@ -441,8 +442,8 @@ void CCrossSectionTask::eventCallBack(void * /* pData */, void * /* pCaller */)
     }
 
   //store state in ring buffer
-  mStatesRing[mStatesRingCounter % RING_SIZE] = mCurrentState;
-  mPreviousCrossingTime = *mpCurrentStateTime;
+  mStatesRing[mStatesRingCounter % RING_SIZE] = mContainerState;
+  mPreviousCrossingTime = *mpContainerStateTime;
   ++mStatesRingCounter;
 }
 

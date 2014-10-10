@@ -1,12 +1,4 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/cpp_examples/example9/example9.cpp,v $
-//   $Revision: 1.5 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/09/30 16:34:15 $
-// End CVS Header
-
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -110,7 +102,6 @@ const char* MODEL_STRING = \
                            "  </model>\n"
                            "</sbml>\n";
 
-
 int main()
 {
   // initialize the backend library
@@ -152,11 +143,12 @@ int main()
   // if there isn't one
   if (pTask == NULL)
     {
-      // create a new one
-      pTask = new CSteadyStateTask();
       // remove any existing steadystate task just to be sure since in
       // theory only the cast might have failed above
       TaskList.remove("Steady-State");
+
+      // create a new one
+      pTask = new CSteadyStateTask(& TaskList);
 
       // add the new task to the task list
       TaskList.add(pTask, true);
@@ -234,13 +226,8 @@ int main()
 
           std::cout << std::endl;
         }
-
-
     }
 
   CCopasiRootContainer::destroy();
   return 0;
 }
-
-
-

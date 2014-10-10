@@ -1,4 +1,4 @@
-// Copyright (C) 2012 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -97,7 +97,7 @@ bool COptMethodCoranaWalk::optimise()
             break;
         }
 
-      (*(*mpSetCalculateVariable)[i])(mCurrent[i]);
+      *mContainerVariables[i] = mCurrent[i];
 
       // The step must not contain any zeroes
       mStep[i] = std::max(fabs(mCurrent[i]), minstep);
@@ -136,13 +136,13 @@ bool COptMethodCoranaWalk::optimise()
               New = mCurrent[h] + xc;
 
               // Set the new parameter value
-              (*(*mpSetCalculateVariable)[h])(New);
+              *mContainerVariables[h] = New;
 
               // Check all parametric constraints
               if (!mpOptProblem->checkParametricConstraints())
                 {
                   // Undo since not accepted
-                  (*(*mpSetCalculateVariable)[h])(mCurrent[h]);
+                  *mContainerVariables[h] = mCurrent[h];
                   continue;
                 }
 
@@ -158,7 +158,7 @@ bool COptMethodCoranaWalk::optimise()
               if (!mpOptProblem->checkFunctionalConstraints())
                 {
                   // Undo since not accepted
-                  (*(*mpSetCalculateVariable)[h])(mCurrent[h]);
+                  *mContainerVariables[h] = mCurrent[h];
 
                   continue;
                 }
@@ -198,7 +198,7 @@ bool COptMethodCoranaWalk::optimise()
                     }
                   else
                     // Undo since not accepted
-                    (*(*mpSetCalculateVariable)[h])(mCurrent[h]);
+                    *mContainerVariables[h] = mCurrent[h];
                 }
 
               // check if it is time to stop
@@ -226,7 +226,7 @@ bool COptMethodCoranaWalk::optimise()
           mCurrent = mpOptProblem->getSolutionVariables();
 
           for (a = 0; a < mVariableSize; a++)
-            (*(*mpSetCalculateVariable)[a])(mCurrent[a]);
+            *mContainerVariables[a] = mCurrent[a];
 
           mCurrentValue = mBestValue;
         }

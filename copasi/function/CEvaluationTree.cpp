@@ -413,7 +413,7 @@ bool CEvaluationTree::setRoot(CEvaluationNode* pRootNode)
 
   mpNodeList = new std::vector< CEvaluationNode * >();
 
-  return this->updateTree();
+  return updateTree();
 }
 
 bool CEvaluationTree::updateTree()
@@ -447,7 +447,7 @@ bool CEvaluationTree::updateTree()
 
 bool CEvaluationTree::setTree(const ASTNode& pRootNode)
 {
-  return this->setRoot(CEvaluationTree::fromAST(&pRootNode));
+  return setRoot(CEvaluationTree::fromAST(&pRootNode));
 }
 
 CEvaluationNode * CEvaluationTree::fromAST(const ASTNode * pASTNode)
@@ -585,12 +585,12 @@ CEvaluationNode * CEvaluationTree::fromAST(const ASTNode * pASTNode)
 
 const CEvaluationNode* CEvaluationTree::getRoot() const
 {
-  return this->mpRoot;
+  return mpRoot;
 }
 
 CEvaluationNode* CEvaluationTree::getRoot()
 {
-  return this->mpRoot;
+  return mpRoot;
 }
 
 void CEvaluationTree::initObjects()
@@ -616,7 +616,7 @@ CCopasiObject::DataObjectSet CEvaluationTree::getDeletedObjects() const
 
 ASTNode* CEvaluationTree::toAST(const CCopasiDataModel* pDataModel) const
 {
-  return this->mpRoot->toAST(pDataModel);
+  return mpRoot->toAST(pDataModel);
 }
 
 bool CEvaluationTree::hasCircularDependency() const

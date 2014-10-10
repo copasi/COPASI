@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CAnnotatedMatrix.cpp,v $
-//   $Revision: 1.37 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/04/20 12:08:24 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2004 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -37,7 +29,7 @@ CArrayAnnotation::CArrayAnnotation(const std::string & name,
                                    const CCopasiContainer * pParent,
                                    CCopasiAbstractArray * array,
                                    const bool & adopt)
-    : CCopasiContainer(name, pParent, "Array" , CCopasiObject::Array),
+  : CCopasiContainer(name, pParent, "Array" , CCopasiObject::Array),
     mpArray(array),
     mDestructArray(adopt),
     mDefaultMode(OBJECTS)
@@ -144,7 +136,7 @@ const std::vector<std::string> & CArrayAnnotation::getAnnotationsString(size_t d
 
       for (i = 0; i < imax; ++i)
         {
-          const CCopasiObject * obj = pDataModel->getDataObject(mAnnotationsCN[d][i]);
+          const CCopasiObject * obj = CObjectInterface::DataObject(getObjectFromCN(mAnnotationsCN[d][i]));
 
           if (obj)
             mAnnotationsString[d][i] =

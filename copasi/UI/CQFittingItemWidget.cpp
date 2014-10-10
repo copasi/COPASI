@@ -34,6 +34,8 @@
 #include "parameterFitting/CExperimentSet.h"
 #include "utilities/utility.h"
 #include "copasi/report/CCopasiRootContainer.h"
+#include "model/CModel.h"
+#include "math/CMathContainer.h"
 
 #include <QtCore/QtDebug>
 
@@ -1187,12 +1189,12 @@ void CQFittingItemWidget::slotNew()
 void CQFittingItemWidget::setTableText(const int & row, const COptItem * pItem)
 {
   QString Item = "   ";
-  const CCopasiObject *pObject;
+  const CObjectInterface *pObject;
 
   if (pItem->getLowerBound() == "-inf" ||
       isNumber(pItem->getLowerBound()))
     Item += FROM_UTF8(pItem->getLowerBound());
-  else if ((pObject = mpDataModel->getDataObject(pItem->getLowerBound())))
+  else if ((pObject = mpDataModel->getObjectFromCN(pItem->getLowerBound())))
     Item += FROM_UTF8(pObject->getObjectDisplayName());
   else
     Item += "Not found: " + FROM_UTF8(pItem->getLowerBound());
@@ -1200,7 +1202,7 @@ void CQFittingItemWidget::setTableText(const int & row, const COptItem * pItem)
   // Insert less than character
   Item += FROM_UTF8(std::string(" \xe2\x89\xa4 "));
 
-  pObject = mpDataModel->getDataObject(pItem->getObjectCN());
+  pObject = mpDataModel->getObjectFromCN(pItem->getObjectCN());
 
   if (pObject)
     Item += FROM_UTF8(pObject->getObjectDisplayName());
@@ -1222,7 +1224,7 @@ void CQFittingItemWidget::setTableText(const int & row, const COptItem * pItem)
   if (pItem->getUpperBound() == "inf" ||
       isNumber(pItem->getUpperBound()))
     Item += FROM_UTF8(pItem->getUpperBound());
-  else if ((pObject = mpDataModel->getDataObject(pItem->getUpperBound())))
+  else if ((pObject = mpDataModel->getObjectFromCN(pItem->getUpperBound())))
     Item += FROM_UTF8(pObject->getObjectDisplayName());
   else
     Item += "Not found: " + FROM_UTF8(pItem->getUpperBound());
@@ -1309,7 +1311,7 @@ void CQFittingItemWidget::loadSelection()
 
       COptItem * pItem = (*mpItemsCopy)[*it];
 
-      const CCopasiObject *pObject = mpDataModel->getDataObject(pItem->getObjectCN());
+      const CObjectInterface *pObject = mpDataModel->getObjectFromCN(pItem->getObjectCN());
 
       if (pObject)
         {
@@ -1335,7 +1337,7 @@ void CQFittingItemWidget::loadSelection()
       if (pItem->getLowerBound() == "-inf" ||
           isNumber(pItem->getLowerBound()))
         Value = FROM_UTF8(pItem->getLowerBound());
-      else if ((mpLowerObject = mpDataModel->getDataObject(pItem->getLowerBound())))
+      else if ((mpLowerObject = mpDataModel->getObjectFromCN(pItem->getLowerBound())))
         Value = FROM_UTF8(mpLowerObject->getObjectDisplayName());
       else
         Value = "Not found: " + FROM_UTF8(pItem->getLowerBound());
@@ -1348,7 +1350,7 @@ void CQFittingItemWidget::loadSelection()
       if (pItem->getUpperBound() == "inf" ||
           isNumber(pItem->getUpperBound()))
         Value = FROM_UTF8(pItem->getUpperBound());
-      else if ((mpUpperObject = mpDataModel->getDataObject(pItem->getUpperBound())))
+      else if ((mpUpperObject = mpDataModel->getObjectFromCN(pItem->getUpperBound())))
         Value = FROM_UTF8(mpUpperObject->getObjectDisplayName());
       else
         Value = "Not found: " + FROM_UTF8(pItem->getUpperBound());
@@ -1404,7 +1406,7 @@ void CQFittingItemWidget::loadSelection()
         {
           pItem = (*mpItemsCopy)[*it];
 
-          const CCopasiObject *pObject = mpDataModel->getDataObject(pItem->getObjectCN());
+          const CObjectInterface *pObject = mpDataModel->getObjectFromCN(pItem->getObjectCN());
 
           if (pObject)
             Value = FROM_UTF8(pObject->getObjectDisplayName());
@@ -1425,7 +1427,7 @@ void CQFittingItemWidget::loadSelection()
           if (pItem->getLowerBound() == "-inf" ||
               isNumber(pItem->getLowerBound()))
             Value = FROM_UTF8(pItem->getLowerBound());
-          else if ((pObject = mpDataModel->getDataObject(pItem->getLowerBound())))
+          else if ((pObject = mpDataModel->getObjectFromCN(pItem->getLowerBound())))
             Value = FROM_UTF8(pObject->getObjectDisplayName());
           else
             Value = "Not found: " + FROM_UTF8(pItem->getLowerBound());
@@ -1439,7 +1441,7 @@ void CQFittingItemWidget::loadSelection()
           if (pItem->getUpperBound() == "inf" ||
               isNumber(pItem->getUpperBound()))
             Value = FROM_UTF8(pItem->getUpperBound());
-          else if ((pObject = mpDataModel->getDataObject(pItem->getUpperBound())))
+          else if ((pObject = mpDataModel->getObjectFromCN(pItem->getUpperBound())))
             Value = FROM_UTF8(pObject->getObjectDisplayName());
           else
             Value = "Not found: " + FROM_UTF8(pItem->getUpperBound());
@@ -1656,15 +1658,17 @@ void CQFittingItemWidget::slotReset()
         break;
 
       case CQStartValueReset::RANDOM:
+      {
+        CRandom & Random = mpDataModel->getModel()->getMathContainer().getRandomGenerator();
 
         for (; it != end; ++it)
           {
-            (*mpItemsCopy)[*it]->setStartValue((*mpItemsCopy)[*it]->getRandomValue());
+            (*mpItemsCopy)[*it]->setStartValue((*mpItemsCopy)[*it]->getRandomValue(Random));
             mpEditStart->setText(QString::number((*mpItemsCopy)[*it]->getStartValue()));
             setTableText((int) *it, (*mpItemsCopy)[*it]);
           }
-
-        break;
+      }
+      break;
 
       case CQStartValueReset::SOLUTION:
       {

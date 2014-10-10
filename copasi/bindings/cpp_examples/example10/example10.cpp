@@ -1,12 +1,4 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/cpp_examples/example10/example10.cpp,v $
-//   $Revision: 1.4 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/09/30 16:34:02 $
-// End CVS Header
-
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -29,7 +21,6 @@
 // For that, check copasi.h
 #define COPASI_MAIN
 #include "copasi/copasi.h"
-
 
 #include "copasi/report/CCopasiRootContainer.h"
 #include "copasi/CopasiDataModel/CCopasiDataModel.h"
@@ -67,7 +58,6 @@ int main(int argc, char** argv)
       try
         {
           result = pDataModel->importSBML(filename, NULL);
-
         }
       catch (...)
         {
@@ -108,11 +98,12 @@ int main(int argc, char** argv)
       // The task should always be there, but just to be sure, we check and create it, if it wasn't.
       if (pTask == NULL)
         {
-          // create a new one
-          pTask = new CMCATask();
           // remove any existing steadystate task just to be sure since in
           // theory only the cast might have failed above
           TaskList.remove("Metabolic Control Analysis");
+
+          // create a new one
+          pTask = new CMCATask(& TaskList);
 
           // add the new task to the task list
           TaskList.add(pTask, true);
@@ -133,7 +124,6 @@ int main(int argc, char** argv)
       // and the steadystate method below, please check the COPASI documentation for those
       // methods on http://www.copasi.org
       pMCAMethod->setValue("Modulation Factor", 1e-9);
-
 
       // Other parameters that affect the calculation of the steady state and which therefore might affect the calculation of the
       // control coefficients are: (name type default)
@@ -160,16 +150,16 @@ int main(int argc, char** argv)
       // again, better safe than sorry, we check if the task was actually there and if not, we delete it
       if (pSSTask == NULL)
         {
-          // create a new one
-          pSSTask = new CSteadyStateTask();
           // remove any existing steadystate task just to be sure since in
           // theory only the cast might have failed above
           TaskList.remove("Steady-State");
 
+          // create a new one
+          pSSTask = new CSteadyStateTask(& TaskList);
+
           // add the new task to the task list
           TaskList.add(pSSTask, true);
         }
-
 
       CCopasiMessage::clearDeque();
 
@@ -247,7 +237,7 @@ int main(int argc, char** argv)
               return 1;
             }
 
-          const CReaction* pReaction = pDataModel->getModel()->getReactions()[numReactions-1];
+          const CReaction* pReaction = pDataModel->getModel()->getReactions()[numReactions - 1];
 
           assert(pReaction != NULL);
 
@@ -292,7 +282,6 @@ int main(int argc, char** argv)
           index[1] = i;
           std::cout << std::setprecision(8);
           std::cout << (*pCCC->array())[index] << std::endl;
-
         }
     }
   else
@@ -308,6 +297,3 @@ int main(int argc, char** argv)
   CCopasiRootContainer::destroy();
   return 0;
 }
-
-
-

@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sensitivities/CSensTask.cpp,v $
-//   $Revision: 1.13 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/03/07 19:33:42 $
-// End CVS Header
-
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2005 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -30,27 +22,26 @@
 #include "CSensTask.h"
 #include "CSensProblem.h"
 #include "CSensMethod.h"
-#include "model/CModel.h"
-#include "model/CState.h"
-//#include "model/CMetabNameInterface.h"
+
+#include "math/CMathContainer.h"
 #include "report/CKeyFactory.h"
 #include "report/CReport.h"
 
 #define XXXX_Reporting
 
-CSensTask::CSensTask(const CCopasiContainer * pParent):
-    CCopasiTask(CCopasiTask::sens, pParent)
+CSensTask::CSensTask(const CCopasiContainer * pParent,
+                     const CCopasiTask::Type & type):
+  CCopasiTask(pParent, type)
 {
   mpProblem = new CSensProblem(this);
 
   mpMethod = createMethod(CCopasiMethod::sensMethod);
   this->add(mpMethod, true);
-
 }
 
 CSensTask::CSensTask(const CSensTask & src,
                      const CCopasiContainer * pParent):
-    CCopasiTask(src, pParent)
+  CCopasiTask(src, pParent)
 {
   mpProblem =
     new CSensProblem(*(CSensProblem *) src.mpProblem, this);
@@ -90,8 +81,6 @@ bool CSensTask::updateMatrices()
 
   bool success = true;
 
-  if (!pProblem->getModel()->compileIfNecessary(mpCallBack)) success = false;
-
   //this does actually more than just update the matrices, but it should do no harm
   if (!pMethod->initialize(pProblem)) success = false;
 
@@ -127,7 +116,7 @@ bool CSensTask::process(const bool & useInitialValues)
   assert(pMethod);
 
   if (useInitialValues)
-    pProblem->getModel()->applyInitialValues();
+    mpContainer->applyInitialValues();
 
   mReport.output(COutputInterface::BEFORE);
 

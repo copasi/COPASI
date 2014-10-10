@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -22,13 +22,12 @@
 #include "CLyapTask.h"
 
 #include "CopasiDataModel/CCopasiDataModel.h"
-#include "model/CModel.h"
-#include "model/CState.h"
+#include "math/CMathContainer.h"
 #include "lapack/blaswrap.h"
 
 CLyapWolfMethod::CLyapWolfMethod(const CCopasiContainer * pParent):
   CLyapMethod(CCopasiMethod::lyapWolf, pParent),
-  mpState(NULL)
+  mContainerState()
 {
   assert((void *) &mData == (void *) &mData.dim);
 
@@ -39,7 +38,7 @@ CLyapWolfMethod::CLyapWolfMethod(const CCopasiContainer * pParent):
 CLyapWolfMethod::CLyapWolfMethod(const CLyapWolfMethod & src,
                                  const CCopasiContainer * pParent):
   CLyapMethod(src, pParent),
-  mpState(NULL)
+  mContainerState()
 {
   assert((void *) &mData == (void *) &mData.dim);
 
@@ -48,9 +47,7 @@ CLyapWolfMethod::CLyapWolfMethod(const CLyapWolfMethod & src,
 }
 
 CLyapWolfMethod::~CLyapWolfMethod()
-{
-  pdelete(mpState);
-}
+{}
 
 void CLyapWolfMethod::initializeParameter()
 {
@@ -96,14 +93,13 @@ double CLyapWolfMethod::step(const double & deltaT)
 {
   if (!mData.dim) //just do nothing if there are no variables
     {
-      mTime = mTime + deltaT;
-      mpState->setTime(mTime);
+      *mpContainerStateTime += deltaT;
 
       return deltaT;
     }
 
-  C_FLOAT64 startTime = mTime;
-  C_FLOAT64 EndTime = mTime + deltaT;
+  C_FLOAT64 startTime = *mpContainerStateTime;
+  C_FLOAT64 EndTime = *mpContainerStateTime + deltaT;
   C_INT one = 1;
   C_INT two = 2;
   C_INT DSize = (C_INT) mDWork.size();
@@ -112,7 +108,7 @@ double CLyapWolfMethod::step(const double & deltaT)
   mLSODA(&EvalF , //  1. evaluate F
          &mData.dim , //  2. number of variables
          mVariables.array(), //  3. the array of current concentrations
-         &mTime , //  4. the current time
+         mpContainerStateTime , //  4. the current time
          &EndTime , //  5. the final time
          &two , //  6. vector absolute error, scalar relative error
          &mRtol , //  7. relative tolerance array
@@ -134,7 +130,7 @@ double CLyapWolfMethod::step(const double & deltaT)
       CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 6, mErrorMsg.str().c_str());
     }
 
-  return mTime - startTime;
+  return *mpContainerStateTime - startTime;
 }
 
 void CLyapWolfMethod::start(/*const CState * initialState*/)
@@ -146,19 +142,20 @@ void CLyapWolfMethod::start(/*const CState * initialState*/)
   mErrorMsg.str("");
   mLSODA.setOstream(mErrorMsg);
 
-  /* Release previous state and make the initialState the current */
-  pdelete(mpState);
-  mpState = new CState(mpProblem->getModel()->getState());
-
-  //mY = mpState->beginIndependent();
-  mTime = mpState->getTime();
-
   mReducedModel = true; /* *getValue("Integrate Reduced Model").pBOOL;*/
 
-  if (mReducedModel)
-    mSystemSize = mpState->getNumIndependent();
-  else
-    mSystemSize = mpState->getNumIndependent() + mpProblem->getModel()->getNumDependentReactionMetabs();
+  /* Release previous state and make the initialState the current */
+  mContainerState.initialize(mpContainer->getState(mReducedModel));
+
+  //mY = mpState->beginIndependent();
+  mpContainerStateTime = mContainerState.array() + mpContainer->getTimeIndex();
+
+  mSystemSize = mContainerState.size() - mpContainer->getTimeIndex() - 1;
+
+  //initialize the vector on which lsoda will work
+  mVariables.initialize(mSystemSize, mpContainerStateTime + 1);
+
+  mpYdot = mpContainer->getRate(mReducedModel).array() + mpContainer->getTimeIndex() + 1;
 
   mNumExp = mpProblem->getExponentNumber();
   mDoDivergence = mpProblem->divergenceRequested();
@@ -176,9 +173,7 @@ void CLyapWolfMethod::start(/*const CState * initialState*/)
   mNorms.resize(mNumExp);
   //pTask->mExponents.resize(mNumExp);
 
-  //initialize the vector on which lsoda will work
-  mVariables.resize(mData.dim);
-  memcpy(mVariables.array(), mpState->beginIndependent(), mSystemSize * sizeof(C_FLOAT64));
+  memcpy(mVariables.array(), mpContainerStateTime + 1, mSystemSize * sizeof(C_FLOAT64));
 
   //generate base vectors. Just define some arbitrary starting vectors that are not too specific and orthonormalize
   // first fill the array with 0.1
@@ -214,7 +209,7 @@ void CLyapWolfMethod::start(/*const CState * initialState*/)
   mRtol = * getValue("Relative Tolerance").pUDOUBLE;
 
   C_FLOAT64 * pTolerance = getValue("Absolute Tolerance").pUDOUBLE;
-  CVector< C_FLOAT64 > tmpAtol = mpProblem->getModel()->initializeAtolVector(*pTolerance, mReducedModel);
+  CVector< C_FLOAT64 > tmpAtol = mpContainer->initializeAtolVector(*pTolerance, mReducedModel);
 
   mAtol.resize(mData.dim);
 
@@ -243,27 +238,11 @@ void CLyapWolfMethod::evalF(const C_FLOAT64 * t, const C_FLOAT64 * y, C_FLOAT64 
 {
   assert(y == mVariables.array());
 
-  //set time in model
-  mpState->setTime(*t);
+  *mpContainerStateTime = *t;
+  mpContainer->updateSimulatedValues(mReducedModel);
+  memcpy(ydot, mpYdot, mData.dim * sizeof(C_FLOAT64));
 
-  //copy working array to state
-  memcpy(mpState->beginIndependent(), mVariables.array(), mSystemSize * sizeof(C_FLOAT64));
-
-  //copy state to model
-  CModel * pModel = mpProblem->getModel();
-  pModel->setState(*mpState);
-  pModel->updateSimulatedValues(mReducedModel);
-
-  //the model
-  if (mReducedModel)
-    pModel->calculateDerivativesX(ydot);
-  else
-    pModel->calculateDerivatives(ydot);
-
-  //the linearized model
-
-  //get jacobian
-  pModel->calculateJacobianX(mJacobian, 1e-6, 1e-12);
+  mpContainer->calculateJacobian(mJacobian, 1e-6, mReducedModel);
 
   //empty dummy entries... to be removed later
   //C_FLOAT64 *dbl, *dblEnd = ydot + mData.dim;
@@ -333,9 +312,9 @@ bool CLyapWolfMethod::calculate()
   start();
 
   C_FLOAT64 stepSize = *getValue("Orthonormalization Interval").pUDOUBLE;
-  C_FLOAT64 transientTime = mpProblem->getTransientTime() + mTime;
-  C_FLOAT64 endTime = mTime + *getValue("Overall time").pUDOUBLE;
-  C_FLOAT64 startTime = mTime;
+  C_FLOAT64 transientTime = mpProblem->getTransientTime() + *mpContainerStateTime;
+  C_FLOAT64 endTime = *mpContainerStateTime + *getValue("Overall time").pUDOUBLE;
+  C_FLOAT64 startTime = *mpContainerStateTime;
 
   bool flagProceed = true;
   C_FLOAT64 handlerFactor = 100.0 / (endTime - startTime);
@@ -343,20 +322,20 @@ bool CLyapWolfMethod::calculate()
   //** do the transient **
   C_FLOAT64 CompareTime = transientTime - 100.0 * fabs(transientTime) * std::numeric_limits< C_FLOAT64 >::epsilon();
 
-  if (mTime < CompareTime)
+  if (*mpContainerStateTime < CompareTime)
     {
       do
         {
-          step(transientTime - mTime);
+          step(transientTime - *mpContainerStateTime);
 
-          if (mTime > CompareTime) break;
+          if (*mpContainerStateTime > CompareTime) break;
 
           /* Here we will do conditional event processing */
 
           /* Currently this is correct since no events are processed. */
           //CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 12);
 
-          flagProceed &= mpTask->methodCallback((mTime - startTime) * handlerFactor, true);
+          flagProceed &= mpTask->methodCallback((*mpContainerStateTime - startTime) * handlerFactor, true);
         }
       while (flagProceed);
 
@@ -367,14 +346,9 @@ bool CLyapWolfMethod::calculate()
     {
     }
 
-  //copy working array to state
-  memcpy(mpState->beginIndependent(), mVariables.array(), mSystemSize * sizeof(C_FLOAT64));
-  mpState->setTime(mTime);
-
   //copy state to model and do output
-  mpProblem->getModel()->setState(*mpState);
-  mpProblem->getModel()->updateSimulatedValues(mReducedModel);
-  mpTask->methodCallback((mTime - startTime) * handlerFactor, false);
+  mpContainer->updateSimulatedValues(mReducedModel);
+  mpTask->methodCallback((*mpContainerStateTime - startTime) * handlerFactor, false);
   //********
 
   orthonormalize();
@@ -401,7 +375,7 @@ bool CLyapWolfMethod::calculate()
           mpTask->mLocalExponents[i] = log(mNorms[i]);
           mSumExponents[i] += mpTask->mLocalExponents[i];
           mpTask->mLocalExponents[i] = mpTask->mLocalExponents[i] / realStepSize;
-          mpTask->mExponents[i] = mSumExponents[i] / (mTime - transientTime);
+          mpTask->mExponents[i] = mSumExponents[i] / (*mpContainerStateTime - transientTime);
         }
 
       //process result of divergence integration
@@ -410,18 +384,12 @@ bool CLyapWolfMethod::calculate()
           mSumDivergence += *(mVariables.array() + mVariables.size() - 1);
           mpTask->mIntervalDivergence = *(mVariables.array() + mVariables.size() - 1) / realStepSize;
           *(mVariables.array() + mVariables.size() - 1) = 0;
-          mpTask->mAverageDivergence = mSumDivergence / (mTime - transientTime);
+          mpTask->mAverageDivergence = mSumDivergence / (*mpContainerStateTime - transientTime);
         }
 
-      //copy working array to state
-      memcpy(mpState->beginIndependent(), mVariables.array(), mSystemSize * sizeof(C_FLOAT64));
-      mpState->setTime(mTime);
-      //copy state to model and do output
-      mpProblem->getModel()->setState(*mpState);
-      mpProblem->getModel()->updateSimulatedValues(mReducedModel);
-      flagProceed &= mpTask->methodCallback((mTime - startTime) * handlerFactor, false);
+      flagProceed &= mpTask->methodCallback((*mpContainerStateTime - startTime) * handlerFactor, false);
     }
-  while ((mTime < endTime) && flagProceed);
+  while ((*mpContainerStateTime < endTime) && flagProceed);
 
   return flagProceed;
 }

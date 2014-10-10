@@ -8492,13 +8492,13 @@ void CCopasiXMLParser::TaskElement::start(const XML_Char *pszName, const XML_Cha
               break;
 
             case CCopasiTask::optimization:
-              mCommon.pCurrentTask = new COptTask(Type, mCommon.pTaskList);
+              mCommon.pCurrentTask = new COptTask(mCommon.pTaskList);
               mCommon.pCurrentTask->getProblem()->assertParameter("Steady-State", CCopasiParameter::STRING, std::string(""));
               mCommon.pCurrentTask->getProblem()->assertParameter("Time-Course", CCopasiParameter::STRING, std::string(""));
               break;
 
             case CCopasiTask::parameterFitting:
-              mCommon.pCurrentTask = new CFitTask(Type, mCommon.pTaskList);
+              mCommon.pCurrentTask = new CFitTask(mCommon.pTaskList);
               break;
 
             case CCopasiTask::mca:
@@ -8522,7 +8522,7 @@ void CCopasiXMLParser::TaskElement::start(const XML_Char *pszName, const XML_Cha
               break;
 
             case CCopasiTask::moieties:
-              mCommon.pCurrentTask = new CMoietiesTask(Type, mCommon.pTaskList);
+              mCommon.pCurrentTask = new CMoietiesTask(mCommon.pTaskList);
               break;
 
             case CCopasiTask::crosssection:
@@ -8542,7 +8542,6 @@ void CCopasiXMLParser::TaskElement::start(const XML_Char *pszName, const XML_Cha
           {
             mCommon.pCurrentTask->setScheduled(Scheduled);
             mCommon.pCurrentTask->setUpdateModel(UpdateModel);
-            mCommon.pCurrentTask->getProblem()->setModel(mCommon.pModel);
 
             if (Key != NULL)
               {

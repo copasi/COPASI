@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -80,10 +80,10 @@ public:
 
   /**
    * Compile the evaluation tree.
-   * @param std::vector< CCopasiContainer * > listOfContainer (Default: CCopasiContainer::EmptyList)
+   * @param CObjectInterface::ContainerList listOfContainer (Default: CCopasiContainer::EmptyList)
    * @return bool success
    */
-  virtual bool compile(std::vector< CCopasiContainer * > listOfContainer =
+  virtual bool compile(CObjectInterface::ContainerList listOfContainer =
                          CCopasiContainer::EmptyList);
 
   /**
@@ -115,9 +115,9 @@ public:
 public:
   /**
    * Retrieve the list of container used for compile
-   * @return const std::vector< CCopasiContainer * > & listOfContainer
+   * @return const CObjectInterface::ContainerList & listOfContainer
    */
-  const std::vector< CCopasiContainer * > & getListOfContainer() const;
+  const CObjectInterface::ContainerList & getListOfContainer() const;
 
   /**
    * This method performs an infix update if a referenced object has been renamed
@@ -153,7 +153,7 @@ protected:
   /**
    * Pointer to the list of containers used for compilation.
    */
-  const std::vector< CCopasiContainer * > * mpListOfContainer;
+  const CObjectInterface::ContainerList * mpListOfContainer;
 
   /**
    * Human readable display string.

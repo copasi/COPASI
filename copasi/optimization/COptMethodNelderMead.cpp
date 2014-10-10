@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -232,7 +232,7 @@ bool COptMethodNelderMead::optimise()
             break;
         }
 
-      (*(*mpSetCalculateVariable)[i])(mCurrent[i]);
+      *mContainerVariables[i] = (mCurrent[i]);
 
       // set the magnitude of each parameter
       mStep[i] = (*OptItem.getUpperBoundValue() - *OptItem.getLowerBoundValue()) / mScale;
@@ -282,7 +282,7 @@ First:
         mSimplex[i][j] = mCurrent[i];
 
       // Calculate the value for the corner
-      (*(*mpSetCalculateVariable)[j])(mCurrent[j]);
+      *mContainerVariables[j] = (mCurrent[j]);
       mValue[j] = evaluate();
 
       if (mEvaluationValue < mBestValue)
@@ -297,7 +297,7 @@ First:
 
       // Reset
       mCurrent[j] = x;
-      (*(*mpSetCalculateVariable)[j])(mCurrent[j]);
+      *mContainerVariables[j] = (mCurrent[j]);
     }
 
   /* ---- Simplex construction complete; now do some work. ---- */
@@ -353,7 +353,7 @@ First:
           for (i = 0; i < mVariableSize; ++i)
             {
               mCurrent[i] = (1.0 + rcoeff) * mCentroid[i] - rcoeff * mSimplex[i][iWorst];
-              (*(*mpSetCalculateVariable)[i])(mCurrent[i]);
+              *mContainerVariables[i] = (mCurrent[i]);
 
               // enforce_bounds(&pstar[i], i);  /* make sure it is inside */
             }
@@ -384,7 +384,7 @@ First:
               for (i = 0; i < mVariableSize; ++i)
                 {
                   mCurrent[i] = ecoeff * mCurrent[i] + (1.0 - ecoeff) * mCentroid[i];
-                  (*(*mpSetCalculateVariable)[i])(mCurrent[i]);
+                  *mContainerVariables[i] = (mCurrent[i]);
 
                   // enforce_bounds(&p2star[i], i);  /* make sure it is inside */
                 }
@@ -450,7 +450,7 @@ First:
                   for (i = 0; i < mVariableSize; ++i)
                     {
                       mCurrent[i] = ccoeff * mSimplex[i][iWorst] + (1.0 - ccoeff) * mCentroid[i];
-                      (*(*mpSetCalculateVariable)[i])(mCurrent[i]);
+                      *mContainerVariables[i] = (mCurrent[i]);
 
                       // may not need to check boundaries since it is contraction
                       // enforce_bounds(&p2star[i], i);  /* make sure it is inside */
@@ -477,7 +477,7 @@ First:
                             {
                               mSimplex[i][j] = (mSimplex[i][j] + mSimplex[i][iBest]) * 0.5;
                               mCurrent[i] = mSimplex[i][j];
-                              (*(*mpSetCalculateVariable)[i])(mCurrent[i]);
+                              *mContainerVariables[i] = (mCurrent[i]);
 
                               //enforce_bounds(&xmin[i], i);  /* make sure it is inside */
                             }
@@ -555,7 +555,7 @@ First:
   mCurrent = mpOptProblem->getSolutionVariables();
 
   for (i = 0; i < mVariableSize; ++i)
-    (*(*mpSetCalculateVariable)[i])(mCurrent[i]);
+    *mContainerVariables[i] = (mCurrent[i]);
 
   for (i = 0; i < mVariableSize; ++i)
     {
@@ -563,21 +563,21 @@ First:
       C_FLOAT64 delta = mStep[i] * 1.0e-03;
 
       /* -- check along one direction -- */
-      (*(*mpSetCalculateVariable)[i])(mCurrent[i] + delta);
+      *mContainerVariables[i] = (mCurrent[i] + delta);
       evaluate();
 
       if ((mEvaluationValue - mBestValue) < -small)
         break;
 
       /* -- now check the other way -- */
-      (*(*mpSetCalculateVariable)[i])(mCurrent[i] - delta);
+      *mContainerVariables[i] = (mCurrent[i] - delta);
       evaluate();
 
       if ((mEvaluationValue - mBestValue) < -small)
         break;
 
       /* -- back to start -- */
-      (*(*mpSetCalculateVariable)[i])(mCurrent[i]);
+      *mContainerVariables[i] = (mCurrent[i]);
     }
 
   ok = (i == mVariableSize);

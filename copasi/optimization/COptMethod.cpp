@@ -1,16 +1,16 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-// and The University of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2002 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc. and EML Research, gGmbH. 
-// All rights reserved. 
+// Copyright (C) 2002 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 /**
  *  COptMethod class
@@ -135,7 +135,7 @@ COptMethod::COptMethod():
   mpOptProblem(NULL),
   mpParentTask(NULL),
   mBounds(false),
-  mpSetCalculateVariable(NULL),
+  mContainerVariables(),
   mpOptItem(NULL),
   mpOptContraints(NULL)
 {CONSTRUCTOR_TRACE;}
@@ -147,7 +147,7 @@ COptMethod::COptMethod(const CCopasiTask::Type & taskType,
   mpOptProblem(NULL),
   mpParentTask(NULL),
   mBounds(false),
-  mpSetCalculateVariable(NULL),
+  mContainerVariables(),
   mpOptItem(NULL),
   mpOptContraints(NULL)
 {CONSTRUCTOR_TRACE;}
@@ -158,10 +158,12 @@ COptMethod::COptMethod(const COptMethod & src,
   mpOptProblem(src.mpOptProblem),
   mpParentTask(src.mpParentTask),
   mBounds(src.mBounds),
-  mpSetCalculateVariable(src.mpSetCalculateVariable),
+  mContainerVariables(),
   mpOptItem(src.mpOptItem),
   mpOptContraints(src.mpOptContraints)
-{CONSTRUCTOR_TRACE;}
+{
+  mContainerVariables.initialize(src.mContainerVariables);
+}
 
 //YOHE: seems "virtual" cannot be outside of class declaration
 COptMethod::~COptMethod()
@@ -197,8 +199,7 @@ bool COptMethod::initialize()
   if (!(mpOptContraints = &mpOptProblem->getConstraintList()))
     return false;
 
-  if (!(mpSetCalculateVariable = &mpOptProblem->getCalculateVariableUpdateMethods()))
-    return false;
+  mContainerVariables.initialize(mpOptProblem->getContainerVariables());
 
   mpParentTask = dynamic_cast<COptTask *>(getObjectParent());
 

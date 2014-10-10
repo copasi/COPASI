@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -23,6 +23,7 @@
 #include "utilities/CCopasiTask.h"
 #include "trajectory/CTrajectoryProblem.h"
 #include "steadystate/CSteadyStateProblem.h"
+#include "math/CMathContainer.h"
 #include "model/CObjectLists.h"
 #include "model/CModel.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
@@ -589,14 +590,10 @@ CCopasiObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * t
       return NULL;
     }
 
-  CModel* pModel = task->getProblem()->getModel();
-
-  if (pModel == NULL)
-    {
-      return NULL;
-    }
+  const CModel & Model = task->getMathContainer()->getModel();
 
   std::vector<const CCopasiObject*> data1, tmpdata;
+
   const CCopasiObject* data2 = NULL;
 
   //first handle the special cases (those not that are not numbered according to the systematic scheme)
@@ -1000,143 +997,143 @@ CCopasiObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * t
   C_INT32 idMod = id % 200;
   bool logY = false; //this is onyl used for plots; it indicates whether the y axis is plotted logarithmically
 
-  const CCopasiObject* pTime = static_cast< const CCopasiObject * >(pModel->getObject(CCopasiObjectName("Reference=Time")));
+  const CCopasiObject* pTime = static_cast< const CCopasiObject * >(Model.getObject(CCopasiObjectName("Reference=Time")));
 
   switch (idMod)
     {
       case 0:
         data1 =
-          CObjectLists::getListOfConstObjects(CObjectLists::NON_CONST_METAB_CONCENTRATIONS, pModel);
+          CObjectLists::getListOfConstObjects(CObjectLists::NON_CONST_METAB_CONCENTRATIONS, &Model);
         tmpdata =
-          CObjectLists::getListOfConstObjects(CObjectLists::NON_CONST_COMPARTMENT_VOLUMES, pModel);
+          CObjectLists::getListOfConstObjects(CObjectLists::NON_CONST_COMPARTMENT_VOLUMES, &Model);
         data1.insert(data1.end(), tmpdata.begin(), tmpdata.end());
         tmpdata =
-          CObjectLists::getListOfConstObjects(CObjectLists::NON_CONST_GLOBAL_PARAMETER_VALUES, pModel);
+          CObjectLists::getListOfConstObjects(CObjectLists::NON_CONST_GLOBAL_PARAMETER_VALUES, &Model);
         data1.insert(data1.end(), tmpdata.begin(), tmpdata.end());
         break;
 
       case 1:
         data1 =
-          CObjectLists::getListOfConstObjects(CObjectLists::NON_CONST_METAB_NUMBERS, pModel);
+          CObjectLists::getListOfConstObjects(CObjectLists::NON_CONST_METAB_NUMBERS, &Model);
         tmpdata =
-          CObjectLists::getListOfConstObjects(CObjectLists::NON_CONST_COMPARTMENT_VOLUMES, pModel);
+          CObjectLists::getListOfConstObjects(CObjectLists::NON_CONST_COMPARTMENT_VOLUMES, &Model);
         data1.insert(data1.end(), tmpdata.begin(), tmpdata.end());
         tmpdata =
-          CObjectLists::getListOfConstObjects(CObjectLists::NON_CONST_GLOBAL_PARAMETER_VALUES, pModel);
+          CObjectLists::getListOfConstObjects(CObjectLists::NON_CONST_GLOBAL_PARAMETER_VALUES, &Model);
         data1.insert(data1.end(), tmpdata.begin(), tmpdata.end());
         break;
 
       case 2:
         data1 =
-          CObjectLists::getListOfConstObjects(CObjectLists::METAB_CONCENTRATIONS, pModel);
+          CObjectLists::getListOfConstObjects(CObjectLists::METAB_CONCENTRATIONS, &Model);
         tmpdata =
-          CObjectLists::getListOfConstObjects(CObjectLists::COMPARTMENT_VOLUMES, pModel);
+          CObjectLists::getListOfConstObjects(CObjectLists::COMPARTMENT_VOLUMES, &Model);
         data1.insert(data1.end(), tmpdata.begin(), tmpdata.end());
         tmpdata =
-          CObjectLists::getListOfConstObjects(CObjectLists::GLOBAL_PARAMETER_VALUES, pModel);
+          CObjectLists::getListOfConstObjects(CObjectLists::GLOBAL_PARAMETER_VALUES, &Model);
         data1.insert(data1.end(), tmpdata.begin(), tmpdata.end());
         break;
 
       case 3:
         data1 =
-          CObjectLists::getListOfConstObjects(CObjectLists::METAB_NUMBERS, pModel);
+          CObjectLists::getListOfConstObjects(CObjectLists::METAB_NUMBERS, &Model);
         tmpdata =
-          CObjectLists::getListOfConstObjects(CObjectLists::COMPARTMENT_VOLUMES, pModel);
+          CObjectLists::getListOfConstObjects(CObjectLists::COMPARTMENT_VOLUMES, &Model);
         data1.insert(data1.end(), tmpdata.begin(), tmpdata.end());
         tmpdata =
-          CObjectLists::getListOfConstObjects(CObjectLists::GLOBAL_PARAMETER_VALUES, pModel);
+          CObjectLists::getListOfConstObjects(CObjectLists::GLOBAL_PARAMETER_VALUES, &Model);
         data1.insert(data1.end(), tmpdata.begin(), tmpdata.end());
         break;
 
       case 4:
         data1 =
-          CObjectLists::getListOfConstObjects(CObjectLists::METAB_CONC_RATES, pModel);
+          CObjectLists::getListOfConstObjects(CObjectLists::METAB_CONC_RATES, &Model);
         tmpdata =
-          CObjectLists::getListOfConstObjects(CObjectLists::COMPARTMENT_RATES, pModel);
+          CObjectLists::getListOfConstObjects(CObjectLists::COMPARTMENT_RATES, &Model);
         data1.insert(data1.end(), tmpdata.begin(), tmpdata.end());
         tmpdata =
-          CObjectLists::getListOfConstObjects(CObjectLists::GLOBAL_PARAMETER_RATES, pModel);
+          CObjectLists::getListOfConstObjects(CObjectLists::GLOBAL_PARAMETER_RATES, &Model);
         data1.insert(data1.end(), tmpdata.begin(), tmpdata.end());
         break;
 
       case 5:
         data1 =
-          CObjectLists::getListOfConstObjects(CObjectLists::METAB_PART_RATES, pModel);
+          CObjectLists::getListOfConstObjects(CObjectLists::METAB_PART_RATES, &Model);
         tmpdata =
-          CObjectLists::getListOfConstObjects(CObjectLists::COMPARTMENT_RATES, pModel);
+          CObjectLists::getListOfConstObjects(CObjectLists::COMPARTMENT_RATES, &Model);
         data1.insert(data1.end(), tmpdata.begin(), tmpdata.end());
         tmpdata =
-          CObjectLists::getListOfConstObjects(CObjectLists::GLOBAL_PARAMETER_RATES, pModel);
+          CObjectLists::getListOfConstObjects(CObjectLists::GLOBAL_PARAMETER_RATES, &Model);
         data1.insert(data1.end(), tmpdata.begin(), tmpdata.end());
         break;
 
       case 6:
         data1 =
-          CObjectLists::getListOfConstObjects(CObjectLists::REACTION_CONC_FLUXES, pModel);
+          CObjectLists::getListOfConstObjects(CObjectLists::REACTION_CONC_FLUXES, &Model);
         break;
 
       case 7:
         data1 =
-          CObjectLists::getListOfConstObjects(CObjectLists::REACTION_PART_FLUXES, pModel);
+          CObjectLists::getListOfConstObjects(CObjectLists::REACTION_PART_FLUXES, &Model);
         break;
 
       case 8:
         data1 =
-          CObjectLists::getListOfConstObjects(CObjectLists::NON_CONST_METAB_CONCENTRATIONS, pModel);
+          CObjectLists::getListOfConstObjects(CObjectLists::NON_CONST_METAB_CONCENTRATIONS, &Model);
         tmpdata =
-          CObjectLists::getListOfConstObjects(CObjectLists::NON_CONST_COMPARTMENT_VOLUMES, pModel);
+          CObjectLists::getListOfConstObjects(CObjectLists::NON_CONST_COMPARTMENT_VOLUMES, &Model);
         data1.insert(data1.end(), tmpdata.begin(), tmpdata.end());
         tmpdata =
-          CObjectLists::getListOfConstObjects(CObjectLists::NON_CONST_GLOBAL_PARAMETER_VALUES, pModel);
+          CObjectLists::getListOfConstObjects(CObjectLists::NON_CONST_GLOBAL_PARAMETER_VALUES, &Model);
         data1.insert(data1.end(), tmpdata.begin(), tmpdata.end());
         tmpdata =
-          CObjectLists::getListOfConstObjects(CObjectLists::METAB_CONC_RATES, pModel);
+          CObjectLists::getListOfConstObjects(CObjectLists::METAB_CONC_RATES, &Model);
         data1.insert(data1.end(), tmpdata.begin(), tmpdata.end());
         tmpdata =
-          CObjectLists::getListOfConstObjects(CObjectLists::COMPARTMENT_RATES, pModel);
+          CObjectLists::getListOfConstObjects(CObjectLists::COMPARTMENT_RATES, &Model);
         data1.insert(data1.end(), tmpdata.begin(), tmpdata.end());
         tmpdata =
-          CObjectLists::getListOfConstObjects(CObjectLists::GLOBAL_PARAMETER_RATES, pModel);
+          CObjectLists::getListOfConstObjects(CObjectLists::GLOBAL_PARAMETER_RATES, &Model);
         data1.insert(data1.end(), tmpdata.begin(), tmpdata.end());
         tmpdata =
-          CObjectLists::getListOfConstObjects(CObjectLists::REACTION_CONC_FLUXES, pModel);
+          CObjectLists::getListOfConstObjects(CObjectLists::REACTION_CONC_FLUXES, &Model);
         data1.insert(data1.end(), tmpdata.begin(), tmpdata.end());
         tmpdata =
-          CObjectLists::getListOfConstObjects(CObjectLists::METAB_TRANSITION_TIME, pModel);
+          CObjectLists::getListOfConstObjects(CObjectLists::METAB_TRANSITION_TIME, &Model);
         data1.insert(data1.end(), tmpdata.begin(), tmpdata.end());
         break;
 
       case 9:
         data1 =
-          CObjectLists::getListOfConstObjects(CObjectLists::NON_CONST_METAB_NUMBERS, pModel);
+          CObjectLists::getListOfConstObjects(CObjectLists::NON_CONST_METAB_NUMBERS, &Model);
         tmpdata =
-          CObjectLists::getListOfConstObjects(CObjectLists::NON_CONST_COMPARTMENT_VOLUMES, pModel);
+          CObjectLists::getListOfConstObjects(CObjectLists::NON_CONST_COMPARTMENT_VOLUMES, &Model);
         data1.insert(data1.end(), tmpdata.begin(), tmpdata.end());
         tmpdata =
-          CObjectLists::getListOfConstObjects(CObjectLists::NON_CONST_GLOBAL_PARAMETER_VALUES, pModel);
+          CObjectLists::getListOfConstObjects(CObjectLists::NON_CONST_GLOBAL_PARAMETER_VALUES, &Model);
         data1.insert(data1.end(), tmpdata.begin(), tmpdata.end());
         tmpdata =
-          CObjectLists::getListOfConstObjects(CObjectLists::METAB_PART_RATES, pModel);
+          CObjectLists::getListOfConstObjects(CObjectLists::METAB_PART_RATES, &Model);
         data1.insert(data1.end(), tmpdata.begin(), tmpdata.end());
         tmpdata =
-          CObjectLists::getListOfConstObjects(CObjectLists::COMPARTMENT_RATES, pModel);
+          CObjectLists::getListOfConstObjects(CObjectLists::COMPARTMENT_RATES, &Model);
         data1.insert(data1.end(), tmpdata.begin(), tmpdata.end());
         tmpdata =
-          CObjectLists::getListOfConstObjects(CObjectLists::GLOBAL_PARAMETER_RATES, pModel);
+          CObjectLists::getListOfConstObjects(CObjectLists::GLOBAL_PARAMETER_RATES, &Model);
         data1.insert(data1.end(), tmpdata.begin(), tmpdata.end());
         tmpdata =
-          CObjectLists::getListOfConstObjects(CObjectLists::REACTION_PART_FLUXES, pModel);
+          CObjectLists::getListOfConstObjects(CObjectLists::REACTION_PART_FLUXES, &Model);
         data1.insert(data1.end(), tmpdata.begin(), tmpdata.end());
         tmpdata =
-          CObjectLists::getListOfConstObjects(CObjectLists::METAB_TRANSITION_TIME, pModel);
+          CObjectLists::getListOfConstObjects(CObjectLists::METAB_TRANSITION_TIME, &Model);
         data1.insert(data1.end(), tmpdata.begin(), tmpdata.end());
         break;
 
       case 50:
         data1 =
-          CObjectLists::getListOfConstObjects(CObjectLists::REDUCED_JACOBIAN_EV_RE, pModel);
+          CObjectLists::getListOfConstObjects(CObjectLists::REDUCED_JACOBIAN_EV_RE, &Model);
         tmpdata =
-          CObjectLists::getListOfConstObjects(CObjectLists::REDUCED_JACOBIAN_EV_IM, pModel);
+          CObjectLists::getListOfConstObjects(CObjectLists::REDUCED_JACOBIAN_EV_IM, &Model);
         data1.insert(data1.end(), tmpdata.begin(), tmpdata.end());
         break;
 
@@ -1190,9 +1187,7 @@ CCopasiObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * t
 
                   if (tmpString.size()) //the scan item references an object, this is the scan parameter
                     {
-                      CCopasiDataModel* pDataModel = pSP->getObjectDataModel();
-                      assert(pDataModel != NULL);
-                      const CCopasiObject * tmpObject = pDataModel->getDataObject(tmpString);
+                      const CCopasiObject * tmpObject = CObjectInterface::DataObject(pSP->getObjectFromCN(tmpString));
 
                       if (tmpObject)
                         tmpdata.push_back(tmpObject);
@@ -1233,9 +1228,7 @@ CCopasiObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * t
 
                   if (tmpString.size()) //the scan item references an object, this is the scan parameter
                     {
-                      CCopasiDataModel* pDataModel = pSP->getObjectDataModel();
-                      assert(pDataModel != NULL);
-                      const CCopasiObject * tmpObject = pDataModel->getDataObject(tmpString);
+                      const CCopasiObject * tmpObject = CObjectInterface::DataObject(pSP->getObjectFromCN(tmpString));
 
                       if (tmpObject)
                         {

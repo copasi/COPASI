@@ -1,17 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiProblem.h,v $
-//   $Revision: 1.21 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/03/12 00:33:30 $
-// End CVS Header
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2003 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -33,179 +30,148 @@
 #include "utilities/CCopasiTask.h"
 //#include "model/CState.h"
 
-class CModel;
+class CMathContainer;
 class CProcessReport;
 class CReport;
 
 class CCopasiProblem : public CCopasiParameterGroup
-  {
-    // Attributes
-  private:
-    /**
-     * The type of the problem
-     */
-    CCopasiTask::Type mType;
+{
+  // Operations
+private:
+  /**
+   * Default constructor
+   */
+  CCopasiProblem();
 
-  protected:
-    /**
-     * The model of the problem
-     */
-    CModel * mpModel;
+protected:
+  /**
+   * Specific constructor
+   * @param const CCopasiTask::Type & type
+   * @param const CCopasiContainer * pParent (default: NULL)
+   */
+  CCopasiProblem(const CCopasiTask::Type & type,
+                 const CCopasiContainer * pParent = NULL);
 
-    /**
-     * a pointer to the callback
-     */
-    CProcessReport * mpCallBack;
+public:
+  /**
+   * Copy constructor
+   * @param const CCopasiProblemr & src
+   * @param const CCopasiContainer * pParent (default: NULL)
+   */
+  CCopasiProblem(const CCopasiProblem & src,
+                 const CCopasiContainer * pParent = NULL);
 
-    /**
-     * A pointer to the report
-     */
-    CReport * mpReport;
+  /**
+   * Destructor
+   */
+  virtual ~CCopasiProblem();
 
-    // propably for optimization only
-#ifdef XXXX
-    /**
-     * A vector of variables for calculate
-     */
-    CVector< C_FLOAT64 > mCalculateVariables;
+  /**
+   * Retrieve the type of the problem
+   * @return  const string & type
+   */
+  const CCopasiTask::Type & getType() const;
 
-    /**
-     * A vector of results for calculate
-     */
-    CVector< C_FLOAT64 > mCalculateResults;
+  /**
+   * Set the model of the problem
+   * @param CMathContainer * pContainer
+   * @result bool success
+   */
+  void setMathContainer(CMathContainer * pContainer);
 
-    /**
-     * A vector of solution variables
-     */
-    CVector< C_FLOAT64 > mSolutionVariables;
+  /**
+   * Retrieve the model of the problem
+   * @result CMathContainer * pContainer
+   */
+  CMathContainer * getMathContainer() const;
 
-    /**
-     * A vector of solution results
-     */
-    CVector< C_FLOAT64 > mSolutionResults;
-#endif // XXXX
+  /**
+   * Set the call back of the problem
+   * @param CProcessReport * pCallBack
+   * @result bool success
+   */
+  virtual bool setCallBack(CProcessReport * pCallBack);
 
-    // Operations
-  private:
-    /**
-     * Default constructor
-     */
-    CCopasiProblem();
+  /**
+   * Do all necessary initialization so that calls to calculate will
+   * be successful. This is called once from CCopasiTask::process()
+   * @result bool success
+   */
+  virtual bool initialize();
 
-  protected:
-    /**
-     * Specific constructor
-     * @param const CCopasiTask::Type & type
-     * @param const CCopasiContainer * pParent (default: NULL)
-     */
-    CCopasiProblem(const CCopasiTask::Type & type,
-                   const CCopasiContainer * pParent = NULL);
+  /**
+   * Do all necessary restore procedures so that the
+   * model is in the same state as before
+   * @param const bool & updateModel
+   * @result bool success
+   */
+  virtual bool restore(const bool & updateModel);
 
-  public:
-    /**
-     * Copy constructor
-     * @param const CCopasiProblemr & src
-     * @param const CCopasiContainer * pParent (default: NULL)
-     */
-    CCopasiProblem(const CCopasiProblem & src,
-                   const CCopasiContainer * pParent = NULL);
+  /**
+   * calculate function for optimization
+   * @result bool fulfilled
+   */
+  // virtual bool checkParametricConstraints();
 
-    /**
-     * Destructor
-     */
-    virtual ~CCopasiProblem();
+  /**
+   * calculate function for optimization
+   * @result bool fulfilled
+   */
+  // virtual bool checkFunctionalConstraints();
 
-    /**
-     * Retrieve the type of the problem
-     * @return  const string & type
-     */
-    const CCopasiTask::Type & getType() const;
+  /**
+   * This is the output method for any object. The default implementation
+   * provided with CCopasiObject uses the ostream operator<< of the object
+   * to print the object.To override this default behavior one needs to
+   * re-implement the virtual print function.
+   * @param std::ostream * ostream
+   */
+  virtual void print(std::ostream * ostream) const;
 
-    /**
-     * Set the model of the problem
-     * @param CModel * pModel
-     * @result bool succes
-     */
-    virtual bool setModel(CModel * pModel);
+  /**
+   * Output stream operator
+   * @param ostream & os
+   * @param const CCopasiProblem & A
+   * @return ostream & os
+   */
+  friend std::ostream &operator<<(std::ostream &os, const CCopasiProblem & o);
 
-    /**
-     * Retrieve the model of the problem
-     * @result CModel * pModel
-     */
-    CModel * getModel() const;
+  /**
+   * This is the output method for any result of a problem. The default implementation
+   * provided with CCopasiProblem. Does only print "Not implemented." To override this
+   * default behavior one needs to re-implement the virtual printResult function.
+   * @param std::ostream * ostream
+   */
+  virtual void printResult(std::ostream * ostream) const;
 
-    /**
-     * Set the call back of the problem
-     * @param CProcessReport * pCallBack
-     * @result bool succes
-     */
-    virtual bool setCallBack(CProcessReport * pCallBack);
+protected:
+  /**
+   * Signal that the math container has changed
+   */
+  virtual void signalMathContainerChanged();
 
-    /**
-     * Sets the initial value (in case this applies to the specific problem)
-     */
-    //virtual void setInitialState(const CState & initialState);
+  // Attributes
+private:
+  /**
+   * The type of the problem
+   */
+  CCopasiTask::Type mType;
 
-    // propably for optimization only
+protected:
+  /**
+   * The model of the problem
+   */
+  CMathContainer * mpContainer;
 
-    /**
-     * Do all neccessary initialization so that calls to caluclate will
-     * be successful. This is called once from CCopasiTask::process()
-     * @result bool succes
-     */
-    virtual bool initialize();
+  /**
+   * a pointer to the callback
+   */
+  CProcessReport * mpCallBack;
 
-    /**
-     * Do the calculatting based on CalculateVariables and fill
-     * CalculateResults with the results.
-     * @result bool succes
-     */
-    // virtual bool calculate();
-
-    /**
-     * Do all neccessary restore procedures so that the
-     * model is in the same state as before
-     * @parem const bool & updateModel
-     * @result bool succes
-     */
-    virtual bool restore(const bool & updateModel);
-
-    /**
-     * calculate function for optimization
-     * @result bool fullfilled
-     */
-    // virtual bool checkParametricConstraints();
-
-    /**
-     * calculate function for optimization
-     * @result bool fullfilled
-     */
-    // virtual bool checkFunctionalConstraints();
-
-    /**
-     * This is the output method for any object. The default implementation
-     * provided with CCopasiObject uses the ostream operator<< of the object
-     * to print the object.To overide this default behaviour one needs to
-     * reimplement the virtual print function.
-     * @param std::ostream * ostream
-     */
-    virtual void print(std::ostream * ostream) const;
-
-    /**
-     * Output stream operator
-     * @param ostream & os
-     * @param const CCopasiProblem & A
-     * @return ostream & os
-     */
-    friend std::ostream &operator<<(std::ostream &os, const CCopasiProblem & o);
-
-    /**
-     * This is the output method for any rsult of a problem. The default implementation
-     * provided with CCopasiProblem. Does only print "Not implmented." To overide this
-     * default behaviour one needs to reimplement the virtual printResult function.
-     * @param std::ostream * ostream
-     */
-    virtual void printResult(std::ostream * ostream) const;
-  };
+  /**
+   * A pointer to the report
+   */
+  CReport * mpReport;
+};
 
 #endif // COPASI_CCopasiProblem

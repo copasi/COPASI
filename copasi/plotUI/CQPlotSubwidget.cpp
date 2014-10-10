@@ -455,9 +455,9 @@ void CQPlotSubwidget::addCurve2D()
     {
       for (i = 0; i < objects2.size(); ++i)
         {
-          addCurveTab(pDataModel->getDataObject(objects2[i])->getObjectDisplayName()
+          addCurveTab(pDataModel->getObjectFromCN(objects2[i])->getObjectDisplayName()
                       + "|"
-                      + pDataModel->getDataObject(objects1[0])->getObjectDisplayName(),
+                      + pDataModel->getObjectFromCN(objects1[0])->getObjectDisplayName(),
                       objects1[0], objects2[i]);
         }
     }
@@ -465,9 +465,9 @@ void CQPlotSubwidget::addCurve2D()
     {
       for (i = 0; i < objects1.size(); ++i)
         {
-          addCurveTab(pDataModel->getDataObject(objects2[0])->getObjectDisplayName()
+          addCurveTab(pDataModel->getObjectFromCN(objects2[0])->getObjectDisplayName()
                       + "|"
-                      + pDataModel->getDataObject(objects1[i])->getObjectDisplayName(),
+                      + pDataModel->getObjectFromCN(objects1[i])->getObjectDisplayName(),
                       objects1[i], objects2[0]);
         }
     }
@@ -482,9 +482,9 @@ void CQPlotSubwidget::addCurve2D()
 
       for (i = 0; i < imax; ++i)
         {
-          addCurveTab(pDataModel->getDataObject(objects2[i])->getObjectDisplayName()
+          addCurveTab(pDataModel->getObjectFromCN(objects2[i])->getObjectDisplayName()
                       + "|"
-                      + pDataModel->getDataObject(objects1[i])->getObjectDisplayName() ,
+                      + pDataModel->getObjectFromCN(objects1[i])->getObjectDisplayName() ,
                       objects1[i], objects2[i]);
         }
     }

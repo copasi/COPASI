@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -26,6 +26,7 @@
 #include <string>
 
 #include "utilities/COutputHandler.h"
+#include "utilities/CVector.h"
 
 #include "report/CCopasiContainer.h"
 #include "report/CReport.h"
@@ -34,7 +35,6 @@ class CCopasiProblem;
 class CCopasiMethod;
 class CCopasiParameterGroup;
 class CProcessReport;
-class CState;
 
 class CCopasiTask : public CCopasiContainer
 {
@@ -189,86 +189,21 @@ public:
     friend std::ostream &operator<<(std::ostream &os, const CResult & o);
   };
 
-  // Attributes
-protected:
-  /**
-   * The type of the task
-   */
-  Type mType;
-
-  /**
-   * The key of the task
-   */
-  std::string mKey;
-
-  /**
-   * The description of the task.
-   */
-  CDescription mDescription;
-
-  /**
-   * The result of the task.
-   */
-  CResult mResult;
-
-  /**
-   * Tells whether the task is scheduled for execution
-   */
-  bool mScheduled;
-
-  /**
-   * Tells whether the task shall update the model with the result.
-   * The restore method must act accordingly.
-   */
-  bool mUpdateModel;
-
-  /**
-   * The state of the model before execution of the task. If mUpdateModel
-   * is false this state is restored.
-   */
-  CState * mpInitialState;
-
-  /**
-   * The problem of the task
-   */
-  CCopasiProblem * mpProblem;
-
-  /**
-   * The method used to solve the problem.
-   */
-  CCopasiMethod * mpMethod;
-
-  /**
-   * The report that belongs to this specific task
-   */
-  CReport mReport;
-
-  /**
-   * progress bar handler
-   */
-  CProcessReport * mpCallBack;
-
-  /**
-   * Pointer to group of sliders associated with the task.
-   */
-  CCopasiParameterGroup * mpSliders;
-
-public:
+private:
   /**
    * Default constructor
    */
-  CCopasiTask(const std::string & name = "NoName",
-              const CCopasiContainer * pParent = NULL,
-              const std::string & type = "Task");
+  CCopasiTask();
 
+public:
   /**
    * Specific constructor
    * @param const Type & taskType
-   * @param const CCopasiContainer * pParent (default: NULL)
+   * @param const CCopasiContainer * pParent
    * @param const std::string & type (default: "Task")
    */
-  CCopasiTask(const Type & taskType,
-              const CCopasiContainer * pParent = NULL,
+  CCopasiTask(const CCopasiContainer * pParent,
+              const Type & taskType,
               const std::string & type = "Task");
 
   /**
@@ -327,6 +262,18 @@ public:
   const bool & isUpdateModel() const;
 
   /**
+   * Set the pointer to container used for calculations
+   * @param CMathContainer * pContainer
+   */
+  void setMathContainer(CMathContainer * pContainer);
+
+  /**
+   * Retrieve the pointer to the container used for calculations
+   * @return CMathContainer * pContainer
+   */
+  CMathContainer * getMathContainer() const;
+
+  /**
    * Set the call back of the task
    * @param CProcessReport * pCallBack
    * @result bool success
@@ -365,13 +312,6 @@ public:
    * @return bool success
    */
   virtual bool process(const bool & useInitialValues);
-
-#ifndef SWIG
-  // used by language bindings to hold last process warnings / errors
-  // however, swig stumbles over this if it sees it here
-  std::string Error;
-  std::string Warning;
-#endif // SWIG
 
   /**
    * Perform necessary cleanup procedures
@@ -460,12 +400,93 @@ public:
   COutputHandler* getOutputHandler() const;
 
 protected:
+  /**
+   *   Signal that the math container has changed
+   */
+  virtual void signalMathContainerChanged();
+
+private:
+  void initObjects();
+
+  // Attributes
+protected:
+  /**
+   * The type of the task
+   */
+  Type mType;
+
+  /**
+   * The key of the task
+   */
+  std::string mKey;
+
+  /**
+   * The description of the task.
+   */
+  CDescription mDescription;
+
+  /**
+   * The result of the task.
+   */
+  CResult mResult;
+
+  /**
+   * Tells whether the task is scheduled for execution
+   */
+  bool mScheduled;
+
+  /**
+   * Tells whether the task shall update the model with the result.
+   * The restore method must act accordingly.
+   */
+  bool mUpdateModel;
+
+  /**
+   * The problem of the task
+   */
+  CCopasiProblem * mpProblem;
+
+  /**
+   * The method used to solve the problem.
+   */
+  CCopasiMethod * mpMethod;
+
+  /**
+   * The report that belongs to this specific task
+   */
+  CReport mReport;
+
+  /**
+   * A pointer to the math container used for calculation
+   */
+  CMathContainer * mpContainer;
+
+  /**
+   * The state of the model before execution of the task. If mUpdateModel
+   * is false this state is restored.
+   */
+  CVector< C_FLOAT64 > mInitialState;
+
+  /**
+   * progress bar handler
+   */
+  CProcessReport * mpCallBack;
+
+  /**
+   * Pointer to group of sliders associated with the task.
+   */
+  CCopasiParameterGroup * mpSliders;
+
   OutputFlag mDoOutput;
   COutputHandler * mpOutputHandler;
   unsigned C_INT32 mOutputCounter;
 
-private:
-  void initObjects();
+#ifndef SWIG
+  // used by language bindings to hold last process warnings / errors
+  //   however, swig stumbles over this if it sees it here
+  std::string Error;
+  std::string Warning;
+#endif // SWIG
 };
 
 #endif // COPASI_CCopasiTask

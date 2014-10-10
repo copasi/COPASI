@@ -61,28 +61,26 @@ const unsigned int CTrajectoryTask::ValidMethods[] =
   CCopasiMethod::directMethod,
   CCopasiMethod::tauLeap,
   CCopasiMethod::adaptiveSA,
-  CCopasiMethod::hybrid,
-  CCopasiMethod::hybridLSODA,
-#ifdef COPASI_DEBUG
   CCopasiMethod::hybridODE45,
+#ifdef COPASI_DEBUG
   CCopasiMethod::DsaLsodar,
 #endif // COPASI_DEBUG
   CCopasiMethod::unset
 };
 
-CTrajectoryTask::CTrajectoryTask(const CCopasiContainer * pParent):
-  CCopasiTask(CCopasiTask::timeCourse, pParent),
+CTrajectoryTask::CTrajectoryTask(const CCopasiContainer * pParent,
+                                 const CCopasiTask::Type & type):
+  CCopasiTask(pParent, type),
   mTimeSeriesRequested(true),
   mTimeSeries(),
   mpTrajectoryProblem(NULL),
   mpTrajectoryMethod(NULL),
   mUpdateMoieties(false),
-  mCurrentState(),
-  mpCurrentStateTime(NULL),
+  mContainerState(),
+  mpContainerStateTime(NULL),
   mOutputStartTime(0.0),
   mpLessOrEqual(&fle),
   mpLess(&fl),
-  mpContainer(NULL),
   mProceed(true)
 {
   mpProblem = new CTrajectoryProblem(this);
@@ -95,34 +93,8 @@ CTrajectoryTask::CTrajectoryTask(const CCopasiContainer * pParent):
     mUpdateMoieties = *pParameter->getValue().pBOOL;
   else
     mUpdateMoieties = false;
-}
 
-CTrajectoryTask::CTrajectoryTask(const Type & taskType,
-                                 const CCopasiContainer * pParent):
-  CCopasiTask(taskType, pParent),
-  mTimeSeriesRequested(true),
-  mTimeSeries(),
-  mpTrajectoryProblem(NULL),
-  mpTrajectoryMethod(NULL),
-  mUpdateMoieties(false),
-  mCurrentState(),
-  mpCurrentStateTime(NULL),
-  mOutputStartTime(0.0),
-  mpLessOrEqual(&fle),
-  mpLess(&fl),
-  mpContainer(NULL),
-  mProceed(true)
-{
-  mpProblem = new CTrajectoryProblem(this);
-  mpMethod = createMethod(CCopasiMethod::deterministic);
-  this->add(mpMethod, true);
-
-  CCopasiParameter * pParameter = mpMethod->getParameter("Integrate Reduced Model");
-
-  if (pParameter != NULL)
-    mUpdateMoieties = *pParameter->getValue().pBOOL;
-  else
-    mUpdateMoieties = false;
+  signalMathContainerChanged();
 }
 
 CTrajectoryTask::CTrajectoryTask(const CTrajectoryTask & src,
@@ -133,12 +105,11 @@ CTrajectoryTask::CTrajectoryTask(const CTrajectoryTask & src,
   mpTrajectoryProblem(NULL),
   mpTrajectoryMethod(NULL),
   mUpdateMoieties(false),
-  mCurrentState(),
-  mpCurrentStateTime(NULL),
+  mContainerState(),
+  mpContainerStateTime(NULL),
   mOutputStartTime(0.0),
   mpLessOrEqual(src.mpLessOrEqual),
   mpLess(src.mpLess),
-  mpContainer(src.mpContainer),
   mProceed(src.mProceed)
 {
   mpProblem =
@@ -158,11 +129,7 @@ CTrajectoryTask::CTrajectoryTask(const CTrajectoryTask & src,
   else
     mUpdateMoieties = false;
 
-  if (mpContainer != NULL)
-    {
-      mCurrentState.initialize(mpContainer->getState(mUpdateMoieties));
-      mpCurrentStateTime = mCurrentState.array() + mpContainer->getTimeIndex();
-    }
+  signalMathContainerChanged();
 }
 
 CTrajectoryTask::~CTrajectoryTask()
@@ -171,9 +138,7 @@ CTrajectoryTask::~CTrajectoryTask()
 }
 
 void CTrajectoryTask::cleanup()
-{
-  // pdelete(mpContainer);
-}
+{}
 
 void CTrajectoryTask::load(CReadConfig & configBuffer)
 {
@@ -236,14 +201,24 @@ bool CTrajectoryTask::initialize(const OutputFlag & of,
 
   success &= CCopasiTask::initialize(of, pOutputHandler, pOstream);
 
-  mpContainer = &mpTrajectoryProblem->getModel()->getMathContainer();
-
-  mCurrentState.initialize(mpContainer->getState(mUpdateMoieties));
-  mpCurrentStateTime = mCurrentState.array() + mpContainer->getTimeIndex();
-
-  mpTrajectoryMethod->setContainer(mpContainer);
+  signalMathContainerChanged();
 
   return success;
+}
+
+// virtual
+void CTrajectoryTask::signalMathContainerChanged()
+{
+  if (mpContainer != NULL)
+    {
+      mContainerState.initialize(mpContainer->getState(mUpdateMoieties));
+      mpContainerStateTime = mContainerState.array() + mpContainer->getTimeIndex();
+    }
+  else
+    {
+      mContainerState.initialize(0, NULL);
+      mpContainerStateTime = NULL;
+    }
 }
 
 bool CTrajectoryTask::process(const bool & useInitialValues)
@@ -267,12 +242,12 @@ bool CTrajectoryTask::process(const bool & useInitialValues)
   if (useInitialValues)
     mOutputStartTime = mpTrajectoryProblem->getOutputStartTime();
   else
-    mOutputStartTime = *mpCurrentStateTime + mpTrajectoryProblem->getOutputStartTime();
+    mOutputStartTime = *mpContainerStateTime + mpTrajectoryProblem->getOutputStartTime();
 
   C_FLOAT64 NextTimeToReport;
 
-  const C_FLOAT64 EndTime = *mpCurrentStateTime + Duration;
-  const C_FLOAT64 StartTime = *mpCurrentStateTime;
+  const C_FLOAT64 EndTime = *mpContainerStateTime + Duration;
+  const C_FLOAT64 StartTime = *mpContainerStateTime;
   C_FLOAT64 CompareEndTime;
 
   if (StepSize < 0.0)
@@ -320,7 +295,7 @@ bool CTrajectoryTask::process(const bool & useInitialValues)
                                      &hundred);
     }
 
-  if ((*mpLessOrEqual)(mOutputStartTime, *mpCurrentStateTime)) output(COutputInterface::DURING);
+  if ((*mpLessOrEqual)(mOutputStartTime, *mpContainerStateTime)) output(COutputInterface::DURING);
 
   try
     {
@@ -335,25 +310,25 @@ bool CTrajectoryTask::process(const bool & useInitialValues)
 
           if (mpCallBack != NULL && StepNumber > 1.0)
             {
-              Percentage = (*mpCurrentStateTime - StartTime) * handlerFactor;
+              Percentage = (*mpContainerStateTime - StartTime) * handlerFactor;
               flagProceed &= mpCallBack->progressItem(hProcess);
             }
 
-          if ((*mpLessOrEqual)(mOutputStartTime, *mpCurrentStateTime))
+          if ((*mpLessOrEqual)(mOutputStartTime, *mpContainerStateTime))
             {
               output(COutputInterface::DURING);
             }
         }
-      while ((*mpLess)(*mpCurrentStateTime, CompareEndTime) && flagProceed);
+      while ((*mpLess)(*mpContainerStateTime, CompareEndTime) && flagProceed);
     }
 
   catch (int)
     {
-      mpContainer->setState(mCurrentState);
+      mpContainer->setState(mContainerState);
       mpContainer->updateSimulatedValues(mUpdateMoieties);
       mpContainer->pushState();
 
-      if ((*mpLessOrEqual)(mOutputStartTime, *mpCurrentStateTime))
+      if ((*mpLessOrEqual)(mOutputStartTime, *mpContainerStateTime))
         {
           output(COutputInterface::DURING);
         }
@@ -367,11 +342,11 @@ bool CTrajectoryTask::process(const bool & useInitialValues)
 
   catch (CCopasiException & Exception)
     {
-      mpContainer->setState(mCurrentState);
+      mpContainer->setState(mContainerState);
       mpContainer->updateSimulatedValues(mUpdateMoieties);
       mpContainer->pushState();
 
-      if ((*mpLessOrEqual)(mOutputStartTime, *mpCurrentStateTime))
+      if ((*mpLessOrEqual)(mOutputStartTime, *mpContainerStateTime))
         {
           output(COutputInterface::DURING);
         }
@@ -397,10 +372,8 @@ void CTrajectoryTask::processStart(const bool & useInitialValues)
       mpContainer->applyInitialValues();
     }
 
-  mCurrentState.initialize(mpContainer->getState(mUpdateMoieties));
-
-  mpTrajectoryMethod->setContainer(mpContainer);
-  mpTrajectoryMethod->start(mCurrentState);
+  mContainerState.initialize(mpContainer->getState(mUpdateMoieties));
+  mpTrajectoryMethod->start();
 
   return;
 }
@@ -419,13 +392,13 @@ bool CTrajectoryTask::processStep(const C_FLOAT64 & endTime)
 
       if (StateChange != CMath::NoChange)
         {
-          if ((*mpLessOrEqual)(mOutputStartTime, *mpCurrentStateTime) &&
+          if ((*mpLessOrEqual)(mOutputStartTime, *mpContainerStateTime) &&
               mpTrajectoryProblem->getOutputEvent())
             {
               output(COutputInterface::DURING);
             }
 
-          mCurrentState = mpContainer->getState(mUpdateMoieties);
+          mContainerState = mpContainer->getState(mUpdateMoieties);
           mpTrajectoryMethod->stateChange(StateChange);
           StateChange = CMath::NoChange;
         }
@@ -433,14 +406,14 @@ bool CTrajectoryTask::processStep(const C_FLOAT64 & endTime)
       // std::min suffices since events are only supported in forward integration.
       NextTime = std::min(endTime, mpContainer->getProcessQueueExecutionTime());
 
-      switch (mpTrajectoryMethod->step(NextTime - *mpCurrentStateTime))
+      switch (mpTrajectoryMethod->step(NextTime - *mpContainerStateTime))
         {
           case CTrajectoryMethod::NORMAL:
-            mpContainer->setState(mCurrentState);
+            mpContainer->setState(mContainerState);
             mpContainer->updateSimulatedValues(mUpdateMoieties);
 
-            if ((*mpLessOrEqual)(mOutputStartTime, *mpCurrentStateTime) &&
-                *mpCurrentStateTime == mpContainer->getProcessQueueExecutionTime() &&
+            if ((*mpLessOrEqual)(mOutputStartTime, *mpContainerStateTime) &&
+                *mpContainerStateTime == mpContainer->getProcessQueueExecutionTime() &&
                 mpTrajectoryProblem->getOutputEvent())
               {
                 output(COutputInterface::DURING);
@@ -449,11 +422,11 @@ bool CTrajectoryTask::processStep(const C_FLOAT64 & endTime)
             // TODO Provide a call back method for resolving simultaneous assignments.
             StateChange = mpContainer->processQueue(true);
 
-            if (fabs(*mpCurrentStateTime - endTime) < Tolerance)
+            if (fabs(*mpContainerStateTime - endTime) < Tolerance)
               {
                 if (StateChange != CMath::NoChange)
                   {
-                    mCurrentState = mpContainer->getState(mUpdateMoieties);
+                    mContainerState = mpContainer->getState(mUpdateMoieties);
                     mpTrajectoryMethod->stateChange(StateChange);
                     StateChange = CMath::NoChange;
                   }
@@ -463,13 +436,13 @@ bool CTrajectoryTask::processStep(const C_FLOAT64 & endTime)
 
             if (StateChange != CMath::NoChange)
               {
-                if ((*mpLessOrEqual)(mOutputStartTime, *mpCurrentStateTime) &&
+                if ((*mpLessOrEqual)(mOutputStartTime, *mpContainerStateTime) &&
                     mpTrajectoryProblem->getOutputEvent())
                   {
                     output(COutputInterface::DURING);
                   }
 
-                mCurrentState = mpContainer->getState(mUpdateMoieties);
+                mContainerState = mpContainer->getState(mUpdateMoieties);
                 mpTrajectoryMethod->stateChange(StateChange);
                 StateChange = CMath::NoChange;
               }
@@ -477,13 +450,13 @@ bool CTrajectoryTask::processStep(const C_FLOAT64 & endTime)
             break;
 
           case CTrajectoryMethod::ROOT:
-            mpContainer->setState(mCurrentState);
+            mpContainer->setState(mContainerState);
             mpContainer->updateSimulatedValues(mUpdateMoieties);
 
             mpContainer->processRoots(true, mpTrajectoryMethod->getRoots());
 
-            if ((*mpLessOrEqual)(mOutputStartTime, *mpCurrentStateTime) &&
-                *mpCurrentStateTime == mpContainer->getProcessQueueExecutionTime() &&
+            if ((*mpLessOrEqual)(mOutputStartTime, *mpContainerStateTime) &&
+                *mpContainerStateTime == mpContainer->getProcessQueueExecutionTime() &&
                 mpTrajectoryProblem->getOutputEvent())
               {
                 output(COutputInterface::DURING);
@@ -496,11 +469,11 @@ bool CTrajectoryTask::processStep(const C_FLOAT64 & endTime)
 
             // If the root happens to coincide with end of the step we have to return and
             // inform the integrator of eventual state changes.
-            if (fabs(*mpCurrentStateTime - endTime) < Tolerance)
+            if (fabs(*mpContainerStateTime - endTime) < Tolerance)
               {
                 if (StateChange != CMath::NoChange)
                   {
-                    mCurrentState = mpContainer->getState(mUpdateMoieties);
+                    mContainerState = mpContainer->getState(mUpdateMoieties);
                     mpTrajectoryMethod->stateChange(StateChange);
                     StateChange = CMath::NoChange;
                   }
@@ -508,17 +481,17 @@ bool CTrajectoryTask::processStep(const C_FLOAT64 & endTime)
                 return true;
               }
 
-            if ((*mpLessOrEqual)(mOutputStartTime, *mpCurrentStateTime) &&
+            if ((*mpLessOrEqual)(mOutputStartTime, *mpContainerStateTime) &&
                 mpTrajectoryProblem->getOutputEvent() &&
                 (StateChange != CMath::NoChange ||
-                 *mpCurrentStateTime == mpContainer->getProcessQueueExecutionTime()))
+                 *mpContainerStateTime == mpContainer->getProcessQueueExecutionTime()))
               {
                 output(COutputInterface::DURING);
               }
 
             if (StateChange != CMath::NoChange)
               {
-                mCurrentState = mpContainer->getState(mUpdateMoieties);
+                mContainerState = mpContainer->getState(mUpdateMoieties);
                 mpTrajectoryMethod->stateChange(StateChange);
                 StateChange = CMath::NoChange;
               }
@@ -544,14 +517,10 @@ bool CTrajectoryTask::restore()
 
   if (mUpdateModel)
     {
-      mpContainer->setState(mCurrentState);
-      mpContainer->updateSimulatedValues(mUpdateMoieties);
-      mpContainer->pushState();
-
-      CModel * pModel = mpProblem->getModel();
-
-      pModel->setInitialState(pModel->getState());
-      pModel->updateInitialValues();
+      mpContainer->updateSimulatedValues(true);
+      mpContainer->setInitialState(mpContainer->getState(false));
+      mpContainer->updateInitialValues(CModelParameter::ParticleNumbers);
+      mpContainer->pushInitialState();
     }
 
   return success;
@@ -585,15 +554,6 @@ CCopasiMethod * CTrajectoryTask::createMethod(const int & type) const
   CCopasiMethod::SubType Type = (CCopasiMethod::SubType) type;
 
   return CTrajectoryMethod::createMethod(Type);
-}
-
-const CState * CTrajectoryTask::getState()
-{
-  mpContainer->setState(mCurrentState);
-  mpContainer->updateSimulatedValues(mUpdateMoieties);
-  mpContainer->pushState();
-
-  return & mpContainer->getModel().getState();
 }
 
 const CTimeSeries & CTrajectoryTask::getTimeSeries() const

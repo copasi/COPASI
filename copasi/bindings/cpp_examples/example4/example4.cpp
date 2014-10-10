@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -131,11 +131,12 @@ int main()
   // if there isn't one
   if (pTrajectoryTask == NULL)
     {
-      // create a new one
-      pTrajectoryTask = new CTrajectoryTask();
       // remove any existing trajectory task just to be sure since in
       // theory only the cast might have failed above
       TaskList.remove("Time-Course");
+
+      // create a new one
+      pTrajectoryTask = new CTrajectoryTask(& TaskList);
 
       // add the new time course task to the task list
       TaskList.add(pTrajectoryTask, true);
@@ -143,9 +144,6 @@ int main()
 
   // run a stochastic time course
   pTrajectoryTask->setMethodType(CCopasiMethod::stochastic);
-
-  // pass a pointer of the model to the problem
-  pTrajectoryTask->getProblem()->setModel(pDataModel->getModel());
 
   // we don't want the trajectory task to run by itself, but we want to
   // run it from a scan, so we deactivate the standalone trajectory task
@@ -168,10 +166,12 @@ int main()
 
   if (pScanTask == NULL)
     {
-      // create a new scan task
-      pScanTask = new CScanTask();
       // just to be on the save side, delete any existing scan task
       TaskList.remove("Scan");
+
+      // create a new scan task
+      pScanTask = new CScanTask(& TaskList);
+
       // add the new scan task
       TaskList.add(pScanTask, true);
     }
@@ -179,9 +179,6 @@ int main()
   // get the problem
   CScanProblem* pScanProblem = dynamic_cast<CScanProblem*>(pScanTask->getProblem());
   assert(pScanProblem != NULL);
-
-  // set the model for the problem
-  pScanProblem->setModel(pDataModel->getModel());
 
   // Activate the task so that is is run
   // if the model is saved and passed to CopasiSE

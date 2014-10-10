@@ -1,17 +1,9 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/moieties/CMoietiesMethod.cpp,v $
-//   $Revision: 1.4 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/03/07 19:31:27 $
-// End CVS Header
-
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
@@ -21,6 +13,7 @@
 #include "CMoietiesMethod.h"
 #include "CMoietiesProblem.h"
 
+#include "math/CMathContainer.h"
 #include "model/CModel.h"
 
 CMoietiesMethod * CMoietiesMethod::createMethod(const CCopasiMethod::SubType & subType)
@@ -39,21 +32,21 @@ CMoietiesMethod * CMoietiesMethod::createMethod(const CCopasiMethod::SubType & s
 }
 
 CMoietiesMethod::CMoietiesMethod():
-    CCopasiMethod(CCopasiTask::moieties, CCopasiMethod::Householder),
-    mpProblem(NULL)
+  CCopasiMethod(CCopasiTask::moieties, CCopasiMethod::Householder),
+  mpProblem(NULL)
 {}
 
 CMoietiesMethod::CMoietiesMethod(const CCopasiTask::Type & taskType,
                                  const CMoietiesMethod::SubType & subType,
                                  const CCopasiContainer * pParent):
-    CCopasiMethod(taskType, subType, pParent),
-    mpProblem(NULL)
+  CCopasiMethod(taskType, subType, pParent),
+  mpProblem(NULL)
 {}
 
 CMoietiesMethod::CMoietiesMethod(const CMoietiesMethod & src,
                                  const CCopasiContainer * pParent):
-    CCopasiMethod(src, pParent),
-    mpProblem(src.mpProblem)
+  CCopasiMethod(src, pParent),
+  mpProblem(src.mpProblem)
 {}
 
 // virtual
@@ -65,7 +58,7 @@ bool CMoietiesMethod::process()
 {
   try
     {
-      mpProblem->getModel()->forceCompile(mpCallBack);
+      const_cast< CModel * >(&mpContainer->getModel())->compileIfNecessary(mpCallBack);
     }
 
   catch (...)

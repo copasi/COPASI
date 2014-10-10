@@ -1,16 +1,16 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-// and The University of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2003 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc. and EML Research, gGmbH. 
-// All rights reserved. 
+// Copyright (C) 2003 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 /**
  *  CCopasiMethod class.
@@ -22,10 +22,11 @@
 
 #include "copasi/copasi.h"
 
-#include "copasi/utilities//CCopasiMethod.h"
-#include "copasi/utilities/CCopasiMessage.h"
-#include "copasi/utilities/CCopasiProblem.h"
-#include "copasi/model/CModel.h"
+#include "CCopasiMethod.h"
+#include "CCopasiMessage.h"
+#include "CCopasiProblem.h"
+
+#include "math/CMathContainer.h"
 
 const std::string CCopasiMethod::SubTypeName[] =
 {
@@ -56,8 +57,6 @@ const std::string CCopasiMethod::SubTypeName[] =
   "Stochastic (Gibson + Bruck)",
   "Stochastic (\xcf\x84-Leap)",
   "Stochastic (Adaptive SSA/\xcf\x84-Leap)",
-  "Hybrid (Runge-Kutta)",
-  "Hybrid (LSODA)",
   "Hybrid (ODE45)",
   "Hybrid (DSA-LSODAR)",
   "ILDM (LSODA,Deuflhard)",
@@ -108,8 +107,6 @@ const char * CCopasiMethod::XMLSubType[] =
   "DirectMethod",
   "TauLeap",
   "AdaptiveSA",
-  "Hybrid",
-  "Hybrid (LSODA)",
   "Hybrid (DSA-ODE45)",
   "Hybrid (DSA-LSODAR)",
   "TimeScaleSeparation(ILDM,Deuflhard)",
@@ -135,8 +132,8 @@ CCopasiMethod::CCopasiMethod():
   CCopasiParameterGroup("NoName", NULL, "Method"),
   mType(CCopasiTask::unset),
   mSubType(unset),
+  mpContainer(NULL),
   mpCallBack(NULL)
-  //mpReport(NULL)
 {setObjectName(SubTypeName[mType]);}
 
 CCopasiMethod::CCopasiMethod(const CCopasiTask::Type & type,
@@ -145,8 +142,8 @@ CCopasiMethod::CCopasiMethod(const CCopasiTask::Type & type,
   CCopasiParameterGroup(CCopasiTask::TypeName[type], pParent, "Method"),
   mType(type),
   mSubType(subType),
+  mpContainer(NULL),
   mpCallBack(NULL)
-  //mpReport(NULL)
 {setObjectName(SubTypeName[mSubType]);}
 
 CCopasiMethod::CCopasiMethod(const CCopasiMethod & src,
@@ -154,11 +151,29 @@ CCopasiMethod::CCopasiMethod(const CCopasiMethod & src,
   CCopasiParameterGroup(src, pParent),
   mType(src.mType),
   mSubType(src.mSubType),
+  mpContainer(src.mpContainer),
   mpCallBack(src.mpCallBack)
-  //mpReport(src.mpReport)
 {}
 
 CCopasiMethod::~CCopasiMethod() {}
+
+void CCopasiMethod::setMathContainer(CMathContainer * pContainer)
+{
+  if (pContainer != mpContainer)
+    {
+      mpContainer = pContainer;
+      signalMathContainerChanged();
+    }
+}
+
+// virtual
+void CCopasiMethod::signalMathContainerChanged()
+{}
+
+CMathContainer * CCopasiMethod::getMathContainer() const
+{
+  return mpContainer;
+}
 
 bool CCopasiMethod::setCallBack(CProcessReport * pCallBack)
 {
@@ -179,21 +194,21 @@ const CCopasiMethod::SubType & CCopasiMethod::getSubType() const
 //virtual
 bool CCopasiMethod::isValidProblem(const CCopasiProblem * pProblem)
 {
-  if (!pProblem)
+  if (pProblem == NULL)
     {
       //no problem
       CCopasiMessage(CCopasiMessage::EXCEPTION, MCCopasiMethod + 2);
       return false;
     }
 
-  if (! pProblem->getModel())
+  if (mpContainer == NULL)
     {
       //no model
       CCopasiMessage(CCopasiMessage::EXCEPTION, MCCopasiMethod + 3);
       return false;
     }
 
-  if (pProblem->getModel()->getEvents().size())
+  if (mpContainer->getEvents().size())
     {
       if (mType == CCopasiTask::lyap)
         {

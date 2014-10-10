@@ -95,7 +95,6 @@ int main()
   // next we need to set subtask type on the problem
   COptProblem* pOptProblem = dynamic_cast<COptProblem*>(pOptTask->getProblem());
   assert(pOptProblem != NULL);
-  pOptProblem->setModel(pModel);
   pOptProblem->setSubtaskType(CCopasiTask::timeCourse);
 
   CTrajectoryTask* pTimeCourseTask = dynamic_cast<CTrajectoryTask*>(TaskList["Time-Course"]);
@@ -106,7 +105,6 @@ int main()
   pTimeCourseTask->setMethodType(CCopasiMethod::deterministic);
 
   // pass a pointer of the model to the problem
-  pTimeCourseTask->getProblem()->setModel(pModel);
 
   // get the problem for the task to set some parameters
   CTrajectoryProblem* pProblem = dynamic_cast<CTrajectoryProblem*>(pTimeCourseTask->getProblem());

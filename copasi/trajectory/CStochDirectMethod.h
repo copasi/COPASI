@@ -19,9 +19,7 @@
 #include <vector>
 
 #include "copasi/trajectory/CTrajectoryMethod.h"
-#include "copasi/trajectory/CStochMethod.h"
-#include "copasi/utilities/CDependencyGraph.h"
-#include "copasi/model/CState.h"
+#include "utilities/CBrent.h"
 
 class CModel;
 class CMetab;
@@ -86,9 +84,8 @@ public:
   /**
    *  This instructs the method to prepare for integration
    *  starting with the initialState given.
-   *  @param "const CState *" initialState
    */
-  virtual void start(CVectorCore< C_FLOAT64 > & initialState);
+  virtual void start();
 
   /**
   * Check if the method is suitable for this problem
@@ -189,9 +186,9 @@ protected:
   bool mHaveTimeDependentRoots;
 
   /**
-   * Functor pointing to the Brent root finding method.
+   * Pointer to method used for function evaluations for the Brent root finding method.
    */
-  FDescent * mpRootValueCalculator;
+  CBrent::Eval * mpRootValueCalculator;
 
   /**
    * A boolean flag indicating whether the maximum steps have been reached. This

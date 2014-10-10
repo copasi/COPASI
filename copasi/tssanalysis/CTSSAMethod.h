@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -35,20 +35,11 @@
 #include "copasi/report/CCopasiObjectReference.h"
 
 class CTSSAProblem;
-class CModel;
-class CState;
+class CLsodaMethod;
 
 class CTSSAMethod : public CCopasiMethod
 {
 protected:
-  /**
-   *  A pointer to the current state. This is set from outside
-   *  with the setState() method and never changed anywhere else.
-   *  It�s used to report the results
-   *  to the calling TSSATask
-   */
-  CState * mpCurrentState;
-
   /**
    *  A pointer to the time scale separation analysis problem.
    */
@@ -107,22 +98,9 @@ public:
   virtual bool setAnnotationM(size_t s) = 0;
 
   /**
-  * Set the Model
-  */
-  void setModel(CModel* model);
-
-  /**
   * Predefine the CArrayAnnotation for plots
   */
   virtual void predifineAnnotation();
-
-  /**
-   *  Set a pointer to the current state.
-   *  This method is used by CTSSATask::process()
-   *  The results of the simulation are passed via this CState variable
-   *  @param "CState *" currentState
-   */
-  void setCurrentState(CState * currentState);
 
   /**
    *  Set a pointer to the problem.
@@ -143,10 +121,8 @@ public:
 
   /**
    *  This instructs the method to prepare for integration
-   *  starting with the initialState given.
-   *  @param "const CState *" initialState
    */
-  virtual void start(const CState * initialState);
+  virtual void start();
 
   /**
    * Check if the method is suitable for this problem
@@ -162,42 +138,14 @@ public:
   /************ The following concerns the both ILDM Methods *******************************/
 
 protected:
+  CLsodaMethod * mpLsodaMethod;
 
-  struct Data
-  {
-    C_INT dim;
-    CTSSAMethod * pMethod;
-  };
-
-  /**
-   *  A pointer to the current state in complete model view.
-   */
-  CState * mpState;
-
-  /**
-   * mData.dim is the dimension of the ODE system.
-   */
-  Data mData;
-
-  /**
-   *  Pointer to the array with left hand side values.
-   */
-  C_FLOAT64 * mY;
-
-  /**
-   * Vector containing the derivatives after calling eval
-   */
-  CVector< C_FLOAT64 > mYdot;
+  C_INT mDim;
 
   /**
    *
-  */
-  CVector< C_FLOAT64 > mY_initial;
-
-  /**
-   *  Current time.
    */
-  C_FLOAT64 mTime;
+  CVector< C_FLOAT64 > mY_initial;
 
   /**
    *  Jacobian matrix
@@ -281,61 +229,6 @@ protected:
   C_INT mSlow;
 
   /**
-   *  LSODA state.
-   */
-  C_INT mLsodaStatus;
-
-  /**
-   * Whether to use the reduced model
-   */
-  bool mReducedModel;
-
-  /**
-   * Relative tolerance.
-   */
-  C_FLOAT64 mRtol;
-
-  /**
-   * A vector of absolute tolerances.
-   */
-  CVector< C_FLOAT64 > mAtol;
-
-  /**
-   * Stream to capture LSODA error messages
-   */
-  std::ostringstream mErrorMsg;
-
-  /**
-   * The LSODA integrator
-   */
-  CLSODA mLSODA;
-
-  /**
-   * The state of the integrator
-   */
-  C_INT mState;
-
-  /**
-   * LSODA C_FLOAT64 work area
-   */
-  CVector< C_FLOAT64 > mDWork;
-
-  /**
-   * LSODA C_INT work area
-   */
-  CVector< C_INT > mIWork;
-
-  /**
-   * The way LSODA calculates the jacobian
-   */
-  C_INT mJType;
-
-  /**
-   * A pointer to the model
-   */
-  CModel * mpModel;
-
-  /**
    *  Tolerance for Deuflhard criterium
    */
   C_FLOAT64 mDtol;
@@ -345,13 +238,16 @@ protected:
    */
   C_FLOAT64 mEPS;
 
+  C_FLOAT64 mNumber2Concentration;
+  C_FLOAT64 mConcentration2Number;
+
+  CVectorCore< C_FLOAT64 > mContainerState;
+  C_FLOAT64 * mpContainerStateTime;
+
+  C_FLOAT64 *mpFirstSpecies;
+  const C_FLOAT64 *mpFirstSpeciesRate;
+
   // Operations
-
-  /**
-   * Initialize integration method parameters
-   */
-
-  void initializeIntegrationsParameter();
 
   /**
    * This methods must be called to elevate subgroups to
@@ -368,29 +264,13 @@ protected:
    *  The return value is the actual timestep taken.
    *  @param "const double &" deltaT
    **/
-
-  /**
-   **/
   void integrationStep(const double & deltaT);
 
   /**
    *  This instructs the method to prepare for integration
    *  starting with the initialState given.
-   *  @param "const CState *" initialState
    */
-  void integrationMethodStart(const CState * initialState);
-
-  /**
-   * Calculate the individual absolute tolerance
-   */
-  void initializeAtol();
-
-  static void EvalF(const C_INT * n, const C_FLOAT64 * t, const C_FLOAT64 * y, C_FLOAT64 * ydot);
-
-  /**
-   *  This evaluates the derivatives
-   */
-  void evalF(const C_FLOAT64 * t, const C_FLOAT64 * y, C_FLOAT64 * ydot);
+  void integrationMethodStart();
 
   /**
    *
@@ -422,15 +302,11 @@ protected:
   /**
    *
    **/
-  void calculateDerivativesX(C_FLOAT64 * X1, C_FLOAT64 * Y1);
-
-  void calculateDerivatives(C_FLOAT64 * X1, C_FLOAT64 * Y1);
+  void calculateDerivatives(C_FLOAT64 * X1, C_FLOAT64 * Y1, bool useReducedModel);
 
   /**
-    * This is not very elegant solution. But I don't know the better one.
+   * This is not very elegant solution. But I don't know the better one.
    **/
-
-  //    void calculateNextJacobian(const double & deltaT);
 
   /**
    *

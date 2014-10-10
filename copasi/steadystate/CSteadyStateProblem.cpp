@@ -1,22 +1,14 @@
-/* Begin CVS Header
- $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateProblem.cpp,v $
- $Revision: 1.28 $
- $Name:  $
- $Author: shoops $
- $Date: 2010/02/11 19:42:49 $
- End CVS Header */
-
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2002 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -25,7 +17,7 @@
  *  This class describes the steady state problem, i.e., it allows to specify
  *  for example initial conditions.
  *
- *  Created for Copasi by Stefan Hoops 2002
+ *  Created for COPASI by Stefan Hoops 2002
  */
 
 #include <string>
@@ -41,9 +33,9 @@
  *  Default constructor.
  */
 CSteadyStateProblem::CSteadyStateProblem(const CCopasiContainer * pParent):
-    CCopasiProblem(CCopasiTask::steadyState, pParent)
-    //mInitialState(),
-    //mHasInitialState(false)
+  CCopasiProblem(CCopasiTask::steadyState, pParent)
+  //mInitialState(),
+  //mHasInitialState(false)
 {
   addParameter("JacobianRequested", CCopasiParameter::BOOL, true);
   addParameter("StabilityAnalysisRequested", CCopasiParameter::BOOL, true);
@@ -56,9 +48,9 @@ CSteadyStateProblem::CSteadyStateProblem(const CCopasiContainer * pParent):
  */
 CSteadyStateProblem::CSteadyStateProblem(const CSteadyStateProblem & src,
     const CCopasiContainer * pParent):
-    CCopasiProblem(src, pParent)
-    //mInitialState(src.mInitialState),
-    //mHasInitialState(src.mHasInitialState)
+  CCopasiProblem(src, pParent)
+  //mInitialState(src.mInitialState),
+  //mHasInitialState(src.mHasInitialState)
 {CONSTRUCTOR_TRACE;}
 
 /**
@@ -69,7 +61,7 @@ CSteadyStateProblem::~CSteadyStateProblem()
 
 bool CSteadyStateProblem::initialize()
 {
-  if (!mpModel) return false;
+  if (!mpContainer) return false;
 
   return true;
 }
@@ -89,14 +81,14 @@ bool CSteadyStateProblem::isJacobianRequested() const
 {return * getValue("JacobianRequested").pBOOL;}
 
 /**
- * Set whether stabilty analysis is requested.
+ * Set whether stability analysis is requested.
  * @param bool * stabilityAnalysisRequested
  */
 void CSteadyStateProblem::setStabilityAnalysisRequested(bool & stabilityAnalysisRequested)
 {setValue("StabilityAnalysisRequested", stabilityAnalysisRequested);}
 
 /**
- * Retrieve whether the stabilty analysis is requested.
+ * Retrieve whether the stability analysis is requested.
  * @return bool stabilityAnalysisRequested
  */
 bool CSteadyStateProblem::isStabilityAnalysisRequested() const
@@ -111,11 +103,6 @@ void CSteadyStateProblem::load(CReadConfig & configBuffer,
 {
   if (configBuffer.getVersion() < "4.0")
     {
-      CCopasiDataModel* pDataModel = getObjectDataModel();
-      assert(pDataModel != NULL);
-      mpModel = pDataModel->getModel();
-      //mInitialState = mpModel->getInitialState();
-      //mHasInitialState = false;
       configBuffer.getVariable("RepStabilityAnalysis", "bool" ,
                                getValue("StabilityAnalysisRequested").pBOOL,
                                CReadConfig::LOOP);

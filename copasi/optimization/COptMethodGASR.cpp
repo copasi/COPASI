@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -135,7 +135,7 @@ bool COptMethodGASR::mutate(CVector< C_FLOAT64 > & individual)
 
       // We need to set the value here so that further checks take
       // account of the value.
-      (*(*mpSetCalculateVariable)[j])(mut);
+      *mContainerVariables[j] = mut;
     }
 
   return true;
@@ -377,7 +377,7 @@ bool COptMethodGASR::creation(size_t first,
 
           // We need to set the value here so that further checks take
           // account of the value.
-          (*(*mpSetCalculateVariable)[j])(mut);
+          *mContainerVariables[j] = mut;
         }
 
       // calculate its fitness
@@ -491,11 +491,10 @@ bool COptMethodGASR::optimise()
 
   // calculate the fitness
   size_t j;
-  std::vector< UpdateMethod *>::const_iterator itMethod = mpSetCalculateVariable->begin();
 
   // set the paramter values
-  for (j = 0; j < mVariableSize; j++, ++itMethod)
-    (**itMethod)((*mIndividual[0])[j]);
+  for (j = 0; j < mVariableSize; j++)
+    *mContainerVariables[j] = (*mIndividual[0])[j];
 
   Continue = evaluate(*mIndividual[0]);
   mValue[0] = mEvaluationValue;

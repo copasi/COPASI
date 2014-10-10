@@ -370,9 +370,12 @@ int main(int argc, char** argv)
             }
         }
 
+      CCopasiVectorN< CCopasiTask > & TaskList = * pDataModel->getTaskList();
+
+      TaskList.remove("Time-Course");
+
       // create a trajectory task
-      pTrajectoryTask =  new CTrajectoryTask();
-      pTrajectoryTask->getProblem()->setModel(pDataModel->getModel());
+      pTrajectoryTask =  new CTrajectoryTask(& TaskList);
 
       pTrajectoryTask->setScheduled(true);
 
@@ -391,9 +394,6 @@ int main(int argc, char** argv)
 
       pMethod->getParameter("Absolute Tolerance")->setValue(1.0e-12);
 
-      CCopasiVectorN< CCopasiTask > & TaskList = * pDataModel->getTaskList();
-
-      TaskList.remove("Time-Course");
       TaskList.add(pTrajectoryTask, true);
 
       // save the file for control purposes

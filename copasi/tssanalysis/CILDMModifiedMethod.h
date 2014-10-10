@@ -1,23 +1,11 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CILDMModifiedMethod.h,v $
-//   $Revision: 1.11 $
-//   $Name:  $
-//   $Author: nsimus $
-//   $Date: 2012/06/04 11:08:57 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
-// All rights reserved.
-
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
 #ifndef COPASI_CILDModMethod
@@ -83,9 +71,8 @@ public:
   /**
    *  This instructs the method to prepare for integration
    *  starting with the initialState given.
-   *  @param "const CState *" initialState
    */
-  virtual void start(const CState * initialState);
+  virtual void start();
 
   void deuflhard_metab(C_INT & slow, C_INT & info);
 
@@ -146,7 +133,6 @@ public:
     const CArrayAnnotation* getTable(std::string name)
     {return mapTableToName[name];}
   */
-
 
   const CArrayAnnotation* getVslowPrintAnn() const
   {return pVslowPrintAnn;}

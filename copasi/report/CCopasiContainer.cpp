@@ -1,16 +1,16 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-// and The University of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2002 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc. and EML Research, gGmbH. 
-// All rights reserved. 
+// Copyright (C) 2002 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 /*!
     \file CCopasiContainer.cpp
@@ -36,25 +36,25 @@
 #include "copasi/utilities/CCopasiVector.h"
 #include "copasi/report/CCopasiRootContainer.h"
 
-const std::vector< CCopasiContainer * > CCopasiContainer::EmptyList;
+const CObjectInterface::ContainerList CCopasiContainer::EmptyList;
 
 CCopasiContainer::CCopasiContainer() :
-    CCopasiObject(),
-    mObjects()
+  CCopasiObject(),
+  mObjects()
 {addObjectReference("Name", *const_cast<std::string *>(&getObjectName()));}
 
 CCopasiContainer::CCopasiContainer(const std::string & name,
                                    const CCopasiContainer * pParent,
                                    const std::string & type,
                                    const unsigned C_INT32 & flag):
-    CCopasiObject(name, pParent, type, flag | CCopasiObject::Container),
-    mObjects()
+  CCopasiObject(name, pParent, type, flag | CCopasiObject::Container),
+  mObjects()
 {addObjectReference("Name", *const_cast<std::string *>(&getObjectName()));}
 
 CCopasiContainer::CCopasiContainer(const CCopasiContainer & src,
                                    const CCopasiContainer * pParent):
-    CCopasiObject(src, pParent),
-    mObjects()
+  CCopasiObject(src, pParent),
+  mObjects()
 {addObjectReference("Name", *const_cast<std::string *>(&getObjectName()));}
 
 CCopasiContainer::~CCopasiContainer()

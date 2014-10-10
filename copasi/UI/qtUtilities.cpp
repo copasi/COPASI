@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -20,6 +20,7 @@
 #include "CQMessageBox.h"
 #include "utilities/CCopasiParameterGroup.h"
 #include "utilities/CDirEntry.h"
+#include "copasiWidget.h"
 
 #ifdef DEBUG_UI
 #include <QtCore/QtDebug>
@@ -208,4 +209,18 @@ void vectorOfStrings2QStringList(std::vector<std::string> vs, QStringList & qsl)
   size_t i, imax = vs.size();
 
   for (i = 0; i < imax; ++i) qsl += FROM_UTF8(vs[i]);
+}
+
+const CopasiWidget * GetCopasiWidget(const QObject * pObject)
+{
+  const QObject * pParent = pObject;
+  const CopasiWidget * pCopasiWidget;
+
+  while (pParent != NULL && pCopasiWidget == NULL)
+    {
+      pCopasiWidget = dynamic_cast< const CopasiWidget * >(pParent);
+      pParent = pParent->parent();
+    }
+
+  return pCopasiWidget;
 }

@@ -115,16 +115,15 @@ void CTimeSeries::clear()
 }
 
 // virtual
-bool CTimeSeries::compile(std::vector< CCopasiContainer * > listOfContainer,
-                          const CCopasiDataModel* pDataModel)
+bool CTimeSeries::compile(CObjectInterface::ContainerList listOfContainer)
 {
-  std::vector< CCopasiContainer * >::const_iterator itContainer = listOfContainer.begin();
-  std::vector< CCopasiContainer * >::const_iterator endContainer = listOfContainer.end();
+  CObjectInterface::ContainerList::const_iterator itContainer = listOfContainer.begin();
+  CObjectInterface::ContainerList::const_iterator endContainer = listOfContainer.end();
   const CMathContainer * pContainer = NULL;
 
   for (; itContainer != endContainer && pContainer == NULL; ++itContainer)
     {
-      pContainer = dynamic_cast< CMathContainer * >(*itContainer);
+      pContainer = dynamic_cast< const CMathContainer * >(*itContainer);
     }
 
   assert(pContainer != NULL);
@@ -139,7 +138,7 @@ bool CTimeSeries::compile(std::vector< CCopasiContainer * > listOfContainer,
   size_t i, imax = Fixed + pContainer->getCountFixed();
   size_t EventTargetCount = 0;
 
-  mContainerValues.initialize(imax, const_cast< C_FLOAT64 * >(pContainer->getState().array()) - pContainer->getCountFixed());
+  mContainerValues.initialize(imax, const_cast< C_FLOAT64 * >(pContainer->getState(false).array()) - pContainer->getCountFixed());
 
   const CMathObject * pFirstObject = pContainer->getMathObject(mContainerValues.array());
   const CMathObject * pObject = pFirstObject;

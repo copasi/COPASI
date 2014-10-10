@@ -98,11 +98,11 @@ public:
 
   /**
    * compile the object list from name vector
-   * @param std::vector< CCopasiContainer * > listOfContainer
+   * @param CObjectInterface::ContainerList listOfContainer
    * @param  const CCopasiDataModel* pDataModel
    * @return bool success
    */
-  virtual bool compile(std::vector< CCopasiContainer * > listOfContainer, const CCopasiDataModel* pDataModel);
+  virtual bool compile(CObjectInterface::ContainerList listOfContainer);
 
   /**
    * Perform an output event for the current activity
@@ -205,7 +205,7 @@ private:
   /**
    * transfer every individual object list from name vector
    */
-  void generateObjectsFromName(const std::vector< CCopasiContainer * > * pListOfContainer,
+  void generateObjectsFromName(const CObjectInterface::ContainerList & listOfContainer,
                                std::vector< CObjectInterface * > & objectList,
                                CReport *& pReport,
                                const std::vector<CRegisteredObjectName>* nameVector);
@@ -213,10 +213,10 @@ private:
   /**
    * Compile the child report
    * @param CReport * pReport
-   * @param std::vector< CCopasiContainer * > listOfContainer
+   * @param CObjectInterface::ContainerList listOfContainer
    * @return bool success
    */
-  bool compileChildReport(CReport * pReport, std::vector< CCopasiContainer * > listOfContainer);
+  bool compileChildReport(CReport * pReport, CObjectInterface::ContainerList listOfContainer);
 };
 
 #endif

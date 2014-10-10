@@ -2064,10 +2064,8 @@ bool CQGLNetworkPainter::createDataSets()
           // create a dummy time series from the current state
           dummyTimeSeries.allocate(1);
           assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-          CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
-          assert(pDataModel != NULL);
-          std::vector<CCopasiContainer*> tmpV;
-          dummyTimeSeries.compile(tmpV, pDataModel);
+          CObjectInterface::ContainerList tmpV;
+          dummyTimeSeries.compile(tmpV);
           dummyTimeSeries.output(COutputInterface::DURING);
           assert(dummyTimeSeries.getRecordedSteps() == 1);
           pTimeSer = &dummyTimeSeries; // point to the dummy time series

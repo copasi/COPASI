@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -23,7 +23,7 @@
 
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "report/CCopasiRootContainer.h"
-#include "model/CState.h"
+#include "math/CMathContainer.h"
 #include "model/CModel.h"
 #include "model/CCompartment.h"
 #include "trajectory/CTrajectoryTask.h"
@@ -229,21 +229,17 @@ CNewtonMethod::NewtonResultCode CNewtonMethod::doIntegration(bool forward)
       try
         {
           // We must not use useInitialValues = true here as this will interfere with scan continuation.
-          mpModel->setState(mStartState);
+          mpContainer->setState(mStartState);
           stepLimitReached = !mpTrajectory->process(false); //single step
         }
 
       catch (CCopasiException & /*Exception*/)
         {
-          *mpSteadyState = *mpTrajectory->getState();
-
           if (mKeepProtocol)
             mMethodLog << "  Integration with duration " << duration << " failed (Exception).\n\n";
 
           break;
         }
-
-      *mpSteadyState = *mpTrajectory->getState();
 
       if (containsNaN())
         {
@@ -263,7 +259,7 @@ CNewtonMethod::NewtonResultCode CNewtonMethod::doIntegration(bool forward)
         }
 
       calculateDerivativesX();
-      C_FLOAT64 value = targetFunction(mdxdt);
+      C_FLOAT64 value = targetFunction();
 
       if (isSteadyState(value))
         {
@@ -325,8 +321,8 @@ CSteadyStateMethod::ReturnCode CNewtonMethod::processInternal()
   if (mpCallBack)
     mpCallBack->setName("performing steady state calculation...");
 
-  mStartState = * mpSteadyState;
-  mpX = mpSteadyState->beginIndependent();
+  mStartState = mContainerState;
+  mpX = mContainerStateReduced.array() + mpContainer->getTimeIndex() + 1;
 
   NewtonResultCode returnCode;
 
@@ -417,7 +413,7 @@ CNewtonMethod::NewtonResultCode CNewtonMethod::doNewtonStep(C_FLOAT64 & currentV
         }
 
       calculateDerivativesX();
-      newValue = targetFunction(mdxdt);
+      newValue = targetFunction();
 
       // mpParentTask->output(COutputInterface::DURING);
     }
@@ -428,7 +424,7 @@ CNewtonMethod::NewtonResultCode CNewtonMethod::doNewtonStep(C_FLOAT64 & currentV
       memcpy(mpX, mXold.array(), mDimension * sizeof(C_FLOAT64));
 
       calculateDerivativesX();
-      currentValue = targetFunction(mdxdt);
+      currentValue = targetFunction();
 
       if (mKeepProtocol) mMethodLog << "    Newton step failed. Damping limit exceeded.\n";
 
@@ -485,7 +481,7 @@ CNewtonMethod::NewtonResultCode CNewtonMethod::processNewton()
   C_FLOAT64 targetValue;
 
   calculateDerivativesX();
-  targetValue = targetFunction(mdxdt);
+  targetValue = targetFunction();
 
   {
     if (mKeepProtocol) mMethodLog << "   Starting Newton Iterations...\n";
@@ -566,22 +562,12 @@ CNewtonMethod::NewtonResultCode CNewtonMethod::processNewton()
 
 void CNewtonMethod::calculateDerivativesX()
 {
-  mpModel->setState(*mpSteadyState);
-  mpModel->updateSimulatedValues(true);
-  mpModel->calculateDerivativesX(mdxdt.array());
+  mpContainer->updateSimulatedValues(true);
 }
 
 bool CNewtonMethod::containsNaN() const
 {
-  //checks for NaNs
-  const C_FLOAT64 * pIt = mpSteadyState->beginIndependent();
-  const C_FLOAT64 * pEnd = mpSteadyState->endIndependent();
-
-  for (; pIt != pEnd; ++pIt)
-    if (isnan(*pIt))
-      return true;
-
-  return false;
+  return mpContainer->isStateValid();
 }
 
 bool CNewtonMethod::isSteadyState(C_FLOAT64 value)
@@ -595,7 +581,7 @@ bool CNewtonMethod::isSteadyState(C_FLOAT64 value)
   return true;
 }
 
-C_FLOAT64 CNewtonMethod::targetFunction(const CVector< C_FLOAT64 > & particlefluxes)
+C_FLOAT64 CNewtonMethod::targetFunction()
 {
   // New criterion: We solve Jacobian * x = current rates and compare x with the current state
   // Calculate the Jacobian
@@ -603,27 +589,27 @@ C_FLOAT64 CNewtonMethod::targetFunction(const CVector< C_FLOAT64 > & particleflu
 
   CVector< C_FLOAT64 > Distance;
 
-  C_FLOAT64 Error = solveJacobianXeqB(Distance, particlefluxes);
+  C_FLOAT64 Error = solveJacobianXeqB(Distance, mdxdt);
 
   // We look at all ODE determined entity and dependent species rates.
   C_FLOAT64 * pDistance = Distance.array();
   C_FLOAT64 * pDistanceEnd = pDistance + Distance.size();
-  C_FLOAT64 * pCurrentState = mpSteadyState->beginIndependent();
+  C_FLOAT64 * pCurrentState = mpX;
   const C_FLOAT64 * pAtol = mAtol.array();
 
   // Assure that all values are updated.
-  mpModel->updateSimulatedValues(true);
+  mpContainer->updateSimulatedValues(true);
+  mpContainer->applyUpdateSequence(mUpdateConcentrations);
 
-  CModelEntity *const* ppEntity = mpModel->getStateTemplate().beginIndependent();
-  const CMetab * pMetab = NULL;
-  C_FLOAT64 Number2Quantity = mpModel->getNumber2QuantityFactor();
+  const CMathObject * pMathObject = mpContainer->getMathObject(mpContainerStateTime + 1);
+  C_FLOAT64 Number2Quantity = mpContainer->getModel().getNumber2QuantityFactor();
 
   C_FLOAT64 AbsoluteDistance = 0.0; // Largest relative distance
   C_FLOAT64 RelativeDistance = 0.0; // Total relative distance
 
   C_FLOAT64 tmp;
 
-  for (; pDistance != pDistanceEnd; ++pDistance, ++pCurrentState, ++pAtol, ++ppEntity)
+  for (; pDistance != pDistanceEnd; ++pDistance, ++pCurrentState, ++pAtol, ++pMathObject)
     {
       // Prevent division by 0
       tmp = fabs(*pDistance) / std::max(fabs(*pCurrentState), *pAtol);
@@ -631,9 +617,9 @@ C_FLOAT64 CNewtonMethod::targetFunction(const CVector< C_FLOAT64 > & particleflu
 
       tmp = fabs(*pDistance);
 
-      if ((pMetab = dynamic_cast< const CMetab * >(*ppEntity)) != NULL)
+      if (pMathObject->getEntityType() == CMath::Species)
         {
-          tmp *= Number2Quantity / fabs(pMetab->getCompartment()->getValue());
+          tmp *= * (C_FLOAT64 *) pMathObject->getCorrespondingProperty()->getValuePointer();
         }
 
       AbsoluteDistance += tmp * tmp;
@@ -657,9 +643,7 @@ bool CNewtonMethod::isValidProblem(const CCopasiProblem * pProblem)
 {
   if (!CSteadyStateMethod::isValidProblem(pProblem)) return false;
 
-  const CModel * pModel = pProblem->getModel();
-
-  if (!pModel->isAutonomous() &&
+  if (!mpContainer->isAutonomous() &&
       *getValue("Use Newton").pBOOL)
     CCopasiMessage(CCopasiMessage::WARNING, MCSteadyState + 1);
 
@@ -714,9 +698,7 @@ bool CNewtonMethod::initialize(const CSteadyStateProblem * pProblem)
   if (* getValue("Accept Negative Concentrations").pBOOL)
     mAcceptNegative = true;
 
-  //if (* getValue("Force additional Newton step").pBOOL)
   mForceNewton = true;
-  //if (* getValue("Keep Protocol").pBOOL)
   mKeepProtocol = true;
 
   mIterationLimit = * getValue("Iteration Limit").pUINT;
@@ -724,22 +706,13 @@ bool CNewtonMethod::initialize(const CSteadyStateProblem * pProblem)
   mMaxDurationForward = *getValue("Maximum duration for forward integration").pUDOUBLE;
   mMaxDurationBackward = *getValue("Maximum duration for backward integration").pUDOUBLE;
 
-  //mFactor = * getValue("Derivation Factor").pUDOUBLE;
-  //mSSResolution = * getValue("Steady State Resolution").pUDOUBLE;
-  //mScaledResolution =
-  //  mSSResolution; // * initialState.getModel()->getQuantity2NumberFactor();
-  // :TODO: discuss scaling
+  mDimension = mContainerStateReduced.size() - mpContainer->getTimeIndex() - 1;
 
-  // convert CState to CStateX
-  //mInitialStateX = mpProblem->getInitialState();
-  //*mpSteadyStateX = mInitialStateX; //not strictly necessary
+  mAtol = mpContainer->initializeAtolVector(*mpSSResolution, true);
 
-  mDimension = mpProblem->getModel()->getStateTemplate().getNumIndependent();
-
-  mAtol = mpModel->initializeAtolVector(*mpSSResolution, true);
   mH.resize(mDimension);
   mXold.resize(mDimension);
-  mdxdt.resize(mDimension);
+  mdxdt.initialize(mDimension, mpContainer->getRate(true).array() + mpContainer->getTimeIndex() + 1);
   mIpiv = new C_INT [mDimension];
 
   if (mUseIntegration || mUseBackIntegration)
@@ -766,18 +739,32 @@ bool CNewtonMethod::initialize(const CSteadyStateProblem * pProblem)
         dynamic_cast<CTrajectoryMethod *>(mpTrajectory->getMethod());
       assert(pTrajectoryMethod);
 
-      pTrajectoryProblem->setModel(mpProblem->getModel());
       pTrajectoryProblem->setStepNumber(1);
 
       mpTrajectory->initialize(CCopasiTask::NO_OUTPUT, NULL, NULL);
     }
 
+  //
+  CObjectInterface::ObjectSet Requested;
+  CMathObject * pMathObject = mpContainer->getMathObject(mpX);
+  CMathObject * pMathObjectEnd = pMathObject + mDimension;
+
+  for (; pMathObject != pMathObjectEnd; ++pMathObject)
+    {
+      if (pMathObject->getEntityType() == CMath::Species)
+        {
+          Requested.insert(pMathObject->getCorrespondingProperty());
+        }
+    }
+
+  mpContainer->getTransientDependencies().getUpdateSequence(mUpdateConcentrations, CMath::UseMoieties, mpContainer->getStateObjects(true), Requested, mpContainer->getSimulationUpToDateObjects());
+
   return true;
 }
 
-C_FLOAT64 CNewtonMethod::solveJacobianXeqB(CVector< C_FLOAT64 > & X, const CVector< C_FLOAT64 > & B) const
+C_FLOAT64 CNewtonMethod::solveJacobianXeqB(CVector< C_FLOAT64 > & X, const CVectorCore< const C_FLOAT64 > & B) const
 {
-  X = B;
+  X = * reinterpret_cast<const CVectorCore< C_FLOAT64 > * >(&B);
 
   C_INT M = (C_INT) mpJacobianX->numCols();
   C_INT N = (C_INT) mpJacobianX->numRows();
@@ -986,7 +973,7 @@ C_FLOAT64 CNewtonMethod::solveJacobianXeqB(CVector< C_FLOAT64 > & X, const CVect
       C_FLOAT64 Alpha = 1.0;
       C_FLOAT64 Beta = 0.0;
 
-      CVector< C_FLOAT64 > Ax = B;
+      CVector< C_FLOAT64 > Ax = * reinterpret_cast<const CVectorCore< C_FLOAT64 > * >(&B);
 
       dgemm_(&T, &T, &M, &N, &N, &Alpha, X.array(), &M,
              mpJacobianX->array(), &N, &Beta, Ax.array(), &M);
@@ -995,22 +982,22 @@ C_FLOAT64 CNewtonMethod::solveJacobianXeqB(CVector< C_FLOAT64 > & X, const CVect
       C_FLOAT64 *pAx = Ax.array();
       C_FLOAT64 *pAxEnd = pAx + Ax.size();
       const C_FLOAT64 *pB = B.array();
-      C_FLOAT64 * pCurrentState = mpSteadyState->beginIndependent();
+      C_FLOAT64 * pCurrentState = mpX;
       const C_FLOAT64 * pAtol = mAtol.array();
 
       // Assure that all values are updated.
-      mpModel->updateSimulatedValues(true);
+      mpContainer->updateSimulatedValues(true);
+      mpContainer->applyUpdateSequence(mUpdateConcentrations);
 
-      CModelEntity *const* ppEntity = mpModel->getStateTemplate().beginIndependent();
-      const CMetab * pMetab = NULL;
-      C_FLOAT64 Number2Quantity = mpModel->getNumber2QuantityFactor();
+      const CMathObject * pMathObject = mpContainer->getMathObject(mpContainerStateTime + 1);
+      C_FLOAT64 Number2Quantity = mpContainer->getModel().getNumber2QuantityFactor();
 
       C_FLOAT64 AbsoluteDistance = 0.0; // Largest relative distance
       C_FLOAT64 RelativeDistance = 0.0; // Total relative distance
 
       C_FLOAT64 tmp;
 
-      for (; pAx != pAxEnd; ++pAx, ++pB, ++pCurrentState, ++pAtol, ++ppEntity)
+      for (; pAx != pAxEnd; ++pAx, ++pB, ++pCurrentState, ++pAtol, ++pMathObject)
         {
           // Prevent division by 0
           tmp = fabs(*pAx - *pB) / std::max(fabs(*pCurrentState), *pAtol);
@@ -1018,9 +1005,9 @@ C_FLOAT64 CNewtonMethod::solveJacobianXeqB(CVector< C_FLOAT64 > & X, const CVect
 
           tmp = fabs(*pAx - *pB);
 
-          if ((pMetab = dynamic_cast< const CMetab * >(*ppEntity)) != NULL)
+          if (pMathObject->getEntityType() == CMath::Species)
             {
-              tmp *= Number2Quantity / fabs(pMetab->getCompartment()->getValue());
+              tmp *= * (C_FLOAT64 *) pMathObject->getCorrespondingProperty()->getValuePointer();
             }
 
           AbsoluteDistance += tmp * tmp;

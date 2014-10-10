@@ -28,8 +28,6 @@
 #include "CStochDirectMethod.h"
 #include "CStochNextReactionMethod.h"
 #include "CTrajAdaptiveSA.h"
-#include "CHybridMethod.h"
-#include "CHybridMethodLSODA.h"
 #include "CTauLeapMethod.h"
 #include "CHybridMethodODE45.h"
 #include "CTrajectoryMethodDsaLsodar.h"
@@ -66,20 +64,9 @@ CTrajectoryMethod::createMethod(CCopasiMethod::SubType subType)
         pMethod = new CTrajAdaptiveSA();
         break;
 
-      case hybrid:
-        pMethod = CHybridMethod::createHybridMethod();
-        break;
-
-      case hybridLSODA:
-        pMethod = CHybridMethodLSODA::createHybridMethodLSODA();
-        break;
-
-#ifdef COPASI_DEBUG
-
       case hybridODE45:
         pMethod = new CHybridMethodODE45();
         break;
-#endif // COPASI_DEBUG
 
       case DsaLsodar:
         pMethod = new CTrajectoryMethodDsaLsodar();
@@ -96,10 +83,10 @@ CTrajectoryMethod::createMethod(CCopasiMethod::SubType subType)
 /**
  *  Default constructor.
  */
-CTrajectoryMethod::CTrajectoryMethod(const CCopasiMethod::SubType & subType,
+CTrajectoryMethod::CTrajectoryMethod(const CCopasiTask::Type & type,
+                                     const CCopasiMethod::SubType & subType,
                                      const CCopasiContainer * pParent) :
-  CCopasiMethod(CCopasiTask::timeCourse, subType, pParent),
-  mpContainer(NULL),
+  CCopasiMethod(type, subType, pParent),
   mContainerState(),
   mpProblem(NULL),
   mpContainerStateTime(NULL),
@@ -113,7 +100,6 @@ CTrajectoryMethod::CTrajectoryMethod(const CCopasiMethod::SubType & subType,
 CTrajectoryMethod::CTrajectoryMethod(const CTrajectoryMethod & src,
                                      const CCopasiContainer * pParent):
   CCopasiMethod(src, pParent),
-  mpContainer(NULL),
   mContainerState(),
   mpContainerStateTime(NULL),
   mpProblem(NULL),
@@ -126,13 +112,19 @@ CTrajectoryMethod::CTrajectoryMethod(const CTrajectoryMethod & src,
 CTrajectoryMethod::~CTrajectoryMethod()
 {DESTRUCTOR_TRACE;}
 
-void CTrajectoryMethod::setContainer(CMathContainer * pContainer)
+// virtual
+void CTrajectoryMethod::signalMathContainerChanged()
 {
-  mpContainer = pContainer;
-
   if (mpContainer != NULL)
     {
-      mContainerState.initialize(mpContainer->getState());
+      bool UpdateMoieties = false;
+
+      CCopasiParameter * pParameter = getParameter("Integrate Reduced Model");
+
+      if (pParameter != NULL)
+        UpdateMoieties = *pParameter->getValue().pBOOL;
+
+      mContainerState.initialize(mpContainer->getState(UpdateMoieties));
       mpContainerStateTime = mContainerState.array() + mpContainer->getTimeIndex();
     }
   else
@@ -165,17 +157,19 @@ void CTrajectoryMethod::stateChange(const CMath::StateChange & change)
 CTrajectoryMethod::Status CTrajectoryMethod::step(const double & C_UNUSED(deltaT))
 {return FAILURE;}
 
-/**
- *  This instructs the method to calculate a a time step of deltaT
- *  starting with the initialState given.
- *  The new state (after deltaT) is expected in the current state.
- *  The return value is the actual timestep taken.
- *  @param "double &" deltaT
- *  @param "const CState *" initialState
- *  @return "const double &" actualDeltaT
- */
-void CTrajectoryMethod::start(CVectorCore< C_FLOAT64 > & /* initialState */)
-{return;}
+void CTrajectoryMethod::start()
+{
+  bool UpdateMoieties = false;
+
+  CCopasiParameter * pParameter = getParameter("Integrate Reduced Model");
+
+  if (pParameter != NULL)
+    UpdateMoieties = *pParameter->getValue().pBOOL;
+
+  mContainerState.initialize(mpContainer->getState(UpdateMoieties));
+
+  return;
+}
 
 //virtual
 bool CTrajectoryMethod::isValidProblem(const CCopasiProblem * pProblem)

@@ -569,7 +569,7 @@ void CQExpressionWidget::setExpression(const std::string & expression)
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
   assert(pDataModel != NULL);
-  std::vector<CCopasiContainer*> containers;
+  CObjectInterface::ContainerList containers;
   containers.push_back(pDataModel);
   containers.push_back(pFunDB);
 
@@ -608,7 +608,7 @@ void CQExpressionWidget::setExpression(const std::string & expression)
       it += InfixObjectPattern.matchedLength();
 
       CCopasiObjectName InfixName(TO_UTF8(InfixObjectPattern.cap(1)));
-      const CCopasiObject * pObject = CObjectInterface::DataObject(pDataModel->ObjectFromCN(containers, InfixName));
+      const CCopasiObject * pObject = CObjectInterface::DataObject(CObjectInterface::GetObjectFromCN(containers, InfixName));
 
       if (pObject != NULL)
         {

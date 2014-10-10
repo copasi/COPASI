@@ -1,4 +1,4 @@
-// Copyright (C) 2012 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -123,7 +123,7 @@ bool COptMethodDE::replicate()
 
           // We need to set the value here so that further checks take
           // account of the value.
-          (*(*mpSetCalculateVariable)[j])(mut);
+          *mContainerVariables[j] = mut;
         }
 
       Continue &= evaluate(*mIndividual[i]);
@@ -162,7 +162,7 @@ bool COptMethodDE::replicate()
                 break;
             }
 
-          (*(*mpSetCalculateVariable)[j])(mut);
+          *mContainerVariables[j] = mut;
         }
 
       Continue &= evaluate(*mIndividual[i]);
@@ -206,7 +206,7 @@ bool COptMethodDE::replicate()
                     break;
                 }
 
-              (*(*mpSetCalculateVariable)[j])(mut);
+              *mContainerVariables[j] = mut;
             }
 
           Continue &= evaluate(*mIndividual[i - 2 * mPopulationSize]);
@@ -306,7 +306,7 @@ bool COptMethodDE::creation(size_t first, size_t last)
 
             // We need to set the value here so that further checks take
             // account of the value.
-            (*(*mpSetCalculateVariable)[j])(mut);
+            *mContainerVariables[j] = mut;
           }
 
       // calculate its fitness
@@ -427,7 +427,7 @@ bool COptMethodDE::optimise()
 
       // We need to set the value here so that further checks take
       // account of the value.
-      (*(*mpSetCalculateVariable)[i])(mut);
+      *mContainerVariables[i] = mut;
     }
 
   Continue &= evaluate(*mIndividual[0]);

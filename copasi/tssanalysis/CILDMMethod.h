@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CILDMMethod.h,v $
-//   $Revision: 1.15 $
-//   $Name:  $
-//   $Author: nsimus $
-//   $Date: 2012/06/04 11:07:58 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -77,14 +69,13 @@ public:
    *  The return value is the actual timestep taken.
    *  @param "const double &" deltaT
    */
-  virtual void step(const double & deltaT);
+  virtual void  step(const double & deltaT);
 
   /**
    *  This instructs the method to prepare for integration
    *  starting with the initialState given.
-   *  @param "const CState *" initialState
    */
-  virtual void start(const CState * initialState);
+  virtual void start();
 
   /**
    *
@@ -130,7 +121,6 @@ public:
     std::map< std::string, CArrayAnnotation* > mapTableToName;
     std::vector<std::string>  tableNames;
   */
-
 
   CArrayAnnotation* pVslowPrintAnn;
   CArrayAnnotation* pVslowMetabPrintAnn;
@@ -187,7 +177,6 @@ public:
     const CArrayAnnotation* getTable(std::string name)
     {return mapTableToName[name];}
   */
-
 
   const CArrayAnnotation* getVslowPrintAnn() const
   {return pVslowPrintAnn;}

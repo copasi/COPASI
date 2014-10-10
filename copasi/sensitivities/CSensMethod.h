@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sensitivities/CSensMethod.h,v $
-//   $Revision: 1.15 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/03/07 19:33:42 $
-// End CVS Header
-
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2005 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -37,7 +29,16 @@ public:
   CCopasiArray tmp1;
   CCopasiArray tmp2;
 
-  std::vector<CCopasiObject*> variables;
+  /**
+   * A vector pointers to variables.
+   */
+  CVector< C_FLOAT64 * > mInitialStateVariables;
+
+  /**
+   * Update sequences to synchronize the initial state
+   * after changing an initial value.
+   */
+  CObjectInterface::UpdateSequence mInitialSequences;
 
   /**
    * holds the index in the index array corresponding to the given level.
@@ -119,15 +120,9 @@ public:
 protected:
 
   bool calculate_one_level(size_t level, CCopasiArray & result);
-  bool do_target_calculation(CCopasiArray & result, bool first);
+  bool do_target_calculation(size_t level, CCopasiArray & result, bool first);
 
-  C_FLOAT64 do_variation(CCopasiObject* variable);
-
-  /**
-   * wraps the CCopasiObject::setObjectValue() method so we can add special treatment
-   * of concentrations
-   */
-  void setValue(CCopasiObject* variable, C_FLOAT64 value);
+  C_FLOAT64 do_variation(C_FLOAT64 & variable);
 
   void calculate_difference(size_t level, const C_FLOAT64 & delta,
                             CCopasiArray & result, CCopasiArray::index_type & resultindex);
@@ -169,15 +164,18 @@ protected:
 
   std::vector<CSensMethodLocalData> mLocalData;
 
-  std::vector<CCopasiObject*> mTargetfunctionPointers;
+  CVector< C_FLOAT64 * > mTargetValuePointers;
 
   CCopasiTask * mpSubTask;
 
-  std::vector< Refresh * > mInitialRefreshes;
+  /**
+   * The sequence need to calculate all target functions
+   */
+  CObjectInterface::UpdateSequence mTargetValueSequence;
 
   C_FLOAT64 * mpDeltaFactor;
   C_FLOAT64 * mpMinDelta;
-  
+
   ///stores the update model flag of the subtask
   bool mStoreSubtasktUpdateFlag;
 

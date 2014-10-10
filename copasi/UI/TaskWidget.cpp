@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -40,6 +40,7 @@
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "report/CCopasiRootContainer.h"
 #include "model/CModel.h"
+#include "math/CMathContainer.h"
 #include "report/CKeyFactory.h"
 #include "UI/CQTaskThread.h"
 #include "plotUI/CopasiPlot.h"
@@ -381,11 +382,14 @@ bool TaskWidget::commonAfterRunTask()
   (*CCopasiRootContainer::getDatamodelList())[0]->finish();
 
   // Update all values shown in the GUI
-  CModel * pModel = (*CCopasiRootContainer::getDatamodelList())[0]->getModel();
-  pModel->updateSimulatedValues(true);
-  pModel->updateNonSimulatedValues();
+  CMathContainer * pContainer = mpTask->getMathContainer();
 
-  protectedNotify(ListViews::STATE, ListViews::CHANGE, (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getKey());
+  pContainer->updateSimulatedValues(true);
+  pContainer->updateTransientDataValues();
+  pContainer->pushAllTransientValues();
+
+  protectedNotify(ListViews::STATE, ListViews::CHANGE, pContainer->getModel().getKey());
+
   unsetCursor();
   CopasiUI3Window::getMainWindow()->suspendAutoSave(false);
 

@@ -1,12 +1,14 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethod.h,v $
-   $Revision: 1.26 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/05/02 19:30:19 $
-   End CVS Header */
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2002 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -21,9 +23,6 @@
  *           methods by which the simulation subsystem accesses several
  *           optimization algorithms.
  *  Note: This is an abstract class
-
-
-
 
  ****** Modified by Liang Xu
  */
@@ -45,114 +44,114 @@ template < class CType > class CVector;
 //
 /** @dia:pos 36.4,4.15 */
 class COptMethod : public CCopasiMethod
-  {
-  public:
-    //    static const std::string TypeName[];
+{
+public:
+  //    static const std::string TypeName[];
 
-    // Attributes
-  public:
+  // Attributes
+public:
 
-    //data member
-  protected:
-    /** @dia:route 0,2; h,36.4,4.15,33.95,4.15,23.0576 */
-    COptProblem * mpOptProblem;        // pointer to remote problem
+  //data member
+protected:
+  /** @dia:route 0,2; h,36.4,4.15,33.95,4.15,23.0576 */
+  COptProblem * mpOptProblem;        // pointer to remote problem
 
-    COptTask * mpParentTask;
+  COptTask * mpParentTask;
 
-    const bool mBounds;            // True if method accepts bounds on the parameters
+  const bool mBounds;            // True if method accepts bounds on the parameters
 
-    /**
-     * A vector of pointers to the update methods for the optimization parameters
-     */
-    const std::vector< UpdateMethod * > * mpSetCalculateVariable;
+  /**
+   * A vector of pointers to the update methods for the optimization parameters
+   */
+  CVectorCore< C_FLOAT64 * > mContainerVariables;
 
-    /**
-     * A vector of pointers to the optimization parameter
-     */
-    const std::vector< COptItem * > * mpOptItem;
+  /**
+   * A vector of pointers to the optimization parameter
+   */
+  const std::vector< COptItem * > * mpOptItem;
 
-    /**
-     * A vector of pointers to the functional constraints
-     */
-    const std::vector< COptItem * > * mpOptContraints;
+  /**
+   * A vector of pointers to the functional constraints
+   */
+  const std::vector< COptItem * > * mpOptContraints;
 
-    // Operations
-  private:
-    /**
-     * Default constructor.
-     */
-    COptMethod();
+  // Operations
+private:
+  /**
+   * Default constructor.
+   */
+  COptMethod();
 
-  protected:
-    /**
-     * Specific constructor
-     * @param const CCopasiTask::Type & type
-     * @param const CCopasiMethod::SubType & subType
-     * @param const CCopasiContainer * pParent (default: NULL)
-     */
-    COptMethod(const CCopasiTask::Type & taskType,
-               const SubType & subType,
-               const CCopasiContainer * pParent = NULL);
+protected:
+  /**
+   * Specific constructor
+   * @param const CCopasiTask::Type & type
+   * @param const CCopasiMethod::SubType & subType
+   * @param const CCopasiContainer * pParent (default: NULL)
+   */
+  COptMethod(const CCopasiTask::Type & taskType,
+             const SubType & subType,
+             const CCopasiContainer * pParent = NULL);
 
-  public:
-    /**
-     * Create a optimization method.
-     * Note: the returned object has to be released after use with delete
-     */
-    static COptMethod * createMethod(CCopasiMethod::SubType subType
-                                     = CCopasiMethod::RandomSearch);
+public:
+  /**
+   * Create a optimization method.
+   * Note: the returned object has to be released after use with delete
+   */
+  static COptMethod * createMethod(CCopasiMethod::SubType subType
+                                   = CCopasiMethod::RandomSearch);
 
-    /**
-     * Copy constructor
-     * @param const COptMethod & src
-     * @param const CCopasiContainer * pParent (default: NULL)
-     */
-    COptMethod(const COptMethod & src,
-               const CCopasiContainer * pParent = NULL);
+  /**
+   * Copy constructor
+   * @param const COptMethod & src
+   * @param const CCopasiContainer * pParent (default: NULL)
+   */
+  COptMethod(const COptMethod & src,
+             const CCopasiContainer * pParent = NULL);
 
-    /**
-     * Destructor
-     */
-    virtual ~COptMethod();
+  /**
+   * Destructor
+   */
+  virtual ~COptMethod();
 
-    /**
-     * Execute the optimization algorithm calling simulation routine
-     * when needed. It is noted that this procedure can give feedback
-     * of its progress by the callback function set with SetCallback.
-     * @ return success;
-     */
-    virtual bool optimise();
+  /**
+   * Execute the optimization algorithm calling simulation routine
+   * when needed. It is noted that this procedure can give feedback
+   * of its progress by the callback function set with SetCallback.
+   * @ return success;
+   */
+  virtual bool optimise();
 
-    /**
-     * Returns True if this method is capable of handling adjustable parameter
-     * boundary constraints, False otherwise
-     */
-    bool isBounded(void);
+  /**
+   * Returns True if this method is capable of handling adjustable parameter
+   * boundary constraints, False otherwise
+   */
+  bool isBounded(void);
 
-    /**
-     * Set the problem to be optmised
-     * @param "COptProblem *" problem
-     */
-    void setProblem(COptProblem * problem);
+  /**
+   * Set the problem to be optmised
+   * @param "COptProblem *" problem
+   */
+  void setProblem(COptProblem * problem);
 
-    /**
-     * Initialize arrays and pointer.
-     * @return bool success
-     */
-    virtual bool initialize();
+  /**
+   * Initialize arrays and pointer.
+   * @return bool success
+   */
+  virtual bool initialize();
 
-    /**
-     * Check if the method is suitable for this problem
-     * @return bool suitability of the method
-     */
-    virtual bool isValidProblem(const CCopasiProblem * pProblem);
+  /**
+   * Check if the method is suitable for this problem
+   * @return bool suitability of the method
+   */
+  virtual bool isValidProblem(const CCopasiProblem * pProblem);
 
-  protected:
-    /**
-     * Cleanup arrays and pointers.
-     * @return bool success
-     */
-    virtual bool cleanup();
-  };
+protected:
+  /**
+   * Cleanup arrays and pointers.
+   * @return bool success
+   */
+  virtual bool cleanup();
+};
 
 #endif  // COPASI_COptMethod

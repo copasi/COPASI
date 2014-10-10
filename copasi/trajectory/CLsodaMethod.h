@@ -191,10 +191,12 @@ private:
 protected:
   /**
    * Default constructor.
+   * @param const CCopasiTask::Type & type
    * @param const CCopasiMethod::SubType & subType (default: deterministic)
    * @param const CCopasiContainer * pParent (default: NULL)
    */
-  CLsodaMethod(const CCopasiMethod::SubType & subType = deterministic,
+  CLsodaMethod(const CCopasiTask::Type & type = CCopasiTask::timeCourse,
+               const CCopasiMethod::SubType & subType = deterministic,
                const CCopasiContainer * pParent = NULL);
 
 public:
@@ -238,16 +240,8 @@ public:
 
   /**
    *  This instructs the method to prepare for integration
-   *  starting with the initialState given.
-   *  @param "const CState *" initialState
    */
-  virtual void start(CVectorCore< C_FLOAT64 > & initialState);
-
-  /**
-   * Set the math container used for calculations
-   * @param CMathContainer * pContainer
-   */
-  virtual void setContainer(CMathContainer * pContainer);
+  virtual void start();
 
   /**
    *  This evaluates the derivatives

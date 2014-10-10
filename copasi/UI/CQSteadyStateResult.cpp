@@ -1,12 +1,4 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQSteadyStateResult.cpp,v $
-//   $Revision: 1.4 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/04/16 19:25:47 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -22,6 +14,7 @@
 #include "steadystate/CSteadyStateProblem.h"
 #include "report/CCopasiRootContainer.h"
 #include "model/CModel.h"
+#include "math/CMathContainer.h"
 #include "commandline/CLocaleString.h"
 
 /*
@@ -29,7 +22,7 @@
  *  name 'name'.'
  */
 CQSteadyStateResult::CQSteadyStateResult(QWidget* parent, const char* name)
-    : CopasiWidget(parent, name)
+  : CopasiWidget(parent, name)
 {
   setupUi(this);
 
@@ -85,19 +78,11 @@ void CQSteadyStateResult::loadResult()
 
   if (!mpTask) return;
 
-  if (!mpTask->getState())
-    {
-      mpCentralWidget->clear();
-      mUpToDate = false;
-      return;
-    }
-
   mpCentralWidget->loadAll(mpTask);
   mUpToDate = true;
 
   return;
 }
-
 
 void CQSteadyStateResult::slotSave(void)
 {
@@ -131,28 +116,19 @@ void CQSteadyStateResult::slotSave(void)
 void CQSteadyStateResult::slotUpdateModel()
 {
   if (mUpToDate &&
-      mpTask != NULL &&
-      mpProblem != NULL &&
-      mpTask->getState() != NULL)
+      mpTask != NULL)
     {
-      CModel *pModel = mpProblem->getModel();
-
-      if (pModel != NULL)
+      if (mpTask->isUpdateModel())
         {
-          pModel->compileIfNecessary(NULL);
-
-          if (mpTask->isUpdateModel())
-            {
-              mpTask->restore();
-            }
-          else
-            {
-              mpTask->setUpdateModel(true);
-              mpTask->restore();
-              mpTask->setUpdateModel(false);
-            }
-
-          protectedNotify(ListViews::STATE, ListViews::CHANGE, pModel->getKey());
+          mpTask->restore();
         }
+      else
+        {
+          mpTask->setUpdateModel(true);
+          mpTask->restore();
+          mpTask->setUpdateModel(false);
+        }
+
+      protectedNotify(ListViews::STATE, ListViews::CHANGE, mpTask->getMathContainer()->getModel().getKey());
     }
 }

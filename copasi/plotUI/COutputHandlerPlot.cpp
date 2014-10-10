@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -37,8 +37,7 @@ COutputHandlerPlot::COutputHandlerPlot(const COutputHandlerPlot & src):
 COutputHandlerPlot::~COutputHandlerPlot()
 {}
 
-bool COutputHandlerPlot::compile(std::vector< CCopasiContainer * > listOfContainer,
-                                 const CCopasiDataModel* pDataModel)
+bool COutputHandlerPlot::compile(CObjectInterface::ContainerList listOfContainer)
 {
   if (!mpDefinitionVector) return false;
 
@@ -76,7 +75,7 @@ bool COutputHandlerPlot::compile(std::vector< CCopasiContainer * > listOfContain
     }
 
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  return COutputHandler::compile(listOfContainer, pDataModel);
+  return COutputHandler::compile(listOfContainer);
 }
 
 void COutputHandlerPlot::removeInterface(COutputInterface * pInterface)

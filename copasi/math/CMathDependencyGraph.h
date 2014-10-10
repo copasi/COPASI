@@ -59,7 +59,7 @@ public:
                          const CMath::SimulationContextFlag & context,
                          const CObjectInterface::ObjectSet & changedObjects,
                          const CObjectInterface::ObjectSet & requestedObjects,
-                         const CObjectInterface::ObjectSet & calculatedObjects = CObjectInterface::ObjectSet());
+                         const CObjectInterface::ObjectSet & calculatedObjects = CObjectInterface::ObjectSet()) const;
 
   void exportDOTFormat(std::ostream & os, const std::string & name) const;
 

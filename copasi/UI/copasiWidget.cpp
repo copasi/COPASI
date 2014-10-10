@@ -106,7 +106,7 @@ void CopasiWidget::setIgnoreUpdates(bool v)
   mIgnoreUpdates = v;
 }
 
-CCopasiDataModel * CopasiWidget::getDataModel()
+CCopasiDataModel * CopasiWidget::getDataModel() const
 {
   return mpDataModel;
 }

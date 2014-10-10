@@ -90,28 +90,28 @@ bool CCopasiTask::isValidMethod(const unsigned int & method,
   return false;
 }
 
-CCopasiTask::CCopasiTask(const std::string & name,
-                         const CCopasiContainer * pParent,
-                         const std::string & type):
-  CCopasiContainer(name, pParent, type),
+CCopasiTask::CCopasiTask():
+  CCopasiContainer(CCopasiTask::TypeName[CCopasiTask::unset], NULL, "Task"),
   mType(CCopasiTask::unset),
   mKey(CCopasiRootContainer::getKeyFactory()->add("Task", this)),
   mDescription(this),
   mResult(this),
   mScheduled(false),
   mUpdateModel(false),
-  mpInitialState(NULL),
   mpProblem(NULL),
   mpMethod(NULL),
   mReport(),
+  mInitialState(),
+  mpContainer(NULL),
   mpCallBack(NULL),
   mpSliders(NULL),
   mDoOutput(OUTPUT_SE),
+  mpOutputHandler(NULL),
   mOutputCounter(0)
 {initObjects();}
 
-CCopasiTask::CCopasiTask(const CCopasiTask::Type & taskType,
-                         const CCopasiContainer * pParent,
+CCopasiTask::CCopasiTask(const CCopasiContainer * pParent,
+                         const CCopasiTask::Type & taskType,
                          const std::string & type):
   CCopasiContainer(CCopasiTask::TypeName[taskType], pParent, type),
   mType(taskType),
@@ -120,10 +120,11 @@ CCopasiTask::CCopasiTask(const CCopasiTask::Type & taskType,
   mResult(this),
   mScheduled(false),
   mUpdateModel(false),
-  mpInitialState(NULL),
   mpProblem(NULL),
   mpMethod(NULL),
   mReport(),
+  mpContainer(NULL),
+  mInitialState(),
   mpCallBack(NULL),
   mpSliders(NULL),
   mDoOutput(OUTPUT_SE),
@@ -140,13 +141,14 @@ CCopasiTask::CCopasiTask(const CCopasiTask & src,
   mResult(src.mResult, this),
   mScheduled(src.mScheduled),
   mUpdateModel(src.mUpdateModel),
-  mpInitialState(src.mpInitialState ? new CState(*src.mpInitialState) : NULL),
   mpProblem(NULL),
   mpMethod(NULL),
   mReport(src.mReport),
+  mpContainer(src.mpContainer),
+  mInitialState(src.mInitialState),
   mpCallBack(NULL),
   mpSliders(NULL),
-  mDoOutput(OUTPUT_SE),
+  mDoOutput(src.mDoOutput),
   mpOutputHandler(NULL),
   mOutputCounter(0)
 {initObjects();}
@@ -155,7 +157,6 @@ CCopasiTask::~CCopasiTask()
 {
   CCopasiRootContainer::getKeyFactory()->remove(mKey);
 
-  pdelete(mpInitialState);
   pdelete(mpProblem);
   pdelete(mpMethod);
   pdelete(mpSliders);
@@ -180,6 +181,34 @@ void CCopasiTask::setUpdateModel(const bool & updateModel) {mUpdateModel = updat
 
 const bool & CCopasiTask::isUpdateModel() const {return mUpdateModel;}
 
+void CCopasiTask::setMathContainer(CMathContainer * pContainer)
+{
+  if (mpProblem != NULL)
+    {
+      mpProblem->setMathContainer(pContainer);
+    }
+
+  if (mpMethod != NULL)
+    {
+      mpMethod->setMathContainer(pContainer);
+    }
+
+  if (pContainer != mpContainer)
+    {
+      mpContainer = pContainer;
+      signalMathContainerChanged();
+    }
+}
+
+// virtual
+void CCopasiTask::signalMathContainerChanged()
+{}
+
+CMathContainer * CCopasiTask::getMathContainer() const
+{
+  return mpContainer;
+}
+
 bool CCopasiTask::setCallBack(CProcessReport * pCallBack)
 {
   mpCallBack = pCallBack;
@@ -202,33 +231,32 @@ bool CCopasiTask::initialize(const OutputFlag & of,
 {
   bool success = true;
 
-  if (!mpProblem)
+  if (mpProblem == NULL)
     {
       CCopasiMessage(CCopasiMessage::ERROR, MCCopasiTask + 1, getObjectName().c_str());
       return false;
     }
 
-  if (!mpProblem->getModel())
+  if (mpContainer == NULL)
     {
       CCopasiMessage(CCopasiMessage::ERROR, MCCopasiTask + 2, getObjectName().c_str());
       return false;
     }
 
-  if (!mpMethod)
+  if (mpMethod == NULL)
     {
       CCopasiMessage(CCopasiMessage::ERROR, MCCopasiTask + 3, getObjectName().c_str());
       return false;
     }
 
-  if (!mpProblem->getModel()->compileIfNecessary(mpCallBack))
+  if (mpContainer != NULL)
     {
-      CCopasiMessage(CCopasiMessage::ERROR, MCCopasiTask + 4, mpProblem->getModel()->getObjectName().c_str());
-      return false;
+      mInitialState = mpContainer->getInitialState();
     }
-
-  pdelete(mpInitialState);
-
-  mpInitialState = new CState(mpProblem->getModel()->getInitialState());
+  else
+    {
+      mInitialState.resize(0);
+    }
 
   mDoOutput = of;
   mpOutputHandler = pOutputHandler;
@@ -247,15 +275,15 @@ bool CCopasiTask::initialize(const OutputFlag & of,
         CCopasiMessage(CCopasiMessage::COMMANDLINE, MCCopasiTask + 5, getObjectName().c_str());
     }
 
-  std::vector< CCopasiContainer * > ListOfContainer;
+  CObjectInterface::ContainerList ListOfContainer;
   ListOfContainer.push_back(this);
 
-  ListOfContainer.push_back(&mpProblem->getModel()->getMathContainer());
+  if (mpContainer != NULL)
+    {
+      ListOfContainer.push_back(mpContainer);
+    }
 
-  CCopasiDataModel* pDataModel = getObjectDataModel();
-  assert(pDataModel != NULL);
-
-  if (!mpOutputHandler->compile(ListOfContainer, pDataModel))
+  if (!mpOutputHandler->compile(ListOfContainer))
     {
       // Warning
       CCopasiMessage(CCopasiMessage::WARNING, MCCopasiTask + 7);
@@ -274,12 +302,11 @@ bool CCopasiTask::restore()
 
   if (!mUpdateModel)
     {
-      if (mpInitialState)
+      if (mpContainer != NULL)
         {
-          mpProblem->getModel()->setInitialState(*mpInitialState);
+          mpContainer->setInitialState(mInitialState);
+          mpContainer->updateInitialValues(CModelParameter::ParticleNumbers);
         }
-
-      mpProblem->getModel()->updateInitialValues();
     }
 
   mpProblem->restore(mUpdateModel);
@@ -386,6 +413,16 @@ void CCopasiTask::initObjects()
   addObjectReference("Output counter", mOutputCounter, CCopasiObject::ValueInt);
   new CCopasiTimer(CCopasiTimer::WALL, this);
   new CCopasiTimer(CCopasiTimer::PROCESS, this);
+
+  CCopasiDataModel *pDataModel = getObjectDataModel();
+
+  if (pDataModel != NULL)
+    {
+      if (pDataModel->getModel() != NULL)
+        {
+          setMathContainer(&pDataModel->getModel()->getMathContainer());
+        }
+    }
 }
 
 CCopasiTask::CDescription::CDescription(const CCopasiContainer * pParent):

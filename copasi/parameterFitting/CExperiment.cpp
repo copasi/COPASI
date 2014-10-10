@@ -23,6 +23,7 @@
 #include "CFitTask.h"
 
 #include "CopasiDataModel/CCopasiDataModel.h"
+#include "math/CMathContainer.h"
 #include "report/CCopasiRootContainer.h"
 #include "model/CModel.h"
 #include "report/CCopasiObjectReference.h"
@@ -97,10 +98,10 @@ CExperiment::CExperiment(const CCopasiContainer * pParent,
   mColumnScale(0),
   mDefaultColumnScale(0),
   mDependentValues(0),
-  mIndependentUpdateMethods(0),
-  mRefreshMethods(),
-  mIndependentObjects(),
   mIndependentValues(0),
+  mpContainer(NULL),
+  mDependentUpdateSequence(),
+  mIndependentObjects(),
   mNumDataRows(0),
   mpDataDependentCalculated(NULL),
   mMean(0),
@@ -147,10 +148,10 @@ CExperiment::CExperiment(const CExperiment & src,
   mColumnScale(src.mColumnScale),
   mDefaultColumnScale(src.mDefaultColumnScale),
   mDependentValues(src.mDependentValues),
-  mIndependentUpdateMethods(src.mIndependentUpdateMethods),
-  mRefreshMethods(src.mRefreshMethods),
-  mIndependentObjects(src.mIndependentObjects),
   mIndependentValues(src.mIndependentValues),
+  mpContainer(src.mpContainer),
+  mDependentUpdateSequence(src.mDependentUpdateSequence),
+  mIndependentObjects(src.mIndependentObjects),
   mNumDataRows(src.mNumDataRows),
   mpDataDependentCalculated(src.mpDataDependentCalculated),
   mMean(src.mMean),
@@ -198,10 +199,10 @@ CExperiment::CExperiment(const CCopasiParameterGroup & group,
   mColumnScale(0),
   mDefaultColumnScale(0),
   mDependentValues(0),
-  mIndependentUpdateMethods(0),
-  mRefreshMethods(),
-  mIndependentObjects(),
   mIndependentValues(0),
+  mpContainer(NULL),
+  mDependentUpdateSequence(),
+  mIndependentObjects(),
   mNumDataRows(0),
   mpDataDependentCalculated(NULL),
   mMean(0),
@@ -433,11 +434,7 @@ C_FLOAT64 CExperiment::sumOfSquares(const size_t & index,
   C_FLOAT64 * const * ppDependentValues = mDependentValues.array();
   C_FLOAT64 const * pScale = mScale[index];
 
-  std::vector< Refresh * >::const_iterator it = mRefreshMethods.begin();
-  std::vector< Refresh * >::const_iterator end = mRefreshMethods.end();
-
-  for (; it != end; ++it)
-    (**it)();
+  mpContainer->applyUpdateSequence(mDependentUpdateSequence);
 
   if (mMissingData)
     {
@@ -521,11 +518,7 @@ C_FLOAT64 CExperiment::sumOfSquaresStore(const size_t & index,
   C_FLOAT64 * const * ppDependentValues = mDependentValues.array();
   C_FLOAT64 const * pScale = mScale[index];
 
-  std::vector< Refresh * >::const_iterator it = mRefreshMethods.begin();
-  std::vector< Refresh * >::const_iterator end = mRefreshMethods.end();
-
-  for (; it != end; ++it)
-    (**it)();
+  mpContainer->applyUpdateSequence(mDependentUpdateSequence);
 
   if (mMissingData)
     {
@@ -578,11 +571,7 @@ void CExperiment::storeExtendedTimeSeriesData(C_FLOAT64 time)
   *mStorageIt = time; ++mStorageIt;
 
   //do all necessary refreshs
-  std::vector< Refresh * >::const_iterator it = mRefreshMethods.begin();
-  std::vector< Refresh * >::const_iterator end = mRefreshMethods.end();
-
-  for (; it != end; ++it)
-    (**it)();
+  mpContainer->applyUpdateSequence(mDependentUpdateSequence);
 
   //store the calculated data
   C_FLOAT64 * const * ppDependentValues = mDependentValues.array();
@@ -731,15 +720,17 @@ bool CExperiment::calculateStatistics()
   return true;
 }
 
-bool CExperiment::compile(const std::vector< CCopasiContainer * > listOfContainer)
+bool CExperiment::compile(const CMathContainer * pMathContainer)
 {
   bool success = true;
 
-  if (!mpObjectMap->compile(listOfContainer))
+  mpContainer = const_cast< CMathContainer * >(pMathContainer);
+
+  if (!mpObjectMap->compile(mpContainer))
     success = false;
 
   size_t LastMappedColumn = mpObjectMap->getLastColumn();
-  const CVector< const CCopasiObject * > & Objects = mpObjectMap->getMappedObjects();
+  const CVector< const CCopasiObject * > & Objects = mpObjectMap->getDataObjects();
 
   size_t i, imax = mpObjectMap->getLastNotIgnoredColumn();
 
@@ -759,11 +750,11 @@ bool CExperiment::compile(const std::vector< CCopasiContainer * > listOfContaine
   size_t DependentCount = mDataDependent.numCols();
 
   mDependentValues.resize(DependentCount);
-  mIndependentUpdateMethods.resize(IndependentCount);
   mIndependentValues.resize(IndependentCount);
   mIndependentObjects.clear();
   mDependentObjects.clear();
-  std::set< const CCopasiObject * > Dependencies;
+
+  CObjectInterface::ObjectSet DependentObjects;
 
   IndependentCount = 0;
   DependentCount = 0;
@@ -771,63 +762,61 @@ bool CExperiment::compile(const std::vector< CCopasiContainer * > listOfContaine
   bool TimeFound = false;
 
   for (i = 0; i <= imax; i++)
-    switch (mpObjectMap->getRole(i))
-      {
-        case ignore:
-          break;
+    {
+      CObjectInterface * pObject = mpContainer->getMathObject(Objects[i]);
 
-        case independent:
+      switch (mpObjectMap->getRole(i))
+        {
+          case ignore:
+            break;
 
-          if (!Objects[i]) // Object not found
-            {
-              CCopasiMessage(CCopasiMessage::ERROR, MCFitting + 5, i + 1);
-              return false;
-            }
+          case independent:
 
-          if (!Objects[i]->isValueDbl())
-            {
-              CCopasiMessage(CCopasiMessage::ERROR, MCFitting + 6, Objects[i]->getObjectDisplayName().c_str(), i + 1);
-              return false;
-            }
+            if (!Objects[i]->isValueDbl())
+              {
+                CCopasiMessage(CCopasiMessage::ERROR, MCFitting + 6, Objects[i]->getObjectDisplayName().c_str(), i + 1);
+                return false;
+              }
 
-          mIndependentObjects.insert(Objects[i]);
-          mIndependentUpdateMethods[IndependentCount] =
-            Objects[i]->getUpdateMethod();
-          mIndependentValues[IndependentCount] =
-            *(C_FLOAT64 *)Objects[i]->getValuePointer();
-          // :TODO: do we have to check if getValuePointer() return a valid pointer?
+            if (pObject == NULL) // Object not found
+              {
+                CCopasiMessage(CCopasiMessage::ERROR, MCFitting + 5, i + 1);
+                return false;
+              }
 
-          IndependentCount++;
-          break;
+            mIndependentObjects.insert(pObject);
+            mIndependentValues[IndependentCount] = (C_FLOAT64 *) pObject->getValuePointer();
 
-        case dependent:
+            IndependentCount++;
+            break;
 
-          if (!Objects[i]) // Object not found
-            {
-              CCopasiMessage(CCopasiMessage::ERROR, MCFitting + 5, i + 1);
-              return false;
-            }
+          case dependent:
 
-          if (!Objects[i]->isValueDbl())
-            {
-              CCopasiMessage(CCopasiMessage::ERROR, MCFitting + 6, Objects[i]->getObjectDisplayName().c_str(), i + 1);
-              return false;
-            }
+            if (!Objects[i]->isValueDbl())
+              {
+                CCopasiMessage(CCopasiMessage::ERROR, MCFitting + 6, Objects[i]->getObjectDisplayName().c_str(), i + 1);
+                return false;
+              }
 
-          mDependentValues[DependentCount] =
-            (C_FLOAT64 *) Objects[i]->getValuePointer();
-          // :TODO: do we have to check if getValuePointer() return a valid pointer?
-          mDependentObjects[const_cast< CCopasiObject * >(Objects[i])] = DependentCount;
-          mColumnScale[DependentCount] = mpObjectMap->getScale(i);
-          Dependencies.insert(Objects[i]->getValueObject());
+            if (pObject == NULL) // Object not found
+              {
+                CCopasiMessage(CCopasiMessage::ERROR, MCFitting + 5, i + 1);
+                return false;
+              }
 
-          DependentCount++;
-          break;
+            DependentObjects.insert(pObject);
+            mDependentValues[DependentCount] = (C_FLOAT64 *) pObject->getValuePointer();
+            mDependentObjects[const_cast< CObjectInterface * >(pObject)] = DependentCount;
+            mColumnScale[DependentCount] = mpObjectMap->getScale(i);
 
-        case time:
-          TimeFound = true;
-          break;
-      }
+            DependentCount++;
+            break;
+
+          case time:
+            TimeFound = true;
+            break;
+        }
+    }
 
   /* We need to check whether a column is mapped to time */
   if (!TimeFound && *mpTaskType == CCopasiTask::timeCourse)
@@ -857,10 +846,7 @@ bool CExperiment::compile(const std::vector< CCopasiContainer * > listOfContaine
   mColumnValidValueCount.resize(numCols);
   mColumnValidValueCount = std::numeric_limits<size_t>::quiet_NaN();
 
-  CModel * pModel =
-    dynamic_cast< CModel * >(getObjectDataModel()->ObjectFromCN(listOfContainer, CCopasiObjectName("Model=" + CCopasiObjectName::escape(getObjectDataModel()->getModel()->getObjectName()))));
-
-  mRefreshMethods = CCopasiObject::buildUpdateSequence(Dependencies, pModel->getUptoDateObjects());
+  mpContainer->getTransientDependencies().getUpdateSequence(mDependentUpdateSequence, CMath::Default, mpContainer->getStateObjects(false), DependentObjects, mpContainer->getSimulationUpToDateObjects());
 
   initializeScalingMatrix();
 
@@ -1142,7 +1128,7 @@ bool CExperiment::calculateWeights()
   return true;
 }
 
-const std::map< CCopasiObject *, size_t > & CExperiment::getDependentObjects() const
+const std::map< CObjectInterface *, size_t > & CExperiment::getDependentObjects() const
 {return mDependentObjects;}
 
 bool CExperiment::readColumnNames()
@@ -1205,20 +1191,14 @@ const std::vector< std::string > & CExperiment::getColumnNames() const
 
 bool CExperiment::updateModelWithIndependentData(const size_t & index)
 {
-  size_t i, imax = mIndependentUpdateMethods.size();
+  C_FLOAT64 ** ppValue = mIndependentValues.array();
+  C_FLOAT64 ** ppValueEnd = ppValue + mIndependentValues.size();
+  C_FLOAT64 * pData = mDataIndependent[index];
 
-  for (i = 0; i < imax; i++)
-    (*mIndependentUpdateMethods[i])(mDataIndependent(index, i));
-
-  return true;
-}
-
-bool CExperiment::restoreModelIndependentData()
-{
-  size_t i, imax = mIndependentUpdateMethods.size();
-
-  for (i = 0; i < imax; i++)
-    (*mIndependentUpdateMethods[i])(mIndependentValues[i]);
+  for (; ppValue != ppValueEnd; ++ppValue, ++pData)
+    {
+      **ppValue = *pData;
+    }
 
   return true;
 }
@@ -1410,7 +1390,7 @@ void CExperiment::printResult(std::ostream * ostream) const
   size_t j, jmax = mDataDependent.numCols();
   size_t k, kmax = mpObjectMap->getLastNotIgnoredColumn() + 1;
 
-  const CVector< const CCopasiObject * > & Objects =  mpObjectMap->getMappedObjects();
+  const CVector< const CCopasiObject * > & Objects =  mpObjectMap->getDataObjects();
 
   os << "Row\t";
 
@@ -1547,10 +1527,9 @@ const C_FLOAT64 & CExperiment::getErrorMean() const
 const C_FLOAT64 & CExperiment::getErrorMeanSD() const
 {return mMeanSD;}
 
-C_FLOAT64 CExperiment::getObjectiveValue(CCopasiObject *const& pObject) const
+C_FLOAT64 CExperiment::getObjectiveValue(const CObjectInterface * pObject) const
 {
-  std::map< CCopasiObject *, size_t >::const_iterator it
-  = mDependentObjects.find(pObject);
+  std::map< CObjectInterface *, size_t >::const_iterator it = mDependentObjects.find(const_cast< CObjectInterface * >(pObject));
 
   if (it != mDependentObjects.end())
     return mColumnObjectiveValue[it->second];
@@ -1558,10 +1537,9 @@ C_FLOAT64 CExperiment::getObjectiveValue(CCopasiObject *const& pObject) const
     return std::numeric_limits<C_FLOAT64>::quiet_NaN();
 }
 
-C_FLOAT64 CExperiment::getDefaultScale(const CCopasiObject * const& pObject) const
+C_FLOAT64 CExperiment::getDefaultScale(const CObjectInterface * pObject) const
 {
-  std::map< CCopasiObject *, size_t>::const_iterator it
-  = mDependentObjects.find(const_cast<CCopasiObject*>(pObject));
+  std::map< CObjectInterface *, size_t>::const_iterator it = mDependentObjects.find(const_cast< CObjectInterface * >(pObject));
 
   if (it == mDependentObjects.end())
     return std::numeric_limits<C_FLOAT64>::quiet_NaN();
@@ -1569,10 +1547,9 @@ C_FLOAT64 CExperiment::getDefaultScale(const CCopasiObject * const& pObject) con
   return mDefaultColumnScale[it->second];
 }
 
-C_FLOAT64 CExperiment::getRMS(CCopasiObject *const& pObject) const
+C_FLOAT64 CExperiment::getRMS(const CObjectInterface * pObject) const
 {
-  std::map< CCopasiObject *, size_t>::const_iterator it
-  = mDependentObjects.find(pObject);
+  std::map< CObjectInterface *, size_t >::const_iterator it = mDependentObjects.find(const_cast< CObjectInterface * >(pObject));
 
   if (it != mDependentObjects.end())
     return mColumnRMS[it->second];
@@ -1580,10 +1557,9 @@ C_FLOAT64 CExperiment::getRMS(CCopasiObject *const& pObject) const
     return std::numeric_limits<C_FLOAT64>::quiet_NaN();
 }
 
-C_FLOAT64 CExperiment::getErrorSum(CCopasiObject *const& pObject) const
+C_FLOAT64 CExperiment::getErrorSum(const CObjectInterface * pObject) const
 {
-  std::map< CCopasiObject *, size_t>::const_iterator it
-  = mDependentObjects.find(pObject);
+  std::map< CObjectInterface *, size_t >::const_iterator it = mDependentObjects.find(const_cast< CObjectInterface * >(pObject));
 
   if (it == mDependentObjects.end() ||
       mpDataDependentCalculated == NULL)
@@ -1612,11 +1588,10 @@ C_FLOAT64 CExperiment::getErrorSum(CCopasiObject *const& pObject) const
   return Mean;
 }
 
-C_FLOAT64 CExperiment::getErrorMeanSD(CCopasiObject *const& pObject,
+C_FLOAT64 CExperiment::getErrorMeanSD(const CObjectInterface * pObject,
                                       const C_FLOAT64 & errorMean) const
 {
-  std::map< CCopasiObject *, size_t>::const_iterator it
-  = mDependentObjects.find(pObject);
+  std::map< CObjectInterface *, size_t >::const_iterator it = mDependentObjects.find(const_cast< CObjectInterface * >(pObject));
 
   if (it == mDependentObjects.end() ||
       mpDataDependentCalculated == NULL)
@@ -1650,10 +1625,9 @@ C_FLOAT64 CExperiment::getErrorMeanSD(CCopasiObject *const& pObject,
   return MeanSD;
 }
 
-size_t CExperiment::getColumnValidValueCount(CCopasiObject *const& pObject) const
+size_t CExperiment::getColumnValidValueCount(const CObjectInterface * pObject) const
 {
-  std::map< CCopasiObject *, size_t>::const_iterator it
-  = mDependentObjects.find(pObject);
+  std::map< CObjectInterface *, size_t >::const_iterator it = mDependentObjects.find(const_cast< CObjectInterface * >(pObject));
 
   if (it != mDependentObjects.end())
     return mColumnValidValueCount[it->second];
@@ -1661,7 +1635,7 @@ size_t CExperiment::getColumnValidValueCount(CCopasiObject *const& pObject) cons
     return 0;
 }
 
-const std::set< const CCopasiObject * > & CExperiment::getIndependentObjects() const
+const CObjectInterface::ObjectSet & CExperiment::getIndependentObjects() const
 {
   return mIndependentObjects;
 }

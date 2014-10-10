@@ -36,8 +36,7 @@
 #include "CTrajectoryMethod.h"
 #include "CTrajectoryProblem.h"
 #include "math/CMathContainer.h"
-#include "model/CState.h"
-#include "model/CCompartment.h"
+#include "math/CMathReaction.h"
 #include "model/CModel.h"
 
 C_INT32 CStochMethod::checkModel(CModel * C_UNUSED(pmodel))
@@ -47,7 +46,21 @@ C_INT32 CStochMethod::checkModel(CModel * C_UNUSED(pmodel))
 }
 
 CStochMethod::CStochMethod(const CCopasiContainer * pParent):
-  CTrajectoryMethod(CCopasiMethod::stochastic, pParent)
+  CTrajectoryMethod(CCopasiTask::timeCourse, CCopasiMethod::stochastic, pParent),
+  mpRandomGenerator(NULL),
+  mA0(0.0),
+  mNumReactions(0),
+  mReactions(),
+  mPropensityObjects(),
+  mAmu(),
+  mUpdateSequences(),
+  mMaxSteps(0),
+  mMaxStepsReached(false),
+  mNextReactionTime(0.0),
+  mNextReactionIndex(C_INVALID_INDEX),
+  mNumReactionSpecies(0),
+  mFirstReactionSpeciesIndex(C_INVALID_INDEX),
+  mDG()
 {
   initializeParameter();
   mpRandomGenerator = CRandom::createGenerator(CRandom::mt19937);
@@ -55,17 +68,28 @@ CStochMethod::CStochMethod(const CCopasiContainer * pParent):
 
 CStochMethod::CStochMethod(const CStochMethod & src,
                            const CCopasiContainer * pParent):
-  CTrajectoryMethod(src, pParent)
+  CTrajectoryMethod(src, pParent),
+  mpRandomGenerator(NULL),
+  mA0(0.0),
+  mNumReactions(0),
+  mReactions(),
+  mPropensityObjects(),
+  mAmu(),
+  mUpdateSequences(),
+  mMaxSteps(0),
+  mMaxStepsReached(false),
+  mNextReactionTime(0.0),
+  mNextReactionIndex(C_INVALID_INDEX),
+  mNumReactionSpecies(0),
+  mFirstReactionSpeciesIndex(C_INVALID_INDEX),
+  mDG()
 {
   initializeParameter();
   mpRandomGenerator = CRandom::createGenerator(CRandom::mt19937);
 }
 
 CStochMethod::~CStochMethod()
-{
-  delete mpRandomGenerator;
-  mpRandomGenerator = NULL;
-}
+{}
 
 void CStochMethod::initializeParameter()
 {
@@ -117,16 +141,6 @@ CTrajectoryMethod::Status CStochMethod::step(const double & deltaT)
   size_t i;
   size_t imax;
 
-  // :TODO: Bug 774: This assumes that the number of variable metabs is the number
-  // of metabs determined by reaction. In addition they are expected at the beginning of the
-  // MetabolitesX which is not the case if we have metabolites of type ODE.
-  for (i = 0, imax = mpProblem->getModel()->getNumVariableMetabs(); i < imax; i++)
-    if (mpProblem->getModel()->getMetabolitesX()[i]->getValue() >= mMaxIntBeforeStep)
-      {
-        CCopasiMessage(CCopasiMessage::EXCEPTION, "at least one particle number got to big.");
-        // TODO:throw exception or something like that
-      }
-
   // do several steps:
   C_FLOAT64 time = *mpContainerStateTime;
   C_FLOAT64 endtime = time + deltaT;
@@ -144,258 +158,111 @@ CTrajectoryMethod::Status CStochMethod::step(const double & deltaT)
         }
     }
 
-  mContainerState = mpContainer->getState();
   *mpContainerStateTime = time;
 
   return NORMAL;
 }
 
-void CStochMethod::start(CVectorCore< C_FLOAT64 > & initialState)
+void CStochMethod::start()
 {
-  /* get configuration data */
-  mMaxSteps = * getValue("Max Internal Steps").pINT;
+  CTrajectoryMethod::start();
+
+  mpRandomGenerator = &mpContainer->getRandomGenerator();
 
   bool useRandomSeed = * getValue("Use Random Seed").pBOOL;
   unsigned C_INT32 randomSeed = * getValue("Random Seed").pUINT;
 
   if (useRandomSeed) mpRandomGenerator->initialize(randomSeed);
 
-  //mpCurrentState is initialized. This state is not used internally in the
-  //stochastic solver, but it is used for returning the result after each step.
-  mContainerState = initialState;
-
-  mpModel = mpProblem->getModel();
-  assert(mpModel);
-
-  if (mpModel->getModelType() == CModel::deterministic)
-    mDoCorrection = true;
-  else
-    mDoCorrection = false;
-
-  mHasAssignments = modelHasAssignments(mpModel);
-
-  size_t i;
+  mMaxSteps = * getValue("Max Internal Steps").pINT;
 
   //initialize the vector of ints that contains the particle numbers
   //for the discrete simulation. This also floors all particle numbers in the model.
-  mNumbers.resize(mpModel->getMetabolitesX().size());
 
-  for (i = 0; i < mNumbers.size(); ++i)
+  // Size the arrays
+  mReactions.initialize(mpContainer->getReactions());
+  mNumReactions = mReactions.size();
+  mAmu.initialize(mpContainer->getPropensities());
+  mPropensityObjects.initialize(mAmu.size(), mpContainer->getMathObject(mAmu.array()));
+  mUpdateSequences.resize(mNumReactions);
+
+  CMathReaction * pReaction = mReactions.array();
+  CMathReaction * pReactionEnd = pReaction + mNumReactions;
+  CObjectInterface::UpdateSequence * pUpdateSequence = mUpdateSequences.array();
+  CMathObject * pPropensityObject = mPropensityObjects.array();
+  CMathObject * pPropensityObjectEnd = pPropensityObject + mPropensityObjects.size();
+  CObjectInterface::ObjectSet Requested;
+
+  for (; pPropensityObject != pPropensityObjectEnd; ++pPropensityObject)
     {
-      mNumbers[i] = (C_INT64) mpModel->getMetabolitesX()[i]->getValue();
-      mpModel->getMetabolitesX()[i]->setValue((C_FLOAT64) mNumbers[i]);
-      mpModel->getMetabolitesX()[i]->refreshConcentration();
+      Requested.insert(pPropensityObject);
     }
 
-  mFirstMetabIndex = mpModel->getStateTemplate().getIndex(mpModel->getMetabolitesX()[0]);
+  CObjectInterface::ObjectSet Changed;
+  CObjectInterface * pTimeObject = mpContainer->getMathObject(mpContainerStateTime);
+  pPropensityObject = mPropensityObjects.array();
 
-  mpModel->updateSimulatedValues(false); //for assignments
-  //mpModel->updateNonSimulatedValues(); //for assignments
-
-  mNumReactions = mpModel->getReactions().size();
-
-  mAmu.clear(); mAmuOld.clear();
-
-  for (i = 0; i < mNumReactions; i++)
+  for (; pReaction  != pReactionEnd; ++pReaction, ++pUpdateSequence, ++pPropensityObject)
     {
-      mAmu.push_back(0);
-      mAmuOld.push_back(0);
+      Changed = pReaction->getChangedObjects();
+
+      // The time is always updated
+      Changed.insert(pTimeObject);
+
+      pUpdateSequence->clear();
+      mpContainer->getTransientDependencies().getUpdateSequence(*pUpdateSequence, CMath::Default, Changed, Requested);
     }
 
-  setupDependencyGraphAndBalances();
-  updatePropensities();
+  mNumReactionSpecies = mpContainer->getCountIndependentSpecies() + mpContainer->getCountDependentSpecies();
+  mFirstReactionSpeciesIndex = mpContainer->getTimeIndex() + mpContainer->getCountODEs();
 
-  // call init of the specific simulation method
-  initMethod(*mpContainerStateTime);
+  C_FLOAT64 * pSpecies = mContainerState.array() + mFirstReactionSpeciesIndex;
+  C_FLOAT64 * pSpeciesEnd = pSpecies + mNumReactionSpecies;
+
+  for (; pSpecies != pSpeciesEnd; ++pSpecies)
+    {
+      *pSpecies = floor(*pSpecies + 0.5);
+    }
+
+  // The container state is now up to date we just need to calculate all values needed for simulation.
+  mpContainer->updateSimulatedValues(false); //for assignments
+
+  pPropensityObject = mPropensityObjects.array();
+  C_FLOAT64 * pAmu = mAmu.array();
+  mA0 = 0.0;
+
+  // Update the propensity
+  for (; pPropensityObject != pPropensityObjectEnd; ++pPropensityObject, ++pAmu)
+    {
+      pPropensityObject->calculate();
+      mA0 += *pAmu;
+    }
 
   mMaxStepsReached = false;
-  return;
-}
+  mNextReactionTime = *mpContainerStateTime;
+  mNextReactionIndex = C_INVALID_INDEX;
 
-C_INT32 CStochMethod::updatePropensities()
-{
-  //mA0Old = mA0;
-  mA0 = 0;
+  setupDependencyGraph();
 
-  for (size_t i = 0; i < mNumReactions; i++)
-    {
-      mAmuOld[i] = mAmu[i];
-      calculateAmu(i);
-      mA0 += mAmu[i];
-    }
-
-  return 0;
-}
-
-C_INT32 CStochMethod::calculateAmu(size_t index)
-{
-  C_FLOAT64 rate_factor = mpModel->getReactions()[index]->calculateParticleFlux();
-
-  if (rate_factor < 0.0)
-    {
-      // TODO CRITICAL Create a warning message
-      rate_factor = 0.0;
-    }
-
-  if (!mDoCorrection)
-    {
-      mAmu[index] = rate_factor;
-      return 0;
-    }
-
-  // We need the product of the cmu and hmu for this step.
-  // We calculate this in one go, as there are fewer steps to
-  // perform and we eliminate some possible rounding errors.
-  C_FLOAT64 amu = 1; // initially
-  //size_t total_substrates = 0;
-  C_INT32 num_ident = 0;
-  C_INT64 number = 0;
-  C_INT64 lower_bound;
-  // substrate_factor - The substrates, raised to their multiplicities,
-  // multiplied with one another. If there are, e.g. m substrates of type m,
-  // and n of type N, then substrate_factor = M^m * N^n.
-  C_FLOAT64 substrate_factor = 1;
-  // First, find the reaction associated with this index.
-  // Keep a pointer to this.
-  // Iterate through each substrate in the reaction
-  const std::vector<CStochBalance> & substrates = mLocalSubstrates[index];
-
-  int flag = 0;
-
-  for (size_t i = 0; i < substrates.size(); i++)
-    {
-      num_ident = substrates[i].mMultiplicity;
-
-      if (num_ident > 1)
-        {
-          flag = 1;
-          number = mNumbers[substrates[i].mIndex];
-          lower_bound = number - num_ident;
-          substrate_factor = substrate_factor * pow((double) number, (int)(num_ident - 1));  //optimization
-
-          number--; //optimization
-
-          while (number > lower_bound)
-            {
-              amu *= number;
-              number--;
-            }
-        }
-    }
-
-  if ((amu == 0) || (substrate_factor == 0))  // at least one substrate particle number is zero
-    {
-      mAmu[index] = 0;
-      return 0;
-    }
-
-  // rate_factor is the rate function divided by substrate_factor.
-  // It would be more efficient if this was generated directly, since in effect we
-  // are multiplying and then dividing by the same thing (substrate_factor)!
-
-  if (flag)
-    {
-      //cout << "Rate factor = " << rate_factor << endl;
-      amu *= rate_factor / substrate_factor;
-      mAmu[index] = amu;
-    }
-  else
-    {
-      mAmu[index] = rate_factor;
-    }
-
-  return 0;
-}
-
-C_INT32 CStochMethod::updateSystemState(size_t rxn, const C_FLOAT64 & time)
-{
-  // Change the particle numbers according to which step took place.
-  // First, get the vector of balances in the reaction we've got.
-  // (This vector expresses the number change of each metabolite
-  // in the reaction.) Then step through each balance, using its
-  // multiplicity to calculate a new value for the associated
-  // metabolite. Finally, update the metabolite.
-
-  const std::vector<CStochBalance> & bals = mLocalBalances[rxn];
-
-  std::vector<CStochBalance>::const_iterator bi;
-  CMetab* pTmpMetab;
-
-  for (bi = bals.begin(); bi != bals.end(); bi++)
-    {
-      mNumbers[bi->mIndex] = mNumbers[bi->mIndex] + bi->mMultiplicity;
-      pTmpMetab = mpModel->getMetabolitesX()[bi->mIndex];
-      pTmpMetab->setValue((C_FLOAT64) mNumbers[bi->mIndex]);
-      pTmpMetab->refreshConcentration();
-    }
-
-  if (mHasAssignments)
-    {
-      // this is less efficient but can deal with assignments.
-      //TODO: handle dependencies for assignments also.
-      mpModel->setTime(time);
-      mpModel->updateSimulatedValues(false);
-
-      //now potentially species with assignments have non integer
-      //particle numbers. This needs to be rounded. Also the updated
-      //particle numbers need to be copied to the vector of integers.
-      //(the integer values may be used to calculate the propensities for
-      //higher order kinetics).
-      size_t i, imax = mNumbers.size();
-
-      for (i = 0; i < imax; ++i)
-        {
-          if (mpModel->getMetabolitesX()[i]->getStatus() == CModelEntity::ASSIGNMENT)
-            {
-              mNumbers[i] = (C_INT64) mpModel->getMetabolitesX()[i]->getValue();
-              mpModel->getMetabolitesX()[i]->setValue((C_FLOAT64) mNumbers[i]);
-              mpModel->getMetabolitesX()[i]->refreshConcentration();
-            }
-        }
-
-      //now the propensities can be updated
-      updatePropensities();
-    }
-  else
-    {
-      const std::set<size_t> & dep_nodes = mDG.getDependents(rxn);
-
-      std::set<size_t>::const_iterator it;
-      size_t ii;
-
-      for (it = dep_nodes.begin(); it != dep_nodes.end(); it++)
-        {
-          ii = *it;
-          mAmuOld[ii] = mAmu[ii];
-          calculateAmu(ii);
-        }
-
-      //mA0Old = mA0;
-
-      mA0 = 0;
-      mA0 = std::accumulate(mAmu.begin(), mAmu.end(), mA0);
-    }
-
-  return 0;
+  initMethod();
 }
 
 size_t CStochMethod::generateReactionIndex()
 {
-  C_FLOAT64 rand1 = mpRandomGenerator->getRandomOO() * mA0;
-  C_FLOAT64 sum = 0;
-  size_t index = 0;
+  C_FLOAT64 sum = 0.0;
+  C_FLOAT64 rand = mpRandomGenerator->getRandomOO() * mA0;
 
-  while (index < (mpModel->getReactions().size() - 1))
+  const C_FLOAT64 * pAmu = mAmu.array();
+  const C_FLOAT64 * pAmuEnd = pAmu + mNumReactions;
+
+  for (; (sum < rand) && (pAmu != pAmuEnd); ++pAmu, ++mNextReactionIndex)
     {
-      sum += mAmu[index] /* /mA0 */;
-
-      if (rand1 <= sum)
-        {return index;}
-
-      index++;
+      sum += *pAmu;
     }
 
-  return index;
+  mNextReactionIndex--;
+
+  return mNextReactionIndex;
 }
 
 C_FLOAT64 CStochMethod::generateReactionTime()
@@ -414,162 +281,33 @@ C_FLOAT64 CStochMethod::generateReactionTime(size_t reaction_index)
   return - 1 * log(rand2) / mAmu[reaction_index];
 }
 
-void CStochMethod::setupDependencyGraphAndBalances()
+void CStochMethod::setupDependencyGraph()
 {
   mDG.clear();
-  std::vector< std::set<std::string>* > DependsOn;
-  std::vector< std::set<std::string>* > Affects;
-  size_t i, j;
-  // Do for each reaction:
 
-  for (i = 0; i < mNumReactions; i++)
+  CObjectInterface::ObjectSet Requested;
+  CObjectInterface::UpdateSequence UpdateSequence;
+
+  const CMathReaction * pReaction = mReactions.array();
+  const CMathReaction * pReactionEnd = pReaction + mReactions.size();
+  const CMathObject * pPropensity = mPropensityObjects.array();
+  const CMathObject * pPropensityEnd = pPropensity + mPropensityObjects.size();
+
+  for (size_t i = 0; pReaction != pReactionEnd; ++pReaction, ++i)
     {
-      // Get the set of metabolites  which affect the value of amu for this
-      // reaction i.e. the set on which amu depends. This may be  more than
-      // the set of substrates, since the kinetics can involve other
-      // reactants, e.g. catalysts. We thus need to step through the
-      // rate function and pick out every reactant which can vary.
-      DependsOn.push_back(getDependsOn(i));
-      // Get the set of metabolites which are affected when this reaction takes place
-      Affects.push_back(getAffects(i));
-    }
+      size_t j = 0;
+      pPropensity = mPropensityObjects.array();
 
-  // For each possible pair of reactions i and j, if the intersection of
-  // Affects(i) with DependsOn(j) is non-empty, add a dependency edge from i to j.
-  mDG.resize(mNumReactions);
-
-  for (i = 0; i < mNumReactions; i++)
-    {
-      for (j = 0; j < mNumReactions; j++)
+      for (; pPropensity != pPropensityEnd; ++pPropensity, ++j)
         {
-          // Determine whether the intersection of these two sets is non-empty
-          // Could also do this with set_intersection generic algorithm, but that
-          // would require operator<() to be defined on the set elements.
+          mpContainer->getTransientDependencies().getUpdateSequence(UpdateSequence, CMath::Default, pReaction->getChangedObjects(), Requested);
 
-          std::set<std::string>::iterator iter = Affects[i]->begin();
-
-          for (; iter != Affects[i]->end(); iter++)
+          if (UpdateSequence.size() > 0)
             {
-              if (DependsOn[j]->count(*iter))
-                {
-                  // The set intersection is non-empty
-                  mDG.addDependent(i, j);
-                  break;
-                }
-            }
-        }
-
-      // Ensure that self edges are included
-      //mDG.addDependent(i, i);
-    }
-
-  // Create local copy of balances and substrates list
-  CStochBalance bb;
-  C_INT32 maxBalance = 0;
-
-  mLocalBalances.clear();
-  mLocalBalances.resize(mNumReactions);
-  mLocalSubstrates.clear();
-  mLocalSubstrates.resize(mNumReactions);
-
-  for (i = 0; i < mNumReactions; i++)
-    {
-      const CCopasiVector<CChemEqElement> * bbb;
-
-      bbb = &mpModel->getReactions()[i]->getChemEq().getBalances();
-
-      //TODO clear old local balances and substrates
-      for (j = 0; j < bbb->size(); j++)
-        {
-          //bb.mIndex = mpModel->getMetabolites().getIndex((*bbb)[j]->getMetabolite().getObjectName(());
-          //bb.mIndex = mpModel->findMetabByKey((*bbb)[j]->getMetaboliteKey());
-          assert((*bbb)[j]->getMetabolite());
-          bb.mIndex = mpModel->getMetabolitesX().getIndex((*bbb)[j]->getMetabolite());
-          bb.mMultiplicity = static_cast<C_INT32>(floor((*bbb)[j]->getMultiplicity() + 0.5));
-
-          if (((*bbb)[j]->getMetabolite()->getStatus()) != CModelEntity::FIXED)
-            {
-              if (bb.mMultiplicity > maxBalance) maxBalance = bb.mMultiplicity;
-
-              mLocalBalances[i].push_back(bb);
-            }
-        }
-
-      bbb = &mpModel->getReactions()[i]->getChemEq().getSubstrates();
-
-      for (j = 0; j < bbb->size(); j++)
-        {
-          //bb.mIndex = mpModel->getMetabolites().getIndex((*bbb)[j]->getMetabolite().getObjectName(());
-          //bb.mIndex = mpModel->findMetabByKey((*bbb)[j]->getMetaboliteKey());
-          assert((*bbb)[j]->getMetabolite());
-          bb.mIndex = mpModel->getMetabolitesX().getIndex((*bbb)[j]->getMetabolite());
-          bb.mMultiplicity = static_cast<C_INT32>(floor((*bbb)[j]->getMultiplicity() + 0.5));
-
-          if (1)
-            {
-              mLocalSubstrates[i].push_back(bb);
+              mDG.addDependent(i, j);
             }
         }
     }
-
-  mMaxBalance = maxBalance;
-  mMaxIntBeforeStep = std::numeric_limits< C_INT64 >::max() - 1 - mMaxSteps * mMaxBalance;
-
-  // Delete the memory allocated in getDependsOn() and getAffects()
-  // since this is allocated in other functions.
-  for (i = 0; i < mNumReactions; i++)
-    {
-      delete DependsOn[i];
-      delete Affects[i];
-    }
-}
-
-std::set<std::string> *CStochMethod::getDependsOn(size_t reaction_index)
-{
-  std::set<std::string> *retset = new std::set<std::string>;
-
-  size_t i, imax = mpModel->getReactions()[reaction_index]->getFunctionParameters().size();
-  size_t j, jmax;
-
-  for (i = 0; i < imax; ++i)
-    {
-      if (mpModel->getReactions()[reaction_index]->getFunctionParameters()[i]->getUsage() == CFunctionParameter::PARAMETER)
-        continue;
-
-      //metablist = mpModel->getReactions()[reaction_index]->getParameterMappingMetab(i);
-      const std::vector <std::string> & metabKeylist =
-        mpModel->getReactions()[reaction_index]->getParameterMappings()[i];
-      jmax = metabKeylist.size();
-
-      for (j = 0; j < jmax; ++j)
-        {
-          retset->insert(metabKeylist[j]);
-        }
-    }
-
-  return retset;
-}
-
-std::set<std::string> *CStochMethod::getAffects(size_t reaction_index)
-{
-  std::set<std::string> *retset = new std::set<std::string>;
-
-  // Get the balances  associated with the reaction at this index
-  // XXX We first get the chemical equation, then the balances, since the getBalances method in CReaction is unimplemented!
-  const CCopasiVector<CChemEqElement> & balances = mpModel->getReactions()[reaction_index]->getChemEq().getBalances();
-
-  for (size_t i = 0; i < balances.size(); i++)
-    {
-      if (!balances[i]->getMetabolite()) continue;
-
-      if (fabs(balances[i]->getMultiplicity()) >= 0.1)
-        if (balances[i]->getMetabolite()->getStatus() != CModelEntity::FIXED)
-          {
-            retset->insert(balances[i]->getMetabolite()->getKey());
-          }
-    }
-
-  return retset;
 }
 
 //virtual
@@ -586,60 +324,15 @@ bool CStochMethod::isValidProblem(const CCopasiProblem * pProblem)
       return false;
     }
 
-  if (pTP->getModel()->getTotSteps() < 1)
+  // check for ODEs
+  if (mpContainer->getCountODEs() > 0)
     {
-      //at least one reaction necessary
-      CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 17);
-      return false;
+      CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 28);
     }
-
-  //check for rules
-  size_t i, imax = pTP->getModel()->getNumModelValues();
-
-  for (i = 0; i < imax; ++i)
-    {
-      if (pTP->getModel()->getModelValues()[i]->getStatus() == CModelEntity::ODE)
-        {
-          //ode rule found
-          CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 18);
-          return false;
-        }
-    }
-
-  imax = pTP->getModel()->getNumMetabs();
-
-  for (i = 0; i < imax; ++i)
-    {
-      if (pTP->getModel()->getMetabolites()[i]->getStatus() == CModelEntity::ODE)
-        {
-          //ode rule found
-          CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 20);
-          return false;
-        }
-    }
-
-  imax = pTP->getModel()->getCompartments().size();
-
-  for (i = 0; i < imax; ++i)
-    {
-      if (pTP->getModel()->getCompartments()[i]->getStatus() == CModelEntity::ODE)
-        {
-          //ode rule found
-          CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 21);
-          return false;
-        }
-    }
-
-  //   if (modelHasAssignments(pTP->getModel()))
-  //     {
-  //       CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 19);
-  //       return false;
-  //}
-  //  this test is disabled since we have preliminary support for assignments
 
   //TODO: rewrite CModel::suitableForStochasticSimulation() to use
   //      CCopasiMessage
-  std::string message = pTP->getModel()->suitableForStochasticSimulation();
+  std::string message = mpContainer->getModel().suitableForStochasticSimulation();
 
   if (message != "")
     {
@@ -655,54 +348,5 @@ bool CStochMethod::isValidProblem(const CCopasiProblem * pProblem)
       return false;
     }
 
-  //events are not supported at the moment
-  if (pTP->getModel()->getEvents().size() > 0)
-    {
-      CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 23);
-      return false;
-    }
-
   return true;
-}
-
-//static
-bool CStochMethod::modelHasAssignments(const CModel* pModel)
-{
-  size_t i, imax = pModel->getNumModelValues();
-
-  for (i = 0; i < imax; ++i)
-    {
-      if (pModel->getModelValues()[i]->getStatus() == CModelEntity::ASSIGNMENT)
-        if (pModel->getModelValues()[i]->isUsed())
-          {
-            //used assignment found
-            return true;
-          }
-    }
-
-  imax = pModel->getNumMetabs();
-
-  for (i = 0; i < imax; ++i)
-    {
-      if (pModel->getMetabolites()[i]->getStatus() == CModelEntity::ASSIGNMENT)
-        if (pModel->getMetabolites()[i]->isUsed())
-          {
-            //used assignment found
-            return true;
-          }
-    }
-
-  imax = pModel->getCompartments().size();
-
-  for (i = 0; i < imax; ++i)
-    {
-      if (pModel->getCompartments()[i]->getStatus() == CModelEntity::ASSIGNMENT)
-        if (pModel->getCompartments()[i]->isUsed())
-          {
-            //used assignment found
-            return true;
-          }
-    }
-
-  return false;
 }

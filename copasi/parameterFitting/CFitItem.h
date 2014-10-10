@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -89,10 +89,10 @@ public:
   /**
    * Compile the optimization item. This function must be called
    * before any of the check functions are called.
-   * @param const std::vector< CCopasiContainer * > listOfContainer
+   * @param const CObjectInterface::ContainerList listOfContainer
    * @return bool success
    */
-  virtual bool compile(const std::vector< CCopasiContainer * > listOfContainer =
+  virtual bool compile(const CObjectInterface::ContainerList listOfContainer =
                          CCopasiContainer::EmptyList);
 
   /**
@@ -124,7 +124,7 @@ public:
   void setLocalValue(const C_FLOAT64 & value);
 
   /**
-   * Retreive the local value.
+   * Retrieve the local value.
    * @return const C_FLOAT64 & value
    */
   const C_FLOAT64 & getLocalValue() const;
@@ -143,7 +143,7 @@ public:
   bool addExperiment(const std::string & key);
 
   /**
-   * Retreive the key of the indexed experiment.
+   * Retrieve the key of the indexed experiment.
    * @param const size_t & index
    * @return const std::string & key
    */
@@ -176,7 +176,7 @@ public:
   bool addCrossValidation(const std::string & key);
 
   /**
-   * Retreive the key of the indexed experiment.
+   * Retrieve the key of the indexed experiment.
    * @param const size_t & index
    * @return const std::string & key
    */

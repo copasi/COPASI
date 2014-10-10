@@ -73,7 +73,7 @@ void CReportDefinition::cleanup()
   mTableVector.clear();
 }
 
-bool CReportDefinition::preCompileTable(const std::vector< CCopasiContainer * > & listOfContainer)
+bool CReportDefinition::preCompileTable(const CObjectInterface::ContainerList & listOfContainer)
 {
   bool success = true;
 
@@ -84,12 +84,9 @@ bool CReportDefinition::preCompileTable(const std::vector< CCopasiContainer * > 
   std::vector<CRegisteredObjectName>::const_iterator it = mTableVector.begin();
   std::vector<CRegisteredObjectName>::const_iterator end = mTableVector.end();
 
-  CCopasiDataModel* pDataModel = getObjectDataModel();
-  const CCopasiObject *  pObject;
-
   for (; it != end; ++it)
     {
-      pObject = CObjectInterface::DataObject(pDataModel->ObjectFromCN(listOfContainer, *it));
+      const CCopasiObject * pObject = CObjectInterface::DataObject(CObjectInterface::GetObjectFromCN(listOfContainer, *it));
 
       if (pObject != NULL)
         {

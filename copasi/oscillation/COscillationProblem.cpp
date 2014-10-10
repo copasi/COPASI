@@ -1,11 +1,9 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/oscillation/COscillationProblem.cpp,v $
-//   $Revision: 1.1 $
-//   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2008/11/11 16:47:54 $
-// End CVS Header
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
@@ -27,7 +25,7 @@
 //  Default constructor
 COscillationProblem::COscillationProblem(const CCopasiTask::Type & type,
     const CCopasiContainer * pParent):
-    CCopasiProblem(type, pParent)
+  CCopasiProblem(type, pParent)
 {
   initializeParameter();
   initObjects();
@@ -36,7 +34,7 @@ COscillationProblem::COscillationProblem(const CCopasiTask::Type & type,
 // copy constructor
 COscillationProblem::COscillationProblem(const COscillationProblem& src,
     const CCopasiContainer * pParent):
-    CCopasiProblem(src, pParent)
+  CCopasiProblem(src, pParent)
 {
   initializeParameter();
   initObjects();
@@ -61,18 +59,12 @@ bool COscillationProblem::elevateChildren()
   return true;
 }
 
-bool COscillationProblem::setModel(CModel * pModel)
-{
-  mpModel = pModel;
-  return true;
-}
-
 bool COscillationProblem::setCallBack(CProcessReport * pCallBack)
 {
   CCopasiProblem::setCallBack(pCallBack);
 
   if (pCallBack)
-  {}
+    {}
 
   return true;
 }
@@ -85,8 +77,9 @@ void COscillationProblem::initObjects()
 bool COscillationProblem::initialize()
 {
 
-  if (!mpModel) return false;
-  mpModel->compileIfNecessary(mpCallBack);
+  if (!mpContainer) return false;
+
+  mpContainer->compileIfNecessary(mpCallBack);
 
   bool success = true;
 
@@ -97,11 +90,11 @@ void COscillationProblem::print(std::ostream * ostream) const
 {*ostream << *this;}
 
 void COscillationProblem::printResult(std::ostream * ostream) const
-  {
-    std::ostream & os = *ostream;
+{
+  std::ostream & os = *ostream;
 
-    //TODO
-  }
+  //TODO
+}
 
 std::ostream &operator<<(std::ostream &os, const COscillationProblem & o)
 {

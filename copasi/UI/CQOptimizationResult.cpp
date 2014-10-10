@@ -116,7 +116,7 @@ bool CQOptimizationResult::enterProtected()
     {
       //1st column: parameter name
       const CCopasiObject *pObject =
-        pDataModel->getDataObject(Items[i]->getObjectCN());
+        CObjectInterface::DataObject(pDataModel->getObjectFromCN(Items[i]->getObjectCN()));
 
       if (pObject)
         pItem = new QTableWidgetItem(FROM_UTF8(pObject->getObjectDisplayName()));

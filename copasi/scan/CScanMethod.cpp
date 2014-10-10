@@ -32,9 +32,11 @@
 #include "CScanMethod.h"
 #include "CScanTask.h"
 
+#include "math/CMathContainer.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "report/CCopasiRootContainer.h"
-#include <utilities/CCopasiMessage.h>
+#include "utilities/CCopasiMessage.h"
+
 // this will have to be defined somewhere else with the
 // values of other distribution types
 //#define SD_UNIFORM 0
@@ -46,8 +48,7 @@
 
 //static
 CScanItem* CScanItem::createScanItemFromParameterGroup(CCopasiParameterGroup* si,
-    CRandom* rg,
-    const bool & continueFromCurrentState)
+    CRandom* rg)
 {
   if (!si) return NULL;
 
@@ -56,13 +57,13 @@ CScanItem* CScanItem::createScanItemFromParameterGroup(CCopasiParameterGroup* si
   CScanItem* tmp = NULL;
 
   if (type == CScanProblem::SCAN_REPEAT)
-    tmp = new CScanItemRepeat(si, continueFromCurrentState);
+    tmp = new CScanItemRepeat(si);
 
   if (type == CScanProblem::SCAN_LINEAR)
-    tmp = new CScanItemLinear(si, continueFromCurrentState);
+    tmp = new CScanItemLinear(si);
 
   if (type == CScanProblem::SCAN_RANDOM)
-    tmp = new CScanItemRandom(si, rg, continueFromCurrentState);
+    tmp = new CScanItemRandom(si, rg);
 
   /*  if (type == CScanProblem::SCAN_BREAK)
       tmp = new CScanItemBreak(si, st);*/
@@ -73,58 +74,31 @@ CScanItem* CScanItem::createScanItemFromParameterGroup(CCopasiParameterGroup* si
 CScanItem::CScanItem():
   mNumSteps(0),
   mpObject(NULL),
-  mpInitialObject(NULL),
+  mpObjectValue(NULL),
   mStoreValue(0.0),
   mIndex(0),
-  mFlagFinished(false),
-  mIsStateVariable(false)
+  mFlagFinished(false)
 {}
 
-CScanItem::CScanItem(CCopasiParameterGroup* si,
-                     const bool & continueFromCurrentState):
+CScanItem::CScanItem(CCopasiParameterGroup* si):
   mNumSteps(0),
   mpObject(NULL),
-  mpInitialObject(NULL),
+  mpObjectValue(NULL),
   mStoreValue(0.0),
   mIndex(0),
-  mFlagFinished(false),
-  mIsStateVariable(false)
+  mFlagFinished(false)
 {
   assert(si != NULL);
 
   mNumSteps = * si->getValue("Number of steps").pUINT;
 
   std::string tmpString = * si->getValue("Object").pCN;
-  CCopasiDataModel* pDataModel = si->getObjectDataModel();
-  assert(pDataModel != NULL);
-  CCopasiObject * tmpObject = pDataModel->getDataObject(tmpString);
 
-  if (tmpObject == NULL || !tmpObject->isValueDbl())
+  mpObject = CObjectInterface::DataObject(si->getObjectFromCN(tmpString));
+
+  if (mpObject != NULL)
     {
-      return;
-    }
-
-  mpInitialObject = tmpObject;
-
-  if (continueFromCurrentState)
-    {
-      // Determine whether the object is the initial value of a state variable;
-      const CModel * pModel = static_cast< CModel * >(mpInitialObject->getObjectAncestor("Model"));
-
-      if (pModel != NULL)
-        {
-          mIsStateVariable = pModel->isStateVariable(tmpObject);
-
-          if (!mIsStateVariable)
-            {
-              // We need to find the object for the transient value if it exists so that we can update while continuing.
-              mpObject = pModel->getCorrespondingTransientObject(tmpObject);
-            }
-        }
-    }
-  else
-    {
-      mpObject = mpInitialObject;
+      mpObjectValue = (C_FLOAT64 *) mpObject->getValuePointer();
     }
 }
 
@@ -132,16 +106,17 @@ size_t CScanItem::getNumSteps() const {return mNumSteps;};
 
 void CScanItem::restoreValue() const
 {
-  if (mpObject)
-    mpObject->setObjectValue(mStoreValue);
+  if (mpObjectValue != NULL)
+    {
+      *mpObjectValue = mStoreValue;
+    }
 };
 
 void CScanItem::storeValue()
 {
-  if (mpObject)
+  if (mpObjectValue != NULL)
     {
-      assert(mpObject->isValueDbl());
-      mStoreValue = * (C_FLOAT64 *) mpObject->getValuePointer();
+      mStoreValue = *mpObjectValue;
     }
 };
 
@@ -154,17 +129,9 @@ void CScanItem::reset()
 
 bool CScanItem::isFinished() const {return mFlagFinished;};
 
-bool CScanItem::isValidScanItem(const bool & continueFromCurrentState)
+bool CScanItem::isValidScanItem()
 {
-  if (continueFromCurrentState &&
-      mIsStateVariable &&
-      mpObject == NULL)
-    {
-      CCopasiMessage(CCopasiMessage::WARNING, MCScan + 1, mpInitialObject->getObjectDisplayName().c_str());
-      return true;
-    }
-
-  if (mpInitialObject == NULL)
+  if (mpObject == NULL)
     {
       CCopasiMessage(CCopasiMessage::ERROR, "Invalid or missing scan parameter.");
       return false;
@@ -180,9 +147,8 @@ const CCopasiObject * CScanItem::getObject() const
 
 //*******
 
-CScanItemRepeat::CScanItemRepeat(CCopasiParameterGroup* si,
-                                 const bool & continueFromCurrentState):
-  CScanItem(si, continueFromCurrentState)
+CScanItemRepeat::CScanItemRepeat(CCopasiParameterGroup* si):
+  CScanItem(si)
 {
   if (mNumSteps >= 1)
     --mNumSteps; // for the repeat item mNumSteps is the number of iterations, not of intervals
@@ -206,9 +172,8 @@ bool CScanItemRepeat::isValidScanItem(const bool & /* continueFromCurrentState *
 
 //*******
 
-CScanItemLinear::CScanItemLinear(CCopasiParameterGroup* si,
-                                 const bool & continueFromCurrentState):
-  CScanItem(si, continueFromCurrentState),
+CScanItemLinear::CScanItemLinear(CCopasiParameterGroup* si):
+  CScanItem(si),
   mLog(false)
 {
   mLog = * si->getValue("log").pBOOL;
@@ -238,14 +203,17 @@ void CScanItemLinear::step()
   if (mIndex > mNumSteps)
     mFlagFinished = true;
 
-  if (mpObject) mpObject->setObjectValue(Value);
+  if (mpObjectValue != NULL)
+    {
+      *mpObjectValue = Value;
+    }
 
   ++mIndex;
 }
 
 bool CScanItemLinear::isValidScanItem(const bool & continueFromCurrentState)
 {
-  if (!CScanItem::isValidScanItem(continueFromCurrentState)) return false;
+  if (!CScanItem::isValidScanItem()) return false;
 
   if (mLog)
     {
@@ -262,9 +230,8 @@ bool CScanItemLinear::isValidScanItem(const bool & continueFromCurrentState)
 
 //*******
 
-CScanItemRandom::CScanItemRandom(CCopasiParameterGroup* si, CRandom* rg,
-                                 const bool & continueFromCurrentState):
-  CScanItem(si, continueFromCurrentState),
+CScanItemRandom::CScanItemRandom(CCopasiParameterGroup* si, CRandom* rg):
+  CScanItem(si),
   mRg(rg),
   mRandomType(0),
   mLog(false)
@@ -326,7 +293,10 @@ void CScanItemRandom::step()
         }
     }
 
-  if (mpObject) mpObject->setObjectValue(Value);
+  if (mpObjectValue != NULL)
+    {
+      *mpObjectValue = Value;
+    }
 
   ++mIndex;
 }
@@ -378,12 +348,11 @@ bool CScanMethod::init()
   if (mpTask == NULL) return false;
 
   cleanupScanItems();
-  mInitialRefreshes.clear();
+  mInitialUpdates.clear();
   //mTransientRefreshes.clear();
 
   mTotalSteps = 1;
-  std::set< const CCopasiObject * > InitialObjectSet;
-  std::set< const CCopasiObject * > TransientObjectSet;
+  CObjectInterface::ObjectSet ObjectSet;
 
   size_t i, imax = mpProblem->getNumberOfScanItems();
   mContinueFromCurrentState = mpProblem->getContinueFromCurrentState();
@@ -391,8 +360,7 @@ bool CScanMethod::init()
   for (i = 0; i < imax; ++i)
     {
       CScanItem * pItem = CScanItem::createScanItemFromParameterGroup(mpProblem->getScanItem(i),
-                          mpRandomGenerator,
-                          mContinueFromCurrentState);
+                          mpRandomGenerator);
 
       if (pItem == NULL)
         {
@@ -402,19 +370,34 @@ bool CScanMethod::init()
       mScanItems.push_back(pItem);
       mTotalSteps *= pItem->getNumSteps() + 1;
 
-      if (pItem->getObject() != NULL)
+      const CCopasiObject * pDataObject = pItem->getObject();
+      const CObjectInterface * pObject = mpContainer->getMathObject(pDataObject);
+
+      size_t Offset = mpContainer->getInitialStateObjects().size();
+
+      if (pObject != NULL)
         {
-          InitialObjectSet.insert(pItem->getObject());
+          // If we continue from the current state we must change the transient values
+          if (mContinueFromCurrentState)
+            {
+              pObject += Offset;
+            }
+
+          ObjectSet.insert(pObject);
+        }
+      else if (pDataObject != NULL)
+        {
+          ObjectSet.insert(pDataObject);
         }
     }
 
   if (mContinueFromCurrentState)
     {
-      mInitialRefreshes = CCopasiObject::buildUpdateSequence(mpProblem->getModel()->getUptoDateObjects(), InitialObjectSet);
+      mpContainer->getTransientDependencies().getUpdateSequence(mInitialUpdates, CMath::UpdateMoieties, ObjectSet, mpContainer->getSimulationUpToDateObjects());
     }
   else
     {
-      mInitialRefreshes = mpProblem->getModel()->buildInitialRefreshSequence(InitialObjectSet);
+      mpContainer->getInitialDependencies().getUpdateSequence(mInitialUpdates, CMath::UpdateMoieties, ObjectSet, mpContainer->getInitialStateObjects());
     }
 
   //set mLastNestingItem
@@ -495,11 +478,7 @@ bool CScanMethod::loop(size_t level)
 
 bool CScanMethod::calculate()
 {
-  std::vector< Refresh * >::iterator it = mInitialRefreshes.begin();
-  std::vector< Refresh * >::iterator end = mInitialRefreshes.end();
-
-  while (it != end)
-    (**it++)();
+  mpContainer->applyUpdateSequence(mInitialUpdates);
 
   return mpTask->processCallback();
 }
@@ -535,8 +514,7 @@ bool CScanMethod::isValidProblem(const CCopasiProblem * pProblem)
   for (i = 0; i < imax; ++i)
     {
       CScanItem * si = CScanItem::createScanItemFromParameterGroup(mpProblem->getScanItem(i),
-                       mpRandomGenerator,
-                       mContinueFromCurrentState);
+                       mpRandomGenerator);
 
       if (!si)
         {
@@ -545,7 +523,7 @@ bool CScanMethod::isValidProblem(const CCopasiProblem * pProblem)
           return false;
         }
 
-      if (!si->isValidScanItem(mContinueFromCurrentState))
+      if (!si->isValidScanItem())
         {
           //the self check of the scan item failed.
           //the message should be generated by the isValidScanItem() method.

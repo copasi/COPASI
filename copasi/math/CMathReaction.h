@@ -18,8 +18,9 @@ class CMathContainer;
 class CMathReaction
 {
 public:
-  typedef std::set< std::pair < const CObjectInterface *, C_FLOAT64 > > Balance;
-
+  typedef std::set< std::pair < const CObjectInterface *, C_FLOAT64 > > ObjectBalance;
+  typedef std::pair< C_FLOAT64 *, C_FLOAT64 > SpeciesBalance;
+  typedef CVector< std::pair< C_FLOAT64 *, C_FLOAT64 > > Balance;
   /**
    * Constructor
    */
@@ -88,9 +89,9 @@ public:
 
   /**
    * Retrieve the set of modified species
-   * @return const std::set< std::pair < const CObjectInterface *, C_FLOAT64 > > & balance
+   * @return const CVector< std::pair< C_FLOAT64 *, C_FLOAT64 > > & balance
    */
-  const Balance & getBalance() const;
+  const Balance & getNumberBalance() const;
 
   /**
    * Retrieve a pointer to the model reaction
@@ -133,13 +134,13 @@ private:
   /**
    * The set of modified species and their change per reaction event
    */
-  Balance mBalance;
+  ObjectBalance mObjectBalance;
 
   /**
    * Information for updating the species particle numbers when the
    * reaction fires.
    */
-  CVector< std::pair< C_FLOAT64, C_FLOAT64 * > > mStepUpdates;
+  Balance mNumberBalance;
 };
 
 #endif // COPASI_CMathReaction

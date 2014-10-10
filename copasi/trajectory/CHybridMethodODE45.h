@@ -178,9 +178,8 @@ public:
   /**
    *  This instructs the method to prepare for integration
    *  starting with the initialState given.
-   *  @param "const CState *" initialState
    */
-  virtual void start(CVectorCore< C_FLOAT64 > & initialState);
+  virtual void start();
 
 protected:
   /**
@@ -336,7 +335,7 @@ private:
   /**
    * A pointer to the first species controlled by reactions
    */
-  const CObjectInterface * mpFirstOdeVariable;
+  const C_FLOAT64 * mpFirstOdeVariable;
 
   /**
    * Bool value

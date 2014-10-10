@@ -1,12 +1,4 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/lna/CLNATask.h,v $
-//   $Revision: 1.1 $
-//   $Name:  $
-//   $Author: jpahle $
-//   $Date: 2011/05/24 17:33:45 $
-// End CVS Header
-
-// Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -39,15 +31,19 @@ class CLNATask : public CCopasiTask
 {
   //Attributes
 private:
-
-  //Operations
-public:
-
   /**
    * Default constructor
-   * @param const CCopasiContainer * pParent (default: NULL)
    */
-  CLNATask(const CCopasiContainer * pParent = NULL);
+  CLNATask();
+
+public:
+  /**
+   * Specific constructor
+   * @param const CCopasiContainer * pParent
+   * @param const CCopasiTask::Type & type (default: lna)
+   */
+  CLNATask(const CCopasiContainer * pParent,
+           const CCopasiTask::Type & type = CCopasiTask::lna);
 
   /**
    * Copy constructor

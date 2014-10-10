@@ -111,10 +111,10 @@ public:
    * Retrieves the state values, i.e., all values of objects of
    * simulation type EventTarget, Time, ODE, Dependent, and Independent. It includes only
    * extensive values for species.
-   * @param const bool & reduced = false
+   * @param const bool & reduced
    * @return const CVectorCore< C_FLOAT64 > & state
    */
-  const CVectorCore< C_FLOAT64 > & getState(const bool & reduced = false) const;
+  const CVectorCore< C_FLOAT64 > & getState(const bool & reduced) const;
 
   /**
    * Set the state values, i.e., all initial values of objects of
@@ -130,13 +130,19 @@ public:
   bool isStateValid() const;
 
   /**
+   * Check whether the model is autonomous
+   * @return const bool &isAutonomous
+   */
+  const bool & isAutonomous() const;
+
+  /**
    * Retrieves the state values, i.e., all values of objects of
    * simulation type EventTarget, Time, ODE, Dependent, and Independent. It includes only
    * extensive values for species.
-   * @param const bool & reduced = false
+   * @param const bool & reduced
    * @return const CMathHistoryCore & history
    */
-  const CMathHistoryCore & getHistory(const bool & reduced = false) const;
+  const CMathHistoryCore & getHistory(const bool & reduced) const;
 
   /**
    * Set all the history values needed for calculation.
@@ -153,19 +159,19 @@ public:
   /**
    * Initialize a vector of individual absolute tolerances
    * @param const C_FLOAT64 & baseTolerance
-   * @param const bool & reduced = false
+   * @param const bool & reduced
    * @return CVector< C_FLOAT64 > absoluteTolerances
    */
-  CVector< C_FLOAT64 > initializeAtolVector(const C_FLOAT64 & baseTolerance, const bool & reduced = false) const;
+  CVector< C_FLOAT64 > initializeAtolVector(const C_FLOAT64 & baseTolerance, const bool & reduced) const;
 
   /**
    * Retrieve the rate of state values, i.e., all initial values of objects of
    * simulation type EventTarget, Time, ODE, Dependent, and Independent. It includes only
    * extensive values for species.
-   * @param const bool & reduced = false
+   * @param const bool & reduced
    * @return const CVectorCore< C_FLOAT64 > & rate
    */
-  const CVectorCore< C_FLOAT64 > & getRate(const bool & reduced = false) const;
+  const CVectorCore< C_FLOAT64 > & getRate(const bool & reduced) const;
 
   /**
    * Retrieve the total masses of the moieties.
@@ -229,6 +235,11 @@ public:
   void updateSimulatedValues(const bool & useMoieties);
 
   /**
+   * Calculate all transient data values. The simulated values need to be calculated beforehand.
+   */
+  void updateTransientDataValues();
+
+  /**
    * Calculate all historic values required for delayed differential equations
    * @param const bool & useMoieties
    */
@@ -251,6 +262,18 @@ public:
    * @param CVector< C_FLOAT64 > & rootDerivatives
    */
   void calculateRootDerivatives(CVector< C_FLOAT64 > & rootDerivatives);
+
+  /**
+   * Calculates the Jacobian of the full model for the current state
+   * and stores it in the provided matrix. calculateElasticityMatrix()
+   * needs to be called before.
+   * @param CMatrix< C_FLOAT64 > & Jacobian
+   * @param const C_FLOAT64 & derivationFactor,
+   * @param const bool & reduced
+   */
+  void calculateJacobian(CMatrix< C_FLOAT64 > & jacobian,
+                         const C_FLOAT64 & derivationFactor,
+                         const bool & reduced);
 
   /**
    * Process events scheduled at the given which a are checked for
@@ -309,6 +332,11 @@ public:
   void pushState();
 
   /**
+   * Push all transient values to the associated model.
+   */
+  void pushAllTransientValues();
+
+  /**
    * Retrieve the CN of the math container
    * The math container provides values for the numerical values of model objects.
    * For the CN mechanism to work properly it has to pretend to be the model.
@@ -317,9 +345,18 @@ public:
   virtual CCopasiObjectName getCN() const;
 
   /**
-   * Retrieve a descendant object by its CN.
+   * Retrieve a descendant object by its partial CN.
+   * @param const CCopasiObjectName & cn
+   * @return const CObjectInterface * pObject
    */
   virtual const CObjectInterface * getObject(const CCopasiObjectName & cn) const;
+
+  /**
+   * Retrieve a object by its full CN.
+   * @param const CCopasiObjectName & cn
+   * @return const CObjectInterface * pObject
+   */
+  virtual const CObjectInterface * getObjectFromCN(const CCopasiObjectName & cn) const;
 
   /**
    * Retrieve a pointer to corresponding the mathematical object
@@ -404,6 +441,13 @@ public:
   const CVector< CMathReaction > & getReactions() const;
 
   /**
+   * Retrieve the stoichiometry matrix
+   * @param const bool & reduced (default: false)
+   * @return const CMatrix< C_FLOAT64 > & stoichiometry
+   */
+  const CMatrix< C_FLOAT64 > & getStoichiometry(const bool & reduced = false) const;
+
+  /**
    * Retrieve the events
    * @return const CVector< CMathEventN > & events
    */
@@ -413,13 +457,19 @@ public:
    * Retrieve the initial dependencies
    * @return CMathDependencyGraph & getTransientDependencies
    */
-  CMathDependencyGraph & getInitialDependencies();
+  const CMathDependencyGraph & getInitialDependencies() const;
 
   /**
    * Retrieve the transient dependencies
    * @return CMathDependencyGraph & getTransientDependencies
    */
-  CMathDependencyGraph & getTransientDependencies();
+  const CMathDependencyGraph & getTransientDependencies() const;
+
+  /**
+   * Retrieve the objects which represent the initial state.
+   * @return CObjectInterface::ObjectSet & stateObjects
+   */
+  const CObjectInterface::ObjectSet & getInitialStateObjects() const;
 
   /**
    * Retrieve the objects which represent the state or reduced state.
@@ -493,7 +543,7 @@ public:
   /**
    * Retrieve the random number generator.
    */
-  CRandom & getRandomGenerator();
+  CRandom & getRandomGenerator() const;
 
   /**
    * Compile the mathematical model
@@ -606,6 +656,11 @@ private:
    * Create the update sequences used to calculate all values required for simulation
    */
   void createUpdateSimulationValuesSequence();
+
+  /**
+   * Create the update sequences used to calculate all transient data values
+   */
+  void createUpdateAllTransientDataValuesSequence();
 
   /**
    * Determine the entity type of an entity
@@ -833,6 +888,12 @@ private:
   CObjectInterface::UpdateSequence mPrioritySequence;
 
   /**
+   * The sequence of updates needed to calculate all objects which have data object associated
+   * on the assumption that all state values may have changed
+   */
+  CObjectInterface::UpdateSequence mTransientDataObjectSequence;
+
+  /**
    * The set of objects which determine the initial state of the model based on extensive
    * values
    */
@@ -843,6 +904,11 @@ private:
    * values
    */
   CObjectInterface::ObjectSet mInitialStateValueIntensive;
+
+  /**
+   * All initial state values (intensive and extensive)
+   */
+  CObjectInterface::ObjectSet mInitialStateValueAll;
 
   /**
    * The set of objects which determine the transient state of the model
@@ -929,6 +995,11 @@ private:
    * A vector of delays
    */
   CVector< CMathDelay > mDelays;
+
+  /**
+   * A flag indicating whether the model is autonomous.
+   */
+  bool mIsAutonomous;
 };
 
 #endif // COPASI_CMathContainer

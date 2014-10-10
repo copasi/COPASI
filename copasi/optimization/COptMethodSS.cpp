@@ -400,7 +400,7 @@ bool COptMethodSS::randomize(C_INT32 i)
 
       // We need to set the value here so that further checks take
       // account of the value.
-      (*(*mpSetCalculateVariable)[j])(Sol);
+      *mContainerVariables[j] = Sol;
     }
 
   // calculate its fitness
@@ -471,7 +471,7 @@ bool COptMethodSS::creation(void)
 
           // We need to set the value here so that further checks take
           // account of the value.
-          (*(*mpSetCalculateVariable)[j])(Sol);
+          *mContainerVariables[j] = Sol;
         }
 
       // calculate its fitness
@@ -502,7 +502,7 @@ bool COptMethodSS::creation(void)
 
       // We need to set the value here so that further checks take
       // account of the value.
-      (*(*mpSetCalculateVariable)[j])(Sol);
+      *mContainerVariables[j] = Sol;
     }
 
   // calculate its fitness
@@ -577,7 +577,7 @@ bool COptMethodSS::creation(void)
 
                   // We need to set the value here so that further checks take
                   // account of the value.
-                  (*(*mpSetCalculateVariable)[j])(Sol);
+                  *mContainerVariables[j] = Sol;
                   // increase the frequency
                   (*mFreq[j])[k] += 1;
                   break;
@@ -928,7 +928,7 @@ bool COptMethodSS::combination(void)
 
                   // We need to set the value here so that further checks take
                   // account of the value.
-                  (*(*mpSetCalculateVariable)[k])(xnew[k]);
+                  *mContainerVariables[k] = xnew[k];
                 }
 
               // calculate the child's fitness
@@ -983,7 +983,7 @@ bool COptMethodSS::combination(void)
 
                   // We need to set the value here so that further checks take
                   // account of the value.
-                  (*(*mpSetCalculateVariable)[k])(xnew[k]);
+                  *mContainerVariables[k] = xnew[k];
                 }
 
               // calculate the child's fitness

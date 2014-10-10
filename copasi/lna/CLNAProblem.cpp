@@ -1,4 +1,4 @@
-// Copyright (C) 2011 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -51,16 +51,6 @@ CLNAProblem::~CLNAProblem()
 {DESTRUCTOR_TRACE;}
 
 /**
- * Set the model the problem is dealing with.
- * @param "CModel *" pModel
- */
-bool CLNAProblem::setModel(CModel * pModel)
-{
-  mpModel = pModel;
-  return true;
-}
-
-/**
  * Load a lna problem
  * @param "CReadConfig &" configBuffer
  */
@@ -95,7 +85,7 @@ void CLNAProblem::setInitialState(const CState & initialState)
 void CLNAProblem::setInitialState(const CStateX & initialState)
 {
   mInitialState = initialState;
-  mpModel = const_cast<CModel *>(mInitialState.getModel());
+  mpContainer = const_cast<CModel *>(mInitialState.getModel());
 }
 
 /**

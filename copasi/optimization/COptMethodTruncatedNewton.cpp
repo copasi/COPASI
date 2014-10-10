@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodTruncatedNewton.cpp,v $
-//   $Revision: 1.11 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/06/20 21:16:37 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -31,16 +23,16 @@
 #include "report/CCopasiObjectReference.h"
 
 COptMethodTruncatedNewton::COptMethodTruncatedNewton(const CCopasiContainer * pParent):
-    COptMethod(CCopasiTask::optimization, CCopasiMethod::TruncatedNewton, pParent),
-    mpTruncatedNewton(new FTruncatedNewtonTemplate<COptMethodTruncatedNewton>(this, &COptMethodTruncatedNewton::sFun)),
-    mpCTruncatedNewton(new CTruncatedNewton())
+  COptMethod(CCopasiTask::optimization, CCopasiMethod::TruncatedNewton, pParent),
+  mpTruncatedNewton(new FTruncatedNewtonTemplate<COptMethodTruncatedNewton>(this, &COptMethodTruncatedNewton::sFun)),
+  mpCTruncatedNewton(new CTruncatedNewton())
 {initObjects();}
 
 COptMethodTruncatedNewton::COptMethodTruncatedNewton(const COptMethodTruncatedNewton & src,
     const CCopasiContainer * pParent):
-    COptMethod(src, pParent),
-    mpTruncatedNewton(new FTruncatedNewtonTemplate<COptMethodTruncatedNewton>(this, &COptMethodTruncatedNewton::sFun)),
-    mpCTruncatedNewton(new CTruncatedNewton())
+  COptMethod(src, pParent),
+  mpTruncatedNewton(new FTruncatedNewtonTemplate<COptMethodTruncatedNewton>(this, &COptMethodTruncatedNewton::sFun)),
+  mpCTruncatedNewton(new CTruncatedNewton())
 {initObjects();}
 
 COptMethodTruncatedNewton::~COptMethodTruncatedNewton()
@@ -102,7 +94,7 @@ bool COptMethodTruncatedNewton::optimise()
         }
 
       // set the value
-      (*(*mpSetCalculateVariable)[i])(mCurrent[i]);
+      *mContainerVariables[i] = (mCurrent[i]);
     }
 
   // Report the first value as the current best
@@ -164,7 +156,7 @@ bool COptMethodTruncatedNewton::optimise()
                 break;
             }
 
-          (*(*mpSetCalculateVariable)[i])(mCurrent[i]);
+          *mContainerVariables[i] = (mCurrent[i]);
         }
 
       evaluate();
@@ -211,7 +203,7 @@ bool COptMethodTruncatedNewton::optimise()
                 break;
             }
 
-          (*(*mpSetCalculateVariable)[i])(mCurrent[i]);
+          *mContainerVariables[i] = (mCurrent[i]);
         }
 
       evaluate();
@@ -266,7 +258,7 @@ C_INT COptMethodTruncatedNewton::sFun(C_INT *n, C_FLOAT64 *x, C_FLOAT64 *f, C_FL
 
   // set the parameter values
   for (i = 0; i < *n; i++)
-    (*(*mpSetCalculateVariable)[i])(x[i]);
+    *mContainerVariables[i] = (x[i]);
 
   //carry out the function evaluation
   *f = evaluate();
@@ -291,17 +283,17 @@ C_INT COptMethodTruncatedNewton::sFun(C_INT *n, C_FLOAT64 *x, C_FLOAT64 *f, C_FL
     {
       if (x[i] != 0.0)
         {
-          (*(*mpSetCalculateVariable)[i])(x[i] * 1.001);
+          *mContainerVariables[i] = (x[i] * 1.001);
           g[i] = (evaluate() - *f) / (x[i] * 0.001);
         }
 
       else
         {
-          (*(*mpSetCalculateVariable)[i])(1e-7);
+          *mContainerVariables[i] = (1e-7);
           g[i] = (evaluate() - *f) / 1e-7;
         }
 
-      (*(*mpSetCalculateVariable)[i])(x[i]);
+      *mContainerVariables[i] = (x[i]);
     }
 
   if (!mContinue)

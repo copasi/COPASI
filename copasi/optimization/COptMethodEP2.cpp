@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodEP2.cpp,v $
-//   $Revision: 1.10 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/04/23 21:11:20 $
-// End CVS Header
-
-// Copyright (C) 2012 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2004 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -44,7 +36,7 @@
 #include "randomGenerator/CRandom.h"
 
 COptMethodEP2::COptMethodEP2(const COptMethodEP2 & src):
-    COptMethod(src)
+  COptMethod(src)
 {}
 
 COptMethodEP2::COptMethodEP2(): COptMethod(CCopasiMethod::EvolutionaryProgram2)
@@ -91,7 +83,7 @@ C_INT32 COptMethodEP2::optimise()
   const double ** Minimum = mpOptProblem->getParameterMin().array();
   const double ** Maximum = mpOptProblem->getParameterMax().array();
 
-  std::vector< UpdateMethod * > & Parameter = mpOptProblem->getCalculateVariableUpdateMethods();
+  std::vector< UpdateMethod * > & Parameter = mpOptProblem->getContainerVariables();
 
   double current_best_value, la;
   int i, j, last_update, u10, u30, u50;
@@ -113,7 +105,7 @@ C_INT32 COptMethodEP2::optimise()
   individual.resize(2 * PopulationSize);
 
   // create the individuals
-  for (i = 0; i < 2*PopulationSize; i++)
+  for (i = 0; i < 2 * PopulationSize; i++)
     individual[i].resize(NumParameter);
 
   // Prepare inital population
@@ -208,32 +200,32 @@ C_INT32 COptMethodEP2::optimise()
       select(5);
 
       //Mutating all parents
-      for (int nn = PopulationSize; nn < 2*PopulationSize; nn++)
+      for (int nn = PopulationSize; nn < 2 * PopulationSize; nn++)
         {
           double mut;
 
           // mutate the parameters
           for (int j = 0; j < NumParameter; j++)
             {
-              if (floor(10*rand() / RAND_MAX) > 5)
+              if (floor(10 * rand() / RAND_MAX) > 5)
                 {
                   //  if(i<NumGeneration*0.5) mut = individual[nn-PopulationSize][j]*(1 + pRand->getRandomCC());
-                  if (i < NumGeneration*0.5) mut = individual[nn - PopulationSize][j] * (1 + sqrt(constant1 * CandidateValueRate[nn] + constant2) * pRand->getRandomCC());
+                  if (i < NumGeneration * 0.5) mut = individual[nn - PopulationSize][j] * (1 + sqrt(constant1 * CandidateValueRate[nn] + constant2) * pRand->getRandomCC());
                   else
                     {
-                      if (i < NumGeneration*0.6) mut = individual[nn - PopulationSize][j] * (1 + sqrt(constant1 * CandidateValueRate[nn] + constant2) * 0.5 * pRand->getRandomCC());
+                      if (i < NumGeneration * 0.6) mut = individual[nn - PopulationSize][j] * (1 + sqrt(constant1 * CandidateValueRate[nn] + constant2) * 0.5 * pRand->getRandomCC());
                       else
                         {
-                          if (i < NumGeneration*0.7) mut = individual[nn - PopulationSize][j] * (1 + sqrt(constant1 * CandidateValueRate[nn] + constant2) * 0.25 * pRand->getRandomCC());
+                          if (i < NumGeneration * 0.7) mut = individual[nn - PopulationSize][j] * (1 + sqrt(constant1 * CandidateValueRate[nn] + constant2) * 0.25 * pRand->getRandomCC());
                           else
                             {
-                              if (i < NumGeneration*0.8) mut = individual[nn - PopulationSize][j] * (1 + sqrt(constant1 * CandidateValueRate[nn] + constant2) * 0.1 * pRand->getRandomCC());
+                              if (i < NumGeneration * 0.8) mut = individual[nn - PopulationSize][j] * (1 + sqrt(constant1 * CandidateValueRate[nn] + constant2) * 0.1 * pRand->getRandomCC());
                               else
                                 {
-                                  if (i < NumGeneration*0.9) mut = individual[nn - PopulationSize][j] * (1 + sqrt(constant1 * CandidateValueRate[nn] + constant2) * 0.01 * pRand->getRandomCC());
+                                  if (i < NumGeneration * 0.9) mut = individual[nn - PopulationSize][j] * (1 + sqrt(constant1 * CandidateValueRate[nn] + constant2) * 0.01 * pRand->getRandomCC());
                                   else
                                     {
-                                      if (i < NumGeneration*0.95) mut = individual[nn - PopulationSize][j] * (1 + sqrt(constant1 * CandidateValueRate[nn] + constant2) * 0.001 * pRand->getRandomCC());
+                                      if (i < NumGeneration * 0.95) mut = individual[nn - PopulationSize][j] * (1 + sqrt(constant1 * CandidateValueRate[nn] + constant2) * 0.001 * pRand->getRandomCC());
                                       else mut = individual[nn - PopulationSize][j] * (1 + sqrt(constant1 * CandidateValueRate[nn] + constant2) * 0.0001 * pRand->getRandomCC());
                                     }
                                 }
@@ -243,22 +235,22 @@ C_INT32 COptMethodEP2::optimise()
                 }
               else
                 {
-                  if (i < NumGeneration*0.5) mut = individual[nn - PopulationSize][j] * (1 - sqrt(constant1 * CandidateValueRate[nn] + constant2) * pRand->getRandomCC());
+                  if (i < NumGeneration * 0.5) mut = individual[nn - PopulationSize][j] * (1 - sqrt(constant1 * CandidateValueRate[nn] + constant2) * pRand->getRandomCC());
                   else
                     {
-                      if (i < NumGeneration*0.6) mut = individual[nn - PopulationSize][j] * (1 - sqrt(constant1 * CandidateValueRate[nn] + constant2) * 0.5 * pRand->getRandomCC());
+                      if (i < NumGeneration * 0.6) mut = individual[nn - PopulationSize][j] * (1 - sqrt(constant1 * CandidateValueRate[nn] + constant2) * 0.5 * pRand->getRandomCC());
                       else
                         {
-                          if (i < NumGeneration*0.7) mut = individual[nn - PopulationSize][j] * (1 - sqrt(constant1 * CandidateValueRate[nn] + constant2) * 0.25 * pRand->getRandomCC());
+                          if (i < NumGeneration * 0.7) mut = individual[nn - PopulationSize][j] * (1 - sqrt(constant1 * CandidateValueRate[nn] + constant2) * 0.25 * pRand->getRandomCC());
                           else
                             {
-                              if (i < NumGeneration*0.8) mut = individual[nn - PopulationSize][j] * (1 - sqrt(constant1 * CandidateValueRate[nn] + constant2) * 0.1 * pRand->getRandomCC());
+                              if (i < NumGeneration * 0.8) mut = individual[nn - PopulationSize][j] * (1 - sqrt(constant1 * CandidateValueRate[nn] + constant2) * 0.1 * pRand->getRandomCC());
                               else
                                 {
-                                  if (i < NumGeneration*0.9) mut = individual[nn - PopulationSize][j] * (1 - sqrt(constant1 * CandidateValueRate[nn] + constant2) * 0.01 * pRand->getRandomCC());
+                                  if (i < NumGeneration * 0.9) mut = individual[nn - PopulationSize][j] * (1 - sqrt(constant1 * CandidateValueRate[nn] + constant2) * 0.01 * pRand->getRandomCC());
                                   else
                                     {
-                                      if (i < NumGeneration*0.95) mut = individual[nn - PopulationSize][j] * (1 - sqrt(constant1 * CandidateValueRate[nn] + constant2) * 0.001 * pRand->getRandomCC());
+                                      if (i < NumGeneration * 0.95) mut = individual[nn - PopulationSize][j] * (1 - sqrt(constant1 * CandidateValueRate[nn] + constant2) * 0.001 * pRand->getRandomCC());
                                       else mut = individual[nn - PopulationSize][j] * (1 - sqrt(constant1 * CandidateValueRate[nn] + constant2) * 0.0001 * pRand->getRandomCC());
                                     }
                                 }
@@ -546,7 +538,7 @@ void COptMethodEP2::select(int SelectionStrategy)
     {
       case 1:        // parent-offspring competition
 
-        for (i = PopulationSize; i < 2*PopulationSize; i++)
+        for (i = PopulationSize; i < 2 * PopulationSize; i++)
           {
             // if offspring is fitter keep it
             for (j = 0; j < PopulationSize; j++)
@@ -564,7 +556,7 @@ void COptMethodEP2::select(int SelectionStrategy)
         if (TournamentSize < 1) TournamentSize = 1;
 
         // parents and offspring are all in competition
-        for (i = 0; i < 2*PopulationSize; i++)
+        for (i = 0; i < 2 * PopulationSize; i++)
           {
             WinScore[i] = 0;
 
@@ -580,7 +572,7 @@ void COptMethodEP2::select(int SelectionStrategy)
         // selection of top PopulationSize winners
         for (i = 0; i < PopulationSize; i++)
           {
-            for (j = i + 1; j < 2*PopulationSize; j++)
+            for (j = i + 1; j < 2 * PopulationSize; j++)
               {if (WinScore[i] < WinScore[j]) swap(i, j);}
           }
 
@@ -591,7 +583,7 @@ void COptMethodEP2::select(int SelectionStrategy)
 
         for (i = 0; i < PopulationSize; i++)
           {
-            for (j = i + 1; j < 2*PopulationSize; j++)
+            for (j = i + 1; j < 2 * PopulationSize; j++)
               {
                 if (CandidateValue[i] > CandidateValue[j]) exchange(i, j);
               }

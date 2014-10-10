@@ -45,6 +45,78 @@ CRenameHandler * CCopasiObject::smpRenameHandler = NULL;
 //static
 UpdateMethod CCopasiObject::mDefaultUpdateMethod;
 
+// static
+const CCopasiObject * CObjectInterface::DataObject(const CObjectInterface * pInterface)
+{
+  if (pInterface != NULL)
+    {
+      return pInterface->getDataObject();
+    }
+
+  return NULL;
+}
+
+// static
+CObjectInterface * CObjectInterface::GetObjectFromCN(const CObjectInterface::ContainerList & listOfContainer,
+    const CCopasiObjectName & objName)
+{
+  const CObjectInterface * pObject = NULL;
+  const CCopasiDataModel * pDataModel = NULL;
+  CObjectInterface::ContainerList::const_iterator it = listOfContainer.begin();
+  CObjectInterface::ContainerList::const_iterator end = listOfContainer.end();
+
+  CCopasiObjectName ContainerName;
+  std::string::size_type pos;
+
+  //favor to search the list of container first
+  for (; it != end && pObject == NULL; ++it)
+    {
+      if (*it == NULL)
+        {
+          continue;
+        }
+
+      if (pDataModel == NULL)
+        {
+          pDataModel = (*it)->getObjectDataModel();
+        }
+
+      ContainerName = (*it)->getCN();
+
+      while (ContainerName.getRemainder() != "")
+        {
+          ContainerName = ContainerName.getRemainder();
+        }
+
+      if ((pos = objName.find(ContainerName)) == std::string::npos)
+        continue;
+
+      if (pos + ContainerName.length() == objName.length())
+        pObject = *it;
+      else
+        pObject = (*it)->getObject(objName.substr(pos + ContainerName.length() + 1));
+    }
+
+  // if still not found search the function database in the root container
+  if (pObject == NULL)
+    pObject = CCopasiRootContainer::getFunctionList()->getObject(objName);
+
+  // last resort check the whole data model if we know it.
+  if (pObject == NULL && pDataModel != NULL)
+    {
+      pObject = pDataModel->getObjectFromCN(objName);
+    }
+
+  return const_cast< CObjectInterface * >(pObject);
+}
+
+CObjectInterface::CObjectInterface()
+{}
+
+// virtual
+CObjectInterface::~CObjectInterface()
+{};
+
 CCopasiObject::CCopasiObject():
   CObjectInterface(),
   mObjectName("No Name"),
@@ -69,8 +141,11 @@ CCopasiObject::CCopasiObject(const std::string & name,
   mpUpdateMethod(&this->mDefaultUpdateMethod),
   mpRefresh(NULL)
 {
-  if (mpObjectParent != NULL)
-    if (mpObjectParent->isContainer()) mpObjectParent->add(this);
+  if (mpObjectParent != NULL &&
+      mpObjectParent->isContainer())
+    {
+      mpObjectParent->add(this);
+    }
 }
 
 CCopasiObject::CCopasiObject(const CCopasiObject & src,
@@ -78,12 +153,22 @@ CCopasiObject::CCopasiObject(const CCopasiObject & src,
   CObjectInterface(),
   mObjectName(src.mObjectName),
   mObjectType(src.mObjectType),
-  mpObjectParent(const_cast<CCopasiContainer *>(pParent)),
+  mpObjectParent(src.mpObjectParent),
   mpObjectDisplayName(NULL),
   mObjectFlag(src.mObjectFlag),
   mpUpdateMethod(&this->mDefaultUpdateMethod),
   mpRefresh(NULL)
-{if (mpObjectParent != NULL) mpObjectParent->add(this);}
+{
+  if (pParent != NULL)
+    {
+      mpObjectParent = const_cast<CCopasiContainer *>(pParent);
+    }
+
+  if (mpObjectParent != NULL)
+    {
+      mpObjectParent->add(this);
+    }
+}
 
 CCopasiObject::~CCopasiObject()
 {
@@ -132,8 +217,7 @@ CCopasiObjectName CCopasiObject::getCN() const
   return CN;
 }
 
-const CObjectInterface *
-CCopasiObject::getObject(const CCopasiObjectName & cn) const
+const CObjectInterface * CCopasiObject::getObject(const CCopasiObjectName & cn) const
 {
   if (cn == "")
     {
@@ -153,6 +237,14 @@ CCopasiObject::getObject(const CCopasiObjectName & cn) const
     }
 
   return NULL;
+}
+
+const CObjectInterface * CCopasiObject::getObjectFromCN(const CCopasiObjectName & cn) const
+{
+  CObjectInterface::ContainerList ListOfContainer;
+  ListOfContainer.push_back(getObjectDataModel());
+
+  return CObjectInterface::GetObjectFromCN(ListOfContainer, cn);
 }
 
 bool CCopasiObject::setObjectName(const std::string & name)

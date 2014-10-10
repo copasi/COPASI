@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -116,7 +116,7 @@ bool COptMethodPS::move(const size_t & index)
   C_FLOAT64 * pVelocity = mVelocities[index];
   C_FLOAT64 * pBestPosition = mBestPositions[index];
   std::vector< COptItem * >::const_iterator itOptItem = mpOptItem->begin();
-  std::vector< UpdateMethod * >::const_iterator itSetCalculateVariable = mpSetCalculateVariable->begin();
+  C_FLOAT64 ** ppContainerVariable = mContainerVariables.array();
 
   C_FLOAT64 * pBestInformantPosition = mBestPositions[index];
   C_FLOAT64 BestInformantValue = mBestValues[index];
@@ -134,7 +134,7 @@ bool COptMethodPS::move(const size_t & index)
       }
 
   for (; pIndividual != pEnd;
-       ++pIndividual, ++pVelocity, ++pBestPosition, ++itOptItem, ++itSetCalculateVariable, ++pBestInformantPosition)
+       ++pIndividual, ++pVelocity, ++pBestPosition, ++itOptItem, ++ppContainerVariable, ++pBestInformantPosition)
     {
       *pVelocity *= w;
       *pVelocity += c * mpRandom->getRandomCC() * (*pBestPosition - *pIndividual);
@@ -160,7 +160,7 @@ bool COptMethodPS::move(const size_t & index)
 
       // We need to set the value here so that further checks take
       // account of the value.
-      (**itSetCalculateVariable)(*pIndividual);
+      **ppContainerVariable = *pIndividual;
     }
 
   // calculate its fitness
@@ -198,12 +198,12 @@ bool COptMethodPS::create(const size_t & index)
   C_FLOAT64 * pVelocity = mVelocities[index];
   C_FLOAT64 * pBestPosition = mBestPositions[index];
   std::vector< COptItem * >::const_iterator itOptItem = mpOptItem->begin();
-  std::vector< UpdateMethod * >::const_iterator itSetCalculateVariable = mpSetCalculateVariable->begin();
+  C_FLOAT64 ** ppContainerVariable = mContainerVariables.array();
 
   C_FLOAT64 mn, mx, la;
 
   for (; pIndividual != pEnd;
-       ++pIndividual, ++pVelocity, ++pBestPosition, ++itOptItem, ++itSetCalculateVariable)
+       ++pIndividual, ++pVelocity, ++pBestPosition, ++itOptItem, ++ppContainerVariable)
     {
       COptItem & OptItem = **itOptItem;
 
@@ -300,7 +300,7 @@ bool COptMethodPS::create(const size_t & index)
 
       // We need to set the value here so that further checks take
       // account of the value.
-      (**itSetCalculateVariable)(*pIndividual);
+      **ppContainerVariable = *pIndividual;
     }
 
   // calculate its fitness
@@ -509,12 +509,12 @@ bool COptMethodPS::optimise()
   C_FLOAT64 * pVelocity = mVelocities[0];
   C_FLOAT64 * pBestPosition = mBestPositions[0];
   std::vector< COptItem * >::const_iterator itOptItem = mpOptItem->begin();
-  std::vector< UpdateMethod * >::const_iterator itSetCalculateVariable = mpSetCalculateVariable->begin();
+  C_FLOAT64 ** ppContainerVariable = mContainerVariables.array();
 
   // initialise the population
   // first individual is the initial guess
   for (; pIndividual != pEnd;
-       ++pIndividual, ++pVelocity, ++pBestPosition, ++itOptItem, ++itSetCalculateVariable)
+       ++pIndividual, ++pVelocity, ++pBestPosition, ++itOptItem, ++ppContainerVariable)
     {
       COptItem & OptItem = **itOptItem;
 
@@ -537,7 +537,7 @@ bool COptMethodPS::optimise()
 
       // We need to set the value here so that further checks take
       // account of the value.
-      (**itSetCalculateVariable)(*pIndividual);
+      **ppContainerVariable = *pIndividual;
     }
 
   // calculate its fitness

@@ -27,8 +27,9 @@
 #include "CSteadyStateTask.h"
 #include "CSteadyStateProblem.h"
 #include "CSteadyStateMethod.h"
+
+#include "math/CMathContainer.h"
 #include "model/CModel.h"
-#include "model/CState.h"
 #include "model/CMetabNameInterface.h"
 #include "report/CKeyFactory.h"
 #include "report/CReport.h"
@@ -37,11 +38,12 @@
 
 #define XXXX_Reporting
 
-CSteadyStateTask::CSteadyStateTask(const CCopasiContainer * pParent):
-  CCopasiTask(CCopasiTask::steadyState, pParent),
-  mpSteadyState(NULL),
+CSteadyStateTask::CSteadyStateTask(const CCopasiContainer * pParent,
+                                   const CCopasiTask::Type & type):
+  CCopasiTask(pParent, type),
+  mSteadyState(),
   mJacobian(),
-  mJacobianX(),
+  mJacobianReduced(),
   mpJacobianAnn(NULL),
   mpJacobianXAnn(NULL),
   mEigenValues("Eigenvalues of Jacobian", this),
@@ -58,9 +60,9 @@ CSteadyStateTask::CSteadyStateTask(const CCopasiContainer * pParent):
 CSteadyStateTask::CSteadyStateTask(const CSteadyStateTask & src,
                                    const CCopasiContainer * pParent):
   CCopasiTask(src, pParent),
-  mpSteadyState(src.mpSteadyState),
+  mSteadyState(src.mSteadyState),
   mJacobian(src.mJacobian),
-  mJacobianX(src.mJacobianX),
+  mJacobianReduced(src.mJacobianReduced),
   mpJacobianAnn(NULL),
   mpJacobianXAnn(NULL),
   mEigenValues(src.mEigenValues, this),
@@ -76,9 +78,7 @@ CSteadyStateTask::CSteadyStateTask(const CSteadyStateTask & src,
 }
 
 CSteadyStateTask::~CSteadyStateTask()
-{
-  pdelete(mpSteadyState);
-}
+{}
 
 // virtual
 CCopasiMethod * CSteadyStateTask::createMethod(const int & type) const
@@ -101,7 +101,7 @@ void CSteadyStateTask::initObjects()
   mpJacobianAnn->setDimensionDescription(1, "Variables of the system, including dependent species");
 
   mpJacobianXAnn = new CArrayAnnotation("Jacobian (reduced system)", this,
-                                        new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mJacobianX), true);
+                                        new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mJacobianReduced), true);
   mpJacobianXAnn->setMode(CArrayAnnotation::OBJECTS);
   mpJacobianXAnn->setDescription("");
   mpJacobianXAnn->setDimensionDescription(0, "Independent variables of the system");
@@ -135,13 +135,15 @@ void CSteadyStateTask::load(CReadConfig & configBuffer)
   ((CSteadyStateMethod *) mpMethod)->load(configBuffer);
 }
 
-const CState * CSteadyStateTask::getState() const
-{return mpSteadyState;}
+const CVectorCore< C_FLOAT64 > & CSteadyStateTask::getState() const
+{
+  return mSteadyState;
+}
 
 const CMatrix< C_FLOAT64 > & CSteadyStateTask::getJacobian() const
 {return mJacobian;}
 const CMatrix< C_FLOAT64 > & CSteadyStateTask::getJacobianReduced() const
-{return mJacobianX;}
+{return mJacobianReduced;}
 
 const CArrayAnnotation * CSteadyStateTask::getJacobianAnnotated() const
 {
@@ -164,55 +166,46 @@ const CEigen & CSteadyStateTask::getEigenValuesReduced() const
 
 bool CSteadyStateTask::updateMatrices()
 {
-  if (!mpProblem->getModel()) return false;
-
-  const CStateTemplate & stateTemplate = mpProblem->getModel()->getStateTemplate();
-
   // init Jacobians
-  size_t sizeX = stateTemplate.getNumIndependent();
-  mJacobianX.resize(sizeX, sizeX);
-  size_t size = sizeX + stateTemplate.getNumDependent();
+  size_t sizeReduced = mpContainer->getState(true).size() - mpContainer->getTimeIndex() - 1;
+  mJacobianReduced.resize(sizeReduced, sizeReduced);
+  size_t size = mpContainer->getState(false).size() - mpContainer->getTimeIndex() - 1;
   mJacobian.resize(size, size);
 
   // Jacobian Annotations
 
   mpJacobianAnn->resize();
-  CModelEntity *const* ppEntities = stateTemplate.getEntities();
-  const size_t * pUserOrder = stateTemplate.getUserOrder().array();
-  const size_t * pUserOrderEnd = pUserOrder + stateTemplate.getUserOrder().size();
-
-  pUserOrder++; // We skip the time which is the first.
-
-  size_t i, imax = size;
-
-  for (i = 0; i < imax && pUserOrder != pUserOrderEnd; pUserOrder++)
-    {
-      const CModelEntity::Status & Status = ppEntities[*pUserOrder]->getStatus();
-
-      if (Status == CModelEntity::ODE ||
-          (Status == CModelEntity::REACTIONS && ppEntities[*pUserOrder]->isUsed()))
-        {
-          mpJacobianAnn->setAnnotationCN(0 , i, ppEntities[*pUserOrder]->getCN());
-          mpJacobianAnn->setAnnotationCN(1 , i, ppEntities[*pUserOrder]->getCN());
-
-          i++;
-        }
-    }
-
   mpJacobianXAnn->resize();
 
-  ppEntities = stateTemplate.beginIndependent();
-  imax = sizeX;
+  const CMathObject * pObject = mpContainer->getMathObject(mpContainer->getState(false).array() + mpContainer->getTimeIndex() + 1);
+  const CMathObject * pObjectEnd = pObject + sizeReduced;
 
-  for (i = 0; i < imax; ++i, ++ppEntities)
+  size_t i;
+
+  for (i = 0; pObject != pObjectEnd; ++pObject, ++i)
     {
-      mpJacobianXAnn->setAnnotationCN(0 , i, (*ppEntities)->getCN());
-      mpJacobianXAnn->setAnnotationCN(1 , i, (*ppEntities)->getCN());
+      std::string CN = pObject->getDataObject()->getObjectParent()->getCN();
+
+      mpJacobianXAnn->setAnnotationCN(0 , i, CN);
+      mpJacobianXAnn->setAnnotationCN(1 , i, CN);
+
+      mpJacobianAnn->setAnnotationCN(0 , i, CN);
+      mpJacobianAnn->setAnnotationCN(1 , i, CN);
+    }
+
+  pObjectEnd += size - sizeReduced;
+
+  for (; pObject != pObjectEnd; ++pObject, ++i)
+    {
+      std::string CN = pObject->getDataObject()->getObjectParent()->getCN();
+
+      mpJacobianAnn->setAnnotationCN(0 , i, CN);
+      mpJacobianAnn->setAnnotationCN(1 , i, CN);
     }
 
   // initial dimension of Eigenvalues of Jacobian
   mEigenvaluesMatrix.resize(size, 2);
-  mEigenvaluesXMatrix.resize(sizeX, 2);
+  mEigenvaluesXMatrix.resize(sizeReduced, 2);
 
   return true;
 }
@@ -221,67 +214,9 @@ bool CSteadyStateTask::initialize(const OutputFlag & of,
                                   COutputHandler * pOutputHandler,
                                   std::ostream * pOstream)
 {
-  assert(mpProblem && mpMethod);
-
-  if (!mpMethod->isValidProblem(mpProblem)) return false;
-
   bool success = true;
 
-  if (!updateMatrices())
-    return false;
-
-  success &= CCopasiTask::initialize(of, pOutputHandler, pOstream);
-
-  pdelete(mpSteadyState);
-  mpSteadyState = new CState(mpProblem->getModel()->getInitialState());
-
-  mCalculateReducedSystem = (mpProblem->getModel()->getNumDependentReactionMetabs() != 0);
-
-#ifdef xxxx
-  // init Jacobians
-  size_t sizeX = mpSteadyState->getNumIndependent();
-  mJacobianX.resize(sizeX, sizeX);
-  size_t size = sizeX + mpSteadyState->getNumDependent();
-  mJacobian.resize(size, size);
-
-  //jacobian annotations
-  CStateTemplate & StateTemplate = mpProblem->getModel()->getStateTemplate();
-
-  mpJacobianAnn->resize();
-  CModelEntity **ppEntities = StateTemplate.getEntities();
-  const size_t * pUserOrder = StateTemplate.getUserOrder().array();
-  const size_t * pUserOrderEnd = pUserOrder + StateTemplate.getUserOrder().size();
-
-  pUserOrder++; // We skip the time which is the first.
-
-  size_t i, imax = size;
-
-  for (i = 0; i < imax && pUserOrder != pUserOrderEnd; pUserOrder++)
-    {
-      const CModelEntity::Status & Status = ppEntities[*pUserOrder]->getStatus();
-
-      if (Status == CModelEntity::ODE ||
-          (Status == CModelEntity::REACTIONS && ppEntities[*pUserOrder]->isUsed()))
-        {
-          mpJacobianAnn->setAnnotationCN(0 , i, ppEntities[*pUserOrder]->getCN());
-          mpJacobianAnn->setAnnotationCN(1 , i, ppEntities[*pUserOrder]->getCN());
-
-          i++;
-        }
-    }
-
-  mpJacobianXAnn->resize();
-
-  ppEntities = StateTemplate.beginIndependent();
-  imax = sizeX;
-
-  for (i = 0; i < imax; ++i, ++ppEntities)
-    {
-      mpJacobianXAnn->setAnnotationCN(0 , i, (*ppEntities)->getCN());
-      mpJacobianXAnn->setAnnotationCN(1 , i, (*ppEntities)->getCN());
-    }
-
-#endif
+  assert(mpProblem && mpMethod);
 
   CSteadyStateProblem* pProblem =
     dynamic_cast<CSteadyStateProblem *>(mpProblem);
@@ -295,6 +230,16 @@ bool CSteadyStateTask::initialize(const OutputFlag & of,
 
   success &= pMethod->initialize(pProblem);
 
+  if (!mpMethod->isValidProblem(mpProblem)) return false;
+
+  if (!updateMatrices())
+    return false;
+
+  mSteadyState = mpContainer->getState(false);
+  mCalculateReducedSystem = (mpContainer->getCountDependentSpecies() != 0);
+
+  success &= CCopasiTask::initialize(of, pOutputHandler, pOstream);
+
   return success;
 }
 
@@ -302,15 +247,15 @@ bool CSteadyStateTask::process(const bool & useInitialValues)
 {
   if (useInitialValues)
     {
-      mpProblem->getModel()->applyInitialValues();
+      mpContainer->applyInitialValues();
     }
 
-  *mpSteadyState = mpProblem->getModel()->getState();
+  mSteadyState = mpContainer->getState(false);
 
   // A steady-state makes only sense in an autonomous model,
   // i.e., the time of the steady-state must not be changed
   // during simulation.
-  C_FLOAT64 InitialTime = mpSteadyState->getTime();
+  C_FLOAT64 InitialTime = mSteadyState[mpContainer->getTimeIndex()];
 
   CSteadyStateMethod* pMethod =
     dynamic_cast<CSteadyStateMethod *>(mpMethod);
@@ -323,20 +268,26 @@ bool CSteadyStateTask::process(const bool & useInitialValues)
   output(COutputInterface::BEFORE);
 
   //call the method
-  mResult = pMethod->process(mpSteadyState,
-                             mJacobianX,
+  mResult = pMethod->process(mSteadyState,
+                             mJacobianReduced,
                              mpCallBack);
+
+  // Reset the time for an autonomous model.
+  if (mpContainer->isAutonomous())
+    {
+      mSteadyState[mpContainer->getTimeIndex()] = InitialTime;
+    }
 
   if (mResult == CSteadyStateMethod::notFound)
     restore();
 
-  //update jacobian
-  if (mpSteadyState->isValid())
+  //update Jacobian
+  if (mpContainer->isStateValid())
     {
       if (pProblem->isJacobianRequested() ||
           pProblem->isStabilityAnalysisRequested())
         {
-          pMethod->doJacobian(mJacobian, mJacobianX);
+          pMethod->doJacobian(mJacobian, mJacobianReduced);
         }
 
       //mpProblem->getModel()->setState(mpSteadyState);
@@ -346,15 +297,12 @@ bool CSteadyStateTask::process(const bool & useInitialValues)
       if (pProblem->isStabilityAnalysisRequested())
         {
           mEigenValues.calcEigenValues(mJacobian);
-          mEigenValuesX.calcEigenValues(mJacobianX);
+          mEigenValuesX.calcEigenValues(mJacobianReduced);
 
           mEigenValues.stabilityAnalysis(pMethod->getStabilityResolution());
           mEigenValuesX.stabilityAnalysis(pMethod->getStabilityResolution());
         }
     }
-
-  // Reset the time.
-  mpSteadyState->setTime(InitialTime);
 
   C_FLOAT64 * pTo;
   size_t i;
@@ -413,24 +361,15 @@ bool CSteadyStateTask::process(const bool & useInitialValues)
   return (mResult != CSteadyStateMethod::notFound);
 }
 
-void CSteadyStateTask::setInitialState()
-{
-  CModel * pModel = mpProblem->getModel();
-  pModel->setInitialState(pModel->getState());
-}
-
 bool CSteadyStateTask::restore()
 {
   bool success = CCopasiTask::restore();
 
   if (mUpdateModel)
     {
-      CModel * pModel = mpProblem->getModel();
-
-      pModel->setState(*mpSteadyState);
-      pModel->updateSimulatedValues(true);
-      pModel->setInitialState(pModel->getState());
-      pModel->updateInitialValues();
+      mpContainer->setInitialState(mSteadyState);
+      mpContainer->updateInitialValues(CModelParameter::ParticleNumbers);
+      mpContainer->pushInitialState();
     }
 
   return success;
@@ -459,17 +398,12 @@ std::ostream &operator<<(std::ostream &os, const CSteadyStateTask &A)
 
   os << std::endl;
 
-  // Update all necessary values.
-  CState * pState = const_cast<CState *>(A.getState());
+  A.mpContainer->setState(A.mSteadyState);
+  A.mpContainer->updateSimulatedValues(false);
+  A.mpContainer->pushState();
 
-  if (!pState) return os;
+  CModel * pModel = const_cast< CModel * >(&A.mpContainer->getModel());
 
-  CModel * pModel = A.mpProblem->getModel();
-
-  if (!pModel) return os;
-
-  pModel->setState(*pState);
-  pModel->updateSimulatedValues(true);
   pModel->updateNonSimulatedValues();
 
   // Metabolite Info: Name, Concentration, Concentration Rate, Particle Number, Particle Rate, Transition Time

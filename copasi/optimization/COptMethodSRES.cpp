@@ -1,16 +1,16 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-// and The University of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2006 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc. and EML Research, gGmbH. 
-// All rights reserved. 
+// Copyright (C) 2006 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 #include <cmath>
 
@@ -217,7 +217,7 @@ bool COptMethodSRES::mutate()
 
           // We need to set the value here so that further checks take
           // account of the value.
-          (*(*mpSetCalculateVariable)[j])(mut);
+          *mContainerVariables[j] = (mut);
         }
 
       // calculate its fitness
@@ -359,7 +359,7 @@ bool COptMethodSRES::creation(size_t first)
 
           // We need to set the value here so that further checks take
           // account of the value.
-          (*(*mpSetCalculateVariable)[j])(mut);
+          *mContainerVariables[j] = (mut);
 
           // Set the variance for this parameter.
           *pVariance = std::min(*OptItem.getUpperBoundValue() - mut, mut - *OptItem.getLowerBoundValue()) / sqrt(double(mVariableSize));
@@ -475,7 +475,7 @@ bool COptMethodSRES::creation(size_t first)
 
           // We need to set the value here so that further checks take
           // account of the value.
-          (*(*mpSetCalculateVariable)[j])(mut);
+          *mContainerVariables[j] = (mut);
 
           // Set the variance for this parameter.
           *pVariance = std::min(*OptItem.getUpperBoundValue() - mut, mut - *OptItem.getLowerBoundValue()) / sqrt(double(mVariableSize));

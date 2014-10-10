@@ -1,12 +1,9 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/moieties/CMoietiesProblem.cpp,v $
-//   $Revision: 1.2 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/03/12 02:12:24 $
-// End CVS Header
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
@@ -15,19 +12,20 @@
 
 #include "CMoietiesProblem.h"
 
+#include "math/CMathContainer.h"
 #include "model/CModel.h"
 #include "utilities/CAnnotatedMatrix.h"
 
 //  Default constructor
 CMoietiesProblem::CMoietiesProblem(const CCopasiTask::Type & type,
                                    const CCopasiContainer * pParent):
-    CCopasiProblem(type, pParent)
+  CCopasiProblem(type, pParent)
 {}
 
 // copy constructor
 CMoietiesProblem::CMoietiesProblem(const CMoietiesProblem & src,
                                    const CCopasiContainer * pParent):
-    CCopasiProblem(src, pParent)
+  CCopasiProblem(src, pParent)
 {}
 
 // Destructor
@@ -35,32 +33,34 @@ CMoietiesProblem::~CMoietiesProblem()
 {}
 
 void CMoietiesProblem::printResult(std::ostream * pOstream) const
-  {
-    if (mpModel == NULL) return;
+{
+  const CModel & Model = mpContainer->getModel();
 
-    // Print all Moieties
-    *pOstream << "Dependent Species" << "\t";
-    *pOstream << "Total Amount" << "\t";
-    *pOstream << "Expression" << std::endl;
+  // Print all Moieties
+  *pOstream << "Dependent Species" << "\t";
+  *pOstream << "Total Amount" << "\t";
+  *pOstream << "Expression" << std::endl;
 
-    CCopasiVector< CMoiety >::const_iterator it = mpModel->getMoieties().begin();
-    CCopasiVector< CMoiety >::const_iterator end = mpModel->getMoieties().end();
-    for (; it != end; ++it)
-      {
-        *pOstream << (*it)->getObjectName() << "\t";
-        *pOstream << (*it)->getNumber() << "\t";
-        *pOstream << (*it)->getDescription(mpModel) << std::endl;
-      }
-    *pOstream << std::endl;
+  CCopasiVector< CMoiety >::const_iterator it = Model.getMoieties().begin();
+  CCopasiVector< CMoiety >::const_iterator end = Model.getMoieties().end();
 
-    // Print Reordered Stoichiometry Matrix
-    *pOstream << *dynamic_cast<const CArrayAnnotation *>(mpModel->getObject(CCopasiObjectName("Array=Stoichiometry(ann)"))) << std::endl;
+  for (; it != end; ++it)
+    {
+      *pOstream << (*it)->getObjectName() << "\t";
+      *pOstream << (*it)->getNumber() << "\t";
+      *pOstream << (*it)->getDescription(&Model) << std::endl;
+    }
 
-    // Print Link Matrix
-    *pOstream << *dynamic_cast<const CArrayAnnotation *>(mpModel->getObject(CCopasiObjectName("Array=Link matrix(ann)"))) << std::endl;
+  *pOstream << std::endl;
 
-    // Print Reduced Stoichiometry Matrix
-    *pOstream << *dynamic_cast<const CArrayAnnotation *>(mpModel->getObject(CCopasiObjectName("Array=Reduced stoichiometry(ann)"))) << std::endl;
+  // Print Reordered Stoichiometry Matrix
+  *pOstream << *dynamic_cast<const CArrayAnnotation *>(Model.getObject(CCopasiObjectName("Array=Stoichiometry(ann)"))) << std::endl;
 
-    return;
-  }
+  // Print Link Matrix
+  *pOstream << *dynamic_cast<const CArrayAnnotation *>(Model.getObject(CCopasiObjectName("Array=Link matrix(ann)"))) << std::endl;
+
+  // Print Reduced Stoichiometry Matrix
+  *pOstream << *dynamic_cast<const CArrayAnnotation *>(Model.getObject(CCopasiObjectName("Array=Reduced stoichiometry(ann)"))) << std::endl;
+
+  return;
+}

@@ -1,16 +1,16 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-// and The University of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc. and EML Research, gGmbH. 
-// All rights reserved. 
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 #include "CQTSSAResultSubWidget.h"
 #include "CQMessageBox.h"
@@ -24,6 +24,7 @@
 #include "utilities/CAnnotatedMatrix.h"
 #include "commandline/CLocaleString.h"
 #include "model/CModel.h"
+#include "math/CMathContainer.h"
 
 const CArrayAnnotation * pResult;
 
@@ -32,7 +33,7 @@ const CArrayAnnotation * pResult;
  *  name 'name' and widget flags set to 'f'.
  */
 CQTSSAResultSubWidget::CQTSSAResultSubWidget(QWidget* parent, const char* name, Qt::WindowFlags fl)
-    : CopasiWidget(parent, name, fl)
+  : CopasiWidget(parent, name, fl)
 {
   setupUi(this);
 
@@ -80,16 +81,13 @@ void CQTSSAResultSubWidget::saveDataToFile()
 
   mpProblem->printResult(&file);
 
-
   return;
 }
-
 
 void CQTSSAResultSubWidget::slotTableChanged()
 {
 
   std::string name  =  static_cast<std::string >(mpBox1->currentText().toUtf8());
-
 
   if (name == "Reactions slow space" ||
       name == "Reactions contribution to the mode" ||
@@ -110,7 +108,7 @@ void CQTSSAResultSubWidget::slotTableChanged()
     }
   else
     {
-      //CColorScaleAdvanced * tcs = new CColorScaleAdvanced() ;
+      //CColorScaleAdvanced * tcs = new CColorScaleAdvanced();
       //tcs->setColorMin(QColor(240, 240, 240));
       //tcs->setColorMax(QColor(0, 255, 0));
 
@@ -119,16 +117,11 @@ void CQTSSAResultSubWidget::slotTableChanged()
 
       mpArrayWidget->setColorCoding(tcs);
       mpArrayWidget->setColorScalingAutomatic(true);
-
     }
-
 
   pResult = pMethod->getTable(name);
   mpArrayWidget->setArrayAnnotation(pResult);
-
-
 }
-
 
 //set time and step number
 void CQTSSAResultSubWidget::slotTimeAndStepChanged()
@@ -156,7 +149,6 @@ void CQTSSAResultSubWidget::changeContents()
       mpBox1->hide();
       mpButton->setText("Show Tables");
       mpIndex = 1;
-
     }
   else
     {
@@ -177,7 +169,7 @@ void CQTSSAResultSubWidget::init()
   if (!pTSSATask) return;
 
   pProblem = dynamic_cast<CTSSAProblem*>(pTSSATask->getProblem());
-  pModel = pProblem->getModel();
+  pModel = & pTSSATask->getMathContainer()->getModel();
 
   pMethod = dynamic_cast<CTSSAMethod*>(pTSSATask->getMethod());
 
@@ -188,12 +180,11 @@ void CQTSSAResultSubWidget::init()
 
   //set colorsettings for ArrayAnnotationWidgets
 
-  CColorScaleAdvanced * tcs = new CColorScaleAdvanced() ;
+  CColorScaleAdvanced * tcs = new CColorScaleAdvanced();
   tcs->setColorMin(QColor(240, 240, 240));
   tcs->setColorMax(QColor(0, 255, 0));
   mpArrayWidget->setColorCoding(tcs);
   mpArrayWidget->setColorScalingAutomatic(true);
-
 
   connect(mpSlider, SIGNAL(valueChanged(int)), this, SLOT(changeInterval()));
   connect(mpButton, SIGNAL(clicked()), this, SLOT(changeContents()));
@@ -205,7 +196,6 @@ void CQTSSAResultSubWidget::init()
   mpTimeScaleWidget->hide();
   mpBox1->show();
   mpArrayWidget->show();
-
 }
 
 void CQTSSAResultSubWidget::displayResult()
@@ -219,7 +209,7 @@ void CQTSSAResultSubWidget::displayResult()
 
   pProblem = dynamic_cast<CTSSAProblem*>(pTSSATask->getProblem());
 
-  pModel = pProblem->getModel();
+  pModel = & pTSSATask->getMathContainer()->getModel();
 
   pMethod = dynamic_cast<CTSSAMethod*>(pTSSATask->getMethod());
 
@@ -228,7 +218,6 @@ void CQTSSAResultSubWidget::displayResult()
   mpSlider->setRange(1, pProblem->getStepNumber());
 
   mpSlider->setValue(mpSlider->minimum());
-
 
   mpBox1->clear();
 
@@ -283,8 +272,5 @@ void CQTSSAResultSubWidget::changeInterval()
       //mpSlider->setDisabled(true);
       mpArrayWidget->setArrayAnnotation(NULL);
       mpTimeScaleWidget->clearWidget();
-
     }
 }
-
-

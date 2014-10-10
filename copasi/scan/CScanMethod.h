@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -38,8 +38,9 @@ class CScanItem
 protected:
   size_t mNumSteps;
 
-  CCopasiObject * mpObject;
-  CCopasiObject * mpInitialObject;
+  const CCopasiObject * mpObject;
+
+  C_FLOAT64 * mpObjectValue;
 
   C_FLOAT64 mStoreValue;
 
@@ -47,13 +48,10 @@ protected:
 
   bool mFlagFinished;
 
-  bool mIsStateVariable;
-
 public:
   static
   CScanItem* createScanItemFromParameterGroup(CCopasiParameterGroup* si,
-      CRandom* rg,
-      const bool & continueFromCurrentState);
+      CRandom* rg);
 
   size_t getNumSteps() const;
 
@@ -74,9 +72,8 @@ public:
   /**
    * perform checks. This is used in the method::isValidProblem() method.
    * It returns false for an invalid ScanItem and generates a CCopasiMessage
-   * @param const bool & continueFromCurrentState
    */
-  virtual bool isValidScanItem(const bool & continueFromCurrentState);
+  virtual bool isValidScanItem();
 
   /**
    * Retrieve the initial object which is scanned.
@@ -86,7 +83,7 @@ public:
 
 protected:
 
-  CScanItem(CCopasiParameterGroup* si, const bool & continueFromCurrentState);
+  CScanItem(CCopasiParameterGroup* si);
 
   //initObject();
 
@@ -99,7 +96,7 @@ private:
 class CScanItemRepeat: public CScanItem
 {
 public:
-  CScanItemRepeat(CCopasiParameterGroup* si, const bool & continueFromCurrentState);
+  CScanItemRepeat(CCopasiParameterGroup* si);
   virtual void step();
 
   virtual ~CScanItemRepeat() {};
@@ -115,7 +112,7 @@ private:
   C_FLOAT64 mMin, mMax, mFaktor;
   bool mLog;
 public:
-  CScanItemLinear(CCopasiParameterGroup* si, const bool & continueFromCurrentState);
+  CScanItemLinear(CCopasiParameterGroup* si);
   virtual void step();
 
   virtual ~CScanItemLinear() {};
@@ -133,7 +130,7 @@ private:
   unsigned C_INT32 mRandomType;
   bool mLog;
 public:
-  CScanItemRandom(CCopasiParameterGroup* si, CRandom* rg, const bool & continueFromCurrentState);
+  CScanItemRandom(CCopasiParameterGroup* si, CRandom* rg);
   virtual ~CScanItemRandom() {};
 
   virtual void step();
@@ -176,7 +173,7 @@ protected:
 
   std::vector<CScanItem*> mScanItems;
 
-  std::vector< Refresh * > mInitialRefreshes;
+  CObjectInterface::UpdateSequence mInitialUpdates;
 
   //std::vector< Refresh * > mTransientRefreshes;
 

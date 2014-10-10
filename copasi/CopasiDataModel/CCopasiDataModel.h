@@ -244,20 +244,22 @@ public:
 
   /**
    * Retrieve the object with the given CN
-   * @param const std::vector< CCopasiContainer * > &listOfContainer
+   * @param const CObjectInterface::ContainerList &listOfContainer
    * @param const CCopasiObjectName& objName
    * @return CObjectInterface * pObject
    */
-  CObjectInterface * ObjectFromCN(const std::vector< CCopasiContainer * > & listOfContainer,
-                                  const CCopasiObjectName & objName) const;
+private:
+  CObjectInterface * _getObjectFromCN(const CObjectInterface::ContainerList & listOfContainer,
+                                      const CCopasiObjectName & objName) const;
 
   /**
    * Retrieve the data object with the given CN
    * @param const CCopasiObjectName & CN
    * @return CCopasiObject * pObject
    */
-  CCopasiObject * getDataObject(const CCopasiObjectName & CN) const;
+  CCopasiObject * _getDataObject(const CCopasiObjectName & CN) const;
 
+public:
   const std::string& getReferenceDirectory() const;
 
   //TODO SEDML by JO Dada

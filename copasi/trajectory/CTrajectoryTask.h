@@ -32,7 +32,6 @@
 
 class CTrajectoryProblem;
 class CTrajectoryMethod;
-class CState;
 class CMathContainer;
 
 class CTrajectoryTask : public CCopasiTask
@@ -44,23 +43,20 @@ public:
    */
   static const unsigned int ValidMethods[];
 
-public:
+private:
   /**
    * Default constructor
-   * @param const CCopasiContainer * pParent (default: NULL)
    */
-  CTrajectoryTask(const CCopasiContainer * pParent = NULL);
-
-protected:
-  /**
-   * Specific constructor
-   * @param const Type & taskType
-   * @param const CCopasiContainer * pParent (default: NULL)
-   */
-  CTrajectoryTask(const Type & taskType,
-                  const CCopasiContainer * pParent = NULL);
+  CTrajectoryTask();
 
 public:
+  /**
+   * Specific constructor
+   * @param const CCopasiContainer * pParent
+   * @param const CCopasiTask::Type & type (default: timeCourse)
+   */
+  CTrajectoryTask(const CCopasiContainer * pParent,
+                  const CCopasiTask::Type & type = CCopasiTask::timeCourse);
 
   /**
     * Copy constructor
@@ -136,16 +132,16 @@ public:
   void load(CReadConfig & configBuffer);
 
   /**
-   * Retrieves a pointer to current state of the integration.
-   * @return const CState * pState
-   */
-  const CState * getState();
-
-  /**
    * gets a reference to the time series
    * @return time series
    */
   const CTimeSeries & getTimeSeries() const;
+
+protected:
+  /**
+   * Signal that the math container has changed
+   */
+  virtual void signalMathContainerChanged();
 
 private:
   /**
@@ -183,12 +179,12 @@ protected:
   /**
    * The current state of the integration.
    */
-  CVectorCore< C_FLOAT64 > mCurrentState;
+  CVectorCore< C_FLOAT64 > mContainerState;
 
   /**
    * A pointer to the current time of the integration.
    */
-  C_FLOAT64 * mpCurrentStateTime;
+  C_FLOAT64 * mpContainerStateTime;
 
   /**
    * A pointer to the time at which the output starts.
@@ -204,11 +200,6 @@ protected:
    * A pointer to less comparison
    */
   bool (*mpLess)(const C_FLOAT64 &, const C_FLOAT64 &);
-
-  /**
-   * A pointer to the math container used for calculation
-   */
-  CMathContainer * mpContainer;
 
   /**
    * A Boolean flag indication whether to proceed with the integration

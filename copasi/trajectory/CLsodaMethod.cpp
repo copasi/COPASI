@@ -23,9 +23,10 @@
 #include "model/CModel.h"
 #include "model/CState.h"
 
-CLsodaMethod::CLsodaMethod(const CCopasiMethod::SubType & subType,
+CLsodaMethod::CLsodaMethod(const CCopasiTask::Type & type,
+                           const CCopasiMethod::SubType & subType,
                            const CCopasiContainer * pParent):
-  CTrajectoryMethod(subType, pParent),
+  CTrajectoryMethod(CCopasiTask::timeCourse, subType, pParent),
   mpReducedModel(NULL),
   mpRelativeTolerance(NULL),
   mpAbsoluteTolerance(NULL),
@@ -463,16 +464,16 @@ CTrajectoryMethod::Status CLsodaMethod::step(const double & deltaT)
   return Status;
 }
 
-void CLsodaMethod::start(CVectorCore< C_FLOAT64 > & initialState)
+void CLsodaMethod::start()
 {
+  CTrajectoryMethod::start();
+
   /* Reset lsoda */
   mLsodaStatus = 1;
   mTask = 1;
   mJType = 2;
   mErrorMsg.str("");
 
-  /* Release previous state and make the initialState the current */
-  mContainerState = initialState;
   mTime = *mpContainerStateTime;
 
   mTargetTime = mTime;
@@ -485,8 +486,8 @@ void CLsodaMethod::start(CVectorCore< C_FLOAT64 > & initialState)
 
   mAtol = mpContainer->initializeAtolVector(*mpAbsoluteTolerance, *mpReducedModel);
 
-  // We ignore fixed event targets
-  mData.dim = (C_INT)(mContainerState.size() - mpContainer->getCountFixedEventTargets());
+  // We ignore fixed event targets and start with the time
+  mData.dim = (C_INT)(mContainerState.size() - mpContainer->getTimeIndex());
   mpY = mpContainerStateTime;
   mpYdot = mpContainer->getRate(*mpReducedModel).array() + mpContainer->getTimeIndex();
   mpAtol = mAtol.array() + mpContainer->getTimeIndex();
@@ -512,23 +513,6 @@ void CLsodaMethod::start(CVectorCore< C_FLOAT64 > & initialState)
     }
 
   return;
-}
-
-// virtual
-void CLsodaMethod::setContainer(CMathContainer * pContainer)
-{
-  mpContainer = pContainer;
-
-  if (mpContainer != NULL)
-    {
-      mContainerState.initialize(mpContainer->getState(*mpReducedModel));
-      mpContainerStateTime = mContainerState.array() + mpContainer->getTimeIndex();
-    }
-  else
-    {
-      mContainerState.initialize(0, NULL);
-      mpContainerStateTime = NULL;
-    }
 }
 
 void CLsodaMethod::EvalF(const C_INT * n, const C_FLOAT64 * t, const C_FLOAT64 * y, C_FLOAT64 * ydot)

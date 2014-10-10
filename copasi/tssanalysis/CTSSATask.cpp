@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -28,8 +28,7 @@
 #include "CTSSATask.h"
 #include "CTSSAProblem.h"
 #include "CTSSAMethod.h"
-#include "model/CModel.h"
-#include "model/CState.h"
+#include "math/CMathContainer.h"
 #include "report/CKeyFactory.h"
 #include "report/CReport.h"
 #include "utilities/CProcessReport.h"
@@ -58,14 +57,15 @@ const unsigned int CTSSATask::ValidMethods[] =
   CCopasiMethod::unset
 };
 
-CTSSATask::CTSSATask(const CCopasiContainer * pParent):
-  CCopasiTask(CCopasiTask::tssAnalysis, pParent),
+CTSSATask::CTSSATask(const CCopasiContainer * pParent,
+                     const CCopasiTask::Type & type):
+  CCopasiTask(pParent, type),
   mTimeSeriesRequested(true),
   mTimeSeries(),
   mpTSSAProblem(NULL),
   mpTSSAMethod(NULL),
-  mpCurrentState(NULL),
-  mpCurrentTime(NULL)
+  mContainerState(),
+  mpContainerStateTime(NULL)
 {
   mpProblem = new CTSSAProblem(this);
   mpMethod = createMethod(CCopasiMethod::tssILDM);
@@ -86,8 +86,8 @@ CTSSATask::CTSSATask(const CTSSATask & src,
   mTimeSeries(),
   mpTSSAProblem(NULL),
   mpTSSAMethod(NULL),
-  mpCurrentState(NULL),
-  mpCurrentTime(NULL)
+  mContainerState(),
+  mpContainerStateTime(NULL)
 {
   mpProblem =
     new CTSSAProblem(*static_cast< CTSSAProblem * >(src.mpProblem), this);
@@ -107,16 +107,9 @@ CTSSATask::CTSSATask(const CTSSATask & src,
 }
 
 CTSSATask::~CTSSATask()
-{
-  cleanup();
-}
+{}
 
-void CTSSATask::cleanup()
-{
-  pdelete(mpCurrentState);
-}
-
-bool CTSSATask::updateMatrices() //NEW
+bool CTSSATask::updateMatrices()
 {
   assert(mpProblem != NULL && mpMethod != NULL);
 
@@ -127,8 +120,6 @@ bool CTSSATask::updateMatrices() //NEW
   CTSSAMethod * pMethod = dynamic_cast<CTSSAMethod*>(mpMethod);
 
   if (!pMethod) return false;
-
-  pMethod->setModel(mpProblem->getModel());
 
   pMethod->predifineAnnotation();
 
@@ -158,10 +149,6 @@ bool CTSSATask::initialize(const OutputFlag & of,
   else
     mUpdateMoieties = false;
 
-  pdelete(mpCurrentState);
-  mpCurrentState = new CState(mpTSSAProblem->getModel()->getState());
-  mpCurrentTime = &mpCurrentState->getTime();
-
   // Handle the time series as a regular output.
   mTimeSeriesRequested = mpTSSAProblem->timeSeriesRequested();
 
@@ -178,15 +165,12 @@ bool CTSSATask::initialize(const OutputFlag & of,
         }
     }
 
-//NEW
-
-  mpTSSAMethod->setModel(mpTSSAProblem->getModel());
-
   mpTSSAMethod->predifineAnnotation();
 
-//
+  success &= CCopasiTask::initialize(of, pOutputHandler, pOstream);
 
-  if (!CCopasiTask::initialize(of, pOutputHandler, pOstream)) success = false;
+  mContainerState.initialize(mpContainer->getState(mUpdateMoieties));
+  mpContainerStateTime = mContainerState.array() + mpContainer->getTimeIndex();
 
   return success;
 }
@@ -202,8 +186,8 @@ bool CTSSATask::process(const bool & useInitialValues)
   C_FLOAT64 StepSize = mpTSSAProblem->getStepSize();
   C_FLOAT64 NextTimeToReport;
 
-  const C_FLOAT64 EndTime = *mpCurrentTime + mpTSSAProblem->getDuration();
-  const C_FLOAT64 StartTime = *mpCurrentTime;
+  const C_FLOAT64 EndTime = *mpContainerStateTime + mpTSSAProblem->getDuration();
+  const C_FLOAT64 StartTime = *mpContainerStateTime;
 
   C_FLOAT64 StepNumber = (mpTSSAProblem->getDuration()) / StepSize;
 
@@ -248,7 +232,7 @@ bool CTSSATask::process(const bool & useInitialValues)
                                      &hundred);
     }
 
-  //if ((*LE)(outputStartTime, *mpCurrentTime)) output(COutputInterface::DURING);
+  //if ((*LE)(outputStartTime, *mpContainerStateTime)) output(COutputInterface::DURING);
 
   try
     {
@@ -263,24 +247,23 @@ bool CTSSATask::process(const bool & useInitialValues)
 
           if (mpCallBack)
             {
-              Percentage = (*mpCurrentTime - StartTime) * handlerFactor;
+              Percentage = (*mpContainerStateTime - StartTime) * handlerFactor;
               flagProceed &= mpCallBack->progressItem(hProcess);
             }
 
-          if ((*LE)(outputStartTime, *mpCurrentTime))
+          if ((*LE)(outputStartTime, *mpContainerStateTime))
             {
               output(COutputInterface::DURING);
             }
         }
-      while ((*L)(*mpCurrentTime, EndTime) && flagProceed);
+      while ((*L)(*mpContainerStateTime, EndTime) && flagProceed);
     }
 
   catch (int)
     {
-      mpTSSAProblem->getModel()->setState(*mpCurrentState);
-      mpTSSAProblem->getModel()->updateSimulatedValues(mUpdateMoieties);
+      mpContainer->updateSimulatedValues(mUpdateMoieties);
 
-      if ((*LE)(outputStartTime, *mpCurrentTime))
+      if ((*LE)(outputStartTime, *mpContainerStateTime))
         {
           output(COutputInterface::DURING);
         }
@@ -294,10 +277,9 @@ bool CTSSATask::process(const bool & useInitialValues)
 
   catch (CCopasiException & Exception)
     {
-      mpTSSAProblem->getModel()->setState(*mpCurrentState);
-      mpTSSAProblem->getModel()->updateSimulatedValues(mUpdateMoieties);
+      mpContainer->updateSimulatedValues(mUpdateMoieties);
 
-      if ((*LE)(outputStartTime, *mpCurrentTime))
+      if ((*LE)(outputStartTime, *mpContainerStateTime))
         {
           output(COutputInterface::DURING);
         }
@@ -319,12 +301,12 @@ bool CTSSATask::process(const bool & useInitialValues)
 void CTSSATask::processStart(const bool & useInitialValues)
 {
   if (useInitialValues)
-    mpTSSAProblem->getModel()->applyInitialValues();
+    {
+      mpContainer->applyInitialValues();
+    }
 
-  *mpCurrentState = mpTSSAProblem->getModel()->getState();
-
-  mpTSSAMethod->setCurrentState(mpCurrentState);
-  mpTSSAMethod->start(mpCurrentState);
+  mContainerState.initialize(mpContainer->getState(mUpdateMoieties));
+  mpTSSAMethod->start();
 
   return;
 }
@@ -333,13 +315,13 @@ bool CTSSATask::processStep(const C_FLOAT64 & nextTime)
 {
   C_FLOAT64 CompareTime = nextTime - 100.0 * fabs(nextTime) * std::numeric_limits< C_FLOAT64 >::epsilon();
 
-  if (*mpCurrentTime <= CompareTime)
+  if (*mpContainerStateTime <= CompareTime)
     {
       do
         {
-          mpTSSAMethod->step(nextTime - *mpCurrentTime);
+          mpTSSAMethod->step(nextTime - *mpContainerStateTime);
 
-          if (*mpCurrentTime > CompareTime) break;
+          if (*mpContainerStateTime > CompareTime) break;
 
           /* Here we will do conditional event processing */
 
@@ -348,21 +330,20 @@ bool CTSSATask::processStep(const C_FLOAT64 & nextTime)
         }
       while (true);
 
-      mpTSSAProblem->getModel()->setState(*mpCurrentState);
-      mpTSSAProblem->getModel()->updateSimulatedValues(mUpdateMoieties);
+      mpContainer->updateSimulatedValues(mUpdateMoieties);
 
       return true;
     }
 
   CompareTime = nextTime + 100.0 * fabs(nextTime) * std::numeric_limits< C_FLOAT64 >::epsilon();
 
-  if (*mpCurrentTime >= CompareTime)
+  if (*mpContainerStateTime >= CompareTime)
     {
       do
         {
-          mpTSSAMethod->step(nextTime - *mpCurrentTime);
+          mpTSSAMethod->step(nextTime - *mpContainerStateTime);
 
-          if (*mpCurrentTime < CompareTime) break;
+          if (*mpContainerStateTime < CompareTime) break;
 
           /* Here we will do conditional event processing */
 
@@ -371,8 +352,7 @@ bool CTSSATask::processStep(const C_FLOAT64 & nextTime)
         }
       while (true);
 
-      mpTSSAProblem->getModel()->setState(*mpCurrentState);
-      mpTSSAProblem->getModel()->updateSimulatedValues(mUpdateMoieties);
+      mpContainer->updateSimulatedValues(mUpdateMoieties);
 
       return true;
     }
@@ -387,12 +367,10 @@ bool CTSSATask::restore()
 
   if (mUpdateModel)
     {
-      CModel * pModel = mpProblem->getModel();
-
-      pModel->setState(*mpCurrentState);
-      pModel->updateSimulatedValues(mUpdateMoieties);
-      pModel->setInitialState(pModel->getState());
-      pModel->updateInitialValues();
+      mpContainer->updateSimulatedValues(true);
+      mpContainer->setInitialState(mpContainer->getState(false));
+      mpContainer->updateInitialValues(CModelParameter::ParticleNumbers);
+      mpContainer->pushInitialState();
     }
 
   return success;
@@ -421,9 +399,6 @@ CCopasiMethod * CTSSATask::createMethod(const int & type) const
 
   return CTSSAMethod::createMethod(Type);
 }
-
-CState * CTSSATask::getState()
-{return mpCurrentState;}
 
 const CTimeSeries & CTSSATask::getTimeSeries() const
 {return mTimeSeries;}

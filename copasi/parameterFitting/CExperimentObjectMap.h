@@ -20,6 +20,8 @@
 #include "utilities/CCopasiParameterGroup.h"
 #include "utilities/CVector.h"
 
+class CMathContainer;
+
 class CExperimentObjectMap: public CCopasiParameterGroup
 {
 public:
@@ -262,17 +264,16 @@ public:
   /**
    * Compile the map. This function must be called
    * before any operations can be performed.
-   * @param const std::vector< CCopasiContainer * > listOfContainer
+   * @param const CMathContainer * pMathContainer
    * @return bool success
    */
-  bool compile(const std::vector< CCopasiContainer * > listOfContainer =
-                 CCopasiContainer::EmptyList);
+  bool compile(const CMathContainer * pMathContainer);
 
   /**
    * Retrieve the vector of mapped objects
    * @return const CVector< const CCopasiObject * > & mappedObjects
    */
-  const CVector< const CCopasiObject * > & getMappedObjects() const;
+  const CVector< const CCopasiObject * > & getDataObjects() const;
 
   /**
    * Retrieve the last mapped column number

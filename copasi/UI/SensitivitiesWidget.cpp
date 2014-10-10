@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -117,7 +117,7 @@ bool SensitivitiesWidget::saveTask()
   else
     tmp.setListType(FunctionChooser->getCurrentObjectList());
 
-  problem->changeTargetFunctions(tmp);
+  problem->setTargetFunctions(tmp);
 
   // variables 1
   if (VariableChooser->getCurrentObjectList() == CObjectLists::SINGLE_OBJECT)
@@ -226,15 +226,10 @@ bool SensitivitiesWidget::loadTask()
 
   CSensItem tmp = problem->getTargetFunctions();
 
-  //target function
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
-  assert(pDataModel != NULL);
-
   if (tmp.isSingleObject())
     {
       FunctionChooser->setCurrentObjectList(CObjectLists::SINGLE_OBJECT);
-      mpSingleFunction = pDataModel->getDataObject(tmp.getSingleObjectCN());
+      mpSingleFunction = CObjectInterface::DataObject(mpDataModel->getObjectFromCN(tmp.getSingleObjectCN()));
 
       if (mpSingleFunction)
         FunctionLineEdit->setText(FROM_UTF8(mpSingleFunction->getObjectDisplayName()));
@@ -253,7 +248,7 @@ bool SensitivitiesWidget::loadTask()
       if (tmp.isSingleObject())
         {
           VariableChooser->setCurrentObjectList(CObjectLists::SINGLE_OBJECT);
-          mpSingleVariable = pDataModel->getDataObject(tmp.getSingleObjectCN());
+          mpSingleVariable = CObjectInterface::DataObject(mpDataModel->getObjectFromCN(tmp.getSingleObjectCN()));
 
           if (mpSingleVariable)
             VariableLineEdit->setText(FROM_UTF8(mpSingleVariable->getObjectDisplayName()));
@@ -275,7 +270,7 @@ bool SensitivitiesWidget::loadTask()
       if (tmp.isSingleObject())
         {
           Variable2Chooser->setCurrentObjectList(CObjectLists::SINGLE_OBJECT);
-          mpSingleVariable2 = pDataModel->getDataObject(tmp.getSingleObjectCN());
+          mpSingleVariable2 = CObjectInterface::DataObject(mpDataModel->getObjectFromCN(tmp.getSingleObjectCN()));
 
           if (mpSingleVariable2)
             Variable2LineEdit->setText(FROM_UTF8(mpSingleVariable2->getObjectDisplayName()));

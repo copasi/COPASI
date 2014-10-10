@@ -395,13 +395,9 @@ void CModelParameter::compile()
   mIsInitialExpressionValid = true;
 
   CModel * pModel = getModel();
-
   assert(pModel != NULL);
 
-  std::vector< CCopasiContainer * > ListOfContainer;
-  ListOfContainer.push_back(pModel);
-
-  mpObject = dynamic_cast< CCopasiObject * >(pModel->getObjectDataModel()->ObjectFromCN(ListOfContainer, mCN));
+  mpObject = const_cast< CCopasiObject * >(CObjectInterface::DataObject(pModel->getObjectFromCN(mCN)));
 
   if (mpObject != NULL)
     {
@@ -522,14 +518,10 @@ bool CModelParameter::updateModel()
                 getInitialExpression() != "")
               {
                 CModel * pModel = mpParent->getModel();
-
                 assert(pModel != NULL);
 
-                std::vector< CCopasiContainer * > ListOfContainer;
-                ListOfContainer.push_back(pModel);
-
                 CCopasiObjectName CN = static_cast< CEvaluationNodeObject * >(mpInitialExpression->getRoot())->getObjectCN();
-                CCopasiObject * pObject = dynamic_cast< CCopasiObject * >(pModel->getObjectDataModel()->ObjectFromCN(ListOfContainer, CN));
+                CCopasiObject * pObject = const_cast< CCopasiObject * >(CObjectInterface::DataObject(pModel->getObjectFromCN(CN)));
 
                 assert(pObject != NULL);
 
@@ -932,12 +924,12 @@ void CModelParameterReactionParameter::compile()
       mValue = mpGlobalQuantity->getValue(ParticleNumbers);
     }
 
-  std::vector< CCopasiContainer * > ListOfContainer;
+  CObjectInterface::ContainerList ListOfContainer;
 
   CModel * pModel = getModel();
   ListOfContainer.push_back(pModel);
 
-  mpReaction = static_cast< CReaction * >(pModel->getObjectDataModel()->ObjectFromCN(ListOfContainer, mpParent->getCN()));
+  mpReaction = static_cast< CReaction * >(const_cast< CCopasiObject * >(CObjectInterface::DataObject(CObjectInterface::GetObjectFromCN(ListOfContainer, mpParent->getCN()))));
 }
 
 const CReaction * CModelParameterReactionParameter::getReaction() const

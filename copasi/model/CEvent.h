@@ -64,10 +64,10 @@ public:
 
   /**
    * Compile the event assignment.
-   * @param std::vector< CCopasiContainer * > listOfContainer
+   * @param CObjectInterface::ContainerList listOfContainer
    * @return bool success
    */
-  bool compile(std::vector< CCopasiContainer * > listOfContainer);
+  bool compile(CObjectInterface::ContainerList listOfContainer);
 
   /**
    * Retrieve the key
@@ -220,10 +220,10 @@ public:
 
   /**
    * Compile the event.
-   * @param std::vector< CCopasiContainer * > listOfContainer
+   * @param CObjectInterface::ContainerList listOfContainer
    * @return bool success
    */
-  bool compile(std::vector< CCopasiContainer * > listOfContainer);
+  bool compile(CObjectInterface::ContainerList listOfContainer);
 
   /**
    * Sets the SBMLId.

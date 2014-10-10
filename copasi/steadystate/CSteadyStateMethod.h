@@ -1,17 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateMethod.h,v $
-//   $Revision: 1.22 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/03/07 19:33:41 $
-// End CVS Header
-
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2002 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -32,13 +29,12 @@
 
 #include "utilities/CCopasiMethod.h"
 #include "utilities/CMatrix.h"
+#include "utilities/CVector.h"
 
 class CSteadyStateProblem;
 class CSteadyStateTask;
-class CState;
 class CEigen;
 class CProcessReport;
-class CModel;
 
 class CSteadyStateMethod : public CCopasiMethod
 {
@@ -58,11 +54,6 @@ protected:
   const CSteadyStateProblem * mpProblem;
 
   /**
-   *  A pointer to the model.
-   */
-  CModel * mpModel;
-
-  /**
    *  A pointer to the task.
    */
   CSteadyStateTask * mpParentTask;
@@ -70,7 +61,7 @@ protected:
   /**
    * A pointer to the steady state
    */
-  CState * mpSteadyState;
+  CVectorCore< C_FLOAT64 > mSteadyState;
 
   /**
    * The jacobian of the steadystate
@@ -93,6 +84,11 @@ protected:
   C_FLOAT64* mpDerivationResolution;
 
   std::ostringstream mMethodLog;
+
+  CVectorCore< C_FLOAT64 > mContainerState;
+  CVectorCore< C_FLOAT64 > mContainerStateReduced;
+
+  C_FLOAT64 * mpContainerStateTime;
 
   // Operations
 private:
@@ -143,12 +139,12 @@ public:
    * This instructs the method to calculate a the steady state
    * starting with the initialState given.
    * The steady state is returned in the object pointed to by steadyState.
-   * @param CState * steadyState
+   * @param CVectorCore< C_FLOAT64 > & State
    * @param CMatrix< C_FLOAT64 > & jacobianX
    * @param CProcessReport * handler
    * @return CSteadyStateMethod::ReturnCode returnCode
    */
-  CSteadyStateMethod::ReturnCode process(CState * pState,
+  CSteadyStateMethod::ReturnCode process(CVectorCore< C_FLOAT64 > & State,
                                          CMatrix< C_FLOAT64 > & jacobianX,
                                          CProcessReport * handler);
 

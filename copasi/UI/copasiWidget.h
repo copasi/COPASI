@@ -48,7 +48,7 @@ public:
   virtual void setFramework(int framework);
   bool getIgnoreUpdates();
   void setIgnoreUpdates(bool v);
-  CCopasiDataModel * getDataModel();
+  CCopasiDataModel * getDataModel() const;
 
 #ifdef COPASI_UNDO
   void setUndoStack(QUndoStack* undoStack);

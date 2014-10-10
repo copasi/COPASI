@@ -1,14 +1,15 @@
-// Begin CVS Header
-//   $Source: /fs/turing/cvs/copasi_dev/cvs_admin/addHeader,v $
-//   $Revision: 1.15 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2010/04/27 16:00:44 $
-// End CVS Header
-
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
 #ifndef CQTSSARESULTSUBWIDGET_H
@@ -35,7 +36,7 @@ public:
   CTSSAProblem* pProblem;
   CTSSAMethod* pMethod;
 
-  CModel* pModel;
+  const CModel* pModel;
   C_INT mpIndex;
   bool mAnnot;
   void displayResult();
@@ -53,8 +54,6 @@ protected slots:
 
   void saveDataToFile();
   virtual void init();
-
-
 };
 
 #endif // CQTSSARESULTSUBWIDGET_H

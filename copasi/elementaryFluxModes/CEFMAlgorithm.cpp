@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -28,6 +28,7 @@
 #include "CFluxMode.h"
 #include "CTableauMatrix.h"
 
+#include "math/CMathContainer.h"
 #include "model/CModel.h"
 #include "utilities/CProcessReport.h"
 #include "report/CCopasiObjectReference.h"
@@ -124,9 +125,7 @@ bool CEFMAlgorithm::initialize()
 
   if (pTask == NULL) return false;
 
-  mpModel = pTask->getProblem()->getModel();
-
-  if (mpModel == NULL) return false;
+  mpModel = &mpContainer->getModel();
 
   mpFluxModes->clear();
 

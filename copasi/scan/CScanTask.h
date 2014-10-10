@@ -60,12 +60,20 @@ private:
 
   bool mUseInitialValues;
 
-public:
-
+private:
   /**
-   * default constructor
+   * Default constructor
    */
-  CScanTask(const CCopasiContainer * pParent = NULL);
+  CScanTask();
+
+public:
+  /**
+   * Specific constructor
+   * @param const CCopasiContainer * pParent
+   * @param const CCopasiTask::Type & type (default: scan)
+   */
+  CScanTask(const CCopasiContainer * pParent,
+            const CCopasiTask::Type & type = CCopasiTask::scan);
 
   /**
    * Copy constructor

@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -90,7 +90,7 @@ bool COptMethodSteepestDescent::optimise()
             break;
         }
 
-      (*(*mpSetCalculateVariable)[i])(mIndividual[i]);
+      *mContainerVariables[i] = mIndividual[i];
     }
 
   fmx = mBestValue = evaluate();
@@ -224,33 +224,44 @@ void COptMethodSteepestDescent::gradient()
 {
   size_t i;
 
+  C_FLOAT64 **ppContainerVariable = mContainerVariables.array();
+  C_FLOAT64 **ppContainerVariableEnd = ppContainerVariable + mVariableSize;
+  C_FLOAT64 * pGradient = mGradient.array();
+
   C_FLOAT64 y;
   C_FLOAT64 x;
 
   y = evaluate();
 
-  for (i = 0; i < mVariableSize && mContinue; i++)
+  for (; ppContainerVariable != ppContainerVariableEnd; ++ppContainerVariable, ++pGradient)
     {
-      if ((x = *(*mpOptItem)[i]->getObjectValue()) != 0.0)
+      if ((x = **ppContainerVariable) != 0.0)
         {
-          (*(*mpSetCalculateVariable)[i])(x * 1.001);
-          mGradient[i] = (y - evaluate()) / (x * 0.001);
+          **ppContainerVariable = x * 1.001;
+          *pGradient = (y - evaluate()) / (x * 0.001);
         }
 
       else
         {
-          (*(*mpSetCalculateVariable)[i])(1e-7);
-          mGradient[i] = (y - evaluate()) / 1e-7;
+          **ppContainerVariable = 1e-7;
+          *pGradient = (y - evaluate()) / 1e-7;
         }
 
-      (*(*mpSetCalculateVariable)[i])(x);
+      **ppContainerVariable = x;
     }
 }
 
 C_FLOAT64 COptMethodSteepestDescent::descentLine(const C_FLOAT64 & x)
 {
-  for (size_t i = 0; i < mVariableSize; i++)
-    (*(*mpSetCalculateVariable)[i])(mIndividual[i] + x * mGradient[i]);
+  C_FLOAT64 **ppContainerVariable = mContainerVariables.array();
+  C_FLOAT64 **ppContainerVariableEnd = ppContainerVariable + mVariableSize;
+  C_FLOAT64 * pGradient = mGradient.array();
+  C_FLOAT64 * pIndividual = mIndividual.array();
+
+  for (; ppContainerVariable != ppContainerVariableEnd; ++ppContainerVariable, ++pIndividual, ++pGradient)
+    {
+      **ppContainerVariable = *pIndividual + x * *pGradient;
+    }
 
   return evaluate();
 }

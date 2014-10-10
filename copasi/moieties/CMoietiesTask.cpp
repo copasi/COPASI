@@ -1,17 +1,9 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/moieties/CMoietiesTask.cpp,v $
-//   $Revision: 1.4 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/05/26 12:18:54 $
-// End CVS Header
-
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
@@ -24,8 +16,7 @@
 #include "report/CKeyFactory.h"
 #include "report/CReport.h"
 
-#include "model/CModel.h"
-#include "model/CState.h"
+#include "math/CMathContainer.h"
 
 const unsigned int CMoietiesTask::ValidMethods[] =
 {
@@ -33,9 +24,9 @@ const unsigned int CMoietiesTask::ValidMethods[] =
   CCopasiMethod::unset
 };
 
-CMoietiesTask::CMoietiesTask(const CCopasiTask::Type & type,
-                             const CCopasiContainer * pParent):
-    CCopasiTask(type, pParent)
+CMoietiesTask::CMoietiesTask(const CCopasiContainer * pParent,
+                             const CCopasiTask::Type & type):
+  CCopasiTask(pParent, type)
 {
   mpProblem = new CMoietiesProblem(type, this);
   mpMethod = CMoietiesMethod::createMethod();
@@ -44,7 +35,7 @@ CMoietiesTask::CMoietiesTask(const CCopasiTask::Type & type,
 
 CMoietiesTask::CMoietiesTask(const CMoietiesTask & src,
                              const CCopasiContainer * pParent):
-    CCopasiTask(src, pParent)
+  CCopasiTask(src, pParent)
 {
   mpProblem = new CMoietiesProblem(* static_cast< CMoietiesProblem * >(src.mpProblem), this);
   mpMethod = CMoietiesMethod::createMethod(src.mpMethod->getSubType());
@@ -101,15 +92,12 @@ bool CMoietiesTask::process(const bool & /* useInitialValues */)
 
   if (mpOutputHandler != NULL)
     {
-      std::vector< CCopasiContainer * > ListOfContainer;
+      CObjectInterface::ContainerList ListOfContainer;
       ListOfContainer.push_back(this);
-
-      CCopasiDataModel* pDataModel = getObjectDataModel();
-      assert(pDataModel != NULL);
 
       size_t Size = CCopasiMessage::size();
 
-      mpOutputHandler->compile(ListOfContainer, pDataModel);
+      mpOutputHandler->compile(ListOfContainer);
 
       // Remove error messages created by setExpression as this may fail
       // due to incomplete model specification at this time.
@@ -125,7 +113,9 @@ bool CMoietiesTask::process(const bool & /* useInitialValues */)
 // virtual
 bool CMoietiesTask::restore()
 {
-  mpProblem->getModel()->updateInitialValues();
+  mpContainer->updateInitialValues(CModelParameter::ParticleNumbers);
+  mpContainer->pushInitialState();
+
   return true;
 }
 

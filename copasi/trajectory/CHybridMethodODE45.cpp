@@ -60,7 +60,7 @@
  * Default constructor.
  */
 CHybridMethodODE45::CHybridMethodODE45(const CCopasiContainer * pParent):
-  CTrajectoryMethod(CCopasiMethod::hybridODE45, pParent)
+  CTrajectoryMethod(CCopasiTask::timeCourse, CCopasiMethod::hybridODE45, pParent)
 {
   assert((void *) &mData == (void *) &mData.dim);
   mData.pMethod = this;
@@ -117,26 +117,11 @@ bool CHybridMethodODE45::isValidProblem(const CCopasiProblem * pProblem)
 
   if (pTP->getDuration() < 0.0)
     {
-      //back integration not possible
-      CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 9);
+      //b ack integration not possible
+      CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 9);
       return false;
     }
 
-  if (pTP->getModel()->getReactions().size() <= 0)
-    {
-      //No Metabolites
-      CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 17); // todo next
-      return false;
-    }
-
-  //events are not supported at the moment
-  /*
-  if (pTP->getModel()->getEvents().size() > 0)
-  {
-      CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 23);
-      return false;
-  }
-  */
   return true;
 }
 
@@ -189,10 +174,11 @@ void CHybridMethodODE45::initializeParameter()
  * starting with the initialState given.
  * @param "const CState *" initialState
  */
-void CHybridMethodODE45::start(CVectorCore< C_FLOAT64 > & initialState)
+void CHybridMethodODE45::start()
 {
+  CTrajectoryMethod::start();
+
   /* Release previous state and make the initialState the current */
-  mContainerState = initialState;
   mLastSuccessState = mContainerState;
 
   // Call initMethod function
@@ -208,7 +194,7 @@ void CHybridMethodODE45::start(CVectorCore< C_FLOAT64 > & initialState)
 void CHybridMethodODE45::initMethod(C_FLOAT64 start_time)
 {
   //(1)----set attributes related with REACTIONS
-  mpFirstOdeVariable = mpContainer->getMathObject(mpContainerStateTime + 1);
+  mpFirstOdeVariable = mpContainerStateTime + 1;
 
   setupReactionFlags();
 
@@ -724,8 +710,8 @@ void CHybridMethodODE45::evalF(const C_FLOAT64 * t, const C_FLOAT64 * y, C_FLOAT
 
       for (; ppReaction != ppReactionEnd; ++ppReaction)
         {
-          CMathReaction::Balance::const_iterator it = (*ppReaction)->getBalance().begin();
-          CMathReaction::Balance::const_iterator end = (*ppReaction)->getBalance().end();
+          const CMathReaction::SpeciesBalance * it = (*ppReaction)->getNumberBalance().array();
+          const CMathReaction::SpeciesBalance * end = it + (*ppReaction)->getNumberBalance().size();
 
           C_FLOAT64 * pParticleFlux = (C_FLOAT64 *)(*ppReaction)->getParticleFluxObject()->getValuePointer();
 

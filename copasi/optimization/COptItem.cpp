@@ -22,6 +22,7 @@
 
 #include "COptItem.h"
 
+#include "math/CMathObject.h"
 #include "randomGenerator/CRandom.h"
 #include "report/CCopasiContainer.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
@@ -32,10 +33,6 @@
 
 C_FLOAT64 NaN = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
 
-UpdateMethod DoNothing;
-
-CRandom * COptItem::mpRandom = NULL;
-
 COptItem::COptItem(const CCopasiContainer * pParent,
                    const std::string & name):
   CCopasiParameterGroup(name, pParent),
@@ -44,7 +41,6 @@ COptItem::COptItem(const CCopasiContainer * pParent,
   mpParmUpperBound(NULL),
   mpParmStartValue(NULL),
   mpObject(NULL),
-  mpMethod(NULL),
   mpObjectValue(NULL),
   mpLowerObject(NULL),
   mpLowerBound(NULL),
@@ -63,7 +59,6 @@ COptItem::COptItem(const COptItem & src,
   mpParmUpperBound(NULL),
   mpParmStartValue(NULL),
   mpObject(NULL),
-  mpMethod(NULL),
   mpObjectValue(NULL),
   mpLowerObject(NULL),
   mpLowerBound(NULL),
@@ -82,7 +77,6 @@ COptItem::COptItem(const CCopasiParameterGroup & group,
   mpParmUpperBound(NULL),
   mpParmStartValue(NULL),
   mpObject(NULL),
-  mpMethod(NULL),
   mpObjectValue(NULL),
   mpLowerObject(NULL),
   mpLowerBound(NULL),
@@ -110,10 +104,7 @@ void COptItem::initializeParameter()
 
 bool COptItem::setObjectCN(const CCopasiObjectName & objectCN)
 {
-  const CCopasiDataModel * pDataModel = getObjectDataModel();
-  assert(pDataModel != NULL);
-
-  const CCopasiObject * pObject = pDataModel->getDataObject(objectCN);
+  const CCopasiObject * pObject = CObjectInterface::DataObject(getObjectFromCN(objectCN));
 
   if (pObject == NULL || !pObject->isValueDbl())
     {
@@ -125,7 +116,7 @@ bool COptItem::setObjectCN(const CCopasiObjectName & objectCN)
   return true;
 }
 
-const CCopasiObject * COptItem::getObject() const
+const CObjectInterface * COptItem::getObject() const
 {return mpObject;}
 
 const CCopasiObjectName COptItem::getObjectCN() const
@@ -133,7 +124,7 @@ const CCopasiObjectName COptItem::getObjectCN() const
 
 std::string COptItem::getObjectDisplayName() const
 {
-  if (!mpObject && !const_cast<COptItem *>(this)->compile())
+  if (!mpObject && !const_cast<COptItem *>(this)->compile(CObjectInterface::ContainerList()))
     return "Invalid Optimization Item";
 
   return mpObject->getObjectDisplayName();
@@ -203,9 +194,7 @@ const C_FLOAT64 & COptItem::getStartValue() const
 
   if (mpObjectValue == NULL)
     {
-      const CCopasiDataModel* pDataModel = getObjectDataModel();
-      assert(pDataModel != NULL);
-      const CCopasiObject * pObject = pDataModel->getDataObject(getObjectCN());
+      const CCopasiObject * pObject = CObjectInterface::DataObject(getObjectFromCN(getObjectCN()));
 
       if (pObject != NULL &&
           pObject->getValuePointer() != NULL)
@@ -227,26 +216,21 @@ void COptItem::rememberStartValue()
   mLastStartValue = getStartValue();
 }
 
-C_FLOAT64 COptItem::getRandomValue(CRandom * pRandom)
+C_FLOAT64 COptItem::getRandomValue(CRandom & Random)
 {
   C_FLOAT64 RandomValue;
 
   if (mpLowerBound == NULL ||
-      mpUpperBound == NULL) compile();
+      mpUpperBound == NULL)
+    {
+      compile(CObjectInterface::ContainerList());
+    }
 
   if (mpLowerBound == NULL ||
       mpUpperBound == NULL)
     {
       RandomValue = NaN;
       return RandomValue;
-    }
-
-  if (pRandom == NULL)
-    {
-      if (mpRandom == NULL)
-        mpRandom = CRandom::createGenerator();
-
-      pRandom = mpRandom;
     }
 
   C_FLOAT64 mn = *mpLowerBound;
@@ -264,16 +248,16 @@ C_FLOAT64 COptItem::getRandomValue(CRandom * pRandom)
           la = log10(mx) - log10(std::max(mn, std::numeric_limits< C_FLOAT64 >::min()));
 
           if (la < 1.8 || !(mn > 0.0)) // linear
-            RandomValue = mn + pRandom->getRandomCC() * (mx - mn);
+            RandomValue = mn + Random.getRandomCC() * (mx - mn);
           else
-            RandomValue = pow(10.0, log10(std::max(mn, std::numeric_limits< C_FLOAT64 >::min())) + la * pRandom->getRandomCC());
+            RandomValue = pow(10.0, log10(std::max(mn, std::numeric_limits< C_FLOAT64 >::min())) + la * Random.getRandomCC());
         }
       else if (mx > 0) // 0 is in the interval (mn, mx)
         {
           la = log10(mx) + log10(-mn);
 
           if (la < 3.6) // linear
-            RandomValue = mn + pRandom->getRandomCC() * (mx - mn);
+            RandomValue = mn + Random.getRandomCC() * (mx - mn);
           else
             {
               C_FLOAT64 mean = (mx + mn) * 0.5;
@@ -281,7 +265,7 @@ C_FLOAT64 COptItem::getRandomValue(CRandom * pRandom)
 
               do
                 {
-                  RandomValue = pRandom->getRandomNormal(mean, sigma);
+                  RandomValue = Random.getRandomNormal(mean, sigma);
                 }
               while ((RandomValue < mn) || (RandomValue > mx));
             }
@@ -296,9 +280,9 @@ C_FLOAT64 COptItem::getRandomValue(CRandom * pRandom)
           la = log10(mx) - log10(std::max(mn, std::numeric_limits< C_FLOAT64 >::min()));
 
           if (la < 1.8 || !(mn > 0.0)) // linear
-            RandomValue = - (mn + pRandom->getRandomCC() * (mx - mn));
+            RandomValue = - (mn + Random.getRandomCC() * (mx - mn));
           else
-            RandomValue = - pow(10.0, log10(std::max(mn, std::numeric_limits< C_FLOAT64 >::min())) + la * pRandom->getRandomCC());
+            RandomValue = - pow(10.0, log10(std::max(mn, std::numeric_limits< C_FLOAT64 >::min())) + la * Random.getRandomCC());
         }
     }
 
@@ -309,9 +293,6 @@ C_FLOAT64 COptItem::getRandomValue(CRandom * pRandom)
 
   return RandomValue;
 }
-
-UpdateMethod * COptItem::getUpdateMethod() const
-{return mpMethod;}
 
 bool COptItem::isValid() const
 {
@@ -333,17 +314,20 @@ bool COptItem::isValid(CCopasiParameterGroup & group)
   return tmp.isValid();
 }
 
-bool COptItem::compile(const std::vector< CCopasiContainer * > listOfContainer)
+bool COptItem::compile(CObjectInterface::ContainerList listOfContainer)
 {
   clearDirectDependencies();
 
   std::string Bound;
 
-  mpMethod = &DoNothing;
   mpObjectValue = &NaN;
+  const CCopasiObject * pDataObject;
 
-  if ((mpObject = dynamic_cast< CCopasiObject * >(getObjectDataModel()->ObjectFromCN(listOfContainer, getObjectCN()))) != NULL &&
-      mpObject->isValueDbl())
+  listOfContainer.push_back(getObjectDataModel());
+
+  if ((mpObject = CObjectInterface::GetObjectFromCN(listOfContainer, getObjectCN())) != NULL &&
+      (pDataObject = CObjectInterface::DataObject(mpObject)) != NULL &&
+      pDataObject->isValueDbl())
     mpObjectValue = (C_FLOAT64 *) mpObject->getValuePointer();
 
   if (mpObjectValue == &NaN)
@@ -352,30 +336,13 @@ bool COptItem::compile(const std::vector< CCopasiContainer * > listOfContainer)
       return false;
     }
 
-  addDirectDependency(mpObject);
-  mpMethod = mpObject->getUpdateMethod();
-
-  if (compileLowerBound(listOfContainer))
-    {
-      if (mpLowerObject != NULL)
-        {
-          addDirectDependency(mpLowerObject);
-        }
-    }
-  else
+  if (!compileLowerBound(listOfContainer))
     {
       CCopasiMessage(CCopasiMessage::ERROR, MCOptimization + 2, mpParmLowerBound->c_str());
       return false;
     }
 
-  if (compileUpperBound(listOfContainer))
-    {
-      if (mpUpperObject != NULL)
-        {
-          addDirectDependency(mpUpperObject);
-        }
-    }
-  else
+  if (!compileUpperBound(listOfContainer))
     {
       CCopasiMessage(CCopasiMessage::ERROR, MCOptimization + 2, mpParmUpperBound->c_str());
       return false;
@@ -436,11 +403,9 @@ bool COptItem::checkUpperBound(const C_FLOAT64 & value) const
 const C_FLOAT64 * COptItem::getObjectValue() const
 {return mpObjectValue;}
 
-bool COptItem::compileLowerBound(const std::vector< CCopasiContainer * > & listOfContainer)
+bool COptItem::compileLowerBound(const CObjectInterface::ContainerList & listOfContainer)
 {
-  const CCopasiDataModel * pDataModel = getObjectDataModel();
-
-  assert(pDataModel != NULL);
+  const CCopasiObject * pDataObject;
 
   mpLowerObject = NULL;
   mpLowerBound = NULL;
@@ -455,8 +420,9 @@ bool COptItem::compileLowerBound(const std::vector< CCopasiContainer * > & listO
       mLowerBound = strToDouble(mpParmLowerBound->c_str(), NULL);
       mpLowerBound = &mLowerBound;
     }
-  else if ((mpLowerObject = dynamic_cast< CCopasiObject * >(getObjectDataModel()->ObjectFromCN(listOfContainer, *mpParmLowerBound))) != NULL &&
-           mpLowerObject->isValueDbl())
+  else if ((mpLowerObject = CObjectInterface::GetObjectFromCN(listOfContainer, *mpParmLowerBound)) != NULL &&
+           (pDataObject = CObjectInterface::DataObject(mpLowerObject)) != NULL &&
+           pDataObject->isValueDbl())
     {
       mpLowerBound = (C_FLOAT64 *) mpLowerObject->getValuePointer();
     }
@@ -464,11 +430,9 @@ bool COptItem::compileLowerBound(const std::vector< CCopasiContainer * > & listO
   return mpLowerBound != NULL;
 }
 
-bool COptItem::compileUpperBound(const std::vector< CCopasiContainer * > & listOfContainer)
+bool COptItem::compileUpperBound(const CObjectInterface::ContainerList & listOfContainer)
 {
-  const CCopasiDataModel * pDataModel = getObjectDataModel();
-
-  assert(pDataModel != NULL);
+  const CCopasiObject * pDataObject;
 
   mpUpperObject = NULL;
   mpUpperBound = NULL;
@@ -483,11 +447,11 @@ bool COptItem::compileUpperBound(const std::vector< CCopasiContainer * > & listO
       mUpperBound = strToDouble(mpParmUpperBound->c_str(), NULL);
       mpUpperBound = &mUpperBound;
     }
-  else if ((mpUpperObject = dynamic_cast< CCopasiObject * >(getObjectDataModel()->ObjectFromCN(listOfContainer, *mpParmUpperBound))) != NULL &&
-           mpUpperObject->isValueDbl())
+  else if ((mpUpperObject = CObjectInterface::GetObjectFromCN(listOfContainer, *mpParmUpperBound)) != NULL &&
+           (pDataObject = CObjectInterface::DataObject(mpUpperObject)) != NULL &&
+           pDataObject->isValueDbl())
     {
       mpUpperBound = (C_FLOAT64 *) mpUpperObject->getValuePointer();
-      addDirectDependency(mpUpperObject);
     }
 
   return mpUpperBound != NULL;
@@ -495,7 +459,7 @@ bool COptItem::compileUpperBound(const std::vector< CCopasiContainer * > & listO
 
 std::ostream &operator<<(std::ostream &os, const COptItem & o)
 {
-  if (!o.mpObject && const_cast<COptItem *>(&o)->compile())
+  if (!o.mpObject && const_cast<COptItem *>(&o)->compile(CObjectInterface::ContainerList()))
     return os << "Invalid Optimization Item";
 
   if (o.mpLowerObject)

@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CEFMTask.h,v $
-//   $Revision: 1.7 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/03/07 19:27:36 $
-// End CVS Header
-
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2006 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -56,11 +48,19 @@ public:
   static bool isValidMethod(const unsigned C_INT32 & method,
                             const unsigned C_INT32 * validMethods);
 
+private:
   /**
-   * default constructor
-   * @param const CCopasiContainer * pParent (default: NULL)
+   * Default constructor
    */
-  CEFMTask(const CCopasiContainer * pParent = NULL);
+  CEFMTask();
+
+public:
+  /**
+   * Specific constructor
+   * @param const CCopasiContainer * pParent
+   */
+  CEFMTask(const CCopasiContainer * pParent,
+           const CCopasiTask::Type & type = CCopasiTask::fluxMode);
 
   /**
    * Copy constructor

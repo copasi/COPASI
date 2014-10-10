@@ -36,12 +36,20 @@ public:
    */
   static const unsigned int ValidMethods[];
 
-public:
+private:
   /**
    * Default constructor
-   * @param const CCopasiContainer * pParent (default: NULL)
    */
-  CCrossSectionTask(const CCopasiContainer * pParent = NULL);
+  CCrossSectionTask();
+
+public:
+  /**
+   * Specific constructor
+   * @param const CCopasiContainer * pParent
+   * @param const CCopasiTask::Type & type (default: crosssection)
+   */
+  CCrossSectionTask(const CCopasiContainer * pParent,
+                    const CCopasiTask::Type & type = CCopasiTask::crosssection);
 
   /**
    * Copy constructor

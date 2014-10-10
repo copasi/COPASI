@@ -1077,11 +1077,8 @@ CEvaluationNodeVariable* CReaction::object2variable(const CEvaluationNodeObject*
 {
   CEvaluationNodeVariable* pVariableNode = NULL;
   std::string objectCN = objectNode->getData();
-  CModel * pModel
-  = dynamic_cast< CModel * >(getObjectAncestor("Model"));
-  std::vector<CCopasiContainer*> containers = std::vector<CCopasiContainer*>();
-  containers.push_back(pModel);
-  CCopasiObject* object = dynamic_cast< CCopasiObject * >(getObjectDataModel()->ObjectFromCN(containers, CCopasiObjectName(objectCN.substr(1, objectCN.size() - 2))));
+
+  CCopasiObject* object = const_cast< CCopasiObject * >(CObjectInterface::DataObject(getObjectFromCN(CCopasiObjectName(objectCN.substr(1, objectCN.size() - 2)))));
   std::string id;
 
   // if the object if of type reference

@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sensitivities/CSensTask.h,v $
-//   $Revision: 1.10 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/03/07 19:33:42 $
-// End CVS Header
-
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2005 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -34,13 +26,20 @@
 
 class CSensTask : public CCopasiTask
 {
-public:
-
+private:
   /**
    * Default constructor
-   * @param const CCopasiContainer * pParent (default: NULL)
    */
-  CSensTask(const CCopasiContainer * pParent = NULL);
+  CSensTask();
+
+public:
+  /**
+   * Specific constructor
+   * @param const CCopasiContainer * pParent
+   * @param const CCopasiTask::Type & type (default: sens)
+   */
+  CSensTask(const CCopasiContainer * pParent,
+            const CCopasiTask::Type & type = CCopasiTask::sens);
 
   /**
    * Copy constructor

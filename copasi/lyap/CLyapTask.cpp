@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/lyap/CLyapTask.cpp,v $
-//   $Revision: 1.20 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/06/15 15:31:12 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2006 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -31,8 +23,8 @@
 #include "CLyapTask.h"
 #include "CLyapProblem.h"
 #include "CLyapMethod.h"
+#include "math/CMathContainer.h"
 #include "model/CModel.h"
-#include "model/CState.h"
 #include "report/CKeyFactory.h"
 #include "report/CReport.h"
 #include "report/CCopasiObjectReference.h"
@@ -49,21 +41,20 @@
 //working annotated vectors
 #define LYAP_NUM_REF 10
 
-CLyapTask::CLyapTask(const CCopasiContainer * pParent):
-    CCopasiTask(CCopasiTask::lyap, pParent),
-    //mTimeSeriesRequested(true),
-    //mTimeSeries(),
-    mpLyapProblem(NULL),
-    mpLyapMethod(NULL),
-    mLocalExponents(),
-    mExponents(),
-    mSumOfExponents(0.0),
-    mSumOfLocalExponents(0.0),
-    mIntervalDivergence(0.0),
-    mAverageDivergence(0.0),
-    mResultAvailable(false),
-    mResultHasDivergence(false),
-    mModelVariablesInResult(0)
+CLyapTask::CLyapTask(const CCopasiContainer * pParent,
+                     const CCopasiTask::Type & type):
+  CCopasiTask(pParent, type),
+  mpLyapProblem(NULL),
+  mpLyapMethod(NULL),
+  mLocalExponents(),
+  mExponents(),
+  mSumOfExponents(0.0),
+  mSumOfLocalExponents(0.0),
+  mIntervalDivergence(0.0),
+  mAverageDivergence(0.0),
+  mResultAvailable(false),
+  mResultHasDivergence(false),
+  mModelVariablesInResult(0)
 {
   mpProblem = new CLyapProblem(this);
   mpMethod =
@@ -168,7 +159,9 @@ bool CLyapTask::initialize(const OutputFlag & of,
 bool CLyapTask::process(const bool & useInitialValues)
 {
   if (useInitialValues)
-    mpLyapProblem->getModel()->applyInitialValues();
+    {
+      mpContainer->applyInitialValues();
+    }
 
   output(COutputInterface::BEFORE);
 
@@ -191,7 +184,7 @@ bool CLyapTask::process(const bool & useInitialValues)
   catch (CCopasiException & Exception)
     {
       //mpLyapProblem->getModel()->setState(*mpCurrentState);
-      mpLyapProblem->getModel()->updateSimulatedValues(true);
+      mpContainer->updateSimulatedValues(true);
 
       calculationsBeforeOutput();
       output(COutputInterface::DURING);
@@ -210,7 +203,7 @@ bool CLyapTask::process(const bool & useInitialValues)
 
   mResultAvailable = true;
   mResultHasDivergence = mpLyapProblem->divergenceRequested();
-  mModelVariablesInResult = mpLyapProblem->getModel()->getState().getNumIndependent();
+  mModelVariablesInResult = mpContainer->getState(true).size() - mpContainer->getTimeIndex() - 1;
   mNumExponentsCalculated = mpLyapProblem->getExponentNumber();
 
   return true;
@@ -222,13 +215,10 @@ bool CLyapTask::restore()
 
   if (mUpdateModel)
     {
-      CModel * pModel = mpProblem->getModel();
-
-      //TODO
-      //pModel->setState(*mpCurrentState);
-      pModel->updateSimulatedValues(true);
-      pModel->setInitialState(pModel->getState());
-      pModel->updateInitialValues();
+      mpContainer->updateSimulatedValues(true);
+      mpContainer->setInitialState(mpContainer->getState(false));
+      mpContainer->updateInitialValues(CModelParameter::ParticleNumbers);
+      mpContainer->pushInitialState();
     }
 
   return success;

@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -29,9 +29,8 @@
 #include "CSteadyStateTask.h"
 #include "CEigen.h"
 
+#include "math/CMathContainer.h"
 #include "model/CModel.h"
-#include "model/CState.h"
-#include "model/CCompartment.h"
 
 CSteadyStateMethod *
 CSteadyStateMethod::createMethod(CCopasiMethod::SubType subType)
@@ -58,7 +57,10 @@ CSteadyStateMethod::createMethod(CCopasiMethod::SubType subType)
 CSteadyStateMethod::CSteadyStateMethod(CCopasiMethod::SubType subType,
                                        const CCopasiContainer * pParent):
   CCopasiMethod(CCopasiTask::steadyState, subType, pParent),
-  mpProblem(NULL)
+  mpProblem(NULL),
+  mContainerState(),
+  mContainerStateReduced(),
+  mpContainerStateTime(NULL)
 {
   initializeParameter();
   CONSTRUCTOR_TRACE;
@@ -71,7 +73,10 @@ CSteadyStateMethod::CSteadyStateMethod(CCopasiMethod::SubType subType,
 CSteadyStateMethod::CSteadyStateMethod(const CSteadyStateMethod & src,
                                        const CCopasiContainer * pParent):
   CCopasiMethod(src, pParent),
-  mpProblem(src.mpProblem)
+  mpProblem(src.mpProblem),
+  mContainerState(),
+  mContainerStateReduced(),
+  mpContainerStateTime(NULL)
 {
   initializeParameter();
   CONSTRUCTOR_TRACE;
@@ -125,14 +130,14 @@ bool CSteadyStateMethod::elevateChildren()
  * @return CSteadyStateMethod::ReturnCode returnCode
  */
 CSteadyStateMethod::ReturnCode
-CSteadyStateMethod::process(CState * pState,
+CSteadyStateMethod::process(CVectorCore< C_FLOAT64 > & State,
                             CMatrix< C_FLOAT64 > & jacobianX,
                             CProcessReport * handler)
 {
   mpParentTask = dynamic_cast<CSteadyStateTask *>(getObjectParent());
   assert(mpParentTask);
 
-  mpSteadyState = pState;
+  mSteadyState.initialize(State);
   mpJacobianX = & jacobianX;
   mpCallBack = handler;
 
@@ -172,16 +177,17 @@ CSteadyStateMethod::processInternal()
 
 bool CSteadyStateMethod::isEquilibrium(const C_FLOAT64 & resolution) const
 {
-  CCopasiVectorNS < CReaction >::const_iterator it =  mpProblem->getModel()->getReactions().begin();
-  CCopasiVectorNS < CReaction >::const_iterator end =  mpProblem->getModel()->getReactions().end();
+  const CMathReaction * pReaction = mpContainer->getReactions().array();
+  const CMathReaction * pReactionEnd = pReaction + mpContainer->getReactions().size();
 
-  for (; it != end; ++it)
+  for (; pReaction != pReactionEnd; ++pReaction)
     {
-      const CCompartment * pCompartment = (*it)->getLargestCompartment();
-
-      if (pCompartment != NULL &&
-          (*it)->getFlux() / pCompartment->getValue() > resolution)
-        return false; //TODO: smallest or largest ?
+      // We are checking the amount flux whether we have an equilibrium.
+      // TODO CRITICAL Do we need to scale with the compartment size?
+      if (* (C_FLOAT64 *) pReaction->getFluxObject()->getValuePointer() > resolution)
+        {
+          return false;
+        }
     }
 
   return true;
@@ -189,51 +195,42 @@ bool CSteadyStateMethod::isEquilibrium(const C_FLOAT64 & resolution) const
 
 bool CSteadyStateMethod::allPositive()
 {
-  // Assure that all values are updated.
-  mpModel->updateSimulatedValues(true);
+  mpContainer->updateSimulatedValues(true);
 
-  CModelEntity *const* ppEntity = mpModel->getStateTemplate().beginIndependent();
-  const C_FLOAT64 * pIt = mpModel->getState().beginIndependent();
-  const C_FLOAT64 * pEnd = mpModel->getState().endDependent();
-
-  // Skip Model quantities of type ODE
-  for (; pIt != pEnd; ++pIt, ++ppEntity)
-    if (dynamic_cast< const CCompartment *>(*ppEntity) != NULL ||
-        dynamic_cast< const CMetab *>(*ppEntity) != NULL)
-      break;
-
-  // For all compartments of type ODE we check that the volume is positive
-  for (; pIt != pEnd; ++pIt, ++ppEntity)
-    {
-      if (dynamic_cast< const CCompartment *>(*ppEntity) == NULL)
-        break;
-
-      if (*pIt < - *mpDerivationResolution)
-        return false;
-    }
+  const C_FLOAT64 * pValue = mContainerState.array();
+  const C_FLOAT64 * pValueEnd = mpContainer->getRate(false).array();
+  const CMathObject * pValueObject = mpContainer->getMathObject(pValue);
 
   // We need to check that all metabolites have positive particle numbers
   // with respect to the given resolution.
-  C_FLOAT64 ParticleResolution =
-    - *mpDerivationResolution * mpModel->getQuantity2NumberFactor();
+  C_FLOAT64 ParticleResolution = *mpDerivationResolution * mpContainer->getModel().getQuantity2NumberFactor();
 
-  for (; pIt != pEnd; ++pIt, ++ppEntity)
+  for (; pValue != pValueEnd; ++pValue, ++pValueObject)
     {
-      if (dynamic_cast< const CMetab *>(*ppEntity) == NULL)
-        break;
+      switch (pValueObject->getEntityType())
+        {
+          case CMath::Compartment:
 
-      if (*pIt < ParticleResolution)
-        return false;
-    }
+            if (*pValue < - *mpDerivationResolution)
+              {
+                return false;
+              }
 
-  // For all compartments of type ASSIGNMENT we check that the volume is positive
-  for (; pIt != pEnd; ++pIt, ++ppEntity)
-    {
-      if (dynamic_cast< CCompartment *>(*ppEntity) == NULL)
-        break;
+            break;
 
-      if (*pIt < - *mpDerivationResolution)
-        return false;
+          case CMath::Species:
+
+            if (*pValue < - ParticleResolution)
+              {
+                return false;
+              }
+
+            break;
+
+            // No restrictions on other values
+          default:
+            break;
+        }
     }
 
   return true;
@@ -259,7 +256,10 @@ bool CSteadyStateMethod::isValidProblem(const CCopasiProblem * pProblem)
 bool CSteadyStateMethod::initialize(const CSteadyStateProblem * pProblem)
 {
   mpProblem = pProblem;
-  mpModel = mpProblem->getModel();
+
+  mContainerState.initialize(mpContainer->getState(false));
+  mContainerStateReduced.initialize(mpContainer->getState(true));
+  mpContainerStateTime = mContainerState.array() + mpContainer->getTimeIndex();
 
   return true;
 }
@@ -267,16 +267,14 @@ bool CSteadyStateMethod::initialize(const CSteadyStateProblem * pProblem)
 void CSteadyStateMethod::doJacobian(CMatrix< C_FLOAT64 > & jacobian,
                                     CMatrix< C_FLOAT64 > & jacobianX)
 {
-  mpModel->setState(*mpSteadyState);
-  mpModel->updateSimulatedValues(true);
+  mpContainer->setState(mSteadyState);
 
-  mpModel->calculateJacobian(jacobian, *mpDerivationResolution, *mpDerivationResolution);
-  mpModel->calculateJacobianX(jacobianX, *mpDerivationResolution, *mpDerivationResolution);
+  mpContainer->calculateJacobian(jacobian, *mpDerivationResolution, false);
+  mpContainer->calculateJacobian(jacobianX, *mpDerivationResolution, true);
 }
 
 C_FLOAT64 CSteadyStateMethod::getStabilityResolution()
 {
-  //C_FLOAT64* pTmp = (C_FLOAT64*)getValue("Stability Resolution").pUDOUBLE;
   C_FLOAT64* pTmp = (C_FLOAT64*)getValue("Resolution").pUDOUBLE;
   assert(pTmp);
   return *pTmp;
@@ -284,11 +282,8 @@ C_FLOAT64 CSteadyStateMethod::getStabilityResolution()
 
 void CSteadyStateMethod::calculateJacobianX(const C_FLOAT64 & oldMaxRate)
 {
-  mpModel->setState(*mpSteadyState);
-  mpModel->updateSimulatedValues(true);
-  mpModel->calculateJacobianX(*mpJacobianX,
-                              std::min(*mpDerivationFactor, oldMaxRate),
-                              *mpDerivationResolution);
+  mpContainer->setState(mContainerStateReduced);
+  mpContainer->calculateJacobian(*mpJacobianX, std::min(*mpDerivationFactor, oldMaxRate), true);
 }
 
 std::string CSteadyStateMethod::getMethodLog() const

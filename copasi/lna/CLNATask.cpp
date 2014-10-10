@@ -1,12 +1,4 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/lna/CLNATask.cpp,v $
-//   $Revision: 1.1 $
-//   $Name:  $
-//   $Author: jpahle $
-//   $Date: 2011/05/24 17:33:44 $
-// End CVS Header
-
-// Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -28,15 +20,15 @@
 #include "steadystate/CSteadyStateTask.h"
 
 #include "CopasiDataModel/CCopasiDataModel.h"
-#include "model/CModel.h"
-#include "model/CState.h"
+#include "math/CMathContainer.h"
 #include "report/CKeyFactory.h"
 #include "report/CReport.h"
 
 #define XXXX_Reporting
 
-CLNATask::CLNATask(const CCopasiContainer * pParent):
-    CCopasiTask(CCopasiTask::lna, pParent)
+CLNATask::CLNATask(const CCopasiContainer * pParent,
+                   const CCopasiTask::Type & type):
+  CCopasiTask(pParent, type)
 {
   mpProblem = new CLNAProblem(this);
 
@@ -46,7 +38,7 @@ CLNATask::CLNATask(const CCopasiContainer * pParent):
 
 CLNATask::CLNATask(const CLNATask & src,
                    const CCopasiContainer * pParent):
-    CCopasiTask(src, pParent)
+  CCopasiTask(src, pParent)
 {
   mpProblem =
     new CLNAProblem(*(CLNAProblem *) src.mpProblem, this);
@@ -93,7 +85,6 @@ bool CLNATask::updateMatrices()
 
   if (!pMethod) return false;
 
-  pMethod->setModel(mpProblem->getModel());
   pMethod->resizeAllMatrices();
 
   return true;
@@ -118,8 +109,6 @@ bool CLNATask::initialize(const OutputFlag & of,
 
   //initialize reporting
   if (!CCopasiTask::initialize(of, pOutputHandler, pOstream)) success = false;
-
-  if (!pProblem->getModel()->compileIfNecessary(mpCallBack)) success = false;
 
   CSteadyStateTask *pSubTask = pProblem->getSubTask();
 
@@ -158,7 +147,7 @@ bool CLNATask::process(const bool & useInitialValues)
 
       if (!success && useInitialValues)
         {
-          mpProblem->getModel()->applyInitialValues();
+          mpContainer->applyInitialValues();
         }
 
       // check for positive or zero Eigen values
@@ -183,7 +172,7 @@ bool CLNATask::process(const bool & useInitialValues)
 
       if (useInitialValues)
         {
-          mpProblem->getModel()->applyInitialValues();
+          mpContainer->applyInitialValues();
         }
 
       success = false;
@@ -231,7 +220,6 @@ void CLNATask::printResult(std::ostream * ostream) const
 
   CLNAMethod* pMethod = dynamic_cast<CLNAMethod *>(mpMethod);
   assert(pMethod);
-  pMethod->setModel(mpProblem->getModel());
 
   std::ostream & os = *ostream;
 

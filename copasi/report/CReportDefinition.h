@@ -1,12 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CReportDefinition.h,v $
-//   $Revision: 1.40 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/02/23 18:51:39 $
-// End CVS Header
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2003 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -38,154 +40,154 @@ class CReport;
 class CReportTable;
 
 class CReportDefinition : public CCopasiObject
+{
+  // Operations
+private:
+  std::string mKey;
+  std::string mComment;
+  CCopasiTask::Type mTaskType;
+
+  std::vector<CRegisteredObjectName> mHeaderVector;
+  std::vector<CRegisteredObjectName> mBodyVector;
+  std::vector<CRegisteredObjectName> mFooterVector;
+  std::vector<CRegisteredObjectName> mTableVector;
+
+  CCopasiReportSeparator mSeparator;
+  bool mTable;
+  bool mbTitle;
+  unsigned C_INT32 mPrecision;
+
+public:
+  /**
+   *  Default constructor.
+   */
+  CReportDefinition(const std::string & name = "NoName",
+                    const CCopasiContainer * pParent = NULL);
+
+  /**
+   *  Copy constructor.
+   */
+  CReportDefinition(const CReportDefinition & src,
+                    const CCopasiContainer * pParent = NULL);
+
+  /**
+   *  Destructor.
+   */
+  ~CReportDefinition();
+
+  /**
+   *cleanup
+   */
+  void cleanup();
+
+  /**
+   * Convert the table list into a header and body list.
+   * @param const CObjectInterface::ContainerList & listOfContainer
+   * (default: CCopasiContainer::EmptyList)
+   * @return bool success
+   */
+  bool preCompileTable(const CObjectInterface::ContainerList & listOfContainer);
+
+  /**
+   *Returns the comments in the report tag
+   */
+  const std::string & getComment() const
   {
-    // Operations
-  private:
-    std::string mKey;
-    std::string mComment;
-    CCopasiTask::Type mTaskType;
+    return mComment;
+  }
 
-    std::vector<CRegisteredObjectName> mHeaderVector;
-    std::vector<CRegisteredObjectName> mBodyVector;
-    std::vector<CRegisteredObjectName> mFooterVector;
-    std::vector<CRegisteredObjectName> mTableVector;
+  /**
+   *sets the comments in the report tag
+   */
+  void setComment(const std::string & comment)
+  {
+    mComment = comment;
+  }
 
-    CCopasiReportSeparator mSeparator;
-    bool mTable;
-    bool mbTitle;
-    unsigned C_INT32 mPrecision;
+  /**
+   *gets the body in the report tag
+   */
+  std::vector<CRegisteredObjectName>* getBodyAddr();
 
-  public:
-    /**
-     *  Default constructor.
-     */
-    CReportDefinition(const std::string & name = "NoName",
-                      const CCopasiContainer * pParent = NULL);
+  /**
+   *gets the header in the report tag
+   */
+  std::vector<CRegisteredObjectName>* getHeaderAddr();
 
-    /**
-     *  Copy constructor.
-     */
-    CReportDefinition(const CReportDefinition & src,
-                      const CCopasiContainer * pParent = NULL);
+  /**
+   *gets the footer in the report tag
+   */
+  std::vector<CRegisteredObjectName>* getFooterAddr();
 
-    /**
-     *  Destructor.
-     */
-    ~CReportDefinition();
+  /**
+   *gets the footer in the report tag
+   */
+  std::vector<CRegisteredObjectName>* getTableAddr();
 
-    /**
-     *cleanup
-     */
-    void cleanup();
+  /**
+   *
+   */
+  bool setTaskType(const CCopasiTask::Type & taskType);
 
-    /**
-     * Convert the table list into a header and body list.
-     * @param const std::vector< CCopasiContainer * > & listOfContainer
-     * (default: CCopasiContainer::EmptyList)
-     * @return bool success
-     */
-    bool preCompileTable(const std::vector< CCopasiContainer * > & listOfContainer = CCopasiContainer::EmptyList);
+  /**
+   *
+   */
+  const CCopasiTask::Type & getTaskType() const;
 
-    /**
-     *Returns the comments in the report tag
-     */
-    const std::string & getComment() const
-      {
-        return mComment;
-      }
+  /**
+   *
+   */
+  void setSeparator(const CCopasiReportSeparator & Separator);
 
-    /**
-     *sets the comments in the report tag
-     */
-    void setComment(const std::string & comment)
-    {
-      mComment = comment;
-    }
+  /**
+   *
+   */
+  const CCopasiReportSeparator & getSeparator() const;
 
-    /**
-     *gets the body in the report tag
-     */
-    std::vector<CRegisteredObjectName>* getBodyAddr();
+  /**
+   *
+   */
+  bool getTitle() const;
 
-    /**
-     *gets the header in the report tag
-     */
-    std::vector<CRegisteredObjectName>* getHeaderAddr();
+  /**
+   *
+   */
+  void setTitle(bool title);
 
-    /**
-     *gets the footer in the report tag
-     */
-    std::vector<CRegisteredObjectName>* getFooterAddr();
+  /**
+   *
+   */
+  bool isTable() const;
 
-    /**
-     *gets the footer in the report tag
-     */
-    std::vector<CRegisteredObjectName>* getTableAddr();
+  /**
+   *
+   */
+  void setIsTable(bool table);
 
-    /**
-     *
-     */
-    bool setTaskType(const CCopasiTask::Type & taskType);
+  /**
+   * Set the precsion for floating point numbers;
+   * @param const unsigned C_INT32 & precision
+   */
+  void setPrecision(const unsigned C_INT32 & precision);
 
-    /**
-     *
-     */
-    const CCopasiTask::Type & getTaskType() const;
+  /**
+   * Retrieve the precsion for floating point numbers;
+   * @return const unsigned C_INT32 & precision
+   */
+  const unsigned C_INT32 & getPrecision() const;
 
-    /**
-     *
-     */
-    void setSeparator(const CCopasiReportSeparator & Separator);
+  /**
+   *
+   */
+  virtual const std::string & getKey() const;
 
-    /**
-     *
-     */
-    const CCopasiReportSeparator & getSeparator() const;
-
-    /**
-     *
-     */
-    bool getTitle() const;
-
-    /**
-     *
-     */
-    void setTitle(bool title);
-
-    /**
-     *
-     */
-    bool isTable() const;
-
-    /**
-     *
-     */
-    void setIsTable(bool table);
-
-    /**
-     * Set the precsion for floating point numbers;
-     * @param const unsigned C_INT32 & precision
-     */
-    void setPrecision(const unsigned C_INT32 & precision);
-
-    /**
-     * Retrieve the precsion for floating point numbers;
-     * @return const unsigned C_INT32 & precision
-     */
-    const unsigned C_INT32 & getPrecision() const;
-
-    /**
-     *
-     */
-    virtual const std::string & getKey() const;
-
-  private:
-    /**
-     * This adds header and body entries for one table element
-     * (including separator if necessary)
-     * @param const CCopasiObject * pObject
-     */
-    void addTableElement(const CCopasiObject * pObject);
-  };
+private:
+  /**
+   * This adds header and body entries for one table element
+   * (including separator if necessary)
+   * @param const CCopasiObject * pObject
+   */
+  void addTableElement(const CCopasiObject * pObject);
+};
 
 #endif

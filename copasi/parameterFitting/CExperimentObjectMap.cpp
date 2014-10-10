@@ -21,6 +21,7 @@
 
 #include "CExperimentObjectMap.h"
 
+#include "math/CMathContainer.h"
 #include "utilities/utility.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
 
@@ -219,7 +220,7 @@ C_FLOAT64 CExperimentObjectMap::getDefaultScale(const size_t & index) const
     return std::numeric_limits<C_FLOAT64>::quiet_NaN();
 }
 
-bool CExperimentObjectMap::compile(const std::vector< CCopasiContainer * > listOfContainer)
+bool CExperimentObjectMap::compile(const CMathContainer * pMathContainer)
 {
   size_t i, imax = size();
   size_t Column;
@@ -250,7 +251,7 @@ bool CExperimentObjectMap::compile(const std::vector< CCopasiContainer * > listO
     {
       if ((CN = getObjectCN(i)) == "") continue;
 
-      if ((pObject = CObjectInterface::DataObject(getObjectDataModel()->ObjectFromCN(listOfContainer, CN))) != NULL &&
+      if ((pObject = CObjectInterface::DataObject(pMathContainer->getObjectFromCN(CN))) != NULL &&
           pObject->isValueDbl())
         {
           Column = strtoul(getName(i).c_str(), NULL, 0);
@@ -263,7 +264,7 @@ bool CExperimentObjectMap::compile(const std::vector< CCopasiContainer * > listO
   return true;
 }
 
-const CVector< const CCopasiObject * > & CExperimentObjectMap::getMappedObjects() const
+const CVector< const CCopasiObject * > & CExperimentObjectMap::getDataObjects() const
 {return mObjects;}
 
 const size_t & CExperimentObjectMap::getLastColumn() const
@@ -446,9 +447,10 @@ C_FLOAT64 CExperimentObjectMap::CDataColumn::getDefaultScale() const
   if (pExperiment == NULL)
     return std::numeric_limits<C_FLOAT64>::quiet_NaN();
 
-  const CCopasiDataModel* pDataModel = getObjectDataModel();
-  assert(pDataModel != NULL);
-  const CCopasiObject * pObject = pDataModel->getDataObject(*mpObjectCN);
+  CObjectInterface::ContainerList ListOfContainer;
+  ListOfContainer.push_back(getObjectDataModel());
+
+  const CCopasiObject * pObject = CObjectInterface::DataObject(CObjectInterface::GetObjectFromCN(ListOfContainer, *mpObjectCN));
 
   if (pObject == NULL)
     return std::numeric_limits<C_FLOAT64>::quiet_NaN();

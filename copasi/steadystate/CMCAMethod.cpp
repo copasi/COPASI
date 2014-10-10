@@ -20,6 +20,7 @@
 #include "CMCAProblem.h"
 #include "CSteadyStateTask.h"
 #include "model/CModel.h"
+#include "math/CMathContainer.h"
 #include "utilities/CReadConfig.h"
 #include "utilities/utility.h"
 #include "utilities/CLinkMatrix.h"
@@ -714,31 +715,31 @@ bool CMCAMethod::isValidProblem(const CCopasiProblem * pProblem)
       return false;
     }
 
-  CModel * pModel = pP->getModel();
-
-  if (pModel == NULL)
-    return false;
-
-  // Check if the model contains an ODE.
-  size_t NumODE =
-    pModel->getStateTemplate().endIndependent() - pModel->getStateTemplate().beginIndependent();
-
-  if (pModel->getNumIndependentReactionMetabs() < NumODE)
+  if (mpContainer->getCountODEs() > 0)
     {
       CCopasiMessage(CCopasiMessage::ERROR, "MCA is not applicable for a system with explicit ODEs.");
       return false;
     }
 
-  // Check if the model has a compartment with an assignment
-  CCopasiVector< CCompartment >::const_iterator it = pModel->getCompartments().begin();
-  CCopasiVector< CCompartment >::const_iterator end = pModel->getCompartments().end();
+  // Check if the model has a changing compartment size
+  CCopasiVector< CCompartment >::const_iterator it = mpContainer->getModel().getCompartments().begin();
+  CCopasiVector< CCompartment >::const_iterator end = mpContainer->getModel().getCompartments().end();
+  CObjectInterface::ObjectSet Requested;
 
   for (; it != end; ++it)
-    if ((*it)->getStatus() == CModelEntity::ASSIGNMENT)
-      {
-        CCopasiMessage(CCopasiMessage::ERROR, "MCA is not applicable for a system with changing volumes.");
-        return false;
-      }
+    {
+      Requested.insert(mpContainer->getMathObject((*it)->getValueReference()));
+    }
+
+  CObjectInterface::UpdateSequence UpdateSequence;
+
+  mpContainer->getTransientDependencies().getUpdateSequence(UpdateSequence, CMath::Default, mpContainer->getStateObjects(false), Requested);
+
+  if (Requested.size() > 0)
+    {
+      CCopasiMessage(CCopasiMessage::ERROR, "MCA is not applicable for a system with changing volumes.");
+      return false;
+    }
 
   return true;
 }

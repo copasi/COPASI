@@ -22,6 +22,7 @@
 #include "utilities/CMatrix.h"
 
 class CExperiment;
+class CMathContainer;
 
 class CExperimentSet: public CCopasiParameterGroup
 {
@@ -65,11 +66,10 @@ public:
   /**
    * Compile the experiment set. This function must be called
    * before any evaluations can be performed.
-   * @param const std::vector< CCopasiContainer * > listOfContainer
+   * @param const CMathContainer * pMathContainer
    * @return bool success
    */
-  bool compile(const std::vector< CCopasiContainer * > listOfContainer =
-                 CCopasiContainer::EmptyList);
+  bool compile(const CMathContainer * pMathContainer);
 
   /**
    * Calculate statistics across all experiments.
@@ -189,9 +189,9 @@ public:
 
   /**
    * Retrieve the list of dependent data objects
-   * @return const std::vector< CCopasiObject * > & dependentObjects
+   * @return const std::vector< const CObjectInterface * > & dependentObjects
    */
-  const CVector< CCopasiObject * > & getDependentObjects() const;
+  const CVector< const CObjectInterface * > & getDependentObjects() const;
 
   /**
    * Retrieve all dependent data objective values.
@@ -245,7 +245,7 @@ private:
   /**
    * A set of all dependent data objects;
    */
-  CVector< CCopasiObject * > mDependentObjects;
+  CVector< const CObjectInterface * > mDependentObjects;
 
   /**
    * A list of all dependent data objective values;

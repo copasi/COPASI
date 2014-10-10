@@ -298,11 +298,8 @@ void CReport::printFooter()
 // Compile the List of Report Objects;
 // Support Parellel
 
-bool CReport::compile(std::vector< CCopasiContainer * > listOfContainer,
-                      const CCopasiDataModel* pDataModel)
+bool CReport::compile(CObjectInterface::ContainerList listOfContainer)
 {
-  assert(mpDataModel == pDataModel);
-
   bool success = true;
   COutputInterface::mObjects.clear();
 
@@ -312,19 +309,19 @@ bool CReport::compile(std::vector< CCopasiContainer * > listOfContainer,
   if (mpReportDef->isTable())
     if (!mpReportDef->preCompileTable(listOfContainer)) success = false;
 
-  generateObjectsFromName(&listOfContainer, mHeaderObjectList, mpHeader,
+  generateObjectsFromName(listOfContainer, mHeaderObjectList, mpHeader,
                           mpReportDef->getHeaderAddr());
 
   if (mpHeader)
     success &= compileChildReport(mpHeader, listOfContainer);
 
-  generateObjectsFromName(&listOfContainer, mBodyObjectList, mpBody,
+  generateObjectsFromName(listOfContainer, mBodyObjectList, mpBody,
                           mpReportDef->getBodyAddr());
 
   if (mpBody)
     success &= compileChildReport(mpBody, listOfContainer);
 
-  generateObjectsFromName(&listOfContainer, mFooterObjectList, mpFooter,
+  generateObjectsFromName(listOfContainer, mFooterObjectList, mpFooter,
                           mpReportDef->getFooterAddr());
 
   if (mpFooter)
@@ -394,7 +391,7 @@ std::ostream * CReport::open(const CCopasiDataModel * pDataModel,
 std::ostream * CReport::getStream() const {return mpOstream;}
 
 // make to support parallel tasks
-void CReport::generateObjectsFromName(const std::vector< CCopasiContainer * > * pListOfContainer,
+void CReport::generateObjectsFromName(const CObjectInterface::ContainerList & listOfContainer,
                                       std::vector< CObjectInterface * > & objectList,
                                       CReport *& pReport,
                                       const std::vector<CRegisteredObjectName>* nameVector)
@@ -407,7 +404,7 @@ void CReport::generateObjectsFromName(const std::vector< CCopasiContainer * > * 
 
   for (i = 0; i < nameVector->size(); i++)
     {
-      pObjectInterface = mpDataModel->ObjectFromCN(*pListOfContainer, (*nameVector)[i]);
+      pObjectInterface = CObjectInterface::GetObjectFromCN(listOfContainer, (*nameVector)[i]);
 
       if (pObjectInterface == NULL)
         {
@@ -428,10 +425,10 @@ void CReport::generateObjectsFromName(const std::vector< CCopasiContainer * > * 
     }
 }
 
-bool CReport::compileChildReport(CReport * pReport, std::vector< CCopasiContainer * > listOfContainer)
+bool CReport::compileChildReport(CReport * pReport, CObjectInterface::ContainerList listOfContainer)
 {
   pReport->open(mpDataModel, mpOstream);
-  bool success = pReport->compile(listOfContainer, mpDataModel);
+  bool success = pReport->compile(listOfContainer);
 
   const CObjectInterface::ObjectSet & Objects = pReport->COutputInterface::getObjects();
   CObjectInterface::ObjectSet::const_iterator it = Objects.begin();

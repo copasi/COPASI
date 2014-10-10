@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -42,7 +42,7 @@ CChemEqInterface::CChemEqInterface():
   mReversibility(false)
 {}
 
-CChemEqInterface::CChemEqInterface(CModel * pModel):
+CChemEqInterface::CChemEqInterface(const CModel * pModel):
   mpModel(pModel),
   mSubstrateNames(),
   mProductNames(),
@@ -648,28 +648,27 @@ std::set< std::pair< std::string, std::string > > CChemEqInterface::listOfNonExi
 
 bool CChemEqInterface::createNonExistingMetabs()
 {
+  CModel * pModel = const_cast< CModel * >(mpModel);
+
   std::set< std::pair< std::string, std::string > > metabs = listOfNonExistingMetabNames();
-  bool ret;
-  if (metabs.size() == 0) ret = false; else ret = true;
 
-  std::set< std::pair< std::string, std::string > >::const_iterator it, itEnd;
+  std::set< std::pair< std::string, std::string > >::const_iterator it = metabs.begin();
+  std::set< std::pair< std::string, std::string > >::const_iterator itEnd = metabs.end();
 
-  itEnd = metabs.end();
-
-  for (it = metabs.begin(); it != itEnd; ++it)
+  for (; it != itEnd; ++it)
     {
       if (mpModel->getCompartments().getIndex(it->second) == C_INVALID_INDEX)
-        mpModel->createCompartment(it->second, 1);
+        pModel->createCompartment(it->second, 1);
 
-      mpModel->createMetabolite(it->first,
-                                it->second,
-                                1.0, CModelEntity::REACTIONS);
+      pModel->createMetabolite(it->first,
+                               it->second,
+                               1.0, CModelEntity::REACTIONS);
     }
 
   // Due to the creation of metabolites the display names may have changed.
   buildDisplayNames();
 
-  return ret;
+  return (metabs.size() != 0);
 }
 
 bool CChemEqInterface::isMulticompartment() const
@@ -737,7 +736,7 @@ const CCompartment * CChemEqInterface::getCompartment() const
 }
 
 /*static*/
-std::string CChemEqInterface::getChemEqString(CModel * model, const CReaction & rea, bool expanded)
+std::string CChemEqInterface::getChemEqString(const CModel * model, const CReaction & rea, bool expanded)
 {
   CChemEqInterface cei(model);
   cei.loadFromChemEq(rea.getChemEq());

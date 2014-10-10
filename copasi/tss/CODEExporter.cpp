@@ -434,9 +434,9 @@ std::string CODEExporter::isModelEntityExpressionODEExporterCompatible(CModelEnt
         {
           const CEvaluationNodeObject* pObjectNode = dynamic_cast<const CEvaluationNodeObject*>(objectNodes[j]);
           assert(pObjectNode);
-          std::vector<CCopasiContainer*> containers;
+          CObjectInterface::ContainerList containers;
           containers.push_back(const_cast<CCopasiDataModel*>(pDataModel)->getModel());
-          const CCopasiObject* pObject = CObjectInterface::DataObject(pDataModel->ObjectFromCN(containers, pObjectNode->getObjectCN()));
+          const CCopasiObject* pObject = CObjectInterface::DataObject(CObjectInterface::GetObjectFromCN(containers, pObjectNode->getObjectCN()));
           assert(pObject);
 
           if (pObject->isReference())
@@ -581,7 +581,8 @@ std::string CODEExporter::exportExpression(const CExpression* pExpression, const
           assert(pObjectNode);
           CCopasiObjectName cn = pObjectNode->getObjectCN();
 
-          const CCopasiObject* pObject = pDataModel->getDataObject(cn);
+          const CCopasiObject* pObject = CObjectInterface::DataObject(pDataModel->getObjectFromCN(cn));
+
           assert(pObject);
           std::string objectName = pObject->getObjectName();
 

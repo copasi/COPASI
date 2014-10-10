@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -94,7 +94,7 @@ bool CExpression::setInfix(const std::string & infix)
   return true;
 }
 
-bool CExpression::compile(std::vector< CCopasiContainer * > listOfContainer)
+bool CExpression::compile(CObjectInterface::ContainerList listOfContainer)
 {
   listOfContainer.push_back(getObjectParent());
   mpListOfContainer = & listOfContainer;
@@ -129,20 +129,17 @@ void CExpression::refresh()
 
 const CObjectInterface * CExpression::getNodeObject(const CCopasiObjectName & CN) const
 {
-  const CCopasiDataModel* pDataModel = getObjectDataModel();
-  assert(pDataModel != NULL);
-
   if (mpListOfContainer != NULL)
     {
-      return pDataModel->ObjectFromCN(*mpListOfContainer, CN);
+      return CObjectInterface::GetObjectFromCN(*mpListOfContainer, CN);
     }
   else
     {
-      return pDataModel->getDataObject(CN);
+      return getObjectFromCN(CN);
     }
 }
 
-const std::vector< CCopasiContainer * > & CExpression::getListOfContainer() const
+const CObjectInterface::ContainerList & CExpression::getListOfContainer() const
 {return *mpListOfContainer;}
 
 bool CExpression::updateInfix()

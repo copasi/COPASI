@@ -15,16 +15,13 @@
 #ifndef COPASI_COptItem
 #define COPASI_COptItem
 
-#include <vector>
-
-#include "copasi/report/CCopasiObject.h"
-#include "copasi/report/CCopasiContainer.h"
 #include "copasi/utilities/CCopasiParameterGroup.h"
 
 class CCopasiObjectName;
 class COptProblem;
-class CRandom;
 class CCopasiDataModel;
+class CMathObject;
+class CRandom;
 
 class COptItem: public CCopasiParameterGroup
 {
@@ -80,9 +77,9 @@ public:
 
   /**
    * Retrieve the item object. This may only be called after compile
-   * @return const CCopasiObject *
+   * @return const CObjectInterface *
    */
-  const CCopasiObject * getObject() const;
+  const CObjectInterface * getObject() const;
 
   /**
    * Retrieve the display name of the optimization item.
@@ -117,12 +114,6 @@ public:
   const std::string getUpperBound() const;
 
   /**
-   * Retrieve the update method
-   * @return UpdateMethod * pUpdateMethod
-   */
-  virtual UpdateMethod * getUpdateMethod() const;
-
-  /**
    * Check the validity of the optimization item.
    */
   virtual bool isValid() const;
@@ -136,11 +127,10 @@ public:
   /**
    * Compile the optimization item. This function must be called
    * before any of the check functions are called.
-   * @param const std::vector< CCopasiContainer * > listOfContainer
+   * @param const CObjectInterface::ContainerList listOfContainer
    * @return bool success
    */
-  virtual bool compile(const std::vector< CCopasiContainer * > listOfContainer =
-                         CCopasiContainer::EmptyList);
+  virtual bool compile(CObjectInterface::ContainerList listOfContainer);
 
   /**
    * This functions check whether the current value is within the limits
@@ -226,10 +216,10 @@ public:
    * Retrieve a random value in the interval (lower bound, upper bound).
    * Optionally one may provide a random number generator to be used
    * to create the random value.
-   * @param CRandom * pRandom (default: NULL)
+   * @param CRandom & Random
    * @return C_FLOAT64 randomValue
    */
-  C_FLOAT64 getRandomValue(CRandom * pRandom = NULL);
+  C_FLOAT64 getRandomValue(CRandom & Random);
 
   /**
    * Output stream operator
@@ -248,17 +238,17 @@ private:
 
   /**
    * Compile the lower bound to hold the value given by the bound
-   * @param const std::vector< CCopasiContainer * > & listOfContainer
+   * @param const CObjectInterface::ContainerList & listOfContainer
    * @return bool success
    */
-  bool compileLowerBound(const std::vector< CCopasiContainer * > & listOfContainer);
+  bool compileLowerBound(const CObjectInterface::ContainerList & listOfContainer);
 
   /**
    * Compile the upper bound to hold the value given by the bound
-   * @param const std::vector< CCopasiContainer * > & listOfContainer
+   * @param const CObjectInterface::ContainerList & listOfContainer
    * @return bool success
    */
-  bool compileUpperBound(const std::vector< CCopasiContainer * > & listOfContainer);
+  bool compileUpperBound(const CObjectInterface::ContainerList & listOfContainer);
 
   //Attributes:
 protected:
@@ -285,12 +275,7 @@ protected:
   /**
    * A pointer to the object
    */
-  const CCopasiObject * mpObject;
-
-  /**
-   * A pointer to the object update method
-   */
-  UpdateMethod * mpMethod;
+  const CObjectInterface * mpObject;
 
   /**
    * A pointer to the object value
@@ -300,7 +285,7 @@ protected:
   /**
    * A pointer to the object for the lower bound
    */
-  const CCopasiObject * mpLowerObject;
+  const CObjectInterface * mpLowerObject;
 
   /**
    * A pointer to the lower bound value
@@ -315,7 +300,7 @@ protected:
   /**
    * A pointer to the object for the upper bound
    */
-  const CCopasiObject * mpUpperObject;
+  const CObjectInterface * mpUpperObject;
 
   /**
    * A pointer to the upper bound value
@@ -331,11 +316,6 @@ protected:
    * The start value use for last calculation
    */
   C_FLOAT64 mLastStartValue;
-
-  /**
-   * A pointer to the random number generator used in randomizeStartValue
-   */
-  static CRandom * mpRandom;
 };
 
 #endif // COPASI_COptItem

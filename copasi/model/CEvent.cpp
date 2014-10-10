@@ -91,7 +91,7 @@ bool CEventAssignment::setObjectParent(const CCopasiContainer * pParent)
   return success;
 }
 
-bool CEventAssignment::compile(std::vector< CCopasiContainer * > listOfContainer)
+bool CEventAssignment::compile(CObjectInterface::ContainerList listOfContainer)
 {
   clearDirectDependencies();
 
@@ -196,7 +196,7 @@ bool CEventAssignment::setExpressionPtr(CExpression * pExpression)
 
   mpExpression->setObjectName("Expression");
   add(mpExpression, true);
-  std::vector< CCopasiContainer * > listOfContainer;
+  CObjectInterface::ContainerList listOfContainer;
   listOfContainer.push_back(mpModel);
 
   if (mpExpression->compile(listOfContainer))
@@ -343,7 +343,7 @@ bool CEvent::mustBeDeleted(const CCopasiObject::DataObjectSet & deletedObjects) 
   return MustBeDeleted;
 }
 
-bool CEvent::compile(std::vector< CCopasiContainer * > listOfContainer)
+bool CEvent::compile(CObjectInterface::ContainerList listOfContainer)
 {
   bool success = true;
 
@@ -520,7 +520,7 @@ bool CEvent::setTriggerExpressionPtr(CExpression * pExpression)
 
   mpTriggerExpression->setObjectName("TriggerExpression");
   add(mpTriggerExpression, true);
-  std::vector< CCopasiContainer * > listOfContainer;
+  CObjectInterface::ContainerList listOfContainer;
   listOfContainer.push_back(mpModel);
 
   if (mpTriggerExpression->compile(listOfContainer))
@@ -587,7 +587,7 @@ bool CEvent::setDelayExpressionPtr(CExpression * pExpression)
 
   mpDelayExpression->setObjectName("DelayExpression");
   add(mpDelayExpression, true);
-  std::vector< CCopasiContainer * > listOfContainer;
+  CObjectInterface::ContainerList listOfContainer;
   listOfContainer.push_back(mpModel);
 
   if (mpDelayExpression->compile(listOfContainer))
@@ -654,7 +654,7 @@ bool CEvent::setPriorityExpressionPtr(CExpression* pExpression)
 
   mpPriorityExpression->setObjectName("PriorityExpression");
   add(mpPriorityExpression, true);
-  std::vector< CCopasiContainer * > listOfContainer;
+  CObjectInterface::ContainerList listOfContainer;
   listOfContainer.push_back(mpModel);
 
   if (mpPriorityExpression->compile(listOfContainer))

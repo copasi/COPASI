@@ -58,6 +58,14 @@ public:
   virtual CCopasiObjectName getCN() const;
 
   /**
+   * Retrieve the display name of the object
+   * @param bool regular (default: true)
+   * @param bool richtext (default: false)
+   * @return std::string objectDisplayName
+   */
+  virtual std::string getObjectDisplayName(bool regular = true, bool richtext = false) const;
+
+  /**
    * Retrieve a descendant object by its CN.
    * @param const CCopasiObjectName & cn
    * @return const CObjectInterface * pObject

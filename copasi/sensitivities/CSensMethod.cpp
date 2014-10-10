@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -26,8 +26,7 @@
 #include "CSensMethod.h"
 #include "CSensProblem.h"
 
-#include "model/CModel.h"
-#include "model/CState.h"
+#include "math/CMathContainer.h"
 #include "utilities/CProcessReport.h"
 
 CSensMethod *
@@ -57,9 +56,9 @@ CSensMethod::CSensMethod(CCopasiMethod::SubType subType,
   CCopasiMethod(CCopasiTask::sens, subType, pParent),
   mpProblem(NULL),
   mLocalData(),
-  mTargetfunctionPointers(),
+  mTargetValuePointers(),
   mpSubTask(NULL),
-  mInitialRefreshes(),
+  mTargetValueSequence(),
   mpDeltaFactor(NULL),
   mpMinDelta(NULL),
   mStoreSubtasktUpdateFlag(false),
@@ -88,9 +87,9 @@ CSensMethod::CSensMethod(const CSensMethod & src,
   CCopasiMethod(src, pParent),
   mpProblem(src.mpProblem),
   mLocalData(),
-  mTargetfunctionPointers(),
+  mTargetValuePointers(),
   mpSubTask(NULL),
-  mInitialRefreshes(),
+  mTargetValueSequence(),
   mpDeltaFactor(NULL),
   mpMinDelta(NULL),
   mStoreSubtasktUpdateFlag(false),
@@ -108,36 +107,33 @@ CSensMethod::~CSensMethod()
 
 //***********************************************************************************
 
-bool CSensMethod::do_target_calculation(CCopasiArray & result, bool /* first */)
+bool CSensMethod::do_target_calculation(size_t level,  CCopasiArray & result, bool /* first */)
 {
   bool success = false;
 
   //perform the necessary updates
-  std::vector< Refresh * >::iterator it = mInitialRefreshes.begin();
-  std::vector< Refresh * >::iterator end = mInitialRefreshes.end();
-
-  while (it != end)
-    (**it++)();
+  mpContainer->applyUpdateSequence(mLocalData[level].mInitialSequences);
 
   //****** do subtask ******************
   if (mpSubTask != NULL)
     {
-      success = mpSubTask->process(/*first*/true);
+      success = mpSubTask->process(true);
       mCounter++;
     }
   else
     {
+      mpContainer->applyInitialValues();
       success = true; // doing nothing should never fail.
     }
 
-  mpProblem->getModel()->updateSimulatedValues(true);
-  mpProblem->getModel()->updateNonSimulatedValues();
+  // We need to make sure that the target value(s) are updated
+  mpContainer->applyUpdateSequence(mTargetValueSequence);
 
   //****** retrieve results ************
 
   //resize results array
   CCopasiArray::index_type resultindex;
-  size_t i, imax = mTargetfunctionPointers.size();
+  size_t i, imax = mTargetValuePointers.size();
 
   if (imax > 1)
     resultindex.push_back(imax);
@@ -152,7 +148,7 @@ bool CSensMethod::do_target_calculation(CCopasiArray & result, bool /* first */)
           if (imax > 1)
             resultindex[0] = i;
 
-          result[resultindex] = *(C_FLOAT64 *)mTargetfunctionPointers[i]->getValuePointer();
+          result[resultindex] = *mTargetValuePointers[i];
         }
     }
   else
@@ -180,34 +176,15 @@ bool CSensMethod::do_target_calculation(CCopasiArray & result, bool /* first */)
   return success;
 }
 
-C_FLOAT64 CSensMethod::do_variation(CCopasiObject* variable)
+C_FLOAT64 CSensMethod::do_variation(C_FLOAT64 & variable)
 {
-  C_FLOAT64 value;
-  value = *(C_FLOAT64*)variable->getValuePointer();
-  C_FLOAT64 delta;
-  delta = fabs(value) * *mpDeltaFactor;
+  C_FLOAT64 delta = fabs(variable) * *mpDeltaFactor;
 
   if (delta < *mpMinDelta) delta = *mpMinDelta;
 
-  setValue(variable, delta + value);
+  variable += delta;
 
   return delta;
-}
-
-void CSensMethod::setValue(CCopasiObject* variable, C_FLOAT64 value)
-{
-  variable->setObjectValue(value);
-
-  if (variable->getObjectName() == "Concentration")
-    {
-      CMetab* pMetab = dynamic_cast<CMetab*>(variable->getObjectAncestor("Metabolite"));
-
-      if (pMetab)
-        {
-          pMetab->setConcentration(value);
-          pMetab->refreshNumber();
-        }
-    }
 }
 
 void CSensMethod::calculate_difference(size_t level, const C_FLOAT64 & delta,
@@ -271,7 +248,7 @@ bool CSensMethod::calculate_one_level(size_t level, CCopasiArray & result)
   //do first calculation
   if (level == 0)
     {
-      if (!do_target_calculation(mLocalData[level].tmp1, true)) return false;
+      if (!do_target_calculation(level, mLocalData[level].tmp1, true)) return false;
     }
   else
     {
@@ -281,26 +258,28 @@ bool CSensMethod::calculate_one_level(size_t level, CCopasiArray & result)
   //resize results array
   CCopasiArray::index_type resultindex; resultindex = mLocalData[level].tmp1.size();
 
-  if (mLocalData[level].variables.size() > 1)
-    resultindex.push_back(mLocalData[level].variables.size());
+  if (mLocalData[level].mInitialStateVariables.size() > 1)
+    resultindex.push_back(mLocalData[level].mInitialStateVariables.size());
 
   result.resize(resultindex);
 
   //loop over all variables
-  size_t i, imax = mLocalData[level].variables.size();
+  size_t i, imax = mLocalData[level].mInitialStateVariables.size();
 
   for (i = 0; i < imax; ++i)
     {
+      C_FLOAT64 & Variable = * mLocalData[level].mInitialStateVariables[i];
+
       //store variable value
-      C_FLOAT64 store = *(C_FLOAT64 *)mLocalData[level].variables[i]->getValuePointer();
+      C_FLOAT64 store = Variable;
 
       //change variable
-      C_FLOAT64 delta = do_variation(mLocalData[level].variables[i]);
+      C_FLOAT64 delta = do_variation(Variable);
 
       //do second calculation
       if (level == 0)
         {
-          if (!do_target_calculation(mLocalData[level].tmp2, false)) return false;
+          if (!do_target_calculation(level, mLocalData[level].tmp2, false)) return false;
         }
       else
         {
@@ -309,7 +288,7 @@ bool CSensMethod::calculate_one_level(size_t level, CCopasiArray & result)
 
       //restore variable
       //mLocalData[level].variables[i]->setObjectValue(store);
-      setValue(mLocalData[level].variables[i], store);
+      Variable = store;
 
       //calculate derivative
       if (imax > 1)
@@ -379,12 +358,12 @@ void CSensMethod::scaling_variables(size_t level, const C_FLOAT64 & factor,
                                     CCopasiArray::index_type & resultindex)
 {
   //loop over all variables
-  size_t i, imax = mLocalData[level].variables.size();
+  size_t i, imax = mLocalData[level].mInitialStateVariables.size();
 
   for (i = 0; i < imax; ++i)
     {
       //get Value
-      C_FLOAT64 value = *(C_FLOAT64 *)mLocalData[level].variables[i]->getValuePointer() * factor;
+      C_FLOAT64 value = *mLocalData[level].mInitialStateVariables[i] * factor;
 
       //do recursive calculation
       if (imax > 1)
@@ -552,31 +531,71 @@ bool CSensMethod::initialize(CSensProblem* problem)
       //the subtask should not change the initial state of the model
       mStoreSubtasktUpdateFlag = mpSubTask->isUpdateModel();
       mpSubTask->setUpdateModel(false);
-      
-      mpSubTask->getProblem()->setModel(mpProblem->getModel());
+
+      mpSubTask->setMathContainer(mpContainer);
+
       mpSubTask->setCallBack(NULL);
       success &= mpSubTask->initialize(CCopasiTask::NO_OUTPUT, NULL, NULL);
     }
 
   //initialize the variables pointers
-  std::set< const CCopasiObject * > ObjectSet;
   size_t i, imax = mpProblem->getNumberOfVariables();
   mLocalData.resize(imax);
+  CObjectInterface::ObjectSet IntialStateObjects;
 
   for (i = 0; i < imax; ++i)
     {
-      mLocalData[i].variables = mpProblem->getVariables(i).getVariablesPointerList(pDataModel);
+      std::vector< CCopasiObject * > DataObjects = mpProblem->getVariables(i).getVariablesPointerList(pDataModel);
+      mLocalData[i].mInitialStateVariables.resize(DataObjects.size());
 
-      ObjectSet.insert(mLocalData[i].variables.begin(), mLocalData[i].variables.end());
+      C_FLOAT64** ppValue = mLocalData[i].mInitialStateVariables.array();
+      C_FLOAT64** ppValueEnd = ppValue + mLocalData[i].mInitialStateVariables.size();
+      std::vector< CCopasiObject * >::const_iterator itDataObject = DataObjects.begin();
+
+      CObjectInterface::ObjectSet Changed;
+
+      for (; ppValue != ppValueEnd; ++ppValue, ++itDataObject)
+        {
+          const CMathObject * pValueObject = mpContainer->getMathObject(*itDataObject);
+          *ppValue = (C_FLOAT64 *) pValueObject->getValuePointer();
+          Changed.insert(pValueObject);
+        }
+
+      mpContainer->getInitialDependencies().getUpdateSequence(mLocalData[i].mInitialSequences,
+          CMath::UpdateMoieties,
+          Changed,
+          mpContainer->getInitialStateObjects());
     }
 
-  //determine which refreshes need to be called when the variables are changed
-  ObjectSet.erase(NULL);
-  mInitialRefreshes.clear();
-  mInitialRefreshes = mpProblem->getModel()->buildInitialRefreshSequence(ObjectSet);
-
   //initialize the target function pointers
-  mTargetfunctionPointers = mpProblem->getTargetFunctions().getVariablesPointerList(pDataModel);
+  std::vector< CCopasiObject * > DataObjects = mpProblem->getTargetFunctions().getVariablesPointerList(pDataModel);
+  mTargetValuePointers.resize(DataObjects.size());
+
+  C_FLOAT64** ppValue = mTargetValuePointers.array();
+  C_FLOAT64** ppValueEnd = ppValue + mTargetValuePointers.size();
+  std::vector< CCopasiObject * >::const_iterator itDataObject = DataObjects.begin();
+
+  CObjectInterface::ObjectSet Requested;
+
+  for (; ppValue != ppValueEnd; ++ppValue, ++itDataObject)
+    {
+      const CMathObject * pValueObject = mpContainer->getMathObject(*itDataObject);
+
+      if (pValueObject != NULL)
+        {
+          *ppValue = (C_FLOAT64 *) pValueObject->getValuePointer();
+          Requested.insert(pValueObject);
+        }
+      else
+        {
+          *ppValue = (C_FLOAT64 *)(*itDataObject)->getValuePointer();
+        }
+    }
+
+  mpContainer->getTransientDependencies().getUpdateSequence(mTargetValueSequence,
+      CMath::Default,
+      mpContainer->getStateObjects(false),
+      Requested);
 
   //****** initialize result annotations ****************
 
@@ -584,18 +603,18 @@ bool CSensMethod::initialize(CSensProblem* problem)
   CCopasiArray::index_type s;
   CCopasiArray::index_type sc; //size of collapsed result
 
-  if (mTargetfunctionPointers.size() > 1)
+  if (mTargetValuePointers.size() > 1)
     {
-      s.push_back(mTargetfunctionPointers.size());
+      s.push_back(mTargetValuePointers.size());
     }
 
   for (i = 0; i < imax; ++i)
     {
-      if (mLocalData[i].variables.size() > 1)
+      if (mLocalData[i].mInitialStateVariables.size() > 1)
         {
           mLocalData[i].index = s.size();
-          s.push_back(mLocalData[i].variables.size());
-          sc.push_back(mLocalData[i].variables.size());
+          s.push_back(mLocalData[i].mInitialStateVariables.size());
+          sc.push_back(mLocalData[i].mInitialStateVariables.size());
         }
       else
         mLocalData[i].index = C_INVALID_INDEX;
@@ -620,18 +639,22 @@ bool CSensMethod::initialize(CSensProblem* problem)
   size_t dim = 0;
   size_t j;
 
-  //target function annotations //TODO: only implemented for scalar and vector
-  if (mTargetfunctionPointers.size() > 1)
+  // target function annotations
+  // TODO: only implemented for scalar and vector
+  if (mTargetValuePointers.size() > 1)
     {
       std::ostringstream tmp;
       tmp << "Target functions, " << mpProblem->getTargetFunctions().getListTypeDisplayName();
       mpProblem->getResultAnnotated()->setDimensionDescription(dim, tmp.str());
       mpProblem->getScaledResultAnnotated()->setDimensionDescription(dim, tmp.str());
 
-      for (j = 0; j < mTargetfunctionPointers.size(); ++j)
+      std::vector< CCopasiObject * > DataObjects = mpProblem->getTargetFunctions().getVariablesPointerList(pDataModel);
+      std::vector< CCopasiObject * >::const_iterator itDataObject = DataObjects.begin();
+
+      for (j = 0; j < mTargetValuePointers.size(); ++j, ++itDataObject)
         {
-          mpProblem->getResultAnnotated()->setAnnotationCN(dim, j, mTargetfunctionPointers[j]->getCN());
-          mpProblem->getScaledResultAnnotated()->setAnnotationCN(dim, j, mTargetfunctionPointers[j]->getCN());
+          mpProblem->getResultAnnotated()->setAnnotationCN(dim, j, (*itDataObject)->getCN());
+          mpProblem->getScaledResultAnnotated()->setAnnotationCN(dim, j, (*itDataObject)->getCN());
         }
 
       ++dim;
@@ -642,7 +665,7 @@ bool CSensMethod::initialize(CSensProblem* problem)
 
   for (i = 0; i < imax; ++i)
     {
-      if (mLocalData[i].variables.size() > 1)
+      if (mLocalData[i].mInitialStateVariables.size() > 1)
         {
           std::ostringstream tmp;
           tmp << "Variables " << i + 1 << ", " << mpProblem->getVariables(i).getListTypeDisplayName();
@@ -652,13 +675,16 @@ bool CSensMethod::initialize(CSensProblem* problem)
           if (mpProblem->collapsRequested())
             mpProblem->getCollapsedResultAnnotated()->setDimensionDescription(dim2, tmp.str());
 
-          for (j = 0; j < mLocalData[i].variables.size(); ++j)
+          std::vector< CCopasiObject * > DataObjects = mpProblem->getVariables(i).getVariablesPointerList(pDataModel);
+          std::vector< CCopasiObject * >::const_iterator itDataObject = DataObjects.begin();
+
+          for (j = 0; j < mLocalData[i].mInitialStateVariables.size(); ++j, ++itDataObject)
             {
-              mpProblem->getResultAnnotated()->setAnnotationCN(dim, j, mLocalData[i].variables[j]->getCN());
-              mpProblem->getScaledResultAnnotated()->setAnnotationCN(dim, j, mLocalData[i].variables[j]->getCN());
+              mpProblem->getResultAnnotated()->setAnnotationCN(dim, j, (*itDataObject)->getCN());
+              mpProblem->getScaledResultAnnotated()->setAnnotationCN(dim, j, (*itDataObject)->getCN());
 
               if (mpProblem->collapsRequested())
-                mpProblem->getCollapsedResultAnnotated()->setAnnotationCN(dim2, j, mLocalData[i].variables[j]->getCN());
+                mpProblem->getCollapsedResultAnnotated()->setAnnotationCN(dim2, j, (*itDataObject)->getCN());
             }
 
           ++dim;
@@ -674,12 +700,13 @@ bool CSensMethod::restore(const bool & /* updateModel */)
   bool success = true;
 
   if (mpSubTask != NULL)
-  {
-    success &= mpSubTask->restore();
+    {
+      success &= mpSubTask->restore();
 
-    //restore the update model flag
-    mpSubTask->setUpdateModel(mStoreSubtasktUpdateFlag);
-  }
+      //restore the update model flag
+      mpSubTask->setUpdateModel(mStoreSubtasktUpdateFlag);
+    }
+
   return success;
 }
 
@@ -690,7 +717,7 @@ size_t CSensMethod::getNumberOfSubtaskCalculations()
 
   for (i = 0; i < mLocalData.size(); ++i)
     {
-      ret *= mLocalData[i].variables.size() + 1;
+      ret *= mLocalData[i].mInitialStateVariables.size() + 1;
     }
 
   return ret;

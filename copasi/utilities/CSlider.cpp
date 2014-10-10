@@ -66,12 +66,12 @@ CSlider::CSlider(const CSlider & src,
 CSlider::~CSlider()
 {CCopasiRootContainer::getKeyFactory()->remove(mKey);}
 
-bool CSlider::compile(const std::vector< CCopasiContainer * > & listOfContainer)
+bool CSlider::compile(const CObjectInterface::ContainerList & listOfContainer)
 {
   if (getObjectDataModel() == NULL) return false;
 
   //setSliderObject(CCopasiContainer::ObjectFromCN(listOfContainer, getObjectName()));
-  setSliderObject(CObjectInterface::DataObject(getObjectDataModel()->ObjectFromCN(listOfContainer, mCN)));
+  setSliderObject(CObjectInterface::DataObject(CObjectInterface::GetObjectFromCN(listOfContainer, mCN)));
 
   if (this->mSync) this->sync();
 
@@ -410,12 +410,12 @@ bool CSlider::isValid() const
   bool result = false;
   // check which object if any belongs to the CN and if it is the same as
   // the pointer currently stored in the slider
+
   assert(getObjectDataModel() != NULL);
   const CModel* pModel = getObjectDataModel()->getModel();
   assert(pModel != NULL);
-  std::vector<CCopasiContainer*> listOfContainers;
-  listOfContainers.push_back(const_cast<CModel*>(pModel));
-  const CCopasiObject* pObject = CObjectInterface::DataObject(getObjectDataModel()->ObjectFromCN(listOfContainers, this->mCN));
+
+  const CCopasiObject* pObject = CObjectInterface::DataObject(pModel->getObjectFromCN(this->mCN));
   result = (pObject != NULL && pObject == this->mpSliderObject);
   return result;
 }

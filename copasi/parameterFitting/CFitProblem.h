@@ -59,13 +59,6 @@ public:
   virtual bool elevateChildren();
 
   /**
-   * Set the model of the problem
-   * @param CModel * pModel
-   * @result bool success
-   */
-  virtual bool setModel(CModel * pModel);
-
-  /**
    * Set the call back of the problem
    * @param CProcessReport * pCallBack
    * @result bool success
@@ -318,20 +311,15 @@ private:
   CTrajectoryTask * mpTrajectory;
 
   /**
-   * Matrix of update methods for items for each experiment.
+   * Pointer to the values which need to be updated for each experiment.
    */
-  CMatrix< UpdateMethod * > mExperimentUpdateMethods;
-
-  /**
-   * Matrix of update methods for undoing items which are not used in all experiment.
-   */
-  CMatrix< UpdateMethod * > mExperimentUndoMethods;
+  CMatrix< C_FLOAT64 * > mExperimentValues;
 
   /**
    * A vector of refresh methods which contains the sequence of refresh methods
    * to update the initial values for each experiment.
    * */
-  CVector< std::vector< Refresh * > > mExperimentInitialRefreshes;
+  CVector< CObjectInterface::UpdateSequence > mExperimentInitialUpdates;
 
   /**
    * Matrix of constraints for each experiment.
@@ -342,7 +330,7 @@ private:
    * A vector of refresh methods which contains the sequence of refresh methods
    * to update the constraint values for each experiment.
    * */
-  CVector< std::vector< Refresh * > > mExperimentConstraintRefreshes;
+  CVector< CObjectInterface::UpdateSequence > mExperimentConstraintUpdates;
 
   /**
    * The simulation values for the experiments.
@@ -357,18 +345,13 @@ private:
   /**
    * Matrix of update methods for items for each cross validation.
    */
-  CMatrix< UpdateMethod * > mCrossValidationUpdateMethods;
-
-  /**
-   * Matrix of update methods for undoing items which are not used in all cross validations.
-   */
-  CMatrix< UpdateMethod * > mCrossValidationUndoMethods;
+  CMatrix< C_FLOAT64 * > mCrossValidationValues;
 
   /**
    * A vector of refresh methods which contains the sequence of refresh methods
    * to update the initial values for each cross validation.
    * */
-  CVector< std::vector< Refresh * > > mCrossValidationInitialRefreshes;
+  CVector< CObjectInterface::UpdateSequence > mCrossValidationInitialUpdates;
 
   /**
    * Matrix of constraints for each experiment.
@@ -379,7 +362,7 @@ private:
    * A vector of refresh methods which contains the sequence of refresh methods
    * to update the constraint values for each cross validation.
    * */
-  CVector< std::vector< Refresh * > > mCrossValidationConstraintRefreshes;
+  CVector< CObjectInterface::UpdateSequence > mCrossValidationConstraintUpdates;
 
   /**
    * The simulation values for the experiments.
@@ -418,9 +401,14 @@ private:
   CTrajectoryProblem * mpTrajectoryProblem;
 
   /**
-   * Copy of the initial state needed for calculate
+   * The initial state of the model prior to any modification
    */
-  CState * mpInitialState;
+  CVector< C_FLOAT64 > mInitialState;
+
+  /**
+   * A pointer to the time of the container
+   */
+  C_FLOAT64 * mpInitialStateTime;
 
   /**
    * Matrix of the residuals.

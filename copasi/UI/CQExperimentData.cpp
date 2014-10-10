@@ -44,6 +44,7 @@
 #include "utilities/utility.h"
 #include "copasi/report/CCopasiRootContainer.h"
 #include "commandline/CLocaleString.h"
+#include "model/CModel.h"
 
 #define COL_NAME 0
 #define COL_TYPE 1
@@ -432,7 +433,7 @@ void CQExperimentData::slotExperimentChanged(QListWidgetItem * pCurrentItem, QLi
       success &= mpExperiment->read(File, CurrentLine);
 
       if (success)
-        success &= mpExperiment->compile();
+        success &= mpExperiment->compile(&mpDataModel->getModel()->getMathContainer());
     }
   else
     {
@@ -1216,7 +1217,7 @@ void CQExperimentData::loadTable(CExperiment * pExperiment, const bool & guess)
 
       if (ObjectMap.getObjectCN(i) != "")
         {
-          pObject = pDataModel->getDataObject(ObjectMap.getObjectCN(i));
+          pObject = CObjectInterface::DataObject(pDataModel->getObjectFromCN(ObjectMap.getObjectCN(i)));
 
           if (pObject)
             mpTable->item((int) i, COL_OBJECT)->setText(FROM_UTF8(pObject->getObjectDisplayName()));
@@ -1292,7 +1293,7 @@ void CQExperimentData::slotTypeChanged(int row, int index)
 
         if (!CQSimpleSelectionTree::filter(CQSimpleSelectionTree::InitialTime |
                                            CQSimpleSelectionTree::Parameters,
-                                           pDataModel->getDataObject(CN)))
+                                           CObjectInterface::DataObject(pDataModel->getObjectFromCN(CN))))
           {
             mModelObjectRow = row;
             // slotModelObject(row);
@@ -1306,7 +1307,7 @@ void CQExperimentData::slotTypeChanged(int row, int index)
 
         if (!CQSimpleSelectionTree::filter(CQSimpleSelectionTree::Variables |
                                            CQSimpleSelectionTree::ObservedValues,
-                                           pDataModel->getDataObject(CN)))
+                                           CObjectInterface::DataObject(pDataModel->getObjectFromCN(CN))))
           {
             mModelObjectRow = row;
             // slotModelObject(row);
@@ -1369,7 +1370,7 @@ void CQExperimentData::updateScales()
 
   size_t CurrentLine = 1;
   mpExperiment->read(File, CurrentLine);
-  mpExperiment->compile();
+  mpExperiment->compile(&mpDataModel->getModel()->getMathContainer());
 
   // We can not simply use loadTable as this would destroy the two signal maps
   // for the buttons and comboboxes leading to crashes in Qt.
@@ -1670,7 +1671,7 @@ void CQExperimentData::slotWeightMethod(int weightMethod)
 
           size_t CurrentLine = 1;
           pNext->read(File, CurrentLine);
-          pNext->compile();
+          pNext->compile(&mpDataModel->getModel()->getMathContainer());
         }
 
       pNext->setWeightMethod((CExperiment::WeightMethod) weightMethod);

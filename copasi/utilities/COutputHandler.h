@@ -65,10 +65,10 @@ public:
 
   /**
    * compile the object list from name vector
-   * @param std::vector< CCopasiContainer * > listOfContainer
+   * @param CObjectInterface::ContainerList listOfContainer
    * @return bool success
    */
-  virtual bool compile(std::vector< CCopasiContainer * > /* listOfContainer */, const CCopasiDataModel* /*pDataModel*/)
+  virtual bool compile(CObjectInterface::ContainerList /* listOfContainer */)
   {return false;};
 
   /**
@@ -134,11 +134,11 @@ public:
 
   /**
    * compile the object list from name vector
-   * @param std::vector< CCopasiContainer * > listOfContainer
+   * @param CObjectInterface::ContainerList listOfContainer
    * @param  const CCopasiDataModel* pDataModel
    * @return bool success
    */
-  virtual bool compile(std::vector< CCopasiContainer * > listOfContainer, const CCopasiDataModel* pDataModel);
+  virtual bool compile(CObjectInterface::ContainerList listOfContainer);
 
   /**
    * Perform an output event for the current activity
@@ -191,10 +191,10 @@ protected:
 
   /**
    * Compile the object refresh list
-   * @param const std::vector< CCopasiContainer * > & listOfContainer
+   * @param const CObjectInterface::ContainerList & listOfContainer
    * @return bool success
    */
-  bool compileUpdateSequence(const std::vector< CCopasiContainer * > & listOfContainer, const CCopasiDataModel* pDataModel);
+  bool compileUpdateSequence(const CObjectInterface::ContainerList & listOfContainer);
 
   // Attributes
 protected:
@@ -217,6 +217,6 @@ protected:
   /**
    * A pointer to the math container
    */
-  CMathContainer * mpContainer;
+  const CMathContainer * mpContainer;
 };
 #endif

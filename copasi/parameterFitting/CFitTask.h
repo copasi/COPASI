@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -29,14 +29,20 @@ class CFitTask : public COptTask
 {
   //Attributes
 
+private:
+  /**
+   * Default constructor
+   */
+  CFitTask();
+
 public:
   /**
-   * default constructor
+   * Specific constructor
+   * @param const CCopasiContainer * pParent
    * @param const CCopasiTask::Type & type (default: parameterFitting)
-   * @param const CCopasiContainer * pParent (default: NULL)
    */
-  CFitTask(const CCopasiTask::Type & type = CCopasiTask::parameterFitting,
-           const CCopasiContainer * pParent = NULL);
+  CFitTask(const CCopasiContainer * pParent,
+           const CCopasiTask::Type & type = CCopasiTask::parameterFitting);
 
   /**
    * Copy constructor

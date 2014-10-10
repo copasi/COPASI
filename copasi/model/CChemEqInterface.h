@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CChemEqInterface.h,v $
-//   $Revision: 1.21 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/03/07 19:30:49 $
-// End CVS Header
-
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2003 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -44,7 +36,7 @@ class CCompartment;
 class CChemEqInterface
 {
 private:
-  CModel * mpModel;
+  const CModel * mpModel;
 
   std::vector< std::string > mSubstrateNames;
   std::vector< std::string > mProductNames;
@@ -68,7 +60,7 @@ private:
   CChemEqInterface();
 
 public:
-  CChemEqInterface(CModel * pModel);
+  CChemEqInterface(const CModel * pModel);
 
   ~CChemEqInterface();
 
@@ -82,7 +74,7 @@ public:
   const std::vector<std::string> & getListOfDisplayNames(CFunctionParameter::Role role) const;
 
   /**
-   * add a modifier to the chemical equation. It is only added if it is not alreay in there.
+   * add a modifier to the chemical equation. It is only added if it is not already in there.
    */
   void addModifier(const std::string & name);
   void clearModifiers();
@@ -114,7 +106,7 @@ public:
   bool createNonExistingMetabs();
 
   //convenience methods:
-  static std::string getChemEqString(CModel * model, const CReaction & rea, bool expanded);
+  static std::string getChemEqString(const CModel * model, const CReaction & rea, bool expanded);
   static void setChemEqFromString(CModel * model, CReaction & rea, const std::string & ces);
   static bool isValidEq(const std::string & eq);
 

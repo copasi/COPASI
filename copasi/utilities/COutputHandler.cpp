@@ -46,14 +46,14 @@ std::set<COutputInterface *> COutputHandler::getInterfaces() const
   return mInterfaces;
 }
 
-bool COutputHandler::compile(std::vector< CCopasiContainer * > listOfContainer, const CCopasiDataModel* pDataModel)
+bool COutputHandler::compile(CObjectInterface::ContainerList listOfContainer)
 {
-  std::vector< CCopasiContainer * >::const_iterator itContainer = listOfContainer.begin();
-  std::vector< CCopasiContainer * >::const_iterator endContainer = listOfContainer.end();
+  CObjectInterface::ContainerList::const_iterator itContainer = listOfContainer.begin();
+  CObjectInterface::ContainerList::const_iterator endContainer = listOfContainer.end();
 
   for (mpContainer = NULL; itContainer != endContainer && mpContainer == NULL; ++itContainer)
     {
-      mpContainer = dynamic_cast< CMathContainer * >(*itContainer);
+      mpContainer = dynamic_cast< const CMathContainer * >(*itContainer);
     }
 
   assert(mpContainer != NULL);
@@ -69,7 +69,7 @@ bool COutputHandler::compile(std::vector< CCopasiContainer * > listOfContainer, 
 
   for (; it != end; ++it)
     {
-      success &= (*it)->compile(listOfContainer, pDataModel);
+      success &= (*it)->compile(listOfContainer);
 
       // Assure that this is the only one master.
       COutputHandler * pHandler = dynamic_cast< COutputHandler * >(*it);
@@ -84,7 +84,7 @@ bool COutputHandler::compile(std::vector< CCopasiContainer * > listOfContainer, 
     }
 
   if (mpMaster == NULL)
-    success &= compileUpdateSequence(listOfContainer, pDataModel);
+    success &= compileUpdateSequence(listOfContainer);
 
   return success;
 }
@@ -177,10 +177,10 @@ bool COutputHandler::isMaster() const
 
 void COutputHandler::applyUpdateSequence()
 {
-  mpContainer->applyUpdateSequence(mUpdateSequence);
+  const_cast< CMathContainer * >(mpContainer)->applyUpdateSequence(mUpdateSequence);
 }
 
-bool COutputHandler::compileUpdateSequence(const std::vector< CCopasiContainer * > & listOfContainer, const CCopasiDataModel* pDataModel)
+bool COutputHandler::compileUpdateSequence(const CObjectInterface::ContainerList & listOfContainer)
 {
 
   mpContainer->getTransientDependencies().getUpdateSequence(mUpdateSequence, CMath::Default, mpContainer->getStateObjects(), mObjects,

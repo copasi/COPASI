@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/CRandomSearch.cpp,v $
-//   $Revision: 1.43 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/06/20 21:16:37 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2002 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -42,11 +34,12 @@ email                : rluktuke@vt.edu
 
 #include "CRandomSearch.h"
 
+#include "math/CMathContainer.h"
 #include "report/CCopasiObjectReference.h"
 #include "randomGenerator/CRandom.h"
 
 CRandomSearch::CRandomSearch():
-    COptMethod(CCopasiTask::optimization, CCopasiMethod::RandomSearch)
+  COptMethod(CCopasiTask::optimization, CCopasiMethod::RandomSearch)
 {
   addParameter("Number of Iterations", CCopasiParameter::UINT, (unsigned C_INT32) 100000);
   addParameter("Random Number Generator", CCopasiParameter::UINT, (unsigned C_INT32) CRandom::mt19937);
@@ -56,14 +49,15 @@ CRandomSearch::CRandomSearch():
 }
 
 CRandomSearch::CRandomSearch(const CRandomSearch & src):
-    COptMethod(src)
+  COptMethod(src)
 {initObjects();}
 
 /**
  * Destructor
  */
 CRandomSearch::~CRandomSearch()
-{//*** added similar to coptga
+{
+  //*** added similar to coptga
   cleanup();
 }
 
@@ -84,8 +78,8 @@ bool CRandomSearch::initialize()
   if (!COptMethod::initialize()) return false;
 
   mIterations = * getValue("Number of Iterations").pUINT;
-  mpRandom = CRandom::createGenerator(* (CRandom::Type *) getValue("Random Number Generator").pUINT,
-                                      * getValue("Seed").pUINT);
+  mpRandom = & mpContainer->getRandomGenerator();
+  mpRandom->initialize(* getValue("Seed").pUINT);
 
   mBestValue = std::numeric_limits<C_FLOAT64>::infinity();
 
@@ -131,7 +125,7 @@ bool CRandomSearch::optimise()
 
       // We need to set the value here so that further checks take
       // account of the value.
-      (*(*mpSetCalculateVariable)[j])(mut);
+      *mContainerVariables[j] = (mut);
     }
 
   Continue = evaluate(mIndividual);
@@ -150,7 +144,7 @@ bool CRandomSearch::optimise()
           COptItem & OptItem = *(*mpOptItem)[j];
           C_FLOAT64 & mut = mIndividual[j];
 
-          mut = OptItem.getRandomValue(mpRandom);
+          mut = OptItem.getRandomValue(*mpRandom);
 
           // force it to be within the bounds
           switch (OptItem.checkConstraint(mut))
@@ -184,7 +178,7 @@ bool CRandomSearch::optimise()
 
           // We need to set the value here so that further checks take
           // account of the value.
-          (*(*mpSetCalculateVariable)[j])(mut);
+          *mContainerVariables[j] = (mut);
         }
 
       Continue = evaluate(mIndividual);

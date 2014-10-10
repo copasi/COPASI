@@ -55,10 +55,12 @@ private:
 protected:
   /**
    * Default constructor.
+   * @param const CCopasiTask::Type & type
    * @param const CCopasiMethod::SubType & subType
    * @param const CCopasiContainer * pParent (default: NULL)
    */
-  CTrajectoryMethod(const CCopasiMethod::SubType & subType,
+  CTrajectoryMethod(const CCopasiTask::Type & type,
+                    const CCopasiMethod::SubType & subType,
                     const CCopasiContainer * pParent = NULL);
 
 public:
@@ -83,12 +85,6 @@ public:
    *  Destructor.
    */
   ~CTrajectoryMethod();
-
-  /**
-   * Set the math container used for calculations
-   * @param CMathContainer * pContainer
-   */
-  virtual void setContainer(CMathContainer * pContainer);
 
   /**
    *  Set a pointer to the problem.
@@ -117,10 +113,8 @@ public:
 
   /**
    *  This instructs the method to prepare for integration
-   *  starting with the initialState given.
-   *  @param "const CState *" initialState
    */
-  virtual void start(CVectorCore< C_FLOAT64 > & initialState);
+  virtual void start();
 
   /**
    * Retrieve the roots.
@@ -134,13 +128,14 @@ public:
    */
   virtual bool isValidProblem(const CCopasiProblem * pProblem);
 
-  // Attributes
 protected:
   /**
-   * A pointer to the math container
+   * Signal that the math container has changed
    */
-  CMathContainer * mpContainer;
+  virtual void signalMathContainerChanged();
 
+  // Attributes
+protected:
   /**
    *  A reference to the current state. This is set from outside
    *  with the setState() method and never changed anywhere else.

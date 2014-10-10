@@ -485,7 +485,7 @@ void CSEDMLExporter::createDataGenerators(CCopasiDataModel & dataModel,
 
               if (current == def->getSeparator().getCN()) continue;
 
-              CCopasiObject *object = dataModel.getDataObject(current);
+              const CCopasiObject *object = CObjectInterface::DataObject(dataModel.getObjectFromCN(current));
 
               if (object == NULL) continue;
 
@@ -511,7 +511,7 @@ void CSEDMLExporter::createDataGenerators(CCopasiDataModel & dataModel,
 
               if (def->isTable())
                 {
-                  CCopasiObject *headerObj = dataModel.getDataObject(header[i]);
+                  const CCopasiObject *headerObj = CObjectInterface::DataObject(dataModel.getObjectFromCN(header[i]));
 
                   if (headerObj != NULL)
                     pDS->setLabel(headerObj->getObjectDisplayName());
@@ -544,18 +544,24 @@ void CSEDMLExporter::createDataGenerators(CCopasiDataModel & dataModel,
         {
           const CPlotItem* pPlotItem = pPlot->getItems()[j];
 
-          CCopasiObject *objectX, *objectY;
+          const CCopasiObject *objectX, *objectY;
 
           if (pPlotItem->getChannels().size() >= 1)
-            objectX = dataModel.getDataObject(pPlotItem->getChannels()[0]);
+            {
+              objectX = CObjectInterface::DataObject(dataModel.getObjectFromCN(pPlotItem->getChannels()[0]));
+            }
 
           bool xIsTime = objectX->getCN() == pTime->getCN();
 
           if (pPlotItem->getChannels().size() >= 2)
-            objectY = dataModel.getDataObject(pPlotItem->getChannels()[1]);
+            {
+              objectY = CObjectInterface::DataObject(dataModel.getObjectFromCN(pPlotItem->getChannels()[1]));
+            }
 
           const std::string& type = objectY->getObjectName();
+
           std::string yAxis = objectY->getObjectDisplayName();
+
           std::string targetXPathString = SEDMLUtils::getXPathAndName(yAxis, type,
                                           pModel, dataModel);
 

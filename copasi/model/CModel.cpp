@@ -3882,7 +3882,7 @@ bool CModel::compileEvents()
 {
   bool success = true;
 
-  std::vector< CCopasiContainer * > ListOfContainer;
+  CObjectInterface::ContainerList ListOfContainer;
 
   CCopasiVectorN< CEvent >::iterator it = mEvents.begin();
   CCopasiVectorN< CEvent >::iterator end = mEvents.end();

@@ -221,9 +221,6 @@ void CTrajectoryProblem::load(CReadConfig & configBuffer,
 {
   if (configBuffer.getVersion() < "4.0")
     {
-      CCopasiDataModel* pDataModel = getObjectDataModel();
-      assert(pDataModel != NULL);
-      mpModel = pDataModel->getModel();
       configBuffer.getVariable("EndTime", "C_FLOAT64",
                                mpDuration,
                                CReadConfig::LOOP);

@@ -410,7 +410,7 @@ bool CMetab::compile()
 
   // Prepare the compilation
   std::set<const CCopasiObject *> Dependencies;
-  std::vector< CCopasiContainer * > listOfContainer;
+  CObjectInterface::ContainerList listOfContainer;
   listOfContainer.push_back(getObjectAncestor("Model"));
 
   CCopasiDataModel* pDataModel = NULL;
@@ -591,7 +591,7 @@ bool CMetab::compileInitialValueDependencies()
 {
   bool success = true;
   std::set<const CCopasiObject *> Dependencies;
-  std::vector< CCopasiContainer * > listOfContainer;
+  CObjectInterface::ContainerList listOfContainer;
   listOfContainer.push_back(getObjectAncestor("Model"));
 
   // If we have an assignment or a valid initial expression we must update both

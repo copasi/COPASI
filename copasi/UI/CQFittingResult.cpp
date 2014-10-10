@@ -152,7 +152,7 @@ bool CQFittingResult::enterProtected()
     {
       //1st column: parameter name
       const CCopasiObject *pObject =
-        pDataModel->getDataObject(Items[i]->getObjectCN());
+        CObjectInterface::DataObject(pDataModel->getObjectFromCN(Items[i]->getObjectCN()));
 
       if (pObject)
         {
@@ -272,7 +272,7 @@ bool CQFittingResult::enterProtected()
 
   for (i = 0; i != imax; i++)
     {
-      const CCopasiObject * pObject = Experiments.getDependentObjects()[i];
+      const CObjectInterface * pObject = Experiments.getDependentObjects()[i];
 
       if (pObject)
         pItem = new QTableWidgetItem(FROM_UTF8(pObject->getObjectDisplayName()));
@@ -398,7 +398,7 @@ bool CQFittingResult::enterProtected()
 
   for (i = 0; i != imax; i++)
     {
-      const CCopasiObject * pObject = CrossValidations.getDependentObjects()[i];
+      const CObjectInterface * pObject = CrossValidations.getDependentObjects()[i];
 
       if (pObject)
         pItem = new QTableWidgetItem(FROM_UTF8(pObject->getObjectDisplayName()));

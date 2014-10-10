@@ -1,17 +1,9 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/cpp_examples/example3/example3.cpp,v $
-//   $Revision: 1.4 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/12/19 16:20:16 $
-// End CVS Header
-
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
@@ -40,7 +32,6 @@
 #include "copasi/trajectory/CTrajectoryProblem.h"
 #include "copasi/trajectory/CTimeSeries.h"
 #include "copasi/function/CFunctionDB.h"
-
 
 int main(int argc, char** argv)
 {
@@ -141,11 +132,12 @@ int main(int argc, char** argv)
       // if there isn't one
       if (pTrajectoryTask == NULL)
         {
-          // create a new one
-          pTrajectoryTask = new CTrajectoryTask();
           // remove any existing trajectory task just to be sure since in
           // theory only the cast might have failed above
           TaskList.remove("Time-Course");
+
+          // create a new one
+          pTrajectoryTask = new CTrajectoryTask(& TaskList);
 
           // add the new time course task to the task list
           TaskList.add(pTrajectoryTask, true);
@@ -154,10 +146,7 @@ int main(int argc, char** argv)
       // run a deterministic time course
       pTrajectoryTask->setMethodType(CCopasiMethod::deterministic);
 
-      // pass a pointer of the model to the problem
-      pTrajectoryTask->getProblem()->setModel(pDataModel->getModel());
-
-      // actiavate the task so that it will be run when the model is saved
+      // Activate the task so that it will be run when the model is saved
       // and passed to CopasiSE
       pTrajectoryTask->setScheduled(true);
 
@@ -186,7 +175,6 @@ int main(int argc, char** argv)
       CCopasiParameter* pParameter = pMethod->getParameter("Absolute Tolerance");
       assert(pParameter != NULL);
       pParameter->setValue(1.0e-12);
-
 
       try
         {
@@ -237,7 +225,6 @@ int main(int argc, char** argv)
           // the concentration data can be acquired with getConcentrationData
           std::cout << pTimeSeries->getTitle(i) << ": " << pTimeSeries->getData(lastIndex, i) << std::endl;
         }
-
     }
   else
     {

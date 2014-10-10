@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -24,6 +24,7 @@
 #include "utilities/CVector.h"
 
 class CExperimentObjectMap;
+class CMathContainer;
 
 class CFittingPoint: public CCopasiContainer
 {
@@ -151,11 +152,10 @@ public:
   /**
    * Compile the experiment. This function must be called
    * before any evaluations can be performed.
-   * @param const std::vector< CCopasiContainer * > listOfContainer
+   * @param const CMathContainer * pMathContainer
    * @return bool success
    */
-  bool compile(const std::vector< CCopasiContainer * > listOfContainer =
-                 CCopasiContainer::EmptyList);
+  bool compile(const CMathContainer * pMathContainer);
 
   /**
    * Reads the experiment data form a the given stream
@@ -175,7 +175,7 @@ public:
    * Retrieve the list of dependent data objects
    * @return const std::map< CCopasiObject *, size_t > & dependentObjects
    */
-  const std::map< CCopasiObject *, size_t > & getDependentObjects() const;
+  const std::map< CObjectInterface *, size_t > & getDependentObjects() const;
 
   /**
    * Calculate the sum of squares for the indexed row of the experiment.
@@ -249,12 +249,6 @@ public:
   bool updateModelWithIndependentData(const size_t & index);
 
   /**
-   * Restore the model with the independent data from before the experiment
-   * @return bool success
-   */
-  bool restoreModelIndependentData();
-
-  /**
    * set the experiment type
    * @param const CCopasiTask::Type & experimentType
    * @return bool success
@@ -266,7 +260,7 @@ public:
    * @return const CCopasiTask::Type & experimentType
    */
   const CCopasiTask::Type & getExperimentType() const;
-  
+
   void setStartInSteadyState(bool flag);
   bool getStartInSteadyState() const;
 
@@ -484,55 +478,55 @@ public:
 
   /**
    * Retrieve the objective value for the object.
-   * @param CCopasiObject *const& pObject
+   * @param const CObjectInterface * pObject
    * @return C_FLOAT64 objectiveValue
    */
-  C_FLOAT64 getObjectiveValue(CCopasiObject * const& pObject) const;
+  C_FLOAT64 getObjectiveValue(const CObjectInterface * pObject) const;
 
   /**
    * Retrieve the default scaling factor for the object.
-   * @param CCopasiObject *const& pObject
+   * @param const CObjectInterface * pObject
    * @return C_FLOAT64 defaultScale
    */
-  C_FLOAT64 getDefaultScale(const CCopasiObject * const& pObject) const;
+  C_FLOAT64 getDefaultScale(const CObjectInterface * pObject) const;
 
   /**
    * Retrieve the RMS for the object.
-   * @param CCopasiObject *const& pObject
+   * @param const CObjectInterface * pObject
    * @return C_FLOAT64 RMS
    */
-  C_FLOAT64 getRMS(CCopasiObject *const& pObject) const;
+  C_FLOAT64 getRMS(const CObjectInterface * pObject) const;
 
   /**
    * Retrieve the sum of errors (scaled residuals) for the object.
-   * @param CCopasiObject *const& pObject
+   * @param const CObjectInterface * pObject
    * @return C_FLOAT64 errorSum
    */
-  C_FLOAT64 getErrorSum(CCopasiObject *const& pObject) const;
+  C_FLOAT64 getErrorSum(const CObjectInterface * pObject) const;
 
   /**
    * Retrieve the error mean std. deviations for the object.
    * More specifically this is the sum of the squared deviations of the residuals
    * from the provided errorMean. The sum is over all data points for the object.
-   * @param CCopasiObject *const& pObject
+   * @param const CObjectInterface * pObject
    * @param C_FLOAT64 errorMean
    * @return C_FLOAT64 errorMeanSD
    */
-  C_FLOAT64 getErrorMeanSD(CCopasiObject *const& pObject,
+  C_FLOAT64 getErrorMeanSD(const CObjectInterface * pObject,
                            const C_FLOAT64 & errorMean) const;
 
   /**
    * Retrieve the data point count for the object.
-   * @param CCopasiObject * const & pObject
+   * @param const CObjectInterface * pObject
    * @return size_t count
    */
-  size_t getColumnValidValueCount(CCopasiObject * const & pObject) const;
+  size_t getColumnValidValueCount(const CObjectInterface * pObject) const;
 
   /**
    * Retrieve the list of independent objects
-   * @return const std::set< const CCopasiObject * > & independentObjects
+   * @return const CObjectInterface::ObjectSet & independentObjects
    */
-  const std::set< const CCopasiObject * > & getIndependentObjects() const;
+  const CObjectInterface::ObjectSet & getIndependentObjects() const;
 
   /**
    * Fix files written with Version 4.10.55, which wrote the square root of user defined weights for the
@@ -577,7 +571,7 @@ private:
 
   /**
    * Indicates whether a time course is supposed to start in a steady state
-   * realized as a CCopasiParameter 
+   * realized as a CCopasiParameter
    */
   bool* mpStartInSteadyState;
 
@@ -648,14 +642,13 @@ private:
   CVector< C_FLOAT64 > mDefaultColumnScale;
 
   CVector< C_FLOAT64 * > mDependentValues;
+  CVector< C_FLOAT64 * > mIndependentValues;
 
-  CVector< UpdateMethod * > mIndependentUpdateMethods;
+  CMathContainer * mpContainer;
 
-  std::vector< Refresh * > mRefreshMethods;
+  CObjectInterface::UpdateSequence mDependentUpdateSequence;
 
-  std::set< const CCopasiObject * > mIndependentObjects;
-
-  CVector< C_FLOAT64 > mIndependentValues;
+  CObjectInterface::ObjectSet mIndependentObjects;
 
   size_t mNumDataRows;
 
@@ -679,7 +672,7 @@ private:
   /**
    * A map of all dependent data objects to dependent data columns;
    */
-  std::map< CCopasiObject *, size_t > mDependentObjects;
+  std::map< CObjectInterface *, size_t > mDependentObjects;
 
   CCopasiVector< CFittingPoint > mFittingPoints;
 

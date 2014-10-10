@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -75,8 +75,8 @@ protected:
   CQValidatorBound * mpUpperValidator;
   CQValidatorBound * mpLowerValidator;
   CQValidatorNotEmpty * mpObjectValidator;
-  const CCopasiObject* mpUpperObject;
-  const CCopasiObject* mpLowerObject;
+  const CObjectInterface* mpUpperObject;
+  const CObjectInterface* mpLowerObject;
   CCopasiObjectName* mpObjectCN;
   const CExperimentSet ** mppExperimentSet;
   CCopasiParameterGroup * mpItems;

@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -25,7 +25,6 @@
 
 #include "utilities/CMatrix.h"
 #include "utilities/CVector.h"
-#include "model/CState.h"
 
 class CTrajectoryTask;
 
@@ -64,12 +63,14 @@ private:
   CVector< C_FLOAT64 > mAtol;
   CVector< C_FLOAT64 > mH;
   CVector< C_FLOAT64 > mXold;
-  CVector< C_FLOAT64 > mdxdt;
+  CVectorCore< const C_FLOAT64 > mdxdt;
   C_INT * mIpiv;
 
   CTrajectoryTask * mpTrajectory;
 
-  CState mStartState;
+  CVector< C_FLOAT64 > mStartState;
+
+  CObjectInterface::UpdateSequence mUpdateConcentrations;
 
   // Operations
 private:
@@ -123,9 +124,8 @@ public:
   /**
    * This is the function that is supposed to be near zero if a steady
    * state is detected.
-   * @param const CVector< C_FLOAT64 > & particleFluxes
    */
-  C_FLOAT64 targetFunction(const CVector< C_FLOAT64 > & particleFluxes);
+  C_FLOAT64 targetFunction();
 
   /**
    * Check if the method is suitable for this problem
@@ -178,9 +178,9 @@ private:
   /**
    * Solve JacobiabX * X = B
    * @param CVector< C_FLOAT64 > & X
-   * @param const CVector< C_FLOAT64 > & B
+   * @param const CVectorCore< const C_FLOAT64 > & B
    * @return C_FLOAT64 error
    */
-  C_FLOAT64 solveJacobianXeqB(CVector< C_FLOAT64 > & X, const CVector< C_FLOAT64 > & B) const;
+  C_FLOAT64 solveJacobianXeqB(CVector< C_FLOAT64 > & X, const CVectorCore< const C_FLOAT64 > & B) const;
 };
 #endif // COPASI_CNewtonMethod

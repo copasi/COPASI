@@ -16,8 +16,8 @@ CMathReaction::CMathReaction():
   mpFlux(NULL),
   mpPropensity(NULL),
   mChangedSpecies(),
-  mBalance(),
-  mStepUpdates()
+  mObjectBalance(),
+  mNumberBalance()
 {}
 
 CMathReaction::CMathReaction(const CMathReaction & src):
@@ -26,8 +26,8 @@ CMathReaction::CMathReaction(const CMathReaction & src):
   mpFlux(src.mpFlux),
   mpPropensity(src.mpPropensity),
   mChangedSpecies(src.mChangedSpecies),
-  mBalance(src.mBalance),
-  mStepUpdates(src.mStepUpdates)
+  mObjectBalance(src.mObjectBalance),
+  mNumberBalance(src.mNumberBalance)
 {}
 
 CMathReaction::~CMathReaction()
@@ -44,8 +44,8 @@ void CMathReaction::initialize(const CReaction * pReaction, CMathContainer & con
   mpFlux = container.getMathObject(mpReaction->getFluxReference());
   mpPropensity = container.getMathObject(mpReaction->getPropensityReference());
 
-  mStepUpdates.resize(mpReaction->getChemEq().getBalances().size());
-  std::pair< C_FLOAT64, C_FLOAT64 * > * pStepUpdate = mStepUpdates.array();
+  mNumberBalance.resize(mpReaction->getChemEq().getBalances().size());
+  SpeciesBalance * pStepUpdate = mNumberBalance.array();
   CCopasiVector < CChemEqElement >::const_iterator it = mpReaction->getChemEq().getBalances().begin();
   CCopasiVector < CChemEqElement >::const_iterator end = mpReaction->getChemEq().getBalances().end();
 
@@ -57,15 +57,15 @@ void CMathReaction::initialize(const CReaction * pReaction, CMathContainer & con
           pParticleNumber->getSimulationType() == CMath::Dependent)
         {
           mChangedSpecies.insert(pParticleNumber);
-          mBalance.insert(std::pair < const CObjectInterface *, C_FLOAT64 >(pParticleNumber, (*it)->getMultiplicity()));
-          pStepUpdate->first = (*it)->getMultiplicity();
-          pStepUpdate->second = (C_FLOAT64 *) pParticleNumber->getValuePointer();
+          mObjectBalance.insert(std::pair < const CObjectInterface *, C_FLOAT64 >(pParticleNumber, (*it)->getMultiplicity()));
+          pStepUpdate->first = (C_FLOAT64 *) pParticleNumber->getValuePointer();
+          pStepUpdate->second = (*it)->getMultiplicity();
 
           ++pStepUpdate;
         }
     }
 
-  mStepUpdates.resize(mChangedSpecies.size(), true);
+  mNumberBalance.resize(mChangedSpecies.size(), true);
 }
 
 void CMathReaction::copy(const CMathReaction & src,
@@ -79,45 +79,45 @@ void CMathReaction::copy(const CMathReaction & src,
   mpFlux = src.mpFlux + objectOffset;
   mpPropensity = src.mpPropensity + objectOffset;
 
-  mStepUpdates.resize(src.mStepUpdates.size());
-  std::pair< C_FLOAT64, C_FLOAT64 * > * pStepUpdate = mStepUpdates.array();
-  std::pair< C_FLOAT64, C_FLOAT64 * > * pStepUpdateEnd = pStepUpdate + mStepUpdates.size();
-  const std::pair< C_FLOAT64, C_FLOAT64 * > * pStepUpdateSrc = src.mStepUpdates.array();
+  mNumberBalance.resize(src.mNumberBalance.size());
+  SpeciesBalance * pStepUpdate = mNumberBalance.array();
+  SpeciesBalance * pStepUpdateEnd = pStepUpdate + mNumberBalance.size();
+  const SpeciesBalance * pStepUpdateSrc = src.mNumberBalance.array();
 
   for (; pStepUpdate != pStepUpdateEnd; ++pStepUpdate, ++pStepUpdateSrc)
     {
-      pStepUpdate->first = pStepUpdateSrc->first;
-      pStepUpdate->second = pStepUpdateSrc->second + valueOffset;
+      pStepUpdate->first = pStepUpdateSrc->first + valueOffset;
+      pStepUpdate->second = pStepUpdateSrc->second;
     }
 
-  Balance::const_iterator it = src.mBalance.begin();
-  Balance::const_iterator end = src.mBalance.end();
+  ObjectBalance::const_iterator it = src.mObjectBalance.begin();
+  ObjectBalance::const_iterator end = src.mObjectBalance.end();
 
   for (; it != end; ++it)
     {
-      mBalance.insert(std::pair < const CObjectInterface *, C_FLOAT64 >(it->first + objectOffset, it->second));
+      mObjectBalance.insert(std::pair < const CObjectInterface *, C_FLOAT64 >(it->first + objectOffset, it->second));
     }
 }
 
 void CMathReaction::fire()
 {
-  std::pair< C_FLOAT64, C_FLOAT64 * > * pStepUpdate = mStepUpdates.array();
-  std::pair< C_FLOAT64, C_FLOAT64 * > * pStepUpdateEnd = pStepUpdate + mStepUpdates.size();
+  SpeciesBalance * pStepUpdate = mNumberBalance.array();
+  SpeciesBalance * pStepUpdateEnd = pStepUpdate + mNumberBalance.size();
 
   for (; pStepUpdate != pStepUpdateEnd; ++pStepUpdate)
     {
-      *pStepUpdate->second += pStepUpdate->first;
+      *pStepUpdate->first += pStepUpdate->second;
     }
 }
 
 void CMathReaction::fireMultiple(const C_FLOAT64 & count)
 {
-  std::pair< C_FLOAT64, C_FLOAT64 * > * pStepUpdate = mStepUpdates.array();
-  std::pair< C_FLOAT64, C_FLOAT64 * > * pStepUpdateEnd = pStepUpdate + mStepUpdates.size();
+  SpeciesBalance * pStepUpdate = mNumberBalance.array();
+  SpeciesBalance * pStepUpdateEnd = pStepUpdate + mNumberBalance.size();
 
   for (; pStepUpdate != pStepUpdateEnd; ++pStepUpdate)
     {
-      *pStepUpdate->second += pStepUpdate->first * count;
+      *pStepUpdate->first += pStepUpdate->second * count;
     }
 }
 
@@ -141,9 +141,9 @@ const CObjectInterface::ObjectSet & CMathReaction::getChangedObjects() const
   return mChangedSpecies;
 }
 
-const std::set< std::pair < const CObjectInterface *, C_FLOAT64 > > & CMathReaction::getBalance() const
+const CMathReaction::Balance & CMathReaction::getNumberBalance() const
 {
-  return mBalance;
+  return mNumberBalance;
 }
 
 const CReaction * CMathReaction::getModelReaction() const

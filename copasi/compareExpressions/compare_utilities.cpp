@@ -1217,7 +1217,7 @@ bool contains_necessary_mass_action_elements(const CCopasiVector<CChemEqElement>
       const CMetab* pMetab = NULL;
       const CCopasiDataModel* pDatamodel = dynamic_cast<const CCopasiDataModel*>(pModel->getObjectParent());
       assert(pDatamodel != NULL);
-      std::vector<CCopasiContainer*> listOfContainers;
+      CObjectInterface::ContainerList listOfContainers;
       listOfContainers.push_back(const_cast<CModel*>(pModel));
 
       CCopasiVector<CChemEqElement> tmpV = elements;
@@ -1239,7 +1239,7 @@ bool contains_necessary_mass_action_elements(const CCopasiVector<CChemEqElement>
               if (pItem != NULL && pItem->getType() == CNormalItem::VARIABLE)
                 {
                   std::string cn = pItem->getName();
-                  pObject = dynamic_cast< const CCopasiObject * >(pDatamodel->ObjectFromCN(listOfContainers, cn));
+                  pObject = CObjectInterface::DataObject(CObjectInterface::GetObjectFromCN(listOfContainers, cn));
 
                   if (pObject != NULL)
                     {

@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateTask.h,v $
-//   $Revision: 1.38 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/03/07 19:33:41 $
-// End CVS Header
-
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2002 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -43,7 +35,6 @@
 #include "steadystate/CEigen.h"
 
 class CSteadyStateProblem;
-class CState;
 class CReportDefinitionVector;
 
 class CSteadyStateTask : public CCopasiTask
@@ -53,7 +44,7 @@ private:
   /**
    * A pointer to the found steady state.
    */
-  CState * mpSteadyState;
+  CVector< C_FLOAT64 > mSteadyState;
 
   /**
    * The jacobian of the steady state.
@@ -63,7 +54,7 @@ private:
   /**
    * The jacobian of the steady state.
    */
-  CMatrix< C_FLOAT64 > mJacobianX;
+  CMatrix< C_FLOAT64 > mJacobianReduced;
 
   CArrayAnnotation * mpJacobianAnn;
   CArrayAnnotation * mpJacobianXAnn;
@@ -103,14 +94,20 @@ private:
   CSteadyStateMethod::ReturnCode mResult;
 
   //Operations
-public:
-
+private:
   /**
    * Default constructor
-   * @param const CCopasiContainer * pParent (default: NULL)
    */
-  CSteadyStateTask(const CCopasiContainer * pParent = NULL);
+  CSteadyStateTask();
 
+public:
+  /**
+   * Specific constructor
+   * @param const CCopasiContainer * pParent
+   * @param const CCopasiTask::Type & type (default: steadyState)
+   */
+  CSteadyStateTask(const CCopasiContainer * pParent,
+                   const CCopasiTask::Type & type = CCopasiTask::steadyState);
   /**
    * Copy constructor
    * @param const CSteadyStateTask & src
@@ -183,16 +180,10 @@ public:
   void load(CReadConfig & configBuffer);
 
   /**
-   * Set initial state by taking the current one.
-   */
-  void setInitialState();
-
-  /**
    * Retrieves a pointer to steady state.
-   * @return CState * pSteadyState
+   * @return const CVectorCore< C_FLOAT64 > & steadyState
    */
-  //CState * getState();
-  const CState * getState() const;
+  const CVectorCore< C_FLOAT64 > & getState() const;
 
   /**
    * Retrieves a the jacobian of the steady state.

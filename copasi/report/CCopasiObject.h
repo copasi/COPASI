@@ -154,28 +154,24 @@ class CRenameHandler;
 class CObjectInterface
 {
 public:
-  static const CCopasiObject * DataObject(const CObjectInterface * pInterface)
-  {
-    if (pInterface != NULL)
-      {
-        return pInterface->getDataObject();
-      }
-
-    return NULL;
-  }
-
   typedef std::set< const CObjectInterface * > ObjectSet;
   typedef std::vector< CObjectInterface * > UpdateSequence;
+  typedef std::vector< const CCopasiContainer * > ContainerList;
+
+  static const CCopasiObject * DataObject(const CObjectInterface * pInterface);
+
+  static CObjectInterface * GetObjectFromCN(const ContainerList & listOfContainer,
+      const CCopasiObjectName & objName);
 
   /**
    * Constructor
    */
-  CObjectInterface() {};
+  CObjectInterface();
 
   /**
    * Destructor
    */
-  virtual ~CObjectInterface() {};
+  virtual ~CObjectInterface();
 
   /**
    * Retrieve the CN of the object
@@ -227,6 +223,14 @@ public:
    * @return const CCopasiObject * dataObject
    */
   virtual const CCopasiObject * getDataObject() const = 0;
+
+  /**
+   * Retrieve the display name of the object
+   * @param bool regular (default: true)
+   * @param bool richtext (default: false)
+   * @return std::string objectDisplayName
+   */
+  virtual std::string getObjectDisplayName(bool regular = true, bool richtext = false) const = 0;
 };
 
 class CCopasiObject: public CObjectInterface
@@ -330,6 +334,12 @@ public:
 
   const std::string & getObjectName() const;
 
+  /**
+   * Retrieve the display name of the object
+   * @param bool regular (default: true)
+   * @param bool richtext (default: false)
+   * @return std::string objectDisplayName
+   */
   virtual std::string getObjectDisplayName(bool regular = true, bool richtext = false) const;
 
   const std::string & getObjectType() const;
@@ -357,6 +367,13 @@ public:
   virtual CCopasiObjectName getCN() const;
 
   virtual const CObjectInterface * getObject(const CCopasiObjectName & cn) const;
+
+  /**
+   * Retrieve a object by its full CN.
+   * @param const CCopasiObjectName & cn
+   * @return const CObjectInterface * pObject
+   */
+  virtual const CObjectInterface * getObjectFromCN(const CCopasiObjectName & cn) const;
 
   /**
    * Set the direct dependencies

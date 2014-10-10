@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CTSSATask.h,v $
-//   $Revision: 1.7 $
-//   $Name:  $
-//   $Author: nsimus $
-//   $Date: 2012/06/04 11:06:09 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -35,10 +27,10 @@
 #include "tssanalysis/CTSSAMethod.h"
 #include "utilities/CCopasiTask.h"
 #include "trajectory/CTimeSeries.h"
+#include "utilities/CVector.h"
 
 class CTSSAProblem;
 class CTSSAMethod;
-class CState;
 
 class CTSSATask : public CCopasiTask
 {
@@ -77,21 +69,29 @@ private:
   bool mUpdateMoieties;
 
   /**
-   * A pointer to the current state of the integration.
+   * The current state of the integration.
    */
-  CState * mpCurrentState;
+  CVectorCore< C_FLOAT64 > mContainerState;
 
   /**
    * A pointer to the current time of the integration.
    */
-  const C_FLOAT64 * mpCurrentTime;
+  C_FLOAT64 * mpContainerStateTime;
+
+private:
+  /**
+   * Default constructor
+   */
+  CTSSATask();
 
 public:
   /**
-   * Default constructor
-   * @param const CCopasiContainer * pParent (default: NULL)
+   * Specific constructor
+   * @param const CCopasiContainer * pParent
+   * @param const CCopasiTask::Type & type (default: tssAnalysis)
    */
-  CTSSATask(const CCopasiContainer * pParent = NULL);
+  CTSSATask(const CCopasiContainer * pParent,
+            const CCopasiTask::Type & type = CCopasiTask::tssAnalysis);
 
   /**
    * Copy constructor
@@ -169,21 +169,9 @@ public:
   virtual CCopasiMethod * createMethod(const int & type) const;
 
   /**
-   * Retrieves a pointer to current state of the integration.
-   * @return CState * pState
-   */
-  CState * getState();
-
-  /**
    * gets a reference to the time series
    * @return time series
    */
   const CTimeSeries & getTimeSeries() const;
-
-private:
-  /**
-   * cleanup()
-   */
-  void cleanup();
 };
 #endif // COPASI_CTSSATask

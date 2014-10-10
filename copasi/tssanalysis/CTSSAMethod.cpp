@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -31,11 +31,12 @@
 #include "CCSPMethod.h"
 
 #include "CTSSAProblem.h"
-#include "model/CState.h"
+#include "math/CMathContainer.h"
 #include "model/CCompartment.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "report/CCopasiRootContainer.h"
 #include "model/CModel.h"
+#include "trajectory/CLsodaMethod.h"
 
 #include "lapack/lapackwrap.h"        // CLAPACK
 #include "lapack/blaswrap.h"           // BLAS
@@ -74,14 +75,10 @@ CTSSAMethod::createMethod(CCopasiMethod::SubType subType)
 CTSSAMethod::CTSSAMethod(const CCopasiMethod::SubType & subType,
                          const CCopasiContainer * pParent) :
   CCopasiMethod(CCopasiTask::tssAnalysis, subType, pParent),
-  mpCurrentState(NULL),
   mpProblem(NULL),
-  mpState(NULL),
-  mData(),
-  mY(NULL),
-  mYdot(),
+  mpLsodaMethod(NULL),
+  mDim(0),
   mY_initial(),
-  mTime(0.0),
   mJacobian(),
   mJacobian_initial(),
   mQ(),
@@ -100,23 +97,19 @@ CTSSAMethod::CTSSAMethod(const CCopasiMethod::SubType & subType,
   mVslow_space(),
   mVfast_space(),
   mSlow(0),
-  mLsodaStatus(1),
-  mReducedModel(false),
-  mRtol(1e-5),
-  mAtol(),
-  mErrorMsg(),
-  mLSODA(),
-  mState(0),
-  mDWork(),
-  mIWork(),
-  mJType(0),
-  mpModel(NULL),
   mDtol(1e-6),
   mEPS(0.01),
+  mNumber2Concentration(1.0),
+  mConcentration2Number(1.0),
+  mContainerState(),
+  mpContainerStateTime(NULL),
+  mpFirstSpecies(NULL),
+  mpFirstSpeciesRate(NULL),
   mVec_SlowModes(),
   mCurrentTime(),
   mVec_TimeScale(),
   mCurrentStep(0)
+
 {}
 
 /**
@@ -126,14 +119,10 @@ CTSSAMethod::CTSSAMethod(const CCopasiMethod::SubType & subType,
 CTSSAMethod::CTSSAMethod(const CTSSAMethod & src,
                          const CCopasiContainer * pParent):
   CCopasiMethod(src, pParent),
-  mpCurrentState(src.mpCurrentState),
   mpProblem(src.mpProblem),
-  mpState(NULL),
-  mData(),
-  mY(NULL),
-  mYdot(),
+  mDim(0),
+  mpLsodaMethod(NULL),
   mY_initial(),
-  mTime(src.mTime),
   mJacobian(),
   mJacobian_initial(),
   mQ(),
@@ -152,19 +141,14 @@ CTSSAMethod::CTSSAMethod(const CTSSAMethod & src,
   mVslow_space(),
   mVfast_space(),
   mSlow(0),
-  mLsodaStatus(1),
-  mReducedModel(src.mReducedModel),
-  mRtol(src.mRtol),
-  mAtol(src.mAtol),
-  mErrorMsg(),
-  mLSODA(),
-  mState(0),
-  mDWork(),
-  mIWork(),
-  mJType(0),
-  mpModel(NULL),
   mDtol(src.mDtol),
   mEPS(src.mEPS),
+  mNumber2Concentration(1.0),
+  mConcentration2Number(1.0),
+  mContainerState(),
+  mpContainerStateTime(NULL),
+  mpFirstSpecies(NULL),
+  mpFirstSpeciesRate(NULL),
   mVec_SlowModes(),
   mCurrentTime(),
   mVec_TimeScale(),
@@ -176,11 +160,6 @@ CTSSAMethod::CTSSAMethod(const CTSSAMethod & src,
  */
 CTSSAMethod::~CTSSAMethod()
 {}
-
-void CTSSAMethod::setCurrentState(CState * currentState)
-{
-  mpCurrentState = currentState;
-}
 
 /**
  *  Set a pointer to the problem.
@@ -198,7 +177,7 @@ void CTSSAMethod::setProblem(CTSSAProblem * problem)
  *  The return value is the actual time step taken.
  *  @param "const double &" deltaT
  */
-void CTSSAMethod::step(const double & C_UNUSED(deltaT))
+void CTSSAMethod::step(const double & /* deltaT */)
 {return ;}
 
 /**
@@ -206,16 +185,23 @@ void CTSSAMethod::step(const double & C_UNUSED(deltaT))
  *  starting with the initialState given.
  *  The new state (after deltaT) is expected in the current state.
  *  The return value is the actual time step taken.
- *  @param "double &" deltaT
- *  @param "const CState *" initialState
- *  @return "const double &" actualDeltaT
  */
-void CTSSAMethod::start(const CState * C_UNUSED(initialState))
-{return;}
-
-void CTSSAMethod::setModel(CModel* model)
+void CTSSAMethod::start()
 {
-  mpModel = model;
+  mDim = mpContainer->getCountIndependentSpecies();
+
+  mContainerState.initialize(mpContainer->getState(true));
+
+  mpContainerStateTime = mContainerState.array() + mpContainer->getTimeIndex();
+  mpFirstSpecies = mContainerState.array() + mpContainer->getTimeIndex() + 1 /* Time */ + mpContainer->getCountODEs();
+  mpFirstSpeciesRate = mpContainer->getRate(true).array() + mpContainer->getTimeIndex() + 1 /* Time */ + mpContainer->getCountODEs();
+
+  const CModel & Model = mpContainer->getModel();
+
+  mNumber2Concentration = Model.getNumber2QuantityFactor() / Model.getCompartments()[0]->getInitialValue();
+  mConcentration2Number =  Model.getQuantity2NumberFactor() * Model.getCompartments()[0]->getInitialValue();
+
+  return;
 }
 
 void CTSSAMethod::predifineAnnotation()
@@ -237,22 +223,19 @@ bool CTSSAMethod::isValidProblem(const CCopasiProblem * pProblem)
       return false;
     }
 
-  CModel * pModel = pTP->getModel();
+  const CModel & Model = mpContainer->getModel();
 
-  if (pModel == NULL)
-    return false;
-
-  if (pModel->getMetabolites().size() == 0)
+  if (Model.getMetabolites().size() == 0)
     {
       CCopasiMessage(CCopasiMessage::ERROR, MCCopasiMethod + 3);
       return false;
     }
 
-  if (pModel->getCompartments().size() != 1)
+  if (Model.getCompartments().size() != 1)
     {
       CCopasiMethod::SubType subType;
 
-      subType = mData.pMethod->getSubType();
+      subType = getSubType();
 
       switch (subType)
         {
@@ -272,15 +255,15 @@ bool CTSSAMethod::isValidProblem(const CCopasiProblem * pProblem)
     }
 
 // Check if the model has a species with an assigments or an ODE
-  if (pModel->getNumODEMetabs() != 0 || pModel->getNumAssignmentMetabs() != 0)
+  if (Model.getNumODEMetabs() != 0 || Model.getNumAssignmentMetabs() != 0)
     {
       CCopasiMessage(CCopasiMessage::ERROR, "TSSA can not be applyed for systems with species determined by assigments or ODE.");
       return false;
     }
 
 // Check if the model has a compartment with an ODE
-  CCopasiVector< CCompartment >::const_iterator it = pModel->getCompartments().begin();
-  CCopasiVector< CCompartment >::const_iterator end = pModel->getCompartments().end();
+  CCopasiVector< CCompartment >::const_iterator it = Model.getCompartments().begin();
+  CCopasiVector< CCompartment >::const_iterator end = Model.getCompartments().end();
 
   for (; it != end; ++it)
     if ((*it)->getStatus() == CModelEntity::ODE || (*it)->getStatus() ==  CModelEntity::ASSIGNMENT)
@@ -294,9 +277,9 @@ bool CTSSAMethod::isValidProblem(const CCopasiProblem * pProblem)
 
   size_t i;
 
-  for (i = 0; i < pModel->getModelValues().size(); i++)
+  for (i = 0; i < Model.getModelValues().size(); i++)
     {
-      if (pModel->getModelValues()[i]->getStatus() == CModelEntity::ODE)
+      if (Model.getModelValues()[i]->getStatus() == CModelEntity::ODE)
         {
           CCopasiMessage(CCopasiMessage::ERROR, "TSSA can not be applyed for systems with parameters defined by ODE.");
           return false;
@@ -304,7 +287,7 @@ bool CTSSAMethod::isValidProblem(const CCopasiProblem * pProblem)
     }
 
 // Check if the model contains events
-  if (pModel->getEvents().size() != 0)
+  if (Model.getEvents().size() != 0)
     {
       CCopasiMessage(CCopasiMessage::ERROR, "TSSA can not be applyed  for systems with events");
       return false;
@@ -322,99 +305,19 @@ C_FLOAT64 CTSSAMethod::returnCurrentTime(int step)
 };
 
 void CTSSAMethod::initializeParameter()
-{return;}
-
-void CTSSAMethod::initializeIntegrationsParameter()
 {
-  CCopasiParameter *pParm;
-
-  assertParameter("Integrate Reduced Model", CCopasiParameter::BOOL, (bool) true);
-  assertParameter("Relative Tolerance", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0e-6);
-  assertParameter("Absolute Tolerance", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0e-12);
-  assertParameter("Max Internal Steps", CCopasiParameter::UINT, (unsigned C_INT32) 10000);
-
-  // Check whether we have a method with the old parameter names
-  if ((pParm = getParameter("LSODA.RelativeTolerance")) != NULL)
+  if (mpLsodaMethod == NULL)
     {
-      setValue("Relative Tolerance", *pParm->getValue().pUDOUBLE);
-      removeParameter("LSODA.RelativeTolerance");
+      mpLsodaMethod = static_cast< CLsodaMethod *>(CTrajectoryMethod::createMethod(CCopasiMethod::deterministic));
+      mpLsodaMethod->setObjectParent(this);
 
-      if ((pParm = getParameter("LSODA.AbsoluteTolerance")) != NULL)
-        {
-          setValue("Absolute Tolerance", *pParm->getValue().pUDOUBLE);
-          removeParameter("LSODA.AbsoluteTolerance");
-        }
-
-      if ((pParm = getParameter("LSODA.AdamsMaxOrder")) != NULL)
-        {
-          removeParameter("LSODA.AdamsMaxOrder");
-        }
-
-      if ((pParm = getParameter("LSODA.BDFMaxOrder")) != NULL)
-        {
-          removeParameter("LSODA.BDFMaxOrder");
-        }
-
-      if ((pParm = getParameter("LSODA.MaxStepsInternal")) != NULL)
-        {
-          setValue("Max Internal Steps", *pParm->getValue().pUINT);
-          removeParameter("LSODA.MaxStepsInternal");
-        }
+      mpLsodaMethod->setValue("Integrate Reduced Model", true);
+      mpLsodaMethod->setValue("Relative Tolerance", (C_FLOAT64) 1.0e-6);
+      mpLsodaMethod->setValue("Absolute Tolerance", (C_FLOAT64) 1.0e-12);
+      mpLsodaMethod->setValue("Max Internal Steps", (unsigned C_INT32) 10000);
     }
 
-  // Check whether we have a method with "Use Default Absolute Tolerance"
-  if ((pParm = getParameter("Use Default Absolute Tolerance")) != NULL)
-    {
-      C_FLOAT64 NewValue;
-
-      if (*pParm->getValue().pBOOL)
-        {
-          // The default
-          NewValue = 1.e-12;
-        }
-      else
-        {
-          C_FLOAT64 OldValue = *getValue("Absolute Tolerance").pUDOUBLE;
-
-          CCopasiDataModel* pDataModel = getObjectDataModel();
-          assert(pDataModel != NULL);
-          CModel * pModel = pDataModel->getModel();
-
-          if (pModel == NULL)
-            // The default
-            NewValue = 1.e-12;
-          else
-            {
-              const CCopasiVectorNS< CCompartment > & Compartment = pModel->getCompartments();
-              size_t i, imax;
-              C_FLOAT64 Volume = std::numeric_limits< C_FLOAT64 >::max();
-
-              for (i = 0, imax = Compartment.size(); i < imax; i++)
-                if (Compartment[i]->getValue() < Volume)
-                  Volume = Compartment[i]->getValue();
-
-              if (Volume == std::numeric_limits< C_FLOAT64 >::max())
-                // The default
-                NewValue = 1.e-12;
-              else
-                // Invert the scaling as best as we can
-                NewValue = OldValue / (Volume * pModel->getQuantity2NumberFactor());
-            }
-        }
-
-      setValue("Absolute Tolerance", NewValue);
-      removeParameter("Use Default Absolute Tolerance");
-    }
-
-  // These parameters are no longer supported.
-  removeParameter("Adams Max Order");
-  removeParameter("BDF Max Order");
-
-  //These parametera are no longer defined by user
-  removeParameter("Relative Tolerance");
-  removeParameter("Absolute Tolerance");
-  removeParameter("Integrate Reduced Model");
-  removeParameter("Max Internal Steps");
+  return;
 }
 
 bool CTSSAMethod::elevateChildren()
@@ -425,59 +328,7 @@ bool CTSSAMethod::elevateChildren()
 
 void CTSSAMethod::integrationStep(const double & deltaT)
 {
-  if (mData.dim == 0) //just do nothing if there are no variables
-    {
-      mTime = mTime + deltaT;
-      mpState->setTime(mTime);
-      *mpCurrentState = *mpState;
-
-      return;
-    }
-
-  C_FLOAT64 EndTime = mTime + deltaT;
-
-  C_INT ITOL = 2; // mRtol scalar, mAtol vector
-  C_INT one = 1;
-  C_INT DSize = (C_INT) mDWork.size();
-  C_INT ISize = (C_INT) mIWork.size();
-
-  mLSODA(&EvalF, //  1. evaluate F
-         &mData.dim, //  2. number of variables
-         mY, //  3. the array of current concentrations
-         &mTime, //  4. the current time
-         &EndTime, //  5. the final time
-         &ITOL, //  6. error control
-         &mRtol, //  7. relative tolerance array
-         mAtol.array(), //  8. absolute tolerance array
-         &mState, //  9. output by overshoot & interpolation
-         &mLsodaStatus, // 10. the state control variable
-         &one, // 11. further options (one)
-         mDWork.array(), // 12. the double work array
-         &DSize, // 13. the double work array size
-         mIWork.array(), // 14. the int work array
-         &ISize, // 15. the int work array size
-         NULL, // 16. evaluate J (not given)
-         &mJType);        // 17. the type of jacobian calculate (2)
-
-  // Why did we ignore this error?
-  // if (mLsodaStatus == -1) mLsodaStatus = 2;
-
-  if ((mLsodaStatus <= 0))
-    {
-      CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 6, mErrorMsg.str().c_str());
-    }
-
-  if (mLsodaStatus == 3)
-    {
-      // It is sufficient to switch to 2. Eventual state changes due to events
-      // are indicated via the method stateChanged()
-      mLsodaStatus = 2;
-    }
-
-  mpState->setTime(mTime);
-  *mpCurrentState = *mpState;
-
-  return;
+  mpLsodaMethod->step(deltaT);
 }
 /**
 MAT_ANAL_MOD:  mathematical analysis of matrices mTdInverse for post-analysis
@@ -487,7 +338,7 @@ void CTSSAMethod::mat_anal_mod(C_INT & slow)
 
   C_INT i, j, dim;
 
-  dim = mData.dim;
+  dim = mDim;
 
   CVector<C_FLOAT64> denom;
   denom.resize(dim);
@@ -531,7 +382,7 @@ void CTSSAMethod::mat_anal_metab(C_INT & slow)
 {
   C_INT i, j, dim;
 
-  dim = mData.dim;
+  dim = mDim;
 
   CVector<C_FLOAT64> denom;
   denom.resize(dim);
@@ -566,7 +417,7 @@ void CTSSAMethod::mat_anal_mod_space(C_INT & slow)
   C_FLOAT64 denom, length;
   C_INT i, j, dim;
 
-  dim = mData.dim;
+  dim = mDim;
   C_INT fast;
   fast = dim - slow;
 
@@ -624,7 +475,7 @@ void CTSSAMethod::mat_anal_fast_space(C_INT & slow)
   C_FLOAT64 denom, length;
   C_INT i, j, dim;
 
-  dim = mData.dim;
+  dim = mDim;
   C_INT fast;
   fast = dim - slow;
 
@@ -682,11 +533,10 @@ void CTSSAMethod::mat_anal_fast_space_thomas(C_INT & slow)
   C_FLOAT64 scalar_product, absolute_value_1;
   C_INT i, j, k, dim;
 
-  dim = mData.dim;
+  dim = mDim;
   C_INT fast;
   fast = dim - slow;
 
-  C_FLOAT64 number2conc = mpModel->getNumber2QuantityFactor() / mpModel->getCompartments()[0]->getInitialValue();
   //C_FLOAT64 number2conc = 1.;
 
   //this is an ugly hack that only makes sense if all metabs are in the same compartment
@@ -696,7 +546,7 @@ void CTSSAMethod::mat_anal_fast_space_thomas(C_INT & slow)
   Xconc.resize(dim);
 
   for (i = 0; i < dim; ++i)
-    Xconc[i] = mY_initial[i] * number2conc;
+    Xconc[i] = mY_initial[i] * mNumber2Concentration;
 
   CVector<C_FLOAT64> d_full;
   d_full.resize(dim);
@@ -743,7 +593,7 @@ double CTSSAMethod::orthog(C_INT & number1, C_INT & number2)
   C_FLOAT64 product = 0;
   C_INT k, dim;
 
-  dim = mData.dim;
+  dim = mDim;
 
   for (k = 0; k < dim; k++)
     product = product + mTdInverse(k, number1) * mTdInverse(k, number2);
@@ -891,7 +741,7 @@ void CTSSAMethod::schur(C_INT &info)
   char V = 'V';
   char N = 'N';
   // TO REMOVE : L_fp select;
-  C_INT dim = mData.dim;
+  C_INT dim = mDim;
   C_INT SDIM = 0;
 
   CVector<C_FLOAT64> R;
@@ -975,7 +825,7 @@ void CTSSAMethod::schur(C_INT &info)
 
           CCopasiMethod::SubType subType;
 
-          subType = mData.pMethod->getSubType();
+          subType = getSubType();
 
           switch (subType)
             {
@@ -1318,7 +1168,7 @@ void CTSSAMethod::schur_desc(C_INT &info)
   char V = 'V';
   char N = 'N';
   // TO REMOVE : L_fp select;
-  C_INT dim = mData.dim;
+  C_INT dim = mDim;
   C_INT SDIM = 0;
 
   CVector<C_FLOAT64> R;
@@ -1590,7 +1440,7 @@ void CTSSAMethod::sylvester(C_INT slow, C_INT & info)
   char N2 = 'N';
   C_INT isgn = -1;
 
-  C_INT dim = mData.dim;
+  C_INT dim = mDim;
 
   C_INT fast = dim - slow;
   //  C_INT info;
@@ -1821,84 +1671,31 @@ void CTSSAMethod::sylvester(C_INT slow, C_INT & info)
   return;
 }
 
-void CTSSAMethod::calculateDerivativesX(C_FLOAT64 * X1, C_FLOAT64 * Y1)
+void CTSSAMethod::calculateDerivatives(C_FLOAT64 * X1, C_FLOAT64 * Y1, bool useReducedModel)
 {
-  size_t i, imax;
-  size_t indep;
+  CVector< C_FLOAT64 > SavedState = mpContainer->getValues();
 
-  // indep = mpModel->getNumIndependentMetabs();
-  indep = mpModel->getNumIndependentReactionMetabs();
+  C_FLOAT64 * pSpecies = mpFirstSpecies;
+  C_FLOAT64 * pSpeciesEnd = mpFirstSpecies + mDim;
+  C_FLOAT64 * pX = X1;
 
-  CVector<C_FLOAT64> tmp;
-  tmp.resize(indep);
+  for (; pSpecies != pSpeciesEnd; ++pSpecies, ++pX)
+    {
+      *pSpecies = mConcentration2Number * *pX;
+    }
 
-  /* make copy of the current state concentrations */
-  for (i = 0, imax = indep; i < imax; i++)
-    tmp[i] = mpModel->getMetabolitesX()[i]->getValue();
+  mpContainer->updateSimulatedValues(useReducedModel);
 
-  C_FLOAT64 conc2number =  mpModel->getQuantity2NumberFactor() * mpModel->getCompartments()[0]->getInitialValue();
-  //C_FLOAT64 conc2number = 1.;
+  const C_FLOAT64 * pRate = mpFirstSpeciesRate;
+  const C_FLOAT64 * pRateEnd = mpFirstSpeciesRate + mDim;
+  C_FLOAT64 * pY = Y1;
 
-  /* write new concentrations in the current state */
-  for (i = 0, imax = indep; i < imax; i++)
-    mpModel->getMetabolitesX()[i]->setValue(X1[i]*conc2number);
+  for (; pRate != pRateEnd; ++pRate, ++pY)
+    {
+      *pY = mNumber2Concentration * *pRate;
+    }
 
-  //mpState->setUpdateDependentRequired(true);
-  mpModel->updateSimulatedValues(mReducedModel);
-  // TO REMOVE:  mpModel->applyAssignments();
-  mpModel->calculateDerivativesX(Y1);
-
-  C_FLOAT64 number2conc = mpModel->getNumber2QuantityFactor() / mpModel->getCompartments()[0]->getInitialValue();
-  //C_FLOAT64 number2conc = 1.;
-
-  for (i = 0; i < imax; ++i)
-    Y1[i] *= number2conc;
-
-  /* write back concentrations of the current state*/
-  for (i = 0, imax = indep; i < imax; i++)
-    mpModel->getMetabolitesX()[i]->setValue(tmp[i]);
-
-  //mpState->setUpdateDependentRequired(true);
-  mpModel->updateSimulatedValues(mReducedModel);
-
-  return;
-}
-
-void CTSSAMethod::calculateDerivatives(C_FLOAT64 * X1, C_FLOAT64 * Y1)
-{
-  C_INT i, imax;
-  C_INT nmetab;
-
-  nmetab = mData.dim;
-
-  CVector<C_FLOAT64> tmp;
-  tmp.resize(nmetab);
-
-  /* make copy of the current state concentrations */
-  for (i = 0, imax = nmetab; i < imax; i++)
-    tmp[i] = mpModel->getMetabolites()[i]->getValue();
-
-  C_FLOAT64 conc2number = mpModel->getQuantity2NumberFactor() * mpModel->getCompartments()[0]->getInitialValue();
-  //C_FLOAT64 conc2number = 1.;
-
-  /* write new concentrations in the current state */
-  for (i = 0, imax = nmetab; i < imax; i++)
-    mpModel->getMetabolites()[i]->setValue(X1[i]*conc2number);
-
-  mpModel->updateSimulatedValues(mReducedModel);
-  mpModel->calculateDerivatives(Y1);
-
-  C_FLOAT64 number2conc = mpModel->getNumber2QuantityFactor() / mpModel->getCompartments()[0]->getInitialValue();
-  //C_FLOAT64 number2conc = 1.;
-
-  for (i = 0; i < imax; ++i)
-    Y1[i] *= number2conc;
-
-  /* write back concentrations of the current state*/
-  for (i = 0, imax = nmetab; i < imax; i++)
-    mpModel->getMetabolites()[i]->setValue(tmp[i]);
-
-  mpModel->updateSimulatedValues(mReducedModel);
+  mpContainer->setValues(SavedState);
 
   return;
 }
@@ -2052,96 +1849,9 @@ void CTSSAMethod::update_pid(C_INT *index, C_INT *pid, const C_INT & dim)
   return;
 }
 
-void CTSSAMethod::integrationMethodStart(const CState * initialState)
+void CTSSAMethod::integrationMethodStart()
 {
-  /* Retrieve the model to calculate */
-  mpModel = mpProblem->getModel();
-
-  /* Reset lsoda */
-
-  mLsodaStatus = 1;
-  mState = 1;
-  mJType = 2;
-  mErrorMsg.str("");
-  mLSODA.setOstream(mErrorMsg);
-
-  /* Release previous state and make the initialState the current */
-  pdelete(mpState);
-  mpState = new CState(*initialState);
-  mY = mpState->beginIndependent();
-
-  mTime = mpState->getTime();
-
-  if (mReducedModel)
-    {
-      mData.dim = mpState->getNumIndependent();
-    }
-  else
-    {
-      mData.dim = mpState->getNumIndependent() + mpModel->getNumDependentReactionMetabs();
-    }
-
-  mYdot.resize(mData.dim);
-  // mY_initial.resize(mData.dim);
-  mJacobian.resize(mData.dim, mData.dim);
-
-  /* Configure lsoda */
-  mRtol = 1.e-6;   // * getValue("Relative Tolerance").pUDOUBLE;
-  initializeAtol();
-
-  mDWork.resize(22 + mData.dim * std::max<C_INT>(16, mData.dim + 9));
-  mDWork[4] = mDWork[5] = mDWork[6] = mDWork[7] = mDWork[8] = mDWork[9] = 0.0;
-  mIWork.resize(20 + mData.dim);
-  mIWork[4] = mIWork[6] = mIWork[9] = 0;
-
-  mIWork[5] =  10000 ; // * getValue("Max Internal Steps").pUINT;
-  mIWork[7] = 12;
-  mIWork[8] = 5;
-
-  return;
-}
-
-void CTSSAMethod::initializeAtol()
-{
-  //C_FLOAT64 * pTolerance = getValue("Absolute Tolerance").pUDOUBLE;
-
-  mAtol.resize(mData.dim);
-  C_FLOAT64 * pAtol = mAtol.array();
-  C_FLOAT64 * pEnd = pAtol + mAtol.size();
-
-  CModelEntity *const* ppEntity = mpModel->getStateTemplate().beginIndependent();
-  const CMetab * pMetab;
-
-  for (; pAtol != pEnd; ++pAtol, ++ppEntity)
-    {
-      *pAtol = 1.e-12 ; // *pTolerance;
-
-      // Rescale for metabolites as we are using particle numbers
-      if ((pMetab = dynamic_cast< const CMetab * >(*ppEntity)) != NULL)
-        {
-          *pAtol *=
-            pMetab->getCompartment()->getValue() * mpModel->getQuantity2NumberFactor();
-        }
-    }
-}
-
-void CTSSAMethod::EvalF(const C_INT * n, const C_FLOAT64 * t, const C_FLOAT64 * y, C_FLOAT64 * ydot)
-{static_cast<Data *>((void *) n)->pMethod->evalF(t, y, ydot);}
-
-void CTSSAMethod::evalF(const C_FLOAT64 * t, const C_FLOAT64 * /* y */, C_FLOAT64 * ydot)
-{
-  mpState->setTime(*t);
-
-  mpModel->setState(*mpState);
-  // TO REMOVE : mpModel->applyAssignments();
-  mpModel->updateSimulatedValues(mReducedModel);
-
-  if (mReducedModel)
-    mpModel->calculateDerivativesX(ydot);
-  else
-    mpModel->calculateDerivatives(ydot);
-
-  return;
+  mpLsodaMethod->start();
 }
 
 /**************** display matrix methods ***********************************/

@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -20,6 +20,8 @@
 
 class QStringList;
 class CCopasiParameterGroup;
+class CopasiWidget;
+class QObject;
 
 /**
  * Retrieve a parameter from a parameter group and convert it to a QString.
@@ -72,6 +74,13 @@ bool setParameterValue(CCopasiParameterGroup * group,
  */
 #define FROM_UTF8(__x) QString::fromUtf8((__x).c_str())
 #define TO_UTF8(__x) (__x).toUtf8().data()
+
+/**
+ * Retrieve the COPASI data model the displayed data is associated with
+ * @param QObject * pObject
+ * @return const CopasiWidget * pCopasiWidget
+ */
+const CopasiWidget * GetCopasiWidget(const QObject * pObject);
 
 /**
  * Checks whether the file exists. If the file exist the user

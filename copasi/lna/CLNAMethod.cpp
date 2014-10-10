@@ -1,4 +1,4 @@
-// Copyright (C) 2011 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -7,12 +7,15 @@
 #include <limits>
 
 #include "copasi.h"
+
+#include "CLNAMethod.h"
+#include "CLNAProblem.h"
+
+#include "math/CMathContainer.h"
 #include "model/CModel.h"
 #include "utilities/utility.h"
 #include "utilities/CCopasiTask.h"
 #include "utilities/CReadConfig.h"
-#include "CLNAMethod.h"
-#include "CLNAProblem.h"
 
 #include "lapack/blaswrap.h"
 #include "lapack/lapackwrap.h"
@@ -710,34 +713,31 @@ bool CLNAMethod::isValidProblem(const CCopasiProblem * pProblem)
       return false;
     }
 
-  CModel * pModel = pP->getModel();
-
-  if (pModel == NULL)
-    return false;
+  const CModel & Model = mpContainer->getModel();
 
   // Check if the model contains species that have assignments or
   // explicit ODEs.
-  if (pModel->getNumAssignmentMetabs() > 0)
+  if (Model.getNumAssignmentMetabs() > 0)
     {
       CCopasiMessage(CCopasiMessage::ERROR, "LNA is not applicable for a system with species assignments.");
       return false;
     }
 
-  if (pModel->getNumODEMetabs() > 0)
+  if (Model.getNumODEMetabs() > 0)
     {
       CCopasiMessage(CCopasiMessage::ERROR, "LNA is not applicable for a system with explicit ODEs for species.");
       return false;
     }
 
-  //if (pModel->getCompartments().size() > 1)
+  //if (Model.getCompartments().size() > 1)
   //  {
   //    CCopasiMessage(CCopasiMessage::ERROR, "LNA is not applicable for a system with more than one compartment.");
   //    return false;
   //}
 
   // Check if the model has a compartment with an assignment or ODE
-  CCopasiVector< CCompartment >::const_iterator it = pModel->getCompartments().begin();
-  CCopasiVector< CCompartment >::const_iterator end = pModel->getCompartments().end();
+  CCopasiVector< CCompartment >::const_iterator it = Model.getCompartments().begin();
+  CCopasiVector< CCompartment >::const_iterator end = Model.getCompartments().end();
 
   for (; it != end; ++it)
     if ((*it)->getStatus() != CModelEntity::FIXED)
@@ -746,8 +746,10 @@ bool CLNAMethod::isValidProblem(const CCopasiProblem * pProblem)
         return false;
       }
 
-  CCopasiVector< CReaction > & reacs = pModel->getReactions();
+  const CCopasiVector< CReaction > & reacs = Model.getReactions();
+
   size_t numReacs = reacs.size();
+
   size_t i;
 
   for (i = 0; i < numReacs; i++) // for every reaction

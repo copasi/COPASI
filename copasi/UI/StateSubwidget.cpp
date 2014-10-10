@@ -347,11 +347,6 @@ bool StateSubwidget::loadAll(const CSteadyStateTask * pTask)
       return false;
     }
 
-  CState * pState = const_cast<CState *>(mpTask->getState());
-  mpModel->setState(*pState);
-  mpModel->updateSimulatedValues(true);
-  mpModel->updateNonSimulatedValues();
-
   if (mpTask->getResult() == CSteadyStateMethod::found)
     topLabel->setText("A steady state with given resolution was found.");
   else if (mpTask->getResult() == CSteadyStateMethod::notFound)

@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -150,7 +150,7 @@ bool COptMethodLevenbergMarquardt::optimise()
             break;
         }
 
-      (*(*mpSetCalculateVariable)[i])(mCurrent[i]);
+      *mContainerVariables[i] = mCurrent[i];
     }
 
   // keep the current parameter for later
@@ -297,7 +297,7 @@ bool COptMethodLevenbergMarquardt::optimise()
       // calculate the relative change in each parameter
       for (convp = 0.0, i = 0; i < mVariableSize; i++)
         {
-          (*(*mpSetCalculateVariable)[i])(mCurrent[i]);
+          *mContainerVariables[i] = mCurrent[i];
           convp += fabs((mCurrent[i] - mBest[i]) / mBest[i]);
         }
 
@@ -346,7 +346,7 @@ bool COptMethodLevenbergMarquardt::optimise()
           mCurrent = mBest;
 
           for (i = 0; i < mVariableSize; i++)
-            (*(*mpSetCalculateVariable)[i])(mCurrent[i]);
+            *mContainerVariables[i] = mCurrent[i];
 
           // if lambda too high terminate
           if (LM_lambda > LAMBDA_MAX) nu = 0.0;
@@ -462,18 +462,18 @@ void COptMethodLevenbergMarquardt::gradient()
 //REVIEW:START
       if ((x = mCurrent[i]) != 0.0)
         {
-          (*(*mpSetCalculateVariable)[i])(x * mod1);
+          *mContainerVariables[i] = (x * mod1);
           mGradient[i] = (evaluate() - y) / (x * mModulation);
         }
 
       else
         {
-          (*(*mpSetCalculateVariable)[i])(mModulation);
+          *mContainerVariables[i] = (mModulation);
           mGradient[i] = (evaluate() - y) / mModulation;
         }
 
 //REVIEW:END
-      (*(*mpSetCalculateVariable)[i])(x);
+      *mContainerVariables[i] = (x);
     }
 }
 
@@ -511,13 +511,13 @@ void COptMethodLevenbergMarquardt::hessian()
           if ((x = mCurrent[i]) != 0.0)
             {
               Delta = 1.0 / (x * mModulation);
-              (*(*mpSetCalculateVariable)[i])(x * mod1);
+              *mContainerVariables[i] = (x * mod1);
             }
 
           else
             {
               Delta = 1.0 / mModulation;
-              (*(*mpSetCalculateVariable)[i])(mModulation);
+              *mContainerVariables[i] = (mModulation);
 //REVIEW:END
             }
 
@@ -529,7 +529,7 @@ void COptMethodLevenbergMarquardt::hessian()
           for (; pCurrentResiduals != pEnd; pCurrentResiduals++, pResiduals++, pJacobianT++)
             *pJacobianT = (*pResiduals - *pCurrentResiduals) * Delta;
 
-          (*(*mpSetCalculateVariable)[i])(x);
+          *mContainerVariables[i] = (x);
         }
 
 #ifdef XXXX
@@ -614,7 +614,7 @@ void COptMethodLevenbergMarquardt::hessian()
 //REVIEW:END
             }
 
-          (*(*mpSetCalculateVariable)[i])(mCurrent[i]);
+          *mContainerVariables[i] = mCurrent[i];
           gradient();
 
           for (j = 0; j <= i; j++)
@@ -622,7 +622,7 @@ void COptMethodLevenbergMarquardt::hessian()
 
           // restore the original parameter value
           mCurrent[i] = x;
-          (*(*mpSetCalculateVariable)[i])(x);
+          *mContainerVariables[i] = (x);
         }
 
       // restore the gradient

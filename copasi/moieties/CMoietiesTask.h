@@ -1,17 +1,9 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/moieties/CMoietiesTask.h,v $
-//   $Revision: 1.4 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/03/07 19:31:28 $
-// End CVS Header
-
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
@@ -33,13 +25,20 @@ public:
    */
   static const unsigned int ValidMethods[];
 
+private:
   /**
-   * default constructor
-   * @param const CCopasiTask::Type & type (default: moieties)
-   * @param const CCopasiContainer * pParent (default: NULL)
+   * Default constructor
    */
-  CMoietiesTask(const CCopasiTask::Type & type = CCopasiTask::moieties,
-                const CCopasiContainer * pParent = NULL);
+  CMoietiesTask();
+
+public:
+  /**
+   * Specific constructor
+   * @param const CCopasiContainer * pParent
+   * @param const CCopasiTask::Type & type (default: moieties)
+   */
+  CMoietiesTask(const CCopasiContainer * pParent,
+                const CCopasiTask::Type & type = CCopasiTask::moieties);
 
   /**
    * Copy constructor

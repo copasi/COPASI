@@ -15,25 +15,12 @@
 #ifndef COPASI_CStochMethod
 #define COPASI_CStochMethod
 
-#include <set>
-#include <vector>
 #include "trajectory/CTrajectoryMethod.h"
 #include "utilities/CDependencyGraph.h"
+#include "utilities/CVector.h"
 
-class CModel;
-class CMetab;
 class CTrajectoryProblem;
-
-/**
- * Integer Balances  for internal use
- */
-class CStochBalance
-{
-public:
-  size_t mIndex;
-  C_INT32 mMultiplicity;
-};
-
+class CMathReaction;
 class CRandom;
 
 class CStochMethod : public CTrajectoryMethod
@@ -44,56 +31,15 @@ class CStochMethod : public CTrajectoryMethod
 protected:
 
   /**
-   * The propensities for the reactions
-   */
-  std::vector<C_FLOAT64> mAmu;
-
-  /**
-   * The sum of the propensities
-   */
-  C_FLOAT64 mA0;
-
-  /**
-   * The stored propensities for the reactions before the last update
-   */
-  std::vector<C_FLOAT64> mAmuOld;
-
-  /**
-   * indicates if the correction N^2 -> N*(N-1) should be performed
-   */
-  bool mDoCorrection;
-
-  /**
-   * Indicates whether the model has global quantities with assignment rules.
-   * If it has, we will use a less efficient way to update the model
-   * state to handle this.
-   */
-  bool mHasAssignments;
-
-  /**
    * Initialization.
    */
-  virtual void initMethod(C_FLOAT64 start_time) = 0;
+  virtual void initMethod() = 0;
 
   /**
    * Do one iteration of the simulation
    * @return Current simulation time or -1 if error.
    */
   virtual C_FLOAT64 doSingleStep(C_FLOAT64 time, C_FLOAT64 endtime) = 0;
-
-  /**
-   * Calculate the propensities for all reactions
-   * @return mFail
-   * @see mFail
-   */
-  C_INT32 updatePropensities();
-
-  /**
-   * Calculate one of the propensities
-   * @return mFail
-   * @see mFail
-   */
-  C_INT32 calculateAmu(size_t reaction_index);
 
   /**
    * Generate the index of a putative reaction.
@@ -114,16 +60,9 @@ protected:
   C_FLOAT64 generateReactionTime(size_t reaction_index);
 
   /**
-   * Update the particle numbers according to which reaction ocurred
-   * @return mFail
-   * @see mFail
-   */
-  C_INT32 updateSystemState(size_t reaction_index, const C_FLOAT64 & time);
-
-  /**
   * Set up the dependency graph and the balances
   */
-  void setupDependencyGraphAndBalances();
+  void setupDependencyGraph();
 
 private:
 
@@ -134,38 +73,6 @@ private:
    *  @return 1: direct method, 2: next reaction method, -1: no stochastic simulation possible
    */
   static C_INT32 checkModel(CModel * pmodel);
-
-  /**
-   * Get the set of metabolites on which a given reaction depends.
-   * @param reaction_index The index of the reaction being executed.
-   * @return The set of metabolites depended on.
-   */
-  std::set<std::string> *getDependsOn(size_t reaction_index);
-
-  /**
-   * Get the set of metabolites which change number when a given
-   * reaction is executed.
-   * @param reaction_index The index of the reaction being executed.
-   * @return The set of affected metabolites.
-   */
-  std::set<std::string> *getAffects(size_t reaction_index);
-
-  /**
-  * max number of single stochastic steps to do in one step()
-  */
-  size_t mMaxSteps;
-
-  /**
-  * maximal increase of a particle number in one step.
-  */
-  C_INT32 mMaxBalance;
-
-  /**
-  * This is set to maxint - mMaxSteps*mMaxBalance
-  */
-  C_INT64 mMaxIntBeforeStep;
-
-  bool mMaxStepsReached;
 
 protected:
   /**
@@ -209,9 +116,8 @@ public:
   /**
    *  This instructs the method to prepare for integration
    *  starting with the initialState given.
-   *  @param "const CState *" initialState
    */
-  virtual void start(CVectorCore< C_FLOAT64 > & initialState);
+  virtual void start();
 
   /**
   * Check if the method is suitable for this problem
@@ -226,50 +132,72 @@ private:
   void initializeParameter();
 
 protected:
-
   /**
    * The random number generator
    */
   CRandom *mpRandomGenerator;
 
   /**
-   * A pointer to the instance of CModel being used.
+   * The sum of the propensities
    */
-  CModel *mpModel;
-
-  /**
-   * The graph of reactions and their dependent reactions. When a reaction is
-   * executed, the propensities for each of its dependents must be updated.
-   */
-  CDependencyGraph mDG;
-
-  /**
-   * The balances of the reactions as integers
-   */
-  std::vector < std::vector <CStochBalance> > mLocalBalances;
-
-  /**
-   * the substrates of each reaction with their multiplicities
-   */
-  std::vector < std::vector <CStochBalance> > mLocalSubstrates;
-
-  /**
-   * The particle numbers
-   */
-  std::vector <C_INT64> mNumbers;
+  C_FLOAT64 mA0;
 
   size_t mNumReactions;
 
   /**
-   * index of first metab in a CState
+   * A reference to the math container's reactions
    */
-  size_t mFirstMetabIndex;
+  CVectorCore< CMathReaction > mReactions;
 
   /**
-   * tests if the model contains a global value with an assignment rule that is
-   * used in calculations
+   * A reference to the math container's propensity objects
    */
-  static bool modelHasAssignments(const CModel* pModel);
+  CVectorCore< CMathObject > mPropensityObjects;
+
+  /**
+   * A reference to the math container's propensity values
+   */
+  CVectorCore< C_FLOAT64 > mAmu;
+
+  /**
+   * A vector containing the update sequence required to update all propensity values.
+   */
+  CVector< CObjectInterface::UpdateSequence > mUpdateSequences;
+
+  /**
+   * max number of single stochastic steps to do in one step()
+   */
+  size_t mMaxSteps;
+
+  /**
+   * Flag indicating whether the max step are reached.
+   */
+  bool mMaxStepsReached;
+
+  /**
+   * The time the next reaction fires
+   */
+  C_FLOAT64 mNextReactionTime;
+
+  /**
+   * The index of the next reaction which fires
+   */
+  size_t mNextReactionIndex;
+
+  /**
+   *   Number of variable metabolites.
+   */
+  size_t mNumReactionSpecies;
+
+  /**
+   *   The Ordered reaction
+   */
+  size_t mFirstReactionSpeciesIndex;
+
+  /**
+   * The dependency graph for the next reaction method.
+   */
+  CDependencyGraph mDG;
 };
 
 //#include "CStochDirectMethod.h"

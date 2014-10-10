@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -30,15 +30,15 @@
 #include "CSteadyStateTask.h"
 
 #include "CopasiDataModel/CCopasiDataModel.h"
-#include "model/CModel.h"
-#include "model/CState.h"
 #include "report/CKeyFactory.h"
 #include "report/CReport.h"
+#include "math/CMathContainer.h"
 
 #define XXXX_Reporting
 
-CMCATask::CMCATask(const CCopasiContainer * pParent):
-  CCopasiTask(CCopasiTask::mca, pParent)
+CMCATask::CMCATask(const CCopasiContainer * pParent,
+                   const CCopasiTask::Type & type):
+  CCopasiTask(pParent, type)
 {
   mpProblem = new CMCAProblem(this);
 
@@ -93,7 +93,6 @@ bool CMCATask::updateMatrices()
 
   if (!pMethod) return false;
 
-  pMethod->setModel(mpProblem->getModel());
   pMethod->resizeAllMatrices();
 
   return true;
@@ -118,8 +117,6 @@ bool CMCATask::initialize(const OutputFlag & of,
 
   //initialize reporting
   if (!CCopasiTask::initialize(of, pOutputHandler, pOstream)) success = false;
-
-  if (!pProblem->getModel()->compileIfNecessary(mpCallBack)) success = false;
 
   CSteadyStateTask *pSubTask = pProblem->getSubTask();
 
@@ -151,7 +148,7 @@ bool CMCATask::process(const bool & useInitialValues)
 
       if (!success && useInitialValues)
         {
-          mpProblem->getModel()->applyInitialValues();
+          mpContainer->applyInitialValues();
         }
 
       pMethod->setSteadyStateTask(pSubTask);
@@ -162,7 +159,7 @@ bool CMCATask::process(const bool & useInitialValues)
 
       if (useInitialValues)
         {
-          mpProblem->getModel()->applyInitialValues();
+          mpContainer->applyInitialValues();
         }
     }
 
@@ -208,7 +205,6 @@ void CMCATask::printResult(std::ostream * ostream) const
 
   CMCAMethod* pMethod = dynamic_cast<CMCAMethod *>(mpMethod);
   assert(pMethod);
-  pMethod->setModel(mpProblem->getModel());
 
   std::ostream & os = *ostream;
 

@@ -247,7 +247,7 @@ void CMathEventQueue::start()
 {
   mActions.clear();
 
-  mpTime = mpContainer->getState().array() + mpContainer->getTimeIndex();
+  mpTime = mpContainer->getState(false).array() + mpContainer->getTimeIndex();
 
   size_t NumRoots = mpContainer->getRoots().size();
   mRootsFound.resize(NumRoots);
@@ -277,7 +277,7 @@ CMath::StateChange CMathEventQueue::process(const bool & priorToOutput)
 
   iterator itAction = getAction();
 
-  std::cout << "State: " << mpContainer->getState() << std::endl;
+  std::cout << "State: " << mpContainer->getState(false) << std::endl;
   std::cout << "Roots: " << mpContainer->getRoots() << std::endl;
 
   // The algorithm below will work properly for user ordered events
@@ -296,7 +296,7 @@ CMath::StateChange CMathEventQueue::process(const bool & priorToOutput)
 
       // State change does not indicate whether we have any root changes. We need to
       // explicitly check for it.
-      std::cout << "State: " << mpContainer->getState() << std::endl;
+      std::cout << "State: " << mpContainer->getState(false) << std::endl;
       std::cout << "Roots: " << mpContainer->getRoots() << std::endl;
 
       // We switch to the next cascading level so that events triggered by the

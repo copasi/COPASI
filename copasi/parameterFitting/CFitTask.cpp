@@ -27,9 +27,9 @@
 
 #include "utilities/CCopasiMethod.h"
 
-CFitTask::CFitTask(const CCopasiTask::Type & type,
-                   const CCopasiContainer * pParent):
-  COptTask(type, pParent)
+CFitTask::CFitTask(const CCopasiContainer * pParent,
+                   const CCopasiTask::Type & type):
+  COptTask(pParent, type)
 {
   pdelete(mpProblem);
   mpProblem = new CFitProblem(type, this);

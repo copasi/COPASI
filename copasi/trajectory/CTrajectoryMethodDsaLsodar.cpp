@@ -53,7 +53,7 @@ CTrajectoryMethodDsaLsodar::CPartition::CPartition():
   mHasDeterministic(false),
   mNumLowSpecies(0),
   mpContainer(NULL),
-  mpFirstReactionSpecies(NULL)
+  mpFirstReactionValue(NULL)
 {}
 
 CTrajectoryMethodDsaLsodar::CPartition::CPartition(const CTrajectoryMethodDsaLsodar::CPartition & src):
@@ -69,7 +69,7 @@ CTrajectoryMethodDsaLsodar::CPartition::CPartition(const CTrajectoryMethodDsaLso
   mHasDeterministic(src.mHasDeterministic),
   mNumLowSpecies(src.mNumLowSpecies),
   mpContainer(src.mpContainer),
-  mpFirstReactionSpecies(src.mpFirstReactionSpecies)
+  mpFirstReactionValue(src.mpFirstReactionValue)
 {}
 
 CTrajectoryMethodDsaLsodar::CPartition::~CPartition()
@@ -84,7 +84,7 @@ void CTrajectoryMethodDsaLsodar::CPartition::intialize(const CMathContainer * pC
   mUpperThreshold = upperThreshold;
 
   mFirstReactionSpeciesIndex = mpContainer->getCountFixedEventTargets() + 1 /* Time */ + mpContainer->getCountODEs();
-  mpFirstReactionSpecies = mpContainer->getMathObject(mpContainer->getState().array() + mFirstReactionSpeciesIndex);
+  mpFirstReactionValue = mpContainer->getState(false).array() + mFirstReactionSpeciesIndex;
   mNumReactionSpecies = mpContainer->getCountIndependentSpecies() + mpContainer->getCountDependentSpecies();
 
   const CVector< CMathReaction > & reactions = mpContainer->getReactions();
@@ -110,18 +110,18 @@ void CTrajectoryMethodDsaLsodar::CPartition::intialize(const CMathContainer * pC
 
   for (size_t Index = 0; pReaction != pReactionEnd; ++pReaction, ++Index)
     {
-      CMathReaction::Balance::const_iterator itBalance = pReaction->getBalance().begin();
-      CMathReaction::Balance::const_iterator endBalance = pReaction->getBalance().end();
+      const CMathReaction::SpeciesBalance * itBalance = pReaction->getNumberBalance().array();
+      const CMathReaction::SpeciesBalance * endBalance = itBalance + pReaction->getNumberBalance().size();
 
       for (; itBalance != endBalance; ++itBalance)
         {
-          mSpeciesToReactions.insert(std::pair< size_t, size_t * >(itBalance->first - mpFirstReactionSpecies,
+          mSpeciesToReactions.insert(std::pair< size_t, size_t * >(itBalance->first - mpFirstReactionValue,
                                      mNumLowSpecies.array() + Index));
         }
     }
 
   // Create the initial partition by first counting species with low particle number per reaction
-  const C_FLOAT64 * pValue = mpContainer->getState().array() + mFirstReactionSpeciesIndex;
+  const C_FLOAT64 * pValue = mpContainer->getState(false).array() + mFirstReactionSpeciesIndex;
   const C_FLOAT64 * pValueEnd = pValue + mNumReactionSpecies;
   bool * pStochasticSpecies = mStochasticSpecies.array();
 
@@ -263,7 +263,7 @@ bool CTrajectoryMethodDsaLsodar::CPartition::rePartition(const CVectorCore< C_FL
  */
 CTrajectoryMethodDsaLsodar::CTrajectoryMethodDsaLsodar(const CCopasiMethod::SubType & subType,
     const CCopasiContainer * pParent):
-  CLsodaMethod(subType, pParent)
+  CLsodaMethod(CCopasiTask::timeCourse, subType, pParent)
 {
   mpRandomGenerator = CRandom::createGenerator(CRandom::mt19937);
   initializeParameter();
@@ -476,9 +476,10 @@ C_FLOAT64 CTrajectoryMethodDsaLsodar::doSingleStep(C_FLOAT64 curTime, C_FLOAT64 
 }
 
 // virtual
-void CTrajectoryMethodDsaLsodar::start(CVectorCore< C_FLOAT64 > & initialState)
+void CTrajectoryMethodDsaLsodar::start()
 {
-  mContainerState = initialState;
+  CLsodaMethod::start();
+
   mReactions.initialize(mpContainer->getReactions());
   mNumReactions = mReactions.size();
   mAmu.initialize(mpContainer->getPropensities());
@@ -537,12 +538,12 @@ void CTrajectoryMethodDsaLsodar::start(CVectorCore< C_FLOAT64 > & initialState)
       // The time is always updated
       Changed.insert(pTimeObject);
 
-      CMathReaction::Balance::const_iterator itBalance = pReaction->getBalance().begin();
-      CMathReaction::Balance::const_iterator endBalance = pReaction->getBalance().end();
+      const CMathReaction::SpeciesBalance * itBalance = pReaction->getNumberBalance().array();
+      const CMathReaction::SpeciesBalance * endBalance = itBalance + pReaction->getNumberBalance().size();
 
       for (; itBalance != endBalance; ++itBalance)
         {
-          Changed.insert(itBalance->first);
+          Changed.insert(mpContainer->getMathObject(itBalance->first));
         }
 
       pUpdateSequence->clear();
@@ -551,8 +552,6 @@ void CTrajectoryMethodDsaLsodar::start(CVectorCore< C_FLOAT64 > & initialState)
 
   mPartition.intialize(mpContainer, *mpLowerLimit, *mpUpperLimit);
 
-  CLsodaMethod::start(initialState);
-
   return;
 }
 
@@ -560,8 +559,8 @@ void CTrajectoryMethodDsaLsodar::start(CVectorCore< C_FLOAT64 > & initialState)
 void CTrajectoryMethodDsaLsodar::evalF(const C_FLOAT64 * t, const C_FLOAT64 * /* y */, C_FLOAT64 * ydot)
 {
   *mpContainerStateTime = *t;
-  mpContainer->updateSimulatedValues(*mpReducedModel);
-  memcpy(ydot, mpContainer->getRate().array(), mData.dim * sizeof(C_FLOAT64));
+  mpContainer->updateSimulatedValues(false);
+  memcpy(ydot, mpContainer->getRate(false).array(), mData.dim * sizeof(C_FLOAT64));
 
   // We cannot use the species rates from the container as they are calculated
   // by summing over all reactions.
@@ -579,14 +578,15 @@ void CTrajectoryMethodDsaLsodar::evalF(const C_FLOAT64 * t, const C_FLOAT64 * /*
           continue;
         }
 
-      CMathReaction::Balance::const_iterator itBalance = (*ppReaction)->getBalance().begin();
-      CMathReaction::Balance::const_iterator endBalance = (*ppReaction)->getBalance().end();
+      const CMathReaction::SpeciesBalance * itBalance = (*ppReaction)->getNumberBalance().array();
+
+      const CMathReaction::SpeciesBalance * endBalance = itBalance + (*ppReaction)->getNumberBalance().size();
 
       C_FLOAT64 * pParticleFlux = (C_FLOAT64 *)(*ppReaction)->getParticleFluxObject()->getValuePointer();
 
       for (; itBalance != endBalance; ++ itBalance)
         {
-          SpeciesRates[itBalance->first - mPartition.mpFirstReactionSpecies] += floor(itBalance->second + 0.5) * *pParticleFlux;
+          SpeciesRates[itBalance->first - mPartition.mpFirstReactionValue] += itBalance->second + 0.5 * *pParticleFlux;
         }
     }
 
@@ -697,54 +697,16 @@ bool CTrajectoryMethodDsaLsodar::isValidProblem(const CCopasiProblem * pProblem)
       return false;
     }
 
-  //check for rules
-  size_t i, imax = pTP->getModel()->getNumModelValues();
-
-  for (i = 0; i < imax; ++i)
+  //events are not supported at the moment
+  if (mpContainer->getEvents().size() > 0)
     {
-      if (pTP->getModel()->getModelValues()[i]->getStatus() == CModelEntity::ODE)
-        {
-          //ode rule found
-          CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 18);
-          return false;
-        }
-
-      /*      if (pTP->getModel()->getModelValues()[i]->getStatus()==CModelEntity::ASSIGNMENT)
-              if (pTP->getModel()->getModelValues()[i]->isUsed())
-                {
-                  //used assignment found
-                  CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 19);
-                  return false;
-                }*/
-    }
-
-  imax = pTP->getModel()->getNumMetabs();
-
-  for (i = 0; i < imax; ++i)
-    {
-      if (pTP->getModel()->getMetabolites()[i]->getStatus() == CModelEntity::ODE)
-        {
-          //ode rule found
-          CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 20);
-          return false;
-        }
-    }
-
-  imax = pTP->getModel()->getCompartments().size();
-
-  for (i = 0; i < imax; ++i)
-    {
-      if (pTP->getModel()->getCompartments()[i]->getStatus() == CModelEntity::ODE)
-        {
-          //ode rule found
-          CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 21);
-          return false;
-        }
+      CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 23);
+      return false;
     }
 
   //TODO: rewrite CModel::suitableForStochasticSimulation() to use
   //      CCopasiMessage
-  std::string message = pTP->getModel()->suitableForStochasticSimulation();
+  std::string message = mpContainer->getModel().suitableForStochasticSimulation();
 
   if (message != "")
     {
@@ -779,13 +741,6 @@ bool CTrajectoryMethodDsaLsodar::isValidProblem(const CCopasiProblem * pProblem)
 
   /* Random Seed */
   // nothing to be done here
-
-  //events are not supported at the moment
-  if (pTP->getModel()->getEvents().size() > 0)
-    {
-      CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 23);
-      return false;
-    }
 
   return true;
 }

@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -99,7 +99,7 @@ bool CFitItem::isValid(CCopasiParameterGroup & group)
   return tmp.isValid();
 }
 
-bool CFitItem::compile(const std::vector< CCopasiContainer * > listOfContainer)
+bool CFitItem::compile(const CObjectInterface::ContainerList listOfContainer)
 {
   if (!COptItem::compile(listOfContainer)) return false;
 

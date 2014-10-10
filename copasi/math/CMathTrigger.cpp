@@ -48,7 +48,7 @@ void CMathTrigger::CRootFinder::initObjects()
   setRefresh(&mRoot, &CExpression::refresh);
 }
 
-bool CMathTrigger::CRootFinder::compile(std::vector< CCopasiContainer * > listOfContainer)
+bool CMathTrigger::CRootFinder::compile(CObjectInterface::ContainerList listOfContainer)
 {
   bool success = true;
 
@@ -210,7 +210,7 @@ bool CMathTrigger::calculate()
 }
 
 bool CMathTrigger::compile(const CExpression * pTriggerExpression,
-                           std::vector< CCopasiContainer * > listOfContainer)
+                           CObjectInterface::ContainerList listOfContainer)
 {
   if (pTriggerExpression == NULL)
     return false;

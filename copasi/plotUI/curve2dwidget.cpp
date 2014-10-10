@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -77,10 +77,10 @@ bool Curve2DWidget::LoadFromCurveSpec(const CPlotItem * curve)
   mpObjectX = mpObjectY = NULL;
 
   if (curve->getChannels().size() >= 1)
-    mpObjectX = pDataModel->getDataObject(curve->getChannels()[0]);
+    mpObjectX = CObjectInterface::DataObject(pDataModel->getObjectFromCN(curve->getChannels()[0]));
 
   if (curve->getChannels().size() >= 2)
-    mpObjectY = pDataModel->getDataObject(curve->getChannels()[1]);
+    mpObjectY = CObjectInterface::DataObject(pDataModel->getObjectFromCN(curve->getChannels()[1]));
 
   if (mpObjectX)
     mpEditX->setText(FROM_UTF8(mpObjectX->getObjectDisplayName()));

@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -33,6 +33,7 @@
 #include "CSSAMethod.h"
 #endif
 
+#include "math/CMathContainer.h"
 #include "model/CModel.h"
 #include "model/CMetab.h"
 #include "model/CMetabNameInterface.h"
@@ -52,8 +53,9 @@ const unsigned int CEFMTask::ValidMethods[] =
   0
 };
 
-CEFMTask::CEFMTask(const CCopasiContainer * pParent):
-  CCopasiTask(CCopasiTask::fluxMode, pParent)
+CEFMTask::CEFMTask(const CCopasiContainer * pParent,
+                   const CCopasiTask::Type & type):
+  CCopasiTask(pParent, type)
 {
   mpProblem = new CEFMProblem(this);
   mpMethod = CEFMMethod::createMethod();
@@ -210,7 +212,7 @@ std::string CEFMTask::getReactionEquation(const std::map< size_t, C_FLOAT64 >::c
     }
   else
 #endif //COPASI_SSA
-    return CChemEqInterface::getChemEqString(mpProblem->getModel(), *pReaction, false);
+    return CChemEqInterface::getChemEqString(&mpContainer->getModel(), *pReaction, false);
 }
 
 std::pair< C_FLOAT64, C_FLOAT64 > CEFMTask::getSpeciesChanges(const CFluxMode & fluxMode,
@@ -273,10 +275,7 @@ std::pair< C_FLOAT64, C_FLOAT64 > CEFMTask::getSpeciesChanges(const CFluxMode & 
 
 std::string CEFMTask::getNetReaction(const CFluxMode & fluxMode) const
 {
-  const CModel* pModel = getProblem()->getModel();
-
-  if (pModel == NULL)
-    return "";
+  const CModel & Model = mpContainer->getModel();
 
   std::map< const CMetab *, C_FLOAT64 > Data = getNetReactionData(fluxMode);
 
@@ -304,7 +303,7 @@ std::string CEFMTask::getNetReaction(const CFluxMode & fluxMode) const
               Products << it->second << " * ";
             }
 
-          Products << CMetabNameInterface::getDisplayName(pModel, *it->first, true);
+          Products << CMetabNameInterface::getDisplayName(&Model, *it->first, true);
           ProductsSeparator = " + ";
         }
       else if (it->second < -100.0 * std::numeric_limits< C_FLOAT64 >::epsilon())
@@ -316,7 +315,7 @@ std::string CEFMTask::getNetReaction(const CFluxMode & fluxMode) const
               Substrates << -it->second << " * ";
             }
 
-          Substrates << CMetabNameInterface::getDisplayName(pModel, *it->first, true);
+          Substrates << CMetabNameInterface::getDisplayName(&Model, *it->first, true);
           SubstratesSeparator = " + ";
         }
     }
@@ -333,10 +332,7 @@ std::string CEFMTask::getNetReaction(const CFluxMode & fluxMode) const
 
 std::string CEFMTask::getInternalSpecies(const CFluxMode & fluxMode) const
 {
-  const CModel* pModel = getProblem()->getModel();
-
-  if (pModel == NULL)
-    return "";
+  const CModel & Model = mpContainer->getModel();
 
   std::map< const CMetab *, C_FLOAT64 > Data = getNetReactionData(fluxMode);
 
@@ -353,7 +349,7 @@ std::string CEFMTask::getInternalSpecies(const CFluxMode & fluxMode) const
       if (fabs(it->second) < 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon())
         {
           Modifiers << ModifiersSeparator;
-          Modifiers << CMetabNameInterface::getDisplayName(pModel, *it->first, true);
+          Modifiers << CMetabNameInterface::getDisplayName(&Model, *it->first, true);
           ModifiersSeparator = ", ";
         }
     }

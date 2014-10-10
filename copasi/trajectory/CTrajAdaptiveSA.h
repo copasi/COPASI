@@ -20,95 +20,14 @@
 #define SSA_MULTIPLE  10
 #define SSA_UPPER_NUM 100
 
-class CModel;
-class CMetab;
 class CTrajectoryProblem;
 class CRandom;
+class CMathReaction;
 
 class CTrajAdaptiveSA : public CTrajectoryMethod
 {
   friend CTrajectoryMethod *
   CTrajectoryMethod::createMethod(CCopasiMethod::SubType subType);
-
-private:
-  class CReactionDependencies
-  {
-  public:
-    // Operations
-    /**
-     * Default constructor
-     */
-    CReactionDependencies();
-
-    /**
-     * Copy constructor
-     * @param const CReactionDependencies & src
-     */
-    CReactionDependencies(const CReactionDependencies & src);
-
-    /**
-     * Destructor
-     */
-    ~CReactionDependencies();
-
-    /**
-     * Assignment operator
-     * @param const CReactionDependencies & rhs
-     * @return CReactionDependencies &
-     */
-    CReactionDependencies & operator = (const CReactionDependencies & rhs);
-
-    // Attributes
-    /**
-     *  Species Index
-     */
-    CVector< size_t > mMethodSpeciesIndex;
-
-    /**
-     * Vector of multiplier to calculate the new state
-     */
-    CVector< C_FLOAT64 > mSpeciesMultiplier;
-
-    /**
-     * Vector of pointers to method internal species values to calculate the new state.
-     */
-    CVector< C_FLOAT64 * > mMethodSpecies;
-
-    /**
-     * Vector of pointers to model species values to calculate the new state.
-     */
-    CVector< C_FLOAT64 * > mModelSpecies;
-
-    /**
-     * Vector of refresh methods which need to be executed to update all values required for simulation
-     */
-    std::vector< Refresh * > mCalculations;
-
-    /**
-     * A vector of indexes of reaction which propensities have to be recalculated.
-     */
-    CVector< size_t > mDependentReactions;
-
-    /**
-     * Vector of multiplier to calculate the new propensity.
-     */
-    CVector< C_FLOAT64 > mSubstrateMultiplier;
-
-    /**
-     * Vector of pointers to method internal species values to calculate the new propensity.
-     */
-    CVector< C_FLOAT64 * > mMethodSubstrates;
-
-    /**
-     * Vector of pointers to model species values to calculate the new propensity.
-     */
-    CVector< C_FLOAT64 * > mModelSubstrates;
-
-    /**
-     * A pointer to the particle flux of the reaction.
-     */
-    C_FLOAT64 * mpParticleFlux;
-  };
 
 protected:
   /**
@@ -116,12 +35,6 @@ protected:
    * @param const CCopasiContainer * pParent (default: NULL)
    */
   CTrajAdaptiveSA(const CCopasiContainer * pParent = NULL);
-
-  /**
-   * Calculate the propensity of the indexed reaction
-   * @param const size_t & index
-   */
-  const C_FLOAT64 & calculateAmu(const size_t & index);
 
   /**
    * Fire the next reaction if it fire before the endTime
@@ -179,9 +92,8 @@ public:
   /**
    *  This instructs the method to prepare for integration
    *  starting with the initialState given.
-   *  @param CVectorCore< C_FLOAT64 > & initialState
    */
-  virtual void start(CVectorCore< C_FLOAT64 > & initialState);
+  virtual void start();
 
   /**
   * Check if the method is suitable for this problem
@@ -234,11 +146,6 @@ private:
   C_FLOAT64 * mpMethodSpecies;
 
   /**
-   *   The temporary species
-   */
-  CVector< C_FLOAT64 > mSpeciesAfterTau;
-
-  /**
    * Vector of refresh methods which need to be executed to update all values required for simulation
   */
   std::vector< Refresh * > mTauCalculations;
@@ -264,14 +171,9 @@ protected:
   CRandom *mpRandomGenerator;
 
   /**
-   * A pointer to the instance of CModel being used.
-   */
-  CModel *mpModel;
-
-  /**
    * The particle and reaction numbers
    */
-  size_t mNumReactions, mNumSpecies;
+  size_t mNumReactions;
 
   /**
    * max number of single stochastic steps to do in one step()
@@ -289,19 +191,29 @@ protected:
   size_t mNextReactionIndex;
 
   /**
-   * A boolean flag indicating whether correction for higher order reactions need to be applied
-   */
-  bool mDoCorrection;
-
-  /**
    *   Number of variable metabolites.
    */
   size_t mNumReactionSpecies;
 
   /**
-   * A vector of reaction propensities
+   * A reference to the math container's reactions
    */
-  CVector< C_FLOAT64 > mAmu;
+  CVectorCore< CMathReaction > mReactions;
+
+  /**
+   * A reference to the math container's propensity objects
+   */
+  CVectorCore< CMathObject > mPropensityObjects;
+
+  /**
+   * A reference to the math container's propensity values
+   */
+  CVectorCore< C_FLOAT64 > mAmu;
+
+  /**
+   * A vector containing the update sequence required to update all propensity values.
+   */
+  CVector< CObjectInterface::UpdateSequence > mUpdateSequences;
 
   /**
    *   The ordered propensity function
@@ -311,17 +223,12 @@ protected:
   /**
    * The method internal state which contains particle rounded particle numbers.
    */
-  CState mMethodState;
-
-  /**
-   * A vector containing dependency information to minimize the required updates.
-   */
-  std::vector< CReactionDependencies >  mReactionDependencies;
+  CVector <C_FLOAT64 > mMethodState;
 
   /**
    *   The Ordered reaction
    */
-  CVector< const CReactionDependencies * > mPartitionedDependencies;
+  CVector< CMathReaction * > mPartitionedDependencies;
 
   /**
    * Total propensity (sum over mAmu[i])

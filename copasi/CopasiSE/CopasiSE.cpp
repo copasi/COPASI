@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiSE/CopasiSE.cpp,v $
-//   $Revision: 1.57 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/06/01 17:26:43 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2003 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -405,7 +397,6 @@ int main(int argc, char *argv[])
               for (i = 0; i < imax; i++)
                 if (TaskList[i]->isScheduled())
                   {
-                    TaskList[i]->getProblem()->setModel(pDataModel->getModel());
                     TaskList[i]->setCallBack(pProcessReport);
 
                     bool success = true;
@@ -480,7 +471,6 @@ int main(int argc, char *argv[])
       std::cerr << Exception.getMessage().getText() << std::endl;
     }
 
-
 finish:
   CCopasiRootContainer::destroy();
   pdelete(pProcessReport);
@@ -517,7 +507,6 @@ int validate()
     if (TaskList[i]->isScheduled())
       {
         bool success = true;
-        TaskList[i]->getProblem()->setModel(pDataModel->getModel());
 
         try
           {

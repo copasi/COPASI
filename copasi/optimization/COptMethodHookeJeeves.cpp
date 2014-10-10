@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodHookeJeeves.cpp,v $
-//   $Revision: 1.18 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/06/20 21:16:37 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2005 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -39,7 +31,7 @@
 #include "report/CCopasiObjectReference.h"
 
 COptMethodHookeJeeves::COptMethodHookeJeeves(const CCopasiContainer * pParent):
-    COptMethod(CCopasiTask::optimization, CCopasiMethod::HookeJeeves, pParent)
+  COptMethod(CCopasiTask::optimization, CCopasiMethod::HookeJeeves, pParent)
 {
   addParameter("Iteration Limit", CCopasiParameter::UINT, (unsigned C_INT32) 50);
   addParameter("Tolerance", CCopasiParameter::DOUBLE, (C_FLOAT64) 1.e-005);
@@ -50,7 +42,7 @@ COptMethodHookeJeeves::COptMethodHookeJeeves(const CCopasiContainer * pParent):
 
 COptMethodHookeJeeves::COptMethodHookeJeeves(const COptMethodHookeJeeves & src,
     const CCopasiContainer * pParent):
-    COptMethod(src, pParent)
+  COptMethod(src, pParent)
 {
   initObjects();
 }
@@ -99,7 +91,7 @@ bool COptMethodHookeJeeves::optimise()
 
       // We need to set the value here so that further checks take
       // account of the value.
-      (*(*mpSetCalculateVariable)[i])(mut);
+      *mContainerVariables[i] = mut;
     }
 
   mContinue &= evaluate();
@@ -187,7 +179,7 @@ bool COptMethodHookeJeeves::optimise()
 
               // We need to set the value here so that further checks take
               // account of the value.
-              (*(*mpSetCalculateVariable)[i])(mut);
+              *mContainerVariables[i] = mut;
             }
 
           newf = bestNearby();
@@ -298,7 +290,7 @@ C_FLOAT64 COptMethodHookeJeeves::bestNearby()
   mIndividual = mNew;
 
   for (i = 0; i < mVariableSize; i++)
-    (*(*mpSetCalculateVariable)[i])(mIndividual[i]);
+    *mContainerVariables[i] = mIndividual[i];
 
   for (i = 0; i < mVariableSize; i++)
     {
@@ -320,7 +312,7 @@ C_FLOAT64 COptMethodHookeJeeves::bestNearby()
 
       // We need to set the value here so that further checks take
       // account of the value.
-      (*(*mpSetCalculateVariable)[i])(mut);
+      *mContainerVariables[i] = mut;
 
       if (!evaluate()) break;
 
@@ -345,7 +337,7 @@ C_FLOAT64 COptMethodHookeJeeves::bestNearby()
 
           // We need to set the value here so that further checks take
           // account of the value.
-          (*(*mpSetCalculateVariable)[i])(mut);
+          *mContainerVariables[i] = mut;
 
           if (!evaluate()) break;
 
@@ -354,7 +346,7 @@ C_FLOAT64 COptMethodHookeJeeves::bestNearby()
           else
             {
               mut = mNew[i];
-              (*(*mpSetCalculateVariable)[i])(mut);
+              *mContainerVariables[i] = mut;
             }
         }
     }

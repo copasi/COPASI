@@ -74,7 +74,7 @@ bool CMathEvent::CAssignment::compile(CEventAssignment * pDataAssignment,
         }
     }
 
-  std::vector< CCopasiContainer * > ListOfContainer;
+  CObjectInterface::ContainerList ListOfContainer;
 
   // Compile the assignment object in the model context
   CExpression AssignmentExpression("AssignmentExpression", &container);
@@ -261,7 +261,7 @@ bool CMathEvent::CTrigger::CRootProcessor::compile(CEvaluationNode * pRootNode,
 {
   mEquality = equality;
 
-  std::vector< CCopasiContainer * > ListOfContainer;
+  CObjectInterface::ContainerList ListOfContainer;
   ListOfContainer.push_back(const_cast< CMathContainer * >(&container));
 
   CMathExpression * pExpression = new CMathExpression("RootExpression", container);
@@ -306,7 +306,7 @@ void CMathEvent::CTrigger::allocate(const CEvent * pDataEvent,
   // Determine the number of roots.
   CMath::Variables< size_t > Variables;
 
-  std::vector< CCopasiContainer * > Container;
+  CObjectInterface::ContainerList Container;
   Container.push_back(const_cast< CMathContainer * >(&container));
 
   CExpression Trigger("EventTrigger", &container);
@@ -405,7 +405,7 @@ bool CMathEvent::CTrigger::compile(CEvent * pDataEvent,
 
   CMath::Variables< CEvaluationNode * > Variables;
 
-  std::vector< CCopasiContainer * > ListOfContainer;
+  CObjectInterface::ContainerList ListOfContainer;
   ListOfContainer.push_back(&container);
 
   CExpression DataTrigger("DataTrigger", &container);
@@ -1076,7 +1076,7 @@ bool CMathEvent::compile(CEvent * pDataEvent,
   bool success = true;
 
   mpContainer = &container;
-  mpTime = container.getState().array() + container.getTimeIndex();
+  mpTime = container.getState(false).array() + container.getTimeIndex();
 
   mType = pDataEvent->getType();
   mFireAtInitialTime = pDataEvent->getFireAtInitialTime();
@@ -1118,7 +1118,7 @@ bool CMathEvent::compile(CEvent * pDataEvent,
       *ppTarget = (C_FLOAT64 *) pAssignment->getTarget()->getValuePointer();
     }
 
-  std::vector< CCopasiContainer * > ListOfContainer;
+  CObjectInterface::ContainerList ListOfContainer;
 
   // Compile the delay object.
   CExpression DelayExpression("DelayExpression", &container);
@@ -1140,7 +1140,7 @@ bool CMathEvent::compile(CMathContainer & container)
   bool success = true;
 
   mpContainer = &container;
-  mpTime = container.getState().array() + container.getTimeIndex();
+  mpTime = container.getState(false).array() + container.getTimeIndex();
 
   mType = CEvent::Discontinuity;
   mFireAtInitialTime = false;
@@ -1150,7 +1150,7 @@ bool CMathEvent::compile(CMathContainer & container)
   // Compile Trigger
   success &= mTrigger.compile(NULL, container);
 
-  std::vector< CCopasiContainer * > ListOfContainer;
+  CObjectInterface::ContainerList ListOfContainer;
 
   // Compile the delay object.
   CExpression DelayExpression("DelayExpression", &container);

@@ -71,13 +71,13 @@ bool CMathDependencyGraph::getUpdateSequence(CObjectInterface::UpdateSequence & 
     const CMath::SimulationContextFlag & context,
     const CObjectInterface::ObjectSet & changedObjects,
     const CObjectInterface::ObjectSet & requestedObjects,
-    const CObjectInterface::ObjectSet & calculatedObjects)
+    const CObjectInterface::ObjectSet & calculatedObjects) const
 {
 
   bool success = true;
 
-  iterator found;
-  iterator notFound = mObjects2Nodes.end();
+  const_iterator found;
+  const_iterator notFound = mObjects2Nodes.end();
 
   updateSequence.clear();
 

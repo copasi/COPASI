@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -17,7 +17,7 @@
 #include "CTSSATask.h"
 #include "CTSSAProblem.h"
 
-#include "model/CReaction.h"
+#include "math/CMathContainer.h"
 
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "report/CCopasiRootContainer.h"
@@ -38,12 +38,11 @@ CILDMMethod::CILDMMethod(const CCopasiContainer * pParent):
   // mpState(NULL),
   // mY(NULL)
 {
-  //assert((void *) &mData == (void *) &mData.dim);
+  //assert((void *) &mData == (void *) &mDim);
 
   // addObjectReference("Number of slow variables", mSlow, CCopasiObject::ValueInt);
   // addMatrixReference("Contribution of Metabolites to Slow Space", mVslow, CCopasiObject::ValueDbl);
 
-  mData.pMethod = this;
   initializeParameter();
 }
 
@@ -53,28 +52,22 @@ CILDMMethod::CILDMMethod(const CILDMMethod & src,
   //mpState(NULL),
   //mY(NULL)
 {
-  //assert((void *) &mData == (void *) &mData.dim);
+  //assert((void *) &mData == (void *) &mDim);
 
-  mData.pMethod = this;
   initializeParameter();
 }
 
 CILDMMethod::~CILDMMethod()
-{
-  pdelete(mpState);
-}
+{}
 
 void CILDMMethod::initializeParameter()
 {
   addObjectReference("Number of slow variables", mSlow, CCopasiObject::ValueInt);
   addMatrixReference("Contribution of Species to Slow Space", mVslow, CCopasiObject::ValueDbl);
 
-  initializeIntegrationsParameter();
-
   assertParameter("Deuflhard Tolerance", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0e-6);
-  mReducedModel = true;
 
-  //mData.dim = mpState->getNumIndependent();
+  //mDim = mpState->getNumIndependent();
 
   createAnnotationsM();
   emptyVectors();
@@ -84,7 +77,7 @@ void CILDMMethod::step(const double & deltaT)
 {
   C_INT failed_while = 0;
 
-  C_INT dim = mData.dim;
+  C_INT dim = mDim;
   C_INT fast = 0;
   C_INT slow = dim - fast;
 
@@ -104,58 +97,55 @@ void CILDMMethod::step(const double & deltaT)
   mTd_save.resize(dim, dim);
   mTdInverse_save.resize(dim, dim);
 
-  mpModel->updateSimulatedValues(mReducedModel);
-  // TO REMOVE : mpModel->applyAssignments();
-  mpModel->calculateJacobianX(mJacobian, 1e-6, 1e-12);
+  mpContainer->updateSimulatedValues(true);
+  // TO REMOVE : Model.applyAssignments();
+  mpContainer->calculateJacobian(mJacobian, 1e-6, true);
 
   C_INT flag_jacob;
   flag_jacob = 1;  // Set flag_jacob=0 to printing Jacobian
 
   // To get the reduced Stoichiometry Matrix;
 
-  CMatrix<C_FLOAT64> Stoichiom;
-  Stoichiom = mpModel -> getRedStoi();
+  const CMatrix<C_FLOAT64> & Stoichiom = mpContainer->getModel().getRedStoi();
 
-  // const CCopasiVector< CReaction > & reacs = copasiModel->getReactions();
-  C_INT reacs_size = (C_INT) mpModel->getRedStoi().size();
-  reacs_size = reacs_size / dim; //TODO what is this?
+  size_t reacs_size = mpContainer->getReactions().size();
 
   /* the vector mY is the current state of the system*/
-
-  C_FLOAT64 number2conc = mpModel->getNumber2QuantityFactor() / mpModel->getCompartments()[0]->getInitialValue();
-  //C_FLOAT62 number2conc = 1.;
 
   //this is an ugly hack that only makes sense if all metabs are in the same compartment
   //at the moment is is the only case the algorithm deals with
 
-  CVector<C_FLOAT64> Xconc; //current state converted to concentrations
-  Xconc.resize(dim);
+  CVector< C_FLOAT64 > Xconc(dim); //current state converted to concentrations
+  C_FLOAT64 * pSpecies = mpFirstSpecies;
+  C_FLOAT64 * pSpeciesEnd = mpFirstSpecies + mDim;
+  C_FLOAT64 * pX = Xconc.array();
 
-  for (i = 0; i < dim; ++i)
-    Xconc[i] = mY[i] * number2conc;
+  for (; pSpecies != pSpeciesEnd; ++pSpecies, ++pX)
+    {
+      *pX = mNumber2Concentration * *pSpecies;
+    }
 
-  for (i = 0; i < dim; i++)
-    mY_initial[i] = mY[i];
+  memcpy(mY_initial.array(), mpFirstSpeciesRate, mDim * sizeof(C_FLOAT64));
 
-  CVector<C_FLOAT64> Xconc_initial; //current state converted to concentrations
-  Xconc_initial.resize(dim);
+  CVector<C_FLOAT64> Xconc_initial(dim); //current state converted to concentrations
+  C_FLOAT64 * pRate = mY_initial.array();
+  C_FLOAT64 * pRateEnd = pRate + mDim;
+  pX = Xconc_initial.array();
 
-  for (i = 0; i < dim; ++i)
-    Xconc_initial[i] = mY_initial[i] * number2conc;
+  for (; pRate != pRateEnd; ++pRate, ++pX)
+    {
+      *pX = mNumber2Concentration * *pRate;
+    }
 
-  // save initial  Jacobian before next time step
-  for (i = 0; i < dim; i++)
-    for (j = 0; j < dim; j++)
-      mJacobian_initial(i, j) = mJacobian(i, j);
+  mJacobian_initial = mJacobian;
 
   // Next time step
   integrationStep(deltaT);
 
-  mpModel->updateSimulatedValues(mReducedModel);
-  // TO REMOVE : mpModel->applyAssignments();
+  mpContainer->updateSimulatedValues(true);
 
   // Calculate Jacobian for time step control
-  mpModel->calculateJacobianX(mJacobian, 1e-6, 1e-12);
+  mpContainer->calculateJacobian(mJacobian, 1e-6, true);
 
 #ifdef ILDMDEBUG
 
@@ -221,7 +211,7 @@ void CILDMMethod::step(const double & deltaT)
   if (info_schur)
     {
       CCopasiMessage(CCopasiMessage::WARNING,
-                     MCTSSAMethod + 5, mTime - deltaT);
+                     MCTSSAMethod + 5, *mpContainerStateTime - deltaT);
 
       goto integration;
     }
@@ -263,7 +253,7 @@ void CILDMMethod::step(const double & deltaT)
       fast = 0;
 
       CCopasiMessage(CCopasiMessage::WARNING,
-                     MCTSSAMethod + 6, mTime - deltaT);
+                     MCTSSAMethod + 6, *mpContainerStateTime - deltaT);
 
       failed = 1;
       goto integration;
@@ -314,7 +304,7 @@ void CILDMMethod::step(const double & deltaT)
           if (info)
             {
               CCopasiMessage(CCopasiMessage::WARNING,
-                             MCTSSAMethod + 7, slow, mTime - deltaT);
+                             MCTSSAMethod + 7, slow, *mpContainerStateTime - deltaT);
 
               failed_while = 1;
               goto integration;
@@ -385,7 +375,7 @@ integration:
 
   if (slow == dim)
     CCopasiMessage(CCopasiMessage::WARNING,
-                   MCTSSAMethod + 8, mTime);
+                   MCTSSAMethod + 8, *mpContainerStateTime);
 
   //  test for orthogonality of the slow space
 
@@ -597,12 +587,10 @@ integration:
 
   // End of reaction analysis
 
-  mpModel->updateSimulatedValues(mReducedModel);
-  // TO REMOVE : mpModel->applyAssignments();
+  mpContainer->updateSimulatedValues(true);
 
   // Calculate Jacobian for time step control
-
-  mpModel->calculateJacobianX(mJacobian, 1e-6, 1e-12);
+  mpContainer->calculateJacobian(mJacobian, 1e-6, true);
 
   // new entry for every entry contains the current data of currently step
   setVectors(slow);
@@ -623,7 +611,7 @@ void CILDMMethod::newton(C_FLOAT64 *ys, C_INT & slow, C_INT & info)
   C_INT nrhs, ok, fast;
 
   C_FLOAT64 tol, err;
-  C_INT dim = mData.dim;
+  C_INT dim = mDim;
 
   fast = dim - slow;
 
@@ -661,9 +649,9 @@ void CILDMMethod::newton(C_FLOAT64 *ys, C_INT & slow, C_INT & info)
 
   nrhs = 1;
   //tol = 1e-9;
-  tol = 1e-9 / mpModel->getNumber2QuantityFactor();
+  tol = 1e-9 / mpContainer->getModel().getNumber2QuantityFactor();
 
-  err = 10.0 / mpModel->getNumber2QuantityFactor();
+  err = 10.0 / mpContainer->getModel().getNumber2QuantityFactor();
   iter = 0;
 
   itermax = 100;
@@ -715,7 +703,7 @@ void CILDMMethod::newton(C_FLOAT64 *ys, C_INT & slow, C_INT & info)
             x_newton[i] = x_newton[i] + mTd(i, j) * y_newton[j];
         }
 
-      calculateDerivativesX(x_newton.array(), dxdt_newton.array());
+      calculateDerivatives(x_newton.array(), dxdt_newton.array(), true);
 
       for (i = 0; i < dim; i++)
         {
@@ -856,11 +844,11 @@ void CILDMMethod::newton(C_FLOAT64 *ys, C_INT & slow, C_INT & info)
   return;
 }
 
-void CILDMMethod::start(const CState * initialState)
+void CILDMMethod::start()
 {
-  mReducedModel = true;
+  CTSSAMethod::start();
 
-  integrationMethodStart(initialState);
+  integrationMethodStart();
 
   mDtol = * getValue("Deuflhard Tolerance").pUDOUBLE;
 
@@ -868,10 +856,10 @@ void CILDMMethod::start(const CState * initialState)
 
   //mDtol = mpProblem->getDeufelhardTol();
 
-  mVslow.resize(mData.dim, mData.dim);
-  mVslow_metab.resize(mData.dim, mData.dim);
-  mVslow_space.resize(mData.dim);
-  mVfast_space.resize(mData.dim);
+  mVslow.resize(mDim, mDim);
+  mVslow_metab.resize(mDim, mDim);
+  mVslow_space.resize(mDim);
+  mVfast_space.resize(mDim);
 
   //createAnnotationsM();
   emptyVectors();
@@ -887,7 +875,7 @@ void CILDMMethod::start(const CState * initialState)
 void CILDMMethod::deuflhard(C_INT & slow, C_INT & info)
 {
   C_INT i, j;
-  C_INT dim = mData.dim;
+  C_INT dim = mDim;
   C_INT fast = dim - slow;
   C_INT flag_deufl;
 
@@ -903,9 +891,6 @@ void CILDMMethod::deuflhard(C_INT & slow, C_INT & info)
 
   /* the vector mY is the current state of the system*/
 
-  C_FLOAT64 number2conc = mpModel->getNumber2QuantityFactor() / mpModel->getCompartments()[0]->getInitialValue();
-  //C_FLOAT62 number2conc = 1.;
-
   //this is an ugly hack that only makes sense if all metabs are in the same compartment
   //at the moment is is the only case the algorithm deals with
 
@@ -913,7 +898,7 @@ void CILDMMethod::deuflhard(C_INT & slow, C_INT & info)
   Xconc.resize(dim);
 
   for (i = 0; i < dim; ++i)
-    Xconc[i] = mY_initial[i] * number2conc;
+    Xconc[i] = mY_initial[i] * mNumber2Concentration;
 
   for (i = 0; i < dim; i++)
     {
@@ -941,7 +926,7 @@ void CILDMMethod::deuflhard(C_INT & slow, C_INT & info)
   CVector<C_FLOAT64> dxdt;
   dxdt.resize(dim);
 
-  mpModel->updateSimulatedValues(mReducedModel);
+  mpContainer->updateSimulatedValues(true);
 
   for (j = 0; j < dim; j++)
     dxdt[j] = 0.;
@@ -951,10 +936,10 @@ void CILDMMethod::deuflhard(C_INT & slow, C_INT & info)
 
   for (j = 0; j < dim; j++)
     {
-      x_help[j] = mY_initial[j] * number2conc;
+      x_help[j] = mY_initial[j] * mNumber2Concentration;
     }
 
-  calculateDerivativesX(x_help.array(), dxdt.array());
+  calculateDerivatives(x_help.array(), dxdt.array(), true);
 
   for (i = 0; i < dim; i++)
     {
@@ -1008,7 +993,7 @@ void CILDMMethod::deuflhard(C_INT & slow, C_INT & info)
         x_relax[i] = x_relax[i] + mTd(i, j) * c_relax[j];
     }
 
-  calculateDerivativesX(x_relax.array(), dxdt_relax.array());
+  calculateDerivatives(x_relax.array(), dxdt_relax.array(), true);
 
   for (i = 0; i < dim; i++)
     {
@@ -1043,7 +1028,7 @@ void CILDMMethod::deuflhard(C_INT & slow, C_INT & info)
 
   max1 = norm * mEPS;
 
-  if (max >= mDtol / mpModel->getNumber2QuantityFactor())
+  if (max >= mDtol / mpContainer->getModel().getNumber2QuantityFactor())
     info = 1;
   else
     info = 0;
@@ -1077,22 +1062,22 @@ void CILDMMethod::emptyVectors()
 void CILDMMethod::setVectors(int slowMode)
 {
   mVec_mVslow.push_back(mCurrentStep);
-  mVec_mVslow[mCurrentStep].resize(mData.dim, mData.dim);
+  mVec_mVslow[mCurrentStep].resize(mDim, mDim);
   mVec_mVslow[mCurrentStep] = mVslow;
 
   mVec_TimeScale.push_back(mCurrentStep);
-  mVec_TimeScale[mCurrentStep].resize(mData.dim);
+  mVec_TimeScale[mCurrentStep].resize(mDim);
   size_t i;
 
-  for (i = 0; i < (size_t) mData.dim; i++)
+  for (i = 0; i < (size_t) mDim; i++)
     mVec_TimeScale[mCurrentStep][i] = -1 / mR(i, i);
 
   mVec_mVslowMetab.push_back(mCurrentStep);
-  mVec_mVslowMetab[mCurrentStep].resize(mData.dim, mData.dim);
+  mVec_mVslowMetab[mCurrentStep].resize(mDim, mDim);
   mVec_mVslowMetab[mCurrentStep] = mVslow_metab;
 
   mVec_mVslowSpace.push_back(mCurrentStep);
-  mVec_mVslowSpace[mCurrentStep].resize(mData.dim);
+  mVec_mVslowSpace[mCurrentStep].resize(mDim);
 
   for (i = 0; i < mVslow_space.size(); i++)
     {
@@ -1100,14 +1085,14 @@ void CILDMMethod::setVectors(int slowMode)
     }
 
   mVec_mVfastSpace.push_back(mCurrentStep);
-  mVec_mVfastSpace[mCurrentStep].resize(mData.dim);
+  mVec_mVfastSpace[mCurrentStep].resize(mDim);
   mVec_mVfastSpace[mCurrentStep] = mVfast_space;
 
   mVec_SlowModes.push_back(mCurrentStep);
   mVec_SlowModes[mCurrentStep] = slowMode;
 
   mCurrentTime.push_back(mCurrentStep);
-  mCurrentTime[mCurrentStep] = mTime;
+  mCurrentTime[mCurrentStep] = *mpContainerStateTime;
 
   // NEW TAB
 
@@ -1117,14 +1102,14 @@ void CILDMMethod::setVectors(int slowMode)
 
   /* temporary tabs */
 
-  size_t reacs_size = mpModel->getReactions().size();
+  size_t reacs_size = mpContainer->getReactions().size();
 
   mVec_mTMP1.push_back(mCurrentStep);
-  mVec_mTMP1[mCurrentStep].resize(reacs_size, mData.dim);
+  mVec_mTMP1[mCurrentStep].resize(reacs_size, mDim);
   mVec_mTMP1[mCurrentStep] = mTMP1;
 
   mVec_mTMP2.push_back(mCurrentStep);
-  mVec_mTMP2[mCurrentStep].resize(reacs_size, mData.dim);
+  mVec_mTMP2[mCurrentStep].resize(reacs_size, mDim);
   mVec_mTMP2[mCurrentStep] = mTMP2;
 
   mVec_mTMP3.push_back(mCurrentStep);
@@ -1275,6 +1260,8 @@ void CILDMMethod::createAnnotationsM()
 //void CILDMMethod::setAnnotationM(int step)
 bool CILDMMethod::setAnnotationM(size_t step)
 {
+  const CModel & Model = mpContainer->getModel();
+
   if (step == 0) return false;
 
   if (mVec_mVslow.size() == 0) return false;
@@ -1291,12 +1278,12 @@ bool CILDMMethod::setAnnotationM(size_t step)
   sstr.clear();
   C_INT i;
 
-  mVslowPrint.resize(mData.dim, mData.dim);
+  mVslowPrint.resize(mDim, mDim);
   mVslowPrint = mVec_mVslow[step];
   pVslowPrintAnn->resize();
-  pVslowPrintAnn->setCopasiVector(1, &mpModel->getMetabolitesX());
+  pVslowPrintAnn->setCopasiVector(1, &Model.getMetabolitesX());
 
-  for (i = 0; i < mData.dim; i++)
+  for (i = 0; i < mDim; i++)
     {
       timeScale = mVec_TimeScale[step][i];
 
@@ -1312,12 +1299,12 @@ bool CILDMMethod::setAnnotationM(size_t step)
       sstr.clear();
     }
 
-  mVslowMetabPrint.resize(mData.dim, mData.dim);
+  mVslowMetabPrint.resize(mDim, mDim);
   mVslowMetabPrint = mVec_mVslowMetab[step];
   pVslowMetabPrintAnn->resize();
-  pVslowMetabPrintAnn->setCopasiVector(0, &mpModel->getMetabolitesX());
+  pVslowMetabPrintAnn->setCopasiVector(0, &Model.getMetabolitesX());
 
-  for (i = 0; i < mData.dim; i++)
+  for (i = 0; i < mDim; i++)
     {
       timeScale = mVec_TimeScale[step][i];
 
@@ -1340,27 +1327,27 @@ bool CILDMMethod::setAnnotationM(size_t step)
   // sstr << " slow mode";
   sstr << " slow; ";
 
-  C_INT dim = mData.dim;
+  C_INT dim = mDim;
   sstr << dim - mVec_SlowModes[step];
   sstr << " fast";
 
   str = sstr.str();
-  mVslowSpacePrint.resize(mData.dim, 1);
+  mVslowSpacePrint.resize(mDim, 1);
 
-  for (i = 0; i < mData.dim; i++)
+  for (i = 0; i < mDim; i++)
     mVslowSpacePrint(i, 0) = mVec_mVslowSpace[step][i];
 
   pVslowSpacePrintAnn->resize();
-  pVslowSpacePrintAnn->setCopasiVector(0, &mpModel->getMetabolitesX());
+  pVslowSpacePrintAnn->setCopasiVector(0, &Model.getMetabolitesX());
   pVslowSpacePrintAnn->setAnnotationString(1, 0, str);
 
-  mVfastSpacePrint.resize(mData.dim, 1);
+  mVfastSpacePrint.resize(mDim, 1);
 
-  for (i = 0; i < mData.dim; i++)
+  for (i = 0; i < mDim; i++)
     mVfastSpacePrint(i, 0) = mVec_mVfastSpace[step][i];
 
   pVfastSpacePrintAnn->resize();
-  pVfastSpacePrintAnn->setCopasiVector(0, &mpModel->getMetabolitesX());
+  pVfastSpacePrintAnn->setCopasiVector(0, &Model.getMetabolitesX());
   pVfastSpacePrintAnn->setAnnotationString(1, 0, str);
 
   //sstr.clear();
@@ -1373,7 +1360,7 @@ bool CILDMMethod::setAnnotationM(size_t step)
     mReacSlowSpacePrint(i, 0) = mVec_mReacSlowSpace[step][i];
 
   pReacSlowSpacePrintAnn->resize();
-  pReacSlowSpacePrintAnn->setCopasiVector(0, &mpModel->getReactions());
+  pReacSlowSpacePrintAnn->setCopasiVector(0, &Model.getReactions());
   pReacSlowSpacePrintAnn->setAnnotationString(1, 0, str);
 
   sstr.str("");
@@ -1381,9 +1368,9 @@ bool CILDMMethod::setAnnotationM(size_t step)
 
   /* temporary tabs */
 
-  size_t reacs_size = mpModel->getReactions().size();
+  size_t reacs_size = mpContainer->getReactions().size();
 
-  mTMP1Print.resize(reacs_size, mData.dim);
+  mTMP1Print.resize(reacs_size, mDim);
   mTMP1Print = mVec_mTMP1[step];
 
   pTMP1PrintAnn->resize();
@@ -1404,9 +1391,9 @@ bool CILDMMethod::setAnnotationM(size_t step)
       sstr.clear();
     }
 
-  pTMP1PrintAnn->setCopasiVector(0, &mpModel->getReactions());
+  pTMP1PrintAnn->setCopasiVector(0, &Model.getReactions());
 
-  mTMP2Print.resize(reacs_size, mData.dim);
+  mTMP2Print.resize(reacs_size, mDim);
   mTMP2Print = mVec_mTMP2[step];
 
   pTMP2PrintAnn->resize();
@@ -1427,12 +1414,12 @@ bool CILDMMethod::setAnnotationM(size_t step)
       sstr.clear();
     }
 
-  pTMP2PrintAnn->setCopasiVector(0, &mpModel->getReactions());
+  pTMP2PrintAnn->setCopasiVector(0, &Model.getReactions());
 
   mTMP3Print.resize(reacs_size, 1);
   mTMP3Print = mVec_mTMP3[step];
   pTMP3PrintAnn->resize();
-  pTMP3PrintAnn->setCopasiVector(0, &mpModel->getReactions());
+  pTMP3PrintAnn->setCopasiVector(0, &Model.getReactions());
   pTMP3PrintAnn->setAnnotationString(1, 0, str);
 
   return true;
@@ -1440,6 +1427,8 @@ bool CILDMMethod::setAnnotationM(size_t step)
 
 void CILDMMethod::printResult(std::ostream * ostream) const // temporary tabs are not included in Report !!!
 {
+  const CModel & Model = mpContainer->getModel();
+
   std::ostream & os = *ostream;
   double timeScale;
   C_INT i, j, istep = 0;
@@ -1466,14 +1455,14 @@ void CILDMMethod::printResult(std::ostream * ostream) const // temporary tabs ar
       os << "Rows : contribution to  mode (TS - corresponding timescale)" << std::endl;
       os << "Columns: species  ";
 
-      for (j = 0; j < mData.dim; j++)
+      for (j = 0; j < mDim; j++)
         {
-          os << mpModel->getMetabolitesX()[j]->getObjectName() << "   ";
+          os << Model.getMetabolitesX()[j]->getObjectName() << "   ";
         }
 
       os << std::endl;
 
-      for (i = 0; i < mData.dim; i++)
+      for (i = 0; i < mDim; i++)
         {
           timeScale = mVec_TimeScale[istep][i];
 
@@ -1484,7 +1473,7 @@ void CILDMMethod::printResult(std::ostream * ostream) const // temporary tabs ar
 
           os << timeScale << "): ";
 
-          for (j = 0; j < mData.dim; j++)
+          for (j = 0; j < mDim; j++)
             os << mVec_mVslow[istep][i][j] << " ";
 
           os << std::endl;
@@ -1498,7 +1487,7 @@ void CILDMMethod::printResult(std::ostream * ostream) const // temporary tabs ar
       os << "Columns: Modes (TS - corresponding  timescale) ";
       os << std::endl;
 
-      for (i = 0; i < mData.dim; i++)
+      for (i = 0; i < mDim; i++)
         {
           timeScale = mVec_TimeScale[istep][i];
 
@@ -1512,11 +1501,11 @@ void CILDMMethod::printResult(std::ostream * ostream) const // temporary tabs ar
 
       os << std::endl;
 
-      for (j = 0; j < mData.dim; j++)
+      for (j = 0; j < mDim; j++)
         {
-          os << mpModel->getMetabolitesX()[j]->getObjectName() << "  ";
+          os << Model.getMetabolitesX()[j]->getObjectName() << "  ";
 
-          for (i = 0; i < mData.dim; i++)
+          for (i = 0; i < mDim; i++)
             os << mVec_mVslowMetab[istep][j][i] << "  ";
 
           os << std::endl;
@@ -1533,13 +1522,13 @@ void CILDMMethod::printResult(std::ostream * ostream) const // temporary tabs ar
       os << mVec_SlowModes[istep];
       os << " slow; ";
 
-      os << mData.dim - mVec_SlowModes[istep];
+      os << mDim - mVec_SlowModes[istep];
       os << " fast";
       os << std::endl;
 
-      for (j = 0; j < mData.dim; j++)
+      for (j = 0; j < mDim; j++)
         {
-          os << mpModel->getMetabolitesX()[j]->getObjectName() << "  ";
+          os << Model.getMetabolitesX()[j]->getObjectName() << "  ";
           os << mVec_mVslowSpace[istep][j] << "  ";
 
           os << std::endl;
@@ -1555,13 +1544,13 @@ void CILDMMethod::printResult(std::ostream * ostream) const // temporary tabs ar
       os << mVec_SlowModes[istep];
       os << " slow; ";
 
-      os << mData.dim - mVec_SlowModes[istep];
+      os << mDim - mVec_SlowModes[istep];
       os << " fast";
       os << std::endl;
 
-      for (j = 0; j < mData.dim; j++)
+      for (j = 0; j < mDim; j++)
         {
-          os << mpModel->getMetabolitesX()[j]->getObjectName() << "  ";
+          os << Model.getMetabolitesX()[j]->getObjectName() << "  ";
           os << mVec_mVfastSpace[istep][j] << "  ";
 
           os << std::endl;
@@ -1574,9 +1563,9 @@ void CILDMMethod::printResult(std::ostream * ostream) const // temporary tabs ar
       os << "Column: Contribution to slow space ";
       os << std::endl;
 
-      for (j = 0; j < (C_INT32) mpModel->getReactions().size(); j++)
+      for (j = 0; j < (C_INT32) Model.getReactions().size(); j++)
         {
-          os << mpModel->getReactions()[j]->getObjectName() << "  ";
+          os << Model.getReactions()[j]->getObjectName() << "  ";
           os << mVec_mReacSlowSpace[istep][j] << "  ";
 
           os << std::endl;

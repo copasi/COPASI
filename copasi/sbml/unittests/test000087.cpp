@@ -113,9 +113,9 @@ void test000087::test_import_reaction_flux_reference_2()
   const CEvaluationNodeObject* pObjectNode = dynamic_cast<const CEvaluationNodeObject*>(pRoot);
   CPPUNIT_ASSERT(pObjectNode != NULL);
   const CRegisteredObjectName cn = pObjectNode->getObjectCN();
-  std::vector<CCopasiContainer*> listOfContainers;
+  CObjectInterface::ContainerList listOfContainers;
   listOfContainers.push_back(pCOPASIDATAMODEL->getModel());
-  const CCopasiObject* pObject = CObjectInterface::DataModel(pCOPASIDATAMODEL->ObjectFromCN(listOfContainers, cn));
+  const CCopasiObject* pObject = CObjectInterface::DataModel(pCOPASIDATAMODEL->getObjectFromCN(listOfContainers, cn));
   CPPUNIT_ASSERT(pObject != NULL);
   CPPUNIT_ASSERT(pObject->isReference() == true);
   CPPUNIT_ASSERT(pObject->getObjectName() == "Flux");
@@ -330,9 +330,9 @@ void test000087::test_simulate_reaction_flux_reference_1()
   const CEvaluationNodeObject* pObjectNode = dynamic_cast<const CEvaluationNodeObject*>(pRoot);
   CPPUNIT_ASSERT(pObjectNode != NULL);
   const CRegisteredObjectName cn = pObjectNode->getObjectCN();
-  std::vector<CCopasiContainer*> listOfContainers;
+  CObjectInterface::ContainerList listOfContainers;
   listOfContainers.push_back(pCOPASIDATAMODEL->getModel());
-  const CCopasiObject* pObject = CObjectInterface::DataModel(pCOPASIDATAMODEL->ObjectFromCN(listOfContainers, cn));
+  const CCopasiObject* pObject = CObjectInterface::DataModel(pCOPASIDATAMODEL->getObjectFromCN(listOfContainers, cn));
   CPPUNIT_ASSERT(pObject != NULL);
   CPPUNIT_ASSERT(pObject->isReference() == true);
   CPPUNIT_ASSERT(pObject->getObjectName() == "Flux");

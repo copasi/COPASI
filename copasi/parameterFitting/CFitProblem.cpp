@@ -24,8 +24,8 @@
 
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "report/CCopasiRootContainer.h"
+#include "math/CMathContainer.h"
 #include "model/CModel.h"
-#include "model/CState.h"
 #include "report/CCopasiObjectReference.h"
 #include "report/CKeyFactory.h"
 #include "steadystate/CSteadyStateTask.h"
@@ -47,12 +47,11 @@ CFitProblem::CFitProblem(const CCopasiTask::Type & type,
   mpExperimentSet(NULL),
   mpSteadyState(NULL),
   mpTrajectory(NULL),
-  mExperimentUpdateMethods(0, 0),
-  mExperimentUndoMethods(0, 0),
+  mExperimentValues(0, 0),
   mExperimentConstraints(0, 0),
   mExperimentDependentValues(0),
   mpCrossValidationSet(NULL),
-  mCrossValidationUpdateMethods(0, 0),
+  mCrossValidationValues(0, 0),
   mCrossValidationConstraints(0, 0),
   mCrossValidationDependentValues(0),
   mCrossValidationSolutionValue(mWorstValue),
@@ -61,7 +60,8 @@ CFitProblem::CFitProblem(const CCopasiTask::Type & type,
   mCrossValidationObjective(mWorstValue),
   mThresholdCounter(0),
   mpTrajectoryProblem(NULL),
-  mpInitialState(NULL),
+  mInitialState(),
+  mpInitialStateTime(NULL),
   mResiduals(0),
   mRMS(std::numeric_limits<C_FLOAT64>::quiet_NaN()),
   mSD(std::numeric_limits<C_FLOAT64>::quiet_NaN()),
@@ -104,12 +104,11 @@ CFitProblem::CFitProblem(const CFitProblem& src,
   mpExperimentSet(NULL),
   mpSteadyState(NULL),
   mpTrajectory(NULL),
-  mExperimentUpdateMethods(0, 0),
-  mExperimentUndoMethods(0, 0),
+  mExperimentValues(0, 0),
   mExperimentConstraints(0, 0),
   mExperimentDependentValues(src.mExperimentDependentValues),
   mpCrossValidationSet(NULL),
-  mCrossValidationUpdateMethods(0, 0),
+  mCrossValidationValues(0, 0),
   mCrossValidationConstraints(0, 0),
   mCrossValidationDependentValues(src.mCrossValidationDependentValues),
   mCrossValidationSolutionValue(mWorstValue),
@@ -118,7 +117,6 @@ CFitProblem::CFitProblem(const CFitProblem& src,
   mCrossValidationObjective(mWorstValue),
   mThresholdCounter(0),
   mpTrajectoryProblem(NULL),
-  mpInitialState(NULL),
   mResiduals(src.mResiduals),
   mRMS(src.mRMS),
   mSD(src.mSD),
@@ -155,7 +153,6 @@ CFitProblem::CFitProblem(const CFitProblem& src,
 CFitProblem::~CFitProblem()
 {
   pdelete(mpTrajectoryProblem);
-  pdelete(mpInitialState);
   pdelete(mpFisherMatrixInterface);
   pdelete(mpFisherMatrix);
   pdelete(mpFisherEigenvaluesMatrixInterface);
@@ -411,9 +408,6 @@ bool CFitProblem::elevateChildren()
   return true;
 }
 
-bool CFitProblem::setModel(CModel * pModel)
-{return COptProblem::setModel(pModel);}
-
 bool CFitProblem::setCallBack(CProcessReport * pCallBack)
 {return COptProblem::setCallBack(pCallBack);}
 
@@ -433,9 +427,7 @@ bool CFitProblem::initialize()
         return false;
     }
 
-  std::vector< CCopasiContainer * > ContainerList;
-  ContainerList.push_back(getObjectAncestor("Vector"));
-  CCopasiDataModel* pDataModel = getObjectDataModel();
+  CCopasiDataModel * pDataModel = getObjectDataModel();
   assert(pDataModel != NULL);
 
   //StartInSS: also initialize the SS task if a time course starts from a steady state
@@ -445,7 +437,7 @@ bool CFitProblem::initialize()
       || mpExperimentSet->hasStartInSteadyState())
     {
       mpSteadyState =
-        dynamic_cast< CSteadyStateTask * >(pDataModel->ObjectFromCN(ContainerList, *mpParmSteadyStateCN));
+        dynamic_cast< CSteadyStateTask * >(const_cast< CCopasiObject * >(CObjectInterface::DataObject(getObjectFromCN(*mpParmSteadyStateCN))));
 
       if (mpSteadyState == NULL)
         {
@@ -469,7 +461,7 @@ bool CFitProblem::initialize()
   if (mpExperimentSet->hasDataForTaskType(CCopasiTask::timeCourse))
     {
       mpTrajectory =
-        dynamic_cast< CTrajectoryTask * >(pDataModel->ObjectFromCN(ContainerList, *mpParmTimeCourseCN));
+        dynamic_cast< CTrajectoryTask * >(const_cast< CCopasiObject * >(CObjectInterface::DataObject(getObjectFromCN(*mpParmTimeCourseCN))));
 
       if (mpTrajectory == NULL)
         {
@@ -495,31 +487,13 @@ bool CFitProblem::initialize()
       mpTrajectory = NULL;
     }
 
-  ContainerList.clear();
+  mInitialState = mpContainer->getInitialState();
+  mpInitialStateTime = mpContainer->getInitialState().array() + mpContainer->getTimeIndex();
 
-  ContainerList.push_back(mpModel);
-
-  CFitTask * pTask = dynamic_cast<CFitTask *>(getObjectParent());
-
-  if (pTask)
-    {
-      ContainerList.push_back(pTask);
-
-      if (mpSteadyState != NULL)
-        {
-          ContainerList.push_back(mpSteadyState);
-        }
-
-      if (mpTrajectory != NULL)
-        {
-          ContainerList.push_back(mpTrajectory);
-        }
-    }
-
-  if (!mpExperimentSet->compile(ContainerList)) return false;
+  if (!mpExperimentSet->compile(mpContainer)) return false;
 
   // Initialize the object set which the experiment independent objects.
-  std::vector< std::set< const CCopasiObject * > > ObjectSet;
+  std::vector< CObjectInterface::ObjectSet > ObjectSet;
   ObjectSet.resize(mpExperimentSet->getExperimentCount());
   size_t i, imax;
 
@@ -529,16 +503,10 @@ bool CFitProblem::initialize()
     }
 
   // Build a matrix of experiment and experiment local items.
-  mExperimentUpdateMethods.resize(mpExperimentSet->getExperimentCount(),
-                                  mpOptItems->size());
-  mExperimentUpdateMethods = NULL;
+  mExperimentValues.resize(mpExperimentSet->getExperimentCount(), mpOptItems->size());
+  mExperimentValues = NULL;
 
-  // Build a matrix of experiment and experiment local undo items.
-  mExperimentUndoMethods.resize(mpExperimentSet->getExperimentCount(),
-                                mpOptItems->size());
-  mExperimentUndoMethods = NULL;
-
-  mExperimentInitialRefreshes.resize(mpExperimentSet->getExperimentCount());
+  mExperimentInitialUpdates.resize(mpExperimentSet->getExperimentCount());
 
   std::vector<COptItem * >::iterator it = mpOptItems->begin();
   std::vector<COptItem * >::iterator end = mpOptItems->end();
@@ -571,6 +539,10 @@ bool CFitProblem::initialize()
       pItem = static_cast<CFitItem *>(*it);
       pItem->updateBounds(mpOptItems->begin());
 
+      // We cannot directly change the container values as multiple parameters
+      // may point to the same value.
+      mContainerVariables[j] = const_cast< C_FLOAT64 * >(&pItem->getLocalValue());
+
       std::string Annotation = pItem->getObjectDisplayName();
 
       imax = pItem->getExperimentCount();
@@ -579,7 +551,7 @@ bool CFitProblem::initialize()
         {
           for (i = 0, imax = mpExperimentSet->getExperimentCount(); i < imax; i++)
             {
-              mExperimentUpdateMethods(i, j) = pItem->COptItem::getUpdateMethod();
+              mExperimentValues(i, j) = (C_FLOAT64 *) pItem->getObject()->getValuePointer();
               ObjectSet[i].insert(pItem->getObject());
             }
         }
@@ -592,12 +564,8 @@ bool CFitProblem::initialize()
               if ((Index = mpExperimentSet->keyToIndex(pItem->getExperiment(i))) == C_INVALID_INDEX)
                 return false;
 
-              mExperimentUpdateMethods(Index, j) = pItem->COptItem::getUpdateMethod();
+              mExperimentValues(Index, j) = (C_FLOAT64 *) pItem->getObject()->getValuePointer();
               ObjectSet[Index].insert(pItem->getObject());
-
-              // We need to undo the changes for all non affected experiments.
-              // We can do that by adding the update method with the current model value to
-              mExperimentUndoMethods(Index, j) = pItem->COptItem::getUpdateMethod();
             };
         }
 
@@ -614,14 +582,14 @@ bool CFitProblem::initialize()
   // Create a joined sequence of update methods for parameters and independent values.
   for (i = 0, imax = mpExperimentSet->getExperimentCount(); i < imax; i++)
     {
-      mExperimentInitialRefreshes[i] = mpModel->buildInitialRefreshSequence(ObjectSet[i]);
+      mpContainer->getInitialDependencies().getUpdateSequence(mExperimentInitialUpdates[i], CMath::UpdateMoieties, ObjectSet[i], mpContainer->getInitialStateObjects());
     }
 
   // Build a matrix of experiment and constraint items;
   mExperimentConstraints.resize(mpExperimentSet->getExperimentCount(),
                                 mpConstraintItems->size());
   mExperimentConstraints = NULL;
-  mExperimentConstraintRefreshes.resize(mpExperimentSet->getExperimentCount());
+  mExperimentConstraintUpdates.resize(mpExperimentSet->getExperimentCount());
   ObjectSet.clear();
   ObjectSet.resize(mpExperimentSet->getExperimentCount());
 
@@ -661,11 +629,15 @@ bool CFitProblem::initialize()
     }
 
   for (i = 0, imax = mpExperimentSet->getExperimentCount(); i < imax; i++)
-    mExperimentConstraintRefreshes[i] = CCopasiObject::buildUpdateSequence(ObjectSet[i], mpModel->getUptoDateObjects());
+    {
+      mpContainer->getTransientDependencies().getUpdateSequence(mExperimentConstraintUpdates[i], CMath::Default,
+          mpContainer->getStateObjects(false), ObjectSet[i],
+          mpContainer->getSimulationUpToDateObjects());
+    }
 
   mExperimentDependentValues.resize(mpExperimentSet->getDataPointCount());
 
-  if (!mpCrossValidationSet->compile(ContainerList)) return false;
+  if (!mpCrossValidationSet->compile(mpContainer)) return false;
 
   // Initialize the object set which the experiment independent objects.
   ObjectSet.clear();
@@ -677,16 +649,11 @@ bool CFitProblem::initialize()
     }
 
   // Build a matrix of cross validation experiments  and local items.
-  mCrossValidationUpdateMethods.resize(mpCrossValidationSet->getExperimentCount(),
-                                       mpOptItems->size());
-  mCrossValidationUpdateMethods = NULL;
+  mCrossValidationValues.resize(mpCrossValidationSet->getExperimentCount(),
+                                mpOptItems->size());
+  mCrossValidationValues = NULL;
 
-  // Build a matrix of experiment and experiment local undo items.
-  mCrossValidationUndoMethods.resize(mpCrossValidationSet->getExperimentCount(),
-                                     mpOptItems->size());
-  mCrossValidationUndoMethods = NULL;
-
-  mCrossValidationInitialRefreshes.resize(mpCrossValidationSet->getExperimentCount());
+  mCrossValidationInitialUpdates.resize(mpCrossValidationSet->getExperimentCount());
 
   it = mpOptItems->begin();
   end = mpOptItems->end();
@@ -702,7 +669,7 @@ bool CFitProblem::initialize()
         {
           for (i = 0, imax = mpCrossValidationSet->getExperimentCount(); i < imax; i++)
             {
-              mCrossValidationUpdateMethods(i, j) = pItem->COptItem::getUpdateMethod();
+              mCrossValidationValues(i, j) = (C_FLOAT64 *) pItem->getObject()->getValuePointer();
               ObjectSet[i].insert(pItem->getObject());
             }
         }
@@ -713,12 +680,8 @@ bool CFitProblem::initialize()
               if ((Index = mpCrossValidationSet->keyToIndex(pItem->getCrossValidation(i))) == C_INVALID_INDEX)
                 return false;
 
-              mCrossValidationUpdateMethods(Index, j) = pItem->COptItem::getUpdateMethod();
+              mCrossValidationValues(Index, j) = (C_FLOAT64 *) pItem->getObject()->getValuePointer();
               ObjectSet[Index].insert(pItem->getObject());
-
-              // We need to undo the changes for all non affected cross validations.
-              // We can do that by adding the update method with the current model value to
-              mCrossValidationUndoMethods(Index, j) = pItem->COptItem::getUpdateMethod();
             };
         }
     }
@@ -726,14 +689,14 @@ bool CFitProblem::initialize()
   // Create a joined sequence of update methods for parameters and independent values.
   for (i = 0, imax = mpCrossValidationSet->getExperimentCount(); i < imax; i++)
     {
-      mCrossValidationInitialRefreshes[i] = mpModel->buildInitialRefreshSequence(ObjectSet[i]);
+      mpContainer->getInitialDependencies().getUpdateSequence(mCrossValidationInitialUpdates[i], CMath::UpdateMoieties, ObjectSet[i], mpContainer->getInitialStateObjects());
     }
 
   // Build a matrix of cross validation experiments and constraint items;
   mCrossValidationConstraints.resize(mpCrossValidationSet->getExperimentCount(),
                                      mpConstraintItems->size());
   mCrossValidationConstraints = NULL;
-  mCrossValidationConstraintRefreshes.resize(mpCrossValidationSet->getExperimentCount());
+  mCrossValidationConstraintUpdates.resize(mpCrossValidationSet->getExperimentCount());
   ObjectSet.clear();
   ObjectSet.resize(mpCrossValidationSet->getExperimentCount());
 
@@ -768,7 +731,11 @@ bool CFitProblem::initialize()
     }
 
   for (i = 0, imax = mpCrossValidationSet->getExperimentCount(); i < imax; i++)
-    mCrossValidationConstraintRefreshes[i] = CCopasiObject::buildUpdateSequence(ObjectSet[i], mpModel->getUptoDateObjects());
+    {
+      mpContainer->getTransientDependencies().getUpdateSequence(mCrossValidationConstraintUpdates[i], CMath::Default,
+          mpContainer->getStateObjects(false), ObjectSet[i],
+          mpContainer->getSimulationUpToDateObjects());
+    }
 
   mCrossValidationDependentValues.resize(mpCrossValidationSet->getDataPointCount());
 
@@ -776,9 +743,6 @@ bool CFitProblem::initialize()
   mThresholdCounter = 0;
 
   setResidualsRequired(false);
-
-  pdelete(mpInitialState);
-  mpInitialState = new CState(mpModel->getInitialState());
 
   return true;
 }
@@ -837,8 +801,7 @@ bool CFitProblem::calculate()
 
   C_FLOAT64 * Residuals = mResiduals.array();
   C_FLOAT64 * DependentValues = mExperimentDependentValues.array();
-  UpdateMethod ** pUpdate = mExperimentUpdateMethods.array();
-  UpdateMethod ** pUndo =  mExperimentUndoMethods.array();
+  C_FLOAT64 ** pUpdate = mExperimentValues.array();
   std::vector<COptItem *>::iterator itItem;
   std::vector<COptItem *>::iterator endItem = mpOptItems->end();
   std::vector<COptItem *>::iterator itConstraint;
@@ -860,15 +823,12 @@ bool CFitProblem::calculate()
         {
           pExp = mpExperimentSet->getExperiment(i);
 
-          // Set the model to its original state.
-          // TODO CRITICAL This is the incorrect state if we are running as part of a scan.
-          mpModel->setInitialState(*mpInitialState);
-          mpModel->updateInitialValues();
-
           // set the global and experiment local fit item values.
           for (itItem = mpOptItems->begin(); itItem != endItem; itItem++, pUpdate++)
             if (*pUpdate)
-              (**pUpdate)(static_cast<CFitItem *>(*itItem)->getLocalValue());
+              {
+                **pUpdate = static_cast<CFitItem *>(*itItem)->getLocalValue();
+              }
 
           kmax = pExp->getNumDataRows();
 
@@ -880,14 +840,7 @@ bool CFitProblem::calculate()
                 for (j = 0; j < kmax && Continue; j++) // For each data row;
                   {
                     pExp->updateModelWithIndependentData(j);
-
-                    // We need to apply the parameter and independent
-                    // value updates as one unit.
-                    itRefresh = mExperimentInitialRefreshes[i].begin();
-                    endRefresh = mExperimentInitialRefreshes[i].end();
-
-                    while (itRefresh != endRefresh)
-                      (**itRefresh++)();
+                    mpContainer->applyUpdateSequence(mExperimentInitialUpdates[i]);
 
                     Continue = mpSteadyState->process(true);
 
@@ -900,11 +853,7 @@ bool CFitProblem::calculate()
 
                     // We check after each simulation whether the constraints are violated.
                     // Make sure the constraint values are up to date.
-                    itRefresh = mExperimentConstraintRefreshes[i].begin();
-                    endRefresh = mExperimentConstraintRefreshes[i].end();
-
-                    for (; itRefresh != endRefresh; ++itRefresh)
-                      (**itRefresh)();
+                    mpContainer->applyUpdateSequence(mExperimentConstraintUpdates[i]);
 
                     ppConstraint = mExperimentConstraints[i];
                     ppConstraintEnd = ppConstraint + mExperimentConstraints.numCols();
@@ -969,19 +918,12 @@ bool CFitProblem::calculate()
                         // Set independent data. A time course only has one set of
                         // independent data.
                         pExp->updateModelWithIndependentData(0);
-
-                        // We need to apply the parameter and independent
-                        // value updates as one unit.
-                        itRefresh = mExperimentInitialRefreshes[i].begin();
-                        endRefresh = mExperimentInitialRefreshes[i].end();
-
-                        while (itRefresh != endRefresh)
-                          (**itRefresh++)();
+                        mpContainer->applyUpdateSequence(mExperimentInitialUpdates[i]);
 
                         static_cast< CTrajectoryProblem * >(mpTrajectory->getProblem())->setStepNumber(1);
                         mpTrajectory->processStart(true);
 
-                        if (pExp->getTimeData()[0] != mpModel->getInitialTime())
+                        if (pExp->getTimeData()[0] != *mpInitialStateTime)
                           {
                             mpTrajectory->processStep(pExp->getTimeData()[0]);
                           }
@@ -989,11 +931,7 @@ bool CFitProblem::calculate()
 
                     // We check after each simulation step whether the constraints are violated.
                     // Make sure the constraint values are up to date.
-                    itRefresh = mExperimentConstraintRefreshes[i].begin();
-                    endRefresh = mExperimentConstraintRefreshes[i].end();
-
-                    for (; itRefresh != endRefresh; ++itRefresh)
-                      (**itRefresh)();
+                    mpContainer->applyUpdateSequence(mExperimentConstraintUpdates[i]);
 
                     ppConstraint = mExperimentConstraints[i];
                     ppConstraintEnd = ppConstraint + mExperimentConstraints.numCols();
@@ -1024,31 +962,9 @@ bool CFitProblem::calculate()
                 break;
             }
 
-          // restore independent data
-          pExp->restoreModelIndependentData();
-
-          // restore experiment local values
-          const C_FLOAT64 *pOriginal = mOriginalVariables.array();
-          const C_FLOAT64 *pOriginalEnd = pOriginal + mOriginalVariables.size();
-          bool RefreshNeeded = false;
-
-          // set the global and experiment local fit item values.
-          for (; pOriginal != pOriginalEnd; pOriginal++, pUndo++)
-            if (*pUndo)
-              {
-                (**pUndo)(*pOriginal);
-                RefreshNeeded = true;
-              }
-
-          if (RefreshNeeded)
-            {
-              // Update initial values which changed due to the fit item values.
-              itRefresh = mExperimentInitialRefreshes[i].begin();
-              endRefresh = mExperimentInitialRefreshes[i].end();
-
-              while (itRefresh != endRefresh)
-                (**itRefresh++)();
-            }
+          // Restore the containers initial state. This includes all local reaction parameter
+          // Additionally this state is synchronized, i.e. nothing to compute.
+          mpContainer->setInitialState(mInitialState);
         }
     }
 
@@ -1069,17 +985,9 @@ bool CFitProblem::calculate()
 #endif
       mCalculateValue = mWorstValue;
 
-      if (pExp)
-        {
-          pExp->restoreModelIndependentData();
-
-          // Update initial values which changed due to the fit item values.
-          itRefresh = mExperimentInitialRefreshes[i].begin();
-          endRefresh = mExperimentInitialRefreshes[i].end();
-
-          while (itRefresh != endRefresh)
-            (**itRefresh++)();
-        }
+      // Restore the containers initial state. This includes all local reaction parameter
+      // Additionally this state is synchronized, i.e. nothing to compute.
+      mpContainer->setInitialState(mInitialState);
     }
 
   catch (...)
@@ -1087,16 +995,9 @@ bool CFitProblem::calculate()
       mFailedCounter++;
       mCalculateValue = mWorstValue;
 
-      if (pExp)
-        {
-          pExp->restoreModelIndependentData();
-          // Update initial values which changed due to the fit item values.
-          itRefresh = mExperimentInitialRefreshes[i].begin();
-          endRefresh = mExperimentInitialRefreshes[i].end();
-
-          while (itRefresh != endRefresh)
-            (**itRefresh++)();
-        }
+      // Restore the containers initial state. This includes all local reaction parameter
+      // Additionally this state is synchronized, i.e. nothing to compute.
+      mpContainer->setInitialState(mInitialState);
     }
 
   if (isnan(mCalculateValue))
@@ -1126,7 +1027,6 @@ bool CFitProblem::restore(const bool & updateModel)
   success &= COptProblem::restore(updateModel);
 
   pdelete(mpTrajectoryProblem);
-  pdelete(mpInitialState);
 
   return success;
 }
@@ -1279,7 +1179,7 @@ std::ostream &operator<<(std::ostream &os, const CFitProblem & o)
 
 void CFitProblem::updateInitialState()
 {
-  *mpInitialState = mpModel->getInitialState();
+  mInitialState = mpContainer->getInitialState();
 }
 
 bool CFitProblem::createObjectiveFunction()
@@ -1336,7 +1236,9 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
 
   // Recalculate the best solution.
   for (i = 0; i < imax; i++)
-    (*mUpdateMethods[i])(mSolutionVariables[i]);
+    {
+      *mContainerVariables[i] = mSolutionVariables[i];
+    }
 
   // For Output
   mStoreResults = true;
@@ -1408,12 +1310,12 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
 
           if (fabs(Current) > resolution)
             {
-              (*mUpdateMethods[i])(Current * (1.0 + factor));
+              *mContainerVariables[i] = Current * (1.0 + factor);
               Delta = 1.0 / (Current * factor);
             }
           else
             {
-              (*mUpdateMethods[i])(resolution);
+              *mContainerVariables[i] = resolution;
               Delta = 1.0 / resolution;
             }
 
@@ -1429,7 +1331,7 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
               *pDeltaResidualDeltaParameter = (*pResidual - *pSolutionResidual) * Delta;
 
           // Restore the value
-          (*mUpdateMethods[i])(Current);
+          *mContainerVariables[i] = Current;
         }
 
       if (!CalculateFIM)
@@ -1844,8 +1746,7 @@ bool CFitProblem::calculateCrossValidation()
   C_FLOAT64 * Residuals = NULL;
   C_FLOAT64 * DependentValues = mCrossValidationDependentValues.array();
 
-  UpdateMethod ** pUpdate = mCrossValidationUpdateMethods.array();
-  UpdateMethod ** pUndo =  mCrossValidationUndoMethods.array();
+  C_FLOAT64 ** pUpdate = mExperimentValues.array();
 
   C_FLOAT64 * pSolution = mSolutionVariables.array();
   C_FLOAT64 * pSolutionEnd = pSolution + mSolutionVariables.size();
@@ -1869,13 +1770,14 @@ bool CFitProblem::calculateCrossValidation()
         {
           pExp = mpCrossValidationSet->getExperiment(i);
 
-          mpModel->setInitialState(*mpInitialState);
-          mpModel->updateInitialValues();
-
           // set the global and CrossValidation local fit item values.
           for (; pSolution != pSolutionEnd; pSolution++, pUpdate++)
-            if (*pUpdate)
-              (**pUpdate)(*pSolution);
+            {
+              if (*pUpdate)
+                {
+                  **pUpdate = *pSolution;
+                }
+            }
 
           kmax = pExp->getNumDataRows();
 
@@ -1887,14 +1789,7 @@ bool CFitProblem::calculateCrossValidation()
                 for (j = 0; j < kmax && Continue; j++) // For each data row;
                   {
                     pExp->updateModelWithIndependentData(j);
-
-                    // We need to apply the parameter and independent
-                    // value updates as one unit.
-                    itRefresh = mCrossValidationInitialRefreshes[i].begin();
-                    endRefresh = mCrossValidationInitialRefreshes[i].end();
-
-                    for (; itRefresh != endRefresh; ++itRefresh)
-                      (**itRefresh)();
+                    mpContainer->applyUpdateSequence(mCrossValidationInitialUpdates[i]);
 
                     Continue &= mpSteadyState->process(true);
 
@@ -1906,11 +1801,7 @@ bool CFitProblem::calculateCrossValidation()
 
                     // We check after each simulation whether the constraints are violated.
                     // Make sure the constraint values are up to date.
-                    itRefresh = mCrossValidationConstraintRefreshes[i].begin();
-                    endRefresh = mCrossValidationConstraintRefreshes[i].end();
-
-                    for (; itRefresh != endRefresh; ++itRefresh)
-                      (**itRefresh)();
+                    mpContainer->applyUpdateSequence(mCrossValidationConstraintUpdates[i]);
 
                     ppConstraint = mCrossValidationConstraints[i];
                     ppConstraintEnd = ppConstraint + mCrossValidationConstraints.numCols();
@@ -1968,16 +1859,12 @@ bool CFitProblem::calculateCrossValidation()
 
                         // We need to apply the parameter and independent
                         // value updates as one unit.
-                        itRefresh = mCrossValidationInitialRefreshes[i].begin();
-                        endRefresh = mCrossValidationInitialRefreshes[i].end();
-
-                        for (; itRefresh != endRefresh; ++itRefresh)
-                          (**itRefresh)();
+                        mpContainer->applyUpdateSequence(mCrossValidationInitialUpdates[i]);
 
                         static_cast< CTrajectoryProblem * >(mpTrajectory->getProblem())->setStepNumber(1);
                         mpTrajectory->processStart(true);
 
-                        if (pExp->getTimeData()[0] != mpModel->getInitialTime())
+                        if (pExp->getTimeData()[0] != *mpInitialStateTime)
                           {
                             mpTrajectory->processStep(pExp->getTimeData()[0]);
                           }
@@ -1985,11 +1872,7 @@ bool CFitProblem::calculateCrossValidation()
 
                     // We check after each simulation whether the constraints are violated.
                     // Make sure the constraint values are up to date.
-                    itRefresh = mCrossValidationConstraintRefreshes[i].begin();
-                    endRefresh = mCrossValidationConstraintRefreshes[i].end();
-
-                    for (; itRefresh != endRefresh; ++itRefresh)
-                      (**itRefresh)();
+                    mpContainer->applyUpdateSequence(mCrossValidationConstraintUpdates[i]);
 
                     ppConstraint = mCrossValidationConstraints[i];
                     ppConstraintEnd = ppConstraint + mCrossValidationConstraints.numCols();
@@ -2015,31 +1898,9 @@ bool CFitProblem::calculateCrossValidation()
                 break;
             }
 
-          // restore independent data
-          pExp->restoreModelIndependentData();
-
-          // restore experiment local values
-          const C_FLOAT64 *pOriginal = mOriginalVariables.array();
-          const C_FLOAT64 *pOriginalEnd = pOriginal + mOriginalVariables.size();
-          bool RefreshNeeded = false;
-
-          // set the global and experiment local fit item values.
-          for (; pOriginal != pOriginalEnd; pOriginal++, pUndo++)
-            if (*pUndo)
-              {
-                (**pUndo)(*pOriginal);
-                RefreshNeeded = true;
-              }
-
-          if (RefreshNeeded)
-            {
-              // Update initial values which changed due to the fit item values.
-              itRefresh = mCrossValidationInitialRefreshes[i].begin();
-              endRefresh = mCrossValidationInitialRefreshes[i].end();
-
-              while (itRefresh != endRefresh)
-                (**itRefresh++)();
-            }
+          // Restore the containers initial state. This includes all local reaction parameter
+          // Additionally this state is synchronized, i.e. nothing to compute.
+          mpContainer->setInitialState(mInitialState);
         }
     }
 
@@ -2051,17 +1912,9 @@ bool CFitProblem::calculateCrossValidation()
       mFailedCounter++;
       CalculateValue = mWorstValue;
 
-      if (pExp)
-        {
-          pExp->restoreModelIndependentData();
-
-          // Update initial values which changed due to the fit item values.
-          itRefresh = mCrossValidationInitialRefreshes[i].begin();
-          endRefresh = mCrossValidationInitialRefreshes[i].end();
-
-          while (itRefresh != endRefresh)
-            (**itRefresh++)();
-        }
+      // Restore the containers initial state. This includes all local reaction parameter
+      // Additionally this state is synchronized, i.e. nothing to compute.
+      mpContainer->setInitialState(mInitialState);
     }
 
   catch (...)
@@ -2069,17 +1922,9 @@ bool CFitProblem::calculateCrossValidation()
       mFailedCounter++;
       CalculateValue = mWorstValue;
 
-      if (pExp)
-        {
-          pExp->restoreModelIndependentData();
-
-          // Update initial values which changed due to the fit item values.
-          itRefresh = mCrossValidationInitialRefreshes[i].begin();
-          endRefresh = mCrossValidationInitialRefreshes[i].end();
-
-          while (itRefresh != endRefresh)
-            (**itRefresh++)();
-        }
+      // Restore the containers initial state. This includes all local reaction parameter
+      // Additionally this state is synchronized, i.e. nothing to compute.
+      mpContainer->setInitialState(mInitialState);
     }
 
   if (isnan(CalculateValue))

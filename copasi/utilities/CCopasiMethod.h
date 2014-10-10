@@ -1,23 +1,23 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-// and The University of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2003 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc. and EML Research, gGmbH. 
-// All rights reserved. 
+// Copyright (C) 2003 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 /**
  *  CCopasiMethod class.
  *  This class is used to describe a method in COPASI. This class is
- *  intended to be used as the parent class for all methods whithin COPASI.
+ *  intended to be used as the parent class for all methods within COPASI.
  *
- *  Created for Copasi by Stefan Hoops 2003
+ *  Created for COPASI by Stefan Hoops 2003
  */
 
 #ifndef COPASI_CCopasiMethod
@@ -30,6 +30,7 @@
 #include "copasi/utilities/CReadConfig.h"
 
 class CProcessReport;
+class CMathContainer;
 
 class CCopasiMethod : public CCopasiParameterGroup
 {
@@ -66,8 +67,6 @@ public:
     stochastic,
     tauLeap,
     adaptiveSA,
-    hybrid,
-    hybridLSODA,
     hybridODE45,
     DsaLsodar,
     tssILDM,
@@ -99,31 +98,6 @@ public:
    */
   static const char* XMLSubType[];
 
-  // Attributes
-private:
-  /**
-   * The type of the method
-   */
-  CCopasiTask::Type mType;
-
-  /**
-   * The type of the method
-   */
-  CCopasiMethod::SubType mSubType;
-
-protected:
-  /**
-   * a pointer to the callback
-   */
-  CProcessReport * mpCallBack;
-
-  /**
-   * A pointer to the report
-   */
-  //CReport * mpReport;
-
-  // Operations
-
 private:
   /**
    * Default constructor
@@ -154,6 +128,18 @@ public:
    * Destructor
    */
   virtual ~CCopasiMethod();
+
+  /**
+   * Set the model of the problem
+   * @param CMathContainer * pContainer
+   */
+  void setMathContainer(CMathContainer * pContainer);
+
+  /**
+   * Retrieve the model of the problem
+   * @result CMathContainer * pContainer
+   */
+  CMathContainer * getMathContainer() const;
 
   /**
    * Set the call back of the problem
@@ -213,6 +199,35 @@ public:
    **/
 
   virtual void printResult(std::ostream * ostream) const;
+
+protected:
+  /**
+   * Signal that the math container has changed
+   */
+  virtual void signalMathContainerChanged();
+
+  // Attributes
+private:
+  /**
+   * The type of the method
+   */
+  CCopasiTask::Type mType;
+
+  /**
+   * The type of the method
+   */
+  CCopasiMethod::SubType mSubType;
+
+protected:
+  /**
+   * The model of the problem
+   */
+  CMathContainer * mpContainer;
+
+  /**
+   * a pointer to the callback
+   */
+  CProcessReport * mpCallBack;
 };
 
 #endif // COPASI_CCopasiMethod

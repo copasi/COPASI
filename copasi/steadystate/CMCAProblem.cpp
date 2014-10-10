@@ -1,17 +1,14 @@
-/* Begin CVS Header
-$Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CMCAProblem.cpp,v $
-$Revision: 1.17 $
-$Name:  $
-$Author: shoops $
-$Date: 2010/09/09 12:02:06 $
-End CVS Header */
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2004 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -41,8 +38,8 @@ End CVS Header */
  *  @param "CModel *" pModel
  */
 CMCAProblem::CMCAProblem(const CCopasiContainer * pParent):
-    CCopasiProblem(CCopasiTask::mca, pParent),
-    mInitialState()
+  CCopasiProblem(CCopasiTask::mca, pParent),
+  mInitialState()
 {
   //  addParameter("SteadyStateRequested", CCopasiParameter::BOOL, true);
   addParameter("Steady-State", CCopasiParameter::KEY, std::string(""));
@@ -55,7 +52,7 @@ CMCAProblem::CMCAProblem(const CCopasiContainer * pParent):
  */
 CMCAProblem::CMCAProblem(const CMCAProblem & src,
                          const CCopasiContainer * pParent):
-    CCopasiProblem(src, pParent)
+  CCopasiProblem(src, pParent)
 {CONSTRUCTOR_TRACE;}
 
 /**
@@ -63,16 +60,6 @@ CMCAProblem::CMCAProblem(const CMCAProblem & src,
  */
 CMCAProblem::~CMCAProblem()
 {DESTRUCTOR_TRACE;}
-
-/**
- * Set the model the problem is dealing with.
- * @param "CModel *" pModel
- */
-bool CMCAProblem::setModel(CModel * pModel)
-{
-  mpModel = pModel;
-  return true;
-}
 
 /**
  * Load a mca problem
@@ -109,7 +96,7 @@ void CMCAProblem::setInitialState(const CState & initialState)
 void CMCAProblem::setInitialState(const CStateX & initialState)
 {
   mInitialState = initialState;
-  mpModel = const_cast<CModel *>(mInitialState.getModel());
+  mpContainer = const_cast<CModel *>(mInitialState.getModel());
 }
 
 /**

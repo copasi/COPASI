@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodStatistics.cpp,v $
-//   $Revision: 1.8 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/06/20 21:16:37 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2006 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -33,20 +25,21 @@
 #include "randomGenerator/CRandom.h"
 
 COptMethodStatistics::COptMethodStatistics():
-    COptMethod(CCopasiTask::optimization, CCopasiMethod::Statistics)
+  COptMethod(CCopasiTask::optimization, CCopasiMethod::Statistics)
 {
   initObjects();
 }
 
 COptMethodStatistics::COptMethodStatistics(const COptMethodStatistics & src):
-    COptMethod(src)
+  COptMethod(src)
 {initObjects();}
 
 /**
  * Destructor
  */
 COptMethodStatistics::~COptMethodStatistics()
-{//*** added similar to coptga
+{
+  //*** added similar to coptga
   cleanup();
 }
 
@@ -105,7 +98,7 @@ bool COptMethodStatistics::optimise()
 
       // We need to set the value here so that further checks take
       // account of the value.
-      (*(*mpSetCalculateVariable)[j])(mut);
+      *mContainerVariables[j] = mut;
     }
 
   Continue = evaluate(mIndividual);

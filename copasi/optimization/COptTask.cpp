@@ -60,9 +60,9 @@ const unsigned int COptTask::ValidMethods[] =
   CCopasiMethod::unset
 };
 
-COptTask::COptTask(const CCopasiTask::Type & type,
-                   const CCopasiContainer * pParent):
-  CCopasiTask(type, pParent)
+COptTask::COptTask(const CCopasiContainer * pParent,
+                   const CCopasiTask::Type & type):
+  CCopasiTask(pParent, type)
 {
   mpProblem = new COptProblem(type, this);
   mpMethod = COptMethod::createMethod();

@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -19,6 +19,7 @@
 #include "CStepMatrix.h"
 #include "CBitPatternTree.h"
 
+#include "math/CMathContainer.h"
 #include "model/CModel.h"
 #include "model/CChemEqInterface.h"
 #include "utilities/CProcessReport.h"
@@ -120,7 +121,7 @@ bool CBitPatternTreeMethod::initialize()
 
   if (pTask == NULL) return false;
 
-  mpModel = pTask->getProblem()->getModel();
+  mpModel = &mpContainer->getModel();
 
   if (mpModel == NULL) return false;
 

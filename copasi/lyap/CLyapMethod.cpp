@@ -19,7 +19,8 @@
 #include "copasi.h"
 #include "CLyapMethod.h"
 #include "CLyapProblem.h"
-#include "model/CState.h"
+
+#include "math/CMathContainer.h"
 #include "model/CCompartment.h"
 #include "model/CModel.h"
 
@@ -148,7 +149,7 @@ bool CLyapMethod::isValidProblem(const CCopasiProblem * pProblem)
       return false;
     }
 
-  unsigned C_INT32 tmp = (unsigned C_INT32) pLP->getModel()->getState().getNumIndependent();
+  unsigned C_INT32 tmp = (unsigned C_INT32) mpContainer->getCountODEs() + mpContainer->getCountIndependentSpecies();
 
   if (pLP->getExponentNumber() > tmp)
     {

@@ -269,7 +269,7 @@ void SliderDialog::createNewSlider()
             }
           else
             {
-              std::vector<CCopasiContainer*> listOfContainers;
+              CObjectInterface::ContainerList listOfContainers;
               assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
               listOfContainers.push_back((*CCopasiRootContainer::getDatamodelList())[0]->getModel());
               pCSlider->compile(listOfContainers);
@@ -413,7 +413,7 @@ void SliderDialog::addSlider(CSlider* pSlider)
 
   if (!equivalentSliderExists(pSlider))
     {
-      std::vector<CCopasiContainer*> listOfContainers;
+      CObjectInterface::ContainerList listOfContainers;
       assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
       listOfContainers.push_back((*CCopasiRootContainer::getDatamodelList())[0]->getModel());
       pSlider->compile(listOfContainers);
@@ -1101,7 +1101,7 @@ bool SliderDialog::sliderObjectChanged(CSlider* pSlider) const
 {
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   CModel* pModel = (*CCopasiRootContainer::getDatamodelList())[0]->getModel();
-  std::vector<CCopasiContainer*> listOfContainers;
+  CObjectInterface::ContainerList listOfContainers;
   listOfContainers.push_back(pModel);
   return !pSlider->compile(listOfContainers);
 }

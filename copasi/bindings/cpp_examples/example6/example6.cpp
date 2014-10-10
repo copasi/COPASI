@@ -1,17 +1,9 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/cpp_examples/example6/example6.cpp,v $
-//   $Revision: 1.10 $
-//   $Name:  $
-//   $Author: mendes $
-//   $Date: 2012/06/04 14:19:06 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
@@ -93,8 +85,12 @@ int main()
   // if there isn't one
   if (pTrajectoryTask == NULL)
     {
+      // remove any existing steadystate task just to be sure since in
+      // theory only the cast might have failed above
+      TaskList.remove("Time-Course");
+
       // create a new one
-      pTrajectoryTask = new CTrajectoryTask();
+      pTrajectoryTask = new CTrajectoryTask(& TaskList);
 
       // add the new time course task to the task list
       pDataModel->getTaskList()->add(pTrajectoryTask);
@@ -102,9 +98,6 @@ int main()
 
   // run a deterministic time course
   pTrajectoryTask->setMethodType(CCopasiMethod::deterministic);
-
-  // pass a pointer of the model to the problem
-  pTrajectoryTask->getProblem()->setModel(pDataModel->getModel());
 
   // activate the task so that it will be run when the model is saved
   // and passed to CopasiSE

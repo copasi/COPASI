@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CCSPMethod.h,v $
-//   $Revision: 1.14 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/06/05 13:33:03 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -44,6 +36,11 @@ public:
   /**
    *  CSP related staff
    */
+
+  /**
+   *
+   */
+  bool mReducedModel;
 
   /**
    * Unit matrix
@@ -76,9 +73,14 @@ public:
   C_INT mIter;
 
   /**
+   *
+   */
+  CVectorCore< C_FLOAT64 > mY;
+
+  /**
    *  A vector of the current right hand side
    */
-  CVector<C_FLOAT64> mG;
+  CVectorCore< const C_FLOAT64 > mG;
 
   /**
    *  An error vector build on the basis of the solution vector
@@ -176,9 +178,8 @@ public:
   /**
    *  This instructs the method to prepare for integration
    *  starting with the initialState given.
-   *  @param "const CState *" initialState
    */
-  virtual void start(const CState * initialState);
+  virtual void start();
 
   /**
    * Intialize the method parameter
@@ -414,7 +415,6 @@ public:
    **/
   void setVectors(int fast);
 
-
   /**
    *  set vectors to NaN when the reduction was not possible
    **/
@@ -437,8 +437,6 @@ public:
   **/
 
   virtual void predifineAnnotation();
-
-
 
   /**
   * set the every CArrayAnnotation for the requested step

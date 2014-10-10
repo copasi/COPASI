@@ -212,10 +212,13 @@ int main(int argc, char *argv[])
           pBody->push_back(metabolites[j]->getObject(CCopasiObjectName("Reference=ParticleNumber"))->getCN());
         }
 
+      CCopasiVectorN< CCopasiTask > & TaskList = * pDataModel->getTaskList();
+
+      TaskList.remove("Time-Course");
       // create a trajectory task
-      pTrajectoryTask = new CTrajectoryTask();
+      pTrajectoryTask = new CTrajectoryTask(& TaskList);
+
       pTrajectoryTask->setMethodType(MethodType);
-      pTrajectoryTask->getProblem()->setModel(pDataModel->getModel());
       pTrajectoryTask->setScheduled(false);
 
       //pTrajectoryTask->getReport().setReportDefinition(pReport);
@@ -231,16 +234,12 @@ int main(int argc, char *argv[])
 
       //pProblem->setInitialState(pDataModel->getModel()->getInitialState());
 
-      CCopasiVectorN< CCopasiTask > & TaskList = * pDataModel->getTaskList();
-
-      TaskList.remove("Time-Course");
       TaskList.add(pTrajectoryTask, true);
 
       // create a scan task
 
       pScanTask = new CScanTask(pDataModel);
       CScanProblem* pScanProblem = dynamic_cast<CScanProblem*>(pScanTask->getProblem());
-      pScanProblem->setModel(pDataModel->getModel());
 
       pScanTask->setScheduled(true);
 

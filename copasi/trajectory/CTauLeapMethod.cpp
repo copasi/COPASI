@@ -35,7 +35,6 @@
 
 #include "CTauLeapMethod.h"
 #include "CTrajectoryProblem.h"
-#include "CHybridMethod.h" // CHybridBalance, todo: beautify this
 #include "math/CMathContainer.h"
 #include "model/CModel.h"
 #include "model/CMetab.h"
@@ -54,7 +53,7 @@
  *   Default constructor.
  */
 CTauLeapMethod::CTauLeapMethod(const CCopasiContainer * pParent):
-  CTrajectoryMethod(CCopasiMethod::tauLeap, pParent),
+  CTrajectoryMethod(CCopasiTask::timeCourse, CCopasiMethod::tauLeap, pParent),
   mNumReactions(0),
   mNumReactionSpecies(0),
   mReactions(),
@@ -71,7 +70,6 @@ CTauLeapMethod::CTauLeapMethod(const CCopasiContainer * pParent):
   mpRandomGenerator(NULL),
   mFirstReactionSpeciesIndex(C_INVALID_INDEX)
 {
-  mpRandomGenerator = CRandom::createGenerator(CRandom::mt19937);
   initializeParameter();
 }
 
@@ -94,7 +92,6 @@ CTauLeapMethod::CTauLeapMethod(const CTauLeapMethod & src,
   mpRandomGenerator(NULL),
   mFirstReactionSpeciesIndex(C_INVALID_INDEX)
 {
-  mpRandomGenerator = CRandom::createGenerator(CRandom::mt19937);
   initializeParameter();
 }
 
@@ -102,10 +99,7 @@ CTauLeapMethod::CTauLeapMethod(const CTauLeapMethod & src,
  *   Destructor.
  */
 CTauLeapMethod::~CTauLeapMethod()
-{
-  cleanup();
-  DESTRUCTOR_TRACE;
-}
+{}
 
 void CTauLeapMethod::initializeParameter()
 {
@@ -167,9 +161,13 @@ CTrajectoryMethod::Status CTauLeapMethod::step(const double & deltaT)
   return NORMAL;
 }
 
-void CTauLeapMethod::start(CVectorCore< C_FLOAT64 > & initialState)
+void CTauLeapMethod::start()
 {
+  CTrajectoryMethod::start();
+
   /* get configuration data */
+
+  mpRandomGenerator = &mpContainer->getRandomGenerator();
 
   bool useRandomSeed = * getValue("Use Random Seed").pBOOL;
   unsigned C_INT32 randomSeed = * getValue("Random Seed").pUINT;
@@ -181,8 +179,6 @@ void CTauLeapMethod::start(CVectorCore< C_FLOAT64 > & initialState)
   mRandomSeed = * getValue("Random Seed").pUINT;
   mMaxSteps = * getValue("Max Internal Steps").pUINT;
 
-  mContainerState = initialState;
-
   // Size the arrays
   mReactions.initialize(mpContainer->getReactions());
   mNumReactions = mReactions.size();
@@ -192,7 +188,7 @@ void CTauLeapMethod::start(CVectorCore< C_FLOAT64 > & initialState)
   mK.resize(mNumReactions);
 
   mNumReactionSpecies = mpContainer->getCountIndependentSpecies() + mpContainer->getCountDependentSpecies();
-  mFirstReactionSpeciesIndex = mpContainer->getCountFixedEventTargets() + 1 /* Time */ + mpContainer->getCountODEs();
+  mFirstReactionSpeciesIndex = mpContainer->getTimeIndex() + mpContainer->getCountODEs();
 
   mAvgDX.resize(mNumReactionSpecies);
   mSigDX.resize(mNumReactionSpecies);
@@ -220,17 +216,6 @@ void CTauLeapMethod::start(CVectorCore< C_FLOAT64 > & initialState)
  */
 
 /**
- *  Cleans up memory, etc.
- */
-void CTauLeapMethod::cleanup()
-{
-  delete mpRandomGenerator;
-  mpRandomGenerator = NULL;
-
-  return;
-}
-
-/**
  *  Simulates the system over the next interval of time. The timestep
  *  is given as argument.
  *
@@ -248,13 +233,13 @@ C_FLOAT64 CTauLeapMethod::doSingleStep(C_FLOAT64 ds)
   CMathReaction * pReaction = mReactions.array();
   const C_FLOAT64 * pAmu = mAmu.array();
   const C_FLOAT64 * pAmuEnd = pAmu + mNumReactions;
-  const CObjectInterface * pFirstSpecies = mpContainer->getMathObject(mContainerState.array() + mFirstReactionSpeciesIndex);
+  const C_FLOAT64 * pFirstSpecies = mContainerState.array() + mFirstReactionSpeciesIndex;
 
   for (; pAmu != pAmuEnd; ++pAmu, ++pReaction)
     {
-      const CMathReaction::Balance & Balance = pReaction->getBalance();
-      CMathReaction::Balance::const_iterator it = Balance.begin();
-      CMathReaction::Balance::const_iterator end = Balance.begin();
+      const CMathReaction::Balance & Balance = pReaction->getNumberBalance();
+      const CMathReaction::SpeciesBalance * it = Balance.array();
+      const CMathReaction::SpeciesBalance * end = it + Balance.size();
 
       for (; it != end; ++it)
         {
@@ -327,7 +312,6 @@ C_FLOAT64 CTauLeapMethod::doSingleStep(C_FLOAT64 ds)
 
 void CTauLeapMethod::updatePropensities()
 {
-  //mA0Old = mA0;
   mA0 = 0;
 
   CMathObject * pPropensity = mPropensityObjects.array();
@@ -394,7 +378,7 @@ bool CTauLeapMethod::isValidProblem(const CCopasiProblem * pProblem)
       return false;
     }
 
-  if (pTP->getModel()->getTotSteps() < 1)
+  if (mpContainer->getReactions().size() < 1)
     {
       //at least one reaction necessary
       CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 17);
@@ -402,57 +386,28 @@ bool CTauLeapMethod::isValidProblem(const CCopasiProblem * pProblem)
     }
 
   //check for ODE rules
-  size_t i, imax = pTP->getModel()->getNumModelValues();
-
-  for (i = 0; i < imax; ++i)
+  if (mpContainer->getCountODEs() > 0)
     {
-      if (pTP->getModel()->getModelValues()[i]->getStatus() == CModelEntity::ODE)
-        {
-          //ode rule found
-          CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 18);
-          return false;
-        }
+      //ode rule found
+      CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 28);
+      return false;
     }
 
-  imax = pTP->getModel()->getNumMetabs();
-
-  for (i = 0; i < imax; ++i)
+  //events are not supported at the moment
+  if (mpContainer->getEvents().size() > 0)
     {
-      if (pTP->getModel()->getMetabolites()[i]->getStatus() == CModelEntity::ODE)
-        {
-          //ode rule found
-          CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 20);
-          return false;
-        }
-    }
-
-  imax = pTP->getModel()->getCompartments().size();
-
-  for (i = 0; i < imax; ++i)
-    {
-      if (pTP->getModel()->getCompartments()[i]->getStatus() == CModelEntity::ODE)
-        {
-          //ode rule found
-          CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 21);
-          return false;
-        }
+      CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 23);
+      return false;
     }
 
   //TODO: rewrite CModel::suitableForStochasticSimulation() to use
   //      CCopasiMessage
-  std::string message = pTP->getModel()->suitableForStochasticSimulation();
+  std::string message = mpContainer->getModel().suitableForStochasticSimulation();
 
   if (message != "")
     {
       //model not suitable, message describes the problem
       CCopasiMessage(CCopasiMessage::ERROR, message.c_str());
-      return false;
-    }
-
-  //events are not supported at the moment
-  if (pTP->getModel()->getEvents().size() > 0)
-    {
-      CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 23);
       return false;
     }
 

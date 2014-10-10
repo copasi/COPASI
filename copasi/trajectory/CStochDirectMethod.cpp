@@ -42,10 +42,8 @@
 #include "model/CCompartment.h"
 #include "model/CModel.h"
 
-#include "optimization/FminBrent.h"
-
 CStochDirectMethod::CStochDirectMethod(const CCopasiContainer * pParent):
-  CTrajectoryMethod(CCopasiMethod::directMethod, pParent),
+  CTrajectoryMethod(CCopasiTask::timeCourse, CCopasiMethod::directMethod, pParent),
   mpRandomGenerator(NULL),
   mNumReactions(0),
   mMaxSteps(1000000),
@@ -94,7 +92,7 @@ void CStochDirectMethod::initializeParameter()
   assertParameter("Use Random Seed", CCopasiParameter::BOOL, false);
   assertParameter("Random Seed", CCopasiParameter::UINT, (unsigned C_INT32) 1);
 
-  mpRootValueCalculator = new FDescentTemplate< CStochDirectMethod >(this, &CStochDirectMethod::rootValue);
+  mpRootValueCalculator = new CBrent::EvalTemplate< CStochDirectMethod >(this, &CStochDirectMethod::rootValue);
 }
 
 bool CStochDirectMethod::elevateChildren()
@@ -131,13 +129,15 @@ CTrajectoryMethod::Status CStochDirectMethod::step(const double & deltaT)
         }
     }
 
-  mContainerState = mpContainer->getState();
+  mContainerState = mpContainer->getState(false);
 
   return NORMAL;
 }
 
-void CStochDirectMethod::start(CVectorCore< C_FLOAT64 > & initialState)
+void CStochDirectMethod::start()
 {
+  CTrajectoryMethod::start();
+
   /* get configuration data */
   mMaxSteps = * getValue("Max Internal Steps").pINT;
 
@@ -150,7 +150,6 @@ void CStochDirectMethod::start(CVectorCore< C_FLOAT64 > & initialState)
 
   //mpCurrentState is initialized. This state is not used internally in the
   //stochastic solver, but it is used for returning the result after each step.
-  mContainerState = initialState;
 
   //========Initialize Roots Related Arguments========
   mNumRoot = mpContainer->getRoots().size();
@@ -238,14 +237,14 @@ bool CStochDirectMethod::isValidProblem(const CCopasiProblem * pProblem)
     }
 
   // check for ODEs
-  if (pTP->getModel()->getMathContainer().getCountODEs() > 0)
+  if (mpContainer->getCountODEs() > 0)
     {
       CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 28);
     }
 
   //TODO: rewrite CModel::suitableForStochasticSimulation() to use
   //      CCopasiMessage
-  std::string message = pTP->getModel()->suitableForStochasticSimulation();
+  std::string message = mpContainer->getModel().suitableForStochasticSimulation();
 
   if (message != "")
     {
@@ -313,7 +312,7 @@ C_FLOAT64 CStochDirectMethod::doSingleStep(C_FLOAT64 startTime, const C_FLOAT64 
           // Interpolate to find the first root
           C_FLOAT64 RootTime;
           C_FLOAT64 RootValue;
-          Brent(startTime, mNextReactionTime, mpRootValueCalculator, &RootTime, &RootValue, 1e-6 * startTime, 0);
+          CBrent::findRoot(startTime, mNextReactionTime, mpRootValueCalculator, &RootTime, &RootValue, 1e-6 * startTime);
 
           if (RootTime > endTime)
             {

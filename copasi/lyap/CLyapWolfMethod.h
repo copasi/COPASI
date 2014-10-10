@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/lyap/CLyapWolfMethod.h,v $
-//   $Revision: 1.9 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/03/07 19:30:20 $
-// End CVS Header
-
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2006 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -56,7 +48,7 @@ private:
   /**
    *  A pointer to the current state in complete model view.
    */
-  CState * mpState;
+  CVectorCore< C_FLOAT64 > mContainerState;
 
   /**
    * mData.dim is the dimension of the ODE system.
@@ -91,7 +83,7 @@ private:
   /**
    *  Current time.
    */
-  C_FLOAT64 mTime;
+  C_FLOAT64 * mpContainerStateTime;
 
   /**
    *  Requested end time.
@@ -136,7 +128,9 @@ private:
   /**
    * the vector that contains the extended system
    */
-  CVector< C_FLOAT64 > mVariables;
+  CVectorCore< C_FLOAT64 > mVariables;
+
+  const C_FLOAT64 * mpYdot;
 
   C_INT mJType;
 

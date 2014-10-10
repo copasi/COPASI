@@ -140,6 +140,16 @@ CCopasiObjectName CMathObject::getCN() const
   return mpDataObject->getCN();
 }
 
+std::string CMathObject::getObjectDisplayName(bool regular, bool richtext) const
+{
+  if (mpDataObject == NULL)
+    {
+      return "Math Container Internal Object";
+    }
+
+  return mpDataObject->getObjectDisplayName(regular, richtext);
+}
+
 //virtual
 const CObjectInterface * CMathObject::getObject(const CCopasiObjectName & cn) const
 {
@@ -385,7 +395,7 @@ bool CMathObject::setExpression(const std::string & infix,
   Expression.setIsBoolean(isBoolean);
 
   success &= Expression.setInfix(infix);
-  std::vector< CCopasiContainer * > ListOfContainer;
+  CObjectInterface::ContainerList ListOfContainer;
   ListOfContainer.push_back(&container);
   success &= Expression.compile(ListOfContainer);
   success &= setExpression(Expression, container);

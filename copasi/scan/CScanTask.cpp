@@ -27,9 +27,7 @@
 #include "report/CKeyFactory.h"
 #include "report/CReport.h"
 
-#include "model/CModel.h"
-#include "model/CState.h"
-
+#include "math/CMathContainer.h"
 #include "optimization/COptProblem.h"
 
 #include "trajectory/CTrajectoryTask.h"
@@ -44,8 +42,9 @@
 #include "report/CCopasiRootContainer.h"
 #include "crosssection/CCrossSectionTask.h"
 
-CScanTask::CScanTask(const CCopasiContainer * pParent):
-  CCopasiTask(CCopasiTask::scan, pParent),
+CScanTask::CScanTask(const CCopasiContainer * pParent,
+                     const CCopasiTask::Type & type):
+  CCopasiTask(pParent, type),
   mProgress(0),
   mhProgress(C_INVALID_INDEX),
   mpSubtask(NULL),
@@ -138,7 +137,7 @@ bool CScanTask::process(const bool & useInitialValues)
 
   if (useInitialValues)
     {
-      mpProblem->getModel()->applyInitialValues();
+      mpContainer->applyInitialValues();
     }
 
   //TODO: reports
@@ -308,7 +307,7 @@ bool CScanTask::initSubtask(const OutputFlag & /* of */,
 
   if (!mpSubtask) return false;
 
-  mpSubtask->getProblem()->setModel(pDataModel->getModel()); //TODO
+  mpSubtask->setMathContainer(mpContainer); //TODO
   mpSubtask->setCallBack(NULL);
 
   if (mOutputInSubtask)

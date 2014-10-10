@@ -1032,8 +1032,7 @@ bool CopasiPlot::initFromSpec(const CPlotSpecification* plotspec)
   return true; //TODO really check!
 }
 
-bool CopasiPlot::compile(std::vector< CCopasiContainer * > listOfContainer,
-                         const CCopasiDataModel* pDataModel)
+bool CopasiPlot::compile(CObjectInterface::ContainerList listOfContainer)
 {
   clearBuffers();
 
@@ -1051,7 +1050,6 @@ bool CopasiPlot::compile(std::vector< CCopasiContainer * > listOfContainer,
   mDataIndex.resize(imax);
 
   std::vector< std::vector < const CObjectInterface * > >::iterator itX;
-  assert(pDataModel != NULL);
 
   for (i = 0; i < imax; ++i)
     {
@@ -1065,8 +1063,7 @@ bool CopasiPlot::compile(std::vector< CCopasiContainer * > listOfContainer,
 
       for (j = 0; j < jmax; ++j)
         {
-          const CObjectInterface * pObj =
-            pDataModel->ObjectFromCN(listOfContainer, pItem->getChannels()[j]);
+          const CObjectInterface * pObj = CObjectInterface::GetObjectFromCN(listOfContainer, pItem->getChannels()[j]);
 
           if (pObj)
             mObjects.insert(pObj);

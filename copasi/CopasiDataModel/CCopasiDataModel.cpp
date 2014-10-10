@@ -1444,11 +1444,11 @@ CCopasiTask * CCopasiDataModel::addTask(const CCopasiTask::Type & taskType)
         break;
 
       case CCopasiTask::optimization:
-        pTask = new COptTask(taskType, mData.pTaskList);
+        pTask = new COptTask(mData.pTaskList);
         break;
 
       case CCopasiTask::parameterFitting:
-        pTask = new CFitTask(taskType, mData.pTaskList);
+        pTask = new CFitTask(mData.pTaskList);
         break;
 
       case CCopasiTask::mca:
@@ -1474,7 +1474,7 @@ CCopasiTask * CCopasiDataModel::addTask(const CCopasiTask::Type & taskType)
         break;
 
       case CCopasiTask::moieties:
-        pTask = new CMoietiesTask(taskType, mData.pTaskList);
+        pTask = new CMoietiesTask(mData.pTaskList);
         break;
 
       case CCopasiTask::crosssection:
@@ -1485,7 +1485,7 @@ CCopasiTask * CCopasiDataModel::addTask(const CCopasiTask::Type & taskType)
         return pTask;
     }
 
-  pTask->getProblem()->setModel(mData.pModel);
+  pTask->setMathContainer(&mData.pModel->getMathContainer());
   mData.pTaskList->add(pTask);
 
   return pTask;
@@ -1880,7 +1880,7 @@ bool CCopasiDataModel::removeLayout(const std::string & key)
   return true;
 }
 
-CObjectInterface * CCopasiDataModel::ObjectFromCN(const std::vector< CCopasiContainer * > & listOfContainer,
+CObjectInterface * CCopasiDataModel::_getObjectFromCN(const CObjectInterface::ContainerList & listOfContainer,
     const CCopasiObjectName & objName) const
 {
   const CObjectInterface * pObject = NULL;
@@ -1924,13 +1924,13 @@ CObjectInterface * CCopasiDataModel::ObjectFromCN(const std::vector< CCopasiCont
     }
 
   // if still not found search the function database in the root container
-  if (!pObject)
+  if (pObject == NULL)
     pObject = CCopasiRootContainer::getFunctionList()->getObject(objName);
 
   return const_cast< CObjectInterface * >(pObject);
 }
 
-CCopasiObject * CCopasiDataModel::getDataObject(const CCopasiObjectName & CN) const
+CCopasiObject * CCopasiDataModel::_getDataObject(const CCopasiObjectName & CN) const
 {
   return dynamic_cast< CCopasiObject *>(const_cast< CObjectInterface * >(getObject(CN)));
 }

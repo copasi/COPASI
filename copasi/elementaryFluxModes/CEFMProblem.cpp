@@ -1,22 +1,14 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CEFMProblem.cpp,v $
-   $Revision: 1.6 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2012/05/10 16:03:08 $
-   End CVS Header */
-
-// Copyright (C) 2012 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2006 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -30,12 +22,13 @@
 #include "model/CReaction.h"
 #include "model/CModel.h"
 #include "model/CMetabNameInterface.h"
+#include "math/CMathContainer.h"
 
 //  Default constructor
 CEFMProblem::CEFMProblem(const CCopasiContainer * pParent):
-    CCopasiProblem(CCopasiTask::optimization, pParent),
-    mFluxModes(),
-    mReorderedReactions()
+  CCopasiProblem(CCopasiTask::optimization, pParent),
+  mFluxModes(),
+  mReorderedReactions()
 {
   initializeParameter();
   initObjects();
@@ -44,9 +37,9 @@ CEFMProblem::CEFMProblem(const CCopasiContainer * pParent):
 // copy constructor
 CEFMProblem::CEFMProblem(const CEFMProblem& src,
                          const CCopasiContainer * pParent):
-    CCopasiProblem(src, pParent),
-    mFluxModes(src.mFluxModes),
-    mReorderedReactions(src.mReorderedReactions)
+  CCopasiProblem(src, pParent),
+  mFluxModes(src.mFluxModes),
+  mReorderedReactions(src.mReorderedReactions)
 {
   initializeParameter();
   initObjects();
@@ -186,17 +179,17 @@ void CEFMProblem::printResult(std::ostream * ostream) const
 
       *ostream << std::endl;
 
-      if (mpModel == NULL) return;
+      const CModel & Model = mpContainer->getModel();
 
       // EFM vs Species
-      std::vector< CMetab * >::const_iterator itSpecies = mpModel->getMetabolites().begin();
-      std::vector< CMetab * >::const_iterator endSpecies = mpModel->getMetabolites().end();
+      std::vector< CMetab * >::const_iterator itSpecies = Model.getMetabolites().begin();
+      std::vector< CMetab * >::const_iterator endSpecies = Model.getMetabolites().end();
       // Column header
       *ostream << "#";
 
       for (; itSpecies != endSpecies; ++itSpecies)
         {
-          *ostream << "\t" << CMetabNameInterface::getDisplayName(mpModel, **itSpecies, false);
+          *ostream << "\t" << CMetabNameInterface::getDisplayName(&Model, **itSpecies, false);
         }
 
       *ostream << std::endl;
@@ -205,7 +198,7 @@ void CEFMProblem::printResult(std::ostream * ostream) const
 
       for (j = 0; itMode != endMode; ++itMode, j++)
         {
-          itSpecies = mpModel->getMetabolites().begin();
+          itSpecies = Model.getMetabolites().begin();
 
           *ostream << j + 1;
 

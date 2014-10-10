@@ -22,6 +22,7 @@
 #include "CExperiment.h"
 
 #include "CopasiDataModel/CCopasiDataModel.h"
+#include "math/CMathContainer.h"
 #include "report/CCopasiRootContainer.h"
 #include "report/CKeyFactory.h"
 #include "utilities/utility.h"
@@ -93,7 +94,7 @@ bool CExperimentSet::elevateChildren()
   return true;
 }
 
-bool CExperimentSet::compile(const std::vector< CCopasiContainer * > listOfContainer)
+bool CExperimentSet::compile(const CMathContainer * pMathContainer)
 {
   bool success = true;
 
@@ -101,7 +102,7 @@ bool CExperimentSet::compile(const std::vector< CCopasiContainer * > listOfConta
   // file reading.
   sort();
 
-  std::set< CCopasiObject * > DependentObjects;
+  CObjectInterface::ObjectSet DependentObjects;
 
   std::ifstream in;
   std::string CurrentFileName("");
@@ -134,23 +135,22 @@ bool CExperimentSet::compile(const std::vector< CCopasiContainer * > listOfConta
 
       if (!(*it)->read(in, CurrentLineNumber)) return false;
 
-      if (!(*it)->compile(listOfContainer)) return false;
+      if (!(*it)->compile(pMathContainer)) return false;
 
-      const std::map< CCopasiObject *, size_t > & ExpDependentObjects
-      = (*it)->getDependentObjects();
-      std::map< CCopasiObject *, size_t >::const_iterator itObject
-      = ExpDependentObjects.begin();
-      std::map< CCopasiObject *, size_t >::const_iterator endObject
-      = ExpDependentObjects.end();
+      const std::map< CObjectInterface *, size_t > & ExpDependentObjects = (*it)->getDependentObjects();
+      std::map< CObjectInterface *, size_t >::const_iterator itObject  = ExpDependentObjects.begin();
+      std::map< CObjectInterface *, size_t >::const_iterator endObject = ExpDependentObjects.end();
 
       for (; itObject != endObject; ++itObject)
-        DependentObjects.insert(itObject->first);
+        {
+          DependentObjects.insert(itObject->first);
+        }
     }
 
   mDependentObjects.resize(DependentObjects.size());
-  CCopasiObject ** ppInsert = mDependentObjects.array();
-  std::set< CCopasiObject * >::const_iterator itObject = DependentObjects.begin();
-  std::set< CCopasiObject * >::const_iterator endObject = DependentObjects.end();
+  const CObjectInterface ** ppInsert = mDependentObjects.array();
+  CObjectInterface::ObjectSet::const_iterator itObject = DependentObjects.begin();
+  CObjectInterface::ObjectSet::const_iterator endObject = DependentObjects.end();
 
   for (; itObject != endObject; ++itObject, ++ppInsert)
     *ppInsert = *itObject;
@@ -203,8 +203,8 @@ bool CExperimentSet::calculateStatistics()
     {
       (*it)->calculateStatistics();
 
-      CCopasiObject *const* ppObject = mDependentObjects.array();
-      CCopasiObject *const* ppEnd = ppObject + mDependentObjects.size();
+      const CObjectInterface ** ppObject = mDependentObjects.array();
+      const CObjectInterface ** ppEnd = ppObject + mDependentObjects.size();
 
       for (i = 0; ppObject != ppEnd; ++ppObject, ++i)
         {
@@ -248,8 +248,8 @@ bool CExperimentSet::calculateStatistics()
   // We need to loop again to calculate the std. deviation.
   for (; it != end; ++it)  //over experiments
     {
-      CCopasiObject *const* ppObject = mDependentObjects.array();
-      CCopasiObject *const* ppEnd = ppObject + mDependentObjects.size();
+      const CObjectInterface ** ppObject = mDependentObjects.array();
+      const CObjectInterface ** ppEnd = ppObject + mDependentObjects.size();
 
       for (i = 0; ppObject != ppEnd; ++ppObject, ++i)
         {
@@ -306,7 +306,7 @@ bool CExperimentSet::calculateStatistics()
   return true;
 }
 
-const CVector< CCopasiObject * > & CExperimentSet::getDependentObjects() const
+const CVector< const CObjectInterface * > & CExperimentSet::getDependentObjects() const
 {return mDependentObjects;}
 
 const CVector< C_FLOAT64 > & CExperimentSet::getDependentObjectiveValues() const

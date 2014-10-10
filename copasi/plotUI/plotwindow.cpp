@@ -423,14 +423,13 @@ PlotWindow::~PlotWindow()
     removeFromMainWindow(mpMainWindow);
 }
 
-bool PlotWindow::compile(std::vector< CCopasiContainer * > listOfContainer,
-                         const CCopasiDataModel* pDataModel)
+bool PlotWindow::compile(CObjectInterface::ContainerList listOfContainer)
 {
   mObjects.clear();
   bool success = true;
 
   if (mpPlot != NULL)
-    success = mpPlot->compile(listOfContainer, pDataModel);
+    success = mpPlot->compile(listOfContainer);
 
   return success;
 };

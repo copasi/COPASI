@@ -1,26 +1,23 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiProblem.cpp,v $
-//   $Revision: 1.21 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/03/12 00:33:30 $
-// End CVS Header
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2003 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
 /**
  *  CCopasiProblem class.
  *  This class is used to describe a task in COPASI. This class is
- *  intended to be used as the parent class for all tasks whithin COPASI.
+ *  intended to be used as the parent class for all tasks within COPASI.
  *
- *  Created for Copasi by Stefan Hoops 2003
+ *  Created for COPASI by Stefan Hoops 2003
  */
 
 #include "copasi.h"
@@ -30,44 +27,55 @@
 #include "model/CModel.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "CCopasiVector.h"
+#include "math/CMathContainer.h"
 
 CCopasiProblem::CCopasiProblem():
-    CCopasiParameterGroup("NoName", NULL, "Problem"),
-    mType(CCopasiTask::unset),
-    mpModel(NULL),
-    mpCallBack(NULL),
-    mpReport(NULL)
+  CCopasiParameterGroup("NoName", NULL, "Problem"),
+  mType(CCopasiTask::unset),
+  mpContainer(NULL),
+  mpCallBack(NULL),
+  mpReport(NULL)
 {}
 
 CCopasiProblem::CCopasiProblem(const CCopasiTask::Type & type,
                                const CCopasiContainer * pParent):
-    CCopasiParameterGroup(CCopasiTask::TypeName[type], pParent, "Problem"),
-    mType(type),
-    mpModel(NULL),
-    mpCallBack(NULL),
-    mpReport(NULL)
+  CCopasiParameterGroup(CCopasiTask::TypeName[type], pParent, "Problem"),
+  mType(type),
+  mpContainer(NULL),
+  mpCallBack(NULL),
+  mpReport(NULL)
 {}
 
 CCopasiProblem::CCopasiProblem(const CCopasiProblem & src,
                                const CCopasiContainer * pParent):
-    CCopasiParameterGroup(src, pParent),
-    mType(src.mType),
-    mpModel(src.mpModel),
-    mpCallBack(src.mpCallBack),
-    mpReport(src.mpReport)
+  CCopasiParameterGroup(src, pParent),
+  mType(src.mType),
+  mpContainer(src.mpContainer),
+  mpCallBack(src.mpCallBack),
+  mpReport(src.mpReport)
 {}
 
 CCopasiProblem::~CCopasiProblem() {}
 
 const CCopasiTask::Type & CCopasiProblem::getType() const {return mType;}
 
-bool CCopasiProblem::setModel(CModel * pModel)
+void CCopasiProblem::setMathContainer(CMathContainer * pContainer)
 {
-  mpModel = pModel;
-  return true;
+  if (pContainer != mpContainer)
+    {
+      mpContainer = pContainer;
+      signalMathContainerChanged();
+    }
 }
 
-CModel * CCopasiProblem::getModel() const {return mpModel;}
+// virtual
+void CCopasiProblem::signalMathContainerChanged()
+{}
+
+CMathContainer * CCopasiProblem::getMathContainer() const
+{
+  return mpContainer;
+}
 
 bool CCopasiProblem::setCallBack(CProcessReport * pCallBack)
 {
@@ -82,10 +90,10 @@ bool CCopasiProblem::initialize() {return true;}
 bool CCopasiProblem::restore(const bool & /* updateModel */) {return true;}
 
 void CCopasiProblem::print(std::ostream * ostream) const
-  {*ostream << *this;}
+{*ostream << *this;}
 
 void CCopasiProblem::printResult(std::ostream * ostream) const
-  {*ostream << "Not implemented.";}
+{*ostream << "Not implemented.";}
 
 std::ostream &operator<<(std::ostream &os, const CCopasiProblem & o)
 {
