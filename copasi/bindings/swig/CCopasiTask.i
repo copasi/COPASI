@@ -19,6 +19,9 @@
 
 
 
+
+
+
 %include exception.i
 
 %{
@@ -106,12 +109,12 @@
 
     std::string getProcessError()
     {
-	return self->Error;
+      return self->Error;
     }
     
     std::string getProcessWarning()
     {
-	return self->Warning;
+      return self->Warning;
     }
   
  
@@ -140,18 +143,24 @@
           if (CCopasiMessage::peekLastMessage().getNumber() != MCCopasiMessage + 1)
           {
             self->Error = CCopasiMessage::getAllMessageText();
-			success = false;
-			
-			goto restore;
+            success = false;
+            
+            goto restore;
           }
         }
 
         if (CCopasiMessage::getHighestSeverity() >= CCopasiMessage::COMMANDLINE)
         {
           self->Error = CCopasiMessage::getAllMessageText();
-          success = false;
-			
-		  goto restore;
+          success = true;
+          if (
+          CCopasiMessage::getHighestSeverity() == CCopasiMessage::ERROR ||
+          CCopasiMessage::getHighestSeverity() == CCopasiMessage::EXCEPTION)
+          {
+            success = false;
+            
+            goto restore;
+          }
         }
 
         CCopasiMessage::clearDeque();
@@ -198,7 +207,7 @@
 
         if (CCopasiMessage::getHighestSeverity() >= CCopasiMessage::COMMANDLINE)
         {
-		  self->Warning = CCopasiMessage::getAllMessageText();
+          self->Warning = CCopasiMessage::getAllMessageText();
         }
 
         CCopasiMessage::clearDeque();
@@ -210,7 +219,7 @@
      
     virtual bool process(bool useInitialValues) 
       {
-	bool success = true;
+        bool success = true;
         
         CCopasiMessage::clearDeque();
         CCopasiDataModel* pDataModel=self->getObjectDataModel();
@@ -233,18 +242,24 @@
           if (CCopasiMessage::peekLastMessage().getNumber() != MCCopasiMessage + 1)
           {
             self->Error = CCopasiMessage::getAllMessageText();
-			success = false;
-			
-			goto restore;
+            success = false;
+            
+            goto restore;
           }
         }
 
         if (CCopasiMessage::getHighestSeverity() >= CCopasiMessage::COMMANDLINE)
         {
           self->Error = CCopasiMessage::getAllMessageText();
-          success = false;
-			
-		  goto restore;
+          success = true;
+          if (
+          CCopasiMessage::getHighestSeverity() == CCopasiMessage::ERROR ||
+          CCopasiMessage::getHighestSeverity() == CCopasiMessage::EXCEPTION)
+          {
+            success = false;
+            
+            goto restore;
+          }
         }
 
         CCopasiMessage::clearDeque();
@@ -291,7 +306,7 @@
 
         if (CCopasiMessage::getHighestSeverity() >= CCopasiMessage::COMMANDLINE)
         {
-		  self->Warning = CCopasiMessage::getAllMessageText();
+          self->Warning = CCopasiMessage::getAllMessageText();
         }
 
         CCopasiMessage::clearDeque();
