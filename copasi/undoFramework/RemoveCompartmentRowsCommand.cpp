@@ -36,12 +36,16 @@ RemoveCompartmentRowsCommand::RemoveCompartmentRowsCommand(QModelIndexList rows,
 		UndoCompartmentData *data = new UndoCompartmentData();
 
 		if (!pCompartmentDM->isDefaultRow(*i) && pModel->getCompartments()[(*i).row()]){
+			mpSpecieData = new QList <UndoSpecieData*>();
+			mpReactionData = new  QList <UndoReactionData*>();
+			mpGlobalQuantityData = new  QList <UndoGlobalQuantityData*>();
 			data->setName(pModel->getCompartments()[(*i).row()]->getObjectName());
 			data->setStatus(pModel->getCompartments()[(*i).row()]->getStatus());
 			data->setInitialValue(pModel->getCompartments()[(*i).row()]->getInitialValue());
 			setDependentObjects(pModel->getCompartments()[(*i).row()]->getDeletedObjects());
 			data->setReactionDependencyObjects(getReactionData());
 			data->setSpecieDependencyObjects(getSpecieData());
+			data->setGlobalQuantityDependencyObjects(getGlobalQuantityData());
 
 			mpCompartmentData.append(data);
 		}

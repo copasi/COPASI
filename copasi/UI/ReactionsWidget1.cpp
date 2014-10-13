@@ -726,7 +726,26 @@ void ReactionsWidget1::lineEditChanged()
 }
 void ReactionsWidget1::restoreLineEditChanged(std::string & eq, std::string &funcName)
 {
+	assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+		CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
+		assert(pDataModel != NULL);
 
+	if(eq==""){
+		mpListView->switchToOtherWidget(114, "");
+		CReaction *pRea = dynamic_cast< CReaction * >(mpObject);
+		std::string key = pRea->getKey();
+		std::string rName = pRea->getObjectName();
+		pDataModel->getModel()->removeReaction(key);
+		protectedNotify(ListViews::REACTION, ListViews::DELETE, key);
+
+		//recreate empty reaction
+		pDataModel->getModel()->createReaction(rName);
+		std::string newKey = pDataModel->getModel()->getReactions()[rName]->getKey();
+		protectedNotify(ListViews::REACTION, ListViews::ADD, newKey);
+
+		mpListView->switchToOtherWidget(C_INVALID_INDEX, newKey);
+		return;
+	}
 	//first check if the string is a valid equation
 	if (!CChemEqInterface::isValidEq(eq))
 	{
@@ -741,6 +760,7 @@ void ReactionsWidget1::restoreLineEditChanged(std::string & eq, std::string &fun
 	// update the widget
 	FillWidgetFromRI();
 	mpListView->switchToOtherWidget(C_INVALID_INDEX, key); //switch to reaction widget
+
 }
 
 void ReactionsWidget1::createNewReaction()
@@ -803,6 +823,7 @@ void ReactionsWidget1::deleteReaction(){
 }
 
 void ReactionsWidget1::deleteReaction(CReaction *pReaction){
+
 	assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
 	CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
 	assert(pDataModel != NULL);

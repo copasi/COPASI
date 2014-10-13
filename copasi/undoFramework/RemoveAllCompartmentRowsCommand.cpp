@@ -34,16 +34,18 @@ RemoveAllCompartmentRowsCommand::RemoveAllCompartmentRowsCommand(CQCompartmentDM
 		UndoCompartmentData *data = new UndoCompartmentData();
 
 		if (pModel->getCompartments()[i]){
+			mpSpecieData = new QList <UndoSpecieData*>();
+			mpReactionData = new  QList <UndoReactionData*>();
+			mpGlobalQuantityData = new  QList <UndoGlobalQuantityData*>();
 			data->setName(pModel->getCompartments()[i]->getObjectName());
 			data->setStatus(pModel->getCompartments()[i]->getStatus());
 			data->setInitialValue(pModel->getCompartments()[i]->getInitialValue());
 			setDependentObjects(pModel->getCompartments()[i]->getDeletedObjects());
 			data->setReactionDependencyObjects(getReactionData());
 			data->setSpecieDependencyObjects(getSpecieData());
+			data->setGlobalQuantityDependencyObjects(getGlobalQuantityData());
 			mpCompartmentData.append(data);
 		}
-
-
 	}
 
 	this->setText(removeAllCompartmentRowsText());

@@ -12,6 +12,8 @@
 #include "UndoData.h"
 
 class UndoReactionData;
+class CExpression;
+class CModelValue;
 
 class UndoGlobalQuantityData: public UndoData {
 public:
@@ -23,8 +25,20 @@ public:
     void setStatus(CModelEntity::Status status);
     QList<UndoReactionData*> *getReactionDependencyObjects() const;
     void setReactionDependencyObjects(QList<UndoReactionData*> *reactionDependencyObjects);
+    bool isFixed() const;
+    void setFixed(bool fixed);
 
+
+    const std::string & getExpression() const;
+    void setExpression(const std::string & expression);
+    CModelValue getModelValue() const;
+    void setModelValue(CModelValue modelValue);
 private:
+    CModelValue modelValue;
+    /**
+     * For Checking whether the entity is FIXED or not.
+     */
+    bool fixed;
     /**
 	 *  Initial value of the global quantity as double
 	 */
@@ -33,7 +47,10 @@ private:
 	 * The status of the quantity
 	 */
     CModelEntity::Status mStatus;
-
+    /**
+     * The expression for non fixed value of quantity
+     */
+    std::string mExpression;
     /**
      * Pointer to species dependency objects
      */

@@ -20,6 +20,7 @@ typedef QList<PathItem> Path;
 class UndoData;
 class UndoSpecieData;
 class UndoReactionData;
+class UndoGlobalQuantityData;
 
 class CCopasiUndoCommand : public QUndoCommand {
 public:
@@ -35,12 +36,13 @@ public:
     QList<UndoSpecieData*> *getSpecieData() const;
     void setReactionData(QList<UndoReactionData*> *reactionData);
     void setSpecieData(QList<UndoSpecieData*> *specieData);
-	
+    QList<UndoGlobalQuantityData*> *getGlobalQuantityData() const;
+    void setGlobalQuantityData(QList<UndoGlobalQuantityData*> *globalQuantityData);
 
-private:
-	QList <UndoSpecieData *> *mpSpecieData;
-	QList <UndoReactionData*> *mpReactionData;
-
+protected:
+    QList<UndoSpecieData*> *mpSpecieData;
+    QList<UndoReactionData*> *mpReactionData;
+    QList<UndoGlobalQuantityData*> *mpGlobalQuantityData;
 };
 
 #endif /* CCOPASIUNDOCOMMAND_H_ */

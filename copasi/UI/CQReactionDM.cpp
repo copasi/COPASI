@@ -484,7 +484,6 @@ bool CQReactionDM::reactionDataChange(const QModelIndex &index, const QVariant &
       emit dataChanged(index, index);
       emit notifyGUI(ListViews::REACTION, ListViews::CHANGE, pRea->getKey());
     }
-
   emit changeWidget(114);
 
   return true;
@@ -506,8 +505,10 @@ void CQReactionDM::insertNewReactionRow(int position, int rows, const QModelInde
 
   for (int row = 0; row < rows; ++row)
     {
-      CReaction *pRea = (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->createReaction(TO_UTF8(createNewName("reaction", COL_NAME_REACTIONS)));
-      emit notifyGUI(ListViews::REACTION, ListViews::ADD, pRea->getKey());
+	  CReaction *pRea = (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->createReaction(TO_UTF8(createNewName("reaction", COL_NAME_REACTIONS)));
+	  std::string key = pRea->getKey();
+	  emit notifyGUI(ListViews::REACTION, ListViews::ADD, key);
+	  emit changeWidget(C_INVALID_INDEX, key);
     }
 
   endInsertRows();
@@ -604,8 +605,9 @@ bool CQReactionDM::insertReactionRows(QList <UndoReactionData *> pData)
       UndoReactionData * data = *j;
       beginInsertRows(QModelIndex(), 1, 1);
       CReaction *pRea =  pModel->createReaction(data->getName());
+      std::string key = pRea->getKey();
       data->getRi()->writeBackToReaction(pRea);
-      emit notifyGUI(ListViews::REACTION, ListViews::ADD, pRea->getKey());
+      emit notifyGUI(ListViews::REACTION, ListViews::ADD, key);
       endInsertRows();
     }
 

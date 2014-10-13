@@ -68,7 +68,7 @@ public:
   bool clear();
 
   signals:
-  void changeWidget(const size_t & id);
+  void changeWidget(const size_t & id, const std::string& key="");
 #endif
 
 protected:
