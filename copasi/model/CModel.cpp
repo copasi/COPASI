@@ -358,8 +358,6 @@ bool CModel::compile()
 
   mpValueReference->addDirectDependency(this);
 
-  CMatrix< C_FLOAT64 > LU;
-
   unsigned C_INT32 CompileStep = 0;
   size_t hCompileStep;
 

@@ -322,7 +322,6 @@ CSteadyStateMethod::ReturnCode CNewtonMethod::processInternal()
     mpCallBack->setName("performing steady state calculation...");
 
   mStartState = mContainerState;
-  mpX = mContainerStateReduced.array() + mpContainer->getTimeIndex() + 1;
 
   NewtonResultCode returnCode;
 
@@ -706,6 +705,7 @@ bool CNewtonMethod::initialize(const CSteadyStateProblem * pProblem)
   mMaxDurationForward = *getValue("Maximum duration for forward integration").pUDOUBLE;
   mMaxDurationBackward = *getValue("Maximum duration for backward integration").pUDOUBLE;
 
+  mpX = mContainerStateReduced.array() + mpContainer->getTimeIndex() + 1;
   mDimension = mContainerStateReduced.size() - mpContainer->getTimeIndex() - 1;
 
   mAtol = mpContainer->initializeAtolVector(*mpSSResolution, true);
