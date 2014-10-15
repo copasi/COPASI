@@ -1,16 +1,16 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-// and The University of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2004 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc. and EML Research, gGmbH. 
-// All rights reserved. 
+// Copyright (C) 2004 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 /**
  * COptMethodGA class
@@ -28,10 +28,18 @@ class CPermutation;
 
 class COptMethodGA : public COptMethod
 {
-  friend COptMethod * COptMethod::createMethod(CCopasiMethod::SubType subType);
-
   // Operations
 public:
+  /**
+   * Specific constructor
+   * @param const CCopasiContainer * pParent
+   * @param const CTaskEnum::Method & methodType (default: GeneticAlgorithm)
+   * @param const CTaskEnum::Task & taskType (default: optimization)
+   */
+  COptMethodGA(const CCopasiContainer * pParent,
+               const CTaskEnum::Method & methodType = CTaskEnum::GeneticAlgorithm,
+               const CTaskEnum::Task & taskType = CTaskEnum::optimization);
+
   /**
    * Copy Constructor
    * @param const COptMethodGA & src
@@ -56,9 +64,8 @@ public:
 private:
   /**
    * Default Constructor
-   * @param const CCopasiContainer * pParent (default: NULL)
    */
-  COptMethodGA(const CCopasiContainer * pParent = NULL);
+  COptMethodGA();
 
   /**
    * Initialize contained objects.
@@ -143,7 +150,7 @@ private:
    * @return bool success
    */
   bool serializepop(size_t first, size_t last);
-  
+
   // Attributes
 private:
   /**

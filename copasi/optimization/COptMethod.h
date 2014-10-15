@@ -82,24 +82,16 @@ private:
    */
   COptMethod();
 
-protected:
-  /**
-   * Specific constructor
-   * @param const CCopasiTask::Type & type
-   * @param const CCopasiMethod::SubType & subType
-   * @param const CCopasiContainer * pParent (default: NULL)
-   */
-  COptMethod(const CCopasiTask::Type & taskType,
-             const SubType & subType,
-             const CCopasiContainer * pParent = NULL);
-
 public:
   /**
-   * Create a optimization method.
-   * Note: the returned object has to be released after use with delete
+   * Specific constructor
+   * @param const CCopasiContainer * pParent
+   * @param const CTaskEnum::Method & methodType
+   * @param const CTaskEnum::Task & taskType (default: optimization)
    */
-  static COptMethod * createMethod(CCopasiMethod::SubType subType
-                                   = CCopasiMethod::RandomSearch);
+  COptMethod(const CCopasiContainer * pParent,
+             const CTaskEnum::Method & methodType,
+             const CTaskEnum::Task & taskType = CTaskEnum::optimization);
 
   /**
    * Copy constructor

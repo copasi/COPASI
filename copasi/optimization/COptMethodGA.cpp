@@ -33,8 +33,10 @@
 #include "utilities/CSort.h"
 #include "report/CCopasiObjectReference.h"
 
-COptMethodGA::COptMethodGA(const CCopasiContainer * pParent):
-  COptMethod(CCopasiTask::optimization, CCopasiMethod::GeneticAlgorithm, pParent),
+COptMethodGA::COptMethodGA(const CCopasiContainer * pParent,
+                           const CTaskEnum::Method & methodType,
+                           const CTaskEnum::Task & taskType):
+  COptMethod(pParent, methodType, taskType),
   mGenerations(0),
   mPopulationSize(0),
   mpRandom(NULL),

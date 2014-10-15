@@ -16,10 +16,12 @@
 #define COPASI_CLyapWolfMethod
 
 #include <sstream>
-#include "utilities/CVector.h"
-#include "utilities/CMatrix.h"
 
-#include "odepack++/CLSODA.h"
+#include "copasi/lyap/CLyapMethod.h"
+#include "copasi/utilities/CVector.h"
+#include "copasi/utilities/CMatrix.h"
+
+#include "copasi/odepack++/CLSODA.h"
 
 class CModel;
 class CState;
@@ -27,9 +29,6 @@ class CLyapTask;
 
 class CLyapWolfMethod : public CLyapMethod
 {
-  friend CLyapMethod *
-  CLyapMethod::createMethod(CCopasiMethod::SubType subType);
-
 public:
   struct Data
   {
@@ -140,11 +139,20 @@ private:
 private:
   /**
    * Default constructor.
-   * @param const CCopasiContainer * pParent (default: NULL)
    */
-  CLyapWolfMethod(const CCopasiContainer * pParent = NULL);
+  CLyapWolfMethod();
 
 public:
+  /**
+   * Specific constructor
+   * @param const CCopasiContainer * pParent
+   * @param const CTaskEnum::Method & methodType (default: lyapWolf)
+   * @param const CTaskEnum::Task & taskType (default: lyap)
+   */
+  CLyapWolfMethod(const CCopasiContainer * pParent,
+                  const CTaskEnum::Method & methodType = CTaskEnum::lyapWolf,
+                  const CTaskEnum::Task & taskType = CTaskEnum::lyap);
+
   /**
    * Copy constructor.
    * @param "const CLsodaMethod &" src

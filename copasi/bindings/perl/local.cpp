@@ -1,13 +1,4 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/perl/local.cpp,v $
-//   $Revision: 1.2 $
-//   $Name:  $
-//   $Author: gauges $
-//   $Date: 2011/07/20 20:02:31 $
-// End CVS Header
-
-
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -62,7 +53,7 @@
 #include "parameterFitting/CExperimentObjectMap.h"
 #include "parameterFitting/CExperimentSet.h"
 #include "parameterFitting/CFitItem.h"
-#include "parameterFitting/CFitMethod.h"
+#include "optimization/COptMethod.h"
 #include "parameterFitting/CFitProblem.h"
 #include "parameterFitting/CFitTask.h"
 

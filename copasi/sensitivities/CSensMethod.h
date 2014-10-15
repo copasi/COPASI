@@ -56,29 +56,22 @@ private:
    */
   CSensMethod();
 
-protected:
-  /**
-   * Specific constructor.
-   * @param CCopasiMethod::SubType subType
-   * @param const CCopasiContainer * pParent (default: NULL)
-   */
-  explicit CSensMethod(CCopasiMethod::SubType subType,
-                       const CCopasiContainer * pParent = NULL);
-
 public:
   /**
-   * Create a trajectory method.
-   * Note: the returned object has to be released after use with delete
+   * Specific constructor
+   * @param const CCopasiContainer * pParent
+   * @param const CTaskEnum::Method & methodType
+   * @param const CTaskEnum::Task & taskType (default: scan)
    */
-  static CSensMethod *
-  createMethod(CCopasiMethod::SubType subType
-               = CCopasiMethod::sensMethod);
+  CSensMethod(const CCopasiContainer * pParent,
+              const CTaskEnum::Method & methodType,
+              const CTaskEnum::Task & taskType = CTaskEnum::sens);
 
   /**
-   * Copy constructor.
-   * @param "const CTSSMethod &" src
-   * @param const CCopasiContainer * pParent (default: NULL)
-   */
+  * Copy constructor.
+  * @param "const CTSSMethod &" src
+  * @param const CCopasiContainer * pParent (default: NULL)
+  */
   CSensMethod(const CSensMethod & src,
               const CCopasiContainer * pParent = NULL);
 

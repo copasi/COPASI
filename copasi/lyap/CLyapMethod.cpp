@@ -25,9 +25,9 @@
 #include "model/CModel.h"
 
 CLyapValidSubTypes::CLyapValidSubTypes():
-  std::vector< CCopasiMethod::SubType >()
+  std::vector< CTaskEnum::Method >()
 {
-  push_back(CCopasiMethod::lyapWolf);
+  push_back(CTaskEnum::lyapWolf);
 }
 
 CLyapValidSubTypes::~CLyapValidSubTypes() {}
@@ -38,7 +38,7 @@ CLyapValidSubTypes::~CLyapValidSubTypes() {}
 const CLyapValidSubTypes CLyapMethod::ValidSubTypes;
 
 //static
-bool CLyapMethod::isValidSubType(const CCopasiMethod::SubType & subType)
+bool CLyapMethod::isValidSubType(const CTaskEnum::Method & subType)
 {
   size_t i, imax = CLyapMethod::ValidSubTypes.size();
 
@@ -48,31 +48,13 @@ bool CLyapMethod::isValidSubType(const CCopasiMethod::SubType & subType)
   return false;
 }
 
-CLyapMethod * CLyapMethod::createMethod(CCopasiMethod::SubType subType)
-{
-  CLyapMethod * pMethod = NULL;
-
-  switch (subType)
-    {
-      case unset:
-      case lyapWolf:
-        pMethod = new CLyapWolfMethod();
-        break;
-
-      default:
-        fatalError();
-    }
-
-  return pMethod;
-}
-
 /**
  *  Default constructor.
  */
-CLyapMethod::CLyapMethod(const CCopasiMethod::SubType & subType,
-                         const CCopasiContainer * pParent) :
-  CCopasiMethod(CCopasiTask::lyap, subType, pParent),
-  //mpCurrentState(NULL),
+CLyapMethod::CLyapMethod(const CCopasiContainer * pParent,
+                         const CTaskEnum::Method & methodType,
+                         const CTaskEnum::Task & taskType):
+  CCopasiMethod(pParent, methodType, taskType),
   mpProblem(NULL)
 {CONSTRUCTOR_TRACE;}
 

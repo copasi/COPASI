@@ -28,7 +28,7 @@
  *  @param "CModel *" pModel
  */
 CLNAProblem::CLNAProblem(const CCopasiContainer * pParent):
-  CCopasiProblem(CCopasiTask::lna, pParent),
+  CCopasiProblem(CTaskEnum::lna, pParent),
   mInitialState()
 {
   addParameter("Steady-State", CCopasiParameter::KEY, std::string(""));

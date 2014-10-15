@@ -35,7 +35,7 @@
  *  Default constructor.
  */
 CTrajectoryProblem::CTrajectoryProblem(const CCopasiContainer * pParent):
-  CCopasiProblem(CCopasiTask::timeCourse, pParent),
+  CCopasiProblem(CTaskEnum::timeCourse, pParent),
   mpDuration(NULL),
   mpStepSize(NULL),
   mpStepNumber(NULL),

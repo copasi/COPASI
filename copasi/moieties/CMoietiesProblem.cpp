@@ -17,7 +17,7 @@
 #include "utilities/CAnnotatedMatrix.h"
 
 //  Default constructor
-CMoietiesProblem::CMoietiesProblem(const CCopasiTask::Type & type,
+CMoietiesProblem::CMoietiesProblem(const CTaskEnum::Task & type,
                                    const CCopasiContainer * pParent):
   CCopasiProblem(type, pParent)
 {}

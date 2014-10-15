@@ -26,16 +26,13 @@ class CMathReaction;
 
 class CTrajAdaptiveSA : public CTrajectoryMethod
 {
-  friend CTrajectoryMethod *
-  CTrajectoryMethod::createMethod(CCopasiMethod::SubType subType);
-
-protected:
+private:
   /**
    * Default constructor.
-   * @param const CCopasiContainer * pParent (default: NULL)
    */
-  CTrajAdaptiveSA(const CCopasiContainer * pParent = NULL);
+  CTrajAdaptiveSA();
 
+protected:
   /**
    * Fire the next reaction if it fire before the endTime
    * @param const C_FLOAT64 & curTime
@@ -53,6 +50,16 @@ protected:
   C_FLOAT64 doSingleTauLeapStep(const C_FLOAT64 & curTime, const C_FLOAT64 & endTime);
 
 public:
+  /**
+   * Specific constructor
+   * @param const CCopasiContainer * pParent
+   * @param const CTaskEnum::Method & methodType (default: adaptiveSA)
+   * @param const CTaskEnum::Task & taskType (default: timeCourse)
+   */
+  CTrajAdaptiveSA(const CCopasiContainer * pParent,
+                  const CTaskEnum::Method & methodType = CTaskEnum::adaptiveSA,
+                  const CTaskEnum::Task & taskType = CTaskEnum::timeCourse);
+
   /**
    * Copy constructor.
    * @param const CTrajAdaptiveSA & src,
@@ -72,11 +79,6 @@ public:
    * @return bool success
    */
   virtual bool elevateChildren();
-
-  /**
-   *  Chooses a stochastic method adequate for the problem
-   */
-  static CTrajAdaptiveSA * createTauLeapMethod();
 
   /**
    *  This instructs the method to calculate a time step of deltaT

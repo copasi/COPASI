@@ -30,30 +30,10 @@
 
 #define DEBUG_MATRIX
 
-CBitPatternTreeMethod::CBitPatternTreeMethod(const CCopasiContainer * pParent):
-  CEFMMethod(CCopasiTask::fluxMode, CCopasiMethod::EFMBitPatternTreeAlgorithm, pParent),
-  mpModel(NULL),
-  mProgressCounter(0),
-  mProgressCounterMax(0),
-  mhProgressCounter(0),
-  mProgressCounter2(0),
-  mProgressCounter2Max(0),
-  mhProgressCounter2(0),
-  mReactionForward(),
-  mReactionPivot(0),
-  mExpandedStoiTranspose(0, 0),
-  mpStepMatrix(NULL),
-  mpNullTree(NULL),
-  mMinimumSetSize(0),
-  mStep(0),
-  mContinueCombination(true)
-{
-  initObjects();
-}
-
-CBitPatternTreeMethod::CBitPatternTreeMethod(const CCopasiMethod::SubType subType,
-    const CCopasiContainer * pParent):
-  CEFMMethod(CCopasiTask::fluxMode, subType, pParent),
+CBitPatternTreeMethod::CBitPatternTreeMethod(const CCopasiContainer * pParent,
+    const CTaskEnum::Method & methodType,
+    const CTaskEnum::Task & taskType):
+  CEFMMethod(pParent, methodType, taskType),
   mpModel(NULL),
   mProgressCounter(0),
   mProgressCounterMax(0),

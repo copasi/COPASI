@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -82,10 +82,10 @@ bool CQOptimizationWidget::saveTask()
       mChanged = true;
     }
 
-  if (mpBoxSubtask->currentText() != FROM_UTF8(CCopasiTask::TypeName[pProblem->getSubtaskType()]))
+  if (mpBoxSubtask->currentText() != FROM_UTF8(CTaskEnum::TaskName[pProblem->getSubtaskType()]))
     {
       mChanged = true;
-      pProblem->setSubtaskType((CCopasiTask::Type) mSubtaskMap[TO_UTF8(mpBoxSubtask->currentText())]);
+      pProblem->setSubtaskType((CTaskEnum::Task) mSubtaskMap[TO_UTF8(mpBoxSubtask->currentText())]);
     }
 
   if (mpBtnMaximize->isChecked() != pProblem->maximize())
@@ -145,7 +145,7 @@ bool CQOptimizationWidget::loadTask()
   mpCheckRandomize->setChecked(pProblem->getRandomizeStartValues());
   mpCheckStatistics->setChecked(pProblem->getCalculateStatistics());
 
-  mpBoxSubtask->setCurrentIndex(mpBoxSubtask->findText(FROM_UTF8(CCopasiTask::TypeName[pProblem->getSubtaskType()])));
+  mpBoxSubtask->setCurrentIndex(mpBoxSubtask->findText(FROM_UTF8(CTaskEnum::TaskName[pProblem->getSubtaskType()])));
 
   mpParameters->load(mpDataModel, pProblem->getGroup("OptimizationItemList"), NULL, NULL);
 
@@ -182,9 +182,6 @@ void CQOptimizationWidget::slotPageChange(QWidget * currentPage)
     mpCurrentList = mpConstraints;
 }
 
-CCopasiMethod * CQOptimizationWidget::createMethod(const CCopasiMethod::SubType & type)
-{return COptMethod::createMethod(type);}
-
 void CQOptimizationWidget::slotParameterNumberChanged(int number)
 {
   QString TabLabel = "Parameters (" + QString::number(number) + ")";
@@ -216,21 +213,21 @@ void CQOptimizationWidget::init()
 
   //mpBtnMaximize->setMinimumWidth(mpLblExpression->width());
 
-  mpBoxSubtask->insertItem(mpBoxSubtask->count(), FROM_UTF8(CCopasiTask::TypeName[CCopasiTask::steadyState]));
-  mSubtaskMap[CCopasiTask::TypeName[CCopasiTask::steadyState]] = CCopasiTask::steadyState;
-  mpBoxSubtask->insertItem(mpBoxSubtask->count(), FROM_UTF8(CCopasiTask::TypeName[CCopasiTask::timeCourse]));
-  mSubtaskMap[CCopasiTask::TypeName[CCopasiTask::timeCourse]] = CCopasiTask::timeCourse;
-  mpBoxSubtask->insertItem(mpBoxSubtask->count(), FROM_UTF8(CCopasiTask::TypeName[CCopasiTask::mca]));
-  mSubtaskMap[CCopasiTask::TypeName[CCopasiTask::mca]] = CCopasiTask::mca;
-  mpBoxSubtask->insertItem(mpBoxSubtask->count(), FROM_UTF8(CCopasiTask::TypeName[CCopasiTask::lna]));
-  mSubtaskMap[CCopasiTask::TypeName[CCopasiTask::lna]] = CCopasiTask::lna;
-  mpBoxSubtask->insertItem(mpBoxSubtask->count(), FROM_UTF8(CCopasiTask::TypeName[CCopasiTask::lyap]));
-  mSubtaskMap[CCopasiTask::TypeName[CCopasiTask::lyap]] = CCopasiTask::lyap;
-  mpBoxSubtask->insertItem(mpBoxSubtask->count(), FROM_UTF8(CCopasiTask::TypeName[CCopasiTask::sens]));
-  mSubtaskMap[CCopasiTask::TypeName[CCopasiTask::sens]] = CCopasiTask::sens;
+  mpBoxSubtask->insertItem(mpBoxSubtask->count(), FROM_UTF8(CTaskEnum::TaskName[CTaskEnum::steadyState]));
+  mSubtaskMap[CTaskEnum::TaskName[CTaskEnum::steadyState]] = CTaskEnum::steadyState;
+  mpBoxSubtask->insertItem(mpBoxSubtask->count(), FROM_UTF8(CTaskEnum::TaskName[CTaskEnum::timeCourse]));
+  mSubtaskMap[CTaskEnum::TaskName[CTaskEnum::timeCourse]] = CTaskEnum::timeCourse;
+  mpBoxSubtask->insertItem(mpBoxSubtask->count(), FROM_UTF8(CTaskEnum::TaskName[CTaskEnum::mca]));
+  mSubtaskMap[CTaskEnum::TaskName[CTaskEnum::mca]] = CTaskEnum::mca;
+  mpBoxSubtask->insertItem(mpBoxSubtask->count(), FROM_UTF8(CTaskEnum::TaskName[CTaskEnum::lna]));
+  mSubtaskMap[CTaskEnum::TaskName[CTaskEnum::lna]] = CTaskEnum::lna;
+  mpBoxSubtask->insertItem(mpBoxSubtask->count(), FROM_UTF8(CTaskEnum::TaskName[CTaskEnum::lyap]));
+  mSubtaskMap[CTaskEnum::TaskName[CTaskEnum::lyap]] = CTaskEnum::lyap;
+  mpBoxSubtask->insertItem(mpBoxSubtask->count(), FROM_UTF8(CTaskEnum::TaskName[CTaskEnum::sens]));
+  mSubtaskMap[CTaskEnum::TaskName[CTaskEnum::sens]] = CTaskEnum::sens;
 #ifdef COPASI_DEBUG
-  mpBoxSubtask->insertItem(mpBoxSubtask->count(), FROM_UTF8(CCopasiTask::TypeName[CCopasiTask::parameterFitting]));
-  mSubtaskMap[CCopasiTask::TypeName[CCopasiTask::parameterFitting]] = CCopasiTask::parameterFitting;
+  mpBoxSubtask->insertItem(mpBoxSubtask->count(), FROM_UTF8(CTaskEnum::TaskName[CTaskEnum::parameterFitting]));
+  mSubtaskMap[CTaskEnum::TaskName[CTaskEnum::parameterFitting]] = CTaskEnum::parameterFitting;
 #endif
   mpParameters->setItemType(CQFittingItemWidget::OPT_ITEM);
 

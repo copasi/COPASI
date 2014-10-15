@@ -212,6 +212,11 @@ void CCopasiContainer::initObjects() {}
 bool CCopasiContainer::add(CCopasiObject * pObject,
                            const bool & adopt)
 {
+  if (pObject == NULL)
+    {
+      return false;
+    }
+
   /* We check whether we are already containing that object. */
   std::pair< objectMap::iterator, objectMap::iterator > range =
     mObjects.equal_range(pObject->getObjectName());

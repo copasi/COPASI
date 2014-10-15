@@ -29,13 +29,6 @@ class CCallbackInterface;
 
 class CCrossSectionTask : public CTrajectoryTask
 {
-  //Attributes
-public:
-  /**
-   * The methods which can be selected for performing this task.
-   */
-  static const unsigned int ValidMethods[];
-
 private:
   /**
    * Default constructor
@@ -46,10 +39,10 @@ public:
   /**
    * Specific constructor
    * @param const CCopasiContainer * pParent
-   * @param const CCopasiTask::Type & type (default: crosssection)
+   * @param const CTaskEnum::Task & type (default: crosssection)
    */
   CCrossSectionTask(const CCopasiContainer * pParent,
-                    const CCopasiTask::Type & type = CCopasiTask::crosssection);
+                    const CTaskEnum::Task & type = CTaskEnum::crosssection);
 
   /**
    * Copy constructor
@@ -91,6 +84,12 @@ public:
    * Perform necessary cleanup procedures
    */
   virtual bool restore();
+
+  /**
+   * Retrieve the list of valid methods
+   * @return const CTaskEnum::Method * pValidMethods
+   */
+  virtual const CTaskEnum::Method * getValidMethods() const;
 
   /**
    * Retrieves a pointer to current state of the integration.

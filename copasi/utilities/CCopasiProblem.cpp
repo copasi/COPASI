@@ -31,15 +31,15 @@
 
 CCopasiProblem::CCopasiProblem():
   CCopasiParameterGroup("NoName", NULL, "Problem"),
-  mType(CCopasiTask::unset),
+  mType(CTaskEnum::UnsetTask),
   mpContainer(NULL),
   mpCallBack(NULL),
   mpReport(NULL)
 {}
 
-CCopasiProblem::CCopasiProblem(const CCopasiTask::Type & type,
+CCopasiProblem::CCopasiProblem(const CTaskEnum::Task & type,
                                const CCopasiContainer * pParent):
-  CCopasiParameterGroup(CCopasiTask::TypeName[type], pParent, "Problem"),
+  CCopasiParameterGroup(CTaskEnum::TaskName[type], pParent, "Problem"),
   mType(type),
   mpContainer(NULL),
   mpCallBack(NULL),
@@ -57,7 +57,7 @@ CCopasiProblem::CCopasiProblem(const CCopasiProblem & src,
 
 CCopasiProblem::~CCopasiProblem() {}
 
-const CCopasiTask::Type & CCopasiProblem::getType() const {return mType;}
+const CTaskEnum::Task & CCopasiProblem::getType() const {return mType;}
 
 void CCopasiProblem::setMathContainer(CMathContainer * pContainer)
 {

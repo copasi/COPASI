@@ -1,14 +1,11 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQMoietiesTaskWidget.h,v $
-//   $Revision: 1.8 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/09/30 16:39:41 $
-// End CVS Header
-
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
 // All rights reserved.
 
 #ifndef CQMOIETIESTASKWIDGET_H
@@ -18,7 +15,6 @@
 
 #include "ui_CQMoietiesTaskWidget.h"
 #include "TaskWidget.h"
-
 
 class CQMoietiesTaskWidget : public TaskWidget, public Ui::CQMoietiesTaskWidget
 {
@@ -31,7 +27,6 @@ public:
   virtual bool runTask();
   virtual bool saveTask();
   virtual bool loadTask();
-  virtual CCopasiMethod * createMethod(const CCopasiMethod::SubType & type);
 
 protected:
   virtual bool taskFinishedEvent();
@@ -41,7 +36,6 @@ protected slots:
 private:
   void init();
   void destroy();
-
 };
 
 #endif // CQMOIETIESTASKWIDGET_H

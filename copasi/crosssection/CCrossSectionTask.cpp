@@ -29,14 +29,8 @@
 #include "utilities/CCallback.h"
 #include  "CopasiDataModel/CCopasiDataModel.h"
 
-const unsigned int CCrossSectionTask::ValidMethods[] =
-{
-  CCopasiMethod::deterministic,
-  CCopasiMethod::unset
-};
-
 CCrossSectionTask::CCrossSectionTask(const CCopasiContainer * pParent,
-                                     const CCopasiTask::Type & type):
+                                     const CTaskEnum::Task & type):
   CTrajectoryTask(pParent, type),
   mpCrossSectionProblem(NULL),
   mStartTime(0.0),
@@ -63,7 +57,7 @@ CCrossSectionTask::CCrossSectionTask(const CCopasiContainer * pParent,
 {
   initObjects();
   mpProblem = new CCrossSectionProblem(this);
-  mpMethod = createMethod(CCopasiMethod::deterministic);
+  mpMethod = createMethod(CTaskEnum::deterministic);
   this->add(mpMethod, true);
 }
 
@@ -290,6 +284,18 @@ bool CCrossSectionTask::restore()
   removeEvent();
 
   return success;
+}
+
+// virtual
+const CTaskEnum::Method * CCrossSectionTask::getValidMethods() const
+{
+  static const CTaskEnum::Method ValidMethods[] =
+  {
+    CTaskEnum::deterministic,
+    CTaskEnum::UnsetMethod
+  };
+
+  return ValidMethods;
 }
 
 const CState * CCrossSectionTask::getState()

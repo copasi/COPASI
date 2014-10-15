@@ -36,12 +36,8 @@ class CMathContainer;
 
 class CTrajectoryTask : public CCopasiTask
 {
-  //Attributes
 public:
-  /**
-   * The methods which can be selected for performing this task.
-   */
-  static const unsigned int ValidMethods[];
+  static const CTaskEnum::Method ValidMethods[];
 
 private:
   /**
@@ -53,10 +49,10 @@ public:
   /**
    * Specific constructor
    * @param const CCopasiContainer * pParent
-   * @param const CCopasiTask::Type & type (default: timeCourse)
+   * @param const CTaskEnum::Task & type (default: timeCourse)
    */
   CTrajectoryTask(const CCopasiContainer * pParent,
-                  const CCopasiTask::Type & type = CCopasiTask::timeCourse);
+                  const CTaskEnum::Task & type = CTaskEnum::timeCourse);
 
   /**
     * Copy constructor
@@ -110,19 +106,10 @@ public:
   virtual bool restore();
 
   /**
-   * Set the method type applied to solve the task
-   * @param const CCopasiMethod::SubType & type
-   * @return bool success
+   * Retrieve the list of valid methods
+   * @return const CTaskEnum::Method * pValidMethods
    */
-  virtual bool setMethodType(const int & type);
-
-  /**
-   * Create a method of the specified type to solve the task.
-   * It is the duty of the caller to release the CCopasiMethod.
-   * @param const CCopasiMethod::SubType & type
-   * @return CCopasiMethod *
-   */
-  virtual CCopasiMethod * createMethod(const int & type) const;
+  virtual const CTaskEnum::Method * getValidMethods() const;
 
   /**
    * Loads parameters for this solver with data coming from a
@@ -142,6 +129,11 @@ protected:
    * Signal that the math container has changed
    */
   virtual void signalMathContainerChanged();
+
+  /**
+   * Signal that the method has changed
+   */
+  virtual void signalMethodChanged();
 
 private:
   /**

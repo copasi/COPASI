@@ -36,10 +36,10 @@ public:
   /**
    * Specific constructor
    * @param const CCopasiContainer * pParent
-   * @param const CCopasiTask::Type & type (default: sens)
+   * @param const CTaskEnum::Task & type (default: sens)
    */
   CSensTask(const CCopasiContainer * pParent,
-            const CCopasiTask::Type & type = CCopasiTask::sens);
+            const CTaskEnum::Task & type = CTaskEnum::sens);
 
   /**
    * Copy constructor
@@ -53,14 +53,6 @@ public:
    * Destructor
    */
   virtual ~CSensTask();
-
-  /**
-   * Create a method of the specified type to solve the task.
-   * It is the duty of the caller to release the CCopasiMethod.
-   * @param const CCopasiMethod::SubType & type
-   * @return CCopasiMethod *
-   */
-  virtual CCopasiMethod * createMethod(const int & type) const;
 
   /**
    * Resizes result matrices and updates array annotations.
@@ -95,6 +87,12 @@ public:
    * Perform necessary cleanup procedures
    */
   virtual bool restore();
+
+  /**
+   * Retrieve the list of valid methods
+   * @return const CTaskEnum::Method * pValidMethods
+   */
+  virtual const CTaskEnum::Method * getValidMethods() const;
 
   /**
    * This is the output method for any object. The default implementation

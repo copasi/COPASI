@@ -63,8 +63,8 @@ std::vector<C_INT32> COutputAssistant::getListOfDefaultOutputDescriptions(const 
         {
           ret.push_back(it->first);
         }
-      else if (task->getType() == it->second.mTaskType || it->second.mTaskType == CCopasiTask::unset ||
-               (task->getType() == CCopasiTask::crosssection && it->second.mTaskType == CCopasiTask::timeCourse)
+      else if (task->getType() == it->second.mTaskType || it->second.mTaskType == CTaskEnum::UnsetTask ||
+               (task->getType() == CTaskEnum::crosssection && it->second.mTaskType == CTaskEnum::timeCourse)
               )
         //add descriptions with matching task type
         {
@@ -83,10 +83,10 @@ C_INT32 COutputAssistant::getDefaultReportIndex(const CCopasiProblem * problem)
 
   switch (problem->getType())
     {
-      case CCopasiTask::steadyState:
+      case CTaskEnum::steadyState:
         return 1000;
 
-      case CCopasiTask::timeCourse:
+      case CTaskEnum::timeCourse:
         return 1000;
 
       default:
@@ -118,10 +118,10 @@ C_INT32 COutputAssistant::getDefaultPlotIndex(const CCopasiProblem * problem)
 
   switch (problem->getType())
     {
-      case CCopasiTask::steadyState:
+      case CTaskEnum::steadyState:
         return 0;
 
-      case CCopasiTask::timeCourse:
+      case CTaskEnum::timeCourse:
         return 0;
 
       default:
@@ -180,7 +180,7 @@ bool COutputAssistant::initialize()
   tmp.second.name = "-- Plots";
   tmp.second.description = "";
   tmp.second.isPlot = true;
-  tmp.second.mTaskType = CCopasiTask::unset;
+  tmp.second.mTaskType = CTaskEnum::UnsetTask;
   mMap.insert(tmp);
 
   //concentrations plot
@@ -188,7 +188,7 @@ bool COutputAssistant::initialize()
   tmp.second.name = "Concentrations, Volumes, and Global Quantity Values";
   tmp.second.description = "A plot of the variable species concentrations, variable compartment volumes, and variable global quantity values vs. time.";
   tmp.second.isPlot = true;
-  tmp.second.mTaskType = CCopasiTask::timeCourse;
+  tmp.second.mTaskType = CTaskEnum::timeCourse;
   mMap.insert(tmp);
 
   //particle numbers plot
@@ -196,7 +196,7 @@ bool COutputAssistant::initialize()
   tmp.second.name = "Particle Numbers, Volumes, and Global Quantity Values";
   tmp.second.description = "A plot of the variable species particle numbers, variable compartment volumes, and variable global quantity values vs. time.";
   tmp.second.isPlot = true;
-  tmp.second.mTaskType = CCopasiTask::timeCourse;
+  tmp.second.mTaskType = CTaskEnum::timeCourse;
   mMap.insert(tmp);
 
   //complete concentrations plot
@@ -204,7 +204,7 @@ bool COutputAssistant::initialize()
   tmp.second.name = "Complete Concentrations, Volumes, and Global Quantity Values";
   tmp.second.description = "A plot of all the species concentrations, compartment volumes, and all global quantity values vs. time (includes fixed ones).";
   tmp.second.isPlot = true;
-  tmp.second.mTaskType = CCopasiTask::timeCourse;
+  tmp.second.mTaskType = CTaskEnum::timeCourse;
   mMap.insert(tmp);
 
   //complete particle numbers plot
@@ -212,7 +212,7 @@ bool COutputAssistant::initialize()
   tmp.second.name = "Complete Particle Numbers, Volumes, and Global Quantity Values";
   tmp.second.description = "A plot of all the species particle numbers, compartment volumes, and global quantity values vs. time (includes fixed ones).";
   tmp.second.isPlot = true;
-  tmp.second.mTaskType = CCopasiTask::timeCourse;
+  tmp.second.mTaskType = CTaskEnum::timeCourse;
   mMap.insert(tmp);
 
   //concentration rate plot
@@ -220,7 +220,7 @@ bool COutputAssistant::initialize()
   tmp.second.name = "Concentration Rates, Volume Rates, and Global Quantity Rates";
   tmp.second.description = "A plot of the rate of change of concentrations of species, compartment volume, and global quantities, which are determined by ODEs or reactions vs. time.";
   tmp.second.isPlot = true;
-  tmp.second.mTaskType = CCopasiTask::timeCourse;
+  tmp.second.mTaskType = CTaskEnum::timeCourse;
   mMap.insert(tmp);
 
   //particle rate plot
@@ -228,7 +228,7 @@ bool COutputAssistant::initialize()
   tmp.second.name = "Particle Number Rates, Volume Rates, and Global Quantity Rates";
   tmp.second.description = "A plot of the rate of change of particle numbers of all species, compartment volume, and global quantities, which are determined by ODEs or reactions vs. time.";
   tmp.second.isPlot = true;
-  tmp.second.mTaskType = CCopasiTask::timeCourse;
+  tmp.second.mTaskType = CTaskEnum::timeCourse;
   mMap.insert(tmp);
 
   //reaction particle flux
@@ -236,7 +236,7 @@ bool COutputAssistant::initialize()
   tmp.second.name = "Reaction Fluxes";
   tmp.second.description = "A plot of the fluxes of all reactions vs. time, in concentration/time unit.";
   tmp.second.isPlot = true;
-  tmp.second.mTaskType = CCopasiTask::timeCourse;
+  tmp.second.mTaskType = CTaskEnum::timeCourse;
   mMap.insert(tmp);
 
   //reaction particle flux
@@ -244,7 +244,7 @@ bool COutputAssistant::initialize()
   tmp.second.name = "Reaction Event Fluxes";
   tmp.second.description = "A plot of the fluxes of all reactions vs. time, in reaction events/time unit.";
   tmp.second.isPlot = true;
-  tmp.second.mTaskType = CCopasiTask::timeCourse;
+  tmp.second.mTaskType = CTaskEnum::timeCourse;
   mMap.insert(tmp);
 
   //fitting result plots
@@ -252,7 +252,7 @@ bool COutputAssistant::initialize()
   tmp.second.name = "Parameter Estimation Result";
   tmp.second.description = "Curves of all dependent values of all experiments are created in one plot. For each dependent value the experimental data, the fitted curve, and the weighted error are shown.";
   tmp.second.isPlot = true;
-  tmp.second.mTaskType = CCopasiTask::parameterFitting;
+  tmp.second.mTaskType = CTaskEnum::parameterFitting;
   mMap.insert(tmp);
 
   //fitting result plots
@@ -260,7 +260,7 @@ bool COutputAssistant::initialize()
   tmp.second.name = "Plots of Parameter Estimation Results per Experiment";
   tmp.second.description = "For each experiment of the parameter estimation a plot is created. Each plot contains the experimental data, the fitted curve, and the weighted error for each dependent value.";
   tmp.second.isPlot = true;
-  tmp.second.mTaskType = CCopasiTask::parameterFitting;
+  tmp.second.mTaskType = CTaskEnum::parameterFitting;
   mMap.insert(tmp);
 
   //fitting result plots
@@ -268,7 +268,7 @@ bool COutputAssistant::initialize()
   tmp.second.name = "Plots of Parameter Estimation Results per Dependent Value";
   tmp.second.description = "For each dependent value of the parameter estimation a plot is created. Each plot contains the experimental data, the fitted curves, and the weighted errors for each experiment a dependent value occurs.";
   tmp.second.isPlot = true;
-  tmp.second.mTaskType = CCopasiTask::parameterFitting;
+  tmp.second.mTaskType = CTaskEnum::parameterFitting;
   mMap.insert(tmp);
 
   //fitting result plots
@@ -276,7 +276,7 @@ bool COutputAssistant::initialize()
   tmp.second.name = "Progress of Fit";
   tmp.second.description = "Plot of the sum of squares of residuals vs. number of function evaluations (for parameter estimation).";
   tmp.second.isPlot = true;
-  tmp.second.mTaskType = CCopasiTask::parameterFitting;
+  tmp.second.mTaskType = CTaskEnum::parameterFitting;
   mMap.insert(tmp);
 
   //opt result plots
@@ -284,7 +284,7 @@ bool COutputAssistant::initialize()
   tmp.second.name = "Progress of Optimization";
   tmp.second.description = "Plot of the target function vs. number of function evaluations (for optimization).";
   tmp.second.isPlot = true;
-  tmp.second.mTaskType = CCopasiTask::optimization;
+  tmp.second.mTaskType = CTaskEnum::optimization;
   mMap.insert(tmp);
 
   //empty plot
@@ -292,7 +292,7 @@ bool COutputAssistant::initialize()
   tmp.second.name = "Create New";
   tmp.second.description = "A plot with nothing in it.";
   tmp.second.isPlot = true;
-  tmp.second.mTaskType = CCopasiTask::unset;
+  tmp.second.mTaskType = CTaskEnum::UnsetTask;
   mMap.insert(tmp);
 
   // *****************************************************************
@@ -302,7 +302,7 @@ bool COutputAssistant::initialize()
   tmp.second.name = "Scan of Concentrations, Volumes, and Global Quantity Values";
   tmp.second.description = "A plot of the variable species concentrations, variable compartment volumes, and variable global quantity values vs. innermost scan parameter.";
   tmp.second.isPlot = true;
-  tmp.second.mTaskType = CCopasiTask::scan;
+  tmp.second.mTaskType = CTaskEnum::scan;
   mMap.insert(tmp);
 
   //particle numbers plot
@@ -310,7 +310,7 @@ bool COutputAssistant::initialize()
   tmp.second.name = "Scan of Particle Numbers, Volumes, and Global Quantity Values";
   tmp.second.description = "A plot of the variable species particle numbers, variable compartment volumes, and variable global quantity values vs. innermost scan parameter.";
   tmp.second.isPlot = true;
-  tmp.second.mTaskType = CCopasiTask::scan;
+  tmp.second.mTaskType = CTaskEnum::scan;
   mMap.insert(tmp);
 
   //complete concentrations plot
@@ -318,7 +318,7 @@ bool COutputAssistant::initialize()
   tmp.second.name = "Scan of Complete Concentrations, Volumes, and Global Quantity Values";
   tmp.second.description = "A plot of all the species concentrations, compartment volumes, and all global quantity values vs. innermost scan parameter (includes fixed ones).";
   tmp.second.isPlot = true;
-  tmp.second.mTaskType = CCopasiTask::scan;
+  tmp.second.mTaskType = CTaskEnum::scan;
   mMap.insert(tmp);
 
   //complete particle numbers plot
@@ -326,7 +326,7 @@ bool COutputAssistant::initialize()
   tmp.second.name = "Scan of Complete Particle Numbers, Volumes, and Global Quantity Values";
   tmp.second.description = "A plot of all the species particle numbers, compartment volumes, and global quantity values vs. innermost scan parameter (includes fixed ones).";
   tmp.second.isPlot = true;
-  tmp.second.mTaskType = CCopasiTask::scan;
+  tmp.second.mTaskType = CTaskEnum::scan;
   mMap.insert(tmp);
 
   //concentration rate plot
@@ -334,7 +334,7 @@ bool COutputAssistant::initialize()
   tmp.second.name = "Scan of Concentration Rates, Volume Rates, and Global Quantity Rates";
   tmp.second.description = "A plot of the rate of change of concentrations of species, compartment volume, and global quantities, which are determined by ODEs or reactions vs. innermost scan parameter.";
   tmp.second.isPlot = true;
-  tmp.second.mTaskType = CCopasiTask::scan;
+  tmp.second.mTaskType = CTaskEnum::scan;
   mMap.insert(tmp);
 
   //particle rate plot
@@ -342,7 +342,7 @@ bool COutputAssistant::initialize()
   tmp.second.name = "Scan of Particle Number Rates, Volume Rates, and Global Quantity Rates";
   tmp.second.description = "A plot of the rate of change of particle numbers of all species, compartment volume, and global quantities, which are determined by ODEs or reactions vs. innermost scan parameter.";
   tmp.second.isPlot = true;
-  tmp.second.mTaskType = CCopasiTask::scan;
+  tmp.second.mTaskType = CTaskEnum::scan;
   mMap.insert(tmp);
 
   //reaction particle flux
@@ -350,7 +350,7 @@ bool COutputAssistant::initialize()
   tmp.second.name = "Scan of Reaction Fluxes";
   tmp.second.description = "A plot of the fluxes of all reactions vs. innermost scan parameter, in concentration/time unit.";
   tmp.second.isPlot = true;
-  tmp.second.mTaskType = CCopasiTask::scan;
+  tmp.second.mTaskType = CTaskEnum::scan;
   mMap.insert(tmp);
 
   //reaction particle flux
@@ -358,7 +358,7 @@ bool COutputAssistant::initialize()
   tmp.second.name = "Scan of Reaction Event Fluxes";
   tmp.second.description = "A plot of the fluxes of all reactions vs. innermost scan parameter, in reaction events/time unit.";
   tmp.second.isPlot = true;
-  tmp.second.mTaskType = CCopasiTask::scan;
+  tmp.second.mTaskType = CTaskEnum::scan;
   mMap.insert(tmp);
 
   //eigenvalues plot
@@ -366,8 +366,8 @@ bool COutputAssistant::initialize()
   tmp.second.name = "Eigenvalues vs. scan parameter";
   tmp.second.description = "A plot of the real and imaginary parts of the eigenvalues of the Jacobian as a function of the innermost scan parameter.";
   tmp.second.isPlot = true;
-  tmp.second.mTaskType = CCopasiTask::scan;
-  tmp.second.mSecondaryTask = CCopasiTask::steadyState;
+  tmp.second.mTaskType = CTaskEnum::scan;
+  tmp.second.mSecondaryTask = CTaskEnum::steadyState;
   mMap.insert(tmp);
 
   //parameter estimation residuals plot
@@ -375,8 +375,8 @@ bool COutputAssistant::initialize()
   tmp.second.name = "Parameter estimation target function vs. scan parameter";
   tmp.second.description = "A plot of the target function of parameter estimation as a function of the innermost scan parameter.";
   tmp.second.isPlot = true;
-  tmp.second.mTaskType = CCopasiTask::scan;
-  tmp.second.mSecondaryTask = CCopasiTask::parameterFitting;
+  tmp.second.mTaskType = CTaskEnum::scan;
+  tmp.second.mSecondaryTask = CTaskEnum::parameterFitting;
   mMap.insert(tmp);
 
   //optimization residuals plot
@@ -384,8 +384,8 @@ bool COutputAssistant::initialize()
   tmp.second.name = "Optimization target function vs. scan parameter";
   tmp.second.description = "A plot of the target function of optimization as a function of the innermost scan parameter.";
   tmp.second.isPlot = true;
-  tmp.second.mTaskType = CCopasiTask::scan;
-  tmp.second.mSecondaryTask = CCopasiTask::optimization;
+  tmp.second.mTaskType = CTaskEnum::scan;
+  tmp.second.mSecondaryTask = CTaskEnum::optimization;
   mMap.insert(tmp);
 
   // *****************************************************************
@@ -395,7 +395,7 @@ bool COutputAssistant::initialize()
   tmp.second.name = "-- Reports";
   tmp.second.description = "";
   tmp.second.isPlot = true;
-  tmp.second.mTaskType = CCopasiTask::unset;
+  tmp.second.mTaskType = CTaskEnum::UnsetTask;
   mMap.insert(tmp);
 
   //concentrations report
@@ -403,70 +403,70 @@ bool COutputAssistant::initialize()
   tmp.second.name = "Time, Concentrations, Volumes, and Global Quantity Values";
   tmp.second.description = "A table of time, variable species concentrations, variable compartment volumes, and variable global quantity values.";
   tmp.second.isPlot = false; //report
-  tmp.second.mTaskType = CCopasiTask::timeCourse;
+  tmp.second.mTaskType = CTaskEnum::timeCourse;
   mMap.insert(tmp);
 
   tmp.first = 1001;
   tmp.second.name = "Time, Particle Numbers, Volumes, and Global Quantity Values";
   tmp.second.description = "A table of time, variable species particle numbers, variable compartment volumes, and variable global quantity values.";
   tmp.second.isPlot = false; //report
-  tmp.second.mTaskType = CCopasiTask::timeCourse;
+  tmp.second.mTaskType = CTaskEnum::timeCourse;
   mMap.insert(tmp);
 
   tmp.first = 1002;
   tmp.second.name = "Complete Time, Concentrations, Volumes, and Global Quantity Values";
   tmp.second.description = "A table of time, all species concentrations, all compartment volumes, and all global quantity values (includes fixed ones).";
   tmp.second.isPlot = false; //report
-  tmp.second.mTaskType = CCopasiTask::timeCourse;
+  tmp.second.mTaskType = CTaskEnum::timeCourse;
   mMap.insert(tmp);
 
   tmp.first = 1003;
   tmp.second.name = "Complete Time, Particle Numbers, Volumes, and Global Quantity Values";
   tmp.second.description = "A table of time, all species particle numbers, all compartment volumes, and all global quantity values (includes fixed ones).";
   tmp.second.isPlot = false; //report
-  tmp.second.mTaskType = CCopasiTask::timeCourse;
+  tmp.second.mTaskType = CTaskEnum::timeCourse;
   mMap.insert(tmp);
 
   tmp.first = 1004;
   tmp.second.name = "Time, Concentration Rates, Volume Rates, and Global Quantity Rates";
   tmp.second.description = "A table of time and the rate of change of concentrations of species, compartment volumes, and global quantities which are determined by reactions or ODEs.";
   tmp.second.isPlot = false; //report
-  tmp.second.mTaskType = CCopasiTask::timeCourse;
+  tmp.second.mTaskType = CTaskEnum::timeCourse;
   mMap.insert(tmp);  //not possible at the moment
 
   tmp.first = 1005;
   tmp.second.name = "Time, Particle Numbers Rates, Volume Rates, and Global Quantity Rates";
   tmp.second.description = "A table of time and the rate of change of particle numbers of species, compartment volumes, and global quantities which are determined by reactions or ODEs.";
   tmp.second.isPlot = false; //report
-  tmp.second.mTaskType = CCopasiTask::timeCourse;
+  tmp.second.mTaskType = CTaskEnum::timeCourse;
   mMap.insert(tmp);
 
   tmp.first = 1006;
   tmp.second.name = "Time and Reaction Fluxes";
   tmp.second.description = "A table of the fluxes of all reactions and time, in concentration/time unit.";
   tmp.second.isPlot = false; //report
-  tmp.second.mTaskType = CCopasiTask::timeCourse;
+  tmp.second.mTaskType = CTaskEnum::timeCourse;
   mMap.insert(tmp);
 
   tmp.first = 1007;
   tmp.second.name = "Time and Reaction Event Fluxes";
   tmp.second.description = "A table of the fluxes of all reactions and time, in reaction events/time unit.";
   tmp.second.isPlot = false; //report
-  tmp.second.mTaskType = CCopasiTask::timeCourse;
+  tmp.second.mTaskType = CTaskEnum::timeCourse;
   mMap.insert(tmp);
 
   tmp.first = 1008;
   tmp.second.name = "Time and all Variable Values (Concentration Units)";
   tmp.second.description = "This table includes all values which change over a time course. Species are measured in concentration unit and fluxes are in concentration/time unit.";
   tmp.second.isPlot = false; //report
-  tmp.second.mTaskType = CCopasiTask::timeCourse;
+  tmp.second.mTaskType = CTaskEnum::timeCourse;
   mMap.insert(tmp);
 
   tmp.first = 1009;
   tmp.second.name = "Time and all Variable Values (Particle Number Units)";
   tmp.second.description = "This table includes all values which change over a time course. Species are measured in particle numbers and fluxes are in events/time unit.";
   tmp.second.isPlot = false; //report
-  tmp.second.mTaskType = CCopasiTask::timeCourse;
+  tmp.second.mTaskType = CTaskEnum::timeCourse;
   mMap.insert(tmp);
 
   //concentrations report
@@ -474,70 +474,70 @@ bool COutputAssistant::initialize()
   tmp.second.name = "Scan Parameters, Time, Concentrations, Volumes, and Global Quantity Values";
   tmp.second.description = "A table of scan parameters, time, variable species concentrations, variable compartment volumes, and variable global quantity values.";
   tmp.second.isPlot = false; //report
-  tmp.second.mTaskType = CCopasiTask::scan;
+  tmp.second.mTaskType = CTaskEnum::scan;
   mMap.insert(tmp);
 
   tmp.first = 1201;
   tmp.second.name = "Scan Parameters, Time, Particle Numbers, Volumes, and Global Quantity Values";
   tmp.second.description = "A table of scan parameters, time, variable species particle numbers, variable compartment volumes, and variable global quantity values.";
   tmp.second.isPlot = false; //report
-  tmp.second.mTaskType = CCopasiTask::scan;
+  tmp.second.mTaskType = CTaskEnum::scan;
   mMap.insert(tmp);
 
   tmp.first = 1202;
   tmp.second.name = "Scan Parameters, Time, Complete Concentrations, Volumes, and Global Quantity Values";
   tmp.second.description = "A table of scan parameters, time, all species concentrations, all compartment volumes, and all global quantity values (includes fixed ones).";
   tmp.second.isPlot = false; //report
-  tmp.second.mTaskType = CCopasiTask::scan;
+  tmp.second.mTaskType = CTaskEnum::scan;
   mMap.insert(tmp);
 
   tmp.first = 1203;
   tmp.second.name = "Scan Parameters, Time, Complete Particle Numbers, Volumes, and Global Quantity Values";
   tmp.second.description = "A table of scan parameters, time, all species particle numbers, all compartment volumes, and all global quantity values (includes fixed ones).";
   tmp.second.isPlot = false; //report
-  tmp.second.mTaskType = CCopasiTask::scan;
+  tmp.second.mTaskType = CTaskEnum::scan;
   mMap.insert(tmp);
 
   tmp.first = 1204;
   tmp.second.name = "Scan Parameters, Time, Concentration Rates, Volume Rates, and Global Quantity Rates";
   tmp.second.description = "A table of scan parameters, time and the rate of change of concentrations of species, compartment volumes, and global quantities which are determined by reactions or ODEs.";
   tmp.second.isPlot = false; //report
-  tmp.second.mTaskType = CCopasiTask::scan;
+  tmp.second.mTaskType = CTaskEnum::scan;
   mMap.insert(tmp);  //not possible at the moment
 
   tmp.first = 1205;
   tmp.second.name = "Scan Parameters, Time, Particle Numbers Rates, Volume Rates, and Global Quantity Rates";
   tmp.second.description = "A table of scan parameters, time and the rate of change of particle numbers of species, compartment volumes, and global quantities which are determined by reactions or ODEs.";
   tmp.second.isPlot = false; //report
-  tmp.second.mTaskType = CCopasiTask::scan;
+  tmp.second.mTaskType = CTaskEnum::scan;
   mMap.insert(tmp);
 
   tmp.first = 1206;
   tmp.second.name = "Scan Parameters, Time and Reaction Fluxes";
   tmp.second.description = "A table of scan parameters and the fluxes of all reactions and time, in concentration/time unit.";
   tmp.second.isPlot = false; //report
-  tmp.second.mTaskType = CCopasiTask::scan;
+  tmp.second.mTaskType = CTaskEnum::scan;
   mMap.insert(tmp);
 
   tmp.first = 1207;
   tmp.second.name = "Scan Parameters, Time and Reaction Event Fluxes";
   tmp.second.description = "A table of scan parameters and the fluxes of all reactions and time, in reaction events/time unit.";
   tmp.second.isPlot = false; //report
-  tmp.second.mTaskType = CCopasiTask::scan;
+  tmp.second.mTaskType = CTaskEnum::scan;
   mMap.insert(tmp);
 
   tmp.first = 1208;
   tmp.second.name = "Scan Parameters, Time and all Variable Values (Concentration Units)";
   tmp.second.description = "This table includes scan parameters and all values which change over a time course. Species are measured in concentration unit and fluxes are in concentration/time unit.";
   tmp.second.isPlot = false; //report
-  tmp.second.mTaskType = CCopasiTask::scan;
+  tmp.second.mTaskType = CTaskEnum::scan;
   mMap.insert(tmp);
 
   tmp.first = 1209;
   tmp.second.name = "Scan Parameters, Time and all Variable Values (Particle Number Units)";
   tmp.second.description = "This table includes scan parameters and all values which change over a time course. Species are measured in particle numbers and fluxes are in events/time unit.";
   tmp.second.isPlot = false; //report
-  tmp.second.mTaskType = CCopasiTask::scan;
+  tmp.second.mTaskType = CTaskEnum::scan;
   mMap.insert(tmp);
 
   //eigenvalues report
@@ -545,8 +545,8 @@ bool COutputAssistant::initialize()
   tmp.second.name = "Scan Parameters and Eigenvalues";
   tmp.second.description = "This table includes scan parameters and the real and imaginary parts of the eigenvalues of the reduced system's Jacobian.";
   tmp.second.isPlot = false;
-  tmp.second.mTaskType = CCopasiTask::scan;
-  tmp.second.mSecondaryTask = CCopasiTask::steadyState;
+  tmp.second.mTaskType = CTaskEnum::scan;
+  tmp.second.mSecondaryTask = CTaskEnum::steadyState;
   mMap.insert(tmp);
 
   //parameter estimation target function  report
@@ -554,8 +554,8 @@ bool COutputAssistant::initialize()
   tmp.second.name = "Scan Parameters and Target function of parameter estimation";
   tmp.second.description = "This table includes scan parameters and the target function of the parameter estimation.";
   tmp.second.isPlot = false;
-  tmp.second.mTaskType = CCopasiTask::scan;
-  tmp.second.mSecondaryTask = CCopasiTask::parameterFitting;
+  tmp.second.mTaskType = CTaskEnum::scan;
+  tmp.second.mSecondaryTask = CTaskEnum::parameterFitting;
   mMap.insert(tmp);
 
   //optimization target function report
@@ -563,15 +563,15 @@ bool COutputAssistant::initialize()
   tmp.second.name = "Scan Parameters and Target function of optimization";
   tmp.second.description = "This table includes scan parameters and the target function of the optimization.";
   tmp.second.isPlot = false;
-  tmp.second.mTaskType = CCopasiTask::scan;
-  tmp.second.mSecondaryTask = CCopasiTask::optimization;
+  tmp.second.mTaskType = CTaskEnum::scan;
+  tmp.second.mSecondaryTask = CTaskEnum::optimization;
   mMap.insert(tmp);
 
   tmp.first = 1999;
   tmp.second.name = "Create New";
   tmp.second.description = "A table with nothing in it.";
   tmp.second.isPlot = false; //report
-  tmp.second.mTaskType = CCopasiTask::unset;
+  tmp.second.mTaskType = CTaskEnum::UnsetTask;
   mMap.insert(tmp);
 
   return true;
@@ -660,7 +660,7 @@ CCopasiObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * t
                 ChannelX.push_back(data2->getCN());
                 Names.push_back(Name + "(Fitted Value)");
 
-                if (pExperiment->getExperimentType() == CCopasiTask::timeCourse)
+                if (pExperiment->getExperimentType() == CTaskEnum::timeCourse)
                   {
                     LineTypes.push_back(0); //curve
                     SymbolSubTypes.push_back(0); //default, this value is not used
@@ -764,7 +764,7 @@ CCopasiObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * t
 
                 unsigned C_INT32 LineType;
 
-                if (pExperiment->getExperimentType() == CCopasiTask::timeCourse)
+                if (pExperiment->getExperimentType() == CTaskEnum::timeCourse)
                   LineType = 0;
                 else
                   LineType = 2;
@@ -840,7 +840,7 @@ CCopasiObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * t
               (*it)->getObject(CCopasiObjectName("Reference=Independent Value"))->getCN();
             unsigned C_INT32 LineType;
 
-            if (pExperiment->getExperimentType() == CCopasiTask::timeCourse)
+            if (pExperiment->getExperimentType() == CTaskEnum::timeCourse)
               LineType = 0;
             else
               LineType = 2;
@@ -1258,7 +1258,7 @@ CPlotSpecification* COutputAssistant::createPlot(const std::string & name,
     bool logX,
     const std::vector<const CCopasiObject*> & y,
     bool logY,
-    const CCopasiTask::Type & taskType,
+    const CTaskEnum::Task & taskType,
     CCopasiDataModel* pDataModel,
     CCopasiTask *task /*= NULL*/)
 {
@@ -1292,8 +1292,8 @@ CPlotSpecification* COutputAssistant::createPlot(const std::string & name,
   CPlotItem * plItem;
 
   CScanProblem* problem = task != NULL ? dynamic_cast<CScanProblem*>(task->getProblem()) : NULL;
-  bool isCrossSection = (problem != NULL && problem->getSubtask() == CCopasiTask::crosssection) ||
-                        (task != NULL && task->getType() == CCopasiTask::crosssection);
+  bool isCrossSection = (problem != NULL && problem->getSubtask() == CTaskEnum::crosssection) ||
+                        (task != NULL && task->getType() == CTaskEnum::crosssection);
 
   for (it = y.begin(); it != itEnd; ++it)
     {
@@ -1323,7 +1323,7 @@ CPlotSpecification* COutputAssistant::createPlot(const std::string & name,
 CReportDefinition* COutputAssistant::createTable(const std::string & name,
     const std::vector<const CCopasiObject *> & d,
     const std::string & comment,
-    const CCopasiTask::Type & taskType,
+    const CTaskEnum::Task & taskType,
     CCopasiDataModel* pDataModel)
 {
   std::vector<const CCopasiObject * >::const_iterator it, itEnd = d.end();

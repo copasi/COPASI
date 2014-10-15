@@ -37,13 +37,12 @@
 #define XXXX_Reporting
 
 CMCATask::CMCATask(const CCopasiContainer * pParent,
-                   const CCopasiTask::Type & type):
+                   const CTaskEnum::Task & type):
   CCopasiTask(pParent, type)
 {
   mpProblem = new CMCAProblem(this);
 
-  mpMethod = createMethod(CCopasiMethod::mcaMethodReder);
-  this->add(mpMethod, true);
+  mpMethod = createMethod(CTaskEnum::mcaMethodReder);
 }
 
 CMCATask::CMCATask(const CMCATask & src,
@@ -59,14 +58,6 @@ CMCATask::CMCATask(const CMCATask & src,
 
 CMCATask::~CMCATask()
 {}
-
-// virtual
-CCopasiMethod * CMCATask::createMethod(const int & type) const
-{
-  CCopasiMethod::SubType Type = (CCopasiMethod::SubType) type;
-
-  return CMCAMethod::createMethod(Type);
-}
 
 void CMCATask::cleanup()
 {}
@@ -184,6 +175,18 @@ bool CMCATask::restore()
     success &= pSubTask->restore();
 
   return success;
+}
+
+// virtual
+const CTaskEnum::Method * CMCATask::getValidMethods() const
+{
+  static const CTaskEnum::Method ValidMethods[] =
+  {
+    CTaskEnum::mcaMethodReder,
+    CTaskEnum::UnsetMethod
+  };
+
+  return ValidMethods;
 }
 
 std::ostream &operator<<(std::ostream &os, const CMCATask & C_UNUSED(A))

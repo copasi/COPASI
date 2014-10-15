@@ -30,13 +30,12 @@
 #define XXXX_Reporting
 
 CSensTask::CSensTask(const CCopasiContainer * pParent,
-                     const CCopasiTask::Type & type):
+                     const CTaskEnum::Task & type):
   CCopasiTask(pParent, type)
 {
   mpProblem = new CSensProblem(this);
 
-  mpMethod = createMethod(CCopasiMethod::sensMethod);
-  this->add(mpMethod, true);
+  mpMethod = createMethod(CTaskEnum::sensMethod);
 }
 
 CSensTask::CSensTask(const CSensTask & src,
@@ -52,14 +51,6 @@ CSensTask::CSensTask(const CSensTask & src,
 
 CSensTask::~CSensTask()
 {}
-
-// virtual
-CCopasiMethod * CSensTask::createMethod(const int & type) const
-{
-  CCopasiMethod::SubType Type = (CCopasiMethod::SubType) type;
-
-  return CSensMethod::createMethod(Type);
-}
 
 void CSensTask::cleanup()
 {}
@@ -140,6 +131,18 @@ bool CSensTask::restore()
     pMethod->restore(mUpdateModel);
 
   return success;
+}
+
+// virtual
+const CTaskEnum::Method * CSensTask::getValidMethods() const
+{
+  static const CTaskEnum::Method ValidMethods[] =
+  {
+    CTaskEnum::sensMethod,
+    CTaskEnum::UnsetMethod
+  };
+
+  return ValidMethods;
 }
 
 std::ostream &operator<<(std::ostream &os, const CSensTask & /* A */)

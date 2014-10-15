@@ -1,22 +1,14 @@
-/* Begin CVS Header
- $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/TaskWidget.h,v $
- $Revision: 1.29 $
- $Name:  $
- $Author: shoops $
- $Date: 2011/10/14 15:07:45 $
- End CVS Header */
-
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2005 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -98,7 +90,7 @@ protected:
 
   virtual bool saveTask() = 0;
 
-  virtual CCopasiMethod * createMethod(const CCopasiMethod::SubType & type) = 0;
+  CCopasiMethod * createMethod(const CTaskEnum::Method & type);
 
   //these methods should be called by the loadTask() or saveTask() methods
   //of the derived classes. They handle the "executable" checkbox
@@ -108,7 +100,6 @@ protected:
   bool loadMethod();
   bool saveMethod();
   virtual bool taskFinishedEvent();
-
 
   //this method should be called at the beginning or the end of the runTask() method
   //of the derived classes, respectively

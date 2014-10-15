@@ -1,17 +1,9 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/oscillation/COscillationTask.cpp,v $
-//   $Revision: 1.2 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/03/07 19:32:04 $
-// End CVS Header
-
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
@@ -33,9 +25,9 @@ const unsigned int COscillationTask::ValidMethods[] =
   CCopasiMethod::unset
 };
 
-COscillationTask::COscillationTask(const CCopasiTask::Type & type,
+COscillationTask::COscillationTask(const CTaskEnum::Task & type,
                                    const CCopasiContainer * pParent):
-    CCopasiTask(type, pParent)
+  CCopasiTask(type, pParent)
 {
   mpProblem = new COscillationProblem(type, this);
   mpMethod = COscillationMethod::createMethod();
@@ -45,7 +37,7 @@ COscillationTask::COscillationTask(const CCopasiTask::Type & type,
 
 COscillationTask::COscillationTask(const COscillationTask & src,
                                    const CCopasiContainer * pParent):
-    CCopasiTask(src, pParent)
+  CCopasiTask(src, pParent)
 {
   mpProblem = new COscillationProblem(*(COscillationProblem *) src.mpProblem, this);
   mpMethod = COscillationMethod::createMethod(src.mpMethod->getSubType());
@@ -114,7 +106,7 @@ bool COscillationTask::process(const bool & /* useInitialValues */)
 
 bool COscillationTask::setMethodType(const int & type)
 {
-  CCopasiMethod::SubType Type = (CCopasiMethod::SubType) type;
+  CTaskEnum::Method Type = (CTaskEnum::Method) type;
 
   if (mpMethod->getSubType() == Type) return true;
 
@@ -129,7 +121,7 @@ bool COscillationTask::setMethodType(const int & type)
 // virtual
 CCopasiMethod * COscillationTask::createMethod(const int & type) const
 {
-  CCopasiMethod::SubType Type = (CCopasiMethod::SubType) type;
+  CTaskEnum::Method Type = (CTaskEnum::Method) type;
 
   return COscillationMethod::createMethod(Type);
 }

@@ -176,8 +176,8 @@ void TaskWidget::addMethodSelectionBox(const unsigned C_INT32 * validMethods, un
 
   unsigned C_INT32 i;
 
-  for (i = 0; validMethods[i] != CCopasiMethod::unset; i++)
-    mpBoxMethod->insertItem(QString::fromUtf8(CCopasiMethod::SubTypeName[validMethods[i]]));
+  for (i = 0; validMethods[i] != CTaskEnum::unset; i++)
+    mpBoxMethod->insertItem(QString::fromUtf8(CTaskEnum::MethodName[validMethods[i]]));
 
   mpSpacer2 = new QSpacerItem(0, 0, QSizePolicy::MinimumExpanding, QSizePolicy::Minimum);
 
@@ -558,4 +558,16 @@ bool TaskWidget::enterProtected()
   mpMethod = mpTask->getMethod();
 
   return loadTask();
+}
+
+CCopasiMethod * TaskWidget::createMethod(const CTaskEnum::Method & type)
+{
+  CCopasiMethod * pMethod = NULL;
+
+  if (mpTask != NULL)
+    {
+      pMethod = mpTask->createMethod(type);
+    }
+
+  return pMethod;
 }

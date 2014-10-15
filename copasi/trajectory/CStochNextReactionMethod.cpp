@@ -20,8 +20,15 @@
 
 #include "math/CMathContainer.h"
 
-CStochNextReactionMethod::CStochNextReactionMethod()
-  : CStochMethod()
+CStochNextReactionMethod::CStochNextReactionMethod(const CCopasiContainer * pParent,
+    const CTaskEnum::Method & methodType,
+    const CTaskEnum::Task & taskType):
+  CStochMethod(pParent, methodType, taskType)
+{}
+
+CStochNextReactionMethod::CStochNextReactionMethod(const CStochMethod & src,
+    const CCopasiContainer * pParent):
+  CStochMethod(src, pParent)
 {}
 
 void CStochNextReactionMethod::initMethod()

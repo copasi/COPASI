@@ -39,11 +39,30 @@ private:
    */
   virtual void initMethod();
 
-public:
+private:
   /**
    * Default constructor
    */
   CStochNextReactionMethod();
+
+public:
+  /**
+   * Specific constructor
+   * @param const CCopasiContainer * pParent
+   * @param const CTaskEnum::Method & methodType (default: stochastic)
+   * @param const CTaskEnum::Task & taskType (default: timeCourse)
+   */
+  CStochNextReactionMethod(const CCopasiContainer * pParent,
+                           const CTaskEnum::Method & methodType = CTaskEnum::stochastic,
+                           const CTaskEnum::Task & taskType = CTaskEnum::timeCourse);
+
+  /**
+   * Copy constructor.
+   * @param const CStochMethod & src,
+   * @param const CCopasiContainer * pParent (Default: NULL)
+   */
+  CStochNextReactionMethod(const CStochMethod & src,
+                           const CCopasiContainer * pParent = NULL);
 
   /**
    * Do one iteration of the simulation

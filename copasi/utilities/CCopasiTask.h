@@ -25,11 +25,12 @@
 
 #include <string>
 
-#include "utilities/COutputHandler.h"
-#include "utilities/CVector.h"
+#include "copasi/utilities/CTaskEnum.h"
+#include "copasi/utilities/COutputHandler.h"
+#include "copasi/utilities/CVector.h"
 
-#include "report/CCopasiContainer.h"
-#include "report/CReport.h"
+#include "copasi/report/CCopasiContainer.h"
+#include "copasi/report/CReport.h"
 
 class CCopasiProblem;
 class CCopasiMethod;
@@ -40,51 +41,14 @@ class CCopasiTask : public CCopasiContainer
 {
 public:
   /**
-   * Enumeration of the types of tasks known to COPASI.
-   */
-  enum Type
-  {
-    steadyState = 0,
-    timeCourse,
-    scan,
-    fluxMode,
-    optimization,
-    parameterFitting,
-    mca,
-    lyap,
-    tssAnalysis,
-    sens,
-    moieties,
-    crosssection,
-    lna,
-    unset
-  };
-
-  /**
-   * String literals for the GUI to display type names of tasks known
-   * to COPASI.
-   */
-  static const std::string TypeName[];
-
-  /**
-   * XML type names of tasks known to COPASI.
-   */
-  static const char* XMLType[];
-
-  /**
-   * The methods which can be selected for performing this task.
-   */
-  static const unsigned int ValidMethods[];
-
-  /**
    * Check whether the given method is in the list of valid methods
    * This list must end with CCopasiMethod::unset
-   * @param const unsigned int & method
-   * @param const unsigned int * validMethods
+   * @param const CTaskEnum::Method & method
+   * @param const CTaskEnum::Method * validMethods
    * @return bool isValid
    */
-  static bool isValidMethod(const unsigned int & method,
-                            const unsigned int * validMethods);
+  static bool isValidMethod(const CTaskEnum::Method & method,
+                            const CTaskEnum::Method * validMethods);
 
   enum eOutputFlagBase
   {
@@ -203,7 +167,7 @@ public:
    * @param const std::string & type (default: "Task")
    */
   CCopasiTask(const CCopasiContainer * pParent,
-              const Type & taskType,
+              const CTaskEnum::Task & taskType,
               const std::string & type = "Task");
 
   /**
@@ -221,15 +185,15 @@ public:
 
   /**
    * Retrieve the type of the task
-   * @return CCopasiTask::Type type
+   * @return CTaskEnum::Task type
    */
-  Type getType() const;
+  CTaskEnum::Task getType() const;
 
   /**
    * Set the type of the task
-   * @param CCopasiTask::Type & type
+   * @param CTaskEnum::Task & type
    */
-  void setType(const Type & type);
+  void setType(const CTaskEnum::Task & type);
 
   /**
    * Retrieve the key for the task.
@@ -319,6 +283,12 @@ public:
   virtual bool restore();
 
   /**
+   * Retrieve the list of valid methods
+   * @return const CTaskEnum::Method * pValidMethods
+   */
+  virtual const CTaskEnum::Method * getValidMethods() const;
+
+  /**
    * Retrieve the problem
    */
   CCopasiProblem * getProblem();
@@ -330,18 +300,18 @@ public:
 
   /**
    * Set the method type applied to solve the task
-   * @param const CCopasiMethod::SubType & type
+   * @param const CTaskEnum::Method & type
    * @return bool success
    */
-  virtual bool setMethodType(const int & type);
+  bool setMethodType(const int & type);
 
   /**
    * Create a method of the specified type to solve the task.
    * It is the duty of the caller to release the CCopasiMethod.
-   * @param const CCopasiMethod::SubType & type
+   * @param const CTaskEnum::Method & type
    * @return CCopasiMethod *
    */
-  virtual CCopasiMethod * createMethod(const int & type) const;
+  CCopasiMethod * createMethod(const CTaskEnum::Method & type) const;
 
   /**
    * Retrieve the method
@@ -401,9 +371,14 @@ public:
 
 protected:
   /**
-   *   Signal that the math container has changed
+   * Signal that the math container has changed
    */
   virtual void signalMathContainerChanged();
+
+  /**
+   * Signal that the method has changed
+   */
+  virtual void signalMethodChanged();
 
 private:
   void initObjects();
@@ -413,7 +388,7 @@ protected:
   /**
    * The type of the task
    */
-  Type mType;
+  CTaskEnum::Task mType;
 
   /**
    * The key of the task

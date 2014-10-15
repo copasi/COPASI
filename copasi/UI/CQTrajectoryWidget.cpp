@@ -321,11 +321,6 @@ bool CQTrajectoryWidget::loadTask()
   return true;
 }
 
-CCopasiMethod * CQTrajectoryWidget::createMethod(const CCopasiMethod::SubType & type)
-{
-  return CTrajectoryMethod::createMethod(type);
-}
-
 bool CQTrajectoryWidget::runTask()
 {
   checkTimeSeries();

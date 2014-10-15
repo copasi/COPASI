@@ -31,8 +31,10 @@
 
 #define LAMBDA_MAX 1e80
 
-COptMethodLevenbergMarquardt::COptMethodLevenbergMarquardt(const CCopasiContainer * pParent):
-  COptMethod(CCopasiTask::optimization, CCopasiMethod::LevenbergMarquardt, pParent),
+COptMethodLevenbergMarquardt::COptMethodLevenbergMarquardt(const CCopasiContainer * pParent,
+    const CTaskEnum::Method & methodType,
+    const CTaskEnum::Task & taskType):
+  COptMethod(pParent, methodType, taskType),
   mIterationLimit(2000),
   mTolerance(1.e-006),
   mModulation(1.e-006),

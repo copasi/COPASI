@@ -86,10 +86,10 @@ public:
   /**
    * Default constructor
    * @param const CCopasiContainer * pParent
-   * @param const  CCopasiTask::Type & type (default: lyap)
+   * @param const  CTaskEnum::Task & type (default: lyap)
    */
   CLyapTask(const CCopasiContainer * pParent,
-            const CCopasiTask::Type & type = CCopasiTask::lyap);
+            const CTaskEnum::Task & type = CTaskEnum::lyap);
 
   /**
    * Destructor
@@ -121,7 +121,11 @@ public:
    */
   virtual bool restore();
 
-  //methods needed by the result widget
+  /**
+   * Retrieve the list of valid methods
+   * @return const CTaskEnum::Method * pValidMethods
+   */
+  virtual const CTaskEnum::Method * getValidMethods() const;
 
   const CVector<C_FLOAT64> & exponents() const
   {return mExponents;}
@@ -152,21 +156,6 @@ public:
   size_t modelVariablesInResult() const;
 
   size_t numberOfExponentsCalculated() const;
-
-  /**
-   * Set the method type applied to solve the task
-   * @param const CCopasiMethod::SubType & type
-   * @return bool success
-   */
-  virtual bool setMethodType(const int & type);
-
-  /**
-   * Create a method of the specified type to solve the task.
-   * It is the duty of the caller to release the CCopasiMethod.
-   * @param const CCopasiMethod::SubType & type
-   * @return CCopasiMethod *
-   */
-  virtual CCopasiMethod * createMethod(const int & type) const;
 
   /**
    * This is called by the method to generate the output and update the progress

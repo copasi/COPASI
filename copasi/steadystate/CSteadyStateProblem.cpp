@@ -33,7 +33,7 @@
  *  Default constructor.
  */
 CSteadyStateProblem::CSteadyStateProblem(const CCopasiContainer * pParent):
-  CCopasiProblem(CCopasiTask::steadyState, pParent)
+  CCopasiProblem(CTaskEnum::steadyState, pParent)
   //mInitialState(),
   //mHasInitialState(false)
 {

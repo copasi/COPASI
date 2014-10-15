@@ -36,8 +36,10 @@
 #include "lapack/lapackwrap.h"
 #include "lapack/blaswrap.h"
 
-CNewtonMethod::CNewtonMethod(const CCopasiContainer * pParent):
-  CSteadyStateMethod(CCopasiMethod::Newton, pParent),
+CNewtonMethod::CNewtonMethod(const CCopasiContainer * pParent,
+                             const CTaskEnum::Method & methodType,
+                             const CTaskEnum::Task & taskType):
+  CSteadyStateMethod(pParent, methodType, taskType),
   mIpiv(NULL),
   mpTrajectory(NULL),
   mStartState()
@@ -732,8 +734,8 @@ bool CNewtonMethod::initialize(const CSteadyStateProblem * pProblem)
         dynamic_cast<CTrajectoryProblem *>(mpTrajectory->getProblem());
       assert(pTrajectoryProblem);
 
-      if (mpTrajectory->getMethod()->getSubType() != CCopasiMethod::deterministic)
-        mpTrajectory->setMethodType(CCopasiMethod::deterministic);
+      if (mpTrajectory->getMethod()->getSubType() != CTaskEnum::deterministic)
+        mpTrajectory->setMethodType(CTaskEnum::deterministic);
 
       pTrajectoryMethod =
         dynamic_cast<CTrajectoryMethod *>(mpTrajectory->getMethod());

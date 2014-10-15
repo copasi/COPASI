@@ -394,10 +394,10 @@ void CModelParameter::compile()
   mpObject = NULL;
   mIsInitialExpressionValid = true;
 
-  CModel * pModel = getModel();
-  assert(pModel != NULL);
+  CObjectInterface::ContainerList ContainerList;
+  ContainerList.push_back(getModel());
 
-  mpObject = const_cast< CCopasiObject * >(CObjectInterface::DataObject(pModel->getObjectFromCN(mCN)));
+  mpObject = const_cast< CCopasiObject * >(CObjectInterface::DataObject(CObjectInterface::GetObjectFromCN(ContainerList, mCN)));
 
   if (mpObject != NULL)
     {

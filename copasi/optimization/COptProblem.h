@@ -55,10 +55,10 @@ public:
 
   /**
    * Default constructor
-   * @param const CCopasiTask::Type & type (default: optimization)
+   * @param const CTaskEnum::Task & type (default: optimization)
    * @param const CCopasiContainer * pParent (default: NULL)
    */
-  COptProblem(const CCopasiTask::Type & type = CCopasiTask::optimization,
+  COptProblem(const CTaskEnum::Task & type = CTaskEnum::optimization,
               const CCopasiContainer * pParent = NULL);
 
   /**
@@ -253,16 +253,16 @@ public:
 
   /**
    * Set subtask type
-   * @param const CCopasiTask::Type & subtaskType
+   * @param const CTaskEnum::Task & subtaskType
    * @return success
    */
-  bool setSubtaskType(const CCopasiTask::Type & subtaskType);
+  bool setSubtaskType(const CTaskEnum::Task & subtaskType);
 
   /**
    * Retrieve the subtask type
-   * @return CCopasiTask::Type subtaskType
+   * @return CTaskEnum::Task subtaskType
    */
-  CCopasiTask::Type getSubtaskType() const;
+  CTaskEnum::Task getSubtaskType() const;
 
   /**
    * Set whether we have to maximize the objective function

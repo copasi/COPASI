@@ -26,8 +26,6 @@ class CZeroSet;
 
 class CBitPatternTreeMethod: public CEFMMethod
 {
-  friend CEFMMethod * CEFMMethod::createMethod(CCopasiMethod::SubType subType);
-
 public:
   /**
    * A static method that calculates the kernel of a full column rank matrix.
@@ -74,22 +72,23 @@ public:
       }
   }
 
-protected:
+private:
   /**
-   * Default constructor
-   * @param const CCopasiContainer * pParent (Default: NULL)
+   * Default constructor.
    */
-  CBitPatternTreeMethod(const CCopasiContainer * pParent = NULL);
-
-  /**
-   * Constructor to be called by derived methods
-   * @param const CCopasiMethod::SubType subType
-   * @param const CCopasiContainer * pParent (Default: NULL)
-   */
-  CBitPatternTreeMethod(const CCopasiMethod::SubType subType,
-                        const CCopasiContainer * pParent = NULL);
+  CBitPatternTreeMethod();
 
 public:
+  /**
+   * Specific constructor
+   * @param const CCopasiContainer * pParent
+   * @param const CTaskEnum::Method & methodType (default: EFMBitPatternTreeAlgorithm)
+   * @param const CTaskEnum::Task & taskType (default: fluxMode)
+   */
+  CBitPatternTreeMethod(const CCopasiContainer * pParent,
+                        const CTaskEnum::Method & methodType = CTaskEnum::EFMBitPatternTreeAlgorithm,
+                        const CTaskEnum::Task & taskType = CTaskEnum::fluxMode);
+
   /**
    * Copy Constructor
    * @param const CBitPatternTreeMethod & src

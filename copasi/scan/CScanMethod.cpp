@@ -311,13 +311,10 @@ void CScanItemRandom::step()
 
 //**************** CScanMethod class ***************************
 
-CScanMethod * CScanMethod::createMethod(CCopasiMethod::SubType /* subType */)
-{
-  return new CScanMethod();
-}
-
-CScanMethod::CScanMethod():
-  CCopasiMethod(CCopasiTask::scan, CCopasiMethod::scanMethod),
+CScanMethod::CScanMethod(const CCopasiContainer * pParent,
+                         const CTaskEnum::Method & methodType,
+                         const CTaskEnum::Task & taskType):
+  CCopasiMethod(pParent, methodType, taskType),
   mpProblem(NULL),
   mpTask(NULL),
   mpRandomGenerator(NULL),

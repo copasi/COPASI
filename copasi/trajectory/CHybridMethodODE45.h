@@ -92,10 +92,6 @@ public:
 
 class CHybridMethodODE45 : public CTrajectoryMethod
 {
-
-  friend CTrajectoryMethod *
-  CTrajectoryMethod::createMethod(CCopasiMethod::SubType subType);
-
 public:
   struct Data
   {
@@ -144,9 +140,19 @@ protected:
   /**
    * Default Constructor
    */
-  CHybridMethodODE45(const CCopasiContainer * pParent = NULL);
+  CHybridMethodODE45();
 
 public:
+  /**
+   * Specific constructor
+   * @param const CCopasiContainer * pParent
+   * @param const CTaskEnum::Method & methodType (default: hybridODE45)
+   * @param const CTaskEnum::Task & taskType (default: timeCourse)
+   */
+  CHybridMethodODE45(const CCopasiContainer * pParent,
+                     const CTaskEnum::Method & methodType = CTaskEnum::hybridODE45,
+                     const CTaskEnum::Task & taskType = CTaskEnum::timeCourse);
+
   /**
    * Copy constructor
    * @param const CHybridMethodODE45 & src

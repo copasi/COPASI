@@ -103,31 +103,31 @@ int main(int argc, char *argv[])
 
   long int repeats = strtol(pRepeats, pTmpP , 10);
 
-  CCopasiMethod::SubType MethodType;
+  CTaskEnum::Method MethodType;
 
   if (!strcmp(pMethodType, "stochastic"))
     {
-      MethodType = CCopasiMethod::stochastic;
+      MethodType = CTaskEnum::stochastic;
     }
   else if (!strcmp(pMethodType, "directMethod"))
     {
-      MethodType = CCopasiMethod::directMethod;
+      MethodType = CTaskEnum::directMethod;
     }
   else if (!strcmp(pMethodType, "tauLeap"))
     {
-      MethodType = CCopasiMethod::tauLeap;
+      MethodType = CTaskEnum::tauLeap;
     }
   else if (!strcmp(pMethodType, "adaptiveSA"))
     {
-      MethodType = CCopasiMethod::adaptiveSA;
+      MethodType = CTaskEnum::adaptiveSA;
     }
   else if (!strcmp(pMethodType, "LSODA"))
     {
-      MethodType = CCopasiMethod::deterministic;
+      MethodType = CTaskEnum::deterministic;
     }
   else if (!strcmp(pMethodType, "HybridODE45"))
     {
-      MethodType = CCopasiMethod::hybridODE45;
+      MethodType = CTaskEnum::hybridODE45;
     }
   else
     {
@@ -169,7 +169,7 @@ int main(int argc, char *argv[])
       // time.
       CReportDefinitionVector* pReports = pDataModel->getReportDefinitionList();
       CReportDefinition* pReport = pReports->createReportDefinition("Report", "Output for stochastic testsuite run");
-      pReport->setTaskType(CCopasiTask::timeCourse);
+      pReport->setTaskType(CTaskEnum::timeCourse);
       pReport->setIsTable(false);
 
       CCopasiReportSeparator Separator(std::string(","));
@@ -247,7 +247,7 @@ int main(int argc, char *argv[])
       pScanTask->getReport().setTarget(pOutputFilename);
       pScanTask->getReport().setAppend(false);
 
-      pScanProblem->setSubtask(CCopasiTask::timeCourse);
+      pScanProblem->setSubtask(CTaskEnum::timeCourse);
       //pScanProblem->createScanItem(CScanProblem::SCAN_REPEAT, repeats);
       pScanProblem->addScanItem(CScanProblem::SCAN_REPEAT, repeats);
       pScanProblem->setOutputInSubtask(true);

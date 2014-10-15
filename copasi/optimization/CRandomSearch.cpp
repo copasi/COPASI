@@ -38,8 +38,10 @@ email                : rluktuke@vt.edu
 #include "report/CCopasiObjectReference.h"
 #include "randomGenerator/CRandom.h"
 
-CRandomSearch::CRandomSearch():
-  COptMethod(CCopasiTask::optimization, CCopasiMethod::RandomSearch)
+CRandomSearch::CRandomSearch(const CCopasiContainer * pParent,
+                             const CTaskEnum::Method & methodType,
+                             const CTaskEnum::Task & taskType):
+  COptMethod(pParent, methodType, taskType)
 {
   addParameter("Number of Iterations", CCopasiParameter::UINT, (unsigned C_INT32) 100000);
   addParameter("Random Number Generator", CCopasiParameter::UINT, (unsigned C_INT32) CRandom::mt19937);
@@ -48,8 +50,9 @@ CRandomSearch::CRandomSearch():
   initObjects();
 }
 
-CRandomSearch::CRandomSearch(const CRandomSearch & src):
-  COptMethod(src)
+CRandomSearch::CRandomSearch(const CRandomSearch & src,
+                             const CCopasiContainer * pParent):
+  COptMethod(src, pParent)
 {initObjects();}
 
 /**

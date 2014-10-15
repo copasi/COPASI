@@ -69,12 +69,12 @@ public:
   /**
    *  Set the type of the subtask.
    */
-  void setSubtask(CCopasiTask::Type type);
+  void setSubtask(CTaskEnum::Task type);
 
   /**
    *  Get the type of the subtask.
    */
-  CCopasiTask::Type getSubtask() const;
+  CTaskEnum::Task getSubtask() const;
 
   /**
    *  Set if output should be done after every step of the subtask.

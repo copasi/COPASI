@@ -28,9 +28,6 @@ class CState;
 
 class CCSPMethod : public CTSSAMethod
 {
-  friend CTSSAMethod *
-  CTSSAMethod::createMethod(CCopasiMethod::SubType subType);
-
 public:
 
   /**
@@ -147,11 +144,20 @@ public:
 private:
   /**
    * Default constructor.
-   * @param const CCopasiContainer * pParent (default: NULL)
    */
-  CCSPMethod(const CCopasiContainer * pParent = NULL);
+  CCSPMethod();
 
 public:
+  /**
+   * Specific constructor
+   * @param const CCopasiContainer * pParent
+   * @param const CTaskEnum::Method & methodType (defaulf: tssCSP)
+   * @param const CTaskEnum::Task & taskType (default: tssAnalysis)
+   */
+  CCSPMethod(const CCopasiContainer * pParent,
+             const CTaskEnum::Method & methodType = CTaskEnum::tssCSP,
+             const CTaskEnum::Task & taskType = CTaskEnum::tssAnalysis);
+
   /**
    * Copy constructor.
    * @param "const CCSPMethod &" src
@@ -253,13 +259,18 @@ public:
   /**
    *  correct for the contribution of the fast time-scales  to y
    **/
-  void yCorrection(C_INT & N, C_INT & M, CVector< C_FLOAT64 > & y, CMatrix< C_FLOAT64 > & TAUM, CMatrix< C_FLOAT64 > & F, CMatrix< C_FLOAT64 > & A);
+  void yCorrection(C_INT & N, C_INT & M,
+                   CVector< C_FLOAT64 > & y, CMatrix< C_FLOAT64 > & TAUM,
+                   CMatrix< C_FLOAT64 > & F, CMatrix< C_FLOAT64 > & A);
 
   /**
    * Refinement Procedre :
    *  Lamm, Combustion Science and Technoligy, 1993.
    **/
-  void basisRefinement(C_INT & N, C_INT & M, CMatrix< C_FLOAT64 > & ALA, CMatrix< C_FLOAT64 > & TAU, CMatrix< C_FLOAT64 > & A, CMatrix< C_FLOAT64 > & B, CMatrix< C_FLOAT64 > & A0, CMatrix< C_FLOAT64 > & B0);
+  void basisRefinement(C_INT & N, C_INT & M,
+                       CMatrix< C_FLOAT64 > & ALA, CMatrix< C_FLOAT64 > & TAU,
+                       CMatrix< C_FLOAT64 > & A, CMatrix< C_FLOAT64 > & B,
+                       CMatrix< C_FLOAT64 > & A0, CMatrix< C_FLOAT64 > & B0);
 
   /**
    * evaluate Jacobian for the current y

@@ -60,12 +60,22 @@ const CCopasiObject * CObjectInterface::DataObject(const CObjectInterface * pInt
 CObjectInterface * CObjectInterface::GetObjectFromCN(const CObjectInterface::ContainerList & listOfContainer,
     const CCopasiObjectName & objName)
 {
+  // Check that we have a fully qualified CN
+  if (objName.getPrimary() != "CN=Root")
+    {
+      return NULL;
+    }
+
   const CObjectInterface * pObject = NULL;
+
   const CCopasiDataModel * pDataModel = NULL;
+
   CObjectInterface::ContainerList::const_iterator it = listOfContainer.begin();
+
   CObjectInterface::ContainerList::const_iterator end = listOfContainer.end();
 
   CCopasiObjectName ContainerName;
+
   std::string::size_type pos;
 
   //favor to search the list of container first

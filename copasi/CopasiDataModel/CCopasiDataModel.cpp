@@ -1421,63 +1421,63 @@ const CCopasiVectorN< CCopasiTask > * CCopasiDataModel::getTaskList() const
   return mOldData.pTaskList;
 }
 
-CCopasiTask * CCopasiDataModel::addTask(const CCopasiTask::Type & taskType)
+CCopasiTask * CCopasiDataModel::addTask(const CTaskEnum::Task & taskType)
 {
   CCopasiTask * pTask = NULL;
 
   switch (taskType)
     {
-      case CCopasiTask::steadyState:
+      case CTaskEnum::steadyState:
         pTask = new CSteadyStateTask(mData.pTaskList);
         break;
 
-      case CCopasiTask::timeCourse:
+      case CTaskEnum::timeCourse:
         pTask = new CTrajectoryTask(mData.pTaskList);
         break;
 
-      case CCopasiTask::scan:
+      case CTaskEnum::scan:
         pTask = new CScanTask(mData.pTaskList);
         break;
 
-      case CCopasiTask::fluxMode:
+      case CTaskEnum::fluxMode:
         pTask = new CEFMTask(mData.pTaskList);
         break;
 
-      case CCopasiTask::optimization:
+      case CTaskEnum::optimization:
         pTask = new COptTask(mData.pTaskList);
         break;
 
-      case CCopasiTask::parameterFitting:
+      case CTaskEnum::parameterFitting:
         pTask = new CFitTask(mData.pTaskList);
         break;
 
-      case CCopasiTask::mca:
+      case CTaskEnum::mca:
         pTask = new CMCATask(mData.pTaskList);
         static_cast< CMCAProblem * >(pTask->getProblem())->setSteadyStateRequested(true);
         break;
 
-      case CCopasiTask::lna:
+      case CTaskEnum::lna:
         pTask = new CLNATask(mData.pTaskList);
         static_cast< CLNAProblem * >(pTask->getProblem())->setSteadyStateRequested(true);
         break;
 
-      case CCopasiTask::lyap:
+      case CTaskEnum::lyap:
         pTask = new CLyapTask(mData.pTaskList);
         break;
 
-      case CCopasiTask::sens:
+      case CTaskEnum::sens:
         pTask = new CSensTask(mData.pTaskList);
         break;
 
-      case CCopasiTask::tssAnalysis:
+      case CTaskEnum::tssAnalysis:
         pTask = new CTSSATask(mData.pTaskList);
         break;
 
-      case CCopasiTask::moieties:
+      case CTaskEnum::moieties:
         pTask = new CMoietiesTask(mData.pTaskList);
         break;
 
-      case CCopasiTask::crosssection:
+      case CTaskEnum::crosssection:
         pTask = new CCrossSectionTask(mData.pTaskList);
         break;
 
@@ -1485,7 +1485,6 @@ CCopasiTask * CCopasiDataModel::addTask(const CCopasiTask::Type & taskType)
         return pTask;
     }
 
-  pTask->setMathContainer(&mData.pModel->getMathContainer());
   mData.pTaskList->add(pTask);
 
   return pTask;
@@ -1495,9 +1494,9 @@ bool CCopasiDataModel::addDefaultTasks()
 {
   size_t i;
 
-  for (i = 0; CCopasiTask::TypeName[i] != ""; i++)
-    if (mData.pTaskList->getIndex(CCopasiTask::TypeName[i]) == C_INVALID_INDEX)
-      addTask((CCopasiTask::Type) i);
+  for (i = 0; CTaskEnum::TaskName[i] != ""; i++)
+    if (mData.pTaskList->getIndex(CTaskEnum::TaskName[i]) == C_INVALID_INDEX)
+      addTask((CTaskEnum::Task) i);
 
   return true;
 }
@@ -1534,14 +1533,14 @@ bool CCopasiDataModel::appendDependentTasks(std::set< const CCopasiObject * > ca
   return Size < dependentTasks.size();
 }
 
-CReportDefinition * CCopasiDataModel::addReport(const CCopasiTask::Type & taskType)
+CReportDefinition * CCopasiDataModel::addReport(const CTaskEnum::Task & taskType)
 {
   CReportDefinition * pReport = NULL;
 
   switch (taskType)
     {
-      case CCopasiTask::steadyState:
-        pReport = new CReportDefinition(CCopasiTask::TypeName[taskType]);
+      case CTaskEnum::steadyState:
+        pReport = new CReportDefinition(CTaskEnum::TaskName[taskType]);
         pReport->setTaskType(taskType);
         pReport->setComment("Automatically generated report.");
         pReport->setIsTable(false);
@@ -1549,16 +1548,16 @@ CReportDefinition * CCopasiDataModel::addReport(const CCopasiTask::Type & taskTy
         pReport->getFooterAddr()->push_back(CCopasiObjectName("CN=Root,Vector=TaskList[Steady-State]"));
         break;
 
-      case CCopasiTask::timeCourse:
+      case CTaskEnum::timeCourse:
         // No default report available.
         break;
 
-      case CCopasiTask::scan:
+      case CTaskEnum::scan:
         // No default report available.
         break;
 
-      case CCopasiTask::fluxMode:
-        pReport = new CReportDefinition(CCopasiTask::TypeName[taskType]);
+      case CTaskEnum::fluxMode:
+        pReport = new CReportDefinition(CTaskEnum::TaskName[taskType]);
         pReport->setTaskType(taskType);
         pReport->setComment("Automatically generated report.");
         pReport->setIsTable(false);
@@ -1566,8 +1565,8 @@ CReportDefinition * CCopasiDataModel::addReport(const CCopasiTask::Type & taskTy
         pReport->getFooterAddr()->push_back(CCopasiObjectName("CN=Root,Vector=TaskList[Elementary Flux Modes],Object=Result"));
         break;
 
-      case CCopasiTask::optimization:
-        pReport = new CReportDefinition(CCopasiTask::TypeName[taskType]);
+      case CTaskEnum::optimization:
+        pReport = new CReportDefinition(CTaskEnum::TaskName[taskType]);
         pReport->setTaskType(taskType);
         pReport->setComment("Automatically generated report.");
         pReport->setIsTable(false);
@@ -1595,8 +1594,8 @@ CReportDefinition * CCopasiDataModel::addReport(const CCopasiTask::Type & taskTy
         break;
 
         //**************************************************************************
-      case CCopasiTask::parameterFitting:
-        pReport = new CReportDefinition(CCopasiTask::TypeName[taskType]);
+      case CTaskEnum::parameterFitting:
+        pReport = new CReportDefinition(CTaskEnum::TaskName[taskType]);
         pReport->setTaskType(taskType);
         pReport->setComment("Automatically generated report.");
         pReport->setIsTable(false);
@@ -1624,8 +1623,8 @@ CReportDefinition * CCopasiDataModel::addReport(const CCopasiTask::Type & taskTy
         break;
 
         //**************************************************************************
-      case CCopasiTask::lyap:
-        pReport = new CReportDefinition(CCopasiTask::TypeName[taskType]);
+      case CTaskEnum::lyap:
+        pReport = new CReportDefinition(CTaskEnum::TaskName[taskType]);
         pReport->setTaskType(taskType);
         pReport->setComment("Automatically generated report.");
         pReport->setIsTable(false);
@@ -1641,8 +1640,8 @@ CReportDefinition * CCopasiDataModel::addReport(const CCopasiTask::Type & taskTy
         break;
 
         //**************************************************************************
-      case CCopasiTask::mca:
-        pReport = new CReportDefinition(CCopasiTask::TypeName[taskType]);
+      case CTaskEnum::mca:
+        pReport = new CReportDefinition(CTaskEnum::TaskName[taskType]);
         pReport->setTaskType(taskType);
         pReport->setComment("Automatically generated report.");
         pReport->setIsTable(false);
@@ -1658,8 +1657,8 @@ CReportDefinition * CCopasiDataModel::addReport(const CCopasiTask::Type & taskTy
         break;
 
         //**************************************************************************
-      case CCopasiTask::lna:
-        pReport = new CReportDefinition(CCopasiTask::TypeName[taskType]);
+      case CTaskEnum::lna:
+        pReport = new CReportDefinition(CTaskEnum::TaskName[taskType]);
         pReport->setTaskType(taskType);
         pReport->setComment("Automatically generated report.");
         pReport->setIsTable(false);
@@ -1675,8 +1674,8 @@ CReportDefinition * CCopasiDataModel::addReport(const CCopasiTask::Type & taskTy
         break;
 
         //**************************************************************************
-      case CCopasiTask::sens:
-        pReport = new CReportDefinition(CCopasiTask::TypeName[taskType]);
+      case CTaskEnum::sens:
+        pReport = new CReportDefinition(CTaskEnum::TaskName[taskType]);
         pReport->setTaskType(taskType);
         pReport->setComment("Automatically generated report.");
         pReport->setIsTable(false);
@@ -1692,8 +1691,8 @@ CReportDefinition * CCopasiDataModel::addReport(const CCopasiTask::Type & taskTy
         break;
 
         //**************************************************************************
-      case CCopasiTask::tssAnalysis:
-        pReport = new CReportDefinition(CCopasiTask::TypeName[taskType]);
+      case CTaskEnum::tssAnalysis:
+        pReport = new CReportDefinition(CTaskEnum::TaskName[taskType]);
         pReport->setTaskType(taskType);
         pReport->setComment("Automatically generated report.");
         pReport->setIsTable(false);
@@ -1721,25 +1720,25 @@ bool CCopasiDataModel::addDefaultReports()
 {
   size_t i;
 
-  for (i = 0; CCopasiTask::TypeName[i] != ""; i++)
+  for (i = 0; CTaskEnum::TaskName[i] != ""; i++)
     {
       //try to create the report if it doesn't exist
-      if (mData.pReportDefinitionList->getIndex(CCopasiTask::TypeName[i]) == C_INVALID_INDEX)
+      if (mData.pReportDefinitionList->getIndex(CTaskEnum::TaskName[i]) == C_INVALID_INDEX)
         {
-          addReport((CCopasiTask::Type) i);
+          addReport((CTaskEnum::Task) i);
         }
 
       //see if the report exists now
       CReportDefinition* pReportDef = NULL;
 
-      if (mData.pReportDefinitionList->getIndex(CCopasiTask::TypeName[i]) != C_INVALID_INDEX)
-        pReportDef = (*mData.pReportDefinitionList)[CCopasiTask::TypeName[i]];
+      if (mData.pReportDefinitionList->getIndex(CTaskEnum::TaskName[i]) != C_INVALID_INDEX)
+        pReportDef = (*mData.pReportDefinitionList)[CTaskEnum::TaskName[i]];
 
       //see if the task exists
       CCopasiTask* pTask = NULL;
 
-      if (mData.pTaskList->getIndex(CCopasiTask::TypeName[i]) != C_INVALID_INDEX)
-        pTask = (*mData.pTaskList)[CCopasiTask::TypeName[i]];
+      if (mData.pTaskList->getIndex(CTaskEnum::TaskName[i]) != C_INVALID_INDEX)
+        pTask = (*mData.pTaskList)[CTaskEnum::TaskName[i]];
 
       if (pTask && pReportDef) //task and report definition exist
         {

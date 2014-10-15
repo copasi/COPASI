@@ -33,27 +33,18 @@
 
 //#define ILDMDEBUG
 
-CILDMMethod::CILDMMethod(const CCopasiContainer * pParent):
-  CTSSAMethod(CCopasiMethod::tssILDM, pParent) //,
-  // mpState(NULL),
-  // mY(NULL)
+CILDMMethod::CILDMMethod(const CCopasiContainer * pParent,
+                         const CTaskEnum::Method & methodType,
+                         const CTaskEnum::Task & taskType):
+  CTSSAMethod(pParent, methodType, taskType)
 {
-  //assert((void *) &mData == (void *) &mDim);
-
-  // addObjectReference("Number of slow variables", mSlow, CCopasiObject::ValueInt);
-  // addMatrixReference("Contribution of Metabolites to Slow Space", mVslow, CCopasiObject::ValueDbl);
-
   initializeParameter();
 }
 
 CILDMMethod::CILDMMethod(const CILDMMethod & src,
                          const CCopasiContainer * pParent):
-  CTSSAMethod(src, pParent) //,
-  //mpState(NULL),
-  //mY(NULL)
+  CTSSAMethod(src, pParent)
 {
-  //assert((void *) &mData == (void *) &mDim);
-
   initializeParameter();
 }
 

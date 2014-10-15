@@ -126,10 +126,10 @@ public:
 
   /**
    * Check whether the set contains data for the the given task type
-   * @param const CCopasiTask::Type & type
+   * @param const CTaskEnum::Task & type
    * @return bool hasDataForTaskType
    */
-  bool hasDataForTaskType(const CCopasiTask::Type & type) const;
+  bool hasDataForTaskType(const CTaskEnum::Task & type) const;
 
   /**
    * Check whether the set contains data for a time course that starts in a steady state
@@ -141,7 +141,7 @@ public:
    * @param const size_t & index,
    * @return const CCopasiTasK::Type & experimentType
    */
-  const CCopasiTask::Type & getExperimentType(const size_t & index) const;
+  const CTaskEnum::Task & getExperimentType(const size_t & index) const;
 
   /**
    * Retrieve the independent data of the indexed experiment.

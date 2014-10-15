@@ -172,9 +172,6 @@ bool SensitivitiesWidget::saveTask()
   return true;
 }
 
-CCopasiMethod * SensitivitiesWidget::createMethod(const CCopasiMethod::SubType & type)
-{return CSensMethod::createMethod(type);}
-
 bool SensitivitiesWidget::runTask()
 {
   if (FunctionChooser->getCurrentObjectList() != CObjectLists::SINGLE_OBJECT)

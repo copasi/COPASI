@@ -1,4 +1,4 @@
-// Copyright (C) 2011 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -24,7 +24,7 @@ public:
 
   void setTask(CCopasiTask * pTask);
 
-  void setValidMethods(const unsigned int * validMethods);
+  void setValidMethods(const CTaskEnum::Method * validMethods);
 
   void showMethodParameters(const bool & show);
 
@@ -41,14 +41,14 @@ protected slots:
 protected:
   void addToHistory(CCopasiMethod * pMethod);
   void removeFromHistory(CCopasiMethod * pMethod);
-  CCopasiMethod * getFromHistory(const CCopasiMethod::SubType & Type) const;
-  void setActiveMethod(const CCopasiMethod::SubType & Type);
+  CCopasiMethod * getFromHistory(const CTaskEnum::Method & Type) const;
+  void setActiveMethod(const CTaskEnum::Method & Type);
 
 protected:
   CCopasiTask * mpTask;
   CCopasiMethod * mpMethod;
   CCopasiMethod * mpActiveMethod;
-  std::map< CCopasiMethod::SubType, CCopasiMethod * > mMethodHistory;
+  std::map< CTaskEnum::Method, CCopasiMethod * > mMethodHistory;
   bool mShowMethods;
   bool mShowMethodParameters;
 };

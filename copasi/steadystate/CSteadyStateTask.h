@@ -104,10 +104,10 @@ public:
   /**
    * Specific constructor
    * @param const CCopasiContainer * pParent
-   * @param const CCopasiTask::Type & type (default: steadyState)
+   * @param const CTaskEnum::Task & type (default: steadyState)
    */
   CSteadyStateTask(const CCopasiContainer * pParent,
-                   const CCopasiTask::Type & type = CCopasiTask::steadyState);
+                   const CTaskEnum::Task & type = CTaskEnum::steadyState);
   /**
    * Copy constructor
    * @param const CSteadyStateTask & src
@@ -120,14 +120,6 @@ public:
    * Destructor
    */
   virtual ~CSteadyStateTask();
-
-  /**
-   * Create a method of the specified type to solve the task.
-   * It is the duty of the caller to release the CCopasiMethod.
-   * @param const CCopasiMethod::SubType & type
-   * @return CCopasiMethod *
-   */
-  virtual CCopasiMethod * createMethod(const int & type) const;
 
   /**
    * Resizes result matrices and updates array annotations for a specific task.
@@ -171,6 +163,12 @@ public:
    * @param std::ostream * ostream
    */
   virtual void print(std::ostream * ostream) const;
+
+  /**
+   * Retrieve the list of valid methods
+   * @return const CTaskEnum::Method * pValidMethods
+   */
+  virtual const CTaskEnum::Method * getValidMethods() const;
 
   /**
    * Loads parameters for this solver with data coming from a

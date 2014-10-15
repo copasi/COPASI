@@ -40,10 +40,10 @@ public:
   /**
    * Specific constructor
    * @param const CCopasiContainer * pParent
-   * @param const CCopasiTask::Type & type (default: lna)
+   * @param const CTaskEnum::Task & type (default: lna)
    */
   CLNATask(const CCopasiContainer * pParent,
-           const CCopasiTask::Type & type = CCopasiTask::lna);
+           const CTaskEnum::Task & type = CTaskEnum::lna);
 
   /**
    * Copy constructor
@@ -57,14 +57,6 @@ public:
    * Destructor
    */
   virtual ~CLNATask();
-
-  /**
-   * Create a method of the specified type to solve the task.
-   * It is the duty of the caller to release the CCopasiMethod.
-   * @param const CCopasiMethod::SubType & type
-   * @return CCopasiMethod *
-   */
-  virtual CCopasiMethod * createMethod(const int & type) const;
 
   /**
    * Resizes result matrices and updates array annotations for a specific task.
@@ -99,6 +91,12 @@ public:
    * Perform neccessary cleanup procedures
    */
   virtual bool restore();
+
+  /**
+   * Retrieve the list of valid methods
+   * @return const CTaskEnum::Method * pValidMethods
+   */
+  virtual const CTaskEnum::Method * getValidMethods() const;
 
   /**
    * Loads parameters for this solver with data coming from a

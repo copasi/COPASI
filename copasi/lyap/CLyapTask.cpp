@@ -42,7 +42,7 @@
 #define LYAP_NUM_REF 10
 
 CLyapTask::CLyapTask(const CCopasiContainer * pParent,
-                     const CCopasiTask::Type & type):
+                     const CTaskEnum::Task & type):
   CCopasiTask(pParent, type),
   mpLyapProblem(NULL),
   mpLyapMethod(NULL),
@@ -57,8 +57,7 @@ CLyapTask::CLyapTask(const CCopasiContainer * pParent,
   mModelVariablesInResult(0)
 {
   mpProblem = new CLyapProblem(this);
-  mpMethod =
-    CLyapMethod::createMethod(CCopasiMethod::lyapWolf);
+  mpMethod = createMethod(CTaskEnum::lyapWolf);
   this->add(mpMethod, true);
 
   initObjects();
@@ -224,27 +223,16 @@ bool CLyapTask::restore()
   return success;
 }
 
-bool CLyapTask::setMethodType(const int & type)
-{
-  CCopasiMethod::SubType Type = (CCopasiMethod::SubType) type;
-
-  if (!CLyapMethod::isValidSubType(Type)) return false;
-
-  if (mpMethod->getSubType() == Type) return true;
-
-  pdelete(mpMethod);
-  mpMethod = createMethod(Type);
-  this->add(mpMethod, true);
-
-  return true;
-}
-
 // virtual
-CCopasiMethod * CLyapTask::createMethod(const int & type) const
+const CTaskEnum::Method * CLyapTask::getValidMethods() const
 {
-  CCopasiMethod::SubType Type = (CCopasiMethod::SubType) type;
+  static const CTaskEnum::Method ValidMethods[] =
+  {
+    CTaskEnum::lyapWolf,
+    CTaskEnum::UnsetMethod
+  };
 
-  return CLyapMethod::createMethod(Type);
+  return ValidMethods;
 }
 
 bool CLyapTask::methodCallback(const C_FLOAT64 & percentage, bool onlyProgress)

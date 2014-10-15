@@ -35,7 +35,7 @@
 #include "copasi/trajectory/CTrajectoryMethod.h"
 #include "copasi/trajectory/CTrajectoryProblem.h"
 #include "copasi/parameterFitting/CFitTask.h"
-#include "copasi/parameterFitting/CFitMethod.h"
+#include "copasi/optimization/COptMethod.h"
 #include "copasi/parameterFitting/CFitProblem.h"
 #include "copasi/parameterFitting/CFitItem.h"
 #include "copasi/parameterFitting/CExperimentSet.h"
@@ -97,7 +97,7 @@ int main()
     }
 
   // run a deterministic time course
-  pTrajectoryTask->setMethodType(CCopasiMethod::deterministic);
+  pTrajectoryTask->setMethodType(CTaskEnum::deterministic);
 
   // activate the task so that it will be run when the model is saved
   // and passed to CopasiSE
@@ -293,8 +293,8 @@ int main()
   assert(pExperiment->getLastRow() == 4001);
   pExperiment->setHeaderRow(1);
   assert(pExperiment->getHeaderRow() == 1);
-  pExperiment->setExperimentType(CCopasiTask::timeCourse);
-  assert(pExperiment->getExperimentType() == CCopasiTask::timeCourse);
+  pExperiment->setExperimentType(CTaskEnum::timeCourse);
+  assert(pExperiment->getExperimentType() == CTaskEnum::timeCourse);
   pExperiment->setNumColumns(4);
   assert(pExperiment->getNumColumns() == 4);
   CExperimentObjectMap* pObjectMap = &pExperiment->getObjectMap();

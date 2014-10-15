@@ -32,10 +32,10 @@ public:
   // Operations
   /**
    * Default constructor
-   * @param const CCopasiTask::Type & type (default: parameterFitting)
+   * @param const CTaskEnum::Task & type (default: parameterFitting)
    * @param const CCopasiContainer * pParent (default: NULL)
    */
-  CFitProblem(const CCopasiTask::Type & type = CCopasiTask::parameterFitting,
+  CFitProblem(const CTaskEnum::Task & type = CTaskEnum::parameterFitting,
               const CCopasiContainer * pParent = NULL);
 
   /**

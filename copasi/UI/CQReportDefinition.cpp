@@ -46,9 +46,9 @@ CQReportDefinition::CQReportDefinition(QWidget* parent, const char* name)
 
   QStringList TaskNames;
 
-  for (i = 0; CCopasiTask::TypeName[i] != ""; i++)
+  for (i = 0; CTaskEnum::TaskName[i] != ""; i++)
     {
-      TaskNames.append(FROM_UTF8(CCopasiTask::TypeName[i]));
+      TaskNames.append(FROM_UTF8(CTaskEnum::TaskName[i]));
     }
 
   mpTaskBox->addItems(TaskNames);
@@ -589,7 +589,7 @@ bool CQReportDefinition::save()
         protectedNotify(ListViews::REPORT, ListViews::RENAME, mKey);
     }
 
-  mpReportDefinition->setTaskType((CCopasiTask::Type) mpTaskBox->currentIndex());
+  mpReportDefinition->setTaskType((CTaskEnum::Task) mpTaskBox->currentIndex());
 
   CCopasiReportSeparator Separator;
 

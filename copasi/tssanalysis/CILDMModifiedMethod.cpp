@@ -23,8 +23,10 @@
 #include "lapack/lapackwrap.h"        // CLAPACK
 #include "lapack/blaswrap.h"           // BLAS
 
-CILDMModifiedMethod::CILDMModifiedMethod(const CCopasiContainer * pParent):
-  CTSSAMethod(CCopasiMethod::tssILDMModified, pParent)
+CILDMModifiedMethod::CILDMModifiedMethod(const CCopasiContainer * pParent,
+    const CTaskEnum::Method & methodType,
+    const CTaskEnum::Task & taskType):
+  CTSSAMethod(pParent, methodType, taskType)
 {
   initializeParameter();
 }

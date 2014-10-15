@@ -1,4 +1,4 @@
-// Copyright (C) 2012 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -19,10 +19,18 @@ class CPermutation;
 
 class COptMethodDE : public COptMethod
 {
-  friend COptMethod * COptMethod::createMethod(CCopasiMethod::SubType subType);
-
   // Operations
 public:
+  /**
+   * Specific constructor
+   * @param const CCopasiContainer * pParent
+   * @param const CTaskEnum::Method & methodType (default: DifferentialEvolution)
+   * @param const CTaskEnum::Task & taskType (default: optimization)
+   */
+  COptMethodDE(const CCopasiContainer * pParent,
+               const CTaskEnum::Method & methodType = CTaskEnum::DifferentialEvolution,
+               const CTaskEnum::Task & taskType = CTaskEnum::optimization);
+
   /**
    * Copy Constructor
    * @param const COptMethodDE & src
@@ -47,9 +55,8 @@ public:
 private:
   /**
    * Default Constructor
-   * @param const CCopasiContainer * pParent (default: NULL)
    */
-  COptMethodDE(const CCopasiContainer * pParent = NULL);
+  COptMethodDE();
 
   /**
    * Initialize contained objects.

@@ -30,44 +30,38 @@
 #include "model/CModel.h"
 #include "model/CState.h"
 
-//#include "trajectory/CTrajectoryTask.h"
-//#include "trajectory/CTrajectoryProblem.h"
-//#include "steadystate/CSteadyStateTask.h"
-//#include "steadystate/CSteadyStateProblem.h"
-//#include "utilities/COutputHandler.h"
-
-const unsigned int COptTask::ValidMethods[] =
+// static
+const CTaskEnum::Method COptTask::ValidMethods[]  =
 {
-  CCopasiMethod::Statistics,
+  CTaskEnum::Statistics,
 #ifdef COPASI_DEBUG
-  CCopasiMethod::CoranaWalk,
+  CTaskEnum::CoranaWalk,
 #endif // COPASI_DEBUG
-  CCopasiMethod::DifferentialEvolution,
-  CCopasiMethod::SRES,
-  CCopasiMethod::EvolutionaryProgram,
-  CCopasiMethod::GeneticAlgorithm,
-  CCopasiMethod::GeneticAlgorithmSR,
-  CCopasiMethod::HookeJeeves,
-  CCopasiMethod::LevenbergMarquardt,
-  CCopasiMethod::NelderMead,
-  CCopasiMethod::ParticleSwarm,
-  CCopasiMethod::Praxis,
-  CCopasiMethod::RandomSearch,
-  CCopasiMethod::ScatterSearch,
-  CCopasiMethod::SimulatedAnnealing,
-  CCopasiMethod::SteepestDescent,
-  CCopasiMethod::TruncatedNewton,
-  CCopasiMethod::unset
+  CTaskEnum::DifferentialEvolution,
+  CTaskEnum::SRES,
+  CTaskEnum::EvolutionaryProgram,
+  CTaskEnum::GeneticAlgorithm,
+  CTaskEnum::GeneticAlgorithmSR,
+  CTaskEnum::HookeJeeves,
+  CTaskEnum::LevenbergMarquardt,
+  CTaskEnum::NelderMead,
+  CTaskEnum::ParticleSwarm,
+  CTaskEnum::Praxis,
+  CTaskEnum::RandomSearch,
+  CTaskEnum::ScatterSearch,
+  CTaskEnum::SimulatedAnnealing,
+  CTaskEnum::SteepestDescent,
+  CTaskEnum::TruncatedNewton,
+  CTaskEnum::UnsetMethod
 };
 
 COptTask::COptTask(const CCopasiContainer * pParent,
-                   const CCopasiTask::Type & type):
+                   const CTaskEnum::Task & type):
   CCopasiTask(pParent, type)
 {
   mpProblem = new COptProblem(type, this);
-  mpMethod = COptMethod::createMethod();
-  this->add(mpMethod, true);
-  //  mpMethod->setObjectParent(this);
+  mpMethod = createMethod(CTaskEnum::RandomSearch);
+
   ((COptMethod *) mpMethod)->setProblem((COptProblem *) mpProblem);
 }
 
@@ -76,8 +70,7 @@ COptTask::COptTask(const COptTask & src,
   CCopasiTask(src, pParent)
 {
   mpProblem = new COptProblem(*(COptProblem *) src.mpProblem, this);
-  mpMethod = COptMethod::createMethod(src.mpMethod->getSubType());
-  this->add(mpMethod, true);
+  mpMethod = createMethod(src.mpMethod->getSubType());
   //  mpMethod->setObjectParent(this);
   ((COptMethod *) mpMethod)->setProblem((COptProblem *) mpProblem);
 }
@@ -153,24 +146,8 @@ bool COptTask::process(const bool & useInitialValues)
   return success;
 }
 
-bool COptTask::setMethodType(const int & type)
-{
-  CCopasiMethod::SubType Type = (CCopasiMethod::SubType) type;
-
-  if (mpMethod->getSubType() == Type) return true;
-
-  pdelete(mpMethod);
-
-  mpMethod = createMethod(Type);
-  this->add(mpMethod, true);
-
-  return true;
-}
-
 // virtual
-CCopasiMethod * COptTask::createMethod(const int & type) const
+const CTaskEnum::Method * COptTask::getValidMethods() const
 {
-  CCopasiMethod::SubType Type = (CCopasiMethod::SubType) type;
-
-  return COptMethod::createMethod(Type);
+  return COptTask::ValidMethods;
 }

@@ -20,17 +20,13 @@
 #include "lapack/blaswrap.h"
 #include "lapack/lapackwrap.h"
 
-// static
-CLNAMethod * CLNAMethod::createMethod(CCopasiMethod::SubType /* subType */)
-{
-  return new CLNAMethod();
-}
-
 /**
  * Default constructor
  */
-CLNAMethod::CLNAMethod(const CCopasiContainer* pParent):
-  CCopasiMethod(CCopasiTask::lna, CCopasiMethod::linearNoiseApproximation, pParent),
+CLNAMethod::CLNAMethod(const CCopasiContainer * pParent,
+                       const CTaskEnum::Method & methodType,
+                       const CTaskEnum::Task & taskType):
+  CCopasiMethod(pParent, methodType, taskType),
   mpModel(NULL),
   mSteadyStateResolution(1.0e-9),
   mSSStatus(CSteadyStateMethod::notFound)

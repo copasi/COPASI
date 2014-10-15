@@ -1,12 +1,4 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/crosssection/CCrossSectionMethod.h,v $
-//   $Revision: 1.2 $
-//   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2010/05/24 12:45:49 $
-// End CVS Header
-
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -22,27 +14,20 @@ class CCrossSectionMethod : public CCopasiMethod
 {
 private:
   /**
-   * Default constructor.
+   * Default constructor
    */
   CCrossSectionMethod();
 
-protected:
-  /**
-   * Specific constructor.
-   * @param CCopasiMethod::SubType subType
-   * @param const CCopasiContainer * pParent (default: NULL)
-   */
-  explicit CCrossSectionMethod(CCopasiMethod::SubType subType,
-                               const CCopasiContainer * pParent = NULL);
-
 public:
   /**
-   * Create a cross section method.
-   * Note: the returned object has to be released after use with delete
+   * Specific constructor
+   * @param const CCopasiContainer * pParent
+   * @param const CTaskEnum::Method & methodType
+   * @param const CTaskEnum::Task & taskType (default: crosssection)
    */
-  static CCrossSectionMethod *
-  createCrossSectionMethod(CCopasiMethod::SubType subType
-                           = CCopasiMethod::crossSectionMethod);
+  CCrossSectionMethod(const CCopasiContainer * pParent,
+                      const CTaskEnum::Method & methodType,
+                      const CTaskEnum::Task & taskType = CTaskEnum::crosssection);
 
   /**
    * Copy constructor.

@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -26,10 +26,18 @@ class CRandom;
 
 class COptMethodSRES : public COptMethod
 {
-  friend COptMethod * COptMethod::createMethod(CCopasiMethod::SubType subType);
-
   // Operations
 public:
+  /**
+   * Specific constructor
+   * @param const CCopasiContainer * pParent
+   * @param const CTaskEnum::Method & methodType (default: SRES)
+   * @param const CTaskEnum::Task & taskType (default: optimization)
+   */
+  COptMethodSRES(const CCopasiContainer * pParent,
+                 const CTaskEnum::Method & methodType = CTaskEnum::SRES,
+                 const CTaskEnum::Task & taskType = CTaskEnum::optimization);
+
   /**
    * Copy Constructor
    * @param const COptMethodSRES & src
@@ -54,9 +62,8 @@ public:
 private:
   /**
    * Default Constructor
-   * @param const CCopasiContainer * pParent (default: NULL)
    */
-  COptMethodSRES(const CCopasiContainer * pParent = NULL);
+  COptMethodSRES();
 
   /**
    * Initialize contained objects.

@@ -31,18 +31,24 @@ class CState;
 
 class CILDMMethod : public CTSSAMethod
 {
-  friend CTSSAMethod *
-  CTSSAMethod::createMethod(CCopasiMethod::SubType subType);
-
   // Operations
 private:
   /**
    * Default constructor.
-   * @param const CCopasiContainer * pParent (default: NULL)
    */
-  CILDMMethod(const CCopasiContainer * pParent = NULL);
+  CILDMMethod();
 
 public:
+  /**
+   * Specific constructor
+   * @param const CCopasiContainer * pParent
+   * @param const CTaskEnum::Method & methodType (default: tssILDM)
+   * @param const CTaskEnum::Task & taskType (default: tssAnalysis)
+   */
+  CILDMMethod(const CCopasiContainer * pParent,
+              const CTaskEnum::Method & methodType = CTaskEnum::tssILDM,
+              const CTaskEnum::Task & taskType = CTaskEnum::tssAnalysis);
+
   /**
    * Copy constructor.
    * @param "const CILDMMethod &" src

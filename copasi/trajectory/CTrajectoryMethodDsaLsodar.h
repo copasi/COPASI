@@ -44,9 +44,6 @@ class CMathReaction;
 
 class CTrajectoryMethodDsaLsodar : public CLsodaMethod
 {
-  friend CTrajectoryMethod *
-  CTrajectoryMethod::createMethod(CCopasiMethod::SubType subType);
-
 private:
 
   class CPartition
@@ -145,16 +142,23 @@ private:
     const C_FLOAT64 * mpFirstReactionValue;
   };
 
-protected:
+private:
   /**
    * Default constructor.
-   * @param const CCopasiMethod::SubType & subType (default: DsaLsodar)
-   * @param const CCopasiContainer * pParent (default: NULL)
    */
-  CTrajectoryMethodDsaLsodar(const CCopasiMethod::SubType & subType = DsaLsodar,
-                             const CCopasiContainer * pParent = NULL);
+  CTrajectoryMethodDsaLsodar();
 
 public:
+  /**
+   * Specific constructor
+   * @param const CCopasiContainer * pParent
+   * @param const CTaskEnum::Method & methodType (default: DsaLsodar)
+   * @param const CTaskEnum::Task & taskType (default: timeCourse)
+   */
+  CTrajectoryMethodDsaLsodar(const CCopasiContainer * pParent,
+                             const CTaskEnum::Method & methodType = CTaskEnum::DsaLsodar,
+                             const CTaskEnum::Task & taskType = CTaskEnum::timeCourse);
+
   /**
    * Copy constructor
    * @param const CTrajectoryMethodDsaLsodar & src

@@ -1,12 +1,4 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/crosssection/CCrossSectionMethod.cpp,v $
-//   $Revision: 1.3 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/03/07 19:27:36 $
-// End CVS Header
-
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -15,36 +7,14 @@
 
 #include "CCrossSectionProblem.h"
 
-CCrossSectionMethod *
-CCrossSectionMethod::createCrossSectionMethod(CCopasiMethod::SubType subType)
-{
-  CCrossSectionMethod * pMethod = NULL;
-
-  switch (subType)
-    {
-      case unset:
-      case crossSectionMethod:
-        pMethod = new CCrossSectionMethod(subType);
-        break;
-
-      default:
-        fatalError();
-    }
-
-  return pMethod;
-}
-
 /**
  *  Default constructor.
  */
-CCrossSectionMethod::CCrossSectionMethod(CCopasiMethod::SubType subType,
-    const CCopasiContainer * pParent):
-    CCopasiMethod(CCopasiTask::crosssection, subType, pParent)
-    //mpProblem(NULL)
-{
-
-  CONSTRUCTOR_TRACE;
-}
+CCrossSectionMethod::CCrossSectionMethod(const CCopasiContainer * pParent,
+    const CTaskEnum::Method & methodType,
+    const CTaskEnum::Task & taskType):
+  CCopasiMethod(pParent, methodType, taskType)
+{}
 
 /**
  *  Copy constructor.
@@ -52,8 +22,8 @@ CCrossSectionMethod::CCrossSectionMethod(CCopasiMethod::SubType subType,
  */
 CCrossSectionMethod::CCrossSectionMethod(const CCrossSectionMethod & src,
     const CCopasiContainer * pParent):
-    CCopasiMethod(src, pParent)
-    //mpProblem(src.mpProblem)
+  CCopasiMethod(src, pParent)
+  //mpProblem(src.mpProblem)
 {CONSTRUCTOR_TRACE;}
 
 /**
@@ -61,7 +31,6 @@ CCrossSectionMethod::CCrossSectionMethod(const CCrossSectionMethod & src,
  */
 CCrossSectionMethod::~CCrossSectionMethod()
 {DESTRUCTOR_TRACE;}
-
 
 bool CCrossSectionMethod::process(CProcessReport * /* handler */)
 {

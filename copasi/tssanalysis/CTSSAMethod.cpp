@@ -41,40 +41,13 @@
 #include "lapack/lapackwrap.h"        // CLAPACK
 #include "lapack/blaswrap.h"           // BLAS
 
-CTSSAMethod *
-CTSSAMethod::createMethod(CCopasiMethod::SubType subType)
-{
-  CTSSAMethod * pMethod = NULL;
-
-  switch (subType)
-    {
-      case unset:
-      case tssILDM:
-        pMethod = new CILDMMethod();
-        break;
-
-      case tssILDMModified:
-        pMethod = new CILDMModifiedMethod();
-        break;
-
-      case tssCSP:
-        pMethod = new CCSPMethod();
-        break;
-
-      default:
-        fatalError();
-        break;
-    }
-
-  return pMethod;
-}
-
 /**
  *  Default constructor.
  */
-CTSSAMethod::CTSSAMethod(const CCopasiMethod::SubType & subType,
-                         const CCopasiContainer * pParent) :
-  CCopasiMethod(CCopasiTask::tssAnalysis, subType, pParent),
+CTSSAMethod::CTSSAMethod(const CCopasiContainer * pParent,
+                         const CTaskEnum::Method & methodType,
+                         const CTaskEnum::Task & taskType):
+  CCopasiMethod(pParent, methodType, taskType),
   mpProblem(NULL),
   mpLsodaMethod(NULL),
   mDim(0),
@@ -233,19 +206,19 @@ bool CTSSAMethod::isValidProblem(const CCopasiProblem * pProblem)
 
   if (Model.getCompartments().size() != 1)
     {
-      CCopasiMethod::SubType subType;
+      CTaskEnum::Method subType;
 
       subType = getSubType();
 
       switch (subType)
         {
-          case tssILDM:
-          case tssILDMModified:
+          case CTaskEnum::tssILDM:
+          case CTaskEnum::tssILDMModified:
 
             CCopasiMessage(CCopasiMessage::ERROR, MCTSSAMethod + 16);
             return false;
 
-          case tssCSP:
+          case CTaskEnum::tssCSP:
             return true;
 
           default:
@@ -308,7 +281,7 @@ void CTSSAMethod::initializeParameter()
 {
   if (mpLsodaMethod == NULL)
     {
-      mpLsodaMethod = static_cast< CLsodaMethod *>(CTrajectoryMethod::createMethod(CCopasiMethod::deterministic));
+      mpLsodaMethod = static_cast< CLsodaMethod *>(createMethod(getObjectParent(), CTaskEnum::deterministic, getType()));
       mpLsodaMethod->setObjectParent(this);
 
       mpLsodaMethod->setValue("Integrate Reduced Model", true);
@@ -823,21 +796,21 @@ void CTSSAMethod::schur(C_INT &info)
 
           bool diagorder = false;
 
-          CCopasiMethod::SubType subType;
+          CTaskEnum::Method subType;
 
           subType = getSubType();
 
           switch (subType)
             {
-              case tssILDM:
+              case CTaskEnum::tssILDM:
                 diagorder = (index[count + 1] < index[count]);
                 break;
 
-              case tssILDMModified:
+              case CTaskEnum::tssILDMModified:
                 diagorder = (index[count + 1] < index[count]);
                 break;
 
-              case tssCSP:
+              case CTaskEnum::tssCSP:
                 diagorder = (index[count + 1] > index[count]);
                 break;
 

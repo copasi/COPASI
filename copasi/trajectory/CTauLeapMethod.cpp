@@ -49,11 +49,20 @@
 #include "utilities/CIndexedPriorityQueue.h"
 #include "randomGenerator/CRandom.h"
 
+/* DEFINE ********************************************************************/
+#define TAU                    0.01
+#define EPS                    0.03
+#define USE_RANDOM_SEED        false
+#define RANDOM_SEED            1
+#define INT_EPSILON            0.1
+
 /**
  *   Default constructor.
  */
-CTauLeapMethod::CTauLeapMethod(const CCopasiContainer * pParent):
-  CTrajectoryMethod(CCopasiTask::timeCourse, CCopasiMethod::tauLeap, pParent),
+CTauLeapMethod::CTauLeapMethod(const CCopasiContainer * pParent,
+                               const CTaskEnum::Method & methodType,
+                               const CTaskEnum::Task & taskType):
+  CTrajectoryMethod(pParent, methodType, taskType),
   mNumReactions(0),
   mNumReactionSpecies(0),
   mReactions(),

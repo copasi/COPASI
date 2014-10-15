@@ -32,8 +32,10 @@
 #define NS 10
 #define K 1.0
 
-COptMethodSA::COptMethodSA(const CCopasiContainer * pParent):
-  COptMethod(CCopasiTask::optimization, CCopasiMethod::SimulatedAnnealing, pParent)
+COptMethodSA::COptMethodSA(const CCopasiContainer * pParent,
+                           const CTaskEnum::Method & methodType,
+                           const CTaskEnum::Task & taskType):
+  COptMethod(pParent, methodType, taskType)
 {
   addParameter("Start Temperature", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0);
   addParameter("Cooling Factor", CCopasiParameter::UDOUBLE, (C_FLOAT64) 0.85);

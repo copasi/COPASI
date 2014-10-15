@@ -70,10 +70,10 @@ public:
   /**
    * Specific constructor
    * @param const CCopasiContainer * pParent
-   * @param const CCopasiTask::Type & type (default: scan)
+   * @param const CTaskEnum::Task & type (default: scan)
    */
   CScanTask(const CCopasiContainer * pParent,
-            const CCopasiTask::Type & type = CCopasiTask::scan);
+            const CTaskEnum::Task & type = CTaskEnum::scan);
 
   /**
    * Copy constructor
@@ -91,14 +91,6 @@ public:
    * cleanup()
    */
   void cleanup();
-
-  /**
-   * Create a method of the specified type to solve the task.
-   * It is the duty of the caller to release the CCopasiMethod.
-   * @param const CCopasiMethod::SubType & type
-   * @return CCopasiMethod *
-   */
-  virtual CCopasiMethod * createMethod(const int & type) const;
 
   /**
    * Initialize the task. If an ostream is given this ostream is used
@@ -124,6 +116,12 @@ public:
    * Perform necessary cleanup procedures
    */
   virtual bool restore();
+
+  /**
+   * Retrieve the list of valid methods
+   * @return const CTaskEnum::Method * pValidMethods
+   */
+  virtual const CTaskEnum::Method * getValidMethods() const;
 
   /**
    * Loads parameters for this solver with data coming from a

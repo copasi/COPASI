@@ -19,10 +19,10 @@ public:
 
   /**
    * Default constructor
-   * @param const CCopasiTask::Type & type (default: optimization)
+   * @param const CTaskEnum::Task & type (default: optimization)
    * @param const CCopasiContainer * pParent (default: NULL)
    */
-  COscillationProblem(const CCopasiTask::Type & type = CCopasiTask::oscillation,
+  COscillationProblem(const CTaskEnum::Task & type = CTaskEnum::oscillation,
                       const CCopasiContainer * pParent = NULL);
 
   /**

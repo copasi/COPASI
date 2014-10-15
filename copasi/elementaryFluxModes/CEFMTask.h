@@ -32,22 +32,6 @@ class CMetab;
 
 class CEFMTask : public CCopasiTask
 {
-public:
-  /**
-   * The methods which can be selected for performing this task.
-   */
-  static const unsigned int ValidMethods[];
-
-  /**
-   * Check whether the given method is in the list of valid methods
-   * This list must end with CCopasiMethod::unset
-   * @param const unsigned C_INT32 & method
-   * @param const unsigned C_INT32 * validMethods
-   * @return bool isValid
-   */
-  static bool isValidMethod(const unsigned C_INT32 & method,
-                            const unsigned C_INT32 * validMethods);
-
 private:
   /**
    * Default constructor
@@ -60,7 +44,7 @@ public:
    * @param const CCopasiContainer * pParent
    */
   CEFMTask(const CCopasiContainer * pParent,
-           const CCopasiTask::Type & type = CCopasiTask::fluxMode);
+           const CTaskEnum::Task & type = CTaskEnum::fluxMode);
 
   /**
    * Copy constructor
@@ -102,19 +86,10 @@ public:
   virtual bool process(const bool & useInitialValues);
 
   /**
-   * Set the method type applied to solve the task
-   * @param const CCopasiMethod::SubType & type
-   * @return bool success
+   * Retrieve the list of valid methods
+   * @return const CTaskEnum::Method * pValidMethods
    */
-  virtual bool setMethodType(const int & type);
-
-  /**
-   * Create a method of the specified type to solve the task.
-   * It is the duty of the caller to release the CCopasiMethod.
-   * @param const CCopasiMethod::SubType & type
-   * @return CCopasiMethod *
-   */
-  virtual CCopasiMethod * createMethod(const int & type) const;
+  virtual const CTaskEnum::Method * getValidMethods() const;
 
   /**
    * Retrieve the Flux Modes

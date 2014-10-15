@@ -8452,7 +8452,7 @@ void CCopasiXMLParser::TaskElement::start(const XML_Char *pszName, const XML_Cha
 
   const char * Key;
   const char * type;
-  CCopasiTask::Type Type;
+  CTaskEnum::Task Type;
   bool Scheduled = false;
   bool UpdateModel = false;
 
@@ -8468,64 +8468,64 @@ void CCopasiXMLParser::TaskElement::start(const XML_Char *pszName, const XML_Cha
 
         Key = mParser.getAttributeValue("key", papszAttrs, false);
         type = mParser.getAttributeValue("type", papszAttrs);
-        Type = toEnum(type, CCopasiTask::XMLType, CCopasiTask::unset);
+        Type = toEnum(type, CTaskEnum::TaskXML, CTaskEnum::UnsetTask);
         Scheduled = mParser.toBool(mParser.getAttributeValue("scheduled", papszAttrs, "false"));
         UpdateModel = mParser.toBool(mParser.getAttributeValue("updateModel", papszAttrs, "false"));
 
         // create a new CCopasiTask element depending on the type
         switch (Type)
           {
-            case CCopasiTask::steadyState:
+            case CTaskEnum::steadyState:
               mCommon.pCurrentTask = new CSteadyStateTask(mCommon.pTaskList);
               break;
 
-            case CCopasiTask::timeCourse:
+            case CTaskEnum::timeCourse:
               mCommon.pCurrentTask = new CTrajectoryTask(mCommon.pTaskList);
               break;
 
-            case CCopasiTask::scan:
+            case CTaskEnum::scan:
               mCommon.pCurrentTask = new CScanTask(mCommon.pTaskList);
               break;
 
-            case CCopasiTask::fluxMode:
+            case CTaskEnum::fluxMode:
               mCommon.pCurrentTask = new CEFMTask(mCommon.pTaskList);
               break;
 
-            case CCopasiTask::optimization:
+            case CTaskEnum::optimization:
               mCommon.pCurrentTask = new COptTask(mCommon.pTaskList);
               mCommon.pCurrentTask->getProblem()->assertParameter("Steady-State", CCopasiParameter::STRING, std::string(""));
               mCommon.pCurrentTask->getProblem()->assertParameter("Time-Course", CCopasiParameter::STRING, std::string(""));
               break;
 
-            case CCopasiTask::parameterFitting:
+            case CTaskEnum::parameterFitting:
               mCommon.pCurrentTask = new CFitTask(mCommon.pTaskList);
               break;
 
-            case CCopasiTask::mca:
+            case CTaskEnum::mca:
               mCommon.pCurrentTask = new CMCATask(mCommon.pTaskList);
               break;
 
-            case CCopasiTask::lna:
+            case CTaskEnum::lna:
               mCommon.pCurrentTask = new CLNATask(mCommon.pTaskList);
               break;
 
-            case CCopasiTask::lyap:
+            case CTaskEnum::lyap:
               mCommon.pCurrentTask = new CLyapTask(mCommon.pTaskList);
               break;
 
-            case CCopasiTask::sens:
+            case CTaskEnum::sens:
               mCommon.pCurrentTask = new CSensTask(mCommon.pTaskList);
               break;
 
-            case CCopasiTask::tssAnalysis:
+            case CTaskEnum::tssAnalysis:
               mCommon.pCurrentTask = new CTSSATask(mCommon.pTaskList);
               break;
 
-            case CCopasiTask::moieties:
+            case CTaskEnum::moieties:
               mCommon.pCurrentTask = new CMoietiesTask(mCommon.pTaskList);
               break;
 
-            case CCopasiTask::crosssection:
+            case CTaskEnum::crosssection:
               mCommon.pCurrentTask = new CCrossSectionTask(mCommon.pTaskList);
               break;
 
@@ -8646,7 +8646,7 @@ void CCopasiXMLParser::TaskElement::end(const XML_Char *pszName)
 
         // This is needed for old files containing the objective function as
         // part of the list of function definitions
-        if (mCommon.pCurrentTask->getType() == CCopasiTask::optimization)
+        if (mCommon.pCurrentTask->getType() == CTaskEnum::optimization)
           {
             CCopasiProblem * pProblem = mCommon.pCurrentTask->getProblem();
             CCopasiParameter * pParameter = pProblem->getParameter("ObjectiveFunction");
@@ -8897,7 +8897,7 @@ void CCopasiXMLParser::ParameterGroupElement::end(const XML_Char *pszName)
         // We need to fix the "Key" parameter of each "Experiment" of the the "Parameter Estimation" problem,
         // since they are handled by the elevation of the problem to CFitProblem.
         if (mCommon.pCurrentTask != NULL &&
-            mCommon.pCurrentTask->getType() == CCopasiTask::parameterFitting &&
+            mCommon.pCurrentTask->getType() == CTaskEnum::parameterFitting &&
             (mCommon.pCurrentParameter->getObjectName() == "Key" ||
              mCommon.pCurrentParameter->getObjectName() == "Experiment Key"))
           {
@@ -9249,10 +9249,10 @@ void CCopasiXMLParser::MethodElement::start(const XML_Char *pszName,
             sType = mParser.getAttributeValue("type", papszAttrs, "default");
             // first set the type of the with setMethodType of the current task
             // object
-            CCopasiMethod::SubType type =
-              toEnum(sType.c_str(), CCopasiMethod::XMLSubType, CCopasiMethod::unset);
+            CTaskEnum::Method type =
+              toEnum(sType.c_str(), CTaskEnum::MethodXML, CTaskEnum::UnsetMethod);
 
-            if (type != CCopasiMethod::unset)
+            if (type != CTaskEnum::UnsetMethod)
               {
                 mCommon.pCurrentTask->setMethodType(type);
               }
@@ -9261,7 +9261,7 @@ void CCopasiXMLParser::MethodElement::start(const XML_Char *pszName,
                 // We use the default method for this task and issue a warning
                 CCopasiMessage(CCopasiMessage::WARNING, MCXML + 18, sType.c_str(),
                                mParser.getCurrentLineNumber(),
-                               CCopasiMethod::XMLSubType[mCommon.pCurrentTask->getMethod()->getSubType()]);
+                               CTaskEnum::MethodXML[mCommon.pCurrentTask->getMethod()->getSubType()]);
               }
 
             mCommon.pCurrentTask->getMethod()->setObjectName(name);
@@ -9488,7 +9488,7 @@ void CCopasiXMLParser::ReportElement::start(const XML_Char *pszName,
   const char * Name;
   const char * Separator;
   const char * Precision;
-  CCopasiTask::Type type;
+  CTaskEnum::Task type;
 
   mCurrentElement++; /* We should always be on the next element */
   mpCurrentHandler = NULL;
@@ -9508,7 +9508,7 @@ void CCopasiXMLParser::ReportElement::start(const XML_Char *pszName,
         Key = mParser.getAttributeValue("key", papszAttrs);
         Name = mParser.getAttributeValue("name", papszAttrs);
         type = toEnum(mParser.getAttributeValue("taskType", papszAttrs),
-                      CCopasiTask::XMLType, CCopasiTask::unset);
+                      CTaskEnum::TaskXML, CTaskEnum::UnsetTask);
 
         Separator = mParser.getAttributeValue("separator", papszAttrs, "\t");
         Precision = mParser.getAttributeValue("precision", papszAttrs, "6");

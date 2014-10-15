@@ -40,25 +40,12 @@
 #include "model/CChemEqInterface.h"
 #include "utilities/CCopasiProblem.h"
 
-const unsigned int CEFMTask::ValidMethods[] =
-{
-  CCopasiMethod::EFMAlgorithm,
-#ifdef COPASI_DEBUG
-  CCopasiMethod::EFMBitPatternTreeAlgorithm,
-  CCopasiMethod::EFMBitPatternAlgorithm,
-#endif // COPASI_DEBUG
-#ifdef COPASI_SSA
-  CCopasiMethod::stoichiometricStabilityAnalysis,
-#endif // COPASI_SSA
-  0
-};
-
 CEFMTask::CEFMTask(const CCopasiContainer * pParent,
-                   const CCopasiTask::Type & type):
+                   const CTaskEnum::Task & type):
   CCopasiTask(pParent, type)
 {
   mpProblem = new CEFMProblem(this);
-  mpMethod = CEFMMethod::createMethod();
+  mpMethod = createMethod(CTaskEnum::EFMAlgorithm);
 
   this->add(mpMethod, true);
 }
@@ -68,7 +55,7 @@ CEFMTask::CEFMTask(const CEFMTask & src,
   CCopasiTask(src, pParent)
 {
   mpProblem = new CCopasiProblem(*static_cast< CEFMProblem * >(src.mpProblem), this);
-  mpMethod = CEFMMethod::createMethod(src.mpMethod->getSubType());
+  mpMethod = createMethod(src.mpMethod->getSubType());
 
   this->add(mpMethod, true);
 }
@@ -108,27 +95,26 @@ bool CEFMTask::process(const bool & /* useInitialValues */)
   return static_cast<CEFMMethod *>(mpMethod)->calculate();
 }
 
-bool CEFMTask::setMethodType(const int & type)
-{
-  CCopasiMethod::SubType Type = (CCopasiMethod::SubType) type;
-
-  if (mpMethod->getSubType() == Type) return true;
-
-  pdelete(mpMethod);
-
-  mpMethod = createMethod(Type);
-
-  this->add(mpMethod, true);
-
-  return true;
-}
-
 // virtual
-CCopasiMethod * CEFMTask::createMethod(const int & type) const
+const CTaskEnum::Method * CEFMTask::getValidMethods() const
 {
-  CCopasiMethod::SubType Type = (CCopasiMethod::SubType) type;
+  static const CTaskEnum::Method ValidMethods[] =
+  {
+    CTaskEnum::EFMAlgorithm,
 
-  return CEFMMethod::createMethod(Type);
+#ifdef COPASI_DEBUG
+    CTaskEnum::EFMBitPatternTreeAlgorithm,
+    CTaskEnum::EFMBitPatternAlgorithm,
+#endif // COPASI_DEBUG
+
+#ifdef COPASI_SSA
+    CTaskEnum::stoichiometricStabilityAnalysis,
+#endif // COPASI_SSA
+
+    CTaskEnum::UnsetMethod
+  };
+
+  return ValidMethods;
 }
 
 std::string CEFMTask::getFluxModeDescription(const CFluxMode & fluxMode) const
@@ -146,7 +132,7 @@ std::string CEFMTask::getFluxModeDescription(const CFluxMode & fluxMode) const
 
 #ifdef COPASI_SSA
 
-  if (mpMethod->getSubType() == CCopasiMethod::stoichiometricStabilityAnalysis)
+  if (mpMethod->getSubType() == CTaskEnum::stoichiometricStabilityAnalysis)
     {
       CSSAMethod * method = dynamic_cast<CSSAMethod *>(mpMethod);
 
@@ -196,7 +182,7 @@ std::string CEFMTask::getReactionEquation(const std::map< size_t, C_FLOAT64 >::c
 
 #ifdef COPASI_SSA
 
-  if (mpMethod->getSubType() == CCopasiMethod::stoichiometricStabilityAnalysis)
+  if (mpMethod->getSubType() == CTaskEnum::stoichiometricStabilityAnalysis)
     {
       CSSAMethod * method = static_cast<CSSAMethod *>(mpMethod);
 

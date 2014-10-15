@@ -1,17 +1,14 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodHookeJeeves.h,v $
-   $Revision: 1.7 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2011/03/07 19:31:25 $
-   End CVS Header */
-
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2005 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -29,10 +26,25 @@ class CRandom;
 
 class COptMethodHookeJeeves : public COptMethod
 {
-  friend COptMethod * COptMethod::createMethod(CCopasiMethod::SubType subType);
-
   // Operations
+
+private:
+  /**
+   * Constructor
+   */
+  COptMethodHookeJeeves();
+
 public:
+  /**
+   * Specific constructor
+   * @param const CCopasiContainer * pParent
+   * @param const CTaskEnum::Method & methodType (default: HookeJeeves)
+   * @param const CTaskEnum::Task & taskType (default: optimization)
+   */
+  COptMethodHookeJeeves(const CCopasiContainer * pParent,
+                        const CTaskEnum::Method & methodType = CTaskEnum::HookeJeeves,
+                        const CTaskEnum::Task & taskType = CTaskEnum::optimization);
+
   /**
    * Copy Constructor
    * @param const COptMethodHookeJeeves & src

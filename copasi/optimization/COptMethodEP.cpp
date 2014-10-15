@@ -25,8 +25,10 @@
 #include "report/CCopasiObjectReference.h"
 #include "utilities/CSort.h"
 
-COptMethodEP::COptMethodEP(const CCopasiContainer * pParent):
-  COptMethod(CCopasiTask::optimization, CCopasiMethod::EvolutionaryProgram, pParent),
+COptMethodEP::COptMethodEP(const CCopasiContainer * pParent,
+                           const CTaskEnum::Method & methodType,
+                           const CTaskEnum::Task & taskType):
+  COptMethod(pParent, methodType, taskType),
   mGenerations(0),
   mGeneration(0),
   mPopulationSize(0),

@@ -38,7 +38,7 @@ CReportDefinition::CReportDefinition(const std::string & name,
   CCopasiObject(name, pParent, "ReportDefinition"),
   mKey(CCopasiRootContainer::getKeyFactory()->add("Report", this)),
   mComment(""),
-  mTaskType(CCopasiTask::timeCourse),
+  mTaskType(CTaskEnum::timeCourse),
   mSeparator("\t"),
   mTable(true),
   mbTitle(true),
@@ -113,10 +113,10 @@ std::vector<CRegisteredObjectName>* CReportDefinition::getFooterAddr()
 std::vector<CRegisteredObjectName>* CReportDefinition::getTableAddr()
 {return &mTableVector;}
 
-bool CReportDefinition::setTaskType(const CCopasiTask::Type & taskType)
+bool CReportDefinition::setTaskType(const CTaskEnum::Task & taskType)
 {mTaskType = taskType; return true;}
 
-const CCopasiTask::Type & CReportDefinition::getTaskType() const
+const CTaskEnum::Task & CReportDefinition::getTaskType() const
 {return mTaskType;}
 
 void CReportDefinition::setSeparator(const CCopasiReportSeparator & Separator)

@@ -36,63 +36,20 @@
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "copasi/report/CCopasiRootContainer.h"
 
-const std::string CCopasiTask::TypeName[] =
-{
-  "Steady-State",
-  "Time-Course",
-  "Scan",
-  "Elementary Flux Modes",
-  "Optimization",
-  "Parameter Estimation",
-  "Metabolic Control Analysis",
-  "Lyapunov Exponents",
-  "Time Scale Separation Analysis",
-  "Sensitivities",
-  "Moieties",
-  "Cross Section",
-  "Linear Noise Approximation",
-  "not specified",
-  ""
-};
-
-const char* CCopasiTask::XMLType[] =
-{
-  "steadyState",
-  "timeCourse",
-  "scan",
-  "fluxMode",
-  "optimization",
-  "parameterFitting",
-  "metabolicControlAnalysis",
-  "lyapunovExponents",
-  "timeScaleSeparationAnalysis",
-  "sensitivities",
-  "moieties",
-  "crosssection",
-  "linearNoiseApproximation",
-  "unset",
-  NULL
-};
-
-const unsigned int CCopasiTask::ValidMethods[] =
-{
-  CCopasiMethod::unset
-};
-
-bool CCopasiTask::isValidMethod(const unsigned int & method,
-                                const unsigned int * validMethods)
+bool CCopasiTask::isValidMethod(const CTaskEnum::Method & method,
+                                const CTaskEnum::Method * validMethods)
 {
   unsigned C_INT32 i;
 
-  for (i = 0; validMethods[i] != CCopasiMethod::unset; i++)
+  for (i = 0; validMethods[i] != CTaskEnum::UnsetMethod; i++)
     if (method == validMethods[i]) return true;
 
   return false;
 }
 
 CCopasiTask::CCopasiTask():
-  CCopasiContainer(CCopasiTask::TypeName[CCopasiTask::unset], NULL, "Task"),
-  mType(CCopasiTask::unset),
+  CCopasiContainer(CTaskEnum::TaskName[CTaskEnum::UnsetTask], NULL, "Task"),
+  mType(CTaskEnum::UnsetTask),
   mKey(CCopasiRootContainer::getKeyFactory()->add("Task", this)),
   mDescription(this),
   mResult(this),
@@ -111,9 +68,9 @@ CCopasiTask::CCopasiTask():
 {initObjects();}
 
 CCopasiTask::CCopasiTask(const CCopasiContainer * pParent,
-                         const CCopasiTask::Type & taskType,
+                         const CTaskEnum::Task & taskType,
                          const std::string & type):
-  CCopasiContainer(CCopasiTask::TypeName[taskType], pParent, type),
+  CCopasiContainer(CTaskEnum::TaskName[taskType], pParent, type),
   mType(taskType),
   mKey(CCopasiRootContainer::getKeyFactory()->add("Task", this)),
   mDescription(this),
@@ -167,9 +124,9 @@ CCopasiTask::~CCopasiTask()
 //bool CCopasiTask::setName(const std::string & name)
 //{return setObjectName(name);}
 
-CCopasiTask::Type CCopasiTask::getType() const {return mType;}
+CTaskEnum::Task CCopasiTask::getType() const {return mType;}
 
-void CCopasiTask::setType(const CCopasiTask::Type & type) {mType = type;}
+void CCopasiTask::setType(const CTaskEnum::Task & type) {mType = type;}
 
 const std::string & CCopasiTask::getKey() const {return mKey;}
 
@@ -314,20 +271,50 @@ bool CCopasiTask::restore()
   return true;
 }
 
+// virtual
+const CTaskEnum::Method * CCopasiTask::getValidMethods() const
+{
+  static const CTaskEnum::Method ValidMethods[] =
+  {
+    CTaskEnum::UnsetMethod
+  };
+
+  return ValidMethods;
+}
+
 CCopasiProblem * CCopasiTask::getProblem() {return mpProblem;}
 
 const CCopasiProblem * CCopasiTask::getProblem() const {return mpProblem;}
 
 // virtual
-bool CCopasiTask::setMethodType(const int & C_UNUSED(type))
+bool CCopasiTask::setMethodType(const int & type)
 {
-  return false;
+  CTaskEnum::Method Type = (CTaskEnum::Method) type;
+
+  if (!isValidMethod(Type, getValidMethods())) return false;
+
+  if (mpMethod->getSubType() == Type) return true;
+
+  pdelete(mpMethod);
+  mpMethod = createMethod(Type);
+
+  signalMethodChanged();
+
+  return true;
 }
 
 // virtual
-CCopasiMethod * CCopasiTask::createMethod(const int & /* type */) const
+void CCopasiTask::signalMethodChanged()
+{}
+
+CCopasiMethod * CCopasiTask::createMethod(const CTaskEnum::Method & type) const
 {
-  return NULL;
+  CCopasiMethod * pMethod = CCopasiMethod::createMethod(this, type, mType);
+  const_cast< CCopasiTask * >(this)->add(pMethod, true);
+
+  pMethod->setMathContainer(mpContainer);
+
+  return pMethod;
 }
 
 CCopasiMethod * CCopasiTask::getMethod() {return mpMethod;}

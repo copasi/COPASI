@@ -46,10 +46,10 @@ private:
 protected:
   /**
    * Specific constructor
-   * @param const CCopasiTask::Type & type
+   * @param const CTaskEnum::Task & type
    * @param const CCopasiContainer * pParent (default: NULL)
    */
-  CCopasiProblem(const CCopasiTask::Type & type,
+  CCopasiProblem(const CTaskEnum::Task & type,
                  const CCopasiContainer * pParent = NULL);
 
 public:
@@ -70,7 +70,7 @@ public:
    * Retrieve the type of the problem
    * @return  const string & type
    */
-  const CCopasiTask::Type & getType() const;
+  const CTaskEnum::Task & getType() const;
 
   /**
    * Set the model of the problem
@@ -155,7 +155,7 @@ private:
   /**
    * The type of the problem
    */
-  CCopasiTask::Type mType;
+  CTaskEnum::Task mType;
 
 protected:
   /**

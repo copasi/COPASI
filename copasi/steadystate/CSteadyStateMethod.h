@@ -99,27 +99,28 @@ private:
 
 protected:
   /**
+   * Specific constructor
+   * @param const CCopasiContainer * pParent
+   * @param const CTaskEnum::Method & methodType
+   * @param const CTaskEnum::Task & taskType (default: steadyState)
+   */
+  CSteadyStateMethod(const CCopasiContainer * pParent,
+                     const CTaskEnum::Method & methodType,
+                     const CTaskEnum::Task & taskType = CTaskEnum::steadyState);
+  /**
    * Specific constructor.
-   * @param CCopasiMethod::SubType subType
+   * @param CTaskEnum::Method subType
    * @param const CCopasiContainer * pParent (default: NULL)
    */
-  CSteadyStateMethod(CCopasiMethod::SubType subType,
+  CSteadyStateMethod(CTaskEnum::Method subType,
                      const CCopasiContainer * pParent = NULL);
 
   /**
-   * initialize parameters and handle parameters of old copasi files
+   * initialize parameters and handle parameters of old COPASI files
    */
   void initializeParameter();
 
 public:
-  /**
-   * Create a trajectory method.
-   * Note: the returned object has to be released after use with delete
-   */
-  static CSteadyStateMethod *
-  createMethod(CCopasiMethod::SubType subType
-               = CCopasiMethod::Newton);
-
   /**
    * Copy constructor.
    * @param "const CSteadyStateMethod &" src

@@ -27,8 +27,10 @@
 #include "parameterFitting/CFitProblem.h"
 #include "report/CCopasiObjectReference.h"
 
-COptMethodNelderMead::COptMethodNelderMead(const CCopasiContainer * pParent):
-  COptMethod(CCopasiTask::optimization, CCopasiMethod::NelderMead, pParent)
+COptMethodNelderMead::COptMethodNelderMead(const CCopasiContainer * pParent,
+    const CTaskEnum::Method & methodType,
+    const CTaskEnum::Task & taskType):
+  COptMethod(pParent, methodType, taskType)
 {
   addParameter("Iteration Limit", CCopasiParameter::UINT, (unsigned C_INT32) 200);
   addParameter("Tolerance", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.e-005);

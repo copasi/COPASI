@@ -31,17 +31,13 @@
 //TODO: put all matrix resizing and annotations creation in one place, so
 // that it has to be done only once if several MCA are calculated (e.g. in a scan)
 
-// static
-CMCAMethod * CMCAMethod::createMethod(CCopasiMethod::SubType /* subType */)
-{
-  return new CMCAMethod();
-}
-
 /**
  * Default constructor
  */
-CMCAMethod::CMCAMethod(const CCopasiContainer* pParent):
-  CCopasiMethod(CCopasiTask::mca, CCopasiMethod::mcaMethodReder, pParent),
+CMCAMethod::CMCAMethod(const CCopasiContainer * pParent,
+                       const CTaskEnum::Method & methodType,
+                       const CTaskEnum::Task & taskType):
+  CCopasiMethod(pParent, methodType, taskType),
   mpModel(NULL),
   mFactor(1.0e-9),
   mSteadyStateResolution(1.0e-9),

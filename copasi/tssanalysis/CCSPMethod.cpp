@@ -33,13 +33,14 @@
 #include "lapack/lapackwrap.h"        // CLAPACK
 #include "lapack/blaswrap.h"           // BLAS
 
-CCSPMethod::CCSPMethod(const CCopasiContainer * pParent):
-  CTSSAMethod(CCopasiMethod::tssCSP, pParent)
+CCSPMethod::CCSPMethod(const CCopasiContainer * pParent,
+                       const CTaskEnum::Method & methodType,
+                       const CTaskEnum::Task & taskType):
+  CTSSAMethod(pParent, methodType, taskType)
 {
   initializeParameter();
 
   createAnnotationsM();
-  //emptyVectors();
 }
 
 CCSPMethod::CCSPMethod(const CCSPMethod & src,

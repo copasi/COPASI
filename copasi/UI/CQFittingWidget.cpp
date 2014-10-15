@@ -30,7 +30,7 @@
 #include "report/CKeyFactory.h"
 #include "parameterFitting/CFitTask.h"
 #include "parameterFitting/CFitItem.h"
-#include "parameterFitting/CFitMethod.h"
+#include "optimization/COptMethod.h"
 #include "parameterFitting/CFitProblem.h"
 #include "parameterFitting/CExperimentSet.h"
 #include "parameterFitting/CExperiment.h"
@@ -285,9 +285,6 @@ bool CQFittingWidget::loadTask()
 
   return true;
 }
-
-CCopasiMethod * CQFittingWidget::createMethod(const CCopasiMethod::SubType & type)
-{return CFitMethod::createMethod(type);}
 
 bool CQFittingWidget::runTask()
 {

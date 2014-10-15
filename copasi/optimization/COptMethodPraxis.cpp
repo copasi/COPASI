@@ -22,8 +22,10 @@
 #include "parameterFitting/CFitProblem.h"
 #include "report/CCopasiObjectReference.h"
 
-COptMethodPraxis::COptMethodPraxis(const CCopasiContainer * pParent):
-  COptMethod(CCopasiTask::optimization, CCopasiMethod::Praxis, pParent),
+COptMethodPraxis::COptMethodPraxis(const CCopasiContainer * pParent,
+                                   const CTaskEnum::Method & methodType,
+                                   const CTaskEnum::Task & taskType):
+  COptMethod(pParent, methodType, taskType),
   mpPraxis(new FPraxisTemplate<COptMethodPraxis>(this, &COptMethodPraxis::evaluateFunction)),
   mpCPraxis(new CPraxis())
 {

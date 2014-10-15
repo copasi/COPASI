@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -65,8 +65,8 @@
 #include "parameterFitting/CExperimentObjectMap.h"
 #include "parameterFitting/CExperimentSet.h"
 #include "parameterFitting/CFitItem.h"
-#include "parameterFitting/CFitMethod.h"
-#include "parameterFitting/CFitMethod.h"
+#include "optimization/COptMethod.h"
+#include "optimization/COptMethod.h"
 #include "parameterFitting/CFitProblem.h"
 #include "parameterFitting/CFitTask.h"
 

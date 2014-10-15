@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -78,7 +78,7 @@ void CQCrossSectionTaskWidget::init()
   mpGridLayout->addWidget(mpMethodWidget->mpLblParameter, 11, 0, 1, 1);
   mpGridLayout->addWidget(mpMethodWidget->mpTableParameter, 11, 1, 1, 2);
 
-  // unsigned int ValidMethods = CCopasiMethod::unset;
+  // unsigned int ValidMethods = CTaskEnum::unset;
   // mpMethodWidget->setValidMethods(&ValidMethods);
   // mpMethodWidget->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
 
@@ -331,11 +331,6 @@ bool CQCrossSectionTaskWidget::loadTask()
   mpValidatorOutTime->saved();
 
   return true;
-}
-
-CCopasiMethod * CQCrossSectionTaskWidget::createMethod(const CCopasiMethod::SubType & /* type */)
-{
-  return NULL;
 }
 
 void CQCrossSectionTaskWidget::slotChooseVariable()

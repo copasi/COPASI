@@ -47,7 +47,6 @@ protected:
 
   virtual bool saveTask();
   virtual bool loadTask();
-  virtual CCopasiMethod * createMethod(const CCopasiMethod::SubType & type);
   virtual bool taskFinishedEvent();
 
 protected slots:

@@ -71,18 +71,10 @@ void CEFMAlgorithm::CSpeciesOrderNode::update(const CTableauMatrix & matrix)
     }
 }
 
-CEFMAlgorithm::CEFMAlgorithm(const CCopasiContainer * pParent):
-  CEFMMethod(CCopasiTask::fluxMode, CCopasiMethod::EFMAlgorithm, pParent),
-  mpModel(NULL),
-  mStoi(),
-  mReversible(0),
-  mpCurrentTableau(NULL),
-  mpNextTableau(NULL),
-  mIndexSet()
-{initObjects();}
-
-CEFMAlgorithm::CEFMAlgorithm(const CCopasiMethod::SubType subType, const CCopasiContainer * pParent):
-  CEFMMethod(CCopasiTask::fluxMode, subType, pParent),
+CEFMAlgorithm::CEFMAlgorithm(const CCopasiContainer * pParent,
+                             const CTaskEnum::Method & methodType,
+                             const CTaskEnum::Task & taskType):
+  CEFMMethod(pParent, methodType, taskType),
   mpModel(NULL),
   mStoi(),
   mReversible(0),

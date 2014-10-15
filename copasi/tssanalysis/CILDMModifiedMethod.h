@@ -28,18 +28,24 @@ class CState;
 
 class CILDMModifiedMethod : public CTSSAMethod
 {
-  friend CTSSAMethod *
-  CTSSAMethod::createMethod(CCopasiMethod::SubType subType);
-
   // Operations
 private:
   /**
    * Default constructor.
-   * @param const CCopasiContainer * pParent (default: NULL)
    */
-  CILDMModifiedMethod(const CCopasiContainer * pParent = NULL);
+  CILDMModifiedMethod();
 
 public:
+  /**
+   * Specific constructor
+   * @param const CCopasiContainer * pParent
+   * @param const CTaskEnum::Method & methodType (default: tssILDMModified)
+   * @param const CTaskEnum::Task & taskType (default: tssAnalysis)
+   */
+  CILDMModifiedMethod(const CCopasiContainer * pParent,
+                      const CTaskEnum::Method & methodType = CTaskEnum::tssILDMModified,
+                      const CTaskEnum::Task & taskType = CTaskEnum::tssAnalysis);
+
   /**
    * Copy constructor.
    * @param "const CILDMMethod &" src

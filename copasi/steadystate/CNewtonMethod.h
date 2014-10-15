@@ -30,9 +30,6 @@ class CTrajectoryTask;
 
 class CNewtonMethod : public CSteadyStateMethod
 {
-  friend CSteadyStateMethod *
-  CSteadyStateMethod::createMethod(CCopasiMethod::SubType subType);
-
   // Attributes
 private:
   enum NewtonResultCode
@@ -76,16 +73,25 @@ private:
 private:
   /**
    * Default constructor.
-   * @param const CCopasiContainer * pParent (default: NULL)
    */
-  CNewtonMethod(const CCopasiContainer * pParent = NULL);
+  CNewtonMethod();
 
 public:
   /**
-   * Copy constructor.
-   * @param "const CNewtonMethod &" src
-   * @param const CCopasiContainer * pParent (default: NULL)
+   * Specific constructor
+   * @param const CCopasiContainer * pParent
+   * @param const CTaskEnum::Method & methodType (default: Newton)
+   * @param const CTaskEnum::Task & taskType (default: steadyState)
    */
+  CNewtonMethod(const CCopasiContainer * pParent,
+                const CTaskEnum::Method & methodType = CTaskEnum::Newton,
+                const CTaskEnum::Task & taskType = CTaskEnum::steadyState);
+
+  /**
+  * Copy constructor.
+  * @param "const CNewtonMethod &" src
+  * @param const CCopasiContainer * pParent (default: NULL)
+  */
   CNewtonMethod(const CNewtonMethod & src,
                 const CCopasiContainer * pParent = NULL);
 

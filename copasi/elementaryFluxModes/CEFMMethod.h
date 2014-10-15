@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -17,10 +17,11 @@
 
 #include <string>
 
-#include "elementaryFluxModes/CFluxMode.h"
+#include "copasi/utilities/CCopasiMethod.h"
+#include "copasi/elementaryFluxModes/CFluxMode.h"
 
-#include "utilities/CCopasiMethod.h"
-#include "utilities/CVector.h"
+#include "copasi/utilities/CCopasiMethod.h"
+#include "copasi/utilities/CVector.h"
 
 class CEFMMethod : public CCopasiMethod
 {
@@ -31,24 +32,16 @@ private:
    */
   CEFMMethod();
 
-protected:
-  /**
-   * Specific constructor
-   * @param const CCopasiTask::Type & type
-   * @param const CCopasiMethod::SubType & subType
-   * @param const CCopasiContainer * pParent (default: NULL)
-   */
-  CEFMMethod(const CCopasiTask::Type & taskType,
-             const SubType & subType,
-             const CCopasiContainer * pParent = NULL);
-
 public:
   /**
-   * Create a EFM method.
-   * Note: the returned object has to be released after use with delete
+   * Specific constructor
+   * @param const CCopasiContainer * pParent
+   * @param const CTaskEnum::Method & methodType
+   * @param const CTaskEnum::Task & taskType (default: fluxMode)
    */
-  static CEFMMethod * createMethod(CCopasiMethod::SubType subType
-                                   = CCopasiMethod::EFMAlgorithm);
+  CEFMMethod(const CCopasiContainer * pParent,
+             const CTaskEnum::Method & methodType,
+             const CTaskEnum::Task & taskType = CTaskEnum::fluxMode);
 
   /**
    * Copy constructor

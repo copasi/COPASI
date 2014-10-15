@@ -1,17 +1,14 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodStatistics.h,v $
-   $Revision: 1.2 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2011/03/07 19:31:26 $
-   End CVS Header */
-
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2006 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -37,8 +34,6 @@ class COptMethod;
 /** @dia:route COptMethod; v,46.9608,16.35,33,59.1652,34.05 */
 class COptMethodStatistics : public COptMethod
 {
-  friend COptMethod * COptMethod::createMethod(CCopasiMethod::SubType subType);
-
   // Operations
 private:
   /**
@@ -81,10 +76,22 @@ private:
 
 public:
   /**
-   * Copy Constructor
-   * @param const COptMethodStatistics & src
+   * Specific constructor
+   * @param const CCopasiContainer * pParent
+   * @param const CTaskEnum::Method & methodType (default: Statistics)
+   * @param const CTaskEnum::Task & taskType (default: optimization)
    */
-  COptMethodStatistics(const COptMethodStatistics & src);
+  COptMethodStatistics(const CCopasiContainer * pParent,
+                       const CTaskEnum::Method & methodType = CTaskEnum::Statistics,
+                       const CTaskEnum::Task & taskType = CTaskEnum::optimization);
+
+  /**
+   * Copy Constructor
+   * @param const COptMethodDE & src
+   * @param const CCopasiContainer * pParent (default: NULL)
+   */
+  COptMethodStatistics(const COptMethodStatistics & src,
+                       const CCopasiContainer * pParent = NULL);
 
   /**
    * Destructor

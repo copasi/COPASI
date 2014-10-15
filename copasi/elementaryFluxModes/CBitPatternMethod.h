@@ -9,9 +9,9 @@
 #include <vector>
 #include <stack>
 
-#include "copasi/elementaryFluxModes/CEFMMethod.h"
-#include "copasi/elementaryFluxModes/CStepMatrix.h"
-#include "copasi/utilities/CMatrix.h"
+#include "CEFMMethod.h"
+#include "CStepMatrix.h"
+#include "utilities/CMatrix.h"
 
 class CStepMatrix;
 class CStepMatrixColumn;
@@ -20,8 +20,6 @@ class CZeroSet;
 
 class CBitPatternMethod: public CEFMMethod
 {
-  friend CEFMMethod * CEFMMethod::createMethod(CCopasiMethod::SubType subType);
-
 public:
   /**
    * A static method that calculates the kernel of a full column rank matrix.
@@ -68,22 +66,23 @@ public:
       }
   }
 
-protected:
+private:
   /**
-   * Default constructor
-   * @param const CCopasiContainer * pParent (Default: NULL)
+   * Default constructor.
    */
-  CBitPatternMethod(const CCopasiContainer * pParent = NULL);
-
-  /**
-   * Constructor to be called by derived methods
-   * @param const CCopasiMethod::SubType subType
-   * @param const CCopasiContainer * pParent (Default: NULL)
-   */
-  CBitPatternMethod(const CCopasiMethod::SubType subType,
-                    const CCopasiContainer * pParent = NULL);
+  CBitPatternMethod();
 
 public:
+  /**
+   * Specific constructor
+   * @param const CCopasiContainer * pParent
+   * @param const CTaskEnum::Method & methodType (default: EFMBitPatternAlgorithm)
+   * @param const CTaskEnum::Task & taskType (default: fluxMode)
+   */
+  CBitPatternMethod(const CCopasiContainer * pParent,
+                    const CTaskEnum::Method & methodType = CTaskEnum::EFMBitPatternAlgorithm,
+                    const CTaskEnum::Task & taskType = CTaskEnum::fluxMode);
+
   /**
    * Copy Constructor
    * @param const CBitPatternMethod & src

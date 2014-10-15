@@ -24,14 +24,17 @@
 #include "report/CCopasiObjectReference.h"
 #include "randomGenerator/CRandom.h"
 
-COptMethodStatistics::COptMethodStatistics():
-  COptMethod(CCopasiTask::optimization, CCopasiMethod::Statistics)
+COptMethodStatistics::COptMethodStatistics(const CCopasiContainer * pParent,
+    const CTaskEnum::Method & methodType,
+    const CTaskEnum::Task & taskType):
+  COptMethod(pParent, methodType, taskType)
 {
   initObjects();
 }
 
-COptMethodStatistics::COptMethodStatistics(const COptMethodStatistics & src):
-  COptMethod(src)
+COptMethodStatistics::COptMethodStatistics(const COptMethodStatistics & src,
+    const CCopasiContainer * pParent):
+  COptMethod(src, pParent)
 {initObjects();}
 
 /**

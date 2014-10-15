@@ -29,31 +29,13 @@
 #include "math/CMathContainer.h"
 #include "utilities/CProcessReport.h"
 
-CSensMethod *
-CSensMethod::createMethod(CCopasiMethod::SubType subType)
-{
-  CSensMethod * pMethod = NULL;
-
-  switch (subType)
-    {
-      case unset:
-      case sensMethod:
-        pMethod = new CSensMethod(subType);
-        break;
-
-      default:
-        fatalError();
-    }
-
-  return pMethod;
-}
-
 /**
  *  Default constructor.
  */
-CSensMethod::CSensMethod(CCopasiMethod::SubType subType,
-                         const CCopasiContainer * pParent):
-  CCopasiMethod(CCopasiTask::sens, subType, pParent),
+CSensMethod::CSensMethod(const CCopasiContainer * pParent,
+                         const CTaskEnum::Method & methodType,
+                         const CTaskEnum::Task & taskType):
+  CCopasiMethod(pParent, methodType, taskType),
   mpProblem(NULL),
   mLocalData(),
   mTargetValuePointers(),

@@ -35,8 +35,6 @@ class CTableauMatrix;
 
 class CEFMAlgorithm: public CEFMMethod
 {
-  friend CEFMMethod * CEFMMethod::createMethod(CCopasiMethod::SubType subType);
-
 private:
   class CSpeciesOrderNode : public CCopasiNode< size_t >
   {
@@ -57,22 +55,22 @@ private:
     std::vector< size_t > mTableauLines;
   };
 
-protected:
   /**
-   * Default constructor
-   * @param const CCopasiContainer * pParent (Default: NULL)
+   * Default constructor.
    */
-  CEFMAlgorithm(const CCopasiContainer * pParent = NULL);
-
-  /**
-   * Constructor to be called by derived methods
-   * @param const CCopasiMethod::SubType subType
-   * @param const CCopasiContainer * pParent (Default: NULL)
-   */
-  CEFMAlgorithm(const CCopasiMethod::SubType subType,
-                const CCopasiContainer * pParent = NULL);
+  CEFMAlgorithm();
 
 public:
+  /**
+   * Specific constructor
+   * @param const CCopasiContainer * pParent
+   * @param const CTaskEnum::Method & methodType (default: EFMAlgorithm)
+   * @param const CTaskEnum::Task & taskType (default: fluxMode)
+   */
+  CEFMAlgorithm(const CCopasiContainer * pParent,
+                const CTaskEnum::Method & methodType = CTaskEnum::EFMAlgorithm,
+                const CTaskEnum::Task & taskType = CTaskEnum::fluxMode);
+
   /**
    * Copy Constructor
    * @param const CEFMAlgorithm & src

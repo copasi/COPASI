@@ -194,32 +194,20 @@ protected:
   // Operations
 private:
   /**
-   * Default constructor.
+   * Default constructor
    */
   CScanMethod();
 
-protected:
-  /**
-   * Specific constructor.
-   * @param CCopasiMethod::SubType subType
-   * @param const CCopasiContainer * pParent (default: NULL)
-   */
-  CScanMethod(CCopasiMethod::SubType subType,
-              const CCopasiContainer * pParent = NULL);
-
 public:
   /**
-   * Create a trajectory method.
-   * Note: the returned object has to be released after use with delete
+   * Specific constructor
+   * @param const CCopasiContainer * pParent
+   * @param const CTaskEnum::Method & methodType (default: scanMethod)
+   * @param const CTaskEnum::Task & taskType (default: scan)
    */
-  static CScanMethod * createMethod(CCopasiMethod::SubType subType = CCopasiMethod::scanMethod);
-
-  /**
-   *  Copy constructor.
-   *  @param "const CTrajectoryMethod &" src
-   */
-  //CScanMethod(const CScanMethod & src,
-  //            const CCopasiContainer * pParent = NULL);
+  CScanMethod(const CCopasiContainer * pParent,
+              const CTaskEnum::Method & methodType = CTaskEnum::scanMethod,
+              const CTaskEnum::Task & taskType = CTaskEnum::scan);
 
   /**
    *  Destructor.

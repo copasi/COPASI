@@ -27,9 +27,6 @@ class CModel;
 
 class CLsodaMethod : public CTrajectoryMethod
 {
-  friend CTrajectoryMethod *
-  CTrajectoryMethod::createMethod(CCopasiMethod::SubType subType);
-
 public:
   struct Data
   {
@@ -188,18 +185,23 @@ private:
   bool mPeekAheadMode;
 
   // Operations
-protected:
+private:
   /**
-   * Default constructor.
-   * @param const CCopasiTask::Type & type
-   * @param const CCopasiMethod::SubType & subType (default: deterministic)
-   * @param const CCopasiContainer * pParent (default: NULL)
+   * Constructor.
    */
-  CLsodaMethod(const CCopasiTask::Type & type = CCopasiTask::timeCourse,
-               const CCopasiMethod::SubType & subType = deterministic,
-               const CCopasiContainer * pParent = NULL);
+  CLsodaMethod();
 
 public:
+  /**
+   * Specific constructor
+   * @param const CCopasiContainer * pParent
+   * @param const CTaskEnum::Method & methodType (default: deterministic)
+   * @param const CTaskEnum::Task & taskType (default: timeCourse)
+   */
+  CLsodaMethod(const CCopasiContainer * pParent,
+               const CTaskEnum::Method & methodType = CTaskEnum::deterministic,
+               const CTaskEnum::Task & taskType = CTaskEnum::timeCourse);
+
   /**
    * Copy constructor.
    * @param "const CLsodaMethod &" src

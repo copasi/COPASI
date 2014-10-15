@@ -24,8 +24,10 @@
 #define NS 5
 #define K 1.0
 
-COptMethodCoranaWalk::COptMethodCoranaWalk(const CCopasiContainer * pParent):
-  COptMethod(CCopasiTask::optimization, CCopasiMethod::CoranaWalk, pParent)
+COptMethodCoranaWalk::COptMethodCoranaWalk(const CCopasiContainer * pParent,
+    const CTaskEnum::Method & methodType,
+    const CTaskEnum::Task & taskType):
+  COptMethod(pParent, methodType, taskType)
 {
   addParameter("Temperature", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0);
   addParameter("Iterations", CCopasiParameter::UINT, (unsigned C_INT32) 100);

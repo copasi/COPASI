@@ -35,69 +35,6 @@ class CMathContainer;
 class CCopasiMethod : public CCopasiParameterGroup
 {
 public:
-  /**
-   * Enumeration of the sub types of methods known to COPASI.
-   */
-  enum SubType
-  {
-    unset = 0,
-    RandomSearch,
-    RandomSearchMaster,
-    SimulatedAnnealing,
-    CoranaWalk,
-    DifferentialEvolution,
-    ScatterSearch,
-    GeneticAlgorithm,
-    EvolutionaryProgram,
-    SteepestDescent,
-    HybridGASA,
-    GeneticAlgorithmSR,
-    HookeJeeves,
-    LevenbergMarquardt,
-    NelderMead,
-    SRES,
-    Statistics,
-    ParticleSwarm,
-    Praxis,
-    TruncatedNewton,
-    Newton,
-    deterministic,
-    LSODAR,
-    directMethod,
-    stochastic,
-    tauLeap,
-    adaptiveSA,
-    hybridODE45,
-    DsaLsodar,
-    tssILDM,
-    tssILDMModified,
-    tssCSP,
-    mcaMethodReder,
-    scanMethod,
-    lyapWolf,
-    sensMethod,
-#ifdef COPASI_SSA
-    stoichiometricStabilityAnalysis,
-#endif // COPASI_SSA
-    EFMAlgorithm,
-    EFMBitPatternTreeAlgorithm,
-    EFMBitPatternAlgorithm,
-    Householder,
-    crossSectionMethod,
-    linearNoiseApproximation
-  };
-
-  /**
-   * String literals for the GUI to display sub type names of methods known
-   * to COPASI.
-   */
-  static const std::string SubTypeName[];
-
-  /**
-   * XML sub type names of methods known to COPASI.
-   */
-  static const char* XMLSubType[];
-
 private:
   /**
    * Default constructor
@@ -107,15 +44,25 @@ private:
 protected:
   /**
    * Specific constructor
-   * @param const CCopasiTask::Type & type
-   * @param const CCopasiMethod::SubType & subType
-   * @param const CCopasiContainer * pParent (default: NULL)
+   * @param const CCopasiContainer * pParent
+   * @param const CTaskEnum::Method & methodType
+   * @param const CTaskEnum::Task & taskType
    */
-  CCopasiMethod(const CCopasiTask::Type & taskType,
-                const SubType & subType,
-                const CCopasiContainer * pParent = NULL);
+  CCopasiMethod(const CCopasiContainer * pParent,
+                const CTaskEnum::Method & methodType,
+                const CTaskEnum::Task & taskType);
 
 public:
+  /**
+   * Convenience method to create and actual instance
+   * @param const CCopasiContainer * pParent
+   * @param const CTaskEnum::Method & methodType
+   * @param const CTaskEnum::Task & taskType
+   */
+  static CCopasiMethod * createMethod(const CCopasiContainer * pParent,
+                                      const CTaskEnum::Method & methodType,
+                                      const CTaskEnum::Task & taskType);
+
   /**
    * Copy constructor
    * @param const CCopasiMethodr & src
@@ -152,13 +99,13 @@ public:
    * Retrieve the type of the method
    * @return  const string & type
    */
-  const CCopasiTask::Type & getType() const;
+  const CTaskEnum::Task & getType() const;
 
   /**
    * Retrieve the sub type of the method
-   * @return CCopasiMethod::SubType & subType
+   * @return CTaskEnum::Method & subType
    */
-  const CCopasiMethod::SubType & getSubType() const;
+  const CTaskEnum::Method & getSubType() const;
 
   /**
    * Check if the method is suitable for this problem
@@ -211,12 +158,12 @@ private:
   /**
    * The type of the method
    */
-  CCopasiTask::Type mType;
+  CTaskEnum::Task mTaskType;
 
   /**
    * The type of the method
    */
-  CCopasiMethod::SubType mSubType;
+  CTaskEnum::Method mSubType;
 
 protected:
   /**

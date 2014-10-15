@@ -29,7 +29,7 @@
  *  @param "CModel *" pModel
  */
 CScanProblem::CScanProblem(const CCopasiContainer * pParent):
-  CCopasiProblem(CCopasiTask::scan, pParent),
+  CCopasiProblem(CTaskEnum::scan, pParent),
   mpScanItems(NULL)
 {
   initializeParameter();
@@ -55,7 +55,7 @@ CScanProblem::~CScanProblem()
 
 void CScanProblem::initializeParameter()
 {
-  addParameter("Subtask", CCopasiParameter::UINT, (unsigned C_INT32) CCopasiTask::timeCourse);
+  addParameter("Subtask", CCopasiParameter::UINT, (unsigned C_INT32) CTaskEnum::timeCourse);
 
   addGroup("ScanItems");
   mpScanItems = dynamic_cast<CCopasiParameterGroup*>(getParameter("ScanItems"));
@@ -66,13 +66,13 @@ void CScanProblem::initializeParameter()
 
 //***********************************
 
-void CScanProblem::setSubtask(CCopasiTask::Type type)
+void CScanProblem::setSubtask(CTaskEnum::Task type)
 {
   setValue("Subtask", (unsigned C_INT32)type);
 }
 
-CCopasiTask::Type CScanProblem::getSubtask() const
-{return *(CCopasiTask::Type *) getValue("Subtask").pUINT;}
+CTaskEnum::Task CScanProblem::getSubtask() const
+{return *(CTaskEnum::Task *) getValue("Subtask").pUINT;}
 
 //************************************
 

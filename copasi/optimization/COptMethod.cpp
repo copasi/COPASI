@@ -29,128 +29,17 @@
 #include "COptMethod.h"
 #include "COptProblem.h"
 
-#include "CRandomSearch.h"
-#include "COptMethodDE.h"
-#include "COptMethodSS.h"
-#include "COptMethodGA.h"
-#include "COptMethodGASR.h"
-#include "COptMethodHookeJeeves.h"
-#include "COptMethodLevenbergMarquardt.h"
-#include "COptMethodNelderMead.h"
-#include "COptMethodPS.h"
-#include "COptMethodSA.h"
-#include "COptMethodCoranaWalk.h"
-#include "COptMethodSRES.h"
-#include "COptMethodStatistics.h"
-#include "COptMethodSteepestDescent.h"
-#include "COptMethodEP.h"
-#include "COptMethodPraxis.h"
-#include "COptMethodTruncatedNewton.h"
-
-COptMethod * COptMethod::createMethod(CCopasiMethod::SubType subType)
-{
-  COptMethod * pMethod = NULL;
-
-  switch (subType)
-    {
-      case DifferentialEvolution:
-        pMethod = new COptMethodDE();
-        break;
-
-      case ScatterSearch:
-        pMethod = new COptMethodSS();
-        break;
-
-      case EvolutionaryProgram:
-        pMethod = new COptMethodEP();
-        break;
-
-      case GeneticAlgorithm:
-        pMethod = new COptMethodGA();
-        break;
-
-      case GeneticAlgorithmSR:
-        pMethod = new COptMethodGASR();
-        break;
-
-      case HookeJeeves:
-        pMethod = new COptMethodHookeJeeves();
-        break;
-
-      case LevenbergMarquardt:
-        pMethod = new COptMethodLevenbergMarquardt();
-        break;
-
-      case NelderMead:
-        pMethod = new COptMethodNelderMead();
-        break;
-
-      case RandomSearch:
-        pMethod = new CRandomSearch();
-        break;
-
-      case SimulatedAnnealing:
-        pMethod = new COptMethodSA();
-        break;
-
-      case CoranaWalk:
-        pMethod = new COptMethodCoranaWalk();
-        break;
-
-      case SRES:
-        pMethod = new COptMethodSRES();
-        break;
-
-      case Statistics:
-        pMethod = new COptMethodStatistics();
-        break;
-
-      case SteepestDescent:
-        pMethod = new COptMethodSteepestDescent();
-        break;
-
-      case ParticleSwarm:
-        pMethod = new COptMethodPS();
-        break;
-
-      case Praxis:
-        pMethod = new COptMethodPraxis();
-        break;
-
-      case TruncatedNewton:
-        pMethod = new COptMethodTruncatedNewton();
-        break;
-
-      default:
-        pMethod = new COptMethodGA();
-        break;
-    }
-
-  return pMethod;
-}
-
-// Default constructor
-COptMethod::COptMethod():
-  CCopasiMethod(CCopasiTask::optimization, CCopasiMethod::unset),
+COptMethod::COptMethod(const CCopasiContainer * pParent,
+                       const CTaskEnum::Method & methodType,
+                       const CTaskEnum::Task & taskType):
+  CCopasiMethod(pParent, methodType, taskType),
   mpOptProblem(NULL),
   mpParentTask(NULL),
   mBounds(false),
   mContainerVariables(),
   mpOptItem(NULL),
   mpOptContraints(NULL)
-{CONSTRUCTOR_TRACE;}
-
-COptMethod::COptMethod(const CCopasiTask::Type & taskType,
-                       const COptMethod::SubType & subType,
-                       const CCopasiContainer * pParent):
-  CCopasiMethod(taskType, subType, pParent),
-  mpOptProblem(NULL),
-  mpParentTask(NULL),
-  mBounds(false),
-  mContainerVariables(),
-  mpOptItem(NULL),
-  mpOptContraints(NULL)
-{CONSTRUCTOR_TRACE;}
+{}
 
 COptMethod::COptMethod(const COptMethod & src,
                        const CCopasiContainer * pParent):

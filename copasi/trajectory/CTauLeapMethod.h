@@ -20,13 +20,6 @@
 #include "utilities/CCopasiVector.h"
 #include "copasi/model/CState.h"
 
-/* DEFINE ********************************************************************/
-#define TAU                    0.01
-#define EPS                    0.03
-#define USE_RANDOM_SEED        false
-#define RANDOM_SEED            1
-#define INT_EPSILON            0.1
-
 /* CLASSES *******************************************************************/
 class CTrajectoryProblem;
 class CRandom;
@@ -34,12 +27,19 @@ class CMathReaction;
 
 class CTauLeapMethod : public CTrajectoryMethod
 {
-  friend CTrajectoryMethod *
-  CTrajectoryMethod::createMethod(CCopasiMethod::SubType subType);
-
   /* PUBLIC METHODS ************************************************************/
 
 public:
+  /**
+   * Specific constructor
+   * @param const CCopasiContainer * pParent
+   * @param const CTaskEnum::Method & methodType (default: tauLeap)
+   * @param const CTaskEnum::Task & taskType (default: timeCourse)
+   */
+  CTauLeapMethod(const CCopasiContainer * pParent,
+                 const CTaskEnum::Method & methodType = CTaskEnum::tauLeap,
+                 const CTaskEnum::Task & taskType = CTaskEnum::timeCourse);
+
   /**
    * Copy constructor
    * @param const CTauLeapMethod & src
@@ -85,13 +85,13 @@ public:
 
   /* PROTECTED METHODS *********************************************************/
 
-protected:
+private:
   /**
    * Default constructor.
-   * @param const CCopasiContainer * pParent (default: NULL)
    */
-  CTauLeapMethod(const CCopasiContainer * pParent = NULL);
+  CTauLeapMethod();
 
+protected:
   /**
    *  Simulates the system over the next interval of time. The timestep
    *  is given as argument.

@@ -23,8 +23,10 @@
 
 #include "report/CCopasiObjectReference.h"
 
-COptMethodSteepestDescent::COptMethodSteepestDescent(const CCopasiContainer * pParent):
-  COptMethod(CCopasiTask::optimization, CCopasiMethod::SteepestDescent, pParent),
+COptMethodSteepestDescent::COptMethodSteepestDescent(const CCopasiContainer * pParent,
+    const CTaskEnum::Method & methodType,
+    const CTaskEnum::Task & taskType):
+  COptMethod(pParent, methodType, taskType),
   mIterations(100),
   mTolerance(1e-6),
   mContinue(true),

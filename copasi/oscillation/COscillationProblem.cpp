@@ -23,7 +23,7 @@
 #include "utilities/CCopasiException.h"
 
 //  Default constructor
-COscillationProblem::COscillationProblem(const CCopasiTask::Type & type,
+COscillationProblem::COscillationProblem(const CTaskEnum::Task & type,
     const CCopasiContainer * pParent):
   CCopasiProblem(type, pParent)
 {

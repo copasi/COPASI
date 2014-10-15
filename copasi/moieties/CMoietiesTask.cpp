@@ -18,18 +18,12 @@
 
 #include "math/CMathContainer.h"
 
-const unsigned int CMoietiesTask::ValidMethods[] =
-{
-  CCopasiMethod::Householder,
-  CCopasiMethod::unset
-};
-
 CMoietiesTask::CMoietiesTask(const CCopasiContainer * pParent,
-                             const CCopasiTask::Type & type):
+                             const CTaskEnum::Task & type):
   CCopasiTask(pParent, type)
 {
   mpProblem = new CMoietiesProblem(type, this);
-  mpMethod = CMoietiesMethod::createMethod();
+  mpMethod = createMethod(CTaskEnum::Householder);
   this->add(mpMethod, true);
 }
 
@@ -38,8 +32,7 @@ CMoietiesTask::CMoietiesTask(const CMoietiesTask & src,
   CCopasiTask(src, pParent)
 {
   mpProblem = new CMoietiesProblem(* static_cast< CMoietiesProblem * >(src.mpProblem), this);
-  mpMethod = CMoietiesMethod::createMethod(src.mpMethod->getSubType());
-  this->add(mpMethod, true);
+  mpMethod = createMethod(src.mpMethod->getSubType());
 }
 
 // virtual
@@ -119,24 +112,14 @@ bool CMoietiesTask::restore()
   return true;
 }
 
-bool CMoietiesTask::setMethodType(const int & type)
-{
-  CCopasiMethod::SubType Type = (CCopasiMethod::SubType) type;
-
-  if (mpMethod->getSubType() == Type) return true;
-
-  pdelete(mpMethod);
-
-  mpMethod = createMethod(Type);
-  this->add(mpMethod, true);
-
-  return true;
-}
-
 // virtual
-CCopasiMethod * CMoietiesTask::createMethod(const int & type) const
+const CTaskEnum::Method * CMoietiesTask::getValidMethods() const
 {
-  CCopasiMethod::SubType Type = (CCopasiMethod::SubType) type;
+  static const CTaskEnum::Method ValidMethods[] =
+  {
+    CTaskEnum::Householder,
+    CTaskEnum::UnsetMethod
+  };
 
-  return CMoietiesMethod::createMethod(Type);
+  return ValidMethods;
 }

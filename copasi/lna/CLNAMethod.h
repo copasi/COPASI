@@ -1,12 +1,4 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/lna/CLNAMethod.h,v $
-//   $Revision: 1.1 $
-//   $Name:  $
-//   $Author: jpahle $
-//   $Date: 2011/05/24 17:33:44 $
-// End CVS Header
-
-// Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -64,19 +56,22 @@ private:
 
   void initObjects();
 
+private:
+  /**
+   * Default constructor.
+   */
+  CLNAMethod();
+
 public:
   /**
-   * Create a LNA method.
-   * Note: the returned object has to be released after use with delete
+   * Specific constructor
+   * @param const CCopasiContainer * pParent
+   * @param const CTaskEnum::Method & methodType (default: linearNoiseApproximation)
+   * @param const CTaskEnum::Task & taskType (default: lna)
    */
-  static CLNAMethod * createMethod(CCopasiMethod::SubType subType = CCopasiMethod::linearNoiseApproximation);
-
-
-  /**
-   * Default constructor
-   * @param const CCopasiContainer * pParent (Default: NULL)
-   */
-  CLNAMethod(const CCopasiContainer * pParent = NULL);
+  CLNAMethod(const CCopasiContainer * pParent,
+             const CTaskEnum::Method & methodType = CTaskEnum::linearNoiseApproximation,
+             const CTaskEnum::Task & taskType = CTaskEnum::lna);
 
   /**
    * Copy constructor
@@ -135,7 +130,6 @@ public:
 
   const CArrayAnnotation* getUnscaledCovarianceMatrixReducedAnn() const
   {return mCovarianceMatrixReducedAnn;}
-
 
   int calculateCovarianceMatrixReduced();
 

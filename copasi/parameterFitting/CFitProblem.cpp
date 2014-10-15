@@ -39,7 +39,7 @@
 #include "lapack/lapackwrap.h"        //use CLAPACK
 
 //  Default constructor
-CFitProblem::CFitProblem(const CCopasiTask::Type & type,
+CFitProblem::CFitProblem(const CTaskEnum::Task & type,
                          const CCopasiContainer * pParent):
   COptProblem(type, pParent),
   mpParmSteadyStateCN(NULL),
@@ -283,7 +283,7 @@ bool CFitProblem::elevateChildren()
       if (!mpParmSteadyStateCN->compare(0, 5 , "Task_") ||
           *mpParmSteadyStateCN == "")
         for (i = 0; i < imax; i++)
-          if ((*pTasks)[i]->getType() == CCopasiTask::steadyState)
+          if ((*pTasks)[i]->getType() == CTaskEnum::steadyState)
             {
               *mpParmSteadyStateCN = (*pTasks)[i]->getCN();
               break;
@@ -292,7 +292,7 @@ bool CFitProblem::elevateChildren()
       if (!mpParmTimeCourseCN->compare(0, 5 , "Task_") ||
           *mpParmTimeCourseCN == "")
         for (i = 0; i < imax; i++)
-          if ((*pTasks)[i]->getType() == CCopasiTask::timeCourse)
+          if ((*pTasks)[i]->getType() == CTaskEnum::timeCourse)
             {
               *mpParmTimeCourseCN = (*pTasks)[i]->getCN();
               break;
@@ -433,7 +433,7 @@ bool CFitProblem::initialize()
   //StartInSS: also initialize the SS task if a time course starts from a steady state
 
   // We only need to initialize the steady-state task if steady-state data is present.
-  if (mpExperimentSet->hasDataForTaskType(CCopasiTask::steadyState)
+  if (mpExperimentSet->hasDataForTaskType(CTaskEnum::steadyState)
       || mpExperimentSet->hasStartInSteadyState())
     {
       mpSteadyState =
@@ -458,7 +458,7 @@ bool CFitProblem::initialize()
   pdelete(mpTrajectoryProblem);
 
   // We only need to initialize the trajectory task if time course data is present.
-  if (mpExperimentSet->hasDataForTaskType(CCopasiTask::timeCourse))
+  if (mpExperimentSet->hasDataForTaskType(CTaskEnum::timeCourse))
     {
       mpTrajectory =
         dynamic_cast< CTrajectoryTask * >(const_cast< CCopasiObject * >(CObjectInterface::DataObject(getObjectFromCN(*mpParmTimeCourseCN))));
@@ -834,7 +834,7 @@ bool CFitProblem::calculate()
 
           switch (pExp->getExperimentType())
             {
-              case CCopasiTask::steadyState:
+              case CTaskEnum::steadyState:
 
                 // set independent data
                 for (j = 0; j < kmax && Continue; j++) // For each data row;
@@ -874,7 +874,7 @@ bool CFitProblem::calculate()
 
                 break;
 
-              case CCopasiTask::timeCourse:
+              case CTaskEnum::timeCourse:
 
                 //StartInSS: if necessary, put the system in a steady state before simulating
                 if (pExp->getStartInSteadyState())
@@ -1783,7 +1783,7 @@ bool CFitProblem::calculateCrossValidation()
 
           switch (pExp->getExperimentType())
             {
-              case CCopasiTask::steadyState:
+              case CTaskEnum::steadyState:
 
                 // set independent data
                 for (j = 0; j < kmax && Continue; j++) // For each data row;
@@ -1817,7 +1817,7 @@ bool CFitProblem::calculateCrossValidation()
 
                 break;
 
-              case CCopasiTask::timeCourse:
+              case CTaskEnum::timeCourse:
 
                 size_t numIntermediateSteps;
 

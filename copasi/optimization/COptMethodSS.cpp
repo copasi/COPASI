@@ -27,8 +27,10 @@
 #include "utilities/CSort.h"
 #include "report/CCopasiObjectReference.h"
 
-COptMethodSS::COptMethodSS(const CCopasiContainer * pParent):
-  COptMethod(CCopasiTask::optimization, CCopasiMethod::ScatterSearch, pParent),
+COptMethodSS::COptMethodSS(const CCopasiContainer * pParent,
+                           const CTaskEnum::Method & methodType,
+                           const CTaskEnum::Task & taskType):
+  COptMethod(pParent, methodType, taskType),
   mIterations(0),
   mPopulationSize(0),
   mVariableSize(0),
@@ -152,7 +154,9 @@ bool COptMethodSS::initialize()
     {
       // this is a least squares problem (param estimation)
       // let's use our favorite lsq method
-      mpLocalMinimizer = COptMethod::createMethod(CCopasiMethod::LevenbergMarquardt);
+      mpLocalMinimizer = static_cast< COptMethod * >(CCopasiMethod::createMethod(getObjectParent(),
+                         CTaskEnum::LevenbergMarquardt,
+                         getType()));
       // the intermediate local minimizations use a rather relaxed tolerance
       mpLocalMinimizer->setValue("Tolerance", (C_FLOAT64) 1.e-003);
       // TODO: not sure if we should let this one go that long...
@@ -162,7 +166,9 @@ bool COptMethodSS::initialize()
     {
       // this is a generic optimisation problem
       // let's use Hooke and Jeeves
-      mpLocalMinimizer = COptMethod::createMethod(CCopasiMethod::HookeJeeves);
+      mpLocalMinimizer = static_cast< COptMethod * >(CCopasiMethod::createMethod(getObjectParent(),
+                         CTaskEnum::HookeJeeves,
+                         getType()));
       // with a rather relaxed tolerance (1e-3) for intermediate minimizations
       mpLocalMinimizer->setValue("Tolerance", (C_FLOAT64) 1.e-003);
       mpLocalMinimizer->setValue("Iteration Limit", (C_INT32) 50);
@@ -184,8 +190,6 @@ bool COptMethodSS::initialize()
   // the local optimization method should not have a callback
   mpOptProblemLocal->setCallBack(NULL);
 
-  // set object parent (this is needed or else initialize() will fail)
-  mpLocalMinimizer->setObjectParent(getObjectParent());
   // we also have to initialize the subtask
   mpOptProblemLocal->initializeSubtaskBeforeOutput();
   // initialize it

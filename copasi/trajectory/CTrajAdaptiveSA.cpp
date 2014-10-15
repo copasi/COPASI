@@ -31,18 +31,10 @@
 #include "math/CMathReaction.h"
 #include "model/CModel.h"
 
-// static
-CTrajAdaptiveSA * CTrajAdaptiveSA::createTauLeapMethod()
-{
-  CTrajAdaptiveSA * pMethod = NULL;
-
-  pMethod = new CTrajAdaptiveSA();
-
-  return pMethod;
-}
-
-CTrajAdaptiveSA::CTrajAdaptiveSA(const CCopasiContainer * pParent):
-  CTrajectoryMethod(CCopasiTask::timeCourse, CCopasiMethod::adaptiveSA, pParent),
+CTrajAdaptiveSA::CTrajAdaptiveSA(const CCopasiContainer * pParent,
+                                 const CTaskEnum::Method & methodType,
+                                 const CTaskEnum::Task & taskType):
+  CTrajectoryMethod(pParent, methodType, taskType),
   mMaxReactionFiring(0),
   mReactionFiring(0),
   mPartitionedReactionFiring(0),

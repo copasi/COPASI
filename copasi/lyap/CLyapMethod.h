@@ -21,13 +21,14 @@
 
 #include <string>
 
-#include "utilities/CCopasiMethod.h"
-#include "utilities/CVector.h"
+#include "copasi/utilities/CCopasiMethod.h"
+#include "copasi/utilities/CCopasiMethod.h"
+#include "copasi/utilities/CVector.h"
 
 class CLyapProblem;
 class CState;
 
-class CLyapValidSubTypes : public std::vector< CCopasiMethod::SubType >
+class CLyapValidSubTypes : public std::vector< CTaskEnum::Method >
 {
 public:
   /**
@@ -51,10 +52,10 @@ public:
 
   /**
    * Checks whether the given sub type is a valid method
-   * @param const CCopasiMethod::SubType & subType
+   * @param const CTaskEnum::Method & subType
    * @return bool isValidSubType
    */
-  static bool isValidSubType(const CCopasiMethod::SubType & subType);
+  static bool isValidSubType(const CTaskEnum::Method & subType);
 
 protected:
   /**
@@ -77,25 +78,16 @@ private:
    */
   CLyapMethod();
 
-protected:
-  /**
-   * Default constructor.
-   * @param const CCopasiMethod::SubType & subType
-   * @param const CCopasiContainer * pParent (default: NULL)
-   */
-  CLyapMethod(const CCopasiMethod::SubType & subType,
-              const CCopasiContainer * pParent = NULL);
-
 public:
-
   /**
-   * Create a trajectory method for a special problem.
-   * Note: the returned object has to be released after use with delete
-   * a problem is also passed so that the method has a chance to choose an
-   * appropriate simulation method.
+   * Specific constructor
+   * @param const CCopasiContainer * pParent
+   * @param const CTaskEnum::Method & methodType
+   * @param const CTaskEnum::Task & taskType (default: lyap)
    */
-  static CLyapMethod * createMethod(CCopasiMethod::SubType subType
-                                    = CCopasiMethod::lyapWolf);
+  CLyapMethod(const CCopasiContainer * pParent,
+              const CTaskEnum::Method & methodType,
+              const CTaskEnum::Task & taskType = CTaskEnum::lyap);
 
   /**
    * Copy constructor.

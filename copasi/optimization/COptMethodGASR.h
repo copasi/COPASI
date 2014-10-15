@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -29,10 +29,18 @@ class CPermutation;
 
 class COptMethodGASR : public COptMethod
 {
-  friend COptMethod * COptMethod::createMethod(CCopasiMethod::SubType subType);
-
   // Operations
 public:
+  /**
+   * Specific constructor
+   * @param const CCopasiContainer * pParent
+   * @param const CTaskEnum::Method & methodType (default: GeneticAlgorithmSR)
+   * @param const CTaskEnum::Task & taskType (default: optimization)
+   */
+  COptMethodGASR(const CCopasiContainer * pParent,
+                 const CTaskEnum::Method & methodType = CTaskEnum::GeneticAlgorithmSR,
+                 const CTaskEnum::Task & taskType = CTaskEnum::optimization);
+
   /**
    * Copy Constructor
    * @param const COptMethodGASR & src

@@ -49,7 +49,7 @@
 #include "utilities/CCopasiException.h"
 
 //  Default constructor
-COptProblem::COptProblem(const CCopasiTask::Type & type,
+COptProblem::COptProblem(const CTaskEnum::Task & type,
                          const CCopasiContainer * pParent):
   CCopasiProblem(type, pParent),
   mWorstValue(0.0),
@@ -160,7 +160,7 @@ bool COptProblem::elevateChildren()
         {
           if (*pParameter->getValue().pSTRING != "")
             {
-              setSubtaskType(CCopasiTask::steadyState);
+              setSubtaskType(CTaskEnum::steadyState);
             }
 
           removeParameter("Steady-State");
@@ -170,7 +170,7 @@ bool COptProblem::elevateChildren()
         {
           if (*pParameter->getValue().pSTRING != "")
             {
-              setSubtaskType(CCopasiTask::timeCourse);
+              setSubtaskType(CTaskEnum::timeCourse);
             }
 
           removeParameter("Time-Course");
@@ -178,7 +178,7 @@ bool COptProblem::elevateChildren()
 
       // If no subtask is defined we default to steady-state
       if (*mpParmSubtaskCN == "")
-        setSubtaskType(CCopasiTask::steadyState);
+        setSubtaskType(CTaskEnum::steadyState);
     }
 
   // Handle old file format in which the objective expression was stored in the function DB
@@ -481,7 +481,7 @@ bool COptProblem::calculate()
     return false;
 
   if (mStoreResults &&
-      mpSubtask->getType() == CCopasiTask::timeCourse)
+      mpSubtask->getType() == CTaskEnum::timeCourse)
     {
       static_cast< CTrajectoryProblem * >(mpSubtask->getProblem())->setTimeSeriesRequested(true);
 
@@ -516,7 +516,7 @@ bool COptProblem::calculate()
     }
 
   if (mStoreResults &&
-      mpSubtask->getType() == CCopasiTask::timeCourse)
+      mpSubtask->getType() == CTaskEnum::timeCourse)
     {
       mStoreResults = false;
       mpSubtask->initialize(CCopasiTask::NO_OUTPUT, NULL, NULL);
@@ -691,7 +691,7 @@ const std::string COptProblem::getObjectiveFunction()
   return *mpParmObjectiveExpression;
 }
 
-bool COptProblem::setSubtaskType(const CCopasiTask::Type & subtaskType)
+bool COptProblem::setSubtaskType(const CTaskEnum::Task & subtaskType)
 {
   mpSubtask = NULL;
   *mpParmSubtaskCN = "";
@@ -720,14 +720,14 @@ bool COptProblem::setSubtaskType(const CCopasiTask::Type & subtaskType)
   return false;
 }
 
-CCopasiTask::Type COptProblem::getSubtaskType() const
+CTaskEnum::Task COptProblem::getSubtaskType() const
 {
   CObjectInterface::ContainerList ListOfContainer;
   ListOfContainer.push_back(getObjectAncestor("Vector"));
   mpSubtask = dynamic_cast< CCopasiTask * >(CObjectInterface::GetObjectFromCN(ListOfContainer, *mpParmSubtaskCN));
 
   if (mpSubtask == NULL)
-    return CCopasiTask::unset;
+    return CTaskEnum::UnsetTask;
 
   return mpSubtask->getType();
 }

@@ -1,17 +1,14 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodLevenbergMarquardt.h,v $
-   $Revision: 1.7 $
-   $Name:  $
-   $Author: mendes $
-   $Date: 2012/06/04 14:12:37 $
-   End CVS Header */
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2006 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -30,10 +27,18 @@ class CRandom;
 
 class COptMethodLevenbergMarquardt : public COptMethod
 {
-  friend COptMethod * COptMethod::createMethod(CCopasiMethod::SubType subType);
-
   // Operations
 public:
+  /**
+   * Specific constructor
+   * @param const CCopasiContainer * pParent
+   * @param const CTaskEnum::Method & methodType (default: LevenbergMarquardt)
+   * @param const CTaskEnum::Task & taskType (default: optimization)
+   */
+  COptMethodLevenbergMarquardt(const CCopasiContainer * pParent,
+                               const CTaskEnum::Method & methodType = CTaskEnum::LevenbergMarquardt,
+                               const CTaskEnum::Task & taskType = CTaskEnum::optimization);
+
   /**
    * Copy Constructor
    * @param const COptMethodLevenbergMarquardt & src
@@ -58,9 +63,8 @@ public:
 private:
   /**
    * Default Constructor
-   * @param const CCopasiContainer * pParent (default: NULL)
    */
-  COptMethodLevenbergMarquardt(const CCopasiContainer * pParent = NULL);
+  COptMethodLevenbergMarquardt();
 
   /**
    * Initialize contained objects.

@@ -15,9 +15,9 @@
 /**
  *  CCopasiMethod class.
  *  This class is used to describe a task in COPASI. This class is
- *  intended to be used as the parent class for all methods whithin COPASI.
+ *  intended to be used as the parent class for all methods within COPASI.
  *
- *  Created for Copasi by Stefan Hoops 2003
+ *  Created for COPASI by Stefan Hoops 2003
  */
 
 #include "copasi/copasi.h"
@@ -28,128 +28,245 @@
 
 #include "math/CMathContainer.h"
 
-const std::string CCopasiMethod::SubTypeName[] =
-{
-  "Not set",
-  "Random Search",
-  "Random Search (PVM)",
-  "Simulated Annealing",
-  "Corana Random Walk",
-  "Differential Evolution",
-  "Scatter Search",
-  "Genetic Algorithm",
-  "Evolutionary Programming",
-  "Steepest Descent",
-  "Hybrid GA/SA",
-  "Genetic Algorithm SR",
-  "Hooke & Jeeves",
-  "Levenberg - Marquardt",
-  "Nelder - Mead",
-  "Evolution Strategy (SRES)",
-  "Current Solution Statistics",
-  "Particle Swarm",
-  "Praxis",
-  "Truncated Newton",
-  "Enhanced Newton",
-  "Deterministic (LSODA)",
-  "Deterministic (LSODAR)",
-  "Stochastic (Direct method)",
-  "Stochastic (Gibson + Bruck)",
-  "Stochastic (\xcf\x84-Leap)",
-  "Stochastic (Adaptive SSA/\xcf\x84-Leap)",
-  "Hybrid (ODE45)",
-  "Hybrid (DSA-LSODAR)",
-  "ILDM (LSODA,Deuflhard)",
-  "ILDM (LSODA,Modified)",
-  "CSP (LSODA)",
-  "MCA Method (Reder)",
-  "Scan Framework",
-  "Wolf Method",
-  "Sensitivities Method",
-#ifdef COPASI_SSA
-  "Stoichiometric Stability Analysis",
-#endif // COPASI_SSA
-  "EFM Algorithm",
-  "Bit Pattern Tree Algorithm",
-  "Bit Pattern Algorithm",
-  "Householder Reduction",
-  "Cross Section Finder",
-  "Linear Noise Approximation",
-  ""
-};
+#include "crosssection/CCrossSectionMethod.h"
+#include "elementaryFluxModes/CBitPatternMethod.h"
+#include "elementaryFluxModes/CBitPatternTreeMethod.h"
+#include "elementaryFluxModes/CEFMMethod.h"
+// #include "elementaryFluxModes/CSSAMethod.h"
+#include "lna/CLNAMethod.h"
+// #include "lyap/CLyapMethod.h"
+#include "lyap/CLyapWolfMethod.h"
+#include "moieties/CMoietiesMethod.h"
+#include "optimization/COptMethodCoranaWalk.h"
+#include "optimization/COptMethodDE.h"
+#include "optimization/COptMethodEP.h"
+#include "optimization/COptMethodGA.h"
+#include "optimization/COptMethodGASR.h"
+#include "optimization/COptMethodHookeJeeves.h"
+#include "optimization/COptMethodLevenbergMarquardt.h"
+#include "optimization/COptMethodNelderMead.h"
+#include "optimization/COptMethodPS.h"
+#include "optimization/COptMethodPraxis.h"
+#include "optimization/COptMethodSA.h"
+#include "optimization/COptMethodSRES.h"
+#include "optimization/COptMethodSS.h"
+#include "optimization/COptMethodStatistics.h"
+#include "optimization/COptMethodSteepestDescent.h"
+#include "optimization/COptMethodTruncatedNewton.h"
+#include "optimization/CRandomSearch.h"
+// #include "oscillation/COscillationMethod.h"
+#include "scan/CScanMethod.h"
+#include "sensitivities/CSensMethod.h"
+#include "steadystate/CMCAMethod.h"
+#include "steadystate/CNewtonMethod.h"
+// #include "steadystate/CSteadyStateMethod.h"
+// #include "trajectory/CExpRKMethod.h"
+#include "trajectory/CHybridMethodODE45.h"
+#include "trajectory/CLsodaMethod.h"
+#include "trajectory/CStochDirectMethod.h"
+// #include "trajectory/CStochMethod.h"
+#include "trajectory/CStochNextReactionMethod.h"
+#include "trajectory/CTauLeapMethod.h"
+#include "trajectory/CTrajAdaptiveSA.h"
+#include "trajectory/CTrajectoryMethodDsaLsodar.h"
+#include "tssanalysis/CCSPMethod.h"
+#include "tssanalysis/CILDMMethod.h"
+#include "tssanalysis/CILDMModifiedMethod.h"
+// #include "tssanalysis/CTSSAMethod.h"
 
-const char * CCopasiMethod::XMLSubType[] =
+//static
+CCopasiMethod * CCopasiMethod::createMethod(const CCopasiContainer * pParent,
+    const CTaskEnum::Method & methodType,
+    const CTaskEnum::Task & taskType)
 {
-  "NotSet",
-  "RandomSearch",
-  "RandomSearch(PVM)",
-  "SimulatedAnnealing",
-  "CoranaRandomWalk",
-  "DifferentialEvolution",
-  "ScatterSearch",
-  "GeneticAlgorithm",
-  "EvolutionaryProgram",
-  "SteepestDescent",
-  "HybridGASA",
-  "GeneticAlgorithmSR",
-  "HookeJeeves",
-  "LevenbergMarquardt",
-  "NelderMead",
-  "EvolutionaryStrategySR",
-  "CurrentSolutionStatistics",
-  "ParticleSwarm",
-  "Praxis",
-  "TruncatedNewton",
-  "EnhancedNewton",
-  "Deterministic(LSODA)",
-  "Deterministic(LSODAR)",
-  "Stochastic",
-  "DirectMethod",
-  "TauLeap",
-  "AdaptiveSA",
-  "Hybrid (DSA-ODE45)",
-  "Hybrid (DSA-LSODAR)",
-  "TimeScaleSeparation(ILDM,Deuflhard)",
-  "TimeScaleSeparation(ILDM,Modified)",
-  "TimeScaleSeparation(CSP)",
-  "MCAMethod(Reder)",
-  "ScanFramework",
-  "WolfMethod",
-  "SensitivitiesMethod",
-#ifdef COPASI_SSA
-  "StoichiometricStabilityAnalysis",
-#endif // COPASI_SSA
-  "EFMAlgorithm",
-  "EFMBitPatternTreeMethod",
-  "EFMBitPatternMethod",
-  "Householder",
-  "crossSectionMethod",
-  "LinearNoiseApproximation",
-  NULL
-};
+  CCopasiMethod * pMethod = NULL;
 
-CCopasiMethod::CCopasiMethod():
-  CCopasiParameterGroup("NoName", NULL, "Method"),
-  mType(CCopasiTask::unset),
-  mSubType(unset),
+  switch (methodType)
+    {
+      case CTaskEnum::UnsetMethod:
+        pMethod = new CCopasiMethod(pParent, methodType, taskType);
+        break;
+
+      case CTaskEnum::RandomSearch:
+        pMethod = new CRandomSearch(pParent, methodType, taskType);
+        break;
+
+      case CTaskEnum::SimulatedAnnealing:
+        pMethod = new COptMethodSA(pParent, methodType, taskType);
+        break;
+
+      case CTaskEnum::CoranaWalk:
+        pMethod = new COptMethodCoranaWalk(pParent, methodType, taskType);
+        break;
+
+      case CTaskEnum::DifferentialEvolution:
+        pMethod = new COptMethodDE(pParent, methodType, taskType);
+        break;
+
+      case CTaskEnum::ScatterSearch:
+        pMethod = new COptMethodSS(pParent, methodType, taskType);
+        break;
+
+      case CTaskEnum::GeneticAlgorithm:
+        pMethod = new COptMethodGA(pParent, methodType, taskType);
+        break;
+
+      case CTaskEnum::EvolutionaryProgram:
+        pMethod = new COptMethodEP(pParent, methodType, taskType);
+        break;
+
+      case CTaskEnum::SteepestDescent:
+        pMethod = new COptMethodSteepestDescent(pParent, methodType, taskType);
+        break;
+
+      case CTaskEnum::GeneticAlgorithmSR:
+        pMethod = new COptMethodGASR(pParent, methodType, taskType);
+        break;
+
+      case CTaskEnum::HookeJeeves:
+        pMethod = new COptMethodHookeJeeves(pParent, methodType, taskType);
+        break;
+
+      case CTaskEnum::LevenbergMarquardt:
+        pMethod = new COptMethodLevenbergMarquardt(pParent, methodType, taskType);
+        break;
+
+      case CTaskEnum::NelderMead:
+        pMethod = new COptMethodNelderMead(pParent, methodType, taskType);
+        break;
+
+      case CTaskEnum::SRES:
+        pMethod = new COptMethodSRES(pParent, methodType, taskType);
+        break;
+
+      case CTaskEnum::Statistics:
+        pMethod = new COptMethodStatistics(pParent, methodType, taskType);
+        break;
+
+      case CTaskEnum::ParticleSwarm:
+        pMethod = new COptMethodPS(pParent, methodType, taskType);
+        break;
+
+      case CTaskEnum::Praxis:
+        pMethod = new COptMethodPraxis(pParent, methodType, taskType);
+        break;
+
+      case CTaskEnum::TruncatedNewton:
+        pMethod = new COptMethodTruncatedNewton(pParent, methodType, taskType);
+        break;
+
+      case CTaskEnum::Newton:
+        pMethod = new CNewtonMethod(pParent, methodType, taskType);
+        break;
+
+      case CTaskEnum::deterministic:
+        pMethod = new CLsodaMethod(pParent, methodType, taskType);
+        break;
+
+      case CTaskEnum::directMethod:
+        pMethod = new CStochDirectMethod(pParent, methodType, taskType);
+        break;
+
+      case CTaskEnum::stochastic:
+        pMethod = new CStochNextReactionMethod(pParent, methodType, taskType);
+        break;
+
+      case CTaskEnum::tauLeap:
+        pMethod = new CTauLeapMethod(pParent, methodType, taskType);
+        break;
+
+      case CTaskEnum::adaptiveSA:
+        pMethod = new CTrajAdaptiveSA(pParent, methodType, taskType);
+        break;
+
+      case CTaskEnum::hybridODE45:
+        pMethod = new CHybridMethodODE45(pParent, methodType, taskType);
+        break;
+
+      case CTaskEnum::DsaLsodar:
+        pMethod = new CTrajectoryMethodDsaLsodar(pParent, methodType, taskType);
+        break;
+
+      case CTaskEnum::tssILDM:
+        pMethod = new CILDMMethod(pParent, methodType, taskType);
+        break;
+
+      case CTaskEnum::tssILDMModified:
+        pMethod = new CILDMModifiedMethod(pParent, methodType, taskType);
+        break;
+
+      case CTaskEnum::tssCSP:
+        pMethod = new CCSPMethod(pParent, methodType, taskType);
+        break;
+
+      case CTaskEnum::mcaMethodReder:
+        pMethod = new CMCAMethod(pParent, methodType, taskType);
+        break;
+
+      case CTaskEnum::scanMethod:
+        pMethod = new CScanMethod(pParent, methodType, taskType);
+        break;
+
+      case CTaskEnum::lyapWolf:
+        pMethod = new CLyapWolfMethod(pParent, methodType, taskType);
+        break;
+
+      case CTaskEnum::sensMethod:
+        pMethod = new CSensMethod(pParent, methodType, taskType);
+        break;
+
+#ifdef COPASI_SSA
+
+      case CTaskEnum::stoichiometricStabilityAnalysis:
+        pMethod = new CSSAMethod(pParent, methodType, taskType);
+        break;
+
+#endif // COPASI_SSA
+
+      case CTaskEnum::EFMAlgorithm:
+        pMethod = new CEFMMethod(pParent, methodType, taskType);
+        break;
+
+      case CTaskEnum::EFMBitPatternTreeAlgorithm:
+        pMethod = new CBitPatternTreeMethod(pParent, methodType, taskType);
+        break;
+
+      case CTaskEnum::EFMBitPatternAlgorithm:
+        pMethod = new CBitPatternMethod(pParent, methodType, taskType);
+        break;
+
+      case CTaskEnum::Householder:
+        pMethod = new CMoietiesMethod(pParent, methodType, taskType);
+        break;
+
+      case CTaskEnum::crossSectionMethod:
+        pMethod = new CCrossSectionMethod(pParent, methodType, taskType);
+        break;
+
+      case CTaskEnum::linearNoiseApproximation:
+        pMethod = new CLNAMethod(pParent, methodType, taskType);
+        break;
+    }
+
+  return pMethod;
+}
+
+CCopasiMethod::CCopasiMethod(const CCopasiContainer * pParent,
+                             const CTaskEnum::Method & methodType,
+                             const CTaskEnum::Task & taskType):
+  CCopasiParameterGroup(CTaskEnum::TaskName[taskType], pParent, "Method"),
+  mTaskType(taskType),
+  mSubType(methodType),
   mpContainer(NULL),
   mpCallBack(NULL)
-{setObjectName(SubTypeName[mType]);}
-
-CCopasiMethod::CCopasiMethod(const CCopasiTask::Type & type,
-                             const CCopasiMethod::SubType & subType,
-                             const CCopasiContainer * pParent):
-  CCopasiParameterGroup(CCopasiTask::TypeName[type], pParent, "Method"),
-  mType(type),
-  mSubType(subType),
-  mpContainer(NULL),
-  mpCallBack(NULL)
-{setObjectName(SubTypeName[mSubType]);}
+{
+  setObjectName(CTaskEnum::MethodName[mSubType]);
+}
 
 CCopasiMethod::CCopasiMethod(const CCopasiMethod & src,
                              const CCopasiContainer * pParent):
   CCopasiParameterGroup(src, pParent),
-  mType(src.mType),
+  mTaskType(src.mTaskType),
   mSubType(src.mSubType),
   mpContainer(src.mpContainer),
   mpCallBack(src.mpCallBack)
@@ -181,14 +298,14 @@ bool CCopasiMethod::setCallBack(CProcessReport * pCallBack)
   return true;
 }
 
-const CCopasiTask::Type & CCopasiMethod::getType() const {return mType;}
+const CTaskEnum::Task & CCopasiMethod::getType() const {return mTaskType;}
 
-// void CCopasiMethod::setType(const CCopasiTask::Type & type) {mType = type;}
+// void CCopasiMethod::setType(const CTaskEnum::Task & type) {mTaskType = type;}
 
-const CCopasiMethod::SubType & CCopasiMethod::getSubType() const
+const CTaskEnum::Method & CCopasiMethod::getSubType() const
 {return mSubType;}
 
-// void CCopasiMethod::setSubType(const CCopasiMethod::SubType & subType)
+// void CCopasiMethod::setSubType(const CTaskEnum::Method & subType)
 // {mSubType = subType;}
 
 //virtual
@@ -210,19 +327,19 @@ bool CCopasiMethod::isValidProblem(const CCopasiProblem * pProblem)
 
   if (mpContainer->getEvents().size())
     {
-      if (mType == CCopasiTask::lyap)
+      if (mTaskType == CTaskEnum::lyap)
         {
           CCopasiMessage(CCopasiMessage::ERROR, MCCopasiMethod + 4, "Lyapunov Exponents");
           return false;
         }
 
-      if (mType == CCopasiTask::tssAnalysis)
+      if (mTaskType == CTaskEnum::tssAnalysis)
         {
           CCopasiMessage(CCopasiMessage::ERROR, MCCopasiMethod + 4, "Time Scale Separation Analysis");
           return false;
         }
 
-      if (mType == CCopasiTask::lna)
+      if (mTaskType == CTaskEnum::lna)
         {
           CCopasiMessage(CCopasiMessage::ERROR, MCCopasiMethod + 4, "Linear Noise Approximation");
           return false;

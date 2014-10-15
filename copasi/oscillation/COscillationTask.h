@@ -1,17 +1,9 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/oscillation/COscillationTask.h,v $
-//   $Revision: 1.3 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/03/07 19:32:04 $
-// End CVS Header
-
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
@@ -43,12 +35,12 @@ public:
 
   /**
    * default constructor
-   * @param const CCopasiTask::Type & type (default: optimization)
+   * @param const CTaskEnum::Task & type (default: optimization)
    * @param const CCopasiContainer * pParent (default: NULL)
    */
-  //COscillationTask(const CCopasiTask::Type & type = CCopasiTask::oscillation,
+  //COscillationTask(const CTaskEnum::Task & type = CTaskEnum::oscillation,
   //                 const CCopasiContainer * pParent = NULL);
-  COscillationTask(const CCopasiTask::Type & type ,
+  COscillationTask(const CTaskEnum::Task & type ,
                    const CCopasiContainer * pParent);
 
   /**
@@ -93,20 +85,5 @@ public:
    * @return bool success
    */
   virtual bool process(const bool & useInitialValues);
-
-  /**
-   * Set the method type applied to solve the task
-   * @param const CCopasiMethod::SubType & type
-   * @return bool success
-   */
-  virtual bool setMethodType(const int & type);
-
-  /**
-   * Create a method of the specified type to solve the task.
-   * It is the duty of the caller to release the CCopasiMethod.
-   * @param const CCopasiMethod::SubType & type
-   * @return CCopasiMethod *
-   */
-  virtual CCopasiMethod * createMethod(const int & type) const;
 };
 #endif // COPASI_COscillationTask

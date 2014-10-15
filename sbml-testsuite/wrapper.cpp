@@ -266,7 +266,7 @@ int main(int argc, char** argv)
       CReportDefinitionVector* pReports = pDataModel->getReportDefinitionList();
       CReportDefinition* pReport = pReports->createReportDefinition("Report", "Output for SBML testsuite run");
       pReport->setSeparator(CCopasiReportSeparator(","));
-      pReport->setTaskType(CCopasiTask::timeCourse);
+      pReport->setTaskType(CTaskEnum::timeCourse);
       pReport->setIsTable(false);
       std::vector<CRegisteredObjectName>* pHeaderAddr = pReport->getHeaderAddr();
       std::vector<CRegisteredObjectName>* pBodyAddr = pReport->getBodyAddr();

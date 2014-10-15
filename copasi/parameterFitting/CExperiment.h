@@ -250,16 +250,16 @@ public:
 
   /**
    * set the experiment type
-   * @param const CCopasiTask::Type & experimentType
+   * @param const CTaskEnum::Task & experimentType
    * @return bool success
    */
-  bool setExperimentType(const CCopasiTask::Type & type);
+  bool setExperimentType(const CTaskEnum::Task & type);
 
   /**
    * Retrieve the experiment type
-   * @return const CCopasiTask::Type & experimentType
+   * @return const CTaskEnum::Task & experimentType
    */
-  const CCopasiTask::Type & getExperimentType() const;
+  const CTaskEnum::Task & getExperimentType() const;
 
   void setStartInSteadyState(bool flag);
   bool getStartInSteadyState() const;
@@ -567,7 +567,7 @@ private:
   /**
    * This is realized as a CCopasiParameter type UINT
    */
-  CCopasiTask::Type * mpTaskType;
+  CTaskEnum::Task * mpTaskType;
 
   /**
    * Indicates whether a time course is supposed to start in a steady state

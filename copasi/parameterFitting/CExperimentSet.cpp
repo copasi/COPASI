@@ -281,7 +281,7 @@ bool CExperimentSet::calculateStatistics()
   for (i = 0; i < imax; i++)
     {
       for (it = mpExperiments->begin() + mNonExperiments; it != end; ++it)
-        (*it)->updateFittedPointValues(i, (*it)->getExperimentType() != CCopasiTask::timeCourse); //false means without simulated data
+        (*it)->updateFittedPointValues(i, (*it)->getExperimentType() != CTaskEnum::timeCourse); //false means without simulated data
 
       pParentTask->output(COutputInterface::AFTER);
     }
@@ -294,7 +294,7 @@ bool CExperimentSet::calculateStatistics()
     {
       for (it = mpExperiments->begin() + mNonExperiments; it != end; ++it)
         {
-          if ((*it)->getExperimentType() == CCopasiTask::timeCourse)
+          if ((*it)->getExperimentType() == CTaskEnum::timeCourse)
             {
               (*it)->updateFittedPointValuesFromExtendedTimeSeries(i);
             }
@@ -361,7 +361,7 @@ CExperiment * CExperimentSet::getExperiment(const std::string & name)
 const CExperiment * CExperimentSet::getExperiment(const std::string & name) const
 {return static_cast<const CExperiment *>(getGroup(name));}
 
-bool CExperimentSet::hasDataForTaskType(const CCopasiTask::Type & type) const
+bool CExperimentSet::hasDataForTaskType(const CTaskEnum::Task & type) const
 {
   std::vector< CExperiment * >::const_iterator it = mpExperiments->begin() + mNonExperiments;
   std::vector< CExperiment * >::const_iterator end = mpExperiments->end();
@@ -393,7 +393,7 @@ bool CExperimentSet::hasStartInSteadyState() const
   return false;
 }
 
-const CCopasiTask::Type & CExperimentSet::getExperimentType(const size_t & index) const
+const CTaskEnum::Task & CExperimentSet::getExperimentType(const size_t & index) const
 {return getExperiment(index)->getExperimentType();}
 
 const CMatrix< C_FLOAT64 > & CExperimentSet::getIndependentData(const size_t & index) const

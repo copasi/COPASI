@@ -26,8 +26,10 @@
 #include "utilities/CProcessReport.h"
 #include "report/CCopasiObjectReference.h"
 
-COptMethodGASR::COptMethodGASR(const CCopasiContainer * pParent):
-  COptMethod(CCopasiTask::optimization, CCopasiMethod::GeneticAlgorithmSR, pParent),
+COptMethodGASR::COptMethodGASR(const CCopasiContainer * pParent,
+                               const CTaskEnum::Method & methodType,
+                               const CTaskEnum::Task & taskType):
+  COptMethod(pParent, methodType, taskType),
   mGenerations(0),
   mPopulationSize(0),
   mpRandom(NULL),
@@ -43,7 +45,6 @@ COptMethodGASR::COptMethodGASR(const CCopasiContainer * pParent):
   mBestValue(std::numeric_limits< C_FLOAT64 >::max()),
   mBestIndex(C_INVALID_INDEX),
   mGeneration(0)
-
 {
   addParameter("Number of Generations", CCopasiParameter::UINT, (unsigned C_INT32) 200);
   addParameter("Population Size", CCopasiParameter::UINT, (unsigned C_INT32) 20);

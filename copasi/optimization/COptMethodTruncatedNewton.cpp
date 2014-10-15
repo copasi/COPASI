@@ -22,8 +22,10 @@
 #include "parameterFitting/CFitProblem.h"
 #include "report/CCopasiObjectReference.h"
 
-COptMethodTruncatedNewton::COptMethodTruncatedNewton(const CCopasiContainer * pParent):
-  COptMethod(CCopasiTask::optimization, CCopasiMethod::TruncatedNewton, pParent),
+COptMethodTruncatedNewton::COptMethodTruncatedNewton(const CCopasiContainer * pParent,
+    const CTaskEnum::Method & methodType,
+    const CTaskEnum::Task & taskType):
+  COptMethod(pParent, methodType, taskType),
   mpTruncatedNewton(new FTruncatedNewtonTemplate<COptMethodTruncatedNewton>(this, &COptMethodTruncatedNewton::sFun)),
   mpCTruncatedNewton(new CTruncatedNewton())
 {initObjects();}

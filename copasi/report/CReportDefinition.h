@@ -45,7 +45,7 @@ class CReportDefinition : public CCopasiObject
 private:
   std::string mKey;
   std::string mComment;
-  CCopasiTask::Type mTaskType;
+  CTaskEnum::Task mTaskType;
 
   std::vector<CRegisteredObjectName> mHeaderVector;
   std::vector<CRegisteredObjectName> mBodyVector;
@@ -127,12 +127,12 @@ public:
   /**
    *
    */
-  bool setTaskType(const CCopasiTask::Type & taskType);
+  bool setTaskType(const CTaskEnum::Task & taskType);
 
   /**
    *
    */
-  const CCopasiTask::Type & getTaskType() const;
+  const CTaskEnum::Task & getTaskType() const;
 
   /**
    *

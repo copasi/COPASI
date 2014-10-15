@@ -23,19 +23,18 @@
 
 #include "CFitTask.h"
 #include "CFitProblem.h"
-#include "CFitMethod.h"
+#include "optimization/COptMethod.h"
 
 #include "utilities/CCopasiMethod.h"
 
 CFitTask::CFitTask(const CCopasiContainer * pParent,
-                   const CCopasiTask::Type & type):
+                   const CTaskEnum::Task & type):
   COptTask(pParent, type)
 {
   pdelete(mpProblem);
   mpProblem = new CFitProblem(type, this);
   pdelete(mpMethod);
-  mpMethod = CFitMethod::createMethod();
-  this->add(mpMethod, true);
+  mpMethod = createMethod(CTaskEnum::EvolutionaryProgram);
 
   ((COptMethod *) mpMethod)->setProblem((COptProblem *) mpProblem);
 }
@@ -47,7 +46,7 @@ CFitTask::CFitTask(const CFitTask & src,
   pdelete(mpProblem);
   mpProblem = new CFitProblem(*(CFitProblem *) src.mpProblem, this);
   pdelete(mpMethod);
-  mpMethod = CFitMethod::createMethod(src.mpMethod->getSubType());
+  mpMethod = createMethod(src.mpMethod->getSubType());
   this->add(mpMethod, true);
 
   ((COptMethod *) mpMethod)->setProblem((COptProblem *) mpProblem);
@@ -102,28 +101,6 @@ bool CFitTask::process(const bool & useInitialValues)
   output(COutputInterface::AFTER);
 
   return success;
-}
-
-bool CFitTask::setMethodType(const int & type)
-{
-  CCopasiMethod::SubType Type = (CCopasiMethod::SubType) type;
-
-  if (mpMethod->getSubType() == Type) return true;
-
-  pdelete(mpMethod);
-
-  mpMethod = createMethod(Type);
-  this->add(mpMethod, true);
-
-  return true;
-}
-
-// virtual
-CCopasiMethod * CFitTask::createMethod(const int & type) const
-{
-  CCopasiMethod::SubType Type = (CCopasiMethod::SubType) type;
-
-  return CFitMethod::createMethod(Type);
 }
 
 void CFitTask::fixBuild55()

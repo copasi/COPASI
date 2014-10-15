@@ -1203,7 +1203,7 @@ bool CCopasiXML::saveTaskList()
       Attributes.erase();
       Attributes.add("key", pTask->getKey());
       Attributes.add("name", pTask->getObjectName());
-      Attributes.add("type", CCopasiTask::XMLType[pTask->getType()]);
+      Attributes.add("type", CTaskEnum::TaskXML[pTask->getType()]);
       Attributes.add("scheduled", pTask->isScheduled() ? "true" : "false");
       Attributes.add("updateModel", pTask->isUpdateModel() ? "true" : "false");
 
@@ -1242,7 +1242,7 @@ bool CCopasiXML::saveTaskList()
 
       Attributes.erase();
       Attributes.add("name", tMethod->CCopasiParameter::getObjectName());
-      Attributes.add("type", CCopasiMethod::XMLSubType[tMethod->getSubType()]);
+      Attributes.add("type", CTaskEnum::MethodXML[tMethod->getSubType()]);
       startSaveElement("Method", Attributes);
       saveParameterGroup(* tMethod->CCopasiParameter::getValue().pGROUP);
       endSaveElement("Method");
@@ -1316,7 +1316,7 @@ bool CCopasiXML::saveReportList()
       Attributes.erase();
       Attributes.add("key", pReport->getKey());
       Attributes.add("name", pReport->getObjectName());
-      Attributes.add("taskType", CCopasiTask::XMLType[pReport->getTaskType()]);
+      Attributes.add("taskType", CTaskEnum::TaskXML[pReport->getTaskType()]);
       Attributes.add("separator", pReport->getSeparator().getStaticString());
       Attributes.add("precision", pReport->getPrecision());
 

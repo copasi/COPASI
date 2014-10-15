@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -35,16 +35,16 @@ public:
     name(""),
     description(""),
     isPlot(true),
-    mTaskType(CCopasiTask::steadyState),
-    mSecondaryTask(CCopasiTask::unset)
+    mTaskType(CTaskEnum::steadyState),
+    mSecondaryTask(CTaskEnum::UnsetTask)
   {}
 
   //C_INT32 id;
   std::string name;
   std::string description;
   bool isPlot;
-  CCopasiTask::Type mTaskType;
-  CCopasiTask::Type mSecondaryTask;
+  CTaskEnum::Task mTaskType;
+  CTaskEnum::Task mSecondaryTask;
 };
 
 class COutputAssistant
@@ -113,7 +113,7 @@ private:           //************************************
                                  bool logX,
                                  const std::vector<const CCopasiObject*> & y,
                                  bool logY,
-                                 const CCopasiTask::Type & taskType,
+                                 const CTaskEnum::Task & taskType,
                                  CCopasiDataModel* pDataModel,
                                  CCopasiTask *task = NULL);
 
@@ -121,7 +121,7 @@ private:           //************************************
   CReportDefinition* createTable(const std::string & name,
                                  const std::vector<const CCopasiObject*> & d,
                                  const std::string & comment,
-                                 const CCopasiTask::Type & taskType,
+                                 const CTaskEnum::Task & taskType,
                                  CCopasiDataModel* pDataModel);
 
   static const std::string emptyString;

@@ -1,17 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/lyap/CLyapProblem.cpp,v $
-//   $Revision: 1.6 $
-//   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2012/04/22 14:54:54 $
-// End CVS Header
-
-// Copyright (C) 2012 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2006 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -33,11 +30,11 @@
  *  Default constructor.
  */
 CLyapProblem::CLyapProblem(const CCopasiContainer * pParent):
-    CCopasiProblem(CCopasiTask::lyap, pParent),
-    mpExponentNumber(NULL),
-    //mpTimeSeriesRequested(NULL),
-    mpDivergenceRequested(NULL),
-    mpTransientTime(NULL)
+  CCopasiProblem(CTaskEnum::lyap, pParent),
+  mpExponentNumber(NULL),
+  //mpTimeSeriesRequested(NULL),
+  mpDivergenceRequested(NULL),
+  mpTransientTime(NULL)
 {
   initializeParameter();
   CONSTRUCTOR_TRACE;
@@ -49,11 +46,11 @@ CLyapProblem::CLyapProblem(const CCopasiContainer * pParent):
  */
 CLyapProblem::CLyapProblem(const CLyapProblem & src,
                            const CCopasiContainer * pParent):
-    CCopasiProblem(src, pParent),
-    mpExponentNumber(NULL),
-    //mpTimeSeriesRequested(NULL),
-    mpDivergenceRequested(NULL),
-    mpTransientTime(NULL)
+  CCopasiProblem(src, pParent),
+  mpExponentNumber(NULL),
+  //mpTimeSeriesRequested(NULL),
+  mpDivergenceRequested(NULL),
+  mpTransientTime(NULL)
 {
   initializeParameter();
   CONSTRUCTOR_TRACE;

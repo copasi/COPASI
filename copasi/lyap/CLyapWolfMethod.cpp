@@ -25,8 +25,10 @@
 #include "math/CMathContainer.h"
 #include "lapack/blaswrap.h"
 
-CLyapWolfMethod::CLyapWolfMethod(const CCopasiContainer * pParent):
-  CLyapMethod(CCopasiMethod::lyapWolf, pParent),
+CLyapWolfMethod::CLyapWolfMethod(const CCopasiContainer * pParent,
+                                 const CTaskEnum::Method & methodType,
+                                 const CTaskEnum::Task & taskType):
+  CLyapMethod(pParent, methodType, taskType),
   mContainerState()
 {
   assert((void *) &mData == (void *) &mData.dim);

@@ -30,17 +30,13 @@ class FDescent;
 
 class CStochDirectMethod : public CTrajectoryMethod
 {
-  friend CTrajectoryMethod *
-  CTrajectoryMethod::createMethod(CCopasiMethod::SubType subType);
-
 private:
-protected:
   /**
    * Default constructor.
-   * @param const CCopasiContainer * pParent (default: NULL)
    */
-  CStochDirectMethod(const CCopasiContainer * pParent = NULL);
+  CStochDirectMethod();
 
+protected:
   /**
    * Fire the next reaction if it fire before the endTime
    * @param C_FLOAT64 startTime
@@ -50,6 +46,16 @@ protected:
   C_FLOAT64 doSingleStep(C_FLOAT64 startTime, const C_FLOAT64 & endTime);
 
 public:
+  /**
+   * Specific constructor
+   * @param const CCopasiContainer * pParent
+   * @param const CTaskEnum::Method & methodType (default: directMethod)
+   * @param const CTaskEnum::Task & taskType (default: timeCourse)
+   */
+  CStochDirectMethod(const CCopasiContainer * pParent,
+                     const CTaskEnum::Method & methodType = CTaskEnum::directMethod,
+                     const CTaskEnum::Task & taskType = CTaskEnum::timeCourse);
+
   /**
    * Copy constructor.
    * @param const CStochDirectMethod & src,

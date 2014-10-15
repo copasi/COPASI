@@ -19,10 +19,18 @@ class CRandom;
 
 class COptMethodSS : public COptMethod
 {
-  friend COptMethod * COptMethod::createMethod(CCopasiMethod::SubType subType);
-
   // Operations
 public:
+  /**
+   * Specific constructor
+   * @param const CCopasiContainer * pParent
+   * @param const CTaskEnum::Method & methodType (default: ScatterSearch)
+   * @param const CTaskEnum::Task & taskType (default: optimization)
+   */
+  COptMethodSS(const CCopasiContainer * pParent,
+               const CTaskEnum::Method & methodType = CTaskEnum::ScatterSearch,
+               const CTaskEnum::Task & taskType = CTaskEnum::optimization);
+
   /**
    * Copy Constructor
    * @param const COptMethodSS & src
@@ -54,9 +62,8 @@ public:
 private:
   /**
    * Default Constructor
-   * @param const CCopasiContainer * pParent (default: NULL)
    */
-  COptMethodSS(const CCopasiContainer * pParent = NULL);
+  COptMethodSS();
 
   /**
    * Serialize the pool for debug

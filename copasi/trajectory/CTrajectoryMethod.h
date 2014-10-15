@@ -52,30 +52,20 @@ private:
    */
   CTrajectoryMethod();
 
-protected:
-  /**
-   * Default constructor.
-   * @param const CCopasiTask::Type & type
-   * @param const CCopasiMethod::SubType & subType
-   * @param const CCopasiContainer * pParent (default: NULL)
-   */
-  CTrajectoryMethod(const CCopasiTask::Type & type,
-                    const CCopasiMethod::SubType & subType,
-                    const CCopasiContainer * pParent = NULL);
-
 public:
   /**
-   * Create a trajectory method for a special problem.
-   * Note: the returned object has to be released after use with delete
-   * a problem is also passed so that the method has a chance to choose an
-   * appropriate simulation method.
+   * Specific constructor
+   * @param const CCopasiContainer * pParent
+   * @param const CTaskEnum::Method & methodType
+   * @param const CTaskEnum::Task & taskType (default: timeCourse)
    */
-  static CTrajectoryMethod *
-  createMethod(CCopasiMethod::SubType subType = CCopasiMethod::deterministic);
+  CTrajectoryMethod(const CCopasiContainer * pParent,
+                    const CTaskEnum::Method & methodType,
+                    const CTaskEnum::Task & taskType = CTaskEnum::timeCourse);
 
   /**
    * Copy constructor.
-   * @param "const CTrajectoryMethod &" src
+   * @param const CTrajectoryMethod & src
    * @param const CCopasiContainer * pParent (default: NULL)
    */
   CTrajectoryMethod(const CTrajectoryMethod & src,

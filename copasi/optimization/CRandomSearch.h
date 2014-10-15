@@ -1,17 +1,14 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/CRandomSearch.h,v $
-   $Revision: 1.13 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2011/03/07 19:31:26 $
-   End CVS Header */
-
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2002 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -22,13 +19,13 @@
 #ifndef COPASI_CRandomSearch
 #define COPASI_CRandomSearch
 
+#include "copasi/optimization/COptMethod.h"
+#include "copasi/randomGenerator/CRandom.h"
+#include "copasi/utilities/CVector.h"
+
 //class CRandom;
 //*** need to be added for definition
 class COptProblem;
-class COptMethod;
-
-#include "randomGenerator/CRandom.h"
-#include "utilities/CVector.h"
 
 // YOHE: this is an abstract class that contains many virtual functions
 // without definitions
@@ -37,8 +34,6 @@ class COptMethod;
 /** @dia:route COptMethod; v,46.9608,16.35,33,59.1652,34.05 */
 class CRandomSearch : public COptMethod
 {
-  friend COptMethod * COptMethod::createMethod(CCopasiMethod::SubType subType);
-
   // Operations
 private:
   /**
@@ -107,10 +102,22 @@ private:
 
 public:
   /**
+   * Specific constructor
+   * @param const CCopasiContainer * pParent
+   * @param const CTaskEnum::Method & methodType (default: RandomSearch)
+   * @param const CTaskEnum::Task & taskType (default: optimization)
+   */
+  CRandomSearch(const CCopasiContainer * pParent,
+                const CTaskEnum::Method & methodType = CTaskEnum::RandomSearch,
+                const CTaskEnum::Task & taskType = CTaskEnum::optimization);
+
+  /**
    * Copy Constructor
    * @param const CRandomSearch & src
+   * @param const CCopasiContainer * pParent (default: NULL)
    */
-  CRandomSearch(const CRandomSearch & src);
+  CRandomSearch(const CRandomSearch & src,
+                const CCopasiContainer * pParent = NULL);
 
   /**
    * Destructor

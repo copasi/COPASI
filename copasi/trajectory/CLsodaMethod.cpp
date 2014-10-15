@@ -23,10 +23,10 @@
 #include "model/CModel.h"
 #include "model/CState.h"
 
-CLsodaMethod::CLsodaMethod(const CCopasiTask::Type & type,
-                           const CCopasiMethod::SubType & subType,
-                           const CCopasiContainer * pParent):
-  CTrajectoryMethod(CCopasiTask::timeCourse, subType, pParent),
+CLsodaMethod::CLsodaMethod(const CCopasiContainer * pParent,
+                           const CTaskEnum::Method & methodType,
+                           const CTaskEnum::Task & taskType):
+  CTrajectoryMethod(pParent, methodType, taskType),
   mpReducedModel(NULL),
   mpRelativeTolerance(NULL),
   mpAbsoluteTolerance(NULL),

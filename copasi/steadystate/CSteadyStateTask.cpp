@@ -39,7 +39,7 @@
 #define XXXX_Reporting
 
 CSteadyStateTask::CSteadyStateTask(const CCopasiContainer * pParent,
-                                   const CCopasiTask::Type & type):
+                                   const CTaskEnum::Task & type):
   CCopasiTask(pParent, type),
   mSteadyState(),
   mJacobian(),
@@ -51,8 +51,7 @@ CSteadyStateTask::CSteadyStateTask(const CCopasiContainer * pParent,
 {
   mpProblem = new CSteadyStateProblem(this);
 
-  mpMethod = createMethod(CCopasiMethod::Newton);
-  this->add(mpMethod, true);
+  mpMethod = createMethod(CTaskEnum::Newton);
 
   initObjects();
 }
@@ -79,14 +78,6 @@ CSteadyStateTask::CSteadyStateTask(const CSteadyStateTask & src,
 
 CSteadyStateTask::~CSteadyStateTask()
 {}
-
-// virtual
-CCopasiMethod * CSteadyStateTask::createMethod(const int & type) const
-{
-  CCopasiMethod::SubType Type = (CCopasiMethod::SubType) type;
-
-  return CSteadyStateMethod::createMethod(Type);
-}
 
 void CSteadyStateTask::cleanup()
 {}
@@ -373,6 +364,18 @@ bool CSteadyStateTask::restore()
     }
 
   return success;
+}
+
+// virtual
+const CTaskEnum::Method * CSteadyStateTask::getValidMethods() const
+{
+  static const CTaskEnum::Method ValidMethods[] =
+  {
+    CTaskEnum::Newton,
+    CTaskEnum::UnsetMethod
+  };
+
+  return ValidMethods;
 }
 
 std::ostream &operator<<(std::ostream &os, const CSteadyStateTask &A)

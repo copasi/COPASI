@@ -1,11 +1,9 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/oscillation/COscillationMethod.h,v $
-//   $Revision: 1.1 $
-//   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2008/11/11 16:47:54 $
-// End CVS Header
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
@@ -19,83 +17,75 @@ class COscillationProblem;
 class COscillationTask;
 
 class COscillationMethod : public CCopasiMethod
-  {
-  public:
+{
+public:
 
-  protected:
+protected:
 
-    COscillationProblem * mpOscProblem;
+  COscillationProblem * mpOscProblem;
 
-    //    COptTask * mpParentTask;
+  //    COptTask * mpParentTask;
 
-  private:
-    /**
-     * Default constructor.
-     */
-    COscillationMethod();
+private:
+  /**
+   * Default constructor.
+   */
+  COscillationMethod();
 
-  protected:
-    /**
-     * Specific constructor
-     * @param const CCopasiTask::Type & type
-     * @param const CCopasiMethod::SubType & subType
-     * @param const CCopasiContainer * pParent (default: NULL)
-     */
-    COscillationMethod(const CCopasiTask::Type & taskType,
-                       const SubType & subType,
-                       const CCopasiContainer * pParent = NULL);
+public:
+  /**
+   * Specific constructor
+   * @param const CCopasiContainer * pParent
+   * @param const CTaskEnum::Method & methodType
+   * @param const CTaskEnum::Task & taskType (default: optimization)
+   */
+  COscillationMethod(const CCopasiContainer * pParent,
+                     const CTaskEnum::Method & methodType,
+                     const CTaskEnum::Task & taskType = CTaskEnum::optimization);
 
-  public:
-    /**
-     * Create a optimization method.
-     * Note: the returned object has to be released after use with delete
-     */
-    static COscillationMethod * createMethod(CCopasiMethod::SubType subType
-        = CCopasiMethod::oscillationIntegrate);
+  /**
+   * Copy constructor
+   * @param const COscillationMethod & src
+   * @param const CCopasiContainer * pParent (default: NULL)
+   */
+  COscillationMethod(const COscillationMethod & src,
+                     const CCopasiContainer * pParent = NULL);
 
-    /**
-     * Copy constructor
-     * @param const COscillationMethod & src
-     * @param const CCopasiContainer * pParent (default: NULL)
-     */
-    COscillationMethod(const COscillationMethod & src,
-                       const CCopasiContainer * pParent = NULL);
+  /**
+   * Destructor
+   */
+  virtual ~COscillationMethod();
 
-    /**
-     * Destructor
-     */
-    virtual ~COscillationMethod();
+  /**
+   * Execute the algorithm
+   * @ return success;
+   */
+  virtual bool run() = 0;
 
-    /**
-     * Execute the algorithm
-     * @ return success;
-     */
-    virtual bool run() = 0;
+  /**
+   * Set the problem to be optmised
+   * @param "COscillationProblem *" problem
+   */
+  void setProblem(COscillationProblem * problem);
 
-    /**
-     * Set the problem to be optmised
-     * @param "COscillationProblem *" problem
-     */
-    void setProblem(COscillationProblem * problem);
+  /**
+   * Initialize arrays and pointer.
+   * @return bool success
+   */
+  virtual bool initialize();
 
-    /**
-     * Initialize arrays and pointer.
-     * @return bool success
-     */
-    virtual bool initialize();
+  /**
+   * Check if the method is suitable for this problem
+   * @return bool suitability of the method
+   */
+  virtual bool isValidProblem(const CCopasiProblem * pProblem);
 
-    /**
-     * Check if the method is suitable for this problem
-     * @return bool suitability of the method
-     */
-    virtual bool isValidProblem(const CCopasiProblem * pProblem);
-
-  protected:
-    /**
-     * Cleanup arrays and pointers.
-     * @return bool success
-     */
-    virtual bool cleanup();
-  };
+protected:
+  /**
+   * Cleanup arrays and pointers.
+   * @return bool success
+   */
+  virtual bool cleanup();
+};
 
 #endif  // COPASI_COscillationMethod

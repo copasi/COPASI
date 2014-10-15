@@ -1,4 +1,4 @@
-// Copyright (C) 2011 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -60,8 +60,8 @@ void CQTaskMethodWidget::changeMethod(int /* index */)
         }
     }
 
-  CCopasiMethod::SubType Type =
-    toEnum(TO_UTF8(mpBoxMethod->currentText()), CCopasiMethod::SubTypeName, CCopasiMethod::unset);
+  CTaskEnum::Method Type =
+    toEnum(TO_UTF8(mpBoxMethod->currentText()), CTaskEnum::MethodName, CTaskEnum::UnsetMethod);
 
   setActiveMethod(Type);
   loadMethod();
@@ -90,12 +90,12 @@ void CQTaskMethodWidget::setTask(CCopasiTask * pTask)
     }
 }
 
-void CQTaskMethodWidget::setValidMethods(const unsigned int * validMethods)
+void CQTaskMethodWidget::setValidMethods(const CTaskEnum::Method * validMethods)
 {
   unsigned C_INT32 i;
 
-  for (i = 0; validMethods[i] != CCopasiMethod::unset; i++)
-    mpBoxMethod->insertItem(mpBoxMethod->count(), FROM_UTF8(CCopasiMethod::SubTypeName[validMethods[i]]));
+  for (i = 0; validMethods[i] != CTaskEnum::UnsetMethod; i++)
+    mpBoxMethod->insertItem(mpBoxMethod->count(), FROM_UTF8(CTaskEnum::MethodName[validMethods[i]]));
 
   if (i > 0)
     {
@@ -139,7 +139,7 @@ bool CQTaskMethodWidget::loadMethod()
 
   if (mShowMethods)
     {
-      mpBoxMethod->setCurrentIndex(mpBoxMethod->findText(FROM_UTF8(CCopasiMethod::SubTypeName[mpActiveMethod->getSubType()])));
+      mpBoxMethod->setCurrentIndex(mpBoxMethod->findText(FROM_UTF8(CTaskEnum::MethodName[mpActiveMethod->getSubType()])));
     }
 
   if (mShowMethodParameters)
@@ -228,7 +228,7 @@ void CQTaskMethodWidget::addToHistory(CCopasiMethod * pMethod)
       return;
     }
 
-  std::map< CCopasiMethod::SubType, CCopasiMethod * >::iterator found = mMethodHistory.find(pMethod->getSubType());
+  std::map< CTaskEnum::Method, CCopasiMethod * >::iterator found = mMethodHistory.find(pMethod->getSubType());
 
   if (found != mMethodHistory.end())
     {
@@ -251,7 +251,7 @@ void CQTaskMethodWidget::removeFromHistory(CCopasiMethod * pMethod)
       return;
     }
 
-  std::map< CCopasiMethod::SubType, CCopasiMethod * >::iterator found = mMethodHistory.find(pMethod->getSubType());
+  std::map< CTaskEnum::Method, CCopasiMethod * >::iterator found = mMethodHistory.find(pMethod->getSubType());
 
   if (found != mMethodHistory.end())
     {
@@ -259,9 +259,9 @@ void CQTaskMethodWidget::removeFromHistory(CCopasiMethod * pMethod)
     }
 }
 
-CCopasiMethod * CQTaskMethodWidget::getFromHistory(const CCopasiMethod::SubType & Type) const
+CCopasiMethod * CQTaskMethodWidget::getFromHistory(const CTaskEnum::Method & Type) const
 {
-  std::map< CCopasiMethod::SubType, CCopasiMethod * >::const_iterator found = mMethodHistory.find(Type);
+  std::map< CTaskEnum::Method, CCopasiMethod * >::const_iterator found = mMethodHistory.find(Type);
 
   if (found != mMethodHistory.end())
     {
@@ -271,7 +271,7 @@ CCopasiMethod * CQTaskMethodWidget::getFromHistory(const CCopasiMethod::SubType 
   return NULL;
 }
 
-void CQTaskMethodWidget::setActiveMethod(const CCopasiMethod::SubType & Type)
+void CQTaskMethodWidget::setActiveMethod(const CTaskEnum::Method & Type)
 {
   mpActiveMethod = getFromHistory(Type);
 
@@ -288,8 +288,8 @@ void CQTaskMethodWidget::setActiveMethod(const CCopasiMethod::SubType & Type)
 
 void CQTaskMethodWidget::clearHistory()
 {
-  std::map< CCopasiMethod::SubType, CCopasiMethod * >::iterator it = mMethodHistory.begin();
-  std::map< CCopasiMethod::SubType, CCopasiMethod * >::iterator end = mMethodHistory.end();
+  std::map< CTaskEnum::Method, CCopasiMethod * >::iterator it = mMethodHistory.begin();
+  std::map< CTaskEnum::Method, CCopasiMethod * >::iterator end = mMethodHistory.end();
 
   for (; it != end; ++it)
     {

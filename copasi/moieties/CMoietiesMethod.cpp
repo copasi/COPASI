@@ -16,30 +16,10 @@
 #include "math/CMathContainer.h"
 #include "model/CModel.h"
 
-CMoietiesMethod * CMoietiesMethod::createMethod(const CCopasiMethod::SubType & subType)
-{
-  CMoietiesMethod * pMethod = NULL;
-
-  switch (subType)
-    {
-      case Householder:
-      default:
-        pMethod = new CMoietiesMethod();
-        break;
-    }
-
-  return pMethod;
-}
-
-CMoietiesMethod::CMoietiesMethod():
-  CCopasiMethod(CCopasiTask::moieties, CCopasiMethod::Householder),
-  mpProblem(NULL)
-{}
-
-CMoietiesMethod::CMoietiesMethod(const CCopasiTask::Type & taskType,
-                                 const CMoietiesMethod::SubType & subType,
-                                 const CCopasiContainer * pParent):
-  CCopasiMethod(taskType, subType, pParent),
+CMoietiesMethod::CMoietiesMethod(const CCopasiContainer * pParent,
+                                 const CTaskEnum::Method & methodType,
+                                 const CTaskEnum::Task & taskType):
+  CCopasiMethod(pParent, methodType, taskType),
   mpProblem(NULL)
 {}
 

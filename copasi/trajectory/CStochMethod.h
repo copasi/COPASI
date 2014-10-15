@@ -25,9 +25,6 @@ class CRandom;
 
 class CStochMethod : public CTrajectoryMethod
 {
-  friend CTrajectoryMethod *
-  CTrajectoryMethod::createMethod(CCopasiMethod::SubType subType);
-
 protected:
 
   /**
@@ -74,14 +71,22 @@ private:
    */
   static C_INT32 checkModel(CModel * pmodel);
 
-protected:
   /**
    * Default constructor.
-   * @param const CCopasiContainer * pParent (default: NULL)
    */
-  CStochMethod(const CCopasiContainer * pParent = NULL);
+  CStochMethod();
 
 public:
+  /**
+   * Specific constructor
+   * @param const CCopasiContainer * pParent
+   * @param const CTaskEnum::Method & methodType (default: stochastic)
+   * @param const CTaskEnum::Task & taskType (default: timeCourse)
+   */
+  CStochMethod(const CCopasiContainer * pParent,
+               const CTaskEnum::Method & methodType = CTaskEnum::stochastic,
+               const CTaskEnum::Task & taskType = CTaskEnum::timeCourse);
+
   /**
    * Copy constructor.
    * @param const CStochMethod & src,

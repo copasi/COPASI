@@ -43,7 +43,7 @@
 #include "crosssection/CCrossSectionTask.h"
 
 CScanTask::CScanTask(const CCopasiContainer * pParent,
-                     const CCopasiTask::Type & type):
+                     const CTaskEnum::Task & type):
   CCopasiTask(pParent, type),
   mProgress(0),
   mhProgress(C_INVALID_INDEX),
@@ -52,8 +52,7 @@ CScanTask::CScanTask(const CCopasiContainer * pParent,
   mUseInitialValues(true)
 {
   mpProblem = new CScanProblem(this);
-  mpMethod = createMethod(CCopasiMethod::scanMethod);
-  this->add(mpMethod, true);
+  mpMethod = createMethod(CTaskEnum::scanMethod);
   static_cast< CScanMethod * >(mpMethod)->setProblem(static_cast< CScanProblem * >(mpProblem));
 }
 
@@ -67,21 +66,12 @@ CScanTask::CScanTask(const CScanTask & src,
   mUseInitialValues(true)
 {
   mpProblem = new CScanProblem(*(CScanProblem *) src.mpProblem, this);
-  mpMethod = createMethod(CCopasiMethod::scanMethod);
-  this->add(mpMethod, true);
+  mpMethod = createMethod(CTaskEnum::scanMethod);
   static_cast< CScanMethod * >(mpMethod)->setProblem(static_cast< CScanProblem * >(mpProblem));
 }
 
 CScanTask::~CScanTask()
 {cleanup();}
-
-// virtual
-CCopasiMethod * CScanTask::createMethod(const int & type) const
-{
-  CCopasiMethod::SubType Type = (CCopasiMethod::SubType) type;
-
-  return CScanMethod::createMethod(Type);
-}
 
 void CScanTask::cleanup()
 {}
@@ -197,6 +187,18 @@ bool CScanTask::restore()
   return success;
 }
 
+// virtual
+const CTaskEnum::Method * CScanTask::getValidMethods() const
+{
+  static const CTaskEnum::Method ValidMethods[] =
+  {
+    CTaskEnum::scanMethod,
+    CTaskEnum::UnsetMethod
+  };
+
+  return ValidMethods;
+}
+
 bool CScanTask::processCallback()
 {
   bool success = mpSubtask->process(mUseInitialValues);
@@ -242,58 +244,58 @@ bool CScanTask::initSubtask(const OutputFlag & /* of */,
   if (!pProblem) fatalError();
 
   //get the parameters from the problem
-  CCopasiTask::Type type = *(CCopasiTask::Type*) pProblem->getValue("Subtask").pUINT;
+  CTaskEnum::Task type = *(CTaskEnum::Task*) pProblem->getValue("Subtask").pUINT;
   CCopasiDataModel* pDataModel = getObjectDataModel();
   assert(pDataModel != NULL);
 
   switch (type)
     {
-      case CCopasiTask::steadyState:
+      case CTaskEnum::steadyState:
         mpSubtask = dynamic_cast<CCopasiTask*>
                     ((*pDataModel->getTaskList())["Steady-State"]);
         break;
 
-      case CCopasiTask::timeCourse:
+      case CTaskEnum::timeCourse:
         mpSubtask = dynamic_cast<CCopasiTask*>
                     ((*pDataModel->getTaskList())["Time-Course"]);
         break;
 
-      case CCopasiTask::mca:
+      case CTaskEnum::mca:
         mpSubtask = dynamic_cast<CCopasiTask*>
                     ((*pDataModel->getTaskList())["Metabolic Control Analysis"]);
         break;
 
-      case CCopasiTask::lyap:
+      case CTaskEnum::lyap:
         mpSubtask = dynamic_cast<CCopasiTask*>
                     ((*pDataModel->getTaskList())["Lyapunov Exponents"]);
         break;
 
-      case CCopasiTask::optimization:
+      case CTaskEnum::optimization:
         mpSubtask = dynamic_cast<CCopasiTask*>
                     ((*pDataModel->getTaskList())["Optimization"]);
         break;
 
-      case CCopasiTask::parameterFitting:
+      case CTaskEnum::parameterFitting:
         mpSubtask = dynamic_cast<CCopasiTask*>
                     ((*pDataModel->getTaskList())["Parameter Estimation"]);
         break;
 
-      case CCopasiTask::sens:
+      case CTaskEnum::sens:
         mpSubtask = dynamic_cast<CCopasiTask*>
                     ((*pDataModel->getTaskList())["Sensitivities"]);
         break;
 
-      case CCopasiTask::lna:
+      case CTaskEnum::lna:
         mpSubtask = dynamic_cast<CCopasiTask*>
                     ((*pDataModel->getTaskList())["Linear Noise Approximation"]);
         break;
 
-      case CCopasiTask::tssAnalysis :
+      case CTaskEnum::tssAnalysis :
         mpSubtask = dynamic_cast<CCopasiTask*>
-                    ((*pDataModel->getTaskList())[CCopasiTask::TypeName[tssAnalysis]]);
+                    ((*pDataModel->getTaskList())[CTaskEnum::TaskName[CTaskEnum::tssAnalysis]]);
         break;
 
-      case CCopasiTask::crosssection:
+      case CTaskEnum::crosssection:
         mpSubtask = dynamic_cast<CCopasiTask*>
                     ((*pDataModel->getTaskList())["Cross Section"]);
         break;

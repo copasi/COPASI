@@ -1,18 +1,6 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodCoranaWalk.h,v $
-   $Revision: 1.1 $
-   $Name:  $
-   $Author: mendes $
-   $Date: 2012/06/04 14:10:44 $
-   End CVS Header */
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
-// All rights reserved.
-
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
 /**
@@ -30,10 +18,18 @@ class CRandom;
 
 class COptMethodCoranaWalk : public COptMethod
 {
-  friend COptMethod * COptMethod::createMethod(CCopasiMethod::SubType subType);
-
   // Operations
 public:
+  /**
+   * Specific constructor
+   * @param const CCopasiContainer * pParent
+   * @param const CTaskEnum::Method & methodType (default: CoranaWalk)
+   * @param const CTaskEnum::Task & taskType (default: optimization)
+   */
+  COptMethodCoranaWalk(const CCopasiContainer * pParent,
+                       const CTaskEnum::Method & methodType = CTaskEnum::CoranaWalk,
+                       const CTaskEnum::Task & taskType = CTaskEnum::optimization);
+
   /**
    * Copy Constructor
    * @param const COptMethodCoranaWalk & src
@@ -58,9 +54,8 @@ public:
 private:
   /**
    * Default Constructor
-   * @param const CCopasiContainer * pParent (default: NULL)
    */
-  COptMethodCoranaWalk(const CCopasiContainer * pParent = NULL);
+  COptMethodCoranaWalk();
 
   /**
    * Initialize contained objects.

@@ -30,8 +30,10 @@
 
 #include "report/CCopasiObjectReference.h"
 
-COptMethodHookeJeeves::COptMethodHookeJeeves(const CCopasiContainer * pParent):
-  COptMethod(CCopasiTask::optimization, CCopasiMethod::HookeJeeves, pParent)
+COptMethodHookeJeeves::COptMethodHookeJeeves(const CCopasiContainer * pParent,
+    const CTaskEnum::Method & methodType,
+    const CTaskEnum::Task & taskType):
+  COptMethod(pParent, methodType, taskType)
 {
   addParameter("Iteration Limit", CCopasiParameter::UINT, (unsigned C_INT32) 50);
   addParameter("Tolerance", CCopasiParameter::DOUBLE, (C_FLOAT64) 1.e-005);

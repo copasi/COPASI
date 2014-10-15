@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -29,19 +29,22 @@ class CSteadyStateTask;
 
 class CMCAMethod: public CCopasiMethod
 {
+private:
+  /**
+   * Default constructor.
+   */
+  CMCAMethod();
+
 public:
   /**
-   * Create a MCA method.
-   * Note: the returned object has to be released after use with delete
+   * Specific constructor
+   * @param const CCopasiContainer * pParent
+   * @param const CTaskEnum::Method & methodType (default: mcaMethodReder)
+   * @param const CTaskEnum::Task & taskType (default: mca)
    */
-  static CMCAMethod * createMethod(CCopasiMethod::SubType subType = CCopasiMethod::mcaMethodReder);
-
-  /**
-   * Default constructor
-   * @param const CCopasiContainer * pParent (Default: NULL)
-   */
-  CMCAMethod(const CCopasiContainer * pParent = NULL);
-
+  CMCAMethod(const CCopasiContainer * pParent,
+             const CTaskEnum::Method & methodType = CTaskEnum::mcaMethodReder,
+             const CTaskEnum::Task & taskType = CTaskEnum::mca);
   /**
    * Copy constructor
    * @param const CMCAMethod & src

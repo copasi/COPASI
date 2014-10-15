@@ -45,8 +45,10 @@ C_INT32 CStochMethod::checkModel(CModel * C_UNUSED(pmodel))
   return 2; // suggest next reaction method
 }
 
-CStochMethod::CStochMethod(const CCopasiContainer * pParent):
-  CTrajectoryMethod(CCopasiTask::timeCourse, CCopasiMethod::stochastic, pParent),
+CStochMethod::CStochMethod(const CCopasiContainer * pParent,
+                           const CTaskEnum::Method & methodType,
+                           const CTaskEnum::Task & taskType):
+  CTrajectoryMethod(pParent, methodType, taskType),
   mpRandomGenerator(NULL),
   mA0(0.0),
   mNumReactions(0),

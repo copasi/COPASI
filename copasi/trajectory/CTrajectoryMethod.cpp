@@ -36,57 +36,13 @@
 #include "model/CCompartment.h"
 #include "math/CMathContainer.h"
 
-CTrajectoryMethod *
-CTrajectoryMethod::createMethod(CCopasiMethod::SubType subType)
-{
-  CTrajectoryMethod * pMethod = NULL;
-
-  switch (subType)
-    {
-      case unset:
-      case deterministic:
-        pMethod = new CLsodaMethod();
-        break;
-
-      case stochastic:
-        pMethod = new CStochNextReactionMethod();
-        break;
-
-      case directMethod:
-        pMethod = new CStochDirectMethod();
-        break;
-
-      case tauLeap:
-        pMethod = new CTauLeapMethod();
-        break;
-
-      case adaptiveSA:
-        pMethod = new CTrajAdaptiveSA();
-        break;
-
-      case hybridODE45:
-        pMethod = new CHybridMethodODE45();
-        break;
-
-      case DsaLsodar:
-        pMethod = new CTrajectoryMethodDsaLsodar();
-        break;
-
-      default:
-        fatalError();
-        break;
-    }
-
-  return pMethod;
-}
-
 /**
  *  Default constructor.
  */
-CTrajectoryMethod::CTrajectoryMethod(const CCopasiTask::Type & type,
-                                     const CCopasiMethod::SubType & subType,
-                                     const CCopasiContainer * pParent) :
-  CCopasiMethod(type, subType, pParent),
+CTrajectoryMethod::CTrajectoryMethod(const CCopasiContainer * pParent,
+                                     const CTaskEnum::Method & methodType,
+                                     const CTaskEnum::Task & taskType):
+  CCopasiMethod(pParent, methodType, taskType),
   mContainerState(),
   mpProblem(NULL),
   mpContainerStateTime(NULL),

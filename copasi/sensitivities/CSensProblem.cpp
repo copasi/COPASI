@@ -190,7 +190,7 @@ void CSensProblem::copyParameterGroupToSensItem(const CCopasiParameterGroup *pg,
  *  @param "CModel *" pModel
  */
 CSensProblem::CSensProblem(const CCopasiContainer * pParent):
-  CCopasiProblem(CCopasiTask::sens, pParent),
+  CCopasiProblem(CTaskEnum::sens, pParent),
   mpSubTaskType(NULL),
   mpTargetFunctions(NULL),
   mpVariablesGroup(NULL),

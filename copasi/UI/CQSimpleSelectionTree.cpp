@@ -473,7 +473,7 @@ void CQSimpleSelectionTree::populateTree(const CModel * pModel,
 
           CTSSAMethod* pMethod = dynamic_cast<CTSSAMethod *>(task->getMethod());
 
-          if (pMethod->getSubType() == CTSSAMethod::tssCSP)
+          if (pMethod->getSubType() == CTaskEnum::tssCSP)
             {
               const CCopasiContainer::objectMap * pObjects = & pMethod->getObjects();
               CCopasiContainer::objectMap::const_iterator its = pObjects->begin();

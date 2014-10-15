@@ -1,12 +1,4 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/common/local_common.cpp,v $
-//   $Revision: 1.2 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/12/19 16:20:15 $
-// End CVS Header
-
-// Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -59,7 +51,6 @@
 #include "parameterFitting/CExperimentObjectMap.h"
 #include "parameterFitting/CExperimentSet.h"
 #include "parameterFitting/CFitItem.h"
-#include "parameterFitting/CFitMethod.h"
 #include "parameterFitting/CFitProblem.h"
 #include "parameterFitting/CFitTask.h"
 #include "sensitivities/CSensMethod.h"
@@ -75,7 +66,6 @@ typedef CCopasiVectorN<CEvent> EventVectorN;
 
 typedef CCopasiVector<CEventAssignment> EventAssignmentVector;
 typedef CCopasiVectorN<CEventAssignment> EventAssignmentVectorN;
-
 
 typedef CCopasiVector<CCopasiTask> TaskVector;
 typedef CCopasiVectorN<CCopasiTask> TaskVectorN;
@@ -114,5 +104,3 @@ typedef CCopasiVectorN<CCopasiDataModel> CCopasiDataModelVectorN;
 
 #include "commandline/COptions.h"
 #include "report/CCopasiRootContainer.h"
-
-

@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CTSSAProblem.cpp,v $
-//   $Revision: 1.13 $
-//   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2012/04/22 15:41:46 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -43,13 +35,13 @@
  *  Default constructor.
  */
 CTSSAProblem::CTSSAProblem(const CCopasiContainer * pParent):
-    CCopasiProblem(CCopasiTask::timeCourse, pParent),
-    mpDuration(NULL),
-    mpStepSize(NULL),
-    mpStepNumber(NULL),
-    mpTimeSeriesRequested(NULL),
-    mpOutputStartTime(NULL),
-    mStepNumberSetLast(true)
+  CCopasiProblem(CTaskEnum::timeCourse, pParent),
+  mpDuration(NULL),
+  mpStepSize(NULL),
+  mpStepNumber(NULL),
+  mpTimeSeriesRequested(NULL),
+  mpOutputStartTime(NULL),
+  mStepNumberSetLast(true)
 {
   initializeParameter();
   initObjects();
@@ -62,13 +54,13 @@ CTSSAProblem::CTSSAProblem(const CCopasiContainer * pParent):
  */
 CTSSAProblem::CTSSAProblem(const CTSSAProblem & src,
                            const CCopasiContainer * pParent):
-    CCopasiProblem(src, pParent),
-    mpDuration(NULL),
-    mpStepSize(NULL),
-    mpStepNumber(NULL),
-    mpTimeSeriesRequested(NULL),
-    mpOutputStartTime(NULL),
-    mStepNumberSetLast(src.mStepNumberSetLast)
+  CCopasiProblem(src, pParent),
+  mpDuration(NULL),
+  mpStepSize(NULL),
+  mpStepNumber(NULL),
+  mpTimeSeriesRequested(NULL),
+  mpOutputStartTime(NULL),
+  mStepNumberSetLast(src.mStepNumberSetLast)
 {
   initializeParameter();
   initObjects();
@@ -100,7 +92,7 @@ bool CTSSAProblem::elevateChildren()
   // If we have an old COPASI file "Duration" is not set
   // but we can fix that.
   if (*mpDuration == 1.0) // the default
-    setDuration(*mpStepSize *(C_FLOAT64) *mpStepNumber);
+    setDuration(*mpStepSize * (C_FLOAT64) *mpStepNumber);
 
   removeParameter("Deuflhard Tolerance");
 

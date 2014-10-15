@@ -42,8 +42,10 @@
 #include "model/CCompartment.h"
 #include "model/CModel.h"
 
-CStochDirectMethod::CStochDirectMethod(const CCopasiContainer * pParent):
-  CTrajectoryMethod(CCopasiTask::timeCourse, CCopasiMethod::directMethod, pParent),
+CStochDirectMethod::CStochDirectMethod(const CCopasiContainer * pParent,
+                                       const CTaskEnum::Method & methodType,
+                                       const CTaskEnum::Task & taskType):
+  CTrajectoryMethod(pParent, methodType, taskType),
   mpRandomGenerator(NULL),
   mNumReactions(0),
   mMaxSteps(1000000),

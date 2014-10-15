@@ -39,10 +39,10 @@ public:
   /**
    * Specific constructor
    * @param const CCopasiContainer * pParent
-   * @param const CCopasiTask::Type & type (default: parameterFitting)
+   * @param const CTaskEnum::Task & type (default: parameterFitting)
    */
   CFitTask(const CCopasiContainer * pParent,
-           const CCopasiTask::Type & type = CCopasiTask::parameterFitting);
+           const CTaskEnum::Task & type = CTaskEnum::parameterFitting);
 
   /**
    * Copy constructor
@@ -87,21 +87,6 @@ public:
    * @return bool success
    */
   virtual bool process(const bool & useInitialValues);
-
-  /**
-   * Set the method type applied to solve the task
-   * @param const CCopasiMethod::SubType & type
-   * @return bool success
-   */
-  virtual bool setMethodType(const int & type);
-
-  /**
-   * Create a method of the specified type to solve the task.
-   * It is the duty of the caller to release the CCopasiMethod.
-   * @param const CCopasiMethod::SubType & type
-   * @return CCopasiMethod *
-   */
-  virtual CCopasiMethod * createMethod(const int & type) const;
 
   /**
    * Fix files written with Version 4.10.55, which wrote the square root of user defined weights for the

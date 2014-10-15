@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -53,48 +53,48 @@ void CScanWidgetTask::init()
 // virtual
 void CScanWidgetTask::load(const CScanProblem * pg)
 {
-  CCopasiTask::Type type = pg->getSubtask();
+  CTaskEnum::Task type = pg->getSubtask();
   int n;
 
   switch (type)
     {
-      case CCopasiTask::steadyState:
+      case CTaskEnum::steadyState:
         n = 0;
         break;
 
-      case CCopasiTask::timeCourse:
+      case CTaskEnum::timeCourse:
         n = 1;
         break;
 
-      case CCopasiTask::mca:
+      case CTaskEnum::mca:
         n = 2;
         break;
 
-      case CCopasiTask::lyap:
+      case CTaskEnum::lyap:
         n = 3;
         break;
 
-      case CCopasiTask::optimization:
+      case CTaskEnum::optimization:
         n = 4;
         break;
 
-      case CCopasiTask::parameterFitting:
+      case CTaskEnum::parameterFitting:
         n = 5;
         break;
 
-      case CCopasiTask::sens:
+      case CTaskEnum::sens:
         n = 6;
         break;
 
-      case CCopasiTask::lna:
+      case CTaskEnum::lna:
         n = 7;
         break;
 
-      case CCopasiTask::crosssection:
+      case CTaskEnum::crosssection:
         n = 8;
         break;
 
-      case CCopasiTask::tssAnalysis:
+      case CTaskEnum::tssAnalysis:
         n = 9;
         break;
 
@@ -118,52 +118,52 @@ bool CScanWidgetTask::save(CScanProblem * pg) const
   bool changed = false;
   int type = comboType->currentIndex();
 
-  CCopasiTask::Type Type;
+  CTaskEnum::Task Type;
 
   switch (type)
     {
       case 0:
-        Type = CCopasiTask::steadyState;
+        Type = CTaskEnum::steadyState;
         break;
 
       case 1:
-        Type = CCopasiTask::timeCourse;
+        Type = CTaskEnum::timeCourse;
         break;
 
       case 2:
-        Type = CCopasiTask::mca;
+        Type = CTaskEnum::mca;
         break;
 
       case 3:
-        Type = CCopasiTask::lyap;
+        Type = CTaskEnum::lyap;
         break;
 
       case 4:
-        Type = CCopasiTask::optimization;
+        Type = CTaskEnum::optimization;
         break;
 
       case 5:
-        Type = CCopasiTask::parameterFitting;
+        Type = CTaskEnum::parameterFitting;
         break;
 
       case 6:
-        Type = CCopasiTask::sens;
+        Type = CTaskEnum::sens;
         break;
 
       case 7:
-        Type = CCopasiTask::lna;
+        Type = CTaskEnum::lna;
         break;
 
       case 8:
-        Type = CCopasiTask::crosssection;
+        Type = CTaskEnum::crosssection;
         break;
 
       case 9:
-        Type = CCopasiTask::tssAnalysis;
+        Type = CTaskEnum::tssAnalysis;
         break;
 
       default :
-        Type = CCopasiTask::steadyState;
+        Type = CTaskEnum::steadyState;
         break;
     }
 

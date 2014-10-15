@@ -38,7 +38,7 @@
  *  @param "CModel *" pModel
  */
 CMCAProblem::CMCAProblem(const CCopasiContainer * pParent):
-  CCopasiProblem(CCopasiTask::mca, pParent),
+  CCopasiProblem(CTaskEnum::mca, pParent),
   mInitialState()
 {
   //  addParameter("SteadyStateRequested", CCopasiParameter::BOOL, true);

@@ -49,16 +49,17 @@ bool tble(const C_FLOAT64 & d1, const C_FLOAT64 & d2)
 bool tbl(const C_FLOAT64 & d1, const C_FLOAT64 & d2)
 {return (d1 > d2);}
 
-const unsigned int CTSSATask::ValidMethods[] =
+// static
+const CTaskEnum::Method CTSSATask::ValidMethods[] =
 {
-  CCopasiMethod::tssILDM,
-  CCopasiMethod::tssILDMModified,
-  CCopasiMethod::tssCSP,
-  CCopasiMethod::unset
+  CTaskEnum::tssILDM,
+  CTaskEnum::tssILDMModified,
+  CTaskEnum::tssCSP,
+  CTaskEnum::UnsetMethod
 };
 
 CTSSATask::CTSSATask(const CCopasiContainer * pParent,
-                     const CCopasiTask::Type & type):
+                     const CTaskEnum::Task & type):
   CCopasiTask(pParent, type),
   mTimeSeriesRequested(true),
   mTimeSeries(),
@@ -68,8 +69,7 @@ CTSSATask::CTSSATask(const CCopasiContainer * pParent,
   mpContainerStateTime(NULL)
 {
   mpProblem = new CTSSAProblem(this);
-  mpMethod = createMethod(CCopasiMethod::tssILDM);
-  this->add(mpMethod, true);
+  mpMethod = createMethod(CTaskEnum::tssILDM);
 
   CCopasiParameter * pParameter = mpMethod->getParameter("Integrate Reduced Model");
 
@@ -376,28 +376,10 @@ bool CTSSATask::restore()
   return success;
 }
 
-bool CTSSATask::setMethodType(const int & type)
-{
-  CCopasiMethod::SubType Type = (CCopasiMethod::SubType) type;
-
-  if (!isValidMethod(Type, ValidMethods)) return false;
-
-  if (mpMethod->getSubType() == Type) return true;
-
-  pdelete(mpMethod);
-  mpMethod = createMethod(Type);
-  this->add(mpMethod, true);
-  //mpMethod->setObjectParent(this);
-
-  return true;
-}
-
 // virtual
-CCopasiMethod * CTSSATask::createMethod(const int & type) const
+const CTaskEnum::Method * CTSSATask::getValidMethods() const
 {
-  CCopasiMethod::SubType Type = (CCopasiMethod::SubType) type;
-
-  return CTSSAMethod::createMethod(Type);
+  return CTSSATask::ValidMethods;
 }
 
 const CTimeSeries & CTSSATask::getTimeSeries() const

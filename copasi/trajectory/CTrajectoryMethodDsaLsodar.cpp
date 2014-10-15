@@ -261,9 +261,10 @@ bool CTrajectoryMethodDsaLsodar::CPartition::rePartition(const CVectorCore< C_FL
 /**
  *   Default constructor.
  */
-CTrajectoryMethodDsaLsodar::CTrajectoryMethodDsaLsodar(const CCopasiMethod::SubType & subType,
-    const CCopasiContainer * pParent):
-  CLsodaMethod(CCopasiTask::timeCourse, subType, pParent)
+CTrajectoryMethodDsaLsodar::CTrajectoryMethodDsaLsodar(const CCopasiContainer * pParent,
+    const CTaskEnum::Method & methodType,
+    const CTaskEnum::Task & taskType):
+  CLsodaMethod(pParent, methodType, taskType)
 {
   mpRandomGenerator = CRandom::createGenerator(CRandom::mt19937);
   initializeParameter();

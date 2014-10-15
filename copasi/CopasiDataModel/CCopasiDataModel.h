@@ -206,7 +206,7 @@ public:
   const CModel * getModel() const;
   CCopasiVectorN< CCopasiTask > * getTaskList();
   const CCopasiVectorN< CCopasiTask > * getTaskList() const;
-  CCopasiTask * addTask(const CCopasiTask::Type & taskType);
+  CCopasiTask * addTask(const CTaskEnum::Task & taskType);
   bool addDefaultTasks();
   /**
    * Appends pointers to tasks, which are dependent on any of the candidates
@@ -220,7 +220,7 @@ public:
 
   const CReportDefinitionVector * getReportDefinitionList() const;
   CReportDefinitionVector * getReportDefinitionList();
-  CReportDefinition * addReport(const CCopasiTask::Type & taskType);
+  CReportDefinition * addReport(const CTaskEnum::Task & taskType);
   bool addDefaultReports();
 
   const COutputDefinitionVector * getPlotDefinitionList() const;

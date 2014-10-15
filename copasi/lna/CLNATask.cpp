@@ -27,12 +27,12 @@
 #define XXXX_Reporting
 
 CLNATask::CLNATask(const CCopasiContainer * pParent,
-                   const CCopasiTask::Type & type):
+                   const CTaskEnum::Task & type):
   CCopasiTask(pParent, type)
 {
   mpProblem = new CLNAProblem(this);
 
-  mpMethod = createMethod(CCopasiMethod::linearNoiseApproximation);
+  mpMethod = createMethod(CTaskEnum::linearNoiseApproximation);
   this->add(mpMethod, true);
 }
 
@@ -49,14 +49,6 @@ CLNATask::CLNATask(const CLNATask & src,
 
 CLNATask::~CLNATask()
 {}
-
-// virtual
-CCopasiMethod * CLNATask::createMethod(const int & type) const
-{
-  CCopasiMethod::SubType Type = (CCopasiMethod::SubType) type;
-
-  return CLNAMethod::createMethod(Type);
-}
 
 void CLNATask::cleanup()
 {}
@@ -199,6 +191,18 @@ bool CLNATask::restore()
     success &= pSubTask->restore();
 
   return success;
+}
+
+// virtual
+const CTaskEnum::Method * CLNATask::getValidMethods() const
+{
+  static const CTaskEnum::Method ValidMethods[] =
+  {
+    CTaskEnum::linearNoiseApproximation,
+    CTaskEnum::UnsetMethod
+  };
+
+  return ValidMethods;
 }
 
 std::ostream &operator<<(std::ostream &os, const CLNATask & C_UNUSED(A))

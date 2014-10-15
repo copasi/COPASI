@@ -1,22 +1,14 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodSteepestDescent.h,v $
-   $Revision: 1.12 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2011/03/07 19:31:27 $
-   End CVS Header */
-
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2005 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -31,15 +23,12 @@ class FDescent;
 
 class COptMethodSteepestDescent: public COptMethod
 {
-  friend COptMethod * COptMethod::createMethod(CCopasiMethod::SubType subType);
-
   // Operations
 private:
-
   /**
-   * Default Constructor
+   * Default constructor.
    */
-  COptMethodSteepestDescent(const CCopasiContainer * pParent = NULL);
+  COptMethodSteepestDescent();
 
   /**
    * Initialize arrays and pointer.
@@ -78,6 +67,16 @@ private:
   void initObjects();
 
 public:
+  /**
+   * Specific constructor
+   * @param const CCopasiContainer * pParent
+   * @param const CTaskEnum::Method & methodType (default: SteepestDescent)
+   * @param const CTaskEnum::Task & taskType (default: optimization)
+   */
+  COptMethodSteepestDescent(const CCopasiContainer * pParent,
+                            const CTaskEnum::Method & methodType = CTaskEnum::SteepestDescent,
+                            const CTaskEnum::Task & taskType = CTaskEnum::optimization);
+
   /**
    * Copy Constructor
    * @param const COptMethodSteepestDescent & src

@@ -32,31 +32,13 @@
 #include "math/CMathContainer.h"
 #include "model/CModel.h"
 
-CSteadyStateMethod *
-CSteadyStateMethod::createMethod(CCopasiMethod::SubType subType)
-{
-  CSteadyStateMethod * pMethod = NULL;
-
-  switch (subType)
-    {
-      case unset:
-      case Newton:
-        pMethod = new CNewtonMethod();
-        break;
-
-      default:
-        fatalError();
-    }
-
-  return pMethod;
-}
-
 /**
  *  Default constructor.
  */
-CSteadyStateMethod::CSteadyStateMethod(CCopasiMethod::SubType subType,
-                                       const CCopasiContainer * pParent):
-  CCopasiMethod(CCopasiTask::steadyState, subType, pParent),
+CSteadyStateMethod::CSteadyStateMethod(const CCopasiContainer * pParent,
+                                       const CTaskEnum::Method & methodType,
+                                       const CTaskEnum::Task & taskType):
+  CCopasiMethod(pParent, methodType, taskType),
   mpProblem(NULL),
   mContainerState(),
   mContainerStateReduced(),

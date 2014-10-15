@@ -59,8 +59,10 @@
 /**
  * Default constructor.
  */
-CHybridMethodODE45::CHybridMethodODE45(const CCopasiContainer * pParent):
-  CTrajectoryMethod(CCopasiTask::timeCourse, CCopasiMethod::hybridODE45, pParent)
+CHybridMethodODE45::CHybridMethodODE45(const CCopasiContainer * pParent,
+                                       const CTaskEnum::Method & methodType,
+                                       const CTaskEnum::Task & taskType):
+  CTrajectoryMethod(pParent, methodType, taskType)
 {
   assert((void *) &mData == (void *) &mData.dim);
   mData.pMethod = this;

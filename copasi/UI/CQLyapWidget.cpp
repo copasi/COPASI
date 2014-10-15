@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -65,9 +65,6 @@ bool CQLyapWidget::taskFinishedEvent()
   mpListView->switchToOtherWidget(261, ""); //change to the results window
   return true;
 }
-
-CCopasiMethod * CQLyapWidget::createMethod(const CCopasiMethod::SubType & type)
-{return CLyapMethod::createMethod(type);}
 
 bool CQLyapWidget::loadTask()
 {

@@ -37,49 +37,10 @@
 #include "math/CMathContainer.h"
 #include "model/CModel.h"
 
-CEFMMethod * CEFMMethod::createMethod(CCopasiMethod::SubType subType)
-{
-  CEFMMethod * pMethod = NULL;
-
-  switch (subType)
-    {
-      case EFMAlgorithm:
-        pMethod = new CEFMAlgorithm();
-        break;
-
-      case EFMBitPatternTreeAlgorithm:
-        pMethod = new CBitPatternTreeMethod();
-        break;
-
-      case EFMBitPatternAlgorithm:
-        pMethod = new CBitPatternMethod();
-        break;
-
-#ifdef COPASI_SSA
-      case stoichiometricStabilityAnalysis:
-        pMethod = new CSSAMethod();
-        break;
-#endif
-
-      default:
-        pMethod = new CEFMAlgorithm();
-        break;
-    }
-
-  return pMethod;
-}
-
-// Default constructor
-CEFMMethod::CEFMMethod():
-  CCopasiMethod(CCopasiTask::fluxMode, CCopasiMethod::unset),
-  mpFluxModes(NULL),
-  mpReorderedReactions(NULL)
-{CONSTRUCTOR_TRACE;}
-
-CEFMMethod::CEFMMethod(const CCopasiTask::Type & taskType,
-                       const CEFMMethod::SubType & subType,
-                       const CCopasiContainer * pParent):
-  CCopasiMethod(taskType, subType, pParent),
+CEFMMethod::CEFMMethod(const CCopasiContainer * pParent,
+                       const CTaskEnum::Method & methodType,
+                       const CTaskEnum::Task & taskType):
+  CCopasiMethod(pParent, methodType, taskType),
   mpFluxModes(NULL),
   mpReorderedReactions(NULL)
 {CONSTRUCTOR_TRACE;}
