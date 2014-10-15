@@ -35,6 +35,9 @@
 
 
 
+
+
+
 %{
 
 #include "CopasiDataModel/CCopasiDataModel.h"
@@ -295,6 +298,11 @@
       }
     }
 
+    unsigned C_INT32 getNumTasks()
+    {
+     return (unsigned C_INT32) self->getTaskList()->size();
+    } 
+    
     CCopasiTask* getTask(unsigned C_INT32 index)
     {
       try

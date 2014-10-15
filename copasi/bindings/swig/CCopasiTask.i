@@ -22,6 +22,9 @@
 
 
 
+
+
+
 %include exception.i
 
 %{
@@ -41,7 +44,9 @@
 %ignore CCopasiTask::getCallBack;
 %ignore CCopasiTask::setCallBack;
 %ignore CCopasiTask::isValidMethod;
-%ignore CCopasiTask::initialize;
+%ignore CCopasiTask::initialize(const OutputFlag & of,
+                          COutputHandler * pOutputHandler,
+                          std::ostream * pOstream);
 
 #if (defined SWIGJAVA || defined SWIGCSHARP)
 // remove some const methods to get rid of warnings
@@ -117,7 +122,35 @@
       return self->Warning;
     }
   
- 
+
+    bool initialize(int outputFlags)
+    {
+         bool success = true;
+        CCopasiMessage::clearDeque();
+        self->Warning = "";
+        self->Error = "";
+        CCopasiDataModel* pDataModel=self->getObjectDataModel();
+        // Initialize the task
+        try
+        {
+          if (!self->initialize((CCopasiTask::OutputFlag)outputFlags, pDataModel, NULL))
+          {
+            throw CCopasiException(CCopasiMessage::peekLastMessage());
+          }
+        }
+
+        catch (CCopasiException &)
+        {
+          if (CCopasiMessage::peekLastMessage().getNumber() != MCCopasiMessage + 1)
+          {
+            self->Error = CCopasiMessage::getAllMessageText();
+            success = false;
+            
+          }
+        }
+        return success;
+    }
+  
     bool processWithOutputFlags(bool useInitialValues, int outputFlags) 
       {
         bool success = true;
