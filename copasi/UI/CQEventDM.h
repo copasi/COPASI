@@ -22,6 +22,10 @@
 #include "model/CModel.h"
 #include "CQBaseDataModel.h"
 
+#ifdef COPASI_UNDO
+class UndoEventData;
+#endif
+
 #define COL_NAME_EVENTS             1
 #define COL_TRIGGER_EVENTS          2
 #define COL_DELAYED_EVENTS          3
@@ -34,6 +38,12 @@ class CQEventDM : public CQBaseDataModel
 {
   Q_OBJECT
 
+#ifdef COPASI_UNDO
+  friend class EventDataChangeCommand;
+  friend class InsertEventRowsCommand;
+#endif
+
+
 public:
   CQEventDM(QObject *parent = 0);
   virtual int rowCount(const QModelIndex &parent = QModelIndex()) const;
@@ -45,6 +55,22 @@ public:
   bool setData(const QModelIndex &index, const QVariant &value,
                int role = Qt::EditRole);
   bool removeRows(QModelIndexList rows, const QModelIndex &index = QModelIndex());
+
+  //TODO Undo
+#ifdef COPASI_UNDO
+  bool eventDataChange(const QModelIndex &index, const QVariant &value, int role);
+  void insertNewEventRow(int position, int rows, const QModelIndex&);
+  void addEventRow(UndoEventData *pEventData);
+  void deleteEventRow(UndoEventData *pEventData);
+  bool removeEventRows(QModelIndexList rows, const QModelIndex&);
+  bool insertEventRows(QList <UndoEventData *> pGlobalQuatityData);
+  void deleteEventRows(QList <UndoEventData *> pEventData);
+  bool removeAllEventRows();
+  bool clear();
+
+  signals:
+  void changeWidget(const size_t & id);
+#endif
 
 protected:
   bool insertRows(int position, int rows, const QModelIndex &index = QModelIndex());

@@ -12,7 +12,6 @@
 #include "UndoData.h"
 
 class UndoReactionData;
-class CExpression;
 class CModelValue;
 
 class UndoGlobalQuantityData: public UndoData {

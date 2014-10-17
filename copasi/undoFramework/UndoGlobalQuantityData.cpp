@@ -8,7 +8,6 @@
 #include <QtCore/QList>
 
 #include "model/CModelValue.h"
-#include "function/CExpression.h"
 #include "UndoGlobalQuantityData.h"
 #include "UndoReactionData.h"
 

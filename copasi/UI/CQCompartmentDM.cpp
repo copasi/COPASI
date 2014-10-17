@@ -592,13 +592,12 @@ bool CQCompartmentDM::insertCompartmentRows(QList <UndoCompartmentData *> pData)
 			{
 				UndoGlobalQuantityData * gData = *g;
 				CModelValue *pGlobalQuantity =  pModel->createModelValue(gData->getName());
-						if(gData->isFixed()){
-									pGlobalQuantity->setInitialValue(gData->getInitialValue());
-								}else if(!gData->isFixed()){
-									std::string my = gData->getExpression();
-									pGlobalQuantity->setExpression(my);
-								}
 				pGlobalQuantity->setStatus(gData->getStatus());
+				if(gData->isFixed()){
+					pGlobalQuantity->setInitialValue(gData->getInitialValue());
+				}else if(!gData->isFixed()){
+					pGlobalQuantity->setExpression(gData->getExpression());
+				}
 				emit notifyGUI(ListViews::MODELVALUE, ListViews::ADD, pGlobalQuantity->getKey());
 			}
 		}

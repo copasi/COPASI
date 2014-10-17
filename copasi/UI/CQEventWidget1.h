@@ -15,6 +15,11 @@
 #ifndef CQEVENTWIDGET1_H
 #define CQEVENTWIDGET1_H
 
+
+#ifdef COPASI_UNDO
+class UndoEventData;
+#endif
+
 #include <QtCore/QVariant>
 
 #include "ui_CQEventWidget1.h"
@@ -29,6 +34,12 @@ class CExpression;
 class CQEventWidget1 : public CopasiWidget, public Ui::CQEventWidget1
 {
   Q_OBJECT
+
+
+#ifdef COPASI_UNDO
+  friend class DeleteEventCommand;
+  friend class CreateNewEventCommand;
+#endif
 
 public:
   CQEventWidget1(QWidget* parent = 0, const char* name = 0);
@@ -68,6 +79,15 @@ private slots:
   void slotSelectObject();
   void slotActualizeAssignmentExpression(int index);
   void slotChooseDelay(int choice);
+
+  //additional functions for UNDO framework
+#ifdef COPASI_UNDO
+  void deleteEvent();
+  void addEvent(UndoEventData *pSData);
+  void createNewEvent();
+  void deleteEvent(UndoEventData *pSData);
+  void eventTypeChanged(int type);
+#endif
 };
 
 #endif // CQEVENTWIDGET1_H

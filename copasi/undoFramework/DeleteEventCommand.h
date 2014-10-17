@@ -1,0 +1,30 @@
+/*
+ * DeleteEventCommand.h
+ *
+ *  Created on: 14 Oct 2014
+ *      Author: dada
+ */
+
+#ifndef DELETEEVENTCOMMAND_H_
+#define DELETEEVENTCOMMAND_H_
+
+#include "CCopasiUndoCommand.h"
+
+class UndoEventData;
+class CQEventWidget1;
+
+class DeleteEventCommand: public CCopasiUndoCommand {
+public:
+	DeleteEventCommand(CQEventWidget1 *pEventWidget1);
+	void redo();
+	void undo();
+	QString deleteEventText(std::string &name) const;
+	virtual ~DeleteEventCommand();
+
+private:
+	bool mFirstTime;
+	UndoEventData *mpEventData;
+	CQEventWidget1* mpEVentWidget1;
+};
+
+#endif /* DELETEEVENTCOMMAND_H_ */

@@ -63,7 +63,7 @@ void RemoveGlobalQuantityRowsCommand::undo(){
 }
 
 QString RemoveGlobalQuantityRowsCommand::removeGlobalQuantityRowsText() const {
-	return QObject::tr(": Removed Global Quantity Rows");
+	return QObject::tr(": Removed Global Quantity");
 }
 
 RemoveGlobalQuantityRowsCommand::~RemoveGlobalQuantityRowsCommand() {
