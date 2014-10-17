@@ -1879,61 +1879,6 @@ bool CCopasiDataModel::removeLayout(const std::string & key)
   return true;
 }
 
-CObjectInterface * CCopasiDataModel::_getObjectFromCN(const CObjectInterface::ContainerList & listOfContainer,
-    const CCopasiObjectName & objName) const
-{
-  const CObjectInterface * pObject = NULL;
-  const CCopasiContainer* pContainer;
-  CCopasiObjectName ContainerName;
-  size_t containerIndex;
-  std::string::size_type pos;
-
-  //favor to search the list of container first
-  for (containerIndex = 0;
-       containerIndex < listOfContainer.size() && pObject == NULL;
-       containerIndex++)
-    {
-      pContainer = listOfContainer[containerIndex];
-
-      if (pContainer == NULL)
-        {
-          continue;
-        }
-
-      ContainerName = pContainer->getCN();
-
-      while (ContainerName.getRemainder() != "")
-        {
-          ContainerName = ContainerName.getRemainder();
-        }
-
-      if ((pos = objName.find(ContainerName)) == std::string::npos)
-        continue;
-
-      if (pos + ContainerName.length() == objName.length())
-        pObject = pContainer;
-      else
-        pObject = pContainer->getObject(objName.substr(pos + ContainerName.length() + 1));
-    }
-
-  // If we have not found the object in the context we search the whole data model.
-  if (pObject == NULL)
-    {
-      pObject = getObject(objName);
-    }
-
-  // if still not found search the function database in the root container
-  if (pObject == NULL)
-    pObject = CCopasiRootContainer::getFunctionList()->getObject(objName);
-
-  return const_cast< CObjectInterface * >(pObject);
-}
-
-CCopasiObject * CCopasiDataModel::_getDataObject(const CCopasiObjectName & CN) const
-{
-  return dynamic_cast< CCopasiObject *>(const_cast< CObjectInterface * >(getObject(CN)));
-}
-
 const std::string& CCopasiDataModel::getReferenceDirectory() const
 {
   return mData.mReferenceDir;
