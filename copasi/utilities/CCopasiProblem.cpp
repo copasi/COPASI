@@ -44,7 +44,14 @@ CCopasiProblem::CCopasiProblem(const CTaskEnum::Task & type,
   mpContainer(NULL),
   mpCallBack(NULL),
   mpReport(NULL)
-{}
+{
+  const CCopasiTask * pTask = dynamic_cast< const CCopasiTask * >(pParent);
+
+  if (pTask != NULL)
+    {
+      setMathContainer(pTask->getMathContainer());
+    }
+}
 
 CCopasiProblem::CCopasiProblem(const CCopasiProblem & src,
                                const CCopasiContainer * pParent):
@@ -53,7 +60,14 @@ CCopasiProblem::CCopasiProblem(const CCopasiProblem & src,
   mpContainer(src.mpContainer),
   mpCallBack(src.mpCallBack),
   mpReport(src.mpReport)
-{}
+{
+  const CCopasiTask * pTask = dynamic_cast< const CCopasiTask * >(pParent);
+
+  if (pTask != NULL)
+    {
+      setMathContainer(pTask->getMathContainer());
+    }
+}
 
 CCopasiProblem::~CCopasiProblem() {}
 
