@@ -8542,6 +8542,7 @@ void CCopasiXMLParser::TaskElement::start(const XML_Char *pszName, const XML_Cha
           {
             mCommon.pCurrentTask->setScheduled(Scheduled);
             mCommon.pCurrentTask->setUpdateModel(UpdateModel);
+            mCommon.pCurrentTask->setMathContainer(&mCommon.pModel->getMathContainer());
 
             if (Key != NULL)
               {
