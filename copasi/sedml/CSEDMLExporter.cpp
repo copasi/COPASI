@@ -491,6 +491,7 @@ void CSEDMLExporter::createDataGenerators(CCopasiDataModel & dataModel,
 
               const std::string& typeX = object->getObjectName();
               std::string xAxis = object->getObjectDisplayName();
+
               std::string targetXPathStringX = SEDMLUtils::getXPathAndName(xAxis, typeX,
                                                pModel, dataModel);
 
@@ -511,7 +512,12 @@ void CSEDMLExporter::createDataGenerators(CCopasiDataModel & dataModel,
 
               if (def->isTable())
                 {
-                  CCopasiObject *headerObj = dataModel.getDataObject(header[i]);
+                  CCopasiObject *headerObj = NULL;
+
+                  if (header.size() > i)
+                    headerObj = dataModel.getDataObject(header[i]);
+                  else
+                    headerObj = dataModel.getDataObject(body[i]);
 
                   if (headerObj != NULL)
                     pDS->setLabel(headerObj->getObjectDisplayName());
