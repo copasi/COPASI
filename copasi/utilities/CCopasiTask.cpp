@@ -107,6 +107,7 @@ CCopasiTask::CCopasiTask(const std::string & name,
     mResult(this),
     mScheduled(false),
     mUpdateModel(false),
+    mStatus(),
     mpInitialState(NULL),
     mpProblem(NULL),
     mpMethod(NULL),
@@ -127,6 +128,7 @@ CCopasiTask::CCopasiTask(const CCopasiTask::Type & taskType,
     mResult(this),
     mScheduled(false),
     mUpdateModel(false),
+    mStatus(),
     mpInitialState(NULL),
     mpProblem(NULL),
     mpMethod(NULL),
@@ -186,6 +188,8 @@ const bool & CCopasiTask::isScheduled() const {return mScheduled;}
 void CCopasiTask::setUpdateModel(const bool & updateModel) {mUpdateModel = updateModel;}
 
 const bool & CCopasiTask::isUpdateModel() const {return mUpdateModel;}
+
+const CCopasiTaskStatus & CCopasiTask::getStatus() const {return mStatus;};
 
 bool CCopasiTask::setCallBack(CProcessReport * pCallBack)
 {

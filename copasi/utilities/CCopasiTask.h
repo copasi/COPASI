@@ -26,6 +26,7 @@
 #include <string>
 
 #include "utilities/COutputHandler.h"
+#include "utilities/CCopasiTaskStatus.h"
 
 #include "report/CCopasiContainer.h"
 #include "report/CReport.h"
@@ -223,6 +224,11 @@ protected:
   bool mUpdateModel;
 
   /**
+   * the status of the task (initialized, finalized, success, etc.)
+   */
+  CCopasiTaskStatus mStatus;
+
+  /**
    * The state of the model before execution of the task. If mUpdateModel
    * is false this state is restored.
    */
@@ -325,6 +331,11 @@ public:
    * @return const bool & updateModel
    */
   const bool & isUpdateModel() const;
+
+  /**
+   * retrieve status information 
+   */
+  const CCopasiTaskStatus & getStatus() const;
 
   /**
    * Set the call back of the task
