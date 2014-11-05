@@ -175,6 +175,23 @@ void CLsodaMethod::stateChanged()
             }
         }
 
+      // Bug 2106 It is not sufficient to check for the state variables we also need
+      // to check for fixed values which are event targets.
+      pMethod = mMethodState.beginFixed();
+      pMethodEnd = mMethodState.endFixed();
+      pCurrent = mpCurrentState->beginFixed();
+
+      for (; pMethod != pMethodEnd; ++pMethod, ++pCurrent)
+        {
+          // We may need to use the absolute and relative tolerance
+          if (*pMethod != *pCurrent)
+            {
+              mLsodaStatus = 1;
+
+              break;
+            }
+        }
+
       if (mLsodaStatus != 1)
         {
           // Compare the rates of the independent state variables
