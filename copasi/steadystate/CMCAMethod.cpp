@@ -634,7 +634,7 @@ bool CMCAMethod::createLinkMatrix()
       return false;
     }
 
-  mLinkZero.build(mpSteadyStateTask->getJacobian());
+  mLinkZero.build(mpSteadyStateTask->getJacobian(), mpModel->getNumIndependentReactionMetabs());
 
   mReducedStoichiometry = mpModel->getStoi();
   mLinkZero.doRowPivot(mReducedStoichiometry);
