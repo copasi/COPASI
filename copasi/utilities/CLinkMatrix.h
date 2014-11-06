@@ -1,4 +1,4 @@
-// Copyright (C) 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2013 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -28,9 +28,10 @@ public:
   /**
    * Build the link matrix for the given matrix
    * @param const CMatrix< C_FLOAT64 > & matrix
+   * @param size_t maxRank (default: C_INVALID_INDEX)
    * @return bool success
    */
-  bool build(const CMatrix< C_FLOAT64 > & matrix);
+  bool build(const CMatrix< C_FLOAT64 > & matrix, size_t maxRank = C_INVALID_INDEX);
 
   /**
    * Right multiply the given matrix M with L, i.e., P = alpha M * L.
