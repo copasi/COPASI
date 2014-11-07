@@ -568,7 +568,7 @@ void CNewtonMethod::calculateDerivativesX()
 
 bool CNewtonMethod::containsNaN() const
 {
-  return mpContainer->isStateValid();
+  return !mpContainer->isStateValid();
 }
 
 bool CNewtonMethod::isSteadyState(C_FLOAT64 value)

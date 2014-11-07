@@ -329,7 +329,7 @@ void CMathObject::calculate()
 #ifdef COPASI_DEBUG
 
   // Check for NaN
-  if (isnan(*mpValue))
+  if (isnan(*mpValue) && mpExpression->getInfix() != "")
     {
       std::cout << "NaN Value for: " << getCN() << std::endl;
     }
