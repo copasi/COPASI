@@ -106,14 +106,14 @@ bool COptTask::initialize(const OutputFlag & of,
   //do the part of the initialization of the subtask that needs to be
   //performed before the output is initialized. This is kind of a hack,
   //we need to find a more general solution for this
-  if (!pProblem->initializeSubtaskBeforeOutput()) success = false;
+  success &= pProblem->initializeSubtaskBeforeOutput();
 
-  if (!CCopasiTask::initialize(of, pOutputHandler, pOstream)) success = false;
+  success &= CCopasiTask::initialize(of, pOutputHandler, pOstream);
 
   //if (!mReport.open(pOstream)) success = false;
   //if (!mReport.compile()) success = false;
 
-  if (!pProblem->initialize()) success = false;
+  success &= pProblem->initialize();
 
   pMethod->setProblem(pProblem);
   //  if (!pMethod->initialize()) return false;

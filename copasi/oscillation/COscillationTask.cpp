@@ -73,12 +73,12 @@ bool COscillationTask::initialize(const OutputFlag & of,
   //initialize reporting
   bool success = true;
 
-  if (!CCopasiTask::initialize(of, pOutputHandler, pOstream)) success = false;
+  success &= CCopasiTask::initialize(of, pOutputHandler, pOstream);
 
   //if (!mReport.open(pOstream)) success = false;
   //if (!mReport.compile()) success = false;
 
-  if (!pProblem->initialize()) success = false;
+  success &= pProblem->initialize();
 
   pMethod->setProblem(pProblem);
   //  if (!pMethod->initialize()) return false;

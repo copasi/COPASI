@@ -86,9 +86,9 @@ bool CSensTask::initialize(const OutputFlag & of,
   bool success = true;
 
   //this needs to be done before the initialization of the output
-  if (!updateMatrices()) success = false;
+  success &= updateMatrices();
 
-  if (!CCopasiTask::initialize(of, pOutputHandler, pOstream)) success = false;
+  success &= CCopasiTask::initialize(of, pOutputHandler, pOstream);
 
   return success;
 }

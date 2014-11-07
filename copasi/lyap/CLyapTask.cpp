@@ -148,7 +148,7 @@ bool CLyapTask::initialize(const OutputFlag & of,
       mvLocExpRef[i]->setReference(mLocalExponents.array()[i]);
     }
 
-  if (!CCopasiTask::initialize(of, pOutputHandler, pOstream)) success = false;
+  success &= CCopasiTask::initialize(of, pOutputHandler, pOstream);
 
   //mTimeSeriesRequested = mpLyapProblem->timeSeriesRequested();
 

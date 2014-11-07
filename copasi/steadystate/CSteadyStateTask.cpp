@@ -221,10 +221,9 @@ bool CSteadyStateTask::initialize(const OutputFlag & of,
 
   success &= pMethod->initialize(pProblem);
 
-  if (!mpMethod->isValidProblem(mpProblem)) return false;
+  success &= pMethod->isValidProblem(mpProblem);
 
-  if (!updateMatrices())
-    return false;
+  success &= updateMatrices();
 
   mSteadyState = mpContainer->getState(false);
   mCalculateReducedSystem = (mpContainer->getCountDependentSpecies() != 0);

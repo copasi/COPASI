@@ -99,22 +99,18 @@ bool CMCATask::initialize(const OutputFlag & of,
     dynamic_cast<CMCAProblem *>(mpProblem);
   assert(pProblem);
 
-  if (!mpMethod->isValidProblem(mpProblem)) return false;
+  bool success = mpMethod->isValidProblem(mpProblem);
 
   //we need to resize an initialize the result matrices before initializing the output
-  if (!updateMatrices()) return false;
-
-  bool success = true;
+  success &= updateMatrices();
 
   //initialize reporting
-  if (!CCopasiTask::initialize(of, pOutputHandler, pOstream)) success = false;
+  success &= CCopasiTask::initialize(of, pOutputHandler, pOstream);
 
   CSteadyStateTask *pSubTask = pProblem->getSubTask();
 
   if (pSubTask)
-    success = pSubTask->initialize(CCopasiTask::NO_OUTPUT, NULL, mReport.getStream());
-
-  //success = pSubTask->initialize(of, mReport.getStream());
+    success &= pSubTask->initialize(CCopasiTask::NO_OUTPUT, NULL, mReport.getStream());
 
   return success;
 }

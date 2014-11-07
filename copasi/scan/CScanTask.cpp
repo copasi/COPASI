@@ -82,9 +82,7 @@ bool CScanTask::initialize(const OutputFlag & of,
 {
   assert(mpProblem && mpMethod);
 
-  mpMethod->isValidProblem(mpProblem);
-
-  bool success = true;
+  bool success = mpMethod->isValidProblem(mpProblem);
 
   if ((of & REPORT) &&
       pOutputHandler != NULL)
