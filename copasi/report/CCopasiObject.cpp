@@ -60,8 +60,13 @@ const CCopasiObject * CObjectInterface::DataObject(const CObjectInterface * pInt
 CObjectInterface * CObjectInterface::GetObjectFromCN(const CObjectInterface::ContainerList & listOfContainer,
     const CCopasiObjectName & objName)
 {
+  CCopasiObjectName Primary = objName.getPrimary();
+  std::string Type = Primary.getObjectType();
+
   // Check that we have a fully qualified CN
-  if (objName.getPrimary() != "CN=Root")
+  if (objName.getPrimary() != "CN=Root" &&
+      Type != "Separator" &&
+      Type != "String")
     {
       return NULL;
     }
@@ -78,6 +83,8 @@ CObjectInterface * CObjectInterface::GetObjectFromCN(const CObjectInterface::Con
 
   std::string::size_type pos;
 
+  bool CheckDataModel = true;
+
   //favor to search the list of container first
   for (; it != end && pObject == NULL; ++it)
     {
@@ -90,6 +97,8 @@ CObjectInterface * CObjectInterface::GetObjectFromCN(const CObjectInterface::Con
         {
           pDataModel = (*it)->getObjectDataModel();
         }
+
+      CheckDataModel &= (pDataModel != *it);
 
       ContainerName = (*it)->getCN();
 
@@ -112,7 +121,8 @@ CObjectInterface * CObjectInterface::GetObjectFromCN(const CObjectInterface::Con
     pObject = CCopasiRootContainer::getFunctionList()->getObject(objName);
 
   // last resort check the whole data model if we know it.
-  if (pObject == NULL && pDataModel != NULL)
+  // We need make sure that we do not  have infinite recursion
+  if (pObject == NULL && pDataModel != NULL && CheckDataModel)
     {
       pObject = pDataModel->getObjectFromCN(objName);
     }
