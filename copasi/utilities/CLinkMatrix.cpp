@@ -189,7 +189,7 @@ bool CLinkMatrix::build(const CMatrix< C_FLOAT64 > & matrix, size_t maxRank)
 
           C_FLOAT64 smax = fabs(M(0, 0));
           C_FLOAT64 smin = smax;
-          C_FLOAT64 RCOND = 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon();
+          C_FLOAT64 RCOND = std::max(NumRows, NumCols) * smax * std::numeric_limits< C_FLOAT64 >::epsilon();
 
           C_FLOAT64 sminpr, s1, c1, smaxpr, s2, c2;
 
