@@ -26,10 +26,13 @@ public:
     ampere = 7,
     kelvin = 11,
     item = 13,  // mole can be derived with the current value of Avagadro's Number
-    candela = 17
+    candela = 17,
+    dimensionless = 19
   };
 
   static const std::string getSymbol(Kind kind);
+
+  static const Kind fromSymbol(const std::string & symbol);
 };
 
 #endif // CBASEUNIT_H

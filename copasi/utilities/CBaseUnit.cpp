@@ -5,6 +5,7 @@
 
 #include "copasi/utilities/CBaseUnit.h"
 
+// static (because CBaseUnit is not meant to be constructed)
 const std::string CBaseUnit::getSymbol(Kind kind)
 {
   switch (kind)
@@ -24,13 +25,24 @@ const std::string CBaseUnit::getSymbol(Kind kind)
       case kelvin:
         return "K";
 
-      case item:
-        return "mol";
+    case candela:
+      return "cd";
 
-      case candela:
-        return "cd";
+    case item:
+    default:
+      return "#";
+  }
+}
 
-      default:
-        return "";
-    }
+// static (because CBaseUnit is not meant to be constructed)
+const CBaseUnit::Kind CBaseUnit::fromSymbol(const std::string & symbol)
+{
+  if (symbol == "m") return meter;
+  if (symbol == "kg") return kilogram;
+  if (symbol == "s") return second;
+  if (symbol == "A") return ampere;
+  if (symbol == "K") return kelvin;
+  if (symbol == "cd") return candela;
+
+  return item;
 }
