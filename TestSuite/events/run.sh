@@ -39,3 +39,4 @@ runTest EventTest22
 runTest EventTest23
 runTest EventTest24
 runTest EventTest25
+runTest EventTest26
