@@ -245,7 +245,7 @@ void ReactionsWidget1::slotComboBoxSelectionChanged(const QString & p2)
 void ReactionsWidget1::slotLineEditChanged()
 {
 #ifdef COPASI_UNDO
-	mpUndoStack->push(new ReactionLineEditChangedCommand(this));
+  mpUndoStack->push(new ReactionLineEditChangedCommand(this));
 #else
   //std::string rName = TO_UTF8(LineEdit1->text());
 
@@ -271,7 +271,7 @@ void ReactionsWidget1::slotLineEditChanged()
 void ReactionsWidget1::slotBtnNew()
 {
 #ifdef COPASI_UNDO
-	mpUndoStack->push(new CreateNewReactionCommand(this));
+  mpUndoStack->push(new CreateNewReactionCommand(this));
 #else
   std::string name = "reaction_1";
   size_t i = 1;
@@ -429,7 +429,7 @@ void ReactionsWidget1::copy()
 void ReactionsWidget1::slotBtnDelete()
 {
 #ifdef COPASI_UNDO
-	mpUndoStack->push(new DeleteReactionCommand(this));
+  mpUndoStack->push(new DeleteReactionCommand(this));
 #else
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
@@ -465,7 +465,8 @@ void ReactionsWidget1::slotBtnDelete()
       default:                                                     // No or Escape
         break;
     }
-  #endif
+
+#endif
 }
 
 void ReactionsWidget1::FillWidgetFromRI()
@@ -599,7 +600,7 @@ void ReactionsWidget1::slotNewFunction()
   std::string nname = name;
   size_t i = 0;
   CCopasiVectorN<CFunction>& FunctionList
-    = CCopasiRootContainer::getFunctionList()->loadedFunctions();
+  = CCopasiRootContainer::getFunctionList()->loadedFunctions();
   CFunction* pFunc;
 
   while (FunctionList.getIndex(nname) != C_INVALID_INDEX)
@@ -726,125 +727,129 @@ void ReactionsWidget1::lineEditChanged()
 }
 void ReactionsWidget1::restoreLineEditChanged(std::string & eq, std::string &funcName)
 {
-	assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-		CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
-		assert(pDataModel != NULL);
+  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
+  assert(pDataModel != NULL);
 
-	if(eq==""){
-		mpListView->switchToOtherWidget(114, "");
-		CReaction *pRea = dynamic_cast< CReaction * >(mpObject);
-		std::string key = pRea->getKey();
-		std::string rName = pRea->getObjectName();
-		pDataModel->getModel()->removeReaction(key);
-		protectedNotify(ListViews::REACTION, ListViews::DELETE, key);
+  if (eq == "")
+    {
+      mpListView->switchToOtherWidget(114, "");
+      CReaction *pRea = dynamic_cast< CReaction * >(mpObject);
+      std::string key = pRea->getKey();
+      std::string rName = pRea->getObjectName();
+      pDataModel->getModel()->removeReaction(key);
+      protectedNotify(ListViews::REACTION, ListViews::DELETE, key);
 
-		//recreate empty reaction
-		pDataModel->getModel()->createReaction(rName);
-		std::string newKey = pDataModel->getModel()->getReactions()[rName]->getKey();
-		protectedNotify(ListViews::REACTION, ListViews::ADD, newKey);
+      //recreate empty reaction
+      pDataModel->getModel()->createReaction(rName);
+      std::string newKey = pDataModel->getModel()->getReactions()[rName]->getKey();
+      protectedNotify(ListViews::REACTION, ListViews::ADD, newKey);
 
-		mpListView->switchToOtherWidget(C_INVALID_INDEX, newKey);
-		return;
-	}
-	//first check if the string is a valid equation
-	if (!CChemEqInterface::isValidEq(eq))
-	{
-		return;  // abort further processing
-	}
+      mpListView->switchToOtherWidget(C_INVALID_INDEX, newKey);
+      return;
+    }
 
-	CReaction *pRea = dynamic_cast< CReaction * >(mpObject);
-	std::string key = pRea->getKey();
-	mpRi->setChemEqString(eq, funcName);
-	mpRi->writeBackToReaction(NULL);
+  //first check if the string is a valid equation
+  if (!CChemEqInterface::isValidEq(eq))
+    {
+      return;  // abort further processing
+    }
 
-	// update the widget
-	FillWidgetFromRI();
-	mpListView->switchToOtherWidget(C_INVALID_INDEX, key); //switch to reaction widget
+  CReaction *pRea = dynamic_cast< CReaction * >(mpObject);
+  std::string key = pRea->getKey();
+  mpRi->setChemEqString(eq, funcName);
+  mpRi->writeBackToReaction(NULL);
 
+  // update the widget
+  FillWidgetFromRI();
+  mpListView->switchToOtherWidget(C_INVALID_INDEX, key); //switch to reaction widget
 }
 
 void ReactionsWidget1::createNewReaction()
 {
-	std::string name = "reaction_1";
-	size_t i = 1;
-	assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-	CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
-	assert(pDataModel != NULL);
+  std::string name = "reaction_1";
+  size_t i = 1;
+  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
+  assert(pDataModel != NULL);
 
-	while (!pDataModel->getModel()->createReaction(name))
-	{
-		i++;
-		name = "reaction_";
-		name += TO_UTF8(QString::number(i));
-	}
+  while (!pDataModel->getModel()->createReaction(name))
+    {
+      i++;
+      name = "reaction_";
+      name += TO_UTF8(QString::number(i));
+    }
 
-	std::string key = pDataModel->getModel()->getReactions()[name]->getKey();
-	protectedNotify(ListViews::REACTION, ListViews::ADD, key);
+  std::string key = pDataModel->getModel()->getReactions()[name]->getKey();
+  protectedNotify(ListViews::REACTION, ListViews::ADD, key);
 
-	mpListView->switchToOtherWidget(C_INVALID_INDEX, key);
+  mpListView->switchToOtherWidget(C_INVALID_INDEX, key);
 }
 
-void ReactionsWidget1::deleteReaction(){
-	assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-	CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
-	assert(pDataModel != NULL);
-	CModel * pModel = pDataModel->getModel();
+void ReactionsWidget1::deleteReaction()
+{
+  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
+  assert(pDataModel != NULL);
+  CModel * pModel = pDataModel->getModel();
 
-	if (pModel == NULL)
-		return;
+  if (pModel == NULL)
+    return;
 
-	CReaction * pReaction =
-			dynamic_cast< CReaction * >(CCopasiRootContainer::getKeyFactory()->get(mKey));
+  CReaction * pReaction =
+    dynamic_cast< CReaction * >(CCopasiRootContainer::getKeyFactory()->get(mKey));
 
-	if (pReaction == NULL) return;
+  if (pReaction == NULL) return;
 
-	QMessageBox::StandardButton choice =
-			CQMessageBox::confirmDelete(NULL, "reaction",
-					FROM_UTF8(pReaction->getObjectName()),
-					pReaction->getDeletedObjects());
+  QMessageBox::StandardButton choice =
+    CQMessageBox::confirmDelete(NULL, "reaction",
+                                FROM_UTF8(pReaction->getObjectName()),
+                                pReaction->getDeletedObjects());
 
-	switch (choice)
-	{
-	case QMessageBox::Ok:                                                     // Yes or Enter
-	{
-		pDataModel->getModel()->removeReaction(mKey);
+  switch (choice)
+    {
+      case QMessageBox::Ok:                                                     // Yes or Enter
+      {
+        pDataModel->getModel()->removeReaction(mKey);
 
-		mpRi->setFunctionWithEmptyMapping("");
+        mpRi->setFunctionWithEmptyMapping("");
 
-		protectedNotify(ListViews::REACTION, ListViews::DELETE, mKey);
-		protectedNotify(ListViews::REACTION, ListViews::DELETE, "");//Refresh all as there may be dependencies.
-		mpListView->switchToOtherWidget(114, "");
-		break;
-	}
+        protectedNotify(ListViews::REACTION, ListViews::DELETE, mKey);
+        protectedNotify(ListViews::REACTION, ListViews::DELETE, "");//Refresh all as there may be dependencies.
+        mpListView->switchToOtherWidget(114, "");
+        break;
+      }
 
-	default:                                                     // No or Escape
-		break;
-	}
+      default:                                                     // No or Escape
+        break;
+    }
 }
 
-void ReactionsWidget1::deleteReaction(CReaction *pReaction){
+void ReactionsWidget1::deleteReaction(CReaction *pReaction)
+{
 
-	assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-	CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
-	assert(pDataModel != NULL);
+  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
+  assert(pDataModel != NULL);
 
-	std::string key = pDataModel->getModel()->getReactions()[pReaction->getObjectName()]->getKey();
-	pDataModel->getModel()->removeReaction(key);
-	protectedNotify(ListViews::REACTION, ListViews::DELETE, key);
+  std::string key = pDataModel->getModel()->getReactions()[pReaction->getObjectName()]->getKey();
+  pDataModel->getModel()->removeReaction(key);
+  protectedNotify(ListViews::REACTION, ListViews::DELETE, key);
 
-	mpListView->switchToOtherWidget(114, "");
+  mpListView->switchToOtherWidget(114, "");
 }
 
-void ReactionsWidget1::addReaction(std::string & reaObjectName, CReactionInterface *pRi){
-	assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-	CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
-	assert(pDataModel != NULL);
+void ReactionsWidget1::addReaction(std::string & reaObjectName, CReactionInterface *pRi)
+{
+  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
+  assert(pDataModel != NULL);
 
-	CReaction *pRea = pDataModel->getModel()->createReaction(reaObjectName);
-	std::string key = pRea->getKey();
-	protectedNotify(ListViews::REACTION, ListViews::ADD, key);
-	pRi->writeBackToReaction(pRea);
+  CReaction *pRea = pDataModel->getModel()->createReaction(reaObjectName);
+  std::string key = pRea->getKey();
+  protectedNotify(ListViews::REACTION, ListViews::ADD, key);
+  pRi->writeBackToReaction(pRea);
 
-	mpListView->switchToOtherWidget(C_INVALID_INDEX, key);
+  mpListView->switchToOtherWidget(C_INVALID_INDEX, key);
 }
 #endif

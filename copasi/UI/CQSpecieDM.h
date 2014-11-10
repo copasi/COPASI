@@ -1,17 +1,9 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQSpecieDM.h,v $
-//   $Revision: 1.6 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/10/07 16:28:57 $
-// End CVS Header
-
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
@@ -65,7 +57,6 @@ public:
   const std::vector< unsigned C_INT32 >& getItemToType();
   bool removeRows(QModelIndexList rows, const QModelIndex &index = QModelIndex());
 
-
   //TODO Undo
 #ifdef COPASI_UNDO
   bool specieDataChange(const QModelIndex &index, const QVariant &value, int role);
@@ -78,7 +69,7 @@ public:
   bool removeAllSpecieRows();
   bool clear();
 
-  signals:
+signals:
   void changeWidget(const size_t & id);
 #endif
 protected:

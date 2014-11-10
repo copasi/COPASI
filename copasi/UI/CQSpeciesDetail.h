@@ -1,12 +1,12 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2009 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-// and The University of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
 
 #ifndef CQSpeciesDetail_h
 #define CQSpeciesDetail_h
@@ -64,7 +64,7 @@ private:
 
 private slots:
   void slotBtnNew();
-  void slotBtnCopy(){};
+  void slotBtnCopy() {};
   void slotBtnDelete();
   void slotCompartmentChanged(int compartment);
   void slotTypeChanged(int type);

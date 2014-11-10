@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -59,7 +59,6 @@ CQGlobalQuantitiesWidget::CQGlobalQuantitiesWidget(QWidget* parent, const char* 
           this, SLOT(dataChanged(const QModelIndex&, const QModelIndex&)));
   connect(mpLEFilter, SIGNAL(textChanged(const QString &)),
           this, SLOT(slotFilterChanged()));
-
 
 #ifdef COPASI_UNDO
   CopasiUI3Window *  pWindow = dynamic_cast<CopasiUI3Window * >(parent->parent());
@@ -272,7 +271,8 @@ void CQGlobalQuantitiesWidget::slotFilterChanged()
 }
 
 #ifdef COPASI_UNDO
-void CQGlobalQuantitiesWidget:: slotChangeWidget(const size_t & id){
-	mpListView->switchToOtherWidget(id, "");
+void CQGlobalQuantitiesWidget:: slotChangeWidget(const size_t & id)
+{
+  mpListView->switchToOtherWidget(id, "");
 }
 #endif

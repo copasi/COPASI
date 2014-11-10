@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -269,8 +269,8 @@ void CQCompartmentsWidget::slotFilterChanged()
 }
 
 #ifdef COPASI_UNDO
-void CQCompartmentsWidget:: slotChangeWidget(const size_t & id){
-	mpListView->switchToOtherWidget(id, "");
+void CQCompartmentsWidget:: slotChangeWidget(const size_t & id)
+{
+  mpListView->switchToOtherWidget(id, "");
 }
 #endif
-

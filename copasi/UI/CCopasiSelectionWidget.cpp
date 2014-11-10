@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CCopasiSelectionWidget.cpp,v $
-//   $Revision: 1.17 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/04/01 15:06:40 $
-// End CVS Header
-
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2004 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -29,12 +21,12 @@
 #include "CQSimpleSelectionTree.h"
 
 CCopasiSelectionWidget::CCopasiSelectionWidget(QWidget* parent):
-    QStackedWidget(parent),
-    mpSimpleTree(NULL),
-    mpObjectBrowser(NULL),
-    mpOutputVector(NULL),
-    mSingleSelect(false),
-    mExpertMode(false)
+  QStackedWidget(parent),
+  mpSimpleTree(NULL),
+  mpObjectBrowser(NULL),
+  mpOutputVector(NULL),
+  mSingleSelect(false),
+  mExpertMode(false)
 {
   this->mpSimpleTree = new CQSimpleSelectionTree(this);
   this->addWidget(this->mpSimpleTree);

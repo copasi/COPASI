@@ -236,15 +236,17 @@ int CQParameterOverviewDM::rowCount(const QModelIndex & parent) const
 bool CQParameterOverviewDM::setData(const QModelIndex &_index, const QVariant &value, int role)
 {
 #ifdef COPASI_UNDO
-	if (role != Qt::EditRole) return false;
 
-	if (_index.data(Qt::EditRole) == value)
-		return false;
-	else
-		mpUndoStack->push(new ParameterOverviewDataChangeCommand(_index, value, role, this));
+  if (role != Qt::EditRole) return false;
+
+  if (_index.data(Qt::EditRole) == value)
+    return false;
+  else
+    mpUndoStack->push(new ParameterOverviewDataChangeCommand(_index, value, role, this));
+
 #else
-	CModelParameter * pNode = nodeFromIndex(_index);
-	bool success = false;
+  CModelParameter * pNode = nodeFromIndex(_index);
+  bool success = false;
 
   if (pNode != NULL &&
       role == Qt::EditRole)
@@ -569,15 +571,18 @@ bool CQParameterOverviewDM::parameterOverviewDataChange(const QModelIndex& _inde
           break;
         }
     }
+
   emit changeWidget(118);
 
   return success;
 }
 
-void CQParameterOverviewDM::setUndoStack(QUndoStack* undoStack){
-	mpUndoStack= undoStack;
+void CQParameterOverviewDM::setUndoStack(QUndoStack* undoStack)
+{
+  mpUndoStack = undoStack;
 }
-QUndoStack* CQParameterOverviewDM::getUndoStack(){
-	return mpUndoStack;
+QUndoStack* CQParameterOverviewDM::getUndoStack()
+{
+  return mpUndoStack;
 }
 #endif

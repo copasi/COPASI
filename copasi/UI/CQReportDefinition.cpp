@@ -410,6 +410,7 @@ void CQReportDefinition::btnCopyReportClicked()
   btnCommitClicked();
 
   CCopasiDataModel* pDataModel = mpObject->getObjectDataModel();
+
   if (pDataModel == NULL) return;
 
   CReportDefinition * pRep = new CReportDefinition(*dynamic_cast<CReportDefinition*>(CCopasiRootContainer::getKeyFactory()->get(mKey)));
@@ -417,13 +418,14 @@ void CQReportDefinition::btnCopyReportClicked()
   std::string baseName = pRep->getObjectName() + "_copy";
   std::string name = baseName;
 
-  int i =1;
+  int i = 1;
 
   while (pDataModel->getReportDefinitionList()->getIndex(name) != C_INVALID_INDEX)
     {
       i++;
       name = baseName + TO_UTF8(QString::number(i));
     }
+
   pRep->setObjectName(name);
 
   pDataModel->getReportDefinitionList()->add(pRep, true);
@@ -433,7 +435,6 @@ void CQReportDefinition::btnCopyReportClicked()
   enter(key);
   mpListView->switchToOtherWidget(C_INVALID_INDEX, key);
 }
-
 
 void CQReportDefinition::btnRevertClicked()
 {load();}

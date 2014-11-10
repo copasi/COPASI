@@ -568,9 +568,10 @@ void CQParameterOverviewWidget::slotResolve(const QModelIndex & index)
 }
 
 #ifdef COPASI_UNDO
-void CQParameterOverviewWidget:: slotChangeWidget(const size_t & id){
-	leave();
-	enterProtected();
-	mpListView->switchToOtherWidget(id, "");
+void CQParameterOverviewWidget:: slotChangeWidget(const size_t & id)
+{
+  leave();
+  enterProtected();
+  mpListView->switchToOtherWidget(id, "");
 }
 #endif

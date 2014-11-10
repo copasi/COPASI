@@ -1,17 +1,9 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQEFMSpeciesDM.cpp,v $
-//   $Revision: 1.6 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/05/10 16:03:10 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
@@ -27,13 +19,13 @@
 #include "utilities/CCopasiProblem.h"
 
 CQEFMSpeciesDM::CQEFMSpeciesDM(QObject *parent):
-    CQBaseDataModel(parent),
-    mpTask(NULL),
-    mBeginModes(),
-    mModesSize(0),
-    mpModel(NULL),
-    mBeginSpecies(),
-    mSpeciesSize(0)
+  CQBaseDataModel(parent),
+  mpTask(NULL),
+  mBeginModes(),
+  mModesSize(0),
+  mpModel(NULL),
+  mBeginSpecies(),
+  mSpeciesSize(0)
 {}
 
 int CQEFMSpeciesDM::rowCount(const QModelIndex & C_UNUSED(parent)) const

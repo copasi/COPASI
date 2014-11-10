@@ -408,11 +408,11 @@ void CopasiUI3Window::createActions()
 
   //TODO UNDO framework
 #ifdef COPASI_UNDO
-   mpaUndo = new QAction(this);
-   mpaRedo = new QAction(this);
-   mpaUndoHistory = new QAction("&Undo History", this);
-   connect(mpaUndoHistory, SIGNAL(activated()), this, SLOT(slotUndoHistory()));
- #endif
+  mpaUndo = new QAction(this);
+  mpaRedo = new QAction(this);
+  mpaUndoHistory = new QAction("&Undo History", this);
+  connect(mpaUndoHistory, SIGNAL(activated()), this, SLOT(slotUndoHistory()));
+#endif
 }
 
 void CopasiUI3Window::slotFunctionDBSave(QString dbFile)
@@ -3158,8 +3158,9 @@ void CopasiUI3Window::slotOpenRecentSEDMLFile(QAction * pAction)
 #endif
 
 #ifdef COPASI_UNDO
-void CopasiUI3Window::slotUndoHistory(){
-	;
+void CopasiUI3Window::slotUndoHistory()
+{
+  ;
 }
-QUndoStack *CopasiUI3Window::getUndoStack(){return mpUndoStack; };
+QUndoStack *CopasiUI3Window::getUndoStack() {return mpUndoStack; };
 #endif

@@ -1,7 +1,7 @@
-// Copyright (C) 2011 - 2014 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2011 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 #include "CQTimeSeriesWidget.h"
 #include "CQTimeSeriesDM.h"
@@ -25,8 +25,8 @@ CQTimeSeriesWidget::CQTimeSeriesWidget(QWidget* parent):
   // Allow for a sorted view of mpDataModel
   QSortFilterProxyModel * sortProxyModel = new QSortFilterProxyModel(parent);
   sortProxyModel->setSourceModel(mpDataModel);
-  connect(mpDataModel, SIGNAL(dataChanged(QModelIndex,QModelIndex)),
-          sortProxyModel, SIGNAL(dataChanged(QModelIndex,QModelIndex)));
+  connect(mpDataModel, SIGNAL(dataChanged(QModelIndex, QModelIndex)),
+          sortProxyModel, SIGNAL(dataChanged(QModelIndex, QModelIndex)));
 
   mpTableView->setModel(sortProxyModel);
 }

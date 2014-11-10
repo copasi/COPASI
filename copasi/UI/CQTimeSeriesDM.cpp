@@ -1,7 +1,7 @@
-// Copyright (C) 2011 - 2014 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2011 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 #include "CQTimeSeriesDM.h"
 #include "qtUtilities.h"
@@ -9,9 +9,9 @@
 #include "trajectory/CTimeSeries.h"
 
 CQTimeSeriesDM::CQTimeSeriesDM(QObject *parent):
-    CQBaseDataModel(parent),
-    mpTimeSeries(NULL),
-    mFramework(0)
+  CQBaseDataModel(parent),
+  mpTimeSeries(NULL),
+  mFramework(0)
 {}
 
 CQTimeSeriesDM::~CQTimeSeriesDM()
@@ -120,5 +120,3 @@ bool CQTimeSeriesDM::isDefaultRow(const QModelIndex& /* i */) const
 {
   return false;
 }
-
-

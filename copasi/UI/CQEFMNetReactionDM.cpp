@@ -1,17 +1,9 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQEFMNetReactionDM.cpp,v $
-//   $Revision: 1.3 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/11/10 13:12:56 $
-// End CVS Header
-
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
@@ -26,10 +18,10 @@
 #include "utilities/CCopasiProblem.h"
 
 CQEFMNetReactionDM::CQEFMNetReactionDM(QObject *parent):
-    CQBaseDataModel(parent),
-    mpTask(NULL),
-    mBeginModes(),
-    mModesSize(0)
+  CQBaseDataModel(parent),
+  mpTask(NULL),
+  mBeginModes(),
+  mModesSize(0)
 {}
 
 int CQEFMNetReactionDM::rowCount(const QModelIndex & C_UNUSED(parent)) const

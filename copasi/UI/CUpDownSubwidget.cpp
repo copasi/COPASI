@@ -1,14 +1,15 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CUpDownSubwidget.cpp,v $
-//   $Revision: 1.13 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/03/15 17:07:51 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2005 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
 #include "CUpDownSubwidget.h"
@@ -19,7 +20,7 @@
  *  name 'name' and widget flags set to 'f'.
  */
 CUpDownSubwidget::CUpDownSubwidget(QWidget* parent, const char* name, Qt::WindowFlags fl)
-    : QWidget(parent, fl)
+  : QWidget(parent, fl)
 {
   setObjectName(QString::fromUtf8(name));
   setupUi(this);
@@ -44,7 +45,6 @@ void CUpDownSubwidget::init()
   toolButtonUp->setIcon(CQIconResource::icon(CQIconResource::moveUp));
   toolButtonCopy->setIcon(CQIconResource::icon(CQIconResource::editCopy));
   toolButtonDown->setIcon(CQIconResource::icon(CQIconResource::moveDown));
-
 }
 
 void CUpDownSubwidget::slotCopy()

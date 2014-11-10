@@ -1,12 +1,4 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQSteadyStateResult.cpp,v $
-//   $Revision: 1.4 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/04/16 19:25:47 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -29,7 +21,7 @@
  *  name 'name'.'
  */
 CQSteadyStateResult::CQSteadyStateResult(QWidget* parent, const char* name)
-    : CopasiWidget(parent, name)
+  : CopasiWidget(parent, name)
 {
   setupUi(this);
 
@@ -97,7 +89,6 @@ void CQSteadyStateResult::loadResult()
 
   return;
 }
-
 
 void CQSteadyStateResult::slotSave(void)
 {

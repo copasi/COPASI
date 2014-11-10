@@ -1,4 +1,4 @@
-// Copyright (C) 2012 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -60,7 +60,7 @@ public:
   bool parameterOverviewDataChange(const QModelIndex &_index, const QVariant &value, int role);
 #endif
 
-  signals:
+signals:
   void signalOpenEditor(const QModelIndex &) const;
   void signalCloseEditor(const QModelIndex &) const;
 
@@ -93,7 +93,6 @@ private:
 #ifdef COPASI_UNDO
   QUndoStack *mpUndoStack;
 #endif
-
 };
 
 #endif // COPASI_CQParameterOverviewDM

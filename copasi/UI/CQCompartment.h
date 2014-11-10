@@ -1,16 +1,16 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-// and The University of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc. and EML Research, gGmbH. 
-// All rights reserved. 
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 #ifndef CQCOMPARTMENT_H
 #define CQCOMPARTMENT_H
@@ -65,7 +65,7 @@ private:
 
 private slots:
   void slotBtnNew();
-  void slotBtnCopy(){}; //dummy, to bypass warnings from TabWidget connections
+  void slotBtnCopy() {}; //dummy, to bypass warnings from TabWidget connections
   void slotBtnDelete();
   void slotTypeChanged(int type);
   void slotInitialTypeChanged(bool useInitialAssignment);
@@ -74,13 +74,13 @@ private slots:
   void slotMetaboliteTableCurrentChanged(int row, int col);
 
   //additional functions for UNDO framework
- #ifdef COPASI_UNDO
-   void deleteCompartment();
-   void addCompartment(UndoCompartmentData *pSData);
-   void createNewCompartment();
-   void deleteCompartment(UndoCompartmentData *pSData);
-   void CompartmentTypeChanged(int type);
- #endif
+#ifdef COPASI_UNDO
+  void deleteCompartment();
+  void addCompartment(UndoCompartmentData *pSData);
+  void createNewCompartment();
+  void deleteCompartment(UndoCompartmentData *pSData);
+  void CompartmentTypeChanged(int type);
+#endif
 };
 
 #endif // CQCOMPARTMENT_H

@@ -1,23 +1,6 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQSimpleSelectionTree.cpp,v $
-//   $Revision: 1.7 $
-//   $Name:  $
-//   $Author: nsimus $
-//   $Date: 2012/06/04 11:09:39 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
-// All rights reserved.
-
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
-// All rights reserved.
-
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
 #include "copasi.h"
@@ -44,9 +27,8 @@
 #include "tssanalysis/CCSPMethod.h"
 #include "tssanalysis/CTSSATask.h"
 
-
 CQSimpleSelectionTree::CQSimpleSelectionTree(QWidget* parent):
-    QTreeWidget(parent), mpOutputVector(NULL)
+  QTreeWidget(parent), mpOutputVector(NULL)
 {
   setSelectionMode(QAbstractItemView::ExtendedSelection);
   setSortingEnabled(true);
@@ -508,7 +490,6 @@ void CQSimpleSelectionTree::populateTree(const CModel * pModel,
                       {
                         pItem = new QTreeWidgetItem(this->mpResultTSSASubtree, QStringList(FROM_UTF8(ann->getObjectName())));
                         treeItems[pItem] = ann;
-
                       }
 
                   if (ann->getObjectName() == "Slow Participation Index")
@@ -516,26 +497,20 @@ void CQSimpleSelectionTree::populateTree(const CModel * pModel,
                       {
                         pItem = new QTreeWidgetItem(this->mpResultTSSASubtree, QStringList(FROM_UTF8(ann->getObjectName())));
                         treeItems[pItem] = ann;
-
                       }
-
 
                   if (ann->getObjectName() == "Importance Index")
                     if (!ann->isEmpty() && filter(classes, ann))
                       {
                         pItem = new QTreeWidgetItem(this->mpResultTSSASubtree, QStringList(FROM_UTF8(ann->getObjectName())));
                         treeItems[pItem] = ann;
-
-
                       }
                 }
             }
-
         }
     }
   catch (...)
     {}
-
 
   // Steady State
   task = dynamic_cast<CCopasiTask *>((*pDataModel->getTaskList())["Steady-State"]);
@@ -702,7 +677,7 @@ std::vector<const CCopasiObject * > * CQSimpleSelectionTree::getTreeSelection()
                       // originating from current item.
                       for (Ancestor = tmpItem->parent();
                            Ancestor != currentItem && Ancestor;
-                           Ancestor = Ancestor->parent()) ;
+                           Ancestor = Ancestor->parent());
 
                       if (!Ancestor) break;
                     }

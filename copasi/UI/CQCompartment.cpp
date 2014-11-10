@@ -1,16 +1,16 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-// and The University of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc. and EML Research, gGmbH. 
-// All rights reserved. 
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 #include "CQCompartment.h"
 
@@ -98,7 +98,7 @@ CQCompartment::~CQCompartment()
 void CQCompartment::slotBtnNew()
 {
 #ifdef COPASI_UNDO
-	mpUndoStack->push(new CreateNewCompartmentCommand(this));
+  mpUndoStack->push(new CreateNewCompartmentCommand(this));
 #else
   leave();
 
@@ -123,7 +123,7 @@ void CQCompartment::slotBtnNew()
 }
 
 void CQCompartment::copy()
-{   
+{
   CModel * pModel = mpDataModel->getModel();
   CModelExpansion cModelExpObj = CModelExpansion(pModel);
   CModelExpansion::SetOfModelElements compartmentObjectsToCopy;
@@ -152,12 +152,12 @@ void CQCompartment::copy()
         CCopasiVectorNS < CMetab >::const_iterator itMetab;
 
         for (itMetab = Metabolites.begin(); itMetab != Metabolites.end(); ++itMetab)
-         {
-          compartmentObjectsToCopy.addMetab(*itMetab);
-         }
+          {
+            compartmentObjectsToCopy.addMetab(*itMetab);
+          }
       }
-        success = true;
-        break;
+      success = true;
+      break;
 
       case CQCompartmentCopyOptions::INTREAC:    //also include the internal reactions
       {
@@ -168,9 +168,9 @@ void CQCompartment::copy()
         CCopasiVectorNS < CMetab >::const_iterator itMetab;
 
         for (itMetab = Metabolites.begin(); itMetab != Metabolites.end(); ++itMetab)
-         {
-          compartmentObjectsToCopy.addMetab(*itMetab);
-         }
+          {
+            compartmentObjectsToCopy.addMetab(*itMetab);
+          }
 
         // Now get the reactions which are not multi-compartment
         CCopasiVectorN< CReaction >::const_iterator it = pModel->getReactions().begin();
@@ -181,11 +181,11 @@ void CQCompartment::copy()
           {
             pRi->initFromReaction((*it)->getKey());
 
-            if(!pRi->isMulticompartment())
-            {
-                if(pRi->getChemEqInterface().getCompartment()->getKey() == mKey)
+            if (!pRi->isMulticompartment())
+              {
+                if (pRi->getChemEqInterface().getCompartment()->getKey() == mKey)
                   compartmentObjectsToCopy.addReaction(*it);
-            }
+              }
           }
 
         pdelete(pRi);
@@ -203,21 +203,21 @@ void CQCompartment::copy()
 
   pdelete(pDialog);
 
-  if(success)
-  {
-    cModelExpObj.duplicate(compartmentObjectsToCopy, "_copy", origToCopyMappings);
+  if (success)
+    {
+      cModelExpObj.duplicate(compartmentObjectsToCopy, "_copy", origToCopyMappings);
 
-    protectedNotify(ListViews::COMPARTMENT, ListViews::DELETE, "");//Refresh all
-    protectedNotify(ListViews::METABOLITE, ListViews::DELETE, ""); //Refresh all
-    protectedNotify(ListViews::REACTION, ListViews::DELETE, "");   //Refresh all
-    mpListView->switchToOtherWidget(C_INVALID_INDEX, origToCopyMappings.getDuplicateKey(mKey));
-  }
+      protectedNotify(ListViews::COMPARTMENT, ListViews::DELETE, "");//Refresh all
+      protectedNotify(ListViews::METABOLITE, ListViews::DELETE, ""); //Refresh all
+      protectedNotify(ListViews::REACTION, ListViews::DELETE, "");   //Refresh all
+      mpListView->switchToOtherWidget(C_INVALID_INDEX, origToCopyMappings.getDuplicateKey(mKey));
+    }
 }
 
 void CQCompartment::slotBtnDelete()
 {
 #ifdef COPASI_UNDO
-	mpUndoStack->push(new DeleteCompartmentCommand(this));
+  mpUndoStack->push(new DeleteCompartmentCommand(this));
 #else
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
@@ -600,142 +600,152 @@ void CQCompartment::loadMetaboliteTable()
 
 void CQCompartment::createNewCompartment()
 {
-	leave();
+  leave();
 
-	std::string name = "compartment_1";
-	int i = 1;
+  std::string name = "compartment_1";
+  int i = 1;
 
-	assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
 
-	while (!(mpCompartment = (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->createCompartment(name)))
-	{
-		i++;
-		name = "compartment_";
-		name += TO_UTF8(QString::number(i));
-	}
+  while (!(mpCompartment = (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->createCompartment(name)))
+    {
+      i++;
+      name = "compartment_";
+      name += TO_UTF8(QString::number(i));
+    }
 
-	std::string key = mpCompartment->getKey();
+  std::string key = mpCompartment->getKey();
 
-	protectedNotify(ListViews::COMPARTMENT, ListViews::ADD, key);
-	mpListView->switchToOtherWidget(C_INVALID_INDEX, key);
-
+  protectedNotify(ListViews::COMPARTMENT, ListViews::ADD, key);
+  mpListView->switchToOtherWidget(C_INVALID_INDEX, key);
 }
 
-void CQCompartment::deleteCompartment(){
+void CQCompartment::deleteCompartment()
+{
 
-	  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-	  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
-	  assert(pDataModel != NULL);
-	  CModel * pModel = pDataModel->getModel();
+  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
+  assert(pDataModel != NULL);
+  CModel * pModel = pDataModel->getModel();
 
-	  if (pModel == NULL) return;
+  if (pModel == NULL) return;
 
-	  if (mpCompartment == NULL) return;
+  if (mpCompartment == NULL) return;
 
-	  QMessageBox::StandardButton choice =
-	    CQMessageBox::confirmDelete(this, "compartment",
-	                                FROM_UTF8(mpCompartment->getObjectName()),
-	                                mpCompartment->getDeletedObjects());
+  QMessageBox::StandardButton choice =
+    CQMessageBox::confirmDelete(this, "compartment",
+                                FROM_UTF8(mpCompartment->getObjectName()),
+                                mpCompartment->getDeletedObjects());
 
-	  switch (choice)
-	    {
-	      case QMessageBox::Ok:
-	      {
-	        pDataModel->getModel()->removeCompartment(mKey);
+  switch (choice)
+    {
+      case QMessageBox::Ok:
+      {
+        pDataModel->getModel()->removeCompartment(mKey);
 
-	        protectedNotify(ListViews::COMPARTMENT, ListViews::DELETE, mKey);
-	        protectedNotify(ListViews::COMPARTMENT, ListViews::DELETE, ""); //Refresh all as there may be dependencies.
-	        break;
-	      }
+        protectedNotify(ListViews::COMPARTMENT, ListViews::DELETE, mKey);
+        protectedNotify(ListViews::COMPARTMENT, ListViews::DELETE, ""); //Refresh all as there may be dependencies.
+        break;
+      }
 
-	      default:
-	        break;
-	    }
+      default:
+        break;
+    }
 
-	mpListView->switchToOtherWidget(111, "");
+  mpListView->switchToOtherWidget(111, "");
 }
 
-void CQCompartment::deleteCompartment(UndoCompartmentData *pCompartmentData){
-	assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-	CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
-	assert(pDataModel != NULL);
+void CQCompartment::deleteCompartment(UndoCompartmentData *pCompartmentData)
+{
+  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
+  assert(pDataModel != NULL);
 
-	CModel * pModel = pDataModel->getModel();
-	assert(pModel!= NULL);
+  CModel * pModel = pDataModel->getModel();
+  assert(pModel != NULL);
 
-	CCompartment * pCompartment = pModel->getCompartments()[pCompartmentData->getName()];
-	std::string key = pCompartment->getKey();
-	pModel->removeCompartment(key);
-	mpCompartment = NULL;
+  CCompartment * pCompartment = pModel->getCompartments()[pCompartmentData->getName()];
+  std::string key = pCompartment->getKey();
+  pModel->removeCompartment(key);
+  mpCompartment = NULL;
 
 #undef DELETE
-	protectedNotify(ListViews::COMPARTMENT, ListViews::DELETE, key);
-	protectedNotify(ListViews::COMPARTMENT, ListViews::DELETE, "");//Refresh all as there may be dependencies.
+  protectedNotify(ListViews::COMPARTMENT, ListViews::DELETE, key);
+  protectedNotify(ListViews::COMPARTMENT, ListViews::DELETE, "");//Refresh all as there may be dependencies.
 
-	mpListView->switchToOtherWidget(111, "");
+  mpListView->switchToOtherWidget(111, "");
 }
 
-void CQCompartment::addCompartment(UndoCompartmentData *pSData){
-	assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-	CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
-	assert(pDataModel != NULL);
+void CQCompartment::addCompartment(UndoCompartmentData *pSData)
+{
+  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
+  assert(pDataModel != NULL);
 
-	CModel * pModel = pDataModel->getModel();
-	assert(pModel!= NULL);
+  CModel * pModel = pDataModel->getModel();
+  assert(pModel != NULL);
 
-	//reinsert all the Compartments
-	CCompartment *pCompartment =  pModel->createCompartment(pSData->getName());
-	pCompartment->setInitialValue(pSData->getInitialValue());
-	pCompartment->setStatus(pSData->getStatus());
-	std::string key = pCompartment->getKey();
-	protectedNotify(ListViews::COMPARTMENT, ListViews::ADD, key);
+  //reinsert all the Compartments
+  CCompartment *pCompartment =  pModel->createCompartment(pSData->getName());
+  pCompartment->setInitialValue(pSData->getInitialValue());
+  pCompartment->setStatus(pSData->getStatus());
+  std::string key = pCompartment->getKey();
+  protectedNotify(ListViews::COMPARTMENT, ListViews::ADD, key);
 
-	//restore all the dependencies
-	//reinsert all the species
-	QList <UndoSpecieData *> *pSpecieData = pSData->getSpecieDependencyObjects();
-	QList <UndoSpecieData *>::const_iterator i;
-	for (i = pSpecieData->begin(); i != pSpecieData->end(); ++i)
-	{
-		UndoSpecieData * data = *i;
-		//	beginInsertRows(QModelIndex(), 1, 1);
-		CMetab *pSpecie =  pModel->createMetabolite(data->getName(), data->getCompartment(), data->getIConc(), data->getStatus());
-		protectedNotify(ListViews::METABOLITE, ListViews::ADD, pSpecie->getKey());
-		//endInsertRows();
-	}
+  //restore all the dependencies
+  //reinsert all the species
+  QList <UndoSpecieData *> *pSpecieData = pSData->getSpecieDependencyObjects();
+  QList <UndoSpecieData *>::const_iterator i;
 
-	//reinsert the dependency reaction
-	QList <UndoReactionData *> *pReactionData = pSData->getReactionDependencyObjects();
-	QList <UndoReactionData *>::const_iterator j;
-	for (j = pReactionData->begin(); j != pReactionData->end(); ++j)
-	{
+  for (i = pSpecieData->begin(); i != pSpecieData->end(); ++i)
+    {
+      UndoSpecieData * data = *i;
+      //  beginInsertRows(QModelIndex(), 1, 1);
+      CMetab *pSpecie =  pModel->createMetabolite(data->getName(), data->getCompartment(), data->getIConc(), data->getStatus());
+      protectedNotify(ListViews::METABOLITE, ListViews::ADD, pSpecie->getKey());
+      //endInsertRows();
+    }
 
-		//UndoReactionData * rData = dynamic_cast<UndoReactionData*>(*j);
-		UndoReactionData * rData = *j;
+  //reinsert the dependency reaction
+  QList <UndoReactionData *> *pReactionData = pSData->getReactionDependencyObjects();
+  QList <UndoReactionData *>::const_iterator j;
 
-		//TODO check if reaction already exist in the model, better idea may be implemented in the future
-		bool exist = false;
-		for(int ii = 0; ii<pModel->getReactions().size(); ii++){
-			if(pModel->getReactions()[ii]->getObjectName() == rData->getName()){
-				exist = true;
-				ii=ii+pModel->getReactions().size()+1; //jump out of the loop reaction exist already
-			}else{
-				exist = false;
-			}
-		}
-		if(!exist){
-			protectedNotify(ListViews::METABOLITE, ListViews::ADD, ""); //Refresh all dependency species.
-			CReaction *pRea =  pModel->createReaction(rData->getName());
-			rData->getRi()->writeBackToReaction(pRea);
-			protectedNotify(ListViews::REACTION, ListViews::ADD, pRea->getKey());
-		}
+  for (j = pReactionData->begin(); j != pReactionData->end(); ++j)
+    {
 
-	}
+      //UndoReactionData * rData = dynamic_cast<UndoReactionData*>(*j);
+      UndoReactionData * rData = *j;
 
-	mpListView->switchToOtherWidget(C_INVALID_INDEX, key);
+      //TODO check if reaction already exist in the model, better idea may be implemented in the future
+      bool exist = false;
+
+      for (int ii = 0; ii < pModel->getReactions().size(); ii++)
+        {
+          if (pModel->getReactions()[ii]->getObjectName() == rData->getName())
+            {
+              exist = true;
+              ii = ii + pModel->getReactions().size() + 1; //jump out of the loop reaction exist already
+            }
+          else
+            {
+              exist = false;
+            }
+        }
+
+      if (!exist)
+        {
+          protectedNotify(ListViews::METABOLITE, ListViews::ADD, ""); //Refresh all dependency species.
+          CReaction *pRea =  pModel->createReaction(rData->getName());
+          rData->getRi()->writeBackToReaction(pRea);
+          protectedNotify(ListViews::REACTION, ListViews::ADD, pRea->getKey());
+        }
+    }
+
+  mpListView->switchToOtherWidget(C_INVALID_INDEX, key);
 }
 
 void CQCompartment::CompartmentTypeChanged(int type)
 {
-	; //TODO
+  ; //TODO
 }
 #endif

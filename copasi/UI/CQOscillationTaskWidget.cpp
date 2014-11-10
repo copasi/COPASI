@@ -1,12 +1,4 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQOscillationTaskWidget.cpp,v $
-//   $Revision: 1.2 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/09/16 18:13:46 $
-// End CVS Header
-
-// Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -25,13 +17,13 @@
 #include "crosssection/CCrossSectionTask.h"
 #include "crosssection/CCrossSectionProblem.h"
 #include "crosssection/CCrossSectionMethod.h"
-*/
+ */
 /*
  *  Constructs a CQCrossSectionWidget which is a child of 'parent', with the
  *  name 'name'.'
  */
 CQOscillationTaskWidget::CQOscillationTaskWidget(QWidget* parent, const char* name)
-    : TaskWidget(parent, name)
+  : TaskWidget(parent, name)
 {
   setupUi(this);
 

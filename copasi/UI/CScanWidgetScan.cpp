@@ -1,19 +1,15 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CScanWidgetScan.cpp,v $
-//   $Revision: 1.18 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/03/21 15:41:54 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2005 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
 #include "copasi.h"
@@ -29,14 +25,13 @@
 #include "report/CCopasiRootContainer.h"
 #include "report/CCopasiObjectName.h"
 
-
 /*
  *  Constructs a CScanWidgetScan as a child of 'parent', with the
  *  name 'name' and widget flags set to 'f'.
  */
 CScanWidgetScan::CScanWidgetScan(QWidget* parent) :
-    QWidget(parent),
-    CScanItemData(CScanProblem::SCAN_LINEAR)
+  QWidget(parent),
+  CScanItemData(CScanProblem::SCAN_LINEAR)
 {
   setupUi(this);
 
@@ -46,8 +41,8 @@ CScanWidgetScan::CScanWidgetScan(QWidget* parent) :
 }
 
 CScanWidgetScan::CScanWidgetScan(const CScanWidgetScan & src, QWidget * parent) :
-    QWidget(parent),
-    CScanItemData(src)
+  QWidget(parent),
+  CScanItemData(src)
 {
   setupUi(this);
 
@@ -80,9 +75,9 @@ void CScanWidgetScan::slotChooseObject()
 {
   const CCopasiObject * pObject =
     CCopasiSelectionDialog::getObjectSingle(this,
-                                            CQSimpleSelectionTree::InitialTime |
-                                            CQSimpleSelectionTree::Parameters,
-                                            mpObject);
+        CQSimpleSelectionTree::InitialTime |
+        CQSimpleSelectionTree::Parameters,
+        mpObject);
 
   if (mpObject != pObject) // Object selection changed.
     initFromObject(pObject);
@@ -100,8 +95,8 @@ void CScanWidgetScan::initFromObject(const CCopasiObject *obj)
         {
           C_FLOAT64 value = *(C_FLOAT64*)obj->getValuePointer();
           lineEditNumber->setText("10");
-          lineEditMin->setText(QString::number(value*0.5));
-          lineEditMax->setText(QString::number(value*2));
+          lineEditMin->setText(QString::number(value * 0.5));
+          lineEditMax->setText(QString::number(value * 2));
         }
     }
   else

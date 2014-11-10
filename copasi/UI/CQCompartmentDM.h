@@ -1,17 +1,9 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQCompartmentDM.h,v $
-//   $Revision: 1.8 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/03/15 17:06:48 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
@@ -61,20 +53,20 @@ public:
   bool removeRows(QModelIndexList rows, const QModelIndex &index = QModelIndex());
 
   //TODO Undo
- #ifdef COPASI_UNDO
-   bool compartmentDataChange(const QModelIndex &index, const QVariant &value, int role);
-   void insertNewCompartmentRow(int position, int rows, const QModelIndex&);
-   void addCompartmentRow(UndoCompartmentData *pCompartmentData);
-   void deleteCompartmentRow(UndoCompartmentData *pCompartmentData);
-   bool removeCompartmentRows(QModelIndexList rows, const QModelIndex&);
-   bool insertCompartmentRows(QList <UndoCompartmentData *> pCompartmentData);
-   void deleteCompartmentRows(QList <UndoCompartmentData *> pCompartmentData);
-   bool removeAllCompartmentRows();
-   bool clear();
+#ifdef COPASI_UNDO
+  bool compartmentDataChange(const QModelIndex &index, const QVariant &value, int role);
+  void insertNewCompartmentRow(int position, int rows, const QModelIndex&);
+  void addCompartmentRow(UndoCompartmentData *pCompartmentData);
+  void deleteCompartmentRow(UndoCompartmentData *pCompartmentData);
+  bool removeCompartmentRows(QModelIndexList rows, const QModelIndex&);
+  bool insertCompartmentRows(QList <UndoCompartmentData *> pCompartmentData);
+  void deleteCompartmentRows(QList <UndoCompartmentData *> pCompartmentData);
+  bool removeAllCompartmentRows();
+  bool clear();
 
-   signals:
-   void changeWidget(const size_t & id);
- #endif
+signals:
+  void changeWidget(const size_t & id);
+#endif
 
 protected:
   QStringList mTypes;

@@ -1,10 +1,16 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CPlotSelectionDialog.cpp,v $
-   $Revision: 1.2 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:27:40 $
-   End CVS Header */
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2004 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
@@ -26,27 +32,27 @@
 #include "qlayout.h"
 
 CPlotSelectionDialog::CPlotSelectionDialog(QWidget* parent, const char* name, bool modal, WFlags f):
-    QDialog(parent, name, modal, f)
-    , mpOKButton(NULL)
-    , mpCancelButton(NULL)
-    , mpExpertCheckBox(NULL)
-    , mpXAxisSimpleSelectionWidget(NULL)
-    , mpYAxisSimpleSelectionWidget(NULL)
-    , mpXAxisObjectBrowserWidget(NULL)
-    , mpYAxisObjectBrowserWidget(NULL)
-    , mpXAxisSelectionWidget(NULL)
-    , mpYAxisSelectionWidget(NULL)
-    , mpSplitter(NULL)
-    , mpButtonBox(NULL)
-    , mpMainLayout(NULL)
-    , mpXAxisLabel(NULL)
-    , mpYAxisLabel(NULL)
-    , mpXAxisSelectionBox(NULL)
-    , mpYAxisSelectionBox(NULL)
-    , mpXAxisOutputVector(NULL)
-    , mpYAxisOutputVector(NULL)
-    , mpXAxisTmpVector(new std::vector<CCopasiObject*>())
-    , mpYAxisTmpVector(new std::vector<CCopasiObject*>())
+  QDialog(parent, name, modal, f)
+  , mpOKButton(NULL)
+  , mpCancelButton(NULL)
+  , mpExpertCheckBox(NULL)
+  , mpXAxisSimpleSelectionWidget(NULL)
+  , mpYAxisSimpleSelectionWidget(NULL)
+  , mpXAxisObjectBrowserWidget(NULL)
+  , mpYAxisObjectBrowserWidget(NULL)
+  , mpXAxisSelectionWidget(NULL)
+  , mpYAxisSelectionWidget(NULL)
+  , mpSplitter(NULL)
+  , mpButtonBox(NULL)
+  , mpMainLayout(NULL)
+  , mpXAxisLabel(NULL)
+  , mpYAxisLabel(NULL)
+  , mpXAxisSelectionBox(NULL)
+  , mpYAxisSelectionBox(NULL)
+  , mpXAxisOutputVector(NULL)
+  , mpYAxisOutputVector(NULL)
+  , mpXAxisTmpVector(new std::vector<CCopasiObject*>())
+  , mpYAxisTmpVector(new std::vector<CCopasiObject*>())
 {
   this->mpMainLayout = new QVBoxLayout(this);
   this->mpMainLayout->setAutoAdd(true);
@@ -156,14 +162,17 @@ void CPlotSelectionDialog::slotOKButtonClicked()
               this->mpXAxisSimpleSelectionWidget->addButtonClicked();
             }
         }
+
       unsigned int counter;
       unsigned int maxCount = this->mpXAxisTmpVector->size();
       this->mpXAxisOutputVector->clear();
-      for (counter = 0; counter < maxCount;++counter)
+
+      for (counter = 0; counter < maxCount; ++counter)
         {
           this->mpXAxisOutputVector->push_back(this->mpXAxisTmpVector->at(counter));
         }
     }
+
   if (this->mpYAxisOutputVector)
     {
       if (this->mpExpertCheckBox->isChecked())
@@ -179,14 +188,17 @@ void CPlotSelectionDialog::slotOKButtonClicked()
               this->mpYAxisSimpleSelectionWidget->addButtonClicked();
             }
         }
+
       unsigned int counter;
       unsigned int maxCount = this->mpYAxisTmpVector->size();
       this->mpYAxisOutputVector->clear();
-      for (counter = 0; counter < maxCount;++counter)
+
+      for (counter = 0; counter < maxCount; ++counter)
         {
           this->mpYAxisOutputVector->push_back(this->mpYAxisTmpVector->at(counter));
         }
     }
+
   QDialog::done(QDialog::Accepted);
 }
 
@@ -201,6 +213,7 @@ void CPlotSelectionDialog::slotExpertCheckBoxToggled(bool checked)
   this->mpYAxisSelectionWidget->hide();
   this->mpXAxisSelectionBox->layout()->remove(this->mpXAxisSelectionWidget);
   this->mpYAxisSelectionBox->layout()->remove(this->mpYAxisSelectionWidget);
+
   if (checked)
     {
       if (!this->mpXAxisObjectBrowserWidget)
@@ -209,6 +222,7 @@ void CPlotSelectionDialog::slotExpertCheckBoxToggled(bool checked)
           this->mpXAxisObjectBrowserWidget = new ObjectBrowserWidget(this->mpXAxisSelectionBox);
           this->mpYAxisObjectBrowserWidget = new ObjectBrowserWidget(this->mpYAxisSelectionBox);
         }
+
       this->mpXAxisSelectionWidget = this->mpXAxisObjectBrowserWidget;
       this->mpYAxisSelectionWidget = this->mpYAxisObjectBrowserWidget;
     }
@@ -218,6 +232,7 @@ void CPlotSelectionDialog::slotExpertCheckBoxToggled(bool checked)
       this->mpXAxisSelectionWidget = this->mpXAxisSimpleSelectionWidget;
       this->mpYAxisSelectionWidget = this->mpYAxisSimpleSelectionWidget;
     }
+
   this->mpXAxisSelectionBox->layout()->add(this->mpXAxisSelectionWidget);
   this->mpYAxisSelectionBox->layout()->add(this->mpYAxisSelectionWidget);
   this->mpXAxisSelectionWidget->show();

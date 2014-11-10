@@ -1,19 +1,15 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQTSSAWidget.cpp,v $
-//   $Revision: 1.22 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/04/23 21:12:27 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
 #include "CQTSSAWidget.h"
@@ -45,7 +41,7 @@
  *  name 'name'.'
  */
 CQTSSAWidget::CQTSSAWidget(QWidget* parent, const char* name)
-    : TaskWidget(parent, name)
+  : TaskWidget(parent, name)
 {
   setupUi(this);
 
@@ -116,7 +112,6 @@ void CQTSSAWidget::slotDuration()
   mpEditIntervalSize->setText(QString::number(mpTSSAProblem->getStepSize()));
   mpValidatorIntervalSize->revalidate();
   mpEditIntervals->setText(QString::number(mpTSSAProblem->getStepNumber()));
-
 }
 
 void CQTSSAWidget::slotIntervalSize()
@@ -187,7 +182,6 @@ bool CQTSSAWidget::saveTask()
       mChanged = true;
     }
 
-
   mpValidatorDuration->saved();
   mpValidatorIntervalSize->saved();
 
@@ -215,7 +209,6 @@ bool CQTSSAWidget::loadTask()
   mpEditIntervalSize->setText(QString::number(tssaproblem->getStepSize()));
   mpEditIntervals->setText(QString::number(tssaproblem->getStepNumber()));
   mpEditDuration->setText(QString::number(tssaproblem->getDuration()));
-
 
   mpValidatorDuration->saved();
   mpValidatorIntervalSize->saved();
@@ -272,8 +265,6 @@ bool CQTSSAWidget::taskFinishedEvent()
 
   pTSSResultSubWidget->discardOldResults();
 
-
-
   if (success)
     {
 
@@ -284,4 +275,3 @@ bool CQTSSAWidget::taskFinishedEvent()
 
   return success;
 }
-

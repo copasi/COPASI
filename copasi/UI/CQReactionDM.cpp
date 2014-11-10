@@ -191,10 +191,12 @@ bool CQReactionDM::setData(const QModelIndex &index, const QVariant &value,
                            int role)
 {
 #ifdef COPASI_UNDO
-	if (index.data() == value)
-		return false;
-	else
-		mpUndoStack->push(new ReactionDataChangeCommand(index, value, role, this));
+
+  if (index.data() == value)
+    return false;
+  else
+    mpUndoStack->push(new ReactionDataChangeCommand(index, value, role, this));
+
 #else
 
   if (index.isValid() && role == Qt::EditRole)
@@ -484,6 +486,7 @@ bool CQReactionDM::reactionDataChange(const QModelIndex &index, const QVariant &
       emit dataChanged(index, index);
       emit notifyGUI(ListViews::REACTION, ListViews::CHANGE, pRea->getKey());
     }
+
   emit changeWidget(114);
 
   return true;
@@ -505,10 +508,10 @@ void CQReactionDM::insertNewReactionRow(int position, int rows, const QModelInde
 
   for (int row = 0; row < rows; ++row)
     {
-	  CReaction *pRea = (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->createReaction(TO_UTF8(createNewName("reaction", COL_NAME_REACTIONS)));
-	  std::string key = pRea->getKey();
-	  emit notifyGUI(ListViews::REACTION, ListViews::ADD, key);
-	  emit changeWidget(C_INVALID_INDEX, key);
+      CReaction *pRea = (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->createReaction(TO_UTF8(createNewName("reaction", COL_NAME_REACTIONS)));
+      std::string key = pRea->getKey();
+      emit notifyGUI(ListViews::REACTION, ListViews::ADD, key);
+      emit changeWidget(C_INVALID_INDEX, key);
     }
 
   endInsertRows();

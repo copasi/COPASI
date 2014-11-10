@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -62,7 +62,7 @@ CQReactionsWidget::CQReactionsWidget(QWidget* parent, const char* name)
   CopasiUI3Window *  pWindow = dynamic_cast<CopasiUI3Window * >(parent->parent());
   mpReactionDM->setUndoStack(pWindow->getUndoStack());
   connect(mpReactionDM, SIGNAL(changeWidget(const size_t&, const std::string&)),
-            this, SLOT(slotChangeWidget(const size_t&, const std::string&)));
+          this, SLOT(slotChangeWidget(const size_t&, const std::string&)));
 #endif
 }
 
@@ -290,7 +290,8 @@ void CQReactionsWidget::deleteSelectedReactions()
 }
 
 #ifdef COPASI_UNDO
-void CQReactionsWidget:: slotChangeWidget(const size_t & id, const std::string &key){
-	mpListView->switchToOtherWidget(id, key);
+void CQReactionsWidget:: slotChangeWidget(const size_t & id, const std::string &key)
+{
+  mpListView->switchToOtherWidget(id, key);
 }
 #endif

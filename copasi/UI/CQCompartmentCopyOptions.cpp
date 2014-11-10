@@ -1,8 +1,7 @@
-// Copyright (C) 2013 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
-
+// Copyright (C) 2013 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 #include "CQCompartmentCopyOptions.h"
 
@@ -16,7 +15,7 @@
  *  true to construct a modal dialog.
  */
 CQCompartmentCopyOptions::CQCompartmentCopyOptions(QWidget* parent, const char* name, bool modal, Qt::WindowFlags fl)
-    : QDialog(parent, fl)
+  : QDialog(parent, fl)
 {
   setObjectName(QString::fromUtf8(name));
   setModal(modal);
