@@ -373,6 +373,8 @@ void CTrajectoryTask::processStart(const bool & useInitialValues)
     }
 
   mContainerState.initialize(mpContainer->getState(mUpdateMoieties));
+  mpContainerStateTime = mContainerState.array() + mpContainer->getTimeIndex();
+
   mpTrajectoryMethod->start();
 
   return;

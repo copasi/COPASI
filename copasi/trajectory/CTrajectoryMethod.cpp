@@ -123,6 +123,7 @@ void CTrajectoryMethod::start()
     UpdateMoieties = *pParameter->getValue().pBOOL;
 
   mContainerState.initialize(mpContainer->getState(UpdateMoieties));
+  mpContainerStateTime = mContainerState.array() + mpContainer->getTimeIndex();
 
   return;
 }
