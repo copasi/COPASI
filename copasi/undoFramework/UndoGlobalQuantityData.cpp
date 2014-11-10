@@ -1,3 +1,8 @@
+// Copyright (C) 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
 /*
  * UndoGlobalQuantityData.cpp
  *
@@ -13,85 +18,72 @@
 
 #include "UndoGlobalQuantityData.h"
 
-UndoGlobalQuantityData::UndoGlobalQuantityData() {
-	// TODO Auto-generated constructor stub
-
+UndoGlobalQuantityData::UndoGlobalQuantityData()
+{
+  // TODO Auto-generated constructor stub
 }
 
 double UndoGlobalQuantityData::getInitialValue() const
 {
-	return mInitialValue;
+  return mInitialValue;
 }
 
 CModelEntity::Status UndoGlobalQuantityData::getStatus() const
 {
-	return mStatus;
+  return mStatus;
 }
 
 void UndoGlobalQuantityData::setInitialValue(double initialValue)
 {
-	mInitialValue = initialValue;
+  mInitialValue = initialValue;
 }
 
 void UndoGlobalQuantityData::setStatus(CModelEntity::Status status)
 {
-	mStatus = status;
+  mStatus = status;
 }
 
-UndoGlobalQuantityData::~UndoGlobalQuantityData() {
-	// TODO Auto-generated destructor stub
+UndoGlobalQuantityData::~UndoGlobalQuantityData()
+{
+  // TODO Auto-generated destructor stub
 }
 
 QList<UndoReactionData*> *UndoGlobalQuantityData::getReactionDependencyObjects() const
 {
-    return mReactionDependencyObjects;
+  return mReactionDependencyObjects;
 }
 
 void UndoGlobalQuantityData::setReactionDependencyObjects(QList<UndoReactionData*> *reactionDependencyObjects)
 {
-    mReactionDependencyObjects = reactionDependencyObjects;
+  mReactionDependencyObjects = reactionDependencyObjects;
 }
 
 bool UndoGlobalQuantityData::isFixed() const
 {
-    return fixed;
+  return fixed;
 }
 
 void UndoGlobalQuantityData::setFixed(bool fixed)
 {
-    this->fixed = fixed;
+  this->fixed = fixed;
 }
 
 const std::string & UndoGlobalQuantityData::getExpression() const
 {
-    return mExpression;
+  return mExpression;
 }
 
 void UndoGlobalQuantityData::setExpression(const std::string &expression)
 {
-    mExpression = expression;
+  mExpression = expression;
 }
 
 CModelValue UndoGlobalQuantityData::getModelValue() const
 {
-    return modelValue;
+  return modelValue;
 }
 
 void UndoGlobalQuantityData::setModelValue(CModelValue modelValue)
 {
-    this->modelValue = modelValue;
+  this->modelValue = modelValue;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-

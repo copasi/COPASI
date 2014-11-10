@@ -1,3 +1,8 @@
+// Copyright (C) 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
 /*
  * RemoveCompartmentRowsCommand.cpp
  *
@@ -17,61 +22,69 @@
 
 #include "RemoveCompartmentRowsCommand.h"
 
-RemoveCompartmentRowsCommand::RemoveCompartmentRowsCommand(QModelIndexList rows, CQCompartmentDM * pCompartmentDM, const QModelIndex&) {
-	mpCompartmentDM = pCompartmentDM;
-	mRows = rows;
-	mFirstTime = true;
+RemoveCompartmentRowsCommand::RemoveCompartmentRowsCommand(QModelIndexList rows, CQCompartmentDM * pCompartmentDM, const QModelIndex&)
+{
+  mpCompartmentDM = pCompartmentDM;
+  mRows = rows;
+  mFirstTime = true;
 
-	assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-	CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
-	assert(pDataModel != NULL);
-	CModel * pModel = pDataModel->getModel();
+  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
+  assert(pDataModel != NULL);
+  CModel * pModel = pDataModel->getModel();
 
-	assert(pModel != NULL);
+  assert(pModel != NULL);
 
-	QModelIndexList::const_iterator i;
+  QModelIndexList::const_iterator i;
 
-	for (i = rows.begin(); i != rows.end(); ++i)
-	{
-		UndoCompartmentData *data = new UndoCompartmentData();
+  for (i = rows.begin(); i != rows.end(); ++i)
+    {
+      UndoCompartmentData *data = new UndoCompartmentData();
 
-		if (!pCompartmentDM->isDefaultRow(*i) && pModel->getCompartments()[(*i).row()]){
-			mpSpecieData = new QList <UndoSpecieData*>();
-			mpReactionData = new  QList <UndoReactionData*>();
-			mpGlobalQuantityData = new  QList <UndoGlobalQuantityData*>();
-			data->setName(pModel->getCompartments()[(*i).row()]->getObjectName());
-			data->setStatus(pModel->getCompartments()[(*i).row()]->getStatus());
-			data->setInitialValue(pModel->getCompartments()[(*i).row()]->getInitialValue());
-			setDependentObjects(pModel->getCompartments()[(*i).row()]->getDeletedObjects());
-			data->setReactionDependencyObjects(getReactionData());
-			data->setSpecieDependencyObjects(getSpecieData());
-			data->setGlobalQuantityDependencyObjects(getGlobalQuantityData());
+      if (!pCompartmentDM->isDefaultRow(*i) && pModel->getCompartments()[(*i).row()])
+        {
+          mpSpecieData = new QList <UndoSpecieData*>();
+          mpReactionData = new  QList <UndoReactionData*>();
+          mpGlobalQuantityData = new  QList <UndoGlobalQuantityData*>();
+          data->setName(pModel->getCompartments()[(*i).row()]->getObjectName());
+          data->setStatus(pModel->getCompartments()[(*i).row()]->getStatus());
+          data->setInitialValue(pModel->getCompartments()[(*i).row()]->getInitialValue());
+          setDependentObjects(pModel->getCompartments()[(*i).row()]->getDeletedObjects());
+          data->setReactionDependencyObjects(getReactionData());
+          data->setSpecieDependencyObjects(getSpecieData());
+          data->setGlobalQuantityDependencyObjects(getGlobalQuantityData());
 
-			mpCompartmentData.append(data);
-		}
-	}
-	this->setText(removeCompartmentRowsText());
+          mpCompartmentData.append(data);
+        }
+    }
+
+  this->setText(removeCompartmentRowsText());
 }
 
-void RemoveCompartmentRowsCommand::redo(){
-	if(mFirstTime){
-		mpCompartmentDM->removeCompartmentRows(mRows, QModelIndex());
-		mFirstTime = false;
-	}
-	else{
-		mpCompartmentDM->deleteCompartmentRows(mpCompartmentData);
-	}
+void RemoveCompartmentRowsCommand::redo()
+{
+  if (mFirstTime)
+    {
+      mpCompartmentDM->removeCompartmentRows(mRows, QModelIndex());
+      mFirstTime = false;
+    }
+  else
+    {
+      mpCompartmentDM->deleteCompartmentRows(mpCompartmentData);
+    }
 }
 
-void RemoveCompartmentRowsCommand::undo(){
-	mpCompartmentDM->insertCompartmentRows(mpCompartmentData);
+void RemoveCompartmentRowsCommand::undo()
+{
+  mpCompartmentDM->insertCompartmentRows(mpCompartmentData);
 }
 
-QString RemoveCompartmentRowsCommand::removeCompartmentRowsText() const {
-	return QObject::tr(": Removed Compartments");
+QString RemoveCompartmentRowsCommand::removeCompartmentRowsText() const
+{
+  return QObject::tr(": Removed Compartments");
 }
 
-RemoveCompartmentRowsCommand::~RemoveCompartmentRowsCommand() {
-	// TODO Auto-generated destructor stub
+RemoveCompartmentRowsCommand::~RemoveCompartmentRowsCommand()
+{
+  // TODO Auto-generated destructor stub
 }
-

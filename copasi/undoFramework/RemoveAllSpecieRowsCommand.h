@@ -1,3 +1,8 @@
+// Copyright (C) 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
 /*
  * RemoveAllSpecieRowsCommand.h
  *
@@ -15,19 +20,20 @@
 class UndoSpecieData;
 class UndoReactionData;
 
-class RemoveAllSpecieRowsCommand: public CCopasiUndoCommand {
+class RemoveAllSpecieRowsCommand: public CCopasiUndoCommand
+{
 public:
-	RemoveAllSpecieRowsCommand(CQSpecieDM * pSpecieDM, const QModelIndex&);
-	void redo();
-	void undo();
+  RemoveAllSpecieRowsCommand(CQSpecieDM * pSpecieDM, const QModelIndex&);
+  void redo();
+  void undo();
 
-	QString removeAllSpecieRowsText() const;
+  QString removeAllSpecieRowsText() const;
 
-	private:
-		CQSpecieDM *mpSpecieDM;
-		QList <UndoSpecieData *> mpSpecieData;
-		QList <UndoReactionData *> mpReactionData;
-	virtual ~RemoveAllSpecieRowsCommand();
+private:
+  CQSpecieDM *mpSpecieDM;
+  QList <UndoSpecieData *> mpSpecieData;
+  QList <UndoReactionData *> mpReactionData;
+  virtual ~RemoveAllSpecieRowsCommand();
 };
 
 #endif /* REMOVEALLSPECIEROWSCOMMAND_H_ */

@@ -1,3 +1,8 @@
+// Copyright (C) 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
 /*
  * CreateNewSpecieCommand.cpp
  *
@@ -14,31 +19,34 @@
 
 CreateNewSpecieCommand::CreateNewSpecieCommand(CQSpeciesDetail *pSpecieDetail)
 {
-	mpSpecieDetail = pSpecieDetail;
-	mpSpecieData = new UndoSpecieData();
-	this->setText(createNewSpecieText());
+  mpSpecieDetail = pSpecieDetail;
+  mpSpecieData = new UndoSpecieData();
+  this->setText(createNewSpecieText());
 }
-void CreateNewSpecieCommand::redo(){
-	mpSpecieDetail->createNewSpecie();
+void CreateNewSpecieCommand::redo()
+{
+  mpSpecieDetail->createNewSpecie();
 
-	std::string sName = mpSpecieDetail->mpMetab->getObjectName();
-	mpSpecieData->setName(sName);
-	mpSpecieData->setIConc(mpSpecieDetail->mpMetab->getInitialConcentration());
-	mpSpecieData->setCompartment(mpSpecieDetail->mpMetab->getCompartment()->getObjectName());
-	mpSpecieData->setStatus(mpSpecieDetail->mpMetab->getStatus());
-}
-
-void CreateNewSpecieCommand::undo(){
-	mpSpecieDetail->deleteSpecie(mpSpecieData);
+  std::string sName = mpSpecieDetail->mpMetab->getObjectName();
+  mpSpecieData->setName(sName);
+  mpSpecieData->setIConc(mpSpecieDetail->mpMetab->getInitialConcentration());
+  mpSpecieData->setCompartment(mpSpecieDetail->mpMetab->getCompartment()->getObjectName());
+  mpSpecieData->setStatus(mpSpecieDetail->mpMetab->getStatus());
 }
 
-QString CreateNewSpecieCommand::createNewSpecieText() const {
-	std::string myEntityName (": Create New Species ");
-	char* entityName = (char*)myEntityName.c_str();
-	return QObject::tr(entityName);
+void CreateNewSpecieCommand::undo()
+{
+  mpSpecieDetail->deleteSpecie(mpSpecieData);
 }
 
-CreateNewSpecieCommand::~CreateNewSpecieCommand() {
-	// TODO Auto-generated destructor stub
+QString CreateNewSpecieCommand::createNewSpecieText() const
+{
+  std::string myEntityName(": Create New Species ");
+  char* entityName = (char*)myEntityName.c_str();
+  return QObject::tr(entityName);
 }
 
+CreateNewSpecieCommand::~CreateNewSpecieCommand()
+{
+  // TODO Auto-generated destructor stub
+}

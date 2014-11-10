@@ -1,3 +1,8 @@
+// Copyright (C) 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
 /*
  * SpecieDataChangeCommand.cpp
  *
@@ -11,33 +16,32 @@
 
 SpecieDataChangeCommand::SpecieDataChangeCommand(QModelIndex index, const QVariant value, int role, CQSpecieDM *pSpecieDM)
 {
-	// stores the data
-	mOld = index.data(Qt::DisplayRole);
-	mNew = value;
-	mpSpecieDM = pSpecieDM;
-	mIndex = index;
-	mRole = role;
+  // stores the data
+  mOld = index.data(Qt::DisplayRole);
+  mNew = value;
+  mpSpecieDM = pSpecieDM;
+  mIndex = index;
+  mRole = role;
 
-	//mPathIndex = pathFromIndex(index);
-	this->setText(specieDataChangeText());
+  //mPathIndex = pathFromIndex(index);
+  this->setText(specieDataChangeText());
 }
 
 SpecieDataChangeCommand::~SpecieDataChangeCommand()
 {
-	// TODO Auto-generated destructor stub
+  // TODO Auto-generated destructor stub
 }
 
 void SpecieDataChangeCommand::redo()
 {
-	mpSpecieDM->specieDataChange(mIndex, mNew, mRole);
+  mpSpecieDM->specieDataChange(mIndex, mNew, mRole);
 }
 void SpecieDataChangeCommand::undo()
 {
-	//mIndex = pathToIndex(mPathIndex, mpSpecieDM);
-	mpSpecieDM->specieDataChange(mIndex, mOld, mRole);
+  //mIndex = pathToIndex(mPathIndex, mpSpecieDM);
+  mpSpecieDM->specieDataChange(mIndex, mOld, mRole);
 }
 QString SpecieDataChangeCommand::specieDataChangeText() const
 {
-	return QObject::tr(": Changed Species Data");
+  return QObject::tr(": Changed Species Data");
 }
-

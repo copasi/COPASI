@@ -1,3 +1,8 @@
+// Copyright (C) 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
 /*
  * CreateNewCompartmentCommand.h
  *
@@ -13,17 +18,18 @@
 class CQCompartment;
 class UndoCompartmentData;
 
-class CreateNewCompartmentCommand: public CCopasiUndoCommand {
+class CreateNewCompartmentCommand: public CCopasiUndoCommand
+{
 public:
-	CreateNewCompartmentCommand(CQCompartment *pCompartment);
-	void redo();
-	void undo();
-	QString createNewCompartmentText() const;
-	virtual ~CreateNewCompartmentCommand();
+  CreateNewCompartmentCommand(CQCompartment *pCompartment);
+  void redo();
+  void undo();
+  QString createNewCompartmentText() const;
+  virtual ~CreateNewCompartmentCommand();
 
 private:
-	UndoCompartmentData *mpCompartmentData;
-	CQCompartment* mpCompartment;
+  UndoCompartmentData *mpCompartmentData;
+  CQCompartment* mpCompartment;
 };
 
 #endif /* CREATENEWCOMPARTMENTCOMMAND_H_ */

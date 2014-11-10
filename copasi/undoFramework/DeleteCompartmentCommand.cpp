@@ -1,3 +1,8 @@
+// Copyright (C) 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
 /*
  * DeleteCompartmentCommand.cpp
  *
@@ -16,44 +21,50 @@
 
 #include "DeleteCompartmentCommand.h"
 
-DeleteCompartmentCommand::DeleteCompartmentCommand(CQCompartment *pCompartment) {
-	mpCompartment = pCompartment;
-	mFirstTime = true;
-	mpCompartmentData = new UndoCompartmentData();
-	std::string sName = mpCompartment->mpCompartment->getObjectName();
-	mpCompartmentData->setName(sName);
-	mpCompartmentData->setInitialValue(mpCompartment->mpCompartment->getInitialValue());
-	mpCompartmentData->setStatus(mpCompartment->mpCompartment->getStatus());
+DeleteCompartmentCommand::DeleteCompartmentCommand(CQCompartment *pCompartment)
+{
+  mpCompartment = pCompartment;
+  mFirstTime = true;
+  mpCompartmentData = new UndoCompartmentData();
+  std::string sName = mpCompartment->mpCompartment->getObjectName();
+  mpCompartmentData->setName(sName);
+  mpCompartmentData->setInitialValue(mpCompartment->mpCompartment->getInitialValue());
+  mpCompartmentData->setStatus(mpCompartment->mpCompartment->getStatus());
 
-	//store to be deleted data
-	setDependentObjects(mpCompartment->mpCompartment->getDeletedObjects());
-	mpCompartmentData->setSpecieDependencyObjects(getSpecieData());
-	mpCompartmentData->setReactionDependencyObjects(getReactionData());
+  //store to be deleted data
+  setDependentObjects(mpCompartment->mpCompartment->getDeletedObjects());
+  mpCompartmentData->setSpecieDependencyObjects(getSpecieData());
+  mpCompartmentData->setReactionDependencyObjects(getReactionData());
 
-	this->setText(deleteCompartmentText(sName));
+  this->setText(deleteCompartmentText(sName));
 }
 
-void DeleteCompartmentCommand::redo(){
-	if(mFirstTime){
-		mpCompartment->deleteCompartment();
-		mFirstTime = false;
-	}else{
-		mpCompartment->deleteCompartment(mpCompartmentData);
-	}
+void DeleteCompartmentCommand::redo()
+{
+  if (mFirstTime)
+    {
+      mpCompartment->deleteCompartment();
+      mFirstTime = false;
+    }
+  else
+    {
+      mpCompartment->deleteCompartment(mpCompartmentData);
+    }
 }
 
-void DeleteCompartmentCommand::undo(){
-	mpCompartment->addCompartment(mpCompartmentData);
+void DeleteCompartmentCommand::undo()
+{
+  mpCompartment->addCompartment(mpCompartmentData);
 }
 
-QString DeleteCompartmentCommand::deleteCompartmentText(std::string &name) const {
-	std::string myEntityName (": Delete Compartment "+name);
-	char* entityName = (char*)myEntityName.c_str();
-	return QObject::tr(entityName);
-
+QString DeleteCompartmentCommand::deleteCompartmentText(std::string &name) const
+{
+  std::string myEntityName(": Delete Compartment " + name);
+  char* entityName = (char*)myEntityName.c_str();
+  return QObject::tr(entityName);
 }
 
-DeleteCompartmentCommand::~DeleteCompartmentCommand() {
-	// TODO Auto-generated destructor stub
+DeleteCompartmentCommand::~DeleteCompartmentCommand()
+{
+  // TODO Auto-generated destructor stub
 }
-

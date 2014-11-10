@@ -1,3 +1,8 @@
+// Copyright (C) 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
 /*
  * insertReactionRowsCommand.cpp
  *
@@ -17,31 +22,36 @@
 
 #include "insertReactionRowsCommand.h"
 
-insertReactionRowsCommand::insertReactionRowsCommand(int position, int rows, CQReactionDM *pReactionDM, const QModelIndex&): CCopasiUndoCommand() {
-	mpReactionDM = pReactionDM;
-	this->setText(insertRowsText());
-	mRows = rows;
-	mPosition = position;
+insertReactionRowsCommand::insertReactionRowsCommand(int position, int rows, CQReactionDM *pReactionDM, const QModelIndex&): CCopasiUndoCommand()
+{
+  mpReactionDM = pReactionDM;
+  this->setText(insertRowsText());
+  mRows = rows;
+  mPosition = position;
 }
 
-insertReactionRowsCommand::~insertReactionRowsCommand() {
-	// TODO Auto-generated destructor stub
+insertReactionRowsCommand::~insertReactionRowsCommand()
+{
+  // TODO Auto-generated destructor stub
 }
 
-void insertReactionRowsCommand::redo(){
-	mpReactionDM->insertNewReactionRow(mPosition, mRows, QModelIndex());
-	assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-	CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
-	assert(pDataModel != NULL);
-	CModel * pModel = pDataModel->getModel();
-	assert(pModel != NULL);
-	mpReaction = pModel->getReactions()[mPosition];
+void insertReactionRowsCommand::redo()
+{
+  mpReactionDM->insertNewReactionRow(mPosition, mRows, QModelIndex());
+  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
+  assert(pDataModel != NULL);
+  CModel * pModel = pDataModel->getModel();
+  assert(pModel != NULL);
+  mpReaction = pModel->getReactions()[mPosition];
 }
 
-void insertReactionRowsCommand::undo(){
-	mpReactionDM->deleteReactionRow(mpReaction);
+void insertReactionRowsCommand::undo()
+{
+  mpReactionDM->deleteReactionRow(mpReaction);
 }
 
-QString insertReactionRowsCommand::insertRowsText() const {
-	return QObject::tr(": Inserted New Reaction");
+QString insertReactionRowsCommand::insertRowsText() const
+{
+  return QObject::tr(": Inserted New Reaction");
 }

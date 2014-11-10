@@ -1,3 +1,8 @@
+// Copyright (C) 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
 /*
  * GlobalQuantityDataChangeCommand.h
  *
@@ -10,22 +15,22 @@
 
 #include "CCopasiUndoCommand.h"
 
-class GlobalQuantityDataChangeCommand: public CCopasiUndoCommand {
+class GlobalQuantityDataChangeCommand: public CCopasiUndoCommand
+{
 public:
-	GlobalQuantityDataChangeCommand(QModelIndex index, const QVariant value, int role, CQGlobalQuantityDM *pGlobalQuantityDM);
-	void redo();
-	void undo();
-	QString globalQuantityDataChangeText() const;
-
+  GlobalQuantityDataChangeCommand(QModelIndex index, const QVariant value, int role, CQGlobalQuantityDM *pGlobalQuantityDM);
+  void redo();
+  void undo();
+  QString globalQuantityDataChangeText() const;
 
 private:
-	QVariant mNew, mOld;
-	QModelIndex mIndex;
-	CQGlobalQuantityDM *mpGlobalQuantityDM;
-	int mRole;
-	Path mPathIndex;
+  QVariant mNew, mOld;
+  QModelIndex mIndex;
+  CQGlobalQuantityDM *mpGlobalQuantityDM;
+  int mRole;
+  Path mPathIndex;
 
-	virtual ~GlobalQuantityDataChangeCommand();
+  virtual ~GlobalQuantityDataChangeCommand();
 };
 
 #endif /* GLOBALQUANTITYDATACHANGECOMMAND_H_ */

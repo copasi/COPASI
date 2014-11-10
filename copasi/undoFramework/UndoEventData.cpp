@@ -1,3 +1,8 @@
+// Copyright (C) 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
 /*
  * UndoEventData.cpp
  *
@@ -11,97 +16,93 @@
 
 #include "UndoEventData.h"
 
-UndoEventData::UndoEventData() {
+UndoEventData::UndoEventData()
+{
 
-	mAssignments = new QList <CEventAssignment*>();
+  mAssignments = new QList <CEventAssignment*>();
 }
 
-UndoEventData::~UndoEventData() {
-	// TODO Auto-generated destructor stub
+UndoEventData::~UndoEventData()
+{
+  // TODO Auto-generated destructor stub
 }
 
 std::string UndoEventData::getDelayExpression() const
 {
-    return delayExpression;
+  return delayExpression;
 }
 
 std::string UndoEventData::getPriorityExpression() const
 {
-    return priorityExpression;
+  return priorityExpression;
 }
 
 std::string UndoEventData::getTriggerExpression() const
 {
-    return triggerExpression;
+  return triggerExpression;
 }
 
 UndoEventData::Type UndoEventData::getType() const
 {
-    return type;
+  return type;
 }
 
 bool UndoEventData::isDelayAssignment() const
 {
-    return mDelayAssignment;
+  return mDelayAssignment;
 }
 
 bool UndoEventData::isFireAtInitialTime() const
 {
-    return mFireAtInitialTime;
+  return mFireAtInitialTime;
 }
 
 bool UndoEventData::isPersistentTrigger() const
 {
-    return mPersistentTrigger;
+  return mPersistentTrigger;
 }
 
 void UndoEventData::setDelayAssignment(bool delayAssignment)
 {
-    mDelayAssignment = delayAssignment;
+  mDelayAssignment = delayAssignment;
 }
 
 void UndoEventData::setDelayExpression(const std::string &delayExpression)
 {
-    this->delayExpression = delayExpression;
+  this->delayExpression = delayExpression;
 }
 
 void UndoEventData::setPriorityExpression(const std::string &priorityXxpression)
 {
-    this->priorityExpression = priorityExpression;
+  this->priorityExpression = priorityExpression;
 }
 
 void UndoEventData::setFireAtInitialTime(bool fireAtInitialTime)
 {
-    mFireAtInitialTime = fireAtInitialTime;
+  mFireAtInitialTime = fireAtInitialTime;
 }
 
 void UndoEventData::setPersistentTrigger(bool persistentTrigger)
 {
-    mPersistentTrigger = persistentTrigger;
+  mPersistentTrigger = persistentTrigger;
 }
 
 void UndoEventData::setTriggerExpression(const std::string &triggerExpression)
 {
-    this->triggerExpression = triggerExpression;
+  this->triggerExpression = triggerExpression;
 }
 
 void UndoEventData::setType(Type &type)
 {
-    this->type = type;
+  this->type = type;
 }
 
 QList<CEventAssignment*> *UndoEventData::getAssignments() const
 {
-    return mAssignments;
+  return mAssignments;
 }
 
 void UndoEventData::setAssignments(QList<CEventAssignment*> *assignments)
 {
-    mAssignments = assignments;
+  mAssignments = assignments;
 }
-
-
-
-
-
-

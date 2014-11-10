@@ -1,3 +1,8 @@
+// Copyright (C) 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
 /*
  * UndoSpecieData.cpp
  *
@@ -11,99 +16,82 @@
 #include "UndoSpecieData.h"
 #include "UndoReactionData.h"
 
-UndoSpecieData::UndoSpecieData() {
-	// TODO Auto-generated constructor stub
-
+UndoSpecieData::UndoSpecieData()
+{
+  // TODO Auto-generated constructor stub
 }
 
-UndoSpecieData::~UndoSpecieData() {
-	// TODO Auto-generated destructor stub
+UndoSpecieData::~UndoSpecieData()
+{
+  // TODO Auto-generated destructor stub
 }
 
 std::string UndoSpecieData::getCompartment() const
 {
-    return mCompartment;
+  return mCompartment;
 }
 
 double UndoSpecieData::getIConc() const
 {
-    return mIConc;
+  return mIConc;
 }
 
 void UndoSpecieData::setCompartment(std::string compartment)
 {
-    mCompartment = compartment;
+  mCompartment = compartment;
 }
 
 void UndoSpecieData::setIConc(double iConc)
 {
-    mIConc = iConc;
+  mIConc = iConc;
 }
 
 CModelEntity::Status UndoSpecieData::getStatus() const
 {
-    return mStatus;
+  return mStatus;
 }
 
 void UndoSpecieData::setStatus(CModelEntity::Status status)
 {
-    mStatus = status;
+  mStatus = status;
 }
 
 std::string UndoSpecieData::getExpression() const
 {
-    return mExpression;
+  return mExpression;
 }
 
 std::string UndoSpecieData::getInitialExpression() const
 {
-    return mInitialExpression;
+  return mInitialExpression;
 }
 
 void UndoSpecieData::setExpression(std::string expression)
 {
-    mExpression = expression;
+  mExpression = expression;
 }
 
 void UndoSpecieData::setInitialExpression(std::string initialExpression)
 {
-    mInitialExpression = initialExpression;
+  mInitialExpression = initialExpression;
 }
 
 QList<UndoReactionData*> *UndoSpecieData::getReactionDependencyObjects() const
 {
-    return mReactionDependencyObjects;
+  return mReactionDependencyObjects;
 }
 
 void UndoSpecieData::setReactionDependencyObjects(QList<UndoReactionData*> *reactionDependencyObjects)
 {
-    mReactionDependencyObjects = reactionDependencyObjects;
+  mReactionDependencyObjects = reactionDependencyObjects;
 }
 
 double UndoSpecieData::getINumber() const
 {
-    return mINumber;
+  return mINumber;
 }
 
 void UndoSpecieData::setINumber(double iNumber)
 {
-    mINumber = iNumber;
+  mINumber = iNumber;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

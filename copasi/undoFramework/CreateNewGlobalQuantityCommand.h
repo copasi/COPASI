@@ -1,3 +1,8 @@
+// Copyright (C) 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
 /*
  * CreateNewGlobalQuantityCommand.h
  *
@@ -13,17 +18,18 @@
 class CQModelValue;
 class UndoGlobalQuantityData;
 
-class CreateNewGlobalQuantityCommand: public CCopasiUndoCommand {
+class CreateNewGlobalQuantityCommand: public CCopasiUndoCommand
+{
 public:
-	CreateNewGlobalQuantityCommand(CQModelValue *pModelValue);
-	void redo();
-	void undo();
-	QString createNewGlobalQuantityText() const;
-	virtual ~CreateNewGlobalQuantityCommand();
+  CreateNewGlobalQuantityCommand(CQModelValue *pModelValue);
+  void redo();
+  void undo();
+  QString createNewGlobalQuantityText() const;
+  virtual ~CreateNewGlobalQuantityCommand();
 
 private:
-	UndoGlobalQuantityData *mpGlobalQuantityData;
-	CQModelValue* mpModelValue;
+  UndoGlobalQuantityData *mpGlobalQuantityData;
+  CQModelValue* mpModelValue;
 };
 
 #endif /* CREATENEWGLOBALQUANTITYCOMMAND_H_ */

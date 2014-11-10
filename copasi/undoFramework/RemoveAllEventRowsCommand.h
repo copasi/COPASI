@@ -1,3 +1,8 @@
+// Copyright (C) 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
 /*
  * RemoveAllEventRowsCommand.h
  *
@@ -12,19 +17,20 @@
 
 #include "CCopasiUndoCommand.h"
 
-class RemoveAllEventRowsCommand: public CCopasiUndoCommand {
+class RemoveAllEventRowsCommand: public CCopasiUndoCommand
+{
 public:
-	RemoveAllEventRowsCommand(CQEventDM * pEventDM, const QModelIndex&);
-	void redo();
-	void undo();
+  RemoveAllEventRowsCommand(CQEventDM * pEventDM, const QModelIndex&);
+  void redo();
+  void undo();
 
-	QString removeAllEventRowsText() const;
+  QString removeAllEventRowsText() const;
 
-	virtual ~RemoveAllEventRowsCommand();
+  virtual ~RemoveAllEventRowsCommand();
 
 private:
-	CQEventDM *mpEventDM;
-	QList <UndoEventData *> mpEventData;
+  CQEventDM *mpEventDM;
+  QList <UndoEventData *> mpEventData;
 };
 
 #endif /* REMOVEALLEVENTROWSCOMMAND_H_ */

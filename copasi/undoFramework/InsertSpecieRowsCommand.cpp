@@ -1,3 +1,8 @@
+// Copyright (C) 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
 /*
  * InsertSpecieRowsCommand.cpp
  *
@@ -15,44 +20,50 @@
 #include "InsertSpecieRowsCommand.h"
 #include "UndoSpecieData.h"
 
-InsertSpecieRowsCommand::InsertSpecieRowsCommand(int position, int rows, CQSpecieDM *pSpecieDM, const QModelIndex&): CCopasiUndoCommand() {
-	mpSpecieDM = pSpecieDM;
-	mpSpecieData = new UndoSpecieData();
-	this->setText(insertRowsText());
-	mRows = rows;
-	mPosition = position;
-	firstTime = true;
+InsertSpecieRowsCommand::InsertSpecieRowsCommand(int position, int rows, CQSpecieDM *pSpecieDM, const QModelIndex&): CCopasiUndoCommand()
+{
+  mpSpecieDM = pSpecieDM;
+  mpSpecieData = new UndoSpecieData();
+  this->setText(insertRowsText());
+  mRows = rows;
+  mPosition = position;
+  firstTime = true;
 }
 
-void InsertSpecieRowsCommand::redo(){
-	if(firstTime){
-		mpSpecieDM->insertNewSpecieRow(mPosition, mRows, QModelIndex());
-		assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-		CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
-		assert(pDataModel != NULL);
-		CModel * pModel = pDataModel->getModel();
-		assert(pModel != NULL);
+void InsertSpecieRowsCommand::redo()
+{
+  if (firstTime)
+    {
+      mpSpecieDM->insertNewSpecieRow(mPosition, mRows, QModelIndex());
+      assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+      CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
+      assert(pDataModel != NULL);
+      CModel * pModel = pDataModel->getModel();
+      assert(pModel != NULL);
 
-		CMetab *pSpecie = pModel->getMetabolites()[mPosition];
-		mpSpecieData->setName(pSpecie->getObjectName());
-		mpSpecieData->setIConc(pSpecie->getInitialConcentration());
-		mpSpecieData->setCompartment(pSpecie->getCompartment()->getObjectName());
-		firstTime = false;
-	}else{
-		mpSpecieDM->addSpecieRow(mpSpecieData);
-	}
+      CMetab *pSpecie = pModel->getMetabolites()[mPosition];
+      mpSpecieData->setName(pSpecie->getObjectName());
+      mpSpecieData->setIConc(pSpecie->getInitialConcentration());
+      mpSpecieData->setCompartment(pSpecie->getCompartment()->getObjectName());
+      firstTime = false;
+    }
+  else
+    {
+      mpSpecieDM->addSpecieRow(mpSpecieData);
+    }
 }
 
-void InsertSpecieRowsCommand::undo(){
-	mpSpecieDM->deleteSpecieRow(mpSpecieData);
+void InsertSpecieRowsCommand::undo()
+{
+  mpSpecieDM->deleteSpecieRow(mpSpecieData);
 }
 
-QString InsertSpecieRowsCommand::insertRowsText() const {
-	return QObject::tr(": Inserted New Species");
+QString InsertSpecieRowsCommand::insertRowsText() const
+{
+  return QObject::tr(": Inserted New Species");
 }
 
-
-InsertSpecieRowsCommand::~InsertSpecieRowsCommand() {
-	// TODO Auto-generated destructor stub
+InsertSpecieRowsCommand::~InsertSpecieRowsCommand()
+{
+  // TODO Auto-generated destructor stub
 }
-

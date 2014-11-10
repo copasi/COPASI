@@ -1,3 +1,8 @@
+// Copyright (C) 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
 /*
  * RemoveAllGlobalQuantityRowsCommand.h
  *
@@ -14,21 +19,21 @@
 
 class UndoReactionData;
 
-class RemoveAllGlobalQuantityRowsCommand: public CCopasiUndoCommand {
+class RemoveAllGlobalQuantityRowsCommand: public CCopasiUndoCommand
+{
 public:
-	RemoveAllGlobalQuantityRowsCommand(CQGlobalQuantityDM * pGlobalQuantityDM, const QModelIndex&);
-	void redo();
-	void undo();
+  RemoveAllGlobalQuantityRowsCommand(CQGlobalQuantityDM * pGlobalQuantityDM, const QModelIndex&);
+  void redo();
+  void undo();
 
-	QString removeAllGlobalQuantityRowsText() const;
+  QString removeAllGlobalQuantityRowsText() const;
 
-	virtual ~RemoveAllGlobalQuantityRowsCommand();
+  virtual ~RemoveAllGlobalQuantityRowsCommand();
 
 private:
-	CQGlobalQuantityDM *mpGlobalQuantityDM;
-	QList <UndoGlobalQuantityData *> mpGlobalQuantityData;
-	QList <UndoReactionData *> mpReactionData;
-
+  CQGlobalQuantityDM *mpGlobalQuantityDM;
+  QList <UndoGlobalQuantityData *> mpGlobalQuantityData;
+  QList <UndoReactionData *> mpReactionData;
 };
 
 #endif /* REMOVEALLGLOBALQUANTITYROWSCOMMAND_H_ */

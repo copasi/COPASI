@@ -1,3 +1,8 @@
+// Copyright (C) 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
 /*
  * RemoveCompartmentRowsCommand.h
  *
@@ -14,21 +19,22 @@
 
 class CCopasiObject;
 
-class RemoveCompartmentRowsCommand: public CCopasiUndoCommand {
+class RemoveCompartmentRowsCommand: public CCopasiUndoCommand
+{
 public:
-	RemoveCompartmentRowsCommand(QModelIndexList rows, CQCompartmentDM * pCompartmentDM, const QModelIndex&);
-	void redo();
-	void undo();
+  RemoveCompartmentRowsCommand(QModelIndexList rows, CQCompartmentDM * pCompartmentDM, const QModelIndex&);
+  void redo();
+  void undo();
 
-	QString removeCompartmentRowsText() const;
-	virtual ~RemoveCompartmentRowsCommand();
+  QString removeCompartmentRowsText() const;
+  virtual ~RemoveCompartmentRowsCommand();
 
 private:
-	CQCompartmentDM *mpCompartmentDM;
-	QModelIndexList mRows;
-	QList <UndoCompartmentData *> mpCompartmentData;
+  CQCompartmentDM *mpCompartmentDM;
+  QModelIndexList mRows;
+  QList <UndoCompartmentData *> mpCompartmentData;
 
-	bool mFirstTime;
+  bool mFirstTime;
 };
 
 #endif /* REMOVECOMPARTMENTROWSCOMMAND_H_ */

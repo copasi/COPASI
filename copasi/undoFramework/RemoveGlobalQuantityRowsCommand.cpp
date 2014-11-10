@@ -1,3 +1,8 @@
+// Copyright (C) 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
 /*
  * RemoveGlobalQuantityRowsCommand.cpp
  *
@@ -16,57 +21,65 @@
 #include "UndoReactionData.h"
 #include "RemoveGlobalQuantityRowsCommand.h"
 
-RemoveGlobalQuantityRowsCommand::RemoveGlobalQuantityRowsCommand(QModelIndexList rows, CQGlobalQuantityDM * pGlobalQuantityDM, const QModelIndex&) {
-	mpGlobalQuantityDM = pGlobalQuantityDM;
-	mRows = rows;
-	mFirstTime = true;
+RemoveGlobalQuantityRowsCommand::RemoveGlobalQuantityRowsCommand(QModelIndexList rows, CQGlobalQuantityDM * pGlobalQuantityDM, const QModelIndex&)
+{
+  mpGlobalQuantityDM = pGlobalQuantityDM;
+  mRows = rows;
+  mFirstTime = true;
 
-	assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-	CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
-	assert(pDataModel != NULL);
-	CModel * pModel = pDataModel->getModel();
+  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
+  assert(pDataModel != NULL);
+  CModel * pModel = pDataModel->getModel();
 
-	assert(pModel != NULL);
+  assert(pModel != NULL);
 
-	QModelIndexList::const_iterator i;
+  QModelIndexList::const_iterator i;
 
-	for (i = rows.begin(); i != rows.end(); ++i)
-	{
-		UndoGlobalQuantityData *data = new UndoGlobalQuantityData();
+  for (i = rows.begin(); i != rows.end(); ++i)
+    {
+      UndoGlobalQuantityData *data = new UndoGlobalQuantityData();
 
-		if (!pGlobalQuantityDM->isDefaultRow(*i) && pModel->getModelValues()[(*i).row()]){
-			data->setName(pModel->getModelValues()[(*i).row()]->getObjectName());
-			data->setInitialValue(pModel->getModelValues()[(*i).row()]->getInitialValue());
-			data->setStatus(pModel->getModelValues()[(*i).row()]->getStatus());
+      if (!pGlobalQuantityDM->isDefaultRow(*i) && pModel->getModelValues()[(*i).row()])
+        {
+          data->setName(pModel->getModelValues()[(*i).row()]->getObjectName());
+          data->setInitialValue(pModel->getModelValues()[(*i).row()]->getInitialValue());
+          data->setStatus(pModel->getModelValues()[(*i).row()]->getStatus());
 
-			setDependentObjects(pModel->getModelValues()[(*i).row()]->getDeletedObjects());
-			data->setReactionDependencyObjects(getReactionData());
+          setDependentObjects(pModel->getModelValues()[(*i).row()]->getDeletedObjects());
+          data->setReactionDependencyObjects(getReactionData());
 
-			mpGlobalQuantityData.append(data);
-		}
-	}
-	this->setText(removeGlobalQuantityRowsText());
+          mpGlobalQuantityData.append(data);
+        }
+    }
+
+  this->setText(removeGlobalQuantityRowsText());
 }
 
-void RemoveGlobalQuantityRowsCommand::redo(){
-	if(mFirstTime){
-		mpGlobalQuantityDM->removeGlobalQuantityRows(mRows, QModelIndex());
-		mFirstTime = false;
-	}
-	else{
-		mpGlobalQuantityDM->deleteGlobalQuantityRows(mpGlobalQuantityData);
-	}
+void RemoveGlobalQuantityRowsCommand::redo()
+{
+  if (mFirstTime)
+    {
+      mpGlobalQuantityDM->removeGlobalQuantityRows(mRows, QModelIndex());
+      mFirstTime = false;
+    }
+  else
+    {
+      mpGlobalQuantityDM->deleteGlobalQuantityRows(mpGlobalQuantityData);
+    }
 }
 
-void RemoveGlobalQuantityRowsCommand::undo(){
-	mpGlobalQuantityDM->insertGlobalQuantityRows(mpGlobalQuantityData);
+void RemoveGlobalQuantityRowsCommand::undo()
+{
+  mpGlobalQuantityDM->insertGlobalQuantityRows(mpGlobalQuantityData);
 }
 
-QString RemoveGlobalQuantityRowsCommand::removeGlobalQuantityRowsText() const {
-	return QObject::tr(": Removed Global Quantity");
+QString RemoveGlobalQuantityRowsCommand::removeGlobalQuantityRowsText() const
+{
+  return QObject::tr(": Removed Global Quantity");
 }
 
-RemoveGlobalQuantityRowsCommand::~RemoveGlobalQuantityRowsCommand() {
-	// TODO Auto-generated destructor stub
+RemoveGlobalQuantityRowsCommand::~RemoveGlobalQuantityRowsCommand()
+{
+  // TODO Auto-generated destructor stub
 }
-

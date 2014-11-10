@@ -1,3 +1,8 @@
+// Copyright (C) 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
 /*
  * DeleteGlobalQuantityCommand.h
  *
@@ -16,19 +21,20 @@ class UndoGlobalQuantityData;
 class UndoReactionData;
 class CQModelValue;
 
-class DeleteGlobalQuantityCommand: public CCopasiUndoCommand {
+class DeleteGlobalQuantityCommand: public CCopasiUndoCommand
+{
 public:
-	DeleteGlobalQuantityCommand(CQModelValue *pModelValue);
-	void redo();
-	void undo();
-	QString deleteGlobalQuantityText(std::string &name) const;
+  DeleteGlobalQuantityCommand(CQModelValue *pModelValue);
+  void redo();
+  void undo();
+  QString deleteGlobalQuantityText(std::string &name) const;
 
-	virtual ~DeleteGlobalQuantityCommand();
+  virtual ~DeleteGlobalQuantityCommand();
 
 private:
-	bool mFirstTime;
-	UndoGlobalQuantityData *mpGlobalQuantityData;
-	CQModelValue* mpModelValue;
+  bool mFirstTime;
+  UndoGlobalQuantityData *mpGlobalQuantityData;
+  CQModelValue* mpModelValue;
 };
 
 #endif /* DELETEGLOBALQUANTITYCOMMAND_H_ */

@@ -1,3 +1,8 @@
+// Copyright (C) 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
 /*
  * CreateNewEventCommand.cpp
  *
@@ -13,31 +18,34 @@
 
 CreateNewEventCommand::CreateNewEventCommand(CQEventWidget1 *pEventWidget)
 {
-	mpEventWidget = pEventWidget;
-	mpEventData = new UndoEventData();
-	this->setText(createNewEventText());
+  mpEventWidget = pEventWidget;
+  mpEventData = new UndoEventData();
+  this->setText(createNewEventText());
 }
-void CreateNewEventCommand::redo(){
-	mpEventWidget->createNewEvent();
+void CreateNewEventCommand::redo()
+{
+  mpEventWidget->createNewEvent();
 
-	std::string sName = mpEventWidget->mpEvent->getObjectName();
-	mpEventData->setName(sName);
-	mpEventData->setDelayExpression(mpEventWidget->mpEvent->getDelayExpression());
-	mpEventData->setTriggerExpression(mpEventWidget->mpEvent->getTriggerExpression());
-	mpEventData->setPriorityExpression(mpEventWidget->mpEvent->getPriorityExpression());
-}
-
-void CreateNewEventCommand::undo(){
-	mpEventWidget->deleteEvent(mpEventData);
+  std::string sName = mpEventWidget->mpEvent->getObjectName();
+  mpEventData->setName(sName);
+  mpEventData->setDelayExpression(mpEventWidget->mpEvent->getDelayExpression());
+  mpEventData->setTriggerExpression(mpEventWidget->mpEvent->getTriggerExpression());
+  mpEventData->setPriorityExpression(mpEventWidget->mpEvent->getPriorityExpression());
 }
 
-QString CreateNewEventCommand::createNewEventText() const {
-	std::string myEntityName (": Create New Event ");
-	char* entityName = (char*)myEntityName.c_str();
-	return QObject::tr(entityName);
+void CreateNewEventCommand::undo()
+{
+  mpEventWidget->deleteEvent(mpEventData);
 }
 
-CreateNewEventCommand::~CreateNewEventCommand() {
-	// TODO Auto-generated destructor stub
+QString CreateNewEventCommand::createNewEventText() const
+{
+  std::string myEntityName(": Create New Event ");
+  char* entityName = (char*)myEntityName.c_str();
+  return QObject::tr(entityName);
 }
 
+CreateNewEventCommand::~CreateNewEventCommand()
+{
+  // TODO Auto-generated destructor stub
+}

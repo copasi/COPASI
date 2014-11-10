@@ -1,3 +1,8 @@
+// Copyright (C) 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
 /*
  * EventDataChangeCommand.h
  *
@@ -10,21 +15,21 @@
 
 #include "CCopasiUndoCommand.h"
 
-class EventDataChangeCommand: public CCopasiUndoCommand {
+class EventDataChangeCommand: public CCopasiUndoCommand
+{
 public:
-	EventDataChangeCommand(QModelIndex index, const QVariant value, int role, CQEventDM *pEventDM);
-	void redo();
-	void undo();
-	QString eventDataChangeText() const;
-
+  EventDataChangeCommand(QModelIndex index, const QVariant value, int role, CQEventDM *pEventDM);
+  void redo();
+  void undo();
+  QString eventDataChangeText() const;
 
 private:
-	QVariant mNew, mOld;
-	QModelIndex mIndex;
-	CQEventDM *mpEventDM;
-	int mRole;
-	Path mPathIndex;
-	virtual ~EventDataChangeCommand();
+  QVariant mNew, mOld;
+  QModelIndex mIndex;
+  CQEventDM *mpEventDM;
+  int mRole;
+  Path mPathIndex;
+  virtual ~EventDataChangeCommand();
 };
 
 #endif /* EVENTDATACHANGECOMMAND_H_ */

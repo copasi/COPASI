@@ -1,3 +1,8 @@
+// Copyright (C) 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
 /*
  * RemoveReactionRowsCommand.cpp
  *
@@ -13,59 +18,65 @@
 #include "model/CModel.h"
 #include "CQReactionDM.h"
 
-
 #include "RemoveReactionRowsCommand.h"
 #include "UndoReactionData.h"
 
+RemoveReactionRowsCommand::RemoveReactionRowsCommand(QModelIndexList rows, CQReactionDM * pReaDM, const QModelIndex&)
+{
+  mpReactionDM = pReaDM;
+  mRows = rows;
+  mFirstTime = true;
 
-RemoveReactionRowsCommand::RemoveReactionRowsCommand(QModelIndexList rows, CQReactionDM * pReaDM, const QModelIndex&) {
-	mpReactionDM = pReaDM;
-	mRows = rows;
-	mFirstTime = true;
+  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
+  assert(pDataModel != NULL);
+  CModel * pModel = pDataModel->getModel();
 
-	assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-	CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
-	assert(pDataModel != NULL);
-	CModel * pModel = pDataModel->getModel();
+  assert(pModel != NULL);
 
-	assert(pModel != NULL);
+  QModelIndexList::const_iterator i;
 
-	QModelIndexList::const_iterator i;
+  for (i = rows.begin(); i != rows.end(); ++i)
+    {
+      UndoReactionData *data = new UndoReactionData();
+      CReactionInterface* ri = new CReactionInterface((*CCopasiRootContainer::getDatamodelList())[0]->getModel());
 
-	for (i = rows.begin(); i != rows.end(); ++i)
-	{
-		UndoReactionData *data = new UndoReactionData();
-		CReactionInterface* ri = new CReactionInterface((*CCopasiRootContainer::getDatamodelList())[0]->getModel());
+      if (!pReaDM->isDefaultRow(*i) && pModel->getReactions()[(*i).row()])
+        {
+          data->setName(pModel->getReactions()[(*i).row()]->getObjectName());
+          ri->initFromReaction(pModel->getReactions()[(*i).row()]->getKey());
+          data->setRi(ri);
+          mpReaData.append(data);
+        }
+    }
 
-		if (!pReaDM->isDefaultRow(*i) && pModel->getReactions()[(*i).row()]){
-			data->setName(pModel->getReactions()[(*i).row()]->getObjectName());
-			ri->initFromReaction(pModel->getReactions()[(*i).row()]->getKey());
-			data->setRi(ri);
-			mpReaData.append(data);
-		}
-	}
-	this->setText(removeReactionRowsText());
+  this->setText(removeReactionRowsText());
 }
 
-void RemoveReactionRowsCommand::redo(){
-	if(mFirstTime){
-		mpReactionDM->removeReactionRows(mRows, QModelIndex());
-		mFirstTime = false;
-	}
-	else{
-		mpReactionDM->deleteReactionRows(mpReaData);
-	}
+void RemoveReactionRowsCommand::redo()
+{
+  if (mFirstTime)
+    {
+      mpReactionDM->removeReactionRows(mRows, QModelIndex());
+      mFirstTime = false;
+    }
+  else
+    {
+      mpReactionDM->deleteReactionRows(mpReaData);
+    }
 }
 
-void RemoveReactionRowsCommand::undo(){
-	mpReactionDM->insertReactionRows(mpReaData);
+void RemoveReactionRowsCommand::undo()
+{
+  mpReactionDM->insertReactionRows(mpReaData);
 }
 
-QString RemoveReactionRowsCommand::removeReactionRowsText() const {
-	return QObject::tr(": Removed Reaction Rows");
+QString RemoveReactionRowsCommand::removeReactionRowsText() const
+{
+  return QObject::tr(": Removed Reaction Rows");
 }
 
-RemoveReactionRowsCommand::~RemoveReactionRowsCommand() {
-	// TODO Auto-generated destructor stub
+RemoveReactionRowsCommand::~RemoveReactionRowsCommand()
+{
+  // TODO Auto-generated destructor stub
 }
-

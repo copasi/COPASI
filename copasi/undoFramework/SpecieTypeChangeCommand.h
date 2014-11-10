@@ -1,3 +1,8 @@
+// Copyright (C) 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
 /*
  * SpecieTypeChangeCommand.h
  *
@@ -13,21 +18,22 @@
 class CQSpeciesDetail;
 class UndoSpecieData;
 
-class SpecieTypeChangeCommand: public CCopasiUndoCommand {
+class SpecieTypeChangeCommand: public CCopasiUndoCommand
+{
 public:
-	SpecieTypeChangeCommand(int type, int currentType, CQSpeciesDetail *pSpecieDetail);
-	void redo();
-	void undo();
-	QString specieTypeChangeText(std::string &name) const;
+  SpecieTypeChangeCommand(int type, int currentType, CQSpeciesDetail *pSpecieDetail);
+  void redo();
+  void undo();
+  QString specieTypeChangeText(std::string &name) const;
 
-	virtual ~SpecieTypeChangeCommand();
+  virtual ~SpecieTypeChangeCommand();
 
 private:
-	int mNewType, mOldType;
-	CQSpeciesDetail* mpSpecieDetail;
-	UndoSpecieData *mpSpecieData;
-	bool mFirstTime;
-	bool useInitialExpression;
+  int mNewType, mOldType;
+  CQSpeciesDetail* mpSpecieDetail;
+  UndoSpecieData *mpSpecieData;
+  bool mFirstTime;
+  bool useInitialExpression;
 };
 
 #endif /* SPECIETYPECHANGECOMMAND_H_ */

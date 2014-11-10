@@ -1,3 +1,8 @@
+// Copyright (C) 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
 /*
  * SpecieDataChangeCommand.h
  *
@@ -10,20 +15,21 @@
 
 #include "CCopasiUndoCommand.h"
 
-class SpecieDataChangeCommand: public CCopasiUndoCommand {
+class SpecieDataChangeCommand: public CCopasiUndoCommand
+{
 public:
-	SpecieDataChangeCommand(QModelIndex index, const QVariant value, int role, CQSpecieDM *pSpecieDM);
-	void redo();
-	void undo();
-	QString specieDataChangeText() const;
-	virtual ~SpecieDataChangeCommand();
+  SpecieDataChangeCommand(QModelIndex index, const QVariant value, int role, CQSpecieDM *pSpecieDM);
+  void redo();
+  void undo();
+  QString specieDataChangeText() const;
+  virtual ~SpecieDataChangeCommand();
 
 private:
-	QVariant mNew, mOld;
-	QModelIndex mIndex;
-	CQSpecieDM *mpSpecieDM;
-	int mRole;
-	Path mPathIndex;
+  QVariant mNew, mOld;
+  QModelIndex mIndex;
+  CQSpecieDM *mpSpecieDM;
+  int mRole;
+  Path mPathIndex;
 };
 
 #endif /* SPECIEDATACHANGECOMMAND_H_ */

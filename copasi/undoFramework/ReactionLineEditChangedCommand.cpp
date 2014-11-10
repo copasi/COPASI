@@ -1,3 +1,8 @@
+// Copyright (C) 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
 /*
  * ReactionLineEditChangedCommand.cpp
  *
@@ -9,35 +14,42 @@
 
 #include "ReactionLineEditChangedCommand.h"
 
-ReactionLineEditChangedCommand::ReactionLineEditChangedCommand(ReactionsWidget1 *pReactionWidget) {
-	mFirstTime = true;
-	mpReactionWidget = pReactionWidget;
-	mOldEq = mpReactionWidget->mpRi->getChemEqString();
-	mOldFunctionName = mpReactionWidget->mpRi->getFunctionName();
-	this->setText(lineEditChangedText());
+ReactionLineEditChangedCommand::ReactionLineEditChangedCommand(ReactionsWidget1 *pReactionWidget)
+{
+  mFirstTime = true;
+  mpReactionWidget = pReactionWidget;
+  mOldEq = mpReactionWidget->mpRi->getChemEqString();
+  mOldFunctionName = mpReactionWidget->mpRi->getFunctionName();
+  this->setText(lineEditChangedText());
 }
-void ReactionLineEditChangedCommand::redo(){
-	if(mFirstTime){
-		mpReactionWidget->lineEditChanged();
-		mEq = mpReactionWidget->mpRi->getChemEqString();
-		mFunctionName = mpReactionWidget->mpRi->getFunctionName();
-		mFirstTime = false;
-	}else{
-		mpReactionWidget->restoreLineEditChanged(mEq, mFunctionName);
-	}
-}
-
-void ReactionLineEditChangedCommand::undo(){
-	mpReactionWidget->restoreLineEditChanged(mOldEq, mOldFunctionName);
-}
-
-QString ReactionLineEditChangedCommand::lineEditChangedText() const {
-	std::string myEntityName (": Reaction Line Edit ");
-	char* entityName = (char*)myEntityName.c_str();
-	return QObject::tr(entityName);
+void ReactionLineEditChangedCommand::redo()
+{
+  if (mFirstTime)
+    {
+      mpReactionWidget->lineEditChanged();
+      mEq = mpReactionWidget->mpRi->getChemEqString();
+      mFunctionName = mpReactionWidget->mpRi->getFunctionName();
+      mFirstTime = false;
+    }
+  else
+    {
+      mpReactionWidget->restoreLineEditChanged(mEq, mFunctionName);
+    }
 }
 
-ReactionLineEditChangedCommand::~ReactionLineEditChangedCommand() {
-	// TODO Auto-generated destructor stub
+void ReactionLineEditChangedCommand::undo()
+{
+  mpReactionWidget->restoreLineEditChanged(mOldEq, mOldFunctionName);
 }
 
+QString ReactionLineEditChangedCommand::lineEditChangedText() const
+{
+  std::string myEntityName(": Reaction Line Edit ");
+  char* entityName = (char*)myEntityName.c_str();
+  return QObject::tr(entityName);
+}
+
+ReactionLineEditChangedCommand::~ReactionLineEditChangedCommand()
+{
+  // TODO Auto-generated destructor stub
+}

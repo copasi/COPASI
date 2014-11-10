@@ -1,3 +1,8 @@
+// Copyright (C) 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
 /*
  * UndoData.h
  *
@@ -10,18 +15,19 @@
 
 #include <string>
 
-class UndoData {
+class UndoData
+{
 public:
-	UndoData();
-	virtual ~UndoData();
-	std::string getName() const;
-	void setName(std::string name);
-	std::string getType() const;
-	void setType(std::string type);
+  UndoData();
+  virtual ~UndoData();
+  std::string getName() const;
+  void setName(std::string name);
+  std::string getType() const;
+  void setType(std::string type);
 
 private:
-	std::string mName;
-	std::string mType;
+  std::string mName;
+  std::string mType;
 };
 
 #endif /* UNDODATA_H_ */

@@ -1,3 +1,8 @@
+// Copyright (C) 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
 /*
  * InsertGlobalQuantityRowsCommand.h
  *
@@ -10,20 +15,21 @@
 
 #include "CCopasiUndoCommand.h"
 
-class InsertGlobalQuantityRowsCommand: public CCopasiUndoCommand {
+class InsertGlobalQuantityRowsCommand: public CCopasiUndoCommand
+{
 public:
-	InsertGlobalQuantityRowsCommand(int position, int rows, CQGlobalQuantityDM *pGlobalQuantityDM, const QModelIndex&);
-	virtual ~InsertGlobalQuantityRowsCommand();
-	void redo();
-	void undo();
-	QString insertRowsText() const;
+  InsertGlobalQuantityRowsCommand(int position, int rows, CQGlobalQuantityDM *pGlobalQuantityDM, const QModelIndex&);
+  virtual ~InsertGlobalQuantityRowsCommand();
+  void redo();
+  void undo();
+  QString insertRowsText() const;
 
 private:
-	CQGlobalQuantityDM* mpGlobalQuantityDM;
-	int mRows, mPosition;
-	QModelIndex mIndex;
-	UndoGlobalQuantityData* mpGlobalQuantityData;
-	int firstTime;
+  CQGlobalQuantityDM* mpGlobalQuantityDM;
+  int mRows, mPosition;
+  QModelIndex mIndex;
+  UndoGlobalQuantityData* mpGlobalQuantityData;
+  int firstTime;
 };
 
 #endif /* INSERTGLOBALQUANTITYROWSCOMMAND_H_ */

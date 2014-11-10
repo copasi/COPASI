@@ -1,3 +1,8 @@
+// Copyright (C) 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
 /*
  * InsertCompartmentRowsCommand.h
  *
@@ -12,22 +17,23 @@
 
 class UndoCompartmentData;
 
-class InsertCompartmentRowsCommand: public CCopasiUndoCommand {
+class InsertCompartmentRowsCommand: public CCopasiUndoCommand
+{
 public:
-	InsertCompartmentRowsCommand(int position, int rows, CQCompartmentDM *pCompartmentDM, const QModelIndex&);
+  InsertCompartmentRowsCommand(int position, int rows, CQCompartmentDM *pCompartmentDM, const QModelIndex&);
 
-	void redo();
-	void undo();
-	QString insertRowsText() const;
+  void redo();
+  void undo();
+  QString insertRowsText() const;
 
-	virtual ~InsertCompartmentRowsCommand();
+  virtual ~InsertCompartmentRowsCommand();
 
 private:
-	CQCompartmentDM* mpCompartmentDM;
-	int mRows, mPosition;
-	QModelIndex mIndex;
-	UndoCompartmentData* mpCompartmentData;
-	int firstTime;
+  CQCompartmentDM* mpCompartmentDM;
+  int mRows, mPosition;
+  QModelIndex mIndex;
+  UndoCompartmentData* mpCompartmentData;
+  int firstTime;
 };
 
 #endif /* INSERTCOMPARTMENTROWSCOMMAND_H_ */

@@ -1,3 +1,8 @@
+// Copyright (C) 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
 /*
  * CreateNewGlobalQuantityCommand.cpp
  *
@@ -13,31 +18,33 @@
 
 CreateNewGlobalQuantityCommand::CreateNewGlobalQuantityCommand(CQModelValue *pModelValue)
 {
-	mpModelValue = pModelValue;
-	mpGlobalQuantityData = new UndoGlobalQuantityData();
-	this->setText(createNewGlobalQuantityText());
+  mpModelValue = pModelValue;
+  mpGlobalQuantityData = new UndoGlobalQuantityData();
+  this->setText(createNewGlobalQuantityText());
 }
-void CreateNewGlobalQuantityCommand::redo(){
-	mpModelValue->createNewGlobalQuantity();
+void CreateNewGlobalQuantityCommand::redo()
+{
+  mpModelValue->createNewGlobalQuantity();
 
-	std::string sName = mpModelValue->mpModelValue->getObjectName();
-	mpGlobalQuantityData->setName(sName);
-	mpGlobalQuantityData->setInitialValue(mpModelValue->mpModelValue->getInitialValue());
-	mpGlobalQuantityData->setStatus(mpModelValue->mpModelValue->getStatus());
-}
-
-void CreateNewGlobalQuantityCommand::undo(){
-	mpModelValue->deleteGlobalQuantity(mpGlobalQuantityData);
+  std::string sName = mpModelValue->mpModelValue->getObjectName();
+  mpGlobalQuantityData->setName(sName);
+  mpGlobalQuantityData->setInitialValue(mpModelValue->mpModelValue->getInitialValue());
+  mpGlobalQuantityData->setStatus(mpModelValue->mpModelValue->getStatus());
 }
 
-QString CreateNewGlobalQuantityCommand::createNewGlobalQuantityText() const {
-	std::string myEntityName (": Create New Global Quantity ");
-	char* entityName = (char*)myEntityName.c_str();
-	return QObject::tr(entityName);
+void CreateNewGlobalQuantityCommand::undo()
+{
+  mpModelValue->deleteGlobalQuantity(mpGlobalQuantityData);
 }
 
-
-CreateNewGlobalQuantityCommand::~CreateNewGlobalQuantityCommand() {
-	// TODO Auto-generated destructor stub
+QString CreateNewGlobalQuantityCommand::createNewGlobalQuantityText() const
+{
+  std::string myEntityName(": Create New Global Quantity ");
+  char* entityName = (char*)myEntityName.c_str();
+  return QObject::tr(entityName);
 }
 
+CreateNewGlobalQuantityCommand::~CreateNewGlobalQuantityCommand()
+{
+  // TODO Auto-generated destructor stub
+}

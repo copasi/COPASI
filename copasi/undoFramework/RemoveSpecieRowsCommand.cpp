@@ -1,10 +1,14 @@
+// Copyright (C) 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
 /*
  * RemoveSpecieRowsCommand.cpp
  *
  *  Created on: 28 Aug 2014
  *      Author: dada
  */
-
 
 #include "report/CCopasiRootContainer.h"
 #include "model/CMetab.h"
@@ -17,63 +21,69 @@
 #include "UndoReactionData.h"
 #include "RemoveSpecieRowsCommand.h"
 
+RemoveSpecieRowsCommand::RemoveSpecieRowsCommand(QModelIndexList rows, CQSpecieDM * pSpecieDM, const QModelIndex&)
+{
+  mpSpecieDM = pSpecieDM;
+  mRows = rows;
+  mFirstTime = true;
 
-RemoveSpecieRowsCommand::RemoveSpecieRowsCommand(QModelIndexList rows, CQSpecieDM * pSpecieDM, const QModelIndex&) {
-	mpSpecieDM = pSpecieDM;
-	mRows = rows;
-	mFirstTime = true;
+  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
+  assert(pDataModel != NULL);
+  CModel * pModel = pDataModel->getModel();
 
-	assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-	CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
-	assert(pDataModel != NULL);
-	CModel * pModel = pDataModel->getModel();
+  assert(pModel != NULL);
 
-	assert(pModel != NULL);
+  QModelIndexList::const_iterator i;
 
-	QModelIndexList::const_iterator i;
+  for (i = rows.begin(); i != rows.end(); ++i)
+    {
+      UndoSpecieData *data = new UndoSpecieData();
 
-	for (i = rows.begin(); i != rows.end(); ++i)
-	{
-		UndoSpecieData *data = new UndoSpecieData();
+      if (!pSpecieDM->isDefaultRow(*i) && pModel->getMetabolites()[(*i).row()])
+        {
+          data->setName(pModel->getMetabolites()[(*i).row()]->getObjectName());
+          data->setIConc(pModel->getMetabolites()[(*i).row()]->getInitialConcentration());
+          data->setCompartment(pModel->getMetabolites()[(*i).row()]->getCompartment()->getObjectName());
+          data->setStatus(pModel->getMetabolites()[(*i).row()]->getStatus());
 
-		if (!pSpecieDM->isDefaultRow(*i) && pModel->getMetabolites()[(*i).row()]){
-			data->setName(pModel->getMetabolites()[(*i).row()]->getObjectName());
-			data->setIConc(pModel->getMetabolites()[(*i).row()]->getInitialConcentration());
-			data->setCompartment(pModel->getMetabolites()[(*i).row()]->getCompartment()->getObjectName());
-			data->setStatus(pModel->getMetabolites()[(*i).row()]->getStatus());
+          //  QList<UndoReactionData*> *dependencyObjects = new QList <UndoReactionData*>();
 
+          setDependentObjects(pModel->getMetabolites()[(*i).row()]->getDeletedObjects()); //, dependencyObjects);
+          data->setReactionDependencyObjects(getReactionData());
+          //  data->setDependencyObjects(getReactionData());
 
-		//	QList<UndoReactionData*> *dependencyObjects = new QList <UndoReactionData*>();
+          mpSpecieData.append(data);
+        }
+    }
 
-			setDependentObjects(pModel->getMetabolites()[(*i).row()]->getDeletedObjects()); //, dependencyObjects);
-			data->setReactionDependencyObjects(getReactionData());
-		//	data->setDependencyObjects(getReactionData());
-
-			mpSpecieData.append(data);
-		}
-	}
-	this->setText(removeSpecieRowsText());
+  this->setText(removeSpecieRowsText());
 }
 
-void RemoveSpecieRowsCommand::redo(){
-	if(mFirstTime){
-		mpSpecieDM->removeSpecieRows(mRows, QModelIndex());
-		mFirstTime = false;
-	}
-	else{
-		mpSpecieDM->deleteSpecieRows(mpSpecieData);
-	}
+void RemoveSpecieRowsCommand::redo()
+{
+  if (mFirstTime)
+    {
+      mpSpecieDM->removeSpecieRows(mRows, QModelIndex());
+      mFirstTime = false;
+    }
+  else
+    {
+      mpSpecieDM->deleteSpecieRows(mpSpecieData);
+    }
 }
 
-void RemoveSpecieRowsCommand::undo(){
-	mpSpecieDM->insertSpecieRows(mpSpecieData);
+void RemoveSpecieRowsCommand::undo()
+{
+  mpSpecieDM->insertSpecieRows(mpSpecieData);
 }
 
-QString RemoveSpecieRowsCommand::removeSpecieRowsText() const {
-	return QObject::tr(": Removed Species");
+QString RemoveSpecieRowsCommand::removeSpecieRowsText() const
+{
+  return QObject::tr(": Removed Species");
 }
 
-RemoveSpecieRowsCommand::~RemoveSpecieRowsCommand() {
-	// TODO Auto-generated destructor stub
+RemoveSpecieRowsCommand::~RemoveSpecieRowsCommand()
+{
+  // TODO Auto-generated destructor stub
 }
-

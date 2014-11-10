@@ -1,3 +1,8 @@
+// Copyright (C) 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
 /*
  * DeleteEventCommand.cpp
  *
@@ -14,51 +19,57 @@
 
 #include "DeleteEventCommand.h"
 
-DeleteEventCommand::DeleteEventCommand(CQEventWidget1 *pEVentWidget1) {
-	mpEVentWidget1 = pEVentWidget1;
-	mFirstTime = true;
-	mpEventData = new UndoEventData();
-	std::string sName = mpEVentWidget1->mpEvent->getObjectName();
-	mpEventData->setName(sName);
+DeleteEventCommand::DeleteEventCommand(CQEventWidget1 *pEVentWidget1)
+{
+  mpEVentWidget1 = pEVentWidget1;
+  mFirstTime = true;
+  mpEventData = new UndoEventData();
+  std::string sName = mpEVentWidget1->mpEvent->getObjectName();
+  mpEventData->setName(sName);
 
-	CCopasiVector< CEventAssignment >::const_iterator it = mpEVentWidget1->mpEvent->getAssignments().begin();
-	CCopasiVector< CEventAssignment >::const_iterator end = mpEVentWidget1->mpEvent->getAssignments().end();
+  CCopasiVector< CEventAssignment >::const_iterator it = mpEVentWidget1->mpEvent->getAssignments().begin();
+  CCopasiVector< CEventAssignment >::const_iterator end = mpEVentWidget1->mpEvent->getAssignments().end();
 
-	for (; it != end; ++it)
-	{
-		CEventAssignment *eventAssign = new CEventAssignment((*it)->getTargetKey(), mpEVentWidget1->mpEvent->getObjectParent());
-		eventAssign->setExpression((*it)->getExpression());
-		mpEventData->getAssignments()->append(eventAssign);
-	}
-	mpEventData->setTriggerExpression(mpEVentWidget1->mpEvent->getTriggerExpression());
-	mpEventData->setDelayExpression(mpEVentWidget1->mpEvent->getDelayExpression());
-	mpEventData->setPriorityExpression(mpEVentWidget1->mpEvent->getPriorityExpression());
+  for (; it != end; ++it)
+    {
+      CEventAssignment *eventAssign = new CEventAssignment((*it)->getTargetKey(), mpEVentWidget1->mpEvent->getObjectParent());
+      eventAssign->setExpression((*it)->getExpression());
+      mpEventData->getAssignments()->append(eventAssign);
+    }
 
-	this->setText(deleteEventText(sName));
+  mpEventData->setTriggerExpression(mpEVentWidget1->mpEvent->getTriggerExpression());
+  mpEventData->setDelayExpression(mpEVentWidget1->mpEvent->getDelayExpression());
+  mpEventData->setPriorityExpression(mpEVentWidget1->mpEvent->getPriorityExpression());
+
+  this->setText(deleteEventText(sName));
 }
 
-void DeleteEventCommand::redo(){
-	if(mFirstTime){
-		mpEVentWidget1->deleteEvent();
-		mFirstTime = false;
-	}else{
-		mpEVentWidget1->deleteEvent(mpEventData);
-	}
+void DeleteEventCommand::redo()
+{
+  if (mFirstTime)
+    {
+      mpEVentWidget1->deleteEvent();
+      mFirstTime = false;
+    }
+  else
+    {
+      mpEVentWidget1->deleteEvent(mpEventData);
+    }
 }
 
-void DeleteEventCommand::undo(){
-	mpEVentWidget1->addEvent(mpEventData);
+void DeleteEventCommand::undo()
+{
+  mpEVentWidget1->addEvent(mpEventData);
 }
 
-QString DeleteEventCommand::deleteEventText(std::string &name) const {
-	std::string myEntityName (": Delete Event "+name);
-	char* entityName = (char*)myEntityName.c_str();
-	return QObject::tr(entityName);
-
+QString DeleteEventCommand::deleteEventText(std::string &name) const
+{
+  std::string myEntityName(": Delete Event " + name);
+  char* entityName = (char*)myEntityName.c_str();
+  return QObject::tr(entityName);
 }
 
-
-DeleteEventCommand::~DeleteEventCommand() {
-	// TODO Auto-generated destructor stub
+DeleteEventCommand::~DeleteEventCommand()
+{
+  // TODO Auto-generated destructor stub
 }
-

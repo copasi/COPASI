@@ -1,3 +1,8 @@
+// Copyright (C) 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
 /*
  * CreateNewReactionCommand.cpp
  *
@@ -13,26 +18,30 @@
 
 #include "CreateNewReactionCommand.h"
 
-CreateNewReactionCommand::CreateNewReactionCommand(ReactionsWidget1 *pReactionWidget) {
-	mpReactionWidget = pReactionWidget;
-	this->setText(createNewReactionText());
+CreateNewReactionCommand::CreateNewReactionCommand(ReactionsWidget1 *pReactionWidget)
+{
+  mpReactionWidget = pReactionWidget;
+  this->setText(createNewReactionText());
 }
-void CreateNewReactionCommand::redo(){
-	mpReactionWidget->createNewReaction();
-	mpReaction = dynamic_cast< CReaction * >(mpReactionWidget->mpObject);
-}
-
-void CreateNewReactionCommand::undo(){
-	mpReactionWidget->deleteReaction(mpReaction);
+void CreateNewReactionCommand::redo()
+{
+  mpReactionWidget->createNewReaction();
+  mpReaction = dynamic_cast< CReaction * >(mpReactionWidget->mpObject);
 }
 
-QString CreateNewReactionCommand::createNewReactionText() const {
-	std::string myEntityName (": Create New Reaction ");
-	char* entityName = (char*)myEntityName.c_str();
-	return QObject::tr(entityName);
+void CreateNewReactionCommand::undo()
+{
+  mpReactionWidget->deleteReaction(mpReaction);
 }
 
-CreateNewReactionCommand::~CreateNewReactionCommand() {
-	// TODO Auto-generated destructor stub
+QString CreateNewReactionCommand::createNewReactionText() const
+{
+  std::string myEntityName(": Create New Reaction ");
+  char* entityName = (char*)myEntityName.c_str();
+  return QObject::tr(entityName);
 }
 
+CreateNewReactionCommand::~CreateNewReactionCommand()
+{
+  // TODO Auto-generated destructor stub
+}

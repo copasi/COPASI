@@ -1,3 +1,8 @@
+// Copyright (C) 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
 /*
  * RemoveAllEventRowsCommand.cpp
  *
@@ -13,56 +18,61 @@
 #include "UndoEventData.h"
 #include "RemoveAllEventRowsCommand.h"
 
-RemoveAllEventRowsCommand::RemoveAllEventRowsCommand(CQEventDM * pEventDM, const QModelIndex&) {
-	mpEventDM = pEventDM;
+RemoveAllEventRowsCommand::RemoveAllEventRowsCommand(CQEventDM * pEventDM, const QModelIndex&)
+{
+  mpEventDM = pEventDM;
 
-	assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-	CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
-	assert(pDataModel != NULL);
-	CModel * pModel = pDataModel->getModel();
+  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
+  assert(pDataModel != NULL);
+  CModel * pModel = pDataModel->getModel();
 
-	assert(pModel != NULL);
+  assert(pModel != NULL);
 
-	for (int i = 0; i != pEventDM->rowCount()-1; ++i)
-	{
-		UndoEventData *data = new UndoEventData();
-		if (pModel->getEvents()[i]){
-			data->setName(pModel->getEvents()[i]->getObjectName());
-			data->setPriorityExpression(pModel->getEvents()[i]->getPriorityExpression());
-			data->setDelayExpression(pModel->getEvents()[i]->getDelayExpression());
-			data->setTriggerExpression(pModel->getEvents()[i]->getTriggerExpression());
+  for (int i = 0; i != pEventDM->rowCount() - 1; ++i)
+    {
+      UndoEventData *data = new UndoEventData();
 
-			CCopasiVector< CEventAssignment >::const_iterator it = pModel->getEvents()[i]->getAssignments().begin();
-			CCopasiVector< CEventAssignment >::const_iterator end = pModel->getEvents()[i]->getAssignments().end();
+      if (pModel->getEvents()[i])
+        {
+          data->setName(pModel->getEvents()[i]->getObjectName());
+          data->setPriorityExpression(pModel->getEvents()[i]->getPriorityExpression());
+          data->setDelayExpression(pModel->getEvents()[i]->getDelayExpression());
+          data->setTriggerExpression(pModel->getEvents()[i]->getTriggerExpression());
 
-			for (; it != end; ++it)
-			{
-				CEventAssignment *eventAssign = new CEventAssignment((*it)->getTargetKey(), pModel->getEvents()[i]->getObjectParent());
-				eventAssign->setExpression((*it)->getExpression());
-				data->getAssignments()->append(eventAssign);
-			}
+          CCopasiVector< CEventAssignment >::const_iterator it = pModel->getEvents()[i]->getAssignments().begin();
+          CCopasiVector< CEventAssignment >::const_iterator end = pModel->getEvents()[i]->getAssignments().end();
 
-			mpEventData.append(data);
-		}
+          for (; it != end; ++it)
+            {
+              CEventAssignment *eventAssign = new CEventAssignment((*it)->getTargetKey(), pModel->getEvents()[i]->getObjectParent());
+              eventAssign->setExpression((*it)->getExpression());
+              data->getAssignments()->append(eventAssign);
+            }
 
-	}
+          mpEventData.append(data);
+        }
+    }
 
-	this->setText(removeAllEventRowsText());
+  this->setText(removeAllEventRowsText());
 }
 
-void RemoveAllEventRowsCommand::redo(){
-	mpEventDM->removeAllEventRows();
+void RemoveAllEventRowsCommand::redo()
+{
+  mpEventDM->removeAllEventRows();
 }
 
-void RemoveAllEventRowsCommand::undo(){
-	mpEventDM->insertEventRows(mpEventData);
+void RemoveAllEventRowsCommand::undo()
+{
+  mpEventDM->insertEventRows(mpEventData);
 }
 
-QString RemoveAllEventRowsCommand::removeAllEventRowsText() const {
-	return QObject::tr(": Removed All Events");
+QString RemoveAllEventRowsCommand::removeAllEventRowsText() const
+{
+  return QObject::tr(": Removed All Events");
 }
 
-RemoveAllEventRowsCommand::~RemoveAllEventRowsCommand() {
-	// TODO Auto-generated destructor stub
+RemoveAllEventRowsCommand::~RemoveAllEventRowsCommand()
+{
+  // TODO Auto-generated destructor stub
 }
-

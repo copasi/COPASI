@@ -1,3 +1,8 @@
+// Copyright (C) 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
 /*
  * InsertSpecieRowsCommand.h
  *
@@ -13,20 +18,21 @@
 class CMetab;
 class UndoSpecieData;
 
-class InsertSpecieRowsCommand: public CCopasiUndoCommand {
+class InsertSpecieRowsCommand: public CCopasiUndoCommand
+{
 public:
-	InsertSpecieRowsCommand(int position, int rows, CQSpecieDM *pSpecieDM, const QModelIndex&);
-	virtual ~InsertSpecieRowsCommand();
-	void redo();
-	void undo();
-	QString insertRowsText() const;
+  InsertSpecieRowsCommand(int position, int rows, CQSpecieDM *pSpecieDM, const QModelIndex&);
+  virtual ~InsertSpecieRowsCommand();
+  void redo();
+  void undo();
+  QString insertRowsText() const;
 
 private:
-	CQSpecieDM* mpSpecieDM;
-	int mRows, mPosition;
-	QModelIndex mIndex;
-	UndoSpecieData* mpSpecieData;
-	int firstTime;
+  CQSpecieDM* mpSpecieDM;
+  int mRows, mPosition;
+  QModelIndex mIndex;
+  UndoSpecieData* mpSpecieData;
+  int firstTime;
 };
 
 #endif /* INSERTSPECIEROWSCOMMAND_H_ */

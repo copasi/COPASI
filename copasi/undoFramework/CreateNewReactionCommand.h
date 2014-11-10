@@ -1,3 +1,8 @@
+// Copyright (C) 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
 /*
  * CreateNewReactionCommand.h
  *
@@ -10,17 +15,18 @@
 
 #include "CCopasiUndoCommand.h"
 
-class CreateNewReactionCommand: public CCopasiUndoCommand  {
+class CreateNewReactionCommand: public CCopasiUndoCommand
+{
 public:
-	CreateNewReactionCommand(ReactionsWidget1 *pReactionWidget);
-	void redo();
-	void undo();
-	QString createNewReactionText() const;
-	virtual ~CreateNewReactionCommand();
+  CreateNewReactionCommand(ReactionsWidget1 *pReactionWidget);
+  void redo();
+  void undo();
+  QString createNewReactionText() const;
+  virtual ~CreateNewReactionCommand();
 
 private:
-	ReactionsWidget1* mpReactionWidget;
-	CReaction *mpReaction;
+  ReactionsWidget1* mpReactionWidget;
+  CReaction *mpReaction;
 };
 
 #endif /* CREATENEWREACTIONCOMMAND_H_ */

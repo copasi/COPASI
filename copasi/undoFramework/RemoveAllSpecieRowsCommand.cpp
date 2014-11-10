@@ -1,3 +1,8 @@
+// Copyright (C) 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
 /*
  * RemoveAllSpecieRowsCommand.cpp
  *
@@ -18,51 +23,54 @@
 #include "UndoSpecieData.h"
 #include "UndoReactionData.h"
 
-RemoveAllSpecieRowsCommand::RemoveAllSpecieRowsCommand(CQSpecieDM * pSpecieDM, const QModelIndex&) {
-	mpSpecieDM = pSpecieDM;
+RemoveAllSpecieRowsCommand::RemoveAllSpecieRowsCommand(CQSpecieDM * pSpecieDM, const QModelIndex&)
+{
+  mpSpecieDM = pSpecieDM;
 
-	assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-	CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
-	assert(pDataModel != NULL);
-	CModel * pModel = pDataModel->getModel();
+  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
+  assert(pDataModel != NULL);
+  CModel * pModel = pDataModel->getModel();
 
-	assert(pModel != NULL);
+  assert(pModel != NULL);
 
-	for (int i = 0; i != pSpecieDM->rowCount()-1; ++i)
-	{
-		UndoSpecieData *data = new UndoSpecieData();
+  for (int i = 0; i != pSpecieDM->rowCount() - 1; ++i)
+    {
+      UndoSpecieData *data = new UndoSpecieData();
 
-		if (pModel->getMetabolites()[i]){
-			data->setName(pModel->getMetabolites()[i]->getObjectName());
-			data->setIConc(pModel->getMetabolites()[i]->getInitialConcentration());
-			data->setCompartment(pModel->getMetabolites()[i]->getCompartment()->getObjectName());
-			data->setStatus(pModel->getMetabolites()[i]->getStatus());
+      if (pModel->getMetabolites()[i])
+        {
+          data->setName(pModel->getMetabolites()[i]->getObjectName());
+          data->setIConc(pModel->getMetabolites()[i]->getInitialConcentration());
+          data->setCompartment(pModel->getMetabolites()[i]->getCompartment()->getObjectName());
+          data->setStatus(pModel->getMetabolites()[i]->getStatus());
 
-			setDependentObjects(pModel->getMetabolites()[i]->getDeletedObjects());
-			data->setReactionDependencyObjects(getReactionData());
+          setDependentObjects(pModel->getMetabolites()[i]->getDeletedObjects());
+          data->setReactionDependencyObjects(getReactionData());
 
-			mpSpecieData.append(data);
-		}
+          mpSpecieData.append(data);
+        }
+    }
 
-
-	}
-
-	this->setText(removeAllSpecieRowsText());
+  this->setText(removeAllSpecieRowsText());
 }
 
-void RemoveAllSpecieRowsCommand::redo(){
-	mpSpecieDM->removeAllSpecieRows();
+void RemoveAllSpecieRowsCommand::redo()
+{
+  mpSpecieDM->removeAllSpecieRows();
 }
 
-void RemoveAllSpecieRowsCommand::undo(){
-	mpSpecieDM->insertSpecieRows(mpSpecieData);
+void RemoveAllSpecieRowsCommand::undo()
+{
+  mpSpecieDM->insertSpecieRows(mpSpecieData);
 }
 
-QString RemoveAllSpecieRowsCommand::removeAllSpecieRowsText() const {
-	return QObject::tr(": Removed All Species");
+QString RemoveAllSpecieRowsCommand::removeAllSpecieRowsText() const
+{
+  return QObject::tr(": Removed All Species");
 }
 
-RemoveAllSpecieRowsCommand::~RemoveAllSpecieRowsCommand() {
-	// TODO Auto-generated destructor stub
+RemoveAllSpecieRowsCommand::~RemoveAllSpecieRowsCommand()
+{
+  // TODO Auto-generated destructor stub
 }
-
