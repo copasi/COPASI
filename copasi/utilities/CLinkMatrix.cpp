@@ -31,7 +31,7 @@ const CVector< size_t > & CLinkMatrix::getRowPivots() const
   return mRowPivots;
 }
 
-bool CLinkMatrix::build(const CMatrix< C_FLOAT64 > & matrix)
+bool CLinkMatrix::build(const CMatrix< C_FLOAT64 > & matrix, size_t maxRank)
 {
   bool success = true;
 
@@ -166,10 +166,58 @@ bool CLinkMatrix::build(const CMatrix< C_FLOAT64 > & matrix)
       for (i = 0; i < NumRows; i++)
         mRowPivots[i] = JPVT[i] - 1;
 
+      /**
+       * Determine the rank of the matrix
+       * This code is copied from dgelsy.f
+       */
+
       C_INT independent = 0;
 
-      while (independent < Dim &&
-             fabs(M(independent, independent)) > 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon()) independent++;
+      if (fabs(M(0, 0)) != 0.0)
+        {
+          ++independent;
+
+          C_INT imax = 1;
+          C_INT imin = 2;
+          C_INT mn = Dim;
+
+          C_FLOAT64 * pIsmin = WORK.array();
+          C_FLOAT64 * pIsmax = pIsmin + Dim;
+
+          *pIsmin = 1.0;
+          *pIsmax = 1.0;
+
+          C_FLOAT64 smax = fabs(M(0, 0));
+          C_FLOAT64 smin = smax;
+          C_FLOAT64 RCOND = std::max(NumRows, NumCols) * smax * std::numeric_limits< C_FLOAT64 >::epsilon();
+
+          C_FLOAT64 sminpr, s1, c1, smaxpr, s2, c2;
+
+          while (independent < mn && independent < maxRank)
+            {
+              dlaic1_(&imin, &independent, pIsmin, &smin, &M(independent, 0), &M(independent, independent), &sminpr, &s1, &c1);
+              dlaic1_(&imax, &independent, pIsmax, &smax, &M(independent, 0), &M(independent, independent), &smaxpr, &s2, &c2);
+
+              if (smaxpr * RCOND > sminpr)
+                {
+                  break;
+                }
+
+              for (size_t i = 0; i < independent - 1; ++i)
+                {
+                  *(pIsmin + i) *= s1;
+                  *(pIsmax + i) *= s2;
+                }
+
+              *(pIsmin + independent) = c1;
+              *(pIsmax + independent) = c2;
+
+              smin = sminpr;
+              smax = smaxpr;
+
+              ++independent;
+            }
+        }
 
       mIndependent = independent;
 

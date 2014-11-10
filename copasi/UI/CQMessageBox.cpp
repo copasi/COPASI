@@ -1,19 +1,15 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQMessageBox.cpp,v $
-//   $Revision: 1.11 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/05/02 20:34:52 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
 #include <QtGui/QTabWidget>
@@ -35,14 +31,14 @@
 CQMessageBox::CQMessageBox(Icon icon, const QString &title, const QString &text,
                            QMessageBox::StandardButtons buttons, QWidget *parent,
                            Qt::WindowFlags f):
-    QMessageBox(icon, title, QString(), buttons, parent, f),
-    mpTabWidget(NULL),
-    mpPage1(NULL),
-    mpVerticalLayoutPage1(NULL),
-    mpText1(NULL),
-    mpPage2(NULL),
-    mpVerticalLayoutPage2(NULL),
-    mpText2(NULL)
+  QMessageBox(icon, title, QString(), buttons, parent, f),
+  mpTabWidget(NULL),
+  mpPage1(NULL),
+  mpVerticalLayoutPage1(NULL),
+  mpText1(NULL),
+  mpPage2(NULL),
+  mpVerticalLayoutPage2(NULL),
+  mpText2(NULL)
 {
   if (CopasiUI3Window::getMainWindow() != NULL)
     {

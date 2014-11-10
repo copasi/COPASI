@@ -1,19 +1,15 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CScanWidgetRepeat.cpp,v $
-//   $Revision: 1.9 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/12/22 19:51:57 $
-// End CVS Header
-
-// Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2005 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
 #include <QtGui/QValidator>
@@ -31,16 +27,16 @@
  *  name 'name' and widget flags set to 'f'.
  */
 CScanWidgetRepeat::CScanWidgetRepeat(QWidget* parent) :
-    QWidget(parent),
-    CScanItemData(CScanProblem::SCAN_REPEAT)
+  QWidget(parent),
+  CScanItemData(CScanProblem::SCAN_REPEAT)
 {
   setupUi(this);
   init();
 }
 
 CScanWidgetRepeat::CScanWidgetRepeat(const CScanWidgetRepeat & src, QWidget * parent) :
-    QWidget(parent),
-    CScanItemData(src)
+  QWidget(parent),
+  CScanItemData(src)
 {
   setupUi(this);
   init();

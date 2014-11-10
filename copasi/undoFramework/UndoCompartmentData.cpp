@@ -75,3 +75,13 @@ void UndoCompartmentData::setInitialValue(double initialValue)
 {
   mInitialValue = initialValue;
 }
+
+QList<UndoGlobalQuantityData*> *UndoCompartmentData::getGlobalQuantityDependencyObjects() const
+{
+  return mGlobalQuantityDependencyObjects;
+}
+
+void UndoCompartmentData::setGlobalQuantityDependencyObjects(QList<UndoGlobalQuantityData*> *globalQuantityDependencyObjects)
+{
+  mGlobalQuantityDependencyObjects = globalQuantityDependencyObjects;
+}

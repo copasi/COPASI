@@ -26,6 +26,7 @@
 #include "undoFramework/UndoCompartmentData.h"
 #include "undoFramework/UndoReactionData.h"
 #include "undoFramework/UndoSpecieData.h"
+#include "undoFramework/UndoGlobalQuantityData.h"
 #endif
 
 #include "copasi.h"
@@ -566,60 +567,90 @@ bool CQCompartmentDM::insertCompartmentRows(QList <UndoCompartmentData *> pData)
     }
 
   //restore all the dependencies
+  //QList <UndoSpecieData *> *pSpecieData;
   QList <UndoCompartmentData *>::const_iterator k;
 
   for (k = pData.begin(); k != pData.end(); ++k)
     {
       UndoCompartmentData * data = *k;
-
       //reinsert all the species
       QList <UndoSpecieData *> *pSpecieData = data->getSpecieDependencyObjects();
-      QList <UndoSpecieData *>::const_iterator i;
 
-      for (i = pSpecieData->begin(); i != pSpecieData->end(); ++i)
+      if (!pSpecieData->empty())
         {
-          UndoSpecieData * data = *i;
-          //  beginInsertRows(QModelIndex(), 1, 1);
-          CMetab *pSpecie =  pModel->createMetabolite(data->getName(), data->getCompartment(), data->getIConc(), data->getStatus());
-          emit notifyGUI(ListViews::METABOLITE, ListViews::ADD, pSpecie->getKey());
-          //endInsertRows();
+          QList <UndoSpecieData *>::const_iterator i;
+
+          for (i = pSpecieData->begin(); i != pSpecieData->end(); ++i)
+            {
+              UndoSpecieData * sData = *i;
+              //  beginInsertRows(QModelIndex(), 1, 1);
+              CMetab *pSpecie =  pModel->createMetabolite(sData->getName(), sData->getCompartment(), sData->getIConc(), sData->getStatus());
+              emit notifyGUI(ListViews::METABOLITE, ListViews::ADD, pSpecie->getKey());
+              //endInsertRows();
+            }
+        }
+
+      //reinsert the dependency global quantity
+      QList <UndoGlobalQuantityData *> *pGlobalQuantityData = data->getGlobalQuantityDependencyObjects();
+
+      if (!pGlobalQuantityData->empty())
+        {
+
+          QList <UndoGlobalQuantityData *>::const_iterator g;
+
+          for (g = pGlobalQuantityData->begin(); g != pGlobalQuantityData->end(); ++g)
+            {
+              UndoGlobalQuantityData * gData = *g;
+              CModelValue *pGlobalQuantity =  pModel->createModelValue(gData->getName());
+              pGlobalQuantity->setStatus(gData->getStatus());
+
+              if (gData->isFixed())
+                {
+                  pGlobalQuantity->setInitialValue(gData->getInitialValue());
+                }
+              else if (!gData->isFixed())
+                {
+                  pGlobalQuantity->setExpression(gData->getExpression());
+                }
+
+              emit notifyGUI(ListViews::MODELVALUE, ListViews::ADD, pGlobalQuantity->getKey());
+            }
         }
 
       //reinsert the dependency reaction
       QList <UndoReactionData *> *pReactionData = data->getReactionDependencyObjects();
 
-      //QList <UndoReactionData *> *reactionData = data->getDependencyObjects();
-
-      QList <UndoReactionData *>::const_iterator j;
-
-      for (j = pReactionData->begin(); j != pReactionData->end(); ++j)
+      if (!pReactionData->empty())
         {
+          QList <UndoReactionData *>::const_iterator j;
 
-          //UndoReactionData * rData = dynamic_cast<UndoReactionData*>(*j);
-          UndoReactionData * rData = *j;
-
-          //TODO check if reaction already exist in the model, better idea may be implemented in the future
-          bool exist = false;
-
-          for (int ii = 0; ii < pModel->getReactions().size(); ii++)
+          for (j = pReactionData->begin(); j != pReactionData->end(); ++j)
             {
-              if (pModel->getReactions()[ii]->getObjectName() == rData->getName())
-                {
-                  exist = true;
-                  ii = ii + pModel->getReactions().size() + 1; //jump out of the loop reaction exist already
-                }
-              else
-                {
-                  exist = false;
-                }
-            }
+              UndoReactionData * rData = *j;
 
-          if (!exist)
-            {
-              emit notifyGUI(ListViews::METABOLITE, ListViews::ADD, ""); //Refresh all dependency species.
-              CReaction *pRea =  pModel->createReaction(rData->getName());
-              rData->getRi()->writeBackToReaction(pRea);
-              emit notifyGUI(ListViews::REACTION, ListViews::ADD, pRea->getKey());
+              //TODO check if reaction already exist in the model, better idea may be implemented in the future
+              bool exist = false;
+
+              for (int ii = 0; ii < pModel->getReactions().size(); ii++)
+                {
+                  if (pModel->getReactions()[ii]->getObjectName() == rData->getName())
+                    {
+                      exist = true;
+                      ii = ii + pModel->getReactions().size() + 1; //jump out of the loop reaction exist already
+                    }
+                  else
+                    {
+                      exist = false;
+                    }
+                }
+
+              if (!exist)
+                {
+                  emit notifyGUI(ListViews::METABOLITE, ListViews::ADD, ""); //Refresh all dependency species.
+                  CReaction *pRea =  pModel->createReaction(rData->getName());
+                  rData->getRi()->writeBackToReaction(pRea);
+                  emit notifyGUI(ListViews::REACTION, ListViews::ADD, pRea->getKey());
+                }
             }
         }
     }

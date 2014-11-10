@@ -57,3 +57,33 @@ void UndoGlobalQuantityData::setReactionDependencyObjects(QList<UndoReactionData
 {
   mReactionDependencyObjects = reactionDependencyObjects;
 }
+
+bool UndoGlobalQuantityData::isFixed() const
+{
+  return fixed;
+}
+
+void UndoGlobalQuantityData::setFixed(bool fixed)
+{
+  this->fixed = fixed;
+}
+
+const std::string & UndoGlobalQuantityData::getExpression() const
+{
+  return mExpression;
+}
+
+void UndoGlobalQuantityData::setExpression(const std::string &expression)
+{
+  mExpression = expression;
+}
+
+CModelValue UndoGlobalQuantityData::getModelValue() const
+{
+  return modelValue;
+}
+
+void UndoGlobalQuantityData::setModelValue(CModelValue modelValue)
+{
+  this->modelValue = modelValue;
+}

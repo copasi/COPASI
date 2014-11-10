@@ -4072,8 +4072,9 @@ void CSBMLExporter::createEvent(CEvent& event, Event* pSBMLEvent, CCopasiDataMod
 
   // c) we check the delay expression and export it if it is set
   pExpression = event.getDelayExpressionPtr();
+  const std::string delayInfix = pExpression == NULL ? "" : pExpression->getInfix();
 
-  if (pExpression != NULL)
+  if (!delayInfix.empty())
     {
       result.clear();
       CSBMLExporter::isExpressionSBMLCompatible(*pExpression

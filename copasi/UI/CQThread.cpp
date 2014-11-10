@@ -1,12 +1,4 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQThread.cpp,v $
-//   $Revision: 1.2 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/03/07 19:38:00 $
-// End CVS Header
-
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -14,15 +6,15 @@
 #include "CQThread.h"
 
 CQThread::CQThread():
-    QThread(),
-    mpClass(NULL),
-    mpMethod(NULL)
+  QThread(),
+  mpClass(NULL),
+  mpMethod(NULL)
 {}
 
 CQThread::CQThread(DataModelGUI * pClass, void (DataModelGUI::*pMethod)()):
-    QThread(),
-    mpClass(pClass),
-    mpMethod(pMethod)
+  QThread(),
+  mpClass(pClass),
+  mpMethod(pMethod)
 {}
 
 CQThread::~CQThread()

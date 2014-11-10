@@ -28,6 +28,7 @@ CCopasiUndoCommand::CCopasiUndoCommand(): QUndoCommand()
   //initialise the UNDO entity data
   mpSpecieData = new QList <UndoSpecieData*>();
   mpReactionData = new  QList <UndoReactionData*>();
+  mpGlobalQuantityData = new  QList <UndoGlobalQuantityData*>();
 }
 
 CCopasiUndoCommand::~CCopasiUndoCommand()
@@ -165,6 +166,35 @@ void CCopasiUndoCommand::setDependentObjects(const std::set< const CCopasiObject
               mpSpecieData->append(data);
             }
         }
+
+      if (Values.size() > 0)
+        {
+          std::set< const CCopasiObject * >::const_iterator it = Values.begin();
+          std::set< const CCopasiObject * >::const_iterator end = Values.end();
+
+          for (; it != end; ++it)
+            {
+              //store the Global Quantity data
+              UndoGlobalQuantityData *data = new UndoGlobalQuantityData();
+              data->setName((*it)->getObjectName());
+              const CModelValue * pModelValue = dynamic_cast<const CModelValue*>(*it);
+              //data->setModelValue(* pModelValue);
+              data->setStatus(pModelValue->getStatus());
+
+              if (pModelValue->isFixed())
+                {
+                  data->setFixed(true);
+                  data->setInitialValue(pModelValue->getInitialValue());
+                }
+              else if (!pModelValue->isFixed())
+                {
+                  data->setFixed(false);
+                  data->setExpression(pModelValue->getExpression());
+                }
+
+              mpGlobalQuantityData->append(data);
+            }
+        }
     }
 }
 
@@ -186,4 +216,14 @@ void CCopasiUndoCommand::setReactionData(QList<UndoReactionData*> *reactionData)
 void CCopasiUndoCommand::setSpecieData(QList<UndoSpecieData*> *specieData)
 {
   mpSpecieData = specieData;
+}
+
+QList<UndoGlobalQuantityData*> *CCopasiUndoCommand::getGlobalQuantityData() const
+{
+  return mpGlobalQuantityData;
+}
+
+void CCopasiUndoCommand::setGlobalQuantityData(QList<UndoGlobalQuantityData*> *globalQuantityData)
+{
+  mpGlobalQuantityData = globalQuantityData;
 }

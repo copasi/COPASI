@@ -1,12 +1,12 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-// and The University of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
 
 #include <QtGui/QTableWidget>
 #include <QtGui/QTableWidgetItem>
@@ -51,7 +51,7 @@ CQUpdatesWidget::CQUpdatesWidget(QWidget* parent, const char* name, Qt::WFlags f
   //main tab widget
   mpMainTab = new QTabWidget(this);
   mpMainTab->setObjectName("MainTabWidget");
-  mWidgetLayout->addWidget(mpMainTab,1,0,2,3);
+  mWidgetLayout->addWidget(mpMainTab, 1, 0, 2, 3);
 
   // tab widget
   mpTab = new QTabWidget(mpMainTab);

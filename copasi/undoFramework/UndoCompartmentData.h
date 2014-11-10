@@ -17,6 +17,7 @@
 
 class UndoReactionData;
 class UndoSpecieData;
+class UndoGlobalQuantityData;
 
 class UndoCompartmentData : public UndoData
 {
@@ -33,7 +34,8 @@ public:
   void setSpecieDependencyObjects(QList<UndoSpecieData*> *specieDependencyObjects);
   double getInitialValue() const;
   void setInitialValue(double initialValue);
-
+  QList<UndoGlobalQuantityData*> *getGlobalQuantityDependencyObjects() const;
+  void setGlobalQuantityDependencyObjects(QList<UndoGlobalQuantityData*> *globalQuantityDependencyObjects);
 private:
   /**
   Value() const;
@@ -56,9 +58,13 @@ private:
   */
   QList<UndoSpecieData*> *mSpecieDependencyObjects;
   /**
-  * Pointer to species dependency objects
+  * Pointer to reaction dependency objects
   */
   QList<UndoReactionData*> *mReactionDependencyObjects;
+  /**
+   * Pointer to global quantity dependency objects
+   */
+  QList<UndoGlobalQuantityData*> *mGlobalQuantityDependencyObjects;
 };
 
 #endif /* UNDOCOMPARTMENTDATA_H_ */

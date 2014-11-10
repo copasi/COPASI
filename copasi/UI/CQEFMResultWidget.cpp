@@ -1,21 +1,12 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQEFMResultWidget.cpp,v $
-//   $Revision: 1.11 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/11/09 18:00:30 $
-// End CVS Header
-
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
-
 
 #include "CQEFMResultWidget.h"
 #include "CQEFMNetReactionDM.h"
@@ -31,14 +22,14 @@
 #include "commandline/CLocaleString.h"
 
 CQEFMResultWidget::CQEFMResultWidget(QWidget* parent, const char* name) :
-    CopasiWidget(parent, name),
-    mpTask(NULL),
-    mpProxyModelReactions(NULL),
-    mpReactionDM(NULL),
-    mpProxyModelSpecies(NULL),
-    mpSpeciesDM(NULL),
-    mpProxyModelNetReactions(NULL),
-    mpNetReactionDM(NULL)
+  CopasiWidget(parent, name),
+  mpTask(NULL),
+  mpProxyModelReactions(NULL),
+  mpReactionDM(NULL),
+  mpProxyModelSpecies(NULL),
+  mpSpeciesDM(NULL),
+  mpProxyModelNetReactions(NULL),
+  mpNetReactionDM(NULL)
 {
   setupUi(this);
 

@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -25,6 +25,10 @@
 #include "model/CModel.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "report/CCopasiRootContainer.h"
+
+#ifdef COPASI_UNDO
+#include "copasiui3window.h"
+#endif
 
 /*
  *  Constructs a CQEventsWidget which is a child of 'parent', with the
@@ -54,6 +58,12 @@ CQEventsWidget::CQEventsWidget(QWidget* parent, const char* name)
           this, SLOT(dataChanged(const QModelIndex&, const QModelIndex&)));
   connect(mpLEFilter, SIGNAL(textChanged(const QString &)),
           this, SLOT(slotFilterChanged()));
+
+#ifdef COPASI_UNDO
+  CopasiUI3Window *  pWindow = dynamic_cast<CopasiUI3Window * >(parent->parent());
+  mpEventDM->setUndoStack(pWindow->getUndoStack());
+  connect(mpEventDM, SIGNAL(changeWidget(const size_t&)), this, SLOT(slotChangeWidget(const size_t&)));
+#endif
 }
 
 /*
@@ -257,3 +267,10 @@ void CQEventsWidget::slotFilterChanged()
   QRegExp regExp(mpLEFilter->text() + "|New Event", Qt::CaseInsensitive, QRegExp::RegExp);
   mpProxyModel->setFilterRegExp(regExp);
 }
+
+#ifdef COPASI_UNDO
+void CQEventsWidget:: slotChangeWidget(const size_t & id)
+{
+  mpListView->switchToOtherWidget(id, "");
+}
+#endif

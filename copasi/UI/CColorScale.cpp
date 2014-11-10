@@ -1,17 +1,9 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CColorScale.cpp,v $
-//   $Revision: 1.3 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/04/23 21:12:27 $
-// End CVS Header
-
-// Copyright (C) 2012 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
@@ -21,7 +13,7 @@
 #include "CColorScale.h"
 
 CColorScale1::CColorScale1()
-    : m1(1e-4)
+  : m1(1e-4)
 {}
 
 //virtual
@@ -42,7 +34,7 @@ QColor CColorScale1::getColor(const C_FLOAT64 & number)
 //**************************
 
 CColorScaleSimple::CColorScaleSimple()
-    : mMin(0.0),
+  : mMin(0.0),
     mMax(1.0),
     mLog(false),
     mSym(false)
@@ -125,7 +117,7 @@ void CColorScaleSimple::finishAutomaticParameterCalculation()
 //**************************
 
 CColorScaleAdvanced::CColorScaleAdvanced()
-    : CColorScaleSimple()
+  : CColorScaleSimple()
 {
   mColorMax = QColor(0, 255, 0);
   mColorMin = QColor(240, 240, 240);
@@ -160,7 +152,7 @@ QColor CColorScaleAdvanced::getColor(const C_FLOAT64 & number)
 //**************************
 
 CColorScaleAverage::CColorScaleAverage()
-    : CColorScaleSimple(),
+  : CColorScaleSimple(),
     mFactor(3.0),
     mFloat(0.0),
     mInt(0)
@@ -204,7 +196,7 @@ void CColorScaleAverage::finishAutomaticParameterCalculation()
 //**************************
 
 CColorScaleBiLog::CColorScaleBiLog()
-    : m1(-6.0),
+  : m1(-6.0),
     m2(2.0),
     mFloat(0.0),
     mInt(0)

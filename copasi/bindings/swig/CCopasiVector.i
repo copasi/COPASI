@@ -30,6 +30,11 @@
 
 
 
+
+
+
+%ignore CCopasiVector::remove(const size_t & index);
+
 %{
 
 #include "utilities/CCopasiVector.h"
@@ -83,16 +88,28 @@
 // get a pointer to the correct type
 %extend CCopasiVector
 {
+  virtual void remove(unsigned C_INT32 index)
+  {
+   if (self == NULL ||  self->size() == 0) return;
+   try
+   {
+     self->remove(index);
+   }
+   catch(...)
+   {
+   }
+  }
+  
   virtual CCopasiObject* get(unsigned C_INT32 index)
   {
-  try
-  {
-      return (CCopasiObject*)((*self)[index]);
-	  }
-      catch(...)
-      {
-	return NULL;
-      }
+    try
+    {
+        return (CCopasiObject*)((*self)[index]);
+    }
+    catch(...)
+    {
+      return NULL;
+    }
   }
 
   // this method is needed because I haven't found out how to disown

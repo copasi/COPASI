@@ -52,7 +52,7 @@ protected slots:
   virtual void slotFilterChanged();
 
 #ifdef COPASI_UNDO
-  virtual void slotChangeWidget(const size_t & id);
+  virtual void slotChangeWidget(const size_t & id, const std::string & key);
 #endif
 };
 

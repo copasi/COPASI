@@ -152,6 +152,11 @@ SEDMLUtils::getXPathAndName(std::string& sbmlId,
           displayName = displayName.substr(0, displayName.find(".InitialVolume"));
         }
 
+      if (type == "Volume")
+        {
+          displayName = displayName.substr(0, displayName.find(".Volume"));
+        }
+
       removeCharactersFromString(displayName, "]");
 
       sbmlId = findIdByNameAndType(copasi2sbmlmap, SBML_COMPARTMENT, displayName);

@@ -31,6 +31,15 @@
 #include "utilities/CCopasiMessage.h"
 #include "report/CCopasiRootContainer.h"
 
+//UNDO framework classes
+#ifdef COPASI_UNDO
+#include "undoFramework/DeleteEventCommand.h"
+#include "undoFramework/CreateNewEventCommand.h"
+//#include "undoFramework/EventTypeChangeCommand.h"
+#include "undoFramework/UndoEventData.h"
+#include "copasiui3window.h"
+#endif
+
 /*
  *  Constructs a CQEventWidget1 which is a child of 'parent', with the
  *  name 'name'.'
@@ -42,6 +51,11 @@ CQEventWidget1::CQEventWidget1(QWidget * parent, const char * name):
   setupUi(this);
 
   init();
+
+#ifdef COPASI_UNDO
+  CopasiUI3Window *  pWindow = dynamic_cast<CopasiUI3Window * >(parent->parent());
+  setUndoStack(pWindow->getUndoStack());
+#endif
 }
 
 /*
@@ -55,6 +69,9 @@ CQEventWidget1::~CQEventWidget1()
 /*! Slot to delete the active event widget */
 void CQEventWidget1::slotBtnDelete()
 {
+#ifdef COPASI_UNDO
+  mpUndoStack->push(new DeleteEventCommand(this));
+#else
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
 
@@ -68,11 +85,15 @@ void CQEventWidget1::slotBtnDelete()
   mpEvent = NULL;
 
   protectedNotify(ListViews::EVENT, ListViews::DELETE, mKey);
+#endif
 }
 
 /// Slot to create a new event; activated whenever the New button is clicked
 void CQEventWidget1::slotBtnNew()
 {
+#ifdef COPASI_UNDO
+  mpUndoStack->push(new CreateNewEventCommand(this));
+#else
   // save the current setting values
   saveToEvent();
 
@@ -94,6 +115,7 @@ void CQEventWidget1::slotBtnNew()
   std::string key = (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getEvents()[name]->getKey();
   protectedNotify(ListViews::EVENT, ListViews::ADD, key);
   mpListView->switchToOtherWidget(C_INVALID_INDEX, key);
+#endif
 }
 
 void CQEventWidget1::slotBtnCopy()
@@ -567,3 +589,110 @@ void CQEventWidget1::slotChooseDelay(int choice)
       showDelayExpression(false);
     }
 }
+
+//Undo methods
+#ifdef COPASI_UNDO
+
+void CQEventWidget1::createNewEvent()
+{
+
+  // save the current setting values
+  saveToEvent();
+
+  // standard name
+  std::string name = "event_1";
+
+  // if the standard name already exists then creating the new event will fail
+  // thus, a growing index will automatically be added to the standard name
+  int i = 1;
+  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+
+  while (!(*CCopasiRootContainer::getDatamodelList())[0]->getModel()->createEvent(name))
+    {
+      i++;
+      name = "event_";
+      name += TO_UTF8(QString::number(i));
+    }
+
+  std::string key = (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getEvents()[name]->getKey();
+  protectedNotify(ListViews::EVENT, ListViews::ADD, key);
+  mpListView->switchToOtherWidget(C_INVALID_INDEX, key);
+}
+
+void CQEventWidget1::deleteEvent()
+{
+
+  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
+
+  CModel * pModel = pDataModel->getModel();
+
+  if (pModel == NULL)
+    return;
+
+  pDataModel->getModel()->removeEvent(mKey);
+
+  mpEvent = NULL;
+
+  protectedNotify(ListViews::EVENT, ListViews::DELETE, mKey);
+  mpListView->switchToOtherWidget(116, "");
+}
+
+void CQEventWidget1::deleteEvent(UndoEventData *pEventData)
+{
+  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
+  assert(pDataModel != NULL);
+
+  CModel * pModel = pDataModel->getModel();
+  assert(pModel != NULL);
+
+  CEvent * pEvent = pModel->getEvents()[pEventData->getName()];
+  std::string key = pEvent->getKey();
+  pModel->removeEvent(key);
+  mpEvent = NULL;
+
+#undef DELETE
+  protectedNotify(ListViews::EVENT, ListViews::DELETE, key);
+  protectedNotify(ListViews::EVENT, ListViews::DELETE, "");//Refresh all as there may be dependencies.
+
+  mpListView->switchToOtherWidget(116, "");
+}
+
+void CQEventWidget1::addEvent(UndoEventData *pSData)
+{
+  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
+  assert(pDataModel != NULL);
+
+  CModel * pModel = pDataModel->getModel();
+  assert(pModel != NULL);
+
+  //reinsert the Event
+  CEvent *pEvent =  pModel->createEvent(pSData->getName());
+
+  //set the expressions
+  pEvent->setTriggerExpression(pSData->getTriggerExpression());
+  pEvent->setDelayExpression(pSData->getDelayExpression());
+  pEvent->setPriorityExpression(pSData->getPriorityExpression());
+
+  QList <CEventAssignment *> *assignments = pSData->getAssignments();
+  QList <CEventAssignment *>::const_iterator i;
+
+  for (i = assignments->begin(); i != assignments->end(); ++i)
+    {
+      CEventAssignment * assign = *i;
+      pEvent->getAssignments().add(assign);
+    }
+
+  std::string key = pEvent->getKey();
+  protectedNotify(ListViews::EVENT, ListViews::ADD, key);
+
+  mpListView->switchToOtherWidget(C_INVALID_INDEX, key);
+}
+
+void CQEventWidget1::eventTypeChanged(int type)
+{
+  ; //TODO
+}
+#endif

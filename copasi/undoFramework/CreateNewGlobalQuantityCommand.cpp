@@ -10,7 +10,6 @@
  *      Author: dada
  */
 
-//#include "model/CModel.h"
 #include "model/CModelValue.h"
 #include "UI/CQModelValue.h"
 #include "UndoGlobalQuantityData.h"

@@ -1,7 +1,7 @@
-// Copyright (C) 2012 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2012 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 #include "CQReportDefinitionSelect.h"
 
@@ -20,16 +20,15 @@
 #include "CopasiDataModel/CCopasiDataModel.h"
 
 CQReportDefinitionSelect::CQReportDefinitionSelect(QWidget * parent, Qt::WindowFlags f) :
-    QDialog(parent, f),
-    mpListView(static_cast< ListViews * >(parent)),
-    mpReport(NULL),
-    mShow(true)
+  QDialog(parent, f),
+  mpListView(static_cast< ListViews * >(parent)),
+  mpReport(NULL),
+  mShow(true)
 {
   setupUi(this);
 
   mpBtnEdit->setIcon(CQIconResource::icon(CQIconResource::edit));
   mpBtnBrowse->setIcon(CQIconResource::icon(CQIconResource::fileOpen));
-
 }
 
 CQReportDefinitionSelect::~CQReportDefinitionSelect()
@@ -158,4 +157,3 @@ void CQReportDefinitionSelect::slotBrowse()
       mpEditTarget->setText(reportFile);
     }
 }
-
