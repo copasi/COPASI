@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- generated with COPASI 4.12 (Build 81) (http://www.copasi.org) at 2014-05-09 15:43:35 UTC -->
+<!-- generated with COPASI 4.14 (Build 89+) (http://www.copasi.org) at 2014-11-11 17:07:04 UTC -->
 <?oxygen RNGSchema="http://www.copasi.org/static/schema/CopasiML.rng" type="xml"?>
-<COPASI xmlns="http://www.copasi.org/static/schema" versionMajor="4" versionMinor="12" versionDevel="81" copasiSourcesModified="0">
+<COPASI xmlns="http://www.copasi.org/static/schema" versionMajor="4" versionMinor="14" versionDevel="89" copasiSourcesModified="1">
   <ListOfFunctions>
     <Function key="Function_44" name="GK" type="UserDefined" reversible="unspecified">
       <Expression>
         2*A4*A1/(A2-A1+A3*A2+A4*A1+((A2-A1+A3*A2+A4*A1)^2-4*(A2-A1)*A4*A1)^(1/2))
       </Expression>
       <ListOfParameterDescriptions>
-        <ParameterDescription key="FunctionParameter_440" name="A1" order="0" role="variable"/>
-        <ParameterDescription key="FunctionParameter_442" name="A2" order="1" role="variable"/>
-        <ParameterDescription key="FunctionParameter_444" name="A3" order="2" role="variable"/>
-        <ParameterDescription key="FunctionParameter_438" name="A4" order="3" role="variable"/>
+        <ParameterDescription key="FunctionParameter_385" name="A1" order="0" role="variable"/>
+        <ParameterDescription key="FunctionParameter_383" name="A2" order="1" role="variable"/>
+        <ParameterDescription key="FunctionParameter_381" name="A3" order="2" role="variable"/>
+        <ParameterDescription key="FunctionParameter_387" name="A4" order="3" role="variable"/>
       </ListOfParameterDescriptions>
     </Function>
     <Function key="Function_48" name="function_4_Synthesis of CLN2" type="UserDefined" reversible="false">
@@ -19,11 +19,11 @@
         (ksn2_p+ksn2_p_p*(SBF*cell))*MASS
       </Expression>
       <ListOfParameterDescriptions>
-        <ParameterDescription key="FunctionParameter_459" name="MASS" order="0" role="modifier"/>
-        <ParameterDescription key="FunctionParameter_455" name="SBF" order="1" role="modifier"/>
-        <ParameterDescription key="FunctionParameter_457" name="cell" order="2" role="volume"/>
-        <ParameterDescription key="FunctionParameter_454" name="ksn2_p" order="3" role="constant"/>
-        <ParameterDescription key="FunctionParameter_450" name="ksn2_p_p" order="4" role="constant"/>
+        <ParameterDescription key="FunctionParameter_366" name="MASS" order="0" role="modifier"/>
+        <ParameterDescription key="FunctionParameter_370" name="SBF" order="1" role="modifier"/>
+        <ParameterDescription key="FunctionParameter_368" name="cell" order="2" role="volume"/>
+        <ParameterDescription key="FunctionParameter_371" name="ksn2_p" order="3" role="constant"/>
+        <ParameterDescription key="FunctionParameter_375" name="ksn2_p_p" order="4" role="constant"/>
       </ListOfParameterDescriptions>
     </Function>
     <Function key="Function_49" name="function_4_Degradation of CLN2" type="UserDefined" reversible="false">
@@ -31,9 +31,9 @@
         Mass_Action_1(kdn2,CLN2*cell)/cell
       </Expression>
       <ListOfParameterDescriptions>
-        <ParameterDescription key="FunctionParameter_456" name="CLN2" order="0" role="substrate"/>
-        <ParameterDescription key="FunctionParameter_452" name="cell" order="1" role="volume"/>
-        <ParameterDescription key="FunctionParameter_460" name="kdn2" order="2" role="constant"/>
+        <ParameterDescription key="FunctionParameter_369" name="CLN2" order="0" role="substrate"/>
+        <ParameterDescription key="FunctionParameter_373" name="cell" order="1" role="volume"/>
+        <ParameterDescription key="FunctionParameter_365" name="kdn2" order="2" role="constant"/>
       </ListOfParameterDescriptions>
     </Function>
     <Function key="Function_50" name="function_4_Synthesis of CLB2" type="UserDefined" reversible="false">
@@ -41,11 +41,11 @@
         (ksb2_p+ksb2_p_p*(MCM1*cell))*MASS
       </Expression>
       <ListOfParameterDescriptions>
-        <ParameterDescription key="FunctionParameter_467" name="MASS" order="0" role="modifier"/>
-        <ParameterDescription key="FunctionParameter_463" name="MCM1" order="1" role="modifier"/>
-        <ParameterDescription key="FunctionParameter_465" name="cell" order="2" role="volume"/>
-        <ParameterDescription key="FunctionParameter_461" name="ksb2_p" order="3" role="constant"/>
-        <ParameterDescription key="FunctionParameter_458" name="ksb2_p_p" order="4" role="constant"/>
+        <ParameterDescription key="FunctionParameter_358" name="MASS" order="0" role="modifier"/>
+        <ParameterDescription key="FunctionParameter_362" name="MCM1" order="1" role="modifier"/>
+        <ParameterDescription key="FunctionParameter_360" name="cell" order="2" role="volume"/>
+        <ParameterDescription key="FunctionParameter_364" name="ksb2_p" order="3" role="constant"/>
+        <ParameterDescription key="FunctionParameter_367" name="ksb2_p_p" order="4" role="constant"/>
       </ListOfParameterDescriptions>
     </Function>
     <Function key="Function_51" name="function_4_Degradation of CLB2" type="UserDefined" reversible="false">
@@ -53,9 +53,9 @@
         Mass_Action_1(Vdb2,CLB2*cell)/cell
       </Expression>
       <ListOfParameterDescriptions>
-        <ParameterDescription key="FunctionParameter_464" name="CLB2" order="0" role="substrate"/>
-        <ParameterDescription key="FunctionParameter_468" name="Vdb2" order="1" role="constant"/>
-        <ParameterDescription key="FunctionParameter_447" name="cell" order="2" role="volume"/>
+        <ParameterDescription key="FunctionParameter_361" name="CLB2" order="0" role="substrate"/>
+        <ParameterDescription key="FunctionParameter_357" name="Vdb2" order="1" role="constant"/>
+        <ParameterDescription key="FunctionParameter_378" name="cell" order="2" role="volume"/>
       </ListOfParameterDescriptions>
     </Function>
     <Function key="Function_52" name="function_4_Synthesis of CLB5" type="UserDefined" reversible="false">
@@ -63,11 +63,11 @@
         (ksb5_p+ksb5_p_p*(SBF*cell))*MASS
       </Expression>
       <ListOfParameterDescriptions>
-        <ParameterDescription key="FunctionParameter_475" name="MASS" order="0" role="modifier"/>
-        <ParameterDescription key="FunctionParameter_471" name="SBF" order="1" role="modifier"/>
-        <ParameterDescription key="FunctionParameter_473" name="cell" order="2" role="volume"/>
-        <ParameterDescription key="FunctionParameter_469" name="ksb5_p" order="3" role="constant"/>
-        <ParameterDescription key="FunctionParameter_466" name="ksb5_p_p" order="4" role="constant"/>
+        <ParameterDescription key="FunctionParameter_350" name="MASS" order="0" role="modifier"/>
+        <ParameterDescription key="FunctionParameter_354" name="SBF" order="1" role="modifier"/>
+        <ParameterDescription key="FunctionParameter_352" name="cell" order="2" role="volume"/>
+        <ParameterDescription key="FunctionParameter_356" name="ksb5_p" order="3" role="constant"/>
+        <ParameterDescription key="FunctionParameter_359" name="ksb5_p_p" order="4" role="constant"/>
       </ListOfParameterDescriptions>
     </Function>
     <Function key="Function_53" name="function_4_Degradation of CLB5" type="UserDefined" reversible="false">
@@ -75,9 +75,9 @@
         Mass_Action_1(Vdb5,CLB5*cell)/cell
       </Expression>
       <ListOfParameterDescriptions>
-        <ParameterDescription key="FunctionParameter_472" name="CLB5" order="0" role="substrate"/>
-        <ParameterDescription key="FunctionParameter_476" name="Vdb5" order="1" role="constant"/>
-        <ParameterDescription key="FunctionParameter_462" name="cell" order="2" role="volume"/>
+        <ParameterDescription key="FunctionParameter_353" name="CLB5" order="0" role="substrate"/>
+        <ParameterDescription key="FunctionParameter_349" name="Vdb5" order="1" role="constant"/>
+        <ParameterDescription key="FunctionParameter_363" name="cell" order="2" role="volume"/>
       </ListOfParameterDescriptions>
     </Function>
     <Function key="Function_54" name="function_4_Synthesis of SIC1" type="UserDefined" reversible="false">
@@ -85,10 +85,10 @@
         (ksc1_p+ksc1_p_p*(SWI5*cell))/cell
       </Expression>
       <ListOfParameterDescriptions>
-        <ParameterDescription key="FunctionParameter_479" name="SWI5" order="0" role="modifier"/>
-        <ParameterDescription key="FunctionParameter_481" name="cell" order="1" role="volume"/>
-        <ParameterDescription key="FunctionParameter_477" name="ksc1_p" order="2" role="constant"/>
-        <ParameterDescription key="FunctionParameter_474" name="ksc1_p_p" order="3" role="constant"/>
+        <ParameterDescription key="FunctionParameter_346" name="SWI5" order="0" role="modifier"/>
+        <ParameterDescription key="FunctionParameter_344" name="cell" order="1" role="volume"/>
+        <ParameterDescription key="FunctionParameter_348" name="ksc1_p" order="2" role="constant"/>
+        <ParameterDescription key="FunctionParameter_351" name="ksc1_p_p" order="3" role="constant"/>
       </ListOfParameterDescriptions>
     </Function>
     <Function key="Function_55" name="function_4_Phosphorylation of SIC1" type="UserDefined" reversible="false">
@@ -96,9 +96,9 @@
         Mass_Action_1(Vkpc1,SIC1*cell)/cell
       </Expression>
       <ListOfParameterDescriptions>
-        <ParameterDescription key="FunctionParameter_478" name="SIC1" order="0" role="substrate"/>
-        <ParameterDescription key="FunctionParameter_482" name="Vkpc1" order="1" role="constant"/>
-        <ParameterDescription key="FunctionParameter_483" name="cell" order="2" role="volume"/>
+        <ParameterDescription key="FunctionParameter_347" name="SIC1" order="0" role="substrate"/>
+        <ParameterDescription key="FunctionParameter_343" name="Vkpc1" order="1" role="constant"/>
+        <ParameterDescription key="FunctionParameter_342" name="cell" order="2" role="volume"/>
       </ListOfParameterDescriptions>
     </Function>
     <Function key="Function_56" name="function_4_Dephosphorylation of SIC1" type="UserDefined" reversible="false">
@@ -106,9 +106,9 @@
         Mass_Action_1(Vppc1,SIC1P*cell)/cell
       </Expression>
       <ListOfParameterDescriptions>
-        <ParameterDescription key="FunctionParameter_480" name="SIC1P" order="0" role="substrate"/>
-        <ParameterDescription key="FunctionParameter_484" name="Vppc1" order="1" role="constant"/>
-        <ParameterDescription key="FunctionParameter_486" name="cell" order="2" role="volume"/>
+        <ParameterDescription key="FunctionParameter_345" name="SIC1P" order="0" role="substrate"/>
+        <ParameterDescription key="FunctionParameter_341" name="Vppc1" order="1" role="constant"/>
+        <ParameterDescription key="FunctionParameter_339" name="cell" order="2" role="volume"/>
       </ListOfParameterDescriptions>
     </Function>
     <Function key="Function_57" name="function_4_Fast Degradation of SIC1P" type="UserDefined" reversible="false">
@@ -116,9 +116,9 @@
         Mass_Action_1(kd3c1,SIC1P*cell)/cell
       </Expression>
       <ListOfParameterDescriptions>
-        <ParameterDescription key="FunctionParameter_470" name="SIC1P" order="0" role="substrate"/>
-        <ParameterDescription key="FunctionParameter_489" name="cell" order="1" role="volume"/>
-        <ParameterDescription key="FunctionParameter_487" name="kd3c1" order="2" role="constant"/>
+        <ParameterDescription key="FunctionParameter_355" name="SIC1P" order="0" role="substrate"/>
+        <ParameterDescription key="FunctionParameter_336" name="cell" order="1" role="volume"/>
+        <ParameterDescription key="FunctionParameter_338" name="kd3c1" order="2" role="constant"/>
       </ListOfParameterDescriptions>
     </Function>
     <Function key="Function_58" name="function_4_Assoc. of CLB2 and SIC1" type="UserDefined" reversible="false">
@@ -126,10 +126,10 @@
         Mass_Action_2(kasb2,CLB2*cell,SIC1*cell)/cell
       </Expression>
       <ListOfParameterDescriptions>
-        <ParameterDescription key="FunctionParameter_485" name="CLB2" order="0" role="substrate"/>
-        <ParameterDescription key="FunctionParameter_494" name="SIC1" order="1" role="substrate"/>
-        <ParameterDescription key="FunctionParameter_492" name="cell" order="2" role="volume"/>
-        <ParameterDescription key="FunctionParameter_490" name="kasb2" order="3" role="constant"/>
+        <ParameterDescription key="FunctionParameter_340" name="CLB2" order="0" role="substrate"/>
+        <ParameterDescription key="FunctionParameter_331" name="SIC1" order="1" role="substrate"/>
+        <ParameterDescription key="FunctionParameter_333" name="cell" order="2" role="volume"/>
+        <ParameterDescription key="FunctionParameter_335" name="kasb2" order="3" role="constant"/>
       </ListOfParameterDescriptions>
     </Function>
     <Function key="Function_59" name="function_4_Dissoc. of CLB2/SIC1 complex" type="UserDefined" reversible="false">
@@ -137,9 +137,9 @@
         Mass_Action_1(kdib2,C2*cell)/cell
       </Expression>
       <ListOfParameterDescriptions>
-        <ParameterDescription key="FunctionParameter_491" name="C2" order="0" role="substrate"/>
-        <ParameterDescription key="FunctionParameter_496" name="cell" order="1" role="volume"/>
-        <ParameterDescription key="FunctionParameter_495" name="kdib2" order="2" role="constant"/>
+        <ParameterDescription key="FunctionParameter_334" name="C2" order="0" role="substrate"/>
+        <ParameterDescription key="FunctionParameter_329" name="cell" order="1" role="volume"/>
+        <ParameterDescription key="FunctionParameter_330" name="kdib2" order="2" role="constant"/>
       </ListOfParameterDescriptions>
     </Function>
     <Function key="Function_60" name="function_4_Assoc. of CLB5 and SIC1" type="UserDefined" reversible="false">
@@ -147,10 +147,10 @@
         Mass_Action_2(kasb5,CLB5*cell,SIC1*cell)/cell
       </Expression>
       <ListOfParameterDescriptions>
-        <ParameterDescription key="FunctionParameter_493" name="CLB5" order="0" role="substrate"/>
-        <ParameterDescription key="FunctionParameter_501" name="SIC1" order="1" role="substrate"/>
-        <ParameterDescription key="FunctionParameter_499" name="cell" order="2" role="volume"/>
-        <ParameterDescription key="FunctionParameter_497" name="kasb5" order="3" role="constant"/>
+        <ParameterDescription key="FunctionParameter_332" name="CLB5" order="0" role="substrate"/>
+        <ParameterDescription key="FunctionParameter_324" name="SIC1" order="1" role="substrate"/>
+        <ParameterDescription key="FunctionParameter_326" name="cell" order="2" role="volume"/>
+        <ParameterDescription key="FunctionParameter_328" name="kasb5" order="3" role="constant"/>
       </ListOfParameterDescriptions>
     </Function>
     <Function key="Function_61" name="function_4_Dissoc. of CLB5/SIC1" type="UserDefined" reversible="false">
@@ -158,9 +158,9 @@
         Mass_Action_1(kdib5,C5*cell)/cell
       </Expression>
       <ListOfParameterDescriptions>
-        <ParameterDescription key="FunctionParameter_498" name="C5" order="0" role="substrate"/>
-        <ParameterDescription key="FunctionParameter_503" name="cell" order="1" role="volume"/>
-        <ParameterDescription key="FunctionParameter_502" name="kdib5" order="2" role="constant"/>
+        <ParameterDescription key="FunctionParameter_327" name="C5" order="0" role="substrate"/>
+        <ParameterDescription key="FunctionParameter_322" name="cell" order="1" role="volume"/>
+        <ParameterDescription key="FunctionParameter_323" name="kdib5" order="2" role="constant"/>
       </ListOfParameterDescriptions>
     </Function>
     <Function key="Function_62" name="function_4_Phosphorylation of C2" type="UserDefined" reversible="false">
@@ -168,9 +168,9 @@
         Mass_Action_1(Vkpc1,C2*cell)/cell
       </Expression>
       <ListOfParameterDescriptions>
-        <ParameterDescription key="FunctionParameter_500" name="C2" order="0" role="substrate"/>
-        <ParameterDescription key="FunctionParameter_504" name="Vkpc1" order="1" role="constant"/>
-        <ParameterDescription key="FunctionParameter_506" name="cell" order="2" role="volume"/>
+        <ParameterDescription key="FunctionParameter_325" name="C2" order="0" role="substrate"/>
+        <ParameterDescription key="FunctionParameter_321" name="Vkpc1" order="1" role="constant"/>
+        <ParameterDescription key="FunctionParameter_319" name="cell" order="2" role="volume"/>
       </ListOfParameterDescriptions>
     </Function>
     <Function key="Function_63" name="function_4_Dephosphorylation of C2P" type="UserDefined" reversible="false">
@@ -178,9 +178,9 @@
         Mass_Action_1(Vppc1,C2P*cell)/cell
       </Expression>
       <ListOfParameterDescriptions>
-        <ParameterDescription key="FunctionParameter_488" name="C2P" order="0" role="substrate"/>
-        <ParameterDescription key="FunctionParameter_507" name="Vppc1" order="1" role="constant"/>
-        <ParameterDescription key="FunctionParameter_509" name="cell" order="2" role="volume"/>
+        <ParameterDescription key="FunctionParameter_337" name="C2P" order="0" role="substrate"/>
+        <ParameterDescription key="FunctionParameter_318" name="Vppc1" order="1" role="constant"/>
+        <ParameterDescription key="FunctionParameter_316" name="cell" order="2" role="volume"/>
       </ListOfParameterDescriptions>
     </Function>
     <Function key="Function_64" name="function_4_Phosphorylation of C5" type="UserDefined" reversible="false">
@@ -188,9 +188,9 @@
         Mass_Action_1(Vkpc1,C5*cell)/cell
       </Expression>
       <ListOfParameterDescriptions>
-        <ParameterDescription key="FunctionParameter_505" name="C5" order="0" role="substrate"/>
-        <ParameterDescription key="FunctionParameter_510" name="Vkpc1" order="1" role="constant"/>
-        <ParameterDescription key="FunctionParameter_512" name="cell" order="2" role="volume"/>
+        <ParameterDescription key="FunctionParameter_320" name="C5" order="0" role="substrate"/>
+        <ParameterDescription key="FunctionParameter_315" name="Vkpc1" order="1" role="constant"/>
+        <ParameterDescription key="FunctionParameter_313" name="cell" order="2" role="volume"/>
       </ListOfParameterDescriptions>
     </Function>
     <Function key="Function_65" name="function_4_Dephosphorylation of C5P" type="UserDefined" reversible="false">
@@ -198,9 +198,9 @@
         Mass_Action_1(Vppc1,C5P*cell)/cell
       </Expression>
       <ListOfParameterDescriptions>
-        <ParameterDescription key="FunctionParameter_508" name="C5P" order="0" role="substrate"/>
-        <ParameterDescription key="FunctionParameter_513" name="Vppc1" order="1" role="constant"/>
-        <ParameterDescription key="FunctionParameter_515" name="cell" order="2" role="volume"/>
+        <ParameterDescription key="FunctionParameter_317" name="C5P" order="0" role="substrate"/>
+        <ParameterDescription key="FunctionParameter_312" name="Vppc1" order="1" role="constant"/>
+        <ParameterDescription key="FunctionParameter_310" name="cell" order="2" role="volume"/>
       </ListOfParameterDescriptions>
     </Function>
     <Function key="Function_66" name="function_4_Degradation of CLB2 in C2" type="UserDefined" reversible="false">
@@ -208,9 +208,9 @@
         Mass_Action_1(Vdb2,C2*cell)/cell
       </Expression>
       <ListOfParameterDescriptions>
-        <ParameterDescription key="FunctionParameter_511" name="C2" order="0" role="substrate"/>
-        <ParameterDescription key="FunctionParameter_516" name="Vdb2" order="1" role="constant"/>
-        <ParameterDescription key="FunctionParameter_518" name="cell" order="2" role="volume"/>
+        <ParameterDescription key="FunctionParameter_314" name="C2" order="0" role="substrate"/>
+        <ParameterDescription key="FunctionParameter_309" name="Vdb2" order="1" role="constant"/>
+        <ParameterDescription key="FunctionParameter_307" name="cell" order="2" role="volume"/>
       </ListOfParameterDescriptions>
     </Function>
     <Function key="Function_67" name="function_4_Degradation of CLB5 in C5" type="UserDefined" reversible="false">
@@ -218,9 +218,9 @@
         Mass_Action_1(Vdb5,C5*cell)/cell
       </Expression>
       <ListOfParameterDescriptions>
-        <ParameterDescription key="FunctionParameter_514" name="C5" order="0" role="substrate"/>
-        <ParameterDescription key="FunctionParameter_519" name="Vdb5" order="1" role="constant"/>
-        <ParameterDescription key="FunctionParameter_521" name="cell" order="2" role="volume"/>
+        <ParameterDescription key="FunctionParameter_311" name="C5" order="0" role="substrate"/>
+        <ParameterDescription key="FunctionParameter_306" name="Vdb5" order="1" role="constant"/>
+        <ParameterDescription key="FunctionParameter_304" name="cell" order="2" role="volume"/>
       </ListOfParameterDescriptions>
     </Function>
     <Function key="Function_68" name="function_4_Degradation of SIC1 in C2P" type="UserDefined" reversible="false">
@@ -228,9 +228,9 @@
         Mass_Action_1(kd3c1,C2P*cell)/cell
       </Expression>
       <ListOfParameterDescriptions>
-        <ParameterDescription key="FunctionParameter_517" name="C2P" order="0" role="substrate"/>
-        <ParameterDescription key="FunctionParameter_524" name="cell" order="1" role="volume"/>
-        <ParameterDescription key="FunctionParameter_522" name="kd3c1" order="2" role="constant"/>
+        <ParameterDescription key="FunctionParameter_308" name="C2P" order="0" role="substrate"/>
+        <ParameterDescription key="FunctionParameter_301" name="cell" order="1" role="volume"/>
+        <ParameterDescription key="FunctionParameter_303" name="kd3c1" order="2" role="constant"/>
       </ListOfParameterDescriptions>
     </Function>
     <Function key="Function_69" name="function_4_Degradation of SIC1P in C5P" type="UserDefined" reversible="false">
@@ -238,9 +238,9 @@
         Mass_Action_1(kd3c1,C5P*cell)/cell
       </Expression>
       <ListOfParameterDescriptions>
-        <ParameterDescription key="FunctionParameter_520" name="C5P" order="0" role="substrate"/>
-        <ParameterDescription key="FunctionParameter_527" name="cell" order="1" role="volume"/>
-        <ParameterDescription key="FunctionParameter_525" name="kd3c1" order="2" role="constant"/>
+        <ParameterDescription key="FunctionParameter_305" name="C5P" order="0" role="substrate"/>
+        <ParameterDescription key="FunctionParameter_298" name="cell" order="1" role="volume"/>
+        <ParameterDescription key="FunctionParameter_300" name="kd3c1" order="2" role="constant"/>
       </ListOfParameterDescriptions>
     </Function>
     <Function key="Function_70" name="function_4_Degradation of CLB2 in C2P" type="UserDefined" reversible="false">
@@ -248,9 +248,9 @@
         Mass_Action_1(Vdb2,C2P*cell)/cell
       </Expression>
       <ListOfParameterDescriptions>
-        <ParameterDescription key="FunctionParameter_523" name="C2P" order="0" role="substrate"/>
-        <ParameterDescription key="FunctionParameter_528" name="Vdb2" order="1" role="constant"/>
-        <ParameterDescription key="FunctionParameter_530" name="cell" order="2" role="volume"/>
+        <ParameterDescription key="FunctionParameter_302" name="C2P" order="0" role="substrate"/>
+        <ParameterDescription key="FunctionParameter_297" name="Vdb2" order="1" role="constant"/>
+        <ParameterDescription key="FunctionParameter_295" name="cell" order="2" role="volume"/>
       </ListOfParameterDescriptions>
     </Function>
     <Function key="Function_71" name="function_4_Degradation of CLB5 in C5P" type="UserDefined" reversible="false">
@@ -258,9 +258,9 @@
         Mass_Action_1(Vdb5,C5P*cell)/cell
       </Expression>
       <ListOfParameterDescriptions>
-        <ParameterDescription key="FunctionParameter_526" name="C5P" order="0" role="substrate"/>
-        <ParameterDescription key="FunctionParameter_531" name="Vdb5" order="1" role="constant"/>
-        <ParameterDescription key="FunctionParameter_533" name="cell" order="2" role="volume"/>
+        <ParameterDescription key="FunctionParameter_299" name="C5P" order="0" role="substrate"/>
+        <ParameterDescription key="FunctionParameter_294" name="Vdb5" order="1" role="constant"/>
+        <ParameterDescription key="FunctionParameter_292" name="cell" order="2" role="volume"/>
       </ListOfParameterDescriptions>
     </Function>
     <Function key="Function_72" name="function_4_CDC6 synthesis" type="UserDefined" reversible="false">
@@ -268,12 +268,12 @@
         (ksf6_p+ksf6_p_p*(SWI5*cell)+ksf6_p_p_p*(SBF*cell))/cell
       </Expression>
       <ListOfParameterDescriptions>
-        <ParameterDescription key="FunctionParameter_542" name="SBF" order="0" role="modifier"/>
-        <ParameterDescription key="FunctionParameter_536" name="SWI5" order="1" role="modifier"/>
-        <ParameterDescription key="FunctionParameter_538" name="cell" order="2" role="volume"/>
-        <ParameterDescription key="FunctionParameter_534" name="ksf6_p" order="3" role="constant"/>
-        <ParameterDescription key="FunctionParameter_529" name="ksf6_p_p" order="4" role="constant"/>
-        <ParameterDescription key="FunctionParameter_540" name="ksf6_p_p_p" order="5" role="constant"/>
+        <ParameterDescription key="FunctionParameter_283" name="SBF" order="0" role="modifier"/>
+        <ParameterDescription key="FunctionParameter_289" name="SWI5" order="1" role="modifier"/>
+        <ParameterDescription key="FunctionParameter_287" name="cell" order="2" role="volume"/>
+        <ParameterDescription key="FunctionParameter_291" name="ksf6_p" order="3" role="constant"/>
+        <ParameterDescription key="FunctionParameter_296" name="ksf6_p_p" order="4" role="constant"/>
+        <ParameterDescription key="FunctionParameter_285" name="ksf6_p_p_p" order="5" role="constant"/>
       </ListOfParameterDescriptions>
     </Function>
     <Function key="Function_73" name="function_4_Phosphorylation of CDC6" type="UserDefined" reversible="false">
@@ -281,9 +281,9 @@
         Mass_Action_1(Vkpf6,CDC6*cell)/cell
       </Expression>
       <ListOfParameterDescriptions>
-        <ParameterDescription key="FunctionParameter_539" name="CDC6" order="0" role="substrate"/>
-        <ParameterDescription key="FunctionParameter_543" name="Vkpf6" order="1" role="constant"/>
-        <ParameterDescription key="FunctionParameter_535" name="cell" order="2" role="volume"/>
+        <ParameterDescription key="FunctionParameter_286" name="CDC6" order="0" role="substrate"/>
+        <ParameterDescription key="FunctionParameter_282" name="Vkpf6" order="1" role="constant"/>
+        <ParameterDescription key="FunctionParameter_290" name="cell" order="2" role="volume"/>
       </ListOfParameterDescriptions>
     </Function>
     <Function key="Function_74" name="function_4_Dephosphorylation of CDC6" type="UserDefined" reversible="false">
@@ -291,9 +291,9 @@
         Mass_Action_1(Vppf6,CDC6P*cell)/cell
       </Expression>
       <ListOfParameterDescriptions>
-        <ParameterDescription key="FunctionParameter_541" name="CDC6P" order="0" role="substrate"/>
-        <ParameterDescription key="FunctionParameter_532" name="Vppf6" order="1" role="constant"/>
-        <ParameterDescription key="FunctionParameter_545" name="cell" order="2" role="volume"/>
+        <ParameterDescription key="FunctionParameter_284" name="CDC6P" order="0" role="substrate"/>
+        <ParameterDescription key="FunctionParameter_293" name="Vppf6" order="1" role="constant"/>
+        <ParameterDescription key="FunctionParameter_280" name="cell" order="2" role="volume"/>
       </ListOfParameterDescriptions>
     </Function>
     <Function key="Function_75" name="function_4_Degradation of CDC6P" type="UserDefined" reversible="false">
@@ -301,9 +301,9 @@
         Mass_Action_1(kd3f6,CDC6P*cell)/cell
       </Expression>
       <ListOfParameterDescriptions>
-        <ParameterDescription key="FunctionParameter_537" name="CDC6P" order="0" role="substrate"/>
-        <ParameterDescription key="FunctionParameter_548" name="cell" order="1" role="volume"/>
-        <ParameterDescription key="FunctionParameter_546" name="kd3f6" order="2" role="constant"/>
+        <ParameterDescription key="FunctionParameter_288" name="CDC6P" order="0" role="substrate"/>
+        <ParameterDescription key="FunctionParameter_277" name="cell" order="1" role="volume"/>
+        <ParameterDescription key="FunctionParameter_279" name="kd3f6" order="2" role="constant"/>
       </ListOfParameterDescriptions>
     </Function>
     <Function key="Function_76" name="function_4_CLB2/CDC6 complex formation" type="UserDefined" reversible="false">
@@ -311,10 +311,10 @@
         Mass_Action_2(kasf2,CLB2*cell,CDC6*cell)/cell
       </Expression>
       <ListOfParameterDescriptions>
-        <ParameterDescription key="FunctionParameter_553" name="CDC6" order="0" role="substrate"/>
-        <ParameterDescription key="FunctionParameter_544" name="CLB2" order="1" role="substrate"/>
-        <ParameterDescription key="FunctionParameter_551" name="cell" order="2" role="volume"/>
-        <ParameterDescription key="FunctionParameter_549" name="kasf2" order="3" role="constant"/>
+        <ParameterDescription key="FunctionParameter_272" name="CDC6" order="0" role="substrate"/>
+        <ParameterDescription key="FunctionParameter_281" name="CLB2" order="1" role="substrate"/>
+        <ParameterDescription key="FunctionParameter_274" name="cell" order="2" role="volume"/>
+        <ParameterDescription key="FunctionParameter_276" name="kasf2" order="3" role="constant"/>
       </ListOfParameterDescriptions>
     </Function>
     <Function key="Function_77" name="function_4_CLB2/CDC6 dissociation" type="UserDefined" reversible="false">
@@ -322,9 +322,9 @@
         Mass_Action_1(kdif2,F2*cell)/cell
       </Expression>
       <ListOfParameterDescriptions>
-        <ParameterDescription key="FunctionParameter_550" name="F2" order="0" role="substrate"/>
-        <ParameterDescription key="FunctionParameter_555" name="cell" order="1" role="volume"/>
-        <ParameterDescription key="FunctionParameter_554" name="kdif2" order="2" role="constant"/>
+        <ParameterDescription key="FunctionParameter_275" name="F2" order="0" role="substrate"/>
+        <ParameterDescription key="FunctionParameter_270" name="cell" order="1" role="volume"/>
+        <ParameterDescription key="FunctionParameter_271" name="kdif2" order="2" role="constant"/>
       </ListOfParameterDescriptions>
     </Function>
     <Function key="Function_78" name="function_4_CLB5/CDC6 complex formation" type="UserDefined" reversible="false">
@@ -332,10 +332,10 @@
         Mass_Action_2(kasf5,CLB5*cell,CDC6*cell)/cell
       </Expression>
       <ListOfParameterDescriptions>
-        <ParameterDescription key="FunctionParameter_560" name="CDC6" order="0" role="substrate"/>
-        <ParameterDescription key="FunctionParameter_552" name="CLB5" order="1" role="substrate"/>
-        <ParameterDescription key="FunctionParameter_558" name="cell" order="2" role="volume"/>
-        <ParameterDescription key="FunctionParameter_556" name="kasf5" order="3" role="constant"/>
+        <ParameterDescription key="FunctionParameter_265" name="CDC6" order="0" role="substrate"/>
+        <ParameterDescription key="FunctionParameter_273" name="CLB5" order="1" role="substrate"/>
+        <ParameterDescription key="FunctionParameter_267" name="cell" order="2" role="volume"/>
+        <ParameterDescription key="FunctionParameter_269" name="kasf5" order="3" role="constant"/>
       </ListOfParameterDescriptions>
     </Function>
     <Function key="Function_79" name="function_4_CLB5/CDC6 dissociation" type="UserDefined" reversible="false">
@@ -343,9 +343,9 @@
         Mass_Action_1(kdif5,F5*cell)/cell
       </Expression>
       <ListOfParameterDescriptions>
-        <ParameterDescription key="FunctionParameter_557" name="F5" order="0" role="substrate"/>
-        <ParameterDescription key="FunctionParameter_562" name="cell" order="1" role="volume"/>
-        <ParameterDescription key="FunctionParameter_561" name="kdif5" order="2" role="constant"/>
+        <ParameterDescription key="FunctionParameter_268" name="F5" order="0" role="substrate"/>
+        <ParameterDescription key="FunctionParameter_246" name="cell" order="1" role="volume"/>
+        <ParameterDescription key="FunctionParameter_258" name="kdif5" order="2" role="constant"/>
       </ListOfParameterDescriptions>
     </Function>
     <Function key="Function_80" name="function_4_F2 phosphorylation" type="UserDefined" reversible="false">
@@ -353,9 +353,9 @@
         Mass_Action_1(Vkpf6,F2*cell)/cell
       </Expression>
       <ListOfParameterDescriptions>
-        <ParameterDescription key="FunctionParameter_559" name="F2" order="0" role="substrate"/>
-        <ParameterDescription key="FunctionParameter_563" name="Vkpf6" order="1" role="constant"/>
-        <ParameterDescription key="FunctionParameter_565" name="cell" order="2" role="volume"/>
+        <ParameterDescription key="FunctionParameter_266" name="F2" order="0" role="substrate"/>
+        <ParameterDescription key="FunctionParameter_254" name="Vkpf6" order="1" role="constant"/>
+        <ParameterDescription key="FunctionParameter_264" name="cell" order="2" role="volume"/>
       </ListOfParameterDescriptions>
     </Function>
     <Function key="Function_81" name="function_4_F2P dephosphorylation" type="UserDefined" reversible="false">
@@ -363,7 +363,7 @@
         Mass_Action_1(Vppf6,F2P*cell)/cell
       </Expression>
       <ListOfParameterDescriptions>
-        <ParameterDescription key="FunctionParameter_547" name="F2P" order="0" role="substrate"/>
+        <ParameterDescription key="FunctionParameter_278" name="F2P" order="0" role="substrate"/>
         <ParameterDescription key="FunctionParameter_566" name="Vppf6" order="1" role="constant"/>
         <ParameterDescription key="FunctionParameter_568" name="cell" order="2" role="volume"/>
       </ListOfParameterDescriptions>
@@ -373,7 +373,7 @@
         Mass_Action_1(Vkpf6,F5*cell)/cell
       </Expression>
       <ListOfParameterDescriptions>
-        <ParameterDescription key="FunctionParameter_564" name="F5" order="0" role="substrate"/>
+        <ParameterDescription key="FunctionParameter_262" name="F5" order="0" role="substrate"/>
         <ParameterDescription key="FunctionParameter_569" name="Vkpf6" order="1" role="constant"/>
         <ParameterDescription key="FunctionParameter_571" name="cell" order="2" role="volume"/>
       </ListOfParameterDescriptions>
@@ -1014,8 +1014,8 @@
         k1*S1
       </Expression>
       <ListOfParameterDescriptions>
-        <ParameterDescription key="FunctionParameter_445" name="k1" order="0" role="variable"/>
-        <ParameterDescription key="FunctionParameter_441" name="S1" order="1" role="variable"/>
+        <ParameterDescription key="FunctionParameter_380" name="k1" order="0" role="variable"/>
+        <ParameterDescription key="FunctionParameter_384" name="S1" order="1" role="variable"/>
       </ListOfParameterDescriptions>
     </Function>
     <Function key="Function_46" name="Mass_Action_2" type="UserDefined" reversible="unspecified">
@@ -1023,9 +1023,9 @@
         k1*S1*S2
       </Expression>
       <ListOfParameterDescriptions>
-        <ParameterDescription key="FunctionParameter_439" name="k1" order="0" role="variable"/>
-        <ParameterDescription key="FunctionParameter_446" name="S1" order="1" role="variable"/>
-        <ParameterDescription key="FunctionParameter_448" name="S2" order="2" role="variable"/>
+        <ParameterDescription key="FunctionParameter_386" name="k1" order="0" role="variable"/>
+        <ParameterDescription key="FunctionParameter_379" name="S1" order="1" role="variable"/>
+        <ParameterDescription key="FunctionParameter_377" name="S2" order="2" role="variable"/>
       </ListOfParameterDescriptions>
     </Function>
     <Function key="Function_47" name="Michaelis-Menten" type="UserDefined" reversible="unspecified">
@@ -1033,21 +1033,21 @@
         k1*S1*M1/(J1+S1)
       </Expression>
       <ListOfParameterDescriptions>
-        <ParameterDescription key="FunctionParameter_451" name="M1" order="0" role="variable"/>
-        <ParameterDescription key="FunctionParameter_453" name="J1" order="1" role="variable"/>
-        <ParameterDescription key="FunctionParameter_449" name="k1" order="2" role="variable"/>
-        <ParameterDescription key="FunctionParameter_443" name="S1" order="3" role="variable"/>
+        <ParameterDescription key="FunctionParameter_374" name="M1" order="0" role="variable"/>
+        <ParameterDescription key="FunctionParameter_372" name="J1" order="1" role="variable"/>
+        <ParameterDescription key="FunctionParameter_376" name="k1" order="2" role="variable"/>
+        <ParameterDescription key="FunctionParameter_382" name="S1" order="3" role="variable"/>
       </ListOfParameterDescriptions>
     </Function>
   </ListOfFunctions>
-  <Model key="Model_5" name="Chen2004_CellCycle Mother with GLU" simulationType="time" timeUnit="min" volumeUnit="l" areaUnit="m²" lengthUnit="m" quantityUnit="mol" type="deterministic" avogadroConstant="6.02214e+23">
+  <Model key="Model_7" name="Chen2004_CellCycle Mother with GLU" simulationType="time" timeUnit="min" volumeUnit="l" areaUnit="m²" lengthUnit="m" quantityUnit="mol" type="deterministic" avogadroConstant="6.02214e+23">
     <MiriamAnnotation>
 <rdf:RDF
    xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#"
    xmlns:dcterms="http://purl.org/dc/terms/"
    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
    xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#">
-  <rdf:Description rdf:about="#Model_5">
+  <rdf:Description rdf:about="#Model_7">
     <dcterms:bibliographicCitation>
       <rdf:Description>
         <CopasiMT:isDescribedBy rdf:resource="urn:miriam:pubmed:15169868"/>
@@ -1155,10 +1155,10 @@
       </Compartment>
     </ListOfCompartments>
     <ListOfMetabolites>
-      <Metabolite key="Metabolite_25" name="BCK2" simulationType="assignment" compartment="Compartment_3">
+      <Metabolite key="Metabolite_49" name="BCK2" simulationType="assignment" compartment="Compartment_3">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Metabolite_25">
+  <rdf:Description rdf:about="#Metabolite_49">
     <dcterms:created>
       <rdf:Description>
         <dcterms:W3CDTF>2011-03-02T13:11:51Z</dcterms:W3CDTF>
@@ -1172,28 +1172,28 @@
           &lt;CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Values[b0],Reference=Value&gt;*(&lt;CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Compartments[cell],Vector=Metabolites[MASS],Reference=ParticleNumber&gt;/&lt;CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Values[amount to particle factor],Reference=Value&gt;)/&lt;CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Compartments[cell],Reference=Volume&gt;
         </Expression>
       </Metabolite>
-      <Metabolite key="Metabolite_27" name="BUB2" simulationType="reactions" compartment="Compartment_3">
+      <Metabolite key="Metabolite_45" name="BUB2" simulationType="reactions" compartment="Compartment_3">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Metabolite_27">
+  <rdf:Description rdf:about="#Metabolite_45">
     <CopasiMT:is rdf:resource="urn:miriam:uniprot:P26448" />
   </rdf:Description>
 </rdf:RDF>
         </MiriamAnnotation>
       </Metabolite>
-      <Metabolite key="Metabolite_29" name="BUD" simulationType="reactions" compartment="Compartment_3">
+      <Metabolite key="Metabolite_41" name="BUD" simulationType="reactions" compartment="Compartment_3">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Metabolite_29">
+  <rdf:Description rdf:about="#Metabolite_41">
     <CopasiMT:isVersionOf rdf:resource="urn:miriam:obo.go:GO%3A0007114" />
   </rdf:Description>
 </rdf:RDF>
         </MiriamAnnotation>
       </Metabolite>
-      <Metabolite key="Metabolite_31" name="C2" simulationType="reactions" compartment="Compartment_3">
+      <Metabolite key="Metabolite_37" name="C2" simulationType="reactions" compartment="Compartment_3">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Metabolite_31">
+  <rdf:Description rdf:about="#Metabolite_37">
     <CopasiMT:hasPart>
       <rdf:Bag>
         <rdf:li rdf:resource="urn:miriam:uniprot:P24868" />
@@ -1220,10 +1220,10 @@
 </rdf:RDF>
         </MiriamAnnotation>
       </Metabolite>
-      <Metabolite key="Metabolite_35" name="C5" simulationType="reactions" compartment="Compartment_3">
+      <Metabolite key="Metabolite_29" name="C5" simulationType="reactions" compartment="Compartment_3">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Metabolite_35">
+  <rdf:Description rdf:about="#Metabolite_29">
     <CopasiMT:hasPart>
       <rdf:Bag>
         <rdf:li rdf:resource="urn:miriam:uniprot:P30283" />
@@ -1235,10 +1235,10 @@
 </rdf:RDF>
         </MiriamAnnotation>
       </Metabolite>
-      <Metabolite key="Metabolite_37" name="C5P" simulationType="reactions" compartment="Compartment_3">
+      <Metabolite key="Metabolite_25" name="C5P" simulationType="reactions" compartment="Compartment_3">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Metabolite_37">
+  <rdf:Description rdf:about="#Metabolite_25">
     <CopasiMT:hasPart>
       <rdf:Bag>
         <rdf:li rdf:resource="urn:miriam:uniprot:P30283" />
@@ -1250,19 +1250,19 @@
 </rdf:RDF>
         </MiriamAnnotation>
       </Metabolite>
-      <Metabolite key="Metabolite_39" name="CDC14" simulationType="reactions" compartment="Compartment_3">
+      <Metabolite key="Metabolite_21" name="CDC14" simulationType="reactions" compartment="Compartment_3">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Metabolite_39">
+  <rdf:Description rdf:about="#Metabolite_21">
     <CopasiMT:is rdf:resource="urn:miriam:uniprot:Q00684" />
   </rdf:Description>
 </rdf:RDF>
         </MiriamAnnotation>
       </Metabolite>
-      <Metabolite key="Metabolite_41" name="CDC14T" simulationType="assignment" compartment="Compartment_3">
+      <Metabolite key="Metabolite_17" name="CDC14T" simulationType="assignment" compartment="Compartment_3">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Metabolite_41">
+  <rdf:Description rdf:about="#Metabolite_17">
     <CopasiMT:is rdf:resource="urn:miriam:uniprot:Q00684" />
   </rdf:Description>
 </rdf:RDF>
@@ -1271,19 +1271,19 @@
           (&lt;CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Compartments[cell],Vector=Metabolites[CDC14],Reference=ParticleNumber&gt;/&lt;CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Values[amount to particle factor],Reference=Value&gt;+&lt;CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Compartments[cell],Vector=Metabolites[RENT],Reference=ParticleNumber&gt;/&lt;CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Values[amount to particle factor],Reference=Value&gt;+&lt;CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Compartments[cell],Vector=Metabolites[RENTP],Reference=ParticleNumber&gt;/&lt;CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Values[amount to particle factor],Reference=Value&gt;)/&lt;CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Compartments[cell],Reference=Volume&gt;
         </Expression>
       </Metabolite>
-      <Metabolite key="Metabolite_43" name="CDC15" simulationType="reactions" compartment="Compartment_3">
+      <Metabolite key="Metabolite_13" name="CDC15" simulationType="reactions" compartment="Compartment_3">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Metabolite_43">
+  <rdf:Description rdf:about="#Metabolite_13">
     <CopasiMT:is rdf:resource="urn:miriam:uniprot:P27636" />
   </rdf:Description>
 </rdf:RDF>
         </MiriamAnnotation>
       </Metabolite>
-      <Metabolite key="Metabolite_45" name="CDC15i" simulationType="assignment" compartment="Compartment_3">
+      <Metabolite key="Metabolite_9" name="CDC15i" simulationType="assignment" compartment="Compartment_3">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Metabolite_45">
+  <rdf:Description rdf:about="#Metabolite_9">
     <CopasiMT:is rdf:resource="urn:miriam:uniprot:P27636" />
   </rdf:Description>
 </rdf:RDF>
@@ -1292,10 +1292,10 @@
           (&lt;CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Values[CDC15T],Reference=Value&gt;-&lt;CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Compartments[cell],Vector=Metabolites[CDC15],Reference=ParticleNumber&gt;/&lt;CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Values[amount to particle factor],Reference=Value&gt;)/&lt;CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Compartments[cell],Reference=Volume&gt;
         </Expression>
       </Metabolite>
-      <Metabolite key="Metabolite_47" name="CDC20" simulationType="reactions" compartment="Compartment_3">
+      <Metabolite key="Metabolite_5" name="CDC20" simulationType="reactions" compartment="Compartment_3">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Metabolite_47">
+  <rdf:Description rdf:about="#Metabolite_5">
     <dcterms:created>
       <rdf:Description>
         <dcterms:W3CDTF>2010-08-05T16:07:02Z</dcterms:W3CDTF>
@@ -1306,10 +1306,10 @@
 </rdf:RDF>
         </MiriamAnnotation>
       </Metabolite>
-      <Metabolite key="Metabolite_49" name="CDC20i" simulationType="reactions" compartment="Compartment_3">
+      <Metabolite key="Metabolite_1" name="CDC20i" simulationType="reactions" compartment="Compartment_3">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Metabolite_49">
+  <rdf:Description rdf:about="#Metabolite_1">
     <dcterms:created>
       <rdf:Description>
         <dcterms:W3CDTF>2010-08-05T16:07:04Z</dcterms:W3CDTF>
@@ -1320,10 +1320,10 @@
 </rdf:RDF>
         </MiriamAnnotation>
       </Metabolite>
-      <Metabolite key="Metabolite_51" name="CDC6" simulationType="reactions" compartment="Compartment_3">
+      <Metabolite key="Metabolite_77" name="CDC6" simulationType="reactions" compartment="Compartment_3">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Metabolite_51">
+  <rdf:Description rdf:about="#Metabolite_77">
     <dcterms:created>
       <rdf:Description>
         <dcterms:W3CDTF>2010-08-05T16:07:08Z</dcterms:W3CDTF>
@@ -1334,19 +1334,19 @@
 </rdf:RDF>
         </MiriamAnnotation>
       </Metabolite>
-      <Metabolite key="Metabolite_53" name="CDC6P" simulationType="reactions" compartment="Compartment_3">
+      <Metabolite key="Metabolite_79" name="CDC6P" simulationType="reactions" compartment="Compartment_3">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Metabolite_53">
+  <rdf:Description rdf:about="#Metabolite_79">
     <CopasiMT:is rdf:resource="urn:miriam:uniprot:P09119" />
   </rdf:Description>
 </rdf:RDF>
         </MiriamAnnotation>
       </Metabolite>
-      <Metabolite key="Metabolite_55" name="CDC6T" simulationType="assignment" compartment="Compartment_3">
+      <Metabolite key="Metabolite_81" name="CDC6T" simulationType="assignment" compartment="Compartment_3">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Metabolite_55">
+  <rdf:Description rdf:about="#Metabolite_81">
     <CopasiMT:is rdf:resource="urn:miriam:uniprot:P09119" />
   </rdf:Description>
 </rdf:RDF>
@@ -1355,19 +1355,19 @@
           (&lt;CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Compartments[cell],Vector=Metabolites[CDC6],Reference=ParticleNumber&gt;/&lt;CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Values[amount to particle factor],Reference=Value&gt;+&lt;CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Compartments[cell],Vector=Metabolites[F2],Reference=ParticleNumber&gt;/&lt;CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Values[amount to particle factor],Reference=Value&gt;+&lt;CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Compartments[cell],Vector=Metabolites[F5],Reference=ParticleNumber&gt;/&lt;CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Values[amount to particle factor],Reference=Value&gt;+&lt;CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Compartments[cell],Vector=Metabolites[CDC6P],Reference=ParticleNumber&gt;/&lt;CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Values[amount to particle factor],Reference=Value&gt;+&lt;CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Compartments[cell],Vector=Metabolites[F2P],Reference=ParticleNumber&gt;/&lt;CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Values[amount to particle factor],Reference=Value&gt;+&lt;CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Compartments[cell],Vector=Metabolites[F5P],Reference=ParticleNumber&gt;/&lt;CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Values[amount to particle factor],Reference=Value&gt;)/&lt;CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Compartments[cell],Reference=Volume&gt;
         </Expression>
       </Metabolite>
-      <Metabolite key="Metabolite_57" name="CDH1" simulationType="reactions" compartment="Compartment_3">
+      <Metabolite key="Metabolite_83" name="CDH1" simulationType="reactions" compartment="Compartment_3">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Metabolite_57">
+  <rdf:Description rdf:about="#Metabolite_83">
     <CopasiMT:is rdf:resource="urn:miriam:uniprot:P53197" />
   </rdf:Description>
 </rdf:RDF>
         </MiriamAnnotation>
       </Metabolite>
-      <Metabolite key="Metabolite_59" name="CDH1i" simulationType="reactions" compartment="Compartment_3">
+      <Metabolite key="Metabolite_85" name="CDH1i" simulationType="reactions" compartment="Compartment_3">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Metabolite_59">
+  <rdf:Description rdf:about="#Metabolite_85">
     <dcterms:created>
       <rdf:Description>
         <dcterms:W3CDTF>2010-08-05T16:07:09Z</dcterms:W3CDTF>
@@ -1378,10 +1378,10 @@
 </rdf:RDF>
         </MiriamAnnotation>
       </Metabolite>
-      <Metabolite key="Metabolite_61" name="CKIT" simulationType="assignment" compartment="Compartment_3">
+      <Metabolite key="Metabolite_87" name="CKIT" simulationType="assignment" compartment="Compartment_3">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Metabolite_61">
+  <rdf:Description rdf:about="#Metabolite_87">
     <CopasiMT:hasPart>
       <rdf:Bag>
         <rdf:li rdf:resource="urn:miriam:uniprot:P09119" />
@@ -1395,10 +1395,10 @@
           (&lt;CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Compartments[cell],Vector=Metabolites[SIC1T],Reference=ParticleNumber&gt;/&lt;CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Values[amount to particle factor],Reference=Value&gt;+&lt;CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Compartments[cell],Vector=Metabolites[CDC6T],Reference=ParticleNumber&gt;/&lt;CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Values[amount to particle factor],Reference=Value&gt;)/&lt;CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Compartments[cell],Reference=Volume&gt;
         </Expression>
       </Metabolite>
-      <Metabolite key="Metabolite_63" name="CLB2" simulationType="reactions" compartment="Compartment_3">
+      <Metabolite key="Metabolite_89" name="CLB2" simulationType="reactions" compartment="Compartment_3">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Metabolite_63">
+  <rdf:Description rdf:about="#Metabolite_89">
     <CopasiMT:hasPart>
       <rdf:Bag>
         <rdf:li rdf:resource="urn:miriam:uniprot:P24868" />
@@ -1409,10 +1409,10 @@
 </rdf:RDF>
         </MiriamAnnotation>
       </Metabolite>
-      <Metabolite key="Metabolite_65" name="CLB2T" simulationType="assignment" compartment="Compartment_3">
+      <Metabolite key="Metabolite_91" name="CLB2T" simulationType="assignment" compartment="Compartment_3">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Metabolite_65">
+  <rdf:Description rdf:about="#Metabolite_91">
     <dcterms:created>
       <rdf:Description>
         <dcterms:W3CDTF>2010-08-05T16:07:18Z</dcterms:W3CDTF>
@@ -1431,10 +1431,10 @@
           (&lt;CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Compartments[cell],Vector=Metabolites[CLB2],Reference=ParticleNumber&gt;/&lt;CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Values[amount to particle factor],Reference=Value&gt;+&lt;CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Compartments[cell],Vector=Metabolites[C2],Reference=ParticleNumber&gt;/&lt;CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Values[amount to particle factor],Reference=Value&gt;+&lt;CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Compartments[cell],Vector=Metabolites[C2P],Reference=ParticleNumber&gt;/&lt;CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Values[amount to particle factor],Reference=Value&gt;+&lt;CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Compartments[cell],Vector=Metabolites[F2],Reference=ParticleNumber&gt;/&lt;CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Values[amount to particle factor],Reference=Value&gt;+&lt;CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Compartments[cell],Vector=Metabolites[F2P],Reference=ParticleNumber&gt;/&lt;CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Values[amount to particle factor],Reference=Value&gt;)/&lt;CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Compartments[cell],Reference=Volume&gt;
         </Expression>
       </Metabolite>
-      <Metabolite key="Metabolite_67" name="CLB5" simulationType="reactions" compartment="Compartment_3">
+      <Metabolite key="Metabolite_93" name="CLB5" simulationType="reactions" compartment="Compartment_3">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Metabolite_67">
+  <rdf:Description rdf:about="#Metabolite_93">
     <dcterms:created>
       <rdf:Description>
         <dcterms:W3CDTF>2010-08-05T16:07:16Z</dcterms:W3CDTF>
@@ -1450,10 +1450,10 @@
 </rdf:RDF>
         </MiriamAnnotation>
       </Metabolite>
-      <Metabolite key="Metabolite_69" name="CLB5T" simulationType="assignment" compartment="Compartment_3">
+      <Metabolite key="Metabolite_95" name="CLB5T" simulationType="assignment" compartment="Compartment_3">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Metabolite_69">
+  <rdf:Description rdf:about="#Metabolite_95">
     <CopasiMT:hasPart>
       <rdf:Bag>
         <rdf:li rdf:resource="urn:miriam:uniprot:P30283" />
@@ -1467,10 +1467,10 @@
           (&lt;CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Compartments[cell],Vector=Metabolites[CLB5],Reference=ParticleNumber&gt;/&lt;CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Values[amount to particle factor],Reference=Value&gt;+&lt;CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Compartments[cell],Vector=Metabolites[C5],Reference=ParticleNumber&gt;/&lt;CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Values[amount to particle factor],Reference=Value&gt;+&lt;CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Compartments[cell],Vector=Metabolites[C5P],Reference=ParticleNumber&gt;/&lt;CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Values[amount to particle factor],Reference=Value&gt;+&lt;CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Compartments[cell],Vector=Metabolites[F5],Reference=ParticleNumber&gt;/&lt;CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Values[amount to particle factor],Reference=Value&gt;+&lt;CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Compartments[cell],Vector=Metabolites[F5P],Reference=ParticleNumber&gt;/&lt;CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Values[amount to particle factor],Reference=Value&gt;)/&lt;CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Compartments[cell],Reference=Volume&gt;
         </Expression>
       </Metabolite>
-      <Metabolite key="Metabolite_71" name="CLN2" simulationType="reactions" compartment="Compartment_3">
+      <Metabolite key="Metabolite_97" name="CLN2" simulationType="reactions" compartment="Compartment_3">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Metabolite_71">
+  <rdf:Description rdf:about="#Metabolite_97">
     <CopasiMT:hasPart>
       <rdf:Bag>
         <rdf:li rdf:resource="urn:miriam:uniprot:P20437" />
@@ -1481,10 +1481,10 @@
 </rdf:RDF>
         </MiriamAnnotation>
       </Metabolite>
-      <Metabolite key="Metabolite_73" name="CLN3" simulationType="assignment" compartment="Compartment_3">
+      <Metabolite key="Metabolite_99" name="CLN3" simulationType="assignment" compartment="Compartment_3">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Metabolite_73">
+  <rdf:Description rdf:about="#Metabolite_99">
     <dcterms:created>
       <rdf:Description>
         <dcterms:W3CDTF>2010-08-05T16:38:46Z</dcterms:W3CDTF>
@@ -1498,19 +1498,19 @@
           &lt;CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Values[C0],Reference=Value&gt;*&lt;CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Values[Dn3],Reference=Value&gt;*(&lt;CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Compartments[cell],Vector=Metabolites[MASS],Reference=ParticleNumber&gt;/&lt;CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Values[amount to particle factor],Reference=Value&gt;)/(&lt;CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Values[Jn3],Reference=Value&gt;+&lt;CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Values[Dn3],Reference=Value&gt;*(&lt;CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Compartments[cell],Vector=Metabolites[MASS],Reference=ParticleNumber&gt;/&lt;CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Values[amount to particle factor],Reference=Value&gt;))/&lt;CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Compartments[cell],Reference=Volume&gt;
         </Expression>
       </Metabolite>
-      <Metabolite key="Metabolite_75" name="ESP1" simulationType="reactions" compartment="Compartment_3">
+      <Metabolite key="Metabolite_101" name="ESP1" simulationType="reactions" compartment="Compartment_3">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Metabolite_75">
+  <rdf:Description rdf:about="#Metabolite_101">
     <CopasiMT:is rdf:resource="urn:miriam:uniprot:Q03018" />
   </rdf:Description>
 </rdf:RDF>
         </MiriamAnnotation>
       </Metabolite>
-      <Metabolite key="Metabolite_77" name="F2" simulationType="reactions" compartment="Compartment_3">
+      <Metabolite key="Metabolite_103" name="F2" simulationType="reactions" compartment="Compartment_3">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Metabolite_77">
+  <rdf:Description rdf:about="#Metabolite_103">
     <CopasiMT:hasPart>
       <rdf:Bag>
         <rdf:li rdf:resource="urn:miriam:uniprot:P09119" />
@@ -1522,10 +1522,10 @@
 </rdf:RDF>
         </MiriamAnnotation>
       </Metabolite>
-      <Metabolite key="Metabolite_79" name="F2P" simulationType="reactions" compartment="Compartment_3">
+      <Metabolite key="Metabolite_105" name="F2P" simulationType="reactions" compartment="Compartment_3">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Metabolite_79">
+  <rdf:Description rdf:about="#Metabolite_105">
     <dcterms:created>
       <rdf:Description>
         <dcterms:W3CDTF>2011-02-21T01:09:19Z</dcterms:W3CDTF>
@@ -1542,10 +1542,10 @@
 </rdf:RDF>
         </MiriamAnnotation>
       </Metabolite>
-      <Metabolite key="Metabolite_81" name="F5" simulationType="reactions" compartment="Compartment_3">
+      <Metabolite key="Metabolite_107" name="F5" simulationType="reactions" compartment="Compartment_3">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Metabolite_81">
+  <rdf:Description rdf:about="#Metabolite_107">
     <CopasiMT:hasPart>
       <rdf:Bag>
         <rdf:li rdf:resource="urn:miriam:uniprot:P09119" />
@@ -1557,10 +1557,10 @@
 </rdf:RDF>
         </MiriamAnnotation>
       </Metabolite>
-      <Metabolite key="Metabolite_83" name="F5P" simulationType="reactions" compartment="Compartment_3">
+      <Metabolite key="Metabolite_109" name="F5P" simulationType="reactions" compartment="Compartment_3">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Metabolite_83">
+  <rdf:Description rdf:about="#Metabolite_109">
     <CopasiMT:hasPart>
       <rdf:Bag>
         <rdf:li rdf:resource="urn:miriam:uniprot:P09119" />
@@ -1572,10 +1572,10 @@
 </rdf:RDF>
         </MiriamAnnotation>
       </Metabolite>
-      <Metabolite key="Metabolite_85" name="IE" simulationType="assignment" compartment="Compartment_3">
+      <Metabolite key="Metabolite_111" name="IE" simulationType="assignment" compartment="Compartment_3">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Metabolite_85">
+  <rdf:Description rdf:about="#Metabolite_111">
     <CopasiMT:is rdf:resource="urn:miriam:obo.go:GO%3A0005680" />
   </rdf:Description>
 </rdf:RDF>
@@ -1584,10 +1584,10 @@
           (&lt;CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Values[IET],Reference=Value&gt;-&lt;CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Compartments[cell],Vector=Metabolites[IEP],Reference=ParticleNumber&gt;/&lt;CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Values[amount to particle factor],Reference=Value&gt;)/&lt;CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Compartments[cell],Reference=Volume&gt;
         </Expression>
       </Metabolite>
-      <Metabolite key="Metabolite_87" name="IEP" simulationType="reactions" compartment="Compartment_3">
+      <Metabolite key="Metabolite_113" name="IEP" simulationType="reactions" compartment="Compartment_3">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Metabolite_87">
+  <rdf:Description rdf:about="#Metabolite_113">
     <dcterms:created>
       <rdf:Description>
         <dcterms:W3CDTF>2010-08-05T16:23:39Z</dcterms:W3CDTF>
@@ -1598,10 +1598,10 @@
 </rdf:RDF>
         </MiriamAnnotation>
       </Metabolite>
-      <Metabolite key="Metabolite_89" name="LTE1" simulationType="reactions" compartment="Compartment_3">
+      <Metabolite key="Metabolite_115" name="LTE1" simulationType="reactions" compartment="Compartment_3">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Metabolite_89">
+  <rdf:Description rdf:about="#Metabolite_115">
     <dcterms:created>
       <rdf:Description>
         <dcterms:W3CDTF>2010-08-05T16:07:22Z</dcterms:W3CDTF>
@@ -1612,10 +1612,10 @@
 </rdf:RDF>
         </MiriamAnnotation>
       </Metabolite>
-      <Metabolite key="Metabolite_91" name="MAD2" simulationType="reactions" compartment="Compartment_3">
+      <Metabolite key="Metabolite_117" name="MAD2" simulationType="reactions" compartment="Compartment_3">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Metabolite_91">
+  <rdf:Description rdf:about="#Metabolite_117">
     <dcterms:created>
       <rdf:Description>
         <dcterms:W3CDTF>2010-08-05T16:07:27Z</dcterms:W3CDTF>
@@ -1626,10 +1626,10 @@
 </rdf:RDF>
         </MiriamAnnotation>
       </Metabolite>
-      <Metabolite key="Metabolite_93" name="MASS" simulationType="reactions" compartment="Compartment_3">
+      <Metabolite key="Metabolite_119" name="MASS" simulationType="reactions" compartment="Compartment_3">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Metabolite_93">
+  <rdf:Description rdf:about="#Metabolite_119">
     <dcterms:created>
       <rdf:Description>
         <dcterms:W3CDTF>2010-08-05T16:23:43Z</dcterms:W3CDTF>
@@ -1640,10 +1640,10 @@
 </rdf:RDF>
         </MiriamAnnotation>
       </Metabolite>
-      <Metabolite key="Metabolite_95" name="MCM1" simulationType="assignment" compartment="Compartment_3">
+      <Metabolite key="Metabolite_121" name="MCM1" simulationType="assignment" compartment="Compartment_3">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Metabolite_95">
+  <rdf:Description rdf:about="#Metabolite_121">
     <dcterms:created>
       <rdf:Description>
         <dcterms:W3CDTF>2010-08-05T16:23:43Z</dcterms:W3CDTF>
@@ -1657,28 +1657,28 @@
           GK(&lt;CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Values[kamcm],Reference=Value&gt;*(&lt;CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Compartments[cell],Vector=Metabolites[CLB2],Reference=ParticleNumber&gt;/&lt;CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Values[amount to particle factor],Reference=Value&gt;),&lt;CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Values[kimcm],Reference=Value&gt;,&lt;CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Values[Jamcm],Reference=Value&gt;,&lt;CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Values[Jimcm],Reference=Value&gt;)/&lt;CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Compartments[cell],Reference=Volume&gt;
         </Expression>
       </Metabolite>
-      <Metabolite key="Metabolite_97" name="NET1" simulationType="reactions" compartment="Compartment_3">
+      <Metabolite key="Metabolite_123" name="NET1" simulationType="reactions" compartment="Compartment_3">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Metabolite_97">
+  <rdf:Description rdf:about="#Metabolite_123">
     <CopasiMT:is rdf:resource="urn:miriam:uniprot:P47035" />
   </rdf:Description>
 </rdf:RDF>
         </MiriamAnnotation>
       </Metabolite>
-      <Metabolite key="Metabolite_99" name="NET1P" simulationType="reactions" compartment="Compartment_3">
+      <Metabolite key="Metabolite_125" name="NET1P" simulationType="reactions" compartment="Compartment_3">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Metabolite_99">
+  <rdf:Description rdf:about="#Metabolite_125">
     <CopasiMT:is rdf:resource="urn:miriam:uniprot:P47035" />
   </rdf:Description>
 </rdf:RDF>
         </MiriamAnnotation>
       </Metabolite>
-      <Metabolite key="Metabolite_101" name="NET1T" simulationType="assignment" compartment="Compartment_3">
+      <Metabolite key="Metabolite_127" name="NET1T" simulationType="assignment" compartment="Compartment_3">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Metabolite_101">
+  <rdf:Description rdf:about="#Metabolite_127">
     <dcterms:created>
       <rdf:Description>
         <dcterms:W3CDTF>2010-08-05T16:23:47Z</dcterms:W3CDTF>
@@ -1692,10 +1692,10 @@
           (&lt;CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Compartments[cell],Vector=Metabolites[NET1],Reference=ParticleNumber&gt;/&lt;CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Values[amount to particle factor],Reference=Value&gt;+&lt;CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Compartments[cell],Vector=Metabolites[NET1P],Reference=ParticleNumber&gt;/&lt;CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Values[amount to particle factor],Reference=Value&gt;+&lt;CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Compartments[cell],Vector=Metabolites[RENT],Reference=ParticleNumber&gt;/&lt;CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Values[amount to particle factor],Reference=Value&gt;+&lt;CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Compartments[cell],Vector=Metabolites[RENTP],Reference=ParticleNumber&gt;/&lt;CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Values[amount to particle factor],Reference=Value&gt;)/&lt;CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Compartments[cell],Reference=Volume&gt;
         </Expression>
       </Metabolite>
-      <Metabolite key="Metabolite_103" name="ORI" simulationType="reactions" compartment="Compartment_3">
+      <Metabolite key="Metabolite_129" name="ORI" simulationType="reactions" compartment="Compartment_3">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Metabolite_103">
+  <rdf:Description rdf:about="#Metabolite_129">
     <dcterms:created>
       <rdf:Description>
         <dcterms:W3CDTF>2010-03-16T14:24:37Z</dcterms:W3CDTF>
@@ -1706,10 +1706,10 @@
 </rdf:RDF>
         </MiriamAnnotation>
       </Metabolite>
-      <Metabolite key="Metabolite_105" name="PDS1" simulationType="reactions" compartment="Compartment_3">
+      <Metabolite key="Metabolite_131" name="PDS1" simulationType="reactions" compartment="Compartment_3">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Metabolite_105">
+  <rdf:Description rdf:about="#Metabolite_131">
     <dcterms:created>
       <rdf:Description>
         <dcterms:W3CDTF>2010-08-05T16:23:51Z</dcterms:W3CDTF>
@@ -1720,10 +1720,10 @@
 </rdf:RDF>
         </MiriamAnnotation>
       </Metabolite>
-      <Metabolite key="Metabolite_107" name="PE" simulationType="assignment" compartment="Compartment_3">
+      <Metabolite key="Metabolite_133" name="PE" simulationType="assignment" compartment="Compartment_3">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Metabolite_107">
+  <rdf:Description rdf:about="#Metabolite_133">
     <CopasiMT:is rdf:resource="urn:miriam:uniprot:Q03018" />
   </rdf:Description>
 </rdf:RDF>
@@ -1732,19 +1732,19 @@
           (&lt;CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Values[ESP1T],Reference=Value&gt;-&lt;CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Compartments[cell],Vector=Metabolites[ESP1],Reference=ParticleNumber&gt;/&lt;CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Values[amount to particle factor],Reference=Value&gt;)/&lt;CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Compartments[cell],Reference=Volume&gt;
         </Expression>
       </Metabolite>
-      <Metabolite key="Metabolite_109" name="PPX" simulationType="reactions" compartment="Compartment_3">
+      <Metabolite key="Metabolite_135" name="PPX" simulationType="reactions" compartment="Compartment_3">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Metabolite_109">
+  <rdf:Description rdf:about="#Metabolite_135">
     <CopasiMT:is rdf:resource="urn:miriam:uniprot:P38698" />
   </rdf:Description>
 </rdf:RDF>
         </MiriamAnnotation>
       </Metabolite>
-      <Metabolite key="Metabolite_111" name="RENT" simulationType="reactions" compartment="Compartment_3">
+      <Metabolite key="Metabolite_137" name="RENT" simulationType="reactions" compartment="Compartment_3">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Metabolite_111">
+  <rdf:Description rdf:about="#Metabolite_137">
     <CopasiMT:hasPart>
       <rdf:Bag>
         <rdf:li rdf:resource="urn:miriam:uniprot:P06700" />
@@ -1757,10 +1757,10 @@
 </rdf:RDF>
         </MiriamAnnotation>
       </Metabolite>
-      <Metabolite key="Metabolite_113" name="RENTP" simulationType="reactions" compartment="Compartment_3">
+      <Metabolite key="Metabolite_139" name="RENTP" simulationType="reactions" compartment="Compartment_3">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Metabolite_113">
+  <rdf:Description rdf:about="#Metabolite_139">
     <CopasiMT:hasPart>
       <rdf:Bag>
         <rdf:li rdf:resource="urn:miriam:uniprot:P06700" />
@@ -1773,10 +1773,10 @@
 </rdf:RDF>
         </MiriamAnnotation>
       </Metabolite>
-      <Metabolite key="Metabolite_115" name="SBF" simulationType="assignment" compartment="Compartment_3">
+      <Metabolite key="Metabolite_141" name="SBF" simulationType="assignment" compartment="Compartment_3">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Metabolite_115">
+  <rdf:Description rdf:about="#Metabolite_141">
     <CopasiMT:is rdf:resource="urn:miriam:uniprot:P11938" />
   </rdf:Description>
 </rdf:RDF>
@@ -1785,28 +1785,28 @@
           GK(&lt;CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Values[Vasbf],Reference=Value&gt;,&lt;CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Values[Visbf],Reference=Value&gt;,&lt;CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Values[Jasbf],Reference=Value&gt;,&lt;CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Values[Jisbf],Reference=Value&gt;)/&lt;CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Compartments[cell],Reference=Volume&gt;
         </Expression>
       </Metabolite>
-      <Metabolite key="Metabolite_117" name="SIC1" simulationType="reactions" compartment="Compartment_3">
+      <Metabolite key="Metabolite_143" name="SIC1" simulationType="reactions" compartment="Compartment_3">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Metabolite_117">
+  <rdf:Description rdf:about="#Metabolite_143">
     <CopasiMT:is rdf:resource="urn:miriam:uniprot:P38634" />
   </rdf:Description>
 </rdf:RDF>
         </MiriamAnnotation>
       </Metabolite>
-      <Metabolite key="Metabolite_119" name="SIC1P" simulationType="reactions" compartment="Compartment_3">
+      <Metabolite key="Metabolite_145" name="SIC1P" simulationType="reactions" compartment="Compartment_3">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Metabolite_119">
+  <rdf:Description rdf:about="#Metabolite_145">
     <CopasiMT:is rdf:resource="urn:miriam:uniprot:P38634" />
   </rdf:Description>
 </rdf:RDF>
         </MiriamAnnotation>
       </Metabolite>
-      <Metabolite key="Metabolite_121" name="SIC1T" simulationType="assignment" compartment="Compartment_3">
+      <Metabolite key="Metabolite_147" name="SIC1T" simulationType="assignment" compartment="Compartment_3">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Metabolite_121">
+  <rdf:Description rdf:about="#Metabolite_147">
     <CopasiMT:is rdf:resource="urn:miriam:uniprot:P38634" />
   </rdf:Description>
 </rdf:RDF>
@@ -1815,37 +1815,37 @@
           (&lt;CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Compartments[cell],Vector=Metabolites[SIC1],Reference=ParticleNumber&gt;/&lt;CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Values[amount to particle factor],Reference=Value&gt;+&lt;CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Compartments[cell],Vector=Metabolites[C2],Reference=ParticleNumber&gt;/&lt;CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Values[amount to particle factor],Reference=Value&gt;+&lt;CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Compartments[cell],Vector=Metabolites[C5],Reference=ParticleNumber&gt;/&lt;CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Values[amount to particle factor],Reference=Value&gt;+&lt;CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Compartments[cell],Vector=Metabolites[SIC1P],Reference=ParticleNumber&gt;/&lt;CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Values[amount to particle factor],Reference=Value&gt;+&lt;CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Compartments[cell],Vector=Metabolites[C2P],Reference=ParticleNumber&gt;/&lt;CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Values[amount to particle factor],Reference=Value&gt;+&lt;CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Compartments[cell],Vector=Metabolites[C5P],Reference=ParticleNumber&gt;/&lt;CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Values[amount to particle factor],Reference=Value&gt;)/&lt;CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Compartments[cell],Reference=Volume&gt;
         </Expression>
       </Metabolite>
-      <Metabolite key="Metabolite_123" name="SPN" simulationType="reactions" compartment="Compartment_3">
+      <Metabolite key="Metabolite_149" name="SPN" simulationType="reactions" compartment="Compartment_3">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Metabolite_123">
+  <rdf:Description rdf:about="#Metabolite_149">
     <CopasiMT:is rdf:resource="urn:miriam:obo.go:GO%3A0051225" />
   </rdf:Description>
 </rdf:RDF>
         </MiriamAnnotation>
       </Metabolite>
-      <Metabolite key="Metabolite_125" name="SWI5" simulationType="reactions" compartment="Compartment_3">
+      <Metabolite key="Metabolite_151" name="SWI5" simulationType="reactions" compartment="Compartment_3">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Metabolite_125">
+  <rdf:Description rdf:about="#Metabolite_151">
     <CopasiMT:is rdf:resource="urn:miriam:uniprot:P08153" />
   </rdf:Description>
 </rdf:RDF>
         </MiriamAnnotation>
       </Metabolite>
-      <Metabolite key="Metabolite_127" name="SWI5P" simulationType="reactions" compartment="Compartment_3">
+      <Metabolite key="Metabolite_153" name="SWI5P" simulationType="reactions" compartment="Compartment_3">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Metabolite_127">
+  <rdf:Description rdf:about="#Metabolite_153">
     <CopasiMT:is rdf:resource="urn:miriam:uniprot:P08153" />
   </rdf:Description>
 </rdf:RDF>
         </MiriamAnnotation>
       </Metabolite>
-      <Metabolite key="Metabolite_129" name="TEM1GDP" simulationType="assignment" compartment="Compartment_3">
+      <Metabolite key="Metabolite_155" name="TEM1GDP" simulationType="assignment" compartment="Compartment_3">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Metabolite_129">
+  <rdf:Description rdf:about="#Metabolite_155">
     <CopasiMT:is rdf:resource="urn:miriam:uniprot:P38987" />
   </rdf:Description>
 </rdf:RDF>
@@ -1854,19 +1854,19 @@
           (&lt;CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Values[TEM1T],Reference=Value&gt;-&lt;CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Compartments[cell],Vector=Metabolites[TEM1GTP],Reference=ParticleNumber&gt;/&lt;CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Values[amount to particle factor],Reference=Value&gt;)/&lt;CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Compartments[cell],Reference=Volume&gt;
         </Expression>
       </Metabolite>
-      <Metabolite key="Metabolite_131" name="TEM1GTP" simulationType="reactions" compartment="Compartment_3">
+      <Metabolite key="Metabolite_157" name="TEM1GTP" simulationType="reactions" compartment="Compartment_3">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Metabolite_131">
+  <rdf:Description rdf:about="#Metabolite_157">
     <CopasiMT:is rdf:resource="urn:miriam:uniprot:P38987" />
   </rdf:Description>
 </rdf:RDF>
         </MiriamAnnotation>
       </Metabolite>
-      <Metabolite key="Metabolite_133" name="GLU" simulationType="fixed" compartment="Compartment_3">
+      <Metabolite key="Metabolite_159" name="GLU" simulationType="fixed" compartment="Compartment_3">
         <MiriamAnnotation>
 <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Metabolite_133">
+  <rdf:Description rdf:about="#Metabolite_159">
     <dcterms:created>
       <rdf:Description>
         <dcterms:W3CDTF>2010-05-07T14:54:29Z</dcterms:W3CDTF>
@@ -1878,10 +1878,10 @@
       </Metabolite>
     </ListOfMetabolites>
     <ListOfModelValues>
-      <ModelValue key="ModelValue_9" name="b0" simulationType="fixed">
+      <ModelValue key="ModelValue_6" name="b0" simulationType="fixed">
         <MiriamAnnotation>
 <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#ModelValue_9">
+  <rdf:Description rdf:about="#ModelValue_6">
     <dcterms:created>
       <rdf:Description>
         <dcterms:W3CDTF>2010-08-05T15:30:02Z</dcterms:W3CDTF>
@@ -1891,10 +1891,10 @@
 </rdf:RDF>
         </MiriamAnnotation>
       </ModelValue>
-      <ModelValue key="ModelValue_10" name="bub2h" simulationType="fixed">
+      <ModelValue key="ModelValue_5" name="bub2h" simulationType="fixed">
         <MiriamAnnotation>
 <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#ModelValue_10">
+  <rdf:Description rdf:about="#ModelValue_5">
     <dcterms:created>
       <rdf:Description>
         <dcterms:W3CDTF>2010-08-05T15:30:03Z</dcterms:W3CDTF>
@@ -3718,10 +3718,10 @@
       </ModelValue>
     </ListOfModelValues>
     <ListOfReactions>
-      <Reaction key="Reaction_24" name="Growth" reversible="false" fast="false">
+      <Reaction key="Reaction_63" name="Growth" reversible="false" fast="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Reaction_24">
+  <rdf:Description rdf:about="#Reaction_63">
     <dcterms:created>
       <rdf:Description>
         <dcterms:W3CDTF>2010-05-07T15:16:10Z</dcterms:W3CDTF>
@@ -3732,28 +3732,28 @@
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_133" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_159" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
-          <Product metabolite="Metabolite_93" stoichiometry="1"/>
+          <Product metabolite="Metabolite_119" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfModifiers>
-          <Modifier metabolite="Metabolite_93" stoichiometry="1"/>
+          <Modifier metabolite="Metabolite_119" stoichiometry="1"/>
         </ListOfModifiers>
         <ListOfConstants>
-          <Constant key="Parameter_4222" name="k" value="0.0077"/>
-          <Constant key="Parameter_4223" name="Kmsub" value="0.001"/>
+          <Constant key="Parameter_4163" name="k" value="0.0077"/>
+          <Constant key="Parameter_4164" name="Kmsub" value="0.001"/>
         </ListOfConstants>
         <KineticLaw function="Function_141">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_775">
-              <SourceParameter reference="Metabolite_93"/>
+              <SourceParameter reference="Metabolite_119"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_771">
               <SourceParameter reference="ModelValue_174"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_777">
-              <SourceParameter reference="Metabolite_133"/>
+              <SourceParameter reference="Metabolite_159"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_779">
               <SourceParameter reference="ModelValue_177"/>
@@ -3761,10 +3761,10 @@
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_25" name="Synthesis of CLN2" reversible="false" fast="false">
+      <Reaction key="Reaction_62" name="Synthesis of CLN2" reversible="false" fast="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Reaction_25">
+  <rdf:Description rdf:about="#Reaction_62">
     <CopasiMT:isVersionOf>
       <rdf:Bag>
         <rdf:li rdf:resource="urn:miriam:kegg.pathway:sce04110" />
@@ -3775,107 +3775,107 @@
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfProducts>
-          <Product metabolite="Metabolite_71" stoichiometry="1"/>
+          <Product metabolite="Metabolite_97" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfModifiers>
-          <Modifier metabolite="Metabolite_115" stoichiometry="1"/>
-          <Modifier metabolite="Metabolite_93" stoichiometry="1"/>
+          <Modifier metabolite="Metabolite_141" stoichiometry="1"/>
+          <Modifier metabolite="Metabolite_119" stoichiometry="1"/>
         </ListOfModifiers>
         <ListOfConstants>
-          <Constant key="Parameter_4224" name="ksn2_p" value="1"/>
-          <Constant key="Parameter_4225" name="ksn2_p_p" value="1"/>
+          <Constant key="Parameter_4139" name="ksn2_p" value="1"/>
+          <Constant key="Parameter_4140" name="ksn2_p_p" value="1"/>
         </ListOfConstants>
         <KineticLaw function="Function_48">
           <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_459">
-              <SourceParameter reference="Metabolite_93"/>
+            <CallParameter functionParameter="FunctionParameter_366">
+              <SourceParameter reference="Metabolite_119"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_455">
-              <SourceParameter reference="Metabolite_115"/>
+            <CallParameter functionParameter="FunctionParameter_370">
+              <SourceParameter reference="Metabolite_141"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_457">
+            <CallParameter functionParameter="FunctionParameter_368">
               <SourceParameter reference="Compartment_3"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_454">
+            <CallParameter functionParameter="FunctionParameter_371">
               <SourceParameter reference="ModelValue_137"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_450">
+            <CallParameter functionParameter="FunctionParameter_375">
               <SourceParameter reference="ModelValue_138"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_26" name="Degradation of CLN2" reversible="false" fast="false">
+      <Reaction key="Reaction_61" name="Degradation of CLN2" reversible="false" fast="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Reaction_26">
+  <rdf:Description rdf:about="#Reaction_61">
     <CopasiMT:isVersionOf rdf:resource="urn:miriam:obo.go:GO%3A0008054" />
   </rdf:Description>
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_71" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_97" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfConstants>
-          <Constant key="Parameter_4226" name="kdn2" value="1"/>
+          <Constant key="Parameter_4141" name="kdn2" value="1"/>
         </ListOfConstants>
         <KineticLaw function="Function_49">
           <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_456">
-              <SourceParameter reference="Metabolite_71"/>
+            <CallParameter functionParameter="FunctionParameter_369">
+              <SourceParameter reference="Metabolite_97"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_452">
+            <CallParameter functionParameter="FunctionParameter_373">
               <SourceParameter reference="Compartment_3"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_460">
+            <CallParameter functionParameter="FunctionParameter_365">
               <SourceParameter reference="ModelValue_98"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_27" name="Synthesis of CLB2" reversible="false" fast="false">
+      <Reaction key="Reaction_60" name="Synthesis of CLB2" reversible="false" fast="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Reaction_27">
+  <rdf:Description rdf:about="#Reaction_60">
     <CopasiMT:isVersionOf rdf:resource="urn:miriam:obo.go:GO%3A0006412" />
   </rdf:Description>
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfProducts>
-          <Product metabolite="Metabolite_63" stoichiometry="1"/>
+          <Product metabolite="Metabolite_89" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfModifiers>
-          <Modifier metabolite="Metabolite_95" stoichiometry="1"/>
-          <Modifier metabolite="Metabolite_93" stoichiometry="1"/>
+          <Modifier metabolite="Metabolite_121" stoichiometry="1"/>
+          <Modifier metabolite="Metabolite_119" stoichiometry="1"/>
         </ListOfModifiers>
         <ListOfConstants>
-          <Constant key="Parameter_4227" name="ksb2_p" value="1"/>
-          <Constant key="Parameter_4228" name="ksb2_p_p" value="1"/>
+          <Constant key="Parameter_4142" name="ksb2_p" value="1"/>
+          <Constant key="Parameter_4143" name="ksb2_p_p" value="1"/>
         </ListOfConstants>
         <KineticLaw function="Function_50">
           <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_467">
-              <SourceParameter reference="Metabolite_93"/>
+            <CallParameter functionParameter="FunctionParameter_358">
+              <SourceParameter reference="Metabolite_119"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_463">
-              <SourceParameter reference="Metabolite_95"/>
+            <CallParameter functionParameter="FunctionParameter_362">
+              <SourceParameter reference="Metabolite_121"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_465">
+            <CallParameter functionParameter="FunctionParameter_360">
               <SourceParameter reference="Compartment_3"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_461">
+            <CallParameter functionParameter="FunctionParameter_364">
               <SourceParameter reference="ModelValue_126"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_458">
+            <CallParameter functionParameter="FunctionParameter_367">
               <SourceParameter reference="ModelValue_127"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_28" name="Degradation of CLB2" reversible="false" fast="false">
+      <Reaction key="Reaction_59" name="Degradation of CLB2" reversible="false" fast="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Reaction_28">
+  <rdf:Description rdf:about="#Reaction_59">
     <CopasiMT:isVersionOf>
       <rdf:Bag>
         <rdf:li rdf:resource="urn:miriam:obo.go:GO%3A0008054" />
@@ -3886,68 +3886,68 @@
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_63" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_89" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfConstants>
-          <Constant key="Parameter_4229" name="Vdb2" value="1"/>
+          <Constant key="Parameter_4144" name="Vdb2" value="1"/>
         </ListOfConstants>
         <KineticLaw function="Function_51">
           <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_464">
-              <SourceParameter reference="Metabolite_63"/>
+            <CallParameter functionParameter="FunctionParameter_361">
+              <SourceParameter reference="Metabolite_89"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_468">
+            <CallParameter functionParameter="FunctionParameter_357">
               <SourceParameter reference="ModelValue_155"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_447">
+            <CallParameter functionParameter="FunctionParameter_378">
               <SourceParameter reference="Compartment_3"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_29" name="Synthesis of CLB5" reversible="false" fast="false">
+      <Reaction key="Reaction_58" name="Synthesis of CLB5" reversible="false" fast="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Reaction_29">
+  <rdf:Description rdf:about="#Reaction_58">
     <CopasiMT:isVersionOf rdf:resource="urn:miriam:obo.go:GO%3A0006412" />
   </rdf:Description>
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfProducts>
-          <Product metabolite="Metabolite_67" stoichiometry="1"/>
+          <Product metabolite="Metabolite_93" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfModifiers>
-          <Modifier metabolite="Metabolite_115" stoichiometry="1"/>
-          <Modifier metabolite="Metabolite_93" stoichiometry="1"/>
+          <Modifier metabolite="Metabolite_141" stoichiometry="1"/>
+          <Modifier metabolite="Metabolite_119" stoichiometry="1"/>
         </ListOfModifiers>
         <ListOfConstants>
-          <Constant key="Parameter_4230" name="ksb5_p" value="1"/>
-          <Constant key="Parameter_4231" name="ksb5_p_p" value="1"/>
+          <Constant key="Parameter_4145" name="ksb5_p" value="1"/>
+          <Constant key="Parameter_4146" name="ksb5_p_p" value="1"/>
         </ListOfConstants>
         <KineticLaw function="Function_52">
           <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_475">
-              <SourceParameter reference="Metabolite_93"/>
+            <CallParameter functionParameter="FunctionParameter_350">
+              <SourceParameter reference="Metabolite_119"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_471">
-              <SourceParameter reference="Metabolite_115"/>
+            <CallParameter functionParameter="FunctionParameter_354">
+              <SourceParameter reference="Metabolite_141"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_473">
+            <CallParameter functionParameter="FunctionParameter_352">
               <SourceParameter reference="Compartment_3"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_469">
+            <CallParameter functionParameter="FunctionParameter_356">
               <SourceParameter reference="ModelValue_128"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_466">
+            <CallParameter functionParameter="FunctionParameter_359">
               <SourceParameter reference="ModelValue_129"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_30" name="Degradation of CLB5" reversible="false" fast="false">
+      <Reaction key="Reaction_57" name="Degradation of CLB5" reversible="false" fast="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Reaction_30">
+  <rdf:Description rdf:about="#Reaction_57">
     <CopasiMT:isVersionOf>
       <rdf:Bag>
         <rdf:li rdf:resource="urn:miriam:obo.go:GO%3A0008054" />
@@ -3958,64 +3958,64 @@
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_67" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_93" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfConstants>
-          <Constant key="Parameter_4232" name="Vdb5" value="1"/>
+          <Constant key="Parameter_4147" name="Vdb5" value="1"/>
         </ListOfConstants>
         <KineticLaw function="Function_53">
           <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_472">
-              <SourceParameter reference="Metabolite_67"/>
+            <CallParameter functionParameter="FunctionParameter_353">
+              <SourceParameter reference="Metabolite_93"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_476">
+            <CallParameter functionParameter="FunctionParameter_349">
               <SourceParameter reference="ModelValue_154"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_462">
+            <CallParameter functionParameter="FunctionParameter_363">
               <SourceParameter reference="Compartment_3"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_31" name="Synthesis of SIC1" reversible="false" fast="false">
+      <Reaction key="Reaction_56" name="Synthesis of SIC1" reversible="false" fast="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Reaction_31">
+  <rdf:Description rdf:about="#Reaction_56">
     <CopasiMT:isVersionOf rdf:resource="urn:miriam:obo.go:GO%3A0006412" />
   </rdf:Description>
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfProducts>
-          <Product metabolite="Metabolite_117" stoichiometry="1"/>
+          <Product metabolite="Metabolite_143" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfModifiers>
-          <Modifier metabolite="Metabolite_125" stoichiometry="1"/>
+          <Modifier metabolite="Metabolite_151" stoichiometry="1"/>
         </ListOfModifiers>
         <ListOfConstants>
-          <Constant key="Parameter_4233" name="ksc1_p" value="1"/>
-          <Constant key="Parameter_4234" name="ksc1_p_p" value="1"/>
+          <Constant key="Parameter_4148" name="ksc1_p" value="1"/>
+          <Constant key="Parameter_4149" name="ksc1_p_p" value="1"/>
         </ListOfConstants>
         <KineticLaw function="Function_54">
           <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_479">
-              <SourceParameter reference="Metabolite_125"/>
+            <CallParameter functionParameter="FunctionParameter_346">
+              <SourceParameter reference="Metabolite_151"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_481">
+            <CallParameter functionParameter="FunctionParameter_344">
               <SourceParameter reference="Compartment_3"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_477">
+            <CallParameter functionParameter="FunctionParameter_348">
               <SourceParameter reference="ModelValue_131"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_474">
+            <CallParameter functionParameter="FunctionParameter_351">
               <SourceParameter reference="ModelValue_132"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_32" name="Phosphorylation of SIC1" reversible="false" fast="false">
+      <Reaction key="Reaction_55" name="Phosphorylation of SIC1" reversible="false" fast="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Reaction_32">
+  <rdf:Description rdf:about="#Reaction_55">
     <CopasiMT:isVersionOf>
       <rdf:Bag>
         <rdf:li rdf:resource="urn:miriam:ec-code:2.7.11.22" />
@@ -4027,32 +4027,32 @@
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_117" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_143" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
-          <Product metabolite="Metabolite_119" stoichiometry="1"/>
+          <Product metabolite="Metabolite_145" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_4235" name="Vkpc1" value="1"/>
+          <Constant key="Parameter_4150" name="Vkpc1" value="1"/>
         </ListOfConstants>
         <KineticLaw function="Function_55">
           <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_478">
-              <SourceParameter reference="Metabolite_117"/>
+            <CallParameter functionParameter="FunctionParameter_347">
+              <SourceParameter reference="Metabolite_143"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_482">
+            <CallParameter functionParameter="FunctionParameter_343">
               <SourceParameter reference="ModelValue_158"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_483">
+            <CallParameter functionParameter="FunctionParameter_342">
               <SourceParameter reference="Compartment_3"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_33" name="Dephosphorylation of SIC1" reversible="false" fast="false">
+      <Reaction key="Reaction_54" name="Dephosphorylation of SIC1" reversible="false" fast="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Reaction_33">
+  <rdf:Description rdf:about="#Reaction_54">
     <CopasiMT:isVersionOf>
       <rdf:Bag>
         <rdf:li rdf:resource="urn:miriam:ec-code:3.1.3.48" />
@@ -4064,60 +4064,60 @@
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_119" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_145" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
-          <Product metabolite="Metabolite_117" stoichiometry="1"/>
+          <Product metabolite="Metabolite_143" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_4236" name="Vppc1" value="1"/>
+          <Constant key="Parameter_4151" name="Vppc1" value="1"/>
         </ListOfConstants>
         <KineticLaw function="Function_56">
           <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_480">
-              <SourceParameter reference="Metabolite_119"/>
+            <CallParameter functionParameter="FunctionParameter_345">
+              <SourceParameter reference="Metabolite_145"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_484">
+            <CallParameter functionParameter="FunctionParameter_341">
               <SourceParameter reference="ModelValue_169"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_486">
+            <CallParameter functionParameter="FunctionParameter_339">
               <SourceParameter reference="Compartment_3"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_34" name="Fast Degradation of SIC1P" reversible="false" fast="false">
+      <Reaction key="Reaction_53" name="Fast Degradation of SIC1P" reversible="false" fast="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Reaction_34">
+  <rdf:Description rdf:about="#Reaction_53">
     <CopasiMT:isVersionOf rdf:resource="urn:miriam:obo.go:GO%3A0030163" />
   </rdf:Description>
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_119" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_145" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfConstants>
-          <Constant key="Parameter_4237" name="kd3c1" value="1"/>
+          <Constant key="Parameter_4152" name="kd3c1" value="1"/>
         </ListOfConstants>
         <KineticLaw function="Function_57">
           <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_470">
-              <SourceParameter reference="Metabolite_119"/>
+            <CallParameter functionParameter="FunctionParameter_355">
+              <SourceParameter reference="Metabolite_145"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_489">
+            <CallParameter functionParameter="FunctionParameter_336">
               <SourceParameter reference="Compartment_3"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_487">
+            <CallParameter functionParameter="FunctionParameter_338">
               <SourceParameter reference="ModelValue_81"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_35" name="Assoc. of CLB2 and SIC1" reversible="false" fast="false">
+      <Reaction key="Reaction_52" name="Assoc. of CLB2 and SIC1" reversible="false" fast="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Reaction_35">
+  <rdf:Description rdf:about="#Reaction_52">
     <CopasiMT:isVersionOf>
       <rdf:Bag>
         <rdf:li rdf:resource="urn:miriam:obo.go:GO%3A0005515" />
@@ -4128,68 +4128,68 @@
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_63" stoichiometry="1"/>
-          <Substrate metabolite="Metabolite_117" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_89" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_143" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
-          <Product metabolite="Metabolite_31" stoichiometry="1"/>
+          <Product metabolite="Metabolite_37" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_4238" name="kasb2" value="1"/>
+          <Constant key="Parameter_4153" name="kasb2" value="1"/>
         </ListOfConstants>
         <KineticLaw function="Function_58">
           <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_485">
-              <SourceParameter reference="Metabolite_63"/>
+            <CallParameter functionParameter="FunctionParameter_340">
+              <SourceParameter reference="Metabolite_89"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_494">
-              <SourceParameter reference="Metabolite_117"/>
+            <CallParameter functionParameter="FunctionParameter_331">
+              <SourceParameter reference="Metabolite_143"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_492">
+            <CallParameter functionParameter="FunctionParameter_333">
               <SourceParameter reference="Compartment_3"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_490">
+            <CallParameter functionParameter="FunctionParameter_335">
               <SourceParameter reference="ModelValue_64"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_36" name="Dissoc. of CLB2/SIC1 complex" reversible="false" fast="false">
+      <Reaction key="Reaction_51" name="Dissoc. of CLB2/SIC1 complex" reversible="false" fast="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Reaction_36">
+  <rdf:Description rdf:about="#Reaction_51">
     <CopasiMT:isVersionOf rdf:resource="urn:miriam:obo.go:GO%3A0043624" />
   </rdf:Description>
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_31" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_37" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
-          <Product metabolite="Metabolite_63" stoichiometry="1"/>
-          <Product metabolite="Metabolite_117" stoichiometry="1"/>
+          <Product metabolite="Metabolite_89" stoichiometry="1"/>
+          <Product metabolite="Metabolite_143" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_4239" name="kdib2" value="1"/>
+          <Constant key="Parameter_4154" name="kdib2" value="1"/>
         </ListOfConstants>
         <KineticLaw function="Function_59">
           <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_491">
-              <SourceParameter reference="Metabolite_31"/>
+            <CallParameter functionParameter="FunctionParameter_334">
+              <SourceParameter reference="Metabolite_37"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_496">
+            <CallParameter functionParameter="FunctionParameter_329">
               <SourceParameter reference="Compartment_3"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_495">
+            <CallParameter functionParameter="FunctionParameter_330">
               <SourceParameter reference="ModelValue_91"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_37" name="Assoc. of CLB5 and SIC1" reversible="false" fast="false">
+      <Reaction key="Reaction_50" name="Assoc. of CLB5 and SIC1" reversible="false" fast="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Reaction_37">
+  <rdf:Description rdf:about="#Reaction_50">
     <CopasiMT:isVersionOf>
       <rdf:Bag>
         <rdf:li rdf:resource="urn:miriam:obo.go:GO%3A0005515" />
@@ -4200,68 +4200,68 @@
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_67" stoichiometry="1"/>
-          <Substrate metabolite="Metabolite_117" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_93" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_143" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
-          <Product metabolite="Metabolite_35" stoichiometry="1"/>
+          <Product metabolite="Metabolite_29" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_4242" name="kasb5" value="1"/>
+          <Constant key="Parameter_4155" name="kasb5" value="1"/>
         </ListOfConstants>
         <KineticLaw function="Function_60">
           <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_493">
-              <SourceParameter reference="Metabolite_67"/>
+            <CallParameter functionParameter="FunctionParameter_332">
+              <SourceParameter reference="Metabolite_93"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_501">
-              <SourceParameter reference="Metabolite_117"/>
+            <CallParameter functionParameter="FunctionParameter_324">
+              <SourceParameter reference="Metabolite_143"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_499">
+            <CallParameter functionParameter="FunctionParameter_326">
               <SourceParameter reference="Compartment_3"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_497">
+            <CallParameter functionParameter="FunctionParameter_328">
               <SourceParameter reference="ModelValue_65"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_38" name="Dissoc. of CLB5/SIC1" reversible="false" fast="false">
+      <Reaction key="Reaction_49" name="Dissoc. of CLB5/SIC1" reversible="false" fast="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Reaction_38">
+  <rdf:Description rdf:about="#Reaction_49">
     <CopasiMT:isVersionOf rdf:resource="urn:miriam:obo.go:GO%3A0043624" />
   </rdf:Description>
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_35" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_29" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
-          <Product metabolite="Metabolite_67" stoichiometry="1"/>
-          <Product metabolite="Metabolite_117" stoichiometry="1"/>
+          <Product metabolite="Metabolite_93" stoichiometry="1"/>
+          <Product metabolite="Metabolite_143" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_4241" name="kdib5" value="1"/>
+          <Constant key="Parameter_4156" name="kdib5" value="1"/>
         </ListOfConstants>
         <KineticLaw function="Function_61">
           <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_498">
-              <SourceParameter reference="Metabolite_35"/>
+            <CallParameter functionParameter="FunctionParameter_327">
+              <SourceParameter reference="Metabolite_29"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_503">
+            <CallParameter functionParameter="FunctionParameter_322">
               <SourceParameter reference="Compartment_3"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_502">
+            <CallParameter functionParameter="FunctionParameter_323">
               <SourceParameter reference="ModelValue_92"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_39" name="Phosphorylation of C2" reversible="false" fast="false">
+      <Reaction key="Reaction_48" name="Phosphorylation of C2" reversible="false" fast="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Reaction_39">
+  <rdf:Description rdf:about="#Reaction_48">
     <CopasiMT:isVersionOf>
       <rdf:Bag>
         <rdf:li rdf:resource="urn:miriam:ec-code:2.7.11.22" />
@@ -4273,32 +4273,32 @@
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_31" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_37" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
           <Product metabolite="Metabolite_33" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_4243" name="Vkpc1" value="1"/>
+          <Constant key="Parameter_4157" name="Vkpc1" value="1"/>
         </ListOfConstants>
         <KineticLaw function="Function_62">
           <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_500">
-              <SourceParameter reference="Metabolite_31"/>
+            <CallParameter functionParameter="FunctionParameter_325">
+              <SourceParameter reference="Metabolite_37"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_504">
+            <CallParameter functionParameter="FunctionParameter_321">
               <SourceParameter reference="ModelValue_158"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_506">
+            <CallParameter functionParameter="FunctionParameter_319">
               <SourceParameter reference="Compartment_3"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_40" name="Dephosphorylation of C2P" reversible="false" fast="false">
+      <Reaction key="Reaction_47" name="Dephosphorylation of C2P" reversible="false" fast="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Reaction_40">
+  <rdf:Description rdf:about="#Reaction_47">
     <CopasiMT:isVersionOf>
       <rdf:Bag>
         <rdf:li rdf:resource="urn:miriam:ec-code:3.1.3.48" />
@@ -4313,29 +4313,29 @@
           <Substrate metabolite="Metabolite_33" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
-          <Product metabolite="Metabolite_31" stoichiometry="1"/>
+          <Product metabolite="Metabolite_37" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_4240" name="Vppc1" value="1"/>
+          <Constant key="Parameter_4158" name="Vppc1" value="1"/>
         </ListOfConstants>
         <KineticLaw function="Function_63">
           <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_488">
+            <CallParameter functionParameter="FunctionParameter_337">
               <SourceParameter reference="Metabolite_33"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_507">
+            <CallParameter functionParameter="FunctionParameter_318">
               <SourceParameter reference="ModelValue_169"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_509">
+            <CallParameter functionParameter="FunctionParameter_316">
               <SourceParameter reference="Compartment_3"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_41" name="Phosphorylation of C5" reversible="false" fast="false">
+      <Reaction key="Reaction_46" name="Phosphorylation of C5" reversible="false" fast="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Reaction_41">
+  <rdf:Description rdf:about="#Reaction_46">
     <CopasiMT:isVersionOf>
       <rdf:Bag>
         <rdf:li rdf:resource="urn:miriam:ec-code:2.7.11.22" />
@@ -4347,32 +4347,32 @@
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_35" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_29" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
-          <Product metabolite="Metabolite_37" stoichiometry="1"/>
+          <Product metabolite="Metabolite_25" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_4244" name="Vkpc1" value="1"/>
+          <Constant key="Parameter_4159" name="Vkpc1" value="1"/>
         </ListOfConstants>
         <KineticLaw function="Function_64">
           <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_505">
-              <SourceParameter reference="Metabolite_35"/>
+            <CallParameter functionParameter="FunctionParameter_320">
+              <SourceParameter reference="Metabolite_29"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_510">
+            <CallParameter functionParameter="FunctionParameter_315">
               <SourceParameter reference="ModelValue_158"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_512">
+            <CallParameter functionParameter="FunctionParameter_313">
               <SourceParameter reference="Compartment_3"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_42" name="Dephosphorylation of C5P" reversible="false" fast="false">
+      <Reaction key="Reaction_45" name="Dephosphorylation of C5P" reversible="false" fast="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Reaction_42">
+  <rdf:Description rdf:about="#Reaction_45">
     <CopasiMT:isVersionOf>
       <rdf:Bag>
         <rdf:li rdf:resource="urn:miriam:ec-code:3.1.3.48" />
@@ -4384,65 +4384,29 @@
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_37" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_25" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
-          <Product metabolite="Metabolite_35" stoichiometry="1"/>
+          <Product metabolite="Metabolite_29" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_4245" name="Vppc1" value="1"/>
+          <Constant key="Parameter_4160" name="Vppc1" value="1"/>
         </ListOfConstants>
         <KineticLaw function="Function_65">
           <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_508">
-              <SourceParameter reference="Metabolite_37"/>
+            <CallParameter functionParameter="FunctionParameter_317">
+              <SourceParameter reference="Metabolite_25"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_513">
+            <CallParameter functionParameter="FunctionParameter_312">
               <SourceParameter reference="ModelValue_169"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_515">
+            <CallParameter functionParameter="FunctionParameter_310">
               <SourceParameter reference="Compartment_3"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_43" name="Degradation of CLB2 in C2" reversible="false" fast="false">
-        <MiriamAnnotation>
-<rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Reaction_43">
-    <CopasiMT:isVersionOf>
-      <rdf:Bag>
-        <rdf:li rdf:resource="urn:miriam:obo.go:GO%3A0008054" />
-        <rdf:li rdf:resource="urn:miriam:obo.go:GO%3A0051437" />
-      </rdf:Bag>
-    </CopasiMT:isVersionOf>
-  </rdf:Description>
-</rdf:RDF>
-        </MiriamAnnotation>
-        <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_31" stoichiometry="1"/>
-        </ListOfSubstrates>
-        <ListOfProducts>
-          <Product metabolite="Metabolite_117" stoichiometry="1"/>
-        </ListOfProducts>
-        <ListOfConstants>
-          <Constant key="Parameter_4246" name="Vdb2" value="1"/>
-        </ListOfConstants>
-        <KineticLaw function="Function_66">
-          <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_511">
-              <SourceParameter reference="Metabolite_31"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_516">
-              <SourceParameter reference="ModelValue_155"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_518">
-              <SourceParameter reference="Compartment_3"/>
-            </CallParameter>
-          </ListOfCallParameters>
-        </KineticLaw>
-      </Reaction>
-      <Reaction key="Reaction_44" name="Degradation of CLB5 in C5" reversible="false" fast="false">
+      <Reaction key="Reaction_44" name="Degradation of CLB2 in C2" reversible="false" fast="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
   <rdf:Description rdf:about="#Reaction_44">
@@ -4456,32 +4420,68 @@
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_35" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_37" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
-          <Product metabolite="Metabolite_117" stoichiometry="1"/>
+          <Product metabolite="Metabolite_143" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_4247" name="Vdb5" value="1"/>
+          <Constant key="Parameter_4161" name="Vdb2" value="1"/>
+        </ListOfConstants>
+        <KineticLaw function="Function_66">
+          <ListOfCallParameters>
+            <CallParameter functionParameter="FunctionParameter_314">
+              <SourceParameter reference="Metabolite_37"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_309">
+              <SourceParameter reference="ModelValue_155"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_307">
+              <SourceParameter reference="Compartment_3"/>
+            </CallParameter>
+          </ListOfCallParameters>
+        </KineticLaw>
+      </Reaction>
+      <Reaction key="Reaction_43" name="Degradation of CLB5 in C5" reversible="false" fast="false">
+        <MiriamAnnotation>
+<rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+  <rdf:Description rdf:about="#Reaction_43">
+    <CopasiMT:isVersionOf>
+      <rdf:Bag>
+        <rdf:li rdf:resource="urn:miriam:obo.go:GO%3A0008054" />
+        <rdf:li rdf:resource="urn:miriam:obo.go:GO%3A0051437" />
+      </rdf:Bag>
+    </CopasiMT:isVersionOf>
+  </rdf:Description>
+</rdf:RDF>
+        </MiriamAnnotation>
+        <ListOfSubstrates>
+          <Substrate metabolite="Metabolite_29" stoichiometry="1"/>
+        </ListOfSubstrates>
+        <ListOfProducts>
+          <Product metabolite="Metabolite_143" stoichiometry="1"/>
+        </ListOfProducts>
+        <ListOfConstants>
+          <Constant key="Parameter_4162" name="Vdb5" value="1"/>
         </ListOfConstants>
         <KineticLaw function="Function_67">
           <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_514">
-              <SourceParameter reference="Metabolite_35"/>
+            <CallParameter functionParameter="FunctionParameter_311">
+              <SourceParameter reference="Metabolite_29"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_519">
+            <CallParameter functionParameter="FunctionParameter_306">
               <SourceParameter reference="ModelValue_154"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_521">
+            <CallParameter functionParameter="FunctionParameter_304">
               <SourceParameter reference="Compartment_3"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_45" name="Degradation of SIC1 in C2P" reversible="false" fast="false">
+      <Reaction key="Reaction_42" name="Degradation of SIC1 in C2P" reversible="false" fast="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Reaction_45">
+  <rdf:Description rdf:about="#Reaction_42">
     <CopasiMT:isVersionOf rdf:resource="urn:miriam:obo.go:GO%3A0030163" />
   </rdf:Description>
 </rdf:RDF>
@@ -4490,60 +4490,60 @@
           <Substrate metabolite="Metabolite_33" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
-          <Product metabolite="Metabolite_63" stoichiometry="1"/>
+          <Product metabolite="Metabolite_89" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_4248" name="kd3c1" value="1"/>
+          <Constant key="Parameter_4191" name="kd3c1" value="1"/>
         </ListOfConstants>
         <KineticLaw function="Function_68">
           <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_517">
+            <CallParameter functionParameter="FunctionParameter_308">
               <SourceParameter reference="Metabolite_33"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_524">
+            <CallParameter functionParameter="FunctionParameter_301">
               <SourceParameter reference="Compartment_3"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_522">
+            <CallParameter functionParameter="FunctionParameter_303">
               <SourceParameter reference="ModelValue_81"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_46" name="Degradation of SIC1P in C5P" reversible="false" fast="false">
+      <Reaction key="Reaction_41" name="Degradation of SIC1P in C5P" reversible="false" fast="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Reaction_46">
+  <rdf:Description rdf:about="#Reaction_41">
     <CopasiMT:isVersionOf rdf:resource="urn:miriam:obo.go:GO%3A0030163" />
   </rdf:Description>
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_37" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_25" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
-          <Product metabolite="Metabolite_67" stoichiometry="1"/>
+          <Product metabolite="Metabolite_93" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_4249" name="kd3c1" value="1"/>
+          <Constant key="Parameter_4193" name="kd3c1" value="1"/>
         </ListOfConstants>
         <KineticLaw function="Function_69">
           <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_520">
-              <SourceParameter reference="Metabolite_37"/>
+            <CallParameter functionParameter="FunctionParameter_305">
+              <SourceParameter reference="Metabolite_25"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_527">
+            <CallParameter functionParameter="FunctionParameter_298">
               <SourceParameter reference="Compartment_3"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_525">
+            <CallParameter functionParameter="FunctionParameter_300">
               <SourceParameter reference="ModelValue_81"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_47" name="Degradation of CLB2 in C2P" reversible="false" fast="false">
+      <Reaction key="Reaction_40" name="Degradation of CLB2 in C2P" reversible="false" fast="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Reaction_47">
+  <rdf:Description rdf:about="#Reaction_40">
     <CopasiMT:isVersionOf>
       <rdf:Bag>
         <rdf:li rdf:resource="urn:miriam:obo.go:GO%3A0008054" />
@@ -4557,29 +4557,29 @@
           <Substrate metabolite="Metabolite_33" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
-          <Product metabolite="Metabolite_119" stoichiometry="1"/>
+          <Product metabolite="Metabolite_145" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_4250" name="Vdb2" value="1"/>
+          <Constant key="Parameter_4194" name="Vdb2" value="1"/>
         </ListOfConstants>
         <KineticLaw function="Function_70">
           <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_523">
+            <CallParameter functionParameter="FunctionParameter_302">
               <SourceParameter reference="Metabolite_33"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_528">
+            <CallParameter functionParameter="FunctionParameter_297">
               <SourceParameter reference="ModelValue_155"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_530">
+            <CallParameter functionParameter="FunctionParameter_295">
               <SourceParameter reference="Compartment_3"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_48" name="Degradation of CLB5 in C5P" reversible="false" fast="false">
+      <Reaction key="Reaction_39" name="Degradation of CLB5 in C5P" reversible="false" fast="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Reaction_48">
+  <rdf:Description rdf:about="#Reaction_39">
     <CopasiMT:isVersionOf>
       <rdf:Bag>
         <rdf:li rdf:resource="urn:miriam:obo.go:GO%3A0008054" />
@@ -4590,321 +4590,75 @@
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_37" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_25" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
-          <Product metabolite="Metabolite_119" stoichiometry="1"/>
+          <Product metabolite="Metabolite_145" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_4251" name="Vdb5" value="1"/>
+          <Constant key="Parameter_4195" name="Vdb5" value="1"/>
         </ListOfConstants>
         <KineticLaw function="Function_71">
           <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_526">
-              <SourceParameter reference="Metabolite_37"/>
+            <CallParameter functionParameter="FunctionParameter_299">
+              <SourceParameter reference="Metabolite_25"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_531">
+            <CallParameter functionParameter="FunctionParameter_294">
               <SourceParameter reference="ModelValue_154"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_533">
+            <CallParameter functionParameter="FunctionParameter_292">
               <SourceParameter reference="Compartment_3"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_49" name="CDC6 synthesis" reversible="false" fast="false">
+      <Reaction key="Reaction_38" name="CDC6 synthesis" reversible="false" fast="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Reaction_49">
+  <rdf:Description rdf:about="#Reaction_38">
     <CopasiMT:isVersionOf rdf:resource="urn:miriam:obo.go:GO%3A0006412" />
   </rdf:Description>
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfProducts>
-          <Product metabolite="Metabolite_51" stoichiometry="1"/>
+          <Product metabolite="Metabolite_77" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfModifiers>
-          <Modifier metabolite="Metabolite_125" stoichiometry="1"/>
-          <Modifier metabolite="Metabolite_115" stoichiometry="1"/>
+          <Modifier metabolite="Metabolite_151" stoichiometry="1"/>
+          <Modifier metabolite="Metabolite_141" stoichiometry="1"/>
         </ListOfModifiers>
         <ListOfConstants>
-          <Constant key="Parameter_4252" name="ksf6_p" value="1"/>
-          <Constant key="Parameter_4253" name="ksf6_p_p" value="1"/>
-          <Constant key="Parameter_4254" name="ksf6_p_p_p" value="1"/>
+          <Constant key="Parameter_4196" name="ksf6_p" value="1"/>
+          <Constant key="Parameter_4192" name="ksf6_p_p" value="1"/>
+          <Constant key="Parameter_4197" name="ksf6_p_p_p" value="1"/>
         </ListOfConstants>
         <KineticLaw function="Function_72">
           <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_542">
-              <SourceParameter reference="Metabolite_115"/>
+            <CallParameter functionParameter="FunctionParameter_283">
+              <SourceParameter reference="Metabolite_141"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_536">
-              <SourceParameter reference="Metabolite_125"/>
+            <CallParameter functionParameter="FunctionParameter_289">
+              <SourceParameter reference="Metabolite_151"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_538">
+            <CallParameter functionParameter="FunctionParameter_287">
               <SourceParameter reference="Compartment_3"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_534">
+            <CallParameter functionParameter="FunctionParameter_291">
               <SourceParameter reference="ModelValue_134"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_529">
+            <CallParameter functionParameter="FunctionParameter_296">
               <SourceParameter reference="ModelValue_135"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_540">
+            <CallParameter functionParameter="FunctionParameter_285">
               <SourceParameter reference="ModelValue_136"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_50" name="Phosphorylation of CDC6" reversible="false" fast="false">
+      <Reaction key="Reaction_37" name="Phosphorylation of CDC6" reversible="false" fast="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Reaction_50">
-    <CopasiMT:isVersionOf>
-      <rdf:Bag>
-        <rdf:li rdf:resource="urn:miriam:ec-code:2.7.11.22" />
-        <rdf:li rdf:resource="urn:miriam:obo.go:GO%3A0004693" />
-        <rdf:li rdf:resource="urn:miriam:obo.go:GO%3A0006468" />
-      </rdf:Bag>
-    </CopasiMT:isVersionOf>
-  </rdf:Description>
-</rdf:RDF>
-        </MiriamAnnotation>
-        <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_51" stoichiometry="1"/>
-        </ListOfSubstrates>
-        <ListOfProducts>
-          <Product metabolite="Metabolite_53" stoichiometry="1"/>
-        </ListOfProducts>
-        <ListOfConstants>
-          <Constant key="Parameter_4255" name="Vkpf6" value="1"/>
-        </ListOfConstants>
-        <KineticLaw function="Function_73">
-          <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_539">
-              <SourceParameter reference="Metabolite_51"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_543">
-              <SourceParameter reference="ModelValue_159"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_535">
-              <SourceParameter reference="Compartment_3"/>
-            </CallParameter>
-          </ListOfCallParameters>
-        </KineticLaw>
-      </Reaction>
-      <Reaction key="Reaction_51" name="Dephosphorylation of CDC6" reversible="false" fast="false">
-        <MiriamAnnotation>
-<rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Reaction_51">
-    <CopasiMT:isVersionOf>
-      <rdf:Bag>
-        <rdf:li rdf:resource="urn:miriam:ec-code:3.1.3.48" />
-        <rdf:li rdf:resource="urn:miriam:obo.go:GO%3A0004721" />
-        <rdf:li rdf:resource="urn:miriam:obo.go:GO%3A0006470" />
-      </rdf:Bag>
-    </CopasiMT:isVersionOf>
-  </rdf:Description>
-</rdf:RDF>
-        </MiriamAnnotation>
-        <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_53" stoichiometry="1"/>
-        </ListOfSubstrates>
-        <ListOfProducts>
-          <Product metabolite="Metabolite_51" stoichiometry="1"/>
-        </ListOfProducts>
-        <ListOfConstants>
-          <Constant key="Parameter_4256" name="Vppf6" value="1"/>
-        </ListOfConstants>
-        <KineticLaw function="Function_74">
-          <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_541">
-              <SourceParameter reference="Metabolite_53"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_532">
-              <SourceParameter reference="ModelValue_170"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_545">
-              <SourceParameter reference="Compartment_3"/>
-            </CallParameter>
-          </ListOfCallParameters>
-        </KineticLaw>
-      </Reaction>
-      <Reaction key="Reaction_52" name="Degradation of CDC6P" reversible="false" fast="false">
-        <MiriamAnnotation>
-<rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Reaction_52">
-    <CopasiMT:isVersionOf rdf:resource="urn:miriam:obo.go:GO%3A0030163" />
-  </rdf:Description>
-</rdf:RDF>
-        </MiriamAnnotation>
-        <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_53" stoichiometry="1"/>
-        </ListOfSubstrates>
-        <ListOfConstants>
-          <Constant key="Parameter_4257" name="kd3f6" value="1"/>
-        </ListOfConstants>
-        <KineticLaw function="Function_75">
-          <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_537">
-              <SourceParameter reference="Metabolite_53"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_548">
-              <SourceParameter reference="Compartment_3"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_546">
-              <SourceParameter reference="ModelValue_82"/>
-            </CallParameter>
-          </ListOfCallParameters>
-        </KineticLaw>
-      </Reaction>
-      <Reaction key="Reaction_53" name="CLB2/CDC6 complex formation" reversible="false" fast="false">
-        <MiriamAnnotation>
-<rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Reaction_53">
-    <CopasiMT:isVersionOf>
-      <rdf:Bag>
-        <rdf:li rdf:resource="urn:miriam:obo.go:GO%3A0005515" />
-        <rdf:li rdf:resource="urn:miriam:obo.go:GO%3A0043623" />
-      </rdf:Bag>
-    </CopasiMT:isVersionOf>
-  </rdf:Description>
-</rdf:RDF>
-        </MiriamAnnotation>
-        <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_63" stoichiometry="1"/>
-          <Substrate metabolite="Metabolite_51" stoichiometry="1"/>
-        </ListOfSubstrates>
-        <ListOfProducts>
-          <Product metabolite="Metabolite_77" stoichiometry="1"/>
-        </ListOfProducts>
-        <ListOfConstants>
-          <Constant key="Parameter_4258" name="kasf2" value="1"/>
-        </ListOfConstants>
-        <KineticLaw function="Function_76">
-          <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_553">
-              <SourceParameter reference="Metabolite_51"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_544">
-              <SourceParameter reference="Metabolite_63"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_551">
-              <SourceParameter reference="Compartment_3"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_549">
-              <SourceParameter reference="ModelValue_68"/>
-            </CallParameter>
-          </ListOfCallParameters>
-        </KineticLaw>
-      </Reaction>
-      <Reaction key="Reaction_54" name="CLB2/CDC6 dissociation" reversible="false" fast="false">
-        <MiriamAnnotation>
-<rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Reaction_54">
-    <CopasiMT:isVersionOf rdf:resource="urn:miriam:obo.go:GO%3A0043624" />
-  </rdf:Description>
-</rdf:RDF>
-        </MiriamAnnotation>
-        <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_77" stoichiometry="1"/>
-        </ListOfSubstrates>
-        <ListOfProducts>
-          <Product metabolite="Metabolite_63" stoichiometry="1"/>
-          <Product metabolite="Metabolite_51" stoichiometry="1"/>
-        </ListOfProducts>
-        <ListOfConstants>
-          <Constant key="Parameter_4259" name="kdif2" value="1"/>
-        </ListOfConstants>
-        <KineticLaw function="Function_77">
-          <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_550">
-              <SourceParameter reference="Metabolite_77"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_555">
-              <SourceParameter reference="Compartment_3"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_554">
-              <SourceParameter reference="ModelValue_94"/>
-            </CallParameter>
-          </ListOfCallParameters>
-        </KineticLaw>
-      </Reaction>
-      <Reaction key="Reaction_55" name="CLB5/CDC6 complex formation" reversible="false" fast="false">
-        <MiriamAnnotation>
-<rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Reaction_55">
-    <CopasiMT:isVersionOf>
-      <rdf:Bag>
-        <rdf:li rdf:resource="urn:miriam:obo.go:GO%3A0005515" />
-        <rdf:li rdf:resource="urn:miriam:obo.go:GO%3A0043623" />
-      </rdf:Bag>
-    </CopasiMT:isVersionOf>
-  </rdf:Description>
-</rdf:RDF>
-        </MiriamAnnotation>
-        <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_67" stoichiometry="1"/>
-          <Substrate metabolite="Metabolite_51" stoichiometry="1"/>
-        </ListOfSubstrates>
-        <ListOfProducts>
-          <Product metabolite="Metabolite_81" stoichiometry="1"/>
-        </ListOfProducts>
-        <ListOfConstants>
-          <Constant key="Parameter_4264" name="kasf5" value="1"/>
-        </ListOfConstants>
-        <KineticLaw function="Function_78">
-          <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_560">
-              <SourceParameter reference="Metabolite_51"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_552">
-              <SourceParameter reference="Metabolite_67"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_558">
-              <SourceParameter reference="Compartment_3"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_556">
-              <SourceParameter reference="ModelValue_69"/>
-            </CallParameter>
-          </ListOfCallParameters>
-        </KineticLaw>
-      </Reaction>
-      <Reaction key="Reaction_56" name="CLB5/CDC6 dissociation" reversible="false" fast="false">
-        <MiriamAnnotation>
-<rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Reaction_56">
-    <CopasiMT:isVersionOf rdf:resource="urn:miriam:obo.go:GO%3A0043624" />
-  </rdf:Description>
-</rdf:RDF>
-        </MiriamAnnotation>
-        <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_81" stoichiometry="1"/>
-        </ListOfSubstrates>
-        <ListOfProducts>
-          <Product metabolite="Metabolite_67" stoichiometry="1"/>
-          <Product metabolite="Metabolite_51" stoichiometry="1"/>
-        </ListOfProducts>
-        <ListOfConstants>
-          <Constant key="Parameter_4263" name="kdif5" value="1"/>
-        </ListOfConstants>
-        <KineticLaw function="Function_79">
-          <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_557">
-              <SourceParameter reference="Metabolite_81"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_562">
-              <SourceParameter reference="Compartment_3"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_561">
-              <SourceParameter reference="ModelValue_95"/>
-            </CallParameter>
-          </ListOfCallParameters>
-        </KineticLaw>
-      </Reaction>
-      <Reaction key="Reaction_57" name="F2 phosphorylation" reversible="false" fast="false">
-        <MiriamAnnotation>
-<rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Reaction_57">
+  <rdf:Description rdf:about="#Reaction_37">
     <CopasiMT:isVersionOf>
       <rdf:Bag>
         <rdf:li rdf:resource="urn:miriam:ec-code:2.7.11.22" />
@@ -4922,26 +4676,26 @@
           <Product metabolite="Metabolite_79" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_4262" name="Vkpf6" value="1"/>
+          <Constant key="Parameter_4198" name="Vkpf6" value="1"/>
         </ListOfConstants>
-        <KineticLaw function="Function_80">
+        <KineticLaw function="Function_73">
           <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_559">
+            <CallParameter functionParameter="FunctionParameter_286">
               <SourceParameter reference="Metabolite_77"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_563">
+            <CallParameter functionParameter="FunctionParameter_282">
               <SourceParameter reference="ModelValue_159"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_565">
+            <CallParameter functionParameter="FunctionParameter_290">
               <SourceParameter reference="Compartment_3"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_58" name="F2P dephosphorylation" reversible="false" fast="false">
+      <Reaction key="Reaction_36" name="Dephosphorylation of CDC6" reversible="false" fast="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Reaction_58">
+  <rdf:Description rdf:about="#Reaction_36">
     <CopasiMT:isVersionOf>
       <rdf:Bag>
         <rdf:li rdf:resource="urn:miriam:ec-code:3.1.3.48" />
@@ -4959,26 +4713,198 @@
           <Product metabolite="Metabolite_77" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_4260" name="Vppf6" value="1"/>
+          <Constant key="Parameter_4199" name="Vppf6" value="1"/>
         </ListOfConstants>
-        <KineticLaw function="Function_81">
+        <KineticLaw function="Function_74">
           <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_547">
+            <CallParameter functionParameter="FunctionParameter_284">
               <SourceParameter reference="Metabolite_79"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_566">
+            <CallParameter functionParameter="FunctionParameter_293">
               <SourceParameter reference="ModelValue_170"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_568">
+            <CallParameter functionParameter="FunctionParameter_280">
               <SourceParameter reference="Compartment_3"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_59" name="F5 phosphorylation" reversible="false" fast="false">
+      <Reaction key="Reaction_35" name="Degradation of CDC6P" reversible="false" fast="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Reaction_59">
+  <rdf:Description rdf:about="#Reaction_35">
+    <CopasiMT:isVersionOf rdf:resource="urn:miriam:obo.go:GO%3A0030163" />
+  </rdf:Description>
+</rdf:RDF>
+        </MiriamAnnotation>
+        <ListOfSubstrates>
+          <Substrate metabolite="Metabolite_79" stoichiometry="1"/>
+        </ListOfSubstrates>
+        <ListOfConstants>
+          <Constant key="Parameter_4200" name="kd3f6" value="1"/>
+        </ListOfConstants>
+        <KineticLaw function="Function_75">
+          <ListOfCallParameters>
+            <CallParameter functionParameter="FunctionParameter_288">
+              <SourceParameter reference="Metabolite_79"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_277">
+              <SourceParameter reference="Compartment_3"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_279">
+              <SourceParameter reference="ModelValue_82"/>
+            </CallParameter>
+          </ListOfCallParameters>
+        </KineticLaw>
+      </Reaction>
+      <Reaction key="Reaction_34" name="CLB2/CDC6 complex formation" reversible="false" fast="false">
+        <MiriamAnnotation>
+<rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+  <rdf:Description rdf:about="#Reaction_34">
+    <CopasiMT:isVersionOf>
+      <rdf:Bag>
+        <rdf:li rdf:resource="urn:miriam:obo.go:GO%3A0005515" />
+        <rdf:li rdf:resource="urn:miriam:obo.go:GO%3A0043623" />
+      </rdf:Bag>
+    </CopasiMT:isVersionOf>
+  </rdf:Description>
+</rdf:RDF>
+        </MiriamAnnotation>
+        <ListOfSubstrates>
+          <Substrate metabolite="Metabolite_89" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_77" stoichiometry="1"/>
+        </ListOfSubstrates>
+        <ListOfProducts>
+          <Product metabolite="Metabolite_103" stoichiometry="1"/>
+        </ListOfProducts>
+        <ListOfConstants>
+          <Constant key="Parameter_4201" name="kasf2" value="1"/>
+        </ListOfConstants>
+        <KineticLaw function="Function_76">
+          <ListOfCallParameters>
+            <CallParameter functionParameter="FunctionParameter_272">
+              <SourceParameter reference="Metabolite_77"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_281">
+              <SourceParameter reference="Metabolite_89"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_274">
+              <SourceParameter reference="Compartment_3"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_276">
+              <SourceParameter reference="ModelValue_68"/>
+            </CallParameter>
+          </ListOfCallParameters>
+        </KineticLaw>
+      </Reaction>
+      <Reaction key="Reaction_33" name="CLB2/CDC6 dissociation" reversible="false" fast="false">
+        <MiriamAnnotation>
+<rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+  <rdf:Description rdf:about="#Reaction_33">
+    <CopasiMT:isVersionOf rdf:resource="urn:miriam:obo.go:GO%3A0043624" />
+  </rdf:Description>
+</rdf:RDF>
+        </MiriamAnnotation>
+        <ListOfSubstrates>
+          <Substrate metabolite="Metabolite_103" stoichiometry="1"/>
+        </ListOfSubstrates>
+        <ListOfProducts>
+          <Product metabolite="Metabolite_89" stoichiometry="1"/>
+          <Product metabolite="Metabolite_77" stoichiometry="1"/>
+        </ListOfProducts>
+        <ListOfConstants>
+          <Constant key="Parameter_4202" name="kdif2" value="1"/>
+        </ListOfConstants>
+        <KineticLaw function="Function_77">
+          <ListOfCallParameters>
+            <CallParameter functionParameter="FunctionParameter_275">
+              <SourceParameter reference="Metabolite_103"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_270">
+              <SourceParameter reference="Compartment_3"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_271">
+              <SourceParameter reference="ModelValue_94"/>
+            </CallParameter>
+          </ListOfCallParameters>
+        </KineticLaw>
+      </Reaction>
+      <Reaction key="Reaction_32" name="CLB5/CDC6 complex formation" reversible="false" fast="false">
+        <MiriamAnnotation>
+<rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+  <rdf:Description rdf:about="#Reaction_32">
+    <CopasiMT:isVersionOf>
+      <rdf:Bag>
+        <rdf:li rdf:resource="urn:miriam:obo.go:GO%3A0005515" />
+        <rdf:li rdf:resource="urn:miriam:obo.go:GO%3A0043623" />
+      </rdf:Bag>
+    </CopasiMT:isVersionOf>
+  </rdf:Description>
+</rdf:RDF>
+        </MiriamAnnotation>
+        <ListOfSubstrates>
+          <Substrate metabolite="Metabolite_93" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_77" stoichiometry="1"/>
+        </ListOfSubstrates>
+        <ListOfProducts>
+          <Product metabolite="Metabolite_107" stoichiometry="1"/>
+        </ListOfProducts>
+        <ListOfConstants>
+          <Constant key="Parameter_4203" name="kasf5" value="1"/>
+        </ListOfConstants>
+        <KineticLaw function="Function_78">
+          <ListOfCallParameters>
+            <CallParameter functionParameter="FunctionParameter_265">
+              <SourceParameter reference="Metabolite_77"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_273">
+              <SourceParameter reference="Metabolite_93"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_267">
+              <SourceParameter reference="Compartment_3"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_269">
+              <SourceParameter reference="ModelValue_69"/>
+            </CallParameter>
+          </ListOfCallParameters>
+        </KineticLaw>
+      </Reaction>
+      <Reaction key="Reaction_31" name="CLB5/CDC6 dissociation" reversible="false" fast="false">
+        <MiriamAnnotation>
+<rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+  <rdf:Description rdf:about="#Reaction_31">
+    <CopasiMT:isVersionOf rdf:resource="urn:miriam:obo.go:GO%3A0043624" />
+  </rdf:Description>
+</rdf:RDF>
+        </MiriamAnnotation>
+        <ListOfSubstrates>
+          <Substrate metabolite="Metabolite_107" stoichiometry="1"/>
+        </ListOfSubstrates>
+        <ListOfProducts>
+          <Product metabolite="Metabolite_93" stoichiometry="1"/>
+          <Product metabolite="Metabolite_77" stoichiometry="1"/>
+        </ListOfProducts>
+        <ListOfConstants>
+          <Constant key="Parameter_4204" name="kdif5" value="1"/>
+        </ListOfConstants>
+        <KineticLaw function="Function_79">
+          <ListOfCallParameters>
+            <CallParameter functionParameter="FunctionParameter_268">
+              <SourceParameter reference="Metabolite_107"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_246">
+              <SourceParameter reference="Compartment_3"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_258">
+              <SourceParameter reference="ModelValue_95"/>
+            </CallParameter>
+          </ListOfCallParameters>
+        </KineticLaw>
+      </Reaction>
+      <Reaction key="Reaction_30" name="F2 phosphorylation" reversible="false" fast="false">
+        <MiriamAnnotation>
+<rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+  <rdf:Description rdf:about="#Reaction_30">
     <CopasiMT:isVersionOf>
       <rdf:Bag>
         <rdf:li rdf:resource="urn:miriam:ec-code:2.7.11.22" />
@@ -4990,32 +4916,32 @@
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_81" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_103" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
-          <Product metabolite="Metabolite_83" stoichiometry="1"/>
+          <Product metabolite="Metabolite_105" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_4261" name="Vkpf6" value="1"/>
+          <Constant key="Parameter_4205" name="Vkpf6" value="1"/>
         </ListOfConstants>
-        <KineticLaw function="Function_82">
+        <KineticLaw function="Function_80">
           <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_564">
-              <SourceParameter reference="Metabolite_81"/>
+            <CallParameter functionParameter="FunctionParameter_266">
+              <SourceParameter reference="Metabolite_103"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_569">
+            <CallParameter functionParameter="FunctionParameter_254">
               <SourceParameter reference="ModelValue_159"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_571">
+            <CallParameter functionParameter="FunctionParameter_264">
               <SourceParameter reference="Compartment_3"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_60" name="F5P dephosphorylation" reversible="false" fast="false">
+      <Reaction key="Reaction_29" name="F2P dephosphorylation" reversible="false" fast="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Reaction_60">
+  <rdf:Description rdf:about="#Reaction_29">
     <CopasiMT:isVersionOf>
       <rdf:Bag>
         <rdf:li rdf:resource="urn:miriam:ec-code:3.1.3.48" />
@@ -5027,18 +4953,92 @@
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_83" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_105" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
-          <Product metabolite="Metabolite_81" stoichiometry="1"/>
+          <Product metabolite="Metabolite_103" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_4265" name="Vppf6" value="1"/>
+          <Constant key="Parameter_4206" name="Vppf6" value="1"/>
+        </ListOfConstants>
+        <KineticLaw function="Function_81">
+          <ListOfCallParameters>
+            <CallParameter functionParameter="FunctionParameter_278">
+              <SourceParameter reference="Metabolite_105"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_566">
+              <SourceParameter reference="ModelValue_170"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_568">
+              <SourceParameter reference="Compartment_3"/>
+            </CallParameter>
+          </ListOfCallParameters>
+        </KineticLaw>
+      </Reaction>
+      <Reaction key="Reaction_28" name="F5 phosphorylation" reversible="false" fast="false">
+        <MiriamAnnotation>
+<rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+  <rdf:Description rdf:about="#Reaction_28">
+    <CopasiMT:isVersionOf>
+      <rdf:Bag>
+        <rdf:li rdf:resource="urn:miriam:ec-code:2.7.11.22" />
+        <rdf:li rdf:resource="urn:miriam:obo.go:GO%3A0004693" />
+        <rdf:li rdf:resource="urn:miriam:obo.go:GO%3A0006468" />
+      </rdf:Bag>
+    </CopasiMT:isVersionOf>
+  </rdf:Description>
+</rdf:RDF>
+        </MiriamAnnotation>
+        <ListOfSubstrates>
+          <Substrate metabolite="Metabolite_107" stoichiometry="1"/>
+        </ListOfSubstrates>
+        <ListOfProducts>
+          <Product metabolite="Metabolite_109" stoichiometry="1"/>
+        </ListOfProducts>
+        <ListOfConstants>
+          <Constant key="Parameter_4207" name="Vkpf6" value="1"/>
+        </ListOfConstants>
+        <KineticLaw function="Function_82">
+          <ListOfCallParameters>
+            <CallParameter functionParameter="FunctionParameter_262">
+              <SourceParameter reference="Metabolite_107"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_569">
+              <SourceParameter reference="ModelValue_159"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_571">
+              <SourceParameter reference="Compartment_3"/>
+            </CallParameter>
+          </ListOfCallParameters>
+        </KineticLaw>
+      </Reaction>
+      <Reaction key="Reaction_27" name="F5P dephosphorylation" reversible="false" fast="false">
+        <MiriamAnnotation>
+<rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+  <rdf:Description rdf:about="#Reaction_27">
+    <CopasiMT:isVersionOf>
+      <rdf:Bag>
+        <rdf:li rdf:resource="urn:miriam:ec-code:3.1.3.48" />
+        <rdf:li rdf:resource="urn:miriam:obo.go:GO%3A0004721" />
+        <rdf:li rdf:resource="urn:miriam:obo.go:GO%3A0006470" />
+      </rdf:Bag>
+    </CopasiMT:isVersionOf>
+  </rdf:Description>
+</rdf:RDF>
+        </MiriamAnnotation>
+        <ListOfSubstrates>
+          <Substrate metabolite="Metabolite_109" stoichiometry="1"/>
+        </ListOfSubstrates>
+        <ListOfProducts>
+          <Product metabolite="Metabolite_107" stoichiometry="1"/>
+        </ListOfProducts>
+        <ListOfConstants>
+          <Constant key="Parameter_4208" name="Vppf6" value="1"/>
         </ListOfConstants>
         <KineticLaw function="Function_83">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_567">
-              <SourceParameter reference="Metabolite_83"/>
+              <SourceParameter reference="Metabolite_109"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_572">
               <SourceParameter reference="ModelValue_170"/>
@@ -5049,10 +5049,10 @@
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_61" name="CLB2 degradation in F2" reversible="false" fast="false">
+      <Reaction key="Reaction_26" name="CLB2 degradation in F2" reversible="false" fast="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Reaction_61">
+  <rdf:Description rdf:about="#Reaction_26">
     <CopasiMT:isVersionOf>
       <rdf:Bag>
         <rdf:li rdf:resource="urn:miriam:obo.go:GO%3A0008054" />
@@ -5063,18 +5063,18 @@
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_77" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_103" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
-          <Product metabolite="Metabolite_51" stoichiometry="1"/>
+          <Product metabolite="Metabolite_77" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_4266" name="Vdb2" value="1"/>
+          <Constant key="Parameter_4209" name="Vdb2" value="1"/>
         </ListOfConstants>
         <KineticLaw function="Function_84">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_570">
-              <SourceParameter reference="Metabolite_77"/>
+              <SourceParameter reference="Metabolite_103"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_575">
               <SourceParameter reference="ModelValue_155"/>
@@ -5085,10 +5085,10 @@
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_62" name="CLB5 degradation in F5" reversible="false" fast="false">
+      <Reaction key="Reaction_25" name="CLB5 degradation in F5" reversible="false" fast="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Reaction_62">
+  <rdf:Description rdf:about="#Reaction_25">
     <CopasiMT:isVersionOf>
       <rdf:Bag>
         <rdf:li rdf:resource="urn:miriam:obo.go:GO%3A0008054" />
@@ -5099,18 +5099,18 @@
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_81" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_107" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
-          <Product metabolite="Metabolite_51" stoichiometry="1"/>
+          <Product metabolite="Metabolite_77" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_4269" name="Vdb5" value="1"/>
+          <Constant key="Parameter_4210" name="Vdb5" value="1"/>
         </ListOfConstants>
         <KineticLaw function="Function_85">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_573">
-              <SourceParameter reference="Metabolite_81"/>
+              <SourceParameter reference="Metabolite_107"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_578">
               <SourceParameter reference="ModelValue_154"/>
@@ -5121,27 +5121,27 @@
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_63" name="CDC6 degradation in F2P" reversible="false" fast="false">
+      <Reaction key="Reaction_24" name="CDC6 degradation in F2P" reversible="false" fast="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Reaction_63">
+  <rdf:Description rdf:about="#Reaction_24">
     <CopasiMT:isVersionOf rdf:resource="urn:miriam:obo.go:GO%3A0030163" />
   </rdf:Description>
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_79" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_105" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
-          <Product metabolite="Metabolite_63" stoichiometry="1"/>
+          <Product metabolite="Metabolite_89" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_4268" name="kd3f6" value="1"/>
+          <Constant key="Parameter_4211" name="kd3f6" value="1"/>
         </ListOfConstants>
         <KineticLaw function="Function_86">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_576">
-              <SourceParameter reference="Metabolite_79"/>
+              <SourceParameter reference="Metabolite_105"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_583">
               <SourceParameter reference="Compartment_3"/>
@@ -5152,27 +5152,27 @@
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_64" name="CDC6 degradation in F5P" reversible="false" fast="false">
+      <Reaction key="Reaction_23" name="CDC6 degradation in F5P" reversible="false" fast="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Reaction_64">
+  <rdf:Description rdf:about="#Reaction_23">
     <CopasiMT:isVersionOf rdf:resource="urn:miriam:obo.go:GO%3A0030163" />
   </rdf:Description>
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_83" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_109" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
-          <Product metabolite="Metabolite_67" stoichiometry="1"/>
+          <Product metabolite="Metabolite_93" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_4267" name="kd3f6" value="1"/>
+          <Constant key="Parameter_4212" name="kd3f6" value="1"/>
         </ListOfConstants>
         <KineticLaw function="Function_87">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_579">
-              <SourceParameter reference="Metabolite_83"/>
+              <SourceParameter reference="Metabolite_109"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_586">
               <SourceParameter reference="Compartment_3"/>
@@ -5183,10 +5183,10 @@
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_65" name="CLB2 degradation in F2P" reversible="false" fast="false">
+      <Reaction key="Reaction_22" name="CLB2 degradation in F2P" reversible="false" fast="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Reaction_65">
+  <rdf:Description rdf:about="#Reaction_22">
     <CopasiMT:isVersionOf>
       <rdf:Bag>
         <rdf:li rdf:resource="urn:miriam:obo.go:GO%3A0008054" />
@@ -5197,18 +5197,18 @@
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_79" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_105" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
-          <Product metabolite="Metabolite_53" stoichiometry="1"/>
+          <Product metabolite="Metabolite_79" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_4270" name="Vdb2" value="1"/>
+          <Constant key="Parameter_4213" name="Vdb2" value="1"/>
         </ListOfConstants>
         <KineticLaw function="Function_88">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_582">
-              <SourceParameter reference="Metabolite_79"/>
+              <SourceParameter reference="Metabolite_105"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_587">
               <SourceParameter reference="ModelValue_155"/>
@@ -5219,10 +5219,10 @@
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_66" name="CLB5 degradation in F5P" reversible="false" fast="false">
+      <Reaction key="Reaction_21" name="CLB5 degradation in F5P" reversible="false" fast="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Reaction_66">
+  <rdf:Description rdf:about="#Reaction_21">
     <CopasiMT:isVersionOf>
       <rdf:Bag>
         <rdf:li rdf:resource="urn:miriam:obo.go:GO%3A0008054" />
@@ -5233,18 +5233,18 @@
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_83" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_109" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
-          <Product metabolite="Metabolite_53" stoichiometry="1"/>
+          <Product metabolite="Metabolite_79" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_4271" name="Vdb5" value="1"/>
+          <Constant key="Parameter_4214" name="Vdb5" value="1"/>
         </ListOfConstants>
         <KineticLaw function="Function_89">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_585">
-              <SourceParameter reference="Metabolite_83"/>
+              <SourceParameter reference="Metabolite_109"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_590">
               <SourceParameter reference="ModelValue_154"/>
@@ -5255,28 +5255,28 @@
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_67" name="Synthesis of SWI5" reversible="false" fast="false">
+      <Reaction key="Reaction_20" name="Synthesis of SWI5" reversible="false" fast="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Reaction_67">
+  <rdf:Description rdf:about="#Reaction_20">
     <CopasiMT:isVersionOf rdf:resource="urn:miriam:obo.go:GO%3A0006412" />
   </rdf:Description>
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfProducts>
-          <Product metabolite="Metabolite_125" stoichiometry="1"/>
+          <Product metabolite="Metabolite_151" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfModifiers>
-          <Modifier metabolite="Metabolite_95" stoichiometry="1"/>
+          <Modifier metabolite="Metabolite_121" stoichiometry="1"/>
         </ListOfModifiers>
         <ListOfConstants>
-          <Constant key="Parameter_4272" name="ksswi_p" value="1"/>
-          <Constant key="Parameter_4273" name="ksswi_p_p" value="1"/>
+          <Constant key="Parameter_4215" name="ksswi_p" value="1"/>
+          <Constant key="Parameter_4216" name="ksswi_p_p" value="1"/>
         </ListOfConstants>
         <KineticLaw function="Function_90">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_595">
-              <SourceParameter reference="Metabolite_95"/>
+              <SourceParameter reference="Metabolite_121"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_597">
               <SourceParameter reference="Compartment_3"/>
@@ -5290,24 +5290,24 @@
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_68" name="Degradation of SWI5" reversible="false" fast="false">
+      <Reaction key="Reaction_19" name="Degradation of SWI5" reversible="false" fast="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Reaction_68">
+  <rdf:Description rdf:about="#Reaction_19">
     <CopasiMT:isVersionOf rdf:resource="urn:miriam:obo.go:GO%3A0030163" />
   </rdf:Description>
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_125" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_151" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfConstants>
-          <Constant key="Parameter_4274" name="kdswi" value="1"/>
+          <Constant key="Parameter_4217" name="kdswi" value="1"/>
         </ListOfConstants>
         <KineticLaw function="Function_91">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_594">
-              <SourceParameter reference="Metabolite_125"/>
+              <SourceParameter reference="Metabolite_151"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_599">
               <SourceParameter reference="Compartment_3"/>
@@ -5318,24 +5318,24 @@
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_69" name="Degradation of SWI5P" reversible="false" fast="false">
+      <Reaction key="Reaction_18" name="Degradation of SWI5P" reversible="false" fast="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Reaction_69">
+  <rdf:Description rdf:about="#Reaction_18">
     <CopasiMT:isVersionOf rdf:resource="urn:miriam:obo.go:GO%3A0030163" />
   </rdf:Description>
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_127" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_153" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfConstants>
-          <Constant key="Parameter_4275" name="kdswi" value="1"/>
+          <Constant key="Parameter_4218" name="kdswi" value="1"/>
         </ListOfConstants>
         <KineticLaw function="Function_92">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_596">
-              <SourceParameter reference="Metabolite_127"/>
+              <SourceParameter reference="Metabolite_153"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_602">
               <SourceParameter reference="Compartment_3"/>
@@ -5346,10 +5346,10 @@
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_70" name="Activation of SWI5" reversible="false" fast="false">
+      <Reaction key="Reaction_17" name="Activation of SWI5" reversible="false" fast="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Reaction_70">
+  <rdf:Description rdf:about="#Reaction_17">
     <CopasiMT:isVersionOf>
       <rdf:Bag>
         <rdf:li rdf:resource="urn:miriam:ec-code:3.1.3.48" />
@@ -5362,24 +5362,24 @@
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_127" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_153" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
-          <Product metabolite="Metabolite_125" stoichiometry="1"/>
+          <Product metabolite="Metabolite_151" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfModifiers>
-          <Modifier metabolite="Metabolite_39" stoichiometry="1"/>
+          <Modifier metabolite="Metabolite_21" stoichiometry="1"/>
         </ListOfModifiers>
         <ListOfConstants>
-          <Constant key="Parameter_4276" name="kaswi" value="1"/>
+          <Constant key="Parameter_4219" name="kaswi" value="1"/>
         </ListOfConstants>
         <KineticLaw function="Function_93">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_591">
-              <SourceParameter reference="Metabolite_39"/>
+              <SourceParameter reference="Metabolite_21"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_607">
-              <SourceParameter reference="Metabolite_127"/>
+              <SourceParameter reference="Metabolite_153"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_605">
               <SourceParameter reference="Compartment_3"/>
@@ -5390,10 +5390,10 @@
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_71" name="Inactivation of SWI5" reversible="false" fast="false">
+      <Reaction key="Reaction_16" name="Inactivation of SWI5" reversible="false" fast="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Reaction_71">
+  <rdf:Description rdf:about="#Reaction_16">
     <CopasiMT:isVersionOf>
       <rdf:Bag>
         <rdf:li rdf:resource="urn:miriam:ec-code:2.7.11.22" />
@@ -5406,24 +5406,24 @@
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_125" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_151" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
-          <Product metabolite="Metabolite_127" stoichiometry="1"/>
+          <Product metabolite="Metabolite_153" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfModifiers>
-          <Modifier metabolite="Metabolite_63" stoichiometry="1"/>
+          <Modifier metabolite="Metabolite_89" stoichiometry="1"/>
         </ListOfModifiers>
         <ListOfConstants>
-          <Constant key="Parameter_4277" name="kiswi" value="1"/>
+          <Constant key="Parameter_4222" name="kiswi" value="1"/>
         </ListOfConstants>
         <KineticLaw function="Function_94">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_604">
-              <SourceParameter reference="Metabolite_63"/>
+              <SourceParameter reference="Metabolite_89"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_611">
-              <SourceParameter reference="Metabolite_125"/>
+              <SourceParameter reference="Metabolite_151"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_609">
               <SourceParameter reference="Compartment_3"/>
@@ -5434,10 +5434,10 @@
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_72" name="Activation of IEP" reversible="false" fast="false">
+      <Reaction key="Reaction_15" name="Activation of IEP" reversible="false" fast="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Reaction_72">
+  <rdf:Description rdf:about="#Reaction_15">
     <CopasiMT:isVersionOf>
       <rdf:Bag>
         <rdf:li rdf:resource="urn:miriam:ec-code:2.7.11.22" />
@@ -5449,19 +5449,19 @@
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_85" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_111" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
-          <Product metabolite="Metabolite_87" stoichiometry="1"/>
+          <Product metabolite="Metabolite_113" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_4278" name="Jaiep" value="1"/>
-          <Constant key="Parameter_4279" name="Vaiep" value="1"/>
+          <Constant key="Parameter_4223" name="Jaiep" value="1"/>
+          <Constant key="Parameter_4224" name="Vaiep" value="1"/>
         </ListOfConstants>
         <KineticLaw function="Function_95">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_613">
-              <SourceParameter reference="Metabolite_85"/>
+              <SourceParameter reference="Metabolite_111"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_601">
               <SourceParameter reference="ModelValue_41"/>
@@ -5475,10 +5475,10 @@
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_73" name="Inactivation" reversible="false" fast="false">
+      <Reaction key="Reaction_14" name="Inactivation" reversible="false" fast="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Reaction_73">
+  <rdf:Description rdf:about="#Reaction_14">
     <CopasiMT:isVersionOf>
       <rdf:Bag>
         <rdf:li rdf:resource="urn:miriam:obo.go:GO%3A0001100" />
@@ -5489,19 +5489,19 @@
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_87" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_113" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
-          <Product metabolite="Metabolite_85" stoichiometry="1"/>
+          <Product metabolite="Metabolite_111" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_4280" name="Jiiep" value="1"/>
-          <Constant key="Parameter_4281" name="kiiep" value="1"/>
+          <Constant key="Parameter_4220" name="Jiiep" value="1"/>
+          <Constant key="Parameter_4221" name="kiiep" value="1"/>
         </ListOfConstants>
         <KineticLaw function="Function_96">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_617">
-              <SourceParameter reference="Metabolite_87"/>
+              <SourceParameter reference="Metabolite_113"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_616">
               <SourceParameter reference="ModelValue_48"/>
@@ -5515,28 +5515,28 @@
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_74" name="Synthesis of inactive CDC20" reversible="false" fast="false">
+      <Reaction key="Reaction_13" name="Synthesis of inactive CDC20" reversible="false" fast="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Reaction_74">
+  <rdf:Description rdf:about="#Reaction_13">
     <CopasiMT:isVersionOf rdf:resource="urn:miriam:obo.go:GO%3A0006412" />
   </rdf:Description>
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfProducts>
-          <Product metabolite="Metabolite_49" stoichiometry="1"/>
+          <Product metabolite="Metabolite_1" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfModifiers>
-          <Modifier metabolite="Metabolite_95" stoichiometry="1"/>
+          <Modifier metabolite="Metabolite_121" stoichiometry="1"/>
         </ListOfModifiers>
         <ListOfConstants>
-          <Constant key="Parameter_4282" name="ks20_p" value="1"/>
-          <Constant key="Parameter_4283" name="ks20_p_p" value="1"/>
+          <Constant key="Parameter_4225" name="ks20_p" value="1"/>
+          <Constant key="Parameter_4226" name="ks20_p_p" value="1"/>
         </ListOfConstants>
         <KineticLaw function="Function_97">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_621">
-              <SourceParameter reference="Metabolite_95"/>
+              <SourceParameter reference="Metabolite_121"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_623">
               <SourceParameter reference="Compartment_3"/>
@@ -5550,24 +5550,24 @@
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_75" name="Degradation of inactiveCDC20" reversible="false" fast="false">
+      <Reaction key="Reaction_12" name="Degradation of inactiveCDC20" reversible="false" fast="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Reaction_75">
+  <rdf:Description rdf:about="#Reaction_12">
     <CopasiMT:isVersionOf rdf:resource="urn:miriam:obo.go:GO%3A0030163" />
   </rdf:Description>
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_49" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_1" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfConstants>
-          <Constant key="Parameter_4284" name="kd20" value="1"/>
+          <Constant key="Parameter_4227" name="kd20" value="1"/>
         </ListOfConstants>
         <KineticLaw function="Function_98">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_614">
-              <SourceParameter reference="Metabolite_49"/>
+              <SourceParameter reference="Metabolite_1"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_625">
               <SourceParameter reference="Compartment_3"/>
@@ -5578,24 +5578,24 @@
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_76" name="Degradation of active CDC20" reversible="false" fast="false">
+      <Reaction key="Reaction_11" name="Degradation of active CDC20" reversible="false" fast="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Reaction_76">
+  <rdf:Description rdf:about="#Reaction_11">
     <CopasiMT:isVersionOf rdf:resource="urn:miriam:obo.go:GO%3A0030163" />
   </rdf:Description>
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_47" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_5" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfConstants>
-          <Constant key="Parameter_4285" name="kd20" value="1"/>
+          <Constant key="Parameter_4228" name="kd20" value="1"/>
         </ListOfConstants>
         <KineticLaw function="Function_99">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_622">
-              <SourceParameter reference="Metabolite_47"/>
+              <SourceParameter reference="Metabolite_5"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_628">
               <SourceParameter reference="Compartment_3"/>
@@ -5606,34 +5606,34 @@
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_77" name="Activation of CDC20" reversible="false" fast="false">
+      <Reaction key="Reaction_10" name="Activation of CDC20" reversible="false" fast="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Reaction_77">
+  <rdf:Description rdf:about="#Reaction_10">
     <CopasiMT:isVersionOf rdf:resource="urn:miriam:obo.go:GO%3A0031536" />
   </rdf:Description>
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_49" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_1" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
-          <Product metabolite="Metabolite_47" stoichiometry="1"/>
+          <Product metabolite="Metabolite_5" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfModifiers>
-          <Modifier metabolite="Metabolite_87" stoichiometry="1"/>
+          <Modifier metabolite="Metabolite_113" stoichiometry="1"/>
         </ListOfModifiers>
         <ListOfConstants>
-          <Constant key="Parameter_4286" name="ka20_p" value="1"/>
-          <Constant key="Parameter_4287" name="ka20_p_p" value="1"/>
+          <Constant key="Parameter_4229" name="ka20_p" value="1"/>
+          <Constant key="Parameter_4230" name="ka20_p_p" value="1"/>
         </ListOfConstants>
         <KineticLaw function="Function_100">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_635">
-              <SourceParameter reference="Metabolite_49"/>
+              <SourceParameter reference="Metabolite_1"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_631">
-              <SourceParameter reference="Metabolite_87"/>
+              <SourceParameter reference="Metabolite_113"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_633">
               <SourceParameter reference="Compartment_3"/>
@@ -5647,56 +5647,56 @@
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_78" name="Inactivation_2" reversible="false" fast="false">
+      <Reaction key="Reaction_9" name="Inactivation_2" reversible="false" fast="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Reaction_78">
+  <rdf:Description rdf:about="#Reaction_9">
     <CopasiMT:isVersionOf rdf:resource="urn:miriam:obo.go:GO%3A0001100" />
   </rdf:Description>
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_47" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_5" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
-          <Product metabolite="Metabolite_49" stoichiometry="1"/>
+          <Product metabolite="Metabolite_1" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfModifiers>
-          <Modifier metabolite="Metabolite_91" stoichiometry="1"/>
+          <Modifier metabolite="Metabolite_117" stoichiometry="1"/>
         </ListOfModifiers>
         <ListOfConstants>
-          <Constant key="Parameter_4288" name="k" value="1"/>
+          <Constant key="Parameter_4231" name="k" value="1"/>
         </ListOfConstants>
         <KineticLaw function="Function_101">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_638">
-              <SourceParameter reference="Metabolite_47"/>
+              <SourceParameter reference="Metabolite_5"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_632">
-              <SourceParameter reference="Metabolite_91"/>
+              <SourceParameter reference="Metabolite_117"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_627">
               <SourceParameter reference="Compartment_3"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_636">
-              <SourceParameter reference="Parameter_4288"/>
+              <SourceParameter reference="Parameter_4231"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_79" name="CDH1 synthesis" reversible="false" fast="false">
+      <Reaction key="Reaction_8" name="CDH1 synthesis" reversible="false" fast="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Reaction_79">
+  <rdf:Description rdf:about="#Reaction_8">
     <CopasiMT:isVersionOf rdf:resource="urn:miriam:obo.go:GO%3A0006412" />
   </rdf:Description>
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfProducts>
-          <Product metabolite="Metabolite_57" stoichiometry="1"/>
+          <Product metabolite="Metabolite_83" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_4289" name="kscdh" value="1"/>
+          <Constant key="Parameter_4232" name="kscdh" value="1"/>
         </ListOfConstants>
         <KineticLaw function="Function_102">
           <ListOfCallParameters>
@@ -5709,24 +5709,24 @@
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_80" name="CDH1 degradation" reversible="false" fast="false">
+      <Reaction key="Reaction_7" name="CDH1 degradation" reversible="false" fast="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Reaction_80">
+  <rdf:Description rdf:about="#Reaction_7">
     <CopasiMT:isVersionOf rdf:resource="urn:miriam:obo.go:GO%3A0030163" />
   </rdf:Description>
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_57" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_83" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfConstants>
-          <Constant key="Parameter_4290" name="kdcdh" value="1"/>
+          <Constant key="Parameter_4233" name="kdcdh" value="1"/>
         </ListOfConstants>
         <KineticLaw function="Function_103">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_640">
-              <SourceParameter reference="Metabolite_57"/>
+              <SourceParameter reference="Metabolite_83"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_642">
               <SourceParameter reference="Compartment_3"/>
@@ -5737,24 +5737,24 @@
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_81" name="CDH1i degradation" reversible="false" fast="false">
+      <Reaction key="Reaction_6" name="CDH1i degradation" reversible="false" fast="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Reaction_81">
+  <rdf:Description rdf:about="#Reaction_6">
     <CopasiMT:isVersionOf rdf:resource="urn:miriam:obo.go:GO%3A0030163" />
   </rdf:Description>
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_59" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_85" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfConstants>
-          <Constant key="Parameter_4291" name="kdcdh" value="1"/>
+          <Constant key="Parameter_4234" name="kdcdh" value="1"/>
         </ListOfConstants>
         <KineticLaw function="Function_104">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_637">
-              <SourceParameter reference="Metabolite_59"/>
+              <SourceParameter reference="Metabolite_85"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_645">
               <SourceParameter reference="Compartment_3"/>
@@ -5765,10 +5765,10 @@
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_82" name="CDH1i activation" reversible="false" fast="false">
+      <Reaction key="Reaction_5" name="CDH1i activation" reversible="false" fast="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Reaction_82">
+  <rdf:Description rdf:about="#Reaction_5">
     <CopasiMT:isVersionOf>
       <rdf:Bag>
         <rdf:li rdf:resource="urn:miriam:ec-code:3.1.3.48" />
@@ -5781,19 +5781,19 @@
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_59" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_85" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
-          <Product metabolite="Metabolite_57" stoichiometry="1"/>
+          <Product metabolite="Metabolite_83" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_4292" name="Jacdh" value="1"/>
-          <Constant key="Parameter_4293" name="Vacdh" value="1"/>
+          <Constant key="Parameter_4235" name="Jacdh" value="1"/>
+          <Constant key="Parameter_4236" name="Vacdh" value="1"/>
         </ListOfConstants>
         <KineticLaw function="Function_105">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_648">
-              <SourceParameter reference="Metabolite_59"/>
+              <SourceParameter reference="Metabolite_85"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_641">
               <SourceParameter reference="ModelValue_40"/>
@@ -5807,10 +5807,10 @@
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_83" name="Inactivation_3" reversible="false" fast="false">
+      <Reaction key="Reaction_4" name="Inactivation_3" reversible="false" fast="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Reaction_83">
+  <rdf:Description rdf:about="#Reaction_4">
     <CopasiMT:isVersionOf>
       <rdf:Bag>
         <rdf:li rdf:resource="urn:miriam:ec-code:2.7.11.22" />
@@ -5823,19 +5823,19 @@
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_57" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_83" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
-          <Product metabolite="Metabolite_59" stoichiometry="1"/>
+          <Product metabolite="Metabolite_85" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_4294" name="Jicdh" value="1"/>
-          <Constant key="Parameter_4295" name="Vicdh" value="1"/>
+          <Constant key="Parameter_4237" name="Jicdh" value="1"/>
+          <Constant key="Parameter_4241" name="Vicdh" value="1"/>
         </ListOfConstants>
         <KineticLaw function="Function_106">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_652">
-              <SourceParameter reference="Metabolite_57"/>
+              <SourceParameter reference="Metabolite_83"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_647">
               <SourceParameter reference="ModelValue_47"/>
@@ -5849,19 +5849,19 @@
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_84" name="CDC14 synthesis" reversible="false" fast="false">
+      <Reaction key="Reaction_3" name="CDC14 synthesis" reversible="false" fast="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Reaction_84">
+  <rdf:Description rdf:about="#Reaction_3">
     <CopasiMT:isVersionOf rdf:resource="urn:miriam:obo.go:GO%3A0006412" />
   </rdf:Description>
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfProducts>
-          <Product metabolite="Metabolite_39" stoichiometry="1"/>
+          <Product metabolite="Metabolite_21" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_4296" name="ks14" value="1"/>
+          <Constant key="Parameter_4242" name="ks14" value="1"/>
         </ListOfConstants>
         <KineticLaw function="Function_107">
           <ListOfCallParameters>
@@ -5874,24 +5874,24 @@
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_85" name="CDC14 degradation" reversible="false" fast="false">
+      <Reaction key="Reaction_2" name="CDC14 degradation" reversible="false" fast="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Reaction_85">
+  <rdf:Description rdf:about="#Reaction_2">
     <CopasiMT:isVersionOf rdf:resource="urn:miriam:obo.go:GO%3A0030163" />
   </rdf:Description>
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_39" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_21" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfConstants>
-          <Constant key="Parameter_4297" name="kd14" value="1"/>
+          <Constant key="Parameter_4240" name="kd14" value="1"/>
         </ListOfConstants>
         <KineticLaw function="Function_108">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_656">
-              <SourceParameter reference="Metabolite_39"/>
+              <SourceParameter reference="Metabolite_21"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_658">
               <SourceParameter reference="Compartment_3"/>
@@ -5902,10 +5902,10 @@
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_86" name="Assoc. with NET1 to form RENT" reversible="false" fast="false">
+      <Reaction key="Reaction_1" name="Assoc. with NET1 to form RENT" reversible="false" fast="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Reaction_86">
+  <rdf:Description rdf:about="#Reaction_1">
     <CopasiMT:isVersionOf>
       <rdf:Bag>
         <rdf:li rdf:resource="urn:miriam:obo.go:GO%3A0005515" />
@@ -5917,22 +5917,22 @@
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_39" stoichiometry="1"/>
-          <Substrate metabolite="Metabolite_97" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_21" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_123" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
-          <Product metabolite="Metabolite_111" stoichiometry="1"/>
+          <Product metabolite="Metabolite_137" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_4298" name="kasrent" value="1"/>
+          <Constant key="Parameter_4246" name="kasrent" value="1"/>
         </ListOfConstants>
         <KineticLaw function="Function_109">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_653">
-              <SourceParameter reference="Metabolite_39"/>
+              <SourceParameter reference="Metabolite_21"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_663">
-              <SourceParameter reference="Metabolite_97"/>
+              <SourceParameter reference="Metabolite_123"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_661">
               <SourceParameter reference="Compartment_3"/>
@@ -5943,28 +5943,28 @@
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_87" name="Dissoc. from RENT" reversible="false" fast="false">
+      <Reaction key="Reaction_0" name="Dissoc. from RENT" reversible="false" fast="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Reaction_87">
+  <rdf:Description rdf:about="#Reaction_0">
     <CopasiMT:isVersionOf rdf:resource="urn:miriam:obo.go:GO%3A0043624" />
   </rdf:Description>
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_111" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_137" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
-          <Product metabolite="Metabolite_97" stoichiometry="1"/>
-          <Product metabolite="Metabolite_39" stoichiometry="1"/>
+          <Product metabolite="Metabolite_123" stoichiometry="1"/>
+          <Product metabolite="Metabolite_21" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_4299" name="kdirent" value="1"/>
+          <Constant key="Parameter_4245" name="kdirent" value="1"/>
         </ListOfConstants>
         <KineticLaw function="Function_110">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_660">
-              <SourceParameter reference="Metabolite_111"/>
+              <SourceParameter reference="Metabolite_137"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_665">
               <SourceParameter reference="Compartment_3"/>
@@ -5990,22 +5990,22 @@
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_39" stoichiometry="1"/>
-          <Substrate metabolite="Metabolite_99" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_21" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_125" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
-          <Product metabolite="Metabolite_113" stoichiometry="1"/>
+          <Product metabolite="Metabolite_139" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_4300" name="kasrentp" value="1"/>
+          <Constant key="Parameter_4244" name="kasrentp" value="1"/>
         </ListOfConstants>
         <KineticLaw function="Function_111">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_662">
-              <SourceParameter reference="Metabolite_39"/>
+              <SourceParameter reference="Metabolite_21"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_670">
-              <SourceParameter reference="Metabolite_99"/>
+              <SourceParameter reference="Metabolite_125"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_668">
               <SourceParameter reference="Compartment_3"/>
@@ -6025,19 +6025,19 @@
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_113" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_139" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
-          <Product metabolite="Metabolite_39" stoichiometry="1"/>
-          <Product metabolite="Metabolite_99" stoichiometry="1"/>
+          <Product metabolite="Metabolite_21" stoichiometry="1"/>
+          <Product metabolite="Metabolite_125" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_4200" name="kdirentp" value="1"/>
+          <Constant key="Parameter_4239" name="kdirentp" value="1"/>
         </ListOfConstants>
         <KineticLaw function="Function_112">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_667">
-              <SourceParameter reference="Metabolite_113"/>
+              <SourceParameter reference="Metabolite_139"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_672">
               <SourceParameter reference="Compartment_3"/>
@@ -6057,10 +6057,10 @@
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfProducts>
-          <Product metabolite="Metabolite_97" stoichiometry="1"/>
+          <Product metabolite="Metabolite_123" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_4201" name="ksnet" value="1"/>
+          <Constant key="Parameter_4238" name="ksnet" value="1"/>
         </ListOfConstants>
         <KineticLaw function="Function_113">
           <ListOfCallParameters>
@@ -6082,15 +6082,15 @@
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_97" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_123" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfConstants>
-          <Constant key="Parameter_4202" name="kdnet" value="1"/>
+          <Constant key="Parameter_4243" name="kdnet" value="1"/>
         </ListOfConstants>
         <KineticLaw function="Function_114">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_675">
-              <SourceParameter reference="Metabolite_97"/>
+              <SourceParameter reference="Metabolite_123"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_677">
               <SourceParameter reference="Compartment_3"/>
@@ -6110,15 +6110,15 @@
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_99" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_125" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfConstants>
-          <Constant key="Parameter_4203" name="kdnet" value="1"/>
+          <Constant key="Parameter_4247" name="kdnet" value="1"/>
         </ListOfConstants>
         <KineticLaw function="Function_115">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_657">
-              <SourceParameter reference="Metabolite_99"/>
+              <SourceParameter reference="Metabolite_125"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_680">
               <SourceParameter reference="Compartment_3"/>
@@ -6145,18 +6145,18 @@
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_97" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_123" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
-          <Product metabolite="Metabolite_99" stoichiometry="1"/>
+          <Product metabolite="Metabolite_125" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_4204" name="Vkpnet" value="1"/>
+          <Constant key="Parameter_4389" name="Vkpnet" value="1"/>
         </ListOfConstants>
         <KineticLaw function="Function_116">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_676">
-              <SourceParameter reference="Metabolite_97"/>
+              <SourceParameter reference="Metabolite_123"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_681">
               <SourceParameter reference="ModelValue_163"/>
@@ -6182,18 +6182,18 @@
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_99" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_125" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
-          <Product metabolite="Metabolite_97" stoichiometry="1"/>
+          <Product metabolite="Metabolite_123" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_4205" name="Vppnet" value="1"/>
+          <Constant key="Parameter_4391" name="Vppnet" value="1"/>
         </ListOfConstants>
         <KineticLaw function="Function_117">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_679">
-              <SourceParameter reference="Metabolite_99"/>
+              <SourceParameter reference="Metabolite_125"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_684">
               <SourceParameter reference="ModelValue_162"/>
@@ -6220,18 +6220,18 @@
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_111" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_137" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
-          <Product metabolite="Metabolite_113" stoichiometry="1"/>
+          <Product metabolite="Metabolite_139" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_4206" name="Vkpnet" value="1"/>
+          <Constant key="Parameter_4392" name="Vkpnet" value="1"/>
         </ListOfConstants>
         <KineticLaw function="Function_118">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_682">
-              <SourceParameter reference="Metabolite_111"/>
+              <SourceParameter reference="Metabolite_137"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_687">
               <SourceParameter reference="ModelValue_163"/>
@@ -6257,18 +6257,18 @@
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_113" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_139" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
-          <Product metabolite="Metabolite_111" stoichiometry="1"/>
+          <Product metabolite="Metabolite_137" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_4207" name="Vppnet" value="1"/>
+          <Constant key="Parameter_4390" name="Vppnet" value="1"/>
         </ListOfConstants>
         <KineticLaw function="Function_119">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_685">
-              <SourceParameter reference="Metabolite_113"/>
+              <SourceParameter reference="Metabolite_139"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_690">
               <SourceParameter reference="ModelValue_162"/>
@@ -6288,18 +6288,18 @@
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_111" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_137" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
-          <Product metabolite="Metabolite_39" stoichiometry="1"/>
+          <Product metabolite="Metabolite_21" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_4208" name="kdnet" value="1"/>
+          <Constant key="Parameter_4393" name="kdnet" value="1"/>
         </ListOfConstants>
         <KineticLaw function="Function_120">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_688">
-              <SourceParameter reference="Metabolite_111"/>
+              <SourceParameter reference="Metabolite_137"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_695">
               <SourceParameter reference="Compartment_3"/>
@@ -6319,18 +6319,18 @@
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_113" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_139" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
-          <Product metabolite="Metabolite_39" stoichiometry="1"/>
+          <Product metabolite="Metabolite_21" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_4209" name="kdnet" value="1"/>
+          <Constant key="Parameter_4507" name="kdnet" value="1"/>
         </ListOfConstants>
         <KineticLaw function="Function_121">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_691">
-              <SourceParameter reference="Metabolite_113"/>
+              <SourceParameter reference="Metabolite_139"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_698">
               <SourceParameter reference="Compartment_3"/>
@@ -6350,18 +6350,18 @@
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_111" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_137" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
-          <Product metabolite="Metabolite_97" stoichiometry="1"/>
+          <Product metabolite="Metabolite_123" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_4210" name="kd14" value="1"/>
+          <Constant key="Parameter_4508" name="kd14" value="1"/>
         </ListOfConstants>
         <KineticLaw function="Function_122">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_694">
-              <SourceParameter reference="Metabolite_111"/>
+              <SourceParameter reference="Metabolite_137"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_701">
               <SourceParameter reference="Compartment_3"/>
@@ -6381,18 +6381,18 @@
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_113" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_139" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
-          <Product metabolite="Metabolite_99" stoichiometry="1"/>
+          <Product metabolite="Metabolite_125" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_4301" name="kd14" value="1"/>
+          <Constant key="Parameter_4278" name="kd14" value="1"/>
         </ListOfConstants>
         <KineticLaw function="Function_123">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_697">
-              <SourceParameter reference="Metabolite_113"/>
+              <SourceParameter reference="Metabolite_139"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_704">
               <SourceParameter reference="Compartment_3"/>
@@ -6418,16 +6418,16 @@
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_129" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_155" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
-          <Product metabolite="Metabolite_131" stoichiometry="1"/>
+          <Product metabolite="Metabolite_157" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfModifiers>
-          <Modifier metabolite="Metabolite_89" stoichiometry="1"/>
+          <Modifier metabolite="Metabolite_115" stoichiometry="1"/>
         </ListOfModifiers>
         <ListOfConstants>
-          <Constant key="Parameter_4302" name="Jatem" value="1"/>
+          <Constant key="Parameter_4277" name="Jatem" value="1"/>
         </ListOfConstants>
         <KineticLaw function="Function_124">
           <ListOfCallParameters>
@@ -6435,10 +6435,10 @@
               <SourceParameter reference="ModelValue_44"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_705">
-              <SourceParameter reference="Metabolite_89"/>
+              <SourceParameter reference="Metabolite_115"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_709">
-              <SourceParameter reference="Metabolite_129"/>
+              <SourceParameter reference="Metabolite_155"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_700">
               <SourceParameter reference="Compartment_3"/>
@@ -6461,27 +6461,27 @@
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_131" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_157" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
-          <Product metabolite="Metabolite_129" stoichiometry="1"/>
+          <Product metabolite="Metabolite_155" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfModifiers>
-          <Modifier metabolite="Metabolite_27" stoichiometry="1"/>
+          <Modifier metabolite="Metabolite_45" stoichiometry="1"/>
         </ListOfModifiers>
         <ListOfConstants>
-          <Constant key="Parameter_3980" name="Jitem" value="1"/>
+          <Constant key="Parameter_4382" name="Jitem" value="1"/>
         </ListOfConstants>
         <KineticLaw function="Function_125">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_710">
-              <SourceParameter reference="Metabolite_27"/>
+              <SourceParameter reference="Metabolite_45"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_711">
               <SourceParameter reference="ModelValue_51"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_713">
-              <SourceParameter reference="Metabolite_131"/>
+              <SourceParameter reference="Metabolite_157"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_706">
               <SourceParameter reference="Compartment_3"/>
@@ -6506,34 +6506,34 @@
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_45" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_9" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
-          <Product metabolite="Metabolite_43" stoichiometry="1"/>
+          <Product metabolite="Metabolite_13" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfModifiers>
-          <Modifier metabolite="Metabolite_129" stoichiometry="1"/>
-          <Modifier metabolite="Metabolite_131" stoichiometry="1"/>
-          <Modifier metabolite="Metabolite_39" stoichiometry="1"/>
+          <Modifier metabolite="Metabolite_155" stoichiometry="1"/>
+          <Modifier metabolite="Metabolite_157" stoichiometry="1"/>
+          <Modifier metabolite="Metabolite_21" stoichiometry="1"/>
         </ListOfModifiers>
         <ListOfConstants>
-          <Constant key="Parameter_3981" name="ka15_p" value="1"/>
-          <Constant key="Parameter_3982" name="ka15_p_p" value="1"/>
-          <Constant key="Parameter_3983" name="ka15p" value="1"/>
+          <Constant key="Parameter_4381" name="ka15_p" value="1"/>
+          <Constant key="Parameter_4289" name="ka15_p_p" value="1"/>
+          <Constant key="Parameter_4288" name="ka15p" value="1"/>
         </ListOfConstants>
         <KineticLaw function="Function_126">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_723">
-              <SourceParameter reference="Metabolite_39"/>
+              <SourceParameter reference="Metabolite_21"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_725">
-              <SourceParameter reference="Metabolite_45"/>
+              <SourceParameter reference="Metabolite_9"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_703">
-              <SourceParameter reference="Metabolite_129"/>
+              <SourceParameter reference="Metabolite_155"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_719">
-              <SourceParameter reference="Metabolite_131"/>
+              <SourceParameter reference="Metabolite_157"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_715">
               <SourceParameter reference="Compartment_3"/>
@@ -6570,18 +6570,18 @@
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_43" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_13" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
-          <Product metabolite="Metabolite_45" stoichiometry="1"/>
+          <Product metabolite="Metabolite_9" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_3984" name="ki15" value="1"/>
+          <Constant key="Parameter_4287" name="ki15" value="1"/>
         </ListOfConstants>
         <KineticLaw function="Function_127">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_722">
-              <SourceParameter reference="Metabolite_43"/>
+              <SourceParameter reference="Metabolite_13"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_718">
               <SourceParameter reference="Compartment_3"/>
@@ -6606,10 +6606,10 @@
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfProducts>
-          <Product metabolite="Metabolite_109" stoichiometry="1"/>
+          <Product metabolite="Metabolite_135" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_3985" name="ksppx" value="1"/>
+          <Constant key="Parameter_4286" name="ksppx" value="1"/>
         </ListOfConstants>
         <KineticLaw function="Function_128">
           <ListOfCallParameters>
@@ -6631,15 +6631,15 @@
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_109" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_135" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfConstants>
-          <Constant key="Parameter_3986" name="Vdppx" value="1"/>
+          <Constant key="Parameter_4285" name="Vdppx" value="1"/>
         </ListOfConstants>
         <KineticLaw function="Function_129">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_712">
-              <SourceParameter reference="Metabolite_109"/>
+              <SourceParameter reference="Metabolite_135"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_708">
               <SourceParameter reference="ModelValue_164"/>
@@ -6659,24 +6659,24 @@
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfProducts>
-          <Product metabolite="Metabolite_105" stoichiometry="1"/>
+          <Product metabolite="Metabolite_131" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfModifiers>
-          <Modifier metabolite="Metabolite_115" stoichiometry="1"/>
-          <Modifier metabolite="Metabolite_95" stoichiometry="1"/>
+          <Modifier metabolite="Metabolite_141" stoichiometry="1"/>
+          <Modifier metabolite="Metabolite_121" stoichiometry="1"/>
         </ListOfModifiers>
         <ListOfConstants>
-          <Constant key="Parameter_3987" name="ks1pds_p_p" value="1"/>
-          <Constant key="Parameter_3988" name="ks2pds_p_p" value="1"/>
-          <Constant key="Parameter_3989" name="kspds_p" value="1"/>
+          <Constant key="Parameter_4284" name="ks1pds_p_p" value="1"/>
+          <Constant key="Parameter_4283" name="ks2pds_p_p" value="1"/>
+          <Constant key="Parameter_4282" name="kspds_p" value="1"/>
         </ListOfConstants>
         <KineticLaw function="Function_130">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_737">
-              <SourceParameter reference="Metabolite_95"/>
+              <SourceParameter reference="Metabolite_121"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_731">
-              <SourceParameter reference="Metabolite_115"/>
+              <SourceParameter reference="Metabolite_141"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_733">
               <SourceParameter reference="Compartment_3"/>
@@ -6707,15 +6707,15 @@
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_105" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_131" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfConstants>
-          <Constant key="Parameter_3990" name="Vdpds" value="1"/>
+          <Constant key="Parameter_4281" name="Vdpds" value="1"/>
         </ListOfConstants>
         <KineticLaw function="Function_131">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_734">
-              <SourceParameter reference="Metabolite_105"/>
+              <SourceParameter reference="Metabolite_131"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_738">
               <SourceParameter reference="ModelValue_165"/>
@@ -6740,18 +6740,18 @@
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_107" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_133" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
-          <Product metabolite="Metabolite_75" stoichiometry="1"/>
+          <Product metabolite="Metabolite_101" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_3991" name="Vdpds" value="1"/>
+          <Constant key="Parameter_4280" name="Vdpds" value="1"/>
         </ListOfConstants>
         <KineticLaw function="Function_132">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_736">
-              <SourceParameter reference="Metabolite_107"/>
+              <SourceParameter reference="Metabolite_133"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_727">
               <SourceParameter reference="ModelValue_165"/>
@@ -6777,22 +6777,22 @@
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_105" stoichiometry="1"/>
-          <Substrate metabolite="Metabolite_75" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_131" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_101" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
-          <Product metabolite="Metabolite_107" stoichiometry="1"/>
+          <Product metabolite="Metabolite_133" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_3992" name="kasesp" value="1"/>
+          <Constant key="Parameter_4279" name="kasesp" value="1"/>
         </ListOfConstants>
         <KineticLaw function="Function_133">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_745">
-              <SourceParameter reference="Metabolite_75"/>
+              <SourceParameter reference="Metabolite_101"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_732">
-              <SourceParameter reference="Metabolite_105"/>
+              <SourceParameter reference="Metabolite_131"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_743">
               <SourceParameter reference="Compartment_3"/>
@@ -6817,19 +6817,19 @@
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_107" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_133" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
-          <Product metabolite="Metabolite_105" stoichiometry="1"/>
-          <Product metabolite="Metabolite_75" stoichiometry="1"/>
+          <Product metabolite="Metabolite_131" stoichiometry="1"/>
+          <Product metabolite="Metabolite_101" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_3993" name="kdiesp" value="1"/>
+          <Constant key="Parameter_4380" name="kdiesp" value="1"/>
         </ListOfConstants>
         <KineticLaw function="Function_134">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_742">
-              <SourceParameter reference="Metabolite_107"/>
+              <SourceParameter reference="Metabolite_133"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_747">
               <SourceParameter reference="Compartment_3"/>
@@ -6854,24 +6854,24 @@
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfProducts>
-          <Product metabolite="Metabolite_103" stoichiometry="1"/>
+          <Product metabolite="Metabolite_129" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfModifiers>
-          <Modifier metabolite="Metabolite_67" stoichiometry="1"/>
-          <Modifier metabolite="Metabolite_63" stoichiometry="1"/>
+          <Modifier metabolite="Metabolite_93" stoichiometry="1"/>
+          <Modifier metabolite="Metabolite_89" stoichiometry="1"/>
         </ListOfModifiers>
         <ListOfConstants>
-          <Constant key="Parameter_3994" name="eorib2" value="1"/>
-          <Constant key="Parameter_3995" name="eorib5" value="1"/>
-          <Constant key="Parameter_3996" name="ksori" value="1"/>
+          <Constant key="Parameter_4379" name="eorib2" value="1"/>
+          <Constant key="Parameter_4378" name="eorib5" value="1"/>
+          <Constant key="Parameter_4377" name="ksori" value="1"/>
         </ListOfConstants>
         <KineticLaw function="Function_135">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_756">
-              <SourceParameter reference="Metabolite_63"/>
+              <SourceParameter reference="Metabolite_89"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_750">
-              <SourceParameter reference="Metabolite_67"/>
+              <SourceParameter reference="Metabolite_93"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_752">
               <SourceParameter reference="Compartment_3"/>
@@ -6897,15 +6897,15 @@
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_103" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_129" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfConstants>
-          <Constant key="Parameter_3997" name="kdori" value="1"/>
+          <Constant key="Parameter_4376" name="kdori" value="1"/>
         </ListOfConstants>
         <KineticLaw function="Function_136">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_753">
-              <SourceParameter reference="Metabolite_103"/>
+              <SourceParameter reference="Metabolite_129"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_749">
               <SourceParameter reference="Compartment_3"/>
@@ -6925,29 +6925,29 @@
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfProducts>
-          <Product metabolite="Metabolite_29" stoichiometry="1"/>
+          <Product metabolite="Metabolite_41" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfModifiers>
-          <Modifier metabolite="Metabolite_71" stoichiometry="1"/>
-          <Modifier metabolite="Metabolite_73" stoichiometry="1"/>
-          <Modifier metabolite="Metabolite_67" stoichiometry="1"/>
+          <Modifier metabolite="Metabolite_97" stoichiometry="1"/>
+          <Modifier metabolite="Metabolite_99" stoichiometry="1"/>
+          <Modifier metabolite="Metabolite_93" stoichiometry="1"/>
         </ListOfModifiers>
         <ListOfConstants>
-          <Constant key="Parameter_3998" name="ebudb5" value="1"/>
-          <Constant key="Parameter_3999" name="ebudn2" value="1"/>
-          <Constant key="Parameter_4000" name="ebudn3" value="1"/>
-          <Constant key="Parameter_4001" name="ksbud" value="1"/>
+          <Constant key="Parameter_4375" name="ebudb5" value="1"/>
+          <Constant key="Parameter_4374" name="ebudn2" value="1"/>
+          <Constant key="Parameter_4373" name="ebudn3" value="1"/>
+          <Constant key="Parameter_4372" name="ksbud" value="1"/>
         </ListOfConstants>
         <KineticLaw function="Function_137">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_769">
-              <SourceParameter reference="Metabolite_67"/>
+              <SourceParameter reference="Metabolite_93"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_759">
-              <SourceParameter reference="Metabolite_71"/>
+              <SourceParameter reference="Metabolite_97"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_765">
-              <SourceParameter reference="Metabolite_73"/>
+              <SourceParameter reference="Metabolite_99"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_761">
               <SourceParameter reference="Compartment_3"/>
@@ -6976,15 +6976,15 @@
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_29" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_41" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfConstants>
-          <Constant key="Parameter_4002" name="kdbud" value="1"/>
+          <Constant key="Parameter_4371" name="kdbud" value="1"/>
         </ListOfConstants>
         <KineticLaw function="Function_138">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_766">
-              <SourceParameter reference="Metabolite_29"/>
+              <SourceParameter reference="Metabolite_41"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_762">
               <SourceParameter reference="Compartment_3"/>
@@ -7004,19 +7004,19 @@
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfProducts>
-          <Product metabolite="Metabolite_123" stoichiometry="1"/>
+          <Product metabolite="Metabolite_149" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfModifiers>
-          <Modifier metabolite="Metabolite_63" stoichiometry="1"/>
+          <Modifier metabolite="Metabolite_89" stoichiometry="1"/>
         </ListOfModifiers>
         <ListOfConstants>
-          <Constant key="Parameter_4003" name="Jspn" value="1"/>
-          <Constant key="Parameter_4004" name="ksspn" value="1"/>
+          <Constant key="Parameter_4370" name="Jspn" value="1"/>
+          <Constant key="Parameter_4369" name="ksspn" value="1"/>
         </ListOfConstants>
         <KineticLaw function="Function_139">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_768">
-              <SourceParameter reference="Metabolite_63"/>
+              <SourceParameter reference="Metabolite_89"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_751">
               <SourceParameter reference="ModelValue_54"/>
@@ -7039,15 +7039,15 @@
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_123" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_149" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfConstants>
-          <Constant key="Parameter_4005" name="kdspn" value="1"/>
+          <Constant key="Parameter_4368" name="kdspn" value="1"/>
         </ListOfConstants>
         <KineticLaw function="Function_140">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_758">
-              <SourceParameter reference="Metabolite_123"/>
+              <SourceParameter reference="Metabolite_149"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_774">
               <SourceParameter reference="Compartment_3"/>
@@ -7060,29 +7060,29 @@
       </Reaction>
     </ListOfReactions>
     <ListOfEvents>
-      <Event key="Event_1" name="reset ORI" fireAtInitialTime="0" persistentTrigger="0">
+      <Event key="Event_2" name="reset ORI" fireAtInitialTime="0" persistentTrigger="0">
         <TriggerExpression>
           &lt;CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Compartments[cell],Vector=Metabolites[CLB2],Reference=ParticleNumber&gt;/&lt;CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Values[amount to particle factor],Reference=Value&gt;+&lt;CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Compartments[cell],Vector=Metabolites[CLB5],Reference=ParticleNumber&gt;/&lt;CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Values[amount to particle factor],Reference=Value&gt;-&lt;CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Values[KEZ2],Reference=Value&gt; lt 0
         </TriggerExpression>
         <ListOfAssignments>
-          <Assignment targetKey="Metabolite_103">
+          <Assignment targetKey="Metabolite_129">
             <Expression>
               0/&lt;CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Compartments[cell],Reference=Volume&gt;
             </Expression>
           </Assignment>
         </ListOfAssignments>
       </Event>
-      <Event key="Event_2" name="start DNA synthesis" fireAtInitialTime="0" persistentTrigger="0">
+      <Event key="Event_0" name="start DNA synthesis" fireAtInitialTime="0" persistentTrigger="0">
         <TriggerExpression>
           &lt;CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Compartments[cell],Vector=Metabolites[ORI],Reference=ParticleNumber&gt;/&lt;CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Values[amount to particle factor],Reference=Value&gt;-1 gt 0
         </TriggerExpression>
         <ListOfAssignments>
-          <Assignment targetKey="Metabolite_91">
+          <Assignment targetKey="Metabolite_117">
             <Expression>
               &lt;CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Values[mad2h],Reference=Value&gt;/&lt;CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Compartments[cell],Reference=Volume&gt;
             </Expression>
           </Assignment>
-          <Assignment targetKey="Metabolite_27">
+          <Assignment targetKey="Metabolite_45">
             <Expression>
               &lt;CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Values[bub2h],Reference=Value&gt;/&lt;CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Compartments[cell],Reference=Volume&gt;
             </Expression>
@@ -7094,17 +7094,17 @@
           &lt;CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Compartments[cell],Vector=Metabolites[SPN],Reference=ParticleNumber&gt;/&lt;CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Values[amount to particle factor],Reference=Value&gt;-1 gt 0
         </TriggerExpression>
         <ListOfAssignments>
-          <Assignment targetKey="Metabolite_91">
+          <Assignment targetKey="Metabolite_117">
             <Expression>
               &lt;CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Values[mad2l],Reference=Value&gt;/&lt;CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Compartments[cell],Reference=Volume&gt;
             </Expression>
           </Assignment>
-          <Assignment targetKey="Metabolite_89">
+          <Assignment targetKey="Metabolite_115">
             <Expression>
               &lt;CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Values[lte1h],Reference=Value&gt;/&lt;CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Compartments[cell],Reference=Volume&gt;
             </Expression>
           </Assignment>
-          <Assignment targetKey="Metabolite_27">
+          <Assignment targetKey="Metabolite_45">
             <Expression>
               &lt;CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Values[bub2l],Reference=Value&gt;/&lt;CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Compartments[cell],Reference=Volume&gt;
             </Expression>
@@ -7127,22 +7127,22 @@
           &lt;CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Compartments[cell],Vector=Metabolites[CLB2],Reference=ParticleNumber&gt;/&lt;CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Values[amount to particle factor],Reference=Value&gt;-&lt;CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Values[KEZ],Reference=Value&gt; lt 0
         </TriggerExpression>
         <ListOfAssignments>
-          <Assignment targetKey="Metabolite_93">
+          <Assignment targetKey="Metabolite_119">
             <Expression>
               (1-&lt;CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Values[F],Reference=Value&gt;)*(&lt;CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Compartments[cell],Vector=Metabolites[MASS],Reference=ParticleNumber&gt;/&lt;CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Values[amount to particle factor],Reference=Value&gt;)/&lt;CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Compartments[cell],Reference=Volume&gt;
             </Expression>
           </Assignment>
-          <Assignment targetKey="Metabolite_89">
+          <Assignment targetKey="Metabolite_115">
             <Expression>
               &lt;CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Values[lte1l],Reference=Value&gt;/&lt;CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Compartments[cell],Reference=Volume&gt;
             </Expression>
           </Assignment>
-          <Assignment targetKey="Metabolite_29">
+          <Assignment targetKey="Metabolite_41">
             <Expression>
               0/&lt;CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Compartments[cell],Reference=Volume&gt;
             </Expression>
           </Assignment>
-          <Assignment targetKey="Metabolite_123">
+          <Assignment targetKey="Metabolite_149">
             <Expression>
               0/&lt;CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Compartments[cell],Reference=Volume&gt;
             </Expression>
@@ -7174,61 +7174,61 @@
           <ModelParameter cn="CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Compartments[cell]" value="1" type="Compartment" simulationType="fixed"/>
         </ModelParameterGroup>
         <ModelParameterGroup cn="String=Initial Species Values" type="Group">
-          <ModelParameter cn="CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Compartments[cell],Vector=Metabolites[BCK2]" value="2.769599495608814e+22" type="Species" simulationType="assignment"/>
+          <ModelParameter cn="CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Compartments[cell],Vector=Metabolites[BCK2]" value="2.769598672382914e+22" type="Species" simulationType="assignment"/>
           <ModelParameter cn="CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Compartments[cell],Vector=Metabolites[BUB2]" value="1.204428300000005e+23" type="Species" simulationType="reactions"/>
           <ModelParameter cn="CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Compartments[cell],Vector=Metabolites[BUD]" value="9.000829013319018e+21" type="Species" simulationType="reactions"/>
-          <ModelParameter cn="CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Compartments[cell],Vector=Metabolites[C2]" value="1.415750029349605e+23" type="Species" simulationType="reactions"/>
+          <ModelParameter cn="CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Compartments[cell],Vector=Metabolites[C2]" value="1.415750029349604e+23" type="Species" simulationType="reactions"/>
           <ModelParameter cn="CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Compartments[cell],Vector=Metabolites[C2P]" value="5.428453477226389e+21" type="Species" simulationType="reactions"/>
           <ModelParameter cn="CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Compartments[cell],Vector=Metabolites[C5]" value="6.3287734055348e+22" type="Species" simulationType="reactions"/>
           <ModelParameter cn="CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Compartments[cell],Vector=Metabolites[C5P]" value="2.307420732690804e+21" type="Species" simulationType="reactions"/>
           <ModelParameter cn="CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Compartments[cell],Vector=Metabolites[CDC14]" value="1.80535936470497e+23" type="Species" simulationType="reactions"/>
-          <ModelParameter cn="CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Compartments[cell],Vector=Metabolites[CDC14T]" value="1.20442835800001e+24" type="Species" simulationType="assignment"/>
-          <ModelParameter cn="CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Compartments[cell],Vector=Metabolites[CDC15]" value="3.817302580975657e+23" type="Species" simulationType="reactions"/>
-          <ModelParameter cn="CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Compartments[cell],Vector=Metabolites[CDC15i]" value="2.204839025199744e+23" type="Species" simulationType="assignment"/>
+          <ModelParameter cn="CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Compartments[cell],Vector=Metabolites[CDC14T]" value="1.20442800000001e+24" type="Species" simulationType="assignment"/>
+          <ModelParameter cn="CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Compartments[cell],Vector=Metabolites[CDC15]" value="3.817302580975654e+23" type="Species" simulationType="reactions"/>
+          <ModelParameter cn="CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Compartments[cell],Vector=Metabolites[CDC15i]" value="2.204838369841239e+23" type="Species" simulationType="assignment"/>
           <ModelParameter cn="CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Compartments[cell],Vector=Metabolites[CDC20]" value="2.29204033134851e+23" type="Species" simulationType="reactions"/>
           <ModelParameter cn="CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Compartments[cell],Vector=Metabolites[CDC20i]" value="6.649934635684339e+23" type="Species" simulationType="reactions"/>
           <ModelParameter cn="CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Compartments[cell],Vector=Metabolites[CDC6]" value="1.747366772326145e+23" type="Species" simulationType="reactions"/>
           <ModelParameter cn="CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Compartments[cell],Vector=Metabolites[CDC6P]" value="6.987702526155101e+21" type="Species" simulationType="reactions"/>
-          <ModelParameter cn="CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Compartments[cell],Vector=Metabolites[CDC6T]" value="2.925133259548562e+23" type="Species" simulationType="assignment"/>
+          <ModelParameter cn="CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Compartments[cell],Vector=Metabolites[CDC6T]" value="2.925132390092359e+23" type="Species" simulationType="assignment"/>
           <ModelParameter cn="CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Compartments[cell],Vector=Metabolites[CDH1]" value="6.004823451606606e+23" type="Species" simulationType="reactions"/>
-          <ModelParameter cn="CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Compartments[cell],Vector=Metabolites[CDH1i]" value="1.731804839342614e+21" type="Species" simulationType="reactions"/>
-          <ModelParameter cn="CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Compartments[cell],Vector=Metabolites[CKIT]" value="5.698011095421221e+23" type="Species" simulationType="assignment"/>
+          <ModelParameter cn="CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Compartments[cell],Vector=Metabolites[CDH1i]" value="1.731804839342613e+21" type="Species" simulationType="reactions"/>
+          <ModelParameter cn="CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Compartments[cell],Vector=Metabolites[CKIT]" value="5.698007708108632e+23" type="Species" simulationType="assignment"/>
           <ModelParameter cn="CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Compartments[cell],Vector=Metabolites[CLB2]" value="9.253339255958898e+21" type="Species" simulationType="reactions"/>
-          <ModelParameter cn="CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Compartments[cell],Vector=Metabolites[CLB2T]" value="2.669833167945896e+23" type="Species" simulationType="assignment"/>
+          <ModelParameter cn="CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Compartments[cell],Vector=Metabolites[CLB2T]" value="2.669832374374183e+23" type="Species" simulationType="assignment"/>
           <ModelParameter cn="CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Compartments[cell],Vector=Metabolites[CLB5]" value="3.888445993186847e+21" type="Species" simulationType="reactions"/>
-          <ModelParameter cn="CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Compartments[cell],Vector=Metabolites[CLB5T]" value="6.954602797048728e+22" type="Species" simulationType="assignment"/>
+          <ModelParameter cn="CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Compartments[cell],Vector=Metabolites[CLB5T]" value="6.954600729887336e+22" type="Species" simulationType="assignment"/>
           <ModelParameter cn="CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Compartments[cell],Vector=Metabolites[CLN2]" value="2.879579509269514e+22" type="Species" simulationType="reactions"/>
-          <ModelParameter cn="CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Compartments[cell],Vector=Metabolites[CLN3]" value="2.994240326851319e+22" type="Species" simulationType="assignment"/>
+          <ModelParameter cn="CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Compartments[cell],Vector=Metabolites[CLN3]" value="2.994239436853977e+22" type="Species" simulationType="assignment"/>
           <ModelParameter cn="CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Compartments[cell],Vector=Metabolites[ESP1]" value="2.159777877052535e+23" type="Species" simulationType="reactions"/>
           <ModelParameter cn="CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Compartments[cell],Vector=Metabolites[F2]" value="1.056512290096014e+23" type="Species" simulationType="reactions"/>
           <ModelParameter cn="CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Compartments[cell],Vector=Metabolites[F2P]" value="5.07527926009403e+21" type="Species" simulationType="reactions"/>
           <ModelParameter cn="CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Compartments[cell],Vector=Metabolites[F5]" value="6.000645303884879e+19" type="Species" simulationType="reactions"/>
           <ModelParameter cn="CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Compartments[cell],Vector=Metabolites[F5P]" value="2.417387190365045e+18" type="Species" simulationType="reactions"/>
-          <ModelParameter cn="CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Compartments[cell],Vector=Metabolites[IE]" value="5.802512306655105e+23" type="Species" simulationType="assignment"/>
+          <ModelParameter cn="CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Compartments[cell],Vector=Metabolites[IE]" value="5.802510581936991e+23" type="Species" simulationType="assignment"/>
           <ModelParameter cn="CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Compartments[cell],Vector=Metabolites[IEP]" value="2.196294727685002e+22" type="Species" simulationType="reactions"/>
           <ModelParameter cn="CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Compartments[cell],Vector=Metabolites[LTE1]" value="6.022141500000027e+22" type="Species" simulationType="reactions"/>
           <ModelParameter cn="CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Compartments[cell],Vector=Metabolites[MAD2]" value="6.022141499999998e+21" type="Species" simulationType="reactions"/>
           <ModelParameter cn="CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Compartments[cell],Vector=Metabolites[MASS]" value="5.128887707846334e+23" type="Species" simulationType="reactions"/>
-          <ModelParameter cn="CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Compartments[cell],Vector=Metabolites[MCM1]" value="6.177544327875697e+21" type="Species" simulationType="assignment"/>
+          <ModelParameter cn="CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Compartments[cell],Vector=Metabolites[MCM1]" value="6.177542491684398e+21" type="Species" simulationType="assignment"/>
           <ModelParameter cn="CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Compartments[cell],Vector=Metabolites[NET1]" value="2.019185755329673e+22" type="Species" simulationType="reactions"/>
           <ModelParameter cn="CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Compartments[cell],Vector=Metabolites[NET1P]" value="6.421153989171979e+23" type="Species" simulationType="reactions"/>
-          <ModelParameter cn="CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Compartments[cell],Vector=Metabolites[NET1T]" value="1.686199701200007e+24" type="Species" simulationType="assignment"/>
+          <ModelParameter cn="CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Compartments[cell],Vector=Metabolites[NET1T]" value="1.686199200000007e+24" type="Species" simulationType="assignment"/>
           <ModelParameter cn="CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Compartments[cell],Vector=Metabolites[ORI]" value="5.793351133464459e+22" type="Species" simulationType="reactions"/>
-          <ModelParameter cn="CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Compartments[cell],Vector=Metabolites[PDS1]" value="1.093220582617616e+22" type="Species" simulationType="reactions"/>
-          <ModelParameter cn="CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Compartments[cell],Vector=Metabolites[PE]" value="3.862363808942007e+23" type="Species" simulationType="assignment"/>
+          <ModelParameter cn="CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Compartments[cell],Vector=Metabolites[PDS1]" value="1.093220582617615e+22" type="Species" simulationType="reactions"/>
+          <ModelParameter cn="CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Compartments[cell],Vector=Metabolites[PE]" value="3.86236266090673e+23" type="Species" simulationType="assignment"/>
           <ModelParameter cn="CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Compartments[cell],Vector=Metabolites[PPX]" value="7.235672544851775e+22" type="Species" simulationType="reactions"/>
           <ModelParameter cn="CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Compartments[cell],Vector=Metabolites[RENT]" value="8.274840214739905e+23" type="Species" simulationType="reactions"/>
           <ModelParameter cn="CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Compartments[cell],Vector=Metabolites[RENTP]" value="1.964083420555222e+23" type="Species" simulationType="reactions"/>
-          <ModelParameter cn="CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Compartments[cell],Vector=Metabolites[SBF]" value="7.496745791131755e+21" type="Species" simulationType="assignment"/>
+          <ModelParameter cn="CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Compartments[cell],Vector=Metabolites[SBF]" value="7.496739071384451e+21" type="Species" simulationType="assignment"/>
           <ModelParameter cn="CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Compartments[cell],Vector=Metabolites[SIC1]" value="6.153793596801723e+22" type="Species" simulationType="reactions"/>
           <ModelParameter cn="CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Compartments[cell],Vector=Metabolites[SIC1P]" value="3.151195626929545e+21" type="Species" simulationType="reactions"/>
-          <ModelParameter cn="CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Compartments[cell],Vector=Metabolites[SIC1T]" value="2.772877561481376e+23" type="Species" simulationType="assignment"/>
+          <ModelParameter cn="CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Compartments[cell],Vector=Metabolites[SIC1T]" value="2.772876737281114e+23" type="Species" simulationType="assignment"/>
           <ModelParameter cn="CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Compartments[cell],Vector=Metabolites[SPN]" value="3.305249612645038e+22" type="Species" simulationType="reactions"/>
           <ModelParameter cn="CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Compartments[cell],Vector=Metabolites[SWI5]" value="5.446744061809811e+23" type="Species" simulationType="reactions"/>
           <ModelParameter cn="CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Compartments[cell],Vector=Metabolites[SWI5P]" value="7.393161906544548e+21" type="Species" simulationType="reactions"/>
-          <ModelParameter cn="CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Compartments[cell],Vector=Metabolites[TEM1GDP]" value="1.263726581862738e+23" type="Species" simulationType="assignment"/>
+          <ModelParameter cn="CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Compartments[cell],Vector=Metabolites[TEM1GDP]" value="1.263726206237145e+23" type="Species" simulationType="assignment"/>
           <ModelParameter cn="CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Compartments[cell],Vector=Metabolites[TEM1GTP]" value="4.758414978992805e+23" type="Species" simulationType="reactions"/>
-          <ModelParameter cn="CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Compartments[cell],Vector=Metabolites[GLU]" value="1.204428358e+21" type="Species" simulationType="fixed"/>
+          <ModelParameter cn="CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Compartments[cell],Vector=Metabolites[GLU]" value="1.204428357999999e+21" type="Species" simulationType="fixed"/>
         </ModelParameterGroup>
         <ModelParameterGroup cn="String=Initial Global Quantities" type="Group">
           <ModelParameter cn="CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Values[b0]" value="0.054" type="ModelValue" simulationType="fixed"/>
@@ -7372,28 +7372,28 @@
           <ModelParameter cn="CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Values[lte1l]" value="0.1" type="ModelValue" simulationType="fixed"/>
           <ModelParameter cn="CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Values[mad2h]" value="8" type="ModelValue" simulationType="fixed"/>
           <ModelParameter cn="CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Values[mad2l]" value="0.01" type="ModelValue" simulationType="fixed"/>
-          <ModelParameter cn="CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Values[mdt]" value="104.9622873419346" type="ModelValue" simulationType="assignment"/>
+          <ModelParameter cn="CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Values[mdt]" value="104.9622855759751" type="ModelValue" simulationType="assignment"/>
           <ModelParameter cn="CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Values[TEM1T]" value="1" type="ModelValue" simulationType="fixed"/>
-          <ModelParameter cn="CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Values[D]" value="123.3657142857143" type="ModelValue" simulationType="assignment"/>
-          <ModelParameter cn="CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Values[mu]" value="0.006603773584905661" type="ModelValue" simulationType="assignment"/>
+          <ModelParameter cn="CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Values[D]" value="123.3657116717321" type="ModelValue" simulationType="assignment"/>
+          <ModelParameter cn="CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Values[mu]" value="0.0066037736960122" type="ModelValue" simulationType="assignment"/>
           <ModelParameter cn="CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Values[Vdb5]" value="0.07089635273693944" type="ModelValue" simulationType="assignment"/>
           <ModelParameter cn="CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Values[Vdb2]" value="0.4589400389952509" type="ModelValue" simulationType="assignment"/>
-          <ModelParameter cn="CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Values[Vasbf]" value="0.4049488649158367" type="ModelValue" simulationType="assignment"/>
+          <ModelParameter cn="CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Values[Vasbf]" value="0.4049487568106332" type="ModelValue" simulationType="assignment"/>
           <ModelParameter cn="CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Values[Visbf]" value="0.7229242355857484" type="ModelValue" simulationType="assignment"/>
-          <ModelParameter cn="CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Values[Vkpc1]" value="0.06235613837299574" type="ModelValue" simulationType="assignment"/>
-          <ModelParameter cn="CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Values[Vkpf6]" value="0.06275344891616547" type="ModelValue" simulationType="assignment"/>
+          <ModelParameter cn="CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Values[Vkpc1]" value="0.0623561288838139" type="ModelValue" simulationType="assignment"/>
+          <ModelParameter cn="CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Values[Vkpf6]" value="0.06275343987480581" type="ModelValue" simulationType="assignment"/>
           <ModelParameter cn="CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Values[Vacdh]" value="0.2498295509602317" type="ModelValue" simulationType="assignment"/>
-          <ModelParameter cn="CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Values[Vicdh]" value="0.009132056532627379" type="ModelValue" simulationType="assignment"/>
+          <ModelParameter cn="CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Values[Vicdh]" value="0.009132056237052346" type="ModelValue" simulationType="assignment"/>
           <ModelParameter cn="CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Values[Vppnet]" value="0.410453463847625" type="ModelValue" simulationType="assignment"/>
-          <ModelParameter cn="CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Values[Vkpnet]" value="0.3324302671175435" type="ModelValue" simulationType="assignment"/>
-          <ModelParameter cn="CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Values[Vdppx]" value="0.8999351532761245" type="ModelValue" simulationType="assignment"/>
+          <ModelParameter cn="CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Values[Vkpnet]" value="0.3324302671175433" type="ModelValue" simulationType="assignment"/>
+          <ModelParameter cn="CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Values[Vdppx]" value="0.8999351532761247" type="ModelValue" simulationType="assignment"/>
           <ModelParameter cn="CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Values[Vdpds]" value="0.1260054117516113" type="ModelValue" simulationType="assignment"/>
           <ModelParameter cn="CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Values[Vaiep]" value="0.001536552944821854" type="ModelValue" simulationType="assignment"/>
-          <ModelParameter cn="CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Values[Vd2c1]" value="0.02672503759551066" type="ModelValue" simulationType="assignment"/>
-          <ModelParameter cn="CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Values[Vd2f6]" value="0.02826159054033252" type="ModelValue" simulationType="assignment"/>
+          <ModelParameter cn="CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Values[Vd2c1]" value="0.02672503275178556" type="ModelValue" simulationType="assignment"/>
+          <ModelParameter cn="CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Values[Vd2f6]" value="0.02826158569660742" type="ModelValue" simulationType="assignment"/>
           <ModelParameter cn="CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Values[Vppc1]" value="1.199147754801158" type="ModelValue" simulationType="assignment"/>
           <ModelParameter cn="CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Values[Vppf6]" value="1.199147754801158" type="ModelValue" simulationType="assignment"/>
-          <ModelParameter cn="CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Values[F]" value="0.4427813287861195" type="ModelValue" simulationType="assignment"/>
+          <ModelParameter cn="CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Values[F]" value="0.4427813303603884" type="ModelValue" simulationType="assignment"/>
           <ModelParameter cn="CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Values[amount to particle factor]" value="6.0221415e+23" type="ModelValue" simulationType="fixed"/>
           <ModelParameter cn="CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Values[1stDivisionTime]" value="-1" type="ModelValue" simulationType="fixed"/>
           <ModelParameter cn="CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Values[mu2]" value="0.007" type="ModelValue" simulationType="fixed"/>
@@ -7486,7 +7486,7 @@
             </ModelParameter>
           </ModelParameterGroup>
           <ModelParameterGroup cn="CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Reactions[Phosphorylation of SIC1]" type="Reaction">
-            <ModelParameter cn="CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Reactions[Phosphorylation of SIC1],ParameterGroup=Parameters,Parameter=Vkpc1" value="0.06235613837299574" type="ReactionParameter" simulationType="assignment">
+            <ModelParameter cn="CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Reactions[Phosphorylation of SIC1],ParameterGroup=Parameters,Parameter=Vkpc1" value="0.0623561288838139" type="ReactionParameter" simulationType="assignment">
               <InitialExpression>
                 &lt;CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Values[Vkpc1],Reference=InitialValue&gt;
               </InitialExpression>
@@ -7535,7 +7535,7 @@
             </ModelParameter>
           </ModelParameterGroup>
           <ModelParameterGroup cn="CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Reactions[Phosphorylation of C2]" type="Reaction">
-            <ModelParameter cn="CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Reactions[Phosphorylation of C2],ParameterGroup=Parameters,Parameter=Vkpc1" value="0.06235613837299574" type="ReactionParameter" simulationType="assignment">
+            <ModelParameter cn="CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Reactions[Phosphorylation of C2],ParameterGroup=Parameters,Parameter=Vkpc1" value="0.0623561288838139" type="ReactionParameter" simulationType="assignment">
               <InitialExpression>
                 &lt;CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Values[Vkpc1],Reference=InitialValue&gt;
               </InitialExpression>
@@ -7549,7 +7549,7 @@
             </ModelParameter>
           </ModelParameterGroup>
           <ModelParameterGroup cn="CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Reactions[Phosphorylation of C5]" type="Reaction">
-            <ModelParameter cn="CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Reactions[Phosphorylation of C5],ParameterGroup=Parameters,Parameter=Vkpc1" value="0.06235613837299574" type="ReactionParameter" simulationType="assignment">
+            <ModelParameter cn="CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Reactions[Phosphorylation of C5],ParameterGroup=Parameters,Parameter=Vkpc1" value="0.0623561288838139" type="ReactionParameter" simulationType="assignment">
               <InitialExpression>
                 &lt;CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Values[Vkpc1],Reference=InitialValue&gt;
               </InitialExpression>
@@ -7622,7 +7622,7 @@
             </ModelParameter>
           </ModelParameterGroup>
           <ModelParameterGroup cn="CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Reactions[Phosphorylation of CDC6]" type="Reaction">
-            <ModelParameter cn="CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Reactions[Phosphorylation of CDC6],ParameterGroup=Parameters,Parameter=Vkpf6" value="0.06275344891616547" type="ReactionParameter" simulationType="assignment">
+            <ModelParameter cn="CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Reactions[Phosphorylation of CDC6],ParameterGroup=Parameters,Parameter=Vkpf6" value="0.06275343987480581" type="ReactionParameter" simulationType="assignment">
               <InitialExpression>
                 &lt;CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Values[Vkpf6],Reference=InitialValue&gt;
               </InitialExpression>
@@ -7671,7 +7671,7 @@
             </ModelParameter>
           </ModelParameterGroup>
           <ModelParameterGroup cn="CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Reactions[F2 phosphorylation]" type="Reaction">
-            <ModelParameter cn="CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Reactions[F2 phosphorylation],ParameterGroup=Parameters,Parameter=Vkpf6" value="0.06275344891616547" type="ReactionParameter" simulationType="assignment">
+            <ModelParameter cn="CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Reactions[F2 phosphorylation],ParameterGroup=Parameters,Parameter=Vkpf6" value="0.06275343987480581" type="ReactionParameter" simulationType="assignment">
               <InitialExpression>
                 &lt;CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Values[Vkpf6],Reference=InitialValue&gt;
               </InitialExpression>
@@ -7685,7 +7685,7 @@
             </ModelParameter>
           </ModelParameterGroup>
           <ModelParameterGroup cn="CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Reactions[F5 phosphorylation]" type="Reaction">
-            <ModelParameter cn="CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Reactions[F5 phosphorylation],ParameterGroup=Parameters,Parameter=Vkpf6" value="0.06275344891616547" type="ReactionParameter" simulationType="assignment">
+            <ModelParameter cn="CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Reactions[F5 phosphorylation],ParameterGroup=Parameters,Parameter=Vkpf6" value="0.06275343987480581" type="ReactionParameter" simulationType="assignment">
               <InitialExpression>
                 &lt;CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Values[Vkpf6],Reference=InitialValue&gt;
               </InitialExpression>
@@ -7884,7 +7884,7 @@
                 &lt;CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Values[Jicdh],Reference=InitialValue&gt;
               </InitialExpression>
             </ModelParameter>
-            <ModelParameter cn="CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Reactions[Inactivation_3],ParameterGroup=Parameters,Parameter=Vicdh" value="0.009132056532627379" type="ReactionParameter" simulationType="assignment">
+            <ModelParameter cn="CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Reactions[Inactivation_3],ParameterGroup=Parameters,Parameter=Vicdh" value="0.009132056237052346" type="ReactionParameter" simulationType="assignment">
               <InitialExpression>
                 &lt;CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Values[Vicdh],Reference=InitialValue&gt;
               </InitialExpression>
@@ -7954,7 +7954,7 @@
             </ModelParameter>
           </ModelParameterGroup>
           <ModelParameterGroup cn="CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Reactions[NET1 phosphorylation]" type="Reaction">
-            <ModelParameter cn="CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Reactions[NET1 phosphorylation],ParameterGroup=Parameters,Parameter=Vkpnet" value="0.3324302671175435" type="ReactionParameter" simulationType="assignment">
+            <ModelParameter cn="CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Reactions[NET1 phosphorylation],ParameterGroup=Parameters,Parameter=Vkpnet" value="0.3324302671175433" type="ReactionParameter" simulationType="assignment">
               <InitialExpression>
                 &lt;CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Values[Vkpnet],Reference=InitialValue&gt;
               </InitialExpression>
@@ -7968,7 +7968,7 @@
             </ModelParameter>
           </ModelParameterGroup>
           <ModelParameterGroup cn="CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Reactions[RENT phosphorylation]" type="Reaction">
-            <ModelParameter cn="CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Reactions[RENT phosphorylation],ParameterGroup=Parameters,Parameter=Vkpnet" value="0.3324302671175435" type="ReactionParameter" simulationType="assignment">
+            <ModelParameter cn="CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Reactions[RENT phosphorylation],ParameterGroup=Parameters,Parameter=Vkpnet" value="0.3324302671175433" type="ReactionParameter" simulationType="assignment">
               <InitialExpression>
                 &lt;CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Values[Vkpnet],Reference=InitialValue&gt;
               </InitialExpression>
@@ -8055,7 +8055,7 @@
             </ModelParameter>
           </ModelParameterGroup>
           <ModelParameterGroup cn="CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Reactions[degradation]" type="Reaction">
-            <ModelParameter cn="CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Reactions[degradation],ParameterGroup=Parameters,Parameter=Vdppx" value="0.8999351532761245" type="ReactionParameter" simulationType="assignment">
+            <ModelParameter cn="CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Reactions[degradation],ParameterGroup=Parameters,Parameter=Vdppx" value="0.8999351532761247" type="ReactionParameter" simulationType="assignment">
               <InitialExpression>
                 &lt;CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Values[Vdppx],Reference=InitialValue&gt;
               </InitialExpression>
@@ -8182,52 +8182,52 @@
       </ModelParameterSet>
     </ListOfModelParameterSets>
     <StateTemplate>
-      <StateTemplateVariable objectReference="Model_5"/>
+      <StateTemplateVariable objectReference="Model_7"/>
       <StateTemplateVariable objectReference="ModelValue_178"/>
-      <StateTemplateVariable objectReference="Metabolite_51"/>
-      <StateTemplateVariable objectReference="Metabolite_117"/>
-      <StateTemplateVariable objectReference="Metabolite_39"/>
-      <StateTemplateVariable objectReference="Metabolite_63"/>
-      <StateTemplateVariable objectReference="Metabolite_67"/>
-      <StateTemplateVariable objectReference="Metabolite_97"/>
-      <StateTemplateVariable objectReference="Metabolite_113"/>
-      <StateTemplateVariable objectReference="Metabolite_53"/>
-      <StateTemplateVariable objectReference="Metabolite_119"/>
-      <StateTemplateVariable objectReference="Metabolite_57"/>
-      <StateTemplateVariable objectReference="Metabolite_105"/>
-      <StateTemplateVariable objectReference="Metabolite_49"/>
-      <StateTemplateVariable objectReference="Metabolite_125"/>
-      <StateTemplateVariable objectReference="Metabolite_99"/>
-      <StateTemplateVariable objectReference="Metabolite_79"/>
-      <StateTemplateVariable objectReference="Metabolite_37"/>
-      <StateTemplateVariable objectReference="Metabolite_83"/>
-      <StateTemplateVariable objectReference="Metabolite_33"/>
-      <StateTemplateVariable objectReference="Metabolite_81"/>
-      <StateTemplateVariable objectReference="Metabolite_31"/>
-      <StateTemplateVariable objectReference="Metabolite_87"/>
-      <StateTemplateVariable objectReference="Metabolite_103"/>
-      <StateTemplateVariable objectReference="Metabolite_109"/>
-      <StateTemplateVariable objectReference="Metabolite_43"/>
-      <StateTemplateVariable objectReference="Metabolite_71"/>
-      <StateTemplateVariable objectReference="Metabolite_29"/>
-      <StateTemplateVariable objectReference="Metabolite_123"/>
-      <StateTemplateVariable objectReference="Metabolite_131"/>
-      <StateTemplateVariable objectReference="Metabolite_75"/>
-      <StateTemplateVariable objectReference="Metabolite_47"/>
-      <StateTemplateVariable objectReference="Metabolite_59"/>
-      <StateTemplateVariable objectReference="Metabolite_127"/>
-      <StateTemplateVariable objectReference="Metabolite_111"/>
       <StateTemplateVariable objectReference="Metabolite_77"/>
-      <StateTemplateVariable objectReference="Metabolite_35"/>
+      <StateTemplateVariable objectReference="Metabolite_143"/>
+      <StateTemplateVariable objectReference="Metabolite_21"/>
+      <StateTemplateVariable objectReference="Metabolite_89"/>
       <StateTemplateVariable objectReference="Metabolite_93"/>
+      <StateTemplateVariable objectReference="Metabolite_123"/>
+      <StateTemplateVariable objectReference="Metabolite_139"/>
+      <StateTemplateVariable objectReference="Metabolite_79"/>
+      <StateTemplateVariable objectReference="Metabolite_145"/>
+      <StateTemplateVariable objectReference="Metabolite_83"/>
+      <StateTemplateVariable objectReference="Metabolite_131"/>
+      <StateTemplateVariable objectReference="Metabolite_1"/>
+      <StateTemplateVariable objectReference="Metabolite_151"/>
+      <StateTemplateVariable objectReference="Metabolite_125"/>
+      <StateTemplateVariable objectReference="Metabolite_105"/>
       <StateTemplateVariable objectReference="Metabolite_25"/>
-      <StateTemplateVariable objectReference="Metabolite_45"/>
-      <StateTemplateVariable objectReference="Metabolite_73"/>
-      <StateTemplateVariable objectReference="Metabolite_85"/>
-      <StateTemplateVariable objectReference="Metabolite_95"/>
+      <StateTemplateVariable objectReference="Metabolite_109"/>
+      <StateTemplateVariable objectReference="Metabolite_33"/>
       <StateTemplateVariable objectReference="Metabolite_107"/>
-      <StateTemplateVariable objectReference="Metabolite_115"/>
+      <StateTemplateVariable objectReference="Metabolite_37"/>
+      <StateTemplateVariable objectReference="Metabolite_113"/>
       <StateTemplateVariable objectReference="Metabolite_129"/>
+      <StateTemplateVariable objectReference="Metabolite_135"/>
+      <StateTemplateVariable objectReference="Metabolite_13"/>
+      <StateTemplateVariable objectReference="Metabolite_97"/>
+      <StateTemplateVariable objectReference="Metabolite_41"/>
+      <StateTemplateVariable objectReference="Metabolite_149"/>
+      <StateTemplateVariable objectReference="Metabolite_157"/>
+      <StateTemplateVariable objectReference="Metabolite_101"/>
+      <StateTemplateVariable objectReference="Metabolite_5"/>
+      <StateTemplateVariable objectReference="Metabolite_85"/>
+      <StateTemplateVariable objectReference="Metabolite_153"/>
+      <StateTemplateVariable objectReference="Metabolite_137"/>
+      <StateTemplateVariable objectReference="Metabolite_103"/>
+      <StateTemplateVariable objectReference="Metabolite_29"/>
+      <StateTemplateVariable objectReference="Metabolite_119"/>
+      <StateTemplateVariable objectReference="Metabolite_49"/>
+      <StateTemplateVariable objectReference="Metabolite_9"/>
+      <StateTemplateVariable objectReference="Metabolite_99"/>
+      <StateTemplateVariable objectReference="Metabolite_111"/>
+      <StateTemplateVariable objectReference="Metabolite_121"/>
+      <StateTemplateVariable objectReference="Metabolite_133"/>
+      <StateTemplateVariable objectReference="Metabolite_141"/>
+      <StateTemplateVariable objectReference="Metabolite_155"/>
       <StateTemplateVariable objectReference="ModelValue_154"/>
       <StateTemplateVariable objectReference="ModelValue_155"/>
       <StateTemplateVariable objectReference="ModelValue_156"/>
@@ -8245,24 +8245,24 @@
       <StateTemplateVariable objectReference="ModelValue_168"/>
       <StateTemplateVariable objectReference="ModelValue_169"/>
       <StateTemplateVariable objectReference="ModelValue_170"/>
-      <StateTemplateVariable objectReference="Metabolite_41"/>
-      <StateTemplateVariable objectReference="Metabolite_55"/>
-      <StateTemplateVariable objectReference="Metabolite_61"/>
-      <StateTemplateVariable objectReference="Metabolite_65"/>
-      <StateTemplateVariable objectReference="Metabolite_69"/>
-      <StateTemplateVariable objectReference="Metabolite_101"/>
-      <StateTemplateVariable objectReference="Metabolite_121"/>
+      <StateTemplateVariable objectReference="Metabolite_17"/>
+      <StateTemplateVariable objectReference="Metabolite_81"/>
+      <StateTemplateVariable objectReference="Metabolite_87"/>
+      <StateTemplateVariable objectReference="Metabolite_91"/>
+      <StateTemplateVariable objectReference="Metabolite_95"/>
+      <StateTemplateVariable objectReference="Metabolite_127"/>
+      <StateTemplateVariable objectReference="Metabolite_147"/>
       <StateTemplateVariable objectReference="ModelValue_150"/>
       <StateTemplateVariable objectReference="ModelValue_152"/>
       <StateTemplateVariable objectReference="ModelValue_153"/>
       <StateTemplateVariable objectReference="ModelValue_171"/>
-      <StateTemplateVariable objectReference="Metabolite_133"/>
-      <StateTemplateVariable objectReference="Metabolite_27"/>
-      <StateTemplateVariable objectReference="Metabolite_89"/>
-      <StateTemplateVariable objectReference="Metabolite_91"/>
+      <StateTemplateVariable objectReference="Metabolite_159"/>
+      <StateTemplateVariable objectReference="Metabolite_45"/>
+      <StateTemplateVariable objectReference="Metabolite_115"/>
+      <StateTemplateVariable objectReference="Metabolite_117"/>
       <StateTemplateVariable objectReference="Compartment_3"/>
-      <StateTemplateVariable objectReference="ModelValue_9"/>
-      <StateTemplateVariable objectReference="ModelValue_10"/>
+      <StateTemplateVariable objectReference="ModelValue_6"/>
+      <StateTemplateVariable objectReference="ModelValue_5"/>
       <StateTemplateVariable objectReference="ModelValue_11"/>
       <StateTemplateVariable objectReference="ModelValue_12"/>
       <StateTemplateVariable objectReference="ModelValue_13"/>
@@ -8412,12 +8412,12 @@
       <StateTemplateVariable objectReference="ModelValue_179"/>
     </StateTemplate>
     <InitialState type="initialState">
-      0 0 1.747366772326145e+23 6.153793596801723e+22 1.80535936470497e+23 9.253339255958898e+21 3.888445993186847e+21 2.019185755329673e+22 1.964083420555222e+23 6.987702526155101e+21 3.151195626929545e+21 6.004823451606606e+23 1.093220582617616e+22 6.649934635684339e+23 5.446744061809811e+23 6.421153989171979e+23 5.07527926009403e+21 2.307420732690804e+21 2.417387190365045e+18 5.428453477226389e+21 6.000645303884879e+19 1.415750029349605e+23 2.196294727685002e+22 5.793351133464459e+22 7.235672544851775e+22 3.817302580975657e+23 2.879579509269514e+22 9.000829013319018e+21 3.305249612645038e+22 4.758414978992805e+23 2.159777877052535e+23 2.29204033134851e+23 1.731804839342614e+21 7.393161906544548e+21 8.274840214739905e+23 1.056512290096014e+23 6.3287734055348e+22 5.128887707846334e+23 2.769599495608814e+22 2.204839025199744e+23 2.994240326851319e+22 5.802512306655105e+23 6.177544327875697e+21 3.862363808942007e+23 7.496745791131755e+21 1.263726581862738e+23 0.07089635273693944 0.4589400389952509 0.4049488649158367 0.7229242355857484 0.06235613837299574 0.06275344891616547 0.2498295509602317 0.009132056532627379 0.410453463847625 0.3324302671175435 0.8999351532761245 0.1260054117516113 0.001536552944821854 0.02672503759551066 0.02826159054033252 1.199147754801158 1.199147754801158 1.20442835800001e+24 2.925133259548562e+23 5.698011095421221e+23 2.669833167945896e+23 6.954602797048728e+22 1.686199701200007e+24 2.772877561481376e+23 104.9622873419346 123.3657142857143 0.006603773584905661 0.4427813287861195 1.204428358e+21 1.204428300000005e+23 6.022141500000027e+22 6.022141499999998e+21 1 0.054 1 0.2 0.4 1 1 1 0.25 0.05 0.45 0.1 0.03 0.06 0.3 0.55 0.1 0.03 0.06 0.3 1.2 8 0.4 0.25 0.45 0.9 2 2 10 1 1 0.15 0.03 0.1 0.1 0.01 0.1 0.05 0.05 0.03 0.1 0.1 0.01 0.1 6 0.04 0.14 0.002 1 0.001 0.05 0.2 0.01 0.8 0.1 1 50 50 0.38 50 15 0.01 200 1 2 0.1 0.01 0.01 0.01 0.3 1 1 0.2 1 1 0.04 0.003 0.4 0.15 0.01 0.16 0.06 0.01 0.05 0.06 0.5 0.5 0.01 1 2 0.12 0.03 0.06 0.17 2 0.06 0.08 0.3 0.2 0.5 0.001 0.08 0.15 0.15 0.6 8 0.05 0.01 0.6 4 4 0.05 3 0.2 0.03 0.006 0.6 0.055 0.001 0.04 0.0008 0.005 0.2 0.012 0.12 0.01 0.024 0.12 0.004 0 0.15 0.08400000000000001 2 0 0.1 0.1 0.005 0.08 1 0.1 8 0.01 1 6.0221415e+23 -1 0.007 0 0 0.00012 0 
+      0 0 1.747366772326145e+23 6.153793596801723e+22 1.80535936470497e+23 9.253339255958898e+21 3.888445993186847e+21 2.019185755329673e+22 1.964083420555222e+23 6.987702526155101e+21 3.151195626929545e+21 6.004823451606606e+23 1.093220582617615e+22 6.649934635684339e+23 5.446744061809811e+23 6.421153989171979e+23 5.07527926009403e+21 2.307420732690804e+21 2.417387190365045e+18 5.428453477226389e+21 6.000645303884879e+19 1.415750029349604e+23 2.196294727685002e+22 5.793351133464459e+22 7.235672544851775e+22 3.817302580975654e+23 2.879579509269514e+22 9.000829013319018e+21 3.305249612645038e+22 4.758414978992805e+23 2.159777877052535e+23 2.29204033134851e+23 1.731804839342613e+21 7.393161906544548e+21 8.274840214739905e+23 1.056512290096014e+23 6.3287734055348e+22 5.128887707846334e+23 2.769598672382914e+22 2.204838369841239e+23 2.994239436853977e+22 5.802510581936991e+23 6.177542491684398e+21 3.86236266090673e+23 7.496739071384451e+21 1.263726206237145e+23 0.07089635273693944 0.4589400389952509 0.4049487568106332 0.7229242355857484 0.0623561288838139 0.06275343987480581 0.2498295509602317 0.009132056237052346 0.410453463847625 0.3324302671175433 0.8999351532761247 0.1260054117516113 0.001536552944821854 0.02672503275178556 0.02826158569660742 1.199147754801158 1.199147754801158 1.20442800000001e+24 2.925132390092359e+23 5.698007708108632e+23 2.669832374374183e+23 6.954600729887336e+22 1.686199200000007e+24 2.772876737281114e+23 104.9622855759751 123.3657116717321 0.0066037736960122 0.4427813303603884 1.204428357999999e+21 1.204428300000005e+23 6.022141500000027e+22 6.022141499999998e+21 1 0.054 1 0.2 0.4 1 1 1 0.25 0.05 0.45 0.1 0.03 0.06 0.3 0.55 0.1 0.03 0.06 0.3 1.2 8 0.4 0.25 0.45 0.9 2 2 10 1 1 0.15 0.03 0.1 0.1 0.01 0.1 0.05 0.05 0.03 0.1 0.1 0.01 0.1 6 0.04 0.14 0.002 1 0.001 0.05 0.2 0.01 0.8 0.1 1 50 50 0.38 50 15 0.01 200 1 2 0.1 0.01 0.01 0.01 0.3 1 1 0.2 1 1 0.04 0.003 0.4 0.15 0.01 0.16 0.06 0.01 0.05 0.06 0.5 0.5 0.01 1 2 0.12 0.03 0.06 0.17 2 0.06 0.08 0.3 0.2 0.5 0.001 0.08 0.15 0.15 0.6 8 0.05 0.01 0.6 4 4 0.05 3 0.2 0.03 0.006 0.6 0.055 0.001 0.04 0.0008 0.005 0.2 0.012 0.12 0.01 0.024 0.12 0.004 0 0.15 0.08400000000000001 2 0 0.1 0.1 0.005 0.08 1 0.1 8 0.01 1 6.0221415e+23 -1 0.007 0 0 0.00012 0 
     </InitialState>
   </Model>
   <ListOfTasks>
-    <Task key="Task_26" name="Steady-State" type="steadyState" scheduled="false" updateModel="false">
-      <Report reference="Report_17" target="" append="1" confirmOverwrite="0"/>
+    <Task key="Task_27" name="Steady-State" type="steadyState" scheduled="false" updateModel="false">
+      <Report reference="Report_20" target="" append="1" confirmOverwrite="0"/>
       <Problem>
         <Parameter name="JacobianRequested" type="bool" value="1"/>
         <Parameter name="StabilityAnalysisRequested" type="bool" value="1"/>
@@ -8434,8 +8434,8 @@
         <Parameter name="Maximum duration for backward integration" type="unsignedFloat" value="1000000"/>
       </Method>
     </Task>
-    <Task key="Task_25" name="Time-Course" type="timeCourse" scheduled="true" updateModel="false">
-      <Report reference="Report_9" target="EventTest12.1.txt" append="0" confirmOverwrite="0"/>
+    <Task key="Task_15" name="Time-Course" type="timeCourse" scheduled="true" updateModel="false">
+      <Report reference="Report_15" target="EventTest12.1.txt" append="0" confirmOverwrite="0"/>
       <Problem>
         <Parameter name="StepNumber" type="unsignedInteger" value="2"/>
         <Parameter name="StepSize" type="float" value="200"/>
@@ -8447,12 +8447,12 @@
       </Problem>
       <Method name="Deterministic (LSODA)" type="Deterministic(LSODA)">
         <Parameter name="Integrate Reduced Model" type="bool" value="0"/>
-        <Parameter name="Relative Tolerance" type="unsignedFloat" value="1e-08"/>
+        <Parameter name="Relative Tolerance" type="unsignedFloat" value="1e-07"/>
         <Parameter name="Absolute Tolerance" type="unsignedFloat" value="1e-12"/>
         <Parameter name="Max Internal Steps" type="unsignedInteger" value="10000"/>
       </Method>
     </Task>
-    <Task key="Task_24" name="Scan" type="scan" scheduled="false" updateModel="false">
+    <Task key="Task_16" name="Scan" type="scan" scheduled="false" updateModel="false">
       <Problem>
         <Parameter name="Subtask" type="unsignedInteger" value="1"/>
         <ParameterGroup name="ScanItems">
@@ -8471,15 +8471,15 @@
       <Method name="Scan Framework" type="ScanFramework">
       </Method>
     </Task>
-    <Task key="Task_23" name="Elementary Flux Modes" type="fluxMode" scheduled="false" updateModel="false">
-      <Report reference="Report_16" target="" append="1" confirmOverwrite="0"/>
+    <Task key="Task_17" name="Elementary Flux Modes" type="fluxMode" scheduled="false" updateModel="false">
+      <Report reference="Report_19" target="" append="1" confirmOverwrite="0"/>
       <Problem>
       </Problem>
       <Method name="Bit Pattern Tree Algorithm" type="EFMBitPatternTreeMethod">
       </Method>
     </Task>
-    <Task key="Task_22" name="Optimization" type="optimization" scheduled="false" updateModel="false">
-      <Report reference="Report_15" target="" append="1" confirmOverwrite="0"/>
+    <Task key="Task_18" name="Optimization" type="optimization" scheduled="false" updateModel="false">
+      <Report reference="Report_9" target="" append="1" confirmOverwrite="0"/>
       <Problem>
         <Parameter name="Subtask" type="cn" value="CN=Root,Vector=TaskList[Steady-State]"/>
         <ParameterText name="ObjectiveExpression" type="expression">
@@ -8499,8 +8499,8 @@
         <Parameter name="Seed" type="unsignedInteger" value="0"/>
       </Method>
     </Task>
-    <Task key="Task_21" name="Parameter Estimation" type="parameterFitting" scheduled="false" updateModel="false">
-      <Report reference="Report_14" target="" append="1" confirmOverwrite="0"/>
+    <Task key="Task_19" name="Parameter Estimation" type="parameterFitting" scheduled="false" updateModel="false">
+      <Report reference="Report_10" target="" append="1" confirmOverwrite="0"/>
       <Problem>
         <Parameter name="Maximize" type="bool" value="0"/>
         <Parameter name="Randomize Start Values" type="bool" value="0"/>
@@ -8511,6 +8511,7 @@
         </ParameterGroup>
         <Parameter name="Steady-State" type="cn" value="CN=Root,Vector=TaskList[Steady-State]"/>
         <Parameter name="Time-Course" type="cn" value="CN=Root,Vector=TaskList[Time-Course]"/>
+        <Parameter name="Create Parameter Sets" type="bool" value="0"/>
         <ParameterGroup name="Experiment Set">
         </ParameterGroup>
         <ParameterGroup name="Validation Set">
@@ -8526,7 +8527,7 @@
       </Method>
     </Task>
     <Task key="Task_20" name="Metabolic Control Analysis" type="metabolicControlAnalysis" scheduled="false" updateModel="false">
-      <Report reference="Report_13" target="" append="1" confirmOverwrite="0"/>
+      <Report reference="Report_11" target="" append="1" confirmOverwrite="0"/>
       <Problem>
         <Parameter name="Steady-State" type="key" value=""/>
       </Problem>
@@ -8534,7 +8535,7 @@
         <Parameter name="Modulation Factor" type="unsignedFloat" value="1e-09"/>
       </Method>
     </Task>
-    <Task key="Task_19" name="Lyapunov Exponents" type="lyapunovExponents" scheduled="false" updateModel="false">
+    <Task key="Task_21" name="Lyapunov Exponents" type="lyapunovExponents" scheduled="false" updateModel="false">
       <Report reference="Report_12" target="" append="1" confirmOverwrite="0"/>
       <Problem>
         <Parameter name="ExponentNumber" type="unsignedInteger" value="3"/>
@@ -8549,8 +8550,8 @@
         <Parameter name="Max Internal Steps" type="unsignedInteger" value="10000"/>
       </Method>
     </Task>
-    <Task key="Task_18" name="Time Scale Separation Analysis" type="timeScaleSeparationAnalysis" scheduled="false" updateModel="false">
-      <Report reference="Report_11" target="" append="1" confirmOverwrite="0"/>
+    <Task key="Task_22" name="Time Scale Separation Analysis" type="timeScaleSeparationAnalysis" scheduled="false" updateModel="false">
+      <Report reference="Report_13" target="" append="1" confirmOverwrite="0"/>
       <Problem>
         <Parameter name="StepNumber" type="unsignedInteger" value="100"/>
         <Parameter name="StepSize" type="float" value="0.01"/>
@@ -8562,8 +8563,8 @@
         <Parameter name="Deuflhard Tolerance" type="unsignedFloat" value="1e-06"/>
       </Method>
     </Task>
-    <Task key="Task_17" name="Sensitivities" type="sensitivities" scheduled="false" updateModel="false">
-      <Report reference="Report_10" target="" append="1" confirmOverwrite="0"/>
+    <Task key="Task_23" name="Sensitivities" type="sensitivities" scheduled="false" updateModel="false">
+      <Report reference="Report_14" target="" append="1" confirmOverwrite="0"/>
       <Problem>
         <Parameter name="SubtaskType" type="unsignedInteger" value="1"/>
         <ParameterGroup name="TargetFunctions">
@@ -8582,13 +8583,13 @@
         <Parameter name="Delta minimum" type="unsignedFloat" value="1e-12"/>
       </Method>
     </Task>
-    <Task key="Task_16" name="Moieties" type="moieties" scheduled="false" updateModel="false">
+    <Task key="Task_24" name="Moieties" type="moieties" scheduled="false" updateModel="false">
       <Problem>
       </Problem>
       <Method name="Householder Reduction" type="Householder">
       </Method>
     </Task>
-    <Task key="Task_15" name="Cross Section" type="crosssection" scheduled="false" updateModel="false">
+    <Task key="Task_25" name="Cross Section" type="crosssection" scheduled="false" updateModel="false">
       <Problem>
         <Parameter name="StepNumber" type="unsignedInteger" value="100"/>
         <Parameter name="StepSize" type="float" value="0.01"/>
@@ -8621,17 +8622,17 @@
         <Parameter name="Max Internal Steps" type="unsignedInteger" value="10000"/>
       </Method>
     </Task>
-    <Task key="Task_27" name="Linear Noise Approximation" type="linearNoiseApproximation" scheduled="false" updateModel="false">
-      <Report reference="Report_19" target="" append="1" confirmOverwrite="1"/>
+    <Task key="Task_14" name="Linear Noise Approximation" type="linearNoiseApproximation" scheduled="false" updateModel="false">
+      <Report reference="Report_16" target="" append="1" confirmOverwrite="1"/>
       <Problem>
-        <Parameter name="Steady-State" type="key" value="Task_26"/>
+        <Parameter name="Steady-State" type="key" value="Task_27"/>
       </Problem>
       <Method name="Linear Noise Approximation" type="LinearNoiseApproximation">
       </Method>
     </Task>
   </ListOfTasks>
   <ListOfReports>
-    <Report key="Report_17" name="Steady-State" taskType="steadyState" separator="&#x09;" precision="6">
+    <Report key="Report_20" name="Steady-State" taskType="steadyState" separator="&#x09;" precision="6">
       <Comment>
         <body xmlns="http://www.w3.org/1999/xhtml">
           Automatically generated report.
@@ -8641,7 +8642,7 @@
         <Object cn="CN=Root,Vector=TaskList[Steady-State]"/>
       </Footer>
     </Report>
-    <Report key="Report_16" name="Elementary Flux Modes" taskType="fluxMode" separator="&#x09;" precision="6">
+    <Report key="Report_19" name="Elementary Flux Modes" taskType="fluxMode" separator="&#x09;" precision="6">
       <Comment>
         <body xmlns="http://www.w3.org/1999/xhtml">
           Automatically generated report.
@@ -8651,7 +8652,7 @@
         <Object cn="CN=Root,Vector=TaskList[Elementary Flux Modes],Object=Result"/>
       </Footer>
     </Report>
-    <Report key="Report_15" name="Optimization" taskType="optimization" separator="&#x09;" precision="6">
+    <Report key="Report_9" name="Optimization" taskType="optimization" separator="&#x09;" precision="6">
       <Comment>
         <body xmlns="http://www.w3.org/1999/xhtml">
           Automatically generated report.
@@ -8677,7 +8678,7 @@
         <Object cn="CN=Root,Vector=TaskList[Optimization],Object=Result"/>
       </Footer>
     </Report>
-    <Report key="Report_14" name="Parameter Estimation" taskType="parameterFitting" separator="&#x09;" precision="6">
+    <Report key="Report_10" name="Parameter Estimation" taskType="parameterFitting" separator="&#x09;" precision="6">
       <Comment>
         <body xmlns="http://www.w3.org/1999/xhtml">
           Automatically generated report.
@@ -8703,7 +8704,7 @@
         <Object cn="CN=Root,Vector=TaskList[Parameter Estimation],Object=Result"/>
       </Footer>
     </Report>
-    <Report key="Report_13" name="Metabolic Control Analysis" taskType="metabolicControlAnalysis" separator="&#x09;" precision="6">
+    <Report key="Report_11" name="Metabolic Control Analysis" taskType="metabolicControlAnalysis" separator="&#x09;" precision="6">
       <Comment>
         <body xmlns="http://www.w3.org/1999/xhtml">
           Automatically generated report.
@@ -8731,7 +8732,7 @@
         <Object cn="CN=Root,Vector=TaskList[Lyapunov Exponents],Object=Result"/>
       </Footer>
     </Report>
-    <Report key="Report_11" name="Time Scale Separation Analysis" taskType="timeScaleSeparationAnalysis" separator="&#x09;" precision="6">
+    <Report key="Report_13" name="Time Scale Separation Analysis" taskType="timeScaleSeparationAnalysis" separator="&#x09;" precision="6">
       <Comment>
         <body xmlns="http://www.w3.org/1999/xhtml">
           Automatically generated report.
@@ -8745,7 +8746,7 @@
         <Object cn="CN=Root,Vector=TaskList[Time Scale Separation Analysis],Object=Result"/>
       </Footer>
     </Report>
-    <Report key="Report_10" name="Sensitivities" taskType="sensitivities" separator="&#x09;" precision="6">
+    <Report key="Report_14" name="Sensitivities" taskType="sensitivities" separator="&#x09;" precision="6">
       <Comment>
         <body xmlns="http://www.w3.org/1999/xhtml">
           Automatically generated report.
@@ -8759,7 +8760,7 @@
         <Object cn="CN=Root,Vector=TaskList[Sensitivities],Object=Result"/>
       </Footer>
     </Report>
-    <Report key="Report_9" name="Events" taskType="timeCourse" separator="&#x09;" precision="7">
+    <Report key="Report_15" name="Events" taskType="timeCourse" separator="&#x09;" precision="7">
       <Comment>
         A table of time, variable species concentrations, variable compartment volumes, and variable global quantity values.
       </Comment>
@@ -8846,7 +8847,7 @@
         <Object cn="CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Values[GLUconsumed],Reference=Value"/>
       </Table>
     </Report>
-    <Report key="Report_19" name="Linear Noise Approximation" taskType="linearNoiseApproximation" separator="&#x09;" precision="6">
+    <Report key="Report_16" name="Linear Noise Approximation" taskType="linearNoiseApproximation" separator="&#x09;" precision="6">
       <Comment>
         Automatically generated report.
       </Comment>
@@ -9817,116 +9818,116 @@
   </ListOfPlots>
   <GUI>
     <ListOfSliders>
-      <Slider key="Slider_0" associatedEntityKey="Task_25" objectCN="CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Compartments[cell],Vector=Metabolites[GLU],Reference=InitialConcentration" objectType="float" objectValue="0.002" minValue="0.0008" maxValue="2e+07" tickNumber="1000" tickFactor="100" scaling="linear"/>
+      <Slider key="Slider_0" associatedEntityKey="Task_15" objectCN="CN=Root,Model=Chen2004_CellCycle Mother with GLU,Vector=Compartments[cell],Vector=Metabolites[GLU],Reference=InitialConcentration" objectType="float" objectValue="0.002" minValue="0.0008" maxValue="2e+07" tickNumber="1000" tickFactor="100" scaling="linear"/>
     </ListOfSliders>
   </GUI>
   <SBMLReference file="BIOMD0000000056.xml">
-    <SBMLMap SBMLid="Activation_of_CDC20" COPASIkey="Reaction_77"/>
-    <SBMLMap SBMLid="Activation_of_IEP" COPASIkey="Reaction_72"/>
-    <SBMLMap SBMLid="Activation_of_SWI5" COPASIkey="Reaction_70"/>
-    <SBMLMap SBMLid="Assoc_of_CLB2_and_SIC1" COPASIkey="Reaction_35"/>
-    <SBMLMap SBMLid="Assoc_of_CLB5_and_SIC1" COPASIkey="Reaction_37"/>
+    <SBMLMap SBMLid="Activation_of_CDC20" COPASIkey="Reaction_10"/>
+    <SBMLMap SBMLid="Activation_of_IEP" COPASIkey="Reaction_15"/>
+    <SBMLMap SBMLid="Activation_of_SWI5" COPASIkey="Reaction_17"/>
+    <SBMLMap SBMLid="Assoc_of_CLB2_and_SIC1" COPASIkey="Reaction_52"/>
+    <SBMLMap SBMLid="Assoc_of_CLB5_and_SIC1" COPASIkey="Reaction_50"/>
     <SBMLMap SBMLid="Assoc_with_ESP1_to_form_PE" COPASIkey="Reaction_110"/>
     <SBMLMap SBMLid="Assoc_with_NET1P_to_form_RENTP" COPASIkey="Reaction_88"/>
-    <SBMLMap SBMLid="Assoc_with_NET1_to_form_RENT" COPASIkey="Reaction_86"/>
-    <SBMLMap SBMLid="BCK2" COPASIkey="Metabolite_25"/>
-    <SBMLMap SBMLid="BUB2" COPASIkey="Metabolite_27"/>
-    <SBMLMap SBMLid="BUD" COPASIkey="Metabolite_29"/>
+    <SBMLMap SBMLid="Assoc_with_NET1_to_form_RENT" COPASIkey="Reaction_1"/>
+    <SBMLMap SBMLid="BCK2" COPASIkey="Metabolite_49"/>
+    <SBMLMap SBMLid="BUB2" COPASIkey="Metabolite_45"/>
+    <SBMLMap SBMLid="BUD" COPASIkey="Metabolite_41"/>
     <SBMLMap SBMLid="Budding" COPASIkey="Reaction_114"/>
     <SBMLMap SBMLid="C0" COPASIkey="ModelValue_12"/>
-    <SBMLMap SBMLid="C2" COPASIkey="Metabolite_31"/>
+    <SBMLMap SBMLid="C2" COPASIkey="Metabolite_37"/>
     <SBMLMap SBMLid="C2P" COPASIkey="Metabolite_33"/>
-    <SBMLMap SBMLid="C5" COPASIkey="Metabolite_35"/>
-    <SBMLMap SBMLid="C5P" COPASIkey="Metabolite_37"/>
-    <SBMLMap SBMLid="CDC14" COPASIkey="Metabolite_39"/>
-    <SBMLMap SBMLid="CDC14T" COPASIkey="Metabolite_41"/>
-    <SBMLMap SBMLid="CDC14_degradation" COPASIkey="Reaction_85"/>
-    <SBMLMap SBMLid="CDC14_synthesis" COPASIkey="Reaction_84"/>
-    <SBMLMap SBMLid="CDC15" COPASIkey="Metabolite_43"/>
+    <SBMLMap SBMLid="C5" COPASIkey="Metabolite_29"/>
+    <SBMLMap SBMLid="C5P" COPASIkey="Metabolite_25"/>
+    <SBMLMap SBMLid="CDC14" COPASIkey="Metabolite_21"/>
+    <SBMLMap SBMLid="CDC14T" COPASIkey="Metabolite_17"/>
+    <SBMLMap SBMLid="CDC14_degradation" COPASIkey="Reaction_2"/>
+    <SBMLMap SBMLid="CDC14_synthesis" COPASIkey="Reaction_3"/>
+    <SBMLMap SBMLid="CDC15" COPASIkey="Metabolite_13"/>
     <SBMLMap SBMLid="CDC15T" COPASIkey="ModelValue_13"/>
     <SBMLMap SBMLid="CDC15_activation" COPASIkey="Reaction_103"/>
-    <SBMLMap SBMLid="CDC15i" COPASIkey="Metabolite_45"/>
-    <SBMLMap SBMLid="CDC20" COPASIkey="Metabolite_47"/>
-    <SBMLMap SBMLid="CDC20i" COPASIkey="Metabolite_49"/>
-    <SBMLMap SBMLid="CDC6" COPASIkey="Metabolite_51"/>
-    <SBMLMap SBMLid="CDC6P" COPASIkey="Metabolite_53"/>
-    <SBMLMap SBMLid="CDC6T" COPASIkey="Metabolite_55"/>
-    <SBMLMap SBMLid="CDC6_degradation_in_F2P" COPASIkey="Reaction_63"/>
-    <SBMLMap SBMLid="CDC6_degradation_in_F5P" COPASIkey="Reaction_64"/>
-    <SBMLMap SBMLid="CDC6_synthesis" COPASIkey="Reaction_49"/>
-    <SBMLMap SBMLid="CDH1" COPASIkey="Metabolite_57"/>
-    <SBMLMap SBMLid="CDH1_degradation" COPASIkey="Reaction_80"/>
-    <SBMLMap SBMLid="CDH1_synthesis" COPASIkey="Reaction_79"/>
-    <SBMLMap SBMLid="CDH1i" COPASIkey="Metabolite_59"/>
-    <SBMLMap SBMLid="CDH1i_activation" COPASIkey="Reaction_82"/>
-    <SBMLMap SBMLid="CDH1i_degradation" COPASIkey="Reaction_81"/>
-    <SBMLMap SBMLid="CKIT" COPASIkey="Metabolite_61"/>
-    <SBMLMap SBMLid="CLB2" COPASIkey="Metabolite_63"/>
-    <SBMLMap SBMLid="CLB2CDC6_complex_formation" COPASIkey="Reaction_53"/>
-    <SBMLMap SBMLid="CLB2CDC6_dissociation" COPASIkey="Reaction_54"/>
-    <SBMLMap SBMLid="CLB2T" COPASIkey="Metabolite_65"/>
-    <SBMLMap SBMLid="CLB2_degradation_in_F2" COPASIkey="Reaction_61"/>
-    <SBMLMap SBMLid="CLB2_degradation_in_F2P" COPASIkey="Reaction_65"/>
-    <SBMLMap SBMLid="CLB5" COPASIkey="Metabolite_67"/>
-    <SBMLMap SBMLid="CLB5CDC6_complex_formation" COPASIkey="Reaction_55"/>
-    <SBMLMap SBMLid="CLB5CDC6_dissociation" COPASIkey="Reaction_56"/>
-    <SBMLMap SBMLid="CLB5T" COPASIkey="Metabolite_69"/>
-    <SBMLMap SBMLid="CLB5_degradation_in_F5" COPASIkey="Reaction_62"/>
-    <SBMLMap SBMLid="CLB5_degradation_in_F5P" COPASIkey="Reaction_66"/>
-    <SBMLMap SBMLid="CLN2" COPASIkey="Metabolite_71"/>
-    <SBMLMap SBMLid="CLN3" COPASIkey="Metabolite_73"/>
+    <SBMLMap SBMLid="CDC15i" COPASIkey="Metabolite_9"/>
+    <SBMLMap SBMLid="CDC20" COPASIkey="Metabolite_5"/>
+    <SBMLMap SBMLid="CDC20i" COPASIkey="Metabolite_1"/>
+    <SBMLMap SBMLid="CDC6" COPASIkey="Metabolite_77"/>
+    <SBMLMap SBMLid="CDC6P" COPASIkey="Metabolite_79"/>
+    <SBMLMap SBMLid="CDC6T" COPASIkey="Metabolite_81"/>
+    <SBMLMap SBMLid="CDC6_degradation_in_F2P" COPASIkey="Reaction_24"/>
+    <SBMLMap SBMLid="CDC6_degradation_in_F5P" COPASIkey="Reaction_23"/>
+    <SBMLMap SBMLid="CDC6_synthesis" COPASIkey="Reaction_38"/>
+    <SBMLMap SBMLid="CDH1" COPASIkey="Metabolite_83"/>
+    <SBMLMap SBMLid="CDH1_degradation" COPASIkey="Reaction_7"/>
+    <SBMLMap SBMLid="CDH1_synthesis" COPASIkey="Reaction_8"/>
+    <SBMLMap SBMLid="CDH1i" COPASIkey="Metabolite_85"/>
+    <SBMLMap SBMLid="CDH1i_activation" COPASIkey="Reaction_5"/>
+    <SBMLMap SBMLid="CDH1i_degradation" COPASIkey="Reaction_6"/>
+    <SBMLMap SBMLid="CKIT" COPASIkey="Metabolite_87"/>
+    <SBMLMap SBMLid="CLB2" COPASIkey="Metabolite_89"/>
+    <SBMLMap SBMLid="CLB2CDC6_complex_formation" COPASIkey="Reaction_34"/>
+    <SBMLMap SBMLid="CLB2CDC6_dissociation" COPASIkey="Reaction_33"/>
+    <SBMLMap SBMLid="CLB2T" COPASIkey="Metabolite_91"/>
+    <SBMLMap SBMLid="CLB2_degradation_in_F2" COPASIkey="Reaction_26"/>
+    <SBMLMap SBMLid="CLB2_degradation_in_F2P" COPASIkey="Reaction_22"/>
+    <SBMLMap SBMLid="CLB5" COPASIkey="Metabolite_93"/>
+    <SBMLMap SBMLid="CLB5CDC6_complex_formation" COPASIkey="Reaction_32"/>
+    <SBMLMap SBMLid="CLB5CDC6_dissociation" COPASIkey="Reaction_31"/>
+    <SBMLMap SBMLid="CLB5T" COPASIkey="Metabolite_95"/>
+    <SBMLMap SBMLid="CLB5_degradation_in_F5" COPASIkey="Reaction_25"/>
+    <SBMLMap SBMLid="CLB5_degradation_in_F5P" COPASIkey="Reaction_21"/>
+    <SBMLMap SBMLid="CLN2" COPASIkey="Metabolite_97"/>
+    <SBMLMap SBMLid="CLN3" COPASIkey="Metabolite_99"/>
     <SBMLMap SBMLid="D" COPASIkey="ModelValue_152"/>
     <SBMLMap SBMLid="DNA_synthesis" COPASIkey="Reaction_112"/>
     <SBMLMap SBMLid="Degradation_of_CDC14_in_RENT" COPASIkey="Reaction_99"/>
     <SBMLMap SBMLid="Degradation_of_CDC14_in_RENTP" COPASIkey="Reaction_100"/>
-    <SBMLMap SBMLid="Degradation_of_CDC6P" COPASIkey="Reaction_52"/>
-    <SBMLMap SBMLid="Degradation_of_CLB2" COPASIkey="Reaction_28"/>
-    <SBMLMap SBMLid="Degradation_of_CLB2_in_C2" COPASIkey="Reaction_43"/>
-    <SBMLMap SBMLid="Degradation_of_CLB2_in_C2P" COPASIkey="Reaction_47"/>
-    <SBMLMap SBMLid="Degradation_of_CLB5" COPASIkey="Reaction_30"/>
-    <SBMLMap SBMLid="Degradation_of_CLB5_in_C5" COPASIkey="Reaction_44"/>
-    <SBMLMap SBMLid="Degradation_of_CLB5_in_C5P" COPASIkey="Reaction_48"/>
-    <SBMLMap SBMLid="Degradation_of_CLN2" COPASIkey="Reaction_26"/>
+    <SBMLMap SBMLid="Degradation_of_CDC6P" COPASIkey="Reaction_35"/>
+    <SBMLMap SBMLid="Degradation_of_CLB2" COPASIkey="Reaction_59"/>
+    <SBMLMap SBMLid="Degradation_of_CLB2_in_C2" COPASIkey="Reaction_44"/>
+    <SBMLMap SBMLid="Degradation_of_CLB2_in_C2P" COPASIkey="Reaction_40"/>
+    <SBMLMap SBMLid="Degradation_of_CLB5" COPASIkey="Reaction_57"/>
+    <SBMLMap SBMLid="Degradation_of_CLB5_in_C5" COPASIkey="Reaction_43"/>
+    <SBMLMap SBMLid="Degradation_of_CLB5_in_C5P" COPASIkey="Reaction_39"/>
+    <SBMLMap SBMLid="Degradation_of_CLN2" COPASIkey="Reaction_61"/>
     <SBMLMap SBMLid="Degradation_of_NET1P_in_RENTP" COPASIkey="Reaction_98"/>
     <SBMLMap SBMLid="Degradation_of_NET1_in_RENT" COPASIkey="Reaction_97"/>
     <SBMLMap SBMLid="Degradation_of_PDS1_in_PE" COPASIkey="Reaction_109"/>
-    <SBMLMap SBMLid="Degradation_of_SIC1P_in_C5P_" COPASIkey="Reaction_46"/>
-    <SBMLMap SBMLid="Degradation_of_SIC1_in_C2P" COPASIkey="Reaction_45"/>
-    <SBMLMap SBMLid="Degradation_of_SWI5" COPASIkey="Reaction_68"/>
-    <SBMLMap SBMLid="Degradation_of_SWI5P" COPASIkey="Reaction_69"/>
-    <SBMLMap SBMLid="Degradation_of_active_CDC20" COPASIkey="Reaction_76"/>
-    <SBMLMap SBMLid="Degradation_of_inactiveCDC20" COPASIkey="Reaction_75"/>
-    <SBMLMap SBMLid="Dephosphorylation_of_C2P" COPASIkey="Reaction_40"/>
-    <SBMLMap SBMLid="Dephosphorylation_of_C5P" COPASIkey="Reaction_42"/>
-    <SBMLMap SBMLid="Dephosphorylation_of_CDC6" COPASIkey="Reaction_51"/>
-    <SBMLMap SBMLid="Dephosphorylation_of_SIC1" COPASIkey="Reaction_33"/>
+    <SBMLMap SBMLid="Degradation_of_SIC1P_in_C5P_" COPASIkey="Reaction_41"/>
+    <SBMLMap SBMLid="Degradation_of_SIC1_in_C2P" COPASIkey="Reaction_42"/>
+    <SBMLMap SBMLid="Degradation_of_SWI5" COPASIkey="Reaction_19"/>
+    <SBMLMap SBMLid="Degradation_of_SWI5P" COPASIkey="Reaction_18"/>
+    <SBMLMap SBMLid="Degradation_of_active_CDC20" COPASIkey="Reaction_11"/>
+    <SBMLMap SBMLid="Degradation_of_inactiveCDC20" COPASIkey="Reaction_12"/>
+    <SBMLMap SBMLid="Dephosphorylation_of_C2P" COPASIkey="Reaction_47"/>
+    <SBMLMap SBMLid="Dephosphorylation_of_C5P" COPASIkey="Reaction_45"/>
+    <SBMLMap SBMLid="Dephosphorylation_of_CDC6" COPASIkey="Reaction_36"/>
+    <SBMLMap SBMLid="Dephosphorylation_of_SIC1" COPASIkey="Reaction_54"/>
     <SBMLMap SBMLid="Disso_from_PE" COPASIkey="Reaction_111"/>
     <SBMLMap SBMLid="Dissoc_from_RENP" COPASIkey="Reaction_89"/>
-    <SBMLMap SBMLid="Dissoc_from_RENT" COPASIkey="Reaction_87"/>
-    <SBMLMap SBMLid="Dissoc_of_CLB2SIC1_complex" COPASIkey="Reaction_36"/>
-    <SBMLMap SBMLid="Dissoc_of_CLB5SIC1" COPASIkey="Reaction_38"/>
+    <SBMLMap SBMLid="Dissoc_from_RENT" COPASIkey="Reaction_0"/>
+    <SBMLMap SBMLid="Dissoc_of_CLB2SIC1_complex" COPASIkey="Reaction_51"/>
+    <SBMLMap SBMLid="Dissoc_of_CLB5SIC1" COPASIkey="Reaction_49"/>
     <SBMLMap SBMLid="Dn3" COPASIkey="ModelValue_14"/>
-    <SBMLMap SBMLid="ESP1" COPASIkey="Metabolite_75"/>
+    <SBMLMap SBMLid="ESP1" COPASIkey="Metabolite_101"/>
     <SBMLMap SBMLid="ESP1T" COPASIkey="ModelValue_37"/>
     <SBMLMap SBMLid="F" COPASIkey="ModelValue_171"/>
-    <SBMLMap SBMLid="F2" COPASIkey="Metabolite_77"/>
-    <SBMLMap SBMLid="F2P" COPASIkey="Metabolite_79"/>
-    <SBMLMap SBMLid="F2P_dephosphorylation" COPASIkey="Reaction_58"/>
-    <SBMLMap SBMLid="F2_phosphorylation" COPASIkey="Reaction_57"/>
-    <SBMLMap SBMLid="F5" COPASIkey="Metabolite_81"/>
-    <SBMLMap SBMLid="F5P" COPASIkey="Metabolite_83"/>
-    <SBMLMap SBMLid="F5P_dephosphorylation" COPASIkey="Reaction_60"/>
-    <SBMLMap SBMLid="F5_phosphorylation" COPASIkey="Reaction_59"/>
-    <SBMLMap SBMLid="Fast_Degradation_of_SIC1P" COPASIkey="Reaction_34"/>
+    <SBMLMap SBMLid="F2" COPASIkey="Metabolite_103"/>
+    <SBMLMap SBMLid="F2P" COPASIkey="Metabolite_105"/>
+    <SBMLMap SBMLid="F2P_dephosphorylation" COPASIkey="Reaction_29"/>
+    <SBMLMap SBMLid="F2_phosphorylation" COPASIkey="Reaction_30"/>
+    <SBMLMap SBMLid="F5" COPASIkey="Metabolite_107"/>
+    <SBMLMap SBMLid="F5P" COPASIkey="Metabolite_109"/>
+    <SBMLMap SBMLid="F5P_dephosphorylation" COPASIkey="Reaction_27"/>
+    <SBMLMap SBMLid="F5_phosphorylation" COPASIkey="Reaction_28"/>
+    <SBMLMap SBMLid="Fast_Degradation_of_SIC1P" COPASIkey="Reaction_53"/>
     <SBMLMap SBMLid="GK_219" COPASIkey="Function_44"/>
-    <SBMLMap SBMLid="Growth" COPASIkey="Reaction_24"/>
-    <SBMLMap SBMLid="IE" COPASIkey="Metabolite_85"/>
-    <SBMLMap SBMLid="IEP" COPASIkey="Metabolite_87"/>
+    <SBMLMap SBMLid="Growth" COPASIkey="Reaction_63"/>
+    <SBMLMap SBMLid="IE" COPASIkey="Metabolite_111"/>
+    <SBMLMap SBMLid="IEP" COPASIkey="Metabolite_113"/>
     <SBMLMap SBMLid="IET" COPASIkey="ModelValue_38"/>
-    <SBMLMap SBMLid="Inactivation_1" COPASIkey="Reaction_73"/>
-    <SBMLMap SBMLid="Inactivation_2" COPASIkey="Reaction_78"/>
-    <SBMLMap SBMLid="Inactivation_3" COPASIkey="Reaction_83"/>
-    <SBMLMap SBMLid="Inactivation_of_SWI5" COPASIkey="Reaction_71"/>
+    <SBMLMap SBMLid="Inactivation_1" COPASIkey="Reaction_14"/>
+    <SBMLMap SBMLid="Inactivation_2" COPASIkey="Reaction_9"/>
+    <SBMLMap SBMLid="Inactivation_3" COPASIkey="Reaction_4"/>
+    <SBMLMap SBMLid="Inactivation_of_SWI5" COPASIkey="Reaction_16"/>
     <SBMLMap SBMLid="J20ppx" COPASIkey="ModelValue_39"/>
     <SBMLMap SBMLid="Jacdh" COPASIkey="ModelValue_40"/>
     <SBMLMap SBMLid="Jaiep" COPASIkey="ModelValue_41"/>
@@ -9945,52 +9946,52 @@
     <SBMLMap SBMLid="Jspn" COPASIkey="ModelValue_54"/>
     <SBMLMap SBMLid="KEZ" COPASIkey="ModelValue_105"/>
     <SBMLMap SBMLid="KEZ2" COPASIkey="ModelValue_106"/>
-    <SBMLMap SBMLid="LTE1" COPASIkey="Metabolite_89"/>
-    <SBMLMap SBMLid="MAD2" COPASIkey="Metabolite_91"/>
-    <SBMLMap SBMLid="MASS" COPASIkey="Metabolite_93"/>
-    <SBMLMap SBMLid="MCM1" COPASIkey="Metabolite_95"/>
+    <SBMLMap SBMLid="LTE1" COPASIkey="Metabolite_115"/>
+    <SBMLMap SBMLid="MAD2" COPASIkey="Metabolite_117"/>
+    <SBMLMap SBMLid="MASS" COPASIkey="Metabolite_119"/>
+    <SBMLMap SBMLid="MCM1" COPASIkey="Metabolite_121"/>
     <SBMLMap SBMLid="Mass_Action_1_222" COPASIkey="Function_45"/>
     <SBMLMap SBMLid="Mass_Action_2_221" COPASIkey="Function_46"/>
     <SBMLMap SBMLid="MichaelisMenten_220" COPASIkey="Function_47"/>
-    <SBMLMap SBMLid="NET1" COPASIkey="Metabolite_97"/>
-    <SBMLMap SBMLid="NET1P" COPASIkey="Metabolite_99"/>
-    <SBMLMap SBMLid="NET1T" COPASIkey="Metabolite_101"/>
+    <SBMLMap SBMLid="NET1" COPASIkey="Metabolite_123"/>
+    <SBMLMap SBMLid="NET1P" COPASIkey="Metabolite_125"/>
+    <SBMLMap SBMLid="NET1T" COPASIkey="Metabolite_127"/>
     <SBMLMap SBMLid="NET1_phosphorylation" COPASIkey="Reaction_93"/>
     <SBMLMap SBMLid="Negative_regulation_of_Cell_budding" COPASIkey="Reaction_115"/>
     <SBMLMap SBMLid="Negative_regulation_of_DNA_synthesis" COPASIkey="Reaction_113"/>
     <SBMLMap SBMLid="Net1P_degradation" COPASIkey="Reaction_92"/>
     <SBMLMap SBMLid="Net1_degradation" COPASIkey="Reaction_91"/>
     <SBMLMap SBMLid="Net1_synthesis" COPASIkey="Reaction_90"/>
-    <SBMLMap SBMLid="ORI" COPASIkey="Metabolite_103"/>
-    <SBMLMap SBMLid="PDS1" COPASIkey="Metabolite_105"/>
+    <SBMLMap SBMLid="ORI" COPASIkey="Metabolite_129"/>
+    <SBMLMap SBMLid="PDS1" COPASIkey="Metabolite_131"/>
     <SBMLMap SBMLid="PDS1_synthesis" COPASIkey="Reaction_107"/>
-    <SBMLMap SBMLid="PE" COPASIkey="Metabolite_107"/>
-    <SBMLMap SBMLid="PPX" COPASIkey="Metabolite_109"/>
+    <SBMLMap SBMLid="PE" COPASIkey="Metabolite_133"/>
+    <SBMLMap SBMLid="PPX" COPASIkey="Metabolite_135"/>
     <SBMLMap SBMLid="PPX_synthesis" COPASIkey="Reaction_105"/>
-    <SBMLMap SBMLid="Phosphorylation_of_C2" COPASIkey="Reaction_39"/>
-    <SBMLMap SBMLid="Phosphorylation_of_C5" COPASIkey="Reaction_41"/>
-    <SBMLMap SBMLid="Phosphorylation_of_CDC6" COPASIkey="Reaction_50"/>
-    <SBMLMap SBMLid="Phosphorylation_of_SIC1" COPASIkey="Reaction_32"/>
-    <SBMLMap SBMLid="RENT" COPASIkey="Metabolite_111"/>
-    <SBMLMap SBMLid="RENTP" COPASIkey="Metabolite_113"/>
+    <SBMLMap SBMLid="Phosphorylation_of_C2" COPASIkey="Reaction_48"/>
+    <SBMLMap SBMLid="Phosphorylation_of_C5" COPASIkey="Reaction_46"/>
+    <SBMLMap SBMLid="Phosphorylation_of_CDC6" COPASIkey="Reaction_37"/>
+    <SBMLMap SBMLid="Phosphorylation_of_SIC1" COPASIkey="Reaction_55"/>
+    <SBMLMap SBMLid="RENT" COPASIkey="Metabolite_137"/>
+    <SBMLMap SBMLid="RENTP" COPASIkey="Metabolite_139"/>
     <SBMLMap SBMLid="RENT_phosphorylation" COPASIkey="Reaction_95"/>
-    <SBMLMap SBMLid="SBF" COPASIkey="Metabolite_115"/>
-    <SBMLMap SBMLid="SIC1" COPASIkey="Metabolite_117"/>
-    <SBMLMap SBMLid="SIC1P" COPASIkey="Metabolite_119"/>
-    <SBMLMap SBMLid="SIC1T" COPASIkey="Metabolite_121"/>
-    <SBMLMap SBMLid="SPN" COPASIkey="Metabolite_123"/>
-    <SBMLMap SBMLid="SWI5" COPASIkey="Metabolite_125"/>
-    <SBMLMap SBMLid="SWI5P" COPASIkey="Metabolite_127"/>
+    <SBMLMap SBMLid="SBF" COPASIkey="Metabolite_141"/>
+    <SBMLMap SBMLid="SIC1" COPASIkey="Metabolite_143"/>
+    <SBMLMap SBMLid="SIC1P" COPASIkey="Metabolite_145"/>
+    <SBMLMap SBMLid="SIC1T" COPASIkey="Metabolite_147"/>
+    <SBMLMap SBMLid="SPN" COPASIkey="Metabolite_149"/>
+    <SBMLMap SBMLid="SWI5" COPASIkey="Metabolite_151"/>
+    <SBMLMap SBMLid="SWI5P" COPASIkey="Metabolite_153"/>
     <SBMLMap SBMLid="Spindle_disassembly" COPASIkey="Reaction_117"/>
     <SBMLMap SBMLid="Spindle_formation" COPASIkey="Reaction_116"/>
-    <SBMLMap SBMLid="Synthesis_of_CLB2" COPASIkey="Reaction_27"/>
-    <SBMLMap SBMLid="Synthesis_of_CLB5" COPASIkey="Reaction_29"/>
-    <SBMLMap SBMLid="Synthesis_of_CLN2" COPASIkey="Reaction_25"/>
-    <SBMLMap SBMLid="Synthesis_of_SIC1" COPASIkey="Reaction_31"/>
-    <SBMLMap SBMLid="Synthesis_of_SWI5" COPASIkey="Reaction_67"/>
-    <SBMLMap SBMLid="Synthesis_of_inactive_CDC20" COPASIkey="Reaction_74"/>
-    <SBMLMap SBMLid="TEM1GDP" COPASIkey="Metabolite_129"/>
-    <SBMLMap SBMLid="TEM1GTP" COPASIkey="Metabolite_131"/>
+    <SBMLMap SBMLid="Synthesis_of_CLB2" COPASIkey="Reaction_60"/>
+    <SBMLMap SBMLid="Synthesis_of_CLB5" COPASIkey="Reaction_58"/>
+    <SBMLMap SBMLid="Synthesis_of_CLN2" COPASIkey="Reaction_62"/>
+    <SBMLMap SBMLid="Synthesis_of_SIC1" COPASIkey="Reaction_56"/>
+    <SBMLMap SBMLid="Synthesis_of_SWI5" COPASIkey="Reaction_20"/>
+    <SBMLMap SBMLid="Synthesis_of_inactive_CDC20" COPASIkey="Reaction_13"/>
+    <SBMLMap SBMLid="TEM1GDP" COPASIkey="Metabolite_155"/>
+    <SBMLMap SBMLid="TEM1GTP" COPASIkey="Metabolite_157"/>
     <SBMLMap SBMLid="TEM1T" COPASIkey="ModelValue_151"/>
     <SBMLMap SBMLid="TEM1_activation" COPASIkey="Reaction_101"/>
     <SBMLMap SBMLid="Vacdh" COPASIkey="ModelValue_160"/>
@@ -10010,8 +10011,8 @@
     <SBMLMap SBMLid="Vppc1" COPASIkey="ModelValue_169"/>
     <SBMLMap SBMLid="Vppf6" COPASIkey="ModelValue_170"/>
     <SBMLMap SBMLid="Vppnet" COPASIkey="ModelValue_162"/>
-    <SBMLMap SBMLid="b0" COPASIkey="ModelValue_9"/>
-    <SBMLMap SBMLid="bub2h" COPASIkey="ModelValue_10"/>
+    <SBMLMap SBMLid="b0" COPASIkey="ModelValue_6"/>
+    <SBMLMap SBMLid="bub2h" COPASIkey="ModelValue_5"/>
     <SBMLMap SBMLid="bub2l" COPASIkey="ModelValue_11"/>
     <SBMLMap SBMLid="cell" COPASIkey="Compartment_3"/>
     <SBMLMap SBMLid="degradation_1" COPASIkey="Reaction_106"/>

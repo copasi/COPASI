@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- generated with COPASI 4.14 (Build 89+) (http://www.copasi.org) at 2014-11-07 17:36:00 UTC -->
+<!-- generated with COPASI 4.14 (Build 89+) (http://www.copasi.org) at 2014-11-11 17:36:19 UTC -->
 <?oxygen RNGSchema="http://www.copasi.org/static/schema/CopasiML.rng" type="xml"?>
 <COPASI xmlns="http://www.copasi.org/static/schema" versionMajor="4" versionMinor="14" versionDevel="89" copasiSourcesModified="1">
-  <Model key="Model_4" name="vascular part of the Bold response as modelled by Aubert 2002" simulationType="time" timeUnit="s" volumeUnit="ml" areaUnit="m²" lengthUnit="m" quantityUnit="mmol" type="deterministic" avogadroConstant="6.02214179e+23">
+  <Model key="Model_16" name="vascular part of the Bold response as modelled by Aubert 2002" simulationType="time" timeUnit="s" volumeUnit="ml" areaUnit="m²" lengthUnit="m" quantityUnit="mmol" type="deterministic" avogadroConstant="6.02214179e+23">
     <MiriamAnnotation>
 <rdf:RDF
    xmlns:dcterms="http://purl.org/dc/terms/"
    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Model_4">
+  <rdf:Description rdf:about="#Model_16">
     <dcterms:created>
       <rdf:Description>
         <dcterms:W3CDTF>2014-11-04T11:57:11Z</dcterms:W3CDTF>
@@ -18,10 +18,10 @@
 
     </MiriamAnnotation>
     <ListOfCompartments>
-      <Compartment key="Compartment_1" name="Venous balloon" simulationType="ode" dimensionality="3">
+      <Compartment key="Compartment_17" name="Venous balloon" simulationType="ode" dimensionality="3">
         <MiriamAnnotation>
 <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Compartment_1">
+  <rdf:Description rdf:about="#Compartment_17">
     <dcterms:created>
       <rdf:Description>
         <dcterms:W3CDTF>2014-11-04T12:07:28Z</dcterms:W3CDTF>
@@ -36,10 +36,10 @@
       </Compartment>
     </ListOfCompartments>
     <ListOfModelValues>
-      <ModelValue key="ModelValue_0" name="F0" simulationType="fixed">
+      <ModelValue key="ModelValue_222" name="F0" simulationType="fixed">
         <MiriamAnnotation>
 <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#ModelValue_0">
+  <rdf:Description rdf:about="#ModelValue_222">
     <dcterms:created>
       <rdf:Description>
         <dcterms:W3CDTF>2014-11-04T11:57:59Z</dcterms:W3CDTF>
@@ -49,10 +49,10 @@
 </rdf:RDF>
         </MiriamAnnotation>
       </ModelValue>
-      <ModelValue key="ModelValue_1" name="is_rising" simulationType="fixed">
+      <ModelValue key="ModelValue_223" name="is_rising" simulationType="fixed">
         <MiriamAnnotation>
 <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#ModelValue_1">
+  <rdf:Description rdf:about="#ModelValue_223">
     <dcterms:created>
       <rdf:Description>
         <dcterms:W3CDTF>2014-11-04T12:00:20Z</dcterms:W3CDTF>
@@ -62,10 +62,10 @@
 </rdf:RDF>
         </MiriamAnnotation>
       </ModelValue>
-      <ModelValue key="ModelValue_2" name="is_falling" simulationType="fixed">
+      <ModelValue key="ModelValue_191" name="is_falling" simulationType="fixed">
         <MiriamAnnotation>
 <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#ModelValue_2">
+  <rdf:Description rdf:about="#ModelValue_191">
     <dcterms:created>
       <rdf:Description>
         <dcterms:W3CDTF>2014-11-04T12:00:22Z</dcterms:W3CDTF>
@@ -75,10 +75,10 @@
 </rdf:RDF>
         </MiriamAnnotation>
       </ModelValue>
-      <ModelValue key="ModelValue_3" name="is_maximum" simulationType="fixed">
+      <ModelValue key="ModelValue_190" name="is_maximum" simulationType="fixed">
         <MiriamAnnotation>
 <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#ModelValue_3">
+  <rdf:Description rdf:about="#ModelValue_190">
     <dcterms:created>
       <rdf:Description>
         <dcterms:W3CDTF>2014-11-04T12:00:22Z</dcterms:W3CDTF>
@@ -88,10 +88,10 @@
 </rdf:RDF>
         </MiriamAnnotation>
       </ModelValue>
-      <ModelValue key="ModelValue_4" name="slope_up" simulationType="assignment">
+      <ModelValue key="ModelValue_189" name="slope_up" simulationType="assignment">
         <MiriamAnnotation>
 <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#ModelValue_4">
+  <rdf:Description rdf:about="#ModelValue_189">
     <dcterms:created>
       <rdf:Description>
         <dcterms:W3CDTF>2014-11-04T11:59:34Z</dcterms:W3CDTF>
@@ -104,10 +104,10 @@
           &lt;CN=Root,Model=vascular part of the Bold response as modelled by Aubert 2002,Vector=Values[maximum],Reference=InitialValue&gt;/&lt;CN=Root,Model=vascular part of the Bold response as modelled by Aubert 2002,Vector=Values[t_on],Reference=InitialValue&gt;*&lt;CN=Root,Model=vascular part of the Bold response as modelled by Aubert 2002,Reference=Time&gt;
         </Expression>
       </ModelValue>
-      <ModelValue key="ModelValue_5" name="alpha_F_in" simulationType="fixed">
+      <ModelValue key="ModelValue_188" name="alpha_F_in" simulationType="fixed">
         <MiriamAnnotation>
 <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#ModelValue_5">
+  <rdf:Description rdf:about="#ModelValue_188">
     <dcterms:created>
       <rdf:Description>
         <dcterms:W3CDTF>2014-11-04T12:25:46Z</dcterms:W3CDTF>
@@ -117,10 +117,10 @@
 </rdf:RDF>
         </MiriamAnnotation>
       </ModelValue>
-      <ModelValue key="ModelValue_6" name="maximum" simulationType="assignment">
+      <ModelValue key="ModelValue_187" name="maximum" simulationType="assignment">
         <MiriamAnnotation>
 <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#ModelValue_6">
+  <rdf:Description rdf:about="#ModelValue_187">
     <dcterms:created>
       <rdf:Description>
         <dcterms:W3CDTF>2014-11-04T12:01:28Z</dcterms:W3CDTF>
@@ -133,10 +133,10 @@
           &lt;CN=Root,Model=vascular part of the Bold response as modelled by Aubert 2002,Vector=Values[F0],Reference=InitialValue&gt;*&lt;CN=Root,Model=vascular part of the Bold response as modelled by Aubert 2002,Vector=Values[alpha_F_in],Reference=InitialValue&gt;
         </Expression>
       </ModelValue>
-      <ModelValue key="ModelValue_7" name="t_on" simulationType="fixed">
+      <ModelValue key="ModelValue_186" name="t_on" simulationType="fixed">
         <MiriamAnnotation>
 <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#ModelValue_7">
+  <rdf:Description rdf:about="#ModelValue_186">
     <dcterms:created>
       <rdf:Description>
         <dcterms:W3CDTF>2014-11-04T12:27:07Z</dcterms:W3CDTF>
@@ -146,10 +146,10 @@
 </rdf:RDF>
         </MiriamAnnotation>
       </ModelValue>
-      <ModelValue key="ModelValue_8" name="t_end" simulationType="fixed">
+      <ModelValue key="ModelValue_185" name="t_end" simulationType="fixed">
         <MiriamAnnotation>
 <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#ModelValue_8">
+  <rdf:Description rdf:about="#ModelValue_185">
     <dcterms:created>
       <rdf:Description>
         <dcterms:W3CDTF>2014-11-04T12:27:03Z</dcterms:W3CDTF>
@@ -159,10 +159,10 @@
 </rdf:RDF>
         </MiriamAnnotation>
       </ModelValue>
-      <ModelValue key="ModelValue_9" name="slope_down" simulationType="assignment">
+      <ModelValue key="ModelValue_184" name="slope_down" simulationType="assignment">
         <MiriamAnnotation>
 <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#ModelValue_9">
+  <rdf:Description rdf:about="#ModelValue_184">
     <dcterms:created>
       <rdf:Description>
         <dcterms:W3CDTF>2014-11-04T12:04:11Z</dcterms:W3CDTF>
@@ -175,10 +175,10 @@
           &lt;CN=Root,Model=vascular part of the Bold response as modelled by Aubert 2002,Vector=Values[maximum],Reference=Value&gt;*(&lt;CN=Root,Model=vascular part of the Bold response as modelled by Aubert 2002,Vector=Values[t_on],Reference=Value&gt;+&lt;CN=Root,Model=vascular part of the Bold response as modelled by Aubert 2002,Vector=Values[t_end],Reference=Value&gt;-&lt;CN=Root,Model=vascular part of the Bold response as modelled by Aubert 2002,Reference=Time&gt;)/&lt;CN=Root,Model=vascular part of the Bold response as modelled by Aubert 2002,Vector=Values[t_on],Reference=Value&gt;
         </Expression>
       </ModelValue>
-      <ModelValue key="ModelValue_10" name="F_in" simulationType="assignment">
+      <ModelValue key="ModelValue_183" name="F_in" simulationType="assignment">
         <MiriamAnnotation>
 <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#ModelValue_10">
+  <rdf:Description rdf:about="#ModelValue_183">
     <dcterms:created>
       <rdf:Description>
         <dcterms:W3CDTF>2014-11-04T12:08:26Z</dcterms:W3CDTF>
@@ -191,10 +191,10 @@
           &lt;CN=Root,Model=vascular part of the Bold response as modelled by Aubert 2002,Vector=Values[F0],Reference=Value&gt;+&lt;CN=Root,Model=vascular part of the Bold response as modelled by Aubert 2002,Vector=Values[is_rising],Reference=Value&gt;*&lt;CN=Root,Model=vascular part of the Bold response as modelled by Aubert 2002,Vector=Values[slope_up],Reference=Value&gt;+&lt;CN=Root,Model=vascular part of the Bold response as modelled by Aubert 2002,Vector=Values[is_maximum],Reference=Value&gt;*&lt;CN=Root,Model=vascular part of the Bold response as modelled by Aubert 2002,Vector=Values[maximum],Reference=Value&gt;+&lt;CN=Root,Model=vascular part of the Bold response as modelled by Aubert 2002,Vector=Values[is_falling],Reference=Value&gt;*&lt;CN=Root,Model=vascular part of the Bold response as modelled by Aubert 2002,Vector=Values[slope_down],Reference=Value&gt;
         </Expression>
       </ModelValue>
-      <ModelValue key="ModelValue_11" name="F_out" simulationType="assignment">
+      <ModelValue key="ModelValue_182" name="F_out" simulationType="assignment">
         <MiriamAnnotation>
 <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#ModelValue_11">
+  <rdf:Description rdf:about="#ModelValue_182">
     <dcterms:created>
       <rdf:Description>
         <dcterms:W3CDTF>2014-11-04T12:10:02Z</dcterms:W3CDTF>
@@ -209,10 +209,10 @@
       </ModelValue>
     </ListOfModelValues>
     <ListOfEvents>
-      <Event key="Event_0" name="from increase to stable" fireAtInitialTime="0" persistentTrigger="0">
+      <Event key="Event_1" name="from increase to stable" fireAtInitialTime="0" persistentTrigger="0">
         <MiriamAnnotation>
 <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Event_0">
+  <rdf:Description rdf:about="#Event_1">
     <dcterms:created>
       <rdf:Description>
         <dcterms:W3CDTF>2014-11-04T12:13:31Z</dcterms:W3CDTF>
@@ -225,22 +225,22 @@
           &lt;CN=Root,Model=vascular part of the Bold response as modelled by Aubert 2002,Reference=Time&gt; == &lt;CN=Root,Model=vascular part of the Bold response as modelled by Aubert 2002,Vector=Values[t_on],Reference=InitialValue&gt;
         </TriggerExpression>
         <ListOfAssignments>
-          <Assignment targetKey="ModelValue_3">
+          <Assignment targetKey="ModelValue_190">
             <Expression>
               1
             </Expression>
           </Assignment>
-          <Assignment targetKey="ModelValue_1">
+          <Assignment targetKey="ModelValue_223">
             <Expression>
               0
             </Expression>
           </Assignment>
         </ListOfAssignments>
       </Event>
-      <Event key="Event_1" name="from decrease to at_rest" fireAtInitialTime="0" persistentTrigger="0">
+      <Event key="Event_5" name="from decrease to at_rest" fireAtInitialTime="0" persistentTrigger="0">
         <MiriamAnnotation>
 <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Event_1">
+  <rdf:Description rdf:about="#Event_5">
     <dcterms:created>
       <rdf:Description>
         <dcterms:W3CDTF>2014-11-04T12:15:30Z</dcterms:W3CDTF>
@@ -253,17 +253,17 @@
           &lt;CN=Root,Model=vascular part of the Bold response as modelled by Aubert 2002,Reference=Time&gt; == &lt;CN=Root,Model=vascular part of the Bold response as modelled by Aubert 2002,Vector=Values[t_end],Reference=InitialValue&gt;+&lt;CN=Root,Model=vascular part of the Bold response as modelled by Aubert 2002,Vector=Values[t_on],Reference=InitialValue&gt;
         </TriggerExpression>
         <ListOfAssignments>
-          <Assignment targetKey="ModelValue_2">
+          <Assignment targetKey="ModelValue_191">
             <Expression>
               0
             </Expression>
           </Assignment>
         </ListOfAssignments>
       </Event>
-      <Event key="Event_2" name="from stable to decrease (end of stimulation)" fireAtInitialTime="0" persistentTrigger="0">
+      <Event key="Event_0" name="from stable to decrease (end of stimulation)" fireAtInitialTime="0" persistentTrigger="0">
         <MiriamAnnotation>
 <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Event_2">
+  <rdf:Description rdf:about="#Event_0">
     <dcterms:created>
       <rdf:Description>
         <dcterms:W3CDTF>2014-11-04T12:16:38Z</dcterms:W3CDTF>
@@ -276,12 +276,12 @@
           &lt;CN=Root,Model=vascular part of the Bold response as modelled by Aubert 2002,Reference=Time&gt; == &lt;CN=Root,Model=vascular part of the Bold response as modelled by Aubert 2002,Vector=Values[t_end],Reference=InitialValue&gt;
         </TriggerExpression>
         <ListOfAssignments>
-          <Assignment targetKey="ModelValue_3">
+          <Assignment targetKey="ModelValue_190">
             <Expression>
               0
             </Expression>
           </Assignment>
-          <Assignment targetKey="ModelValue_2">
+          <Assignment targetKey="ModelValue_191">
             <Expression>
               1
             </Expression>
@@ -318,20 +318,20 @@
       </ModelParameterSet>
     </ListOfModelParameterSets>
     <StateTemplate>
-      <StateTemplateVariable objectReference="Model_4"/>
-      <StateTemplateVariable objectReference="Compartment_1"/>
-      <StateTemplateVariable objectReference="ModelValue_4"/>
-      <StateTemplateVariable objectReference="ModelValue_6"/>
-      <StateTemplateVariable objectReference="ModelValue_9"/>
-      <StateTemplateVariable objectReference="ModelValue_10"/>
-      <StateTemplateVariable objectReference="ModelValue_11"/>
-      <StateTemplateVariable objectReference="ModelValue_0"/>
-      <StateTemplateVariable objectReference="ModelValue_1"/>
-      <StateTemplateVariable objectReference="ModelValue_2"/>
-      <StateTemplateVariable objectReference="ModelValue_3"/>
-      <StateTemplateVariable objectReference="ModelValue_5"/>
-      <StateTemplateVariable objectReference="ModelValue_7"/>
-      <StateTemplateVariable objectReference="ModelValue_8"/>
+      <StateTemplateVariable objectReference="Model_16"/>
+      <StateTemplateVariable objectReference="Compartment_17"/>
+      <StateTemplateVariable objectReference="ModelValue_189"/>
+      <StateTemplateVariable objectReference="ModelValue_187"/>
+      <StateTemplateVariable objectReference="ModelValue_184"/>
+      <StateTemplateVariable objectReference="ModelValue_183"/>
+      <StateTemplateVariable objectReference="ModelValue_182"/>
+      <StateTemplateVariable objectReference="ModelValue_222"/>
+      <StateTemplateVariable objectReference="ModelValue_223"/>
+      <StateTemplateVariable objectReference="ModelValue_191"/>
+      <StateTemplateVariable objectReference="ModelValue_190"/>
+      <StateTemplateVariable objectReference="ModelValue_188"/>
+      <StateTemplateVariable objectReference="ModelValue_186"/>
+      <StateTemplateVariable objectReference="ModelValue_185"/>
     </StateTemplate>
     <InitialState type="initialState">
       0 0.0237 0 0.006 0.438 0.012 0.012 0.012 1 0 0 0.5 5 360 
@@ -356,7 +356,7 @@
         <Parameter name="Maximum duration for backward integration" type="unsignedFloat" value="1000000"/>
       </Method>
     </Task>
-    <Task key="Task_11" name="Time-Course" type="timeCourse" scheduled="false" updateModel="false">
+    <Task key="Task_11" name="Time-Course" type="timeCourse" scheduled="true" updateModel="false">
       <Report reference="Report_18" target="EventTest26.1.txt" append="0" confirmOverwrite="0"/>
       <Problem>
         <Parameter name="StepNumber" type="unsignedInteger" value="400"/>
@@ -369,7 +369,7 @@
       </Problem>
       <Method name="Deterministic (LSODA)" type="Deterministic(LSODA)">
         <Parameter name="Integrate Reduced Model" type="bool" value="0"/>
-        <Parameter name="Relative Tolerance" type="unsignedFloat" value="1e-06"/>
+        <Parameter name="Relative Tolerance" type="unsignedFloat" value="1e-07"/>
         <Parameter name="Absolute Tolerance" type="unsignedFloat" value="1e-12"/>
         <Parameter name="Max Internal Steps" type="unsignedInteger" value="10000"/>
       </Method>
@@ -693,108 +693,108 @@
       <Parameter name="log Y" type="bool" value="0"/>
       <ListOfPlotItems>
         <PlotItem name="Compartments[Venous balloon].Volume" type="Curve2D">
-          <Parameter name="Line type" type="unsignedInteger" value="0"/>
-          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
-          <Parameter name="Line width" type="unsignedFloat" value="1"/>
-          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
           <Parameter name="Color" type="string" value="auto"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1"/>
           <Parameter name="Recording Activity" type="string" value="during"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
           <ListOfChannels>
             <ChannelSpec cn="CN=Root,Model=vascular part of the Bold response as modelled by Aubert 2002,Reference=Time"/>
             <ChannelSpec cn="CN=Root,Model=vascular part of the Bold response as modelled by Aubert 2002,Vector=Compartments[Venous balloon],Reference=Volume"/>
           </ListOfChannels>
         </PlotItem>
         <PlotItem name="Values[is_rising]" type="Curve2D">
-          <Parameter name="Line type" type="unsignedInteger" value="0"/>
-          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
-          <Parameter name="Line width" type="unsignedFloat" value="1"/>
-          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
           <Parameter name="Color" type="string" value="auto"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1"/>
           <Parameter name="Recording Activity" type="string" value="during"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
           <ListOfChannels>
             <ChannelSpec cn="CN=Root,Model=vascular part of the Bold response as modelled by Aubert 2002,Reference=Time"/>
             <ChannelSpec cn="CN=Root,Model=vascular part of the Bold response as modelled by Aubert 2002,Vector=Values[is_rising],Reference=Value"/>
           </ListOfChannels>
         </PlotItem>
         <PlotItem name="Values[is_falling]" type="Curve2D">
-          <Parameter name="Line type" type="unsignedInteger" value="0"/>
-          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
-          <Parameter name="Line width" type="unsignedFloat" value="1"/>
-          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
           <Parameter name="Color" type="string" value="auto"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1"/>
           <Parameter name="Recording Activity" type="string" value="during"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
           <ListOfChannels>
             <ChannelSpec cn="CN=Root,Model=vascular part of the Bold response as modelled by Aubert 2002,Reference=Time"/>
             <ChannelSpec cn="CN=Root,Model=vascular part of the Bold response as modelled by Aubert 2002,Vector=Values[is_falling],Reference=Value"/>
           </ListOfChannels>
         </PlotItem>
         <PlotItem name="Values[is_maximum]" type="Curve2D">
-          <Parameter name="Line type" type="unsignedInteger" value="0"/>
-          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
-          <Parameter name="Line width" type="unsignedFloat" value="1"/>
-          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
           <Parameter name="Color" type="string" value="auto"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1"/>
           <Parameter name="Recording Activity" type="string" value="during"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
           <ListOfChannels>
             <ChannelSpec cn="CN=Root,Model=vascular part of the Bold response as modelled by Aubert 2002,Reference=Time"/>
             <ChannelSpec cn="CN=Root,Model=vascular part of the Bold response as modelled by Aubert 2002,Vector=Values[is_maximum],Reference=Value"/>
           </ListOfChannels>
         </PlotItem>
         <PlotItem name="Values[slope_up]" type="Curve2D">
-          <Parameter name="Line type" type="unsignedInteger" value="0"/>
-          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
-          <Parameter name="Line width" type="unsignedFloat" value="1"/>
-          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
           <Parameter name="Color" type="string" value="auto"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1"/>
           <Parameter name="Recording Activity" type="string" value="during"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
           <ListOfChannels>
             <ChannelSpec cn="CN=Root,Model=vascular part of the Bold response as modelled by Aubert 2002,Reference=Time"/>
             <ChannelSpec cn="CN=Root,Model=vascular part of the Bold response as modelled by Aubert 2002,Vector=Values[slope_up],Reference=Value"/>
           </ListOfChannels>
         </PlotItem>
         <PlotItem name="Values[maximum]" type="Curve2D">
-          <Parameter name="Line type" type="unsignedInteger" value="0"/>
-          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
-          <Parameter name="Line width" type="unsignedFloat" value="1"/>
-          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
           <Parameter name="Color" type="string" value="auto"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1"/>
           <Parameter name="Recording Activity" type="string" value="during"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
           <ListOfChannels>
             <ChannelSpec cn="CN=Root,Model=vascular part of the Bold response as modelled by Aubert 2002,Reference=Time"/>
             <ChannelSpec cn="CN=Root,Model=vascular part of the Bold response as modelled by Aubert 2002,Vector=Values[maximum],Reference=Value"/>
           </ListOfChannels>
         </PlotItem>
         <PlotItem name="Values[slope_down]" type="Curve2D">
-          <Parameter name="Line type" type="unsignedInteger" value="0"/>
-          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
-          <Parameter name="Line width" type="unsignedFloat" value="1"/>
-          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
           <Parameter name="Color" type="string" value="auto"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1"/>
           <Parameter name="Recording Activity" type="string" value="during"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
           <ListOfChannels>
             <ChannelSpec cn="CN=Root,Model=vascular part of the Bold response as modelled by Aubert 2002,Reference=Time"/>
             <ChannelSpec cn="CN=Root,Model=vascular part of the Bold response as modelled by Aubert 2002,Vector=Values[slope_down],Reference=Value"/>
           </ListOfChannels>
         </PlotItem>
         <PlotItem name="Values[F_in]" type="Curve2D">
-          <Parameter name="Line type" type="unsignedInteger" value="0"/>
-          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
-          <Parameter name="Line width" type="unsignedFloat" value="1"/>
-          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
           <Parameter name="Color" type="string" value="auto"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1"/>
           <Parameter name="Recording Activity" type="string" value="during"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
           <ListOfChannels>
             <ChannelSpec cn="CN=Root,Model=vascular part of the Bold response as modelled by Aubert 2002,Reference=Time"/>
             <ChannelSpec cn="CN=Root,Model=vascular part of the Bold response as modelled by Aubert 2002,Vector=Values[F_in],Reference=Value"/>
           </ListOfChannels>
         </PlotItem>
         <PlotItem name="Values[F_out]" type="Curve2D">
-          <Parameter name="Line type" type="unsignedInteger" value="0"/>
-          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
-          <Parameter name="Line width" type="unsignedFloat" value="1"/>
-          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
           <Parameter name="Color" type="string" value="auto"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1"/>
           <Parameter name="Recording Activity" type="string" value="during"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
           <ListOfChannels>
             <ChannelSpec cn="CN=Root,Model=vascular part of the Bold response as modelled by Aubert 2002,Reference=Time"/>
             <ChannelSpec cn="CN=Root,Model=vascular part of the Bold response as modelled by Aubert 2002,Vector=Values[F_out],Reference=Value"/>
@@ -806,18 +806,18 @@
   <GUI>
   </GUI>
   <SBMLReference file="VascularPartOfBoldResponseAubert2002_false.xml">
-    <SBMLMap SBMLid="F0" COPASIkey="ModelValue_0"/>
-    <SBMLMap SBMLid="F_in" COPASIkey="ModelValue_10"/>
-    <SBMLMap SBMLid="F_out" COPASIkey="ModelValue_11"/>
-    <SBMLMap SBMLid="Venous_balloon" COPASIkey="Compartment_1"/>
-    <SBMLMap SBMLid="alpha_F_in" COPASIkey="ModelValue_5"/>
-    <SBMLMap SBMLid="is_falling" COPASIkey="ModelValue_2"/>
-    <SBMLMap SBMLid="is_maximum" COPASIkey="ModelValue_3"/>
-    <SBMLMap SBMLid="is_rising" COPASIkey="ModelValue_1"/>
-    <SBMLMap SBMLid="maximum" COPASIkey="ModelValue_6"/>
-    <SBMLMap SBMLid="slope_down" COPASIkey="ModelValue_9"/>
-    <SBMLMap SBMLid="slope_up" COPASIkey="ModelValue_4"/>
-    <SBMLMap SBMLid="t_end" COPASIkey="ModelValue_8"/>
-    <SBMLMap SBMLid="t_on" COPASIkey="ModelValue_7"/>
+    <SBMLMap SBMLid="F0" COPASIkey="ModelValue_222"/>
+    <SBMLMap SBMLid="F_in" COPASIkey="ModelValue_183"/>
+    <SBMLMap SBMLid="F_out" COPASIkey="ModelValue_182"/>
+    <SBMLMap SBMLid="Venous_balloon" COPASIkey="Compartment_17"/>
+    <SBMLMap SBMLid="alpha_F_in" COPASIkey="ModelValue_188"/>
+    <SBMLMap SBMLid="is_falling" COPASIkey="ModelValue_191"/>
+    <SBMLMap SBMLid="is_maximum" COPASIkey="ModelValue_190"/>
+    <SBMLMap SBMLid="is_rising" COPASIkey="ModelValue_223"/>
+    <SBMLMap SBMLid="maximum" COPASIkey="ModelValue_187"/>
+    <SBMLMap SBMLid="slope_down" COPASIkey="ModelValue_184"/>
+    <SBMLMap SBMLid="slope_up" COPASIkey="ModelValue_189"/>
+    <SBMLMap SBMLid="t_end" COPASIkey="ModelValue_185"/>
+    <SBMLMap SBMLid="t_on" COPASIkey="ModelValue_186"/>
   </SBMLReference>
 </COPASI>
