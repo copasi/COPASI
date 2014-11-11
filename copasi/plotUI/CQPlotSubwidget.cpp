@@ -861,7 +861,12 @@ bool CQPlotSubwidget::loadFromPlotSpec(const CPlotSpecification *pspec)
       QString title = FROM_UTF8((*it)->getTitle());
       PlotItems.append(title);
 
-      mList.insert(title, new CPlotItem(**it));
+      CPlotItem * pItem = new CPlotItem(**it);
+
+      // The copy has the same parent as the original, i.e., it has been added to the plot specification.
+      const_cast< CPlotSpecification * >(pspec)->getItems().remove(pItem);
+
+      mList.insert(title, pItem);
     }
 
   mpListPlotItems->addItems(PlotItems);
@@ -910,15 +915,12 @@ bool CQPlotSubwidget::saveToPlotSpec()
 
   for (it = mList.begin(); it != mList.end(); ++it)
     {
-      CPlotItem* currentItem = (*it);
+      CPlotItem * currentItem = (*it);
 
       if (currentItem == NULL) continue;
 
       item = new CPlotItem(*currentItem);
-
-      if (item != NULL)
-        if (!pspec->getItems().add(item , true))
-          delete item;
+      pspec->getItems().add(item, true);
     }
 
   // :TODO Bug 322: This should only be called when actual changes have been saved.
