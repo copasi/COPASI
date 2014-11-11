@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -49,13 +49,18 @@ CCopasiRootContainer::~CCopasiRootContainer()
       mpConfiguration->save();
     }
 
+  // delete the configuration
+  pdelete(mpConfiguration);
+
+  // delete the unkown resource
   pdelete(mpUnknownResource);
 
-  pdelete(mpConfiguration);
-  // delete the function list
-  pdelete(mpFunctionList);
   // delete the model list
   pdelete(mpDataModelList);
+
+  // delete the function list
+  pdelete(mpFunctionList);
+
   // delete the undefined and the unsupported delay function
   pdelete(mpUndefined);
 }
