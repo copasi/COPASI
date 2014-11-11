@@ -15,7 +15,7 @@
 /**
  * Class CCopasiObject
  *
- * This class is the base class for all global accessible objects in copasi.
+ * This class is the base class for all global accessible objects in COPASI.
  *
  * Copyright Stefan Hoops 2002
  */
