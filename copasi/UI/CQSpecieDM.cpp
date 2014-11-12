@@ -29,6 +29,8 @@
 #include "undoFramework/SpecieDataChangeCommand.h"
 #include "undoFramework/UndoSpecieData.h"
 #include "undoFramework/UndoReactionData.h"
+#include "undoFramework/UndoGlobalQuantityData.h"
+#include "undoFramework/UndoEventData.h"
 #endif
 
 CQSpecieDM::CQSpecieDM(QObject *parent):
@@ -350,7 +352,8 @@ bool CQSpecieDM::setData(const QModelIndex &index, const QVariant &value,
 {
 #ifdef COPASI_UNDO
 
-  if (index.data() == value)
+  //change is only accepted if the new value is different from the old value and also the old value is not equal to "New Species" for the 'name' column
+  if (index.data() == value || index.data() == "New Species")
     return false;
   else
     mpUndoStack->push(new SpecieDataChangeCommand(index, value, role, this));
@@ -624,7 +627,6 @@ bool CQSpecieDM::removeRows(QModelIndexList rows, const QModelIndex&)
 
 bool CQSpecieDM::specieDataChange(const QModelIndex &index, const QVariant &value, int role)
 {
-
   if (index.isValid() && role == Qt::EditRole)
     {
       bool defaultRow = isDefaultRow(index);
@@ -646,6 +648,7 @@ bool CQSpecieDM::specieDataChange(const QModelIndex &index, const QVariant &valu
             }
 
           mNotify = false;
+
           insertRow();
           mNotify = true;
         }
@@ -754,6 +757,7 @@ bool CQSpecieDM::specieDataChange(const QModelIndex &index, const QVariant &valu
 
       if (defaultRow)
         {
+
           emit notifyGUI(ListViews::METABOLITE, ListViews::ADD, key);
         }
       else
@@ -893,38 +897,125 @@ bool CQSpecieDM::insertSpecieRows(QList <UndoSpecieData *> pData)
   for (k = pData.begin(); k != pData.end(); ++k)
     {
       UndoSpecieData * data = *k;
-      QList <UndoReactionData *> *reactionData = data->getReactionDependencyObjects();
 
-      QList <UndoReactionData *>::const_iterator j;
+      //reinsert the dependency global quantity
+      QList <UndoGlobalQuantityData *> *pGlobalQuantityData = data->getGlobalQuantityDependencyObjects();
 
-      for (j = reactionData->begin(); j != reactionData->end(); ++j)
+      if (!pGlobalQuantityData->empty())
         {
+          QList <UndoGlobalQuantityData *>::const_iterator g;
 
-          UndoReactionData * rData = *j;
-
-          //TODO check if reaction already exist in the model, better idea may be implemented in the future
-          bool exist = false;
-
-          for (int ii = 0; ii < pModel->getReactions().size(); ii++)
+          for (g = pGlobalQuantityData->begin(); g != pGlobalQuantityData->end(); ++g)
             {
-              if (pModel->getReactions()[ii]->getObjectName() == rData->getName())
+              UndoGlobalQuantityData * gData = *g;
+
+              if (pModel->getModelValues().getIndex(gData->getName()) == C_INVALID_INDEX)
                 {
-                  exist = true;
-                  ii = ii + pModel->getReactions().size() + 1; //jump out of the loop reaction exist already
-                }
-              else
-                {
-                  exist = false;
+                  CModelValue *pGlobalQuantity =  pModel->createModelValue(gData->getName()); //, gData->getInitialValue());
+
+                  if (pGlobalQuantity)
+                    {
+                      pGlobalQuantity->setStatus(gData->getStatus());
+
+                      if (gData->getStatus() != CModelEntity::ASSIGNMENT)
+                        {
+                          std::cout << "+++Not Quantity ASSIGN ========++" << gData->getInitialValue() << " ---" << gData->getStatus() << std::endl;
+                          pGlobalQuantity->setInitialValue(gData->getInitialValue());
+                        }
+
+                      if (gData->getStatus() != CModelEntity::FIXED)
+                        {
+                          pGlobalQuantity->setExpression(gData->getExpression());
+                        }
+
+                      /*  if (gData->getStatus() == CModelEntity::ODE){
+                          std::cout<<"+++Not Quantity FIXED ========++"<<gData->getExpression()<<"++++"<<gData->getStatus()<<std::endl;
+                          pGlobalQuantity->setExpression(gData->getExpression());
+                        }*/
+
+                      // set initial expression
+                      if (gData->getStatus() != CModelEntity::ASSIGNMENT)
+                        {
+
+                          pGlobalQuantity->setInitialExpression(gData->getInitialExpression());
+                        }
+
+                      emit notifyGUI(ListViews::MODELVALUE, ListViews::ADD, pGlobalQuantity->getKey());
+                    }
                 }
             }
+        }
 
-          if (!exist)
+      QList <UndoReactionData *> *reactionData = data->getReactionDependencyObjects();
+
+      if (!reactionData->empty())
+        {
+          QList <UndoReactionData *>::const_iterator j;
+
+          for (j = reactionData->begin(); j != reactionData->end(); ++j)
             {
-              //  beginInsertRows(QModelIndex(), 1, 1);
-              CReaction *pRea =  pModel->createReaction(rData->getName());
-              rData->getRi()->writeBackToReaction(pRea);
-              emit notifyGUI(ListViews::REACTION, ListViews::ADD, pRea->getKey());
-              //  endInsertRows();
+
+              UndoReactionData * rData = *j;
+
+              //need to make sure reaction doesn't exist in the model already
+              if (pModel->getReactions().getIndex(rData->getName()) == C_INVALID_INDEX)
+                {
+                  CReaction *pRea =  pModel->createReaction(rData->getName());
+                  CChemEqInterface *chem = new CChemEqInterface(pModel);
+                  chem->setChemEqString(rData->getRi()->getChemEqString());
+                  chem->writeToChemEq(pRea->getChemEq());
+                  rData->getRi()->createMetabolites();
+                  rData->getRi()->createOtherObjects();
+                  rData->getRi()->writeBackToReaction(pRea);
+                  //std::string name = rData->getRi()->getFunctionName();
+                  //pRea->setFunction((const)rData->getRi()->getFunction());
+
+                  emit notifyGUI(ListViews::REACTION, ListViews::ADD, pRea->getKey());
+                  //  endInsertRows();
+                }
+            }
+        }
+
+      //reinsert the dependency events
+      QList <UndoEventData *> *pEventData = data->getEventDependencyObjects();
+
+      if (!pEventData->empty())
+        {
+          QList <UndoEventData *>::const_iterator ev;
+
+          for (ev = pEventData->begin(); ev != pEventData->end(); ++ev)
+            {
+              UndoEventData * eData = *ev;
+
+              if (pModel->getEvents().getIndex(eData->getName()) == C_INVALID_INDEX)
+                {
+                  CEvent *pEvent =  pModel->createEvent(eData->getName());
+
+                  if (pEvent)
+                    {
+                      std::string key = pEvent->getKey();
+                      //set the expressions
+                      pEvent->setTriggerExpression(eData->getTriggerExpression());
+                      pEvent->setDelayExpression(eData->getDelayExpression());
+                      pEvent->setPriorityExpression(eData->getPriorityExpression());
+
+                      QList <CEventAssignment *> *assignments = eData->getAssignments();
+                      QList <CEventAssignment *>::const_iterator i;
+
+                      for (i = assignments->begin(); i != assignments->end(); ++i)
+                        {
+                          CEventAssignment * assign = *i;
+
+                          if (pEvent->getAssignments().getIndex(assign->getObjectName()) == C_INVALID_INDEX)
+                            {
+                              CEventAssignment *eventAssign = new CEventAssignment(assign->getTargetKey(), pEvent->getObjectParent());
+                              pEvent->getAssignments().add(eventAssign);
+                            }
+                        }
+
+                      emit notifyGUI(ListViews::EVENT, ListViews::ADD, key);
+                    }
+                }
             }
         }
     }

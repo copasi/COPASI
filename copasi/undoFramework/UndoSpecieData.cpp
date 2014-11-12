@@ -15,6 +15,8 @@
 #include "model/CMetab.h"
 #include "UndoSpecieData.h"
 #include "UndoReactionData.h"
+#include "UndoGlobalQuantityData.h"
+#include "UndoEventData.h"
 
 UndoSpecieData::UndoSpecieData()
 {
@@ -94,4 +96,24 @@ double UndoSpecieData::getINumber() const
 void UndoSpecieData::setINumber(double iNumber)
 {
   mINumber = iNumber;
+}
+
+QList<UndoGlobalQuantityData*> *UndoSpecieData::getGlobalQuantityDependencyObjects() const
+{
+  return mGlobalQuantityDependencyObjects;
+}
+
+void UndoSpecieData::setGlobalQuantityDependencyObjects(QList<UndoGlobalQuantityData*> *globalQuantityDependencyObjects)
+{
+  mGlobalQuantityDependencyObjects = globalQuantityDependencyObjects;
+}
+
+QList<UndoEventData*> *UndoSpecieData::getEventDependencyObjects() const
+{
+  return mEventDependencyObjects;
+}
+
+void UndoSpecieData::setEventDependencyObjects(QList<UndoEventData*> *eventDependencyObjects)
+{
+  mEventDependencyObjects = eventDependencyObjects;
 }

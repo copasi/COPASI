@@ -35,6 +35,7 @@ DeleteCompartmentCommand::DeleteCompartmentCommand(CQCompartment *pCompartment)
   setDependentObjects(mpCompartment->mpCompartment->getDeletedObjects());
   mpCompartmentData->setSpecieDependencyObjects(getSpecieData());
   mpCompartmentData->setReactionDependencyObjects(getReactionData());
+  mpCompartmentData->setEventDependencyObjects(getEventData());
 
   this->setText(deleteCompartmentText(sName));
 }

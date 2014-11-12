@@ -23,7 +23,7 @@ SpecieDataChangeCommand::SpecieDataChangeCommand(QModelIndex index, const QVaria
   mIndex = index;
   mRole = role;
 
-  //mPathIndex = pathFromIndex(index);
+  mPathIndex = pathFromIndex(index);
   this->setText(specieDataChangeText());
 }
 
@@ -34,11 +34,12 @@ SpecieDataChangeCommand::~SpecieDataChangeCommand()
 
 void SpecieDataChangeCommand::redo()
 {
+  mIndex = pathToIndex(mPathIndex, mpSpecieDM);
   mpSpecieDM->specieDataChange(mIndex, mNew, mRole);
 }
 void SpecieDataChangeCommand::undo()
 {
-  //mIndex = pathToIndex(mPathIndex, mpSpecieDM);
+  mIndex = pathToIndex(mPathIndex, mpSpecieDM);
   mpSpecieDM->specieDataChange(mIndex, mOld, mRole);
 }
 QString SpecieDataChangeCommand::specieDataChangeText() const

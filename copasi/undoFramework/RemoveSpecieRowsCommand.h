@@ -34,8 +34,7 @@ private:
   CQSpecieDM *mpSpecieDM;
   QModelIndexList mRows;
   QList <UndoSpecieData *> mpSpecieData;
-
-  QList <UndoReactionData *> mpReactionData;
+  //QList <UndoReactionData *> mpReactionData;
   bool mFirstTime;
 };
 

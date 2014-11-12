@@ -44,6 +44,7 @@ RemoveAllCompartmentRowsCommand::RemoveAllCompartmentRowsCommand(CQCompartmentDM
           mpSpecieData = new QList <UndoSpecieData*>();
           mpReactionData = new  QList <UndoReactionData*>();
           mpGlobalQuantityData = new  QList <UndoGlobalQuantityData*>();
+          mpEventData = new  QList <UndoEventData*>();
           data->setName(pModel->getCompartments()[i]->getObjectName());
           data->setStatus(pModel->getCompartments()[i]->getStatus());
           data->setInitialValue(pModel->getCompartments()[i]->getInitialValue());
@@ -51,6 +52,8 @@ RemoveAllCompartmentRowsCommand::RemoveAllCompartmentRowsCommand(CQCompartmentDM
           data->setReactionDependencyObjects(getReactionData());
           data->setSpecieDependencyObjects(getSpecieData());
           data->setGlobalQuantityDependencyObjects(getGlobalQuantityData());
+          data->setEventDependencyObjects(getEventData());
+
           mpCompartmentData.append(data);
         }
     }

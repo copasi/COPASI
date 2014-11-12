@@ -25,6 +25,7 @@ class UndoData;
 class UndoSpecieData;
 class UndoReactionData;
 class UndoGlobalQuantityData;
+class UndoEventData;
 
 class CCopasiUndoCommand : public QUndoCommand
 {
@@ -43,11 +44,14 @@ public:
   void setSpecieData(QList<UndoSpecieData*> *specieData);
   QList<UndoGlobalQuantityData*> *getGlobalQuantityData() const;
   void setGlobalQuantityData(QList<UndoGlobalQuantityData*> *globalQuantityData);
+  QList<UndoEventData*> *getEventData() const;
+  void setEventData(QList<UndoEventData*> *eventData);
 
 protected:
   QList<UndoSpecieData*> *mpSpecieData;
   QList<UndoReactionData*> *mpReactionData;
   QList<UndoGlobalQuantityData*> *mpGlobalQuantityData;
+  QList<UndoEventData*> *mpEventData;
 };
 
 #endif /* CCOPASIUNDOCOMMAND_H_ */

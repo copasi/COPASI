@@ -19,6 +19,8 @@
 
 #include "UndoSpecieData.h"
 #include "UndoReactionData.h"
+#include "UndoEventData.h"
+#include "UndoGlobalQuantityData.h"
 #include "RemoveSpecieRowsCommand.h"
 
 RemoveSpecieRowsCommand::RemoveSpecieRowsCommand(QModelIndexList rows, CQSpecieDM * pSpecieDM, const QModelIndex&)
@@ -42,16 +44,18 @@ RemoveSpecieRowsCommand::RemoveSpecieRowsCommand(QModelIndexList rows, CQSpecieD
 
       if (!pSpecieDM->isDefaultRow(*i) && pModel->getMetabolites()[(*i).row()])
         {
+          //  mpReactionData = new  QList <UndoReactionData*>();
+          //  mpGlobalQuantityData = new  QList <UndoGlobalQuantityData*>();
+          //  mpEventData = new  QList <UndoEventData*>();
           data->setName(pModel->getMetabolites()[(*i).row()]->getObjectName());
           data->setIConc(pModel->getMetabolites()[(*i).row()]->getInitialConcentration());
           data->setCompartment(pModel->getMetabolites()[(*i).row()]->getCompartment()->getObjectName());
           data->setStatus(pModel->getMetabolites()[(*i).row()]->getStatus());
 
-          //  QList<UndoReactionData*> *dependencyObjects = new QList <UndoReactionData*>();
-
-          setDependentObjects(pModel->getMetabolites()[(*i).row()]->getDeletedObjects()); //, dependencyObjects);
+          setDependentObjects(pModel->getMetabolites()[(*i).row()]->getDeletedObjects());
           data->setReactionDependencyObjects(getReactionData());
-          //  data->setDependencyObjects(getReactionData());
+          data->setGlobalQuantityDependencyObjects(getGlobalQuantityData());
+          data->setEventDependencyObjects(getEventData());
 
           mpSpecieData.append(data);
         }

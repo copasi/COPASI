@@ -85,3 +85,13 @@ void UndoCompartmentData::setGlobalQuantityDependencyObjects(QList<UndoGlobalQua
 {
   mGlobalQuantityDependencyObjects = globalQuantityDependencyObjects;
 }
+
+QList<UndoEventData*> *UndoCompartmentData::getEventDependencyObjects() const
+{
+  return mEventDependencyObjects;
+}
+
+void UndoCompartmentData::setEventDependencyObjects(QList<UndoEventData*> *eventDependencyObjects)
+{
+  mEventDependencyObjects = eventDependencyObjects;
+}

@@ -19,6 +19,7 @@
 #include "model/CReaction.h"
 #include "model/CMetab.h"
 #include "model/CReactionInterface.h"
+#include "model/CEvent.h"
 #include "undoFramework/InsertCompartmentRowsCommand.h"
 #include "undoFramework/RemoveCompartmentRowsCommand.h"
 #include "undoFramework/RemoveAllCompartmentRowsCommand.h"
@@ -27,6 +28,7 @@
 #include "undoFramework/UndoReactionData.h"
 #include "undoFramework/UndoSpecieData.h"
 #include "undoFramework/UndoGlobalQuantityData.h"
+#include "undoFramework/UndoEventData.h"
 #endif
 
 #include "copasi.h"
@@ -553,26 +555,32 @@ bool CQCompartmentDM::insertCompartmentRows(QList <UndoCompartmentData *> pData)
     return false;
 
   //reinsert all the Compartments
-  QList <UndoCompartmentData *>::const_iterator i;
-
+  /*QList <UndoCompartmentData *>::const_iterator i;
   for (i = pData.begin(); i != pData.end(); ++i)
+  {
+    UndoCompartmentData * data = *i;
+    beginInsertRows(QModelIndex(), 1, 1);
+    CCompartment *pCompartment =  pModel->createCompartment(data->getName());
+    pCompartment->setInitialValue(data->getInitialValue());
+    pCompartment->setStatus(data->getStatus());
+    emit notifyGUI(ListViews::COMPARTMENT, ListViews::ADD, pCompartment->getKey());
+    endInsertRows();
+  }*/
+
+  //restore all the dependencies
+  QList <UndoCompartmentData *>::const_iterator k;
+
+  for (k = pData.begin(); k != pData.end(); ++k)
     {
-      UndoCompartmentData * data = *i;
+      UndoCompartmentData * data = *k;
+
       beginInsertRows(QModelIndex(), 1, 1);
       CCompartment *pCompartment =  pModel->createCompartment(data->getName());
       pCompartment->setInitialValue(data->getInitialValue());
       pCompartment->setStatus(data->getStatus());
       emit notifyGUI(ListViews::COMPARTMENT, ListViews::ADD, pCompartment->getKey());
       endInsertRows();
-    }
 
-  //restore all the dependencies
-  //QList <UndoSpecieData *> *pSpecieData;
-  QList <UndoCompartmentData *>::const_iterator k;
-
-  for (k = pData.begin(); k != pData.end(); ++k)
-    {
-      UndoCompartmentData * data = *k;
       //reinsert all the species
       QList <UndoSpecieData *> *pSpecieData = data->getSpecieDependencyObjects();
 
@@ -595,25 +603,39 @@ bool CQCompartmentDM::insertCompartmentRows(QList <UndoCompartmentData *> pData)
 
       if (!pGlobalQuantityData->empty())
         {
-
           QList <UndoGlobalQuantityData *>::const_iterator g;
 
           for (g = pGlobalQuantityData->begin(); g != pGlobalQuantityData->end(); ++g)
             {
               UndoGlobalQuantityData * gData = *g;
-              CModelValue *pGlobalQuantity =  pModel->createModelValue(gData->getName());
-              pGlobalQuantity->setStatus(gData->getStatus());
 
-              if (gData->isFixed())
+              if (pModel->getModelValues().getIndex(gData->getName()) == C_INVALID_INDEX)
                 {
-                  pGlobalQuantity->setInitialValue(gData->getInitialValue());
-                }
-              else if (!gData->isFixed())
-                {
-                  pGlobalQuantity->setExpression(gData->getExpression());
-                }
+                  CModelValue *pGlobalQuantity =  pModel->createModelValue(gData->getName());
 
-              emit notifyGUI(ListViews::MODELVALUE, ListViews::ADD, pGlobalQuantity->getKey());
+                  if (pGlobalQuantity)
+                    {
+                      pGlobalQuantity->setStatus(gData->getStatus());
+
+                      if (gData->getStatus() != CModelEntity::ASSIGNMENT)
+                        {
+                          pGlobalQuantity->setInitialValue(gData->getInitialValue());
+                        }
+
+                      if (gData->getStatus() != CModelEntity::FIXED)
+                        {
+                          pGlobalQuantity->setExpression(gData->getExpression());
+                        }
+
+                      // set initial expression
+                      if (gData->getStatus() != CModelEntity::ASSIGNMENT)
+                        {
+                          pGlobalQuantity->setInitialExpression(gData->getInitialExpression());
+                        }
+
+                      emit notifyGUI(ListViews::MODELVALUE, ListViews::ADD, pGlobalQuantity->getKey());
+                    }
+                }
             }
         }
 
@@ -628,29 +650,56 @@ bool CQCompartmentDM::insertCompartmentRows(QList <UndoCompartmentData *> pData)
             {
               UndoReactionData * rData = *j;
 
-              //TODO check if reaction already exist in the model, better idea may be implemented in the future
-              bool exist = false;
+              //need to make sure reaction doesn't exist in the model already
 
-              for (int ii = 0; ii < pModel->getReactions().size(); ii++)
-                {
-                  if (pModel->getReactions()[ii]->getObjectName() == rData->getName())
-                    {
-                      exist = true;
-                      ii = ii + pModel->getReactions().size() + 1; //jump out of the loop reaction exist already
-                    }
-                  else
-                    {
-                      exist = false;
-                    }
-                }
-
-              if (!exist)
+              if (pModel->getReactions().getIndex(rData->getName()) == C_INVALID_INDEX)
                 {
                   emit notifyGUI(ListViews::METABOLITE, ListViews::ADD, ""); //Refresh all dependency species.
                   CReaction *pRea =  pModel->createReaction(rData->getName());
+                  CChemEqInterface *chem = new CChemEqInterface(pModel);
+                  chem->setChemEqString(rData->getRi()->getChemEqString());
+                  chem->writeToChemEq(pRea->getChemEq());
+                  rData->getRi()->createMetabolites();
+                  rData->getRi()->createOtherObjects();
                   rData->getRi()->writeBackToReaction(pRea);
+
                   emit notifyGUI(ListViews::REACTION, ListViews::ADD, pRea->getKey());
                 }
+            }
+        }
+
+      //reinsert the dependency events
+      QList <UndoEventData *> *pEventData = data->getEventDependencyObjects();
+
+      if (!pEventData->empty())
+        {
+
+          QList <UndoEventData *>::const_iterator ev;
+
+          for (ev = pEventData->begin(); ev != pEventData->end(); ++ev)
+            {
+
+              UndoEventData * eData = *ev;
+
+              CEvent *pEvent =  pModel->createEvent(eData->getName());
+              std::string key = pEvent->getKey();
+
+              //set the expressions
+              pEvent->setTriggerExpression(eData->getTriggerExpression());
+              pEvent->setDelayExpression(eData->getDelayExpression());
+              pEvent->setPriorityExpression(eData->getPriorityExpression());
+
+              QList <CEventAssignment *> *assignments = eData->getAssignments();
+              QList <CEventAssignment *>::const_iterator i;
+
+              for (i = assignments->begin(); i != assignments->end(); ++i)
+                {
+                  CEventAssignment * assign = *i;
+                  CEventAssignment *eventAssign = new CEventAssignment(assign->getTargetKey(), pEvent->getObjectParent());
+                  pEvent->getAssignments().add(eventAssign);
+                }
+
+              emit notifyGUI(ListViews::EVENT, ListViews::ADD, key);
             }
         }
     }
@@ -675,7 +724,19 @@ void CQCompartmentDM::deleteCompartmentRows(QList <UndoCompartmentData *> pData)
       UndoCompartmentData * data = *j;
       CCompartment * pCompartment = pModel->getCompartments()[data->getName()];
       size_t index = pModel->getCompartments().CCopasiVector< CCompartment >::getIndex(pCompartment);
-      removeRow((int) index);
+
+      if (index != C_INVALID_INDEX)
+        {
+          QMessageBox::StandardButton choice =
+            CQMessageBox::confirmDelete(NULL, "compartment",
+                                        FROM_UTF8(pCompartment->getObjectName()),
+                                        pCompartment->getDeletedObjects());
+
+          if (choice == QMessageBox::Ok)
+            removeRow((int) index);
+        }
+
+      //removeRow((int) index);
     }
 
   emit changeWidget(111);

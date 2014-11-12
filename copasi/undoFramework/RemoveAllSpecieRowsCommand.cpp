@@ -10,6 +10,8 @@
  *      Author: dada
  */
 
+#include <QtCore/QList>
+
 #include "report/CCopasiRootContainer.h"
 #include "model/CMetab.h"
 #include "model/CModel.h"
@@ -22,6 +24,8 @@
 #include "RemoveAllSpecieRowsCommand.h"
 #include "UndoSpecieData.h"
 #include "UndoReactionData.h"
+#include "UndoGlobalQuantityData.h"
+#include "UndoEventData.h"
 
 RemoveAllSpecieRowsCommand::RemoveAllSpecieRowsCommand(CQSpecieDM * pSpecieDM, const QModelIndex&)
 {
@@ -40,10 +44,18 @@ RemoveAllSpecieRowsCommand::RemoveAllSpecieRowsCommand(CQSpecieDM * pSpecieDM, c
 
       if (pModel->getMetabolites()[i])
         {
+          //  mpReactionData = new  QList <UndoReactionData*>();
+          //  mpGlobalQuantityData = new  QList <UndoGlobalQuantityData*>();
+          //  mpEventData = new  QList <UndoEventData*>();
           data->setName(pModel->getMetabolites()[i]->getObjectName());
           data->setIConc(pModel->getMetabolites()[i]->getInitialConcentration());
           data->setCompartment(pModel->getMetabolites()[i]->getCompartment()->getObjectName());
           data->setStatus(pModel->getMetabolites()[i]->getStatus());
+
+          setDependentObjects(pModel->getMetabolites()[i]->getDeletedObjects());
+          data->setReactionDependencyObjects(getReactionData());
+          data->setGlobalQuantityDependencyObjects(getGlobalQuantityData());
+          data->setEventDependencyObjects(getEventData());
 
           setDependentObjects(pModel->getMetabolites()[i]->getDeletedObjects());
           data->setReactionDependencyObjects(getReactionData());

@@ -20,6 +20,8 @@
 
 class CMetab;
 class UndoReactionData;
+class UndoGlobalQuantityData;
+class UndoEventData;
 
 class UndoSpecieData: public UndoData
 {
@@ -41,6 +43,11 @@ public:
   void setReactionDependencyObjects(QList<UndoReactionData*> *reactionDependencyObjects);
   double getINumber() const;
   void setINumber(double iNumber);
+  QList<UndoGlobalQuantityData*> *getGlobalQuantityDependencyObjects() const;
+  void setGlobalQuantityDependencyObjects(QList<UndoGlobalQuantityData*> *globalQuantityDependencyObjects);
+  QList<UndoEventData*> *getEventDependencyObjects() const;
+  void setEventDependencyObjects(QList<UndoEventData*> *eventDependencyObjects);
+
 private:
   /**
    *  Initial concentration of the species as double
@@ -70,6 +77,14 @@ private:
    * Pointer to species dependency objects
    */
   QList<UndoReactionData*> *mReactionDependencyObjects;
+  /**
+   * Pointer to global quantity dependency objects
+   */
+  QList<UndoGlobalQuantityData*> *mGlobalQuantityDependencyObjects;
+  /**
+   * Pointer to event dependency objects
+   */
+  QList<UndoEventData*> *mEventDependencyObjects;
 };
 
 #endif /* UNDOSPECIEDATA_H_ */

@@ -87,3 +87,13 @@ void UndoGlobalQuantityData::setModelValue(CModelValue modelValue)
 {
   this->modelValue = modelValue;
 }
+
+const std::string & UndoGlobalQuantityData::getInitialExpression() const
+{
+  return mInitialExpression;
+}
+
+void UndoGlobalQuantityData::setInitialExpression(const std::string &initialExpression)
+{
+  mInitialExpression = initialExpression;
+}

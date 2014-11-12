@@ -32,7 +32,7 @@ public:
 private:
   CQSpecieDM *mpSpecieDM;
   QList <UndoSpecieData *> mpSpecieData;
-  QList <UndoReactionData *> mpReactionData;
+  //  QList <UndoReactionData *> mpReactionData;
   virtual ~RemoveAllSpecieRowsCommand();
 };
 

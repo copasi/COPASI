@@ -36,7 +36,10 @@ public:
   const std::string & getExpression() const;
   void setExpression(const std::string & expression);
   CModelValue getModelValue() const;
+
   void setModelValue(CModelValue modelValue);
+  const std::string &getInitialExpression() const;
+  void setInitialExpression(const std::string &initialExpression);
 private:
   CModelValue modelValue;
   /**
@@ -44,17 +47,21 @@ private:
    */
   bool fixed;
   /**
-  *  Initial value of the global quantity as double
-  */
+   *  Initial value of the global quantity as double
+   */
   double mInitialValue;
   /**
-  * The status of the quantity
-  */
+   * The status of the quantity
+   */
   CModelEntity::Status mStatus;
   /**
    * The expression for non fixed value of quantity
    */
   std::string mExpression;
+  /**
+   * The initial expression for non fixed value of quantity
+   */
+  std::string mInitialExpression;
   /**
    * Pointer to species dependency objects
    */
