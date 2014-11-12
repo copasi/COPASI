@@ -27,6 +27,8 @@
 #include "undoFramework/SpecieInitialValueLostFocusCommand.h"
 #include "undoFramework/UndoSpecieData.h"
 #include "undoFramework/UndoReactionData.h"
+#include "undoFramework/UndoGlobalQuantityData.h"
+#include "undoFramework/UndoEventData.h"
 #include "copasiui3window.h"
 #endif
 
@@ -972,8 +974,78 @@ void CQSpeciesDetail::addSpecie(UndoSpecieData *pSData)
       if (!exist)
         {
           CReaction *pRea =  pModel->createReaction(rData->getName());
-          rData->getRi()->writeBackToReaction(pRea);
+          CChemEqInterface *chem = new CChemEqInterface(pModel);
+          chem->setChemEqString(rData->getRi()->getChemEqString());
+          chem->writeToChemEq(pRea->getChemEq());
+
+          //  rData->getRi()->writeBackToReaction(pRea);
           protectedNotify(ListViews::REACTION, ListViews::ADD, pRea->getKey());
+        }
+    }
+
+  //reinsert the dependency global quantity
+  QList <UndoGlobalQuantityData *> *pGlobalQuantityData = pSData->getGlobalQuantityDependencyObjects();
+
+  if (!pGlobalQuantityData->empty())
+    {
+
+      QList <UndoGlobalQuantityData *>::const_iterator g;
+
+      for (g = pGlobalQuantityData->begin(); g != pGlobalQuantityData->end(); ++g)
+        {
+          UndoGlobalQuantityData * gData = *g;
+          CModelValue *pGlobalQuantity =  pModel->createModelValue(gData->getName());
+          pGlobalQuantity->setStatus(gData->getStatus());
+
+          if (gData->isFixed())
+            {
+              pGlobalQuantity->setInitialValue(gData->getInitialValue());
+            }
+          else if (!gData->isFixed())
+            {
+              pGlobalQuantity->setExpression(gData->getExpression());
+            }
+
+          protectedNotify(ListViews::MODELVALUE, ListViews::ADD, pGlobalQuantity->getKey());
+        }
+    }
+
+  //reinsert the dependency events
+  QList <UndoEventData *> *pEventData = pSData->getEventDependencyObjects();
+
+  if (!pEventData->empty())
+    {
+
+      QList <UndoEventData *>::const_iterator ev;
+
+      for (ev = pEventData->begin(); ev != pEventData->end(); ++ev)
+        {
+
+          UndoEventData * eData = *ev;
+
+          CEvent *pEvent =  pModel->createEvent(eData->getName());
+          std::string key = pEvent->getKey();
+
+          //set the expressions
+          pEvent->setTriggerExpression(eData->getTriggerExpression());
+          //pEvent->setDelayExpression(eData->getDelayExpression());
+          //  std::cout<<"+++++Event Level++++ Prioroty"<<eData->getPriorityExpression()<<std::endl;
+          //  pEvent->setPriorityExpression(eData->getPriorityExpression());
+
+          QList <CEventAssignment *> *assignments = eData->getAssignments();
+          QList <CEventAssignment *>::const_iterator i;
+
+          for (i = assignments->begin(); i != assignments->end(); ++i)
+            {
+              CEventAssignment * assign = *i;
+              CEventAssignment *eventAssign = new CEventAssignment(assign->getTargetKey(), pEvent->getObjectParent());
+              pEvent->getAssignments().add(eventAssign);
+              //    std::cout<<"+++++Event Level++++"<<eventAssign->getKey()<<std::endl;
+            }
+
+          //    std::cout<<"=====Event Level==== KEY"<<key<<std::endl;
+          protectedNotify(ListViews::EVENT, ListViews::ADD, key);
+          //    std::cout<<"=====Event Level===="<<key<<std::endl;
         }
     }
 

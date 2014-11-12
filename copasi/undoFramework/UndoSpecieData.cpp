@@ -15,6 +15,8 @@
 #include "model/CMetab.h"
 #include "UndoSpecieData.h"
 #include "UndoReactionData.h"
+#include "UndoGlobalQuantityData.h"
+#include "UndoEventData.h"
 
 UndoSpecieData::UndoSpecieData()
 {
@@ -56,22 +58,22 @@ void UndoSpecieData::setStatus(CModelEntity::Status status)
   mStatus = status;
 }
 
-std::string UndoSpecieData::getExpression() const
+const std::string & UndoSpecieData::getExpression() const
 {
   return mExpression;
 }
 
-std::string UndoSpecieData::getInitialExpression() const
+const std::string & UndoSpecieData::getInitialExpression() const
 {
   return mInitialExpression;
 }
 
-void UndoSpecieData::setExpression(std::string expression)
+void UndoSpecieData::setExpression(const std::string &expression)
 {
   mExpression = expression;
 }
 
-void UndoSpecieData::setInitialExpression(std::string initialExpression)
+void UndoSpecieData::setInitialExpression(const std::string &initialExpression)
 {
   mInitialExpression = initialExpression;
 }
@@ -94,4 +96,24 @@ double UndoSpecieData::getINumber() const
 void UndoSpecieData::setINumber(double iNumber)
 {
   mINumber = iNumber;
+}
+
+QList<UndoGlobalQuantityData*> *UndoSpecieData::getGlobalQuantityDependencyObjects() const
+{
+  return mGlobalQuantityDependencyObjects;
+}
+
+void UndoSpecieData::setGlobalQuantityDependencyObjects(QList<UndoGlobalQuantityData*> *globalQuantityDependencyObjects)
+{
+  mGlobalQuantityDependencyObjects = globalQuantityDependencyObjects;
+}
+
+QList<UndoEventData*> *UndoSpecieData::getEventDependencyObjects() const
+{
+  return mEventDependencyObjects;
+}
+
+void UndoSpecieData::setEventDependencyObjects(QList<UndoEventData*> *eventDependencyObjects)
+{
+  mEventDependencyObjects = eventDependencyObjects;
 }

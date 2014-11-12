@@ -608,9 +608,14 @@ bool CQReactionDM::insertReactionRows(QList <UndoReactionData *> pData)
       UndoReactionData * data = *j;
       beginInsertRows(QModelIndex(), 1, 1);
       CReaction *pRea =  pModel->createReaction(data->getName());
-      std::string key = pRea->getKey();
+
+      CChemEqInterface *chem = new CChemEqInterface(pModel);
+      chem->setChemEqString(data->getRi()->getChemEqString());
+      chem->writeToChemEq(pRea->getChemEq());
+      data->getRi()->createMetabolites();
+      data->getRi()->createOtherObjects();
       data->getRi()->writeBackToReaction(pRea);
-      emit notifyGUI(ListViews::REACTION, ListViews::ADD, key);
+      emit notifyGUI(ListViews::REACTION, ListViews::ADD, pRea->getKey());
       endInsertRows();
     }
 

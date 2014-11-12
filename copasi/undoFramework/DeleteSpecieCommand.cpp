@@ -20,6 +20,7 @@
 
 #include "UndoSpecieData.h"
 #include "UndoReactionData.h"
+#include "UndoEventData.h"
 
 #include "DeleteSpecieCommand.h"
 
@@ -28,6 +29,11 @@ DeleteSpecieCommand::DeleteSpecieCommand(CQSpeciesDetail *pSpecieDetail)
   mpSpecieDetail = pSpecieDetail;
   mFirstTime = true;
   mpSpecieData = new UndoSpecieData();
+
+  mpReactionData = new  QList <UndoReactionData*>();
+  mpGlobalQuantityData = new  QList <UndoGlobalQuantityData*>();
+  mpEventData = new  QList <UndoEventData*>();
+
   std::string sName = mpSpecieDetail->mpMetab->getObjectName();
   mpSpecieData->setName(sName);
   mpSpecieData->setIConc(mpSpecieDetail->mpMetab->getInitialConcentration());
@@ -40,6 +46,8 @@ DeleteSpecieCommand::DeleteSpecieCommand(CQSpeciesDetail *pSpecieDetail)
   //QList<UndoReactionData*> *dependencyObjects = new QList<UndoReactionData*>();
   setDependentObjects(mpSpecieDetail->mpMetab->getDeletedObjects());
   mpSpecieData->setReactionDependencyObjects(getReactionData());
+  mpSpecieData->setGlobalQuantityDependencyObjects(getGlobalQuantityData());
+  mpSpecieData->setEventDependencyObjects(getEventData());
 
   this->setText(deleteSpecieText(sName));
 }

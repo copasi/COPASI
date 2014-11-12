@@ -10,6 +10,8 @@
  *      Author: dada
  */
 
+#include <QtCore/QList>
+
 #include "report/CCopasiRootContainer.h"
 #include "model/CMetab.h"
 #include "model/CModel.h"
@@ -22,6 +24,8 @@
 #include "RemoveAllSpecieRowsCommand.h"
 #include "UndoSpecieData.h"
 #include "UndoReactionData.h"
+#include "UndoGlobalQuantityData.h"
+#include "UndoEventData.h"
 
 RemoveAllSpecieRowsCommand::RemoveAllSpecieRowsCommand(CQSpecieDM * pSpecieDM, const QModelIndex&)
 {
@@ -40,14 +44,34 @@ RemoveAllSpecieRowsCommand::RemoveAllSpecieRowsCommand(CQSpecieDM * pSpecieDM, c
 
       if (pModel->getMetabolites()[i])
         {
+          //  mpReactionData = new  QList <UndoReactionData*>();
+          //  mpGlobalQuantityData = new  QList <UndoGlobalQuantityData*>();
+          //  mpEventData = new  QList <UndoEventData*>();
           data->setName(pModel->getMetabolites()[i]->getObjectName());
           data->setIConc(pModel->getMetabolites()[i]->getInitialConcentration());
           data->setCompartment(pModel->getMetabolites()[i]->getCompartment()->getObjectName());
           data->setStatus(pModel->getMetabolites()[i]->getStatus());
 
+          if (pModel->getMetabolites()[i]->getStatus() != CModelEntity::ASSIGNMENT)
+            {
+              data->setIConc(pModel->getMetabolites()[i]->getInitialConcentration());
+            }
+
+          if (pModel->getMetabolites()[i]->getStatus() ==  CModelEntity::ASSIGNMENT || pModel->getMetabolites()[i]->getStatus() == CModelEntity::ODE)
+            {
+              data->setExpression(pModel->getMetabolites()[i]->getExpression());
+            }
+
+          // set initial expression
+          if (pModel->getMetabolites()[i]->getStatus() != CModelEntity::ASSIGNMENT)
+            {
+              data->setInitialExpression(pModel->getMetabolites()[i]->getInitialExpression());
+            }
+
           setDependentObjects(pModel->getMetabolites()[i]->getDeletedObjects());
           data->setReactionDependencyObjects(getReactionData());
-
+          data->setGlobalQuantityDependencyObjects(getGlobalQuantityData());
+          data->setEventDependencyObjects(getEventData());
           mpSpecieData.append(data);
         }
     }

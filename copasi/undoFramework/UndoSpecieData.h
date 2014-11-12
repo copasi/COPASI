@@ -20,6 +20,8 @@
 
 class CMetab;
 class UndoReactionData;
+class UndoGlobalQuantityData;
+class UndoEventData;
 
 class UndoSpecieData: public UndoData
 {
@@ -31,16 +33,21 @@ public:
   double getIConc() const;
   void setCompartment(std::string compartment);
   void setIConc(double iConc);
-  std::string getExpression() const;
-  std::string getInitialExpression() const;
-  void setExpression(std::string expression);
-  void setInitialExpression(std::string initialExpression);
+  const std::string & getExpression() const;
+  const std::string &getInitialExpression() const;
+  void setExpression(const std::string & expression);
+  void setInitialExpression(const std::string &initialExpression);
   CModelEntity::Status getStatus() const;
   void setStatus(CModelEntity::Status status);
   QList<UndoReactionData*> *getReactionDependencyObjects() const;
   void setReactionDependencyObjects(QList<UndoReactionData*> *reactionDependencyObjects);
   double getINumber() const;
   void setINumber(double iNumber);
+  QList<UndoGlobalQuantityData*> *getGlobalQuantityDependencyObjects() const;
+  void setGlobalQuantityDependencyObjects(QList<UndoGlobalQuantityData*> *globalQuantityDependencyObjects);
+  QList<UndoEventData*> *getEventDependencyObjects() const;
+  void setEventDependencyObjects(QList<UndoEventData*> *eventDependencyObjects);
+
 private:
   /**
    *  Initial concentration of the species as double
@@ -70,6 +77,14 @@ private:
    * Pointer to species dependency objects
    */
   QList<UndoReactionData*> *mReactionDependencyObjects;
+  /**
+   * Pointer to global quantity dependency objects
+   */
+  QList<UndoGlobalQuantityData*> *mGlobalQuantityDependencyObjects;
+  /**
+   * Pointer to event dependency objects
+   */
+  QList<UndoEventData*> *mEventDependencyObjects;
 };
 
 #endif /* UNDOSPECIEDATA_H_ */
