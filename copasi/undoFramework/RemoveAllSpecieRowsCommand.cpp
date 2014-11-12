@@ -42,8 +42,6 @@ RemoveAllSpecieRowsCommand::RemoveAllSpecieRowsCommand(CQSpecieDM * pSpecieDM, c
     {
       UndoSpecieData *data = new UndoSpecieData();
 
-      <<< <<< < HEAD
-
       if (pModel->getMetabolites()[i])
         {
           //  mpReactionData = new  QList <UndoReactionData*>();
@@ -53,9 +51,8 @@ RemoveAllSpecieRowsCommand::RemoveAllSpecieRowsCommand(CQSpecieDM * pSpecieDM, c
           data->setIConc(pModel->getMetabolites()[i]->getInitialConcentration());
           data->setCompartment(pModel->getMetabolites()[i]->getCompartment()->getObjectName());
           data->setStatus(pModel->getMetabolites()[i]->getStatus());
-          == == == =
 
-            if (pModel->getMetabolites()[i]->getStatus() != CModelEntity::ASSIGNMENT)
+          if (pModel->getMetabolites()[i]->getStatus() != CModelEntity::ASSIGNMENT)
             {
               data->setIConc(pModel->getMetabolites()[i]->getInitialConcentration());
             }
@@ -75,15 +72,14 @@ RemoveAllSpecieRowsCommand::RemoveAllSpecieRowsCommand(CQSpecieDM * pSpecieDM, c
           data->setReactionDependencyObjects(getReactionData());
           data->setGlobalQuantityDependencyObjects(getGlobalQuantityData());
           data->setEventDependencyObjects(getEventData());
-          >>> >>> > Updated UNDO action classes.
 
-          setDependentObjects(pModel->getMetabolites()[i]->getDeletedObjects());
-          data->setReactionDependencyObjects(getReactionData());
-          data->setGlobalQuantityDependencyObjects(getGlobalQuantityData());
-          data->setEventDependencyObjects(getEventData());
+          /*    setDependentObjects(pModel->getMetabolites()[i]->getDeletedObjects());
+              data->setReactionDependencyObjects(getReactionData());
+              data->setGlobalQuantityDependencyObjects(getGlobalQuantityData());
+              data->setEventDependencyObjects(getEventData());
 
-          setDependentObjects(pModel->getMetabolites()[i]->getDeletedObjects());
-          data->setReactionDependencyObjects(getReactionData());
+              setDependentObjects(pModel->getMetabolites()[i]->getDeletedObjects());
+              data->setReactionDependencyObjects(getReactionData());*/
 
           mpSpecieData.append(data);
         }
