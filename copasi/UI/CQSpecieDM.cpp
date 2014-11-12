@@ -887,6 +887,25 @@ bool CQSpecieDM::insertSpecieRows(QList <UndoSpecieData *> pData)
       UndoSpecieData * data = *i;
       beginInsertRows(QModelIndex(), 1, 1);
       CMetab *pSpecie =  pModel->createMetabolite(data->getName(), data->getCompartment(), data->getIConc(), data->getStatus());
+
+      if (data->getStatus() != CModelEntity::ASSIGNMENT)
+        {
+          pSpecie->setInitialConcentration(data->getIConc());
+        }
+
+      if (data->getStatus() == CModelEntity::ODE || data->getStatus() == CModelEntity::ASSIGNMENT)
+        {
+          //  std::cout<<"+++Not Species FIXED ========++"<<data->getExpression()<<"++++"<<data->getStatus()<<std::endl;
+          pSpecie->setExpression(data->getExpression());
+        }
+
+      // set initial expression
+      if (data->getStatus() != CModelEntity::ASSIGNMENT)
+        {
+
+          pSpecie->setInitialExpression(data->getInitialExpression());
+        }
+
       emit notifyGUI(ListViews::METABOLITE, ListViews::ADD, pSpecie->getKey());
       endInsertRows();
     }
@@ -919,7 +938,6 @@ bool CQSpecieDM::insertSpecieRows(QList <UndoSpecieData *> pData)
 
                       if (gData->getStatus() != CModelEntity::ASSIGNMENT)
                         {
-                          std::cout << "+++Not Quantity ASSIGN ========++" << gData->getInitialValue() << " ---" << gData->getStatus() << std::endl;
                           pGlobalQuantity->setInitialValue(gData->getInitialValue());
                         }
 

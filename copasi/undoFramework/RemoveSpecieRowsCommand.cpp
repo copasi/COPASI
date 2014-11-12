@@ -52,6 +52,22 @@ RemoveSpecieRowsCommand::RemoveSpecieRowsCommand(QModelIndexList rows, CQSpecieD
           data->setCompartment(pModel->getMetabolites()[(*i).row()]->getCompartment()->getObjectName());
           data->setStatus(pModel->getMetabolites()[(*i).row()]->getStatus());
 
+          if (pModel->getMetabolites()[(*i).row()]->getStatus() != CModelEntity::ASSIGNMENT)
+            {
+              data->setIConc(pModel->getMetabolites()[(*i).row()]->getInitialConcentration());
+            }
+
+          if (pModel->getMetabolites()[(*i).row()]->getStatus() ==  CModelEntity::ASSIGNMENT || pModel->getMetabolites()[(*i).row()]->getStatus() == CModelEntity::ODE)
+            {
+              data->setExpression(pModel->getMetabolites()[(*i).row()]->getExpression());
+            }
+
+          // set initial expression
+          if (pModel->getMetabolites()[(*i).row()]->getStatus() != CModelEntity::ASSIGNMENT)
+            {
+              data->setInitialExpression(pModel->getMetabolites()[(*i).row()]->getInitialExpression());
+            }
+
           setDependentObjects(pModel->getMetabolites()[(*i).row()]->getDeletedObjects());
           data->setReactionDependencyObjects(getReactionData());
           data->setGlobalQuantityDependencyObjects(getGlobalQuantityData());

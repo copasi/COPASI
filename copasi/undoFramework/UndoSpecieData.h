@@ -33,10 +33,10 @@ public:
   double getIConc() const;
   void setCompartment(std::string compartment);
   void setIConc(double iConc);
-  std::string getExpression() const;
-  std::string getInitialExpression() const;
-  void setExpression(std::string expression);
-  void setInitialExpression(std::string initialExpression);
+  const std::string & getExpression() const;
+  const std::string &getInitialExpression() const;
+  void setExpression(const std::string & expression);
+  void setInitialExpression(const std::string &initialExpression);
   CModelEntity::Status getStatus() const;
   void setStatus(CModelEntity::Status status);
   QList<UndoReactionData*> *getReactionDependencyObjects() const;

@@ -159,9 +159,25 @@ void CCopasiUndoCommand::setDependentObjects(const std::set< const CCopasiObject
               UndoSpecieData *data = new UndoSpecieData();
               data->setName((*it)->getObjectName());
               const CMetab * pMetab = dynamic_cast<const CMetab*>(*it);
-              data->setIConc(pMetab->getInitialConcentration());
+              //data->setIConc(pMetab->getInitialConcentration());
               data->setCompartment(pMetab->getCompartment()->getObjectName());
               data->setStatus(pMetab->getStatus());
+
+              if (pMetab->getStatus() != CModelEntity::ASSIGNMENT)
+                {
+                  data->setIConc(pMetab->getInitialConcentration());
+                }
+
+              if (pMetab->getStatus() ==  CModelEntity::ASSIGNMENT || pMetab->getStatus() == CModelEntity::ODE)
+                {
+                  data->setExpression(pMetab->getExpression());
+                }
+
+              // set initial expression
+              if (pMetab->getStatus() != CModelEntity::ASSIGNMENT)
+                {
+                  data->setInitialExpression(pMetab->getInitialExpression());
+                }
 
               //store the reaction data
               //  QList<UndoReactionData*> *dependencyObjects = new QList <UndoReactionData*>();
