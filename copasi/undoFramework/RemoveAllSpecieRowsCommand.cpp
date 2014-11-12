@@ -72,15 +72,6 @@ RemoveAllSpecieRowsCommand::RemoveAllSpecieRowsCommand(CQSpecieDM * pSpecieDM, c
           data->setReactionDependencyObjects(getReactionData());
           data->setGlobalQuantityDependencyObjects(getGlobalQuantityData());
           data->setEventDependencyObjects(getEventData());
-
-          /*    setDependentObjects(pModel->getMetabolites()[i]->getDeletedObjects());
-              data->setReactionDependencyObjects(getReactionData());
-              data->setGlobalQuantityDependencyObjects(getGlobalQuantityData());
-              data->setEventDependencyObjects(getEventData());
-
-              setDependentObjects(pModel->getMetabolites()[i]->getDeletedObjects());
-              data->setReactionDependencyObjects(getReactionData());*/
-
           mpSpecieData.append(data);
         }
     }
