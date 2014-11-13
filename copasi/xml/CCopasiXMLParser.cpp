@@ -3182,8 +3182,15 @@ void CCopasiXMLParser::EventElement::start(const XML_Char *pszName,
               mParser.toBool(mParser.getAttributeValue("delayAssignment", papszAttrs, false));
             FireAtInitialTime =
               mParser.toBool(mParser.getAttributeValue("fireAtInitialTime", papszAttrs, false));
-            PersistentTrigger =
-              mParser.toBool(mParser.getAttributeValue("persistentTrigger", papszAttrs, false));
+
+            if (mCommon.pVersion->getVersionDevel() <= 90)
+              {
+                PersistentTrigger = true;
+              }
+            else
+              {
+                mParser.toBool(mParser.getAttributeValue("persistentTrigger", papszAttrs, true));
+              }
 
             mCommon.pEvent = new CEvent();
             addFix(mKey, mCommon.pEvent);
