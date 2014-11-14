@@ -33,7 +33,6 @@ public:
 private:
   CQGlobalQuantityDM *mpGlobalQuantityDM;
   QList <UndoGlobalQuantityData *> mpGlobalQuantityData;
-  QList <UndoReactionData *> mpReactionData;
 };
 
 #endif /* REMOVEALLGLOBALQUANTITYROWSCOMMAND_H_ */

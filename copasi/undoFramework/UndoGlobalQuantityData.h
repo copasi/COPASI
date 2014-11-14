@@ -16,6 +16,8 @@
 #include "qtUtilities.h"
 #include "UndoData.h"
 
+class UndoSpecieData;
+class UndoEventData;
 class UndoReactionData;
 class CModelValue;
 
@@ -40,6 +42,11 @@ public:
   void setModelValue(CModelValue modelValue);
   const std::string &getInitialExpression() const;
   void setInitialExpression(const std::string &initialExpression);
+  QList<UndoEventData*> *getEventDependencyObjects() const;
+  QList<UndoSpecieData*> *getSpecieDependencyObjects() const;
+  void setEventDependencyObjects(QList<UndoEventData*> *eventDependencyObjects);
+  void setSpecieDependencyObjects(QList<UndoSpecieData*> *specieDependencyObjects);
+
 private:
   CModelValue modelValue;
   /**
@@ -65,7 +72,15 @@ private:
   /**
    * Pointer to species dependency objects
    */
+  QList<UndoSpecieData*> *mSpecieDependencyObjects;
+  /**
+   * Pointer to species dependency objects
+   */
   QList<UndoReactionData*> *mReactionDependencyObjects;
+  /**
+   * Pointer to event dependency objects
+   */
+  QList<UndoEventData*> *mEventDependencyObjects;
 };
 
 #endif /* UNDOGLOBALQUANTITYDATA_H_ */

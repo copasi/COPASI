@@ -895,8 +895,8 @@ bool CQSpecieDM::insertSpecieRows(QList <UndoSpecieData *> pData)
 
       if (data->getStatus() == CModelEntity::ODE || data->getStatus() == CModelEntity::ASSIGNMENT)
         {
-          //  std::cout<<"+++Not Species FIXED ========++"<<data->getExpression()<<"++++"<<data->getStatus()<<std::endl;
           pSpecie->setExpression(data->getExpression());
+          pSpecie->getExpressionPtr()->compile();
         }
 
       // set initial expression
@@ -904,6 +904,7 @@ bool CQSpecieDM::insertSpecieRows(QList <UndoSpecieData *> pData)
         {
 
           pSpecie->setInitialExpression(data->getInitialExpression());
+          pSpecie->getInitialExpressionPtr()->compile();
         }
 
       emit notifyGUI(ListViews::METABOLITE, ListViews::ADD, pSpecie->getKey());
@@ -944,18 +945,14 @@ bool CQSpecieDM::insertSpecieRows(QList <UndoSpecieData *> pData)
                       if (gData->getStatus() != CModelEntity::FIXED)
                         {
                           pGlobalQuantity->setExpression(gData->getExpression());
+                          pGlobalQuantity->getExpressionPtr()->compile();
                         }
-
-                      /*  if (gData->getStatus() == CModelEntity::ODE){
-                          std::cout<<"+++Not Quantity FIXED ========++"<<gData->getExpression()<<"++++"<<gData->getStatus()<<std::endl;
-                          pGlobalQuantity->setExpression(gData->getExpression());
-                        }*/
 
                       // set initial expression
                       if (gData->getStatus() != CModelEntity::ASSIGNMENT)
                         {
-
                           pGlobalQuantity->setInitialExpression(gData->getInitialExpression());
+                          pGlobalQuantity->getInitialExpressionPtr()->compile();
                         }
 
                       emit notifyGUI(ListViews::MODELVALUE, ListViews::ADD, pGlobalQuantity->getKey());
@@ -1027,6 +1024,8 @@ bool CQSpecieDM::insertSpecieRows(QList <UndoSpecieData *> pData)
                           if (pEvent->getAssignments().getIndex(assign->getObjectName()) == C_INVALID_INDEX)
                             {
                               CEventAssignment *eventAssign = new CEventAssignment(assign->getTargetKey(), pEvent->getObjectParent());
+                              eventAssign->setExpression(assign->getExpression());
+                              eventAssign->getExpressionPtr()->compile();
                               pEvent->getAssignments().add(eventAssign);
                             }
                         }

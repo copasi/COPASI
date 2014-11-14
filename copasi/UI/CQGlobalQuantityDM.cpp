@@ -28,6 +28,8 @@
 #include "undoFramework/GlobalQuantityDataChangeCommand.h"
 #include "undoFramework/UndoGlobalQuantityData.h"
 #include "undoFramework/UndoReactionData.h"
+#include "undoFramework/UndoSpecieData.h"
+#include "undoFramework/UndoEventData.h"
 #endif
 
 CQGlobalQuantityDM::CQGlobalQuantityDM(QObject *parent)
@@ -540,12 +542,14 @@ bool CQGlobalQuantityDM::insertGlobalQuantityRows(QList <UndoGlobalQuantityData 
           if (data->getStatus() != CModelEntity::FIXED)
             {
               pGlobalQuantity->setExpression(data->getExpression());
+              pGlobalQuantity->getExpressionPtr()->compile();
             }
 
           // set initial expression
           if (data->getStatus() != CModelEntity::ASSIGNMENT)
             {
               pGlobalQuantity->setInitialExpression(data->getInitialExpression());
+              pGlobalQuantity->getInitialExpressionPtr()->compile();
             }
 
           emit notifyGUI(ListViews::MODELVALUE, ListViews::ADD, pGlobalQuantity->getKey());
@@ -559,6 +563,47 @@ bool CQGlobalQuantityDM::insertGlobalQuantityRows(QList <UndoGlobalQuantityData 
   for (k = pData.begin(); k != pData.end(); ++k)
     {
       UndoGlobalQuantityData * data = *k;
+
+      //reinsert all the species
+      QList <UndoSpecieData *> *pSpecieData = data->getSpecieDependencyObjects();
+
+      if (!pSpecieData->empty())
+        {
+          QList <UndoSpecieData *>::const_iterator i;
+
+          for (i = pSpecieData->begin(); i != pSpecieData->end(); ++i)
+            {
+              UndoSpecieData * sData = *i;
+
+              //need to make sure species doesn't exist in the model already
+              CMetab *pSpecie =  pModel->createMetabolite(sData->getName(), sData->getCompartment(), sData->getIConc(), sData->getStatus());
+
+              if (pSpecie)
+                {
+
+                  if (sData->getStatus() != CModelEntity::ASSIGNMENT)
+                    {
+                      pSpecie->setInitialConcentration(sData->getIConc());
+                    }
+
+                  if (sData->getStatus() == CModelEntity::ODE || sData->getStatus() == CModelEntity::ASSIGNMENT)
+                    {
+                      pSpecie->setExpression(sData->getExpression());
+                      pSpecie->getExpressionPtr()->compile();
+                    }
+
+                  // set initial expression
+                  if (sData->getStatus() != CModelEntity::ASSIGNMENT)
+                    {
+                      pSpecie->setInitialExpression(sData->getInitialExpression());
+                      pSpecie->getInitialExpressionPtr()->compile();
+                    }
+
+                  emit notifyGUI(ListViews::METABOLITE, ListViews::ADD, pSpecie->getKey());
+                }
+            }
+        }
+
       QList <UndoReactionData *> *reactionData = data->getReactionDependencyObjects();
 
       QList <UndoReactionData *>::const_iterator j;
@@ -573,9 +618,56 @@ bool CQGlobalQuantityDM::insertGlobalQuantityRows(QList <UndoGlobalQuantityData 
             {
               //  beginInsertRows(QModelIndex(), 1, 1);
               CReaction *pRea =  pModel->createReaction(rData->getName());
+              rData->getRi()->createMetabolites();
+              rData->getRi()->createOtherObjects();
               rData->getRi()->writeBackToReaction(pRea);
               emit notifyGUI(ListViews::REACTION, ListViews::ADD, pRea->getKey());
               //  endInsertRows();
+            }
+        }
+
+      //reinsert the dependency events
+      QList <UndoEventData *> *pEventData = data->getEventDependencyObjects();
+
+      if (!pEventData->empty())
+        {
+          QList <UndoEventData *>::const_iterator ev;
+
+          for (ev = pEventData->begin(); ev != pEventData->end(); ++ev)
+            {
+              UndoEventData * eData = *ev;
+
+              if (pModel->getEvents().getIndex(eData->getName()) == C_INVALID_INDEX)
+                {
+                  CEvent *pEvent =  pModel->createEvent(eData->getName());
+
+                  if (pEvent)
+                    {
+                      std::string key = pEvent->getKey();
+                      //set the expressions
+                      pEvent->setTriggerExpression(eData->getTriggerExpression());
+                      pEvent->setDelayExpression(eData->getDelayExpression());
+                      pEvent->setPriorityExpression(eData->getPriorityExpression());
+
+                      QList <CEventAssignment *> *assignments = eData->getAssignments();
+                      QList <CEventAssignment *>::const_iterator i;
+
+                      for (i = assignments->begin(); i != assignments->end(); ++i)
+                        {
+                          CEventAssignment * assign = *i;
+
+                          if (pEvent->getAssignments().getIndex(assign->getObjectName()) == C_INVALID_INDEX)
+                            {
+                              CEventAssignment *eventAssign = new CEventAssignment(assign->getTargetKey(), pEvent->getObjectParent());
+                              eventAssign->setExpression(assign->getExpression());
+                              eventAssign->getExpressionPtr()->compile();
+                              pEvent->getAssignments().add(eventAssign);
+                            }
+                        }
+
+                      emit notifyGUI(ListViews::EVENT, ListViews::ADD, key);
+                    }
+                }
             }
         }
     }

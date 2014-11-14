@@ -63,6 +63,8 @@ RemoveAllGlobalQuantityRowsCommand::RemoveAllGlobalQuantityRowsCommand(CQGlobalQ
 
           setDependentObjects(pModel->getModelValues()[i]->getDeletedObjects());
           data->setReactionDependencyObjects(getReactionData());
+          data->setSpecieDependencyObjects(getSpecieData());
+          data->setEventDependencyObjects(getEventData());
           mpGlobalQuantityData.append(data);
         }
     }

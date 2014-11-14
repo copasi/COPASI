@@ -242,7 +242,7 @@ void CCopasiUndoCommand::setDependentObjects(const std::set< const CCopasiObject
               const CEvent * pEvent = dynamic_cast<const CEvent*>(*it);
 
               data->setPriorityExpression(pEvent->getPriorityExpression());
-              //  data->setDelayExpression(pEvent->getDelayExpression());
+              data->setDelayExpression(pEvent->getDelayExpression());
               data->setTriggerExpression(pEvent->getTriggerExpression());
 
               CCopasiVector< CEventAssignment >::const_iterator iit = pEvent->getAssignments().begin();
@@ -252,6 +252,7 @@ void CCopasiUndoCommand::setDependentObjects(const std::set< const CCopasiObject
                 {
                   CEventAssignment *eventAssign = new CEventAssignment((*iit)->getTargetKey(), pEvent->getObjectParent());
                   eventAssign->setExpression((*iit)->getExpression());
+                  eventAssign->getExpressionPtr()->compile();
                   data->getAssignments()->append(eventAssign);
                 }
 
