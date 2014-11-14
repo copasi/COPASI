@@ -69,7 +69,7 @@ function getAttribute () {
   echo $attribute
 }
 
-if [ _$(uname) = _Darwin ]; then
+if [ _$(uname) = _Darwin -o _$(uname) = _FreeBSD ]; then
   function getPermissions () {
     stat -f %Mp%Lp $@
   }

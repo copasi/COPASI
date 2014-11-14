@@ -43,7 +43,7 @@ for f in `git diff --cached --name-only`; do
     
     if [ -e "$f" ]; then
       # We need to preserve the permission of the file
-      permissions=$(stat -c %a "$f")
+      permissions=$(getPermissions "$f")
       mv "$f" "$f.bkp"
 
       git checkout-index -- "$f"
