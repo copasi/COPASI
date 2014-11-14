@@ -524,11 +524,33 @@ bool CQGlobalQuantityDM::insertGlobalQuantityRows(QList <UndoGlobalQuantityData 
   for (i = pData.begin(); i != pData.end(); ++i)
     {
       UndoGlobalQuantityData * data = *i;
-      beginInsertRows(QModelIndex(), 1, 1);
-      CModelValue *pGlobalQuantity =  pModel->createModelValue(data->getName(), data->getInitialValue());
-      pGlobalQuantity->setStatus(data->getStatus());
-      emit notifyGUI(ListViews::MODELVALUE, ListViews::ADD, pGlobalQuantity->getKey());
-      endInsertRows();
+
+      if (pModel->getModelValues().getIndex(data->getName()) == C_INVALID_INDEX)
+        {
+          beginInsertRows(QModelIndex(), 1, 1);
+          CModelValue *pGlobalQuantity =  pModel->createModelValue(data->getName());
+          pGlobalQuantity->setStatus(data->getStatus());
+
+          if (data->getStatus() != CModelEntity::ASSIGNMENT)
+            {
+              pGlobalQuantity->setInitialValue(data->getInitialValue());
+            }
+
+          // set the expression
+          if (data->getStatus() != CModelEntity::FIXED)
+            {
+              pGlobalQuantity->setExpression(data->getExpression());
+            }
+
+          // set initial expression
+          if (data->getStatus() != CModelEntity::ASSIGNMENT)
+            {
+              pGlobalQuantity->setInitialExpression(data->getInitialExpression());
+            }
+
+          emit notifyGUI(ListViews::MODELVALUE, ListViews::ADD, pGlobalQuantity->getKey());
+          endInsertRows();
+        }
     }
 
   //restore the reactions
@@ -546,23 +568,8 @@ bool CQGlobalQuantityDM::insertGlobalQuantityRows(QList <UndoGlobalQuantityData 
 
           UndoReactionData * rData = *j;
 
-          //TODO check if reaction already exist in the model, better idea may be implemented in the future
-          bool exist = false;
-
-          for (int ii = 0; ii < pModel->getReactions().size(); ii++)
-            {
-              if (pModel->getReactions()[ii]->getObjectName() == rData->getName())
-                {
-                  exist = true;
-                  ii = ii + pModel->getReactions().size() + 1; //jump out of the loop reaction exist already
-                }
-              else
-                {
-                  exist = false;
-                }
-            }
-
-          if (!exist)
+          //need to make sure reaction doesn't exist in the model already
+          if (pModel->getReactions().getIndex(rData->getName()) == C_INVALID_INDEX)
             {
               //  beginInsertRows(QModelIndex(), 1, 1);
               CReaction *pRea =  pModel->createReaction(rData->getName());

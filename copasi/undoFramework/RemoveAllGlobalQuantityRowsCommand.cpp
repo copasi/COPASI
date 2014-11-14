@@ -42,8 +42,25 @@ RemoveAllGlobalQuantityRowsCommand::RemoveAllGlobalQuantityRowsCommand(CQGlobalQ
       if (pModel->getModelValues()[i])
         {
           data->setName(pModel->getModelValues()[i]->getObjectName());
-          data->setInitialValue(pModel->getModelValues()[i]->getInitialValue());
           data->setStatus(pModel->getModelValues()[i]->getStatus());
+
+          if (pModel->getModelValues()[i]->getStatus() != CModelEntity::ASSIGNMENT)
+            {
+              data->setInitialValue(pModel->getModelValues()[i]->getInitialValue());
+            }
+
+          // set expression
+          if (pModel->getModelValues()[i]->getStatus() != CModelEntity::FIXED)
+            {
+              data->setExpression(pModel->getModelValues()[i]->getExpression());
+            }
+
+          // set initial expression
+          if (pModel->getModelValues()[i]->getStatus() != CModelEntity::ASSIGNMENT)
+            {
+              data->setInitialExpression(pModel->getModelValues()[i]->getInitialExpression());
+            }
+
           setDependentObjects(pModel->getModelValues()[i]->getDeletedObjects());
           data->setReactionDependencyObjects(getReactionData());
           mpGlobalQuantityData.append(data);

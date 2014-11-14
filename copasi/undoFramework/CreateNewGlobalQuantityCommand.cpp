@@ -28,8 +28,25 @@ void CreateNewGlobalQuantityCommand::redo()
 
   std::string sName = mpModelValue->mpModelValue->getObjectName();
   mpGlobalQuantityData->setName(sName);
-  mpGlobalQuantityData->setInitialValue(mpModelValue->mpModelValue->getInitialValue());
   mpGlobalQuantityData->setStatus(mpModelValue->mpModelValue->getStatus());
+
+  if (mpModelValue->mpModelValue->getStatus() != CModelEntity::ASSIGNMENT)
+    {
+      mpGlobalQuantityData->setInitialValue(mpModelValue->mpModelValue->getInitialValue());
+    }
+
+  // set expression
+  if (mpModelValue->mpModelValue->getStatus() != CModelEntity::FIXED)
+    {
+
+      mpGlobalQuantityData->setExpression(mpModelValue->mpModelValue->getExpression());
+    }
+
+  // set initial expression
+  if (mpModelValue->mpModelValue->getStatus() != CModelEntity::ASSIGNMENT)
+    {
+      mpGlobalQuantityData->setInitialExpression(mpModelValue->mpModelValue->getInitialExpression());
+    }
 }
 
 void CreateNewGlobalQuantityCommand::undo()
