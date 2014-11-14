@@ -31,6 +31,7 @@ ${FLEX}  -t $SOURCE_FILE | \
          -e 's/include <fstream>/include <iostream>/' \
          -e 's/using std::istream;/using namespace std;/' \
          -e '/using std::ostream;/d' \
+         -e '/#define yy_current_buffer YY_CURRENT_BUFFER/d' \
          -e '/#include <unistd.h>/d' \
          > $TARGET_FILE
 
