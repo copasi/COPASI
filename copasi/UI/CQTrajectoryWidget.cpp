@@ -282,7 +282,9 @@ bool CQTrajectoryWidget::loadTask()
   assert(trajectoryproblem);
 
   pdelete(mpTrajectoryProblem);
+
   mpTrajectoryProblem = new CTrajectoryProblem(*trajectoryproblem);
+  mpTask->remove(mpTrajectoryProblem);
 
   //numbers
   mpEditIntervalSize->setText(QString::number(trajectoryproblem->getStepSize()));

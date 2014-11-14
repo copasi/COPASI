@@ -278,6 +278,7 @@ void CQTaskMethodWidget::setActiveMethod(const CTaskEnum::Method & Type)
   if (mpActiveMethod == NULL)
     {
       mpActiveMethod = mpTask->createMethod(Type);
+      mpTask->remove(mpActiveMethod);
       addToHistory(mpActiveMethod);
     }
 
