@@ -15,15 +15,12 @@
 
 
 PATH=$PATH:/bin:/usr/bin:/usr/local/bin
-AWK=${COPASI_AWK:-gawk}
 SED=${COPASI_SED:-sed}
 FLEX="$1"
 
 for arg in $@; do
   SOURCE_FILE=$arg
 done
-
-PREFIX=`${AWK} -- '$0 ~ "%option prefix=" {split($2, out, "\""); print out[2]}' $SOURCE_FILE`
 
 TARGET_FILE=${SOURCE_FILE/%.*/_lex.cpp}
 
