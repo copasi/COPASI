@@ -436,18 +436,21 @@ bool CMathEventQueue::rootsFound()
   for (; pRootFound != pRootEnd; ++pRootFound, ++pValueBefore, ++pValueAfter, ++ppRootProcessor)
     {
       // Root values which did not change are not found
-      if (*pValueBefore == *pValueAfter)
+      if (2.0 * fabs(*pValueAfter - *pValueBefore) <= (fabs(*pValueAfter) + fabs(*pValueBefore)) * std::numeric_limits< C_FLOAT64 >::epsilon())
         {
           *pRootFound = 0;
           continue;
         }
+
+      // Detect whether we have an exact zero (within 10 * epsilon)
+      bool zero = (fabs(*pValueAfter) < 10.0 * fabs(*pValueBefore) * std::numeric_limits< C_FLOAT64 >::epsilon());
 
       // Handle equality
       if ((*ppRootProcessor)->isEquality())
         {
           if ((*ppRootProcessor)->isTrue())
             {
-              if (*pValueAfter >= 0.0 || *pValueAfter > *pValueBefore)
+              if (zero || *pValueAfter >= 0.0 || *pValueAfter > *pValueBefore)
                 {
                   *pRootFound = 0;
                 }
@@ -486,7 +489,7 @@ bool CMathEventQueue::rootsFound()
             }
           else
             {
-              if (*pValueAfter <= 0.0 || *pValueAfter < *pValueBefore)
+              if (zero || *pValueAfter <= 0.0 || *pValueAfter < *pValueBefore)
                 {
                   *pRootFound = 0;
                 }

@@ -628,7 +628,10 @@ CTrajectoryMethod::Status CLsodaMethod::peekAhead()
   mPeekAheadMode = true;
   Status PeekAheadStatus = ROOT;
 
-  CVector< C_INT > CombinedRoots = mRootsFound;
+  CVector< C_FLOAT64 > CurrentRoots = mpContainer->getRoots();
+  std::cout << "Current Roots:        " << mpContainer->getRoots() << std::endl;
+  CVector< C_INT > CombinedRootsFound = mRootsFound;
+  std::cout << "Combined Roots found: " << CombinedRootsFound << std::endl;
 
   C_FLOAT64 MaxPeekAheadTime = std::max(mTargetTime, mTime * (1.0 + 2.0 * *mpRelativeTolerance));
 
@@ -641,13 +644,29 @@ CTrajectoryMethod::Status CLsodaMethod::peekAhead()
             if (mRootMasking != ALL)
               {
                 mPeekAheadMode = false;
+
+                // It is possible that LSODA does not detect a root if the original root
+                // value was very close to 0.0. We have a new root if we have a sign change.
+                // This must have been at the start of the integration.
+                C_INT * pCombinedRoot = CombinedRootsFound.array();
+                C_INT * pCombinedRootEnd = pCombinedRoot + CombinedRootsFound.size();
+                const C_FLOAT64 * pOldRoot = CurrentRoots.array();
+                const C_FLOAT64 * pNewRoot = mpContainer->getRoots().array();
+
+                for (; pCombinedRoot != pCombinedRootEnd; ++pCombinedRoot, ++pOldRoot, ++pNewRoot)
+                  {
+                    *pCombinedRoot |= (*pOldRoot * *pNewRoot < 0.0);
+                  }
+
+                std::cout << "Current Roots:        " << mpContainer->getRoots() << std::endl;
+                std::cout << "Combined Roots found: " << CombinedRootsFound << std::endl;
               }
             else
               {
                 // We need to remove the masked root
                 const bool *pMask = mRootMask.array();
                 const bool *pMaskEnd = pMask + mRootMask.size();
-                C_INT * pCombinedRoot = CombinedRoots.array();
+                C_INT * pCombinedRoot = CombinedRootsFound.array();
 
                 PeekAheadStatus = NORMAL;
 
@@ -704,7 +723,7 @@ CTrajectoryMethod::Status CLsodaMethod::peekAhead()
                 // Combine all the roots
                 C_INT * pRoot = mRootsFound.array();
                 C_INT * pRootEnd = pRoot + mRootsFound.size();
-                C_INT * pCombinedRoot = CombinedRoots.array();
+                C_INT * pCombinedRoot = CombinedRootsFound.array();
 
                 for (; pRoot != pRootEnd; ++pRoot, ++pCombinedRoot)
                   {
@@ -713,6 +732,8 @@ CTrajectoryMethod::Status CLsodaMethod::peekAhead()
                         *pCombinedRoot = 1;
                       }
                   }
+
+                std::cout << "Combined Roots found: " << CombinedRootsFound << std::endl;
               }
           }
           break;
@@ -731,7 +752,7 @@ CTrajectoryMethod::Status CLsodaMethod::peekAhead()
   mDWork = ResetDWork;
   mIWork = ResetIWork;
 
-  mRootsFound = CombinedRoots;
+  mRootsFound = CombinedRootsFound;
 
   return PeekAheadStatus;
 }
