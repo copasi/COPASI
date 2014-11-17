@@ -70,7 +70,7 @@ public:
    *  (default: CCopasiContainer::EmptyList)
    * @return bool success
    */
-  bool compile(const CObjectInterface::ContainerList & listOfContainer = CCopasiContainer::EmptyList);
+  bool compile(const CObjectInterface::ContainerList & listOfContainer);
 
   /**
    * Retrieve the key

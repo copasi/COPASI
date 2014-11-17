@@ -30,6 +30,7 @@
 #include "qtUtilities.h"
 #include "DataModelGUI.h"
 #include "resourcesUI/CQIconResource.h"
+#include "copasi/CopasiDataModel/CCopasiDataModel.h"
 
 CopasiSlider::CopasiSlider(CSlider* pSlider, DataModelGUI * pDM, QWidget* parent):
   QFrame(parent),
@@ -75,7 +76,10 @@ CopasiSlider::CopasiSlider(CSlider* pSlider, DataModelGUI * pDM, QWidget* parent
 
   layout()->addWidget(pFrame);
 
-  if (!mpCSlider->compile())
+  CObjectInterface::ContainerList ListOfContainer;
+  ListOfContainer.push_back(mpCSlider->getObjectDataModel());
+
+  if (!mpCSlider->compile(ListOfContainer))
     {
       mpQSlider->setEnabled(false);
     }
@@ -91,9 +95,6 @@ CopasiSlider::CopasiSlider(CSlider* pSlider, DataModelGUI * pDM, QWidget* parent
   connect(mpEditButton, SIGNAL(clicked()), this, SLOT(editButtonClicked()));
 
   setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
-
-  // We need to assure that the slider is compiled
-  if (mpCSlider) mpCSlider->compile();
 }
 
 CopasiSlider::~CopasiSlider()

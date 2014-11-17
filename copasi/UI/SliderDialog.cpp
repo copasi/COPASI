@@ -1023,7 +1023,10 @@ std::vector<CSlider*>* SliderDialog::getCSlidersForObject(CCopasiObject* pObject
         {
           if (pSlider->getAssociatedEntityKey() == pDataModel->getModel()->getKey() || pSlider->getAssociatedEntityKey() == pObject->getKey())
             {
-              if (!pSlider->compile())
+              CObjectInterface::ContainerList ListOfContainer;
+              ListOfContainer.push_back(pSlider->getObjectDataModel());
+
+              if (!pSlider->compile(ListOfContainer))
                 {
                   issueWarning = true;
                 }
