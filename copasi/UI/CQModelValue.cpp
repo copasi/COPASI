@@ -264,6 +264,9 @@ void CQModelValue::load()
 {
   if (mpModelValue == NULL) return;
 
+  // Units
+  mpEditUnits->setText("These are the units.");
+
   // Type
   mpComboBoxType->setCurrentIndex(mpComboBoxType->findText(FROM_UTF8(CModelEntity::StatusName[mpModelValue->getStatus()])));
 
