@@ -1,0 +1,88 @@
+/* scanner for kinetic functions */
+
+%option outfile="CUnitParser_lex.cpp"
+%option prefix="CUnitParser"
+%option never-interactive
+%option c++
+
+%{
+#include <vector>
+
+#include "copasi.h"
+#include "CUnitParser.h"
+#include "CUnitParser_yacc.hpp"
+
+#include "utilities/CCopasiMessage.h"
+#include "utilities/utility.h"
+
+#ifndef YYERRCODE
+#define YYERRCODE 256
+#endif
+
+#define YY_USER_INIT \
+    mPosition = 0;
+
+
+#define COMMON_ACTION \
+    mData.text = yytext; \
+    mPosition += yyleng;
+
+%}
+
+SCALE    [apfumcdhkMGTP]
+KIND     ([mgsAK#]|cd)
+DIGIT    [0-9]
+
+%%
+{SCALE}/{KIND}   %{
+  COMMON_ACTION;
+  return TOKEN_SCALE;
+%}
+
+{KIND}   %{
+  COMMON_ACTION;
+  return TOKEN_KIND;
+%}
+
+{DIGIT}+("."?{DIGIT}*(((e|E)"+"?|(e|E)"-"){DIGIT}+)?)?   %{
+  COMMON_ACTION;
+  return TOKEN_NUMBER;
+%}
+
+"*"   %{
+  COMMON_ACTION;
+  return TOKEN_MULTIPLY;
+%}
+
+"/"   %{
+  COMMON_ACTION;
+  return TOKEN_DIVIDE;
+%}
+
+"("   %{
+  COMMON_ACTION;
+  return TOKEN_START_PARENS;
+%}
+
+")"   %{
+  COMMON_ACTION;
+  return TOKEN_END_PARENS;
+%}
+
+"^"   %{
+  COMMON_ACTION;
+  return TOKEN_EXPONENT;
+%}
+
+[ \t\r\n]+ %{
+  COMMON_ACTION;
+%} 
+
+<<EOF>>  return 0;
+
+.     %{
+  CCopasiMessage(CCopasiMessage::ERROR, MCFunction + 2, mPosition);
+  return YYERRCODE;
+%}
+     
+%%

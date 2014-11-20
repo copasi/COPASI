@@ -1,0 +1,89 @@
+// The bison parser together with CEvaluationFlexLexer builds
+// the evaluation tree.
+
+%{
+#define YYSTYPE CUnitParserBase::Data
+
+#ifdef yylval
+# undef yylval
+#endif
+#define yylval mData
+
+#ifdef yyerror
+# undef yyerror
+#endif
+#define yyerror(__str) \
+  if (yychar != YYERRCODE) correctErrorPosition(); \
+  CCopasiMessage(CCopasiMessage::ERROR, MCFunction + 1, mPosition)
+
+#include "copasi.h"
+#include "CUnitParser.h"
+
+#include "utilities/CCopasiMessage.h"
+#include "utilities/utility.h"
+
+#undef yyparse
+#define yyparse CUnitParserBase::yyparse
+%}
+
+/* yacc Declarations */
+%token TOKEN_SCALE
+%token TOKEN_KIND
+%token TOKEN_NUMBER
+%token TOKEN_MULTIPLY
+%token TOKEN_DIVIDE
+%token TOKEN_START_PARENS
+%token TOKEN_END_PARENS
+%token TOKEN_EXPONENT
+
+// Precedence
+%left TOKEN_SCALE
+%left TOKEN_KIND
+%left TOKEN_NUMBER
+%left TOKEN_MULTIPLY
+%left TOKEN_DIVIDE
+%left TOKEN_START_PARENS
+%left TOKEN_END_PARENS
+%right TOKEN_EXPONENT
+
+/* Grammar follows */
+%%
+
+list_of_components:  component
+           {
+           }
+         | component TOKEN_DIVIDE
+           {
+
+           }
+
+component: scaled_kind
+           {
+             ;
+           }
+         | TOKEN_NUMBER scaled_kind
+           {
+
+           }
+         | scaled_kind TOKEN_EXPONENT TOKEN_NUMBER
+           {
+             ;
+           }
+         | TOKEN_START_PARENS TOKEN_NUMBER scaled_kind TOKEN_END_PARENS TOKEN_EXPONENT TOKEN_NUMBER
+           {
+             ;
+           }
+
+scaled_kind: TOKEN_KIND
+           {
+              $$.pComponent = new CUnitComponent(CBaseUnit::fromSymbol($$.text));
+           }
+         | TOKEN_SCALE TOKEN_KIND
+           {
+             ;
+           }
+
+;
+
+%%
+
