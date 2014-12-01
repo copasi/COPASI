@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -189,7 +189,7 @@ CNewtonMethod::NewtonResultCode CNewtonMethod::doIntegration(bool forward)
   C_FLOAT64 maxDuration = forward ? mMaxDurationForward : -mMaxDurationBackward;
   //minimum duration is either hardcoded or equal to maximum duration, whichever is smaller.
   C_FLOAT64 minDuration = forward ? (mMaxDurationForward < 1e-1 ? mMaxDurationForward : 1e-1)
-                            : -(mMaxDurationBackward < 1e-2 ? mMaxDurationBackward : 1e-2);
+                          : -(mMaxDurationBackward < 1e-2 ? mMaxDurationBackward : 1e-2);
 
   //progress bar
   size_t hProcess;
@@ -961,7 +961,7 @@ C_FLOAT64 CNewtonMethod::solveJacobianXeqB(CVector< C_FLOAT64 > & X, const CVect
 
   if (INFO < 0)
     {
-      fatalError();
+      return std::numeric_limits< C_FLOAT64 >::infinity();
     }
 
   LWORK = (C_INT) WORK[0];
@@ -972,7 +972,7 @@ C_FLOAT64 CNewtonMethod::solveJacobianXeqB(CVector< C_FLOAT64 > & X, const CVect
 
   if (INFO < 0)
     {
-      fatalError();
+      return std::numeric_limits< C_FLOAT64 >::infinity();
     }
 
   C_FLOAT64 Error = 0;
