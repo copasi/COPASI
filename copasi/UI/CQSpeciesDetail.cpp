@@ -925,7 +925,7 @@ void CQSpeciesDetail::deleteSpecie(UndoSpecieData *pSData)
   pModel->removeMetabolite(key);
 
 #undef DELETE
-  protectedNotify(ListViews::METABOLITE, ListViews::DELETE, mKey);
+  protectedNotify(ListViews::METABOLITE, ListViews::DELETE, key); //mKey);
   protectedNotify(ListViews::METABOLITE, ListViews::DELETE, "");//Refresh all as there may be dependencies.
 
   mpListView->switchToOtherWidget(112, "");
@@ -941,10 +941,26 @@ void CQSpeciesDetail::addSpecie(UndoSpecieData *pSData)
   assert(pModel != NULL);
 
   //reinsert the species
-  CMetab *pSpecie =  pModel->createMetabolite(pSData->getName(), pSData->getCompartment(), pSData->getIConc(), pSData->getStatus());
-  //pSpecie->setInitialExpression(pSData->getInitialExpression());
-  //pSpecie->setExpression(pSData->getExpression());
+  CMetab *pSpecie =  pModel->createMetabolite(pSData->getName(), pSData->getCompartment(), 1.0, pSData->getStatus());
   std::string key = pSpecie->getKey();
+
+  if (pSData->getStatus() != CModelEntity::ASSIGNMENT)
+    {
+      pSpecie->setInitialConcentration(pSData->getIConc());
+    }
+
+  if (pSData->getStatus() == CModelEntity::ODE || pSData->getStatus() == CModelEntity::ASSIGNMENT)
+    {
+      pSpecie->setExpression(pSData->getExpression());
+      pSpecie->getExpressionPtr()->compile();
+    }
+
+  // set initial expression
+  if (pSData->getStatus() != CModelEntity::ASSIGNMENT && pSData->getInitialExpression() != "")
+    {
+      pSpecie->setInitialExpression(pSData->getInitialExpression());
+    }
+
   protectedNotify(ListViews::METABOLITE, ListViews::ADD, key);
 
   //restore the reactions the species dependent on
@@ -971,69 +987,50 @@ void CQSpeciesDetail::addSpecie(UndoSpecieData *pSData)
               rData->getRi()->writeBackToReaction(pRea);
 
               protectedNotify(ListViews::REACTION, ListViews::ADD, pRea->getKey());
-              //  endInsertRows();
             }
         }
     }
 
-  /* QList <UndoReactionData *>::const_iterator j;
-
-   for (j = reactionData->begin(); j != reactionData->end(); ++j)
-     {
-       UndoReactionData * rData = *j;
-
-    /*   //TODO check if reaction already exist in the model, better ideal may be implemented in the future
-       bool exist = false;
-
-       for (int ii = 0; ii < pModel->getReactions().size(); ii++)
-         {
-           if (pModel->getReactions()[ii]->getObjectName() == rData->getName())
-             {
-               exist = true;
-               ii = ii + pModel->getReactions().size() + 1; //jump out of the loop reaction exist already
-             }
-           else
-             {
-               exist = false;
-             }
-         }
-
-       if (!exist)
-         {
-           CReaction *pRea =  pModel->createReaction(rData->getName());
-           CChemEqInterface *chem = new CChemEqInterface(pModel);
-           chem->setChemEqString(rData->getRi()->getChemEqString());
-           chem->writeToChemEq(pRea->getChemEq());
-
-           //  rData->getRi()->writeBackToReaction(pRea);
-           protectedNotify(ListViews::REACTION, ListViews::ADD, pRea->getKey());
-         }
-     }
-  */
   //reinsert the dependency global quantity
   QList <UndoGlobalQuantityData *> *pGlobalQuantityData = pSData->getGlobalQuantityDependencyObjects();
 
   if (!pGlobalQuantityData->empty())
     {
-
       QList <UndoGlobalQuantityData *>::const_iterator g;
 
       for (g = pGlobalQuantityData->begin(); g != pGlobalQuantityData->end(); ++g)
         {
           UndoGlobalQuantityData * gData = *g;
-          CModelValue *pGlobalQuantity =  pModel->createModelValue(gData->getName());
-          pGlobalQuantity->setStatus(gData->getStatus());
 
-          if (gData->isFixed())
+          if (pModel->getModelValues().getIndex(gData->getName()) == C_INVALID_INDEX)
             {
-              pGlobalQuantity->setInitialValue(gData->getInitialValue());
-            }
-          else if (!gData->isFixed())
-            {
-              pGlobalQuantity->setExpression(gData->getExpression());
-            }
+              CModelValue *pGlobalQuantity =  pModel->createModelValue(gData->getName()); //, gData->getInitialValue());
 
-          protectedNotify(ListViews::MODELVALUE, ListViews::ADD, pGlobalQuantity->getKey());
+              if (pGlobalQuantity)
+                {
+                  pGlobalQuantity->setStatus(gData->getStatus());
+
+                  if (gData->getStatus() != CModelEntity::ASSIGNMENT)
+                    {
+                      pGlobalQuantity->setInitialValue(gData->getInitialValue());
+                    }
+
+                  if (gData->getStatus() != CModelEntity::FIXED)
+                    {
+                      pGlobalQuantity->setExpression(gData->getExpression());
+                      pGlobalQuantity->getExpressionPtr()->compile();
+                    }
+
+                  // set initial expression
+                  if (gData->getStatus() != CModelEntity::ASSIGNMENT)
+                    {
+                      pGlobalQuantity->setInitialExpression(gData->getInitialExpression());
+                      pGlobalQuantity->getInitialExpressionPtr()->compile();
+                    }
+
+                  protectedNotify(ListViews::MODELVALUE, ListViews::ADD, pGlobalQuantity->getKey());
+                }
+            }
         }
     }
 
@@ -1056,7 +1053,6 @@ void CQSpeciesDetail::addSpecie(UndoSpecieData *pSData)
           //set the expressions
           pEvent->setTriggerExpression(eData->getTriggerExpression());
           pEvent->setDelayExpression(eData->getDelayExpression());
-          //  std::cout<<"+++++Event Level++++ Prioroty"<<eData->getPriorityExpression()<<std::endl;
           pEvent->setPriorityExpression(eData->getPriorityExpression());
 
           QList <UndoEventAssignmentData *> *assignmentData = eData->getEventAssignmentData();
@@ -1075,20 +1071,7 @@ void CQSpeciesDetail::addSpecie(UndoSpecieData *pSData)
                 }
             }
 
-          /*        QList <CEventAssignment *> *assignments = eData->getAssignments();
-                  QList <CEventAssignment *>::const_iterator i;
-
-                  for (i = assignments->begin(); i != assignments->end(); ++i)
-                    {
-                      CEventAssignment * assign = *i;
-                      CEventAssignment *eventAssign = new CEventAssignment(assign->getTargetKey(), pEvent->getObjectParent());
-                      pEvent->getAssignments().add(eventAssign);
-                      //    std::cout<<"+++++Event Level++++"<<eventAssign->getKey()<<std::endl;
-                    }
-          */
-          //    std::cout<<"=====Event Level==== KEY"<<key<<std::endl;
           protectedNotify(ListViews::EVENT, ListViews::ADD, key);
-          //    std::cout<<"=====Event Level===="<<key<<std::endl;
         }
     }
 
