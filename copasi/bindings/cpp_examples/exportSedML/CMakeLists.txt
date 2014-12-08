@@ -24,22 +24,15 @@
 ###############################################################################
 
 cmake_minimum_required (VERSION 2.6)
+project (exportSedML)
 
-project (cpp_examples)
+include_directories("${PROJECT_SOURCE_DIR}/../../.." "${PROJECT_SOURCE_DIR}/../../../.." "${PROJECT_SOURCE_DIR}")
 
-add_subdirectory(example1)
-add_subdirectory(example2)
-add_subdirectory(example3)
-add_subdirectory(example4)
-add_subdirectory(example5)
-add_subdirectory(example6)
-add_subdirectory(example7)
-add_subdirectory(example8)
-add_subdirectory(example9)
-add_subdirectory(example10)
+set(SOURCES ${SOURCES} exportSedML.cpp)
 
-if (ENABLE_COPASI_SEDML)
-  add_subdirectory(runSedML)
-  add_subdirectory(exportSedML)
-endif()
+include(../../../CMakeConsoleApp.cmake)
+
+add_executable(exportSedML ${SOURCES} ${HEADERS})
+add_dependencies(exportSedML ${SE_DEPENDENCIES}) 
+target_link_libraries(exportSedML ${SE_EXTERNAL_LIBS} ${SE_LIBS})
 
