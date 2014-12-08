@@ -29,6 +29,7 @@
 #include "undoFramework/UndoSpecieData.h"
 #include "undoFramework/UndoGlobalQuantityData.h"
 #include "undoFramework/UndoEventData.h"
+#include "undoFramework/UndoEventAssignmentData.h"
 #endif
 
 #include "copasi.h"
@@ -718,30 +719,46 @@ bool CQCompartmentDM::insertCompartmentRows(QList <UndoCompartmentData *> pData)
               pEvent->setDelayExpression(eData->getDelayExpression());
               pEvent->setPriorityExpression(eData->getPriorityExpression());
 
-              QList <CEventAssignment *> *assignments = eData->getAssignments();
-              QList <CEventAssignment *>::const_iterator i;
+              QList <UndoEventAssignmentData *> *assignmentData = eData->getEventAssignmentData();
+              QList <UndoEventAssignmentData *>::const_iterator i;
 
-              for (i = assignments->begin(); i != assignments->end(); ++i)
+              for (i = assignmentData->begin(); i != assignmentData->end(); ++i)
                 {
-                  CEventAssignment * assign = *i;
+                  UndoEventAssignmentData * assignData = *i;
 
-                  if (pEvent->getAssignments().getIndex(assign->getObjectName()) == C_INVALID_INDEX)
+                  if (pEvent->getAssignments().getIndex(assignData->getTargetKey()) == C_INVALID_INDEX)
                     {
-                      CEventAssignment *eventAssign = new CEventAssignment(assign->getTargetKey(), pEvent->getObjectParent());
-                      eventAssign->setExpression(assign->getExpression());
-                      //  eventAssign->getExpressionPtr()->compile();
+                      CEventAssignment *eventAssign = new CEventAssignment(assignData->getTargetKey(), pEvent->getObjectParent());
+                      eventAssign->setExpression(assignData->getExpression());
+                      eventAssign->getExpressionPtr()->compile();
                       pEvent->getAssignments().add(eventAssign);
                     }
-
-                  /*    if (pEvent->getAssignments().getIndex(assign->getObjectName()) == C_INVALID_INDEX)
-                  {
-                    CEventAssignment *eventAssign = assign; // new CEventAssignment(assign->getTargetKey(), pEvent->getObjectParent());
-                  //  CEventAssignment *eventAssign = new CEventAssignment(pEvent->getObjectParent()->getKey());
-                  //    eventAssign->setExpression(assign->getExpression());
-                  //    eventAssign->getExpressionPtr()->compile();
-                    pEvent->getAssignments().add(eventAssign);
-                  }*/
                 }
+
+              /*        QList <CEventAssignment *> *assignments = eData->getAssignments();
+                      QList <CEventAssignment *>::const_iterator i;
+
+                      for (i = assignments->begin(); i != assignments->end(); ++i)
+                        {
+                          CEventAssignment * assign = *i;
+
+                          if (pEvent->getAssignments().getIndex(assign->getObjectName()) == C_INVALID_INDEX)
+                            {
+                              CEventAssignment *eventAssign = new CEventAssignment(assign->getTargetKey(), pEvent->getObjectParent());
+                              eventAssign->setExpression(assign->getExpression());
+                              //  eventAssign->getExpressionPtr()->compile();
+                              pEvent->getAssignments().add(eventAssign);
+                            }*/
+
+              /*    if (pEvent->getAssignments().getIndex(assign->getObjectName()) == C_INVALID_INDEX)
+              {
+                CEventAssignment *eventAssign = assign; // new CEventAssignment(assign->getTargetKey(), pEvent->getObjectParent());
+              //  CEventAssignment *eventAssign = new CEventAssignment(pEvent->getObjectParent()->getKey());
+              //    eventAssign->setExpression(assign->getExpression());
+              //    eventAssign->getExpressionPtr()->compile();
+                pEvent->getAssignments().add(eventAssign);
+              }*/
+              //}
 
               emit notifyGUI(ListViews::EVENT, ListViews::ADD, key);
             }

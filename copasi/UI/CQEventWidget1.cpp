@@ -37,6 +37,7 @@
 #include "undoFramework/CreateNewEventCommand.h"
 //#include "undoFramework/EventTypeChangeCommand.h"
 #include "undoFramework/UndoEventData.h"
+#include "undoFramework/UndoEventAssignmentData.h"
 #include "copasiui3window.h"
 #endif
 
@@ -651,15 +652,31 @@ void CQEventWidget1::addEvent(UndoEventData *pSData)
   pEvent->setDelayExpression(pSData->getDelayExpression());
   pEvent->setPriorityExpression(pSData->getPriorityExpression());
 
-  QList <CEventAssignment *> *assignments = pSData->getAssignments();
-  QList <CEventAssignment *>::const_iterator i;
+  QList <UndoEventAssignmentData *> *assignmentData = pSData->getEventAssignmentData();
+  QList <UndoEventAssignmentData *>::const_iterator i;
 
-  for (i = assignments->begin(); i != assignments->end(); ++i)
+  for (i = assignmentData->begin(); i != assignmentData->end(); ++i)
     {
-      CEventAssignment * assign = *i;
-      pEvent->getAssignments().add(assign);
+      UndoEventAssignmentData * assignData = *i;
+
+      if (pEvent->getAssignments().getIndex(assignData->getTargetKey()) == C_INVALID_INDEX)
+        {
+          CEventAssignment *eventAssign = new CEventAssignment(assignData->getTargetKey(), pEvent->getObjectParent());
+          eventAssign->setExpression(assignData->getExpression());
+          eventAssign->getExpressionPtr()->compile();
+          pEvent->getAssignments().add(eventAssign);
+        }
     }
 
+  /* QList <CEventAssignment *> *assignments = pSData->getAssignments();
+   QList <CEventAssignment *>::const_iterator i;
+
+   for (i = assignments->begin(); i != assignments->end(); ++i)
+     {
+       CEventAssignment * assign = *i;
+       pEvent->getAssignments().add(assign);
+     }
+  */
   std::string key = pEvent->getKey();
   protectedNotify(ListViews::EVENT, ListViews::ADD, key);
 

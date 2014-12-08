@@ -19,6 +19,7 @@
 #include "UndoReactionData.h"
 #include "UndoGlobalQuantityData.h"
 #include "UndoEventData.h"
+#include "UndoEventAssignmentData.h"
 #include "UndoSpecieData.h"
 #include "UndoData.h"
 
@@ -208,7 +209,6 @@ void CCopasiUndoCommand::setDependentObjects(const std::set< const CCopasiObject
 
               if (pModelValue->getStatus() != CModelEntity::FIXED)
                 {
-
                   data->setExpression(pModelValue->getExpression());
                 }
 
@@ -250,10 +250,11 @@ void CCopasiUndoCommand::setDependentObjects(const std::set< const CCopasiObject
 
               for (; iit != end; ++iit)
                 {
-                  CEventAssignment *eventAssign = new CEventAssignment((*iit)->getTargetKey(), pEvent->getObjectParent());
-                  eventAssign->setExpression((*iit)->getExpression());
-                  eventAssign->getExpressionPtr()->compile();
-                  data->getAssignments()->append(eventAssign);
+                  UndoEventAssignmentData *eventAssignData = new UndoEventAssignmentData();
+                  eventAssignData->setName((*iit)->getObjectName());
+                  eventAssignData->setExpression((*iit)->getExpression());
+                  eventAssignData->setTargetKey((*iit)->getTargetKey());
+                  data->getEventAssignmentData()->append(eventAssignData);
                 }
 
               mpEventData->append(data);

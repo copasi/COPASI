@@ -16,6 +16,7 @@
 #include "UI/CQEventDM.h"
 
 #include "UndoEventData.h"
+#include "UndoEventAssignmentData.h"
 #include "RemoveAllEventRowsCommand.h"
 
 RemoveAllEventRowsCommand::RemoveAllEventRowsCommand(CQEventDM * pEventDM, const QModelIndex&)
@@ -45,10 +46,19 @@ RemoveAllEventRowsCommand::RemoveAllEventRowsCommand(CQEventDM * pEventDM, const
 
           for (; it != end; ++it)
             {
-              CEventAssignment *eventAssign = new CEventAssignment((*it)->getTargetKey(), pModel->getEvents()[i]->getObjectParent());
-              eventAssign->setExpression((*it)->getExpression());
-              data->getAssignments()->append(eventAssign);
+              UndoEventAssignmentData *eventAssignData = new UndoEventAssignmentData();
+              eventAssignData->setName((*it)->getObjectName());
+              eventAssignData->setExpression((*it)->getExpression());
+              eventAssignData->setTargetKey((*it)->getTargetKey());
+              data->getEventAssignmentData()->append(eventAssignData);
             }
+
+          /*       for (; it != end; ++it)
+                   {
+                     CEventAssignment *eventAssign = new CEventAssignment((*it)->getTargetKey(), pModel->getEvents()[i]->getObjectParent());
+                     eventAssign->setExpression((*it)->getExpression());
+                     data->getAssignments()->append(eventAssign);
+                   }*/
 
           mpEventData.append(data);
         }

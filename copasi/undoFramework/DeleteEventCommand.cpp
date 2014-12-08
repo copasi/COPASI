@@ -16,6 +16,7 @@
 #include "UI/CQEventWidget1.h"
 
 #include "UndoEventData.h"
+#include "UndoEventAssignmentData.h"
 
 #include "DeleteEventCommand.h"
 
@@ -32,10 +33,19 @@ DeleteEventCommand::DeleteEventCommand(CQEventWidget1 *pEVentWidget1)
 
   for (; it != end; ++it)
     {
-      CEventAssignment *eventAssign = new CEventAssignment((*it)->getTargetKey(), mpEVentWidget1->mpEvent->getObjectParent());
-      eventAssign->setExpression((*it)->getExpression());
-      mpEventData->getAssignments()->append(eventAssign);
+      UndoEventAssignmentData *eventAssignData = new UndoEventAssignmentData();
+      eventAssignData->setName((*it)->getObjectName());
+      eventAssignData->setExpression((*it)->getExpression());
+      eventAssignData->setTargetKey((*it)->getTargetKey());
+      mpEventData->getEventAssignmentData()->append(eventAssignData);
     }
+
+  /* for (; it != end; ++it)
+     {
+       CEventAssignment *eventAssign = new CEventAssignment((*it)->getTargetKey(), mpEVentWidget1->mpEvent->getObjectParent());
+       eventAssign->setExpression((*it)->getExpression());
+       mpEventData->getAssignments()->append(eventAssign);
+     }*/
 
   mpEventData->setTriggerExpression(mpEVentWidget1->mpEvent->getTriggerExpression());
   mpEventData->setDelayExpression(mpEVentWidget1->mpEvent->getDelayExpression());

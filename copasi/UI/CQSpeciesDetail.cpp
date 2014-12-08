@@ -29,6 +29,7 @@
 #include "undoFramework/UndoReactionData.h"
 #include "undoFramework/UndoGlobalQuantityData.h"
 #include "undoFramework/UndoEventData.h"
+#include "undoFramework/UndoEventAssignmentData.h"
 #include "copasiui3window.h"
 #endif
 
@@ -949,40 +950,66 @@ void CQSpeciesDetail::addSpecie(UndoSpecieData *pSData)
   //restore the reactions the species dependent on
   QList <UndoReactionData *> *reactionData = pSData->getReactionDependencyObjects();
 
-  QList <UndoReactionData *>::const_iterator j;
-
-  for (j = reactionData->begin(); j != reactionData->end(); ++j)
+  if (!reactionData->empty())
     {
-      UndoReactionData * rData = *j;
+      QList <UndoReactionData *>::const_iterator j;
 
-      //TODO check if reaction already exist in the model, better ideal may be implemented in the future
-      bool exist = false;
-
-      for (int ii = 0; ii < pModel->getReactions().size(); ii++)
+      for (j = reactionData->begin(); j != reactionData->end(); ++j)
         {
-          if (pModel->getReactions()[ii]->getObjectName() == rData->getName())
-            {
-              exist = true;
-              ii = ii + pModel->getReactions().size() + 1; //jump out of the loop reaction exist already
-            }
-          else
-            {
-              exist = false;
-            }
-        }
 
-      if (!exist)
-        {
-          CReaction *pRea =  pModel->createReaction(rData->getName());
-          CChemEqInterface *chem = new CChemEqInterface(pModel);
-          chem->setChemEqString(rData->getRi()->getChemEqString());
-          chem->writeToChemEq(pRea->getChemEq());
+          UndoReactionData * rData = *j;
 
-          //  rData->getRi()->writeBackToReaction(pRea);
-          protectedNotify(ListViews::REACTION, ListViews::ADD, pRea->getKey());
+          //need to make sure reaction doesn't exist in the model already
+          if (pModel->getReactions().getIndex(rData->getName()) == C_INVALID_INDEX)
+            {
+              CReaction *pRea =  pModel->createReaction(rData->getName());
+              CChemEqInterface *chem = new CChemEqInterface(pModel);
+              chem->setChemEqString(rData->getRi()->getChemEqString());
+              chem->writeToChemEq(pRea->getChemEq());
+              rData->getRi()->createMetabolites();
+              rData->getRi()->createOtherObjects();
+              rData->getRi()->writeBackToReaction(pRea);
+
+              protectedNotify(ListViews::REACTION, ListViews::ADD, pRea->getKey());
+              //  endInsertRows();
+            }
         }
     }
 
+  /* QList <UndoReactionData *>::const_iterator j;
+
+   for (j = reactionData->begin(); j != reactionData->end(); ++j)
+     {
+       UndoReactionData * rData = *j;
+
+    /*   //TODO check if reaction already exist in the model, better ideal may be implemented in the future
+       bool exist = false;
+
+       for (int ii = 0; ii < pModel->getReactions().size(); ii++)
+         {
+           if (pModel->getReactions()[ii]->getObjectName() == rData->getName())
+             {
+               exist = true;
+               ii = ii + pModel->getReactions().size() + 1; //jump out of the loop reaction exist already
+             }
+           else
+             {
+               exist = false;
+             }
+         }
+
+       if (!exist)
+         {
+           CReaction *pRea =  pModel->createReaction(rData->getName());
+           CChemEqInterface *chem = new CChemEqInterface(pModel);
+           chem->setChemEqString(rData->getRi()->getChemEqString());
+           chem->writeToChemEq(pRea->getChemEq());
+
+           //  rData->getRi()->writeBackToReaction(pRea);
+           protectedNotify(ListViews::REACTION, ListViews::ADD, pRea->getKey());
+         }
+     }
+  */
   //reinsert the dependency global quantity
   QList <UndoGlobalQuantityData *> *pGlobalQuantityData = pSData->getGlobalQuantityDependencyObjects();
 
@@ -1028,21 +1055,37 @@ void CQSpeciesDetail::addSpecie(UndoSpecieData *pSData)
 
           //set the expressions
           pEvent->setTriggerExpression(eData->getTriggerExpression());
-          //pEvent->setDelayExpression(eData->getDelayExpression());
+          pEvent->setDelayExpression(eData->getDelayExpression());
           //  std::cout<<"+++++Event Level++++ Prioroty"<<eData->getPriorityExpression()<<std::endl;
-          //  pEvent->setPriorityExpression(eData->getPriorityExpression());
+          pEvent->setPriorityExpression(eData->getPriorityExpression());
 
-          QList <CEventAssignment *> *assignments = eData->getAssignments();
-          QList <CEventAssignment *>::const_iterator i;
+          QList <UndoEventAssignmentData *> *assignmentData = eData->getEventAssignmentData();
+          QList <UndoEventAssignmentData *>::const_iterator i;
 
-          for (i = assignments->begin(); i != assignments->end(); ++i)
+          for (i = assignmentData->begin(); i != assignmentData->end(); ++i)
             {
-              CEventAssignment * assign = *i;
-              CEventAssignment *eventAssign = new CEventAssignment(assign->getTargetKey(), pEvent->getObjectParent());
-              pEvent->getAssignments().add(eventAssign);
-              //    std::cout<<"+++++Event Level++++"<<eventAssign->getKey()<<std::endl;
+              UndoEventAssignmentData * assignData = *i;
+
+              if (pEvent->getAssignments().getIndex(assignData->getTargetKey()) == C_INVALID_INDEX)
+                {
+                  CEventAssignment *eventAssign = new CEventAssignment(assignData->getTargetKey(), pEvent->getObjectParent());
+                  eventAssign->setExpression(assignData->getExpression());
+                  eventAssign->getExpressionPtr()->compile();
+                  pEvent->getAssignments().add(eventAssign);
+                }
             }
 
+          /*        QList <CEventAssignment *> *assignments = eData->getAssignments();
+                  QList <CEventAssignment *>::const_iterator i;
+
+                  for (i = assignments->begin(); i != assignments->end(); ++i)
+                    {
+                      CEventAssignment * assign = *i;
+                      CEventAssignment *eventAssign = new CEventAssignment(assign->getTargetKey(), pEvent->getObjectParent());
+                      pEvent->getAssignments().add(eventAssign);
+                      //    std::cout<<"+++++Event Level++++"<<eventAssign->getKey()<<std::endl;
+                    }
+          */
           //    std::cout<<"=====Event Level==== KEY"<<key<<std::endl;
           protectedNotify(ListViews::EVENT, ListViews::ADD, key);
           //    std::cout<<"=====Event Level===="<<key<<std::endl;

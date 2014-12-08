@@ -36,11 +36,24 @@ DeleteSpecieCommand::DeleteSpecieCommand(CQSpeciesDetail *pSpecieDetail)
 
   std::string sName = mpSpecieDetail->mpMetab->getObjectName();
   mpSpecieData->setName(sName);
-  mpSpecieData->setIConc(mpSpecieDetail->mpMetab->getInitialConcentration());
-  mpSpecieData->setCompartment(mpSpecieDetail->mpMetab->getCompartment()->getObjectName());
-  //mpSpecieData->setInitialExpression(mpSpecieDetail->mpInitialExpressionEMW->mpExpressionWidget->getExpression());
-  //mpSpecieData->setExpression(mpSpecieDetail->mpExpressionEMW->mpExpressionWidget->getExpression());
+
   mpSpecieData->setStatus(mpSpecieDetail->mpMetab->getStatus());
+
+  if (mpSpecieDetail->mpMetab->getStatus() != CModelEntity::ASSIGNMENT)
+    {
+      mpSpecieData->setIConc(mpSpecieDetail->mpMetab->getInitialConcentration());
+    }
+
+  if (mpSpecieDetail->mpMetab->getStatus() ==  CModelEntity::ASSIGNMENT || mpSpecieDetail->mpMetab->getStatus() == CModelEntity::ODE)
+    {
+      mpSpecieData->setExpression(mpSpecieDetail->mpMetab->getExpression());
+    }
+
+  // set initial expression
+  if (mpSpecieDetail->mpMetab->getStatus() != CModelEntity::ASSIGNMENT)
+    {
+      mpSpecieData->setInitialExpression(mpSpecieDetail->mpMetab->getInitialExpression());
+    }
 
   //store to be deleted data
   //QList<UndoReactionData*> *dependencyObjects = new QList<UndoReactionData*>();

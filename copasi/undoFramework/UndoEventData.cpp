@@ -16,10 +16,12 @@
 
 #include "UndoEventData.h"
 
+#include "UndoEventAssignmentData.h"
+
 UndoEventData::UndoEventData()
 {
 
-  mAssignments = new QList <CEventAssignment*>();
+  mEventAssignmentData = new QList <UndoEventAssignmentData*>();
 }
 
 UndoEventData::~UndoEventData()
@@ -97,12 +99,12 @@ void UndoEventData::setType(Type &type)
   this->type = type;
 }
 
-QList<CEventAssignment*> *UndoEventData::getAssignments() const
+QList<UndoEventAssignmentData*> *UndoEventData::getEventAssignmentData() const
 {
-  return mAssignments;
+  return mEventAssignmentData;
 }
 
-void UndoEventData::setAssignments(QList<CEventAssignment*> *assignments)
+void UndoEventData::setEventAssignmentData(QList<UndoEventAssignmentData *> *eventAssignmentData)
 {
-  mAssignments = assignments;
+  mEventAssignmentData = eventAssignmentData;
 }

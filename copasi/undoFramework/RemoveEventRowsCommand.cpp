@@ -16,6 +16,7 @@
 #include "model/CEvent.h"
 
 #include "UndoEventData.h"
+#include "UndoEventAssignmentData.h"
 
 #include "RemoveEventRowsCommand.h"
 
@@ -50,10 +51,19 @@ RemoveEventRowsCommand::RemoveEventRowsCommand(QModelIndexList rows, CQEventDM *
 
           for (; it != end; ++it)
             {
-              CEventAssignment *eventAssign = new CEventAssignment((*it)->getTargetKey(), pModel->getEvents()[(*i).row()]->getObjectParent());
-              eventAssign->setExpression((*it)->getExpression());
-              data->getAssignments()->append(eventAssign);
+              UndoEventAssignmentData *eventAssignData = new UndoEventAssignmentData();
+              eventAssignData->setName((*it)->getObjectName());
+              eventAssignData->setExpression((*it)->getExpression());
+              eventAssignData->setTargetKey((*it)->getTargetKey());
+              data->getEventAssignmentData()->append(eventAssignData);
             }
+
+          /*      for (; it != end; ++it)
+                  {
+                    CEventAssignment *eventAssign = new CEventAssignment((*it)->getTargetKey(), pModel->getEvents()[(*i).row()]->getObjectParent());
+                    eventAssign->setExpression((*it)->getExpression());
+                    data->getAssignments()->append(eventAssign);
+                  }*/
 
           mpEventData.append(data);
         }

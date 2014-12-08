@@ -17,6 +17,7 @@
 #include "CQEventDM.h"
 
 #include "UndoEventData.h"
+#include "UndoEventAssignmentData.h"
 #include "InsertEventRowsCommand.h"
 
 InsertEventRowsCommand::InsertEventRowsCommand(int position, int rows, CQEventDM *pEventDM, const QModelIndex&): CCopasiUndoCommand()
@@ -52,10 +53,19 @@ void InsertEventRowsCommand::redo()
 
       for (; it != end; ++it)
         {
-          CEventAssignment *eventAssign = new CEventAssignment((*it)->getTargetKey(), pEvent->getObjectParent());
-          eventAssign->setExpression((*it)->getExpression());
-          mpEventData->getAssignments()->append(eventAssign);
+          UndoEventAssignmentData *eventAssignData = new UndoEventAssignmentData();
+          eventAssignData->setName((*it)->getObjectName());
+          eventAssignData->setExpression((*it)->getExpression());
+          eventAssignData->setTargetKey((*it)->getTargetKey());
+          mpEventData->getEventAssignmentData()->append(eventAssignData);
         }
+
+      /*     for (; it != end; ++it)
+             {
+               CEventAssignment *eventAssign = new CEventAssignment((*it)->getTargetKey(), pEvent->getObjectParent());
+               eventAssign->setExpression((*it)->getExpression());
+               mpEventData->getAssignments()->append(eventAssign);
+             }*/
 
       firstTime = false;
     }

@@ -31,6 +31,7 @@
 #include "undoFramework/UndoReactionData.h"
 #include "undoFramework/UndoGlobalQuantityData.h"
 #include "undoFramework/UndoEventData.h"
+#include "undoFramework/UndoEventAssignmentData.h"
 #endif
 
 CQSpecieDM::CQSpecieDM(QObject *parent):
@@ -885,30 +886,35 @@ bool CQSpecieDM::insertSpecieRows(QList <UndoSpecieData *> pData)
   for (i = pData.begin(); i != pData.end(); ++i)
     {
       UndoSpecieData * data = *i;
-      beginInsertRows(QModelIndex(), 1, 1);
-      CMetab *pSpecie =  pModel->createMetabolite(data->getName(), data->getCompartment(), data->getIConc(), data->getStatus());
+      CCompartment * pCompartment = pModel->getCompartments()[data->getCompartment()];
 
-      if (data->getStatus() != CModelEntity::ASSIGNMENT)
+      if (pCompartment->getMetabolites().getIndex(data->getName()) == C_INVALID_INDEX)
         {
-          pSpecie->setInitialConcentration(data->getIConc());
+          beginInsertRows(QModelIndex(), 1, 1);
+
+          CMetab *pSpecie =  pModel->createMetabolite(data->getName(), data->getCompartment(), 1.0, data->getStatus());
+
+          if (data->getStatus() != CModelEntity::ASSIGNMENT)
+            {
+              pSpecie->setInitialConcentration(data->getIConc());
+            }
+
+          if (data->getStatus() == CModelEntity::ODE || data->getStatus() == CModelEntity::ASSIGNMENT)
+            {
+              pSpecie->setExpression(data->getExpression());
+              pSpecie->getExpressionPtr()->compile();
+            }
+
+          // set initial expression
+          if (data->getStatus() != CModelEntity::ASSIGNMENT)
+            {
+              pSpecie->setInitialExpression(data->getInitialExpression());
+              pSpecie->getInitialExpressionPtr()->compile();
+            }
+
+          emit notifyGUI(ListViews::METABOLITE, ListViews::ADD, pSpecie->getKey());
+          endInsertRows();
         }
-
-      if (data->getStatus() == CModelEntity::ODE || data->getStatus() == CModelEntity::ASSIGNMENT)
-        {
-          pSpecie->setExpression(data->getExpression());
-          pSpecie->getExpressionPtr()->compile();
-        }
-
-      // set initial expression
-      if (data->getStatus() != CModelEntity::ASSIGNMENT)
-        {
-
-          pSpecie->setInitialExpression(data->getInitialExpression());
-          pSpecie->getInitialExpressionPtr()->compile();
-        }
-
-      emit notifyGUI(ListViews::METABOLITE, ListViews::ADD, pSpecie->getKey());
-      endInsertRows();
     }
 
   //restore the reactions
@@ -1014,17 +1020,17 @@ bool CQSpecieDM::insertSpecieRows(QList <UndoSpecieData *> pData)
                       pEvent->setDelayExpression(eData->getDelayExpression());
                       pEvent->setPriorityExpression(eData->getPriorityExpression());
 
-                      QList <CEventAssignment *> *assignments = eData->getAssignments();
-                      QList <CEventAssignment *>::const_iterator i;
+                      QList <UndoEventAssignmentData *> *assignmentData = eData->getEventAssignmentData();
+                      QList <UndoEventAssignmentData *>::const_iterator i;
 
-                      for (i = assignments->begin(); i != assignments->end(); ++i)
+                      for (i = assignmentData->begin(); i != assignmentData->end(); ++i)
                         {
-                          CEventAssignment * assign = *i;
+                          UndoEventAssignmentData * assignData = *i;
 
-                          if (pEvent->getAssignments().getIndex(assign->getObjectName()) == C_INVALID_INDEX)
+                          if (pEvent->getAssignments().getIndex(assignData->getTargetKey()) == C_INVALID_INDEX)
                             {
-                              CEventAssignment *eventAssign = new CEventAssignment(assign->getTargetKey(), pEvent->getObjectParent());
-                              eventAssign->setExpression(assign->getExpression());
+                              CEventAssignment *eventAssign = new CEventAssignment(assignData->getTargetKey(), pEvent->getObjectParent());
+                              eventAssign->setExpression(assignData->getExpression());
                               eventAssign->getExpressionPtr()->compile();
                               pEvent->getAssignments().add(eventAssign);
                             }
