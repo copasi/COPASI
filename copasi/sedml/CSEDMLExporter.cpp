@@ -196,7 +196,7 @@ std::string CSEDMLExporter::createScanTask(CCopasiDataModel& dataModel, const st
   if (pProblem->getSubtask() != CCopasiTask::steadyState &&
       pProblem->getSubtask() != CCopasiTask::timeCourse)
     {
-      CCopasiMessage(CCopasiMessage::WARNING, "This version of COPASI only allows the export of time course or steady state scans.");
+      CCopasiMessage(CCopasiMessage::WARNING, "SED-ML: This version of COPASI only allows the export of time course or steady state scans.");
       return "";
     }
 
@@ -225,7 +225,7 @@ std::string CSEDMLExporter::createScanTask(CCopasiDataModel& dataModel, const st
       // ignore random items
       if (type == CScanProblem::SCAN_RANDOM)
         {
-          CCopasiMessage(CCopasiMessage::WARNING, "This version of COPASI cannot export random scan items, they will be ignored.");
+          CCopasiMessage(CCopasiMessage::WARNING, "SED-ML: This version of COPASI cannot export random scan items, they will be ignored.");
           continue;
         }
 
@@ -266,7 +266,7 @@ std::string CSEDMLExporter::createScanTask(CCopasiDataModel& dataModel, const st
 
           if (xpath.empty())
             {
-              CCopasiMessage(CCopasiMessage::WARNING, "This version of COPASI cannot export the selected scan object, it will be ignored.");
+              CCopasiMessage(CCopasiMessage::WARNING, "SED-ML: This version of COPASI cannot export the selected scan object, it will be ignored.");
               continue;
             }
 
@@ -436,7 +436,7 @@ void CSEDMLExporter::createDataGenerators(CCopasiDataModel & dataModel,
   std::vector<std::string> stringsContainer; //split string container
 
   if (pModel == NULL)
-    CCopasiMessage(CCopasiMessage::ERROR, "No model for this SED-ML document. An SBML model must exist for every SED-ML document.");
+    CCopasiMessage(CCopasiMessage::ERROR, "SED-ML: No model for this SED-ML document. An SBML model must exist for every SED-ML document.");
 
   SedPlot2D* pPSedPlot;
   SedCurve* pCurve; // = pPSedPlot->createCurve();
@@ -456,7 +456,7 @@ void CSEDMLExporter::createDataGenerators(CCopasiDataModel & dataModel,
   SedDataGenerator *pPDGen;
 
   if (imax == 0 && (task == NULL || task->getReport().getTarget().empty()))
-    CCopasiMessage(CCopasiMessage::ERROR, "No plot/report definition for this SED-ML document.");
+    CCopasiMessage(CCopasiMessage::ERROR, "SED-ML: No plot/report definition for this SED-ML document.");
 
   // export report
   if (task != NULL && !task->getReport().getTarget().empty())
@@ -553,12 +553,38 @@ void CSEDMLExporter::createDataGenerators(CCopasiDataModel & dataModel,
           CCopasiObject *objectX, *objectY;
 
           if (pPlotItem->getChannels().size() >= 1)
-            objectX = dataModel.getDataObject(pPlotItem->getChannels()[0]);
+            {
+              objectX = dataModel.getDataObject(pPlotItem->getChannels()[0]);
+            }
+          else
+            {
+              CCopasiMessage(CCopasiMessage::WARNING, "SED-ML: Can't export plotItem '%s', as it has no data channel.", pPlotItem->getObjectName().c_str());
+              continue;
+            }
+
+          if (objectX == NULL)
+            {
+              CCopasiMessage(CCopasiMessage::WARNING, "SED-ML: Can't export plotItem '%s' variable '%s', as it cannot be resolved.",  pPlotItem->getObjectName().c_str(), pPlotItem->getChannels()[0].c_str());
+              continue;
+            }
 
           bool xIsTime = objectX->getCN() == pTime->getCN();
 
           if (pPlotItem->getChannels().size() >= 2)
-            objectY = dataModel.getDataObject(pPlotItem->getChannels()[1]);
+            {
+              objectY = dataModel.getDataObject(pPlotItem->getChannels()[1]);
+            }
+          else
+            {
+              CCopasiMessage(CCopasiMessage::WARNING, "SED-ML: Can't export plotItem '%s', as it has only 1 data channel.", pPlotItem->getObjectName().c_str());
+              continue;
+            }
+
+          if (objectY == NULL)
+            {
+              CCopasiMessage(CCopasiMessage::WARNING, "SED-ML: Can't export plotItem '%s' variable '%s', as it cannot be resolved.",  pPlotItem->getObjectName().c_str(), pPlotItem->getChannels()[1].c_str());
+              continue;
+            }
 
           const std::string& type = objectY->getObjectName();
           std::string yAxis = objectY->getObjectDisplayName();
@@ -567,6 +593,7 @@ void CSEDMLExporter::createDataGenerators(CCopasiDataModel & dataModel,
 
           if (targetXPathString.empty())
             {
+              CCopasiMessage(CCopasiMessage::WARNING, "SED-ML: Can't export plotItem '%s' variable '%s', as no xpath expression for it could be generated.",  pPlotItem->getObjectName().c_str(), pPlotItem->getChannels()[1].c_str());
               continue;
             }
 
