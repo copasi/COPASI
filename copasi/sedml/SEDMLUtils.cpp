@@ -30,6 +30,9 @@ std::string SEDMLUtils::findIdByNameAndType(
 {
   std::map<CCopasiObject*, SBase*>::const_iterator it = map.begin();
 
+  std::string::size_type compartmentStart = name.find("{");
+  std::string nameOnly = name.substr(0, compartmentStart);
+
   while (it != map.end())
     {
       SBase* current = it->second;
@@ -37,6 +40,20 @@ std::string SEDMLUtils::findIdByNameAndType(
       if (((current->getTypeCode() & typeCode) == typeCode) &&
           current->getName() == name)
         return current->getId();
+
+      if (typeCode == SBML_SPECIES  && compartmentStart != std::string::npos)
+        {
+          if (((current->getTypeCode() & typeCode) == typeCode) &&
+              current->getName() == nameOnly)
+            {
+              std::string compName = name.substr(compartmentStart + 1, name.size() - compartmentStart  - 2);
+              std::string compId = findIdByNameAndType(map, SBML_COMPARTMENT, compName);
+              Species* species = (Species*) current;
+
+              if (species->getCompartment() == compId)
+                return species->getId();
+            }
+        }
 
       ++it;
     }
@@ -82,6 +99,8 @@ SEDMLUtils::getXPathAndName(std::string& sbmlId,
         {
           return targetXPathString + sbmlId + "\']";
         }
+      else
+        return "";
     }
 
   else if (type == "Flux")
@@ -98,6 +117,8 @@ SEDMLUtils::getXPathAndName(std::string& sbmlId,
         {
           return targetXPathString + sbmlId + "\']";
         }
+      else
+        return "";
     }
   else if (type == "Value" || type == "InitialValue")
     {
@@ -141,6 +162,8 @@ SEDMLUtils::getXPathAndName(std::string& sbmlId,
         {
           return targetXPathString + sbmlId + "\']";
         }
+      else
+        return "";
     }
   else if (type == "Volume" || type == "InitialVolume")
     {
@@ -166,6 +189,8 @@ SEDMLUtils::getXPathAndName(std::string& sbmlId,
         {
           return targetXPathString + sbmlId + "\']";
         }
+      else
+        return "";
     }
   else if (type == "Time" || type == "Initial Time")
     return SEDML_TIME_URN;
