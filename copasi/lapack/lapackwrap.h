@@ -1252,7 +1252,7 @@ extern "C"
 # if defined (HAVE_LAPACK_H) && !defined(HAVE_APPLE)
 #  include <lapack.h>
 # else
-#  if (defined HAVE_CLAPACK_H)
+#  if defined (HAVE_CLAPACK_H) && !defined(HAVE_APPLE)
 #   include <clapack.h>
 #  else
 #    if !defined(HAVE_APPLE)
