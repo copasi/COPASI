@@ -144,6 +144,15 @@ void CCopasiUndoCommand::setDependentObjects(const std::set< const CCopasiObject
               //ri->initFromReaction((*it)->getKey());
 
               data->setName((*it)->getObjectName());
+
+              const CReaction * pRea = dynamic_cast<const CReaction*>(*it);
+
+              if (pRea->getDeletedObjects().size() > 0)
+                {
+                  setDependentObjects(pRea->getDeletedObjects());
+                  data->setSpecieDependencyObjects(getSpecieData());
+                }
+
               //  data->setRi(ri);
               mpReactionData->append(data); //FROM_UTF8((*it)->getObjectName()));
             }

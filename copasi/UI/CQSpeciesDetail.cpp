@@ -951,8 +951,11 @@ void CQSpeciesDetail::addSpecie(UndoSpecieData *pSData)
 
   if (pSData->getStatus() == CModelEntity::ODE || pSData->getStatus() == CModelEntity::ASSIGNMENT)
     {
-      pSpecie->setExpression(pSData->getExpression());
-      pSpecie->getExpressionPtr()->compile();
+      if (pSData->getExpression() != "")
+        {
+          pSpecie->setExpression(pSData->getExpression());
+          pSpecie->getExpressionPtr()->compile();
+        }
     }
 
   // set initial expression

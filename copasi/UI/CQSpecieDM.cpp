@@ -988,11 +988,44 @@ bool CQSpecieDM::insertSpecieRows(QList <UndoSpecieData *> pData)
                   rData->getRi()->createMetabolites();
                   rData->getRi()->createOtherObjects();
                   rData->getRi()->writeBackToReaction(pRea);
-                  //std::string name = rData->getRi()->getFunctionName();
-                  //pRea->setFunction((const)rData->getRi()->getFunction());
+
+                  //reaction may further has dependencies, these must be taken care of
+                  QList <UndoSpecieData *> *spData = rData->getSpecieDependencyObjects();
+
+                  QList <UndoSpecieData *>::const_iterator rs;
+
+                  for (rs = spData->begin(); rs != spData->end(); ++rs)
+                    {
+                      UndoSpecieData * data = *rs;
+                      CCompartment * pCompartment = pModel->getCompartments()[data->getCompartment()];
+
+                      if (pCompartment->getMetabolites().getIndex(data->getName()) == C_INVALID_INDEX)
+                        {
+                          CMetab *pSpecie =  pModel->createMetabolite(data->getName(), data->getCompartment(), 1.0, data->getStatus());
+
+                          if (data->getStatus() != CModelEntity::ASSIGNMENT)
+                            {
+                              pSpecie->setInitialConcentration(data->getIConc());
+                            }
+
+                          if (data->getStatus() == CModelEntity::ODE || data->getStatus() == CModelEntity::ASSIGNMENT)
+                            {
+                              pSpecie->setExpression(data->getExpression());
+                              pSpecie->getExpressionPtr()->compile();
+                            }
+
+                          // set initial expression
+                          if (data->getStatus() != CModelEntity::ASSIGNMENT)
+                            {
+                              pSpecie->setInitialExpression(data->getInitialExpression());
+                              pSpecie->getInitialExpressionPtr()->compile();
+                            }
+
+                          emit notifyGUI(ListViews::METABOLITE, ListViews::ADD, pSpecie->getKey());
+                        }
+                    }
 
                   emit notifyGUI(ListViews::REACTION, ListViews::ADD, pRea->getKey());
-                  //  endInsertRows();
                 }
             }
         }
