@@ -21,6 +21,8 @@ CreateNewCompartmentCommand::CreateNewCompartmentCommand(CQCompartment *pCompart
   mpCompartment = pCompartment;
   mpCompartmentData = new UndoCompartmentData();
   this->setText(createNewCompartmentText());
+  mType = COMPARTMENTCREATION;
+  setEntityType("Compartment");
 }
 void CreateNewCompartmentCommand::redo()
 {
@@ -30,11 +32,15 @@ void CreateNewCompartmentCommand::redo()
   mpCompartmentData->setName(sName);
   mpCompartmentData->setInitialValue(mpCompartment->mpCompartment->getInitialValue());
   mpCompartmentData->setStatus(mpCompartment->mpCompartment->getStatus());
+  setUndoState(true);
+  setAction("Create");
 }
 
 void CreateNewCompartmentCommand::undo()
 {
   mpCompartment->deleteCompartment(mpCompartmentData);
+  setUndoState(false);
+  setAction("Delete");
 }
 
 QString CreateNewCompartmentCommand::createNewCompartmentText() const
@@ -47,4 +53,14 @@ QString CreateNewCompartmentCommand::createNewCompartmentText() const
 CreateNewCompartmentCommand::~CreateNewCompartmentCommand()
 {
   // TODO Auto-generated destructor stub
+}
+
+UndoData *CreateNewCompartmentCommand::getUndoData() const
+{
+  return mpCompartmentData;
+}
+
+void CreateNewCompartmentCommand::setType(const CreateNewCompartmentCommand::Type & type)
+{
+  mType = COMPARTMENTCREATION;
 }

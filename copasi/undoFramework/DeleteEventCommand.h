@@ -25,6 +25,7 @@ public:
   void redo();
   void undo();
   QString deleteEventText(std::string &name) const;
+  UndoData *getUndoData() const;
   virtual ~DeleteEventCommand();
 
 private:

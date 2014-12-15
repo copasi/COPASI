@@ -21,6 +21,7 @@
 typedef QPair<int, int> PathItem;
 typedef QList<PathItem> Path;
 
+class CCopasiObject;
 class UndoData;
 class UndoSpecieData;
 class UndoReactionData;
@@ -30,14 +31,46 @@ class UndoEventData;
 class CCopasiUndoCommand : public QUndoCommand
 {
 public:
+  /**
+   *  The valid command type for Undo History
+   */
+  enum Type
+  {
+    COMPARTMENTCREATION = 0 , //creation of single compartment
+    EVENTCREATION, //creation of single event
+    GLOBALQUANTITYCREATION, //creation of single global quantity
+    REACTIONCREATION, //creation of single reaction
+    SPECIECREATION, //creation of single species
+    COMPARTMENTDELETE, //deletion of single compartment
+    EVENTDELETE, //deletion of single event
+    GLOBALQUANTITYDELETE, //deletion of single global quantity
+    REACTIONDELETE, //deletion of single reaction
+    SPECIEDELETE, //deletion of single species
+    SPECIESTYPECHANG
+  };
+  //change of species type
+  /**
+  * Retrieve the type of the command.
+  * @return const CCopasiUndoCommand::Type & type
+  */
+  const CCopasiUndoCommand::Type & getType() const;
+  /**
+  * Set the type
+  * @param const CCopasiUndoCommand::Type & type
+  */
+  virtual void setType(const CCopasiUndoCommand::Type & type);
+  /**
+  * Retrieve the Undo Data associated with this command.
+  * @return UndoData *undoData
+  */
+  virtual UndoData *getUndoData() const;
   CCopasiUndoCommand();
   virtual ~CCopasiUndoCommand();
   virtual void undo() = 0;
   virtual void redo() = 0;
-  Path pathFromIndex(const QModelIndex &index);
-  QModelIndex pathToIndex(const Path &path, const QAbstractItemModel *model);
-  void setDependentObjects(const std::set< const CCopasiObject * > & deletedObjects);
-
+  Path pathFromIndex(const QModelIndex & index);
+  QModelIndex pathToIndex(const Path & path, const QAbstractItemModel *model);
+  void setDependentObjects(const std::set<const CCopasiObject*> & deletedObjects);
   QList<UndoReactionData*> *getReactionData() const;
   QList<UndoSpecieData*> *getSpecieData() const;
   void setReactionData(QList<UndoReactionData*> *reactionData);
@@ -46,12 +79,35 @@ public:
   void setGlobalQuantityData(QList<UndoGlobalQuantityData*> *globalQuantityData);
   QList<UndoEventData*> *getEventData() const;
   void setEventData(QList<UndoEventData*> *eventData);
+  bool isUndoState() const;
+  void setUndoState(bool undoState);
+  std::string getEntityType() const;
+  std::string getNewValue() const;
+  std::string getOldValue() const;
+  std::string getProperty() const;
+  void setEntityType(std::string entityType);
+  void setNewValue(std::string newValue);
+  void setOldValue(std::string oldValue);
+  void setProperty(std::string property);
+  std::string getAction() const;
+  void setAction(std::string action);
 
 protected:
   QList<UndoSpecieData*> *mpSpecieData;
   QList<UndoReactionData*> *mpReactionData;
   QList<UndoGlobalQuantityData*> *mpGlobalQuantityData;
   QList<UndoEventData*> *mpEventData;
+  /**
+  *  Type of the undo command.
+  */
+  CCopasiUndoCommand::Type mType;
+private:
+  bool undoState;
+  std::string  mNewValue;
+  std::string  mOldValue;
+  std::string mProperty;
+  std::string  mEntityType;
+  std::string mAction;
 };
 
 #endif /* CCOPASIUNDOCOMMAND_H_ */

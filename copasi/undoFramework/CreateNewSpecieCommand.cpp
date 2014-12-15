@@ -22,6 +22,8 @@ CreateNewSpecieCommand::CreateNewSpecieCommand(CQSpeciesDetail *pSpecieDetail)
   mpSpecieDetail = pSpecieDetail;
   mpSpecieData = new UndoSpecieData();
   this->setText(createNewSpecieText());
+  mType = SPECIECREATION;
+  setEntityType("Species");
 }
 void CreateNewSpecieCommand::redo()
 {
@@ -32,11 +34,15 @@ void CreateNewSpecieCommand::redo()
   mpSpecieData->setIConc(mpSpecieDetail->mpMetab->getInitialConcentration());
   mpSpecieData->setCompartment(mpSpecieDetail->mpMetab->getCompartment()->getObjectName());
   mpSpecieData->setStatus(mpSpecieDetail->mpMetab->getStatus());
+  setUndoState(true);
+  setAction("Create");
 }
 
 void CreateNewSpecieCommand::undo()
 {
   mpSpecieDetail->deleteSpecie(mpSpecieData);
+  setUndoState(false);
+  setAction("Delete");
 }
 
 QString CreateNewSpecieCommand::createNewSpecieText() const
@@ -44,6 +50,11 @@ QString CreateNewSpecieCommand::createNewSpecieText() const
   std::string myEntityName(": Create New Species ");
   char* entityName = (char*)myEntityName.c_str();
   return QObject::tr(entityName);
+}
+
+UndoData *CreateNewSpecieCommand::getUndoData() const
+{
+  return mpSpecieData;
 }
 
 CreateNewSpecieCommand::~CreateNewSpecieCommand()

@@ -29,6 +29,8 @@ public:
   void undo();
   QString deleteGlobalQuantityText(std::string &name) const;
 
+  UndoData *getUndoData() const;
+
   virtual ~DeleteGlobalQuantityCommand();
 
 private:

@@ -26,6 +26,9 @@ public:
   void undo();
   QString createNewCompartmentText() const;
   virtual ~CreateNewCompartmentCommand();
+  void setType(const CreateNewCompartmentCommand::Type & type);
+  CreateNewCompartmentCommand * getCreateNewCompartmentCommand() {return this; };
+  UndoData *getUndoData() const;
 
 private:
   UndoCompartmentData *mpCompartmentData;

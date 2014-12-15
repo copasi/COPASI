@@ -10,7 +10,6 @@
  *      Author: dada
  */
 
-//#include "model/CEvent.h"
 #include "UI/CQEventWidget1.h"
 #include "UndoEventData.h"
 
@@ -21,6 +20,8 @@ CreateNewEventCommand::CreateNewEventCommand(CQEventWidget1 *pEventWidget)
   mpEventWidget = pEventWidget;
   mpEventData = new UndoEventData();
   this->setText(createNewEventText());
+  mType = EVENTCREATION;
+  setEntityType("Event");
 }
 void CreateNewEventCommand::redo()
 {
@@ -31,11 +32,15 @@ void CreateNewEventCommand::redo()
   mpEventData->setDelayExpression(mpEventWidget->mpEvent->getDelayExpression());
   mpEventData->setTriggerExpression(mpEventWidget->mpEvent->getTriggerExpression());
   mpEventData->setPriorityExpression(mpEventWidget->mpEvent->getPriorityExpression());
+  setUndoState(true);
+  setAction("Create");
 }
 
 void CreateNewEventCommand::undo()
 {
   mpEventWidget->deleteEvent(mpEventData);
+  setUndoState(false);
+  setAction("Delete");
 }
 
 QString CreateNewEventCommand::createNewEventText() const
@@ -48,4 +53,9 @@ QString CreateNewEventCommand::createNewEventText() const
 CreateNewEventCommand::~CreateNewEventCommand()
 {
   // TODO Auto-generated destructor stub
+}
+
+UndoData *CreateNewEventCommand::getUndoData() const
+{
+  return mpEventData;
 }

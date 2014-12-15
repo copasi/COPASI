@@ -25,6 +25,8 @@ public:
   void redo();
   void undo();
   QString createNewGlobalQuantityText() const;
+  UndoData *getUndoData() const;
+
   virtual ~CreateNewGlobalQuantityCommand();
 
 private:

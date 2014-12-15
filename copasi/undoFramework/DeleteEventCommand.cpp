@@ -27,6 +27,8 @@ DeleteEventCommand::DeleteEventCommand(CQEventWidget1 *pEVentWidget1)
   mpEventData = new UndoEventData();
   std::string sName = mpEVentWidget1->mpEvent->getObjectName();
   mpEventData->setName(sName);
+  mType = EVENTDELETE;
+  setEntityType("Event");
 
   CCopasiVector< CEventAssignment >::const_iterator it = mpEVentWidget1->mpEvent->getAssignments().begin();
   CCopasiVector< CEventAssignment >::const_iterator end = mpEVentWidget1->mpEvent->getAssignments().end();
@@ -65,11 +67,16 @@ void DeleteEventCommand::redo()
     {
       mpEVentWidget1->deleteEvent(mpEventData);
     }
+
+  setUndoState(true);
+  setAction("Delete");
 }
 
 void DeleteEventCommand::undo()
 {
   mpEVentWidget1->addEvent(mpEventData);
+  setUndoState(false);
+  setAction("Create");
 }
 
 QString DeleteEventCommand::deleteEventText(std::string &name) const
@@ -77,6 +84,11 @@ QString DeleteEventCommand::deleteEventText(std::string &name) const
   std::string myEntityName(": Delete Event " + name);
   char* entityName = (char*)myEntityName.c_str();
   return QObject::tr(entityName);
+}
+
+UndoData *DeleteEventCommand::getUndoData() const
+{
+  return mpEventData;
 }
 
 DeleteEventCommand::~DeleteEventCommand()

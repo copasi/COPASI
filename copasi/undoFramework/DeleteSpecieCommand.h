@@ -28,6 +28,7 @@ public:
   void redo();
   void undo();
   QString deleteSpecieText(std::string &name) const;
+  UndoData *getUndoData() const;
 
   virtual ~DeleteSpecieCommand();
 

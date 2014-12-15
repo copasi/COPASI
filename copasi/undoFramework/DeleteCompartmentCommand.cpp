@@ -38,6 +38,8 @@ DeleteCompartmentCommand::DeleteCompartmentCommand(CQCompartment *pCompartment)
   mpCompartmentData->setEventDependencyObjects(getEventData());
 
   this->setText(deleteCompartmentText(sName));
+  setEntityType("Compartment");
+  mType = COMPARTMENTDELETE;
 }
 
 void DeleteCompartmentCommand::redo()
@@ -51,11 +53,16 @@ void DeleteCompartmentCommand::redo()
     {
       mpCompartment->deleteCompartment(mpCompartmentData);
     }
+
+  setUndoState(true);
+  setAction("Delete");
 }
 
 void DeleteCompartmentCommand::undo()
 {
   mpCompartment->addCompartment(mpCompartmentData);
+  setUndoState(false);
+  setAction("Create");
 }
 
 QString DeleteCompartmentCommand::deleteCompartmentText(std::string &name) const
@@ -63,6 +70,11 @@ QString DeleteCompartmentCommand::deleteCompartmentText(std::string &name) const
   std::string myEntityName(": Delete Compartment " + name);
   char* entityName = (char*)myEntityName.c_str();
   return QObject::tr(entityName);
+}
+
+UndoData *DeleteCompartmentCommand::getUndoData() const
+{
+  return mpCompartmentData;
 }
 
 DeleteCompartmentCommand::~DeleteCompartmentCommand()

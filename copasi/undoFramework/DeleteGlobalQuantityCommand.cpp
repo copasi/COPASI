@@ -28,13 +28,32 @@ DeleteGlobalQuantityCommand::DeleteGlobalQuantityCommand(CQModelValue *pModelVal
   mpGlobalQuantityData = new UndoGlobalQuantityData();
   std::string sName = mpModelValue->mpModelValue->getObjectName();
   mpGlobalQuantityData->setName(sName);
-  mpGlobalQuantityData->setInitialValue(mpModelValue->mpModelValue->getInitialValue());
   mpGlobalQuantityData->setStatus(mpModelValue->mpModelValue->getStatus());
+
+  if (mpModelValue->mpModelValue->getStatus() != CModelEntity::ASSIGNMENT)
+    {
+      mpGlobalQuantityData->setInitialValue(mpModelValue->mpModelValue->getInitialValue());
+    }
+
+  if (mpModelValue->mpModelValue->getStatus() != CModelEntity::FIXED)
+    {
+      mpGlobalQuantityData->setExpression(mpModelValue->mpModelValue->getExpression());
+    }
+
+  // set initial expression
+  if (mpModelValue->mpModelValue->getStatus() != CModelEntity::ASSIGNMENT)
+    {
+      mpGlobalQuantityData->setInitialExpression(mpModelValue->mpModelValue->getInitialExpression());
+    }
 
   //store to be deleted data
   setDependentObjects(mpModelValue->mpModelValue->getDeletedObjects());
   mpGlobalQuantityData->setReactionDependencyObjects(getReactionData());
+  mpGlobalQuantityData->setSpecieDependencyObjects(getSpecieData());
+  mpGlobalQuantityData->setEventDependencyObjects(getEventData());
 
+  mType = GLOBALQUANTITYDELETE;
+  setEntityType("Global Quantity");
   this->setText(deleteGlobalQuantityText(sName));
 }
 
@@ -49,11 +68,16 @@ void DeleteGlobalQuantityCommand::redo()
     {
       mpModelValue->deleteGlobalQuantity(mpGlobalQuantityData);
     }
+
+  setUndoState(true);
+  setAction("Delete");
 }
 
 void DeleteGlobalQuantityCommand::undo()
 {
   mpModelValue->addGlobalQuantity(mpGlobalQuantityData);
+  setUndoState(false);
+  setAction("Create");
 }
 
 QString DeleteGlobalQuantityCommand::deleteGlobalQuantityText(std::string &name) const
@@ -61,6 +85,11 @@ QString DeleteGlobalQuantityCommand::deleteGlobalQuantityText(std::string &name)
   std::string myEntityName(": Delete Global Quantity " + name);
   char* entityName = (char*)myEntityName.c_str();
   return QObject::tr(entityName);
+}
+
+UndoData *DeleteGlobalQuantityCommand::getUndoData() const
+{
+  return mpGlobalQuantityData;
 }
 
 DeleteGlobalQuantityCommand::~DeleteGlobalQuantityCommand()

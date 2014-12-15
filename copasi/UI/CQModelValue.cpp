@@ -33,6 +33,9 @@
 //#include "undoFramework/GlobalQuantityTypeChangeCommand.h"
 #include "undoFramework/UndoGlobalQuantityData.h"
 #include "undoFramework/UndoReactionData.h"
+#include "undoFramework/UndoEventData.h"
+#include "undoFramework/UndoSpecieData.h"
+#include "undoFramework/UndoEventAssignmentData.h"
 #include "copasiui3window.h"
 #endif
 
@@ -553,45 +556,145 @@ void CQModelValue::addGlobalQuantity(UndoGlobalQuantityData *pSData)
   assert(pModel != NULL);
 
   //reinsert the Global Quantity
-  CModelValue *pGlobalQuantity =  pModel->createModelValue(pSData->getName(), pSData->getInitialValue());
+  /*  CModelValue *pGlobalQuantity =  pModel->createModelValue(pSData->getName(), pSData->getInitialValue());
+    pGlobalQuantity->setStatus(pSData->getStatus());
+    std::string key = pGlobalQuantity->getKey();
+    protectedNotify(ListViews::MODELVALUE, ListViews::ADD, key);  */
+
+  CModelValue *pGlobalQuantity =  pModel->createModelValue(pSData->getName());
   pGlobalQuantity->setStatus(pSData->getStatus());
-  std::string key = pGlobalQuantity->getKey();
-  protectedNotify(ListViews::MODELVALUE, ListViews::ADD, key);
+
+  if (pSData->getStatus() != CModelEntity::ASSIGNMENT)
+    {
+      pGlobalQuantity->setInitialValue(pSData->getInitialValue());
+    }
+
+  // set the expression
+  if (pSData->getStatus() != CModelEntity::FIXED)
+    {
+      pGlobalQuantity->setExpression(pSData->getExpression());
+      pGlobalQuantity->getExpressionPtr()->compile();
+    }
+
+  // set initial expression
+  if (pSData->getStatus() != CModelEntity::ASSIGNMENT)
+    {
+      pGlobalQuantity->setInitialExpression(pSData->getInitialExpression());
+      pGlobalQuantity->getInitialExpressionPtr()->compile();
+    }
+
+  protectedNotify(ListViews::MODELVALUE, ListViews::ADD, pGlobalQuantity->getKey());
 
   //restore the reactions the Global Quantity dependent on
+  //restore the reactions
+  QList <UndoGlobalQuantityData *>::const_iterator k;
+
+  //reinsert all the species
+  QList <UndoSpecieData *> *pSpecieData = pSData->getSpecieDependencyObjects();
+
+  if (!pSpecieData->empty())
+    {
+      QList <UndoSpecieData *>::const_iterator i;
+
+      for (i = pSpecieData->begin(); i != pSpecieData->end(); ++i)
+        {
+          UndoSpecieData * sData = *i;
+
+          //need to make sure species doesn't exist in the model already
+          CMetab *pSpecie =  pModel->createMetabolite(sData->getName(), sData->getCompartment(), sData->getIConc(), sData->getStatus());
+
+          if (pSpecie)
+            {
+
+              if (sData->getStatus() != CModelEntity::ASSIGNMENT)
+                {
+                  pSpecie->setInitialConcentration(sData->getIConc());
+                }
+
+              if (sData->getStatus() == CModelEntity::ODE || sData->getStatus() == CModelEntity::ASSIGNMENT)
+                {
+                  pSpecie->setExpression(sData->getExpression());
+                  pSpecie->getExpressionPtr()->compile();
+                }
+
+              // set initial expression
+              if (sData->getStatus() != CModelEntity::ASSIGNMENT)
+                {
+                  pSpecie->setInitialExpression(sData->getInitialExpression());
+                  pSpecie->getInitialExpressionPtr()->compile();
+                }
+
+              protectedNotify(ListViews::METABOLITE, ListViews::ADD, pSpecie->getKey());
+            }
+        }
+    }
+
   QList <UndoReactionData *> *reactionData = pSData->getReactionDependencyObjects();
 
   QList <UndoReactionData *>::const_iterator j;
 
   for (j = reactionData->begin(); j != reactionData->end(); ++j)
     {
+
       UndoReactionData * rData = *j;
 
-      //TODO check if reaction already exist in the model, better ideal may be implemented in the future
-      bool exist = false;
-
-      for (int ii = 0; ii < pModel->getReactions().size(); ii++)
-        {
-          if (pModel->getReactions()[ii]->getObjectName() == rData->getName())
-            {
-              exist = true;
-              ii = ii + pModel->getReactions().size() + 1; //jump out of the loop reaction exist already
-            }
-          else
-            {
-              exist = false;
-            }
-        }
-
-      if (!exist)
+      //need to make sure reaction doesn't exist in the model already
+      if (pModel->getReactions().getIndex(rData->getName()) == C_INVALID_INDEX)
         {
           CReaction *pRea =  pModel->createReaction(rData->getName());
+          rData->getRi()->createMetabolites();
+          rData->getRi()->createOtherObjects();
           rData->getRi()->writeBackToReaction(pRea);
           protectedNotify(ListViews::REACTION, ListViews::ADD, pRea->getKey());
         }
     }
 
-  mpListView->switchToOtherWidget(C_INVALID_INDEX, key);
+  //reinsert the dependency events
+  QList <UndoEventData *> *pEventData = pSData->getEventDependencyObjects();
+
+  if (!pEventData->empty())
+    {
+      QList <UndoEventData *>::const_iterator ev;
+
+      for (ev = pEventData->begin(); ev != pEventData->end(); ++ev)
+        {
+          UndoEventData * eData = *ev;
+
+          if (pModel->getEvents().getIndex(eData->getName()) == C_INVALID_INDEX)
+            {
+              CEvent *pEvent =  pModel->createEvent(eData->getName());
+
+              if (pEvent)
+                {
+                  std::string key = pEvent->getKey();
+                  //set the expressions
+                  pEvent->setTriggerExpression(eData->getTriggerExpression());
+                  pEvent->setDelayExpression(eData->getDelayExpression());
+                  pEvent->setPriorityExpression(eData->getPriorityExpression());
+
+                  QList <UndoEventAssignmentData *> *assignmentData = eData->getEventAssignmentData();
+                  QList <UndoEventAssignmentData *>::const_iterator i;
+
+                  for (i = assignmentData->begin(); i != assignmentData->end(); ++i)
+                    {
+                      UndoEventAssignmentData * assignData = *i;
+
+                      if (pEvent->getAssignments().getIndex(assignData->getTargetKey()) == C_INVALID_INDEX)
+                        {
+                          CEventAssignment *eventAssign = new CEventAssignment(assignData->getTargetKey(), pEvent->getObjectParent());
+                          eventAssign->setExpression(assignData->getExpression());
+                          eventAssign->getExpressionPtr()->compile();
+                          pEvent->getAssignments().add(eventAssign);
+                        }
+                    }
+
+                  protectedNotify(ListViews::EVENT, ListViews::ADD, key);
+                }
+            }
+        }
+    }
+
+  mpListView->switchToOtherWidget(C_INVALID_INDEX, pGlobalQuantity->getKey());
 }
 
 void CQModelValue::globalQuantityTypeChanged(int type)

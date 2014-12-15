@@ -20,6 +20,7 @@
 
 #ifdef COPASI_UNDO
 #include <QUndoStack>
+#include "CQUndoHistoryDialog.h"
 #endif
 
 #include <QtCore/QEvent>
@@ -1554,10 +1555,10 @@ void CopasiUI3Window::slotExportSBML()
 
       if ((*CCopasiRootContainer::getDatamodelList())[0]->getFileName() != "")
         Default
-        = FROM_UTF8(CDirEntry::dirName((*CCopasiRootContainer::getDatamodelList())[0]->getFileName())
-                    + CDirEntry::Separator
-                    + CDirEntry::baseName((*CCopasiRootContainer::getDatamodelList())[0]->getFileName())
-                    + ".xml");
+          = FROM_UTF8(CDirEntry::dirName((*CCopasiRootContainer::getDatamodelList())[0]->getFileName())
+                      + CDirEntry::Separator
+                      + CDirEntry::baseName((*CCopasiRootContainer::getDatamodelList())[0]->getFileName())
+                      + ".xml");
       else
         {
           Default = "untitled.xml";
@@ -1624,9 +1625,9 @@ void CopasiUI3Window::slotExportMathModel()
 
       if (pDataModel->getFileName() != "")
         Default
-        = FROM_UTF8(CDirEntry::dirName(pDataModel->getFileName())
-                    + CDirEntry::Separator
-                    + CDirEntry::baseName(pDataModel->getFileName()));
+          = FROM_UTF8(CDirEntry::dirName(pDataModel->getFileName())
+                      + CDirEntry::Separator
+                      + CDirEntry::baseName(pDataModel->getFileName()));
       else
         Default = "untitled.c";
 
@@ -3103,10 +3104,10 @@ void CopasiUI3Window::slotExportSEDML()
 
       if ((*CCopasiRootContainer::getDatamodelList())[0]->getFileName() != "")
         Default
-        = FROM_UTF8(CDirEntry::dirName((*CCopasiRootContainer::getDatamodelList())[0]->getFileName())
-                    + CDirEntry::Separator
-                    + CDirEntry::baseName((*CCopasiRootContainer::getDatamodelList())[0]->getFileName())
-                    + ".sedml");
+          = FROM_UTF8(CDirEntry::dirName((*CCopasiRootContainer::getDatamodelList())[0]->getFileName())
+                      + CDirEntry::Separator
+                      + CDirEntry::baseName((*CCopasiRootContainer::getDatamodelList())[0]->getFileName())
+                      + ".sedml");
       else
         {
           Default = "untitled.sedml";
@@ -3160,7 +3161,9 @@ void CopasiUI3Window::slotOpenRecentSEDMLFile(QAction * pAction)
 #ifdef COPASI_UNDO
 void CopasiUI3Window::slotUndoHistory()
 {
-  ;
+  CQUndoHistoryDialog* undoDialog = new CQUndoHistoryDialog(this, mpUndoStack); //, "Undo History Dialog", 76, 30);
+  undoDialog->setWindowTitle("Undo History");
+  undoDialog->exec();
 }
 QUndoStack *CopasiUI3Window::getUndoStack() {return mpUndoStack; };
 #endif

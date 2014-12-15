@@ -62,6 +62,8 @@ DeleteSpecieCommand::DeleteSpecieCommand(CQSpeciesDetail *pSpecieDetail)
   mpSpecieData->setGlobalQuantityDependencyObjects(getGlobalQuantityData());
   mpSpecieData->setEventDependencyObjects(getEventData());
 
+  mType = SPECIEDELETE;
+  setEntityType("Species");
   this->setText(deleteSpecieText(sName));
 }
 
@@ -76,11 +78,16 @@ void DeleteSpecieCommand::redo()
     {
       mpSpecieDetail->deleteSpecie(mpSpecieData);
     }
+
+  setUndoState(true);
+  setAction("Delete");
 }
 
 void DeleteSpecieCommand::undo()
 {
   mpSpecieDetail->addSpecie(mpSpecieData);
+  setUndoState(false);
+  setAction("Create");
 }
 
 QString DeleteSpecieCommand::deleteSpecieText(std::string &name) const
@@ -88,6 +95,11 @@ QString DeleteSpecieCommand::deleteSpecieText(std::string &name) const
   std::string myEntityName(": Delete Species " + name);
   char* entityName = (char*)myEntityName.c_str();
   return QObject::tr(entityName);
+}
+
+UndoData *DeleteSpecieCommand::getUndoData() const
+{
+  return mpSpecieData;
 }
 
 DeleteSpecieCommand::~DeleteSpecieCommand()

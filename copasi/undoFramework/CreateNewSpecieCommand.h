@@ -25,6 +25,8 @@ public:
   void redo();
   void undo();
   QString createNewSpecieText() const;
+  UndoData *getUndoData() const;
+
   virtual ~CreateNewSpecieCommand();
 
 private:

@@ -17,6 +17,7 @@
 
 class CReaction;
 class ReactionsWidget1;
+class UndoReactionData;
 
 class DeleteReactionCommand: public CCopasiUndoCommand
 {
@@ -25,6 +26,7 @@ public:
   void redo();
   void undo();
   QString deleteReactionText(std::string &name) const;
+  UndoData *getUndoData() const;
 
   virtual ~DeleteReactionCommand();
 
@@ -32,6 +34,7 @@ private:
   std::string mReaObjectName;
   CReactionInterface *mpRi;
   CReaction *mpReaction;
+  UndoReactionData *mpReactionData;
   ReactionsWidget1* mpReactionWidget;
 };
 

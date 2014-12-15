@@ -15,6 +15,8 @@
 
 #include "CCopasiUndoCommand.h"
 
+class UndoReactionData;
+
 class CreateNewReactionCommand: public CCopasiUndoCommand
 {
 public:
@@ -22,11 +24,13 @@ public:
   void redo();
   void undo();
   QString createNewReactionText() const;
+  UndoData *getUndoData() const;
   virtual ~CreateNewReactionCommand();
 
 private:
   ReactionsWidget1* mpReactionWidget;
   CReaction *mpReaction;
+  UndoReactionData *mpReactionData;
 };
 
 #endif /* CREATENEWREACTIONCOMMAND_H_ */

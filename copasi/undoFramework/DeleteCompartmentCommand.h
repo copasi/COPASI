@@ -24,6 +24,7 @@ public:
   void redo();
   void undo();
   QString deleteCompartmentText(std::string &name) const;
+  UndoData *getUndoData() const;
   virtual ~DeleteCompartmentCommand();
 
 private:

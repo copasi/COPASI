@@ -13,6 +13,7 @@
 #ifndef UNDOCOMPARTMENTDATA_H_
 #define UNDOCOMPARTMENTDATA_H_
 
+#include "model/CCompartment.h"
 #include "UndoData.h"
 
 class UndoReactionData;

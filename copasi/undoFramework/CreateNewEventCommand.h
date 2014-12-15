@@ -27,6 +27,8 @@ public:
   QString createNewEventText() const;
   virtual ~CreateNewEventCommand();
 
+  UndoData *getUndoData() const;
+
 private:
   UndoEventData *mpEventData;
   CQEventWidget1* mpEventWidget;

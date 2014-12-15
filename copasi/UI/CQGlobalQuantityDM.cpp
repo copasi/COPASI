@@ -644,6 +644,7 @@ bool CQGlobalQuantityDM::insertGlobalQuantityRows(QList <UndoGlobalQuantityData 
 
                   if (pEvent)
                     {
+                      pEvent->getAssignments().clear();
                       std::string key = pEvent->getKey();
                       //set the expressions
                       pEvent->setTriggerExpression(eData->getTriggerExpression());
@@ -657,10 +658,11 @@ bool CQGlobalQuantityDM::insertGlobalQuantityRows(QList <UndoGlobalQuantityData 
                         {
                           UndoEventAssignmentData * assignData = *i;
 
-                          if (pEvent->getAssignments().getIndex(assignData->getTargetKey()) == C_INVALID_INDEX)
+                          if (pEvent->getAssignments().getIndex(assignData->getName()) == C_INVALID_INDEX)
                             {
                               CEventAssignment *eventAssign = new CEventAssignment(assignData->getTargetKey(), pEvent->getObjectParent());
                               eventAssign->setExpression(assignData->getExpression());
+                              std::cout << "Target: " << eventAssign->getTargetKey() << " expression" << assignData->getExpression() << std::endl;
                               eventAssign->getExpressionPtr()->compile();
                               pEvent->getAssignments().add(eventAssign);
                             }
