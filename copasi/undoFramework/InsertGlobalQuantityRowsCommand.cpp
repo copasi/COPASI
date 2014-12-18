@@ -29,6 +29,8 @@ InsertGlobalQuantityRowsCommand::InsertGlobalQuantityRowsCommand(int position, i
   mRows = rows;
   mPosition = position;
   firstTime = true;
+  mType = GLOBALQUANTITYINSERT;
+  setEntityType("Global Quantity");
 }
 
 void InsertGlobalQuantityRowsCommand::redo()
@@ -52,16 +54,27 @@ void InsertGlobalQuantityRowsCommand::redo()
     {
       mpGlobalQuantityDM->addGlobalQuantityRow(mpGlobalQuantityData);
     }
+
+  setUndoState(false);
+  setAction("Add to list");
+  setName(mpGlobalQuantityData->getName());
 }
 
 void InsertGlobalQuantityRowsCommand::undo()
 {
   mpGlobalQuantityDM->deleteGlobalQuantityRow(mpGlobalQuantityData);
+  setUndoState(false);
+  setAction("Delete from list");
 }
 
 QString InsertGlobalQuantityRowsCommand::insertRowsText() const
 {
   return QObject::tr(": Inserted New Global Quantity");
+}
+
+UndoData *InsertGlobalQuantityRowsCommand::getUndoData() const
+{
+  return mpGlobalQuantityData;
 }
 
 InsertGlobalQuantityRowsCommand::~InsertGlobalQuantityRowsCommand()

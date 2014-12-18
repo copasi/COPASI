@@ -46,23 +46,33 @@ public:
     GLOBALQUANTITYDELETE, //deletion of single global quantity
     REACTIONDELETE, //deletion of single reaction
     SPECIEDELETE, //deletion of single species
+    COMPARTMENTINSERT, //insert compartment
+    EVENTINSERT, //insert event
+    GLOBALQUANTITYINSERT, //insert global quantity
+    REACTIONINSERT, //insert reaction
+    SPECIEINSERT, //insert species
+    COMPARTMENTREMOVE, //remove compartment
+    EVENTREMOVE, //remove event
+    GLOBALQUANTITYREMOVE, //remove global quantity
+    REACTIONREMOVE, //remove reaction
+    SPECIEREMOVE, //remove species
     SPECIESTYPECHANG
   };
   //change of species type
   /**
-  * Retrieve the type of the command.
-  * @return const CCopasiUndoCommand::Type & type
-  */
+   * Retrieve the type of the command.
+   * @return const CCopasiUndoCommand::Type & type
+   */
   const CCopasiUndoCommand::Type & getType() const;
   /**
-  * Set the type
-  * @param const CCopasiUndoCommand::Type & type
-  */
+   * Set the type
+   * @param const CCopasiUndoCommand::Type & type
+   */
   virtual void setType(const CCopasiUndoCommand::Type & type);
   /**
-  * Retrieve the Undo Data associated with this command.
-  * @return UndoData *undoData
-  */
+   * Retrieve the Undo Data associated with this command.
+   * @return UndoData *undoData
+   */
   virtual UndoData *getUndoData() const;
   CCopasiUndoCommand();
   virtual ~CCopasiUndoCommand();
@@ -91,6 +101,8 @@ public:
   void setProperty(std::string property);
   std::string getAction() const;
   void setAction(std::string action);
+  std::string getName() const;
+  void setName(std::string name);
 
 protected:
   QList<UndoSpecieData*> *mpSpecieData;
@@ -98,8 +110,8 @@ protected:
   QList<UndoGlobalQuantityData*> *mpGlobalQuantityData;
   QList<UndoEventData*> *mpEventData;
   /**
-  *  Type of the undo command.
-  */
+   *  Type of the undo command.
+   */
   CCopasiUndoCommand::Type mType;
 private:
   bool undoState;
@@ -108,6 +120,7 @@ private:
   std::string mProperty;
   std::string  mEntityType;
   std::string mAction;
+  std::string mName;
 };
 
 #endif /* CCOPASIUNDOCOMMAND_H_ */

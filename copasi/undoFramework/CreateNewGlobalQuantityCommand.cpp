@@ -52,6 +52,7 @@ void CreateNewGlobalQuantityCommand::redo()
 
   setUndoState(true);
   setAction("Create");
+  setName(sName);
 }
 
 void CreateNewGlobalQuantityCommand::undo()

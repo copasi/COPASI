@@ -26,6 +26,7 @@ public:
   void redo();
   void undo();
   QString insertRowsText() const;
+  UndoData *getUndoData() const;
 
 private:
   CQSpecieDM* mpSpecieDM;

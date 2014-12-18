@@ -102,38 +102,35 @@ void CQUndoHistoryDialog::generateUndoData(QUndoStack *undoStack, int commandCou
       const CCopasiUndoCommand *cCommand = dynamic_cast<const CCopasiUndoCommand*>(cmd);
       const UndoData *undoData =  cCommand->getUndoData();
 
-      if (undoData)
+      for (int col = 0; col < 6; col++)
         {
-          for (int col = 0; col < 6; col++)
+          QModelIndex index = model->index(row, col, QModelIndex());
+
+          switch (col)
             {
-              QModelIndex index = model->index(row, col, QModelIndex());
+              case 0:
+                model->setData(index, QVariant(QString(FROM_UTF8(cCommand->getEntityType()))));
+                break;
 
-              switch (col)
-                {
-                  case 0:
-                    model->setData(index, QVariant(QString(FROM_UTF8(cCommand->getEntityType()))));
-                    break;
+              case 1:
+                model->setData(index, QVariant(QString(FROM_UTF8(cCommand->getName()))));
+                break;
 
-                  case 1:
-                    model->setData(index, QVariant(QString(FROM_UTF8(undoData->getName()))));
-                    break;
+              case 2:
+                model->setData(index, QVariant(QString(FROM_UTF8(cCommand->getAction()))));
+                break;
 
-                  case 2:
-                    model->setData(index, QVariant(QString(FROM_UTF8(cCommand->getAction()))));
-                    break;
+              case 3:
+                model->setData(index, "");
+                break;
 
-                  case 3:
-                    model->setData(index, "");
-                    break;
+              case 4:
+                model->setData(index, "");
+                break;
 
-                  case 4:
-                    model->setData(index, "");
-                    break;
-
-                  case 5:
-                    model->setData(index, "");
-                    break;
-                }
+              case 5:
+                model->setData(index, "");
+                break;
             }
         }
     }

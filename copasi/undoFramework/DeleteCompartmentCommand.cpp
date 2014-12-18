@@ -40,6 +40,7 @@ DeleteCompartmentCommand::DeleteCompartmentCommand(CQCompartment *pCompartment)
   this->setText(deleteCompartmentText(sName));
   setEntityType("Compartment");
   mType = COMPARTMENTDELETE;
+  setName(sName);
 }
 
 void DeleteCompartmentCommand::redo()

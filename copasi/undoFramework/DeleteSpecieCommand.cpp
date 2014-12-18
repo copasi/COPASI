@@ -64,6 +64,7 @@ DeleteSpecieCommand::DeleteSpecieCommand(CQSpeciesDetail *pSpecieDetail)
 
   mType = SPECIEDELETE;
   setEntityType("Species");
+  setName(sName);
   this->setText(deleteSpecieText(sName));
 }
 

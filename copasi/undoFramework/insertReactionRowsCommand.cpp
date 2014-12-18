@@ -20,6 +20,7 @@
 #include "CQReactionDM.h"
 #include "qtUtilities.h"
 
+#include "UndoReactionData.h"
 #include "insertReactionRowsCommand.h"
 
 insertReactionRowsCommand::insertReactionRowsCommand(int position, int rows, CQReactionDM *pReactionDM, const QModelIndex&): CCopasiUndoCommand()
@@ -28,6 +29,8 @@ insertReactionRowsCommand::insertReactionRowsCommand(int position, int rows, CQR
   this->setText(insertRowsText());
   mRows = rows;
   mPosition = position;
+  mType = REACTIONINSERT;
+  setEntityType("Reaction");
 }
 
 insertReactionRowsCommand::~insertReactionRowsCommand()
@@ -44,14 +47,29 @@ void insertReactionRowsCommand::redo()
   CModel * pModel = pDataModel->getModel();
   assert(pModel != NULL);
   mpReaction = pModel->getReactions()[mPosition];
+  std::string sName = mpReaction->getObjectName();
+  mpReactionData->setName(sName);
+  CReactionInterface* ri = new CReactionInterface((*CCopasiRootContainer::getDatamodelList())[0]->getModel());
+  ri->initFromReaction(mpReaction);
+  mpReactionData->setRi(ri);
+  setUndoState(true);
+  setAction("Add to list");
+  setName(mpReactionData->getName());
 }
 
 void insertReactionRowsCommand::undo()
 {
   mpReactionDM->deleteReactionRow(mpReaction);
+  setUndoState(false);
+  setAction("Delete to list");
 }
 
 QString insertReactionRowsCommand::insertRowsText() const
 {
   return QObject::tr(": Inserted New Reaction");
+}
+
+UndoData *insertReactionRowsCommand::getUndoData() const
+{
+  return mpReactionData;
 }

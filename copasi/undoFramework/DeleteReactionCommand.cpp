@@ -36,6 +36,7 @@ DeleteReactionCommand::DeleteReactionCommand(ReactionsWidget1 *pReactionWidget)
   this->setText(deleteReactionText(mReaObjectName));
   mType = REACTIONDELETE;
   setEntityType("Reaction");
+  setName(mReaObjectName);
 }
 
 DeleteReactionCommand::~DeleteReactionCommand()

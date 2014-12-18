@@ -29,6 +29,7 @@ DeleteEventCommand::DeleteEventCommand(CQEventWidget1 *pEVentWidget1)
   mpEventData->setName(sName);
   mType = EVENTDELETE;
   setEntityType("Event");
+  setName(sName);
 
   CCopasiVector< CEventAssignment >::const_iterator it = mpEVentWidget1->mpEvent->getAssignments().begin();
   CCopasiVector< CEventAssignment >::const_iterator end = mpEVentWidget1->mpEvent->getAssignments().end();

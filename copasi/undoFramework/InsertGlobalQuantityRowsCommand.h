@@ -15,6 +15,8 @@
 
 #include "CCopasiUndoCommand.h"
 
+class UndoGlobalQuantityData;
+
 class InsertGlobalQuantityRowsCommand: public CCopasiUndoCommand
 {
 public:
@@ -23,6 +25,7 @@ public:
   void redo();
   void undo();
   QString insertRowsText() const;
+  UndoData *getUndoData() const;
 
 private:
   CQGlobalQuantityDM* mpGlobalQuantityDM;

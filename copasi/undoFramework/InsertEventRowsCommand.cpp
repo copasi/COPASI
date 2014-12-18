@@ -28,6 +28,8 @@ InsertEventRowsCommand::InsertEventRowsCommand(int position, int rows, CQEventDM
   mRows = rows;
   mPosition = position;
   firstTime = true;
+  mType = EVENTINSERT;
+  setEntityType("Event");
 }
 
 void InsertEventRowsCommand::redo()
@@ -60,29 +62,33 @@ void InsertEventRowsCommand::redo()
           mpEventData->getEventAssignmentData()->append(eventAssignData);
         }
 
-      /*     for (; it != end; ++it)
-             {
-               CEventAssignment *eventAssign = new CEventAssignment((*it)->getTargetKey(), pEvent->getObjectParent());
-               eventAssign->setExpression((*it)->getExpression());
-               mpEventData->getAssignments()->append(eventAssign);
-             }*/
-
       firstTime = false;
     }
   else
     {
       mpEventDM->addEventRow(mpEventData);
     }
+
+  setUndoState(true);
+  setAction("Add to list");
+  setName(mpEventData->getName());
 }
 
 void InsertEventRowsCommand::undo()
 {
   mpEventDM->deleteEventRow(mpEventData);
+  setUndoState(false);
+  setAction("Delete from list");
 }
 
 QString InsertEventRowsCommand::insertRowsText() const
 {
   return QObject::tr(": Inserted New Event");
+}
+
+UndoData *InsertEventRowsCommand::getUndoData() const
+{
+  return mpEventData;
 }
 
 InsertEventRowsCommand::~InsertEventRowsCommand()

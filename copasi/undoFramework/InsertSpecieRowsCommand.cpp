@@ -28,6 +28,8 @@ InsertSpecieRowsCommand::InsertSpecieRowsCommand(int position, int rows, CQSpeci
   mRows = rows;
   mPosition = position;
   firstTime = true;
+  mType = SPECIEINSERT;
+  setEntityType("Species");
 }
 
 void InsertSpecieRowsCommand::redo()
@@ -51,16 +53,27 @@ void InsertSpecieRowsCommand::redo()
     {
       mpSpecieDM->addSpecieRow(mpSpecieData);
     }
+
+  setUndoState(true);
+  setAction("Add to list");
+  setName(mpSpecieData->getName());
 }
 
 void InsertSpecieRowsCommand::undo()
 {
   mpSpecieDM->deleteSpecieRow(mpSpecieData);
+  setUndoState(false);
+  setAction("Delete from list");
 }
 
 QString InsertSpecieRowsCommand::insertRowsText() const
 {
   return QObject::tr(": Inserted New Species");
+}
+
+UndoData *InsertSpecieRowsCommand::getUndoData() const
+{
+  return mpSpecieData;
 }
 
 InsertSpecieRowsCommand::~InsertSpecieRowsCommand()

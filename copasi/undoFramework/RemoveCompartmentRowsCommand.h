@@ -18,6 +18,7 @@
 #include "CCopasiUndoCommand.h"
 
 class CCopasiObject;
+class UndoCompartmentData;
 
 class RemoveCompartmentRowsCommand: public CCopasiUndoCommand
 {
@@ -25,8 +26,9 @@ public:
   RemoveCompartmentRowsCommand(QModelIndexList rows, CQCompartmentDM * pCompartmentDM, const QModelIndex&);
   void redo();
   void undo();
-
   QString removeCompartmentRowsText() const;
+  UndoData *getUndoData() const;
+
   virtual ~RemoveCompartmentRowsCommand();
 
 private:

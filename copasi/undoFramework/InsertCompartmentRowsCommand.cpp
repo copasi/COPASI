@@ -28,6 +28,8 @@ InsertCompartmentRowsCommand::InsertCompartmentRowsCommand(int position, int row
   mRows = rows;
   mPosition = position;
   firstTime = true;
+  mType = COMPARTMENTINSERT;
+  setEntityType("Compartment");
 }
 
 void InsertCompartmentRowsCommand::redo()
@@ -51,16 +53,27 @@ void InsertCompartmentRowsCommand::redo()
     {
       mpCompartmentDM->addCompartmentRow(mpCompartmentData);
     }
+
+  setUndoState(true);
+  setAction("Add to list");
+  setName(mpCompartmentData->getName());
 }
 
 void InsertCompartmentRowsCommand::undo()
 {
   mpCompartmentDM->deleteCompartmentRow(mpCompartmentData);
+  setUndoState(false);
+  setAction("Delete from list");
 }
 
 QString InsertCompartmentRowsCommand::insertRowsText() const
 {
   return QObject::tr(": Inserted New Compartments");
+}
+
+UndoData *InsertCompartmentRowsCommand::getUndoData() const
+{
+  return mpCompartmentData;
 }
 
 InsertCompartmentRowsCommand::~InsertCompartmentRowsCommand()

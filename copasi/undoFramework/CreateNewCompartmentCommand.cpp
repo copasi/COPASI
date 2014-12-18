@@ -33,6 +33,7 @@ void CreateNewCompartmentCommand::redo()
   mpCompartmentData->setInitialValue(mpCompartment->mpCompartment->getInitialValue());
   mpCompartmentData->setStatus(mpCompartment->mpCompartment->getStatus());
   setUndoState(true);
+  setName(sName);
   setAction("Create");
 }
 

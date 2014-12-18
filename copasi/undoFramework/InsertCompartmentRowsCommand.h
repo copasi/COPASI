@@ -25,6 +25,7 @@ public:
   void redo();
   void undo();
   QString insertRowsText() const;
+  UndoData *getUndoData() const;
 
   virtual ~InsertCompartmentRowsCommand();
 

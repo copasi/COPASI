@@ -38,6 +38,7 @@ void CreateNewReactionCommand::redo()
   mpReactionData->setRi(ri);
   setUndoState(true);
   setAction("Create");
+  setName(sName);
 }
 
 void CreateNewReactionCommand::undo()

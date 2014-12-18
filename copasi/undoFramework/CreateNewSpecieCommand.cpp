@@ -36,6 +36,7 @@ void CreateNewSpecieCommand::redo()
   mpSpecieData->setStatus(mpSpecieDetail->mpMetab->getStatus());
   setUndoState(true);
   setAction("Create");
+  setName(sName);
 }
 
 void CreateNewSpecieCommand::undo()

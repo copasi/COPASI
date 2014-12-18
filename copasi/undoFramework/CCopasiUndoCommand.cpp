@@ -39,6 +39,7 @@ CCopasiUndoCommand::CCopasiUndoCommand(): QUndoCommand()
   setProperty("");
   setEntityType("");
   setAction("");
+  setName("");
 }
 
 CCopasiUndoCommand::~CCopasiUndoCommand()
@@ -391,4 +392,14 @@ std::string CCopasiUndoCommand::getAction() const
 void CCopasiUndoCommand::setAction(std::string action)
 {
   mAction = action;
+}
+
+std::string CCopasiUndoCommand::getName() const
+{
+  return mName;
+}
+
+void CCopasiUndoCommand::setName(std::string name)
+{
+  mName = name;
 }

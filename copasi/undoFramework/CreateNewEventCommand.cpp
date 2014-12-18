@@ -34,6 +34,7 @@ void CreateNewEventCommand::redo()
   mpEventData->setPriorityExpression(mpEventWidget->mpEvent->getPriorityExpression());
   setUndoState(true);
   setAction("Create");
+  setName(sName);
 }
 
 void CreateNewEventCommand::undo()

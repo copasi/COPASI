@@ -15,6 +15,8 @@
 
 #include "CCopasiUndoCommand.h"
 
+class UndoReactionData;
+
 class insertReactionRowsCommand: public CCopasiUndoCommand
 {
 public:
@@ -23,6 +25,7 @@ public:
   void redo();
   void undo();
   QString insertRowsText() const;
+  UndoData *getUndoData() const;
 
 private:
   CQReactionDM* mpReactionDM;
@@ -30,6 +33,7 @@ private:
   QModelIndex mIndex;
   CReaction *mpReaction;
   CReactionInterface *mpRi;
+  UndoReactionData *mpReactionData;
 };
 
 #endif /* INSERTREACTIONROWSCOMMAND_H_ */

@@ -61,6 +61,9 @@ RemoveCompartmentRowsCommand::RemoveCompartmentRowsCommand(QModelIndexList rows,
     }
 
   this->setText(removeCompartmentRowsText());
+
+  mType = COMPARTMENTREMOVE;
+  setEntityType("Compartment");
 }
 
 void RemoveCompartmentRowsCommand::redo()
@@ -74,16 +77,26 @@ void RemoveCompartmentRowsCommand::redo()
     {
       mpCompartmentDM->deleteCompartmentRows(mpCompartmentData);
     }
+
+  setUndoState(true);
+  setAction("Delete set");
 }
 
 void RemoveCompartmentRowsCommand::undo()
 {
   mpCompartmentDM->insertCompartmentRows(mpCompartmentData);
+  setUndoState(true);
+  setAction("Add set");
 }
 
 QString RemoveCompartmentRowsCommand::removeCompartmentRowsText() const
 {
   return QObject::tr(": Removed Compartments");
+}
+
+UndoData *RemoveCompartmentRowsCommand::getUndoData() const
+{
+  return NULL;
 }
 
 RemoveCompartmentRowsCommand::~RemoveCompartmentRowsCommand()

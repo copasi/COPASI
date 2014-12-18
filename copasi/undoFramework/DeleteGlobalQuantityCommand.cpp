@@ -55,6 +55,7 @@ DeleteGlobalQuantityCommand::DeleteGlobalQuantityCommand(CQModelValue *pModelVal
   mType = GLOBALQUANTITYDELETE;
   setEntityType("Global Quantity");
   this->setText(deleteGlobalQuantityText(sName));
+  setName(sName);
 }
 
 void DeleteGlobalQuantityCommand::redo()
