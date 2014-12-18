@@ -58,18 +58,13 @@ RemoveEventRowsCommand::RemoveEventRowsCommand(QModelIndexList rows, CQEventDM *
               data->getEventAssignmentData()->append(eventAssignData);
             }
 
-          /*      for (; it != end; ++it)
-                  {
-                    CEventAssignment *eventAssign = new CEventAssignment((*it)->getTargetKey(), pModel->getEvents()[(*i).row()]->getObjectParent());
-                    eventAssign->setExpression((*it)->getExpression());
-                    data->getAssignments()->append(eventAssign);
-                  }*/
-
           mpEventData.append(data);
         }
     }
 
   this->setText(removeEventRowsText());
+  mType = EVENTREMOVE;
+  setEntityType("Event");
 }
 
 void RemoveEventRowsCommand::redo()
@@ -83,11 +78,16 @@ void RemoveEventRowsCommand::redo()
     {
       mpEventDM->deleteEventRows(mpEventData);
     }
+
+  setUndoState(true);
+  setAction("Delete set");
 }
 
 void RemoveEventRowsCommand::undo()
 {
   mpEventDM->insertEventRows(mpEventData);
+  setUndoState(false);
+  setAction("Undelete set");
 }
 
 QString RemoveEventRowsCommand::removeEventRowsText() const

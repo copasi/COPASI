@@ -63,7 +63,7 @@ void InsertCompartmentRowsCommand::undo()
 {
   mpCompartmentDM->deleteCompartmentRow(mpCompartmentData);
   setUndoState(false);
-  setAction("Delete from list");
+  setAction("Remove from list");
 }
 
 QString InsertCompartmentRowsCommand::insertRowsText() const

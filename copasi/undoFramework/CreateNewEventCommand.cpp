@@ -20,7 +20,7 @@ CreateNewEventCommand::CreateNewEventCommand(CQEventWidget1 *pEventWidget)
   mpEventWidget = pEventWidget;
   mpEventData = new UndoEventData();
   this->setText(createNewEventText());
-  mType = EVENTCREATION;
+  mType = EVENTCREATE;
   setEntityType("Event");
 }
 void CreateNewEventCommand::redo()

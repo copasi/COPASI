@@ -46,17 +46,23 @@ RemoveAllReactionRowsCommand::RemoveAllReactionRowsCommand(CQReactionDM * pReaDM
         }
     }
 
+  mType = REACTIONREMOVEALL;
+  setEntityType("Reaction");
   this->setText(removeAllReactionRowsText());
 }
 
 void RemoveAllReactionRowsCommand::redo()
 {
   mpReactionDM->removeAllReactionRows();
+  setUndoState(true);
+  setAction("Delete all");
 }
 
 void RemoveAllReactionRowsCommand::undo()
 {
   mpReactionDM->insertReactionRows(mpReaData);
+  setUndoState(false);
+  setAction("Undelete all");
 }
 
 QString RemoveAllReactionRowsCommand::removeAllReactionRowsText() const

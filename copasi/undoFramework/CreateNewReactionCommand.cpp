@@ -24,7 +24,7 @@ CreateNewReactionCommand::CreateNewReactionCommand(ReactionsWidget1 *pReactionWi
   mpReactionWidget = pReactionWidget;
   mpReactionData = new UndoReactionData();
   this->setText(createNewReactionText());
-  mType = REACTIONCREATION;
+  mType = REACTIONCREATE;
   setEntityType("Reaction");
 }
 void CreateNewReactionCommand::redo()

@@ -21,7 +21,7 @@ CreateNewCompartmentCommand::CreateNewCompartmentCommand(CQCompartment *pCompart
   mpCompartment = pCompartment;
   mpCompartmentData = new UndoCompartmentData();
   this->setText(createNewCompartmentText());
-  mType = COMPARTMENTCREATION;
+  mType = COMPARTMENTCREATE;
   setEntityType("Compartment");
 }
 void CreateNewCompartmentCommand::redo()
@@ -63,5 +63,5 @@ UndoData *CreateNewCompartmentCommand::getUndoData() const
 
 void CreateNewCompartmentCommand::setType(const CreateNewCompartmentCommand::Type & type)
 {
-  mType = COMPARTMENTCREATION;
+  mType = COMPARTMENTCREATE;
 }

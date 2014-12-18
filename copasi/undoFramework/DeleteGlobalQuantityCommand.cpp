@@ -78,7 +78,7 @@ void DeleteGlobalQuantityCommand::undo()
 {
   mpModelValue->addGlobalQuantity(mpGlobalQuantityData);
   setUndoState(false);
-  setAction("Create");
+  setAction("Undelete");
 }
 
 QString DeleteGlobalQuantityCommand::deleteGlobalQuantityText(std::string &name) const

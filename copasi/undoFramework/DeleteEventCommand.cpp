@@ -77,7 +77,7 @@ void DeleteEventCommand::undo()
 {
   mpEVentWidget1->addEvent(mpEventData);
   setUndoState(false);
-  setAction("Create");
+  setAction("Undelete");
 }
 
 QString DeleteEventCommand::deleteEventText(std::string &name) const

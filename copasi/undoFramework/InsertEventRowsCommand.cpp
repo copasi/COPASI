@@ -78,7 +78,7 @@ void InsertEventRowsCommand::undo()
 {
   mpEventDM->deleteEventRow(mpEventData);
   setUndoState(false);
-  setAction("Delete from list");
+  setAction("Remove from list");
 }
 
 QString InsertEventRowsCommand::insertRowsText() const

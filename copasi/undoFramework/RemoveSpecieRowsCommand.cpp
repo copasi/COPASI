@@ -77,6 +77,9 @@ RemoveSpecieRowsCommand::RemoveSpecieRowsCommand(QModelIndexList rows, CQSpecieD
         }
     }
 
+  mType = SPECIEREMOVE;
+  setEntityType("Species");
+
   this->setText(removeSpecieRowsText());
 }
 
@@ -91,11 +94,16 @@ void RemoveSpecieRowsCommand::redo()
     {
       mpSpecieDM->deleteSpecieRows(mpSpecieData);
     }
+
+  setUndoState(true);
+  setAction("Delete set");
 }
 
 void RemoveSpecieRowsCommand::undo()
 {
   mpSpecieDM->insertSpecieRows(mpSpecieData);
+  setUndoState(false);
+  setAction("Undelete set");
 }
 
 QString RemoveSpecieRowsCommand::removeSpecieRowsText() const

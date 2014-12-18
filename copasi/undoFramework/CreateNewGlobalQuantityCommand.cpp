@@ -21,7 +21,7 @@ CreateNewGlobalQuantityCommand::CreateNewGlobalQuantityCommand(CQModelValue *pMo
   mpModelValue = pModelValue;
   mpGlobalQuantityData = new UndoGlobalQuantityData();
   this->setText(createNewGlobalQuantityText());
-  mType = GLOBALQUANTITYCREATION;
+  mType = GLOBALQUANTITYCREATE;
   setEntityType("Global Quantity");
 }
 void CreateNewGlobalQuantityCommand::redo()

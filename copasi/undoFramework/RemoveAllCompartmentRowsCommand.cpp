@@ -58,17 +58,23 @@ RemoveAllCompartmentRowsCommand::RemoveAllCompartmentRowsCommand(CQCompartmentDM
         }
     }
 
+  mType = COMPARTMENTREMOVEALL;
+  setEntityType("Compartment");
   this->setText(removeAllCompartmentRowsText());
 }
 
 void RemoveAllCompartmentRowsCommand::redo()
 {
   mpCompartmentDM->removeAllCompartmentRows();
+  setUndoState(true);
+  setAction("Delete all");
 }
 
 void RemoveAllCompartmentRowsCommand::undo()
 {
   mpCompartmentDM->insertCompartmentRows(mpCompartmentData);
+  setUndoState(false);
+  setAction("Undelete all");
 }
 
 QString RemoveAllCompartmentRowsCommand::removeAllCompartmentRowsText() const

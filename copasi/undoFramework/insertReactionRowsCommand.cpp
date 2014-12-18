@@ -61,7 +61,7 @@ void insertReactionRowsCommand::undo()
 {
   mpReactionDM->deleteReactionRow(mpReaction);
   setUndoState(false);
-  setAction("Delete to list");
+  setAction("Remove from list");
 }
 
 QString insertReactionRowsCommand::insertRowsText() const

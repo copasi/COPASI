@@ -22,7 +22,7 @@ CreateNewSpecieCommand::CreateNewSpecieCommand(CQSpeciesDetail *pSpecieDetail)
   mpSpecieDetail = pSpecieDetail;
   mpSpecieData = new UndoSpecieData();
   this->setText(createNewSpecieText());
-  mType = SPECIECREATION;
+  mType = SPECIECREATE;
   setEntityType("Species");
 }
 void CreateNewSpecieCommand::redo()

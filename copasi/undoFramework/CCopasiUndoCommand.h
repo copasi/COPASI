@@ -36,11 +36,11 @@ public:
    */
   enum Type
   {
-    COMPARTMENTCREATION = 0 , //creation of single compartment
-    EVENTCREATION, //creation of single event
-    GLOBALQUANTITYCREATION, //creation of single global quantity
-    REACTIONCREATION, //creation of single reaction
-    SPECIECREATION, //creation of single species
+    COMPARTMENTCREATE = 0 , //creation of single compartment
+    EVENTCREATE, //creation of single event
+    GLOBALQUANTITYCREATE, //creation of single global quantity
+    REACTIONCREATE, //creation of single reaction
+    SPECIECREATE, //creation of single species
     COMPARTMENTDELETE, //deletion of single compartment
     EVENTDELETE, //deletion of single event
     GLOBALQUANTITYDELETE, //deletion of single global quantity
@@ -56,6 +56,16 @@ public:
     GLOBALQUANTITYREMOVE, //remove global quantity
     REACTIONREMOVE, //remove reaction
     SPECIEREMOVE, //remove species
+    COMPARTMENTREMOVEALL, //remove all compartment
+    EVENTREMOVEALL, //remove all event
+    GLOBALQUANTITYREMOVEALL, //remove all global quantity
+    REACTIONREMOVEALL, //remove all reaction
+    SPECIEREMOVEALL, //remove all species
+    COMPARTMENTDATACHANGE, //change compartment data
+    EVENTDATACHANGE, //change event data
+    GLOBALQUANTITYDATACHANGE, //change global quantity data
+    REACTIONDATACHANGE, //change reaction data
+    SPECIEDATACHANGE, //change species data
     SPECIESTYPECHANG
   };
   //change of species type

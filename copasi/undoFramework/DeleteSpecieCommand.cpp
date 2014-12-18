@@ -88,7 +88,7 @@ void DeleteSpecieCommand::undo()
 {
   mpSpecieDetail->addSpecie(mpSpecieData);
   setUndoState(false);
-  setAction("Create");
+  setAction("Undelete");
 }
 
 QString DeleteSpecieCommand::deleteSpecieText(std::string &name) const

@@ -85,8 +85,8 @@ void RemoveCompartmentRowsCommand::redo()
 void RemoveCompartmentRowsCommand::undo()
 {
   mpCompartmentDM->insertCompartmentRows(mpCompartmentData);
-  setUndoState(true);
-  setAction("Add set");
+  setUndoState(false);
+  setAction("Undelete set");
 }
 
 QString RemoveCompartmentRowsCommand::removeCompartmentRowsText() const

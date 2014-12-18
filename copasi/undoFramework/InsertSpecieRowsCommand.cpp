@@ -63,7 +63,7 @@ void InsertSpecieRowsCommand::undo()
 {
   mpSpecieDM->deleteSpecieRow(mpSpecieData);
   setUndoState(false);
-  setAction("Delete from list");
+  setAction("Reomve from list");
 }
 
 QString InsertSpecieRowsCommand::insertRowsText() const

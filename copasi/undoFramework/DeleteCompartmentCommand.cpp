@@ -63,7 +63,7 @@ void DeleteCompartmentCommand::undo()
 {
   mpCompartment->addCompartment(mpCompartmentData);
   setUndoState(false);
-  setAction("Create");
+  setAction("Undelete");
 }
 
 QString DeleteCompartmentCommand::deleteCompartmentText(std::string &name) const

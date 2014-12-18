@@ -55,7 +55,7 @@ void InsertGlobalQuantityRowsCommand::redo()
       mpGlobalQuantityDM->addGlobalQuantityRow(mpGlobalQuantityData);
     }
 
-  setUndoState(false);
+  setUndoState(true);
   setAction("Add to list");
   setName(mpGlobalQuantityData->getName());
 }
@@ -64,7 +64,7 @@ void InsertGlobalQuantityRowsCommand::undo()
 {
   mpGlobalQuantityDM->deleteGlobalQuantityRow(mpGlobalQuantityData);
   setUndoState(false);
-  setAction("Delete from list");
+  setAction("Remove from list");
 }
 
 QString InsertGlobalQuantityRowsCommand::insertRowsText() const

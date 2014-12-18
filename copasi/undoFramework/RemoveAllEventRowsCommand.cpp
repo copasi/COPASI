@@ -64,17 +64,23 @@ RemoveAllEventRowsCommand::RemoveAllEventRowsCommand(CQEventDM * pEventDM, const
         }
     }
 
+  mType = EVENTREMOVEALL;
+  setEntityType("Event");
   this->setText(removeAllEventRowsText());
 }
 
 void RemoveAllEventRowsCommand::redo()
 {
   mpEventDM->removeAllEventRows();
+  setUndoState(true);
+  setAction("Delete all");
 }
 
 void RemoveAllEventRowsCommand::undo()
 {
   mpEventDM->insertEventRows(mpEventData);
+  setUndoState(false);
+  setAction("Undelete all");
 }
 
 QString RemoveAllEventRowsCommand::removeAllEventRowsText() const

@@ -100,7 +100,7 @@ void CQUndoHistoryDialog::generateUndoData(QUndoStack *undoStack, int commandCou
     {
       const QUndoCommand *cmd = undoStack->command(row);
       const CCopasiUndoCommand *cCommand = dynamic_cast<const CCopasiUndoCommand*>(cmd);
-      const UndoData *undoData =  cCommand->getUndoData();
+      // const UndoData *undoData =  cCommand->getUndoData();
 
       for (int col = 0; col < 6; col++)
         {
@@ -121,15 +121,15 @@ void CQUndoHistoryDialog::generateUndoData(QUndoStack *undoStack, int commandCou
                 break;
 
               case 3:
-                model->setData(index, "");
+                model->setData(index, QVariant(QString(FROM_UTF8(cCommand->getProperty()))));
                 break;
 
               case 4:
-                model->setData(index, "");
+                model->setData(index, QVariant(QString(FROM_UTF8(cCommand->getNewValue()))));
                 break;
 
               case 5:
-                model->setData(index, "");
+                model->setData(index, QVariant(QString(FROM_UTF8(cCommand->getOldValue()))));
                 break;
             }
         }

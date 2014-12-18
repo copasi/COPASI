@@ -50,6 +50,9 @@ RemoveReactionRowsCommand::RemoveReactionRowsCommand(QModelIndexList rows, CQRea
         }
     }
 
+  mType = REACTIONREMOVE;
+  setEntityType("Reaction");
+
   this->setText(removeReactionRowsText());
 }
 
@@ -64,11 +67,16 @@ void RemoveReactionRowsCommand::redo()
     {
       mpReactionDM->deleteReactionRows(mpReaData);
     }
+
+  setUndoState(true);
+  setAction("Delete set");
 }
 
 void RemoveReactionRowsCommand::undo()
 {
   mpReactionDM->insertReactionRows(mpReaData);
+  setUndoState(false);
+  setAction("Undelete set");
 }
 
 QString RemoveReactionRowsCommand::removeReactionRowsText() const

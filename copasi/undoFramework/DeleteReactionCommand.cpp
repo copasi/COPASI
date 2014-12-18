@@ -55,7 +55,7 @@ void DeleteReactionCommand::undo()
 {
   mpReactionWidget->addReaction(mReaObjectName, mpRi);
   setUndoState(false);
-  setAction("Create");
+  setAction("Undelete");
 }
 
 QString DeleteReactionCommand::deleteReactionText(std::string &name) const
