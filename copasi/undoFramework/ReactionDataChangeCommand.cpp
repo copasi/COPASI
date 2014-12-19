@@ -40,6 +40,29 @@ ReactionDataChangeCommand::ReactionDataChangeCommand(QModelIndex index, const QV
 
   //mPathIndex = pathFromIndex(index);
   this->setText(reactionDataChangeText());
+
+  //set the data for UNDO history
+  mType = REACTIONDATACHANGE;
+  setEntityType("Reaction");
+  setAction("Update");
+  setName(pRea->getObjectName());
+  setOldValue(TO_UTF8(mOld.toString()));
+  setNewValue(TO_UTF8(mNew.toString()));
+
+  switch (index.column())
+    {
+      case 0:
+        setProperty("");
+        break;
+
+      case 1:
+        setProperty("Name");
+        break;
+
+      case 2:
+        setProperty("Reaction");
+        break;
+    }
 }
 
 ReactionDataChangeCommand::~ReactionDataChangeCommand()

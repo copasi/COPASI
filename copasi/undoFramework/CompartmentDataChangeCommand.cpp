@@ -37,8 +37,8 @@ CompartmentDataChangeCommand::CompartmentDataChangeCommand(QModelIndex index, co
   CModel * pModel = pDataModel->getModel();
   CCompartment *pCompartment = pModel->getCompartments()[index.row()];
   mType = COMPARTMENTDATACHANGE;
-  setAction("Compartment");
-  setAction("Change value");
+  setEntityType("Compartment");
+  setAction("Update");
   setName(pCompartment->getObjectName());
   setOldValue(TO_UTF8(mOld.toString()));
   setNewValue(TO_UTF8(mNew.toString()));
