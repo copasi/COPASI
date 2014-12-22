@@ -37,6 +37,52 @@ SpecieTypeChangeCommand::SpecieTypeChangeCommand(int type, int currentType, CQSp
   mpSpecieData->setStatus((CModelEntity::Status)type);
 
   this->setText(specieTypeChangeText(sName));
+
+  //set the data for UNDO history
+  mType = SPECIESTYPECHANGE;
+  setEntityType("Species");
+  setAction("Change");
+  setName(mpSpecieData->getName());
+
+  switch ((CModelEntity::Status) mNewType)
+    {
+      case CModelEntity::FIXED:
+        setNewValue("fixed");
+        break;
+
+      case CModelEntity::REACTIONS:
+        setNewValue("reactions");
+        break;
+
+      case CModelEntity::ASSIGNMENT:
+        setNewValue("assignment");
+        break;
+
+      case CModelEntity::ODE:
+        setNewValue("ode");
+        break;
+    }
+
+  switch ((CModelEntity::Status) mOldType)
+    {
+      case CModelEntity::FIXED:
+        setOldValue("fixed");
+        break;
+
+      case CModelEntity::REACTIONS:
+        setOldValue("reactions");
+        break;
+
+      case CModelEntity::ASSIGNMENT:
+        setOldValue("assignment");
+        break;
+
+      case CModelEntity::ODE:
+        setOldValue("ode");
+        break;
+    }
+
+  setProperty("Type");
 }
 void SpecieTypeChangeCommand::redo()
 {
@@ -53,6 +99,7 @@ void SpecieTypeChangeCommand::redo()
 void SpecieTypeChangeCommand::undo()
 {
   mpSpecieDetail->specieTypeChanged(mpSpecieData, mOldType);
+  setAction("Unchange");
 }
 QString SpecieTypeChangeCommand::specieTypeChangeText(std::string &name) const
 {

@@ -66,6 +66,8 @@ public:
     GLOBALQUANTITYDATACHANGE, //change global quantity data
     REACTIONDATACHANGE, //change reaction data
     SPECIEDATACHANGE, //change species data
+    REACTIONLINEEDITCHANGE, //change reaction data
+    SPECIESTYPECHANGE, //change reaction data
     SPECIESTYPECHANG
   };
   //change of species type

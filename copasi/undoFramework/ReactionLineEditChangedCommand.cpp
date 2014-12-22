@@ -10,6 +10,7 @@
  *      Author: dada
  */
 
+#include "model/CReaction.h"
 #include "UI/ReactionsWidget1.h"
 
 #include "ReactionLineEditChangedCommand.h"
@@ -21,6 +22,15 @@ ReactionLineEditChangedCommand::ReactionLineEditChangedCommand(ReactionsWidget1 
   mOldEq = mpReactionWidget->mpRi->getChemEqString();
   mOldFunctionName = mpReactionWidget->mpRi->getFunctionName();
   this->setText(lineEditChangedText());
+
+  //set the data for UNDO history
+  mType = REACTIONLINEEDITCHANGE;
+  setEntityType("Reaction");
+  setAction("Change");
+  CReaction* reac = dynamic_cast< CReaction * >(mpReactionWidget->mpObject);
+  setName(reac->getObjectName());
+  setOldValue(mOldEq);
+  setProperty("Reaction");
 }
 void ReactionLineEditChangedCommand::redo()
 {
@@ -35,11 +45,14 @@ void ReactionLineEditChangedCommand::redo()
     {
       mpReactionWidget->restoreLineEditChanged(mEq, mFunctionName);
     }
+
+  setNewValue(mEq);
 }
 
 void ReactionLineEditChangedCommand::undo()
 {
   mpReactionWidget->restoreLineEditChanged(mOldEq, mOldFunctionName);
+  setProperty("Unchange");
 }
 
 QString ReactionLineEditChangedCommand::lineEditChangedText() const

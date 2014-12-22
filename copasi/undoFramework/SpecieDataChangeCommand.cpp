@@ -39,7 +39,7 @@ SpecieDataChangeCommand::SpecieDataChangeCommand(QModelIndex index, const QVaria
   CMetab *pSpecies = pModel->getMetabolites()[index.row()];
   mType = SPECIEDATACHANGE;
   setEntityType("Species");
-  setAction("Update");
+  setAction("Change");
   setName(pSpecies->getObjectName());
   setOldValue(TO_UTF8(mOld.toString()));
   setNewValue(TO_UTF8(mNew.toString()));
@@ -102,6 +102,7 @@ void SpecieDataChangeCommand::undo()
 {
   mIndex = pathToIndex(mPathIndex, mpSpecieDM);
   mpSpecieDM->specieDataChange(mIndex, mOld, mRole);
+  setAction("Unchange");
 }
 QString SpecieDataChangeCommand::specieDataChangeText() const
 {

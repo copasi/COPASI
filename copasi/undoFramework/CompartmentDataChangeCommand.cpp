@@ -38,7 +38,7 @@ CompartmentDataChangeCommand::CompartmentDataChangeCommand(QModelIndex index, co
   CCompartment *pCompartment = pModel->getCompartments()[index.row()];
   mType = COMPARTMENTDATACHANGE;
   setEntityType("Compartment");
-  setAction("Update");
+  setAction("Change");
   setName(pCompartment->getObjectName());
   setOldValue(TO_UTF8(mOld.toString()));
   setNewValue(TO_UTF8(mNew.toString()));
@@ -87,6 +87,7 @@ void CompartmentDataChangeCommand::undo()
 {
   //mIndex = pathToIndex(mPathIndex, mpCompartmentDM);
   mpCompartmentDM->compartmentDataChange(mIndex, mOld, mRole);
+  setAction("Unchange");
 }
 QString CompartmentDataChangeCommand::compartmentDataChangeText() const
 {

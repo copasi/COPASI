@@ -44,7 +44,7 @@ ReactionDataChangeCommand::ReactionDataChangeCommand(QModelIndex index, const QV
   //set the data for UNDO history
   mType = REACTIONDATACHANGE;
   setEntityType("Reaction");
-  setAction("Update");
+  setAction("Change");
   setName(pRea->getObjectName());
   setOldValue(TO_UTF8(mOld.toString()));
   setNewValue(TO_UTF8(mNew.toString()));
@@ -78,6 +78,7 @@ void ReactionDataChangeCommand::undo()
 {
   //mIndex = pathToIndex(mPathIndex, mpReactionDM);
   mpReactionDM->reactionDataChange(mIndex, mOld, mRole, mOldFunctionName);
+  setAction("Unchange");
 }
 QString ReactionDataChangeCommand::reactionDataChangeText() const
 {

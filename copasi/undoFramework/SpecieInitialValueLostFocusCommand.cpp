@@ -32,6 +32,22 @@ SpecieInitialValueLostFocusCommand::SpecieInitialValueLostFocusCommand(CQSpecies
   mpSpecieData->setINumber(mpSpecieDetail->mInitialNumber);
 
   this->setText(specieInitialValueLostFocusText(sName));
+
+  //set the data for UNDO history
+  mType = SPECIESTYPECHANGE;
+  setEntityType("Species");
+  setAction("Change");
+  setName(mpSpecieData->getName());
+
+  std::ostringstream strs;
+  strs << mpSpecieDetail->mInitialConcentration;
+  std::string str = strs.str();
+  setNewValue(str);
+  strs.clear();
+  strs << mpSpecieDetail->mpMetab->getInitialConcentration();
+  str = strs.str();
+  setOldValue(str);
+  setProperty("Initial Value");
 }
 void SpecieInitialValueLostFocusCommand::redo()
 {
@@ -48,6 +64,7 @@ void SpecieInitialValueLostFocusCommand::redo()
 void SpecieInitialValueLostFocusCommand::undo()
 {
   mpSpecieDetail->specieInitialValueLostFocus(mpSpecieData);
+  setAction("Unchange");
 }
 QString SpecieInitialValueLostFocusCommand::specieInitialValueLostFocusText(std::string &name) const
 {
