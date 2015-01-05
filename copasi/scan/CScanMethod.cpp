@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -240,6 +240,8 @@ void CScanItemLinear::step()
 
   if (mpObject) mpObject->setObjectValue(Value);
 
+  if (mpInitialObject) mpInitialObject->setObjectValue(Value);
+
   ++mIndex;
 }
 
@@ -335,6 +337,8 @@ void CScanItemRandom::step()
     }
 
   if (mpObject) mpObject->setObjectValue(Value);
+
+  if (mpInitialObject) mpInitialObject->setObjectValue(Value);
 
   ++mIndex;
 }
