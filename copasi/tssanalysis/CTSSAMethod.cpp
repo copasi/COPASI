@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -914,7 +914,7 @@ void CTSSAMethod::schur(C_INT &info)
   CVector< C_FLOAT64 > work;
   work.resize(10 * dim);
 
-  CVector< C_INT > Bwork;
+  CVector< logical > Bwork;
   Bwork.resize(dim);
 
   dgees_(&V, &N, NULL, &dim, R.array(), &dim, &SDIM, eval_r.array(), eval_i.array(), Q.array(), &dim, work.array(), & lwork, Bwork.array(), &info);
@@ -1341,7 +1341,7 @@ void CTSSAMethod::schur_desc(C_INT &info)
   CVector< C_FLOAT64 > work;
   work.resize(10 * dim);
 
-  CVector< C_INT > Bwork;
+  CVector< logical > Bwork;
   Bwork.resize(dim);
 
   dgees_(&V, &N, NULL, &dim, R.array(), &dim, &SDIM, eval_r.array(), eval_i.array(), Q.array(), &dim, work.array(), & lwork, Bwork.array(), &info);
