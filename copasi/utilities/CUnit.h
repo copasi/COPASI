@@ -1,4 +1,4 @@
-// Copyright (C) 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2014 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -88,6 +88,7 @@ public:
   bool isDimensionless() const;
   void addComponent(const CUnitComponent & component);
   bool simplifyComponents();
+  bool invertComponents();
   std::string prefixFromScale(int scale);
 
 private:

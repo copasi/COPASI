@@ -408,6 +408,21 @@ bool CUnit::simplifyComponents()
   return didSimplify;
 }
 
+bool CUnit::invertComponents()
+{
+  if (mComponents.size() < 1)
+    return false;
+
+  std::vector< CUnitComponent >::iterator it = mComponents.begin();
+
+  for (; it != mComponents.end(); it++)
+    {
+      it->setExponent(it->getExponent() * -1);
+    }
+
+  return true;
+}
+
 std::string CUnit::prefixFromScale(int scale)
 {
   switch (scale)
