@@ -588,7 +588,8 @@ void CSEDMLExporter::createDataGenerators(CCopasiDataModel & dataModel,
 
           const std::string& type = objectY->getObjectName();
           std::string yAxis = objectY->getObjectDisplayName();
-          std::string targetXPathString = SEDMLUtils::getXPathAndName(yAxis, type,
+          std::string sbmlId = yAxis;
+          std::string targetXPathString = SEDMLUtils::getXPathAndName(sbmlId, type,
                                           pModel, dataModel);
 
           if (targetXPathString.empty())
@@ -599,12 +600,14 @@ void CSEDMLExporter::createDataGenerators(CCopasiDataModel & dataModel,
 
           pPDGen = createDataGenerator(
                      this->mpSEDMLDocument,
-                     yAxis,
+                     sbmlId,
                      targetXPathString,
                      taskId,
                      i,
                      j
                    );
+
+          pPDGen->setName(yAxis);
 
           pCurve = pPSedPlot->createCurve();
           std::ostringstream idCurveStrStream;
@@ -615,6 +618,7 @@ void CSEDMLExporter::createDataGenerators(CCopasiDataModel & dataModel,
           pCurve->setId(idCurveStrStream.str());
           pCurve->setLogX(pPlot->isLogX());
           pCurve->setLogY(pPlot->isLogY());
+          pCurve->setName(yAxis);
           pCurve->setYDataReference(pPDGen->getId());
 
           if (xIsTime)
