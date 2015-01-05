@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -108,7 +108,7 @@
 #endif
 
 // for compatibility with default CLAPACK f2c
-#if ((defined __LP64__) && (!(defined HAVE_CLAPACK_H) || (defined Darwin)))
+#if ((defined(COPASI_OVERWRITE_C_INT_AS_INT) && !defined(COPASI_OVERWRITE_C_INT_AS_LONG)) || ((defined __LP64__) && (!(defined HAVE_CLAPACK_H) || (defined Darwin))))
 # define C_INT int
 #else
 # define C_INT long

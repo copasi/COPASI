@@ -1,4 +1,4 @@
-// Copyright (C) 2013 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2013 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -1252,7 +1252,7 @@ extern "C"
 # if defined (HAVE_LAPACK_H) && !defined(HAVE_APPLE)
 #  include <lapack.h>
 # else
-#  if defined (HAVE_CLAPACK_H) && !defined(HAVE_APPLE)
+#  if defined (HAVE_CLAPACK_H) && !defined(HAVE_APPLE) && !defined(COPASI_OVERWRITE_USE_LAPACK)
 #   include <clapack.h>
 #  else
 #    if !defined(HAVE_APPLE)

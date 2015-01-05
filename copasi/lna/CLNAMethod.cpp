@@ -1,4 +1,4 @@
-// Copyright (C) 2011 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -247,7 +247,7 @@ int CLNAMethod::calculateCovarianceMatrixReduced()
   vs_A.resize((size_t)ldvs_A, (size_t)ldvs_A);
   CVector< C_FLOAT64 > work = 1;
   C_INT lwork;
-  C_INT * pbwork = NULL;
+  logical * pbwork = NULL;
   C_INT info;
 
   // LWORK workspace query

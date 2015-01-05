@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -98,7 +98,7 @@
 
 #include "utilities/CCopasiMessage.h"
 
-#if LIBSBML_VERSION >= 50903
+#if LIBSBML_VERSION >= 50903 && LIBSBML_HAS_PACKAGE_COMP
 
 #include <sbml/util/PrefixTransformer.h>
 #include <sbml/packages/comp/extension/CompModelPlugin.h>
@@ -3404,7 +3404,7 @@ SBMLImporter::parseSBML(const std::string& sbmlDocumentText,
               CCopasiMessage(CCopasiMessage::EXCEPTION, message.c_str());
             }
 
-#if LIBSBML_VERSION >= 50903
+#if LIBSBML_VERSION >= 50903 && LIBSBML_HAS_PACKAGE_COMP
           // apply the name transformer
           CompModelPlugin* mPlug = dynamic_cast<CompModelPlugin*>(sbmlDoc->getModel()->getPlugin("comp"));
           CPrefixNameTransformer trans;
@@ -3414,7 +3414,7 @@ SBMLImporter::parseSBML(const std::string& sbmlDocumentText,
               mPlug->setTransformer(&trans);
             }
 
-#endif //LIBSBML_VERSION >= 50903
+#endif //LIBSBML_VERSION >= 50903 && LIBSBML_HAS_PACKAGE_COMP
 
           // the sbml comp package is used, and the required flag is set, so it stands to reason
           // that we need to flatten the document
