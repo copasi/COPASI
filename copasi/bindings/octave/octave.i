@@ -11,6 +11,8 @@
 // of Manchester. 
 // All rights reserved. 
 
+%ignore real;
+
 /**
  * Convert CFitItem objects into the most specific type possible.
  */
