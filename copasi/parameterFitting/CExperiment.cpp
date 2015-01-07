@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -81,6 +81,7 @@ CExperiment::CExperiment(const CCopasiContainer * pParent,
   mpLastRow(NULL),
   mpTaskType(NULL),
   mpStartInSteadyState(NULL),
+  mpNormalizeWeightsPerExperiment(NULL),
   mpSeparator(NULL),
   mpWeightMethod(NULL),
   mpRowOriented(NULL),
@@ -131,6 +132,7 @@ CExperiment::CExperiment(const CExperiment & src,
   mpLastRow(NULL),
   mpTaskType(NULL),
   mpStartInSteadyState(NULL),
+  mpNormalizeWeightsPerExperiment(NULL),
   mpSeparator(NULL),
   mpWeightMethod(NULL),
   mpRowOriented(NULL),
@@ -182,6 +184,7 @@ CExperiment::CExperiment(const CCopasiParameterGroup & group,
   mpLastRow(NULL),
   mpTaskType(NULL),
   mpStartInSteadyState(NULL),
+  mpNormalizeWeightsPerExperiment(NULL),
   mpSeparator(NULL),
   mpWeightMethod(NULL),
   mpRowOriented(NULL),
@@ -242,6 +245,7 @@ CExperiment & CExperiment::operator = (const CExperiment & rhs)
   mpLastRow = getValue("Last Row").pUINT;
   mpTaskType = (CCopasiTask::Type *) getValue("Experiment Type").pUINT;
   mpStartInSteadyState = getValue("Start in Steady State").pBOOL;
+  mpNormalizeWeightsPerExperiment = getValue("Normalize Weights per Experiment").pBOOL;
   mpSeparator = getValue("Separator").pSTRING;
   mpWeightMethod = (WeightMethod *) getValue("Weight Method").pUINT;
   mpRowOriented = getValue("Data is Row Oriented").pBOOL;
@@ -270,6 +274,9 @@ void CExperiment::initializeParameter()
                assertParameter("Experiment Type", CCopasiParameter::UINT, (unsigned C_INT32) CCopasiTask::unset)->getValue().pUINT;
   mpStartInSteadyState =
     assertParameter("Start in Steady State", CCopasiParameter::BOOL, false)->getValue().pBOOL;
+
+  mpNormalizeWeightsPerExperiment =
+    assertParameter("Normalize Weights per Experiment", CCopasiParameter::BOOL, true)->getValue().pBOOL;
 
   mpSeparator =
     assertParameter("Separator", CCopasiParameter::STRING, std::string("\t"))->getValue().pSTRING;
@@ -1130,7 +1137,7 @@ bool CExperiment::calculateWeights()
       if (DefaultColumScale < MinWeight) MinWeight = DefaultColumScale;
     }
 
-  if (*mpWeightMethod != VALUE_SCALING)
+  if (*mpNormalizeWeightsPerExperiment && *mpWeightMethod != VALUE_SCALING)
     {
       // We have to calculate the default weights
       for (i = 0; i < DependentCount; i++)
@@ -1254,6 +1261,19 @@ bool CExperiment::getStartInSteadyState() const
     return *mpStartInSteadyState;
   else
     return false;
+}
+
+void CExperiment::setNormalizeWeightsPerExperiment(bool flag)
+{
+  *mpNormalizeWeightsPerExperiment = flag;
+}
+
+bool CExperiment::getNormalizeWeightsPerExperiment() const
+{
+  if (mpNormalizeWeightsPerExperiment)
+    return *mpNormalizeWeightsPerExperiment;
+  else
+    return true;
 }
 
 const CVector< C_FLOAT64 > & CExperiment::getTimeData() const
@@ -1551,7 +1571,7 @@ const C_FLOAT64 & CExperiment::getErrorMeanSD() const
 C_FLOAT64 CExperiment::getObjectiveValue(CCopasiObject *const& pObject) const
 {
   std::map< CCopasiObject *, size_t >::const_iterator it
-  = mDependentObjects.find(pObject);
+    = mDependentObjects.find(pObject);
 
   if (it != mDependentObjects.end())
     return mColumnObjectiveValue[it->second];
@@ -1562,7 +1582,7 @@ C_FLOAT64 CExperiment::getObjectiveValue(CCopasiObject *const& pObject) const
 C_FLOAT64 CExperiment::getDefaultScale(const CCopasiObject * const& pObject) const
 {
   std::map< CCopasiObject *, size_t>::const_iterator it
-  = mDependentObjects.find(const_cast<CCopasiObject*>(pObject));
+    = mDependentObjects.find(const_cast<CCopasiObject*>(pObject));
 
   if (it == mDependentObjects.end())
     return std::numeric_limits<C_FLOAT64>::quiet_NaN();
@@ -1573,7 +1593,7 @@ C_FLOAT64 CExperiment::getDefaultScale(const CCopasiObject * const& pObject) con
 C_FLOAT64 CExperiment::getRMS(CCopasiObject *const& pObject) const
 {
   std::map< CCopasiObject *, size_t>::const_iterator it
-  = mDependentObjects.find(pObject);
+    = mDependentObjects.find(pObject);
 
   if (it != mDependentObjects.end())
     return mColumnRMS[it->second];
@@ -1584,7 +1604,7 @@ C_FLOAT64 CExperiment::getRMS(CCopasiObject *const& pObject) const
 C_FLOAT64 CExperiment::getErrorSum(CCopasiObject *const& pObject) const
 {
   std::map< CCopasiObject *, size_t>::const_iterator it
-  = mDependentObjects.find(pObject);
+    = mDependentObjects.find(pObject);
 
   if (it == mDependentObjects.end() ||
       mpDataDependentCalculated == NULL)
@@ -1617,7 +1637,7 @@ C_FLOAT64 CExperiment::getErrorMeanSD(CCopasiObject *const& pObject,
                                       const C_FLOAT64 & errorMean) const
 {
   std::map< CCopasiObject *, size_t>::const_iterator it
-  = mDependentObjects.find(pObject);
+    = mDependentObjects.find(pObject);
 
   if (it == mDependentObjects.end() ||
       mpDataDependentCalculated == NULL)
@@ -1654,7 +1674,7 @@ C_FLOAT64 CExperiment::getErrorMeanSD(CCopasiObject *const& pObject,
 size_t CExperiment::getColumnValidValueCount(CCopasiObject *const& pObject) const
 {
   std::map< CCopasiObject *, size_t>::const_iterator it
-  = mDependentObjects.find(pObject);
+    = mDependentObjects.find(pObject);
 
   if (it != mDependentObjects.end())
     return mColumnValidValueCount[it->second];

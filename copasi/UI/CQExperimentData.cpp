@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -313,6 +313,51 @@ void CQExperimentData::slotHeader()
   // uncheck mpCheckHeader
 }
 
+void CQExperimentData::slotCheckStartInSteadyState(bool flag)
+{
+  if (!mpExperiment) return;
+
+  size_t Current =
+    mpExperimentSetCopy->keyToIndex(mpExperiment->CCopasiParameter::getKey());
+  size_t Next = Current + 1;
+
+  // Find all experiments which are like this.
+  while (Next < mpExperimentSetCopy->getExperimentCount() && mpCheckTo->isChecked())
+    {
+      CExperiment * pNext = mpExperimentSetCopy->getExperiment(Next);
+
+      if (!isLikePreviousExperiment(pNext)) break;
+
+      Next++;
+    }
+
+  // Update each of them.
+  while (true)
+    {
+      Next--;
+
+      CExperiment * pNext = mpExperimentSetCopy->getExperiment(Next);
+
+      bool Changed = saveTable(pNext);
+
+      if (Changed)
+        {
+          std::ifstream File;
+          File.open(CLocaleString::fromUtf8(pNext->getFileName()).c_str());
+
+          size_t CurrentLine = 1;
+          pNext->read(File, CurrentLine);
+          pNext->compile();
+        }
+
+      pNext->setStartInSteadyState(flag);
+
+      if (Next == Current) break;
+    }
+
+  loadTable(mpExperiment, false);
+}
+
 void CQExperimentData::slotExprimentType(bool isSteadyState)
 {
   if (!mpExperiment) return;
@@ -394,6 +439,8 @@ void CQExperimentData::slotExperimentAdd()
   pExperiment->setLastRow((unsigned C_INT32) Last);
   pExperiment->setHeaderRow((unsigned C_INT32) First);
   pExperiment->setFileName(mpFileInfo->getFileName());
+
+  pExperiment->setNormalizeWeightsPerExperiment(false);
 
   pExperiment->setNumColumns((unsigned C_INT32) pExperiment->guessColumnNumber());
   mpFileInfo->sync();
@@ -851,6 +898,8 @@ bool CQExperimentData::loadExperiment(CExperiment * pExperiment)
   mpBtnSteadystate->blockSignals(true);
   mpEditSeparator->blockSignals(true);
   mpCheckTab->blockSignals(true);
+  mpCheckNormalizeWeightsPerExperiment->blockSignals(true);
+  mpCheckStartInSteadyState->blockSignals(true);
 
   if (!pExperiment)
     {
@@ -862,6 +911,8 @@ bool CQExperimentData::loadExperiment(CExperiment * pExperiment)
       mpEditHeader->setText("");
       mpCheckHeader->setChecked(false);
       mpBtnTimeCourse->setChecked(true);
+      mpCheckNormalizeWeightsPerExperiment->setChecked(true);
+      mpCheckStartInSteadyState->setChecked(false);
       mpCheckFrom->setChecked(false);
       mpCheckTo->setChecked(false);
       mpBoxWeightMethod->setCurrentIndex(CExperiment::SD);
@@ -918,6 +969,9 @@ bool CQExperimentData::loadExperiment(CExperiment * pExperiment)
             break;
         }
 
+      mpCheckNormalizeWeightsPerExperiment->setChecked(pExperiment->getNormalizeWeightsPerExperiment());
+      mpCheckStartInSteadyState->setChecked(pExperiment->getStartInSteadyState());
+
       size_t Next =
         mpExperimentSetCopy->keyToIndex(pExperiment->CCopasiParameter::getKey()) + 1;
 
@@ -940,6 +994,8 @@ bool CQExperimentData::loadExperiment(CExperiment * pExperiment)
   mpBtnSteadystate->blockSignals(false);
   mpEditSeparator->blockSignals(false);
   mpCheckTab->blockSignals(false);
+  mpCheckNormalizeWeightsPerExperiment->blockSignals(false);
+  mpCheckStartInSteadyState->blockSignals(false);
 
   loadTable(pExperiment, false);
 
@@ -1015,6 +1071,9 @@ bool CQExperimentData::saveExperiment(CExperiment * pExperiment, const bool & fu
     pExperiment->setExperimentType(CCopasiTask::steadyState);
 
   pExperiment->setWeightMethod((CExperiment::WeightMethod) mpBoxWeightMethod->currentIndex());
+
+  pExperiment->setNormalizeWeightsPerExperiment(mpCheckNormalizeWeightsPerExperiment->isChecked());
+  pExperiment->setStartInSteadyState(mpCheckStartInSteadyState->isChecked());
 
   mpFileInfo->sync();
 
@@ -1535,6 +1594,10 @@ bool CQExperimentData::isLikePreviousExperiment(CExperiment * pExperiment)
   if (mpExperiment != pExperiment)
     {
       if (pExperiment->getWeightMethod() != (CExperiment::WeightMethod) mOldWeightMethod) return false;
+
+      if (pExperiment->getNormalizeWeightsPerExperiment() != pPrevious->getNormalizeWeightsPerExperiment()) return false;
+
+      if (pExperiment->getStartInSteadyState() != pPrevious->getStartInSteadyState()) return false;
     }
   else
     {
@@ -1582,6 +1645,9 @@ void CQExperimentData::enableEdit(const bool & enable)
       mpTable->setEnabled(true);
       mpBoxWeightMethod->setEnabled(true);
 
+      mpCheckNormalizeWeightsPerExperiment->setEnabled(true);
+      mpCheckStartInSteadyState->setEnabled(true);
+
       // We need to enable all items in COL_TYPE and some in COL_BTN
       // Disable is inheritted but enable not.
       /*
@@ -1619,7 +1685,55 @@ void CQExperimentData::enableEdit(const bool & enable)
       mpCheckTab->setEnabled(false);
       mpTable->setEnabled(false);
       mpBoxWeightMethod->setEnabled(false);
+      mpCheckNormalizeWeightsPerExperiment->setEnabled(false);
+      mpCheckStartInSteadyState->setEnabled(false);
     }
+}
+
+void CQExperimentData::slotCheckNormalizeWeightsPerExperiment(bool flag)
+{
+  if (!mpExperiment) return;
+
+  size_t Current =
+    mpExperimentSetCopy->keyToIndex(mpExperiment->CCopasiParameter::getKey());
+  size_t Next = Current + 1;
+
+  // Find all experiments which are like this.
+  while (Next < mpExperimentSetCopy->getExperimentCount() && mpCheckTo->isChecked())
+    {
+      CExperiment * pNext = mpExperimentSetCopy->getExperiment(Next);
+
+      if (!isLikePreviousExperiment(pNext)) break;
+
+      Next++;
+    }
+
+  // Update each of them.
+  while (true)
+    {
+      Next--;
+
+      CExperiment * pNext = mpExperimentSetCopy->getExperiment(Next);
+
+      bool Changed = saveTable(pNext);
+
+      if (Changed)
+        {
+          std::ifstream File;
+          File.open(CLocaleString::fromUtf8(pNext->getFileName()).c_str());
+
+          size_t CurrentLine = 1;
+          pNext->read(File, CurrentLine);
+          pNext->compile();
+        }
+
+      pNext->setNormalizeWeightsPerExperiment(flag);
+      pNext->calculateWeights();
+
+      if (Next == Current) break;
+    }
+
+  loadTable(mpExperiment, false);
 }
 
 void CQExperimentData::slotWeightMethod(int weightMethod)
