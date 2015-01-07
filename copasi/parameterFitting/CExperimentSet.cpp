@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -137,11 +137,11 @@ bool CExperimentSet::compile(const std::vector< CCopasiContainer * > listOfConta
       if (!(*it)->compile(listOfContainer)) return false;
 
       const std::map< CCopasiObject *, size_t > & ExpDependentObjects
-      = (*it)->getDependentObjects();
+        = (*it)->getDependentObjects();
       std::map< CCopasiObject *, size_t >::const_iterator itObject
-      = ExpDependentObjects.begin();
+        = ExpDependentObjects.begin();
       std::map< CCopasiObject *, size_t >::const_iterator endObject
-      = ExpDependentObjects.end();
+        = ExpDependentObjects.end();
 
       for (; itObject != endObject; ++itObject)
         DependentObjects.insert(itObject->first);

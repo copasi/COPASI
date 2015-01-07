@@ -19,6 +19,9 @@
 
 
 
+
+
+
  <comment> All rights reserved. </comment>
  <class>CQExperimentData</class>
  <widget class="QDialog" name="CQExperimentData">
@@ -499,20 +502,7 @@
       <string>Time Course</string>
      </property>
     </widget>
-   </item>
-    <item row="7" column="3" colspan="4">
-      <widget class="QCheckBox" name="mpCheckStartInSteadyState">
-        <property name="text">
-          <string>Start Time Course in Steady State</string>
-        </property>
-        <property name="toolTip">
-          <string>For Time Course data, the model will be brought into steady state before fitting the experiment.</string>
-        </property>
-      <property name="visible">
-      <bool>false</bool>
-     </property>
-      </widget>
-    </item>
+   </item>    
     
    <item row="8" column="0">
     <widget class="QLabel" name="mpLblWeightMethod">
@@ -719,23 +709,7 @@
      <y>20</y>
     </hint>
    </hints>
-  </connection>
-   <connection>
-     <sender>mpCheckStartInSteadyState</sender>
-     <signal>toggled(bool)</signal>
-     <receiver>CQExperimentData</receiver>
-     <slot>slotCheckStartInSteadyState(bool)</slot>
-     <hints>
-       <hint type="sourcelabel">
-         <x>20</x>
-         <y>20</y>
-       </hint>
-       <hint type="destinationlabel">
-         <x>20</x>
-         <y>20</y>
-       </hint>
-     </hints>
-   </connection>
+  </connection>   
    <connection>
      <sender>mpCheckNormalizeWeightsPerExperiment</sender>
      <signal>toggled(bool)</signal>
