@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -43,6 +43,7 @@ CTrajectoryProblem::CTrajectoryProblem(const CCopasiContainer * pParent):
   mpOutputStartTime(NULL),
   mpOutputEvent(NULL),
   mpContinueSimultaneousEvents(NULL),
+  mpStartInSteadyState(NULL),
   mStepNumberSetLast(true)
 {
   initializeParameter();
@@ -64,6 +65,7 @@ CTrajectoryProblem::CTrajectoryProblem(const CTrajectoryProblem & src,
   mpOutputStartTime(NULL),
   mpOutputEvent(NULL),
   mpContinueSimultaneousEvents(NULL),
+  mpStartInSteadyState(NULL),
   mStepNumberSetLast(src.mStepNumberSetLast)
 {
   initializeParameter();
@@ -93,6 +95,8 @@ void CTrajectoryProblem::initializeParameter()
     assertParameter("Output Event", CCopasiParameter::BOOL, (bool) false)->getValue().pBOOL;
   mpContinueSimultaneousEvents =
     assertParameter("Continue on Simultaneous Events", CCopasiParameter::BOOL, (bool) false)->getValue().pBOOL;
+  mpStartInSteadyState =
+    assertParameter("Start in Steady State", CCopasiParameter::BOOL, false)->getValue().pBOOL;
 }
 
 bool CTrajectoryProblem::elevateChildren()
@@ -298,4 +302,17 @@ bool CTrajectoryProblem::sync()
   *mpStepNumber = (unsigned C_INT32) StepNumber;
 
   return success;
+}
+
+void CTrajectoryProblem::setStartInSteadyState(bool flag)
+{
+  *mpStartInSteadyState = flag;
+}
+
+bool CTrajectoryProblem::getStartInSteadyState() const
+{
+  if (mpStartInSteadyState)
+    return *mpStartInSteadyState;
+  else
+    return false;
 }

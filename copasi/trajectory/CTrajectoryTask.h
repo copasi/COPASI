@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -32,6 +32,7 @@
 
 class CTrajectoryProblem;
 class CTrajectoryMethod;
+class CSteadyStateTask;
 class CState;
 
 class CTrajectoryTask : public CCopasiTask
@@ -59,6 +60,12 @@ private:
    * A pointer to the trajectory Problem
    */
   CTrajectoryProblem * mpTrajectoryProblem;
+
+  /**
+   * Pointer to CSteadyStateTask.  To be used in processStart() to start
+   * simulation in steady state
+   */
+  CSteadyStateTask * mpSteadyState;
 
   /**
    * A pointer to the trajectory method

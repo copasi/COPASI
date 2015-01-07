@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -189,7 +189,7 @@ CNewtonMethod::NewtonResultCode CNewtonMethod::doIntegration(bool forward)
   C_FLOAT64 maxDuration = forward ? mMaxDurationForward : -mMaxDurationBackward;
   //minimum duration is either hardcoded or equal to maximum duration, whichever is smaller.
   C_FLOAT64 minDuration = forward ? (mMaxDurationForward < 1e-1 ? mMaxDurationForward : 1e-1)
-                          : -(mMaxDurationBackward < 1e-2 ? mMaxDurationBackward : 1e-2);
+                            : -(mMaxDurationBackward < 1e-2 ? mMaxDurationBackward : 1e-2);
 
   //progress bar
   size_t hProcess;
@@ -768,6 +768,7 @@ bool CNewtonMethod::initialize(const CSteadyStateProblem * pProblem)
 
       pTrajectoryProblem->setModel(mpProblem->getModel());
       pTrajectoryProblem->setStepNumber(1);
+      pTrajectoryProblem->setStartInSteadyState(false);
 
       mpTrajectory->initialize(CCopasiTask::NO_OUTPUT, NULL, NULL);
     }

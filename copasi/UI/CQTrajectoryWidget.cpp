@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -258,6 +258,12 @@ bool CQTrajectoryWidget::saveTask()
       mChanged = true;
     }
 
+  if (trajectoryproblem->getStartInSteadyState() != mpCheckStartInSteadyState->isChecked())
+    {
+      trajectoryproblem->setStartInSteadyState(mpCheckStartInSteadyState->isChecked());
+      mChanged = true;
+    }
+
   mpValidatorDuration->saved();
   mpValidatorIntervalSize->saved();
   mpValidatorIntervals->saved();
@@ -306,6 +312,7 @@ bool CQTrajectoryWidget::loadTask()
 
   mpCheckOutputEvent->setChecked(trajectoryproblem->getOutputEvent());
   mpCheckContinueEvents->setChecked(trajectoryproblem->getContinueSimultaneousEvents());
+  mpCheckStartInSteadyState->setChecked(trajectoryproblem->getStartInSteadyState());
 
   //store time series checkbox
   mpCheckSave->setChecked(trajectoryproblem->timeSeriesRequested());

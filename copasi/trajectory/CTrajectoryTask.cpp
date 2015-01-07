@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -30,6 +30,7 @@
 #include "CTrajectoryTask.h"
 #include "CTrajectoryProblem.h"
 #include "CTrajectoryMethod.h"
+#include "steadystate/CSteadyStateTask.h"
 #include "model/CModel.h"
 #include "model/CMathModel.h"
 #include "model/CModel.h"
@@ -75,6 +76,7 @@ CTrajectoryTask::CTrajectoryTask(const CCopasiContainer * pParent):
   mTimeSeriesRequested(true),
   mTimeSeries(),
   mpTrajectoryProblem(NULL),
+  mpSteadyState(NULL),
   mpTrajectoryMethod(NULL),
   mUpdateMoieties(false),
   mpCurrentState(NULL),
@@ -101,6 +103,7 @@ CTrajectoryTask::CTrajectoryTask(const CTrajectoryTask & src,
   mTimeSeriesRequested(src.mTimeSeriesRequested),
   mTimeSeries(),
   mpTrajectoryProblem(NULL),
+  mpSteadyState(NULL),
   mpTrajectoryMethod(NULL),
   mUpdateMoieties(false),
   mpCurrentState(NULL),
@@ -203,6 +206,20 @@ bool CTrajectoryTask::initialize(const OutputFlag & of,
     }
 
   mpTrajectoryProblem->getModel()->getMathModel()->getProcessQueue().setContinueSimultaneousEvents(mpTrajectoryProblem->getContinueSimultaneousEvents());
+
+  if (mpTrajectoryProblem->getStartInSteadyState())
+    {
+      mpSteadyState =
+        dynamic_cast<CSteadyStateTask *>((*mpTrajectoryProblem->getObjectDataModel()->getTaskList())["Steady-State"]);
+
+      if (mpSteadyState == NULL) fatalError();
+
+      mpSteadyState->initialize(CCopasiTask::NO_OUTPUT, NULL, NULL);
+    }
+  else
+    {
+      mpSteadyState = NULL;
+    }
 
   if (!CCopasiTask::initialize(of, pOutputHandler, pOstream)) success = false;
 
@@ -351,7 +368,21 @@ bool CTrajectoryTask::process(const bool & useInitialValues)
 void CTrajectoryTask::processStart(const bool & useInitialValues)
 {
   if (useInitialValues)
-    mpTrajectoryProblem->getModel()->applyInitialValues();
+    {
+      if (mpTrajectoryProblem->getStartInSteadyState())
+        {
+          if (!mpSteadyState->process(true))
+            {
+              CCopasiMessage(CCopasiMessage::ERROR, "Steady state could not be reached.");
+            }
+
+          mpSteadyState->getObjectDataModel()->getModel()->setTime(0);
+        }
+      else
+        {
+          mpTrajectoryProblem->getModel()->applyInitialValues();
+        }
+    }
 
   *mpCurrentState = mpTrajectoryProblem->getModel()->getState();
 
