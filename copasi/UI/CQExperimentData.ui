@@ -16,6 +16,9 @@
 
 
 
+
+
+
  <comment> All rights reserved. </comment>
  <class>CQExperimentData</class>
  <widget class="QDialog" name="CQExperimentData">
@@ -505,6 +508,9 @@
         <property name="toolTip">
           <string>For Time Course data, the model will be brought into steady state before fitting the experiment.</string>
         </property>
+      <property name="visible">
+      <bool>false</bool>
+     </property>
       </widget>
     </item>
     
