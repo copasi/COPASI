@@ -1,4 +1,4 @@
-﻿using System.Reflection;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("The COPASI Team")]
 [assembly: AssemblyProduct("copasicsP.dll")]
-[assembly: AssemblyCopyright("Copyright (C) The COPASI Team 2012")]
+[assembly: AssemblyCopyright("Copyright (C) The COPASI Team 2015")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

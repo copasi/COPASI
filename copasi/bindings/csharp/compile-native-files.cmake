@@ -3,6 +3,7 @@
 # of Manchester. 
 # All rights reserved. 
 
+
 ###############################################################################
 #
 # Description       : CMake build script for native C# library
@@ -82,7 +83,7 @@ endif()
 execute_process(
 	COMMAND "${CSHARP_COMPILER}"
 		 -target:library
-		 -nowarn:108,109,114,1570,1572,1573,1574,1591
+		 -nowarn:105,108,109,114,1570,1572,1573,1574,1591
 		 -out:copasicsP.dll
 		 ${CSHARP_EXTRA_ARGS}
 		 ${NATIVE_FILES}
