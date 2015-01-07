@@ -37,9 +37,18 @@ if (NOT R_INCLUDE_DIRS)
     find_path(R_INCLUDE_DIRS
         NAMES R.h
         PATHS /usr/include /usr/local/include /usr/share/R/include
-		      /Library/Frameworks/R.framework/Versions/Current/Resources/include
-			  $ENV{ProgramFiles}/R/R-2.15.1/include
-			  $ENV{ProgramW6432}/R/R-2.15.1/include
+              /usr/include/R /usr/local/include/R
+              /Library/Frameworks/R.framework/Versions/Current/Resources/include
+              $ENV{ProgramFiles}/R/R-3.1.0/include
+              $ENV{ProgramW6432}/R/R-3.1.0/include
+              $ENV{ProgramFiles}/R/R-3.0.3/include
+              $ENV{ProgramW6432}/R/R-3.0.3/include
+              $ENV{ProgramFiles}/R/R-2.15.3/include
+              $ENV{ProgramW6432}/R/R-2.15.3/include
+              $ENV{ProgramFiles}/R/R-2.15.2/include
+              $ENV{ProgramW6432}/R/R-2.15.2/include
+              $ENV{ProgramFiles}/R/R-2.15.1/include
+              $ENV{ProgramW6432}/R/R-2.15.1/include
               ${CMAKE_SOURCE_DIR}/include
               ${LIBSBML_DEPENDENCY_DIR}/include
         DOC "The directory containing the R include files."
@@ -47,33 +56,50 @@ if (NOT R_INCLUDE_DIRS)
 endif()
 if (NOT R_LIB)
     SET(R_SUFFIX)
-	if (WIN32)
-		if (COPASI_BUILD_TYPE STREQUAL "32bit")
-		SET(R_SUFFIX "/i386")
-		else()
-		SET(R_SUFFIX "/x64")
-		endif()
-	endif()
-	find_library(R_LIB
-			NAMES Rlib.lib R
-			PATHS /usr/lib /usr/local/lib /usr/lib/R/lib
-			    $ENV{ProgramFiles}/R/R-2.15.1/bin${R_SUFFIX}
-			    $ENV{ProgramW6432}/R/R-2.15.1/bin${R_SUFFIX}
-				  /Library/Frameworks/R.framework/Versions/Current/Resources/lib
+  if (WIN32)
+    if (COPASI_BUILD_TYPE STREQUAL "32bit")
+    SET(R_SUFFIX "/i386")
+    else()
+    SET(R_SUFFIX "/x64")
+    endif()
+  endif()
+  find_library(R_LIB
+      NAMES Rlib.lib R
+      PATHS /usr/${LIB_DIR} /usr/local/${LIB_DIR} 
+          /usr/lib /usr/local/lib /usr/lib/R/lib
+          $ENV{ProgramFiles}/R/R-3.1.0/bin${R_SUFFIX}
+          $ENV{ProgramW6432}/R/R-3.1.0/bin${R_SUFFIX}
+          $ENV{ProgramFiles}/R/R-3.0.3/bin${R_SUFFIX}
+          $ENV{ProgramW6432}/R/R-3.0.3/bin${R_SUFFIX}
+          $ENV{ProgramFiles}/R/R-2.15.3/bin${R_SUFFIX}
+          $ENV{ProgramW6432}/R/R-2.15.3/bin${R_SUFFIX}
+          $ENV{ProgramFiles}/R/R-2.15.2/bin${R_SUFFIX}
+          $ENV{ProgramW6432}/R/R-2.15.2/bin${R_SUFFIX}
+          $ENV{ProgramFiles}/R/R-2.15.1/bin${R_SUFFIX}
+          $ENV{ProgramW6432}/R/R-2.15.1/bin${R_SUFFIX}
+          /Library/Frameworks/R.framework/Versions/Current/Resources/lib
           ${CMAKE_SOURCE_DIR}
-				  ${LIBSBML_DEPENDENCY_DIR}/lib
-			DOC "The file name of the R library."
-			)
+          ${LIBSBML_DEPENDENCY_DIR}/lib
+      DOC "The file name of the R library."
+      )
 endif()
 if (NOT R_INTERPRETER)
-	find_program(R_INTERPRETER
+  find_program(R_INTERPRETER
         NAMES R
         PATHS 
-		      $ENV{ProgramFiles}/R/R-2.15.1/bin
-		      $ENV{ProgramW6432}/R/R-2.15.1/bin
-			  /Library/Frameworks/R.framework/Versions/Current/Resources/R
-              /usr/local/bin
-              /usr/bin
+          $ENV{ProgramFiles}/R/R-3.1.0/bin
+          $ENV{ProgramW6432}/R/R-3.1.0/bin
+          $ENV{ProgramFiles}/R/R-3.0.3/bin
+          $ENV{ProgramW6432}/R/R-3.0.3/bin
+          $ENV{ProgramFiles}/R/R-2.15.3/bin
+          $ENV{ProgramW6432}/R/R-2.15.3/bin
+          $ENV{ProgramFiles}/R/R-2.15.2/bin
+          $ENV{ProgramW6432}/R/R-2.15.2/bin
+          $ENV{ProgramFiles}/R/R-2.15.1/bin
+          $ENV{ProgramW6432}/R/R-2.15.1/bin
+          /Library/Frameworks/R.framework/Versions/Current/Resources/bin/
+          /usr/local/bin
+          /usr/bin
         DOC "The file name of the R interpreter."
         )
 endif()
@@ -89,13 +115,13 @@ endif()
 
 # if we have not found something, stop here to ask for it
 if (NOT R_INTERPRETER)
-	message(FATAL_ERROR "Need the R interpreter in order to create an R package") 
+  message(FATAL_ERROR "Need the R interpreter in order to create an R package") 
 endif()
 if (NOT R_LIB)
-	message(FATAL_ERROR "Need the R library, please specify R_LIB")
+  message(FATAL_ERROR "Need the R library, please specify R_LIB")
 endif()
 if (NOT R_INCLUDE_DIRS)
-	message(FATAL_ERROR "Need the R include directory, please specify R_INCLUDE_DIRS")
+  message(FATAL_ERROR "Need the R include directory, please specify R_INCLUDE_DIRS")
 endif()
 
 
@@ -118,30 +144,30 @@ elseif(LAPACK_FOUND)
 endif()
 
 
-ADD_CUSTOM_COMMAND(	
+ADD_CUSTOM_COMMAND(  
     OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/copasi_wrapper.cpp
-		   ${CMAKE_CURRENT_BINARY_DIR}/COPASI.R
+       ${CMAKE_CURRENT_BINARY_DIR}/COPASI.R
     COMMAND "${SWIG_EXECUTABLE}"
-    ARGS	-I${CMAKE_CURRENT_SOURCE_DIR}/../swig/
-	        -I${CMAKE_CURRENT_SOURCE_DIR}/../../
+    ARGS  -I${CMAKE_CURRENT_SOURCE_DIR}/../swig/
+          -I${CMAKE_CURRENT_SOURCE_DIR}/../../
             -I${CMAKE_CURRENT_SOURCE_DIR}
-			-I${CMAKE_SOURCE_DIR}
-			-c++
-			-r		
-			${SWIG_EXTRA_ARGS}		 
-			-o ${CMAKE_CURRENT_BINARY_DIR}/copasi_wrapper.cpp 
-			${CMAKE_CURRENT_SOURCE_DIR}/R.i
-	COMMAND "${CMAKE_COMMAND}"
-	        -DSRC_DIR=${CMAKE_CURRENT_SOURCE_DIR}
-			-DFILENAME=\"${CMAKE_CURRENT_BINARY_DIR}/COPASI.R\"
-			-P "${CMAKE_CURRENT_SOURCE_DIR}/patch-swig-file.cmake"
+      -I${CMAKE_SOURCE_DIR}
+      -c++
+      -r    
+      ${SWIG_EXTRA_ARGS}     
+      -o ${CMAKE_CURRENT_BINARY_DIR}/copasi_wrapper.cpp 
+      ${CMAKE_CURRENT_SOURCE_DIR}/R.i
+  COMMAND "${CMAKE_COMMAND}"
+      -DSRC_DIR=${CMAKE_CURRENT_SOURCE_DIR}
+      -DFILENAME=\"${CMAKE_CURRENT_BINARY_DIR}/COPASI.R\"
+      -P "${CMAKE_CURRENT_SOURCE_DIR}/patch-swig-file.cmake"
     MAIN_DEPENDENCY ${CMAKE_CURRENT_SOURCE_DIR}/R.i
-	DEPENDS ${SWIG_DEPENDENCIES}
+  DEPENDS ${SWIG_DEPENDENCIES}
     COMMENT "Swig R source") 
 
 add_custom_target(binding_r_swig ALL DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/copasi_wrapper.cpp)
 
-	
+  
 ####################################################################
 #
 # Build native library
@@ -172,8 +198,8 @@ add_dependencies( binding_r_lib binding_python_swig)
 
 set_target_properties (binding_r_lib PROPERTIES OUTPUT_NAME "COPASI")
 if (UNIX)
-	set_target_properties (binding_r_lib PROPERTIES PREFIX "")
-	set_target_properties (binding_r_lib PROPERTIES SUFFIX ".so")
+  set_target_properties (binding_r_lib PROPERTIES PREFIX "")
+  set_target_properties (binding_r_lib PROPERTIES SUFFIX ".so")
 endif()
 
 target_link_libraries(binding_r_lib ${SE_EXTERNAL_LIBS} ${SE_LIBS}   ${R_LIB})
