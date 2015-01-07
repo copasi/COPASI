@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -130,12 +130,6 @@ public:
    * @return bool hasDataForTaskType
    */
   bool hasDataForTaskType(const CCopasiTask::Type & type) const;
-
-  /**
-   * Check whether the set contains data for a time course that starts in a steady state
-   */
-  bool hasStartInSteadyState() const;
-
 
   /**
    * Retrieve the indexed experiment type

@@ -82,7 +82,6 @@ protected slots:
   void slotHeader();
   void slotExprimentType(bool isSteadyState);
   void slotCheckNormalizeWeightsPerExperiment(bool flag);
-  void slotCheckStartInSteadyState(bool flag);
   void slotCheckTab(bool checked);
   void slotCheckHeader(bool checked);
   void slotExperimentAdd();

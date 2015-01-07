@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -438,11 +438,8 @@ bool CFitProblem::initialize()
   CCopasiDataModel* pDataModel = getObjectDataModel();
   assert(pDataModel != NULL);
 
-  //StartInSS: also initialize the SS task if a time course starts from a steady state
-
   // We only need to initialize the steady-state task if steady-state data is present.
-  if (mpExperimentSet->hasDataForTaskType(CCopasiTask::steadyState)
-      || mpExperimentSet->hasStartInSteadyState())
+  if (mpExperimentSet->hasDataForTaskType(CCopasiTask::steadyState))
     {
       mpSteadyState =
         dynamic_cast< CSteadyStateTask * >(pDataModel->ObjectFromName(ContainerList, *mpParmSteadyStateCN));
@@ -926,11 +923,6 @@ bool CFitProblem::calculate()
                 break;
 
               case CCopasiTask::timeCourse:
-
-                //StartInSS: if necessary, put the system in a steady state before simulating
-                if (pExp->getStartInSteadyState())
-                  {
-                  }
 
                 size_t numIntermediateSteps;
 

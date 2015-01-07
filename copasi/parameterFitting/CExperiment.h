@@ -267,9 +267,6 @@ public:
    */
   const CCopasiTask::Type & getExperimentType() const;
 
-  void setStartInSteadyState(bool flag);
-  bool getStartInSteadyState() const;
-
   void setNormalizeWeightsPerExperiment(bool flag);
   bool getNormalizeWeightsPerExperiment() const;
   /**
@@ -576,12 +573,6 @@ private:
    * This is realized as a CCopasiParameter type UINT
    */
   CCopasiTask::Type * mpTaskType;
-
-  /**
-   * Indicates whether a time course is supposed to start in a steady state
-   * realized as a CCopasiParameter
-   */
-  bool* mpStartInSteadyState;
 
   /**
    * Indicates whether the weights of this experiment should be normalized to 1
