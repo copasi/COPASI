@@ -26,10 +26,10 @@
   %{  $input = as.integer($input);     %}
 
 %{
-typedef unsigned int size_t;
+//typedef unsigned int size_t;
 %}
 
-%typedef unsigned int size_t;
+//%typedef unsigned int size_t;
 
 
 /**
