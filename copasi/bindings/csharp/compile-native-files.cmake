@@ -1,3 +1,8 @@
+# Copyright (C) 2012 - 2015 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., University of Heidelberg, and The University 
+# of Manchester. 
+# All rights reserved. 
+
 ###############################################################################
 #
 # Description       : CMake build script for native C# library
@@ -32,11 +37,23 @@ message("Creating: copasicsP.dll")
 file(GLOB_RECURSE SOURCE_FILES RELATIVE ${BIN_DIRECTORY} ${BIN_DIRECTORY}/csharp-files/*.cs)
 set(SOURCE_FILES ${SOURCE_FILES} ${SRC_DIRECTORY}/AssemblyInfo.cs)
 
+SET(PATCH_SWIG_FILES ON)
+
 # convert paths
 set(NATIVE_FILES)
 foreach(csFile ${SOURCE_FILES})
 	file(TO_NATIVE_PATH ${csFile} temp)
 	set(NATIVE_FILES ${NATIVE_FILES} ${temp})
+  
+  if (PATCH_SWIG_FILES)
+  
+    # read file, prepend using statement, write again ... 
+    file(READ ${csFile} content)
+    file(WRITE ${csFile} "using System;\nusing System.Runtime.InteropServices;\n\n${content}")
+
+  endif(PATCH_SWIG_FILES)
+
+  
 endforeach()
 
 # delete file if it exists
@@ -45,6 +62,7 @@ if (EXISTS ${BIN_DIRECTORY}/copasicsP.dll)
 endif()
 
 # the compile run disables the following warnings
+# -  105: duplicated using statement, due to the patch above 
 # -  108: 'method name' hides inherited member 'base member name'. Use the 
 #         new keyword if hiding was intended.
 # -  114: 'method name' hides inherited member 'base member name'. To make 
