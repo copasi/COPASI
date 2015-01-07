@@ -33,22 +33,28 @@
 #include "utilities/CVector.h"
 #include "report/CCopasiContainer.h"
 
-#ifndef HAVE_APPLE
-#include "lapack/blaswrap.h"
-#include "lapack/lapackwrap.h"
-#else
+#ifdef COPASI_OVERWRITE_LOGICAL_AS_INT
+typedef  C_INT logical;
+#elif COPASI_OVERWRITE_LOGICAL_AS_LONG
+typedef  long logical;
+#else 
+# ifndef HAVE_APPLE
+#   include "lapack/blaswrap.h"
+#   include "lapack/lapackwrap.h"
+# else
 // need to include definition directly, so that
 // MacTypes.h is not included which would break
 // the build
-# ifdef HAVE_F2C_H
-#  include <f2c.h>
-# else
-#  include "lapack/f2c.h"
-# endif
-# undef abs
-# undef max
-# undef min
-#endif
+#   ifdef HAVE_F2C_H
+#     include <f2c.h>
+#   else
+#     include "lapack/f2c.h"
+#   endif
+#   undef abs
+#   undef max
+#   undef min
+# endif // HAVE_APPLE
+#endif // COPASI_OVERWRITE_LOGICAL_AS_INT
 
 class CEigen: public CCopasiContainer
 {
