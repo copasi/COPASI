@@ -33,8 +33,22 @@
 #include "utilities/CVector.h"
 #include "report/CCopasiContainer.h"
 
+#ifndef HAVE_APPLE
 #include "lapack/blaswrap.h"
 #include "lapack/lapackwrap.h"
+#else
+// need to include definition directly, so that
+// MacTypes.h is not included which would break
+// the build
+# ifdef HAVE_F2C_H
+#  include <f2c.h>
+# else
+#  include "lapack/f2c.h"
+# endif
+# undef abs
+# undef max
+# undef min
+#endif
 
 class CEigen: public CCopasiContainer
 {
