@@ -395,7 +395,7 @@ void CQExperimentData::slotExperimentAdd()
   pExperiment->setHeaderRow((unsigned C_INT32) First);
   pExperiment->setFileName(mpFileInfo->getFileName());
 
-  pExperiment->setNormalizeWeightsPerExperiment(false);
+  pExperiment->setNormalizeWeightsPerExperiment(true);
 
   pExperiment->setNumColumns((unsigned C_INT32) pExperiment->guessColumnNumber());
   mpFileInfo->sync();
