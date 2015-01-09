@@ -1,0 +1,15 @@
+Package: COPASI
+Version: ${COPASI_VERSION_MAJOR}.${COPASI_VERSION_MINOR}.${COPASI_VERSION_BUILD}
+Date: ${CURRENT_DATE}
+Title: COPASI: biochemical network simulator
+Author: Frank Bergmann <fbergman@caltech.edu>
+Maintainer: Frank Bergmann <fbergman@caltech.edu>
+Depends: R (>= 1.8.0), methods
+Description: COPASI is a software application for simulation and analysis of 
+	biochemical networks and their dynamics. COPASI is a stand-alone program that 
+	supports models in the SBML standard and can simulate their behavior using 
+	ODEs or Gillespie's stochastic simulation algorithm; arbitrary discrete events 
+	can be included in such simulations.
+License: Artistic-2.0
+URL: http://copasi.org
+BugReports: http://copasi.org/tracker
