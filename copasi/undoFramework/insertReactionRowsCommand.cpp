@@ -1,4 +1,4 @@
-// Copyright (C) 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2014 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -23,7 +23,11 @@
 #include "UndoReactionData.h"
 #include "insertReactionRowsCommand.h"
 
-insertReactionRowsCommand::insertReactionRowsCommand(int position, int rows, CQReactionDM *pReactionDM, const QModelIndex&): CCopasiUndoCommand()
+insertReactionRowsCommand::insertReactionRowsCommand(int position, int rows, CQReactionDM *pReactionDM, const QModelIndex&)
+  : CCopasiUndoCommand()
+  , mpRi(NULL)
+  , mpReactionData(NULL)
+
 {
   mpReactionDM = pReactionDM;
   this->setText(insertRowsText());
@@ -48,13 +52,22 @@ void insertReactionRowsCommand::redo()
   assert(pModel != NULL);
   mpReaction = pModel->getReactions()[mPosition];
   std::string sName = mpReaction->getObjectName();
-  mpReactionData->setName(sName);
+
+  if (mpReactionData != NULL)
+    mpReactionData->setName(sName);
+
   CReactionInterface* ri = new CReactionInterface((*CCopasiRootContainer::getDatamodelList())[0]->getModel());
   ri->initFromReaction(mpReaction);
-  mpReactionData->setRi(ri);
+
+  if (mpReactionData != NULL)
+    mpReactionData->setRi(ri);
+
   setUndoState(true);
   setAction("Add to list");
-  setName(mpReactionData->getName());
+
+  if (mpReactionData != NULL)
+    setName(mpReactionData->getName());
+  else setName(sName);
 }
 
 void insertReactionRowsCommand::undo()
