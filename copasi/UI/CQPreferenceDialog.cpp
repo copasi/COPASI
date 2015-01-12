@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -127,6 +127,16 @@ void CQPreferenceDialog::init()
       new QTreeWidgetItem(mpTreeWidget, Values);
     }
 
+  pParameter = configFile->getParameter("Normalize Weights per Experiment");
+
+  if (pParameter != NULL)
+    {
+      QStringList Values;
+      Values.append("Normalize Weights per Experiment");
+      Values.append((*pParameter->getValue().pBOOL ? "YES" : "NO"));
+      new QTreeWidgetItem(mpTreeWidget, Values);
+    }
+
   pParameter = configFile->getParameter("Allow Simultaneous Event Assignments");
 
   if (pParameter != NULL)
@@ -228,6 +238,15 @@ void CQPreferenceDialog::slotBtnOk()
 
   Items = mpTreeWidget->findItems("Use Advanced Editing", 0, 0);
   pParameter = configFile->getParameter("Use Advanced Editing");
+
+  if (Items.size() > 0 &&
+      pParameter != NULL)
+    {
+      pParameter->setValue(Items[0]->text(COL_VALUE).toUpper() == "YES");
+    }
+
+  Items = mpTreeWidget->findItems("Normalize Weights per Experiment", 0, 0);
+  pParameter = configFile->getParameter("Normalize Weights per Experiment");
 
   if (Items.size() > 0 &&
       pParameter != NULL)

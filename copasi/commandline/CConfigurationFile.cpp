@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -111,6 +111,7 @@ CConfigurationFile::CConfigurationFile(const std::string & name,
   mpUseOpenGL(NULL),
   mpUseAdvancedSliders(NULL),
   mpUseAdvancedEditing(NULL),
+  mpNormalizePerExperiment(NULL),
   mpWorkingDirectory(NULL)
 {initializeParameter();}
 
@@ -126,6 +127,7 @@ CConfigurationFile::CConfigurationFile(const CConfigurationFile & src,
   mpUseOpenGL(NULL),
   mpUseAdvancedSliders(NULL),
   mpUseAdvancedEditing(NULL),
+  mpNormalizePerExperiment(NULL),
   mpWorkingDirectory(NULL)
 {initializeParameter();}
 
@@ -141,6 +143,7 @@ CConfigurationFile::CConfigurationFile(const CCopasiParameterGroup & group,
   mpUseOpenGL(NULL),
   mpUseAdvancedSliders(NULL),
   mpUseAdvancedEditing(NULL),
+  mpNormalizePerExperiment(NULL),
   mpWorkingDirectory(NULL)
 {initializeParameter();}
 
@@ -190,6 +193,7 @@ void CConfigurationFile::initializeParameter()
   mpUseOpenGL = assertParameter("Use OpenGL", CCopasiParameter::BOOL, false)->getValue().pBOOL;
   mpUseAdvancedSliders = assertParameter("Use Advanced Sliders", CCopasiParameter::BOOL, true)->getValue().pBOOL;
   mpUseAdvancedEditing = assertParameter("Use Advanced Editing", CCopasiParameter::BOOL, false)->getValue().pBOOL;
+  mpNormalizePerExperiment = assertParameter("Normalize Weights per Experiment", CCopasiParameter::BOOL, false)->getValue().pBOOL;
   mpWorkingDirectory = assertParameter("Working Directory", CCopasiParameter::STRING, std::string(""))->getValue().pSTRING;
 
   elevateChildren();
@@ -304,6 +308,16 @@ bool CConfigurationFile::useAdvancedEditing() const
 void CConfigurationFile::setUseAdvancedEditing(bool useAdvancedEditing)
 {
   *mpUseAdvancedEditing = useAdvancedEditing;
+}
+
+bool CConfigurationFile::normalizePerExperiment() const
+{
+  return *mpNormalizePerExperiment;
+}
+
+void CConfigurationFile::setNormalizePerExperiment(bool flag)
+{
+  *mpNormalizePerExperiment = flag;
 }
 
 bool CConfigurationFile::validateUnits() const

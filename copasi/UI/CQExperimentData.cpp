@@ -44,6 +44,7 @@
 #include "utilities/utility.h"
 #include "copasi/report/CCopasiRootContainer.h"
 #include "commandline/CLocaleString.h"
+#include "copasi/commandline/CConfigurationFile.h"
 
 #define COL_NAME 0
 #define COL_TYPE 1
@@ -395,7 +396,7 @@ void CQExperimentData::slotExperimentAdd()
   pExperiment->setHeaderRow((unsigned C_INT32) First);
   pExperiment->setFileName(mpFileInfo->getFileName());
 
-  pExperiment->setNormalizeWeightsPerExperiment(true);
+  pExperiment->setNormalizeWeightsPerExperiment(CCopasiRootContainer::getConfiguration()->normalizePerExperiment());
 
   pExperiment->setNumColumns((unsigned C_INT32) pExperiment->guessColumnNumber());
   mpFileInfo->sync();
