@@ -36,6 +36,9 @@
 
 
 
+
+
+
 %ignore CCopasiVector::remove(const size_t & index);
 
 %{
@@ -262,10 +265,14 @@
 %template(ParameterVector) std::vector<CCopasiParameter*>;
 
 %template(IntStdVector) std::vector<C_INT32>;
+
 #if !SWIGPYTHON && !SWIGR && !SWIGOCTAVE
 %template(UIntStdVector) std::vector<unsigned int>;
 #endif
+
+#if !SWIGR
 %template(SizeTStdVector) std::vector<size_t>;
+#endif
 
 %template(StringStdVector) std::vector<std::string>;
 %template(VectorOfStringVectors) std::vector<std::vector<std::string> >;
