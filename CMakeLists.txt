@@ -223,6 +223,15 @@ if ( NOT CLAPACK_FOUND )
   find_package(CLAPACK REQUIRED)
 endif ()
 
+
+IF(DEFINED F2C_INTEGER)
+  add_definitions(-DF2C_INTEGER=${F2C_INTEGER})
+ENDIF()
+
+IF(DEFINED F2C_LOGICAL)
+  add_definitions(-DF2C_LOGICAL=${F2C_LOGICAL})
+ENDIF()
+
 include_directories(BEFORE ${CLAPACK_INCLUDE_DIR})
 # set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${LAPACK_CFLAGS}")
 
