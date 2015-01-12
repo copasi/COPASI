@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -216,6 +216,16 @@ public:
   void setUseAdvancedEditing(bool useAdvancedEditing);
 
   /**
+   * @return a flag on whether weights in Parameter Estimation should be normalized per experiment
+   */
+  bool normalizePerExperiment() const;
+
+  /**
+   *  Set whether weights in Parameter Estimation should be normalized per experiment
+   */
+  void setNormalizePerExperiment(bool flag);
+
+  /**
    * Retrieve the web working directory
    * @return const std::string & workingDirectory
    */
@@ -335,9 +345,14 @@ private:
   bool *mpUseAdvancedSliders;
 
   /**
-  * A pointer indicating whether to use the advanced editing
+   * A pointer indicating whether to use the advanced editing
    */
   bool *mpUseAdvancedEditing;
+
+  /**
+   * A pointer indicating whether to experiments should be normalized by default
+   */
+  bool *mpNormalizePerExperiment;
 
   /**
    * A pointer to the last used working directory of the GUI.
