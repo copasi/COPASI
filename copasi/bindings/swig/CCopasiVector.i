@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., University of Heidelberg, and The University 
 // of Manchester. 
 // All rights reserved. 
@@ -25,6 +25,18 @@
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+%ignore CCopasiVector::remove(const size_t & index);
 
 %{
 
@@ -250,7 +262,7 @@
 %template(ParameterVector) std::vector<CCopasiParameter*>;
 
 %template(IntStdVector) std::vector<C_INT32>;
-#if !SWIGPYTHON && !SWIGR
+#if !SWIGPYTHON && !SWIGR && !SWIGOCTAVE
 %template(UIntStdVector) std::vector<unsigned int>;
 #endif
 %template(SizeTStdVector) std::vector<size_t>;
