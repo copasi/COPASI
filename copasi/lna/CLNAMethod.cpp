@@ -247,7 +247,7 @@ int CLNAMethod::calculateCovarianceMatrixReduced()
   vs_A.resize((size_t)ldvs_A, (size_t)ldvs_A);
   CVector< C_FLOAT64 > work = 1;
   C_INT lwork;
-  logical * pbwork = NULL;
+  C_LOGICAL * pbwork = NULL;
   C_INT info;
 
   // LWORK workspace query

@@ -33,14 +33,6 @@
 #include "utilities/CVector.h"
 #include "report/CCopasiContainer.h"
 
-#ifdef COPASI_OVERWRITE_LOGICAL_AS_INT
-typedef  C_INT logical;
-#elif COPASI_OVERWRITE_LOGICAL_AS_LONG
-typedef  long logical;
-#else
-typedef  C_INT logical;
-#endif // COPASI_OVERWRITE_LOGICAL_AS_INT
-
 class CEigen: public CCopasiContainer
 {
 private:
@@ -239,7 +231,7 @@ private:
    * #14: (workspace) Logical array, dimension (N)
    * Not referenced if mSort = 'N'
    */
-  logical * mpBWork;
+  C_LOGICAL * mpBWork;
 
   /**
    * #15: (output) an integer
