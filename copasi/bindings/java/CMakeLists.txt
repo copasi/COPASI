@@ -136,9 +136,12 @@ install(TARGETS binding_java_lib DESTINATION bindings/java )
 
 target_link_libraries(binding_java_lib ${SE_EXTERNAL_LIBS} ${SE_LIBS} )
 
+SET(COPASI_JAR ${CMAKE_CURRENT_BINARY_DIR}/copasi.jar)
+SET(COPASI_GUI_JAR ${CMAKE_CURRENT_BINARY_DIR}/copasi-gui.jar)
+
 add_custom_command(	
-	OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/copasi.jar
-	       ${CMAKE_CURRENT_BINARY_DIR}/copasi-gui.jar
+	OUTPUT ${COPASI_JAR}
+	       ${COPASI_GUI_JAR}
 	COMMAND "${CMAKE_COMMAND}"
 	ARGS -DJava_JAVAC_EXECUTABLE=\"${Java_JAVAC_EXECUTABLE}\"
 		 -DJava_JAR_EXECUTABLE=\"${Java_JAR_EXECUTABLE}\"
@@ -154,13 +157,13 @@ add_custom_command(
 	) 
 
 add_custom_target(binding_java_jar ALL DEPENDS 
-	${CMAKE_CURRENT_BINARY_DIR}/copasi.jar	
+	${COPASI_JAR}	
 	)
 	
 add_dependencies(binding_java_jar binding_java_swig)
 	
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/copasi.jar 
-	  ${CMAKE_CURRENT_BINARY_DIR}/copasi-gui.jar 
+install(FILES ${COPASI_JAR}
+	  ${COPASI_GUI_JAR}
         DESTINATION bindings/java) 
 file(GLOB examples ${CMAKE_CURRENT_SOURCE_DIR}/examples/*.java)
 install(FILES ${examples} DESTINATION bindings/java/examples) 
