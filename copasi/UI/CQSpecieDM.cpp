@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -1054,11 +1054,11 @@ bool CQSpecieDM::insertSpecieRows(QList <UndoSpecieData *> pData)
                       pEvent->setPriorityExpression(eData->getPriorityExpression());
 
                       QList <UndoEventAssignmentData *> *assignmentData = eData->getEventAssignmentData();
-                      QList <UndoEventAssignmentData *>::const_iterator i;
+                      QList <UndoEventAssignmentData *>::const_iterator evi;
 
-                      for (i = assignmentData->begin(); i != assignmentData->end(); ++i)
+                      for (evi = assignmentData->begin(); evi != assignmentData->end(); ++evi)
                         {
-                          UndoEventAssignmentData * assignData = *i;
+                          UndoEventAssignmentData * assignData = *evi;
 
                           if (pEvent->getAssignments().getIndex(assignData->getTargetKey()) == C_INVALID_INDEX)
                             {
@@ -1077,7 +1077,6 @@ bool CQSpecieDM::insertSpecieRows(QList <UndoSpecieData *> pData)
     }
 
   emit changeWidget(112);
-
   return true;
 }
 
@@ -1096,7 +1095,23 @@ void CQSpecieDM::deleteSpecieRows(QList <UndoSpecieData *> pData)
       UndoSpecieData * data = *j;
 
       size_t index = pModel->findMetabByName(data->getName());
-      removeRow((int) index);
+      const CMetab* pSpecies = pModel->getMetabolites()[index];
+      std::string key = pSpecies->getKey();
+      beginRemoveRows(QModelIndex(), 1, 1);
+      pModel->removeMetabolite(pSpecies->getKey());
+      emit notifyGUI(ListViews::METABOLITE, ListViews::DELETE, key);
+      emit notifyGUI(ListViews::METABOLITE, ListViews::DELETE, "");//Refresh all as there may be dependencies.
+      endRemoveRows();
+
+      //  CMetab * pSpecies = pModel->getMetabolites()[data->getName()];
+      // pModel->removeMetabolite(pSpecies, true);
+      /*    size_t index = pModel->findMetabByName(data->getName());
+          const CMetab* pSpecies = pModel->getMetabolites()[index];
+          std::string key = pSpecies->getKey();
+          pModel->removeMetabolite(index, true);
+          emit notifyGUI(ListViews::METABOLITE, ListViews::ADD, key);
+      */
+      //  removeRow((int) index);
     }
 
   emit changeWidget(112);

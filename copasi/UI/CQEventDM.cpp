@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -526,7 +526,6 @@ bool CQEventDM::insertEventRows(QList <UndoEventData *> pData)
       UndoEventData * data = *i;
       beginInsertRows(QModelIndex(), 1, 1);
       CEvent *pEvent =  pModel->createEvent(data->getName());
-      pEvent->setTriggerExpression(data->getTriggerExpression());
 
       //set the expressions
       pEvent->setTriggerExpression(data->getTriggerExpression());

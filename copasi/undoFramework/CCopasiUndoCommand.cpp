@@ -1,4 +1,4 @@
-// Copyright (C) 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2014 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -268,6 +268,7 @@ void CCopasiUndoCommand::setDependentObjects(const std::set< const CCopasiObject
           for (; it != end; ++it)
             {
               //store the Event data
+
               UndoEventData *data = new UndoEventData();
               data->setName((*it)->getObjectName());
               const CEvent * pEvent = dynamic_cast<const CEvent*>(*it);
