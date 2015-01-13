@@ -193,7 +193,7 @@ void CConfigurationFile::initializeParameter()
   mpUseOpenGL = assertParameter("Use OpenGL", CCopasiParameter::BOOL, false)->getValue().pBOOL;
   mpUseAdvancedSliders = assertParameter("Use Advanced Sliders", CCopasiParameter::BOOL, true)->getValue().pBOOL;
   mpUseAdvancedEditing = assertParameter("Use Advanced Editing", CCopasiParameter::BOOL, false)->getValue().pBOOL;
-  mpNormalizePerExperiment = assertParameter("Normalize Weights per Experiment", CCopasiParameter::BOOL, false)->getValue().pBOOL;
+  mpNormalizePerExperiment = assertParameter("Normalize Weights per Experiment", CCopasiParameter::BOOL, true)->getValue().pBOOL;
   mpWorkingDirectory = assertParameter("Working Directory", CCopasiParameter::STRING, std::string(""))->getValue().pSTRING;
 
   elevateChildren();
