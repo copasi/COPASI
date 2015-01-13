@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -485,7 +485,8 @@ void CQSpeciesDetail::loadReactionTable()
   if (i == 0)
     mpReactionTable->setItem(i, 0, new QTableWidgetItem("none"));
 
-  // Resize columns to content.
+  // Provide count of reactions, in label.
+  mpLblReactions->setText("Involved in \n" + QString::number(mpReactionTable->rowCount()) + " Reactions");
 
   return;
 }
