@@ -1,12 +1,12 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2009 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-// and The University of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
 
 #include "CQSpeciesDetail.h"
 #include "CQMessageBox.h"
@@ -382,6 +382,7 @@ void CQSpeciesDetail::save()
   switch (mFramework)
     {
       case 0:
+
         if (mpMetab->getInitialConcentration() != mInitialConcentration)
           {
             mpMetab->setInitialConcentration(mInitialConcentration);
@@ -391,6 +392,7 @@ void CQSpeciesDetail::save()
         break;
 
       case 1:
+
         if (mpMetab->getInitialValue() != mInitialNumber)
           {
             mpMetab->setInitialValue(mInitialNumber);
@@ -423,6 +425,7 @@ void CQSpeciesDetail::save()
           mChanged = true;
         }
     }
+
   if (mChanged)
     {
       if (mpDataModel)
@@ -462,7 +465,8 @@ void CQSpeciesDetail::loadReactionTable()
   if (i == 0)
     mpReactionTable->setItem(i, 0, new QTableWidgetItem("none"));
 
-  // Resize columns to content.
+  // Provide count of reactions, in label.
+  mpLblReactions->setText("Involved in \n" + QString::number(mpReactionTable->rowCount()) + " Reactions");
 
   return;
 }
@@ -503,6 +507,7 @@ void CQSpeciesDetail::copy()
   if (mpMetab == NULL) return;
 
   CModel * pModel = NULL;
+
   if (mpMetab) pModel = mpDataModel->getModel();
 
   if (pModel == NULL) return; // for getting compartments and initializing cModelExpObj
@@ -547,10 +552,10 @@ void CQSpeciesDetail::copy()
     {
       // Put species in different compartment (without name modification) by making
       // duplicateMetab think the other compartment was duplicated from the original
-      if(origCompartmentIndex != pDialog->mpSelectionBox->currentIndex())
+      if (origCompartmentIndex != pDialog->mpSelectionBox->currentIndex())
         {
           sourceObjects.addCompartment(mpMetab->getCompartment());
-          origToCopyMapping.add(mpMetab->getCompartment(),*(it + pDialog->mpSelectionBox->currentIndex()));
+          origToCopyMapping.add(mpMetab->getCompartment(), *(it + pDialog->mpSelectionBox->currentIndex()));
         }
 
       sourceObjects.addMetab(mpMetab);
@@ -615,6 +620,7 @@ void CQSpeciesDetail::slotCompartmentChanged(int compartment)
 
   if (pModel == NULL)
     return;
+
   QString Compartment = mpComboBoxCompartment->itemText(compartment);
   const CCompartment * pNewCompartment =
     pModel->getCompartments()[TO_UTF8(Compartment)];
