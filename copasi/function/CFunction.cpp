@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -105,6 +105,8 @@ bool CFunction::setInfix(const std::string & infix)
     }
 
   if (!initVariables()) return false;
+
+  compileNodes();
 
   return true;
 }
