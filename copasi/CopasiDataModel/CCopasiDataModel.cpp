@@ -165,13 +165,21 @@ bool CCopasiDataModel::loadModel(std::istream & in,
 
   CCopasiMessage::clearDeque();
 
-  std::string Line;
-  in >> Line;
+  // Read enough characters of the file, into a char array, to determine the format
+  char buffer[1024];
+  in.read(buffer, 1023);
+
+  // Make sure the stream pointer is at the beginning, for the subsequent true conditional
+  in.seekg(0, std::ios_base::beg);
+
+  // Properly NULL terminate the C-type "string" (so the string class constructor knows where it ends)
+  buffer[1023] = 0x0;
+
+  // create string (class), to have useful member functions
+  std::string Line = buffer;
 
   if (!Line.compare(0, 8, "Version="))
     {
-      in.seekg(0, std::ios_base::beg);
-
       CReadConfig inbuf(in);
 
       if (inbuf.getVersion() >= "4")
@@ -197,9 +205,8 @@ bool CCopasiDataModel::loadModel(std::istream & in,
 
       static_cast<CSteadyStateTask *>((*mData.pTaskList)["Steady-State"])->load(inbuf);
     }
-  else if (!Line.find("<?xml") != std::string::npos)
+  else if (Line.find("<COPASI") != std::string::npos)
     {
-      in.seekg(0, std::ios_base::beg);
       pushData();
       mData.mFileType = CopasiML;
 
@@ -1601,7 +1608,7 @@ CReportDefinition * CCopasiDataModel::addReport(const CCopasiTask::Type & taskTy
         pReport->getFooterAddr()->push_back(CCopasiObjectName("CN=Root,Vector=TaskList[Optimization],Object=Result"));
         break;
 
-        //**************************************************************************
+      //**************************************************************************
       case CCopasiTask::parameterFitting:
         pReport = new CReportDefinition(CCopasiTask::TypeName[taskType]);
         pReport->setTaskType(taskType);
@@ -1630,7 +1637,7 @@ CReportDefinition * CCopasiDataModel::addReport(const CCopasiTask::Type & taskTy
         pReport->getFooterAddr()->push_back(CCopasiObjectName("CN=Root,Vector=TaskList[Parameter Estimation],Object=Result"));
         break;
 
-        //**************************************************************************
+      //**************************************************************************
       case CCopasiTask::lyap:
         pReport = new CReportDefinition(CCopasiTask::TypeName[taskType]);
         pReport->setTaskType(taskType);
@@ -1647,7 +1654,7 @@ CReportDefinition * CCopasiDataModel::addReport(const CCopasiTask::Type & taskTy
         pReport->getFooterAddr()->push_back(CCopasiObjectName("CN=Root,Vector=TaskList[Lyapunov Exponents],Object=Result"));
         break;
 
-        //**************************************************************************
+      //**************************************************************************
       case CCopasiTask::mca:
         pReport = new CReportDefinition(CCopasiTask::TypeName[taskType]);
         pReport->setTaskType(taskType);
@@ -1664,7 +1671,7 @@ CReportDefinition * CCopasiDataModel::addReport(const CCopasiTask::Type & taskTy
         pReport->getFooterAddr()->push_back(CCopasiObjectName("CN=Root,Vector=TaskList[Metabolic Control Analysis],Object=Result"));
         break;
 
-        //**************************************************************************
+      //**************************************************************************
       case CCopasiTask::lna:
         pReport = new CReportDefinition(CCopasiTask::TypeName[taskType]);
         pReport->setTaskType(taskType);
@@ -1681,7 +1688,7 @@ CReportDefinition * CCopasiDataModel::addReport(const CCopasiTask::Type & taskTy
         pReport->getFooterAddr()->push_back(CCopasiObjectName("CN=Root,Vector=TaskList[Linear Noise Approximation],Object=Result"));
         break;
 
-        //**************************************************************************
+      //**************************************************************************
       case CCopasiTask::sens:
         pReport = new CReportDefinition(CCopasiTask::TypeName[taskType]);
         pReport->setTaskType(taskType);
@@ -1698,7 +1705,7 @@ CReportDefinition * CCopasiDataModel::addReport(const CCopasiTask::Type & taskTy
         pReport->getFooterAddr()->push_back(CCopasiObjectName("CN=Root,Vector=TaskList[Sensitivities],Object=Result"));
         break;
 
-        //**************************************************************************
+      //**************************************************************************
       case CCopasiTask::tssAnalysis:
         pReport = new CReportDefinition(CCopasiTask::TypeName[taskType]);
         pReport->setTaskType(taskType);
