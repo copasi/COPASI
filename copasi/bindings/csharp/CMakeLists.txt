@@ -28,6 +28,12 @@ find_package(SWIG REQUIRED)
 include(${SWIG_USE_FILE})
 include (CheckTypeSize)
 
+configure_file (
+  "${CMAKE_CURRENT_SOURCE_DIR}/AssemblyInfo.cs"
+  "${CMAKE_CURRENT_BINARY_DIR}/AssemblyInfo.cs"
+  )
+
+
 find_program(CSHARP_COMPILER
         NAMES gmcs csc
         PATHS C:/Windows/Microsoft.NET/Framework/v2.0.50727/ /usr/bin /usr/local/bin

@@ -4,6 +4,7 @@
 # All rights reserved. 
 
 
+
 ###############################################################################
 #
 # Description       : CMake build script for native C# library
@@ -36,7 +37,7 @@ message("Creating: copasicsP.dll")
 
 # find all sources
 file(GLOB_RECURSE SOURCE_FILES RELATIVE ${BIN_DIRECTORY} ${BIN_DIRECTORY}/csharp-files/*.cs)
-set(SOURCE_FILES ${SOURCE_FILES} ${SRC_DIRECTORY}/AssemblyInfo.cs)
+set(SOURCE_FILES ${SOURCE_FILES} ${BIN_DIRECTORY}/AssemblyInfo.cs)
 
 SET(PATCH_SWIG_FILES ON)
 
