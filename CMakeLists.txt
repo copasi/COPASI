@@ -29,7 +29,10 @@ project (COPASI)
 
 # preferably link against the static versions 
 # as compared to the dynamic ones
-if (NOT WIN32)
+
+option(PREFER_STATIC "Preferably link against the static library versions" ON)
+
+if (NOT WIN32 AND PREFER_STATIC)
  SET(CMAKE_FIND_LIBRARY_SUFFIXES .a ${CMAKE_FIND_LIBRARY_SUFFIXES})
 endif()
 
