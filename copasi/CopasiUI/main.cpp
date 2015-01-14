@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -52,14 +52,15 @@ int main(int argc, char *argv[])
 
   // Fix of Issue with Text centering on OSX Mavericks
 #ifdef Q_OS_MACX
-  if ( QSysInfo::MacintoshVersion > QSysInfo::MV_10_8 )
-  {
-    // fix Mac OS X 10.9 (mavericks) font issue
-    // https://bugreports.qt-project.org/browse/QTBUG-32789
-    QFont::insertSubstitution(".Lucida Grande UI", "Lucida Grande");
-  }
-#endif
 
+  if (QSysInfo::MacintoshVersion > QSysInfo::MV_10_8)
+    {
+      // fix Mac OS X 10.9 (mavericks) font issue
+      // https://bugreports.qt-project.org/browse/QTBUG-32789
+      QFont::insertSubstitution(".Lucida Grande UI", "Lucida Grande");
+    }
+
+#endif
 
   CQCopasiApplication a(argc, argv);
 
@@ -108,6 +109,7 @@ int main(int argc, char *argv[])
     {
       a.setMainWindow(pWindow);
       a.exec();
+      delete pWindow;
     }
 
 finish:

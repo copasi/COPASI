@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -46,6 +46,7 @@ CQEFMListWidget::CQEFMListWidget(QWidget* parent, const char* name) :
 CQEFMListWidget::~CQEFMListWidget()
 {
   // TODO Auto-generated destructor stub
+  pdelete(mpProxyModel);
 }
 
 bool CQEFMListWidget::loadResult(const CEFMTask * pTask)
