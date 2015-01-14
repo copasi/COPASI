@@ -10,6 +10,7 @@
 
 #include <raptor.h>
 #include <string.h>
+#include <stdlib.h>
 
 #include "copasi.h"
 
@@ -24,7 +25,7 @@ CRaptorInit::CRaptorInit()
     {
       raptor_init();
       Initialized = true;
-      std::atexit(&raptor_finish);
+      atexit(&raptor_finish);
     }
 }
 

@@ -109,13 +109,13 @@ int main(int argc, char *argv[])
     {
       a.setMainWindow(pWindow);
       a.exec();
-      delete pWindow;
     }
 
 finish:
 
   try // To suppress any access violations during destruction works only under Windows
     {
+      pdelete(pWindow);
       CCopasiRootContainer::destroy();
     }
   catch (...)
