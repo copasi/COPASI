@@ -1,4 +1,4 @@
-// Copyright (C) 2011 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -37,6 +37,7 @@ CQTaskMethodWidget::CQTaskMethodWidget(QWidget* parent, Qt::WindowFlags f):
 CQTaskMethodWidget::~CQTaskMethodWidget()
 {
   clearHistory();
+  pdelete(mpActiveMethod);
 }
 
 void CQTaskMethodWidget::changeMethod(int /* index */)

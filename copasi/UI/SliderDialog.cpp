@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -370,29 +370,33 @@ void SliderDialog::editSlider()
 
 SliderDialog::~SliderDialog()
 {
+  this->clear();
+  removeFromMainWindow(mpParentWindow);
   delete mpRunTaskButton;
   delete mpAutoRunCheckBox;
   delete mpAutoModifyRangesCheckBox;
   delete mpSliderBox;
   delete mpScrollView;
-  this->clear();
-  removeFromMainWindow(mpParentWindow);
 }
 
 void SliderDialog::clear()
 {
   this->clearSliderBox();
-  size_t i, j, maxWidgets, maxVectors = this->mSliderMap.size();
+  size_t j, maxWidgets;
 
-  for (i = 0; i < maxVectors; ++i)
+  std::map< size_t, std::vector< QWidget* > >::iterator it = mSliderMap.begin();
+
+  while (it != mSliderMap.end())
     {
-      std::vector<QWidget*> v = mSliderMap[i];
+      std::vector<QWidget*> v = it->second;
       maxWidgets = v.size();
 
       for (j = 0; j < maxWidgets; ++j)
         {
           pdelete(v[j]);
         }
+
+      ++it;
     }
 
   this->mSliderMap.clear();
@@ -1263,7 +1267,7 @@ void SliderDialog::showEvent(QShowEvent* pEvent)
 
 void SliderDialog::deleteInvalidSliders()
 {
-  std::vector<QWidget*> v = mSliderMap[mCurrentFolderId];
+  std::vector<QWidget*> &v = mSliderMap[mCurrentFolderId];
   std::vector<QWidget*>::iterator wit = v.begin(), wendit = v.end();
   bool sliderDeleted = false;
   CopasiSlider* pCopasiSlider = NULL;

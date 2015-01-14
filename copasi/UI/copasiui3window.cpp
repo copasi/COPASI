@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -275,9 +275,6 @@ CopasiUI3Window::~CopasiUI3Window()
   sbwDisconnect();
 #endif // COPASI_SBW_INTEGRATION
 
-  pdelete(mpListView);
-  pdelete(mpDataModelGUI);
-
   QList< QPointer<QMainWindow> >::iterator it = mWindows.begin();
   QList< QPointer<QMainWindow> >::iterator end = mWindows.end();
 
@@ -287,6 +284,11 @@ CopasiUI3Window::~CopasiUI3Window()
 
       (*it)->close();
     }
+
+  pdelete(mpSliders);
+  mpDataModelGUI->deregisterListView(mpListView);
+  pdelete(mpDataModelGUI);
+  pdelete(mpListView);
 }
 
 void CopasiUI3Window::createActions()
@@ -2424,8 +2426,6 @@ void CopasiUI3Window::sbwRefreshMenu()
   mpSBWActionGroup = new QActionGroup(this);
   connect(mpSBWActionGroup, SIGNAL(triggered(QAction *)), this, SLOT(sbwSlotMenuTriggered(QAction *)));
 
-  QAction * pAction;
-
   try
     {
       std::vector<DataBlockReader> Services = sbwFindServices("Analysis", true);
@@ -2495,7 +2495,7 @@ void CopasiUI3Window::sbwRefreshMenu()
       // Add the option to register in SBW
       if (!IsSBWRegistered)
         {
-          pAction = new QAction("Register", mpSBWActionGroup);
+          QAction* pAction = new QAction("Register", mpSBWActionGroup);
           mpSBWMenu->addAction(pAction);
           mSBWActionMap[pAction] = SortedNames.size();
 
@@ -2510,7 +2510,7 @@ void CopasiUI3Window::sbwRefreshMenu()
           mSBWAnalyzerModules.append(ModuleList[itMap.value()]);
           mSBWAnalyzerServices.append(ServiceList[itMap.value()]);
 
-          pAction = new QAction(itMap.key(), mpSBWActionGroup);
+          QAction* pAction = new QAction(itMap.key(), mpSBWActionGroup);
           mpSBWMenu->addAction(pAction);
           mSBWActionMap[pAction] = i;
         }

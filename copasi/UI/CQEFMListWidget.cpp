@@ -1,17 +1,9 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQEFMListWidget.cpp,v $
-//   $Revision: 1.8 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/11/09 18:00:30 $
-// End CVS Header
-
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
@@ -21,10 +13,10 @@
 #include "elementaryFluxModes/CEFMTask.h"
 
 CQEFMListWidget::CQEFMListWidget(QWidget* parent, const char* name) :
-    QWidget(parent),
-    mpTask(NULL),
-    mpProxyModel(NULL),
-    mpFluxModeDM(NULL)
+  QWidget(parent),
+  mpTask(NULL),
+  mpProxyModel(NULL),
+  mpFluxModeDM(NULL)
 {
   setObjectName(QString::fromUtf8(name));
   setupUi(this);
@@ -54,6 +46,7 @@ CQEFMListWidget::CQEFMListWidget(QWidget* parent, const char* name) :
 CQEFMListWidget::~CQEFMListWidget()
 {
   // TODO Auto-generated destructor stub
+  pdelete(mpProxyModel);
 }
 
 bool CQEFMListWidget::loadResult(const CEFMTask * pTask)
