@@ -1,4 +1,4 @@
-// Copyright (C) 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2014 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -55,10 +55,10 @@ void InsertEventRowsCommand::redo()
 
       for (; it != end; ++it)
         {
+          const CModelEntity * pEntity = dynamic_cast< CModelEntity * >(CCopasiRootContainer::getKeyFactory()->get((*it)->getTargetKey()));
           UndoEventAssignmentData *eventAssignData = new UndoEventAssignmentData();
-          eventAssignData->setName((*it)->getObjectName());
+          eventAssignData->setName(pEntity->getObjectName());
           eventAssignData->setExpression((*it)->getExpression());
-          eventAssignData->setTargetKey((*it)->getTargetKey());
           mpEventData->getEventAssignmentData()->append(eventAssignData);
         }
 

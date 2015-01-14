@@ -1,4 +1,4 @@
-// Copyright (C) 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2014 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -21,6 +21,9 @@
 UndoSpecieData::UndoSpecieData()
 {
   // TODO Auto-generated constructor stub
+  mEventDependencyObjects = new QList <UndoEventData*>();
+  mReactionDependencyObjects = new QList <UndoReactionData*>();
+  mGlobalQuantityDependencyObjects = new QList <UndoGlobalQuantityData*>();
 }
 
 UndoSpecieData::~UndoSpecieData()

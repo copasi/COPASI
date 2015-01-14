@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -709,8 +709,6 @@ bool CQCompartmentDM::insertCompartmentRows(QList <UndoCompartmentData *> pData)
 
               UndoEventData * eData = *ev;
 
-              //  pModel->getEvents().getIndex(eData-getName())
-
               CEvent *pEvent =  pModel->createEvent(eData->getName());
               std::string key = pEvent->getKey();
 
@@ -726,39 +724,29 @@ bool CQCompartmentDM::insertCompartmentRows(QList <UndoCompartmentData *> pData)
                 {
                   UndoEventAssignmentData * assignData = *i;
 
-                  if (pEvent->getAssignments().getIndex(assignData->getTargetKey()) == C_INVALID_INDEX)
+                  CCopasiObject * pObject = NULL;
+                  CCompartment * pCompartment = pModel->getCompartments()[data->getName()];
+
+                  if (pCompartment->getMetabolites().getIndex(assignData->getName()) != C_INVALID_INDEX)
                     {
-                      CEventAssignment *eventAssign = new CEventAssignment(assignData->getTargetKey(), pEvent->getObjectParent());
-                      eventAssign->setExpression(assignData->getExpression());
-                      eventAssign->getExpressionPtr()->compile();
-                      pEvent->getAssignments().add(eventAssign);
+                      size_t index = pModel->findMetabByName(assignData->getName());
+                      pObject =  pModel->getMetabolites()[index];
                     }
+                  else if (pModel->getModelValues().getIndex(assignData->getName()) != C_INVALID_INDEX)
+                    {
+                      pObject = pModel->getModelValues()[assignData->getName()];
+                    }
+                  else if (pModel->getReactions().getIndex(assignData->getName()) != C_INVALID_INDEX)
+                    {
+                      pObject = pModel->getReactions()[assignData->getName()];
+                    }
+
+                  const CModelEntity * pEntity = dynamic_cast< const CModelEntity * >(pObject);
+                  CEventAssignment *eventAssign = new CEventAssignment(pObject->getKey(), pEvent->getObjectParent());
+                  eventAssign->setExpression(assignData->getExpression());
+                  eventAssign->getExpressionPtr()->compile();
+                  pEvent->getAssignments().add(eventAssign);
                 }
-
-              /*        QList <CEventAssignment *> *assignments = eData->getAssignments();
-                      QList <CEventAssignment *>::const_iterator i;
-
-                      for (i = assignments->begin(); i != assignments->end(); ++i)
-                        {
-                          CEventAssignment * assign = *i;
-
-                          if (pEvent->getAssignments().getIndex(assign->getObjectName()) == C_INVALID_INDEX)
-                            {
-                              CEventAssignment *eventAssign = new CEventAssignment(assign->getTargetKey(), pEvent->getObjectParent());
-                              eventAssign->setExpression(assign->getExpression());
-                              //  eventAssign->getExpressionPtr()->compile();
-                              pEvent->getAssignments().add(eventAssign);
-                            }*/
-
-              /*    if (pEvent->getAssignments().getIndex(assign->getObjectName()) == C_INVALID_INDEX)
-              {
-                CEventAssignment *eventAssign = assign; // new CEventAssignment(assign->getTargetKey(), pEvent->getObjectParent());
-              //  CEventAssignment *eventAssign = new CEventAssignment(pEvent->getObjectParent()->getKey());
-              //    eventAssign->setExpression(assign->getExpression());
-              //    eventAssign->getExpressionPtr()->compile();
-                pEvent->getAssignments().add(eventAssign);
-              }*/
-              //}
 
               emit notifyGUI(ListViews::EVENT, ListViews::ADD, key);
             }

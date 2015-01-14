@@ -268,11 +268,9 @@ void CCopasiUndoCommand::setDependentObjects(const std::set< const CCopasiObject
           for (; it != end; ++it)
             {
               //store the Event data
-
               UndoEventData *data = new UndoEventData();
               data->setName((*it)->getObjectName());
               const CEvent * pEvent = dynamic_cast<const CEvent*>(*it);
-
               data->setPriorityExpression(pEvent->getPriorityExpression());
               data->setDelayExpression(pEvent->getDelayExpression());
               data->setTriggerExpression(pEvent->getTriggerExpression());
@@ -282,10 +280,10 @@ void CCopasiUndoCommand::setDependentObjects(const std::set< const CCopasiObject
 
               for (; iit != end; ++iit)
                 {
+                  const CModelEntity * pEntity = dynamic_cast< CModelEntity * >(CCopasiRootContainer::getKeyFactory()->get((*iit)->getTargetKey()));
                   UndoEventAssignmentData *eventAssignData = new UndoEventAssignmentData();
-                  eventAssignData->setName((*iit)->getObjectName());
+                  eventAssignData->setName(pEntity->getObjectName());
                   eventAssignData->setExpression((*iit)->getExpression());
-                  eventAssignData->setTargetKey((*iit)->getTargetKey());
                   data->getEventAssignmentData()->append(eventAssignData);
                 }
 

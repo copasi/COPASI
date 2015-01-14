@@ -1,4 +1,4 @@
-// Copyright (C) 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2014 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -36,19 +36,12 @@ DeleteEventCommand::DeleteEventCommand(CQEventWidget1 *pEVentWidget1)
 
   for (; it != end; ++it)
     {
+      const CModelEntity * pEntity = dynamic_cast< CModelEntity * >(CCopasiRootContainer::getKeyFactory()->get((*it)->getTargetKey()));
       UndoEventAssignmentData *eventAssignData = new UndoEventAssignmentData();
-      eventAssignData->setName((*it)->getObjectName());
+      eventAssignData->setName(pEntity->getObjectName());
       eventAssignData->setExpression((*it)->getExpression());
-      eventAssignData->setTargetKey((*it)->getTargetKey());
       mpEventData->getEventAssignmentData()->append(eventAssignData);
     }
-
-  /* for (; it != end; ++it)
-     {
-       CEventAssignment *eventAssign = new CEventAssignment((*it)->getTargetKey(), mpEVentWidget1->mpEvent->getObjectParent());
-       eventAssign->setExpression((*it)->getExpression());
-       mpEventData->getAssignments()->append(eventAssign);
-     }*/
 
   mpEventData->setTriggerExpression(mpEVentWidget1->mpEvent->getTriggerExpression());
   mpEventData->setDelayExpression(mpEVentWidget1->mpEvent->getDelayExpression());

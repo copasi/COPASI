@@ -417,6 +417,7 @@ void CQEventDM::addEventRow(UndoEventData *pEventData)
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
   assert(pDataModel != NULL);
+  CModel * pModel = pDataModel->getModel();
 
   beginInsertRows(QModelIndex(), 1, 1);
   CEvent *pEvent = pDataModel->getModel()->createEvent(pEventData->getName());
@@ -433,23 +434,38 @@ void CQEventDM::addEventRow(UndoEventData *pEventData)
     {
       UndoEventAssignmentData * assignData = *i;
 
-      if (pEvent->getAssignments().getIndex(assignData->getName()) == C_INVALID_INDEX)
+      CCopasiObject * pObject = NULL;
+      bool speciesExist = false;
+      size_t ci;
+
+      for (ci = 0; ci < pModel->getCompartments().size(); ci++)
         {
-          CEventAssignment *eventAssign = new CEventAssignment(assignData->getTargetKey(), pEvent->getObjectParent());
-          eventAssign->setExpression(assignData->getExpression());
-          eventAssign->getExpressionPtr()->compile();
-          pEvent->getAssignments().add(eventAssign);
+          CCompartment * pCompartment = pModel->getCompartments()[ci];
+
+          if (pCompartment->getMetabolites().getIndex(assignData->getName()) != C_INVALID_INDEX)
+            speciesExist = true;
         }
+
+      if (speciesExist)
+        {
+          size_t index = pModel->findMetabByName(assignData->getName());
+          pObject =  pModel->getMetabolites()[index];
+        }
+      else if (pModel->getModelValues().getIndex(assignData->getName()) != C_INVALID_INDEX)
+        {
+          pObject = pModel->getModelValues()[assignData->getName()];
+        }
+      else if (pModel->getReactions().getIndex(assignData->getName()) != C_INVALID_INDEX)
+        {
+          pObject = pModel->getReactions()[assignData->getName()];
+        }
+
+      const CModelEntity * pEntity = dynamic_cast< const CModelEntity * >(pObject);
+      CEventAssignment *eventAssign = new CEventAssignment(pObject->getKey(), pEvent->getObjectParent());
+      eventAssign->setExpression(assignData->getExpression());
+      eventAssign->getExpressionPtr()->compile();
+      pEvent->getAssignments().add(eventAssign);
     }
-
-  /*QList <CEventAssignment *> *assignments = pEventData->getAssignments();
-   QList <CEventAssignment *>::const_iterator i;
-
-   for (i = assignments->begin(); i != assignments->end(); ++i)
-     {
-       CEventAssignment * assign = *i;
-       pEvent->getAssignments().add(assign);
-     }*/
 
   std::string key = pEvent->getKey();
   emit notifyGUI(ListViews::EVENT, ListViews::ADD, key);
@@ -539,23 +555,38 @@ bool CQEventDM::insertEventRows(QList <UndoEventData *> pData)
         {
           UndoEventAssignmentData * assignData = *i;
 
-          if (pEvent->getAssignments().getIndex(assignData->getTargetKey()) == C_INVALID_INDEX)
+          CCopasiObject * pObject = NULL;
+          bool speciesExist = false;
+          size_t ci;
+
+          for (ci = 0; ci < pModel->getCompartments().size(); ci++)
             {
-              CEventAssignment *eventAssign = new CEventAssignment(assignData->getTargetKey(), pEvent->getObjectParent());
-              eventAssign->setExpression(assignData->getExpression());
-              eventAssign->getExpressionPtr()->compile();
-              pEvent->getAssignments().add(eventAssign);
+              CCompartment * pCompartment = pModel->getCompartments()[ci];
+
+              if (pCompartment->getMetabolites().getIndex(assignData->getName()) != C_INVALID_INDEX)
+                speciesExist = true;
             }
+
+          if (speciesExist)
+            {
+              size_t index = pModel->findMetabByName(assignData->getName());
+              pObject =  pModel->getMetabolites()[index];
+            }
+          else if (pModel->getModelValues().getIndex(assignData->getName()) != C_INVALID_INDEX)
+            {
+              pObject = pModel->getModelValues()[assignData->getName()];
+            }
+          else if (pModel->getReactions().getIndex(assignData->getName()) != C_INVALID_INDEX)
+            {
+              pObject = pModel->getReactions()[assignData->getName()];
+            }
+
+          const CModelEntity * pEntity = dynamic_cast< const CModelEntity * >(pObject);
+          CEventAssignment *eventAssign = new CEventAssignment(pObject->getKey(), pEvent->getObjectParent());
+          eventAssign->setExpression(assignData->getExpression());
+          eventAssign->getExpressionPtr()->compile();
+          pEvent->getAssignments().add(eventAssign);
         }
-
-      /*      QList <CEventAssignment *> *assignments = data->getAssignments();
-            QList <CEventAssignment *>::const_iterator i;
-
-            for (i = assignments->begin(); i != assignments->end(); ++i)
-              {
-                CEventAssignment * assign = *i;
-                pEvent->getAssignments().add(assign);
-              }*/
 
       emit notifyGUI(ListViews::EVENT, ListViews::ADD, pEvent->getKey());
       endInsertRows();

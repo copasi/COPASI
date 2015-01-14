@@ -1059,14 +1059,28 @@ bool CQSpecieDM::insertSpecieRows(QList <UndoSpecieData *> pData)
                       for (evi = assignmentData->begin(); evi != assignmentData->end(); ++evi)
                         {
                           UndoEventAssignmentData * assignData = *evi;
+                          CCopasiObject * pObject = NULL;
+                          CCompartment * pCompartment = pModel->getCompartments()[data->getCompartment()];
 
-                          if (pEvent->getAssignments().getIndex(assignData->getTargetKey()) == C_INVALID_INDEX)
+                          if (pCompartment->getMetabolites().getIndex(assignData->getName()) != C_INVALID_INDEX)
                             {
-                              CEventAssignment *eventAssign = new CEventAssignment(assignData->getTargetKey(), pEvent->getObjectParent());
-                              eventAssign->setExpression(assignData->getExpression());
-                              eventAssign->getExpressionPtr()->compile();
-                              pEvent->getAssignments().add(eventAssign);
+                              size_t index = pModel->findMetabByName(assignData->getName());
+                              pObject =  pModel->getMetabolites()[index];
                             }
+                          else if (pModel->getModelValues().getIndex(assignData->getName()) != C_INVALID_INDEX)
+                            {
+                              pObject = pModel->getModelValues()[assignData->getName()];
+                            }
+                          else if (pModel->getReactions().getIndex(assignData->getName()) != C_INVALID_INDEX)
+                            {
+                              pObject = pModel->getReactions()[assignData->getName()];
+                            }
+
+                          const CModelEntity * pEntity = dynamic_cast< const CModelEntity * >(pObject);
+                          CEventAssignment *eventAssign = new CEventAssignment(pObject->getKey(), pEvent->getObjectParent());
+                          eventAssign->setExpression(assignData->getExpression());
+                          eventAssign->getExpressionPtr()->compile();
+                          pEvent->getAssignments().add(eventAssign);
                         }
 
                       emit notifyGUI(ListViews::EVENT, ListViews::ADD, key);
@@ -1093,25 +1107,10 @@ void CQSpecieDM::deleteSpecieRows(QList <UndoSpecieData *> pData)
   for (j = pData.begin(); j != pData.end(); ++j)
     {
       UndoSpecieData * data = *j;
-
       size_t index = pModel->findMetabByName(data->getName());
-      const CMetab* pSpecies = pModel->getMetabolites()[index];
-      std::string key = pSpecies->getKey();
       beginRemoveRows(QModelIndex(), 1, 1);
-      pModel->removeMetabolite(pSpecies->getKey());
-      emit notifyGUI(ListViews::METABOLITE, ListViews::DELETE, key);
-      emit notifyGUI(ListViews::METABOLITE, ListViews::DELETE, "");//Refresh all as there may be dependencies.
+      removeRow((int) index);
       endRemoveRows();
-
-      //  CMetab * pSpecies = pModel->getMetabolites()[data->getName()];
-      // pModel->removeMetabolite(pSpecies, true);
-      /*    size_t index = pModel->findMetabByName(data->getName());
-          const CMetab* pSpecies = pModel->getMetabolites()[index];
-          std::string key = pSpecies->getKey();
-          pModel->removeMetabolite(index, true);
-          emit notifyGUI(ListViews::METABOLITE, ListViews::ADD, key);
-      */
-      //  removeRow((int) index);
     }
 
   emit changeWidget(112);

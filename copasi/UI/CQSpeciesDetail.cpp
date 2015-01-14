@@ -1066,13 +1066,37 @@ void CQSpeciesDetail::addSpecie(UndoSpecieData *pSData)
             {
               UndoEventAssignmentData * assignData = *i;
 
-              if (pEvent->getAssignments().getIndex(assignData->getTargetKey()) == C_INVALID_INDEX)
+              CCopasiObject * pObject = NULL;
+              bool speciesExist = false;
+              size_t ci;
+
+              for (ci = 0; ci < pModel->getCompartments().size(); ci++)
                 {
-                  CEventAssignment *eventAssign = new CEventAssignment(assignData->getTargetKey(), pEvent->getObjectParent());
-                  eventAssign->setExpression(assignData->getExpression());
-                  eventAssign->getExpressionPtr()->compile();
-                  pEvent->getAssignments().add(eventAssign);
+                  CCompartment * pCompartment = pModel->getCompartments()[ci];
+
+                  if (pCompartment->getMetabolites().getIndex(assignData->getName()) != C_INVALID_INDEX)
+                    speciesExist = true;
                 }
+
+              if (speciesExist)
+                {
+                  size_t index = pModel->findMetabByName(assignData->getName());
+                  pObject =  pModel->getMetabolites()[index];
+                }
+              else if (pModel->getModelValues().getIndex(assignData->getName()) != C_INVALID_INDEX)
+                {
+                  pObject = pModel->getModelValues()[assignData->getName()];
+                }
+              else if (pModel->getReactions().getIndex(assignData->getName()) != C_INVALID_INDEX)
+                {
+                  pObject = pModel->getReactions()[assignData->getName()];
+                }
+
+              const CModelEntity * pEntity = dynamic_cast< const CModelEntity * >(pObject);
+              CEventAssignment *eventAssign = new CEventAssignment(pObject->getKey(), pEvent->getObjectParent());
+              eventAssign->setExpression(assignData->getExpression());
+              eventAssign->getExpressionPtr()->compile();
+              pEvent->getAssignments().add(eventAssign);
             }
 
           protectedNotify(ListViews::EVENT, ListViews::ADD, key);
