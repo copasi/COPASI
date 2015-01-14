@@ -24,7 +24,7 @@
 ###############################################################################
 
 find_package(SWIG REQUIRED)
-find_package(JNI)
+find_package(JNI REQUIRED)
 find_package(Java COMPONENTS Development REQUIRED)
 include(${SWIG_USE_FILE})
 
