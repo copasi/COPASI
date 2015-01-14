@@ -37,7 +37,6 @@ CQTaskMethodWidget::CQTaskMethodWidget(QWidget* parent, Qt::WindowFlags f):
 CQTaskMethodWidget::~CQTaskMethodWidget()
 {
   clearHistory();
-  pdelete(mpActiveMethod);
 }
 
 void CQTaskMethodWidget::changeMethod(int /* index */)
