@@ -77,6 +77,7 @@ void CReport::cleanup()
   mFooterObjectList.clear();
 
   finish();
+  close();
 }
 
 CReportDefinition* CReport::getReportDefinition()
@@ -137,8 +138,6 @@ void CReport::finish()
   pdelete(mpHeader);
   pdelete(mpBody);
   pdelete(mpFooter);
-
-  close();
 
   mState = Invalid;
 }

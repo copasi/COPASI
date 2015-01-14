@@ -144,7 +144,14 @@ CCopasiDataModel::CCopasiDataModel(const std::string & name,
 CCopasiDataModel::~CCopasiDataModel()
 {
   CCopasiObject::setRenameHandler(NULL);
-  newModel(NULL, true);
+
+  // Make sure that the old data is deleted
+  deleteOldData();
+
+  // Delete the current data
+  mOldData = mData;
+  deleteOldData();
+
   pdelete(pOldMetabolites);
 }
 
