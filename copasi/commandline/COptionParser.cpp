@@ -1,14 +1,15 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commandline/COptionParser.cpp,v $
-//   $Revision: 1.32 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/06/01 17:25:01 $
-// End CVS Header
-
-// Copyright (C) 2012 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2002 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
 /*
@@ -72,7 +73,7 @@ const char* expand_long_name(const std::string &name);
 
 //#########################################################################
 copasi::COptionParser::COptionParser(void)
-    : state_(state_option)
+  : state_(state_option)
 {
   memset(&locations_, 0, sizeof(locations_));
 }
@@ -172,7 +173,7 @@ void copasi::COptionParser::parse(const char * fileName)
         {
           std::ostringstream error;
           error << "error reading file: '" << fileName << "(" << LineCounter
-          << ")': " << e.what();
+                << ")': " << e.what();
 
           throw option_error(error.str());
         }
@@ -190,38 +191,60 @@ void copasi::COptionParser::finalize(void)
         {
           case option_ConfigDir:
             throw option_error("missing value for 'configdir' option");
+
           case option_ConfigFile:
             throw option_error("missing value for 'configfile' option");
+
           case option_CopasiDir:
             throw option_error("missing value for 'copasidir' option");
+
           case option_ExportBerkeleyMadonna:
             throw option_error("missing value for 'exportBerkeleyMadonna' option");
+
           case option_ExportC:
             throw option_error("missing value for 'exportC' option");
+
           case option_ExportSBML:
             throw option_error("missing value for 'exportSBML' option");
+
           case option_ExportXPPAUT:
             throw option_error("missing value for 'exportXPPAUT' option");
+
           case option_Home:
             throw option_error("missing value for 'home' option");
+
           case option_ImportSBML:
             throw option_error("missing value for 'importSBML' option");
+
           case option_License:
             throw option_error("missing value for 'license' option");
+
           case option_MaxTime:
             throw option_error("missing value for 'maxTime' option");
+
           case option_NoLogo:
             throw option_error("missing value for 'nologo' option");
+
           case option_SBMLSchema:
             throw option_error("missing value for 'SBMLSchema' option");
+
           case option_Save:
             throw option_error("missing value for 'save' option");
+
           case option_Tmp:
             throw option_error("missing value for 'tmp' option");
+
           case option_Validate:
             throw option_error("missing value for 'validate' option");
+
           case option_Verbose:
             throw option_error("missing value for 'verbose' option");
+
+#ifdef COPASI_SEDML
+
+          case option_ImportSEDML:
+            throw option_error("missing value for 'importSEDML' option");
+#endif
         }
     }
 }
@@ -235,6 +258,7 @@ void copasi::COptionParser::parse_element(const char *element, int position, ops
       case state_consume:
         non_options_.push_back(element);
         break;
+
       case state_option:
 
         if (length >= 2 && element[0] == '-' && element[1] == '-')
@@ -297,6 +321,7 @@ void copasi::COptionParser::parse_element(const char *element, int position, ops
           }
 
         break;
+
       case state_value:
         parse_value(element);
         state_ = state_option;
@@ -321,6 +346,7 @@ void copasi::COptionParser::parse_short_option(char option, int position, opsour
         state_ = state_value;
         locations_.CopasiDir = position;
         return;
+
       case 'e':
 
         if (source != source_cl) throw option_error("the 'exportSBML' option can only be used on the command line");
@@ -334,6 +360,7 @@ void copasi::COptionParser::parse_short_option(char option, int position, opsour
         state_ = state_value;
         locations_.ExportSBML = position;
         return;
+
       case 'i':
 
         if (source != source_cl) throw option_error("the 'importSBML' option can only be used on the command line");
@@ -347,6 +374,7 @@ void copasi::COptionParser::parse_short_option(char option, int position, opsour
         state_ = state_value;
         locations_.ImportSBML = position;
         return;
+
       case 's':
         source = source; // kill compiler unused variable warning
 
@@ -359,6 +387,7 @@ void copasi::COptionParser::parse_short_option(char option, int position, opsour
         state_ = state_value;
         locations_.Save = position;
         return;
+
       case 't':
         source = source; // kill compiler unused variable warning
 
@@ -371,11 +400,13 @@ void copasi::COptionParser::parse_short_option(char option, int position, opsour
         state_ = state_value;
         locations_.Tmp = position;
         return;
+
       case 'h':
 
         if (source != source_cl) break;
 
         throw autoexcept(autothrow_help, const_usage);
+
       case '?':
 
         if (source != source_cl) break;
@@ -647,48 +678,58 @@ void copasi::COptionParser::parse_value(const char *value)
         options_.ConfigDir = value;
       }
       break;
+
       case option_ConfigFile:
       {
         options_.ConfigFile = value;
       }
       break;
+
       case option_CopasiDir:
       {
         options_.CopasiDir = value;
       }
       break;
+
       case option_ExportBerkeleyMadonna:
       {
         options_.ExportBerkeleyMadonna = value;
       }
       break;
+
       case option_ExportC:
       {
         options_.ExportC = value;
       }
       break;
+
       case option_ExportSBML:
       {
         options_.ExportSBML = value;
       }
       break;
+
       case option_ExportXPPAUT:
       {
         options_.ExportXPPAUT = value;
       }
       break;
+
       case option_Home:
       {
         options_.Home = value;
       }
       break;
+
       case option_ImportSBML:
       {
         options_.ImportSBML = value;
       }
       break;
+
       case option_License:
         break;
+
       case option_MaxTime:
       {
         char *endptr; int tmp = std::strtol(value, &endptr, 0);
@@ -709,8 +750,10 @@ void copasi::COptionParser::parse_value(const char *value)
         options_.MaxTime = tmp;
       }
       break;
+
       case option_NoLogo:
         break;
+
       case option_SBMLSchema:
       {
         SBMLSchema_enum evalue;
@@ -752,20 +795,33 @@ void copasi::COptionParser::parse_value(const char *value)
         options_.SBMLSchema = evalue;
       }
       break;
+
       case option_Save:
       {
         options_.Save = value;
       }
       break;
+
       case option_Tmp:
       {
         options_.Tmp = value;
       }
       break;
+
       case option_Validate:
         break;
+
       case option_Verbose:
         break;
+
+#ifdef COPASI_SEDML
+
+      case option_ImportSEDML:
+      {
+        options_.ImportSEDML = value;
+      }
+
+#endif
     }
 }
 //#########################################################################
