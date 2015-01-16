@@ -1,22 +1,14 @@
-/* Begin CVS Header
- $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CCallParameters.cpp,v $
- $Revision: 1.23 $
- $Name:  $
- $Author: shoops $
- $Date: 2011/07/05 19:24:03 $
- End CVS Header */
-
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2003 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -31,10 +23,16 @@ CCopasiObject * CFunctionParameterMap::pUnmappedObject = NULL;
 
 //TODO: modify the constructors so that CFunctionParameterMap behaves like a CCopasiObject
 
+void deleteUnmappedObject()
+{
+  delete CFunctionParameterMap::pUnmappedObject;
+  CFunctionParameterMap::pUnmappedObject = NULL;
+}
+
 CFunctionParameterMap::CFunctionParameterMap():
-    mPointers(),
-    mObjects(),
-    mpFunctionParameters(NULL)
+  mPointers(),
+  mObjects(),
+  mpFunctionParameters(NULL)
 {
   if (pUnmappedObject == NULL)
     {
@@ -42,13 +40,15 @@ CFunctionParameterMap::CFunctionParameterMap():
 
       pUnmappedObject =
         new CCopasiParameter("NaN", CCopasiParameter::DOUBLE, & InvalidValue);
+
+      std::atexit(&deleteUnmappedObject);
     }
 };
 
 CFunctionParameterMap::CFunctionParameterMap(const CFunctionParameterMap & src):
-    mPointers(src.mPointers),
-    mObjects(src.mObjects),
-    mpFunctionParameters(new CFunctionParameters(*src.mpFunctionParameters))
+  mPointers(src.mPointers),
+  mObjects(src.mObjects),
+  mpFunctionParameters(new CFunctionParameters(*src.mpFunctionParameters))
 {
   size_t i, imax = mpFunctionParameters->size();
 

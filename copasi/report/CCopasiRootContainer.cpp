@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -19,6 +19,10 @@
 #include "copasi/function/CEvaluationNodeOperator.h"
 #include "copasi/function/CEvaluationNodeVariable.h"
 #include "copasi/function/CEvaluationNodeConstant.h"
+
+#include <copasi/layout/CLGlobalRenderInformation.h>
+
+extern CCopasiVector<CLGlobalRenderInformation>* DEFAULT_STYLES;
 
 extern CCopasiRootContainer * pRootContainer;
 
@@ -63,6 +67,9 @@ CCopasiRootContainer::~CCopasiRootContainer()
 
   // delete the undefined and the unsupported delay function
   pdelete(mpUndefined);
+
+  // delete other static variables
+  pdelete(DEFAULT_STYLES);
 }
 
 /**

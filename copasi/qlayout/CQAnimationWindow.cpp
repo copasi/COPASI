@@ -1,4 +1,4 @@
-// Copyright (C) 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2013 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -345,11 +345,18 @@ CQAnimationWindow::~CQAnimationWindow()
     }
 
   removeFromMainWindow();
+
+  pdelete(mpScene);
+  pdelete(mpLayoutThread);
 }
 
 void CQAnimationWindow::setScene(CQLayoutScene* scene, CCopasiDataModel* dataModel)
 {
   mpModel = dataModel;
+
+  if (mpScene != NULL && mpScene != scene)
+    pdelete(mpScene);
+
   mpScene = scene;
   this->graphicsView->setScene(mpScene);
   mpScene->recreate();
@@ -442,6 +449,7 @@ void CQAnimationWindow::slotRandomizeLayout()
 {
   mpLayoutThread->stopLayout();
   mpLayoutThread->wait();
+  CLayoutState::tagLayout(mpScene->getCurrentLayout());
   mpLayoutThread->randomizeLayout(mpScene->getCurrentLayout());
 }
 

@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -1349,7 +1349,9 @@ CFunction * CReaction::setFunctionFromExpressionTree(const CExpression & express
 
   std::map<std::string, std::pair<CCopasiObject*, CFunctionParameter*> > replacementMap = std::map<std::string , std::pair<CCopasiObject*, CFunctionParameter*> >();
 
-  CEvaluationNode* pFunctionTree = objects2variables(pOrigNode->copyBranch(), replacementMap, copasi2sbmlmap);
+  CEvaluationNode* copy = pOrigNode->copyBranch();
+  CEvaluationNode* pFunctionTree = objects2variables(copy, replacementMap, copasi2sbmlmap);
+  delete copy;
 
   if (pFunctionTree)
     {
