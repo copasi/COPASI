@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CEvaluationNodeNormalizer.cpp,v $
-//   $Revision: 1.14 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/05/15 15:56:22 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -53,44 +45,58 @@ CEvaluationNode* CEvaluationNodeNormalizer::normalize(const CEvaluationNode* pNo
         {
           case CEvaluationNode::INVALID:
             break;
+
           case CEvaluationNode::NUMBER:
             pResult = normalizeCEvaluationNodeNumber(dynamic_cast<const CEvaluationNodeNumber*>(pNode));
             break;
+
           case CEvaluationNode::CONSTANT:
             pResult = normalizeCEvaluationNodeConstant(dynamic_cast<const CEvaluationNodeConstant*>(pNode));
             break;
+
           case CEvaluationNode::DELAY:
             pResult = normalizeCEvaluationNodeDelay(dynamic_cast<const CEvaluationNodeDelay*>(pNode));
             break;
+
           case CEvaluationNode::OPERATOR:
             pResult = normalizeCEvaluationNodeOperator(dynamic_cast<const CEvaluationNodeOperator*>(pNode));
             break;
+
           case CEvaluationNode::OBJECT:
             pResult = normalizeCEvaluationNodeObject(dynamic_cast<const CEvaluationNodeObject*>(pNode));
             break;
+
           case CEvaluationNode::FUNCTION:
             pResult = normalizeCEvaluationNodeFunction(dynamic_cast<const CEvaluationNodeFunction*>(pNode));
             break;
+
           case CEvaluationNode::CALL:
             pResult = normalizeCEvaluationNodeCall(dynamic_cast<const CEvaluationNodeCall*>(pNode));
             break;
+
           case CEvaluationNode::STRUCTURE:
             pResult = normalizeCEvaluationNodeStructure(dynamic_cast<const CEvaluationNodeStructure*>(pNode));
             break;
+
           case CEvaluationNode::CHOICE:
             pResult = normalizeCEvaluationNodeChoice(dynamic_cast<const CEvaluationNodeChoice*>(pNode));
             break;
+
           case CEvaluationNode::VARIABLE:
             pResult = normalizeCEvaluationNodeVariable(dynamic_cast<const CEvaluationNodeVariable*>(pNode));
             break;
+
           case CEvaluationNode::WHITESPACE:
             pResult = normalizeCEvaluationNodeWhiteSpace(dynamic_cast<const CEvaluationNodeWhiteSpace*>(pNode));
             break;
+
           case CEvaluationNode::LOGICAL:
             pResult = normalizeCEvaluationNodeLogical(dynamic_cast<const CEvaluationNodeLogical*>(pNode));
             break;
+
           case CEvaluationNode::MV_FUNCTION:
             break;
+
           case CEvaluationNode::VECTOR:
             pResult = normalizeCEvaluationNodeVector(dynamic_cast<const CEvaluationNodeVector*>(pNode));
             break;
@@ -138,21 +144,27 @@ CEvaluationNode* CEvaluationNodeNormalizer::normalizeCEvaluationNodeOperator(con
         {
           case CEvaluationNodeOperator::INVALID:
             break;
+
           case CEvaluationNodeOperator::POWER:
             pResult = CEvaluationNodeNormalizer::normalizePowerNode(pNode);
             break;
+
           case CEvaluationNodeOperator::MULTIPLY:
             pResult = CEvaluationNodeNormalizer::normalizeMultiplyNode(pNode);
             break;
+
           case CEvaluationNodeOperator::DIVIDE:
             pResult = CEvaluationNodeNormalizer::normalizeDivideNode(pNode);
             break;
+
           case CEvaluationNodeOperator::MODULUS:
             pResult = CEvaluationNodeNormalizer::normalizeModulusNode(pNode);
             break;
+
           case CEvaluationNodeOperator::PLUS:
             pResult = CEvaluationNodeNormalizer::normalizePlusNode(pNode);
             break;
+
           case CEvaluationNodeOperator::MINUS:
             pResult = CEvaluationNodeNormalizer::normalizeMinusNode(pNode);
             break;
@@ -189,6 +201,7 @@ CEvaluationNode* CEvaluationNodeNormalizer::normalizeCEvaluationNodeFunction(con
         {
           case CEvaluationNodeFunction::INVALID:
             break;
+
           case CEvaluationNodeFunction::LOG:
           case CEvaluationNodeFunction::LOG10:
           case CEvaluationNodeFunction::EXP:
@@ -237,8 +250,11 @@ CEvaluationNode* CEvaluationNodeNormalizer::normalizeCEvaluationNodeFunction(con
               }
 
             break;
+
           case CEvaluationNodeFunction::RUNIFORM:
           case CEvaluationNodeFunction::RNORMAL:
+          case CEvaluationNodeFunction::MIN:
+          case CEvaluationNodeFunction::MAX:
             //case CEvaluationNodeFunction::DELAY:
             // normalize all children
             pResult = new CEvaluationNodeFunction((CEvaluationNodeFunction::SubType)CEvaluationNode::subType(pNode->getType()), pNode->getData());
@@ -266,13 +282,14 @@ CEvaluationNode* CEvaluationNodeNormalizer::normalizeCEvaluationNodeFunction(con
               }
 
             break;
-            /*
-            case CEvaluationNodeFunction::MINUS:
-                // relace the - by a multiplication with -1
-                // !!! Maybe this is not possible since CEvaluationNodeNumber
-                // elements can not hold negative numbers.
-                pResult=new CEvaluationNodeOperator(CEvaluationNodeOperator::MULTIPLY,"");
-            */
+
+          /*
+          case CEvaluationNodeFunction::MINUS:
+              // relace the - by a multiplication with -1
+              // !!! Maybe this is not possible since CEvaluationNodeNumber
+              // elements can not hold negative numbers.
+              pResult=new CEvaluationNodeOperator(CEvaluationNodeOperator::MULTIPLY,"");
+          */
           case CEvaluationNodeFunction::PLUS:
             // eliminate the plus
             pResult = CEvaluationNodeNormalizer::normalize(dynamic_cast<const CEvaluationNode*>(pNode->getChild()));
@@ -297,6 +314,7 @@ CEvaluationNode* CEvaluationNodeNormalizer::normalizeCEvaluationNodeDelay(const 
         {
           case CEvaluationNodeDelay::INVALID:
             break;
+
           case CEvaluationNodeDelay::DELAY:
             pResult = new CEvaluationNodeDelay((CEvaluationNodeDelay::SubType)CEvaluationNode::subType(pNode->getType()), pNode->getData());
             pTmpResult = CEvaluationNodeNormalizer::normalize(dynamic_cast<const CEvaluationNode*>(pNode->getChild()));
@@ -347,6 +365,7 @@ CEvaluationNode* CEvaluationNodeNormalizer::normalizeCEvaluationNodeCall(const C
         {
           case CEvaluationNodeCall::INVALID:
             break;
+
           case CEvaluationNodeCall::EXPRESSION:
           case CEvaluationNodeCall::FUNCTION:
             pResult = dynamic_cast<CEvaluationNodeCall*>(CEvaluationNode::create(pNode->getType(), pNode->getData()));
@@ -413,6 +432,7 @@ CEvaluationNode* CEvaluationNodeNormalizer::normalizeCEvaluationNodeChoice(const
         {
           case CEvaluationNodeChoice::INVALID:
             break;
+
           case CEvaluationNodeChoice::IF:
             // create a new choice node with normalized if, true and false
             // elements
@@ -485,6 +505,7 @@ CEvaluationNode* CEvaluationNodeNormalizer::normalizeCEvaluationNodeLogical(cons
         {
           case CEvaluationNodeLogical::INVALID:
             break;
+
           case CEvaluationNodeLogical::OR:
           case CEvaluationNodeLogical::XOR:
           case CEvaluationNodeLogical::AND:
@@ -517,6 +538,7 @@ CEvaluationNode* CEvaluationNodeNormalizer::normalizeCEvaluationNodeLogical(cons
               }
 
             break;
+
           case CEvaluationNodeLogical::GT:
             // turn the order of the operands and change to LT
             pResult = new CEvaluationNodeLogical(CEvaluationNodeLogical::LT, "<");
@@ -544,6 +566,7 @@ CEvaluationNode* CEvaluationNodeNormalizer::normalizeCEvaluationNodeLogical(cons
               }
 
             break;
+
           case CEvaluationNodeLogical::GE:
             // turn the order of the operands and change to LE
             pResult = new CEvaluationNodeLogical(CEvaluationNodeLogical::LE, "<=");
@@ -635,6 +658,7 @@ CEvaluationNode* CEvaluationNodeNormalizer::normalizeCEvaluationNodeVector(const
               }
 
             break;
+
           case CEvaluationNodeVector::INVALID:
             break;
         }
@@ -1178,21 +1202,27 @@ CEvaluationNodeOperator* CEvaluationNodeNormalizer::buildOperatorBranchFromChain
       case CEvaluationNodeOperator::POWER:
         data = "^";
         break;
+
       case CEvaluationNodeOperator::MULTIPLY:
         data = "*";
         break;
+
       case CEvaluationNodeOperator::DIVIDE:
         data = "/";
         break;
+
       case CEvaluationNodeOperator::MODULUS:
         data = "%";
         break;
+
       case CEvaluationNodeOperator::PLUS:
         data = "+";
         break;
+
       case CEvaluationNodeOperator::MINUS:
         data = "-";
         break;
+
       default:
         fatalError();
         break;
