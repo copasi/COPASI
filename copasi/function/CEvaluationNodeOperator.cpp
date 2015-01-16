@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -1014,13 +1014,20 @@ CEvaluationNode* CEvaluationNodeOperator::simplifyNode(const std::vector<CEvalua
 
         if (CEvaluationNode::type(child2->getType()) == NUMBER)
           {
+            // These should probably use  DBL_MIN and DBL_EPSILON,
+            // instead of numerical constants
+
             // a/0 -> false
             if (fabs(child2->getValue()) < 1.0E-100)
-              return false;
+              {
+                // TODO This should probably return (a pointer to) an infinity newnode
+                fatalError();
+                return NULL;
+              }
 
+            // a/1 -> a
             if (fabs(child2->getValue() - 1.0) < 1.0E-100)
               {
-                // a/1 -> a
                 delete child2;
                 return child1;
               }
