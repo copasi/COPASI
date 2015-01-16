@@ -1,16 +1,16 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-// and The University of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2003 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc. and EML Research, gGmbH. 
-// All rights reserved. 
+// Copyright (C) 2003 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 /**
  *  CCopasiParameter class.
@@ -63,22 +63,22 @@ const char* CCopasiParameter::XMLType[] =
 };
 
 CCopasiParameter::CCopasiParameter():
-    CCopasiContainer("NoName", NULL, "Parameter"),
-    mKey(CCopasiRootContainer::getKeyFactory()->add("Parameter", this)),
-    mType(INVALID),
-    mSize(0),
-    mValue(),
-    mpValueReference(NULL)
+  CCopasiContainer("NoName", NULL, "Parameter"),
+  mKey(CCopasiRootContainer::getKeyFactory()->add("Parameter", this)),
+  mType(INVALID),
+  mSize(0),
+  mValue(),
+  mpValueReference(NULL)
 {mValue.pVOID = NULL;}
 
 CCopasiParameter::CCopasiParameter(const CCopasiParameter & src,
                                    const CCopasiContainer * pParent):
-    CCopasiContainer(src, pParent),
-    mKey(CCopasiRootContainer::getKeyFactory()->add(src.getObjectType(), this)),
-    mType(src.mType),
-    mSize(0),
-    mValue(),
-    mpValueReference(NULL)
+  CCopasiContainer(src, pParent),
+  mKey(CCopasiRootContainer::getKeyFactory()->add(src.getObjectType(), this)),
+  mType(src.mType),
+  mSize(0),
+  mValue(),
+  mpValueReference(NULL)
 {
   createValue(src.mValue);
 }
@@ -88,17 +88,17 @@ CCopasiParameter::CCopasiParameter(const std::string & name,
                                    const void * pValue,
                                    const CCopasiContainer * pParent,
                                    const std::string & objectType):
-    CCopasiContainer(name, pParent, objectType,
-                     CCopasiObject::Container |
-                     ((type == DOUBLE || type == UDOUBLE) ? CCopasiObject::ValueDbl :
-                      ((type == INT || type == UINT) ? CCopasiObject::ValueInt :
-                       ((type == STRING || type == CN || type == KEY || type == FILE || type == EXPRESSION) ? CCopasiObject::ValueString :
-                        (type == BOOL) ? CCopasiObject::ValueBool : 0)))),
-    mKey(CCopasiRootContainer::getKeyFactory()->add(objectType, this)),
-    mType(type),
-    mSize(0),
-    mValue(),
-    mpValueReference(NULL)
+  CCopasiContainer(name, pParent, objectType,
+                   CCopasiObject::Container |
+                   ((type == DOUBLE || type == UDOUBLE) ? CCopasiObject::ValueDbl :
+                    ((type == INT || type == UINT) ? CCopasiObject::ValueInt :
+                     ((type == STRING || type == CN || type == KEY || type == FILE || type == EXPRESSION) ? CCopasiObject::ValueString :
+                      (type == BOOL) ? CCopasiObject::ValueBool : 0)))),
+  mKey(CCopasiRootContainer::getKeyFactory()->add(objectType, this)),
+  mType(type),
+  mSize(0),
+  mValue(),
+  mpValueReference(NULL)
 {
   CCopasiParameter::Value value;
   value.pVOID = const_cast<void *>(pValue);
@@ -107,7 +107,9 @@ CCopasiParameter::CCopasiParameter(const std::string & name,
 
 CCopasiParameter::~CCopasiParameter()
 {
-  CCopasiRootContainer::getKeyFactory()->remove(mKey);
+  if (CCopasiRootContainer::getRoot())
+    CCopasiRootContainer::getKeyFactory()->remove(mKey);
+
   deleteValue();
 }
 
@@ -600,4 +602,3 @@ std::string CCopasiParameter::getObjectDisplayName(bool regular, bool richtext) 
 
   return CCopasiObject::getObjectDisplayName(regular, richtext);
 }
-

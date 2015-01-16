@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -252,6 +252,8 @@ ListViews::ListViews(QWidget *parent, const char *name):
 ListViews::~ListViews()
 {
   //TODO clean up
+  if (mpLayoutsWidget != NULL)
+    mpLayoutsWidget->deleteLayoutWindows();
 }
 
 /************************ListViews::setDataModel(DataModel<Folder>* dm)----------->

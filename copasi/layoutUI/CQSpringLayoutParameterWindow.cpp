@@ -1,4 +1,4 @@
-// Copyright (C) 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2013 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -14,7 +14,7 @@
 CQSpringLayoutParameterWindow::CQSpringLayoutParameterWindow(const QString &title, QWidget *parent , Qt::WindowFlags flags)
   : QDockWidget(title, parent, flags)
 {
-  QWidget* pParaWidget = new QWidget();
+  QWidget* pParaWidget = new QWidget(this);
   QVBoxLayout* pLayout = new QVBoxLayout;
   pParaWidget->setLayout(pLayout);
   size_t i;
@@ -23,8 +23,7 @@ CQSpringLayoutParameterWindow::CQSpringLayoutParameterWindow(const QString &titl
     {
       QLabel* label = new QLabel(mLayoutParameters.names[i].c_str());
       pLayout->addWidget(label);
-      QwtSlider* slider = new QwtSlider(pParaWidget);
-      slider->setScalePosition(QwtSlider::BottomScale);
+      QwtSlider* slider = new QwtSlider(pParaWidget, Qt::Horizontal, QwtSlider::BottomScale);
 
       if (mLayoutParameters.isLog[i])
         {
