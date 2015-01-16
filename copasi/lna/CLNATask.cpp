@@ -1,12 +1,4 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/lna/CLNATask.cpp,v $
-//   $Revision: 1.1 $
-//   $Name:  $
-//   $Author: jpahle $
-//   $Date: 2011/05/24 17:33:44 $
-// End CVS Header
-
-// Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -36,7 +28,7 @@
 #define XXXX_Reporting
 
 CLNATask::CLNATask(const CCopasiContainer * pParent):
-    CCopasiTask(CCopasiTask::lna, pParent)
+  CCopasiTask(CCopasiTask::lna, pParent)
 {
   mpProblem = new CLNAProblem(this);
 
@@ -46,7 +38,7 @@ CLNATask::CLNATask(const CCopasiContainer * pParent):
 
 CLNATask::CLNATask(const CLNATask & src,
                    const CCopasiContainer * pParent):
-    CCopasiTask(src, pParent)
+  CCopasiTask(src, pParent)
 {
   mpProblem =
     new CLNAProblem(*(CLNAProblem *) src.mpProblem, this);
@@ -133,7 +125,6 @@ bool CLNATask::process(const bool & useInitialValues)
 {
   bool success = true;
   bool stabilityAnalysisRequested = true;
-  CEigen mEigenReduced;
 
   assert(mpMethod);
 
@@ -164,7 +155,7 @@ bool CLNATask::process(const bool & useInitialValues)
       // check for positive or zero Eigen values
       if (success)
         {
-          mEigenReduced = pSubTask->getEigenValuesReduced();
+          const CEigen &mEigenReduced = pSubTask->getEigenValuesReduced();
 
           if ((mEigenReduced.getNposreal() + mEigenReduced.getNimag() + mEigenReduced.getNzero()) > 0)
             {
