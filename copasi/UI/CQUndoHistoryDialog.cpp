@@ -1,4 +1,4 @@
-// Copyright (C) 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2014 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -37,20 +37,22 @@ CQUndoHistoryDialog::CQUndoHistoryDialog(QWidget* parent, QUndoStack *undoStack,
   setObjectName(QString::fromUtf8(name));
   setModal(modal);
   setupUi(this);
-  connect(cancelButton, SIGNAL(clicked()), this, SLOT(cancelClicked()));
+  connect(closeButton, SIGNAL(clicked()), this, SLOT(closeButtonClicked()));
+  connect(undoButton, SIGNAL(clicked()), this, SLOT(undoButtonClicked()));
 
-  int nCol = 6; //total number of UNDO History column
-  int count = undoStack->count(); //number of command in unod stack
+  mpUndoStack = undoStack;
+  mNCol = 6; //total number of UNDO History column
+// int count = mpUndoStack->count(); //number of command in unod stack
 
   // Create a new model
   // QStandardItemModel(int rows, int columns, QObject * parent = parent)
-  model = new QStandardItemModel(count, nCol, parent);
+  mpModel = new QStandardItemModel(mpUndoStack->count(), mNCol, parent);
 
   // attach the model to the view
-  mpUndoHistoryView->setModel(model);
+  mpUndoHistoryView->setModel(mpModel);
 
   //generate UNDO History data from undostack
-  generateUndoData(undoStack, count, nCol);
+  generateUndoData(mpUndoStack, mpUndoStack->count(), mNCol);
 }
 
 CQUndoHistoryDialog::~CQUndoHistoryDialog()
@@ -58,9 +60,17 @@ CQUndoHistoryDialog::~CQUndoHistoryDialog()
   // no need to delete child widgets, Qt does it all
 }
 
-void CQUndoHistoryDialog::cancelClicked()
+void CQUndoHistoryDialog::closeButtonClicked()
 {
   close();
+}
+
+void CQUndoHistoryDialog::undoButtonClicked()
+{
+  mSelectedIndex = 2; //TODO just a test
+  mpUndoStack->setIndex(mSelectedIndex);
+  //generate new UNDO History data from undostack
+  generateUndoData(mpUndoStack, mpUndoStack->count(), mNCol);
 }
 
 void CQUndoHistoryDialog::generateUndoData(QUndoStack *undoStack, int commandCount, int nCol)
@@ -71,27 +81,27 @@ void CQUndoHistoryDialog::generateUndoData(QUndoStack *undoStack, int commandCou
       switch (col)
         {
           case 0:
-            model->setHeaderData(0, Qt::Horizontal, QString("Entity Type"));
+            mpModel->setHeaderData(0, Qt::Horizontal, QString("Entity Type"));
             break;
 
           case 1:
-            model->setHeaderData(1, Qt::Horizontal, QString("Name"));
+            mpModel->setHeaderData(1, Qt::Horizontal, QString("Name"));
             break;
 
           case 2:
-            model->setHeaderData(2, Qt::Horizontal, QString("Action"));
+            mpModel->setHeaderData(2, Qt::Horizontal, QString("Action"));
             break;
 
           case 3:
-            model->setHeaderData(3, Qt::Horizontal, QString("Property"));
+            mpModel->setHeaderData(3, Qt::Horizontal, QString("Property"));
             break;
 
           case 4:
-            model->setHeaderData(4, Qt::Horizontal, QString("New Value"));
+            mpModel->setHeaderData(4, Qt::Horizontal, QString("New Value"));
             break;
 
           case 5:
-            model->setHeaderData(5, Qt::Horizontal, QString("Old Value"));
+            mpModel->setHeaderData(5, Qt::Horizontal, QString("Old Value"));
             break;
         }
     }
@@ -104,32 +114,32 @@ void CQUndoHistoryDialog::generateUndoData(QUndoStack *undoStack, int commandCou
 
       for (int col = 0; col < 6; col++)
         {
-          QModelIndex index = model->index(row, col, QModelIndex());
+          QModelIndex index = mpModel->index(row, col, QModelIndex());
 
           switch (col)
             {
               case 0:
-                model->setData(index, QVariant(QString(FROM_UTF8(cCommand->getEntityType()))));
+                mpModel->setData(index, QVariant(QString(FROM_UTF8(cCommand->getEntityType()))));
                 break;
 
               case 1:
-                model->setData(index, QVariant(QString(FROM_UTF8(cCommand->getName()))));
+                mpModel->setData(index, QVariant(QString(FROM_UTF8(cCommand->getName()))));
                 break;
 
               case 2:
-                model->setData(index, QVariant(QString(FROM_UTF8(cCommand->getAction()))));
+                mpModel->setData(index, QVariant(QString(FROM_UTF8(cCommand->getAction()))));
                 break;
 
               case 3:
-                model->setData(index, QVariant(QString(FROM_UTF8(cCommand->getProperty()))));
+                mpModel->setData(index, QVariant(QString(FROM_UTF8(cCommand->getProperty()))));
                 break;
 
               case 4:
-                model->setData(index, QVariant(QString(FROM_UTF8(cCommand->getNewValue()))));
+                mpModel->setData(index, QVariant(QString(FROM_UTF8(cCommand->getNewValue()))));
                 break;
 
               case 5:
-                model->setData(index, QVariant(QString(FROM_UTF8(cCommand->getOldValue()))));
+                mpModel->setData(index, QVariant(QString(FROM_UTF8(cCommand->getOldValue()))));
                 break;
             }
         }

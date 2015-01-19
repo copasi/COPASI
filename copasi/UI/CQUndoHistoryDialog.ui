@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
-<comment> Copyright (C) 2014 by Pedro Mendes, Virginia Tech Intellectual </comment>
+<comment> Copyright (C) 2014 - 2015 by Pedro Mendes, Virginia Tech Intellectual </comment>
 <comment> Properties, Inc., University of Heidelberg, and The University </comment>
 <comment> of Manchester. </comment>
 <comment> All rights reserved. </comment>
 
+ <comment> All rights reserved. </comment>
  <class>CQUndoHistoryDialog</class>
  <widget class="QDialog" name="CQUndoHistoryDialog">
   <property name="geometry">
@@ -65,14 +66,14 @@
     <item>
      <widget class="QPushButton" name="undoButton">
       <property name="text">
-       <string>Clear</string>
+       <string>Undo</string>
       </property>
      </widget>
     </item>
     <item>
-     <widget class="QPushButton" name="cancelButton">
+     <widget class="QPushButton" name="closeButton">
       <property name="text">
-       <string>Cancel</string>
+       <string>Close</string>
       </property>
      </widget>
     </item>
