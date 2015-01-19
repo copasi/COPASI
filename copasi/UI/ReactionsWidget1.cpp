@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -81,7 +81,9 @@ ReactionsWidget1::ReactionsWidget1(QWidget *parent, const char * name, Qt::WFlag
 }
 
 ReactionsWidget1::~ReactionsWidget1()
-{}
+{
+  pdelete(mpRi);
+}
 
 /* This function loads the reactions widget when its name is
    clicked in the tree   */
@@ -600,7 +602,7 @@ void ReactionsWidget1::slotNewFunction()
   std::string nname = name;
   size_t i = 0;
   CCopasiVectorN<CFunction>& FunctionList
-  = CCopasiRootContainer::getFunctionList()->loadedFunctions();
+    = CCopasiRootContainer::getFunctionList()->loadedFunctions();
   CFunction* pFunc;
 
   while (FunctionList.getIndex(nname) != C_INVALID_INDEX)

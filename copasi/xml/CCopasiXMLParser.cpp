@@ -1,16 +1,16 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-// and The University of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2003 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc. and EML Research, gGmbH. 
-// All rights reserved. 
+// Copyright (C) 2003 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 /**
  * CCopasiXMLParser class.
@@ -3393,7 +3393,7 @@ CCopasiXMLParser::ListOfAssignmentsElement::ListOfAssignmentsElement(CCopasiXMLP
 {}
 
 CCopasiXMLParser::ListOfAssignmentsElement::~ListOfAssignmentsElement()
-{}
+{deleteCurrentHandler();}
 
 void CCopasiXMLParser::ListOfAssignmentsElement::start(const XML_Char *pszName,
     const XML_Char **papszAttrs)
@@ -3483,7 +3483,7 @@ CCopasiXMLParser::AssignmentElement::AssignmentElement(CCopasiXMLParser & parser
 {}
 
 CCopasiXMLParser::AssignmentElement::~AssignmentElement()
-{}
+{deleteCurrentHandler();}
 
 void CCopasiXMLParser::AssignmentElement::start(const XML_Char *pszName,
     const XML_Char **papszAttrs)
@@ -4749,9 +4749,9 @@ void CCopasiXMLParser::KineticLawElement::end(const XML_Char *pszName)
 
         {
           std::map< std::string, std::vector< std::string > >::const_iterator it
-          = mCommon.SourceParameterKeys.begin();
+            = mCommon.SourceParameterKeys.begin();
           std::map< std::string, std::vector< std::string > >::const_iterator end
-          = mCommon.SourceParameterKeys.end();
+            = mCommon.SourceParameterKeys.end();
 
           for (; it != end; ++it)
             if (it->second.size() > 0)
