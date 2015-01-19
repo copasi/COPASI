@@ -97,6 +97,8 @@ void CCopasiRootContainer::destroy()
       pRootContainer = NULL;
     }
 
+  pdelete(CFunctionParameterMap::pUnmappedObject);
+
   COptions::cleanup();
 }
 

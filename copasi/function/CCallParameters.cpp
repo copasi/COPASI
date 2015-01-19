@@ -18,18 +18,10 @@
 
 #include "utilities/CCopasiParameter.h"
 
-#include <stdlib.h>
-
 // static
 CCopasiObject * CFunctionParameterMap::pUnmappedObject = NULL;
 
 //TODO: modify the constructors so that CFunctionParameterMap behaves like a CCopasiObject
-
-void deleteUnmappedObject()
-{
-  delete CFunctionParameterMap::pUnmappedObject;
-  CFunctionParameterMap::pUnmappedObject = NULL;
-}
 
 CFunctionParameterMap::CFunctionParameterMap():
   mPointers(),
@@ -42,8 +34,6 @@ CFunctionParameterMap::CFunctionParameterMap():
 
       pUnmappedObject =
         new CCopasiParameter("NaN", CCopasiParameter::DOUBLE, & InvalidValue);
-
-      std::atexit(&deleteUnmappedObject);
     }
 };
 
