@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -3393,7 +3393,7 @@ CCopasiXMLParser::ListOfAssignmentsElement::ListOfAssignmentsElement(CCopasiXMLP
 {}
 
 CCopasiXMLParser::ListOfAssignmentsElement::~ListOfAssignmentsElement()
-{}
+{deleteCurrentHandler();}
 
 void CCopasiXMLParser::ListOfAssignmentsElement::start(const XML_Char *pszName,
     const XML_Char **papszAttrs)
@@ -3483,7 +3483,7 @@ CCopasiXMLParser::AssignmentElement::AssignmentElement(CCopasiXMLParser & parser
 {}
 
 CCopasiXMLParser::AssignmentElement::~AssignmentElement()
-{}
+{deleteCurrentHandler();}
 
 void CCopasiXMLParser::AssignmentElement::start(const XML_Char *pszName,
     const XML_Char **papszAttrs)
