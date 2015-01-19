@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -289,8 +289,8 @@ struct yy_buffer_state
  * Returns the top of the stack, or NULL.
  */
 #define YY_CURRENT_BUFFER ((yy_buffer_stack) \
-                            ? (yy_buffer_stack)[(yy_buffer_stack_top)] \
-                            : NULL)
+                           ? (yy_buffer_stack)[(yy_buffer_stack_top)] \
+                           : NULL)
 
 /* Same as previous macro, but useful when we know that the buffer stack is not
  * NULL or when we need an lvalue. For internal use only.
@@ -579,7 +579,7 @@ static int yy_flex_strlen(yyconst char *);
 YY_DECL
 {
   register yy_state_type yy_current_state;
-  register char *yy_cp, *yy_bp;
+  register char * yy_cp, *yy_bp;
   register int yy_act;
 
 #line 36 "model/CChemEqParser.lpp"
@@ -679,6 +679,7 @@ do_action:  /* This label is used only to access EOF actions. */
             return TOKEN_NUMBER;
 
             YY_BREAK
+
           case 2:
             YY_RULE_SETUP
 #line 42 "model/CChemEqParser.lpp"
@@ -687,6 +688,7 @@ do_action:  /* This label is used only to access EOF actions. */
             return TOKEN_PLUS;
 
             YY_BREAK
+
           case 3:
             YY_RULE_SETUP
 #line 47 "model/CChemEqParser.lpp"
@@ -695,6 +697,7 @@ do_action:  /* This label is used only to access EOF actions. */
             return TOKEN_MULTIPLY;
 
             YY_BREAK
+
           case 4:
             YY_RULE_SETUP
 #line 52 "model/CChemEqParser.lpp"
@@ -703,6 +706,7 @@ do_action:  /* This label is used only to access EOF actions. */
             return TOKEN_BEGIN_COMPARTMENT;
 
             YY_BREAK
+
           case 5:
             YY_RULE_SETUP
 #line 57 "model/CChemEqParser.lpp"
@@ -711,6 +715,7 @@ do_action:  /* This label is used only to access EOF actions. */
             return TOKEN_END_COMPARTMENT;
 
             YY_BREAK
+
           case 6:
             YY_RULE_SETUP
 #line 62 "model/CChemEqParser.lpp"
@@ -719,6 +724,7 @@ do_action:  /* This label is used only to access EOF actions. */
             return TOKEN_BEGIN_MODIFIERS;
 
             YY_BREAK
+
           case 7:
             YY_RULE_SETUP
 #line 67 "model/CChemEqParser.lpp"
@@ -727,6 +733,7 @@ do_action:  /* This label is used only to access EOF actions. */
             return TOKEN_BEGIN_PRODUCTS;
 
             YY_BREAK
+
           case 8:
             /* rule 8 can match eol */
             YY_RULE_SETUP
@@ -737,6 +744,7 @@ do_action:  /* This label is used only to access EOF actions. */
             return TOKEN_NAME;
 
             YY_BREAK
+
           case 9:
             /* rule 9 can match eol */
             YY_RULE_SETUP
@@ -746,18 +754,22 @@ do_action:  /* This label is used only to access EOF actions. */
             return TOKEN_NAME;
 
             YY_BREAK
+
           case 10:
             /* rule 10 can match eol */
             YY_RULE_SETUP
 #line 83 "model/CChemEqParser.lpp"
 
-            COMMON_ACTION;
+            mPosition += yyleng;
+            //COMMON_ACTION;
 
             YY_BREAK
+
           case YY_STATE_EOF(INITIAL):
 #line 87 "model/CChemEqParser.lpp"
             return 0;
             YY_BREAK
+
           case 11:
             YY_RULE_SETUP
 #line 89 "model/CChemEqParser.lpp"
@@ -766,6 +778,7 @@ do_action:  /* This label is used only to access EOF actions. */
             return YYERRCODE;
 
             YY_BREAK
+
           case 12:
             YY_RULE_SETUP
 #line 94 "model/CChemEqParser.lpp"
