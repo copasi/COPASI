@@ -18,6 +18,8 @@
 
 #include "utilities/CCopasiParameter.h"
 
+#include <stdlib.h>
+
 // static
 CCopasiObject * CFunctionParameterMap::pUnmappedObject = NULL;
 
