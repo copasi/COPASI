@@ -88,4 +88,5 @@ UndoData *DeleteEventCommand::getUndoData() const
 DeleteEventCommand::~DeleteEventCommand()
 {
   // TODO Auto-generated destructor stub
+  pdelete(mpEventData);
 }

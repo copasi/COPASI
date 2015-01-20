@@ -1,4 +1,4 @@
-// Copyright (C) 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2014 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -54,6 +54,7 @@ QString CreateNewCompartmentCommand::createNewCompartmentText() const
 CreateNewCompartmentCommand::~CreateNewCompartmentCommand()
 {
   // TODO Auto-generated destructor stub
+  pdelete(mpCompartmentData);
 }
 
 UndoData *CreateNewCompartmentCommand::getUndoData() const

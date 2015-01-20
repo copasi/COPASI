@@ -45,6 +45,10 @@ CCopasiUndoCommand::CCopasiUndoCommand(): QUndoCommand()
 CCopasiUndoCommand::~CCopasiUndoCommand()
 {
   // TODO Auto-generated destructor stub
+  pdelete(mpSpecieData);
+  pdelete(mpReactionData);
+  pdelete(mpGlobalQuantityData);
+  pdelete(mpEventData);
 }
 
 Path CCopasiUndoCommand::pathFromIndex(const QModelIndex &index)
