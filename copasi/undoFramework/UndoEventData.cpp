@@ -12,7 +12,7 @@
 
 #include <QtCore/QList>
 
-//#include "model/CEvent.h"
+#include "model/CModel.h"
 
 #include "UndoEventData.h"
 
@@ -27,6 +27,7 @@ UndoEventData::UndoEventData()
 UndoEventData::~UndoEventData()
 {
   // TODO Auto-generated destructor stub
+  pdelete(this->mEventAssignmentData);
 }
 
 std::string UndoEventData::getDelayExpression() const

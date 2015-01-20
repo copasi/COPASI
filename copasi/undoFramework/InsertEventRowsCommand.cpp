@@ -94,4 +94,5 @@ UndoData *InsertEventRowsCommand::getUndoData() const
 InsertEventRowsCommand::~InsertEventRowsCommand()
 {
   // TODO Auto-generated destructor stub
+  pdelete(mpEventData);
 }

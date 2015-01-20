@@ -29,6 +29,9 @@ UndoSpecieData::UndoSpecieData()
 UndoSpecieData::~UndoSpecieData()
 {
   // TODO Auto-generated destructor stub
+  pdelete(this->mEventDependencyObjects);
+  pdelete(this->mReactionDependencyObjects);
+  pdelete(this->mGlobalQuantityDependencyObjects);
 }
 
 std::string UndoSpecieData::getCompartment() const

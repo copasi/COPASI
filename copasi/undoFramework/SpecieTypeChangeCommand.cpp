@@ -1,4 +1,4 @@
-// Copyright (C) 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2014 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -110,4 +110,5 @@ QString SpecieTypeChangeCommand::specieTypeChangeText(std::string &name) const
 SpecieTypeChangeCommand::~SpecieTypeChangeCommand()
 {
   // TODO Auto-generated destructor stub
+  pdelete(this->mpSpecieData);
 }

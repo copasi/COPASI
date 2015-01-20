@@ -57,6 +57,7 @@ CQUndoHistoryDialog::CQUndoHistoryDialog(QWidget* parent, QUndoStack *undoStack,
 
 CQUndoHistoryDialog::~CQUndoHistoryDialog()
 {
+  pdelete(mpModel);
   // no need to delete child widgets, Qt does it all
 }
 

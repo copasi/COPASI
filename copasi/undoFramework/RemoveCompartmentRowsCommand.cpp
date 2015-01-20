@@ -1,4 +1,4 @@
-// Copyright (C) 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2014 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -102,4 +102,8 @@ UndoData *RemoveCompartmentRowsCommand::getUndoData() const
 RemoveCompartmentRowsCommand::~RemoveCompartmentRowsCommand()
 {
   // TODO Auto-generated destructor stub
+  pdelete(this->mpSpecieData);
+  pdelete(this->mpReactionData);
+  pdelete(this->mpGlobalQuantityData);
+  pdelete(this->mpEventData);
 }

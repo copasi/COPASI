@@ -299,6 +299,11 @@ CopasiUI3Window::~CopasiUI3Window()
   mpDataModelGUI->deregisterListView(mpListView);
   pdelete(mpDataModelGUI);
   pdelete(mpListView);
+
+  //clear the undo stack
+#ifdef COPASI_UNDO
+  pdelete(mpUndoStack);
+#endif
 }
 
 void CopasiUI3Window::createActions()
