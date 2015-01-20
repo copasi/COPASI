@@ -36,7 +36,10 @@ configure_file (
 
 find_program(CSHARP_COMPILER
         NAMES gmcs csc
-        PATHS C:/Windows/Microsoft.NET/Framework/v2.0.50727/ /usr/bin /usr/local/bin
+        PATHS $ENV{CSHARP_DIR}/bin
+              C:/Windows/Microsoft.NET/Framework/v2.0.50727/ 
+              /usr/bin 
+              /usr/local/bin
         DOC "The file name of the C# compiler."
         )
     if(UNIX)
