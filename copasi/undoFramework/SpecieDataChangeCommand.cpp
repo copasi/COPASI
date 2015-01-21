@@ -1,4 +1,4 @@
-// Copyright (C) 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2014 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -102,7 +102,7 @@ void SpecieDataChangeCommand::undo()
 {
   mIndex = pathToIndex(mPathIndex, mpSpecieDM);
   mpSpecieDM->specieDataChange(mIndex, mOld, mRole);
-  setAction("Unchange");
+  setAction("Undone change");
 }
 QString SpecieDataChangeCommand::specieDataChangeText() const
 {

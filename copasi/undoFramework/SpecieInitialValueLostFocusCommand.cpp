@@ -64,7 +64,7 @@ void SpecieInitialValueLostFocusCommand::redo()
 void SpecieInitialValueLostFocusCommand::undo()
 {
   mpSpecieDetail->specieInitialValueLostFocus(mpSpecieData);
-  setAction("Unchange");
+  setAction("Undone change");
 }
 QString SpecieInitialValueLostFocusCommand::specieInitialValueLostFocusText(std::string &name) const
 {

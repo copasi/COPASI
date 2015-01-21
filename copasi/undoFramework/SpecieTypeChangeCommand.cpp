@@ -99,7 +99,7 @@ void SpecieTypeChangeCommand::redo()
 void SpecieTypeChangeCommand::undo()
 {
   mpSpecieDetail->specieTypeChanged(mpSpecieData, mOldType);
-  setAction("Unchange");
+  setAction("Undone change");
 }
 QString SpecieTypeChangeCommand::specieTypeChangeText(std::string &name) const
 {
