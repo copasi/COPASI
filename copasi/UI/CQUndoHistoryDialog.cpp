@@ -15,6 +15,7 @@
 #include <QStandardItemModel>
 #include <QUndoStack>
 
+#include "CQMessageBox.h"
 #include "qtUtilities.h"
 
 #include "copasi/undoFramework/CCopasiUndoCommand.h"
@@ -42,6 +43,7 @@ CQUndoHistoryDialog::CQUndoHistoryDialog(QWidget* parent, QUndoStack *undoStack,
 
   mpUndoStack = undoStack;
   mNCol = 6; //total number of UNDO History column
+  mSelectedIndex = 0;
 // int count = mpUndoStack->count(); //number of command in unod stack
 
   // Create a new model
@@ -68,10 +70,35 @@ void CQUndoHistoryDialog::closeButtonClicked()
 
 void CQUndoHistoryDialog::undoButtonClicked()
 {
-  mSelectedIndex = 2; //TODO just a test
-  mpUndoStack->setIndex(mSelectedIndex);
-  //generate new UNDO History data from undostack
-  generateUndoData(mpUndoStack, mpUndoStack->count(), mNCol);
+  //find the selected row
+  const QItemSelectionModel * pSelectionModel = mpUndoHistoryView->selectionModel();
+  size_t i, imax = mpModel->rowCount();
+  bool isRowSelected = false;
+
+  for (i = 0; i < imax; i++)
+    {
+      if (pSelectionModel->isRowSelected((int) i, QModelIndex()))
+        {
+          mSelectedIndex = i;
+          isRowSelected = true;
+        }
+    }
+
+  if (isRowSelected)
+    {
+      QString msg;
+      msg = "All actions up to the selected row will be undone!";
+
+      QMessageBox::StandardButton choice = CQMessageBox::question(NULL, QString("Undo Actions"), msg, QMessageBox::Ok | QMessageBox::Cancel, QMessageBox::Ok);
+
+      if (choice == QMessageBox::Ok)
+        {
+          mpUndoStack->setIndex(mSelectedIndex);
+          close();
+          //generate new UNDO History data from undostack
+          //  generateUndoData(mpUndoStack, mpUndoStack->count(), mNCol);
+        }
+    }
 }
 
 void CQUndoHistoryDialog::generateUndoData(QUndoStack *undoStack, int commandCount, int nCol)
