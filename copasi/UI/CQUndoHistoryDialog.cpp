@@ -87,7 +87,7 @@ void CQUndoHistoryDialog::undoButtonClicked()
   if (isRowSelected)
     {
       QString msg;
-      msg = "All actions up to the selected row will be undone!";
+      msg = "Warning!! All actions up to the selected row will be undone.";
 
       QMessageBox::StandardButton choice = CQMessageBox::question(NULL, QString("Undo Actions"), msg, QMessageBox::Ok | QMessageBox::Cancel, QMessageBox::Ok);
 
