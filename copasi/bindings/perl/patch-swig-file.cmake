@@ -4,11 +4,12 @@
 # All rights reserved. 
 
 
+
 if (NOT FILENAME OR NOT EXISTS ${FILENAME})
   message(FATAL_ERROR "Please specify the filename to the file to patch")
 endif()
 
-get_filename_component(NAME_ONLY FILENAME NAME)
+get_filename_component(NAME_ONLY ${FILENAME} NAME)
 file(READ "${FILENAME}" SOURCECODE)
 
 file(WRITE  "${FILENAME}" "// patched ${NAME_ONLY}\n")
