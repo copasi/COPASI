@@ -62,7 +62,7 @@
 // if needed
 #ifndef TRUE
 #define TRUE
-#endif 1
+#endif
 
 //#include <iostream>
 
