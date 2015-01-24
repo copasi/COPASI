@@ -1,13 +1,4 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/perl/local.cpp,v $
-//   $Revision: 1.2 $
-//   $Name:  $
-//   $Author: gauges $
-//   $Date: 2011/07/20 20:02:31 $
-// End CVS Header
-
-
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -15,6 +6,7 @@
 #ifdef SWIGPERL
 #undef NORMAL
 #endif // SWIGPERL
+
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "utilities/CCopasiMethod.h"
 #include "utilities/CCopasiProblem.h"
@@ -67,7 +59,10 @@
 #include "parameterFitting/CFitTask.h"
 
 // since COPASI undefines TRUE from swig, we have to redefine it here
-#define TRUE 1
+// if needed
+#ifndef TRUE
+#define TRUE
+#endif 1
 
 //#include <iostream>
 
