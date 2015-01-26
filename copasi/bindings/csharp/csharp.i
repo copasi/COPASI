@@ -1,7 +1,8 @@
-// Copyright (C) 2011 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2011 - 2015 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., University of Heidelberg, and The University 
 // of Manchester. 
 // All rights reserved. 
+
 
 
 
@@ -979,13 +980,14 @@ int GetType_COptTask(COptTask* pPointer);
 /**
  * Convert CObjectInterface objects into the most specific object possible.
  */
-%typemap("csout") 
+%typemap("csout", excode=SWIGEXCODE) 
   CObjectInterface *,
   const CObjectInterface *,
   CObjectInterface &,
   const CObjectInterface &
 {
-  return $modulePINVOKE.DowncastCObjectInterface($imcall, $owner);
+  $csclassname ret = ($csclassname) $modulePINVOKE.DowncastCObjectInterface($imcall, $owner);$excode
+  return ret;
 }
 
 // CCopasiObject
