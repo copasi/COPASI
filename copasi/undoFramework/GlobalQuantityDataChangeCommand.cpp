@@ -31,15 +31,9 @@ GlobalQuantityDataChangeCommand::GlobalQuantityDataChangeCommand(QModelIndex ind
   this->setText(globalQuantityDataChangeText());
 
   //set the data for UNDO history
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
-  assert(pDataModel != NULL);
-  CModel * pModel = pDataModel->getModel();
-  CModelValue *pModelValue = pModel->getModelValues()[index.row()];
   mType = GLOBALQUANTITYDATACHANGE;
   setEntityType("Global Quantity");
   setAction("Change");
-  setName(pModelValue->getObjectName());
   setOldValue(TO_UTF8(mOld.toString()));
   setNewValue(TO_UTF8(mNew.toString()));
 
@@ -82,6 +76,12 @@ GlobalQuantityDataChangeCommand::GlobalQuantityDataChangeCommand(QModelIndex ind
 void GlobalQuantityDataChangeCommand::redo()
 {
   mpGlobalQuantityDM->globalQuantityDataChange(mIndex, mNew, mRole);
+  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
+  assert(pDataModel != NULL);
+  CModel * pModel = pDataModel->getModel();
+  CModelValue *pModelValue = pModelValue = pModel->getModelValues()[mIndex.row()];
+  setName(pModelValue->getObjectName());
 }
 void GlobalQuantityDataChangeCommand::undo()
 {
