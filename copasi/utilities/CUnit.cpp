@@ -1,7 +1,7 @@
-// Copyright (C) 2014 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2014 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 #include <math.h>
 
@@ -74,41 +74,44 @@ void CUnit::fromEnum(VolumeUnit volEnum)
 
   mSymbol = VolumeUnitNames[volEnum];
 
-  if( volEnum == CUnit::dimensionlessVolume )
+  if (volEnum == CUnit::dimensionlessVolume)
     return; // no need to add component
 
   CUnitComponent tmpComponent = CUnitComponent(CBaseUnit::meter);
   tmpComponent.setExponent(3);
 
   switch (volEnum)
-  {
-    case CUnit::m3:  //default scale = 0
-      break;
+    {
+      case CUnit::m3:  //default scale = 0
+        break;
 
-    case CUnit::l:
-      tmpComponent.setScale(-3);
-      break;
+      case CUnit::l:
+        tmpComponent.setScale(-3);
+        break;
 
-    case CUnit::ml:
-      tmpComponent.setScale(-6);
-      break;
+      case CUnit::ml:
+        tmpComponent.setScale(-6);
+        break;
 
-    case CUnit::microl:
-      tmpComponent.setScale(-9);
-      break;
+      case CUnit::microl:
+        tmpComponent.setScale(-9);
+        break;
 
-    case CUnit::nl:
-      tmpComponent.setScale(-12);
-      break;
+      case CUnit::nl:
+        tmpComponent.setScale(-12);
+        break;
 
-    case CUnit::pl:
-      tmpComponent.setScale(-15);
-      break;
+      case CUnit::pl:
+        tmpComponent.setScale(-15);
+        break;
 
-    case CUnit::fl:
-      tmpComponent.setScale(-18);
-      break;
-  }
+      case CUnit::fl:
+        tmpComponent.setScale(-18);
+        break;
+
+      default:
+        return; // just to silence compiler warning
+    }
 
   addComponent(tmpComponent);
 
@@ -120,45 +123,48 @@ void CUnit::fromEnum(AreaUnit areaEnum)
 
   mSymbol = AreaUnitNames[areaEnum];
 
-  if( areaEnum == CUnit::dimensionlessArea )
+  if (areaEnum == CUnit::dimensionlessArea)
     return; // no need to add component
 
   CUnitComponent tmpComponent = CUnitComponent(CBaseUnit::meter);
   tmpComponent.setExponent(2);
 
   switch (areaEnum)
-  {
-    case CUnit::m2:  //default scale = 0
-      break;
+    {
+      case CUnit::m2:  //default scale = 0
+        break;
 
-    case CUnit::dm2:
-      tmpComponent.setScale(-2);
-      break;
+      case CUnit::dm2:
+        tmpComponent.setScale(-2);
+        break;
 
-    case CUnit::cm2:
-      tmpComponent.setScale(-4);
-      break;
+      case CUnit::cm2:
+        tmpComponent.setScale(-4);
+        break;
 
-    case CUnit::mm2:
-      tmpComponent.setScale(-6);
-      break;
+      case CUnit::mm2:
+        tmpComponent.setScale(-6);
+        break;
 
-    case CUnit::microm2:
-      tmpComponent.setScale(-12);
-      break;
+      case CUnit::microm2:
+        tmpComponent.setScale(-12);
+        break;
 
-    case CUnit::nm2:
-      tmpComponent.setScale(-18);
-      break;
+      case CUnit::nm2:
+        tmpComponent.setScale(-18);
+        break;
 
-    case CUnit::pm2:
-      tmpComponent.setScale(-24);
-      break;
+      case CUnit::pm2:
+        tmpComponent.setScale(-24);
+        break;
 
-    case CUnit::fm2:
-      tmpComponent.setScale(-30);
-      break;
-  }
+      case CUnit::fm2:
+        tmpComponent.setScale(-30);
+        break;
+
+      default:
+        return; // just to silence compiler warning
+    }
 
   addComponent(tmpComponent);
 
@@ -170,44 +176,47 @@ void CUnit::fromEnum(LengthUnit lengthEnum)
 
   mSymbol = LengthUnitNames[lengthEnum];
 
-  if( lengthEnum == CUnit::dimensionlessLength )
+  if (lengthEnum == CUnit::dimensionlessLength)
     return; // no need to add component
 
   CUnitComponent tmpComponent = CUnitComponent(CBaseUnit::meter);
 
   switch (lengthEnum)
-  {
-    case CUnit::m:  //default scale = 0
-      break;
+    {
+      case CUnit::m:  //default scale = 0
+        break;
 
-    case CUnit::dm:
-      tmpComponent.setScale(-1);
-      break;
+      case CUnit::dm:
+        tmpComponent.setScale(-1);
+        break;
 
-    case CUnit::cm:
-      tmpComponent.setScale(-2);
-      break;
+      case CUnit::cm:
+        tmpComponent.setScale(-2);
+        break;
 
-    case CUnit::mm:
-      tmpComponent.setScale(-3);
-      break;
+      case CUnit::mm:
+        tmpComponent.setScale(-3);
+        break;
 
-    case CUnit::microm:
-      tmpComponent.setScale(-6);
-      break;
+      case CUnit::microm:
+        tmpComponent.setScale(-6);
+        break;
 
-    case CUnit::nm:
-      tmpComponent.setScale(-9);
-      break;
+      case CUnit::nm:
+        tmpComponent.setScale(-9);
+        break;
 
-    case CUnit::pm:
-      tmpComponent.setScale(-12);
-      break;
+      case CUnit::pm:
+        tmpComponent.setScale(-12);
+        break;
 
-    case CUnit::fm:
-      tmpComponent.setScale(-15);
-      break;
-  }
+      case CUnit::fm:
+        tmpComponent.setScale(-15);
+        break;
+
+      default:
+        return; // just to silence compiler warning
+    }
 
   addComponent(tmpComponent);
 
@@ -219,45 +228,48 @@ void CUnit::fromEnum(TimeUnit timeEnum)
 
   mSymbol = TimeUnitNames[timeEnum];
 
-  if( timeEnum == CUnit::dimensionlessTime )
+  if (timeEnum == CUnit::dimensionlessTime)
     return; // no need to add component
 
   CUnitComponent tmpComponent = CUnitComponent(CBaseUnit::second);
 
   switch (timeEnum)
-  {
-    case CUnit::d:
-      tmpComponent.setMultiplier(60*60*24);
-      break;
+    {
+      case CUnit::d:
+        tmpComponent.setMultiplier(60 * 60 * 24);
+        break;
 
-    case CUnit::h:
-      tmpComponent.setMultiplier(60*60);
-      break;
+      case CUnit::h:
+        tmpComponent.setMultiplier(60 * 60);
+        break;
 
-    case CUnit::min:
-    case CUnit::OldMinute:
-      tmpComponent.setMultiplier(60);
-      break;
+      case CUnit::min:
+      case CUnit::OldMinute:
+        tmpComponent.setMultiplier(60);
+        break;
 
-    case CUnit::s:  // defaults are appropriate
-      break;
+      case CUnit::s:  // defaults are appropriate
+        break;
 
-    case CUnit::micros:
-      tmpComponent.setScale(-6);
-      break;
+      case CUnit::micros:
+        tmpComponent.setScale(-6);
+        break;
 
-    case CUnit::ns:
-      tmpComponent.setScale(-9);
-      break;
+      case CUnit::ns:
+        tmpComponent.setScale(-9);
+        break;
 
-    case CUnit::ps:
-      tmpComponent.setScale(-12);
-      break;
+      case CUnit::ps:
+        tmpComponent.setScale(-12);
+        break;
 
-    case CUnit::fs:
-      tmpComponent.setScale(-15);
-      break;
-  }
+      case CUnit::fs:
+        tmpComponent.setScale(-15);
+        break;
+
+      default:
+        return; // just to silence compiler warning
+    }
 
   addComponent(tmpComponent);
 }
@@ -268,7 +280,7 @@ void CUnit::fromEnum(QuantityUnit quantityEnum)
 
   mSymbol = QuantityUnitNames[quantityEnum];
 
-  if( quantityEnum == CUnit::dimensionlessQuantity )
+  if (quantityEnum == CUnit::dimensionlessQuantity)
     return; // no need to add component
 
   CUnitComponent tmpComponent = CUnitComponent(CBaseUnit::item);
@@ -277,7 +289,7 @@ void CUnit::fromEnum(QuantityUnit quantityEnum)
 
   C_FLOAT64 usedAvogadro;
 
-  if(pModel != NULL)
+  if (pModel != NULL)
     usedAvogadro = pModel->getAvogadro();
   else
     usedAvogadro = Avogadro;
@@ -287,35 +299,38 @@ void CUnit::fromEnum(QuantityUnit quantityEnum)
   //   enum QuantityUnit {dimensionlessQuantity = 0, Mol, mMol, microMol, nMol, pMol, fMol, number, OldXML};
 
   switch (quantityEnum)
-  {
-    case CUnit::Mol:
-      break;
+    {
+      case CUnit::Mol:
+        break;
 
-    case CUnit::mMol:
-      tmpComponent.setScale(-3);
-      break;
+      case CUnit::mMol:
+        tmpComponent.setScale(-3);
+        break;
 
-    case CUnit::microMol:
-      tmpComponent.setScale(-6);
-      break;
+      case CUnit::microMol:
+        tmpComponent.setScale(-6);
+        break;
 
-    case CUnit::nMol:
-      tmpComponent.setScale(-9);
-      break;
+      case CUnit::nMol:
+        tmpComponent.setScale(-9);
+        break;
 
-    case CUnit::pMol:
-      tmpComponent.setScale(-12);
-      break;
+      case CUnit::pMol:
+        tmpComponent.setScale(-12);
+        break;
 
-    case CUnit::fMol:
-      tmpComponent.setScale(-15);
-      break;
+      case CUnit::fMol:
+        tmpComponent.setScale(-15);
+        break;
 
-    case CUnit::number:
-    case CUnit::OldXML:
-      tmpComponent.setMultiplier(1);
-      break;
-  }
+      case CUnit::number:
+      case CUnit::OldXML:
+        tmpComponent.setMultiplier(1);
+        break;
+
+      default:
+        return; // just to silence compiler warning
+    }
 
   addComponent(tmpComponent);
 }
@@ -338,7 +353,7 @@ bool CUnit::isDimensionless() const
 {
   // If the symbol string has been set to other than "dimensionless",
   // assume it has dimension, regardless of the components
-  if(mSymbol != "dimensionless" || mSymbol != "")
+  if (mSymbol != "dimensionless" || mSymbol != "")
     return false;
 
   std::vector< CUnitComponent >::const_iterator it = mComponents.begin();
@@ -373,25 +388,25 @@ bool CUnit::simplifyComponents()
   std::sort(mComponents.begin(), mComponents.end()); // make same Kinds adjacent
 
   for (; it != mComponents.end(); it++)
-  {
-    tempComponent = (*it);
-
-    while (it != mComponents.end() && tempComponent.getKind() == (*(it + 1)).getKind())
     {
-      tempComponent.setExponent((tempComponent.getExponent()) + (*(it + 1)).getExponent());
-      tempComponent.setScale(tempComponent.getScale() + (*(it + 1)).getScale());
-      tempComponent.setMultiplier(tempComponent.getMultiplier() * (*(it + 1)).getMultiplier());
-      didSimplify = true;
-      it++;
-    }
+      tempComponent = (*it);
+
+      while (it != mComponents.end() && tempComponent.getKind() == (*(it + 1)).getKind())
+        {
+          tempComponent.setExponent((tempComponent.getExponent()) + (*(it + 1)).getExponent());
+          tempComponent.setScale(tempComponent.getScale() + (*(it + 1)).getScale());
+          tempComponent.setMultiplier(tempComponent.getMultiplier() * (*(it + 1)).getMultiplier());
+          didSimplify = true;
+          it++;
+        }
 
       replacementVector.push_back(tempComponent);
-  }
+    }
 
   if (didSimplify)
-  {
-    mComponents = replacementVector;
-  }
+    {
+      mComponents = replacementVector;
+    }
 
   return didSimplify;
 }
@@ -399,39 +414,39 @@ bool CUnit::simplifyComponents()
 std::string CUnit::prefixFromScale(int scale)
 {
   switch (scale)
-  {
-    case 3:
-      return "k";  // kilo
+    {
+      case 3:
+        return "k";  // kilo
 
-    case 2:
-      return "h";  // hecto
+      case 2:
+        return "h";  // hecto
 
-    case 1:
-      return "da"; // deca
+      case 1:
+        return "da"; // deca
 
-    case -1:
-      return "d";  // deci
+      case -1:
+        return "d";  // deci
 
-    case -2:
-      return "c";  // centi
+      case -2:
+        return "c";  // centi
 
-    case -3:
-      return "m";  // milli
+      case -3:
+        return "m";  // milli
 
-    case -6:
-      return "\xc2\xb5";  // micro
+      case -6:
+        return "\xc2\xb5";  // micro
 
-    case -9:
-      return "n";  // nano
+      case -9:
+        return "n";  // nano
 
-    case -12:
-      return "p";  // pico
+      case -12:
+        return "p";  // pico
 
-    case -15:
-      return "f";  // femto
+      case -15:
+        return "f";  // femto
 
-    default:
-      return "";  // anything else, including scale = 0
-  }
+      default:
+        return "";  // anything else, including scale = 0
+    }
 }
 
