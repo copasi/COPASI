@@ -673,6 +673,7 @@ message(STATUS "-----------------------------------------------------------
    Model Merging            = ${ENABLE_WITH_MERGEMODEL}
    SEDML support            = ${ENABLE_COPASI_SEDML}
    GPROF support            = ${ENABLE_GPROF}
+   UNDO framework           = ${ENABLE_COPASI_UNDO}
    Additional Defines       = ${DirDefs}
 
   Language Bindings:
