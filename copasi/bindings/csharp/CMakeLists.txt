@@ -42,18 +42,27 @@ find_program(CSHARP_COMPILER
               /usr/local/bin
         DOC "The file name of the C# compiler."
         )
-    if(UNIX)
-    else()
-	    if (CMAKE_SIZEOF_VOID_P)
-        if(${CMAKE_SIZEOF_VOID_P} EQUAL 4)
-            # mark libsbml library as x86
-            set(CSHARP_EXTRA_ARGS -platform:x86 )
-        elseif(${CMAKE_SIZEOF_VOID_P} EQUAL 8)
-            # mark libsbml library as x64
-            set(CSHARP_EXTRA_ARGS -platform:x64 )
-        endif()
-		endif()
+
+if (${CSHARP_COMPILER} STREQUAL CSHARP_COMPILER-NOTFOUND)
+  message(FATAL_ERROR "No C# compiler found! 
+  Please set the environment variable CSHARP_DIR to point 
+  to the installation directory.")
+else ()
+  message(STATUS "Found C# Compiler:  ${CSHARP_COMPILER}")
+endif()
+
+if(UNIX)
+else()
+  if (CMAKE_SIZEOF_VOID_P)
+    if(${CMAKE_SIZEOF_VOID_P} EQUAL 4)
+      # mark libsbml library as x86
+      set(CSHARP_EXTRA_ARGS -platform:x86 )
+    elseif(${CMAKE_SIZEOF_VOID_P} EQUAL 8)
+      # mark libsbml library as x64
+      set(CSHARP_EXTRA_ARGS -platform:x64 )
     endif()
+  endif()
+endif()
 
 set(SWIG_EXTRA_FLAGS)
 
@@ -82,7 +91,7 @@ make_directory(${CMAKE_CURRENT_BINARY_DIR}/csharp-files)
 add_custom_command(	
     OUTPUT 	${CMAKE_CURRENT_BINARY_DIR}/copasi_wrapper.cpp 
 	${CMAKE_CURRENT_BINARY_DIR}/csharp-files
-	${CMAKE_CURRENT_BINARY_DIR}/csharp-files/copasi.cs 
+	${CMAKE_CURRENT_BINARY_DIR}/csharp-files/COPASI.cs 
     COMMAND "${CMAKE_COMMAND}"
     ARGS  -E remove_directory "${COPASI_CS_FILES}"
     COMMAND "${CMAKE_COMMAND}"
@@ -119,7 +128,6 @@ add_custom_target(binding_csharp_swig DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/csharp
 include(../../common.cmake)
 include(../../CMakeConsoleApp.cmake)
 
-
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../..)
@@ -127,11 +135,9 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../swig)
 include_directories(${CMAKE_SOURCE_DIR}/src)
 add_library(binding_csharp_native_lib SHARED ${CMAKE_CURRENT_BINARY_DIR}/copasi_wrapper.cpp) 
 add_dependencies(binding_csharp_native_lib binding_csharp_swig)
-if (UNIX)
+
 set_target_properties (binding_csharp_native_lib PROPERTIES OUTPUT_NAME "copasics")
-else()
-set_target_properties (binding_csharp_native_lib PROPERTIES OUTPUT_NAME "copasics")
-endif()
+
 target_link_libraries(binding_csharp_native_lib ${SE_EXTERNAL_LIBS} ${SE_LIBS} )
 
 INSTALL(TARGETS binding_csharp_native_lib 
@@ -155,7 +161,7 @@ ADD_CUSTOM_COMMAND(
 		 
 	MAIN_DEPENDENCY "${CMAKE_CURRENT_SOURCE_DIR}/../swig/copasi.i"
 	DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/compile-native-files.cmake
-	        ${CMAKE_CURRENT_BINARY_DIR}/csharp-files/copasi.cs
+	        ${CMAKE_CURRENT_BINARY_DIR}/csharp-files/COPASI.cs
 	        ${CMAKE_CURRENT_BINARY_DIR}/copasi_wrapper.cpp 
 	WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"
 	COMMENT "Build csharp files"
