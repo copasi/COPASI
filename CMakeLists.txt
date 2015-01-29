@@ -107,6 +107,12 @@ if (CMAKE_SIZEOF_VOID_P EQUAL 4)
 else()
   set(COPASI_BUILD_TYPE "64bit")
 endif()
+
+# On OSX it is common to build universal binaries to support multiple
+# processor architectures. The default behavior is not to build
+# multiple architectures, as most users might not need that.
+option(ENABLE_UNIVERSAL "Create universal binaries on Mac OS X." OFF)
+
 if (APPLE AND ENABLE_UNIVERSAL)
   set(COPASI_BUILD_TYPE "universal")
 endif()
@@ -286,6 +292,26 @@ if(UNIX)
         set(CMAKE_XCODE_ATTRIBUTE_GCC_VERSION "com.apple.compilers.llvmgcc42")
       endif()
     endif()
+
+    set(CMAKE_OSX_ARCHITECTURES "${CMAKE_OSX_ARCHITECTURES}" CACHE STRING
+      "A semicolon-separated list of build architectures to be used.")
+    if(ENABLE_UNIVERSAL)
+      # if universal binaries are requested and none defined so far
+      # overwrite them with all three common architectures. If the user
+      # specified their own list of architectures do not touch!
+      if(CMAKE_OSX_ARCHITECTURES STREQUAL "")
+        STRING(REGEX REPLACE "^.*MacOSX([0-9]*\\.[0-9]*)\\.sdk$" "\\1"
+               OSX_SDK_VERSION "${CMAKE_OSX_SYSROOT}")
+        if(OSX_SDK_VERSION  VERSION_EQUAL "10.7" OR OSX_SDK_VERSION  VERSION_EQUAL "10.8")
+          # OSX Lion no longer supports ppc architecture
+          set(CMAKE_OSX_ARCHITECTURES "i386;x86_64" CACHE STRING
+            "A semicolon-separated list of build architectures to be used." FORCE)
+          else()
+            set(CMAKE_OSX_ARCHITECTURES "i386;ppc;x86_64" CACHE STRING
+              "A semicolon-separated list of build architectures to be used." FORCE)
+        endif()
+      endif()
+    endif(ENABLE_UNIVERSAL)
   else()
     add_definitions(-DLinux)
     if(NOT CYGWIN)
