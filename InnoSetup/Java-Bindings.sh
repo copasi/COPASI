@@ -5,6 +5,7 @@
 # All rights reserved. 
 
 PACKAGE_NAME="COPASI-${MyAppVersion}-Java-Bindings-Windows-${Arch}"
+BUILD_ROOT="$(pwd)"
 
 echo mkdir -p "${SETUP_DIR}/${PACKAGE_NAME}"
 mkdir -p "${SETUP_DIR}/${PACKAGE_NAME}"
@@ -24,18 +25,18 @@ cp "${SOURCE}"/copasi/ArtisticLicense.txt LICENSE
 chmod 644 LICENSE
 
 # Copy copasi.jar
-echo cp copasi/bindings/java/copasi.jar  .
-cp copasi/bindings/java/copasi.jar .
+echo cp "${BUILD_ROOT}"/copasi/bindings/java/copasi.jar  .
+cp "${BUILD_ROOT}"copasi/bindings/java/copasi.jar .
 chmod 644 copasi.jar
 
 # Copy copasi_gui.jar
-echo cp copasi/bindings/java/copasi-gui.jar  .
-cp copasi/bindings/java/copasi-gui.jar .
+echo cp "${BUILD_ROOT}"copasi/bindings/java/copasi-gui.jar  .
+cp "${BUILD_ROOT}"copasi/bindings/java/copasi-gui.jar .
 chmod 644 copasi_gui.jar
 
 # Copy CopasiJava.dll
-echo cp copasi/bindings/java/CopasiJava.dll  .
-cp copasi/bindings/java/CopasiJava.dll .
+echo "${BUILD_ROOT}"cp copasi/bindings/java/CopasiJava.dll  .
+cp "${BUILD_ROOT}"copasi/bindings/java/CopasiJava.dll .
 chmod 644 CopasiJava.dll
 
 # Copy examples
