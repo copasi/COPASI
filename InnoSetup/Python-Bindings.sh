@@ -4,7 +4,7 @@
 # of Manchester. 
 # All rights reserved. 
 
-PACKAGE_NAME="COPASI-${MyAppVersion}-Python-Windows-${Arch}"
+PACKAGE_NAME="COPASI-${MyAppVersion}-Python-Bindings-Windows-${Arch}"
 
 echo mkdir -p "${SETUP_DIR}/${PACKAGE_NAME}"
 mkdir -p "${SETUP_DIR}/${PACKAGE_NAME}"
