@@ -5,6 +5,7 @@
 # All rights reserved. 
 
 PACKAGE_NAME="COPASI-${MyAppVersion}-Python-Bindings-Windows-${Arch}"
+BUILD_ROOT="$(pwd)"
 
 echo mkdir -p "${SETUP_DIR}/${PACKAGE_NAME}"
 mkdir -p "${SETUP_DIR}/${PACKAGE_NAME}"
@@ -24,13 +25,13 @@ cp "${SOURCE}"/copasi/ArtisticLicense.txt LICENSE
 chmod 644 LICENSE
 
 # Copy COPASI.py
-echo cp copasi/bindings/python/COPASI.py  .
-cp copasi/bindings/python/COPASI.py .
+echo cp "${BUILD_ROOT}"/copasi/bindings/python/COPASI.py  .
+cp "${BUILD_ROOT}"/copasi/bindings/python/COPASI.py .
 chmod 644 COPASI.py
 
 # Copy _COPASI.pyd
-echo cp copasi/bindings/python/_COPASI.pyd  .
-cp copasi/bindings/python/_COPASI.pyd .
+echo cp "${BUILD_ROOT}"/copasi/bindings/python/_COPASI.pyd  .
+cp "${BUILD_ROOT}"/copasi/bindings/python/_COPASI.pyd .
 chmod 644 _COPASI.pyd
 
 # Copy examples

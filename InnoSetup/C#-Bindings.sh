@@ -5,6 +5,7 @@
 # All rights reserved. 
 
 PACKAGE_NAME="COPASI-${MyAppVersion}-C#-Bindings-Windows-${Arch}"
+BUILD_ROOT="$(pwd)"
 
 echo mkdir -p "${SETUP_DIR}/${PACKAGE_NAME}"
 mkdir -p "${SETUP_DIR}/${PACKAGE_NAME}"
@@ -24,13 +25,13 @@ cp "${SOURCE}"/copasi/ArtisticLicense.txt LICENSE
 chmod 644 LICENSE
 
 # Copy copasicsP.dll
-echo cp copasi/bindings/csharp/copasicsP.dll  .
-cp copasi/bindings/csharp/copasicsP.dll .
+echo cp "${BUILD_ROOT}"/copasi/bindings/csharp/copasicsP.dll  .
+cp "${BUILD_ROOT}"/copasi/bindings/csharp/copasicsP.dll .
 chmod 644 copasicsP.dll
 
 # Copy copasics.dll
-echo cp copasi/bindings/csharp/copasics.dll  .
-cp copasi/bindings/csharp/copasics.dll .
+echo cp "${BUILD_ROOT}"/copasi/bindings/csharp/copasics.dll  .
+cp "${BUILD_ROOT}"/copasi/bindings/csharp/copasics.dll .
 chmod 644 copasics.dll
 
 # Copy examples
