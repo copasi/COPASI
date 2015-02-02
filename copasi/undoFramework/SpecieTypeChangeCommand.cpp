@@ -44,43 +44,8 @@ SpecieTypeChangeCommand::SpecieTypeChangeCommand(int type, int currentType, CQSp
   setAction("Change");
   setName(mpSpecieData->getName());
 
-  switch ((CModelEntity::Status) mNewType)
-    {
-      case CModelEntity::FIXED:
-        setNewValue("fixed");
-        break;
-
-      case CModelEntity::REACTIONS:
-        setNewValue("reactions");
-        break;
-
-      case CModelEntity::ASSIGNMENT:
-        setNewValue("assignment");
-        break;
-
-      case CModelEntity::ODE:
-        setNewValue("ode");
-        break;
-    }
-
-  switch ((CModelEntity::Status) mOldType)
-    {
-      case CModelEntity::FIXED:
-        setOldValue("fixed");
-        break;
-
-      case CModelEntity::REACTIONS:
-        setOldValue("reactions");
-        break;
-
-      case CModelEntity::ASSIGNMENT:
-        setOldValue("assignment");
-        break;
-
-      case CModelEntity::ODE:
-        setOldValue("ode");
-        break;
-    }
+  setNewValue(CModelEntity::XMLStatus[type]);
+  setOldValue(CModelEntity::XMLStatus[currentType]);
 
   setProperty("Type");
 }
