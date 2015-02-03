@@ -27,7 +27,6 @@ case ${TARGET_VS_ARCH} in
     ;;
 
   *)
-    exit
     ;;
 esac
 
