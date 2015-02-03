@@ -197,7 +197,7 @@ if (ENABLE_WITH_MERGEMODEL)
 endif(ENABLE_WITH_MERGEMODEL)
 
 
-option(ENABLE_PE_EVENT_CREATION "Enable Event Creation out of time series data" OFF)
+option(ENABLE_PE_EVENT_CREATION "Enable Event Creation out of time series data" ON)
 if (ENABLE_PE_EVENT_CREATION)
   add_definitions(-DWITH_PE_EVENT_CREATION)
 endif(ENABLE_PE_EVENT_CREATION)
