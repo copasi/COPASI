@@ -3018,6 +3018,7 @@ CModel::createEventsForTimeseries(CExperiment* experiment/* = NULL*/)
         }
 
       const CFitProblem *problem = static_cast<const CFitProblem*>(task->getProblem());
+
       const CExperimentSet& experiments = problem->getExperiementSet();
 
       // find first time course experiment
@@ -3156,8 +3157,9 @@ CModel::createEventsForTimeseries(CExperiment* experiment/* = NULL*/)
         {
           problem->setContinueSimultaneousEvents(true);
           CCopasiMessage(CCopasiMessage::WARNING,
-                         "Since the model contained events, the option 'Continue on Simultaneous Events' has been enabled on"
-                         "the  Time-Course  task, to ensure that simulation continues if multiple events trigger at the same time.");
+                         "Since the model contained events, the option 'Continue on Simultaneous Events' "
+                         "has been enabled in the 'Time 'Course' task to ensure that simulation continues "
+                         "if multiple events trigger at the same time.");
         }
     }
 
