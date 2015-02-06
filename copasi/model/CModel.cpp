@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -2999,8 +2999,12 @@ bool CModel::removeEvent(const CEvent * pEvent,
 #include <copasi/parameterFitting/CExperiment.h>
 #include <copasi/parameterFitting/CExperimentSet.h>
 #include <copasi/parameterFitting/CExperimentObjectMap.h>
+
 #include <copasi/parameterFitting/CFitTask.h>
 #include <copasi/parameterFitting/CFitProblem.h>
+
+#include <copasi/trajectory/CTrajectoryTask.h>
+#include <copasi/trajectory/CTrajectoryProblem.h>
 
 #include <copasi/commandline/CLocaleString.h>
 
@@ -3106,6 +3110,10 @@ CModel::createEventsForTimeseries(CExperiment* experiment/* = NULL*/)
       return false;
     }
 
+  // remember whether we had events before, if so it could be that
+  // we have two events triggering at the same time
+  bool hadEvents = getEvents().size() > 0;
+
   size_t numCols = experiment->getNumColumns();
   const CVector< CCopasiObject * > &objects = experiment->getObjectMap().getMappedObjects();
 
@@ -3149,6 +3157,27 @@ CModel::createEventsForTimeseries(CExperiment* experiment/* = NULL*/)
           pNewAssignment->setExpression(assignmentStr.str());
           pNewAssignment->getExpressionPtr()->compile();
           pEvent->getAssignments().add(pNewAssignment, true);
+        }
+    }
+
+  // ensure that the 'continue on simultaneous events' option is enabled
+  // for time course simulations, this needs to happen whenever we already
+  // have events in the model, as then there is a chance that two events trigger at the same time
+
+  if (!hadEvents) return true;
+
+  CTrajectoryTask* task = dynamic_cast<CTrajectoryTask*>((*getObjectDataModel()->getTaskList())["Time-Course"]);
+
+  if (task != NULL)
+    {
+      CTrajectoryProblem* problem = dynamic_cast<CTrajectoryProblem*>(task->getProblem());
+
+      if (!problem->getContinueSimultaneousEvents())
+        {
+          problem->setContinueSimultaneousEvents(true);
+          CCopasiMessage(CCopasiMessage::WARNING,
+                         "Since the model contained events, the option 'Continue on Simultaneous Events' has been enabled on"
+                         "the  Time-Course  task, to ensure that simulation continues if multiple events trigger at the same time.");
         }
     }
 
