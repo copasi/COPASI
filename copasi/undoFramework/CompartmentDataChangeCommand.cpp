@@ -35,6 +35,14 @@ CompartmentDataChangeCommand::CompartmentDataChangeCommand(QModelIndex index, co
   CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
   assert(pDataModel != NULL);
   CModel * pModel = pDataModel->getModel();
+
+  if (pModel->getCompartments().size() <= (size_t)index.row())
+    {
+      // TODO: here you have the case of a new compartment added, that needs to be handled
+      //       otherwise it will crash, for now return
+      return;
+    }
+
   CCompartment *pCompartment = pModel->getCompartments()[index.row()];
   mType = COMPARTMENTDATACHANGE;
   setEntityType("Compartment");

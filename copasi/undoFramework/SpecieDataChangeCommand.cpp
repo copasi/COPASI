@@ -36,6 +36,14 @@ SpecieDataChangeCommand::SpecieDataChangeCommand(QModelIndex index, const QVaria
   CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
   assert(pDataModel != NULL);
   CModel * pModel = pDataModel->getModel();
+
+  if (pModel->getMetabolites().size() <= (size_t)index.row())
+    {
+      // TODO: here you have the case of a new species added, that needs to be handled
+      //       otherwise it will crash, for now return
+      return;
+    }
+
   CMetab *pSpecies = pModel->getMetabolites()[index.row()];
   mType = SPECIEDATACHANGE;
   setEntityType("Species");

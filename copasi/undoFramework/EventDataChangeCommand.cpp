@@ -36,6 +36,14 @@ EventDataChangeCommand::EventDataChangeCommand(QModelIndex index, const QVariant
   CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
   assert(pDataModel != NULL);
   CModel * pModel = pDataModel->getModel();
+
+  if (pModel->getEvents().size() <= (size_t)index.row())
+    {
+      // TODO: here you have the case of a new event added, that needs to be handled
+      //       otherwise it will crash, for now return
+      return;
+    }
+
   CEvent *pEvent = pModel->getEvents()[index.row()];
   mType = EVENTDATACHANGE;
   setEntityType("Event");

@@ -354,7 +354,8 @@ bool CQSpecieDM::setData(const QModelIndex &index, const QVariant &value,
 #ifdef COPASI_UNDO
 
   //change is only accepted if the new value is different from the old value and also the old value is not equal to "New Species" for the 'name' column
-  if (index.data() == value || index.data() == "New Species")
+  // in that case no new species will be created!
+  if (index.data() == value)
     return false;
   else
     mpUndoStack->push(new SpecieDataChangeCommand(index, value, role, this));
