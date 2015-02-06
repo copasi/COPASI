@@ -4,7 +4,11 @@
 # of Manchester. 
 # All rights reserved. 
 
-PACKAGE_NAME="COPASI-${MyAppVersion}-Python-Bindings-Darwin"
+PYTHON_VERSION="$(python --version 2>&1)"
+PYTHON_VERSION=${PYTHON_VERSION#Python }
+PYTHON_VERSION=${PYTHON_VERSION:0:3}
+
+PACKAGE_NAME="COPASI-${MyAppVersion}-Python-${PYTHON_VERSION}-Bindings-Darwin"
 
 echo mkdir -p "${SETUP_DIR}/${PACKAGE_NAME}"
 mkdir -p "${SETUP_DIR}/${PACKAGE_NAME}"

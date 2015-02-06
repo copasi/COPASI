@@ -4,23 +4,23 @@
 # of Manchester. 
 # All rights reserved. 
 
-PACKAGE_NAME="COPASI-${MyAppVersion}-Python-2.7-Bindings-Windows-${Arch}"
+PYTHON_VERSION="$("$(cygpath "$PYTHON_EXECUTABLE")" --version 2>&1)"
+PYTHON_VERSION=${PYTHON_VERSION#Python }
+PYTHON_VERSION=${PYTHON_VERSION:0:3}
+
+PACKAGE_NAME="COPASI-${MyAppVersion}-Python-${PYTHON_VERSION}-Bindings-Windows-${Arch}"
 BUILD_ROOT="$(pwd)"
 
 echo mkdir -p "${SETUP_DIR}"
 mkdir -p "${SETUP_DIR}"
 pushd "${SETUP_DIR}"
 
-echo rm -rf "COPASI-${MyAppVersion}-Python-2.7-Bindings-Windows-${Arch}"*
-rm -rf "COPASI-${MyAppVersion}-Python-2.7-Bindings-Windows-${Arch}"*
+echo rm -rf "COPASI-${MyAppVersion}-Python-${PYTHON_VERSION}-Bindings-Windows-${Arch}"*
+rm -rf "COPASI-${MyAppVersion}-Python-${PYTHON_VERSION}-Bindings-Windows-${Arch}"*
 
 echo mkdir -p "${PACKAGE_NAME}"
 mkdir -p "${PACKAGE_NAME}"
 pushd "${PACKAGE_NAME}"
-
-PYTHON_VERSION="$("$(cygpath "$PYTHON_EXECUTABLE")" --version 2>&1)"
-PYTHON_VERSION=${PYTHON_VERSION#Python }
-PYTHON_VERSION=${PYTHON_VERSION:0:3}
 
 PYTHON_PACKAGE="build/lib.${PythonArch}-${PYTHON_VERSION}/COPASI"
 
