@@ -20,10 +20,12 @@ SETUP_DIR=${COPASI_SETUP_DIR:-"${COMMON_ENVIRONMENT}/setup"}
 case ${TARGET_VS_ARCH} in
   'x86')
     Arch="32-bit"
+    PythonArch="win32"
     ;;
 
   'amd64')
     Arch="64-bit"
+    PythonArch="win-amd64"
     ;;
 
   *)
