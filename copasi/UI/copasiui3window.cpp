@@ -280,9 +280,12 @@ CopasiUI3Window::~CopasiUI3Window()
 
   for (; it != end; ++it)
     {
-      if (*it == NULL)  continue;
+      QPointer<QMainWindow> current = *it;
 
-      (*it)->close();
+      if (current == NULL)  continue;
+
+      if (current != this)
+        current->close();
     }
 
   pdelete(mpSliders);
