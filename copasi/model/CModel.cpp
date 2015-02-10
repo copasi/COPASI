@@ -2975,7 +2975,7 @@ bool CModel::removeEvent(const CEvent * pEvent,
   return true;
 }
 
-#if WITH_PE_EVENT_CREATION
+#ifdef WITH_PE_EVENT_CREATION
 
 #include <copasi/parameterFitting/CExperiment.h>
 #include <copasi/parameterFitting/CExperimentSet.h>
@@ -3099,7 +3099,7 @@ CModel::createEventsForTimeseries(CExperiment* experiment/* = NULL*/)
   const CVector< CCopasiObject * > &objects = experiment->getObjectMap().getMappedObjects();
 
   // then go through each time point
-  for (size_t i = 0; i < numRows - 1; ++i)
+  for (size_t i = 0; i < numRows; ++i)
     {
       double current = time[i];
 
