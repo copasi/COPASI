@@ -1666,8 +1666,19 @@ void CopasiUI3Window::slotCreateEventsForTimeseries()
       // Display error messages.
       CQMessageBox::information(this, "Event Creation Failed",
                                 CCopasiMessage::getAllMessageText().c_str(),
-                                QMessageBox::Ok | QMessageBox::Default,
-                                QMessageBox::NoButton);
+                                QMessageBox::Ok,
+                                QMessageBox::Ok);
+      CCopasiMessage::clearDeque();
+    }
+
+  // show any warning messages that occured
+  if (CCopasiMessage::size() != 0)
+    {
+      // Display warnings messages.
+      CQMessageBox::information(this, "Event Creation succeded with warnings",
+                                CCopasiMessage::getAllMessageText().c_str(),
+                                QMessageBox::Ok,
+                                QMessageBox::Ok);
       CCopasiMessage::clearDeque();
     }
 

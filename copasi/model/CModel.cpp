@@ -3132,6 +3132,16 @@ CModel::createEventsForTimeseries(CExperiment* experiment/* = NULL*/)
 
           double value = data(i, j);
 
+          // don't include missing data points
+          if (value != value)
+            {
+              std::string displayName = currentObject->getObjectParent()->getObjectDisplayName();
+              CCopasiMessage(CCopasiMessage::WARNING,
+                             "At time %.2f: a missing data point was encountered for '%s', the value has been ignored."
+                             , current, displayName.c_str());
+              continue;
+            }
+
           CEventAssignment * pNewAssignment =
             new CEventAssignment(currentObject->getObjectParent()->getKey());
           std::stringstream assignmentStr; assignmentStr << value;
