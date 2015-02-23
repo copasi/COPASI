@@ -1311,9 +1311,9 @@ bool CModel::setVolumeUnit(const CUnit::VolumeUnit & unitEnum)
   return true;
 }
 
-const CUnit * CModel::getVolumeUnit() const
+const CUnit & CModel::getVolumeUnit() const
 {
-  return mpVolumeUnit;
+  return *mpVolumeUnit;
 }
 
 std::string CModel::getVolumeUnitName() const
@@ -1339,9 +1339,9 @@ bool CModel::setAreaUnit(const CUnit::AreaUnit & unitEnum)
   return true;
 }
 
-const CUnit * CModel::getAreaUnit() const
+const CUnit & CModel::getAreaUnit() const
 {
-  return mpAreaUnit;
+  return *mpAreaUnit;
 }
 
 std::string CModel::getAreaUnitName() const
@@ -1366,9 +1366,9 @@ bool CModel::setLengthUnit(const CUnit::LengthUnit & unitEnum)
   return true;
 }
 
-const CUnit * CModel::getLengthUnit() const
+const CUnit & CModel::getLengthUnit() const
 {
-  return mpLengthUnit;
+  return *mpLengthUnit;
 }
 
 std::string CModel::getLengthUnitName() const
@@ -1394,9 +1394,9 @@ bool CModel::setTimeUnit(const CUnit::TimeUnit & unitEnum)
   return true;
 }
 
-const CUnit * CModel::getTimeUnit() const
+const CUnit & CModel::getTimeUnit() const
 {
-  return mpTimeUnit;
+  return *mpTimeUnit;
 }
 
 std::string CModel::getTimeUnitName() const
@@ -1491,9 +1491,9 @@ bool CModel::setQuantityUnit(const CUnit::QuantityUnit & unitEnum)
   return success;
 }
 
-const CUnit * CModel::getQuantityUnit() const
+const CUnit & CModel::getQuantityUnit() const
 {
-  return mpQuantityUnit;
+  return *mpQuantityUnit;
 }
 
 std::string CModel::getQuantityUnitName() const
@@ -3495,11 +3495,11 @@ std::string CModel::printParameterOverview()
           oss << reac->getObjectName() << "\n";
 
           //calculate units
-          CFindDimensions units(reac->getFunction(), getQuantityUnit()->isDimensionless(),
-                                getVolumeUnit()->isDimensionless(),
-                                getTimeUnit()->isDimensionless(),
-                                getAreaUnit()->isDimensionless(),
-                                getLengthUnit()->isDimensionless());
+          CFindDimensions units(reac->getFunction(), getQuantityUnit().isDimensionless(),
+                                getVolumeUnit().isDimensionless(),
+                                getTimeUnit().isDimensionless(),
+                                getAreaUnit().isDimensionless(),
+                                getLengthUnit().isDimensionless());
           units.setUseHeuristics(true);
           units.setChemicalEquation(&reac->getChemEq());
           units.findDimensions(reac->getCompartmentNumber() > 1);
@@ -3561,7 +3561,7 @@ std::string CModel::getFrequencyUnitsDisplayString() const
 
 std::string CModel::getVolumeUnitsDisplayString() const
 {
-  if (getVolumeUnit()->isDimensionless())
+  if (getVolumeUnit().isDimensionless())
     return "";
 
   return mpVolumeUnit->getSymbol();

@@ -445,7 +445,7 @@ public:
    * Get the current volume unit of the model
    * @return const CUnit & volumeunit
    */
-  const CUnit * getVolumeUnit() const;
+  const CUnit & getVolumeUnit() const;
 
   /**
    * Get the unit for volumes
@@ -477,7 +477,7 @@ public:
    * Get the current area unit of the model
    * @return const CUnit & areaunit
    */
-  const CUnit * getAreaUnit() const;
+  const CUnit & getAreaUnit() const;
 
   /**
    * Get the unit for areas
@@ -509,7 +509,7 @@ public:
    * Get the current length unit of the model
    * @return const CUnit & lengthunit
    */
-  const CUnit * getLengthUnit() const;
+  const CUnit & getLengthUnit() const;
 
   /**
    * Get the unit for lengths
@@ -545,7 +545,7 @@ public:
    * Get the current time unit of the model
    * @return const CUnit & timeunit
    */
-  const CUnit * getTimeUnit() const;
+  const CUnit & getTimeUnit() const;
 
   /**
    * Get the unit for time
@@ -581,7 +581,7 @@ public:
    * Get the current quantity unit of the model
    * @return const CUnit & quantityunit
    */
-  const CUnit * getQuantityUnit() const;
+  const CUnit & getQuantityUnit() const;
 
   /**
    * Get the unit for quantities
