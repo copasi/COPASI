@@ -90,6 +90,7 @@ public:
   bool simplifyComponents();
   bool invertComponents();
   std::string prefixFromScale(int scale);
+  CUnit operator*(const CUnit & rhs) const;
 
 private:
 

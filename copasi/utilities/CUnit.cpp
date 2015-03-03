@@ -461,3 +461,14 @@ std::string CUnit::prefixFromScale(int scale)
         return "";  // anything else, including scale = 0
     }
 }
+
+// Putting units next to each other implies multipying them.
+CUnit CUnit::operator*(const CUnit & rhs) const
+{
+  CUnit combined_unit = *this; // Make a copy of the first CUnit
+
+  // Insert the components of the second unit after the ones from the first one.
+  combined_unit.mComponents.insert(combined_unit.mComponents.end(), rhs.mComponents.begin(), rhs.mComponents.end());
+
+  return combined_unit; // The calling code might want to call simplifyComponents() on the returned unit.
+}
