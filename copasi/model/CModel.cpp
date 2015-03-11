@@ -139,14 +139,6 @@ CModel::CModel(CCopasiContainer* pParent):
 
   forceCompile(NULL);
 
-  /* This following 2 lines added by Liang Xu
-  Because of the failure to initialize the parameter when creating a new models
-  */
-//  setQuantityUnit(mpQuantityUnit->getSymbol()); // set the factors
-//  setVolumeUnit(mpVolumeUnit->getSymbol()); // set the factors
-  setQuantityUnit("mol");
-  setVolumeUnit("ml");
-
   CONSTRUCTOR_TRACE;
 }
 
@@ -208,6 +200,7 @@ CModel::CModel(CCopasiContainer* pParent):
 
 CModel::~CModel()
 {
+  mpModel = NULL;
   mpIValue = NULL;
   mpValue = NULL;
 
@@ -3019,7 +3012,7 @@ bool
 CModel::createEventsForTimeseries(CExperiment* experiment/* = NULL*/)
 {
 
-#pragma region   //find_experiment
+  #pragma region   //find_experiment
 
   if (experiment == NULL)
     {
@@ -3069,7 +3062,7 @@ CModel::createEventsForTimeseries(CExperiment* experiment/* = NULL*/)
       return createEventsForTimeseries(const_cast<CExperiment*>(theExperiment));
     }
 
-#pragma endregion //find_experiment
+  #pragma endregion //find_experiment
 
   if (experiment->getExperimentType() != CCopasiTask::timeCourse)
     {
@@ -3629,6 +3622,8 @@ bool CModel::convert2NonReversible()
 
 void CModel::initObjects()
 {
+  mpModel = this;
+
   mKey = CCopasiRootContainer::getKeyFactory()->add("Model", this);
 
   // The regular CModelEntity mechanism does not work since
