@@ -39,6 +39,7 @@ class CCopasiObject;
 class CModel;
 class CCopasiDataModel;
 class CCopasiStaticString;
+class CUnit;   //This will also work-around having a circular dependency
 
 template <class CType> class CCopasiObjectReference;
 template <class CType> class CCopasiVectorReference;
@@ -369,9 +370,9 @@ public:
 
   /**
    * Retrieve the units of the object.
-   * @return std::string units
+   * @return CUnit units
    */
-  virtual std::string getUnits() const;
+  virtual const CUnit getUnits() const;
 
   /**
    * Comparison operator which can be used to sort objects based on their dependencies

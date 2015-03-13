@@ -33,6 +33,7 @@ class CCompartment;
 class CReadConfig;
 class CMetabOld;
 class CModel;
+class CUnit;
 
 class CConcentrationReference : public CCopasiObjectReference< C_FLOAT64 >
 {
@@ -259,9 +260,9 @@ public:
 
   /**
    * Retrieve the units of the child object.
-   * @return std::string units
+   * @return const & CUnit units
    */
-  virtual std::string getChildObjectUnits(const CCopasiObject * pObject) const;
+  virtual CUnit getChildObjectUnits(const CCopasiObject * pObject) const;
 
   /**
    * Retrieve the object representing the value;

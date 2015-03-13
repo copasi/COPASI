@@ -1,12 +1,9 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CCompartment.h,v $
-//   $Revision: 1.51 $
-//   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2009/05/04 14:51:12 $
-// End CVS Header
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
@@ -71,7 +68,7 @@ public:
    * Retrieve the units of the child object.
    * @return std::string units
    */
-  virtual std::string getChildObjectUnits(const CCopasiObject * pObject) const;
+  virtual CUnit getChildObjectUnits(const CCopasiObject * pObject) const;
 
   /**
    * Cleanup

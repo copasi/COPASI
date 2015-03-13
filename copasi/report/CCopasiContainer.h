@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -33,6 +33,8 @@
 #include <vector>
 
 #include "copasi/report/CCopasiObject.h"
+
+class CUnit;
 
 class CCopasiContainer: public CCopasiObject
 {
@@ -73,15 +75,15 @@ public:
 
   /**
    * Retrieve the units of the object.
-   * @return std::string units
+   * @return CUnit units
    */
-  virtual std::string getUnits() const;
+  virtual CUnit getUnits();
 
   /**
    * Retrieve the units of the child object.
    * @return std::string units
    */
-  virtual std::string getChildObjectUnits(const CCopasiObject * pObject) const;
+  virtual CUnit getChildObjectUnits(const CCopasiObject * pObject) const;
 
 protected:
   void initObjects();

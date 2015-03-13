@@ -150,7 +150,7 @@ CCopasiObject::CCopasiObject(const std::string & name,
   CObjectInterface(),
   mObjectName((name == "") ? "No Name" : name),
   mObjectType(type),
-  mpObjectParent(const_cast<CCopasiContainer *>(pParent)),
+  mpObjectParent(const_cast<CCopasiContainer * >(pParent)),
   mpObjectDisplayName(NULL),
   mObjectFlag(flag)
 {
@@ -600,12 +600,12 @@ const std::string & CCopasiObject::getKey() const
 }
 
 // virtual
-std::string CCopasiObject::getUnits() const
+const CUnit CCopasiObject::getUnits() const
 {
   if (mpObjectParent != NULL)
     return mpObjectParent->getChildObjectUnits(this);
 
-  return "";
+  return CUnit();
 }
 
 std::ostream &operator<<(std::ostream &os, const CCopasiObject & o)

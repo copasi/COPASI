@@ -282,9 +282,9 @@ QVariant CQSpecieDM::headerData(int section, Qt::Orientation orientation,
         RateUnits = "\n(" + RateUnits + ")";
 
       if (pModel)
-        FrequencyUnits = FROM_UTF8(pModel->getFrequencyUnitsDisplayString());
+        FrequencyUnits = FROM_UTF8(pModel->getFrequencyUnit().getSymbol());
 
-      if (!FrequencyUnits.isEmpty())
+      if (FrequencyUnits != "none")
         FrequencyUnits = "\n(" + FrequencyUnits + ")";
 
       if (!ValueUnits.isEmpty() && !RateUnits.isEmpty())

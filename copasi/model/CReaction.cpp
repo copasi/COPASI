@@ -113,23 +113,23 @@ CReaction::~CReaction()
 }
 
 // virtual
-std::string CReaction::getChildObjectUnits(const CCopasiObject * pObject) const
+CUnit CReaction::getChildObjectUnits(const CCopasiObject * pObject) const
 {
   const CModel * pModel =
     dynamic_cast< const CModel * >(getObjectAncestor("Model"));
 
-  if (pModel == NULL) return "";
+  if (pModel == NULL) return CUnit();
 
   const std::string & Name = pObject->getObjectName();
 
   if (Name == "ParticleFlux")
-    return pModel->getFrequencyUnitsDisplayString();
+    return pModel->getFrequencyUnit();
   else if (Name == "Flux")
     return pModel->getQuantityRateUnitsDisplayString();
   else if (Name == "Propensity")
-    return pModel->getFrequencyUnitsDisplayString();
+    return pModel->getFrequencyUnit();
 
-  return "";
+  return CUnit();
 }
 
 void CReaction::cleanup()

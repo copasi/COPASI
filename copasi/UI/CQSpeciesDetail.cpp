@@ -176,9 +176,9 @@ void CQSpeciesDetail::setFramework(int framework)
   QString FrequencyUnits;
 
   if (pModel)
-    FrequencyUnits = FROM_UTF8(pModel->getFrequencyUnitsDisplayString());
+    FrequencyUnits = FROM_UTF8(pModel->getFrequencyUnit().getSymbol());
 
-  if (!FrequencyUnits.isEmpty())
+  if (FrequencyUnits != "none")
     FrequencyUnits = " (" + FrequencyUnits + ")";
 
   switch (mFramework)

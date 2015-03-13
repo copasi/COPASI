@@ -171,9 +171,9 @@ QVariant CQReactionDM::headerData(int section, Qt::Orientation orientation,
             QString FrequencyUnits;
 
             if (pModel)
-              FrequencyUnits = FROM_UTF8(pModel->getFrequencyUnitsDisplayString());
+              FrequencyUnits = FROM_UTF8(pModel->getFrequencyUnit().getSymbol());
 
-            if (!FrequencyUnits.isEmpty())
+            if (FrequencyUnits != "none")
               FrequencyUnits = "\n(" + FrequencyUnits + ")";
 
             return QVariant("Flux" + FrequencyUnits);

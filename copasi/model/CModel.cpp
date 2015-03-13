@@ -198,13 +198,13 @@ CModel::~CModel()
 }
 
 // virtual
-std::string CModel::getChildObjectUnits(const CCopasiObject * pObject) const
+CUnit CModel::getChildObjectUnits(const CCopasiObject * pObject) const
 {
   if (pObject->getObjectName() == "Initial Time" ||
       pObject->getObjectName() == "Time")
-    return getTimeUnitName();
+    return getTimeUnit();
 
-  return "";
+  return CUnit();
 }
 
 C_INT32 CModel::load(CReadConfig & configBuffer)
@@ -3551,12 +3551,12 @@ std::string CModel::getTimeUnitsDisplayString() const
   return mpTimeUnit->getSymbol();
 }
 
-std::string CModel::getFrequencyUnitsDisplayString() const
+CUnit CModel::getFrequencyUnit() const
 {
-  if (mpTimeUnit->isDimensionless())
-    return "";
-
-  return std::string("1/") + mpTimeUnit->getSymbol();
+  CUnit frequencyUnit = CUnit(getTimeUnit());
+  frequencyUnit.simplifyComponents();
+  frequencyUnit.invertComponents();
+  return frequencyUnit;
 }
 
 std::string CModel::getVolumeUnitsDisplayString() const

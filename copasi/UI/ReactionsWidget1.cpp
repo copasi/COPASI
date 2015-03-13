@@ -643,9 +643,9 @@ void ReactionsWidget1::setFramework(int framework)
       case 1:
 
         if (pModel)
-          Units = FROM_UTF8(pModel->getFrequencyUnitsDisplayString());
+          Units = FROM_UTF8(pModel->getFrequencyUnit().getSymbol());
 
-        if (!Units.isEmpty())
+        if (Units != "none")
           Units = " (" + Units + ")";
 
         TextLabel8->setText("Particle Flux" + Units);

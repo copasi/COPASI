@@ -81,7 +81,7 @@ public:
    * Retrieve the units of the child object.
    * @return std::string units
    */
-  virtual std::string getChildObjectUnits(const CCopasiObject * pObject) const;
+  virtual CUnit getChildObjectUnits(const CCopasiObject * pObject) const;
 
   /**
    * Converts the set of reactions to a set of reactions where all reactions are irreversible.
@@ -931,7 +931,7 @@ public:
    * Retrieve the frequency units
    * @return std::string frequencyUnits
    */
-  std::string getFrequencyUnitsDisplayString() const;
+  CUnit getFrequencyUnit() const;
 
   /**
    * Retrieve the volume units

@@ -68,9 +68,9 @@ CCompartment::~CCompartment()
 }
 
 // virtual
-std::string CCompartment::getChildObjectUnits(const CCopasiObject * pObject) const
+CUnit CCompartment::getChildObjectUnits(const CCopasiObject * pObject) const
 {
-  if (mpModel == NULL) return "";
+  if (mpModel == NULL) return CUnit();
 
   if (pObject == mpValueReference ||
       pObject == mpIValueReference)
@@ -90,20 +90,20 @@ std::string CCompartment::getChildObjectUnits(const CCopasiObject * pObject) con
             break;
 
           default:
-            return "";
+            return CUnit();
             break;
         }
     }
   else if (pObject == mpRateReference)
     {
-      std::string Unit = getChildObjectUnits(mpValueReference);
+      std::string Unit = getChildObjectUnits(mpValueReference).getSymbol();
       std::string TimeUnit = mpModel->getTimeUnitsDisplayString();
 
       if (Unit == "")
         {
           if (TimeUnit == "")
             {
-              return "";
+              return CUnit();
             }
 
           return "1/" + TimeUnit;
@@ -117,7 +117,7 @@ std::string CCompartment::getChildObjectUnits(const CCopasiObject * pObject) con
       return Unit + "/" + TimeUnit;
     }
 
-  return "";
+  return CUnit();
 }
 
 void CCompartment::cleanup() {mMetabolites.cleanup();}

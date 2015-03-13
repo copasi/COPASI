@@ -34,6 +34,7 @@
 #include "copasi/report/CCopasiTimer.h"
 
 #include "copasi/utilities/CCopasiVector.h"
+#include "copasi/utilities/CUnit.h"
 #include "copasi/report/CCopasiRootContainer.h"
 
 const CObjectInterface::ContainerList CCopasiContainer::EmptyList;
@@ -265,9 +266,9 @@ bool CCopasiContainer::remove(CCopasiObject * pObject)
 }
 
 // virtual
-std::string CCopasiContainer::getUnits() const
-{return "";}
+CUnit CCopasiContainer::getUnits()
+{return CUnit();}
 
 // virtual
-std::string CCopasiContainer::getChildObjectUnits(const CCopasiObject * /* pObject */) const
-{return "";}
+CUnit CCopasiContainer::getChildObjectUnits(const CCopasiObject * /* pObject */) const
+{return CUnit();}

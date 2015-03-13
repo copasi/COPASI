@@ -115,93 +115,103 @@ CMetab::~CMetab()
 }
 
 // virtual
-std::string CMetab::getChildObjectUnits(const CCopasiObject * pObject) const
+CUnit CMetab::getChildObjectUnits(const CCopasiObject * pObject) const
 {
-  if (mpModel == NULL) return "";
+  if (mpModel == NULL) return CUnit();
 
   if (pObject == mpIValueReference ||
       pObject == mpValueReference)
     {
-      return "";
+      return CUnit();
     }
   else if (pObject == mpRateReference)
     {
-      return mpModel->getFrequencyUnitsDisplayString();
+      return mpModel->getFrequencyUnit();
     }
   else if (pObject == mpTTReference)
     {
-      return mpModel->getTimeUnitsDisplayString();
+      return mpModel->getTimeUnit();
     }
   else if (mpCompartment != NULL)
     {
-      std::string Unit = mpModel->getQuantityUnitsDisplayString();
-      std::string CompartmentUnit = mpCompartment->getChildObjectUnits(mpCompartment->getInitialValueReference());
-      std::string TimeUnit = mpModel->getTimeUnitsDisplayString();
+      CUnit Unit = mpModel->getQuantityUnit();
+      CUnit CompartmentUnit = mpCompartment->getChildObjectUnits(mpCompartment->getInitialValueReference());
+      CUnit TimeUnit = mpModel->getTimeUnit();
 
       if (pObject == mpIConcReference ||
           pObject == mpConcReference)
         {
-          if (Unit == "")
+          if (Unit.getSymbol() == "none")
             {
-              if (CompartmentUnit == "")
+              if (CompartmentUnit.getSymbol() == "none")
                 {
-                  return "";
+                  return CUnit();
                 }
 
-              return "1/" + CompartmentUnit;
+              CompartmentUnit.invertComponents();
+              return CompartmentUnit;
             }
 
-          if (CompartmentUnit == "")
+          if (CompartmentUnit.getSymbol() == "none")
             {
               return Unit;
             }
 
-          return Unit + "/" + CompartmentUnit;
+          CompartmentUnit.invertComponents();
+          return CompartmentUnit;
         }
       else if (pObject == this->mpConcRateReference)
         {
-          if (Unit == "")
+          if (Unit.getSymbol() == "none")
             {
-              if (CompartmentUnit == "")
+              if (CompartmentUnit.getSymbol() == "none")
                 {
-                  if (TimeUnit == "")
+                  if (TimeUnit.getSymbol() == "none")
                     {
-                      return "";
+                      return CUnit();
                     }
 
-                  return "1/" + TimeUnit;
+                  TimeUnit.invertComponents();
+                  return TimeUnit;
                 }
 
-              if (TimeUnit == "")
+              if (TimeUnit.getSymbol() == "none")
                 {
-                  return "1/" + CompartmentUnit;
+                  CompartmentUnit.invertComponents();
+                  return CompartmentUnit;
                 }
 
-              return "1/(" + CompartmentUnit + "*" + TimeUnit + ")";
+              CompartmentUnit.invertComponents();
+              TimeUnit.invertComponents();
+              return CompartmentUnit * TimeUnit;
             }
           else
             {
-              if (CompartmentUnit == "")
+              if (CompartmentUnit.getSymbol() == "none")
                 {
-                  if (TimeUnit == "")
+                  if (TimeUnit.getSymbol() == "none")
                     {
                       return Unit;
                     }
 
-                  return Unit + "/" + TimeUnit;
+                  TimeUnit.invertComponents();
+                  return Unit * TimeUnit;
                 }
 
-              if (TimeUnit == "")
+              if (TimeUnit.getSymbol() == "none")
                 {
-                  return Unit + "/" + CompartmentUnit;
+                  CompartmentUnit.invertComponents();
+                  return Unit * CompartmentUnit;
                 }
 
-              return Unit + "/(" + CompartmentUnit + "*" + TimeUnit + ")";
+              CompartmentUnit.invertComponents();
+              TimeUnit.invertComponents();
+              return Unit * CompartmentUnit * TimeUnit;
             }
         }
     }
 
-  return "";
+  return CUnit();
 }
 
 void CMetab::cleanup() {}
