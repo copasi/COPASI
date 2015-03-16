@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeFunction.h,v $
-//   $Revision: 1.55 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/05/30 17:11:46 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2005 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -98,7 +90,9 @@ public:
     RUNIFORM = 0x00000023,
     RNORMAL = 0x00000024,
     MAX = 0x00000025,
-    MIN =  0x00000026
+    MIN =  0x00000026,
+    RGAMMA = 0x00000027,
+    RPOISSON = 0x00000028
   };
 
   // Operations
@@ -304,6 +298,11 @@ private:
 
   static C_FLOAT64 rnormal(const C_FLOAT64 & mean,
                            const C_FLOAT64 & sd);
+
+  static C_FLOAT64 rgamma(const C_FLOAT64 & shape,
+                          const C_FLOAT64 & scale);
+
+  static C_FLOAT64 rpoisson(const C_FLOAT64 mu);
 
   static C_FLOAT64 max(const C_FLOAT64 & x1,
                        const C_FLOAT64 & x2);
