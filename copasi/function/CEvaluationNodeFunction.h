@@ -98,7 +98,9 @@ public:
     RUNIFORM = 0x00000023,
     RNORMAL = 0x00000024,
     MAX = 0x00000025,
-    MIN =  0x00000026
+    MIN =  0x00000026,
+    RGAMMA = 0x00000027,
+    RPOISSON = 0x00000028
   };
 
   // Operations
@@ -304,6 +306,12 @@ private:
 
   static C_FLOAT64 rnormal(const C_FLOAT64 & mean,
                            const C_FLOAT64 & sd);
+
+  static C_FLOAT64 rgamma(const C_FLOAT64 & shape,
+                           const C_FLOAT64 & scale);
+
+  static C_FLOAT64 rpoisson(const C_FLOAT64 mu);
+
 
   static C_FLOAT64 max(const C_FLOAT64 & x1,
                        const C_FLOAT64 & x2);

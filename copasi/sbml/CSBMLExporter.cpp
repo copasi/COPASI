@@ -234,6 +234,46 @@ std::string getUserDefinedFuctionForName(SBMLDocument* pSBMLDocument,
               );
       return newId;
     }
+  else if (id == std::string("RGAMMA"))
+  {
+    newId = hasFunctionDefinitionForURI(pSBMLDocument,
+                                        "http://sbml.org/annotations/distribution",
+                                        "distribution",
+                                        "http://www.uncertml.org/distributions/gamma");
+
+    if (!newId.empty()) return newId;
+
+    newId = createFunctionDefinitonForURI(
+                                          pSBMLDocument,
+                                          idMap,
+                                          id,
+                                          "http://sbml.org/annotations/distribution",
+                                          "distribution",
+                                          "http://www.uncertml.org/distributions/gamma",
+                                          "lambda(a,b,a*b)"
+                                          );
+    return newId;
+  }
+  else if (id == std::string("RPOISSON"))
+  {
+    newId = hasFunctionDefinitionForURI(pSBMLDocument,
+                                        "http://sbml.org/annotations/distribution",
+                                        "distribution",
+                                        "http://www.uncertml.org/distributions/poisson");
+
+    if (!newId.empty()) return newId;
+
+    newId = createFunctionDefinitonForURI(
+                                          pSBMLDocument,
+                                          idMap,
+                                          id,
+                                          "http://sbml.org/annotations/distribution",
+                                          "distribution",
+                                          "http://www.uncertml.org/distributions/poisson",
+                                          "lambda(mu,mu)"
+                                          );
+    return newId;
+  }
   else if (id == std::string("MAX"))
     {
       newId = hasFunctionDefinitionForURI(pSBMLDocument,

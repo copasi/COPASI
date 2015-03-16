@@ -33,6 +33,20 @@ C_FLOAT64 CEvaluationNodeFunction::runiform(const C_FLOAT64 & lowerBound, const 
 C_FLOAT64 CEvaluationNodeFunction::rnormal(const C_FLOAT64 & mean, const C_FLOAT64 & sd)
 {return mpRandom->getRandomNormal(mean, sd);}
 
+//static
+C_FLOAT64 CEvaluationNodeFunction::rgamma(const C_FLOAT64 & shape,
+                        const C_FLOAT64 & scale)
+{
+  return mpRandom->getRandomGamma(shape, scale);
+}
+
+//static
+C_FLOAT64 CEvaluationNodeFunction::rpoisson(const C_FLOAT64 mu)
+{
+  return mpRandom->getRandomPoisson(mu);
+}
+
+
 // static
 C_FLOAT64 CEvaluationNodeFunction::max(const C_FLOAT64 & x1, const C_FLOAT64 & x2)
 {
@@ -225,6 +239,22 @@ CEvaluationNodeFunction::CEvaluationNodeFunction(const SubType & subType,
 
         break;
 
+      case RPOISSON:
+        mpFunction = rpoisson;
+
+        if (!mpRandom)
+          mpRandom = CRandom::createGenerator();
+
+        break;
+
+      case RGAMMA:
+        mpFunction2 = rgamma;
+
+        if (!mpRandom)
+          mpRandom = CRandom::createGenerator();
+
+        break;
+
       case MAX:
         mpFunction2 = max;
         break;
@@ -295,9 +325,13 @@ std::string CEvaluationNodeFunction::getInfix(const std::vector< std::string > &
 
         case RUNIFORM:
         case RNORMAL:
+        case RGAMMA:
         case MAX:
         case MIN:
           return mData + "(" + children[0] + "," + children[1] + ")";
+
+        case RPOISSON:
+          return mData + "(" + children[0] + ")";
 
         case NOT:
           return handleNot(children[0]);
@@ -321,9 +355,13 @@ std::string CEvaluationNodeFunction::getDisplayString(const std::vector< std::st
 
         case RUNIFORM:
         case RNORMAL:
+        case RGAMMA:
         case MAX:
         case MIN:
           return mData + "(" + children[0] + "," + children[1] + ")";
+
+        case RPOISSON:
+          return mData + "(" + children[0] + ")";
 
         case NOT:
           return handleNot(children[0]);
@@ -491,6 +529,14 @@ std::string CEvaluationNodeFunction::getCCodeString(const std::vector< std::stri
             data = "user_provided_normal";
             break;
 
+          case RGAMMA:
+            data = "user_provided_normal";
+            break;
+
+          case RPOISSON:
+            data = "user_provided_normal";
+            break;
+
           case MAX:
             data = "max";
             break;
@@ -517,6 +563,7 @@ std::string CEvaluationNodeFunction::getCCodeString(const std::vector< std::stri
 
           case RUNIFORM:
           case RNORMAL:
+          case RGAMMA:
           case MAX:
           case MIN:
             return data + "(" + children[0] + "," + children[1] + ")";
@@ -586,6 +633,8 @@ std::string CEvaluationNodeFunction::getBerkeleyMadonnaString(const std::vector<
           case FACTORIAL:
           case RUNIFORM:
           case RNORMAL:
+          case RGAMMA:
+          case RPOISSON:
           case MAX:
           case MIN:
           default:
@@ -606,6 +655,7 @@ std::string CEvaluationNodeFunction::getBerkeleyMadonnaString(const std::vector<
 
           case RUNIFORM:
           case RNORMAL:
+          case RGAMMA:
           case MAX:
           case MIN:
             return data + "(" + children[0] + "," + children[1] + ")";
@@ -678,6 +728,8 @@ std::string CEvaluationNodeFunction::getXPPString(const std::vector< std::string
           case FACTORIAL:
           case RUNIFORM:
           case RNORMAL:
+          case RGAMMA:
+          case RPOISSON:
           case MAX:
           case MIN:
           default:
@@ -697,6 +749,7 @@ std::string CEvaluationNodeFunction::getXPPString(const std::vector< std::string
 
           case RUNIFORM:
           case RNORMAL:
+          case RGAMMA:
           case MAX:
           case MIN:
             return data + "(" + children[0] + "," + children[1] + ")";
@@ -1135,6 +1188,28 @@ ASTNode* CEvaluationNodeFunction::toAST(const CCopasiDataModel* pDataModel) cons
         node->addChild(sibling->toAST(pDataModel));
       }
       break;
+
+      case RGAMMA:
+      {
+        needFirstArg = false;
+        node->setType(AST_FUNCTION);
+        node->setName("RGAMMA");
+        const CEvaluationNode* child = dynamic_cast<const CEvaluationNode*>(this->getChild());
+        const CEvaluationNode* sibling = dynamic_cast<const CEvaluationNode*>(child->getSibling());
+        node->addChild(child->toAST(pDataModel));
+        node->addChild(sibling->toAST(pDataModel));
+      }
+        break;
+
+      case RPOISSON:
+      {
+        needFirstArg = false;
+        node->setType(AST_FUNCTION);
+        node->setName("RPOISSON");
+        const CEvaluationNode* child = dynamic_cast<const CEvaluationNode*>(this->getChild());
+        node->addChild(child->toAST(pDataModel));
+      }
+        break;
 
       case MAX:
       {
@@ -1620,6 +1695,7 @@ std::string CEvaluationNodeFunction::getMMLString(const std::vector< std::string
 
       case RUNIFORM:
       case RNORMAL:
+      case RGAMMA:
       case MAX:
       case MIN:
         out << "<mrow>" << std::endl;
@@ -1634,6 +1710,23 @@ std::string CEvaluationNodeFunction::getMMLString(const std::vector< std::string
         out << "<mo> , </mo>" << std::endl;
 
         out << children[1];
+
+        out << "</mrow>" << std::endl;
+        out << "<mo>) </mo>" << std::endl;
+
+        out << "</mrow>" << std::endl;
+        out << "</mrow>" << std::endl;
+        break;
+
+      case RPOISSON:
+        out << "<mrow>" << std::endl;
+
+        out << "<mi>" << mData << "</mi>" << std::endl;
+        out << "<mrow>" << std::endl;
+        out << "<mo>(</mo>" << std::endl;
+        out << "<mrow>" << std::endl;
+
+        out << children[0];
 
         out << "</mrow>" << std::endl;
         out << "<mo>) </mo>" << std::endl;

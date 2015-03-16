@@ -1618,6 +1618,28 @@ bool addToKnownFunctionToMap(std::map<std::string, std::string>& map, const Func
       return true;
     }
 
+  id = isKnownCustomFunctionDefinition(sbmlFunction,
+                                       "http://sbml.org/annotations/distribution",
+                                       "distribution",
+                                       "http://www.uncertml.org/distributions/gamma");
+
+  if (!id.empty())
+  {
+    map[id] = "RGAMMA";
+    return true;
+  }
+
+  id = isKnownCustomFunctionDefinition(sbmlFunction,
+                                       "http://sbml.org/annotations/distribution",
+                                       "distribution",
+                                       "http://www.uncertml.org/distributions/poisson");
+
+  if (!id.empty())
+  {
+    map[id] = "RPOISSON";
+    return true;
+  }
+
   return false;
 }
 
@@ -9905,6 +9927,18 @@ CFunctionDB* SBMLImporter::importFunctionDefinitions(Model* pSBMLModel, std::map
                   pFun->setInfix("NORMAL(a, b)");
                   pFun->compile();
                 }
+              else if (pos->second == "RPOISSON")
+              {
+                // replace call to function with call to normal
+                pFun->setInfix("POISSON(a)");
+                pFun->compile();
+              }
+              else if (pos->second == "RGAMMA")
+              {
+                // replace call to function with call to normal
+                pFun->setInfix("GAMMA(a, b)");
+                pFun->compile();
+              }
             }
 
           copasi2sbmlmap[pFun] = const_cast<FunctionDefinition*>(it->first);

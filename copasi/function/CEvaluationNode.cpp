@@ -160,6 +160,8 @@ const char * CEvaluationNode::Keywords[] =
   "factorial", "FACTORIAL",
   "uniform", "UNIFORM",
   "normal", "NORMAL",
+  "gamma", "GAMMA",
+  "poisson", "POISSON",
   "max", "MAX",
   "min", "MIN",
   "delay", "DELAY",
