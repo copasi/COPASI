@@ -3008,6 +3008,20 @@ std::string getNextId(const std::string& base, int count)
   return str.str();
 }
 
+const CCopasiObject* 
+getDependentOrNull(const std::map< CCopasiObject *, size_t > &  dependentMap, int index)
+{
+
+  std::map< CCopasiObject *, size_t >::const_iterator it = dependentMap.begin();
+  while(it != dependentMap.end())
+  {
+    if (it->second == index)
+      return it->first;
+     ++it;
+  }
+  return NULL;
+}
+
 bool
 CModel::createEventsForTimeseries(CExperiment* experiment/* = NULL*/)
 {
@@ -3108,7 +3122,7 @@ CModel::createEventsForTimeseries(CExperiment* experiment/* = NULL*/)
   bool hadEvents = getEvents().size() > 0;
 
   size_t numCols = experiment->getNumColumns();
-  const CVector< CCopasiObject * > &objects = experiment->getObjectMap().getMappedObjects();
+  const std::map< CCopasiObject *, size_t > &  dependentMap = experiment->getDependentObjects();
 
   // then go through each time point
   for (size_t i = 0; i < numRows; ++i)
@@ -3138,7 +3152,8 @@ CModel::createEventsForTimeseries(CExperiment* experiment/* = NULL*/)
       // create event and assignment for each mapping with its value
       for (size_t j = 0; j < data.numCols(); ++j)
         {
-          const CCopasiObject* currentObject = objects[j + 1];
+          
+          const CCopasiObject* currentObject = getDependentOrNull(dependentMap, j);  //objects[j + 1];
 
           if (currentObject == NULL || currentObject->getObjectParent() == NULL) continue;
 
