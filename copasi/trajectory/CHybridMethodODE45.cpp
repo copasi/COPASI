@@ -59,8 +59,15 @@
 /**
  * Default constructor.
  */
-CHybridMethodODE45::CHybridMethodODE45(const CCopasiContainer * pParent):
-  CTrajectoryMethod(CCopasiMethod::hybridODE45, pParent)
+CHybridMethodODE45::CHybridMethodODE45(const CCopasiContainer * pParent)
+  :  CTrajectoryMethod(CCopasiMethod::hybridODE45, pParent)
+  , mpModel(NULL)
+  , mpMetabolites(NULL)
+  , mpReactions(NULL)
+  , mpState(NULL)
+  , mY(NULL)
+  , mpRT(NULL)
+  , mpRandomGenerator(NULL)
 {
   assert((void *) &mData == (void *) &mData.dim);
   mData.pMethod = this;
@@ -73,8 +80,15 @@ CHybridMethodODE45::CHybridMethodODE45(const CCopasiContainer * pParent):
  * Copy Constructor
  */
 CHybridMethodODE45::CHybridMethodODE45(const CHybridMethodODE45 & src,
-                                       const CCopasiContainer * pParent):
-  CTrajectoryMethod(src, pParent)
+                                       const CCopasiContainer * pParent)
+  : CTrajectoryMethod(src, pParent)
+  , mpModel(NULL)
+  , mpMetabolites(NULL)
+  , mpReactions(NULL)
+  , mpState(NULL)
+  , mY(NULL)
+  , mpRT(NULL)
+  , mpRandomGenerator(NULL)
 {
   assert((void *) &mData == (void *) &mData.dim);
   mData.pMethod = this;
