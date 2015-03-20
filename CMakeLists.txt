@@ -288,6 +288,17 @@ if(UNIX)
       endif()
     endif()
 
+    # Since we are encountering errors with the use of libc++ on OSX
+    # this option allows to override which stdlib to use (needed for R 
+    # bindings on mavericks / yosemite ...)
+    if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+      option(CLANG_USE_STDLIB "Use libstdc++ rather than libc++" OFF)
+      if (CLANG_USE_STDLIB)
+        SET( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libstdc++" )
+      endif()
+    endif()
+
+    
     set(CMAKE_OSX_ARCHITECTURES "${CMAKE_OSX_ARCHITECTURES}" CACHE STRING
       "A semicolon-separated list of build architectures to be used.")
     if(ENABLE_UNIVERSAL)
