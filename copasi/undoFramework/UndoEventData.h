@@ -1,4 +1,4 @@
-// Copyright (C) 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2014 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -17,7 +17,7 @@
 
 #include "UndoData.h"
 
-class CEventAssignment;
+class UndoEventAssignmentData;
 
 class UndoEventData: public UndoData
 {
@@ -44,8 +44,9 @@ public:
   void setPersistentTrigger(bool persistentTrigger);
   void setTriggerExpression(const std::string &triggerExpression);
   void setType(Type &type);
-  QList<CEventAssignment*> *getAssignments() const;
-  void setAssignments(QList<CEventAssignment*> *assignments);
+  QList<UndoEventAssignmentData*> *getEventAssignmentData() const;
+  void setEventAssignmentData(QList<UndoEventAssignmentData*> *eventAssignmentData);
+  void setUndoEventAssignmentData(UndoEventAssignmentData *eventAssignData);
 
 private:
   /**
@@ -87,7 +88,7 @@ private:
   /**
    * A list of assignments expressions which specify the changes made by the event.
    */
-  QList < CEventAssignment *> *mAssignments;
+  QList < UndoEventAssignmentData *> *mEventAssignmentData;
 };
 
 #endif /* UNDOEVENTDATA_H_ */

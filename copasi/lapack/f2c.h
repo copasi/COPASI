@@ -1,4 +1,4 @@
-// Copyright (C) 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2013 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -15,7 +15,7 @@
 // for compatibility with default CLAPACK f2c
 typedef C_INT integer;
 typedef unsigned C_INT uinteger;
-typedef C_INT logical;
+typedef C_LOGICAL logical;
 
 typedef char *address;
 typedef short int shortint;

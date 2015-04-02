@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -231,6 +231,46 @@ std::string getUserDefinedFuctionForName(SBMLDocument* pSBMLDocument,
                 "distribution",
                 "http://www.uncertml.org/distributions/uniform",
                 "lambda(a,b,(a+b)/2)"
+              );
+      return newId;
+    }
+  else if (id == std::string("RGAMMA"))
+    {
+      newId = hasFunctionDefinitionForURI(pSBMLDocument,
+                                          "http://sbml.org/annotations/distribution",
+                                          "distribution",
+                                          "http://www.uncertml.org/distributions/gamma");
+
+      if (!newId.empty()) return newId;
+
+      newId = createFunctionDefinitonForURI(
+                pSBMLDocument,
+                idMap,
+                id,
+                "http://sbml.org/annotations/distribution",
+                "distribution",
+                "http://www.uncertml.org/distributions/gamma",
+                "lambda(a,b,a*b)"
+              );
+      return newId;
+    }
+  else if (id == std::string("RPOISSON"))
+    {
+      newId = hasFunctionDefinitionForURI(pSBMLDocument,
+                                          "http://sbml.org/annotations/distribution",
+                                          "distribution",
+                                          "http://www.uncertml.org/distributions/poisson");
+
+      if (!newId.empty()) return newId;
+
+      newId = createFunctionDefinitonForURI(
+                pSBMLDocument,
+                idMap,
+                id,
+                "http://sbml.org/annotations/distribution",
+                "distribution",
+                "http://www.uncertml.org/distributions/poisson",
+                "lambda(mu,mu)"
               );
       return newId;
     }

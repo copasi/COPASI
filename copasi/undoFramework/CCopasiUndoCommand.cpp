@@ -1,4 +1,4 @@
-// Copyright (C) 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2014 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -19,6 +19,7 @@
 #include "UndoReactionData.h"
 #include "UndoGlobalQuantityData.h"
 #include "UndoEventData.h"
+#include "UndoEventAssignmentData.h"
 #include "UndoSpecieData.h"
 #include "UndoData.h"
 
@@ -31,11 +32,23 @@ CCopasiUndoCommand::CCopasiUndoCommand(): QUndoCommand()
   mpReactionData = new  QList <UndoReactionData*>();
   mpGlobalQuantityData = new  QList <UndoGlobalQuantityData*>();
   mpEventData = new  QList <UndoEventData*>();
+
+  //set the characterisation methods for Undo History / provenance to empty string. Sub class must reimplement individual methods if necessary
+  setNewValue("");
+  setOldValue("");
+  setProperty("");
+  setEntityType("");
+  setAction("");
+  setName("");
 }
 
 CCopasiUndoCommand::~CCopasiUndoCommand()
 {
   // TODO Auto-generated destructor stub
+  pdelete(mpSpecieData);
+  pdelete(mpReactionData);
+  pdelete(mpGlobalQuantityData);
+  pdelete(mpEventData);
 }
 
 Path CCopasiUndoCommand::pathFromIndex(const QModelIndex &index)
@@ -64,6 +77,20 @@ QModelIndex CCopasiUndoCommand::pathToIndex(const Path &path, const QAbstractIte
   return iter;
 }
 
+const CCopasiUndoCommand::Type & CCopasiUndoCommand::getType() const {return mType;}
+
+UndoData *CCopasiUndoCommand::getUndoData() const
+{
+  return NULL;
+}
+
+void CCopasiUndoCommand::setType(const CCopasiUndoCommand::Type & type)
+{
+  if (mType != type)
+    {
+      mType = type;
+    }
+}
 void CCopasiUndoCommand::setDependentObjects(const std::set< const CCopasiObject * > & deletedObjects)
 {
   if (deletedObjects.size() == 0)
@@ -143,6 +170,15 @@ void CCopasiUndoCommand::setDependentObjects(const std::set< const CCopasiObject
               //ri->initFromReaction((*it)->getKey());
 
               data->setName((*it)->getObjectName());
+
+              const CReaction * pRea = dynamic_cast<const CReaction*>(*it);
+
+              if (pRea->getDeletedObjects().size() > 0)
+                {
+                  setDependentObjects(pRea->getDeletedObjects());
+                  data->setSpecieDependencyObjects(getSpecieData());
+                }
+
               //  data->setRi(ri);
               mpReactionData->append(data); //FROM_UTF8((*it)->getObjectName()));
             }
@@ -208,7 +244,6 @@ void CCopasiUndoCommand::setDependentObjects(const std::set< const CCopasiObject
 
               if (pModelValue->getStatus() != CModelEntity::FIXED)
                 {
-
                   data->setExpression(pModelValue->getExpression());
                 }
 
@@ -240,9 +275,8 @@ void CCopasiUndoCommand::setDependentObjects(const std::set< const CCopasiObject
               UndoEventData *data = new UndoEventData();
               data->setName((*it)->getObjectName());
               const CEvent * pEvent = dynamic_cast<const CEvent*>(*it);
-
               data->setPriorityExpression(pEvent->getPriorityExpression());
-              //  data->setDelayExpression(pEvent->getDelayExpression());
+              data->setDelayExpression(pEvent->getDelayExpression());
               data->setTriggerExpression(pEvent->getTriggerExpression());
 
               CCopasiVector< CEventAssignment >::const_iterator iit = pEvent->getAssignments().begin();
@@ -250,9 +284,11 @@ void CCopasiUndoCommand::setDependentObjects(const std::set< const CCopasiObject
 
               for (; iit != end; ++iit)
                 {
-                  CEventAssignment *eventAssign = new CEventAssignment((*iit)->getTargetKey(), pEvent->getObjectParent());
-                  eventAssign->setExpression((*iit)->getExpression());
-                  data->getAssignments()->append(eventAssign);
+                  const CModelEntity * pEntity = dynamic_cast< CModelEntity * >(CCopasiRootContainer::getKeyFactory()->get((*iit)->getTargetKey()));
+                  UndoEventAssignmentData *eventAssignData = new UndoEventAssignmentData();
+                  eventAssignData->setName(pEntity->getObjectName());
+                  eventAssignData->setExpression((*iit)->getExpression());
+                  data->getEventAssignmentData()->append(eventAssignData);
                 }
 
               mpEventData->append(data);
@@ -299,4 +335,74 @@ QList<UndoEventData*> *CCopasiUndoCommand::getEventData() const
 void CCopasiUndoCommand::setEventData(QList<UndoEventData*> *eventData)
 {
   mpEventData = eventData;
+}
+
+bool CCopasiUndoCommand::isUndoState() const
+{
+  return undoState;
+}
+
+void CCopasiUndoCommand::setUndoState(bool undoState)
+{
+  this->undoState = undoState;
+}
+
+std::string CCopasiUndoCommand::getEntityType() const
+{
+  return mEntityType;
+}
+
+std::string CCopasiUndoCommand::getNewValue() const
+{
+  return mNewValue;
+}
+
+std::string CCopasiUndoCommand::getOldValue() const
+{
+  return mOldValue;
+}
+
+std::string CCopasiUndoCommand::getProperty() const
+{
+  return mProperty;
+}
+
+void CCopasiUndoCommand::setEntityType(std::string entityType)
+{
+  mEntityType = entityType;
+}
+
+void CCopasiUndoCommand::setNewValue(std::string newValue)
+{
+  mNewValue = newValue;
+}
+
+void CCopasiUndoCommand::setOldValue(std::string oldValue)
+{
+  mOldValue = oldValue;
+}
+
+void CCopasiUndoCommand::setProperty(std::string property)
+{
+  mProperty = property;
+}
+
+std::string CCopasiUndoCommand::getAction() const
+{
+  return mAction;
+}
+
+void CCopasiUndoCommand::setAction(std::string action)
+{
+  mAction = action;
+}
+
+std::string CCopasiUndoCommand::getName() const
+{
+  return mName;
+}
+
+void CCopasiUndoCommand::setName(std::string name)
+{
+  mName = name;
 }

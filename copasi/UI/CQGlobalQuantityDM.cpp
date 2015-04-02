@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -28,6 +28,9 @@
 #include "undoFramework/GlobalQuantityDataChangeCommand.h"
 #include "undoFramework/UndoGlobalQuantityData.h"
 #include "undoFramework/UndoReactionData.h"
+#include "undoFramework/UndoSpecieData.h"
+#include "undoFramework/UndoEventData.h"
+#include "undoFramework/UndoEventAssignmentData.h"
 #endif
 
 CQGlobalQuantityDM::CQGlobalQuantityDM(QObject *parent)
@@ -524,11 +527,35 @@ bool CQGlobalQuantityDM::insertGlobalQuantityRows(QList <UndoGlobalQuantityData 
   for (i = pData.begin(); i != pData.end(); ++i)
     {
       UndoGlobalQuantityData * data = *i;
-      beginInsertRows(QModelIndex(), 1, 1);
-      CModelValue *pGlobalQuantity =  pModel->createModelValue(data->getName(), data->getInitialValue());
-      pGlobalQuantity->setStatus(data->getStatus());
-      emit notifyGUI(ListViews::MODELVALUE, ListViews::ADD, pGlobalQuantity->getKey());
-      endInsertRows();
+
+      if (pModel->getModelValues().getIndex(data->getName()) == C_INVALID_INDEX)
+        {
+          beginInsertRows(QModelIndex(), 1, 1);
+          CModelValue *pGlobalQuantity =  pModel->createModelValue(data->getName());
+          pGlobalQuantity->setStatus(data->getStatus());
+
+          if (data->getStatus() != CModelEntity::ASSIGNMENT)
+            {
+              pGlobalQuantity->setInitialValue(data->getInitialValue());
+            }
+
+          // set the expression
+          if (data->getStatus() != CModelEntity::FIXED)
+            {
+              pGlobalQuantity->setExpression(data->getExpression());
+              pGlobalQuantity->getExpressionPtr()->compile();
+            }
+
+          // set initial expression
+          if (data->getStatus() != CModelEntity::ASSIGNMENT)
+            {
+              pGlobalQuantity->setInitialExpression(data->getInitialExpression());
+              pGlobalQuantity->getInitialExpressionPtr()->compile();
+            }
+
+          emit notifyGUI(ListViews::MODELVALUE, ListViews::ADD, pGlobalQuantity->getKey());
+          endInsertRows();
+        }
     }
 
   //restore the reactions
@@ -537,6 +564,47 @@ bool CQGlobalQuantityDM::insertGlobalQuantityRows(QList <UndoGlobalQuantityData 
   for (k = pData.begin(); k != pData.end(); ++k)
     {
       UndoGlobalQuantityData * data = *k;
+
+      //reinsert all the species
+      QList <UndoSpecieData *> *pSpecieData = data->getSpecieDependencyObjects();
+
+      if (!pSpecieData->empty())
+        {
+          QList <UndoSpecieData *>::const_iterator i;
+
+          for (i = pSpecieData->begin(); i != pSpecieData->end(); ++i)
+            {
+              UndoSpecieData * sData = *i;
+
+              //need to make sure species doesn't exist in the model already
+              CMetab *pSpecie =  pModel->createMetabolite(sData->getName(), sData->getCompartment(), sData->getIConc(), sData->getStatus());
+
+              if (pSpecie)
+                {
+
+                  if (sData->getStatus() != CModelEntity::ASSIGNMENT)
+                    {
+                      pSpecie->setInitialConcentration(sData->getIConc());
+                    }
+
+                  if (sData->getStatus() == CModelEntity::ODE || sData->getStatus() == CModelEntity::ASSIGNMENT)
+                    {
+                      pSpecie->setExpression(sData->getExpression());
+                      pSpecie->getExpressionPtr()->compile();
+                    }
+
+                  // set initial expression
+                  if (sData->getStatus() != CModelEntity::ASSIGNMENT)
+                    {
+                      pSpecie->setInitialExpression(sData->getInitialExpression());
+                      pSpecie->getInitialExpressionPtr()->compile();
+                    }
+
+                  emit notifyGUI(ListViews::METABOLITE, ListViews::ADD, pSpecie->getKey());
+                }
+            }
+        }
+
       QList <UndoReactionData *> *reactionData = data->getReactionDependencyObjects();
 
       QList <UndoReactionData *>::const_iterator j;
@@ -546,29 +614,90 @@ bool CQGlobalQuantityDM::insertGlobalQuantityRows(QList <UndoGlobalQuantityData 
 
           UndoReactionData * rData = *j;
 
-          //TODO check if reaction already exist in the model, better idea may be implemented in the future
-          bool exist = false;
-
-          for (int ii = 0; ii < pModel->getReactions().size(); ii++)
-            {
-              if (pModel->getReactions()[ii]->getObjectName() == rData->getName())
-                {
-                  exist = true;
-                  ii = ii + pModel->getReactions().size() + 1; //jump out of the loop reaction exist already
-                }
-              else
-                {
-                  exist = false;
-                }
-            }
-
-          if (!exist)
+          //need to make sure reaction doesn't exist in the model already
+          if (pModel->getReactions().getIndex(rData->getName()) == C_INVALID_INDEX)
             {
               //  beginInsertRows(QModelIndex(), 1, 1);
               CReaction *pRea =  pModel->createReaction(rData->getName());
+              rData->getRi()->createMetabolites();
+              rData->getRi()->createOtherObjects();
               rData->getRi()->writeBackToReaction(pRea);
               emit notifyGUI(ListViews::REACTION, ListViews::ADD, pRea->getKey());
               //  endInsertRows();
+            }
+        }
+
+      //reinsert the dependency events
+      QList <UndoEventData *> *pEventData = data->getEventDependencyObjects();
+
+      if (!pEventData->empty())
+        {
+          QList <UndoEventData *>::const_iterator ev;
+
+          for (ev = pEventData->begin(); ev != pEventData->end(); ++ev)
+            {
+              UndoEventData * eData = *ev;
+
+              if (pModel->getEvents().getIndex(eData->getName()) == C_INVALID_INDEX)
+                {
+                  CEvent *pEvent =  pModel->createEvent(eData->getName());
+
+                  if (pEvent)
+                    {
+                      pEvent->getAssignments().clear();
+                      std::string key = pEvent->getKey();
+                      //set the expressions
+                      pEvent->setTriggerExpression(eData->getTriggerExpression());
+                      pEvent->setDelayExpression(eData->getDelayExpression());
+                      pEvent->setPriorityExpression(eData->getPriorityExpression());
+
+                      QList <UndoEventAssignmentData *> *assignmentData = eData->getEventAssignmentData();
+                      QList <UndoEventAssignmentData *>::const_iterator i;
+
+                      for (i = assignmentData->begin(); i != assignmentData->end(); ++i)
+                        {
+                          UndoEventAssignmentData * assignData = *i;
+
+                          CCopasiObject * pObject = NULL;
+                          bool speciesExist = false;
+                          size_t ci;
+
+                          for (ci = 0; ci < pModel->getCompartments().size(); ci++)
+                            {
+                              CCompartment * pCompartment = pModel->getCompartments()[ci];
+
+                              if (pCompartment->getMetabolites().getIndex(assignData->getName()) != C_INVALID_INDEX)
+                                speciesExist = true;
+                            }
+
+                          if (speciesExist)
+                            {
+                              size_t index = pModel->findMetabByName(assignData->getName());
+                              pObject =  pModel->getMetabolites()[index];
+                            }
+                          else if (pModel->getModelValues().getIndex(assignData->getName()) != C_INVALID_INDEX)
+                            {
+                              pObject = pModel->getModelValues()[assignData->getName()];
+                            }
+                          else if (pModel->getReactions().getIndex(assignData->getName()) != C_INVALID_INDEX)
+                            {
+                              pObject = pModel->getReactions()[assignData->getName()];
+                            }
+
+                          const CModelEntity * pEntity = dynamic_cast< const CModelEntity * >(pObject);
+
+                          CEventAssignment *eventAssign = new CEventAssignment(pObject->getKey(), pEvent->getObjectParent());
+
+                          eventAssign->setExpression(assignData->getExpression());
+
+                          eventAssign->getExpressionPtr()->compile();
+
+                          pEvent->getAssignments().add(eventAssign);
+                        }
+
+                      emit notifyGUI(ListViews::EVENT, ListViews::ADD, key);
+                    }
+                }
             }
         }
     }

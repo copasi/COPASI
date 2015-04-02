@@ -1,4 +1,4 @@
-// Copyright (C) 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2014 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -28,6 +28,8 @@ InsertSpecieRowsCommand::InsertSpecieRowsCommand(int position, int rows, CQSpeci
   mRows = rows;
   mPosition = position;
   firstTime = true;
+  mType = SPECIEINSERT;
+  setEntityType("Species");
 }
 
 void InsertSpecieRowsCommand::redo()
@@ -51,11 +53,17 @@ void InsertSpecieRowsCommand::redo()
     {
       mpSpecieDM->addSpecieRow(mpSpecieData);
     }
+
+  setUndoState(true);
+  setAction("Add to list");
+  setName(mpSpecieData->getName());
 }
 
 void InsertSpecieRowsCommand::undo()
 {
   mpSpecieDM->deleteSpecieRow(mpSpecieData);
+  setUndoState(false);
+  setAction("Reomve from list");
 }
 
 QString InsertSpecieRowsCommand::insertRowsText() const
@@ -63,7 +71,13 @@ QString InsertSpecieRowsCommand::insertRowsText() const
   return QObject::tr(": Inserted New Species");
 }
 
+UndoData *InsertSpecieRowsCommand::getUndoData() const
+{
+  return mpSpecieData;
+}
+
 InsertSpecieRowsCommand::~InsertSpecieRowsCommand()
 {
   // TODO Auto-generated destructor stub
+  pdelete(mpSpecieData);
 }

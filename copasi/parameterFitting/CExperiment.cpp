@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -81,7 +81,7 @@ CExperiment::CExperiment(const CCopasiContainer * pParent,
   mpFirstRow(NULL),
   mpLastRow(NULL),
   mpTaskType(NULL),
-  mpStartInSteadyState(NULL),
+  mpNormalizeWeightsPerExperiment(NULL),
   mpSeparator(NULL),
   mpWeightMethod(NULL),
   mpRowOriented(NULL),
@@ -131,7 +131,7 @@ CExperiment::CExperiment(const CExperiment & src,
   mpFirstRow(NULL),
   mpLastRow(NULL),
   mpTaskType(NULL),
-  mpStartInSteadyState(NULL),
+  mpNormalizeWeightsPerExperiment(NULL),
   mpSeparator(NULL),
   mpWeightMethod(NULL),
   mpRowOriented(NULL),
@@ -182,7 +182,7 @@ CExperiment::CExperiment(const CCopasiParameterGroup & group,
   mpFirstRow(NULL),
   mpLastRow(NULL),
   mpTaskType(NULL),
-  mpStartInSteadyState(NULL),
+  mpNormalizeWeightsPerExperiment(NULL),
   mpSeparator(NULL),
   mpWeightMethod(NULL),
   mpRowOriented(NULL),
@@ -242,7 +242,7 @@ CExperiment & CExperiment::operator = (const CExperiment & rhs)
   mpFirstRow = getValue("First Row").pUINT;
   mpLastRow = getValue("Last Row").pUINT;
   mpTaskType = (CTaskEnum::Task *) getValue("Experiment Type").pUINT;
-  mpStartInSteadyState = getValue("Start in Steady State").pBOOL;
+  mpNormalizeWeightsPerExperiment = getValue("Normalize Weights per Experiment").pBOOL;
   mpSeparator = getValue("Separator").pSTRING;
   mpWeightMethod = (WeightMethod *) getValue("Weight Method").pUINT;
   mpRowOriented = getValue("Data is Row Oriented").pBOOL;
@@ -269,8 +269,8 @@ void CExperiment::initializeParameter()
     assertParameter("Last Row", CCopasiParameter::UINT, (unsigned C_INT32) InvalidIndex)->getValue().pUINT;
   mpTaskType = (CTaskEnum::Task *)
                assertParameter("Experiment Type", CCopasiParameter::UINT, (unsigned C_INT32) CTaskEnum::UnsetTask)->getValue().pUINT;
-  mpStartInSteadyState =
-    assertParameter("Start in Steady State", CCopasiParameter::BOOL, false)->getValue().pBOOL;
+  mpNormalizeWeightsPerExperiment =
+    assertParameter("Normalize Weights per Experiment", CCopasiParameter::BOOL, true)->getValue().pBOOL;
 
   mpSeparator =
     assertParameter("Separator", CCopasiParameter::STRING, std::string("\t"))->getValue().pSTRING;
@@ -1116,7 +1116,7 @@ bool CExperiment::calculateWeights()
       if (DefaultColumScale < MinWeight) MinWeight = DefaultColumScale;
     }
 
-  if (*mpWeightMethod != VALUE_SCALING)
+  if (*mpNormalizeWeightsPerExperiment && *mpWeightMethod != VALUE_SCALING)
     {
       // We have to calculate the default weights
       for (i = 0; i < DependentCount; i++)
@@ -1223,17 +1223,17 @@ bool CExperiment::setExperimentType(const CTaskEnum::Task & type)
   return false;
 }
 
-void CExperiment::setStartInSteadyState(bool flag)
+void CExperiment::setNormalizeWeightsPerExperiment(bool flag)
 {
-  *mpStartInSteadyState = flag;
+  *mpNormalizeWeightsPerExperiment = flag;
 }
 
-bool CExperiment::getStartInSteadyState() const
+bool CExperiment::getNormalizeWeightsPerExperiment() const
 {
-  if (mpStartInSteadyState)
-    return *mpStartInSteadyState;
+  if (mpNormalizeWeightsPerExperiment)
+    return *mpNormalizeWeightsPerExperiment;
   else
-    return false;
+    return true;
 }
 
 const CVector< C_FLOAT64 > & CExperiment::getTimeData() const

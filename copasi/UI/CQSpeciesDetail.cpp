@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -29,6 +29,7 @@
 #include "undoFramework/UndoReactionData.h"
 #include "undoFramework/UndoGlobalQuantityData.h"
 #include "undoFramework/UndoEventData.h"
+#include "undoFramework/UndoEventAssignmentData.h"
 #include "copasiui3window.h"
 #endif
 
@@ -484,7 +485,8 @@ void CQSpeciesDetail::loadReactionTable()
   if (i == 0)
     mpReactionTable->setItem(i, 0, new QTableWidgetItem("none"));
 
-  // Resize columns to content.
+  // Provide count of reactions, in label.
+  mpLblReactions->setText("Involved in \n" + QString::number(mpReactionTable->rowCount()) + " Reactions");
 
   return;
 }
@@ -924,7 +926,7 @@ void CQSpeciesDetail::deleteSpecie(UndoSpecieData *pSData)
   pModel->removeMetabolite(key);
 
 #undef DELETE
-  protectedNotify(ListViews::METABOLITE, ListViews::DELETE, mKey);
+  protectedNotify(ListViews::METABOLITE, ListViews::DELETE, key); //mKey);
   protectedNotify(ListViews::METABOLITE, ListViews::DELETE, "");//Refresh all as there may be dependencies.
 
   mpListView->switchToOtherWidget(112, "");
@@ -940,46 +942,56 @@ void CQSpeciesDetail::addSpecie(UndoSpecieData *pSData)
   assert(pModel != NULL);
 
   //reinsert the species
-  CMetab *pSpecie =  pModel->createMetabolite(pSData->getName(), pSData->getCompartment(), pSData->getIConc(), pSData->getStatus());
-  //pSpecie->setInitialExpression(pSData->getInitialExpression());
-  //pSpecie->setExpression(pSData->getExpression());
+  CMetab *pSpecie =  pModel->createMetabolite(pSData->getName(), pSData->getCompartment(), 1.0, pSData->getStatus());
   std::string key = pSpecie->getKey();
+
+  if (pSData->getStatus() != CModelEntity::ASSIGNMENT)
+    {
+      pSpecie->setInitialConcentration(pSData->getIConc());
+    }
+
+  if (pSData->getStatus() == CModelEntity::ODE || pSData->getStatus() == CModelEntity::ASSIGNMENT)
+    {
+      if (pSData->getExpression() != "")
+        {
+          pSpecie->setExpression(pSData->getExpression());
+          pSpecie->getExpressionPtr()->compile();
+        }
+    }
+
+  // set initial expression
+  if (pSData->getStatus() != CModelEntity::ASSIGNMENT && pSData->getInitialExpression() != "")
+    {
+      pSpecie->setInitialExpression(pSData->getInitialExpression());
+    }
+
   protectedNotify(ListViews::METABOLITE, ListViews::ADD, key);
 
   //restore the reactions the species dependent on
   QList <UndoReactionData *> *reactionData = pSData->getReactionDependencyObjects();
 
-  QList <UndoReactionData *>::const_iterator j;
-
-  for (j = reactionData->begin(); j != reactionData->end(); ++j)
+  if (!reactionData->empty())
     {
-      UndoReactionData * rData = *j;
+      QList <UndoReactionData *>::const_iterator j;
 
-      //TODO check if reaction already exist in the model, better ideal may be implemented in the future
-      bool exist = false;
-
-      for (int ii = 0; ii < pModel->getReactions().size(); ii++)
+      for (j = reactionData->begin(); j != reactionData->end(); ++j)
         {
-          if (pModel->getReactions()[ii]->getObjectName() == rData->getName())
-            {
-              exist = true;
-              ii = ii + pModel->getReactions().size() + 1; //jump out of the loop reaction exist already
-            }
-          else
-            {
-              exist = false;
-            }
-        }
 
-      if (!exist)
-        {
-          CReaction *pRea =  pModel->createReaction(rData->getName());
-          CChemEqInterface *chem = new CChemEqInterface(pModel);
-          chem->setChemEqString(rData->getRi()->getChemEqString());
-          chem->writeToChemEq(pRea->getChemEq());
+          UndoReactionData * rData = *j;
 
-          //  rData->getRi()->writeBackToReaction(pRea);
-          protectedNotify(ListViews::REACTION, ListViews::ADD, pRea->getKey());
+          //need to make sure reaction doesn't exist in the model already
+          if (pModel->getReactions().getIndex(rData->getName()) == C_INVALID_INDEX)
+            {
+              CReaction *pRea =  pModel->createReaction(rData->getName());
+              CChemEqInterface *chem = new CChemEqInterface(pModel);
+              chem->setChemEqString(rData->getRi()->getChemEqString());
+              chem->writeToChemEq(pRea->getChemEq());
+              rData->getRi()->createMetabolites();
+              rData->getRi()->createOtherObjects();
+              rData->getRi()->writeBackToReaction(pRea);
+
+              protectedNotify(ListViews::REACTION, ListViews::ADD, pRea->getKey());
+            }
         }
     }
 
@@ -988,25 +1000,41 @@ void CQSpeciesDetail::addSpecie(UndoSpecieData *pSData)
 
   if (!pGlobalQuantityData->empty())
     {
-
       QList <UndoGlobalQuantityData *>::const_iterator g;
 
       for (g = pGlobalQuantityData->begin(); g != pGlobalQuantityData->end(); ++g)
         {
           UndoGlobalQuantityData * gData = *g;
-          CModelValue *pGlobalQuantity =  pModel->createModelValue(gData->getName());
-          pGlobalQuantity->setStatus(gData->getStatus());
 
-          if (gData->isFixed())
+          if (pModel->getModelValues().getIndex(gData->getName()) == C_INVALID_INDEX)
             {
-              pGlobalQuantity->setInitialValue(gData->getInitialValue());
-            }
-          else if (!gData->isFixed())
-            {
-              pGlobalQuantity->setExpression(gData->getExpression());
-            }
+              CModelValue *pGlobalQuantity =  pModel->createModelValue(gData->getName()); //, gData->getInitialValue());
 
-          protectedNotify(ListViews::MODELVALUE, ListViews::ADD, pGlobalQuantity->getKey());
+              if (pGlobalQuantity)
+                {
+                  pGlobalQuantity->setStatus(gData->getStatus());
+
+                  if (gData->getStatus() != CModelEntity::ASSIGNMENT)
+                    {
+                      pGlobalQuantity->setInitialValue(gData->getInitialValue());
+                    }
+
+                  if (gData->getStatus() != CModelEntity::FIXED)
+                    {
+                      pGlobalQuantity->setExpression(gData->getExpression());
+                      pGlobalQuantity->getExpressionPtr()->compile();
+                    }
+
+                  // set initial expression
+                  if (gData->getStatus() != CModelEntity::ASSIGNMENT)
+                    {
+                      pGlobalQuantity->setInitialExpression(gData->getInitialExpression());
+                      pGlobalQuantity->getInitialExpressionPtr()->compile();
+                    }
+
+                  protectedNotify(ListViews::MODELVALUE, ListViews::ADD, pGlobalQuantity->getKey());
+                }
+            }
         }
     }
 
@@ -1028,24 +1056,54 @@ void CQSpeciesDetail::addSpecie(UndoSpecieData *pSData)
 
           //set the expressions
           pEvent->setTriggerExpression(eData->getTriggerExpression());
-          //pEvent->setDelayExpression(eData->getDelayExpression());
-          //  std::cout<<"+++++Event Level++++ Prioroty"<<eData->getPriorityExpression()<<std::endl;
-          //  pEvent->setPriorityExpression(eData->getPriorityExpression());
+          pEvent->setDelayExpression(eData->getDelayExpression());
+          pEvent->setPriorityExpression(eData->getPriorityExpression());
 
-          QList <CEventAssignment *> *assignments = eData->getAssignments();
-          QList <CEventAssignment *>::const_iterator i;
+          QList <UndoEventAssignmentData *> *assignmentData = eData->getEventAssignmentData();
+          QList <UndoEventAssignmentData *>::const_iterator i;
 
-          for (i = assignments->begin(); i != assignments->end(); ++i)
+          for (i = assignmentData->begin(); i != assignmentData->end(); ++i)
             {
-              CEventAssignment * assign = *i;
-              CEventAssignment *eventAssign = new CEventAssignment(assign->getTargetKey(), pEvent->getObjectParent());
+              UndoEventAssignmentData * assignData = *i;
+
+              CCopasiObject * pObject = NULL;
+              bool speciesExist = false;
+              size_t ci;
+
+              for (ci = 0; ci < pModel->getCompartments().size(); ci++)
+                {
+                  CCompartment * pCompartment = pModel->getCompartments()[ci];
+
+                  if (pCompartment->getMetabolites().getIndex(assignData->getName()) != C_INVALID_INDEX)
+                    speciesExist = true;
+                }
+
+              if (speciesExist)
+                {
+                  size_t index = pModel->findMetabByName(assignData->getName());
+                  pObject =  pModel->getMetabolites()[index];
+                }
+              else if (pModel->getModelValues().getIndex(assignData->getName()) != C_INVALID_INDEX)
+                {
+                  pObject = pModel->getModelValues()[assignData->getName()];
+                }
+              else if (pModel->getReactions().getIndex(assignData->getName()) != C_INVALID_INDEX)
+                {
+                  pObject = pModel->getReactions()[assignData->getName()];
+                }
+
+              const CModelEntity * pEntity = dynamic_cast< const CModelEntity * >(pObject);
+
+              CEventAssignment *eventAssign = new CEventAssignment(pObject->getKey(), pEvent->getObjectParent());
+
+              eventAssign->setExpression(assignData->getExpression());
+
+              eventAssign->getExpressionPtr()->compile();
+
               pEvent->getAssignments().add(eventAssign);
-              //    std::cout<<"+++++Event Level++++"<<eventAssign->getKey()<<std::endl;
             }
 
-          //    std::cout<<"=====Event Level==== KEY"<<key<<std::endl;
           protectedNotify(ListViews::EVENT, ListViews::ADD, key);
-          //    std::cout<<"=====Event Level===="<<key<<std::endl;
         }
     }
 

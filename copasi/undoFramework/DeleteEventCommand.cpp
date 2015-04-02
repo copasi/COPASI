@@ -1,4 +1,4 @@
-// Copyright (C) 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2014 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -16,6 +16,7 @@
 #include "UI/CQEventWidget1.h"
 
 #include "UndoEventData.h"
+#include "UndoEventAssignmentData.h"
 
 #include "DeleteEventCommand.h"
 
@@ -26,15 +27,20 @@ DeleteEventCommand::DeleteEventCommand(CQEventWidget1 *pEVentWidget1)
   mpEventData = new UndoEventData();
   std::string sName = mpEVentWidget1->mpEvent->getObjectName();
   mpEventData->setName(sName);
+  mType = EVENTDELETE;
+  setEntityType("Event");
+  setName(sName);
 
   CCopasiVector< CEventAssignment >::const_iterator it = mpEVentWidget1->mpEvent->getAssignments().begin();
   CCopasiVector< CEventAssignment >::const_iterator end = mpEVentWidget1->mpEvent->getAssignments().end();
 
   for (; it != end; ++it)
     {
-      CEventAssignment *eventAssign = new CEventAssignment((*it)->getTargetKey(), mpEVentWidget1->mpEvent->getObjectParent());
-      eventAssign->setExpression((*it)->getExpression());
-      mpEventData->getAssignments()->append(eventAssign);
+      const CModelEntity * pEntity = dynamic_cast< CModelEntity * >(CCopasiRootContainer::getKeyFactory()->get((*it)->getTargetKey()));
+      UndoEventAssignmentData *eventAssignData = new UndoEventAssignmentData();
+      eventAssignData->setName(pEntity->getObjectName());
+      eventAssignData->setExpression((*it)->getExpression());
+      mpEventData->getEventAssignmentData()->append(eventAssignData);
     }
 
   mpEventData->setTriggerExpression(mpEVentWidget1->mpEvent->getTriggerExpression());
@@ -55,11 +61,16 @@ void DeleteEventCommand::redo()
     {
       mpEVentWidget1->deleteEvent(mpEventData);
     }
+
+  setUndoState(true);
+  setAction("Delete");
 }
 
 void DeleteEventCommand::undo()
 {
   mpEVentWidget1->addEvent(mpEventData);
+  setUndoState(false);
+  setAction("Undelete");
 }
 
 QString DeleteEventCommand::deleteEventText(std::string &name) const
@@ -69,7 +80,13 @@ QString DeleteEventCommand::deleteEventText(std::string &name) const
   return QObject::tr(entityName);
 }
 
+UndoData *DeleteEventCommand::getUndoData() const
+{
+  return mpEventData;
+}
+
 DeleteEventCommand::~DeleteEventCommand()
 {
   // TODO Auto-generated destructor stub
+  pdelete(mpEventData);
 }

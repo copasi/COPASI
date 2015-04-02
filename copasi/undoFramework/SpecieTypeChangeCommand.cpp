@@ -1,4 +1,4 @@
-// Copyright (C) 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2014 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -37,6 +37,17 @@ SpecieTypeChangeCommand::SpecieTypeChangeCommand(int type, int currentType, CQSp
   mpSpecieData->setStatus((CModelEntity::Status)type);
 
   this->setText(specieTypeChangeText(sName));
+
+  //set the data for UNDO history
+  mType = SPECIESTYPECHANGE;
+  setEntityType("Species");
+  setAction("Change");
+  setName(mpSpecieData->getName());
+
+  setNewValue(CModelEntity::XMLStatus[type]);
+  setOldValue(CModelEntity::XMLStatus[currentType]);
+
+  setProperty("Type");
 }
 void SpecieTypeChangeCommand::redo()
 {
@@ -53,6 +64,7 @@ void SpecieTypeChangeCommand::redo()
 void SpecieTypeChangeCommand::undo()
 {
   mpSpecieDetail->specieTypeChanged(mpSpecieData, mOldType);
+  setAction("Undone change");
 }
 QString SpecieTypeChangeCommand::specieTypeChangeText(std::string &name) const
 {
@@ -63,4 +75,5 @@ QString SpecieTypeChangeCommand::specieTypeChangeText(std::string &name) const
 SpecieTypeChangeCommand::~SpecieTypeChangeCommand()
 {
   // TODO Auto-generated destructor stub
+  pdelete(this->mpSpecieData);
 }

@@ -1,4 +1,4 @@
-// Copyright (C) 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2014 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -40,6 +40,29 @@ ReactionDataChangeCommand::ReactionDataChangeCommand(QModelIndex index, const QV
 
   //mPathIndex = pathFromIndex(index);
   this->setText(reactionDataChangeText());
+
+  //set the data for UNDO history
+  mType = REACTIONDATACHANGE;
+  setEntityType("Reaction");
+  setAction("Change");
+  setName(pRea->getObjectName());
+  setOldValue(TO_UTF8(mOld.toString()));
+  setNewValue(TO_UTF8(mNew.toString()));
+
+  switch (index.column())
+    {
+      case 0:
+        setProperty("");
+        break;
+
+      case 1:
+        setProperty("Name");
+        break;
+
+      case 2:
+        setProperty("Reaction");
+        break;
+    }
 }
 
 ReactionDataChangeCommand::~ReactionDataChangeCommand()
@@ -55,6 +78,7 @@ void ReactionDataChangeCommand::undo()
 {
   //mIndex = pathToIndex(mPathIndex, mpReactionDM);
   mpReactionDM->reactionDataChange(mIndex, mOld, mRole, mOldFunctionName);
+  setAction("Undone change");
 }
 QString ReactionDataChangeCommand::reactionDataChangeText() const
 {

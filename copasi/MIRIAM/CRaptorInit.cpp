@@ -1,18 +1,16 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRaptorInit.cpp,v $
-//   $Revision: 1.3 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/12/18 18:52:23 $
-// End CVS Header
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
 #include <raptor.h>
 #include <string.h>
+#include <stdlib.h>
 
 #include "copasi.h"
 
@@ -27,6 +25,7 @@ CRaptorInit::CRaptorInit()
     {
       raptor_init();
       Initialized = true;
+      atexit(&raptor_finish);
     }
 }
 

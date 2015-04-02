@@ -1,4 +1,4 @@
-// Copyright (C) 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2014 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -25,6 +25,7 @@ public:
   void redo();
   void undo();
   QString deleteEventText(std::string &name) const;
+  UndoData *getUndoData() const;
   virtual ~DeleteEventCommand();
 
 private:

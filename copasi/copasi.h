@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -105,10 +105,20 @@
 #endif
 
 // for compatibility with default CLAPACK f2c
-#if ((defined __LP64__) && (!(defined HAVE_CLAPACK_H) || (defined Darwin)))
-# define C_INT int
+#ifdef F2C_INTEGER
+# define C_INT F2C_INTEGER
 #else
-# define C_INT long
+# if ((defined __LP64__) && (!(defined HAVE_CLAPACK_H) || (defined Darwin)))
+#  define C_INT int
+# else
+#  define C_INT long
+# endif
+#endif
+
+#ifdef F2C_LOGICAL
+# define C_LOGICAL F2C_LOGICAL
+#else
+# define C_LOGICAL C_INT
 #endif
 
 enum TriLogic

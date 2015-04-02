@@ -1,4 +1,4 @@
-// Copyright (C) 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2013 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -18,7 +18,8 @@
 #include <UI/copasiui3window.h>
 
 CQLayoutThread::CQLayoutThread(QWidget* parent)
-  : mpParameterWindow(NULL)
+  : QThread(parent)
+  , mpParameterWindow(NULL)
   , mpCurrentLayout(NULL)
   , mNumIterations(1000)
   , mUpdateWait(100)
@@ -68,10 +69,8 @@ QDockWidget* CQLayoutThread::getParameterWindow()
 
 CQLayoutThread::~CQLayoutThread()
 {
-  if (mpCurrent == NULL) return;
-
-  delete mpCurrent;
-  mpCurrent = NULL;
+  pdelete(mpCurrent);
+  pdelete(mpParameterWindow);
 }
 
 void CQLayoutThread::randomizeLayout(CLayout* layout)

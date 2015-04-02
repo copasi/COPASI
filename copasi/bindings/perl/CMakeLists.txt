@@ -48,28 +48,31 @@ elseif(LAPACK_FOUND)
 endif()
 
 
-ADD_CUSTOM_COMMAND(	
+ADD_CUSTOM_COMMAND(  
     OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/copasi_wrapper.cpp
     COMMAND "${SWIG_EXECUTABLE}"
-    ARGS	-I${CMAKE_CURRENT_SOURCE_DIR}/../swig/
-	        -I${CMAKE_CURRENT_SOURCE_DIR}/../../
-            -I${CMAKE_CURRENT_SOURCE_DIR}
-			-I${CMAKE_SOURCE_DIR}
-			-c++
-			-perl5
-			#-proxy		
-			${SWIG_EXTRA_ARGS}		 
-			-o ${CMAKE_CURRENT_BINARY_DIR}/copasi_wrapper.cpp 
-			${CMAKE_CURRENT_SOURCE_DIR}/perl.i
+    ARGS  -I${CMAKE_CURRENT_SOURCE_DIR}/../swig/
+          -I${CMAKE_CURRENT_SOURCE_DIR}/../../
+          -I${CMAKE_CURRENT_SOURCE_DIR}
+          -I${CMAKE_SOURCE_DIR}
+          -c++
+          -perl5
+          #-proxy    
+          ${SWIG_EXTRA_ARGS}     
+          -o ${CMAKE_CURRENT_BINARY_DIR}/copasi_wrapper.cpp 
+          ${CMAKE_CURRENT_SOURCE_DIR}/perl.i
+    COMMAND "${CMAKE_COMMAND}"
+      -DSRC_DIR=${CMAKE_CURRENT_SOURCE_DIR}
+      -DFILENAME=\"${CMAKE_CURRENT_BINARY_DIR}/copasi_wrapper.cpp\"
+      -P "${CMAKE_CURRENT_SOURCE_DIR}/patch-swig-file.cmake"
 
     MAIN_DEPENDENCY ${CMAKE_CURRENT_SOURCE_DIR}/perl.i
-	DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/CMakeLists.txt
-	        ${SWIG_DEPENDENCIES}
+    DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/CMakeLists.txt
+            ${SWIG_DEPENDENCIES}
     COMMENT "Swig Perl source") 
 
 add_custom_target(binding_perl_swig ALL DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/perl.i)
 
-	
 ####################################################################
 #
 # Build native library

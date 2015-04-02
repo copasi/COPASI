@@ -1,4 +1,4 @@
-// Copyright (C) 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2014 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -22,6 +22,8 @@ CreateNewSpecieCommand::CreateNewSpecieCommand(CQSpeciesDetail *pSpecieDetail)
   mpSpecieDetail = pSpecieDetail;
   mpSpecieData = new UndoSpecieData();
   this->setText(createNewSpecieText());
+  mType = SPECIECREATE;
+  setEntityType("Species");
 }
 void CreateNewSpecieCommand::redo()
 {
@@ -32,11 +34,16 @@ void CreateNewSpecieCommand::redo()
   mpSpecieData->setIConc(mpSpecieDetail->mpMetab->getInitialConcentration());
   mpSpecieData->setCompartment(mpSpecieDetail->mpMetab->getCompartment()->getObjectName());
   mpSpecieData->setStatus(mpSpecieDetail->mpMetab->getStatus());
+  setUndoState(true);
+  setAction("Create");
+  setName(sName);
 }
 
 void CreateNewSpecieCommand::undo()
 {
   mpSpecieDetail->deleteSpecie(mpSpecieData);
+  setUndoState(false);
+  setAction("Delete");
 }
 
 QString CreateNewSpecieCommand::createNewSpecieText() const
@@ -46,7 +53,13 @@ QString CreateNewSpecieCommand::createNewSpecieText() const
   return QObject::tr(entityName);
 }
 
+UndoData *CreateNewSpecieCommand::getUndoData() const
+{
+  return mpSpecieData;
+}
+
 CreateNewSpecieCommand::~CreateNewSpecieCommand()
 {
   // TODO Auto-generated destructor stub
+  pdelete(mpSpecieData);
 }

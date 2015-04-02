@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and The University 
 # of Manchester. 
 # All rights reserved. 
@@ -15,15 +15,12 @@
 
 
 PATH=$PATH:/bin:/usr/bin:/usr/local/bin
-AWK=${COPASI_AWK:-gawk}
 SED=${COPASI_SED:-sed}
 FLEX="$1"
 
 for arg in $@; do
   SOURCE_FILE=$arg
 done
-
-PREFIX=`${AWK} -- '$0 ~ "%option prefix=" {split($2, out, "\""); print out[2]}' $SOURCE_FILE`
 
 TARGET_FILE=${SOURCE_FILE/%.*/_lex.cpp}
 
@@ -34,6 +31,7 @@ ${FLEX}  -t $SOURCE_FILE | \
          -e 's/include <fstream>/include <iostream>/' \
          -e 's/using std::istream;/using namespace std;/' \
          -e '/using std::ostream;/d' \
+         -e '/#define yy_current_buffer YY_CURRENT_BUFFER/d' \
          -e '/#include <unistd.h>/d' \
          > $TARGET_FILE
 

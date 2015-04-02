@@ -1,4 +1,4 @@
-// Copyright (C) 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2014 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -15,6 +15,8 @@
 #include "model/CModelValue.h"
 #include "UndoGlobalQuantityData.h"
 #include "UndoReactionData.h"
+#include "UndoEventData.h"
+#include "UndoSpecieData.h"
 
 #include "UndoGlobalQuantityData.h"
 
@@ -96,4 +98,24 @@ const std::string & UndoGlobalQuantityData::getInitialExpression() const
 void UndoGlobalQuantityData::setInitialExpression(const std::string &initialExpression)
 {
   mInitialExpression = initialExpression;
+}
+
+QList<UndoEventData*> *UndoGlobalQuantityData::getEventDependencyObjects() const
+{
+  return mEventDependencyObjects;
+}
+
+QList<UndoSpecieData*> *UndoGlobalQuantityData::getSpecieDependencyObjects() const
+{
+  return mSpecieDependencyObjects;
+}
+
+void UndoGlobalQuantityData::setEventDependencyObjects(QList<UndoEventData*> *eventDependencyObjects)
+{
+  mEventDependencyObjects = eventDependencyObjects;
+}
+
+void UndoGlobalQuantityData::setSpecieDependencyObjects(QList<UndoSpecieData*> *specieDependencyObjects)
+{
+  mSpecieDependencyObjects = specieDependencyObjects;
 }

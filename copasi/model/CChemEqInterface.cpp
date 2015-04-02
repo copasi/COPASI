@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -754,6 +754,8 @@ void CChemEqInterface::setChemEqFromString(CModel * model, CReaction & rea, cons
 /*static*/
 bool CChemEqInterface::isValidEq(const std::string & eq)
 {
+  if (eq.empty()) return false;
+
   // parse the description into a linked node tree
   std::istringstream buffer(eq);
   CChemEqParser Parser(&buffer);

@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -6,6 +6,7 @@
 #ifdef SWIGPERL
 #undef NORMAL
 #endif // SWIGPERL
+
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "utilities/CCopasiMethod.h"
 #include "utilities/CCopasiProblem.h"
@@ -58,7 +59,10 @@
 #include "parameterFitting/CFitTask.h"
 
 // since COPASI undefines TRUE from swig, we have to redefine it here
-#define TRUE 1
+// if needed
+#ifndef TRUE
+#define TRUE
+#endif
 
 //#include <iostream>
 

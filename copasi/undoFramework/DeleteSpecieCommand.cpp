@@ -1,4 +1,4 @@
-// Copyright (C) 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2014 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -36,11 +36,24 @@ DeleteSpecieCommand::DeleteSpecieCommand(CQSpeciesDetail *pSpecieDetail)
 
   std::string sName = mpSpecieDetail->mpMetab->getObjectName();
   mpSpecieData->setName(sName);
-  mpSpecieData->setIConc(mpSpecieDetail->mpMetab->getInitialConcentration());
-  mpSpecieData->setCompartment(mpSpecieDetail->mpMetab->getCompartment()->getObjectName());
-  //mpSpecieData->setInitialExpression(mpSpecieDetail->mpInitialExpressionEMW->mpExpressionWidget->getExpression());
-  //mpSpecieData->setExpression(mpSpecieDetail->mpExpressionEMW->mpExpressionWidget->getExpression());
+
   mpSpecieData->setStatus(mpSpecieDetail->mpMetab->getStatus());
+
+  if (mpSpecieDetail->mpMetab->getStatus() != CModelEntity::ASSIGNMENT)
+    {
+      mpSpecieData->setIConc(mpSpecieDetail->mpMetab->getInitialConcentration());
+    }
+
+  if (mpSpecieDetail->mpMetab->getStatus() ==  CModelEntity::ASSIGNMENT || mpSpecieDetail->mpMetab->getStatus() == CModelEntity::ODE)
+    {
+      mpSpecieData->setExpression(mpSpecieDetail->mpMetab->getExpression());
+    }
+
+  // set initial expression
+  if (mpSpecieDetail->mpMetab->getStatus() != CModelEntity::ASSIGNMENT)
+    {
+      mpSpecieData->setInitialExpression(mpSpecieDetail->mpMetab->getInitialExpression());
+    }
 
   //store to be deleted data
   //QList<UndoReactionData*> *dependencyObjects = new QList<UndoReactionData*>();
@@ -49,6 +62,9 @@ DeleteSpecieCommand::DeleteSpecieCommand(CQSpeciesDetail *pSpecieDetail)
   mpSpecieData->setGlobalQuantityDependencyObjects(getGlobalQuantityData());
   mpSpecieData->setEventDependencyObjects(getEventData());
 
+  mType = SPECIEDELETE;
+  setEntityType("Species");
+  setName(sName);
   this->setText(deleteSpecieText(sName));
 }
 
@@ -63,11 +79,16 @@ void DeleteSpecieCommand::redo()
     {
       mpSpecieDetail->deleteSpecie(mpSpecieData);
     }
+
+  setUndoState(true);
+  setAction("Delete");
 }
 
 void DeleteSpecieCommand::undo()
 {
   mpSpecieDetail->addSpecie(mpSpecieData);
+  setUndoState(false);
+  setAction("Undelete");
 }
 
 QString DeleteSpecieCommand::deleteSpecieText(std::string &name) const
@@ -77,7 +98,15 @@ QString DeleteSpecieCommand::deleteSpecieText(std::string &name) const
   return QObject::tr(entityName);
 }
 
+UndoData *DeleteSpecieCommand::getUndoData() const
+{
+  return mpSpecieData;
+}
+
 DeleteSpecieCommand::~DeleteSpecieCommand()
 {
   // TODO Auto-generated destructor stub
+  pdelete(mpReactionData);
+  pdelete(mpGlobalQuantityData);
+  pdelete(mpEventData);
 }

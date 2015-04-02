@@ -1,17 +1,9 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/CQRDFTreeView.cpp,v $
-//   $Revision: 1.5 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/05/17 13:10:27 $
-// End CVS Header
-
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
@@ -42,15 +34,16 @@
 #define COL_OBJECT     2
 
 CQRDFTreeView::CQRDFTreeView(QWidget* parent, const char* name) :
-    CopasiWidget(parent, name),
-    mNode2Item(),
-    mpGraph(NULL)
+  CopasiWidget(parent, name),
+  mNode2Item(),
+  mpGraph(NULL)
 {
   setupUi(this);
 }
 
 CQRDFTreeView::~CQRDFTreeView()
 {
+  clear();
 }
 
 bool CQRDFTreeView::update(ListViews::ObjectType /* objectType */,

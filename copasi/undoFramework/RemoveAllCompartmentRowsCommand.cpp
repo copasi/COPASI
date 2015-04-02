@@ -1,4 +1,4 @@
-// Copyright (C) 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2014 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -58,17 +58,23 @@ RemoveAllCompartmentRowsCommand::RemoveAllCompartmentRowsCommand(CQCompartmentDM
         }
     }
 
+  mType = COMPARTMENTREMOVEALL;
+  setEntityType("Compartment");
   this->setText(removeAllCompartmentRowsText());
 }
 
 void RemoveAllCompartmentRowsCommand::redo()
 {
   mpCompartmentDM->removeAllCompartmentRows();
+  setUndoState(true);
+  setAction("Delete all");
 }
 
 void RemoveAllCompartmentRowsCommand::undo()
 {
   mpCompartmentDM->insertCompartmentRows(mpCompartmentData);
+  setUndoState(false);
+  setAction("Undelete all");
 }
 
 QString RemoveAllCompartmentRowsCommand::removeAllCompartmentRowsText() const
@@ -79,4 +85,8 @@ QString RemoveAllCompartmentRowsCommand::removeAllCompartmentRowsText() const
 RemoveAllCompartmentRowsCommand::~RemoveAllCompartmentRowsCommand()
 {
   // TODO Auto-generated destructor stub
+  pdelete(this->mpSpecieData);
+  pdelete(this->mpReactionData);
+  pdelete(this->mpGlobalQuantityData);
+  pdelete(this->mpEventData);
 }

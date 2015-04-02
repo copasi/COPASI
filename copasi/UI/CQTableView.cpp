@@ -1,4 +1,4 @@
-// Copyright (C) 2011 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -65,14 +65,14 @@ void CQTableView::keyPressEvent(QKeyEvent * pEvent)
 // virtual
 void CQTableView::mousePressEvent(QMouseEvent * pEvent)
 {
+  if (mpMouseEvent != NULL)
+    {
+      delete mpMouseEvent;
+      mpMouseEvent = NULL;
+    }
+
   if (mpTimer->isActive())
     {
-      if (mpMouseEvent != NULL)
-        {
-          delete mpMouseEvent;
-          mpMouseEvent = NULL;
-        }
-
       QTableView::mousePressEvent(pEvent);
       emit doubleClicked(currentIndex());
 

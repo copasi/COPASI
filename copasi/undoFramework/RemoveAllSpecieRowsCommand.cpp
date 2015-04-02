@@ -1,4 +1,4 @@
-// Copyright (C) 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2014 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -76,17 +76,23 @@ RemoveAllSpecieRowsCommand::RemoveAllSpecieRowsCommand(CQSpecieDM * pSpecieDM, c
         }
     }
 
+  mType = SPECIEREMOVEALL;
+  setEntityType("Species");
   this->setText(removeAllSpecieRowsText());
 }
 
 void RemoveAllSpecieRowsCommand::redo()
 {
   mpSpecieDM->removeAllSpecieRows();
+  setUndoState(true);
+  setAction("Delete all");
 }
 
 void RemoveAllSpecieRowsCommand::undo()
 {
   mpSpecieDM->insertSpecieRows(mpSpecieData);
+  setUndoState(false);
+  setAction("Undelete all");
 }
 
 QString RemoveAllSpecieRowsCommand::removeAllSpecieRowsText() const

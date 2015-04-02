@@ -1,4 +1,4 @@
-// Copyright (C) 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2014 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -28,6 +28,8 @@ InsertCompartmentRowsCommand::InsertCompartmentRowsCommand(int position, int row
   mRows = rows;
   mPosition = position;
   firstTime = true;
+  mType = COMPARTMENTINSERT;
+  setEntityType("Compartment");
 }
 
 void InsertCompartmentRowsCommand::redo()
@@ -51,11 +53,17 @@ void InsertCompartmentRowsCommand::redo()
     {
       mpCompartmentDM->addCompartmentRow(mpCompartmentData);
     }
+
+  setUndoState(true);
+  setAction("Add to list");
+  setName(mpCompartmentData->getName());
 }
 
 void InsertCompartmentRowsCommand::undo()
 {
   mpCompartmentDM->deleteCompartmentRow(mpCompartmentData);
+  setUndoState(false);
+  setAction("Remove from list");
 }
 
 QString InsertCompartmentRowsCommand::insertRowsText() const
@@ -63,7 +71,13 @@ QString InsertCompartmentRowsCommand::insertRowsText() const
   return QObject::tr(": Inserted New Compartments");
 }
 
+UndoData *InsertCompartmentRowsCommand::getUndoData() const
+{
+  return mpCompartmentData;
+}
+
 InsertCompartmentRowsCommand::~InsertCompartmentRowsCommand()
 {
   // TODO Auto-generated destructor stub
+  pdelete(mpCompartmentData);
 }

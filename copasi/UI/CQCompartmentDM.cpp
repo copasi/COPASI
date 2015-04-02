@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -29,6 +29,7 @@
 #include "undoFramework/UndoSpecieData.h"
 #include "undoFramework/UndoGlobalQuantityData.h"
 #include "undoFramework/UndoEventData.h"
+#include "undoFramework/UndoEventAssignmentData.h"
 #endif
 
 #include "copasi.h"
@@ -579,7 +580,6 @@ bool CQCompartmentDM::insertCompartmentRows(QList <UndoCompartmentData *> pData)
       pCompartment->setInitialValue(data->getInitialValue());
       pCompartment->setStatus(data->getStatus());
       emit notifyGUI(ListViews::COMPARTMENT, ListViews::ADD, pCompartment->getKey());
-      endInsertRows();
 
       //reinsert all the species
       QList <UndoSpecieData *> *pSpecieData = data->getSpecieDependencyObjects();
@@ -591,10 +591,36 @@ bool CQCompartmentDM::insertCompartmentRows(QList <UndoCompartmentData *> pData)
           for (i = pSpecieData->begin(); i != pSpecieData->end(); ++i)
             {
               UndoSpecieData * sData = *i;
+
               //  beginInsertRows(QModelIndex(), 1, 1);
-              CMetab *pSpecie =  pModel->createMetabolite(sData->getName(), sData->getCompartment(), sData->getIConc(), sData->getStatus());
-              emit notifyGUI(ListViews::METABOLITE, ListViews::ADD, pSpecie->getKey());
-              //endInsertRows();
+              if (pCompartment->getMetabolites().getIndex(sData->getName()) == C_INVALID_INDEX)
+                {
+                  CMetab *pSpecie =  pModel->createMetabolite(sData->getName(), sData->getCompartment(), sData->getIConc(), sData->getStatus());
+
+                  if (pSpecie)
+                    {
+                      if (sData->getStatus() != CModelEntity::ASSIGNMENT)
+                        {
+                          pSpecie->setInitialConcentration(sData->getIConc());
+                        }
+
+                      if (sData->getStatus() == CModelEntity::ODE || sData->getStatus() == CModelEntity::ASSIGNMENT)
+                        {
+                          pSpecie->setExpression(sData->getExpression());
+                          pSpecie->getExpressionPtr()->compile();
+                        }
+
+                      // set initial expression
+                      if (sData->getStatus() != CModelEntity::ASSIGNMENT)
+                        {
+                          pSpecie->setInitialExpression(sData->getInitialExpression());
+                          pSpecie->getInitialExpressionPtr()->compile();
+                        }
+
+                      emit notifyGUI(ListViews::METABOLITE, ListViews::ADD, pSpecie->getKey());
+                      //endInsertRows();
+                    }
+                }
             }
         }
 
@@ -625,12 +651,14 @@ bool CQCompartmentDM::insertCompartmentRows(QList <UndoCompartmentData *> pData)
                       if (gData->getStatus() != CModelEntity::FIXED)
                         {
                           pGlobalQuantity->setExpression(gData->getExpression());
+                          pGlobalQuantity->getExpressionPtr()->compile();
                         }
 
                       // set initial expression
                       if (gData->getStatus() != CModelEntity::ASSIGNMENT)
                         {
                           pGlobalQuantity->setInitialExpression(gData->getInitialExpression());
+                          pGlobalQuantity->getInitialExpressionPtr()->compile();
                         }
 
                       emit notifyGUI(ListViews::MODELVALUE, ListViews::ADD, pGlobalQuantity->getKey());
@@ -689,19 +717,46 @@ bool CQCompartmentDM::insertCompartmentRows(QList <UndoCompartmentData *> pData)
               pEvent->setDelayExpression(eData->getDelayExpression());
               pEvent->setPriorityExpression(eData->getPriorityExpression());
 
-              QList <CEventAssignment *> *assignments = eData->getAssignments();
-              QList <CEventAssignment *>::const_iterator i;
+              QList <UndoEventAssignmentData *> *assignmentData = eData->getEventAssignmentData();
+              QList <UndoEventAssignmentData *>::const_iterator i;
 
-              for (i = assignments->begin(); i != assignments->end(); ++i)
+              for (i = assignmentData->begin(); i != assignmentData->end(); ++i)
                 {
-                  CEventAssignment * assign = *i;
-                  CEventAssignment *eventAssign = new CEventAssignment(assign->getTargetKey(), pEvent->getObjectParent());
+                  UndoEventAssignmentData * assignData = *i;
+
+                  CCopasiObject * pObject = NULL;
+                  CCompartment * pCompartment = pModel->getCompartments()[data->getName()];
+
+                  if (pCompartment->getMetabolites().getIndex(assignData->getName()) != C_INVALID_INDEX)
+                    {
+                      size_t index = pModel->findMetabByName(assignData->getName());
+                      pObject =  pModel->getMetabolites()[index];
+                    }
+                  else if (pModel->getModelValues().getIndex(assignData->getName()) != C_INVALID_INDEX)
+                    {
+                      pObject = pModel->getModelValues()[assignData->getName()];
+                    }
+                  else if (pModel->getReactions().getIndex(assignData->getName()) != C_INVALID_INDEX)
+                    {
+                      pObject = pModel->getReactions()[assignData->getName()];
+                    }
+
+                  const CModelEntity * pEntity = dynamic_cast< const CModelEntity * >(pObject);
+
+                  CEventAssignment *eventAssign = new CEventAssignment(pObject->getKey(), pEvent->getObjectParent());
+
+                  eventAssign->setExpression(assignData->getExpression());
+
+                  eventAssign->getExpressionPtr()->compile();
+
                   pEvent->getAssignments().add(eventAssign);
                 }
 
               emit notifyGUI(ListViews::EVENT, ListViews::ADD, key);
             }
         }
+
+      endInsertRows();
     }
 
   emit changeWidget(111);

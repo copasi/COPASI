@@ -1,4 +1,4 @@
-// Copyright (C) 2013 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2013 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -431,8 +431,8 @@ C_FLOAT64 CHybridMethodODE45::doSingleStep(C_FLOAT64 endTime)
   //<i> ~~~~ Doing things about mRootMasking
   if (mSysStatus == SYS_EVENT && mHasRoot)
     {
-      if (mRootCounter > 0.99 * mMaxSteps
-          || mODE45.mT == *mpContainerStateTime) //oscillation around roots
+      if (mRootCounter > 0.99 * mMaxSteps || \
+          mODE45.mT == *mpContainerStateTime) //oscillation around roots
         {
           switch (mRootMasking)
             {
@@ -444,6 +444,7 @@ C_FLOAT64 CHybridMethodODE45::doSingleStep(C_FLOAT64 endTime)
                 mSysStatus = SYS_NEW;
                 break;
               }
+
               case ALL:
               {
                 mSysStatus = SYS_CONT;
@@ -465,6 +466,7 @@ C_FLOAT64 CHybridMethodODE45::doSingleStep(C_FLOAT64 endTime)
           case NONE:
           case DISCRETE:
             break;
+
           case ALL:
           {
             const bool *pDiscrete = mDiscreteRoots.array();

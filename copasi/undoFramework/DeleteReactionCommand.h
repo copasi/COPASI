@@ -1,4 +1,4 @@
-// Copyright (C) 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2014 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -17,6 +17,7 @@
 
 class CReaction;
 class ReactionsWidget1;
+class UndoReactionData;
 
 class DeleteReactionCommand: public CCopasiUndoCommand
 {
@@ -25,6 +26,7 @@ public:
   void redo();
   void undo();
   QString deleteReactionText(std::string &name) const;
+  UndoData *getUndoData() const;
 
   virtual ~DeleteReactionCommand();
 
@@ -32,6 +34,7 @@ private:
   std::string mReaObjectName;
   CReactionInterface *mpRi;
   CReaction *mpReaction;
+  UndoReactionData *mpReactionData;
   ReactionsWidget1* mpReactionWidget;
 };
 

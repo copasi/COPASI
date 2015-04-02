@@ -1,12 +1,12 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-// and The University of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
 
 #include "CQLayoutsWidget.h"
 
@@ -36,6 +36,8 @@
 #endif //DISABLE_QT_LAYOUT_RENDERING
 
 #include "copasi/layoutUI/CQAutolayoutWizard.h"
+
+#include <copasi/UI/copasiui3window.h>
 
 #include <sstream>
 
@@ -74,7 +76,9 @@ CQLayoutsWidget::CQLayoutsWidget(QWidget* parent)
 
 // virtual
 CQLayoutsWidget::~CQLayoutsWidget()
-{}
+{
+  pdelete(mpProxyModel);
+}
 
 // virtual
 bool CQLayoutsWidget::update(ListViews::ObjectType /* objectType */, ListViews::Action /* action */, const std::string & /* key */)
@@ -243,9 +247,9 @@ void CQLayoutsWidget::slotBtnNewClicked()
       name = str.str();
     }
 
-  CQAutolayoutWizard* pWizard = new CQAutolayoutWizard(*pModel);
+  CQAutolayoutWizard pWizard(*pModel);
 
-  if (pWizard->exec() != QDialog::Accepted)
+  if (pWizard.exec() != QDialog::Accepted)
     return;
 
   // add the layout to the datamodel
@@ -256,10 +260,10 @@ void CQLayoutsWidget::slotBtnNewClicked()
   // create the random layout
   CCopasiSpringLayout::Parameters p;
   CLayout* pLayout = CCopasiSpringLayout::createLayout(
-                       pDataModel, pWizard->getSelectedCompartments(),
-                       pWizard->getSelectedReactions(),
-                       pWizard->getSelectedMetabolites(),
-                       pWizard->getSideMetabolites(),
+                       pDataModel, pWizard.getSelectedCompartments(),
+                       pWizard.getSelectedReactions(),
+                       pWizard.getSelectedMetabolites(),
+                       pWizard.getSideMetabolites(),
                        &p);
 
   pLayout->setObjectName(name);
@@ -418,6 +422,9 @@ void CQLayoutsWidget::slotShowLayout(const QModelIndex & index)
       if (pLayoutWindow == NULL)
         {
           pLayoutWindow = createLayoutWindow(row, pLayout);
+
+          // need to add it to the list, so the window can be deleted later
+          mLayoutWindowMap[pLayout->getKey()] = pLayoutWindow;
         }
 
       if (pLayoutWindow != NULL)

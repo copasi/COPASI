@@ -1,4 +1,4 @@
-// Copyright (C) 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2014 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -108,6 +108,9 @@ void CUnit::fromEnum(VolumeUnit volEnum)
       case CUnit::fl:
         tmpComponent.setScale(-18);
         break;
+
+      default:
+        return; // just to silence compiler warning
     }
 
   addComponent(tmpComponent);
@@ -157,6 +160,9 @@ void CUnit::fromEnum(AreaUnit areaEnum)
       case CUnit::fm2:
         tmpComponent.setScale(-30);
         break;
+
+      default:
+        return; // just to silence compiler warning
     }
 
   addComponent(tmpComponent);
@@ -205,6 +211,9 @@ void CUnit::fromEnum(LengthUnit lengthEnum)
       case CUnit::fm:
         tmpComponent.setScale(-15);
         break;
+
+      default:
+        return; // just to silence compiler warning
     }
 
   addComponent(tmpComponent);
@@ -254,6 +263,9 @@ void CUnit::fromEnum(TimeUnit timeEnum)
       case CUnit::fs:
         tmpComponent.setScale(-15);
         break;
+
+      default:
+        return; // just to silence compiler warning
     }
 
   addComponent(tmpComponent);
@@ -312,6 +324,9 @@ void CUnit::fromEnum(QuantityUnit quantityEnum)
       case CUnit::OldXML:
         tmpComponent.setMultiplier(1);
         break;
+
+      default:
+        return; // just to silence compiler warning
     }
 
   addComponent(tmpComponent);

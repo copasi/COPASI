@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -20,6 +20,7 @@
 
 #ifdef COPASI_UNDO
 #include <QUndoStack>
+#include "CQUndoHistoryDialog.h"
 #endif
 
 #include <QtCore/QEvent>
@@ -284,18 +285,28 @@ CopasiUI3Window::~CopasiUI3Window()
   sbwDisconnect();
 #endif // COPASI_SBW_INTEGRATION
 
-  pdelete(mpListView);
-  pdelete(mpDataModelGUI);
-
   QList< QPointer<QMainWindow> >::iterator it = mWindows.begin();
   QList< QPointer<QMainWindow> >::iterator end = mWindows.end();
 
   for (; it != end; ++it)
     {
-      if (*it == NULL)  continue;
+      QPointer<QMainWindow> current = *it;
 
-      (*it)->close();
+      if (current == NULL)  continue;
+
+      if (current != this)
+        current->close();
     }
+
+  pdelete(mpSliders);
+  mpDataModelGUI->deregisterListView(mpListView);
+  pdelete(mpDataModelGUI);
+  pdelete(mpListView);
+
+  //clear the undo stack
+#ifdef COPASI_UNDO
+  pdelete(mpUndoStack);
+#endif
 }
 
 void CopasiUI3Window::createActions()
@@ -1690,8 +1701,19 @@ void CopasiUI3Window::slotCreateEventsForTimeseries()
       // Display error messages.
       CQMessageBox::information(this, "Event Creation Failed",
                                 CCopasiMessage::getAllMessageText().c_str(),
-                                QMessageBox::Ok | QMessageBox::Default,
-                                QMessageBox::NoButton);
+                                QMessageBox::Ok,
+                                QMessageBox::Ok);
+      CCopasiMessage::clearDeque();
+    }
+
+  // show any warning messages that occured
+  if (CCopasiMessage::size() != 0)
+    {
+      // Display warnings messages.
+      CQMessageBox::information(this, "Event Creation succeded with warnings",
+                                CCopasiMessage::getAllMessageText().c_str(),
+                                QMessageBox::Ok,
+                                QMessageBox::Ok);
       CCopasiMessage::clearDeque();
     }
 
@@ -2491,8 +2513,6 @@ void CopasiUI3Window::sbwRefreshMenu()
   mpSBWActionGroup = new QActionGroup(this);
   connect(mpSBWActionGroup, SIGNAL(triggered(QAction *)), this, SLOT(sbwSlotMenuTriggered(QAction *)));
 
-  QAction * pAction;
-
   try
     {
       std::vector<DataBlockReader> Services = sbwFindServices("Analysis", true);
@@ -2562,7 +2582,7 @@ void CopasiUI3Window::sbwRefreshMenu()
       // Add the option to register in SBW
       if (!IsSBWRegistered)
         {
-          pAction = new QAction("Register", mpSBWActionGroup);
+          QAction* pAction = new QAction("Register", mpSBWActionGroup);
           mpSBWMenu->addAction(pAction);
           mSBWActionMap[pAction] = SortedNames.size();
 
@@ -2577,7 +2597,7 @@ void CopasiUI3Window::sbwRefreshMenu()
           mSBWAnalyzerModules.append(ModuleList[itMap.value()]);
           mSBWAnalyzerServices.append(ServiceList[itMap.value()]);
 
-          pAction = new QAction(itMap.key(), mpSBWActionGroup);
+          QAction* pAction = new QAction(itMap.key(), mpSBWActionGroup);
           mpSBWMenu->addAction(pAction);
           mSBWActionMap[pAction] = i;
         }
@@ -3160,7 +3180,9 @@ void CopasiUI3Window::slotOpenRecentSEDMLFile(QAction * pAction)
 #ifdef COPASI_UNDO
 void CopasiUI3Window::slotUndoHistory()
 {
-  ;
+  CQUndoHistoryDialog* undoDialog = new CQUndoHistoryDialog(this, mpUndoStack); //, "Undo History Dialog", 76, 30);
+  undoDialog->setWindowTitle("Undo History");
+  undoDialog->exec();
 }
 QUndoStack *CopasiUI3Window::getUndoStack() {return mpUndoStack; };
 #endif

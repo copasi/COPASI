@@ -1,4 +1,4 @@
-// Copyright (C) 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2014 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -16,6 +16,7 @@
 #include "model/CEvent.h"
 
 #include "UndoEventData.h"
+#include "UndoEventAssignmentData.h"
 
 #include "RemoveEventRowsCommand.h"
 
@@ -50,9 +51,11 @@ RemoveEventRowsCommand::RemoveEventRowsCommand(QModelIndexList rows, CQEventDM *
 
           for (; it != end; ++it)
             {
-              CEventAssignment *eventAssign = new CEventAssignment((*it)->getTargetKey(), pModel->getEvents()[(*i).row()]->getObjectParent());
-              eventAssign->setExpression((*it)->getExpression());
-              data->getAssignments()->append(eventAssign);
+              const CModelEntity * pEntity = dynamic_cast< CModelEntity * >(CCopasiRootContainer::getKeyFactory()->get((*it)->getTargetKey()));
+              UndoEventAssignmentData *eventAssignData = new UndoEventAssignmentData();
+              eventAssignData->setName(pEntity->getObjectName());
+              eventAssignData->setExpression((*it)->getExpression());
+              data->getEventAssignmentData()->append(eventAssignData);
             }
 
           mpEventData.append(data);
@@ -60,6 +63,8 @@ RemoveEventRowsCommand::RemoveEventRowsCommand(QModelIndexList rows, CQEventDM *
     }
 
   this->setText(removeEventRowsText());
+  mType = EVENTREMOVE;
+  setEntityType("Event");
 }
 
 void RemoveEventRowsCommand::redo()
@@ -73,11 +78,16 @@ void RemoveEventRowsCommand::redo()
     {
       mpEventDM->deleteEventRows(mpEventData);
     }
+
+  setUndoState(true);
+  setAction("Delete set");
 }
 
 void RemoveEventRowsCommand::undo()
 {
   mpEventDM->insertEventRows(mpEventData);
+  setUndoState(false);
+  setAction("Undelete set");
 }
 
 QString RemoveEventRowsCommand::removeEventRowsText() const

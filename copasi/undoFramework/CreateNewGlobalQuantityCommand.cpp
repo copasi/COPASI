@@ -1,4 +1,4 @@
-// Copyright (C) 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2014 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -21,6 +21,8 @@ CreateNewGlobalQuantityCommand::CreateNewGlobalQuantityCommand(CQModelValue *pMo
   mpModelValue = pModelValue;
   mpGlobalQuantityData = new UndoGlobalQuantityData();
   this->setText(createNewGlobalQuantityText());
+  mType = GLOBALQUANTITYCREATE;
+  setEntityType("Global Quantity");
 }
 void CreateNewGlobalQuantityCommand::redo()
 {
@@ -28,13 +30,36 @@ void CreateNewGlobalQuantityCommand::redo()
 
   std::string sName = mpModelValue->mpModelValue->getObjectName();
   mpGlobalQuantityData->setName(sName);
-  mpGlobalQuantityData->setInitialValue(mpModelValue->mpModelValue->getInitialValue());
   mpGlobalQuantityData->setStatus(mpModelValue->mpModelValue->getStatus());
+
+  if (mpModelValue->mpModelValue->getStatus() != CModelEntity::ASSIGNMENT)
+    {
+      mpGlobalQuantityData->setInitialValue(mpModelValue->mpModelValue->getInitialValue());
+    }
+
+  // set expression
+  if (mpModelValue->mpModelValue->getStatus() != CModelEntity::FIXED)
+    {
+
+      mpGlobalQuantityData->setExpression(mpModelValue->mpModelValue->getExpression());
+    }
+
+  // set initial expression
+  if (mpModelValue->mpModelValue->getStatus() != CModelEntity::ASSIGNMENT)
+    {
+      mpGlobalQuantityData->setInitialExpression(mpModelValue->mpModelValue->getInitialExpression());
+    }
+
+  setUndoState(true);
+  setAction("Create");
+  setName(sName);
 }
 
 void CreateNewGlobalQuantityCommand::undo()
 {
   mpModelValue->deleteGlobalQuantity(mpGlobalQuantityData);
+  setUndoState(false);
+  setAction("Delete");
 }
 
 QString CreateNewGlobalQuantityCommand::createNewGlobalQuantityText() const
@@ -44,7 +69,13 @@ QString CreateNewGlobalQuantityCommand::createNewGlobalQuantityText() const
   return QObject::tr(entityName);
 }
 
+UndoData *CreateNewGlobalQuantityCommand::getUndoData() const
+{
+  return mpGlobalQuantityData;
+}
+
 CreateNewGlobalQuantityCommand::~CreateNewGlobalQuantityCommand()
 {
   // TODO Auto-generated destructor stub
+  pdelete(mpGlobalQuantityData);
 }

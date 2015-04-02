@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -145,6 +145,14 @@ CCopasiDataModel::CCopasiDataModel(const std::string & name,
 CCopasiDataModel::~CCopasiDataModel()
 {
   CCopasiObject::setRenameHandler(NULL);
+
+  // Make sure that the old data is deleted
+  deleteOldData();
+
+  // Delete the current data
+  mOldData = mData;
+  deleteOldData();
+
   pdelete(pOldMetabolites);
 }
 
@@ -158,13 +166,21 @@ bool CCopasiDataModel::loadModel(std::istream & in,
 
   CCopasiMessage::clearDeque();
 
-  std::string Line;
-  in >> Line;
+  // Read enough characters of the file, into a char array, to determine the format
+  char buffer[1024];
+  in.read(buffer, 1023);
+
+  // Make sure the stream pointer is at the beginning, for the subsequent true conditional
+  in.seekg(0, std::ios_base::beg);
+
+  // Properly NULL terminate the C-type "string" (so the string class constructor knows where it ends)
+  buffer[1023] = 0x0;
+
+  // create string (class), to have useful member functions
+  std::string Line = buffer;
 
   if (!Line.compare(0, 8, "Version="))
     {
-      in.seekg(0, std::ios_base::beg);
-
       CReadConfig inbuf(in);
 
       if (inbuf.getVersion() >= "4")
@@ -190,9 +206,8 @@ bool CCopasiDataModel::loadModel(std::istream & in,
 
       static_cast<CSteadyStateTask *>((*mData.pTaskList)["Steady-State"])->load(inbuf);
     }
-  else if (!Line.find("<?xml") != std::string::npos)
+  else if (Line.find("<COPASI") != std::string::npos)
     {
-      in.seekg(0, std::ios_base::beg);
       pushData();
       mData.mFileType = CopasiML;
 

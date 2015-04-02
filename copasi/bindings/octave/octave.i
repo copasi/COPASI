@@ -1,15 +1,9 @@
-// Begin CVS Header 
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/octave/octave.i,v $ 
-//   $Revision: 1.1 $ 
-//   $Name:  $ 
-//   $Author: gauges $ 
-//   $Date: 2010/10/14 10:34:22 $ 
-// End CVS Header 
-
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., University of Heidelberg, and The University 
 // of Manchester. 
 // All rights reserved. 
+
+%ignore real;
 
 /**
  * Convert CFitItem objects into the most specific type possible.

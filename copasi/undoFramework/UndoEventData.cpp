@@ -1,4 +1,4 @@
-// Copyright (C) 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2014 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -12,19 +12,22 @@
 
 #include <QtCore/QList>
 
-//#include "model/CEvent.h"
+#include "model/CModel.h"
 
 #include "UndoEventData.h"
+
+#include "UndoEventAssignmentData.h"
 
 UndoEventData::UndoEventData()
 {
 
-  mAssignments = new QList <CEventAssignment*>();
+  mEventAssignmentData = new QList <UndoEventAssignmentData*>();
 }
 
 UndoEventData::~UndoEventData()
 {
   // TODO Auto-generated destructor stub
+  pdelete(this->mEventAssignmentData);
 }
 
 std::string UndoEventData::getDelayExpression() const
@@ -97,12 +100,17 @@ void UndoEventData::setType(Type &type)
   this->type = type;
 }
 
-QList<CEventAssignment*> *UndoEventData::getAssignments() const
+QList<UndoEventAssignmentData*> *UndoEventData::getEventAssignmentData() const
 {
-  return mAssignments;
+  return mEventAssignmentData;
 }
 
-void UndoEventData::setAssignments(QList<CEventAssignment*> *assignments)
+void UndoEventData::setEventAssignmentData(QList<UndoEventAssignmentData *> *eventAssignmentData)
 {
-  mAssignments = assignments;
+  mEventAssignmentData = eventAssignmentData;
+}
+
+void UndoEventData::setUndoEventAssignmentData(UndoEventAssignmentData *eventAssignData)
+{
+  mEventAssignmentData->append(eventAssignData);
 }

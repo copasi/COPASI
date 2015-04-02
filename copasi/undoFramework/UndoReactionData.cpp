@@ -1,4 +1,4 @@
-// Copyright (C) 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2014 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -10,6 +10,10 @@
  *      Author: dada
  */
 
+#include <QtCore/QList>
+
+#include "model/CMetab.h"
+#include "UndoSpecieData.h"
 #include "UndoReactionData.h"
 
 UndoReactionData::UndoReactionData()
@@ -30,4 +34,14 @@ CReactionInterface *UndoReactionData::getRi() const
 void UndoReactionData::setRi(CReactionInterface *mpRi)
 {
   this->mpRi = mpRi;
+}
+
+QList<UndoSpecieData*> *UndoReactionData::getSpecieDependencyObjects() const
+{
+  return mSpecieDependencyObjects;
+}
+
+void UndoReactionData::setSpecieDependencyObjects(QList<UndoSpecieData*> *specieDependencyObjects)
+{
+  mSpecieDependencyObjects = specieDependencyObjects;
 }

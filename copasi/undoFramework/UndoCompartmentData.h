@@ -1,4 +1,4 @@
-// Copyright (C) 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2014 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -13,6 +13,7 @@
 #ifndef UNDOCOMPARTMENTDATA_H_
 #define UNDOCOMPARTMENTDATA_H_
 
+#include "model/CCompartment.h"
 #include "UndoData.h"
 
 class UndoReactionData;
@@ -41,12 +42,8 @@ public:
   void setEventDependencyObjects(QList<UndoEventData*> *eventDependencyObjects);
 private:
   /**
-  Value() const;
-    void setInitialValue(double initialValue);
-  private:
-    /**
-   *  Initial volume of the compartment as double
-   */
+  *  Initial volume of the compartment as double
+  */
   double mInitialValue;
   /**
    * The status of the metabolite

@@ -1,4 +1,4 @@
-// Copyright (C) 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2014 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -42,25 +42,50 @@ RemoveAllGlobalQuantityRowsCommand::RemoveAllGlobalQuantityRowsCommand(CQGlobalQ
       if (pModel->getModelValues()[i])
         {
           data->setName(pModel->getModelValues()[i]->getObjectName());
-          data->setInitialValue(pModel->getModelValues()[i]->getInitialValue());
           data->setStatus(pModel->getModelValues()[i]->getStatus());
+
+          if (pModel->getModelValues()[i]->getStatus() != CModelEntity::ASSIGNMENT)
+            {
+              data->setInitialValue(pModel->getModelValues()[i]->getInitialValue());
+            }
+
+          // set expression
+          if (pModel->getModelValues()[i]->getStatus() != CModelEntity::FIXED)
+            {
+              data->setExpression(pModel->getModelValues()[i]->getExpression());
+            }
+
+          // set initial expression
+          if (pModel->getModelValues()[i]->getStatus() != CModelEntity::ASSIGNMENT)
+            {
+              data->setInitialExpression(pModel->getModelValues()[i]->getInitialExpression());
+            }
+
           setDependentObjects(pModel->getModelValues()[i]->getDeletedObjects());
           data->setReactionDependencyObjects(getReactionData());
+          data->setSpecieDependencyObjects(getSpecieData());
+          data->setEventDependencyObjects(getEventData());
           mpGlobalQuantityData.append(data);
         }
     }
 
+  mType = GLOBALQUANTITYREMOVEALL;
+  setEntityType("Global Quantity");
   this->setText(removeAllGlobalQuantityRowsText());
 }
 
 void RemoveAllGlobalQuantityRowsCommand::redo()
 {
   mpGlobalQuantityDM->removeAllGlobalQuantityRows();
+  setUndoState(true);
+  setAction("Delete all");
 }
 
 void RemoveAllGlobalQuantityRowsCommand::undo()
 {
   mpGlobalQuantityDM->insertGlobalQuantityRows(mpGlobalQuantityData);
+  setUndoState(false);
+  setAction("Undelete all");
 }
 
 QString RemoveAllGlobalQuantityRowsCommand::removeAllGlobalQuantityRowsText() const

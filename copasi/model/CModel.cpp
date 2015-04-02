@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -131,12 +131,11 @@ CModel::CModel(CCopasiContainer* pParent):
 
   initializeMetabolites();
 
-  setQuantityUnit("mol");
-  setVolumeUnit("ml");
-
   mpMathContainer = new CMathContainer(*this);
 
   forceCompile(NULL);
+
+  CONSTRUCTOR_TRACE;
 }
 
 // CModel::CModel(const CModel & src):
@@ -197,6 +196,7 @@ CModel::CModel(CCopasiContainer* pParent):
 
 CModel::~CModel()
 {
+  mpModel = NULL;
   mpIValue = NULL;
   mpValue = NULL;
 
@@ -2978,13 +2978,17 @@ bool CModel::removeEvent(const CEvent * pEvent,
   return true;
 }
 
-#if WITH_PE_EVENT_CREATION
+#ifdef WITH_PE_EVENT_CREATION
 
 #include <copasi/parameterFitting/CExperiment.h>
 #include <copasi/parameterFitting/CExperimentSet.h>
 #include <copasi/parameterFitting/CExperimentObjectMap.h>
+
 #include <copasi/parameterFitting/CFitTask.h>
 #include <copasi/parameterFitting/CFitProblem.h>
+
+#include <copasi/trajectory/CTrajectoryTask.h>
+#include <copasi/trajectory/CTrajectoryProblem.h>
 
 #include <copasi/commandline/CLocaleString.h>
 
@@ -2993,6 +2997,21 @@ std::string getNextId(const std::string& base, int count)
   std::stringstream str;
   str << base << count;
   return str.str();
+}
+
+const CObjectInterface* getDependentOrNull(const std::map< CObjectInterface *, size_t > &  dependentMap, int index)
+{
+
+  std::map< CObjectInterface *, size_t >::const_iterator it = dependentMap.begin();
+
+  while (it != dependentMap.end())
+    {
+      if (it->second == index) return it->first;
+
+      ++it;
+    }
+
+  return NULL;
 }
 
 bool
@@ -3072,7 +3091,7 @@ CModel::createEventsForTimeseries(CExperiment* experiment/* = NULL*/)
       return false;
     }
 
-  if (!experiment->compile())
+  if (!experiment->compile(mpMathContainer))
     {
       CCopasiMessage(CCopasiMessage::ERROR,
                      "The experiment could not be compiled.");
@@ -3090,11 +3109,15 @@ CModel::createEventsForTimeseries(CExperiment* experiment/* = NULL*/)
       return false;
     }
 
+  // remember whether we had events before, if so it could be that
+  // we have two events triggering at the same time
+  bool hadEvents = getEvents().size() > 0;
+
   size_t numCols = experiment->getNumColumns();
-  const CVector< CCopasiObject * > &objects = experiment->getObjectMap().getMappedObjects();
+  const std::map< CObjectInterface *, size_t > &  dependentMap = experiment->getDependentObjects();
 
   // then go through each time point
-  for (size_t i = 0; i < numRows - 1; ++i)
+  for (size_t i = 0; i < numRows; ++i)
     {
       double current = time[i];
 
@@ -3121,18 +3144,53 @@ CModel::createEventsForTimeseries(CExperiment* experiment/* = NULL*/)
       // create event and assignment for each mapping with its value
       for (size_t j = 0; j < data.numCols(); ++j)
         {
-          const CCopasiObject* currentObject = objects[j + 1];
 
-          if (currentObject == NULL || currentObject->getObjectParent() == NULL) continue;
+          const CObjectInterface * currentObject = getDependentOrNull(dependentMap, j);  //objects[j + 1];
+
+          if (currentObject == NULL ||
+              currentObject->getDataObject() ==  NULL ||
+              currentObject->getDataObject()->getObjectParent() == NULL) continue;
 
           double value = data(i, j);
 
+          // don't include missing data points
+          if (value != value)
+            {
+              std::string displayName = currentObject->getDataObject()->getObjectParent()->getObjectDisplayName();
+              CCopasiMessage(CCopasiMessage::WARNING,
+                             "At time %.2f: a missing data point was encountered for '%s', the value has been ignored."
+                             , current, displayName.c_str());
+              continue;
+            }
+
           CEventAssignment * pNewAssignment =
-            new CEventAssignment(currentObject->getObjectParent()->getKey());
+            new CEventAssignment(currentObject->getDataObject()->getObjectParent()->getKey());
           std::stringstream assignmentStr; assignmentStr << value;
           pNewAssignment->setExpression(assignmentStr.str());
           pNewAssignment->getExpressionPtr()->compile();
           pEvent->getAssignments().add(pNewAssignment, true);
+        }
+    }
+
+  // ensure that the 'continue on simultaneous events' option is enabled
+  // for time course simulations, this needs to happen whenever we already
+  // have events in the model, as then there is a chance that two events trigger at the same time
+
+  if (!hadEvents) return true;
+
+  CTrajectoryTask* task = dynamic_cast<CTrajectoryTask*>((*getObjectDataModel()->getTaskList())["Time-Course"]);
+
+  if (task != NULL)
+    {
+      CTrajectoryProblem* problem = dynamic_cast<CTrajectoryProblem*>(task->getProblem());
+
+      if (!problem->getContinueSimultaneousEvents())
+        {
+          problem->setContinueSimultaneousEvents(true);
+          CCopasiMessage(CCopasiMessage::WARNING,
+                         "Since the model contained events, the option 'Continue on Simultaneous Events' "
+                         "has been enabled in the 'Time 'Course' task to ensure that simulation continues "
+                         "if multiple events trigger at the same time.");
         }
     }
 
@@ -3573,6 +3631,8 @@ bool CModel::convert2NonReversible()
 
 void CModel::initObjects()
 {
+  mpModel = this;
+
   mKey = CCopasiRootContainer::getKeyFactory()->add("Model", this);
 
   // The regular CModelEntity mechanism does not work since

@@ -29,7 +29,10 @@ project (COPASI)
 
 # preferably link against the static versions 
 # as compared to the dynamic ones
-if (NOT WIN32)
+
+option(PREFER_STATIC "Preferably link against the static library versions" ON)
+
+if (NOT WIN32 AND PREFER_STATIC)
  SET(CMAKE_FIND_LIBRARY_SUFFIXES .a ${CMAKE_FIND_LIBRARY_SUFFIXES})
 endif()
 
@@ -104,6 +107,12 @@ if (CMAKE_SIZEOF_VOID_P EQUAL 4)
 else()
   set(COPASI_BUILD_TYPE "64bit")
 endif()
+
+# On OSX it is common to build universal binaries to support multiple
+# processor architectures. The default behavior is not to build
+# multiple architectures, as most users might not need that.
+option(ENABLE_UNIVERSAL "Create universal binaries on Mac OS X." OFF)
+
 if (APPLE AND ENABLE_UNIVERSAL)
   set(COPASI_BUILD_TYPE "universal")
 endif()
@@ -188,7 +197,7 @@ if (ENABLE_WITH_MERGEMODEL)
 endif(ENABLE_WITH_MERGEMODEL)
 
 
-option(ENABLE_PE_EVENT_CREATION "Enable Event Creation out of time series data" OFF)
+option(ENABLE_PE_EVENT_CREATION "Enable Event Creation out of time series data" ON)
 if (ENABLE_PE_EVENT_CREATION)
   add_definitions(-DWITH_PE_EVENT_CREATION)
 endif(ENABLE_PE_EVENT_CREATION)
@@ -217,6 +226,15 @@ find_package(OpenGL)
 if ( NOT CLAPACK_FOUND )
   find_package(CLAPACK REQUIRED)
 endif ()
+
+
+IF(DEFINED F2C_INTEGER)
+  add_definitions(-DF2C_INTEGER=${F2C_INTEGER})
+ENDIF()
+
+IF(DEFINED F2C_LOGICAL)
+  add_definitions(-DF2C_LOGICAL=${F2C_LOGICAL})
+ENDIF()
 
 include_directories(BEFORE ${CLAPACK_INCLUDE_DIR})
 # set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${LAPACK_CFLAGS}")
@@ -249,11 +267,6 @@ if(ENABLE_COPASI_SEDML)
   include_directories(BEFORE ${LIBSEDML_INCLUDE_DIR})
 endif(ENABLE_COPASI_SEDML)
 
-# we need swig for the language bindings. Only if SWIG was found, the options to
-# build the different language bindings are enabled
-# TODO test the SWIG version
-find_package(SWIG)
-
 # actually iconv is only needed on BSD like systems
 find_package(ICONV)
 
@@ -269,6 +282,37 @@ if(UNIX)
         set(CMAKE_XCODE_ATTRIBUTE_GCC_VERSION "com.apple.compilers.llvmgcc42")
       endif()
     endif()
+
+    # Since we are encountering errors with the use of libc++ on OSX
+    # this option allows to override which stdlib to use (needed for R 
+    # bindings on mavericks / yosemite ...)
+    if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+      option(CLANG_USE_STDLIB "Use libstdc++ rather than libc++" OFF)
+      if (CLANG_USE_STDLIB)
+        SET( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libstdc++" )
+      endif()
+    endif()
+
+    
+    set(CMAKE_OSX_ARCHITECTURES "${CMAKE_OSX_ARCHITECTURES}" CACHE STRING
+      "A semicolon-separated list of build architectures to be used.")
+    if(ENABLE_UNIVERSAL)
+      # if universal binaries are requested and none defined so far
+      # overwrite them with all three common architectures. If the user
+      # specified their own list of architectures do not touch!
+      if(CMAKE_OSX_ARCHITECTURES STREQUAL "")
+        STRING(REGEX REPLACE "^.*MacOSX([0-9]*\\.[0-9]*)\\.sdk$" "\\1"
+               OSX_SDK_VERSION "${CMAKE_OSX_SYSROOT}")
+        if(OSX_SDK_VERSION  VERSION_EQUAL "10.7" OR OSX_SDK_VERSION  VERSION_EQUAL "10.8")
+          # OSX Lion no longer supports ppc architecture
+          set(CMAKE_OSX_ARCHITECTURES "i386;x86_64" CACHE STRING
+            "A semicolon-separated list of build architectures to be used." FORCE)
+          else()
+            set(CMAKE_OSX_ARCHITECTURES "i386;ppc;x86_64" CACHE STRING
+              "A semicolon-separated list of build architectures to be used." FORCE)
+        endif()
+      endif()
+    endif(ENABLE_UNIVERSAL)
   else()
     add_definitions(-DLinux)
     if(NOT CYGWIN)
@@ -339,13 +383,19 @@ option (BUILD_CXX_EXAMPLES "Build the C++ examples." OFF)
 include(CMakeDependentOption)
 
 # for the language bindings we need swig
-cmake_dependent_option (ENABLE_CSHARP "Enable language bindings for the C# language." OFF "SWIG_FOUND" OFF)
-cmake_dependent_option (ENABLE_JAVA "Enable language bindings for the Java language." OFF "SWIG_FOUND" OFF)
-cmake_dependent_option (ENABLE_PYTHON "Enable language bindings for the Python language." OFF "SWIG_FOUND" OFF)
-cmake_dependent_option (ENABLE_PERL "Enable language bindings for the Perl language." OFF "SWIG_FOUND" OFF)
-cmake_dependent_option (ENABLE_OCTAVE "Enable language bindings for the Octave language." OFF "SWIG_FOUND" OFF)
-cmake_dependent_option (ENABLE_R "Enable language bindings for the R language." OFF "SWIG_FOUND" OFF)
+option (ENABLE_CSHARP "Enable language bindings for the C# language." OFF)
+option (ENABLE_JAVA "Enable language bindings for the Java language." OFF)
+option (ENABLE_PYTHON "Enable language bindings for the Python language.")
+option (ENABLE_PERL "Enable language bindings for the Perl language." OFF)
+option (ENABLE_OCTAVE "Enable language bindings for the Octave language." OFF)
+option (ENABLE_R "Enable language bindings for the R language." OFF)
 
+# we need swig for the language bindings. Only if SWIG was found, the options to
+# build the different language bindings are enabled
+# TODO test the SWIG version
+if (ENABLE_CSHARP OR ENABLE_JAVA OR ENABLE_PYTHON OR ENABLE_PERL OR ENABLE_OCTAVE OR ENABLE_R)
+  find_package(SWIG  REQUIRED)
+endif ()
 
 option (ENABLE_USE_SBMLUNIT "Enables extended unit support." OFF)
 mark_as_advanced(ENABLE_USE_SBMLUNIT)
@@ -468,6 +518,33 @@ if(MSVC OR USING_INTEL)
         endforeach(flag_var)
     add_definitions( -D_MT)
     endif(WITH_STATIC_RUNTIME)
+    
+    option(COPASI_USE_VLD "When running debug builds with MSVC use Visual Leak Detector." OFF)
+    
+    mark_as_advanced(COPASI_USE_VLD)
+    
+    if (COPASI_USE_VLD)
+    
+      add_definitions( -DCOPASI_USE_VLD)      
+
+    endif (COPASI_USE_VLD)
+    
+    # CMake no longer creates PDB files for static libraries after 2.8.11
+    # so we store debug information in the object files instead
+    if (${CMAKE_VERSION} VERSION_GREATER "2.8.11")
+            foreach(flag_var
+                CMAKE_CXX_FLAGS CMAKE_CXX_FLAGS_DEBUG CMAKE_CXX_FLAGS_RELEASE
+                CMAKE_CXX_FLAGS_MINSIZEREL CMAKE_CXX_FLAGS_RELWITHDEBINFO
+                CMAKE_C_FLAGS CMAKE_C_FLAGS_DEBUG CMAKE_C_FLAGS_RELEASE
+                CMAKE_C_FLAGS_MINSIZEREL CMAKE_C_FLAGS_RELWITHDEBINFO)
+
+                if(${flag_var} MATCHES "/Zi")
+            STRING(REPLACE "/Zi"  "/Z7" "${flag_var}" "${${flag_var}}")
+                endif(${flag_var} MATCHES "/Zi")
+
+            endforeach(flag_var)      
+    endif()
+
 endif(MSVC OR USING_INTEL)
 
 
@@ -628,6 +705,7 @@ message(STATUS "-----------------------------------------------------------
    Model Merging            = ${ENABLE_WITH_MERGEMODEL}
    SEDML support            = ${ENABLE_COPASI_SEDML}
    GPROF support            = ${ENABLE_GPROF}
+   UNDO framework           = ${ENABLE_COPASI_UNDO}
    Additional Defines       = ${DirDefs}
 
   Language Bindings:

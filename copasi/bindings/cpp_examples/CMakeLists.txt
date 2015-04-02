@@ -40,5 +40,6 @@ add_subdirectory(example10)
 
 if (ENABLE_COPASI_SEDML)
   add_subdirectory(runSedML)
+  add_subdirectory(exportSedML)
 endif()
 

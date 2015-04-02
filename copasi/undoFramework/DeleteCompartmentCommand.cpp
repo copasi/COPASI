@@ -1,4 +1,4 @@
-// Copyright (C) 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2014 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -38,6 +38,9 @@ DeleteCompartmentCommand::DeleteCompartmentCommand(CQCompartment *pCompartment)
   mpCompartmentData->setEventDependencyObjects(getEventData());
 
   this->setText(deleteCompartmentText(sName));
+  setEntityType("Compartment");
+  mType = COMPARTMENTDELETE;
+  setName(sName);
 }
 
 void DeleteCompartmentCommand::redo()
@@ -51,11 +54,16 @@ void DeleteCompartmentCommand::redo()
     {
       mpCompartment->deleteCompartment(mpCompartmentData);
     }
+
+  setUndoState(true);
+  setAction("Delete");
 }
 
 void DeleteCompartmentCommand::undo()
 {
   mpCompartment->addCompartment(mpCompartmentData);
+  setUndoState(false);
+  setAction("Undelete");
 }
 
 QString DeleteCompartmentCommand::deleteCompartmentText(std::string &name) const
@@ -65,7 +73,13 @@ QString DeleteCompartmentCommand::deleteCompartmentText(std::string &name) const
   return QObject::tr(entityName);
 }
 
+UndoData *DeleteCompartmentCommand::getUndoData() const
+{
+  return mpCompartmentData;
+}
+
 DeleteCompartmentCommand::~DeleteCompartmentCommand()
 {
   // TODO Auto-generated destructor stub
+  pdelete(mpCompartmentData);
 }

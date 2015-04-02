@@ -1,4 +1,4 @@
-// Copyright (C) 2011 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -112,7 +112,6 @@ bool CLNATask::process(const bool & useInitialValues)
 {
   bool success = true;
   bool stabilityAnalysisRequested = true;
-  CEigen mEigenReduced;
 
   assert(mpMethod);
 
@@ -143,7 +142,7 @@ bool CLNATask::process(const bool & useInitialValues)
       // check for positive or zero Eigen values
       if (success)
         {
-          mEigenReduced = pSubTask->getEigenValuesReduced();
+          const CEigen &mEigenReduced = pSubTask->getEigenValuesReduced();
 
           if ((mEigenReduced.getNposreal() + mEigenReduced.getNimag() + mEigenReduced.getNzero()) > 0)
             {

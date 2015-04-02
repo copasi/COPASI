@@ -1,4 +1,4 @@
-// Copyright (C) 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2014 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -43,16 +43,36 @@ RemoveGlobalQuantityRowsCommand::RemoveGlobalQuantityRowsCommand(QModelIndexList
       if (!pGlobalQuantityDM->isDefaultRow(*i) && pModel->getModelValues()[(*i).row()])
         {
           data->setName(pModel->getModelValues()[(*i).row()]->getObjectName());
-          data->setInitialValue(pModel->getModelValues()[(*i).row()]->getInitialValue());
           data->setStatus(pModel->getModelValues()[(*i).row()]->getStatus());
+
+          if (pModel->getModelValues()[(*i).row()]->getStatus() != CModelEntity::ASSIGNMENT)
+            {
+              data->setInitialValue(pModel->getModelValues()[(*i).row()]->getInitialValue());
+            }
+
+          // set expression
+          if (pModel->getModelValues()[(*i).row()]->getStatus() != CModelEntity::FIXED)
+            {
+              data->setExpression(pModel->getModelValues()[(*i).row()]->getExpression());
+            }
+
+          // set initial expression
+          if (pModel->getModelValues()[(*i).row()]->getStatus() != CModelEntity::ASSIGNMENT)
+            {
+              data->setInitialExpression(pModel->getModelValues()[(*i).row()]->getInitialExpression());
+            }
 
           setDependentObjects(pModel->getModelValues()[(*i).row()]->getDeletedObjects());
           data->setReactionDependencyObjects(getReactionData());
+          data->setSpecieDependencyObjects(getSpecieData());
+          data->setEventDependencyObjects(getEventData());
 
           mpGlobalQuantityData.append(data);
         }
     }
 
+  mType = GLOBALQUANTITYREMOVE;
+  setEntityType("Global Quantity");
   this->setText(removeGlobalQuantityRowsText());
 }
 
@@ -67,11 +87,16 @@ void RemoveGlobalQuantityRowsCommand::redo()
     {
       mpGlobalQuantityDM->deleteGlobalQuantityRows(mpGlobalQuantityData);
     }
+
+  setUndoState(true);
+  setAction("Delete set");
 }
 
 void RemoveGlobalQuantityRowsCommand::undo()
 {
   mpGlobalQuantityDM->insertGlobalQuantityRows(mpGlobalQuantityData);
+  setUndoState(false);
+  setAction("Undelete set");
 }
 
 QString RemoveGlobalQuantityRowsCommand::removeGlobalQuantityRowsText() const

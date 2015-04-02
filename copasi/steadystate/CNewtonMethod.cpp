@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -742,6 +742,7 @@ bool CNewtonMethod::initialize(const CSteadyStateProblem * pProblem)
       assert(pTrajectoryMethod);
 
       pTrajectoryProblem->setStepNumber(1);
+      pTrajectoryProblem->setStartInSteadyState(false);
 
       mpTrajectory->initialize(CCopasiTask::NO_OUTPUT, NULL, NULL);
     }
@@ -950,7 +951,7 @@ C_FLOAT64 CNewtonMethod::solveJacobianXeqB(CVector< C_FLOAT64 > & X, const CVect
 
   if (INFO < 0)
     {
-      fatalError();
+      return std::numeric_limits< C_FLOAT64 >::infinity();
     }
 
   LWORK = (C_INT) WORK[0];
@@ -961,7 +962,7 @@ C_FLOAT64 CNewtonMethod::solveJacobianXeqB(CVector< C_FLOAT64 > & X, const CVect
 
   if (INFO < 0)
     {
-      fatalError();
+      return std::numeric_limits< C_FLOAT64 >::infinity();
     }
 
   C_FLOAT64 Error = 0;

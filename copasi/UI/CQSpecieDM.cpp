@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -31,6 +31,7 @@
 #include "undoFramework/UndoReactionData.h"
 #include "undoFramework/UndoGlobalQuantityData.h"
 #include "undoFramework/UndoEventData.h"
+#include "undoFramework/UndoEventAssignmentData.h"
 #endif
 
 CQSpecieDM::CQSpecieDM(QObject *parent):
@@ -353,7 +354,8 @@ bool CQSpecieDM::setData(const QModelIndex &index, const QVariant &value,
 #ifdef COPASI_UNDO
 
   //change is only accepted if the new value is different from the old value and also the old value is not equal to "New Species" for the 'name' column
-  if (index.data() == value || index.data() == "New Species")
+  // in that case no new species will be created!
+  if (index.data() == value)
     return false;
   else
     mpUndoStack->push(new SpecieDataChangeCommand(index, value, role, this));
@@ -885,29 +887,35 @@ bool CQSpecieDM::insertSpecieRows(QList <UndoSpecieData *> pData)
   for (i = pData.begin(); i != pData.end(); ++i)
     {
       UndoSpecieData * data = *i;
-      beginInsertRows(QModelIndex(), 1, 1);
-      CMetab *pSpecie =  pModel->createMetabolite(data->getName(), data->getCompartment(), data->getIConc(), data->getStatus());
+      CCompartment * pCompartment = pModel->getCompartments()[data->getCompartment()];
 
-      if (data->getStatus() != CModelEntity::ASSIGNMENT)
+      if (pCompartment->getMetabolites().getIndex(data->getName()) == C_INVALID_INDEX)
         {
-          pSpecie->setInitialConcentration(data->getIConc());
+          beginInsertRows(QModelIndex(), 1, 1);
+
+          CMetab *pSpecie =  pModel->createMetabolite(data->getName(), data->getCompartment(), 1.0, data->getStatus());
+
+          if (data->getStatus() != CModelEntity::ASSIGNMENT)
+            {
+              pSpecie->setInitialConcentration(data->getIConc());
+            }
+
+          if (data->getStatus() == CModelEntity::ODE || data->getStatus() == CModelEntity::ASSIGNMENT)
+            {
+              pSpecie->setExpression(data->getExpression());
+              pSpecie->getExpressionPtr()->compile();
+            }
+
+          // set initial expression
+          if (data->getStatus() != CModelEntity::ASSIGNMENT)
+            {
+              pSpecie->setInitialExpression(data->getInitialExpression());
+              pSpecie->getInitialExpressionPtr()->compile();
+            }
+
+          emit notifyGUI(ListViews::METABOLITE, ListViews::ADD, pSpecie->getKey());
+          endInsertRows();
         }
-
-      if (data->getStatus() == CModelEntity::ODE || data->getStatus() == CModelEntity::ASSIGNMENT)
-        {
-          //  std::cout<<"+++Not Species FIXED ========++"<<data->getExpression()<<"++++"<<data->getStatus()<<std::endl;
-          pSpecie->setExpression(data->getExpression());
-        }
-
-      // set initial expression
-      if (data->getStatus() != CModelEntity::ASSIGNMENT)
-        {
-
-          pSpecie->setInitialExpression(data->getInitialExpression());
-        }
-
-      emit notifyGUI(ListViews::METABOLITE, ListViews::ADD, pSpecie->getKey());
-      endInsertRows();
     }
 
   //restore the reactions
@@ -944,18 +952,14 @@ bool CQSpecieDM::insertSpecieRows(QList <UndoSpecieData *> pData)
                       if (gData->getStatus() != CModelEntity::FIXED)
                         {
                           pGlobalQuantity->setExpression(gData->getExpression());
+                          pGlobalQuantity->getExpressionPtr()->compile();
                         }
-
-                      /*  if (gData->getStatus() == CModelEntity::ODE){
-                          std::cout<<"+++Not Quantity FIXED ========++"<<gData->getExpression()<<"++++"<<gData->getStatus()<<std::endl;
-                          pGlobalQuantity->setExpression(gData->getExpression());
-                        }*/
 
                       // set initial expression
                       if (gData->getStatus() != CModelEntity::ASSIGNMENT)
                         {
-
                           pGlobalQuantity->setInitialExpression(gData->getInitialExpression());
+                          pGlobalQuantity->getInitialExpressionPtr()->compile();
                         }
 
                       emit notifyGUI(ListViews::MODELVALUE, ListViews::ADD, pGlobalQuantity->getKey());
@@ -985,11 +989,44 @@ bool CQSpecieDM::insertSpecieRows(QList <UndoSpecieData *> pData)
                   rData->getRi()->createMetabolites();
                   rData->getRi()->createOtherObjects();
                   rData->getRi()->writeBackToReaction(pRea);
-                  //std::string name = rData->getRi()->getFunctionName();
-                  //pRea->setFunction((const)rData->getRi()->getFunction());
+
+                  //reaction may further has dependencies, these must be taken care of
+                  QList <UndoSpecieData *> *spData = rData->getSpecieDependencyObjects();
+
+                  QList <UndoSpecieData *>::const_iterator rs;
+
+                  for (rs = spData->begin(); rs != spData->end(); ++rs)
+                    {
+                      UndoSpecieData * data = *rs;
+                      CCompartment * pCompartment = pModel->getCompartments()[data->getCompartment()];
+
+                      if (pCompartment->getMetabolites().getIndex(data->getName()) == C_INVALID_INDEX)
+                        {
+                          CMetab *pSpecie =  pModel->createMetabolite(data->getName(), data->getCompartment(), 1.0, data->getStatus());
+
+                          if (data->getStatus() != CModelEntity::ASSIGNMENT)
+                            {
+                              pSpecie->setInitialConcentration(data->getIConc());
+                            }
+
+                          if (data->getStatus() == CModelEntity::ODE || data->getStatus() == CModelEntity::ASSIGNMENT)
+                            {
+                              pSpecie->setExpression(data->getExpression());
+                              pSpecie->getExpressionPtr()->compile();
+                            }
+
+                          // set initial expression
+                          if (data->getStatus() != CModelEntity::ASSIGNMENT)
+                            {
+                              pSpecie->setInitialExpression(data->getInitialExpression());
+                              pSpecie->getInitialExpressionPtr()->compile();
+                            }
+
+                          emit notifyGUI(ListViews::METABOLITE, ListViews::ADD, pSpecie->getKey());
+                        }
+                    }
 
                   emit notifyGUI(ListViews::REACTION, ListViews::ADD, pRea->getKey());
-                  //  endInsertRows();
                 }
             }
         }
@@ -1017,18 +1054,38 @@ bool CQSpecieDM::insertSpecieRows(QList <UndoSpecieData *> pData)
                       pEvent->setDelayExpression(eData->getDelayExpression());
                       pEvent->setPriorityExpression(eData->getPriorityExpression());
 
-                      QList <CEventAssignment *> *assignments = eData->getAssignments();
-                      QList <CEventAssignment *>::const_iterator i;
+                      QList <UndoEventAssignmentData *> *assignmentData = eData->getEventAssignmentData();
+                      QList <UndoEventAssignmentData *>::const_iterator evi;
 
-                      for (i = assignments->begin(); i != assignments->end(); ++i)
+                      for (evi = assignmentData->begin(); evi != assignmentData->end(); ++evi)
                         {
-                          CEventAssignment * assign = *i;
+                          UndoEventAssignmentData * assignData = *evi;
+                          CCopasiObject * pObject = NULL;
+                          CCompartment * pCompartment = pModel->getCompartments()[data->getCompartment()];
 
-                          if (pEvent->getAssignments().getIndex(assign->getObjectName()) == C_INVALID_INDEX)
+                          if (pCompartment->getMetabolites().getIndex(assignData->getName()) != C_INVALID_INDEX)
                             {
-                              CEventAssignment *eventAssign = new CEventAssignment(assign->getTargetKey(), pEvent->getObjectParent());
-                              pEvent->getAssignments().add(eventAssign);
+                              size_t index = pModel->findMetabByName(assignData->getName());
+                              pObject =  pModel->getMetabolites()[index];
                             }
+                          else if (pModel->getModelValues().getIndex(assignData->getName()) != C_INVALID_INDEX)
+                            {
+                              pObject = pModel->getModelValues()[assignData->getName()];
+                            }
+                          else if (pModel->getReactions().getIndex(assignData->getName()) != C_INVALID_INDEX)
+                            {
+                              pObject = pModel->getReactions()[assignData->getName()];
+                            }
+
+                          const CModelEntity * pEntity = dynamic_cast< const CModelEntity * >(pObject);
+
+                          CEventAssignment *eventAssign = new CEventAssignment(pObject->getKey(), pEvent->getObjectParent());
+
+                          eventAssign->setExpression(assignData->getExpression());
+
+                          eventAssign->getExpressionPtr()->compile();
+
+                          pEvent->getAssignments().add(eventAssign);
                         }
 
                       emit notifyGUI(ListViews::EVENT, ListViews::ADD, key);
@@ -1039,7 +1096,6 @@ bool CQSpecieDM::insertSpecieRows(QList <UndoSpecieData *> pData)
     }
 
   emit changeWidget(112);
-
   return true;
 }
 
@@ -1056,9 +1112,10 @@ void CQSpecieDM::deleteSpecieRows(QList <UndoSpecieData *> pData)
   for (j = pData.begin(); j != pData.end(); ++j)
     {
       UndoSpecieData * data = *j;
-
       size_t index = pModel->findMetabByName(data->getName());
+      beginRemoveRows(QModelIndex(), 1, 1);
       removeRow((int) index);
+      endRemoveRows();
     }
 
   emit changeWidget(112);

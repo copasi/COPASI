@@ -81,7 +81,8 @@ ID       [a-z_A-Z][a-z_A-Z0-9]*
 %}
 
 [ \t\r\n]+ %{
-  COMMON_ACTION;
+  mPosition += yyleng;
+  //COMMON_ACTION;
 %} 
 
 <<EOF>>  return 0;

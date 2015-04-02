@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -24,6 +24,7 @@
 #include "undoFramework/RemoveAllEventRowsCommand.h"
 #include "undoFramework/EventDataChangeCommand.h"
 #include "undoFramework/UndoEventData.h"
+#include "undoFramework/UndoEventAssignmentData.h"
 #endif
 
 CQEventDM::CQEventDM(QObject *parent)
@@ -416,6 +417,7 @@ void CQEventDM::addEventRow(UndoEventData *pEventData)
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
   assert(pDataModel != NULL);
+  CModel * pModel = pDataModel->getModel();
 
   beginInsertRows(QModelIndex(), 1, 1);
   CEvent *pEvent = pDataModel->getModel()->createEvent(pEventData->getName());
@@ -425,13 +427,48 @@ void CQEventDM::addEventRow(UndoEventData *pEventData)
   pEvent->setDelayExpression(pEventData->getDelayExpression());
   pEvent->setPriorityExpression(pEventData->getPriorityExpression());
 
-  QList <CEventAssignment *> *assignments = pEventData->getAssignments();
-  QList <CEventAssignment *>::const_iterator i;
+  QList <UndoEventAssignmentData *> *assignmentData = pEventData->getEventAssignmentData();
+  QList <UndoEventAssignmentData *>::const_iterator i;
 
-  for (i = assignments->begin(); i != assignments->end(); ++i)
+  for (i = assignmentData->begin(); i != assignmentData->end(); ++i)
     {
-      CEventAssignment * assign = *i;
-      pEvent->getAssignments().add(assign);
+      UndoEventAssignmentData * assignData = *i;
+
+      CCopasiObject * pObject = NULL;
+      bool speciesExist = false;
+      size_t ci;
+
+      for (ci = 0; ci < pModel->getCompartments().size(); ci++)
+        {
+          CCompartment * pCompartment = pModel->getCompartments()[ci];
+
+          if (pCompartment->getMetabolites().getIndex(assignData->getName()) != C_INVALID_INDEX)
+            speciesExist = true;
+        }
+
+      if (speciesExist)
+        {
+          size_t index = pModel->findMetabByName(assignData->getName());
+          pObject =  pModel->getMetabolites()[index];
+        }
+      else if (pModel->getModelValues().getIndex(assignData->getName()) != C_INVALID_INDEX)
+        {
+          pObject = pModel->getModelValues()[assignData->getName()];
+        }
+      else if (pModel->getReactions().getIndex(assignData->getName()) != C_INVALID_INDEX)
+        {
+          pObject = pModel->getReactions()[assignData->getName()];
+        }
+
+      const CModelEntity * pEntity = dynamic_cast< const CModelEntity * >(pObject);
+
+      CEventAssignment *eventAssign = new CEventAssignment(pObject->getKey(), pEvent->getObjectParent());
+
+      eventAssign->setExpression(assignData->getExpression());
+
+      eventAssign->getExpressionPtr()->compile();
+
+      pEvent->getAssignments().add(eventAssign);
     }
 
   std::string key = pEvent->getKey();
@@ -509,20 +546,54 @@ bool CQEventDM::insertEventRows(QList <UndoEventData *> pData)
       UndoEventData * data = *i;
       beginInsertRows(QModelIndex(), 1, 1);
       CEvent *pEvent =  pModel->createEvent(data->getName());
-      pEvent->setTriggerExpression(data->getTriggerExpression());
 
       //set the expressions
       pEvent->setTriggerExpression(data->getTriggerExpression());
       pEvent->setDelayExpression(data->getDelayExpression());
       pEvent->setPriorityExpression(data->getPriorityExpression());
 
-      QList <CEventAssignment *> *assignments = data->getAssignments();
-      QList <CEventAssignment *>::const_iterator i;
+      QList <UndoEventAssignmentData *> *assignmentData = data->getEventAssignmentData();
+      QList <UndoEventAssignmentData *>::const_iterator i;
 
-      for (i = assignments->begin(); i != assignments->end(); ++i)
+      for (i = assignmentData->begin(); i != assignmentData->end(); ++i)
         {
-          CEventAssignment * assign = *i;
-          pEvent->getAssignments().add(assign);
+          UndoEventAssignmentData * assignData = *i;
+
+          CCopasiObject * pObject = NULL;
+          bool speciesExist = false;
+          size_t ci;
+
+          for (ci = 0; ci < pModel->getCompartments().size(); ci++)
+            {
+              CCompartment * pCompartment = pModel->getCompartments()[ci];
+
+              if (pCompartment->getMetabolites().getIndex(assignData->getName()) != C_INVALID_INDEX)
+                speciesExist = true;
+            }
+
+          if (speciesExist)
+            {
+              size_t index = pModel->findMetabByName(assignData->getName());
+              pObject =  pModel->getMetabolites()[index];
+            }
+          else if (pModel->getModelValues().getIndex(assignData->getName()) != C_INVALID_INDEX)
+            {
+              pObject = pModel->getModelValues()[assignData->getName()];
+            }
+          else if (pModel->getReactions().getIndex(assignData->getName()) != C_INVALID_INDEX)
+            {
+              pObject = pModel->getReactions()[assignData->getName()];
+            }
+
+          const CModelEntity * pEntity = dynamic_cast< const CModelEntity * >(pObject);
+
+          CEventAssignment *eventAssign = new CEventAssignment(pObject->getKey(), pEvent->getObjectParent());
+
+          eventAssign->setExpression(assignData->getExpression());
+
+          eventAssign->getExpressionPtr()->compile();
+
+          pEvent->getAssignments().add(eventAssign);
         }
 
       emit notifyGUI(ListViews::EVENT, ListViews::ADD, pEvent->getKey());

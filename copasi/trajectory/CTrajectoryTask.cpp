@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -38,7 +38,8 @@
 #include "report/CReport.h"
 #include "utilities/CProcessReport.h"
 #include "utilities/CCopasiException.h"
-#include  "CopasiDataModel/CCopasiDataModel.h"
+#include "CopasiDataModel/CCopasiDataModel.h"
+#include "steadystate/CSteadyStateTask.h"
 
 #define XXXX_Reporting
 
@@ -75,6 +76,7 @@ CTrajectoryTask::CTrajectoryTask(const CCopasiContainer * pParent,
   mTimeSeriesRequested(true),
   mTimeSeries(),
   mpTrajectoryProblem(NULL),
+  mpSteadyState(NULL),
   mpTrajectoryMethod(NULL),
   mUpdateMoieties(false),
   mContainerState(),
@@ -104,6 +106,7 @@ CTrajectoryTask::CTrajectoryTask(const CTrajectoryTask & src,
   mTimeSeriesRequested(src.mTimeSeriesRequested),
   mTimeSeries(),
   mpTrajectoryProblem(NULL),
+  mpSteadyState(NULL),
   mpTrajectoryMethod(NULL),
   mUpdateMoieties(false),
   mContainerState(),
@@ -367,13 +370,25 @@ bool CTrajectoryTask::process(const bool & useInitialValues)
 
 void CTrajectoryTask::processStart(const bool & useInitialValues)
 {
-  if (useInitialValues)
-    {
-      mpContainer->applyInitialValues();
-    }
-
   mContainerState.initialize(mpContainer->getState(mUpdateMoieties));
   mpContainerStateTime = mContainerState.array() + mpContainer->getTimeIndex();
+
+  if (useInitialValues)
+    {
+      if (mpTrajectoryProblem->getStartInSteadyState())
+        {
+          if (!mpSteadyState->process(true))
+            {
+              CCopasiMessage(CCopasiMessage::ERROR, "Steady state could not be reached.");
+            }
+
+          * mpContainerStateTime = 0;
+        }
+      else
+        {
+          mpContainer->applyInitialValues();
+        }
+    }
 
   mpTrajectoryMethod->start();
 

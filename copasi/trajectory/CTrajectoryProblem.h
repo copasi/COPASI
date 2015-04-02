@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -143,6 +143,9 @@ public:
    */
   const bool & getContinueSimultaneousEvents() const;
 
+  void setStartInSteadyState(bool flag);
+  bool getStartInSteadyState() const;
+
   /**
    * Load a trajectory problem
    * @param "CReadConfig &" configBuffer
@@ -204,6 +207,12 @@ protected:
    * are encountered
    */
   bool * mpContinueSimultaneousEvents;
+
+  /**
+   * Indicates whether a time course is supposed to start in a steady state
+   * realized as a CCopasiParameter
+   */
+  bool* mpStartInSteadyState;
 
   /**
    *  Indicate whether the step number or step size was set last.

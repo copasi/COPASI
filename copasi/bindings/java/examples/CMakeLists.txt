@@ -23,7 +23,7 @@ foreach(file
 		)
 	
 	file(TO_NATIVE_PATH ${CMAKE_CURRENT_BINARY_DIR} CURRENT_BIN)
-	file(TO_NATIVE_PATH ${CMAKE_CURRENT_BINARY_DIR}/../copasi.jar CURRENT_JAR )
+	file(TO_NATIVE_PATH ${COPASI_JAR} CURRENT_JAR )
 	file(TO_NATIVE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/${file}.java CURRENT_FILE)
 		
 	ADD_CUSTOM_COMMAND(	
@@ -34,9 +34,8 @@ foreach(file
 			 -source 1.5
 			 -target 1.5
 			 -d ${CMAKE_CURRENT_BINARY_DIR}
-		MAIN_DEPENDENCY ${CMAKE_CURRENT_BINARY_DIR}/../copasi.jar
+		MAIN_DEPENDENCY ${CMAKE_CURRENT_SOURCE_DIR}/${file}.java
 		WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"
-		DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/${file}.java
 		COMMENT "Build java example ${file}"
 	) 
 	add_custom_target(example_java_${file} ALL 

@@ -1,4 +1,4 @@
-// Copyright (C) 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2014 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -15,6 +15,8 @@
 
 #include "CCopasiUndoCommand.h"
 
+class UndoReactionData;
+
 class CreateNewReactionCommand: public CCopasiUndoCommand
 {
 public:
@@ -22,11 +24,13 @@ public:
   void redo();
   void undo();
   QString createNewReactionText() const;
+  UndoData *getUndoData() const;
   virtual ~CreateNewReactionCommand();
 
 private:
   ReactionsWidget1* mpReactionWidget;
   CReaction *mpReaction;
+  UndoReactionData *mpReactionData;
 };
 
 #endif /* CREATENEWREACTIONCOMMAND_H_ */

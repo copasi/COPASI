@@ -1,23 +1,11 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFWriter.cpp,v $
-//   $Revision: 1.9 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/11/10 17:14:10 $
-// End CVS Header
-
-// Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
-// All rights reserved.
-
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
 #include <stdlib.h>
@@ -53,9 +41,9 @@ std::string CRDFWriter::xmlFromGraph(const CRDFGraph * pGraph)
 }
 
 CRDFWriter::CRDFWriter():
-    CRaptorInit(),
-    mpWriter(NULL),
-    mpGraph(NULL)
+  CRaptorInit(),
+  mpWriter(NULL),
+  mpGraph(NULL)
 {
   mpWriter = raptor_new_serializer("rdfxml-abbrev");
 
@@ -69,7 +57,10 @@ CRDFWriter::CRDFWriter():
 CRDFWriter::~CRDFWriter()
 {
   if (mpWriter != NULL)
-    raptor_free_serializer(mpWriter);
+    {
+      raptor_free_serializer(mpWriter);
+      mpWriter = NULL;
+    }
 }
 
 void CRDFWriter::initNamespaces(const CRDFGraph * pGraph)

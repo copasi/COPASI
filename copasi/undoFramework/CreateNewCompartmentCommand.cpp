@@ -1,4 +1,4 @@
-// Copyright (C) 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2014 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -21,6 +21,8 @@ CreateNewCompartmentCommand::CreateNewCompartmentCommand(CQCompartment *pCompart
   mpCompartment = pCompartment;
   mpCompartmentData = new UndoCompartmentData();
   this->setText(createNewCompartmentText());
+  mType = COMPARTMENTCREATE;
+  setEntityType("Compartment");
 }
 void CreateNewCompartmentCommand::redo()
 {
@@ -30,11 +32,16 @@ void CreateNewCompartmentCommand::redo()
   mpCompartmentData->setName(sName);
   mpCompartmentData->setInitialValue(mpCompartment->mpCompartment->getInitialValue());
   mpCompartmentData->setStatus(mpCompartment->mpCompartment->getStatus());
+  setUndoState(true);
+  setName(sName);
+  setAction("Create");
 }
 
 void CreateNewCompartmentCommand::undo()
 {
   mpCompartment->deleteCompartment(mpCompartmentData);
+  setUndoState(false);
+  setAction("Delete");
 }
 
 QString CreateNewCompartmentCommand::createNewCompartmentText() const
@@ -47,4 +54,15 @@ QString CreateNewCompartmentCommand::createNewCompartmentText() const
 CreateNewCompartmentCommand::~CreateNewCompartmentCommand()
 {
   // TODO Auto-generated destructor stub
+  pdelete(mpCompartmentData);
+}
+
+UndoData *CreateNewCompartmentCommand::getUndoData() const
+{
+  return mpCompartmentData;
+}
+
+void CreateNewCompartmentCommand::setType(const CreateNewCompartmentCommand::Type & type)
+{
+  mType = COMPARTMENTCREATE;
 }

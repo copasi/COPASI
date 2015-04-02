@@ -1,4 +1,4 @@
-// Copyright (C) 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2014 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -17,6 +17,7 @@
 #include "CQEventDM.h"
 
 #include "UndoEventData.h"
+#include "UndoEventAssignmentData.h"
 #include "InsertEventRowsCommand.h"
 
 InsertEventRowsCommand::InsertEventRowsCommand(int position, int rows, CQEventDM *pEventDM, const QModelIndex&): CCopasiUndoCommand()
@@ -27,6 +28,8 @@ InsertEventRowsCommand::InsertEventRowsCommand(int position, int rows, CQEventDM
   mRows = rows;
   mPosition = position;
   firstTime = true;
+  mType = EVENTINSERT;
+  setEntityType("Event");
 }
 
 void InsertEventRowsCommand::redo()
@@ -52,9 +55,11 @@ void InsertEventRowsCommand::redo()
 
       for (; it != end; ++it)
         {
-          CEventAssignment *eventAssign = new CEventAssignment((*it)->getTargetKey(), pEvent->getObjectParent());
-          eventAssign->setExpression((*it)->getExpression());
-          mpEventData->getAssignments()->append(eventAssign);
+          const CModelEntity * pEntity = dynamic_cast< CModelEntity * >(CCopasiRootContainer::getKeyFactory()->get((*it)->getTargetKey()));
+          UndoEventAssignmentData *eventAssignData = new UndoEventAssignmentData();
+          eventAssignData->setName(pEntity->getObjectName());
+          eventAssignData->setExpression((*it)->getExpression());
+          mpEventData->getEventAssignmentData()->append(eventAssignData);
         }
 
       firstTime = false;
@@ -63,11 +68,17 @@ void InsertEventRowsCommand::redo()
     {
       mpEventDM->addEventRow(mpEventData);
     }
+
+  setUndoState(true);
+  setAction("Add to list");
+  setName(mpEventData->getName());
 }
 
 void InsertEventRowsCommand::undo()
 {
   mpEventDM->deleteEventRow(mpEventData);
+  setUndoState(false);
+  setAction("Remove from list");
 }
 
 QString InsertEventRowsCommand::insertRowsText() const
@@ -75,7 +86,13 @@ QString InsertEventRowsCommand::insertRowsText() const
   return QObject::tr(": Inserted New Event");
 }
 
+UndoData *InsertEventRowsCommand::getUndoData() const
+{
+  return mpEventData;
+}
+
 InsertEventRowsCommand::~InsertEventRowsCommand()
 {
   // TODO Auto-generated destructor stub
+  pdelete(mpEventData);
 }
