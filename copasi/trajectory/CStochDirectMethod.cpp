@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -96,7 +96,13 @@ CStochDirectMethod::CStochDirectMethod(const CCopasiContainer * pParent):
   mA0(0.0),
   mMethodState(),
   mReactionDependencies(0),
-  mMaxStepsReached(false)
+  mMaxStepsReached(false),
+  mTimeRecord(0.0),
+  mNumRoot(0),
+  mpRootValueOld(NULL),
+  mpRootValueNew(NULL),
+  mpRootNew(NULL),
+  mpRootOld(NULL)
 {
   initializeParameter();
 }
@@ -115,7 +121,14 @@ CStochDirectMethod::CStochDirectMethod(const CStochDirectMethod & src,
   mA0(src.mA0),
   mMethodState(src.mMethodState),
   mReactionDependencies(src.mReactionDependencies),
-  mMaxStepsReached(src.mMaxStepsReached)
+  mMaxStepsReached(src.mMaxStepsReached),
+  mTimeRecord(src.mTimeRecord),
+  mNumRoot(src.mNumRoot),
+  mpRootValueOld(NULL),
+  mpRootValueNew(NULL),
+  mpRootNew(NULL),
+  mpRootOld(NULL)
+
 {
   initializeParameter();
 }
@@ -697,37 +710,39 @@ bool CStochDirectMethod::checkRoots()
  */
 void CStochDirectMethod::stateChanged()
 {
-    mMaxStepsReached = false;
-    mMethodState = *mpCurrentState;
-    const CStateTemplate & StateTemplate = mpModel->getStateTemplate();
-    CModelEntity *const* ppEntity  = StateTemplate.beginIndependent();
-    CModelEntity *const* endEntity = StateTemplate.endFixed();
-    C_FLOAT64 * pValue = mMethodState.beginIndependent();
-    for (; ppEntity != endEntity; ++ppEntity, ++pValue)
+  mMaxStepsReached = false;
+  mMethodState = *mpCurrentState;
+  const CStateTemplate & StateTemplate = mpModel->getStateTemplate();
+  CModelEntity *const* ppEntity  = StateTemplate.beginIndependent();
+  CModelEntity *const* endEntity = StateTemplate.endFixed();
+  C_FLOAT64 * pValue = mMethodState.beginIndependent();
+
+  for (; ppEntity != endEntity; ++ppEntity, ++pValue)
     {
       if (dynamic_cast< const CMetab * >(*ppEntity) != NULL)
         *pValue = floor(*pValue + 0.5);
     }
 
-    mpModel->setState(mMethodState);
-    mpModel->updateSimulatedValues(false); //for assignments
+  mpModel->setState(mMethodState);
+  mpModel->updateSimulatedValues(false); //for assignments
 
-    // recalculate amu;
-    size_t i;
-    for (i = 0; i < mNumReactions; i++)
-        calculateAmu(i);
+  // recalculate amu;
+  size_t i;
 
-    // calculate the total propensity
-    C_FLOAT64 * pAmu   = mAmu.array();
-    C_FLOAT64 * endAmu = pAmu + mNumReactions;
+  for (i = 0; i < mNumReactions; i++)
+    calculateAmu(i);
 
-    mA0 = 0.0;
+  // calculate the total propensity
+  C_FLOAT64 * pAmu   = mAmu.array();
+  C_FLOAT64 * endAmu = pAmu + mNumReactions;
 
-    for (; pAmu != endAmu; ++pAmu)
-        mA0 += *pAmu;
+  mA0 = 0.0;
 
-    mNextReactionIndex = C_INVALID_INDEX;
-   
-    // recalculate roots
-    mpModel->evaluateRoots(*mpRootValueOld, true);
+  for (; pAmu != endAmu; ++pAmu)
+    mA0 += *pAmu;
+
+  mNextReactionIndex = C_INVALID_INDEX;
+
+  // recalculate roots
+  mpModel->evaluateRoots(*mpRootValueOld, true);
 }
