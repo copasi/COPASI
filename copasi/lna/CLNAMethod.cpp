@@ -141,15 +141,8 @@ int CLNAMethod::calculateCovarianceMatrixReduced()
   // reactions.
   size_t numMetabs = mpModel->getNumIndependentReactionMetabs();
 
-  //#ifdef DEBUG
-  std::cout << "LNA (start)" << std::endl;
-  std::cout << "Metabolites:" << std::endl << metabs << std::endl;
-  std::cout << "No. of independent metabolites (head of metabolites' vector): " << numMetabs << std::endl;
-  std::cout << "Reactions:" << std::endl << reacs << std::endl;
-  //#endif // DEBUG
-
-  size_t i, j, k, b_i, b_j;
-  CMetab * mpMetabolite;
+  size_t i, j, k;
+  const CMetab * pMetabolite;
   C_FLOAT64 balance_i, balance_j, BContrib;
 
   // calculate covariances
@@ -170,27 +163,41 @@ int CLNAMethod::calculateCovarianceMatrixReduced()
   //       big systems since mRedStoi should be sparse there.
   for (k = 0; k < numReacs; k++)
     {
-      const CCopasiVector <CChemEqElement> * balances =
-        &reacs[k]->getChemEq().getBalances();
+      const CCopasiVector <CChemEqElement> & Balances =
+        reacs[k]->getChemEq().getBalances();
 
-      for (b_i = 0; b_i < balances->size(); b_i++)
+      CCopasiVector<CChemEqElement>::const_iterator itRow;
+      CCopasiVector<CChemEqElement>::const_iterator itColumn;
+      CCopasiVector<CChemEqElement>::const_iterator itEnd = Balances.end();
+
+      for (itRow = Balances.begin(); itRow != itEnd; ++itRow)
         {
-          mpMetabolite = const_cast < CMetab* >((*balances)[b_i]->getMetabolite());
-          i = metabs.getIndex(mpMetabolite);
-          balance_i = (*balances)[b_i]->getMultiplicity();
+          pMetabolite = (*itRow)->getMetabolite();
+          i = metabs.getIndex(pMetabolite);
 
-          if ((mpMetabolite->getStatus() != CModelEntity::REACTIONS) || (mpMetabolite->isDependent())) balance_i = 0.0;
-
-          for (b_j = 0; b_j < balances->size(); b_j++)
+          if (i < numMetabs)
             {
-              mpMetabolite = const_cast < CMetab* >((*balances)[b_j]->getMetabolite());
-              j = metabs.getIndex(mpMetabolite);
-              balance_j = (*balances)[b_j]->getMultiplicity();
+              balance_i = (*itRow)->getMultiplicity();
 
-              if ((mpMetabolite->getStatus() != CModelEntity::REACTIONS) || (mpMetabolite->isDependent())) balance_j = 0.0;
+              // This check is no longer needed since we check the index for validity, i.e. we are assured to have an independent metabolite
+              if ((pMetabolite->getStatus() != CModelEntity::REACTIONS) || (pMetabolite->isDependent())) balance_i = 0.0;
 
-              BContrib = ParticleFlux[k] * balance_i * balance_j;
-              mBMatrixReduced[i][j] += BContrib;
+              for (itColumn = Balances.begin(); itColumn != itEnd; ++itColumn)
+                {
+                  pMetabolite = (*itColumn)->getMetabolite();
+                  j = metabs.getIndex(pMetabolite);
+
+                  if (j < numMetabs)
+                    {
+                      balance_j = (*itColumn)->getMultiplicity();
+
+                      // This check is no longer needed since we check the index for validity, i.e. we are assured to have an independent metabolite
+                      if ((pMetabolite->getStatus() != CModelEntity::REACTIONS) || (pMetabolite->isDependent())) balance_j = 0.0;
+
+                      BContrib = ParticleFlux[k] * balance_i * balance_j;
+                      mBMatrixReduced[i][j] += BContrib;
+                    }
+                }
             }
         }
     }
@@ -204,10 +211,6 @@ int CLNAMethod::calculateCovarianceMatrixReduced()
   C_FLOAT64 derivationFactor = 1e-6;
   C_FLOAT64 resolution = 1e-12;
   mpModel->calculateJacobianX(mJacobianReduced, derivationFactor, resolution);
-
-  //#ifdef DEBUG
-  std::cout << "Jacobian (reduced):" << std::endl << mJacobianReduced << std::endl;
-  //#endif // DEBUG
 
   // copy the Jacobian (reduced) into A
   CMatrix< C_FLOAT64 > A;
@@ -228,10 +231,6 @@ int CLNAMethod::calculateCovarianceMatrixReduced()
             *pA = - std::numeric_limits< C_FLOAT64 >::max();
         }
     }
-
-  //#ifdef DEBUG
-  std::cout << "A:" << std::endl << A << std::endl;
-  //#endif // DEBUG
 
   char jobvs = 'V'; // Schur vectors are computed
   char sort = 'N'; // Eigenvalues are not ordered
@@ -299,11 +298,6 @@ int CLNAMethod::calculateCovarianceMatrixReduced()
       //      CCopasiMessage(CCopasiMessage::EXCEPTION, MCLNA + 1, -mInfo);
     }
 
-  //#ifdef DEBUG
-  std::cout << "Real Schur Form A:" << std::endl << A << std::endl;
-  std::cout << "Unitary Matrix A:" << std::endl << vs_A << std::endl;
-  //#endif // DEBUG
-
   // now, (Schur) transform the transposed Jacobian (reduced)
 
   // copy the transposed Jacobian (reduced) into At
@@ -325,10 +319,6 @@ int CLNAMethod::calculateCovarianceMatrixReduced()
             }
         }
     }
-
-  //#ifdef DEBUG
-  std::cout << "At:" << std::endl << At << std::endl;
-  //#endif // DEBUG
 
   jobvs = 'V'; // Schur vectors are computed
   sort = 'N'; // Eigenvalues are not ordered
@@ -396,11 +386,6 @@ int CLNAMethod::calculateCovarianceMatrixReduced()
       //      CCopasiMessage(CCopasiMessage::EXCEPTION, MCLNA + 1, -mInfo);
     }
 
-  //#ifdef DEBUG
-  std::cout << "Real Schur Form At:" << std::endl << At << std::endl;
-  std::cout << "Unitary Matrix At:" << std::endl << vs_At << std::endl;
-  //#endif // DEBUG
-
   // 2. transform the mBMatrixReduced B to new coordinates
   //    BMatrixReduced_transformed = (unitary At)^T * mBMatrixReduced * (unitary A);
 
@@ -444,10 +429,6 @@ int CLNAMethod::calculateCovarianceMatrixReduced()
          &beta,
          BMatrixReduced_transformed.array(),
          &BMatrixReduced_transformed_d);
-
-  //#ifdef DEBUG
-  std::cout << "Transformed B Matrix (reduced):" << std::endl << BMatrixReduced_transformed << std::endl;
-  //#endif // DEBUG
 
   // 3. Solve the simplified Lyapunov (Sylvester) Equation
 
@@ -528,9 +509,6 @@ int CLNAMethod::calculateCovarianceMatrixReduced()
          mCovarianceMatrixReduced.array(),
          &n);
 
-  //#ifdef DEBUG
-  std::cout << "Covariance Matrix (reduced):" << std::endl << mCovarianceMatrixReduced << std::endl;
-  //#endif // DEBUG
   return LNA_OK;
 }
 
@@ -559,13 +537,6 @@ void CLNAMethod::calculateCovarianceMatrixFull()
   for (i = 0; i < numDependentMetabs; i++)
     for (j = 0; j < numIndependentMetabs; j++)
       mL[(size_t)i + (size_t)numIndependentMetabs][(size_t)j] = mL0[(size_t)i][(size_t)j];
-
-  //#ifdef DEBUG
-  std::cout << "Link Matrix:" << std::endl << mL << std::endl;
-  //  std::cout << "Link Matrix:" << std::endl;
-  //  for (i = 0; i < numReactionMetabs*numIndependentMetabs; i++) std::cout << (mL.array())[i] << " ";
-  //  std::cout << std::endl;
-  //#endif // DEBUG
 
   CMatrix< C_FLOAT64 > D;
   D.resize((size_t)numIndependentMetabs, (size_t)numReactionMetabs);
@@ -612,14 +583,6 @@ void CLNAMethod::calculateCovarianceMatrixFull()
          &beta,
          mCovarianceMatrix.array(),
          &numReactionMetabs);
-
-  //#ifdef DEBUG
-  std::cout << "Covariance Matrix (full):" << std::endl << mCovarianceMatrix << std::endl;
-  //#endif // DEBUG
-
-  //#ifdef DEBUG
-  std::cout << "LNA (end)" << std::endl;
-  //#endif // DEBUG
 }
 
 /**
