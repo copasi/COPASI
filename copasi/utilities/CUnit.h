@@ -88,7 +88,7 @@ public:
   bool isDimensionless() const;
   void addComponent(const CUnitComponent & component);
   bool simplifyComponents();
-  bool invertComponents();
+  CUnit & exponentiate(double exp);
   std::string prefixFromScale(int scale);
   CUnit operator*(const CUnit & rhs) const;
 

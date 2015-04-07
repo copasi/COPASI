@@ -408,19 +408,16 @@ bool CUnit::simplifyComponents()
   return didSimplify;
 }
 
-bool CUnit::invertComponents()
+CUnit & CUnit::exponentiate(double exp)
 {
-  if (mComponents.size() < 1)
-    return false;
-
   std::vector< CUnitComponent >::iterator it = mComponents.begin();
 
   for (; it != mComponents.end(); it++)
     {
-      it->setExponent(it->getExponent() * -1);
+      it->setExponent(it->getExponent() * exp);
     }
 
-  return true;
+  return *this;
 }
 
 std::string CUnit::prefixFromScale(int scale)

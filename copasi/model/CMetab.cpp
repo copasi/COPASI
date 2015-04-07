@@ -148,7 +148,7 @@ CUnit CMetab::getChildObjectUnits(const CCopasiObject * pObject) const
                   return CUnit();
                 }
 
-              CompartmentUnit.invertComponents();
+              CompartmentUnit.exponentiate(-1);
               return CompartmentUnit;
             }
 
@@ -157,7 +157,7 @@ CUnit CMetab::getChildObjectUnits(const CCopasiObject * pObject) const
               return Unit;
             }
 
-          CompartmentUnit.invertComponents();
+          CompartmentUnit.exponentiate(-1);
           return CompartmentUnit;
         }
       else if (pObject == this->mpConcRateReference)
@@ -171,18 +171,18 @@ CUnit CMetab::getChildObjectUnits(const CCopasiObject * pObject) const
                       return CUnit();
                     }
 
-                  TimeUnit.invertComponents();
+                  TimeUnit.exponentiate(-1);
                   return TimeUnit;
                 }
 
               if (TimeUnit.getSymbol() == "none")
                 {
-                  CompartmentUnit.invertComponents();
+                  CompartmentUnit.exponentiate(-1);
                   return CompartmentUnit;
                 }
 
-              CompartmentUnit.invertComponents();
-              TimeUnit.invertComponents();
+              CompartmentUnit.exponentiate(-1);
+              TimeUnit.exponentiate(-1);
               return CompartmentUnit * TimeUnit;
             }
           else
@@ -194,18 +194,18 @@ CUnit CMetab::getChildObjectUnits(const CCopasiObject * pObject) const
                       return Unit;
                     }
 
-                  TimeUnit.invertComponents();
+                  TimeUnit.exponentiate(-1);
                   return Unit * TimeUnit;
                 }
 
               if (TimeUnit.getSymbol() == "none")
                 {
-                  CompartmentUnit.invertComponents();
+                  CompartmentUnit.exponentiate(-1);
                   return Unit * CompartmentUnit;
                 }
 
-              CompartmentUnit.invertComponents();
-              TimeUnit.invertComponents();
+              CompartmentUnit.exponentiate(-1);
+              TimeUnit.exponentiate(-1);
               return Unit * CompartmentUnit * TimeUnit;
             }
         }

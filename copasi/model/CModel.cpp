@@ -3555,7 +3555,7 @@ CUnit CModel::getFrequencyUnit() const
 {
   CUnit frequencyUnit = CUnit(getTimeUnit());
   frequencyUnit.simplifyComponents();
-  frequencyUnit.invertComponents();
+  frequencyUnit.exponentiate(-1);
   return frequencyUnit;
 }
 
