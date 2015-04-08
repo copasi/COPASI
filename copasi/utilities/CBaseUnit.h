@@ -1,4 +1,4 @@
-// Copyright (C) 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2014 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -33,6 +33,29 @@ public:
   static const std::string getSymbol(Kind kind);
 
   static const Kind fromSymbol(const std::string & symbol);
+
+  //http://physics.nist.gov/cuu/Units/prefixes.html
+  enum Scale
+  {
+    // SCALE    [afpumcdhkMGTP]
+    atto = -18,
+    femto = -15,
+    pico = -12,
+    micro = -6,
+    milli = -3,
+    centi = -2,
+    deci = -1,
+    zero = 0,
+    hecto = 2,
+    kilo = 3,
+    mega = 6,
+    giga = 9,
+    tera = 12,
+    peta = 15
+  };
+
+  static const Scale scaleFromPrefix(const std::string & prefix);
+
 };
 
 #endif // CBASEUNIT_H
