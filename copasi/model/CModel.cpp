@@ -2996,6 +2996,23 @@ std::string getNextId(const std::string& base, int count)
   return str.str();
 }
 
+const CCopasiObject*
+getDependentOrNull(const std::map< CCopasiObject *, size_t > &  dependentMap, int index)
+{
+
+  std::map< CCopasiObject *, size_t >::const_iterator it = dependentMap.begin();
+
+  while (it != dependentMap.end())
+    {
+      if (it->second == index)
+        return it->first;
+
+      ++it;
+    }
+
+  return NULL;
+}
+
 bool
 CModel::createEventsForTimeseries(CExperiment* experiment/* = NULL*/)
 {
@@ -3096,7 +3113,7 @@ CModel::createEventsForTimeseries(CExperiment* experiment/* = NULL*/)
   bool hadEvents = getEvents().size() > 0;
 
   size_t numCols = experiment->getNumColumns();
-  const CVector< CCopasiObject * > &objects = experiment->getObjectMap().getMappedObjects();
+  const std::map< CCopasiObject *, size_t > &  dependentMap = experiment->getDependentObjects();
 
   // then go through each time point
   for (size_t i = 0; i < numRows; ++i)
@@ -3126,7 +3143,8 @@ CModel::createEventsForTimeseries(CExperiment* experiment/* = NULL*/)
       // create event and assignment for each mapping with its value
       for (size_t j = 0; j < data.numCols(); ++j)
         {
-          const CCopasiObject* currentObject = objects[j + 1];
+
+          const CCopasiObject* currentObject = getDependentOrNull(dependentMap, j);  //objects[j + 1];
 
           if (currentObject == NULL || currentObject->getObjectParent() == NULL) continue;
 
@@ -3193,7 +3211,6 @@ bool CModel::convert2NonReversible()
   std::vector< CReaction * > reactionsToDelete;
 
   CReaction *reac0, *reac1, *reac2;
-  CReactionInterface ri1(this), ri2(this);
   std::string fn, rn1, rn2;
 
   //CModel* model = dynamic_cast< CModel * >(CCopasiRootContainer::getKeyFactory()->get(objKey));
@@ -3206,6 +3223,8 @@ bool CModel::convert2NonReversible()
   for (i = 0; i < imax; ++i)
     if (steps[i]->isReversible())
       {
+        std::vector< std::pair< const CCopasiObject * , const CCopasiObject * > > ParameterMap;
+
         reac0 = steps[i];
         rn1 = reac0->getObjectName() + " (forward)";
         rn2 = reac0->getObjectName() + " (backward)";
@@ -3308,6 +3327,13 @@ bool CModel::convert2NonReversible()
               reac2->setParameterMapping("k1", reac0->getParameterMapping("k2")[0]);
 
             reac2->setParameterMappingVector("substrate", reac0->getParameterMapping("product"));
+
+            // Bug 2143: We need to replace any occurrence of the reaction parameter of the
+            // reversible reaction with its replacement in the forward or backwards reaction
+            ParameterMap.push_back(std::make_pair(reac0->getParameters().getParameter("k1")->getValueReference(),
+                                                  reac1->getParameters().getParameter("k1")->getValueReference()));
+            ParameterMap.push_back(std::make_pair(reac0->getParameters().getParameter("k2")->getValueReference(),
+                                                  reac2->getParameters().getParameter("k1")->getValueReference()));
           }
         else //not mass action
           {
@@ -3372,6 +3398,7 @@ bool CModel::convert2NonReversible()
 
                       if (reac0->isLocalParameter(fp->getObjectName()))
                         {
+
                           reac1->setParameterValue(fp->getObjectName(),
                                                    reac0->getParameterValue(fp->getObjectName()));
                           reac2->setParameterValue(fp->getObjectName(),
@@ -3384,6 +3411,20 @@ bool CModel::convert2NonReversible()
                           reac2->setParameterMapping(fp->getObjectName(),
                                                      reac0->getParameterMapping(fp->getObjectName())[0]);
                         }
+
+                      // Bug 2143: We need to replace any occurrence of the reaction parameter of the
+                      // reversible reaction with its replacement in the forward or backwards reaction
+                      {
+                        CCopasiParameter * pOldParameter = reac0->getParameters().getParameter(fp->getObjectName());
+                        CCopasiParameter * pNewParameter = reac1->getParameters().getParameter(fp->getObjectName());
+
+                        if (pNewParameter == NULL)
+                          {
+                            pNewParameter = reac2->getParameters().getParameter(fp->getObjectName());
+                          }
+
+                        ParameterMap.push_back(std::make_pair(pOldParameter->getValueReference(), pNewParameter->getValueReference()));
+                      }
 
                       break;
 
@@ -3400,12 +3441,188 @@ bool CModel::convert2NonReversible()
         reac1->compile();
         reac2->compile();
 
-        // TODO CRITICAL BUG 1848. We need to replace all references to the flux and particle flux
+        std::string Old;
+        std::string New;
+        std::string Infix;
+
+        // Bug 2143: We need to replace any occurrence of the reaction parameter of the
+        // reversible reaction with its replacement in the forward or backwards reaction
+        std::vector< std::pair< const CCopasiObject *, const CCopasiObject * > >::const_iterator itParameter = ParameterMap.begin();
+        std::vector< std::pair< const CCopasiObject *, const CCopasiObject * > >::const_iterator endParameter = ParameterMap.end();
+
+        for (; itParameter != endParameter; ++itParameter)
+          {
+            Old = "<" + itParameter->first->getCN() + ">";
+            New = "<" + itParameter->second->getCN() + ">";
+
+            // We need to find all expressions which reference the old parameter (first value of the itParameter)
+            // Compartments (expression, initial expression)
+            CCopasiVector< CCompartment >::iterator itComp = mCompartments.begin();
+            CCopasiVector< CCompartment >::iterator endComp = mCompartments.end();
+
+            for (; itComp != endComp; ++itComp)
+              {
+                const CExpression * pExpression = (*itComp)->getExpressionPtr();
+
+                if (pExpression != NULL)
+                  {
+                    const CCopasiObject::DataObjectSet & Dependencies = pExpression->getDirectDependencies();
+
+                    if (Dependencies.find(itParameter->first) != Dependencies.end())
+                      {
+                        Infix = (*itComp)->getExpression();
+                        stringReplace(Infix, Old, New);
+                        (*itComp)->setExpression(Infix);
+                      }
+                  }
+
+                pExpression = (*itComp)->getInitialExpressionPtr();
+
+                if (pExpression != NULL)
+                  {
+                    const CCopasiObject::DataObjectSet & Dependencies = pExpression->getDirectDependencies();
+
+                    if (Dependencies.find(itParameter->first) != Dependencies.end())
+                      {
+                        Infix = (*itComp)->getInitialExpression();
+                        stringReplace(Infix, Old, New);
+                        (*itComp)->setInitialExpression(Infix);
+                      }
+                  }
+              }
+
+            // Species (expression, initial expression)
+            CCopasiVector< CMetab >::iterator itMetab = mMetabolitesX.begin();
+            CCopasiVector< CMetab >::iterator endMetab = mMetabolitesX.end();
+
+            for (; itMetab != endMetab; ++itMetab)
+              {
+                const CExpression * pExpression = (*itMetab)->getExpressionPtr();
+
+                if (pExpression != NULL)
+                  {
+                    const CCopasiObject::DataObjectSet & Dependencies = pExpression->getDirectDependencies();
+
+                    if (Dependencies.find(itParameter->first) != Dependencies.end())
+                      {
+                        Infix = (*itMetab)->getExpression();
+                        stringReplace(Infix, Old, New);
+                        (*itMetab)->setExpression(Infix);
+                      }
+                  }
+
+                pExpression = (*itMetab)->getInitialExpressionPtr();
+
+                if (pExpression != NULL)
+                  {
+                    const CCopasiObject::DataObjectSet & Dependencies = pExpression->getDirectDependencies();
+
+                    if (Dependencies.find(itParameter->first) != Dependencies.end())
+                      {
+                        Infix = (*itMetab)->getInitialExpression();
+                        stringReplace(Infix, Old, New);
+                        (*itMetab)->setInitialExpression(Infix);
+                      }
+                  }
+              }
+
+            // Model Quantities (expression, initial expression)
+            CCopasiVector< CModelValue >::iterator itValue = mValues.begin();
+            CCopasiVector< CModelValue >::iterator endValue = mValues.end();
+
+            for (; itValue != endValue; ++itValue)
+              {
+                const CExpression * pExpression = (*itValue)->getExpressionPtr();
+
+                if (pExpression != NULL)
+                  {
+                    const CCopasiObject::DataObjectSet & Dependencies = pExpression->getDirectDependencies();
+
+                    if (Dependencies.find(itParameter->first) != Dependencies.end())
+                      {
+                        Infix = (*itValue)->getExpression();
+                        stringReplace(Infix, Old, New);
+                        (*itValue)->setExpression(Infix);
+                      }
+                  }
+
+                pExpression = (*itValue)->getInitialExpressionPtr();
+
+                if (pExpression != NULL)
+                  {
+                    const CCopasiObject::DataObjectSet & Dependencies = pExpression->getDirectDependencies();
+
+                    if (Dependencies.find(itParameter->first) != Dependencies.end())
+                      {
+                        Infix = (*itValue)->getInitialExpression();
+                        stringReplace(Infix, Old, New);
+                        (*itValue)->setInitialExpression(Infix);
+                      }
+                  }
+              }
+
+            // Events (trigger, delay, assignments)
+            CCopasiVector< CEvent >::iterator itEvent = mEvents.begin();
+            CCopasiVector< CEvent >::iterator endEvent = mEvents.end();
+
+            for (; itEvent != endEvent; ++itEvent)
+              {
+                const CExpression * pExpression = (*itEvent)->getTriggerExpressionPtr();
+
+                if (pExpression != NULL)
+                  {
+                    const CCopasiObject::DataObjectSet & Dependencies = pExpression->getDirectDependencies();
+
+                    if (Dependencies.find(itParameter->first) != Dependencies.end())
+                      {
+                        Infix = (*itEvent)->getTriggerExpression();
+                        stringReplace(Infix, Old, New);
+                        (*itEvent)->setTriggerExpression(Infix);
+                      }
+                  }
+
+                pExpression = (*itEvent)->getDelayExpressionPtr();
+
+                if (pExpression != NULL)
+                  {
+                    const CCopasiObject::DataObjectSet & Dependencies = pExpression->getDirectDependencies();
+
+                    if (Dependencies.find(itParameter->first) != Dependencies.end())
+                      {
+                        Infix = (*itEvent)->getDelayExpression();
+                        stringReplace(Infix, Old, New);
+                        (*itEvent)->setDelayExpression(Infix);
+                      }
+                  }
+
+                CCopasiVector< CEventAssignment >::iterator itAssignment = (*itEvent)->getAssignments().begin();
+                CCopasiVector< CEventAssignment >::iterator endAssignment = (*itEvent)->getAssignments().end();
+
+                for (; itAssignment != endAssignment; ++itAssignment)
+                  {
+                    pExpression = (*itAssignment)->getExpressionPtr();
+
+                    if (pExpression != NULL)
+                      {
+                        const CCopasiObject::DataObjectSet & Dependencies = pExpression->getDirectDependencies();
+
+                        if (Dependencies.find(itParameter->first) != Dependencies.end())
+                          {
+                            Infix = (*itAssignment)->getExpression();
+                            stringReplace(Infix, Old, New);
+                            (*itAssignment)->setExpression(Infix);
+                          }
+                      }
+                  }
+              }
+          }
+
+        // BUG 1848. We need to replace all references to the flux and particle flux
         // with the difference of the forward and backward reaction fluxes and particle fluxes, i.e,
         // flux = forward.flux - backward.flux
 
-        std::string Old = "<" + reac0->getFluxReference()->getCN() + ">";
-        std::string New = "(<" + reac1->getFluxReference()->getCN() + "> - <" + reac2->getFluxReference()->getCN() + ">)";
+        Old = "<" + reac0->getFluxReference()->getCN() + ">";
+        New = "(<" + reac1->getFluxReference()->getCN() + "> - <" + reac2->getFluxReference()->getCN() + ">)";
 
         // Find all objects which directly depend on the flux or particle flux.
         std::set< const CCopasiObject * > Flux;
@@ -3425,7 +3642,7 @@ bool CModel::convert2NonReversible()
             CModelEntity * pEntity = static_cast< CModelEntity * >(const_cast< CCopasiObject * >(*it));
 
             // Expression
-            std::string Infix = pEntity->getExpression();
+            Infix = pEntity->getExpression();
 
             if (stringReplace(Infix, Old, New))
               {
@@ -3457,7 +3674,7 @@ bool CModel::convert2NonReversible()
             CEvent * pEvent = static_cast< CEvent * >(const_cast< CCopasiObject * >(*it));
 
             // Trigger Expression
-            std::string Infix = pEvent->getTriggerExpression();
+            Infix = pEvent->getTriggerExpression();
 
             if (stringReplace(Infix, Old, New))
               {
@@ -3517,7 +3734,7 @@ bool CModel::convert2NonReversible()
             CModelEntity * pEntity = static_cast< CModelEntity * >(const_cast< CCopasiObject * >(*it));
 
             // Expression
-            std::string Infix = pEntity->getExpression();
+            Infix = pEntity->getExpression();
 
             if (stringReplace(Infix, Old, New))
               {
@@ -3549,7 +3766,7 @@ bool CModel::convert2NonReversible()
             CEvent * pEvent = static_cast< CEvent * >(const_cast< CCopasiObject * >(*it));
 
             // Trigger Expression
-            std::string Infix = pEvent->getTriggerExpression();
+            Infix = pEvent->getTriggerExpression();
 
             if (stringReplace(Infix, Old, New))
               {

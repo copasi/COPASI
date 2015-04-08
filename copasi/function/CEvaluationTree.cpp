@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -307,13 +307,21 @@ bool CEvaluationTree::compileNodes()
 
   // The compile order must be child first.
   CNodeIterator< CEvaluationNode > itNode(mpRoot);
+  CEvaluationNode *pErrorNode = NULL;
   mUsable = true;
 
-  while (mUsable && itNode.next() != itNode.end())
+  while (itNode.next() != itNode.end())
     {
       if (*itNode != NULL)
         {
-          mUsable &= itNode->compile(this);
+          if (!itNode->compile(this))
+            {
+              if (mUsable)
+                {
+                  mUsable = false;
+                  pErrorNode = *itNode;
+                }
+            }
         }
     }
 
@@ -325,7 +333,7 @@ bool CEvaluationTree::compileNodes()
       // Find the error node in the node list
       for (it = mpNodeList->begin(); it != end; ++it)
         {
-          if (*it == *itNode)
+          if (*it == pErrorNode)
             {
               end = it + 1;
               break;
@@ -689,16 +697,16 @@ bool CEvaluationTree::hasDiscontinuity() const
     {
       switch ((int)(*it)->getType())
         {
-          case (CEvaluationNode::CHOICE | CEvaluationNodeChoice::IF):
-          case (CEvaluationNode::FUNCTION | CEvaluationNodeFunction::FLOOR):
-          case (CEvaluationNode::FUNCTION | CEvaluationNodeFunction::CEIL):
-          case (CEvaluationNode::OPERATOR | CEvaluationNodeOperator::MODULUS):
+          case(CEvaluationNode::CHOICE | CEvaluationNodeChoice::IF):
+          case(CEvaluationNode::FUNCTION | CEvaluationNodeFunction::FLOOR):
+          case(CEvaluationNode::FUNCTION | CEvaluationNodeFunction::CEIL):
+          case(CEvaluationNode::OPERATOR | CEvaluationNodeOperator::MODULUS):
             // We found a discontinuity.
             return true;
             break;
 
-          case (CEvaluationNode::CALL | CEvaluationNodeCall::FUNCTION):
-          case (CEvaluationNode::CALL | CEvaluationNodeCall::EXPRESSION):
+          case(CEvaluationNode::CALL | CEvaluationNodeCall::FUNCTION):
+          case(CEvaluationNode::CALL | CEvaluationNodeCall::EXPRESSION):
 
             // If the called tree has a discontinuity so do we.
             if (static_cast< CEvaluationNodeCall * >(*it)->getCalledTree()->hasDiscontinuity())
