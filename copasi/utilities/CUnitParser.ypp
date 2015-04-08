@@ -27,62 +27,65 @@
 %}
 
 /* yacc Declarations */
-%token TOKEN_SCALE
-%token TOKEN_KIND
-%token TOKEN_NUMBER
-%token TOKEN_MULTIPLY
-%token TOKEN_DIVIDE
-%token TOKEN_START_PARENS
-%token TOKEN_END_PARENS
-%token TOKEN_EXPONENT
+%token SCALE
+%token KIND
+%token NUMBER
+%token MULTIPLY
+%token DIVIDE
+%token START_PARENS
+%token END_PARENS
+%token EXPONENT
 
 // Precedence
-%left TOKEN_SCALE
-%left TOKEN_KIND
-%left TOKEN_NUMBER
-%left TOKEN_MULTIPLY
-%left TOKEN_DIVIDE
-%left TOKEN_START_PARENS
-%left TOKEN_END_PARENS
-%right TOKEN_EXPONENT
+%left SCALE
+%left KIND
+%left NUMBER
+%left MULTIPLY
+%left DIVIDE
+%left START_PARENS
+%left END_PARENS
+%right EXPONENT
 
 /* Grammar follows */
 %%
 
 list_of_components:  component
            {
+             $$.unit.addComponent($$.component);
            }
-         | component TOKEN_DIVIDE
+         | list_of_components MULTIPLY list_of_components
            {
-
+             $$.unit = $1.unit * $2.unit;
+           }
+         | list_of_components DIVIDE list_of_components
+           {
+             $$.unit = $1.unit * $2.unit.exponentiate(-1);
+           }
+         | START_PARENS list_of_components END_PARENS
+           {
+             $$ = $2;
+           }
+         | list_of_components EXPONENT NUMBER
+           {
+             $$.unit = $1.unit.exponentiate(strToDouble($3.text.c_str(), NULL));
            }
 
 component: scaled_kind
+         | NUMBER scaled_kind
            {
-             ;
-           }
-         | TOKEN_NUMBER scaled_kind
-           {
-
-           }
-         | scaled_kind TOKEN_EXPONENT TOKEN_NUMBER
-           {
-             ;
-           }
-         | TOKEN_START_PARENS TOKEN_NUMBER scaled_kind TOKEN_END_PARENS TOKEN_EXPONENT TOKEN_NUMBER
-           {
-             ;
+             $$ = $2;
+             $$.component.setMultiplier(strToDouble($1.text.c_str(), NULL));
            }
 
-scaled_kind: TOKEN_KIND
+scaled_kind: KIND
            {
-              $$.pComponent = new CUnitComponent(CBaseUnit::fromSymbol($$.text));
+             $$.component.setKind(CBaseUnit::fromSymbol($1.text));
            }
-         | TOKEN_SCALE TOKEN_KIND
+         | SCALE KIND
            {
-             ;
+             $$.component.setScale(CBaseUnit::scaleFromPrefix($1.text));
+             $$.component.setKind(CBaseUnit::fromSymbol($2.text));
            }
-
 ;
 
 %%

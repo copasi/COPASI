@@ -29,49 +29,49 @@
 
 %}
 
-SCALE    [apfumcdhkMGTP]
+SCALE    [afpumcdhkMGTP]
 KIND     ([mgsAK#]|cd)
 DIGIT    [0-9]
 
 %%
 {SCALE}/{KIND}   %{
   COMMON_ACTION;
-  return TOKEN_SCALE;
+  return SCALE;
 %}
 
 {KIND}   %{
   COMMON_ACTION;
-  return TOKEN_KIND;
+  return KIND;
 %}
 
 {DIGIT}+("."?{DIGIT}*(((e|E)"+"?|(e|E)"-"){DIGIT}+)?)?   %{
   COMMON_ACTION;
-  return TOKEN_NUMBER;
+  return NUMBER;
 %}
 
 "*"   %{
   COMMON_ACTION;
-  return TOKEN_MULTIPLY;
+  return MULTIPLY;
 %}
 
 "/"   %{
   COMMON_ACTION;
-  return TOKEN_DIVIDE;
+  return DIVIDE;
 %}
 
 "("   %{
   COMMON_ACTION;
-  return TOKEN_START_PARENS;
+  return START_PARENS;
 %}
 
 ")"   %{
   COMMON_ACTION;
-  return TOKEN_END_PARENS;
+  return END_PARENS;
 %}
 
 "^"   %{
   COMMON_ACTION;
-  return TOKEN_EXPONENT;
+  return EXPONENT;
 %}
 
 [ \t\r\n]+ %{
