@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -384,7 +384,7 @@ bool COptProblem::initialize()
 
   for (i = 0; it != end; ++it, i++)
     {
-      if (!(*it)->compile(ContainerList)) return false;
+      success &= (*it)->compile(ContainerList);
 
       Objects.insert((*it)->getDirectDependencies().begin(),
                      (*it)->getDirectDependencies().end());

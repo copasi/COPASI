@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -335,6 +335,7 @@ bool COptItem::isValid(CCopasiParameterGroup & group)
 
 bool COptItem::compile(const std::vector< CCopasiContainer * > listOfContainer)
 {
+  bool success = true;
   clearDirectDependencies();
 
   std::string Bound;
@@ -351,11 +352,13 @@ bool COptItem::compile(const std::vector< CCopasiContainer * > listOfContainer)
   if (mpObjectValue == &NaN)
     {
       CCopasiMessage(CCopasiMessage::ERROR, MCOptimization + 1, getObjectCN().c_str());
-      return false;
+      success = false;
     }
-
-  addDirectDependency(mpObject);
-  mpMethod = mpObject->getUpdateMethod();
+  else
+    {
+      addDirectDependency(mpObject);
+      mpMethod = mpObject->getUpdateMethod();
+    }
 
   if (compileLowerBound(listOfContainer))
     {
@@ -367,7 +370,7 @@ bool COptItem::compile(const std::vector< CCopasiContainer * > listOfContainer)
   else
     {
       CCopasiMessage(CCopasiMessage::ERROR, MCOptimization + 2, mpParmLowerBound->c_str());
-      return false;
+      success = false;
     }
 
   if (compileUpperBound(listOfContainer))
@@ -380,19 +383,19 @@ bool COptItem::compile(const std::vector< CCopasiContainer * > listOfContainer)
   else
     {
       CCopasiMessage(CCopasiMessage::ERROR, MCOptimization + 2, mpParmUpperBound->c_str());
-      return false;
+      success = false;
     }
 
   if (!mpUpperObject && !mpLowerObject && *mpUpperBound < *mpLowerBound)
     {
       CCopasiMessage(CCopasiMessage::ERROR, MCOptimization + 4, *mpLowerBound, *mpUpperBound, mpObject->getObjectDisplayName().c_str());
-      return false;
+      success = false;
     }
 
   if (isnan(*mpParmStartValue))
     *mpParmStartValue = *mpObjectValue;
 
-  return true;
+  return success;
 }
 
 C_INT32 COptItem::checkConstraint() const
@@ -501,7 +504,7 @@ bool COptItem::compileUpperBound(const std::vector< CCopasiContainer * > & listO
 
 std::ostream &operator<<(std::ostream &os, const COptItem & o)
 {
-  if (!o.mpObject && const_cast<COptItem *>(&o)->compile())
+  if (o.mpObject == NULL && !const_cast<COptItem *>(&o)->compile())
     return os << "Invalid Optimization Item";
 
   if (o.mpLowerObject)

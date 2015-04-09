@@ -419,6 +419,8 @@ bool CFitProblem::setCallBack(CProcessReport * pCallBack)
 
 bool CFitProblem::initialize()
 {
+  bool success = true;
+
   mHaveStatistics = false;
   mStoreResults = false;
 
@@ -430,7 +432,8 @@ bool CFitProblem::initialize()
 
       if (CCopasiMessage::getHighestSeverity() > CCopasiMessage::WARNING &&
           CCopasiMessage::peekLastMessage().getNumber() != MCCopasiMessage + 1)
-        return false;
+
+        success = false;
     }
 
   std::vector< CCopasiContainer * > ContainerList;
@@ -611,6 +614,7 @@ bool CFitProblem::initialize()
   // Create a joined sequence of update methods for parameters and independent values.
   for (i = 0, imax = mpExperimentSet->getExperimentCount(); i < imax; i++)
     {
+      ObjectSet[i].erase(NULL);
       mExperimentInitialRefreshes[i] = mpModel->buildInitialRefreshSequence(ObjectSet[i]);
     }
 
