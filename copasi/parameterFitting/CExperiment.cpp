@@ -1131,7 +1131,12 @@ bool CExperiment::calculateWeights()
       if (DefaultColumScale < MinWeight) MinWeight = DefaultColumScale;
     }
 
-  if (*mpNormalizeWeightsPerExperiment && *mpWeightMethod != VALUE_SCALING)
+  if (!*mpNormalizeWeightsPerExperiment)
+    {
+      MinWeight = 1.0;
+    }
+
+  if (*mpWeightMethod != VALUE_SCALING)
     {
       // We have to calculate the default weights
       for (i = 0; i < DependentCount; i++)
@@ -1552,7 +1557,7 @@ const C_FLOAT64 & CExperiment::getErrorMeanSD() const
 C_FLOAT64 CExperiment::getObjectiveValue(CCopasiObject *const& pObject) const
 {
   std::map< CCopasiObject *, size_t >::const_iterator it
-    = mDependentObjects.find(pObject);
+  = mDependentObjects.find(pObject);
 
   if (it != mDependentObjects.end())
     return mColumnObjectiveValue[it->second];
@@ -1563,7 +1568,7 @@ C_FLOAT64 CExperiment::getObjectiveValue(CCopasiObject *const& pObject) const
 C_FLOAT64 CExperiment::getDefaultScale(const CCopasiObject * const& pObject) const
 {
   std::map< CCopasiObject *, size_t>::const_iterator it
-    = mDependentObjects.find(const_cast<CCopasiObject*>(pObject));
+  = mDependentObjects.find(const_cast<CCopasiObject*>(pObject));
 
   if (it == mDependentObjects.end())
     return std::numeric_limits<C_FLOAT64>::quiet_NaN();
@@ -1574,7 +1579,7 @@ C_FLOAT64 CExperiment::getDefaultScale(const CCopasiObject * const& pObject) con
 C_FLOAT64 CExperiment::getRMS(CCopasiObject *const& pObject) const
 {
   std::map< CCopasiObject *, size_t>::const_iterator it
-    = mDependentObjects.find(pObject);
+  = mDependentObjects.find(pObject);
 
   if (it != mDependentObjects.end())
     return mColumnRMS[it->second];
@@ -1585,7 +1590,7 @@ C_FLOAT64 CExperiment::getRMS(CCopasiObject *const& pObject) const
 C_FLOAT64 CExperiment::getErrorSum(CCopasiObject *const& pObject) const
 {
   std::map< CCopasiObject *, size_t>::const_iterator it
-    = mDependentObjects.find(pObject);
+  = mDependentObjects.find(pObject);
 
   if (it == mDependentObjects.end() ||
       mpDataDependentCalculated == NULL)
@@ -1618,7 +1623,7 @@ C_FLOAT64 CExperiment::getErrorMeanSD(CCopasiObject *const& pObject,
                                       const C_FLOAT64 & errorMean) const
 {
   std::map< CCopasiObject *, size_t>::const_iterator it
-    = mDependentObjects.find(pObject);
+  = mDependentObjects.find(pObject);
 
   if (it == mDependentObjects.end() ||
       mpDataDependentCalculated == NULL)
@@ -1655,7 +1660,7 @@ C_FLOAT64 CExperiment::getErrorMeanSD(CCopasiObject *const& pObject,
 size_t CExperiment::getColumnValidValueCount(CCopasiObject *const& pObject) const
 {
   std::map< CCopasiObject *, size_t>::const_iterator it
-    = mDependentObjects.find(pObject);
+  = mDependentObjects.find(pObject);
 
   if (it != mDependentObjects.end())
     return mColumnValidValueCount[it->second];
