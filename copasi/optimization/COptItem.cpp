@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -316,6 +316,7 @@ bool COptItem::isValid(CCopasiParameterGroup & group)
 
 bool COptItem::compile(CObjectInterface::ContainerList listOfContainer)
 {
+  bool success = true;
   clearDirectDependencies();
 
   std::string Bound;
@@ -333,31 +334,49 @@ bool COptItem::compile(CObjectInterface::ContainerList listOfContainer)
   if (mpObjectValue == &NaN)
     {
       CCopasiMessage(CCopasiMessage::ERROR, MCOptimization + 1, getObjectCN().c_str());
-      return false;
+      success = false;
+    }
+  else
+    {
+      addDirectDependency(mpObject->getDataObject());
     }
 
-  if (!compileLowerBound(listOfContainer))
+  if (compileLowerBound(listOfContainer))
+    {
+      if (mpLowerObject != NULL)
+        {
+          addDirectDependency(mpLowerObject->getDataObject());
+        }
+    }
+  else
     {
       CCopasiMessage(CCopasiMessage::ERROR, MCOptimization + 2, mpParmLowerBound->c_str());
-      return false;
+      success = false;
     }
 
-  if (!compileUpperBound(listOfContainer))
+  if (compileUpperBound(listOfContainer))
+    {
+      if (mpUpperObject != NULL)
+        {
+          addDirectDependency(mpUpperObject->getDataObject());
+        }
+    }
+  else
     {
       CCopasiMessage(CCopasiMessage::ERROR, MCOptimization + 2, mpParmUpperBound->c_str());
-      return false;
+      success = false;
     }
 
   if (!mpUpperObject && !mpLowerObject && *mpUpperBound < *mpLowerBound)
     {
       CCopasiMessage(CCopasiMessage::ERROR, MCOptimization + 4, *mpLowerBound, *mpUpperBound, mpObject->getObjectDisplayName().c_str());
-      return false;
+      success = false;
     }
 
   if (isnan(*mpParmStartValue))
     *mpParmStartValue = *mpObjectValue;
 
-  return true;
+  return success;
 }
 
 C_INT32 COptItem::checkConstraint() const
@@ -459,7 +478,7 @@ bool COptItem::compileUpperBound(const CObjectInterface::ContainerList & listOfC
 
 std::ostream &operator<<(std::ostream &os, const COptItem & o)
 {
-  if (!o.mpObject && const_cast<COptItem *>(&o)->compile(CObjectInterface::ContainerList()))
+  if (o.mpObject == NULL && !const_cast<COptItem *>(&o)->compile(CObjectInterface::ContainerList()))
     return os << "Invalid Optimization Item";
 
   if (o.mpLowerObject)

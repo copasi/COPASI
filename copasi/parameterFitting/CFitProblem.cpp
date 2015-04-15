@@ -413,6 +413,8 @@ bool CFitProblem::setCallBack(CProcessReport * pCallBack)
 
 bool CFitProblem::initialize()
 {
+  bool success = true;
+
   mHaveStatistics = false;
   mStoreResults = false;
 
@@ -424,7 +426,8 @@ bool CFitProblem::initialize()
 
       if (CCopasiMessage::getHighestSeverity() > CCopasiMessage::WARNING &&
           CCopasiMessage::peekLastMessage().getNumber() != MCCopasiMessage + 1)
-        return false;
+
+        success = false;
     }
 
   CCopasiDataModel * pDataModel = getObjectDataModel();

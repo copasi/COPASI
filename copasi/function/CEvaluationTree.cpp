@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -307,13 +307,21 @@ bool CEvaluationTree::compileNodes()
 
   // The compile order must be child first.
   CNodeIterator< CEvaluationNode > itNode(mpRoot);
+  CEvaluationNode *pErrorNode = NULL;
   mUsable = true;
 
-  while (mUsable && itNode.next() != itNode.end())
+  while (itNode.next() != itNode.end())
     {
       if (*itNode != NULL)
         {
-          mUsable &= itNode->compile(this);
+          if (!itNode->compile(this))
+            {
+              if (mUsable)
+                {
+                  mUsable = false;
+                  pErrorNode = *itNode;
+                }
+            }
         }
     }
 
@@ -325,7 +333,7 @@ bool CEvaluationTree::compileNodes()
       // Find the error node in the node list
       for (it = mpNodeList->begin(); it != end; ++it)
         {
-          if (*it == *itNode)
+          if (*it == pErrorNode)
             {
               end = it + 1;
               break;

@@ -1116,7 +1116,12 @@ bool CExperiment::calculateWeights()
       if (DefaultColumScale < MinWeight) MinWeight = DefaultColumScale;
     }
 
-  if (*mpNormalizeWeightsPerExperiment && *mpWeightMethod != VALUE_SCALING)
+  if (!*mpNormalizeWeightsPerExperiment)
+    {
+      MinWeight = 1.0;
+    }
+
+  if (*mpWeightMethod != VALUE_SCALING)
     {
       // We have to calculate the default weights
       for (i = 0; i < DependentCount; i++)
