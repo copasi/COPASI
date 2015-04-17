@@ -1,28 +1,16 @@
-// Begin CVS Header 
-//   $Source: /fs/turing/cvs/copasi_dev/copasi/bindings/swig/CState.i,v $ 
-//   $Revision: 1.9 $ 
-//   $Name:  $ 
-//   $Author: bergmann $ 
-//   $Date: 2012/04/11 15:40:27 $ 
-// End CVS Header 
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., University of Heidelberg, and The University 
 // of Manchester. 
 // All rights reserved. 
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
 // and The University of Manchester. 
 // All rights reserved. 
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2006 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc. and EML Research, gGmbH. 
 // All rights reserved. 
-
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
-// All rights reserved.
 
 %{
 
@@ -132,6 +120,15 @@
         }
     }
 
+  void setIndependent(unsigned C_INT32 index, C_FLOAT64 val)
+  {
+    if(index < $self->getNumIndependent())
+    {
+      $self->beginIndependent()[index] = val;
+    }
+  }
+
+
     C_FLOAT64 getDependent(unsigned C_INT32 index)
     {
         if(index < $self->getNumDependent())
@@ -144,6 +141,15 @@
         }
     }
 
+  void setDependent(unsigned C_INT32 index, C_FLOAT64 val)
+  {
+    if(index < $self->getNumDependent())
+    {
+      $self->beginDependent()[index] = val;
+    }
+  }
+
+
     C_FLOAT64 getFixed(unsigned C_INT32 index)
     {
         if(index < $self->getNumFixed())
@@ -155,6 +161,14 @@
             return std::numeric_limits<C_FLOAT64>::quiet_NaN();
         }
     }
+
+  void setFixed(unsigned C_INT32 index, C_FLOAT64 val)
+  {
+    if(index < $self->getNumFixed())
+    {
+      $self->beginFixed()[index] = val;
+    }
+  }
 }
 
 
