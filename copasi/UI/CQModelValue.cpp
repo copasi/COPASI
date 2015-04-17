@@ -24,6 +24,7 @@
 #include "function/CExpression.h"
 #include "report/CKeyFactory.h"
 #include "report/CCopasiRootContainer.h"
+#include "utilities/CUnitParser.h"
 
 //UNDO framework classes
 #include "model/CReactionInterface.h"
@@ -45,7 +46,8 @@
  */
 CQModelValue::CQModelValue(QWidget* parent, const char* name)
   : CopasiWidget(parent, name),
-    mKeyToCopy("")
+    mKeyToCopy(""),
+    mpModelValue(NULL)
 {
   setupUi(this);
 
@@ -162,6 +164,8 @@ void CQModelValue::init()
 
   mInitialExpressionValid = false;
   mpInitialExpressionEMW->mpExpressionWidget->setExpressionType(CQExpressionWidget::InitialExpression);
+
+  //connect(mpEditUnits, SIGNAL(editingFinished()), this, SLOT(slotUnitChanged()));
 }
 
 void CQModelValue::destroy()
@@ -265,7 +269,7 @@ void CQModelValue::load()
   if (mpModelValue == NULL) return;
 
   // Units
-  mpEditUnits->setText("These are the units.");
+  mpEditUnits->setText("m");
 
   // Type
   mpComboBoxType->setCurrentIndex(mpComboBoxType->findText(FROM_UTF8(CModelEntity::StatusName[mpModelValue->getStatus()])));
@@ -402,6 +406,18 @@ void CQModelValue::save()
     }
 
   mChanged = false;
+}
+
+void CQModelValue::slotUnitChanged()
+{
+  std::cout << "slotUnitChanged() called." << std::endl;
+
+  if (mpModelValue != NULL)
+    {
+      std::istringstream buffer(TO_UTF8(mpEditUnits->text()));
+      CUnitParser Parser(&buffer);
+//      bool success = (Parser.yyparse() == 0);
+    }
 }
 
 /*!

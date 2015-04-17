@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
-<comment> Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual </comment>
+<comment> Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual </comment>
 <comment> Properties, Inc., University of Heidelberg, and The University </comment>
 <comment> of Manchester. </comment>
 <comment> All rights reserved. </comment>
@@ -329,6 +329,22 @@
    <signal>toggled(bool)</signal>
    <receiver>CQModelValue</receiver>
    <slot>slotInitialTypeChanged(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mpEditUnits</sender>
+   <signal>editingFinished()</signal>
+   <receiver>CQModelValue</receiver>
+   <slot>slotUnitChanged()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>20</x>
