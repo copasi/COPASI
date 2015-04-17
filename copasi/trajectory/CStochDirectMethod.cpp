@@ -59,7 +59,14 @@ CStochDirectMethod::CStochDirectMethod(const CCopasiContainer * pParent,
   mUpdateTimeDependentRoots(),
   mHaveTimeDependentRoots(false),
   mpRootValueCalculator(NULL),
-  mMaxStepsReached(false)
+  mMaxStepsReached(false),
+  mTargetTime(0.0),
+  mNumRoot(0),
+  mRootsA(),
+  mRootsB(),
+  mRootsNonZero(),
+  mpRootValueOld(NULL),
+  mpRootValueNew(NULL)
 {
   initializeParameter();
 }
@@ -80,7 +87,14 @@ CStochDirectMethod::CStochDirectMethod(const CStochDirectMethod & src,
   mUpdateTimeDependentRoots(),
   mHaveTimeDependentRoots(false),
   mpRootValueCalculator(NULL),
-  mMaxStepsReached(false)
+  mMaxStepsReached(false),
+  mTargetTime(src.mTargetTime),
+  mNumRoot(src.mNumRoot),
+  mRootsA(src.mRootsA),
+  mRootsB(src.mRootsB),
+  mRootsNonZero(src.mRootsNonZero),
+  mpRootValueOld(NULL),
+  mpRootValueNew(NULL)
 {
   initializeParameter();
 }
@@ -216,6 +230,7 @@ void CStochDirectMethod::start()
 
   mMaxStepsReached = false;
 
+  mTargetTime = *mpContainerStateTime;
   mNextReactionTime = *mpContainerStateTime;
   mNextReactionIndex = C_INVALID_INDEX;
 

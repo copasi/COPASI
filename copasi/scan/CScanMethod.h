@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -73,7 +73,7 @@ public:
    * perform checks. This is used in the method::isValidProblem() method.
    * It returns false for an invalid ScanItem and generates a CCopasiMessage
    */
-  virtual bool isValidScanItem();
+  virtual bool isValidScanItem(const bool & continueFromCurrentState);
 
   /**
    * Retrieve the initial object which is scanned.
