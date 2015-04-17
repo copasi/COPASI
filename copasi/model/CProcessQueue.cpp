@@ -96,7 +96,7 @@ CProcessQueue::CAction::CAction(const CVector< C_FLOAT64 > & values,
         mType = Callback;
         break;
 
-      default: ;
+      default:;
     }
 }
 
@@ -184,8 +184,8 @@ CProcessQueue::CProcessQueue(const CProcessQueue & src):
   mRootsFound(src.mRootsFound),
   mRootValues1(src.mRootValues1),
   mRootValues2(src.mRootValues2),
-  mpRootValuesBefore(&src.mRootValues1 == src.mpRootValuesBefore ? &mRootValues1 : &mRootValues2),
-  mpRootValuesAfter(&src.mRootValues1 == src.mpRootValuesAfter ? &mRootValues1 : &mRootValues2),
+  mpRootValuesBefore(&src.mRootValues1 == src.mpRootValuesBefore ? & mRootValues1 : & mRootValues2),
+  mpRootValuesAfter(&src.mRootValues1 == src.mpRootValuesAfter ? & mRootValues1 : & mRootValues2),
   mpResolveSimultaneousAssignments(src.mpResolveSimultaneousAssignments),
   mContinueSimultaneousEvents(src.mContinueSimultaneousEvents),
   mpCallbackTask(src.mpCallbackTask),
@@ -269,6 +269,9 @@ bool CProcessQueue::process(const C_FLOAT64 & time,
 
   bool success = true;
   bool stateChanged = false;
+
+  if (mpMathModel == NULL)
+    CCopasiMessage(CCopasiMessage::ERROR, "The math model is not available, this will happen if the task is run without it ever being initialized. You need to run process(true,...) at least once.");
 
   mpMathModel->evaluateRoots(*mpRootValuesBefore, false);
 
