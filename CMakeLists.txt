@@ -196,6 +196,11 @@ if (ENABLE_WITH_MERGEMODEL)
   add_definitions(-DWITH_MERGEMODEL)
 endif(ENABLE_WITH_MERGEMODEL)
 
+option(ENABLE_HYBRIDODE45 "Enable Hybrid ODE45" OFF)
+if (ENABLE_HYBRIDODE45)
+add_definitions(-DWITH_HYBRIDODE45)
+endif(ENABLE_HYBRIDODE45)
+
 
 option(ENABLE_PE_EVENT_CREATION "Enable Event Creation out of time series data" ON)
 if (ENABLE_PE_EVENT_CREATION)

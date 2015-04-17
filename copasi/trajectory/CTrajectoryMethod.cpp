@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -73,12 +73,13 @@ CTrajectoryMethod::createMethod(CCopasiMethod::SubType subType)
         pMethod = CHybridMethodLSODA::createHybridMethodLSODA();
         break;
 
-#ifdef COPASI_DEBUG
+#ifdef WITH_HYBRIDODE45
 
       case hybridODE45:
         pMethod = new CHybridMethodODE45();
         break;
-#endif // COPASI_DEBUG
+
+#endif // WITH_HYBRIDODE45
 
       case DsaLsodar:
         pMethod = new CTrajectoryMethodDsaLsodar();
