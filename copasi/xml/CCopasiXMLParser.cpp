@@ -3189,7 +3189,7 @@ void CCopasiXMLParser::EventElement::start(const XML_Char *pszName,
               }
             else
               {
-                mParser.toBool(mParser.getAttributeValue("persistentTrigger", papszAttrs, true));
+                PersistentTrigger = mParser.toBool(mParser.getAttributeValue("persistentTrigger", papszAttrs, true));
               }
 
             mCommon.pEvent = new CEvent();
@@ -4749,9 +4749,9 @@ void CCopasiXMLParser::KineticLawElement::end(const XML_Char *pszName)
 
         {
           std::map< std::string, std::vector< std::string > >::const_iterator it
-            = mCommon.SourceParameterKeys.begin();
+          = mCommon.SourceParameterKeys.begin();
           std::map< std::string, std::vector< std::string > >::const_iterator end
-            = mCommon.SourceParameterKeys.end();
+          = mCommon.SourceParameterKeys.end();
 
           for (; it != end; ++it)
             if (it->second.size() > 0)
