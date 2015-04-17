@@ -161,7 +161,6 @@ bool CHybridMethodODE45::isValidProblem(const CCopasiProblem * pProblem)
   return true;
 }
 
-
 /**
  * Intialize the method parameter
  */
@@ -206,7 +205,6 @@ void CHybridMethodODE45::initializeParameter()
     }
 }
 
-
 /**
  * This instructs the method to prepare for integration
  * starting with the initialState given.
@@ -238,7 +236,6 @@ void CHybridMethodODE45::start(const CState * initialState)
 
   return;
 }
-
 
 /**
  *  Initializes the solver and sets the model to be used.
@@ -280,8 +277,9 @@ void CHybridMethodODE45::initMethod(C_FLOAT64 start_time)
   //=======Check Method Uses Here========
   if (mMethod == STOCHASTIC)
     {
-      std::cerr << "At Least One Reaction should be set FAST" << std::endl;
-      return; //need error massige here......
+      CCopasiMessage(CCopasiMessage::WARNING, "CHybridMethodODE45: At Least One Reaction should be set FAST");
+      //std::cerr << "At Least One Reaction should be set FAST" << std::endl;
+      //return; //need error massige here......
     }
 
   //(5)----set attributes related with STOCHASTIC
@@ -664,7 +662,6 @@ C_FLOAT64 CHybridMethodODE45::doSingleStep(C_FLOAT64 endTime)
   return ds;
 }
 
-
 /**
  * Function called from TrajectoryMethod which update
  * system state and inform ODE solver to restart
@@ -697,7 +694,6 @@ void CHybridMethodODE45::fireSlowReaction4Hybrid()
 
   return;
 }
-
 
 //========Function for ODE45========
 /**
@@ -827,14 +823,12 @@ void CHybridMethodODE45::EvalF(const size_t * n, const C_FLOAT64 * t, const C_FL
                                C_FLOAT64 * ydot)
 {static_cast<Data *>((void *) n)->pMethod->evalF(t, y, ydot);}
 
-
 /**
  * Dummy f function for calculating roots value
  */
 void CHybridMethodODE45::EvalR(const size_t * n, const C_FLOAT64 * t, const C_FLOAT64 * y,
                                const size_t * nr, C_FLOAT64 * r)
 {static_cast<Data *>((void *) n)->pMethod->evalR(t, y, nr, r);}
-
 
 /**
  * Derivative Calculation Function
@@ -881,7 +875,6 @@ void CHybridMethodODE45::evalF(const C_FLOAT64 * t, const C_FLOAT64 * y, C_FLOAT
       size_t metabIndex;
       size_t    *pId  = mSlowIndex.array();
 
-
       pId  = mSlowIndex.array();
       pAmu = mAmu.array();
 
@@ -926,7 +919,6 @@ void CHybridMethodODE45::evalR(const C_FLOAT64 *t, const C_FLOAT64 *y,
   return;
 }
 
-
 //========Function for Stoichastic========
 /**
  * Calculates amu values of all slow reactions.
@@ -940,7 +932,6 @@ void CHybridMethodODE45::calculateAmu()
   for (size_t id = 0; id < mNumSlowReactions; id++, pRct++, pAmu++)
     *pAmu = (*pRct)->calculateParticleFlux();
 }
-
 
 /**
  *   Executes the specified reaction in the system once.
@@ -1030,7 +1021,6 @@ void CHybridMethodODE45::maskRoots(CVectorCore<C_FLOAT64 > & rootValues)
   return;
 }
 
-
 void CHybridMethodODE45::createRootMask()
 {
   double absoluteTolerance = 1.e-12;
@@ -1058,7 +1048,6 @@ void CHybridMethodODE45::destroyRootMask()
   mRootMask.resize(0);
   mRootMasking = NONE;
 }
-
 
 //========Help Function========
 /**
@@ -1102,7 +1091,6 @@ C_INT32 CHybridMethodODE45::checkModel(CModel * model)
   return 1; // Model is appropriate for hybrid simulation
 }
 
-
 /**
  *   Prints out data on standard output. Deprecated.
  */
@@ -1114,7 +1102,6 @@ void CHybridMethodODE45::outputData()
     std::cout << "mDoCorrection: Yes" << std::endl;
   else
     std::cout << "mDoCorrection: No" << std::endl;
-
 
   std::cout << std::endl;
 
