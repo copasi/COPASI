@@ -246,20 +246,28 @@ void CHybridMethodODE45::initMethod(C_FLOAT64 start_time)
   //(1)----set attributes related with REACTIONS
   mpReactions   = &mpModel->getReactions();
   mNumReactions = mpReactions->size();
+  mNumVariables = mpState->getNumIndependent() + mpModel->getNumDependentReactionMetabs();
+
+  size_t numReactIndepMetabs = static_cast<size_t>(mpModel->getNumIndependentReactionMetabs());
+  mNumReactMetabs = numReactIndepMetabs + mpModel->getNumDependentReactionMetabs();
+
+  //one more for sum of propensities
+  mData.dim = (size_t)(mNumVariables + mNumReactions + 1);
+
+  // we don't want to directly record new results into mpState, since
+  // the sum of slow reaction propensities is also recorded in mY
+  mY = new C_FLOAT64[mData.dim];
+
+  mIntAmu = CVectorCore< C_FLOAT64 >(mNumReactions, mY + mNumVariables);
+  mIntAmu = 0.0;
+
+  mAmu.resize(mNumReactions);
+  mAmu = 0.0;
 
   setupReactionFlags();
 
   //(2)----set attributes related with METABS
   mpMetabolites = &(const_cast < CCopasiVector < CMetab > & >(mpModel->getMetabolitesX()));
-
-  size_t numReactIndepMetabs = static_cast<size_t>(mpModel->getNumIndependentReactionMetabs());
-
-  mNumReactMetabs = numReactIndepMetabs
-                    + mpModel->getNumDependentReactionMetabs();
-
-  //one more for sum of propensities
-  mData.dim = (size_t)(mpState->getNumIndependent()
-                       + mpModel->getNumDependentReactionMetabs() + 1);
 
   mReactMetabId = mpState->getNumIndependent() - numReactIndepMetabs;
   setupBalances();    //initialize mLocalBalances
@@ -302,9 +310,6 @@ void CHybridMethodODE45::initMethod(C_FLOAT64 start_time)
   mODE45.mHybrid = true;
   mODE45.mStatis = false;
 
-  // we don't want to directly record new results into mpState, since
-  // the sum of slow reaction propensities is also recorded in mY
-  mY = new C_FLOAT64[mData.dim];
   mODE45.mY = mY;
   mODE45.mDerivFunc = &CHybridMethodODE45::EvalF;
 
@@ -431,7 +436,6 @@ void CHybridMethodODE45::setupReactionFlags()
 
   // Record slow reactions
   size_t count = 0;
-  mAmu.resize(mNumSlowReactions);
   mSlowIndex.resize(mNumSlowReactions);
   mSlowReactionPointer.resize(mNumSlowReactions);
 
@@ -528,7 +532,7 @@ CTrajectoryMethod::Status CHybridMethodODE45::step(const double & deltaT)
 
   endTime = mTimeRecord;
 
-  for (size_t i = 0; ((mRootCounter < mMaxSteps) && (time < endTime)); i++)
+  for (size_t i = 0; time < endTime && i < mMaxSteps && mRootCounter < mMaxSteps; i++)
     {
       time = doSingleStep(endTime);
 
@@ -721,11 +725,10 @@ void CHybridMethodODE45::integrateDeterministicPart(C_FLOAT64 endTime)
       //only when starts a new step, we should copy state into ode solver
       C_FLOAT64 * stateY = mpState->beginIndependent();
 
-      for (size_t i = 0; i < mData.dim - 1; i++)
-        mY[i] = stateY[i];
+      memcpy(mY, mpState->beginIndependent(), (mData.dim - mNumReactions - 1) * sizeof(C_FLOAT64));
 
-      C_FLOAT64 randNum = mpRandomGenerator->getRandomOO();
-      mY[mData.dim - 1] = log(randNum);
+      memset(mY + mpState->getNumIndependent() + mpModel->getNumDependentReactionMetabs(), 0, mNumReactions * sizeof(C_FLOAT64));
+      mY[mData.dim - 1] = log(mpRandomGenerator->getRandomOO());
 
       if (mODE45.mODEState != ODE_INIT)
         mODE45.mODEState = ODE_NEW;
@@ -846,7 +849,7 @@ void CHybridMethodODE45::evalF(const C_FLOAT64 * t, const C_FLOAT64 * y, C_FLOAT
   mpState->setTime(*t);
   C_FLOAT64 * tmpY = mpState->beginIndependent();//mpState is a local copy
 
-  memcpy(tmpY, y, (mData.dim - 1)*sizeof(C_FLOAT64));
+  memcpy(tmpY, y, (mData.dim - mNumReactions - 1) * sizeof(C_FLOAT64));
 
   mpModel->setState(*mpState);
   mpModel->updateSimulatedValues(false); //update ASSIGNMENT values in model
@@ -854,16 +857,22 @@ void CHybridMethodODE45::evalF(const C_FLOAT64 * t, const C_FLOAT64 * y, C_FLOAT
   //(2) Calculate derivatives
   size_t reactID;
   mpModel->calculateDerivatives(ydot);
-  ydot[mData.dim - 1] = 0;
+
+  C_FLOAT64 * pYAmu = ydot + mNumVariables;
+  C_FLOAT64 & yA0 = *(pYAmu + mNumReactions);
+  yA0 = 0;
 
   //(3) Deal with slow reactions
   if (mMethod == HYBRID)
     {
-      C_FLOAT64 *pAmu = mAmu.array();
       calculateAmu();
+      C_FLOAT64 *pAmu = mAmu.array();
 
       for (i = 0; i < mNumSlowReactions; i++, pAmu++)
-        ydot[mData.dim - 1] += *pAmu;
+        {
+          *pYAmu = *pAmu;
+          yA0 += *pAmu;
+        }
 
       // Modify fast reactions
       // update derivatives
@@ -873,7 +882,7 @@ void CHybridMethodODE45::evalF(const C_FLOAT64 * t, const C_FLOAT64 * y, C_FLOAT
       std::vector <CHybridODE45Balance>::iterator metabIt;
       std::vector <CHybridODE45Balance>::iterator metabEndIt;
       size_t metabIndex;
-      size_t    *pId  = mSlowIndex.array();
+      size_t *pId = mSlowIndex.array();
 
       pId  = mSlowIndex.array();
       pAmu = mAmu.array();
@@ -905,7 +914,7 @@ void CHybridMethodODE45::evalR(const C_FLOAT64 *t, const C_FLOAT64 *y,
 
   mpState->setTime(*t);
   C_FLOAT64 *stateY = mpState->beginIndependent();
-  memcpy(stateY, y, (mData.dim - 1)*sizeof(C_FLOAT64));
+  memcpy(stateY, y, (mData.dim - mNumReactions - 1) * sizeof(C_FLOAT64));
 
   mpModel->setState(*mpState);
 
@@ -971,11 +980,10 @@ size_t CHybridMethodODE45::getReactionIndex4Hybrid()
 {
   //calculate sum of amu
   C_FLOAT64 mAmuSum = 0.0;
-  C_FLOAT64 *pAmu   = mAmu.array();
-  size_t    *pId;
+  size_t    *pId = mSlowIndex.array();
 
-  for (int i = 0; i < mNumSlowReactions; i++, pAmu++)
-    mAmuSum += *pAmu;
+  for (int i = 0; i < mNumSlowReactions; i++, pId++)
+    mAmuSum += mIntAmu[*pId];
 
   //get the threshold
   C_FLOAT64 rand2 = mpRandomGenerator->getRandomOO();
@@ -985,12 +993,11 @@ size_t CHybridMethodODE45::getReactionIndex4Hybrid()
   C_FLOAT64 tmp = 0.0;
 
   //is there some algorithm that can get a log() complex?
-  pAmu = mAmu.array();
   pId  = mSlowIndex.array();
 
-  for (size_t i = 0; i < mNumSlowReactions; i++, pAmu++, pId++)
+  for (size_t i = 0; i < mNumSlowReactions; i++, pId++)
     {
-      tmp += *pAmu;
+      tmp += mIntAmu[*pId];
 
       if (tmp >= threshold)
         return *pId;
@@ -1000,6 +1007,7 @@ size_t CHybridMethodODE45::getReactionIndex4Hybrid()
   // the fact that it would theoretically be possible
   // to not execute the return statement in the above
   // loop (e.g. mNumSlowReactions = 0)
+
   return C_INVALID_INDEX;
 }
 
