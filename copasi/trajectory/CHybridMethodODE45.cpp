@@ -863,7 +863,7 @@ void CHybridMethodODE45::evalF(const C_FLOAT64 * t, const C_FLOAT64 * y, C_FLOAT
   yA0 = 0;
 
   //(3) Deal with slow reactions
-  if (mMethod == HYBRID)
+  if (mMethod == HYBRID || mMethod == STOCHASTIC)
     {
       calculateAmu();
       C_FLOAT64 *pAmu = mAmu.array();
