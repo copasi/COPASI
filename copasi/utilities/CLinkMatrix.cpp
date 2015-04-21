@@ -1,4 +1,4 @@
-// Copyright (C) 2013 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2013 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -64,7 +64,7 @@ bool CLinkMatrix::build(const CMatrix< C_FLOAT64 > & matrix, size_t maxRank)
 
       CVector< C_FLOAT64 > WORK(1);
       C_INT LWORK = -1;
-      C_INT INFO;
+      C_INT INFO = 0;
 
       // QR factorization of the stoichiometry matrix
       /*
