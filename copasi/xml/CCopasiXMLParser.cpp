@@ -3189,7 +3189,7 @@ void CCopasiXMLParser::EventElement::start(const XML_Char *pszName,
               }
             else
               {
-                mParser.toBool(mParser.getAttributeValue("persistentTrigger", papszAttrs, true));
+                PersistentTrigger = mParser.toBool(mParser.getAttributeValue("persistentTrigger", papszAttrs, true));
               }
 
             mCommon.pEvent = new CEvent();

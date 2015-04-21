@@ -213,8 +213,7 @@ void CHybridMethodODE45::initMethod(C_FLOAT64 start_time)
   //=======Check Method Uses Here========
   if (mMethod == STOCHASTIC)
     {
-      std::cerr << "At Least One Reaction should be set FAST" << std::endl;
-      return; //need error message here......
+      CCopasiMessage(CCopasiMessage::WARNING, "CHybridMethodODE45: At Least One Reaction should be set FAST");
     }
 
   //(5)----set attributes related with STOCHASTIC

@@ -734,11 +734,14 @@ bool CExperiment::compile(const CMathContainer * pMathContainer)
 
   size_t i, imax = mpObjectMap->getLastNotIgnoredColumn();
 
-  if (*mpNumColumns <= imax)
-    {
-      CCopasiMessage(CCopasiMessage::ERROR, MCFitting + 4, imax + 1, *mpNumColumns + 1);
-      return false; // More column types specified than we have data columns
-    }
+  if (*mpNumColumns < imax)
+    *mpNumColumns = imax;
+
+  //if (*mpNumColumns <= imax)
+  //  {
+  //    CCopasiMessage(CCopasiMessage::ERROR, MCFitting + 4, imax + 1, *mpNumColumns + 1);
+  //    return false; // More column types specified than we have data columns
+  //}
 
   if (LastMappedColumn < imax || LastMappedColumn == C_INVALID_INDEX)
     {
@@ -860,10 +863,13 @@ bool CExperiment::read(std::istream & in,
   size_t i, imax = mpObjectMap->size();
 
   if (*mpNumColumns < imax)
-    {
-      CCopasiMessage(CCopasiMessage::ERROR, MCFitting + 4, imax, *mpNumColumns);
-      return false; // More column types specified than we have data columns
-    }
+    *mpNumColumns = imax;
+
+  //if (*mpNumColumns < imax)
+  //  {
+  //    CCopasiMessage(CCopasiMessage::ERROR, MCFitting + 4, imax, *mpNumColumns);
+  //    return false; // More column types specified than we have data columns
+  //}
 
   size_t IndependentCount = 0;
   size_t DependentCount = 0;
