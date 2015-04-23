@@ -1,4 +1,4 @@
-// Copyright (C) 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2014 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -7,7 +7,7 @@
  *   CExpRKMethod
  *
  *   This class is the ODE solver in terms Ronge-Kutta Method ODE45
- *   
+ *
  *   File name: CExpRKMethod.h
  *   Author: Shuo Wang
  *   Email: shuowang.learner@gmail.com
@@ -20,15 +20,15 @@
 #define CEXPRKMETHOD
 
 #include <iostream>
-#include "copasi/utilities/CVersion.h"
-#include "copasi.h"
+
+#include "copasi/utilities/CVector.h"
 
 #define MAX_STAGE 8
 #define EPS1      2.220446049250313e-16
 #define EPS0      4.940656458412465e-300
 
 /**
- *Define function pointer of functions for computing derivative and 
+ * Define function pointer of functions for computing derivative and
  * event function
  * Parameters:
  * 1. C_FLOAT64 mT
@@ -36,17 +36,17 @@
  * 3. size_t mRootNum
  * 4. C_FLOAT64 mRootValue
  */
-typedef void (*pEvalRoot)(const size_t *, 
-			  const C_FLOAT64 * , const C_FLOAT64 * ,
-			  const size_t *, C_FLOAT64 * );
+typedef void (*pEvalRoot)(const size_t *,
+                          const C_FLOAT64 * , const C_FLOAT64 * ,
+                          const size_t *, C_FLOAT64 *);
 
 //Need static?
 // Parameters:
 // 1. C_FLOAT64 mT
 // 2. C_FLOAT64 mY
 // 3. C_FLOAT64 Yp
-typedef void (*pEvalDeriv)(const size_t *, const C_FLOAT64 *, 
-			   const C_FLOAT64 *, C_FLOAT64 * );
+typedef void (*pEvalDeriv)(const size_t *, const C_FLOAT64 *,
+                           const C_FLOAT64 *, C_FLOAT64 *);
 
 /**
  * A simple structure recording root id and firing time t
@@ -86,7 +86,7 @@ public:
   //*************************//
 
   /**
-   * Main function processing integration along time 
+   * Main function processing integration along time
    */
   void integrate();
 
@@ -114,7 +114,6 @@ private:
    */
   void advanceStep();
 
-
   //***************************************//
   //* Functions for System Initialization *//
   //***************************************//
@@ -138,7 +137,6 @@ private:
    */
   void setStatRecord();
 
-
   //***********************************//
   //* Functions for step size control *//
   //***********************************//
@@ -147,7 +145,6 @@ private:
    * Set initial step size of integrator
    */
   void setInitialStepSize();
-
 
   //*****************************//
   //* Function for Root Finder  *//
@@ -178,13 +175,13 @@ private:
    * Locate roots in terms of Bisection Method
    */
   C_FLOAT64 rootFindByBisection(const size_t id, const C_FLOAT64 leftT, const C_FLOAT64 leftV,
-                             const C_FLOAT64 rightT, const C_FLOAT64 rightV);
+                                const C_FLOAT64 rightT, const C_FLOAT64 rightV);
 
   /**
    * Locate roots in terms of Falsi Method
    */
   C_FLOAT64 rootFindByFalsi(const size_t id, const C_FLOAT64 leftT, const C_FLOAT64 leftV,
-                             const C_FLOAT64 rightT, const C_FLOAT64 rightV);
+                            const C_FLOAT64 rightT, const C_FLOAT64 rightV);
 
   /**
    * Check whether a slow function fired in this step
@@ -203,7 +200,6 @@ private:
    * Check parameters used in the integration
    */
   void checkParameter();
-
 
   //***************************//
   //* Other Helpful Functions *//
@@ -254,8 +250,7 @@ private:
   void queuePush(const SRoot&);
 
   /**
-   * Shrink the queue which just contains only one root for
-   * each event
+   * Shrink the queue which just contains only one root for each event
    */
   void shrinkQueue();
 
@@ -264,7 +259,7 @@ private:
   //*****************************************//
   //* Attributs that should be set by users *//
   //*****************************************//
- public:
+public:
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   //~~~~~~~~Input Parameters~~~~~~~~
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -277,11 +272,13 @@ private:
    * mRootNum, a size_t variable, number of roots
    */
   size_t mRootNum;
+  bool mRootsInitialized;
+  CVector< C_INT > mRootFound;
 
   /**
-   * mAbsTol, absolute error tolerance 
+   * mAbsTol, absolute error tolerance
    * mRelTol. relative error tolerance
-   */ 
+   */
   C_FLOAT64 mAbsTol;
   C_FLOAT64 mRelTol;
 
@@ -302,7 +299,6 @@ private:
    */
   pEvalRoot mEventFunc;
 
-
   /**
    * mHybrid, a boolean variable
    * mHybrid == false, a regular ODE solver
@@ -310,9 +306,8 @@ private:
    */
   bool mHybrid;
 
-  
   /**
-   * mStatic, a boolean variable 
+   * mStatic, a boolean variable
    * mStatic == 1, write statistic results into a txt file
    * mStatic == 0, do not output statistic results
    */
@@ -327,7 +322,6 @@ private:
    */
   int mRootId;
 
-
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   //~~~~~~~~Input and Output Parameters~~~~~~~~
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -337,10 +331,10 @@ private:
   C_FLOAT64 mT;
 
   /**
-   * mY, a C_FLOAT64 pointer pointing to an array recording 
+   * mY, a C_FLOAT64 pointer pointing to an array recording
    *     system values at privous step
    */
-  C_FLOAT64 *mY;
+  C_FLOAT64 *mpY;
 
   /**
    * mODEState, an int varialbe, recording the state of the solver
@@ -357,15 +351,13 @@ private:
    */
   int mODEState;
 
-
-  
- private:
+private:
   //**********************************************//
   //* Variables recording system states          *//
   //**********************************************//
-  
+
   /**
-   * mODEStateRecord, recording state of mODEState 
+   * mODEStateRecord, recording state of mODEState
    * before return, in usage of checking correctness
    * of mODEState setting at the initial step
    */
@@ -389,9 +381,9 @@ private:
   C_FLOAT64 *mYNew;
 
   /**
-   * mYOld, a C_FLOAT64 pointer pointing to an array recording 
+   * mYOld, a C_FLOAT64 pointer pointing to an array recording
    *        mY
-   */ 
+   */
   C_FLOAT64 *mYOld;
 
   //***********************************************************//
@@ -415,7 +407,7 @@ private:
   size_t mStage;
 
   /**
-   * mA, a C_FLOAT64 two dimension array, recording 
+   * mA, a C_FLOAT64 two dimension array, recording
    *     coefficients a_ij
    */
   C_FLOAT64 mA[MAX_STAGE][MAX_STAGE];
@@ -437,7 +429,7 @@ private:
   C_FLOAT64 mE[MAX_STAGE];
 
   /**
-   * mK, a C_FLOAT64 pointer of a two dimension array, recording 
+   * mK, a C_FLOAT64 pointer of a two dimension array, recording
    *     approximated derivatives (mStage*mDim)
    */
   C_FLOAT64 **mK;
@@ -445,7 +437,7 @@ private:
   //*********************************************************//
   //* Step size h, and step size control related parameters *//
   //*********************************************************//
-  
+
   /**
    * mh, step size
    */
@@ -484,9 +476,9 @@ private:
   //*********************************************************//
   //* Some state records, for usage of ODE solver control   *//
   //*********************************************************//
-  
+
   /**
-   * mhNoFailed, a boolean variable 
+   * mhNoFailed, a boolean variable
    * mhNoFailed == true, success after a reject step
    * mhNoFailed == false, previous step is accepted
    */
@@ -499,11 +491,10 @@ private:
    */
   bool mHasEvent;
 
-  
   //********************************************//
   //* Integration process statistic variables  *//
   //********************************************//
-  
+
   /**
    * mStepNum, a size_t variable, recording how many steps are executed
    */
@@ -520,26 +511,25 @@ private:
   size_t mRejectNum;
 
   /**
-   * mfEvalNum, a size_t variable, recording how many times mDerivFunc 
+   * mfEvalNum, a size_t variable, recording how many times mDerivFunc
    *            are called
    */
   size_t mfEvalNum;
 
   /**
-   * mrEvalNum, a size_t variable, recording how many times mEventFunc 
+   * mrEvalNum, a size_t variable, recording how many times mEventFunc
    *            are called
    */
   size_t mrEvalNum;
-
 
   //******************************************//
   //* Variables for Root Finding functions   *//
   //******************************************//
 
- private:
+private:
   /**
    * mRootQueue, a queue of struct SRoot, which recording
-   * root index and corresponding time, in a time ascending 
+   * root index and corresponding time, in a time ascending
    * order
    */
   SRoot *mRootQueue;
@@ -548,7 +538,7 @@ private:
   size_t mQueueSite;
 
   /**
-   * mI, a two dimension C_FLOAT64 array, for interpolation 
+   * mI, a two dimension C_FLOAT64 array, for interpolation
    */
   C_FLOAT64 mI[MAX_STAGE][MAX_STAGE];
 
@@ -563,7 +553,6 @@ private:
    *             current time mT
    */
   C_FLOAT64 *mRootValue;
-  
 
   /**
    * mOrderY, the order of Y interpolation can achieve
@@ -580,7 +569,6 @@ private:
    */
   bool mHasMultipleRoots;
 
-  
   //************************//
   //* Some Other Attributs *//
   //************************//
@@ -589,8 +577,6 @@ private:
   C_FLOAT64 *mIn1, *mIn2, *mIn3, *mtArray;
 
   bool mFindRoots, mFindSlow;
-
 };
 
-
-#endif 
+#endif

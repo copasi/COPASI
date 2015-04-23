@@ -256,19 +256,27 @@ void CHybridMethodODE45::initMethod(C_FLOAT64 start_time)
   mNumReactMetabs = numReactIndepMetabs + mpModel->getNumDependentReactionMetabs();
 
   //one more for sum of propensities
-  mData.dim = (size_t)(mNumVariables + mNumSlowReactions + 1);
+  if (mNumSlowReactions > 0)
+    {
+      mData.dim = mNumVariables + mNumSlowReactions + 1;
+      mY.resize(mData.dim);
+      mpA0 = mY.array() + (mData.dim - 1);
+    }
+  else
+    {
+      mData.dim = mNumVariables;
+      mY.resize(mData.dim);
+      mpA0 = NULL;
+    }
 
   // we don't want to directly record new results into mpState, since
   // the sum of slow reaction propensities is also recorded in mY
-  mY.resize(mData.dim);
 
   mIntAmu = CVectorCore< C_FLOAT64 >(mNumSlowReactions, mY.array() + mNumVariables);
   mIntAmu = 0.0;
 
   mAmu.resize(mNumSlowReactions);
   mAmu = 0.0;
-
-  mpA0 = mY.array() + (mData.dim - 1);
 
   //(2)----set attributes related with METABS
   mpMetabolites = &(const_cast < CCopasiVector < CMetab > & >(mpModel->getMetabolitesX()));
@@ -673,7 +681,7 @@ void CHybridMethodODE45::stateChanged()
 {
   *mpState = *mpCurrentState;
   mpModel->setState(*mpState);
-  mRoots[mODE45.mRootId] = 0;
+  // mRoots[mODE45.mRootId] = 0;
   mODE45.mRootsInitialized = false;
 
   mSysStatus = SYS_NEW;
@@ -719,8 +727,8 @@ void CHybridMethodODE45::integrateDeterministicPart(C_FLOAT64 endTime)
   mODE45.mT    = mpState->getTime();
   mODE45.mTEnd = endTime;
 
-  std::cout << "integrateDeterministicPart (in): T: " << mODE45.mT << std::endl;
-  std::cout << "integrateDeterministicPart (in): Y: " << mY << std::endl;
+  // std::cout << "integrateDeterministicPart (in): T: " << mODE45.mT << std::endl;
+  // std::cout << "integrateDeterministicPart (in): Y: " << mY << std::endl;
 
   //=(4)= set y and ode status
   if (mSysStatus == SYS_NEW)
@@ -729,10 +737,14 @@ void CHybridMethodODE45::integrateDeterministicPart(C_FLOAT64 endTime)
       C_FLOAT64 * stateY = mpState->beginIndependent();
 
       memcpy(mY.array(), mpState->beginIndependent(), mNumVariables * sizeof(C_FLOAT64));
-      memset(mY.array() + mNumVariables, 0, mNumSlowReactions * sizeof(C_FLOAT64));
-      *mpA0 = log(mpRandomGenerator->getRandomOO());
 
-      std::cout << "integrateDeterministicPart (in): Y: " << mY << std::endl;
+      if (mNumSlowReactions > 0)
+        {
+          memset(mY.array() + mNumVariables, 0, mNumSlowReactions * sizeof(C_FLOAT64));
+          *mpA0 = log(mpRandomGenerator->getRandomOO());
+        }
+
+      // std::cout << "integrateDeterministicPart (in): Y: " << mY << std::endl;
 
       if (mODE45.mODEState != ODE_INIT)
         {
@@ -745,7 +757,7 @@ void CHybridMethodODE45::integrateDeterministicPart(C_FLOAT64 endTime)
     }
   else
     {
-      std::cout << "Wrong mSysStatus = " << mSysStatus << std::endl;
+      // std::cout << "Wrong mSysStatus = " << mSysStatus << std::endl;
     }
 
   //3----If time increment is too small, do nothing
@@ -806,8 +818,8 @@ void CHybridMethodODE45::integrateDeterministicPart(C_FLOAT64 endTime)
   //Dependent Reaction Metabs have been updated by ODE slover
   mpModel->updateSimulatedValues(false);
 
-  std::cout << "integrateDeterministicPart (out): T: " << mODE45.mT << std::endl;
-  std::cout << "integrateDeterministicPart (out): Y: " << mY << std::endl;
+  // std::cout << "integrateDeterministicPart (out): T: " << mODE45.mT << std::endl;
+  // std::cout << "integrateDeterministicPart (out): Y: " << mY << std::endl;
 
   return;
 }
@@ -880,11 +892,9 @@ void CHybridMethodODE45::evalF(const C_FLOAT64 * t, const C_FLOAT64 * y, C_FLOAT
         }
     }
 
-  /*
-  std::cout << "evalF: " << *t << std::endl;
-  std::cout << "evalF: " << CVectorCore< const C_FLOAT64 >(mData.dim, y) << std::endl;
-  std::cout << "evalF: " << CVectorCore< C_FLOAT64 >(mData.dim, ydot) << std::endl;
-  */
+  // std::cout << "evalF: " << *t << std::endl;
+  // std::cout << "evalF: " << CVectorCore< const C_FLOAT64 >(mData.dim, y) << std::endl;
+  // std::cout << "evalF: " << CVectorCore< C_FLOAT64 >(mData.dim, ydot) << std::endl;
 
   return;
 }
@@ -906,14 +916,14 @@ void CHybridMethodODE45::evalR(const C_FLOAT64 *t, const C_FLOAT64 *y,
   CVectorCore< C_FLOAT64 > rootValues(*nr, r);
   mpModel->evaluateRoots(rootValues, true);
 
-  std::cout << "evalR: " << *mpState << std::endl;
-  std::cout << "evalR: " << rootValues << std::endl;
+  // std::cout << "evalR: " << *mpState << std::endl;
+  // std::cout << "evalR: " << rootValues << std::endl;
 
   static C_FLOAT64 old = -1;
 
   if (old * rootValues[0] <= 0)
     {
-      std::cout << "Sign change!" << std::endl;
+      // std::cout << "Sign change!" << std::endl;
     }
 
   old = rootValues[0];
