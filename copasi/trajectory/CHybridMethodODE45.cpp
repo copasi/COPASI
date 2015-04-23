@@ -702,8 +702,6 @@ void CHybridMethodODE45::fireSlowReaction4Hybrid()
   fireReaction(id); //Directly update current state in global view
   *mpState = mpModel->getState();
 
-  std::cout << "fireSlowReaction4Hybrid: " << *mpState << std::endl;
-
   return;
 }
 

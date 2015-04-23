@@ -126,86 +126,27 @@ CExpRKMethod::~CExpRKMethod()
   if (mEventFunc)
     mEventFunc = NULL;
 
-  if (mYNew)
-    {
-      delete [] mYNew;
-      mYNew = NULL;
-    }
-
-  if (mYOld)
-    {
-      delete [] mYOld;
-      mYOld = NULL;
-    }
+  pdelete(mYNew);
+  pdelete(mYOld);
 
   if (mK)
     {
       for (int i = (int)mStage; i >= 0; i--)
-        delete [] mK[i];
+        pdelete(mK[i])
 
-      delete [] mK;
-      mK = NULL;
+        pdelete(mK);
     }
 
-  if (mRootQueue)
-    {
-      delete [] mRootQueue;
-      mRootQueue = NULL;
-    }
-
-  if (mRootValueOld)
-    {
-      delete [] mRootValueOld;
-      mRootValueOld = NULL;
-    }
-
-  if (mRootValue)
-    {
-      delete [] mRootValue;
-      mRootValue = NULL;
-    }
-
-  if (mZ1)
-    {
-      delete [] mZ1;
-      mZ1 = NULL;
-    }
-
-  if (mZ2)
-    {
-      delete [] mZ2;
-      mZ2 = NULL;
-    }
-
-  if (mZ3)
-    {
-      delete [] mZ3;
-      mZ3 = NULL;
-    }
-
-  if (mIn1)
-    {
-      delete [] mIn1;
-      mIn1 = NULL;
-    }
-
-  if (mIn2)
-    {
-      delete [] mIn2;
-      mIn2 = NULL;
-    }
-
-  if (mIn3)
-    {
-      delete [] mIn3;
-      mIn3 = NULL;
-    }
-
-  if (mtArray)
-    {
-      delete [] mtArray;
-      mtArray = NULL;
-    }
+  pdelete(mRootQueue);
+  pdelete(mRootValueOld);
+  pdelete(mRootValue);
+  pdelete(mZ1);
+  pdelete(mZ2);
+  pdelete(mZ3);
+  pdelete(mIn1);
+  pdelete(mIn2);
+  pdelete(mIn3);
+  pdelete(mtArray);
 
   return;
 }
@@ -245,9 +186,9 @@ void CExpRKMethod::integrate()
             {
               // It is possible that a stochastic reaction event caused a root change
               (*mEventFunc)(mDim, &mTOld, mYOld, &mRootNum, mRootValue);
-              C_FLOAT64 * pNewRoot = mRootValue;
-              C_FLOAT64 * pNewRootEnd = pNewRoot + mRootNum;
-              C_FLOAT64 * pOldRoot = mRootValueOld;
+              const C_FLOAT64 * pNewRoot = mRootValue;
+              const C_FLOAT64 * pNewRootEnd = pNewRoot + mRootNum;
+              const C_FLOAT64 * pOldRoot = mRootValueOld;
               C_INT * pRootFound = mRootFound.array();
 
               for (; pNewRoot != pNewRootEnd; ++pNewRoot, ++pOldRoot)
@@ -614,14 +555,10 @@ void CExpRKMethod::initialize()
     {
       mHasEvent = true;
 
-      if (mRootValueOld)
-        delete [] mRootValueOld;
-
+      pdelete(mRootValueOld);
       mRootValueOld = new C_FLOAT64[mRootNum];
 
-      if (mRootValue)
-        delete [] mRootValue;
-
+      pdelete(mRootValue);
       mRootValue    = new C_FLOAT64[mRootNum];
 
       mRootFound.resize(mRootNum);
@@ -644,9 +581,9 @@ void CExpRKMethod::allocateSpace()
   if (mK)
     {
       for (int i = (int)mStage; i >= 0; i--)
-        delete [] mK[i];
+        pdelete(mK[i]);
 
-      delete [] mK;
+      pdelete(mK);
     }
 
   mK = new C_FLOAT64*[mStage + 1];
@@ -655,54 +592,36 @@ void CExpRKMethod::allocateSpace()
     mK[r] = new C_FLOAT64[*mDim];
 
   //----Set mYNew----
-  if (mYNew)
-    delete [] mYNew;
-
+  pdelete(mYNew);
   mYNew = new C_FLOAT64[*mDim];
 
   //----Set mYCp----
-  if (mYOld)
-    delete [] mYOld;
-
+  pdelete(mYOld);
   mYOld = new C_FLOAT64[*mDim];
 
   // ----(2)----
   size_t size = (*mDim > mRootNum) ? *mDim : mRootNum;
   size = (size > (MAX_STAGE + 2)) ? size : (MAX_STAGE + 2);
 
-  if (mZ1)
-    delete [] mZ1;
-
+  pdelete(mZ1);
   mZ1 = new C_FLOAT64[size];
 
-  if (mZ2)
-    delete [] mZ2;
-
+  pdelete(mZ2);
   mZ2 = new C_FLOAT64[size];
 
-  if (mZ3)
-    delete [] mZ3;
-
+  pdelete(mZ3);
   mZ3 = new C_FLOAT64[size];
 
-  if (mIn1)
-    delete [] mIn1;
-
+  pdelete(mIn1);
   mIn1 = new C_FLOAT64[size];
 
-  if (mIn2)
-    delete [] mIn2;
-
+  pdelete(mIn2);
   mIn2 = new C_FLOAT64[size];
 
-  if (mIn3)
-    delete [] mIn3;
-
+  pdelete(mIn3);
   mIn3 = new C_FLOAT64[size];
 
-  if (mtArray)
-    delete [] mtArray;
-
+  pdelete(mtArray);
   mtArray = new C_FLOAT64[5];
 
   // ----(3)----
@@ -714,10 +633,9 @@ void CExpRKMethod::allocateSpace()
   if (mHybrid)
     ++size;
 
-  if (mRootQueue)
-    delete [] mRootQueue;
-
+  pdelete(mRootQueue);
   mRootQueue = new SRoot[2 * size + 2];
+
   clearQueue();
   return;
 }
@@ -1237,7 +1155,7 @@ void CExpRKMethod::calculateRootState()
   mT      = root.t;
   interpolation(mT, mpY);
 
-  mRootFound[root.id] = 1;
+  if (root.id != -1) mRootFound[root.id] = 1;
 
   while (!queueIsEmpty())
     {
@@ -1251,7 +1169,8 @@ void CExpRKMethod::calculateRootState()
         }
 
       queuePop();
-      mRootFound[root.id] = 1;
+
+      if (root.id != -1) mRootFound[root.id] = 1;
     }
 
   mODEState = 3;
