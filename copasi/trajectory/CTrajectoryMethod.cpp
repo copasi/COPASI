@@ -73,13 +73,13 @@ CTrajectoryMethod::createMethod(CCopasiMethod::SubType subType)
         pMethod = CHybridMethodLSODA::createHybridMethodLSODA();
         break;
 
-#ifdef WITH_HYBRIDODE45
+#ifdef COPASI_DEBUG
 
       case hybridODE45:
         pMethod = new CHybridMethodODE45();
         break;
 
-#endif // WITH_HYBRIDODE45
+#endif // COPASI_DEBUG
 
       case DsaLsodar:
         pMethod = new CTrajectoryMethodDsaLsodar();

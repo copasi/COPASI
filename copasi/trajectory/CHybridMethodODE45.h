@@ -289,11 +289,6 @@ protected:
    */
   void fireSlowReaction4Hybrid();
 
-  /**
-   * Clear mRoots and set the id-th equal to 1
-   */
-  void setRoot(const size_t id);
-
   //================Function for Stoichastic Part================
 protected:
 
@@ -494,7 +489,7 @@ private:
   /**
    *  Pointer to the array with left hand side values.
    */
-  C_FLOAT64 * mY;
+  CVector< C_FLOAT64 > mY;
 
   /**
    * state of ODE45, indicating what to do next in the step part
@@ -511,7 +506,10 @@ private:
    * The integrated propensities of the stochastic reactions.
    */
   CVectorCore< C_FLOAT64 > mIntAmu;
+  C_FLOAT64 *mpA0;
+
   CVector< C_FLOAT64 > mAmu;
+  C_FLOAT64 mA0;
 
   //================Attributes for Root================
   /**
