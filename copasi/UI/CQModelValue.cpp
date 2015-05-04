@@ -164,8 +164,6 @@ void CQModelValue::init()
 
   mInitialExpressionValid = false;
   mpInitialExpressionEMW->mpExpressionWidget->setExpressionType(CQExpressionWidget::InitialExpression);
-
-  //connect(mpEditUnits, SIGNAL(editingFinished()), this, SLOT(slotUnitChanged()));
 }
 
 void CQModelValue::destroy()
@@ -410,8 +408,6 @@ void CQModelValue::save()
 
 void CQModelValue::slotUnitChanged()
 {
-  std::cout << "slotUnitChanged() called." << std::endl;
-
   if (mpModelValue != NULL)
     {
       std::istringstream buffer(TO_UTF8(mpEditUnits->text()));
