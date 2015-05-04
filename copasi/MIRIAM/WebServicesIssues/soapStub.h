@@ -1,12 +1,9 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/WebServicesIssues/soapStub.h,v $
-//   $Revision: 1.4 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/04/21 16:17:18 $
-// End CVS Header
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
@@ -26,7 +23,7 @@
 # pragma warning (disable: 4100)
 #endif
 
-#if !defined( _GLIBCXX_VECTOR) and !defined(__clang__)
+#if !defined(_GLIBCXX_VECTOR) && !defined(__clang__)
 #define _GLIBCXX_VECTOR 1
 #pragma GCC system_header
 #include <bits/functexcept.h>
@@ -81,7 +78,8 @@ public:
   virtual void *soap_get(struct soap*, const char*, const char*);
   virtual void *soap_in(struct soap*, const char*, const char*);
   ArrayOf_USCORExsd_USCOREstring() : __ptr(NULL), __size(0), soap(NULL) {}
-  virtual ~ArrayOf_USCORExsd_USCOREstring() {}};
+  virtual ~ArrayOf_USCORExsd_USCOREstring() {}
+};
 #endif
 
 #ifndef SOAP_TYPE_ns2__getNameResponse

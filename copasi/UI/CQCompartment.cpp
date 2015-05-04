@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -156,6 +156,7 @@ void CQCompartment::copy()
             compartmentObjectsToCopy.addMetab(*itMetab);
           }
       }
+
       success = true;
       break;
 
@@ -719,7 +720,7 @@ void CQCompartment::addCompartment(UndoCompartmentData *pSData)
       //TODO check if reaction already exist in the model, better idea may be implemented in the future
       bool exist = false;
 
-      for (int ii = 0; ii < pModel->getReactions().size(); ii++)
+      for (int ii = 0; ii < (int)pModel->getReactions().size(); ++ii)
         {
           if (pModel->getReactions()[ii]->getObjectName() == rData->getName())
             {
