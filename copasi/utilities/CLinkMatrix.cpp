@@ -1,4 +1,4 @@
-// Copyright (C) 2013 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2013 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -20,7 +20,17 @@
 CLinkMatrix::CLinkMatrix():
   CMatrix< C_FLOAT64 >(),
   mRowPivots(),
+  mPivotInverse(),
+  mSwapVector(),
   mIndependent(0)
+{}
+
+CLinkMatrix::CLinkMatrix(const CLinkMatrix & src):
+  CMatrix< C_FLOAT64 >(src),
+  mRowPivots(src.mRowPivots),
+  mPivotInverse(src.mPivotInverse),
+  mSwapVector(src.mSwapVector),
+  mIndependent(src.mIndependent)
 {}
 
 CLinkMatrix::~CLinkMatrix()
@@ -158,6 +168,8 @@ bool CLinkMatrix::build(const CMatrix< C_FLOAT64 > & matrix, size_t maxRank)
       dgeqp3_(&NumCols, &NumRows, M.array(), &LDA,
               JPVT.array(), TAU.array(), WORK.array(), &LWORK, &INFO);
 
+      std::cout << M << std::endl;
+
       if (INFO < 0) fatalError();
 
       C_INT32 i;
@@ -195,6 +207,8 @@ bool CLinkMatrix::build(const CMatrix< C_FLOAT64 > & matrix, size_t maxRank)
 
           while (independent < mn && independent < maxRank)
             {
+              std::cout << M(independent, independent) << std::endl;
+
               dlaic1_(&imin, &independent, pIsmin, &smin, &M(independent, 0), &M(independent, independent), &sminpr, &s1, &c1);
               dlaic1_(&imax, &independent, pIsmax, &smax, &M(independent, 0), &M(independent, independent), &smaxpr, &s2, &c2);
 
