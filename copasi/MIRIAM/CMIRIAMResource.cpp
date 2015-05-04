@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -20,6 +20,11 @@
 
 #include "utilities/CCopasiException.h"
 #include "report/CCopasiRootContainer.h"
+
+#include <sbml/xml/XMLNode.h>
+#include <sbml/xml/XMLAttributes.h>
+#include <sbml/xml/XMLToken.h>
+#include <sbml/xml/XMLInputStream.h>
 
 CMIRIAMResources::CMIRIAMResources(const std::string & name,
                                    const CCopasiContainer * pParent) :
@@ -75,6 +80,128 @@ const unsigned C_INT32 & CMIRIAMResources::getMIRIAMLastUpdateDate() const
 
 const unsigned C_INT32 & CMIRIAMResources::getMIRIAMUpdateFrequency() const
 {return * mpUpdateFrequency;}
+
+bool CMIRIAMResources::updateMIRIAMResourcesFromFile(CProcessReport * pProcessReport,
+    const std::string& filename)
+{
+  bool success = true;
+
+  CCopasiParameterGroup * pTmpCpyCMIRIAMResources = new CCopasiParameterGroup("Resources");
+  CMIRIAMResource * pMIRIAMResource = NULL;
+  std::string Name, URI, Deprecated, Pattern, IsDeprecated;
+  int itNames = 0, itURIs = 0, sizeNames = 0, sizeURIs = 0;
+  unsigned C_INT32 processStep = 0, processSteps = 1;
+
+  size_t hUpdateStep;
+
+  if (pProcessReport)
+    hUpdateStep = pProcessReport->addItem("Parsing MIRIAM XML", processStep, &processSteps);
+
+  // parse file into memory
+  XMLInputStream stream(filename.c_str());
+
+  if (stream.isError()) return false;
+
+  XMLNode root(stream);
+
+  ++processStep;
+
+  if (pProcessReport && !pProcessReport->progressItem(hUpdateStep))
+    return false;
+
+  sizeNames = root.getNumChildren();
+  processSteps = sizeNames + 2;
+
+  if (pProcessReport)
+    hUpdateStep = pProcessReport->addItem("Add Items", processStep, &processSteps);
+
+  if (pProcessReport && !pProcessReport->progressItem(hUpdateStep))
+    return false;
+
+  // read all datatype elements
+  for (itNames = 0; itNames < sizeNames; itNames++)
+    {
+      XMLNode dataType = root.getChild(itNames);
+
+      // only parse dataType elements
+      if (dataType.getName() != "datatype") continue;
+
+      // extract name
+      Name = dataType.getChild("name").getChild(0).getCharacters();
+      pMIRIAMResource = new CMIRIAMResource(Name, NULL);
+
+      XMLNode uris = dataType.getChild("uris");
+      sizeURIs = uris.getNumChildren();
+
+      // extract uri & deprecated uris
+      URI.clear();
+
+      if (sizeURIs != 0)
+        {
+          for (itURIs = 0; itURIs < sizeURIs; itURIs++)
+            {
+              XMLNode uri = uris.getChild(itURIs);
+
+              if (URI.empty())
+                URI = uri.getChild(0).getCharacters();
+
+              Deprecated = uri.getAttrValue("deprecated");
+
+              if (Deprecated == "true")
+                pMIRIAMResource->addDeprecatedURL(uri.getChild(0).getCharacters());
+            }
+        }
+
+      // set name
+      pMIRIAMResource->setMIRIAMDisplayName(Name);
+
+      if (URI.empty() || Name.empty())
+        {
+          // ignore invalid item
+          delete pMIRIAMResource;
+          continue;
+        }
+
+      pMIRIAMResource->setMIRIAMURI(URI);
+      pMIRIAMResource->setMIRIAMPattern(dataType.getAttrValue("pattern"));
+      pMIRIAMResource->setMIRIAMCitation(URI == "urn:miriam:arxiv" ||
+                                         URI == "urn:miriam:doi" ||
+                                         URI == "urn:miriam:pubmed" ||
+                                         URI == "urn:miriam:isbn");
+
+      pTmpCpyCMIRIAMResources->addParameter(pMIRIAMResource);
+
+      processStep++;
+
+      if (pProcessReport && !pProcessReport->progressItem(hUpdateStep))
+        return false;
+    }
+
+  processStep++;
+
+  if (pProcessReport && !pProcessReport->progressItem(hUpdateStep))
+    return false;
+
+  if (success)
+    {
+      // TODO add a resource for local objects, i.e., within the current model.
+
+      setMIRIAMLastUpdateDate();
+      *mpMIRIAMResources = *pTmpCpyCMIRIAMResources;
+      elevateChildren();
+      createDisplayNameMap();
+      createURIMap();
+    }
+
+  pdelete(pTmpCpyCMIRIAMResources);
+
+  processStep++;
+
+  if (pProcessReport && !pProcessReport->progressItem(hUpdateStep))
+    return false;
+
+  return success;
+}
 
 bool CMIRIAMResources::updateMIRIAMResources(CProcessReport * pProcessReport)
 {

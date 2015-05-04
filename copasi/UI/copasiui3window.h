@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -18,7 +18,6 @@
 #include <QtCore/QModelIndex>
 #include <QtCore/QMap>
 #include <QtCore/QPointer>
-
 
 #ifdef COPASI_SBW_INTEGRATION
 # include <QtGui/QApplication>
@@ -195,6 +194,7 @@ protected slots:
   void slotFrameworkChanged(int index);
   void slotCapture();
   void slotUpdateMIRIAM();
+  void slotUpdateMIRIAMFinished(bool);
   void slotExpandModel();
   void slotFontSelection();
 

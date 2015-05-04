@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -29,6 +29,7 @@ class CMIRIAMResources;
 class CQThread;
 class CProgressBar;
 class CQBrowserPaneDM;
+class QNetworkReply;
 
 class DataModelGUI: public QObject
 {
@@ -91,6 +92,8 @@ public slots:
 #ifdef WITH_MERGEMODEL
   void addModelFinished();
 #endif
+  void miriamDownloadFinished(QNetworkReply*);
+  void miriamDownloadProgress(qint64 received, qint64 total);
 
   //TODO SEDML
 #ifdef COPASI_SEDML
@@ -149,6 +152,10 @@ private:
   bool mSBMLExportIncomplete;
   bool mSBMLExportCOPASIMIRIAM;
   std::string mExportFormat;
+  CMIRIAMResources* mpMiriamResources;
+  unsigned int mDownloadedBytes;
+  unsigned int mDownloadedTotalBytes;
+  size_t mUpdateItem;
 
   //TODO SEDML
 #ifdef COPASI_SEDML
