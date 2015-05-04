@@ -46,7 +46,7 @@ public:
 
   virtual int yyparse();
 
-  const CUnit & getUnit() const;
+  CUnit * getUnit() const;
 
 protected:
   void correctErrorPosition();
@@ -56,13 +56,12 @@ public:
 //struct {CUnit unit, CUnitComponent component, char * pText}
   struct Data
   {
-    CUnit unit;
+    CUnit *pUnit;
     CUnitComponent component;
     std::string text;
   };
 protected:
   Data mData;
-  CUnit mUnit;
 
   unsigned C_INT32 mPosition;
 };

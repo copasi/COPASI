@@ -24,6 +24,7 @@
 
 
 #define COMMON_ACTION \
+    mData.pUnit = NULL; \
     mData.text = yytext; \
     mPosition += yyleng;
 

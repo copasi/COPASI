@@ -51,23 +51,36 @@
 
 list_of_components:  component
            {
-             $$.unit.addComponent($$.component);
+             $$.pUnit = new CUnit("");
+             $$.pUnit->addComponent($$.component);
+             mData = $$;
            }
          | list_of_components MULTIPLY list_of_components
            {
-             $$.unit = $1.unit * $2.unit;
+             $$.pUnit = new CUnit("");
+             *$$.pUnit = *$1.pUnit * *$3.pUnit;
+             mData = $$;
+             pdelete($1.pUnit);
+             pdelete($3.pUnit);
            }
          | list_of_components DIVIDE list_of_components
            {
-             $$.unit = $1.unit * $2.unit.exponentiate(-1);
+             $$.pUnit = new CUnit("");
+             *$$.pUnit = *$1.pUnit * $3.pUnit->exponentiate(-1);
+             mData = $$;
+             pdelete($1.pUnit);
+             pdelete($3.pUnit);
            }
          | START_PARENS list_of_components END_PARENS
            {
              $$ = $2;
+             mData = $$;
            }
          | list_of_components EXPONENT NUMBER
            {
-             $$.unit = $1.unit.exponentiate(strToDouble($3.text.c_str(), NULL));
+             $1.pUnit->exponentiate(strToDouble($3.text.c_str(), NULL));
+             $$.pUnit = $1.pUnit; 
+             mData = $$;
            }
 
 component: scaled_kind

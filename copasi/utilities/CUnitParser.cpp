@@ -1,4 +1,4 @@
-// Copyright (C) 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2014 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -13,8 +13,8 @@ CUnitParserBase::CUnitParserBase()
 CUnitParserBase::~CUnitParserBase()
 {}
 
-const CUnit & CUnitParserBase::getUnit() const
-{return mUnit;}
+CUnit * CUnitParserBase::getUnit() const
+{return mData.pUnit;}
 
 void CUnitParserBase::correctErrorPosition()
 {return;}
