@@ -67,6 +67,13 @@
 #include <sbml/packages/layout/extension/LayoutModelPlugin.h>
 #endif
 
+#include <QByteArray>
+#include <QNetworkAccessManager>
+#include <QNetworkRequest>
+#include <QNetworkReply>
+
+#include <copasi/commandline/COptions.h>
+
 //*****************************************************************************
 
 DataModelGUI::DataModelGUI(QObject * parent):
@@ -512,20 +519,84 @@ void DataModelGUI::exportMathModelFinished()
   threadFinished();
 }
 
+void DataModelGUI::miriamDownloadFinished(QNetworkReply* reply)
+{
+  bool success = true;
+  mDownloadedBytes = 100;
+  mpProgressBar->progressItem(mUpdateItem);
+
+  CMIRIAMResources & miriamResources = *mpMiriamResources;
+
+  if (reply != NULL && reply->error() == QNetworkReply::NoError)
+    {
+      std::string filename;
+      COptions::getValue("ConfigDir", filename);
+      filename += "/miriam.xml";
+
+      QFile *miriamFile = new QFile(filename.c_str());
+
+      if (miriamFile->open(QFile::WriteOnly))
+        {
+          miriamFile->write(reply->readAll());
+          miriamFile->flush();
+          miriamFile->close();
+          success = miriamResources.updateMIRIAMResourcesFromFile(mpProgressBar, filename);
+        }
+
+      delete miriamFile;
+    }
+  else
+    {
+      success = false;
+    }
+
+  reply->deleteLater();
+
+  pdelete(mpProgressBar);
+
+  // notify UI to pick up
+  emit finished(success);
+}
+
+void DataModelGUI::miriamDownloadProgress(qint64 received, qint64 total)
+{
+  if (total != -1)
+    {
+      mDownloadedBytes = 100 * double(received) / double(total);
+    }
+  else
+    {
+      ++mDownloadedBytes;
+    }
+
+  if (!mpProgressBar->progressItem(mUpdateItem))
+    {
+      QNetworkReply *reply = dynamic_cast<QNetworkReply*>(sender());
+
+      if (reply != NULL) reply->abort();
+    }
+}
+
 bool DataModelGUI::updateMIRIAM(CMIRIAMResources & miriamResources)
 {
   bool success = true;
-  CProgressBar* pProgressBar = CProgressBar::create();
-  //try
-  //{
-  success = miriamResources.updateMIRIAMResources(pProgressBar);
-  //}
-  //catch (...)
-  //{
-  //success = false;
-  //}
 
-  pdelete(pProgressBar);
+  mpMiriamResources = &miriamResources;
+
+  mpProgressBar = CProgressBar::create();
+  mpProgressBar->setName("MIRIAM Resources Update...");
+  mDownloadedBytes = 0; mDownloadedTotalBytes = 100;
+  mUpdateItem = ((CProcessReport*)mpProgressBar)->addItem("Download MIRIAM info", mDownloadedBytes, &mDownloadedTotalBytes);
+
+  QNetworkAccessManager *manager = new QNetworkAccessManager(this);
+
+  connect(manager, SIGNAL(finished(QNetworkReply*)),
+          this, SLOT(miriamDownloadFinished(QNetworkReply*)));
+
+  QNetworkReply* reply = manager->get(QNetworkRequest(QUrl("http://www.ebi.ac.uk/miriam/main/export/xml/")));
+  connect(reply, SIGNAL(downloadProgress(qint64, qint64)),
+          this, SLOT(miriamDownloadProgress(qint64, qint64)));
+
   return success;
 }
 

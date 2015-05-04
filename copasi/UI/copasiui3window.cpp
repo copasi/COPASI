@@ -2096,27 +2096,11 @@ void CopasiUI3Window::slotCheckModel()
   checkModelWindow->show();
 }
 
-void CopasiUI3Window::slotUpdateMIRIAM()
+void CopasiUI3Window::slotUpdateMIRIAMFinished(bool success)
 {
-  bool success = true;
-
+  disconnect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(slotFileSaveFinished(bool)));
   QCursor oldCursor = cursor();
   setCursor(Qt::WaitCursor);
-
-  CCopasiMessage::clearDeque();
-
-  if (!mpDataModelGUI)
-    mpDataModelGUI = new DataModelGUI(this); // create a new data model
-
-  try
-    {
-      success = mpDataModelGUI->updateMIRIAM(
-                  CCopasiRootContainer::getConfiguration()->getRecentMIRIAMResources());
-    }
-  catch (...)
-    {
-      success = false;
-    }
 
   if (!success)
     {
@@ -2129,9 +2113,9 @@ void CopasiUI3Window::slotUpdateMIRIAM()
     }
 
   /* still check for warnings.
-   * Maybe events or rules were ignored while reading
-   * the file.
-   */
+  * Maybe events or rules were ignored while reading
+  * the file.
+  */
   if (success)
     {
       CCopasiRootContainer::getConfiguration()->save();
@@ -2144,6 +2128,28 @@ void CopasiUI3Window::slotUpdateMIRIAM()
   CCopasiMessage::clearDeque();
   mpListView->switchToOtherWidget(0, "");
   setCursor(oldCursor);
+}
+
+void CopasiUI3Window::slotUpdateMIRIAM()
+{
+  bool success = true;
+
+  CCopasiMessage::clearDeque();
+
+  if (!mpDataModelGUI)
+    mpDataModelGUI = new DataModelGUI(this); // create a new data model
+
+  connect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(slotUpdateMIRIAMFinished(bool)));
+
+  try
+    {
+      success = mpDataModelGUI->updateMIRIAM(
+                  CCopasiRootContainer::getConfiguration()->getRecentMIRIAMResources());
+    }
+  catch (...)
+    {
+      success = false;
+    }
 }
 
 void CopasiUI3Window::slotApplyInitialState()

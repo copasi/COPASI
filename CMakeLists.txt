@@ -330,7 +330,7 @@ endif()
 
 if(BUILD_GUI)
   # find Qt4
-  find_package(Qt4 4.7.0 REQUIRED QtCore QtOpenGL QtGui QtXml QtWebKit)
+  find_package(Qt4 4.7.0 REQUIRED QtCore QtOpenGL QtGui QtXml QtWebKit QtNetwork)
   # check for qwt, TODO check if the version is OK
   find_package(QwtQt4 REQUIRED)
   # check for qwtplot3d
