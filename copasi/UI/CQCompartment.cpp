@@ -1,16 +1,16 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-// and The University of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc. and EML Research, gGmbH. 
-// All rights reserved. 
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 #include "CQCompartment.h"
 
@@ -101,7 +101,7 @@ void CQCompartment::slotBtnNew()
 }
 
 void CQCompartment::copy()
-{   
+{
   CModel * pModel = mpDataModel->getModel();
   CModelExpansion cModelExpObj = CModelExpansion(pModel);
   CModelExpansion::SetOfModelElements compartmentObjectsToCopy;
@@ -130,12 +130,13 @@ void CQCompartment::copy()
         CCopasiVectorNS < CMetab >::const_iterator itMetab;
 
         for (itMetab = Metabolites.begin(); itMetab != Metabolites.end(); ++itMetab)
-         {
-          compartmentObjectsToCopy.addMetab(*itMetab);
-         }
+          {
+            compartmentObjectsToCopy.addMetab(*itMetab);
+          }
       }
-        success = true;
-        break;
+
+      success = true;
+      break;
 
       case CQCompartmentCopyOptions::INTREAC:    //also include the internal reactions
       {
@@ -146,9 +147,9 @@ void CQCompartment::copy()
         CCopasiVectorNS < CMetab >::const_iterator itMetab;
 
         for (itMetab = Metabolites.begin(); itMetab != Metabolites.end(); ++itMetab)
-         {
-          compartmentObjectsToCopy.addMetab(*itMetab);
-         }
+          {
+            compartmentObjectsToCopy.addMetab(*itMetab);
+          }
 
         // Now get the reactions which are not multi-compartment
         CCopasiVectorN< CReaction >::const_iterator it = pModel->getReactions().begin();
@@ -159,11 +160,11 @@ void CQCompartment::copy()
           {
             pRi->initFromReaction((*it)->getKey());
 
-            if(!pRi->isMulticompartment())
-            {
-                if(pRi->getChemEqInterface().getCompartment()->getKey() == mKey)
+            if (!pRi->isMulticompartment())
+              {
+                if (pRi->getChemEqInterface().getCompartment()->getKey() == mKey)
                   compartmentObjectsToCopy.addReaction(*it);
-            }
+              }
           }
 
         pdelete(pRi);
@@ -181,15 +182,15 @@ void CQCompartment::copy()
 
   pdelete(pDialog);
 
-  if(success)
-  {
-    cModelExpObj.duplicate(compartmentObjectsToCopy, "_copy", origToCopyMappings);
+  if (success)
+    {
+      cModelExpObj.duplicate(compartmentObjectsToCopy, "_copy", origToCopyMappings);
 
-    protectedNotify(ListViews::COMPARTMENT, ListViews::DELETE, "");//Refresh all
-    protectedNotify(ListViews::METABOLITE, ListViews::DELETE, ""); //Refresh all
-    protectedNotify(ListViews::REACTION, ListViews::DELETE, "");   //Refresh all
-    mpListView->switchToOtherWidget(C_INVALID_INDEX, origToCopyMappings.getDuplicateKey(mKey));
-  }
+      protectedNotify(ListViews::COMPARTMENT, ListViews::DELETE, "");//Refresh all
+      protectedNotify(ListViews::METABOLITE, ListViews::DELETE, ""); //Refresh all
+      protectedNotify(ListViews::REACTION, ListViews::DELETE, "");   //Refresh all
+      mpListView->switchToOtherWidget(C_INVALID_INDEX, origToCopyMappings.getDuplicateKey(mKey));
+    }
 }
 
 void CQCompartment::slotBtnDelete()
