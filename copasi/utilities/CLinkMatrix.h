@@ -1,4 +1,4 @@
-// Copyright (C) 2013 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2013 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -19,6 +19,11 @@ public:
    * Default constructor
    */
   CLinkMatrix();
+
+  /**
+   * Copy constructor
+   */
+  CLinkMatrix(const CLinkMatrix & src);
 
   /**
    * Destructor

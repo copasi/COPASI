@@ -411,9 +411,9 @@ public:
 
   /**
    * Get the relevant portion of the link matrix L.
-   * @return const CMatrix< C_FLOAT64 > & L0
+   * @return const CLinkMatrix & L0
    */
-  const CMatrix< C_FLOAT64 > & getL0() const;
+  const CLinkMatrix & getL0() const;
 
   /**
    * initialize all values of the model with their initial values

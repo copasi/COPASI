@@ -1136,7 +1136,7 @@ const CCopasiVector < CMoiety > & CModel::getMoieties() const
 const CLinkMatrixView & CModel::getL() const
 {CCHECK return mLView;}
 
-const CMatrix< C_FLOAT64 > & CModel::getL0() const
+const CLinkMatrix & CModel::getL0() const
 {return mL;}
 
 const CStateTemplate & CModel::getStateTemplate() const

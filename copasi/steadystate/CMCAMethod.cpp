@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -562,7 +562,7 @@ void CMCAMethod::scaleMCA(int condition, C_FLOAT64 res)
             {
               *pScaled = *pUnscaled;
             }
-          else if (tmp >= res)
+          else if (fabs(Scale) >= res)
             {
               *pScaled = *pUnscaled * (*itReactionCol)->getFlux() / Scale;
             }
@@ -573,7 +573,7 @@ void CMCAMethod::scaleMCA(int condition, C_FLOAT64 res)
                                    fabs((*itReactionCol)->getFlux()) :
                                    fabs((*itReactionCol)->getFlux() / pCompartmentCol->getValue());
 
-              if (ScaleCol <= res)
+              if (fabs(ScaleCol) <= res)
                 {
                   *pScaled = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
                 }
@@ -586,6 +586,49 @@ void CMCAMethod::scaleMCA(int condition, C_FLOAT64 res)
             }
         }
     }
+}
+
+bool CMCAMethod::checkSummationTheorems(const C_FLOAT64 & resolution)
+{
+  bool success = true;
+
+  C_FLOAT64 * pScaled = mScaledConcCC.array();
+  C_FLOAT64 * pScaledRowEnd = pScaled + mScaledConcCC.numCols();
+  C_FLOAT64 * pScaledEnd = pScaled + mScaledConcCC.size();
+
+  CVector< C_FLOAT64 > Sum(mScaledConcCC.numRows());
+  Sum = 0.0;
+  C_FLOAT64 * pSum = Sum.array();
+
+  for (; pScaled != pScaledEnd; pScaledRowEnd += mScaledConcCC.numCols(), ++pSum)
+    {
+      for (; pScaled != pScaledRowEnd; ++pScaled)
+        {
+          *pSum += *pScaled;
+        }
+    }
+
+  std::cout << Sum << std::endl;
+
+  pScaled = mScaledFluxCC.array();
+  pScaledRowEnd = pScaled + mScaledFluxCC.numCols();
+  pScaledEnd = pScaled + mScaledFluxCC.size();
+
+  Sum.resize(mScaledFluxCC.numRows());
+  Sum = 0.0;
+  pSum = Sum.array();
+
+  for (; pScaled != pScaledEnd; pScaledRowEnd += mScaledFluxCC.numCols(), ++pSum)
+    {
+      for (; pScaled != pScaledRowEnd; ++pScaled)
+        {
+          *pSum += *pScaled;
+        }
+    }
+
+  std::cout << Sum << std::endl;
+
+  return success;
 }
 
 /**
@@ -623,6 +666,9 @@ int CMCAMethod::CalculateMCA(C_FLOAT64 res)
 
   scaleMCA(ret, res);
 
+  // Check summation theorems
+  checkSummationTheorems(res);
+
   return ret;
 }
 
@@ -634,7 +680,8 @@ bool CMCAMethod::createLinkMatrix()
       return false;
     }
 
-  mLinkZero.build(mpSteadyStateTask->getJacobian(), mpModel->getNumIndependentReactionMetabs());
+  // mLinkZero.build(mpSteadyStateTask->getJacobian(), mpModel->getNumIndependentReactionMetabs());
+  mLinkZero = mpModel->getL0();
 
   mReducedStoichiometry = mpModel->getStoi();
   mLinkZero.doRowPivot(mReducedStoichiometry);
