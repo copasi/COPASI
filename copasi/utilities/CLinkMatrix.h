@@ -39,6 +39,11 @@ public:
   bool build(const CMatrix< C_FLOAT64 > & matrix, size_t maxRank = C_INVALID_INDEX);
 
   /**
+   * Clear the pivot and swap vectors
+   */
+  void clearPivoting();
+
+  /**
    * Right multiply the given matrix M with L, i.e., P = alpha M * L.
    * Note the columns of M must be in the same order as L.
    * @param const C_FLOAT64 & alpha
@@ -168,6 +173,12 @@ private:
    */
   bool applyRowPivot(CMatrix< C_FLOAT64 > & matrix,
                      const CVector< size_t > & pivots) const;
+
+  /**
+   * Complete the pivot information.
+   */
+  void completePivotInformation();
+
   /**
    * The row pivoting performed to create the link matrix
    */
@@ -182,6 +193,7 @@ private:
    *  The swap vector used for column swapping
    */
   CVector< C_INT > mSwapVector;
+
   /**
    * The number of linear independent rows.
    */
