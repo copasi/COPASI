@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -67,6 +67,7 @@ Message;
 #define MCLayout                 MCopasiBase + 4800
 #define MCScan                   MCopasiBase + 4900
 #define MCSEDML                  MCopasiBase + 5000
+#define MCMCA                    MCopasiBase + 5100
 /**
  *  This throws an exception with information where the error occurred.
  */

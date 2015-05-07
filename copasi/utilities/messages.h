@@ -480,6 +480,8 @@ const MESSAGES Messages[] =
 
   {MCScan + 1, "CScan (1): The scan item '%s' set the initial value of a state variable and is ignored when Continue from Current State is checked."},
 
+  {MCMCA + 1, "CMCA (1): Numerical instabilities encountered, at least one of the the Summation Theorems is violated."},
+
   // This must be the last element of the message list! Do not delete!
   {0, NULL}
 };

@@ -168,8 +168,6 @@ bool CLinkMatrix::build(const CMatrix< C_FLOAT64 > & matrix, size_t maxRank)
       dgeqp3_(&NumCols, &NumRows, M.array(), &LDA,
               JPVT.array(), TAU.array(), WORK.array(), &LWORK, &INFO);
 
-      std::cout << M << std::endl;
-
       if (INFO < 0) fatalError();
 
       C_INT32 i;
@@ -207,8 +205,6 @@ bool CLinkMatrix::build(const CMatrix< C_FLOAT64 > & matrix, size_t maxRank)
 
           while (independent < mn && independent < maxRank)
             {
-              std::cout << M(independent, independent) << std::endl;
-
               dlaic1_(&imin, &independent, pIsmin, &smin, &M(independent, 0), &M(independent, independent), &sminpr, &s1, &c1);
               dlaic1_(&imax, &independent, pIsmax, &smax, &M(independent, 0), &M(independent, independent), &smaxpr, &s2, &c2);
 
@@ -336,6 +332,13 @@ bool CLinkMatrix::build(const CMatrix< C_FLOAT64 > & matrix, size_t maxRank)
         }
     }
 
+  completePivotInformation();
+
+  return success;
+}
+
+void CLinkMatrix::completePivotInformation()
+{
   // We need to convert the pivot vector into a swap vector.
   mPivotInverse.resize(mRowPivots.size());
 
@@ -376,8 +379,20 @@ bool CLinkMatrix::build(const CMatrix< C_FLOAT64 > & matrix, size_t maxRank)
       *pFromColumn = *pToColumn;
       *pToColumn = tmp;
     }
+}
 
-  return success;
+void CLinkMatrix::clearPivoting()
+{
+  size_t * pPivot = mRowPivots.array();
+  size_t * pPivotEnd = pPivot + mRowPivots.size();
+  size_t Index = 0;
+
+  for (; pPivot != pPivotEnd; ++pPivot, ++Index)
+    {
+      *pPivot = Index;
+    }
+
+  completePivotInformation();
 }
 
 bool CLinkMatrix::rightMultiply(const C_FLOAT64 & alpha,
