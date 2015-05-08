@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -235,45 +235,45 @@ std::string getUserDefinedFuctionForName(SBMLDocument* pSBMLDocument,
       return newId;
     }
   else if (id == std::string("RGAMMA"))
-  {
-    newId = hasFunctionDefinitionForURI(pSBMLDocument,
-                                        "http://sbml.org/annotations/distribution",
-                                        "distribution",
-                                        "http://www.uncertml.org/distributions/gamma");
-
-    if (!newId.empty()) return newId;
-
-    newId = createFunctionDefinitonForURI(
-                                          pSBMLDocument,
-                                          idMap,
-                                          id,
+    {
+      newId = hasFunctionDefinitionForURI(pSBMLDocument,
                                           "http://sbml.org/annotations/distribution",
                                           "distribution",
-                                          "http://www.uncertml.org/distributions/gamma",
-                                          "lambda(a,b,a*b)"
-                                          );
-    return newId;
-  }
+                                          "http://www.uncertml.org/distributions/gamma");
+
+      if (!newId.empty()) return newId;
+
+      newId = createFunctionDefinitonForURI(
+                pSBMLDocument,
+                idMap,
+                id,
+                "http://sbml.org/annotations/distribution",
+                "distribution",
+                "http://www.uncertml.org/distributions/gamma",
+                "lambda(a,b,a*b)"
+              );
+      return newId;
+    }
   else if (id == std::string("RPOISSON"))
-  {
-    newId = hasFunctionDefinitionForURI(pSBMLDocument,
-                                        "http://sbml.org/annotations/distribution",
-                                        "distribution",
-                                        "http://www.uncertml.org/distributions/poisson");
-
-    if (!newId.empty()) return newId;
-
-    newId = createFunctionDefinitonForURI(
-                                          pSBMLDocument,
-                                          idMap,
-                                          id,
+    {
+      newId = hasFunctionDefinitionForURI(pSBMLDocument,
                                           "http://sbml.org/annotations/distribution",
                                           "distribution",
-                                          "http://www.uncertml.org/distributions/poisson",
-                                          "lambda(mu,mu)"
-                                          );
-    return newId;
-  }
+                                          "http://www.uncertml.org/distributions/poisson");
+
+      if (!newId.empty()) return newId;
+
+      newId = createFunctionDefinitonForURI(
+                pSBMLDocument,
+                idMap,
+                id,
+                "http://sbml.org/annotations/distribution",
+                "distribution",
+                "http://www.uncertml.org/distributions/poisson",
+                "lambda(mu,mu)"
+              );
+      return newId;
+    }
   else if (id == std::string("MAX"))
     {
       newId = hasFunctionDefinitionForURI(pSBMLDocument,
@@ -3239,8 +3239,9 @@ const std::string CSBMLExporter::exportModelToString(CCopasiDataModel& dataModel
     {
       LayoutModelPlugin* lmPlugin = static_cast<LayoutModelPlugin*>(this->mpSBMLDocument->getModel()->getPlugin("layout"));
 
-      if (lmPlugin != NULL)
+      if (lmPlugin != NULL && sbmlLevel > 1)
         {
+          // the layout can only be exported for Level 2 or Level 3
           dataModel.getListOfLayouts()->exportToSBML(lmPlugin->getListOfLayouts(),
               this->mCOPASI2SBMLMap, mIdMap, this->mpSBMLDocument->getLevel(), this->mpSBMLDocument->getVersion());
 
@@ -3332,6 +3333,11 @@ const std::string CSBMLExporter::exportModelToString(CCopasiDataModel& dataModel
   // mark some temporary objects as no longer needed
   removeStickyTagFromElements(mpSBMLDocument);
 
+  // the workaround is no longer necessary, as the libSBML > 5.11.4 will include
+  // a converter that not only converts to l1v1 but also inlines the compartment
+  // sizes and changes pow implementation as needed by Gepasi
+#if LIBSBML_VERSION <= 51104
+
   // actually most of the work seems to be done by
   // libsbml already, so the following method doesn't have to
   // do much and most of the code is obsolete, at least for now
@@ -3340,6 +3346,8 @@ const std::string CSBMLExporter::exportModelToString(CCopasiDataModel& dataModel
       // if there is an exception in the routine, we hand it up to the calling routine
       convert_to_l1v1(returnValue);
     }
+
+#endif
 
   return returnValue;
 }
@@ -3579,12 +3587,35 @@ void CSBMLExporter::createSBMLDocument(CCopasiDataModel& dataModel)
   if (this->mpSBMLDocument->getLevel() != this->mSBMLLevel || this->mpSBMLDocument->getVersion() != this->mSBMLVersion)
     {
 #if LIBSBML_VERSION >= 50400
-      ConversionProperties prop(new SBMLNamespaces(mSBMLLevel, mSBMLVersion));
-      prop.addOption("strict", false);
-      prop.addOption("setLevelAndVersion", true);
-      prop.addOption("ignorePackages", true);
 
-      mpSBMLDocument->convert(prop);
+      SBMLNamespaces targetNs(mSBMLLevel, mSBMLVersion); // use reference, as the ns gets cloned
+
+      if (mSBMLLevel == 1 && mSBMLVersion == 1)
+        {
+          // l1v1 export tailor made to suit GEPASI, with pow -> ^ notation and
+          // inlining of compartment sizes in kinetics.
+
+          ConversionProperties prop(&targetNs);
+          prop.addOption("convertToL1V1", true,
+                         "convert the document to SBML Level 1 Version 1");
+          prop.addOption("changePow", true,
+                         "change pow expressions to the (^) hat notation");
+          prop.addOption("inlineCompartmentSizes", true,
+                         "if true, occurrances of compartment ids in expressions will be replaced with their initial size");
+
+          mpSBMLDocument->convert(prop);
+        }
+      else
+        {
+
+          ConversionProperties prop(&targetNs);
+          prop.addOption("strict", false);
+          prop.addOption("setLevelAndVersion", true);
+          prop.addOption("ignorePackages", true);
+
+          mpSBMLDocument->convert(prop);
+        }
+
 #else
       this->mpSBMLDocument->setLevelAndVersion(this->mSBMLLevel, this->mSBMLVersion);
 #endif
