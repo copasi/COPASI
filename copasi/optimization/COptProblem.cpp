@@ -47,6 +47,22 @@
 #include "utilities/CProcessReport.h"
 #include "utilities/CCopasiException.h"
 
+// static
+const unsigned int COptProblem::ValidSubtasks[] =
+{
+  CCopasiTask::steadyState,
+  CCopasiTask::timeCourse,
+  CCopasiTask::scan,
+  CCopasiTask::parameterFitting,
+  CCopasiTask::mca,
+  CCopasiTask::lyap,
+  CCopasiTask::tssAnalysis,
+  CCopasiTask::sens,
+  CCopasiTask::crosssection,
+  CCopasiTask::lna,
+  CCopasiTask::unset
+};
+
 //  Default constructor
 COptProblem::COptProblem(const CCopasiTask::Type & type,
                          const CCopasiContainer * pParent):

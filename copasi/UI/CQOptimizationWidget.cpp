@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -215,23 +215,14 @@ void CQOptimizationWidget::init()
   mpExpressionEMW->mpExpressionWidget->setExpressionType(CQExpressionWidget::ObjectiveFunctions);
 
   //mpBtnMaximize->setMinimumWidth(mpLblExpression->width());
+  const unsigned int * pSubtask = COptProblem::ValidSubtasks;
 
-  mpBoxSubtask->insertItem(mpBoxSubtask->count(), FROM_UTF8(CCopasiTask::TypeName[CCopasiTask::steadyState]));
-  mSubtaskMap[CCopasiTask::TypeName[CCopasiTask::steadyState]] = CCopasiTask::steadyState;
-  mpBoxSubtask->insertItem(mpBoxSubtask->count(), FROM_UTF8(CCopasiTask::TypeName[CCopasiTask::timeCourse]));
-  mSubtaskMap[CCopasiTask::TypeName[CCopasiTask::timeCourse]] = CCopasiTask::timeCourse;
-  mpBoxSubtask->insertItem(mpBoxSubtask->count(), FROM_UTF8(CCopasiTask::TypeName[CCopasiTask::mca]));
-  mSubtaskMap[CCopasiTask::TypeName[CCopasiTask::mca]] = CCopasiTask::mca;
-  mpBoxSubtask->insertItem(mpBoxSubtask->count(), FROM_UTF8(CCopasiTask::TypeName[CCopasiTask::lna]));
-  mSubtaskMap[CCopasiTask::TypeName[CCopasiTask::lna]] = CCopasiTask::lna;
-  mpBoxSubtask->insertItem(mpBoxSubtask->count(), FROM_UTF8(CCopasiTask::TypeName[CCopasiTask::lyap]));
-  mSubtaskMap[CCopasiTask::TypeName[CCopasiTask::lyap]] = CCopasiTask::lyap;
-  mpBoxSubtask->insertItem(mpBoxSubtask->count(), FROM_UTF8(CCopasiTask::TypeName[CCopasiTask::sens]));
-  mSubtaskMap[CCopasiTask::TypeName[CCopasiTask::sens]] = CCopasiTask::sens;
-#ifdef COPASI_DEBUG
-  mpBoxSubtask->insertItem(mpBoxSubtask->count(), FROM_UTF8(CCopasiTask::TypeName[CCopasiTask::parameterFitting]));
-  mSubtaskMap[CCopasiTask::TypeName[CCopasiTask::parameterFitting]] = CCopasiTask::parameterFitting;
-#endif
+  for (; *pSubtask != CCopasiTask::unset; ++pSubtask)
+    {
+      mpBoxSubtask->insertItem(mpBoxSubtask->count(), FROM_UTF8(CCopasiTask::TypeName[*pSubtask]));
+      mSubtaskMap[CCopasiTask::TypeName[*pSubtask]] = *pSubtask;
+    }
+
   mpParameters->setItemType(CQFittingItemWidget::OPT_ITEM);
 
   connect(mpParameters, SIGNAL(numberChanged(int)), this, SLOT(slotParameterNumberChanged(int)));
