@@ -676,8 +676,8 @@ void CSBMLExporter::createSubstanceUnit(const CCopasiDataModel& dataModel)
   if (this->mSBMLLevel > 2)
     {
       pSBMLModel->setSubstanceUnits(uDef.getId());
-      // here we also set the extends unit to the same unit as the substance unit
-      // because COPASI does not know about different extend units
+      // here we also set the extent unit to the same unit as the substance unit
+      // because COPASI does not know about different extent units
       pSBMLModel->setExtentUnits(uDef.getId());
     }
 
@@ -1055,6 +1055,11 @@ void CSBMLExporter::createCompartment(CCompartment& compartment)
       CSBMLExporter::setSBMLNotes(pSBMLCompartment, &compartment);
     }
 
+  if (pSBMLCompartment != NULL && mSBMLLevel == 3)
+    {
+      pSBMLCompartment->setUnits("volume");
+    }
+
   CSBMLExporter::updateMIRIAMAnnotation(&compartment, pSBMLCompartment, this->mMetaIdMap);
 }
 
@@ -1266,6 +1271,12 @@ void CSBMLExporter::createMetabolite(CMetab& metab)
   if (pSBMLSpecies != NULL)
     {
       CSBMLExporter::setSBMLNotes(pSBMLSpecies, &metab);
+    }
+
+  if (pSBMLSpecies != NULL && mSBMLLevel == 3)
+    {
+      // for l3 the unit needs to be set explicitly to substance,
+      pSBMLSpecies->setSubstanceUnits("substance");
     }
 
   CSBMLExporter::updateMIRIAMAnnotation(&metab, pSBMLSpecies, this->mMetaIdMap);
@@ -3388,6 +3399,11 @@ void addInitialAssignmentsToModel(SBMLDocument* doc
 
 void CSBMLExporter::createSBMLDocument(CCopasiDataModel& dataModel)
 {
+  // reset warnings for missing entries in modelhistory
+  mHaveModelHistoryAuthorWarning = false;
+  mHaveModelHistoryCreationDateWarning = false;
+  mHaveModelHistoryModificationDateWarning = false;
+
   const SBMLDocument* pOldSBMLDocument = dataModel.getCurrentSBMLDocument();
   const CModel* pModel = dataModel.getModel();
   assert(pModel != NULL);
@@ -6657,8 +6673,9 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CCopasiObject* pCOPASIObject, S
           modelHistory.addCreator(&modelCreator);
         }
 
-      if (modelHistory.getNumCreators() < 1)
+      if (modelHistory.getNumCreators() < 1 && !mHaveModelHistoryAuthorWarning)
         {
+          mHaveModelHistoryAuthorWarning = true;
           CCopasiMessage(CCopasiMessage::WARNING, "The ModelHistory cannot be exported to SBML, as no author has been defined.");
         }
 
@@ -6672,8 +6689,9 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CCopasiObject* pCOPASIObject, S
           modified = true;
         }
 
-      if (!modelHistory.isSetCreatedDate())
+      if (!modelHistory.isSetCreatedDate() && !mHaveModelHistoryCreationDateWarning)
         {
+          mHaveModelHistoryCreationDateWarning = true;
           CCopasiMessage(CCopasiMessage::WARNING, "The ModelHistory cannot be exported to SBML, as no creation date has been defined.");
         }
 
@@ -6712,8 +6730,9 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CCopasiObject* pCOPASIObject, S
           modelHistory.setModifiedDate(modelHistory.getCreatedDate());
         }
 
-      if (!modelHistory.isSetModifiedDate())
+      if (!modelHistory.isSetModifiedDate() && mHaveModelHistoryModificationDateWarning)
         {
+          mHaveModelHistoryModificationDateWarning = true;
           CCopasiMessage(CCopasiMessage::WARNING, "The ModelHistory cannot be exported to SBML, as no modification date has been defined.");
         }
 
