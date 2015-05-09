@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -35,7 +35,7 @@ C_FLOAT64 CEvaluationNodeFunction::rnormal(const C_FLOAT64 & mean, const C_FLOAT
 
 //static
 C_FLOAT64 CEvaluationNodeFunction::rgamma(const C_FLOAT64 & shape,
-                        const C_FLOAT64 & scale)
+    const C_FLOAT64 & scale)
 {
   return mpRandom->getRandomGamma(shape, scale);
 }
@@ -45,7 +45,6 @@ C_FLOAT64 CEvaluationNodeFunction::rpoisson(const C_FLOAT64 mu)
 {
   return mpRandom->getRandomPoisson(mu);
 }
-
 
 // static
 C_FLOAT64 CEvaluationNodeFunction::max(const C_FLOAT64 & x1, const C_FLOAT64 & x2)
@@ -1027,8 +1026,17 @@ ASTNode* CEvaluationNodeFunction::toAST(const CCopasiDataModel* pDataModel) cons
         break;
 
       case LOG10:
+      {
+        // log 10 needs two children, the log and the base
         node->setType(AST_FUNCTION_LOG);
+
+        ASTNode* logBase = new ASTNode();
+        logBase->setType(AST_INTEGER);
+        logBase->setValue(10);
+        node->addChild(logBase);
+
         break;
+      }
 
       case EXP:
         node->setType(AST_FUNCTION_EXP);
@@ -1199,7 +1207,7 @@ ASTNode* CEvaluationNodeFunction::toAST(const CCopasiDataModel* pDataModel) cons
         node->addChild(child->toAST(pDataModel));
         node->addChild(sibling->toAST(pDataModel));
       }
-        break;
+      break;
 
       case RPOISSON:
       {
@@ -1209,7 +1217,7 @@ ASTNode* CEvaluationNodeFunction::toAST(const CCopasiDataModel* pDataModel) cons
         const CEvaluationNode* child = dynamic_cast<const CEvaluationNode*>(this->getChild());
         node->addChild(child->toAST(pDataModel));
       }
-        break;
+      break;
 
       case MAX:
       {
