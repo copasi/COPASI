@@ -1,17 +1,14 @@
-/* Begin CVS Header
-$Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CExpat.h,v $
-$Revision: 1.26 $
-$Name:  $
-$Author: bergmann $
-$Date: 2012/05/14 05:56:57 $
-End CVS Header */
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2003 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -19,7 +16,7 @@ End CVS Header */
  * This file describes the C++ interface to the expat library used by
  * COPASI.
  *
- * Created for Copasi by Stefan Hoops 2003
+ * Created for COPASI by Stefan Hoops 2003
  * Copyright Stefan Hoops
  */
 
@@ -34,10 +31,10 @@ End CVS Header */
 
 /**
  * CExpatTemplate class.
- * The class CExpatTemplate is a demplate defining a C++ interface to
+ * The class CExpatTemplate is a template defining a C++ interface to
  * the expat library.
  *
- * Created for Copasi by Stefan Hoops 2003
+ * Created for COPASI by Stefan Hoops 2003
  */
 template <class CType>
 class CExpatTemplate
@@ -66,7 +63,7 @@ public:
    * Default constructor
    */
   CExpatTemplate():
-      mParser(NULL)
+    mParser(NULL)
   {}
 
   /**
@@ -119,6 +116,12 @@ public:
     //
 
     XML_SetUserData(mParser, (void *) this);
+
+    //
+    // Allow the handling of skipped entities, e.g. in XHTML
+    //
+    XML_UseForeignDTD(mParser, XML_TRUE);
+
     return true;
   }
 
@@ -325,6 +328,17 @@ public:
     assert(mParser != NULL);
     XML_SetExternalEntityRefHandler(mParser,
                                     fEnable ? externalEntityRefHandler : NULL);
+  }
+
+  /**
+   * Enable/Disable the skipped entity handler
+   * @param bool fEnable (Default: true)
+   */
+  void enableSkippedEntityHandler(bool fEnable = true)
+  {
+    assert(mParser != NULL);
+    XML_SetSkippedEntityHandler(mParser,
+                                fEnable ? skippedEntityHandler : NULL);
   }
 
   /**
@@ -586,6 +600,24 @@ public:
   {return false;}
 
   /**
+   * Skipped entity handler
+   * This is called in two situations:
+   * 1) An entity reference is encountered for which no declaration
+   *    has been read *and* this is not an error.
+   * 2) An internal entity reference is read, but not expanded, because
+   *    XML_SetDefaultHandler has been called.
+   * Note: skipped parameter entities in declarations and skipped general
+   *       entities in attribute values cannot be reported, because
+   *       the event would be out of sync with the reporting of the
+   *       declarations or attribute values
+   * @param const XML_Char *entityName
+   * @param int is_parameter_entity
+   */
+  void onSkippedEntityHandler(const XML_Char * /* entityName */,
+                              int /* is_parameter_entity */)
+  {return;}
+
+  /**
    * Unknown encoding handler
    * @param const XML_Char *pszName
    * @param XML_Encoding *pInfo
@@ -669,7 +701,7 @@ public:
   }
 
   /**
-   * Retreive the attribute value for the given name out of the list
+   * Retrieve the attribute value for the given name out of the list
    * of attributes. If the attribute is not found default is returned.
    * @param const std::string & name
    * @param const char ** attributes
@@ -829,12 +861,34 @@ protected:
   }
 
   /**
+   * Skipped entity handler
+   * This is called in two situations:
+   * 1) An entity reference is encountered for which no declaration
+   *    has been read *and* this is not an error.
+   * 2) An internal entity reference is read, but not expanded, because
+   *    XML_SetDefaultHandler has been called.
+   * Note: skipped parameter entities in declarations and skipped general
+   *       entities in attribute values cannot be reported, because
+   *       the event would be out of sync with the reporting of the
+   *       declarations or attribute values
+   * @param void *pUserData
+   * @param const XML_Char *entityName
+   * @param int is_parameter_entity
+   */
+  static void skippedEntityHandler(void *pUserData,
+                                   const XML_Char *entityName,
+                                   int is_parameter_entity)
+  {
+    CType *pThis = static_cast <CType *>((CExpatTemplate <CType> *) pUserData);
+    pThis->onSkippedEntityHandler(entityName, is_parameter_entity);
+  }
+
+  /**
    * Unknown encoding wrapper
    * @param void *pUserData
    * @param const XML_Char *pszName
    * @param XML_Encoding *pInfo
    */
-
   static int unknownEncodingHandler(void * pUserData,
                                     const XML_Char *pszName,
                                     XML_Encoding *pInfo)
@@ -1001,6 +1055,23 @@ public:
                                    const XML_Char *pszBase,
                                    const XML_Char *pszSystemID,
                                    const XML_Char *pszPublicID);
+
+  /**
+   * Skipped entity handler
+   * This is called in two situations:
+   * 1) An entity reference is encountered for which no declaration
+   *    has been read *and* this is not an error.
+   * 2) An internal entity reference is read, but not expanded, because
+   *    XML_SetDefaultHandler has been called.
+   * Note: skipped parameter entities in declarations and skipped general
+   *       entities in attribute values cannot be reported, because
+   *       the event would be out of sync with the reporting of the
+   *       declarations or attribute values
+   * @param const XML_Char *entityName
+   * @param int is_parameter_entity
+   */
+  virtual void onSkippedEntityHandler(const XML_Char * /* entityName */,
+                                      int /* is_parameter_entity */);
 
   /**
    * Unknown encoding handler

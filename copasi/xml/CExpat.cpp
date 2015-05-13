@@ -1,12 +1,14 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CExpat.cpp,v $
-   $Revision: 1.4 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:33:05 $
-   End CVS Header */
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2003 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -65,6 +67,10 @@ bool CExpat::onExternalEntityRef(const XML_Char * C_UNUSED(pszContext),
                                  const XML_Char * C_UNUSED(pszSystemID),
                                  const XML_Char * C_UNUSED(pszPublicID))
 {return false;}
+
+void CExpat::onSkippedEntityHandler(const XML_Char * /* entityName */,
+                                    int /* is_parameter_entity */)
+{return;}
 
 bool CExpat::onUnknownEncoding(const XML_Char * C_UNUSED(pszName),
                                XML_Encoding * C_UNUSED(pInfo))
