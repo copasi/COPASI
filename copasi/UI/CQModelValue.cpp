@@ -24,7 +24,7 @@
 #include "function/CExpression.h"
 #include "report/CKeyFactory.h"
 #include "report/CCopasiRootContainer.h"
-#include "utilities/CUnitParser.h"
+#include "UI/CQValidatorUnit.h"
 
 //UNDO framework classes
 #include "model/CReactionInterface.h"
@@ -164,6 +164,8 @@ void CQModelValue::init()
 
   mInitialExpressionValid = false;
   mpInitialExpressionEMW->mpExpressionWidget->setExpressionType(CQExpressionWidget::InitialExpression);
+
+  mpEditUnits->setValidator(new CQValidatorUnit(mpEditUnits));
 }
 
 void CQModelValue::destroy()
@@ -408,12 +410,7 @@ void CQModelValue::save()
 
 void CQModelValue::slotUnitChanged()
 {
-  if (mpModelValue != NULL)
-    {
-      std::istringstream buffer(TO_UTF8(mpEditUnits->text()));
-      CUnitParser Parser(&buffer);
-//      bool success = (Parser.yyparse() == 0);
-    }
+  std::cout << "slotUnitChanged() called" << std::endl;
 }
 
 /*!
