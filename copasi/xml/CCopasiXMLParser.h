@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -4863,6 +4863,23 @@ public:
    */
   virtual void onEndCdataSection();
 #endif // XXXX
+
+  /**
+   * Skipped entity handler
+   * This is called in two situations:
+   * 1) An entity reference is encountered for which no declaration
+   *    has been read *and* this is not an error.
+   * 2) An internal entity reference is read, but not expanded, because
+   *    XML_SetDefaultHandler has been called.
+   * Note: skipped parameter entities in declarations and skipped general
+   *       entities in attribute values cannot be reported, because
+   *       the event would be out of sync with the reporting of the
+   *       declarations or attribute values
+   * @param const XML_Char *entityName
+   * @param int is_parameter_entity
+   */
+  virtual void onSkippedEntityHandler(const XML_Char * entityName,
+                                      int is_parameter_entity);
 
   /**
    * Enable/Disable the character data handler
