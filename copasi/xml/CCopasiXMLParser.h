@@ -29,10 +29,11 @@
 #include <sstream>
 #include <vector>
 
-#include "xml/CExpat.h"
-#include "xml/CXMLHandler.h"
-#include "utilities/CCopasiVector.h"
-#include "report/CKeyFactory.h"
+#include "copasi/xml/CExpat.h"
+#include "copasi/xml/CXMLHandler.h"
+#include "copasi/xml/CCopasiXMLInterface.h"
+#include "copasi/utilities/CCopasiVector.h"
+#include "copasi/report/CKeyFactory.h"
 #include "copasi/model/CAnnotation.h"
 
 class CCompartment;
@@ -324,6 +325,11 @@ private:
    * The character data.
    */
   std::string mCharacterData;
+
+  /**
+   * The character data.
+   */
+  CCopasiXMLInterface::EncodingType mCharacterDataEncoding;
 
   /**
    * The element handler stack

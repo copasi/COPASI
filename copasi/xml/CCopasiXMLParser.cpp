@@ -200,12 +200,15 @@ void CCopasiXMLParser::TEMPLATEElement::end(const XML_Char *pszName)
 CCopasiXMLParser::CCopasiXMLParser(CVersion & version) :
   CExpat(),
   mCommon(),
+  mCharacterData(),
+  mCharacterDataEncoding(CCopasiXMLInterface::none),
   mElementHandlerStack(),
   mUnknownElement(*this, this->mCommon),
   mCharacterDataElement(*this, this->mCommon),
   mListOfUnsupportedAnnotationsElement(*this, this->mCommon),
   mCommentElement(*this, this->mCommon),
   mMiriamAnnotationElement(*this, this->mCommon)
+  // Attributes
 {
   create();
 
@@ -320,7 +323,10 @@ void CCopasiXMLParser::enableCharacterDataHandler(bool fEnable)
 void CCopasiXMLParser::onCharacterData(const XML_Char *pszData,
                                        int nLength)
 {
-  mCharacterData.append(pszData, nLength);
+  std::string Data;
+  Data.append(pszData, nLength);
+
+  mCharacterData += CCopasiXMLInterface::encode(Data, mCharacterDataEncoding);
 }
 
 std::string CCopasiXMLParser::getCharacterData(const std::string & toBeStripped,
@@ -2011,6 +2017,7 @@ void CCopasiXMLParser::CommentElement::start(const XML_Char *pszName,
         mLevel = 0;
         mParser.enableCharacterDataHandler();
         mParser.enableSkippedEntityHandler();
+        mParser.mCharacterDataEncoding = CCopasiXMLInterface::standard;
 
         mElementEmpty.push(false);
         break;
@@ -2077,6 +2084,8 @@ void CCopasiXMLParser::CommentElement::end(const XML_Char *pszName)
         }
 
         mParser.enableSkippedEntityHandler(false);
+        mParser.mCharacterDataEncoding = CCopasiXMLInterface::none;
+
         mParser.popElementHandler();
         mCurrentElement = START_ELEMENT;
         mElementEmpty.pop();
