@@ -20,10 +20,6 @@ class CQValidatorUnit: public CQValidator< QLineEdit >
 public:
   CQValidatorUnit(QLineEdit *parent, const char * name = 0);
   virtual State validate(QString & input, int & pos) const;
-  virtual CUnit * getUnit();
-
-protected:
-  CUnit mUnit;
 };
 
 #endif

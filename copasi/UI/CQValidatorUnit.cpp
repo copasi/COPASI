@@ -8,8 +8,7 @@
 #include "CQValidatorUnit.h"
 
 CQValidatorUnit::CQValidatorUnit(QLineEdit * parent, const char * name):
-  CQValidator< QLineEdit >(parent, &QLineEdit::text, name),
-  mUnit()
+  CQValidator< QLineEdit >(parent, &QLineEdit::text, name)
 {
 }
 
@@ -35,9 +34,4 @@ QValidator::State CQValidatorUnit::validate(QString & input, int & pos) const
     }
 
   return CurrentState;
-}
-
-CUnit * CQValidatorUnit::getUnit()
-{
-  return &mUnit;
 }

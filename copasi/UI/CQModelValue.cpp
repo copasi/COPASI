@@ -408,11 +408,6 @@ void CQModelValue::save()
   mChanged = false;
 }
 
-void CQModelValue::slotUnitChanged()
-{
-  std::cout << "slotUnitChanged() called" << std::endl;
-}
-
 /*!
     If the initial expression is chosen to be used by checking the mpBoxUseInitialExpression check box being represented by
     the boolean parameter useInitialAssignment (true if checked; false otherwise), COPASI will show the Initial Expression

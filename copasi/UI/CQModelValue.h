@@ -65,7 +65,6 @@ private slots:
   void slotBtnNew();
   void slotBtnCopy();
   void slotBtnDelete();
-  void slotUnitChanged();
   void slotTypeChanged(int type);
   void slotExpressionValid(bool valid);
   void slotInitialExpressionValid(bool valid);
