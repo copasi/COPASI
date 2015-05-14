@@ -37,10 +37,11 @@ public:
   //http://physics.nist.gov/cuu/Units/prefixes.html
   enum Scale
   {
-    // SCALE    [afpumcdhkMGTP]
+    // SCALE    [afpnumcdhkMGTP]
     atto = -18,
     femto = -15,
     pico = -12,
+    nano = -9,
     micro = -6,
     milli = -3,
     centi = -2,

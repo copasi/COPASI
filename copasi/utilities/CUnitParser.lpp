@@ -30,7 +30,7 @@
 
 %}
 
-SCALE    [afpumcdhkMGTP]
+SCALE    [afpnumcdhkMGTP]
 KIND     ([mgsAK#]|cd)
 DIGIT    [0-9]
 
