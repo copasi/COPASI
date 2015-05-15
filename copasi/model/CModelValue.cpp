@@ -72,7 +72,8 @@ CModelEntity::CModelEntity(const std::string & name,
   mpInitialExpression(NULL),
   mStatus(FIXED),
   mUsed(false),
-  mpModel(NULL)
+  mpModel(NULL),
+  mpUnit(NULL)
 {
   mKey = CCopasiRootContainer::getKeyFactory()->add(getObjectType(), this);
 
@@ -88,11 +89,12 @@ CModelEntity::CModelEntity(const CModelEntity & src,
   mValue(src.mValue),
   mIValue(src.mIValue),
   mRate(src.mRate),
-  mpExpression(src.mpExpression ? new CExpression(*src.mpExpression, this) : NULL),
-  mpInitialExpression(src.mpInitialExpression ? new CExpression(*src.mpInitialExpression, this) : NULL),
+  mpExpression(src.mpExpression != NULL ? new CExpression(*src.mpExpression, this) : NULL),
+  mpInitialExpression(src.mpInitialExpression != NULL ? new CExpression(*src.mpInitialExpression, this) : NULL),
   mStatus(FIXED),
   mUsed(false),
-  mpModel(NULL)
+  mpModel(NULL),
+  mpUnit(src.mpUnit != NULL ? new CUnit(*src.mpUnit, this) : NULL)
 {
   mKey = CCopasiRootContainer::getKeyFactory()->add(getObjectType(), this);
 
@@ -110,6 +112,7 @@ CModelEntity::~CModelEntity()
   // After the above call we definitely own the data and
   // therefore must destroy them.
 
+  pdelete(mpUnit);
   // since the expressions now have the model entity as parent, they should
   // automatically be destroyed be the destructor of CCopasiContainer
   //pdelete(mpExpression);
@@ -353,6 +356,18 @@ std::string CModelEntity::getInitialExpression() const
 
   mpInitialExpression->updateInfix();
   return mpInitialExpression->getInfix();
+}
+
+// virtual
+bool CModelEntity::setUnit(const CUnit & unit)
+{
+  return false;
+}
+
+// virtual
+const CUnit & CModelEntity::getUnit() const
+{
+  return *mpUnit;
 }
 
 /**
@@ -624,6 +639,21 @@ CModelValue::~CModelValue()
 
 void CModelValue::initObjects()
 {}
+
+// virtual
+bool CModelValue::setUnit(const CUnit & unit)
+{
+  if (mpUnit == NULL)
+    {
+      mpUnit = new CUnit(unit);
+    }
+  else
+    {
+      *mpUnit = unit;
+    }
+
+  return true;
+}
 
 std::ostream & operator<<(std::ostream &os, const CModelValue & d)
 {

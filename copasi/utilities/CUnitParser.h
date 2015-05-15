@@ -46,7 +46,7 @@ public:
 
   virtual int yyparse();
 
-  CUnit * getUnit() const;
+  const CUnit & getUnit() const;
 
 protected:
   void correctErrorPosition();

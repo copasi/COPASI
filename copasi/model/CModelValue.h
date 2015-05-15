@@ -26,6 +26,8 @@
 #include "copasi/model/CAnnotation.h"
 #include "copasi/report/CCopasiContainer.h"
 
+#include "copasi/utilities/CUnit.h"
+
 class CModel;
 class CExpression;
 
@@ -273,6 +275,19 @@ public:
   std::string getInitialExpression() const;
 
   /**
+   * Set the unit.
+   * @param const CUnit & unit
+   * @return bool success
+   */
+  virtual bool setUnit(const CUnit & unit);
+
+  /**
+   * Get the unit.
+   * @return const CUnit &
+   */
+  virtual const CUnit & getUnit() const;
+
+  /**
    * Set whether the model entity is used during simulation
    * @param const bool & used
    */
@@ -327,6 +342,11 @@ protected:
    * Optional initial expression
    */
   CExpression * mpInitialExpression;
+
+  /**
+   * Pointer to the Unit of the model entity.
+   */
+  CUnit * mpUnit;
 
 private:
   /**
@@ -427,6 +447,13 @@ public:
    *  Destructor.
    */
   ~CModelValue();
+
+  /**
+   * Set the unit.
+   * @param const CUnit & unit
+   * @return bool success
+   */
+  virtual bool setUnit(const CUnit & unit);
 
   /**
    * insert operator

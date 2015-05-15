@@ -11,10 +11,12 @@ CUnitParserBase::CUnitParserBase()
 {}
 
 CUnitParserBase::~CUnitParserBase()
-{}
+{
+  pdelete(mData.pUnit);
+}
 
-CUnit * CUnitParserBase::getUnit() const
-{return mData.pUnit;}
+const CUnit & CUnitParserBase::getUnit() const
+{return *mData.pUnit;}
 
 void CUnitParserBase::correctErrorPosition()
 {return;}
