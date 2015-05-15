@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -210,6 +210,36 @@ void ConverterASTNode::setChildren(List* children)
   this->mChildren = children;
 };
 
+void fixNaryRelational(ASTNode& node)
+{
+  if (!node.isRelational()) return;
+
+  if (node.getNumChildren() == 2) return;
+
+  ASTNodeType_t type = node.getType();
+  std::vector<ASTNode*> nodes;
+  node.setType(AST_LOGICAL_AND);
+
+  for (int i = 1; i < node.getNumChildren(); ++i)
+    {
+      ASTNode *current = new ASTNode(type);
+      current->addChild(node.getChild(i - 1)->deepCopy());
+      current->addChild(node.getChild(i)->deepCopy());
+      nodes.push_back(current);
+    }
+
+  while (node.getNumChildren() > 0)
+    node.removeChild(0);
+
+  std::vector<ASTNode*>::iterator it = nodes.begin();
+
+  while (it != nodes.end())
+    {
+      node.addChild(*it);
+      ++it;
+    }
+}
+
 /**
  * Constructor that makes a ConverterASTNode from an ASTNode.
  */
@@ -224,6 +254,20 @@ ConverterASTNode::ConverterASTNode(const ASTNode &templ): ASTNode(templ.getType(
     {
       this->mExponent = templ.getExponent();
       this->mReal = templ.getMantissa();
+    }
+
+  if (templ.getNumChildren() > 2 && (
+        this->getType() == AST_RELATIONAL_EQ ||
+        this->getType() == AST_RELATIONAL_NEQ ||
+        this->getType() == AST_RELATIONAL_GEQ ||
+        this->getType() == AST_RELATIONAL_GT ||
+        this->getType() == AST_RELATIONAL_LEQ ||
+        this->getType() == AST_RELATIONAL_LT))
+    {
+      // reduce to binary
+      //const_cast<ASTNode&>(templ).reduceToBinary();
+      fixNaryRelational(const_cast<ASTNode&>(templ));
+      ASTNode::setType(AST_LOGICAL_AND);
     }
 
   if (this->getType() == AST_PLUS || this->getType() == AST_MINUS || this->getType() == AST_TIMES || this->getType() == AST_DIVIDE || this->getType() == AST_POWER)
