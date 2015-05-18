@@ -220,8 +220,12 @@ if (ENABLE_FLEX_BISON)
   set(BISON_EXECUTABLE "${COPASI_SOURCE_DIR}/admin/yacc.sh")
 endif (ENABLE_FLEX_BISON)
 
-find_package(OpenGL)
-
+option(ENABLE_GPROF "Enable comiling and linking for gprof analysis." OFF)
+if (ENABLE_GPROF)
+  set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-pg")
+  set(CMAKE_EXE_LINKER_FLAGS "-pg")
+endif (ENABLE_GPROF)
+  
 if ( NOT CLAPACK_FOUND )
   find_package(CLAPACK REQUIRED)
 endif ()
@@ -282,6 +286,17 @@ if(UNIX)
       endif()
     endif()
 
+    # Since we are encountering errors with the use of libc++ on OSX
+    # this option allows to override which stdlib to use (needed for R 
+    # bindings on mavericks / yosemite ...)
+    if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+      option(CLANG_USE_STDLIB "Use libstdc++ rather than libc++" OFF)
+      if (CLANG_USE_STDLIB)
+        SET( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libstdc++" )
+      endif()
+    endif()
+
+
     set(CMAKE_OSX_ARCHITECTURES "${CMAKE_OSX_ARCHITECTURES}" CACHE STRING
       "A semicolon-separated list of build architectures to be used.")
     if(ENABLE_UNIVERSAL)
@@ -329,6 +344,9 @@ if (WIN32 AND NOT CYGWIN)
 endif()
 
 if(BUILD_GUI)
+  FIND_LIBRARY(OPENGL_gl_LIBRARY NAMES GL PATHS /usr/lib/x86_64-linux-gnu/mesa)
+  find_package(OpenGL REQUIRED)
+  
   # find Qt4
   find_package(Qt4 4.7.0 REQUIRED QtCore QtOpenGL QtGui QtXml QtWebKit QtNetwork)
   # check for qwt, TODO check if the version is OK
