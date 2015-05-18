@@ -229,7 +229,10 @@ void fixNaryRelational(ASTNode& node)
     }
 
   while (node.getNumChildren() > 0)
-    node.removeChild(0);
+    {
+      delete node.getChild(0);
+      node.removeChild(0);
+    }
 
   std::vector<ASTNode*>::iterator it = nodes.begin();
 
