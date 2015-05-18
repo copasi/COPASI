@@ -269,7 +269,7 @@ void CQModelValue::load()
   if (mpModelValue == NULL) return;
 
   // Units
-  mpEditUnits->setText("m");
+  mpEditUnits->setText(FROM_UTF8(mpModelValue->getUnit().getDefinition()));
 
   // Type
   mpComboBoxType->setCurrentIndex(mpComboBoxType->findText(FROM_UTF8(CModelEntity::StatusName[mpModelValue->getStatus()])));
