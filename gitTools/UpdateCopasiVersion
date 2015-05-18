@@ -93,7 +93,7 @@ next=45
 
 compatibility={
 
-for b in `sort $$`; do
+for b in `sort -g $$`; do
   # Remove Windows line ending
   b=$((${b//$'\r'}))
 
