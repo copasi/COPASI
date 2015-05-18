@@ -7,16 +7,16 @@
 
 #include "CUnitParser.h"
 
-CUnitParserBase::CUnitParserBase()
+CUnitParserBase::CUnitParserBase():
+  mPosition(0),
+  mUnit()
 {}
 
 CUnitParserBase::~CUnitParserBase()
-{
-  pdelete(mData.pUnit);
-}
+{}
 
-const CUnit & CUnitParserBase::getUnit() const
-{return *mData.pUnit;}
+const std::set< CUnitComponent > & CUnitParserBase::getComponents() const
+{return mUnit.getComponents();}
 
 void CUnitParserBase::correctErrorPosition()
 {return;}

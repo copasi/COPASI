@@ -4,13 +4,16 @@
 // All rights reserved.
 
 #include <math.h>
+#include <algorithm>
 
 #include "copasi/utilities/CUnit.h"
+#include "copasi/utilities/CUnitParser.h"
 #include "copasi/report/CKeyFactory.h"
 #include "copasi/report/CCopasiRootContainer.h"
 #include "copasi/model/CModel.h"
 
-#include <algorithm>
+// static
+CUnit CUnit::EmptyUnit;
 
 // static
 C_FLOAT64 CUnit::Avogadro(6.02214129e23); // http://physics.nist.gov/cgi-bin/cuu/Value?na (Wed Jan 29 18:33:36 EST 2014)
@@ -41,32 +44,21 @@ CUnit::CUnit(const std::string & name,
              const CCopasiContainer * pParent):
   CCopasiContainer(name, pParent, "Unit"),
   mSymbol("none"),
-  mKey(),
+  mDefinition(),
   mComponents()
-{
-  setup();
-}
+{}
 
 // copy constructor
 CUnit::CUnit(const CUnit & src,
              const CCopasiContainer * pParent):
   CCopasiContainer(src, pParent),
   mSymbol(src.mSymbol),
-  mKey(),
+  mDefinition(),
   mComponents(src.mComponents)
-{
-  setup();
-}
+{}
 
 CUnit::~CUnit()
-{
-  CCopasiRootContainer::getKeyFactory()->remove(mKey);
-}
-
-void CUnit::setup()
-{
-  mKey = CCopasiRootContainer::getKeyFactory()->add("Unit", this);
-}
+{}
 
 void CUnit::fromEnum(VolumeUnit volEnum)
 {
@@ -332,7 +324,7 @@ void CUnit::fromEnum(QuantityUnit quantityEnum)
   addComponent(tmpComponent);
 }
 
-void CUnit::setSymbol(std::string symbol)
+void CUnit::setSymbol(const std::string & symbol)
 {
   mSymbol = symbol;
 }
@@ -340,6 +332,34 @@ void CUnit::setSymbol(std::string symbol)
 std::string CUnit::getSymbol() const
 {
   return mSymbol;
+}
+
+bool CUnit::setDefinition(const std::string & definition)
+{
+  mDefinition = definition;
+
+  return compile();
+}
+
+bool CUnit::compile()
+{
+  // parse the definition into a linked node tree
+  std::istringstream buffer(mDefinition);
+  CUnitParser Parser(&buffer);
+
+  bool success = (Parser.yyparse() == 0);
+
+  if (success)
+    {
+      mComponents = Parser.getComponents();
+    }
+
+  return success;
+}
+
+std::string CUnit::getDefinition() const
+{
+  return mDefinition;
 }
 
 // See if the component units cancel (divide to 1).
@@ -353,7 +373,7 @@ bool CUnit::isDimensionless() const
   if (mSymbol != "dimensionless" || mSymbol != "")
     return false;
 
-  std::vector< CUnitComponent >::const_iterator it = mComponents.begin();
+  std::set< CUnitComponent >::const_iterator it = mComponents.begin();
 
   double reduction = 1;
 
@@ -362,59 +382,43 @@ bool CUnit::isDimensionless() const
       reduction *= pow((double)(*it).getKind(), (*it).getExponent());
     }
 
-  // If the vector is empy, it will loop 0 times, and the reduction
+  // If the vector is empty, it will loop 0 times, and the reduction
   // will remain ==1 (i.e. dimensionless if no components)
   return reduction == 1;
 }
 
 void CUnit::addComponent(const CUnitComponent & component)
 {
-  mComponents.push_back(component);
+  std::set< CUnitComponent >::iterator it = mComponents.find(component);
+
+  if (it != mComponents.end())
+    {
+      CUnitComponent * pComponent = const_cast< CUnitComponent * >(&*it);
+
+      pComponent->setExponent(pComponent->getExponent() + component.getExponent());
+      pComponent->setScale(pComponent->getScale() + component.getScale());
+      pComponent->setMultiplier(pComponent->getMultiplier() * component.getMultiplier());
+    }
+  else
+    {
+      mComponents.insert(component);
+    }
 }
 
-bool CUnit::simplifyComponents()
+const std::set< CUnitComponent > & CUnit::getComponents() const
 {
-  if (mComponents.size() < 2)
-    return false;
-
-  std::vector< CUnitComponent > replacementVector;
-  std::vector< CUnitComponent >::const_iterator it = mComponents.begin();
-  CUnitComponent tempComponent;
-  bool didSimplify = false;
-
-  std::sort(mComponents.begin(), mComponents.end()); // make same Kinds adjacent
-
-  for (; it != mComponents.end(); it++)
-    {
-      tempComponent = (*it);
-
-      while (it != mComponents.end() && tempComponent.getKind() == (*(it + 1)).getKind())
-        {
-          tempComponent.setExponent((tempComponent.getExponent()) + (*(it + 1)).getExponent());
-          tempComponent.setScale(tempComponent.getScale() + (*(it + 1)).getScale());
-          tempComponent.setMultiplier(tempComponent.getMultiplier() * (*(it + 1)).getMultiplier());
-          didSimplify = true;
-          it++;
-        }
-
-      replacementVector.push_back(tempComponent);
-    }
-
-  if (didSimplify)
-    {
-      mComponents = replacementVector;
-    }
-
-  return didSimplify;
+  return mComponents;
 }
 
 CUnit & CUnit::exponentiate(double exp)
 {
-  std::vector< CUnitComponent >::iterator it = mComponents.begin();
+  std::set< CUnitComponent >::iterator it = mComponents.begin();
 
   for (; it != mComponents.end(); it++)
     {
-      it->setExponent(it->getExponent() * exp);
+      CUnitComponent * pComponent = const_cast< CUnitComponent * >(&*it);
+
+      pComponent->setExponent(pComponent->getExponent() * exp);
     }
 
   return *this;
@@ -459,13 +463,48 @@ std::string CUnit::prefixFromScale(int scale)
     }
 }
 
-// Putting units next to each other implies multipying them.
+// Putting units next to each other implies multiplying them.
 CUnit CUnit::operator*(const CUnit & rhs) const
 {
+  std::set< CUnitComponent >::const_iterator it = rhs.mComponents.begin();
+  std::set< CUnitComponent >::const_iterator end = rhs.mComponents.end();
+
   CUnit combined_unit = *this; // Make a copy of the first CUnit
 
-  // Insert the components of the second unit after the ones from the first one.
-  combined_unit.mComponents.insert(combined_unit.mComponents.end(), rhs.mComponents.begin(), rhs.mComponents.end());
+  for (; it != end; ++it)
+    {
+      combined_unit.addComponent(*it);
+    }
 
   return combined_unit; // The calling code might want to call simplifyComponents() on the returned unit.
+}
+
+bool CUnit::operator==(const CUnit & rhs) const
+{
+  return (mSymbol == rhs.mSymbol &&
+          mDefinition == rhs.mDefinition);
+}
+
+bool CUnit::isEquivalent(const CUnit & rhs) const
+{
+  if (mComponents.size() != rhs.mComponents.size())
+    {
+      return false;
+    }
+
+  std::set< CUnitComponent >::const_iterator it = mComponents.begin();
+  std::set< CUnitComponent >::const_iterator end = mComponents.end();
+  std::set< CUnitComponent >::const_iterator itRhs = rhs.mComponents.begin();
+
+  for (; it != end; ++it, ++itRhs)
+    {
+      if (*it == *itRhs)
+        {
+          continue;
+        }
+
+      return false;
+    }
+
+  return true;
 }

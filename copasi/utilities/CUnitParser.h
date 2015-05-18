@@ -46,7 +46,7 @@ public:
 
   virtual int yyparse();
 
-  const CUnit & getUnit() const;
+  const std::set< CUnitComponent > & getComponents() const;
 
 protected:
   void correctErrorPosition();
@@ -61,8 +61,8 @@ public:
     std::string text;
   };
 protected:
-  Data mData;
 
+  CUnit mUnit;
   unsigned C_INT32 mPosition;
 };
 

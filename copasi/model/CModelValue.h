@@ -279,6 +279,13 @@ public:
    * @param const CUnit & unit
    * @return bool success
    */
+  virtual bool setUnitDefinition(const std::string & unitDefinition);
+
+  /**
+   * Set the unit.
+   * @param const CUnit & unit
+   * @return bool success
+   */
   virtual bool setUnit(const CUnit & unit);
 
   /**
@@ -447,6 +454,13 @@ public:
    *  Destructor.
    */
   ~CModelValue();
+
+  /**
+   * Set the unit.
+   * @param const CUnit & unit
+   * @return bool success
+   */
+  virtual bool setUnitDefinition(const std::string & unitDefinition);
 
   /**
    * Set the unit.

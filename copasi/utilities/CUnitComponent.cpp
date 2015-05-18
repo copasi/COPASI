@@ -1,4 +1,4 @@
-// Copyright (C) 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2014 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -70,5 +70,13 @@ void CUnitComponent::setExponent(double exponent)
 
 bool CUnitComponent::operator<(const CUnitComponent& rightSide) const
 {
-  return mKind < rightSide.getKind();
+  return mKind < rightSide.mKind;
+}
+
+bool CUnitComponent::operator==(const CUnitComponent& rightSide) const
+{
+  return (mKind == rightSide.mKind &&
+          mExponent == rightSide.mExponent &&
+          mScale == rightSide.mScale &&
+          mMultiplier == mMultiplier);
 }

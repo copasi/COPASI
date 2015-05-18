@@ -19,8 +19,8 @@
 
 class CUnit : public CCopasiContainer
 {
-
 public:
+  static CUnit EmptyUnit;
 
   static C_FLOAT64 Avogadro;
 
@@ -83,24 +83,28 @@ public:
   void fromEnum(TimeUnit timeEnum);
   void fromEnum(QuantityUnit quantityEnum);
 
-  void setSymbol(std::string symbol);
+  void setSymbol(const std::string & symbol);
   std::string getSymbol() const;
+
+  bool setDefinition(const std::string & definition);
+  std::string getDefinition() const;
+
   bool isDimensionless() const;
   void addComponent(const CUnitComponent & component);
-  bool simplifyComponents();
+  const std::set< CUnitComponent > & getComponents() const;
+
+  bool compile();
+
   CUnit & exponentiate(double exp);
   std::string prefixFromScale(int scale);
   CUnit operator*(const CUnit & rhs) const;
-
+  bool operator==(const CUnit & rhs) const;
+  bool isEquivalent(const CUnit & rhs) const;
 private:
 
   std::string mSymbol;
-  std::string mKey;
-  std::vector < CUnitComponent > mComponents;
-
-  void setup(); // initilizations common to all constructors
-
-//  std::string getSimplifiedComponents const(); TODO
+  std::string mDefinition;
+  std::set< CUnitComponent > mComponents;
 };
 
 #endif // CUNIT_H

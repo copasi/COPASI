@@ -359,6 +359,12 @@ std::string CModelEntity::getInitialExpression() const
 }
 
 // virtual
+bool CModelEntity::setUnitDefinition(const std::string & unitDefinition)
+{
+  return false;
+}
+
+// virtual
 bool CModelEntity::setUnit(const CUnit & unit)
 {
   return false;
@@ -367,6 +373,11 @@ bool CModelEntity::setUnit(const CUnit & unit)
 // virtual
 const CUnit & CModelEntity::getUnit() const
 {
+  if (mpUnit == NULL)
+    {
+      return CUnit::EmptyUnit;
+    }
+
   return *mpUnit;
 }
 
@@ -639,6 +650,17 @@ CModelValue::~CModelValue()
 
 void CModelValue::initObjects()
 {}
+
+// virtual
+bool CModelValue::setUnitDefinition(const std::string & unitDefinition)
+{
+  if (mpUnit == NULL)
+    {
+      mpUnit = new CUnit();
+    }
+
+  return mpUnit->setDefinition(unitDefinition);
+}
 
 // virtual
 bool CModelValue::setUnit(const CUnit & unit)

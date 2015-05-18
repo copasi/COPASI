@@ -3554,7 +3554,6 @@ std::string CModel::getTimeUnitsDisplayString() const
 CUnit CModel::getFrequencyUnit() const
 {
   CUnit frequencyUnit = CUnit(getTimeUnit());
-  frequencyUnit.simplifyComponents();
   frequencyUnit.exponentiate(-1);
   return frequencyUnit;
 }
