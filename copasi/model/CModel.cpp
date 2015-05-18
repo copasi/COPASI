@@ -493,6 +493,11 @@ bool CModel::compile()
 
 finish:
 
+  // Since we have applied the pivot to the stoichiometry matrix and the species
+  // we do not need them any longer. In fact it is detrimental if other functions rely
+  // on consistency between the stoichiometry matrix, reduced stoichiometry matrix and the Link matrix..
+  mL.clearPivoting();
+
   if (CCopasiObject::smpRenameHandler != NULL)
     {
       CCopasiObject::smpRenameHandler->setEnabled(true);
@@ -1127,7 +1132,7 @@ const CCopasiVector < CMoiety > & CModel::getMoieties() const
 const CLinkMatrixView & CModel::getL() const
 {CCHECK return mLView;}
 
-const CMatrix< C_FLOAT64 > & CModel::getL0() const
+const CLinkMatrix & CModel::getL0() const
 {return mL;}
 
 const CStateTemplate & CModel::getStateTemplate() const

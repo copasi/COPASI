@@ -1,4 +1,4 @@
-// Copyright (C) 2013 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2013 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -107,9 +107,8 @@ protected:
     DISCRETE
   };
 
-  enum MethodUsed
+  enum IntergrationType
   {
-    STOCHASTIC,
     DETERMINISTIC,
     HYBRID
   };
@@ -212,13 +211,13 @@ protected:
   /**
    * Check whether a function is fast or not.
    */
-  void setupReactionFlags();
+  void partitionSystem();
 
   /**
    * Setup mMethod, switching between Deterministic Method and
    * Hybrid Method
    */
-  void setupMethod();
+  void determineIntegrationType();
 
   //================Function for ODE45================
 public:
@@ -288,11 +287,6 @@ protected:
    */
   void fireSlowReaction4Hybrid();
 
-  /**
-   * Clear mRoots and set the id-th equal to 1
-   */
-  void setRoot(const size_t id);
-
   //================Function for Stoichastic Part================
 protected:
 
@@ -355,7 +349,7 @@ private:
    * 1 == Deterministic
    * 2 == Hybrid
    */
-  MethodUsed mMethod;
+  IntergrationType mIntegrationType;
 
   //================Attributes for State================
   /**
@@ -399,9 +393,12 @@ private:
   Data mData;
 
   /**
-   *  Pointer to the array with left hand side values.
+   * Vector of integration variables
    */
-  C_FLOAT64 * mY;
+  CVector< C_FLOAT64 > mY;
+  const C_FLOAT64 * mpYdot;
+  size_t mCountContainerVariables;
+  CObjectInterface::UpdateSequence mSpeciesRateUpdateSequence;
 
   /**
    * state of ODE45, indicating what to do next in the step part
@@ -415,11 +412,17 @@ private:
   SystemStatus mSysStatus;
 
   /**
-   * The propensities of the stochastic reactions.
+   * The variables handling the integrated propensities of the stochastic reactions.
    */
-  CVector <C_FLOAT64> mAmu;
+  CVectorCore< C_FLOAT64 > mAmuVariables;
+  C_FLOAT64 *mpA0;
 
-  C_FLOAT64 mAmuSum;
+  CVector< C_FLOAT64 * > mAmuPointers;
+  C_FLOAT64 mA0;
+
+  CVector< C_FLOAT64 * > mFluxPointers;
+
+  CObjectInterface::UpdateSequence mPropensitiesUpdateSequence;
 
   //================Attributes for Root================
   /**
@@ -461,26 +464,13 @@ private:
   /**
    * Value of Roots
    */
-  CVectorCore< C_FLOAT64 > *mpRootValue;
-
-  C_FLOAT64 * mpRT;
+  CVectorCore< C_FLOAT64 > mRootValues;
 
   //================Stochastic Related================
   /**
    * The random number generator.
    */
   CRandom * mpRandomGenerator;
-
-  /**
-   * Specifies if the mRandomSeed should be used.
-   * otherwise a randomly chosen seed is used.
-   */
-  bool mUseRandomSeed;
-
-  /**
-   *  The random seed to use.
-   */
-  unsigned C_INT32 mRandomSeed;
 
   //========System Related========
   /**

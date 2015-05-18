@@ -20,7 +20,17 @@
 CLinkMatrix::CLinkMatrix():
   CMatrix< C_FLOAT64 >(),
   mRowPivots(),
+  mPivotInverse(),
+  mSwapVector(),
   mIndependent(0)
+{}
+
+CLinkMatrix::CLinkMatrix(const CLinkMatrix & src):
+  CMatrix< C_FLOAT64 >(src),
+  mRowPivots(src.mRowPivots),
+  mPivotInverse(src.mPivotInverse),
+  mSwapVector(src.mSwapVector),
+  mIndependent(src.mIndependent)
 {}
 
 CLinkMatrix::~CLinkMatrix()
@@ -322,6 +332,13 @@ bool CLinkMatrix::build(const CMatrix< C_FLOAT64 > & matrix, size_t maxRank)
         }
     }
 
+  completePivotInformation();
+
+  return success;
+}
+
+void CLinkMatrix::completePivotInformation()
+{
   // We need to convert the pivot vector into a swap vector.
   mPivotInverse.resize(mRowPivots.size());
 
@@ -362,8 +379,20 @@ bool CLinkMatrix::build(const CMatrix< C_FLOAT64 > & matrix, size_t maxRank)
       *pFromColumn = *pToColumn;
       *pToColumn = tmp;
     }
+}
 
-  return success;
+void CLinkMatrix::clearPivoting()
+{
+  size_t * pPivot = mRowPivots.array();
+  size_t * pPivotEnd = pPivot + mRowPivots.size();
+  size_t Index = 0;
+
+  for (; pPivot != pPivotEnd; ++pPivot, ++Index)
+    {
+      *pPivot = Index;
+    }
+
+  completePivotInformation();
 }
 
 bool CLinkMatrix::rightMultiply(const C_FLOAT64 & alpha,

@@ -323,10 +323,10 @@ void CQMiriamWidget::slotCreatedDTChanged(QDateTime newDT)
     }
 }
 
-bool CQMiriamWidget::enterProtected()
+void
+CQMiriamWidget::showEvent(QShowEvent * event)
 {
-  if (mKey == "")
-    return false;
+  if (!isVisible() || mKey.empty()) return;
 
   CCopasiMessage::clearDeque();
 
@@ -379,9 +379,11 @@ bool CQMiriamWidget::enterProtected()
     {
       switch (CCopasiMessage::getHighestSeverity())
         {
-          case CCopasiMessage::WARNING:
-            CQMessageBox::information(this, "Information", FROM_UTF8(CCopasiMessage::getAllMessageText()));
-            break;
+            // we decided to not display the warning about not recognized terms
+            // at the last meeting
+            // case CCopasiMessage::WARNING:
+            //  CQMessageBox::information(this, "Information", FROM_UTF8(CCopasiMessage::getAllMessageText()));
+            //  break;
 
           case CCopasiMessage::ERROR:
           case CCopasiMessage::EXCEPTION:
@@ -394,7 +396,11 @@ bool CQMiriamWidget::enterProtected()
 
       CCopasiMessage::clearDeque();
     }
+}
 
+bool CQMiriamWidget::enterProtected()
+{
+  // loading is now deferred until the window is made visible
   return true;
 }
 

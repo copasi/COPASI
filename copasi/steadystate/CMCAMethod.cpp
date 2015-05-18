@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -39,6 +39,8 @@ CMCAMethod::CMCAMethod(const CCopasiContainer * pParent,
                        const CTaskEnum::Task & taskType):
   CCopasiMethod(pParent, methodType, taskType),
   mpModel(NULL),
+  mpUseReeder(NULL),
+  mpUseSmallbone(NULL),
   mFactor(1.0e-9),
   mSteadyStateResolution(1.0e-9),
   mSSStatus(CSteadyStateMethod::notFound),
@@ -55,6 +57,8 @@ CMCAMethod::CMCAMethod(const CMCAMethod & src,
                        const CCopasiContainer * pParent):
   CCopasiMethod(src, pParent),
   mpModel(NULL),
+  mpUseReeder(NULL),
+  mpUseSmallbone(NULL),
   mFactor(src.mFactor),
   mSteadyStateResolution(src.mSteadyStateResolution),
   mSSStatus(CSteadyStateMethod::notFound),
@@ -139,6 +143,9 @@ void CMCAMethod::initializeParameter()
       setValue("Modulation Factor", *pParm->getValue().pUDOUBLE);
       removeParameter("MCA.ModulationFactor");
     }
+
+  mpUseReeder = assertParameter("Use Reeder", CCopasiParameter::BOOL, true)->getValue().pBOOL;
+  mpUseSmallbone = assertParameter("Use Smallbone", CCopasiParameter::BOOL, true)->getValue().pBOOL;
 }
 
 bool CMCAMethod::elevateChildren()
@@ -298,12 +305,13 @@ void CMCAMethod::calculateUnscaledElasticities(C_FLOAT64 /* res */)
   mpModel->updateSimulatedValues(false);
 }
 
-int CMCAMethod::calculateUnscaledConcentrationCC()
+bool CMCAMethod::calculateUnscaledConcentrationCC()
 {
   assert(mpModel);
 
   // Calculate RedStoi * mUnscaledElasticities;
   // Note the columns of mUnscaledElasticities must be reordered
+
   mLinkZero.doColumnPivot(mUnscaledElasticities);
 
   // Initialize the unscaled concentration control coefficients to 0.0
@@ -344,7 +352,7 @@ int CMCAMethod::calculateUnscaledConcentrationCC()
   // LU decomposition of aux2 (for inversion)
   dgetrf_(&M, &M, aux2.array(), &M, Ipiv.array(), &info);
 
-  if (info != 0) return MCA_SINGULAR;
+  if (info != 0) return false;
 
   C_INT lwork = -1; // Instruct dgetri_ to determine work array size.
   CVector< C_FLOAT64 > work(1);
@@ -357,7 +365,7 @@ int CMCAMethod::calculateUnscaledConcentrationCC()
   // now invert aux2 (result in aux2)
   dgetri_(&M, aux2.array(), &M, Ipiv.array(), work.array(), &lwork, &info);
 
-  if (info != 0) return MCA_SINGULAR;
+  if (info != 0) return false;
 
   // aux1 := -1.0 * aux2 * RedStoi
 
@@ -383,10 +391,10 @@ int CMCAMethod::calculateUnscaledConcentrationCC()
   // We need to swap the rows since they are with respect to reordered stoichiometry .
   mLinkZero.undoRowPivot(mUnscaledConcCC);
 
-  return MCA_OK;
+  return true;
 }
 
-void CMCAMethod::calculateUnscaledFluxCC(int condition)
+bool CMCAMethod::calculateUnscaledFluxCC(const bool & status)
 {
   assert(mpModel);
   //size_t i, j, k;
@@ -401,31 +409,29 @@ void CMCAMethod::calculateUnscaledFluxCC(int condition)
   // Initialize mUnscaledFluxCC to the identity matrix;
   dlaset_(&UPLO, &M, &M, &Alpha, &Beta, mUnscaledFluxCC.array(), &M);
 
-  if (condition == MCA_SINGULAR)
+  if (status)
     {
-      return;
+      char TRANSA = 'N';
+      char TRANSB = 'N';
+      M = (C_INT) mUnscaledFluxCC.numCols(); /* LDA, LDC */
+      C_INT N = (C_INT) mUnscaledFluxCC.numRows();
+      C_INT K = (C_INT) mUnscaledElasticities.numCols();
+
+      C_INT LDA = (C_INT) mUnscaledConcCC.numCols();
+      C_INT LDB = (C_INT) mUnscaledElasticities.numCols();
+      C_INT LDC = (C_INT) mUnscaledFluxCC.numCols();
+
+      Alpha = 1.0;
+      Beta = 1.0;
+
+      dgemm_(&TRANSA, &TRANSB, &M, &N, &K, &Alpha, mUnscaledConcCC.array(), &LDA,
+             mUnscaledElasticities.array(), &LDB, &Beta, mUnscaledFluxCC.array(), &LDC);
     }
 
-  char TRANSA = 'N';
-  char TRANSB = 'N';
-  M = (C_INT) mUnscaledFluxCC.numCols(); /* LDA, LDC */
-  C_INT N = (C_INT) mUnscaledFluxCC.numRows();
-  C_INT K = (C_INT) mUnscaledElasticities.numCols();
-
-  C_INT LDA = (C_INT) mUnscaledConcCC.numCols();
-  C_INT LDB = (C_INT) mUnscaledElasticities.numCols();
-  C_INT LDC = (C_INT) mUnscaledFluxCC.numCols();
-
-  Alpha = 1.0;
-  Beta = 1.0;
-
-  dgemm_(&TRANSA, &TRANSB, &M, &N, &K, &Alpha, mUnscaledConcCC.array(), &LDA,
-         mUnscaledElasticities.array(), &LDB, &Beta, mUnscaledFluxCC.array(), &LDC);
-
-  return;
+  return status;
 }
 
-void CMCAMethod::scaleMCA(int condition, C_FLOAT64 res)
+bool CMCAMethod::scaleMCA(const bool & status, C_FLOAT64 res)
 {
   assert(mpModel);
   // The number of metabs determined by reaction.
@@ -442,8 +448,6 @@ void CMCAMethod::scaleMCA(int condition, C_FLOAT64 res)
   size_t col;
 
   // Scale Elasticities
-  //  mScaledElasticities.resize(mUnscaledElasticities.numRows(), mUnscaledElasticities.numCols());
-
   C_FLOAT64 * pUnscaled;
   C_FLOAT64 * pScaled;
   bool * pElasticityDependency;
@@ -481,18 +485,16 @@ void CMCAMethod::scaleMCA(int condition, C_FLOAT64 res)
 
   //if we are not in a steady state we cannot calculate CCs
   if (mSSStatus != CSteadyStateMethod::found ||
-      condition != MCA_OK)
+      !status)
     {
       mScaledConcCC = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
       mScaledFluxCC = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
 
-      return;
+      return false;
     }
 
   // Scale ConcCC
   // Reactions are columns, species are rows
-  //   mScaledConcCC.resize(mUnscaledConcCC.numRows(), mUnscaledConcCC.numCols());
-
   itSpecies = metabs.begin();
   pUnscaled = mUnscaledConcCC.array();
   pScaled = mScaledConcCC.array();
@@ -521,42 +523,43 @@ void CMCAMethod::scaleMCA(int condition, C_FLOAT64 res)
   for (; itReaction != endReaction; ++itReaction)
     {
       const CCompartment * pCompartment = (*itReaction)->getLargestCompartment();
+      C_FLOAT64 Resolution = res * pCompartment->getValue();
 
       C_FLOAT64 Scale = (*itReaction)->getFlux();
-      C_FLOAT64 tmp = fabs((pCompartment == NULL) ? Scale : Scale / pCompartment->getValue());
+      C_FLOAT64 tmp = 0.0;
+      C_FLOAT64 eq = 0.0;
 
-      if (tmp < res)
+      // We use the summation theorem to verify the scaling
+      C_FLOAT64 *pSum = pUnscaled;
+      C_FLOAT64 *pSumEnd = pSum + mScaledFluxCC.numCols();
+
+      for (itReactionCol = reacs.begin(); pSum != pSumEnd; ++itReactionCol, ++pSum)
         {
-          tmp = 0.0;
-
-          // We use the summation theorem to scale
-          C_FLOAT64 *pSum = pUnscaled;
-          C_FLOAT64 *pSumEnd = pSum + mScaledFluxCC.numCols();
-
-          for (itReactionCol = reacs.begin(); pSum != pSumEnd; ++itReactionCol, ++pSum)
-            {
-              tmp += *pSum * (*itReactionCol)->getFlux();
-            }
-
-          if (fabs(tmp) < res)
-            {
-              tmp = 2 * res;
-              Scale = std::numeric_limits< C_FLOAT64 >::infinity();
-            }
-          else
-            {
-              Scale = tmp;
-            }
+          tmp += *pSum * (*itReactionCol)->getFlux();
+          eq += fabs(*pSum);
         }
+
+      eq /= mScaledFluxCC.numCols();
+
+      if (fabs(tmp) < Resolution && eq >= Resolution)
+        {
+          Scale = std::numeric_limits< C_FLOAT64 >::infinity();
+        }
+
+      tmp = 0.0;
 
       for (itReactionCol = reacs.begin(); itReactionCol != endReaction; ++itReactionCol, ++pUnscaled, ++pScaled)
         {
           // In the diagonal the scaling factors cancel.
-          if (itReactionCol == itReaction)
+          if (eq < res)
+            {
+              *pScaled = (itReactionCol != itReaction) ? 0.0  : 1.0;
+            }
+          else if (itReactionCol == itReaction)
             {
               *pScaled = *pUnscaled;
             }
-          else if (tmp >= res)
+          else if (fabs(Scale) >= res)
             {
               *pScaled = *pUnscaled * (*itReactionCol)->getFlux() / Scale;
             }
@@ -567,7 +570,7 @@ void CMCAMethod::scaleMCA(int condition, C_FLOAT64 res)
                                    fabs((*itReactionCol)->getFlux()) :
                                    fabs((*itReactionCol)->getFlux() / pCompartmentCol->getValue());
 
-              if (ScaleCol <= res)
+              if (fabs(ScaleCol) <= res)
                 {
                   *pScaled = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
                 }
@@ -578,8 +581,74 @@ void CMCAMethod::scaleMCA(int condition, C_FLOAT64 res)
                               std::numeric_limits<C_FLOAT64>::infinity());
                 }
             }
+
+          tmp += *pScaled;
         }
     }
+
+  return true;
+}
+
+bool CMCAMethod::checkSummationTheorems(const C_FLOAT64 & resolution)
+{
+  bool success = true;
+
+  C_FLOAT64 * pScaled = mScaledConcCC.array();
+  C_FLOAT64 * pScaledRowEnd = pScaled + mScaledConcCC.numCols();
+  C_FLOAT64 * pScaledEnd = pScaled + mScaledConcCC.size();
+
+  CVector< C_FLOAT64 > Sum(mScaledConcCC.numRows());
+  CVector< C_FLOAT64 > Max(mScaledConcCC.numRows());
+  CVector< C_FLOAT64 > Error(mScaledConcCC.numRows());
+  Sum = 0.0;
+  Max = 0.0;
+  C_FLOAT64 * pSum = Sum.array();
+  C_FLOAT64 * pMax = Max.array();
+  C_FLOAT64 * pError = Error.array();
+
+  for (; pScaled != pScaledEnd; pScaledRowEnd += mScaledConcCC.numCols(), ++pSum, ++pMax, ++pError)
+    {
+      for (; pScaled != pScaledRowEnd; ++pScaled)
+        {
+          success &= !isnan(*pScaled);
+
+          *pSum += *pScaled;
+          *pMax = std::max(*pMax, fabs(*pScaled));
+        }
+
+      *pError = (*pMax > 100.0 * std::numeric_limits< C_FLOAT64 >::min()) ? fabs(*pSum) / *pMax : 0.0;
+      success &= *pError < resolution;
+    }
+
+  pScaled = mScaledFluxCC.array();
+  pScaledRowEnd = pScaled + mScaledFluxCC.numCols();
+  pScaledEnd = pScaled + mScaledFluxCC.size();
+
+  Sum.resize(mScaledFluxCC.numRows());
+  Max.resize(mScaledFluxCC.numRows());
+  Error.resize(mScaledFluxCC.numRows());
+  Sum = 0.0;
+  Max = 0.0;
+
+  pSum = Sum.array();
+  pMax = Max.array();
+  pError = Error.array();
+
+  for (; pScaled != pScaledEnd; pScaledRowEnd += mScaledConcCC.numCols(), ++pSum, ++pMax, ++pError)
+    {
+      for (; pScaled != pScaledRowEnd; ++pScaled)
+        {
+          success &= !isnan(*pScaled);
+
+          *pSum += *pScaled;
+          *pMax = std::max(*pMax, fabs(*pScaled));
+        }
+
+      *pError = (*pMax > 100.0 * std::numeric_limits< C_FLOAT64 >::min()) ? fabs(1.0 - *pSum) / *pMax : 0.0;
+      success &= *pError < resolution;
+    }
+
+  return success;
 }
 
 /**
@@ -595,19 +664,41 @@ void CMCAMethod::setModel(CModel* model)
  * @param ss_solution refer to steady-state solution
  * @param refer to the resolution
  */
-int CMCAMethod::CalculateMCA(C_FLOAT64 res)
+bool CMCAMethod::CalculateMCA(C_FLOAT64 res)
 {
+  bool success = true;
+  bool SummationTheoremsOK = false;
+
   assert(mpModel);
-  int ret = MCA_OK;
 
   calculateUnscaledElasticities(res);
 
   if (mSSStatus == CSteadyStateMethod::found)
     {
-      createLinkMatrix();
+      if (*mpUseReeder)
+        {
+          createLinkMatrix();
+          success &= calculateUnscaledConcentrationCC();
+          success &= calculateUnscaledFluxCC(success);
+          success &= scaleMCA(success, res);
+          SummationTheoremsOK = checkSummationTheorems(res);
+        }
 
-      ret = calculateUnscaledConcentrationCC();
-      calculateUnscaledFluxCC(ret);
+      if (*mpUseSmallbone && !SummationTheoremsOK)
+        {
+          success = true;
+
+          createLinkMatrix(true);
+          success &= calculateUnscaledConcentrationCC();
+          success &= calculateUnscaledFluxCC(success);
+          success &= scaleMCA(success, res);
+          SummationTheoremsOK = checkSummationTheorems(res);
+        }
+
+      if (!SummationTheoremsOK)
+        {
+          CCopasiMessage(CCopasiMessage::WARNING, MCMCA + 1);
+        }
     }
   else
     {
@@ -615,12 +706,10 @@ int CMCAMethod::CalculateMCA(C_FLOAT64 res)
       mUnscaledFluxCC = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
     }
 
-  scaleMCA(ret, res);
-
-  return ret;
+  return success;
 }
 
-bool CMCAMethod::createLinkMatrix()
+bool CMCAMethod::createLinkMatrix(const bool & useSmallbone)
 {
   if (mpModel == NULL ||
       mpSteadyStateTask == NULL)
@@ -628,11 +717,18 @@ bool CMCAMethod::createLinkMatrix()
       return false;
     }
 
-  mLinkZero.build(mpSteadyStateTask->getJacobian(), mpModel->getNumIndependentReactionMetabs());
-
-  mReducedStoichiometry = mpModel->getStoi();
-  mLinkZero.doRowPivot(mReducedStoichiometry);
-  mReducedStoichiometry.resize(mLinkZero.getNumIndependent(), mReducedStoichiometry.numCols(), true);
+  if (useSmallbone)
+    {
+      mLinkZero.build(mpSteadyStateTask->getJacobian(), mpModel->getNumIndependentReactionMetabs());
+      mReducedStoichiometry = mpModel->getStoi();
+      mLinkZero.doRowPivot(mReducedStoichiometry);
+      mReducedStoichiometry.resize(mLinkZero.getNumIndependent(), mReducedStoichiometry.numCols(), true);
+    }
+  else
+    {
+      mLinkZero = mpModel->getL0();
+      mReducedStoichiometry = mpModel->getRedStoi();
+    }
 
   return true;
 }
@@ -734,6 +830,12 @@ bool CMCAMethod::isValidProblem(const CCopasiProblem * pProblem)
   if (Requested.size() > 0)
     {
       CCopasiMessage(CCopasiMessage::ERROR, "MCA is not applicable for a system with changing volumes.");
+      return false;
+    }
+
+  if (!*mpUseReeder && !*mpUseSmallbone)
+    {
+      CCopasiMessage(CCopasiMessage::ERROR, "At least one of the algorithm Reeder or Smallbone must be selected.");
       return false;
     }
 

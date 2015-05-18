@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -77,6 +77,9 @@ protected:
   ListOfFunctionDefinitions mExportedFunctions;
   std::map<const FunctionDefinition*, const CCopasiObject*> mFunctionMap;
   std::map<const std::string, Parameter*> mInitialValueMap;
+  bool mHaveModelHistoryAuthorWarning;
+  bool mHaveModelHistoryCreationDateWarning;
+  bool mHaveModelHistoryModificationDateWarning;
 
 public:
   /**

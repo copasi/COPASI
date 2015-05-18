@@ -1,4 +1,4 @@
-// Copyright (C) 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2014 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -58,7 +58,7 @@ CExpRKMethod::CExpRKMethod()
   mTEnd    = 0;
   mTNew    = 0;
   mTOld    = 0;
-  mY       = NULL;
+  mpY      = NULL;
   mYNew    = NULL;
   mYOld    = NULL;
   mK       = NULL;
@@ -79,7 +79,6 @@ CExpRKMethod::CExpRKMethod()
   mFacMaxRej = 0;
 
   // Default solver status
-  mStatis         = false;
   mhNoFailed      = false;
   mHasEvent       = false;
   mODEState       = 0;
@@ -126,86 +125,27 @@ CExpRKMethod::~CExpRKMethod()
   if (mEventFunc)
     mEventFunc = NULL;
 
-  if (mYNew)
-    {
-      delete [] mYNew;
-      mYNew = NULL;
-    }
-
-  if (mYOld)
-    {
-      delete [] mYOld;
-      mYOld = NULL;
-    }
+  pdelete(mYNew);
+  pdelete(mYOld);
 
   if (mK)
     {
       for (int i = (int)mStage; i >= 0; i--)
-        delete [] mK[i];
+        pdelete(mK[i])
 
-      delete [] mK;
-      mK = NULL;
+        pdelete(mK);
     }
 
-  if (mRootQueue)
-    {
-      delete [] mRootQueue;
-      mRootQueue = NULL;
-    }
-
-  if (mRootValueOld)
-    {
-      delete [] mRootValueOld;
-      mRootValueOld = NULL;
-    }
-
-  if (mRootValue)
-    {
-      delete [] mRootValue;
-      mRootValue = NULL;
-    }
-
-  if (mZ1)
-    {
-      delete [] mZ1;
-      mZ1 = NULL;
-    }
-
-  if (mZ2)
-    {
-      delete [] mZ2;
-      mZ2 = NULL;
-    }
-
-  if (mZ3)
-    {
-      delete [] mZ3;
-      mZ3 = NULL;
-    }
-
-  if (mIn1)
-    {
-      delete [] mIn1;
-      mIn1 = NULL;
-    }
-
-  if (mIn2)
-    {
-      delete [] mIn2;
-      mIn2 = NULL;
-    }
-
-  if (mIn3)
-    {
-      delete [] mIn3;
-      mIn3 = NULL;
-    }
-
-  if (mtArray)
-    {
-      delete [] mtArray;
-      mtArray = NULL;
-    }
+  pdelete(mRootQueue);
+  pdelete(mRootValueOld);
+  pdelete(mRootValue);
+  pdelete(mZ1);
+  pdelete(mZ2);
+  pdelete(mZ3);
+  pdelete(mIn1);
+  pdelete(mIn2);
+  pdelete(mIn3);
+  pdelete(mtArray);
 
   return;
 }
@@ -232,14 +172,53 @@ void CExpRKMethod::integrate()
       for (size_t i = 0; i < *mDim; ++i)
           mYOld[i] = mY[i];
       */
-      memcpy(mYOld, mY, (*mDim)*sizeof(C_FLOAT64));
+      memcpy(mYOld, mpY, (*mDim)*sizeof(C_FLOAT64));
 
       setInitialStepSize();
       mDerivFunc(mDim, &mTOld, mYOld, mK[0]);//record derivative to
 
       //Calculate root at initial time
       if (mHasEvent)
-        (*mEventFunc)(mDim, &mTOld, mYOld, &mRootNum, mRootValueOld);
+        {
+          if (mRootsInitialized)
+            {
+              // It is possible that a stochastic reaction event caused a root change
+              (*mEventFunc)(mDim, &mTOld, mYOld, &mRootNum, mRootValue);
+              const C_FLOAT64 * pNewRoot = mRootValue;
+              const C_FLOAT64 * pNewRootEnd = pNewRoot + mRootNum;
+              const C_FLOAT64 * pOldRoot = mRootValueOld;
+              C_INT * pRootFound = mRootFound.array();
+
+              for (; pNewRoot != pNewRootEnd; ++pNewRoot, ++pOldRoot)
+                {
+                  if (*pNewRoot * *pOldRoot <= 0)
+                    {
+                      *pRootFound = 1;
+                      mODEState = 3;
+                    }
+                  else
+                    {
+                      *pRootFound = 0;
+                    }
+                }
+
+              // Save the new roots.
+              memcpy(mRootValueOld, mRootValue, mRootNum * sizeof(C_FLOAT64));
+
+              if (mODEState == 3)
+                {
+                  mRootId = 0;
+                  mODEStateRecord = mODEState;
+
+                  return;
+                }
+            }
+          else
+            {
+              (*mEventFunc)(mDim, &mTOld, mYOld, &mRootNum, mRootValueOld);
+              mRootsInitialized = true;
+            }
+        }
 
       mHasMultipleRoots = false;
     }
@@ -255,7 +234,7 @@ void CExpRKMethod::integrate()
         {
           //no roots
           mODEState = 1;
-          advanceStep();
+          // advanceStep();
           mHasMultipleRoots = false;
         }
     }
@@ -372,7 +351,7 @@ void CExpRKMethod::integrate()
   for(size_t i=0; i<*mDim; i++)
       mY[i] = mYNew[i];
   */
-  memcpy(mY, mYNew, (*mDim)*sizeof(C_FLOAT64));
+  memcpy(mpY, mYNew, (*mDim)*sizeof(C_FLOAT64));
 
   return;
 }
@@ -574,15 +553,13 @@ void CExpRKMethod::initialize()
     {
       mHasEvent = true;
 
-      if (mRootValueOld)
-        delete [] mRootValueOld;
-
+      pdelete(mRootValueOld);
       mRootValueOld = new C_FLOAT64[mRootNum];
 
-      if (mRootValue)
-        delete [] mRootValue;
-
+      pdelete(mRootValue);
       mRootValue    = new C_FLOAT64[mRootNum];
+
+      mRootFound.resize(mRootNum);
 
       clearQueue();
     }
@@ -602,9 +579,9 @@ void CExpRKMethod::allocateSpace()
   if (mK)
     {
       for (int i = (int)mStage; i >= 0; i--)
-        delete [] mK[i];
+        pdelete(mK[i]);
 
-      delete [] mK;
+      pdelete(mK);
     }
 
   mK = new C_FLOAT64*[mStage + 1];
@@ -613,54 +590,36 @@ void CExpRKMethod::allocateSpace()
     mK[r] = new C_FLOAT64[*mDim];
 
   //----Set mYNew----
-  if (mYNew)
-    delete [] mYNew;
-
+  pdelete(mYNew);
   mYNew = new C_FLOAT64[*mDim];
 
   //----Set mYCp----
-  if (mYOld)
-    delete [] mYOld;
-
+  pdelete(mYOld);
   mYOld = new C_FLOAT64[*mDim];
 
   // ----(2)----
   size_t size = (*mDim > mRootNum) ? *mDim : mRootNum;
   size = (size > (MAX_STAGE + 2)) ? size : (MAX_STAGE + 2);
 
-  if (mZ1)
-    delete [] mZ1;
-
+  pdelete(mZ1);
   mZ1 = new C_FLOAT64[size];
 
-  if (mZ2)
-    delete [] mZ2;
-
+  pdelete(mZ2);
   mZ2 = new C_FLOAT64[size];
 
-  if (mZ3)
-    delete [] mZ3;
-
+  pdelete(mZ3);
   mZ3 = new C_FLOAT64[size];
 
-  if (mIn1)
-    delete [] mIn1;
-
+  pdelete(mIn1);
   mIn1 = new C_FLOAT64[size];
 
-  if (mIn2)
-    delete [] mIn2;
-
+  pdelete(mIn2);
   mIn2 = new C_FLOAT64[size];
 
-  if (mIn3)
-    delete [] mIn3;
-
+  pdelete(mIn3);
   mIn3 = new C_FLOAT64[size];
 
-  if (mtArray)
-    delete [] mtArray;
-
+  pdelete(mtArray);
   mtArray = new C_FLOAT64[5];
 
   // ----(3)----
@@ -672,10 +631,9 @@ void CExpRKMethod::allocateSpace()
   if (mHybrid)
     ++size;
 
-  if (mRootQueue)
-    delete [] mRootQueue;
-
+  pdelete(mRootQueue);
   mRootQueue = new SRoot[2 * size + 2];
+
   clearQueue();
   return;
 }
@@ -871,7 +829,7 @@ void CExpRKMethod::checkRoots()
       mtArray[3] = mTOld + 3 * step;
       mtArray[4] = mTNew;
 
-      //Caculate Root Interpolation Values at times of array tArray
+      // Calculate Root Interpolation Values at times of array tArray
       interpolation(mtArray[1], interY);
       (*mEventFunc)(mDim, &mtArray[1], interY, &mRootNum, mIn1);
       interpolation(mtArray[2], interY);
@@ -893,7 +851,7 @@ void CExpRKMethod::checkRoots()
 
   if (mHybrid)
     {
-      if (mYOld[*mDim - 1]*mYNew[*mDim - 1] <= 0)
+      if (mYOld[*mDim - 1] * mYNew[*mDim - 1] <= 0)
         mFindSlow = true;
     }
 
@@ -1110,8 +1068,8 @@ C_FLOAT64 CExpRKMethod::rootFindByFalsi(const size_t id,
  */
 void CExpRKMethod::findSlowReaction()
 {
-  // Check slow reactin existance
-  if (mYOld[*mDim - 1]*mYNew[*mDim - 1] > 0) //no slow reaction
+  // Check slow reaction existence
+  if (mYOld[*mDim - 1] * mYNew[*mDim - 1] > 0) //no slow reaction
     return;
 
   C_FLOAT64 *tArray = mZ1;
@@ -1179,6 +1137,8 @@ void CExpRKMethod::findSlowReaction()
  */
 void CExpRKMethod::calculateRootState()
 {
+  mRootFound = 0;
+
   if (queueIsEmpty())
     {
       std::cout << "No root in mRootQueue! Check Code......" << std::endl;
@@ -1191,7 +1151,25 @@ void CExpRKMethod::calculateRootState()
 
   mRootId = root.id;
   mT      = root.t;
-  interpolation(mT, mY);
+  interpolation(mT, mpY);
+
+  if (root.id != -1) mRootFound[root.id] = 1;
+
+  while (!queueIsEmpty())
+    {
+      root = mRootQueue[mQueueSite];
+
+      if (root.t > mT * (1.0 + mRelTol) &&
+          fabs(root.t) > mAbsTol &&
+          fabs(mT) > mAbsTol)
+        {
+          break;
+        }
+
+      queuePop();
+
+      if (root.id != -1) mRootFound[root.id] = 1;
+    }
 
   mODEState = 3;
   mODEStateRecord = mODEState;
@@ -1223,7 +1201,7 @@ void CExpRKMethod::checkParameter()
 
   if ((mAbsTol < 0) || (mRelTol < 0) || (mAbsTol + mRelTol == 0))
     {
-      std::cout << "Error Tolerances should be nonnegativ and at least one should be positive" << std::endl;
+      std::cout << "Error Tolerances should be nonnegative and at least one should be positive" << std::endl;
       return;
     }
 
@@ -1233,7 +1211,7 @@ void CExpRKMethod::checkParameter()
       return;
     }
 
-  if (!mY)
+  if (!mpY)
     {
       std::cout << "mY should be set before integration!" << std::endl;
       return;
@@ -1241,7 +1219,7 @@ void CExpRKMethod::checkParameter()
 
   if (!mDerivFunc)
     {
-      std::cout << "Function that calculates direvatives should be set!" << std::endl;
+      std::cout << "Function that calculates derivatives should be set!" << std::endl;
       return;
     }
 
@@ -1279,7 +1257,7 @@ C_FLOAT64 CExpRKMethod::infNorm(const size_t &len, const C_FLOAT64 *y)
 }
 
 /**
- * Calculate the maxinum element of an array
+ * Calculate the maximum element of an array
  */
 inline C_FLOAT64 CExpRKMethod::dmax(const C_FLOAT64 &x1, const C_FLOAT64 &x2)
 {

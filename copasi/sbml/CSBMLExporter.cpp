@@ -676,8 +676,8 @@ void CSBMLExporter::createSubstanceUnit(const CCopasiDataModel& dataModel)
   if (this->mSBMLLevel > 2)
     {
       pSBMLModel->setSubstanceUnits(uDef.getId());
-      // here we also set the extends unit to the same unit as the substance unit
-      // because COPASI does not know about different extend units
+      // here we also set the extent unit to the same unit as the substance unit
+      // because COPASI does not know about different extent units
       pSBMLModel->setExtentUnits(uDef.getId());
     }
 
@@ -1055,6 +1055,11 @@ void CSBMLExporter::createCompartment(CCompartment& compartment)
       CSBMLExporter::setSBMLNotes(pSBMLCompartment, &compartment);
     }
 
+  if (pSBMLCompartment != NULL && mSBMLLevel == 3)
+    {
+      pSBMLCompartment->setUnits("volume");
+    }
+
   CSBMLExporter::updateMIRIAMAnnotation(&compartment, pSBMLCompartment, this->mMetaIdMap);
 }
 
@@ -1266,6 +1271,12 @@ void CSBMLExporter::createMetabolite(CMetab& metab)
   if (pSBMLSpecies != NULL)
     {
       CSBMLExporter::setSBMLNotes(pSBMLSpecies, &metab);
+    }
+
+  if (pSBMLSpecies != NULL && mSBMLLevel == 3)
+    {
+      // for l3 the unit needs to be set explicitly to substance,
+      pSBMLSpecies->setSubstanceUnits("substance");
     }
 
   CSBMLExporter::updateMIRIAMAnnotation(&metab, pSBMLSpecies, this->mMetaIdMap);
@@ -3236,8 +3247,9 @@ const std::string CSBMLExporter::exportModelToString(CCopasiDataModel& dataModel
     {
       LayoutModelPlugin* lmPlugin = static_cast<LayoutModelPlugin*>(this->mpSBMLDocument->getModel()->getPlugin("layout"));
 
-      if (lmPlugin != NULL)
+      if (lmPlugin != NULL && sbmlLevel > 1)
         {
+          // the layout can only be exported for Level 2 or Level 3
           dataModel.getListOfLayouts()->exportToSBML(lmPlugin->getListOfLayouts(),
               this->mCOPASI2SBMLMap, mIdMap, this->mpSBMLDocument->getLevel(), this->mpSBMLDocument->getVersion());
 
@@ -3329,6 +3341,11 @@ const std::string CSBMLExporter::exportModelToString(CCopasiDataModel& dataModel
   // mark some temporary objects as no longer needed
   removeStickyTagFromElements(mpSBMLDocument);
 
+  // the workaround is no longer necessary, as the libSBML > 5.11.4 will include
+  // a converter that not only converts to l1v1 but also inlines the compartment
+  // sizes and changes pow implementation as needed by Gepasi
+#if LIBSBML_VERSION <= 51104
+
   // actually most of the work seems to be done by
   // libsbml already, so the following method doesn't have to
   // do much and most of the code is obsolete, at least for now
@@ -3337,6 +3354,8 @@ const std::string CSBMLExporter::exportModelToString(CCopasiDataModel& dataModel
       // if there is an exception in the routine, we hand it up to the calling routine
       convert_to_l1v1(returnValue);
     }
+
+#endif
 
   return returnValue;
 }
@@ -3377,6 +3396,11 @@ void addInitialAssignmentsToModel(SBMLDocument* doc
 
 void CSBMLExporter::createSBMLDocument(CCopasiDataModel& dataModel)
 {
+  // reset warnings for missing entries in modelhistory
+  mHaveModelHistoryAuthorWarning = false;
+  mHaveModelHistoryCreationDateWarning = false;
+  mHaveModelHistoryModificationDateWarning = false;
+
   const SBMLDocument* pOldSBMLDocument = dataModel.getCurrentSBMLDocument();
   const CModel* pModel = dataModel.getModel();
   assert(pModel != NULL);
@@ -3576,12 +3600,35 @@ void CSBMLExporter::createSBMLDocument(CCopasiDataModel& dataModel)
   if (this->mpSBMLDocument->getLevel() != this->mSBMLLevel || this->mpSBMLDocument->getVersion() != this->mSBMLVersion)
     {
 #if LIBSBML_VERSION >= 50400
-      ConversionProperties prop(new SBMLNamespaces(mSBMLLevel, mSBMLVersion));
-      prop.addOption("strict", false);
-      prop.addOption("setLevelAndVersion", true);
-      prop.addOption("ignorePackages", true);
 
-      mpSBMLDocument->convert(prop);
+      SBMLNamespaces targetNs(mSBMLLevel, mSBMLVersion); // use reference, as the ns gets cloned
+
+      if (mSBMLLevel == 1 && mSBMLVersion == 1)
+        {
+          // l1v1 export tailor made to suit GEPASI, with pow -> ^ notation and
+          // inlining of compartment sizes in kinetics.
+
+          ConversionProperties prop(&targetNs);
+          prop.addOption("convertToL1V1", true,
+                         "convert the document to SBML Level 1 Version 1");
+          prop.addOption("changePow", true,
+                         "change pow expressions to the (^) hat notation");
+          prop.addOption("inlineCompartmentSizes", true,
+                         "if true, occurrances of compartment ids in expressions will be replaced with their initial size");
+
+          mpSBMLDocument->convert(prop);
+        }
+      else
+        {
+
+          ConversionProperties prop(&targetNs);
+          prop.addOption("strict", false);
+          prop.addOption("setLevelAndVersion", true);
+          prop.addOption("ignorePackages", true);
+
+          mpSBMLDocument->convert(prop);
+        }
+
 #else
       this->mpSBMLDocument->setLevelAndVersion(this->mSBMLLevel, this->mSBMLVersion);
 #endif
@@ -4521,7 +4568,7 @@ void CSBMLExporter::updateCOPASI2SBMLMap(const CCopasiDataModel& dataModel)
 
   while (it != endit)
     {
-      std::map<std::string, const SBase*>::iterator pos = this->mIdMap.find(it->second->getId());
+      std::map<std::string, const SBase*>::iterator pos = it->second == NULL ? mIdMap.end() :  this->mIdMap.find(it->second->getId());
 
       if (pos != this->mIdMap.end())
         {
@@ -6619,8 +6666,9 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CCopasiObject* pCOPASIObject, S
           modelHistory.addCreator(&modelCreator);
         }
 
-      if (modelHistory.getNumCreators() < 1)
+      if (modelHistory.getNumCreators() < 1 && !mHaveModelHistoryAuthorWarning)
         {
+          mHaveModelHistoryAuthorWarning = true;
           CCopasiMessage(CCopasiMessage::WARNING, "The ModelHistory cannot be exported to SBML, as no author has been defined.");
         }
 
@@ -6634,8 +6682,9 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CCopasiObject* pCOPASIObject, S
           modified = true;
         }
 
-      if (!modelHistory.isSetCreatedDate())
+      if (!modelHistory.isSetCreatedDate() && !mHaveModelHistoryCreationDateWarning)
         {
+          mHaveModelHistoryCreationDateWarning = true;
           CCopasiMessage(CCopasiMessage::WARNING, "The ModelHistory cannot be exported to SBML, as no creation date has been defined.");
         }
 
@@ -6674,8 +6723,9 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CCopasiObject* pCOPASIObject, S
           modelHistory.setModifiedDate(modelHistory.getCreatedDate());
         }
 
-      if (!modelHistory.isSetModifiedDate())
+      if (!modelHistory.isSetModifiedDate() && mHaveModelHistoryModificationDateWarning)
         {
+          mHaveModelHistoryModificationDateWarning = true;
           CCopasiMessage(CCopasiMessage::WARNING, "The ModelHistory cannot be exported to SBML, as no modification date has been defined.");
         }
 

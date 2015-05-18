@@ -200,12 +200,15 @@ void CCopasiXMLParser::TEMPLATEElement::end(const XML_Char *pszName)
 CCopasiXMLParser::CCopasiXMLParser(CVersion & version) :
   CExpat(),
   mCommon(),
+  mCharacterData(),
+  mCharacterDataEncoding(CCopasiXMLInterface::none),
   mElementHandlerStack(),
   mUnknownElement(*this, this->mCommon),
   mCharacterDataElement(*this, this->mCommon),
   mListOfUnsupportedAnnotationsElement(*this, this->mCommon),
   mCommentElement(*this, this->mCommon),
   mMiriamAnnotationElement(*this, this->mCommon)
+  // Attributes
 {
   create();
 
@@ -287,6 +290,30 @@ void CCopasiXMLParser::onEndCdataSection()
 }
 #endif // XXXX
 
+/**
+ * Skipped entity handler
+ * This is called in two situations:
+ * 1) An entity reference is encountered for which no declaration
+ *    has been read *and* this is not an error.
+ * 2) An internal entity reference is read, but not expanded, because
+ *    XML_SetDefaultHandler has been called.
+ * Note: skipped parameter entities in declarations and skipped general
+ *       entities in attribute values cannot be reported, because
+ *       the event would be out of sync with the reporting of the
+ *       declarations or attribute values
+ * @param const XML_Char *entityName
+ * @param int is_parameter_entity
+ */
+void CCopasiXMLParser::onSkippedEntityHandler(const XML_Char * entityName,
+    int is_parameter_entity)
+{
+  mCharacterData += "&";
+  mCharacterData += entityName;
+  mCharacterData += ";";
+
+  return;
+}
+
 void CCopasiXMLParser::enableCharacterDataHandler(bool fEnable)
 {
   mCharacterData.erase();
@@ -296,7 +323,10 @@ void CCopasiXMLParser::enableCharacterDataHandler(bool fEnable)
 void CCopasiXMLParser::onCharacterData(const XML_Char *pszData,
                                        int nLength)
 {
-  mCharacterData.append(pszData, nLength);
+  std::string Data;
+  Data.append(pszData, nLength);
+
+  mCharacterData += CCopasiXMLInterface::encode(Data, mCharacterDataEncoding);
 }
 
 std::string CCopasiXMLParser::getCharacterData(const std::string & toBeStripped,
@@ -1986,6 +2016,9 @@ void CCopasiXMLParser::CommentElement::start(const XML_Char *pszName,
         mXhtml.str("");
         mLevel = 0;
         mParser.enableCharacterDataHandler();
+        mParser.enableSkippedEntityHandler();
+        mParser.mCharacterDataEncoding = CCopasiXMLInterface::standard;
+
         mElementEmpty.push(false);
         break;
 
@@ -2033,10 +2066,7 @@ void CCopasiXMLParser::CommentElement::end(const XML_Char *pszName)
           CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
                          pszName, "Comment", mParser.getCurrentLineNumber());
 
-        if (mXhtml.str() != "")
-          mXhtml << CCopasiXMLInterface::encode(mParser.getCharacterData());
-        else
-          mXhtml << mParser.getCharacterData();
+        mXhtml << mParser.getCharacterData();
 
         mCommon.CharacterData = mXhtml.str();
 
@@ -2052,6 +2082,9 @@ void CCopasiXMLParser::CommentElement::end(const XML_Char *pszName)
           if (pos < mCommon.CharacterData.length())
             mCommon.CharacterData = mCommon.CharacterData.substr(0, pos + 1);
         }
+
+        mParser.enableSkippedEntityHandler(false);
+        mParser.mCharacterDataEncoding = CCopasiXMLInterface::none;
 
         mParser.popElementHandler();
         mCurrentElement = START_ELEMENT;
@@ -2078,8 +2111,7 @@ void CCopasiXMLParser::CommentElement::end(const XML_Char *pszName)
               mXhtml << " />";
           }
 
-        if (Xhtml != "")
-          mXhtml << CCopasiXMLInterface::encode(Xhtml);
+        mXhtml << Xhtml;
 
         if (mElementEmpty.top() == false)
           mXhtml << "</" << pszName << ">";

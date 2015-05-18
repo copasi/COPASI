@@ -1,4 +1,4 @@
-// Copyright (C) 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2014 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -20,15 +20,15 @@
 #define CEXPRKMETHOD
 
 #include <iostream>
-#include "copasi/utilities/CVersion.h"
-#include "copasi.h"
+
+#include "copasi/utilities/CVector.h"
 
 #define MAX_STAGE 8
 #define EPS1      2.220446049250313e-16
 #define EPS0      4.940656458412465e-300
 
 /**
- *Define function pointer of functions for computing derivative and
+ * Define function pointer of functions for computing derivative and
  * event function
  * Parameters:
  * 1. C_FLOAT64 mT
@@ -250,8 +250,7 @@ private:
   void queuePush(const SRoot&);
 
   /**
-   * Shrink the queue which just contains only one root for
-   * each event
+   * Shrink the queue which just contains only one root for each event
    */
   void shrinkQueue();
 
@@ -273,6 +272,8 @@ public:
    * mRootNum, a size_t variable, number of roots
    */
   size_t mRootNum;
+  bool mRootsInitialized;
+  CVector< C_INT > mRootFound;
 
   /**
    * mAbsTol, absolute error tolerance
@@ -305,13 +306,6 @@ public:
    */
   bool mHybrid;
 
-  /**
-   * mStatic, a boolean variable
-   * mStatic == 1, write statistic results into a txt file
-   * mStatic == 0, do not output statistic results
-   */
-  bool mStatis;
-
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   //~~~~~~~~Output Parameters~~~~~~~~~
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -333,7 +327,7 @@ public:
    * mY, a C_FLOAT64 pointer pointing to an array recording
    *     system values at privous step
    */
-  C_FLOAT64 *mY;
+  C_FLOAT64 *mpY;
 
   /**
    * mODEState, an int varialbe, recording the state of the solver

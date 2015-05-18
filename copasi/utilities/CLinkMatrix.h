@@ -1,4 +1,4 @@
-// Copyright (C) 2013 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2013 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -21,6 +21,11 @@ public:
   CLinkMatrix();
 
   /**
+   * Copy constructor
+   */
+  CLinkMatrix(const CLinkMatrix & src);
+
+  /**
    * Destructor
    */
   virtual ~CLinkMatrix();
@@ -32,6 +37,11 @@ public:
    * @return bool success
    */
   bool build(const CMatrix< C_FLOAT64 > & matrix, size_t maxRank = C_INVALID_INDEX);
+
+  /**
+   * Clear the pivot and swap vectors
+   */
+  void clearPivoting();
 
   /**
    * Right multiply the given matrix M with L, i.e., P = alpha M * L.
@@ -163,6 +173,12 @@ private:
    */
   bool applyRowPivot(CMatrix< C_FLOAT64 > & matrix,
                      const CVector< size_t > & pivots) const;
+
+  /**
+   * Complete the pivot information.
+   */
+  void completePivotInformation();
+
   /**
    * The row pivoting performed to create the link matrix
    */
@@ -177,6 +193,7 @@ private:
    *  The swap vector used for column swapping
    */
   CVector< C_INT > mSwapVector;
+
   /**
    * The number of linear independent rows.
    */

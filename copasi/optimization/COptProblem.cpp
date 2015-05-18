@@ -48,6 +48,22 @@
 #include "utilities/CProcessReport.h"
 #include "utilities/CCopasiException.h"
 
+// static
+const unsigned int COptProblem::ValidSubtasks[] =
+{
+  CTaskEnum::steadyState,
+  CTaskEnum::timeCourse,
+  CTaskEnum::scan,
+  CTaskEnum::parameterFitting,
+  CTaskEnum::mca,
+  CTaskEnum::lyap,
+  CTaskEnum::tssAnalysis,
+  CTaskEnum::sens,
+  CTaskEnum::crosssection,
+  CTaskEnum::lna,
+  CTaskEnum::UnsetTask
+};
+
 //  Default constructor
 COptProblem::COptProblem(const CTaskEnum::Task & type,
                          const CCopasiContainer * pParent):

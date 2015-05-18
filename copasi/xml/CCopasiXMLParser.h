@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -29,10 +29,11 @@
 #include <sstream>
 #include <vector>
 
-#include "xml/CExpat.h"
-#include "xml/CXMLHandler.h"
-#include "utilities/CCopasiVector.h"
-#include "report/CKeyFactory.h"
+#include "copasi/xml/CExpat.h"
+#include "copasi/xml/CXMLHandler.h"
+#include "copasi/xml/CCopasiXMLInterface.h"
+#include "copasi/utilities/CCopasiVector.h"
+#include "copasi/report/CKeyFactory.h"
 #include "copasi/model/CAnnotation.h"
 
 class CCompartment;
@@ -324,6 +325,11 @@ private:
    * The character data.
    */
   std::string mCharacterData;
+
+  /**
+   * The character data.
+   */
+  CCopasiXMLInterface::EncodingType mCharacterDataEncoding;
 
   /**
    * The element handler stack
@@ -4863,6 +4869,23 @@ public:
    */
   virtual void onEndCdataSection();
 #endif // XXXX
+
+  /**
+   * Skipped entity handler
+   * This is called in two situations:
+   * 1) An entity reference is encountered for which no declaration
+   *    has been read *and* this is not an error.
+   * 2) An internal entity reference is read, but not expanded, because
+   *    XML_SetDefaultHandler has been called.
+   * Note: skipped parameter entities in declarations and skipped general
+   *       entities in attribute values cannot be reported, because
+   *       the event would be out of sync with the reporting of the
+   *       declarations or attribute values
+   * @param const XML_Char *entityName
+   * @param int is_parameter_entity
+   */
+  virtual void onSkippedEntityHandler(const XML_Char * entityName,
+                                      int is_parameter_entity);
 
   /**
    * Enable/Disable the character data handler

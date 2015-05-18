@@ -45,8 +45,6 @@
 #define SS_SINGULAR_JACOBIAN 2
 #define SS_DAMPING_LIMIT 3
 #define SS_ITERATION_LIMIT 4
-#define MCA_OK 0
-#define MCA_SINGULAR 1
 
 #ifdef min
 # undef min

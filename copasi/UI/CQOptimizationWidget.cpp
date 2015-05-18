@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -212,23 +212,14 @@ void CQOptimizationWidget::init()
   mpExpressionEMW->mpExpressionWidget->setExpressionType(CQExpressionWidget::ObjectiveFunctions);
 
   //mpBtnMaximize->setMinimumWidth(mpLblExpression->width());
+  const unsigned int * pSubtask = COptProblem::ValidSubtasks;
 
-  mpBoxSubtask->insertItem(mpBoxSubtask->count(), FROM_UTF8(CTaskEnum::TaskName[CTaskEnum::steadyState]));
-  mSubtaskMap[CTaskEnum::TaskName[CTaskEnum::steadyState]] = CTaskEnum::steadyState;
-  mpBoxSubtask->insertItem(mpBoxSubtask->count(), FROM_UTF8(CTaskEnum::TaskName[CTaskEnum::timeCourse]));
-  mSubtaskMap[CTaskEnum::TaskName[CTaskEnum::timeCourse]] = CTaskEnum::timeCourse;
-  mpBoxSubtask->insertItem(mpBoxSubtask->count(), FROM_UTF8(CTaskEnum::TaskName[CTaskEnum::mca]));
-  mSubtaskMap[CTaskEnum::TaskName[CTaskEnum::mca]] = CTaskEnum::mca;
-  mpBoxSubtask->insertItem(mpBoxSubtask->count(), FROM_UTF8(CTaskEnum::TaskName[CTaskEnum::lna]));
-  mSubtaskMap[CTaskEnum::TaskName[CTaskEnum::lna]] = CTaskEnum::lna;
-  mpBoxSubtask->insertItem(mpBoxSubtask->count(), FROM_UTF8(CTaskEnum::TaskName[CTaskEnum::lyap]));
-  mSubtaskMap[CTaskEnum::TaskName[CTaskEnum::lyap]] = CTaskEnum::lyap;
-  mpBoxSubtask->insertItem(mpBoxSubtask->count(), FROM_UTF8(CTaskEnum::TaskName[CTaskEnum::sens]));
-  mSubtaskMap[CTaskEnum::TaskName[CTaskEnum::sens]] = CTaskEnum::sens;
-#ifdef COPASI_DEBUG
-  mpBoxSubtask->insertItem(mpBoxSubtask->count(), FROM_UTF8(CTaskEnum::TaskName[CTaskEnum::parameterFitting]));
-  mSubtaskMap[CTaskEnum::TaskName[CTaskEnum::parameterFitting]] = CTaskEnum::parameterFitting;
-#endif
+  for (; *pSubtask != CTaskEnum::UnsetTask; ++pSubtask)
+    {
+      mpBoxSubtask->insertItem(mpBoxSubtask->count(), FROM_UTF8(CTaskEnum::TaskName[*pSubtask]));
+      mSubtaskMap[CTaskEnum::TaskName[*pSubtask]] = *pSubtask;
+    }
+
   mpParameters->setItemType(CQFittingItemWidget::OPT_ITEM);
 
   connect(mpParameters, SIGNAL(numberChanged(int)), this, SLOT(slotParameterNumberChanged(int)));

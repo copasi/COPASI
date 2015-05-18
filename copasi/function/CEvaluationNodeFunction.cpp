@@ -1026,8 +1026,17 @@ ASTNode* CEvaluationNodeFunction::toAST(const CCopasiDataModel* pDataModel) cons
         break;
 
       case LOG10:
+      {
+        // log 10 needs two children, the log and the base
         node->setType(AST_FUNCTION_LOG);
+
+        ASTNode* logBase = new ASTNode();
+        logBase->setType(AST_INTEGER);
+        logBase->setValue(10);
+        node->addChild(logBase);
+
         break;
+      }
 
       case EXP:
         node->setType(AST_FUNCTION_EXP);

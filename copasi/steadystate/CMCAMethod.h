@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -20,9 +20,6 @@
 #include "utilities/CCopasiMethod.h"
 #include "utilities/CAnnotatedMatrix.h"
 #include "steadystate/CSteadyStateMethod.h"
-
-#define MCA_OK 0
-#define MCA_SINGULAR 1
 
 class CModel;
 class CSteadyStateTask;
@@ -48,19 +45,13 @@ public:
   /**
    * Copy constructor
    * @param const CMCAMethod & src
-   * @param const CCopasiContainer * pParent (Defailt: NULL)
+   * @param const CCopasiContainer * pParent (Default: NULL)
    */
   CMCAMethod(const CMCAMethod & src,
              const CCopasiContainer * pParent = NULL);
 
   /**
-   * User defined constructor
-   * @param refer to Model and factor
-   */
-  //    CMCAMethod(CModel & model, C_FLOAT64 factor, const CCopasiContainer* pParent);
-
-  /**
-   * Deconstructor
+   * Destructor
    */
   virtual ~CMCAMethod();
 
@@ -79,12 +70,12 @@ public:
   const CMatrix<C_FLOAT64> & getUnscaledConcentrationCC() const
   {return mUnscaledConcCC;}
 
-  int calculateUnscaledConcentrationCC();
+  bool calculateUnscaledConcentrationCC();
 
   const CMatrix<C_FLOAT64> & getUnscaledFluxCC() const
   {return mUnscaledFluxCC;}
 
-  void calculateUnscaledFluxCC(int condition);
+  bool calculateUnscaledFluxCC(const bool & status);
 
   const CMatrix<C_FLOAT64> & getScaledElasticities() const
   {return mScaledElasticities;}
@@ -120,7 +111,12 @@ public:
   /**
    * Scales the coefficients (i.e. Kacser format, rather than Reder)
    */
-  void scaleMCA(int condition, C_FLOAT64 res);
+  bool scaleMCA(const bool & status, C_FLOAT64 res);
+
+  /**
+   * Check whether the summation theorems hold.
+   */
+  bool checkSummationTheorems(const C_FLOAT64 & resolution);
 
   /**
    * Set the Model
@@ -137,7 +133,7 @@ public:
    * @param ss_solution refer to steady-state solution
    * @param refer to the resolution
    */
-  int CalculateMCA(C_FLOAT64 res);
+  bool CalculateMCA(C_FLOAT64 res);
 
   /**
    *
@@ -168,15 +164,19 @@ private:
   void initObjects();
 
   /**
-   * Intialize the method parameter
+   * Initialize the method parameter
    */
   void initializeParameter();
 
-  bool createLinkMatrix();
+  bool createLinkMatrix(const bool & useSmallbone = false);
 
 private:
 
   CModel * mpModel;
+
+  bool * mpUseReeder;
+
+  bool * mpUseSmallbone;
 
   /**
    * MCA Matrices
