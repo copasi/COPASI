@@ -231,8 +231,6 @@ if (ENABLE_GPROF)
   set(CMAKE_EXE_LINKER_FLAGS "-pg")
 endif (ENABLE_GPROF)
   
-find_package(OpenGL)
-
 if ( NOT CLAPACK_FOUND )
   find_package(CLAPACK REQUIRED)
 endif ()
@@ -351,6 +349,9 @@ if (WIN32 AND NOT CYGWIN)
 endif()
 
 if(BUILD_GUI)
+  FIND_LIBRARY(OPENGL_gl_LIBRARY NAMES GL PATHS /usr/lib/x86_64-linux-gnu/mesa)
+  find_package(OpenGL REQUIRED)
+  
   # find Qt4
   find_package(Qt4 4.7.0 REQUIRED QtCore QtOpenGL QtGui QtXml QtWebKit QtNetwork)
   # check for qwt, TODO check if the version is OK
