@@ -44,7 +44,7 @@
       </sizepolicy>
      </property>
      <property name="text">
-      <string>Units</string>
+      <string>Unit</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignRight|Qt::AlignTop|Qt::AlignTrailing</set>

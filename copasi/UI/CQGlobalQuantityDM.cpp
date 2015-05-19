@@ -138,6 +138,9 @@ QVariant CQGlobalQuantityDM::data(const QModelIndex &index, int role) const
               case COL_NAME_GQ:
                 return QVariant(QString(FROM_UTF8(pGQ->getObjectName())));
 
+              case COL_UNIT_GQ:
+                return QVariant(QString(FROM_UTF8(pGQ->getUnit().getDefinition())));
+
               case COL_TYPE_GQ:
                 return QVariant(QString(FROM_UTF8(CModelEntity::StatusName[pGQ->getStatus()])));
 
@@ -199,6 +202,9 @@ QVariant CQGlobalQuantityDM::headerData(int section, Qt::Orientation orientation
 
           case COL_NAME_GQ:
             return QVariant(QString("Name"));
+
+          case COL_UNIT_GQ:
+            return QVariant(QString("Unit"));
 
           case COL_TYPE_GQ:
             return QVariant(QString("     Type     "));

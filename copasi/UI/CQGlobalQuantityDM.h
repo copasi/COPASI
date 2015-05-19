@@ -19,13 +19,14 @@ class UndoSpeciesData;
 class UndoReactionData;
 
 #define COL_NAME_GQ         1
-#define COL_TYPE_GQ         2
-#define COL_INITIAL_GQ      3
-#define COL_TRANSIENT_GQ    4
-#define COL_RATE_GQ         5
-#define COL_IEXPRESSION_GQ  6
-#define COL_EXPRESSION_GQ   7
-#define TOTAL_COLS_GQ       8
+#define COL_UNIT_GQ         2
+#define COL_TYPE_GQ         3
+#define COL_INITIAL_GQ      4
+#define COL_TRANSIENT_GQ    5
+#define COL_RATE_GQ         6
+#define COL_IEXPRESSION_GQ  7
+#define COL_EXPRESSION_GQ   8
+#define TOTAL_COLS_GQ       9
 
 class CQGlobalQuantityDM : public CQBaseDataModel
 {
