@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<!-- Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual -->
+<!-- Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual -->
 <!-- Properties, Inc., University of Heidelberg, and The University -->
 <!-- of Manchester. -->
 <!-- All rights reserved. -->
@@ -361,11 +361,13 @@
   <define name="unit.datatype">
     <element name="Unit">
       <ref name="name.attribute"/>
-      <attribute name="key">
-        <data type="ID">
-          <param name="pattern">Unit_\d+</param>
-        </data>
+      <attribute name="symbol">
+        <data type="string"/>
       </attribute>
+      <ref name="annotation.datatype"/>
+      <element name="Definition">
+        <ref name="expression.simpletype"/>
+      </element>
     </element>
   </define>
   

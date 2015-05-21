@@ -22,18 +22,18 @@
 #define YY_USER_INIT \
     mPosition = 0;
 
-
 #define COMMON_ACTION \
     mPosition += yyleng;
-
+    
 %}
 
 SCALE    [afpnumcdhkMGTP]
 KIND     ([mgsAK#]|cd)
+SI_UNIT  (N|Pa|J|W|C|V|F|\xCE\xA9|O|S|Wb|T|H|lm|lx|Bq|Gy|Sv|ka|l|mol)
 DIGIT    [0-9]
 
 %%
-{SCALE}/{KIND}   %{
+{SCALE}/{KIND}|{SI_UNIT}   %{
   COMMON_ACTION;
   return SCALE;
 %}
@@ -43,7 +43,12 @@ DIGIT    [0-9]
   return KIND;
 %}
 
-{DIGIT}+("."?{DIGIT}*(((e|E)"+"?|(e|E)"-"){DIGIT}+)?)?   %{
+{SI_UNIT} %{
+  COMMON_ACTION;
+  return SI_UNIT;
+%}
+
+"-"?{DIGIT}+("."?{DIGIT}*(((e|E)"+"?|(e|E)"-"){DIGIT}+)?)?   %{
   COMMON_ACTION;
   return NUMBER;
 %}

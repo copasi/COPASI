@@ -29,6 +29,7 @@
 /* yacc Declarations */
 %token SCALE
 %token KIND
+%token SI_UNIT
 %token NUMBER
 %token MULTIPLY
 %token DIVIDE
@@ -39,6 +40,7 @@
 // Precedence
 %left SCALE
 %left KIND
+%left SI_UNIT
 %left NUMBER
 %left MULTIPLY
 %left DIVIDE
@@ -52,6 +54,19 @@
 list_of_components:  component
            {
              $$.pUnit = new CUnit("");
+             $$.pUnit->addComponent($$.component);
+             mData = $$;
+           }
+         | scaled_si_unit
+           { 
+             $$.pUnit = $1.pUnit;
+             mData = $$;
+           }
+         | NUMBER MULTIPLY scaled_si_unit
+           { 
+             $$.component.setKind(CBaseUnit::dimensionless);
+             $$.component.setMultiplier(strToDouble($1.text.c_str(), NULL));
+             $$.pUnit = $3.pUnit;
              $$.pUnit->addComponent($$.component);
              mData = $$;
            }
@@ -71,6 +86,24 @@ list_of_components:  component
              pdelete($1.pUnit);
              pdelete($3.pUnit);
            }
+         | NUMBER DIVIDE list_of_components
+           {
+             $$.component.setKind(CBaseUnit::dimensionless);
+             $$.component.setMultiplier(strToDouble($1.text.c_str(), NULL));
+             $$.pUnit = $3.pUnit;
+             $$.pUnit->exponentiate(-1);
+             $$.pUnit->addComponent($$.component);
+             mData = $$;
+           }
+         | list_of_components DIVIDE NUMBER
+           {
+             $$.component.setKind(CBaseUnit::dimensionless);
+             $$.component.setMultiplier(1.0/strToDouble($1.text.c_str(), NULL));
+             $$.component.setExponent(-1.0);
+             $$.pUnit = $1.pUnit;
+             $$.pUnit->addComponent($$.component);
+             mData = $$;
+           }
          | START_PARENS list_of_components END_PARENS
            {
              $$ = $2;
@@ -84,9 +117,9 @@ list_of_components:  component
            }
 
 component: scaled_kind
-         | NUMBER scaled_kind
+         | NUMBER MULTIPLY scaled_kind
            {
-             $$ = $2;
+             $$ = $3;
              $$.component.setMultiplier(strToDouble($1.text.c_str(), NULL));
            }
 
@@ -99,7 +132,17 @@ scaled_kind: KIND
              $$.component.setScale(CBaseUnit::scaleFromPrefix($1.text));
              $$.component.setKind(CBaseUnit::fromSymbol($2.text));
            }
-;
 
+scaled_si_unit: SI_UNIT
+           {
+             $$.pUnit = new CUnit(CUnit::getSIUnit($1.text));
+           }
+         | SCALE SI_UNIT
+           {
+             $$.component.setKind(CBaseUnit::dimensionless);
+             $$.component.setScale(CBaseUnit::scaleFromPrefix($1.text));
+             $$.pUnit = new CUnit(CUnit::getSIUnit($2.text));
+             $$.pUnit->addComponent($$.component);
+           }
 %%
 

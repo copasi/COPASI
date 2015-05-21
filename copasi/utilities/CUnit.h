@@ -58,6 +58,8 @@ public:
   // String representation of valid quantity units
   static const char * QuantityUnitNames[];
 
+  static CUnit getSIUnit(const std::string & si);
+
   // constructors
   /**
    * Default constructor
