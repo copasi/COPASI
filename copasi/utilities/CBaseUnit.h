@@ -20,14 +20,14 @@ public:
   enum Kind
   {
     // prime numbers to make reliable to quickly calculate if CUnit is dimensionless
-    meter = 2,
-    kilogram = 3,
-    second = 5,
-    ampere = 7,
-    kelvin = 11,
-    item = 13,  // mole can be derived with the current value of Avagadro's Number
-    candela = 17,
-    dimensionless = 19
+    dimensionless = 0,
+    meter,
+    kilogram,
+    second,
+    ampere,
+    kelvin,
+    item,  // mole can be derived with the current value of Avagadro's Number
+    candela
   };
 
   static const std::string getSymbol(Kind kind);
@@ -56,7 +56,6 @@ public:
   };
 
   static const Scale scaleFromPrefix(const std::string & prefix);
-
 };
 
 #endif // CBASEUNIT_H

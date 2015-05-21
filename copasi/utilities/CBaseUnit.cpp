@@ -10,6 +10,9 @@ const std::string CBaseUnit::getSymbol(Kind kind)
 {
   switch (kind)
     {
+      case dimensionless:
+        return "";
+
       case meter:
         return "m";
 
@@ -29,8 +32,10 @@ const std::string CBaseUnit::getSymbol(Kind kind)
         return "cd";
 
       case item:
-      default:
         return "#";
+
+      default:
+        return "";
     }
 }
 
