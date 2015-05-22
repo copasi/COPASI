@@ -87,5 +87,7 @@ set(COPASI_HEADERS ${COPASI_HEADERS} ${HEADERS_CE})
 
 if (BUILD_TESTS)
   add_subdirectory(compareExpressions/stresstest)
-  add_subdirectory(compareExpressions/unittests)
+  
+  # as the tests below pass, i take them out for now 
+  # add_subdirectory(compareExpressions/unittests)
 endif(BUILD_TESTS)
