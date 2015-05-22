@@ -9,14 +9,22 @@
 
 CUnitParserBase::CUnitParserBase():
   mPosition(0),
-  mUnit()
+  mpUnit(NULL)
 {}
 
 CUnitParserBase::~CUnitParserBase()
-{}
+{pdelete(mpUnit)}
 
 const std::set< CUnitComponent > & CUnitParserBase::getComponents() const
-{return mUnit.getComponents();}
+{
+  if (mpUnit != NULL)
+    {
+      return mpUnit->getComponents();
+    }
+
+  static std::set< CUnitComponent > Components;
+  return Components;
+}
 
 void CUnitParserBase::correctErrorPosition()
 {return;}

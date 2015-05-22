@@ -81,12 +81,22 @@ CUnit::CUnit(const std::string & name,
   mComponents()
 {}
 
+CUnit::CUnit(const CBaseUnit::Kind & kind,
+             const CCopasiContainer * pParent):
+  CCopasiContainer(CBaseUnit::Name[kind], pParent, "Unit"),
+  mSymbol(CBaseUnit::getSymbol(kind)),
+  mDefinition(CBaseUnit::getSymbol(kind)),
+  mComponents()
+{
+  mComponents.insert(CUnitComponent(kind));
+};
+
 // copy constructor
 CUnit::CUnit(const CUnit & src,
              const CCopasiContainer * pParent):
   CCopasiContainer(src, pParent),
   mSymbol(src.mSymbol),
-  mDefinition(),
+  mDefinition(src.mDefinition),
   mComponents(src.mComponents)
 {}
 
@@ -387,6 +397,8 @@ bool CUnit::compile()
       mComponents = Parser.getComponents();
     }
 
+  std::cout << *this << std::endl;
+
   return success;
 }
 
@@ -541,4 +553,23 @@ bool CUnit::isEquivalent(const CUnit & rhs) const
     }
 
   return true;
+}
+
+// friend
+std::ostream &operator<<(std::ostream &os, const CUnit & o)
+{
+  os << "Name: " << o.getObjectName() << ", ";
+  os << "Symbol: " << o.mSymbol << ", ";
+  os << "Definition: " << o.mDefinition << ", ";
+  os << "Components: " << std::endl;
+
+  std::set< CUnitComponent >::const_iterator it = o.mComponents.begin();
+  std::set< CUnitComponent >::const_iterator end = o.mComponents.end();
+
+  for (; it != end; ++it)
+    {
+      os << *it;
+    }
+
+  return os;
 }

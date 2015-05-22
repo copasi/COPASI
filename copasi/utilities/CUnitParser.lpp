@@ -8,6 +8,8 @@
 %{
 #include <vector>
 
+#define YYSTYPE CUnitParserBase::Data
+
 #include "copasi.h"
 #include "CUnitParser.h"
 #include "CUnitParser_yacc.hpp"
@@ -20,9 +22,12 @@
 #endif
 
 #define YY_USER_INIT \
+    pdelete(mpUnit); \
     mPosition = 0;
 
 #define COMMON_ACTION \
+    CUnitParserlval.pUnit = NULL; \
+    CUnitParserlval.text = yytext; \
     mPosition += yyleng;
     
 %}
@@ -30,6 +35,7 @@
 SCALE    [afpnumcdhkMGTP]
 KIND     ([mgsAK#]|cd)
 SI_UNIT  (N|Pa|J|W|C|V|F|\xCE\xA9|O|S|Wb|T|H|lm|lx|Bq|Gy|Sv|ka|l|mol)
+ID       (\"([^\\\"]|\\.)*\"|[a-z_A-Z][a-z_A-Z0-9]*)
 DIGIT    [0-9]
 
 %%
@@ -78,6 +84,11 @@ DIGIT    [0-9]
   return EXPONENT;
 %}
 
+{ID}  %{
+  COMMON_ACTION;
+  return USER_DEFINED_UNIT;
+%}
+  
 [ \t\r\n]+ %{
   COMMON_ACTION;
 %} 

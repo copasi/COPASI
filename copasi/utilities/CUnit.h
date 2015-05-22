@@ -19,6 +19,8 @@
 
 class CUnit : public CCopasiContainer
 {
+  friend std::ostream &operator<<(std::ostream &os, const CUnit & o);
+
 public:
   static CUnit EmptyUnit;
 
@@ -70,6 +72,14 @@ public:
         const CCopasiContainer * pParent = NULL);
 
   /**
+   * Default constructor
+   * @param const CBaseUnit::Kind & kind
+   * @param const CCopasiContainer * pParent (default: NULL)
+   */
+  CUnit(const CBaseUnit::Kind & kind,
+        const CCopasiContainer * pParent = NULL);
+
+  /**
    * Copy constructor
    * @param const CUnit & src
    * @param const CCopasiContainer * pParent (default: NULL)
@@ -107,6 +117,7 @@ private:
   std::string mSymbol;
   std::string mDefinition;
   std::set< CUnitComponent > mComponents;
+  std::set< std::string > mUserDefinedSymbols;
 };
 
 #endif // CUNIT_H

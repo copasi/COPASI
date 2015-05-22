@@ -22,13 +22,15 @@ public:
     // prime numbers to make reliable to quickly calculate if CUnit is dimensionless
     dimensionless = 0,
     meter,
-    kilogram,
+    gram,
     second,
     ampere,
     kelvin,
     item,  // mole can be derived with the current value of Avagadro's Number
     candela
   };
+
+  static const char * Name[];
 
   static const std::string getSymbol(Kind kind);
 

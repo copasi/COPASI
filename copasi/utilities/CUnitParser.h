@@ -57,12 +57,11 @@ public:
   struct Data
   {
     CUnit *pUnit;
-    CUnitComponent component;
     std::string text;
   };
 protected:
 
-  CUnit mUnit;
+  CUnit *mpUnit;
   unsigned C_INT32 mPosition;
 };
 
@@ -162,5 +161,7 @@ protected:
   int yy_more_offset;
   int yy_prev_more_offset;
 };
+
+typedef yyYaccParser::Data CChemEqParserlval;
 
 #endif // COPASI_CUnitParser

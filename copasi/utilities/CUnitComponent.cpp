@@ -3,6 +3,7 @@
 // of Manchester.
 // All rights reserved.
 
+#include "copasi.h"
 #include "copasi/utilities/CUnitComponent.h"
 
 CUnitComponent::CUnitComponent(CBaseUnit::Kind kind,
@@ -78,5 +79,16 @@ bool CUnitComponent::operator==(const CUnitComponent& rightSide) const
   return (mKind == rightSide.mKind &&
           mExponent == rightSide.mExponent &&
           mScale == rightSide.mScale &&
-          mMultiplier == mMultiplier);
+          mMultiplier == rightSide.mMultiplier);
+}
+
+// friend
+std::ostream &operator<<(std::ostream &os, const CUnitComponent & o)
+{
+  os << "Kind: " << CBaseUnit::Name[o.mKind] << ", ";
+  os << "Exponent: " << o.mExponent << ", ";
+  os << "Scale: " << o.mScale << ", ";
+  os << "Multiplier: " << o.mMultiplier << std::endl;
+
+  return os;
 }

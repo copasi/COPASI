@@ -14,6 +14,7 @@
 
 class CUnitComponent
 {
+  friend std::ostream &operator<<(std::ostream &os, const CUnitComponent & o);
 
 public:
 

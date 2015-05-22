@@ -4,11 +4,6 @@
 %{
 #define YYSTYPE CUnitParserBase::Data
 
-#ifdef yylval
-# undef yylval
-#endif
-#define yylval mData
-
 #ifdef yyerror
 # undef yyerror
 #endif
@@ -30,6 +25,7 @@
 %token SCALE
 %token KIND
 %token SI_UNIT
+%token USER_DEFINED_UNIT
 %token NUMBER
 %token MULTIPLY
 %token DIVIDE
@@ -41,6 +37,7 @@
 %left SCALE
 %left KIND
 %left SI_UNIT
+%left USER_DEFINED_UNIT
 %left NUMBER
 %left MULTIPLY
 %left DIVIDE
@@ -51,98 +48,97 @@
 /* Grammar follows */
 %%
 
-list_of_components:  component
+compound_unit: unit
            {
-             $$.pUnit = new CUnit("");
-             $$.pUnit->addComponent($$.component);
-             mData = $$;
-           }
-         | scaled_si_unit
-           { 
              $$.pUnit = $1.pUnit;
-             mData = $$;
+             mpUnit = $$.pUnit;
            }
-         | NUMBER MULTIPLY scaled_si_unit
+         | scaled_unit
+           {
+             $$.pUnit = $1.pUnit;
+             mpUnit = $$.pUnit;
+           }
+         | NUMBER MULTIPLY compound_unit
            { 
-             $$.component.setKind(CBaseUnit::dimensionless);
-             $$.component.setMultiplier(strToDouble($1.text.c_str(), NULL));
+             CUnitComponent component;
+             component.setKind(CBaseUnit::dimensionless);
+             component.setMultiplier(strToDouble($1.text.c_str(), NULL));
+             
              $$.pUnit = $3.pUnit;
-             $$.pUnit->addComponent($$.component);
-             mData = $$;
+             $$.pUnit->addComponent(component);
+             mpUnit = $$.pUnit;
            }
-         | list_of_components MULTIPLY list_of_components
+         | compound_unit MULTIPLY compound_unit
            {
              $$.pUnit = new CUnit("");
              *$$.pUnit = *$1.pUnit * *$3.pUnit;
-             mData = $$;
              pdelete($1.pUnit);
              pdelete($3.pUnit);
+             mpUnit = $$.pUnit;
            }
-         | list_of_components DIVIDE list_of_components
+         | compound_unit DIVIDE compound_unit
            {
              $$.pUnit = new CUnit("");
              *$$.pUnit = *$1.pUnit * $3.pUnit->exponentiate(-1);
-             mData = $$;
              pdelete($1.pUnit);
              pdelete($3.pUnit);
+             mpUnit = $$.pUnit;
            }
-         | NUMBER DIVIDE list_of_components
+         | NUMBER DIVIDE compound_unit
            {
-             $$.component.setKind(CBaseUnit::dimensionless);
-             $$.component.setMultiplier(strToDouble($1.text.c_str(), NULL));
+             CUnitComponent component;
+             component.setKind(CBaseUnit::dimensionless);
+             component.setMultiplier(strToDouble($1.text.c_str(), NULL));
+             
              $$.pUnit = $3.pUnit;
              $$.pUnit->exponentiate(-1);
-             $$.pUnit->addComponent($$.component);
-             mData = $$;
+             $$.pUnit->addComponent(component);
+             mpUnit = $$.pUnit;
            }
-         | list_of_components DIVIDE NUMBER
+         | compound_unit DIVIDE NUMBER
            {
-             $$.component.setKind(CBaseUnit::dimensionless);
-             $$.component.setMultiplier(1.0/strToDouble($1.text.c_str(), NULL));
-             $$.component.setExponent(-1.0);
+             CUnitComponent component;
+             component.setKind(CBaseUnit::dimensionless);
+             component.setMultiplier(1.0/strToDouble($1.text.c_str(), NULL));
+             component.setExponent(-1.0);
+             
              $$.pUnit = $1.pUnit;
-             $$.pUnit->addComponent($$.component);
-             mData = $$;
+             $$.pUnit->addComponent(component);
+             mpUnit = $$.pUnit;
            }
-         | START_PARENS list_of_components END_PARENS
+         | START_PARENS compound_unit END_PARENS
            {
              $$ = $2;
-             mData = $$;
+             mpUnit = $$.pUnit;
            }
-         | list_of_components EXPONENT NUMBER
+         | compound_unit EXPONENT NUMBER
            {
              $1.pUnit->exponentiate(strToDouble($3.text.c_str(), NULL));
              $$.pUnit = $1.pUnit; 
-             mData = $$;
+             mpUnit = $$.pUnit;
            }
 
-component: scaled_kind
-         | NUMBER MULTIPLY scaled_kind
+unit:      KIND
            {
-             $$ = $3;
-             $$.component.setMultiplier(strToDouble($1.text.c_str(), NULL));
+             $$.pUnit = new CUnit(CBaseUnit::fromSymbol($1.text));
            }
-
-scaled_kind: KIND
-           {
-             $$.component.setKind(CBaseUnit::fromSymbol($1.text));
-           }
-         | SCALE KIND
-           {
-             $$.component.setScale(CBaseUnit::scaleFromPrefix($1.text));
-             $$.component.setKind(CBaseUnit::fromSymbol($2.text));
-           }
-
-scaled_si_unit: SI_UNIT
+         | SI_UNIT
            {
              $$.pUnit = new CUnit(CUnit::getSIUnit($1.text));
            }
-         | SCALE SI_UNIT
+         | USER_DEFINED_UNIT
            {
-             $$.component.setKind(CBaseUnit::dimensionless);
-             $$.component.setScale(CBaseUnit::scaleFromPrefix($1.text));
-             $$.pUnit = new CUnit(CUnit::getSIUnit($2.text));
-             $$.pUnit->addComponent($$.component);
+             $$.pUnit = new CUnit();
            }
+scaled_unit:  SCALE unit
+           {
+             CUnitComponent component;
+             component.setKind(CBaseUnit::dimensionless);
+             component.setScale(CBaseUnit::scaleFromPrefix($1.text));
+             
+             $$.pUnit = $2.pUnit;
+             $$.pUnit->addComponent(component);
+           }
+           
 %%
 

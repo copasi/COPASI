@@ -4,6 +4,21 @@
 // All rights reserved.
 
 #include "copasi/utilities/CBaseUnit.h"
+#include "copasi/utilities/CCopasiMessage.h"
+
+// static
+const char * CBaseUnit::Name[] =
+{
+  "dimensionless",
+  "meter",
+  "gram",
+  "second",
+  "Ampere",
+  "Kelvin",
+  "item",
+  "Candela",
+  NULL
+};
 
 // static (because CBaseUnit is not meant to be constructed)
 const std::string CBaseUnit::getSymbol(Kind kind)
@@ -16,8 +31,8 @@ const std::string CBaseUnit::getSymbol(Kind kind)
       case meter:
         return "m";
 
-      case kilogram:
-        return "kg";
+      case gram:
+        return "g";
 
       case second:
         return "s";
@@ -44,7 +59,7 @@ const CBaseUnit::Kind CBaseUnit::fromSymbol(const std::string & symbol)
 {
   if (symbol == "m") return meter;
 
-  if (symbol == "kg") return kilogram;
+  if (symbol == "g") return gram;
 
   if (symbol == "s") return second;
 
@@ -54,7 +69,13 @@ const CBaseUnit::Kind CBaseUnit::fromSymbol(const std::string & symbol)
 
   if (symbol == "cd") return candela;
 
-  return item;
+  if (symbol == "#") return item;
+
+  if (symbol == "") return dimensionless;
+
+  fatalError();
+
+  return dimensionless;
 }
 
 // static (because CBaseUnit is not meant to be constructed)
