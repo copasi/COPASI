@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -348,7 +348,7 @@ int main(int argc, char** argv)
                 }
               else
                 {
-                  std::cerr << "Species \"" << *it << "\" neither given in the amounts or the conentration section." << std::endl;
+                  std::cerr << "Species \"" << *it << "\" neither given in the amounts or the concentration section." << std::endl;
                   exit(1);
                 }
             }
@@ -414,6 +414,8 @@ int main(int argc, char** argv)
         {
           std::cerr << CCopasiMessage::getAllMessageText();
         }
+
+      std::cout << "DONE ..." << std::endl;
 
       // create another report that will write to the directory where the input file came from
       // this can be used for debugging
