@@ -165,7 +165,7 @@ def testDir(dir, binFile, source_dir, outDir):
     for refName in glob.glob(refDir + '/*.txt'):
       different = NumDiff.runTest(refName, name, cmpFile, report, testName)
       if different: 
-        print(" ... Dfferent ")
+        print(" ... Different ")
       else:
         print (" ... OK");
 

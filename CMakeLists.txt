@@ -138,12 +138,27 @@ ELSE()
    FORCE)
 ENDIF()
 
-set(TESTING_ENABLED OFF)
+# set test timeout to 3000 as the normal time limit is not sufficient
+# for the comp tests
+SET(DART_TESTING_TIMEOUT "3000" CACHE STRING "" FORCE)
+
+enable_testing()
+if (UNIX)
+    # setup valgrind
+    set(CMAKE_MEMORYCHECK_COMMAND valgrind)
+    set(CMAKE_MEMORYCHECK_COMMAND_OPTIONS
+       "--error-exitcode=1 --trace-children=yes --leak-check=full --show-reachable=yes --leak-resolution=high --track-origins=yes --error-limit=no ")
+
+    set(MEMCHECK_COMMAND
+       "${CMAKE_MEMORYCHECK_COMMAND} ${CMAKE_MEMORYCHECK_COMMAND_OPTIONS}")
+    separate_arguments(MEMCHECK_COMMAND)
+endif()
+
+include(CTest)
+
 if (BUILD_TESTS)
 find_path(CPPUNIT_INCLUDE_DIR cppunit/Test.h )
 find_library(CPPUNIT_LIBRARY NAMES cppunit)
- enable_testing()
- set(TESTING_ENABLED ON)
 endif(BUILD_TESTS)
 
 set (DEFAULT_EXTUNIT OFF)

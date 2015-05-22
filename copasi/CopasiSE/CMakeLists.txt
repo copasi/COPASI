@@ -23,6 +23,7 @@
 #
 ###############################################################################
 
+find_package(PythonInterp)
 
 set(COPSISE_SOURCES CopasiSE.cpp)
 
@@ -46,7 +47,7 @@ target_link_libraries(CopasiSE libCOPASI ${SE_EXTERNAL_LIBS} ${SE_LIBS})
 
 install(TARGETS CopasiSE DESTINATION bin)
 
-if (TESTING_ENABLED AND ENABLE_PYTHON)
+if (PYTHONINTERP_FOUND)
 
 # call python test script 
 add_test(NAME CopasiTestsuite
