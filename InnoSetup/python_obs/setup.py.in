@@ -1,0 +1,101 @@
+## @file    setup.py
+## @brief   Python distutils code for COPASI Python module
+## @author  Frank Bergmann (fbergman@caltech.edu)
+## 
+
+import glob
+import os
+import sys
+import shutil
+import platform
+
+# remove -Wstrict-prototypes (to compile with clang on osx)
+from distutils.sysconfig import get_config_vars
+(opt,) = get_config_vars('OPT')
+if opt != None:
+  os.environ['OPT'] = " ".join(
+      flag for flag in opt.split() if flag != '-Wstrict-prototypes'
+  )
+
+# post processing, if needed here
+shutil.copyfile('./script/COPASI.py', './COPASI/__init__.py')
+
+# figure out the os
+basepath = os.path.abspath('./') + '/'
+current_os = 'LINUX'
+
+#initialize definitions 
+definitions = [('Linux', None)]
+
+# since those are static libraries, order is important
+# order by usage:
+#  -COPASISE, uses all libraries
+#  -SED-ML uses, SBML, which uses expat ...
+#
+libs = ['COPASISE', 'lapack', 'blas','f2c', 'raptor', 'sedml-static', 'sbml-static','expat']
+
+if platform.system() == 'Darwin': 
+  current_os = 'DARWIN'
+
+elif platform.system() == 'Windows':
+  current_os = 'WIN32'
+  libs = ['libblas', 'libexpat', 'libf2c', 'liblapack', 'libraptor', 'libsbml-static', 'libsedml-static']
+
+# the dependencies dir, is just the bin dir from copasi-dependencies
+# additionally the libCOPASISE.a from a build is copied into lib
+dependency_dir = basepath + current_os + '/dependencies-32/'
+
+if sys.maxint > 2147483647:
+  dependency_dir = basepath + current_os + '/dependencies-64/'
+
+# on DARWIN use universal binaries
+if platform.system() == 'Darwin': 
+  dependency_dir = basepath + current_os + '/dependencies/'
+
+lib_dirs = [dependency_dir + 'lib', '/usr/lib']
+
+# the cpp-api folder contains all header files of copasi
+inc_dirs = [dependency_dir + 'include', 
+            basepath + "src",
+            basepath + "src/copasi",  
+            basepath + "cpp-api",
+            basepath + "cpp-api/copasi",  
+            "."]
+
+package_name = '"COPASI"'
+
+definitions += [
+  ('COPASI_SEDML', None),
+  ('HAVE_BLASWRAP_H', None),
+  ('HAVE_CLAPACK_H', None),
+  ('HAVE_MML', None),  
+  ('NO_BLAS_WRAP', None),
+  ('WITH_PE_EVENT_CREATION', None),
+  ('binding_python_lib_EXPORTS', None)
+]
+
+cfiles = [basepath + 'src/copasi_wrapper.cpp' ]
+
+from distutils.core import setup, Extension
+
+setup(name             = "python-copasi", 
+      version          = "@VERSION@",
+      description      = "COPASI Python API",
+      long_description = ("COPASI is a software application for simulation and analysis of biochemical networks and their dynamics. COPASI is a stand-alone program that supports models in the SBML standard and can simulate their behavior using ODEs or Gillespie's stochastic simulation algorithm; arbitrary discrete events can be included in such simulations."),
+      license          = "Artistic License",
+      author           = "COPASI Team",
+      author_email     = "copasi-devel@copasi.org",
+      url              = "http://copasi.org",
+      packages         = ["COPASI"],
+      package_dir      = {'COPASI': 'COPASI'},
+      ext_package      = "COPASI",
+      ext_modules      = [Extension("_COPASI", 
+         sources       = cfiles,
+         define_macros = definitions +  
+                         [(current_os, None)],
+         include_dirs = inc_dirs,
+         libraries = libs,
+         library_dirs = lib_dirs
+      )]
+)
+
