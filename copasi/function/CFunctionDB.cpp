@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -442,34 +442,8 @@ std::vector< CFunction * > CFunctionDB::getUsedFunctions(const CModel* pModel) c
       std::set< const CCopasiObject * > Compartments;
       std::set< const CCopasiObject * > Events;
 
-      pModel->appendDependentModelObjects(Function,
-                                          Reactions, Metabolites, Compartments, Values, Events);
-
-      if (Reactions.size() != 0)
-        {
-          UsedFunctions.push_back(*it);
-          continue;
-        }
-
-      if (Metabolites.size() != 0)
-        {
-          UsedFunctions.push_back(*it);
-          continue;
-        }
-
-      if (Values.size() != 0)
-        {
-          UsedFunctions.push_back(*it);
-          continue;
-        }
-
-      if (Compartments.size() != 0)
-        {
-          UsedFunctions.push_back(*it);
-          continue;
-        }
-
-      if (Events.size() != 0)
+      if (pModel->appendDependentModelObjects(Function,
+                                              Reactions, Metabolites, Compartments, Values, Events))
         {
           UsedFunctions.push_back(*it);
           continue;
