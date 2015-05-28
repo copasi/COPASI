@@ -105,24 +105,37 @@ add_library (libCOPASISE-core OBJECT ${COPASI_SOURCES} ${COPASI_HEADERS})
 add_library (libCOPASISE-static STATIC $<TARGET_OBJECTS:libCOPASISE-core>)
 set_target_properties (libCOPASISE-static PROPERTIES OUTPUT_NAME "COPASISE")
 
-add_library (libCOPASISE-shared SHARED $<TARGET_OBJECTS:libCOPASISE-core>)
-set_target_properties (libCOPASISE-shared PROPERTIES OUTPUT_NAME "COPASISE")
-
 if(ENABLE_COPASI_SEDML)
-target_link_libraries(libCOPASISE-static ${LIBSEDML_LIBRARY})
-target_link_libraries(libCOPASISE-shared ${LIBSEDML_LIBRARY})
+  target_link_libraries(libCOPASISE-static ${LIBSEDML_LIBRARY})
 endif()
 
 target_link_libraries(libCOPASISE-static ${RAPTOR_LIBRARY} ${LIBSBML_LIBRARY} ${EXPAT_LIBRARIES} ${CLAPACK_LIBRARIES})
-target_link_libraries(libCOPASISE-shared ${RAPTOR_LIBRARY} ${LIBSBML_LIBRARY} ${EXPAT_LIBRARIES} ${CLAPACK_LIBRARIES})
 
 #need to link against iconv
 if (NOT (WIN32 AND NOT CYGWIN) AND NOT APPLE)
   if (ICONV_LIBRARIES)
-  target_link_libraries(libCOPASISE-static ${ICONV_LIBRARIES})
-  target_link_libraries(libCOPASISE-shared ${ICONV_LIBRARIES})
+    target_link_libraries(libCOPASISE-static ${ICONV_LIBRARIES})
   endif()
 endif()
+
+if(UNIX AND NOT APPLE)
+  add_library (libCOPASISE-shared SHARED $<TARGET_OBJECTS:libCOPASISE-core>)
+  set_target_properties (libCOPASISE-shared PROPERTIES OUTPUT_NAME "COPASISE")
+
+  if(ENABLE_COPASI_SEDML)
+    target_link_libraries(libCOPASISE-shared ${LIBSEDML_LIBRARY})
+  endif()
+
+  target_link_libraries(libCOPASISE-shared ${RAPTOR_LIBRARY} ${LIBSBML_LIBRARY} ${EXPAT_LIBRARIES} ${CLAPACK_LIBRARIES})
+  
+  #need to link against iconv
+  if (NOT (WIN32 AND NOT CYGWIN) AND NOT APPLE)
+    if (ICONV_LIBRARIES)
+      target_link_libraries(libCOPASISE-shared ${ICONV_LIBRARIES})
+    endif()
+  endif()
+endif (UNIX AND NOT APPLE)
+
 
 # add all directories with libraries to the list of
 # directories the linker searches
