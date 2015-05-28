@@ -202,7 +202,7 @@ if (UNIX)
   set_target_properties (binding_r_lib PROPERTIES SUFFIX ".so")
 endif()
 
-target_link_libraries(binding_r_lib ${SE_EXTERNAL_LIBS} ${SE_LIBS}   ${R_LIB})
+target_link_libraries(binding_r_lib ${SE_LIBS} ${SE_EXTERNAL_LIBS}   ${R_LIB})
 
 ####################################################################
 #

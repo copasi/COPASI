@@ -38,5 +38,5 @@ add_executable(semantic-test-suite ${SOURCES} ${HEADERS})
 install(TARGETS semantic-test-suite DESTINATION bin)
 
 add_dependencies(semantic-test-suite ${SE_DEPENDENCIES}) 
-target_link_libraries(semantic-test-suite ${SE_EXTERNAL_LIBS} ${SE_LIBS} )
+target_link_libraries(semantic-test-suite ${SE_LIBS} ${SE_EXTERNAL_LIBS} )
 

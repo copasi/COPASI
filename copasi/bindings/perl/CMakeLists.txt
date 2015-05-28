@@ -145,7 +145,7 @@ else()
 endif()
 
 
-target_link_libraries(binding_perl_lib ${SE_EXTERNAL_LIBS} ${SE_LIBS}  ${PERL_LIBRARY})
+target_link_libraries(binding_perl_lib ${SE_LIBS} ${SE_EXTERNAL_LIBS}  ${PERL_LIBRARY})
 
 set_target_properties(binding_perl_lib PROPERTIES  OUTPUT_NAME COPASI)
 set_target_properties(binding_perl_lib PROPERTIES  PREFIX "")

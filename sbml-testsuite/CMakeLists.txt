@@ -38,5 +38,5 @@ add_executable(sbml-testsuite ${SOURCES} ${HEADERS})
 install(TARGETS sbml-testsuite DESTINATION bin)
 
 add_dependencies(sbml-testsuite ${SE_DEPENDENCIES}) 
-target_link_libraries(sbml-testsuite ${SE_EXTERNAL_LIBS} ${SE_LIBS} )
+target_link_libraries(sbml-testsuite ${SE_LIBS} ${SE_EXTERNAL_LIBS} )
 

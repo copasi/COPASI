@@ -110,7 +110,7 @@ else()
 	endif()
 endif()
 
-target_link_libraries(binding_python_lib ${SE_EXTERNAL_LIBS} ${SE_LIBS}  ${PYTHON_LIBRARIES})
+target_link_libraries(binding_python_lib ${SE_LIBS} ${SE_EXTERNAL_LIBS}  ${PYTHON_LIBRARIES})
 
 # 
 # Determine the python installation directory

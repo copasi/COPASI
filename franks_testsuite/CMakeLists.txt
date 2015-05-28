@@ -38,5 +38,5 @@ add_executable(franks-testsuite ${SOURCES} ${HEADERS})
 install(TARGETS franks-testsuite DESTINATION bin)
 
 add_dependencies(franks-testsuite ${SE_DEPENDENCIES}) 
-target_link_libraries(franks-testsuite ${SE_EXTERNAL_LIBS} ${SE_LIBS} )
+target_link_libraries(franks-testsuite ${SE_LIBS} ${SE_EXTERNAL_LIBS} )
 
