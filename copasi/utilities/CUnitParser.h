@@ -48,6 +48,8 @@ public:
 
   const std::set< CUnitComponent > & getComponents() const;
 
+  void setAvogadro(const C_FLOAT64 & avogadro);
+
 protected:
   void correctErrorPosition();
 
@@ -63,6 +65,7 @@ protected:
 
   CUnit *mpUnit;
   unsigned C_INT32 mPosition;
+  C_FLOAT64 mAvogadro;
 };
 
 class CUnitParser: public FlexLexer, public yyYaccParser

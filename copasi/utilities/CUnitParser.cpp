@@ -9,7 +9,8 @@
 
 CUnitParserBase::CUnitParserBase():
   mPosition(0),
-  mpUnit(NULL)
+  mpUnit(NULL),
+  mAvogadro(CUnit::Avogadro)
 {}
 
 CUnitParserBase::~CUnitParserBase()
@@ -24,6 +25,11 @@ const std::set< CUnitComponent > & CUnitParserBase::getComponents() const
 
   static std::set< CUnitComponent > Components;
   return Components;
+}
+
+void CUnitParserBase::setAvogadro(const C_FLOAT64 & avogadro)
+{
+  mAvogadro = avogadro;
 }
 
 void CUnitParserBase::correctErrorPosition()

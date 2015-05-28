@@ -659,7 +659,16 @@ bool CModelValue::setUnitDefinition(const std::string & unitDefinition)
       mpUnit = new CUnit();
     }
 
-  return mpUnit->setDefinition(unitDefinition);
+  C_FLOAT64 Avogadro = CUnit::Avogadro;
+
+  const CModel * pModel = static_cast<const CModel *>(getObjectAncestor("Model"));
+
+  if (pModel != NULL)
+    {
+      Avogadro = pModel->getAvogadro();
+    }
+
+  return mpUnit->setDefinition(unitDefinition, Avogadro);
 }
 
 // virtual

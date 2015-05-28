@@ -46,7 +46,8 @@ C_FLOAT64 CUnit::Avogadro(6.02214129e23); // http://physics.nist.gov/cgi-bin/cuu
  */
 
 // static
-CUnit CUnit::getSIUnit(const std::string & si)
+CUnit CUnit::getSIUnit(const std::string & si,
+                       const C_FLOAT64 & avogadro)
 {
   return CUnit();
 }
@@ -377,18 +378,20 @@ std::string CUnit::getSymbol() const
   return mSymbol;
 }
 
-bool CUnit::setDefinition(const std::string & definition)
+bool CUnit::setDefinition(const std::string & definition,
+                          const C_FLOAT64 & avogadro)
 {
   mDefinition = definition;
 
-  return compile();
+  return compile(avogadro);
 }
 
-bool CUnit::compile()
+bool CUnit::compile(const C_FLOAT64 & avogadro)
 {
   // parse the definition into a linked node tree
   std::istringstream buffer(mDefinition);
   CUnitParser Parser(&buffer);
+  Parser.setAvogadro(avogadro);
 
   bool success = (Parser.yyparse() == 0);
 

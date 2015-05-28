@@ -124,7 +124,7 @@ unit:      KIND
            }
          | SI_UNIT
            {
-             $$.pUnit = new CUnit(CUnit::getSIUnit($1.text));
+             $$.pUnit = new CUnit(CUnit::getSIUnit($1.text, mAvogadro));
            }
          | USER_DEFINED_UNIT
            {

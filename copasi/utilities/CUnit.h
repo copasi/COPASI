@@ -60,7 +60,8 @@ public:
   // String representation of valid quantity units
   static const char * QuantityUnitNames[];
 
-  static CUnit getSIUnit(const std::string & si);
+  static CUnit getSIUnit(const std::string & si,
+                         const C_FLOAT64 & avogadro);
 
   // constructors
   /**
@@ -98,14 +99,16 @@ public:
   void setSymbol(const std::string & symbol);
   std::string getSymbol() const;
 
-  bool setDefinition(const std::string & definition);
+  bool setDefinition(const std::string & definition,
+                     const C_FLOAT64 & avogadro);
+
   std::string getDefinition() const;
 
   bool isDimensionless() const;
   void addComponent(const CUnitComponent & component);
   const std::set< CUnitComponent > & getComponents() const;
 
-  bool compile();
+  bool compile(const C_FLOAT64 & avogadro);
 
   CUnit & exponentiate(double exp);
   std::string prefixFromScale(int scale);
