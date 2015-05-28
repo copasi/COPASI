@@ -149,7 +149,7 @@ include(../../CMakeConsoleApp.cmake)
 add_executable(sbml-unittests ${SOURCES})
 
 add_dependencies(sbml-unittests ${SE_DEPENDENCIES}) 
-target_link_libraries(sbml-unittests ${SE_EXTERNAL_LIBS} ${SE_LIBS} ${CPPUNIT_LIBRARY})
+target_link_libraries(sbml-unittests ${SE_LIBS} ${SE_EXTERNAL_LIBS} ${CPPUNIT_LIBRARY})
 
 add_test(NAME run_sbml_unittests COMMAND ${CMAKE_CURRENT_BINARY_DIR}/sbml-unittests )
 #set_tests_properties(run_sbml_unittests PROPERTIES FAIL_REGULAR_EXPRESSION "!!!FAILURES!!!")

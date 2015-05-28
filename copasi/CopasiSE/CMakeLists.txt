@@ -43,7 +43,7 @@ if (BUILD_STATIC_COPASISE)
 endif (BUILD_STATIC_COPASISE) 
 
 add_executable(CopasiSE ${COPSISE_SOURCES})
-target_link_libraries(CopasiSE libCOPASI ${SE_EXTERNAL_LIBS} ${SE_LIBS})
+target_link_libraries(CopasiSE ${SE_LIBS} ${SE_EXTERNAL_LIBS})
 
 install(TARGETS CopasiSE DESTINATION bin)
 

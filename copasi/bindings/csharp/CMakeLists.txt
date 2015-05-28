@@ -138,7 +138,7 @@ add_dependencies(binding_csharp_native_lib binding_csharp_swig)
 
 set_target_properties (binding_csharp_native_lib PROPERTIES OUTPUT_NAME "copasics")
 
-target_link_libraries(binding_csharp_native_lib ${SE_EXTERNAL_LIBS} ${SE_LIBS} )
+target_link_libraries(binding_csharp_native_lib ${SE_LIBS} ${SE_EXTERNAL_LIBS} )
 
 INSTALL(TARGETS binding_csharp_native_lib 
         DESTINATION bindings/csharp

@@ -18,7 +18,7 @@ if(WIN32 AND NOT CYGWIN)
 endif(WIN32 AND NOT CYGWIN)
 
 add_executable(CopasiSBW ${CopasiSBW_UI_FLAGS} ${SBW_SOURCES})
-target_link_libraries(CopasiSBW libCOPASI ${SE_EXTERNAL_LIBS} ${SE_LIBS} ${SBW_LIBRARIES})
+target_link_libraries(CopasiSBW ${SE_LIBS} ${SE_EXTERNAL_LIBS} ${SBW_LIBRARIES})
 
 if (UNIX AND NOT APPLE)
 target_link_libraries(CopasiSBW pthread z)

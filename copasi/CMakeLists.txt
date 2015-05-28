@@ -23,7 +23,7 @@
 #
 ###############################################################################
 
-cmake_minimum_required (VERSION 2.6)
+cmake_minimum_required (VERSION 2.8.8)
 
 
 project (COPASI)
@@ -100,20 +100,27 @@ if (NOT (WIN32 AND NOT CYGWIN) AND NOT APPLE)
   endif()
 endif()
 
+add_library (libCOPASISE-core OBJECT ${COPASI_SOURCES} ${COPASI_HEADERS})
 
-add_library(libCOPASI STATIC ${COPASI_SOURCES} ${COPASI_HEADERS})
-target_link_libraries(libCOPASI ${CLAPACK_LIBRARIES} ${RAPTOR_LIBRARY} ${LIBSBML_LIBRARY} ${EXPAT_LIBRARIES})
-set_target_properties (libCOPASI PROPERTIES OUTPUT_NAME "COPASISE")
+add_library (libCOPASISE-static STATIC $<TARGET_OBJECTS:libCOPASISE-core>)
+set_target_properties (libCOPASISE-static PROPERTIES OUTPUT_NAME "COPASISE")
+
+add_library (libCOPASISE-shared SHARED $<TARGET_OBJECTS:libCOPASISE-core>)
+set_target_properties (libCOPASISE-shared PROPERTIES OUTPUT_NAME "COPASISE")
 
 if(ENABLE_COPASI_SEDML)
-target_link_libraries(libCOPASI ${LIBSEDML_LIBRARY})
+target_link_libraries(libCOPASISE-static ${LIBSEDML_LIBRARY})
+target_link_libraries(libCOPASISE-shared ${LIBSEDML_LIBRARY})
 endif()
 
+target_link_libraries(libCOPASISE-static ${RAPTOR_LIBRARY} ${LIBSBML_LIBRARY} ${EXPAT_LIBRARIES} ${CLAPACK_LIBRARIES})
+target_link_libraries(libCOPASISE-shared ${RAPTOR_LIBRARY} ${LIBSBML_LIBRARY} ${EXPAT_LIBRARIES} ${CLAPACK_LIBRARIES})
 
 #need to link against iconv
 if (NOT (WIN32 AND NOT CYGWIN) AND NOT APPLE)
   if (ICONV_LIBRARIES)
-  target_link_libraries(libCOPASI ${ICONV_LIBRARIES})
+  target_link_libraries(libCOPASISE-static ${ICONV_LIBRARIES})
+  target_link_libraries(libCOPASISE-shared ${ICONV_LIBRARIES})
   endif()
 endif()
 
@@ -132,7 +139,7 @@ mark_as_advanced(BUILD_SE)
 
 if(BUILD_SE)
   add_subdirectory(CopasiSE)
-  add_dependencies(CopasiSE libCOPASI ${SE_DEPENDENCIES})
+  add_dependencies(CopasiSE libCOPASISE-static ${SE_DEPENDENCIES})
 endif(BUILD_SE)
 
 
@@ -257,7 +264,7 @@ include_directories(${LIBSEDML_INCLUDE_DIR})
 endif()
 
 add_library(libCOPASIUI STATIC ${COPASI_UI_SOURCES} ${COPASI_UI_HEADERS} ${HEADERS_UI_FORMS} ${COPASI_RCC_SOURCES} ${HEADERS_UI_MOC})
-target_link_libraries(libCOPASIUI libCOPASI ${OPENGL_glu_LIBRARY} ${QT_QTOPENGL_LIBRARY}  ${QWT_LIBRARY} ${QT_LIBRARIES} ${QT_QTSVG_LIBRARY} ${MML_LIBRARY})
+target_link_libraries(libCOPASIUI libCOPASISE-static ${SBW_LIBRARY} ${QWT_LIBRARY} ${QWTPLOT3D_LIBRARY} ${MML_LIBRARY})
 set_target_properties (libCOPASIUI PROPERTIES OUTPUT_NAME "COPASIUI")
 
   set(UI_LIBS

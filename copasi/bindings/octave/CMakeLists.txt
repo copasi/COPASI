@@ -119,7 +119,7 @@ else()
 	endif()
 endif()
 
-target_link_libraries(binding_octave_lib ${SE_EXTERNAL_LIBS} ${SE_LIBS}  ${OCTAVE_OCTAVE_LIBRARY})
+target_link_libraries(binding_octave_lib ${SE_LIBS} ${SE_EXTERNAL_LIBS}  ${OCTAVE_OCTAVE_LIBRARY})
 
 # 
 # Determine the python installation directory
