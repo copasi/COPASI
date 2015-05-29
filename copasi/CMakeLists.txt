@@ -118,7 +118,7 @@ if (NOT (WIN32 AND NOT CYGWIN) AND NOT APPLE)
   endif()
 endif()
 
-if(UNIX AND NOT APPLE)
+if(ENABLE_LIBCOPASISE_SHARED)
   add_library (libCOPASISE-shared SHARED $<TARGET_OBJECTS:libCOPASISE-core>)
   set_target_properties (libCOPASISE-shared PROPERTIES OUTPUT_NAME "COPASISE")
 
@@ -134,7 +134,7 @@ if(UNIX AND NOT APPLE)
       target_link_libraries(libCOPASISE-shared ${ICONV_LIBRARIES})
     endif()
   endif()
-endif (UNIX AND NOT APPLE)
+endif (ENABLE_LIBCOPASISE_SHARED)
 
 
 # add all directories with libraries to the list of
