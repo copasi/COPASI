@@ -185,6 +185,7 @@ if(ENABLE_COPASI_DEBUG_TRACE)
 endif(ENABLE_COPASI_DEBUG_TRACE)
 
 
+
 # Sven developed an option of scaling the residuals in the parameter estimation
 # by the current simulation value (instead of 0) this removes the bias when
 # using value scaled experimental data.
@@ -339,6 +340,8 @@ if(UNIX)
       endif()
     endif(ENABLE_UNIVERSAL)
   else()
+    option(ENABLE_LIBCOPASISE_SHARED "Enable building of libCOPASISE as shared object." OFF)
+  
     add_definitions(-DLinux)
     if(NOT CYGWIN)
       # on cygwin all code is position independent so -fPIC is not needed
