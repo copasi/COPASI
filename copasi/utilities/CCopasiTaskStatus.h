@@ -10,6 +10,7 @@
 #define __COPASI__CCopasiTaskStatus__
 
 //#include <stdio.h>
+#include <iostream>
 
 //TODO if we don't mind the overhead this could be converted to a CCopasiObject
 
@@ -20,12 +21,49 @@
  */
 class CCopasiTaskStatus
 {
+public:
+
+  /**
+   * An enum that contains all (exclusive) states a task can be in.
+   */
+  enum State
+  {
+    NoState = 0, ///no state assigned
+    OutputDataStructuresInitialized, ///the output annotations were initialized (by updateMatrices())
+    Initialized, ///initialize() completed successfully
+    ProblemCheckfailed, ///the isValidProblem() check failed
+    InitializeFailed, ///initialize() failed for other reasons
+    Started, ///set at the beginning of process()
+    Stopped, ///user has stopped the task (from the GUI)
+    FinishedSuccesfully, ///task completed successfully
+    Failed, ///task failed
+    FailedByParent ///task is completed, but considered failed by parent, e.g. because of constraint violations
+  };
+
+  /**
+   * String literals for the GUI to display states
+   */
+  static const std::string StateString[];
+
+
   CCopasiTaskStatus();
 
   /*virtual*/ void print(std::ostream * ostream) const;
   
-  void setInitialized();
+  void set(State state);
 
+  /**
+   * convenience method: sets status to Initialized or
+   * InitializeFailed, according to the 
+   * success flag.
+   */
+  void setInitialized(bool success);
+
+  const State & getState() const;
+  
+protected:
+
+  State mState;
 
 };
 

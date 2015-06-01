@@ -214,6 +214,7 @@ bool CSteadyStateTask::updateMatrices()
   mEigenvaluesMatrix.resize(size, 2);
   mEigenvaluesXMatrix.resize(sizeX, 2);
 
+  //mStatus.set(CCopasiTaskStatus::OutputDataStructuresInitialized);
   return true;
 }
 
@@ -223,7 +224,11 @@ bool CSteadyStateTask::initialize(const OutputFlag & of,
 {
   assert(mpProblem && mpMethod);
 
-  if (!mpMethod->isValidProblem(mpProblem)) return false;
+  if (!mpMethod->isValidProblem(mpProblem))
+   {
+     //mStatus.set(CCopasiTaskStatus::ProblemCheckfailed);
+     return false;
+   }
 
   bool success = true;
 
@@ -237,52 +242,6 @@ bool CSteadyStateTask::initialize(const OutputFlag & of,
 
   mCalculateReducedSystem = (mpProblem->getModel()->getNumDependentReactionMetabs() != 0);
 
-#ifdef xxxx
-  // init Jacobians
-  size_t sizeX = mpSteadyState->getNumIndependent();
-  mJacobianX.resize(sizeX, sizeX);
-  size_t size = sizeX + mpSteadyState->getNumDependent();
-  mJacobian.resize(size, size);
-
-  //jacobian annotations
-  CStateTemplate & StateTemplate = mpProblem->getModel()->getStateTemplate();
-
-  mpJacobianAnn->resize();
-  CModelEntity **ppEntities = StateTemplate.getEntities();
-  const size_t * pUserOrder = StateTemplate.getUserOrder().array();
-  const size_t * pUserOrderEnd = pUserOrder + StateTemplate.getUserOrder().size();
-
-  pUserOrder++; // We skip the time which is the first.
-
-  size_t i, imax = size;
-
-  for (i = 0; i < imax && pUserOrder != pUserOrderEnd; pUserOrder++)
-    {
-      const CModelEntity::Status & Status = ppEntities[*pUserOrder]->getStatus();
-
-      if (Status == CModelEntity::ODE ||
-          (Status == CModelEntity::REACTIONS && ppEntities[*pUserOrder]->isUsed()))
-        {
-          mpJacobianAnn->setAnnotationCN(0 , i, ppEntities[*pUserOrder]->getCN());
-          mpJacobianAnn->setAnnotationCN(1 , i, ppEntities[*pUserOrder]->getCN());
-
-          i++;
-        }
-    }
-
-  mpJacobianXAnn->resize();
-
-  ppEntities = StateTemplate.beginIndependent();
-  imax = sizeX;
-
-  for (i = 0; i < imax; ++i, ++ppEntities)
-    {
-      mpJacobianXAnn->setAnnotationCN(0 , i, (*ppEntities)->getCN());
-      mpJacobianXAnn->setAnnotationCN(1 , i, (*ppEntities)->getCN());
-    }
-
-#endif
-
   CSteadyStateProblem* pProblem =
     dynamic_cast<CSteadyStateProblem *>(mpProblem);
   assert(pProblem);
@@ -295,6 +254,7 @@ bool CSteadyStateTask::initialize(const OutputFlag & of,
 
   success &= pMethod->initialize(pProblem);
 
+  //mStatus.setInitialized(success);
   return success;
 }
 
