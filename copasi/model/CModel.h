@@ -1592,6 +1592,11 @@ public:
    */
   CMathContainer * getMathContainer();
 #endif // USE_MATH_CONTAINER
+  
+  //bool prepareSymbolicJacobian();
+  
+  CEvaluationNode* prepareElasticity(const CReaction * pReaction, const CModelEntity* pVar, bool simplify);
+
 };
 
 #endif // CModel

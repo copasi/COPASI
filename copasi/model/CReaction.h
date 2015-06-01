@@ -463,6 +463,8 @@ public:
 
   void printDebug() const;
 
+  const CFunctionParameterMap & getMap() const;
+
   /**
    * Set whether the reaction is to be treated as fast
    * @param const bool & fast
