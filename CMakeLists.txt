@@ -459,6 +459,7 @@ endif(ENABLE_MML)
 
 option (BUILD_SEMANTIC_TESTSUITE "Build the program to run the SBML semantic testsuite." OFF)
 option (BUILD_STEADY_STATE_RUNNER "Build the program to run the comparisons on steady state results." OFF)
+option (BUILD_MCA_RUNNER "Build the program to run the comparisons on MCA results." OFF)
 option (BUILD_SBML_TESTSUITE "Build the program to run the new SBML testsuite." OFF)
 option (BUILD_STOCHASTIC_TESTSUITE "Build the program to run the SBML stochastic testsuite." OFF)
 option (BUILD_FRANKS_TESTSUITE "Build the program to run the Frank Bergmann's SBML tests." OFF)
@@ -468,6 +469,7 @@ mark_as_advanced(BUILD_TESTS)
 
 mark_as_advanced(BUILD_SEMANTIC_TESTSUITE)
 mark_as_advanced(BUILD_STEADY_STATE_RUNNER)
+mark_as_advanced(BUILD_MCA_RUNNER)
 mark_as_advanced(BUILD_SBML_TESTSUITE)
 mark_as_advanced(BUILD_STOCHASTIC_TESTSUITE)
 mark_as_advanced(BUILD_FRANKS_TESTSUITE)
@@ -657,6 +659,11 @@ if(BUILD_STEADY_STATE_RUNNER)
 add_subdirectory(steady_state_test_wrapper)
 endif (BUILD_STEADY_STATE_RUNNER)
 
+if(BUILD_MCA_RUNNER)
+add_subdirectory(mca_test_wrapper)
+endif (BUILD_MCA_RUNNER)
+
+
 if(BUILD_HYB_ODE_TESTS)
 if (EXISTS ${CMAKE_SOURCE_DIR}/hyb-ode-test-suite)
 add_subdirectory(hyb-ode-test-suite)
@@ -762,6 +769,7 @@ message(STATUS "-----------------------------------------------------------
    Semantic Testsuite      = ${BUILD_SEMANTIC_TESTSUITE}
    Stochastic Testsuite    = ${BUILD_STOCHASTIC_TESTSUITE}
    Steady State TestRunner = ${BUILD_STEADY_STATE_RUNNER}
+   MCA TestRunner          = ${BUILD_MCA_RUNNER}
 
 -----------------------------------------------------------
 ")
