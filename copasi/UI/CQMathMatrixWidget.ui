@@ -47,6 +47,26 @@
        <string>Link Matrix</string>
       </attribute>
      </widget>
+     <widget class="QWidget" name="tab">
+      <attribute name="title">
+       <string notr="true">Deriv test</string>
+      </attribute>
+      <layout class="QGridLayout" name="gridLayout_2">
+       <item row="0" column="0">
+        <widget class="QPushButton" name="mpDerivButton">
+         <property name="text">
+          <string>Deriv</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QtMmlWidget" name="mpMML" native="true"/>
+       </item>
+       <item row="2" column="0">
+        <widget class="QtMmlWidget" name="mpMML2" native="true"/>
+       </item>
+      </layout>
+     </widget>
     </widget>
    </item>
   </layout>
@@ -56,6 +76,12 @@
    <class>CQArrayAnnotationsWidget</class>
    <extends>QWidget</extends>
    <header>copasi/UI/CQArrayAnnotationsWidget.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QtMmlWidget</class>
+   <extends>QWidget</extends>
+   <header location="global">qtmmlwidget.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <resources/>

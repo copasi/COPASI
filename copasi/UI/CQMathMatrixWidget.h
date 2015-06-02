@@ -43,6 +43,9 @@ public:
 
 protected slots:
 
+  /// This contains code for displaying test results for symbolic differentiation
+  void slotDerivButtonPressed();
+
 protected:
   virtual bool enterProtected();
   void loadMatrices();
