@@ -4,6 +4,7 @@
 // All rights reserved.
 
 #include <math.h>
+#include <string.h>
 #include <algorithm>
 
 #include "copasi/utilities/CUnit.h"
@@ -11,6 +12,10 @@
 #include "copasi/report/CKeyFactory.h"
 #include "copasi/report/CCopasiRootContainer.h"
 #include "copasi/model/CModel.h"
+#include "copasi/xml/CCopasiXMLInterface.h"
+#include "copasi/utilities/CUnitParser.h"
+
+#include "CCopasiException.h"
 
 // static
 CUnit CUnit::EmptyUnit;
@@ -38,18 +43,80 @@ C_FLOAT64 CUnit::Avogadro(6.02214129e23); // http://physics.nist.gov/cgi-bin/cuu
  * lumen      lm       cd
  * lux        lx       m^-2·cd
  * becquerel  Bq       s^-1
- * gray       Gy       m2·s^-2
- * sievert    Sv       m2·s^-2
+ * gray       Gy       m^2·s^-2
+ * sievert    Sv       m^2·s^-2
  * katal      ka       s^-1·mol
  * liter      l        0.001·m^3
  * mole       mol      Avogadro·#
  */
 
+// SI Name, Symbol, Definition
+struct SIUnit
+{
+  char * name;
+  char * symbol;
+  char * definition;
+};
+
+SIUnit SIUnits[] =
+{
+  {"hertz",      "Hz",       "s^-1"},
+  {"newton",     "N",        "m*kg*s^-2"},
+  {"pascal",     "Pa",       "m^-1*kg*s^-2"},
+  {"joule",      "J",        "m^2*kg*s^-2"},
+  {"watt",       "W",        "m^2*kg*s^-3"},
+  {"coulomb",    "C",        "s*A"},
+  {"volt",       "V",        "m^2*kg*s^-3*A^-1"},
+  {"farad",      "F",        "m^-2*kg^-1*s^4*A^2"},
+  {"ohm",        "\xCE\xA9", "m^2*kg*s^-3*A^-2"},    // Use this symbol for presentation and parsing
+  {"ohm",        "O",        "m^2*kg*s^-3*A^-2"},    // Use this symbol for parsing only
+  {"siemens",    "S",        "m^-2*kg^-1*s3*A^2"},
+  {"weber",      "Wb",       "m2*kg*s^-2*A^-1"},
+  {"tesla",      "T",        "kg*s^-2*A^-1"},
+  {"henry",      "H",        "m2*kg*s^-2*A^-2"},
+  {"lumen",      "lm",       "cd"},
+  {"lux",        "lx",       "m^-2*cd"},
+  {"becquerel",  "Bq",       "s^-1"},
+  {"gray",       "Gy",       "m^2*s^-2"},
+  {"sievert",    "Sv",       "m^2*s^-2"},
+  {"katal",      "ka",       "s^-1*mol"},
+  {"liter",      "l",        "0.001*m^3"},
+  {"mole",       "mol",      "Avogadro*#"},
+
+  // This must be the last element of the SI unit list! Do not delete!
+  {NULL,         NULL,        NULL}
+};
+
 // static
 CUnit CUnit::getSIUnit(const std::string & si,
                        const C_FLOAT64 & avogadro)
 {
-  return CUnit();
+  SIUnit * pSIUnit = SIUnits;
+
+  while (pSIUnit->name && strcmp(pSIUnit->symbol, si.c_str()) != 0)
+    ++pSIUnit;
+
+  if (!pSIUnit->name)
+    fatalError();
+
+  std::ostringstream buffer;
+
+  if (pSIUnit->symbol != "mol")
+    {
+      buffer << pSIUnit->definition;
+    }
+  else
+    {
+      buffer << CCopasiXMLInterface::DBL(avogadro) << "*#";
+    }
+
+  CUnit SIunit = CUnit();
+
+  SIunit.setObjectName(pSIUnit->name);
+  SIunit.setSymbol(pSIUnit->symbol);
+  SIunit.setDefinition(buffer.str(), avogadro);
+
+  return SIunit;
 }
 
 const char * CUnit::VolumeUnitNames[] =
@@ -90,7 +157,7 @@ CUnit::CUnit(const CBaseUnit::Kind & kind,
   mComponents()
 {
   mComponents.insert(CUnitComponent(kind));
-};
+}
 
 // copy constructor
 CUnit::CUnit(const CUnit & src,
