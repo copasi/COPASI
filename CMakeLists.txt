@@ -347,9 +347,12 @@ if (WIN32 AND NOT CYGWIN)
 endif()
 
 if(BUILD_GUI)
-  FIND_LIBRARY(OPENGL_gl_LIBRARY NAMES GL PATHS /usr/lib/x86_64-linux-gnu/mesa)
+  if (UNIX AND NOT APPLE)
+    FIND_LIBRARY(OPENGL_gl_LIBRARY NAMES GL PATHS /usr/lib/x86_64-linux-gnu/mesa)
+  endif (UNIX AND NOT APPLE)
+
   find_package(OpenGL REQUIRED)
-  
+
   # find Qt4
   find_package(Qt4 4.7.0 REQUIRED QtCore QtOpenGL QtGui QtXml QtWebKit QtNetwork)
   # check for qwt, TODO check if the version is OK
