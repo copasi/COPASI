@@ -395,10 +395,10 @@ CEvaluationNode* CDerive::deriveBranch(const CEvaluationNode* node, const CCopas
                                                   multiply(pRightDeriv, funcNode, simplify),
                                                   simplify);
 
-            // b*a   + a*b  * ln a
+            // b*a + a*b * ln a
             CEvaluationNode * plusNode = add(tmpNode, tmpNode2, simplify);
 
-            // a^(b-1)*(b*a   + a*b   * ln a)
+            // a^(b-1)*(b*a + a*b * ln a)
             return multiply(powerNode, plusNode, simplify);
           }
           break;
@@ -462,7 +462,7 @@ CEvaluationNode* CDerive::deriveBranch(const CEvaluationNode* node, const CCopas
           CEvaluationNode* damount = deriveBranch(amount, pObject, env, pTree, simplify);
           CEvaluationNode* dvolume = deriveBranch(volume, pObject, env, pTree, simplify);
 
-          // A  /V - A*V  /V^2
+          // A / V - A*V /V^2
           return
             subtract(divide(damount, volume, simplify),
                      divide(multiply(amount, dvolume, simplify),
