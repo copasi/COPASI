@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -76,6 +76,14 @@ public:
    * @return bool success
    */
   virtual bool setInfix(const std::string & infix);
+
+  /**
+   * Function to set the infix description of the tree and (optionally) compile it.
+   * @param const std::string & infix
+   * @param bool compile, boolean indicating whether the expression ought to be compiled
+   * @return bool success
+   */
+  virtual bool setInfix(const std::string & infix, bool compile);
 
   /**
    * Comparison operator
