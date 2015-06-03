@@ -1673,7 +1673,14 @@ void CCopasiXMLParser::ModelElement::start(const XML_Char *pszName,
         ModelType = toEnum(mParser.getAttributeValue("type", papszAttrs, "deterministic"),
                            CModel::ModelTypeNames, CModel::deterministic);
 
-        Avogadro = CCopasiXMLInterface::DBL(mParser.getAttributeValue("avogadroConstant", papszAttrs, CUnit::Avogadro));
+        {
+          const char * tmp = mParser.getAttributeValue("avogadroConstant", papszAttrs, false);
+
+          if (tmp == NULL)
+            Avogadro = CUnit::Avogadro;
+          else
+            Avogadro = CCopasiXMLInterface::DBL(tmp);
+        }
 
         if (!mCommon.pModel) mCommon.pModel = new CModel(mCommon.pDataModel);
 
@@ -4781,9 +4788,9 @@ void CCopasiXMLParser::KineticLawElement::end(const XML_Char *pszName)
 
         {
           std::map< std::string, std::vector< std::string > >::const_iterator it
-          = mCommon.SourceParameterKeys.begin();
+            = mCommon.SourceParameterKeys.begin();
           std::map< std::string, std::vector< std::string > >::const_iterator end
-          = mCommon.SourceParameterKeys.end();
+            = mCommon.SourceParameterKeys.end();
 
           for (; it != end; ++it)
             if (it->second.size() > 0)
