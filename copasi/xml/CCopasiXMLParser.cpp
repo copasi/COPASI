@@ -1117,7 +1117,11 @@ void CCopasiXMLParser::FunctionElement::end(const XML_Char *pszName)
         if (mCommon.pFunction != NULL)
           {
             if (!mCommon.mPredefinedFunction)
-              mCommon.pFunction->setInfix(mCommon.CharacterData);
+              {
+                // do not yet compile the function as it might depend on elements not
+                // read yet
+                mCommon.pFunction->setInfix(mCommon.CharacterData, false);
+              }
           }
         else if (mCommon.mpExpression != NULL)
           {
