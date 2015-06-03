@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -198,6 +198,7 @@ bool CSteadyStateTask::updateMatrices()
   mEigenvaluesMatrix.resize(size, 2);
   mEigenvaluesXMatrix.resize(sizeReduced, 2);
 
+  //mStatus.set(CCopasiTaskStatus::OutputDataStructuresInitialized);
   return true;
 }
 

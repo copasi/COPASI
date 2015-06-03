@@ -134,7 +134,7 @@ endif()
 
 install(TARGETS binding_java_lib DESTINATION bindings/java )
 
-target_link_libraries(binding_java_lib ${SE_EXTERNAL_LIBS} ${SE_LIBS} )
+target_link_libraries(binding_java_lib ${SE_LIBS} ${SE_EXTERNAL_LIBS} )
 
 SET(COPASI_JAR ${CMAKE_CURRENT_BINARY_DIR}/copasi.jar)
 SET(COPASI_GUI_JAR ${CMAKE_CURRENT_BINARY_DIR}/copasi-gui.jar)

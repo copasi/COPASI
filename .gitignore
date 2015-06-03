@@ -34,3 +34,4 @@ CMakeLists.txt.user*
 COPASI.kdev4
 copasi/copasi.pro.user
 *~
+/Tools/*.pyc

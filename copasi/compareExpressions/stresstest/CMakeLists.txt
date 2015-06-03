@@ -43,6 +43,6 @@ include(../../CMakeConsoleApp.cmake)
 add_executable(compareExpressions-stresstest ${SOURCES} ${HEADERS})
 
 add_dependencies(compareExpressions-stresstest ${SE_DEPENDENCIES}) 
-target_link_libraries(compareExpressions-stresstest ${SE_EXTERNAL_LIBS} ${SE_LIBS} ${CPPUNIT_LIBRARY})
+target_link_libraries(compareExpressions-stresstest ${SE_LIBS} ${SE_EXTERNAL_LIBS} ${CPPUNIT_LIBRARY})
 
 add_test(run_compareExpressions_stresstest compareExpressions-stresstest)

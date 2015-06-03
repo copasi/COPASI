@@ -23,6 +23,7 @@
 #
 ###############################################################################
 
+find_package(PythonInterp)
 
 set(COPSISE_SOURCES CopasiSE.cpp)
 
@@ -42,6 +43,18 @@ if (BUILD_STATIC_COPASISE)
 endif (BUILD_STATIC_COPASISE) 
 
 add_executable(CopasiSE ${COPSISE_SOURCES})
-target_link_libraries(CopasiSE libCOPASI ${SE_EXTERNAL_LIBS} ${SE_LIBS})
+target_link_libraries(CopasiSE ${SE_LIBS} ${SE_EXTERNAL_LIBS})
 
 install(TARGETS CopasiSE DESTINATION bin)
+
+if (PYTHONINTERP_FOUND)
+
+# call python test script 
+add_test(NAME CopasiTestsuite
+         COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_SOURCE_DIR}/Tools/RunTests.py "$<TARGET_FILE:CopasiSE>"  ${CMAKE_CURRENT_BINARY_DIR}/CURRENT_BUILD ${CMAKE_SOURCE_DIR}/COPASI_TestSuite/Tests
+         
+)
+set_tests_properties(CopasiTestsuite PROPERTIES FAIL_REGULAR_EXPRESSION "ifferent")	
+
+endif()
+

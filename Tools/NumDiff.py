@@ -1,17 +1,6 @@
-# Begin CVS Header 
-#   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/Tools/NumDiff.py,v $ 
-#   $Revision: 1.5 $ 
-#   $Name:  $ 
-#   $Author: pwilly $ 
-#   $Date: 2008/11/03 11:56:17 $ 
-# End CVS Header 
-
-# Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
-# Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-# and The University of Manchester. 
-# All rights reserved. 
-
 #! /usr/bin/env python
+
+
 
 # NumDiff, a python script for writing numerical differences between two files
 
@@ -40,7 +29,7 @@ def itos(integer):
 def fopen(fname):
   try:
     return open(fname, 'U')
-  except IOError, detail:
+  except (IOError) as detail:
     return fail("Couldn't open " + fname + ": " + str(detail))
 
 # --- Get Index Line ---
@@ -71,7 +60,7 @@ def takeImportantThings_python(ename, aname, dname):
   dataFile1 = [] 
   dataFile2 = [] 
   for line in difflib.unified_diff(a, b):
-    print line
+    #print line
     if string.find(line, '-') == 0:
       dataFile1.append(line)
     
@@ -79,8 +68,8 @@ def takeImportantThings_python(ename, aname, dname):
     if string.find(line, '+') == 0:
       dataFile2.append(line)
 
-  print '\n\nData from file 1 = ', dataFile1
-  print '\n\nData from file 2 = ', dataFile2
+  #print '\n\nData from file 1 = ', dataFile1
+  #print '\n\nData from file 2 = ', dataFile2
 
   expData = []
   actData = []
@@ -175,11 +164,11 @@ def takeImportantThings_python(ename, aname, dname):
       ref = expData[idx]
 
       if len(value[idxAux]) != len(value[idxAux+1]):
-        print 'len(value[idxAux]) = ', len(value[idxAux]), ' -vs- len(value[idxAux+1]) = ', len(value[idxAux+1]) 
+        print ('len(value[idxAux]) = ', len(value[idxAux]), ' -vs- len(value[idxAux+1]) = ', len(value[idxAux+1]) )
         exit()
 
       absErr, relErr, idxField = calcError( value[idxAux], value[idxAux+1], ref )
-      print '-'*100
+      #print '-'*100
 
       diffExists = False
 
@@ -222,8 +211,8 @@ def calcError(listValue0, listValue1, ref):
 
   absErr = []; relErr = []
 
-  print 'listValue0 = ', listValue0
-  print 'listValue1 = ', listValue1
+  #print 'listValue0 = ', listValue0
+  #print 'listValue1 = ', listValue1
 
   # len(listValue0) = len(listValue1)
   for ij in range(0, len(listValue1)):
@@ -235,12 +224,12 @@ def calcError(listValue0, listValue1, ref):
       absolute = 0.0; relative = 0.0
     else:
       absolute = abs(value0 - value1)
-      print 'val0 = ', value0, ' - val1 = ', value1 
+      #print 'val0 = ', value0, ' - val1 = ', value1 
       relative = absolute / max(abs(value0), abs(value1))
 
     relErr.append(relative)
     absErr.append(absolute)
-	
+
   relErrMax = max(relErr)
   absErrMax = max(absErr)
   idxRelErr = relErr.index(relErrMax)
@@ -248,9 +237,9 @@ def calcError(listValue0, listValue1, ref):
   refSplit = ref.split()
   setRef = set(refSplit)
 
-  print 'absErr = ', absErr, ' -> max ', absErrMax, ' -> idx = ', idxAbsErr
-  print 'relErr = ', relErr, ' -> max ', relErrMax, ' -> idx = ', idxRelErr
-  print 'corr. listValue0 = ', listValue0[idxAbsErr] 
+  #print 'absErr = ', absErr, ' -> max ', absErrMax, ' -> idx = ', idxAbsErr
+  #print 'relErr = ', relErr, ' -> max ', relErrMax, ' -> idx = ', idxRelErr
+  #print 'corr. listValue0 = ', listValue0[idxAbsErr] 
 
   if listValue0[idxAbsErr] in setRef:
     idxField = -1
@@ -264,14 +253,7 @@ def calcError(listValue0, listValue1, ref):
 
 # --- Main Function ---
 
-def main(args):  
-
-  if len(args) < 5:
-    return fail("Need 5 args: <exp_result> <actual_result> <cmp_result> <report> <testName>")
-
-  expResult, actResult, tmpResult, report, testName = args
-
-#  print '\nexp: ', expResult, '\nact: ', actResult, '\ntmpResult: ', tmpResult, '\nreport: ', report, '\ntestName', testName
+def runTest(expResult, actResult, tmpResult, report, testName):
 
   takeImportantThings_python(expResult, actResult, tmpResult)
 
@@ -282,7 +264,9 @@ def main(args):
   repFile = open(report, 'a') 
 
   # there exists difference value(s)
-  if size > 0:
+  differenceFound = size > 0;
+
+  if differenceFound:
 
     # take info
     file = open(endResult, 'r')
@@ -311,11 +295,20 @@ def main(args):
     repFile.write(testName + '\t...\tOK\n')
 
   repFile.close()
+  
+  return differenceFound
 
-  print 'ENDE'
+def main(args):  
+
+  if len(args) < 5:
+    return fail("Need 5 args: <exp_result> <actual_result> <cmp_result> <report> <testName>")
+
+  expResult, actResult, tmpResult, report, testName = args
+  runTest(expResult, actResult, tmpResult, report, testName)
+#  print '\nexp: ', expResult, '\nact: ', actResult, '\ntmpResult: ', tmpResult, '\nreport: ', report, '\ntestName', testName
 
 
 if __name__ == '__main__':
-  print '--- Running NumDiff.py ---'
+  print ('--- Running NumDiff.py ---')
   args = sys.argv[1:]
   main(args)  

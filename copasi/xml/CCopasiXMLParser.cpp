@@ -1117,7 +1117,11 @@ void CCopasiXMLParser::FunctionElement::end(const XML_Char *pszName)
         if (mCommon.pFunction != NULL)
           {
             if (!mCommon.mPredefinedFunction)
-              mCommon.pFunction->setInfix(mCommon.CharacterData);
+              {
+                // do not yet compile the function as it might depend on elements not
+                // read yet
+                mCommon.pFunction->setInfix(mCommon.CharacterData, false);
+              }
           }
         else if (mCommon.mpExpression != NULL)
           {
@@ -1673,7 +1677,14 @@ void CCopasiXMLParser::ModelElement::start(const XML_Char *pszName,
         ModelType = toEnum(mParser.getAttributeValue("type", papszAttrs, "deterministic"),
                            CModel::ModelTypeNames, CModel::deterministic);
 
-        Avogadro = CCopasiXMLInterface::DBL(mParser.getAttributeValue("avogadroConstant", papszAttrs, CUnit::Avogadro));
+        {
+          const char * tmp = mParser.getAttributeValue("avogadroConstant", papszAttrs, false);
+
+          if (tmp == NULL)
+            Avogadro = CUnit::Avogadro;
+          else
+            Avogadro = CCopasiXMLInterface::DBL(tmp);
+        }
 
         if (!mCommon.pModel) mCommon.pModel = new CModel(mCommon.pDataModel);
 

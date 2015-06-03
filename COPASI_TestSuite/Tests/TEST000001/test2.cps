@@ -84,7 +84,7 @@
       </Method>
     </Task>
     <Task key="Task_1" name="Time-Course" type="timeCourse" scheduled="true" updateModel="false">
-      <Report reference="Report_7" target="test2.txt" append="0"/>
+      <Report reference="Report_7" target="test2_result.txt" append="0"/>
       <Problem>
         <Parameter name="StepNumber" type="unsignedInteger" value="100"/>
         <Parameter name="StepSize" type="float" value="0.1"/>

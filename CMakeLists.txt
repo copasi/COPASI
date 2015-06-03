@@ -138,10 +138,27 @@ ELSE()
    FORCE)
 ENDIF()
 
+# set test timeout to 3000 as the normal time limit is not sufficient
+# for the comp tests
+SET(DART_TESTING_TIMEOUT "3000" CACHE STRING "" FORCE)
+
+enable_testing()
+if (UNIX)
+    # setup valgrind
+    set(CMAKE_MEMORYCHECK_COMMAND valgrind)
+    set(CMAKE_MEMORYCHECK_COMMAND_OPTIONS
+       "--error-exitcode=1 --trace-children=yes --leak-check=full --show-reachable=yes --leak-resolution=high --track-origins=yes --error-limit=no ")
+
+    set(MEMCHECK_COMMAND
+       "${CMAKE_MEMORYCHECK_COMMAND} ${CMAKE_MEMORYCHECK_COMMAND_OPTIONS}")
+    separate_arguments(MEMCHECK_COMMAND)
+endif()
+
+include(CTest)
+
 if (BUILD_TESTS)
 find_path(CPPUNIT_INCLUDE_DIR cppunit/Test.h )
 find_library(CPPUNIT_LIBRARY NAMES cppunit)
- enable_testing()
 endif(BUILD_TESTS)
 
 set (DEFAULT_EXTUNIT OFF)
@@ -166,6 +183,7 @@ option(ENABLE_COPASI_DEBUG_TRACE "Enable COPASI Debug Tracing" ${DEFAULT_DEBUG_T
 if(ENABLE_COPASI_DEBUG_TRACE)
   add_definitions(-DCOPASI_DEBUG_TRACE)
 endif(ENABLE_COPASI_DEBUG_TRACE)
+
 
 
 # Sven developed an option of scaling the residuals in the parameter estimation
@@ -226,8 +244,6 @@ if (ENABLE_GPROF)
   set(CMAKE_EXE_LINKER_FLAGS "-pg")
 endif (ENABLE_GPROF)
   
-find_package(OpenGL)
-
 if ( NOT CLAPACK_FOUND )
   find_package(CLAPACK REQUIRED)
 endif ()
@@ -319,6 +335,8 @@ if(UNIX)
       endif()
     endif(ENABLE_UNIVERSAL)
   else()
+    option(ENABLE_LIBCOPASISE_SHARED "Enable building of libCOPASISE as shared object." OFF)
+  
     add_definitions(-DLinux)
     if(NOT CYGWIN)
       # on cygwin all code is position independent so -fPIC is not needed
@@ -346,6 +364,12 @@ if (WIN32 AND NOT CYGWIN)
 endif()
 
 if(BUILD_GUI)
+  if (UNIX AND NOT APPLE)
+    FIND_LIBRARY(OPENGL_gl_LIBRARY NAMES GL PATHS /usr/lib/x86_64-linux-gnu/mesa)
+  endif (UNIX AND NOT APPLE)
+
+  find_package(OpenGL REQUIRED)
+
   # find Qt4
   find_package(Qt4 4.7.0 REQUIRED QtCore QtOpenGL QtGui QtXml QtWebKit QtNetwork)
   # check for qwt, TODO check if the version is OK
@@ -390,7 +414,7 @@ include(CMakeDependentOption)
 # for the language bindings we need swig
 option (ENABLE_CSHARP "Enable language bindings for the C# language." OFF)
 option (ENABLE_JAVA "Enable language bindings for the Java language." OFF)
-option (ENABLE_PYTHON "Enable language bindings for the Python language.")
+option (ENABLE_PYTHON "Enable language bindings for the Python language." OFF)
 option (ENABLE_PERL "Enable language bindings for the Perl language." OFF)
 option (ENABLE_OCTAVE "Enable language bindings for the Octave language." OFF)
 option (ENABLE_R "Enable language bindings for the R language." OFF)
@@ -433,6 +457,7 @@ endif(ENABLE_MML)
 
 option (BUILD_SEMANTIC_TESTSUITE "Build the program to run the SBML semantic testsuite." OFF)
 option (BUILD_STEADY_STATE_RUNNER "Build the program to run the comparisons on steady state results." OFF)
+option (BUILD_MCA_RUNNER "Build the program to run the comparisons on MCA results." OFF)
 option (BUILD_SBML_TESTSUITE "Build the program to run the new SBML testsuite." OFF)
 option (BUILD_STOCHASTIC_TESTSUITE "Build the program to run the SBML stochastic testsuite." OFF)
 option (BUILD_FRANKS_TESTSUITE "Build the program to run the Frank Bergmann's SBML tests." OFF)
@@ -442,6 +467,7 @@ mark_as_advanced(BUILD_TESTS)
 
 mark_as_advanced(BUILD_SEMANTIC_TESTSUITE)
 mark_as_advanced(BUILD_STEADY_STATE_RUNNER)
+mark_as_advanced(BUILD_MCA_RUNNER)
 mark_as_advanced(BUILD_SBML_TESTSUITE)
 mark_as_advanced(BUILD_STOCHASTIC_TESTSUITE)
 mark_as_advanced(BUILD_FRANKS_TESTSUITE)
@@ -631,6 +657,11 @@ if(BUILD_STEADY_STATE_RUNNER)
 add_subdirectory(steady_state_test_wrapper)
 endif (BUILD_STEADY_STATE_RUNNER)
 
+if(BUILD_MCA_RUNNER)
+add_subdirectory(mca_test_wrapper)
+endif (BUILD_MCA_RUNNER)
+
+
 if(BUILD_HYB_ODE_TESTS)
 if (EXISTS ${CMAKE_SOURCE_DIR}/hyb-ode-test-suite)
 add_subdirectory(hyb-ode-test-suite)
@@ -735,6 +766,7 @@ message(STATUS "-----------------------------------------------------------
    Semantic Testsuite      = ${BUILD_SEMANTIC_TESTSUITE}
    Stochastic Testsuite    = ${BUILD_STOCHASTIC_TESTSUITE}
    Steady State TestRunner = ${BUILD_STEADY_STATE_RUNNER}
+   MCA TestRunner          = ${BUILD_MCA_RUNNER}
 
 -----------------------------------------------------------
 ")

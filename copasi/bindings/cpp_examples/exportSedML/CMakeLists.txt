@@ -34,5 +34,5 @@ include(../../../CMakeConsoleApp.cmake)
 
 add_executable(exportSedML ${SOURCES} ${HEADERS})
 add_dependencies(exportSedML ${SE_DEPENDENCIES}) 
-target_link_libraries(exportSedML ${SE_EXTERNAL_LIBS} ${SE_LIBS})
+target_link_libraries(exportSedML ${SE_LIBS} ${SE_EXTERNAL_LIBS})
 

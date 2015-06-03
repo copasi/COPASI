@@ -1,5 +1,32 @@
-The following directories will be automatically tested
-
-ss_simple
-ss_simple2
-param_est1
+# The following directories will be automatically tested
+# 
+# ss_simple   - different 
+# ss_simple2  - different 
+# param_est1  - different 
+# stoch_assignment - different 
+EventTest1
+EventTest2
+EventTest3
+# EventTest4 - different 
+# EventTest5 - different 
+# EventTest6 - different 
+# EventTest7 - take too long for testing 
+EventTest8
+EventTest9
+# EventTest10 - take too long for testing 
+EventTest11
+# EventTest12 - different 
+EventTest13
+# EventTest14 - take too long for testing 
+# EventTest15 - take too long for testing 
+EventTest16
+EventTest17
+EventTest18
+EventTest19
+EventTest20
+EventTest21
+EventTest22
+EventTest23
+EventTest24
+# EventTest25 - take too long for testing 
+EventTest26

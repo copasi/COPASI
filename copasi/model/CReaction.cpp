@@ -1694,6 +1694,11 @@ std::string CReaction::getObjectDisplayName(bool regular, bool richtext) const
   return CCopasiObject::getObjectDisplayName(regular, richtext);
 }
 
+const CFunctionParameterMap & CReaction::getMap() const
+{
+  return mMap;
+}
+
 void CReaction::printDebug() const
 {}
 

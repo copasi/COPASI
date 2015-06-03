@@ -72,6 +72,11 @@ const std::string& CFunction::getSBMLId() const
 
 bool CFunction::setInfix(const std::string & infix)
 {
+  return setInfix(infix, true);
+}
+
+bool CFunction::setInfix(const std::string & infix, bool compile)
+{
   if (!CEvaluationTree::setInfix(infix)) return false;
 
   if (mpNodeList == NULL) return true;
@@ -106,7 +111,7 @@ bool CFunction::setInfix(const std::string & infix)
 
   if (!initVariables()) return false;
 
-  compileNodes();
+  if (compile) compileNodes();
 
   return true;
 }

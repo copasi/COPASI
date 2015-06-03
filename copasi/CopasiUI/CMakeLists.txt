@@ -69,28 +69,21 @@ set(MACOSX_BUNDLE_COPYRIGHT ${MACOSX_BUNDLE_INFO_STRING})
 endif(APPLE)
 
 if (BUILD_STATIC_COPASISE) 
-    set(CMAKE_EXE_LINKER_FLAGS "-static-libgcc -static-libstdc++") 
+    # set(CMAKE_EXE_LINKER_FLAGS "-static-libgcc -static-libstdc++") 
     # Maybe this works as well, haven't tried yet. 
-    # set_property(GLOBAL PROPERTY TARGET_SUPPORTS_SHARED_LIBS FALSE) 
+    set_property(GLOBAL PROPERTY TARGET_SUPPORTS_SHARED_LIBS FALSE) 
 endif (BUILD_STATIC_COPASISE) 
 
 add_executable(CopasiUI ${COPASI_UI_FLAGS} ${SOURCES} ${HEADERS})
 
-if (USING_INTEL)
-    target_link_libraries(CopasiUI
-	${SE_EXTERNAL_LIBS} ${SE_LIBS} ${UI_LIBS}
-	${QT_LIBRARIES} ${QT_QTWEBKIT_LIBRARY}
-	${OPENGL_gl_LIBRARY} ${QT_QTOPENGL_LIBRARY} ${OPENGL_glu_LIBRARY}
-	${QWTPLOT3D_LIBRARY}
-	${QT_QTSVG_LIBRARY} ${QWT_LIBRARY} )
-else (USING_INTEL)
-    target_link_libraries(CopasiUI
-	${SE_EXTERNAL_LIBS} ${SE_LIBS} ${UI_LIBS}
-	${QT_LIBRARIES} ${QT_QTWEBKIT_LIBRARY}
-	${OPENGL_gl_LIBRARY} ${QT_QTOPENGL_LIBRARY} ${OPENGL_glu_LIBRARY}
-	${QWTPLOT3D_LIBRARY}
-	${QT_QTSVG_LIBRARY} ${ZLIB_LIBRARY} ${QWT_LIBRARY} )
-endif (USING_INTEL)
+target_link_libraries(CopasiUI ${SE_LIBS} ${UI_LIBS} ${SE_EXTERNAL_LIBS} ${UI_EXTERNAL_LIBS}
+                      ${QT_LIBRARIES} ${QT_QTWEBKIT_LIBRARY}
+                      ${OPENGL_gl_LIBRARY} ${QT_QTOPENGL_LIBRARY} ${OPENGL_glu_LIBRARY}
+                      ${QT_QTSVG_LIBRARY})
+
+if (NOT USING_INTEL)
+  target_link_libraries(CopasiUI ${ZLIB_LIBRARY})
+endif (NOT USING_INTEL)
 
 if (ENABLE_SBW_INTEGRATION)
 target_link_libraries(CopasiUI ${SBW_LIBRARIES})
