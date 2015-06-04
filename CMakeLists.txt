@@ -296,6 +296,11 @@ endif(ENABLE_COPASI_SEDML)
 # actually iconv is only needed on BSD like systems
 find_package(ICONV)
 
+if (ICONV_SECOND_ARGUMENT_IS_CONST)
+  add_definitions(-DCOPASI_ICONV_CONST_CHAR)
+endif (ICONV_SECOND_ARGUMENT_IS_CONST)
+
+
 #platform specific defines
 
 if(UNIX)
