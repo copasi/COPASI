@@ -1645,9 +1645,18 @@ bool addToKnownFunctionToMap(std::map<std::string, std::string>& map, const Func
 int
 AstStrCmp(const void *s1, const void *s2)
 {
+  const char* a = static_cast<const ASTNode *>(s1)->getName();
+  const char* b = static_cast<const ASTNode *>(s2)->getName();
+
+  if (a == NULL && b == NULL) return  0;
+
+  if (a == NULL && b != NULL) return -1;
+
+  if (a != NULL && b == NULL) return  1;
+
   return strcmp(
-           static_cast<const ASTNode *>(s1)->getName(),
-           static_cast<const ASTNode *>(s2)->getName());
+           a,
+           b);
 }
 
 /**
@@ -1657,7 +1666,7 @@ AstStrCmp(const void *s1, const void *s2)
  */
 void ensureAllArgsAreBeingUsedInFunctionDefinition(const FunctionDefinition* sbmlFunction)
 {
-  if (sbmlFunction == NULL || sbmlFunction->getNumArguments() == 0) return;
+  if (sbmlFunction == NULL || sbmlFunction->getNumArguments() == 0 || sbmlFunction->getBody() == NULL) return;
 
   // get all variables
   List *variables = sbmlFunction->getBody()->getListOfNodes(ASTNode_isName);
@@ -1671,7 +1680,8 @@ void ensureAllArgsAreBeingUsedInFunctionDefinition(const FunctionDefinition* sbm
 
       if (variables->find(arg, AstStrCmp) == NULL)
         {
-          unused.push_back(arg->getName());
+          if (arg->getName() != NULL)
+            unused.push_back(arg->getName());
         }
     }
 
@@ -3421,6 +3431,9 @@ SBMLImporter::parseSBML(const std::string& sbmlDocumentText,
                 "The SBML model you are trying to import uses the Hierarchical Modeling extension. "
                 "In order to import this model in COPASI, it has to be flattened, however flattening is "
                 "not possible because of the following errors:\n" + sbmlDoc->getErrorLog()->toString();
+
+              // escape potential percent signs that would lead to an error when passed to CCopasiMessage
+              CPrefixNameTransformer::replaceStringInPlace(message, "%", "%%");
 
               CCopasiMessage(CCopasiMessage::EXCEPTION, message.c_str());
             }
@@ -6668,7 +6681,7 @@ void SBMLImporter::areRulesUnique(const Model* sbmlModel)
         {
           if (!idSet.insert(id).second)
             {
-              CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 35);
+              CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 35, id.c_str());
               break;
             }
         }
@@ -9557,6 +9570,20 @@ void SBMLImporter::importEvent(const Event* pEvent, Model* pSBMLModel, CModel* p
 {
   if (pEvent == NULL) return;
 
+  // no point including an event without trigger element
+  if (!pEvent->isSetTrigger())
+    {
+      CCopasiMessage(CCopasiMessage::WARNING, "Encountered event without trigger element, this event cannot be imported and is skipped.");
+      return;
+    }
+
+  // no point including an event without trigger math
+  if (!pEvent->getTrigger()->isSetMath())
+    {
+      CCopasiMessage(CCopasiMessage::WARNING, "Encountered event without trigger expression, this event cannot be imported and is skipped.");
+      return;
+    }
+
   // create a warning if the priority is set
   if (pEvent->isSetPriority())
     {
@@ -9597,7 +9624,6 @@ void SBMLImporter::importEvent(const Event* pEvent, Model* pSBMLModel, CModel* p
 
   // import the trigger
   const Trigger* pTrigger = pEvent->getTrigger();
-  assert(pTrigger != NULL);
 
   // create a warning if the initialValue is set
   // We only need to consider the case where the initial value is false
@@ -9990,6 +10016,10 @@ CFunctionDB* SBMLImporter::importFunctionDefinitions(Model* pSBMLModel, std::map
  */
 void SBMLImporter::findDirectDependencies(const FunctionDefinition* pFunDef, std::map<const FunctionDefinition*, std::set<std::string> >& dependencies)
 {
+  // if we don't have math, we don't have dependencies
+  if (pFunDef == NULL || !pFunDef->isSetMath() || pFunDef->getMath()->getNumChildren() == 0)
+    return;
+
   assert(pFunDef != NULL);
   std::set<std::string> deps;
   SBMLImporter::findDirectDependencies(pFunDef->getMath()->getChild(pFunDef->getMath()->getNumChildren() - 1), deps);
