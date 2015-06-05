@@ -992,7 +992,9 @@ CEvaluationNode * CEvaluationNodeFunction::fromAST(const ASTNode * pASTNode, con
 
   assert(iMax == 1);
   CEvaluationNode * pNode = new CEvaluationNodeFunction(subType, data);
-  pNode->addChild(children[0]);
+
+  if (!children.empty())
+    pNode->addChild(children[0]);
 
   return pNode;
 }
