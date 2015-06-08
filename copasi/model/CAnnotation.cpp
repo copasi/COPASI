@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -210,13 +210,6 @@ const CAnnotation::UnsupportedAnnotation & CAnnotation::getUnsupportedAnnotation
 
 bool CAnnotation::addUnsupportedAnnotation(const std::string & name, const std::string & xml)
 {
-  // We need to check whether we have valid XML.
-  if (!isValidXML(xml))
-    {
-      CCopasiMessage(CCopasiMessage::ERROR, MCAnnotation + 5, name.c_str());
-      return false;
-    }
-
   // The name must not be empty
   if (name == "")
     {
@@ -228,6 +221,13 @@ bool CAnnotation::addUnsupportedAnnotation(const std::string & name, const std::
   if (mUnsupportedAnnotations.find(name) != mUnsupportedAnnotations.end())
     {
       CCopasiMessage(CCopasiMessage::ERROR, MCAnnotation + 6, name.c_str());
+      return false;
+    }
+
+  // We need to check whether we have valid XML.
+  if (!isValidXML(xml))
+    {
+      CCopasiMessage(CCopasiMessage::ERROR, MCAnnotation + 5, name.c_str());
       return false;
     }
 
