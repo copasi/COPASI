@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -322,7 +322,8 @@ bool CCopasiXMLInterface::saveXhtml(const std::string & xhtml)
       std::string::size_type pos = xhtml.find('>');
       std::string FirstElement = xhtml.substr(0, pos);
 
-      if (FirstElement.find("xmlns=\"http://www.w3.org/1999/xhtml\"") == std::string::npos)
+      if (FirstElement.find("xmlns=\"http://www.w3.org/1999/xhtml\"") == std::string::npos
+          && FirstElement.find("xmlns='http://www.w3.org/1999/xhtml'") == std::string::npos)
         FirstElement += " xmlns=\"http://www.w3.org/1999/xhtml\"";
 
       *mpOstream << mIndent << FirstElement << xhtml.substr(pos) << std::endl;
