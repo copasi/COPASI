@@ -916,6 +916,14 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
       title = "NoName";
     }
 
+  size_t idCount = 0;
+
+  while (mpDataModel->getObject("Model=" + title) != NULL)
+    {
+      std::stringstream str; str << sbmlModel->getName() << "_" << ++idCount;
+      title = str.str();
+    }
+
   this->mpCopasiModel->setObjectName(title.c_str());
   // fill the set of SBML species reference ids because
   // we need this to check for references to species references in all expressions
@@ -6767,6 +6775,7 @@ void SBMLImporter::importRuleForModelEntity(const Rule* rule, CModelEntity* pME,
     }
 
   pME->setStatus(status);
+
   bool result = pME->setExpressionPtr(pExpression);
 
   if (result == false)
