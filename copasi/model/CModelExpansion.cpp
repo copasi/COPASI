@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -478,7 +478,7 @@ void CModelExpansion::createRectangularArray(const SetOfModelElements & source, 
 std::set<CCopasiObject*> CModelExpansion::copyCompleteModel(const CModel* pSourceModel)
 {
   mpSourceModel = pSourceModel;
-  
+
   SetOfModelElements sourceElements;
   sourceElements.fillComplete(pSourceModel);
   ElementsMap map;
@@ -558,6 +558,9 @@ void CModelExpansion::duplicateCompartment(const CCompartment* source, const std
     }
   while (!newObj);
 
+  //add duplicated object to the map
+  emap.add(source, newObj);
+
   //now copy the contents of the object
   newObj->setDimensionality(source->getDimensionality());
 
@@ -574,9 +577,6 @@ void CModelExpansion::duplicateCompartment(const CCompartment* source, const std
 
   newObj->setNotes(source->getNotes());
   newObj->setMiriamAnnotation(source->getMiriamAnnotation(), newObj->getKey(), source->getKey());
-
-  //add duplicated object to the map
-  emap.add(source, newObj);
 }
 
 void CModelExpansion::duplicateMetab(const CMetab* source, const std::string & index, const SetOfModelElements & sourceSet, ElementsMap & emap)
@@ -626,6 +626,9 @@ void CModelExpansion::duplicateMetab(const CMetab* source, const std::string & i
     }
   while (!newObj);
 
+  //add duplicated object to the map
+  emap.add(source, newObj);
+
   //expression (for assignment or ODE)
   newObj->setExpression(source->getExpression());
   updateExpression(newObj->getExpressionPtr(), index, sourceSet, emap);
@@ -636,9 +639,6 @@ void CModelExpansion::duplicateMetab(const CMetab* source, const std::string & i
 
   newObj->setNotes(source->getNotes());
   newObj->setMiriamAnnotation(source->getMiriamAnnotation(), newObj->getKey(), source->getKey());
-
-  //add duplicated object to the map
-  emap.add(source, newObj);
 }
 
 void CModelExpansion::duplicateReaction(const CReaction* source, const std::string & index, const SetOfModelElements & sourceSet, ElementsMap & emap)
@@ -659,6 +659,9 @@ void CModelExpansion::duplicateReaction(const CReaction* source, const std::stri
       infix << "_";
     }
   while (!newObj);
+
+  //add duplicated object to the map
+  emap.add(source, newObj);
 
   //now copy the chemical equation
   size_t i;
@@ -824,9 +827,6 @@ void CModelExpansion::duplicateReaction(const CReaction* source, const std::stri
 
   newObj->setNotes(source->getNotes());
   newObj->setMiriamAnnotation(source->getMiriamAnnotation(), newObj->getKey(), source->getKey());
-
-  //add duplicated object to the map
-  emap.add(source, newObj);
 }
 
 void CModelExpansion::duplicateGlobalQuantity(const CModelValue* source, const std::string & index, const SetOfModelElements & sourceSet, ElementsMap & emap)
@@ -848,6 +848,9 @@ void CModelExpansion::duplicateGlobalQuantity(const CModelValue* source, const s
     }
   while (!newObj);
 
+  //add duplicated object to the map
+  emap.add(source, newObj);
+
   //status
   newObj->setStatus(source->getStatus());
 
@@ -861,9 +864,6 @@ void CModelExpansion::duplicateGlobalQuantity(const CModelValue* source, const s
 
   newObj->setNotes(source->getNotes());
   newObj->setMiriamAnnotation(source->getMiriamAnnotation(), newObj->getKey(), source->getKey());
-
-  //add duplicated object to the map
-  emap.add(source, newObj);
 }
 
 void CModelExpansion::duplicateEvent(CEvent* source, const std::string & index, const SetOfModelElements & sourceSet, ElementsMap & emap)
@@ -891,6 +891,9 @@ void CModelExpansion::duplicateEvent(CEvent* source, const std::string & index, 
         }
       while (!newObj);
 
+      //add duplicated object to the map
+      emap.add(source, newObj);
+
       //now do the trigger
       newObj->setTriggerExpression(source->getTriggerExpression());
       newObj->getTriggerExpressionPtr()->compile(); //I don't know why this is necessary
@@ -904,7 +907,12 @@ void CModelExpansion::duplicateEvent(CEvent* source, const std::string & index, 
       newObj->setDelayAssignment(source->getDelayAssignment());
     }
   else
-    newObj = source; //no copying necessary
+    {
+      newObj = source; //no copying necessary
+
+      //add duplicated object to the map
+      emap.add(source, newObj);
+    }
 
   //now the event assignments...
   size_t i;
@@ -939,9 +947,6 @@ void CModelExpansion::duplicateEvent(CEvent* source, const std::string & index, 
 
   newObj->setNotes(source->getNotes());
   newObj->setMiriamAnnotation(source->getMiriamAnnotation(), newObj->getKey(), source->getKey());
-
-  //add duplicated object to the map
-  emap.add(source, newObj);
 }
 
 void CModelExpansion::updateExpression(CExpression* exp, const std::string & index, const SetOfModelElements & sourceSet, ElementsMap & emap)
@@ -969,14 +974,16 @@ void CModelExpansion::updateExpression(CExpression* exp, const std::string & ind
       //if it points to an object in a different model.
       //We try to fix this now:
       if (!pObj && mpSourceModel)
-      {
-        CCopasiObjectName cn = node->getObjectCN();
-        while (cn.getPrimary().getObjectType() != "Model" && !cn.empty())
-          {
-            cn = cn.getRemainder();
-          }
-        pObj = dynamic_cast<const CCopasiObject*>(mpSourceModel->getObject(cn) );
-      }
+        {
+          CCopasiObjectName cn = node->getObjectCN();
+
+          while (cn.getPrimary().getObjectType() != "Model" && !cn.empty())
+            {
+              cn = cn.getRemainder();
+            }
+
+          pObj = dynamic_cast<const CCopasiObject*>(mpSourceModel->getObject(cn));
+        }
 
       if (pObj)
         {
