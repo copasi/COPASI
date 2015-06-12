@@ -1,28 +1,21 @@
-// Begin CVS Header 
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/python/python.i,v $ 
-//   $Revision: 1.29 $ 
-//   $Name:  $ 
-//   $Author: shoops $ 
-//   $Date: 2012/06/21 16:46:55 $ 
-// End CVS Header 
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., University of Heidelberg, and The University 
 // of Manchester. 
 // All rights reserved. 
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
 // and The University of Manchester. 
 // All rights reserved. 
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2006 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc. and EML Research, gGmbH. 
 // All rights reserved. 
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
-// All rights reserved.
+
+
+
+
 
 /**
  * Convert CFitItem objects into the most specific type possible.
@@ -219,6 +212,30 @@ CCopasiMessage.size=_COPASI.CCopasiMessage_size
   %{
 
       def setValue(self,arg):
+        if sys.version_info >= (3, 0): 
+          return setValueV3(arg)
+        return setValueV2(arg);
+        
+      def setValueV3(self,arg):
+        result=False
+        if(type(arg)==int):
+           if((self.getType()==self.INT) or (arg < 0)):
+             result=self.setIntValue(arg)
+           else:
+             result=self.setUIntValue(arg) 
+        elif(type(arg)==float):
+           result=self.setDblValue(arg) 
+        elif(type(arg)==bool):
+           result=self.setBoolValue(arg) 
+        elif(type(arg)==bytes):
+           result=self.setStringValue(arg) 
+        elif(arg.__class__==CRegisteredObjectName):
+           result=self.setCNValue(arg) 
+        elif(arg.__class__ == ParameterVector):
+           result=self.setGroupValue(arg) 
+        return result;
+
+      def setValueV2(self,arg):
         result=False
         if(type(arg)==types.IntType):
            if((self.getType()==self.INT) or (arg < 0)):
@@ -236,7 +253,7 @@ CCopasiMessage.size=_COPASI.CCopasiMessage_size
         elif(arg.__class__ == ParameterVector):
            result=self.setGroupValue(arg) 
         return result;
-
+        
       def getValue(self):
         value=None
         if(self.getType()==CCopasiParameter.DOUBLE):
