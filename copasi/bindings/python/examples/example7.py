@@ -1,21 +1,18 @@
 # -*- coding: utf-8 -*-
-# Begin CVS Header 
-#   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/python/examples/example7.py,v $ 
-#   $Revision: 1.3 $ 
-#   $Name:  $ 
-#   $Author: shoops $ 
-#   $Date: 2012/03/05 18:09:32 $ 
-# End CVS Header 
-
-# Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and The University 
 # of Manchester. 
 # All rights reserved. 
 
-# Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2009 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
 # and The University of Manchester. 
 # All rights reserved. 
+
+
+
+
+
 
 #
 # This is an example on how to create user defined kinetic functions with the COPASI API
@@ -164,7 +161,7 @@ def main():
      try:
        dataModel.exportSBML("example7.xml", True, 2, 3)
      except:
-        print >> sys.stderr, "Error. Exporting the model to SBML failed."
+        sys.stderr.write("Error. Exporting the model to SBML failed.\n")
 
 
 if(__name__ == '__main__'):

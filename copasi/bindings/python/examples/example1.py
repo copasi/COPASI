@@ -1,13 +1,18 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual </comment>
-# Properties, Inc., University of Heidelberg, and The University </comment>
-# of Manchester. </comment>
-# All rights reserved. </comment>
+# Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., University of Heidelberg, and The University 
+# of Manchester. 
+# All rights reserved. 
 
-# Copyright (C) 2009 by Pedro Mendes, Virginia Tech Intellectual </comment>
-# Properties, Inc., EML Research, gGmbH, University of Heidelberg, </comment>
-# and The University of Manchester. </comment>
-# All rights reserved. </comment>
+# Copyright (C) 2009 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+# and The University of Manchester. 
+# All rights reserved. 
+
+
+
+
+
 
 
 
@@ -138,7 +143,7 @@ def main():
       assert object != None
       changedObjects.push_back(object)
   else:
-      print >> sys.stderr, "Error. Could not find a kinetic law that contains the term \"Constant\"." 
+      sys.stderr.write("Error. Could not find a kinetic law that contains the term \"Constant\".\n" )
       return 1
   # now we also create a separate reaction for the backwards reaction and
   # set the kinetic law to irreversible mass action

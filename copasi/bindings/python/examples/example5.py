@@ -1,12 +1,10 @@
 # -*- coding: utf-8 -*-
-# Begin CVS Header 
-#   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/python/examples/example5.py,v $ 
-#   $Revision: 1.3 $ 
-#   $Name:  $ 
-#   $Author: gauges $ 
-#   $Date: 2009/09/01 13:34:10 $ 
-# End CVS Header 
-# Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., University of Heidelberg, and The University 
+# of Manchester. 
+# All rights reserved. 
+
+# Copyright (C) 2009 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
 # and The University of Manchester. 
 # All rights reserved. 
@@ -165,10 +163,10 @@ def main():
    try:
      result=optTask.process(True)
    except:
-       print >> sys.stderr,"Running the optimization failed." 
+       sys.stderr.write("Running the optimization failed.\n" )
        return 1
    if(not result):
-       print >> sys.stderr,"Running the optimization failed." 
+       sys.stderr.write("Running the optimization failed.\n" )
        return 1
    # now we check if the optimization actually got the correct result
    # the best value it should have is 0 and the best parameter value for

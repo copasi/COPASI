@@ -1,21 +1,17 @@
 # -*- coding: utf-8 -*-
-# Begin CVS Header 
-#   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/python/examples/example3.py,v $ 
-#   $Revision: 1.7 $ 
-#   $Name:  $ 
-#   $Author: shoops $ 
-#   $Date: 2012/03/05 18:09:32 $ 
-# End CVS Header 
-
-# Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and The University 
 # of Manchester. 
 # All rights reserved. 
 
-# Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2009 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
 # and The University of Manchester. 
 # All rights reserved. 
+
+
+
+
 
 # 
 # This is an example on how to import an sbml file
@@ -38,7 +34,7 @@ def main(args):
           # load the model 
           dataModel.importSBML(filename)
       except:
-          print >> sys.stderr,  "Error while importing the model from file named \"" + filename + "\"." 
+          sys.stderr.write("Error while importing the model from file named \"" + filename + "\".\n") 
           return 1
       model = dataModel.getModel()
       assert model != None
@@ -138,18 +134,18 @@ def main(args):
           # now we run the actual trajectory
           result=trajectoryTask.process(True)
       except:
-          print >> sys.stderr,  "Error. Running the time course simulation failed." 
+          sys.stderr.write("Error. Running the time course simulation failed.\n") 
           # check if there are additional error messages
           if CCopasiMessage.size() > 0:
               # print the messages in chronological order
-              print >> sys.stderr, CCopasiMessage.getAllMessageText(True)
+              sys.stderr.write(CCopasiMessage.getAllMessageText(True))
           return 1
       if result == False:
-          print >> sys.stderr,  "Error. Running the time course simulation failed." 
+          sys.stderr.write("Error. Running the time course simulation failed.\n" )
           # check if there are additional error messages
           if CCopasiMessage.size() > 0:
               # print the messages in chronological order
-              print >> sys.stderr, CCopasiMessage.getAllMessageText(True)
+              sys.stderr.write(CCopasiMessage.getAllMessageText(True))
           return 1
 
       # look at the timeseries
@@ -157,16 +153,16 @@ def main(args):
       # we simulated 100 steps, including the initial state, this should be
       # 101 step in the timeseries
       assert timeSeries.getRecordedSteps() == 101
-      print  "The time series consists of " , timeSeries.getRecordedSteps() , "." 
-      print  "Each step contains " , timeSeries.getNumVariables() , " variables." 
-      print  "The final state is: " 
+      print  ("The time series consists of " , timeSeries.getRecordedSteps() , "." )
+      print  ("Each step contains " , timeSeries.getNumVariables() , " variables." )
+      print  ("The final state is: " )
       iMax = timeSeries.getNumVariables()
       lastIndex = timeSeries.getRecordedSteps() - 1
       for i in range(0,iMax):
           # here we get the particle number (at least for the species)
           # the unit of the other variables may not be particle numbers
           # the concentration data can be acquired with getConcentrationData
-          print timeSeries.getTitle(i) + ": " , timeSeries.getData(lastIndex, i) 
+          print (timeSeries.getTitle(i) + ": " , timeSeries.getData(lastIndex, i))
       # the CTimeSeries class now has some new methods to get all variable titles
       # as a python list (getTitles())
       # and methods to get the complete time course data for a certain variable based on
@@ -183,7 +179,7 @@ def main(args):
 
 
   else:
-      print >> sys.stderr, "Usage: example3 SBMLFILE" 
+      sys.stderr.write("Usage: example3 SBMLFILE\n") 
       return 1;
 
 if(__name__ == '__main__'):

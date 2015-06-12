@@ -1,14 +1,17 @@
 
 # -*- coding: utf-8 -*-
-# Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual </comment>
-# Properties, Inc., University of Heidelberg, and The University </comment>
-# of Manchester. </comment>
-# All rights reserved. </comment>
+# Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., University of Heidelberg, and The University 
+# of Manchester. 
+# All rights reserved. 
 
-# Copyright (C) 2009 by Pedro Mendes, Virginia Tech Intellectual </comment>
-# Properties, Inc., EML Research, gGmbH, University of Heidelberg, </comment>
-# and The University of Manchester. </comment>
-# All rights reserved. </comment>
+# Copyright (C) 2009 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+# and The University of Manchester. 
+# All rights reserved. 
+
+
+
 
 # 
 # This is an example on how to run an parameter fitting task.
@@ -102,7 +105,7 @@ def main():
      # load the model 
      dataModel.importSBMLFromString(MODEL_STRING)
    except:
-     print >> sys.stderr,  "Error while importing the model."
+     sys.stderr.write("Error while importing the model.\n")
      return 1
    
    # now we need to run some time course simulation to get data to fit
@@ -151,23 +154,23 @@ def main():
        # now we run the actual trajectory
        result=trajectoryTask.processWithOutputFlags(True, CCopasiTask.ONLY_TIME_SERIES)
    except:
-       print >> sys.stderr,  "Error. Running the time course simulation failed." 
-       print >> sys.stderr, trajectoryTask.getProcessWarning()
-       print >> sys.stderr, trajectoryTask.getProcessError()
+       sys.stderr.write("Error. Running the time course simulation failed.\n" )
+       sys.stderr.write(trajectoryTask.getProcessWarning())
+       sys.stderr.write(trajectoryTask.getProcessError())
        # check if there are additional error messages
        if CCopasiMessage.size() > 0:
            # print the messages in chronological order
-           print >> sys.stderr, CCopasiMessage.getAllMessageText(True)
+           sys.stderr.write(CCopasiMessage.getAllMessageText(True))
        return 1
    if result==False:
-       print >> sys.stderr,  "An error occured while running the time course simulation." 
+       sys.stderr.write("An error occured while running the time course simulation.\n" )
        dataModel.saveModel('test.cps', True)
-       print >> sys.stderr, trajectoryTask.getProcessWarning()
-       print >> sys.stderr, trajectoryTask.getProcessError()
+       sys.stderr.write(trajectoryTask.getProcessWarning())
+       sys.stderr.write(trajectoryTask.getProcessError())
        # check if there are additional error messages
        if CCopasiMessage.size() > 0:
            # print the messages in chronological order
-           print >> sys.stderr, CCopasiMessage.getAllMessageText(True)
+           sys.stderr.write(CCopasiMessage.getAllMessageText(True))
        return 1
 
    # we write the data to a file and add some noise to it
@@ -365,20 +368,20 @@ def main():
    result=True
    try:
      # running the task for this example will probably take some time
-     print "This can take some time..."
+     print ("This can take some time...")
      result=fitTask.processWithOutputFlags(True, CCopasiTask.ONLY_TIME_SERIES)
    except:
-     print >> sys.stderr, "Error. Parameter fitting failed."
+     sys.stderr.write("Error. Parameter fitting failed.\n")
      return 1
    if result==False:
-       print >> sys.stderr,  "An error occured while running the Parameter estimation." 
+       sys.stderr.write("An error occured while running the Parameter estimation.\n")
        dataModel.saveModel('test.cps', True)
-       print >> sys.stderr, fitTask.getProcessWarning()
-       print >> sys.stderr, fitTask.getProcessError()
+       sys.stderr.write(fitTask.getProcessWarning())
+       sys.stderr.write(fitTask.getProcessError())
        # check if there are additional error messages
        if CCopasiMessage.size() > 0:
            # print the messages in chronological order
-           print >> sys.stderr, CCopasiMessage.getAllMessageText(True)
+           sys.stderr.write(CCopasiMessage.getAllMessageText(True))
        return 1
    assert result == True
    # assert that there are two optimization items
@@ -388,8 +391,8 @@ def main():
    optItem2 = fitProblem.getOptItemList()[1]
    # the actual results are stored in the fit problem
    assert fitProblem.getSolutionVariables().size() == 2
-   print "value for " , optItem1.getObject().getCN().getString() , ": " , fitProblem.getSolutionVariables().get(0)
-   print "value for " , optItem2.getObject().getCN().getString() , ": " , fitProblem.getSolutionVariables().get(1)
+   print ("value for " , optItem1.getObject().getCN().getString() , ": " , fitProblem.getSolutionVariables().get(0))
+   print ("value for " , optItem2.getObject().getCN().getString() , ": " , fitProblem.getSolutionVariables().get(1))
    # depending on the noise, the fit can be quite bad, so we are a litle
    # relaxed here (we should be within 3% of the original values)
    assert (abs(fitProblem.getSolutionVariables().get(0) - 0.03) / 0.03) < 3e-2
