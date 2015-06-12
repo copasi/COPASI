@@ -1,15 +1,14 @@
 # -*- coding: utf-8 -*-
-# Begin CVS Header 
-#   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/python/examples/example2.py,v $ 
-#   $Revision: 1.2 $ 
-#   $Name:  $ 
-#   $Author: gauges $ 
-#   $Date: 2009/03/05 11:12:46 $ 
-# End CVS Header 
-# Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., University of Heidelberg, and The University 
+# of Manchester. 
+# All rights reserved. 
+
+# Copyright (C) 2009 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
 # and The University of Manchester. 
 # All rights reserved. 
+
 
 #
 # This is an example on how to load a cps file
@@ -32,40 +31,40 @@ def main(args):
             # load the model without progress report
             dataModel.loadModel(filename)
         except:
-            print >> sys.stderr, "Error while loading the model from file named \"" + filename + "\"."
+            sys.stderr.write("Error while loading the model from file named \"" + filename + "\".\n")
             return 1
         model = dataModel.getModel()
         assert model != None
-        print "Model statistics for model \"" + model.getObjectName() + "\"."
+        print ("Model statistics for model \"" + model.getObjectName() + "\".")
 
         # output number and names of all compartments
         iMax = model.getCompartments().size()
-        print "Number of Compartments: " , iMax
-        print "Compartments: "
+        print ("Number of Compartments: " , iMax)
+        print ("Compartments: ")
         for i in range(0,iMax): 
             compartment = model.getCompartment(i)
             assert compartment != None
-            print "\t" + compartment.getObjectName()
+            print ("\t" + compartment.getObjectName())
 
         # output number and names of all metabolites
         iMax = model.getMetabolites().size()
-        print "Number of Metabolites: " , iMax
-        print "Metabolites: "
+        print ("Number of Metabolites: " , iMax)
+        print ("Metabolites: ")
         for i in range(0,iMax):
             metab = model.getMetabolite(i)
             assert metab != None
-            print "\t" + metab.getObjectName()
+            print ("\t" + metab.getObjectName())
 
         # output number and names of all reactions
         iMax = model.getReactions().size()
-        print "Number of Reactions: " , iMax
-        print "Reactions: "
+        print ("Number of Reactions: " , iMax)
+        print ("Reactions: ")
         for i in range(0,iMax):
             reaction = model.getReaction(i)
             assert reaction != None
-            print "\t" + reaction.getObjectName()
+            print ("\t" + reaction.getObjectName())
     else:
-        print >> sys.stderr, "Usage: example2 CPSFILE"
+        sys.stderr.write("Usage: example2 CPSFILE\n")
         return 1
 
 if(__name__ == '__main__'):

@@ -1,16 +1,10 @@
 # -*- coding: utf-8 -*-
-# Begin CVS Header 
-#   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/python/examples/example8.py,v $ 
-#   $Revision: 1.2 $ 
-#   $Name:  $ 
-#   $Author: shoops $ 
-#   $Date: 2010/07/16 18:56:01 $ 
-# End CVS Header 
-
-# Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and The University 
 # of Manchester. 
 # All rights reserved. 
+
+
 
 #  
 #  This is an example on how to calculate and output the Jacobian matrix
@@ -37,7 +31,7 @@ def main():
     try:
       result = dataModel.importSBMLFromString(MODEL_STRING)
     except:
-        print >> sys.stderr, "Import of model failed miserably."
+        sys.stderr.write("Import of model failed miserably.\n")
         return
     # check if the import was successful
     mostSevere = CCopasiMessage.getHighestSeverity()
@@ -49,7 +43,7 @@ def main():
     # we assume that the import succeeded if the return value is True and
     # the most severe error message is not an error or an exception
     if result != True and  mostSevere < CCopasiMessage.ERROR:
-        print >> sys.stderr, "Sorry. Model could not be imported."
+        sys.stderr.write("Sorry. Model could not be imported.\n")
         return
 
     #
@@ -104,48 +98,49 @@ def main():
         # now we print the matrix, for this we assume that no
         # entity name is longer then 5 character which is a save bet since
         # we know the model
-        print "Jacobian Matrix:"
-        print ""
-        print "%7s" % (" "),
+        printJacobian(nameVector, jacobian);
+        print ("Jacobian Matrix:")
+        print ("")
+        row = "%7s" % (" ")
 
         for i in range(0,len(nameVector)):
-            print "%7s" % (nameVector[i]),
+            row = row + "%7s" % (nameVector[i])
 
-        print ""
+        print (row)
 
         for i in range(0,len(nameVector)):
-            print "%7s" % (nameVector[i]),
+            row = "%7s" % (nameVector[i])
 
             for j in range(0,len(nameVector)):
-                print "%7.3f" % (jacobian.get(i,j)),
+                row = row + "%7.3f" % (jacobian.get(i,j))
 
-            print ""
+            print (row)
 
         # we can also calculate the jacobian of the reduced system
         # in a similar way
         model.calculateJacobianX(jacobian, 1e-12, 1.0)
         # this time generating the output is actually simpler because the rows
         # and columns are ordered in the same way as the independent variables of the state temple
-        print ""
-        print ""
-        print "Reduced Jacobian Matrix:"
-        print ""
-        print "%7s" % (" "),
+        print ("")
+        print ("")
+        print ("Reduced Jacobian Matrix:")
+        print ("")
+        row = "%7s" % (" ")
         
         iMax = stateTemplate.getNumIndependent()
         
         for i in range(0,iMax):
-          print "%7s" % (stateTemplate.getIndependent(i).getObjectName()),
+          row = row + "%7s" % (stateTemplate.getIndependent(i).getObjectName())
 
-        print ""
+        print (row)
 
         for i in range(0,iMax):
-            print "%7s" % (stateTemplate.getIndependent(i).getObjectName()),
+            row = "%7s" % (stateTemplate.getIndependent(i).getObjectName())
 
             for j in range(0,iMax):
-                print "%7.3f" % (jacobian.get(i,j)),
+                row = row + "%7.3f" % (jacobian.get(i,j))
 
-            print ""
+            print (row)
 
 if(__name__ == '__main__'):
    main() 
