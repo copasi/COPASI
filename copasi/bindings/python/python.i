@@ -20,6 +20,9 @@
 
 
 
+
+
+
 /**
  * Convert CFitItem objects into the most specific type possible.
  */
@@ -217,8 +220,8 @@ CCopasiMessage.size=_COPASI.CCopasiMessage_size
 
       def setValue(self,arg):
         if sys.version_info >= (3, 0): 
-          return setValueV3(arg)
-        return setValueV2(arg);
+          return self.setValueV3(arg)
+        return self.setValueV2(arg);
         
       def setValueV3(self,arg):
         result=False
