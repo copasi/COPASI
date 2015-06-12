@@ -6,6 +6,7 @@
 
 
 
+
 #  
 #  This is an example on how to calculate and output the Jacobian matrix
 #  in COPASI
@@ -98,13 +99,12 @@ def main():
         # now we print the matrix, for this we assume that no
         # entity name is longer then 5 character which is a save bet since
         # we know the model
-        printJacobian(nameVector, jacobian);
         print ("Jacobian Matrix:")
         print ("")
         row = "%7s" % (" ")
 
         for i in range(0,len(nameVector)):
-            row = row + "%7s" % (nameVector[i])
+            row = row + " %7s" % (nameVector[i])
 
         print (row)
 
@@ -112,7 +112,7 @@ def main():
             row = "%7s" % (nameVector[i])
 
             for j in range(0,len(nameVector)):
-                row = row + "%7.3f" % (jacobian.get(i,j))
+                row = row + " %7.3f" % (jacobian.get(i,j))
 
             print (row)
 
@@ -130,7 +130,7 @@ def main():
         iMax = stateTemplate.getNumIndependent()
         
         for i in range(0,iMax):
-          row = row + "%7s" % (stateTemplate.getIndependent(i).getObjectName())
+          row = row + " %7s" % (stateTemplate.getIndependent(i).getObjectName())
 
         print (row)
 
@@ -138,7 +138,7 @@ def main():
             row = "%7s" % (stateTemplate.getIndependent(i).getObjectName())
 
             for j in range(0,iMax):
-                row = row + "%7.3f" % (jacobian.get(i,j))
+                row = row + " %7.3f" % (jacobian.get(i,j))
 
             print (row)
 

@@ -6,6 +6,7 @@
 
 
 
+
 #  
 #  This example is similar to example 8. We also calculate the jacobian,
 #  but this time we want the jacobian at the steady state.
@@ -106,7 +107,7 @@ def main():
       row = "%7s" % (" ")
 
       for i in range(0, annotations.size()):
-          row = row + "%7s" % (annotations[i])
+          row = row + " %7s" % (annotations[i])
 
       print (row)
 
@@ -117,7 +118,7 @@ def main():
           for j in range(0,annotations.size()):
               index[1]=j
               array=aj.array();
-              row = row + "%7.3f" % (array.get(index))
+              row = row + " %7.3f" % (array.get(index))
           print (row)
   return
 
