@@ -17,6 +17,9 @@
 
 
 
+
+
+
 /**
  * Convert CFitItem objects into the most specific type possible.
  */
@@ -145,6 +148,7 @@
 %pythoncode
 %{
 import types
+import sys 
 %}
 
 %include "../swig/copasi.i"
