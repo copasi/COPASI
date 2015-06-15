@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -26,9 +26,17 @@
 #include <QtCore/QMutex>
 #include <QtCore/QWaitCondition>
 
+#include <QRectF>
+
 #include <qwt_plot.h>
 #include <qwt_painter.h>
+
+#if QWT_VERSION > 0x060000
+#include <qwt_compat.h>
+#else
 #include <qwt_data.h>
+#endif
+
 #include <qwt_plot_curve.h>
 
 #include "plot/CPlotItem.h"
@@ -39,21 +47,31 @@
 #include "utilities/CVector.h"
 
 // NaN are ignored bounding rectangle
-class C2DCurveData : public QwtData
+class C2DCurveData :
+#if QWT_VERSION > 0x060000
+  public QwtSeriesData<QPointF>
+#else
+  public QwtData
+#endif
 {
 public:
   C2DCurveData();
   C2DCurveData(const CVector< double > & x, const CVector< double > & y, size_t size);
   virtual ~C2DCurveData();
 
+#if QWT_VERSION > 0x060000
+  virtual QwtSeriesData<QPointF> *copy() const;
+  virtual QPointF sample(size_t i) const;
+#else
   virtual QwtData *copy() const;
+#endif
+
+  virtual QwtDoubleRect boundingRect() const;
 
   virtual size_t size() const;
 
   virtual double x(size_t i) const;
   virtual double y(size_t i) const;
-
-  virtual QwtDoubleRect boundingRect() const;
 
   void setSize(const size_t & size);
 
@@ -75,7 +93,13 @@ private:
   mutable double mMaxY;
 };
 
-class CBandedGraphData : public QwtData
+class CBandedGraphData :
+#if QWT_VERSION > 0x060000
+  public QwtSeriesData<QPointF>
+#else
+  public QwtData
+#endif
+
 {
 public:
   CBandedGraphData();
@@ -85,7 +109,14 @@ public:
                    size_t size);
   virtual ~CBandedGraphData();
 
+#if QWT_VERSION > 0x060000
+  virtual QwtSeriesData<QPointF> *copy() const;
+  virtual QPointF sample(size_t i) const;
+#else
   virtual QwtData *copy() const;
+#endif
+
+  virtual QwtDoubleRect boundingRect() const;
 
   virtual size_t size() const;
 
@@ -93,8 +124,6 @@ public:
   virtual double y(size_t i) const;
   double y1(size_t i) const;
   double y2(size_t i) const;
-
-  virtual QwtDoubleRect boundingRect() const;
 
   void setSize(const size_t & size);
 
@@ -118,7 +147,13 @@ private:
   mutable double mMaxY;
 };
 
-class CHistoCurveData : public QwtData
+class CHistoCurveData :
+#if QWT_VERSION > 0x060000
+  public QwtSeriesData<QPointF>
+#else
+  public QwtData
+#endif
+
 {
 public:
   CHistoCurveData();
@@ -126,14 +161,19 @@ public:
                   const C_FLOAT64 & increment);
   virtual ~CHistoCurveData();
 
+#if QWT_VERSION > 0x060000
+  virtual QwtSeriesData<QPointF> *copy() const;
+  virtual QPointF sample(size_t i) const;
+#else
   virtual QwtData *copy() const;
+#endif
+
+  virtual QwtDoubleRect boundingRect() const;
 
   virtual size_t size() const;
 
   virtual double x(size_t i) const;
   virtual double y(size_t i) const;
-
-  virtual QwtDoubleRect boundingRect() const;
 
   void setSize(const size_t & size);
 
@@ -188,6 +228,21 @@ public:
   const COutputInterface::Activity & getActivity() const;
 
 protected:
+
+#if QWT_VERSION > 0x060000
+
+  void myDrawLines(QPainter *painter,
+                   const QwtScaleMap &xMap, const QwtScaleMap &yMap,
+                   const QRectF &canvasRect, int from, int to) const;
+
+  virtual void drawCurve(QPainter *p, int style, const QwtScaleMap &xMap,
+                         const QwtScaleMap &yMap, const QRectF &canvasRect, int from, int to) const;
+
+  virtual void drawSymbols(QPainter *p, const QwtSymbol &, const QwtScaleMap &xMap,
+                           const QwtScaleMap &yMap, const QRectF &canvasRect, int from, int to) const;
+
+#else
+
   void myDrawLines(QPainter *painter,
                    const QwtScaleMap &xMap, const QwtScaleMap &yMap,
                    int from, int to) const;
@@ -201,6 +256,7 @@ protected:
   virtual void drawSymbols(QPainter *painter, const QwtSymbol &symbol,
                            const QwtScaleMap &xMap, const QwtScaleMap &yMap,
                            int from, int to) const;
+#endif
 
 private:
   QMutex * mpMutex;
@@ -287,6 +343,9 @@ public:
 
 public slots:
   virtual void replot();
+#if QWT_VERSION > 0x060000
+  virtual void legendChecked(const QVariant &, bool on);
+#endif
 
 private:
   /**

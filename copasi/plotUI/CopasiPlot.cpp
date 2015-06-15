@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -19,7 +19,13 @@
 
 #include <qwt_symbol.h>
 #include <qwt_legend.h>
+#if QWT_VERSION > 0x060000
+#include <qwt_legend_data.h>
+#include <qwt_legend_label.h>
+#include <qwt_plot_canvas.h>
+#else
 #include <qwt_legend_item.h>
+#endif
 #include <qwt_scale_engine.h>
 
 #include <limits>
@@ -41,7 +47,12 @@
 
 //********************  data  *********************************************
 C2DCurveData::C2DCurveData():
+#if QWT_VERSION > 0x060000
+  QwtSeriesData<QPointF>(),
+#else
   QwtData(),
+#endif
+
   mpX(NULL),
   mpY(NULL),
   mSize(0),
@@ -54,7 +65,11 @@ C2DCurveData::C2DCurveData():
 {}
 
 C2DCurveData::C2DCurveData(const CVector< C_FLOAT64 > & x, const CVector< C_FLOAT64 > & y, size_t size):
+#if QWT_VERSION > 0x060000
+  QwtSeriesData<QPointF>(),
+#else
   QwtData(),
+#endif
   mpX(x.array()),
   mpY(y.array()),
   mSize(size),
@@ -72,6 +87,22 @@ C2DCurveData::C2DCurveData(const CVector< C_FLOAT64 > & x, const CVector< C_FLOA
 C2DCurveData::~C2DCurveData()
 {}
 
+#if QWT_VERSION > 0x060000
+QwtSeriesData<QPointF> * C2DCurveData::copy() const
+{
+  C2DCurveData * pCopy = new C2DCurveData();
+
+  *pCopy = *this;
+
+  return pCopy;
+}
+
+QPointF C2DCurveData::sample(size_t i) const
+{
+  return QPointF(x(i), y(i));
+}
+
+#else
 QwtData * C2DCurveData::copy() const
 {
   C2DCurveData * pCopy = new C2DCurveData();
@@ -80,6 +111,7 @@ QwtData * C2DCurveData::copy() const
 
   return pCopy;
 }
+#endif
 
 size_t C2DCurveData::size() const
 {
@@ -208,7 +240,11 @@ C2DCurveData & C2DCurveData::operator = (const C2DCurveData & rhs)
 
 //********************  CBandedGraphData  *********************************
 CBandedGraphData::CBandedGraphData():
+#if QWT_VERSION > 0x060000
+  QwtSeriesData<QPointF>(),
+#else
   QwtData(),
+#endif
   mpX(NULL),
   mpY1(NULL),
   mpY2(NULL),
@@ -225,7 +261,11 @@ CBandedGraphData::CBandedGraphData(const CVector< double > & x,
                                    const CVector< double > & y1,
                                    const CVector< double > & y2,
                                    size_t size):
+#if QWT_VERSION > 0x060000
+  QwtSeriesData<QPointF>(),
+#else
   QwtData(),
+#endif
   mpX(x.array()),
   mpY1(y1.array()),
   mpY2(y2.array()),
@@ -245,6 +285,23 @@ CBandedGraphData::CBandedGraphData(const CVector< double > & x,
 CBandedGraphData::~CBandedGraphData()
 {}
 
+#if QWT_VERSION > 0x060000
+QwtSeriesData<QPointF> *
+CBandedGraphData::copy() const
+{
+  CBandedGraphData * pCopy = new CBandedGraphData();
+
+  *pCopy = *this;
+
+  return pCopy;
+}
+
+QPointF CBandedGraphData::sample(size_t i) const
+{
+  return QPointF(x(i), y(i));
+}
+
+#else
 QwtData *
 CBandedGraphData::copy() const
 {
@@ -254,6 +311,7 @@ CBandedGraphData::copy() const
 
   return pCopy;
 }
+#endif
 
 size_t
 CBandedGraphData::size() const
@@ -424,7 +482,11 @@ CBandedGraphData & CBandedGraphData::operator = (const CBandedGraphData & rhs)
 
 //********************  data  *********************************************
 CHistoCurveData::CHistoCurveData():
+#if QWT_VERSION > 0x060000
+  QwtSeriesData<QPointF>(),
+#else
   QwtData(),
+#endif
   mpX(NULL),
   mSize(0),
   mMaxSize(0),
@@ -442,7 +504,11 @@ CHistoCurveData::CHistoCurveData():
 CHistoCurveData::CHistoCurveData(const CVector< C_FLOAT64 > & x,
                                  size_t size,
                                  const C_FLOAT64 & increment):
+#if QWT_VERSION > 0x060000
+  QwtSeriesData<QPointF>(),
+#else
   QwtData(),
+#endif
   mpX(x.array()),
   mSize(size),
   mMaxSize(x.size()),
@@ -462,7 +528,8 @@ CHistoCurveData::CHistoCurveData(const CVector< C_FLOAT64 > & x,
 CHistoCurveData::~CHistoCurveData()
 {}
 
-QwtData * CHistoCurveData::copy() const
+#if QWT_VERSION > 0x060000
+QwtSeriesData<QPointF>* CHistoCurveData::copy() const
 {
   CHistoCurveData * pCopy = new CHistoCurveData();
 
@@ -470,6 +537,22 @@ QwtData * CHistoCurveData::copy() const
 
   return pCopy;
 }
+
+QPointF CHistoCurveData::sample(size_t i) const
+{
+  return QPointF(x(i), y(i));
+}
+
+#else
+QwtData* CHistoCurveData::copy() const
+{
+  CHistoCurveData * pCopy = new CHistoCurveData();
+
+  *pCopy = *this;
+
+  return pCopy;
+}
+#endif
 
 size_t CHistoCurveData::size() const
 {
@@ -601,6 +684,29 @@ CHistoCurveData & CHistoCurveData::operator = (const CHistoCurveData & rhs)
 
 void C2DPlotCurve::setDataSize(const size_t & size)
 {
+#if QWT_VERSION > 0x060000
+
+  switch (mCurveType)
+    {
+      case CPlotItem::curve2d:
+        static_cast< C2DCurveData * >(data())->setSize(size);
+        break;
+
+      case CPlotItem::bandedGraph:
+        static_cast< CBandedGraphData * >(data())->setSize(size);
+        break;
+
+      case CPlotItem::histoItem1d:
+        static_cast< CHistoCurveData * >(data())->setSize(size);
+        break;
+
+      default:
+        fatalError();
+        break;
+    }
+
+#else
+
   switch (mCurveType)
     {
       case CPlotItem::curve2d:
@@ -619,10 +725,34 @@ void C2DPlotCurve::setDataSize(const size_t & size)
         fatalError();
         break;
     }
+
+#endif
 }
 
 void C2DPlotCurve::reallocatedData(const CVector< double > * pX, const CVector< double > * pY, const CVector< double > * pY2)
 {
+#if QWT_VERSION > 0x060000
+
+  switch (mCurveType)
+    {
+      case CPlotItem::curve2d:
+        static_cast< C2DCurveData * >(data())->reallocated(pX, pY);
+        break;
+
+      case CPlotItem::bandedGraph:
+        static_cast< CBandedGraphData * >(data())->reallocated(pX, pY, pY2);
+        break;
+
+      case CPlotItem::histoItem1d:
+        static_cast< CHistoCurveData * >(data())->reallocated(pX);
+        break;
+
+      default:
+        fatalError();
+        break;
+    }
+
+#else
 
   switch (mCurveType)
     {
@@ -642,6 +772,8 @@ void C2DPlotCurve::reallocatedData(const CVector< double > * pX, const CVector< 
         fatalError();
         break;
     }
+
+#endif
 }
 
 void C2DPlotCurve::setIncrement(const C_FLOAT64 & increment)
@@ -663,6 +795,102 @@ const COutputInterface::Activity & C2DPlotCurve::getActivity() const
 {
   return mActivity;
 }
+
+#if QWT_VERSION > 0x060000
+
+//draw the several curves, separated by NaNs.
+void C2DPlotCurve::myDrawLines(QPainter *painter,
+                               const QwtScaleMap &xMap, const QwtScaleMap &yMap,
+                               const QRectF &canvasRect, int from, int to) const
+{
+  int to2;
+
+  do
+    {
+      int i;
+
+      for (i = from; i <= to; ++i)
+        if (isnan(this->sample(i).x()) || isnan(sample(i).y())) //NaN
+          break;
+
+      if (i == from)
+        {
+          ++from;
+          continue;
+        }
+
+      to2 = i - 1;
+
+      QwtPlotCurve::drawLines(painter, xMap, yMap, canvasRect, from, to2);
+
+      from = to2 + 2;
+    }
+  while (from < to);
+}
+
+//virtual
+void C2DPlotCurve::drawCurve(QPainter *painter, int style,
+                             const QwtScaleMap &xMap, const QwtScaleMap &yMap,
+                             const QRectF &canvasRect, int from, int to) const
+{
+  QMutexLocker Locker(mpMutex);
+
+  if (style == Lines)
+    {
+      myDrawLines(painter, xMap, yMap, canvasRect, from, to);
+    }
+  else
+    {
+      QwtPlotCurve::drawCurve(painter, style, xMap, yMap, canvasRect, from, to);
+    }
+}
+
+void C2DPlotCurve::drawSymbols(QPainter *painter, const QwtSymbol &symbol,
+                               const QwtScaleMap &xMap, const QwtScaleMap &yMap,
+                               const QRectF &canvasRect, int from, int to) const
+{
+
+  int from2 = from;
+  int to2;
+
+  for (;;)
+    {
+
+      //find the next not-NaN point
+      while (isnan(sample(from2).x()) || isnan(sample(from2).y()))
+        {
+          ++from2;
+
+          if (from2 >= to)
+            return;
+        }
+
+      //find the nex NaN point (or the end of data)
+      to2 = from2;
+
+      do
+        {
+          ++to2;
+
+          if (to2 > to)
+            break;
+        }
+      while (!(isnan(sample(to2).x()) || isnan(sample(to2).y())));
+
+      --to2;
+
+      QwtPlotCurve::drawSymbols(painter, symbol, xMap, yMap, canvasRect, from2, to2);
+
+      //are we done?
+      if (to2 >= to)
+        return;
+
+      //continue with the next data point
+      from2 = to2 + 1;
+    }
+}
+
+#else
 
 //draw the several curves, separated by NaNs.
 void C2DPlotCurve::myDrawLines(QPainter *painter,
@@ -756,6 +984,8 @@ void C2DPlotCurve::drawSymbols(QPainter *painter, const QwtSymbol &symbol,
     }
 }
 
+#endif
+
 //************************************
 C_FLOAT64 CopasiPlot::MissingValue = std::numeric_limits<C_FLOAT64>::quiet_NaN();
 
@@ -792,8 +1022,20 @@ CopasiPlot::CopasiPlot(const CPlotSpecification* plotspec, QWidget* parent):
   mpZoomer(NULL),
   mReplotFinished(false)
 {
-  QwtLegend *legend = new QwtLegend;
+  QwtLegend *legend = new QwtLegend(this);
+
+#if QWT_VERSION > 0x060000
+  legend->setDefaultItemMode(QwtLegendData::Checkable);
+  ((QwtPlotCanvas*)canvas())->setPaintAttribute(QwtPlotCanvas::Opaque, true);
+
+  connect(legend, SIGNAL(checked(const QVariant &, bool, int)),
+          SLOT(legendChecked(const QVariant &, bool)));
+
+#else
   legend->setItemMode(QwtLegend::CheckableItem);
+  setCanvasLineWidth(0);
+  canvas()->setPaintAttribute(QwtPlotCanvas::PaintPacked, true);
+#endif
 
   // whole legend can not be displayed at bottom on DARWIN
   // maybe a Qwt bug ?!?
@@ -814,9 +1056,6 @@ CopasiPlot::CopasiPlot(const CPlotSpecification* plotspec, QWidget* parent):
   setCanvasBackground(Qt::white);
 
   //  setTitle(FROM_UTF8(plotspec->getTitle()));
-  setCanvasLineWidth(0);
-
-  canvas()->setPaintAttribute(QwtPlotCanvas::PaintPacked, true);
 
   connect(this, SIGNAL(legendChecked(QwtPlotItem *, bool)),
           SLOT(showCurve(QwtPlotItem *, bool)));
@@ -832,6 +1071,16 @@ CopasiPlot::CopasiPlot(const CPlotSpecification* plotspec, QWidget* parent):
   initFromSpec(plotspec);
   connect(this, SIGNAL(replotSignal()), this, SLOT(replot()));
 }
+
+#if QWT_VERSION > 0x060000
+void CopasiPlot::legendChecked(const QVariant &itemInfo, bool on)
+{
+  QwtPlotItem *plotItem = infoToItem(itemInfo);
+
+  if (plotItem)
+    showCurve(plotItem, on);
+}
+#endif
 
 bool CopasiPlot::initFromSpec(const CPlotSpecification* plotspec)
 {
@@ -969,16 +1218,29 @@ bool CopasiPlot::initFromSpec(const CPlotSpecification* plotspec)
               switch (symbolsubtype) //symbol type
                 {
                   case 1:
+#if QWT_VERSION > 0x060000
+                    pCurve->setSymbol(new QwtSymbol(QwtSymbol::Cross, QBrush(), QPen(QBrush(color), 2), QSize(7, 7)));
+#else
                     pCurve->setSymbol(QwtSymbol(QwtSymbol::Cross, QBrush(), QPen(QBrush(color), 2), QSize(7, 7)));
+#endif
                     break;
 
                   case 2:
+#if QWT_VERSION > 0x060000
+                    pCurve->setSymbol(new QwtSymbol(QwtSymbol::Ellipse, QBrush(), QPen(QBrush(color), 1), QSize(8, 8)));
+#else
                     pCurve->setSymbol(QwtSymbol(QwtSymbol::Ellipse, QBrush(), QPen(QBrush(color), 1), QSize(8, 8)));
+#endif
                     break;
 
                   case 0:
                   default:
+#if QWT_VERSION > 0x060000
+                    pCurve->setSymbol(new QwtSymbol(QwtSymbol::Cross, QBrush(color), QPen(QBrush(color), 1), QSize(5, 5)));
+#else
                     pCurve->setSymbol(QwtSymbol(QwtSymbol::Cross, QBrush(color), QPen(QBrush(color), 1), QSize(5, 5)));
+#endif
+
                     break;
                 }
             }
@@ -1005,14 +1267,24 @@ bool CopasiPlot::initFromSpec(const CPlotSpecification* plotspec)
     }
 
   if (plotspec->isLogX())
+#if QWT_VERSION > 0x060000
+    setAxisScaleEngine(xBottom, new QwtLogScaleEngine());
+
+#else
     setAxisScaleEngine(xBottom, new QwtLog10ScaleEngine());
+#endif
   else
     setAxisScaleEngine(xBottom, new QwtLinearScaleEngine());
 
   setAxisAutoScale(xBottom);
 
   if (plotspec->isLogY())
+#if QWT_VERSION > 0x060000
+    setAxisScaleEngine(yLeft, new QwtLogScaleEngine());
+
+#else
     setAxisScaleEngine(yLeft, new QwtLog10ScaleEngine());
+#endif
   else
     setAxisScaleEngine(yLeft, new QwtLinearScaleEngine());
 
@@ -1163,23 +1435,41 @@ bool CopasiPlot::compile(std::vector< CCopasiContainer * > listOfContainer,
       switch ((*itCurves)->getType())
         {
           case CPlotItem::curve2d:
+#if QWT_VERSION > 0x060000
+            (*itCurves)->setData(new C2DCurveData(*data[mDataIndex[k][0].second],
+                                                  *data[mDataIndex[k][1].second],
+                                                  0));
+#else
             (*itCurves)->setData(C2DCurveData(*data[mDataIndex[k][0].second],
                                               *data[mDataIndex[k][1].second],
                                               0));
+#endif
             break;
 
           case CPlotItem::bandedGraph:
+#if QWT_VERSION > 0x060000
+            (*itCurves)->setData(new CBandedGraphData(*data[mDataIndex[k][0].second],
+                                 *data[mDataIndex[k][1].second],
+                                 *data[mDataIndex[k][2].second],
+                                 0));
+#else
             (*itCurves)->setData(CBandedGraphData(*data[mDataIndex[k][0].second],
                                                   *data[mDataIndex[k][1].second],
                                                   *data[mDataIndex[k][2].second],
                                                   0));
+#endif
             break;
 
           case CPlotItem::histoItem1d:
+#if QWT_VERSION > 0x060000
+            (*itCurves)->setData(new CHistoCurveData(*data[mDataIndex[k][0].second],
+                                 0,
+                                 mCurves[k]->getIncrement()));
+#else
             (*itCurves)->setData(CHistoCurveData(*data[mDataIndex[k][0].second],
                                                  0,
                                                  mCurves[k]->getIncrement()));
-
+#endif
             break;
 
           default:
@@ -1623,7 +1913,11 @@ bool CopasiPlot::saveData(const std::string & filename)
 
           fs << std::endl;
 
+#if QWT_VERSION > 0x060000
+          CHistoCurveData * pData = static_cast< CHistoCurveData * >((*itCurves)->data());
+#else
           CHistoCurveData * pData = static_cast< CHistoCurveData * >(&(*itCurves)->data());
+#endif
           size_t i, imax = pData->size();
 
           for (i = 0; i < imax; ++i)
@@ -1644,10 +1938,27 @@ void CopasiPlot::showCurve(QwtPlotItem *item, bool on)
 {
   item->setVisible(on);
   item->setItemAttribute(QwtPlotItem::AutoScale, on);
+#if QWT_VERSION > 0x060000
+  QwtLegend *lgd = qobject_cast<QwtLegend *>(legend());
+  QList<QWidget *> legendWidgets =
+    lgd->legendWidgets(itemToInfo(item));
+
+  if (legendWidgets.size() == 1)
+    {
+      QwtLegendLabel *legendLabel =
+        qobject_cast<QwtLegendLabel *>(legendWidgets[0]);
+
+      if (legendLabel)
+        legendLabel->setChecked(on);
+    }
+
+#else
   QWidget *w = legend()->find(item);
 
   if (w && w->inherits("QwtLegendItem"))
     static_cast< QwtLegendItem * >(w)->setChecked(on);
+
+#endif
 
   if (!mIgnoreUpdate)
     replot();
@@ -1662,10 +1973,27 @@ void CopasiPlot::setCurvesVisibility(const bool & visibility)
     {
       it->second->setVisible(visibility);
       it->second->setItemAttribute(QwtPlotItem::AutoScale, visibility);
+#if QWT_VERSION > 0x060000
+      QwtLegend *lgd = qobject_cast<QwtLegend *>(legend());
+      QList<QWidget *> legendWidgets =
+        lgd->legendWidgets(itemToInfo(it->second));
+
+      if (legendWidgets.size() == 1)
+        {
+          QwtLegendLabel *legendLabel =
+            qobject_cast<QwtLegendLabel *>(legendWidgets[0]);
+
+          if (legendLabel)
+            legendLabel->setChecked(visibility);
+        }
+
+#else
       QWidget *w = legend()->find(it->second);
 
       if (w && w->inherits("QwtLegendItem"))
         static_cast< QwtLegendItem * >(w)->setChecked(visibility);
+
+#endif
     }
 
   if (!mIgnoreUpdate)
