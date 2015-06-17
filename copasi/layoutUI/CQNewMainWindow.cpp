@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -1787,30 +1787,30 @@ QRectF getBounds(const std::vector<CCopasiSpringLayout::UpdateAction>& updates)
           case CCopasiSpringLayout::UpdateAction::COMPARTMENT_4V:
           {
             CLCompartmentGlyph* current = ((CLCompartmentGlyph*)(it->mpTarget));
-            result.setLeft(qMin(result.left(), current->getX()));
-            result.setTop(qMin(result.top(), current->getY()));
-            result.setRight(qMax(result.right(), current->getX() + current->getWidth()));
-            result.setBottom(qMax(result.bottom(), current->getY() + current->getHeight()));
+            result.setLeft(qMin(result.left(), (qreal)current->getX()));
+            result.setTop(qMin(result.top(), (qreal)current->getY()));
+            result.setRight(qMax(result.right(), (qreal)(current->getX() + current->getWidth())));
+            result.setBottom(qMax(result.bottom(), (qreal)(current->getY() + current->getHeight())));
           }
           break;
 
           case CCopasiSpringLayout::UpdateAction::POSITION_2V:
           {
             CLGraphicalObject* current = ((CLGraphicalObject*)(it->mpTarget));
-            result.setLeft(qMin(result.left(), current->getX()));
-            result.setTop(qMin(result.top(), current->getY()));
-            result.setRight(qMax(result.right(), current->getX() + current->getWidth()));
-            result.setBottom(qMax(result.bottom(), current->getY() + current->getHeight()));
+            result.setLeft(qMin(result.left(), (qreal)current->getX()));
+            result.setTop(qMin(result.top(), (qreal)current->getY()));
+            result.setRight(qMax(result.right(), (qreal)(current->getX() + current->getWidth())));
+            result.setBottom(qMax(result.bottom(), (qreal)(current->getY() + current->getHeight())));
           }
           break;
 
           case CCopasiSpringLayout::UpdateAction::REACTION_2V:
           {
             CLReactionGlyph* current = ((CLReactionGlyph*)(it->mpTarget));
-            result.setLeft(qMin(result.left(), current->getX()));
-            result.setTop(qMin(result.top(), current->getY()));
-            result.setRight(qMax(result.right(), current->getX() + current->getWidth()));
-            result.setBottom(qMax(result.bottom(), current->getY() + current->getHeight()));
+            result.setLeft(qMin(result.left(), (qreal)current->getX()));
+            result.setTop(qMin(result.top(), (qreal)current->getY()));
+            result.setRight(qMax(result.right(), (qreal)(current->getX() + current->getWidth())));
+            result.setBottom(qMax(result.bottom(), (qreal)(current->getY() + current->getHeight())));
           }
           break;
 
