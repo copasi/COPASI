@@ -3103,6 +3103,32 @@ void CSBMLExporter::createFunctionDefinitions(CCopasiDataModel& dataModel)
 }
 
 /**
+ * function going through all children of pFunNode, and renaming elements if they are in the rename list
+ */
+void renameAstNodes(ASTNode* pFunNode, const std::map<std::string, std::string>& renameList)
+{
+  if (pFunNode == NULL || renameList.empty())
+    return;
+
+  if (pFunNode->getType() == AST_NAME)
+    {
+      std::map<std::string, std::string>::const_iterator it = renameList.find(pFunNode->getName());
+
+      if (it != renameList.end())
+        {
+          pFunNode->setName(it->second.c_str());
+        }
+    }
+
+  unsigned int iMax = pFunNode->getNumChildren();
+
+  for (unsigned int i = 0; i < iMax; ++i)
+    {
+      renameAstNodes(pFunNode->getChild(i), renameList);
+    }
+}
+
+/**
  * Create the SBML function definition from the given COPASI function.
  */
 void CSBMLExporter::createFunctionDefinition(CFunction& function, CCopasiDataModel& dataModel)
@@ -3180,12 +3206,26 @@ void CSBMLExporter::createFunctionDefinition(CFunction& function, CCopasiDataMod
           size_t i, iMax = funParams.size();
           ASTNode* pParamNode = NULL;
 
+          std::map<std::string, std::string> renameList;
+
           for (i = 0; i < iMax; ++i)
             {
               pParamNode = new ASTNode(AST_NAME);
-              pParamNode->setName(funParams[i]->getObjectName().c_str());
+              std::string name = funParams[i]->getObjectName();
+
+              if (!isValidSId(name))
+                {
+                  std::string newName = nameToSbmlId(name);
+                  renameList[name] = newName;
+                  name = newName;
+                }
+
+              pParamNode->setName(name.c_str());
               pLambda->addChild(pParamNode);
             }
+
+          if (!renameList.empty())
+            renameAstNodes(pFunNode, renameList);
 
           pLambda->addChild(pFunNode);
 
@@ -6454,9 +6494,9 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CCopasiObject* pCOPASIObject, S
             cvTerm.setBiologicalQualifierType(BQB_IS);
             break;
 
-          // IS DESCRIBED BY is handled in the references below
-          //case bqbiol_isDescribedBy:
-          //    break;
+            // IS DESCRIBED BY is handled in the references below
+            //case bqbiol_isDescribedBy:
+            //    break;
           case CRDFPredicate::bqbiol_isEncodedBy:
           case CRDFPredicate::copasi_isEncodedBy:
             cvTerm.setQualifierType(BIOLOGICAL_QUALIFIER);
@@ -6494,7 +6534,7 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CCopasiObject* pCOPASIObject, S
             break;
 #if LIBSBML_VERSION >= 40100
 
-          // This qualifier is supported in libsbml 4.1
+            // This qualifier is supported in libsbml 4.1
           case CRDFPredicate::bqbiol_occursIn:
           case CRDFPredicate::copasi_occursIn:
             cvTerm.setQualifierType(BIOLOGICAL_QUALIFIER);
@@ -6513,9 +6553,9 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CCopasiObject* pCOPASIObject, S
             cvTerm.setModelQualifierType(BQM_IS);
             break;
 
-          // IS DESCRIBED BY is handled in the references below
-          //case bqmodel_isDescribedBy:
-          //    break;
+            // IS DESCRIBED BY is handled in the references below
+            //case bqmodel_isDescribedBy:
+            //    break;
           default:
             // there are many qualifiers that start e.g. with copasi_ which are
             // not handled
