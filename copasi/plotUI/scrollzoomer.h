@@ -53,11 +53,18 @@ public:
 #endif
 
 public slots:
-  virtual
-  void move(double x, double y);
+#if QWT_VERSION > 0x060000
+  virtual void moveTo(const QPointF &   pos);
+#else
+  virtual void move(double x, double y);
+#endif
 
 protected:
+#if QWT_VERSION > 0x060000
+  virtual QwtText trackerTextF(const QwtDoublePoint &pos) const;
+#else
   virtual QwtText trackerText(const QwtDoublePoint &pos) const;
+#endif
 };
 
 class ScrollZoomer: public LogPlotZoomer

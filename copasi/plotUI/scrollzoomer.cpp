@@ -39,7 +39,11 @@ LogPlotZoomer::LogPlotZoomer(QwtPlotCanvas *canvas):
 #endif
 {}
 
+#if QWT_VERSION > 0x060000
+QwtText LogPlotZoomer::trackerTextF(const QwtDoublePoint &pos) const
+#else
 QwtText LogPlotZoomer::trackerText(const QwtDoublePoint &pos) const
+#endif
 {
   switch (rubberBand())
     {
@@ -71,8 +75,15 @@ QwtText LogPlotZoomer::trackerText(const QwtDoublePoint &pos) const
     }
 }*/
 
+#if QWT_VERSION > 0x060000
+void LogPlotZoomer::moveTo(const QPointF &  pos)
+{
+  double x = pos.x();
+  double y = pos.y();
+#else
 void LogPlotZoomer::move(double x, double y)
 {
+#endif
   //QwtPlotZoomer::move(x,y);
 
   x = qwtMax(x, zoomBase().left());
@@ -612,9 +623,19 @@ void ScrollZoomer::layoutScrollBars(const QRect &rect)
 void ScrollZoomer::scrollBarMoved(Qt::Orientation o, double min, double)
 {
   if (o == Qt::Horizontal)
+#if QWT_VERSION > 0x060000
+    moveTo(QPointF(min, zoomRect().top()));
+
+#else
     move(min, zoomRect().top());
+#endif
   else
+#if QWT_VERSION > 0x060000
+    moveTo(QPointF(zoomRect().left(), min));
+
+#else
     move(zoomRect().left(), min);
+#endif
 
   emit zoomed(zoomRect());
 }
