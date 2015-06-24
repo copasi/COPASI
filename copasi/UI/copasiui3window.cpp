@@ -82,6 +82,8 @@
 #include "CQSEDMLFileDialog.h"
 #endif
 
+#include <qwt_global.h>
+
 #define AutoSaveInterval 10*60*1000
 
 #ifdef DEBUG_UI
@@ -1277,7 +1279,9 @@ void CopasiUI3Window::about()
   QString text =
     QString(AboutDialog::text)
     .arg(FROM_UTF8(CVersion::VERSION.getVersion()))
-    .arg(LIBSBML_DOTTED_VERSION);
+    .arg(LIBSBML_DOTTED_VERSION)
+    .arg(QWT_VERSION_STR)
+    .arg(QT_VERSION_STR);
 
   AboutDialog* aboutDialog = new AboutDialog(this, text, 76, 30);
   aboutDialog->setWindowTitle(FixedTitle);
