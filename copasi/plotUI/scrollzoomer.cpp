@@ -68,11 +68,11 @@ void LogPlotZoomer::move(double x, double y)
 {
   //QwtPlotZoomer::move(x,y);
 
-  x = qwtMax(x, zoomBase().left());
-  x = qwtMin(x, zoomBase().right() - zoomRect().width());
+  x = qwtMax(x, (double)zoomBase().left());
+  x = qwtMin(x, (double)(zoomBase().right() - zoomRect().width()));
 
-  y = qwtMax(y, zoomBase().top());
-  y = qwtMin(y, zoomBase().bottom() - zoomRect().height());
+  y = qwtMax(y, (double)zoomBase().top());
+  y = qwtMin(y, (double)(zoomBase().bottom() - zoomRect().height()));
 
   if (x != zoomRect().left() || y != zoomRect().top())
     {
