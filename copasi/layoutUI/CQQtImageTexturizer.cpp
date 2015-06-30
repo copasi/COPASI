@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -21,7 +21,7 @@
 #endif // __APPLE__
 
 #include "CQQtImageTexturizer.h"
-#include "copasi/layout/utility_classes.h"
+#include "copasi/layoutUI/utility_classes.h"
 #include "copasi/utilities/CCopasiMessage.h"
 #include "copasi/utilities/utility.h"
 #include "copasi/UI/qtUtilities.h"

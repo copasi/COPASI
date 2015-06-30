@@ -1,12 +1,4 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLSimpleImageTexturizer.cpp,v $
-//   $Revision: 1.2 $
-//   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2012/04/22 14:51:16 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -17,19 +9,6 @@
 #include <jerror.h>
 
 #include <cmath>
-
-// opengl includes
-#ifdef _WIN32
-#include "windows.h"
-#endif // _WIN32
-
-#ifdef __APPLE__
-#include "OpenGL/gl.h"
-#include "OpenGL/glu.h"
-#else
-#include "GL/gl.h"
-#include "GL/glu.h"
-#endif // __APPLE__
 
 #include "CLSimpleImageTexturizer.h"
 #include "utility_classes.h"
@@ -104,7 +83,7 @@ CLTextureSpec* CLSimpleImageTexturizer::create_texture_for_jpeg_image(const std:
       pTexture->mTextureHeight = height;
       pTexture->mTextureName = 0;
       pTexture->mNumComponents = 3;
-      GLubyte* pData = new GLubyte[3*width*height];
+      GLubyte* pData = new GLubyte[3 * width * height];
       JSAMPARRAY buffer = (*cinfo.mem->alloc_sarray)
                           ((j_common_ptr) & cinfo, JPOOL_IMAGE, row_stride, 1);
 
@@ -287,7 +266,7 @@ CLTextureSpec* CLSimpleImageTexturizer::create_texture_for_png_image(const std::
                           pTexture = new CLTextureSpec();
                           // we have to reserve enough memory for a width*height
                           // RGBA image
-                          GLubyte* pData = new GLubyte[4*width*height];
+                          GLubyte* pData = new GLubyte[4 * width * height];
                           pTexture->mTextureWidth = width;
                           pTexture->mTextureHeight = height;
                           pTexture->mNumComponents = 4;
@@ -298,7 +277,7 @@ CLTextureSpec* CLSimpleImageTexturizer::create_texture_for_png_image(const std::
 
                           for (i = 0; i < height; ++i)
                             {
-                              pRow_pointers[i] = (&(pData[4*width*i]));
+                              pRow_pointers[i] = (&(pData[4 * width * i]));
                             }
 
                           png_read_image(png_ptr, pRow_pointers);

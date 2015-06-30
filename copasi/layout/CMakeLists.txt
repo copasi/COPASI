@@ -35,25 +35,6 @@
 file(GLOB HEADERS_LAYOUT layout/*.h)
 file(GLOB SOURCES_LAYOUT layout/*.cpp)
 
-if(NOT OPENGL_FOUND)
-
-  list(REMOVE_ITEM SOURCES_LAYOUT
-    ${CMAKE_CURRENT_SOURCE_DIR}/layout/CLLayoutRenderer.cpp
-	  ${CMAKE_CURRENT_SOURCE_DIR}/layout/utility_classes.cpp
-  )
-	
-  list(REMOVE_ITEM HEADERS_LAYOUT
-    ${CMAKE_CURRENT_SOURCE_DIR}/layout/CLFontRendererBase.h
-	  ${CMAKE_CURRENT_SOURCE_DIR}/layout/CLLayoutRenderer.h
-	  ${CMAKE_CURRENT_SOURCE_DIR}/layout/utility_classes.h
-  )  
-endif(NOT OPENGL_FOUND)
-
-# remove other elements that 
-list(REMOVE_ITEM SOURCES_LAYOUT 
-  ${CMAKE_CURRENT_SOURCE_DIR}/layout/CLSimpleImageTexturizer.cpp
-)
-
 # create source group for IDEs
 source_group(layout FILES ${SOURCES_LAYOUT} ${HEADERS_LAYOUT})
 

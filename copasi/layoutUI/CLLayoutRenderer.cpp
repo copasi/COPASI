@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -23,7 +23,7 @@
 #include "copasi/layout/CLBase.h"
 #include "copasi/layout/CLGradientStops.h"
 #include "copasi/layout/CLDefaultStyles.h"
-#include "copasi/layout/CLFontRendererBase.h"
+#include "copasi/layoutUI/CLFontRendererBase.h"
 #include "copasi/layout/CLRenderResolver.h"
 #include "copasi/layout/CLRGBAColor.h"
 #include "copasi/layout/CLRelAbsVector.h"

@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -16,7 +16,7 @@
 #include <utility>
 
 #include "copasi/layout/CLText.h"
-#include "copasi/layout/CLFontRendererBase.h"
+#include "copasi/layoutUI/CLFontRendererBase.h"
 
 struct CLTextTextureSpec;
 

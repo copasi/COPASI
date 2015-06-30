@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -14,7 +14,7 @@
 #include "copasi/CopasiDataModel/CCopasiDataModel.h"
 
 #include "CQFontRenderer.h"
-#include "copasi/layout/CLLayoutRenderer.h"
+#include "copasi/layoutUI/CLLayoutRenderer.h"
 #include "copasi/layout/CLDefaultStyles.h"
 #include "copasi/layout/CLLocalRenderInformation.h"
 #include "copasi/layout/CLGlobalRenderInformation.h"

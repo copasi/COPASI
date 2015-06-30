@@ -1,12 +1,4 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/utility_classes.cpp,v $
-//   $Revision: 1.3 $
-//   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2012/04/22 14:51:16 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -23,9 +15,9 @@
 #include "copasi/layout/CLReactionGlyph.h"
 
 CLLineStippleTexture::CLLineStippleTexture(const std::vector<unsigned int>& dasharray):
-    mPatternLength(0),
-    mTextureLength(0),
-    mTextureName(0)
+  mPatternLength(0),
+  mTextureLength(0),
+  mTextureName(0)
 {
   if (!dasharray.empty())
     {
@@ -134,28 +126,28 @@ bool compareGraphicalObjectsBySize::operator()(const CLGraphicalObject* pObject1
  * Constructor that fills all values with default attributes.
  */
 CLGroupAttributes::CLGroupAttributes():
-    mStroke("none"),
-    mStrokeWidth(0.0),
-    mStrokeDasharray(),
-    mpTransform(NULL),
-    mFill("none"),
-    mFillRule(CLGraphicalPrimitive2D::NONZERO),
-    mFontFamily("sans-serif"),
-    mFontSize(CLRelAbsVector(0.0, 0.0)),
-    mFontWeight(CLText::WEIGHT_NORMAL),
-    mFontStyle(CLText::STYLE_NORMAL),
-    mTextAnchor(CLText::ANCHOR_START),
-    mVTextAnchor(CLText::ANCHOR_TOP),
-    mStartHead("none"),
-    mEndHead("none"),
-    mX(0),
-    mY(0),
-    mZ(0),
-    mWidth(0),
-    mHeight(0)
+  mStroke("none"),
+  mStrokeWidth(0.0),
+  mStrokeDasharray(),
+  mpTransform(NULL),
+  mFill("none"),
+  mFillRule(CLGraphicalPrimitive2D::NONZERO),
+  mFontFamily("sans-serif"),
+  mFontSize(CLRelAbsVector(0.0, 0.0)),
+  mFontWeight(CLText::WEIGHT_NORMAL),
+  mFontStyle(CLText::STYLE_NORMAL),
+  mTextAnchor(CLText::ANCHOR_START),
+  mVTextAnchor(CLText::ANCHOR_TOP),
+  mStartHead("none"),
+  mEndHead("none"),
+  mX(0),
+  mY(0),
+  mZ(0),
+  mWidth(0),
+  mHeight(0)
 {
   this->mpTransform = new double[12];
-  memcpy(this->mpTransform, CLTransformation::getIdentityMatrix(), 12*sizeof(double));
+  memcpy(this->mpTransform, CLTransformation::getIdentityMatrix(), 12 * sizeof(double));
 }
 /**
  * Destructor that deletes the memory used for the transformation
@@ -173,28 +165,28 @@ CLGroupAttributes::~CLGroupAttributes()
  * Copy constructor.
  */
 CLGroupAttributes::CLGroupAttributes(const CLGroupAttributes& src):
-    mStroke(src.mStroke),
-    mStrokeWidth(src.mStrokeWidth),
-    mStrokeDasharray(src.mStrokeDasharray),
-    mpTransform(NULL),
-    mFill(src.mFill),
-    mFillRule(src.mFillRule),
-    mFontFamily(src.mFontFamily),
-    mFontSize(src.mFontSize),
-    mFontWeight(src.mFontWeight),
-    mFontStyle(src.mFontStyle),
-    mTextAnchor(src.mTextAnchor),
-    mVTextAnchor(src.mVTextAnchor),
-    mStartHead(src.mStartHead),
-    mEndHead(src.mEndHead),
-    mX(src.mX),
-    mY(src.mY),
-    mZ(src.mZ),
-    mWidth(src.mWidth),
-    mHeight(src.mHeight)
+  mStroke(src.mStroke),
+  mStrokeWidth(src.mStrokeWidth),
+  mStrokeDasharray(src.mStrokeDasharray),
+  mpTransform(NULL),
+  mFill(src.mFill),
+  mFillRule(src.mFillRule),
+  mFontFamily(src.mFontFamily),
+  mFontSize(src.mFontSize),
+  mFontWeight(src.mFontWeight),
+  mFontStyle(src.mFontStyle),
+  mTextAnchor(src.mTextAnchor),
+  mVTextAnchor(src.mVTextAnchor),
+  mStartHead(src.mStartHead),
+  mEndHead(src.mEndHead),
+  mX(src.mX),
+  mY(src.mY),
+  mZ(src.mZ),
+  mWidth(src.mWidth),
+  mHeight(src.mHeight)
 {
   this->mpTransform = new double[12];
-  memcpy(this->mpTransform, src.mpTransform, 12*sizeof(double));
+  memcpy(this->mpTransform, src.mpTransform, 12 * sizeof(double));
 }
 
 /**
@@ -214,7 +206,7 @@ CLGroupAttributes& CLGroupAttributes::operator=(const CLGroupAttributes & src)
         }
 
       // contains 12 double values
-      memcpy(this->mpTransform, src.mpTransform, 12*sizeof(double));
+      memcpy(this->mpTransform, src.mpTransform, 12 * sizeof(double));
       this->mFill = src.mFill;
       this->mFillRule = src.mFillRule;
       this->mFontFamily = src.mFontFamily;
@@ -236,10 +228,10 @@ CLGroupAttributes& CLGroupAttributes::operator=(const CLGroupAttributes & src)
 }
 
 CLFontSpec::CLFontSpec():
-    mFamily(""),
-    mSize(0.0),
-    mWeight(CLText::WEIGHT_UNSET),
-    mStyle(CLText::STYLE_UNSET)
+  mFamily(""),
+  mSize(0.0),
+  mWeight(CLText::WEIGHT_UNSET),
+  mStyle(CLText::STYLE_UNSET)
 {
 }
 
