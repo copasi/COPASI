@@ -231,7 +231,7 @@ protected slots:
 #ifdef COPASI_UNDO
   void slotUndoHistory();
 #endif
-
+  void slotLoadParameterEstimationProtocol();
 private:
   CopasiUI3Window();
 
@@ -272,6 +272,7 @@ private:
   QAction* mpaUpdateMIRIAM;
   QAction* mpaExpandModel;
   QAction* mpaFontSelectionDialog;
+  QAction* mpaParameterEstimationResult;
 
   QAction* mpaCloseAllWindows;
 

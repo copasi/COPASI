@@ -82,6 +82,8 @@
 #include "CQSEDMLFileDialog.h"
 #endif
 
+#include <copasi/UI/CQParameterEstimationResult.h>
+
 #include <qwt_global.h>
 
 #define AutoSaveInterval 10*60*1000
@@ -426,6 +428,17 @@ void CopasiUI3Window::createActions()
   mpaUndoHistory = new QAction("&Undo History", this);
   connect(mpaUndoHistory, SIGNAL(activated()), this, SLOT(slotUndoHistory()));
 #endif
+
+  mpaParameterEstimationResult = new QAction("Load Parameter Estimation Protocol", this);
+  connect(mpaParameterEstimationResult, SIGNAL(activated()), this, SLOT(slotLoadParameterEstimationProtocol()));
+}
+
+void
+CopasiUI3Window::slotLoadParameterEstimationProtocol()
+{
+  CQParameterEstimationResult *dlg = new CQParameterEstimationResult(this, (*CCopasiRootContainer::getDatamodelList())[0]);
+  dlg->exec();
+  dlg->deleteLater();
 }
 
 void CopasiUI3Window::slotFunctionDBSave(QString dbFile)
@@ -601,6 +614,7 @@ void CopasiUI3Window::createMenuBar()
 #ifdef WITH_PE_EVENT_CREATION
   mpTools->addAction("&Create Events For Timeseries Experiment", this, SLOT(slotCreateEventsForTimeseries()));
 #endif
+  mpTools->addAction(mpaParameterEstimationResult);
 
 #ifdef COPASI_SBW_INTEGRATION
   // create and populate SBW menu
