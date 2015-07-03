@@ -50,7 +50,16 @@ void replaceAllSubStrings(std::string& str, const std::string& from, const std::
     }
 }
 
-std::string sanitizeName(std::string& name)
+std::string sanitizeName(const std::string& name)
+{
+  if (name.empty()) return name;
+
+  std::string copy(name);
+  replaceAllSubStrings(copy, "\"", "");
+  return copy;
+}
+
+std::string& sanitizeName(std::string& name)
 {
   if (name.empty()) return name;
 
@@ -316,7 +325,7 @@ public:
     return result;
   }
 
-  std::vector<FittingItem*> getItems(std::string& displayName)
+  std::vector<FittingItem*> getItems(const std::string& displayName)
   {
     std::string name = sanitizeName(displayName);
     std::vector<FittingItem*> result;
@@ -328,7 +337,7 @@ public:
     return result;
   }
 
-  double getBestValueFor(std::string& name, CheckPoint* data, const std::vector<std::string>& priorities)
+  double getBestValueFor(const std::string& name, CheckPoint* data, const std::vector<std::string>& priorities)
   {
     FittingItem* item = getBestItem(getItems(name), priorities);
     size_t index = getIndex(mFittingItems, item);
