@@ -4,7 +4,7 @@
 // All rights reserved.
 
 #include "CQParameterEstimationResult.h"
-#include "ui_cqparameterestimationresult.h"
+#include "ui_CQParameterEstimationResult.h"
 
 #include <string>
 #include <sstream>
