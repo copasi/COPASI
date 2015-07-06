@@ -53,9 +53,9 @@ C_FLOAT64 CUnit::Avogadro(6.02214129e23); // http://physics.nist.gov/cgi-bin/cuu
 // SI Name, Symbol, Definition
 struct SIUnit
 {
-  char * name;
-  char * symbol;
-  char * definition;
+  const char * name;
+  const char * symbol;
+  const char * definition;
 };
 
 SIUnit SIUnits[] =
@@ -88,6 +88,7 @@ SIUnit SIUnits[] =
 };
 
 // static
+
 CUnit CUnit::getSIUnit(const std::string & si,
                        const C_FLOAT64 & avogadro)
 {
@@ -117,6 +118,43 @@ CUnit CUnit::getSIUnit(const std::string & si,
   SIunit.setDefinition(buffer.str(), avogadro);
 
   return SIunit;
+}
+
+// static
+void CUnit::updateSIUnits(CCopasiVectorN< CUnit > & Units,
+                          const C_FLOAT64 & avogadro)
+{
+  SIUnit * pSIUnit = SIUnits;
+
+  while (pSIUnit->name)
+    {
+      CUnit * pUnit = NULL;
+
+      if (size_t Index = Units.getIndex(pSIUnit->name) != C_INVALID_INDEX)
+        {
+          pUnit = Units[Index];
+        }
+      else
+        {
+          pUnit = new CUnit();
+
+          pUnit->setObjectName(pSIUnit->name);
+          pUnit->setSymbol(pSIUnit->symbol);
+        }
+
+      std::ostringstream buffer;
+
+      if (pSIUnit->symbol != "mol")
+        {
+          buffer << pSIUnit->definition;
+        }
+      else
+        {
+          buffer << CCopasiXMLInterface::DBL(avogadro) << "*#";
+        }
+
+      pUnit->setDefinition(buffer.str(), avogadro);
+    }
 }
 
 const char * CUnit::VolumeUnitNames[] =

@@ -63,6 +63,9 @@ public:
   static CUnit getSIUnit(const std::string & si,
                          const C_FLOAT64 & avogadro);
 
+  static void updateSIUnits(CCopasiVectorN< CUnit > & Units,
+                            const C_FLOAT64 & avogadro);
+
   // constructors
   /**
    * Default constructor
