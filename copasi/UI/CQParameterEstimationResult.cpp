@@ -717,7 +717,7 @@ readExp:
   }
   static std::vector<ResultData*> parseFile(const std::string& fileName, CCopasiDataModel* dataModel = NULL)
   {
-    std::ifstream ifs(fileName, std::ifstream::in);
+    std::ifstream ifs(fileName.c_str(), std::ios_base::in);
 
     return parseStream(ifs, dataModel);
   }
