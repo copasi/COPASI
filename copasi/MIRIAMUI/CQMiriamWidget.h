@@ -67,6 +67,8 @@ private:
   void deleteSelectedModifieds();
   void keyPressEvent(QKeyEvent* ev);
   std::string mKeyToCopy;
+  std::string mMessage;
+  int mMessageType;
 
 protected slots:
   virtual void slotBtnDeleteClicked();
