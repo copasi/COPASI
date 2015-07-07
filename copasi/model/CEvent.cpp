@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -225,11 +225,15 @@ std::string CEventAssignment::getExpression() const
 
 const CExpression* CEventAssignment::getExpressionPtr() const
 {
+  if (mpExpression != NULL) mpExpression->updateInfix();
+
   return mpExpression;
 }
 
 CExpression* CEventAssignment::getExpressionPtr()
 {
+  if (mpExpression != NULL) mpExpression->updateInfix();
+
   return mpExpression;
 }
 
@@ -533,11 +537,15 @@ std::string CEvent::getTriggerExpression() const
 
 const CExpression* CEvent::getTriggerExpressionPtr() const
 {
+  if (mpTriggerExpression != NULL) mpTriggerExpression->updateInfix();
+
   return mpTriggerExpression;
 }
 
 CExpression* CEvent::getTriggerExpressionPtr()
 {
+  if (mpTriggerExpression != NULL) mpTriggerExpression->updateInfix();
+
   return mpTriggerExpression;
 }
 
@@ -600,11 +608,15 @@ std::string CEvent::getDelayExpression() const
 
 const CExpression* CEvent::getDelayExpressionPtr() const
 {
+  if (mpDelayExpression != NULL) mpDelayExpression->updateInfix();
+
   return mpDelayExpression;
 }
 
 CExpression* CEvent::getDelayExpressionPtr()
 {
+  if (mpDelayExpression != NULL) mpDelayExpression->updateInfix();
+
   return mpDelayExpression;
 }
 
@@ -667,11 +679,15 @@ std::string CEvent::getPriorityExpression() const
 
 CExpression* CEvent::getPriorityExpressionPtr()
 {
+  if (mpPriorityExpression != NULL) mpPriorityExpression->updateInfix();
+
   return mpPriorityExpression;
 }
 
 const CExpression* CEvent::getPriorityExpressionPtr() const
 {
+  if (mpPriorityExpression != NULL) mpPriorityExpression->updateInfix();
+
   return mpPriorityExpression;
 }
 
