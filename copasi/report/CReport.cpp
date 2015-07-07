@@ -357,7 +357,7 @@ std::ostream * CReport::open(const CCopasiDataModel * pDataModel,
   else if (mTarget != "" && mpReportDef != NULL)
     {
       if (CDirEntry::isRelativePath(mTarget) &&
-          !CDirEntry::makePathAbsolute(mTarget, mpDataModel->getFileName()))
+          !CDirEntry::makePathAbsolute(mTarget, mpDataModel->getReferenceDirectory()))
         mTarget = CDirEntry::fileName(mTarget);
 
       mpOstream = new std::ofstream;

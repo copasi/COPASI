@@ -193,6 +193,7 @@ bool CCopasiDataModel::loadModel(std::istream & in,
 
       newModel(NULL, deleteOldData);
       mData.mFileType = Gepasi;
+      mData.mReferenceDir = pwd;
 
       if (mData.pModel->load(inbuf))
         {
@@ -209,6 +210,7 @@ bool CCopasiDataModel::loadModel(std::istream & in,
     {
       pushData();
       mData.mFileType = CopasiML;
+      mData.mReferenceDir = pwd;
 
       CCopasiXML XML;
       XML.setFunctionList(&CCopasiRootContainer::getFunctionList()->loadedFunctions());

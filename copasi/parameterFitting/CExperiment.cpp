@@ -384,7 +384,7 @@ void CExperiment::updateFittedPointValues(const size_t & index, bool includeSimu
 #ifdef COPASI_PARAMETERFITTING_RESIDUAL_SCALING
       Residual = (*pDataDependentCalculated - *pDataDependent) / (*pDataDependentCalculated > 1 ? *pDataDependentCalculated : 1.0);
 #else
-      Residual = (*pDataDependentCalculated - *pDataDependent) * *pScale;
+      Residual = (*pDataDependentCalculated - *pDataDependent) **pScale;
 #endif
 
       (*it)->setValues(Independent,
@@ -456,10 +456,10 @@ C_FLOAT64 CExperiment::sumOfSquares(const size_t & index,
 #ifdef COPASI_PARAMETERFITTING_RESIDUAL_SCALING
             *residuals = (*pDataDependent - **ppDependentValues) / std::max(1.0, **ppDependentValues);
 #else
-            *residuals = (*pDataDependent - **ppDependentValues) * *pScale;
+            *residuals = (*pDataDependent - **ppDependentValues) **pScale;
 #endif
 
-            s += *residuals * *residuals;
+            s += *residuals **residuals;
           }
       else
         for (; pDataDependent != pEnd;
@@ -470,7 +470,7 @@ C_FLOAT64 CExperiment::sumOfSquares(const size_t & index,
 #ifdef COPASI_PARAMETERFITTING_RESIDUAL_SCALING
             Residual = (*pDataDependent - **ppDependentValues) / std::max(1.0, **ppDependentValues);
 #else
-            Residual = (*pDataDependent - **ppDependentValues) * *pScale;
+            Residual = (*pDataDependent - **ppDependentValues) **pScale;
 #endif
 
             s += Residual * Residual;
@@ -485,10 +485,10 @@ C_FLOAT64 CExperiment::sumOfSquares(const size_t & index,
 #ifdef COPASI_PARAMETERFITTING_RESIDUAL_SCALING
             *residuals = (*pDataDependent - **ppDependentValues) / std::max(1.0, **ppDependentValues);
 #else
-            *residuals = (*pDataDependent - **ppDependentValues) * *pScale;
+            *residuals = (*pDataDependent - **ppDependentValues) **pScale;
 #endif
 
-            s += *residuals * *residuals;
+            s += *residuals **residuals;
           }
       else
         for (; pDataDependent != pEnd;
@@ -498,7 +498,7 @@ C_FLOAT64 CExperiment::sumOfSquares(const size_t & index,
 #ifdef COPASI_PARAMETERFITTING_RESIDUAL_SCALING
             Residual = (*pDataDependent - **ppDependentValues) / std::max(1.0, **ppDependentValues);
 #else
-            Residual = (*pDataDependent - **ppDependentValues) * *pScale;
+            Residual = (*pDataDependent - **ppDependentValues) **pScale;
 #endif
 
             s += Residual * Residual;
@@ -540,7 +540,7 @@ C_FLOAT64 CExperiment::sumOfSquaresStore(const size_t & index,
 #ifdef COPASI_PARAMETERFITTING_RESIDUAL_SCALING
           Residual = (*pDataDependent - *dependentValues) / std::max(1.0, *dependentValues);
 #else
-          Residual = (*pDataDependent - *dependentValues) * *pScale;
+          Residual = (*pDataDependent - *dependentValues) **pScale;
 #endif
 
           s += Residual * Residual;
@@ -556,7 +556,7 @@ C_FLOAT64 CExperiment::sumOfSquaresStore(const size_t & index,
 #ifdef COPASI_PARAMETERFITTING_RESIDUAL_SCALING
           Residual = (*pDataDependent - *dependentValues) / std::max(1.0, *dependentValues);
 #else
-          Residual = (*pDataDependent - *dependentValues) * *pScale;
+          Residual = (*pDataDependent - *dependentValues) **pScale;
 #endif
 
           s += Residual * Residual;
@@ -654,7 +654,7 @@ bool CExperiment::calculateStatistics()
 #ifdef COPASI_PARAMETERFITTING_RESIDUAL_SCALING
           Residual = (*pDataDependentCalculated - *pDataDependent) * std::max(1.0, *pDataDependentCalculated);
 #else
-          Residual = (*pDataDependentCalculated - *pDataDependent) * *pScale;
+          Residual = (*pDataDependentCalculated - *pDataDependent) **pScale;
 #endif
 
           if (isnan(Residual)) continue;
@@ -713,7 +713,7 @@ bool CExperiment::calculateStatistics()
 #ifdef COPASI_PARAMETERFITTING_RESIDUAL_SCALING
           Residual = mMean - (*pDataDependentCalculated - *pDataDependent) / std::max(1.0, *pDataDependentCalculated);
 #else
-          Residual = mMean - (*pDataDependentCalculated - *pDataDependent) * *pScale;
+          Residual = mMean - (*pDataDependentCalculated - *pDataDependent) **pScale;
 #endif
 
           if (isnan(Residual)) continue;
@@ -751,7 +751,7 @@ bool CExperiment::compile(const std::vector< CCopasiContainer * > listOfContaine
   //  {
   //    CCopasiMessage(CCopasiMessage::ERROR, MCFitting + 4, imax + 1, *mpNumColumns + 1);
   //    return false; // More column types specified than we have data columns
-  //  }
+  //}
 
   if (LastMappedColumn < imax || LastMappedColumn == C_INVALID_INDEX)
     {
@@ -879,11 +879,12 @@ bool CExperiment::read(std::istream & in,
 
   if (*mpNumColumns < imax)
     *mpNumColumns = imax;
+
   //if (*mpNumColumns < imax)
   //  {
   //    CCopasiMessage(CCopasiMessage::ERROR, MCFitting + 4, imax, *mpNumColumns);
   //    return false; // More column types specified than we have data columns
-  //  }
+  //}
 
   size_t IndependentCount = 0;
   size_t DependentCount = 0;
@@ -1282,7 +1283,7 @@ const std::string & CExperiment::getFileName() const
 
   if (CDirEntry::isRelativePath(*pFileName) &&
       !CDirEntry::makePathAbsolute(*pFileName,
-                                   getObjectDataModel()->getFileName()))
+                                   getObjectDataModel()->getReferenceDirectory()))
     *pFileName = CDirEntry::fileName(*pFileName);
 
   return *mpFileName;
@@ -1562,7 +1563,7 @@ const C_FLOAT64 & CExperiment::getErrorMeanSD() const
 C_FLOAT64 CExperiment::getObjectiveValue(CCopasiObject *const& pObject) const
 {
   std::map< CCopasiObject *, size_t >::const_iterator it
-  = mDependentObjects.find(pObject);
+    = mDependentObjects.find(pObject);
 
   if (it != mDependentObjects.end())
     return mColumnObjectiveValue[it->second];
@@ -1573,7 +1574,7 @@ C_FLOAT64 CExperiment::getObjectiveValue(CCopasiObject *const& pObject) const
 C_FLOAT64 CExperiment::getDefaultScale(const CCopasiObject * const& pObject) const
 {
   std::map< CCopasiObject *, size_t>::const_iterator it
-  = mDependentObjects.find(const_cast<CCopasiObject*>(pObject));
+    = mDependentObjects.find(const_cast<CCopasiObject*>(pObject));
 
   if (it == mDependentObjects.end())
     return std::numeric_limits<C_FLOAT64>::quiet_NaN();
@@ -1584,7 +1585,7 @@ C_FLOAT64 CExperiment::getDefaultScale(const CCopasiObject * const& pObject) con
 C_FLOAT64 CExperiment::getRMS(CCopasiObject *const& pObject) const
 {
   std::map< CCopasiObject *, size_t>::const_iterator it
-  = mDependentObjects.find(pObject);
+    = mDependentObjects.find(pObject);
 
   if (it != mDependentObjects.end())
     return mColumnRMS[it->second];
@@ -1595,7 +1596,7 @@ C_FLOAT64 CExperiment::getRMS(CCopasiObject *const& pObject) const
 C_FLOAT64 CExperiment::getErrorSum(CCopasiObject *const& pObject) const
 {
   std::map< CCopasiObject *, size_t>::const_iterator it
-  = mDependentObjects.find(pObject);
+    = mDependentObjects.find(pObject);
 
   if (it == mDependentObjects.end() ||
       mpDataDependentCalculated == NULL)
@@ -1628,7 +1629,7 @@ C_FLOAT64 CExperiment::getErrorMeanSD(CCopasiObject *const& pObject,
                                       const C_FLOAT64 & errorMean) const
 {
   std::map< CCopasiObject *, size_t>::const_iterator it
-  = mDependentObjects.find(pObject);
+    = mDependentObjects.find(pObject);
 
   if (it == mDependentObjects.end() ||
       mpDataDependentCalculated == NULL)
@@ -1651,7 +1652,7 @@ C_FLOAT64 CExperiment::getErrorMeanSD(CCopasiObject *const& pObject,
 #ifdef COPASI_PARAMETERFITTING_RESIDUAL_SCALING
       Residual = errorMean - (*pDataDependentCalculated - *pDataDependent) / std::max(1.0, *pDataDependentCalculated);
 #else
-      Residual = errorMean - (*pDataDependentCalculated - *pDataDependent) * *pScale;
+      Residual = errorMean - (*pDataDependentCalculated - *pDataDependent) **pScale;
 #endif
 
       if (isnan(Residual)) continue;
@@ -1665,7 +1666,7 @@ C_FLOAT64 CExperiment::getErrorMeanSD(CCopasiObject *const& pObject,
 size_t CExperiment::getColumnValidValueCount(CCopasiObject *const& pObject) const
 {
   std::map< CCopasiObject *, size_t>::const_iterator it
-  = mDependentObjects.find(pObject);
+    = mDependentObjects.find(pObject);
 
   if (it != mDependentObjects.end())
     return mColumnValidValueCount[it->second];
