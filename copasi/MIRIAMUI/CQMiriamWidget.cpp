@@ -33,7 +33,9 @@
  */
 CQMiriamWidget::CQMiriamWidget(QWidget* parent, const char* name)
   : CopasiWidget(parent, name),
-    mKeyToCopy("")
+    mKeyToCopy(""),
+    mMessage(""),
+    mMessageType(-1)
 {
   setupUi(this);
 
@@ -323,10 +325,10 @@ void CQMiriamWidget::slotCreatedDTChanged(QDateTime newDT)
     }
 }
 
-void
-CQMiriamWidget::showEvent(QShowEvent * event)
+bool CQMiriamWidget::enterProtected()
 {
-  if (!isVisible() || mKey.empty()) return;
+  if (mKey == "")
+    return false;
 
   CCopasiMessage::clearDeque();
 
@@ -377,30 +379,18 @@ CQMiriamWidget::showEvent(QShowEvent * event)
 
   if (CCopasiMessage::size() > 0)
     {
-      switch (CCopasiMessage::getHighestSeverity())
-        {
-            // we decided to not display the warning about not recognized terms
-            // at the last meeting
-            // case CCopasiMessage::WARNING:
-            //  CQMessageBox::information(this, "Information", FROM_UTF8(CCopasiMessage::getAllMessageText()));
-            //  break;
-
-          case CCopasiMessage::ERROR:
-          case CCopasiMessage::EXCEPTION:
-            CQMessageBox::critical(this, "Error", FROM_UTF8(CCopasiMessage::getAllMessageText()));
-            break;
-
-          default:
-            break;
-        }
-
+      mMessageType = CCopasiMessage::getHighestSeverity();
+      mMessage = CCopasiMessage::getAllMessageText();
       CCopasiMessage::clearDeque();
-    }
-}
 
-bool CQMiriamWidget::enterProtected()
-{
-  // loading is now deferred until the window is made visible
+      showEvent(NULL);
+    }
+  else
+    {
+      mMessageType = -1;
+      mMessage = "";
+    }
+
   return true;
 }
 
@@ -408,6 +398,26 @@ bool CQMiriamWidget::leave()
 {
   mpMIRIAMInfo->save();
   return true;
+}
+
+// virtual
+void CQMiriamWidget::showEvent(QShowEvent * event)
+{
+  if (!isVisible()) return;
+
+  switch ((CCopasiMessage::Type) mMessageType)
+    {
+      case CCopasiMessage::ERROR:
+      case CCopasiMessage::EXCEPTION:
+        CQMessageBox::critical(this, "Error", FROM_UTF8(mMessage));
+        break;
+
+      default:
+        break;
+    }
+
+  mMessageType = -1;
+  mMessage = "";
 }
 
 const CMIRIAMInfo & CQMiriamWidget::getMIRIAMInfo() const
