@@ -140,6 +140,7 @@ void CUnit::updateSIUnits(CCopasiVectorN< CUnit > & Units,
 
           pUnit->setObjectName(pSIUnit->name);
           pUnit->setSymbol(pSIUnit->symbol);
+          Units.add(pUnit, true);
         }
 
       std::ostringstream buffer;
