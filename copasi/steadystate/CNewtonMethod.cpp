@@ -609,7 +609,7 @@ C_FLOAT64 CNewtonMethod::targetFunction(const CVector< C_FLOAT64 > & particleflu
   C_FLOAT64 * pDistance = Distance.array();
   C_FLOAT64 * pDistanceEnd = pDistance + Distance.size();
   C_FLOAT64 * pCurrentState = mpSteadyState->beginIndependent();
-  const C_FLOAT64 * pAtol = mAtol.array();
+  C_FLOAT64 * pAtol = mAtol.array();
 
   // Assure that all values are updated.
   mpModel->updateSimulatedValues(true);
@@ -625,8 +625,10 @@ C_FLOAT64 CNewtonMethod::targetFunction(const CVector< C_FLOAT64 > & particleflu
 
   for (; pDistance != pDistanceEnd; ++pDistance, ++pCurrentState, ++pAtol, ++ppEntity)
     {
+      *pAtol = std::max(fabs(*pCurrentState), *pAtol);
+
       // Prevent division by 0
-      tmp = fabs(*pDistance) / std::max(fabs(*pCurrentState), *pAtol);
+      tmp = fabs(*pDistance) / *pAtol;
       RelativeDistance += tmp * tmp;
 
       tmp = fabs(*pDistance);
