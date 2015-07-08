@@ -745,28 +745,27 @@ readExp:
 class CheckPointModel : public QAbstractTableModel
 {
   QVector<CheckPoint*> mData;
-  int mColumnCount;
   std::vector<QString> mHeaders;
 public:
 
   CheckPointModel(QObject * parent, ResultData* data)
     : QAbstractTableModel(parent)
     , mData()
-    , mColumnCount(data->numFittingItems() + 2)
     , mHeaders()
   {
     mHeaders.push_back("Function Evaluations");
     mHeaders.push_back("Best Value");
 
-    for (std::vector<FittingItem*>::iterator it = data->mFittingItems.begin(); it != data->mFittingItems.end(); ++it)
-      {
-        mHeaders.push_back((*it)->mName.c_str());
-      }
+    if (data != NULL)
+      for (std::vector<FittingItem*>::iterator it = data->mFittingItems.begin(); it != data->mFittingItems.end(); ++it)
+        {
+          mHeaders.push_back((*it)->mName.c_str());
+        }
   }
 
   int rowCount(const QModelIndex &) const {return mData.count();}
 
-  int columnCount(const QModelIndex &) const {return mColumnCount;}
+  int columnCount(const QModelIndex &) const {return (int)mHeaders.size();}
 
   QVariant data(const QModelIndex &index, int role) const
   {
@@ -797,7 +796,7 @@ public:
 
     if (role != Qt::DisplayRole) return QVariant();
 
-    if (section < mColumnCount)
+    if (section < mHeaders.size())
       return mHeaders[section];
 
     return QVariant();
@@ -1027,7 +1026,9 @@ CQParameterEstimationResult::applyToModelState()
 void
 CQParameterEstimationResult::protocolFileChanged(const QString& fileName)
 {
-  if (!QFile(fileName).exists()) return;
+  QFileInfo info(fileName);
+
+  if (!info.exists() || !info.isFile()) return;
 
   loadProtocol(fileName);
 }
