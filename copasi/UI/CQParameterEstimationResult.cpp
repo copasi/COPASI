@@ -14,6 +14,7 @@
 #include <cctype>
 #include <locale>
 
+#include <QVector>
 #include <QFile>
 #include <QFileDialog>
 #include <QFileSystemModel>
@@ -21,6 +22,7 @@
 #include <QMessageBox>
 #include <QListView>
 #include <QStandardItemModel>
+#include <QSortFilterProxyModel>
 
 #include <copasi/CopasiDataModel/CCopasiDataModel.h>
 #include <copasi/model/CModel.h>
@@ -125,6 +127,16 @@ public:
     , mFittingItems()
     , mCheckPoints()
   {
+  }
+
+  int numCheckPoints()
+  {
+    return (int)mCheckPoints.size();
+  }
+
+  int numFittingItems()
+  {
+    return (int)mFittingItems.size();
   }
 
   ~ResultData()
@@ -730,12 +742,103 @@ readExp:
 
 #pragma endregion // reading data
 
+class CheckPointModel : public QAbstractTableModel
+{
+  QVector<CheckPoint*> mData;
+  int mColumnCount;
+  std::vector<QString> mHeaders;
+public:
+
+  CheckPointModel(QObject * parent, ResultData* data)
+    : QAbstractTableModel(parent)
+    , mData()
+    , mColumnCount(data->numFittingItems() + 2)
+    , mHeaders()
+  {
+    mHeaders.push_back("Function Evaluations");
+    mHeaders.push_back("Best Value");
+
+    for (std::vector<FittingItem*>::iterator it = data->mFittingItems.begin(); it != data->mFittingItems.end(); ++it)
+      {
+        mHeaders.push_back((*it)->mName.c_str());
+      }
+  }
+
+  int rowCount(const QModelIndex &) const {return mData.count();}
+
+  int columnCount(const QModelIndex &) const {return mColumnCount;}
+
+  QVariant data(const QModelIndex &index, int role) const
+  {
+    if (role != Qt::DisplayRole && role != Qt::EditRole) return QVariant();
+
+    const CheckPoint * checkPoint = mData[index.row()];
+
+    if (index.column() == 0)
+      {
+        return checkPoint->mFunctionEvaluations;
+      }
+
+    if (index.column() == 1)
+      {
+        return checkPoint->mBestValue;
+      }
+
+    if (index.column() < checkPoint->mParameters.size() + 2)
+      {
+        return checkPoint->mParameters[index.column() - 2];
+      }
+
+    return QVariant();
+  }
+  QVariant headerData(int section, Qt::Orientation orientation, int role) const
+  {
+    if (orientation != Qt::Horizontal) return QVariant();
+
+    if (role != Qt::DisplayRole) return QVariant();
+
+    if (section < mColumnCount)
+      return mHeaders[section];
+
+    return QVariant();
+  }
+
+  void removeAllRows()
+  {
+    mData.clear();
+    reset();
+  }
+
+  void append(std::vector<CheckPoint*> & checkPoints)
+  {
+    beginInsertRows(QModelIndex(), mData.count(), mData.count() + checkPoints.size() - 1);
+
+    for (std::vector<CheckPoint*>::iterator it1 = checkPoints.begin();
+         it1 != checkPoints.end(); ++it1)
+      {
+        mData.append(*it1);
+      }
+
+    endInsertRows();
+  }
+
+  void append(CheckPoint* checkPoint)
+  {
+    beginInsertRows(QModelIndex(), mData.count(), mData.count());
+    mData.append(checkPoint);
+    endInsertRows();
+  }
+};
+
 CQParameterEstimationResult::CQParameterEstimationResult(QWidget *parent,
     CCopasiDataModel* dataModel)
   : QDialog(parent)
   , ui(new Ui::CQParameterEstimationResult)
   , mResultData()
   , mpDataModel(dataModel)
+  , mpCheckPointModel(NULL)
+  , mpProxy(NULL)
+  , mInitializing(true)
 {
   ui->setupUi(this);
 
@@ -758,29 +861,37 @@ CQParameterEstimationResult::~CQParameterEstimationResult()
 void
 CQParameterEstimationResult::updateUI()
 {
+  mInitializing = true;
+
   ui->lstDataSets->clear();
 
   for (std::vector<ResultData*>::iterator it = mResultData.begin(); it != mResultData.end(); ++it)
     ui->lstDataSets->addItem(QString("DataSet_%1").arg(ui->lstDataSets->count() + 1));
 
   ResultData* data = getResult(0);
-  ui->tblResults->clear();
 
-  if (data != NULL)
+  ui->tblResults->setModel(NULL);
+
+  if (mpCheckPointModel != NULL)
     {
-      ui->tblResults->setColumnCount(data->mFittingItems.size() + 2);
-      ui->tblResults->setHorizontalHeaderItem(0, new QTableWidgetItem("Function Evaluations"));
-      ui->tblResults->setHorizontalHeaderItem(1, new QTableWidgetItem("Best Value"));
-      int count = 1;
-
-      for (std::vector<FittingItem*>::iterator it = data->mFittingItems.begin(); it != data->mFittingItems.end(); ++it)
-        {
-          ui->tblResults->setHorizontalHeaderItem(++count, new QTableWidgetItem((*it)->mName.c_str()));
-        }
+      mpProxy->deleteLater();
+      mpProxy = NULL;
+      mpCheckPointModel->deleteLater();
+      mpCheckPointModel = NULL;
     }
 
+  mpProxy = new QSortFilterProxyModel(this);
+  mpCheckPointModel = new CheckPointModel(this, data);
+  mpProxy->setSourceModel(mpCheckPointModel);
+  ui->tblResults->setModel(mpProxy);
+
+  mInitializing = false;
+
   if (ui->lstDataSets->count() > 0)
-    ui->lstDataSets->setCurrentIndex(ui->lstDataSets->count() - 1);
+    {
+      ui->lstDataSets->setCurrentIndex(ui->lstDataSets->count() - 1);
+      dataSetChanged();
+    }
 }
 
 void
@@ -831,9 +942,9 @@ CQParameterEstimationResult::setTaskStartValues()
 
   if (data == NULL) return;
 
-  QList<QTableWidgetItem*> selectedItems = ui->tblResults->selectedItems();
+  QItemSelectionModel *select = ui->tblResults->selectionModel();
 
-  if (selectedItems.empty())
+  if (select->selectedRows().empty())
     {
       QMessageBox::information(this, "No row selected",
                                "Before setting start values, please select a result row, from which the values should be taken.",
@@ -841,7 +952,7 @@ CQParameterEstimationResult::setTaskStartValues()
       return;
     }
 
-  data->setTaskStartValues(selectedItems.at(0)->row());
+  data->setTaskStartValues(select->selectedRows().at(0).row());
 }
 
 void
@@ -851,9 +962,9 @@ CQParameterEstimationResult::applyToModelState()
 
   if (data == NULL) return;
 
-  QList<QTableWidgetItem*> selectedItems = ui->tblResults->selectedItems();
+  QItemSelectionModel *select = ui->tblResults->selectionModel();
 
-  if (selectedItems.empty())
+  if (!select->hasSelection())
     {
       QMessageBox::information(this, "No row selected",
                                "Before setting start values, please select a result row, from which the values should be taken.",
@@ -910,7 +1021,7 @@ CQParameterEstimationResult::applyToModelState()
       experiments = newOrder;
     }
 
-  data->applyToModelState(selectedItems.at(0)->row(), experiments);
+  data->applyToModelState(select->selectedRows().at(0).row(), experiments);
 }
 
 void
@@ -954,6 +1065,8 @@ CQParameterEstimationResult::getResult(int index)
 void
 CQParameterEstimationResult::dataSetChanged()
 {
+  if (mInitializing) return;
+
   int currentIndex = ui->lstDataSets->currentIndex();
   ResultData* data = getResult(currentIndex);
 
@@ -966,7 +1079,6 @@ CQParameterEstimationResult::dataSetChanged()
                                QMessageBox::Ok, QMessageBox::Ok);
     }
 
-  //ui->tblFitItems->clearContents();
   while (ui->tblFitItems->rowCount() > 0)
     ui->tblFitItems->removeRow(0);
 
@@ -982,23 +1094,9 @@ CQParameterEstimationResult::dataSetChanged()
       ui->tblFitItems->setItem(row, 4, new QTableWidgetItem(item->getAffectedExperiments().c_str()));
     }
 
-  //ui->tblResults->clearContents();
-  while (ui->tblResults->rowCount() > 0)
-    ui->tblResults->removeRow(0);
-
-  for (std::vector<CheckPoint*>::iterator it1 = data->mCheckPoints.begin();
-       it1 != data->mCheckPoints.end(); ++it1)
+  if (mpCheckPointModel != NULL)
     {
-      CheckPoint* checkPoint = *it1;
-      int row = ui->tblResults->rowCount();
-      ui->tblResults->insertRow(row);
-      ui->tblResults->setItem(row, 0, new QTableWidgetItem(QString::number(checkPoint->mFunctionEvaluations)));
-      ui->tblResults->setItem(row, 1, new QTableWidgetItem(QString::number(checkPoint->mBestValue)));
-
-      int count = 1;
-
-      for (std::vector<double>::iterator it2 = checkPoint->mParameters.begin();
-           it2 != checkPoint->mParameters.end(); ++it2)
-        ui->tblResults->setItem(row, ++count, new QTableWidgetItem(QString::number(*it2)));
+      mpCheckPointModel->removeAllRows();
+      mpCheckPointModel->append(data->mCheckPoints);
     }
 }

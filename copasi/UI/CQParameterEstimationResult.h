@@ -17,6 +17,9 @@ class CQParameterEstimationResult;
 
 class ResultData;
 class CCopasiDataModel;
+class CheckPointModel;
+
+class QSortFilterProxyModel;
 
 class CQParameterEstimationResult : public QDialog
 {
@@ -46,6 +49,9 @@ private:
   Ui::CQParameterEstimationResult *ui;
   std::vector<ResultData*> mResultData;
   CCopasiDataModel* mpDataModel;
+  CheckPointModel* mpCheckPointModel;
+  QSortFilterProxyModel* mpProxy;
+  bool mInitializing;
 };
 
 #endif // CQPARAMETER_ESTIMATION_RESULT_H

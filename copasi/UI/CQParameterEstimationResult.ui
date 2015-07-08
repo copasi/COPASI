@@ -5,6 +5,7 @@
 <comment> of Manchester. </comment>
 <comment> All rights reserved. </comment>
 
+ <comment> All rights reserved. </comment>
  <class>CQParameterEstimationResult</class>
  <widget class="QDialog" name="CQParameterEstimationResult">
   <property name="geometry">
@@ -192,7 +193,7 @@
     </widget>
    </item>
    <item>
-    <widget class="QTableWidget" name="tblResults">
+    <widget class="QTableView" name="tblResults">
      <property name="editTriggers">
       <set>QAbstractItemView::NoEditTriggers</set>
      </property>
