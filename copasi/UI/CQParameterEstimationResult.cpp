@@ -191,7 +191,7 @@ public:
     if (taskItems > mFittingItems.size())
       return false;
 
-    for (int i = 0; i < problem->getOptItemList().size(); ++i)
+    for (size_t i = 0; i < problem->getOptItemList().size(); ++i)
       {
         COptItem *item = static_cast<COptItem*>(problem->getOptItemList()[i]);
         std::string name = sanitizeName(item->getObjectDisplayName());
@@ -661,11 +661,11 @@ readExp:
 
   static CheckPoint* parseValue(const std::string& line)
   {
-    CheckPoint* result = new CheckPoint();
-
     std::string::size_type firstTab = line.find("\t");
 
     if (firstTab == std::string::npos) return NULL;
+
+    CheckPoint* result = new CheckPoint();
 
     result->mFunctionEvaluations = toInt32(line.substr(0, firstTab));
     std::string::size_type open = line.find("(");
@@ -783,7 +783,7 @@ public:
         return checkPoint->mBestValue;
       }
 
-    if (index.column() < checkPoint->mParameters.size() + 2)
+    if (index.column() < (int)checkPoint->mParameters.size() + 2)
       {
         return checkPoint->mParameters[index.column() - 2];
       }
@@ -796,7 +796,7 @@ public:
 
     if (role != Qt::DisplayRole) return QVariant();
 
-    if (section < mHeaders.size())
+    if (section < (int)mHeaders.size())
       return mHeaders[section];
 
     return QVariant();
