@@ -16,6 +16,7 @@
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "model/CModel.h"
 #include "utilities/CCopasiTask.h"
+#include "utilities/CUnit.h"
 #include "report/CReportDefinitionVector.h"
 #include "plot/COutputDefinitionVector.h"
 #include "report/CCopasiRootContainer.h"
@@ -28,7 +29,7 @@ CQBrowserPaneDM::CQBrowserPaneDM(QObject * pParent):
   mpCopasiDM(NULL),
   mpGuiDM(NULL),
   mEmitDataChanged(true),
-  mFlags(CQBrowserPaneDM::Model | CQBrowserPaneDM::Tasks | CQBrowserPaneDM::Output | CQBrowserPaneDM::FunctionDB)
+  mFlags(CQBrowserPaneDM::Model | CQBrowserPaneDM::Tasks | CQBrowserPaneDM::Output | CQBrowserPaneDM::FunctionDB | CQBrowserPaneDM::Units)
 {
   // setSortRole(Qt::EditRole);
   createStaticDM();
@@ -61,6 +62,7 @@ QVariant CQBrowserPaneDM::data(const QModelIndex & index, int role) const
         switch (pNode->getId())
           {
             case 5:
+            case 6:
             case 42:
             case 43:
             case 111:
@@ -343,6 +345,8 @@ void CQBrowserPaneDM::load()
 
   load(5); // Functions
 
+  load(6); //Units
+
   dataChanged(index(0, 0), index(0, 0));
 }
 
@@ -389,6 +393,10 @@ void CQBrowserPaneDM::load(const size_t & id)
 
       case 5: // Functions
         pVector = reinterpret_cast< const CCopasiVector< CCopasiObject > * >(&CCopasiRootContainer::getFunctionList()->loadedFunctions());
+        break;
+
+      case 6: // Units
+        pVector = reinterpret_cast< const CCopasiVector< CCopasiObject > * >(CCopasiRootContainer::getUnitList());
         break;
 
       default:
@@ -533,6 +541,7 @@ bool CQBrowserPaneDM::slotNotify(ListViews::ObjectType objectType, ListViews::Ac
             case ListViews::FUNCTION:
             case ListViews::LAYOUT:
             case ListViews::MODELPARAMETERSET:
+            case ListViews::UNIT:
               rename(key, DisplayRole);
               break;
 
@@ -557,6 +566,7 @@ bool CQBrowserPaneDM::slotNotify(ListViews::ObjectType objectType, ListViews::Ac
             case ListViews::FUNCTION:
             case ListViews::LAYOUT:
             case ListViews::MODELPARAMETERSET:
+            case ListViews::UNIT:
               remove(key);
               break;
 
@@ -608,6 +618,10 @@ bool CQBrowserPaneDM::slotNotify(ListViews::ObjectType objectType, ListViews::Ac
 
             case ListViews::FUNCTION:
               add(C_INVALID_INDEX, key, DisplayRole, 5);
+              break;
+
+            case ListViews::UNIT:
+              add(C_INVALID_INDEX, key, DisplayRole, 6);
               break;
 
             default:
@@ -708,6 +722,10 @@ void CQBrowserPaneDM::createStaticDM()
               case 5:
                 pParent = (mFlags & FunctionDB) ? mpRoot : NULL;
                 break;
+
+              case 6:
+                pParent = (mFlags & Units) ? mpRoot : NULL;
+                break;
             }
         }
       else
@@ -733,6 +751,7 @@ void CQBrowserPaneDM::clear()
   findNodeFromId(42)->deleteChildren(); // Plot Specifications
   findNodeFromId(43)->deleteChildren(); // Report Specifications
   findNodeFromId(5)->deleteChildren(); // Functions
+  findNodeFromId(6)->deleteChildren(); // Units
 }
 
 CQBrowserPaneDM::CNode::CNode():

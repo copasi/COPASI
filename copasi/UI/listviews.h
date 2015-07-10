@@ -61,6 +61,7 @@ class CQSensResultWidget;
 class CQSteadyStateResult;
 class CQTrajectoryWidget;
 class CQReportsWidget;
+class CQUnitsWidget;
 class CQTSSAWidget;
 class CQTSSAResultWidget;
 class CQTSSAResultSubWidget;
@@ -118,19 +119,20 @@ public:
   // CHANGE does not include RENAME
   enum Action {CHANGE = 0, ADD, DELETE, RENAME};
   enum ObjectType {METABOLITE = 0
-                                , COMPARTMENT
-                   , REACTION
-                   , FUNCTION
-                   , MODEL
-                   , STATE
-                   , REPORT
-                   , PLOT
-                   , MODELVALUE
-                   , EVENT
-                   , MIRIAM
-                   , LAYOUT
-                   , PARAMETEROVERVIEW
-                   , MODELPARAMETERSET
+  , COMPARTMENT
+  , REACTION
+  , FUNCTION
+  , MODEL
+  , STATE
+  , REPORT
+  , PLOT
+  , MODELVALUE
+  , EVENT
+  , MIRIAM
+  , LAYOUT
+  , PARAMETEROVERVIEW
+  , MODELPARAMETERSET
+  , UNIT
                   };
 
   void setDataModel(DataModelGUI* pDM);
@@ -236,6 +238,7 @@ private:
   CQSteadyStateResult *stateWidget;
   SteadyStateWidget *steadystateWidget;
   CQReportsWidget *mpReportsWidget;
+  CQUnitsWidget *mpUnitsWidget;
   CQReportDefinition *tableDefinition1;
   CQTimeSeriesWidget *timeSeriesWidget;
   CQTrajectoryWidget *trajectoryWidget;

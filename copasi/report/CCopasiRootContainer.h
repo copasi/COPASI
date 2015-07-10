@@ -1,17 +1,9 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiRootContainer.h,v $
-//   $Revision: 1.8 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/03/07 19:32:38 $
-// End CVS Header
-
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
@@ -82,6 +74,7 @@ protected:
   CFunctionDB* mpFunctionList;
   CConfigurationFile* mpConfiguration;
   CCopasiVector<CCopasiDataModel>* mpDataModelList;
+  CCopasiVectorN<CUnit>* mpUnitList;
   // flag to store if we are running a GUI or not
   bool mWithGUI;
 
@@ -117,6 +110,11 @@ public:
    * Returns a pointer to the list of data models.
    */
   static CCopasiVector< CCopasiDataModel > * getDatamodelList();
+
+  /**
+   * Returns a pointer to the list of units.
+   */
+  static CCopasiVectorN< CUnit > *getUnitList();
 
   /**
    * Creates a new datamodel instance and adds it to the list.

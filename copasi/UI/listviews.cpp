@@ -66,6 +66,7 @@
 #include "CQOptimizationWidget.h"
 #include "CQOptimizationResult.h"
 #include "CQReportsWidget.h"
+#include "CQUnitsWidget.h"
 #include "CQSplashWidget.h"
 #include "CQTrajectoryWidget.h"
 #include "CQTimeSeriesWidget.h"
@@ -126,6 +127,7 @@ const std::string ListViews::ObjectTypeName[] =
   "Layout", // LAYOUT
   "Parameter Overview", // PARAMETEROVERVIEW
   "Parameter Set", // MODELPARAMETERSET
+  "Unit", //UNIT
   ""
 };
 
@@ -192,6 +194,7 @@ ListViews::ListViews(QWidget *parent, const char *name):
   stateWidget(NULL),
   steadystateWidget(NULL),
   mpReportsWidget(NULL),
+  mpUnitsWidget(NULL),
   tableDefinition1(NULL),
   timeSeriesWidget(NULL),
   trajectoryWidget(NULL),
@@ -532,6 +535,12 @@ void ListViews::ConstructNodeWidgets()
       mpStackedWidget->addWidget(mpReportsWidget);
     }
 
+  if (!mpUnitsWidget)
+    {
+      mpUnitsWidget = new CQUnitsWidget(this);
+      mpStackedWidget->addWidget(mpUnitsWidget);
+    }
+
   if (!tableDefinition1)
     {
       tableDefinition1 = new CQReportDefinition(this);
@@ -690,6 +699,10 @@ CopasiWidget* ListViews::findWidgetFromIndex(const QModelIndex & index) const
 
       case 5:
         return functionWidget1;
+        break;
+
+      case 6:
+        return mpUnitsWidget;
         break;
     }
 
@@ -890,6 +903,10 @@ CopasiWidget* ListViews::findWidgetFromId(const size_t & id) const
 
       case 5:
         return mpFunctionsWidget;
+        break;
+
+      case 6:
+        return mpUnitsWidget;
         break;
     }
 

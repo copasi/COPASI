@@ -19,6 +19,7 @@
 #include "copasi/function/CEvaluationNodeOperator.h"
 #include "copasi/function/CEvaluationNodeVariable.h"
 #include "copasi/function/CEvaluationNodeConstant.h"
+#include "copasi/utilities/CUnit.h"
 
 #include <copasi/layout/CLGlobalRenderInformation.h>
 
@@ -37,6 +38,7 @@ CCopasiRootContainer::CCopasiRootContainer(const bool & withGUI):
   mKeyFactory(),
   mpUnknownResource(NULL),
   mpFunctionList(NULL),
+  mpUnitList(NULL),
   mpConfiguration(NULL),
   mpDataModelList(NULL),
   mWithGUI(withGUI),
@@ -64,6 +66,9 @@ CCopasiRootContainer::~CCopasiRootContainer()
 
   // delete the function list
   pdelete(mpFunctionList);
+
+  // delete the unit list
+  pdelete(mpUnitList);
 
   // delete the undefined and the unsupported delay function
   pdelete(mpUndefined);
@@ -119,6 +124,9 @@ void CCopasiRootContainer::initializeChildren()
   mpUndefined = new CFunction("undefined", this);
   mpUndefined->setInfix("nan");
   mpUndefined->compile();
+
+  mpUnitList = new CCopasiVectorN< CUnit >;
+  CUnit::updateSIUnits(*mpUnitList, CUnit::Avogadro);
 }
 
 // static
@@ -143,6 +151,12 @@ CFunctionDB * CCopasiRootContainer::getFunctionList()
 CCopasiVector< CCopasiDataModel > * CCopasiRootContainer::getDatamodelList()
 {
   return pRootContainer->mpDataModelList;
+}
+
+// static
+CCopasiVectorN< CUnit > * CCopasiRootContainer::getUnitList()
+{
+  return pRootContainer->mpUnitList;
 }
 
 // static

@@ -60,28 +60,27 @@ struct SIUnit
 
 SIUnit SIUnits[] =
 {
-  {"hertz",      "Hz",       "s^-1"},
-  {"newton",     "N",        "m*kg*s^-2"},
-  {"pascal",     "Pa",       "m^-1*kg*s^-2"},
-  {"joule",      "J",        "m^2*kg*s^-2"},
-  {"watt",       "W",        "m^2*kg*s^-3"},
-  {"coulomb",    "C",        "s*A"},
-  {"volt",       "V",        "m^2*kg*s^-3*A^-1"},
-  {"farad",      "F",        "m^-2*kg^-1*s^4*A^2"},
-  {"ohm",        "\xCE\xA9", "m^2*kg*s^-3*A^-2"},    // Use this symbol for presentation and parsing
-  {"ohm",        "O",        "m^2*kg*s^-3*A^-2"},    // Use this symbol for parsing only
-  {"siemens",    "S",        "m^-2*kg^-1*s3*A^2"},
-  {"weber",      "Wb",       "m2*kg*s^-2*A^-1"},
-  {"tesla",      "T",        "kg*s^-2*A^-1"},
-  {"henry",      "H",        "m2*kg*s^-2*A^-2"},
-  {"lumen",      "lm",       "cd"},
-  {"lux",        "lx",       "m^-2*cd"},
   {"becquerel",  "Bq",       "s^-1"},
+  {"coulomb",    "C",        "s*A"},
+  {"farad",      "F",        "m^-2*kg^-1*s^4*A^2"},
   {"gray",       "Gy",       "m^2*s^-2"},
-  {"sievert",    "Sv",       "m^2*s^-2"},
+  {"henry",      "H",        "m2*kg*s^-2*A^-2"},
+  {"hertz",      "Hz",       "s^-1"},
+  {"joule",      "J",        "m^2*kg*s^-2"},
   {"katal",      "ka",       "s^-1*mol"},
   {"liter",      "l",        "0.001*m^3"},
+  {"lumen",      "lm",       "cd"},
+  {"lux",        "lx",       "m^-2*cd"},
   {"mole",       "mol",      "Avogadro*#"},
+  {"newton",     "N",        "m*kg*s^-2"},
+  {"ohm",        "\xCE\xA9", "m^2*kg*s^-3*A^-2"},
+  {"pascal",     "Pa",       "m^-1*kg*s^-2"},
+  {"siemens",    "S",        "m^-2*kg^-1*s3*A^2"},
+  {"sievert",    "Sv",       "m^2*s^-2"},
+  {"tesla",      "T",        "kg*s^-2*A^-1"},
+  {"volt",       "V",        "m^2*kg*s^-3*A^-1"},
+  {"watt",       "W",        "m^2*kg*s^-3"},
+  {"weber",      "Wb",       "m2*kg*s^-2*A^-1"},
 
   // This must be the last element of the SI unit list! Do not delete!
   {NULL,         NULL,        NULL}
@@ -102,7 +101,7 @@ CUnit CUnit::getSIUnit(const std::string & si,
 
   std::ostringstream buffer;
 
-  if (pSIUnit->symbol != "mol")
+  if (strcmp(pSIUnit->symbol, "mol"))
     {
       buffer << pSIUnit->definition;
     }
@@ -129,8 +128,9 @@ void CUnit::updateSIUnits(CCopasiVectorN< CUnit > & Units,
   while (pSIUnit->name)
     {
       CUnit * pUnit = NULL;
+      size_t Index = Units.getIndex(pSIUnit->name);
 
-      if (size_t Index = Units.getIndex(pSIUnit->name) != C_INVALID_INDEX)
+      if (Index != C_INVALID_INDEX)
         {
           pUnit = Units[Index];
         }
@@ -145,7 +145,7 @@ void CUnit::updateSIUnits(CCopasiVectorN< CUnit > & Units,
 
       std::ostringstream buffer;
 
-      if (pSIUnit->symbol != "mol")
+      if (strcmp(pSIUnit->symbol, "mol"))
         {
           buffer << pSIUnit->definition;
         }
@@ -155,6 +155,8 @@ void CUnit::updateSIUnits(CCopasiVectorN< CUnit > & Units,
         }
 
       pUnit->setDefinition(buffer.str(), avogadro);
+
+      pSIUnit++;
     }
 }
 
@@ -205,10 +207,19 @@ CUnit::CUnit(const CUnit & src,
   mSymbol(src.mSymbol),
   mDefinition(src.mDefinition),
   mComponents(src.mComponents)
-{}
+{
+  setup();
+}
 
 CUnit::~CUnit()
-{}
+{
+  CCopasiRootContainer::getKeyFactory()->remove(mKey);
+}
+
+void CUnit::setup()
+{
+  mKey = CCopasiRootContainer::getKeyFactory()->add("Unit", this);
+}
 
 void CUnit::fromEnum(VolumeUnit volEnum)
 {

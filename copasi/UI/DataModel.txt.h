@@ -1,4 +1,5 @@
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
+
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -71,4 +72,5 @@ static char DataModeltxt[] =
   "4:42:Plots\n"
   "4:43:Report Templates\n"
   "0:5:Functions\n"
+  "0:6:Units\n"
   ;

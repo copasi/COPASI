@@ -118,12 +118,14 @@ public:
   CUnit operator*(const CUnit & rhs) const;
   bool operator==(const CUnit & rhs) const;
   bool isEquivalent(const CUnit & rhs) const;
-private:
 
+private:
+  std::string mKey;
   std::string mSymbol;
   std::string mDefinition;
   std::set< CUnitComponent > mComponents;
   std::set< std::string > mUserDefinedSymbols;
+  void setup();
 };
 
 #endif // CUNIT_H
