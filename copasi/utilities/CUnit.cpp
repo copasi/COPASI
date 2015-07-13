@@ -221,6 +221,12 @@ void CUnit::setup()
   mKey = CCopasiRootContainer::getKeyFactory()->add("Unit", this);
 }
 
+// virtual
+const std::string & CUnit::getKey() const
+{
+  return CAnnotation::getKey();
+}
+
 void CUnit::fromEnum(VolumeUnit volEnum)
 {
   mComponents.clear();

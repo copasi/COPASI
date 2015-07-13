@@ -16,8 +16,9 @@
 #include "copasi/utilities/CUnitComponent.h"
 #include "copasi/report/CCopasiContainer.h"
 #include "copasi/utilities/CCopasiVector.h"
+#include "model/CAnnotation.h"
 
-class CUnit : public CCopasiContainer
+class CUnit : public CCopasiContainer, public CAnnotation
 {
   friend std::ostream &operator<<(std::ostream &os, const CUnit & o);
 
@@ -93,6 +94,8 @@ public:
 
   ~CUnit();
 
+  virtual const std::string & getKey() const;
+
   void fromEnum(VolumeUnit volEnum);
   void fromEnum(AreaUnit areaEnum);
   void fromEnum(LengthUnit lengthEnum);
@@ -120,7 +123,6 @@ public:
   bool isEquivalent(const CUnit & rhs) const;
 
 private:
-  std::string mKey;
   std::string mSymbol;
   std::string mDefinition;
   std::set< CUnitComponent > mComponents;
