@@ -417,10 +417,10 @@ public:
   void createAnnotationsM();
 
   /**
-  * Predifine the CArrayAnnotation for plots
+  * Predefine the CArrayAnnotation for plots
   **/
 
-  virtual void predifineAnnotation();
+  virtual void predefineAnnotation();
 
 
 

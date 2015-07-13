@@ -1786,10 +1786,10 @@ bool CCSPMethod::modesAreExhausted(C_INT & N, C_INT & M, C_FLOAT64 & tauM, C_FLO
 }
 
 /**
- *  Predifine the CArrayAnnotation for plots
+ *  Predefine the CArrayAnnotation for plots
  **/
 
-void CCSPMethod::predifineAnnotation()
+void CCSPMethod::predefineAnnotation()
 {
   mReducedModel = *getValue("Integrate Reduced Model").pBOOL;
 
