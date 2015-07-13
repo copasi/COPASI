@@ -342,23 +342,7 @@ public:
   CArrayAnnotation* pImportanceIndexAnn;
   CArrayAnnotation* pImportanceIndexNormedRowAnn;
 
-  /**
-  *required for creation of above listed CArrayAnnotation
-  **/
-  CArrayAnnotation* pTmp1;
-  CArrayAnnotation* pTmp2;
-  CArrayAnnotation* pTmp3;
-  CArrayAnnotation* pTmp3Normed;
-  CArrayAnnotation* pTmp4;
-  CArrayAnnotation* pTmp4NormedColumn;
-  CArrayAnnotation* pTmp4NormedRow;
-
-  CArrayAnnotation* pTmp4Fast;
-  CArrayAnnotation* pTmp4Slow;
-
-  CArrayAnnotation* pTmp5;
-  CArrayAnnotation* pTmp5NormedRow;
-
+ 
   /**
   *input for every CArraAnnotations
   *contain data for single stepcalculation
