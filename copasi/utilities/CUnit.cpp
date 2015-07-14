@@ -82,6 +82,10 @@ SIUnit SIUnits[] =
   {"watt",       "W",        "m^2*kg*s^-3"},
   {"weber",      "Wb",       "m2*kg*s^-2*A^-1"},
 
+  {"minute",     "min",      "60*s"},
+  {"hour",       "h",        "60*60*s"},
+  {"day",        "d",        "24*60*60*s"},
+
   // This must be the last element of the SI unit list! Do not delete!
   {NULL,         NULL,        NULL}
 };

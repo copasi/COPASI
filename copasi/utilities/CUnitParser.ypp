@@ -14,6 +14,7 @@
 #include "copasi.h"
 #include "CUnitParser.h"
 
+#include "report/CCopasiRootContainer.h"
 #include "utilities/CCopasiMessage.h"
 #include "utilities/utility.h"
 
@@ -130,8 +131,17 @@ unit:      KIND
            }
          | USER_DEFINED_UNIT
            {
-             $$.pUnit = new CUnit();
-             mSymbols.insert($1.text);
+             const CUnit * pUnit = CCopasiRootContainer::getUnitFromSymbol($1.text);
+             
+             if (pUnit != NULL)
+               {
+                 yyerror($1.text);
+               }
+             else
+               {
+                 $$.pUnit = new CUnit(*pUnit);
+                 mSymbols.insert($1.text);
+               }
            }
 scaled_unit:  SCALE unit
            {

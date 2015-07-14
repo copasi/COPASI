@@ -117,6 +117,11 @@ public:
   static CCopasiVectorN< CUnit > *getUnitList();
 
   /**
+   * Retrieve the unit for the given symbol
+   */
+  static const CUnit * getUnitFromSymbol(const std::string symbol);
+
+  /**
    * Creates a new datamodel instance and adds it to the list.
    * The new instance is returned by the method.
    */

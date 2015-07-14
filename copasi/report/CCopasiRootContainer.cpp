@@ -160,6 +160,26 @@ CCopasiVectorN< CUnit > * CCopasiRootContainer::getUnitList()
 }
 
 // static
+const CUnit * CCopasiRootContainer::getUnitFromSymbol(const std::string symbol)
+{
+  CCopasiVectorN< CUnit >::const_iterator it = pRootContainer->mpUnitList->begin();
+  CCopasiVectorN< CUnit >::const_iterator end = pRootContainer->mpUnitList->end();
+
+  const CUnit * pUnit = NULL;
+
+  for (; it != end; ++it)
+    {
+      if (symbol == (*it)->getSymbol())
+        {
+          pUnit = *it;
+          break;
+        }
+    }
+
+  return pUnit;
+}
+
+// static
 CCopasiDataModel * CCopasiRootContainer::addDatamodel()
 {
   CCopasiDataModel* pDataModel = new CCopasiDataModel(pRootContainer->mWithGUI);
