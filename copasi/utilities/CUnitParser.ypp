@@ -121,14 +121,17 @@ compound_unit: unit
 unit:      KIND
            {
              $$.pUnit = new CUnit(CBaseUnit::fromSymbol($1.text));
+             mSymbols.insert($1.text);
            }
          | SI_UNIT
            {
              $$.pUnit = new CUnit(CUnit::getSIUnit($1.text, mAvogadro));
+             mSymbols.insert($1.text);
            }
          | USER_DEFINED_UNIT
            {
              $$.pUnit = new CUnit();
+             mSymbols.insert($1.text);
            }
 scaled_unit:  SCALE unit
            {

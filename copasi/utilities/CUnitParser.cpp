@@ -10,7 +10,8 @@
 CUnitParserBase::CUnitParserBase():
   mPosition(0),
   mpUnit(NULL),
-  mAvogadro(CUnit::Avogadro)
+  mAvogadro(CUnit::Avogadro),
+  mSymbols()
 {}
 
 CUnitParserBase::~CUnitParserBase()
@@ -25,6 +26,11 @@ const std::set< CUnitComponent > & CUnitParserBase::getComponents() const
 
   static std::set< CUnitComponent > Components;
   return Components;
+}
+
+const std::set< std::string > & CUnitParserBase::getSymbols() const
+{
+  return mSymbols;
 }
 
 void CUnitParserBase::setAvogadro(const C_FLOAT64 & avogadro)

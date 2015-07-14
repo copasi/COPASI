@@ -187,7 +187,8 @@ CUnit::CUnit(const std::string & name,
   CCopasiContainer(name, pParent, "Unit"),
   mSymbol("none"),
   mDefinition(),
-  mComponents()
+  mComponents(),
+  mUsedSymbols()
 {}
 
 CUnit::CUnit(const CBaseUnit::Kind & kind,
@@ -195,7 +196,8 @@ CUnit::CUnit(const CBaseUnit::Kind & kind,
   CCopasiContainer(CBaseUnit::Name[kind], pParent, "Unit"),
   mSymbol(CBaseUnit::getSymbol(kind)),
   mDefinition(CBaseUnit::getSymbol(kind)),
-  mComponents()
+  mComponents(),
+  mUsedSymbols()
 {
   mComponents.insert(CUnitComponent(kind));
 }
@@ -206,7 +208,8 @@ CUnit::CUnit(const CUnit & src,
   CCopasiContainer(src, pParent),
   mSymbol(src.mSymbol),
   mDefinition(src.mDefinition),
-  mComponents(src.mComponents)
+  mComponents(src.mComponents),
+  mUsedSymbols(src.mUsedSymbols)
 {
   setup();
 }
@@ -521,6 +524,7 @@ bool CUnit::compile(const C_FLOAT64 & avogadro)
   if (success)
     {
       mComponents = Parser.getComponents();
+      mUsedSymbols = Parser.getSymbols();
     }
 
   std::cout << *this << std::endl;
@@ -531,6 +535,11 @@ bool CUnit::compile(const C_FLOAT64 & avogadro)
 std::string CUnit::getDefinition() const
 {
   return mDefinition;
+}
+
+const std::set< std::string > & CUnit::getUsedSymbols() const
+{
+  return mUsedSymbols;
 }
 
 // See if the component units cancel (divide to 1).

@@ -110,6 +110,8 @@ public:
 
   std::string getDefinition() const;
 
+  const std::set< std::string > & getUsedSymbols() const;
+
   bool isDimensionless() const;
   void addComponent(const CUnitComponent & component);
   const std::set< CUnitComponent > & getComponents() const;
@@ -126,7 +128,8 @@ private:
   std::string mSymbol;
   std::string mDefinition;
   std::set< CUnitComponent > mComponents;
-  std::set< std::string > mUserDefinedSymbols;
+  std::set< std::string > mUsedSymbols;
+
   void setup();
 };
 

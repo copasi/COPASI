@@ -23,7 +23,8 @@
 
 #define YY_USER_INIT \
     pdelete(mpUnit); \
-    mPosition = 0;
+    mPosition = 0; \
+    mSymbols.clear();
 
 #define COMMON_ACTION \
     CUnitParserlval.pUnit = NULL; \
