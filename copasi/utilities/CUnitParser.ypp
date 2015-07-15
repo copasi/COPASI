@@ -133,7 +133,7 @@ unit:      KIND
            {
              const CUnit * pUnit = CCopasiRootContainer::getUnitFromSymbol($1.text);
              
-             if (pUnit != NULL)
+             if (pUnit == NULL)
                {
                  yyerror($1.text);
                }
