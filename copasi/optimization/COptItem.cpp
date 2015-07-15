@@ -386,7 +386,8 @@ bool COptItem::compile(const std::vector< CCopasiContainer * > listOfContainer)
       success = false;
     }
 
-  if (!mpUpperObject && !mpLowerObject && *mpUpperBound < *mpLowerBound)
+  // We can only access the lower and upper numbers if the compile succeeded so far.
+  if (success && !mpUpperObject && !mpLowerObject && *mpUpperBound < *mpLowerBound)
     {
       CCopasiMessage(CCopasiMessage::ERROR, MCOptimization + 4, *mpLowerBound, *mpUpperBound, mpObject->getObjectDisplayName().c_str());
       success = false;
