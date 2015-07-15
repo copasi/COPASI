@@ -294,6 +294,8 @@ CEvaluationNode* CEvaluationNodeNormalizer::normalizeCEvaluationNodeFunction(con
             // eliminate the plus
             pResult = CEvaluationNodeNormalizer::normalize(dynamic_cast<const CEvaluationNode*>(pNode->getChild()));
             break;
+
+          default: break;
         }
 
       if (pResult == NULL) pResult = pNode->copyBranch();
