@@ -94,10 +94,12 @@ DIGIT    [0-9]
   COMMON_ACTION;
 %} 
 
-<<EOF>>  return 0;
+<<EOF>>  %{
+  return 0;
+%}
 
 .     %{
-  CCopasiMessage(CCopasiMessage::ERROR, MCFunction + 2, mPosition);
+  CCopasiMessage(CCopasiMessage::ERROR, MCUnit + 2, mPosition);
   return YYERRCODE;
 %}
      

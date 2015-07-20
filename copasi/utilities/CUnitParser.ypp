@@ -9,7 +9,7 @@
 #endif
 #define yyerror(__str) \
   if (yychar != YYERRCODE) correctErrorPosition(); \
-  CCopasiMessage(CCopasiMessage::ERROR, MCFunction + 1, mPosition)
+  CCopasiMessage(CCopasiMessage::ERROR, MCUnit + 1, mPosition)
 
 #include "copasi.h"
 #include "CUnitParser.h"
@@ -128,6 +128,7 @@ unit:      KIND
            {
              $$.pUnit = new CUnit(CUnit::getSIUnit($1.text, mAvogadro));
              mSymbols.insert($1.text);
+             mSymbols.insert($$.pUnit->getUsedSymbols().begin(), $$.pUnit->getUsedSymbols().end());
            }
          | USER_DEFINED_UNIT
            {
@@ -141,6 +142,7 @@ unit:      KIND
                {
                  $$.pUnit = new CUnit(*pUnit);
                  mSymbols.insert($1.text);
+                 mSymbols.insert($$.pUnit->getUsedSymbols().begin(), $$.pUnit->getUsedSymbols().end());
                }
            }
 scaled_unit:  SCALE unit

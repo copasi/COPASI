@@ -483,6 +483,10 @@ const MESSAGES Messages[] =
 
   {MCMCA + 1, "CMCA (1): Numerical instabilities encountered, at least one of the the Summation Theorems is violated."},
 
+  // Function
+  {MCUnit + 1, "Unit (1): Parser error near character position: '%d'."},
+  {MCUnit + 2, "Unit (2): Lexer error near character position: '%d'."},
+
   // This must be the last element of the message list! Do not delete!
   {0, NULL}
 };
