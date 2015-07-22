@@ -256,19 +256,19 @@ bool CQFunctionDM::removeRows(int position, int rows)
         }
     }
 
+  beginRemoveRows(QModelIndex(), position, position + row - 1);
+
   for (itDeletedKey = DeletedKeys.begin(), row = 0; itDeletedKey != endDeletedKey; ++itDeletedKey, ++row)
     {
       if (*itDeletedKey != "")
         {
-          beginRemoveRows(QModelIndex(), position + row, position + row);
-
           CCopasiRootContainer::getFunctionList()->removeFunction(*itDeletedKey);
           emit notifyGUI(ListViews::FUNCTION, ListViews::DELETE, *itDeletedKey);
           emit notifyGUI(ListViews::FUNCTION, ListViews::DELETE, ""); //Refresh all as there may be dependencies.
-
-          endRemoveRows();
         }
     }
+
+  endRemoveRows();
 
   return true;
 }

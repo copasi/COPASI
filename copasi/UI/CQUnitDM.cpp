@@ -216,19 +216,21 @@ bool CQUnitDM::removeRows(int position, int rows, const QModelIndex&)
       *itDeletedKey = (*itRow)->getKey();
     }
 
+  beginRemoveRows(QModelIndex(), position, position + row - 1);
+
   for (itDeletedKey = DeletedKeys.begin(), row = 0; itDeletedKey != endDeletedKey; ++itDeletedKey, ++row)
     {
       if (*itDeletedKey != "")
         {
-          beginRemoveRows(QModelIndex(), position + row, position + row);
           CCopasiObject * pUnit = CCopasiRootContainer::getKeyFactory()->get(*itDeletedKey);
-          CCopasiRootContainer::getUnitList()->CCopasiVector< CUnit >::remove(pUnit);
-          emit notifyGUI(ListViews::UNIT, ListViews::DELETE, *itDeletedKey);
-          emit notifyGUI(ListViews::UNIT, ListViews::DELETE, ""); //Refresh all as there may be dependencies.
 
-          endRemoveRows();
+          if (pUnit != NULL) delete pUnit;
+
+          emit notifyGUI(ListViews::UNIT, ListViews::DELETE, *itDeletedKey);
         }
     }
+
+  endRemoveRows();
 
   return true;
 }
