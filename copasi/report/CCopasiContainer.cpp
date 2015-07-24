@@ -247,6 +247,7 @@ bool CCopasiContainer::remove(CCopasiObject * pObject)
 
   if (it == end) return false;
 
+  // Note: erase does not delete pointed to objects
   mObjects.erase(it);
 
   return true;

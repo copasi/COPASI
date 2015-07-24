@@ -307,7 +307,7 @@ public:
   }
 
   /**
-   * Removes the pointed to object from the vector
+   * Removes the pointer to the object, from the vector
    * @param CCopasiObject * pObject
    * @return bool success
    */
@@ -320,6 +320,7 @@ public:
     if (index != C_INVALID_INDEX)
       {
         iterator Target = begin() + index;
+        // Note: erase does not delete pointed to objects
         std::vector< CType * >::erase(Target, Target + 1);
       }
     else
