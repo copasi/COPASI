@@ -3822,3 +3822,27 @@ CEvaluationNode* CModel::prepareElasticity(const CReaction * pReaction, const CM
   //tmp->printRecursively(std::cout);
   return tmp;
 }
+
+// Return a set of any Copasi object using this symbol.
+CCopasiObject::DataObjectSet CModel::getUnitSymbolUsage(std::string symbol)
+{
+   DataObjectSet usages;
+
+  //Is it used in the Model Values?
+  CCopasiVector< CModelValue >::const_iterator it = getModelValues().begin();
+  CCopasiVector< CModelValue >::const_iterator end = getModelValues().end();
+
+  for (; it != end; ++it)
+    if ((*it)->getUnit().getUsedSymbols().count(symbol))
+      usages.insert(*it);
+
+  //Is it used for any of the default model units?
+  if (mpVolumeUnit->getUsedSymbols().count(symbol) ||
+      mpAreaUnit->getUsedSymbols().count(symbol) ||
+      mpLengthUnit->getUsedSymbols().count(symbol) ||
+      mpTimeUnit->getUsedSymbols().count(symbol) ||
+      mpQuantityUnit->getUsedSymbols().count(symbol))
+    usages.insert(this);
+
+  return usages;
+}

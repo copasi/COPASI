@@ -36,10 +36,10 @@ C_FLOAT64 CUnit::Avogadro(6.02214129e23); // http://physics.nist.gov/cgi-bin/cuu
  * farad      F        m^-2·kg^-1·s^4·A^2
  * ohm        \xCE\xA9 m^2·kg·s^-3·A^-2    // Use this symbol for presentation and parsing
  * ohm        O        m^2·kg·s^-3·A^-2    // Use this symbol for parsing only
- * siemens    S        m^-2·kg^-1·s3·A2
- * weber      Wb       m2·kg·s^-2·A^-1
+ * siemens    S        m^-2·kg^-1·s^3·A2
+ * weber      Wb       m^2·kg·s^-2·A^-1
  * tesla      T        kg·s^-2·A^-1
- * henry      H        m2·kg·s^-2·A^-2
+ * henry      H        m^2·kg·s^-2·A^-2
  * lumen      lm       cd
  * lux        lx       m^-2·cd
  * becquerel  Bq       s^-1
@@ -64,7 +64,7 @@ SIUnit SIUnits[] =
   {"coulomb",    "C",        "s*A"},
   {"farad",      "F",        "m^-2*kg^-1*s^4*A^2"},
   {"gray",       "Gy",       "m^2*s^-2"},
-  {"henry",      "H",        "m2*kg*s^-2*A^-2"},
+  {"henry",      "H",        "m^2*kg*s^-2*A^-2"},
   {"hertz",      "Hz",       "s^-1"},
   {"joule",      "J",        "m^2*kg*s^-2"},
   {"katal",      "ka",       "s^-1*mol"},
@@ -75,12 +75,12 @@ SIUnit SIUnits[] =
   {"newton",     "N",        "m*kg*s^-2"},
   {"ohm",        "\xCE\xA9", "m^2*kg*s^-3*A^-2"},
   {"pascal",     "Pa",       "m^-1*kg*s^-2"},
-  {"siemens",    "S",        "m^-2*kg^-1*s3*A^2"},
+  {"siemens",    "S",        "m^-2*kg^-1*s^3*A^2"},
   {"sievert",    "Sv",       "m^2*s^-2"},
   {"tesla",      "T",        "kg*s^-2*A^-1"},
   {"volt",       "V",        "m^2*kg*s^-3*A^-1"},
   {"watt",       "W",        "m^2*kg*s^-3"},
-  {"weber",      "Wb",       "m2*kg*s^-2*A^-1"},
+  {"weber",      "Wb",       "m^2*kg*s^-2*A^-1"},
 
   {"minute",     "min",      "60*s"},
   {"hour",       "h",        "60*60*s"},
@@ -531,7 +531,7 @@ bool CUnit::compile(const C_FLOAT64 & avogadro)
       mUsedSymbols = Parser.getSymbols();
     }
 
-  std::cout << *this << std::endl;
+  std::cout << this << ": " << *this << std::endl;
 
   return success;
 }

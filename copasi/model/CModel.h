@@ -1281,6 +1281,8 @@ public:
   //bool prepareSymbolicJacobian();
 
   CEvaluationNode* prepareElasticity(const CReaction * pReaction, const CModelEntity* pVar, bool simplify);
+
+  CCopasiObject::DataObjectSet getUnitSymbolUsage(std::string symbol);
 };
 
 #endif // CModel

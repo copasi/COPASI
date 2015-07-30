@@ -9,7 +9,7 @@
 #endif
 #define yyerror(__str) \
   if (yychar != YYERRCODE) correctErrorPosition(); \
-  CCopasiMessage(CCopasiMessage::ERROR, MCUnit + 1, mPosition)
+  CCopasiMessage(CCopasiMessage::EXCEPTION, MCUnit + 1, mPosition)
 
 #include "copasi.h"
 #include "CUnitParser.h"
@@ -53,11 +53,13 @@ compound_unit: unit
            {
              $$.pUnit = $1.pUnit;
              mpUnit = $$.pUnit;
+             std::cout << $$.pUnit << std::endl;
            }
          | scaled_unit
            {
              $$.pUnit = $1.pUnit;
              mpUnit = $$.pUnit;
+             std::cout << $$.pUnit << std::endl;
            }
          | NUMBER MULTIPLY compound_unit
            { 
@@ -68,6 +70,7 @@ compound_unit: unit
              $$.pUnit = $3.pUnit;
              $$.pUnit->addComponent(component);
              mpUnit = $$.pUnit;
+             std::cout << $$.pUnit << std::endl;
            }
          | compound_unit MULTIPLY compound_unit
            {
@@ -76,6 +79,7 @@ compound_unit: unit
              pdelete($1.pUnit);
              pdelete($3.pUnit);
              mpUnit = $$.pUnit;
+             std::cout << $$.pUnit << std::endl;
            }
          | compound_unit DIVIDE compound_unit
            {
@@ -84,6 +88,7 @@ compound_unit: unit
              pdelete($1.pUnit);
              pdelete($3.pUnit);
              mpUnit = $$.pUnit;
+             std::cout << $$.pUnit << std::endl;
            }
          | NUMBER DIVIDE compound_unit
            {
@@ -95,6 +100,7 @@ compound_unit: unit
              $$.pUnit->exponentiate(-1);
              $$.pUnit->addComponent(component);
              mpUnit = $$.pUnit;
+             std::cout << $$.pUnit << std::endl;
            }
          | compound_unit DIVIDE NUMBER
            {
@@ -106,29 +112,34 @@ compound_unit: unit
              $$.pUnit = $1.pUnit;
              $$.pUnit->addComponent(component);
              mpUnit = $$.pUnit;
+             std::cout << $$.pUnit << std::endl;
            }
          | START_PARENS compound_unit END_PARENS
            {
              $$ = $2;
              mpUnit = $$.pUnit;
+             std::cout << $$.pUnit << std::endl;
            }
          | compound_unit EXPONENT NUMBER
            {
              $1.pUnit->exponentiate(strToDouble($3.text.c_str(), NULL));
              $$.pUnit = $1.pUnit; 
              mpUnit = $$.pUnit;
+             std::cout << $$.pUnit << std::endl;
            }
 
 unit:      KIND
            {
              $$.pUnit = new CUnit(CBaseUnit::fromSymbol($1.text));
              mSymbols.insert($1.text);
+             std::cout << $$.pUnit << std::endl;
            }
          | SI_UNIT
            {
              $$.pUnit = new CUnit(CUnit::getSIUnit($1.text, mAvogadro));
              mSymbols.insert($1.text);
              mSymbols.insert($$.pUnit->getUsedSymbols().begin(), $$.pUnit->getUsedSymbols().end());
+             std::cout << $$.pUnit << std::endl;
            }
          | USER_DEFINED_UNIT
            {
@@ -144,6 +155,7 @@ unit:      KIND
                  mSymbols.insert($1.text);
                  mSymbols.insert($$.pUnit->getUsedSymbols().begin(), $$.pUnit->getUsedSymbols().end());
                }
+             std::cout << $$.pUnit << std::endl;
            }
 scaled_unit:  SCALE unit
            {
@@ -153,6 +165,7 @@ scaled_unit:  SCALE unit
              
              $$.pUnit = $2.pUnit;
              $$.pUnit->addComponent(component);
+             std::cout << $$.pUnit << std::endl;
            }
            
 %%

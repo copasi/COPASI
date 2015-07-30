@@ -67,6 +67,7 @@
 #include "CQOptimizationResult.h"
 #include "CQReportsWidget.h"
 #include "CQUnitsWidget.h"
+#include "CQUnitDetail.h"
 #include "CQSplashWidget.h"
 #include "CQTrajectoryWidget.h"
 #include "CQTimeSeriesWidget.h"
@@ -195,6 +196,7 @@ ListViews::ListViews(QWidget *parent, const char *name):
   steadystateWidget(NULL),
   mpReportsWidget(NULL),
   mpUnitsWidget(NULL),
+  mpUnitWidget(NULL),
   tableDefinition1(NULL),
   timeSeriesWidget(NULL),
   trajectoryWidget(NULL),
@@ -539,6 +541,12 @@ void ListViews::ConstructNodeWidgets()
     {
       mpUnitsWidget = new CQUnitsWidget(this);
       mpStackedWidget->addWidget(mpUnitsWidget);
+    }
+
+  if (!mpUnitWidget)
+    {
+      mpUnitWidget = new CQTabWidget(ListViews::UNIT, new CQUnitDetail(this), this);
+      mpStackedWidget->addWidget(mpUnitWidget);
     }
 
   if (!tableDefinition1)
