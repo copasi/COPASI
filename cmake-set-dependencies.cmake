@@ -1,3 +1,8 @@
+# Copyright (C) 2012 - 2015 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., University of Heidelberg, and The University 
+# of Manchester. 
+# All rights reserved. 
+
 ###############################################################################
 #
 # Description       : CMake overwrite dependencies script
@@ -7,19 +12,8 @@
 # This file is part of COPASI.  Please visit http://COPASI.org for more
 # information about COPASI, and the latest version of COPASI.
 #
-# Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
-# Properties, Inc., University of Heidelberg, and The University
-# of Manchester.
-# All rights reserved.
 # 
-# Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
-# Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-# and The University of Manchester.
-# All rights reserved.
 # 
-# Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
-# Properties, Inc. and EML Research, gGmbH.
-# All rights reserved.
 #
 ###############################################################################
 
@@ -185,8 +179,16 @@ endif()
 if (NOT APPLE)
   # clapack
   set (CLAPACK_INCLUDE_DIR ${COPASI_DEPENDENCY_DIR}/include CACHE PATH "clapack include directory" FORCE)
+
+  set(CLAPACK_LIBRARY_F2C "${COPASI_DEPENDENCY_DIR}/lib/libf2c.a")
+
+  if (NOT EXISTS "${CLAPACK_LIBRARY_F2C}")
+    set(CLAPACK_LIBRARY_F2C "/usr/lib/libgfortran.so")
+  endif()
+  
+
   set (CLAPACK_LIBRARIES
-       ${COPASI_DEPENDENCY_DIR}/lib/liblapack.a;${COPASI_DEPENDENCY_DIR}/lib/libblas.a;${COPASI_DEPENDENCY_DIR}/lib/libf2c.a
+       ${COPASI_DEPENDENCY_DIR}/lib/liblapack.a;${COPASI_DEPENDENCY_DIR}/lib/libblas.a;${CLAPACK_LIBRARY_F2C}
        CACHE FILEPATH "lapack library" FORCE)
 
   add_definitions(-DHAVE_BLASWRAP_H)
