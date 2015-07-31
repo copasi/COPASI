@@ -369,6 +369,7 @@ bool CQUnitDetail::enterProtected()
 
   load();
 
+  // This is needed, in the case the unit is copied.
   mpUnit = dynamic_cast<CUnit *>(mpObject);
 
   return true;

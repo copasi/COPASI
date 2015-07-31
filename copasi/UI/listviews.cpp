@@ -196,7 +196,7 @@ ListViews::ListViews(QWidget *parent, const char *name):
   steadystateWidget(NULL),
   mpReportsWidget(NULL),
   mpUnitsWidget(NULL),
-  mpUnitWidget(NULL),
+  mpUnitDetail(NULL),
   tableDefinition1(NULL),
   timeSeriesWidget(NULL),
   trajectoryWidget(NULL),
@@ -543,10 +543,10 @@ void ListViews::ConstructNodeWidgets()
       mpStackedWidget->addWidget(mpUnitsWidget);
     }
 
-  if (!mpUnitWidget)
+  if (!mpUnitDetail)
     {
-      mpUnitWidget = new CQTabWidget(ListViews::UNIT, new CQUnitDetail(this), this);
-      mpStackedWidget->addWidget(mpUnitWidget);
+      mpUnitDetail = new CQTabWidget(ListViews::UNIT, new CQUnitDetail(this), this);
+      mpStackedWidget->addWidget(mpUnitDetail);
     }
 
   if (!tableDefinition1)
@@ -710,7 +710,7 @@ CopasiWidget* ListViews::findWidgetFromIndex(const QModelIndex & index) const
         break;
 
       case 6:
-        return mpUnitsWidget;
+        return mpUnitDetail;
         break;
     }
 

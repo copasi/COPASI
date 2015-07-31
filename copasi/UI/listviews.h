@@ -239,7 +239,7 @@ private:
   SteadyStateWidget *steadystateWidget;
   CQReportsWidget *mpReportsWidget;
   CQUnitsWidget *mpUnitsWidget;
-  CQTabWidget *mpUnitWidget;
+  CQTabWidget *mpUnitDetail;
   CQReportDefinition *tableDefinition1;
   CQTimeSeriesWidget *timeSeriesWidget;
   CQTrajectoryWidget *trajectoryWidget;
