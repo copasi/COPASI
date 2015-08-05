@@ -241,28 +241,8 @@ std::string getInitialCNForSBase(SBase* sbase, std::map<CCopasiObject*, SBase*>&
 /**
  * Creates and returns a Copasi CModel from the SBMLDocument given as argument.
  */
-CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap)
+void SBMLImporter::importUnitsFromSBMLDocument(Model* sbmlModel)
 {
-  Model* sbmlModel = sbmlDocument->getModel();
-
-  /* Create an empty model and set the title. */
-  this->mpCopasiModel = new CModel(mpDataModel);
-  copasi2sbmlmap[this->mpCopasiModel] = sbmlModel;
-  this->mpCopasiModel->setLengthUnit(CUnit::m);
-  this->mpCopasiModel->setAreaUnit(CUnit::m2);
-  this->mpCopasiModel->setVolumeUnit(CUnit::l);
-  this->mpCopasiModel->setTimeUnit(CUnit::s);
-  this->mpCopasiModel->setQuantityUnit(CUnit::Mol);
-  this->mpCopasiModel->setSBMLId(sbmlModel->getId());
-
-  unsigned C_INT32 step = 0, totalSteps = 0;
-  size_t hStep = C_INVALID_INDEX;
-
-  mImportStep = 1;
-
-  if (mpImportHandler && !mpImportHandler->progressItem(mhImportStep)) return NULL;
-
-  SBMLImporter::importMIRIAM(sbmlModel, this->mpCopasiModel);
   UnitDefinition *pSubstanceUnits = NULL;
   UnitDefinition *pTimeUnits = NULL;
   UnitDefinition *pVolumeUnits = NULL;
@@ -896,7 +876,83 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
   // go through all compartments and species and check if the units are
   // consistent
   checkElementUnits(sbmlModel, this->mpCopasiModel, this->mLevel, this->mVersion);
-  std::string title;
+}
+
+bool
+SBMLImporter::reportCurrentProgressOrStop()
+{
+  if (!mpImportHandler) return false;
+
+  return !mpImportHandler->progressItem(mCurrentStepHandle);
+}
+
+void
+SBMLImporter::finishCurrentStep()
+{
+  if (!mpImportHandler || mCurrentStepHandle == C_INVALID_INDEX)  return;
+
+  mpImportHandler->finishItem(mCurrentStepHandle);
+  mCurrentStepHandle = C_INVALID_INDEX;
+}
+
+void
+SBMLImporter::finishImport()
+{
+  if (!mpImportHandler)  return;
+
+  finishCurrentStep();
+
+  mpImportHandler->finishItem(mGlobalStepHandle);
+}
+
+bool
+SBMLImporter::createProgressStepOrStop(unsigned C_INT32 globalStep,
+                                       unsigned C_INT32 currentTotal,
+                                       const std::string& title)
+{
+  if (!mpImportHandler) return false;
+
+  if (mCurrentStepHandle != C_INVALID_INDEX)
+    mpImportHandler->finishItem(mCurrentStepHandle);
+
+  mGlobalStepCounter = globalStep;
+
+  if (!mpImportHandler->progressItem(mGlobalStepHandle)) return true;
+
+  mCurrentStepCounter = 0;
+  mCurrentStepTotal = currentTotal;
+  mCurrentStepHandle = mpImportHandler->addItem(title,
+                       mCurrentStepCounter,
+                       &mCurrentStepTotal);
+
+  return false;
+}
+
+CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap)
+{
+  Model* sbmlModel = sbmlDocument->getModel();
+
+  /* Create an empty model and set the title. */
+  this->mpCopasiModel = new CModel(mpDataModel);
+  copasi2sbmlmap[this->mpCopasiModel] = sbmlModel;
+  this->mpCopasiModel->setLengthUnit(CUnit::m);
+  this->mpCopasiModel->setAreaUnit(CUnit::m2);
+  this->mpCopasiModel->setVolumeUnit(CUnit::l);
+  this->mpCopasiModel->setTimeUnit(CUnit::s);
+  this->mpCopasiModel->setQuantityUnit(CUnit::Mol);
+  this->mpCopasiModel->setSBMLId(sbmlModel->getId());
+
+  mCurrentStepHandle = C_INVALID_INDEX;
+  mCurrentStepCounter = 0;
+  mCurrentStepTotal = 0;
+
+  SBMLImporter::importMIRIAM(sbmlModel, this->mpCopasiModel);
+  SBMLImporter::importNotes(this->mpCopasiModel, sbmlModel);
+
+  if (createProgressStepOrStop(3, 1, "Importing units"))
+    return NULL;
+
+  importUnitsFromSBMLDocument(sbmlModel);
 
   if (this->isStochasticModel(sbmlModel))
     {
@@ -907,9 +963,7 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
       this->mpCopasiModel->setModelType(CModel::deterministic);
     }
 
-  SBMLImporter::importNotes(this->mpCopasiModel, sbmlModel);
-
-  title = sbmlModel->getName();
+  std::string title = sbmlModel->getName();
 
   if (title == "")
     {
@@ -925,6 +979,7 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
     }
 
   this->mpCopasiModel->setObjectName(title.c_str());
+
   // fill the set of SBML species reference ids because
   // we need this to check for references to species references in all expressions
   // as long as we do not support these references
@@ -932,21 +987,14 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
 
   /* import the functions */
   unsigned int counter;
+  size_t num;
+
   CCopasiVectorN< CFunction >* functions = &(this->functionDB->loadedFunctions());
 
-  size_t num = (*functions).size();
+  num = (*functions).size();
 
-  if (mpImportHandler)
-    {
-      mImportStep = 2;
-
-      if (!mpImportHandler->progressItem(mhImportStep)) return NULL;
-
-      totalSteps = (unsigned C_INT32) num;
-      hStep = mpImportHandler->addItem("Importing function definitions",
-                                       step,
-                                       &totalSteps);
-    }
+  if (createProgressStepOrStop(4, num, "Importing function definitions"))
+    return NULL;
 
   this->sbmlIdMap.clear();
 
@@ -962,27 +1010,17 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
     }
 
   CFunctionDB* pTmpFunctionDB = this->importFunctionDefinitions(sbmlModel, copasi2sbmlmap);
+
   // try to find global parameters that represent avogadros number
   this->findAvogadroConstant(sbmlModel, this->mpCopasiModel->getQuantity2NumberFactor());
 
-  std::map<std::string, CCompartment*> compartmentMap;
+  mCompartmentMap.clear();
 
   /* Create the compartments */
   num = sbmlModel->getNumCompartments();
 
-  if (mpImportHandler)
-    {
-      mpImportHandler->finishItem(hStep);
-      mImportStep = 3;
-
-      if (!mpImportHandler->progressItem(mhImportStep)) return NULL;
-
-      step = 0;
-      totalSteps = (unsigned C_INT32) num;
-      hStep = mpImportHandler->addItem("Importing compartments...",
-                                       step,
-                                       &totalSteps);
-    }
+  if (createProgressStepOrStop(5, num, "Importing compartments..."))
+    return NULL;
 
   for (counter = 0; counter < num; counter++)
     {
@@ -1024,28 +1062,18 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
           key = sbmlCompartment->getName();
         }
 
-      compartmentMap[key] = pCopasiCompartment;
-      ++step;
+      mCompartmentMap[key] = pCopasiCompartment;
+      ++mCurrentStepCounter;
 
-      if (mpImportHandler && !mpImportHandler->progressItem(hStep)) return NULL;
+      if (reportCurrentProgressOrStop())
+        return NULL;
     }
 
   /* Create all species */
   num = sbmlModel->getNumSpecies();
 
-  if (mpImportHandler)
-    {
-      mpImportHandler->finishItem(hStep);
-      mImportStep = 4;
-
-      if (!mpImportHandler->progressItem(mhImportStep)) return NULL;
-
-      step = 0;
-      totalSteps = (unsigned C_INT32) num;
-      hStep = mpImportHandler->addItem("Importing species...",
-                                       step,
-                                       &totalSteps);
-    }
+  if (createProgressStepOrStop(6, num, "Importing species..."))
+    return NULL;
 
   for (counter = 0; counter < num; ++counter)
     {
@@ -1056,7 +1084,7 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
           fatalError();
         }
 
-      CCompartment* pCopasiCompartment = compartmentMap[sbmlSpecies->getCompartment()];
+      CCompartment* pCopasiCompartment = mCompartmentMap[sbmlSpecies->getCompartment()];
 
       if (pCopasiCompartment != NULL)
         {
@@ -1102,27 +1130,17 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
           CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 5 , sbmlSpecies->getCompartment().c_str(), sbmlSpecies->getId().c_str());
         }
 
-      ++step;
+      ++mCurrentStepCounter;
 
-      if (mpImportHandler && !mpImportHandler->progressItem(hStep)) return NULL;
+      if (reportCurrentProgressOrStop())
+        return NULL;
     }
 
   /* Create the global Parameters */
   num = sbmlModel->getNumParameters();
 
-  if (mpImportHandler)
-    {
-      mpImportHandler->finishItem(hStep);
-      mImportStep = 5;
-
-      if (!mpImportHandler->progressItem(mhImportStep)) return NULL;
-
-      step = 0;
-      totalSteps = (unsigned C_INT32) num;
-      hStep = mpImportHandler->addItem("Importing global parameters...",
-                                       step,
-                                       &totalSteps);
-    }
+  if (createProgressStepOrStop(7, num, "Importing global parameters..."))
+    return NULL;
 
   for (counter = 0; counter < num; ++counter)
     {
@@ -1185,9 +1203,10 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
           CCopasiMessage(CCopasiMessage::EXCEPTION, os.str().c_str());
         }
 
-      ++step;
+      ++mCurrentStepCounter;
 
-      if (mpImportHandler && !mpImportHandler->progressItem(hStep)) return NULL;
+      if (reportCurrentProgressOrStop())
+        return NULL;
     }
 
   // the information that is collected here is used in the creation of the reactions to
@@ -1256,19 +1275,8 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
   /* Create all reactions */
   num = sbmlModel->getNumReactions();
 
-  if (mpImportHandler)
-    {
-      mpImportHandler->finishItem(hStep);
-      mImportStep = 6;
-
-      if (!mpImportHandler->progressItem(mhImportStep)) return NULL;
-
-      step = 0;
-      totalSteps = (unsigned C_INT32) num;
-      hStep = mpImportHandler->addItem("Importing reactions...",
-                                       step,
-                                       &totalSteps);
-    }
+  if (createProgressStepOrStop(8, num, "Importing reactions..."))
+    return NULL;
 
   this->mDivisionByCompartmentReactions.clear();
   this->mFastReactions.clear();
@@ -1298,9 +1306,10 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
           CCopasiMessage(CCopasiMessage::EXCEPTION, os.str().c_str());
         }
 
-      ++step;
+      ++mCurrentStepCounter;
 
-      if (mpImportHandler && !mpImportHandler->progressItem(hStep)) return NULL;
+      if (reportCurrentProgressOrStop())
+        return NULL;
     }
 
   if (!this->mDivisionByCompartmentReactions.empty())
@@ -1359,13 +1368,9 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
 
   // import the initial assignments
   // we do this after the reactions since intial assignments can reference reaction ids.
-  if (mpImportHandler)
-    {
-      mpImportHandler->finishItem(hStep);
-      mImportStep = 7;
 
-      if (!mpImportHandler->progressItem(mhImportStep)) return NULL;
-    }
+  if (createProgressStepOrStop(9, sbmlModel->getNumInitialAssignments(), "Importing initial assignments..."))
+    return NULL;
 
   importInitialAssignments(sbmlModel, copasi2sbmlmap, this->mpCopasiModel);
 
@@ -1380,19 +1385,8 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
   this->areRulesUnique(sbmlModel);
   num = sbmlModel->getNumRules();
 
-  if (mpImportHandler)
-    {
-      mpImportHandler->finishItem(hStep);
-      mImportStep = 8;
-
-      if (!mpImportHandler->progressItem(mhImportStep)) return NULL;
-
-      step = 0;
-      totalSteps = (unsigned C_INT32) num;
-      hStep = mpImportHandler->addItem("Importing global parameters...",
-                                       step,
-                                       &totalSteps);
-    }
+  if (createProgressStepOrStop(10, num, "Importing Rules..."))
+    return NULL;
 
   for (counter = 0; counter < num; ++counter)
     {
@@ -1426,9 +1420,10 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
           CCopasiMessage(CCopasiMessage::EXCEPTION, os.str().c_str());
         }
 
-      ++step;
+      ++mCurrentStepCounter;
 
-      if (mpImportHandler && !mpImportHandler->progressItem(hStep)) return NULL;
+      if (reportCurrentProgressOrStop())
+        return NULL;
     }
 
   if (sbmlModel->getNumConstraints() > 0)
@@ -1445,13 +1440,9 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
   // events should be imported after reactions because we use the mSBMLSpeciesReferenceIds to determine if an
   // event assignment changes a species reference (stoichiometry
   // Since COPASI does not support this, we need to ignore the event assignment
-  if (mpImportHandler)
-    {
-      mpImportHandler->finishItem(hStep);
-      mImportStep = 9;
 
-      if (!mpImportHandler->progressItem(mhImportStep)) return NULL;
-    }
+  if (createProgressStepOrStop(11, sbmlModel->getNumEvents(), "Importing Events..."))
+    return NULL;
 
   this->importEvents(sbmlModel, this->mpCopasiModel, copasi2sbmlmap);
 
@@ -1492,13 +1483,14 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
       CCopasiMessage Message(CCopasiMessage::WARNING, MCSBML + 99);
     }
 
-  if (mpImportHandler)
-    {
-      mpImportHandler->finishItem(hStep);
-      mImportStep = 10;
-
-      if (!mpImportHandler->progressItem(mhImportStep)) return NULL;
-    }
+  if (createProgressStepOrStop(12,
+                               (unsigned C_INT32)(mpCopasiModel->getReactions().size()
+                                   + this->mpCopasiModel->getCompartments().size()
+                                   + this->mpCopasiModel->getMetabolites().size()
+                                   + this->mpCopasiModel->getModelValues().size()),
+                               "Searching unused functions..."
+                              ))
+    return NULL;
 
   // unset the hasOnlySubstanceUnits flag on all such species
   std::map<Species*, Compartment*>::iterator it = this->mSubstanceOnlySpecies.begin();
@@ -2255,7 +2247,9 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
       if (pos == this->speciesMap.end())
         {
           delete copasiReaction;
-          fatalError();
+          std::stringstream os;
+          os << "There exists no species for the specified species reference '" << sr->getSpecies() << "'.";
+          CCopasiMessage(CCopasiMessage::EXCEPTION, os.str().c_str());
         }
       else
         {
@@ -2387,7 +2381,9 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
       if (pos == this->speciesMap.end())
         {
           delete copasiReaction;
-          fatalError();
+          std::stringstream os;
+          os << "There exists no species for the specified species reference '" << sr->getSpecies() << "'.";
+          CCopasiMessage(CCopasiMessage::EXCEPTION, os.str().c_str());
         }
       else
         {
@@ -2487,8 +2483,11 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
 
       if (pos == this->speciesMap.end())
         {
-          delete copasiReaction;
-          fatalError();
+          //delete copasiReaction;
+          // modifiers are not as necessary and can be ignored
+          std::stringstream os;
+          os << "There exists no species for the specified modifier '" << sr->getSpecies() << "'.";
+          CCopasiMessage(CCopasiMessage::WARNING, os.str().c_str());
         }
 
       std::map<CCopasiObject*, SBase*>::const_iterator spos = copasi2sbmlmap.find(pos->second);
@@ -3063,9 +3062,12 @@ SBMLImporter::SBMLImporter():
   mFunctionNameMapping(),
   mDivisionByCompartmentReactions(),
   mpImportHandler(NULL),
-  mImportStep(0),
-  mhImportStep(C_INVALID_INDEX),
-  mTotalSteps(0),
+  mGlobalStepHandle(C_INVALID_INDEX),
+  mGlobalStepCounter(0),
+  mGlobalStepTotal(0),
+  mCurrentStepHandle(C_INVALID_INDEX),
+  mCurrentStepCounter(0),
+  mCurrentStepTotal(0),
   mSubstanceOnlySpecies(),
   mFastReactions(),
   mReactionsWithReplacedLocalParameters(),
@@ -3093,9 +3095,10 @@ SBMLImporter::SBMLImporter():
 # if LIBSBML_VERSION >= 40200
   mEventPrioritiesIgnored(false),
   mInitialTriggerValues(false),
-  mNonPersistentTriggerFound(false)
+  mNonPersistentTriggerFound(false),
 # endif // LIBSBML_VERSION >= 40200
 #endif // LIBSBML_VERSION >= 40100
+  mCompartmentMap()
 {
   this->speciesMap = std::map<std::string, CMetab*>();
   this->functionDB = NULL;
@@ -3213,6 +3216,220 @@ CModel* SBMLImporter::readSBML(std::string filename,
                          pSBMLDocument, copasi2sbmlmap, prLol, pDataModel);
 }
 
+bool SBMLImporter::checkValidityOfSourceDocument(SBMLDocument* sbmlDoc)
+{
+  if (CCopasiRootContainer::getConfiguration()->validateUnits())
+    sbmlDoc->setApplicableValidators(AllChecksON);
+  else
+    sbmlDoc->setApplicableValidators(AllChecksON & UnitsCheckOFF);
+
+#if LIBSBML_VERSION > 50800
+  // libSBML is validating comp models after 5.8.0 this would throw an
+  // error in case external references can't be resolved.
+  sbmlDoc->setLocationURI(mpDataModel->getReferenceDirectory());
+#endif
+
+  unsigned int checkResult = sbmlDoc->checkConsistency();
+
+#if LIBSBML_VERSION > 50800
+
+  sbmlDoc->setLocationURI(mpDataModel->getReferenceDirectory());
+
+  // the new libsbml includes complete layout validation, and flags many
+  // things as errors, that would cause COPASI to reject the model (even
+  // though the layout code has been written to anticipate all these possible
+  // error sources). Thus downgrade these error messages
+  sbmlDoc->getErrorLog()->changeErrorSeverity(LIBSBML_SEV_ERROR, LIBSBML_SEV_WARNING, "layout");
+#endif
+
+  if (checkResult != 0)
+    {
+      int fatal = -1;
+      unsigned int i, iMax = sbmlDoc->getNumErrors();
+
+      for (i = 0; (i < iMax) && (fatal == -1); ++i)
+        {
+          const XMLError* pSBMLError = sbmlDoc->getError(i);
+
+          // we check if the model contained a required package
+          if (sbmlDoc->getLevel() > 2 && pSBMLError->getErrorId() == 99107)
+            {
+              CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 96);
+            }
+
+          CCopasiMessage::Type messageType = CCopasiMessage::RAW;
+
+          switch (pSBMLError->getSeverity())
+            {
+              case LIBSBML_SEV_INFO:
+
+                if (mIgnoredSBMLMessages.find(pSBMLError->getErrorId()) != mIgnoredSBMLMessages.end())
+                  {
+                    messageType = CCopasiMessage::WARNING_FILTERED;
+                  }
+                else
+                  {
+                    messageType = CCopasiMessage::WARNING;
+                  }
+
+                CCopasiMessage(messageType, MCSBML + 40, "INFO", pSBMLError->getErrorId(), pSBMLError->getLine(), pSBMLError->getColumn(), pSBMLError->getMessage().c_str());
+                break;
+
+              case LIBSBML_SEV_WARNING:
+
+#if LIBSBML_VERSION > 50800
+
+                // filter layout warnings always
+                if (pSBMLError->getPackage() == "layout")
+                  messageType = CCopasiMessage::WARNING_FILTERED;
+                else
+#endif
+                  if (mIgnoredSBMLMessages.find(pSBMLError->getErrorId()) != mIgnoredSBMLMessages.end())
+                    {
+                      messageType = CCopasiMessage::WARNING_FILTERED;
+                    }
+                  else
+                    {
+                      messageType = CCopasiMessage::WARNING;
+                    }
+
+                CCopasiMessage(messageType, MCSBML + 40, "WARNING", pSBMLError->getErrorId(), pSBMLError->getLine(), pSBMLError->getColumn(), pSBMLError->getMessage().c_str());
+                break;
+
+              case LIBSBML_SEV_ERROR:
+
+                if (mIgnoredSBMLMessages.find(pSBMLError->getErrorId()) != mIgnoredSBMLMessages.end())
+                  {
+                    messageType = CCopasiMessage::ERROR_FILTERED;
+                  }
+
+                CCopasiMessage(messageType, MCSBML + 40, "ERROR", pSBMLError->getErrorId(), pSBMLError->getLine(), pSBMLError->getColumn(), pSBMLError->getMessage().c_str());
+                break;
+
+              case LIBSBML_SEV_FATAL:
+
+                // treat unknown as fatal
+              default:
+
+                //CCopasiMessage(CCopasiMessage::TRACE, MCSBML + 40,"FATAL",pSBMLError->getLine(),pSBMLError->getColumn(),pSBMLError->getMessage().c_str());
+                if (pSBMLError->getErrorId() == 10804)
+                  {
+                    // this error indicates a problem with a notes element
+                    // although libsbml flags this as fatal, we would still
+                    // like to read the model
+                    CCopasiMessage(messageType, MCSBML + 40, "ERROR", pSBMLError->getErrorId(), pSBMLError->getLine(), pSBMLError->getColumn(), pSBMLError->getMessage().c_str());
+                  }
+                else
+                  {
+                    fatal = i;
+                  }
+
+                break;
+            }
+
+          //std::cerr << pSBMLError->getMessage() << std::endl;
+        }
+
+      if (fatal != -1)
+        {
+          const XMLError* pSBMLError = sbmlDoc->getError(fatal);
+          CCopasiMessage Message(CCopasiMessage::EXCEPTION, MCXML + 2,
+                                 pSBMLError->getLine(),
+                                 pSBMLError->getColumn(),
+                                 pSBMLError->getMessage().c_str());
+
+          finishImport();
+
+          return true;
+        }
+    }
+  else
+    {
+      if (sbmlDoc->getLevel() > 2)
+        {
+          // we check if the model contained a required package
+          unsigned int i, iMax = sbmlDoc->getNumErrors();
+
+          for (i = 0; i < iMax ; ++i)
+            {
+              const XMLError* pSBMLError = sbmlDoc->getError(i);
+
+              if (pSBMLError->getErrorId() == 99107)
+                {
+                  if (pSBMLError->getMessage().find("'spatial'") != std::string::npos)
+                    {
+                      CCopasiMessage(CCopasiMessage::ERROR,
+                                     "The model you tried to open requires the SBML spatial package. "
+                                     "This version of COPASI does not support spatial models.");
+                    }
+                  else
+                    {
+                      CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 96);
+                    }
+                }
+            }
+        }
+    }
+
+#if LIBSBML_VERSION >= 50700
+
+  if (sbmlDoc->getPlugin("comp") != NULL && sbmlDoc->isSetPackageRequired("comp"))
+    {
+
+      if (sbmlDoc->getNumErrors(LIBSBML_SEV_ERROR) > 0)
+        {
+          std::string message =
+            "The SBML model you are trying to import uses the Hierarchical Modeling extension. "
+            "In order to import this model in COPASI, it has to be flattened, however flattening is "
+            "not possible because of the following errors:\n" + sbmlDoc->getErrorLog()->toString();
+
+          // escape potential percent signs that would lead to an error when passed to CCopasiMessage
+          CPrefixNameTransformer::replaceStringInPlace(message, "%", "%%");
+
+          CCopasiMessage(CCopasiMessage::EXCEPTION, message.c_str());
+        }
+
+#if LIBSBML_VERSION >= 50903 && LIBSBML_HAS_PACKAGE_COMP
+      // apply the name transformer
+      CompModelPlugin* mPlug = dynamic_cast<CompModelPlugin*>(sbmlDoc->getModel()->getPlugin("comp"));
+      CPrefixNameTransformer trans;
+
+      if (mPlug != NULL)
+        {
+          mPlug->setTransformer(&trans);
+        }
+
+#endif //LIBSBML_VERSION >= 50903 && LIBSBML_HAS_PACKAGE_COMP
+
+      // the sbml comp package is used, and the required flag is set, so it stands to reason
+      // that we need to flatten the document
+      sbmlDoc->getErrorLog()->clearLog();
+
+      ConversionProperties props;
+      props.addOption("flatten comp");
+      props.addOption("leavePorts", false);
+      props.addOption("basePath", mpDataModel->getReferenceDirectory());
+
+      if (sbmlDoc->convert(props) != LIBSBML_OPERATION_SUCCESS)
+        {
+          std::string message =
+            "The SBML model you are trying to import uses the Hierarchical Modeling extension. "
+            "In order to import this model in COPASI, it has to be flattened, however flattening failed";
+
+          if (sbmlDoc->getNumErrors() == 0)
+            message += ".";
+          else
+            message += " with the following errors:\n" + sbmlDoc->getErrorLog()->toString();
+
+          CCopasiMessage(CCopasiMessage::EXCEPTION, message.c_str());
+        }
+    }
+
+#endif
+  finishCurrentStep();
+  return false;
+}
+
 /**
  * Function parses an SBML document with libsbml and converts it to a COPASI CModel
  * object which is returned. Deletion of the returned pointer is up to the
@@ -3233,314 +3450,103 @@ SBMLImporter::parseSBML(const std::string& sbmlDocumentText,
 
   this->mpCopasiModel = NULL;
 
-  if (funDB != NULL)
+  if (funDB == NULL)
     {
-      this->functionDB = funDB;
-      SBMLReader* reader = new SBMLReader();
-
-      mImportStep = 0;
-
-      if (mpImportHandler)
-        {
-          mpImportHandler->setName("Importing SBML file...");
-          mTotalSteps = 11;
-          mhImportStep = mpImportHandler->addItem("Step",
-                                                  mImportStep,
-                                                  &mTotalSteps);
-        }
-
-      unsigned C_INT32 step = 0, totalSteps = 0;
-      size_t hStep = C_INVALID_INDEX;
-
-      if (this->mpImportHandler != 0)
-        {
-          step = 0;
-          totalSteps = 1;
-          hStep = mpImportHandler->addItem("Reading SBML file...",
-                                           step,
-                                           &totalSteps);
-        }
-
-      SBMLDocument* sbmlDoc = reader->readSBMLFromString(sbmlDocumentText);
-
-      if (mpImportHandler) mpImportHandler->finishItem(hStep);
-
-      if (this->mpImportHandler != 0)
-        {
-          step = 0;
-          totalSteps = 1;
-          hStep = mpImportHandler->addItem("Checking consistency...",
-                                           step,
-                                           &totalSteps);
-        }
-
-      if (CCopasiRootContainer::getConfiguration()->validateUnits())
-        sbmlDoc->setApplicableValidators(AllChecksON);
-      else
-        sbmlDoc->setApplicableValidators(AllChecksON & UnitsCheckOFF);
-
-#if LIBSBML_VERSION > 50800
-      // libSBML is validating comp models after 5.8.0 this would throw an
-      // error in case external references can't be resolved.
-      sbmlDoc->setLocationURI(pDataModel->getReferenceDirectory());
-#endif
-
-      bool checkResult = sbmlDoc->checkConsistency();
-
-#if LIBSBML_VERSION > 50800
-
-      sbmlDoc->setLocationURI(pDataModel->getReferenceDirectory());
-
-      // the new libsbml includes complete layout validation, and flags many
-      // things as errors, that would cause COPASI to reject the model (even
-      // though the layout code has been written to anticipate all these possible
-      // error sources). Thus downgrade these error messages
-      sbmlDoc->getErrorLog()->changeErrorSeverity(LIBSBML_SEV_ERROR, LIBSBML_SEV_WARNING, "layout");
-#endif
-
-      if (mpImportHandler) mpImportHandler->finishItem(hStep);
-
-      if (checkResult != 0)
-        {
-          int fatal = -1;
-          unsigned int i, iMax = sbmlDoc->getNumErrors();
-
-          for (i = 0; (i < iMax) && (fatal == -1); ++i)
-            {
-              const XMLError* pSBMLError = sbmlDoc->getError(i);
-
-              // we check if the model contained a required package
-              if (sbmlDoc->getLevel() > 2 && pSBMLError->getErrorId() == 99107)
-                {
-                  CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 96);
-                }
-
-              CCopasiMessage::Type messageType = CCopasiMessage::RAW;
-
-              switch (pSBMLError->getSeverity())
-                {
-                  case LIBSBML_SEV_INFO:
-
-                    if (mIgnoredSBMLMessages.find(pSBMLError->getErrorId()) != mIgnoredSBMLMessages.end())
-                      {
-                        messageType = CCopasiMessage::WARNING_FILTERED;
-                      }
-                    else
-                      {
-                        messageType = CCopasiMessage::WARNING;
-                      }
-
-                    CCopasiMessage(messageType, MCSBML + 40, "INFO", pSBMLError->getErrorId(), pSBMLError->getLine(), pSBMLError->getColumn(), pSBMLError->getMessage().c_str());
-                    break;
-
-                  case LIBSBML_SEV_WARNING:
-
-#if LIBSBML_VERSION > 50800
-
-                    // filter layout warnings always
-                    if (pSBMLError->getPackage() == "layout")
-                      messageType = CCopasiMessage::WARNING_FILTERED;
-                    else
-#endif
-                      if (mIgnoredSBMLMessages.find(pSBMLError->getErrorId()) != mIgnoredSBMLMessages.end())
-                        {
-                          messageType = CCopasiMessage::WARNING_FILTERED;
-                        }
-                      else
-                        {
-                          messageType = CCopasiMessage::WARNING;
-                        }
-
-                    CCopasiMessage(messageType, MCSBML + 40, "WARNING", pSBMLError->getErrorId(), pSBMLError->getLine(), pSBMLError->getColumn(), pSBMLError->getMessage().c_str());
-                    break;
-
-                  case LIBSBML_SEV_ERROR:
-
-                    if (mIgnoredSBMLMessages.find(pSBMLError->getErrorId()) != mIgnoredSBMLMessages.end())
-                      {
-                        messageType = CCopasiMessage::ERROR_FILTERED;
-                      }
-
-                    CCopasiMessage(messageType, MCSBML + 40, "ERROR", pSBMLError->getErrorId(), pSBMLError->getLine(), pSBMLError->getColumn(), pSBMLError->getMessage().c_str());
-                    break;
-
-                  case LIBSBML_SEV_FATAL:
-
-                    // treat unknown as fatal
-                  default:
-
-                    //CCopasiMessage(CCopasiMessage::TRACE, MCSBML + 40,"FATAL",pSBMLError->getLine(),pSBMLError->getColumn(),pSBMLError->getMessage().c_str());
-                    if (pSBMLError->getErrorId() == 10804)
-                      {
-                        // this error indicates a problem with a notes element
-                        // although libsbml flags this as fatal, we would still
-                        // like to read the model
-                        CCopasiMessage(messageType, MCSBML + 40, "ERROR", pSBMLError->getErrorId(), pSBMLError->getLine(), pSBMLError->getColumn(), pSBMLError->getMessage().c_str());
-                      }
-                    else
-                      {
-                        fatal = i;
-                      }
-
-                    break;
-                }
-
-              //std::cerr << pSBMLError->getMessage() << std::endl;
-            }
-
-          if (fatal != -1)
-            {
-              const XMLError* pSBMLError = sbmlDoc->getError(fatal);
-              CCopasiMessage Message(CCopasiMessage::EXCEPTION, MCXML + 2,
-                                     pSBMLError->getLine(),
-                                     pSBMLError->getColumn(),
-                                     pSBMLError->getMessage().c_str());
-
-              if (mpImportHandler) mpImportHandler->finishItem(mhImportStep);
-
-              return NULL;
-            }
-        }
-      else
-        {
-          if (sbmlDoc->getLevel() > 2)
-            {
-              // we check if the model contained a required package
-              unsigned int i, iMax = sbmlDoc->getNumErrors();
-
-              for (i = 0; i < iMax ; ++i)
-                {
-                  const XMLError* pSBMLError = sbmlDoc->getError(i);
-
-                  if (pSBMLError->getErrorId() == 99107)
-                    {
-                      if (pSBMLError->getMessage().find("'spatial'") != std::string::npos)
-                        {
-                          CCopasiMessage(CCopasiMessage::ERROR,
-                                         "The model you tried to open requires the SBML spatial package. "
-                                         "This version of COPASI does not support spatial models.");
-                        }
-                      else
-                        {
-                          CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 96);
-                        }
-                    }
-                }
-            }
-        }
-
-#if LIBSBML_VERSION >= 50700
-
-      if (sbmlDoc->getPlugin("comp") != NULL && sbmlDoc->isSetPackageRequired("comp"))
-        {
-
-          if (sbmlDoc->getNumErrors(LIBSBML_SEV_ERROR) > 0)
-            {
-              std::string message =
-                "The SBML model you are trying to import uses the Hierarchical Modeling extension. "
-                "In order to import this model in COPASI, it has to be flattened, however flattening is "
-                "not possible because of the following errors:\n" + sbmlDoc->getErrorLog()->toString();
-
-              // escape potential percent signs that would lead to an error when passed to CCopasiMessage
-              CPrefixNameTransformer::replaceStringInPlace(message, "%", "%%");
-
-              CCopasiMessage(CCopasiMessage::EXCEPTION, message.c_str());
-            }
-
-#if LIBSBML_VERSION >= 50903 && LIBSBML_HAS_PACKAGE_COMP
-          // apply the name transformer
-          CompModelPlugin* mPlug = dynamic_cast<CompModelPlugin*>(sbmlDoc->getModel()->getPlugin("comp"));
-          CPrefixNameTransformer trans;
-
-          if (mPlug != NULL)
-            {
-              mPlug->setTransformer(&trans);
-            }
-
-#endif //LIBSBML_VERSION >= 50903 && LIBSBML_HAS_PACKAGE_COMP
-
-          // the sbml comp package is used, and the required flag is set, so it stands to reason
-          // that we need to flatten the document
-          sbmlDoc->getErrorLog()->clearLog();
-
-          ConversionProperties props;
-          props.addOption("flatten comp");
-          props.addOption("leavePorts", false);
-          props.addOption("basePath", pDataModel->getReferenceDirectory());
-
-          if (sbmlDoc->convert(props) != LIBSBML_OPERATION_SUCCESS)
-            {
-              std::string message =
-                "The SBML model you are trying to import uses the Hierarchical Modeling extension. "
-                "In order to import this model in COPASI, it has to be flattened, however flattening failed";
-
-              if (sbmlDoc->getNumErrors() == 0)
-                message += ".";
-              else
-                message += " with the following errors:\n" + sbmlDoc->getErrorLog()->toString();
-
-              CCopasiMessage(CCopasiMessage::EXCEPTION, message.c_str());
-            }
-        }
-
-#endif
-
-      if (sbmlDoc->getModel() == NULL)
-        {
-          CCopasiMessage Message(CCopasiMessage::ERROR, MCSBML + 2);
-
-          if (mpImportHandler) mpImportHandler->finishItem(mhImportStep);
-
-          return NULL;
-        }
-
-      delete reader;
-      pSBMLDocument = sbmlDoc;
-      this->mLevel = pSBMLDocument->getLevel();
-      // remember the original level of the document because we convert Level 1 documents to Level 2
-      // For the import of rules, we need to remember that is was actually a level 1 document
-      // because otherwise we throw error messages on rules on parameters since the parameters
-      //  have been set to constant by the conversation to Level 2
-      this->mOriginalLevel = this->mLevel;
-      this->mVersion = pSBMLDocument->getVersion();
-
-      if (mLevel == 1)
-        {
-          unsigned int i, iMax = pSBMLDocument->getModel()->getNumCompartments();
-
-          for (i = 0; i < iMax; ++i)
-            {
-              Compartment* pCompartment = pSBMLDocument->getModel()->getCompartment(i);
-              pCompartment->setSize(pCompartment->getVolume());
-            }
-
-          pSBMLDocument->setLevelAndVersion(2, 1);
-          mLevel = pSBMLDocument->getLevel();
-        }
-
-      this->mpCopasiModel = this->createCModelFromSBMLDocument(sbmlDoc, copasi2sbmlmap);
-
-      prLol = new CListOfLayouts("ListOfLayouts", mpDataModel);
-      Model* sbmlmodel = pSBMLDocument->getModel();
-
-      if (sbmlmodel && prLol)
-        {
-          LayoutModelPlugin *lmPlugin = (LayoutModelPlugin*)sbmlmodel->getPlugin("layout");
-
-          if (lmPlugin != NULL)
-            SBMLDocumentLoader::readListOfLayouts(*prLol,
-                                                  *lmPlugin->getListOfLayouts(),
-                                                  copasi2sbmlmap);
-        }
-    }
-  else
-    {
-      if (mpImportHandler) mpImportHandler->finishItem(mhImportStep);
-
+      finishImport();
       fatalError();
     }
 
-  if (mpImportHandler) mpImportHandler->finishItem(mhImportStep);
+  this->functionDB = funDB;
+  SBMLReader* reader = new SBMLReader();
+
+  mGlobalStepCounter = 0;
+
+  if (mpImportHandler)
+    {
+      mpImportHandler->setName("Importing SBML file...");
+      mGlobalStepTotal = 14;
+      mGlobalStepHandle = mpImportHandler->addItem("Step",
+                          mGlobalStepCounter,
+                          &mGlobalStepTotal);
+    }
+
+  if (this->mpImportHandler != 0)
+    {
+      mCurrentStepCounter = 0;
+      mCurrentStepTotal = 1;
+      mCurrentStepHandle = mpImportHandler->addItem("Reading SBML file...",
+                           mCurrentStepCounter,
+                           &mCurrentStepTotal);
+    }
+
+  SBMLDocument* sbmlDoc = reader->readSBMLFromString(sbmlDocumentText);
+
+  if (createProgressStepOrStop(2, 1, "Checking consistency..."))
+    {
+      finishImport();
+      return NULL;
+    }
+
+  if (checkValidityOfSourceDocument(sbmlDoc))
+    {
+      finishImport();
+      return NULL;
+    }
+
+  if (sbmlDoc->getModel() == NULL)
+    {
+      CCopasiMessage Message(CCopasiMessage::ERROR, MCSBML + 2);
+
+      finishImport();
+      return NULL;
+    }
+
+  delete reader;
+  pSBMLDocument = sbmlDoc;
+  this->mLevel = pSBMLDocument->getLevel();
+  // remember the original level of the document because we convert Level 1 documents to Level 2
+  // For the import of rules, we need to remember that is was actually a level 1 document
+  // because otherwise we throw error messages on rules on parameters since the parameters
+  //  have been set to constant by the conversation to Level 2
+  this->mOriginalLevel = this->mLevel;
+  this->mVersion = pSBMLDocument->getVersion();
+
+  if (mLevel == 1)
+    {
+      unsigned int i, iMax = pSBMLDocument->getModel()->getNumCompartments();
+
+      for (i = 0; i < iMax; ++i)
+        {
+          Compartment* pCompartment = pSBMLDocument->getModel()->getCompartment(i);
+          pCompartment->setSize(pCompartment->getVolume());
+        }
+
+      pSBMLDocument->setLevelAndVersion(2, 1);
+      mLevel = pSBMLDocument->getLevel();
+    }
+
+  this->mpCopasiModel = this->createCModelFromSBMLDocument(sbmlDoc, copasi2sbmlmap);
+
+  if (createProgressStepOrStop(14, 1, "Import Layout ..."))
+    {
+      finishImport();
+      return NULL;
+    }
+
+  prLol = new CListOfLayouts("ListOfLayouts", mpDataModel);
+  Model* sbmlmodel = pSBMLDocument->getModel();
+
+  if (sbmlmodel && prLol)
+    {
+      LayoutModelPlugin *lmPlugin = (LayoutModelPlugin*)sbmlmodel->getPlugin("layout");
+
+      if (lmPlugin != NULL)
+        SBMLDocumentLoader::readListOfLayouts(*prLol,
+                                              *lmPlugin->getListOfLayouts(),
+                                              copasi2sbmlmap);
+    }
+
+  finishImport();
 
   return this->mpCopasiModel;
 }
@@ -6089,229 +6095,212 @@ CProcessReport* SBMLImporter::getImportHandlerAddr()
 
 bool SBMLImporter::removeUnusedFunctions(CFunctionDB* pTmpFunctionDB, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap)
 {
-  if (pTmpFunctionDB)
+  if (pTmpFunctionDB == NULL)
+    return true;
+
+  size_t i, iMax = this->mpCopasiModel->getReactions().size();
+
+  std::set<std::string> functionNameSet;
+
+  for (i = 0; i < iMax; ++i)
     {
-      unsigned C_INT32 step = 0, totalSteps = 0;
-      size_t hStep = C_INVALID_INDEX;
-      size_t i, iMax = this->mpCopasiModel->getReactions().size();
+      const CFunction* pTree = this->mpCopasiModel->getReactions()[i]->getFunction();
 
-      if (mpImportHandler)
+      // this is a hack, but if we changed stoichiometries in reactions, we can no longer be sure that the
+      // kinetic function fits the reaction, so in this case it is probably better to set all functions used
+      // in directions to general
+      // If we don't do this, the user will not be able to use the function in the reaction in the GUI if he
+      // changed it once.
+      // TODO only set those functions to general that really contain modified stoichiometries
+      if (this->mConversionFactorFound)
         {
-          step = 0;
-          totalSteps =
-            (unsigned C_INT32)(iMax + this->mpCopasiModel->getCompartments().size() + this->mpCopasiModel->getMetabolites().size() + this->mpCopasiModel->getModelValues().size());
-          hStep = mpImportHandler->addItem("Searching used functions...",
-                                           step,
-                                           &totalSteps);
+          // TODO another const_cast that should disappear
+          // TODO because there is probably a better place to do this
+          // TODO but this means rewriting the code that modifies the
+          // TODO stoichiometries of reactions and put it all in one place.
+          const_cast<CFunction*>(pTree)->setReversible(TriUnspecified);
         }
 
-      std::set<std::string> functionNameSet;
-
-      for (i = 0; i < iMax; ++i)
+      if (functionNameSet.find(pTree->getObjectName()) == functionNameSet.end())
         {
-          const CFunction* pTree = this->mpCopasiModel->getReactions()[i]->getFunction();
-
-          // this is a hack, but if we changed stoichiometries in reactions, we can no longer be sure that the
-          // kinetic function fits the reaction, so in this case it is probably better to set all functions used
-          // in directions to general
-          // If we don't do this, the user will not be able to use the function in the reaction in the GUI if he
-          // changed it once.
-          // TODO only set those functions to general that really contain modified stoichiometries
-          if (this->mConversionFactorFound)
-            {
-              // TODO another const_cast that should disappear
-              // TODO because there is probably a better place to do this
-              // TODO but this means rewriting the code that modifies the
-              // TODO stoichiometries of reactions and put it all in one place.
-              const_cast<CFunction*>(pTree)->setReversible(TriUnspecified);
-            }
-
-          if (functionNameSet.find(pTree->getObjectName()) == functionNameSet.end())
-            {
-              functionNameSet.insert(pTree->getObjectName());
-              this->findFunctionCalls(pTree->getRoot(), functionNameSet);
-            }
-
-          ++step;
-
-          if (mpImportHandler && !mpImportHandler->progressItem(hStep)) return false;
+          functionNameSet.insert(pTree->getObjectName());
+          this->findFunctionCalls(pTree->getRoot(), functionNameSet);
         }
 
-      iMax = this->mpCopasiModel->getCompartments().size();
+      ++mCurrentStepCounter;
 
-      for (i = 0; i < iMax; ++i)
+      if (reportCurrentProgressOrStop())
+        return false;
+    }
+
+  iMax = this->mpCopasiModel->getCompartments().size();
+
+  for (i = 0; i < iMax; ++i)
+    {
+      CModelEntity* pME = this->mpCopasiModel->getCompartments()[i];
+
+      if (pME->getStatus() != CModelEntity::FIXED)
         {
-          CModelEntity* pME = this->mpCopasiModel->getCompartments()[i];
-
-          if (pME->getStatus() != CModelEntity::FIXED)
-            {
-              const CEvaluationTree* pTree = pME->getExpressionPtr();
-
-              if (pTree != NULL)
-                {
-                  this->findFunctionCalls(pTree->getRoot(), functionNameSet);
-                }
-            }
-
-          if (pME->getStatus() != CModelEntity::ASSIGNMENT)
-            {
-              const CEvaluationTree* pTree = pME->getInitialExpressionPtr();
-
-              if (pTree != NULL)
-                {
-                  this->findFunctionCalls(pTree->getRoot(), functionNameSet);
-                }
-            }
-
-          ++step;
-        }
-
-      iMax = this->mpCopasiModel->getMetabolites().size();
-
-      for (i = 0; i < iMax; ++i)
-        {
-          CModelEntity* pME = this->mpCopasiModel->getMetabolites()[i];
-
-          if (pME->getStatus() != CModelEntity::FIXED)
-            {
-              const CEvaluationTree* pTree = pME->getExpressionPtr();
-
-              if (pTree != NULL)
-                {
-                  this->findFunctionCalls(pTree->getRoot(), functionNameSet);
-                }
-            }
-
-          if (pME->getStatus() != CModelEntity::ASSIGNMENT)
-            {
-              const CEvaluationTree* pTree = pME->getInitialExpressionPtr();
-
-              if (pTree != NULL)
-                {
-                  this->findFunctionCalls(pTree->getRoot(), functionNameSet);
-                }
-            }
-
-          ++step;
-        }
-
-      iMax = this->mpCopasiModel->getModelValues().size();
-
-      for (i = 0; i < iMax; ++i)
-        {
-          CModelEntity* pME = this->mpCopasiModel->getModelValues()[i];
-
-          if (pME->getStatus() != CModelEntity::FIXED)
-            {
-              const CEvaluationTree* pTree = pME->getExpressionPtr();
-
-              if (pTree != NULL)
-                {
-                  this->findFunctionCalls(pTree->getRoot(), functionNameSet);
-                }
-            }
-
-          if (pME->getStatus() != CModelEntity::ASSIGNMENT)
-            {
-              const CEvaluationTree* pTree = pME->getInitialExpressionPtr();
-
-              if (pTree != NULL)
-                {
-                  this->findFunctionCalls(pTree->getRoot(), functionNameSet);
-                }
-            }
-
-          ++step;
-        }
-
-      // find the used function in events
-      iMax = this->mpCopasiModel->getEvents().size();
-
-      for (i = 0; i < iMax; ++i)
-        {
-          CEvent* pEvent = this->mpCopasiModel->getEvents()[i];
-          assert(pEvent != NULL);
-          const CEvaluationTree* pTree = pEvent->getTriggerExpressionPtr();
-          // an event has to have a trigger
-          assert(pTree != NULL);
+          const CEvaluationTree* pTree = pME->getExpressionPtr();
 
           if (pTree != NULL)
             {
               this->findFunctionCalls(pTree->getRoot(), functionNameSet);
             }
+        }
 
-          // handle the delay
-          pTree = pEvent->getDelayExpressionPtr();
+      if (pME->getStatus() != CModelEntity::ASSIGNMENT)
+        {
+          const CEvaluationTree* pTree = pME->getInitialExpressionPtr();
 
           if (pTree != NULL)
             {
               this->findFunctionCalls(pTree->getRoot(), functionNameSet);
             }
+        }
 
-          // handle all assignments
-          size_t j, jMax = pEvent->getAssignments().size();
+      ++mCurrentStepCounter;
+    }
 
-          for (j = 0; j < jMax; ++j)
+  iMax = this->mpCopasiModel->getMetabolites().size();
+
+  for (i = 0; i < iMax; ++i)
+    {
+      CModelEntity* pME = this->mpCopasiModel->getMetabolites()[i];
+
+      if (pME->getStatus() != CModelEntity::FIXED)
+        {
+          const CEvaluationTree* pTree = pME->getExpressionPtr();
+
+          if (pTree != NULL)
             {
-              CEventAssignment* pEventAssignment = pEvent->getAssignments()[j];
-              assert(pEventAssignment != NULL);
+              this->findFunctionCalls(pTree->getRoot(), functionNameSet);
+            }
+        }
 
-              if (pEventAssignment != NULL)
+      if (pME->getStatus() != CModelEntity::ASSIGNMENT)
+        {
+          const CEvaluationTree* pTree = pME->getInitialExpressionPtr();
+
+          if (pTree != NULL)
+            {
+              this->findFunctionCalls(pTree->getRoot(), functionNameSet);
+            }
+        }
+
+      ++mCurrentStepCounter;
+    }
+
+  iMax = this->mpCopasiModel->getModelValues().size();
+
+  for (i = 0; i < iMax; ++i)
+    {
+      CModelEntity* pME = this->mpCopasiModel->getModelValues()[i];
+
+      if (pME->getStatus() != CModelEntity::FIXED)
+        {
+          const CEvaluationTree* pTree = pME->getExpressionPtr();
+
+          if (pTree != NULL)
+            {
+              this->findFunctionCalls(pTree->getRoot(), functionNameSet);
+            }
+        }
+
+      if (pME->getStatus() != CModelEntity::ASSIGNMENT)
+        {
+          const CEvaluationTree* pTree = pME->getInitialExpressionPtr();
+
+          if (pTree != NULL)
+            {
+              this->findFunctionCalls(pTree->getRoot(), functionNameSet);
+            }
+        }
+
+      ++mCurrentStepCounter;
+    }
+
+  // find the used function in events
+  iMax = this->mpCopasiModel->getEvents().size();
+
+  for (i = 0; i < iMax; ++i)
+    {
+      CEvent* pEvent = this->mpCopasiModel->getEvents()[i];
+      assert(pEvent != NULL);
+      const CEvaluationTree* pTree = pEvent->getTriggerExpressionPtr();
+      // an event has to have a trigger
+      assert(pTree != NULL);
+
+      if (pTree != NULL)
+        {
+          this->findFunctionCalls(pTree->getRoot(), functionNameSet);
+        }
+
+      // handle the delay
+      pTree = pEvent->getDelayExpressionPtr();
+
+      if (pTree != NULL)
+        {
+          this->findFunctionCalls(pTree->getRoot(), functionNameSet);
+        }
+
+      // handle all assignments
+      size_t j, jMax = pEvent->getAssignments().size();
+
+      for (j = 0; j < jMax; ++j)
+        {
+          CEventAssignment* pEventAssignment = pEvent->getAssignments()[j];
+          assert(pEventAssignment != NULL);
+
+          if (pEventAssignment != NULL)
+            {
+              pTree = pEventAssignment->getExpressionPtr();
+              // each event assignment has to have an expression
+              assert(pTree != NULL);
+
+              if (pTree != NULL)
                 {
-                  pTree = pEventAssignment->getExpressionPtr();
-                  // each event assignment has to have an expression
-                  assert(pTree != NULL);
-
-                  if (pTree != NULL)
-                    {
-                      this->findFunctionCalls(pTree->getRoot(), functionNameSet);
-                    }
+                  this->findFunctionCalls(pTree->getRoot(), functionNameSet);
                 }
             }
-        }
-
-      CFunctionDB* pFunctionDB = CCopasiRootContainer::getFunctionList();
-
-      if (mpImportHandler)
-        {
-          mpImportHandler->finishItem(hStep);
-          step = 0;
-          totalSteps = (unsigned C_INT32) pTmpFunctionDB->loadedFunctions().size();
-          hStep = mpImportHandler->addItem("Removing unused functions...",
-                                           step,
-                                           &totalSteps);
-        }
-
-      // here we could have a dialog asking the user if unused functions should
-      // be removed.
-
-      CCopasiVectorN < CFunction >::const_iterator it = pTmpFunctionDB->loadedFunctions().begin();
-      CCopasiVectorN < CFunction >::const_iterator end = pTmpFunctionDB->loadedFunctions().end();
-
-      for (; it != end; ++it)
-        {
-          CEvaluationTree * pTree = *it;
-
-          if (functionNameSet.find(pTree->getObjectName()) == functionNameSet.end())
-            {
-              mUsedFunctions.erase(pTree->getObjectName());
-              pFunctionDB->loadedFunctions().remove(pTree->getObjectName());
-              // delete the entry from the copasi2sbmlmap.
-              std::map<CCopasiObject*, SBase*>::iterator pos = copasi2sbmlmap.find(pTree);
-              assert(pos != copasi2sbmlmap.end());
-              copasi2sbmlmap.erase(pos);
-            }
-
-          ++step;
-
-          if (mpImportHandler && !mpImportHandler->progressItem(hStep)) return false;
-        }
-
-      if (mpImportHandler)
-        {
-          mpImportHandler->finishItem(hStep);
         }
     }
+
+  CFunctionDB* pFunctionDB = CCopasiRootContainer::getFunctionList();
+
+  if (createProgressStepOrStop(13,
+                               (unsigned C_INT32) pTmpFunctionDB->loadedFunctions().size(),
+                               "Removing unused functions..."
+                              ))
+    return false;
+
+  // here we could have a dialog asking the user if unused functions should
+  // be removed.
+
+  CCopasiVectorN < CFunction >::const_iterator it = pTmpFunctionDB->loadedFunctions().begin();
+  CCopasiVectorN < CFunction >::const_iterator end = pTmpFunctionDB->loadedFunctions().end();
+
+  for (; it != end; ++it)
+    {
+      CEvaluationTree * pTree = *it;
+
+      if (functionNameSet.find(pTree->getObjectName()) == functionNameSet.end())
+        {
+          mUsedFunctions.erase(pTree->getObjectName());
+          pFunctionDB->loadedFunctions().remove(pTree->getObjectName());
+          // delete the entry from the copasi2sbmlmap.
+          std::map<CCopasiObject*, SBase*>::iterator pos = copasi2sbmlmap.find(pTree);
+          assert(pos != copasi2sbmlmap.end());
+          copasi2sbmlmap.erase(pos);
+        }
+
+      ++mCurrentStepCounter;
+
+      if (reportCurrentProgressOrStop())
+        return false;
+    }
+
+  finishCurrentStep();
 
   return true;
 }
@@ -8801,18 +8790,6 @@ void SBMLImporter::importInitialAssignments(Model* pSBMLModel, std::map<CCopasiO
       ++it;
     }
 
-  unsigned C_INT32 step = 0, totalSteps = 0;
-  size_t hStep = C_INVALID_INDEX;
-
-  if (this->mpImportHandler != 0)
-    {
-      step = 0;
-      totalSteps = iMax;
-      hStep = mpImportHandler->addItem("Importing initial assignments...",
-                                       step,
-                                       &totalSteps);
-    }
-
   for (i = 0; i < iMax; ++i)
     {
       const InitialAssignment* pInitialAssignment = pSBMLModel->getInitialAssignment(i);
@@ -8843,7 +8820,7 @@ void SBMLImporter::importInitialAssignments(Model* pSBMLModel, std::map<CCopasiO
                   // check for references to species references in the expression because we don't support them yet
                   if (!SBMLImporter::findIdInASTTree(pMath, this->mSBMLSpeciesReferenceIds).empty())
                     {
-                      if (mpImportHandler) mpImportHandler->finishItem(hStep);
+                      finishCurrentStep();
 
                       CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 95);
                     }
@@ -8871,7 +8848,8 @@ void SBMLImporter::importInitialAssignments(Model* pSBMLModel, std::map<CCopasiO
                           this->mStoichiometricExpressionMap.insert(std::make_pair(pMath, pChemEqElement));
 
                           // go to the next iteration
-                          if (mpImportHandler && !mpImportHandler->progressItem(hStep)) return;
+                          if (reportCurrentProgressOrStop())
+                            return;
 
                           continue;
                         }
@@ -8962,7 +8940,7 @@ void SBMLImporter::importInitialAssignments(Model* pSBMLModel, std::map<CCopasiO
                           os << "\n" << text.substr(text.find("\n") + 1);
                         }
 
-                      if (mpImportHandler) mpImportHandler->finishItem(hStep);
+                      finishCurrentStep();
 
                       CCopasiMessage(CCopasiMessage::EXCEPTION, os.str().c_str());
                     }
@@ -8974,7 +8952,8 @@ void SBMLImporter::importInitialAssignments(Model* pSBMLModel, std::map<CCopasiO
             }
         }
 
-      if (mpImportHandler && !mpImportHandler->progressItem(hStep)) return;
+      if (reportCurrentProgressOrStop())
+        return;
     }
 }
 
@@ -9534,17 +9513,6 @@ void SBMLImporter::replace_time_with_initial_time(ASTNode* pASTNode, const CMode
 void SBMLImporter::importEvents(Model* pSBMLModel, CModel* pCopasiModel, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap)
 {
   unsigned int i, iMax = pSBMLModel->getNumEvents();
-  unsigned C_INT32 step = 0, totalSteps = 0;
-  size_t hStep = C_INVALID_INDEX;
-
-  if (this->mpImportHandler != 0)
-    {
-      step = 0;
-      totalSteps = iMax;
-      hStep = mpImportHandler->addItem("Importing initial assignments...",
-                                       step,
-                                       &totalSteps);
-    }
 
   for (i = 0; i < iMax; ++i)
     {
@@ -9567,12 +9535,13 @@ void SBMLImporter::importEvents(Model* pSBMLModel, CModel* pCopasiModel, std::ma
               os << "\n" << text.substr(text.find("\n") + 1);
             }
 
-          if (mpImportHandler) mpImportHandler->finishItem(hStep);
+          finishCurrentStep();
 
           CCopasiMessage(CCopasiMessage::EXCEPTION, os.str().c_str());
         }
 
-      if (mpImportHandler && !mpImportHandler->progressItem(hStep)) return;
+      if (reportCurrentProgressOrStop())
+        return;
     }
 }
 

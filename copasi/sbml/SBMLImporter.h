@@ -1,16 +1,16 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-// and The University of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2004 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc. and EML Research, gGmbH. 
-// All rights reserved. 
+// Copyright (C) 2004 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 #ifndef SBMLIMPORTER_H__
 #define SBMLIMPORTER_H__
@@ -69,10 +69,41 @@ protected:
   CModel* mpCopasiModel;
   std::map<std::string, std::string> mFunctionNameMapping;
   std::set<std::string> mDivisionByCompartmentReactions;
+
+  /**
+   * the import handler
+   */
   CProcessReport* mpImportHandler;
-  unsigned C_INT32 mImportStep;
-  size_t mhImportStep;
-  unsigned C_INT32 mTotalSteps;
+
+  /**
+   * the global import step handle
+   */
+  size_t mGlobalStepHandle;
+
+  /**
+   * global step counter
+   */
+  unsigned C_INT32 mGlobalStepCounter;
+
+  /**
+   * total step counter for global import
+   */
+  unsigned C_INT32 mGlobalStepTotal;
+
+  /**
+   * the current import step handle
+   */
+  size_t mCurrentStepHandle;
+
+  /**
+   * current step counter for current import
+   */
+  unsigned C_INT32 mCurrentStepCounter = 0;
+  /**
+   * total steps of current import task
+   */
+  unsigned C_INT32 mCurrentStepTotal = 0;
+
   std::map<Species*, Compartment*> mSubstanceOnlySpecies;
   std::set<std::string> mFastReactions;
   std::set<std::string> mReactionsWithReplacedLocalParameters;
@@ -120,11 +151,51 @@ protected:
 
 #endif // LIBSBML_VERSION >= 40100
 
+  std::map<std::string, CCompartment*> mCompartmentMap;
+
+  /**
+   * This utility functions adds a new step to the progress dialog (if present)
+   * @param globalStep the global steps that have been completed
+   * @param currentTotal the total for current task
+   * @param title the title of the current task
+   * @return a boolean indicating whether processing should be stopped
+   */
+  bool createProgressStepOrStop(unsigned C_INT32 globalStep, unsigned C_INT32 currentTotal, const std::string& title);
+
+  /**
+   * Notifies the progress dialog of local progress
+   * @return a boolean indicating whether processing should be stopped
+   */
+  bool reportCurrentProgressOrStop();
+
+  /**
+   * Notifies the progress dialog that a step finished
+   */
+  void finishCurrentStep();
+
+  /**
+   * Notifies the progress dialog that all importing is complete
+   */
+  void finishImport();
+
+  /**
+   * checks the given document, and if not valid stops
+   * @param sbmlDoc the document to be checked
+   * @return true if serious errors were encountered and importing stopped
+   */
+  bool checkValidityOfSourceDocument(SBMLDocument* sbmlDoc);
+
   /**
    * Creates and returns a COPASI CModel from the SBMLDocument given as argument.
    */
   CModel* createCModelFromSBMLDocument(SBMLDocument * doc,
                                        std::map<CCopasiObject*, SBase*>& copasi2sbmlmap);
+
+  /**
+   * @brief imports the units from the given sbml model
+   * @param sbmlModel
+   */
+  void importUnitsFromSBMLDocument(Model* sbmlModel);
 
   /**
    * Creates and returns a COPASI CFunction from the SBML FunctionDefinition
