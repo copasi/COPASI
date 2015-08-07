@@ -18,7 +18,7 @@
 #include "CCopasiException.h"
 
 // static
-CUnit CUnit::EmptyUnit;
+CUnit CUnit::EmptyUnit("empty_unit");
 
 // static
 C_FLOAT64 CUnit::Avogadro(6.02214129e23); // http://physics.nist.gov/cgi-bin/cuu/Value?na (Wed Jan 29 18:33:36 EST 2014)
@@ -193,7 +193,9 @@ CUnit::CUnit(const std::string & name,
   mDefinition(),
   mComponents(),
   mUsedSymbols()
-{}
+{
+  setup();
+}
 
 CUnit::CUnit(const CBaseUnit::Kind & kind,
              const CCopasiContainer * pParent):
@@ -204,6 +206,7 @@ CUnit::CUnit(const CBaseUnit::Kind & kind,
   mUsedSymbols()
 {
   mComponents.insert(CUnitComponent(kind));
+  setup();
 }
 
 // copy constructor
@@ -225,7 +228,8 @@ CUnit::~CUnit()
 
 void CUnit::setup()
 {
-  mKey = CCopasiRootContainer::getKeyFactory()->add("Unit", this);
+  if(this->getObjectName() != "empty_unit")
+    mKey = CCopasiRootContainer::getKeyFactory()->add("Unit", this);
 }
 
 // virtual
