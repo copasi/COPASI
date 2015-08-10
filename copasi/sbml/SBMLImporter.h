@@ -152,6 +152,7 @@ protected:
 #endif // LIBSBML_VERSION >= 40100
 
   std::map<std::string, CCompartment*> mCompartmentMap;
+  std::set<const CCopasiObject*> mChangedObjects;
 
   /**
    * This utility functions adds a new step to the progress dialog (if present)

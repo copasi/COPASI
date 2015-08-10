@@ -946,10 +946,13 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
   mCurrentStepCounter = 0;
   mCurrentStepTotal = 0;
 
+  if (createProgressStepOrStop(3, 1, "Importing notes/annotations..."))
+    return NULL;
+
   SBMLImporter::importMIRIAM(sbmlModel, this->mpCopasiModel);
   SBMLImporter::importNotes(this->mpCopasiModel, sbmlModel);
 
-  if (createProgressStepOrStop(3, 1, "Importing units"))
+  if (createProgressStepOrStop(4, 1, "Importing units..."))
     return NULL;
 
   importUnitsFromSBMLDocument(sbmlModel);
@@ -993,7 +996,7 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
 
   num = (*functions).size();
 
-  if (createProgressStepOrStop(4, num, "Importing function definitions"))
+  if (createProgressStepOrStop(5, num, "Importing function definitions..."))
     return NULL;
 
   this->sbmlIdMap.clear();
@@ -1019,7 +1022,7 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
   /* Create the compartments */
   num = sbmlModel->getNumCompartments();
 
-  if (createProgressStepOrStop(5, num, "Importing compartments..."))
+  if (createProgressStepOrStop(6, num, "Importing compartments..."))
     return NULL;
 
   for (counter = 0; counter < num; counter++)
@@ -1072,7 +1075,7 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
   /* Create all species */
   num = sbmlModel->getNumSpecies();
 
-  if (createProgressStepOrStop(6, num, "Importing species..."))
+  if (createProgressStepOrStop(7, num, "Importing species..."))
     return NULL;
 
   for (counter = 0; counter < num; ++counter)
@@ -1139,7 +1142,7 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
   /* Create the global Parameters */
   num = sbmlModel->getNumParameters();
 
-  if (createProgressStepOrStop(7, num, "Importing global parameters..."))
+  if (createProgressStepOrStop(8, num, "Importing global parameters..."))
     return NULL;
 
   for (counter = 0; counter < num; ++counter)
@@ -1275,7 +1278,7 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
   /* Create all reactions */
   num = sbmlModel->getNumReactions();
 
-  if (createProgressStepOrStop(8, num, "Importing reactions..."))
+  if (createProgressStepOrStop(9, num, "Importing reactions..."))
     return NULL;
 
   this->mDivisionByCompartmentReactions.clear();
@@ -1369,7 +1372,7 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
   // import the initial assignments
   // we do this after the reactions since intial assignments can reference reaction ids.
 
-  if (createProgressStepOrStop(9, sbmlModel->getNumInitialAssignments(), "Importing initial assignments..."))
+  if (createProgressStepOrStop(10, sbmlModel->getNumInitialAssignments(), "Importing initial assignments..."))
     return NULL;
 
   importInitialAssignments(sbmlModel, copasi2sbmlmap, this->mpCopasiModel);
@@ -1385,7 +1388,7 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
   this->areRulesUnique(sbmlModel);
   num = sbmlModel->getNumRules();
 
-  if (createProgressStepOrStop(10, num, "Importing Rules..."))
+  if (createProgressStepOrStop(11, num, "Importing Rules..."))
     return NULL;
 
   for (counter = 0; counter < num; ++counter)
@@ -1441,7 +1444,7 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
   // event assignment changes a species reference (stoichiometry
   // Since COPASI does not support this, we need to ignore the event assignment
 
-  if (createProgressStepOrStop(11, sbmlModel->getNumEvents(), "Importing Events..."))
+  if (createProgressStepOrStop(12, sbmlModel->getNumEvents(), "Importing events..."))
     return NULL;
 
   this->importEvents(sbmlModel, this->mpCopasiModel, copasi2sbmlmap);
@@ -1483,15 +1486,6 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
       CCopasiMessage Message(CCopasiMessage::WARNING, MCSBML + 99);
     }
 
-  if (createProgressStepOrStop(12,
-                               (unsigned C_INT32)(mpCopasiModel->getReactions().size()
-                                   + this->mpCopasiModel->getCompartments().size()
-                                   + this->mpCopasiModel->getMetabolites().size()
-                                   + this->mpCopasiModel->getModelValues().size()),
-                               "Searching unused functions..."
-                              ))
-    return NULL;
-
   // unset the hasOnlySubstanceUnits flag on all such species
   std::map<Species*, Compartment*>::iterator it = this->mSubstanceOnlySpecies.begin();
   std::map<Species*, Compartment*>::iterator endIt = this->mSubstanceOnlySpecies.end();
@@ -1502,6 +1496,13 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
       ++it;
     }
 
+  if (createProgressStepOrStop(13,
+                               1,
+                               "Setting initial values..."
+                              ))
+    return NULL;
+
+  // TODO: analyze whether this is necessary
   setInitialValues(this->mpCopasiModel, copasi2sbmlmap);
   // evaluate and apply the initial expressions
   this->applyStoichiometricExpressions(copasi2sbmlmap, sbmlModel);
@@ -1511,6 +1512,15 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
     {
       this->applyConversionFactors();
     }
+
+  if (createProgressStepOrStop(14,
+                               (unsigned C_INT32)(mpCopasiModel->getReactions().size()
+                                   + this->mpCopasiModel->getCompartments().size()
+                                   + this->mpCopasiModel->getMetabolites().size()
+                                   + this->mpCopasiModel->getModelValues().size()),
+                               "Searching unused functions..."
+                              ))
+    return NULL;
 
   this->removeUnusedFunctions(pTmpFunctionDB, copasi2sbmlmap);
 
@@ -1547,6 +1557,8 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
     }
 
   this->mpCopasiModel->forceCompile(this->mpImportHandler);
+  mpCopasiModel->updateInitialValues(mChangedObjects);
+
   return this->mpCopasiModel;
 }
 
@@ -3098,7 +3110,8 @@ SBMLImporter::SBMLImporter():
   mNonPersistentTriggerFound(false),
 # endif // LIBSBML_VERSION >= 40200
 #endif // LIBSBML_VERSION >= 40100
-  mCompartmentMap()
+  mCompartmentMap(),
+  mChangedObjects()
 {
   this->speciesMap = std::map<std::string, CMetab*>();
   this->functionDB = NULL;
@@ -3464,7 +3477,7 @@ SBMLImporter::parseSBML(const std::string& sbmlDocumentText,
   if (mpImportHandler)
     {
       mpImportHandler->setName("Importing SBML file...");
-      mGlobalStepTotal = 14;
+      mGlobalStepTotal = 16;
       mGlobalStepHandle = mpImportHandler->addItem("Step",
                           mGlobalStepCounter,
                           &mGlobalStepTotal);
@@ -3527,7 +3540,7 @@ SBMLImporter::parseSBML(const std::string& sbmlDocumentText,
 
   this->mpCopasiModel = this->createCModelFromSBMLDocument(sbmlDoc, copasi2sbmlmap);
 
-  if (createProgressStepOrStop(14, 1, "Import Layout ..."))
+  if (createProgressStepOrStop(16, 1, "Importing layout ..."))
     {
       finishImport();
       return NULL;
@@ -6268,7 +6281,7 @@ bool SBMLImporter::removeUnusedFunctions(CFunctionDB* pTmpFunctionDB, std::map<C
 
   CFunctionDB* pFunctionDB = CCopasiRootContainer::getFunctionList();
 
-  if (createProgressStepOrStop(13,
+  if (createProgressStepOrStop(15,
                                (unsigned C_INT32) pTmpFunctionDB->loadedFunctions().size(),
                                "Removing unused functions..."
                               ))
@@ -7165,7 +7178,7 @@ bool SBMLImporter::setInitialValues(CModel* pModel, const std::map<CCopasiObject
   // by another means (rule, initialAssignment) and if not, create an error
   // message
   std::map<CCopasiObject*, SBase*>::const_iterator pos;
-  std::set<const CCopasiObject*> changedObjects;
+  mChangedObjects.clear();
   CCopasiVectorNS<CCompartment>::iterator compartmentIt = pModel->getCompartments().begin();
   CCopasiVectorNS<CCompartment>::iterator compartmentEndit = pModel->getCompartments().end();
 
@@ -7185,7 +7198,7 @@ bool SBMLImporter::setInitialValues(CModel* pModel, const std::map<CCopasiObject
           // here we can safely use getSize() regardless of the level of the
           // sbml model
           (*compartmentIt)->setInitialValue(pSBMLCompartment->getSize());
-          changedObjects.insert((*compartmentIt)->getInitialValueReference());
+          //mChangedObjects.insert((*compartmentIt)->getInitialValueReference());
         }
       else
         {
@@ -7198,7 +7211,7 @@ bool SBMLImporter::setInitialValues(CModel* pModel, const std::map<CCopasiObject
               CCopasiMessage(CCopasiMessage::ERROR, MCSBML + 45, pSBMLCompartment->getId().c_str());
 
               (*compartmentIt)->setInitialValue(1.0);
-              changedObjects.insert((*compartmentIt)->getInitialValueReference());
+              //mChangedObjects.insert((*compartmentIt)->getInitialValueReference());
             }
         }
 
@@ -7227,12 +7240,12 @@ bool SBMLImporter::setInitialValues(CModel* pModel, const std::map<CCopasiObject
           // here we can safely use getSize() regardless of the level of the
           // sbml model
           (*metabIt)->setInitialConcentration(pSBMLSpecies->getInitialConcentration());
-          changedObjects.insert((*metabIt)->getInitialConcentrationReference());
+          mChangedObjects.insert((*metabIt)->getInitialConcentrationReference());
         }
       else if (pSBMLSpecies->isSetInitialAmount())
         {
           (*metabIt)->setInitialValue(pSBMLSpecies->getInitialAmount()*pModel->getQuantity2NumberFactor()); // CHECK UNITS !!!
-          changedObjects.insert((*metabIt)->getInitialValueReference());
+          mChangedObjects.insert((*metabIt)->getInitialValueReference());
         }
       else
         {
@@ -7245,7 +7258,7 @@ bool SBMLImporter::setInitialValues(CModel* pModel, const std::map<CCopasiObject
               CCopasiMessage(CCopasiMessage::ERROR, MCSBML + 41, pSBMLSpecies->getId().c_str());
 
               (*metabIt)->setInitialConcentration(1.0);
-              changedObjects.insert((*metabIt)->getInitialConcentrationReference());
+              mChangedObjects.insert((*metabIt)->getInitialConcentrationReference());
             }
         }
 
@@ -7269,7 +7282,7 @@ bool SBMLImporter::setInitialValues(CModel* pModel, const std::map<CCopasiObject
           // here we can safely use getSize() regardless of the level of the
           // sbml model
           (*mvIt)->setInitialValue(pSBMLParameter->getValue());
-          changedObjects.insert((*mvIt)->getInitialValueReference());
+          //mChangedObjects.insert((*mvIt)->getInitialValueReference());
         }
       else
         {
@@ -7282,60 +7295,49 @@ bool SBMLImporter::setInitialValues(CModel* pModel, const std::map<CCopasiObject
               CCopasiMessage(CCopasiMessage::ERROR, MCSBML + 43, pSBMLParameter->getId().c_str());
 
               (*mvIt)->setInitialValue(1.0);
-              changedObjects.insert((*mvIt)->getInitialValueReference());
+              //mChangedObjects.insert((*mvIt)->getInitialValueReference());
             }
         }
 
       ++mvIt;
     }
 
-  CCopasiVectorNS < CReaction >::iterator reactIt = pModel->getReactions().begin();
-  CCopasiVectorNS < CReaction >::iterator reactEndit = pModel->getReactions().end();
+  //CCopasiVectorNS < CReaction >::iterator reactIt = pModel->getReactions().begin();
+  //CCopasiVectorNS < CReaction >::iterator reactEndit = pModel->getReactions().end();
 
-  while (reactIt != reactEndit)
-    {
-      const std::vector<std::vector<std::string> >& parameterMappings = (*reactIt)->getParameterMappings();
-      std::vector<std::vector<std::string> >::const_iterator parameterMappingsIt = parameterMappings.begin();
-      std::vector<std::vector<std::string> >::const_iterator parameterMappingsEndit = parameterMappings.end();
-      CCopasiParameter* pLocalParameter = NULL;
+  //while (reactIt != reactEndit)
+  //  {
+  //    const std::vector<std::vector<std::string> >& parameterMappings = (*reactIt)->getParameterMappings();
+  //    std::vector<std::vector<std::string> >::const_iterator parameterMappingsIt = parameterMappings.begin();
+  //    std::vector<std::vector<std::string> >::const_iterator parameterMappingsEndit = parameterMappings.end();
+  //    CCopasiParameter* pLocalParameter = NULL;
 
-      while (parameterMappingsIt != parameterMappingsEndit)
-        {
-          std::vector<std::string>::const_iterator keyIt = (*parameterMappingsIt).begin();
-          std::vector<std::string>::const_iterator keyEndit = (*parameterMappingsIt).end();
+  //    while (parameterMappingsIt != parameterMappingsEndit)
+  //      {
+  //        std::vector<std::string>::const_iterator keyIt = (*parameterMappingsIt).begin();
+  //        std::vector<std::string>::const_iterator keyEndit = (*parameterMappingsIt).end();
 
-          while (keyIt != keyEndit)
-            {
-              pLocalParameter = dynamic_cast<CCopasiParameter*>(CCopasiRootContainer::getKeyFactory()->get(*keyIt));
+  //        while (keyIt != keyEndit)
+  //          {
+  //            pLocalParameter = dynamic_cast<CCopasiParameter*>(CCopasiRootContainer::getKeyFactory()->get(*keyIt));
 
-              if (pLocalParameter != NULL)
-                {
-                  // it is a local parameter and it is being used
-                  changedObjects.insert(pLocalParameter->getValueReference());
-                }
+  //            if (pLocalParameter != NULL)
+  //              {
+  //                // it is a local parameter and it is being used
+  //                mChangedObjects.insert(pLocalParameter->getValueReference());
+  //}
 
-              ++keyIt;
-            }
+  //            ++keyIt;
+  //}
 
-          ++parameterMappingsIt;
-        }
+  //        ++parameterMappingsIt;
+  //}
 
-      ++reactIt;
-    }
+  //    ++reactIt;
+  //}
 
   pModel->compileIfNecessary(mpImportHandler);
-
-  try
-    {
-      std::vector<Refresh*> refreshes = pModel->buildInitialRefreshSequence(changedObjects);
-      std::vector<Refresh*>::iterator refreshIt = refreshes.begin(), refreshEndit = refreshes.end();
-
-      while (refreshIt != refreshEndit)
-        (**refreshIt++)();
-    }
-
-  catch (...)
-    {}
+  pModel->updateInitialValues(mChangedObjects);
 
   return true;
 }
