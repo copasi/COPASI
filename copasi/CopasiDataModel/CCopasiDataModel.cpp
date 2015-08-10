@@ -763,6 +763,7 @@ std::string CCopasiDataModel::exportSBMLToString(CProcessReport* pExportHandler,
   // This should eventually be determined by a setting in the preferences
   // dialog.
   exporter.setExportCOPASIMIRIAM(true);
+  exporter.setHandler(pExportHandler);
   std::string str = exporter.exportModelToString(*this, sbmlLevel, sbmlVersion);
 
   // only get the new model if it is not a Level 1 model
@@ -804,7 +805,14 @@ std::string CCopasiDataModel::exportSBMLToString(CProcessReport* pExportHandler,
   return str;
 }
 
-bool CCopasiDataModel::exportSBML(const std::string & fileName, bool overwriteFile, int sbmlLevel, int sbmlVersion, bool /*exportIncomplete*/, bool exportCOPASIMIRIAM, CProcessReport* pExportHandler)
+bool
+CCopasiDataModel::exportSBML(const std::string & fileName,
+                             bool overwriteFile,
+                             int sbmlLevel,
+                             int sbmlVersion,
+                             bool /*exportIncomplete*/,
+                             bool exportCOPASIMIRIAM,
+                             CProcessReport* pExportHandler)
 {
   CCopasiMessage::clearDeque();
 
@@ -845,7 +853,8 @@ bool CCopasiDataModel::exportSBML(const std::string & fileName, bool overwriteFi
     {
       if (!mData.pModel->compileIfNecessary(pExportHandler))
         {
-          CCopasiMessage(CCopasiMessage::EXCEPTION, failedCompile.c_str(), CCopasiMessage::getAllMessageText().c_str());
+          CCopasiMessage(CCopasiMessage::EXCEPTION, failedCompile.c_str(),
+                         CCopasiMessage::getAllMessageText().c_str());
           return false;
         }
     }
@@ -856,11 +865,13 @@ bool CCopasiDataModel::exportSBML(const std::string & fileName, bool overwriteFi
     }
   catch (...)
     {
-      CCopasiMessage(CCopasiMessage::EXCEPTION, failedCompile.c_str(), CCopasiMessage::getAllMessageText().c_str());
+      CCopasiMessage(CCopasiMessage::EXCEPTION, failedCompile.c_str(),
+                     CCopasiMessage::getAllMessageText().c_str());
       return false;
     }
 
   CSBMLExporter exporter;
+  exporter.setHandler(pExportHandler);
   exporter.setExportCOPASIMIRIAM(exportCOPASIMIRIAM);
   SBMLDocument* pOrigSBMLDocument = NULL;
 
@@ -923,7 +934,10 @@ bool CCopasiDataModel::exportSBML(const std::string & fileName, bool overwriteFi
   return true;
 }
 
-std::string CCopasiDataModel::exportMathModelToString(CProcessReport* pProcessReport, const std::string & filter)
+std::string
+CCopasiDataModel::exportMathModelToString(
+  CProcessReport* pProcessReport,
+  const std::string & filter)
 {
   CODEExporter * pExporter = NULL;
 
@@ -1610,7 +1624,7 @@ CReportDefinition * CCopasiDataModel::addReport(const CCopasiTask::Type & taskTy
         pReport->getFooterAddr()->push_back(CCopasiObjectName("CN=Root,Vector=TaskList[Optimization],Object=Result"));
         break;
 
-      //**************************************************************************
+        //**************************************************************************
       case CCopasiTask::parameterFitting:
         pReport = new CReportDefinition(CCopasiTask::TypeName[taskType]);
         pReport->setTaskType(taskType);
@@ -1639,7 +1653,7 @@ CReportDefinition * CCopasiDataModel::addReport(const CCopasiTask::Type & taskTy
         pReport->getFooterAddr()->push_back(CCopasiObjectName("CN=Root,Vector=TaskList[Parameter Estimation],Object=Result"));
         break;
 
-      //**************************************************************************
+        //**************************************************************************
       case CCopasiTask::lyap:
         pReport = new CReportDefinition(CCopasiTask::TypeName[taskType]);
         pReport->setTaskType(taskType);
@@ -1656,7 +1670,7 @@ CReportDefinition * CCopasiDataModel::addReport(const CCopasiTask::Type & taskTy
         pReport->getFooterAddr()->push_back(CCopasiObjectName("CN=Root,Vector=TaskList[Lyapunov Exponents],Object=Result"));
         break;
 
-      //**************************************************************************
+        //**************************************************************************
       case CCopasiTask::mca:
         pReport = new CReportDefinition(CCopasiTask::TypeName[taskType]);
         pReport->setTaskType(taskType);
@@ -1673,7 +1687,7 @@ CReportDefinition * CCopasiDataModel::addReport(const CCopasiTask::Type & taskTy
         pReport->getFooterAddr()->push_back(CCopasiObjectName("CN=Root,Vector=TaskList[Metabolic Control Analysis],Object=Result"));
         break;
 
-      //**************************************************************************
+        //**************************************************************************
       case CCopasiTask::lna:
         pReport = new CReportDefinition(CCopasiTask::TypeName[taskType]);
         pReport->setTaskType(taskType);
@@ -1690,7 +1704,7 @@ CReportDefinition * CCopasiDataModel::addReport(const CCopasiTask::Type & taskTy
         pReport->getFooterAddr()->push_back(CCopasiObjectName("CN=Root,Vector=TaskList[Linear Noise Approximation],Object=Result"));
         break;
 
-      //**************************************************************************
+        //**************************************************************************
       case CCopasiTask::sens:
         pReport = new CReportDefinition(CCopasiTask::TypeName[taskType]);
         pReport->setTaskType(taskType);
@@ -1707,7 +1721,7 @@ CReportDefinition * CCopasiDataModel::addReport(const CCopasiTask::Type & taskTy
         pReport->getFooterAddr()->push_back(CCopasiObjectName("CN=Root,Vector=TaskList[Sensitivities],Object=Result"));
         break;
 
-      //**************************************************************************
+        //**************************************************************************
       case CCopasiTask::tssAnalysis:
         pReport = new CReportDefinition(CCopasiTask::TypeName[taskType]);
         pReport->setTaskType(taskType);
