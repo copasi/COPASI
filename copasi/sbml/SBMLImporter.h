@@ -73,7 +73,7 @@ protected:
   /**
    * the import handler
    */
-  CProcessReport* mpImportHandler;
+  CProcessReport* mpProgressHandler;
 
   /**
    * the global import step handle
@@ -98,11 +98,11 @@ protected:
   /**
    * current step counter for current import
    */
-  unsigned C_INT32 mCurrentStepCounter = 0;
+  unsigned C_INT32 mCurrentStepCounter;
   /**
    * total steps of current import task
    */
-  unsigned C_INT32 mCurrentStepTotal = 0;
+  unsigned C_INT32 mCurrentStepTotal;
 
   std::map<Species*, Compartment*> mSubstanceOnlySpecies;
   std::set<std::string> mFastReactions;
