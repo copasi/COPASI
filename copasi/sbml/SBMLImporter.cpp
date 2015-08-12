@@ -1449,8 +1449,6 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
 
   this->importEvents(sbmlModel, this->mpCopasiModel, copasi2sbmlmap);
 
-  this->mpCopasiModel->setCompileFlag();
-
   if (this->mUnsupportedRuleFound)
     {
       CCopasiMessage Message(CCopasiMessage::WARNING, MCSBML + 3);
@@ -10615,10 +10613,11 @@ bool SBMLImporter::importNotes(CAnnotation* pAnno, const SBase* pSBase)
       pAnno->setNotes(s);
     }
 
-  if (!pSBase->isSetAnnotation())
-    return result;
-
   const XMLNode* node = const_cast<SBase*>(pSBase)->getAnnotation();
+
+  // more efficient to just check for NULL
+  if (node == NULL)
+    return result;
 
   for (unsigned int i = 0; i < node->getNumChildren(); ++i)
     {
