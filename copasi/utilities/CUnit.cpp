@@ -23,33 +23,6 @@ CUnit CUnit::EmptyUnit("empty_unit");
 // static
 C_FLOAT64 CUnit::Avogadro(6.02214129e23); // http://physics.nist.gov/cgi-bin/cuu/Value?na (Wed Jan 29 18:33:36 EST 2014)
 
-/**
- * static SI units
- * name symbol definition
- * hertz      Hz       s^-1
- * newton     N        m·kg·s^-2
- * pascal     Pa       m^-1·kg·s^-2
- * joule      J        m^2·kg·s^-2
- * watt       W        m^2·kg·s^-3
- * coulomb    C        s·A
- * volt       V        m^2·kg·s^-3·A^-1
- * farad      F        m^-2·kg^-1·s^4·A^2
- * ohm        \xCE\xA9 m^2·kg·s^-3·A^-2    // Use this symbol for presentation and parsing
- * ohm        O        m^2·kg·s^-3·A^-2    // Use this symbol for parsing only
- * siemens    S        m^-2·kg^-1·s^3·A2
- * weber      Wb       m^2·kg·s^-2·A^-1
- * tesla      T        kg·s^-2·A^-1
- * henry      H        m^2·kg·s^-2·A^-2
- * lumen      lm       cd
- * lux        lx       m^-2·cd
- * becquerel  Bq       s^-1
- * gray       Gy       m^2·s^-2
- * sievert    Sv       m^2·s^-2
- * katal      ka       s^-1·mol
- * liter      l        0.001·m^3
- * mole       mol      Avogadro·#
- */
-
 // SI Name, Symbol, Definition
 struct SIUnit
 {
@@ -83,8 +56,8 @@ SIUnit SIUnits[] =
   {"weber",      "Wb",       "m^2*kg*s^-2*A^-1"},
 
   {"minute",     "min",      "60*s"},
-  {"hour",       "h",        "60*60*s"},
-  {"day",        "d",        "24*60*60*s"},
+  {"hour",       "h",        "3600*s"},
+  {"day",        "d",        "86400*s"},
 
   // This must be the last element of the SI unit list! Do not delete!
   {NULL,         NULL,        NULL}
