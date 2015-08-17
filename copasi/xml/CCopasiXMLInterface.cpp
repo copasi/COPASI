@@ -304,7 +304,7 @@ bool CCopasiXMLInterface::save(const std::string & fileName,
 
 bool CCopasiXMLInterface::saveData(const std::string & data)
 {
-  *mpOstream << mIndent << CCopasiXMLInterface::encode(data) << std::endl;
+  *mpOstream << mIndent << CCopasiXMLInterface::encode(data, character) << std::endl;
 
   return true;
 }

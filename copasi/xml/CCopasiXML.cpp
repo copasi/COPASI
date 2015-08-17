@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -1272,13 +1272,7 @@ bool CCopasiXML::saveReportSection(const std::string & name,
         {
           if (section[j].getObjectType() == "html")
             {
-              //Write in Text
-              startSaveElement("html");
-              Attributes.set(0, "xmlns", "http://www.w3.org/1999/xhtml");
-              startSaveElement("body", Attributes);
-              saveData(section[j].getObjectName()); //TODO check
-              endSaveElement("body");
-              endSaveElement("html");
+              saveXhtml(section[j].getObjectName());
             }
           else
             {
@@ -1874,7 +1868,7 @@ bool CCopasiXML::buildFunctionList()
   bool success = true;
 
   CCopasiVectorN< CFunction > * pFunctionList
-  = new CCopasiVectorN< CFunction >;
+    = new CCopasiVectorN< CFunction >;
 
   *pFunctionList = CCopasiRootContainer::getFunctionList()->getUsedFunctions(this->mpDataModel->getModel());
 
