@@ -1,4 +1,4 @@
-// Copyright (C) 2011 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -60,6 +60,8 @@
 
 #include "SBMLUtils.h"
 
+#include <copasi/utilities/CCopasiMessage.h>
+
 // TODO modifications are not imported yet
 
 // TODO set the role on species reference glyphs where possible, this is done on substrates and products already
@@ -74,6 +76,25 @@
 
 // TODO label positions on compartments are not handled
 
+#define FAIL_WITH_ERROR(result, message)\
+  {\
+    std::stringstream str;\
+    str << "CellDesigner Importer: " << "line: " << __LINE__ << " " << message;\
+    result = false;\
+    CCopasiMessage(CCopasiMessage::WARNING_FILTERED, str.str().c_str());\
+  }\
+
+#define COULD_NOT_CREATE(result)\
+  {\
+    FAIL_WITH_ERROR(result, "could not create element");\
+  }\
+
+#define FAIL_WITH_ERROR_AND_RETURN(result, message)\
+  {\
+    FAIL_WITH_ERROR(result, message);\
+    return result;\
+  }\
+
 /**
  * Constructor that takes a pointer to an
  * SBMLDocument.
@@ -82,23 +103,44 @@
  * If the pointer is not NULL, the class will try
  * to directly convert the CellDesigner layout if there is one.
  */
-CCellDesignerImporter::CCellDesignerImporter(SBMLDocument* pDocument):
-  mpDocument(pDocument),
-  mpLayout(NULL),
-  mpLocalRenderInfo(NULL)
+CCellDesignerImporter::CCellDesignerImporter(SBMLDocument* pDocument)
+  : mpDocument(NULL)
+  , mpModel(NULL)
+  , mpLayout(NULL)
+  , mpLocalRenderInfo(NULL)
 {
   setlocale(LC_ALL, "C");
-  if (this->mpDocument != NULL &&
-      this->mpDocument->getModel() != NULL &&
-      this->mpDocument->getModel()->getAnnotation() != NULL)
-    {
-      const XMLNode* pAnnotation = this->findCellDesignerAnnotation(this->mpDocument, this->mpDocument->getModel()->getAnnotation());
+  setSBMLDocument(pDocument);
+}
 
-      if (pAnnotation != NULL)
+void CCellDesignerImporter::removeCurrentLayout()
+{
+  if (this->mpLayout != NULL)
+    return;
+
+  if (this->mpDocument && mpModel)
+    {
+
+      LayoutModelPlugin* lmPlugin = (LayoutModelPlugin*)mpModel->getPlugin("layout");
+
+      if (lmPlugin != NULL)
         {
-          this->convertCellDesignerLayout(pAnnotation);
+
+          unsigned int i, iMax = lmPlugin->getListOfLayouts()->size();
+
+          for (i = 0; i < iMax; ++i)
+            {
+              if (lmPlugin->getLayout(i) == this->mpLayout)
+                {
+                  lmPlugin->removeLayout(i);
+                  break;
+                }
+            }
         }
     }
+
+  delete this->mpLayout;
+  this->mpLayout = NULL;
 }
 
 /**
@@ -108,51 +150,27 @@ CCellDesignerImporter::CCellDesignerImporter(SBMLDocument* pDocument):
  */
 void CCellDesignerImporter::setSBMLDocument(SBMLDocument* pDocument)
 {
-  if (pDocument != this->mpDocument)
+  if (pDocument == this->mpDocument)
+    return;
+
+  this->mpDocument = pDocument;
+
+  mpModel = mpDocument == NULL ? NULL : mpDocument->getModel();
+
+  const XMLNode* pAnnotation = mpModel == NULL ? NULL : mpModel->getAnnotation();
+
+  if (pAnnotation == NULL)
     {
-      this->mpDocument = pDocument;
-
-      if (this->mpDocument != NULL &&
-          this->mpDocument->getModel() != NULL &&
-          this->mpDocument->getModel()->getAnnotation() != NULL)
-        {
-          const XMLNode* pAnnotation = this->findCellDesignerAnnotation(this->mpDocument, this->mpDocument->getModel()->getAnnotation());
-
-          if (pAnnotation != NULL)
-            {
-              this->convertCellDesignerLayout(pAnnotation);
-            }
-        }
-      else
-        {
-          if (this->mpLayout != NULL)
-            {
-              if (this->mpDocument && this->mpDocument->getModel())
-                {
-
-                  LayoutModelPlugin* lmPlugin = (LayoutModelPlugin*)this->mpDocument->getModel()->getPlugin("layout");
-
-                  if (lmPlugin != NULL)
-                    {
-
-                      unsigned int i, iMax = lmPlugin->getListOfLayouts()->size();
-
-                      for (i = 0; i < iMax; ++i)
-                        {
-                          if (lmPlugin->getLayout(i) == this->mpLayout)
-                            {
-                              lmPlugin->removeLayout(i);
-                              break;
-                            }
-                        }
-                    }
-                }
-
-              delete this->mpLayout;
-              this->mpLayout = NULL;
-            }
-        }
+      removeCurrentLayout();
+      return;
     }
+
+  pAnnotation = this->findCellDesignerAnnotation(this->mpDocument, pAnnotation);
+
+  if (pAnnotation == NULL)
+    return;
+
+  this->convertCellDesignerLayout(pAnnotation);
 }
 
 /**
@@ -181,62 +199,61 @@ const Layout* CCellDesignerImporter::getLayout() const
  * If the current SBMLDocument is NULL or if no CellDesigner annotation
  * is found, ULL is returned.
  */
-const XMLNode* CCellDesignerImporter::findCellDesignerAnnotation(SBMLDocument* pDocument, const XMLNode* pAnnotation)
+const XMLNode* CCellDesignerImporter::findCellDesignerAnnotation(SBMLDocument* pDocument,
+    const XMLNode* pAnnotation)
 {
   const XMLNode* pNode = NULL;
 
-  if (pDocument != NULL && pAnnotation != NULL)
+  if (pDocument == NULL || pAnnotation == NULL)
+    return pNode;
+
+  const Model* pModel = pDocument->getModel();
+  std::pair<bool, std::string> celldesigner_ns_found =
+    CCellDesignerImporter::findCellDesignerNamespace(pDocument);
+
+  if (celldesigner_ns_found.first == false || pModel == NULL)
+    return pNode;
+
+  const XMLNamespaces* pNamespaces = NULL;
+  const std::string uri("http://www.sbml.org/2001/ns/celldesigner");
+  const XMLNode* pAnnoChild = NULL;
+
+  unsigned int i, iMax = pAnnotation->getNumChildren();
+
+  // we only search until we found the first element that fits
+  std::string ns_prefix;
+
+  if (pAnnotation->getNamespaces().hasURI(uri))
     {
-      const Model* pModel = pDocument->getModel();
-      std::pair<bool, std::string> celldesigner_ns_found = CCellDesignerImporter::findCellDesignerNamespace(pDocument);
+      ns_prefix = pAnnotation->getNamespaces().getPrefix(uri);
+    }
+  else if (pDocument->getNamespaces()->hasURI(uri))
+    {
+      ns_prefix = pDocument->getNamespaces()->getPrefix(uri);
+    }
 
-      if (celldesigner_ns_found.first == true && pModel != NULL)
+  for (i = 0; i < iMax && pNode == NULL; ++i)
+    {
+      pAnnoChild = &pAnnotation->getChild(i);
+
+      // check if the child has the celldesigner namespace
+      // or if the child has the celldesigner prefix
+      if (pAnnoChild != NULL)
         {
-          const XMLNamespaces* pNamespaces = NULL;
-          const std::string uri("http://www.sbml.org/2001/ns/celldesigner");
-          const XMLNode* pAnnoChild = NULL;
+          // if the prefix is redefined here, it should take precedence
+          pNamespaces = &pAnnoChild->getNamespaces();
 
-          if (pAnnotation != NULL)
+          if (pNamespaces->hasURI(uri))
             {
-              unsigned int i, iMax = pAnnotation->getNumChildren();
+              ns_prefix = pNamespaces->getPrefix(uri);
+            }
 
-              // we only search until we found the first element that fits
-              std::string ns_prefix;
-
-              if (pAnnotation->getNamespaces().hasURI(uri))
-                {
-                  ns_prefix = pAnnotation->getNamespaces().getPrefix(uri);
-                }
-              else if (pDocument->getNamespaces()->hasURI(uri))
-                {
-                  ns_prefix = pDocument->getNamespaces()->getPrefix(uri);
-                }
-
-              for (i = 0; i < iMax && pNode == NULL; ++i)
-                {
-                  pAnnoChild = &pAnnotation->getChild(i);
-
-                  // check if the child has the celldesigner namespace
-                  // or if the child has the celldesigner prefix
-                  if (pAnnoChild != NULL)
-                    {
-                      // if the prefix is redefined here, it should take precedence
-                      pNamespaces = &pAnnoChild->getNamespaces();
-
-                      if (pNamespaces->hasURI(uri))
-                        {
-                          ns_prefix = pNamespaces->getPrefix(uri);
-                        }
-
-                      if (!ns_prefix.empty() && ns_prefix == pAnnoChild->getPrefix() && pAnnoChild->getName() == "extension")
-                        {
-                          // we have found the first cell designer annotation
-                          // element
-                          // check if it really is the top level cell designer anotation
-                          pNode = pAnnoChild;
-                        }
-                    }
-                }
+          if (!ns_prefix.empty() && ns_prefix == pAnnoChild->getPrefix() && pAnnoChild->getName() == "extension")
+            {
+              // we have found the first cell designer annotation
+              // element
+              // check if it really is the top level cell designer anotation
+              pNode = pAnnoChild;
             }
         }
     }
@@ -254,69 +271,67 @@ std::pair<bool, std::string> CCellDesignerImporter::findCellDesignerNamespace(co
 {
   std::pair<bool, std::string> result(false, "");
 
-  if (pDocument != NULL)
+  if (pDocument == NULL)
+    return result;
+
+  // first we look for the CellDesigner namespace in the SBMLDocument
+  // and in the model and in all children of the models annotation
+  const XMLNamespaces* pNamespaces = pDocument->getNamespaces();
+  const std::string uri("http://www.sbml.org/2001/ns/celldesigner");
+  const Model* pModel = pDocument->getModel();
+
+  if (pNamespaces && pNamespaces->hasURI(uri))
     {
-      // first we look for the CellDesigner namespace in the SBMLDocument
-      // and in the model and in all children of the models annotation
-      const XMLNamespaces* pNamespaces = pDocument->getNamespaces();
-      const std::string uri("http://www.sbml.org/2001/ns/celldesigner");
-      const Model* pModel = pDocument->getModel();
+      result.first = true;
+      result.second = pNamespaces->getPrefix(uri);
 
-      if (pNamespaces && pNamespaces->hasURI(uri))
+      return result;
+    }
+
+  if (pModel == NULL)
+    return result;
+
+  pNamespaces = pModel->getNamespaces();
+
+  if (pNamespaces != NULL && pNamespaces->hasURI(uri))
+    {
+      result.first = true;
+      result.second = pNamespaces->getPrefix(uri);
+      return result;
+    }
+
+  // check the annotation and all its top level children
+  const XMLNode* pAnnotation = const_cast<Model*>(pModel)->getAnnotation();
+
+  if (pAnnotation == NULL)
+    return result;
+
+  pNamespaces = &pAnnotation->getNamespaces();
+
+  if (pNamespaces != NULL && pNamespaces->hasURI(uri))
+    {
+      result.first = true;
+      result.second = pNamespaces->getPrefix(uri);
+      return result;
+    }
+
+  unsigned int i, iMax = pAnnotation->getNumChildren();
+  const XMLNode* pChild = NULL;
+
+  for (i = 0; i < iMax; ++i)
+    {
+      pChild = &pAnnotation->getChild(i);
+      assert(pChild != NULL);
+
+      if (pChild != NULL)
         {
-          result.first = true;
-          result.second = pNamespaces->getPrefix(uri);
-        }
-      else
-        {
-          if (pModel != NULL)
+          pNamespaces = &pChild->getNamespaces();
+
+          if (pNamespaces != NULL && pNamespaces->hasURI(uri))
             {
-              pNamespaces = pModel->getNamespaces();
-
-              if (pNamespaces != NULL && pNamespaces->hasURI(uri))
-                {
-                  result.first = true;
-                  result.second = pNamespaces->getPrefix(uri);
-                }
-              else
-                {
-                  // check the annotation and all its top level children
-                  const XMLNode* pAnnotation = const_cast<Model*>(pModel)->getAnnotation();
-
-                  if (pAnnotation != NULL)
-                    {
-                      pNamespaces = &pAnnotation->getNamespaces();
-
-                      if (pNamespaces != NULL && pNamespaces->hasURI(uri))
-                        {
-                          result.first = true;
-                          result.second = pNamespaces->getPrefix(uri);
-                        }
-                      else
-                        {
-                          unsigned int i, iMax = pAnnotation->getNumChildren();
-                          const XMLNode* pChild = NULL;
-
-                          for (i = 0; i < iMax; ++i)
-                            {
-                              pChild = &pAnnotation->getChild(i);
-                              assert(pChild != NULL);
-
-                              if (pChild != NULL)
-                                {
-                                  pNamespaces = &pChild->getNamespaces();
-
-                                  if (pNamespaces != NULL && pNamespaces->hasURI(uri))
-                                    {
-                                      result.first = true;
-                                      result.second = pNamespaces->getPrefix(uri);
-                                      break;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
+              result.first = true;
+              result.second = pNamespaces->getPrefix(uri);
+              break;
             }
         }
     }
@@ -361,232 +376,208 @@ bool CCellDesignerImporter::convertCellDesignerLayout(const XMLNode* pCellDesign
   //this->mASRNANameMap.clear();
 
   // check if we are in the top level cell designer element
-  if (pCellDesignerAnnotation != NULL &&
-      pCellDesignerAnnotation->getName() == "extension" &&
-      this->mpDocument != NULL &&
-      this->mpDocument->getModel() != NULL)
+  if (pCellDesignerAnnotation == NULL ||
+      pCellDesignerAnnotation->getName() != "extension" ||
+      this->mpDocument == NULL ||
+      mpModel == NULL)
     {
-      // we don't need the meta ids
-      std::map<std::string, const SBase*> metaids;
-      // delete all existing ids
-      SBMLUtils::collectIds(this->mpDocument->getModel(), this->mIdMap, metaids);
+      FAIL_WITH_ERROR_AND_RETURN(result, "CellDesigner Importer: no CellDesigner map found.");
+    }
 
-      LayoutModelPlugin* lmPlugin = (LayoutModelPlugin*)this->mpDocument->getModel()->getPlugin("layout");
-      assert(lmPlugin != NULL);
-      // create the layout
-      this->mpLayout = lmPlugin->createLayout();
+  // we don't need the meta ids
+  std::map<std::string, const SBase*> metaids;
+  // delete all existing ids
+  SBMLUtils::collectIds(mpModel, this->mIdMap, metaids);
 
-      if (this->mpLayout != NULL)
+  LayoutModelPlugin* lmPlugin = (LayoutModelPlugin*)mpModel->getPlugin("layout");
+  assert(lmPlugin != NULL);
+  // create the layout
+  this->mpLayout = lmPlugin->createLayout();
+
+  if (this->mpLayout != NULL)
+    {
+      // we need to find a unique id for the layout
+      std::string id = this->createUniqueId("Layout");
+      this->mpLayout->setId(id);
+      this->mpLayout->setName(id);
+      this->mIdMap.insert(std::pair<std::string, const SBase*>(id, this->mpLayout));
+
+      // create the LocalRenderInformation
+      RenderLayoutPlugin* rlPlugin = (RenderLayoutPlugin*) this->mpLayout->getPlugin("render");
+      this->mpLocalRenderInfo = rlPlugin->createLocalRenderInformation();
+
+      if (this->mpLocalRenderInfo != NULL)
         {
-          // we need to find a unique id for the layout
-          std::string id = this->createUniqueId("Layout");
-          this->mpLayout->setId(id);
-          this->mpLayout->setName(id);
-          this->mIdMap.insert(std::pair<std::string, const SBase*>(id, this->mpLayout));
+          // set the id of the render information
+          // set a name
+          // set a program name
+          // set the background color to white
+          this->mpLocalRenderInfo->setBackgroundColor("#FFFFFFFF");
+          this->mpLocalRenderInfo->setName("render info from celldesigner");
+          this->mpLocalRenderInfo->setProgramName("CellDesignerImporter");
+          this->mpLocalRenderInfo->setProgramVersion("0.0.1");
+          std::string render_id = this->createUniqueId("RenderInformation");
+          this->mpLocalRenderInfo->setId(id);
+          this->mIdMap.insert(std::pair<std::string, const SBase*>(render_id, this->mpLocalRenderInfo));
+          // since we use black for the edge of all objects, we create a color definition for that
+          std::string color_id = this->createUniqueId("black");
+          ColorDefinition* pBlack = this->mpLocalRenderInfo->createColorDefinition();
 
-          // create the LocalRenderInformation
-          RenderLayoutPlugin* rlPlugin = (RenderLayoutPlugin*) this->mpLayout->getPlugin("render");
-          this->mpLocalRenderInfo = rlPlugin->createLocalRenderInformation();
-
-          if (this->mpLocalRenderInfo != NULL)
+          if (pBlack != NULL)
             {
-              // set the id of the render information
-              // set a name
-              // set a program name
-              // set the background color to white
-              this->mpLocalRenderInfo->setBackgroundColor("#FFFFFFFF");
-              this->mpLocalRenderInfo->setName("render info from celldesigner");
-              this->mpLocalRenderInfo->setProgramName("CellDesignerImporter");
-              this->mpLocalRenderInfo->setProgramVersion("0.0.1");
-              std::string render_id = this->createUniqueId("RenderInformation");
-              this->mpLocalRenderInfo->setId(id);
-              this->mIdMap.insert(std::pair<std::string, const SBase*>(render_id, this->mpLocalRenderInfo));
-              // since we use black for the edge of all objects, we create a color definition for that
-              std::string color_id = this->createUniqueId("black");
-              ColorDefinition* pBlack = this->mpLocalRenderInfo->createColorDefinition();
-
-              if (pBlack != NULL)
-                {
-                  pBlack->setId(color_id);
-                  this->mIdMap.insert(std::pair<std::string, const SBase*>(color_id, pBlack));
-                  pBlack->setRGBA(0, 0, 0, 255);
-                  this->mColorStringMap.insert(std::pair<std::string, std::string>("#000000FF", color_id));
-                }
-              else
-                {
-                  result = false;
-                }
-
-              if (result == true)
-                {
-                  // ReactionGlyphs and SpeciesReferenceGlyphs
-                  result = this->createDefaultStyles();
-                }
+              pBlack->setId(color_id);
+              this->mIdMap.insert(std::pair<std::string, const SBase*>(color_id, pBlack));
+              pBlack->setRGBA(0, 0, 0, 255);
+              this->mColorStringMap.insert(std::pair<std::string, std::string>("#000000FF", color_id));
             }
-
-          const XMLNode* pChild = NULL;
-
-          double version = CCellDesignerImporter::determineVersion(pCellDesignerAnnotation);
-
-          if (version < 4.0)
+          else
             {
-              result = false;
+              COULD_NOT_CREATE(result);
             }
 
           if (result == true)
             {
-              // handle the modelDisplay element
-              pChild = CCellDesignerImporter::findChildNode(pCellDesignerAnnotation, pCellDesignerAnnotation->getPrefix(), "modelDisplay", false);
-              result = (pChild != NULL && CCellDesignerImporter::parseModelDisplay(pChild, *this->mpLayout->getDimensions()));
-            }
-
-          if (result == true)
-            {
-              pChild = CCellDesignerImporter::findChildNode(pCellDesignerAnnotation, pCellDesignerAnnotation->getPrefix(), "listOfIncludedSpecies", false);
-
-              if (pChild != NULL)
-                {
-                  result = this->handleIncludedSpecies(pChild);
-                }
-            }
-
-          if (result == true)
-            {
-              pChild = CCellDesignerImporter::findChildNode(pCellDesignerAnnotation, pCellDesignerAnnotation->getPrefix(), "listOfCompartmentAliases", false);
-
-              if (pChild != NULL)
-                {
-                  result = this->createCompartmentGlyphs(pChild);
-                }
-            }
-
-          if (result == true)
-            {
-              pChild = CCellDesignerImporter::findChildNode(pCellDesignerAnnotation, pCellDesignerAnnotation->getPrefix(), "listOfSpeciesAliases", false);
-
-              if (pChild != NULL)
-                {
-                  result = this->createSpeciesGlyphs(pChild);
-                }
-            }
-
-          if (result == true)
-            {
-              pChild = CCellDesignerImporter::findChildNode(pCellDesignerAnnotation, pCellDesignerAnnotation->getPrefix(), "listOfComplexSpeciesAliases", false);
-
-              if (pChild != NULL)
-                {
-                  result = this->createSpeciesGlyphs(pChild);
-                }
-            }
-
-          /*
-          if(result == true)
-          {
-              pChild=CCellDesignerImporter::findChildNode(pCellDesignerAnnotation,pCellDesignerAnnotation->getPrefix(),"listOfGenes",false);
-              result = (pChild!=NULL && this->parseGeneNames(pChild));
-          }
-          if(result == true)
-          {
-              pChild=CCellDesignerImporter::findChildNode(pCellDesignerAnnotation,pCellDesignerAnnotation->getPrefix(),"listOfRNAs",false);
-              result = (pChild!=NULL && this->parseRNANames(pChild));
-          }
-          if(result == true)
-          {
-              pChild=CCellDesignerImporter::findChildNode(pCellDesignerAnnotation,pCellDesignerAnnotation->getPrefix(),"listOfAntisenseRNAs",false);
-              result = (pChild!=NULL && this->parseASRNANames(pChild));
-          }
-          */
-
-          // go through the models reactions and find the cell designer annotations there
-          // so that we can create the edges of the graph
-          if (result)
-            {
-              result = this->convertReactionAnnotations();
-            }
-
-          // go through the compartment annotations and create the text glyph for the names
-          if (result)
-            {
-              result = this->convertCompartmentAnnotations();
-            }
-
-          // go through the species annotations and create the text glyph for the names
-          if (result)
-            {
-              result = this->convertSpeciesAnnotations();
-            }
-
-          // now we need to find the correct way of drawing protein nodes
-          // for this we need the type on the protein elements
-          // this information is used when we create the styles for the species glyphs
-          // TODO the code below will only work if we know the mapping from protein reference id
-          // TODO to the corresponding species or CellDesigner species id
-          // TODO this information is stored in a proteinReference element of either the annotation
-          // TODO of the species or directly with the CellDesignerSpecies
-          if (result == true)
-            {
-              pChild = CCellDesignerImporter::findChildNode(pCellDesignerAnnotation, pCellDesignerAnnotation->getPrefix(), "listOfProteins", false);
-              result = (pChild != NULL && this->parseProteins(pChild));
-
-              //   // now we go through the protein map and set the correct type
-              //   // on the SpeciesAlias for the corresponding species
-              //   std::map<std::string,Protein>::const_iterator it=this->mProteinInformationMap.begin(),endit=this->mProteinInformationMap.end();
-              //   std::map<std::string,SpeciesAnnotation>::iterator annoIt;
-              //   std::cout << "num protein types:" << this->mProteinInformationMap.size() << std::endl;
-              //   while(it != endit)
-              //   {
-              //       std::cout << "looking for annotation to " << it->first << std::endl;
-              //       annoIt=this->mSpeciesAnnotationMap.find(it->first);
-              //       if(annoIt != this->mSpeciesAnnotationMap.end())
-              //       {
-              //           annoIt->second.mIdentity.mSpeciesClass=it->second;
-              //}
-              //       else
-              //       {
-              //           result=false;
-              //}
-              //       ++it;
-              //}
-            }
-
-          // go through all species glyphs and create a style for each one
-          if (result)
-            {
-              result = this->createSpeciesStyles();
+              // ReactionGlyphs and SpeciesReferenceGlyphs
+              result = this->createDefaultStyles();
             }
         }
 
-      // clean up
-      if (!result && this->mpLayout != NULL)
+      const XMLNode* pChild = NULL;
+
+      double version = CCellDesignerImporter::determineVersion(pCellDesignerAnnotation);
+
+      if (version < 4.0)
         {
-          if (this->mpDocument && this->mpDocument->getModel())
+          FAIL_WITH_ERROR_AND_RETURN(result, "CellDesigner Layout not imported, only versions >= 4.0 are supported by this version of COPASI.");
+        }
+
+      if (result == true)
+        {
+          // handle the modelDisplay element
+          pChild = CCellDesignerImporter::findChildNode(pCellDesignerAnnotation, pCellDesignerAnnotation->getPrefix(), "modelDisplay", false);
+          result = (pChild != NULL && CCellDesignerImporter::parseModelDisplay(pChild, *this->mpLayout->getDimensions()));
+        }
+
+      if (result == true)
+        {
+          pChild = CCellDesignerImporter::findChildNode(pCellDesignerAnnotation, pCellDesignerAnnotation->getPrefix(), "listOfIncludedSpecies", false);
+
+          if (pChild != NULL)
             {
-              LayoutModelPlugin* lmPlugin = (LayoutModelPlugin*)this->mpDocument->getModel()->getPlugin("layout");
-
-              if (lmPlugin != NULL)
-                {
-                  unsigned int i, iMax = lmPlugin->getListOfLayouts()->size();
-
-                  for (i = 0; i < iMax; ++i)
-                    {
-                      if (lmPlugin->getLayout(i) == this->mpLayout)
-                        {
-                          lmPlugin->removeLayout(i);
-                          break;
-                        }
-                    }
-                }
+              result = this->handleIncludedSpecies(pChild);
             }
+        }
 
-          delete this->mpLayout;
-          this->mpLayout = NULL;
+      if (result == true)
+        {
+          pChild = CCellDesignerImporter::findChildNode(pCellDesignerAnnotation, pCellDesignerAnnotation->getPrefix(), "listOfCompartmentAliases", false);
+
+          if (pChild != NULL)
+            {
+              result = this->createCompartmentGlyphs(pChild);
+            }
+        }
+
+      if (result == true)
+        {
+          pChild = CCellDesignerImporter::findChildNode(pCellDesignerAnnotation, pCellDesignerAnnotation->getPrefix(), "listOfSpeciesAliases", false);
+
+          if (pChild != NULL)
+            {
+              result = this->createSpeciesGlyphs(pChild);
+            }
+        }
+
+      if (result == true)
+        {
+          pChild = CCellDesignerImporter::findChildNode(pCellDesignerAnnotation, pCellDesignerAnnotation->getPrefix(), "listOfComplexSpeciesAliases", false);
+
+          if (pChild != NULL)
+            {
+              result = this->createSpeciesGlyphs(pChild);
+            }
+        }
+
+      /*
+            if(result == true)
+            {
+                pChild=CCellDesignerImporter::findChildNode(pCellDesignerAnnotation,pCellDesignerAnnotation->getPrefix(),"listOfGenes",false);
+                result = (pChild!=NULL && this->parseGeneNames(pChild));
+            }
+            if(result == true)
+            {
+                pChild=CCellDesignerImporter::findChildNode(pCellDesignerAnnotation,pCellDesignerAnnotation->getPrefix(),"listOfRNAs",false);
+                result = (pChild!=NULL && this->parseRNANames(pChild));
+            }
+            if(result == true)
+            {
+                pChild=CCellDesignerImporter::findChildNode(pCellDesignerAnnotation,pCellDesignerAnnotation->getPrefix(),"listOfAntisenseRNAs",false);
+                result = (pChild!=NULL && this->parseASRNANames(pChild));
+            }
+            */
+
+      // go through the models reactions and find the cell designer annotations there
+      // so that we can create the edges of the graph
+      if (result)
+        {
+          result = this->convertReactionAnnotations();
+        }
+
+      // go through the compartment annotations and create the text glyph for the names
+      if (result)
+        {
+          result = this->convertCompartmentAnnotations();
+        }
+
+      // go through the species annotations and create the text glyph for the names
+      if (result)
+        {
+          result = this->convertSpeciesAnnotations();
+        }
+
+      // now we need to find the correct way of drawing protein nodes
+      // for this we need the type on the protein elements
+      // this information is used when we create the styles for the species glyphs
+      // TODO the code below will only work if we know the mapping from protein reference id
+      // TODO to the corresponding species or CellDesigner species id
+      // TODO this information is stored in a proteinReference element of either the annotation
+      // TODO of the species or directly with the CellDesignerSpecies
+      if (result == true)
+        {
+          pChild = CCellDesignerImporter::findChildNode(pCellDesignerAnnotation, pCellDesignerAnnotation->getPrefix(), "listOfProteins", false);
+          result = (pChild != NULL && this->parseProteins(pChild));
+
+          //   // now we go through the protein map and set the correct type
+          //   // on the SpeciesAlias for the corresponding species
+          //   std::map<std::string,Protein>::const_iterator it=this->mProteinInformationMap.begin(),endit=this->mProteinInformationMap.end();
+          //   std::map<std::string,SpeciesAnnotation>::iterator annoIt;
+          //   std::cout << "num protein types:" << this->mProteinInformationMap.size() << std::endl;
+          //   while(it != endit)
+          //   {
+          //       std::cout << "looking for annotation to " << it->first << std::endl;
+          //       annoIt=this->mSpeciesAnnotationMap.find(it->first);
+          //       if(annoIt != this->mSpeciesAnnotationMap.end())
+          //       {
+          //           annoIt->second.mIdentity.mSpeciesClass=it->second;
+          //}
+          //       else
+          //       {
+          //           result=false;
+          //}
+          //       ++it;
+          //}
+        }
+
+      // go through all species glyphs and create a style for each one
+      if (result)
+        {
+          result = this->createSpeciesStyles();
         }
     }
-  else
-    {
-      result = false;
-    }
+
+  // clean up
+  if (!result && this->mpLayout != NULL)
+    removeCurrentLayout();
 
   return result;
 }
@@ -623,7 +614,7 @@ bool CCellDesignerImporter::createCompartmentGlyphs(const XMLNode* pLoCA)
     }
   else
     {
-      result = false;
+      FAIL_WITH_ERROR(result, "listOfCompartmentAliases not found.");
     }
 
   return result;
@@ -663,7 +654,7 @@ bool CCellDesignerImporter::createSpeciesGlyphs(const XMLNode* pLoSA)
     }
   else
     {
-      result = false;
+      FAIL_WITH_ERROR(result, "listOfSpeciesAliases not found.");
     }
 
   return result;
@@ -693,8 +684,8 @@ bool CCellDesignerImporter::createCompartmentGlyph(const CompartmentAlias& ca)
           // check if a compartment with that id actually exists before making the link
           if (!ca.mCompartment.empty() &&
               this->mpDocument != NULL &&
-              this->mpDocument->getModel() != NULL &&
-              this->mpDocument->getModel()->getCompartment(ca.mCompartment) != NULL)
+              mpModel != NULL &&
+              mpModel->getCompartment(ca.mCompartment) != NULL)
             {
               pCGlyph->setCompartmentId(ca.mCompartment);
               this->mModelIdToLayoutElement.insert(std::pair<std::string, GraphicalObject*>(ca.mCompartment, pCGlyph));
@@ -715,7 +706,7 @@ bool CCellDesignerImporter::createCompartmentGlyph(const CompartmentAlias& ca)
     }
   else
     {
-      result = false;
+      FAIL_WITH_ERROR(result, "Comparment alias not found.");
     }
 
   return result;
@@ -754,8 +745,8 @@ bool CCellDesignerImporter::createSpeciesGlyph(const SpeciesAlias& sa)
               // check if a compartment with that id actually exists before making the link
               if (!sa.mSpecies.empty() &&
                   this->mpDocument != NULL &&
-                  this->mpDocument->getModel() != NULL &&
-                  this->mpDocument->getModel()->getSpecies(sa.mSpecies) != NULL)
+                  mpModel != NULL &&
+                  mpModel->getSpecies(sa.mSpecies) != NULL)
                 {
                   pSGlyph->setSpeciesId(sa.mSpecies);
                   this->mModelIdToLayoutElement.insert(std::pair<std::string, GraphicalObject*>(sa.mSpecies, pSGlyph));
@@ -773,7 +764,7 @@ bool CCellDesignerImporter::createSpeciesGlyph(const SpeciesAlias& sa)
             }
           else
             {
-              result = false;
+              COULD_NOT_CREATE(result);
             }
         }
       else
@@ -787,7 +778,7 @@ bool CCellDesignerImporter::createSpeciesGlyph(const SpeciesAlias& sa)
     }
   else
     {
-      result = false;
+      FAIL_WITH_ERROR(result, "species alias not found.");
     }
 
   return result;
@@ -888,7 +879,7 @@ bool CCellDesignerImporter::createSpeciesStyles()
                                   if (result == true && pCurrent != *dependency_it)
                                     {
                                       // find and add text
-                                      const Species* pSpecies = this->mpDocument->getModel()->getSpecies(sa.mSpecies);
+                                      const Species* pSpecies = mpModel->getSpecies(sa.mSpecies);
 
                                       if (pSpecies == NULL)
                                         {
@@ -928,7 +919,7 @@ bool CCellDesignerImporter::createSpeciesStyles()
                                             }
                                           else
                                             {
-                                              result = false;
+                                              FAIL_WITH_ERROR(result,  "species annotation not found.");
                                             }
                                         }
                                     }
@@ -937,12 +928,12 @@ bool CCellDesignerImporter::createSpeciesStyles()
                                 }
                               else
                                 {
-                                  result = false;
+                                  FAIL_WITH_ERROR(result, "species alias empty.");
                                 }
                             }
                           else
                             {
-                              result = false;
+                              FAIL_WITH_ERROR(result, "no species aliases found.");
                             }
 
                           pCurrent = pCurrent->getNext();
@@ -950,7 +941,7 @@ bool CCellDesignerImporter::createSpeciesStyles()
                     }
                   else
                     {
-                      result = false;
+                      COULD_NOT_CREATE(result);
                     }
                 }
               else
@@ -996,22 +987,22 @@ bool CCellDesignerImporter::createSpeciesStyles()
                                 }
                               else
                                 {
-                                  result = false;
+                                  FAIL_WITH_ERROR(result, "style group is NULL");
                                 }
                             }
                           else
                             {
-                              result = false;
+                              FAIL_WITH_ERROR(result, "could not find species annotation for " << glyphs_it->second.mSpecies);
                             }
                         }
                       else
                         {
-                          result = false;
+                          FAIL_WITH_ERROR(result, "emtpy species annotation id");
                         }
                     }
                   else
                     {
-                      result = false;
+                      COULD_NOT_CREATE(result);
                     }
                 }
             }
@@ -1021,7 +1012,7 @@ bool CCellDesignerImporter::createSpeciesStyles()
     }
   else
     {
-      result = false;
+      FAIL_WITH_ERROR(result, "no reaction info");
     }
 
   return result;
@@ -1094,7 +1085,7 @@ bool CCellDesignerImporter::createPrimitive(RenderGroup* pGroup,
               }
             else
               {
-                result = false;
+                COULD_NOT_CREATE(result);
               }
           }
           break;
@@ -1117,7 +1108,7 @@ bool CCellDesignerImporter::createPrimitive(RenderGroup* pGroup,
               }
             else
               {
-                result = false;
+                COULD_NOT_CREATE(result);
               }
           }
           break;
@@ -1149,7 +1140,7 @@ bool CCellDesignerImporter::createPrimitive(RenderGroup* pGroup,
               }
             else
               {
-                result = false;
+                COULD_NOT_CREATE(result);
               }
 
             // inner rectangle
@@ -1171,7 +1162,7 @@ bool CCellDesignerImporter::createPrimitive(RenderGroup* pGroup,
               }
             else
               {
-                result = false;
+                COULD_NOT_CREATE(result);
               }
           }
           break;
@@ -1195,7 +1186,7 @@ bool CCellDesignerImporter::createPrimitive(RenderGroup* pGroup,
               }
             else
               {
-                result = false;
+                COULD_NOT_CREATE(result);
               }
           }
           break;
@@ -1229,34 +1220,40 @@ bool CCellDesignerImporter::createPrimitive(RenderGroup* pGroup,
 
                     if (pP != NULL)
                       {
-                        pP->setX((short_side - width) * 0.5);
+                        double xstart =
+                          offset.x() + bounds.getPosition()->x() + width * 0.5
+                          - short_side / 2;
+                        // xstart = (short_side - width) * 0.5;
+
+                        pP->setX(xstart);
                         pP->setY((short_side - height) * 0.5 + short_side);
                         pP = pCurve->createPoint();
                         assert(pP != NULL);
 
                         if (pP != NULL)
                           {
-                            pP->setX((short_side - width) * 0.5 + short_side);
+                            pP->setX(xstart + short_side);
+                            //pP->setX((short_side - width) * 0.5 + short_side);
                             pP->setY((short_side - height) * 0.5);
                           }
                         else
                           {
-                            result = false;
+                            COULD_NOT_CREATE(result);
                           }
                       }
                     else
                       {
-                        result = false;
+                        COULD_NOT_CREATE(result);
                       }
                   }
                 else
                   {
-                    result = false;
+                    COULD_NOT_CREATE(result);
                   }
               }
             else
               {
-                result = false;
+                COULD_NOT_CREATE(result);
               }
           }
           break;
@@ -1286,7 +1283,7 @@ bool CCellDesignerImporter::createPrimitive(RenderGroup* pGroup,
                   }
                 else
                   {
-                    result = false;
+                    COULD_NOT_CREATE(result);
                   }
 
                 if (result == true)
@@ -1300,7 +1297,7 @@ bool CCellDesignerImporter::createPrimitive(RenderGroup* pGroup,
                       }
                     else
                       {
-                        result = false;
+                        COULD_NOT_CREATE(result);
                       }
                   }
 
@@ -1315,7 +1312,7 @@ bool CCellDesignerImporter::createPrimitive(RenderGroup* pGroup,
                       }
                     else
                       {
-                        result = false;
+                        COULD_NOT_CREATE(result);
                       }
                   }
 
@@ -1330,7 +1327,7 @@ bool CCellDesignerImporter::createPrimitive(RenderGroup* pGroup,
                       }
                     else
                       {
-                        result = false;
+                        COULD_NOT_CREATE(result);
                       }
                   }
 
@@ -1345,7 +1342,7 @@ bool CCellDesignerImporter::createPrimitive(RenderGroup* pGroup,
                       }
                     else
                       {
-                        result = false;
+                        COULD_NOT_CREATE(result);
                       }
                   }
 
@@ -1360,7 +1357,7 @@ bool CCellDesignerImporter::createPrimitive(RenderGroup* pGroup,
                       }
                     else
                       {
-                        result = false;
+                        COULD_NOT_CREATE(result);
                       }
                   }
 
@@ -1379,7 +1376,7 @@ bool CCellDesignerImporter::createPrimitive(RenderGroup* pGroup,
                       }
                     else
                       {
-                        result = false;
+                        COULD_NOT_CREATE(result);
                       }
                   }
 
@@ -1394,7 +1391,7 @@ bool CCellDesignerImporter::createPrimitive(RenderGroup* pGroup,
                       }
                     else
                       {
-                        result = false;
+                        COULD_NOT_CREATE(result);
                       }
                   }
 
@@ -1413,13 +1410,13 @@ bool CCellDesignerImporter::createPrimitive(RenderGroup* pGroup,
                       }
                     else
                       {
-                        result = false;
+                        COULD_NOT_CREATE(result);
                       }
                   }
               }
             else
               {
-                result = false;
+                COULD_NOT_CREATE(result);
               }
           }
           break;
@@ -1445,7 +1442,7 @@ bool CCellDesignerImporter::createPrimitive(RenderGroup* pGroup,
 
             else
               {
-                result = false;
+                COULD_NOT_CREATE(result);
               }
 
             if (result == true)
@@ -1483,7 +1480,7 @@ bool CCellDesignerImporter::createPrimitive(RenderGroup* pGroup,
                   }
                 else
                   {
-                    result = false;
+                    COULD_NOT_CREATE(result);
                   }
 
                 if (result == true)
@@ -1497,7 +1494,7 @@ bool CCellDesignerImporter::createPrimitive(RenderGroup* pGroup,
                       }
                     else
                       {
-                        result = false;
+                        COULD_NOT_CREATE(result);
                       }
                   }
 
@@ -1512,7 +1509,7 @@ bool CCellDesignerImporter::createPrimitive(RenderGroup* pGroup,
                       }
                     else
                       {
-                        result = false;
+                        COULD_NOT_CREATE(result);
                       }
                   }
 
@@ -1527,7 +1524,7 @@ bool CCellDesignerImporter::createPrimitive(RenderGroup* pGroup,
                       }
                     else
                       {
-                        result = false;
+                        COULD_NOT_CREATE(result);
                       }
                   }
 
@@ -1542,7 +1539,7 @@ bool CCellDesignerImporter::createPrimitive(RenderGroup* pGroup,
                       }
                     else
                       {
-                        result = false;
+                        COULD_NOT_CREATE(result);
                       }
                   }
 
@@ -1557,13 +1554,13 @@ bool CCellDesignerImporter::createPrimitive(RenderGroup* pGroup,
                       }
                     else
                       {
-                        result = false;
+                        COULD_NOT_CREATE(result);
                       }
                   }
               }
             else
               {
-                result = false;
+                COULD_NOT_CREATE(result);
               }
           }
           break;
@@ -1589,7 +1586,7 @@ bool CCellDesignerImporter::createPrimitive(RenderGroup* pGroup,
                   }
                 else
                   {
-                    result = false;
+                    COULD_NOT_CREATE(result);
                   }
 
                 if (result == true)
@@ -1603,7 +1600,7 @@ bool CCellDesignerImporter::createPrimitive(RenderGroup* pGroup,
                       }
                     else
                       {
-                        result = false;
+                        COULD_NOT_CREATE(result);
                       }
                   }
 
@@ -1618,7 +1615,7 @@ bool CCellDesignerImporter::createPrimitive(RenderGroup* pGroup,
                       }
                     else
                       {
-                        result = false;
+                        COULD_NOT_CREATE(result);
                       }
                   }
 
@@ -1633,13 +1630,13 @@ bool CCellDesignerImporter::createPrimitive(RenderGroup* pGroup,
                       }
                     else
                       {
-                        result = false;
+                        COULD_NOT_CREATE(result);
                       }
                   }
               }
             else
               {
-                result = false;
+                COULD_NOT_CREATE(result);
               }
           }
           break;
@@ -1665,7 +1662,7 @@ bool CCellDesignerImporter::createPrimitive(RenderGroup* pGroup,
                   }
                 else
                   {
-                    result = false;
+                    COULD_NOT_CREATE(result);
                   }
 
                 if (result == true)
@@ -1679,7 +1676,7 @@ bool CCellDesignerImporter::createPrimitive(RenderGroup* pGroup,
                       }
                     else
                       {
-                        result = false;
+                        COULD_NOT_CREATE(result);
                       }
                   }
 
@@ -1694,7 +1691,7 @@ bool CCellDesignerImporter::createPrimitive(RenderGroup* pGroup,
                       }
                     else
                       {
-                        result = false;
+                        COULD_NOT_CREATE(result);
                       }
                   }
 
@@ -1709,13 +1706,13 @@ bool CCellDesignerImporter::createPrimitive(RenderGroup* pGroup,
                       }
                     else
                       {
-                        result = false;
+                        COULD_NOT_CREATE(result);
                       }
                   }
               }
             else
               {
-                result = false;
+                COULD_NOT_CREATE(result);
               }
           }
           break;
@@ -1744,7 +1741,7 @@ bool CCellDesignerImporter::createPrimitive(RenderGroup* pGroup,
                   }
                 else
                   {
-                    result = false;
+                    COULD_NOT_CREATE(result);
                   }
 
                 if (result == true)
@@ -1758,7 +1755,7 @@ bool CCellDesignerImporter::createPrimitive(RenderGroup* pGroup,
                       }
                     else
                       {
-                        result = false;
+                        COULD_NOT_CREATE(result);
                       }
                   }
 
@@ -1773,7 +1770,7 @@ bool CCellDesignerImporter::createPrimitive(RenderGroup* pGroup,
                       }
                     else
                       {
-                        result = false;
+                        COULD_NOT_CREATE(result);
                       }
                   }
 
@@ -1788,7 +1785,7 @@ bool CCellDesignerImporter::createPrimitive(RenderGroup* pGroup,
                       }
                     else
                       {
-                        result = false;
+                        COULD_NOT_CREATE(result);
                       }
                   }
 
@@ -1803,7 +1800,7 @@ bool CCellDesignerImporter::createPrimitive(RenderGroup* pGroup,
                       }
                     else
                       {
-                        result = false;
+                        COULD_NOT_CREATE(result);
                       }
                   }
 
@@ -1818,7 +1815,7 @@ bool CCellDesignerImporter::createPrimitive(RenderGroup* pGroup,
                       }
                     else
                       {
-                        result = false;
+                        COULD_NOT_CREATE(result);
                       }
                   }
 
@@ -1833,7 +1830,7 @@ bool CCellDesignerImporter::createPrimitive(RenderGroup* pGroup,
                       }
                     else
                       {
-                        result = false;
+                        COULD_NOT_CREATE(result);
                       }
                   }
 
@@ -1848,13 +1845,13 @@ bool CCellDesignerImporter::createPrimitive(RenderGroup* pGroup,
                       }
                     else
                       {
-                        result = false;
+                        COULD_NOT_CREATE(result);
                       }
                   }
               }
             else
               {
-                result = false;
+                COULD_NOT_CREATE(result);
               }
           }
           break;
@@ -1879,7 +1876,7 @@ bool CCellDesignerImporter::createPrimitive(RenderGroup* pGroup,
                   }
                 else
                   {
-                    result = false;
+                    COULD_NOT_CREATE(result);
                   }
 
                 if (result == true)
@@ -1893,7 +1890,7 @@ bool CCellDesignerImporter::createPrimitive(RenderGroup* pGroup,
                       }
                     else
                       {
-                        result = false;
+                        COULD_NOT_CREATE(result);
                       }
                   }
 
@@ -1908,7 +1905,7 @@ bool CCellDesignerImporter::createPrimitive(RenderGroup* pGroup,
                       }
                     else
                       {
-                        result = false;
+                        COULD_NOT_CREATE(result);
                       }
                   }
 
@@ -1923,7 +1920,7 @@ bool CCellDesignerImporter::createPrimitive(RenderGroup* pGroup,
                       }
                     else
                       {
-                        result = false;
+                        COULD_NOT_CREATE(result);
                       }
                   }
 
@@ -1938,7 +1935,7 @@ bool CCellDesignerImporter::createPrimitive(RenderGroup* pGroup,
                       }
                     else
                       {
-                        result = false;
+                        COULD_NOT_CREATE(result);
                       }
                   }
 
@@ -1953,13 +1950,13 @@ bool CCellDesignerImporter::createPrimitive(RenderGroup* pGroup,
                       }
                     else
                       {
-                        result = false;
+                        COULD_NOT_CREATE(result);
                       }
                   }
               }
             else
               {
-                result = false;
+                COULD_NOT_CREATE(result);
               }
           }
           break;
@@ -1986,7 +1983,7 @@ bool CCellDesignerImporter::createPrimitive(RenderGroup* pGroup,
               }
             else
               {
-                result = false;
+                COULD_NOT_CREATE(result);
               }
 
             pRect = pGroup->createRectangle();
@@ -2006,7 +2003,7 @@ bool CCellDesignerImporter::createPrimitive(RenderGroup* pGroup,
               }
             else
               {
-                result = false;
+                COULD_NOT_CREATE(result);
               }
           }
           break;
@@ -2028,13 +2025,13 @@ bool CCellDesignerImporter::createPrimitive(RenderGroup* pGroup,
               }
             else
               {
-                result = false;
+                COULD_NOT_CREATE(result);
               }
           }
           break;
 
           default:
-            result = false;
+            FAIL_WITH_ERROR(result, "Encountered unknown primitive class.");
             break;
         }
 
@@ -2063,13 +2060,13 @@ bool CCellDesignerImporter::createPrimitive(RenderGroup* pGroup,
             }
           else
             {
-              result = false;
+              COULD_NOT_CREATE(result);
             }
         }
     }
   else
     {
-      result = false;
+      FAIL_WITH_ERROR(result, "group NULL, or class not defined.");
     }
 
   return result;
@@ -2177,7 +2174,7 @@ bool CCellDesignerImporter::createProteinModification(RenderGroup* pGroup,
     }
   else
     {
-      result = false;
+      COULD_NOT_CREATE(result);
     }
 
   return result;
@@ -2213,27 +2210,14 @@ bool CCellDesignerImporter::convertReactionAnnotations()
 {
   bool result = true;
 
-  if (this->mpDocument != NULL)
-    {
-      Model* pModel = this->mpDocument->getModel();
+  if (mpDocument == NULL || mpModel == NULL)
+    FAIL_WITH_ERROR_AND_RETURN(result, "document or model NULL");
 
-      if (pModel != NULL)
-        {
-          unsigned int i, iMax = pModel->getNumReactions();
+  unsigned int i, iMax = mpModel->getNumReactions();
 
-          for (i = 0; i < iMax && result == true; ++i)
-            {
-              result = this->convertReactionAnnotation(pModel->getReaction(i), pModel);
-            }
-        }
-      else
-        {
-          result = false;
-        }
-    }
-  else
+  for (i = 0; i < iMax && result == true; ++i)
     {
-      result = false;
+      result = this->convertReactionAnnotation(mpModel->getReaction(i), mpModel);
     }
 
   return result;
@@ -2247,813 +2231,809 @@ bool CCellDesignerImporter::convertReactionAnnotation(Reaction* pReaction, const
 {
   bool result = true;
 
-  if (pReaction != NULL && pModel != NULL && pReaction->getAnnotation() != NULL)
+  if (pReaction == NULL || pModel == NULL || pReaction->getAnnotation() == NULL)
     {
-      const XMLNode* pAnnotation = this->findCellDesignerAnnotation(this->mpDocument, pReaction->getAnnotation());
-
-      if (pAnnotation != NULL && pAnnotation->getName() == "extension" && this->mpLayout != NULL)
-        {
-          // create a reaction glyph
-          ReactionAnnotation ranno;
-          result = this->parseReactionAnnotation(pAnnotation, ranno);
-
-          if (result == true)
-            {
-              ReactionGlyph* pRGlyph = this->mpLayout->createReactionGlyph();
-
-              if (pRGlyph != NULL)
-                {
-                  std::string id = this->createUniqueId("ReactionGlyph");
-                  pRGlyph->setId(id);
-                  pRGlyph->setReactionId(pReaction->getId());
-                  this->mIdMap.insert(std::pair<std::string, const SBase*>(id, pRGlyph));
-                  // the reactionType element has a text element
-                  // that defines the type of reaction
-
-                  // the following reaction types have one reactant and one product
-                  // STATE_TRANSITION, KNOWN_TRANSITION_OMITTED, UNKNOWN_TRANSITION,
-                  // TRANSCRIPTION, TRANSLATION, TRANSPORT
-                  // I also have an example where an INHIBITION reaction has one substrate
-                  // and one product, so maybe we add some more like CATALYSIS, UNKNOWN_INHIBITION
-                  // UNKNOWN_CATALYSIS, TRANSCRITPTIONAL_INHIBITION, TRANSLATIONAL_INHIBITION,
-                  // TRANSLATIONAL_ACTIVATION, TRANSCRIPTIONAL_ACTIVATION
-                  // the following reactions have two reactants and one product
-                  // HETERODIMNER_ASSOCIATION
-                  // the following reactions have one substrate and two products:
-                  // DISSOCIATION, TRUNCATION
-                  switch (ranno.mType)
-                    {
-                      case STATE_TRANSITION_RTYPE:
-                      case KNOWN_TRANSITION_OMITTED_RTYPE:
-                      case UNKNOWN_TRANSITION_RTYPE:
-                      case TRANSCRIPTION_RTYPE:
-                      case TRANSLATION_RTYPE:
-                      case TRANSPORT_RTYPE:
-                      case CATALYSIS_RTYPE:
-                      case UNKNOWN_CATALYSIS_RTYPE:
-                      case INHIBITION_RTYPE:
-                      case UNKNOWN_INHIBITION_RTYPE:
-                      case TRANSCRIPTIONAL_ACTIVATION_RTYPE:
-                      case TRANSCRIPTIONAL_INHIBITION_RTYPE:
-                      case TRANSLATIONAL_ACTIVATION_RTYPE:
-                      case TRANSLATIONAL_INHIBITION_RTYPE:
-                      {
-                        assert(ranno.mBaseReactants.size() == 1);
-                        assert(ranno.mBaseProducts.size() == 1);
-                        // check if both elements have a link anchor
-                        this->checkLinkAnchors(ranno.mBaseReactants[0], ranno.mBaseProducts[0]);
-
-                        if (ranno.mBaseReactants[0].mPosition != POSITION_UNDEFINED &&
-                            ranno.mBaseProducts[0].mPosition != POSITION_UNDEFINED &&
-                            !ranno.mBaseReactants[0].mAlias.empty() &&
-                            !ranno.mBaseProducts[0].mAlias.empty()
-                           )
-                          {
-                            // we should have a start and an end point now
-                            // and the reaction box lies in the middle between these two points
-                            std::map<std::string, BoundingBox>::const_iterator box_pos1 = this->mCDBounds.find(ranno.mBaseReactants[0].mAlias);
-                            std::map<std::string, BoundingBox>::const_iterator box_pos2 = this->mCDBounds.find(ranno.mBaseProducts[0].mAlias);
-                            assert(box_pos1 != this->mCDBounds.end());
-                            assert(box_pos2 != this->mCDBounds.end());
-
-                            if (box_pos1 != this->mCDBounds.end() && box_pos2 != this->mCDBounds.end())
-                              {
-                                // calculate the absolute values of all points
-                                // and put them in a vector
-                                // then we go through the vector and create
-                                // the line segments
-                                // add all edit points
-                                //
-                                // p1 stores the coordinates of the anchor point at the reactant
-                                Point p1 = CCellDesignerImporter::getPositionPoint(box_pos1->second, ranno.mBaseReactants[0].mPosition);
-                                // p2 stores the coordinates of the anchor point at the product
-                                Point p2 = CCellDesignerImporter::getPositionPoint(box_pos2->second, ranno.mBaseProducts[0].mPosition);
-                                Point v1(new LayoutPkgNamespaces(), p2.x() - p1.x(), p2.y() - p1.y());
-                                Point v2(new LayoutPkgNamespaces());
-                                result = CCellDesignerImporter::createOrthogonal(v1, v2);
-
-                                Point p3(new LayoutPkgNamespaces(), p1.x() + v2.x(), p1.y() + v2.y());
-                                std::vector<Point>::const_iterator pointIt = ranno.mEditPoints.mPoints.begin(), pointsEnd = ranno.mEditPoints.mPoints.end();
-                                Point p(new LayoutPkgNamespaces());
-                                std::vector<Point> points;
-                                // we add p1 and p2 to the points vector
-                                // then the values would be save and we could use the entries from the vector below
-                                // which would be save even if p1 and p2 got new values
-                                points.push_back(p1);
-
-                                while (pointIt != pointsEnd)
-                                  {
-                                    // create the absolute point
-                                    p = CCellDesignerImporter::calculateAbsoluteValue(*pointIt, p1, p2, p3);
-                                    points.push_back(p);
-                                    ++pointIt;
-                                  }
-
-                                points.push_back(p2);
-
-                                std::vector<Point> reactantPoints;
-                                pointIt = points.begin(), pointsEnd = points.end();
-                                reactantPoints.push_back(*pointIt);
-                                ++pointIt;
-                                std::vector<Point> productPoints;
-                                int index = 0;
-                                int rectangleIndex = ranno.mConnectScheme.mRectangleIndex;
-
-                                // rectangle index marks the segment that contains the "process symbol", i.e. the reaction glyph
-                                while (index < rectangleIndex)
-                                  {
-                                    reactantPoints.push_back(*pointIt);
-                                    ++index;
-                                    ++pointIt;
-                                  }
-
-                                assert(pointIt != pointsEnd);
-
-                                if (pointIt != pointsEnd)
-                                  {
-                                    p2 = *pointIt;
-                                  }
-
-                                // p2 now points to the end of the section that contains the reaction glyph
-                                // now we assing p3 to be the start of the segment that contains the reaction glyph
-                                // which is the last point we added to the reactants
-                                p3 = reactantPoints.back();
-
-                                double distance = CCellDesignerImporter::distance(p3, p2);
-                                Point v(new LayoutPkgNamespaces(), (p2.x() - p3.x()) / distance, (p2.y() - p3.y()) / distance);
-                                // create the curve for the reaction glyph
-                                // right now, the reaction glyph consists of a short
-                                // line segment
-                                // the curve should not be longer than 1/3 the distance
-                                distance /= 6.0;
-
-                                if (distance >= 7.5)
-                                  {
-                                    distance = 7.5;
-                                  }
-
-                                Curve* pCurve = pRGlyph->getCurve();
-                                assert(pCurve != NULL);
-                                LineSegment* pLS = pCurve->createLineSegment();
-                                Point center(new LayoutPkgNamespaces(), (p3.x() + p2.x()) * 0.5, (p3.y() + p2.y()) * 0.5);
-                                pLS->setStart(center.x() - distance * v.x(), center.y() - distance * v.y());
-                                pLS->setEnd(center.x() + distance * v.x(), center.y() + distance * v.y());
-                                // add a new substrate point
-                                // the substrate points are in reverse order
-                                reactantPoints.push_back(*pLS->getStart());
-                                // add a new product point
-                                productPoints.push_back(*pLS->getEnd());
-
-                                if (pointIt == pointsEnd)
-                                  {
-                                    productPoints.push_back(p2);
-                                  }
-
-                                while (pointIt != pointsEnd)
-                                  {
-                                    productPoints.push_back(*pointIt);
-                                    ++pointIt;
-                                  }
-
-                                // create the speciesReferenceGlyphs
-                                SpeciesReferenceGlyph* pSRefGlyph1 = pRGlyph->createSpeciesReferenceGlyph();
-                                SpeciesReferenceGlyph* pSRefGlyph2 = pRGlyph->createSpeciesReferenceGlyph();
-                                assert(pSRefGlyph1 != NULL);
-                                assert(pSRefGlyph2 != NULL);
-
-                                if (pSRefGlyph1 != NULL && pSRefGlyph2 != NULL)
-                                  {
-                                    // set the ids
-                                    std::string id = this->createUniqueId("SpeciesReferenceGlyph");
-                                    pSRefGlyph1->setId(id);
-                                    this->mIdMap.insert(std::pair<std::string, const SBase*>(id, pSRefGlyph1));
-                                    id = this->createUniqueId("SpeciesReferenceGlyph");
-                                    pSRefGlyph2->setId(id);
-                                    this->mIdMap.insert(std::pair<std::string, const SBase*>(id, pSRefGlyph2));
-                                    // set the role
-                                    pSRefGlyph1->setRole(SPECIES_ROLE_SUBSTRATE);
-                                    pSRefGlyph2->setRole(SPECIES_ROLE_PRODUCT);
-                                    // set the curve
-                                    pCurve = pSRefGlyph1->getCurve();
-                                    assert(pCurve != NULL);
-
-                                    if (pCurve != NULL && result == true)
-                                      {
-                                        assert(reactantPoints.size() > 1);
-                                        result = CCellDesignerImporter::createLineSegments(pCurve, reactantPoints.rbegin(), reactantPoints.rend());
-                                      }
-                                    else
-                                      {
-                                        result = false;
-                                      }
-
-                                    pCurve = pSRefGlyph2->getCurve();
-                                    assert(pCurve != NULL);
-
-                                    if (pCurve != NULL && result == true)
-                                      {
-                                        assert(productPoints.size() > 1);
-                                        result = CCellDesignerImporter::createLineSegments(pCurve, productPoints.begin(), productPoints.end());
-                                      }
-
-                                    // make sure the role is set because setSpeciesReferenceId relies on it
-                                    this->setSpeciesGlyphId(pSRefGlyph1, ranno.mBaseReactants[0]);
-                                    this->setSpeciesReferenceId(pSRefGlyph1, ranno.mBaseReactants[0], pRGlyph->getReactionId());
-                                    this->setSpeciesGlyphId(pSRefGlyph2, ranno.mBaseProducts[0]);
-                                    this->setSpeciesReferenceId(pSRefGlyph2, ranno.mBaseProducts[0], pRGlyph->getReactionId());
-                                  }
-                                else
-                                  {
-                                    result = false;
-                                  }
-                              }
-                            else
-                              {
-                                result = false;
-                              }
-                          }
-                        else
-                          {
-                            result = false;
-                          }
-                      }
-                      break;
-
-                      case DISSOCIATION_RTYPE:
-                      case TRUNCATION_RTYPE:
-                      {
-                        assert(ranno.mBaseReactants.size() == 1);
-                        assert(ranno.mBaseProducts.size() == 2);
-                        // there must be some edit points
-                        assert(!ranno.mEditPoints.mPoints.empty());
-                        // there should be a tShapeIndex or an omittedShapeIndex element
-                        // that tells us, which of the points is the connection point
-                        // center_product1 - center_substrate_1)
-                        // if no tShapeIndex or omittedSHapeIndex is given, we assume it is 0
-                        Point connectionPoint(new LayoutPkgNamespaces());
-
-                        if (ranno.mEditPoints.mTShapeIndex < (int)ranno.mEditPoints.mPoints.size())
-                          {
-                            connectionPoint = ranno.mEditPoints.mPoints[ranno.mEditPoints.mTShapeIndex];
-                          }
-                        else if (ranno.mEditPoints.mOmittedShapeIndex < (int)ranno.mEditPoints.mPoints.size())
-                          {
-                            connectionPoint = ranno.mEditPoints.mPoints[ranno.mEditPoints.mOmittedShapeIndex];
-                          }
-                        else
-                          {
-                            connectionPoint = ranno.mEditPoints.mPoints[0];
-                          }
-
-                        // calculate the absolute position
-                        // the position for the relative points coordinates is calculated as
-                        // center_substrate1 + x*(center_substrate_2 - center_substrate_1)+y*(
-                        std::string alias1 = ranno.mBaseReactants[0].mAlias;
-                        assert(!alias1.empty());
-                        std::string alias2 = ranno.mBaseProducts[0].mAlias;
-                        assert(!alias2.empty());
-                        std::string alias3 = ranno.mBaseProducts[1].mAlias;
-                        assert(!alias3.empty());
-                        std::map<std::string, BoundingBox>::const_iterator pos1, pos2, pos3;
-                        pos1 = this->mCDBounds.find(alias1);
-                        assert(pos1 != this->mCDBounds.end());
-                        pos2 = this->mCDBounds.find(alias2);
-                        assert(pos2 != this->mCDBounds.end());
-                        pos3 = this->mCDBounds.find(alias3);
-                        assert(pos3 != this->mCDBounds.end());
-
-                        if (!alias1.empty() &&
-                            !alias3.empty() &&
-                            !alias3.empty() &&
-                            pos1 != this->mCDBounds.end() &&
-                            pos2 != this->mCDBounds.end() &&
-                            pos3 != this->mCDBounds.end())
-                          {
-                            Point p1(new LayoutPkgNamespaces(), pos1->second.getPosition()->x() + pos1->second.getDimensions()->getWidth() * 0.5, pos1->second.getPosition()->y() + pos1->second.getDimensions()->getHeight() * 0.5);
-                            Point p2(new LayoutPkgNamespaces(), pos2->second.getPosition()->x() + pos2->second.getDimensions()->getWidth() * 0.5, pos2->second.getPosition()->y() + pos2->second.getDimensions()->getHeight() * 0.5);
-                            Point p3(new LayoutPkgNamespaces(), pos3->second.getPosition()->x() + pos3->second.getDimensions()->getWidth() * 0.5, pos3->second.getPosition()->y() + pos3->second.getDimensions()->getHeight() * 0.5);
-                            Point v1(new LayoutPkgNamespaces(), p2.x() - p1.x(), p2.y() - p1.y());
-                            Point v2(new LayoutPkgNamespaces(), p3.x() - p1.x(), p3.y() - p1.y());
-                            Point p(new LayoutPkgNamespaces(), p1.x() + connectionPoint.x()*v1.x() + connectionPoint.y()*v2.x(), p1.y() + connectionPoint.x()*v1.y() + connectionPoint.y()*v2.y());
-                            // p is the start point of the reaction glyph
-                            // i.e. the point where the substrates connect
-                            // create the curve for the reaction glyph
-                            // the end point is a short distance further along the
-                            // path the the only product
-
-                            // first we have to check if we have linkAnchors for all
-                            // elements
-                            // if not, we create them based on the shortest distance to the
-                            // connection point
-
-                            CCellDesignerImporter::checkLinkAnchor(ranno.mBaseReactants[0], p);
-                            CCellDesignerImporter::checkLinkAnchor(ranno.mBaseProducts[0], p);
-                            CCellDesignerImporter::checkLinkAnchor(ranno.mBaseProducts[1], p);
-                            assert(ranno.mBaseReactants[0].mPosition != POSITION_UNDEFINED);
-                            assert(ranno.mBaseProducts[0].mPosition != POSITION_UNDEFINED);
-                            assert(ranno.mBaseProducts[1].mPosition != POSITION_UNDEFINED);
-
-                            if (ranno.mBaseReactants[0].mPosition != POSITION_UNDEFINED &&
-                                ranno.mBaseProducts[0].mPosition != POSITION_UNDEFINED &&
-                                ranno.mBaseProducts[1].mPosition != POSITION_UNDEFINED)
-                              {
-                                // p is the end point of the reaction glyph
-                                // i.e. the point where the products connect
-                                // the start point is a short distance further along the
-                                // path the to the only substrate
-                                Curve* pCurve = pRGlyph->getCurve();
-                                assert(pCurve != NULL);
-
-                                if (pCurve != NULL)
-                                  {
-                                    LineSegment* pLS = pCurve->createLineSegment();
-                                    assert(pLS != NULL);
-
-                                    if (pLS != NULL)
-                                      {
-                                        pLS->setEnd(p.x(), p.y());
-
-                                        Point p1 = CCellDesignerImporter::getPositionPoint(pos1->second, ranno.mBaseReactants[0].mPosition);
-                                        double dist = CCellDesignerImporter::distance(p1, p);
-                                        assert(dist != 0.0);
-                                        Point v(new LayoutPkgNamespaces(), (p1.x() - p.x()) / dist, (p1.y() - p.y()) / dist);
-                                        dist /= 3.0;
-
-                                        if (dist > 15.0)
-                                          {
-                                            dist = 15.0;
-                                          }
-
-                                        pLS->setStart(p.x() + dist * v.x(), p.y() + dist * v.y());
-
-                                        // create the species reference glyphs
-                                        // since we already know the endpoint for the substrate, we start
-                                        // with that
-                                        SpeciesReferenceGlyph* pSRefGlyph = pRGlyph->createSpeciesReferenceGlyph();
-                                        assert(pSRefGlyph != NULL);
-
-                                        if (pSRefGlyph != NULL)
-                                          {
-                                            // set the curve
-                                            pCurve = pSRefGlyph->getCurve();
-
-                                            if (pCurve != NULL)
-                                              {
-                                                LineSegment* pLS2 = pCurve->createLineSegment();
-                                                assert(pLS2 != NULL);
-
-                                                if (pLS2 != NULL)
-                                                  {
-                                                    pLS2->setStart(pLS->getStart()->x(), pLS->getStart()->y());
-                                                    pLS2->setEnd(p1.x(), p1.y());
-                                                  }
-                                                else
-                                                  {
-                                                    result = false;
-                                                  }
-                                              }
-                                            else
-                                              {
-                                                result = false;
-                                              }
-
-                                            // set an id
-                                            std::string id = this->createUniqueId("SpeciesReferenceGlyph");
-                                            pSRefGlyph->setId(id);
-                                            this->mIdMap.insert(std::pair<std::string, const SBase*>(id, pSRefGlyph));
-                                            // set the role
-                                            pSRefGlyph->setRole(SPECIES_ROLE_SUBSTRATE);
-                                            // set the species glyph id
-                                            this->setSpeciesGlyphId(pSRefGlyph, ranno.mBaseReactants[0]);
-                                            // set the species reference id
-                                            this->setSpeciesReferenceId(pSRefGlyph, ranno.mBaseReactants[0], pRGlyph->getReactionId());
-                                          }
-                                        else
-                                          {
-                                            result = false;
-                                          }
-
-                                        // first product
-                                        if (result == true)
-                                          {
-                                            p1 = CCellDesignerImporter::getPositionPoint(pos2->second, ranno.mBaseProducts[0].mPosition);
-                                            pSRefGlyph = pRGlyph->createSpeciesReferenceGlyph();
-                                            assert(pSRefGlyph != NULL);
-
-                                            if (pSRefGlyph != NULL)
-                                              {
-                                                // set the curve
-                                                pCurve = pSRefGlyph->getCurve();
-
-                                                if (pCurve != NULL)
-                                                  {
-                                                    LineSegment* pLS2 = pCurve->createLineSegment();
-                                                    assert(pLS2 != NULL);
-
-                                                    if (pLS2 != NULL)
-                                                      {
-                                                        pLS2->setStart(pLS->getEnd()->x(), pLS->getEnd()->y());
-                                                        pLS2->setEnd(p1.x(), p1.y());
-                                                      }
-                                                    else
-                                                      {
-                                                        result = false;
-                                                      }
-                                                  }
-                                                else
-                                                  {
-                                                    result = false;
-                                                  }
-
-                                                // set an id
-                                                std::string id = this->createUniqueId("SpeciesReferenceGlyph");
-                                                pSRefGlyph->setId(id);
-                                                this->mIdMap.insert(std::pair<std::string, const SBase*>(id, pSRefGlyph));
-                                                // set the role
-                                                pSRefGlyph->setRole(SPECIES_ROLE_PRODUCT);
-                                                // set the species glyph id
-                                                this->setSpeciesGlyphId(pSRefGlyph, ranno.mBaseProducts[0]);
-                                                // set the species reference id
-                                                this->setSpeciesReferenceId(pSRefGlyph, ranno.mBaseProducts[0], pRGlyph->getReactionId());
-                                              }
-                                            else
-                                              {
-                                                result = false;
-                                              }
-                                          }
-
-                                        // second product
-                                        if (result == true)
-                                          {
-                                            p1 = CCellDesignerImporter::getPositionPoint(pos3->second, ranno.mBaseProducts[1].mPosition);
-                                            pSRefGlyph = pRGlyph->createSpeciesReferenceGlyph();
-                                            assert(pSRefGlyph != NULL);
-
-                                            if (pSRefGlyph != NULL)
-                                              {
-                                                // set the curve
-                                                pCurve = pSRefGlyph->getCurve();
-
-                                                if (pCurve != NULL)
-                                                  {
-                                                    LineSegment* pLS2 = pCurve->createLineSegment();
-                                                    assert(pLS2 != NULL);
-
-                                                    if (pLS2 != NULL)
-                                                      {
-                                                        pLS2->setStart(pLS->getEnd()->x(), pLS->getEnd()->y());
-                                                        pLS2->setEnd(p1.x(), p1.y());
-                                                      }
-                                                    else
-                                                      {
-                                                        result = false;
-                                                      }
-                                                  }
-                                                else
-                                                  {
-                                                    result = false;
-                                                  }
-
-                                                // set an id
-                                                std::string id = this->createUniqueId("SpeciesReferenceGlyph");
-                                                pSRefGlyph->setId(id);
-                                                this->mIdMap.insert(std::pair<std::string, const SBase*>(id, pSRefGlyph));
-                                                // set the role
-                                                pSRefGlyph->setRole(SPECIES_ROLE_PRODUCT);
-                                                // set the species glyph id
-                                                this->setSpeciesGlyphId(pSRefGlyph, ranno.mBaseProducts[1]);
-                                                // set the species reference id
-                                                this->setSpeciesReferenceId(pSRefGlyph, ranno.mBaseProducts[1], pRGlyph->getReactionId());
-                                              }
-                                            else
-                                              {
-                                                result = false;
-                                              }
-                                          }
-                                      }
-                                    else
-                                      {
-                                        result = false;
-                                      }
-                                  }
-                                else
-                                  {
-                                    result = false;
-                                  }
-                              }
-                            else
-                              {
-                                result = false;
-                              }
-                          }
-                        else
-                          {
-                            result = false;
-                          }
-                      }
-                      break;
-
-                      case HETERODIMER_ASSOCIATION_RTYPE:
-                      {
-                        assert(ranno.mBaseReactants.size() == 2);
-                        assert(ranno.mBaseProducts.size() == 1);
-                        // assert that all elements have a link anchor
-                        assert(!ranno.mEditPoints.mPoints.empty());
-                        // there should be a tShapeIndex or an omittedShapeIndex element
-                        // that tells us, which of the points is the connection point
-                        Point connectionPoint(new LayoutPkgNamespaces());
-
-                        if (ranno.mEditPoints.mTShapeIndex < (int)ranno.mEditPoints.mPoints.size())
-                          {
-                            connectionPoint = ranno.mEditPoints.mPoints[ranno.mEditPoints.mTShapeIndex];
-                          }
-                        else if (ranno.mEditPoints.mOmittedShapeIndex < (int)ranno.mEditPoints.mPoints.size())
-                          {
-                            connectionPoint = ranno.mEditPoints.mPoints[ranno.mEditPoints.mOmittedShapeIndex];
-                          }
-                        else
-                          {
-                            connectionPoint = ranno.mEditPoints.mPoints[0];
-                          }
-
-                        // calculate the absolute position
-                        // the position for the relative points coordinates is calculated as
-                        // center_substrat1 + x*(center_product1 - center_substrate_1)+y*(
-                        // center_product2 - center_substrate_1)
-                        // if no tShapeIndex or omittedShapeIndex is given, we assume it is 0
-                        std::string alias1 = ranno.mBaseReactants[0].mAlias;
-                        assert(!alias1.empty());
-                        std::string alias2 = ranno.mBaseReactants[1].mAlias;
-                        assert(!alias2.empty());
-                        std::string alias3 = ranno.mBaseProducts[0].mAlias;
-                        assert(!alias3.empty());
-                        std::map<std::string, BoundingBox>::const_iterator pos1, pos2, pos3;
-                        pos1 = this->mCDBounds.find(alias1);
-                        assert(pos1 != this->mCDBounds.end());
-                        pos2 = this->mCDBounds.find(alias2);
-                        assert(pos2 != this->mCDBounds.end());
-                        pos3 = this->mCDBounds.find(alias3);
-                        assert(pos3 != this->mCDBounds.end());
-
-                        if (!alias1.empty() &&
-                            !alias3.empty() &&
-                            !alias3.empty() &&
-                            pos1 != this->mCDBounds.end() &&
-                            pos2 != this->mCDBounds.end() &&
-                            pos3 != this->mCDBounds.end())
-                          {
-                            Point p1(new LayoutPkgNamespaces(), pos1->second.getPosition()->x() + pos1->second.getDimensions()->getWidth() * 0.5, pos1->second.getPosition()->y() + pos1->second.getDimensions()->getHeight() * 0.5);
-                            Point p2(new LayoutPkgNamespaces(), pos2->second.getPosition()->x() + pos2->second.getDimensions()->getWidth() * 0.5, pos2->second.getPosition()->y() + pos2->second.getDimensions()->getHeight() * 0.5);
-                            Point p3(new LayoutPkgNamespaces(), pos3->second.getPosition()->x() + pos3->second.getDimensions()->getWidth() * 0.5, pos3->second.getPosition()->y() + pos3->second.getDimensions()->getHeight() * 0.5);
-
-                            Point p = CCellDesignerImporter::calculateAbsoluteValue(connectionPoint, p1, p2, p3);
-
-                            // first we have to check if we have linkAnchors for all
-                            // elements
-                            // if not, we create them based on the shortest distance to the
-                            // connection point
-                            CCellDesignerImporter::checkLinkAnchor(ranno.mBaseReactants[0], p);
-                            CCellDesignerImporter::checkLinkAnchor(ranno.mBaseReactants[1], p);
-                            CCellDesignerImporter::checkLinkAnchor(ranno.mBaseProducts[0], p);
-                            assert(ranno.mBaseReactants[0].mPosition != POSITION_UNDEFINED);
-                            assert(ranno.mBaseReactants[1].mPosition != POSITION_UNDEFINED);
-                            assert(ranno.mBaseProducts[0].mPosition != POSITION_UNDEFINED);
-
-                            if (ranno.mBaseReactants[0].mPosition != POSITION_UNDEFINED &&
-                                ranno.mBaseReactants[1].mPosition != POSITION_UNDEFINED &&
-                                ranno.mBaseProducts[0].mPosition != POSITION_UNDEFINED)
-                              {
-                                // p is the start point of the reaction glyph
-                                // i.e. the point where the substrates connect
-                                // create the curve for the reaction glyph
-                                // the end point is a short distance further along the
-                                // path the to the only product
-                                Curve* pCurve = pRGlyph->getCurve();
-                                assert(pCurve != NULL);
-
-                                if (pCurve != NULL)
-                                  {
-                                    LineSegment* pLS = pCurve->createLineSegment();
-                                    assert(pLS != NULL);
-
-                                    if (pLS != NULL)
-                                      {
-                                        pLS->setStart(p.x(), p.y());
-
-                                        Point p3 = CCellDesignerImporter::getPositionPoint(pos3->second, ranno.mBaseProducts[0].mPosition);
-                                        double dist = CCellDesignerImporter::distance(p3, p);
-                                        assert(dist != 0.0);
-                                        Point v(new LayoutPkgNamespaces(), (p3.x() - p.x()) / dist, (p3.y() - p.y()) / dist);
-                                        dist /= 3.0;
-
-                                        if (dist > 15.0)
-                                          {
-                                            dist = 15.0;
-                                          }
-
-                                        pLS->setEnd(p.x() + dist * v.x(), p.y() + dist * v.y());
-
-                                        // create the species reference glyphs
-                                        // since we already know the endpoint for the product, we start
-                                        // with that
-                                        SpeciesReferenceGlyph* pSRefGlyph = pRGlyph->createSpeciesReferenceGlyph();
-                                        assert(pSRefGlyph != NULL);
-
-                                        if (pSRefGlyph != NULL)
-                                          {
-                                            // set the curve
-                                            pCurve = pSRefGlyph->getCurve();
-
-                                            if (pCurve != NULL)
-                                              {
-                                                LineSegment* pLS2 = pCurve->createLineSegment();
-                                                assert(pLS2 != NULL);
-
-                                                if (pLS2 != NULL)
-                                                  {
-                                                    pLS2->setStart(p.x(), p.y());
-                                                    pLS2->setEnd(p3.x(), p3.y());
-                                                  }
-                                                else
-                                                  {
-                                                    result = false;
-                                                  }
-                                              }
-                                            else
-                                              {
-                                                result = false;
-                                              }
-
-                                            // set an id
-                                            std::string id = this->createUniqueId("SpeciesReferenceGlyph");
-                                            pSRefGlyph->setId(id);
-                                            this->mIdMap.insert(std::pair<std::string, const SBase*>(id, pSRefGlyph));
-                                            // set the role
-                                            pSRefGlyph->setRole(SPECIES_ROLE_PRODUCT);
-                                            // set the species glyph id
-                                            this->setSpeciesGlyphId(pSRefGlyph, ranno.mBaseProducts[0]);
-                                            // set the species reference id
-                                            this->setSpeciesReferenceId(pSRefGlyph, ranno.mBaseProducts[0], pRGlyph->getReactionId());
-                                          }
-                                        else
-                                          {
-                                            result = false;
-                                          }
-
-                                        // first substrate
-                                        if (result == true)
-                                          {
-                                            p3 = CCellDesignerImporter::getPositionPoint(pos1->second, ranno.mBaseReactants[0].mPosition);
-                                            pSRefGlyph = pRGlyph->createSpeciesReferenceGlyph();
-                                            assert(pSRefGlyph != NULL);
-
-                                            if (pSRefGlyph != NULL)
-                                              {
-                                                // set the curve
-                                                pCurve = pSRefGlyph->getCurve();
-
-                                                if (pCurve != NULL)
-                                                  {
-                                                    LineSegment* pLS2 = pCurve->createLineSegment();
-                                                    assert(pLS2 != NULL);
-
-                                                    if (pLS2 != NULL)
-                                                      {
-                                                        pLS2->setStart(pLS->getStart()->x(), pLS->getStart()->y());
-                                                        pLS2->setEnd(p3.x(), p3.y());
-                                                      }
-                                                    else
-                                                      {
-                                                        result = false;
-                                                      }
-                                                  }
-                                                else
-                                                  {
-                                                    result = false;
-                                                  }
-
-                                                // set an id
-                                                std::string id = this->createUniqueId("SpeciesReferenceGlyph");
-                                                pSRefGlyph->setId(id);
-                                                this->mIdMap.insert(std::pair<std::string, const SBase*>(id, pSRefGlyph));
-                                                // set the role
-                                                pSRefGlyph->setRole(SPECIES_ROLE_SUBSTRATE);
-                                                // set the species glyph id
-                                                this->setSpeciesGlyphId(pSRefGlyph, ranno.mBaseReactants[0]);
-                                                // set the species reference id
-                                                this->setSpeciesReferenceId(pSRefGlyph, ranno.mBaseReactants[0], pRGlyph->getReactionId());
-                                              }
-                                            else
-                                              {
-                                                result = false;
-                                              }
-                                          }
-
-                                        // second substrate
-                                        if (result == true)
-                                          {
-                                            p3 = CCellDesignerImporter::getPositionPoint(pos2->second, ranno.mBaseReactants[1].mPosition);
-                                            pSRefGlyph = pRGlyph->createSpeciesReferenceGlyph();
-                                            assert(pSRefGlyph != NULL);
-
-                                            if (pSRefGlyph != NULL)
-                                              {
-                                                // set the curve
-                                                pCurve = pSRefGlyph->getCurve();
-
-                                                if (pCurve != NULL)
-                                                  {
-                                                    LineSegment* pLS2 = pCurve->createLineSegment();
-                                                    assert(pLS2 != NULL);
-
-                                                    if (pLS2 != NULL)
-                                                      {
-                                                        pLS2->setStart(pLS->getStart()->x(), pLS->getStart()->y());
-                                                        pLS2->setEnd(p3.x(), p3.y());
-                                                      }
-                                                    else
-                                                      {
-                                                        result = false;
-                                                      }
-                                                  }
-                                                else
-                                                  {
-                                                    result = false;
-                                                  }
-
-                                                // set an id
-                                                std::string id = this->createUniqueId("SpeciesReferenceGlyph");
-                                                pSRefGlyph->setId(id);
-                                                this->mIdMap.insert(std::pair<std::string, const SBase*>(id, pSRefGlyph));
-                                                // set the role
-                                                pSRefGlyph->setRole(SPECIES_ROLE_SUBSTRATE);
-                                                // set the species glyph id
-                                                this->setSpeciesGlyphId(pSRefGlyph, ranno.mBaseReactants[1]);
-                                                // set the species reference id
-                                                this->setSpeciesReferenceId(pSRefGlyph, ranno.mBaseReactants[1], pRGlyph->getReactionId());
-                                              }
-                                            else
-                                              {
-                                                result = false;
-                                              }
-                                          }
-                                      }
-                                    else
-                                      {
-                                        result = false;
-                                      }
-                                  }
-                                else
-                                  {
-                                    result = false;
-                                  }
-                              }
-                            else
-                              {
-                                result = false;
-                              }
-                          }
-                        else
-                          {
-                            result = false;
-                          }
-                      }
-                      break;
-
-                      default:
-                        result = false;
-                        break;
-                    }
-
-                  // there might be additional substrates and reactants
-                  // in the listOfReactantLinks and the listOfProductLinks
-                  if (result == true)
-                    {
-                      result = this->handleExtraReactionElements(pRGlyph, ranno, true);
-                    }
-
-                  if (result == true)
-                    {
-                      result = this->handleExtraReactionElements(pRGlyph, ranno, false);
-                    }
-
-                  // now that the species reference glyphs are handled,
-                  // we should handle the modifiers
-                  if (result == true)
-                    {
-                      result = this->handleModificationLinks(pRGlyph, ranno);
-                    }
-                }
-              else
-                {
-                  result = false;
-                }
-            }
-        }
+      FAIL_WITH_ERROR_AND_RETURN(result, "reaction annotation not found.");
     }
-  else
+
+  const XMLNode* pAnnotation = this->findCellDesignerAnnotation(this->mpDocument, pReaction->getAnnotation());
+
+  if (pAnnotation == NULL || pAnnotation->getName() != "extension" || this->mpLayout == NULL)
+    return result;
+
+  // create a reaction glyph
+  ReactionAnnotation ranno;
+  result = this->parseReactionAnnotation(pAnnotation, ranno);
+
+  if (!result) return result;
+
+  ReactionGlyph* pRGlyph = this->mpLayout->createReactionGlyph();
+
+  if (pRGlyph == NULL)
     {
-      result = false;
+      COULD_NOT_CREATE(result);
+      return result;
+    }
+
+  std::string id = this->createUniqueId("ReactionGlyph");
+  pRGlyph->setId(id);
+  pRGlyph->setReactionId(pReaction->getId());
+  this->mIdMap.insert(std::pair<std::string, const SBase*>(id, pRGlyph));
+  // the reactionType element has a text element
+  // that defines the type of reaction
+
+  // the following reaction types have one reactant and one product
+  // STATE_TRANSITION, KNOWN_TRANSITION_OMITTED, UNKNOWN_TRANSITION,
+  // TRANSCRIPTION, TRANSLATION, TRANSPORT
+  // I also have an example where an INHIBITION reaction has one substrate
+  // and one product, so maybe we add some more like CATALYSIS, UNKNOWN_INHIBITION
+  // UNKNOWN_CATALYSIS, TRANSCRITPTIONAL_INHIBITION, TRANSLATIONAL_INHIBITION,
+  // TRANSLATIONAL_ACTIVATION, TRANSCRIPTIONAL_ACTIVATION
+  // the following reactions have two reactants and one product
+  // HETERODIMNER_ASSOCIATION
+  // the following reactions have one substrate and two products:
+  // DISSOCIATION, TRUNCATION
+  switch (ranno.mType)
+    {
+      case STATE_TRANSITION_RTYPE:
+      case KNOWN_TRANSITION_OMITTED_RTYPE:
+      case UNKNOWN_TRANSITION_RTYPE:
+      case TRANSCRIPTION_RTYPE:
+      case TRANSLATION_RTYPE:
+      case TRANSPORT_RTYPE:
+      case CATALYSIS_RTYPE:
+      case UNKNOWN_CATALYSIS_RTYPE:
+      case INHIBITION_RTYPE:
+      case UNKNOWN_INHIBITION_RTYPE:
+      case TRANSCRIPTIONAL_ACTIVATION_RTYPE:
+      case TRANSCRIPTIONAL_INHIBITION_RTYPE:
+      case TRANSLATIONAL_ACTIVATION_RTYPE:
+      case TRANSLATIONAL_INHIBITION_RTYPE:
+      {
+        assert(ranno.mBaseReactants.size() == 1);
+        assert(ranno.mBaseProducts.size() == 1);
+        // check if both elements have a link anchor
+        this->checkLinkAnchors(ranno.mBaseReactants[0], ranno.mBaseProducts[0]);
+
+        if (ranno.mBaseReactants[0].mPosition != POSITION_UNDEFINED &&
+            ranno.mBaseProducts[0].mPosition != POSITION_UNDEFINED &&
+            !ranno.mBaseReactants[0].mAlias.empty() &&
+            !ranno.mBaseProducts[0].mAlias.empty()
+           )
+          {
+            // we should have a start and an end point now
+            // and the reaction box lies in the middle between these two points
+            std::map<std::string, BoundingBox>::const_iterator box_pos1 = this->mCDBounds.find(ranno.mBaseReactants[0].mAlias);
+            std::map<std::string, BoundingBox>::const_iterator box_pos2 = this->mCDBounds.find(ranno.mBaseProducts[0].mAlias);
+            assert(box_pos1 != this->mCDBounds.end());
+            assert(box_pos2 != this->mCDBounds.end());
+
+            if (box_pos1 != this->mCDBounds.end() && box_pos2 != this->mCDBounds.end())
+              {
+                // calculate the absolute values of all points
+                // and put them in a vector
+                // then we go through the vector and create
+                // the line segments
+                // add all edit points
+                //
+                // p1 stores the coordinates of the anchor point at the reactant
+                Point p1 = CCellDesignerImporter::getPositionPoint(box_pos1->second, ranno.mBaseReactants[0].mPosition);
+                // p2 stores the coordinates of the anchor point at the product
+                Point p2 = CCellDesignerImporter::getPositionPoint(box_pos2->second, ranno.mBaseProducts[0].mPosition);
+                Point v1(new LayoutPkgNamespaces(), p2.x() - p1.x(), p2.y() - p1.y());
+                Point v2(new LayoutPkgNamespaces());
+                result = CCellDesignerImporter::createOrthogonal(v1, v2);
+
+                Point p3(new LayoutPkgNamespaces(), p1.x() + v2.x(), p1.y() + v2.y());
+                std::vector<Point>::const_iterator pointIt = ranno.mEditPoints.mPoints.begin(), pointsEnd = ranno.mEditPoints.mPoints.end();
+                Point p(new LayoutPkgNamespaces());
+                std::vector<Point> points;
+                // we add p1 and p2 to the points vector
+                // then the values would be save and we could use the entries from the vector below
+                // which would be save even if p1 and p2 got new values
+                points.push_back(p1);
+
+                while (pointIt != pointsEnd)
+                  {
+                    // create the absolute point
+                    p = CCellDesignerImporter::calculateAbsoluteValue(*pointIt, p1, p2, p3);
+                    points.push_back(p);
+                    ++pointIt;
+                  }
+
+                points.push_back(p2);
+
+                std::vector<Point> reactantPoints;
+                pointIt = points.begin(), pointsEnd = points.end();
+                reactantPoints.push_back(*pointIt);
+                ++pointIt;
+                std::vector<Point> productPoints;
+                int index = 0;
+                int rectangleIndex = ranno.mConnectScheme.mRectangleIndex;
+
+                // rectangle index marks the segment that contains the "process symbol", i.e. the reaction glyph
+                while (index < rectangleIndex)
+                  {
+                    reactantPoints.push_back(*pointIt);
+                    ++index;
+                    ++pointIt;
+                  }
+
+                assert(pointIt != pointsEnd);
+
+                if (pointIt != pointsEnd)
+                  {
+                    p2 = *pointIt;
+                  }
+
+                // p2 now points to the end of the section that contains the reaction glyph
+                // now we assing p3 to be the start of the segment that contains the reaction glyph
+                // which is the last point we added to the reactants
+                p3 = reactantPoints.back();
+
+                double distance = CCellDesignerImporter::distance(p3, p2);
+                Point v(new LayoutPkgNamespaces(), (p2.x() - p3.x()) / distance, (p2.y() - p3.y()) / distance);
+                // create the curve for the reaction glyph
+                // right now, the reaction glyph consists of a short
+                // line segment
+                // the curve should not be longer than 1/3 the distance
+                distance /= 6.0;
+
+                if (distance >= 7.5)
+                  {
+                    distance = 7.5;
+                  }
+
+                Curve* pCurve = pRGlyph->getCurve();
+                assert(pCurve != NULL);
+                LineSegment* pLS = pCurve->createLineSegment();
+                Point center(new LayoutPkgNamespaces(), (p3.x() + p2.x()) * 0.5, (p3.y() + p2.y()) * 0.5);
+                pLS->setStart(center.x() - distance * v.x(), center.y() - distance * v.y());
+                pLS->setEnd(center.x() + distance * v.x(), center.y() + distance * v.y());
+                // add a new substrate point
+                // the substrate points are in reverse order
+                reactantPoints.push_back(*pLS->getStart());
+                // add a new product point
+                productPoints.push_back(*pLS->getEnd());
+
+                if (pointIt == pointsEnd)
+                  {
+                    productPoints.push_back(p2);
+                  }
+
+                while (pointIt != pointsEnd)
+                  {
+                    productPoints.push_back(*pointIt);
+                    ++pointIt;
+                  }
+
+                // create the speciesReferenceGlyphs
+                SpeciesReferenceGlyph* pSRefGlyph1 = pRGlyph->createSpeciesReferenceGlyph();
+                SpeciesReferenceGlyph* pSRefGlyph2 = pRGlyph->createSpeciesReferenceGlyph();
+                assert(pSRefGlyph1 != NULL);
+                assert(pSRefGlyph2 != NULL);
+
+                if (pSRefGlyph1 != NULL && pSRefGlyph2 != NULL)
+                  {
+                    // set the ids
+                    std::string id = this->createUniqueId("SpeciesReferenceGlyph");
+                    pSRefGlyph1->setId(id);
+                    this->mIdMap.insert(std::pair<std::string, const SBase*>(id, pSRefGlyph1));
+                    id = this->createUniqueId("SpeciesReferenceGlyph");
+                    pSRefGlyph2->setId(id);
+                    this->mIdMap.insert(std::pair<std::string, const SBase*>(id, pSRefGlyph2));
+                    // set the role
+                    pSRefGlyph1->setRole(SPECIES_ROLE_SUBSTRATE);
+                    pSRefGlyph2->setRole(SPECIES_ROLE_PRODUCT);
+                    // set the curve
+                    pCurve = pSRefGlyph1->getCurve();
+                    assert(pCurve != NULL);
+
+                    if (pCurve != NULL && result == true)
+                      {
+                        assert(reactantPoints.size() > 1);
+                        result = CCellDesignerImporter::createLineSegments(pCurve, reactantPoints.rbegin(), reactantPoints.rend());
+                      }
+                    else
+                      {
+                        FAIL_WITH_ERROR(result, "curve null");
+                      }
+
+                    pCurve = pSRefGlyph2->getCurve();
+                    assert(pCurve != NULL);
+
+                    if (pCurve != NULL && result == true)
+                      {
+                        assert(productPoints.size() > 1);
+                        result = CCellDesignerImporter::createLineSegments(pCurve, productPoints.begin(), productPoints.end());
+                      }
+
+                    // make sure the role is set because setSpeciesReferenceId relies on it
+                    this->setSpeciesGlyphId(pSRefGlyph1, ranno.mBaseReactants[0]);
+                    this->setSpeciesReferenceId(pSRefGlyph1, ranno.mBaseReactants[0], pRGlyph->getReactionId());
+                    this->setSpeciesGlyphId(pSRefGlyph2, ranno.mBaseProducts[0]);
+                    this->setSpeciesReferenceId(pSRefGlyph2, ranno.mBaseProducts[0], pRGlyph->getReactionId());
+                  }
+                else
+                  {
+                    COULD_NOT_CREATE(result);
+                  }
+              }
+            else
+              {
+                FAIL_WITH_ERROR(result, "bound not found.");
+              }
+          }
+        else
+          {
+            FAIL_WITH_ERROR(result, "reaction links not defined");
+          }
+      }
+      break;
+
+      case DISSOCIATION_RTYPE:
+      case TRUNCATION_RTYPE:
+      {
+        assert(ranno.mBaseReactants.size() == 1);
+        assert(ranno.mBaseProducts.size() == 2);
+        // there must be some edit points
+        assert(!ranno.mEditPoints.mPoints.empty());
+        // there should be a tShapeIndex or an omittedShapeIndex element
+        // that tells us, which of the points is the connection point
+        // center_product1 - center_substrate_1)
+        // if no tShapeIndex or omittedSHapeIndex is given, we assume it is 0
+        Point connectionPoint(new LayoutPkgNamespaces());
+
+        if (ranno.mEditPoints.mTShapeIndex < (int)ranno.mEditPoints.mPoints.size())
+          {
+            connectionPoint = ranno.mEditPoints.mPoints[ranno.mEditPoints.mTShapeIndex];
+          }
+        else if (ranno.mEditPoints.mOmittedShapeIndex < (int)ranno.mEditPoints.mPoints.size())
+          {
+            connectionPoint = ranno.mEditPoints.mPoints[ranno.mEditPoints.mOmittedShapeIndex];
+          }
+        else
+          {
+            connectionPoint = ranno.mEditPoints.mPoints[0];
+          }
+
+        // calculate the absolute position
+        // the position for the relative points coordinates is calculated as
+        // center_substrate1 + x*(center_substrate_2 - center_substrate_1)+y*(
+        std::string alias1 = ranno.mBaseReactants[0].mAlias;
+        assert(!alias1.empty());
+        std::string alias2 = ranno.mBaseProducts[0].mAlias;
+        assert(!alias2.empty());
+        std::string alias3 = ranno.mBaseProducts[1].mAlias;
+        assert(!alias3.empty());
+        std::map<std::string, BoundingBox>::const_iterator pos1, pos2, pos3;
+        pos1 = this->mCDBounds.find(alias1);
+        assert(pos1 != this->mCDBounds.end());
+        pos2 = this->mCDBounds.find(alias2);
+        assert(pos2 != this->mCDBounds.end());
+        pos3 = this->mCDBounds.find(alias3);
+        assert(pos3 != this->mCDBounds.end());
+
+        if (!alias1.empty() &&
+            !alias3.empty() &&
+            !alias3.empty() &&
+            pos1 != this->mCDBounds.end() &&
+            pos2 != this->mCDBounds.end() &&
+            pos3 != this->mCDBounds.end())
+          {
+            Point p1(new LayoutPkgNamespaces(), pos1->second.getPosition()->x() + pos1->second.getDimensions()->getWidth() * 0.5, pos1->second.getPosition()->y() + pos1->second.getDimensions()->getHeight() * 0.5);
+            Point p2(new LayoutPkgNamespaces(), pos2->second.getPosition()->x() + pos2->second.getDimensions()->getWidth() * 0.5, pos2->second.getPosition()->y() + pos2->second.getDimensions()->getHeight() * 0.5);
+            Point p3(new LayoutPkgNamespaces(), pos3->second.getPosition()->x() + pos3->second.getDimensions()->getWidth() * 0.5, pos3->second.getPosition()->y() + pos3->second.getDimensions()->getHeight() * 0.5);
+            Point v1(new LayoutPkgNamespaces(), p2.x() - p1.x(), p2.y() - p1.y());
+            Point v2(new LayoutPkgNamespaces(), p3.x() - p1.x(), p3.y() - p1.y());
+            Point p(new LayoutPkgNamespaces(), p1.x() + connectionPoint.x()*v1.x() + connectionPoint.y()*v2.x(), p1.y() + connectionPoint.x()*v1.y() + connectionPoint.y()*v2.y());
+            // p is the start point of the reaction glyph
+            // i.e. the point where the substrates connect
+            // create the curve for the reaction glyph
+            // the end point is a short distance further along the
+            // path the the only product
+
+            // first we have to check if we have linkAnchors for all
+            // elements
+            // if not, we create them based on the shortest distance to the
+            // connection point
+
+            CCellDesignerImporter::checkLinkAnchor(ranno.mBaseReactants[0], p);
+            CCellDesignerImporter::checkLinkAnchor(ranno.mBaseProducts[0], p);
+            CCellDesignerImporter::checkLinkAnchor(ranno.mBaseProducts[1], p);
+            assert(ranno.mBaseReactants[0].mPosition != POSITION_UNDEFINED);
+            assert(ranno.mBaseProducts[0].mPosition != POSITION_UNDEFINED);
+            assert(ranno.mBaseProducts[1].mPosition != POSITION_UNDEFINED);
+
+            if (ranno.mBaseReactants[0].mPosition != POSITION_UNDEFINED &&
+                ranno.mBaseProducts[0].mPosition != POSITION_UNDEFINED &&
+                ranno.mBaseProducts[1].mPosition != POSITION_UNDEFINED)
+              {
+                // p is the end point of the reaction glyph
+                // i.e. the point where the products connect
+                // the start point is a short distance further along the
+                // path the to the only substrate
+                Curve* pCurve = pRGlyph->getCurve();
+                assert(pCurve != NULL);
+
+                if (pCurve != NULL)
+                  {
+                    LineSegment* pLS = pCurve->createLineSegment();
+                    assert(pLS != NULL);
+
+                    if (pLS != NULL)
+                      {
+                        pLS->setEnd(p.x(), p.y());
+
+                        Point p1 = CCellDesignerImporter::getPositionPoint(pos1->second, ranno.mBaseReactants[0].mPosition);
+                        double dist = CCellDesignerImporter::distance(p1, p);
+                        assert(dist != 0.0);
+                        Point v(new LayoutPkgNamespaces(), (p1.x() - p.x()) / dist, (p1.y() - p.y()) / dist);
+                        dist /= 3.0;
+
+                        if (dist > 15.0)
+                          {
+                            dist = 15.0;
+                          }
+
+                        pLS->setStart(p.x() + dist * v.x(), p.y() + dist * v.y());
+
+                        // create the species reference glyphs
+                        // since we already know the endpoint for the substrate, we start
+                        // with that
+                        SpeciesReferenceGlyph* pSRefGlyph = pRGlyph->createSpeciesReferenceGlyph();
+                        assert(pSRefGlyph != NULL);
+
+                        if (pSRefGlyph != NULL)
+                          {
+                            // set the curve
+                            pCurve = pSRefGlyph->getCurve();
+
+                            if (pCurve != NULL)
+                              {
+                                LineSegment* pLS2 = pCurve->createLineSegment();
+                                assert(pLS2 != NULL);
+
+                                if (pLS2 != NULL)
+                                  {
+                                    pLS2->setStart(pLS->getStart()->x(), pLS->getStart()->y());
+                                    pLS2->setEnd(p1.x(), p1.y());
+                                  }
+                                else
+                                  {
+                                    COULD_NOT_CREATE(result);
+                                  }
+                              }
+                            else
+                              {
+                                FAIL_WITH_ERROR(result, "curve NULL");
+                              }
+
+                            // set an id
+                            std::string id = this->createUniqueId("SpeciesReferenceGlyph");
+                            pSRefGlyph->setId(id);
+                            this->mIdMap.insert(std::pair<std::string, const SBase*>(id, pSRefGlyph));
+                            // set the role
+                            pSRefGlyph->setRole(SPECIES_ROLE_SUBSTRATE);
+                            // set the species glyph id
+                            this->setSpeciesGlyphId(pSRefGlyph, ranno.mBaseReactants[0]);
+                            // set the species reference id
+                            this->setSpeciesReferenceId(pSRefGlyph, ranno.mBaseReactants[0], pRGlyph->getReactionId());
+                          }
+                        else
+                          {
+                            COULD_NOT_CREATE(result);
+                          }
+
+                        // first product
+                        if (result == true)
+                          {
+                            p1 = CCellDesignerImporter::getPositionPoint(pos2->second, ranno.mBaseProducts[0].mPosition);
+                            pSRefGlyph = pRGlyph->createSpeciesReferenceGlyph();
+                            assert(pSRefGlyph != NULL);
+
+                            if (pSRefGlyph != NULL)
+                              {
+                                // set the curve
+                                pCurve = pSRefGlyph->getCurve();
+
+                                if (pCurve != NULL)
+                                  {
+                                    LineSegment* pLS2 = pCurve->createLineSegment();
+                                    assert(pLS2 != NULL);
+
+                                    if (pLS2 != NULL)
+                                      {
+                                        pLS2->setStart(pLS->getEnd()->x(), pLS->getEnd()->y());
+                                        pLS2->setEnd(p1.x(), p1.y());
+                                      }
+                                    else
+                                      {
+                                        COULD_NOT_CREATE(result);
+                                      }
+                                  }
+                                else
+                                  {
+                                    FAIL_WITH_ERROR(result, "curve null");
+                                  }
+
+                                // set an id
+                                std::string id = this->createUniqueId("SpeciesReferenceGlyph");
+                                pSRefGlyph->setId(id);
+                                this->mIdMap.insert(std::pair<std::string, const SBase*>(id, pSRefGlyph));
+                                // set the role
+                                pSRefGlyph->setRole(SPECIES_ROLE_PRODUCT);
+                                // set the species glyph id
+                                this->setSpeciesGlyphId(pSRefGlyph, ranno.mBaseProducts[0]);
+                                // set the species reference id
+                                this->setSpeciesReferenceId(pSRefGlyph, ranno.mBaseProducts[0], pRGlyph->getReactionId());
+                              }
+                            else
+                              {
+                                COULD_NOT_CREATE(result);
+                              }
+                          }
+
+                        // second product
+                        if (result == true)
+                          {
+                            p1 = CCellDesignerImporter::getPositionPoint(pos3->second, ranno.mBaseProducts[1].mPosition);
+                            pSRefGlyph = pRGlyph->createSpeciesReferenceGlyph();
+                            assert(pSRefGlyph != NULL);
+
+                            if (pSRefGlyph != NULL)
+                              {
+                                // set the curve
+                                pCurve = pSRefGlyph->getCurve();
+
+                                if (pCurve != NULL)
+                                  {
+                                    LineSegment* pLS2 = pCurve->createLineSegment();
+                                    assert(pLS2 != NULL);
+
+                                    if (pLS2 != NULL)
+                                      {
+                                        pLS2->setStart(pLS->getEnd()->x(), pLS->getEnd()->y());
+                                        pLS2->setEnd(p1.x(), p1.y());
+                                      }
+                                    else
+                                      {
+                                        COULD_NOT_CREATE(result);
+                                      }
+                                  }
+                                else
+                                  {
+                                    FAIL_WITH_ERROR(result, "curve NULL");
+                                  }
+
+                                // set an id
+                                std::string id = this->createUniqueId("SpeciesReferenceGlyph");
+                                pSRefGlyph->setId(id);
+                                this->mIdMap.insert(std::pair<std::string, const SBase*>(id, pSRefGlyph));
+                                // set the role
+                                pSRefGlyph->setRole(SPECIES_ROLE_PRODUCT);
+                                // set the species glyph id
+                                this->setSpeciesGlyphId(pSRefGlyph, ranno.mBaseProducts[1]);
+                                // set the species reference id
+                                this->setSpeciesReferenceId(pSRefGlyph, ranno.mBaseProducts[1], pRGlyph->getReactionId());
+                              }
+                            else
+                              {
+                                COULD_NOT_CREATE(result);
+                              }
+                          }
+                      }
+                    else
+                      {
+                        COULD_NOT_CREATE(result);
+                      }
+                  }
+                else
+                  {
+                    FAIL_WITH_ERROR(result, "curve NULL");
+                  }
+              }
+            else
+              {
+                FAIL_WITH_ERROR(result, "link anchor not defined.");
+              }
+          }
+        else
+          {
+            FAIL_WITH_ERROR(result, "bound not found.");
+          }
+      }
+      break;
+
+      case HETERODIMER_ASSOCIATION_RTYPE:
+      {
+        assert(ranno.mBaseReactants.size() == 2);
+        assert(ranno.mBaseProducts.size() == 1);
+        // assert that all elements have a link anchor
+        assert(!ranno.mEditPoints.mPoints.empty());
+        // there should be a tShapeIndex or an omittedShapeIndex element
+        // that tells us, which of the points is the connection point
+        Point connectionPoint(new LayoutPkgNamespaces());
+
+        if (ranno.mEditPoints.mTShapeIndex < (int)ranno.mEditPoints.mPoints.size())
+          {
+            connectionPoint = ranno.mEditPoints.mPoints[ranno.mEditPoints.mTShapeIndex];
+          }
+        else if (ranno.mEditPoints.mOmittedShapeIndex < (int)ranno.mEditPoints.mPoints.size())
+          {
+            connectionPoint = ranno.mEditPoints.mPoints[ranno.mEditPoints.mOmittedShapeIndex];
+          }
+        else
+          {
+            connectionPoint = ranno.mEditPoints.mPoints[0];
+          }
+
+        // calculate the absolute position
+        // the position for the relative points coordinates is calculated as
+        // center_substrat1 + x*(center_product1 - center_substrate_1)+y*(
+        // center_product2 - center_substrate_1)
+        // if no tShapeIndex or omittedShapeIndex is given, we assume it is 0
+        std::string alias1 = ranno.mBaseReactants[0].mAlias;
+        assert(!alias1.empty());
+        std::string alias2 = ranno.mBaseReactants[1].mAlias;
+        assert(!alias2.empty());
+        std::string alias3 = ranno.mBaseProducts[0].mAlias;
+        assert(!alias3.empty());
+        std::map<std::string, BoundingBox>::const_iterator pos1, pos2, pos3;
+        pos1 = this->mCDBounds.find(alias1);
+        assert(pos1 != this->mCDBounds.end());
+        pos2 = this->mCDBounds.find(alias2);
+        assert(pos2 != this->mCDBounds.end());
+        pos3 = this->mCDBounds.find(alias3);
+        assert(pos3 != this->mCDBounds.end());
+
+        if (!alias1.empty() &&
+            !alias3.empty() &&
+            !alias3.empty() &&
+            pos1 != this->mCDBounds.end() &&
+            pos2 != this->mCDBounds.end() &&
+            pos3 != this->mCDBounds.end())
+          {
+            Point p1(new LayoutPkgNamespaces(), pos1->second.getPosition()->x() + pos1->second.getDimensions()->getWidth() * 0.5, pos1->second.getPosition()->y() + pos1->second.getDimensions()->getHeight() * 0.5);
+            Point p2(new LayoutPkgNamespaces(), pos2->second.getPosition()->x() + pos2->second.getDimensions()->getWidth() * 0.5, pos2->second.getPosition()->y() + pos2->second.getDimensions()->getHeight() * 0.5);
+            Point p3(new LayoutPkgNamespaces(), pos3->second.getPosition()->x() + pos3->second.getDimensions()->getWidth() * 0.5, pos3->second.getPosition()->y() + pos3->second.getDimensions()->getHeight() * 0.5);
+
+            Point p = CCellDesignerImporter::calculateAbsoluteValue(connectionPoint, p1, p2, p3);
+
+            // first we have to check if we have linkAnchors for all
+            // elements
+            // if not, we create them based on the shortest distance to the
+            // connection point
+            CCellDesignerImporter::checkLinkAnchor(ranno.mBaseReactants[0], p);
+            CCellDesignerImporter::checkLinkAnchor(ranno.mBaseReactants[1], p);
+            CCellDesignerImporter::checkLinkAnchor(ranno.mBaseProducts[0], p);
+            assert(ranno.mBaseReactants[0].mPosition != POSITION_UNDEFINED);
+            assert(ranno.mBaseReactants[1].mPosition != POSITION_UNDEFINED);
+            assert(ranno.mBaseProducts[0].mPosition != POSITION_UNDEFINED);
+
+            if (ranno.mBaseReactants[0].mPosition != POSITION_UNDEFINED &&
+                ranno.mBaseReactants[1].mPosition != POSITION_UNDEFINED &&
+                ranno.mBaseProducts[0].mPosition != POSITION_UNDEFINED)
+              {
+                // p is the start point of the reaction glyph
+                // i.e. the point where the substrates connect
+                // create the curve for the reaction glyph
+                // the end point is a short distance further along the
+                // path the to the only product
+                Curve* pCurve = pRGlyph->getCurve();
+                assert(pCurve != NULL);
+
+                if (pCurve != NULL)
+                  {
+                    LineSegment* pLS = pCurve->createLineSegment();
+                    assert(pLS != NULL);
+
+                    if (pLS != NULL)
+                      {
+                        pLS->setStart(p.x(), p.y());
+
+                        Point p3 = CCellDesignerImporter::getPositionPoint(pos3->second, ranno.mBaseProducts[0].mPosition);
+                        double dist = CCellDesignerImporter::distance(p3, p);
+                        assert(dist != 0.0);
+                        Point v(new LayoutPkgNamespaces(), (p3.x() - p.x()) / dist, (p3.y() - p.y()) / dist);
+                        dist /= 3.0;
+
+                        if (dist > 15.0)
+                          {
+                            dist = 15.0;
+                          }
+
+                        pLS->setEnd(p.x() + dist * v.x(), p.y() + dist * v.y());
+
+                        // create the species reference glyphs
+                        // since we already know the endpoint for the product, we start
+                        // with that
+                        SpeciesReferenceGlyph* pSRefGlyph = pRGlyph->createSpeciesReferenceGlyph();
+                        assert(pSRefGlyph != NULL);
+
+                        if (pSRefGlyph != NULL)
+                          {
+                            // set the curve
+                            pCurve = pSRefGlyph->getCurve();
+
+                            if (pCurve != NULL)
+                              {
+                                LineSegment* pLS2 = pCurve->createLineSegment();
+                                assert(pLS2 != NULL);
+
+                                if (pLS2 != NULL)
+                                  {
+                                    pLS2->setStart(p.x(), p.y());
+                                    pLS2->setEnd(p3.x(), p3.y());
+                                  }
+                                else
+                                  {
+                                    COULD_NOT_CREATE(result);
+                                  }
+                              }
+                            else
+                              {
+                                FAIL_WITH_ERROR(result, "curve NULL");
+                              }
+
+                            // set an id
+                            std::string id = this->createUniqueId("SpeciesReferenceGlyph");
+                            pSRefGlyph->setId(id);
+                            this->mIdMap.insert(std::pair<std::string, const SBase*>(id, pSRefGlyph));
+                            // set the role
+                            pSRefGlyph->setRole(SPECIES_ROLE_PRODUCT);
+                            // set the species glyph id
+                            this->setSpeciesGlyphId(pSRefGlyph, ranno.mBaseProducts[0]);
+                            // set the species reference id
+                            this->setSpeciesReferenceId(pSRefGlyph, ranno.mBaseProducts[0], pRGlyph->getReactionId());
+                          }
+                        else
+                          {
+                            COULD_NOT_CREATE(result);
+                          }
+
+                        // first substrate
+                        if (result == true)
+                          {
+                            p3 = CCellDesignerImporter::getPositionPoint(pos1->second, ranno.mBaseReactants[0].mPosition);
+                            pSRefGlyph = pRGlyph->createSpeciesReferenceGlyph();
+                            assert(pSRefGlyph != NULL);
+
+                            if (pSRefGlyph != NULL)
+                              {
+                                // set the curve
+                                pCurve = pSRefGlyph->getCurve();
+
+                                if (pCurve != NULL)
+                                  {
+                                    LineSegment* pLS2 = pCurve->createLineSegment();
+                                    assert(pLS2 != NULL);
+
+                                    if (pLS2 != NULL)
+                                      {
+                                        pLS2->setStart(pLS->getStart()->x(), pLS->getStart()->y());
+                                        pLS2->setEnd(p3.x(), p3.y());
+                                      }
+                                    else
+                                      {
+                                        COULD_NOT_CREATE(result);
+                                      }
+                                  }
+                                else
+                                  {
+                                    FAIL_WITH_ERROR(result, "curve null");
+                                  }
+
+                                // set an id
+                                std::string id = this->createUniqueId("SpeciesReferenceGlyph");
+                                pSRefGlyph->setId(id);
+                                this->mIdMap.insert(std::pair<std::string, const SBase*>(id, pSRefGlyph));
+                                // set the role
+                                pSRefGlyph->setRole(SPECIES_ROLE_SUBSTRATE);
+                                // set the species glyph id
+                                this->setSpeciesGlyphId(pSRefGlyph, ranno.mBaseReactants[0]);
+                                // set the species reference id
+                                this->setSpeciesReferenceId(pSRefGlyph, ranno.mBaseReactants[0], pRGlyph->getReactionId());
+                              }
+                            else
+                              {
+                                COULD_NOT_CREATE(result);
+                              }
+                          }
+
+                        // second substrate
+                        if (result == true)
+                          {
+                            p3 = CCellDesignerImporter::getPositionPoint(pos2->second, ranno.mBaseReactants[1].mPosition);
+                            pSRefGlyph = pRGlyph->createSpeciesReferenceGlyph();
+                            assert(pSRefGlyph != NULL);
+
+                            if (pSRefGlyph != NULL)
+                              {
+                                // set the curve
+                                pCurve = pSRefGlyph->getCurve();
+
+                                if (pCurve != NULL)
+                                  {
+                                    LineSegment* pLS2 = pCurve->createLineSegment();
+                                    assert(pLS2 != NULL);
+
+                                    if (pLS2 != NULL)
+                                      {
+                                        pLS2->setStart(pLS->getStart()->x(), pLS->getStart()->y());
+                                        pLS2->setEnd(p3.x(), p3.y());
+                                      }
+                                    else
+                                      {
+                                        COULD_NOT_CREATE(result);
+                                      }
+                                  }
+                                else
+                                  {
+                                    FAIL_WITH_ERROR(result, "curve null");
+                                  }
+
+                                // set an id
+                                std::string id = this->createUniqueId("SpeciesReferenceGlyph");
+                                pSRefGlyph->setId(id);
+                                this->mIdMap.insert(std::pair<std::string, const SBase*>(id, pSRefGlyph));
+                                // set the role
+                                pSRefGlyph->setRole(SPECIES_ROLE_SUBSTRATE);
+                                // set the species glyph id
+                                this->setSpeciesGlyphId(pSRefGlyph, ranno.mBaseReactants[1]);
+                                // set the species reference id
+                                this->setSpeciesReferenceId(pSRefGlyph, ranno.mBaseReactants[1], pRGlyph->getReactionId());
+                              }
+                            else
+                              {
+                                COULD_NOT_CREATE(result);
+                              }
+                          }
+                      }
+                    else
+                      {
+                        COULD_NOT_CREATE(result);
+                      }
+                  }
+                else
+                  {
+                    FAIL_WITH_ERROR(result, "curve null");
+                  }
+              }
+            else
+              {
+                FAIL_WITH_ERROR(result, "link anchor not defined.");
+              }
+          }
+        else
+          {
+            FAIL_WITH_ERROR(result, "bounds not found.");
+          }
+      }
+      break;
+
+      default:
+        FAIL_WITH_ERROR(result, "encountered unknown reaction type.");
+        break;
+    }
+
+  // there might be additional substrates and reactants
+  // in the listOfReactantLinks and the listOfProductLinks
+  if (result == true)
+    {
+      result = this->handleExtraReactionElements(pRGlyph, ranno, true);
+    }
+
+  if (result == true)
+    {
+      result = this->handleExtraReactionElements(pRGlyph, ranno, false);
+    }
+
+  // now that the species reference glyphs are handled,
+  // we should handle the modifiers
+  if (result == true)
+    {
+      result = this->handleModificationLinks(pRGlyph, ranno);
     }
 
   return result;
@@ -3112,7 +3092,7 @@ bool CCellDesignerImporter::createSpeciesReferenceGlyphs(ReactionGlyph* pRGlyph,
 
                           if (go_pos == this->mCDIdToLayoutElement.end())
                             {
-                              result = false;
+                              FAIL_WITH_ERROR(result, "could not create species reference " << alias);
                             }
                         }
                     }
@@ -3134,9 +3114,9 @@ bool CCellDesignerImporter::createSpeciesReferenceGlyphs(ReactionGlyph* pRGlyph,
                           if (!pLink->mSpecies.empty() &&
                               !pRGlyph->getReactionId().empty() &&
                               this->mpDocument != NULL &&
-                              this->mpDocument->getModel() != NULL)
+                              mpModel != NULL)
                             {
-                              Reaction* pReaction = this->mpDocument->getModel()->getReaction(pRGlyph->getReactionId());
+                              Reaction* pReaction = mpModel->getReaction(pRGlyph->getReactionId());
 
                               if (pReaction != NULL)
                                 {
@@ -3208,7 +3188,7 @@ bool CCellDesignerImporter::createSpeciesReferenceGlyphs(ReactionGlyph* pRGlyph,
                                 }
                               else
                                 {
-                                  result = false;
+                                  FAIL_WITH_ERROR(result, "reaction not found.");
                                 }
                             }
 
@@ -3235,24 +3215,24 @@ bool CCellDesignerImporter::createSpeciesReferenceGlyphs(ReactionGlyph* pRGlyph,
                         }
                       else
                         {
-                          result = false;
+                          FAIL_WITH_ERROR(result, "link for species reference not found.");
                         }
                     }
                 }
               else
                 {
-                  result = false;
+                  FAIL_WITH_ERROR(result, "bound not found.");
                 }
             }
           else
             {
-              result = false;
+              FAIL_WITH_ERROR(result, "link empty.");
             }
         }
     }
   else
     {
-      result = false;
+      FAIL_WITH_ERROR(result, "reaction glyph NULL.");
     }
 
   return result;
@@ -3375,9 +3355,9 @@ bool CCellDesignerImporter::convertCompartmentAnnotations()
 {
   bool result = true;
 
-  if (this->mpDocument && this->mpDocument->getModel() && this->mpLayout)
+  if (this->mpDocument && mpModel && this->mpLayout)
     {
-      Model* pModel = this->mpDocument->getModel();
+      Model* pModel = mpModel;
       unsigned int i, iMax = pModel->getNumCompartments();
       Compartment* pCompartment = NULL;
       const XMLNode* pAnnotation = NULL;
@@ -3460,7 +3440,7 @@ bool CCellDesignerImporter::convertCompartmentAnnotations()
                     }
                   else
                     {
-                      result = false;
+                      FAIL_WITH_ERROR(result, "couldn't parse compartment information.");
                     }
                 }
             }
@@ -3468,7 +3448,7 @@ bool CCellDesignerImporter::convertCompartmentAnnotations()
     }
   else
     {
-      result = false;
+      FAIL_WITH_ERROR(result, "document / model / layout NULL.");
     }
 
   return result;
@@ -3482,9 +3462,9 @@ bool CCellDesignerImporter::convertSpeciesAnnotations()
 {
   bool result = true;
 
-  if (this->mpDocument && this->mpDocument->getModel() && this->mpLayout)
+  if (this->mpDocument && mpModel && this->mpLayout)
     {
-      Model* pModel = this->mpDocument->getModel();
+      Model* pModel = mpModel;
       unsigned int i, iMax = pModel->getNumSpecies();
       Species* pSpecies = NULL;
       const XMLNode* pAnnotation = NULL;
@@ -3559,7 +3539,7 @@ bool CCellDesignerImporter::convertSpeciesAnnotations()
                                     }
                                   else
                                     {
-                                      result = false;
+                                      FAIL_WITH_ERROR(result, "species glyph not found.");
                                     }
 
                                   ++pos;
@@ -3568,13 +3548,13 @@ bool CCellDesignerImporter::convertSpeciesAnnotations()
                             }
                           else
                             {
-                              result = false;
+                              FAIL_WITH_ERROR(result, "species not found.");
                             }
                         }
                     }
                   else
                     {
-                      result = false;
+                      FAIL_WITH_ERROR(result, "could not parse species annotation.");
                     }
                 }
             }
@@ -3582,7 +3562,7 @@ bool CCellDesignerImporter::convertSpeciesAnnotations()
     }
   else
     {
-      result = false;
+      FAIL_WITH_ERROR(result, "document / model /layout NULL");
     }
 
   return result;
@@ -3810,7 +3790,7 @@ bool CCellDesignerImporter::parseProteins(const XMLNode* pNode)
                         }
                       else
                         {
-                          result = false;
+                          FAIL_WITH_ERROR(result, "undefined species class encountered: " << type);
                         }
                     }
                 }
@@ -3842,7 +3822,7 @@ bool CCellDesignerImporter::parseProteins(const XMLNode* pNode)
                         }
                       else
                         {
-                          result = false;
+                          FAIL_WITH_ERROR(result, "modification residue not found.");
                         }
 
                       ++j;
@@ -3903,7 +3883,7 @@ bool CCellDesignerImporter::parseProteinModification(const XMLNode* pNode, Prote
                 }
               else
                 {
-                  result = false;
+                  FAIL_WITH_ERROR(result, "could not parse angle.");
                 }
             }
           else
@@ -3913,12 +3893,12 @@ bool CCellDesignerImporter::parseProteinModification(const XMLNode* pNode, Prote
         }
       else
         {
-          result = false;
+          FAIL_WITH_ERROR(result, "missing id.");
         }
     }
   else
     {
-      result = false;
+      FAIL_WITH_ERROR(result, "modification residue not found.");
     }
 
   return result;
@@ -3945,12 +3925,12 @@ bool CCellDesignerImporter::parseCompartmentAnnotation(const XMLNode* pNode, Com
         }
       else
         {
-          result = false;
+          FAIL_WITH_ERROR(result, "comparment name not found.");
         }
     }
   else
     {
-      result = false;
+      FAIL_WITH_ERROR(result, "compartment annotation not found.");
     }
 
   return result;
@@ -3981,12 +3961,12 @@ bool CCellDesignerImporter::parseSpeciesAnnotation(const XMLNode* pNode, Species
         }
       else
         {
-          result = false;
+          FAIL_WITH_ERROR(result, "species identity not found.");
         }
     }
   else
     {
-      result = false;
+      FAIL_WITH_ERROR(result, "species annotation not found.");
     }
 
   return result;
@@ -4030,7 +4010,7 @@ bool CCellDesignerImporter::parseSpeciesIdentity(const XMLNode* pNode, SpeciesId
                   }
                 else
                   {
-                    result = false;
+                    FAIL_WITH_ERROR(result, "name not found.");
                   }
               }
               break;
@@ -4046,7 +4026,7 @@ bool CCellDesignerImporter::parseSpeciesIdentity(const XMLNode* pNode, SpeciesId
                   }
                 else
                   {
-                    result = false;
+                    FAIL_WITH_ERROR(result, "proteinReference not found.");
                   }
               }
               break;
@@ -4060,7 +4040,7 @@ bool CCellDesignerImporter::parseSpeciesIdentity(const XMLNode* pNode, SpeciesId
         }
       else
         {
-          result = false;
+          FAIL_WITH_ERROR(result, "species identity class not found.");
         }
 
       // handle state
@@ -4073,7 +4053,7 @@ bool CCellDesignerImporter::parseSpeciesIdentity(const XMLNode* pNode, SpeciesId
     }
   else
     {
-      result = false;
+      FAIL_WITH_ERROR(result, "species identity not found.");
     }
 
   return result;
@@ -4113,10 +4093,6 @@ bool CCellDesignerImporter::parseSpeciesState(const XMLNode* pNode, SpeciesState
                       state.mModifications.push_back(mod);
                     }
                 }
-              else
-                {
-                  result = false;
-                }
 
               ++i;
             }
@@ -4124,7 +4100,7 @@ bool CCellDesignerImporter::parseSpeciesState(const XMLNode* pNode, SpeciesState
     }
   else
     {
-      result = false;
+      FAIL_WITH_ERROR(result, "species state not found.");
     }
 
   return result;
@@ -4156,12 +4132,12 @@ bool CCellDesignerImporter::parseSpeciesModification(const XMLNode* pNode, Speci
         }
       else
         {
-          result = false;
+          FAIL_WITH_ERROR(result, "invalid species modification.");
         }
     }
   else
     {
-      result = false;
+      FAIL_WITH_ERROR(result, "species modification not found.");
     }
 
   return result;
@@ -4212,188 +4188,167 @@ bool CCellDesignerImporter::parseReactionAnnotation(const XMLNode* pNode, Reacti
 {
   bool result = true;
 
-  if (pNode != NULL)
+  if (pNode == NULL)
     {
-      const XMLNode* pChild = NULL;
+      FAIL_WITH_ERROR_AND_RETURN(result, "invalid reaction annotation.");
+    }
 
-      // now come the mandatory elements
-      // type element
-      pChild = CCellDesignerImporter::findChildNode(pNode, pNode->getPrefix(), "reactionType");
+  const XMLNode* pChild = NULL;
 
-      if (pChild != NULL)
+  // now come the mandatory elements
+  // type element
+  pChild = CCellDesignerImporter::findChildNode(pNode, pNode->getPrefix(), "reactionType");
+
+  if (pChild == NULL)
+    {
+      FAIL_WITH_ERROR_AND_RETURN(result, "reaction type not found.");
+    }
+
+  if (pChild->getNumChildren() != 1 || !pChild->getChild(0).isText())
+    {
+      FAIL_WITH_ERROR_AND_RETURN(result, "invalid reaction type.");
+    }
+
+  std::string s = pChild->getChild(0).getCharacters();
+  ranno.mType = CCellDesignerImporter::reactionTypeToEnum(s);
+
+  // baseReactants
+  pChild = CCellDesignerImporter::findChildNode(pNode, pNode->getPrefix(), "baseReactants");
+
+  if (pChild == NULL)
+    {
+      FAIL_WITH_ERROR_AND_RETURN(result, "base reactants not found.");
+    }
+
+  result = CCellDesignerImporter::parseReactionElements(pChild, ranno.mBaseReactants);
+
+  if (!result)
+    return result;
+
+  // baseProducts
+  pChild = CCellDesignerImporter::findChildNode(pNode, pNode->getPrefix(), "baseProducts");
+
+  if (pChild == NULL)
+    {
+      FAIL_WITH_ERROR_AND_RETURN(result, "base products not found.");
+    }
+
+  result = CCellDesignerImporter::parseReactionElements(pChild, ranno.mBaseProducts);
+
+  if (!result)
+    return result;
+
+  // connectScheme
+  pChild = CCellDesignerImporter::findChildNode(pNode, pNode->getPrefix(), "connectScheme");
+
+  if (pChild == NULL)
+    {
+      FAIL_WITH_ERROR_AND_RETURN(result, "could not parse connect scheme.");
+    }
+
+  result = CCellDesignerImporter::parseConnectScheme(pChild, ranno.mConnectScheme);
+
+  if (!result)
+    return result;
+
+  // line
+  pChild = CCellDesignerImporter::findChildNode(pNode, pNode->getPrefix(), "line");
+
+  if (pChild == NULL)
+    {
+      FAIL_WITH_ERROR_AND_RETURN(result, "line not found.");
+    }
+
+  result = CCellDesignerImporter::parseLine(pChild, ranno.mLine);
+
+  if (!result)
+    return result;
+
+  // now we read the optional elements
+  // name element (optional)
+  pChild = CCellDesignerImporter::findChildNode(pNode, pNode->getPrefix(), "name");
+
+  if (pChild != NULL)
+    {
+      if (pChild->getNumChildren() == 1 && pChild->getChild(0).isText())
         {
-          if (pChild->getNumChildren() == 1 && pChild->getChild(0).isText())
+          ranno.mName = pChild->getChild(0).getCharacters();
+        }
+    }
+
+  // listOfReactantLinks (optional)
+  pChild = CCellDesignerImporter::findChildNode(pNode, pNode->getPrefix(), "listOfReactantLinks");
+
+  if (pChild != NULL)
+    {
+      result = CCellDesignerImporter::parseExtraLinks(pChild, ranno.mReactantLinks);
+
+      if (!result) return result;
+    }
+
+  // listOfProductLinks (optional)
+  pChild = CCellDesignerImporter::findChildNode(pNode, pNode->getPrefix(), "listOfProductLinks");
+
+  if (pChild != NULL)
+    {
+      result = CCellDesignerImporter::parseExtraLinks(pChild, ranno.mProductLinks);
+
+      if (!result) return result;
+    }
+
+  // offset (optional)
+  pChild = CCellDesignerImporter::findChildNode(pNode, pNode->getPrefix(), "offset");
+
+  if (pChild != NULL)
+    {
+      // read the x and the y attribute
+      if (pChild->getAttributes().hasAttribute("x") && pChild->getAttributes().hasAttribute("y"))
+        {
+          s = pChild->getAttributes().getValue("x");
+          char** err = NULL;
+          double v;
+          v = strtod(s.c_str(), err);
+
+          if (err == NULL || *err != s.c_str())
             {
-              std::string s = pChild->getChild(0).getCharacters();
-              ranno.mType = CCellDesignerImporter::reactionTypeToEnum(s);
+              ranno.mOffset.setX(v);
+              err = NULL;
+              v = strtod(s.c_str(), err);
 
-              // baseReactants
-              pChild = CCellDesignerImporter::findChildNode(pNode, pNode->getPrefix(), "baseReactants");
-
-              if (pChild != NULL)
+              if (err == NULL || *err != s.c_str())
                 {
-                  result = CCellDesignerImporter::parseReactionElements(pChild, ranno.mBaseReactants);
-
-                  if (result == true)
-                    {
-                      // baseProducts
-                      pChild = CCellDesignerImporter::findChildNode(pNode, pNode->getPrefix(), "baseProducts");
-
-                      if (pChild != NULL)
-                        {
-                          result = CCellDesignerImporter::parseReactionElements(pChild, ranno.mBaseProducts);
-
-                          if (result == true)
-                            {
-                              // connectScheme
-                              pChild = CCellDesignerImporter::findChildNode(pNode, pNode->getPrefix(), "connectScheme");
-
-                              if (pChild != NULL)
-                                {
-                                  result = CCellDesignerImporter::parseConnectScheme(pChild, ranno.mConnectScheme);
-
-                                  if (result == true)
-                                    {
-                                      // line
-                                      pChild = CCellDesignerImporter::findChildNode(pNode, pNode->getPrefix(), "line");
-
-                                      if (pChild != NULL)
-                                        {
-                                          result = CCellDesignerImporter::parseLine(pChild, ranno.mLine);
-
-                                          if (result == true)
-                                            {
-                                              // now we read the optional elements
-                                              // name element (optional)
-                                              pChild = CCellDesignerImporter::findChildNode(pNode, pNode->getPrefix(), "name");
-
-                                              if (pChild != NULL)
-                                                {
-                                                  if (pChild->getNumChildren() == 1 && pChild->getChild(0).isText())
-                                                    {
-                                                      ranno.mName = pChild->getChild(0).getCharacters();
-                                                    }
-                                                }
-
-                                              if (result == true)
-                                                {
-                                                  // listOfReactantLinks (optional)
-                                                  pChild = CCellDesignerImporter::findChildNode(pNode, pNode->getPrefix(), "listOfReactantLinks");
-
-                                                  if (pChild != NULL)
-                                                    {
-                                                      result = CCellDesignerImporter::parseExtraLinks(pChild, ranno.mReactantLinks);
-                                                    }
-
-                                                  if (result == true)
-                                                    {
-                                                      // listOfProductLinks (optional)
-                                                      pChild = CCellDesignerImporter::findChildNode(pNode, pNode->getPrefix(), "listOfProductLinks");
-
-                                                      if (pChild != NULL)
-                                                        {
-                                                          result = CCellDesignerImporter::parseExtraLinks(pChild, ranno.mProductLinks);
-                                                        }
-
-                                                      if (result == true)
-                                                        {
-                                                          // offset (optional)
-                                                          pChild = CCellDesignerImporter::findChildNode(pNode, pNode->getPrefix(), "offset");
-
-                                                          if (pChild != NULL)
-                                                            {
-                                                              // read the x and the y attribute
-                                                              if (pChild->getAttributes().hasAttribute("x") && pChild->getAttributes().hasAttribute("y"))
-                                                                {
-                                                                  s = pChild->getAttributes().getValue("x");
-                                                                  char** err = NULL;
-                                                                  double v;
-                                                                  v = strtod(s.c_str(), err);
-
-                                                                  if (err == NULL || *err != s.c_str())
-                                                                    {
-                                                                      ranno.mOffset.setX(v);
-                                                                      err = NULL;
-                                                                      v = strtod(s.c_str(), err);
-
-                                                                      if (err == NULL || *err != s.c_str())
-                                                                        {
-                                                                          ranno.mOffset.setY(v);
-                                                                        }
-                                                                      else
-                                                                        {
-                                                                          result = false;
-                                                                        }
-                                                                    }
-                                                                  else
-                                                                    {
-                                                                      result = false;
-                                                                    }
-                                                                }
-                                                            }
-
-                                                          if (result == true)
-                                                            {
-                                                              // editPoints (optional)
-                                                              pChild = CCellDesignerImporter::findChildNode(pNode, pNode->getPrefix(), "editPoints");
-
-                                                              if (pChild != NULL)
-                                                                {
-                                                                  result = CCellDesignerImporter::parseEditPoints(pChild, ranno.mEditPoints);
-                                                                }
-
-                                                              if (result == true)
-                                                                {
-                                                                  // listOfModifications (optional)
-                                                                  pChild = CCellDesignerImporter::findChildNode(pNode, pNode->getPrefix(), "listOfModification");
-
-                                                                  if (pChild != NULL)
-                                                                    {
-                                                                      result = CCellDesignerImporter::parseReactionModifications(pChild, ranno.mModifications);
-                                                                    }
-                                                                }
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                      else
-                                        {
-                                          result = false;
-                                        }
-                                    }
-                                }
-                              else
-                                {
-                                  result = false;
-                                }
-                            }
-                        }
-                      else
-                        {
-                          result = false;
-                        }
-                    }
+                  ranno.mOffset.setY(v);
                 }
               else
                 {
-                  result = false;
+                  FAIL_WITH_ERROR(result, "could not parse y offset.");
                 }
             }
           else
             {
-              result = false;
+              FAIL_WITH_ERROR(result, "could not parse x offset.");
             }
         }
-      else
-        {
-          result = false;
-        }
+
+      if (!result) return result;
     }
-  else
+
+  // editPoints (optional)
+  pChild = CCellDesignerImporter::findChildNode(pNode, pNode->getPrefix(), "editPoints");
+
+  if (pChild != NULL)
     {
-      result = false;
+      result = CCellDesignerImporter::parseEditPoints(pChild, ranno.mEditPoints);
+
+      if (!result) return result;
+    }
+
+  // listOfModifications (optional)
+  pChild = CCellDesignerImporter::findChildNode(pNode, pNode->getPrefix(), "listOfModification");
+
+  if (pChild != NULL)
+    {
+      result = CCellDesignerImporter::parseReactionModifications(pChild, ranno.mModifications);
     }
 
   return result;
@@ -4428,7 +4383,7 @@ REACTION_TYPE CCellDesignerImporter::reactionTypeToEnum(std::string s)
     {
       result = UNKNOWN_CATALYSIS_RTYPE;
     }
-  else if (s == "INHIBITION")
+  else if (s == "INHIBITION" || s == "NEGATIVE_INFLUENCE")
     {
       result = INHIBITION_RTYPE;
     }
@@ -4475,6 +4430,17 @@ REACTION_TYPE CCellDesignerImporter::reactionTypeToEnum(std::string s)
   else if (s == "TRANSLATION")
     {
       result = TRANSLATION_RTYPE;
+    }
+  else if (s == "TRANSLATION")
+    {
+      result = TRANSLATION_RTYPE;
+    }
+
+  if (result == UNDEFINED_RTYPE)
+    {
+      bool status;
+      FAIL_WITH_ERROR(status, "undefined reaction type: " << s << " assuming state transition");
+      result = STATE_TRANSITION_RTYPE;
     }
 
   return result;
@@ -4558,6 +4524,13 @@ MODIFICATION_LINK_TYPE CCellDesignerImporter::modificationLinkTypeToEnum(std::st
       result = BOOLEAN_LOGIC_GATE_UNKNOWN_ML_TYPE;
     }
 
+  //if (result == UNDEFINED_ML_TYPE)
+  //{
+  //  bool status;
+  //  FAIL_WITH_ERROR(status, "undefined modification link type: " << s << " assuming modulation");
+  //  result = MODULATION_ML_TYPE;
+  //}
+
   return result;
 }
 
@@ -4616,6 +4589,13 @@ MODIFICATION_TYPE CCellDesignerImporter::modificationTypeToEnum(std::string s)
     }
   else if (s == "MODULATION")
     {
+      result = MODULATION_MTYPE;
+    }
+
+  if (result == UNDEFINED_MTYPE)
+    {
+      bool status;
+      FAIL_WITH_ERROR(status, "undefined modification type: " << s << " assuming modulation");
       result = MODULATION_MTYPE;
     }
 
@@ -4790,7 +4770,7 @@ PAINT_SCHEME CCellDesignerImporter::paintSchemeToEnum(std::string s)
     {
       result = PAINT_COLOR;
     }
-  else if (s == "GRADIENT")
+  else if (s == "GRADIENT" || s == "GRADATION")
     {
       result = PAINT_GRADIENT;
     }
@@ -4946,7 +4926,7 @@ bool CCellDesignerImporter::parseReactionElements(const XMLNode* pNode, std::vec
     }
   else
     {
-      result = false;
+      FAIL_WITH_ERROR(result, "invalid reaction elements found.");
     }
 
   return result;
@@ -4987,7 +4967,7 @@ bool CCellDesignerImporter::parseConnectScheme(const XMLNode* pNode, ConnectSche
                     }
                   else
                     {
-                      result = false;
+                      FAIL_WITH_ERROR(result, "invalid rectangle index.");
                     }
                 }
 
@@ -5016,22 +4996,22 @@ bool CCellDesignerImporter::parseConnectScheme(const XMLNode* pNode, ConnectSche
                 }
               else
                 {
-                  result = false;
+                  FAIL_WITH_ERROR(result, "list of line directions not found.");
                 }
             }
           else
             {
-              result = false;
+              FAIL_WITH_ERROR(result, "invalid connectPolicy.");
             }
         }
       else
         {
-          result = false;
+          FAIL_WITH_ERROR(result, "connectPolicy not found.");
         }
     }
   else
     {
-      result = false;
+      FAIL_WITH_ERROR(result, "invalid connectScheme.");
     }
 
   return result;
@@ -5066,7 +5046,7 @@ bool CCellDesignerImporter::parseLine(const XMLNode* pNode, Line& line)
             }
           else
             {
-              result = false;
+              FAIL_WITH_ERROR(result, "invalid line width.");
             }
 
           // the lines with reactant and productLinks
@@ -5084,12 +5064,12 @@ bool CCellDesignerImporter::parseLine(const XMLNode* pNode, Line& line)
         }
       else
         {
-          result = false;
+          FAIL_WITH_ERROR(result, "line color / width missing.");
         }
     }
   else
     {
-      result = false;
+      FAIL_WITH_ERROR(result, "line description missing.");
     }
 
   return result;
@@ -5133,7 +5113,7 @@ bool CCellDesignerImporter::parseExtraLinks(const XMLNode* pNode, std::vector<Re
     }
   else
     {
-      result = false;
+      FAIL_WITH_ERROR(result, "listOfreactantlinks / listofproductlinks not found.");
     }
 
   return result;
@@ -5174,7 +5154,7 @@ bool CCellDesignerImporter::parseEditPoints(const XMLNode* pNode, EditPoints& ed
                 }
               else
                 {
-                  result = false;
+                  FAIL_WITH_ERROR(result, "could not parse num0.");
                 }
             }
 
@@ -5190,7 +5170,7 @@ bool CCellDesignerImporter::parseEditPoints(const XMLNode* pNode, EditPoints& ed
                 }
               else
                 {
-                  result = false;
+                  FAIL_WITH_ERROR(result, "could not parse num1.");
                 }
             }
 
@@ -5206,7 +5186,7 @@ bool CCellDesignerImporter::parseEditPoints(const XMLNode* pNode, EditPoints& ed
                 }
               else
                 {
-                  result = false;
+                  FAIL_WITH_ERROR(result, "could not parse num2.");
                 }
             }
 
@@ -5222,7 +5202,7 @@ bool CCellDesignerImporter::parseEditPoints(const XMLNode* pNode, EditPoints& ed
                 }
               else
                 {
-                  result = false;
+                  FAIL_WITH_ERROR(result, "could not parse tShapeIndex.");
                 }
             }
 
@@ -5238,18 +5218,18 @@ bool CCellDesignerImporter::parseEditPoints(const XMLNode* pNode, EditPoints& ed
                 }
               else
                 {
-                  result = false;
+                  FAIL_WITH_ERROR(result, "could not parse omittedShapeIndex.");
                 }
             }
         }
       else
         {
-          result = false;
+          FAIL_WITH_ERROR(result, "invalid editPoints.");
         }
     }
   else
     {
-      result = false;
+      FAIL_WITH_ERROR(result, "editPoints not found.");
     }
 
   return result;
@@ -5285,7 +5265,7 @@ bool CCellDesignerImporter::parseReactionModifications(const XMLNode* pNode, std
     }
   else
     {
-      result = false;
+      FAIL_WITH_ERROR(result, "listOfModification not found.");
     }
 
   return result;
@@ -5327,23 +5307,23 @@ bool CCellDesignerImporter::parseLinkTarget(const XMLNode* pNode, LinkTarget& l)
 
                   if (l.mPosition == POSITION_UNDEFINED)
                     {
-                      result = false;
+                      FAIL_WITH_ERROR(result, "could not parse position.");
                     }
                 }
               else
                 {
-                  result = false;
+                  FAIL_WITH_ERROR(result, "position missing.");
                 }
             }
         }
       else
         {
-          result = false;
+          FAIL_WITH_ERROR(result, "alias / species missing.");
         }
     }
   else
     {
-      result = false;
+      FAIL_WITH_ERROR(result, "expected reactant / product / link.");
     }
 
   return result;
@@ -5392,23 +5372,23 @@ bool CCellDesignerImporter::parseLineDirection(const XMLNode* pNode, LineDirecti
                         }
                       else
                         {
-                          result = false;
+                          FAIL_WITH_ERROR(result, "could not parse arm.");
                         }
                     }
                 }
               else
                 {
-                  result = false;
+                  FAIL_WITH_ERROR(result, "invalid direction value.");
                 }
             }
           else
             {
-              result = false;
+              FAIL_WITH_ERROR(result, "could not parse index.");
             }
         }
       else
         {
-          result = false;
+          FAIL_WITH_ERROR(result, "could not parse line direction.");
         }
     }
 
@@ -5483,34 +5463,34 @@ bool CCellDesignerImporter::parseExtraLink(const XMLNode* pNode, ReactantLink& l
 
                               if (l.mPosition == POSITION_UNDEFINED)
                                 {
-                                  result = false;
+                                  FAIL_WITH_ERROR(result, "could not parse position.");
                                 }
                             }
                         }
                     }
                   else
                     {
-                      result = false;
+                      FAIL_WITH_ERROR(result, "could not find line.");
                     }
                 }
               else
                 {
-                  result = false;
+                  FAIL_WITH_ERROR(result, "could not parse target line.");
                 }
             }
           else
             {
-              result = false;
+              FAIL_WITH_ERROR(result, "invalid target line index.");
             }
         }
       else
         {
-          result = false;
+          FAIL_WITH_ERROR(result, "invalid link.");
         }
     }
   else
     {
-      result = false;
+      FAIL_WITH_ERROR(result, "invalid extra link.");
     }
 
   return result;
@@ -5575,17 +5555,17 @@ bool CCellDesignerImporter::parseReactionModification(const XMLNode* pNode, Reac
                             }
                           else
                             {
-                              result = false;
+                              FAIL_WITH_ERROR(result, "invalid targetLineIndex.");
                             }
                         }
                       else
                         {
-                          result = false;
+                          FAIL_WITH_ERROR(result, "could not parse type.");
                         }
                     }
                   else
                     {
-                      result = false;
+                      FAIL_WITH_ERROR(result, "could not parse modifiers.");
                     }
                 }
             }
@@ -5616,7 +5596,7 @@ bool CCellDesignerImporter::parseReactionModification(const XMLNode* pNode, Reac
                     }
                   else
                     {
-                      result = false;
+                      FAIL_WITH_ERROR(result, "could not parse num0.");
                     }
                 }
 
@@ -5632,7 +5612,7 @@ bool CCellDesignerImporter::parseReactionModification(const XMLNode* pNode, Reac
                     }
                   else
                     {
-                      result = false;
+                      FAIL_WITH_ERROR(result, "could not parse num1.");
                     }
                 }
 
@@ -5648,7 +5628,7 @@ bool CCellDesignerImporter::parseReactionModification(const XMLNode* pNode, Reac
                     }
                   else
                     {
-                      result = false;
+                      FAIL_WITH_ERROR(result, "could not parse num2.");
                     }
                 }
 
@@ -5659,7 +5639,7 @@ bool CCellDesignerImporter::parseReactionModification(const XMLNode* pNode, Reac
 
                   if (mod.mModType == UNDEFINED_MTYPE)
                     {
-                      result = false;
+                      FAIL_WITH_ERROR(result, "could not parse modificationType.");
                     }
                 }
 
@@ -5675,7 +5655,7 @@ bool CCellDesignerImporter::parseReactionModification(const XMLNode* pNode, Reac
                     }
                   else
                     {
-                      result = false;
+                      FAIL_WITH_ERROR(result, "could not parse offsetX.");
                     }
                 }
 
@@ -5691,7 +5671,7 @@ bool CCellDesignerImporter::parseReactionModification(const XMLNode* pNode, Reac
                     }
                   else
                     {
-                      result = false;
+                      FAIL_WITH_ERROR(result, "could not parse offsetY.");
                     }
                 }
             }
@@ -5740,12 +5720,12 @@ bool CCellDesignerImporter::parseReactionModification(const XMLNode* pNode, Reac
         }
       else
         {
-          result = false;
+          FAIL_WITH_ERROR(result, "invalid modification.");
         }
     }
   else
     {
-      result = false;
+      FAIL_WITH_ERROR(result, "modification not found.");
     }
 
   return result;
@@ -5801,17 +5781,17 @@ bool CCellDesignerImporter::parsePointsString(const std::string& s, std::vector<
                         }
                       else
                         {
-                          result = false;
+                          FAIL_WITH_ERROR(result, "could not parse y coordinate.");
                         }
                     }
                   else
                     {
-                      result = false;
+                      FAIL_WITH_ERROR(result, "could not parse x coordinate.");
                     }
                 }
               else
                 {
-                  result = false;
+                  FAIL_WITH_ERROR(result, "invalid point pair.");
                 }
             }
 
@@ -5899,7 +5879,7 @@ bool CCellDesignerImporter::parseCompartmentAlias(const XMLNode* pNode, Compartm
         }
       else
         {
-          result = false;
+          FAIL_WITH_ERROR(result, "compartment missing.");
         }
 
       if (result == true)
@@ -6014,19 +5994,19 @@ bool CCellDesignerImporter::parseCompartmentAlias(const XMLNode* pNode, Compartm
                                         break;
 
                                       default:
-                                        result = false;
+                                        FAIL_WITH_ERROR(result, "unexpected species class.");
                                         break;
                                     }
                                 }
                             }
                           else
                             {
-                              result = false;
+                              FAIL_WITH_ERROR(result, "missing x, y coordinates.");
                             }
                         }
                       else
                         {
-                          result = false;
+                          FAIL_WITH_ERROR(result, "point missing.");
                         }
                     }
 
@@ -6041,7 +6021,7 @@ bool CCellDesignerImporter::parseCompartmentAlias(const XMLNode* pNode, Compartm
                         }
                       else
                         {
-                          result = false;
+                          FAIL_WITH_ERROR(result, "missing namePoint.");
                         }
 
                       if (result == true)
@@ -6071,36 +6051,36 @@ bool CCellDesignerImporter::parseCompartmentAlias(const XMLNode* pNode, Compartm
                                         }
                                       else
                                         {
-                                          result = false;
+                                          FAIL_WITH_ERROR(result, "could not parse font size.");
                                         }
                                     }
                                 }
                               else
                                 {
-                                  result = false;
+                                  FAIL_WITH_ERROR(result, "missing paint.");
                                 }
                             }
                           else
                             {
-                              result = false;
+                              FAIL_WITH_ERROR(result, "missing doubleLine.");
                             }
                         }
                     }
                 }
               else
                 {
-                  result = false;
+                  FAIL_WITH_ERROR(result, "undefined species class.");
                 }
             }
           else
             {
-              result = false;
+              FAIL_WITH_ERROR(result, "missing class attribute.");
             }
         }
     }
   else
     {
-      result = false;
+      FAIL_WITH_ERROR(result, "invalid compartmentAlias.");
     }
 
   return result;
@@ -6159,7 +6139,7 @@ bool CCellDesignerImporter::parseSpeciesAlias(const XMLNode* pNode, SpeciesAlias
                 }
               else
                 {
-                  result = false;
+                  FAIL_WITH_ERROR(result, "could not parse font size.");
                 }
             }
 
@@ -6178,18 +6158,18 @@ bool CCellDesignerImporter::parseSpeciesAlias(const XMLNode* pNode, SpeciesAlias
                 }
               else
                 {
-                  result = false;
+                  FAIL_WITH_ERROR(result, "invalid bounds.");
                 }
             }
         }
       else
         {
-          result = false;
+          FAIL_WITH_ERROR(result, "invalid id / species.");
         }
     }
   else
     {
-      result = false;
+      FAIL_WITH_ERROR(result, "invalid species alias.");
     }
 
   return result;
@@ -6226,17 +6206,17 @@ bool CCellDesignerImporter::parsePoint(const XMLNode* pNode, Point& p)
             }
           else
             {
-              result = false;
+              FAIL_WITH_ERROR(result, "could not parse y coordinate.");
             }
         }
       else
         {
-          result = false;
+          FAIL_WITH_ERROR(result, "could not parse x coordinate.");
         }
     }
   else
     {
-      result = false;
+      FAIL_WITH_ERROR(result, "could not parse point.");
     }
 
   return result;
@@ -6279,18 +6259,18 @@ bool CCellDesignerImporter::parseBounds(const XMLNode* pNode, BoundingBox& box)
                 }
               else
                 {
-                  result = false;
+                  FAIL_WITH_ERROR(result, "could not parse height.");
                 }
             }
           else
             {
-              result = false;
+              FAIL_WITH_ERROR(result, "could not parse width.");
             }
         }
     }
   else
     {
-      result = false;
+      FAIL_WITH_ERROR(result, "invalid bounds.");
     }
 
   return result;
@@ -6342,35 +6322,35 @@ bool CCellDesignerImporter::parseUsualView(const XMLNode* pNode, UsualView& view
                         }
                       else
                         {
-                          result = false;
+                          FAIL_WITH_ERROR(result, "could not parse width.");
                         }
                     }
                   else
                     {
-                      result = false;
+                      FAIL_WITH_ERROR(result, "missing singleline.");
                     }
                 }
               else
                 {
-                  result = false;
+                  FAIL_WITH_ERROR(result, "invalid paint.");
                 }
             }
           else
             {
-              result = false;
+              FAIL_WITH_ERROR(result, "invalid boxSize.");
             }
         }
     }
   else
     {
-      result = false;
+      FAIL_WITH_ERROR(result, "invalid usual view.");
     }
 
   return result;
 }
 
 /**
- * Parses the given node and stored the information iín the width and height attribute
+ * Parses the given node and stored the information i  n the width and height attribute
  * in the given dimensions object.
  * If parsinf fails, false is returned.
  */
@@ -6400,24 +6380,24 @@ bool CCellDesignerImporter::parseModelDisplay(const XMLNode* pNode, Dimensions& 
             }
           else
             {
-              result = false;
+              FAIL_WITH_ERROR(result, "could not parse sizeY.");
             }
         }
       else
         {
-          result = false;
+          FAIL_WITH_ERROR(result, "could not parse sizeX.");
         }
     }
   else
     {
-      result = false;
+      FAIL_WITH_ERROR(result, "invalid model display.");
     }
 
   return result;
 }
 
 /**
- * Parses the given node and stored the information iín the width and height attribute
+ * Parses the given node and stored the information i  n the width and height attribute
  * in the given dimensions object.
  * If parsinf fails, false is returned.
  */
@@ -6446,17 +6426,17 @@ bool CCellDesignerImporter::parseBoxSize(const XMLNode* pNode, Dimensions& d)
             }
           else
             {
-              result = false;
+              FAIL_WITH_ERROR(result, "could not parse height.");
             }
         }
       else
         {
-          result = false;
+          FAIL_WITH_ERROR(result, "could not parse width.");
         }
     }
   else
     {
-      result = false;
+      FAIL_WITH_ERROR(result, "invalid boxSize.");
     }
 
   return result;
@@ -6504,27 +6484,27 @@ bool CCellDesignerImporter::parseDoubleLine(const XMLNode* pNode, DoubleLine& dl
                     }
                   else
                     {
-                      result = false;
+                      FAIL_WITH_ERROR(result, "could not parse thickness.");
                     }
                 }
               else
                 {
-                  result = false;
+                  FAIL_WITH_ERROR(result, "could not parse outerwidth.");
                 }
             }
           else
             {
-              result = false;
+              FAIL_WITH_ERROR(result, "could not parse innerwidth.");
             }
         }
       else
         {
-          result = false;
+          FAIL_WITH_ERROR(result, "invalid doubleLine.");
         }
     }
   else
     {
-      result = false;
+      FAIL_WITH_ERROR(result, "invalid doubleLine.");
     }
 
   return result;
@@ -6556,17 +6536,17 @@ bool CCellDesignerImporter::parsePaint(const XMLNode* pNode, Paint& p)
 
           if (p.mScheme == PAINT_UNDEFINED)
             {
-              result = false;
+              FAIL_WITH_ERROR(result, "invalid scheme.");
             }
         }
       else
         {
-          result = false;
+          FAIL_WITH_ERROR(result, "invalid color / scheme .");
         }
     }
   else
     {
-      result = false;
+      FAIL_WITH_ERROR(result, "invalid paint.");
     }
 
   return result;
@@ -6608,7 +6588,7 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
         }
       else
         {
-          result = false;
+          FAIL_WITH_ERROR(result, "could not parse inner color string.");
         }
 
       if (result == true)
@@ -6651,7 +6631,7 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
                           }
                         else
                           {
-                            result = false;
+                            COULD_NOT_CREATE(result);
                           }
 
                         // the second has a width of 2 and is non-transparent
@@ -6669,7 +6649,7 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
                           }
                         else
                           {
-                            result = false;
+                            COULD_NOT_CREATE(result);
                           }
 
                         // the third has a width of 1 and is non-transparent
@@ -6687,7 +6667,7 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
                           }
                         else
                           {
-                            result = false;
+                            COULD_NOT_CREATE(result);
                           }
                       }
                       break;
@@ -6747,7 +6727,7 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
                               }
                             else
                               {
-                                result = false;
+                                COULD_NOT_CREATE(result);
                               }
 
                             pP = pCurve->createPoint();
@@ -6760,7 +6740,7 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
                               }
                             else
                               {
-                                result = false;
+                                COULD_NOT_CREATE(result);
                               }
 
                             pCB = pCurve->createCubicBezier();
@@ -6777,7 +6757,7 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
                               }
                             else
                               {
-                                result = false;
+                                COULD_NOT_CREATE(result);
                               }
 
                             pP = pCurve->createPoint();
@@ -6790,12 +6770,12 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
                               }
                             else
                               {
-                                result = false;
+                                COULD_NOT_CREATE(result);
                               }
                           }
                         else
                           {
-                            result = false;
+                            COULD_NOT_CREATE(result);
                           }
 
                         // second curve for the outer edge
@@ -6816,7 +6796,7 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
                               }
                             else
                               {
-                                result = false;
+                                COULD_NOT_CREATE(result);
                               }
 
                             pP = pCurve->createPoint();
@@ -6829,7 +6809,7 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
                               }
                             else
                               {
-                                result = false;
+                                COULD_NOT_CREATE(result);
                               }
 
                             pCB = pCurve->createCubicBezier();
@@ -6846,7 +6826,7 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
                               }
                             else
                               {
-                                result = false;
+                                COULD_NOT_CREATE(result);
                               }
 
                             pP = pCurve->createPoint();
@@ -6859,12 +6839,12 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
                               }
                             else
                               {
-                                result = false;
+                                COULD_NOT_CREATE(result);
                               }
                           }
                         else
                           {
-                            result = false;
+                            COULD_NOT_CREATE(result);
                           }
 
                         // third curve for the inner edge
@@ -6885,7 +6865,7 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
                               }
                             else
                               {
-                                result = false;
+                                COULD_NOT_CREATE(result);
                               }
 
                             pP = pCurve->createPoint();
@@ -6898,7 +6878,7 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
                               }
                             else
                               {
-                                result = false;
+                                COULD_NOT_CREATE(result);
                               }
 
                             pCB = pCurve->createCubicBezier();
@@ -6915,7 +6895,7 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
                               }
                             else
                               {
-                                result = false;
+                                COULD_NOT_CREATE(result);
                               }
 
                             pP = pCurve->createPoint();
@@ -6928,12 +6908,12 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
                               }
                             else
                               {
-                                result = false;
+                                COULD_NOT_CREATE(result);
                               }
                           }
                         else
                           {
-                            result = false;
+                            COULD_NOT_CREATE(result);
                           }
                       }
                       break;
@@ -6962,7 +6942,7 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
                               }
                             else
                               {
-                                result = false;
+                                COULD_NOT_CREATE(result);
                               }
 
                             pP = pCurve->createPoint();
@@ -6975,7 +6955,7 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
                               }
                             else
                               {
-                                result = false;
+                                COULD_NOT_CREATE(result);
                               }
 
                             pCB = pCurve->createCubicBezier();
@@ -6992,7 +6972,7 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
                               }
                             else
                               {
-                                result = false;
+                                COULD_NOT_CREATE(result);
                               }
 
                             pP = pCurve->createPoint();
@@ -7005,12 +6985,12 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
                               }
                             else
                               {
-                                result = false;
+                                COULD_NOT_CREATE(result);
                               }
                           }
                         else
                           {
-                            result = false;
+                            COULD_NOT_CREATE(result);
                           }
 
                         // second curve for the outer edge
@@ -7031,7 +7011,7 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
                               }
                             else
                               {
-                                result = false;
+                                COULD_NOT_CREATE(result);
                               }
 
                             pP = pCurve->createPoint();
@@ -7044,7 +7024,7 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
                               }
                             else
                               {
-                                result = false;
+                                COULD_NOT_CREATE(result);
                               }
 
                             pCB = pCurve->createCubicBezier();
@@ -7061,7 +7041,7 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
                               }
                             else
                               {
-                                result = false;
+                                COULD_NOT_CREATE(result);
                               }
 
                             pP = pCurve->createPoint();
@@ -7074,12 +7054,12 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
                               }
                             else
                               {
-                                result = false;
+                                COULD_NOT_CREATE(result);
                               }
                           }
                         else
                           {
-                            result = false;
+                            COULD_NOT_CREATE(result);
                           }
 
                         // third curve for the inner edge
@@ -7100,7 +7080,7 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
                               }
                             else
                               {
-                                result = false;
+                                COULD_NOT_CREATE(result);
                               }
 
                             pP = pCurve->createPoint();
@@ -7113,7 +7093,7 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
                               }
                             else
                               {
-                                result = false;
+                                COULD_NOT_CREATE(result);
                               }
 
                             pCB = pCurve->createCubicBezier();
@@ -7130,7 +7110,7 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
                               }
                             else
                               {
-                                result = false;
+                                COULD_NOT_CREATE(result);
                               }
 
                             pP = pCurve->createPoint();
@@ -7143,12 +7123,12 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
                               }
                             else
                               {
-                                result = false;
+                                COULD_NOT_CREATE(result);
                               }
                           }
                         else
                           {
-                            result = false;
+                            COULD_NOT_CREATE(result);
                           }
                       }
                       break;
@@ -7177,7 +7157,7 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
                               }
                             else
                               {
-                                result = false;
+                                COULD_NOT_CREATE(result);
                               }
 
                             pP = pCurve->createPoint();
@@ -7190,7 +7170,7 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
                               }
                             else
                               {
-                                result = false;
+                                COULD_NOT_CREATE(result);
                               }
 
                             pCB = pCurve->createCubicBezier();
@@ -7207,7 +7187,7 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
                               }
                             else
                               {
-                                result = false;
+                                COULD_NOT_CREATE(result);
                               }
 
                             pP = pCurve->createPoint();
@@ -7220,12 +7200,12 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
                               }
                             else
                               {
-                                result = false;
+                                COULD_NOT_CREATE(result);
                               }
                           }
                         else
                           {
-                            result = false;
+                            COULD_NOT_CREATE(result);
                           }
 
                         // second curve for the outer edge
@@ -7246,7 +7226,7 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
                               }
                             else
                               {
-                                result = false;
+                                COULD_NOT_CREATE(result);
                               }
 
                             pP = pCurve->createPoint();
@@ -7259,7 +7239,7 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
                               }
                             else
                               {
-                                result = false;
+                                COULD_NOT_CREATE(result);
                               }
 
                             pCB = pCurve->createCubicBezier();
@@ -7276,7 +7256,7 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
                               }
                             else
                               {
-                                result = false;
+                                COULD_NOT_CREATE(result);
                               }
 
                             pP = pCurve->createPoint();
@@ -7289,12 +7269,12 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
                               }
                             else
                               {
-                                result = false;
+                                COULD_NOT_CREATE(result);
                               }
                           }
                         else
                           {
-                            result = false;
+                            COULD_NOT_CREATE(result);
                           }
 
                         // third curve for the inner edge
@@ -7315,7 +7295,7 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
                               }
                             else
                               {
-                                result = false;
+                                COULD_NOT_CREATE(result);
                               }
 
                             pP = pCurve->createPoint();
@@ -7328,7 +7308,7 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
                               }
                             else
                               {
-                                result = false;
+                                COULD_NOT_CREATE(result);
                               }
 
                             pCB = pCurve->createCubicBezier();
@@ -7345,7 +7325,7 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
                               }
                             else
                               {
-                                result = false;
+                                COULD_NOT_CREATE(result);
                               }
 
                             pP = pCurve->createPoint();
@@ -7358,12 +7338,12 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
                               }
                             else
                               {
-                                result = false;
+                                COULD_NOT_CREATE(result);
                               }
                           }
                         else
                           {
-                            result = false;
+                            COULD_NOT_CREATE(result);
                           }
                       }
                       break;
@@ -7392,7 +7372,7 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
                               }
                             else
                               {
-                                result = false;
+                                COULD_NOT_CREATE(result);
                               }
 
                             pP = pCurve->createPoint();
@@ -7405,7 +7385,7 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
                               }
                             else
                               {
-                                result = false;
+                                COULD_NOT_CREATE(result);
                               }
 
                             pCB = pCurve->createCubicBezier();
@@ -7422,7 +7402,7 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
                               }
                             else
                               {
-                                result = false;
+                                COULD_NOT_CREATE(result);
                               }
 
                             pP = pCurve->createPoint();
@@ -7435,12 +7415,12 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
                               }
                             else
                               {
-                                result = false;
+                                COULD_NOT_CREATE(result);
                               }
                           }
                         else
                           {
-                            result = false;
+                            COULD_NOT_CREATE(result);
                           }
 
                         // second curve for the outer edge
@@ -7461,7 +7441,7 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
                               }
                             else
                               {
-                                result = false;
+                                COULD_NOT_CREATE(result);
                               }
 
                             pP = pCurve->createPoint();
@@ -7474,7 +7454,7 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
                               }
                             else
                               {
-                                result = false;
+                                COULD_NOT_CREATE(result);
                               }
 
                             pCB = pCurve->createCubicBezier();
@@ -7491,7 +7471,7 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
                               }
                             else
                               {
-                                result = false;
+                                COULD_NOT_CREATE(result);
                               }
 
                             pP = pCurve->createPoint();
@@ -7504,12 +7484,12 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
                               }
                             else
                               {
-                                result = false;
+                                COULD_NOT_CREATE(result);
                               }
                           }
                         else
                           {
-                            result = false;
+                            COULD_NOT_CREATE(result);
                           }
 
                         // third curve for the inner edge
@@ -7530,7 +7510,7 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
                               }
                             else
                               {
-                                result = false;
+                                COULD_NOT_CREATE(result);
                               }
 
                             pP = pCurve->createPoint();
@@ -7543,7 +7523,7 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
                               }
                             else
                               {
-                                result = false;
+                                COULD_NOT_CREATE(result);
                               }
 
                             pCB = pCurve->createCubicBezier();
@@ -7560,7 +7540,7 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
                               }
                             else
                               {
-                                result = false;
+                                COULD_NOT_CREATE(result);
                               }
 
                             pP = pCurve->createPoint();
@@ -7573,12 +7553,12 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
                               }
                             else
                               {
-                                result = false;
+                                COULD_NOT_CREATE(result);
                               }
                           }
                         else
                           {
-                            result = false;
+                            COULD_NOT_CREATE(result);
                           }
                       }
                       break;
@@ -7605,7 +7585,7 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
                               }
                             else
                               {
-                                result = false;
+                                COULD_NOT_CREATE(result);
                               }
 
                             pP = pCurve->createPoint();
@@ -7618,12 +7598,12 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
                               }
                             else
                               {
-                                result = false;
+                                COULD_NOT_CREATE(result);
                               }
                           }
                         else
                           {
-                            result = false;
+                            COULD_NOT_CREATE(result);
                           }
 
                         // the second has width 2 and is non-transparent
@@ -7644,7 +7624,7 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
                               }
                             else
                               {
-                                result = false;
+                                COULD_NOT_CREATE(result);
                               }
 
                             pP = pCurve->createPoint();
@@ -7657,12 +7637,12 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
                               }
                             else
                               {
-                                result = false;
+                                COULD_NOT_CREATE(result);
                               }
                           }
                         else
                           {
-                            result = false;
+                            COULD_NOT_CREATE(result);
                           }
 
                         // the third has width 1 and is non-transparent
@@ -7683,7 +7663,7 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
                               }
                             else
                               {
-                                result = false;
+                                COULD_NOT_CREATE(result);
                               }
 
                             pP = pCurve->createPoint();
@@ -7696,12 +7676,12 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
                               }
                             else
                               {
-                                result = false;
+                                COULD_NOT_CREATE(result);
                               }
                           }
                         else
                           {
-                            result = false;
+                            COULD_NOT_CREATE(result);
                           }
                       }
                       break;
@@ -7728,7 +7708,7 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
                               }
                             else
                               {
-                                result = false;
+                                COULD_NOT_CREATE(result);
                               }
 
                             pP = pCurve->createPoint();
@@ -7741,12 +7721,12 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
                               }
                             else
                               {
-                                result = false;
+                                COULD_NOT_CREATE(result);
                               }
                           }
                         else
                           {
-                            result = false;
+                            COULD_NOT_CREATE(result);
                           }
 
                         // the second has width 2 and is non-transparent
@@ -7767,7 +7747,7 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
                               }
                             else
                               {
-                                result = false;
+                                COULD_NOT_CREATE(result);
                               }
 
                             pP = pCurve->createPoint();
@@ -7780,12 +7760,12 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
                               }
                             else
                               {
-                                result = false;
+                                COULD_NOT_CREATE(result);
                               }
                           }
                         else
                           {
-                            result = false;
+                            COULD_NOT_CREATE(result);
                           }
 
                         // the third has width 1 and is non-transparent
@@ -7806,7 +7786,7 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
                               }
                             else
                               {
-                                result = false;
+                                COULD_NOT_CREATE(result);
                               }
 
                             pP = pCurve->createPoint();
@@ -7819,12 +7799,12 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
                               }
                             else
                               {
-                                result = false;
+                                COULD_NOT_CREATE(result);
                               }
                           }
                         else
                           {
-                            result = false;
+                            COULD_NOT_CREATE(result);
                           }
                       }
                       break;
@@ -7851,7 +7831,7 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
                               }
                             else
                               {
-                                result = false;
+                                COULD_NOT_CREATE(result);
                               }
 
                             pP = pCurve->createPoint();
@@ -7864,12 +7844,12 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
                               }
                             else
                               {
-                                result = false;
+                                COULD_NOT_CREATE(result);
                               }
                           }
                         else
                           {
-                            result = false;
+                            COULD_NOT_CREATE(result);
                           }
 
                         // the second has width 2 and is non-transparent
@@ -7890,7 +7870,7 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
                               }
                             else
                               {
-                                result = false;
+                                COULD_NOT_CREATE(result);
                               }
 
                             pP = pCurve->createPoint();
@@ -7903,12 +7883,12 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
                               }
                             else
                               {
-                                result = false;
+                                COULD_NOT_CREATE(result);
                               }
                           }
                         else
                           {
-                            result = false;
+                            COULD_NOT_CREATE(result);
                           }
 
                         // the third has width 1 and is non-transparent
@@ -7929,7 +7909,7 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
                               }
                             else
                               {
-                                result = false;
+                                COULD_NOT_CREATE(result);
                               }
 
                             pP = pCurve->createPoint();
@@ -7942,12 +7922,12 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
                               }
                             else
                               {
-                                result = false;
+                                COULD_NOT_CREATE(result);
                               }
                           }
                         else
                           {
-                            result = false;
+                            COULD_NOT_CREATE(result);
                           }
                       }
                       break;
@@ -7974,7 +7954,7 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
                               }
                             else
                               {
-                                result = false;
+                                COULD_NOT_CREATE(result);
                               }
 
                             pP = pCurve->createPoint();
@@ -7987,12 +7967,12 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
                               }
                             else
                               {
-                                result = false;
+                                COULD_NOT_CREATE(result);
                               }
                           }
                         else
                           {
-                            result = false;
+                            COULD_NOT_CREATE(result);
                           }
 
                         // the second has width 2 and is non-transparent
@@ -8013,7 +7993,7 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
                               }
                             else
                               {
-                                result = false;
+                                COULD_NOT_CREATE(result);
                               }
 
                             pP = pCurve->createPoint();
@@ -8026,12 +8006,12 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
                               }
                             else
                               {
-                                result = false;
+                                COULD_NOT_CREATE(result);
                               }
                           }
                         else
                           {
-                            result = false;
+                            COULD_NOT_CREATE(result);
                           }
 
                         // the third has width 1 and is non-transparent
@@ -8052,7 +8032,7 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
                               }
                             else
                               {
-                                result = false;
+                                COULD_NOT_CREATE(result);
                               }
 
                             pP = pCurve->createPoint();
@@ -8065,18 +8045,18 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
                               }
                             else
                               {
-                                result = false;
+                                COULD_NOT_CREATE(result);
                               }
                           }
                         else
                           {
-                            result = false;
+                            COULD_NOT_CREATE(result);
                           }
                       }
                       break;
 
                       default:
-                        result = false;
+                        FAIL_WITH_ERROR(result, "unexpected compartment style.");
                         break;
                     }
                 }
@@ -8088,7 +8068,7 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
     }
   else
     {
-      result = false;
+      FAIL_WITH_ERROR(result, "invalid compartmentglyph / render info.");
     }
 
   return result;
@@ -8242,7 +8222,7 @@ bool CCellDesignerImporter::createTextGlyphStyle(double size, Text::TEXT_ANCHOR 
     }
   else
     {
-      result = false;
+      FAIL_WITH_ERROR(result, "missing object reference.");
     }
 
   return result;
@@ -8272,7 +8252,7 @@ bool CCellDesignerImporter::createDefaultStyles()
     }
   else
     {
-      result = false;
+      FAIL_WITH_ERROR(result, "could not create default style.");
     }
 
   return result;
@@ -8316,17 +8296,17 @@ bool CCellDesignerImporter::createDefaultReactionGlyphStyle()
             }
           else
             {
-              result = false;
+              FAIL_WITH_ERROR(result, "reaction style group NULL.");
             }
         }
       else
         {
-          result = false;
+          COULD_NOT_CREATE(result);
         }
     }
   else
     {
-      result = false;
+      FAIL_WITH_ERROR(result, "invalid render info.");
     }
 
   return result;
@@ -8401,37 +8381,37 @@ bool CCellDesignerImporter::createDefaultModifierStyle()
                                 }
                               else
                                 {
-                                  result = false;
+                                  COULD_NOT_CREATE(result);
                                 }
                             }
                           else
                             {
-                              result = false;
+                              COULD_NOT_CREATE(result);
                             }
                         }
                       else
                         {
-                          result = false;
+                          COULD_NOT_CREATE(result);
                         }
                     }
                   else
                     {
-                      result = false;
+                      COULD_NOT_CREATE(result);
                     }
                 }
               else
                 {
-                  result = false;
+                  COULD_NOT_CREATE(result);
                 }
             }
           else
             {
-              result = false;
+              COULD_NOT_CREATE(result);
             }
         }
       else
         {
-          result = false;
+          COULD_NOT_CREATE(result);
         }
 
       if (result == true)
@@ -8463,18 +8443,18 @@ bool CCellDesignerImporter::createDefaultModifierStyle()
                 }
               else
                 {
-                  result = false;
+                  FAIL_WITH_ERROR(result, "group null.");
                 }
             }
           else
             {
-              result = false;
+              COULD_NOT_CREATE(result);
             }
         }
     }
   else
     {
-      result = false;
+      FAIL_WITH_ERROR(result, "invalid render info.");
     }
 
   return result;
@@ -8525,17 +8505,17 @@ bool CCellDesignerImporter::createDefaultInhibitorStyle()
                 }
               else
                 {
-                  result = false;
+                  COULD_NOT_CREATE(result);
                 }
             }
           else
             {
-              result = false;
+              FAIL_WITH_ERROR(result, "group null.");
             }
         }
       else
         {
-          result = false;
+          COULD_NOT_CREATE(result);
         }
 
       if (result == true)
@@ -8567,18 +8547,18 @@ bool CCellDesignerImporter::createDefaultInhibitorStyle()
                 }
               else
                 {
-                  result = false;
+                  FAIL_WITH_ERROR(result, "group NULL.");
                 }
             }
           else
             {
-              result = false;
+              COULD_NOT_CREATE(result);
             }
         }
     }
   else
     {
-      result = false;
+      FAIL_WITH_ERROR(result, "render info NULL.");
     }
 
   return result;
@@ -8647,32 +8627,32 @@ bool CCellDesignerImporter::createDefaultActivatorStyle()
                             }
                           else
                             {
-                              result = false;
+                              COULD_NOT_CREATE(result);
                             }
                         }
                       else
                         {
-                          result = false;
+                          COULD_NOT_CREATE(result);
                         }
                     }
                   else
                     {
-                      result = false;
+                      COULD_NOT_CREATE(result);
                     }
                 }
               else
                 {
-                  result = false;
+                  COULD_NOT_CREATE(result);
                 }
             }
           else
             {
-              result = false;
+              FAIL_WITH_ERROR(result, "group NULL.");
             }
         }
       else
         {
-          result = false;
+          COULD_NOT_CREATE(result);
         }
 
       if (result == true)
@@ -8704,18 +8684,18 @@ bool CCellDesignerImporter::createDefaultActivatorStyle()
                 }
               else
                 {
-                  result = false;
+                  FAIL_WITH_ERROR(result, "group NULL.");
                 }
             }
           else
             {
-              result = false;
+              COULD_NOT_CREATE(result);
             }
         }
     }
   else
     {
-      result = false;
+      FAIL_WITH_ERROR(result, "render info NULL.");
     }
 
   return result;
@@ -8770,17 +8750,17 @@ bool CCellDesignerImporter::createCatalysisStyles()
                 }
               else
                 {
-                  result = false;
+                  COULD_NOT_CREATE(result);
                 }
             }
           else
             {
-              result = false;
+              FAIL_WITH_ERROR(result, "group NULL.");
             }
         }
       else
         {
-          result = false;
+          COULD_NOT_CREATE(result);
         }
 
       if (result == true)
@@ -8812,12 +8792,12 @@ bool CCellDesignerImporter::createCatalysisStyles()
                 }
               else
                 {
-                  result = false;
+                  FAIL_WITH_ERROR(result, "group NULL.");
                 }
             }
           else
             {
-              result = false;
+              COULD_NOT_CREATE(result);
             }
         }
 
@@ -8855,18 +8835,18 @@ bool CCellDesignerImporter::createCatalysisStyles()
                 }
               else
                 {
-                  result = false;
+                  FAIL_WITH_ERROR(result, "group NULL.");
                 }
             }
           else
             {
-              result = false;
+              COULD_NOT_CREATE(result);
             }
         }
     }
   else
     {
-      result = false;
+      FAIL_WITH_ERROR(result, "render info NULL.");
     }
 
   return result;
@@ -8936,32 +8916,32 @@ bool CCellDesignerImporter::createDefaultProductStyle()
                             }
                           else
                             {
-                              result = false;
+                              COULD_NOT_CREATE(result);
                             }
                         }
                       else
                         {
-                          result = false;
+                          COULD_NOT_CREATE(result);
                         }
                     }
                   else
                     {
-                      result = false;
+                      COULD_NOT_CREATE(result);
                     }
                 }
               else
                 {
-                  result = false;
+                  COULD_NOT_CREATE(result);
                 }
             }
           else
             {
-              result = false;
+              FAIL_WITH_ERROR(result, "group NULL.");
             }
         }
       else
         {
-          result = false;
+          COULD_NOT_CREATE(result);
         }
 
       if (result == true)
@@ -8994,18 +8974,18 @@ bool CCellDesignerImporter::createDefaultProductStyle()
                 }
               else
                 {
-                  result = false;
+                  FAIL_WITH_ERROR(result, "group NULL.");
                 }
             }
           else
             {
-              result = false;
+              COULD_NOT_CREATE(result);
             }
         }
     }
   else
     {
-      result = false;
+      FAIL_WITH_ERROR(result, "render info NULL.");
     }
 
   return result;
@@ -9047,18 +9027,20 @@ bool CCellDesignerImporter::createDefaultSubstrateStyle()
             }
           else
             {
-              result = false;
+              FAIL_WITH_ERROR(result, "group NULL.");
             }
         }
       else
         {
-          result = false;
+          COULD_NOT_CREATE(result);
         }
     }
   else
     {
-      result = false;
-    }    return result;
+      FAIL_WITH_ERROR(result, "render info NULL.");
+    }
+
+  return result;
 }
 
 /**
@@ -9134,7 +9116,7 @@ bool CCellDesignerImporter::findShortestConnection(std::vector<POSITION>& pos1, 
               width2 == -inf ||
               height2 == -inf)
             {
-              result = false;
+              FAIL_WITH_ERROR(result, "invalid connection.");
               pos1.clear();
               pos2.clear();
             }
@@ -9168,7 +9150,7 @@ bool CCellDesignerImporter::findShortestConnection(std::vector<POSITION>& pos1, 
                 }
               else
                 {
-                  result = false;
+                  FAIL_WITH_ERROR(result, "invalid position.");
                   break;
                 }
 
@@ -9183,7 +9165,7 @@ bool CCellDesignerImporter::findShortestConnection(std::vector<POSITION>& pos1, 
     }
   else
     {
-      result = false;
+      FAIL_WITH_ERROR(result, "invalid connection.");
       pos1.clear();
       pos2.clear();
     }
@@ -9406,9 +9388,9 @@ bool CCellDesignerImporter::setSpeciesReferenceId(SpeciesReferenceGlyph* pGlyph,
       // for pSRefGlyph1 we check if we find
       // a species reference that is pointing
       // to this id
-      if (this->mpDocument != NULL && this->mpDocument->getModel() != NULL)
+      if (this->mpDocument != NULL && mpModel != NULL)
         {
-          Reaction* pReaction = this->mpDocument->getModel()->getReaction(reactionId);
+          Reaction* pReaction = mpModel->getReaction(reactionId);
           assert(pReaction != NULL);
 
           if (pReaction != NULL)
@@ -9782,31 +9764,31 @@ bool CCellDesignerImporter::handleModificationLinks(ReactionGlyph* pRGlyph, Reac
                                     }
                                   else
                                     {
-                                      result = false;
+                                      FAIL_WITH_ERROR(result, "could not create orthogonal.");
                                     }
                                 }
                             }
                           else
                             {
-                              result = false;
+                              FAIL_WITH_ERROR(result, "targetPosition undefined.");
                             }
                         }
                       else
                         {
-                          result = false;
+                          FAIL_WITH_ERROR(result, "curve segment NULL.");
                         }
                     }
                 }
             }
           else
             {
-              result = false;
+              FAIL_WITH_ERROR(result, "curve empty.");
             }
         }
     }
   else
     {
-      result = false;
+      FAIL_WITH_ERROR(result, "glyph NULL.");
     }
 
   return result;
@@ -9891,7 +9873,7 @@ bool CCellDesignerImporter::handleExtraReactionElements(ReactionGlyph* pRGlyph, 
                             }
                           else
                             {
-                              result = false;
+                              COULD_NOT_CREATE(result);
                             }
 
                           if (result && (*it).mPosition != POSITION_UNDEFINED)
@@ -9941,12 +9923,12 @@ bool CCellDesignerImporter::handleExtraReactionElements(ReactionGlyph* pRGlyph, 
                                         }
                                       else
                                         {
-                                          result = false;
+                                          COULD_NOT_CREATE(result);
                                         }
                                     }
                                   else
                                     {
-                                      result = false;
+                                      COULD_NOT_CREATE(result);
                                     }
 
                                   if (result == true)
@@ -9973,12 +9955,12 @@ bool CCellDesignerImporter::handleExtraReactionElements(ReactionGlyph* pRGlyph, 
                         }
                       else
                         {
-                          result = false;
+                          FAIL_WITH_ERROR(result, "Could not find bounding box.");
                         }
                     }
                   else
                     {
-                      result = false;
+                      FAIL_WITH_ERROR(result, "Could not find alias.");
                     }
 
                   ++it;
@@ -9986,13 +9968,13 @@ bool CCellDesignerImporter::handleExtraReactionElements(ReactionGlyph* pRGlyph, 
             }
           else
             {
-              result = false;
+              FAIL_WITH_ERROR(result, "Curve is NULL");
             }
         }
     }
   else
     {
-      result = false;
+      FAIL_WITH_ERROR(result, "reaction glyph is NULL");
     }
 
   return result;
@@ -10251,7 +10233,7 @@ bool CCellDesignerImporter::handleIncludedSpecies(const XMLNode* pNode)
                 }
               else
                 {
-                  result = false;
+                  FAIL_WITH_ERROR(result, "species has id / name");
                 }
             }
         }
@@ -10312,6 +10294,11 @@ bool CCellDesignerImporter::createOrthogonal(const Point& v1, Point& v2)
   else
     {
       result = false;
+    }
+
+  if (!result)
+    {
+      FAIL_WITH_ERROR(result, "Could not create orthogonal vector");
     }
 
   return result;

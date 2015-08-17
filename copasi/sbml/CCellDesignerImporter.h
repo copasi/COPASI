@@ -1,4 +1,4 @@
-// Copyright (C) 2011 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -515,6 +515,9 @@ protected:
   // an SBMLDocument
   SBMLDocument* mpDocument;
 
+  // the documents sbml model
+  Model* mpModel;
+
   // the result is stored in an instance of the
   // SBML Layout class
   Layout* mpLayout;
@@ -656,6 +659,7 @@ public:
    */
   static double determineVersion(const XMLNode* pNode);
 
+  void removeCurrentLayout();
 protected:
   /**
    * This method tries to convert the CellDesigner annotation to an SBML Layout.
@@ -812,7 +816,7 @@ protected:
   static bool parseReactionAnnotation(const XMLNode* pNode, ReactionAnnotation& ranno);
 
   /**
-   * Parses the given node and stored the information iín the width and height attribute
+   * Parses the given node and stored the information i  n the width and height attribute
    * in the given dimensions object.
    * If parsinf fails, false is returned.
    */
