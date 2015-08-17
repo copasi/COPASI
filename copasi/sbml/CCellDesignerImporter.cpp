@@ -4524,12 +4524,12 @@ MODIFICATION_LINK_TYPE CCellDesignerImporter::modificationLinkTypeToEnum(std::st
       result = BOOLEAN_LOGIC_GATE_UNKNOWN_ML_TYPE;
     }
 
-  //if (result == UNDEFINED_ML_TYPE)
-  //{
-  //  bool status;
-  //  FAIL_WITH_ERROR(status, "undefined modification link type: " << s << " assuming modulation");
-  //  result = MODULATION_ML_TYPE;
-  //}
+  if (result == UNDEFINED_ML_TYPE)
+    {
+      bool status;
+      FAIL_WITH_ERROR(status, "undefined modification link type: " << s << " assuming modulation");
+      result = MODULATION_ML_TYPE;
+    }
 
   return result;
 }
@@ -4888,7 +4888,7 @@ SPECIES_CLASS CCellDesignerImporter::classToEnum(std::string cl)
 }
 
 /**
- * Tries to parse the reaction elements (baseReactants or baseProducts) in the given
+ * Tries to parse the reaction elements (baseReamctants or baseProducts) in the given
  * node and stores the data in the given ReactionAnnotation structure.
  * If parsing fails, false is returned.
  */
@@ -10442,6 +10442,13 @@ SPECIES_MODIFICATION_TYPE CCellDesignerImporter::speciesModificationTypeToEnum(s
   else if (cl == "SUFLATED")
     {
       result = SUFLATED_MOD_TYPE;
+    }
+
+  if (result == UNDEFINED_MOD_TYPE)
+    {
+      bool status;
+      FAIL_WITH_ERROR(status, "undefined species modification type: " << cl << " assuming empty");
+      result = EMPTY_MOD_TYPE;
     }
 
   return result;
