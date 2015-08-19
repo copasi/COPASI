@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -50,21 +50,8 @@ Qt::ItemFlags CQFunctionDM::flags(const QModelIndex &index) const
 
 bool CQFunctionDM::isFunctionReadOnly(const QModelIndex &index) const
 {
-  const CEvaluationTree *pFunc = CCopasiRootContainer::getFunctionList()->loadedFunctions()[index.row()];
-
-  switch (pFunc->getType())
-    {
-      case CEvaluationTree::PreDefined:
-      case CEvaluationTree::MassAction:
-        return true;
-        break;
-      case CEvaluationTree::UserDefined:
-      case CEvaluationTree::Function:
-      case CEvaluationTree::Expression:
-      case CEvaluationTree::MathExpression:
-        return false;
-        break;
-    }
+  const CFunction *pFunc = CCopasiRootContainer::getFunctionList()->loadedFunctions()[index.row()];
+  return pFunc->isReadOnly();
 
   return true;
 }
@@ -88,10 +75,13 @@ QVariant CQFunctionDM::data(const QModelIndex &index, int role) const
             {
               case COL_ROW_NUMBER:
                 return QVariant(QString(""));
+
               case COL_NAME_FUNCTIONS:
                 return QVariant(QString("New Function"));
+
               case COL_TYPE_FUNCTIONS:
                 return QVariant(QString(FROM_UTF8(CEvaluationTree::TypeName[4])));
+
               default:
                 return QVariant(QString(""));
             }
@@ -138,14 +128,19 @@ QVariant CQFunctionDM::headerData(int section, Qt::Orientation orientation,
         {
           case COL_ROW_NUMBER:
             return QVariant(QString("#"));
+
           case COL_NAME_FUNCTIONS:
             return QVariant(QString("Name"));
+
           case COL_TYPE_FUNCTIONS:
             return QVariant(QString("Type"));
+
           case COL_MATH_DESC_FUNCTIONS:
             return QVariant(QString("Mathematical Description"));
+
           case COL_SBML_ID_FUNCTIONS:
             return QVariant(QString("SBML ID"));
+
           default:
             return QVariant();
         }
