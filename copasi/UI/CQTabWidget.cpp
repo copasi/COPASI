@@ -158,11 +158,7 @@ void CQTabWidget::load()
 
       if (mObjectType == ListViews::FUNCTION)
         {
-          const CFunction * pFunction = static_cast< const CFunction * >(mpObject);
-
-          bool readOnly =
-            (pFunction->getType() == CFunction::PreDefined ||
-             pFunction->getType() == CFunction::MassAction);
+          bool readOnly = static_cast< const CFunction * >(mpObject)->isReadOnly();
 
           mpEditName->setReadOnly(readOnly);
           mpBtnCommit->setEnabled(!readOnly);

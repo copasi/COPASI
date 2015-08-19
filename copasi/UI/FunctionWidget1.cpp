@@ -1,16 +1,16 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-// and The University of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2002 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc. and EML Research, gGmbH. 
-// All rights reserved. 
+// Copyright (C) 2002 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 #include "FunctionWidget1.h"
 
@@ -412,8 +412,7 @@ bool FunctionWidget1::loadFromFunction(const CFunction* func)
       desc.insert(l, 1, '\n');
     }
 
-  mReadOnly = (mpFunction->getType() == CFunction::PreDefined ||
-               mpFunction->getType() == CFunction::MassAction);
+  mReadOnly = mpFunction->isReadOnly();
 
   RadioButton1->setEnabled(!mReadOnly);
   RadioButton2->setEnabled(!mReadOnly);
@@ -650,7 +649,7 @@ void FunctionWidget1::slotBtnNew()
   int i = 1;
   CFunction* pFunc;
   CCopasiVectorN<CFunction>& FunctionList
-  = CCopasiRootContainer::getFunctionList()->loadedFunctions();
+    = CCopasiRootContainer::getFunctionList()->loadedFunctions();
 
   while (FunctionList.getIndex(name) != C_INVALID_INDEX)
     {
