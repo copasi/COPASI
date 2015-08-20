@@ -86,6 +86,12 @@ public:
   virtual bool setInfix(const std::string & infix, bool compile);
 
   /**
+   * Check whether a function is read only
+   * @return bool isReadOnly
+   */
+  virtual bool isReadOnly() const;
+
+  /**
    * Comparison operator
    * @param const CFunction & rhs
    * @return bool equal

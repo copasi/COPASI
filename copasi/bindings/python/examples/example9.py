@@ -1,16 +1,11 @@
 # -*- coding: utf-8 -*-
-# Begin CVS Header 
-#   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/python/examples/example9.py,v $ 
-#   $Revision: 1.3 $ 
-#   $Name:  $ 
-#   $Author: shoops $ 
-#   $Date: 2012/03/05 18:09:32 $ 
-# End CVS Header 
-
-# Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and The University 
 # of Manchester. 
 # All rights reserved. 
+
+
+
 
 #  
 #  This example is similar to example 8. We also calculate the jacobian,
@@ -45,7 +40,7 @@ def main():
   try:
     result = dataModel.importSBMLFromString(MODEL_STRING)
   except:
-     print >> sys.stderr, "An exception has occured during the import of the SBML model"
+     sys.stderr.write("An exception has occured during the import of the SBML model.\n")
      return
   # check if the import was successful
   mostSevere = CCopasiMessage.getHighestSeverity()
@@ -57,7 +52,7 @@ def main():
   # we assume that the import succeeded if the return value is True and
   # the most severe error message is not an error or an exception
   if (result != True and  mostSevere < CCopasiMessage.ERROR):
-      print >> sys.stderr, "Sorry. Model could not be imported."
+      sys.stderr.write("Sorry. Model could not be imported.\n")
       return
 
   # get the trajectory task object
@@ -76,12 +71,12 @@ def main():
       # now we run the actual trajectory
       task.process(True)
   except:
-      print >> sys.stderr, "Error. Running the scan failed."
+      sys.stderr.write("Error. Running the scan failed.\n")
 
       # check if there are additional error messages
       if CCopasiMessage.size() > 0:
           # print the messages in chronological order
-          print >> sys.stderr, CCopasiMessage.getAllMessageText(True)
+          sys.stderr.write(CCopasiMessage.getAllMessageText(True))
       return
 
   # now we can get the result of the steady state calculation, e.g. the jacobian
@@ -107,24 +102,24 @@ def main():
       # since the rows and columns have the same annotation for the jacobian, it doesn't matter
       # for which dimension we get the annotations
       annotations = aj.getAnnotationsString(1)
-      print "Jacobian Matrix: "
-      print ""
-      print "%7s" % (" "),
+      print ("Jacobian Matrix: ")
+      print ("")
+      row = "%7s" % (" ")
 
       for i in range(0, annotations.size()):
-          print "%7s" % (annotations[i]),
+          row = row + " %7s" % (annotations[i])
 
-      print ""
+      print (row)
 
       for i in range(0,annotations.size()):
-          print "%7s" % ( annotations[i]),
+          row = "%7s" % ( annotations[i])
           index[0]=i
 
           for j in range(0,annotations.size()):
               index[1]=j
               array=aj.array();
-              print "%7.3f" % (array.get(index)),
-          print ""
+              row = row + " %7.3f" % (array.get(index))
+          print (row)
   return
 
 

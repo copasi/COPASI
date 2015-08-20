@@ -1,17 +1,9 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiVector.h,v $
-//   $Revision: 1.92 $
-//   $Name:  $
-//   $Author: bergmann $
-//   $Date: 2012/05/14 05:55:34 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
@@ -49,7 +41,7 @@ template <class CType>
 std::ostream &operator<<(std::ostream &os, const CCopasiVector<CType> & d);
 
 template < class CType > class CCopasiVector:
-    protected std::vector< CType * >, public CCopasiContainer
+  protected std::vector< CType * >, public CCopasiContainer
 {
 public:
   typedef typename std::vector< CType * >::value_type value_type;
@@ -69,8 +61,8 @@ public:
                 const CCopasiContainer * pParent = NULL,
                 const unsigned C_INT32 &
                 flag = CCopasiObject::Vector):
-      std::vector< CType * >(),
-      CCopasiContainer(name, pParent, "Vector", flag | CCopasiObject::Vector)
+    std::vector< CType * >(),
+    CCopasiContainer(name, pParent, "Vector", flag | CCopasiObject::Vector)
   {CONSTRUCTOR_TRACE;}
 
   /**
@@ -80,8 +72,8 @@ public:
    */
   CCopasiVector(const CCopasiVector < CType > & src,
                 const CCopasiContainer * pParent = NULL):
-      std::vector< CType * >(src),
-      CCopasiContainer(src, pParent)
+    std::vector< CType * >(src),
+    CCopasiContainer(src, pParent)
   {
     CONSTRUCTOR_TRACE;
 
@@ -307,7 +299,7 @@ public:
   }
 
   /**
-   * Removes the pointed to object from the vector
+   * Removes the pointer to the object, from the vector
    * @param CCopasiObject * pObject
    * @return bool success
    */
@@ -320,6 +312,7 @@ public:
     if (index != C_INVALID_INDEX)
       {
         iterator Target = begin() + index;
+        // Note: erase does not delete pointed to objects
         std::vector< CType * >::erase(Target, Target + 1);
       }
     else
@@ -513,7 +506,7 @@ public:
    */
   CCopasiVectorS(const std::string & name = "NoName",
                  const CCopasiContainer * pParent = NULL):
-      CCopasiVector< CType >(name, pParent) {}
+    CCopasiVector< CType >(name, pParent) {}
 
   /**
    * Copy constructor
@@ -522,7 +515,7 @@ public:
    */
   CCopasiVectorS(const CCopasiVectorS < CType > & src,
                  const CCopasiContainer * pParent = NULL) :
-      CCopasiVector < CType > (src, pParent) {}
+    CCopasiVector < CType > (src, pParent) {}
 
   /**
    *  Destructor
@@ -581,10 +574,10 @@ public:
    */
   CCopasiVectorN(const std::string & name = "NoName",
                  const CCopasiContainer * pParent = NULL):
-      CCopasiVector< CType >(name, pParent,
-                             CCopasiObject::Container
-                             + CCopasiObject::Vector
-                             + CCopasiObject::NameVector)
+    CCopasiVector< CType >(name, pParent,
+                           CCopasiObject::Container
+                           + CCopasiObject::Vector
+                           + CCopasiObject::NameVector)
   {}
 
   /**
@@ -594,7 +587,7 @@ public:
    */
   CCopasiVectorN(const CCopasiVectorN < CType > & src,
                  const CCopasiContainer * pParent = NULL) :
-      CCopasiVector < CType > (src, pParent)
+    CCopasiVector < CType > (src, pParent)
   {}
 
   /**
@@ -813,7 +806,7 @@ public:
    */
   CCopasiVectorNS(const std::string & name = "NoName",
                   const CCopasiContainer * pParent = NULL):
-      CCopasiVectorN< CType >(name, pParent)
+    CCopasiVectorN< CType >(name, pParent)
   {}
 
   /**
@@ -823,7 +816,7 @@ public:
    */
   CCopasiVectorNS(const CCopasiVectorNS < CType > & src,
                   const CCopasiContainer * pParent = NULL) :
-      CCopasiVectorN< CType >(src, pParent) {}
+    CCopasiVectorN< CType >(src, pParent) {}
 
   /**
    *  Destructor

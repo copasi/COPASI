@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -244,11 +244,15 @@ std::string CModelEntity::getExpression() const
 
 CExpression* CModelEntity::getExpressionPtr()
 {
+  if (mpExpression != NULL) mpExpression->updateInfix();
+
   return mpExpression;
 }
 
 const CExpression* CModelEntity::getExpressionPtr() const
 {
+  if (mpExpression != NULL) mpExpression->updateInfix();
+
   return mpExpression;
 }
 
@@ -288,11 +292,15 @@ bool CModelEntity::setExpressionPtr(CExpression* pExpression)
 
 CExpression* CModelEntity::getInitialExpressionPtr()
 {
+  if (mpInitialExpression != NULL) mpInitialExpression->updateInfix();
+
   return mpInitialExpression;
 }
 
 const CExpression* CModelEntity::getInitialExpressionPtr() const
 {
+  if (mpInitialExpression != NULL) mpInitialExpression->updateInfix();
+
   return mpInitialExpression;
 }
 

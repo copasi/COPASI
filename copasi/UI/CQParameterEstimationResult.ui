@@ -1,0 +1,420 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+<comment> Copyright (C) 2015 by Pedro Mendes, Virginia Tech Intellectual </comment>
+<comment> Properties, Inc., University of Heidelberg, and The University </comment>
+<comment> of Manchester. </comment>
+<comment> All rights reserved. </comment>
+
+ <comment> All rights reserved. </comment>
+ <class>CQParameterEstimationResult</class>
+ <widget class="QDialog" name="CQParameterEstimationResult">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>702</width>
+    <height>512</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Load Parameter Estimation Protocol</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout_2">
+     <item>
+      <widget class="QLabel" name="label_2">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>70</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>70</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="text">
+        <string>Protocol File: </string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLineEdit" name="txtProtocol">
+       <property name="toolTip">
+        <string>the protocol file to load</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="cmdBrowseProtocol">
+       <property name="toolTip">
+        <string>select the file protocol file to load. </string>
+       </property>
+       <property name="text">
+        <string>...</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QLabel" name="label">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>70</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>70</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="text">
+        <string>Data Sets: </string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QComboBox" name="lstDataSets">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QPushButton" name="cmdUpdateFitItems">
+       <property name="toolTip">
+        <string>Updates the displayed fititems from the current setup in the model (for comparison purposes only)</string>
+       </property>
+       <property name="text">
+        <string>Update FitItems</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="cmdSetTaskStartValues">
+       <property name="toolTip">
+        <string>Sets the Parameter / Optimization start values to the values from the selected row.</string>
+       </property>
+       <property name="text">
+        <string>Set Task Start Values</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="cmdApplyToModel">
+       <property name="toolTip">
+        <string>Updates the model initial state to the selected row.</string>
+       </property>
+       <property name="text">
+        <string>Apply To Model State</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <widget class="QTableWidget" name="tblFitItems">
+     <property name="editTriggers">
+      <set>QAbstractItemView::NoEditTriggers</set>
+     </property>
+     <property name="alternatingRowColors">
+      <bool>true</bool>
+     </property>
+     <property name="sortingEnabled">
+      <bool>true</bool>
+     </property>
+     <attribute name="horizontalHeaderStretchLastSection">
+      <bool>true</bool>
+     </attribute>
+     <attribute name="verticalHeaderVisible">
+      <bool>false</bool>
+     </attribute>
+     <column>
+      <property name="text">
+       <string>Name</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Lower Bound</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Upper Bound</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Start Value</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Affected Experiments</string>
+      </property>
+     </column>
+    </widget>
+   </item>
+   <item>
+    <widget class="QTableView" name="tblResults">
+     <property name="editTriggers">
+      <set>QAbstractItemView::NoEditTriggers</set>
+     </property>
+     <property name="alternatingRowColors">
+      <bool>true</bool>
+     </property>
+     <property name="selectionMode">
+      <enum>QAbstractItemView::SingleSelection</enum>
+     </property>
+     <property name="selectionBehavior">
+      <enum>QAbstractItemView::SelectRows</enum>
+     </property>
+     <property name="sortingEnabled">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout_3">
+     <item>
+      <widget class="QCheckBox" name="chkHideFitItems">
+       <property name="text">
+        <string>Hide FitItems</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer_2">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QDialogButtonBox" name="buttonBox">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="standardButtons">
+        <set>QDialogButtonBox::Close</set>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <tabstops>
+  <tabstop>txtProtocol</tabstop>
+  <tabstop>cmdBrowseProtocol</tabstop>
+  <tabstop>lstDataSets</tabstop>
+  <tabstop>cmdUpdateFitItems</tabstop>
+  <tabstop>cmdSetTaskStartValues</tabstop>
+  <tabstop>cmdApplyToModel</tabstop>
+  <tabstop>tblFitItems</tabstop>
+  <tabstop>tblResults</tabstop>
+  <tabstop>chkHideFitItems</tabstop>
+ </tabstops>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>accepted()</signal>
+   <receiver>CQParameterEstimationResult</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>248</x>
+     <y>254</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>157</x>
+     <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>rejected()</signal>
+   <receiver>CQParameterEstimationResult</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>316</x>
+     <y>260</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>286</x>
+     <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>chkHideFitItems</sender>
+   <signal>stateChanged(int)</signal>
+   <receiver>CQParameterEstimationResult</receiver>
+   <slot>toggleFitItems()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>52</x>
+     <y>490</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>350</x>
+     <y>255</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>cmdApplyToModel</sender>
+   <signal>clicked()</signal>
+   <receiver>CQParameterEstimationResult</receiver>
+   <slot>applyToModelState()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>637</x>
+     <y>49</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>350</x>
+     <y>255</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>cmdBrowseProtocol</sender>
+   <signal>clicked()</signal>
+   <receiver>CQParameterEstimationResult</receiver>
+   <slot>browseForProtocol()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>679</x>
+     <y>19</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>350</x>
+     <y>255</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>cmdSetTaskStartValues</sender>
+   <signal>clicked()</signal>
+   <receiver>CQParameterEstimationResult</receiver>
+   <slot>setTaskStartValues()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>522</x>
+     <y>49</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>350</x>
+     <y>255</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>cmdUpdateFitItems</sender>
+   <signal>clicked()</signal>
+   <receiver>CQParameterEstimationResult</receiver>
+   <slot>updateFitItems()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>420</x>
+     <y>49</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>350</x>
+     <y>255</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>lstDataSets</sender>
+   <signal>currentIndexChanged(int)</signal>
+   <receiver>CQParameterEstimationResult</receiver>
+   <slot>dataSetChanged()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>155</x>
+     <y>48</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>350</x>
+     <y>255</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>txtProtocol</sender>
+   <signal>returnPressed()</signal>
+   <receiver>CQParameterEstimationResult</receiver>
+   <slot>loadProtocol()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>373</x>
+     <y>19</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>350</x>
+     <y>255</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>updateUI()</slot>
+  <slot>updateFitItems()</slot>
+  <slot>setTaskStartValues()</slot>
+  <slot>applyToModelState()</slot>
+  <slot>loadProtocol(QString)</slot>
+  <slot>protocolFileChanged(QString)</slot>
+  <slot>browseForProtocol()</slot>
+  <slot>toggleFitItems()</slot>
+  <slot>dataSetChanged()</slot>
+  <slot>loadProtocol()</slot>
+ </slots>
+</ui>

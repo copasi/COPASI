@@ -1,4 +1,4 @@
-// Copyright (C) 2011 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -90,7 +90,7 @@ CLocaleString CLocaleString::fromUtf8(const std::string & utf8)
 
   size_t Utf8Length = utf8.length();
   char * Utf8 = strdup(utf8.c_str());
-#if (defined FreeBSD || defined SunOS) // non standard iconv declaration :(
+#if (defined COPASI_ICONV_CONST_CHAR) // non standard iconv declaration :(
   const char * pUtf8 = Utf8;
 #else
   char * pUtf8 = Utf8;
@@ -252,7 +252,7 @@ std::string CLocaleString::toUtf8() const
 
   size_t LocaleLength = strlen(mpStr);
   char * Locale = strdup(mpStr);
-#if (defined FreeBSD | defined SunOS) // non standard iconv declaration :(
+#if (COPASI_ICONV_CONST_CHAR) // non standard iconv declaration :(
   const char * pLocale = Locale;
 #else
   char * pLocale = Locale;

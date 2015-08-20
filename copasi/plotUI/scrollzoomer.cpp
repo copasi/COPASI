@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -12,8 +12,8 @@
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
-// Copyright � 1997   Josef Wilgen
-// Copyright � 2002   Uwe Rathmann
+// Copyright 1997   Josef Wilgen
+// Copyright 2002   Uwe Rathmann
 //
 // This file is published under the Qwt License, Version 1.0.
 // You should have received a copy of this licence in the file
@@ -30,18 +30,29 @@
 #include "scrollbar.h"
 #include "scrollzoomer.h"
 
+#if QWT_VERSION > 0x060000
+LogPlotZoomer::LogPlotZoomer(QWidget *canvas) :
+  QwtPlotZoomer(canvas)
+#else
 LogPlotZoomer::LogPlotZoomer(QwtPlotCanvas *canvas):
   QwtPlotZoomer(canvas)
+#endif
 {}
 
+#if QWT_VERSION > 0x060000
+QwtText LogPlotZoomer::trackerTextF(const QwtDoublePoint &pos) const
+#else
 QwtText LogPlotZoomer::trackerText(const QwtDoublePoint &pos) const
+#endif
 {
   switch (rubberBand())
     {
       case HLineRubberBand:
         return QString().sprintf("%.4g", pos.y());
+
       case VLineRubberBand:
         return QString().sprintf("%.4g", pos.x());
+
       default:
         return QString().sprintf("%.4g, %.4g", pos.x(), pos.y());
     }
@@ -64,15 +75,22 @@ QwtText LogPlotZoomer::trackerText(const QwtDoublePoint &pos) const
     }
 }*/
 
+#if QWT_VERSION > 0x060000
+void LogPlotZoomer::moveTo(const QPointF &  pos)
+{
+  double x = pos.x();
+  double y = pos.y();
+#else
 void LogPlotZoomer::move(double x, double y)
 {
+#endif
   //QwtPlotZoomer::move(x,y);
 
-  x = qwtMax(x, zoomBase().left());
-  x = qwtMin(x, zoomBase().right() - zoomRect().width());
+  x = qwtMax(x, (double)zoomBase().left());
+  x = qwtMin(x, (double)(zoomBase().right() - zoomRect().width()));
 
-  y = qwtMax(y, zoomBase().top());
-  y = qwtMin(y, zoomBase().bottom() - zoomRect().height());
+  y = qwtMax(y, (double)zoomBase().top());
+  y = qwtMin(y, (double)(zoomBase().bottom() - zoomRect().height()));
 
   if (x != zoomRect().left() || y != zoomRect().top())
     {
@@ -83,7 +101,12 @@ void LogPlotZoomer::move(double x, double y)
       const int xAxis = QwtPlotZoomer::xAxis();
       const QwtScaleEngine *sex = plot()->axisScaleEngine(xAxis);
 
+#if QWT_VERSION > 0x060000
+
+      if (dynamic_cast<const QwtLogScaleEngine*>(sex))
+#else
       if (dynamic_cast<const QwtLog10ScaleEngine*>(sex))
+#endif
         {
           //logarithmic
           double factor = rect.right() / rect.left();
@@ -99,7 +122,12 @@ void LogPlotZoomer::move(double x, double y)
 
       const QwtScaleEngine *sey = plot()->axisScaleEngine(yAxis);
 
+#if QWT_VERSION > 0x060000
+
+      if (dynamic_cast<const QwtLogScaleEngine*>(sey))
+#else
       if (dynamic_cast<const QwtLog10ScaleEngine*>(sey))
+#endif
         {
           //logarithmic
           double factor = rect.bottom() / rect.top();
@@ -148,8 +176,13 @@ public:
 
 //******************************************
 
+#if QWT_VERSION > 0x060000
+ScrollZoomer::ScrollZoomer(QWidget *canvas):
+  LogPlotZoomer(canvas),
+#else
 ScrollZoomer::ScrollZoomer(QwtPlotCanvas *canvas):
   LogPlotZoomer(canvas),
+#endif
   d_cornerWidget(NULL),
   d_hScrollData(NULL),
   d_vScrollData(NULL)
@@ -321,6 +354,7 @@ bool ScrollZoomer::eventFilter(QObject *o, QEvent *e)
             layoutScrollBars(rect);
             break;
           }
+
           case QEvent::ChildRemoved:
           {
             const QObject *child = ((QChildEvent *)e)->child();
@@ -334,6 +368,7 @@ bool ScrollZoomer::eventFilter(QObject *o, QEvent *e)
 
             break;
           }
+
           default:
             break;
         }
@@ -373,6 +408,7 @@ bool ScrollZoomer::needScrollBar(Qt::Orientation o) const
   switch (mode)
     {
 #if QT_VERSION < 0x040000
+
       case Q3ScrollView::AlwaysOn:
 #else
       case Qt::ScrollBarAlwaysOn:
@@ -380,12 +416,14 @@ bool ScrollZoomer::needScrollBar(Qt::Orientation o) const
         needed = true;
         break;
 #if QT_VERSION < 0x040000
+
       case Q3ScrollView::AlwaysOff:
 #else
       case Qt::ScrollBarAlwaysOff:
 #endif
         needed = false;
         break;
+
       default:
       {
         if (baseMin < zoomMin || baseMax > zoomMax)
@@ -428,7 +466,11 @@ void ScrollZoomer::updateScrollBars()
 
       const QwtScaleEngine *se = plot()->axisScaleEngine(xAxis);
       sb->setInverted(se->testAttribute(QwtScaleEngine::Inverted));
+#if QWT_VERSION > 0x060000
+      sb->setLogScale(dynamic_cast<const QwtLogScaleEngine*>(se));
+#else
       sb->setLogScale(dynamic_cast<const QwtLog10ScaleEngine*>(se));
+#endif
 
       sb->setBase(zoomBase().left(), zoomBase().right());
       sb->moveSlider(zoomRect().left(), zoomRect().right());
@@ -460,7 +502,11 @@ void ScrollZoomer::updateScrollBars()
 
       const QwtScaleEngine *se = plot()->axisScaleEngine(yAxis);
       sb->setInverted(!(se->testAttribute(QwtScaleEngine::Inverted)));
+#if QWT_VERSION > 0x060000
+      sb->setLogScale(dynamic_cast<const QwtLogScaleEngine*>(se));
+#else
       sb->setLogScale(dynamic_cast<const QwtLog10ScaleEngine*>(se));
+#endif
 
       sb->setBase(zoomBase().top(), zoomBase().bottom());
       sb->moveSlider(zoomRect().top(), zoomRect().bottom());
@@ -577,9 +623,19 @@ void ScrollZoomer::layoutScrollBars(const QRect &rect)
 void ScrollZoomer::scrollBarMoved(Qt::Orientation o, double min, double)
 {
   if (o == Qt::Horizontal)
+#if QWT_VERSION > 0x060000
+    moveTo(QPointF(min, zoomRect().top()));
+
+#else
     move(min, zoomRect().top());
+#endif
   else
+#if QWT_VERSION > 0x060000
+    moveTo(QPointF(zoomRect().left(), min));
+
+#else
     move(zoomRect().left(), min);
+#endif
 
   emit zoomed(zoomRect());
 }
@@ -590,12 +646,16 @@ int ScrollZoomer::oppositeAxis(int axis) const
     {
       case QwtPlot::xBottom:
         return QwtPlot::xTop;
+
       case QwtPlot::xTop:
         return QwtPlot::xBottom;
+
       case QwtPlot::yLeft:
         return QwtPlot::yRight;
+
       case QwtPlot::yRight:
         return QwtPlot::yLeft;
+
       default:
         break;
     }

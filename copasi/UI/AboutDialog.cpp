@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -57,8 +57,8 @@ const char* AboutDialog::text =
   "</p><p>"
   "The following software and algorithms are being used by COPASI: "
   "<ul>"
-  "<li>Qt 4 GUI framework</li>"
-  "<li>Qwt 5.2.0</li>"
+  "<li>Qt %4 GUI framework</li>"
+  "<li>Qwt %3</li>"
   "<li>QwtPlot3D 0.2.7</li>"
   "<li>Expat 2.0.1 XML parser</li>"
   "<li>libSBML %2</li>"

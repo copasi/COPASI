@@ -48,6 +48,7 @@ class SBase;
 class SBMLDocument;
 class SBMLIncompatibility;
 class XMLNode;
+class CProcessReport;
 
 class CSBMLExporter
 {
@@ -80,40 +81,116 @@ protected:
   bool mHaveModelHistoryAuthorWarning;
   bool mHaveModelHistoryCreationDateWarning;
   bool mHaveModelHistoryModificationDateWarning;
+  /**
+   * the progress handler for the export
+   */
+  CProcessReport* mpProgressHandler;
+  /**
+   * the global import step handle
+   */
+  size_t mGlobalStepHandle;
+
+  /**
+   * global step counter
+   */
+  unsigned C_INT32 mGlobalStepCounter;
+
+  /**
+   * total step counter for global import
+   */
+  unsigned C_INT32 mGlobalStepTotal;
+
+  /**
+   * the current import step handle
+   */
+  size_t mCurrentStepHandle;
+
+  /**
+   * current step counter for current import
+   */
+  unsigned C_INT32 mCurrentStepCounter;
+  /**
+   * total steps of current import task
+   */
+  unsigned C_INT32 mCurrentStepTotal;
 
 public:
+
   /**
-   * Default Konstruktor
+   * Sets the progress handler to be used while exporting
+   * set to NULL, to stop reporting
+   *
+   * @param pHandler the progress handler to be used, or NULL
+   */
+  void setHandler(CProcessReport* pHandler);
+
+  /**
+   * This utility functions adds a new step to the progress dialog (if present)
+   * @param globalStep the global steps that have been completed
+   * @param currentTotal the total for current task
+   * @param title the title of the current task
+   * @return a boolean indicating whether processing should be stopped
+   */
+  bool createProgressStepOrStop(unsigned C_INT32 globalStep,
+                                unsigned C_INT32 currentTotal,
+                                const std::string& title);
+
+  /**
+   * Notifies the progress dialog of local progress
+   *
+   * @return a boolean indicating whether processing should be stopped
+   */
+  bool reportCurrentProgressOrStop();
+
+  /**
+   * Notifies the progress dialog that a step finished
+   */
+  void finishCurrentStep();
+
+  /**
+   * Notifies the progress dialog that the overall exporting is complete
+   */
+  void finishExport();
+
+  /**
+   * Default construktor
    */
   CSBMLExporter();
 
   /**
-   * Destruktor
+   * Destructor
    */
   ~CSBMLExporter();
 
-  SBMLDocument* getSBMLDocument() {return this->mpSBMLDocument;};
+  SBMLDocument* getSBMLDocument();
 
   /**
    * Export the model to SBML.
    * The SBML model is returned as a string. In case of an error, an
    * empty string is returned.
    */
-  const std::string exportModelToString(CCopasiDataModel& dataModel, unsigned int sbmlLevel, unsigned int sbmlVersion);
+  const std::string exportModelToString(CCopasiDataModel& dataModel,
+                                        unsigned int sbmlLevel,
+                                        unsigned int sbmlVersion);
 
   /**
    * Export the model to SBML.
    * The model is written to the file given by filename.
    * If the export fails, false is returned.
    */
-  bool exportModel(CCopasiDataModel& dataModel, const std::string& filename, unsigned int sbmlLevel = 2, unsigned int sbmlVersion = 1, bool overwrite = false);
+  bool exportModel(CCopasiDataModel& dataModel,
+                   const std::string& filename,
+                   unsigned int sbmlLevel = 2,
+                   unsigned int sbmlVersion = 1,
+                   bool overwrite = false);
 
   /**
    * Checks wether the given data model can be exported to a certain version of SBML.
    * If it can be exported, the result vector will be empty, otherwise it will
    * contain a number of messages that specify why it can't be exported.
    */
-  static const std::vector<SBMLIncompatibility> isModelSBMLCompatible(const CCopasiDataModel& pDataModel, int sbmlLevel, int sbmlVersion);
+  static const std::vector<SBMLIncompatibility> isModelSBMLCompatible(
+    const CCopasiDataModel& pDataModel, int sbmlLevel, int sbmlVersion);
 
   /**
    * This method assures that the SBMLDocument is not deleted by the destructor of the exporter.
@@ -157,6 +234,7 @@ public:
   static XMLNode* createSBMLNotes(const std::string& notes_string);
 #endif // LIBSBML_VERSION
 
+  bool exportLayout(unsigned int sbmlLevel, CCopasiDataModel& dataModel);
 protected:
 
   /**
@@ -192,7 +270,7 @@ protected:
   /**
    * Creates the compartments for the model.
    */
-  void createCompartments(CCopasiDataModel& dataModel);
+  bool createCompartments(CCopasiDataModel& dataModel);
 
   /**
    * Creates the compartment for the given COPASI compartment.
@@ -202,7 +280,7 @@ protected:
   /**
    * Creates the compartments for the model.
    */
-  void createMetabolites(CCopasiDataModel& dataModel);
+  bool createMetabolites(CCopasiDataModel& dataModel);
 
   /**
    * Creates the species for the given COPASI metabolite.
@@ -212,7 +290,7 @@ protected:
   /**
    * Creates the parameters for the model.
    */
-  void createParameters(CCopasiDataModel& dataModel);
+  bool createParameters(CCopasiDataModel& dataModel);
 
   /**
    * Creates the parameter for the given COPASI parameter.
@@ -222,7 +300,7 @@ protected:
   /**
    * Creates the reactions for the model.
    */
-  void createReactions(CCopasiDataModel& dataModel);
+  bool createReactions(CCopasiDataModel& dataModel);
 
   /**
    * Creates the reaction for the given COPASI reaction.
@@ -232,7 +310,7 @@ protected:
   /**
    * Creates the initial assignments for the model.
    */
-  void createInitialAssignments(CCopasiDataModel& dataModel);
+  bool createInitialAssignments(CCopasiDataModel& dataModel);
 
   /**
    * Creates the initial assignment for the given COPASI model entity.
@@ -242,7 +320,7 @@ protected:
   /**
    * Creates the rules for the model.
    */
-  void createRules(CCopasiDataModel& dataModel);
+  bool createRules(CCopasiDataModel& dataModel);
 
   /**
    * Creates the rule for the given COPASI model entity.
@@ -252,7 +330,7 @@ protected:
   /**
    * Create all function definitions.
    */
-  void createFunctionDefinitions(CCopasiDataModel& dataModel);
+  bool createFunctionDefinitions(CCopasiDataModel& dataModel);
 
   /**
    * Create the SBML function definition from the given COPASI function.
@@ -263,45 +341,61 @@ protected:
    * Checks all assignments (initial and transient) for references to objects
    * that can not be exported to SBML.
    */
-  void checkForUnsupportedObjectReferences(const CCopasiDataModel& dataModel, unsigned int sbmlLevel, unsigned int sbmlVersion, std::vector<SBMLIncompatibility>& result);
+  void checkForUnsupportedObjectReferences(const CCopasiDataModel& dataModel,
+      unsigned int sbmlLevel,
+      unsigned int sbmlVersion,
+      std::vector<SBMLIncompatibility>& result);
   /**
    * Checks the given expression for references to objects
    * that can not be exported to SBML.
    */
-  static void checkForUnsupportedObjectReferences(const CEvaluationTree& expression, const CCopasiDataModel& dataModel, unsigned int sbmlLevel, unsigned int sbmlVersion, std::vector<SBMLIncompatibility>& result, bool initialExpression = false, std::map<const std::string, Parameter*>* initialMap = NULL);
+  static void checkForUnsupportedObjectReferences(const CEvaluationTree& expression,
+      const CCopasiDataModel& dataModel,
+      unsigned int sbmlLevel,
+      unsigned int sbmlVersion,
+      std::vector<SBMLIncompatibility>& result,
+      bool initialExpression = false,
+      std::map<const std::string, Parameter*>* initialMap = NULL);
 
   /**
    * Checks all expressions in the given datamodel for piecewise defined
    * functions.
    */
-  static void checkForPiecewiseFunctions(const CCopasiDataModel& dataModel, std::vector<SBMLIncompatibility>& result);
+  static void checkForPiecewiseFunctions(const CCopasiDataModel& dataModel,
+                                         std::vector<SBMLIncompatibility>& result);
 
   /**
    * Checks the given node and all it's children for the occurence of
    * piecewise functions.
    */
-  static void checkForPiecewiseFunctions(const CEvaluationNode& node, std::vector<SBMLIncompatibility>& result, const std::string& objectName, const std::string& objectType);
+  static void checkForPiecewiseFunctions(const CEvaluationNode& node,
+                                         std::vector<SBMLIncompatibility>& result,
+                                         const std::string& objectName,
+                                         const std::string& objectType);
 
   /**
    * Checks wether the given data model can be exported to SBML Level1
    * If it can be exported, the result vector will be empty, otherwise it will
    * contain a number of messages that specify why it can't be exported.
    */
-  static void isModelSBMLL1Compatible(const CCopasiDataModel& dataModel, std::vector<SBMLIncompatibility>& result);
+  static void isModelSBMLL1Compatible(const CCopasiDataModel& dataModel,
+                                      std::vector<SBMLIncompatibility>& result);
 
   /**
    * Checks wether the given data model can be exported to SBML Level2 Version1.
    * If it can be exported, the result vector will be empty, otherwise it will
    * contain a number of messages that specify why it can't be exported.
    */
-  static void isModelSBMLL2V1Compatible(const CCopasiDataModel& dataModel, std::vector<SBMLIncompatibility>& result);
+  static void isModelSBMLL2V1Compatible(const CCopasiDataModel& dataModel,
+                                        std::vector<SBMLIncompatibility>& result);
 
   /**
    * Checks wether the given data model can be exported to SBML Level2 Version3.
    * If it can be exported, the result vector will be empty, otherwise it will
    * contain a number of messages that specify why it can't be exported.
    */
-  static void isModelSBMLL2V3Compatible(const CCopasiDataModel& dataModel, std::vector<SBMLIncompatibility>& result);
+  static void isModelSBMLL2V3Compatible(const CCopasiDataModel& dataModel,
+                                        std::vector<SBMLIncompatibility>& result);
 
   /**
    * Go through all species in the model and check if the corresponding species
@@ -313,7 +407,8 @@ protected:
    * delete it without changing the model, otherwise we have to give a
    * corresponding warning.
    */
-  static void check_for_spatial_size_units(const CCopasiDataModel& dataModel, std::vector<SBMLIncompatibility>& result);
+  static void check_for_spatial_size_units(const CCopasiDataModel& dataModel,
+      std::vector<SBMLIncompatibility>& result);
 
   /**
    * Checks wether the model contains a metabolite that is defined by an ODE
@@ -321,7 +416,8 @@ protected:
    * interprets the expression differntly from SBML, we can not correctly
    * export this yet. See Bug 903.
    */
-  static void checkForODESpeciesInNonfixedCompartment(const CCopasiDataModel& dataModel, std::vector<SBMLIncompatibility> result);
+  static void checkForODESpeciesInNonfixedCompartment(const CCopasiDataModel& dataModel,
+      std::vector<SBMLIncompatibility> result);
 
   /**
    * Checks wether the rule in the given model entity can be exported to
@@ -329,29 +425,41 @@ protected:
    * If it can be exported, the result vector will be empty, otherwise it will
    * contain a number of messages that specify why it can't be exported.
    */
-  static void isExpressionSBMLCompatible(const CEvaluationTree& expr, const CCopasiDataModel& dataModel, int sbmlLevel, int sbmlVersion, std::vector<SBMLIncompatibility>& result,
-                                         const std::string& objectDescription, bool initialExression = false, std::map<const std::string, Parameter*>* initialMap = NULL);
+  static void isExpressionSBMLCompatible(const CEvaluationTree& expr,
+                                         const CCopasiDataModel& dataModel,
+                                         int sbmlLevel,
+                                         int sbmlVersion,
+                                         std::vector<SBMLIncompatibility>& result,
+                                         const std::string& objectDescription,
+                                         bool initialExression = false,
+                                         std::map<const std::string, Parameter*>* initialMap = NULL);
 
   /**
    * Checks wether the rule in the given model entity can be exported to SBML Level2 Version1.
    * If it can be exported, the result vector will be empty, otherwise it will
    * contain a number of messages that specify why it can't be exported.
    */
-  static void isExpressionSBMLL1Compatible(const CEvaluationTree& expr, const CCopasiDataModel& dataModel, std::vector<SBMLIncompatibility>& result);
+  static void isExpressionSBMLL1Compatible(const CEvaluationTree& expr,
+      const CCopasiDataModel& dataModel,
+      std::vector<SBMLIncompatibility>& result);
 
   /**
    * Checks wether the rule in the given model entity can be exported to SBML Level2 Version1.
    * If it can be exported, the result vector will be empty, otherwise it will
    * contain a number of messages that specify why it can't be exported.
    */
-  static void isExpressionSBMLL2V1Compatible(const CEvaluationTree& expr, const CCopasiDataModel& dataModel, std::vector<SBMLIncompatibility>& result);
+  static void isExpressionSBMLL2V1Compatible(const CEvaluationTree& expr,
+      const CCopasiDataModel& dataModel,
+      std::vector<SBMLIncompatibility>& result);
 
   /**
    * Checks wether the rule in the given model entity can be exported to SBML Level2 Version3.
    * If it can be exported, the result vector will be empty, otherwise it will
    * contain a number of messages that specify why it can't be exported.
    */
-  static void isExpressionSBMLL2V3Compatible(const CEvaluationTree& expression, const CCopasiDataModel& pDataModel, std::vector<SBMLIncompatibility>& result);
+  static void isExpressionSBMLL2V3Compatible(const CEvaluationTree& expression,
+      const CCopasiDataModel& pDataModel,
+      std::vector<SBMLIncompatibility>& result);
 
   /**
    * This static methods checks, wether the model uses any function calls
@@ -359,13 +467,14 @@ protected:
    * functions.
    */
   void checkForUnsupportedFunctionCalls(const CCopasiDataModel& dataModel,
-                                        unsigned int sbmlLEvel, unsigned int sbmlVersion,
+                                        unsigned int sbmlLEvel,
+                                        unsigned int sbmlVersion,
                                         std::vector<SBMLIncompatibility>& result);
 
   /**
-   * This static methods checks recursively, whether the given CEvaluationNode constains any function calls
-   * that can not be expressed in SBML like the random distribution
-   * functions.
+   * This static methods checks recursively, whether the given CEvaluationNode
+   * constains any function calls that can not be expressed in SBML like the
+   * random distribution functions.
    */
   static void checkForUnsupportedFunctionCalls(const CEvaluationNode& node,
       const std::set<CEvaluationNodeFunction::SubType>& unsupportedFunctions,
@@ -375,7 +484,8 @@ protected:
   /**
    * This method checks wether the given model contains any initial assignments.
    */
-  static void checkForInitialAssignments(const CCopasiDataModel& dataModel, std::vector<SBMLIncompatibility>& result);
+  static void checkForInitialAssignments(const CCopasiDataModel& dataModel,
+                                         std::vector<SBMLIncompatibility>& result);
 
   /**
    * Goes through the given SBML model and puts all ids with the
@@ -387,13 +497,15 @@ protected:
    * Create the kinetic law for the given reaction.
    * On failure NULL is returned.
    */
-  KineticLaw* createKineticLaw(CReaction& reaction, CCopasiDataModel& dataModel, unsigned int level, unsigned int version);
+  KineticLaw* createKineticLaw(CReaction& reaction, CCopasiDataModel& dataModel,
+                               unsigned int level, unsigned int version);
 
   /**
    * Go through a CEvaluationNode base tree and add the names
    * of all functions directly called in this tree to the set.
    */
-  static void findDirectlyUsedFunctions(const CEvaluationNode* pRootNode, std::set<std::string>& result);
+  static void findDirectlyUsedFunctions(const CEvaluationNode* pRootNode,
+                                        std::set<std::string>& result);
 
   /**
    * checks if the given ASTNode based tree is divided by the
@@ -423,13 +535,15 @@ protected:
    * If the kinetic law was mass action, the expression is a mass action term
    * , otherwise it is a function call.
    */
-  CEvaluationNode* createKineticExpression(CFunction* pFun, const std::vector<std::vector<std::string> >& arguments);
+  CEvaluationNode* createKineticExpression(CFunction* pFun,
+      const std::vector<std::vector<std::string> >& arguments);
 
   /**
    * Checks if the given datamodel contains events.
    * This is called if SBML Level 1 is to be exported.
    */
-  static void checkForEvents(const CCopasiDataModel& dataModel, std::vector<SBMLIncompatibility>& result);
+  static void checkForEvents(const CCopasiDataModel& dataModel,
+                             std::vector<SBMLIncompatibility>& result);
 
   /**
    * Creates an SBMLDocument from the given CCopasiDataModelObject.
@@ -438,8 +552,10 @@ protected:
    * If none exists a new one is created.
    * Copying the old one makes sure that if something goes wrong during
    * export, the original model is still consistent.
+   *
+   * @return true, if exporting should continue, false otherwise
    */
-  void createSBMLDocument(CCopasiDataModel& dataModel);
+  bool createSBMLDocument(CCopasiDataModel& dataModel);
 
   /**
    * Sorts the rules.
@@ -455,7 +571,7 @@ protected:
   /**
    * Creates the events for the given data model.
    */
-  void createEvents(CCopasiDataModel& dataModel);
+  bool createEvents(CCopasiDataModel& dataModel);
 
   /**
    * Creates an SBML Event for the given COPASI event.
@@ -472,20 +588,31 @@ protected:
    * This method checks if the given event assignment object is SBML
    * compatible.
    */
-  static void isEventAssignmentSBMLCompatible(std::string& key, const CExpression* pExpression, const CCopasiDataModel& dataModel, unsigned int sbmlLevel, unsigned int sbmlVersion, const std::string& eventName, std::vector<SBMLIncompatibility>& result);
+  static void isEventAssignmentSBMLCompatible(std::string& key,
+      const CExpression* pExpression,
+      const CCopasiDataModel& dataModel,
+      unsigned int sbmlLevel,
+      unsigned int sbmlVersion,
+      const std::string& eventName,
+      std::vector<SBMLIncompatibility>& result);
 
   /**
    * This method checks if the given event object is SBML
    * compatible.
    */
-  static void isEventSBMLCompatible(const CEvent* pEvent, const CCopasiDataModel& dataModel, unsigned int sbmlLevel, unsigned int sbmlVersion, std::vector<SBMLIncompatibility>& result);
+  static void isEventSBMLCompatible(const CEvent* pEvent,
+                                    const CCopasiDataModel& dataModel,
+                                    unsigned int sbmlLevel,
+                                    unsigned int sbmlVersion,
+                                    std::vector<SBMLIncompatibility>& result);
 
   /**
    * This method creates an ASTNode tree where all the species specified in
    * the given vector are multiplied. This is used to create the mass action
    * kinetic law.
    */
-  static ASTNode* createTimesTree(const CCopasiVector<CChemEqElement >& vect, unsigned int pos = 0);
+  static ASTNode* createTimesTree(const CCopasiVector<CChemEqElement >& vect,
+                                  unsigned int pos = 0);
 
   /**
    * Remove all compartments, species, parameters and reactions
@@ -497,9 +624,11 @@ protected:
    * Takes a set of functions and recursively finds functions used by those
    * functions
    */
-  static const std::vector<CFunction*> findUsedFunctions(std::set<CFunction*>& functions, CFunctionDB* pFunctionDB);
+  static const std::vector<CFunction*> findUsedFunctions(std::set<CFunction*>& functions,
+      CFunctionDB* pFunctionDB);
 
-  static const std::set<CFunction*> createFunctionSetFromFunctionNames(const std::set<std::string>& names, CFunctionDB* pFunDB);
+  static const std::set<CFunction*> createFunctionSetFromFunctionNames(
+    const std::set<std::string>& names, CFunctionDB* pFunDB);
 
   /**
    * This method takes care of expanding all function calls in all
@@ -512,13 +641,16 @@ protected:
    * Creates a set of all function subtypes that can not be exported for a
    * certain SBML level.
    */
-  static const std::set<CEvaluationNodeFunction::SubType> createUnsupportedFunctionTypeSet(unsigned int sbmlLevel);
+  static const std::set<CEvaluationNodeFunction::SubType> createUnsupportedFunctionTypeSet(
+    unsigned int sbmlLevel);
 
   /**
    * Find all ModelEntities for which the given node and its children contains
    * references.
    */
-  static void findModelEntityDependencies(const CEvaluationNode* pNode, const CCopasiDataModel& dataModel, std::set<const CModelEntity*>& dependencies);
+  static void findModelEntityDependencies(const CEvaluationNode* pNode,
+                                          const CCopasiDataModel& dataModel,
+                                          std::set<const CModelEntity*>& dependencies);
 
   /**
    * Creates an ASTNode based tree where all occurences of nodes that are not
@@ -526,7 +658,9 @@ protected:
    * On error an exception is created.
    * The caller is responsible for freeing the memory of the returned object.
    */
-  static ASTNode* convertASTTreeToLevel1(const ASTNode* pNode, const ListOfFunctionDefinitions& functions, std::string& message);
+  static ASTNode* convertASTTreeToLevel1(const ASTNode* pNode,
+                                         const ListOfFunctionDefinitions& functions,
+                                         std::string& message);
 
   /**
    * This method goes through the ASTNode based tree rooted at pNode and
@@ -542,7 +676,9 @@ protected:
    * The second argument determines whether it is reversible or irreversible
    * mass action.
    */
-  static CEvaluationNode* createMassActionExpression(const std::vector<std::vector<std::string> >& arguments, bool isReversible);
+  static CEvaluationNode* createMassActionExpression(
+    const std::vector<std::vector<std::string> >& arguments,
+    bool isReversible);
 
   /**
    * Checks if the given string is a valid SId
@@ -568,7 +704,8 @@ protected:
    * The method also takes into consideration the substance units of the
    * model.
    */
-  CEvaluationNode* replaceSpeciesReferences(const CEvaluationNode* pOrigNode, const CCopasiDataModel& dataModel);
+  CEvaluationNode* replaceSpeciesReferences(const CEvaluationNode* pOrigNode,
+      const CCopasiDataModel& dataModel);
 
   /**
    * Try to find a global parameter that represents avogadros number.
@@ -579,7 +716,9 @@ protected:
    * This method gets the MIRIAM annotation from the given COPASI object and
    * sets it on the given SBML object.
    */
-  bool updateMIRIAMAnnotation(const CCopasiObject* pCOPASIObject, SBase* pSBMLObject, std::map<std::string, const SBase*>& metaIds);
+  bool updateMIRIAMAnnotation(const CCopasiObject* pCOPASIObject,
+                              SBase* pSBMLObject,
+                              std::map<std::string, const SBase*>& metaIds);
 
   /**
    * This is a general method to set the notes of an SBase object based on a COPASI
@@ -636,12 +775,13 @@ protected:
   void restore_local_parameters(ASTNode* pOrigNode, const CCopasiDataModel& dataModel);
 
   /**
-   * Since we want to replace local reaction parameters by global parameters if they are used in an assignment,
-   * we have to create the reactions after creating the rules and events. On the other hand, a reaction flux
-   * might also be referenced in an assignment or an event and the creation of this rule or event only works
+   * Since we want to replace local reaction parameters by global parameters if they
+   * are used in an assignment, we have to create the reactions after creating the
+   * rules and events. On the other hand, a reaction flux might also be referenced in
+   * an assignment or an event and the creation of this rule or event only works
    * if the reactions already have SBML ids.
-   * To solve this problem, the reactions have to be assigned SBML ids prior to creating rules and events.
-   * This is what this method does.
+   * To solve this problem, the reactions have to be assigned SBML ids prior to
+   * creating rules and events.
    */
   void assignSBMLIdsToReactions(CModel* pModel);
 
@@ -655,7 +795,8 @@ protected:
    * This method multiplies a given expression by the given object.
    * The caller is responsible for freeing the memory for the new expression.
    */
-  static CEvaluationNode* multiplyByObject(const CEvaluationNode* pOrigNode, const CCopasiObject* pObject);
+  static CEvaluationNode* multiplyByObject(const CEvaluationNode* pOrigNode,
+      const CCopasiObject* pObject);
 
   /**
    * Converts the SBML model given in SBML Level 1 Version 2 format to SBML Level 1 Version 1.

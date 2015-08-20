@@ -82,6 +82,10 @@
 #include "CQSEDMLFileDialog.h"
 #endif
 
+#include <copasi/UI/CQParameterEstimationResult.h>
+
+#include <qwt_global.h>
+
 #define AutoSaveInterval 10*60*1000
 
 #ifdef DEBUG_UI
@@ -424,6 +428,17 @@ void CopasiUI3Window::createActions()
   mpaUndoHistory = new QAction("&Undo History", this);
   connect(mpaUndoHistory, SIGNAL(activated()), this, SLOT(slotUndoHistory()));
 #endif
+
+  mpaParameterEstimationResult = new QAction("Load Parameter Estimation Protocol", this);
+  connect(mpaParameterEstimationResult, SIGNAL(activated()), this, SLOT(slotLoadParameterEstimationProtocol()));
+}
+
+void
+CopasiUI3Window::slotLoadParameterEstimationProtocol()
+{
+  CQParameterEstimationResult *dlg = new CQParameterEstimationResult(this, (*CCopasiRootContainer::getDatamodelList())[0]);
+  dlg->exec();
+  dlg->deleteLater();
 }
 
 void CopasiUI3Window::slotFunctionDBSave(QString dbFile)
@@ -599,6 +614,7 @@ void CopasiUI3Window::createMenuBar()
 #ifdef WITH_PE_EVENT_CREATION
   mpTools->addAction("&Create Events For Timeseries Experiment", this, SLOT(slotCreateEventsForTimeseries()));
 #endif
+  mpTools->addAction(mpaParameterEstimationResult);
 
 #ifdef COPASI_SBW_INTEGRATION
   // create and populate SBW menu
@@ -1277,7 +1293,9 @@ void CopasiUI3Window::about()
   QString text =
     QString(AboutDialog::text)
     .arg(FROM_UTF8(CVersion::VERSION.getVersion()))
-    .arg(LIBSBML_DOTTED_VERSION);
+    .arg(LIBSBML_DOTTED_VERSION)
+    .arg(QWT_VERSION_STR)
+    .arg(QT_VERSION_STR);
 
   AboutDialog* aboutDialog = new AboutDialog(this, text, 76, 30);
   aboutDialog->setWindowTitle(FixedTitle);
@@ -1565,10 +1583,10 @@ void CopasiUI3Window::slotExportSBML()
 
       if ((*CCopasiRootContainer::getDatamodelList())[0]->getFileName() != "")
         Default
-        = FROM_UTF8(CDirEntry::dirName((*CCopasiRootContainer::getDatamodelList())[0]->getFileName())
-                    + CDirEntry::Separator
-                    + CDirEntry::baseName((*CCopasiRootContainer::getDatamodelList())[0]->getFileName())
-                    + ".xml");
+          = FROM_UTF8(CDirEntry::dirName((*CCopasiRootContainer::getDatamodelList())[0]->getFileName())
+                      + CDirEntry::Separator
+                      + CDirEntry::baseName((*CCopasiRootContainer::getDatamodelList())[0]->getFileName())
+                      + ".xml");
       else
         {
           Default = "untitled.xml";
@@ -1635,9 +1653,9 @@ void CopasiUI3Window::slotExportMathModel()
 
       if (pDataModel->getFileName() != "")
         Default
-        = FROM_UTF8(CDirEntry::dirName(pDataModel->getFileName())
-                    + CDirEntry::Separator
-                    + CDirEntry::baseName(pDataModel->getFileName()));
+          = FROM_UTF8(CDirEntry::dirName(pDataModel->getFileName())
+                      + CDirEntry::Separator
+                      + CDirEntry::baseName(pDataModel->getFileName()));
       else
         Default = "untitled.c";
 
@@ -3129,10 +3147,10 @@ void CopasiUI3Window::slotExportSEDML()
 
       if ((*CCopasiRootContainer::getDatamodelList())[0]->getFileName() != "")
         Default
-        = FROM_UTF8(CDirEntry::dirName((*CCopasiRootContainer::getDatamodelList())[0]->getFileName())
-                    + CDirEntry::Separator
-                    + CDirEntry::baseName((*CCopasiRootContainer::getDatamodelList())[0]->getFileName())
-                    + ".sedml");
+          = FROM_UTF8(CDirEntry::dirName((*CCopasiRootContainer::getDatamodelList())[0]->getFileName())
+                      + CDirEntry::Separator
+                      + CDirEntry::baseName((*CCopasiRootContainer::getDatamodelList())[0]->getFileName())
+                      + ".sedml");
       else
         {
           Default = "untitled.sedml";

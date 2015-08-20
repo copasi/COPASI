@@ -116,6 +116,24 @@ bool CFunction::setInfix(const std::string & infix, bool compile)
   return true;
 }
 
+// virtual
+bool CFunction::isReadOnly() const
+{
+  switch (mType)
+    {
+      case MassAction:
+      case PreDefined:
+        return true;
+        break;
+
+      default:
+        return false;
+        break;
+    };
+
+  return false;
+}
+
 bool CFunction::operator == (const CFunction & rhs) const
 {
   if (!(*static_cast< const CEvaluationTree * >(this) == rhs))

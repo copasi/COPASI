@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -12,8 +12,8 @@
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
-// Copyright � 1997   Josef Wilgen
-// Copyright � 2002   Uwe Rathmann
+// Copyright 1997   Josef Wilgen
+// Copyright 2002   Uwe Rathmann
 //
 // This file is published under the Qwt License, Version 1.0.
 // You should have received a copy of this licence in the file
@@ -33,6 +33,10 @@
 //Added by qt3to4:
 #include <QtCore/QEvent>
 
+#if QWT_VERSION > 0x060000
+#include <qwt_compat.h>
+#endif
+
 class ScrollData;
 class ScrollBar;
 
@@ -41,14 +45,26 @@ class LogPlotZoomer: public QwtPlotZoomer
   Q_OBJECT
 
 public:
+
+#if QWT_VERSION > 0x060000
+  LogPlotZoomer(QWidget *canvas);
+#else
   LogPlotZoomer(QwtPlotCanvas *canvas);
+#endif
 
 public slots:
-  virtual
-  void move(double x, double y);
+#if QWT_VERSION > 0x060000
+  virtual void moveTo(const QPointF &   pos);
+#else
+  virtual void move(double x, double y);
+#endif
 
 protected:
+#if QWT_VERSION > 0x060000
+  virtual QwtText trackerTextF(const QwtDoublePoint &pos) const;
+#else
   virtual QwtText trackerText(const QwtDoublePoint &pos) const;
+#endif
 };
 
 class ScrollZoomer: public LogPlotZoomer
@@ -61,7 +77,11 @@ public:
     OppositeToScale
   };
 
+#if QWT_VERSION > 0x060000
+  ScrollZoomer(QWidget *);
+#else
   ScrollZoomer(QwtPlotCanvas *);
+#endif
   virtual ~ScrollZoomer();
 
   ScrollBar *horizontalScrollBar() const;

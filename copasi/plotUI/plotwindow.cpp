@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -39,6 +39,11 @@
 #include <qwt_plot.h>
 #include <qwt_scale_engine.h>
 
+#if QWT_VERSION > 0x060000
+#include <qwt_plot_renderer.h>
+#endif
+
+#if QWT_VERSION < 0x060000
 // taken from qwt examples/bode
 class PrintFilter: public QwtPlotPrintFilter
 {
@@ -52,6 +57,7 @@ public:
     return f2;
   }
 };
+#endif
 
 //-----------------------------------------------------------------------------
 PlotWindow::PlotWindow(COutputHandlerPlot * pHandler, const CPlotSpecification* ptrSpec, CopasiUI3Window * pMainWindow):
@@ -219,7 +225,11 @@ void PlotWindow::toggleLogX(bool logX)
 
   if (logX)
     {
+#if QWT_VERSION > 0x060000
+      mpPlot->setAxisScaleEngine(QwtPlot::xBottom, new QwtLogScaleEngine());
+#else
       mpPlot->setAxisScaleEngine(QwtPlot::xBottom, new QwtLog10ScaleEngine());
+#endif
     }
   else
     {
@@ -239,7 +249,11 @@ void PlotWindow::toggleLogY(bool logY)
 
   if (logY)
     {
+#if QWT_VERSION > 0x060000
+      mpPlot->setAxisScaleEngine(QwtPlot::yLeft, new QwtLogScaleEngine());
+#else
       mpPlot->setAxisScaleEngine(QwtPlot::yLeft, new QwtLog10ScaleEngine());
+#endif
     }
   else
     {
@@ -282,7 +296,13 @@ void PlotWindow::saveToFile(const QString& fileName) const
       pixmap.fill();
       QPainter painter(&pixmap);
       painter.begin(&pixmap);
+#if QWT_VERSION > 0x060000
+      QwtPlotRenderer renderer;
+      renderer.render(mpPlot, &painter, rect);
+
+#else
       mpPlot->print(&painter, rect, PrintFilter());
+#endif
       painter.end();
 
       pixmap.save(fileName, "PNG");
@@ -293,7 +313,13 @@ void PlotWindow::saveToFile(const QString& fileName) const
       generator.setFileName(fileName);
       QPainter painter(&generator);
       painter.begin(&generator);
+#if QWT_VERSION > 0x060000
+      QwtPlotRenderer renderer;
+      renderer.render(mpPlot, &painter, rect);
+
+#else
       mpPlot->print(&painter, rect, PrintFilter());
+#endif
       painter.end();
     }
   else if (fileName.endsWith(".pdf"))
@@ -303,7 +329,13 @@ void PlotWindow::saveToFile(const QString& fileName) const
       printer.setOutputFormat(QPrinter::PdfFormat);
       QPainter painter(&printer);
       painter.begin(&printer);
+#if QWT_VERSION > 0x060000
+      QwtPlotRenderer renderer;
+      renderer.render(mpPlot, &painter, rect);
+
+#else
       mpPlot->print(&painter, rect, PrintFilter());
+#endif
       painter.end();
     }
 }
@@ -365,7 +397,15 @@ void PlotWindow::printPlot()
   QPrintDialog dialog(&printer);
 
   if (dialog.exec())
-    mpPlot->print(printer, PrintFilter());
+    {
+#if QWT_VERSION > 0x060000
+      QwtPlotRenderer renderer;
+      renderer.renderTo(mpPlot, printer);
+
+#else
+      mpPlot->print(printer, PrintFilter());
+#endif
+    }
 }
 
 void PlotWindow::slotSaveData()

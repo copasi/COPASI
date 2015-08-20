@@ -410,9 +410,9 @@ void CEvaluationTree::calculate()
 
 bool CEvaluationTree::setRoot(CEvaluationNode* pRootNode)
 {
-  assert(pRootNode->getParent() == NULL);
-
   if (pRootNode == NULL) return false;
+
+  assert(pRootNode->getParent() == NULL);
 
   if (mpNodeList != NULL)
     CEvaluationLexer::freeNodeList(mpNodeList);
@@ -686,16 +686,16 @@ bool CEvaluationTree::hasDiscontinuity() const
     {
       switch ((int)(*it)->getType())
         {
-          case(CEvaluationNode::CHOICE | CEvaluationNodeChoice::IF):
-          case(CEvaluationNode::FUNCTION | CEvaluationNodeFunction::FLOOR):
-          case(CEvaluationNode::FUNCTION | CEvaluationNodeFunction::CEIL):
-          case(CEvaluationNode::OPERATOR | CEvaluationNodeOperator::MODULUS):
+          case (CEvaluationNode::CHOICE | CEvaluationNodeChoice::IF):
+          case (CEvaluationNode::FUNCTION | CEvaluationNodeFunction::FLOOR):
+          case (CEvaluationNode::FUNCTION | CEvaluationNodeFunction::CEIL):
+          case (CEvaluationNode::OPERATOR | CEvaluationNodeOperator::MODULUS):
             // We found a discontinuity.
             return true;
             break;
 
-          case(CEvaluationNode::CALL | CEvaluationNodeCall::FUNCTION):
-          case(CEvaluationNode::CALL | CEvaluationNodeCall::EXPRESSION):
+          case (CEvaluationNode::CALL | CEvaluationNodeCall::FUNCTION):
+          case (CEvaluationNode::CALL | CEvaluationNodeCall::EXPRESSION):
 
             // If the called tree has a discontinuity so do we.
             if (static_cast< CEvaluationNodeCall * >(*it)->getCalledTree()->hasDiscontinuity())

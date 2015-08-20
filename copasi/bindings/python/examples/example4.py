@@ -1,13 +1,16 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual </comment>
-# Properties, Inc., University of Heidelberg, and The University </comment>
-# of Manchester. </comment>
-# All rights reserved. </comment>
+# Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., University of Heidelberg, and The University 
+# of Manchester. 
+# All rights reserved. 
 
-# Copyright (C) 2009 by Pedro Mendes, Virginia Tech Intellectual </comment>
-# Properties, Inc., EML Research, gGmbH, University of Heidelberg, </comment>
-# and The University of Manchester. </comment>
-# All rights reserved. </comment>
+# Copyright (C) 2009 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+# and The University of Manchester. 
+# All rights reserved. 
+
+
+
 
 # 
 # This is an example on how to import an sbml file
@@ -104,7 +107,7 @@ def main(args):
        # load the model
        dataModel.importSBMLFromString(MODEL_STRING)
    except:
-       print >> sys.stderr,  "Error while importing the model from given string."
+       sys.stderr.write("Error while importing the model from given string.\n")
        return 1
    model = dataModel.getModel()
    assert model != None
@@ -234,11 +237,11 @@ def main(args):
        # now we run the actual trajectory
        scanTask.process(True)
    except:
-       print >> sys.stderr,  "Error. Running the scan failed."
+       sys.stderr.write("Error. Running the scan failed.\n")
        # check if there are additional error messages
        if (CCopasiMessage.size() > 0):
            # print the messages in chronological order
-           print >> sys.stderr,  CCopasiMessage.getAllMessageText(True)
+           sys.stderr.write(CCopasiMessage.getAllMessageText(True))
        return 1
 
 

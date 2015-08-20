@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -1742,10 +1742,10 @@ bool CCSPMethod::modesAreExhausted(C_INT & N, C_INT & M, C_FLOAT64 & tauM, C_FLO
 }
 
 /**
- *  Predifine the CArrayAnnotation for plots
+ *  Predefine the CArrayAnnotation for plots
  **/
 
-void CCSPMethod::predifineAnnotation()
+void CCSPMethod::predefineAnnotation()
 {
   const CModel & Model = mpContainer->getModel();
 
@@ -1808,167 +1808,152 @@ void CCSPMethod::createAnnotationsM()
 
   /* this table is not visible  more */
 #if 0
-
-  CArrayAnnotation *
-  pTmp1 = new CArrayAnnotation("Amplitude", this,
-                               new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mAmplitudeTab), true);
-  pTmp1->setMode(0, pTmp1->STRINGS);
-  pTmp1->setMode(1, pTmp1->STRINGS);
-  pTmp1->setDescription(" ");
-  pTmp1->setDimensionDescription(0, "Fast Reaction Modes");
-  pTmp1->setDimensionDescription(1, "Amplitudes ");
-  pAmplitudeAnn = pTmp1;
-
+  pAmplitudeAnn = new CArrayAnnotation("Amplitude", this,
+                                       new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mAmplitudeTab), true);
+  pAmplitudeAnn->setMode(0, pTmp1->STRINGS);
+  pAmplitudeAnn->setMode(1, pTmp1->STRINGS);
+  pAmplitudeAnn->setDescription(" ");
+  pAmplitudeAnn->setDimensionDescription(0, "Fast Reaction Modes");
+  pAmplitudeAnn->setDimensionDescription(1, "Amplitudes ");
 #endif
 
   name = "Radical Pointer";
   tableNames.push_back(name);
 
-  CArrayAnnotation *
-  pTmp2 = new CArrayAnnotation("Radical Pointer", this,
-                               new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mRadicalPointerTab), true);
-  pTmp2->setMode(0, pTmp2->VECTOR);
-  pTmp2->setMode(1, pTmp2->STRINGS);
-  pTmp2->setDescription("Radical Pointer: whenever is not a small number, species k is said to be CSP radical ");
-  pTmp2->setDimensionDescription(0, "Species");
-  pTmp2->setDimensionDescription(1, "Fast Time Scales");
-  pRadicalPointerAnn = pTmp2;
+  pRadicalPointerAnn = new CArrayAnnotation("Radical Pointer", this,
+      new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mRadicalPointerTab), true);
+  pRadicalPointerAnn->setMode(0, CArrayAnnotation::VECTOR);
+  pRadicalPointerAnn->setMode(1, CArrayAnnotation::STRINGS);
+  pRadicalPointerAnn->setDescription("Radical Pointer: whenever is not a small number, species k is said to be CSP radical ");
+  pRadicalPointerAnn->setDimensionDescription(0, "Species");
+  pRadicalPointerAnn->setDimensionDescription(1, "Fast Time Scales");
 
   mapTableToName[name] = pRadicalPointerAnn;
 
+  //
   name = "Fast Reaction Pointer";
   tableNames.push_back(name);
 
-  CArrayAnnotation *
-  pTmp3 = new CArrayAnnotation("Fast Reaction Pointer", this,
-                               new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mFastReactionPointerTab), true);
-  pTmp3->setMode(0, pTmp3->VECTOR);
-  pTmp3->setMode(1, pTmp3->STRINGS);
-  pTmp3->setDescription("Fast Reaction Pointer of the m-th reaction  mode : whenever is not a small number, the r-th reaction is said to be a fast reaction");
-  pTmp3->setDimensionDescription(0, "Reactions");
-  pTmp3->setDimensionDescription(1, "Fast Time Scales");
-  pFastReactionPointerAnn = pTmp3;
+  pFastReactionPointerAnn = new CArrayAnnotation("Fast Reaction Pointer", this,
+      new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mFastReactionPointerTab), true);
+  pFastReactionPointerAnn->setMode(0, CArrayAnnotation::VECTOR);
+  pFastReactionPointerAnn->setMode(1, CArrayAnnotation::STRINGS);
+  pFastReactionPointerAnn->setDescription("Fast Reaction Pointer of the m-th reaction  mode : whenever is not a small number, the r-th reaction is said to be a fast reaction");
+  pFastReactionPointerAnn->setDimensionDescription(0, "Reactions");
+  pFastReactionPointerAnn->setDimensionDescription(1, "Fast Time Scales");
 
   mapTableToName[name] = pFastReactionPointerAnn;
 
+  //
   name = "Normed Fast Reaction Pointer";
   tableNames.push_back(name);
 
-  CArrayAnnotation *
-  pTmp3Normed = new CArrayAnnotation("Normed Fast Reaction Pointer", this,
-                                     new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mFastReactionPointerNormedTab), true);
-  pTmp3Normed->setMode(0, pTmp3Normed->VECTOR);
-  pTmp3Normed->setMode(1, pTmp3Normed->STRINGS);
-  pTmp3Normed->setDescription("Fast Reaction Pointer of the m-th reaction  mode : whenever is not a small number, the r-th reaction is said to be a fast reaction");
-  pTmp3Normed->setDimensionDescription(0, "Reactions");
-  pTmp3Normed->setDimensionDescription(1, "Fast Time Scales");
-  pFastReactionPointerNormedAnn = pTmp3Normed;
+  pFastReactionPointerNormedAnn = new CArrayAnnotation("Normed Fast Reaction Pointer", this,
+      new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mFastReactionPointerNormedTab), true);
+  pFastReactionPointerNormedAnn->setMode(0, CArrayAnnotation::VECTOR);
+  pFastReactionPointerNormedAnn->setMode(1, CArrayAnnotation::STRINGS);
+  pFastReactionPointerNormedAnn->setDescription("Fast Reaction Pointer of the m-th reaction  mode : whenever is not a small number, the r-th reaction is said to be a fast reaction");
+  pFastReactionPointerNormedAnn->setDimensionDescription(0, "Reactions");
+  pFastReactionPointerNormedAnn->setDimensionDescription(1, "Fast Time Scales");
 
   mapTableToName[name] = pFastReactionPointerNormedAnn;
 
+  //
   name = "Participation Index";
   tableNames.push_back(name);
 
-  CArrayAnnotation *
-  pTmp4 = new CArrayAnnotation("Participation Index", this,
-                               new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mParticipationIndexTab), true);
-  pTmp4->setMode(1, pTmp4->STRINGS);
-  pTmp4->setMode(0, pTmp4->VECTOR);
-  pTmp4->setDescription("Participation Index : is a measure of participation of the r-th elementary reaction to the balancing act of the i-th mode");
-  pTmp4->setDimensionDescription(0, "Reactions");
-  pTmp4->setDimensionDescription(1, "Time Scales");
-  pParticipationIndexAnn = pTmp4;
+  pParticipationIndexAnn = new CArrayAnnotation("Participation Index", this,
+      new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mParticipationIndexTab), true);
+  pParticipationIndexAnn->setMode(1, CArrayAnnotation::STRINGS);
+  pParticipationIndexAnn->setMode(0, CArrayAnnotation::VECTOR);
+  pParticipationIndexAnn->setDescription("Participation Index : is a measure of participation of the r-th elementary reaction to the balancing act of the i-th mode");
+  pParticipationIndexAnn->setDimensionDescription(0, "Reactions");
+  pParticipationIndexAnn->setDimensionDescription(1, "Time Scales");
 
   mapTableToName[name] = pParticipationIndexAnn;
 
+  //
   name = "Normed Participation Index (by column)";
   tableNames.push_back(name);
 
-  CArrayAnnotation *
-  pTmp4NormedColumn = new CArrayAnnotation("Normed Participation Index (by column)", this,
+  pParticipationIndexNormedColumnAnn = new CArrayAnnotation("Normed Participation Index (by column)", this,
       new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mParticipationIndexNormedColumnTab), true);
-  pTmp4NormedColumn->setMode(1, pTmp4NormedColumn->STRINGS);
-  pTmp4NormedColumn->setMode(0, pTmp4NormedColumn->VECTOR);
-  pTmp4NormedColumn->setDescription("Participation Index : is a measure of participation of the r-th elementary reaction to the balancing act of the i-th mode");
-  pTmp4NormedColumn->setDimensionDescription(0, "Reactions");
-  pTmp4NormedColumn->setDimensionDescription(1, "Time Scales");
-  pParticipationIndexNormedColumnAnn = pTmp4NormedColumn;
+  pParticipationIndexNormedColumnAnn->setMode(1, CArrayAnnotation::STRINGS);
+  pParticipationIndexNormedColumnAnn->setMode(0, CArrayAnnotation::VECTOR);
+  pParticipationIndexNormedColumnAnn->setDescription("Participation Index : is a measure of participation of the r-th elementary reaction to the balancing act of the i-th mode");
+  pParticipationIndexNormedColumnAnn->setDimensionDescription(0, "Reactions");
+  pParticipationIndexNormedColumnAnn->setDimensionDescription(1, "Time Scales");
 
   mapTableToName[name] = pParticipationIndexNormedColumnAnn;
 
+  //
   name = "Normed Participation Index (by row)";
   tableNames.push_back(name);
 
-  CArrayAnnotation *
-  pTmp4NormedRow = new CArrayAnnotation("Normed Participation Index (by row)", this,
-                                        new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mParticipationIndexNormedRowTab), true);
-  pTmp4NormedRow->setMode(1, pTmp4NormedRow->STRINGS);
-  pTmp4NormedRow->setMode(0, pTmp4NormedRow->VECTOR);
-  pTmp4NormedRow->setDescription("Participation Index : is a measure of participation of the r-th elementary reaction to the balancing act of the i-th mode");
-  pTmp4NormedRow->setDimensionDescription(0, "Reactions");
-  pTmp4NormedRow->setDimensionDescription(1, "Time Scales");
-  pParticipationIndexNormedRowAnn = pTmp4NormedRow;
+  pParticipationIndexNormedRowAnn = new CArrayAnnotation("Normed Participation Index (by row)", this,
+      new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mParticipationIndexNormedRowTab), true);
+  pParticipationIndexNormedRowAnn->setMode(1, CArrayAnnotation::STRINGS);
+  pParticipationIndexNormedRowAnn->setMode(0, CArrayAnnotation::VECTOR);
+  pParticipationIndexNormedRowAnn->setDescription("Participation Index : is a measure of participation of the r-th elementary reaction to the balancing act of the i-th mode");
+  pParticipationIndexNormedRowAnn->setDimensionDescription(0, "Reactions");
+  pParticipationIndexNormedRowAnn->setDimensionDescription(1, "Time Scales");
 
   mapTableToName[name] = pParticipationIndexNormedRowAnn;
 
+  //
   name = "Fast Participation Index";
   tableNames.push_back(name);
 
-  CArrayAnnotation *
-  pTmp4Fast = new CArrayAnnotation("Fast Participation Index", this,
-                                   new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mFastParticipationIndexTab), true);
-  pTmp4Fast->setMode(0, pTmp4Fast->VECTOR);
-  pTmp4Fast->setMode(1, pTmp4Fast->STRINGS);
-  pTmp4Fast->setDescription(" Fast Participation Index : is a measure of participation of the r-th elementary reaction to the balancing act of fast modes");
-  pTmp4Fast->setDimensionDescription(0, "Reactions");
-  pTmp4Fast->setDimensionDescription(1, " ");
-  pFastParticipationIndexAnn = pTmp4Fast;
+  pFastParticipationIndexAnn = new CArrayAnnotation("Fast Participation Index", this,
+      new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mFastParticipationIndexTab), true);
+  pFastParticipationIndexAnn->setMode(0, CArrayAnnotation::VECTOR);
+  pFastParticipationIndexAnn->setMode(1, CArrayAnnotation::STRINGS);
+  pFastParticipationIndexAnn->setDescription(" Fast Participation Index : is a measure of participation of the r-th elementary reaction to the balancing act of fast modes");
+  pFastParticipationIndexAnn->setDimensionDescription(0, "Reactions");
+  pFastParticipationIndexAnn->setDimensionDescription(1, " ");
 
   mapTableToName[name] = pFastParticipationIndexAnn;
 
+  //
   name = "Slow Participation Index";
   tableNames.push_back(name);
 
-  CArrayAnnotation *
-  pTmp4Slow = new CArrayAnnotation("Slow Participation Index", this,
-                                   new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mSlowParticipationIndexTab), true);
+  pSlowParticipationIndexAnn = new CArrayAnnotation("Slow Participation Index", this,
+      new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mSlowParticipationIndexTab), true);
 
-  pTmp4Slow->setMode(0, pTmp4Slow->VECTOR);
-  pTmp4Slow->setMode(1, pTmp4Slow->STRINGS);
-  pTmp4Slow->setDescription("Slow Participation Index : is a measure of participation of the r-th elementary reaction to the balancing act of slow modes");
-  pTmp4Slow->setDimensionDescription(0, "Reactions");
-  pTmp4Slow->setDimensionDescription(1, " ");
-  pSlowParticipationIndexAnn = pTmp4Slow;
+  pSlowParticipationIndexAnn->setMode(0, CArrayAnnotation::VECTOR);
+  pSlowParticipationIndexAnn->setMode(1, CArrayAnnotation::STRINGS);
+  pSlowParticipationIndexAnn->setDescription("Slow Participation Index : is a measure of participation of the r-th elementary reaction to the balancing act of slow modes");
+  pSlowParticipationIndexAnn->setDimensionDescription(0, "Reactions");
+  pSlowParticipationIndexAnn->setDimensionDescription(1, " ");
 
   mapTableToName[name] = pSlowParticipationIndexAnn;
 
+  //
   name = "Importance Index";
   tableNames.push_back(name);
 
-  CArrayAnnotation *
-  pTmp5 = new CArrayAnnotation("Importance Index", this,
-                               new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mImportanceIndexTab), true);
-  pTmp5->setMode(1, pTmp5->VECTOR);
-  pTmp5->setMode(0, pTmp5->VECTOR);
-  pTmp5->setDescription("Importance Index: is a measure of relative importance of the contribution of r-th elementary reaction to the current reaction rate of i-th species");
-  pTmp5->setDimensionDescription(0, "Reactions");
-  pTmp5->setDimensionDescription(1, "Species");
-  pImportanceIndexAnn = pTmp5;
+  pImportanceIndexAnn = new CArrayAnnotation("Importance Index", this,
+      new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mImportanceIndexTab), true);
+  pImportanceIndexAnn->setMode(1, CArrayAnnotation::VECTOR);
+  pImportanceIndexAnn->setMode(0, CArrayAnnotation::VECTOR);
+  pImportanceIndexAnn->setDescription("Importance Index: is a measure of relative importance of the contribution of r-th elementary reaction to the current reaction rate of i-th species");
+  pImportanceIndexAnn->setDimensionDescription(0, "Reactions");
+  pImportanceIndexAnn->setDimensionDescription(1, "Species");
 
   mapTableToName[name] =  pImportanceIndexAnn;
 
+  //
   name = "Normed Importance Index (by row)";
   tableNames.push_back(name);
 
-  CArrayAnnotation *
-  pTmp5NormedRow = new CArrayAnnotation("Normed Importance Index (by row)", this,
-                                        new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mImportanceIndexNormedRowTab), true);
-  pTmp5NormedRow->setMode(1, pTmp5NormedRow->VECTOR);
-  pTmp5NormedRow->setMode(0, pTmp5NormedRow->VECTOR);
-  pTmp5NormedRow->setDescription("Importance Index: is a measure of relative importance of the contribution of r-th elementary reaction to the current reaction rate of i-th species");
-  pTmp5NormedRow->setDimensionDescription(0, "Reactions");
-  pTmp5NormedRow->setDimensionDescription(1, "Species");
-  pImportanceIndexNormedRowAnn = pTmp5NormedRow;
+  pImportanceIndexNormedRowAnn = new CArrayAnnotation("Normed Importance Index (by row)", this,
+      new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mImportanceIndexNormedRowTab), true);
+  pImportanceIndexNormedRowAnn->setMode(1, CArrayAnnotation::VECTOR);
+  pImportanceIndexNormedRowAnn->setMode(0, CArrayAnnotation::VECTOR);
+  pImportanceIndexNormedRowAnn->setDescription("Importance Index: is a measure of relative importance of the contribution of r-th elementary reaction to the current reaction rate of i-th species");
+  pImportanceIndexNormedRowAnn->setDimensionDescription(0, "Reactions");
+  pImportanceIndexNormedRowAnn->setDimensionDescription(1, "Species");
 
   mapTableToName[name] = pImportanceIndexNormedRowAnn;
 }

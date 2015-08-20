@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -22,9 +22,9 @@
 
 #include "copasi/copasi.h"
 
-#include "CCopasiMethod.h"
-#include "CCopasiMessage.h"
-#include "CCopasiProblem.h"
+#include "copasi/utilities/CCopasiMethod.h"
+#include "copasi/utilities/CCopasiMessage.h"
+#include "copasi/utilities/CCopasiProblem.h"
 
 #include "math/CMathContainer.h"
 

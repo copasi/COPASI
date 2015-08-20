@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and The University 
 # of Manchester. 
 # All rights reserved. 
@@ -8,6 +8,8 @@
 # Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
 # and The University of Manchester. 
 # All rights reserved. 
+
+
 
 
 
@@ -165,10 +167,10 @@ def main():
    try:
      result=optTask.process(True)
    except:
-       print >> sys.stderr,"Running the optimization failed." 
+       sys.stderr.write("Running the optimization failed.\n" )
        return 1
    if(not result):
-       print >> sys.stderr,"Running the optimization failed." 
+       sys.stderr.write("Running the optimization failed.\n" )
        return 1
    # now we check if the optimization actually got the correct result
    # the best value it should have is 0 and the best parameter value for

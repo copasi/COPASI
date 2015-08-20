@@ -194,6 +194,7 @@ bool CCopasiDataModel::loadModel(std::istream & in,
 
       newModel(NULL, deleteOldData);
       mData.mFileType = Gepasi;
+      mData.mReferenceDir = pwd;
 
       if (mData.pModel->load(inbuf))
         {
@@ -210,6 +211,7 @@ bool CCopasiDataModel::loadModel(std::istream & in,
     {
       pushData();
       mData.mFileType = CopasiML;
+      mData.mReferenceDir = pwd;
 
       CCopasiXML XML;
       XML.setFunctionList(&CCopasiRootContainer::getFunctionList()->loadedFunctions());
@@ -762,6 +764,7 @@ std::string CCopasiDataModel::exportSBMLToString(CProcessReport* pExportHandler,
   // This should eventually be determined by a setting in the preferences
   // dialog.
   exporter.setExportCOPASIMIRIAM(true);
+  exporter.setHandler(pExportHandler);
   std::string str = exporter.exportModelToString(*this, sbmlLevel, sbmlVersion);
 
   // only get the new model if it is not a Level 1 model
@@ -803,7 +806,14 @@ std::string CCopasiDataModel::exportSBMLToString(CProcessReport* pExportHandler,
   return str;
 }
 
-bool CCopasiDataModel::exportSBML(const std::string & fileName, bool overwriteFile, int sbmlLevel, int sbmlVersion, bool /*exportIncomplete*/, bool exportCOPASIMIRIAM, CProcessReport* pExportHandler)
+bool
+CCopasiDataModel::exportSBML(const std::string & fileName,
+                             bool overwriteFile,
+                             int sbmlLevel,
+                             int sbmlVersion,
+                             bool /*exportIncomplete*/,
+                             bool exportCOPASIMIRIAM,
+                             CProcessReport* pExportHandler)
 {
   CCopasiMessage::clearDeque();
 
@@ -844,7 +854,8 @@ bool CCopasiDataModel::exportSBML(const std::string & fileName, bool overwriteFi
     {
       if (!mData.pModel->compileIfNecessary(pExportHandler))
         {
-          CCopasiMessage(CCopasiMessage::EXCEPTION, failedCompile.c_str(), CCopasiMessage::getAllMessageText().c_str());
+          CCopasiMessage(CCopasiMessage::EXCEPTION, failedCompile.c_str(),
+                         CCopasiMessage::getAllMessageText().c_str());
           return false;
         }
     }
@@ -855,11 +866,13 @@ bool CCopasiDataModel::exportSBML(const std::string & fileName, bool overwriteFi
     }
   catch (...)
     {
-      CCopasiMessage(CCopasiMessage::EXCEPTION, failedCompile.c_str(), CCopasiMessage::getAllMessageText().c_str());
+      CCopasiMessage(CCopasiMessage::EXCEPTION, failedCompile.c_str(),
+                     CCopasiMessage::getAllMessageText().c_str());
       return false;
     }
 
   CSBMLExporter exporter;
+  exporter.setHandler(pExportHandler);
   exporter.setExportCOPASIMIRIAM(exportCOPASIMIRIAM);
   SBMLDocument* pOrigSBMLDocument = NULL;
 
@@ -922,7 +935,10 @@ bool CCopasiDataModel::exportSBML(const std::string & fileName, bool overwriteFi
   return true;
 }
 
-std::string CCopasiDataModel::exportMathModelToString(CProcessReport* pProcessReport, const std::string & filter)
+std::string
+CCopasiDataModel::exportMathModelToString(
+  CProcessReport* pProcessReport,
+  const std::string & filter)
 {
   CODEExporter * pExporter = NULL;
 

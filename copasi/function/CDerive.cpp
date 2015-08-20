@@ -17,6 +17,7 @@
 #include "CEvaluationNode.h"
 #include "utilities/CCopasiParameter.h"
 #include "model/CModelValue.h"
+#include "function/CFunction.h"
 #include "utilities/CNodeIterator.h"
 
 bool CDerive::isOne(const CEvaluationNode* node)
@@ -478,6 +479,33 @@ CEvaluationNode* CDerive::deriveBranch(const CEvaluationNode* node, const CCopas
 
       // otherwise return 0.
       return new CEvaluationNodeNumber(CEvaluationNodeNumber::INTEGER, "0");
+    }
+
+  const CEvaluationNodeCall  *pENCall = dynamic_cast<const CEvaluationNodeCall*>(node);
+
+  if (pENCall)
+    {
+
+      //is it a function?
+      const CFunction * tmpFunction = dynamic_cast<const CFunction*>(pENCall->getCalledTree());
+
+//     const std::vector<CEvaluationNode *> getListOfChildNodes() const {return mCallNodes;}
+
+      //create call environment for the called function
+      std::vector<const CEvaluationNode*> subenv;
+      size_t i, imax = pENCall->getListOfChildNodes().size();
+      subenv.resize(imax);
+
+      for (i = 0; i < imax; ++i)
+        {
+          CEvaluationNode* tmpnode = copyBranch_var2obj(pENCall->getListOfChildNodes()[i], env);
+          compileTree(tmpnode, pTree);
+          subenv[i] = tmpnode;
+        }
+
+      return deriveBranch(pENCall->getCalledTree()->getRoot(), pObject,
+                          subenv,
+                          pTree, simplify);
     }
 
   return newNode;

@@ -326,8 +326,83 @@ std::string getUserDefinedFuctionForName(SBMLDocument* pSBMLDocument,
 # include "sbmlunit/CSBMLunitInterface.h"
 #endif // USE_SBMLUNIT
 
-CSBMLExporter::CSBMLExporter(): mpSBMLDocument(NULL), mSBMLLevel(2), mSBMLVersion(1), mIncompleteExport(false), mVariableVolumes(false), mpAvogadro(NULL), mAvogadroCreated(false), mMIRIAMWarning(false), mDocumentDisowned(false), mExportCOPASIMIRIAM(false), mExportedFunctions(2, 1)
-{}
+void
+CSBMLExporter::setHandler(CProcessReport *pHandler)
+{
+  mpProgressHandler = pHandler;
+}
+
+bool
+CSBMLExporter::reportCurrentProgressOrStop()
+{
+  if (!mpProgressHandler) return false;
+
+  return !mpProgressHandler->progressItem(mCurrentStepHandle);
+}
+
+void
+CSBMLExporter::finishCurrentStep()
+{
+  if (!mpProgressHandler || mCurrentStepHandle == C_INVALID_INDEX)  return;
+
+  mpProgressHandler->finishItem(mCurrentStepHandle);
+  mCurrentStepHandle = C_INVALID_INDEX;
+}
+
+void
+CSBMLExporter::finishExport()
+{
+  if (!mpProgressHandler)  return;
+
+  finishCurrentStep();
+
+  mpProgressHandler->finishItem(mGlobalStepHandle);
+}
+
+bool
+CSBMLExporter::createProgressStepOrStop(unsigned C_INT32 globalStep,
+                                        unsigned C_INT32 currentTotal,
+                                        const std::string& title)
+{
+  if (!mpProgressHandler) return false;
+
+  if (mCurrentStepHandle != C_INVALID_INDEX)
+    mpProgressHandler->finishItem(mCurrentStepHandle);
+
+  mGlobalStepCounter = globalStep;
+
+  if (!mpProgressHandler->progressItem(mGlobalStepHandle)) return true;
+
+  mCurrentStepCounter = 0;
+  mCurrentStepTotal = currentTotal;
+  mCurrentStepHandle = mpProgressHandler->addItem(title,
+                       mCurrentStepCounter,
+                       &mCurrentStepTotal);
+
+  return false;
+}
+
+CSBMLExporter::CSBMLExporter()
+  : mpSBMLDocument(NULL)
+  , mSBMLLevel(2)
+  , mSBMLVersion(1)
+  , mIncompleteExport(false)
+  , mVariableVolumes(false)
+  , mpAvogadro(NULL)
+  , mAvogadroCreated(false)
+  , mMIRIAMWarning(false)
+  , mDocumentDisowned(false)
+  , mExportCOPASIMIRIAM(false)
+  , mExportedFunctions(2, 1)
+  , mpProgressHandler(NULL)
+  , mGlobalStepHandle(C_INVALID_INDEX)
+  , mGlobalStepCounter(0)
+  , mGlobalStepTotal(0)
+  , mCurrentStepHandle(C_INVALID_INDEX)
+  , mCurrentStepCounter(0)
+  , mCurrentStepTotal(0)
+{
+}
 
 CSBMLExporter::~CSBMLExporter()
 {
@@ -335,7 +410,13 @@ CSBMLExporter::~CSBMLExporter()
     {
       pdelete(mpSBMLDocument);
     }
-};
+}
+
+SBMLDocument *
+CSBMLExporter::getSBMLDocument()
+{
+  return this->mpSBMLDocument;
+}
 
 /**
  * Creates the units for the SBML model.
@@ -909,10 +990,11 @@ void CSBMLExporter::createAreaUnit(const CCopasiDataModel& dataModel)
 /**
  * Creates the compartments for the model.
  */
-void CSBMLExporter::createCompartments(CCopasiDataModel& dataModel)
+bool CSBMLExporter::createCompartments(CCopasiDataModel& dataModel)
 {
   // make sure the SBML Document already exists and that it has a Model set
-  if (dataModel.getModel() == NULL || this->mpSBMLDocument == NULL || this->mpSBMLDocument->getModel() == NULL) return;
+  if (dataModel.getModel() == NULL || this->mpSBMLDocument == NULL || this->mpSBMLDocument->getModel() == NULL)
+    return false;
 
   CCopasiVectorNS<CCompartment>::const_iterator it = dataModel.getModel()->getCompartments().begin(), endit = dataModel.getModel()->getCompartments().end();
 
@@ -920,7 +1002,14 @@ void CSBMLExporter::createCompartments(CCopasiDataModel& dataModel)
     {
       createCompartment(**it);
       ++it;
+
+      ++mCurrentStepCounter;
+
+      if (reportCurrentProgressOrStop())
+        return false;
     }
+
+  return true;
 }
 
 /**
@@ -1066,10 +1155,12 @@ void CSBMLExporter::createCompartment(CCompartment& compartment)
 /**
  * Creates the compartments for the model.
  */
-void CSBMLExporter::createMetabolites(CCopasiDataModel& dataModel)
+bool
+CSBMLExporter::createMetabolites(CCopasiDataModel& dataModel)
 {
   // make sure the SBML Document already exists and that it has a Model set
-  if (dataModel.getModel() == NULL || this->mpSBMLDocument == NULL || this->mpSBMLDocument->getModel() == NULL) return;
+  if (dataModel.getModel() == NULL || this->mpSBMLDocument == NULL || this->mpSBMLDocument->getModel() == NULL)
+    return false;
 
   if (this->mSBMLLevel > 2 || (this->mSBMLLevel == 2 && this->mSBMLVersion >= 3))
     {
@@ -1083,6 +1174,11 @@ void CSBMLExporter::createMetabolites(CCopasiDataModel& dataModel)
     {
       createMetabolite(**it);
       ++it;
+
+      ++mCurrentStepCounter;
+
+      if (reportCurrentProgressOrStop())
+        return false;
     }
 
   if (!this->mSpatialSizeUnitsSpecies.empty())
@@ -1098,6 +1194,8 @@ void CSBMLExporter::createMetabolites(CCopasiDataModel& dataModel)
 
       CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 84, os.str().substr(0, os.str().size() - 2).c_str());
     }
+
+  return true;
 }
 
 /**
@@ -1285,10 +1383,11 @@ void CSBMLExporter::createMetabolite(CMetab& metab)
 /**
  * Creates the parameters for the model.
  */
-void CSBMLExporter::createParameters(CCopasiDataModel& dataModel)
+bool CSBMLExporter::createParameters(CCopasiDataModel& dataModel)
 {
   // make sure the SBML Document already exists and that it has a Model set
-  if (dataModel.getModel() == NULL || this->mpSBMLDocument == NULL || this->mpSBMLDocument->getModel() == NULL) return;
+  if (dataModel.getModel() == NULL || this->mpSBMLDocument == NULL || this->mpSBMLDocument->getModel() == NULL)
+    return false;
 
   CCopasiVectorN<CModelValue>::const_iterator it = dataModel.getModel()->getModelValues().begin(), endit = dataModel.getModel()->getModelValues().end();
 
@@ -1296,7 +1395,14 @@ void CSBMLExporter::createParameters(CCopasiDataModel& dataModel)
     {
       createParameter(**it);
       ++it;
+
+      ++mCurrentStepCounter;
+
+      if (reportCurrentProgressOrStop())
+        return false;
     }
+
+  return true;
 }
 
 /**
@@ -1415,10 +1521,11 @@ void CSBMLExporter::createParameter(CModelValue& modelValue)
 /**
  * Creates the reactions for the model.
  */
-void CSBMLExporter::createReactions(CCopasiDataModel& dataModel)
+bool CSBMLExporter::createReactions(CCopasiDataModel& dataModel)
 {
   // make sure the SBML Document already exists and that it has a Model set
-  if (dataModel.getModel() == NULL || this->mpSBMLDocument == NULL || this->mpSBMLDocument->getModel() == NULL) return;
+  if (dataModel.getModel() == NULL || this->mpSBMLDocument == NULL || this->mpSBMLDocument->getModel() == NULL)
+    return false;
 
   CCopasiVectorNS<CReaction>::const_iterator it = dataModel.getModel()->getReactions().begin(), endit = dataModel.getModel()->getReactions().end();
 
@@ -1426,7 +1533,14 @@ void CSBMLExporter::createReactions(CCopasiDataModel& dataModel)
     {
       createReaction(**it, dataModel);
       ++it;
+
+      ++mCurrentStepCounter;
+
+      if (reportCurrentProgressOrStop())
+        return false;
     }
+
+  return true;
 }
 
 /**
@@ -1648,7 +1762,7 @@ void CSBMLExporter::createReaction(CReaction& reaction, CCopasiDataModel& dataMo
 /**
  * Creates the initial assignments for the model.
  */
-void CSBMLExporter::createInitialAssignments(CCopasiDataModel& dataModel)
+bool CSBMLExporter::createInitialAssignments(CCopasiDataModel& dataModel)
 {
   // make sure the mInitialAssignmentVector has been filled already
 
@@ -1664,8 +1778,13 @@ void CSBMLExporter::createInitialAssignments(CCopasiDataModel& dataModel)
       if (pME != NULL)
         {
           createInitialAssignment(*pME, dataModel);
+
+          if (reportCurrentProgressOrStop())
+            return false;
         }
     }
+
+  return true;
 }
 
 /**
@@ -1833,7 +1952,7 @@ std::string convertExpression(const std::string& expression, const std::map<cons
 /**
  * Creates the rules for the model.
  */
-void CSBMLExporter::createRules(CCopasiDataModel& dataModel)
+bool CSBMLExporter::createRules(CCopasiDataModel& dataModel)
 {
   // make sure the mAssignmentVector has been filled already
   // make sure the mODEVector has been filled already
@@ -1872,6 +1991,9 @@ void CSBMLExporter::createRules(CCopasiDataModel& dataModel)
       pSBMLModel->getListOfRules()->remove(0);
     }
 
+  if (reportCurrentProgressOrStop())
+    return false;
+
   // create the rules
   const CModelEntity* pME = NULL;
   size_t i, iMax = orderedAssignmentRules.size();
@@ -1897,6 +2019,9 @@ void CSBMLExporter::createRules(CCopasiDataModel& dataModel)
         }
     }
 
+  if (reportCurrentProgressOrStop())
+    return false;
+
   iMax = mODEVector.size();
 
   for (i = 0; i < iMax; ++i)
@@ -1920,6 +2045,9 @@ void CSBMLExporter::createRules(CCopasiDataModel& dataModel)
         }
     }
 
+  if (reportCurrentProgressOrStop())
+    return false;
+
   // delete the remaining rules
   std::map<std::string, Rule*>::iterator mapIt = ruleMap.begin(), mapEndit = ruleMap.end();
 
@@ -1930,6 +2058,7 @@ void CSBMLExporter::createRules(CCopasiDataModel& dataModel)
     }
 
   ruleMap.clear();
+  return true;
 }
 
 /**
@@ -2935,7 +3064,7 @@ void CSBMLExporter::checkForInitialAssignments(const CCopasiDataModel& dataModel
 /**
  * Create all function definitions.
  */
-void CSBMLExporter::createFunctionDefinitions(CCopasiDataModel& dataModel)
+bool CSBMLExporter::createFunctionDefinitions(CCopasiDataModel& dataModel)
 {
   this->mExportedFunctions.clear(true);
   this->mFunctionMap.clear();
@@ -3003,6 +3132,9 @@ void CSBMLExporter::createFunctionDefinitions(CCopasiDataModel& dataModel)
 
       ++i;
     }
+
+  if (reportCurrentProgressOrStop())
+    return false;
 
   // find all indirectly called functions for the unused functions
   std::vector<CFunction*> functionsVect = findUsedFunctions(unusedFunctions, CCopasiRootContainer::getFunctionList());
@@ -3096,6 +3228,37 @@ void CSBMLExporter::createFunctionDefinitions(CCopasiDataModel& dataModel)
         }
 
       ++it;
+
+      if (reportCurrentProgressOrStop())
+        return false;
+    }
+
+  return true;
+}
+
+/**
+ * function going through all children of pFunNode, and renaming elements if they are in the rename list
+ */
+void renameAstNodes(ASTNode* pFunNode, const std::map<std::string, std::string>& renameList)
+{
+  if (pFunNode == NULL || renameList.empty())
+    return;
+
+  if (pFunNode->getType() == AST_NAME)
+    {
+      std::map<std::string, std::string>::const_iterator it = renameList.find(pFunNode->getName());
+
+      if (it != renameList.end())
+        {
+          pFunNode->setName(it->second.c_str());
+        }
+    }
+
+  unsigned int iMax = pFunNode->getNumChildren();
+
+  for (unsigned int i = 0; i < iMax; ++i)
+    {
+      renameAstNodes(pFunNode->getChild(i), renameList);
     }
 }
 
@@ -3177,12 +3340,26 @@ void CSBMLExporter::createFunctionDefinition(CFunction& function, CCopasiDataMod
           size_t i, iMax = funParams.size();
           ASTNode* pParamNode = NULL;
 
+          std::map<std::string, std::string> renameList;
+
           for (i = 0; i < iMax; ++i)
             {
               pParamNode = new ASTNode(AST_NAME);
-              pParamNode->setName(funParams[i]->getObjectName().c_str());
+              std::string name = funParams[i]->getObjectName();
+
+              if (!isValidSId(name))
+                {
+                  std::string newName = nameToSbmlId(name);
+                  renameList[name] = newName;
+                  name = newName;
+                }
+
+              pParamNode->setName(name.c_str());
               pLambda->addChild(pParamNode);
             }
+
+          if (!renameList.empty())
+            renameAstNodes(pFunNode, renameList);
 
           pLambda->addChild(pFunNode);
 
@@ -3236,12 +3413,14 @@ void removeStickyTagFromElements(SBMLDocument *pSBMLDocument)
  * The SBML model is returned as a string. In case of an error, an
  * empty string is returned.
  */
-const std::string CSBMLExporter::exportModelToString(CCopasiDataModel& dataModel, unsigned int sbmlLevel, unsigned int sbmlVersion)
+bool
+CSBMLExporter::exportLayout(unsigned int sbmlLevel, CCopasiDataModel& dataModel)
 {
-  this->mSBMLLevel = sbmlLevel;
-  this->mSBMLVersion = sbmlVersion;
-  mHandledSBMLObjects.clear();
-  createSBMLDocument(dataModel);
+  if (createProgressStepOrStop(12, 1, "Exporting layout..."))
+    {
+      finishExport();
+      return false;
+    }
 
   if (this->mpSBMLDocument && this->mpSBMLDocument->getModel())
     {
@@ -3274,10 +3453,47 @@ const std::string CSBMLExporter::exportModelToString(CCopasiDataModel& dataModel
         }
     }
 
+  return true;
+}
+
+const std::string
+CSBMLExporter::exportModelToString(CCopasiDataModel& dataModel,
+                                   unsigned int sbmlLevel,
+                                   unsigned int sbmlVersion)
+{
+  this->mSBMLLevel = sbmlLevel;
+  this->mSBMLVersion = sbmlVersion;
+  mHandledSBMLObjects.clear();
+
+  if (mpProgressHandler)
+    {
+      std::stringstream str;
+      str << "Exporting SBML L" << sbmlLevel << "V" << sbmlVersion << "...";
+      mpProgressHandler->setName(str.str());
+      mGlobalStepTotal = 16;
+      mGlobalStepHandle = mpProgressHandler->addItem("Step",
+                          mGlobalStepCounter,
+                          &mGlobalStepTotal);
+    }
+
+  if (!createSBMLDocument(dataModel))
+    return "";
+
+  if (!exportLayout(sbmlLevel, dataModel))
+    return "";
+
 #ifdef USE_SBMLUNIT
 
   if (this->mpSBMLDocument != NULL)
     {
+      if (createProgressStepOrStop(13,
+                                   1,
+                                   "Infering units..."))
+        {
+          finishExport();
+          return "";
+        }
+
       CSBMLunitInterface uif(this->mpSBMLDocument->getModel(), true);
       uif.determineUnits();
 
@@ -3325,16 +3541,38 @@ const std::string CSBMLExporter::exportModelToString(CCopasiDataModel& dataModel
   // export the model to a string
   if (this->mpSBMLDocument == NULL) return std::string();
 
+  if (createProgressStepOrStop(14,
+                               1,
+                               "Remove unused elements..."))
+    {
+      finishExport();
+      return "";
+    }
+
   removeUnusedObjects();
+
+  if (createProgressStepOrStop(15,
+                               1,
+                               "Writing document..."))
+    {
+      finishExport();
+      return "";
+    }
+
   SBMLWriter* writer = new SBMLWriter();
 
   writer->setProgramName("COPASI");
   writer->setProgramVersion(CVersion::VERSION.getVersion().c_str());
 
+#if LIBSBML_VERSION <= 51104
   char* d = writer->writeToString(this->mpSBMLDocument);
   std::string returnValue = d;
 
   if (d) free(d);
+
+#else
+  std::string returnValue = writer->writeSBMLToStdString(this->mpSBMLDocument);
+#endif
 
   pdelete(writer);
 
@@ -3356,6 +3594,8 @@ const std::string CSBMLExporter::exportModelToString(CCopasiDataModel& dataModel
     }
 
 #endif
+
+  finishExport();
 
   return returnValue;
 }
@@ -3394,7 +3634,7 @@ void addInitialAssignmentsToModel(SBMLDocument* doc
     }
 }
 
-void CSBMLExporter::createSBMLDocument(CCopasiDataModel& dataModel)
+bool CSBMLExporter::createSBMLDocument(CCopasiDataModel& dataModel)
 {
   // reset warnings for missing entries in modelhistory
   mHaveModelHistoryAuthorWarning = false;
@@ -3457,6 +3697,12 @@ void CSBMLExporter::createSBMLDocument(CCopasiDataModel& dataModel)
   // update the comments on the model
   this->mpSBMLDocument->getModel()->setName(pModel->getObjectName());
 
+  if (createProgressStepOrStop(1, 1, "Exporting notes/annotations..."))
+    {
+      finishExport();
+      return false;
+    }
+
   if (pModel != NULL && this->mpSBMLDocument->getModel() != NULL)
     {
       CSBMLExporter::setSBMLNotes(this->mpSBMLDocument->getModel(), pModel);
@@ -3477,6 +3723,12 @@ void CSBMLExporter::createSBMLDocument(CCopasiDataModel& dataModel)
 
   // create units, compartments, species, parameters, reactions, initial
   // assignment, assignments, (event) and function definitions
+  if (createProgressStepOrStop(2, 1, "Exporting units..."))
+    {
+      finishExport();
+      return false;
+    }
+
   createUnits(dataModel);
   // try to find a parameter that represents Avogadros number
   findAvogadro(dataModel);
@@ -3486,9 +3738,38 @@ void CSBMLExporter::createSBMLDocument(CCopasiDataModel& dataModel)
   // hasOnlySubstanceUnits flag set to true
   this->mVariableVolumes = this->hasVolumeAssignment(dataModel);
 
-  createCompartments(dataModel);
-  createMetabolites(dataModel);
-  createParameters(dataModel);
+  if (createProgressStepOrStop(3,
+                               dataModel.getModel()->getCompartments().size(),
+                               "Exporting compartments..."))
+    {
+      finishExport();
+      return false;
+    }
+
+  if (!createCompartments(dataModel))
+    return false;
+
+  if (createProgressStepOrStop(4,
+                               dataModel.getModel()->getMetabolites().size(),
+                               "Exporting species..."))
+    {
+      finishExport();
+      return false;
+    }
+
+  if (!createMetabolites(dataModel))
+    return false;
+
+  if (createProgressStepOrStop(5,
+                               dataModel.getModel()->getModelValues().size(),
+                               "Exporting parameters..."))
+    {
+      finishExport();
+      return false;
+    }
+
+  if (!createParameters(dataModel))
+    return false;
 
   // TODO here we should check the expressions but the function definitions
   // TODO have not been created yet, so we can't
@@ -3499,7 +3780,19 @@ void CSBMLExporter::createSBMLDocument(CCopasiDataModel& dataModel)
   // only export initial assignments for Level 2 Version 2 and above
   if (this->mSBMLLevel != 1 && !(this->mSBMLLevel == 2 && this->mSBMLVersion == 1))
     {
-      createInitialAssignments(dataModel);
+      if (createProgressStepOrStop(6,
+                                   1,
+                                   "Exporting initial assignments..."))
+        {
+          finishExport();
+          return false;
+        }
+
+      if (!createInitialAssignments(dataModel))
+        {
+          finishExport();
+          return false;
+        }
     }
   else
     {
@@ -3511,16 +3804,66 @@ void CSBMLExporter::createSBMLDocument(CCopasiDataModel& dataModel)
   // and events
   assignSBMLIdsToReactions(dataModel.getModel());
 
-  createRules(dataModel);
-  createEvents(dataModel);
+  if (createProgressStepOrStop(7,
+                               1,
+                               "Exporting rules..."))
+    {
+      finishExport();
+      return false;
+    }
+
+  if (!createRules(dataModel))
+    {
+      finishExport();
+      return false;
+    }
+
+  if (createProgressStepOrStop(8,
+                               dataModel.getModel()->getEvents().size(),
+                               "Exporting events..."))
+    {
+      finishExport();
+      return false;
+    }
+
+  if (!createEvents(dataModel))
+    {
+      finishExport();
+      return false;
+    }
 
   // we have to export the reactions after all other entities that have
   // expressions since an expression could contain a local parameter
   // If it did, it would have to be converted to a global parameter and that
   // has to be taken into consideration when creating the reactions
-  createReactions(dataModel);
+  if (createProgressStepOrStop(9,
+                               dataModel.getModel()->getReactions().size(),
+                               "Exporting reactions..."))
+    {
+      finishExport();
+      return false;
+    }
+
+  if (!createReactions(dataModel))
+    {
+      finishExport();
+      return false;
+    }
+
   // find all used functions
-  createFunctionDefinitions(dataModel);
+  if (createProgressStepOrStop(10,
+                               1,
+                               "Exporting functions..."))
+    {
+      finishExport();
+      return false;
+    }
+
+  if (!createFunctionDefinitions(dataModel))
+    {
+      finishExport();
+      return false;
+    }
 
   if (this->mSBMLLevel == 1)
     {
@@ -3597,8 +3940,17 @@ void CSBMLExporter::createSBMLDocument(CCopasiDataModel& dataModel)
     }
 
   // In case the document is just a clone of an old model, we have to set the level and version
-  if (this->mpSBMLDocument->getLevel() != this->mSBMLLevel || this->mpSBMLDocument->getVersion() != this->mSBMLVersion)
+  if (this->mpSBMLDocument->getLevel() != this->mSBMLLevel
+      || this->mpSBMLDocument->getVersion() != this->mSBMLVersion)
     {
+      if (createProgressStepOrStop(11,
+                                   1,
+                                   "Converting document..."))
+        {
+          finishExport();
+          return false;
+        }
+
 #if LIBSBML_VERSION >= 50400
 
       SBMLNamespaces targetNs(mSBMLLevel, mSBMLVersion); // use reference, as the ns gets cloned
@@ -3673,6 +4025,8 @@ void CSBMLExporter::createSBMLDocument(CCopasiDataModel& dataModel)
   // and the function map
   this->mExportedFunctions.clear(true);
   this->mFunctionMap.clear();
+
+  return true;
 }
 
 const std::set<CEvaluationNodeFunction::SubType> CSBMLExporter::createUnsupportedFunctionTypeSet(unsigned int sbmlLevel)
@@ -3713,7 +4067,12 @@ const std::set<CEvaluationNodeFunction::SubType> CSBMLExporter::createUnsupporte
  * The model is written to the file given by filename.
  * If the export fails, false is returned.
  */
-bool CSBMLExporter::exportModel(CCopasiDataModel& dataModel, const std::string& filename, unsigned int sbmlLevel, unsigned int sbmlVersion, bool overwrite)
+bool
+CSBMLExporter::exportModel(CCopasiDataModel& dataModel,
+                           const std::string& filename,
+                           unsigned int sbmlLevel,
+                           unsigned int sbmlVersion,
+                           bool overwrite)
 {
   bool success = true;
   /* create a string that represents the SBMLDocument */
@@ -3933,22 +4292,22 @@ const std::vector<SBMLIncompatibility> CSBMLExporter::isModelSBMLCompatible(cons
   return result;
 }
 
-void CSBMLExporter::createEvents(CCopasiDataModel& dataModel)
+bool CSBMLExporter::createEvents(CCopasiDataModel& dataModel)
 {
   if (this->mSBMLLevel == 1)
     {
       CSBMLExporter::checkForEvents(dataModel, this->mIncompatibilities);
-      return;
+      return false;
     }
 
   // bail early
   if (dataModel.getModel() == NULL)
-    return;
+    return false;
 
   Model* pSBMLModel = this->mpSBMLDocument->getModel();
 
   if (pSBMLModel == NULL)
-    return;
+    return false;
 
   // remove all events from the SBML model and put them in a set
   std::set<Event*> eventSet;
@@ -3987,6 +4346,11 @@ void CSBMLExporter::createEvents(CCopasiDataModel& dataModel)
 
       this->createEvent(**it, pSBMLEvent, dataModel);
       ++it;
+
+      ++mCurrentStepCounter;
+
+      if (reportCurrentProgressOrStop())
+        return false;
     }
 
   // make sure events that have already been deleted do not get
@@ -3998,6 +4362,8 @@ void CSBMLExporter::createEvents(CCopasiDataModel& dataModel)
       delete *it2;
       ++it2;
     }
+
+  return true;
 }
 
 void CSBMLExporter::createEvent(CEvent& event, Event* pSBMLEvent, CCopasiDataModel& dataModel)

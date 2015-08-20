@@ -596,7 +596,7 @@ C_FLOAT64 CNewtonMethod::targetFunction()
   C_FLOAT64 * pDistance = Distance.array();
   C_FLOAT64 * pDistanceEnd = pDistance + Distance.size();
   C_FLOAT64 * pCurrentState = mpX;
-  const C_FLOAT64 * pAtol = mAtol.array();
+  C_FLOAT64 * pAtol = mAtol.array();
 
   // Assure that all values are updated.
   mpContainer->updateSimulatedValues(true);
@@ -612,8 +612,10 @@ C_FLOAT64 CNewtonMethod::targetFunction()
 
   for (; pDistance != pDistanceEnd; ++pDistance, ++pCurrentState, ++pAtol, ++pMathObject)
     {
+      *pAtol = std::max(fabs(*pCurrentState), *pAtol);
+
       // Prevent division by 0
-      tmp = fabs(*pDistance) / std::max(fabs(*pCurrentState), *pAtol);
+      tmp = fabs(*pDistance) / *pAtol;
       RelativeDistance += tmp * tmp;
 
       tmp = fabs(*pDistance);

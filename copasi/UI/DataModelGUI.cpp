@@ -611,7 +611,10 @@ bool DataModelGUI::notify(ListViews::ObjectType objectType, ListViews::Action ac
   if (mpProgressBar != NULL) return false;
 
   // update all initial value
-  if (action != ListViews::RENAME)
+  if (action != ListViews::RENAME && // not needed after rename
+      !(action == ListViews::ADD && objectType == ListViews::MODEL) && // not needed when model was loaded
+      !(objectType == ListViews::EVENT) // not needed when event is modified
+     )
     refreshInitialValues();
 
   emit notifyView(objectType, action, key);

@@ -23,18 +23,37 @@ CQSpringLayoutParameterWindow::CQSpringLayoutParameterWindow(const QString &titl
     {
       QLabel* label = new QLabel(mLayoutParameters.names[i].c_str());
       pLayout->addWidget(label);
+#if QWT_VERSION > 0x060000
+      QwtSlider* slider = new QwtSlider(Qt::Horizontal,  pParaWidget);
+      slider->setScalePosition(QwtSlider::LeadingScale);
+
+      if (mLayoutParameters.isLog[i])
+        slider->setScaleEngine(new QwtLogScaleEngine());
+
+#else
       QwtSlider* slider = new QwtSlider(pParaWidget, Qt::Horizontal, QwtSlider::BottomScale);
 
       if (mLayoutParameters.isLog[i])
         {
-          slider->setScaleEngine(new QwtLog10ScaleEngine);
+          slider->setScaleEngine(new QwtLog10ScaleEngine());
           slider->setRange(log10(mLayoutParameters.min[i]), log10(mLayoutParameters.max[i]));
+          slider->setScale(mLayoutParameters.min[i], mLayoutParameters.max[i]);
+        }
+      else
+        {
+          slider->setRange(mLayoutParameters.min[i], mLayoutParameters.max[i]);
+        }
+
+#endif
+
+      if (mLayoutParameters.isLog[i])
+        {
+
           slider->setScale(mLayoutParameters.min[i], mLayoutParameters.max[i]);
           slider->setValue(log10(mLayoutParameters.values[i]));
         }
       else
         {
-          slider->setRange(mLayoutParameters.min[i], mLayoutParameters.max[i]);
           slider->setValue(mLayoutParameters.values[i]);
         }
 
@@ -65,7 +84,12 @@ void CQSpringLayoutParameterWindow::slotLayoutSliderChanged()
   for (i = 0; i < mLayoutSliders.size(); ++i)
     {
       if (mLayoutParameters.isLog[i])
+#if QWT_VERSION > 0x060000
+        mLayoutParameters.values[i] = pow(10, log10(mLayoutSliders[i]->value()));
+
+#else
         mLayoutParameters.values[i] = pow(10, mLayoutSliders[i]->value());
+#endif
       else
         mLayoutParameters.values[i] = mLayoutSliders[i]->value();
     }

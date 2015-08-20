@@ -384,7 +384,7 @@ void CExperiment::updateFittedPointValues(const size_t & index, bool includeSimu
 #ifdef COPASI_PARAMETERFITTING_RESIDUAL_SCALING
       Residual = (*pDataDependentCalculated - *pDataDependent) / (*pDataDependentCalculated > 1 ? *pDataDependentCalculated : 1.0);
 #else
-      Residual = (*pDataDependentCalculated - *pDataDependent) * *pScale;
+      Residual = (*pDataDependentCalculated - *pDataDependent) **pScale;
 #endif
 
       (*it)->setValues(Independent,
@@ -452,10 +452,10 @@ C_FLOAT64 CExperiment::sumOfSquares(const size_t & index,
 #ifdef COPASI_PARAMETERFITTING_RESIDUAL_SCALING
             *residuals = (*pDataDependent - **ppDependentValues) / std::max(1.0, **ppDependentValues);
 #else
-            *residuals = (*pDataDependent - **ppDependentValues) * *pScale;
+            *residuals = (*pDataDependent - **ppDependentValues) **pScale;
 #endif
 
-            s += *residuals * *residuals;
+            s += *residuals **residuals;
           }
       else
         for (; pDataDependent != pEnd;
@@ -466,7 +466,7 @@ C_FLOAT64 CExperiment::sumOfSquares(const size_t & index,
 #ifdef COPASI_PARAMETERFITTING_RESIDUAL_SCALING
             Residual = (*pDataDependent - **ppDependentValues) / std::max(1.0, **ppDependentValues);
 #else
-            Residual = (*pDataDependent - **ppDependentValues) * *pScale;
+            Residual = (*pDataDependent - **ppDependentValues) **pScale;
 #endif
 
             s += Residual * Residual;
@@ -481,10 +481,10 @@ C_FLOAT64 CExperiment::sumOfSquares(const size_t & index,
 #ifdef COPASI_PARAMETERFITTING_RESIDUAL_SCALING
             *residuals = (*pDataDependent - **ppDependentValues) / std::max(1.0, **ppDependentValues);
 #else
-            *residuals = (*pDataDependent - **ppDependentValues) * *pScale;
+            *residuals = (*pDataDependent - **ppDependentValues) **pScale;
 #endif
 
-            s += *residuals * *residuals;
+            s += *residuals **residuals;
           }
       else
         for (; pDataDependent != pEnd;
@@ -494,7 +494,7 @@ C_FLOAT64 CExperiment::sumOfSquares(const size_t & index,
 #ifdef COPASI_PARAMETERFITTING_RESIDUAL_SCALING
             Residual = (*pDataDependent - **ppDependentValues) / std::max(1.0, **ppDependentValues);
 #else
-            Residual = (*pDataDependent - **ppDependentValues) * *pScale;
+            Residual = (*pDataDependent - **ppDependentValues) **pScale;
 #endif
 
             s += Residual * Residual;
@@ -532,7 +532,7 @@ C_FLOAT64 CExperiment::sumOfSquaresStore(const size_t & index,
 #ifdef COPASI_PARAMETERFITTING_RESIDUAL_SCALING
           Residual = (*pDataDependent - *dependentValues) / std::max(1.0, *dependentValues);
 #else
-          Residual = (*pDataDependent - *dependentValues) * *pScale;
+          Residual = (*pDataDependent - *dependentValues) **pScale;
 #endif
 
           s += Residual * Residual;
@@ -548,7 +548,7 @@ C_FLOAT64 CExperiment::sumOfSquaresStore(const size_t & index,
 #ifdef COPASI_PARAMETERFITTING_RESIDUAL_SCALING
           Residual = (*pDataDependent - *dependentValues) / std::max(1.0, *dependentValues);
 #else
-          Residual = (*pDataDependent - *dependentValues) * *pScale;
+          Residual = (*pDataDependent - *dependentValues) **pScale;
 #endif
 
           s += Residual * Residual;
@@ -642,7 +642,7 @@ bool CExperiment::calculateStatistics()
 #ifdef COPASI_PARAMETERFITTING_RESIDUAL_SCALING
           Residual = (*pDataDependentCalculated - *pDataDependent) * std::max(1.0, *pDataDependentCalculated);
 #else
-          Residual = (*pDataDependentCalculated - *pDataDependent) * *pScale;
+          Residual = (*pDataDependentCalculated - *pDataDependent) **pScale;
 #endif
 
           if (isnan(Residual)) continue;
@@ -701,7 +701,7 @@ bool CExperiment::calculateStatistics()
 #ifdef COPASI_PARAMETERFITTING_RESIDUAL_SCALING
           Residual = mMean - (*pDataDependentCalculated - *pDataDependent) / std::max(1.0, *pDataDependentCalculated);
 #else
-          Residual = mMean - (*pDataDependentCalculated - *pDataDependent) * *pScale;
+          Residual = mMean - (*pDataDependentCalculated - *pDataDependent) **pScale;
 #endif
 
           if (isnan(Residual)) continue;
@@ -1262,7 +1262,7 @@ const std::string & CExperiment::getFileName() const
 
   if (CDirEntry::isRelativePath(*pFileName) &&
       !CDirEntry::makePathAbsolute(*pFileName,
-                                   getObjectDataModel()->getFileName()))
+                                   getObjectDataModel()->getReferenceDirectory()))
     *pFileName = CDirEntry::fileName(*pFileName);
 
   return *mpFileName;
@@ -1625,7 +1625,7 @@ C_FLOAT64 CExperiment::getErrorMeanSD(const CObjectInterface * pObject,
 #ifdef COPASI_PARAMETERFITTING_RESIDUAL_SCALING
       Residual = errorMean - (*pDataDependentCalculated - *pDataDependent) / std::max(1.0, *pDataDependentCalculated);
 #else
-      Residual = errorMean - (*pDataDependentCalculated - *pDataDependent) * *pScale;
+      Residual = errorMean - (*pDataDependentCalculated - *pDataDependent) **pScale;
 #endif
 
       if (isnan(Residual)) continue;

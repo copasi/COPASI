@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -355,23 +355,6 @@ public:
   CArrayAnnotation* pImportanceIndexNormedRowAnn;
 
   /**
-  *required for creation of above listed CArrayAnnotation
-  **/
-  CArrayAnnotation* pTmp1;
-  CArrayAnnotation* pTmp2;
-  CArrayAnnotation* pTmp3;
-  CArrayAnnotation* pTmp3Normed;
-  CArrayAnnotation* pTmp4;
-  CArrayAnnotation* pTmp4NormedColumn;
-  CArrayAnnotation* pTmp4NormedRow;
-
-  CArrayAnnotation* pTmp4Fast;
-  CArrayAnnotation* pTmp4Slow;
-
-  CArrayAnnotation* pTmp5;
-  CArrayAnnotation* pTmp5NormedRow;
-
-  /**
   *input for every CArraAnnotations
   *contain data for single stepcalculation
   **/
@@ -444,10 +427,10 @@ public:
   void createAnnotationsM();
 
   /**
-  * Predifine the CArrayAnnotation for plots
+  * Predefine the CArrayAnnotation for plots
   **/
 
-  virtual void predifineAnnotation();
+  virtual void predefineAnnotation();
 
   /**
   * set the every CArrayAnnotation for the requested step

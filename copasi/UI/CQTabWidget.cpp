@@ -1,4 +1,4 @@
-// Copyright (C) 2012 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -146,11 +146,7 @@ void CQTabWidget::load()
 
       if (mObjectType == ListViews::FUNCTION)
         {
-          const CFunction * pFunction = static_cast< const CFunction * >(mpObject);
-
-          bool readOnly =
-            (pFunction->getType() == CFunction::PreDefined ||
-             pFunction->getType() == CFunction::MassAction);
+          bool readOnly = static_cast< const CFunction * >(mpObject)->isReadOnly();
 
           mpEditName->setReadOnly(readOnly);
           mpBtnCommit->setEnabled(!readOnly);

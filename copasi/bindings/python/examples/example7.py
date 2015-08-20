@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and The University 
 # of Manchester. 
 # All rights reserved. 
@@ -8,6 +8,8 @@
 # Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
 # and The University of Manchester. 
 # All rights reserved. 
+
+
 
 
 
@@ -159,7 +161,7 @@ def main():
      try:
        dataModel.exportSBML("example7.xml", True, 2, 3)
      except:
-        print >> sys.stderr, "Error. Exporting the model to SBML failed."
+        sys.stderr.write("Error. Exporting the model to SBML failed.\n")
 
 
 if(__name__ == '__main__'):
