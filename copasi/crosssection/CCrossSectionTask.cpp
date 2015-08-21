@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -296,15 +296,6 @@ const CTaskEnum::Method * CCrossSectionTask::getValidMethods() const
   };
 
   return ValidMethods;
-}
-
-const CState * CCrossSectionTask::getState()
-{
-  mpContainer->setState(mContainerState);
-  mpContainer->updateSimulatedValues(mUpdateMoieties);
-  mpContainer->pushState();
-
-  return & mpContainer->getModel().getState();
 }
 
 void CCrossSectionTask::setEventCallback(const bool & set)
