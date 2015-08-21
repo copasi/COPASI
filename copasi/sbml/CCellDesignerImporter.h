@@ -602,6 +602,11 @@ protected:
    */
   std::map<MODIFICATION_LINK_TYPE, LocalStyle*> mModificationLinkStyleMap;
 
+  /**
+   * the font to be used for text glyphs
+   */
+  std::string mFont;
+
 public:
   /**
    * Constructor that takes a pointer to an
@@ -1197,9 +1202,10 @@ protected:
    * Takes a protein modification description and creates the corresponding primitive.
    */
   bool createProteinModification(RenderGroup* pGroup,
-                                 const SpeciesModification& smod,
+                                 SPECIES_MODIFICATION_TYPE type,
                                  const BoundingBox& bounds,
-                                 const std::string& stroke_color
+                                 const std::string& stroke_color,
+                                 double angle = 0.0
                                 );
 
   /**
@@ -1249,6 +1255,21 @@ protected:
    * The result is returned in r.
    */
   static void rotate(const Point& p, double a, Point& r);
+
+  /**
+   * @brief adds the given protein modifications to the given group
+   * @param pGroup the render group to add the modification to
+   * @param bounds the bounds of the element
+   * @param modifications list of angles where to attach the modifications
+   * @param speciesModifications list of modification types
+   * @param stroke_color the stroke color
+   * @return status information as to whether or not the operation was successful
+   */
+  bool addProteinModifications(RenderGroup* pGroup,
+                               const BoundingBox& bounds,
+                               const std::vector<ProteinModification>& modifications,
+                               const std::vector<SpeciesModification>& speciesModifications,
+                               const std::string& stroke_color);
 
   /**
    * This method takes a pointer to a curve object
@@ -1306,6 +1327,16 @@ protected:
    * or an empty string if the color id was not found.
    */
   std::string getColorString(const std::string& color_id) const;
+
+  /**
+   * @brief cleanString replaces sequences within the given text string
+   * @param text the string to be cleaned
+   * @return the cleaned string
+   */
+  static std::string cleanString(const std::string& text);
+
+  static void replaceStringInPlace(std::string& subject, const std::string& search,
+                                   const std::string& replace);
 };
 
 #endif // CCellDesignerImporter_H__
