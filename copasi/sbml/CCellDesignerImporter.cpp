@@ -3513,8 +3513,10 @@ bool CCellDesignerImporter::convertCompartmentAnnotations()
                               // set the position and dimensions of the text
                               Point position = *pCGlyph->getBoundingBox()->getPosition();
                               // add the name position to the position of the compartment
-                              position.setX(position.x() + p.x());
-                              position.setY(position.y() + p.y());
+                              Point center = getCenter(*pCGlyph->getBoundingBox());
+                              position.setX(p.x());
+                              position.setY(p.y());
+
                               Dimensions dim = *pCGlyph->getBoundingBox()->getDimensions();
                               // subtract the name position from the dimensions of the compartment
                               dim.setWidth(dim.getWidth() - p.x());
@@ -3530,7 +3532,7 @@ bool CCellDesignerImporter::convertCompartmentAnnotations()
 
                               if (compAliasPos != this->mCompartmentAliasMap.end())
                                 {
-                                  this->createTextGlyphStyle(compAliasPos->second.mFontSize, Text::ANCHOR_START, Text::ANCHOR_BOTTOM, pTGlyph->getId());
+                                  this->createTextGlyphStyle(compAliasPos->second.mFontSize, Text::ANCHOR_START, Text::ANCHOR_TOP, pTGlyph->getId());
                                 }
 
                               ++pos;
@@ -3539,7 +3541,6 @@ bool CCellDesignerImporter::convertCompartmentAnnotations()
                         }
                       else
                         {
-                          // TODO this is OK as long as we only import compartments with bounds
                           //result=false;
                         }
                     }
