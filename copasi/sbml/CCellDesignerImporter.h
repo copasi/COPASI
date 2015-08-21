@@ -242,6 +242,7 @@ struct SpeciesIdentity
   SPECIES_CLASS mSpeciesClass;
   std::string mNameOrReference;
   SpeciesState mState;
+  bool mHypothetical;
 
   // Default constructor
   SpeciesIdentity();
@@ -1222,6 +1223,8 @@ protected:
    * If color creation fails, false is returned by the method.
    */
   bool findOrCreateColorDefinition(const std::string& color_string, std::string& id);
+
+  bool findOrCreateColorDefinition(const Paint& paint, std::string& id);
 
   /**
    * Tries to find the name for the given species identity.

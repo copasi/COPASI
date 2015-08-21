@@ -73,8 +73,6 @@
 // TODO import render information, e.g. start with color and font size
 // TODO since these should be easy
 
-// TODO label positions on compartments are not handled
-
 #define FAIL_WITH_ERROR(result, message)\
   {\
     std::stringstream str;\
@@ -874,7 +872,7 @@ bool CCellDesignerImporter::createSpeciesStyles()
                             {
                               // create the primitive
                               std::string color_id;
-                              result = this->findOrCreateColorDefinition(sa.mUView.mPaint.mColor, color_id);
+                              result = this->findOrCreateColorDefinition(sa.mUView.mPaint, color_id);
                               // if we are not on the root node, we need to add a text
                               // element as well
                               std::string text;
@@ -907,7 +905,14 @@ bool CCellDesignerImporter::createSpeciesStyles()
                                   if (is_included)
                                     {
                                       // the identity should be stored in the mIncludedSpeciesNameMap
-                                      result = CCellDesignerImporter::createPrimitive(pGroup, nameMapPos->second.second, alias_pos->second.mBounds, offset, 1.0, "#000000", color_id, text);
+                                      result = CCellDesignerImporter::createPrimitive(pGroup,
+                                               nameMapPos->second.second,
+                                               alias_pos->second.mBounds,
+                                               offset,
+                                               sa.mUView.mLineWidth,
+                                               "#000000",
+                                               color_id,
+                                               text);
                                     }
                                   else
                                     {
@@ -918,7 +923,14 @@ bool CCellDesignerImporter::createSpeciesStyles()
 
                                       if (anno_pos != this->mSpeciesAnnotationMap.end())
                                         {
-                                          result = CCellDesignerImporter::createPrimitive(pGroup, anno_pos->second.mIdentity, alias_pos->second.mBounds, offset, 1.0, "#000000", color_id, text);
+                                          result = CCellDesignerImporter::createPrimitive(pGroup,
+                                                   anno_pos->second.mIdentity,
+                                                   alias_pos->second.mBounds,
+                                                   offset,
+                                                   sa.mUView.mLineWidth,
+                                                   "#000000",
+                                                   color_id,
+                                                   text);
                                         }
                                       else
                                         {
@@ -926,8 +938,6 @@ bool CCellDesignerImporter::createSpeciesStyles()
                                         }
                                     }
                                 }
-
-                              // TODO gradients are currently not considered
                             }
                           else
                             {
@@ -979,14 +989,18 @@ bool CCellDesignerImporter::createSpeciesStyles()
                               // the position of the glyphs bounding box from
                               // all coordinates in the style
                               std::string color_id;
-                              result = this->findOrCreateColorDefinition(glyphs_it->second.mUView.mPaint.mColor, color_id);
+                              result = this->findOrCreateColorDefinition(glyphs_it->second.mUView.mPaint, color_id);
 
                               if (result == true)
                                 {
-                                  result = CCellDesignerImporter::createPrimitive(pStyle->getGroup(), anno_pos->second.mIdentity, glyphs_it->second.mBounds, Point(new LayoutPkgNamespaces(), -glyphs_it->first->getBoundingBox()->getPosition()->x(), -glyphs_it->first->getBoundingBox()->getPosition()->y()), 1.0, "#000000", color_id);
+                                  result = CCellDesignerImporter::createPrimitive(pStyle->getGroup(),
+                                           anno_pos->second.mIdentity,
+                                           glyphs_it->second.mBounds,
+                                           Point(new LayoutPkgNamespaces(), -glyphs_it->first->getBoundingBox()->getPosition()->x(), -glyphs_it->first->getBoundingBox()->getPosition()->y()),
+                                           glyphs_it->second.mUView.mLineWidth,
+                                           "#000000",
+                                           color_id);
                                 }
-
-                              // TODO gradients are currently not considered
                             }
                           else
                             {
@@ -1085,10 +1099,17 @@ bool CCellDesignerImporter::createPrimitive(RenderGroup* pGroup,
     double stroke_width,
     const std::string& stroke_color,
     const std::string& fill_color,
-    const std::string& text
-                                           )
+    const std::string& text /* = "" */)
 {
   bool result = true;
+
+  std::vector<unsigned int> dashes;
+
+  if (si.mHypothetical)
+    {
+      dashes.push_back(5);
+      dashes.push_back(3);
+    }
 
   // maybe we should rule out all the SQUARE classes and the OVAL class
   // since they are probably only used for compartments
@@ -1138,6 +1159,7 @@ bool CCellDesignerImporter::createPrimitive(RenderGroup* pGroup,
             pEllipse->setRY(RelAbsVector(shortside * 0.5, 0.0));
             pEllipse->setStrokeWidth(stroke_width);
             pEllipse->setStroke(stroke_color);
+            pEllipse->setDashArray(dashes);
             pEllipse->setFillColor(fill_color);
           }
         else
@@ -1193,6 +1215,7 @@ bool CCellDesignerImporter::createPrimitive(RenderGroup* pGroup,
 
             pRectangle->setStrokeWidth(stroke_width);
             pRectangle->setStroke(stroke_color);
+            pRectangle->setDashArray(dashes);
             pRectangle->setFillColor(fill_color);
           }
         else
@@ -1215,6 +1238,7 @@ bool CCellDesignerImporter::createPrimitive(RenderGroup* pGroup,
 
             pRectangle->setStrokeWidth(stroke_width);
             pRectangle->setStroke(stroke_color);
+            pRectangle->setDashArray(dashes);
             pRectangle->setFillColor(fill_color);
           }
         else
@@ -1239,6 +1263,7 @@ bool CCellDesignerImporter::createPrimitive(RenderGroup* pGroup,
             pEllipse->setRY(RelAbsVector(bounds.getDimensions()->getHeight() * 0.5, 0.0));
             pEllipse->setStrokeWidth(stroke_width);
             pEllipse->setStroke(stroke_color);
+            pEllipse->setDashArray(dashes);
             pEllipse->setFillColor(fill_color);
           }
         else
@@ -1264,6 +1289,7 @@ bool CCellDesignerImporter::createPrimitive(RenderGroup* pGroup,
             pEllipse->setRY(RelAbsVector(short_side * 0.35, 0.0));
             pEllipse->setStrokeWidth(stroke_width);
             pEllipse->setStroke(stroke_color);
+            pEllipse->setDashArray(dashes);
             pEllipse->setFillColor(fill_color);
             RenderCurve* pCurve = pGroup->createCurve();
             assert(pCurve != NULL);
@@ -1329,6 +1355,7 @@ bool CCellDesignerImporter::createPrimitive(RenderGroup* pGroup,
           {
             pPoly->setStrokeWidth(stroke_width);
             pPoly->setStroke(stroke_color);
+            pPoly->setDashArray(dashes);
             pPoly->setFillColor(fill_color);
             RenderPoint* pP = pPoly->createPoint();
             RenderCubicBezier* pCB = NULL;
@@ -1500,6 +1527,7 @@ bool CCellDesignerImporter::createPrimitive(RenderGroup* pGroup,
             pRect->setHeight(RelAbsVector(bounds.getDimensions()->getHeight(), 0.0));
             pRect->setStrokeWidth(stroke_width);
             pRect->setStroke(stroke_color);
+            pRect->setDashArray(dashes);
             pRect->setFillColor(fill_color);
           }
 
@@ -1526,6 +1554,7 @@ bool CCellDesignerImporter::createPrimitive(RenderGroup* pGroup,
           {
             pPoly->setStrokeWidth(stroke_width);
             pPoly->setStroke(stroke_color);
+            pPoly->setDashArray(dashes);
             pPoly->setFillColor(fill_color);
             RenderPoint* pP = pPoly->createPoint();
 
@@ -1632,6 +1661,7 @@ bool CCellDesignerImporter::createPrimitive(RenderGroup* pGroup,
           {
             pPoly->setStrokeWidth(stroke_width);
             pPoly->setStroke(stroke_color);
+            pPoly->setDashArray(dashes);
             pPoly->setFillColor(fill_color);
             RenderPoint* pP = pPoly->createPoint();
 
@@ -1708,6 +1738,7 @@ bool CCellDesignerImporter::createPrimitive(RenderGroup* pGroup,
           {
             pPoly->setStrokeWidth(stroke_width);
             pPoly->setStroke(stroke_color);
+            pPoly->setDashArray(dashes);
             pPoly->setFillColor(fill_color);
             RenderPoint* pP = pPoly->createPoint();
 
@@ -1787,6 +1818,7 @@ bool CCellDesignerImporter::createPrimitive(RenderGroup* pGroup,
           {
             pPoly->setStrokeWidth(stroke_width);
             pPoly->setStroke(stroke_color);
+            pPoly->setDashArray(dashes);
             pPoly->setFillColor(fill_color);
             RenderPoint* pP = pPoly->createPoint();
 
@@ -1922,6 +1954,7 @@ bool CCellDesignerImporter::createPrimitive(RenderGroup* pGroup,
           {
             pPoly->setStrokeWidth(stroke_width);
             pPoly->setStroke(stroke_color);
+            pPoly->setDashArray(dashes);
             pPoly->setFillColor(fill_color);
             RenderPoint* pP = pPoly->createPoint();
 
@@ -2041,6 +2074,7 @@ bool CCellDesignerImporter::createPrimitive(RenderGroup* pGroup,
             pRect->setHeight(RelAbsVector(height, 0.0));
             pRect->setStrokeWidth(stroke_width);
             pRect->setStroke(stroke_color);
+            pRect->setDashArray(dashes);
             pRect->setFillColor(fill_color);
           }
         else
@@ -2061,6 +2095,7 @@ bool CCellDesignerImporter::createPrimitive(RenderGroup* pGroup,
             pRect->setRadiusY(RelAbsVector(6.0, 0.0));
             pRect->setStrokeWidth(stroke_width);
             pRect->setStroke(stroke_color);
+            pRect->setDashArray(dashes);
             pRect->setFillColor(fill_color);
           }
         else
@@ -2089,6 +2124,7 @@ bool CCellDesignerImporter::createPrimitive(RenderGroup* pGroup,
             pRect->setHeight(RelAbsVector(bounds.getDimensions()->getHeight(), 0.0));
             pRect->setStrokeWidth(stroke_width);
             pRect->setStroke(stroke_color);
+            pRect->setDashArray(dashes);
             pRect->setFillColor(fill_color);
           }
         else
@@ -3491,6 +3527,13 @@ bool CCellDesignerImporter::convertCompartmentAnnotations()
                         {
                           do
                             {
+                              // don't create label for empty compartment lable
+                              if (canno.mName.empty())
+                                {
+                                  ++pos;
+                                  continue;
+                                }
+
                               TextGlyph* pTGlyph = this->mpLayout->createTextGlyph();
                               std::string id = this->createUniqueId("TextGlyph");
                               pTGlyph->setId(id);
@@ -4038,12 +4081,14 @@ bool CCellDesignerImporter::parseCompartmentAnnotation(const XMLNode* pNode, Com
         }
       else
         {
-          FAIL_WITH_ERROR(result, "comparment name not found.");
+          // Not having a name (or an empty string as name), is a valid compartment annotation
+          //FAIL_WITH_ERROR(result, "comparment name not found.");
         }
     }
   else
     {
-      FAIL_WITH_ERROR(result, "compartment annotation not found.");
+      // Not having a name (or an empty string as name), is a valid compartment annotation
+      //FAIL_WITH_ERROR(result, "compartment annotation not found.");
     }
 
   return result;
@@ -4107,6 +4152,15 @@ bool CCellDesignerImporter::parseSpeciesIdentity(const XMLNode* pNode, SpeciesId
           std::string cl = pChild->getChild(0).getCharacters();
           assert(!cl.empty());
           identity.mSpeciesClass = CCellDesignerImporter::classToEnum(cl);
+
+          {
+            const XMLNode* pHypotheticalNode = CCellDesignerImporter::findChildNode(pNode, pNode->getPrefix(), "hypothetical", false);
+
+            if (pHypotheticalNode != NULL && pHypotheticalNode->getNumChildren() == 1 && pHypotheticalNode->getChild(0).isText())
+              {
+                identity.mHypothetical = pHypotheticalNode->getChild(0).getCharacters() == "true";
+              }
+          }
 
           switch (identity.mSpeciesClass)
             {
@@ -6672,7 +6726,6 @@ bool CCellDesignerImporter::parsePaint(const XMLNode* pNode, Paint& p)
  */
 bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, const CompartmentGlyph* pCGlyph)
 {
-  // TODO the GRADIENT flag is currently ignored
   bool result = true;
 
   if (this->mpLocalRenderInfo != NULL &&
@@ -6681,7 +6734,7 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
       !pCGlyph->getId().empty())
     {
       std::string color_id;
-      result = this->findOrCreateColorDefinition(ca.mPaint.mColor, color_id);
+      result = this->findOrCreateColorDefinition(ca.mPaint, color_id);
       // CellDesigner seems to use the paint color for the two edges
       // of the compartment representation
       // The inner area (between the two edges seems to be filled with the same color, but
@@ -8196,7 +8249,6 @@ bool CCellDesignerImporter::createSpeciesStyle(const SpeciesAlias& sa,const std:
     // TODO for now this style has a black, single
     // TODO line edge and a background color as specified
     // TODO in the paint element
-    // TODO the GRADIENT flag is currently ignored
     bool result=true;
     if(this->mpLocalRenderInfo != NULL &&
        !sa.mUView.mPaint.mColor.empty() &&
@@ -10093,6 +10145,32 @@ bool CCellDesignerImporter::handleExtraReactionElements(ReactionGlyph* pRGlyph, 
   return result;
 }
 
+bool CCellDesignerImporter::findOrCreateColorDefinition(const Paint& paint, std::string& id)
+{
+  if (paint.mScheme == PAINT_GRADIENT)
+    {
+      std::string color; findOrCreateColorDefinition(paint.mColor, color);
+
+      id = "lg_" + color;
+      LinearGradient* grad = dynamic_cast<LinearGradient*>(mpLocalRenderInfo->getGradientDefinition(id));
+
+      if (grad != NULL)
+        return true;
+
+      grad = mpLocalRenderInfo->createLinearGradientDefinition();
+      grad->setId(id);
+      grad->setPoint2(RelAbsVector(0, 100), RelAbsVector(0, 100));
+      GradientStop* stop = grad->createGradientStop();
+      stop->setStopColor("#FFFFFF");
+      stop = grad->createGradientStop();
+      stop->setOffset(RelAbsVector(0, 100));
+      stop->setStopColor(color);
+      return true;
+    }
+
+  return findOrCreateColorDefinition(paint.mColor, id);
+}
+
 /**
  * Check if a color with the given color string already exists.
  * If so, the id of the color is set on the given id string.
@@ -10652,7 +10730,7 @@ SpeciesState::SpeciesState():
 
 SpeciesIdentity::SpeciesIdentity():
   mSpeciesClass(UNDEFINED_CLASS),
-  mNameOrReference("")
+  mNameOrReference(""), mHypothetical(false)
 {}
 
 SpeciesAnnotation::SpeciesAnnotation():
