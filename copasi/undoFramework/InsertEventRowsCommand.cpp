@@ -83,7 +83,7 @@ void InsertEventRowsCommand::undo()
 
 QString InsertEventRowsCommand::insertRowsText() const
 {
-  return QObject::tr(": Inserted New Event");
+  return QObject::tr(": Inserted new event");
 }
 
 UndoData *InsertEventRowsCommand::getUndoData() const

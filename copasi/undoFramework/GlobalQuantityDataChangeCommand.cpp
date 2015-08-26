@@ -101,7 +101,7 @@ void GlobalQuantityDataChangeCommand::undo()
 }
 QString GlobalQuantityDataChangeCommand::globalQuantityDataChangeText() const
 {
-  return QString(": Changed Global Quantity %1").arg(getProperty().c_str());
+  return QString(": Changed global quantity %1").arg(getProperty().c_str());
   //QObject::tr(": Changed Global Quantity Data");
 }
 

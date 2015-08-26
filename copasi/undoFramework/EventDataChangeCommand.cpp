@@ -68,15 +68,17 @@ void EventDataChangeCommand::redo()
 {
   mpEventDM->eventDataChange(mIndex, mNew, mRole);
 }
+
 void EventDataChangeCommand::undo()
 {
   //mIndex = pathToIndex(mPathIndex, mpEventDM);
   mpEventDM->eventDataChange(mIndex, mOld, mRole);
   setAction("Undone change");
 }
+
 QString EventDataChangeCommand::eventDataChangeText() const
 {
-  return QString(": Changed Global Quantity %1").arg(getProperty().c_str());
+  return QString(": Changed event %1").arg(getProperty().c_str());
   // QObject::tr(": Changed Global Quantity Data");
 }
 

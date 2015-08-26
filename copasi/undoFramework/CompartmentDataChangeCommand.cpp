@@ -105,7 +105,7 @@ void CompartmentDataChangeCommand::undo()
 
 QString CompartmentDataChangeCommand::compartmentDataChangeText() const
 {
-  return QString(": Changed Compartment %1").arg(getProperty().c_str());
+  return QString(": Changed compartment %1").arg(getProperty().c_str());
   //QObject::tr(": Changed Compartment Data");
 }
 

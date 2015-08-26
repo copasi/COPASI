@@ -85,6 +85,6 @@ void ReactionDataChangeCommand::undo()
 }
 QString ReactionDataChangeCommand::reactionDataChangeText() const
 {
-  return QString(": Changed Reaction %1").arg(getProperty().c_str());
+  return QString(": Changed reaction %1").arg(getProperty().c_str());
   // QObject::tr(": Changed Reaction Data");
 }

@@ -79,7 +79,7 @@ void InsertReactionRowsCommand::undo()
 
 QString InsertReactionRowsCommand::insertRowsText() const
 {
-  return QObject::tr(": Inserted New Reaction");
+  return QObject::tr(": Inserted new reaction");
 }
 
 UndoData *InsertReactionRowsCommand::getUndoData() const

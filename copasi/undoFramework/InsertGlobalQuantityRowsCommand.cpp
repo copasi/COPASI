@@ -69,7 +69,7 @@ void InsertGlobalQuantityRowsCommand::undo()
 
 QString InsertGlobalQuantityRowsCommand::insertRowsText() const
 {
-  return QObject::tr(": Inserted New Global Quantity");
+  return QObject::tr(": Inserted new global quantity");
 }
 
 UndoData *InsertGlobalQuantityRowsCommand::getUndoData() const

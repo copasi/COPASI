@@ -83,7 +83,7 @@ void InsertCompartmentRowsCommand::undo()
 
 QString InsertCompartmentRowsCommand::insertRowsText() const
 {
-  return QObject::tr(": Inserted New Compartment");
+  return QObject::tr(": Inserted new compartment");
 }
 
 UndoData *InsertCompartmentRowsCommand::getUndoData() const

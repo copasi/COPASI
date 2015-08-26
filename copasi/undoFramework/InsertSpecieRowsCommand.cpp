@@ -68,7 +68,7 @@ void InsertSpecieRowsCommand::undo()
 
 QString InsertSpecieRowsCommand::insertRowsText() const
 {
-  return QObject::tr(": Inserted New Species");
+  return QObject::tr(": Inserted new species");
 }
 
 UndoData *InsertSpecieRowsCommand::getUndoData() const
