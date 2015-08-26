@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -25,6 +25,7 @@ class QTabWidget;
 class QTableWidget;
 
 class CModel;
+class CObjectInterface;
 
 /**
  * This widget displays tables representing the refresh lists. It will probably only
@@ -48,12 +49,8 @@ protected:
   void loadWidget();
   void clearArrays();
 
-  void loadOneTable(QTableWidget * pTable, const std::vector< Refresh * > & list);
+  void loadOneTable(QTableWidget * pTable, const std::vector< CObjectInterface * > & list);
   void loadObjectsTable(CModel* pModel);
-
-  std::map<const Refresh*, const CCopasiObject*> mRefreshsMap;
-
-  void fillRefreshsMapRecursively(const CCopasiObject* obj);
 
   QGridLayout* mWidgetLayout;
 

@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -33,6 +33,7 @@
 #include "model/CReaction.h"
 #include "model/CMoiety.h"
 #include "model/CChemEqElement.h"
+#include "math/CMathContainer.h"
 #include "function/CFunction.h"
 #include "function/CExpression.h"
 #include "function/CFunctionDB.h"
@@ -196,14 +197,13 @@ bool CODEExporter::exportToStream(const CCopasiDataModel* pDataModel, std::ostre
 
 void CODEExporter::exportObjectNodesFromModel(const CCopasiDataModel* pDataModel)
 {
+  const CObjectInterface::UpdateSequence & Objects = pDataModel->getModel()->getMathContainer().getSimulationValuesSequence(false);
+  CObjectInterface::UpdateSequence::const_iterator it = Objects.begin();
+  CObjectInterface::UpdateSequence::const_iterator end = Objects.end();
 
-  size_t i, imax;
-
-  imax = pDataModel->getModel()->getListOfSimulatedRefreshes().size();
-
-  for (i = 0; i < imax; ++i)
+  for (; it != end; ++it)
     {
-      CCopasiObject * obj = findObjectFromRefresh(pDataModel, pDataModel->getModel()->getListOfSimulatedRefreshes()[i]);
+      const CCopasiObject * obj = (*it)->getDataObject();
 
       if (obj) exportSimulatedObject(obj, pDataModel);
     }
@@ -253,7 +253,7 @@ CCopasiObject* CODEExporter::findObjectFromRefresh(const CCopasiObject * tmp, co
   return NULL;
 }
 
-void CODEExporter::exportSimulatedObject(CCopasiObject * obj, const CCopasiDataModel* pDataModel)
+void CODEExporter::exportSimulatedObject(const CCopasiObject * obj, const CCopasiDataModel* pDataModel)
 {
   if (obj == NULL || pDataModel == NULL)
     return;
@@ -288,7 +288,7 @@ void CODEExporter::exportSimulatedObject(CCopasiObject * obj, const CCopasiDataM
   return;
 }
 
-bool CODEExporter::exportModelEntityExpression(CCopasiObject * obj, const CCopasiDataModel* pDataModel)
+bool CODEExporter::exportModelEntityExpression(const CCopasiObject * obj, const CCopasiDataModel* pDataModel)
 {
   if (obj == NULL || pDataModel == NULL)
     return false;
@@ -302,8 +302,7 @@ bool CODEExporter::exportModelEntityExpression(CCopasiObject * obj, const CCopas
     {
       std::string typeString = obj->getObjectType();
 
-      CModelEntity* tmp;
-      tmp = dynamic_cast< CModelEntity * >(obj);
+      const CModelEntity * tmp = dynamic_cast< const CModelEntity * >(obj);
 
       std::ostringstream comments;
       std::ostringstream expression;
@@ -357,8 +356,7 @@ bool CODEExporter::exportModelEntityExpression(CCopasiObject * obj, const CCopas
             str1 = expression.str();
             str2 = comments.str();
 
-            CMetab* metab;
-            metab = dynamic_cast< CMetab * >(tmp);
+            const CMetab * metab = dynamic_cast< const CMetab * >(tmp);
 
             if (metab)
               {
@@ -390,8 +388,7 @@ bool CODEExporter::exportModelEntityExpression(CCopasiObject * obj, const CCopas
             str1 = equations[tmp->getKey()];
             str2 = comments.str();
 
-            CMetab* metab;
-            metab = dynamic_cast< CMetab * >(tmp);
+            const CMetab* metab = dynamic_cast< const CMetab * >(tmp);
 
             if (metab)
               {
@@ -420,7 +417,7 @@ std::string CODEExporter::getSingleLineComment()
   return "";
 }
 
-std::string CODEExporter::isModelEntityExpressionODEExporterCompatible(CModelEntity * tmp, const CExpression* pExpression, const CCopasiDataModel* pDataModel)
+std::string CODEExporter::isModelEntityExpressionODEExporterCompatible(const CModelEntity * tmp, const CExpression* pExpression, const CCopasiDataModel* pDataModel)
 {
 
   std::ostringstream result;

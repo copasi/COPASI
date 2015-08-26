@@ -1,4 +1,4 @@
-// Copyright (C) 2013 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2013 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -18,7 +18,7 @@ class CMathContainer;
 class CMathReaction
 {
 public:
-  typedef std::set< std::pair < const CObjectInterface *, C_FLOAT64 > > ObjectBalance;
+  typedef std::set< std::pair < const CMathObject *, C_FLOAT64 > > ObjectBalance;
   typedef std::pair< C_FLOAT64 *, C_FLOAT64 > SpeciesBalance;
   typedef CVector< std::pair< C_FLOAT64 *, C_FLOAT64 > > Balance;
   /**
@@ -89,9 +89,15 @@ public:
 
   /**
    * Retrieve the set of modified species
-   * @return const CVector< std::pair< C_FLOAT64 *, C_FLOAT64 > > & balance
+   * @return const CMathReaction::Balance & balance
    */
   const Balance & getNumberBalance() const;
+
+  /**
+   * Retrieve the set of modified species objects
+   * @return CMathReaction::ObjectBalance & objectBalance
+   */
+  const ObjectBalance & getObjectBalance() const;
 
   /**
    * Retrieve a pointer to the model reaction

@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -345,7 +345,7 @@ private:
    * The sequnece of methods to update initial values depending on this sliders
    * object.
    */
-  std::vector< Refresh * > mInitialRefreshes;
+  CObjectInterface::UpdateSequence mInitialRefreshes;
 };
 
 #endif

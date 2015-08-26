@@ -1,4 +1,4 @@
-// Copyright (C) 2013 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2013 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -57,7 +57,7 @@ void CMathReaction::initialize(const CReaction * pReaction, CMathContainer & con
           pParticleNumber->getSimulationType() == CMath::Dependent)
         {
           mChangedSpecies.insert(pParticleNumber);
-          mObjectBalance.insert(std::pair < const CObjectInterface *, C_FLOAT64 >(pParticleNumber, (*it)->getMultiplicity()));
+          mObjectBalance.insert(std::pair < const CMathObject *, C_FLOAT64 >(pParticleNumber, (*it)->getMultiplicity()));
           pStepUpdate->first = (C_FLOAT64 *) pParticleNumber->getValuePointer();
           pStepUpdate->second = (*it)->getMultiplicity();
 
@@ -95,7 +95,7 @@ void CMathReaction::copy(const CMathReaction & src,
 
   for (; it != end; ++it)
     {
-      mObjectBalance.insert(std::pair < const CObjectInterface *, C_FLOAT64 >(it->first + objectOffset, it->second));
+      mObjectBalance.insert(std::pair < const CMathObject *, C_FLOAT64 >(it->first + objectOffset, it->second));
     }
 }
 
@@ -144,6 +144,11 @@ const CObjectInterface::ObjectSet & CMathReaction::getChangedObjects() const
 const CMathReaction::Balance & CMathReaction::getNumberBalance() const
 {
   return mNumberBalance;
+}
+
+const CMathReaction::ObjectBalance & CMathReaction::getObjectBalance() const
+{
+  return mObjectBalance;
 }
 
 const CReaction * CMathReaction::getModelReaction() const

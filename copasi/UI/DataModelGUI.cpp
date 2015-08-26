@@ -30,6 +30,7 @@
 #include "model/CModel.h"
 #include "model/CModelValue.h"
 #include "model/CMetabNameInterface.h"
+#include "math/CMathContainer.h"
 #include "plotUI/COutputHandlerPlot.h"
 #include "plot/COutputDefinitionVector.h"
 #include "report/CReportDefinitionVector.h"
@@ -732,15 +733,9 @@ void DataModelGUI::refreshInitialValues()
 {
   buildChangedObjects();
 
-  std::vector< Refresh * >::iterator it = mUpdateVector.begin();
-  std::vector< Refresh * >::iterator end = mUpdateVector.end();
-
-  for (; it != end; ++it)
-    (**it)();
-
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   CModel * pModel = (*CCopasiRootContainer::getDatamodelList())[0]->getModel();
-
+  pModel->getMathContainer().applyUpdateSequence(mUpdateVector);
   pModel->refreshActiveParameterSet();
 }
 

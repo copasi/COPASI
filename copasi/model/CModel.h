@@ -429,11 +429,9 @@ public:
   const CState & getInitialState() const;
 
   /**
-   * Get the current state of the model, i.e., all current model
-   * quantities.
-   * @return const CState & currentState
+   * Copy the current state value to the initial state
    */
-  const CState & getState() const;
+  void stateToIntialState();
 
   /**
    * Set all initial model quantities to the one given by the state and
@@ -443,79 +441,12 @@ public:
   void setInitialState(const CState & state);
 
   /**
-   * Set all independent current model quantities to the one given by the
-   * state.
-   * @param const CState & state
-   */
-  void setState(const CState & state);
-
-  /**
-   * Construct an intitial update sequence for the given context
-   * @param const CMath::SimulationContextFlag & context
-   * @param const CCopasiObject::DataObjectSet & changedObjects
-   * @param const CCopasiObject::DataObjectSet & requestedObjects
-   * @param CCopasiObject::DataUpdateSequence & updateSequence)
-   * @return bool success
-   */
-  bool getInitialUpdateSequence(const CMath::SimulationContextFlag & context,
-                                const CCopasiObject::DataObjectSet & changedObjects,
-                                const CCopasiObject::DataObjectSet & requestedObjects,
-                                CCopasiObject::DataUpdateSequence & updateSequence) const;
-
-  /**
-   * Construct a transient update sequence for the given context
-   * @param const CMath::SimulationContextFlag & context
-   * @param const CCopasiObject::DataObjectSet & changedObjects
-   * @param const CCopasiObject::DataObjectSet & requestedObjects
-   * @param CCopasiObject::DataUpdateSequence & updateSequence)
-   * @return bool success
-   */
-  bool getTransientUpdateSequence(const CMath::SimulationContextFlag & context,
-                                  const CCopasiObject::DataObjectSet & changedObjects,
-                                  const CCopasiObject::DataObjectSet & requestedObjects,
-                                  CCopasiObject::DataUpdateSequence & updateSequence) const;
-
-  /**
    * This method calculates all values needed for simulation based on the current
    * current state. If updateMoities is true the particle numbers of dependent metabolites
    * of type REACTION are calculated otherwise they are assumed to be synchronized.
    * @param const bool & updateMoieties
    */
   void updateSimulatedValues(const bool & updateMoieties);
-
-  /**
-   * Calling this method after updateSimulatedValues assure that all model values
-   * even those not needed for simulation are consistent with the current state
-   */
-  void updateNonSimulatedValues(void);
-
-  /**
-   * Calculate the changes of all model quantities determined by ODEs
-   * for the model in the current state.
-   * The parameter derivatives must at least provide space for
-   * state->getVariableNumberSize() double
-   * &param C_FLOAT64 * derivatives (output)
-   */
-  void calculateDerivatives(C_FLOAT64 * derivatives);
-
-  /**
-   * Calculate the changes of all model quantities determined by ODEs
-   * for the reduced model in the current state.
-   * The parameter derivatives must at least provide space for
-   * state->getDependentNumberSize() double
-   * &param C_FLOAT64 * derivatives (output)
-   */
-  void calculateDerivativesX(C_FLOAT64 * derivativesX);
-
-  /**
-   * Calculates the elasticity matrix of the model for the current
-   * state and stores it in the provided matrix.
-   * @param CMatrix< C_FLOAT64 > & elasticityMatrix
-   * @param const C_FLOAT64 & factor,
-   * @param const C_FLOAT64 & resolution
-   */
-  void calculateElasticityMatrix(const C_FLOAT64 & factor,
-                                 const C_FLOAT64 & resolution);
 
   /**
    * Calculates the jacobian of the full model for the current state
@@ -540,15 +471,6 @@ public:
   void calculateJacobianX(CMatrix< C_FLOAT64 > & jacobianX,
                           const C_FLOAT64 & derivationFactor,
                           const C_FLOAT64 & resolution);
-
-  /**
-   * Calculates the divergence for the current state.
-   * calculateElasticityMatrix() needs to be called before.
-   * It makes only sense to use this method if the Jacobian
-   * is not also calculated. In this case it would be more
-   * efficient to use the trace of the Jacobian
-   */
-  C_FLOAT64 calculateDivergence() const;
 
   /**
    * Set the unit for volumes. If COPASI recognizes
@@ -986,34 +908,6 @@ public:
   const std::set< const CCopasiObject * > & getUptoDateObjects() const;
 
   /**
-   * Retrieve the sequence of refresh calls to be executed for updating the
-   * initial values
-   * @return const std::vector< Refresh * > & initialRefreshSequence
-   */
-  const std::vector< Refresh * > & getListOfInitialRefreshes() const;
-
-  /**
-   * Retrieve the sequence of refresh calls to be executed for updating the
-   * simulated values
-   * @return const std::vector< Refresh * > & simulatedRefreshSequence
-   */
-  const std::vector< Refresh * > & getListOfSimulatedRefreshes() const;
-
-  /**
-   * Retrieve the sequence of refresh calls to be executed for updating the
-   * constant values
-   * @return const std::vector< Refresh * > & constantRefreshSequence
-   */
-  const std::vector< Refresh * > & getListOfConstantRefreshes() const;
-
-  /**
-   * Retrieve the sequence of refresh calls to be executed for updating the
-   * non simulated values
-   * @return const std::vector< Refresh * > & nonsimulatedRefreshSequence
-   */
-  const std::vector< Refresh * > & getListOfNonSimulatedRefreshes() const;
-
-  /**
    * Check whether the model contains reversible reactions
    * @return bool hasReversibleReaction
    */
@@ -1050,9 +944,9 @@ public:
    * updated by default unless itself is in the list of changed objects. In
    * that case the initial concentration is updated.
    * @param std::set< const CCopasiObject * > & changedObjects
-   * @return std::vector< Refresh * > initialRefreshSequence
+   * @return CObjectInterface::UpdateSequence initialRefreshSequence
    */
-  std::vector< Refresh * > buildInitialRefreshSequence(std::set< const CCopasiObject * > & changedObjects);
+  CObjectInterface::UpdateSequence buildInitialRefreshSequence(std::set< const CCopasiObject * > & changedObjects);
 
   /**
    * Builds and executes the the update sequence used to calculate all initial
@@ -1462,7 +1356,7 @@ private:
   /**
    * An ordered list of refresh methods needed by the updateInitialValues
    */
-  std::vector< Refresh * > mInitialRefreshes;
+  CObjectInterface::UpdateSequence mInitialRefreshes;
 
   /**
    * An ordered list of refresh methods needed by the updateSimulatedValues
@@ -1506,55 +1400,6 @@ private:
 
   // Operations
 public:
-#ifdef XXXX
-  /**
-   * Process events scheduled at the given which a are checked for
-   * equality or not
-   * @param const C_FLOAT64 & time
-   * @param const bool & equality
-   * @param CProcessQueue::resolveSimultaneousAssignments pResolveSimultaneousAssignments
-   * @return bool stateChanged
-   */
-  bool processQueue(const C_FLOAT64 & time,
-                    const bool & equality,
-                    CProcessQueue::resolveSimultaneousAssignments pResolveSimultaneousAssignments
-                   );
-
-  /**
-   * Check whether the roots which have value 1 lead to firing of
-   * events and schedule them if needed.
-   * @param const C_FLOAT64 & time
-   * @param const bool & equality
-   * @param const bool & correct
-   * @param const CVector< C_INT > & roots
-   */
-  void processRoots(const C_FLOAT64 & time,
-                    const bool & equality,
-                    const bool & correct,
-                    const CVector< C_INT > & roots);
-
-  /**
-   * Retrieve the next execution time scheduled in the process queue
-   * @return const C_FLOAT64 & processQueueExecutionTime
-   */
-  const C_FLOAT64 & getProcessQueueExecutionTime() const;
-
-  /**
-   * Retrieve the number of roots used in checking for discontinuities.
-   * @return size_t numRoots
-   */
-  size_t getNumRoots() const;
-
-  /**
-   * Retrieve a vector of root finders
-   * @return const CVector< CMathTrigger::CRootFinder * > & rootFinders
-   */
-  const CVector< CMathTrigger::CRootFinder * > & getRootFinders() const;
-
-  const CMathModel* getMathModel() const;
-  CMathModel* getMathModel();
-#endif // XXXX
-
   /**
    * Retrieve the container of all mathematical objects
    * @return const CMathContainer & mathContainer

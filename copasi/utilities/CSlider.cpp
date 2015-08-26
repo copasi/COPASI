@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -20,6 +20,7 @@
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "report/CCopasiRootContainer.h"
 #include "model/CModel.h"
+#include "math/CMathContainer.h"
 
 const char * CSlider::TypeName[] =
 {"float", "unsignedFloat", "integer", "unsignedInteger", "Undefined", NULL};
@@ -273,11 +274,11 @@ void CSlider::writeToObject()
   else if (mpSliderObject->isValueBool())
     mpSliderObject->setObjectValue(mValue != 0.0);
 
-  std::vector< Refresh * >::iterator it = mInitialRefreshes.begin();
-  std::vector< Refresh * >::iterator end = mInitialRefreshes.end();
-
-  for (; it != end; ++it)
-    (**it)();
+  CCopasiDataModel* pDataModel = getObjectDataModel();
+  assert(pDataModel != NULL);
+  CMathContainer & Container = pDataModel->getModel()->getMathContainer();
+  Container.applyUpdateSequence(mInitialRefreshes);
+  Container.pushInitialState();
 
   return;
 }

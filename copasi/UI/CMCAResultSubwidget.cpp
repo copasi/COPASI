@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -77,12 +77,6 @@ void CMCAResultSubwidget::loadAll(const CMCAMethod * mcaMethod)
 
   if (mcaMethod)
     {
-      if (!mcaMethod->getModel())
-        {
-          clear();
-          return;
-        }
-
       if (mcaMethod->getSteadyStateStatus() == CSteadyStateMethod::found)
         {
           mTopLabel->setText("Steady State found. All coefficients available.");

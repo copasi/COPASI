@@ -1,4 +1,4 @@
-// Copyright (C) 2011 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -73,7 +73,6 @@ bool CMathDependencyGraph::getUpdateSequence(CObjectInterface::UpdateSequence & 
     const CObjectInterface::ObjectSet & requestedObjects,
     const CObjectInterface::ObjectSet & calculatedObjects) const
 {
-
   bool success = true;
 
   const_iterator found;
@@ -228,6 +227,30 @@ finish:
 #endif //
 
   return success;
+}
+
+bool CMathDependencyGraph::dependsOn(const CObjectInterface * pObject,
+                                     const CMath::SimulationContextFlag & context,
+                                     const CObjectInterface * pChangedObject) const
+{
+  CObjectInterface::UpdateSequence UpdateSequence;
+  CObjectInterface::ObjectSet ChangedObjects;
+
+  if (pChangedObject != NULL)
+    {
+      ChangedObjects.insert(pChangedObject);
+    }
+
+  CObjectInterface::ObjectSet RequestedObjects;
+
+  if (pObject != NULL)
+    {
+      RequestedObjects.insert(pObject);
+    }
+
+  getUpdateSequence(UpdateSequence, context, ChangedObjects, RequestedObjects);
+
+  return !UpdateSequence.empty();
 }
 
 void CMathDependencyGraph::exportDOTFormat(std::ostream & os, const std::string & name) const

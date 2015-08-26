@@ -1,4 +1,4 @@
-// Copyright (C) 2011 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -184,6 +184,12 @@ public:
    * @return const CVectorCore< C_FLOAT64 > & particleFluxes
    */
   const CVectorCore< C_FLOAT64 > & getParticleFluxes() const;
+
+  /**
+   * Retrieve reaction fluxes.
+   * @return const CVectorCore< C_FLOAT64 > & fluxes
+   */
+  const CVectorCore< C_FLOAT64 > & getFluxes() const;
 
   /**
    * Retrieve reaction propensities.
@@ -381,6 +387,22 @@ public:
   CMathObject * getMathObject(const CCopasiObjectName & cn) const;
 
   /**
+   * Retrieve the pointer to the compartment of a species related object
+   * otherwise NULL
+   * @param const CMathObject * pObject
+   * CMathObject * pCompartment
+   */
+  CMathObject * getCompartment(const CMathObject * pObject) const;
+
+  /**
+   * Retrieve the size of the largest compartment of the species changed in
+   * the reaction
+   * @param const CMathReaction * pReaction
+   * @return CMathObject * pLargestCompartment
+   */
+  CMathObject * getLargestReactionCompartment(const CMathReaction * pReaction) const;
+
+  /**
    * Retrieve the model for the container
    * @return const CModel & model
    */
@@ -483,6 +505,32 @@ public:
    * @return CObjectInterface::ObjectSet & imulationUpToDateObjects
    */
   const CObjectInterface::ObjectSet & getSimulationUpToDateObjects() const;
+
+  /**
+   * Retrieve the sequence for synchronizing all transient values for the given framework.
+   * @param const CModelParameter::Framework & framework
+   * @return CObjectInterface::UpdateSequence & synchronizeInitialValuesSequence
+   */
+  const CObjectInterface::UpdateSequence & getSynchronizeInitialValuesSequence(const CModelParameter::Framework & framework) const;
+
+  /**
+   * Retrieve the sequence for applying the initial values to the transient values.
+   * @return CObjectInterface::UpdateSequence & applyInitialValuesSequence
+   */
+  const CObjectInterface::UpdateSequence & getApplyInitialValuesSequence() const;
+
+  /**
+   * Retrieve the sequence for calculating all values needed for the simulation.
+   * @param const bool & useMoieties
+   * @return CObjectInterface::UpdateSequence & synchronizeInitialValuesSequence
+   */
+  const CObjectInterface::UpdateSequence & getSimulationValuesSequence(const bool & useMoieties) const;
+
+  /**
+   * Retrieve the sequence for updating all transient values.
+   * @return CObjectInterface::UpdateSequence & transientDataValueSequence
+   */
+  const CObjectInterface::UpdateSequence & getTransientDataValueSequence() const;
 
   /**
    * Copy a node and all its children. Nodes are converted to suite the math container,

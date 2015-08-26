@@ -1,4 +1,4 @@
-// Copyright (C) 2011 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -49,7 +49,7 @@ public:
    * Construct a update sequence for the given context. Please note the calculated objects
    * must be calculated based on the same changed values and context.
    * @param const CMath::SimulationContextFlag & context
-   * @param CObjectInterface::UpdateSequence & updateSequence)
+   * @param CObjectInterface::UpdateSequence & updateSequence
    * @param const CObjectInterface::ObjectSet & changedObjects
    * @param const CObjectInterface::ObjectSet & requestedObjects
    * @param const CObjectInterface::ObjectSet & calculatedObjects (default: none)
@@ -60,6 +60,18 @@ public:
                          const CObjectInterface::ObjectSet & changedObjects,
                          const CObjectInterface::ObjectSet & requestedObjects,
                          const CObjectInterface::ObjectSet & calculatedObjects = CObjectInterface::ObjectSet()) const;
+
+  /**
+   * Construct a update sequence for the given context. Please note the calculated objects
+   * must be calculated based on the same changed values and context.
+   * @param const CObjectInterface * pObject
+   * @param const CMath::SimulationContextFlag & context
+   * @param const const CObjectInterface * pChangedObject
+   * @return bool dependsOn
+   */
+  bool dependsOn(const CObjectInterface * pObject,
+                 const CMath::SimulationContextFlag & context,
+                 const CObjectInterface * pChangedObject) const;
 
   void exportDOTFormat(std::ostream & os, const std::string & name) const;
 

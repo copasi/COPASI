@@ -1201,23 +1201,12 @@ size_t CModel::findMoiety(const std::string &Target) const
 
 void CModel::applyInitialValues()
 {
-  // Copy the initial state to the current state,
-  setState(mInitialState);
-
-  // Since the initial state is in itself consistent we should not need to
-  // do anything further. However, for species of type ODE and ASSIGNMENT
-  // the effective state variable is the concentration, i.e., we need to update
-  // their concentration here.
-  std::vector< Refresh * >::const_iterator itRefresh = mApplyInitialValuesRefreshes.begin();
-  std::vector< Refresh * >::const_iterator endRefresh = mApplyInitialValuesRefreshes.end();
-
-  while (itRefresh != endRefresh)
-    (**itRefresh++)();
-
-  // Update all dependent objects needed for simulation.
-  updateSimulatedValues(false);
-
-  // mpMathModel->applyInitialValues();
+  mpMathContainer->fetchInitialState();
+  mpMathContainer->updateInitialValues(CModelParameter::ParticleNumbers);
+  mpMathContainer->applyInitialValues();
+  mpMathContainer->updateSimulatedValues(false);
+  mpMathContainer->updateTransientDataValues();
+  mpMathContainer->pushState();
 }
 
 void CModel::clearMoieties()
@@ -1431,17 +1420,9 @@ bool CModel::updateInitialValues()
       compileIfNecessary(NULL);
     }
 
-  if (mBuildInitialSequence)
-    {
-      buildInitialSequence();
-    }
-
-  // Update all initial values.
-  std::vector< Refresh * >::const_iterator itRefresh = mInitialRefreshes.begin();
-  std::vector< Refresh * >::const_iterator endRefresh = mInitialRefreshes.end();
-
-  while (itRefresh != endRefresh)
-    (**itRefresh++)();
+  mpMathContainer->fetchInitialState();
+  mpMathContainer->updateInitialValues(CModelParameter::ParticleNumbers);
+  mpMathContainer->pushInitialState();
 
   return true;
 }
@@ -1734,9 +1715,6 @@ bool CModel::buildNonSimulatedSequence()
 const CState & CModel::getInitialState() const
 {return mInitialState;}
 
-const CState & CModel::getState() const
-{return mCurrentState;}
-
 void CModel::setInitialState(const CState & state)
 {
   mInitialState = state;
@@ -1748,35 +1726,12 @@ void CModel::setInitialState(const CState & state)
   return;
 }
 
-void CModel::setState(const CState & state)
+void CModel::stateToIntialState()
 {
-  mCurrentState = state;
-
-  return;
-}
-
-bool CModel::getInitialUpdateSequence(const CMath::SimulationContextFlag & context,
-                                      const CCopasiObject::DataObjectSet & changedObjects,
-                                      const CCopasiObject::DataObjectSet & requestedObjects,
-                                      CCopasiObject::DataUpdateSequence & updateSequence) const
-{
-  return getUpdateSequence(mInitialDependencies,
-                           context,
-                           changedObjects,
-                           requestedObjects,
-                           updateSequence);
-}
-
-bool CModel::getTransientUpdateSequence(const CMath::SimulationContextFlag & context,
-                                        const CCopasiObject::DataObjectSet & changedObjects,
-                                        const CCopasiObject::DataObjectSet & requestedObjects,
-                                        CCopasiObject::DataUpdateSequence & updateSequence) const
-{
-  return getUpdateSequence(mTransientDependencies,
-                           context,
-                           changedObjects,
-                           requestedObjects,
-                           updateSequence);
+  mpMathContainer->fetchState();
+  mpMathContainer->setInitialState(mpMathContainer->getState(false));
+  mpMathContainer->updateInitialValues(CModelParameter::ParticleNumbers);
+  mpMathContainer->pushInitialState();
 }
 
 bool CModel::getUpdateSequence(CMathDependencyGraph & dependencyGraph,
@@ -1855,271 +1810,20 @@ void CModel::updateSimulatedValues(const bool & updateMoieties)
     }
 }
 
-void CModel::updateNonSimulatedValues(void)
-{
-  std::vector< Refresh * >::const_iterator itRefresh = mNonSimulatedRefreshes.begin();
-  std::vector< Refresh * >::const_iterator endRefresh = mNonSimulatedRefreshes.end();
-
-  while (itRefresh != endRefresh)
-    (**itRefresh++)();
-
-  return;
-}
-
-void CModel::calculateDerivatives(C_FLOAT64 * derivatives)
-{
-  C_FLOAT64 * pTmp = derivatives;
-
-  // First retrieve derivatives of quantities determined by ODE
-  // The offset 1 is for the model time which is always the first
-  // state variable.
-  CModelEntity ** ppIt = mStateTemplate.getEntities() + 1;
-  CModelEntity ** ppEnd =
-    ppIt + mStateTemplate.getNumIndependent() - mNumMetabolitesReactionIndependent;
-
-  for (; ppIt != ppEnd; ++ppIt, ++pTmp)
-    {
-      *pTmp = (*ppIt)->getRate();
-
-#ifdef COPASI_DEBUG
-
-      if (isnan(*pTmp))
-        {
-          std::cout << "Entity[" <<   ppIt - (mStateTemplate.getEntities() + 1) << "] is NaN" << std::endl;
-        }
-
-#endif // COPASI_DEBUG
-    }
-
-  // Now calculate derivatives of all metabolites determined by reactions
-  char T = 'N';
-  C_INT M = 1;
-  C_INT N = (C_INT) mNumMetabolitesReaction;
-  C_INT K = (C_INT) mSteps.size();
-  C_FLOAT64 Alpha = 1.0;
-  C_FLOAT64 Beta = 0.0;
-
-  if (K != 0)
-    dgemm_(&T, &T, &M, &N, &K, &Alpha, mParticleFluxes.array(), &M,
-           mStoi.array(), &K, &Beta, pTmp, &M);
-}
-
-void CModel::calculateDerivativesX(C_FLOAT64 * derivativesX)
-{
-  C_FLOAT64 * pTmp = derivativesX;
-
-  // First retrieve derivatives of quantities determined by ODE
-  // The offset 1 is for the model time which is always the first
-  // state variable.
-  CModelEntity ** ppIt = mStateTemplate.getEntities() + 1;
-  CModelEntity ** ppEnd =
-    ppIt + mStateTemplate.getNumIndependent() - mNumMetabolitesReactionIndependent;
-
-  for (; ppIt != ppEnd; ++ppIt, ++pTmp)
-    *pTmp = (*ppIt)->getRate();
-
-  // Now calculate derivatives of the independent metabolites determined by reactions
-  char T = 'N';
-  C_INT M = 1;
-  C_INT N = (C_INT) mNumMetabolitesReactionIndependent;
-  C_INT K = (C_INT) mSteps.size();
-  C_FLOAT64 Alpha = 1.0;
-  C_FLOAT64 Beta = 0.0;
-
-  if (K != 0)
-    dgemm_(&T, &T, &M, &N, &K, &Alpha, mParticleFluxes.array(), &M,
-           mRedStoi.array(), &K, &Beta, pTmp, &M);
-}
-
-void CModel::calculateElasticityMatrix(const C_FLOAT64 & factor,
-                                       const C_FLOAT64 & resolution)
-{
-  size_t Col;
-  size_t nCol = mElasticities.numCols();
-
-  C_FLOAT64 * itE;
-  C_FLOAT64 * beginE = mElasticities.array();
-
-  CCopasiVector< CReaction >::const_iterator itReaction;
-  CCopasiVector< CReaction >::const_iterator beginReaction = mSteps.begin();
-  CCopasiVector< CReaction >::const_iterator endReaction = mSteps.end();
-
-  CModelEntity ** itEntity;
-  CModelEntity ** beginEntity = mStateTemplate.beginIndependent();
-  CModelEntity ** endEntity = mStateTemplate.endDependent();
-
-  for (itEntity = beginEntity, Col = 0; itEntity != endEntity; ++itEntity, ++Col)
-    {
-      // :TODO: This only works for entities of type metabolites.
-      //        The scaling factor for other entities should be 1.
-      const C_FLOAT64 invVolume =
-        1.0 / static_cast<CMetab *>(*itEntity)->getCompartment()->getValue();
-      C_FLOAT64 * pX =
-        const_cast<C_FLOAT64 *>(&static_cast<CMetab *>(*itEntity)->getConcentration());
-
-      for (itReaction = beginReaction, itE = beginE + Col;
-           itReaction != endReaction;
-           ++itReaction, itE += nCol)
-        * itE = invVolume * (*itReaction)->calculatePartialDerivative(pX, factor, resolution);
-    }
-
-  // DebugFile << "CModel::calculateElasticityMatrix()" << std::endl;
-  // DebugFile << mElasticities << std::endl;
-
-  return;
-}
-
 void CModel::calculateJacobian(CMatrix< C_FLOAT64 > & jacobian,
                                const C_FLOAT64 & derivationFactor,
                                const C_FLOAT64 & /* resolution */)
 {
-  C_FLOAT64 DerivationFactor = std::max(derivationFactor, 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon());
-
-  size_t Dim =
-    mCurrentState.getNumIndependent() + MNumMetabolitesReactionDependent;
-  //Dim now contains the number of entities with ODEs + number of metabs depending on reactions.
-
-  size_t Col;
-
-  jacobian.resize(Dim, Dim);
-
-  C_FLOAT64 Store;
-  C_FLOAT64 X1;
-  C_FLOAT64 X2;
-  C_FLOAT64 InvDelta;
-
-  CVector< C_FLOAT64 > Y1(Dim);
-  CVector< C_FLOAT64 > Y2(Dim);
-
-  C_FLOAT64 * pY1;
-  C_FLOAT64 * pY2;
-
-  C_FLOAT64 * pX = mCurrentState.beginIndependent();
-  C_FLOAT64 * pXEnd = pX + Dim;
-
-  C_FLOAT64 * pJacobian;
-  C_FLOAT64 * pJacobianEnd = jacobian.array() + Dim * Dim;
-
-  for (Col = 0; pX != pXEnd; ++pX, ++Col)
-    {
-      Store = *pX;
-
-      // We only need to make sure that we do not have an underflow problem
-      if (fabs(Store) < DerivationFactor)
-        {
-          X1 = 0.0;
-
-          if (Store < 0.0)
-            X2 = -2.0 * DerivationFactor;
-          else
-            X2 = 2.0 * DerivationFactor;
-        }
-      else
-        {
-          X1 = Store * (1.0 + DerivationFactor);
-          X2 = Store * (1.0 - DerivationFactor);
-        }
-
-      InvDelta = 1.0 / (X2 - X1);
-
-      *pX = X1;
-      updateSimulatedValues(false);
-      calculateDerivatives(Y1.array());
-
-      *pX = X2;
-      updateSimulatedValues(false);
-      calculateDerivatives(Y2.array());
-
-      *pX = Store;
-
-      pJacobian = jacobian.array() + Col;
-      pY1 = Y1.array();
-      pY2 = Y2.array();
-
-      for (; pJacobian < pJacobianEnd; pJacobian += Dim, ++pY1, ++pY2)
-        * pJacobian = (*pY2 - *pY1) * InvDelta;
-    }
-
-  updateSimulatedValues(false);
-
-  return;
+  mpMathContainer->fetchState();
+  mpMathContainer->calculateJacobian(jacobian, derivationFactor, false);
 }
 
 void CModel::calculateJacobianX(CMatrix< C_FLOAT64 > & jacobianX,
                                 const C_FLOAT64 & derivationFactor,
                                 const C_FLOAT64 & /* resolution */)
 {
-  C_FLOAT64 DerivationFactor = std::max(derivationFactor, 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon());
-
-  size_t Dim = mCurrentState.getNumIndependent();
-  size_t Col;
-
-  jacobianX.resize(Dim, Dim);
-
-  C_FLOAT64 Store;
-  C_FLOAT64 X1;
-  C_FLOAT64 X2;
-  C_FLOAT64 InvDelta;
-
-  CVector< C_FLOAT64 > Y1(Dim);
-  CVector< C_FLOAT64 > Y2(Dim);
-
-  C_FLOAT64 * pY1;
-  C_FLOAT64 * pY2;
-
-  C_FLOAT64 * pX = mCurrentState.beginIndependent();
-  C_FLOAT64 * pXEnd = pX + Dim;
-
-  C_FLOAT64 * pJacobian;
-  C_FLOAT64 * pJacobianEnd = jacobianX.array() + Dim * Dim;
-
-  for (Col = 0; pX != pXEnd; ++pX, ++Col)
-    {
-      Store = *pX;
-
-      // We only need to make sure that we do not have an underflow problem
-      if (fabs(Store) < DerivationFactor)
-        {
-          X1 = 0.0;
-
-          if (Store < 0.0)
-            X2 = -2.0 * DerivationFactor;
-          else
-            X2 = 2.0 * DerivationFactor;;
-        }
-      else
-        {
-          X1 = Store * (1.0 + DerivationFactor);
-          X2 = Store * (1.0 - DerivationFactor);
-        }
-
-      InvDelta = 1.0 / (X2 - X1);
-
-      *pX = X1;
-      updateSimulatedValues(true);
-      calculateDerivativesX(Y1.array());
-
-      *pX = X2;
-      updateSimulatedValues(true);
-      calculateDerivativesX(Y2.array());
-
-      *pX = Store;
-
-      pJacobian = jacobianX.array() + Col;
-      pY1 = Y1.array();
-      pY2 = Y2.array();
-
-      for (; pJacobian < pJacobianEnd; pJacobian += Dim, ++pY1, ++pY2)
-        * pJacobian = (*pY2 - *pY1) * InvDelta;
-    }
-
-  updateSimulatedValues(true);
-}
-
-C_FLOAT64 CModel::calculateDivergence() const
-{
-  fatalError(); //not yet implemented
-  return 0.0;
+  mpMathContainer->fetchState();
+  mpMathContainer->calculateJacobian(jacobianX, derivationFactor, true);
 }
 
 bool CModel::setVolumeUnit(const std::string & name)
@@ -4157,239 +3861,45 @@ bool CModel::compileEvents()
   return success;
 }
 
-const std::vector< Refresh * > & CModel::getListOfInitialRefreshes() const
-{return mInitialRefreshes;}
-
-const std::vector< Refresh * > & CModel::getListOfSimulatedRefreshes() const
-{return mSimulatedRefreshes;}
-
-const std::vector< Refresh * > & CModel::getListOfConstantRefreshes() const
-{return mApplyInitialValuesRefreshes;}
-
-const std::vector< Refresh * > & CModel::getListOfNonSimulatedRefreshes() const
-{return mNonSimulatedRefreshes;}
-
-void
-CModel::updateInitialValues(std::set< const CCopasiObject * > & changedObjects)
+void CModel::updateInitialValues(std::set< const CCopasiObject * > & changedObjects)
 {
-  std::vector< Refresh * > refreshes = buildInitialRefreshSequence(changedObjects);
-  std::vector< Refresh * >::iterator it = refreshes.begin(), endIt = refreshes.end();
-
-  while (it != endIt)
-    (**it++)();
+  CObjectInterface::UpdateSequence UpdateSequence = buildInitialRefreshSequence(changedObjects);
+  mpMathContainer->applyUpdateSequence(UpdateSequence);
 }
 
-void
-CModel::updateInitialValues(const CCopasiObject* changedObject)
+void CModel::updateInitialValues(const CCopasiObject* changedObject)
 {
   std::set<const CCopasiObject*> changedObjects;
   changedObjects.insert(changedObject);
   updateInitialValues(changedObjects);
 }
 
-std::vector< Refresh * >
+CObjectInterface::UpdateSequence
 CModel::buildInitialRefreshSequence(std::set< const CCopasiObject * > & changedObjects)
 {
-  // First we remove all objects which are of type assignment from the changed objects
-  // since this may not be changed as they are under control of the assignment.
-  std::set< const CCopasiObject * >::iterator itSet;
-  std::set< const CCopasiObject * >::iterator endSet;
-  std::set< const CCopasiObject * > Objects;
+  // Map the changed objects to their math equivalents;
+  std::set< const CCopasiObject * >::const_iterator it = changedObjects.begin();
+  std::set< const CCopasiObject * >::const_iterator end = changedObjects.end();
 
-  CModelEntity **ppEntity;
-  CModelEntity **ppEntityEnd = mStateTemplate.endFixed();
+  CObjectInterface::ObjectSet ChangedObjects;
 
-  const CModelEntity * pEntity;
-  CMetab * pMetab;
-
-  // If the changed objects are empty we assume that all changeable objects have been changed
-  if (changedObjects.size() == 0)
+  for (; it != end; ++it)
     {
-      // The objects which are changed are all initial values of of all model entities including
-      // fixed and unused once. Additionally, all kinetic parameters are possibly changed.
-      // This is basically all the parameters in the parameter overview whose value is editable.
+      CObjectInterface * pObject = mpMathContainer->getMathObject(*it);
 
-      // :TODO: Theoretically, it is possible that also task parameters influence the initial
-      // state of a model but that is currently not handled.
-
-      // The initial values of the model entities
-      ppEntity = mStateTemplate.beginIndependent() - 1; // Offset for time
-
-      for (; ppEntity != ppEntityEnd; ++ppEntity)
+      if (pObject != NULL)
         {
-          // If we have an initial expression we have no initial values
-          if (((*ppEntity)->getInitialExpression() != "" ||
-               (*ppEntity)->getStatus() == ASSIGNMENT) &&
-              (*ppEntity)->getInitialValueReference()->getDirectDependencies().size() > 0)
-            continue;
-
-          // Metabolites have two initial values
-          if ((pMetab = dynamic_cast< CMetab * >(*ppEntity)) != NULL)
-            {
-              // The concentration is assumed to be fix accept when this would lead to circular dependencies,
-              // for the parent's compartment's initial volume.
-              if (pMetab->isInitialConcentrationChangeAllowed())
-                changedObjects.insert(pMetab->getInitialConcentrationReference());
-              else
-                changedObjects.insert(pMetab->getInitialValueReference());
-            }
-          else
-            changedObjects.insert((*ppEntity)->getInitialValueReference());
-        }
-
-      // The reaction parameters
-      CCopasiVector< CReaction >::const_iterator itReaction = mSteps.begin();
-      CCopasiVector< CReaction >::const_iterator endReaction = mSteps.end();
-      size_t i, imax;
-
-      for (; itReaction != endReaction; ++itReaction)
-        {
-          const CCopasiParameterGroup & Group = (*itReaction)->getParameters();
-
-          for (i = 0, imax = Group.size(); i < imax; i++)
-            changedObjects.insert(Group.getParameter(i));
-        }
-
-      // Fix for Issue 1170: We need to add elements of the stoichiometry, reduced stoichiometry,
-      // and link matrices.
-      if (mpStoiAnnotation != NULL)
-        mpStoiAnnotation->appendElementReferences(changedObjects);
-
-      if (mpRedStoiAnnotation != NULL)
-        mpRedStoiAnnotation->appendElementReferences(changedObjects);
-
-      if (mpLinkMatrixAnnotation != NULL)
-        mpLinkMatrixAnnotation->appendElementReferences(changedObjects);
-    }
-  else
-    {
-      // Remove all objects with initial assignments
-      itSet = changedObjects.begin();
-      endSet = changedObjects.end();
-
-      for (; itSet != endSet; ++itSet)
-        {
-          if ((pEntity = dynamic_cast< const CModelEntity * >((*itSet)->getObjectParent())) != NULL &&
-              (pEntity->getInitialExpression() != "" ||
-               pEntity->getStatus() == ASSIGNMENT) &&
-              pEntity->getInitialValueReference()->getDirectDependencies().size() > 0)
-            Objects.insert(*itSet);
-        }
-
-      for (itSet = Objects.begin(), endSet = Objects.end(); itSet != endSet; ++itSet)
-        changedObjects.erase(*itSet);
-    }
-
-  // We need to add all initial values which are dynamically calculated.
-  // These are initial assignments and either a metabolite's initial particle number
-  // or concentration.
-  ppEntity = mStateTemplate.beginIndependent() - 1; // Offset for time
-  Objects.clear();
-
-  for (; ppEntity != ppEntityEnd; ++ppEntity)
-    {
-      if (((*ppEntity)->getInitialExpression() != "" ||
-           (*ppEntity)->getStatus() == ASSIGNMENT))
-        {
-          Objects.insert((*ppEntity)->getInitialValueReference());
-          continue;
-        }
-
-      // For metabolites we need to add the initial concentration or the initial
-      // particle number..
-      if ((pMetab = dynamic_cast< CMetab * >(*ppEntity)) != NULL)
-        {
-          if (changedObjects.count(pMetab->getInitialConcentrationReference()) != 0)
-            {
-              Objects.insert(pMetab->getInitialValueReference());
-            }
-          else
-            {
-              Objects.insert(pMetab->getInitialConcentrationReference());
-            }
+          ChangedObjects.insert(pObject);
         }
     }
 
-  // We need to add the total particle number of moieties.
-  CCopasiVector< CMoiety >::iterator itMoiety = mMoieties.begin();
-  CCopasiVector< CMoiety >::iterator endMoiety = mMoieties.end();
+  CObjectInterface::UpdateSequence UpdateSequence;
+  mpMathContainer->getInitialDependencies().getUpdateSequence(UpdateSequence,
+      CMath::UpdateMoieties,
+      ChangedObjects,
+      mpMathContainer->getInitialStateObjects());
 
-  for (; itMoiety != endMoiety; ++itMoiety)
-    Objects.insert((*itMoiety)->getInitialValueReference());
-
-  std::set< const CCopasiObject * > DependencySet;
-  std::set< const CCopasiObject * > VerifiedSet;
-  std::pair<std::set< const CCopasiObject * >::iterator, bool> InsertedObject;
-
-  assert(Objects.count(NULL) == 0);
-
-  // Check whether we have any circular dependencies
-  for (itSet = Objects.begin(), endSet = Objects.end(); itSet != endSet; ++itSet)
-    if ((*itSet)->hasCircularDependencies(DependencySet, VerifiedSet, changedObjects))
-      CCopasiMessage(CCopasiMessage::EXCEPTION, MCObject + 1, (*itSet)->getCN().c_str());
-
-  // Build the complete set of dependencies
-  for (itSet = Objects.begin(); itSet != endSet; ++itSet)
-    {
-      // At least the object itself needs to be up to date.
-      InsertedObject = DependencySet.insert(*itSet);
-
-      // Add all its dependencies
-      if (InsertedObject.second)
-        (*itSet)->getAllDependencies(DependencySet, changedObjects);
-    }
-
-  // Remove all objects which do not depend on the changed objects, or do not have a
-  // refresh method.
-  Objects.clear();
-
-  // We now check which objects we need to refresh
-  for (itSet = DependencySet.begin(), endSet = DependencySet.end(); itSet != endSet; ++itSet)
-    {
-      // No refresh method
-      if ((*itSet)->getRefresh() == NULL)
-        Objects.insert(*itSet);
-      // Is a changed object
-      else if (changedObjects.count(*itSet) != 0)
-        Objects.insert(*itSet);
-      // Not dependent on the changed objects.
-      else if (!(*itSet)->dependsOn(changedObjects, changedObjects))
-        Objects.insert(*itSet);
-    }
-
-  for (itSet = Objects.begin(), endSet = Objects.end(); itSet != endSet; ++itSet)
-    DependencySet.erase(*itSet);
-
-  // Create a properly sorted list.
-  std::list< const CCopasiObject * > SortedList =
-    sortObjectsByDependency(DependencySet.begin(), DependencySet.end(), changedObjects);
-
-  std::list< const CCopasiObject * >::iterator itList;
-  std::list< const CCopasiObject * >::iterator endList;
-
-  // Build the vector of pointers to refresh methods
-  Refresh * pRefresh;
-
-  std::vector< Refresh * > UpdateVector;
-  std::vector< Refresh * >::const_iterator itUpdate;
-  std::vector< Refresh * >::const_iterator endUpdate;
-
-  itList = SortedList.begin();
-  endList = SortedList.end();
-
-  for (; itList != endList; ++itList)
-    {
-      pRefresh = (*itList)->getRefresh();
-      itUpdate = UpdateVector.begin();
-      endUpdate = UpdateVector.end();
-
-      while (itUpdate != endUpdate && !(*itUpdate)->isEqual(pRefresh)) ++itUpdate;
-
-      if (itUpdate == endUpdate)
-        UpdateVector.push_back(pRefresh);
-    }
-
-  return UpdateVector;
+  return UpdateSequence;
 }
 
 CVector< C_FLOAT64 > CModel::initializeAtolVector(const C_FLOAT64 & atol, const bool & reducedModel) const
@@ -4700,59 +4210,6 @@ std::string CModel::getQuantityRateUnitsDisplayString() const
 
   return Units + "/" + mpTimeUnit->getSymbol();
 }
-
-/****** Below will be removed when the math model completed ******/
-
-#ifdef XXXX
-void CModel::evaluateRoots(CVectorCore< C_FLOAT64 > & rootValues,
-                           const bool & ignoreDiscrete)
-{
-  return mpMathModel->evaluateRoots(rootValues, ignoreDiscrete);
-}
-
-bool CModel::processQueue(const C_FLOAT64 & time,
-                          const bool & equality,
-                          CProcessQueue::resolveSimultaneousAssignments pResolveSimultaneousAssignments)
-{
-  return mpMathModel->processQueue(time, equality, pResolveSimultaneousAssignments);
-}
-
-void CModel::processRoots(const C_FLOAT64 & time,
-                          const bool & equality,
-                          const bool & correct,
-                          const CVector< C_INT > & roots)
-{
-  mpMathModel->processRoots(time, equality, correct, roots);
-
-  return;
-}
-
-const C_FLOAT64 & CModel::getProcessQueueExecutionTime() const
-{
-  return mpMathModel->getProcessQueueExecutionTime();
-}
-
-size_t CModel::getNumRoots() const
-{
-  return mpMathModel->getNumRoots();
-}
-
-void CModel::calculateRootDerivatives(CVector< C_FLOAT64 > & rootDerivatives)
-{
-  return mpMathModel->calculateRootDerivatives(rootDerivatives);
-}
-
-const CVector< CMathTrigger::CRootFinder * > & CModel::getRootFinders() const
-{
-  return mpMathModel->getRootFinders();
-}
-
-const CMathModel* CModel::getMathModel() const
-{return mpMathModel;}
-
-CMathModel* CModel::getMathModel()
-{return mpMathModel;}
-#endif // XXXX
 
 const CMathContainer & CModel::getMathContainer() const
 {return *mpMathContainer;}

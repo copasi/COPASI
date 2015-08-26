@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -60,9 +60,9 @@ public:
 
   CCopasiObject* findObjectFromRefresh(const CCopasiObject * tmp, const Refresh* ref);
 
-  void exportSimulatedObject(CCopasiObject * obj, const CCopasiDataModel* pDataModel);
+  void exportSimulatedObject(const CCopasiObject * obj, const CCopasiDataModel* pDataModel);
 
-  bool exportModelEntityExpression(CCopasiObject * obj, const CCopasiDataModel* pDataModel);
+  bool exportModelEntityExpression(const CCopasiObject * obj, const CCopasiDataModel* pDataModel);
 
   bool exportModelValuesExpressions(const CModel* copasiModel);
 
@@ -72,7 +72,7 @@ public:
 
   virtual bool exportSingleFunction(const CFunction *func, std::set<std::string>& isExported);
 
-  std::string isModelEntityExpressionODEExporterCompatible(CModelEntity * tmp, const CExpression* pExpression, const CCopasiDataModel* pDataModel);
+  std::string isModelEntityExpressionODEExporterCompatible(const CModelEntity * tmp, const CExpression* pExpression, const CCopasiDataModel* pDataModel);
 
   std::string exportExpression(const CExpression* pExpression, const CCopasiDataModel* pDataModel);
 

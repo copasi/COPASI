@@ -119,11 +119,6 @@ public:
   bool checkSummationTheorems(const C_FLOAT64 & resolution);
 
   /**
-   * Set the Model
-   */
-  void setModel(CModel* model);
-
-  /**
    * Get the Model
    */
   const CModel* getModel() const;
@@ -171,9 +166,6 @@ private:
   bool createLinkMatrix(const bool & useSmallbone = false);
 
 private:
-
-  CModel * mpModel;
-
   bool * mpUseReeder;
 
   bool * mpUseSmallbone;

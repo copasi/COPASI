@@ -403,11 +403,10 @@ std::ostream &operator<<(std::ostream &os, const CSteadyStateTask &A)
 
   A.mpContainer->setState(A.mSteadyState);
   A.mpContainer->updateSimulatedValues(false);
+  A.mpContainer->updateTransientDataValues();
   A.mpContainer->pushState();
 
   CModel * pModel = const_cast< CModel * >(&A.mpContainer->getModel());
-
-  pModel->updateNonSimulatedValues();
 
   // Metabolite Info: Name, Concentration, Concentration Rate, Particle Number, Particle Rate, Transition Time
   const CCopasiVector<CMetab> & Metabolites = pModel->getMetabolites();

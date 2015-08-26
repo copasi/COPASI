@@ -1,4 +1,4 @@
-// Copyright (C) 2011 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -538,10 +538,10 @@ CVector< C_FLOAT64 > CMathContainer::initializeAtolVector(const C_FLOAT64 & atol
           {
             const CMetab * pMetab = static_cast< const CMetab * >(pObject->getDataObject()->getObjectParent());
             std::map< CCopasiObject *, CMathObject * >::const_iterator itFound
-            = mDataObject2MathObject.find(pMetab->getCompartment()->getInitialValueReference());
+              = mDataObject2MathObject.find(pMetab->getCompartment()->getInitialValueReference());
 
             C_FLOAT64 Limit = fabs(* (C_FLOAT64 *) itFound->second->getValuePointer())
-                              * * (C_FLOAT64 *) mpQuantity2NumberFactor->getValuePointer();
+                              ** (C_FLOAT64 *) mpQuantity2NumberFactor->getValuePointer();
 
             if (InitialValue != 0.0)
               *pAtol *= std::min(Limit, InitialValue);
@@ -583,6 +583,11 @@ const CVectorCore< C_FLOAT64 > & CMathContainer::getTotalMasses() const
 const CVectorCore< C_FLOAT64 > & CMathContainer::getParticleFluxes() const
 {
   return mParticleFluxes;
+}
+
+const CVectorCore< C_FLOAT64 > & CMathContainer::getFluxes() const
+{
+  return mFluxes;
 }
 
 const CVectorCore< C_FLOAT64 > & CMathContainer::getPropensities() const
@@ -732,6 +737,42 @@ void CMathContainer::updateSimulatedValues(const bool & useMoieties)
 void CMathContainer::updateTransientDataValues()
 {
   applyUpdateSequence(mTransientDataObjectSequence);
+}
+
+const CObjectInterface::UpdateSequence & CMathContainer::getSynchronizeInitialValuesSequence(const CModelParameter::Framework & framework) const
+{
+  switch (framework)
+    {
+      case CModelParameter::Concentration:
+        return mSynchronizeInitialValuesSequenceIntensive;
+        break;
+
+      case CModelParameter::ParticleNumbers:
+        return mSynchronizeInitialValuesSequenceExtensive;
+        break;
+    }
+}
+
+const CObjectInterface::UpdateSequence & CMathContainer::getApplyInitialValuesSequence() const
+{
+  return mApplyInitialValuesSequence;
+}
+
+const CObjectInterface::UpdateSequence & CMathContainer::getSimulationValuesSequence(const bool & useMoieties) const
+{
+  if (useMoieties)
+    {
+      return mSimulationValuesSequenceReduced;
+    }
+  else
+    {
+      return mSimulationValuesSequence;
+    }
+}
+
+const CObjectInterface::UpdateSequence & CMathContainer::getTransientDataValueSequence() const
+{
+  return mTransientDataObjectSequence;
 }
 
 void CMathContainer::updateHistoryValues(const bool & useMoieties)
@@ -964,6 +1005,45 @@ CMathObject * CMathContainer::getMathObject(const C_FLOAT64 * pDataValue) const
 CMathObject * CMathContainer::getMathObject(const CCopasiObjectName & cn) const
 {
   return getMathObject(mpModel->getObject(cn));
+}
+
+CMathObject * CMathContainer::getCompartment(const CMathObject * pObject) const
+{
+  if (pObject == NULL ||
+      pObject->getEntityType() != CMath::Species)
+    {
+      return NULL;
+    }
+
+  CMetab * pMetab = static_cast< CMetab * >(pObject->getDataObject()->getObjectParent());
+
+  return getMathObject(pMetab->getCompartment()->getValueReference());
+}
+
+CMathObject * CMathContainer::getLargestReactionCompartment(const CMathReaction * pReaction) const
+{
+  if (pReaction == NULL)
+    {
+      return NULL;
+    }
+
+  CMathObject * pLargestCompartment = NULL;
+  CMathReaction::ObjectBalance::const_iterator it = pReaction->getObjectBalance().begin();
+  CMathReaction::ObjectBalance::const_iterator end = pReaction->getObjectBalance().end();
+
+  for (; it != end; ++it)
+    {
+      CMathObject * pCompartment = getCompartment(it->first);
+
+      if (pLargestCompartment == NULL ||
+          (pCompartment != NULL &&
+           *(C_FLOAT64*)pLargestCompartment->getValuePointer() < * (C_FLOAT64*)pCompartment->getValuePointer()))
+        {
+          pLargestCompartment = pCompartment;
+        }
+    }
+
+  return pLargestCompartment;
 }
 
 void CMathContainer::compile()
@@ -1207,7 +1287,7 @@ CEvaluationNode * CMathContainer::copyBranch(const CEvaluationNode * pNode,
       switch ((int) itNode->getType())
         {
             // Handle object nodes which are of type CN
-          case(CEvaluationNode::OBJECT | CEvaluationNodeObject::CN):
+          case (CEvaluationNode::OBJECT | CEvaluationNodeObject::CN):
           {
             // We need to map the object to a math object if possible.
             const CObjectInterface * pObject =
@@ -1219,7 +1299,7 @@ CEvaluationNode * CMathContainer::copyBranch(const CEvaluationNode * pNode,
           break;
 
           // Handle object nodes which are of type POINTER
-          case(CEvaluationNode::OBJECT | CEvaluationNodeObject::POINTER):
+          case (CEvaluationNode::OBJECT | CEvaluationNodeObject::POINTER):
           {
             const CObjectInterface * pObject =
               getMathObject(static_cast< const CEvaluationNodeObject *>(*itNode)->getObjectValuePtr());
@@ -1230,7 +1310,7 @@ CEvaluationNode * CMathContainer::copyBranch(const CEvaluationNode * pNode,
           break;
 
           // Handle variables
-          case(CEvaluationNode::VARIABLE | CEvaluationNodeVariable::ANY):
+          case (CEvaluationNode::VARIABLE | CEvaluationNodeVariable::ANY):
           {
             size_t Index =
               static_cast< const CEvaluationNodeVariable * >(*itNode)->getIndex();
@@ -1248,8 +1328,8 @@ CEvaluationNode * CMathContainer::copyBranch(const CEvaluationNode * pNode,
           break;
 
           // Handle call nodes
-          case(CEvaluationNode::CALL | CEvaluationNodeCall::FUNCTION):
-          case(CEvaluationNode::CALL | CEvaluationNodeCall::EXPRESSION):
+          case (CEvaluationNode::CALL | CEvaluationNodeCall::FUNCTION):
+          case (CEvaluationNode::CALL | CEvaluationNodeCall::EXPRESSION):
           {
             const CEvaluationNode * pCalledNode =
               static_cast< const CEvaluationNodeCall * >(*itNode)->getCalledTree()->getRoot();
@@ -1268,10 +1348,10 @@ CEvaluationNode * CMathContainer::copyBranch(const CEvaluationNode * pNode,
           break;
 
           // Handle discrete nodes
-          case(CEvaluationNode::CHOICE | CEvaluationNodeChoice::IF):
-          case(CEvaluationNode::FUNCTION | CEvaluationNodeFunction::FLOOR):
-          case(CEvaluationNode::FUNCTION | CEvaluationNodeFunction::CEIL):
-          case(CEvaluationNode::OPERATOR | CEvaluationNodeOperator::MODULUS):
+          case (CEvaluationNode::CHOICE | CEvaluationNodeChoice::IF):
+          case (CEvaluationNode::FUNCTION | CEvaluationNodeFunction::FLOOR):
+          case (CEvaluationNode::FUNCTION | CEvaluationNodeFunction::CEIL):
+          case (CEvaluationNode::OPERATOR | CEvaluationNodeOperator::MODULUS):
 
             if (replaceDiscontinuousNodes)
               {
@@ -2995,17 +3075,17 @@ void CMathContainer::createDiscontinuityEvents(const CEvaluationTree * pTree)
 
       switch ((int) itNode->getType())
         {
-          case(CEvaluationNode::CHOICE | CEvaluationNodeChoice::IF):
-          case(CEvaluationNode::FUNCTION | CEvaluationNodeFunction::FLOOR):
-          case(CEvaluationNode::FUNCTION | CEvaluationNodeFunction::CEIL):
-          case(CEvaluationNode::OPERATOR | CEvaluationNodeOperator::MODULUS):
+          case (CEvaluationNode::CHOICE | CEvaluationNodeChoice::IF):
+          case (CEvaluationNode::FUNCTION | CEvaluationNodeFunction::FLOOR):
+          case (CEvaluationNode::FUNCTION | CEvaluationNodeFunction::CEIL):
+          case (CEvaluationNode::OPERATOR | CEvaluationNodeOperator::MODULUS):
             createDiscontinuityDataEvent(*itNode);
             break;
 
             // Call nodes may include discontinuities but each called tree is handled
             // separately.
-          case(CEvaluationNode::CALL | CEvaluationNodeCall::FUNCTION):
-          case(CEvaluationNode::CALL | CEvaluationNodeCall::EXPRESSION):
+          case (CEvaluationNode::CALL | CEvaluationNodeCall::FUNCTION):
+          case (CEvaluationNode::CALL | CEvaluationNodeCall::EXPRESSION):
             createDiscontinuityEvents(static_cast< const CEvaluationNodeCall * >(*itNode)->getCalledTree());
             break;
 
@@ -3035,16 +3115,16 @@ std::string CMathContainer::createDiscontinuityTriggerInfix(const CEvaluationNod
   // We need to define a data event for each discontinuity.
   switch ((int) pNode->getType())
     {
-      case(CEvaluationNode::CHOICE | CEvaluationNodeChoice::IF):
+      case (CEvaluationNode::CHOICE | CEvaluationNodeChoice::IF):
         TriggerInfix = static_cast< const CEvaluationNode * >(pNode->getChild())->buildInfix();
         break;
 
-      case(CEvaluationNode::FUNCTION | CEvaluationNodeFunction::FLOOR):
-      case(CEvaluationNode::FUNCTION | CEvaluationNodeFunction::CEIL):
+      case (CEvaluationNode::FUNCTION | CEvaluationNodeFunction::FLOOR):
+      case (CEvaluationNode::FUNCTION | CEvaluationNodeFunction::CEIL):
         TriggerInfix = "sin(PI*(" + static_cast< const CEvaluationNode * >(pNode->getChild())->buildInfix() + ")) > 0";
         break;
 
-      case(CEvaluationNode::OPERATOR | CEvaluationNodeOperator::MODULUS):
+      case (CEvaluationNode::OPERATOR | CEvaluationNodeOperator::MODULUS):
         TriggerInfix = "sin(PI*(" + static_cast< const CEvaluationNode * >(pNode->getChild())->buildInfix();
         TriggerInfix += ")) > 0 || sin(PI*(" + static_cast< const CEvaluationNode * >(pNode->getChild()->getSibling())->buildInfix() + ")) > 0";
         break;

@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -20,6 +20,7 @@
 #include "report/CCopasiRootContainer.h"
 
 #include "model/CModel.h"
+#include "math/CMathContainer.h"
 
 #include <QtGui/QTabWidget>
 
@@ -91,75 +92,49 @@ CQUpdatesWidget::CQUpdatesWidget(QWidget* parent, const char* name, Qt::WFlags f
 CQUpdatesWidget::~CQUpdatesWidget()
 {}
 
-void CQUpdatesWidget::fillRefreshsMapRecursively(const CCopasiObject* obj)
-{
-  if (obj->getRefresh())
-    mRefreshsMap[obj->getRefresh()] = obj;
-
-  //recursion
-  if (obj->isContainer())
-    {
-      CCopasiContainer* container;
-      container = (CCopasiContainer*)obj;
-
-      CCopasiContainer::objectMap::const_iterator it = container->getObjects().begin();
-      // int cnt = container->getObjects().size();
-
-      for (; it != container->getObjects().end(); ++it)
-        {
-          //the next line skips name references...
-          if (it->second->getObjectName() == "Name") continue;
-
-          if (it->second->getObjectType() == "Function") continue;
-
-          //skip if the contained object is not owned by this container
-          if (it->second->getObjectParent() != container) continue;
-
-          fillRefreshsMapRecursively(it->second);
-        }
-
-      //return;
-    }
-}
-
 void CQUpdatesWidget::loadWidget()
 {
-
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   CModel* pModel = (*CCopasiRootContainer::getDatamodelList())[0]->getModel();
 
   if (!pModel) return;
 
   pModel->compileIfNecessary(NULL);
-  mRefreshsMap.clear();
-  fillRefreshsMapRecursively(pModel);
 
-  loadOneTable(mpTable0, pModel->getListOfInitialRefreshes());
-  loadOneTable(mpTable1, pModel->getListOfConstantRefreshes());
-  loadOneTable(mpTable2, pModel->getListOfSimulatedRefreshes());
-  loadOneTable(mpTable3, pModel->getListOfNonSimulatedRefreshes());
+  CMathContainer & Container = pModel->getMathContainer();
+
+  loadOneTable(mpTable0, Container.getSynchronizeInitialValuesSequence(CModelParameter::ParticleNumbers));
+  loadOneTable(mpTable1, Container.getApplyInitialValuesSequence());
+  loadOneTable(mpTable2, Container.getSimulationValuesSequence(false));
+  loadOneTable(mpTable3, Container.getTransientDataValueSequence());
 
   loadObjectsTable(pModel);
 }
 
-void CQUpdatesWidget::loadOneTable(QTableWidget * pTable, const std::vector< Refresh * > & list)
+void CQUpdatesWidget::loadOneTable(QTableWidget * pTable, const std::vector< CObjectInterface * > & list)
 {
   pTable->setColumnCount(2);
+  pTable->setRowCount((int) list.size());
+  std::vector< CObjectInterface * >::const_iterator it = list.begin();
+  std::vector< CObjectInterface * >::const_iterator end = list.end();
 
-  size_t i, imax = list.size();
-  pTable->setRowCount((int) imax);
-
-  for (i = 0; i < imax; ++i)
+  for (int i = 0; it != end; ++it, ++i)
     {
-      std::map<const Refresh*, const CCopasiObject*>::const_iterator it = mRefreshsMap.find(list[i]);
+      const CCopasiObject * pDataObject = CObjectInterface::DataObject(*it);
+      const CMathObject * pMathObject = dynamic_cast< const CMathObject * >(*it);
 
-      if (it != mRefreshsMap.end() && it->second)
-        pTable->setItem((int) i, 0, new QTableWidgetItem(FROM_UTF8(it->second->getObjectDisplayName())));
+      if (pDataObject == NULL && pMathObject == NULL) continue;
 
-      const CCopasiObject* tmp = list[i]->getObject();
-
-      if (tmp)
-        pTable->setItem((int) i, 1, new QTableWidgetItem(FROM_UTF8(tmp->getObjectDisplayName())));
+      if (pDataObject != NULL)
+        {
+          pTable->setItem(i, 0, new QTableWidgetItem(FROM_UTF8(pDataObject->getObjectParent()->getObjectDisplayName())));
+          pTable->setItem(i, 0, new QTableWidgetItem(FROM_UTF8(pDataObject->getObjectDisplayName())));
+        }
+      else if (pMathObject != NULL)
+        {
+          pTable->setItem(i, 0, new QTableWidgetItem("Math Container"));
+          pTable->setItem(i, 0, new QTableWidgetItem(FROM_UTF8(pMathObject->getObjectDisplayName())));
+        }
     }
 }
 

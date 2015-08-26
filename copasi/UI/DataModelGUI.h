@@ -137,7 +137,7 @@ private:
   COutputHandlerPlot mOutputHandlerPlot;
   std::set< ListViews * > mListViews;
   int mFramework;
-  std::vector< Refresh * > mUpdateVector;
+  std::vector< CObjectInterface * > mUpdateVector;
   std::set< const CCopasiObject * > mChangedObjects;
 
   CQThread * mpThread;

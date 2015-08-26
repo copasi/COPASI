@@ -2221,7 +2221,6 @@ void CopasiUI3Window::slotApplyInitialState()
     {
       pModel->compileIfNecessary(NULL);
       pModel->applyInitialValues();
-      pModel->updateNonSimulatedValues();
 
       mpDataModelGUI->notify(ListViews::STATE, ListViews::CHANGE, (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getKey());
     }
@@ -2237,8 +2236,7 @@ void CopasiUI3Window::slotUpdateInitialState()
   if (pModel != NULL)
     {
       pModel->compileIfNecessary(NULL);
-      pModel->setInitialState(pModel->getState());
-      pModel->updateInitialValues();
+      pModel->stateToIntialState();
 
       mpDataModelGUI->notify(ListViews::STATE, ListViews::CHANGE, (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getKey());
     }

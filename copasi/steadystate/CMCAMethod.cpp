@@ -38,7 +38,6 @@ CMCAMethod::CMCAMethod(const CCopasiContainer * pParent,
                        const CTaskEnum::Method & methodType,
                        const CTaskEnum::Task & taskType):
   CCopasiMethod(pParent, methodType, taskType),
-  mpModel(NULL),
   mpUseReeder(NULL),
   mpUseSmallbone(NULL),
   mFactor(1.0e-9),
@@ -56,7 +55,6 @@ CMCAMethod::CMCAMethod(const CCopasiContainer * pParent,
 CMCAMethod::CMCAMethod(const CMCAMethod & src,
                        const CCopasiContainer * pParent):
   CCopasiMethod(src, pParent),
-  mpModel(NULL),
   mpUseReeder(NULL),
   mpUseSmallbone(NULL),
   mFactor(src.mFactor),
@@ -156,41 +154,41 @@ bool CMCAMethod::elevateChildren()
 
 void CMCAMethod::resizeAllMatrices()
 {
-  if (!mpModel) return;
+  const CModel & Model = mpContainer->getModel();
 
-  mUnscaledElasticities.resize(mpModel->getTotSteps(),
-                               mpModel->getNumIndependentReactionMetabs() + mpModel->getNumDependentReactionMetabs());
+  mUnscaledElasticities.resize(mpContainer->getReactions().size(),
+                               mpContainer->getCountIndependentSpecies() + mpContainer->getCountDependentSpecies());
   mUnscaledElasticitiesAnn->resize();
-  mUnscaledElasticitiesAnn->setCopasiVector(0, &mpModel->getReactions());
-  mUnscaledElasticitiesAnn->setCopasiVector(1, &mpModel->getMetabolitesX());
+  mUnscaledElasticitiesAnn->setCopasiVector(0, &Model.getReactions());
+  mUnscaledElasticitiesAnn->setCopasiVector(1, &Model.getMetabolitesX());
 
-  mUnscaledConcCC.resize(mpModel->getNumIndependentReactionMetabs() + mpModel->getNumDependentReactionMetabs(),
-                         mpModel->getTotSteps());
+  mUnscaledConcCC.resize(mpContainer->getCountIndependentSpecies() + mpContainer->getCountDependentSpecies(),
+                         mpContainer->getReactions().size());
   mUnscaledConcCCAnn->resize();
-  mUnscaledConcCCAnn->setCopasiVector(0, &mpModel->getMetabolitesX());
-  mUnscaledConcCCAnn->setCopasiVector(1, &mpModel->getReactions());
+  mUnscaledConcCCAnn->setCopasiVector(0, &Model.getMetabolitesX());
+  mUnscaledConcCCAnn->setCopasiVector(1, &Model.getReactions());
 
-  mUnscaledFluxCC.resize(mpModel->getTotSteps(), mpModel->getTotSteps());
+  mUnscaledFluxCC.resize(mpContainer->getReactions().size(), mpContainer->getReactions().size());
   mUnscaledFluxCCAnn->resize();
-  mUnscaledFluxCCAnn->setCopasiVector(0, &mpModel->getReactions());
-  mUnscaledFluxCCAnn->setCopasiVector(1, &mpModel->getReactions());
+  mUnscaledFluxCCAnn->setCopasiVector(0, &Model.getReactions());
+  mUnscaledFluxCCAnn->setCopasiVector(1, &Model.getReactions());
 
   mScaledElasticities.resize(mUnscaledElasticities.numRows(), mUnscaledElasticities.numCols());
   mScaledElasticitiesAnn->resize();
-  mScaledElasticitiesAnn->setCopasiVector(0, &mpModel->getReactions());
-  mScaledElasticitiesAnn->setCopasiVector(1, &mpModel->getMetabolitesX());
+  mScaledElasticitiesAnn->setCopasiVector(0, &Model.getReactions());
+  mScaledElasticitiesAnn->setCopasiVector(1, &Model.getMetabolitesX());
 
   // Reactions are columns, species are rows
   mScaledConcCC.resize(mUnscaledConcCC.numRows(), mUnscaledConcCC.numCols());
   mScaledConcCCAnn->resize();
-  mScaledConcCCAnn->setCopasiVector(0, &mpModel->getMetabolitesX());
-  mScaledConcCCAnn->setCopasiVector(1, &mpModel->getReactions());
+  mScaledConcCCAnn->setCopasiVector(0, &Model.getMetabolitesX());
+  mScaledConcCCAnn->setCopasiVector(1, &Model.getReactions());
 
   // Reactions are columns and rows
   mScaledFluxCC.resize(mUnscaledFluxCC.numRows(), mUnscaledFluxCC.numCols());
   mScaledFluxCCAnn->resize();
-  mScaledFluxCCAnn->setCopasiVector(0, &mpModel->getReactions());
-  mScaledFluxCCAnn->setCopasiVector(1, &mpModel->getReactions());
+  mScaledFluxCCAnn->setCopasiVector(0, &Model.getReactions());
+  mScaledFluxCCAnn->setCopasiVector(1, &Model.getReactions());
 
   mElasticityDependencies.resize(mUnscaledElasticities.numRows(), mUnscaledElasticities.numCols());
 }
@@ -199,63 +197,52 @@ void CMCAMethod::resizeAllMatrices()
 //which is the same as d(flux of substance)/d(amount of substance)
 void CMCAMethod::calculateUnscaledElasticities(C_FLOAT64 /* res */)
 {
-  assert(mpModel);
-
   // We need the number of metabolites determined by reactions.
-  size_t numMetabs =
-    mpModel->getNumIndependentReactionMetabs() + mpModel->getNumDependentReactionMetabs();
-
-  CCopasiVector< CMetab >::iterator itSpecies = mpModel->getMetabolitesX().begin();
-  CCopasiVector< CMetab >::iterator endSpecies = itSpecies + numMetabs;
+  size_t numMetabs = mpContainer->getCountIndependentSpecies() + mpContainer->getCountDependentSpecies();
+  size_t FirstReactionSpeciesIndex = mpContainer->getTimeIndex() + mpContainer->getCountODEs();
+  size_t numReacs = mpContainer->getParticleFluxes().size();
 
   // Calculate the dependencies of the elasticities this is helpful for scaling to determine
   // whether 0/0 is 0 or NaN
+  const CMathDependencyGraph & TransientDependencies = mpContainer->getTransientDependencies();
+
+  CMathObject * pParticleFluxObject = mpContainer->getMathObject(mpContainer->getParticleFluxes().array());
+  CMathObject * pParticleFluxObjectEnd = pParticleFluxObject + numReacs;
+  CMathObject * pSpeciesObjectStart = mpContainer->getMathObject(mpContainer->getState(false).array()) + FirstReactionSpeciesIndex;
+  CMathObject * pSpeciesObjectEnd = pSpeciesObjectStart + numMetabs;
+  CMathObject * pSpeciesObject;
 
   bool * pElasticityDependency = mElasticityDependencies.array();
-  CCopasiVector< CReaction >::const_iterator itReac = mpModel->getReactions().begin();
-  CCopasiVector< CReaction >::const_iterator endReac = mpModel->getReactions().end();
 
-  for (; itReac != endReac; ++itReac)
+  for (; pParticleFluxObject != pParticleFluxObjectEnd; ++pParticleFluxObject)
     {
-      CCopasiObject::DataObjectSet ReactionDependencies;
-      (*itReac)->getParticleFluxReference()->getAllDependencies(ReactionDependencies, DataObjectSet());
-
-      itSpecies = mpModel->getMetabolitesX().begin();
-
-      for (; itSpecies != endSpecies; ++itSpecies, ++pElasticityDependency)
+      for (pSpeciesObject = pSpeciesObjectStart; pSpeciesObject != pSpeciesObjectEnd; ++pSpeciesObject, ++pElasticityDependency)
         {
-          *pElasticityDependency = (ReactionDependencies.find((*itSpecies)->getValueReference()) != ReactionDependencies.end());
+          *pElasticityDependency = TransientDependencies.dependsOn(pParticleFluxObject, CMath::Default, pSpeciesObject);
         }
     }
 
-  const CVector< C_FLOAT64 > & ParticleFlux = mpModel->getParticleFlux();
-
-  //   mUnscaledElasticities.resize(numReacs, numMetabs);
+  // mUnscaledElasticities.resize(numReacs, numMetabs);
   C_FLOAT64 * pElasticity;
-
   C_FLOAT64 * pElasticityEnd = mUnscaledElasticities.array() + mUnscaledElasticities.size();
 
   C_FLOAT64 Store, InvDelta;
-
   C_FLOAT64 X1, X2;
 
   // Arrays to store function value
-  size_t numReacs = mpModel->getReactions().size();
-
   CVector< C_FLOAT64 > Y1(numReacs);
-
   C_FLOAT64 * pY1;
-
   CVector< C_FLOAT64 > Y2(numReacs);
-
   C_FLOAT64 * pY2;
+  const CVectorCore< C_FLOAT64 > & ParticleFluxes = mpContainer->getParticleFluxes();
+
+  C_FLOAT64 * pSpecies = (C_FLOAT64 *) pSpeciesObjectStart->getValuePointer();
+  C_FLOAT64 * pSpeciesEnd = pSpecies + numMetabs;
 
   // calculate elasticities
-  itSpecies = mpModel->getMetabolitesX().begin();
-
-  for (size_t j = 0; itSpecies != endSpecies; ++itSpecies, ++j)
+  for (size_t j = 0; pSpecies != pSpeciesEnd; ++pSpecies, ++j)
     {
-      Store = (*itSpecies)->getValue();
+      Store = *pSpecies;
 
       // We only need to make sure that we do not have an underflow problem
       if (fabs(Store) < 100 * std::numeric_limits< C_FLOAT64 >::min())
@@ -276,18 +263,18 @@ void CMCAMethod::calculateUnscaledElasticities(C_FLOAT64 /* res */)
       InvDelta = 1.0 / (X1 - X2);
 
       // let's take X+dx
-      (*itSpecies)->setValue(X1);
-      mpModel->updateSimulatedValues(false); // TODO test if true or false should be used.
+      *pSpecies = X1;
+      mpContainer->updateSimulatedValues(false); // TODO test if true or false should be used.
 
       // get the fluxes
-      Y1 = ParticleFlux;
+      Y1 = ParticleFluxes;
 
       // now X-dx
-      (*itSpecies)->setValue(X2);
-      mpModel->updateSimulatedValues(false); // TODO test if true or false should be used.
+      *pSpecies = X2;
+      mpContainer->updateSimulatedValues(false); // TODO test if true or false should be used.
 
       // get the fluxes
-      Y2 = ParticleFlux;
+      Y2 = ParticleFluxes;
 
       // set column j of Dxv
       pElasticity = mUnscaledElasticities.array() + j;
@@ -298,17 +285,15 @@ void CMCAMethod::calculateUnscaledElasticities(C_FLOAT64 /* res */)
         * pElasticity = (*pY1 - *pY2) * InvDelta;
 
       // restore the value of the species
-      (*itSpecies)->setValue(Store);
+      *pSpecies = Store;
     }
 
   // make sure the fluxes are correct afterwards (needed for scaling of the MCA results)
-  mpModel->updateSimulatedValues(false);
+  mpContainer->updateSimulatedValues(false);
 }
 
 bool CMCAMethod::calculateUnscaledConcentrationCC()
 {
-  assert(mpModel);
-
   // Calculate RedStoi * mUnscaledElasticities;
   // Note the columns of mUnscaledElasticities must be reordered
 
@@ -396,7 +381,6 @@ bool CMCAMethod::calculateUnscaledConcentrationCC()
 
 bool CMCAMethod::calculateUnscaledFluxCC(const bool & status)
 {
-  assert(mpModel);
   //size_t i, j, k;
 
   // mUnscaledFluxCC := I + mUnscaledElasticities * mUnscaledConcCC
@@ -433,52 +417,54 @@ bool CMCAMethod::calculateUnscaledFluxCC(const bool & status)
 
 bool CMCAMethod::scaleMCA(const bool & status, C_FLOAT64 res)
 {
-  assert(mpModel);
-  // The number of metabs determined by reaction.
-  size_t numSpeciesReaction =
-    mpModel->getNumIndependentReactionMetabs() + mpModel->getNumDependentReactionMetabs();
-  CCopasiVector< CMetab > & metabs = mpModel->getMetabolitesX();
-  CCopasiVector< CMetab >::const_iterator itSpecies = metabs.begin();
-  CCopasiVector< CMetab >::const_iterator endSpecies = itSpecies + numSpeciesReaction;
+  // We need the number of metabolites determined by reactions.
+  size_t numMetabs = mpContainer->getCountIndependentSpecies() + mpContainer->getCountDependentSpecies();
+  size_t FirstReactionSpeciesIndex = mpContainer->getTimeIndex() + mpContainer->getCountODEs();
+  size_t numReacs = mpContainer->getParticleFluxes().size();
 
-  CCopasiVector< CReaction > & reacs = mpModel->getReactions();
-  CCopasiVector< CReaction >::const_iterator itReaction;
-  CCopasiVector< CReaction >::const_iterator endReaction = reacs.end();
+  CMathObject * pSpeciesObjectStart = mpContainer->getMathObject(mpContainer->getState(false).array()) + FirstReactionSpeciesIndex;
+  CMathObject * pSpeciesObjectEnd = pSpeciesObjectStart + numMetabs;
+  CMathObject * pSpeciesObject;
 
-  size_t col;
+  const C_FLOAT64 * pParticleFlux = mpContainer->getParticleFluxes().array();
+  const C_FLOAT64 * pFlux = mpContainer->getFluxes().array();
+  const C_FLOAT64 * pFluxEnd = pFlux + mpContainer->getFluxes().size();
 
   // Scale Elasticities
   C_FLOAT64 * pUnscaled;
   C_FLOAT64 * pScaled;
   bool * pElasticityDependency;
 
-  // Reactions are rows, species are columns
-  for (col = 0; itSpecies != endSpecies; ++itSpecies, col++)
-    {
-      C_FLOAT64 VolumeInv = 1.0 / (*itSpecies)->getCompartment()->getValue();
-      C_FLOAT64 Number = (*itSpecies)->getValue();
+  size_t col = 0;
 
-      for (itReaction = reacs.begin(),
+  // Reactions are rows, species are columns
+  for (pSpeciesObject = pSpeciesObjectStart; pSpeciesObject != pSpeciesObjectEnd; ++pSpeciesObject, ++col)
+    {
+      C_FLOAT64 VolumeInv = 1.0 / *(C_FLOAT64 *)mpContainer->getCompartment(pSpeciesObject)->getValuePointer();
+
+      for (pFlux = mpContainer->getFluxes().array(),
+           pParticleFlux = mpContainer->getParticleFluxes().array(),
            pUnscaled = mUnscaledElasticities.array() + col,
            pScaled = mScaledElasticities.array() + col,
            pElasticityDependency = mElasticityDependencies.array() + col;
-           itReaction != endReaction;
-           ++itReaction,
-           pUnscaled += numSpeciesReaction,
-           pScaled += numSpeciesReaction,
-           pElasticityDependency += numSpeciesReaction)
+           pFlux != pFluxEnd;
+           ++pFlux,
+           ++pParticleFlux,
+           pUnscaled += numMetabs,
+           pScaled += numMetabs,
+           pElasticityDependency += numMetabs)
         {
           if (!*pElasticityDependency)
             {
               *pScaled = 0.0;
             }
-          else if (fabs((*itReaction)->getFlux() * VolumeInv) >= res)
+          else if (fabs(*pFlux) * VolumeInv >= res)
             {
-              *pScaled = *pUnscaled * Number / (*itReaction)->getParticleFlux();
+              *pScaled = *pUnscaled **(C_FLOAT64 *)pSpeciesObject->getValuePointer() / *pParticleFlux;
             }
           else
             {
-              *pScaled = (((*itReaction)->getFlux() < 0.0) ? - std::numeric_limits<C_FLOAT64>::infinity() : std::numeric_limits<C_FLOAT64>::infinity());
+              *pScaled = (*pFlux < 0.0) ? - std::numeric_limits<C_FLOAT64>::infinity() : std::numeric_limits<C_FLOAT64>::infinity();
             }
         }
     }
@@ -495,37 +481,42 @@ bool CMCAMethod::scaleMCA(const bool & status, C_FLOAT64 res)
 
   // Scale ConcCC
   // Reactions are columns, species are rows
-  itSpecies = metabs.begin();
   pUnscaled = mUnscaledConcCC.array();
   pScaled = mScaledConcCC.array();
 
-  for (; itSpecies != endSpecies; ++itSpecies)
-    {
-      // In rare occasions the concentration might not be updated
-      (*(*itSpecies)->getConcentrationReference()->getRefresh())();
-      C_FLOAT64 alt = fabs((*itSpecies)->getConcentration());
+  // In rare occasions the concentration might not be updated
+  mpContainer->updateTransientDataValues();
 
-      for (itReaction = reacs.begin(); itReaction != endReaction; ++itReaction, ++pUnscaled, ++pScaled)
+  for (pSpeciesObject = pSpeciesObjectStart; pSpeciesObject != pSpeciesObjectEnd; ++pSpeciesObject)
+    {
+      C_FLOAT64 alt = fabs(*(C_FLOAT64 *)pSpeciesObject->getCorrespondingProperty()->getValuePointer());
+
+      for (pFlux = mpContainer->getFluxes().array(),
+           pParticleFlux = mpContainer->getParticleFluxes().array();
+           pFlux != pFluxEnd;
+           ++pFlux,
+           ++pParticleFlux,
+           ++pUnscaled,
+           ++pScaled)
         {
           if (alt >= res)
-            *pScaled =
-              *pUnscaled * (*itReaction)->getParticleFlux() / (*itSpecies)->getValue();
+            *pScaled = *pUnscaled **pParticleFlux / *(C_FLOAT64 *)pSpeciesObject->getValuePointer();
           else
             *pScaled = *pUnscaled * std::numeric_limits<C_FLOAT64>::infinity();
         }
     }
 
-  CCopasiVector< CReaction >::const_iterator itReactionCol;
-  itReaction = reacs.begin();
+  const CMathReaction * pReaction = mpContainer->getReactions().array();
+
   pUnscaled = mUnscaledFluxCC.array();
   pScaled = mScaledFluxCC.array();
 
-  for (; itReaction != endReaction; ++itReaction)
+  for (pFlux = mpContainer->getFluxes().array(); pFlux != pFluxEnd; ++pFlux, ++pReaction)
     {
-      const CCompartment * pCompartment = (*itReaction)->getLargestCompartment();
-      C_FLOAT64 Resolution = res * pCompartment->getValue();
+      CMathObject * pCompartment = mpContainer->getLargestReactionCompartment(pReaction);
+      C_FLOAT64 Resolution = (pCompartment != NULL) ?  res **(C_FLOAT64*)pCompartment->getValuePointer() : res;
 
-      C_FLOAT64 Scale = (*itReaction)->getFlux();
+      C_FLOAT64 Scale = *pFlux;
       C_FLOAT64 tmp = 0.0;
       C_FLOAT64 eq = 0.0;
 
@@ -533,9 +524,11 @@ bool CMCAMethod::scaleMCA(const bool & status, C_FLOAT64 res)
       C_FLOAT64 *pSum = pUnscaled;
       C_FLOAT64 *pSumEnd = pSum + mScaledFluxCC.numCols();
 
-      for (itReactionCol = reacs.begin(); pSum != pSumEnd; ++itReactionCol, ++pSum)
+      const C_FLOAT64 * pColFlux = mpContainer->getFluxes().array();
+
+      for (pColFlux = mpContainer->getFluxes().array(); pSum != pSumEnd; ++pColFlux, ++pSum)
         {
-          tmp += *pSum * (*itReactionCol)->getFlux();
+          tmp += *pSum **pColFlux;
           eq += fabs(*pSum);
         }
 
@@ -548,27 +541,27 @@ bool CMCAMethod::scaleMCA(const bool & status, C_FLOAT64 res)
 
       tmp = 0.0;
 
-      for (itReactionCol = reacs.begin(); itReactionCol != endReaction; ++itReactionCol, ++pUnscaled, ++pScaled)
+      for (pColFlux = mpContainer->getFluxes().array(); pColFlux != pFluxEnd; ++pColFlux, ++pUnscaled, ++pScaled)
         {
           // In the diagonal the scaling factors cancel.
           if (eq < res)
             {
-              *pScaled = (itReactionCol != itReaction) ? 0.0  : 1.0;
+              *pScaled = (pColFlux != pFlux) ? 0.0  : 1.0;
             }
-          else if (itReactionCol == itReaction)
+          else if (pColFlux == pFlux)
             {
               *pScaled = *pUnscaled;
             }
           else if (fabs(Scale) >= res)
             {
-              *pScaled = *pUnscaled * (*itReactionCol)->getFlux() / Scale;
+              *pScaled = *pUnscaled **pColFlux / Scale;
             }
           else
             {
-              const CCompartment * pCompartmentCol = (*itReactionCol)->getLargestCompartment();
-              C_FLOAT64 ScaleCol = (pCompartmentCol == NULL) ?
-                                   fabs((*itReactionCol)->getFlux()) :
-                                   fabs((*itReactionCol)->getFlux() / pCompartmentCol->getValue());
+              CMathObject * pCompartmentCol = mpContainer->getLargestReactionCompartment(pReaction);
+              C_FLOAT64 ScaleCol = (pCompartmentCol != NULL) ?
+                                   fabs(*pColFlux / * (C_FLOAT64*)pCompartmentCol->getValuePointer()) :
+                                   fabs(*pColFlux);
 
               if (fabs(ScaleCol) <= res)
                 {
@@ -576,9 +569,9 @@ bool CMCAMethod::scaleMCA(const bool & status, C_FLOAT64 res)
                 }
               else
                 {
-                  *pScaled = (((*itReaction)->getFlux() < 0.0) ?
-                              - std::numeric_limits<C_FLOAT64>::infinity() :
-                              std::numeric_limits<C_FLOAT64>::infinity());
+                  *pScaled = (*pFlux < 0.0) ?
+                             - std::numeric_limits<C_FLOAT64>::infinity() :
+                             std::numeric_limits<C_FLOAT64>::infinity();
                 }
             }
 
@@ -652,14 +645,6 @@ bool CMCAMethod::checkSummationTheorems(const C_FLOAT64 & resolution)
 }
 
 /**
- * Set the Model
- */
-void CMCAMethod::setModel(CModel* model)
-{
-  mpModel = model;
-}
-
-/**
  * the steady state MCA entry point
  * @param ss_solution refer to steady-state solution
  * @param refer to the resolution
@@ -668,8 +653,6 @@ bool CMCAMethod::CalculateMCA(C_FLOAT64 res)
 {
   bool success = true;
   bool SummationTheoremsOK = false;
-
-  assert(mpModel);
 
   calculateUnscaledElasticities(res);
 
@@ -711,7 +694,7 @@ bool CMCAMethod::CalculateMCA(C_FLOAT64 res)
 
 bool CMCAMethod::createLinkMatrix(const bool & useSmallbone)
 {
-  if (mpModel == NULL ||
+  if (mpContainer == NULL ||
       mpSteadyStateTask == NULL)
     {
       return false;
@@ -719,15 +702,15 @@ bool CMCAMethod::createLinkMatrix(const bool & useSmallbone)
 
   if (useSmallbone)
     {
-      mLinkZero.build(mpSteadyStateTask->getJacobian(), mpModel->getNumIndependentReactionMetabs());
-      mReducedStoichiometry = mpModel->getStoi();
+      mLinkZero.build(mpSteadyStateTask->getJacobian(), mpContainer->getModel().getNumIndependentReactionMetabs());
+      mReducedStoichiometry = mpContainer->getModel().getStoi();
       mLinkZero.doRowPivot(mReducedStoichiometry);
       mReducedStoichiometry.resize(mLinkZero.getNumIndependent(), mReducedStoichiometry.numCols(), true);
     }
   else
     {
-      mLinkZero = mpModel->getL0();
-      mReducedStoichiometry = mpModel->getRedStoi();
+      mLinkZero = mpContainer->getModel().getL0();
+      mReducedStoichiometry = mpContainer->getModel().getRedStoi();
     }
 
   return true;
@@ -786,11 +769,6 @@ void CMCAMethod::setFactor(C_FLOAT64 factor)
 void CMCAMethod::setSteadyStateResolution(C_FLOAT64 resolution)
 {
   this->mSteadyStateResolution = resolution;
-}
-
-const CModel* CMCAMethod::getModel() const
-{
-  return this->mpModel;
 }
 
 //virtual
