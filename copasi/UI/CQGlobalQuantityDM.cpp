@@ -46,6 +46,19 @@ CQGlobalQuantityDM::CQGlobalQuantityDM(QObject *parent)
   mItemToType.push_back(CModelEntity::ODE);
 }
 
+
+const QString&
+CQGlobalQuantityDM::indexToStatus(int index) const
+{
+  return mTypes[index];
+}
+
+int
+CQGlobalQuantityDM::statusToIndex(const QString& status) const
+{
+  return mTypes.indexOf(status);
+}
+
 const QStringList& CQGlobalQuantityDM::getTypes()
 {
   return mTypes;
@@ -224,8 +237,24 @@ bool CQGlobalQuantityDM::setData(const QModelIndex &index, const QVariant &value
 
   if (index.data() == value)
     return false;
+
+  if (index.column() == COL_TYPE_GQ && index.data().toString() == QString(FROM_UTF8(CModelEntity::StatusName[mItemToType[value.toInt()]])))
+    return false;
+
+  bool defaultRow = isDefaultRow(index);
+
+  if (defaultRow)
+    {
+      int newRow = rowCount() - 1;
+      mpUndoStack->push(new InsertGlobalQuantityRowsCommand(newRow, 1, this, QModelIndex()));
+      QModelIndex newIndex = createIndex(newRow, index.column(), Qt::DisplayRole);
+      mpUndoStack->push(new GlobalQuantityDataChangeCommand(newIndex, value, role, this));
+
+    }
   else
-    mpUndoStack->push(new GlobalQuantityDataChangeCommand(index, value, role, this));
+    {
+      mpUndoStack->push(new GlobalQuantityDataChangeCommand(index, value, role, this));
+    }
 
 #else
 

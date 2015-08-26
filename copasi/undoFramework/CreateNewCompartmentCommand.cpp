@@ -53,7 +53,6 @@ QString CreateNewCompartmentCommand::createNewCompartmentText() const
 
 CreateNewCompartmentCommand::~CreateNewCompartmentCommand()
 {
-  // TODO Auto-generated destructor stub
   pdelete(mpCompartmentData);
 }
 
@@ -65,4 +64,10 @@ UndoData *CreateNewCompartmentCommand::getUndoData() const
 void CreateNewCompartmentCommand::setType(const CreateNewCompartmentCommand::Type & type)
 {
   mType = COMPARTMENTCREATE;
+}
+
+CreateNewCompartmentCommand *
+CreateNewCompartmentCommand::getCreateNewCompartmentCommand()
+{
+  return this;
 }

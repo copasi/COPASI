@@ -23,7 +23,7 @@
 #include "UndoReactionData.h"
 #include "insertReactionRowsCommand.h"
 
-insertReactionRowsCommand::insertReactionRowsCommand(int position, int rows, CQReactionDM *pReactionDM, const QModelIndex&)
+InsertReactionRowsCommand::InsertReactionRowsCommand(int position, int rows, CQReactionDM *pReactionDM, const QModelIndex&)
   : CCopasiUndoCommand()
   , mpRi(NULL)
   , mpReactionData(NULL)
@@ -37,12 +37,12 @@ insertReactionRowsCommand::insertReactionRowsCommand(int position, int rows, CQR
   setEntityType("Reaction");
 }
 
-insertReactionRowsCommand::~insertReactionRowsCommand()
+InsertReactionRowsCommand::~InsertReactionRowsCommand()
 {
   // TODO Auto-generated destructor stub
 }
 
-void insertReactionRowsCommand::redo()
+void InsertReactionRowsCommand::redo()
 {
   mpReactionDM->insertNewReactionRow(mPosition, mRows, QModelIndex());
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
@@ -70,19 +70,19 @@ void insertReactionRowsCommand::redo()
   else setName(sName);
 }
 
-void insertReactionRowsCommand::undo()
+void InsertReactionRowsCommand::undo()
 {
   mpReactionDM->deleteReactionRow(mpReaction);
   setUndoState(false);
   setAction("Remove from list");
 }
 
-QString insertReactionRowsCommand::insertRowsText() const
+QString InsertReactionRowsCommand::insertRowsText() const
 {
   return QObject::tr(": Inserted New Reaction");
 }
 
-UndoData *insertReactionRowsCommand::getUndoData() const
+UndoData *InsertReactionRowsCommand::getUndoData() const
 {
   return mpReactionData;
 }

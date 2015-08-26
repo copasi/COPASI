@@ -25,7 +25,10 @@
 
 #include "CCopasiUndoCommand.h"
 
-CCopasiUndoCommand::CCopasiUndoCommand(): QUndoCommand()
+CCopasiUndoCommand::CCopasiUndoCommand(const std::string& entityType /*= ""*/,
+                                       CCopasiUndoCommand::Type type /*= INVALID_TYPE*/)
+  : QUndoCommand()
+  , mType(type)
 {
   //initialise the UNDO entity data
   mpSpecieData = new QList <UndoSpecieData*>();
@@ -33,18 +36,19 @@ CCopasiUndoCommand::CCopasiUndoCommand(): QUndoCommand()
   mpGlobalQuantityData = new  QList <UndoGlobalQuantityData*>();
   mpEventData = new  QList <UndoEventData*>();
 
-  //set the characterisation methods for Undo History / provenance to empty string. Sub class must reimplement individual methods if necessary
+  // set the characterisation methods for Undo History /
+  // provenance to empty string. Sub class must reimplement
+  // individual methods if necessary
   setNewValue("");
   setOldValue("");
   setProperty("");
-  setEntityType("");
+  setEntityType(entityType);
   setAction("");
   setName("");
 }
 
 CCopasiUndoCommand::~CCopasiUndoCommand()
 {
-  // TODO Auto-generated destructor stub
   pdelete(mpSpecieData);
   pdelete(mpReactionData);
   pdelete(mpGlobalQuantityData);
@@ -65,7 +69,9 @@ Path CCopasiUndoCommand::pathFromIndex(const QModelIndex &index)
   return path;
 }
 
-QModelIndex CCopasiUndoCommand::pathToIndex(const Path &path, const QAbstractItemModel *model)
+QModelIndex
+CCopasiUndoCommand::pathToIndex(
+  const Path &path, const QAbstractItemModel *model)
 {
   QModelIndex iter;
 
@@ -77,7 +83,11 @@ QModelIndex CCopasiUndoCommand::pathToIndex(const Path &path, const QAbstractIte
   return iter;
 }
 
-const CCopasiUndoCommand::Type & CCopasiUndoCommand::getType() const {return mType;}
+const CCopasiUndoCommand::Type&
+CCopasiUndoCommand::getType() const
+{
+  return mType;
+}
 
 UndoData *CCopasiUndoCommand::getUndoData() const
 {
@@ -367,22 +377,22 @@ std::string CCopasiUndoCommand::getProperty() const
   return mProperty;
 }
 
-void CCopasiUndoCommand::setEntityType(std::string entityType)
+void CCopasiUndoCommand::setEntityType(const std::string& entityType)
 {
   mEntityType = entityType;
 }
 
-void CCopasiUndoCommand::setNewValue(std::string newValue)
+void CCopasiUndoCommand::setNewValue(const std::string& newValue)
 {
   mNewValue = newValue;
 }
 
-void CCopasiUndoCommand::setOldValue(std::string oldValue)
+void CCopasiUndoCommand::setOldValue(const std::string& oldValue)
 {
   mOldValue = oldValue;
 }
 
-void CCopasiUndoCommand::setProperty(std::string property)
+void CCopasiUndoCommand::setProperty(const std::string& property)
 {
   mProperty = property;
 }
@@ -392,7 +402,7 @@ std::string CCopasiUndoCommand::getAction() const
   return mAction;
 }
 
-void CCopasiUndoCommand::setAction(std::string action)
+void CCopasiUndoCommand::setAction(const std::string& action)
 {
   mAction = action;
 }
@@ -402,7 +412,7 @@ std::string CCopasiUndoCommand::getName() const
   return mName;
 }
 
-void CCopasiUndoCommand::setName(std::string name)
+void CCopasiUndoCommand::setName(const std::string& name)
 {
   mName = name;
 }

@@ -1,4 +1,4 @@
-// Copyright (C) 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2014 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -17,11 +17,11 @@
 
 class UndoReactionData;
 
-class insertReactionRowsCommand: public CCopasiUndoCommand
+class InsertReactionRowsCommand: public CCopasiUndoCommand
 {
 public:
-  insertReactionRowsCommand(int position, int rows, CQReactionDM *pReactionDM, const QModelIndex&);
-  virtual ~insertReactionRowsCommand();
+  InsertReactionRowsCommand(int position, int rows, CQReactionDM *pReactionDM, const QModelIndex&);
+  virtual ~InsertReactionRowsCommand();
   void redo();
   void undo();
   QString insertRowsText() const;

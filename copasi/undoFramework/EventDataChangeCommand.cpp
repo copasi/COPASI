@@ -29,7 +29,6 @@ EventDataChangeCommand::EventDataChangeCommand(QModelIndex index, const QVariant
   mRole = role;
 
   //mPathIndex = pathFromIndex(index);
-  this->setText(eventDataChangeText());
 
   //set the data for UNDO history
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
@@ -39,8 +38,6 @@ EventDataChangeCommand::EventDataChangeCommand(QModelIndex index, const QVariant
 
   if (pModel->getEvents().size() <= (size_t)index.row())
     {
-      // TODO: here you have the case of a new event added, that needs to be handled
-      //       otherwise it will crash, for now return
       return;
     }
 
@@ -62,6 +59,9 @@ EventDataChangeCommand::EventDataChangeCommand(QModelIndex index, const QVariant
         setProperty("Name");
         break;
     }
+
+  this->setText(eventDataChangeText());
+
 }
 
 void EventDataChangeCommand::redo()
@@ -76,10 +76,11 @@ void EventDataChangeCommand::undo()
 }
 QString EventDataChangeCommand::eventDataChangeText() const
 {
-  return QObject::tr(": Changed Global Quantity Data");
+  return QString(": Changed Global Quantity %1").arg(getProperty().c_str());
+  // QObject::tr(": Changed Global Quantity Data");
 }
 
 EventDataChangeCommand::~EventDataChangeCommand()
 {
-  // TODO Auto-generated destructor stub
+
 }

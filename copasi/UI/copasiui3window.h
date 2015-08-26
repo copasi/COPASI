@@ -230,6 +230,7 @@ protected slots:
 
 #ifdef COPASI_UNDO
   void slotUndoHistory();
+  void slotClearUndoHistory();
 #endif
   void slotLoadParameterEstimationProtocol();
 private:
@@ -334,6 +335,7 @@ private:
   QAction* mpaUndo;
   QAction* mpaRedo;
   QAction* mpaUndoHistory;
+  QAction* mpaClearUndoHistory;
   QUndoStack *mpUndoStack;
 #endif
 

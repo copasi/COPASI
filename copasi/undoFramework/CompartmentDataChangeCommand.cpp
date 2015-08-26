@@ -18,17 +18,22 @@
 
 #include "CompartmentDataChangeCommand.h"
 
-CompartmentDataChangeCommand::CompartmentDataChangeCommand(QModelIndex index, const QVariant value, int role, CQCompartmentDM *pCompartmentDM)
+CompartmentDataChangeCommand::CompartmentDataChangeCommand(
+  const QModelIndex& index,
+  const QVariant& value,
+  int role,
+  CQCompartmentDM *pCompartmentDM)
+  : CCopasiUndoCommand("Compartment", COMPARTMENTDATACHANGE)
+  , mNew(value)
+  , mOld(index.data(Qt::DisplayRole))
+  , mIndex(index)
+  , mpCompartmentDM(pCompartmentDM)
+  , mRole(role)
+  , mPathIndex()
+
 {
-  // stores the data
-  mOld = index.data(Qt::DisplayRole);
-  mNew = value;
-  mpCompartmentDM = pCompartmentDM;
-  mIndex = index;
-  mRole = role;
 
   //mPathIndex = pathFromIndex(index);
-  this->setText(compartmentDataChangeText());
 
   //set the data for UNDO history
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
@@ -38,14 +43,10 @@ CompartmentDataChangeCommand::CompartmentDataChangeCommand(QModelIndex index, co
 
   if (pModel->getCompartments().size() <= (size_t)index.row())
     {
-      // TODO: here you have the case of a new compartment added, that needs to be handled
-      //       otherwise it will crash, for now return
       return;
     }
 
   CCompartment *pCompartment = pModel->getCompartments()[index.row()];
-  mType = COMPARTMENTDATACHANGE;
-  setEntityType("Compartment");
   setAction("Change");
   setName(pCompartment->getObjectName());
   setOldValue(TO_UTF8(mOld.toString()));
@@ -85,24 +86,30 @@ CompartmentDataChangeCommand::CompartmentDataChangeCommand(QModelIndex index, co
         setProperty("Initial Volume");
         break;
     }
+
+  setText(compartmentDataChangeText());
+
 }
 
 void CompartmentDataChangeCommand::redo()
 {
   mpCompartmentDM->compartmentDataChange(mIndex, mNew, mRole);
 }
+
 void CompartmentDataChangeCommand::undo()
 {
   //mIndex = pathToIndex(mPathIndex, mpCompartmentDM);
   mpCompartmentDM->compartmentDataChange(mIndex, mOld, mRole);
   setAction("Undone change");
 }
+
 QString CompartmentDataChangeCommand::compartmentDataChangeText() const
 {
-  return QObject::tr(": Changed Compartment Data");
+  return QString(": Changed Compartment %1").arg(getProperty().c_str());
+  //QObject::tr(": Changed Compartment Data");
 }
 
 CompartmentDataChangeCommand::~CompartmentDataChangeCommand()
 {
-  // TODO Auto-generated destructor stub
+
 }

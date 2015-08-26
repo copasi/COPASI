@@ -210,8 +210,20 @@ bool CQEventDM::setData(const QModelIndex &index, const QVariant &value,
 
   if (index.data() == value)
     return false;
+
+  bool defaultRow = isDefaultRow(index);
+
+  if (defaultRow)
+    {
+      int newRow = rowCount() - 1;
+      mpUndoStack->push(new InsertEventRowsCommand(newRow, 1, this, QModelIndex()));
+      QModelIndex newIndex = createIndex(newRow, index.column(), Qt::DisplayRole);
+      mpUndoStack->push(new EventDataChangeCommand(newIndex, value, role, this));
+    }
   else
-    mpUndoStack->push(new EventDataChangeCommand(index, value, role, this));
+    {
+      mpUndoStack->push(new EventDataChangeCommand(index, value, role, this));
+    }
 
 #else
 

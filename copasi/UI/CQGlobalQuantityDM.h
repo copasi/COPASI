@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -51,6 +51,9 @@ public:
   bool setData(const QModelIndex &index, const QVariant &value,
                int role = Qt::EditRole);
   bool removeRows(QModelIndexList rows, const QModelIndex &index = QModelIndex());
+
+  const QString& indexToStatus(int index) const;
+  int statusToIndex(const QString& status) const;
 
   //TODO Undo
 #ifdef COPASI_UNDO

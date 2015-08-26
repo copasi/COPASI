@@ -423,10 +423,17 @@ void CopasiUI3Window::createActions()
 
   //TODO UNDO framework
 #ifdef COPASI_UNDO
-  mpaUndo = new QAction(this);
-  mpaRedo = new QAction(this);
+  mpaUndo = mpUndoStack->createUndoAction(this);
+  mpaUndo->setShortcut(QKeySequence::Undo);
+  mpaRedo = mpUndoStack->createRedoAction(this);
+  mpaRedo->setShortcut(QKeySequence::Redo);
+
   mpaUndoHistory = new QAction("&Undo History", this);
   connect(mpaUndoHistory, SIGNAL(activated()), this, SLOT(slotUndoHistory()));
+
+  mpaClearUndoHistory = new QAction("&Clear Undo History", this);
+  connect(mpaClearUndoHistory, SIGNAL(activated()), this, SLOT(slotClearUndoHistory()));
+
 #endif
 
   mpaParameterEstimationResult = new QAction("Load Parameter Estimation Protocol", this);
@@ -584,9 +591,10 @@ void CopasiUI3Window::createMenuBar()
   //********** edit menu ************
 #ifdef COPASI_UNDO
   QMenu * pEditMenu = menuBar()->addMenu("&Edit");
-  pEditMenu->insertAction(mpaUndo, mpUndoStack->createUndoAction(this));
-  pEditMenu->insertAction(mpaRedo, mpUndoStack->createRedoAction(this));
+  pEditMenu->addAction(mpaUndo);
+  pEditMenu->addAction(mpaRedo);
   pEditMenu->addAction(mpaUndoHistory);
+  pEditMenu->addAction(mpaClearUndoHistory);
 #endif
 
   //****** tools menu **************
@@ -815,6 +823,10 @@ void CopasiUI3Window::newDoc()
 
   mSaveAsRequired = true;
   mCommitRequired = true;
+
+#ifdef COPASI_UNDO
+  mpUndoStack->clear();
+#endif
 }
 
 void CopasiUI3Window::openInitialDocument(const QString & file)
@@ -3202,6 +3214,13 @@ void CopasiUI3Window::slotOpenRecentSEDMLFile(QAction * pAction)
 #endif
 
 #ifdef COPASI_UNDO
+
+void
+CopasiUI3Window::slotClearUndoHistory()
+{
+  mpUndoStack->clear();
+}
+
 void CopasiUI3Window::slotUndoHistory()
 {
   CQUndoHistoryDialog* undoDialog = new CQUndoHistoryDialog(this, mpUndoStack); //, "Undo History Dialog", 76, 30);
