@@ -1,16 +1,16 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
-// All rights reserved.
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+// and The University of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
-// All rights reserved.
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc. and EML Research, gGmbH. 
+// All rights reserved. 
 
 #include "CQEventsWidget.h"
 
@@ -62,7 +62,7 @@ CQEventsWidget::CQEventsWidget(QWidget* parent, const char* name)
 #ifdef COPASI_UNDO
   CopasiUI3Window *  pWindow = dynamic_cast<CopasiUI3Window * >(parent->parent());
   mpEventDM->setUndoStack(pWindow->getUndoStack());
-  connect(mpEventDM, SIGNAL(changeWidget(const size_t&)), this, SLOT(slotChangeWidget(const size_t&)));
+  connect(mpEventDM, SIGNAL(changeWidget(int)), this, SLOT(slotChangeWidget(int)));
 #endif
 }
 
@@ -269,7 +269,7 @@ void CQEventsWidget::slotFilterChanged()
 }
 
 #ifdef COPASI_UNDO
-void CQEventsWidget:: slotChangeWidget(const size_t & id)
+void CQEventsWidget:: slotChangeWidget(int id)
 {
   mpListView->switchToOtherWidget(id, "");
 }

@@ -1,12 +1,12 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2009 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
-// All rights reserved.
+// Copyright (C) 2009 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+// and The University of Manchester. 
+// All rights reserved. 
 
 #include "CQCompartmentsWidget.h"
 
@@ -62,7 +62,7 @@ CQCompartmentsWidget::CQCompartmentsWidget(QWidget* parent, const char* name)
 #ifdef COPASI_UNDO
   CopasiUI3Window *  pWindow = dynamic_cast<CopasiUI3Window * >(parent->parent());
   mpCompartmentDM->setUndoStack(pWindow->getUndoStack());
-  connect(mpCompartmentDM, SIGNAL(changeWidget(const size_t&)), this, SLOT(slotChangeWidget(const size_t&)));
+  connect(mpCompartmentDM, SIGNAL(changeWidget(int)), this, SLOT(slotChangeWidget(int)));
 #endif
 }
 
@@ -269,7 +269,7 @@ void CQCompartmentsWidget::slotFilterChanged()
 }
 
 #ifdef COPASI_UNDO
-void CQCompartmentsWidget:: slotChangeWidget(const size_t & id)
+void CQCompartmentsWidget:: slotChangeWidget(int id)
 {
   mpListView->switchToOtherWidget(id, "");
 }

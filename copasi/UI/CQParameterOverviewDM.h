@@ -1,7 +1,7 @@
-// Copyright (C) 2012 - 2014 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
+// Copyright (C) 2012 - 2015 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
 #ifndef COPASI_CQParameterOverviewDM
 #define COPASI_CQParameterOverviewDM
@@ -65,7 +65,7 @@ signals:
   void signalCloseEditor(const QModelIndex &) const;
 
 #ifdef COPASI_UNDO
-  void changeWidget(const size_t & id);
+  void changeWidget(int id);
 #endif
 
 private:
