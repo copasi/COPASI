@@ -423,8 +423,12 @@ void CQEventDM::deleteEventRow(UndoEventData *pEventData)
   if (index == C_INVALID_INDEX)
     return;
 
-  removeRow((int) index);
+  // careful! need to first change the widget (as this will result in the
+  // event widget to save back its data in case it was active) ...
   emit changeWidget(116);
+
+  // only then can we safely delete this item
+  removeRow((int) index);
 }
 
 void CQEventDM::addEventRow(UndoEventData *pEventData)
