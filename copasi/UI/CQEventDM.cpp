@@ -418,8 +418,11 @@ void CQEventDM::deleteEventRow(UndoEventData *pEventData)
 {
   CModel * pModel = (*CCopasiRootContainer::getDatamodelList())[0]->getModel();
 
-  CEvent * pGQ = pModel->getEvents()[pEventData->getName()];
-  size_t index = pModel->getEvents().CCopasiVector< CEvent >::getIndex(pGQ);
+  size_t index = pModel->getEvents().getIndex(pEventData->getName());
+
+  if (index == C_INVALID_INDEX)
+    return;
+
   removeRow((int) index);
   emit changeWidget(116);
 }

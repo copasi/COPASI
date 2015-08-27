@@ -469,8 +469,11 @@ void CQGlobalQuantityDM::deleteGlobalQuantityRow(UndoGlobalQuantityData *pGlobal
 {
   CModel * pModel = (*CCopasiRootContainer::getDatamodelList())[0]->getModel();
 
-  CModelValue * pGQ = pModel->getModelValues()[pGlobalQuantityData->getName()];
-  size_t index = pModel->getModelValues().CCopasiVector< CModelValue >::getIndex(pGQ);
+  size_t index = pModel->getModelValues().getIndex(pGlobalQuantityData->getName());
+
+  if (index == C_INVALID_INDEX)
+    return;
+
   removeRow((int) index);
   emit changeWidget(115);
 }

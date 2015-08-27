@@ -498,8 +498,11 @@ void CQCompartmentDM::deleteCompartmentRow(UndoCompartmentData *pCompartmentData
 {
   CModel * pModel = (*CCopasiRootContainer::getDatamodelList())[0]->getModel();
 
-  CCompartment * pCompartment = pModel->getCompartments()[pCompartmentData->getName()];
-  size_t index = pModel->getCompartments().CCopasiVector< CCompartment >::getIndex(pCompartment);
+  size_t index = pModel->getCompartments().getIndex(pCompartmentData->getName());
+
+  if (index == C_INVALID_INDEX)
+    return;
+
   removeRow((int) index);
 
   emit changeWidget(111);
