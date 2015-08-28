@@ -66,7 +66,7 @@ CQUndoHistoryDialog::~CQUndoHistoryDialog()
 void
 CQUndoHistoryDialog::slotUndo()
 {
-  QModelIndexList& indexList = mpUndoHistoryView->selectionModel()->selectedRows();
+  QModelIndexList indexList = mpUndoHistoryView->selectionModel()->selectedRows();
 
   if (indexList.isEmpty())
     return;
