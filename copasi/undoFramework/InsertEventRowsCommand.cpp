@@ -20,16 +20,16 @@
 #include "UndoEventAssignmentData.h"
 #include "InsertEventRowsCommand.h"
 
-InsertEventRowsCommand::InsertEventRowsCommand(int position, int rows, CQEventDM *pEventDM, const QModelIndex&): CCopasiUndoCommand()
+InsertEventRowsCommand::InsertEventRowsCommand(int position, int rows, CQEventDM *pEventDM, const QModelIndex& index)
+  : CCopasiUndoCommand("Event", EVENTINSERT)
+  , mpEventDM(pEventDM)
+  , mRows(rows)
+  , mPosition(position)
+  , mIndex(index)
+  , mpEventData(new UndoEventData())
+  , firstTime(true)
 {
-  mpEventDM = pEventDM;
-  mpEventData = new UndoEventData();
   this->setText(insertRowsText());
-  mRows = rows;
-  mPosition = position;
-  firstTime = true;
-  mType = EVENTINSERT;
-  setEntityType("Event");
 }
 
 void InsertEventRowsCommand::redo()
@@ -93,6 +93,5 @@ UndoData *InsertEventRowsCommand::getUndoData() const
 
 InsertEventRowsCommand::~InsertEventRowsCommand()
 {
-  // TODO Auto-generated destructor stub
   pdelete(mpEventData);
 }

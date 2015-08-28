@@ -25,8 +25,10 @@
 #include "RemoveAllCompartmentRowsCommand.h"
 
 RemoveAllCompartmentRowsCommand::RemoveAllCompartmentRowsCommand(CQCompartmentDM * pCompartmentDM, const QModelIndex&)
+  : CCopasiUndoCommand("Compartment", COMPARTMENTREMOVEALL)
+  , mpCompartmentDM(pCompartmentDM)
+  , mpCompartmentData()
 {
-  mpCompartmentDM = pCompartmentDM;
 
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
@@ -58,8 +60,6 @@ RemoveAllCompartmentRowsCommand::RemoveAllCompartmentRowsCommand(CQCompartmentDM
         }
     }
 
-  mType = COMPARTMENTREMOVEALL;
-  setEntityType("Compartment");
   this->setText(removeAllCompartmentRowsText());
 }
 
@@ -79,14 +79,22 @@ void RemoveAllCompartmentRowsCommand::undo()
 
 QString RemoveAllCompartmentRowsCommand::removeAllCompartmentRowsText() const
 {
-  return QObject::tr(": Removed All Compartments");
+  return QObject::tr(": Removed all compartments");
 }
 
 RemoveAllCompartmentRowsCommand::~RemoveAllCompartmentRowsCommand()
 {
-  // TODO Auto-generated destructor stub
-  pdelete(this->mpSpecieData);
-  pdelete(this->mpReactionData);
-  pdelete(this->mpGlobalQuantityData);
-  pdelete(this->mpEventData);
+  // should be freeing the memory allocated above, rather than ]
+  // the elements freed by the parent
+  foreach(UndoCompartmentData * data, mpCompartmentData)
+  {
+    pdelete(data);
+  }
+  mpCompartmentData.clear();
+
+  //// TODO Auto-generated destructor stub
+  //pdelete(this->mpSpecieData);
+  //pdelete(this->mpReactionData);
+  //pdelete(this->mpGlobalQuantityData);
+  //pdelete(this->mpEventData);
 }

@@ -20,16 +20,16 @@
 #include "InsertSpecieRowsCommand.h"
 #include "UndoSpecieData.h"
 
-InsertSpecieRowsCommand::InsertSpecieRowsCommand(int position, int rows, CQSpecieDM *pSpecieDM, const QModelIndex&): CCopasiUndoCommand()
+InsertSpecieRowsCommand::InsertSpecieRowsCommand(int position, int rows, CQSpecieDM *pSpecieDM, const QModelIndex& index)
+  : CCopasiUndoCommand("Species", SPECIEINSERT)
+  , mpSpecieDM(pSpecieDM)
+  , mRows(rows)
+  , mPosition(position)
+  , mIndex(index)
+  , mpSpecieData(new UndoSpecieData())
+  , firstTime(true)
 {
-  mpSpecieDM = pSpecieDM;
-  mpSpecieData = new UndoSpecieData();
   this->setText(insertRowsText());
-  mRows = rows;
-  mPosition = position;
-  firstTime = true;
-  mType = SPECIEINSERT;
-  setEntityType("Species");
 }
 
 void InsertSpecieRowsCommand::redo()
@@ -63,7 +63,7 @@ void InsertSpecieRowsCommand::undo()
 {
   mpSpecieDM->deleteSpecieRow(mpSpecieData);
   setUndoState(false);
-  setAction("Reomve from list");
+  setAction("Remove from list");
 }
 
 QString InsertSpecieRowsCommand::insertRowsText() const
@@ -78,6 +78,5 @@ UndoData *InsertSpecieRowsCommand::getUndoData() const
 
 InsertSpecieRowsCommand::~InsertSpecieRowsCommand()
 {
-  // TODO Auto-generated destructor stub
   pdelete(mpSpecieData);
 }

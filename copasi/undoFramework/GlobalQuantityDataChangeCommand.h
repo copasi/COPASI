@@ -23,8 +23,11 @@ public:
                                   const QVariant& value,
                                   int role,
                                   CQGlobalQuantityDM *pGlobalQuantityDM);
+  virtual ~GlobalQuantityDataChangeCommand();
+
   void redo();
   void undo();
+
   QString globalQuantityDataChangeText() const;
 
 private:
@@ -34,7 +37,6 @@ private:
   int mRole;
   Path mPathIndex;
 
-  virtual ~GlobalQuantityDataChangeCommand();
 };
 
 #endif /* GLOBALQUANTITYDATACHANGECOMMAND_H_ */

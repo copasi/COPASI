@@ -1,4 +1,4 @@
-// Copyright (C) 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2014 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -27,7 +27,7 @@ public:
   DeleteGlobalQuantityCommand(CQModelValue *pModelValue);
   void redo();
   void undo();
-  QString deleteGlobalQuantityText(std::string &name) const;
+  QString deleteGlobalQuantityText(const std::string &name) const;
 
   UndoData *getUndoData() const;
 

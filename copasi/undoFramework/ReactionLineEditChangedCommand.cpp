@@ -1,4 +1,4 @@
-// Copyright (C) 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2014 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -16,22 +16,24 @@
 #include "ReactionLineEditChangedCommand.h"
 
 ReactionLineEditChangedCommand::ReactionLineEditChangedCommand(ReactionsWidget1 *pReactionWidget)
+  : CCopasiUndoCommand("Reaction", REACTIONLINEEDITCHANGE, "Change", "Reaction")
+  , mpReactionWidget(pReactionWidget)
+  , mEq()
+  , mOldEq()
+  , mFunctionName()
+  , mOldFunctionName()
+  , mFirstTime(true)
 {
-  mFirstTime = true;
-  mpReactionWidget = pReactionWidget;
   mOldEq = mpReactionWidget->mpRi->getChemEqString();
   mOldFunctionName = mpReactionWidget->mpRi->getFunctionName();
   this->setText(lineEditChangedText());
 
   //set the data for UNDO history
-  mType = REACTIONLINEEDITCHANGE;
-  setEntityType("Reaction");
-  setAction("Change");
   CReaction* reac = dynamic_cast< CReaction * >(mpReactionWidget->mpObject);
   setName(reac->getObjectName());
   setOldValue(mOldEq);
-  setProperty("Reaction");
 }
+
 void ReactionLineEditChangedCommand::redo()
 {
   if (mFirstTime)
@@ -57,12 +59,11 @@ void ReactionLineEditChangedCommand::undo()
 
 QString ReactionLineEditChangedCommand::lineEditChangedText() const
 {
-  std::string myEntityName(": Reaction Line Edit ");
-  char* entityName = (char*)myEntityName.c_str();
-  return QObject::tr(entityName);
+//  std::string myEntityName(": Reaction Line Edit ");
+//  char* entityName = (char*)myEntityName.c_str();
+  return QObject::tr(": Changed reaction scheme ");
 }
 
 ReactionLineEditChangedCommand::~ReactionLineEditChangedCommand()
 {
-  // TODO Auto-generated destructor stub
 }

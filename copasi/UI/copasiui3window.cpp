@@ -935,15 +935,18 @@ void CopasiUI3Window::slotFileOpen(QString file)
       mNewFile = newFile;
       connect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(slotFileOpenFinished(bool)));
       mpDataModelGUI->loadModel(TO_UTF8(newFile));
+
     }
 
-#ifdef COPASI_UNDO
-  mpUndoStack->clear();
-#endif
 }
 
 void CopasiUI3Window::slotFileOpenFinished(bool success)
 {
+
+#ifdef COPASI_UNDO
+  mpUndoStack->clear();
+#endif
+
   disconnect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(slotFileOpenFinished(bool)));
   unsetCursor();
   mCommitRequired = true;
@@ -1420,6 +1423,10 @@ void CopasiUI3Window::importSBMLFromString(const std::string& sbmlDocumentText)
 
 void CopasiUI3Window::slotImportSBMLFromStringFinished(bool success)
 {
+#ifdef COPASI_UNDO
+  mpUndoStack->clear();
+#endif
+
   disconnect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(slotImportSBMLFromStringFinished(bool)));
   unsetCursor();
   mCommitRequired = true;
@@ -1537,6 +1544,10 @@ void CopasiUI3Window::slotImportSBML(QString file)
 
 void CopasiUI3Window::slotImportSBMLFinished(bool success)
 {
+#ifdef COPASI_UNDO
+  mpUndoStack->clear();
+#endif
+
   disconnect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(slotImportSBMLFinished(bool)));
   unsetCursor();
   mCommitRequired = true;
@@ -1993,10 +2004,6 @@ void CopasiUI3Window::refreshRecentSBMLFileMenu()
       mRecentSBMLFilesActionMap[pAction] = Index;
     }
 
-  //clear the Undo stack
-#ifdef COPASI_UNDO
-  mpUndoStack->clear();
-#endif
 }
 
 void CopasiUI3Window::exportSBMLToString(std::string & SBML)
@@ -2908,6 +2915,11 @@ void CopasiUI3Window::slotFileExamplesSEDMLFiles(QString file)
 }
 void CopasiUI3Window::slotImportSEDMLFromStringFinished(bool success)
 {
+
+#ifdef COPASI_UNDO
+  mpUndoStack->clear();
+#endif
+
   disconnect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(slotImportSEDMLFromStringFinished(bool)));
   unsetCursor();
   mCommitRequired = true;
@@ -2954,6 +2966,11 @@ void CopasiUI3Window::slotImportSEDMLFromStringFinished(bool success)
 
 void CopasiUI3Window::slotImportSEDMLFinished(bool success)
 {
+
+#ifdef COPASI_UNDO
+  mpUndoStack->clear();
+#endif
+
   disconnect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(slotImportSEDMLFinished(bool)));
   unsetCursor();
   mCommitRequired = true;
@@ -3097,10 +3114,6 @@ void CopasiUI3Window::refreshRecentSEDMLFileMenu()
       mRecentSEDMLFilesActionMap[pAction] = Index;
     }
 
-  //clear the Undo stack
-#ifdef COPASI_UNDO
-  mpUndoStack->clear();
-#endif
 }
 
 //TODO

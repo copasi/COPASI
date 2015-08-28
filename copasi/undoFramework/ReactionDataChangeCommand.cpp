@@ -21,13 +21,18 @@ ReactionDataChangeCommand::ReactionDataChangeCommand(
   const QVariant& value,
   int role,
   CQReactionDM *pReactionDM)
+  : CCopasiUndoCommand("Reaction", REACTIONDATACHANGE, "Change")
+  , mNew(value)
+  , mOld(index.data(Qt::DisplayRole))
+  , mIndex(index)
+  , mpReactionDM(pReactionDM)
+  , mRole(role)
+  , mPathIndex()
+  , mOldFunctionName()
+  , mNewFunctionName("")
 {
   // stores the data
-  mOld = index.data(Qt::DisplayRole);
-  mNew = value;
-  mpReactionDM = pReactionDM;
-  mIndex = index;
-  mRole = role;
+
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   CCopasiVectorNS < CReaction > &reactions = (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getReactions();
 
@@ -38,14 +43,10 @@ ReactionDataChangeCommand::ReactionDataChangeCommand(
 
   CReaction *pRea = reactions[index.row()];
   mOldFunctionName = FROM_UTF8(pRea->getFunction()->getObjectName());
-  mNewFunctionName = "";
 
   //mPathIndex = pathFromIndex(index);
 
   //set the data for UNDO history
-  mType = REACTIONDATACHANGE;
-  setEntityType("Reaction");
-  setAction("Change");
   setName(pRea->getObjectName());
   setOldValue(TO_UTF8(mOld.toString()));
   setNewValue(TO_UTF8(mNew.toString()));

@@ -24,22 +24,21 @@
 #include "insertReactionRowsCommand.h"
 
 InsertReactionRowsCommand::InsertReactionRowsCommand(int position, int rows, CQReactionDM *pReactionDM, const QModelIndex&)
-  : CCopasiUndoCommand()
+  : CCopasiUndoCommand("Reaction", REACTIONINSERT)
+  , mpReactionDM(pReactionDM)
+  , mRows(rows)
+  , mPosition(position)
+  , mpReaction(NULL)
   , mpRi(NULL)
-  , mpReactionData(NULL)
+  , mpReactionData(new UndoReactionData())
 
 {
-  mpReactionDM = pReactionDM;
   this->setText(insertRowsText());
-  mRows = rows;
-  mPosition = position;
-  mType = REACTIONINSERT;
-  setEntityType("Reaction");
 }
 
 InsertReactionRowsCommand::~InsertReactionRowsCommand()
 {
-  // TODO Auto-generated destructor stub
+  pdelete(mpReactionData)
 }
 
 void InsertReactionRowsCommand::redo()
@@ -53,21 +52,17 @@ void InsertReactionRowsCommand::redo()
   mpReaction = pModel->getReactions()[mPosition];
   std::string sName = mpReaction->getObjectName();
 
-  if (mpReactionData != NULL)
-    mpReactionData->setName(sName);
+  mpReactionData->setName(sName);
 
   CReactionInterface* ri = new CReactionInterface((*CCopasiRootContainer::getDatamodelList())[0]->getModel());
   ri->initFromReaction(mpReaction);
 
-  if (mpReactionData != NULL)
-    mpReactionData->setRi(ri);
+  mpReactionData->setRi(ri);
 
   setUndoState(true);
   setAction("Add to list");
 
-  if (mpReactionData != NULL)
-    setName(mpReactionData->getName());
-  else setName(sName);
+  setName(sName);
 }
 
 void InsertReactionRowsCommand::undo()

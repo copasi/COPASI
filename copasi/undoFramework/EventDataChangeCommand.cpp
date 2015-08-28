@@ -20,14 +20,15 @@
 #include "EventDataChangeCommand.h"
 
 EventDataChangeCommand::EventDataChangeCommand(QModelIndex index, const QVariant value, int role, CQEventDM *pEventDM)
+  : CCopasiUndoCommand("Event", EVENTDATACHANGE, "Change")
+  , mNew(value)
+  , mOld(index.data(Qt::DisplayRole))
+  , mIndex(index)
+  , mpEventDM(pEventDM)
+  , mRole(role)
+  , mPathIndex()
 {
   // stores the data
-  mOld = index.data(Qt::DisplayRole);
-  mNew = value;
-  mpEventDM = pEventDM;
-  mIndex = index;
-  mRole = role;
-
   //mPathIndex = pathFromIndex(index);
 
   //set the data for UNDO history
@@ -42,9 +43,6 @@ EventDataChangeCommand::EventDataChangeCommand(QModelIndex index, const QVariant
     }
 
   CEvent *pEvent = pModel->getEvents()[index.row()];
-  mType = EVENTDATACHANGE;
-  setEntityType("Event");
-  setAction("Change");
   setName(pEvent->getObjectName());
   setOldValue(TO_UTF8(mOld.toString()));
   setNewValue(TO_UTF8(mNew.toString()));

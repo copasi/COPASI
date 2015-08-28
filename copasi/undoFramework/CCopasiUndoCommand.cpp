@@ -26,25 +26,28 @@
 #include "CCopasiUndoCommand.h"
 
 CCopasiUndoCommand::CCopasiUndoCommand(const std::string& entityType /*= ""*/,
-                                       CCopasiUndoCommand::Type type /*= INVALID_TYPE*/)
+                                       CCopasiUndoCommand::Type type /*= INVALID_TYPE*/,
+                                       const std::string& action /*= ""*/,
+                                       const std::string& property /*= ""*/,
+                                       const std::string& newValue /*= ""*/,
+                                       const std::string& oldValue /*= ""*/,
+                                       const std::string& name /*= ""*/
+                                      )
   : QUndoCommand()
+  , mpSpecieData(new QList <UndoSpecieData*>())
+  , mpReactionData(new  QList <UndoReactionData*>())
+  , mpGlobalQuantityData(new  QList <UndoGlobalQuantityData*>())
+  , mpEventData(new  QList <UndoEventData*>())
   , mType(type)
+  , undoState(false)
+  , mNewValue(newValue)
+  , mOldValue(oldValue)
+  , mProperty(property)
+  , mEntityType(entityType)
+  , mAction(action)
+  , mName(name)
 {
-  //initialise the UNDO entity data
-  mpSpecieData = new QList <UndoSpecieData*>();
-  mpReactionData = new  QList <UndoReactionData*>();
-  mpGlobalQuantityData = new  QList <UndoGlobalQuantityData*>();
-  mpEventData = new  QList <UndoEventData*>();
 
-  // set the characterisation methods for Undo History /
-  // provenance to empty string. Sub class must reimplement
-  // individual methods if necessary
-  setNewValue("");
-  setOldValue("");
-  setProperty("");
-  setEntityType(entityType);
-  setAction("");
-  setName("");
 }
 
 CCopasiUndoCommand::~CCopasiUndoCommand()

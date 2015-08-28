@@ -22,9 +22,13 @@
 #include "DeleteReactionCommand.h"
 
 DeleteReactionCommand::DeleteReactionCommand(ReactionsWidget1 *pReactionWidget)
+  : CCopasiUndoCommand("Reaction", REACTIONDELETE)
+  , mReaObjectName()
+  , mpRi(NULL)
+  , mpReaction(NULL)
+  , mpReactionData(new UndoReactionData())
+  , mpReactionWidget(pReactionWidget)
 {
-  mpReactionWidget = pReactionWidget;
-  mpReactionData = new UndoReactionData();
   mpReaction = dynamic_cast< CReaction * >(CCopasiRootContainer::getKeyFactory()->get(mpReactionWidget->mKey));
   mReaObjectName = mpReaction->getObjectName();
   mpRi = new CReactionInterface((*CCopasiRootContainer::getDatamodelList())[0]->getModel());
@@ -34,14 +38,11 @@ DeleteReactionCommand::DeleteReactionCommand(ReactionsWidget1 *pReactionWidget)
   mpReactionData->setRi(mpRi);
 
   this->setText(deleteReactionText(mReaObjectName));
-  mType = REACTIONDELETE;
-  setEntityType("Reaction");
   setName(mReaObjectName);
 }
 
 DeleteReactionCommand::~DeleteReactionCommand()
 {
-  // TODO Auto-generated destructor stub
   pdelete(mpReactionData);
   pdelete(mpRi);
 }
@@ -62,9 +63,10 @@ void DeleteReactionCommand::undo()
 
 QString DeleteReactionCommand::deleteReactionText(std::string &name) const
 {
-  std::string myEntityName(": Delete Reaction " + name);
-  char* entityName = (char*)myEntityName.c_str();
-  return QObject::tr(entityName);
+//  std::string myEntityName(": Delete Reaction " + name);
+//  char* entityName = (char*)myEntityName.c_str();
+//  return QObject::tr(entityName);
+  return QString(": Deleted reaction %1").arg(name.c_str());
 }
 
 UndoData *DeleteReactionCommand::getUndoData() const

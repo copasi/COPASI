@@ -22,11 +22,13 @@
 #include "DeleteGlobalQuantityCommand.h"
 
 DeleteGlobalQuantityCommand::DeleteGlobalQuantityCommand(CQModelValue *pModelValue)
+  : CCopasiUndoCommand("Global Quantity", GLOBALQUANTITYDELETE)
+  , mFirstTime(true)
+  , mpGlobalQuantityData(new UndoGlobalQuantityData())
+  , mpModelValue(pModelValue)
 {
-  mpModelValue = pModelValue;
-  mFirstTime = true;
-  mpGlobalQuantityData = new UndoGlobalQuantityData();
-  std::string sName = mpModelValue->mpModelValue->getObjectName();
+
+  const std::string& sName = mpModelValue->mpModelValue->getObjectName();
   mpGlobalQuantityData->setName(sName);
   mpGlobalQuantityData->setStatus(mpModelValue->mpModelValue->getStatus());
 
@@ -52,8 +54,6 @@ DeleteGlobalQuantityCommand::DeleteGlobalQuantityCommand(CQModelValue *pModelVal
   mpGlobalQuantityData->setSpecieDependencyObjects(getSpecieData());
   mpGlobalQuantityData->setEventDependencyObjects(getEventData());
 
-  mType = GLOBALQUANTITYDELETE;
-  setEntityType("Global Quantity");
   this->setText(deleteGlobalQuantityText(sName));
   setName(sName);
 }
@@ -81,11 +81,12 @@ void DeleteGlobalQuantityCommand::undo()
   setAction("Undelete");
 }
 
-QString DeleteGlobalQuantityCommand::deleteGlobalQuantityText(std::string &name) const
+QString DeleteGlobalQuantityCommand::deleteGlobalQuantityText(const std::string &name) const
 {
-  std::string myEntityName(": Delete Global Quantity " + name);
-  char* entityName = (char*)myEntityName.c_str();
-  return QObject::tr(entityName);
+//  std::string myEntityName(": Delete Global Quantity " + name);
+//  char* entityName = (char*)myEntityName.c_str();
+//  return QObject::tr(entityName);
+  return QString(": Deleted global quantity %1").arg(name.c_str());
 }
 
 UndoData *DeleteGlobalQuantityCommand::getUndoData() const
@@ -95,6 +96,5 @@ UndoData *DeleteGlobalQuantityCommand::getUndoData() const
 
 DeleteGlobalQuantityCommand::~DeleteGlobalQuantityCommand()
 {
-  // TODO Auto-generated destructor stub
   pdelete(mpGlobalQuantityData);
 }

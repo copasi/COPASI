@@ -1,4 +1,4 @@
-// Copyright (C) 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2014 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -19,6 +19,7 @@ class EventDataChangeCommand: public CCopasiUndoCommand
 {
 public:
   EventDataChangeCommand(QModelIndex index, const QVariant value, int role, CQEventDM *pEventDM);
+  virtual ~EventDataChangeCommand();
   void redo();
   void undo();
   QString eventDataChangeText() const;
@@ -29,7 +30,6 @@ private:
   CQEventDM *mpEventDM;
   int mRole;
   Path mPathIndex;
-  virtual ~EventDataChangeCommand();
 };
 
 #endif /* EVENTDATACHANGECOMMAND_H_ */

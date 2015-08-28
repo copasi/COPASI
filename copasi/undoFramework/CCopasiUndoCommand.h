@@ -95,7 +95,13 @@ public:
    * @param type the type (or INVALID_TYPE if not given)
    */
   CCopasiUndoCommand(const std::string& entityType = "",
-                     CCopasiUndoCommand::Type type = INVALID_TYPE);
+                     CCopasiUndoCommand::Type type = INVALID_TYPE,
+                     const std::string& action = "",
+                     const std::string& property = "",
+                     const std::string& newValue = "",
+                     const std::string& oldValue = "",
+                     const std::string& name = ""
+                    );
 
   virtual ~CCopasiUndoCommand();
 
@@ -161,7 +167,7 @@ protected:
    *  Type of the undo command.
    */
   CCopasiUndoCommand::Type mType;
-private:
+
   bool undoState;
   std::string mNewValue;
   std::string mOldValue;

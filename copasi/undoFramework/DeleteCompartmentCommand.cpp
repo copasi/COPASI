@@ -22,11 +22,13 @@
 #include "DeleteCompartmentCommand.h"
 
 DeleteCompartmentCommand::DeleteCompartmentCommand(CQCompartment *pCompartment)
+  : CCopasiUndoCommand("Compartment", COMPARTMENTDELETE)
+  , mFirstTime(true)
+  , mpCompartmentData(new UndoCompartmentData())
+  , mpCompartment(pCompartment)
 {
-  mpCompartment = pCompartment;
-  mFirstTime = true;
-  mpCompartmentData = new UndoCompartmentData();
-  std::string sName = mpCompartment->mpCompartment->getObjectName();
+
+  const std::string& sName = mpCompartment->mpCompartment->getObjectName();
   mpCompartmentData->setName(sName);
   mpCompartmentData->setInitialValue(mpCompartment->mpCompartment->getInitialValue());
   mpCompartmentData->setStatus(mpCompartment->mpCompartment->getStatus());
@@ -38,8 +40,6 @@ DeleteCompartmentCommand::DeleteCompartmentCommand(CQCompartment *pCompartment)
   mpCompartmentData->setEventDependencyObjects(getEventData());
 
   this->setText(deleteCompartmentText(sName));
-  setEntityType("Compartment");
-  mType = COMPARTMENTDELETE;
   setName(sName);
 }
 
@@ -66,11 +66,12 @@ void DeleteCompartmentCommand::undo()
   setAction("Undelete");
 }
 
-QString DeleteCompartmentCommand::deleteCompartmentText(std::string &name) const
+QString DeleteCompartmentCommand::deleteCompartmentText(const std::string &name) const
 {
-  std::string myEntityName(": Delete Compartment " + name);
-  char* entityName = (char*)myEntityName.c_str();
-  return QObject::tr(entityName);
+//  std::string myEntityName(": Delete Compartment " + name);
+//  char* entityName = (char*)myEntityName.c_str();
+//  return QObject::tr(entityName);
+  return QString(": Deleted compartment %1").arg(name.c_str());
 }
 
 UndoData *DeleteCompartmentCommand::getUndoData() const
@@ -80,6 +81,5 @@ UndoData *DeleteCompartmentCommand::getUndoData() const
 
 DeleteCompartmentCommand::~DeleteCompartmentCommand()
 {
-  // TODO Auto-generated destructor stub
   pdelete(mpCompartmentData);
 }

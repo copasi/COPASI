@@ -1,4 +1,4 @@
-// Copyright (C) 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2014 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -18,16 +18,15 @@
 #include "ParameterOverviewDataChangeCommand.h"
 
 ParameterOverviewDataChangeCommand::ParameterOverviewDataChangeCommand(const QModelIndex &index, const QVariant &value, int role, CQParameterOverviewDM *pParameterOverviewDM)
+  : CCopasiUndoCommand()
+  , mNew(value.toDouble())
+  , mOld(index.data(Qt::EditRole))
+  , mIndex(index)
+  , mpParameterOverviewDM(pParameterOverviewDM)
+  , mRole(role)
+  , mPathIndex(pathFromIndex(index))
+  , mFirstTime(true)
 {
-  // stores the data
-  mPathIndex = pathFromIndex(index);
-  mpParameterOverviewDM = pParameterOverviewDM;
-  mOld = index.data(Qt::EditRole);
-  mNew = value.toDouble();
-  mIndex = index;
-  mRole = role;
-  mFirstTime = true;
-
   this->setText(parameterOverviewDataChangeText());
 }
 
@@ -49,12 +48,12 @@ void ParameterOverviewDataChangeCommand::undo()
   QModelIndex indx = pathToIndex(mPathIndex, mpParameterOverviewDM);
   mpParameterOverviewDM->parameterOverviewDataChange(indx, mOld, mRole);
 }
+
 QString ParameterOverviewDataChangeCommand::parameterOverviewDataChangeText() const
 {
-  return QObject::tr(": Changed Parameter Overview Data");
+  return QObject::tr(": Changed parameter overview data");
 }
 
 ParameterOverviewDataChangeCommand::~ParameterOverviewDataChangeCommand()
 {
-  // TODO Auto-generated destructor stub
 }

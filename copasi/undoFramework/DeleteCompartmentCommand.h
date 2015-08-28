@@ -1,4 +1,4 @@
-// Copyright (C) 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2014 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -16,6 +16,7 @@
 #include "CCopasiUndoCommand.h"
 
 class UndoCompartmentData;
+class CQCompartment;
 
 class DeleteCompartmentCommand: public CCopasiUndoCommand
 {
@@ -23,7 +24,7 @@ public:
   DeleteCompartmentCommand(CQCompartment *pCompartment);
   void redo();
   void undo();
-  QString deleteCompartmentText(std::string &name) const;
+  QString deleteCompartmentText(const std::string &name) const;
   UndoData *getUndoData() const;
   virtual ~DeleteCompartmentCommand();
 

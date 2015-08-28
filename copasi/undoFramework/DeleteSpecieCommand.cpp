@@ -25,16 +25,13 @@
 #include "DeleteSpecieCommand.h"
 
 DeleteSpecieCommand::DeleteSpecieCommand(CQSpeciesDetail *pSpecieDetail)
+  : CCopasiUndoCommand("Species", SPECIEDELETE)
+  , mFirstTime(true)
+  , mpSpecieData(new UndoSpecieData())
+  , mpSpecieDetail(pSpecieDetail)
 {
-  mpSpecieDetail = pSpecieDetail;
-  mFirstTime = true;
-  mpSpecieData = new UndoSpecieData();
 
-  mpReactionData = new  QList <UndoReactionData*>();
-  mpGlobalQuantityData = new  QList <UndoGlobalQuantityData*>();
-  mpEventData = new  QList <UndoEventData*>();
-
-  std::string sName = mpSpecieDetail->mpMetab->getObjectName();
+  const std::string& sName = mpSpecieDetail->mpMetab->getObjectName();
   mpSpecieData->setName(sName);
 
   mpSpecieData->setStatus(mpSpecieDetail->mpMetab->getStatus());
@@ -56,14 +53,11 @@ DeleteSpecieCommand::DeleteSpecieCommand(CQSpeciesDetail *pSpecieDetail)
     }
 
   //store to be deleted data
-  //QList<UndoReactionData*> *dependencyObjects = new QList<UndoReactionData*>();
   setDependentObjects(mpSpecieDetail->mpMetab->getDeletedObjects());
   mpSpecieData->setReactionDependencyObjects(getReactionData());
   mpSpecieData->setGlobalQuantityDependencyObjects(getGlobalQuantityData());
   mpSpecieData->setEventDependencyObjects(getEventData());
 
-  mType = SPECIEDELETE;
-  setEntityType("Species");
   setName(sName);
   this->setText(deleteSpecieText(sName));
 }
@@ -91,11 +85,12 @@ void DeleteSpecieCommand::undo()
   setAction("Undelete");
 }
 
-QString DeleteSpecieCommand::deleteSpecieText(std::string &name) const
+QString DeleteSpecieCommand::deleteSpecieText(const std::string &name) const
 {
-  std::string myEntityName(": Delete Species " + name);
-  char* entityName = (char*)myEntityName.c_str();
-  return QObject::tr(entityName);
+//  std::string myEntityName(": Delete Species " + name);
+//  char* entityName = (char*)myEntityName.c_str();
+//  return QObject::tr(entityName);
+  return QString(": Deleted species %1").arg(name.c_str());
 }
 
 UndoData *DeleteSpecieCommand::getUndoData() const
@@ -105,8 +100,5 @@ UndoData *DeleteSpecieCommand::getUndoData() const
 
 DeleteSpecieCommand::~DeleteSpecieCommand()
 {
-  // TODO Auto-generated destructor stub
-  pdelete(mpReactionData);
-  pdelete(mpGlobalQuantityData);
-  pdelete(mpEventData);
+  pdelete(mpSpecieData);
 }

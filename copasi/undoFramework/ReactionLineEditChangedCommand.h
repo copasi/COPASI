@@ -1,4 +1,4 @@
-// Copyright (C) 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2014 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -14,6 +14,8 @@
 #define REACTIONLINEEDITCHANGEDCOMMAND_H_
 
 #include "CCopasiUndoCommand.h"
+
+class ReactionsWidget1;
 
 class ReactionLineEditChangedCommand: public CCopasiUndoCommand
 {

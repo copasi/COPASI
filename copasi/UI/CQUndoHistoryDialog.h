@@ -19,6 +19,8 @@
 
 class QStandardItemModel;
 class QUndoStack;
+class QAbstractButton;
+class QPushButton;
 
 class CQUndoHistoryDialog : public QDialog, public Ui::CQUndoHistoryDialog
 {
@@ -37,14 +39,14 @@ public:
   ~CQUndoHistoryDialog();
 
 public slots:
-  void closeButtonClicked();
-  void undoButtonClicked();
+  void slotUndo();
 
 private:
-  QStandardItemModel *mpModel;
   QUndoStack *mpUndoStack;
   int mNCol;
+  QStandardItemModel *mpModel;
   int mSelectedIndex;
+
 };
 
 #endif /* CQUNDOHISTORYDIALOG_H_ */

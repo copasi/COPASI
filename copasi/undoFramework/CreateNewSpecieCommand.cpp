@@ -18,13 +18,13 @@
 #include "CreateNewSpecieCommand.h"
 
 CreateNewSpecieCommand::CreateNewSpecieCommand(CQSpeciesDetail *pSpecieDetail)
+  : CCopasiUndoCommand("Species", SPECIECREATE)
+  , mpSpecieData(new UndoSpecieData())
+  , mpSpecieDetail(pSpecieDetail)
 {
-  mpSpecieDetail = pSpecieDetail;
-  mpSpecieData = new UndoSpecieData();
   this->setText(createNewSpecieText());
-  mType = SPECIECREATE;
-  setEntityType("Species");
 }
+
 void CreateNewSpecieCommand::redo()
 {
   mpSpecieDetail->createNewSpecie();
@@ -48,9 +48,7 @@ void CreateNewSpecieCommand::undo()
 
 QString CreateNewSpecieCommand::createNewSpecieText() const
 {
-  std::string myEntityName(": Create New Species ");
-  char* entityName = (char*)myEntityName.c_str();
-  return QObject::tr(entityName);
+  return QObject::tr(": Created new species ");
 }
 
 UndoData *CreateNewSpecieCommand::getUndoData() const
@@ -60,6 +58,5 @@ UndoData *CreateNewSpecieCommand::getUndoData() const
 
 CreateNewSpecieCommand::~CreateNewSpecieCommand()
 {
-  // TODO Auto-generated destructor stub
   pdelete(mpSpecieData);
 }

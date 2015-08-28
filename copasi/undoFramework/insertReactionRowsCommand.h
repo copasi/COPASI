@@ -16,6 +16,9 @@
 #include "CCopasiUndoCommand.h"
 
 class UndoReactionData;
+class CQReactionDM;
+class CReaction;
+class CReactionInterface;
 
 class InsertReactionRowsCommand: public CCopasiUndoCommand
 {
