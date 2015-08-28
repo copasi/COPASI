@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CState.h,v $
-//   $Revision: 1.39 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/04/01 15:06:43 $
-// End CVS Header
-
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2002 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -56,12 +48,8 @@ public:
   /**
    * Specific constructor
    * @param CModel & model
-   * @param CState & initialState
-   * @param CState & currentState
    */
-  CStateTemplate(CModel & model,
-                 CState & initialState,
-                 CState & currentState);
+  CStateTemplate(CModel & model);
 
   /**
    * Destructor
@@ -70,15 +58,15 @@ public:
 
   /**
    * Add an entity to the template.
-   * @param CModelEntity * entity
+   * @param const CModelEntity * entity
    */
-  void add(CModelEntity * entity);
+  void add(const CModelEntity * entity);
 
   /**
    * Remove an entity from the template.
-   * @param CModelEntity * entity
+   * @param const CModelEntity * entity
    */
-  void remove(CModelEntity * entity);
+  void remove(const CModelEntity * entity);
 
   /**
    * Retrieve the index of an entity in the template.
@@ -90,15 +78,15 @@ public:
 
   /**
    * Reorder the template.
-   * @param const CVector< CModelEntity * > & newOrder
+   * @param const CVector< const CModelEntity * > & newOrder
    */
   void reorder(const CVector< CModelEntity * > & newOrder);
 
   /**
    * Set the user preferred order of the entities.
-   * @param const CVector< CModelEntity * > & userOrder
+   * @param const CVector< const CModelEntity * > & userOrder
    */
-  void setUserOrder(const CVector< CModelEntity * > & userOrder);
+  void setUserOrder(const CVector< const CModelEntity * > & userOrder);
 
   /**
    * Retrieve a pivot vector which can be used to reconstruct the user order.
@@ -107,90 +95,47 @@ public:
   const CVector<size_t> & getUserOrder() const;
 
   /**
-   * Retrieve the array of pointers to all entities.
-   * @return CModelEntities ** entities
-   */
-  CModelEntity ** getEntities();
-
-  /**
    * Retrieve the array of pointers to all independent entities.
    * @return CModelEntities ** independentEntities
    */
-  CModelEntity ** beginIndependent();
+  const CModelEntity *const* beginIndependent() const;
 
   /**
    * Retrieve pointer just beyond the independent entities.
    * @return CModelEntities ** endIndependentEntities
    */
-  CModelEntity ** endIndependent();
+  const CModelEntity *const* endIndependent() const;
 
   /**
    * Retrieve the array of pointers to all dependent entities,
    * which are only dependent species for a reduced model.
    * @return CModelEntities ** dependentEntities
    */
-  CModelEntity ** beginDependent();
+  const CModelEntity *const* beginDependent() const;
 
   /**
    * Retrieve pointer just beyond the dependent entities.
    * @return CModelEntities ** endDependentEntities
    */
-  CModelEntity ** endDependent();
+  const CModelEntity *const* endDependent() const;
 
   /**
    * Retrieve the array of pointers to all fixed entities.
    * @return CModelEntities ** fixedEntities
    */
-  CModelEntity ** beginFixed();
+  const CModelEntity *const* beginFixed() const;
 
   /**
    * Retrieve pointer just beyond the fixed entities.
    * @return CModelEntities ** endFixedEntities
    */
-  CModelEntity ** endFixed();
+  const CModelEntity *const* endFixed() const;
 
   /**
    * Retrieve the array of pointers to all entities.
-   * @return CModelEntities *const* entities
+   * @return const CVector< const CModelEntity *> & entities
    */
-  CModelEntity *const* getEntities() const;
-
-  /**
-   * Retrieve the array of pointers to all independent entities.
-   * @return CModelEntities *const* independentEntities
-   */
-  CModelEntity *const* beginIndependent() const;
-
-  /**
-   * Retrieve pointer just beyond the independent entities.
-   * @return CModelEntities *const* endIndependentEntities
-   */
-  CModelEntity *const* endIndependent() const;
-
-  /**
-   * Retrieve the array of pointers to all dependent entities,
-   * which are only dependent species for a reduced model.
-   * @return CModelEntities *const* dependentEntities
-   */
-  CModelEntity *const* beginDependent() const;
-
-  /**
-   * Retrieve pointer just beyond the dependent entities.
-   * @return CModelEntities ** endDependentEntities
-   */
-  CModelEntity *const* endDependent() const;
-
-  /**
-   * Retrieve the array of pointers to all fixed entities.
-   * @return CModelEntities *const* fixedEntities
-   */
-  CModelEntity *const* beginFixed() const;
-
-  /**
-   * Retrieve pointer just beyond the fixed entities.
-   * @return CModelEntities *const* endFixedEntities
-   */
-  CModelEntity *const* endFixed() const;
+  const CVector< const CModelEntity *> &  getEntities() const;
 
   /**
    * Retrieve the number of independent entities.
@@ -237,19 +182,9 @@ private:
   CModel & mModel;
 
   /**
-   * A reference to the initial state of the model
-   */
-  CState & mInitialState;
-
-  /**
-   * A reference to the current state of the model
-   */
-  CState & mCurrentState;
-
-  /**
    * The array of entities
    */
-  CModelEntity ** mpEntities;
+  CVector< const CModelEntity * > mEntities;
 
   /**
    * The allocate size of the template
@@ -259,22 +194,22 @@ private:
   /**
    * A pointer to the independent entities
    */
-  CModelEntity ** mpBeginIndependent;
+  const CModelEntity *const* mpBeginIndependent;
 
   /**
    * A pointer to the dependent entities
    */
-  CModelEntity ** mpBeginDependent;
+  const CModelEntity *const* mpBeginDependent;
 
   /**
    * A pointer to the fixed entities
    */
-  CModelEntity ** mpBeginFixed;
+  const CModelEntity *const* mpBeginFixed;
 
   /**
    * A pointer just beyond the entities
    */
-  CModelEntity ** mpEnd;
+  const CModelEntity *const* mpEnd;
 
   /**
    * The index in which the next added entity must be inserted.
@@ -284,220 +219,12 @@ private:
   /**
    * A map of pointer to entities to the index it appear in the template
    */
-  std::map< CModelEntity *, size_t > mIndexMap;
+  std::map< const CModelEntity *, size_t > mIndexMap;
 
   /**
    * A pivot vector storing the user order of the entities
    */
   CVector<size_t> mUserOrder;
-
-  /**
-   * The array of initial values of all entities
-   */
-  C_FLOAT64 * mpInitialValues;
-
-  /**
-   * The array of current values of all entities
-   */
-  C_FLOAT64 * mpCurrentValues;
-};
-
-class CState
-{
-public:
-
-  friend std::ostream &operator << (std::ostream &os, const CState & s);
-
-  /**
-   * Constructor
-   */
-  CState();
-
-  /**
-   * Copy constructor
-   * @param const CState & src
-   */
-  CState(const CState & src);
-
-  /**
-   * Destructor
-   */
-  ~CState();
-
-  /**
-   * Assignment operator
-   * @param const CState & rhs
-   * @return CState & lhs
-   */
-  CState & operator=(const CState & rhs);
-
-  /**
-   * Retrieve the time of the state
-   * @return const C_FLOAT64 & time
-   */
-  const C_FLOAT64 & getTime() const;
-
-  /**
-   * Set the time of the state
-   * @param const C_FLOAT64 & time
-   */
-  void setTime(const C_FLOAT64 & time);
-
-  /**
-   * Retrieve the array of pointers of values of all independent entities.
-   * @return C_FLOAT64 * independentValues
-   */
-  C_FLOAT64 * beginIndependent();
-
-  /**
-   * Retrieve pointer just beyond the values of all independent entities.
-   * @return C_FLOAT64 * endIndependentValues
-   */
-  C_FLOAT64 * endIndependent();
-
-  /**
-   * Retrieve the array of pointers of values of all dependent entities,
-   * which are only dependent species for a reduced model.
-   * @return C_FLOAT64 * dependentValues
-   */
-  C_FLOAT64 * beginDependent();
-
-  /**
-   * Retrieve pointer just beyond the values of all dependent entities.
-   * @return C_FLOAT64 * endDependentValues
-   */
-  C_FLOAT64 * endDependent();
-
-  /**
-   * Retrieve the array of pointers of values of all fixed entities.
-   * @return C_FLOAT64 * fixedValues
-   */
-  C_FLOAT64 * beginFixed();
-
-  /**
-   * Retrieve pointer just beyond the values of all fixed entities.
-   * @return C_FLOAT64 * endFixedValues
-   */
-  C_FLOAT64 * endFixed();
-
-  /**
-   * Retrieve the array of pointers of values of all independent entities.
-   * @return const C_FLOAT64 * independentValues
-   */
-  const C_FLOAT64 * beginIndependent() const;
-
-  /**
-   * Retrieve pointer just beyond the values of all independent entities.
-   * @return const C_FLOAT64 * endIndependentValues
-   */
-  const C_FLOAT64 * endIndependent() const;
-
-  /**
-   * Retrieve the array of pointers of values of all dependent entities,
-   * which are only dependent species for a reduced model.
-   * @return const C_FLOAT64 * dependentValues
-   */
-  const C_FLOAT64 * beginDependent() const;
-
-  /**
-   * Retrieve pointer just beyond the values of all dependent entities.
-   * @return const C_FLOAT64 * endDependentValues
-   */
-  const C_FLOAT64 * endDependent() const;
-
-  /**
-   * Retrieve the array of pointers of values of all fixed entities.
-   * @return const C_FLOAT64 * fixedValues
-   */
-  const C_FLOAT64 * beginFixed() const;
-
-  /**
-   * Retrieve pointer just beyond the values of all fixed entities.
-   * @return const C_FLOAT64 * endFixedValues
-   */
-  const C_FLOAT64 * endFixed() const;
-
-  /**
-   * Retrieve the number of independent entities.
-   * @return size_t numIndependent
-   */
-  size_t getNumIndependent() const;
-
-  /**
-   * Retrieve the number of dependent entities.
-   * @return size_t numDependent
-   */
-  size_t getNumDependent() const;
-
-  /**
-   * Retrieve the number of variable entities, i.e., the sum of
-   * independent and dependent variables.
-   * @return size_t numVariable
-   */
-  size_t getNumVariable() const;
-
-  /**
-   * Retrieve the number of fixed entities.
-   * @return size_t numFixed
-   */
-  size_t getNumFixed() const;
-
-  /**
-   * Check whether the current state is valid (contains no NaN)
-   * @return bool isValid
-  */
-  bool isValid() const;
-
-protected:
-  // These methods are only accessible from CStateTemplate
-  friend class CStateTemplate;
-  C_FLOAT64 * resize(const size_t & size);
-
-  /**
-   * Update the pointers to the different types of entities
-   * @param const size_t & numIndependent
-   * @param const size_t & numDependent
-   * @param const size_t & numFixed
-   */
-  void updateIterator(const size_t & numIndependent,
-                      const size_t & numDependent,
-                      const size_t & numFixed);
-
-private:
-  /**
-   * Array of entity values
-   */
-  C_FLOAT64 * mpValues;
-
-  /**
-   * Size of the state
-   */
-  size_t mSize;
-
-  /**
-   * Pointer to the beginning of values of independent entities.
-   */
-  C_FLOAT64 * mpBeginIndependent;
-
-  /**
-   * Pointer to the beginning of values of dependent entities.
-   */
-  C_FLOAT64 * mpBeginDependent;
-
-  /**
-   * Pointer to the beginning of values of fixed entities.
-   */
-  C_FLOAT64 * mpBeginFixed;
-
-  /**
-   * Pointer just beyond the values of fixed entities.
-   */
-  C_FLOAT64 * mpEnd;
-
-  /**
-   * Indicates whether the state is of a reduced or complete model
-   */
-  bool mUpdateDependentRequired;
 };
 
 #endif

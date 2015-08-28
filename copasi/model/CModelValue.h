@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -209,18 +209,6 @@ public:
   const std::string& getSBMLId() const;
 
   /**
-   * Set the pointer to the initial value
-   * @param C_FLOAT64 * pInitialValue
-   */
-  void setInitialValuePtr(C_FLOAT64 * pInitialValue);
-
-  /**
-   * Set the pointer to the value
-   * @param C_FLOAT64 * pValue
-   */
-  void setValuePtr(C_FLOAT64 * pValue);
-
-  /**
    * Set the expression for non FIXED model values
    * @param CExpression*
    * @return bool success
@@ -318,12 +306,12 @@ protected:
   /**
    * Pointer to the value of the model entity.
    */
-  C_FLOAT64 * mpValue;
+  C_FLOAT64 mValue;
 
   /**
    * Pointer to the initial value of the model entity.
    */
-  C_FLOAT64 * mpIValue;
+  C_FLOAT64 mIValue;
 
   /**
    * Rate of change/time.

@@ -89,6 +89,7 @@ CMathContainer::CMathContainer():
   mCreateDiscontinuousPointer(),
   mDataObject2MathObject(),
   mDataValue2MathObject(),
+  mDataValue2DataObject(),
   mDiscontinuityEvents("Discontinuities", this),
   mDiscontinuityInfix2Object(),
   mTriggerInfix2Event(),
@@ -167,6 +168,7 @@ CMathContainer::CMathContainer(CModel & model):
   mRootProcessors(),
   mDataObject2MathObject(),
   mDataValue2MathObject(),
+  mDataValue2DataObject(),
   mDiscontinuityEvents("Discontinuities", this),
   mDiscontinuityInfix2Object(),
   mTriggerInfix2Event(),
@@ -252,6 +254,7 @@ CMathContainer::CMathContainer(const CMathContainer & src):
   mRootProcessors(src.mRootProcessors),
   mDataObject2MathObject(),
   mDataValue2MathObject(),
+  mDataValue2DataObject(src.mDataValue2DataObject),
   mDiscontinuityEvents("Discontinuities", this),
   mDiscontinuityInfix2Object(),
   mTriggerInfix2Event(),
@@ -1007,6 +1010,19 @@ CMathObject * CMathContainer::getMathObject(const CCopasiObjectName & cn) const
   return getMathObject(mpModel->getObject(cn));
 }
 
+CCopasiObject * CMathContainer::getDataObject(const C_FLOAT64 * pDataValue) const
+{
+  std::map< C_FLOAT64 *, CCopasiObject * >::const_iterator found =
+    mDataValue2DataObject.find(const_cast< C_FLOAT64 * >(pDataValue));
+
+  if (found != mDataValue2DataObject.end())
+    {
+      return found->second;
+    }
+
+  return NULL;
+}
+
 CMathObject * CMathContainer::getCompartment(const CMathObject * pObject) const
 {
   if (pObject == NULL ||
@@ -1051,6 +1067,7 @@ void CMathContainer::compile()
   // Clear old maps before allocation
   mDataObject2MathObject.clear();
   mDataValue2MathObject.clear();
+  mDataValue2DataObject.clear();
 
   allocate();
 
@@ -1613,8 +1630,8 @@ void CMathContainer::initializeObjects(CMath::sPointers & p)
   const CStateTemplate & StateTemplate = mpModel->getStateTemplate();
 
   // Determine which fixed entities are modified by events and which not.
-  CModelEntity *const* ppEntities = StateTemplate.beginFixed();
-  CModelEntity *const* ppEntitiesEnd = StateTemplate.endFixed();
+  const CModelEntity *const* ppEntities = StateTemplate.beginFixed();
+  const CModelEntity *const* ppEntitiesEnd = StateTemplate.endFixed();
 
   for (; ppEntities != ppEntitiesEnd; ++ppEntities)
     {
@@ -1818,6 +1835,13 @@ CEvaluationNode * CMathContainer::createNodeFromObject(const CObjectInterface * 
   else
     {
       pNode = new CEvaluationNodeObject((C_FLOAT64 *) pObject->getValuePointer());
+
+      // Check whether we have a data object
+      if (pObject == pObject->getDataObject())
+        {
+          mDataValue2DataObject[(C_FLOAT64 *) pObject->getValuePointer()]
+            = static_cast< CCopasiObject * >(const_cast< CObjectInterface * >(pObject));
+        }
     }
 
   return pNode;
@@ -1885,9 +1909,6 @@ void CMathContainer::createDependencyGraphs()
 
 void CMathContainer::createSynchronizeInitialValuesSequence()
 {
-  // TODO CRITICAL Issue 1170: We need to add elements of the stoichiometry, reduced stoichiometry,
-  // and link matrices.
-
   // Collect all the changed objects, which are all initial state values
   mInitialStateValueAll.clear();
   mInitialStateValueExtensive.clear();
@@ -1954,6 +1975,17 @@ void CMathContainer::createSynchronizeInitialValuesSequence()
             RequestedIntensive.insert(pObject);
             break;
         }
+    }
+
+  // Issue 1170: We need to add elements of the stoichiometry, reduced stoichiometry,
+  // and link matrices.
+  std::map< C_FLOAT64 *, CCopasiObject * >::const_iterator itDataObject = mDataValue2DataObject.begin();
+  std::map< C_FLOAT64 *, CCopasiObject * >::const_iterator endDataObject = mDataValue2DataObject.end();
+
+  for (; itDataObject != endDataObject; ++itDataObject)
+    {
+      mInitialStateValueExtensive.insert(itDataObject->second);
+      mInitialStateValueIntensive.insert(itDataObject->second);
     }
 
   // Build the update sequence
@@ -3012,7 +3044,7 @@ void CMathContainer::map(CCopasiObject * pDataObject, CMathObject * pMathObject)
 
 C_FLOAT64 * CMathContainer::getInitialValuePointer(const C_FLOAT64 * pValue) const
 {
-  assert(mValues.array() <= pValue && pValue < mValues.array() + mValues.size());
+  assert((mValues.array() <= pValue && pValue < mValues.array() + mValues.size()) || getDataObject(pValue) != NULL);
 
   const C_FLOAT64 * pInitialValue = pValue;
 

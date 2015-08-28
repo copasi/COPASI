@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -96,7 +96,7 @@ void CMoiety::initObjects()
 void CMoiety::add(C_FLOAT64 value, CMetab * pMetabolite)
 {
   if (!mEquation.size())
-    pMetabolite->setDependentOn(this);
+    pMetabolite->setDependsOnMoiety(this);
   else
     addDirectDependency(pMetabolite->mpValueReference);
 
@@ -261,7 +261,7 @@ const C_FLOAT64 & CMoiety::getAmount() const
 
 void CMoiety::refreshAmount()
 {
-  mIAmount = mINumber * *mpConversionFactor;
+  mIAmount = mINumber **mpConversionFactor;
 }
 
 const std::vector<std::pair< C_FLOAT64, CMetab * > > & CMoiety::getEquation() const

@@ -27,7 +27,6 @@ CLNAMethod::CLNAMethod(const CCopasiContainer * pParent,
                        const CTaskEnum::Method & methodType,
                        const CTaskEnum::Task & taskType):
   CCopasiMethod(pParent, methodType, taskType),
-  mpModel(NULL),
   mSteadyStateResolution(1.0e-9),
   mSSStatus(CSteadyStateMethod::notFound)
 {
@@ -38,7 +37,6 @@ CLNAMethod::CLNAMethod(const CCopasiContainer * pParent,
 CLNAMethod::CLNAMethod(const CLNAMethod & src,
                        const CCopasiContainer * pParent):
   CCopasiMethod(src, pParent),
-  mpModel(NULL),
   mSteadyStateResolution(src.mSteadyStateResolution),
   mSSStatus(CSteadyStateMethod::notFound)
 {
@@ -105,22 +103,23 @@ bool CLNAMethod::elevateChildren()
 
 void CLNAMethod::resizeAllMatrices()
 {
-  if (!mpModel) return;
+  const CModel & Model = mpContainer->getModel();
 
-  mBMatrixReduced.resize(mpModel->getNumIndependentReactionMetabs(), mpModel->getNumIndependentReactionMetabs());
+  mBMatrixReduced.resize(mpContainer->getCountIndependentSpecies(), mpContainer->getCountDependentSpecies());
   mBMatrixReducedAnn->resize();
-  mBMatrixReducedAnn->setCopasiVector(0, &mpModel->getMetabolitesX());
-  mBMatrixReducedAnn->setCopasiVector(1, &mpModel->getMetabolitesX());
+  mBMatrixReducedAnn->setCopasiVector(0, &Model.getMetabolitesX());
+  mBMatrixReducedAnn->setCopasiVector(1, &Model.getMetabolitesX());
 
-  mCovarianceMatrixReduced.resize(mpModel->getNumIndependentReactionMetabs(), mpModel->getNumIndependentReactionMetabs());
+  mCovarianceMatrixReduced.resize(mpContainer->getCountIndependentSpecies(), mpContainer->getCountDependentSpecies());
   mCovarianceMatrixReducedAnn->resize();
-  mCovarianceMatrixReducedAnn->setCopasiVector(0, &mpModel->getMetabolitesX());
-  mCovarianceMatrixReducedAnn->setCopasiVector(1, &mpModel->getMetabolitesX());
+  mCovarianceMatrixReducedAnn->setCopasiVector(0, &Model.getMetabolitesX());
+  mCovarianceMatrixReducedAnn->setCopasiVector(1, &Model.getMetabolitesX());
 
-  mCovarianceMatrix.resize(mpModel->getNumIndependentReactionMetabs() + mpModel->getNumDependentReactionMetabs(), mpModel->getNumIndependentReactionMetabs() + mpModel->getNumDependentReactionMetabs());
+  mCovarianceMatrix.resize(mpContainer->getCountIndependentSpecies() + mpContainer->getCountDependentSpecies(),
+                           mpContainer->getCountIndependentSpecies() + mpContainer->getCountDependentSpecies());
   mCovarianceMatrixAnn->resize();
-  mCovarianceMatrixAnn->setCopasiVector(0, &mpModel->getMetabolitesX());
-  mCovarianceMatrixAnn->setCopasiVector(1, &mpModel->getMetabolitesX());
+  mCovarianceMatrixAnn->setCopasiVector(0, &Model.getMetabolitesX());
+  mCovarianceMatrixAnn->setCopasiVector(1, &Model.getMetabolitesX());
 }
 
 int CLNAMethod::calculateCovarianceMatrixReduced()
@@ -128,21 +127,14 @@ int CLNAMethod::calculateCovarianceMatrixReduced()
   // code snippet: transform something into particle space:
   // *(metabs[i]->getCompartment())->getValue()*mpModel->getQuantity2NumberFactor();
 
-  assert(mpModel);
+  CVector< CMathReaction > & Reactions = mpContainer->getReactions();
+  const CVectorCore< C_FLOAT64 > & ParticleFluxex = mpContainer->getParticleFluxes();
 
-  CCopasiVector< CMetab > & metabs = mpModel->getMetabolitesX();
-  CCopasiVector< CReaction > & reacs = mpModel->getReactions();
-  const CVector< C_FLOAT64 > & ParticleFlux = mpModel->getParticleFlux();
-
-  size_t numReacs = reacs.size();
+  size_t numReacs = Reactions.size();
 
   // We need the number of independent metabolites determined by
   // reactions.
-  size_t numMetabs = mpModel->getNumIndependentReactionMetabs();
-
-  size_t i, j, k;
-  const CMetab * pMetabolite;
-  C_FLOAT64 balance_i, balance_j, BContrib;
+  size_t numMetabs = mpContainer->getCountIndependentSpecies();
 
   // calculate covariances
   // first, set BMatrix (reduced) to zero
@@ -160,41 +152,27 @@ int CLNAMethod::calculateCovarianceMatrixReduced()
   // Note: This could also be computed using mRedStoi in CModel.
   //       However, then it would probably be less efficient for very
   //       big systems since mRedStoi should be sparse there.
-  for (k = 0; k < numReacs; k++)
+  const CMathReaction * pReaction = Reactions.array();
+  const CMathReaction * pReactionEnd = pReaction + Reactions.size();
+  const C_FLOAT64 * pParticleFlux = ParticleFluxex.array();
+
+  for (; pReaction != pReactionEnd; ++pReaction, ++pParticleFlux)
     {
-      const CCopasiVector <CChemEqElement> & Balances =
-        reacs[k]->getChemEq().getBalances();
+      const CMathReaction::Balance & Balances = pReaction->getNumberBalance();
+      const CMathReaction::SpeciesBalance * pBalanceRow;
+      const CMathReaction::SpeciesBalance * pBalanceColumn;
+      const CMathReaction::SpeciesBalance * pBalanceEnd = Balances.array() + Balances.size();
+      C_FLOAT64 * pBMatrixReduced = mBMatrixReduced.array();
 
-      CCopasiVector<CChemEqElement>::const_iterator itRow;
-      CCopasiVector<CChemEqElement>::const_iterator itColumn;
-      CCopasiVector<CChemEqElement>::const_iterator itEnd = Balances.end();
-
-      for (itRow = Balances.begin(); itRow != itEnd; ++itRow)
+      for (pBalanceRow = Balances.array(); pBalanceRow != pBalanceEnd; ++pBalanceRow)
         {
-          pMetabolite = (*itRow)->getMetabolite();
-          i = metabs.getIndex(pMetabolite);
-
-          if (i < numMetabs)
+          if (mpContainer->getMathObject(pBalanceRow->first)->getSimulationType() == CMath::Independent)
             {
-              balance_i = (*itRow)->getMultiplicity();
-
-              // This check is no longer needed since we check the index for validity, i.e. we are assured to have an independent metabolite
-              if ((pMetabolite->getStatus() != CModelEntity::REACTIONS) || (pMetabolite->isDependent())) balance_i = 0.0;
-
-              for (itColumn = Balances.begin(); itColumn != itEnd; ++itColumn)
+              for (pBalanceColumn = Balances.array(); pBalanceColumn != pBalanceEnd; ++pBalanceColumn)
                 {
-                  pMetabolite = (*itColumn)->getMetabolite();
-                  j = metabs.getIndex(pMetabolite);
-
-                  if (j < numMetabs)
+                  if (mpContainer->getMathObject(pBalanceColumn->first)->getSimulationType() == CMath::Independent)
                     {
-                      balance_j = (*itColumn)->getMultiplicity();
-
-                      // This check is no longer needed since we check the index for validity, i.e. we are assured to have an independent metabolite
-                      if ((pMetabolite->getStatus() != CModelEntity::REACTIONS) || (pMetabolite->isDependent())) balance_j = 0.0;
-
-                      BContrib = ParticleFlux[k] * balance_i * balance_j;
-                      mBMatrixReduced[i][j] += BContrib;
+                      * pBMatrixReduced += *pParticleFlux * pBalanceRow->second * pBalanceColumn->second;
                     }
                 }
             }
@@ -208,8 +186,7 @@ int CLNAMethod::calculateCovarianceMatrixReduced()
 
   // get the Jacobian (reduced)
   C_FLOAT64 derivationFactor = 1e-6;
-  C_FLOAT64 resolution = 1e-12;
-  mpModel->calculateJacobianX(mJacobianReduced, derivationFactor, resolution);
+  mpContainer->calculateJacobian(mJacobianReduced, derivationFactor, true);
 
   // copy the Jacobian (reduced) into A
   CMatrix< C_FLOAT64 > A;
@@ -302,19 +279,25 @@ int CLNAMethod::calculateCovarianceMatrixReduced()
   // copy the transposed Jacobian (reduced) into At
   CMatrix< C_FLOAT64 > At;
   At.resize(mJacobianReduced.numCols(), mJacobianReduced.numRows());
+  const C_FLOAT64 * pJacobian = mJacobianReduced.array();
+  const C_FLOAT64 * pJacobianEnd = pJacobian + mJacobianReduced.size();
 
-  for (i = 0; i < mJacobianReduced.numRows(); i++)
+  for (size_t i = 0; pJacobian != pJacobianEnd; i++)
     {
-      for (j = 0; j < mJacobianReduced.numCols(); j++)
-        {
-          At[j][i] = mJacobianReduced[i][j];
+      const C_FLOAT64 * pJacobianRowEnd = pJacobian + mJacobianReduced.numCols();
 
-          if (!finite(At[j][i]) && !isnan(At[j][i]))
+      for (size_t j = 0; pJacobian != pJacobianRowEnd; j++)
+        {
+          C_FLOAT64 & at = At[j][i];
+
+          at = mJacobianReduced[i][j];
+
+          if (!finite(at) && !isnan(at))
             {
-              if (At[j][i] > 0)
-                At[j][i] = std::numeric_limits< C_FLOAT64 >::max();
+              if (at > 0)
+                at = std::numeric_limits< C_FLOAT64 >::max();
               else
-                At[j][i] = - std::numeric_limits< C_FLOAT64 >::max();
+                at = - std::numeric_limits< C_FLOAT64 >::max();
             }
         }
     }
@@ -522,20 +505,18 @@ void CLNAMethod::calculateCovarianceMatrixFull()
 
   C_INT i, j;
 
-  C_INT numIndependentMetabs = (C_INT)mpModel->getNumIndependentReactionMetabs();
-  C_INT numReactionMetabs = (C_INT)mpModel->getNumIndependentReactionMetabs() + mpModel->getNumDependentReactionMetabs();
-  C_INT numDependentMetabs = numReactionMetabs - numIndependentMetabs;
+  C_INT numIndependentMetabs = (C_INT) mpContainer->getCountIndependentSpecies();
+  C_INT numDependentMetabs = (C_INT) mpContainer->getCountDependentSpecies();
+  C_INT numReactionMetabs = numIndependentMetabs + numDependentMetabs;
 
-  CMatrix<C_FLOAT64> mL0;
-  mL0 = mpModel->getL0();
+  const CLinkMatrix & L = mpContainer->getModel().getL0();
+
   mL.resize((size_t)numReactionMetabs, (size_t)numIndependentMetabs);
   mL = 0.0;
 
   for (i = 0; i < numIndependentMetabs; i++) mL[(size_t)i][(size_t)i] = 1.0;
 
-  for (i = 0; i < numDependentMetabs; i++)
-    for (j = 0; j < numIndependentMetabs; j++)
-      mL[(size_t)i + (size_t)numIndependentMetabs][(size_t)j] = mL0[(size_t)i][(size_t)j];
+  memcpy(mL[numIndependentMetabs], L.array(), sizeof(C_FLOAT64) * L.size());
 
   CMatrix< C_FLOAT64 > D;
   D.resize((size_t)numIndependentMetabs, (size_t)numReactionMetabs);
@@ -585,22 +566,12 @@ void CLNAMethod::calculateCovarianceMatrixFull()
 }
 
 /**
- * Set the Model
- */
-void CLNAMethod::setModel(CModel* model)
-{
-  mpModel = model;
-}
-
-/**
  * the LNA entry point
  * @param status refers to the steady-state solution
  * @param res refers to the resolution
  */
 int CLNAMethod::CalculateLNA()
 {
-  assert(mpModel);
-
   if (((mSSStatus == CSteadyStateMethod::found) || (mSSStatus == CSteadyStateMethod::foundEquilibrium)) && (mEVStatus == CLNAMethod::allNeg))
     {
       if (calculateCovarianceMatrixReduced() == LNA_OK)
@@ -651,11 +622,6 @@ void CLNAMethod::setEigenValueStatus(CLNAMethod::EVStatus status)
 void CLNAMethod::setSteadyStateResolution(C_FLOAT64 resolution)
 {
   this->mSteadyStateResolution = resolution;
-}
-
-const CModel* CLNAMethod::getModel() const
-{
-  return this->mpModel;
 }
 
 //virtual

@@ -387,6 +387,13 @@ public:
   CMathObject * getMathObject(const CCopasiObjectName & cn) const;
 
   /**
+   * Retrieve a pointer to the data object for a data value pointer
+   * @param const C_FLOAT64 * pDataValue
+   * @return CCopasiObject * pDataObject
+   */
+  CCopasiObject * getDataObject(const C_FLOAT64 * pDataValue) const;
+
+  /**
    * Retrieve the pointer to the compartment of a species related object
    * otherwise NULL
    * @param const CMathObject * pObject
@@ -1021,6 +1028,11 @@ private:
    * A map from data objects values to math objects
    */
   std::map< C_FLOAT64 *, CMathObject * > mDataValue2MathObject;
+
+  /**
+   * A map from data objects values to math objects
+   */
+  std::map< C_FLOAT64 *, CCopasiObject * > mDataValue2DataObject;
 
   /**
    * A vector of data events for discontinuities

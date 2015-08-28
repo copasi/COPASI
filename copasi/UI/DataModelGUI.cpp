@@ -83,8 +83,6 @@ DataModelGUI::DataModelGUI(QObject * parent):
   mOutputHandlerPlot(),
   mListViews(),
   mFramework(0),
-  mUpdateVector(),
-  mChangedObjects(),
   mpThread(NULL),
   mpProgressBar(NULL),
   mSuccess(false),
@@ -635,108 +633,11 @@ void DataModelGUI::deregisterListView(ListViews * pListView)
   mListViews.erase(pListView);
 }
 
-void DataModelGUI::buildChangedObjects()
-{
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CModel * pModel = (*CCopasiRootContainer::getDatamodelList())[0]->getModel();
-  pModel->compileIfNecessary(NULL);
-
-  mChangedObjects.clear();
-
-  CModelEntity ** ppEntity = pModel->getStateTemplate().getEntities();
-  CModelEntity ** ppEntityEnd = pModel->getStateTemplate().endFixed();
-
-  CMetab * pMetab;
-  std::set< const CCopasiObject * > Objects;
-
-  // The objects which are changed are all initial values of of all model entities including
-  // fixed and unused once. Additionally, all kinetic parameters are possibly changed.
-  // This is basically all the parameters in the parameter overview whose value is editable.
-
-  // :TODO: Theoretically, it is possible that also task parameters influence the initial
-  // state of a model but that is currently not handled.
-
-  for (; ppEntity != ppEntityEnd; ++ppEntity)
-    {
-      // If we have an initial expression we have no initial values
-      if ((*ppEntity)->getInitialExpression() != "" ||
-          (*ppEntity)->getStatus() == CModelEntity::ASSIGNMENT)
-        continue;
-
-      // Metabolites have two initial values
-      if (mFramework == 0 &&
-          (pMetab = dynamic_cast< CMetab * >(*ppEntity)) != NULL)
-        {
-          // The concentration is assumed to be fix accept when this would lead to circular dependencies,
-          // for the parent's compartment's initial volume.
-          if (pMetab->isInitialConcentrationChangeAllowed() &&
-              !isnan(pMetab->getInitialConcentration()))
-            mChangedObjects.insert(pMetab->getInitialConcentrationReference());
-          else
-            mChangedObjects.insert(pMetab->getInitialValueReference());
-        }
-      else
-        mChangedObjects.insert((*ppEntity)->getInitialValueReference());
-    }
-
-  // The reaction parameters
-  CCopasiVector< CReaction >::const_iterator itReaction = pModel->getReactions().begin();
-  CCopasiVector< CReaction >::const_iterator endReaction = pModel->getReactions().end();
-  size_t i, imax;
-
-  for (; itReaction != endReaction; ++itReaction)
-    {
-      const CCopasiParameterGroup & Group = (*itReaction)->getParameters();
-
-      for (i = 0, imax = Group.size(); i < imax; i++)
-        mChangedObjects.insert(static_cast< const CCopasiObject * >(Group.getParameter(i)->getObject(CCopasiObjectName("Reference=Value"))));
-    }
-
-  // Fix for Issue 1170: We need to add elements of the stoichiometry, reduced stoichiometry,
-  // and link matrices.
-  const CArrayAnnotation * pMatrix = NULL;
-  pMatrix = dynamic_cast<const CArrayAnnotation *>(pModel->getObject(std::string("Array=Stoichiometry(ann)")));
-
-  if (pMatrix != NULL)
-    pMatrix->appendElementReferences(mChangedObjects);
-
-  pMatrix = dynamic_cast<const CArrayAnnotation *>(pModel->getObject(std::string("Array=Reduced stoichiometry(ann)")));
-
-  if (pMatrix != NULL)
-    pMatrix->appendElementReferences(mChangedObjects);
-
-  pMatrix = dynamic_cast<const CArrayAnnotation *>(pModel->getObject(std::string("Array=Link matrix(ann)")));
-
-  if (pMatrix != NULL)
-    pMatrix->appendElementReferences(mChangedObjects);
-
-  try
-    {
-      mUpdateVector = pModel->buildInitialRefreshSequence(mChangedObjects);
-    }
-
-  catch (...)
-    {
-      QString Message = "Error while updating the initial values!\n\n";
-      Message += FROM_UTF8(CCopasiMessage::getLastMessage().getText());
-
-      CQMessageBox::critical(NULL, QString("COPASI Error"), Message,
-                             QMessageBox::Ok, QMessageBox::Ok);
-      CCopasiMessage::clearDeque();
-
-      mUpdateVector.clear();
-      return;
-    }
-}
-
 void DataModelGUI::refreshInitialValues()
 {
-  buildChangedObjects();
-
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   CModel * pModel = (*CCopasiRootContainer::getDatamodelList())[0]->getModel();
-  pModel->getMathContainer().applyUpdateSequence(mUpdateVector);
-  pModel->refreshActiveParameterSet();
+  pModel->updateInitialValues(static_cast< CModelParameter::Framework >(mFramework));
 }
 
 void DataModelGUI::setFramework(int framework)

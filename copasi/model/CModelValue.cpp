@@ -65,8 +65,8 @@ CModelEntity::CModelEntity(const std::string & name,
                            const unsigned C_INT32 & flag):
   CCopasiContainer(name, pParent, type, (flag | CCopasiObject::Container | CCopasiObject::ValueDbl | CCopasiObject::ModelEntity)),
   CAnnotation(),
-  mpValue(NULL),
-  mpIValue(NULL),
+  mValue(std::numeric_limits<C_FLOAT64>::quiet_NaN()),
+  mIValue(1.0),
   mRate(0.0),
   mpExpression(NULL),
   mpInitialExpression(NULL),
@@ -78,9 +78,6 @@ CModelEntity::CModelEntity(const std::string & name,
 
   initObjects();
 
-  *mpIValue = 1.0;
-  *mpValue = std::numeric_limits<C_FLOAT64>::quiet_NaN();
-
   CONSTRUCTOR_TRACE;
 }
 
@@ -88,8 +85,8 @@ CModelEntity::CModelEntity(const CModelEntity & src,
                            const CCopasiContainer * pParent):
   CCopasiContainer(src, pParent),
   CAnnotation(src),
-  mpValue(NULL),
-  mpIValue(NULL),
+  mValue(src.mValue),
+  mIValue(src.mIValue),
   mRate(src.mRate),
   mpExpression(src.mpExpression ? new CExpression(*src.mpExpression, this) : NULL),
   mpInitialExpression(src.mpInitialExpression ? new CExpression(*src.mpInitialExpression, this) : NULL),
@@ -102,23 +99,17 @@ CModelEntity::CModelEntity(const CModelEntity & src,
   initObjects();
 
   setStatus(src.mStatus);
-
-  *mpValue = *src.mpValue;
-  *mpIValue = *src.mpIValue;
-
   setMiriamAnnotation(src.getMiriamAnnotation(), mKey, src.mKey);
 }
 
 CModelEntity::~CModelEntity()
 {
   if (mpModel)
-    mpModel->getStateTemplate().remove(this);
+    mpModel->removeModelEntity(this);
 
   // After the above call we definitely own the data and
   // therefore must destroy them.
 
-  pdelete(mpValue);
-  pdelete(mpIValue);
   // since the expressions now have the model entity as parent, they should
   // automatically be destroyed be the destructor of CCopasiContainer
   //pdelete(mpExpression);
@@ -133,10 +124,10 @@ const std::string & CModelEntity::getKey() const
   return CAnnotation::getKey();
 }
 
-const C_FLOAT64 & CModelEntity::getValue() const {return *mpValue;}
+const C_FLOAT64 & CModelEntity::getValue() const {return mValue;}
 
 const C_FLOAT64 & CModelEntity::getInitialValue() const
-{return *mpIValue;}
+{return mIValue;}
 
 const CModelEntity::Status & CModelEntity::getStatus() const {return mStatus;}
 
@@ -184,7 +175,7 @@ bool CModelEntity::compile()
       // If we have a valid initial expression, we update the initial value.
       // In case the expression is constant this suffices other are updated lated again.
       if (mpInitialExpression->isUsable())
-        *mpIValue = mpInitialExpression->calcValue();
+        mIValue = mpInitialExpression->calcValue();
     }
   else
     {
@@ -199,7 +190,7 @@ void CModelEntity::calculate()
   switch (mStatus)
     {
       case ASSIGNMENT:
-        *mpValue = mpExpression->calcValue();
+        mValue = mpExpression->calcValue();
         break;
 
       case ODE:
@@ -215,7 +206,7 @@ void CModelEntity::refreshInitialValue()
 {
   if (mpInitialExpression != NULL &&
       mpInitialExpression->getInfix() != "")
-    *mpIValue = mpInitialExpression->calcValue();
+    mIValue = mpInitialExpression->calcValue();
 }
 
 bool CModelEntity::setExpression(const std::string & expression)
@@ -385,12 +376,12 @@ CCopasiObject * CModelEntity::getRateReference() const
 
 void CModelEntity::setValue(const C_FLOAT64 & value)
 {
-  *mpValue = value;
+  mValue = value;
 }
 
 void CModelEntity::setInitialValue(const C_FLOAT64 & initialValue)
 {
-  *mpIValue = initialValue;
+  mIValue = initialValue;
 }
 
 void CModelEntity::setRate(const C_FLOAT64 & rate)
@@ -414,7 +405,6 @@ void CModelEntity::setStatus(const CModelEntity::Status & status)
         pdelete(mpInitialExpression);
 
       mStatus = status;
-      this->setValuePtr(mpValue);
 
       if (mpModel != NULL)
         mpModel->setCompileFlag(true);
@@ -497,7 +487,7 @@ const CCopasiObject * CModelEntity::getValueObject() const
 // virtual
 void * CModelEntity::getValuePointer() const
 {
-  return const_cast<C_FLOAT64 *>(mpValue);
+  return const_cast<C_FLOAT64 *>(&mValue);
 }
 
 void CModelEntity::initObjects()
@@ -526,32 +516,8 @@ void CModelEntity::initObjects()
 
   if (mpModel)
     {
-      mpModel->getStateTemplate().add(this);
+      mpModel->addModelEntity(this);
     }
-  else
-    {
-      // This creates the needed values.
-      setInitialValuePtr(NULL);
-      setValuePtr(NULL);
-    }
-}
-
-void CModelEntity::setInitialValuePtr(C_FLOAT64 * pInitialValue)
-{
-  mpIValue = pInitialValue;
-
-  if (!mpIValue) mpIValue = new C_FLOAT64;
-
-  mpIValueReference->setReference(*mpIValue);
-}
-
-void CModelEntity::setValuePtr(C_FLOAT64 * pValue)
-{
-  mpValue = pValue;
-
-  if (!mpValue) mpValue = new C_FLOAT64;
-
-  mpValueReference->setReference(*mpValue);
 }
 
 bool CModelEntity::setObjectParent(const CCopasiContainer * pParent)
@@ -561,33 +527,20 @@ bool CModelEntity::setObjectParent(const CCopasiContainer * pParent)
 
   if (mpModel == pNewModel) return true;
 
-  C_FLOAT64 InitialValue = *mpIValue;
-  C_FLOAT64 Value = *mpValue;
-
   if (mpModel)
     {
       // This allocates new objects for mpIValue and mpValueData
-      mpModel->getStateTemplate().remove(this);
+      mpModel->removeModelEntity(this);
     }
 
   // We can safely remove the currently allocated objects as they
   // are not part of an CStateTemplate
-  pdelete(mpIValue);
-  pdelete(mpValue);
-
   if (pNewModel)
     {
-      pNewModel->getStateTemplate().add(this);
-    }
-  else
-    {
-      mpValue = new C_FLOAT64;
-      mpIValue = new C_FLOAT64;
+      pNewModel->addModelEntity(this);
     }
 
   mpModel = pNewModel;
-  *mpIValue = InitialValue;
-  *mpValue = Value;
 
   return true;
 }
@@ -683,7 +636,7 @@ void CModelValue::initObjects()
 std::ostream & operator<<(std::ostream &os, const CModelValue & d)
 {
   os << "    ++++CModelValue: " << d.getObjectName() << std::endl;
-  os << "        mValue " << *d.mpValue << " mIValue " << *d.mpIValue << std::endl;
+  os << "        mValue " << d.mValue << " mIValue " << d.mIValue << std::endl;
   os << "        mRate " << d.mRate << " mStatus " << d.getStatus() << std::endl;
   os << "    ----CModelValue " << std::endl;
 

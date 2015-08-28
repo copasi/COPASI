@@ -118,7 +118,6 @@ public:
   void deregisterListView(ListViews * pListView);
 
   void refreshInitialValues();
-  void buildChangedObjects();
   void setFramework(int framework);
   void updateMIRIAMResourceContents();
   void commit();
@@ -137,8 +136,6 @@ private:
   COutputHandlerPlot mOutputHandlerPlot;
   std::set< ListViews * > mListViews;
   int mFramework;
-  std::vector< CObjectInterface * > mUpdateVector;
-  std::set< const CCopasiObject * > mChangedObjects;
 
   CQThread * mpThread;
   CProgressBar * mpProgressBar;

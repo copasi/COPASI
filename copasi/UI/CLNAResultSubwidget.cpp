@@ -1,4 +1,4 @@
-// Copyright (C) 2011 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -68,12 +68,6 @@ void CLNAResultSubwidget::loadAll(const CLNAMethod * lnaMethod)
 
   if (lnaMethod)
     {
-      if (!lnaMethod->getModel())
-        {
-          clear();
-          return;
-        }
-
       if ((lnaMethod->getSteadyStateStatus() == CSteadyStateMethod::found) && (lnaMethod->getEigenValueStatus() == CLNAMethod::allNeg))
         {
           mTopLabel->setText("Steady State found.");

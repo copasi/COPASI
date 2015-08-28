@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -45,7 +45,7 @@ CCompartment::CCompartment(const std::string & name,
 
   setStatus(FIXED);
 
-  *mpIValue = 1.0;
+  mIValue = 1.0;
 
   CONSTRUCTOR_TRACE;
 }
@@ -214,7 +214,7 @@ void CCompartment::initObjects()
 
 std::ostream & operator<<(std::ostream &os, const CCompartment & d)
 {
-  os << "++++CCompartment: " << d.getObjectName() << " mValue " << *d.mpValue;
+  os << "++++CCompartment: " << d.getObjectName() << " mValue " << d.mValue;
   os << "    CCompartment.mMetabolites " << std::endl << d.mMetabolites;
   os << "----CCompartment " << std::endl;
 

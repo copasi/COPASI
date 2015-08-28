@@ -250,18 +250,18 @@ void CQUpdatesWidget::loadObjectsTable(CModel* pModel)
     {
       mpTableState->setVerticalHeaderItem((int) i, new QTableWidgetItem(QString::number(i)));
 
-      CModelEntity* pME = *(st.getEntities() + i);
+      const CModelEntity * pME = *(st.getEntities().array() + i);
 
       //first column
       QColor c(100, 100, 100);
 
-      if (dynamic_cast<CModel*>(pME)) c = QColor(250, 100, 100);
+      if (dynamic_cast< const CModel * >(pME)) c = QColor(250, 100, 100);
 
-      if (dynamic_cast<CMetab*>(pME)) c = QColor(250, 250, 150);
+      if (dynamic_cast< const CMetab * >(pME)) c = QColor(250, 250, 150);
 
-      if (dynamic_cast<CCompartment*>(pME)) c = QColor(100, 250, 100);
+      if (dynamic_cast< const CCompartment * >(pME)) c = QColor(100, 250, 100);
 
-      if (dynamic_cast<CModelValue*>(pME)) c = QColor(100, 100, 250);
+      if (dynamic_cast< const CModelValue * >(pME)) c = QColor(100, 100, 250);
 
       mpTableState->setItem((int) i, 0, new QTableWidgetItem(FROM_UTF8(pME->getObjectDisplayName())));
       //      mpTableState->setText(i, 0,FROM_UTF8(pME->getObjectDisplayName()));
@@ -292,43 +292,43 @@ void CQUpdatesWidget::loadObjectsTable(CModel* pModel)
 
   QColor c(200, 250, 250);
 
-  for (i = st.beginIndependent() - st.getEntities(); i < (size_t)(st.endIndependent() - st.getEntities()); ++i)
+  for (i = st.beginIndependent() - st.getEntities().array(); i < (size_t)(st.endIndependent() - st.getEntities().array()); ++i)
     mpTableState->setItem((int) i, 2, new  QTableWidgetItem(""));
 
   c = QColor(250, 200, 250);
 
-  for (i = st.beginDependent() - st.getEntities(); i < (size_t)(st.endDependent() - st.getEntities()); ++i)
+  for (i = st.beginDependent() - st.getEntities().array(); i < (size_t)(st.endDependent() - st.getEntities().array()); ++i)
     mpTableState->setItem((int) i, 2, new QTableWidgetItem(""));
 
   c = QColor(200, 200, 200);
 
-  for (i = st.beginFixed() - st.getEntities(); i < (size_t)(st.endFixed() - st.getEntities()); ++i)
+  for (i = st.beginFixed() - st.getEntities().array(); i < (size_t)(st.endFixed() - st.getEntities().array()); ++i)
     mpTableState->setItem((int) i, 2, new QTableWidgetItem(""));
 
-  int tmpint = st.beginIndependent() - st.getEntities();
+  int tmpint = st.beginIndependent() - st.getEntities().array();
   mpTableState->setItem(tmpint, 2, new QTableWidgetItem("beginIndependent "));
-  tmpint = st.endIndependent() - st.getEntities();
+  tmpint = st.endIndependent() - st.getEntities().array();
   mpTableState->setItem(tmpint, 2, new QTableWidgetItem(mpTableState->item(tmpint, 2)->text() + "endIndependent "));
 
-  tmpint = st.beginDependent() - st.getEntities();
+  tmpint = st.beginDependent() - st.getEntities().array();
   mpTableState->setItem(tmpint, 2, new QTableWidgetItem(mpTableState->item(tmpint, 2)->text() + "beginDependent "));
-  tmpint = st.endDependent() - st.getEntities();
+  tmpint = st.endDependent() - st.getEntities().array();
   mpTableState->setItem(tmpint, 2, new QTableWidgetItem(mpTableState->item(tmpint, 2)->text() + "endDependent "));
 
-  tmpint = st.beginFixed() - st.getEntities();
+  tmpint = st.beginFixed() - st.getEntities().array();
   mpTableState->setItem(tmpint, 2, new QTableWidgetItem(mpTableState->item(tmpint, 2)->text() + "beginFixed "));
-  tmpint = st.endFixed() - st.getEntities();
+  tmpint = st.endFixed() - st.getEntities().array();
   mpTableState->setItem(tmpint, 2, new QTableWidgetItem("endFixed "));
 
   //add absolute Tolerances to table
   CVector< C_FLOAT64 > atolv = pModel->initializeAtolVector(1, false);
-  tmpint = st.beginIndependent() - st.getEntities();
+  tmpint = st.beginIndependent() - st.getEntities().array();
 
   for (i = 0; i < atolv.size(); ++i)
     {
       mpTableState->setItem((int) i + tmpint, 3, new QTableWidgetItem(QString::number(atolv[i])));
 
-      CModelEntity* pME = *(st.getEntities() + i + 1);
+      const CModelEntity * pME = *(st.getEntities().array() + i + 1);
       C_FLOAT64 tmp = std::min(atolv[i], std::max(100.0 * std::numeric_limits< C_FLOAT64 >::min(), fabs(pME->getInitialValue())));
       mpTableState->setItem((int) i + tmpint, 4, new QTableWidgetItem(QString::number(tmp)));
     }

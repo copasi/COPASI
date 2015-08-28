@@ -385,5 +385,10 @@ std::string CMathDependencyGraph::getDOTNodeId(const CObjectInterface * pObject)
       return os.str();
     }
 
+  CCopasiObject * pReaction = pDataObject->getObjectAncestor("Reaction");
+
+  if (pReaction != NULL && pReaction != pDataObject->getObjectParent())
+    return pReaction->getObjectName() + "::" + pDataObject->getObjectParent()->getObjectName() + "::" + pDataObject->getObjectName();
+
   return pDataObject->getObjectParent()->getObjectName() + "::" + pDataObject->getObjectName();
 }

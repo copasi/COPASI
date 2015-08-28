@@ -1,4 +1,4 @@
-// Copyright (C) 2011 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -27,9 +27,6 @@ public:
   };
 
 private:
-
-  CModel * mpModel;
-
   /**
    * LNA Matrices
    */
@@ -146,16 +143,6 @@ public:
    * The model needs to be set before calling this.
    */
   virtual void resizeAllMatrices();
-
-  /**
-   * Set the Model
-   */
-  void setModel(CModel* model);
-
-  /**
-   * Get the Model
-   */
-  const CModel* getModel() const;
 
   /**
    * the LNA entry point

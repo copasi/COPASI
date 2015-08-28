@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -263,7 +263,7 @@ void CMetab::setInitialConcentration(const C_FLOAT64 & initialConcentration)
 
 void CMetab::refreshInitialValue()
 {
-  *mpIValue = mIConc * mpCompartment->getInitialValue() * mpModel->getQuantity2NumberFactor();
+  mIValue = mIConc * mpCompartment->getInitialValue() * mpModel->getQuantity2NumberFactor();
 }
 
 void CMetab::refreshInitialConcentration()
@@ -273,19 +273,19 @@ void CMetab::refreshInitialConcentration()
     mIConc = mpInitialExpression->calcValue();
   else
     mIConc =
-      *mpIValue / mpCompartment->getInitialValue() * mpModel->getNumber2QuantityFactor();
+      mIValue / mpCompartment->getInitialValue() * mpModel->getNumber2QuantityFactor();
 
   if (isFixed()) mConc = mIConc;
 }
 
 void CMetab::refreshConcentration()
 {
-  mConc = *mpValue / mpCompartment->getValue() * mpModel->getNumber2QuantityFactor();
+  mConc = mValue / mpCompartment->getValue() * mpModel->getNumber2QuantityFactor();
 }
 
 void CMetab::refreshNumber()
 {
-  *mpValue = mConc * mpCompartment->getValue() * mpModel->getQuantity2NumberFactor();
+  mValue = mConc * mpCompartment->getValue() * mpModel->getQuantity2NumberFactor();
 }
 
 void CMetab::setStatus(const CModelEntity::Status & status)
@@ -684,7 +684,7 @@ void CMetab::calculate()
       case REACTIONS:
 
         if (isDependent())
-          *mpValue = mpMoiety->getDependentNumber();
+          mValue = mpMoiety->getDependentNumber();
 
         break;
 
@@ -716,7 +716,7 @@ void CMetab::refreshRate()
           mRateVector.end();
 
         for (; it != end; ++it)
-          mRate += it->first * *it->second;
+          mRate += it->first **it->second;
       }
       break;
 
@@ -736,7 +736,7 @@ void CMetab::refreshTransitionTime()
         break;
 
       case ODE:
-        mTT = *mpValue / fabs(mRate);
+        mTT = mValue / fabs(mRate);
         break;
 
       case REACTIONS:
@@ -752,7 +752,7 @@ void CMetab::refreshTransitionTime()
 
         for (; it != end; ++it)
           {
-            Flux = it->first * *it->second;
+            Flux = it->first **it->second;
 
             if (Flux > 0.0)
               PositiveFlux += Flux;
@@ -765,7 +765,7 @@ void CMetab::refreshTransitionTime()
         if (Flux == 0.0)
           mTT = std::numeric_limits<C_FLOAT64>::infinity();
         else
-          mTT = *mpValue / Flux;
+          mTT = mValue / Flux;
       }
       break;
 
@@ -901,7 +901,7 @@ std::ostream & operator<<(std::ostream &os, const CMetab & d)
 {
   os << "    ++++CMetab: " << d.getObjectName() << std::endl;
   os << "        mConc " << d.mConc << " mIConc " << d.mIConc << std::endl;
-  os << "        mValue (particle number) " << *d.mpValue << " mIValue " << *d.mpIValue << std::endl;
+  os << "        mValue (particle number) " << d.mValue << " mIValue " << d.mIValue << std::endl;
   os << "        mRate " << d.mRate << " mTT " << d.mTT << " mStatus " << d.getStatus() << std::endl;
 
   if (d.mpCompartment)
@@ -983,7 +983,7 @@ std::string CMetab::getObjectDisplayName(bool regular, bool richtext) const
   return CCopasiObject::getObjectDisplayName(regular, richtext);
 }
 
-void CMetab::setDependentOn(const CMoiety * pMoiety)
+void CMetab::setDependsOnMoiety(const CMoiety * pMoiety)
 {mpMoiety = pMoiety;}
 
 bool CMetab::isDependent() const

@@ -1762,20 +1762,14 @@ void CCSPMethod::predefineAnnotation()
       N = Model.getNumIndependentReactionMetabs() + Model.getNumDependentReactionMetabs();
     }
 
-  CCopasiVector<CMetab>  metabs;
+  CCopasiVector< CMetab >  metabs;
   metabs.resize(N);
 
-  CModelEntity* tmp;
   C_INT j;
 
   for (j = 0; j < N; j++)
     {
-
-      tmp = Model.getStateTemplate().beginIndependent()[j];
-
-      CMetab* metab = dynamic_cast< CMetab * >(tmp);
-
-      metabs[j] = metab;
+      metabs[j] = static_cast< CMetab * >(const_cast< CModelEntity * >(Model.getStateTemplate().beginIndependent()[j]));
     }
 
   mImportanceIndexTab.resize(Model.getReactions().size(),
@@ -2041,22 +2035,16 @@ bool CCSPMethod::setAnnotationM(size_t step)
   mRadicalPointerTab = mVec_mRadicalPointer[step];
   pRadicalPointerAnn->resize();
 
-  CCopasiVector<CMetab>  metabs;
+  CCopasiVector< CMetab >  metabs;
   //FIXED :  metabs.resize(mDim);
   metabs.resize(N);
 
-  CModelEntity* tmp;
   C_INT j;
 
   // FIXED:  for (j = 0; j < mDim; j++)
   for (j = 0; j < N; j++)
     {
-
-      tmp = Model.getStateTemplate().beginIndependent()[j];
-
-      CMetab* metab = dynamic_cast< CMetab * >(tmp);
-
-      metabs[j] = metab;
+      metabs[j] = static_cast< CMetab * >(const_cast< CModelEntity * >(Model.getStateTemplate().beginIndependent()[j]));
     }
 
   pRadicalPointerAnn->setCopasiVector(0, &metabs);

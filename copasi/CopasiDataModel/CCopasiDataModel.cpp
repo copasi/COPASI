@@ -2165,7 +2165,7 @@ void CCopasiDataModel::commonAfterLoad(CProcessReport* pProcessReport,
   if (mData.pModel)
     {
       mData.pModel->compileIfNecessary(pProcessReport);
-      mData.pModel->updateInitialValues();
+      mData.pModel->updateInitialValues(CModelParameter::ParticleNumbers);
     }
 
   changed(false);

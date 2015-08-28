@@ -1,4 +1,4 @@
-// Copyright (C) 2011 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -28,8 +28,7 @@
  *  @param "CModel *" pModel
  */
 CLNAProblem::CLNAProblem(const CCopasiContainer * pParent):
-  CCopasiProblem(CTaskEnum::lna, pParent),
-  mInitialState()
+  CCopasiProblem(CTaskEnum::lna, pParent)
 {
   addParameter("Steady-State", CCopasiParameter::KEY, std::string(""));
   CONSTRUCTOR_TRACE;
@@ -67,36 +66,6 @@ void CLNAProblem::load(CReadConfig & configBuffer,
       setSteadyStateRequested(SteadyStateRequested);
     }
 }
-
-/**
- * Set the initial state of the problem.
- * @param const CState & initialState
- */
-void CLNAProblem::setInitialState(const CState & initialState)
-{
-  mInitialState = initialState;
-}
-
-#ifdef XXXX
-/**
- * Set the initial state of the problem.
- * @param const CStateX & InitialState
- */
-void CLNAProblem::setInitialState(const CStateX & initialState)
-{
-  mInitialState = initialState;
-  mpContainer = const_cast<CModel *>(mInitialState.getModel());
-}
-
-/**
- * Retrieve the initial state of the problem.
- * @return "const CState &" pInitialState
- */
-const CState & CLNAProblem::getInitialState() const
-{
-  return mInitialState;
-}
-#endif // XXXX
 
 /**
  * Set whether the steady state analysis is requested.

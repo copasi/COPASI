@@ -887,8 +887,8 @@ bool CCopasiXML::saveModel()
   Attributes.add("objectReference", "");
   std::pair< std::string, std::string > Variable;
 
-  CModelEntity *const* ppEntity = mpModel->getStateTemplate().getEntities();
-  CModelEntity *const* ppEntityEnd = ppEntity + mpModel->getStateTemplate().size();
+  const CModelEntity *const* ppEntity = mpModel->getStateTemplate().getEntities().array();
+  const CModelEntity *const* ppEntityEnd = ppEntity + mpModel->getStateTemplate().size();
 
   for (; ppEntity != ppEntityEnd; ++ppEntity)
     {
@@ -903,7 +903,7 @@ bool CCopasiXML::saveModel()
   Attributes.add("type", "initialState");
   startSaveElement("InitialState", Attributes);
   *mpOstream << mIndent;
-  ppEntity = mpModel->getStateTemplate().getEntities();
+  ppEntity = mpModel->getStateTemplate().getEntities().array();
 
   for (; ppEntity != ppEntityEnd; ++ppEntity)
     {

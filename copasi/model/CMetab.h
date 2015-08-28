@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -456,7 +456,7 @@ public:
    * by a moiety
    * @param const CMoiety * pMoiety
    */
-  void setDependentOn(const CMoiety * pMoiety);
+  void setDependsOnMoiety(const CMoiety * pMoiety);
 
   /**
    * Retrieve whether the metabolite dependent

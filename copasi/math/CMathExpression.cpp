@@ -1,4 +1,4 @@
-// Copyright (C) 2011 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -190,10 +190,6 @@ bool CMathExpression::compile()
         {
           void * pValue = stringToPointer((*it)->getData());
 
-          // TODO CRITICAL It is possible that the user selects non model objects, i.e.,
-          // problem or method values within the expression. These cannot be mapped to a
-          // math objects and therefore dependencies will be broken.
-
           CMathObject * pMathObject = pMathContainer->getMathObject((C_FLOAT64 *) pValue);
 
           if (pMathObject != NULL)
@@ -202,8 +198,17 @@ bool CMathExpression::compile()
             }
           else
             {
-              // For the moment we stop.
-              assert(false);
+              CCopasiObject * pDataObject = pMathContainer->getDataObject((C_FLOAT64 *) pValue);
+
+              if (pDataObject != NULL)
+                {
+                  mPrerequisites.insert(pDataObject);
+                }
+              else
+                {
+                  // This must never happen
+                  fatalError();
+                }
             }
         }
     }

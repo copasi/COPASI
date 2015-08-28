@@ -417,36 +417,15 @@ public:
 
   /**
    * Update all initial values.
+   * @param const CModelParameter::Framework & framework
    * @return bool success
    */
-  bool updateInitialValues();
-
-  /**
-   * Get the current state of the model, i.e., all current model
-   * quantities.
-   * @return const CState & initialState
-   */
-  const CState & getInitialState() const;
+  bool updateInitialValues(const CModelParameter::Framework & framework);
 
   /**
    * Copy the current state value to the initial state
    */
   void stateToIntialState();
-
-  /**
-   * Set all initial model quantities to the one given by the state and
-   * updates moieties and metabolite concentrations.
-   * @param const CState & state
-   */
-  void setInitialState(const CState & state);
-
-  /**
-   * This method calculates all values needed for simulation based on the current
-   * current state. If updateMoities is true the particle numbers of dependent metabolites
-   * of type REACTION are calculated otherwise they are assumed to be synchronized.
-   * @param const bool & updateMoieties
-   */
-  void updateSimulatedValues(const bool & updateMoieties);
 
   /**
    * Calculates the jacobian of the full model for the current state
@@ -895,10 +874,16 @@ public:
   const CStateTemplate & getStateTemplate() const;
 
   /**
-   * Retrieve the state template
-   * @return const CModel::CStateTemplate & stateTemplate
+   * Add a model entity to the model
+   * @param const CModelEntity * pModelEntity
    */
-  CStateTemplate & getStateTemplate();
+  void addModelEntity(const CModelEntity * pModelEntity);
+
+  /**
+   * Remove a model entity to the model
+   * @param const CModelEntity * pModelEntity
+   */
+  void removeModelEntity(const CModelEntity * pModelEntity);
 
   /**
    * Retrieve the list of objects which are up to date after a call
@@ -1080,31 +1065,6 @@ private:
   bool buildStateTemplate();
 
   /**
-   * Build the update sequence used by updateInitialValues to update all
-   * initial values.
-   * @return bool success
-   */
-  bool buildInitialSequence();
-
-  /**
-   * Build the update sequence used by applyInitialValues to update values.
-   * @return bool success
-   */
-  bool buildApplyInitialValuesSequence();
-
-  /**
-   * Build the update sequence used by updateSimulatedValues.
-   * @return bool success
-   */
-  bool buildSimulatedSequence();
-
-  /**
-   * Build the update sequence used by updateNonSimulatedValues.
-   * @return bool success
-   */
-  bool buildNonSimulatedSequence();
-
-  /**
    * Build the user order for the state template
    * @return bool success
    */
@@ -1133,10 +1093,6 @@ public:
 
   // Attributes
 private:
-  CState mInitialState;
-
-  CState mCurrentState;
-
   /**
    * The state template for the model
    */
@@ -1148,8 +1104,6 @@ private:
    */
   std::set< const CCopasiObject * > mSimulatedUpToDateObjects;
 
-  mutable CMathDependencyGraph mInitialDependencies;
-  mutable CMathDependencyGraph mTransientDependencies;
   CMathDependencyGraph mPhysicalDependencies;
 
   /**
@@ -1241,11 +1195,6 @@ private:
    *  for array of conserved moieties
    */
   CCopasiVector< CMoiety > mMoieties;
-
-  /**
-   *   Stoichiometry Matrix
-   */
-  CMatrix< C_FLOAT64 > mStoiInternal;
 
   /**
    * Column and Row Annotation for the reduced Stoichiometry Matrix
@@ -1352,28 +1301,6 @@ private:
    * reported to it.
    */
   CProcessReport * mpCompileHandler;
-
-  /**
-   * An ordered list of refresh methods needed by the updateInitialValues
-   */
-  CObjectInterface::UpdateSequence mInitialRefreshes;
-
-  /**
-   * An ordered list of refresh methods needed by the updateSimulatedValues
-   */
-  std::vector< Refresh * > mSimulatedRefreshes;
-
-  /**
-   * An ordered list of refresh methods needed by the applyInitialValues
-   * to update values which stay constant during simulation.
-   */
-  std::vector< Refresh * > mApplyInitialValuesRefreshes;
-
-  /**
-   * An ordered list of refresh methods needed to update all model values
-   * which are not calculated during simulation
-   */
-  std::vector< Refresh * > mNonSimulatedRefreshes;
 
   /**
    * A flag indicating whether the state template has to be reordered

@@ -1,13 +1,4 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/cpp_examples/example8/example8.cpp,v $
-//   $Revision: 1.3 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/03/07 19:25:42 $
-// End CVS Header
-
-
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -106,7 +97,6 @@ const char* MODEL_STRING = \
                            "  </model>\n"
                            "</sbml>\n";
 
-
 int main()
 {
   // initialize the backend library
@@ -170,7 +160,7 @@ int main()
       // forward to find out which column/row corresponds to which species
       const CStateTemplate& stateTemplate = pModel->getStateTemplate();
       // we get a pointer to all entities
-      CModelEntity** pEntities = const_cast<CStateTemplate&>(stateTemplate).getEntities();
+      const CModelEntity *const* pEntities = stateTemplate.getEntities().array();
       // and we need the user order
       const CVector<size_t>& userOrder = stateTemplate.getUserOrder();
       // from those two, we can construct an new vector that contains
@@ -228,8 +218,8 @@ int main()
       // and columns are ordered in the same way as the independent variables of the state temple
       std::cout << std::endl << std::endl << "Reduced Jacobian Matrix:" << std::endl << std::endl;
       std::cout << std::setw(5) << " ";
-      CModelEntity* const* beginIndependent = stateTemplate.beginIndependent();
-      const CModelEntity* const* endIndependent = stateTemplate.endIndependent();
+      const CModelEntity *const* beginIndependent = stateTemplate.beginIndependent();
+      const CModelEntity *const* endIndependent = stateTemplate.endIndependent();
 
       while (beginIndependent < endIndependent)
         {
@@ -252,11 +242,7 @@ int main()
 
           std::cout << std::endl;
         }
-
     }
 
   return 0;
 }
-
-
-

@@ -4792,9 +4792,9 @@ void CCopasiXMLParser::KineticLawElement::end(const XML_Char *pszName)
 
         {
           std::map< std::string, std::vector< std::string > >::const_iterator it
-          = mCommon.SourceParameterKeys.begin();
+            = mCommon.SourceParameterKeys.begin();
           std::map< std::string, std::vector< std::string > >::const_iterator end
-          = mCommon.SourceParameterKeys.end();
+            = mCommon.SourceParameterKeys.end();
 
           for (; it != end; ++it)
             if (it->second.size() > 0)
@@ -5339,11 +5339,6 @@ void CCopasiXMLParser::InitialStateElement::end(const XML_Char *pszName)
   std::vector< CModelEntity * >::iterator end;
   double Value;
 
-  const CStateTemplate & Template = mCommon.pModel->getStateTemplate();
-  CState IState = mCommon.pModel->getInitialState();
-  C_FLOAT64 * pValues = IState.beginIndependent() - 1;
-  size_t Index;
-
   switch (mCurrentElement)
     {
       case InitialState:
@@ -5362,24 +5357,13 @@ void CCopasiXMLParser::InitialStateElement::end(const XML_Char *pszName)
             if (Values.fail()) break;
 
             Value = CCopasiXMLInterface::DBL(StringValue.c_str());
-
-            Index = Template.getIndex(*it);
-
-            if (Index != C_INVALID_INDEX)
-              {
-                pValues[Index] = Value;
-                continue;
-              }
-
-            fatalError();
+            (*it)->setInitialValue(Value);
           }
 
         if (it != end || !Values.fail() || !Values.eof())
           {
             CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 17, mParser.getCurrentLineNumber());
           }
-
-        mCommon.pModel->setInitialState(IState);
 
         mParser.popElementHandler();
         mCurrentElement = START_ELEMENT;

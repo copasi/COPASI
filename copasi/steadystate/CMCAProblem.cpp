@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -38,8 +38,7 @@
  *  @param "CModel *" pModel
  */
 CMCAProblem::CMCAProblem(const CCopasiContainer * pParent):
-  CCopasiProblem(CTaskEnum::mca, pParent),
-  mInitialState()
+  CCopasiProblem(CTaskEnum::mca, pParent)
 {
   //  addParameter("SteadyStateRequested", CCopasiParameter::BOOL, true);
   addParameter("Steady-State", CCopasiParameter::KEY, std::string(""));
@@ -78,34 +77,6 @@ void CMCAProblem::load(CReadConfig & configBuffer,
       setSteadyStateRequested(SteadyStateRequested);
     }
 }
-
-/**
- * Set the initial state of the problem.
- * @param const CState & initialState
- */
-void CMCAProblem::setInitialState(const CState & initialState)
-{
-  mInitialState = initialState;
-}
-
-#ifdef XXXX
-/**
- * Set the initial state of the problem.
- * @param const CStateX & InitialState
- */
-void CMCAProblem::setInitialState(const CStateX & initialState)
-{
-  mInitialState = initialState;
-  mpContainer = const_cast<CModel *>(mInitialState.getModel());
-}
-
-/**
- * Retrieve the initial state of the problem.
- * @return "const CState &" pInitialState
- */
-const CState & CMCAProblem::getInitialState() const
-{return mInitialState;}
-#endif // XXXX
 
 /**
  * Set whether the steady state analysis is requested.

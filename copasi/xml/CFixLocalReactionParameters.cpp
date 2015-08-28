@@ -1,12 +1,9 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CFixLocalReactionParameters.cpp,v $
-//   $Revision: 1.4 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/01/07 19:40:34 $
-// End CVS Header
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
@@ -21,8 +18,8 @@
 #include "function/CExpression.h"
 
 CFixLocalReactionParameters::CFixLocalReactionParameters():
-    mpModel(NULL),
-    mChanges()
+  mpModel(NULL),
+  mChanges()
 {}
 
 CFixLocalReactionParameters::~CFixLocalReactionParameters()
@@ -62,17 +59,18 @@ void CFixLocalReactionParameters::checkModel()
           // Note '>' is already properly escaped in the CN
           std::string CN = "<" + (*itParameter)->getCN() + ",Reference=Value>";
 
-          CModelEntity *const*ppEntity = mpModel->getStateTemplate().getEntities();
-          CModelEntity *const*ppEntityEnd = ppEntity + mpModel->getStateTemplate().size();
+          const CModelEntity *const*ppEntity = mpModel->getStateTemplate().getEntities().array();
+          const CModelEntity *const*ppEntityEnd = ppEntity + mpModel->getStateTemplate().size();
+
           for (; ppEntity != ppEntityEnd; ++ppEntity)
             {
               if ((*ppEntity)->getExpression().find(CN) != std::string::npos)
                 mChanges.insert
-                (std::pair< CCopasiParameter * const, CExpression * >(*itParameter, (*ppEntity)->getExpressionPtr()));
+                (std::pair< CCopasiParameter * const, const CExpression * >(*itParameter, (*ppEntity)->getExpressionPtr()));
 
               if ((*ppEntity)->getInitialExpression().find(CN) != std::string::npos)
                 mChanges.insert
-                (std::pair< CCopasiParameter * const, CExpression * >(*itParameter, (*ppEntity)->getInitialExpressionPtr()));
+                (std::pair< CCopasiParameter * const, const CExpression * >(*itParameter, (*ppEntity)->getInitialExpressionPtr()));
             }
         }
     }
@@ -95,8 +93,8 @@ void CFixLocalReactionParameters::changeModel()
   std::string::size_type Start;
 
   // Loop through all changes.
-  std::multimap< CCopasiParameter *, CExpression * >::const_iterator itChanges = mChanges.begin();
-  std::multimap< CCopasiParameter *, CExpression * >::const_iterator endChanges = mChanges.end();
+  std::multimap< CCopasiParameter *, const CExpression * >::const_iterator itChanges = mChanges.begin();
+  std::multimap< CCopasiParameter *, const CExpression * >::const_iterator endChanges = mChanges.end();
 
   for (; itChanges != endChanges; ++itChanges)
     {
@@ -117,6 +115,7 @@ void CFixLocalReactionParameters::changeModel()
           // In case the created name is not unique we append _n with increasing n
           // until we succeed;
           C_INT32 index = 0;
+
           while (pModelValue == NULL)
             {
               NameStream.str("");
@@ -124,6 +123,7 @@ void CFixLocalReactionParameters::changeModel()
               pModelValue = mpModel->createModelValue(NameStream.str(),
                                                       *pParameter->getValue().pDOUBLE);
             }
+
           NewCNBase = "<" + pModelValue->getCN() + ",Reference=";
 
           // If the parameter is actually used in the reaction
@@ -132,7 +132,7 @@ void CFixLocalReactionParameters::changeModel()
             pReaction->setParameterMapping(pParameter->getObjectName(), pModelValue->getKey());
 
           Message << "  " << pParameter->getObjectName() << " in " << pReaction->getObjectName()
-          << " is replaced by " << pModelValue->getObjectName() << std::endl;
+                  << " is replaced by " << pModelValue->getObjectName() << std::endl;
         }
 
       // We need to distinguish between initial and other expressions.
@@ -146,10 +146,11 @@ void CFixLocalReactionParameters::changeModel()
 
       // There may be more than one occurrence.
       Start = 0;
+
       while ((Start = Infix.find(OldCN), Start) != std::string::npos)
         Infix.replace(Start, OldCN.length(), NewCN);
 
-      itChanges->second->setInfix(Infix);
+      const_cast< CExpression * >(itChanges->second)->setInfix(Infix);
     }
 
   CCopasiMessage(CCopasiMessage::WARNING, MCXML + 14, Message.str().c_str());
