@@ -1,4 +1,4 @@
-// Copyright (C) 2011 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -251,7 +251,7 @@ bool CMathObject::isPrerequisiteForContext(const CObjectInterface * pObject,
           {
             switch ((int) mpExpression->getRoot()->getType())
               {
-                case(CEvaluationNode::CHOICE | CEvaluationNodeChoice::IF):
+                case (CEvaluationNode::CHOICE | CEvaluationNodeChoice::IF):
                 {
                   const CMathObject * pMathObject = dynamic_cast< const CMathObject * >(pObject);
 
@@ -265,11 +265,11 @@ bool CMathObject::isPrerequisiteForContext(const CObjectInterface * pObject,
                 }
                 break;
 
-                case(CEvaluationNode::FUNCTION | CEvaluationNodeFunction::FLOOR):
+                case (CEvaluationNode::FUNCTION | CEvaluationNodeFunction::FLOOR):
                   return false;
                   break;
 
-                case(CEvaluationNode::FUNCTION | CEvaluationNodeFunction::CEIL):
+                case (CEvaluationNode::FUNCTION | CEvaluationNodeFunction::CEIL):
                   return false;
                   break;
 
@@ -1371,8 +1371,8 @@ std::ostream &operator<<(std::ostream &os, const CMathObject & o)
       os << "Data Object = NULL" << std::endl;
     }
 
-  os << "  Pointer:               " << &o << std::endl;
-  os << "  Value Type:            ";
+  os << "  Pointer:                " << &o << std::endl;
+  os << "  Value Type:             ";
 
   switch (o.mValueType)
     {
@@ -1437,7 +1437,7 @@ std::ostream &operator<<(std::ostream &os, const CMathObject & o)
         break;
     }
 
-  os << "  Simulation Type:       ";
+  os << "  Simulation Type:        ";
 
   switch (o.mSimulationType)
     {
@@ -1478,7 +1478,7 @@ std::ostream &operator<<(std::ostream &os, const CMathObject & o)
         break;
     };
 
-  os << "  Entity Type:           ";
+  os << "  Entity Type:            ";
 
   switch (o.mEntityType)
     {
@@ -1527,11 +1527,11 @@ std::ostream &operator<<(std::ostream &os, const CMathObject & o)
         break;
     };
 
-  os << "  Is Intensive Property: " << (o.mIsIntensiveProperty ? "true" : "false") << std::endl;
+  os << "  Is Intensive Property:  " << (o.mIsIntensiveProperty ? "true" : "false") << std::endl;
 
-  os << "  Is Initial Value:      " << (o.mIsInitialValue ? "true" : "false") << std::endl;
+  os << "  Is Initial Value:       " << (o.mIsInitialValue ? "true" : "false") << std::endl;
 
-  os << "  Intensive Property:    ";
+  os << "  Corresponding Property: ";
 
   if (o.mpCorrespondingProperty != NULL)
     {
@@ -1542,9 +1542,9 @@ std::ostream &operator<<(std::ostream &os, const CMathObject & o)
       os << "NULL" << std::endl;
     }
 
-  os << "  Value:                 " << *o.mpValue << " (" << o.mpValue << ")" << std::endl;
+  os << "  Value:                  " << *o.mpValue << " (" << o.mpValue << ")" << std::endl;
 
-  os << "  Expression:            ";
+  os << "  Expression:             ";
 
   if (o.mpExpression != NULL)
     {

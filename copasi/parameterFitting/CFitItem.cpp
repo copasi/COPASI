@@ -29,8 +29,7 @@ CFitItem::CFitItem(const CCopasiContainer * pParent,
   COptItem(pParent, name),
   mpGrpAffectedExperiments(NULL),
   mpGrpAffectedCrossValidations(NULL),
-  mLocalValue(0),
-  mpLocalMethod(new SpecificUpdateMethod<CFitItem, C_FLOAT64>(this, &CFitItem::setLocalValue))
+  mLocalValue(0)
 {initializeParameter();}
 
 CFitItem::CFitItem(const CFitItem & src,
@@ -38,8 +37,7 @@ CFitItem::CFitItem(const CFitItem & src,
   COptItem(src, pParent),
   mpGrpAffectedExperiments(NULL),
   mpGrpAffectedCrossValidations(NULL),
-  mLocalValue(0),
-  mpLocalMethod(new SpecificUpdateMethod<CFitItem, C_FLOAT64>(this, &CFitItem::setLocalValue))
+  mLocalValue(0)
 {initializeParameter();}
 
 CFitItem::CFitItem(const CCopasiParameterGroup & group,
@@ -47,12 +45,11 @@ CFitItem::CFitItem(const CCopasiParameterGroup & group,
   COptItem(group, pParent),
   mpGrpAffectedExperiments(NULL),
   mpGrpAffectedCrossValidations(NULL),
-  mLocalValue(0),
-  mpLocalMethod(new SpecificUpdateMethod<CFitItem, C_FLOAT64>(this, &CFitItem::setLocalValue))
+  mLocalValue(0)
 {initializeParameter();}
 
 CFitItem::~CFitItem()
-{pdelete(mpLocalMethod);}
+{}
 
 void CFitItem::initializeParameter()
 {
@@ -177,9 +174,6 @@ const C_FLOAT64 & CFitItem::getLocalValue() const
 
 const C_FLOAT64 * CFitItem::getObjectValue() const
 {return & mLocalValue;}
-
-UpdateMethod * CFitItem::getUpdateMethod() const
-{return mpLocalMethod;}
 
 bool CFitItem::addExperiment(const std::string & key)
 {

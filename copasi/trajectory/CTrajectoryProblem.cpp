@@ -110,17 +110,7 @@ bool CTrajectoryProblem::elevateChildren()
 }
 
 void CTrajectoryProblem::initObjects()
-{
-  getParameter("StepNumber")->getValueReference()
-  ->setUpdateMethod(this,
-                    (void (CTrajectoryProblem::*)(const C_INT32 &)) &CTrajectoryProblem::setStepNumber);
-
-  getParameter("StepSize")->getValueReference()
-  ->setUpdateMethod(this, &CTrajectoryProblem::setStepSize);
-
-  getParameter("Duration")->getValueReference()
-  ->setUpdateMethod(this, &CTrajectoryProblem::setDuration);
-}
+{}
 
 /**
  * Set the number of time steps the trajectory method should integrate.

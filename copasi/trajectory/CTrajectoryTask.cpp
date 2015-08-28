@@ -329,7 +329,8 @@ bool CTrajectoryTask::process(const bool & useInitialValues)
     {
       mpContainer->setState(mContainerState);
       mpContainer->updateSimulatedValues(mUpdateMoieties);
-      mpContainer->pushState();
+      mpContainer->updateTransientDataValues();
+      mpContainer->pushAllTransientValues();
 
       if ((*mpLessOrEqual)(mOutputStartTime, *mpContainerStateTime))
         {
@@ -347,7 +348,8 @@ bool CTrajectoryTask::process(const bool & useInitialValues)
     {
       mpContainer->setState(mContainerState);
       mpContainer->updateSimulatedValues(mUpdateMoieties);
-      mpContainer->pushState();
+      mpContainer->updateTransientDataValues();
+      mpContainer->pushAllTransientValues();
 
       if ((*mpLessOrEqual)(mOutputStartTime, *mpContainerStateTime))
         {

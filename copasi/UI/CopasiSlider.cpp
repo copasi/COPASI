@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -158,11 +158,11 @@ void CopasiSlider::setValue(C_FLOAT64 value)
   if (pObject == NULL) return;
 
   if (pObject->isValueDbl())
-    pObject->setObjectValue(value);
+    *(C_FLOAT64*)pObject->getValuePointer() = value;
   else if (pObject->isValueInt())
-    pObject->setObjectValue((C_INT32) floor(value + 0.5));
+    *(C_INT32*)pObject->getValuePointer() = (C_INT32) floor(value + 0.5);
   else if (pObject->isValueBool())
-    pObject->setObjectValue(value != 0.0);
+    *(bool*)pObject->getValuePointer() = (value != 0.0);
 
   // recalculate all other dependent values
   mpDM->refreshInitialValues();
@@ -327,11 +327,11 @@ void CopasiSlider::updateValue(bool modifyRange, bool updateDependencies)
   if (pObject == NULL) return;
 
   if (pObject->isValueDbl())
-    pObject->setObjectValue(value);
+    *(C_FLOAT64*)pObject->getValuePointer() = value;
   else if (pObject->isValueInt())
-    pObject->setObjectValue((C_INT32) floor(value + 0.5));
+    *(C_INT32*)pObject->getValuePointer() = (C_INT32) floor(value + 0.5);
   else if (pObject->isValueBool())
-    pObject->setObjectValue(value != 0.0);
+    *(bool*)pObject->getValuePointer() = (value != 0.0);
 
   // recalculate all other dependent values
   if (updateDependencies)

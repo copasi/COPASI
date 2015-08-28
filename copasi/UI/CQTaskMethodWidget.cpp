@@ -1,4 +1,4 @@
-// Copyright (C) 2011 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -255,6 +255,7 @@ void CQTaskMethodWidget::removeFromHistory(CCopasiMethod * pMethod)
 
   if (found != mMethodHistory.end())
     {
+      pdelete(found->second);
       mMethodHistory.erase(found);
     }
 }
@@ -293,9 +294,11 @@ void CQTaskMethodWidget::clearHistory()
   std::map< CTaskEnum::Method, CCopasiMethod * >::iterator end = mMethodHistory.end();
 
   for (; it != end; ++it)
-    {
-      delete it->second;
-    }
+    if (it->second != NULL)
+      {
+        it->second->setObjectParent(NULL);
+        delete it->second;
+      }
 
   mMethodHistory.clear();
 }

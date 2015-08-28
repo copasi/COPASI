@@ -454,6 +454,7 @@ bool CModel::compile()
   buildDependencyGraphs();
 
   mpMathContainer->compile();
+  mpMathContainer->fetchInitialState();
 
   // CMathContainer CopyModel(MathModel);
 
@@ -521,8 +522,6 @@ bool CModel::compileIfNecessary(CProcessReport* pProcessReport)
 
       mpCompileHandler = NULL;
     }
-
-  mpMathContainer->fetchInitialState();
 
   return success;
 }
@@ -1132,7 +1131,7 @@ void CModel::applyInitialValues()
   mpMathContainer->applyInitialValues();
   mpMathContainer->updateSimulatedValues(false);
   mpMathContainer->updateTransientDataValues();
-  mpMathContainer->pushState();
+  mpMathContainer->pushAllTransientValues();
 }
 
 void CModel::clearMoieties()

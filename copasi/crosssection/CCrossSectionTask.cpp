@@ -249,7 +249,8 @@ bool CCrossSectionTask::process(const bool & useInitialValues)
     {
       mpContainer->setState(mContainerState);
       mpContainer->updateSimulatedValues(mUpdateMoieties);
-      mpContainer->pushState();
+      mpContainer->updateTransientDataValues();
+      mpContainer->pushAllTransientValues();
 
       finish();
       CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 16);
@@ -259,7 +260,8 @@ bool CCrossSectionTask::process(const bool & useInitialValues)
     {
       mpContainer->setState(mContainerState);
       mpContainer->updateSimulatedValues(mUpdateMoieties);
-      mpContainer->pushState();
+      mpContainer->updateTransientDataValues();
+      mpContainer->pushAllTransientValues();
 
       finish();
       throw CCopasiException(Exception.getMessage());

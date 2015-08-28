@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -66,12 +66,6 @@ public:
    * @return bool success
    */
   virtual bool elevateChildren();
-
-  /**
-   * Retrieve the update method
-   * @return UpdateMethod * pUpdateMethod
-   */
-  virtual UpdateMethod * getUpdateMethod() const;
 
   /**
    * Check the validity of the optimization item.
@@ -233,11 +227,6 @@ protected:
    * The value for local items, which affect the experiments in the list.
    */
   C_FLOAT64 mLocalValue;
-
-  /**
-   * A pointer to the local update method
-   */
-  UpdateMethod * mpLocalMethod;
 };
 
 class CFitConstraint : public CFitItem

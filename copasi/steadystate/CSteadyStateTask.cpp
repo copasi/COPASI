@@ -71,7 +71,7 @@ CSteadyStateTask::CSteadyStateTask(const CSteadyStateTask & src,
     new CSteadyStateProblem(*(CSteadyStateProblem *) src.mpProblem, this);
 
   mpMethod = createMethod(src.mpMethod->getSubType());
-  this->add(mpMethod, true);
+  *mpMethod = *src.mpMethod;
 
   initObjects();
 }
@@ -404,7 +404,7 @@ std::ostream &operator<<(std::ostream &os, const CSteadyStateTask &A)
   A.mpContainer->setState(A.mSteadyState);
   A.mpContainer->updateSimulatedValues(false);
   A.mpContainer->updateTransientDataValues();
-  A.mpContainer->pushState();
+  A.mpContainer->pushAllTransientValues();
 
   CModel * pModel = const_cast< CModel * >(&A.mpContainer->getModel());
 

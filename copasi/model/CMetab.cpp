@@ -777,17 +777,13 @@ void CMetab::refreshTransitionTime()
 void CMetab::initObjects()
 {
   // We need to have mpIValueRefernce point to a CParticleReference object.
-  C_FLOAT64 * pValue = static_cast< C_FLOAT64 * >(mpValueReference->getValuePointer());
-  assert(pValue != NULL);
   pdelete(mpIValueReference);
-  mpIValueReference = new CParticleReference("InitialParticleNumber", this, *pValue);
+  mpIValueReference = new CParticleReference("InitialParticleNumber", this, mIValue);
   mpIValueReference->setRefresh(this, &CMetab::refreshInitialValue);
 
   // We need to have mpValueRefernce point to a CParticleReference object.
-  pValue = static_cast< C_FLOAT64 * >(mpValueReference->getValuePointer());
-  assert(pValue != NULL);
   pdelete(mpValueReference);
-  mpValueReference = new CParticleReference("ParticleNumber", this, *pValue);
+  mpValueReference = new CParticleReference("ParticleNumber", this, mValue);
 
   mpRateReference->setObjectName("ParticleNumberRate");
 

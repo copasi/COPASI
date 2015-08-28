@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -125,7 +125,6 @@ CCopasiObjectReference<C_FLOAT64>::CCopasiObjectReference(const std::string & na
   mpReference(&reference)
 {
   assert(pParent != NULL);
-  setUpdateMethod(this, &CCopasiObjectReference<C_FLOAT64>::updateMethod);
 }
 
 template<> inline
@@ -141,7 +140,6 @@ CCopasiObjectReference<C_INT32>::CCopasiObjectReference(const std::string & name
   mpReference(&reference)
 {
   assert(pParent != NULL);
-  setUpdateMethod(this, &CCopasiObjectReference<C_INT32>::updateMethod);
 }
 
 template<> inline
@@ -157,7 +155,6 @@ CCopasiObjectReference<bool>::CCopasiObjectReference(const std::string & name,
   mpReference(&reference)
 {
   assert(pParent != NULL);
-  setUpdateMethod(this, &CCopasiObjectReference<bool>::updateMethod);
 }
 
 template <class CType> class CCopasiVectorReference: public CCopasiObject

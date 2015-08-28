@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -41,9 +41,6 @@ const C_FLOAT64 CCopasiObject::DummyValue = 0.0;
 
 //static
 CRenameHandler * CCopasiObject::smpRenameHandler = NULL;
-
-//static
-UpdateMethod CCopasiObject::mDefaultUpdateMethod;
 
 // static
 const CCopasiObject * CObjectInterface::DataObject(const CObjectInterface * pInterface)
@@ -144,7 +141,6 @@ CCopasiObject::CCopasiObject():
   mpObjectParent(NULL),
   mpObjectDisplayName(NULL),
   mObjectFlag(0),
-  mpUpdateMethod(&this->mDefaultUpdateMethod),
   mpRefresh(NULL)
 {}
 
@@ -158,7 +154,6 @@ CCopasiObject::CCopasiObject(const std::string & name,
   mpObjectParent(const_cast<CCopasiContainer *>(pParent)),
   mpObjectDisplayName(NULL),
   mObjectFlag(flag),
-  mpUpdateMethod(&this->mDefaultUpdateMethod),
   mpRefresh(NULL)
 {
   if (mpObjectParent != NULL &&
@@ -176,7 +171,6 @@ CCopasiObject::CCopasiObject(const CCopasiObject & src,
   mpObjectParent(src.mpObjectParent),
   mpObjectDisplayName(NULL),
   mObjectFlag(src.mObjectFlag),
-  mpUpdateMethod(&this->mDefaultUpdateMethod),
   mpRefresh(NULL)
 {
   if (pParent != NULL)
@@ -196,10 +190,6 @@ CCopasiObject::~CCopasiObject()
     mpObjectParent->remove(this);
 
   pdelete(mpObjectDisplayName);
-
-  if (mpUpdateMethod != &mDefaultUpdateMethod)
-    pdelete(mpUpdateMethod);
-
   pdelete(mpRefresh);
 }
 
@@ -545,120 +535,6 @@ bool CCopasiObject::hasCircularDependencies(CCopasiObject::DataObjectSet & candi
   return hasCircularDependencies;
 }
 
-//static
-std::vector< Refresh * >
-CCopasiObject::buildUpdateSequence(const CCopasiObject::DataObjectSet & objects,
-                                   const CCopasiObject::DataObjectSet & uptoDateObjects,
-                                   const CCopasiObject::DataObjectSet & context)
-{
-  CCopasiObject::DataObjectSet DependencySet;
-  CCopasiObject::DataObjectSet VerifiedSet;
-
-  CCopasiObject::DataObjectSet::const_iterator itSet;
-  CCopasiObject::DataObjectSet::const_iterator endSet = objects.end();
-  std::pair<CCopasiObject::DataObjectSet::iterator, bool> InsertedObject;
-
-  assert(objects.count(NULL) == 0);
-
-  // Check whether we have any circular dependencies
-  for (itSet = objects.begin(); itSet != endSet; ++itSet)
-    if ((*itSet)->hasCircularDependencies(DependencySet, VerifiedSet, context))
-      CCopasiMessage(CCopasiMessage::EXCEPTION, MCObject + 1, (*itSet)->getCN().c_str());
-
-  // Build the complete set of dependencies
-  for (itSet = objects.begin(); itSet != endSet; ++itSet)
-    {
-      // At least the object itself needs to be up to date.
-      InsertedObject = DependencySet.insert(*itSet);
-
-      // Add all its dependencies
-      if (InsertedObject.second)
-        (*itSet)->getAllDependencies(DependencySet, context);
-    }
-
-  // Remove all objects which do not have any refresh method as they will
-  // be ignored anyway, i.e., no need to sort them.
-  for (itSet = DependencySet.begin(), endSet = DependencySet.end(); itSet != endSet;)
-    if ((*itSet)->getRefresh() == NULL ||
-        ((dynamic_cast< const CParticleReference * >(*itSet) != NULL ||
-          dynamic_cast< const CConcentrationReference * >(*itSet) != NULL) &&
-         (*itSet)->getDirectDependencies(context).size() == 0))
-      {
-        const CCopasiObject * pObject = *itSet;
-        ++itSet;
-        DependencySet.erase(pObject);
-      }
-    else
-      ++itSet;
-
-  // Build the list of all up to date objects
-  CCopasiObject::DataObjectSet UpToDateSet;
-
-  for (itSet = uptoDateObjects.begin(), endSet = uptoDateObjects.end(); itSet != endSet; ++itSet)
-    {
-      // At least the object itself is up to date.
-      InsertedObject = UpToDateSet.insert(*itSet);
-
-      // Add all its dependencies too
-      if (InsertedObject.second)
-        (*itSet)->getAllDependencies(UpToDateSet, context);
-    }
-
-  // Now remove all objects in the dependency set which are up to date
-  for (itSet = UpToDateSet.begin(), endSet = UpToDateSet.end(); itSet != endSet; ++itSet)
-    DependencySet.erase(*itSet);
-
-  // Create a properly sorted list.
-  std::list< const CCopasiObject * > SortedList =
-    sortObjectsByDependency(DependencySet.begin(), DependencySet.end(), context);
-
-  std::list< const CCopasiObject * >::iterator itList;
-  std::list< const CCopasiObject * >::iterator endList;
-
-  // Build the vector of pointers to refresh methods
-  Refresh * pRefresh;
-
-  std::vector< Refresh * > UpdateVector;
-  std::vector< Refresh * >::const_iterator itUpdate;
-  std::vector< Refresh * >::const_iterator endUpdate;
-
-  itList = SortedList.begin();
-  endList = SortedList.end();
-
-  for (; itList != endList; ++itList)
-    {
-      pRefresh = (*itList)->getRefresh();
-      itUpdate = UpdateVector.begin();
-      endUpdate = UpdateVector.end();
-
-      while (itUpdate != endUpdate && !(*itUpdate)->isEqual(pRefresh)) ++itUpdate;
-
-      if (itUpdate == endUpdate)
-        UpdateVector.push_back(pRefresh);
-    }
-
-  return UpdateVector;
-}
-
-#ifdef XXXX
-// static
-bool CCopasiObject::compare(const CCopasiObject * lhs, const CCopasiObject * rhs)
-{
-  if (lhs != rhs)
-    {
-      CCopasiObject::DataObjectSet Candidates;
-      CCopasiObject::DataObjectSet VerifiedSet;
-
-      Candidates.insert(lhs);
-
-      if (rhs->hasCircularDependencies(Candidates, VerifiedSet))
-        return true;
-    }
-
-  return false;
-}
-#endif
-
 void * CCopasiObject::getValuePointer() const
 {
   return NULL;
@@ -729,21 +605,6 @@ const std::string & CCopasiObject::getKey() const
 
   return DefaultKey;
 }
-
-void CCopasiObject::setObjectValue(const C_FLOAT64 & value)
-{(*mpUpdateMethod)(value);}
-
-void CCopasiObject::setObjectValue(const C_INT32 & value)
-{(*mpUpdateMethod)(value);}
-
-void CCopasiObject::setObjectValue(const bool & value)
-{(*mpUpdateMethod)(value);}
-
-UpdateMethod * CCopasiObject::getUpdateMethod() const
-{return mpUpdateMethod;}
-
-bool CCopasiObject::hasUpdateMethod() const
-{return mpUpdateMethod != &mDefaultUpdateMethod;}
 
 void CCopasiObject::clearRefresh()
 {pdelete(mpRefresh);}

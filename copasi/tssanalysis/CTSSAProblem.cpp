@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -100,17 +100,7 @@ bool CTSSAProblem::elevateChildren()
 }
 
 void CTSSAProblem::initObjects()
-{
-  getParameter("StepNumber")->getValueReference()
-  ->setUpdateMethod(this,
-                    (void (CTSSAProblem::*)(const C_INT32 &)) &CTSSAProblem::setStepNumber);
-
-  getParameter("StepSize")->getValueReference()
-  ->setUpdateMethod(this, &CTSSAProblem::setStepSize);
-
-  getParameter("Duration")->getValueReference()
-  ->setUpdateMethod(this, &CTSSAProblem::setDuration);
-}
+{}
 
 /**
  * Set the number of time steps the trajectory method should integrate.

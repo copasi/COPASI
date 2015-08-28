@@ -496,15 +496,14 @@ void CModelEntity::initObjects()
 
   mpValueReference =
     static_cast<CCopasiObjectReference<C_FLOAT64> *>(addObjectReference("Value",
-        Dummy,
+        mValue,
         CCopasiObject::ValueDbl));
-  mpValueReference->setUpdateMethod(this, &CModelEntity::setValue);
 
   mpIValueReference =
     static_cast<CCopasiObjectReference<C_FLOAT64> *>(addObjectReference("InitialValue",
-        Dummy,
+        mIValue,
         CCopasiObject::ValueDbl));
-  mpIValueReference->setUpdateMethod(this, &CModelEntity::setInitialValue);
+
   mpIValueReference->setRefresh(this, &CModelEntity::refreshInitialValue);
 
   mpRateReference =

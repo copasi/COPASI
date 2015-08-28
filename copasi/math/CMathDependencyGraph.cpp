@@ -15,6 +15,8 @@
 #include "report/CCopasiObjectName.h"
 #include "utilities/CCopasiMessage.h"
 
+// #define DEBUG_OUTPUT 1
+
 CMathDependencyGraph::CMathDependencyGraph():
   mObjects2Nodes(),
   mObject2Index()
@@ -83,18 +85,27 @@ bool CMathDependencyGraph::getUpdateSequence(CObjectInterface::UpdateSequence & 
   CObjectInterface::ObjectSet::const_iterator it = changedObjects.begin();
   CObjectInterface::ObjectSet::const_iterator end = changedObjects.end();
 
+#ifdef DEBUG_OUTPUT
   std::cout << "Changed:" << std::endl;
+#endif // DEBUG_OUTPUT
 
   // Mark all nodes which are changed or need to be calculated
   for (; it != end && success; ++it)
     {
-      // We may have data objects which are ignored as they are always up to date
-      if ((*it)->getDataObject() == *it)
+      // Issue 1170: We need to add elements of the stoichiometry, reduced stoichiometry,
+      // and link matrices, i.e., we have data objects which may change
+#ifdef DEBUG_OUTPUT
+      if ((*it)->getDataObject() != *it)
         {
-          continue;
+          std::cout << *static_cast< const CMathObject * >(*it) << std::endl;
+        }
+      else
+        {
+          std::cout << *static_cast< const CCopasiObject * >(*it) << std::endl;
         }
 
-      std::cout << *static_cast< const CMathObject * >(*it) << std::endl;
+#endif // DEBUG_OUTPUT
+
       found = mObjects2Nodes.find(*it);
 
       if (found != notFound)
@@ -109,18 +120,29 @@ bool CMathDependencyGraph::getUpdateSequence(CObjectInterface::UpdateSequence & 
   it = calculatedObjects.begin();
   end = calculatedObjects.end();
 
+#ifdef DEBUG_OUTPUT
   std::cout << "Up To Date:" << std::endl;
+#endif // DEBUG_OUTPUT
 
   // Mark all nodes which are requested and its prerequisites.
   for (; it != end && success; ++it)
     {
-      // We may have data objects which are ignored as they are always up to date
-      if ((*it)->getDataObject() == *it)
+#ifdef DEBUG_OUTPUT
+
+      // Issue 1170: We need to add elements of the stoichiometry, reduced stoichiometry,
+      // and link matrices, i.e., we have data objects which may change
+      if ((*it)->getDataObject() != *it)
         {
-          continue;
+          std::cout << *static_cast< const CMathObject * >(*it) << std::endl;
+        }
+      else
+        {
+          std::cout << *static_cast< const CCopasiObject * >(*it) << std::endl;
         }
 
       std::cout << *static_cast< const CMathObject * >(*it) << std::endl;
+#endif // DEBUG_OUTPUT
+
       found = mObjects2Nodes.find(*it);
 
       if (found != notFound)
@@ -133,18 +155,23 @@ bool CMathDependencyGraph::getUpdateSequence(CObjectInterface::UpdateSequence & 
   it = requestedObjects.begin();
   end = requestedObjects.end();
 
+#ifdef DEBUG_OUTPUT
   std::cout << "Requested:" << std::endl;
+#endif // DEBUG_OUTPUT
 
   // Mark all nodes which are requested and its prerequisites.
   for (; it != end && success; ++it)
     {
-      // We may have data objects which are ignored as they are always up to date
+      // We may have data objects which are ignored as they cannot be calculated
       if ((*it)->getDataObject() == *it)
         {
           continue;
         }
 
+#ifdef DEBUG_OUTPUT
       std::cout << *static_cast< const CMathObject * >(*it) << std::endl;
+#endif // DEBUG_OUTPUT
+
       found = mObjects2Nodes.find(*it);
 
       if (found != notFound)
@@ -154,13 +181,13 @@ bool CMathDependencyGraph::getUpdateSequence(CObjectInterface::UpdateSequence & 
         }
     }
 
-#ifdef COPASI_DEBUG_TRACE
+#ifdef DEBUG_OUTPUT
   {
     std::ofstream GetUpdateSequence("GetUpdateSequence.dot");
     exportDOTFormat(GetUpdateSequence, "GetUpdateSequence");
     GetUpdateSequence.close();
   }
-#endif //COPASI_DEBUG_TRACE
+#endif // DEBUG_OUTPUT
 
   if (!success) goto finish;
 
@@ -205,7 +232,7 @@ finish:
       CCopasiMessage(CCopasiMessage::ERROR, MCMathModel + 3, (*it)->getCN().c_str());
     }
 
-#ifdef XXXX
+#ifdef DEBUG_OUTPUT
   CObjectInterface::UpdateSequence::const_iterator itSeq = updateSequence.begin();
   CObjectInterface::UpdateSequence::const_iterator endSeq = updateSequence.end();
 
@@ -224,7 +251,7 @@ finish:
     }
 
   std::cout << "End" << std::endl;
-#endif //
+#endif // DEBUG_OUTPUT
 
   return success;
 }

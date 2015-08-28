@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -47,46 +47,6 @@ template <class CType> class CCopasiMatrixReference;
 #ifdef WIN32
 template <class CType> class CCopasiVector;
 #endif // WIN32
-
-class UpdateMethod
-{
-public:
-
-  virtual ~UpdateMethod() {};
-
-  virtual void operator()(const C_FLOAT64 & C_UNUSED(value))
-  {return;}
-
-  virtual void operator()(const C_INT32 & C_UNUSED(value))
-  {return;}
-
-  virtual void operator()(const bool & C_UNUSED(value))
-  {return;}
-};
-
-template <class CType, class VType> class SpecificUpdateMethod : public UpdateMethod
-{
-private:
-  void (CType::*mMethod)(const VType &);   // pointer to member function
-  CType * mpType;                                    // pointer to object
-
-public:
-
-  // constructor - takes pointer to an object and pointer to a member and stores
-  // them in two private variables
-  SpecificUpdateMethod(CType * pType,
-                       void(CType::*method)(const VType &))
-  {
-    mpType = pType;
-    mMethod = method;
-  };
-
-  virtual ~SpecificUpdateMethod() {};
-
-  // override operator "()"
-  virtual void operator()(const VType & value)
-  {(*mpType.*mMethod)(value);}  ;              // execute member function
-};
 
 class Refresh
 {
@@ -289,13 +249,9 @@ private:
 
 private:
 
-  UpdateMethod * mpUpdateMethod;
-
   Refresh * mpRefresh;
 
   static const C_FLOAT64 DummyValue;
-
-  static UpdateMethod mDefaultUpdateMethod;
 
 protected:
   static CRenameHandler * smpRenameHandler;
@@ -467,19 +423,6 @@ public:
                                const DataObjectSet & context) const;
 
   /**
-   * Build the update sequence for the given list of objects. The resulting sequence
-   * takes the dependencies of the objects in consideration. If circular dependencies
-   * are detected an exception is thrown
-   * @param DataObjectSet & objects
-   * @param const DataObjectSet & uptoDateObjects
-   * @param const DataObjectSet & context (default: empty set)
-   * @return std::vector< Refresh * > updateSequence
-   */
-  static std::vector< Refresh * > buildUpdateSequence(const DataObjectSet & objects,
-      const DataObjectSet & uptoDateObjects,
-      const DataObjectSet & context = DataObjectSet());
-
-  /**
    * Retrieve the units of the object.
    * @return std::string units
    */
@@ -531,53 +474,6 @@ public:
   friend std::ostream &operator<<(std::ostream &os, const CCopasiObject & o);
 
   virtual const std::string & getKey() const;
-
-  void setObjectValue(const C_FLOAT64 & value);
-  void setObjectValue(const C_INT32 & value);
-  void setObjectValue(const bool & value);
-
-  template <class CType>
-  void setUpdateMethod(CType * pType,
-                       void (CType::*method)(const C_FLOAT64 &))
-  {
-    if (mpUpdateMethod != &mDefaultUpdateMethod)
-      pdelete(mpUpdateMethod);
-
-    mpUpdateMethod =
-      new SpecificUpdateMethod< CType, C_FLOAT64 >(pType, method);
-
-    return;
-  }
-
-  template <class CType>
-  void setUpdateMethod(CType * pType,
-                       void (CType::*method)(const C_INT32 &))
-  {
-    if (mpUpdateMethod != &mDefaultUpdateMethod)
-      pdelete(mpUpdateMethod);
-
-    mpUpdateMethod =
-      new SpecificUpdateMethod< CType, C_INT32 >(pType, method);
-
-    return;
-  }
-
-  template <class CType>
-  void setUpdateMethod(CType * pType,
-                       void (CType::*method)(const bool &))
-  {
-    if (mpUpdateMethod != &mDefaultUpdateMethod)
-      pdelete(mpUpdateMethod);
-
-    mpUpdateMethod =
-      new SpecificUpdateMethod< CType, bool >(pType, method);
-
-    return;
-  }
-
-  UpdateMethod * getUpdateMethod() const;
-
-  bool hasUpdateMethod() const;
 
   template <class CType>
   void setRefresh(CType * pType,

@@ -268,11 +268,11 @@ void CSlider::writeToObject()
   if (!mpSliderObject) return;
 
   if (mpSliderObject->isValueDbl())
-    mpSliderObject->setObjectValue(mValue);
+    *(C_FLOAT64*)mpSliderObject->getValuePointer() = mValue;
   else if (mpSliderObject->isValueInt())
-    mpSliderObject->setObjectValue((C_INT32) floor(mValue + 0.5));
+    *(C_INT32*)mpSliderObject->getValuePointer() = (C_INT32) floor(mValue + 0.5);
   else if (mpSliderObject->isValueBool())
-    mpSliderObject->setObjectValue(mValue != 0.0);
+    *(bool*)mpSliderObject->getValuePointer() = (mValue != 0.0);
 
   CCopasiDataModel* pDataModel = getObjectDataModel();
   assert(pDataModel != NULL);
