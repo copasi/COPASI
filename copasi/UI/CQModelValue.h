@@ -1,22 +1,24 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-// and The University of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2006 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc. and EML Research, gGmbH. 
-// All rights reserved. 
+// Copyright (C) 2006 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 #ifndef CQMODELVALUE_H
 #define CQMODELVALUE_H
 
 #ifdef COPASI_UNDO
 class UndoGlobalQuantityData;
+#include <limits>
+#include <copasi/undoFramework/CCopasiUndoCommand.h>
 #endif
 
 class CQExpressionWidget;
@@ -80,7 +82,11 @@ private slots:
   void addGlobalQuantity(UndoGlobalQuantityData *pSData);
   void createNewGlobalQuantity();
   void deleteGlobalQuantity(UndoGlobalQuantityData *pSData);
-  void globalQuantityTypeChanged(int type);
+public:
+  bool changeValue(const std::string& key,
+                   CCopasiUndoCommand::Type type,
+                   const QVariant& newValue,
+                   double iValue = std::numeric_limits<double>::quiet_NaN());
 #endif
 };
 

@@ -80,6 +80,10 @@ public:
     COMPARTMENT_INITIAL_EXPRESSION_CHANGE, // change of compartment initial expression
     COMPARTMENT_EXPRESSION_CHANGE, // change of assignment / ode expression
     COMPARTMENT_SPATIAL_DIMENSION_CHANGE, // change of compartment spatial dimensions
+    GLOBALQUANTITY_INITAL_VALUE_CHANGE, // change of parameter initial value
+    GLOBALQUANTITY_INITIAL_EXPRESSION_CHANGE, // change of parameter initial expression
+    GLOBALQUANTITY_SIMULATION_TYPE_CHANGE, // change of parameter simulation type
+    GLOBALQUANTITY_EXPRESSION_CHANGE, // change of parameter assignment / ode expression
     INVALID_TYPE
   };
 

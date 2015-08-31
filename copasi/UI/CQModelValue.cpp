@@ -36,7 +36,10 @@
 #include "undoFramework/UndoEventData.h"
 #include "undoFramework/UndoSpecieData.h"
 #include "undoFramework/UndoEventAssignmentData.h"
+
+#include <copasi/undoFramework/GlobalQuantityChangeCommand.h>
 #include "copasiui3window.h"
+
 #endif
 
 /*
@@ -376,6 +379,94 @@ void CQModelValue::save()
 {
   if (mpModelValue == NULL) return;
 
+#if COPASI_UNDO
+
+  mIgnoreUpdates = true;
+
+  // set status
+  if (mpModelValue->getStatus() != (CModelEntity::Status) mItemToType[mpComboBoxType->currentIndex()])
+    {
+      mpUndoStack->push(new GlobalQuantityChangeCommand(
+                          CCopasiUndoCommand::GLOBALQUANTITY_SIMULATION_TYPE_CHANGE,
+                          (int)mpModelValue->getStatus(),
+                          mItemToType[mpComboBoxType->currentIndex()],
+                          mpModelValue,
+                          this
+                        ));
+      mChanged = true;
+    }
+
+  // set initial value
+  if (QString::number(mpModelValue->getInitialValue(), 'g', 10) != mpEditInitialValue->text() &&
+      mpModelValue->getStatus() != CModelEntity::ASSIGNMENT)
+    {
+      mpUndoStack->push(new GlobalQuantityChangeCommand(
+                          CCopasiUndoCommand::GLOBALQUANTITY_INITAL_VALUE_CHANGE,
+                          mpModelValue->getInitialValue(),
+                          mpEditInitialValue->text().toDouble(),
+                          mpModelValue,
+                          this
+                        ));
+      mChanged = true;
+    }
+
+  // set expression
+  if (mpModelValue->getExpression() != mpExpressionEMW->mpExpressionWidget->getExpression())
+    {
+      mpUndoStack->push(new GlobalQuantityChangeCommand(
+                          CCopasiUndoCommand::GLOBALQUANTITY_EXPRESSION_CHANGE,
+                          FROM_UTF8(mpModelValue->getExpression()),
+                          FROM_UTF8(mpExpressionEMW->mpExpressionWidget->getExpression()),
+                          mpModelValue,
+                          this
+                        ));
+      mChanged = true;
+    }
+
+  // set initial expression
+  if ((CModelEntity::Status) mItemToType[mpComboBoxType->currentIndex()] != CModelEntity::ASSIGNMENT)
+    {
+      if (mpBoxUseInitialExpression->isChecked() &&
+          mpModelValue->getInitialExpression() != mpInitialExpressionEMW->mpExpressionWidget->getExpression())
+        {
+          mpUndoStack->push(new GlobalQuantityChangeCommand(
+                              CCopasiUndoCommand::GLOBALQUANTITY_INITIAL_EXPRESSION_CHANGE,
+                              FROM_UTF8(mpModelValue->getInitialExpression()),
+                              FROM_UTF8(mpInitialExpressionEMW->mpExpressionWidget->getExpression()),
+                              mpModelValue,
+                              this,
+                              mpModelValue->getInitialValue()
+                            ));
+          mChanged = true;
+        }
+      else if (!mpBoxUseInitialExpression->isChecked() &&
+               mpModelValue->getInitialExpression() != "")
+        {
+          mpUndoStack->push(new GlobalQuantityChangeCommand(
+                              CCopasiUndoCommand::GLOBALQUANTITY_INITIAL_EXPRESSION_CHANGE,
+                              FROM_UTF8(mpModelValue->getInitialExpression()),
+                              QString(""),
+                              mpModelValue,
+                              this,
+                              mpModelValue->getInitialValue()
+                            ));
+          mChanged = true;
+        }
+    }
+
+  mIgnoreUpdates = false;
+
+  if (mChanged)
+    {
+      assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+      (*CCopasiRootContainer::getDatamodelList())[0]->changed();
+      protectedNotify(ListViews::MODELVALUE, ListViews::CHANGE, mKey);
+
+      load();
+    }
+
+#else
+
   // set status
   if (mpModelValue->getStatus() != (CModelEntity::Status) mItemToType[mpComboBoxType->currentIndex()])
     {
@@ -422,6 +513,8 @@ void CQModelValue::save()
       (*CCopasiRootContainer::getDatamodelList())[0]->changed();
       protectedNotify(ListViews::MODELVALUE, ListViews::CHANGE, mKey);
     }
+
+#endif
 
   mChanged = false;
 }
@@ -721,8 +814,59 @@ void CQModelValue::addGlobalQuantity(UndoGlobalQuantityData *pSData)
   mpListView->switchToOtherWidget(C_INVALID_INDEX, pGlobalQuantity->getKey());
 }
 
-void CQModelValue::globalQuantityTypeChanged(int type)
+bool
+CQModelValue::changeValue(const std::string& key,
+                          CCopasiUndoCommand::Type type,
+                          const QVariant& newValue,
+                          double iValue /* = std::numeric_limits<double>::quiet_NaN()*/)
 {
-  ; //TODO
+  if (!mIgnoreUpdates)
+    {
+      mKey = key;
+      mpObject = CCopasiRootContainer::getKeyFactory()->get(mKey);
+      mpModelValue = dynamic_cast<CModelValue*>(mpObject);
+      load();
+    }
+
+  mpListView->switchToOtherWidget(C_INVALID_INDEX, mKey);
+  qApp->processEvents();
+
+  switch (type)
+    {
+      case CCopasiUndoCommand::GLOBALQUANTITY_EXPRESSION_CHANGE:
+        mpModelValue->setExpression(TO_UTF8(newValue.toString()));
+        break;
+
+      case CCopasiUndoCommand::GLOBALQUANTITY_INITAL_VALUE_CHANGE:
+        mpModelValue->setInitialValue(newValue.toDouble());
+        break;
+
+      case CCopasiUndoCommand::GLOBALQUANTITY_INITIAL_EXPRESSION_CHANGE:
+        mpModelValue->setInitialExpression(TO_UTF8(newValue.toString()));
+
+        if (newValue.toString().isEmpty())
+          mpModelValue->setInitialValue(iValue);
+
+        break;
+
+      case CCopasiUndoCommand::GLOBALQUANTITY_SIMULATION_TYPE_CHANGE:
+        mpModelValue->setStatus((CModelEntity::Status) newValue.toInt());
+        break;
+
+      default:
+        return false;
+    }
+
+
+  if (mIgnoreUpdates) return true;
+
+  (*CCopasiRootContainer::getDatamodelList())[0]->changed();
+  protectedNotify(ListViews::MODELVALUE, ListViews::CHANGE, mKey);
+
+  load();
+
+  return true;
+
 }
+
 #endif

@@ -31,6 +31,7 @@
 #include "undoFramework/UndoSpecieData.h"
 #include "undoFramework/UndoEventData.h"
 #include "undoFramework/UndoEventAssignmentData.h"
+#include <copasi/UI/CQCopasiApplication.h>
 #endif
 
 CQGlobalQuantityDM::CQGlobalQuantityDM(QObject *parent)
@@ -467,6 +468,9 @@ void CQGlobalQuantityDM::insertNewGlobalQuantityRow(int position, int rows, cons
 
 void CQGlobalQuantityDM::deleteGlobalQuantityRow(UndoGlobalQuantityData *pGlobalQuantityData)
 {
+  emit changeWidget(115);
+  qApp->processEvents();
+
   CModel * pModel = (*CCopasiRootContainer::getDatamodelList())[0]->getModel();
 
   size_t index = pModel->getModelValues().getIndex(pGlobalQuantityData->getName());
@@ -475,7 +479,7 @@ void CQGlobalQuantityDM::deleteGlobalQuantityRow(UndoGlobalQuantityData *pGlobal
     return;
 
   removeRow((int) index);
-  emit changeWidget(115);
+
 }
 
 void CQGlobalQuantityDM::addGlobalQuantityRow(UndoGlobalQuantityData *pGlobalQuantityData)
