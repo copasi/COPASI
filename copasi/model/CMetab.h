@@ -432,6 +432,12 @@ public:
   const C_FLOAT64 & getTransitionTime() const;
 
   /**
+   * Retrieve object referencing the Transition Time
+   * @return CCopasiObject * transitionTimeReference
+   */
+  CCopasiObject * getTransitionTimeReference() const;
+
+  /**
    * Return rate of production of this metaboLite
    */
   C_FLOAT64 getConcentrationRate() const;

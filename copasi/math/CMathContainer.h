@@ -853,6 +853,7 @@ private:
   CVectorCore< C_FLOAT64 > mDiscontinuous;
   CVectorCore< C_FLOAT64 > mDelayValues;
   CVectorCore< C_FLOAT64 > mDelayLags;
+  CVectorCore< C_FLOAT64 > mTransitionTimes;
 
   size_t mFixedCount;
   size_t mEventTargetCount;

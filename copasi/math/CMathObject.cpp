@@ -526,6 +526,10 @@ bool CMathObject::compile(CMathContainer & container)
         success = compileDependentMass(container);
         break;
 
+      case CMath::TransitionTime:
+        success = compileTransitionTime(container);
+        break;
+
       case CMath::Discontinuous:
       case CMath::EventDelay:
       case CMath::EventPriority:
@@ -1095,6 +1099,123 @@ bool CMathObject::compileDependentMass(CMathContainer & container)
   success &= E.setInfix(Infix.str());
 
   mpExpression = new CMathExpression(E, container, !mIsInitialValue);
+  compileExpression();
+
+  return success;
+}
+
+bool CMathObject::compileTransitionTime(CMathContainer & container)
+{
+  bool success = true;
+
+  // The default value is NaN
+  *mpValue = InvalidValue;
+
+  // Reset the prerequisites
+  mPrerequisites.clear();
+
+  const CMetab * pSpecies = static_cast< const CMetab *>(mpDataObject->getObjectParent());
+
+  std::ostringstream Infix;
+  Infix.imbue(std::locale::classic());
+  Infix.precision(16);
+
+  switch (pSpecies->getStatus())
+    {
+      case CModelEntity::ODE:
+        // mTT = *mpValue / fabs(mRate);
+        Infix << "abs(";
+        Infix << pointerToString(container.getMathObject(pSpecies->getValueReference())->getValuePointer());
+        Infix << "/";
+        Infix << pointerToString(container.getMathObject(pSpecies->getRateReference())->getValuePointer());
+        Infix << ")";
+        break;
+
+      case CModelEntity::REACTIONS:
+      {
+        std::ostringstream PositiveFlux;
+        PositiveFlux.imbue(std::locale::classic());
+        PositiveFlux.precision(16);
+
+        std::ostringstream NegativeFlux;
+        NegativeFlux.imbue(std::locale::classic());
+        NegativeFlux.precision(16);
+
+        std::string Key = pSpecies->getKey();
+        bool First = true;
+
+        CCopasiVectorN< CReaction >::const_iterator it = container.getModel().getReactions().begin();
+        CCopasiVectorN< CReaction >::const_iterator end = container.getModel().getReactions().end();
+
+        for (; it != end; ++it)
+          {
+            const CCopasiVector< CChemEqElement > &Balances =
+              (*it)->getChemEq().getBalances();
+            CCopasiVector< CChemEqElement >::const_iterator itChem = Balances.begin();
+            CCopasiVector< CChemEqElement >::const_iterator endChem = Balances.end();
+
+            for (; itChem != endChem; ++itChem)
+              if ((*itChem)->getMetaboliteKey() == Key)
+                break;
+
+            if (itChem != endChem)
+              {
+                const C_FLOAT64 & Multiplicity = (*itChem)->getMultiplicity();
+
+                if (!First)
+                  {
+                    PositiveFlux << "+";
+                    NegativeFlux << "+";
+                  }
+
+                PositiveFlux << "max(";
+                NegativeFlux << "min(";
+
+                if (Multiplicity == std::numeric_limits< C_FLOAT64 >::infinity())
+                  {
+                    PositiveFlux << "infinity";
+                    NegativeFlux << "infinity";
+                  }
+                else if (Multiplicity == -std::numeric_limits< C_FLOAT64 >::infinity())
+                  {
+                    PositiveFlux << "-infinity";
+                    NegativeFlux << "-infinity";
+                  }
+                else
+                  {
+                    PositiveFlux << Multiplicity;
+                    NegativeFlux << Multiplicity;
+                  }
+
+                PositiveFlux << "*";
+                NegativeFlux << "*";
+                PositiveFlux << pointerToString(container.getMathObject((*it)->getParticleFluxReference())->getValuePointer());
+                NegativeFlux << pointerToString(container.getMathObject((*it)->getParticleFluxReference())->getValuePointer());
+
+                PositiveFlux << ",0)";
+                NegativeFlux << ",0)";
+
+                First = false;
+              }
+          }
+
+        Infix << "abs(";
+        Infix << pointerToString(container.getMathObject(pSpecies->getValueReference())->getValuePointer());
+        Infix << ")/if(";
+        Infix << pointerToString(container.getMathObject(pSpecies->getRateReference())->getValuePointer());
+        Infix << "<0,-(" << NegativeFlux.str() << ")," << PositiveFlux.str() << ")";
+      }
+      break;
+
+      default:
+        break;
+    }
+
+  CExpression E("TransitionTimeExpression", &container);
+
+  success &= E.setInfix(Infix.str());
+
+  mpExpression = new CMathExpression(E, container, false);
   compileExpression();
 
   return success;

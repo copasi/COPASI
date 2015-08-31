@@ -1,4 +1,4 @@
-// Copyright (C) 2011 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -117,6 +117,7 @@ public:
     C_FLOAT64 * pDiscontinuous;
     C_FLOAT64 * pDelayValue;
     C_FLOAT64 * pDelayLag;
+    C_FLOAT64 * pTransitionTime;
 
     CMathObject * pInitialExtensiveValuesObject;
     CMathObject * pInitialIntensiveValuesObject;
@@ -146,6 +147,7 @@ public:
     CMathObject * pDiscontinuousObject;
     CMathObject * pDelayValueObject;
     CMathObject * pDelayLagObject;
+    CMathObject * pTransitionTimeObject;
   };
 
 public:
@@ -187,7 +189,8 @@ public:
     EventRoot,
     EventRootState,
     DelayValue,
-    DelayLag
+    DelayLag,
+    TransitionTime
   };
 
   enum SimulationType
@@ -251,71 +254,6 @@ public:
     ~Variables()
     {}
   };
-
-  class CAllocationStack
-  {
-  public:
-    class CAllocation
-    {
-    public:
-      friend std::ostream & operator << (std::ostream & os, const CAllocation & s);
-
-      CAllocation();
-
-      CAllocation(const CAllocation & src);
-
-      ~CAllocation();
-
-      CAllocation & operator = (const CAllocation & rhs);
-
-      CAllocation & operator += (const CAllocation & rhs);
-
-      size_t nDiscontinuous;
-
-      size_t nTotalRoots;
-
-      std::vector< size_t > nRootsPerDiscontinuity;
-    };
-
-    typedef std::vector< CAllocation > StackElement;
-    typedef std::vector< StackElement > Buffer;
-
-    enum Context
-    {
-      Variable,
-      Body
-    };
-
-  private:
-    CAllocationStack();
-
-  public:
-    CAllocationStack(Buffer & stack);
-
-    CAllocationStack(const CAllocationStack & src);
-
-    ~CAllocationStack();
-
-    void push(const StackElement & stackElement);
-
-    void pop();
-
-    size_t size() const;
-
-    const CAllocation & operator [](const size_t & index) const;
-
-  private:
-    Buffer * mpStack;
-
-  private:
-    Context mContext;
-
-    size_t mVariableLevel;
-
-    size_t mBodyLevel;
-  };
 };
-
-std::ostream & operator << (std::ostream & os, const CMath::CAllocationStack::CAllocation & s);
 
 #endif // COPASI_CMathEnum

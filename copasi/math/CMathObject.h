@@ -1,4 +1,4 @@
-// Copyright (C) 2011 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -285,6 +285,13 @@ private:
    * @return bool success
    */
   bool compileDependentMass(CMathContainer & container);
+
+  /**
+   * Compile the transition time of a species.
+   * @param CMathContainer & container
+   * @return bool success
+   */
+  bool compileTransitionTime(CMathContainer & container);
 
   /**
    * Common compile steps after an expression has been created.

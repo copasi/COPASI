@@ -51,6 +51,7 @@ CMathContainer::CMathContainer():
   mDiscontinuous(),
   mDelayValues(),
   mDelayLags(),
+  mTransitionTimes(),
   mFixedCount(0),
   mEventTargetCount(0),
   mODECount(0),
@@ -131,6 +132,7 @@ CMathContainer::CMathContainer(CModel & model):
   mDiscontinuous(),
   mDelayValues(),
   mDelayLags(),
+  mTransitionTimes(),
   mFixedCount(0),
   mEventTargetCount(0),
   mODECount(0),
@@ -324,6 +326,8 @@ CMathContainer::CMathContainer(const CMathContainer & src):
                           (C_FLOAT64 *)((size_t) src.mDelayValues.array() + ValueOffset));
   mDelayLags.initialize(src.mDelayLags.size(),
                         (C_FLOAT64 *)((size_t) src.mDelayLags.array() + ValueOffset));
+  mTransitionTimes.initialize(src.mTransitionTimes.size(),
+                              (C_FLOAT64 *)((size_t) src.mTransitionTimes.array() + ValueOffset));
 
   mInitialState.initialize(src.mInitialState.size(),
                            (C_FLOAT64 *)((size_t) src.mInitialState.array() + ValueOffset));
@@ -1552,7 +1556,8 @@ void CMathContainer::allocate()
                  3 * nMoieties +
                  nDiscontinuities +
                  4 * nEvents + nEventAssignments + 2 * nEventRoots +
-                 2 * nDelays);
+                 2 * nDelays +
+                 nIntensiveValues);
 
   mValues = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
 
@@ -1612,6 +1617,8 @@ void CMathContainer::allocate()
   pArray += nDelays;
   mDelayLags.initialize(nDelays, pArray);
   pArray += nDelays;
+  mTransitionTimes.initialize(nIntensiveValues, pArray);
+  pArray += nIntensiveValues;
 
   assert(pArray == mValues.array() + mValues.size());
 
@@ -2659,6 +2666,7 @@ void CMathContainer::initializePointers(CMath::sPointers & p)
   p.pDiscontinuous = mDiscontinuous.array();
   p.pDelayValue = mDelayValues.array();
   p.pDelayLag = mDelayLags.array();
+  p.pTransitionTime = mTransitionTimes.array();
 
   C_FLOAT64 * pValues = mValues.array();
   CMathObject * pObjects = mObjects.array();
@@ -2691,6 +2699,7 @@ void CMathContainer::initializePointers(CMath::sPointers & p)
   p.pDiscontinuousObject = pObjects + (p.pDiscontinuous - pValues);
   p.pDelayValueObject = pObjects + (p.pDelayValue - pValues);
   p.pDelayLagObject = pObjects + (p.pDelayLag - pValues);
+  p.pTransitionTimeObject = pObjects + (p.pTransitionTime - pValues);
 }
 
 #ifdef COPASI_DEBUG
@@ -2752,6 +2761,8 @@ void CMathContainer::printPointers(CMath::sPointers & p)
   std::cout << "  mDelayValue:[" << Index << "]" << ((mDelayValues.size() <= Index) ? " Error" : "") << std::endl;
   Index = p.pDelayLag - mDelayLags.array();
   std::cout << "  mDelayLag:[" << Index << "]" << ((mDelayLags.size() <= Index) ? " Error" : "") << std::endl;
+  Index = p.pTransitionTime - mTransitionTimes.array();
+  std::cout << "  mTransitionTime:[" << Index << "]" << ((mTransitionTimes.size() <= Index) ? " Error" : "") << std::endl;
   std::cout << std::endl;
 }
 #endif // COAPSI_DEBUG
@@ -2867,7 +2878,7 @@ void CMathContainer::initializeMathObjects(const std::vector<const CModelEntity*
                               CMath::Rate, EntityType, SimulationType, false, false,
                               (*it)->getRateReference());
 
-      // Species have intensive values in addition to the extensive  ones.
+      // Species have intensive values in addition to the extensive ones and transition time.
       if (EntityType == CMath::Species)
         {
           const CMetab *pSpecies = static_cast<const CMetab*>(*it);
@@ -2911,6 +2922,12 @@ void CMathContainer::initializeMathObjects(const std::vector<const CModelEntity*
           CMathObject::initialize(p.pIntensiveRatesObject, p.pIntensiveRates,
                                   CMath::Rate, CMath::Species, CMath::Assignment, true, false,
                                   pSpecies->getConcentrationRateReference());
+
+          // Transition Time
+          map(pSpecies->getTransitionTimeReference(), p.pTransitionTimeObject);
+          CMathObject::initialize(p.pTransitionTimeObject, p.pTransitionTime,
+                                  CMath::TransitionTime, CMath::Species, CMath::Assignment, false, false,
+                                  pSpecies->getTransitionTimeReference());
         }
     }
 }

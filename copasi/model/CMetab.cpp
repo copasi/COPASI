@@ -228,6 +228,8 @@ void CMetab::setTransitionTime(const C_FLOAT64 & transitionTime)
 
 const C_FLOAT64 & CMetab::getTransitionTime() const {return mTT;}
 
+CCopasiObject * CMetab::getTransitionTimeReference() const {return mpTTReference;}
+
 bool CMetab::setObjectParent(const CCopasiContainer * pParent)
 {
   CModelEntity::setObjectParent(pParent);
