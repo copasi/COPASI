@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -137,6 +137,8 @@ CSteadyStateMethod::process(CVectorCore< C_FLOAT64 > & State,
 CSteadyStateMethod::ReturnCode
 CSteadyStateMethod::returnProcess(bool steadyStateFound)
 {
+  mSteadyState = mpContainer->getState(true);
+
   if (!steadyStateFound)
     return CSteadyStateMethod::notFound;
 

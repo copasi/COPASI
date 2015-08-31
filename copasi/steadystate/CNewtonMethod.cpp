@@ -615,14 +615,14 @@ C_FLOAT64 CNewtonMethod::targetFunction()
       *pAtol = std::max(fabs(*pCurrentState), *pAtol);
 
       // Prevent division by 0
-      tmp = fabs(*pDistance) / *pAtol;
+      tmp = *pDistance / *pAtol;
       RelativeDistance += tmp * tmp;
 
-      tmp = fabs(*pDistance);
+      tmp = *pDistance;
 
       if (pMathObject->getEntityType() == CMath::Species)
         {
-          tmp *= * (C_FLOAT64 *) pMathObject->getCorrespondingProperty()->getValuePointer();
+          tmp *= *(C_FLOAT64*)pMathObject->getCorrespondingProperty()->getValuePointer() / *(C_FLOAT64*)pMathObject->getValuePointer();
         }
 
       AbsoluteDistance += tmp * tmp;
@@ -1012,7 +1012,7 @@ C_FLOAT64 CNewtonMethod::solveJacobianXeqB(CVector< C_FLOAT64 > & X, const CVect
 
           if (pMathObject->getEntityType() == CMath::Species)
             {
-              tmp *= * (C_FLOAT64 *) pMathObject->getCorrespondingProperty()->getValuePointer();
+              tmp *= *(C_FLOAT64*)pMathObject->getCorrespondingProperty()->getValuePointer() / *(C_FLOAT64*)pMathObject->getValuePointer();
             }
 
           AbsoluteDistance += tmp * tmp;

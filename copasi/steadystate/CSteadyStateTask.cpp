@@ -226,8 +226,7 @@ bool CSteadyStateTask::initialize(const OutputFlag & of,
 
   success &= updateMatrices();
 
-  mSteadyState = mpContainer->getState(false);
-  mCalculateReducedSystem = (mpContainer->getCountDependentSpecies() != 0);
+  mSteadyState = mpContainer->getState(true);
 
   success &= CCopasiTask::initialize(of, pOutputHandler, pOstream);
 
@@ -241,7 +240,7 @@ bool CSteadyStateTask::process(const bool & useInitialValues)
       mpContainer->applyInitialValues();
     }
 
-  mSteadyState = mpContainer->getState(false);
+  mSteadyState = mpContainer->getState(true);
 
   // A steady-state makes only sense in an autonomous model,
   // i.e., the time of the steady-state must not be changed
@@ -346,6 +345,10 @@ bool CSteadyStateTask::process(const bool & useInitialValues)
 #ifdef DEBUG_UI
   std::cout << mEigenvaluesXMatrix << std::endl;
 #endif
+
+  mpContainer->updateSimulatedValues(true);
+  mpContainer->updateTransientDataValues();
+  mpContainer->pushAllTransientValues();
 
   output(COutputInterface::AFTER);
 

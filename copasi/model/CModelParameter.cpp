@@ -1,4 +1,4 @@
-// Copyright (C) 2011 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -418,7 +418,11 @@ void CModelParameter::compile()
 
   if (mpInitialExpression != NULL)
     {
+      size_t Size = CCopasiMessage::size();
       mIsInitialExpressionValid = mpInitialExpression->compile();
+
+      while (CCopasiMessage::size() > Size)
+        CCopasiMessage::getLastMessage();
     }
 }
 

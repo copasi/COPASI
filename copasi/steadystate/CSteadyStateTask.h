@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -58,12 +58,6 @@ private:
 
   CArrayAnnotation * mpJacobianAnn;
   CArrayAnnotation * mpJacobianXAnn;
-
-  /**
-   * Whether the model is actually reducible and calculating
-   * stability of the reduced steady states makes sense
-   */
-  bool mCalculateReducedSystem;
 
   /**
    * The Eigenvalues of the Jacobian of the system

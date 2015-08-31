@@ -283,41 +283,42 @@ bool CQTrajectoryWidget::loadTask()
 
   showUnits();
 
-  CTrajectoryProblem* trajectoryproblem =
+  CTrajectoryProblem* TrajectoryProblem =
     dynamic_cast<CTrajectoryProblem *>(pTask->getProblem());
-  assert(trajectoryproblem);
+  assert(TrajectoryProblem);
 
   pdelete(mpTrajectoryProblem);
 
-  mpTrajectoryProblem = new CTrajectoryProblem(*trajectoryproblem);
+  mpTrajectoryProblem = new CTrajectoryProblem(*TrajectoryProblem);
   mpTask->remove(mpTrajectoryProblem);
+  mpTrajectoryProblem->setObjectParent(NULL);
 
   //numbers
-  mpEditIntervalSize->setText(QString::number(trajectoryproblem->getStepSize()));
-  mpEditIntervals->setText(QString::number(trajectoryproblem->getStepNumber()));
-  mpEditDuration->setText(QString::number(trajectoryproblem->getDuration()));
+  mpEditIntervalSize->setText(QString::number(TrajectoryProblem->getStepSize()));
+  mpEditIntervals->setText(QString::number(TrajectoryProblem->getStepNumber()));
+  mpEditDuration->setText(QString::number(TrajectoryProblem->getDuration()));
 
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   C_FLOAT64 InitialTime = (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getInitialTime();
 
   bool Delayed;
 
-  if (trajectoryproblem->getStepSize() > 0.0)
-    Delayed = (trajectoryproblem->getOutputStartTime() - InitialTime) > std::numeric_limits< C_FLOAT64 >::min();
+  if (TrajectoryProblem->getStepSize() > 0.0)
+    Delayed = (TrajectoryProblem->getOutputStartTime() - InitialTime) > std::numeric_limits< C_FLOAT64 >::min();
   else
-    Delayed = (InitialTime - trajectoryproblem->getOutputStartTime()) > std::numeric_limits< C_FLOAT64 >::min();
+    Delayed = (InitialTime - TrajectoryProblem->getOutputStartTime()) > std::numeric_limits< C_FLOAT64 >::min();
 
   mpCheckDelay->setChecked(Delayed);
   mpEditDelay->setEnabled(Delayed);
 
-  mpEditDelay->setText(QString::number(trajectoryproblem->getOutputStartTime()));
+  mpEditDelay->setText(QString::number(TrajectoryProblem->getOutputStartTime()));
 
-  mpCheckOutputEvent->setChecked(trajectoryproblem->getOutputEvent());
-  mpCheckContinueEvents->setChecked(trajectoryproblem->getContinueSimultaneousEvents());
-  mpCheckStartInSteadyState->setChecked(trajectoryproblem->getStartInSteadyState());
+  mpCheckOutputEvent->setChecked(TrajectoryProblem->getOutputEvent());
+  mpCheckContinueEvents->setChecked(TrajectoryProblem->getContinueSimultaneousEvents());
+  mpCheckStartInSteadyState->setChecked(TrajectoryProblem->getStartInSteadyState());
 
   //store time series checkbox
-  mpCheckSave->setChecked(trajectoryproblem->timeSeriesRequested());
+  mpCheckSave->setChecked(TrajectoryProblem->timeSeriesRequested());
 
   checkTimeSeries();
 
