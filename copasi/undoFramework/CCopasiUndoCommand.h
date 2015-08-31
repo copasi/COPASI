@@ -68,6 +68,13 @@ public:
     SPECIEDATACHANGE, //change species data
     REACTIONLINEEDITCHANGE, //change reaction data
     SPECIESTYPECHANGE, //change of species type
+    MODEL_INITIAL_TIME_CHANGE, // change of model initial time
+    MODEL_TIME_UNIT_CHANGE, // change of model time unit
+    MODEL_QUANTITY_UNIT_CHANGE, // change of model quantity unit
+    MODEL_VOLUME_UNIT_CHANGE, // change of model volume unit
+    MODEL_AREA_UNIT_CHANGE, // change of model area unit
+    MODEL_LENGTH_UNIT_CHANGE, // change of model length unit
+    MODEL_STOCHASTIC_CORRECTION_CHANGE, // change of the stochastic correct on model
     INVALID_TYPE
   };
 

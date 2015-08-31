@@ -1,4 +1,4 @@
-// Copyright (C) 2012 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -103,6 +103,12 @@ void CQCopasiApplication::setMainWindow(CopasiUI3Window * pMainWindow)
 
   mpMainWindow->openInitialDocument(mFile);
   mStarting = false;
+}
+
+CopasiUI3Window *
+CQCopasiApplication::getMainWindow()
+{
+  return mpMainWindow;
 }
 
 #ifdef COPASI_DEBUG

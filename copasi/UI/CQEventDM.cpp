@@ -33,11 +33,11 @@ CQEventDM::CQEventDM(QObject *parent)
 {
 }
 
-int CQEventDM::rowCount(const QModelIndex& C_UNUSED(parent)) const
+int CQEventDM::rowCount(const QModelIndex&) const
 {
   return (int)(*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getEvents().size() + 1;
 }
-int CQEventDM::columnCount(const QModelIndex& C_UNUSED(parent)) const
+int CQEventDM::columnCount(const QModelIndex&) const
 {
   return TOTAL_COLS_EVENTS;
 }

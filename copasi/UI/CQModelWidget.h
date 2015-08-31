@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -18,6 +18,11 @@
 
 #include "copasi/UI/ui_CQModelWidget.h"
 
+#if COPASI_UNDO
+class QUndoStack;
+#include <copasi/undoFramework/CCopasiUndoCommand.h>
+#endif
+
 class CModel;
 
 class CQModelWidget : public CopasiWidget, public Ui::CQModelWidget
@@ -30,6 +35,10 @@ public:
 
   virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
   virtual bool leave();
+
+#if COPASI_UNDO
+  bool changeValue(CCopasiUndoCommand::Type type, const QVariant& newValue);
+#endif
 
 protected slots:
   virtual void slotBtnRevertClicked();
@@ -44,6 +53,10 @@ private:
 
   // Attributes
   CModel * mpModel;
+
+#if COPASI_UNDO
+  QUndoStack *mpUndoStack;
+#endif
 };
 
 #endif // COPASI_CQModelWidget

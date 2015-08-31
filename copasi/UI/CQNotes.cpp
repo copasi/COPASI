@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -28,6 +28,12 @@
 #include "report/CReportDefinition.h"
 #include "copasi/report/CCopasiRootContainer.h"
 #include "commandline/CConfigurationFile.h"
+
+#if COPASI_UNDO
+#include <copasi/UI/copasiui3window.h>
+#include <copasi/UI/CQCopasiApplication.h>
+#include <copasi/undoFramework/ChangeNotesCommand.h>
+#endif // COPASI_UNDO
 
 CQValidatorXML::CQValidatorXML(QPlainTextEdit * parent, const char * name):
   CQValidator< QPlainTextEdit >(parent, &QPlainTextEdit::toPlainText, name),
@@ -148,6 +154,11 @@ CQNotes::CQNotes(QWidget* parent, const char* name) :
   mpBtnToggleEdit->setIcon(CQIconResource::icon(CQIconResource::edit));
 
   mpWebView->page()->setLinkDelegationPolicy(QWebPage::DelegateAllLinks);
+
+#if COPASI_UNDO
+  mpUndoStack = NULL;
+#endif
+
 }
 
 CQNotes::~CQNotes()
@@ -329,21 +340,25 @@ void CQNotes::save()
   if (mpObject != NULL &&
       mValidity == QValidator::Acceptable)
     {
-      QString Notes;
 
       CAnnotation * pAnnotation = CAnnotation::castObject(mpObject);
       CReportDefinition * pReportDefinition = static_cast< CReportDefinition * >(mpObject);
 
+      std::string notes;
+
       if (pAnnotation != NULL)
         {
-          Notes = FROM_UTF8(pAnnotation->getNotes());
+          notes = pAnnotation->getNotes();
         }
       else if (pReportDefinition != NULL)
         {
-          Notes = FROM_UTF8(pReportDefinition->getComment());
+          notes = pReportDefinition->getComment();
         }
 
-      if (mpEdit->toPlainText() != Notes)
+
+      QString qNotes(FROM_UTF8(notes));
+
+      if (mpEdit->toPlainText() != qNotes)
         {
           std::string PlainText = TO_UTF8(mpEdit->toPlainText());
 
@@ -352,6 +367,19 @@ void CQNotes::save()
               // We wrap the HTML in a body element if it does not contain a top level html or body element.
               PlainText = "<body xmlns=\"http://www.w3.org/1999/xhtml\">" + PlainText + "</body>";
             }
+
+#if COPASI_UNDO
+
+          if (mpUndoStack == NULL)
+            {
+              CopasiUI3Window *  pWindow = static_cast<CQCopasiApplication*>(qApp)->getMainWindow();
+
+              if (pWindow)
+                mpUndoStack = pWindow->getUndoStack();
+            }
+
+          mpUndoStack->push(new ChangeNotesCommand(mpObject, notes, PlainText, this));
+#else
 
           if (pAnnotation != NULL)
             {
@@ -363,6 +391,7 @@ void CQNotes::save()
             }
 
           mChanged = true;
+#endif
         }
     }
 
@@ -385,3 +414,36 @@ void CQNotes::slotOpenUrl(const QUrl & url)
   QDesktopServices::openUrl(url);
   return;
 }
+
+
+#if COPASI_UNDO
+void
+CQNotes::changeNotes(const std::string& key, const std::string& notes)
+{
+  mKey = key;
+  load();
+  mpListView->switchToOtherWidget(C_INVALID_INDEX, mKey);
+  qApp->processEvents();
+
+  CAnnotation * pAnnotation = CAnnotation::castObject(mpObject);
+  CReportDefinition * pReportDefinition = static_cast< CReportDefinition * >(mpObject);
+
+  if (pAnnotation != NULL)
+    {
+      pAnnotation->setNotes(notes);
+    }
+  else if (pReportDefinition != NULL)
+    {
+      pReportDefinition->setComment(notes);
+    }
+
+  if (mpDataModel != NULL)
+    {
+      mpDataModel->changed();
+    }
+
+  protectedNotify(ListViews::MODEL, ListViews::CHANGE, mKey);
+
+
+}
+#endif // COPASI_UNDO

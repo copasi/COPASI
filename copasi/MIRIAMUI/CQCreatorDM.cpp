@@ -1,17 +1,9 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/CQCreatorDM.cpp,v $
-//   $Revision: 1.11 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/05/02 18:56:24 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
@@ -23,17 +15,17 @@
 #include "MIRIAM/CModelMIRIAMInfo.h"
 
 CQCreatorDM::CQCreatorDM(CMIRIAMInfo* MIRIAMInfo, QObject *parent)
-    : CQBaseDataModel(parent)
+  : CQBaseDataModel(parent)
 
 {
   mpMIRIAMInfo = MIRIAMInfo;
 }
 
-int CQCreatorDM::rowCount(const QModelIndex& C_UNUSED(parent)) const
+int CQCreatorDM::rowCount(const QModelIndex&) const
 {
   return (int) mpMIRIAMInfo->getCreators().size() + 1;
 }
-int CQCreatorDM::columnCount(const QModelIndex& C_UNUSED(parent)) const
+int CQCreatorDM::columnCount(const QModelIndex&) const
 {
   return TOTAL_COLS_CREATORS;
 }
@@ -61,12 +53,16 @@ QVariant CQCreatorDM::data(const QModelIndex &index, int role) const
             {
               case COL_ROW_NUMBER:
                 return QVariant(index.row() + 1);
+
               case COL_FAMILY_NAME:
                 return QVariant(QString(FROM_UTF8(mpMIRIAMInfo->getCreators()[index.row()]->getFamilyName())));
+
               case COL_GIVEN_NAME:
                 return QVariant(QString(FROM_UTF8(mpMIRIAMInfo->getCreators()[index.row()]->getGivenName())));
+
               case COL_EMAIL:
                 return QVariant(QString(FROM_UTF8(mpMIRIAMInfo->getCreators()[index.row()]->getEmail())));
+
               case COL_ORG:
                 return QVariant(QString(FROM_UTF8(mpMIRIAMInfo->getCreators()[index.row()]->getORG())));
             }
@@ -88,14 +84,19 @@ QVariant CQCreatorDM::headerData(int section, Qt::Orientation orientation,
         {
           case COL_ROW_NUMBER:
             return QVariant(QString("#"));
+
           case COL_FAMILY_NAME:
             return QVariant(QString("Family Name"));
+
           case COL_GIVEN_NAME:
             return QVariant(QString("Given Name"));
+
           case COL_EMAIL:
             return QVariant(QString("Email"));
+
           case COL_ORG:
             return QVariant(QString("Organization"));
+
           default:
             return QVariant();
         }
@@ -122,18 +123,21 @@ bool CQCreatorDM::setData(const QModelIndex &index, const QVariant &value,
           case COL_FAMILY_NAME:
             mpMIRIAMInfo->getCreators()[index.row()]->setFamilyName(TO_UTF8(value.toString()));
             break;
+
           case COL_GIVEN_NAME:
             mpMIRIAMInfo->getCreators()[index.row()]->setGivenName(TO_UTF8(value.toString()));
             break;
+
           case COL_EMAIL:
             mpMIRIAMInfo->getCreators()[index.row()]->setEmail(TO_UTF8(value.toString()));
             break;
+
           case COL_ORG:
             mpMIRIAMInfo->getCreators()[index.row()]->setORG(TO_UTF8(value.toString()));
             break;
         }
 
-      emit dataChanged(index, index);
+      //emit dataChanged(index, index);
       emit notifyGUI(ListViews::MIRIAM, ListViews::CHANGE, "");
       return true;
     }
