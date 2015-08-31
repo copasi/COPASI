@@ -30,6 +30,9 @@
 #include "undoFramework/UndoGlobalQuantityData.h"
 #include "undoFramework/UndoEventData.h"
 #include "undoFramework/UndoEventAssignmentData.h"
+
+#include <copasi/UI/CQCopasiApplication.h>
+
 #endif
 
 #include "copasi.h"
@@ -496,6 +499,9 @@ void CQCompartmentDM::insertNewCompartmentRow(int position, int rows, const QMod
 
 void CQCompartmentDM::deleteCompartmentRow(UndoCompartmentData *pCompartmentData)
 {
+  emit changeWidget(111);
+  qApp->processEvents();
+
   CModel * pModel = (*CCopasiRootContainer::getDatamodelList())[0]->getModel();
 
   size_t index = pModel->getCompartments().getIndex(pCompartmentData->getName());
@@ -505,7 +511,7 @@ void CQCompartmentDM::deleteCompartmentRow(UndoCompartmentData *pCompartmentData
 
   removeRow((int) index);
 
-  emit changeWidget(111);
+
 }
 
 void CQCompartmentDM::addCompartmentRow(UndoCompartmentData *pCompartmentData)

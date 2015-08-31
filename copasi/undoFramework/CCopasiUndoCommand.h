@@ -75,6 +75,11 @@ public:
     MODEL_AREA_UNIT_CHANGE, // change of model area unit
     MODEL_LENGTH_UNIT_CHANGE, // change of model length unit
     MODEL_STOCHASTIC_CORRECTION_CHANGE, // change of the stochastic correct on model
+    COMPARTMENT_SIMULATION_TYPE_CHANGE, //change of compartment simulation type
+    COMPARTMENT_INITIAL_VOLUME_CHANGE, // change of compartment initial volume
+    COMPARTMENT_INITIAL_EXPRESSION_CHANGE, // change of compartment initial expression
+    COMPARTMENT_EXPRESSION_CHANGE, // change of assignment / ode expression
+    COMPARTMENT_SPATIAL_DIMENSION_CHANGE, // change of compartment spatial dimensions
     INVALID_TYPE
   };
 
