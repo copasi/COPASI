@@ -51,8 +51,6 @@ void CExpression::initObjects()
   CObjectInterface * pObject =
     const_cast< CObjectInterface * >(getObject(CCopasiObjectName("Reference=Value")));
   assert(pObject != NULL);
-
-  static_cast< CCopasiObject * >(pObject)->setRefresh(this, &CExpression::refresh);
 }
 
 void CExpression::setIsBoolean(const bool & isBoolean)

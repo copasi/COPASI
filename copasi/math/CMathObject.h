@@ -113,7 +113,7 @@ public:
   /**
    * Calculate the objects value
    */
-  void calculate();
+  virtual void calculateValue();
 
   /**
    * Initialize a single mathematical object and advance relevant pointers

@@ -48,65 +48,6 @@ template <class CType> class CCopasiMatrixReference;
 template <class CType> class CCopasiVector;
 #endif // WIN32
 
-class Refresh
-{
-protected:
-  Refresh()
-  {}
-
-public:
-  virtual ~Refresh() {}
-
-  virtual void operator()(void)
-  {return;}
-
-  virtual bool isEqual(Refresh *const rhs) const
-  {return (this == rhs);}
-
-  virtual CCopasiObject * getObject() const
-  {return NULL;}
-};
-
-template <typename CClass> class RefreshTemplate : public Refresh
-{
-private:
-  CClass * mpInstance;             // pointer to object
-  void (CClass::*mMethod)(void);   // pointer to member function
-
-private:
-  RefreshTemplate():
-    Refresh(),
-    mpInstance(NULL),
-    mMethod(NULL)
-  {}
-
-public:
-  // constructor - takes pointer to an object and pointer to a member and stores
-  // them in two private variables
-  RefreshTemplate(CClass * pInstance, void (CClass::*method)(void)):
-    Refresh(),
-    mpInstance(pInstance),
-    mMethod(method)
-  {}
-
-  virtual ~RefreshTemplate() {};
-
-  // override operator "()"
-  virtual void operator()(void)
-  {(*mpInstance.*mMethod)();}  // execute member function
-
-  virtual CCopasiObject * getObject() const
-  {return mpInstance;}
-
-  virtual bool isEqual(Refresh *const rhs) const
-  {
-    const RefreshTemplate< CClass > * pRhs =
-      static_cast< RefreshTemplate< CClass > * >(rhs);
-
-    return (mpInstance == pRhs->mpInstance && mMethod == pRhs->mMethod);
-  }
-};
-
 class CRenameHandler;
 
 //********************************************************************************
@@ -132,6 +73,11 @@ public:
    * Destructor
    */
   virtual ~CObjectInterface();
+
+  /**
+   * Calculate the objects value.
+   */
+  virtual void calculateValue() = 0;
 
   /**
    * Retrieve the CN of the object
@@ -199,11 +145,8 @@ class CCopasiObject: public CObjectInterface
   friend CCopasiVector< CCopasiObject >;
 #endif // WIN32
 
-  typedef CCopasiObject referenceType;
-
 public:
   typedef std::set< const CCopasiObject * > DataObjectSet;
-  typedef std::vector< Refresh * > DataUpdateSequence;
 
   //Attributes
 protected:
@@ -249,8 +192,6 @@ private:
 
 private:
 
-  Refresh * mpRefresh;
-
   static const C_FLOAT64 DummyValue;
 
 protected:
@@ -269,6 +210,11 @@ public:
                 const CCopasiContainer * pParent = NULL);
 
   virtual ~CCopasiObject();
+
+  /**
+   * Calculate the objects value.
+   */
+  virtual void calculateValue() {};
 
   /**
    * This is the output method for any object. The default implementation
@@ -474,31 +420,6 @@ public:
   friend std::ostream &operator<<(std::ostream &os, const CCopasiObject & o);
 
   virtual const std::string & getKey() const;
-
-  template <class CType>
-  void setRefresh(CType * pType,
-                  void (CType::*method)(void))
-  {
-    Refresh * pRefresh =
-      new RefreshTemplate< CType >(pType, method);
-
-    if (mpRefresh != NULL &&
-        mpRefresh->isEqual(pRefresh))
-      {
-        delete pRefresh;
-      }
-    else
-      {
-        pdelete(mpRefresh);
-        mpRefresh = pRefresh;
-      }
-
-    return;
-  }
-
-  void clearRefresh();
-
-  virtual Refresh * getRefresh() const;
 
   static void setRenameHandler(CRenameHandler* rh)
   {smpRenameHandler = rh;}

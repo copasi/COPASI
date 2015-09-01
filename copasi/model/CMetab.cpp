@@ -317,20 +317,14 @@ void CMetab::setStatus(const CModelEntity::Status & status)
           Dependencies.insert(pVolumeReference);
 
         mpValueReference->setDirectDependencies(Dependencies);
-        mpValueReference->setRefresh(this, &CMetab::refreshNumber);
-
         mpConcReference->setDirectDependencies(mpExpression->getDirectDependencies());
-        mpConcReference->setRefresh(this, &CMetab::calculate);
 
         // The dependencies and refresh of the rate are correct (see CModelEntity::setStatus).
-
         mpConcRateReference->setDirectDependencies(mpRateReference->getDirectDependencies());
-        mpConcRateReference->clearRefresh();
         break;
 
       case ODE:
         mpValueReference->setDirectDependencies(Dependencies);
-        mpValueReference->clearRefresh();
 
         Dependencies.insert(mpValueReference);
 
@@ -338,7 +332,6 @@ void CMetab::setStatus(const CModelEntity::Status & status)
           Dependencies.insert(pVolumeReference);
 
         mpConcReference->setDirectDependencies(Dependencies);
-        mpConcReference->setRefresh(this, &CMetab::refreshConcentration);
 
         Dependencies.clear();
         Dependencies.insert(mpConcRateReference);
@@ -347,25 +340,17 @@ void CMetab::setStatus(const CModelEntity::Status & status)
           Dependencies.insert(pVolumeReference);
 
         mpRateReference->setDirectDependencies(Dependencies);
-        mpRateReference->setRefresh(this, &CMetab::refreshRate);
-
         mpConcRateReference->setDirectDependencies(mpExpression->getDirectDependencies());
-        mpConcRateReference->setRefresh(this, &CMetab::calculate);
-
         break;
 
       case REACTIONS:
         mpValueReference->setDirectDependencies(Dependencies);
-        mpValueReference->clearRefresh();
 
         if (pVolumeReference)
           Dependencies.insert(pVolumeReference);
 
         Dependencies.insert(mpValueReference);
         mpConcReference->setDirectDependencies(Dependencies);
-        mpConcReference->setRefresh(this, &CMetab::refreshConcentration);
-
-        mpRateReference->setRefresh(this, &CMetab::refreshRate);
 
         Dependencies.clear();
 
@@ -374,7 +359,6 @@ void CMetab::setStatus(const CModelEntity::Status & status)
 
         Dependencies.insert(mpRateReference);
         mpConcRateReference->setDirectDependencies(Dependencies);
-        mpConcRateReference->setRefresh(this, &CMetab::refreshConcentrationRate);
         break;
 
       default:
@@ -391,24 +375,19 @@ bool CMetab::compile()
   // We first clear all dependencies and refreshes
   // Particle Number
   mpValueReference->clearDirectDependencies();
-  mpValueReference->clearRefresh();
 
   // Rate (particle number rate)
   mRateVector.clear();
   mpRateReference->clearDirectDependencies();
-  mpRateReference->clearRefresh();
 
   // Concentration
   mpConcReference->clearDirectDependencies();
-  mpConcReference->clearRefresh();
 
   // Concentration Rate
   mpConcRateReference->clearDirectDependencies();
-  mpConcRateReference->clearRefresh();
 
   // Transition Time
   mpTTReference->clearDirectDependencies();
-  mpTTReference->clearRefresh();
 
   // Prepare the compilation
   std::set<const CCopasiObject *> Dependencies;
@@ -429,7 +408,6 @@ bool CMetab::compile()
 
   // We no longer need to distinguish the cases since the reference are now context sensitive
   mpValueReference->setDirectDependencies(Dependencies);
-  mpValueReference->setRefresh(this, &CMetab::refreshNumber);
 
   Dependencies.clear();
 
@@ -444,7 +422,6 @@ bool CMetab::compile()
           Dependencies.insert(pVolumeReference);
 
         mpConcReference->setDirectDependencies(Dependencies);
-        mpConcReference->setRefresh(this, &CMetab::refreshConcentration);
 
         // Fixed values
         mRate = 0.0;
@@ -456,7 +433,6 @@ bool CMetab::compile()
         // Concentration
         success = mpExpression->compile(listOfContainer);
         mpConcReference->setDirectDependencies(mpExpression->getDirectDependencies());
-        mpConcReference->setRefresh(this, &CMetab::calculate);
 
         // Implicit initial expression
         pdelete(mpInitialExpression);
@@ -478,7 +454,6 @@ bool CMetab::compile()
           Dependencies.insert(pVolumeReference);
 
         mpConcReference->setDirectDependencies(Dependencies);
-        mpConcReference->setRefresh(this, &CMetab::refreshConcentration);
 
         // Rate (particle number rate)
         success = mpExpression->compile(listOfContainer);
@@ -488,7 +463,6 @@ bool CMetab::compile()
           Dependencies.insert(pVolumeReference);
 
         mpRateReference->setDirectDependencies(Dependencies);
-        mpRateReference->setRefresh(this, &CMetab::calculate);
         Dependencies.clear();
 
         // Concentration Rate
@@ -502,14 +476,12 @@ bool CMetab::compile()
           Dependencies.insert(mpCompartment->getRateReference());
 
         mpConcRateReference->setDirectDependencies(Dependencies);
-        mpConcRateReference->setRefresh(this, &CMetab::refreshConcentrationRate);
         Dependencies.clear();
 
         // Transition Time
         Dependencies.insert(mpValueReference);
         Dependencies.insert(mpRateReference);
         mpTTReference->setDirectDependencies(Dependencies);
-        mpTTReference->setRefresh(this, &CMetab::refreshTransitionTime);
         Dependencies.clear();
         break;
 
@@ -521,7 +493,6 @@ bool CMetab::compile()
           Dependencies.insert(pVolumeReference);
 
         mpConcReference->setDirectDependencies(Dependencies);
-        mpConcReference->setRefresh(this, &CMetab::refreshConcentration);
 
         Dependencies.clear();
 
@@ -555,11 +526,9 @@ bool CMetab::compile()
         }
 
         // Rate (particle number rate)
-        mpRateReference->setRefresh(this, &CMetab::refreshRate);
         mpRateReference->setDirectDependencies(Dependencies);
 
         // Transition Time
-        mpTTReference->setRefresh(this, &CMetab::refreshTransitionTime);
         mpTTReference->setDirectDependencies(Dependencies);
         Dependencies.clear();
 
@@ -574,7 +543,6 @@ bool CMetab::compile()
           Dependencies.insert(mpCompartment->getRateReference());
 
         mpConcRateReference->setDirectDependencies(Dependencies);
-        mpConcRateReference->setRefresh(this, &CMetab::refreshConcentrationRate);
         Dependencies.clear();
 
         break;
@@ -781,7 +749,6 @@ void CMetab::initObjects()
   // We need to have mpIValueRefernce point to a CParticleReference object.
   pdelete(mpIValueReference);
   mpIValueReference = new CParticleReference("InitialParticleNumber", this, mIValue);
-  mpIValueReference->setRefresh(this, &CMetab::refreshInitialValue);
 
   // We need to have mpValueRefernce point to a CParticleReference object.
   pdelete(mpValueReference);
@@ -790,7 +757,6 @@ void CMetab::initObjects()
   mpRateReference->setObjectName("ParticleNumberRate");
 
   mpIConcReference = new CConcentrationReference("InitialConcentration", this, mIConc);
-  mpIConcReference->setRefresh(this, &CMetab::refreshInitialConcentration);
 
   mpConcReference = new CConcentrationReference("Concentration", this, mConc);
 
@@ -1078,31 +1044,20 @@ CCopasiObject::DataObjectSet CConcentrationReference::EmptyDependencies;
 CConcentrationReference::CConcentrationReference(const std::string & name,
     const CCopasiContainer * pParent,
     C_FLOAT64 & reference) :
-  CCopasiObjectReference< C_FLOAT64 >(name, pParent, reference),
-  mpApplyInitialValuesRefresh(NULL)
+  CCopasiObjectReference< C_FLOAT64 >(name, pParent, reference)
 {
   const CMetab * pMetab = static_cast< const CMetab * >(pParent);
-
-  mpApplyInitialValuesRefresh =
-    new RefreshTemplate< CMetab >(const_cast< CMetab * >(pMetab),
-                                  &CMetab::refreshConcentration);
 }
 
 CConcentrationReference::CConcentrationReference(const CConcentrationReference & src,
     const CCopasiContainer * pParent) :
-  CCopasiObjectReference< C_FLOAT64 >(src, pParent),
-  mpApplyInitialValuesRefresh(NULL)
+  CCopasiObjectReference< C_FLOAT64 >(src, pParent)
 {
   const CMetab * pMetab = static_cast< const CMetab * >(pParent);
-
-  mpApplyInitialValuesRefresh =
-    new RefreshTemplate< CMetab >(const_cast< CMetab * >(pMetab),
-                                  &CMetab::refreshConcentration);
 }
 
 CConcentrationReference::~CConcentrationReference()
 {
-  pdelete(mpApplyInitialValuesRefresh);
 }
 
 // virtual
@@ -1129,11 +1084,6 @@ bool CConcentrationReference::isPrerequisiteForContext(const CObjectInterface * 
 
   // Densities which are not in the context have to be recalculated.
   return true;
-}
-
-Refresh * CConcentrationReference::getApplyInitialValueRefresh() const
-{
-  return mpApplyInitialValuesRefresh;
 }
 
 // static

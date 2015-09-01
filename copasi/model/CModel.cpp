@@ -66,7 +66,6 @@ const char * CModel::ModelTypeNames[] =
 CModel::CModel(CCopasiContainer* pParent):
   CModelEntity("New Model", pParent, "Model"),
   mStateTemplate(*this),
-  mSimulatedUpToDateObjects(),
   mPhysicalDependencies(),
   mListOfUnits("Units", this),
   mpVolumeUnit(NULL),
@@ -1066,9 +1065,6 @@ void CModel::removeModelEntity(const CModelEntity * pModelEntity)
   mStateTemplate.remove(pModelEntity);
 }
 
-const std::set< const CCopasiObject * > & CModel::getUptoDateObjects() const
-{return mSimulatedUpToDateObjects;}
-
 void CModel::setInitialTime(const C_FLOAT64 & time)
 {mIValue = time;}
 
@@ -1293,41 +1289,6 @@ void CModel::stateToIntialState()
   mpMathContainer->setInitialState(mpMathContainer->getState(false));
   mpMathContainer->updateInitialValues(CModelParameter::ParticleNumbers);
   mpMathContainer->pushInitialState();
-}
-
-bool CModel::getUpdateSequence(CMathDependencyGraph & dependencyGraph,
-                               const CMath::SimulationContextFlag & context,
-                               const CCopasiObject::DataObjectSet & changedObjects,
-                               const CCopasiObject::DataObjectSet & requestedObjects,
-                               CCopasiObject::DataUpdateSequence & updateSequence) const
-{
-  updateSequence.clear();
-
-  CObjectInterface::UpdateSequence UpdateSequence;
-
-  if (!dependencyGraph.getUpdateSequence(UpdateSequence,
-                                         context,
-                                         *reinterpret_cast< const CObjectInterface::ObjectSet *>(&changedObjects),
-                                         *reinterpret_cast< const CObjectInterface::ObjectSet *>(&requestedObjects)))
-    {
-      return false;
-    }
-
-  CObjectInterface::UpdateSequence::iterator it = UpdateSequence.begin();
-  CObjectInterface::UpdateSequence::iterator end = UpdateSequence.end();
-  Refresh * pRefresh = NULL;
-
-  for (; it != end; ++it)
-    {
-      pRefresh = static_cast< CCopasiObject * >(*it)->getRefresh();
-
-      if (pRefresh != NULL)
-        {
-          updateSequence.push_back(pRefresh);
-        }
-    }
-
-  return true;
 }
 
 bool CModel::setVolumeUnit(const std::string & name)

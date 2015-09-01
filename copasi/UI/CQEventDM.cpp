@@ -13,6 +13,7 @@
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "report/CCopasiRootContainer.h"
 #include "report/CKeyFactory.h"
+#include "function/CExpression.h"
 
 #include "CQMessageBox.h"
 #include "CQEventDM.h"

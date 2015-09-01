@@ -318,7 +318,8 @@ void * CMathObject::getValuePointer() const
   return mpValue;
 }
 
-void CMathObject::calculate()
+// virtual
+void CMathObject::calculateValue()
 {
   // This method should only be called if there is something to calculate, i.e.
   // mpExpression != NULL
@@ -1235,7 +1236,7 @@ void CMathObject::compileExpression()
 
   if (mPrerequisites.empty())
     {
-      calculate();
+      calculateValue();
     }
 }
 

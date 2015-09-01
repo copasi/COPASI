@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -286,7 +286,7 @@ CSparseMatrixElement & CSparseMatrix::operator()(const size_t & row,
   mSearchCol = col;
 
   std::vector< CSparseMatrixElement * >::iterator found
-  = std::lower_bound(mCols[col].begin(), mCols[col].end(), &mElement, CSparseMatrixElement::compareRow);
+    = std::lower_bound(mCols[col].begin(), mCols[col].end(), &mElement, CSparseMatrixElement::compareRow);
 
   if (found != mCols[col].end() &&
       (*found)->row() == row) return **found;
@@ -301,7 +301,7 @@ const CSparseMatrixElement & CSparseMatrix::operator()(const size_t & row,
   const_cast<CSparseMatrix *>(this)->mSearchCol = col;
 
   std::vector< CSparseMatrixElement * >::const_iterator found
-  = std::lower_bound(mCols[col].begin(), mCols[col].end(), &mElement, CSparseMatrixElement::compareRow);
+    = std::lower_bound(mCols[col].begin(), mCols[col].end(), &mElement, CSparseMatrixElement::compareRow);
 
   if (found != mCols[col].end() &&
       (*found)->row() == row) return **found;
@@ -317,7 +317,7 @@ bool CSparseMatrix::insert(const size_t & row,
   mSearchCol = col;
 
   std::vector< CSparseMatrixElement * >::iterator found
-  = std::lower_bound(mCols[col].begin(), mCols[col].end(), &mElement, CSparseMatrixElement::compareRow);
+    = std::lower_bound(mCols[col].begin(), mCols[col].end(), &mElement, CSparseMatrixElement::compareRow);
 
   if (found != mCols[col].end() &&
       (*found)->row() == row) return false; // The element already exists.
@@ -338,7 +338,7 @@ bool CSparseMatrix::remove(const size_t & row,
   mSearchCol = col;
 
   std::vector< CSparseMatrixElement * >::iterator found
-  = std::lower_bound(mCols[col].begin(), mCols[col].end(), &mElement, CSparseMatrixElement::compareRow);
+    = std::lower_bound(mCols[col].begin(), mCols[col].end(), &mElement, CSparseMatrixElement::compareRow);
 
   if (found == mCols[col].end()) return false; // The element does not exist.
 
@@ -680,12 +680,12 @@ bool SparseMatrixTest(const size_t & size,
 
                 for (pTmp4 = pTmp1, pTmp5 = pTmp2, pEnd4 = pTmp4 + LDA;
                      pTmp4 < pEnd4; pTmp4++, pTmp5 += LDB)
-                  * pTmp3 += *pTmp4 * *pTmp5;
+                  * pTmp3 += *pTmp4 **pTmp5;
               }
         }
 
-      CPU.refresh();
-      WALL.refresh();
+      CPU.calculateValue();
+      WALL.calculateValue();
       std::cout << "Matrix * Matrix:\t";
       CPU.print(&std::cout);
       std::cout << "\t";
@@ -720,8 +720,8 @@ bool SparseMatrixTest(const size_t & size,
             assert(fabs(MR(i, j) - dgemmR(i, j)) <= 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon() * fabs(MR(i, j)));
       */
 
-      CPU.refresh();
-      WALL.refresh();
+      CPU.calculateValue();
+      WALL.calculateValue();
       std::cout << "dgemm(Matrix, Matrix):\t";
       CPU.print(&std::cout);
       std::cout << "\t";
@@ -774,7 +774,7 @@ bool SparseMatrixTest(const size_t & size,
 
                       if ((*itRowElement)->col() != (*itColElement)->row()) continue;
 
-                      Tmp += **itRowElement * **itColElement;
+                      Tmp += **itRowElement ***itColElement;
                       ++itRowElement;
                       ++itColElement;
                     }
@@ -786,8 +786,8 @@ bool SparseMatrixTest(const size_t & size,
             }
         }
 
-      CPU.refresh();
-      WALL.refresh();
+      CPU.calculateValue();
+      WALL.calculateValue();
       std::cout << "Sparse * Sparse:\t";
       CPU.print(&std::cout);
       std::cout << "\t";
@@ -851,7 +851,7 @@ bool SparseMatrixTest(const size_t & size,
 
                       if (itRowElement.getColumnIndex() != *pColElementRow) continue;
 
-                      Tmp += *itRowElement * *pColElement;
+                      Tmp += *itRowElement **pColElement;
                       ++itRowElement;
                       ++pColElement;
                       ++pColElementRow;
@@ -866,8 +866,8 @@ bool SparseMatrixTest(const size_t & size,
           CR = TmpR;
         }
 
-      CPU.refresh();
-      WALL.refresh();
+      CPU.calculateValue();
+      WALL.calculateValue();
       std::cout << "Compressed * Compressed:\t";
       CPU.print(&std::cout);
       std::cout << "\t";

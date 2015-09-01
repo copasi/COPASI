@@ -34,7 +34,6 @@
 #include "copasi/report/CCopasiContainer.h"
 #include "copasi/utilities/CUnit.h"
 
-#include "copasi/math/CMathTrigger.h"
 #include "copasi/math/CMathDependencyGraph.h"
 
 class CMathContainer;
@@ -712,21 +711,6 @@ private:
   bool appendDependentEvents(std::set< const CCopasiObject * > candidates,
                              std::set< const CCopasiObject * > & dependents) const;
 
-  /**
-   * Construct a update sequence for the given context
-   * @param CMathDependencyGraph & dependencyGraph
-   * @param const CMath::SimulationContextFlag & context
-   * @param const CCopasiObject::DataObjectSet & changedObjects
-   * @param const CCopasiObject::DataObjectSet & requestedObjects
-   * @param CCopasiObject::DataUpdateSequence & updateSequence)
-   * @return bool success
-   */
-  bool getUpdateSequence(CMathDependencyGraph & dependencyGraph,
-                         const CMath::SimulationContextFlag & context,
-                         const CCopasiObject::DataObjectSet & changedObjects,
-                         const CCopasiObject::DataObjectSet & requestedObjects,
-                         CCopasiObject::DataUpdateSequence & updateSequence) const;
-
 public:
   /**
    * Remove all model objects which depend on the deleted objects
@@ -846,13 +830,6 @@ public:
    * @param const CModelEntity * pModelEntity
    */
   void removeModelEntity(const CModelEntity * pModelEntity);
-
-  /**
-   * Retrieve the list of objects which are up to date after a call
-   * to apply assignment.
-   * @return const std::set< const CCopasiObject * > & uptoDateObjects
-   */
-  const std::set< const CCopasiObject * > & getUptoDateObjects() const;
 
   /**
    * Check whether the model contains reversible reactions
@@ -1059,12 +1036,6 @@ private:
    * The state template for the model
    */
   CStateTemplate mStateTemplate;
-
-  /**
-   * This is the list of objects which contains all objects which
-   * are up to date after a call to updateSimulatedValues
-   */
-  std::set< const CCopasiObject * > mSimulatedUpToDateObjects;
 
   CMathDependencyGraph mPhysicalDependencies;
 

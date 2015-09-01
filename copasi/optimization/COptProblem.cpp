@@ -576,7 +576,7 @@ bool COptProblem::calculateStatistics(const C_FLOAT64 & factor,
   mStoreResults = false;
 
   // Make sure the timer is accurate.
-  mCPUTime.getRefresh();
+  mCPUTime.calculateValue();
 
   if (mSolutionValue == mWorstValue)
     return false;
@@ -622,7 +622,7 @@ bool COptProblem::calculateStatistics(const C_FLOAT64 & factor,
       calculate();
 
       // Make sure the timer is accurate.
-      (*mCPUTime.getRefresh())();
+      mCPUTime.calculateValue();
     }
 
   return true;

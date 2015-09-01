@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -252,8 +252,8 @@ C_FLOAT64 CTauLeapMethod::doSingleStep(C_FLOAT64 ds)
 
       for (; it != end; ++it)
         {
-          mAvgDX[it->first - pFirstSpecies] += it->second * *pAmu;
-          mSigDX[it->first - pFirstSpecies] += it->second * it->second * *pAmu;
+          mAvgDX[it->first - pFirstSpecies] += it->second **pAmu;
+          mSigDX[it->first - pFirstSpecies] += it->second * it->second **pAmu;
         }
     }
 
@@ -329,7 +329,7 @@ void CTauLeapMethod::updatePropensities()
 
   for (; pPropensity != pPropensityEnd; ++pPropensity, ++pAmu)
     {
-      pPropensity->calculate();
+      pPropensity->calculateValue();
       mA0 += *pAmu;
     }
 

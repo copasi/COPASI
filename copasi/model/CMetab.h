@@ -84,13 +84,6 @@ public:
                                         const CMath::SimulationContextFlag & context,
                                         const CObjectInterface::ObjectSet & changedObjects) const;
 
-  /**
-   * Retrieve the refresh call which calculates the concentration based on state values needed
-   * when applying the initial state.
-   * @return Refresh * applyInitialValueRefresh
-   */
-  Refresh * getApplyInitialValueRefresh() const;
-
   // Attributes
 private:
   /**
@@ -98,11 +91,6 @@ private:
    * i.e., it is always empty
    */
   static DataObjectSet EmptyDependencies;
-
-  /**
-   * The refresh call needed when applying initial values.
-   */
-  Refresh * mpApplyInitialValuesRefresh;
 };
 
 class CParticleReference : public CCopasiObjectReference< C_FLOAT64 >

@@ -209,6 +209,7 @@ void CODEExporter::exportObjectNodesFromModel(const CCopasiDataModel* pDataModel
     }
 }
 
+/*
 CCopasiObject* CODEExporter::findObjectFromRefresh(const CCopasiObject * tmp, const Refresh* ref)
 {
 
@@ -252,6 +253,7 @@ CCopasiObject* CODEExporter::findObjectFromRefresh(const CCopasiObject * tmp, co
 
   return NULL;
 }
+ */
 
 void CODEExporter::exportSimulatedObject(const CCopasiObject * obj, const CCopasiDataModel* pDataModel)
 {

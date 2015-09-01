@@ -75,19 +75,13 @@ CMoiety::~CMoiety()
 
 void CMoiety::initObjects()
 {
-  setRefresh(this, &CMoiety::refreshDependentNumber);
-
   mpINumberReference = new CTotalNumberReference("InitialValue", this, mINumber);
-  mpINumberReference->setRefresh(this, &CMoiety::refreshInitialValue);
-
   mpNumberReference = new CTotalNumberReference("Value", this, mNumber);
-  mpNumberReference->setRefresh(this, &CMoiety::refreshValue);
 
   mpDNumberReference = new CDependentNumberReference("DependentValue", this, mNumber);
   mpDNumberReference->addDirectDependency(this);
 
   CCopasiObject * pObject = addObjectReference("Amount", mIAmount, CCopasiObject::ValueDbl);
-  pObject->setRefresh(this, &CMoiety::refreshAmount);
   pObject->addDirectDependency(mpNumberReference);
 
   return;

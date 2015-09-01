@@ -1,4 +1,4 @@
-// Copyright (C) 2011 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -7,7 +7,6 @@
 #define COPASI_CMathEvent
 
 #include "copasi/model/CEvent.h"
-#include "copasi/math/CMathTrigger.h"
 #include "copasi/math/CMathEventQueue.h"
 
 #include "copasi/function/CExpression.h"

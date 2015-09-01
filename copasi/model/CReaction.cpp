@@ -163,7 +163,7 @@ C_INT32 CReaction::load(CReadConfig & configbuffer)
     return Fail;
 
   CModel * pModel
-  = dynamic_cast< CModel * >(getObjectAncestor("Model"));
+    = dynamic_cast< CModel * >(getObjectAncestor("Model"));
   CChemEqInterface::setChemEqFromString(pModel, *this, ChemEq);
 
   if ((Fail = configbuffer.getVariable("KineticType", "string", &tmp)))
@@ -592,17 +592,11 @@ void CReaction::compile()
       if (mpFunction != CCopasiRootContainer::getUndefinedFunction())
         {
           addDirectDependency(mpFunction);
-
-          mpFluxReference->setRefresh(this, &CReaction::calculate);
-          mpParticleFluxReference->setRefresh(this, &CReaction::calculate);
         }
       else
         {
           mFlux = 0.0;
           mParticleFlux = 0.0;
-
-          mpFluxReference->clearRefresh();
-          mpParticleFluxReference->clearRefresh();
         }
 
       size_t i, j, jmax;
@@ -670,7 +664,7 @@ bool CReaction::loadOneRole(CReadConfig & configbuffer,
                             const std::string & prefix)
 {
   const CModel * pModel
-  = dynamic_cast< const CModel * >(getObjectAncestor("Model"));
+    = dynamic_cast< const CModel * >(getObjectAncestor("Model"));
   const CCopasiVector< CMetab > & Metabolites = pModel->getMetabolites();
 
   size_t pos;
@@ -946,11 +940,9 @@ void CReaction::initObjects()
 {
   mpFluxReference =
     static_cast<CCopasiObjectReference<C_FLOAT64> *>(addObjectReference("Flux", mFlux, CCopasiObject::ValueDbl));
-  mpFluxReference->setRefresh(this, &CReaction::calculate);
 
   mpParticleFluxReference =
     static_cast<CCopasiObjectReference<C_FLOAT64> *>(addObjectReference("ParticleFlux", mParticleFlux, CCopasiObject::ValueDbl));
-  mpParticleFluxReference->setRefresh(this, &CReaction::calculate);
 
   mpPropensityReference =
     static_cast<CCopasiObjectReference<C_FLOAT64> *>(addObjectReference("Propensity", mPropensity, CCopasiObject::ValueDbl));

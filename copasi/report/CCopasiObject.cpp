@@ -140,8 +140,7 @@ CCopasiObject::CCopasiObject():
   mObjectType("Unknown Type"),
   mpObjectParent(NULL),
   mpObjectDisplayName(NULL),
-  mObjectFlag(0),
-  mpRefresh(NULL)
+  mObjectFlag(0)
 {}
 
 CCopasiObject::CCopasiObject(const std::string & name,
@@ -153,8 +152,7 @@ CCopasiObject::CCopasiObject(const std::string & name,
   mObjectType(type),
   mpObjectParent(const_cast<CCopasiContainer *>(pParent)),
   mpObjectDisplayName(NULL),
-  mObjectFlag(flag),
-  mpRefresh(NULL)
+  mObjectFlag(flag)
 {
   if (mpObjectParent != NULL &&
       mpObjectParent->isContainer())
@@ -170,8 +168,7 @@ CCopasiObject::CCopasiObject(const CCopasiObject & src,
   mObjectType(src.mObjectType),
   mpObjectParent(src.mpObjectParent),
   mpObjectDisplayName(NULL),
-  mObjectFlag(src.mObjectFlag),
-  mpRefresh(NULL)
+  mObjectFlag(src.mObjectFlag)
 {
   if (pParent != NULL)
     {
@@ -190,7 +187,6 @@ CCopasiObject::~CCopasiObject()
     mpObjectParent->remove(this);
 
   pdelete(mpObjectDisplayName);
-  pdelete(mpRefresh);
 }
 
 void CCopasiObject::print(std::ostream * ostream) const {(*ostream) << (*this);}
@@ -605,12 +601,6 @@ const std::string & CCopasiObject::getKey() const
 
   return DefaultKey;
 }
-
-void CCopasiObject::clearRefresh()
-{pdelete(mpRefresh);}
-
-Refresh * CCopasiObject::getRefresh() const
-{return mpRefresh;}
 
 // virtual
 std::string CCopasiObject::getUnits() const

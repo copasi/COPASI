@@ -165,6 +165,12 @@ bool CMathDependencyGraph::getUpdateSequence(CObjectInterface::UpdateSequence & 
       // We may have data objects which are ignored as they cannot be calculated
       if ((*it)->getDataObject() == *it)
         {
+          // Objects of class CCopasiTimer must always be calculated
+          if ((*it)->getDataObject()->getObjectType() == "Timer")
+            {
+              updateSequence.push_back(const_cast< CObjectInterface * >(*it));
+            }
+
           continue;
         }
 

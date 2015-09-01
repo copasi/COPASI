@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -135,7 +135,7 @@ void CTrajectoryMethodDsaLsodar::CPartition::intialize(const CMathContainer * pC
         {
           *pStochasticSpecies = true;
           std::pair< speciesToReactionsMap::const_iterator, speciesToReactionsMap::const_iterator > Range
-          = mSpeciesToReactions.equal_range(Index);
+            = mSpeciesToReactions.equal_range(Index);
 
           for (; Range.first != Range.second; ++Range.first)
             {
@@ -186,7 +186,7 @@ bool CTrajectoryMethodDsaLsodar::CPartition::rePartition(const CVectorCore< C_FL
           PartitionChanged = true;
 
           std::pair< speciesToReactionsMap::const_iterator, speciesToReactionsMap::const_iterator > Range
-          = mSpeciesToReactions.equal_range(Index);
+            = mSpeciesToReactions.equal_range(Index);
 
           for (; Range.first != Range.second; ++Range.first)
             {
@@ -199,7 +199,7 @@ bool CTrajectoryMethodDsaLsodar::CPartition::rePartition(const CVectorCore< C_FL
           PartitionChanged = true;
 
           std::pair< speciesToReactionsMap::const_iterator, speciesToReactionsMap::const_iterator > Range
-          = mSpeciesToReactions.equal_range(Index);
+            = mSpeciesToReactions.equal_range(Index);
 
           for (; Range.first != Range.second; ++Range.first)
             {
@@ -531,7 +531,7 @@ void CTrajectoryMethodDsaLsodar::start()
   for (; pReaction  != pReactionEnd; ++pReaction, ++pUpdateSequence, ++pPropensityObject, ++pAmu)
     {
       // Update the propensity
-      pPropensityObject->calculate();
+      pPropensityObject->calculateValue();
       mA0 += *pAmu;
 
       CObjectInterface::ObjectSet Changed;
@@ -657,7 +657,7 @@ void CTrajectoryMethodDsaLsodar::calculatePropensities()
     {
       if (*ppStochastic != NULL)
         {
-          pPropensity->calculate();
+          pPropensity->calculateValue();
         }
     }
 

@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -217,7 +217,7 @@ void CTrajAdaptiveSA::start()
   // Update the propensity
   for (; pPropensityObject != pPropensityObjectEnd; ++pPropensityObject, ++pAmu)
     {
-      pPropensityObject->calculate();
+      pPropensityObject->calculateValue();
       mA0 += *pAmu;
     }
 
@@ -518,7 +518,7 @@ C_FLOAT64 CTrajAdaptiveSA::doSingleTauLeapStep(const C_FLOAT64 & curTime, const 
 
   for (; pPropensity != pPropensityEnd; ++pPropensity, ++pAmu)
     {
-      pPropensity->calculate();
+      pPropensity->calculateValue();
       mA0 += *pAmu;
     }
 

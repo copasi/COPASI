@@ -412,15 +412,12 @@ void CModelEntity::setStatus(const CModelEntity::Status & status)
       std::set< const CCopasiObject * > NoDependencies;
 
       setDirectDependencies(NoDependencies);
-      clearRefresh();
 
       mpIValueReference->setDirectDependencies(NoDependencies);
 
       mpValueReference->setDirectDependencies(NoDependencies);
-      mpValueReference->clearRefresh();
 
       mpRateReference->setDirectDependencies(NoDependencies);
-      mpRateReference->clearRefresh();
       CCopasiDataModel* pDataModel = NULL;
 
       switch (mStatus)
@@ -437,7 +434,6 @@ void CModelEntity::setStatus(const CModelEntity::Status & status)
             add(mpInitialExpression, true);
 
             mpValueReference->setDirectDependencies(mpExpression->getDirectDependencies());
-            mpValueReference->setRefresh(this, &CModelEntity::calculate);
 
             mRate = std::numeric_limits<C_FLOAT64>::quiet_NaN();
 
@@ -450,7 +446,6 @@ void CModelEntity::setStatus(const CModelEntity::Status & status)
               mpExpression = new CExpression("Expression", this);
 
             mpRateReference->setDirectDependencies(mpExpression->getDirectDependencies());
-            mpRateReference->setRefresh(this, &CModelEntity::calculate);
 
             mUsed = true;
             break;
@@ -503,8 +498,6 @@ void CModelEntity::initObjects()
     static_cast<CCopasiObjectReference<C_FLOAT64> *>(addObjectReference("InitialValue",
         mIValue,
         CCopasiObject::ValueDbl));
-
-  mpIValueReference->setRefresh(this, &CModelEntity::refreshInitialValue);
 
   mpRateReference =
     static_cast<CCopasiObjectReference<C_FLOAT64> *>(addObjectReference("Rate", mRate, CCopasiObject::ValueDbl));

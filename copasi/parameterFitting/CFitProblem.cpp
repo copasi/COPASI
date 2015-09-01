@@ -1265,7 +1265,7 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
   mHaveStatistics = true;
 
   // Make sure the timer is accurate.
-  (*mCPUTime.getRefresh())();
+  mCPUTime.calculateValue();
 
   if (mSolutionValue == mWorstValue)
     return false;
@@ -1332,7 +1332,7 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
       if (!CalculateFIM)
         {
           // Make sure the timer is accurate.
-          (*mCPUTime.getRefresh())();
+          mCPUTime.calculateValue();
 
           CCopasiMessage(CCopasiMessage::WARNING, MCFitting + 13);
           return false;
@@ -1350,7 +1350,7 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
             C_FLOAT64 * pL = DeltaResidualDeltaParameter[l];
 
             for (j = 0; j < jmax; j++, ++pI, ++pL)
-              tmp += *pI * *pL;
+              tmp += *pI **pL;
 
             tmp *= 2.0;
 
@@ -1562,7 +1562,7 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
           CCopasiMessage(CCopasiMessage::WARNING, MCFitting + 12);
 
           // Make sure the timer is accurate.
-          (*mCPUTime.getRefresh())();
+          mCPUTime.calculateValue();
 
           return false;
         }
@@ -1616,7 +1616,7 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
           CCopasiMessage(CCopasiMessage::WARNING, MCFitting + 1, INFO);
 
           // Make sure the timer is accurate.
-          (*mCPUTime.getRefresh())();
+          mCPUTime.calculateValue();
 
           return false;
         }
@@ -1662,7 +1662,7 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
       calculate();
 
       // Make sure the timer is accurate.
-      (*mCPUTime.getRefresh())();
+      mCPUTime.calculateValue();
     }
 
   mStoreResults = false;

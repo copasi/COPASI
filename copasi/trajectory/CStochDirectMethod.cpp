@@ -421,7 +421,7 @@ bool CStochDirectMethod::checkRoots()
 
   for (; pRootFound != pRootFoundEnd; pRootValueOld++, pRootValueNew++, pRootFound++, pRootNonZero++)
     {
-      if (*pRootValueOld * *pRootValueNew < 0.0 ||
+      if (*pRootValueOld **pRootValueNew < 0.0 ||
           (*pRootValueNew == 0.0 && *pIsTimeDependent && !*pIsDiscrete))
         {
           // These root changes are not caused by the time alone as those are handled in do single step.
@@ -437,7 +437,7 @@ bool CStochDirectMethod::checkRoots()
         }
       else if (*pRootValueNew != 0.0 &&
                *pRootValueOld == 0.0 &&
-               *pRootValueNew * *pRootNonZero < 0.0)
+               *pRootValueNew **pRootNonZero < 0.0)
         {
           hasRoots = true;
           *pRootFound = CMath::ToggleInequality; // toggle only inequality
@@ -479,7 +479,7 @@ void CStochDirectMethod::stateChange(const CMath::StateChange & change)
       // Update the propensity
       for (; pPropensityObject != pPropensityObjectEnd; ++pPropensityObject, ++pAmu)
         {
-          pPropensityObject->calculate();
+          pPropensityObject->calculateValue();
           mA0 += *pAmu;
         }
 
@@ -505,7 +505,7 @@ C_FLOAT64 CStochDirectMethod::rootValue(const C_FLOAT64 & time)
   for (; pRoot != pRootEnd; ++pRoot, ++pRootOld, ++pRootNew)
     {
       // We are only looking for roots which change sign in [pOld, pNew]
-      if (*pRootOld * *pRootNew < 0)
+      if (*pRootOld **pRootNew < 0)
         {
           C_FLOAT64 RootValue = (*pRootNew > 0) ? *pRoot : -*pRoot;
 

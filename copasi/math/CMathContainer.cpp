@@ -670,7 +670,7 @@ void CMathContainer::applyInitialValues()
 
   for (; pTriggerObject != pTriggerObjectEnd; ++pTriggerObject)
     {
-      pTriggerObject->calculate();
+      pTriggerObject->calculateValue();
     }
 
   // Fire events which triggers are true and which may fire at the initial time
@@ -808,7 +808,7 @@ void CMathContainer::applyUpdateSequence(const CObjectInterface::UpdateSequence 
 
   for (; it != end; ++it)
     {
-      static_cast< CMathObject * >(*it)->calculate();
+      (*it)->calculateValue();
     }
 }
 
@@ -2519,7 +2519,7 @@ void CMathContainer::processRoots(const bool & equality,
 
   for (; pTrigger != pTriggerEnd; ++pTrigger)
     {
-      pTrigger->calculate();
+      pTrigger->calculateValue();
     }
 
   CVector< C_FLOAT64 > Before = mEventTriggers;
@@ -2544,7 +2544,7 @@ void CMathContainer::processRoots(const bool & equality,
 
   for (; pTrigger != pTriggerEnd; ++pTrigger)
     {
-      pTrigger->calculate();
+      pTrigger->calculateValue();
     }
 
   // Find out which events fire and add them to the process queue
@@ -2576,7 +2576,7 @@ void CMathContainer::processRoots(const CVector< C_INT > & rootsFound)
 
   for (; pTrigger != pTriggerEnd; ++pTrigger)
     {
-      pTrigger->calculate();
+      pTrigger->calculateValue();
     }
 
   CVector< C_FLOAT64 > Before = mEventTriggers;
@@ -2602,7 +2602,7 @@ void CMathContainer::processRoots(const CVector< C_INT > & rootsFound)
 
   for (; pTrigger != pTriggerEnd; ++pTrigger)
     {
-      pTrigger->calculate();
+      pTrigger->calculateValue();
     }
 
   // Find out which events fire and add them to the process queue

@@ -58,7 +58,7 @@ public:
 #if 1
   void exportObjectNodesFromModel(const CCopasiDataModel* pDataModel);
 
-  CCopasiObject* findObjectFromRefresh(const CCopasiObject * tmp, const Refresh* ref);
+  // CCopasiObject* findObjectFromRefresh(const CCopasiObject * tmp, const Refresh* ref);
 
   void exportSimulatedObject(const CCopasiObject * obj, const CCopasiDataModel* pDataModel);
 
