@@ -239,8 +239,8 @@ public:
    * Retrieve the parameter set
    * @return const CModelParameterSet & modelParameterSet
    */
-  const CModelParameterSet & getModelParameterSet() const;
-  CModelParameterSet & getModelParameterSet();
+  const CModelParameterSet & getActiveModelParameterSet() const;
+  CModelParameterSet & getActiveModelParameterSet();
 
   /**
    * Update the model initial values from the active parameter set.

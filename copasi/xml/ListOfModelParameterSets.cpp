@@ -1,4 +1,4 @@
-// Copyright (C) 2012 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -119,7 +119,7 @@ void CCopasiXMLParser::ListOfModelParameterSetsElement::end(const XML_Char *pszN
             {
               size_t Size = CCopasiMessage::size();
 
-              mCommon.pModel->getModelParameterSet().assignSetContent(*pModelParameterSet, false);
+              mCommon.pModel->getActiveModelParameterSet().assignSetContent(*pModelParameterSet, false);
               delete pModelParameterSet;
               mActiveSet = "";
 

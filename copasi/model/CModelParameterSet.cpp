@@ -225,7 +225,7 @@ bool CModelParameterSet::isActive() const
       return false;
     }
 
-  return (mpModel->getModelParameterSet().getKey() == mKey);
+  return (mpModel->getActiveModelParameterSet().getKey() == mKey);
 }
 
 void CModelParameterSet::assignSetContent(const CModelParameterSet & src,

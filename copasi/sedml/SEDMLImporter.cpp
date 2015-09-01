@@ -1,4 +1,4 @@
-// Copyright (C) 2013 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2013 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -924,7 +924,7 @@ CModel* SEDMLImporter::importFirstSBMLModel(CProcessReport* pImportHandler,
   // apply possible changes to the model
   if (sedmlModel != NULL && sedmlModel->getNumChanges() > 0)
     {
-      CModelParameterSet& set = mpCopasiModel->getModelParameterSet();
+      CModelParameterSet& set = mpCopasiModel->getActiveModelParameterSet();
       bool valueChanged = false;
 
       for (unsigned int i = 0; i < sedmlModel->getNumChanges(); ++i)

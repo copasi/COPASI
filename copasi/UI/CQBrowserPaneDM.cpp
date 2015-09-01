@@ -1,4 +1,4 @@
-// Copyright (C) 2011 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -313,7 +313,7 @@ void CQBrowserPaneDM::load()
   load(115); // Global Quantities
   load(116); // Events
 
-  findNodeFromId(118)->setKey(mpCopasiDM->getModel()->getModelParameterSet().getKey()); // Parameter Set
+  findNodeFromId(118)->setKey(mpCopasiDM->getModel()->getActiveModelParameterSet().getKey()); // Parameter Set
   findNodeFromId(119)->setKey(mpCopasiDM->getModel()->getKey());
   load(119); // Model Parameter Sets
 

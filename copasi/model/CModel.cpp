@@ -953,12 +953,12 @@ const CCopasiVectorN< CModelParameterSet > & CModel::getModelParameterSets() con
 CCopasiVectorN< CModelParameterSet > & CModel::getModelParameterSets()
 {return mParameterSets;}
 
-const CModelParameterSet & CModel::getModelParameterSet() const
+const CModelParameterSet & CModel::getActiveModelParameterSet() const
 {
   return mParameterSet;
 }
 
-CModelParameterSet & CModel::getModelParameterSet()
+CModelParameterSet & CModel::getActiveModelParameterSet()
 {
   return mParameterSet;
 }

@@ -1,4 +1,4 @@
-// Copyright (C) 2012 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -335,7 +335,7 @@ void CQParameterOverviewWidget::slotBtnNew()
         {
           if (SelectionList.indexOf(Name) == -1)
             {
-              CModelParameterSet * pNew = new CModelParameterSet(pModel->getModelParameterSet(), pModel, false);
+              CModelParameterSet * pNew = new CModelParameterSet(pModel->getActiveModelParameterSet(), pModel, false);
               pNew->setObjectName(TO_UTF8(Name));
               Sets.add(pNew, true);
 
@@ -345,7 +345,7 @@ void CQParameterOverviewWidget::slotBtnNew()
           else
             {
               CModelParameterSet * pExisting = Sets[TO_UTF8(Name)];
-              pExisting->assignSetContent(pModel->getModelParameterSet(), false);
+              pExisting->assignSetContent(pModel->getActiveModelParameterSet(), false);
 
               // Notify the GUI of the insert
               protectedNotify(ListViews::MODELPARAMETERSET, ListViews::CHANGE, pExisting->getKey());
@@ -390,7 +390,7 @@ void CQParameterOverviewWidget::slotBtnCopy()
       Name += TO_UTF8(QString::number(i));
     }
 
-  CModelParameterSet * pNew = new CModelParameterSet(pModel->getModelParameterSet(), pModel, false);
+  CModelParameterSet * pNew = new CModelParameterSet(pModel->getActiveModelParameterSet(), pModel, false);
   pNew->setObjectName(Name);
   Sets.add(pNew, true);
 

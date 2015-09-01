@@ -824,7 +824,7 @@ bool CCopasiXML::saveModel()
 
   // Save the model parameter sets
   Attributes.erase();
-  const CModelParameterSet * pSet = & mpModel->getModelParameterSet();
+  const CModelParameterSet * pSet = & mpModel->getActiveModelParameterSet();
   Attributes.add("activeSet", pSet->getKey());
 
   startSaveElement("ListOfModelParameterSets", Attributes);
@@ -833,7 +833,7 @@ bool CCopasiXML::saveModel()
   Attributes.add("key", "");
   Attributes.add("name", "");
 
-  pSet = & mpModel->getModelParameterSet();
+  pSet = & mpModel->getActiveModelParameterSet();
 
   Attributes.setValue(0, pSet->getKey());
   Attributes.setValue(1, pSet->getObjectName());

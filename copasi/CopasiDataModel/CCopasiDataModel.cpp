@@ -420,7 +420,7 @@ bool CCopasiDataModel::saveModel(const std::string & fileName, CProcessReport* p
       mData.pModel->compileIfNecessary(pProcessReport);
 
       // Assure that the parameter set reflects all changes made to the model.
-      mData.pModel->getModelParameterSet().refreshFromModel(false);
+      mData.pModel->getActiveModelParameterSet().refreshFromModel(false);
     }
 
   catch (...)
@@ -2128,7 +2128,7 @@ void CCopasiDataModel::commonAfterLoad(CProcessReport* pProcessReport,
 
 #endif
 
-  mData.pModel->getModelParameterSet().updateModel();
+  mData.pModel->getActiveModelParameterSet().updateModel();
 
   // We need to initialize all the task so that results are available
 
