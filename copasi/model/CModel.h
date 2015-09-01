@@ -144,20 +144,6 @@ public:
   void buildLinkZero();
 
   /**
-   *  Build the core of the link matrix L
-   *  @param const CMatrix< C_FLOAT64 > & LU
-   */
-  //void buildL(const CMatrix< C_FLOAT64 > & LU);
-
-#ifdef XXXX
-  /**
-   *  LU-Decomposition of the stoichiometry matrix
-   *  @param CMatrix< C_FLOAT64 > & LU
-   */
-  void lUDecomposition(CMatrix< C_FLOAT64 > & LU);
-#endif // XXXX
-
-  /**
    *  Build the Reduced Stoichiometry Matrix from the LU decomposition
    */
   void buildRedStoi();
@@ -210,7 +196,7 @@ public:
   size_t getNumODEMetabs() const;
 
   /**
-   *  Get the number of metabolites determined by assigments
+   *  Get the number of metabolites determined by assignments
    *  @return size_t dimension
    */
   size_t getNumAssignmentMetabs() const;
@@ -426,30 +412,6 @@ public:
    * Copy the current state value to the initial state
    */
   void stateToIntialState();
-
-  /**
-   * Calculates the jacobian of the full model for the current state
-   * and stores it in the provided matrix. calculateElasticityMatrix()
-   * needs to be called before.
-   * @param CMatrix< C_FLOAT64 > & jacobian
-   * @param const C_FLOAT64 & derivationFactor,
-   * @param const C_FLOAT64 & resolution
-   */
-  void calculateJacobian(CMatrix< C_FLOAT64 > & jacobian,
-                         const C_FLOAT64 & derivationFactor,
-                         const C_FLOAT64 & resolution);
-
-  /**
-   * Calculates the Jacobian of the reduced model for the current
-   * state and stores it in the provided matrix. calculateElasticityMatrix()
-   * needs to be called before.
-   * @param const C_FLOAT64 & derivationFactor,
-   * @param const C_FLOAT64 & resolution
-   * @param CMatrix< C_FLOAT64 > & jacobianX
-   */
-  void calculateJacobianX(CMatrix< C_FLOAT64 > & jacobianX,
-                          const C_FLOAT64 & derivationFactor,
-                          const C_FLOAT64 & resolution);
 
   /**
    * Set the unit for volumes. If COPASI recognizes

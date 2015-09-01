@@ -1330,22 +1330,6 @@ bool CModel::getUpdateSequence(CMathDependencyGraph & dependencyGraph,
   return true;
 }
 
-void CModel::calculateJacobian(CMatrix< C_FLOAT64 > & jacobian,
-                               const C_FLOAT64 & derivationFactor,
-                               const C_FLOAT64 & /* resolution */)
-{
-  mpMathContainer->fetchState();
-  mpMathContainer->calculateJacobian(jacobian, derivationFactor, false);
-}
-
-void CModel::calculateJacobianX(CMatrix< C_FLOAT64 > & jacobianX,
-                                const C_FLOAT64 & derivationFactor,
-                                const C_FLOAT64 & /* resolution */)
-{
-  mpMathContainer->fetchState();
-  mpMathContainer->calculateJacobian(jacobianX, derivationFactor, true);
-}
-
 bool CModel::setVolumeUnit(const std::string & name)
 {
   return setVolumeUnit(toEnum(name.c_str(), CUnit::VolumeUnitNames, CUnit::ml));

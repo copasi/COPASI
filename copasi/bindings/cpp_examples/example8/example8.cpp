@@ -18,6 +18,7 @@
 #include "copasi/model/CModel.h"
 #include "copasi/model/CState.h"
 #include "copasi/model/CModelValue.h"
+#include "copasi/math/CMathContainer.h"
 #include "copasi/utilities/CMatrix.h"
 
 const char* MODEL_STRING = \
@@ -153,7 +154,7 @@ int main()
       // it basically represents a relative delta value for the calculation of the derivatives
       // the third parameter termed resolution in the C++ API is currently ignores
       // so it does not matter what value you give here.
-      pModel->calculateJacobian(jacobian, 1e-12, 1.0);
+      pModel->getMathContainer().calculateJacobian(jacobian, 1e-12, false);
       // now we print the result
       // the jacobian stores the values in the order they are
       // given in the user order in the state template so it is not really straight
@@ -213,7 +214,8 @@ int main()
 
       // we can also calculate the jacobian of the reduced system
       // in a similar way
-      pModel->calculateJacobianX(jacobian, 1e-12, 1.0);
+      pModel->getMathContainer().calculateJacobian(jacobian, 1e-12, true);
+
       // this time generating the output is actually simpler because the rows
       // and columns are ordered in the same way as the independent variables of the state temple
       std::cout << std::endl << std::endl << "Reduced Jacobian Matrix:" << std::endl << std::endl;

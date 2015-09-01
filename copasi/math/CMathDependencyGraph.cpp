@@ -398,16 +398,12 @@ std::string CMathDependencyGraph::getDOTNodeId(const CObjectInterface * pObject)
 
       std::map< const CObjectInterface *, size_t >::const_iterator found = mObject2Index.find(pMathObject);
 
-      if (found != mObject2Index.end())
+      if (found == mObject2Index.end())
         {
-          os << "::"  << found->second;
+          found = mObject2Index.insert(std::make_pair(pMathObject, mObject2Index.size())).first;
         }
-      else
-        {
-          size_t Index = mObject2Index.size();
-          os << "::"  << Index;
-          mObject2Index[pMathObject] = Index;
-        }
+
+      os << "::"  << found->second;
 
       return os.str();
     }
