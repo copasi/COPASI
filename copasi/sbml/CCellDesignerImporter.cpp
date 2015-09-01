@@ -80,18 +80,18 @@
     result = false;\
     CCopasiMessage(CCopasiMessage::WARNING_FILTERED, str.str().c_str());\
   }\
-
+   
 #define COULD_NOT_CREATE(result)\
   {\
     FAIL_WITH_ERROR(result, "could not create element");\
   }\
-
+   
 #define FAIL_WITH_ERROR_AND_RETURN(result, message)\
   {\
     FAIL_WITH_ERROR(result, message);\
     return result;\
   }\
-
+   
 /**
  * Constructor that takes a pointer to an
  * SBMLDocument.
@@ -10843,57 +10843,104 @@ CCellDesignerImporter::cleanString(const std::string& text)
 
   // need to figure out how to replace unicode characters
   // probably would have to change to wstrings ...
-  /*
-  replaceStringInPlace(result, "_alpha_", "\u03B1");
-  replaceStringInPlace(result, "_Alpha_", "\u0391");
-  replaceStringInPlace(result, "_beta_", "\u03B2");
-  replaceStringInPlace(result, "_Beta_", "\u0392");
-  replaceStringInPlace(result, "_gamma_", "\u03B3");
-  replaceStringInPlace(result, "_Gamma_", "\u0393");
-  replaceStringInPlace(result, "_delta_", "\u03B4");
-  replaceStringInPlace(result, "_Delta_", "\u0394");
-  replaceStringInPlace(result, "_epsilon_", "\u03B5");
-  replaceStringInPlace(result, "_Epsilon_", "\u0395");
-  replaceStringInPlace(result, "_zeta_", "\u03B6");
-  replaceStringInPlace(result, "_Zeta_", "\u0396");
-  replaceStringInPlace(result, "_eta_", "\u03B7");
-  replaceStringInPlace(result, "_Eta_", "\u0397");
-  replaceStringInPlace(result, "_theta_", "\u03B8");
-  replaceStringInPlace(result, "_Theta_", "\u0398");
-  replaceStringInPlace(result, "_iota_", "\u03B9");
-  replaceStringInPlace(result, "_Iota_", "\u0399");
-  replaceStringInPlace(result, "_kappa_", "\u03BA");
-  replaceStringInPlace(result, "_Kappa_", "\u039A");
-  replaceStringInPlace(result, "_lambda_", "\u03BB");
-  replaceStringInPlace(result, "_Lambda_", "\u039B");
-  replaceStringInPlace(result, "_mu_", "\u03BC");
-  replaceStringInPlace(result, "_Mu_", "\u039C");
-  replaceStringInPlace(result, "_nu_", "\u03BD");
-  replaceStringInPlace(result, "_Nu_", "\u039D");
-  replaceStringInPlace(result, "_xi_", "\u03BE");
-  replaceStringInPlace(result, "_Xi_", "\u039E");
-  replaceStringInPlace(result, "_omicron_", "\u03BF");
-  replaceStringInPlace(result, "_Omicron_", "\u039F");
-  replaceStringInPlace(result, "_pi_", "\u03C0");
-  replaceStringInPlace(result, "_Pi_", "\u03A0");
-  replaceStringInPlace(result, "_rho_", "\u03C1");
-  replaceStringInPlace(result, "_Rho_", "\u03A1");
-  replaceStringInPlace(result, "_sigma_", "\u03C3");
-  replaceStringInPlace(result, "_Sigma_", "\u03A3");
-  replaceStringInPlace(result, "_tau_", "\u03C4");
-  replaceStringInPlace(result, "_Tau_", "\u03A4");
-  replaceStringInPlace(result, "_upsilon_", "\u03C5");
-  replaceStringInPlace(result, "_Upsilon_", "\u03A5");
-  replaceStringInPlace(result, "_phi_", "\u03C6");
-  replaceStringInPlace(result, "_Phi_", "\u03A6");
-  replaceStringInPlace(result, "_chi_", "\u03C7");
-  replaceStringInPlace(result, "_Chi_", "\u03A7");
-  replaceStringInPlace(result, "_psi_", "\u03C8");
-  replaceStringInPlace(result, "_Psi_", "\u03A8");
-  replaceStringInPlace(result, "_omega_", "\u03C9");
-  replaceStringInPlace(result, "_Omega_", "\u03A9");
 
-  */
+  replaceStringInPlace(result, "_alpha_", "_alpha");
+  replaceStringInPlace(result, "_Alpha_", "_Alpha");
+  replaceStringInPlace(result, "_beta_", "_beta");
+  replaceStringInPlace(result, "_Beta_", "_Beta");
+  replaceStringInPlace(result, "_gamma_", "_gamma");
+  replaceStringInPlace(result, "_Gamma_", "_Gamma");
+  replaceStringInPlace(result, "_delta_", "_delta");
+  replaceStringInPlace(result, "_Delta_", "_Delta");
+  replaceStringInPlace(result, "_epsilon_", "_epsilon");
+  replaceStringInPlace(result, "_Epsilon_", "_Epsilon");
+  replaceStringInPlace(result, "_zeta_", "_zeta");
+  replaceStringInPlace(result, "_Zeta_", "_Zeta");
+  replaceStringInPlace(result, "_eta_", "_eta");
+  replaceStringInPlace(result, "_Eta_", "_Eta");
+  replaceStringInPlace(result, "_theta_", "_theta");
+  replaceStringInPlace(result, "_Theta_", "_Theta");
+  replaceStringInPlace(result, "_iota_", "_iota");
+  replaceStringInPlace(result, "_Iota_", "_Iota");
+  replaceStringInPlace(result, "_kappa_", "_kappa");
+  replaceStringInPlace(result, "_Kappa_", "_Kappa");
+  replaceStringInPlace(result, "_lambda_", "_lambda");
+  replaceStringInPlace(result, "_Lambda_", "_Lambda");
+  replaceStringInPlace(result, "_mu_", "_mu");
+  replaceStringInPlace(result, "_Mu_", "_Mu");
+  replaceStringInPlace(result, "_nu_", "_nu");
+  replaceStringInPlace(result, "_Nu_", "_Nu");
+  replaceStringInPlace(result, "_xi_", "_xi");
+  replaceStringInPlace(result, "_Xi_", "_Xi");
+  replaceStringInPlace(result, "_omicron_", "_omicron");
+  replaceStringInPlace(result, "_Omicron_", "_Omicron");
+  replaceStringInPlace(result, "_pi_", "_pi");
+  replaceStringInPlace(result, "_Pi_", "_Pi");
+  replaceStringInPlace(result, "_rho_", "_rho");
+  replaceStringInPlace(result, "_Rho_", "_Rho");
+  replaceStringInPlace(result, "_sigma_", "_sigma");
+  replaceStringInPlace(result, "_Sigma_", "_Sigma");
+  replaceStringInPlace(result, "_tau_", "_tau");
+  replaceStringInPlace(result, "_Tau_", "_Tau");
+  replaceStringInPlace(result, "_upsilon_", "_upsilon");
+  replaceStringInPlace(result, "_Upsilon_", "_Upsilon");
+  replaceStringInPlace(result, "_phi_", "_phi");
+  replaceStringInPlace(result, "_Phi_", "_Phi");
+  replaceStringInPlace(result, "_chi_", "_chi");
+  replaceStringInPlace(result, "_Chi_", "_Chi");
+  replaceStringInPlace(result, "_psi_", "_psi");
+  replaceStringInPlace(result, "_Psi_", "_Psi");
+  replaceStringInPlace(result, "_omega_", "_omega");
+  replaceStringInPlace(result, "_Omega_", "_Omega");
+
+  replaceStringInPlace(result, "_alpha", "\xCE\xB1");
+  replaceStringInPlace(result, "_Alpha", "\xCE\x91");
+  replaceStringInPlace(result, "_beta", "\xCE\xB2");
+  replaceStringInPlace(result, "_Beta", "\xCE\x92");
+  replaceStringInPlace(result, "_gamma", "\xCE\xB3");
+  replaceStringInPlace(result, "_Gamma", "\xCE\x93");
+  replaceStringInPlace(result, "_delta", "\xCE\xB4");
+  replaceStringInPlace(result, "_Delta", "\xCE\x94");
+  replaceStringInPlace(result, "_epsilon", "\xCE\xB5");
+  replaceStringInPlace(result, "_Epsilon", "\xCE\x95");
+  replaceStringInPlace(result, "_zeta", "\xCE\xB6");
+  replaceStringInPlace(result, "_Zeta", "\xCE\x96");
+  replaceStringInPlace(result, "_eta", "\xCE\xB7");
+  replaceStringInPlace(result, "_Eta", "\xCE\x97");
+  replaceStringInPlace(result, "_theta", "\xCE\xB8");
+  replaceStringInPlace(result, "_Theta", "\xCE\x98");
+  replaceStringInPlace(result, "_iota", "\xCE\xB9");
+  replaceStringInPlace(result, "_Iota", "\xCE\x99");
+  replaceStringInPlace(result, "_kappa", "\xCE\xBA");
+  replaceStringInPlace(result, "_Kappa", "\xCE\x9A");
+  replaceStringInPlace(result, "_lambda", "\xCE\xBB");
+  replaceStringInPlace(result, "_Lambda", "\xCE\x9B");
+  replaceStringInPlace(result, "_mu", "\xCE\xBC");
+  replaceStringInPlace(result, "_Mu", "\xCE\x9C");
+  replaceStringInPlace(result, "_nu", "\xCE\xBD");
+  replaceStringInPlace(result, "_Nu", "\xCE\x9D");
+  replaceStringInPlace(result, "_xi", "\xCE\xBE");
+  replaceStringInPlace(result, "_Xi", "\xCE\x9E");
+  replaceStringInPlace(result, "_omicron", "\xCE\xBF");
+  replaceStringInPlace(result, "_Omicron", "\xCE\x9F");
+  replaceStringInPlace(result, "_pi", "\xCE\xC0");
+  replaceStringInPlace(result, "_Pi", "\xCE\xA0");
+  replaceStringInPlace(result, "_rho", "\xCE\xC1");
+  replaceStringInPlace(result, "_Rho", "\xCE\xA1");
+  replaceStringInPlace(result, "_sigma", "\xCE\xC3");
+  replaceStringInPlace(result, "_Sigma", "\xCE\xA3");
+  replaceStringInPlace(result, "_tau", "\xCE\xC4");
+  replaceStringInPlace(result, "_Tau", "\xCE\xA4");
+  replaceStringInPlace(result, "_upsilon", "\xCE\xC5");
+  replaceStringInPlace(result, "_Upsilon", "\xCE\xA5");
+  replaceStringInPlace(result, "_phi", "\xCE\xC6");
+  replaceStringInPlace(result, "_Phi", "\xCE\xA6");
+  replaceStringInPlace(result, "_chi", "\xCE\xC7");
+  replaceStringInPlace(result, "_Chi", "\xCE\xA7");
+  replaceStringInPlace(result, "_psi", "\xCE\xC8");
+  replaceStringInPlace(result, "_Psi", "\xCE\xA8");
+  replaceStringInPlace(result, "_omega", "\xCE\xC9");
+  replaceStringInPlace(result, "_Omega", "\xCE\xA9");
 
   return result;
 }

@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -1695,7 +1695,7 @@ RGTextureSpec* CQGLNetworkPainter::RG_createTextureForText(const std::string& te
   QPixmap pixmap(width, height);
   pixmap.fill(QColor(255, 255, 255));
   QGraphicsScene scene(0.0, 0.0, width, height);
-  QGraphicsTextItem* pTextItem = scene.addText(QString(text.c_str()), font);
+  QGraphicsTextItem* pTextItem = scene.addText(FROM_UTF8(text), font);
   pTextItem->setDefaultTextColor(QColor(0, 0, 0));
   // also move one to the right and one down to generate one column
   // and one row of transparent pixels
