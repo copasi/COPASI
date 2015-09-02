@@ -135,7 +135,6 @@ void CQModelWidget::save()
     {
       mpUndoStack = static_cast<CQCopasiApplication*>(qApp)
                     ->getMainWindow()->getUndoStack();
-      changed = true;
     }
 
   if (TO_UTF8(mpComboTimeUnit->currentText()) != mpModel->getTimeUnitName())

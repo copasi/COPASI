@@ -388,8 +388,9 @@ void CQNotes::save()
               pReportDefinition->setComment(PlainText);
             }
 
-          mChanged = true;
 #endif
+
+          mChanged = true;
         }
     }
 
