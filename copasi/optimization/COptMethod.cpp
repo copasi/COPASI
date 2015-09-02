@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -35,7 +35,6 @@ COptMethod::COptMethod(const CCopasiContainer * pParent,
   CCopasiMethod(pParent, methodType, taskType),
   mpOptProblem(NULL),
   mpParentTask(NULL),
-  mBounds(false),
   mContainerVariables(),
   mpOptItem(NULL),
   mpOptContraints(NULL)
@@ -46,7 +45,6 @@ COptMethod::COptMethod(const COptMethod & src,
   CCopasiMethod(src, pParent),
   mpOptProblem(src.mpOptProblem),
   mpParentTask(src.mpParentTask),
-  mBounds(src.mBounds),
   mContainerVariables(),
   mpOptItem(src.mpOptItem),
   mpOptContraints(src.mpOptContraints)
@@ -62,13 +60,6 @@ void COptMethod::setProblem(COptProblem * problem)
 {
   assert(problem);
   mpOptProblem = problem;
-}
-
-// Returns True if this method is capable of handling adjustable parameter boundary
-// constraints, False otherwise
-bool COptMethod::isBounded(void)
-{
-  return mBounds;
 }
 
 //virtual C_INT32 COptMethod::Optimise(C_FLOAT64 (*func) (void))

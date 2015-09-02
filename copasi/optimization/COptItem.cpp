@@ -53,7 +53,7 @@ COptItem::COptItem(const CCopasiContainer * pParent,
 
 COptItem::COptItem(const COptItem & src,
                    const CCopasiContainer * pParent):
-  CCopasiParameterGroup(src, (pParent != NULL) ? pParent : src.getObjectDataModel()),
+  CCopasiParameterGroup(src, (pParent != NULL) ? pParent : static_cast< const CCopasiContainer * >(src.getObjectDataModel())),
   mpParmObjectCN(NULL),
   mpParmLowerBound(NULL),
   mpParmUpperBound(NULL),
@@ -71,7 +71,7 @@ COptItem::COptItem(const COptItem & src,
 
 COptItem::COptItem(const CCopasiParameterGroup & group,
                    const CCopasiContainer * pParent):
-  CCopasiParameterGroup(group, (pParent != NULL) ? pParent : group.getObjectDataModel()),
+  CCopasiParameterGroup(group, (pParent != NULL) ? pParent : static_cast< const CCopasiContainer * >(group.getObjectDataModel())),
   mpParmObjectCN(NULL),
   mpParmLowerBound(NULL),
   mpParmUpperBound(NULL),
@@ -124,8 +124,16 @@ const CCopasiObjectName COptItem::getObjectCN() const
 
 std::string COptItem::getObjectDisplayName() const
 {
-  if (!mpObject && !const_cast<COptItem *>(this)->compile(CObjectInterface::ContainerList()))
-    return "Invalid Optimization Item";
+  if (mpObject == NULL)
+    {
+      const CCopasiObject * pObject = CObjectInterface::DataObject(getObjectFromCN(*mpParmObjectCN));
+
+      if (pObject != NULL &&
+          pObject->getValuePointer() != NULL)
+        return pObject->getObjectDisplayName();
+
+      return "Invalid Optimization Item";
+    }
 
   return mpObject->getObjectDisplayName();
 }
@@ -194,7 +202,7 @@ const C_FLOAT64 & COptItem::getStartValue() const
 
   if (mpObjectValue == NULL)
     {
-      const CCopasiObject * pObject = CObjectInterface::DataObject(getObjectFromCN(getObjectCN()));
+      const CCopasiObject * pObject = CObjectInterface::DataObject(getObjectFromCN(*mpParmObjectCN));
 
       if (pObject != NULL &&
           pObject->getValuePointer() != NULL)
@@ -298,7 +306,7 @@ bool COptItem::isValid() const
 {
   COptItem *pTmp = const_cast<COptItem *>(this);
 
-  if (!pTmp->setObjectCN(getObjectCN())) return false;
+  if (!pTmp->setObjectCN(*mpParmObjectCN)) return false;
 
   if (!pTmp->setLowerBound(getLowerBound())) return false;
 
@@ -326,14 +334,14 @@ bool COptItem::compile(CObjectInterface::ContainerList listOfContainer)
 
   listOfContainer.push_back(getObjectDataModel());
 
-  if ((mpObject = CObjectInterface::GetObjectFromCN(listOfContainer, getObjectCN())) != NULL &&
+  if ((mpObject = CObjectInterface::GetObjectFromCN(listOfContainer, *mpParmObjectCN)) != NULL &&
       (pDataObject = CObjectInterface::DataObject(mpObject)) != NULL &&
       pDataObject->isValueDbl())
     mpObjectValue = (C_FLOAT64 *) mpObject->getValuePointer();
 
   if (mpObjectValue == &NaN)
     {
-      CCopasiMessage(CCopasiMessage::ERROR, MCOptimization + 1, getObjectCN().c_str());
+      CCopasiMessage(CCopasiMessage::ERROR, MCOptimization + 1, mpParmObjectCN->c_str());
       success = false;
     }
   else

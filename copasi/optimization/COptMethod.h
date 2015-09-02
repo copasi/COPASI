@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -58,8 +58,6 @@ protected:
 
   COptTask * mpParentTask;
 
-  const bool mBounds;            // True if method accepts bounds on the parameters
-
   /**
    * A vector of pointers to the update methods for the optimization parameters
    */
@@ -115,13 +113,7 @@ public:
   virtual bool optimise();
 
   /**
-   * Returns True if this method is capable of handling adjustable parameter
-   * boundary constraints, False otherwise
-   */
-  bool isBounded(void);
-
-  /**
-   * Set the problem to be optmised
+   * Set the problem to be optimized
    * @param "COptProblem *" problem
    */
   void setProblem(COptProblem * problem);
