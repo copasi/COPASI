@@ -21,16 +21,16 @@
 
 #include "InsertGlobalQuantityRowsCommand.h"
 
-InsertGlobalQuantityRowsCommand::InsertGlobalQuantityRowsCommand(int position, int rows, CQGlobalQuantityDM *pGlobalQuantityDM, const QModelIndex&): CCopasiUndoCommand()
+InsertGlobalQuantityRowsCommand::InsertGlobalQuantityRowsCommand(int position, int rows, CQGlobalQuantityDM *pGlobalQuantityDM, const QModelIndex& index)
+  : CCopasiUndoCommand("Global Quantity", GLOBALQUANTITYINSERT)
+  , mpGlobalQuantityDM(pGlobalQuantityDM)
+  , mRows(rows)
+  , mPosition(position)
+  , mIndex(index)
+  , mpGlobalQuantityData(new UndoGlobalQuantityData())
+  , firstTime(true)
 {
-  mpGlobalQuantityDM = pGlobalQuantityDM;
-  mpGlobalQuantityData = new UndoGlobalQuantityData();
   this->setText(insertRowsText());
-  mRows = rows;
-  mPosition = position;
-  firstTime = true;
-  mType = GLOBALQUANTITYINSERT;
-  setEntityType("Global Quantity");
 }
 
 void InsertGlobalQuantityRowsCommand::redo()
@@ -69,7 +69,7 @@ void InsertGlobalQuantityRowsCommand::undo()
 
 QString InsertGlobalQuantityRowsCommand::insertRowsText() const
 {
-  return QObject::tr(": Inserted New Global Quantity");
+  return QObject::tr(": Inserted new global quantity");
 }
 
 UndoData *InsertGlobalQuantityRowsCommand::getUndoData() const
@@ -79,6 +79,5 @@ UndoData *InsertGlobalQuantityRowsCommand::getUndoData() const
 
 InsertGlobalQuantityRowsCommand::~InsertGlobalQuantityRowsCommand()
 {
-  // TODO Auto-generated destructor stub
   pdelete(mpGlobalQuantityData);
 }

@@ -14,22 +14,29 @@
 #include "report/CCopasiRootContainer.h"
 #include "model/CCompartment.h"
 #include "model/CModel.h"
+
+#include <utilities/CCopasiException.h>
+
 #include "CQCompartmentDM.h"
 
 #include "UndoCompartmentData.h"
 
 #include "InsertCompartmentRowsCommand.h"
 
-InsertCompartmentRowsCommand::InsertCompartmentRowsCommand(int position, int rows, CQCompartmentDM *pCompartmentDM, const QModelIndex&): CCopasiUndoCommand()
+InsertCompartmentRowsCommand::InsertCompartmentRowsCommand(
+  int position,
+  int rows,
+  CQCompartmentDM *pCompartmentDM,
+  const QModelIndex&)
+  : CCopasiUndoCommand("Compartment", COMPARTMENTINSERT)
+  , mpCompartmentDM(pCompartmentDM)
+  , mRows(rows)
+  , mPosition(position)
+  , mIndex()
+  , mpCompartmentData(new UndoCompartmentData())
+  , firstTime(true)
 {
-  mpCompartmentDM = pCompartmentDM;
-  mpCompartmentData = new UndoCompartmentData();
   this->setText(insertRowsText());
-  mRows = rows;
-  mPosition = position;
-  firstTime = true;
-  mType = COMPARTMENTINSERT;
-  setEntityType("Compartment");
 }
 
 void InsertCompartmentRowsCommand::redo()
@@ -61,14 +68,22 @@ void InsertCompartmentRowsCommand::redo()
 
 void InsertCompartmentRowsCommand::undo()
 {
-  mpCompartmentDM->deleteCompartmentRow(mpCompartmentData);
-  setUndoState(false);
-  setAction("Remove from list");
+  try
+    {
+      mpCompartmentDM->deleteCompartmentRow(mpCompartmentData);
+      setUndoState(false);
+      setAction("Remove from list");
+    }
+  catch (CCopasiException&)
+    {
+      // handle the case that the compartment does not
+      // exist that is to be removed
+    }
 }
 
 QString InsertCompartmentRowsCommand::insertRowsText() const
 {
-  return QObject::tr(": Inserted New Compartments");
+  return QObject::tr(": Inserted new compartment");
 }
 
 UndoData *InsertCompartmentRowsCommand::getUndoData() const
@@ -78,6 +93,5 @@ UndoData *InsertCompartmentRowsCommand::getUndoData() const
 
 InsertCompartmentRowsCommand::~InsertCompartmentRowsCommand()
 {
-  // TODO Auto-generated destructor stub
   pdelete(mpCompartmentData);
 }

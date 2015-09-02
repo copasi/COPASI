@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -194,8 +194,20 @@ bool CQReactionDM::setData(const QModelIndex &index, const QVariant &value,
 
   if (index.data() == value)
     return false;
+
+  bool defaultRow = isDefaultRow(index);
+
+  if (defaultRow)
+    {
+      int newRow = rowCount() - 1;
+      mpUndoStack->push(new InsertReactionRowsCommand(newRow, 1, this, QModelIndex()));
+      QModelIndex newIndex = createIndex(newRow, index.column(), Qt::DisplayRole);
+      mpUndoStack->push(new ReactionDataChangeCommand(newIndex, value, role, this));
+    }
   else
-    mpUndoStack->push(new ReactionDataChangeCommand(index, value, role, this));
+    {
+      mpUndoStack->push(new ReactionDataChangeCommand(index, value, role, this));
+    }
 
 #else
 
@@ -346,7 +358,7 @@ void CQReactionDM::setEquation(const CReaction *pRea, const QModelIndex& index, 
 bool CQReactionDM::insertRows(int position, int rows, const QModelIndex&)
 {
 #ifdef COPASI_UNDO
-  mpUndoStack->push(new insertReactionRowsCommand(position, rows, this, QModelIndex()));
+  mpUndoStack->push(new InsertReactionRowsCommand(position, rows, this, QModelIndex()));
 #else
   beginInsertRows(QModelIndex(), position, position + rows - 1);
 
@@ -473,7 +485,10 @@ bool CQReactionDM::reactionDataChange(const QModelIndex &index, const QVariant &
       CReaction *pRea = (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getReactions()[index.row()];
 
       if (index.column() == COL_NAME_REACTIONS)
-        pRea->setObjectName(TO_UTF8(value.toString()));
+        {
+          pRea->setObjectName(TO_UTF8(value.toString()));
+          emit notifyGUI(ListViews::REACTION, ListViews::RENAME, pRea->getKey());
+        }
       else if (index.column() == COL_EQUATION)
         {
           setEquation(pRea, index, value);

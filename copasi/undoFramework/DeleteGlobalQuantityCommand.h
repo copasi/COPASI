@@ -27,7 +27,7 @@ public:
   DeleteGlobalQuantityCommand(CQModelValue *pModelValue);
   void redo();
   void undo();
-  QString deleteGlobalQuantityText(std::string &name) const;
+  QString deleteGlobalQuantityText(const std::string &name) const;
 
   UndoData *getUndoData() const;
 

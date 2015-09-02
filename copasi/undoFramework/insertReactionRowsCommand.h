@@ -16,12 +16,15 @@
 #include "CCopasiUndoCommand.h"
 
 class UndoReactionData;
+class CQReactionDM;
+class CReaction;
+class CReactionInterface;
 
-class insertReactionRowsCommand: public CCopasiUndoCommand
+class InsertReactionRowsCommand: public CCopasiUndoCommand
 {
 public:
-  insertReactionRowsCommand(int position, int rows, CQReactionDM *pReactionDM, const QModelIndex&);
-  virtual ~insertReactionRowsCommand();
+  InsertReactionRowsCommand(int position, int rows, CQReactionDM *pReactionDM, const QModelIndex&);
+  virtual ~InsertReactionRowsCommand();
   void redo();
   void undo();
   QString insertRowsText() const;

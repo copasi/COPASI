@@ -34,11 +34,11 @@ CQEventDM::CQEventDM(QObject *parent)
 {
 }
 
-int CQEventDM::rowCount(const QModelIndex& C_UNUSED(parent)) const
+int CQEventDM::rowCount(const QModelIndex&) const
 {
   return (int)(*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getEvents().size() + 1;
 }
-int CQEventDM::columnCount(const QModelIndex& C_UNUSED(parent)) const
+int CQEventDM::columnCount(const QModelIndex&) const
 {
   return TOTAL_COLS_EVENTS;
 }
@@ -211,8 +211,20 @@ bool CQEventDM::setData(const QModelIndex &index, const QVariant &value,
 
   if (index.data() == value)
     return false;
+
+  bool defaultRow = isDefaultRow(index);
+
+  if (defaultRow)
+    {
+      int newRow = rowCount() - 1;
+      mpUndoStack->push(new InsertEventRowsCommand(newRow, 1, this, QModelIndex()));
+      QModelIndex newIndex = createIndex(newRow, index.column(), Qt::DisplayRole);
+      mpUndoStack->push(new EventDataChangeCommand(newIndex, value, role, this));
+    }
   else
-    mpUndoStack->push(new EventDataChangeCommand(index, value, role, this));
+    {
+      mpUndoStack->push(new EventDataChangeCommand(index, value, role, this));
+    }
 
 #else
 
@@ -407,10 +419,17 @@ void CQEventDM::deleteEventRow(UndoEventData *pEventData)
 {
   CModel * pModel = (*CCopasiRootContainer::getDatamodelList())[0]->getModel();
 
-  CEvent * pGQ = pModel->getEvents()[pEventData->getName()];
-  size_t index = pModel->getEvents().CCopasiVector< CEvent >::getIndex(pGQ);
-  removeRow((int) index);
+  size_t index = pModel->getEvents().getIndex(pEventData->getName());
+
+  if (index == C_INVALID_INDEX)
+    return;
+
+  // careful! need to first change the widget (as this will result in the
+  // event widget to save back its data in case it was active) ...
   emit changeWidget(116);
+
+  // only then can we safely delete this item
+  removeRow((int) index);
 }
 
 void CQEventDM::addEventRow(UndoEventData *pEventData)

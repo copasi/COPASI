@@ -19,17 +19,19 @@
 
 #include "SpecieDataChangeCommand.h"
 
-SpecieDataChangeCommand::SpecieDataChangeCommand(QModelIndex index, const QVariant value, int role, CQSpecieDM *pSpecieDM)
+SpecieDataChangeCommand::SpecieDataChangeCommand(
+  const QModelIndex& index,
+  const QVariant& value,
+  int role,
+  CQSpecieDM *pSpecieDM)
+  : CCopasiUndoCommand("Species", SPECIEDATACHANGE)
+  , mNew(value)
+  , mOld(index.data(Qt::DisplayRole))
+  , mIndex(index)
+  , mpSpecieDM(pSpecieDM)
+  , mRole(role)
+  , mPathIndex(pathFromIndex(index))
 {
-  // stores the data
-  mOld = index.data(Qt::DisplayRole);
-  mNew = value;
-  mpSpecieDM = pSpecieDM;
-  mIndex = index;
-  mRole = role;
-
-  mPathIndex = pathFromIndex(index);
-  this->setText(specieDataChangeText());
 
   //set the data for UNDO history
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
@@ -39,15 +41,13 @@ SpecieDataChangeCommand::SpecieDataChangeCommand(QModelIndex index, const QVaria
 
   if (pModel->getMetabolites().size() <= (size_t)index.row())
     {
-      // TODO: here you have the case of a new species added, that needs to be handled
-      //       otherwise it will crash, for now return
       return;
     }
 
   CMetab *pSpecies = pModel->getMetabolites()[index.row()];
-  mType = SPECIEDATACHANGE;
-  setEntityType("Species");
+
   setAction("Change");
+
   setName(pSpecies->getObjectName());
   setOldValue(TO_UTF8(mOld.toString()));
   setNewValue(TO_UTF8(mNew.toString()));
@@ -94,11 +94,12 @@ SpecieDataChangeCommand::SpecieDataChangeCommand(QModelIndex index, const QVaria
         setProperty("Initial Concentration");
         break;
     }
+
+  setText(specieDataChangeText());
 }
 
 SpecieDataChangeCommand::~SpecieDataChangeCommand()
 {
-  // TODO Auto-generated destructor stub
 }
 
 void SpecieDataChangeCommand::redo()
@@ -106,13 +107,16 @@ void SpecieDataChangeCommand::redo()
   mIndex = pathToIndex(mPathIndex, mpSpecieDM);
   mpSpecieDM->specieDataChange(mIndex, mNew, mRole);
 }
+
 void SpecieDataChangeCommand::undo()
 {
   mIndex = pathToIndex(mPathIndex, mpSpecieDM);
   mpSpecieDM->specieDataChange(mIndex, mOld, mRole);
   setAction("Undone change");
 }
+
 QString SpecieDataChangeCommand::specieDataChangeText() const
 {
-  return QObject::tr(": Changed Species Data");
+  return QString(": Changed species %1").arg(getProperty().c_str());
+  //QObject::tr(": Changed Species Data");
 }

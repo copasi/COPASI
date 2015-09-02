@@ -20,13 +20,14 @@
 #include "UndoReactionData.h"
 
 CreateNewReactionCommand::CreateNewReactionCommand(ReactionsWidget1 *pReactionWidget)
+  : CCopasiUndoCommand("Reaction", REACTIONCREATE)
+  , mpReactionWidget(pReactionWidget)
+  , mpReaction(NULL)
+  , mpReactionData(new UndoReactionData())
 {
-  mpReactionWidget = pReactionWidget;
-  mpReactionData = new UndoReactionData();
   this->setText(createNewReactionText());
-  mType = REACTIONCREATE;
-  setEntityType("Reaction");
 }
+
 void CreateNewReactionCommand::redo()
 {
   mpReactionWidget->createNewReaction();
@@ -50,9 +51,7 @@ void CreateNewReactionCommand::undo()
 
 QString CreateNewReactionCommand::createNewReactionText() const
 {
-  std::string myEntityName(": Create New Reaction ");
-  char* entityName = (char*)myEntityName.c_str();
-  return QObject::tr(entityName);
+  return QObject::tr(": Created new reaction ");
 }
 
 UndoData *CreateNewReactionCommand::getUndoData() const
@@ -62,6 +61,5 @@ UndoData *CreateNewReactionCommand::getUndoData() const
 
 CreateNewReactionCommand::~CreateNewReactionCommand()
 {
-  // TODO Auto-generated destructor stub
   pdelete(mpReactionData);
 }

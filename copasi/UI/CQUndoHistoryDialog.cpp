@@ -1,4 +1,4 @@
-// Copyright (C) 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2014 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -14,6 +14,8 @@
 #include <QItemDelegate>
 #include <QStandardItemModel>
 #include <QUndoStack>
+#include <QPushButton>
+#include <QDialogButtonBox>
 
 #include "CQMessageBox.h"
 #include "qtUtilities.h"
@@ -34,21 +36,19 @@
  */
 CQUndoHistoryDialog::CQUndoHistoryDialog(QWidget* parent, QUndoStack *undoStack, const char* name, bool modal, Qt::WindowFlags fl)
   : QDialog(parent, fl)
+  , mpUndoStack(undoStack)
+  , mNCol(6) //total number of UNDO History columns
+  , mpModel(new QStandardItemModel(mpUndoStack->count() + 1, mNCol, parent))
+  , mSelectedIndex(0)
 {
   setObjectName(QString::fromUtf8(name));
   setModal(modal);
   setupUi(this);
-  connect(closeButton, SIGNAL(clicked()), this, SLOT(closeButtonClicked()));
-  connect(undoButton, SIGNAL(clicked()), this, SLOT(undoButtonClicked()));
 
-  mpUndoStack = undoStack;
-  mNCol = 6; //total number of UNDO History column
-  mSelectedIndex = 0;
-// int count = mpUndoStack->count(); //number of command in unod stack
+  QPushButton* undo = new QPushButton("&Undo");
+  connect(undo, SIGNAL(clicked(bool)), this, SLOT(slotUndo()));
 
-  // Create a new model
-  // QStandardItemModel(int rows, int columns, QObject * parent = parent)
-  mpModel = new QStandardItemModel(mpUndoStack->count(), mNCol, parent);
+  buttonBox->addButton(undo, QDialogButtonBox::ActionRole);
 
   // attach the model to the view
   mpUndoHistoryView->setModel(mpModel);
@@ -60,51 +60,53 @@ CQUndoHistoryDialog::CQUndoHistoryDialog(QWidget* parent, QUndoStack *undoStack,
 CQUndoHistoryDialog::~CQUndoHistoryDialog()
 {
   pdelete(mpModel);
-  // no need to delete child widgets, Qt does it all
 }
 
-void CQUndoHistoryDialog::closeButtonClicked()
+void
+CQUndoHistoryDialog::slotUndo()
 {
+  QModelIndexList indexList = mpUndoHistoryView->selectionModel()->selectedRows();
+
+  if (indexList.isEmpty())
+    return;
+
+  int selectedRow = indexList.at(0).row();
+
+  int currentIndex = mpUndoStack->index();
+
+  if (selectedRow == currentIndex)
+    return;
+
+  if (selectedRow < currentIndex)
+    {
+
+      QMessageBox::StandardButton choice = CQMessageBox::question(this,
+                                           QString("Undo Actions"),
+                                           "Warning!! All actions up to the selected row will be undone, continue?",
+                                           QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
+
+      if (choice != QMessageBox::Yes)
+        return;
+    }
+  else
+    {
+      QMessageBox::StandardButton choice = CQMessageBox::question(this,
+                                           QString("Redo Actions"),
+                                           "Warning!! All actions up to the selected row will be redone, continue?",
+                                           QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
+
+      if (choice != QMessageBox::Yes)
+        return;
+    }
+
+  mpUndoStack->setIndex(selectedRow);
   close();
-}
-
-void CQUndoHistoryDialog::undoButtonClicked()
-{
-  //find the selected row
-  const QItemSelectionModel * pSelectionModel = mpUndoHistoryView->selectionModel();
-  size_t i, imax = mpModel->rowCount();
-  bool isRowSelected = false;
-
-  for (i = 0; i < imax; i++)
-    {
-      if (pSelectionModel->isRowSelected((int) i, QModelIndex()))
-        {
-          mSelectedIndex = i;
-          isRowSelected = true;
-        }
-    }
-
-  if (isRowSelected)
-    {
-      QString msg;
-      msg = "Warning!! All actions up to the selected row will be undone.";
-
-      QMessageBox::StandardButton choice = CQMessageBox::question(NULL, QString("Undo Actions"), msg, QMessageBox::Ok | QMessageBox::Cancel, QMessageBox::Ok);
-
-      if (choice == QMessageBox::Ok)
-        {
-          mpUndoStack->setIndex(mSelectedIndex);
-          close();
-          //generate new UNDO History data from undostack
-          //  generateUndoData(mpUndoStack, mpUndoStack->count(), mNCol);
-        }
-    }
 }
 
 void CQUndoHistoryDialog::generateUndoData(QUndoStack *undoStack, int commandCount, int nCol)
 {
   // set the table header data
-  for (int col = 0; col < nCol; col++)
+  for (int col = 0; col < nCol; ++col)
     {
       switch (col)
         {
@@ -134,13 +136,14 @@ void CQUndoHistoryDialog::generateUndoData(QUndoStack *undoStack, int commandCou
         }
     }
 
-  for (int row = 0; row < commandCount; row++)
+  for (int row = 0; row < commandCount; ++row)
     {
       const QUndoCommand *cmd = undoStack->command(row);
       const CCopasiUndoCommand *cCommand = dynamic_cast<const CCopasiUndoCommand*>(cmd);
-      // const UndoData *undoData =  cCommand->getUndoData();
 
-      for (int col = 0; col < 6; col++)
+      if (cCommand == NULL) continue;
+
+      for (int col = 0; col < 6; ++col)
         {
           QModelIndex index = mpModel->index(row, col, QModelIndex());
 
@@ -172,4 +175,6 @@ void CQUndoHistoryDialog::generateUndoData(QUndoStack *undoStack, int commandCou
             }
         }
     }
+
+  mpUndoHistoryView->selectRow(mpUndoStack->index());
 }

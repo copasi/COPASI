@@ -27,7 +27,7 @@ public:
   DeleteSpecieCommand(CQSpeciesDetail *pSpecieDetail);
   void redo();
   void undo();
-  QString deleteSpecieText(std::string &name) const;
+  QString deleteSpecieText(const std::string &name) const;
   UndoData *getUndoData() const;
 
   virtual ~DeleteSpecieCommand();

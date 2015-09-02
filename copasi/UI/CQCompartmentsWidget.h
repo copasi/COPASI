@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -53,7 +53,7 @@ protected slots:
   virtual void slotFilterChanged();
 
 #ifdef COPASI_UNDO
-  virtual void slotChangeWidget(const size_t & id);
+  virtual void slotChangeWidget(int id);
 #endif
 };
 

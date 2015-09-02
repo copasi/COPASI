@@ -23,26 +23,25 @@
 #include "UndoReactionData.h"
 #include "insertReactionRowsCommand.h"
 
-insertReactionRowsCommand::insertReactionRowsCommand(int position, int rows, CQReactionDM *pReactionDM, const QModelIndex&)
-  : CCopasiUndoCommand()
+InsertReactionRowsCommand::InsertReactionRowsCommand(int position, int rows, CQReactionDM *pReactionDM, const QModelIndex&)
+  : CCopasiUndoCommand("Reaction", REACTIONINSERT)
+  , mpReactionDM(pReactionDM)
+  , mRows(rows)
+  , mPosition(position)
+  , mpReaction(NULL)
   , mpRi(NULL)
-  , mpReactionData(NULL)
+  , mpReactionData(new UndoReactionData())
 
 {
-  mpReactionDM = pReactionDM;
   this->setText(insertRowsText());
-  mRows = rows;
-  mPosition = position;
-  mType = REACTIONINSERT;
-  setEntityType("Reaction");
 }
 
-insertReactionRowsCommand::~insertReactionRowsCommand()
+InsertReactionRowsCommand::~InsertReactionRowsCommand()
 {
-  // TODO Auto-generated destructor stub
+  pdelete(mpReactionData)
 }
 
-void insertReactionRowsCommand::redo()
+void InsertReactionRowsCommand::redo()
 {
   mpReactionDM->insertNewReactionRow(mPosition, mRows, QModelIndex());
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
@@ -53,36 +52,32 @@ void insertReactionRowsCommand::redo()
   mpReaction = pModel->getReactions()[mPosition];
   std::string sName = mpReaction->getObjectName();
 
-  if (mpReactionData != NULL)
-    mpReactionData->setName(sName);
+  mpReactionData->setName(sName);
 
   CReactionInterface* ri = new CReactionInterface((*CCopasiRootContainer::getDatamodelList())[0]->getModel());
   ri->initFromReaction(mpReaction);
 
-  if (mpReactionData != NULL)
-    mpReactionData->setRi(ri);
+  mpReactionData->setRi(ri);
 
   setUndoState(true);
   setAction("Add to list");
 
-  if (mpReactionData != NULL)
-    setName(mpReactionData->getName());
-  else setName(sName);
+  setName(sName);
 }
 
-void insertReactionRowsCommand::undo()
+void InsertReactionRowsCommand::undo()
 {
   mpReactionDM->deleteReactionRow(mpReaction);
   setUndoState(false);
   setAction("Remove from list");
 }
 
-QString insertReactionRowsCommand::insertRowsText() const
+QString InsertReactionRowsCommand::insertRowsText() const
 {
-  return QObject::tr(": Inserted New Reaction");
+  return QObject::tr(": Inserted new reaction");
 }
 
-UndoData *insertReactionRowsCommand::getUndoData() const
+UndoData *InsertReactionRowsCommand::getUndoData() const
 {
   return mpReactionData;
 }

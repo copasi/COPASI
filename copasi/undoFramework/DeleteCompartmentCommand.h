@@ -16,6 +16,7 @@
 #include "CCopasiUndoCommand.h"
 
 class UndoCompartmentData;
+class CQCompartment;
 
 class DeleteCompartmentCommand: public CCopasiUndoCommand
 {
@@ -23,7 +24,7 @@ public:
   DeleteCompartmentCommand(CQCompartment *pCompartment);
   void redo();
   void undo();
-  QString deleteCompartmentText(std::string &name) const;
+  QString deleteCompartmentText(const std::string &name) const;
   UndoData *getUndoData() const;
   virtual ~DeleteCompartmentCommand();
 

@@ -16,12 +16,11 @@
 #include "CreateNewEventCommand.h"
 
 CreateNewEventCommand::CreateNewEventCommand(CQEventWidget1 *pEventWidget)
+  : CCopasiUndoCommand("Event", EVENTCREATE)
+  , mpEventData(new UndoEventData())
+  , mpEventWidget(pEventWidget)
 {
-  mpEventWidget = pEventWidget;
-  mpEventData = new UndoEventData();
   this->setText(createNewEventText());
-  mType = EVENTCREATE;
-  setEntityType("Event");
 }
 void CreateNewEventCommand::redo()
 {
@@ -46,14 +45,11 @@ void CreateNewEventCommand::undo()
 
 QString CreateNewEventCommand::createNewEventText() const
 {
-  std::string myEntityName(": Create New Event ");
-  char* entityName = (char*)myEntityName.c_str();
-  return QObject::tr(entityName);
+  return QObject::tr(": Created new event ");
 }
 
 CreateNewEventCommand::~CreateNewEventCommand()
 {
-  // TODO Auto-generated destructor stub
   pdelete(mpEventData);
 }
 

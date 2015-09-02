@@ -16,35 +16,37 @@
 #include <QDebug>
 #include "qtUtilities.h"
 
-ReactionDataChangeCommand::ReactionDataChangeCommand(QModelIndex index, const QVariant value, int role, CQReactionDM *pReactionDM)
+ReactionDataChangeCommand::ReactionDataChangeCommand(
+  const QModelIndex& index,
+  const QVariant& value,
+  int role,
+  CQReactionDM *pReactionDM)
+  : CCopasiUndoCommand("Reaction", REACTIONDATACHANGE, "Change")
+  , mNew(value)
+  , mOld(index.data(Qt::DisplayRole))
+  , mIndex(index)
+  , mpReactionDM(pReactionDM)
+  , mRole(role)
+  , mPathIndex()
+  , mOldFunctionName()
+  , mNewFunctionName("")
 {
   // stores the data
-  mOld = index.data(Qt::DisplayRole);
-  mNew = value;
-  mpReactionDM = pReactionDM;
-  mIndex = index;
-  mRole = role;
+
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   CCopasiVectorNS < CReaction > &reactions = (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getReactions();
 
-  if (reactions.size() <= index.row())
+  if ((int)reactions.size() <= index.row())
     {
-      // TODO: here you have the case of a new reaction added, that you need to handle
-      //       otherwise it will crash, for now return
       return;
     }
 
   CReaction *pRea = reactions[index.row()];
   mOldFunctionName = FROM_UTF8(pRea->getFunction()->getObjectName());
-  mNewFunctionName = "";
 
   //mPathIndex = pathFromIndex(index);
-  this->setText(reactionDataChangeText());
 
   //set the data for UNDO history
-  mType = REACTIONDATACHANGE;
-  setEntityType("Reaction");
-  setAction("Change");
   setName(pRea->getObjectName());
   setOldValue(TO_UTF8(mOld.toString()));
   setNewValue(TO_UTF8(mNew.toString()));
@@ -63,11 +65,12 @@ ReactionDataChangeCommand::ReactionDataChangeCommand(QModelIndex index, const QV
         setProperty("Reaction");
         break;
     }
+
+  this->setText(reactionDataChangeText());
 }
 
 ReactionDataChangeCommand::~ReactionDataChangeCommand()
 {
-  // TODO Auto-generated destructor stub
 }
 
 void ReactionDataChangeCommand::redo()
@@ -82,5 +85,6 @@ void ReactionDataChangeCommand::undo()
 }
 QString ReactionDataChangeCommand::reactionDataChangeText() const
 {
-  return QObject::tr(": Changed Reaction Data");
+  return QString(": Changed reaction %1").arg(getProperty().c_str());
+  // QObject::tr(": Changed Reaction Data");
 }

@@ -20,16 +20,16 @@
 #include "EventDataChangeCommand.h"
 
 EventDataChangeCommand::EventDataChangeCommand(QModelIndex index, const QVariant value, int role, CQEventDM *pEventDM)
+  : CCopasiUndoCommand("Event", EVENTDATACHANGE, "Change")
+  , mNew(value)
+  , mOld(index.data(Qt::DisplayRole))
+  , mIndex(index)
+  , mpEventDM(pEventDM)
+  , mRole(role)
+  , mPathIndex()
 {
   // stores the data
-  mOld = index.data(Qt::DisplayRole);
-  mNew = value;
-  mpEventDM = pEventDM;
-  mIndex = index;
-  mRole = role;
-
   //mPathIndex = pathFromIndex(index);
-  this->setText(eventDataChangeText());
 
   //set the data for UNDO history
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
@@ -39,15 +39,10 @@ EventDataChangeCommand::EventDataChangeCommand(QModelIndex index, const QVariant
 
   if (pModel->getEvents().size() <= (size_t)index.row())
     {
-      // TODO: here you have the case of a new event added, that needs to be handled
-      //       otherwise it will crash, for now return
       return;
     }
 
   CEvent *pEvent = pModel->getEvents()[index.row()];
-  mType = EVENTDATACHANGE;
-  setEntityType("Event");
-  setAction("Change");
   setName(pEvent->getObjectName());
   setOldValue(TO_UTF8(mOld.toString()));
   setNewValue(TO_UTF8(mNew.toString()));
@@ -62,24 +57,28 @@ EventDataChangeCommand::EventDataChangeCommand(QModelIndex index, const QVariant
         setProperty("Name");
         break;
     }
+
+  this->setText(eventDataChangeText());
 }
 
 void EventDataChangeCommand::redo()
 {
   mpEventDM->eventDataChange(mIndex, mNew, mRole);
 }
+
 void EventDataChangeCommand::undo()
 {
   //mIndex = pathToIndex(mPathIndex, mpEventDM);
   mpEventDM->eventDataChange(mIndex, mOld, mRole);
   setAction("Undone change");
 }
+
 QString EventDataChangeCommand::eventDataChangeText() const
 {
-  return QObject::tr(": Changed Global Quantity Data");
+  return QString(": Changed event %1").arg(getProperty().c_str());
+  // QObject::tr(": Changed Global Quantity Data");
 }
 
 EventDataChangeCommand::~EventDataChangeCommand()
 {
-  // TODO Auto-generated destructor stub
 }

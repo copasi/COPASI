@@ -494,6 +494,11 @@ bool CQEventWidget1::enterProtected()
 /*! The slot to be done before leaving the active event widget */
 bool CQEventWidget1::leave()
 {
+  // no saving if the dialog is not visible right now
+  // (the changes would already have been saved the last time
+  // it was visible and the pane was left)
+  if (!isVisible()) return true;
+
   saveToEvent();
 
   return true;

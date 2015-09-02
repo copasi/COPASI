@@ -21,14 +21,14 @@
 #include "DeleteEventCommand.h"
 
 DeleteEventCommand::DeleteEventCommand(CQEventWidget1 *pEVentWidget1)
+  : CCopasiUndoCommand("Event", EVENTDELETE)
+  , mFirstTime(true)
+  , mpEventData(new UndoEventData())
+  , mpEVentWidget1(pEVentWidget1)
 {
-  mpEVentWidget1 = pEVentWidget1;
-  mFirstTime = true;
-  mpEventData = new UndoEventData();
-  std::string sName = mpEVentWidget1->mpEvent->getObjectName();
+
+  const std::string& sName = mpEVentWidget1->mpEvent->getObjectName();
   mpEventData->setName(sName);
-  mType = EVENTDELETE;
-  setEntityType("Event");
   setName(sName);
 
   CCopasiVector< CEventAssignment >::const_iterator it = mpEVentWidget1->mpEvent->getAssignments().begin();
@@ -73,11 +73,12 @@ void DeleteEventCommand::undo()
   setAction("Undelete");
 }
 
-QString DeleteEventCommand::deleteEventText(std::string &name) const
+QString DeleteEventCommand::deleteEventText(const std::string &name) const
 {
-  std::string myEntityName(": Delete Event " + name);
-  char* entityName = (char*)myEntityName.c_str();
-  return QObject::tr(entityName);
+//  std::string myEntityName(": Delete Event " + name);
+//  char* entityName = (char*)myEntityName.c_str();
+//  return QObject::tr(entityName);
+  return QString(": Deleted event %1").arg(name.c_str());
 }
 
 UndoData *DeleteEventCommand::getUndoData() const
@@ -87,6 +88,5 @@ UndoData *DeleteEventCommand::getUndoData() const
 
 DeleteEventCommand::~DeleteEventCommand()
 {
-  // TODO Auto-generated destructor stub
   pdelete(mpEventData);
 }

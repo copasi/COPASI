@@ -1,4 +1,4 @@
-// Copyright (C) 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2014 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -19,6 +19,8 @@
 
 class QStandardItemModel;
 class QUndoStack;
+class QAbstractButton;
+class QPushButton;
 
 class CQUndoHistoryDialog : public QDialog, public Ui::CQUndoHistoryDialog
 {
@@ -37,13 +39,12 @@ public:
   ~CQUndoHistoryDialog();
 
 public slots:
-  void closeButtonClicked();
-  void undoButtonClicked();
+  void slotUndo();
 
 private:
-  QStandardItemModel *mpModel;
   QUndoStack *mpUndoStack;
   int mNCol;
+  QStandardItemModel *mpModel;
   int mSelectedIndex;
 };
 

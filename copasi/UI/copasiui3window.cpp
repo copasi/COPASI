@@ -423,10 +423,17 @@ void CopasiUI3Window::createActions()
 
   //TODO UNDO framework
 #ifdef COPASI_UNDO
-  mpaUndo = new QAction(this);
-  mpaRedo = new QAction(this);
+  mpaUndo = mpUndoStack->createUndoAction(this);
+  mpaUndo->setShortcut(QKeySequence::Undo);
+  mpaRedo = mpUndoStack->createRedoAction(this);
+  mpaRedo->setShortcut(QKeySequence::Redo);
+
   mpaUndoHistory = new QAction("&Undo History", this);
   connect(mpaUndoHistory, SIGNAL(activated()), this, SLOT(slotUndoHistory()));
+
+  mpaClearUndoHistory = new QAction("&Clear Undo History", this);
+  connect(mpaClearUndoHistory, SIGNAL(activated()), this, SLOT(slotClearUndoHistory()));
+
 #endif
 
   mpaParameterEstimationResult = new QAction("Load Parameter Estimation Protocol", this);
@@ -584,9 +591,10 @@ void CopasiUI3Window::createMenuBar()
   //********** edit menu ************
 #ifdef COPASI_UNDO
   QMenu * pEditMenu = menuBar()->addMenu("&Edit");
-  pEditMenu->insertAction(mpaUndo, mpUndoStack->createUndoAction(this));
-  pEditMenu->insertAction(mpaRedo, mpUndoStack->createRedoAction(this));
+  pEditMenu->addAction(mpaUndo);
+  pEditMenu->addAction(mpaRedo);
   pEditMenu->addAction(mpaUndoHistory);
+  pEditMenu->addAction(mpaClearUndoHistory);
 #endif
 
   //****** tools menu **************
@@ -815,6 +823,10 @@ void CopasiUI3Window::newDoc()
 
   mSaveAsRequired = true;
   mCommitRequired = true;
+
+#ifdef COPASI_UNDO
+  mpUndoStack->clear();
+#endif
 }
 
 void CopasiUI3Window::openInitialDocument(const QString & file)
@@ -924,14 +936,15 @@ void CopasiUI3Window::slotFileOpen(QString file)
       connect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(slotFileOpenFinished(bool)));
       mpDataModelGUI->loadModel(TO_UTF8(newFile));
     }
-
-#ifdef COPASI_UNDO
-  mpUndoStack->clear();
-#endif
 }
 
 void CopasiUI3Window::slotFileOpenFinished(bool success)
 {
+
+#ifdef COPASI_UNDO
+  mpUndoStack->clear();
+#endif
+
   disconnect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(slotFileOpenFinished(bool)));
   unsetCursor();
   mCommitRequired = true;
@@ -1408,6 +1421,10 @@ void CopasiUI3Window::importSBMLFromString(const std::string& sbmlDocumentText)
 
 void CopasiUI3Window::slotImportSBMLFromStringFinished(bool success)
 {
+#ifdef COPASI_UNDO
+  mpUndoStack->clear();
+#endif
+
   disconnect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(slotImportSBMLFromStringFinished(bool)));
   unsetCursor();
   mCommitRequired = true;
@@ -1525,6 +1542,10 @@ void CopasiUI3Window::slotImportSBML(QString file)
 
 void CopasiUI3Window::slotImportSBMLFinished(bool success)
 {
+#ifdef COPASI_UNDO
+  mpUndoStack->clear();
+#endif
+
   disconnect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(slotImportSBMLFinished(bool)));
   unsetCursor();
   mCommitRequired = true;
@@ -1980,11 +2001,6 @@ void CopasiUI3Window::refreshRecentSBMLFileMenu()
       mpMenuRecentSBMLFiles->addAction(pAction);
       mRecentSBMLFilesActionMap[pAction] = Index;
     }
-
-  //clear the Undo stack
-#ifdef COPASI_UNDO
-  mpUndoStack->clear();
-#endif
 }
 
 void CopasiUI3Window::exportSBMLToString(std::string & SBML)
@@ -2894,6 +2910,11 @@ void CopasiUI3Window::slotFileExamplesSEDMLFiles(QString file)
 }
 void CopasiUI3Window::slotImportSEDMLFromStringFinished(bool success)
 {
+
+#ifdef COPASI_UNDO
+  mpUndoStack->clear();
+#endif
+
   disconnect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(slotImportSEDMLFromStringFinished(bool)));
   unsetCursor();
   mCommitRequired = true;
@@ -2940,6 +2961,11 @@ void CopasiUI3Window::slotImportSEDMLFromStringFinished(bool success)
 
 void CopasiUI3Window::slotImportSEDMLFinished(bool success)
 {
+
+#ifdef COPASI_UNDO
+  mpUndoStack->clear();
+#endif
+
   disconnect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(slotImportSEDMLFinished(bool)));
   unsetCursor();
   mCommitRequired = true;
@@ -3082,11 +3108,6 @@ void CopasiUI3Window::refreshRecentSEDMLFileMenu()
       mpMenuRecentSEDMLFiles->addAction(pAction);
       mRecentSEDMLFilesActionMap[pAction] = Index;
     }
-
-  //clear the Undo stack
-#ifdef COPASI_UNDO
-  mpUndoStack->clear();
-#endif
 }
 
 //TODO
@@ -3200,6 +3221,13 @@ void CopasiUI3Window::slotOpenRecentSEDMLFile(QAction * pAction)
 #endif
 
 #ifdef COPASI_UNDO
+
+void
+CopasiUI3Window::slotClearUndoHistory()
+{
+  mpUndoStack->clear();
+}
+
 void CopasiUI3Window::slotUndoHistory()
 {
   CQUndoHistoryDialog* undoDialog = new CQUndoHistoryDialog(this, mpUndoStack); //, "Undo History Dialog", 76, 30);

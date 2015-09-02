@@ -18,22 +18,27 @@
 
 #include "GlobalQuantityDataChangeCommand.h"
 
-GlobalQuantityDataChangeCommand::GlobalQuantityDataChangeCommand(QModelIndex index, const QVariant value, int role, CQGlobalQuantityDM *pGlobalQuantityDM)
+GlobalQuantityDataChangeCommand::GlobalQuantityDataChangeCommand(
+  const QModelIndex& index,
+  const QVariant& value,
+  int role,
+  CQGlobalQuantityDM *pGlobalQuantityDM)
+  : CCopasiUndoCommand("Global Quantity", GLOBALQUANTITYDATACHANGE, "Change")
+  , mNew(value)
+  , mOld(index.data(Qt::DisplayRole))
+  , mIndex(index)
+  , mpGlobalQuantityDM(pGlobalQuantityDM)
+  , mRole(role)
+  , mPathIndex()
 {
   // stores the data
-  mOld = index.data(Qt::DisplayRole);
-  mNew = value;
-  mpGlobalQuantityDM = pGlobalQuantityDM;
-  mIndex = index;
-  mRole = role;
+
+  if (mRole == COL_TYPE_GQ)
+    mOld = pGlobalQuantityDM->statusToIndex(mOld.toString());
 
   //mPathIndex = pathFromIndex(index);
-  this->setText(globalQuantityDataChangeText());
 
   //set the data for UNDO history
-  mType = GLOBALQUANTITYDATACHANGE;
-  setEntityType("Global Quantity");
-  setAction("Change");
   setOldValue(TO_UTF8(mOld.toString()));
   setNewValue(TO_UTF8(mNew.toString()));
 
@@ -71,6 +76,8 @@ GlobalQuantityDataChangeCommand::GlobalQuantityDataChangeCommand(QModelIndex ind
         setProperty("Initial Value");
         break;
     }
+
+  this->setText(globalQuantityDataChangeText());
 }
 
 void GlobalQuantityDataChangeCommand::redo()
@@ -91,10 +98,10 @@ void GlobalQuantityDataChangeCommand::undo()
 }
 QString GlobalQuantityDataChangeCommand::globalQuantityDataChangeText() const
 {
-  return QObject::tr(": Changed Global Quantity Data");
+  return QString(": Changed global quantity %1").arg(getProperty().c_str());
+  //QObject::tr(": Changed Global Quantity Data");
 }
 
 GlobalQuantityDataChangeCommand::~GlobalQuantityDataChangeCommand()
 {
-  // TODO Auto-generated destructor stub
 }

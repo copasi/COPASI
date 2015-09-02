@@ -1,4 +1,4 @@
-// Copyright (C) 2012 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -23,6 +23,7 @@ public:
   virtual bool event(QEvent * pEvent);
 
   void setMainWindow(CopasiUI3Window * pMainWindow);
+  CopasiUI3Window * getMainWindow();
 
 #ifdef COPASI_DEBUG
   bool notify(QObject *, QEvent *);

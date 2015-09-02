@@ -40,6 +40,7 @@
 #include "undoFramework/UndoCompartmentData.h"
 #include "undoFramework/UndoReactionData.h"
 #include "undoFramework/UndoSpecieData.h"
+#include <copasi/undoFramework/CompartmentChangeCommand.h>
 #include "copasiui3window.h"
 #endif
 
@@ -486,6 +487,111 @@ void CQCompartment::save()
 
   if (mpCompartment == NULL) return;
 
+#if COPASI_UNDO
+
+  mIgnoreUpdates = true;
+
+#ifdef COPASI_EXTUNIT
+
+  //Dimensionality
+  if ((C_INT32)mpCompartment->getDimensionality() != mpComboBoxDim->currentIndex()) //this makes assumptions about the order of entries in the combo box!
+    {
+      mpUndoStack->push(new CompartmentChangeCommand(
+                          CCopasiUndoCommand::COMPARTMENT_SPATIAL_DIMENSION_CHANGE,
+                          mpCompartment->getDimensionality(),
+                          mpComboBoxDim->currentIndex(),
+                          mpCompartment,
+                          this
+                        ));
+
+      mChanged = true;
+    }
+
+#endif
+
+  // Type
+  if (mpCompartment->getStatus() != (CModelEntity::Status) mItemToType[mpComboBoxType->currentIndex()])
+    {
+      mpUndoStack->push(new CompartmentChangeCommand(
+                          CCopasiUndoCommand::COMPARTMENT_SIMULATION_TYPE_CHANGE,
+                          (int)mpCompartment->getStatus(),
+                          mItemToType[mpComboBoxType->currentIndex()],
+                          mpCompartment,
+                          this
+                        ));
+      mChanged = true;
+    }
+
+  // Initial Volume
+  if (QString::number(mpCompartment->getInitialValue(), 'g', 10) != mpEditInitialVolume->text())
+    {
+      mpUndoStack->push(new CompartmentChangeCommand(
+                          CCopasiUndoCommand::COMPARTMENT_INITIAL_VOLUME_CHANGE,
+                          mpCompartment->getInitialValue(),
+                          mpEditInitialVolume->text().toDouble(),
+                          mpCompartment,
+                          this
+                        ));
+      mChanged = true;
+    }
+
+  // Expression
+  if (mpCompartment->getExpression() != mpExpressionEMW->mpExpressionWidget->getExpression())
+    {
+      mpUndoStack->push(new CompartmentChangeCommand(
+                          CCopasiUndoCommand::COMPARTMENT_EXPRESSION_CHANGE,
+                          FROM_UTF8(mpCompartment->getExpression()),
+                          FROM_UTF8(mpExpressionEMW->mpExpressionWidget->getExpression()),
+                          mpCompartment,
+                          this
+                        ));
+      mChanged = true;
+    }
+
+  // Initial Expression
+  if ((CModelEntity::Status) mItemToType[mpComboBoxType->currentIndex()] != CModelEntity::ASSIGNMENT)
+    {
+      if (mpBoxUseInitialExpression->isChecked() &&
+          mpCompartment->getInitialExpression() != mpInitialExpressionEMW->mpExpressionWidget->getExpression())
+        {
+          mpUndoStack->push(new CompartmentChangeCommand(
+                              CCopasiUndoCommand::COMPARTMENT_INITIAL_EXPRESSION_CHANGE,
+                              FROM_UTF8(mpCompartment->getInitialExpression()),
+                              FROM_UTF8(mpInitialExpressionEMW->mpExpressionWidget->getExpression()),
+                              mpCompartment,
+                              this,
+                              mpCompartment->getInitialValue()
+                            ));
+
+          mChanged = true;
+        }
+      else if (!mpBoxUseInitialExpression->isChecked() &&
+               mpCompartment->getInitialExpression() != "")
+        {
+          mpUndoStack->push(new CompartmentChangeCommand(
+                              CCopasiUndoCommand::COMPARTMENT_INITIAL_EXPRESSION_CHANGE,
+                              FROM_UTF8(mpCompartment->getInitialExpression()),
+                              QString(""),
+                              mpCompartment,
+                              this
+                            ));
+          mChanged = true;
+        }
+    }
+
+  mIgnoreUpdates = false;
+
+  if (mChanged)
+    {
+      assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+      (*CCopasiRootContainer::getDatamodelList())[0]->changed();
+      protectedNotify(ListViews::COMPARTMENT, ListViews::CHANGE, mKey);
+
+      load();
+    }
+
+#else
+
 #ifdef COPASI_EXTUNIT
 
   //Dimensionality
@@ -541,6 +647,8 @@ void CQCompartment::save()
       (*CCopasiRootContainer::getDatamodelList())[0]->changed();
       protectedNotify(ListViews::COMPARTMENT, ListViews::CHANGE, mKey);
     }
+
+#endif
 
   mChanged = false;
 }
@@ -745,8 +853,62 @@ void CQCompartment::addCompartment(UndoCompartmentData *pSData)
   mpListView->switchToOtherWidget(C_INVALID_INDEX, key);
 }
 
-void CQCompartment::CompartmentTypeChanged(int type)
+bool CQCompartment::changeValue(const std::string& key,
+                                CCopasiUndoCommand::Type type,
+                                const QVariant& newValue,
+                                double iValue)
 {
-  ; //TODO
+  if (!mIgnoreUpdates)
+    {
+      mKey = key;
+      mpObject = CCopasiRootContainer::getKeyFactory()->get(key);
+      mpCompartment = dynamic_cast<CCompartment*>(mpObject);
+      load();
+    }
+
+  mpListView->switchToOtherWidget(C_INVALID_INDEX, mKey);
+  qApp->processEvents();
+
+  switch (type)
+    {
+      case CCopasiUndoCommand::COMPARTMENT_EXPRESSION_CHANGE:
+        mpCompartment->setExpression(TO_UTF8(newValue.toString()));
+        break;
+
+      case CCopasiUndoCommand::COMPARTMENT_INITIAL_EXPRESSION_CHANGE:
+        mpCompartment->setInitialExpression(TO_UTF8(newValue.toString()));
+
+        if (newValue.toString().isEmpty())
+          {
+            mpCompartment->setInitialValue(iValue);
+          }
+
+        break;
+
+      case CCopasiUndoCommand::COMPARTMENT_INITIAL_VOLUME_CHANGE:
+        mpCompartment->setInitialValue(newValue.toDouble());
+        break;
+
+      case CCopasiUndoCommand::COMPARTMENT_SIMULATION_TYPE_CHANGE:
+        mpCompartment->setStatus((CModelEntity::Status)newValue.toInt());
+        break;
+
+      case CCopasiUndoCommand::COMPARTMENT_SPATIAL_DIMENSION_CHANGE:
+        mpCompartment->setDimensionality(newValue.toInt());
+        break;
+
+      default:
+        return false;
+    }
+
+  if (mIgnoreUpdates) return true;
+
+  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  (*CCopasiRootContainer::getDatamodelList())[0]->changed();
+  protectedNotify(ListViews::COMPARTMENT, ListViews::CHANGE, mKey);
+
+  load();
+
+  return true;
 }
 #endif

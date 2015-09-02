@@ -1,4 +1,4 @@
-// Copyright (C) 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2014 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -15,12 +15,19 @@
 
 #include "CCopasiUndoCommand.h"
 
+class CQGlobalQuantityDM;
 class GlobalQuantityDataChangeCommand: public CCopasiUndoCommand
 {
 public:
-  GlobalQuantityDataChangeCommand(QModelIndex index, const QVariant value, int role, CQGlobalQuantityDM *pGlobalQuantityDM);
+  GlobalQuantityDataChangeCommand(const QModelIndex& index,
+                                  const QVariant& value,
+                                  int role,
+                                  CQGlobalQuantityDM *pGlobalQuantityDM);
+  virtual ~GlobalQuantityDataChangeCommand();
+
   void redo();
   void undo();
+
   QString globalQuantityDataChangeText() const;
 
 private:
@@ -29,8 +36,6 @@ private:
   CQGlobalQuantityDM *mpGlobalQuantityDM;
   int mRole;
   Path mPathIndex;
-
-  virtual ~GlobalQuantityDataChangeCommand();
 };
 
 #endif /* GLOBALQUANTITYDATACHANGECOMMAND_H_ */

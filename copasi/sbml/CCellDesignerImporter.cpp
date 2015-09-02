@@ -13,6 +13,7 @@
 #include <limits>
 #include <cmath>
 #include <sstream>
+#include <string>
 #include <stdlib.h> // for strtod
 
 #define USE_LAYOUT 1
@@ -27,6 +28,7 @@
 #include <sbml/xml/XMLNode.h>
 #include <sbml/xml/XMLNamespaces.h>
 #include <sbml/xml/XMLAttributes.h>
+
 // layout classes
 #include <sbml/packages/layout/sbml/CompartmentGlyph.h>
 #include <sbml/packages/layout/sbml/CubicBezier.h>
@@ -62,10 +64,7 @@
 
 #include <copasi/utilities/CCopasiMessage.h>
 
-// TODO modifications are not imported yet
-
 // TODO set the role on species reference glyphs where possible, this is done on substrates and products already
-
 // TODO modifiers are missing
 
 // TODO deal with missing linkAnchor in a nicer way, e.g. find the closest
@@ -73,8 +72,6 @@
 
 // TODO import render information, e.g. start with color and font size
 // TODO since these should be easy
-
-// TODO label positions on compartments are not handled
 
 #define FAIL_WITH_ERROR(result, message)\
   {\
@@ -108,6 +105,7 @@ CCellDesignerImporter::CCellDesignerImporter(SBMLDocument* pDocument)
   , mpModel(NULL)
   , mpLayout(NULL)
   , mpLocalRenderInfo(NULL)
+  , mFont("Arial") //, mFont("serif")
 {
   setlocale(LC_ALL, "C");
   setSBMLDocument(pDocument);
@@ -791,231 +789,277 @@ bool CCellDesignerImporter::createSpeciesStyles()
 {
   bool result = true;
 
-  if (this->mpLocalRenderInfo != NULL)
+  if (this->mpLocalRenderInfo == NULL)
     {
-      // we go through the top level species which we can get from the dependency tree
-      // for each glyph we create a primitive depending on the class of the alias
-      // for the first implementation, all classes will be represented as boxes
-      // then we will recurse into the dependency tree and create primitives for the
-      // children
-      std::map<const SpeciesGlyph*, SpeciesAlias>::const_iterator glyphs_it = this->mSpeciesAliasMap.begin(), glyphs_endit = this->mSpeciesAliasMap.end();
-      std::list<CCopasiNode<std::string>*>::const_iterator dependency_it, dependency_endit;
+      FAIL_WITH_ERROR_AND_RETURN(result, "no reaction info");
+    }
 
-      while (glyphs_it != glyphs_endit)
+  // we go through the top level species which we can get from the dependency tree
+  // for each glyph we create a primitive depending on the class of the alias
+  // for the first implementation, all classes will be represented as boxes
+  // then we will recurse into the dependency tree and create primitives for the
+  // children
+  std::map<const SpeciesGlyph*, SpeciesAlias>::const_iterator glyphs_it = this->mSpeciesAliasMap.begin(), glyphs_endit = this->mSpeciesAliasMap.end();
+  std::list<CCopasiNode<std::string>*>::const_iterator dependency_it, dependency_endit;
+
+  while (glyphs_it != glyphs_endit)
+    {
+      std::map<std::string, SpeciesAnnotation>::const_iterator anno_pos = this->mSpeciesAnnotationMap.find(glyphs_it->second.mSpecies);
+
+      if (anno_pos != this->mSpeciesAnnotationMap.end() && glyphs_it->first != NULL && glyphs_it->second.mComplexSpeciesAlias.empty())
         {
-          std::map<std::string, SpeciesAnnotation>::const_iterator anno_pos = this->mSpeciesAnnotationMap.find(glyphs_it->second.mSpecies);
+          // find the alias in the dependency map.
+          dependency_it = this->mComplexDependencies.begin();
+          dependency_endit = this->mComplexDependencies.end();
 
-          if (anno_pos != this->mSpeciesAnnotationMap.end() && glyphs_it->first != NULL && glyphs_it->second.mComplexSpeciesAlias.empty())
+          while (dependency_it != dependency_endit)
             {
-              // find the alias in the dependency map.
-              dependency_it = this->mComplexDependencies.begin();
-              dependency_endit = this->mComplexDependencies.end();
-
-              while (dependency_it != dependency_endit)
+              if ((*dependency_it)->getData() == glyphs_it->second.mId)
                 {
-                  if ((*dependency_it)->getData() == glyphs_it->second.mId)
-                    {
-                      break;
-                    }
-
-                  ++dependency_it;
+                  break;
                 }
 
-              if (dependency_it != dependency_endit)
+              ++dependency_it;
+            }
+
+          if (dependency_it != dependency_endit)
+            {
+              // If we find it, we create a primitive and a text glyph
+              // and we create a style that contains all the children
+              const CCopasiNode<std::string>* pCurrent = *dependency_it;
+              assert(pCurrent != NULL);
+              std::string alias;
+              std::map<std::string, SpeciesAlias>::const_iterator alias_pos;
+              // create a style
+              std::string style_id = this->createUniqueId("ComplexSpeciesGlyphStyle");
+              LocalStyle* pStyle = this->mpLocalRenderInfo->createStyle(style_id);
+
+              if (pStyle != NULL)
                 {
-                  // If we find it, we create a primitive and a text glyph
-                  // and we create a style that contains all the children
-                  const CCopasiNode<std::string>* pCurrent = *dependency_it;
-                  assert(pCurrent != NULL);
-                  std::string alias;
-                  std::map<std::string, SpeciesAlias>::const_iterator alias_pos;
-                  // create a style
-                  std::string style_id = this->createUniqueId("ComplexSpeciesGlyphStyle");
-                  LocalStyle* pStyle = this->mpLocalRenderInfo->createStyle(style_id);
+                  pStyle->setId(style_id);
+                  this->mIdMap.insert(std::pair<std::string, const SBase*>(style_id, pStyle));
+                  // apply the style to the glyph
+                  pStyle->addId(glyphs_it->first->getId());
+                  RenderGroup* pGroup = pStyle->getGroup();
+                  assert(pGroup != NULL);
+                  // since children of aliases should stay within the bounds of their
+                  // parents, we add all children to the same group and assume
+                  // that no overlap will occur
+                  // this also allows us to traverse the tree depth first
+                  // instead of level for level
 
-                  if (pStyle != NULL)
+                  // all primitives we create should be relative to the glyphs bounding box
+                  // sine the CellDesigner annotation contains absolute values for
+                  // all coordinates, we need to subtract the species glyphs position
+                  Point offset(new LayoutPkgNamespaces(), -glyphs_it->first->getBoundingBox()->getPosition()->x(), -glyphs_it->first->getBoundingBox()->getPosition()->y());
+
+                  while (pCurrent != NULL)
                     {
-                      pStyle->setId(style_id);
-                      this->mIdMap.insert(std::pair<std::string, const SBase*>(style_id, pStyle));
-                      // apply the style to the glyph
-                      pStyle->addId(glyphs_it->first->getId());
-                      RenderGroup* pGroup = pStyle->getGroup();
-                      assert(pGroup != NULL);
-                      // since children of aliases should stay within the bounds of their
-                      // parents, we add all children to the same group and assume
-                      // that no overlap will occur
-                      // this also allows us to traverse the tree depth first
-                      // instead of level for level
+                      alias = pCurrent->getData();
+                      assert(!alias.empty());
+                      // find the corresponding SpeciesAlias entry
+                      alias_pos = this->mSpeciesAliases.find(alias);
+                      assert(alias_pos != this->mSpeciesAliases.end());
+                      bool is_included = false;
+                      std::map<std::string, std::pair<std::string, SpeciesIdentity> >::const_iterator nameMapPos;
 
-                      // all primitives we create should be relative to the glyphs bounding box
-                      // sine the CellDesigner annotation contains absolute values for
-                      // all coordinates, we need to subtract the species glyphs position
-                      Point offset(new LayoutPkgNamespaces(), -glyphs_it->first->getBoundingBox()->getPosition()->x(), -glyphs_it->first->getBoundingBox()->getPosition()->y());
-
-                      while (pCurrent != NULL)
+                      if (alias_pos != this->mSpeciesAliases.end())
                         {
-                          alias = pCurrent->getData();
-                          assert(!alias.empty());
-                          // find the corresponding SpeciesAlias entry
-                          alias_pos = this->mSpeciesAliases.find(alias);
-                          assert(alias_pos != this->mSpeciesAliases.end());
-                          bool is_included = false;
-                          std::map<std::string, std::pair<std::string, SpeciesIdentity> >::const_iterator nameMapPos;
+                          SpeciesAlias sa = alias_pos->second;
 
-                          if (alias_pos != this->mSpeciesAliases.end())
+                          // find the corresponding SpeciesAnnotation
+                          if (!sa.mSpecies.empty())
                             {
-                              SpeciesAlias sa = alias_pos->second;
+                              // create the primitive
+                              std::string color_id;
+                              result = this->findOrCreateColorDefinition(sa.mUView.mPaint, color_id);
+                              // if we are not on the root node, we need to add a text
+                              // element as well
+                              std::string text;
 
-                              // find the corresponding SpeciesAnnotation
-                              if (!sa.mSpecies.empty())
+                              if (result == true && pCurrent != *dependency_it)
                                 {
-                                  // create the primitive
-                                  std::string color_id;
-                                  result = this->findOrCreateColorDefinition(sa.mUView.mPaint.mColor, color_id);
-                                  // if we are not on the root node, we need to add a text
-                                  // element as well
-                                  std::string text;
+                                  // find and add text
+                                  const Species* pSpecies = mpModel->getSpecies(sa.mSpecies);
 
-                                  if (result == true && pCurrent != *dependency_it)
+                                  if (pSpecies == NULL)
                                     {
-                                      // find and add text
-                                      const Species* pSpecies = mpModel->getSpecies(sa.mSpecies);
+                                      // it is a CellDesignerSpecies
+                                      nameMapPos = this->mIncludedSpeciesNameMap.find(sa.mSpecies);
+                                      assert(nameMapPos != this->mIncludedSpeciesNameMap.end());
 
-                                      if (pSpecies == NULL)
+                                      if (nameMapPos != this->mIncludedSpeciesNameMap.end())
                                         {
-                                          // it is a CellDesignerSpecies
-                                          nameMapPos = this->mIncludedSpeciesNameMap.find(sa.mSpecies);
-                                          assert(nameMapPos != this->mIncludedSpeciesNameMap.end());
-
-                                          if (nameMapPos != this->mIncludedSpeciesNameMap.end())
-                                            {
-                                              text = nameMapPos->second.first;
-                                              is_included = true;
-                                            }
-                                        }
-                                      else
-                                        {
-                                          text = pSpecies->getName();
+                                          text = nameMapPos->second.first;
+                                          is_included = true;
                                         }
                                     }
-
-                                  if (result == true)
+                                  else
                                     {
-                                      if (is_included)
-                                        {
-                                          // the identity should be stored in the mIncludedSpeciesNameMap
-                                          result = CCellDesignerImporter::createPrimitive(pGroup, nameMapPos->second.second, alias_pos->second.mBounds, offset, 1.0, "#000000", color_id, text);
-                                        }
-                                      else
-                                        {
-                                          // the identity should be stored in the SpeciesAnnotationMap
-                                          // The mSpeciesAnnotationMap uses the id of an SBML species as the key
-                                          anno_pos = this->mSpeciesAnnotationMap.find(sa.mSpecies);
-                                          assert(anno_pos != this->mSpeciesAnnotationMap.end());
-
-                                          if (anno_pos != this->mSpeciesAnnotationMap.end())
-                                            {
-                                              result = CCellDesignerImporter::createPrimitive(pGroup, anno_pos->second.mIdentity, alias_pos->second.mBounds, offset, 1.0, "#000000", color_id, text);
-                                            }
-                                          else
-                                            {
-                                              FAIL_WITH_ERROR(result,  "species annotation not found.");
-                                            }
-                                        }
+                                      text = pSpecies->getName();
                                     }
-
-                                  // TODO gradients are currently not considered
                                 }
-                              else
+
+                              if (result == true)
                                 {
-                                  FAIL_WITH_ERROR(result, "species alias empty.");
+                                  if (is_included)
+                                    {
+                                      // the identity should be stored in the mIncludedSpeciesNameMap
+                                      result = CCellDesignerImporter::createPrimitive(pGroup,
+                                               nameMapPos->second.second,
+                                               alias_pos->second.mBounds,
+                                               offset,
+                                               sa.mUView.mLineWidth,
+                                               "#000000",
+                                               color_id,
+                                               text);
+                                    }
+                                  else
+                                    {
+                                      // the identity should be stored in the SpeciesAnnotationMap
+                                      // The mSpeciesAnnotationMap uses the id of an SBML species as the key
+                                      anno_pos = this->mSpeciesAnnotationMap.find(sa.mSpecies);
+                                      assert(anno_pos != this->mSpeciesAnnotationMap.end());
+
+                                      if (anno_pos != this->mSpeciesAnnotationMap.end())
+                                        {
+                                          result = CCellDesignerImporter::createPrimitive(pGroup,
+                                                   anno_pos->second.mIdentity,
+                                                   alias_pos->second.mBounds,
+                                                   offset,
+                                                   sa.mUView.mLineWidth,
+                                                   "#000000",
+                                                   color_id,
+                                                   text);
+                                        }
+                                      else
+                                        {
+                                          FAIL_WITH_ERROR(result,  "species annotation not found.");
+                                        }
+                                    }
                                 }
                             }
                           else
                             {
-                              FAIL_WITH_ERROR(result, "no species aliases found.");
-                            }
-
-                          pCurrent = pCurrent->getNext();
-                        }
-                    }
-                  else
-                    {
-                      COULD_NOT_CREATE(result);
-                    }
-                }
-              else
-                {
-                  // if it is not a root element in there, and if it
-                  // does not have the mComplexSpeciesSpeciesAlias attribute set
-                  // we assume it is a top level species and create a primitive
-                  std::string style_id = this->createUniqueId("SpeciesGlyphStyle");
-                  LocalStyle* pStyle = this->mpLocalRenderInfo->createStyle(style_id);
-                  assert(pStyle != NULL);
-
-                  if (pStyle != NULL)
-                    {
-                      pStyle->setId(style_id);
-                      // apply it to the glyph
-                      pStyle->addId(glyphs_it->first->getId());
-                      this->mIdMap.insert(std::pair<std::string, const SBase*>(style_id, pStyle));
-
-                      // find the identity for the species alias
-                      if (!glyphs_it->second.mSpecies.empty())
-                        {
-                          std::map<std::string, SpeciesAnnotation>::const_iterator anno_pos = this->mSpeciesAnnotationMap.find(glyphs_it->second.mSpecies);
-
-                          if (anno_pos != this->mSpeciesAnnotationMap.end())
-                            {
-                              assert(pStyle->getGroup() != NULL);
-
-                              if (pStyle->getGroup() != NULL)
-                                {
-                                  // all positions within the style should be relative
-                                  // to the glyphs bounding box, so we need to subtract
-                                  // the position of the glyphs bounding box from
-                                  // all coordinates in the style
-                                  std::string color_id;
-                                  result = this->findOrCreateColorDefinition(glyphs_it->second.mUView.mPaint.mColor, color_id);
-
-                                  if (result == true)
-                                    {
-                                      result = CCellDesignerImporter::createPrimitive(pStyle->getGroup(), anno_pos->second.mIdentity, glyphs_it->second.mBounds, Point(new LayoutPkgNamespaces(), -glyphs_it->first->getBoundingBox()->getPosition()->x(), -glyphs_it->first->getBoundingBox()->getPosition()->y()), 1.0, "#000000", color_id);
-                                    }
-
-                                  // TODO gradients are currently not considered
-                                }
-                              else
-                                {
-                                  FAIL_WITH_ERROR(result, "style group is NULL");
-                                }
-                            }
-                          else
-                            {
-                              FAIL_WITH_ERROR(result, "could not find species annotation for " << glyphs_it->second.mSpecies);
+                              FAIL_WITH_ERROR(result, "species alias empty.");
                             }
                         }
                       else
                         {
-                          FAIL_WITH_ERROR(result, "emtpy species annotation id");
+                          FAIL_WITH_ERROR(result, "no species aliases found.");
+                        }
+
+                      pCurrent = pCurrent->getNext();
+                    }
+                }
+              else
+                {
+                  COULD_NOT_CREATE(result);
+                }
+            }
+          else
+            {
+              // if it is not a root element in there, and if it
+              // does not have the mComplexSpeciesSpeciesAlias attribute set
+              // we assume it is a top level species and create a primitive
+              std::string style_id = this->createUniqueId("SpeciesGlyphStyle");
+              LocalStyle* pStyle = this->mpLocalRenderInfo->createStyle(style_id);
+              assert(pStyle != NULL);
+
+              if (pStyle != NULL)
+                {
+                  pStyle->setId(style_id);
+                  // apply it to the glyph
+                  pStyle->addId(glyphs_it->first->getId());
+                  this->mIdMap.insert(std::pair<std::string, const SBase*>(style_id, pStyle));
+
+                  // find the identity for the species alias
+                  if (!glyphs_it->second.mSpecies.empty())
+                    {
+                      std::map<std::string, SpeciesAnnotation>::const_iterator anno_pos = this->mSpeciesAnnotationMap.find(glyphs_it->second.mSpecies);
+
+                      if (anno_pos != this->mSpeciesAnnotationMap.end())
+                        {
+                          assert(pStyle->getGroup() != NULL);
+
+                          if (pStyle->getGroup() != NULL)
+                            {
+                              // all positions within the style should be relative
+                              // to the glyphs bounding box, so we need to subtract
+                              // the position of the glyphs bounding box from
+                              // all coordinates in the style
+                              std::string color_id;
+                              result = this->findOrCreateColorDefinition(glyphs_it->second.mUView.mPaint, color_id);
+
+                              if (result == true)
+                                {
+                                  result = CCellDesignerImporter::createPrimitive(pStyle->getGroup(),
+                                           anno_pos->second.mIdentity,
+                                           glyphs_it->second.mBounds,
+                                           Point(new LayoutPkgNamespaces(), -glyphs_it->first->getBoundingBox()->getPosition()->x(), -glyphs_it->first->getBoundingBox()->getPosition()->y()),
+                                           glyphs_it->second.mUView.mLineWidth,
+                                           "#000000",
+                                           color_id);
+                                }
+                            }
+                          else
+                            {
+                              FAIL_WITH_ERROR(result, "style group is NULL");
+                            }
+                        }
+                      else
+                        {
+                          FAIL_WITH_ERROR(result, "could not find species annotation for " << glyphs_it->second.mSpecies);
                         }
                     }
                   else
                     {
-                      COULD_NOT_CREATE(result);
+                      FAIL_WITH_ERROR(result, "emtpy species annotation id");
                     }
                 }
+              else
+                {
+                  COULD_NOT_CREATE(result);
+                }
             }
-
-          ++glyphs_it;
         }
-    }
-  else
-    {
-      FAIL_WITH_ERROR(result, "no reaction info");
+
+      ++glyphs_it;
     }
 
   return result;
+}
+
+double
+getAngleFrom(const std::vector<ProteinModification>& modifications, const std::string& id)
+{
+  std::vector<ProteinModification>::const_iterator it = modifications.begin();
+
+  while (it != modifications.end())
+    {
+      if (it->mId == id)
+        return it->mAngle;
+
+      ++it;
+    }
+
+  return 0;
+}
+
+SPECIES_MODIFICATION_TYPE
+getTypeFrom(const std::vector<SpeciesModification>& modifications, const std::string& id)
+{
+  std::vector<SpeciesModification>::const_iterator it = modifications.begin();
+
+  while (it != modifications.end())
+    {
+      if (it->mResidue == id)
+        return it->mType;
+
+      ++it;
+    }
+
+  return EMPTY_MOD_TYPE;
 }
 
 /**
@@ -1026,6 +1070,28 @@ bool CCellDesignerImporter::createSpeciesStyles()
  * If creation of the primitive fails, false is returned.
  *
  */
+bool CCellDesignerImporter::addProteinModifications(RenderGroup* pGroup,
+    const BoundingBox& bounds,
+    const std::vector<ProteinModification>& modifications,
+    const std::vector<SpeciesModification>& speciesModifications,
+    const std::string& stroke_color
+                                                   )
+{
+  bool result = true;
+  std::vector<ProteinModification>::const_iterator it = modifications.begin(), endit = modifications.end();
+
+  while (it != endit)
+    {
+      SPECIES_MODIFICATION_TYPE type = getTypeFrom(speciesModifications, it->mId);
+
+      result = this->createProteinModification(pGroup, type, bounds, stroke_color, it->mAngle);
+      assert(result == true);
+      ++it;
+    }
+
+  return result;
+}
+
 bool CCellDesignerImporter::createPrimitive(RenderGroup* pGroup,
     const SpeciesIdentity& si,
     const BoundingBox& bounds,
@@ -1033,213 +1099,225 @@ bool CCellDesignerImporter::createPrimitive(RenderGroup* pGroup,
     double stroke_width,
     const std::string& stroke_color,
     const std::string& fill_color,
-    const std::string& text
-                                           )
+    const std::string& text /* = "" */)
 {
   bool result = true;
+
+  std::vector<unsigned int> dashes;
+
+  if (si.mHypothetical)
+    {
+      dashes.push_back(5);
+      dashes.push_back(3);
+    }
 
   // maybe we should rule out all the SQUARE classes and the OVAL class
   // since they are probably only used for compartments
   // On the other hand, maybe we can use this method to create the primitives
   // for the compartments as well
-  if (pGroup != NULL &&
-      si.mSpeciesClass != UNDEFINED_CLASS
+  if (pGroup == NULL ||
+      si.mSpeciesClass == UNDEFINED_CLASS
      )
     {
-      // if it is a protein, find the specific type
-      SPECIES_CLASS cl = UNDEFINED_CLASS;
+      FAIL_WITH_ERROR_AND_RETURN(result, "group NULL, or class not defined.");
+    }
 
-      if (si.mSpeciesClass == PROTEIN_CLASS && !si.mNameOrReference.empty())
+  // if it is a protein, find the specific type
+  SPECIES_CLASS cl = UNDEFINED_CLASS;
+  std::vector<ProteinModification> modifications;
+
+  if (si.mSpeciesClass == PROTEIN_CLASS && !si.mNameOrReference.empty())
+    {
+      std::map<std::string, Protein>::const_iterator pos = this->mProteinInformationMap.find(si.mNameOrReference);
+
+      if (pos != this->mProteinInformationMap.end())
         {
-          std::map<std::string, Protein>::const_iterator pos = this->mProteinInformationMap.find(si.mNameOrReference);
-
-          if (pos != this->mProteinInformationMap.end())
-            {
-              cl = pos->second.mType;
-            }
+          cl = pos->second.mType;
+          modifications = pos->second.mModifications;
         }
-      else
-        {
-          cl = si.mSpeciesClass;
-        }
+    }
+  else
+    {
+      cl = si.mSpeciesClass;
+    }
 
-      switch (cl)
-        {
-          case ION_CLASS:
+  switch (cl)
+    {
+      case ION_CLASS:
+      {
+        double width = bounds.getDimensions()->getWidth();
+        double height = bounds.getDimensions()->getHeight();
+        double shortside = (width < height) ? width : height;
+        Ellipse* pEllipse = pGroup->createEllipse();
+        assert(pEllipse != NULL);
+
+        if (pEllipse != NULL)
+          {
+            pEllipse->setCX(RelAbsVector(offset.x() + bounds.getPosition()->x() + width * 0.5, 0.0));
+            pEllipse->setCY(RelAbsVector(offset.y() + bounds.getPosition()->y() + height * 0.5, 0.0));
+            pEllipse->setRX(RelAbsVector(shortside * 0.5, 0.0));
+            pEllipse->setRY(RelAbsVector(shortside * 0.5, 0.0));
+            pEllipse->setStrokeWidth(stroke_width);
+            pEllipse->setStroke(stroke_color);
+            pEllipse->setDashArray(dashes);
+            pEllipse->setFillColor(fill_color);
+          }
+        else
+          {
+            COULD_NOT_CREATE(result);
+          }
+      }
+      break;
+
+      case UNKNOWN_CLASS:
+        // unknown has no edge
+      {
+        Ellipse* pEllipse = pGroup->createEllipse();
+        assert(pEllipse != NULL);
+
+        if (pEllipse != NULL)
           {
             double width = bounds.getDimensions()->getWidth();
             double height = bounds.getDimensions()->getHeight();
-            double shortside = (width < height) ? width : height;
-            Ellipse* pEllipse = pGroup->createEllipse();
-            assert(pEllipse != NULL);
-
-            if (pEllipse != NULL)
-              {
-                pEllipse->setCX(RelAbsVector(offset.x() + bounds.getPosition()->x() + width * 0.5, 0.0));
-                pEllipse->setCY(RelAbsVector(offset.y() + bounds.getPosition()->y() + height * 0.5, 0.0));
-                pEllipse->setRX(RelAbsVector(shortside * 0.5, 0.0));
-                pEllipse->setRY(RelAbsVector(shortside * 0.5, 0.0));
-                pEllipse->setStrokeWidth(stroke_width);
-                pEllipse->setStroke(stroke_color);
-                pEllipse->setFillColor(fill_color);
-              }
-            else
-              {
-                COULD_NOT_CREATE(result);
-              }
+            pEllipse->setCX(RelAbsVector(offset.x() + bounds.getPosition()->x() + width * 0.5, 0.0));
+            pEllipse->setCY(RelAbsVector(offset.y() + bounds.getPosition()->y() + height * 0.5, 0.0));
+            pEllipse->setRX(RelAbsVector(bounds.getDimensions()->getWidth() * 0.5, 0.0));
+            pEllipse->setRY(RelAbsVector(bounds.getDimensions()->getHeight() * 0.5, 0.0));
+            pEllipse->setFillColor(fill_color);
           }
-          break;
-
-          case UNKNOWN_CLASS:
-            // unknown has no edge
+        else
           {
-            Ellipse* pEllipse = pGroup->createEllipse();
-            assert(pEllipse != NULL);
-
-            if (pEllipse != NULL)
-              {
-                double width = bounds.getDimensions()->getWidth();
-                double height = bounds.getDimensions()->getHeight();
-                pEllipse->setCX(RelAbsVector(offset.x() + bounds.getPosition()->x() + width * 0.5, 0.0));
-                pEllipse->setCY(RelAbsVector(offset.y() + bounds.getPosition()->y() + height * 0.5, 0.0));
-                pEllipse->setRX(RelAbsVector(bounds.getDimensions()->getWidth() * 0.5, 0.0));
-                pEllipse->setRY(RelAbsVector(bounds.getDimensions()->getHeight() * 0.5, 0.0));
-                pEllipse->setFillColor(fill_color);
-              }
-            else
-              {
-                COULD_NOT_CREATE(result);
-              }
+            COULD_NOT_CREATE(result);
           }
-          break;
+      }
+      break;
 
-          case DRUG_CLASS:
-            // actually drug is a rectangle with rounded sides
+      case DRUG_CLASS:
+        // actually drug is a rectangle with rounded sides
+      {
+        // create two circles with radius height/2 at 10%,50% and 90%,50%
+        // both have a fill and a black edge with stroke width 1
+        double width = bounds.getDimensions()->getWidth();
+        double height = bounds.getDimensions()->getHeight();
+
+        // outer rectangle
+        Rectangle* pRectangle = pGroup->createRectangle();
+        assert(pRectangle != NULL);
+
+        if (pRectangle != NULL)
           {
-            // create two circles with radius height/2 at 10%,50% and 90%,50%
-            // both have a fill and a black edge with stroke width 1
+            pRectangle->setX(RelAbsVector(offset.x() + bounds.getPosition()->x(), 0.0));
+            pRectangle->setY(RelAbsVector(offset.y() + bounds.getPosition()->y(), 0.0));
+            pRectangle->setRadiusX(RelAbsVector(height * 0.5, 0.0));
+            pRectangle->setRadiusY(RelAbsVector(height * 0.5, 0.0));
+            pRectangle->setWidth(RelAbsVector(width, 0.0));
+            pRectangle->setHeight(RelAbsVector(height, 0.0));
+
+            pRectangle->setStrokeWidth(stroke_width);
+            pRectangle->setStroke(stroke_color);
+            pRectangle->setDashArray(dashes);
+            pRectangle->setFillColor(fill_color);
+          }
+        else
+          {
+            COULD_NOT_CREATE(result);
+          }
+
+        // inner rectangle
+        pRectangle = pGroup->createRectangle();
+        assert(pRectangle != NULL);
+
+        if (pRectangle != NULL)
+          {
+            pRectangle->setX(RelAbsVector(offset.x() + bounds.getPosition()->x() + 5, 0.0));
+            pRectangle->setY(RelAbsVector(offset.y() + bounds.getPosition()->y() + 5, 0.0));
+            pRectangle->setRadiusX(RelAbsVector(height * 0.5 - 5, 0.0));
+            pRectangle->setRadiusY(RelAbsVector(height * 0.5 - 5, 0.0));
+            pRectangle->setWidth(RelAbsVector(width - 10, 0.0));
+            pRectangle->setHeight(RelAbsVector(height - 10, 0.0));
+
+            pRectangle->setStrokeWidth(stroke_width);
+            pRectangle->setStroke(stroke_color);
+            pRectangle->setDashArray(dashes);
+            pRectangle->setFillColor(fill_color);
+          }
+        else
+          {
+            COULD_NOT_CREATE(result);
+          }
+      }
+      break;
+
+      case SIMPLE_MOLECULE_CLASS:
+      {
+        Ellipse* pEllipse = pGroup->createEllipse();
+        assert(pEllipse != NULL);
+
+        if (pEllipse != NULL)
+          {
             double width = bounds.getDimensions()->getWidth();
             double height = bounds.getDimensions()->getHeight();
-
-            // outer rectangle
-            Rectangle* pRectangle = pGroup->createRectangle();
-            assert(pRectangle != NULL);
-
-            if (pRectangle != NULL)
-              {
-                pRectangle->setX(RelAbsVector(offset.x() + bounds.getPosition()->x(), 0.0));
-                pRectangle->setY(RelAbsVector(offset.y() + bounds.getPosition()->y(), 0.0));
-                pRectangle->setRadiusX(RelAbsVector(height * 0.5, 0.0));
-                pRectangle->setRadiusY(RelAbsVector(height * 0.5, 0.0));
-                pRectangle->setWidth(RelAbsVector(width, 0.0));
-                pRectangle->setHeight(RelAbsVector(height, 0.0));
-
-                pRectangle->setStrokeWidth(stroke_width);
-                pRectangle->setStroke(stroke_color);
-                pRectangle->setFillColor(fill_color);
-              }
-            else
-              {
-                COULD_NOT_CREATE(result);
-              }
-
-            // inner rectangle
-            pRectangle = pGroup->createRectangle();
-            assert(pRectangle != NULL);
-
-            if (pRectangle != NULL)
-              {
-                pRectangle->setX(RelAbsVector(offset.x() + bounds.getPosition()->x() + 5, 0.0));
-                pRectangle->setY(RelAbsVector(offset.y() + bounds.getPosition()->y() + 5, 0.0));
-                pRectangle->setRadiusX(RelAbsVector(height * 0.5 - 5, 0.0));
-                pRectangle->setRadiusY(RelAbsVector(height * 0.5 - 5, 0.0));
-                pRectangle->setWidth(RelAbsVector(width - 10, 0.0));
-                pRectangle->setHeight(RelAbsVector(height - 10, 0.0));
-
-                pRectangle->setStrokeWidth(stroke_width);
-                pRectangle->setStroke(stroke_color);
-                pRectangle->setFillColor(fill_color);
-              }
-            else
-              {
-                COULD_NOT_CREATE(result);
-              }
+            pEllipse->setCX(RelAbsVector(offset.x() + bounds.getPosition()->x() + width * 0.5, 0.0));
+            pEllipse->setCY(RelAbsVector(offset.y() + bounds.getPosition()->y() + height * 0.5, 0.0));
+            pEllipse->setRX(RelAbsVector(bounds.getDimensions()->getWidth() * 0.5, 0.0));
+            pEllipse->setRY(RelAbsVector(bounds.getDimensions()->getHeight() * 0.5, 0.0));
+            pEllipse->setStrokeWidth(stroke_width);
+            pEllipse->setStroke(stroke_color);
+            pEllipse->setDashArray(dashes);
+            pEllipse->setFillColor(fill_color);
           }
-          break;
-
-          case SIMPLE_MOLECULE_CLASS:
+        else
           {
-            Ellipse* pEllipse = pGroup->createEllipse();
-            assert(pEllipse != NULL);
-
-            if (pEllipse != NULL)
-              {
-                double width = bounds.getDimensions()->getWidth();
-                double height = bounds.getDimensions()->getHeight();
-                pEllipse->setCX(RelAbsVector(offset.x() + bounds.getPosition()->x() + width * 0.5, 0.0));
-                pEllipse->setCY(RelAbsVector(offset.y() + bounds.getPosition()->y() + height * 0.5, 0.0));
-                pEllipse->setRX(RelAbsVector(bounds.getDimensions()->getWidth() * 0.5, 0.0));
-                pEllipse->setRY(RelAbsVector(bounds.getDimensions()->getHeight() * 0.5, 0.0));
-                pEllipse->setStrokeWidth(stroke_width);
-                pEllipse->setStroke(stroke_color);
-                pEllipse->setFillColor(fill_color);
-              }
-            else
-              {
-                COULD_NOT_CREATE(result);
-              }
+            COULD_NOT_CREATE(result);
           }
-          break;
+      }
+      break;
 
-          case DEGRADED_CLASS:
+      case DEGRADED_CLASS:
+      {
+        Ellipse* pEllipse = pGroup->createEllipse();
+        assert(pEllipse != NULL);
+
+        if (pEllipse != NULL)
           {
-            Ellipse* pEllipse = pGroup->createEllipse();
-            assert(pEllipse != NULL);
+            double width = bounds.getDimensions()->getWidth();
+            double height = bounds.getDimensions()->getHeight();
+            pEllipse->setCX(RelAbsVector(offset.x() + bounds.getPosition()->x() + width * 0.5, 0.0));
+            pEllipse->setCY(RelAbsVector(offset.y() + bounds.getPosition()->y() + height * 0.5, 0.0));
+            double short_side = (width > height) ? height : width;
+            pEllipse->setRX(RelAbsVector(short_side * 0.35, 0.0));
+            pEllipse->setRY(RelAbsVector(short_side * 0.35, 0.0));
+            pEllipse->setStrokeWidth(stroke_width);
+            pEllipse->setStroke(stroke_color);
+            pEllipse->setDashArray(dashes);
+            pEllipse->setFillColor(fill_color);
+            RenderCurve* pCurve = pGroup->createCurve();
+            assert(pCurve != NULL);
 
-            if (pEllipse != NULL)
+            if (pCurve != NULL)
               {
-                double width = bounds.getDimensions()->getWidth();
-                double height = bounds.getDimensions()->getHeight();
-                pEllipse->setCX(RelAbsVector(offset.x() + bounds.getPosition()->x() + width * 0.5, 0.0));
-                pEllipse->setCY(RelAbsVector(offset.y() + bounds.getPosition()->y() + height * 0.5, 0.0));
-                double short_side = (width > height) ? height : width;
-                pEllipse->setRX(RelAbsVector(short_side * 0.35, 0.0));
-                pEllipse->setRY(RelAbsVector(short_side * 0.35, 0.0));
-                pEllipse->setStrokeWidth(stroke_width);
-                pEllipse->setStroke(stroke_color);
-                pEllipse->setFillColor(fill_color);
-                RenderCurve* pCurve = pGroup->createCurve();
-                assert(pCurve != NULL);
+                pCurve->setStrokeWidth(2.0);
+                pCurve->setStroke("#000000FF");
+                RenderPoint* pP = pCurve->createPoint();
+                assert(pP != NULL);
 
-                if (pCurve != NULL)
+                if (pP != NULL)
                   {
-                    pCurve->setStrokeWidth(2.0);
-                    pCurve->setStroke("#000000FF");
-                    RenderPoint* pP = pCurve->createPoint();
+                    double xstart =
+                      offset.x() + bounds.getPosition()->x() + width * 0.5
+                      - short_side / 2;
+                    // xstart = (short_side - width) * 0.5;
+
+                    pP->setX(xstart);
+                    pP->setY((short_side - height) * 0.5 + short_side);
+                    pP = pCurve->createPoint();
                     assert(pP != NULL);
 
                     if (pP != NULL)
                       {
-                        double xstart =
-                          offset.x() + bounds.getPosition()->x() + width * 0.5
-                          - short_side / 2;
-                        // xstart = (short_side - width) * 0.5;
-
-                        pP->setX(xstart);
-                        pP->setY((short_side - height) * 0.5 + short_side);
-                        pP = pCurve->createPoint();
-                        assert(pP != NULL);
-
-                        if (pP != NULL)
-                          {
-                            pP->setX(xstart + short_side);
-                            //pP->setX((short_side - width) * 0.5 + short_side);
-                            pP->setY((short_side - height) * 0.5);
-                          }
-                        else
-                          {
-                            COULD_NOT_CREATE(result);
-                          }
+                        pP->setX(xstart + short_side);
+                        //pP->setX((short_side - width) * 0.5 + short_side);
+                        pP->setY((short_side - height) * 0.5);
                       }
                     else
                       {
@@ -1256,190 +1334,37 @@ bool CCellDesignerImporter::createPrimitive(RenderGroup* pGroup,
                 COULD_NOT_CREATE(result);
               }
           }
-          break;
-
-          case TRUNCATED_CLASS:
+        else
           {
-            // TODO the left corners should be rounded, but for now this is close enough
-            double width = bounds.getDimensions()->getWidth();
-            double height = bounds.getDimensions()->getHeight();
-            // we take a fixed radius for the rounded corners
-            double radius = 10.0;
-            Polygon* pPoly = pGroup->createPolygon();
-            assert(pPoly != NULL);
-
-            if (pPoly != NULL)
-              {
-                pPoly->setStrokeWidth(stroke_width);
-                pPoly->setStroke(stroke_color);
-                pPoly->setFillColor(fill_color);
-                RenderPoint* pP = pPoly->createPoint();
-                RenderCubicBezier* pCB = NULL;
-
-                if (pP != NULL)
-                  {
-                    pP->setX(RelAbsVector(radius, 0.0));
-                    pP->setY(RelAbsVector(0.0, 0.0));
-                  }
-                else
-                  {
-                    COULD_NOT_CREATE(result);
-                  }
-
-                if (result == true)
-                  {
-                    pP = pPoly->createPoint();
-
-                    if (pP != NULL)
-                      {
-                        pP->setX(RelAbsVector(width, 0.0));
-                        pP->setY(RelAbsVector(0.0, 0.0));
-                      }
-                    else
-                      {
-                        COULD_NOT_CREATE(result);
-                      }
-                  }
-
-                if (result == true)
-                  {
-                    pP = pPoly->createPoint();
-
-                    if (pP != NULL)
-                      {
-                        pP->setX(RelAbsVector(width, 0.0));
-                        pP->setY(RelAbsVector(0.8 * height, 0.0));
-                      }
-                    else
-                      {
-                        COULD_NOT_CREATE(result);
-                      }
-                  }
-
-                if (result == true)
-                  {
-                    pP = pPoly->createPoint();
-
-                    if (pP != NULL)
-                      {
-                        pP->setX(RelAbsVector(0.8 * width, 0.0));
-                        pP->setY(RelAbsVector(0.5 * height, 0.0));
-                      }
-                    else
-                      {
-                        COULD_NOT_CREATE(result);
-                      }
-                  }
-
-                if (result == true)
-                  {
-                    pP = pPoly->createPoint();
-
-                    if (pP != NULL)
-                      {
-                        pP->setX(RelAbsVector(0.8 * width, 0.0));
-                        pP->setY(RelAbsVector(height, 0.0));
-                      }
-                    else
-                      {
-                        COULD_NOT_CREATE(result);
-                      }
-                  }
-
-                if (result == true)
-                  {
-                    pP = pPoly->createPoint();
-
-                    if (pP != NULL)
-                      {
-                        pP->setX(RelAbsVector(radius, 0.0));
-                        pP->setY(RelAbsVector(height, 0.0));
-                      }
-                    else
-                      {
-                        COULD_NOT_CREATE(result);
-                      }
-                  }
-
-                if (result == true)
-                  {
-                    pCB = pPoly->createCubicBezier();
-
-                    if (pCB != NULL)
-                      {
-                        pCB->setBasePoint1_X(RelAbsVector(0.0, 0.0));
-                        pCB->setBasePoint1_Y(RelAbsVector(height, 0.0));
-                        pCB->setBasePoint2_X(RelAbsVector(0.0, 0.0));
-                        pCB->setBasePoint2_Y(RelAbsVector(height, 0.0));
-                        pCB->setX(RelAbsVector(0.0, 0.0));
-                        pCB->setY(RelAbsVector(height - radius, 0.0));
-                      }
-                    else
-                      {
-                        COULD_NOT_CREATE(result);
-                      }
-                  }
-
-                if (result == true)
-                  {
-                    pP = pPoly->createPoint();
-
-                    if (pP != NULL)
-                      {
-                        pP->setX(RelAbsVector(0.0, 0.0));
-                        pP->setY(RelAbsVector(radius, 0.0));
-                      }
-                    else
-                      {
-                        COULD_NOT_CREATE(result);
-                      }
-                  }
-
-                if (result == true)
-                  {
-                    pCB = pPoly->createCubicBezier();
-
-                    if (pCB != NULL)
-                      {
-                        pCB->setBasePoint1_X(RelAbsVector(0.0, 0.0));
-                        pCB->setBasePoint1_Y(RelAbsVector(0.0, 0.0));
-                        pCB->setBasePoint2_X(RelAbsVector(0.0, 0.0));
-                        pCB->setBasePoint2_Y(RelAbsVector(0.0, 0.0));
-                        pCB->setX(RelAbsVector(radius, 0.0));
-                        pCB->setY(RelAbsVector(0.0, 0.0));
-                      }
-                    else
-                      {
-                        COULD_NOT_CREATE(result);
-                      }
-                  }
-              }
-            else
-              {
-                COULD_NOT_CREATE(result);
-              }
+            COULD_NOT_CREATE(result);
           }
-          break;
+      }
+      break;
 
-          case PROTEIN_CLASS:
-            // make a rectangle with rounded edges
+      case TRUNCATED_CLASS:
+      {
+        // TODO the left corners should be rounded, but for now this is close enough
+        double width = bounds.getDimensions()->getWidth();
+        double height = bounds.getDimensions()->getHeight();
+        // we take a fixed radius for the rounded corners
+        double radius = 10.0;
+        Polygon* pPoly = pGroup->createPolygon();
+        assert(pPoly != NULL);
+
+        if (pPoly != NULL)
           {
-            Rectangle* pRect = pGroup->createRectangle();
-            assert(pRect != NULL);
+            pPoly->setStrokeWidth(stroke_width);
+            pPoly->setStroke(stroke_color);
+            pPoly->setDashArray(dashes);
+            pPoly->setFillColor(fill_color);
+            RenderPoint* pP = pPoly->createPoint();
+            RenderCubicBezier* pCB = NULL;
 
-            if (pRect != NULL)
+            if (pP != NULL)
               {
-                pRect->setX(RelAbsVector(offset.x() + bounds.getPosition()->x(), 0.0));
-                pRect->setY(RelAbsVector(offset.y() + bounds.getPosition()->y(), 0.0));
-                pRect->setRadiusX(RelAbsVector(0.0, 10.0));
-                pRect->setRadiusY(RelAbsVector(0.0, 10.0));
-                pRect->setWidth(RelAbsVector(bounds.getDimensions()->getWidth(), 0.0));
-                pRect->setHeight(RelAbsVector(bounds.getDimensions()->getHeight(), 0.0));
-                pRect->setStrokeWidth(stroke_width);
-                pRect->setStroke(stroke_color);
-                pRect->setFillColor(fill_color);
+                pP->setX(RelAbsVector(radius, 0.0));
+                pP->setY(RelAbsVector(0.0, 0.0));
               }
-
             else
               {
                 COULD_NOT_CREATE(result);
@@ -1447,628 +1372,810 @@ bool CCellDesignerImporter::createPrimitive(RenderGroup* pGroup,
 
             if (result == true)
               {
-                // handle modifications
-                std::vector<SpeciesModification>::const_iterator it = si.mState.mModifications.begin(), endit = si.mState.mModifications.end();
-
-                while (it != endit)
-                  {
-                    result = this->createProteinModification(pGroup, *it, bounds, stroke_color);
-                    assert(result == true);
-                    ++it;
-                  }
-              }
-          }
-          break;
-
-          case PHENOTYPE_CLASS:
-          {
-            // we assume the width is larger
-            Polygon* pPoly = pGroup->createPolygon();
-            assert(pPoly != NULL);
-
-            if (pPoly != NULL)
-              {
-                pPoly->setStrokeWidth(stroke_width);
-                pPoly->setStroke(stroke_color);
-                pPoly->setFillColor(fill_color);
-                RenderPoint* pP = pPoly->createPoint();
+                pP = pPoly->createPoint();
 
                 if (pP != NULL)
                   {
+                    pP->setX(RelAbsVector(width, 0.0));
                     pP->setY(RelAbsVector(0.0, 0.0));
+                  }
+                else
+                  {
+                    COULD_NOT_CREATE(result);
+                  }
+              }
+
+            if (result == true)
+              {
+                pP = pPoly->createPoint();
+
+                if (pP != NULL)
+                  {
+                    pP->setX(RelAbsVector(width, 0.0));
+                    pP->setY(RelAbsVector(0.8 * height, 0.0));
+                  }
+                else
+                  {
+                    COULD_NOT_CREATE(result);
+                  }
+              }
+
+            if (result == true)
+              {
+                pP = pPoly->createPoint();
+
+                if (pP != NULL)
+                  {
+                    pP->setX(RelAbsVector(0.8 * width, 0.0));
+                    pP->setY(RelAbsVector(0.5 * height, 0.0));
+                  }
+                else
+                  {
+                    COULD_NOT_CREATE(result);
+                  }
+              }
+
+            if (result == true)
+              {
+                pP = pPoly->createPoint();
+
+                if (pP != NULL)
+                  {
+                    pP->setX(RelAbsVector(0.8 * width, 0.0));
+                    pP->setY(RelAbsVector(height, 0.0));
+                  }
+                else
+                  {
+                    COULD_NOT_CREATE(result);
+                  }
+              }
+
+            if (result == true)
+              {
+                pP = pPoly->createPoint();
+
+                if (pP != NULL)
+                  {
+                    pP->setX(RelAbsVector(radius, 0.0));
+                    pP->setY(RelAbsVector(height, 0.0));
+                  }
+                else
+                  {
+                    COULD_NOT_CREATE(result);
+                  }
+              }
+
+            if (result == true)
+              {
+                pCB = pPoly->createCubicBezier();
+
+                if (pCB != NULL)
+                  {
+                    pCB->setBasePoint1_X(RelAbsVector(0.0, 0.0));
+                    pCB->setBasePoint1_Y(RelAbsVector(height, 0.0));
+                    pCB->setBasePoint2_X(RelAbsVector(0.0, 0.0));
+                    pCB->setBasePoint2_Y(RelAbsVector(height, 0.0));
+                    pCB->setX(RelAbsVector(0.0, 0.0));
+                    pCB->setY(RelAbsVector(height - radius, 0.0));
+                  }
+                else
+                  {
+                    COULD_NOT_CREATE(result);
+                  }
+              }
+
+            if (result == true)
+              {
+                pP = pPoly->createPoint();
+
+                if (pP != NULL)
+                  {
+                    pP->setX(RelAbsVector(0.0, 0.0));
+                    pP->setY(RelAbsVector(radius, 0.0));
+                  }
+                else
+                  {
+                    COULD_NOT_CREATE(result);
+                  }
+              }
+
+            if (result == true)
+              {
+                pCB = pPoly->createCubicBezier();
+
+                if (pCB != NULL)
+                  {
+                    pCB->setBasePoint1_X(RelAbsVector(0.0, 0.0));
+                    pCB->setBasePoint1_Y(RelAbsVector(0.0, 0.0));
+                    pCB->setBasePoint2_X(RelAbsVector(0.0, 0.0));
+                    pCB->setBasePoint2_Y(RelAbsVector(0.0, 0.0));
+                    pCB->setX(RelAbsVector(radius, 0.0));
+                    pCB->setY(RelAbsVector(0.0, 0.0));
+                  }
+                else
+                  {
+                    COULD_NOT_CREATE(result);
+                  }
+              }
+          }
+        else
+          {
+            COULD_NOT_CREATE(result);
+          }
+
+        if (result == true)
+          {
+            // handle modifications
+            result = addProteinModifications(pGroup, bounds, modifications, si.mState.mModifications, stroke_color);
+          }
+      }
+      break;
+
+      case PROTEIN_CLASS:
+        // make a rectangle with rounded edges
+      {
+        Rectangle* pRect = pGroup->createRectangle();
+        assert(pRect != NULL);
+
+        if (pRect != NULL)
+          {
+            pRect->setX(RelAbsVector(offset.x() + bounds.getPosition()->x(), 0.0));
+            pRect->setY(RelAbsVector(offset.y() + bounds.getPosition()->y(), 0.0));
+            pRect->setRadiusX(RelAbsVector(0.0, 10.0));
+            pRect->setRadiusY(RelAbsVector(0.0, 10.0));
+            pRect->setWidth(RelAbsVector(bounds.getDimensions()->getWidth(), 0.0));
+            pRect->setHeight(RelAbsVector(bounds.getDimensions()->getHeight(), 0.0));
+            pRect->setStrokeWidth(stroke_width);
+            pRect->setStroke(stroke_color);
+            pRect->setDashArray(dashes);
+            pRect->setFillColor(fill_color);
+          }
+
+        else
+          {
+            COULD_NOT_CREATE(result);
+          }
+
+        if (result == true)
+          {
+            // handle modifications
+            result = addProteinModifications(pGroup, bounds, modifications, si.mState.mModifications, stroke_color);
+          }
+      }
+      break;
+
+      case PHENOTYPE_CLASS:
+      {
+        // we assume the width is larger
+        Polygon* pPoly = pGroup->createPolygon();
+        assert(pPoly != NULL);
+
+        if (pPoly != NULL)
+          {
+            pPoly->setStrokeWidth(stroke_width);
+            pPoly->setStroke(stroke_color);
+            pPoly->setDashArray(dashes);
+            pPoly->setFillColor(fill_color);
+            RenderPoint* pP = pPoly->createPoint();
+
+            if (pP != NULL)
+              {
+                pP->setY(RelAbsVector(0.0, 0.0));
+                pP->setY(RelAbsVector(0.0, 50.0));
+              }
+            else
+              {
+                COULD_NOT_CREATE(result);
+              }
+
+            if (result == true)
+              {
+                pP = pPoly->createPoint();
+
+                if (pP != NULL)
+                  {
+                    pP->setX(RelAbsVector(0.0, 15.0));
+                    pP->setY(RelAbsVector(0.0, 0.0));
+                  }
+                else
+                  {
+                    COULD_NOT_CREATE(result);
+                  }
+              }
+
+            if (result == true)
+              {
+                pP = pPoly->createPoint();
+
+                if (pP != NULL)
+                  {
+                    pP->setX(RelAbsVector(0.0, 85.0));
+                    pP->setY(RelAbsVector(0.0, 0.0));
+                  }
+                else
+                  {
+                    COULD_NOT_CREATE(result);
+                  }
+              }
+
+            if (result == true)
+              {
+                pP = pPoly->createPoint();
+
+                if (pP != NULL)
+                  {
+                    pP->setX(RelAbsVector(0.0, 100.0));
                     pP->setY(RelAbsVector(0.0, 50.0));
                   }
                 else
                   {
                     COULD_NOT_CREATE(result);
                   }
+              }
 
-                if (result == true)
+            if (result == true)
+              {
+                pP = pPoly->createPoint();
+
+                if (pP != NULL)
                   {
-                    pP = pPoly->createPoint();
-
-                    if (pP != NULL)
-                      {
-                        pP->setX(RelAbsVector(0.0, 15.0));
-                        pP->setY(RelAbsVector(0.0, 0.0));
-                      }
-                    else
-                      {
-                        COULD_NOT_CREATE(result);
-                      }
+                    pP->setX(RelAbsVector(0.0, 85.0));
+                    pP->setY(RelAbsVector(0.0, 100.0));
                   }
-
-                if (result == true)
+                else
                   {
-                    pP = pPoly->createPoint();
-
-                    if (pP != NULL)
-                      {
-                        pP->setX(RelAbsVector(0.0, 85.0));
-                        pP->setY(RelAbsVector(0.0, 0.0));
-                      }
-                    else
-                      {
-                        COULD_NOT_CREATE(result);
-                      }
+                    COULD_NOT_CREATE(result);
                   }
+              }
 
-                if (result == true)
+            if (result == true)
+              {
+                pP = pPoly->createPoint();
+
+                if (pP != NULL)
                   {
-                    pP = pPoly->createPoint();
-
-                    if (pP != NULL)
-                      {
-                        pP->setX(RelAbsVector(0.0, 100.0));
-                        pP->setY(RelAbsVector(0.0, 50.0));
-                      }
-                    else
-                      {
-                        COULD_NOT_CREATE(result);
-                      }
+                    pP->setX(RelAbsVector(0.0, 15.0));
+                    pP->setY(RelAbsVector(0.0, 100.0));
                   }
-
-                if (result == true)
+                else
                   {
-                    pP = pPoly->createPoint();
-
-                    if (pP != NULL)
-                      {
-                        pP->setX(RelAbsVector(0.0, 85.0));
-                        pP->setY(RelAbsVector(0.0, 100.0));
-                      }
-                    else
-                      {
-                        COULD_NOT_CREATE(result);
-                      }
+                    COULD_NOT_CREATE(result);
                   }
+              }
+          }
+        else
+          {
+            COULD_NOT_CREATE(result);
+          }
+      }
+      break;
 
-                if (result == true)
-                  {
-                    pP = pPoly->createPoint();
+      case RNA_CLASS:
+        // make a trapezoid
+      {
+        // we assume the width is larger
+        Polygon* pPoly = pGroup->createPolygon();
+        assert(pPoly != NULL);
 
-                    if (pP != NULL)
-                      {
-                        pP->setX(RelAbsVector(0.0, 15.0));
-                        pP->setY(RelAbsVector(0.0, 100.0));
-                      }
-                    else
-                      {
-                        COULD_NOT_CREATE(result);
-                      }
-                  }
+        if (pPoly != NULL)
+          {
+            pPoly->setStrokeWidth(stroke_width);
+            pPoly->setStroke(stroke_color);
+            pPoly->setDashArray(dashes);
+            pPoly->setFillColor(fill_color);
+            RenderPoint* pP = pPoly->createPoint();
+
+            if (pP != NULL)
+              {
+                pP->setX(RelAbsVector(0.0, 20.0));
+                pP->setY(RelAbsVector(0.0, 0.0));
               }
             else
               {
                 COULD_NOT_CREATE(result);
               }
-          }
-          break;
 
-          case RNA_CLASS:
-            // make a trapezoid
-          {
-            // we assume the width is larger
-            Polygon* pPoly = pGroup->createPolygon();
-            assert(pPoly != NULL);
-
-            if (pPoly != NULL)
+            if (result == true)
               {
-                pPoly->setStrokeWidth(stroke_width);
-                pPoly->setStroke(stroke_color);
-                pPoly->setFillColor(fill_color);
-                RenderPoint* pP = pPoly->createPoint();
+                pP = pPoly->createPoint();
+
+                if (pP != NULL)
+                  {
+                    pP->setX(RelAbsVector(0.0, 100.0));
+                    pP->setY(RelAbsVector(0.0, 0.0));
+                  }
+                else
+                  {
+                    COULD_NOT_CREATE(result);
+                  }
+              }
+
+            if (result == true)
+              {
+                pP = pPoly->createPoint();
+
+                if (pP != NULL)
+                  {
+                    pP->setX(RelAbsVector(0.0, 80.0));
+                    pP->setY(RelAbsVector(0.0, 100.0));
+                  }
+                else
+                  {
+                    COULD_NOT_CREATE(result);
+                  }
+              }
+
+            if (result == true)
+              {
+                pP = pPoly->createPoint();
+
+                if (pP != NULL)
+                  {
+                    pP->setX(RelAbsVector(0.0, 0.0));
+                    pP->setY(RelAbsVector(0.0, 100.0));
+                  }
+                else
+                  {
+                    COULD_NOT_CREATE(result);
+                  }
+              }
+          }
+        else
+          {
+            COULD_NOT_CREATE(result);
+          }
+      }
+      break;
+
+      case ANTISENSE_RNA_CLASS:
+        // make a trapzoid
+      {
+        // we assume the width is larger
+        Polygon* pPoly = pGroup->createPolygon();
+        assert(pPoly != NULL);
+
+        if (pPoly != NULL)
+          {
+            pPoly->setStrokeWidth(stroke_width);
+            pPoly->setStroke(stroke_color);
+            pPoly->setDashArray(dashes);
+            pPoly->setFillColor(fill_color);
+            RenderPoint* pP = pPoly->createPoint();
+
+            if (pP != NULL)
+              {
+                pP->setY(RelAbsVector(0.0, 0.0));
+                pP->setY(RelAbsVector(0.0, 0.0));
+              }
+            else
+              {
+                COULD_NOT_CREATE(result);
+              }
+
+            if (result == true)
+              {
+                pP = pPoly->createPoint();
+
+                if (pP != NULL)
+                  {
+                    pP->setX(RelAbsVector(0.0, 80.0));
+                    pP->setY(RelAbsVector(0.0, 0.0));
+                  }
+                else
+                  {
+                    COULD_NOT_CREATE(result);
+                  }
+              }
+
+            if (result == true)
+              {
+                pP = pPoly->createPoint();
+
+                if (pP != NULL)
+                  {
+                    pP->setX(RelAbsVector(0.0, 100.0));
+                    pP->setY(RelAbsVector(0.0, 100.0));
+                  }
+                else
+                  {
+                    COULD_NOT_CREATE(result);
+                  }
+              }
+
+            if (result == true)
+              {
+                pP = pPoly->createPoint();
 
                 if (pP != NULL)
                   {
                     pP->setX(RelAbsVector(0.0, 20.0));
-                    pP->setY(RelAbsVector(0.0, 0.0));
+                    pP->setY(RelAbsVector(0.0, 100.0));
                   }
                 else
                   {
                     COULD_NOT_CREATE(result);
                   }
+              }
+          }
+        else
+          {
+            COULD_NOT_CREATE(result);
+          }
+      }
+      break;
 
-                if (result == true)
-                  {
-                    pP = pPoly->createPoint();
+      case COMPLEX_CLASS:
+        // rectangle with cut edges
+      {
+        double width = bounds.getDimensions()->getWidth();
+        double height = bounds.getDimensions()->getHeight();
+        // we assume the width is larger
+        double ratio = height / width;
+        Polygon* pPoly = pGroup->createPolygon();
+        assert(pPoly != NULL);
 
-                    if (pP != NULL)
-                      {
-                        pP->setX(RelAbsVector(0.0, 100.0));
-                        pP->setY(RelAbsVector(0.0, 0.0));
-                      }
-                    else
-                      {
-                        COULD_NOT_CREATE(result);
-                      }
-                  }
+        if (pPoly != NULL)
+          {
+            pPoly->setStrokeWidth(stroke_width);
+            pPoly->setStroke(stroke_color);
+            pPoly->setDashArray(dashes);
+            pPoly->setFillColor(fill_color);
+            RenderPoint* pP = pPoly->createPoint();
 
-                if (result == true)
-                  {
-                    pP = pPoly->createPoint();
-
-                    if (pP != NULL)
-                      {
-                        pP->setX(RelAbsVector(0.0, 80.0));
-                        pP->setY(RelAbsVector(0.0, 100.0));
-                      }
-                    else
-                      {
-                        COULD_NOT_CREATE(result);
-                      }
-                  }
-
-                if (result == true)
-                  {
-                    pP = pPoly->createPoint();
-
-                    if (pP != NULL)
-                      {
-                        pP->setX(RelAbsVector(0.0, 0.0));
-                        pP->setY(RelAbsVector(0.0, 100.0));
-                      }
-                    else
-                      {
-                        COULD_NOT_CREATE(result);
-                      }
-                  }
+            if (pP != NULL)
+              {
+                pP->setX(RelAbsVector(0.0, 10.0 * ratio));
+                pP->setY(RelAbsVector(0.0, 0.0));
               }
             else
               {
                 COULD_NOT_CREATE(result);
               }
-          }
-          break;
 
-          case ANTISENSE_RNA_CLASS:
-            // make a trapzoid
-          {
-            // we assume the width is larger
-            Polygon* pPoly = pGroup->createPolygon();
-            assert(pPoly != NULL);
-
-            if (pPoly != NULL)
+            if (result == true)
               {
-                pPoly->setStrokeWidth(stroke_width);
-                pPoly->setStroke(stroke_color);
-                pPoly->setFillColor(fill_color);
-                RenderPoint* pP = pPoly->createPoint();
+                pP = pPoly->createPoint();
 
                 if (pP != NULL)
                   {
-                    pP->setY(RelAbsVector(0.0, 0.0));
+                    pP->setX(RelAbsVector(0.0, 100.0 - 10.0 * ratio));
                     pP->setY(RelAbsVector(0.0, 0.0));
                   }
                 else
                   {
                     COULD_NOT_CREATE(result);
                   }
+              }
 
-                if (result == true)
+            if (result == true)
+              {
+                pP = pPoly->createPoint();
+
+                if (pP != NULL)
                   {
-                    pP = pPoly->createPoint();
-
-                    if (pP != NULL)
-                      {
-                        pP->setX(RelAbsVector(0.0, 80.0));
-                        pP->setY(RelAbsVector(0.0, 0.0));
-                      }
-                    else
-                      {
-                        COULD_NOT_CREATE(result);
-                      }
+                    pP->setX(RelAbsVector(0.0, 100.0));
+                    pP->setY(RelAbsVector(0.0, 10.0));
                   }
-
-                if (result == true)
+                else
                   {
-                    pP = pPoly->createPoint();
-
-                    if (pP != NULL)
-                      {
-                        pP->setX(RelAbsVector(0.0, 100.0));
-                        pP->setY(RelAbsVector(0.0, 100.0));
-                      }
-                    else
-                      {
-                        COULD_NOT_CREATE(result);
-                      }
-                  }
-
-                if (result == true)
-                  {
-                    pP = pPoly->createPoint();
-
-                    if (pP != NULL)
-                      {
-                        pP->setX(RelAbsVector(0.0, 20.0));
-                        pP->setY(RelAbsVector(0.0, 100.0));
-                      }
-                    else
-                      {
-                        COULD_NOT_CREATE(result);
-                      }
+                    COULD_NOT_CREATE(result);
                   }
               }
-            else
+
+            if (result == true)
               {
-                COULD_NOT_CREATE(result);
+                pP = pPoly->createPoint();
+
+                if (pP != NULL)
+                  {
+                    pP->setX(RelAbsVector(0.0, 100.0));
+                    pP->setY(RelAbsVector(0.0, 90.0));
+                  }
+                else
+                  {
+                    COULD_NOT_CREATE(result);
+                  }
               }
-          }
-          break;
 
-          case COMPLEX_CLASS:
-            // rectangle with cut edges
-          {
-            double width = bounds.getDimensions()->getWidth();
-            double height = bounds.getDimensions()->getHeight();
-            // we assume the width is larger
-            double ratio = height / width;
-            Polygon* pPoly = pGroup->createPolygon();
-            assert(pPoly != NULL);
-
-            if (pPoly != NULL)
+            if (result == true)
               {
-                pPoly->setStrokeWidth(stroke_width);
-                pPoly->setStroke(stroke_color);
-                pPoly->setFillColor(fill_color);
-                RenderPoint* pP = pPoly->createPoint();
+                pP = pPoly->createPoint();
+
+                if (pP != NULL)
+                  {
+                    pP->setX(RelAbsVector(0.0, 100.0 - 10.0 * ratio));
+                    pP->setY(RelAbsVector(0.0, 100.0));
+                  }
+                else
+                  {
+                    COULD_NOT_CREATE(result);
+                  }
+              }
+
+            if (result == true)
+              {
+                pP = pPoly->createPoint();
 
                 if (pP != NULL)
                   {
                     pP->setX(RelAbsVector(0.0, 10.0 * ratio));
-                    pP->setY(RelAbsVector(0.0, 0.0));
+                    pP->setY(RelAbsVector(0.0, 100.0));
                   }
                 else
                   {
                     COULD_NOT_CREATE(result);
                   }
-
-                if (result == true)
-                  {
-                    pP = pPoly->createPoint();
-
-                    if (pP != NULL)
-                      {
-                        pP->setX(RelAbsVector(0.0, 100.0 - 10.0 * ratio));
-                        pP->setY(RelAbsVector(0.0, 0.0));
-                      }
-                    else
-                      {
-                        COULD_NOT_CREATE(result);
-                      }
-                  }
-
-                if (result == true)
-                  {
-                    pP = pPoly->createPoint();
-
-                    if (pP != NULL)
-                      {
-                        pP->setX(RelAbsVector(0.0, 100.0));
-                        pP->setY(RelAbsVector(0.0, 10.0));
-                      }
-                    else
-                      {
-                        COULD_NOT_CREATE(result);
-                      }
-                  }
-
-                if (result == true)
-                  {
-                    pP = pPoly->createPoint();
-
-                    if (pP != NULL)
-                      {
-                        pP->setX(RelAbsVector(0.0, 100.0));
-                        pP->setY(RelAbsVector(0.0, 90.0));
-                      }
-                    else
-                      {
-                        COULD_NOT_CREATE(result);
-                      }
-                  }
-
-                if (result == true)
-                  {
-                    pP = pPoly->createPoint();
-
-                    if (pP != NULL)
-                      {
-                        pP->setX(RelAbsVector(0.0, 100.0 - 10.0 * ratio));
-                        pP->setY(RelAbsVector(0.0, 100.0));
-                      }
-                    else
-                      {
-                        COULD_NOT_CREATE(result);
-                      }
-                  }
-
-                if (result == true)
-                  {
-                    pP = pPoly->createPoint();
-
-                    if (pP != NULL)
-                      {
-                        pP->setX(RelAbsVector(0.0, 10.0 * ratio));
-                        pP->setY(RelAbsVector(0.0, 100.0));
-                      }
-                    else
-                      {
-                        COULD_NOT_CREATE(result);
-                      }
-                  }
-
-                if (result == true)
-                  {
-                    pP = pPoly->createPoint();
-
-                    if (pP != NULL)
-                      {
-                        pP->setX(RelAbsVector(0.0, 0.0));
-                        pP->setY(RelAbsVector(0.0, 90.0));
-                      }
-                    else
-                      {
-                        COULD_NOT_CREATE(result);
-                      }
-                  }
-
-                if (result == true)
-                  {
-                    pP = pPoly->createPoint();
-
-                    if (pP != NULL)
-                      {
-                        pP->setX(RelAbsVector(0.0, 0.0));
-                        pP->setY(RelAbsVector(0.0, 10.0));
-                      }
-                    else
-                      {
-                        COULD_NOT_CREATE(result);
-                      }
-                  }
               }
-            else
-              {
-                COULD_NOT_CREATE(result);
-              }
-          }
-          break;
 
-          case RECEPTOR_CLASS:
-          {
-            // we assume the width is larger
-            Polygon* pPoly = pGroup->createPolygon();
-            assert(pPoly != NULL);
-
-            if (pPoly != NULL)
+            if (result == true)
               {
-                pPoly->setStrokeWidth(stroke_width);
-                pPoly->setStroke(stroke_color);
-                pPoly->setFillColor(fill_color);
-                RenderPoint* pP = pPoly->createPoint();
+                pP = pPoly->createPoint();
 
                 if (pP != NULL)
                   {
-                    pP->setY(RelAbsVector(0.0, 0.0));
+                    pP->setX(RelAbsVector(0.0, 0.0));
+                    pP->setY(RelAbsVector(0.0, 90.0));
+                  }
+                else
+                  {
+                    COULD_NOT_CREATE(result);
+                  }
+              }
+
+            if (result == true)
+              {
+                pP = pPoly->createPoint();
+
+                if (pP != NULL)
+                  {
+                    pP->setX(RelAbsVector(0.0, 0.0));
+                    pP->setY(RelAbsVector(0.0, 10.0));
+                  }
+                else
+                  {
+                    COULD_NOT_CREATE(result);
+                  }
+              }
+          }
+        else
+          {
+            COULD_NOT_CREATE(result);
+          }
+      }
+      break;
+
+      case RECEPTOR_CLASS:
+      {
+        // we assume the width is larger
+        Polygon* pPoly = pGroup->createPolygon();
+        assert(pPoly != NULL);
+
+        if (pPoly != NULL)
+          {
+            pPoly->setStrokeWidth(stroke_width);
+            pPoly->setStroke(stroke_color);
+            pPoly->setDashArray(dashes);
+            pPoly->setFillColor(fill_color);
+            RenderPoint* pP = pPoly->createPoint();
+
+            if (pP != NULL)
+              {
+                pP->setY(RelAbsVector(0.0, 0.0));
+                pP->setY(RelAbsVector(0.0, 0.0));
+              }
+            else
+              {
+                COULD_NOT_CREATE(result);
+              }
+
+            if (result == true)
+              {
+                pP = pPoly->createPoint();
+
+                if (pP != NULL)
+                  {
+                    pP->setX(RelAbsVector(0.0, 50.0));
+                    pP->setY(RelAbsVector(0.0, 15.0));
+                  }
+                else
+                  {
+                    COULD_NOT_CREATE(result);
+                  }
+              }
+
+            if (result == true)
+              {
+                pP = pPoly->createPoint();
+
+                if (pP != NULL)
+                  {
+                    pP->setX(RelAbsVector(0.0, 100.0));
                     pP->setY(RelAbsVector(0.0, 0.0));
                   }
                 else
                   {
                     COULD_NOT_CREATE(result);
                   }
+              }
 
-                if (result == true)
+            if (result == true)
+              {
+                pP = pPoly->createPoint();
+
+                if (pP != NULL)
                   {
-                    pP = pPoly->createPoint();
-
-                    if (pP != NULL)
-                      {
-                        pP->setX(RelAbsVector(0.0, 50.0));
-                        pP->setY(RelAbsVector(0.0, 15.0));
-                      }
-                    else
-                      {
-                        COULD_NOT_CREATE(result);
-                      }
+                    pP->setX(RelAbsVector(0.0, 100.0));
+                    pP->setY(RelAbsVector(0.0, 85.0));
                   }
-
-                if (result == true)
+                else
                   {
-                    pP = pPoly->createPoint();
-
-                    if (pP != NULL)
-                      {
-                        pP->setX(RelAbsVector(0.0, 100.0));
-                        pP->setY(RelAbsVector(0.0, 0.0));
-                      }
-                    else
-                      {
-                        COULD_NOT_CREATE(result);
-                      }
-                  }
-
-                if (result == true)
-                  {
-                    pP = pPoly->createPoint();
-
-                    if (pP != NULL)
-                      {
-                        pP->setX(RelAbsVector(0.0, 100.0));
-                        pP->setY(RelAbsVector(0.0, 85.0));
-                      }
-                    else
-                      {
-                        COULD_NOT_CREATE(result);
-                      }
-                  }
-
-                if (result == true)
-                  {
-                    pP = pPoly->createPoint();
-
-                    if (pP != NULL)
-                      {
-                        pP->setX(RelAbsVector(0.0, 50.0));
-                        pP->setY(RelAbsVector(0.0, 100.0));
-                      }
-                    else
-                      {
-                        COULD_NOT_CREATE(result);
-                      }
-                  }
-
-                if (result == true)
-                  {
-                    pP = pPoly->createPoint();
-
-                    if (pP != NULL)
-                      {
-                        pP->setX(RelAbsVector(0.0, 0.0));
-                        pP->setY(RelAbsVector(0.0, 85.0));
-                      }
-                    else
-                      {
-                        COULD_NOT_CREATE(result);
-                      }
+                    COULD_NOT_CREATE(result);
                   }
               }
-            else
+
+            if (result == true)
               {
-                COULD_NOT_CREATE(result);
+                pP = pPoly->createPoint();
+
+                if (pP != NULL)
+                  {
+                    pP->setX(RelAbsVector(0.0, 50.0));
+                    pP->setY(RelAbsVector(0.0, 100.0));
+                  }
+                else
+                  {
+                    COULD_NOT_CREATE(result);
+                  }
+              }
+
+            if (result == true)
+              {
+                pP = pPoly->createPoint();
+
+                if (pP != NULL)
+                  {
+                    pP->setX(RelAbsVector(0.0, 0.0));
+                    pP->setY(RelAbsVector(0.0, 85.0));
+                  }
+                else
+                  {
+                    COULD_NOT_CREATE(result);
+                  }
               }
           }
-          break;
-
-          case CHANNEL_CLASS:
-            // make two rectangles with rounded corners
+        else
           {
-            double width = bounds.getDimensions()->getWidth();
-            double height = bounds.getDimensions()->getHeight();
-            Rectangle* pRect = pGroup->createRectangle();
-            assert(pRect != NULL);
-
-            if (pRect != NULL)
-              {
-                pRect->setX(RelAbsVector(offset.x() + bounds.getPosition()->x(), 0.0));
-                pRect->setY(RelAbsVector(offset.y() + bounds.getPosition()->y(), 0.0));
-                pRect->setRadiusX(RelAbsVector(6.0, 0.0));
-                pRect->setRadiusY(RelAbsVector(6.0, 0.0));
-                pRect->setWidth(RelAbsVector(width * 0.75, 0.0));
-                pRect->setHeight(RelAbsVector(height, 0.0));
-                pRect->setStrokeWidth(stroke_width);
-                pRect->setStroke(stroke_color);
-                pRect->setFillColor(fill_color);
-              }
-            else
-              {
-                COULD_NOT_CREATE(result);
-              }
-
-            pRect = pGroup->createRectangle();
-            assert(pRect != NULL);
-
-            if (pRect != NULL)
-              {
-                pRect->setX(RelAbsVector(offset.x() + bounds.getPosition()->x() + width * 0.75, 0.0));
-                pRect->setY(RelAbsVector(offset.y() + bounds.getPosition()->y(), 0.0));
-                pRect->setWidth(RelAbsVector(width * 0.25, 0.0));
-                pRect->setHeight(RelAbsVector(height, 0.0));
-                pRect->setRadiusX(RelAbsVector(6.0, 0.0));
-                pRect->setRadiusY(RelAbsVector(6.0, 0.0));
-                pRect->setStrokeWidth(stroke_width);
-                pRect->setStroke(stroke_color);
-                pRect->setFillColor(fill_color);
-              }
-            else
-              {
-                COULD_NOT_CREATE(result);
-              }
+            COULD_NOT_CREATE(result);
           }
-          break;
 
-          case GENE_CLASS:
+        if (result == true)
           {
-            Rectangle* pRect = pGroup->createRectangle();
-            assert(pRect != NULL);
-
-            if (pRect != NULL)
-              {
-                pRect->setX(RelAbsVector(offset.x() + bounds.getPosition()->x(), 0.0));
-                pRect->setY(RelAbsVector(offset.y() + bounds.getPosition()->y(), 0.0));
-                pRect->setWidth(RelAbsVector(bounds.getDimensions()->getWidth(), 0.0));
-                pRect->setHeight(RelAbsVector(bounds.getDimensions()->getHeight(), 0.0));
-                pRect->setStrokeWidth(stroke_width);
-                pRect->setStroke(stroke_color);
-                pRect->setFillColor(fill_color);
-              }
-            else
-              {
-                COULD_NOT_CREATE(result);
-              }
+            // handle modifications
+            result = addProteinModifications(pGroup, bounds, modifications, si.mState.mModifications, stroke_color);
           }
-          break;
+      }
+      break;
 
-          default:
-            FAIL_WITH_ERROR(result, "Encountered unknown primitive class.");
-            break;
-        }
+      case CHANNEL_CLASS:
+        // make two rectangles with rounded corners
+      {
+        double width = bounds.getDimensions()->getWidth();
+        double height = bounds.getDimensions()->getHeight();
+        Rectangle* pRect = pGroup->createRectangle();
+        assert(pRect != NULL);
 
-      // create the text element
-      if (result == true && !text.empty())
-        {
-          // place a text element in the box
-          // specified by bounds
-          Text* pText = pGroup->createText();
-          assert(pText != NULL);
+        if (pRect != NULL)
+          {
+            pRect->setX(RelAbsVector(offset.x() + bounds.getPosition()->x(), 0.0));
+            pRect->setY(RelAbsVector(offset.y() + bounds.getPosition()->y(), 0.0));
+            pRect->setRadiusX(RelAbsVector(6.0, 0.0));
+            pRect->setRadiusY(RelAbsVector(6.0, 0.0));
+            pRect->setWidth(RelAbsVector(width * 0.75, 0.0));
+            pRect->setHeight(RelAbsVector(height, 0.0));
+            pRect->setStrokeWidth(stroke_width);
+            pRect->setStroke(stroke_color);
+            pRect->setDashArray(dashes);
+            pRect->setFillColor(fill_color);
+          }
+        else
+          {
+            COULD_NOT_CREATE(result);
+          }
 
-          if (pText != NULL)
-            {
-              pText->setTextAnchor(Text::ANCHOR_MIDDLE);
-              pText->setVTextAnchor(Text::ANCHOR_MIDDLE);
-              // middle of the box
-              pText->setX(RelAbsVector(bounds.getPosition()->x() + offset.x() + 0.5 * bounds.getDimensions()->getWidth(), 0.0));
-              // middle of the box
-              pText->setY(RelAbsVector(bounds.getPosition()->y() + offset.y() + 0.5 * bounds.getDimensions()->getHeight(), 0.0));
-              pText->setText(text);
-              // TODO we need the font size and the font family
-              // TODO for now we use a default
-              pText->setFontFamily("serif");
-              pText->setFontSize(RelAbsVector(10.0, 0.0));
-              pText->setStroke("#000000");
-            }
-          else
-            {
-              COULD_NOT_CREATE(result);
-            }
-        }
+        pRect = pGroup->createRectangle();
+        assert(pRect != NULL);
+
+        if (pRect != NULL)
+          {
+            pRect->setX(RelAbsVector(offset.x() + bounds.getPosition()->x() + width * 0.75, 0.0));
+            pRect->setY(RelAbsVector(offset.y() + bounds.getPosition()->y(), 0.0));
+            pRect->setWidth(RelAbsVector(width * 0.25, 0.0));
+            pRect->setHeight(RelAbsVector(height, 0.0));
+            pRect->setRadiusX(RelAbsVector(6.0, 0.0));
+            pRect->setRadiusY(RelAbsVector(6.0, 0.0));
+            pRect->setStrokeWidth(stroke_width);
+            pRect->setStroke(stroke_color);
+            pRect->setDashArray(dashes);
+            pRect->setFillColor(fill_color);
+          }
+        else
+          {
+            COULD_NOT_CREATE(result);
+          }
+
+        if (result == true)
+          {
+            // handle modifications
+            result = addProteinModifications(pGroup, bounds, modifications, si.mState.mModifications, stroke_color);
+          }
+      }
+      break;
+
+      case GENE_CLASS:
+      {
+        Rectangle* pRect = pGroup->createRectangle();
+        assert(pRect != NULL);
+
+        if (pRect != NULL)
+          {
+            pRect->setX(RelAbsVector(offset.x() + bounds.getPosition()->x(), 0.0));
+            pRect->setY(RelAbsVector(offset.y() + bounds.getPosition()->y(), 0.0));
+            pRect->setWidth(RelAbsVector(bounds.getDimensions()->getWidth(), 0.0));
+            pRect->setHeight(RelAbsVector(bounds.getDimensions()->getHeight(), 0.0));
+            pRect->setStrokeWidth(stroke_width);
+            pRect->setStroke(stroke_color);
+            pRect->setDashArray(dashes);
+            pRect->setFillColor(fill_color);
+          }
+        else
+          {
+            COULD_NOT_CREATE(result);
+          }
+      }
+      break;
+
+      default:
+        FAIL_WITH_ERROR(result, "Encountered unknown primitive class.");
+        break;
+    }
+
+  // create the text element
+  if (result == true && text.empty())
+    return result;
+
+  // place a text element in the box
+  // specified by bounds
+  Text* pText = pGroup->createText();
+  assert(pText != NULL);
+
+  if (pText != NULL)
+    {
+      pText->setTextAnchor(Text::ANCHOR_MIDDLE);
+      pText->setVTextAnchor(Text::ANCHOR_MIDDLE);
+      // middle of the box
+      pText->setX(RelAbsVector(bounds.getPosition()->x() + offset.x() + 0.5 * bounds.getDimensions()->getWidth(), 0.0));
+      // middle of the box
+      pText->setY(RelAbsVector(bounds.getPosition()->y() + offset.y() + 0.5 * bounds.getDimensions()->getHeight(), 0.0));
+      pText->setText(cleanString(text));
+      // TODO we need the font size and the font family
+      // TODO for now we use a default
+      pText->setFontFamily(mFont);
+      pText->setFontSize(RelAbsVector(10.0, 0.0));
+      pText->setStroke("#000000");
     }
   else
     {
-      FAIL_WITH_ERROR(result, "group NULL, or class not defined.");
+      COULD_NOT_CREATE(result);
     }
 
+  return result;
+}
+
+Point getCenter(const BoundingBox& bounds)
+{
+  Point result;
+  result.setXOffset(bounds.x() + 0.5 * bounds.width());
+  result.setYOffset(bounds.y() + 0.5 * bounds.height());
   return result;
 }
 
@@ -2076,16 +2183,43 @@ bool CCellDesignerImporter::createPrimitive(RenderGroup* pGroup,
  * Takes a protein modification description and creates the corresponding primitive.
  */
 bool CCellDesignerImporter::createProteinModification(RenderGroup* pGroup,
-    const SpeciesModification& smod,
+    SPECIES_MODIFICATION_TYPE type,
     const BoundingBox& bounds,
-    const std::string& stroke_color
-                                                     )
+    const std::string& stroke_color,
+    double angle /*= 0.0*/)
 {
-  // TODO this method will place all modification in exactly the same spot, so
-  // TODO if a protein has several modifications, they will sit on top of each other
-  // TODO One would have to play around with CellDesigner to see how it is done there
-  // TODO because there does not seem to be any stored information on where the
-  // TODO modification symbol is supposed to be placed
+  double radius = 7.0;
+  // as far as i can tell the positions start with the right middle ..
+  Point center = getCenter(bounds);
+  Point p;
+  p.setXOffset(bounds.width() / 2.0f);
+  p.setYOffset(0);
+
+  Point tmp = p;
+
+  // rotate around the origin
+  rotate(tmp, angle, p);
+
+  // normalize to width / height of bounds
+  p.setXOffset(((p.x() / (bounds.width() / 2.0f) + 1.0) / 2.0) * bounds.width());
+  p.setYOffset(((((p.y() / (bounds.width() / 2.0f) * -1.0) + 1.0) / 2.0)*bounds.height()));
+
+  // clamp if needed
+  if (p.x() > bounds.width())
+    p.setXOffset(bounds.width());
+
+  if (p.x() < 0)
+    p.setXOffset(0);
+
+  if (p.y() > bounds.height())
+    p.setYOffset(bounds.height());
+
+  if (p.y() < 0)
+    p.setYOffset(0);
+
+  double cornerX = p.x();
+  double cornerY = p.y();
+
   bool result = true;
   // this is a filled circle
   // the fill color is white
@@ -2094,17 +2228,18 @@ bool CCellDesignerImporter::createProteinModification(RenderGroup* pGroup,
 
   if (pEllipse != NULL)
     {
-      pEllipse->setCX(RelAbsVector(0.0, 0.0));
-      pEllipse->setCY(RelAbsVector(0.0, 0.0));
-      pEllipse->setRX(RelAbsVector(7.0, 0.0));
-      pEllipse->setRY(RelAbsVector(7.0, 0.0));
+      pEllipse->setCX(RelAbsVector(cornerX, 0.0));
+      pEllipse->setCY(RelAbsVector(cornerY, 0.0));
+      pEllipse->setRX(RelAbsVector(radius, 0.0));
+      pEllipse->setRY(RelAbsVector(radius, 0.0));
       pEllipse->setStrokeWidth(1.0);
       pEllipse->setStroke(stroke_color);
       pEllipse->setFillColor("#FFFFFFFF");
+
       // depending on the type of modification, the string displayed in the circle varies
       std::string mod_string("");
 
-      switch (smod.mType)
+      switch (type)
         {
           case PHOSPHORYLATED_MOD_TYPE:
             mod_string = "P";
@@ -2163,12 +2298,12 @@ bool CCellDesignerImporter::createProteinModification(RenderGroup* pGroup,
         }
 
       Text* pText = pGroup->createText();
-      pText->setTextAnchor(Text::ANCHOR_MIDDLE);
-      pText->setVTextAnchor(Text::ANCHOR_MIDDLE);
-      pText->setX(RelAbsVector(0.0, 0.0));
-      pText->setY(RelAbsVector(0.0, 0.0));
+      pText->setTextAnchor(Text::ANCHOR_START);
+      pText->setVTextAnchor(Text::ANCHOR_TOP);
+      pText->setX(RelAbsVector(cornerX - 9,  0.0));
+      pText->setY(RelAbsVector(cornerY - 9, 0.0));
       pText->setText(mod_string);
-      pText->setFontFamily("serif");
+      pText->setFontFamily(mFont);
       pText->setFontSize(RelAbsVector(8.0, 0.0));
       pText->setStroke("#000000FF");
     }
@@ -2794,9 +2929,15 @@ bool CCellDesignerImporter::convertReactionAnnotation(Reaction* pReaction, const
             pos2 != this->mCDBounds.end() &&
             pos3 != this->mCDBounds.end())
           {
-            Point p1(new LayoutPkgNamespaces(), pos1->second.getPosition()->x() + pos1->second.getDimensions()->getWidth() * 0.5, pos1->second.getPosition()->y() + pos1->second.getDimensions()->getHeight() * 0.5);
-            Point p2(new LayoutPkgNamespaces(), pos2->second.getPosition()->x() + pos2->second.getDimensions()->getWidth() * 0.5, pos2->second.getPosition()->y() + pos2->second.getDimensions()->getHeight() * 0.5);
-            Point p3(new LayoutPkgNamespaces(), pos3->second.getPosition()->x() + pos3->second.getDimensions()->getWidth() * 0.5, pos3->second.getPosition()->y() + pos3->second.getDimensions()->getHeight() * 0.5);
+            Point p1(new LayoutPkgNamespaces(),
+                     pos1->second.getPosition()->x() + pos1->second.getDimensions()->getWidth() * 0.5,
+                     pos1->second.getPosition()->y() + pos1->second.getDimensions()->getHeight() * 0.5);
+            Point p2(new LayoutPkgNamespaces(),
+                     pos2->second.getPosition()->x() + pos2->second.getDimensions()->getWidth() * 0.5,
+                     pos2->second.getPosition()->y() + pos2->second.getDimensions()->getHeight() * 0.5);
+            Point p3(new LayoutPkgNamespaces(),
+                     pos3->second.getPosition()->x() + pos3->second.getDimensions()->getWidth() * 0.5,
+                     pos3->second.getPosition()->y() + pos3->second.getDimensions()->getHeight() * 0.5);
 
             Point p = CCellDesignerImporter::calculateAbsoluteValue(connectionPoint, p1, p2, p3);
 
@@ -3386,12 +3527,19 @@ bool CCellDesignerImporter::convertCompartmentAnnotations()
                         {
                           do
                             {
+                              // don't create label for empty compartment lable
+                              if (canno.mName.empty())
+                                {
+                                  ++pos;
+                                  continue;
+                                }
+
                               TextGlyph* pTGlyph = this->mpLayout->createTextGlyph();
                               std::string id = this->createUniqueId("TextGlyph");
                               pTGlyph->setId(id);
                               this->mIdMap.insert(std::pair<std::string, const SBase*>(id, pTGlyph));
                               // set the text and the associated layout element
-                              pTGlyph->setText(canno.mName);
+                              pTGlyph->setText(cleanString(canno.mName));
                               pTGlyph->setGraphicalObjectId(pos->second->getId());
                               // set the position of the text relative to the layout element
                               // from the mCompartmentNamePointMap
@@ -3408,8 +3556,10 @@ bool CCellDesignerImporter::convertCompartmentAnnotations()
                               // set the position and dimensions of the text
                               Point position = *pCGlyph->getBoundingBox()->getPosition();
                               // add the name position to the position of the compartment
-                              position.setX(position.x() + p.x());
-                              position.setY(position.y() + p.y());
+                              Point center = getCenter(*pCGlyph->getBoundingBox());
+                              position.setX(p.x());
+                              position.setY(p.y());
+
                               Dimensions dim = *pCGlyph->getBoundingBox()->getDimensions();
                               // subtract the name position from the dimensions of the compartment
                               dim.setWidth(dim.getWidth() - p.x());
@@ -3425,7 +3575,7 @@ bool CCellDesignerImporter::convertCompartmentAnnotations()
 
                               if (compAliasPos != this->mCompartmentAliasMap.end())
                                 {
-                                  this->createTextGlyphStyle(compAliasPos->second.mFontSize, Text::ANCHOR_START, Text::ANCHOR_BOTTOM, pTGlyph->getId());
+                                  this->createTextGlyphStyle(compAliasPos->second.mFontSize, Text::ANCHOR_START, Text::ANCHOR_TOP, pTGlyph->getId());
                                 }
 
                               ++pos;
@@ -3434,7 +3584,6 @@ bool CCellDesignerImporter::convertCompartmentAnnotations()
                         }
                       else
                         {
-                          // TODO this is OK as long as we only import compartments with bounds
                           //result=false;
                         }
                     }
@@ -3511,7 +3660,7 @@ bool CCellDesignerImporter::convertSpeciesAnnotations()
                                       pTGlyph->setId(id);
                                       this->mIdMap.insert(std::pair<std::string, const SBase*>(id, pTGlyph));
                                       // set the text and the associated layout element
-                                      pTGlyph->setText(name);
+                                      pTGlyph->setText(cleanString(name));
                                       pTGlyph->setGraphicalObjectId(pSGlyph->getId());
                                       // set the position and dimensions of the text
                                       Point position = *pSGlyph->getBoundingBox()->getPosition();
@@ -3880,6 +4029,13 @@ bool CCellDesignerImporter::parseProteinModification(const XMLNode* pNode, Prote
               if (err == NULL || *err != s.c_str())
                 {
                   mod.mAngle = v;
+
+                  if (s.length() < 5)
+                    {
+                      // if cell designer slider is used, multiples of
+                      // 3.14 are used that are too imprecise
+                      mod.mAngle = mod.mAngle / 3.14 * M_PI;
+                    }
                 }
               else
                 {
@@ -3925,12 +4081,14 @@ bool CCellDesignerImporter::parseCompartmentAnnotation(const XMLNode* pNode, Com
         }
       else
         {
-          FAIL_WITH_ERROR(result, "comparment name not found.");
+          // Not having a name (or an empty string as name), is a valid compartment annotation
+          //FAIL_WITH_ERROR(result, "comparment name not found.");
         }
     }
   else
     {
-      FAIL_WITH_ERROR(result, "compartment annotation not found.");
+      // Not having a name (or an empty string as name), is a valid compartment annotation
+      //FAIL_WITH_ERROR(result, "compartment annotation not found.");
     }
 
   return result;
@@ -3994,6 +4152,15 @@ bool CCellDesignerImporter::parseSpeciesIdentity(const XMLNode* pNode, SpeciesId
           std::string cl = pChild->getChild(0).getCharacters();
           assert(!cl.empty());
           identity.mSpeciesClass = CCellDesignerImporter::classToEnum(cl);
+
+          {
+            const XMLNode* pHypotheticalNode = CCellDesignerImporter::findChildNode(pNode, pNode->getPrefix(), "hypothetical", false);
+
+            if (pHypotheticalNode != NULL && pHypotheticalNode->getNumChildren() == 1 && pHypotheticalNode->getChild(0).isText())
+              {
+                identity.mHypothetical = pHypotheticalNode->getChild(0).getCharacters() == "true";
+              }
+          }
 
           switch (identity.mSpeciesClass)
             {
@@ -4439,7 +4606,7 @@ REACTION_TYPE CCellDesignerImporter::reactionTypeToEnum(std::string s)
   if (result == UNDEFINED_RTYPE)
     {
       bool status;
-      FAIL_WITH_ERROR(status, "undefined reaction type: " << s << " assuming state transition");
+      FAIL_WITH_ERROR(status, "unsupported reaction type: " << s << " assuming state transition");
       result = STATE_TRANSITION_RTYPE;
     }
 
@@ -4524,12 +4691,12 @@ MODIFICATION_LINK_TYPE CCellDesignerImporter::modificationLinkTypeToEnum(std::st
       result = BOOLEAN_LOGIC_GATE_UNKNOWN_ML_TYPE;
     }
 
-  //if (result == UNDEFINED_ML_TYPE)
-  //{
-  //  bool status;
-  //  FAIL_WITH_ERROR(status, "undefined modification link type: " << s << " assuming modulation");
-  //  result = MODULATION_ML_TYPE;
-  //}
+  if (result == UNDEFINED_ML_TYPE)
+    {
+      bool status;
+      FAIL_WITH_ERROR(status, "unsupported modification link type: " << s << " assuming modulation");
+      result = MODULATION_ML_TYPE;
+    }
 
   return result;
 }
@@ -4595,7 +4762,7 @@ MODIFICATION_TYPE CCellDesignerImporter::modificationTypeToEnum(std::string s)
   if (result == UNDEFINED_MTYPE)
     {
       bool status;
-      FAIL_WITH_ERROR(status, "undefined modification type: " << s << " assuming modulation");
+      FAIL_WITH_ERROR(status, "unsupported modification type: " << s << " assuming modulation");
       result = MODULATION_MTYPE;
     }
 
@@ -4888,7 +5055,7 @@ SPECIES_CLASS CCellDesignerImporter::classToEnum(std::string cl)
 }
 
 /**
- * Tries to parse the reaction elements (baseReactants or baseProducts) in the given
+ * Tries to parse the reaction elements (baseReamctants or baseProducts) in the given
  * node and stores the data in the given ReactionAnnotation structure.
  * If parsing fails, false is returned.
  */
@@ -6559,7 +6726,6 @@ bool CCellDesignerImporter::parsePaint(const XMLNode* pNode, Paint& p)
  */
 bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, const CompartmentGlyph* pCGlyph)
 {
-  // TODO the GRADIENT flag is currently ignored
   bool result = true;
 
   if (this->mpLocalRenderInfo != NULL &&
@@ -6568,7 +6734,7 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
       !pCGlyph->getId().empty())
     {
       std::string color_id;
-      result = this->findOrCreateColorDefinition(ca.mPaint.mColor, color_id);
+      result = this->findOrCreateColorDefinition(ca.mPaint, color_id);
       // CellDesigner seems to use the paint color for the two edges
       // of the compartment representation
       // The inner area (between the two edges seems to be filled with the same color, but
@@ -8083,7 +8249,6 @@ bool CCellDesignerImporter::createSpeciesStyle(const SpeciesAlias& sa,const std:
     // TODO for now this style has a black, single
     // TODO line edge and a background color as specified
     // TODO in the paint element
-    // TODO the GRADIENT flag is currently ignored
     bool result=true;
     if(this->mpLocalRenderInfo != NULL &&
        !sa.mUView.mPaint.mColor.empty() &&
@@ -8196,7 +8361,7 @@ bool CCellDesignerImporter::createTextGlyphStyle(double size, Text::TEXT_ANCHOR 
             {
               // set the font size
               pGroup->setFontSize(size);
-              pGroup->setFontFamily("serif");
+              pGroup->setFontFamily(mFont);
               // well as the edge color, and edge width
               std::map<std::string, std::string>::const_iterator pos = this->mColorStringMap.find("#000000FF");
               assert(pos != this->mColorStringMap.end());
@@ -9980,6 +10145,32 @@ bool CCellDesignerImporter::handleExtraReactionElements(ReactionGlyph* pRGlyph, 
   return result;
 }
 
+bool CCellDesignerImporter::findOrCreateColorDefinition(const Paint& paint, std::string& id)
+{
+  if (paint.mScheme == PAINT_GRADIENT)
+    {
+      std::string color; findOrCreateColorDefinition(paint.mColor, color);
+
+      id = "lg_" + color;
+      LinearGradient* grad = dynamic_cast<LinearGradient*>(mpLocalRenderInfo->getGradientDefinition(id));
+
+      if (grad != NULL)
+        return true;
+
+      grad = mpLocalRenderInfo->createLinearGradientDefinition();
+      grad->setId(id);
+      grad->setPoint2(RelAbsVector(0, 100), RelAbsVector(0, 100));
+      GradientStop* stop = grad->createGradientStop();
+      stop->setStopColor("#FFFFFF");
+      stop = grad->createGradientStop();
+      stop->setOffset(RelAbsVector(0, 100));
+      stop->setStopColor(color);
+      return true;
+    }
+
+  return findOrCreateColorDefinition(paint.mColor, id);
+}
+
 /**
  * Check if a color with the given color string already exists.
  * If so, the id of the color is set on the given id string.
@@ -10444,6 +10635,13 @@ SPECIES_MODIFICATION_TYPE CCellDesignerImporter::speciesModificationTypeToEnum(s
       result = SUFLATED_MOD_TYPE;
     }
 
+  if (result == UNDEFINED_MOD_TYPE)
+    {
+      bool status;
+      FAIL_WITH_ERROR(status, "unsupported species modification type: " << cl << " assuming empty");
+      result = EMPTY_MOD_TYPE;
+    }
+
   return result;
 }
 
@@ -10532,7 +10730,7 @@ SpeciesState::SpeciesState():
 
 SpeciesIdentity::SpeciesIdentity():
   mSpeciesClass(UNDEFINED_CLASS),
-  mNameOrReference("")
+  mNameOrReference(""), mHypothetical(false)
 {}
 
 SpeciesAnnotation::SpeciesAnnotation():
@@ -10620,3 +10818,142 @@ Protein::Protein():
   mName(""),
   mType(PROTEIN_CLASS)
 {}
+
+/**
+ * @brief cleanString replaces sequences within the given text string
+ * @param text the string to be cleaned
+ * @return the cleaned string
+ */
+std::string
+CCellDesignerImporter::cleanString(const std::string& text)
+{
+  std::string result(text);
+
+  replaceStringInPlace(result, "_br_", "\n");
+
+  replaceStringInPlace(result, "_super_", " ");
+  replaceStringInPlace(result, "_endsuper_", " ");
+  replaceStringInPlace(result, "_sub_", " ");
+  replaceStringInPlace(result, "_endsub_", " ");
+  replaceStringInPlace(result, "_plus_", "+");
+  replaceStringInPlace(result, "_minus_", "-");
+  replaceStringInPlace(result, "_slash_", "/");
+  replaceStringInPlace(result, "_underscore_", "");
+  replaceStringInPlace(result, "_space_", " ");
+
+  // need to figure out how to replace unicode characters
+  // probably would have to change to wstrings ...
+
+  replaceStringInPlace(result, "_alpha_", "_alpha");
+  replaceStringInPlace(result, "_Alpha_", "_Alpha");
+  replaceStringInPlace(result, "_beta_", "_beta");
+  replaceStringInPlace(result, "_Beta_", "_Beta");
+  replaceStringInPlace(result, "_gamma_", "_gamma");
+  replaceStringInPlace(result, "_Gamma_", "_Gamma");
+  replaceStringInPlace(result, "_delta_", "_delta");
+  replaceStringInPlace(result, "_Delta_", "_Delta");
+  replaceStringInPlace(result, "_epsilon_", "_epsilon");
+  replaceStringInPlace(result, "_Epsilon_", "_Epsilon");
+  replaceStringInPlace(result, "_zeta_", "_zeta");
+  replaceStringInPlace(result, "_Zeta_", "_Zeta");
+  replaceStringInPlace(result, "_eta_", "_eta");
+  replaceStringInPlace(result, "_Eta_", "_Eta");
+  replaceStringInPlace(result, "_theta_", "_theta");
+  replaceStringInPlace(result, "_Theta_", "_Theta");
+  replaceStringInPlace(result, "_iota_", "_iota");
+  replaceStringInPlace(result, "_Iota_", "_Iota");
+  replaceStringInPlace(result, "_kappa_", "_kappa");
+  replaceStringInPlace(result, "_Kappa_", "_Kappa");
+  replaceStringInPlace(result, "_lambda_", "_lambda");
+  replaceStringInPlace(result, "_Lambda_", "_Lambda");
+  replaceStringInPlace(result, "_mu_", "_mu");
+  replaceStringInPlace(result, "_Mu_", "_Mu");
+  replaceStringInPlace(result, "_nu_", "_nu");
+  replaceStringInPlace(result, "_Nu_", "_Nu");
+  replaceStringInPlace(result, "_xi_", "_xi");
+  replaceStringInPlace(result, "_Xi_", "_Xi");
+  replaceStringInPlace(result, "_omicron_", "_omicron");
+  replaceStringInPlace(result, "_Omicron_", "_Omicron");
+  replaceStringInPlace(result, "_pi_", "_pi");
+  replaceStringInPlace(result, "_Pi_", "_Pi");
+  replaceStringInPlace(result, "_rho_", "_rho");
+  replaceStringInPlace(result, "_Rho_", "_Rho");
+  replaceStringInPlace(result, "_sigma_", "_sigma");
+  replaceStringInPlace(result, "_Sigma_", "_Sigma");
+  replaceStringInPlace(result, "_tau_", "_tau");
+  replaceStringInPlace(result, "_Tau_", "_Tau");
+  replaceStringInPlace(result, "_upsilon_", "_upsilon");
+  replaceStringInPlace(result, "_Upsilon_", "_Upsilon");
+  replaceStringInPlace(result, "_phi_", "_phi");
+  replaceStringInPlace(result, "_Phi_", "_Phi");
+  replaceStringInPlace(result, "_chi_", "_chi");
+  replaceStringInPlace(result, "_Chi_", "_Chi");
+  replaceStringInPlace(result, "_psi_", "_psi");
+  replaceStringInPlace(result, "_Psi_", "_Psi");
+  replaceStringInPlace(result, "_omega_", "_omega");
+  replaceStringInPlace(result, "_Omega_", "_Omega");
+
+  replaceStringInPlace(result, "_alpha", "\xCE\xB1");
+  replaceStringInPlace(result, "_Alpha", "\xCE\x91");
+  replaceStringInPlace(result, "_beta", "\xCE\xB2");
+  replaceStringInPlace(result, "_Beta", "\xCE\x92");
+  replaceStringInPlace(result, "_gamma", "\xCE\xB3");
+  replaceStringInPlace(result, "_Gamma", "\xCE\x93");
+  replaceStringInPlace(result, "_delta", "\xCE\xB4");
+  replaceStringInPlace(result, "_Delta", "\xCE\x94");
+  replaceStringInPlace(result, "_epsilon", "\xCE\xB5");
+  replaceStringInPlace(result, "_Epsilon", "\xCE\x95");
+  replaceStringInPlace(result, "_zeta", "\xCE\xB6");
+  replaceStringInPlace(result, "_Zeta", "\xCE\x96");
+  replaceStringInPlace(result, "_eta", "\xCE\xB7");
+  replaceStringInPlace(result, "_Eta", "\xCE\x97");
+  replaceStringInPlace(result, "_theta", "\xCE\xB8");
+  replaceStringInPlace(result, "_Theta", "\xCE\x98");
+  replaceStringInPlace(result, "_iota", "\xCE\xB9");
+  replaceStringInPlace(result, "_Iota", "\xCE\x99");
+  replaceStringInPlace(result, "_kappa", "\xCE\xBA");
+  replaceStringInPlace(result, "_Kappa", "\xCE\x9A");
+  replaceStringInPlace(result, "_lambda", "\xCE\xBB");
+  replaceStringInPlace(result, "_Lambda", "\xCE\x9B");
+  replaceStringInPlace(result, "_mu", "\xCE\xBC");
+  replaceStringInPlace(result, "_Mu", "\xCE\x9C");
+  replaceStringInPlace(result, "_nu", "\xCE\xBD");
+  replaceStringInPlace(result, "_Nu", "\xCE\x9D");
+  replaceStringInPlace(result, "_xi", "\xCE\xBE");
+  replaceStringInPlace(result, "_Xi", "\xCE\x9E");
+  replaceStringInPlace(result, "_omicron", "\xCE\xBF");
+  replaceStringInPlace(result, "_Omicron", "\xCE\x9F");
+  replaceStringInPlace(result, "_pi", "\xCE\xC0");
+  replaceStringInPlace(result, "_Pi", "\xCE\xA0");
+  replaceStringInPlace(result, "_rho", "\xCE\xC1");
+  replaceStringInPlace(result, "_Rho", "\xCE\xA1");
+  replaceStringInPlace(result, "_sigma", "\xCE\xC3");
+  replaceStringInPlace(result, "_Sigma", "\xCE\xA3");
+  replaceStringInPlace(result, "_tau", "\xCE\xC4");
+  replaceStringInPlace(result, "_Tau", "\xCE\xA4");
+  replaceStringInPlace(result, "_upsilon", "\xCE\xC5");
+  replaceStringInPlace(result, "_Upsilon", "\xCE\xA5");
+  replaceStringInPlace(result, "_phi", "\xCE\xC6");
+  replaceStringInPlace(result, "_Phi", "\xCE\xA6");
+  replaceStringInPlace(result, "_chi", "\xCE\xC7");
+  replaceStringInPlace(result, "_Chi", "\xCE\xA7");
+  replaceStringInPlace(result, "_psi", "\xCE\xC8");
+  replaceStringInPlace(result, "_Psi", "\xCE\xA8");
+  replaceStringInPlace(result, "_omega", "\xCE\xC9");
+  replaceStringInPlace(result, "_Omega", "\xCE\xA9");
+
+  return result;
+}
+
+void
+CCellDesignerImporter::replaceStringInPlace(std::string& subject, const std::string& search,
+    const std::string& replace)
+{
+  size_t pos = 0;
+
+  while ((pos = subject.find(search, pos)) != std::string::npos)
+    {
+      subject.replace(pos, search.length(), replace);
+      pos += replace.length();
+    }
+}

@@ -17,12 +17,11 @@
 #include "CreateNewGlobalQuantityCommand.h"
 
 CreateNewGlobalQuantityCommand::CreateNewGlobalQuantityCommand(CQModelValue *pModelValue)
+  : CCopasiUndoCommand("Global Quantity", GLOBALQUANTITYCREATE)
+  , mpGlobalQuantityData(new UndoGlobalQuantityData())
+  , mpModelValue(pModelValue)
 {
-  mpModelValue = pModelValue;
-  mpGlobalQuantityData = new UndoGlobalQuantityData();
   this->setText(createNewGlobalQuantityText());
-  mType = GLOBALQUANTITYCREATE;
-  setEntityType("Global Quantity");
 }
 void CreateNewGlobalQuantityCommand::redo()
 {
@@ -64,9 +63,7 @@ void CreateNewGlobalQuantityCommand::undo()
 
 QString CreateNewGlobalQuantityCommand::createNewGlobalQuantityText() const
 {
-  std::string myEntityName(": Create New Global Quantity ");
-  char* entityName = (char*)myEntityName.c_str();
-  return QObject::tr(entityName);
+  return QObject::tr(": Created new global quantity ");
 }
 
 UndoData *CreateNewGlobalQuantityCommand::getUndoData() const
@@ -76,6 +73,5 @@ UndoData *CreateNewGlobalQuantityCommand::getUndoData() const
 
 CreateNewGlobalQuantityCommand::~CreateNewGlobalQuantityCommand()
 {
-  // TODO Auto-generated destructor stub
   pdelete(mpGlobalQuantityData);
 }

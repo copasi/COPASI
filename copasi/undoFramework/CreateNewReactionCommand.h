@@ -16,6 +16,8 @@
 #include "CCopasiUndoCommand.h"
 
 class UndoReactionData;
+class ReactionsWidget1;
+class CReaction;
 
 class CreateNewReactionCommand: public CCopasiUndoCommand
 {

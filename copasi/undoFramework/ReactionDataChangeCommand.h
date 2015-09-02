@@ -1,4 +1,4 @@
-// Copyright (C) 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2014 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -20,7 +20,10 @@ class ReactionDataChangeCommand: public CCopasiUndoCommand
 {
 
 public:
-  ReactionDataChangeCommand(QModelIndex index, const QVariant value, int role, CQReactionDM *pReactionDM);
+  ReactionDataChangeCommand(const QModelIndex& index,
+                            const QVariant& value,
+                            int role,
+                            CQReactionDM *pReactionDM);
   void redo();
   void undo();
   QString reactionDataChangeText() const;

@@ -451,13 +451,16 @@ void CQMiriamWidget::keyPressEvent(QKeyEvent* ev)
     slotCopyEvent();
 }
 
-void CQMiriamWidget::dataChanged(const QModelIndex& C_UNUSED(topLeft), const QModelIndex& C_UNUSED(bottomRight))
+void CQMiriamWidget::dataChanged(const QModelIndex& topLeft, const QModelIndex& C_UNUSED(bottomRight))
 {
   std::vector<CQTableView*>::const_iterator it = mWidgets.begin();
   std::vector<CQTableView*>::const_iterator end = mWidgets.end();
 
   for (; it != end; it++)
     (*it)->resizeColumnsToContents();
+
+  if (mpTblAuthors->hasFocus())
+    mpTblAuthors->selectionModel()->select(topLeft, QItemSelectionModel::Select);
 }
 
 void CQMiriamWidget::slotCopyEvent()

@@ -1,4 +1,4 @@
-// Copyright (C) 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2013 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -7,9 +7,10 @@
 #include <qlayout/CQRenderConverter.h>
 #include <layout/CLGlyphs.h>
 #include <layout/CLRenderResolver.h>
+#include <copasi/UI/qtUtilities.h>
 
 CQLabelGraphicsItem::CQLabelGraphicsItem(const CLTextGlyph* textGlyph, const CLRenderResolver* resolver)
-  : QGraphicsTextItem(textGlyph->getText().c_str())
+  : QGraphicsTextItem(FROM_UTF8(textGlyph->getText()))
   , CQCopasiGraphicsItem(resolver, resolver != NULL ? resolver->resolveStyle(textGlyph) : NULL)
 {
   //setTextInteractionFlags(Qt::TextEditorInteraction);

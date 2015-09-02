@@ -60,7 +60,7 @@ CQParameterOverviewWidget::CQParameterOverviewWidget(QWidget* parent, const char
 #ifdef COPASI_UNDO
   CopasiUI3Window *  pWindow = dynamic_cast<CopasiUI3Window * >(parent->parent());
   mpParameterSetDM->setUndoStack(pWindow->getUndoStack());
-  connect(mpParameterSetDM, SIGNAL(changeWidget(const size_t&)), this, SLOT(slotChangeWidget(const size_t&)));
+  connect(mpParameterSetDM, SIGNAL(changeWidget(int)), this, SLOT(slotChangeWidget(int)));
 #endif
 }
 
@@ -568,7 +568,7 @@ void CQParameterOverviewWidget::slotResolve(const QModelIndex & index)
 }
 
 #ifdef COPASI_UNDO
-void CQParameterOverviewWidget:: slotChangeWidget(const size_t & id)
+void CQParameterOverviewWidget:: slotChangeWidget(int id)
 {
   leave();
   enterProtected();

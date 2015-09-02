@@ -1,4 +1,4 @@
-// Copyright (C) 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2014 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -15,12 +15,19 @@
 
 #include "CCopasiUndoCommand.h"
 
+class CQCompartmentDM;
 class CompartmentDataChangeCommand: public CCopasiUndoCommand
 {
 public:
-  CompartmentDataChangeCommand(QModelIndex index, const QVariant value, int role, CQCompartmentDM *pCompartmentDM);
+  CompartmentDataChangeCommand(const QModelIndex& index,
+                               const QVariant& value,
+                               int role,
+                               CQCompartmentDM *pCompartmentDM);
+
   void redo();
+
   void undo();
+
   QString compartmentDataChangeText() const;
 
   virtual ~CompartmentDataChangeCommand();

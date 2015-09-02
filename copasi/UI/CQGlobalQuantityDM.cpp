@@ -31,6 +31,7 @@
 #include "undoFramework/UndoSpecieData.h"
 #include "undoFramework/UndoEventData.h"
 #include "undoFramework/UndoEventAssignmentData.h"
+#include <copasi/UI/CQCopasiApplication.h>
 #endif
 
 CQGlobalQuantityDM::CQGlobalQuantityDM(QObject *parent)
@@ -44,6 +45,18 @@ CQGlobalQuantityDM::CQGlobalQuantityDM(QObject *parent)
   mItemToType.push_back(CModelEntity::FIXED);
   mItemToType.push_back(CModelEntity::ASSIGNMENT);
   mItemToType.push_back(CModelEntity::ODE);
+}
+
+const QString&
+CQGlobalQuantityDM::indexToStatus(int index) const
+{
+  return mTypes[index];
+}
+
+int
+CQGlobalQuantityDM::statusToIndex(const QString& status) const
+{
+  return mTypes.indexOf(status);
 }
 
 const QStringList& CQGlobalQuantityDM::getTypes()
@@ -224,8 +237,23 @@ bool CQGlobalQuantityDM::setData(const QModelIndex &index, const QVariant &value
 
   if (index.data() == value)
     return false;
+
+  if (index.column() == COL_TYPE_GQ && index.data().toString() == QString(FROM_UTF8(CModelEntity::StatusName[mItemToType[value.toInt()]])))
+    return false;
+
+  bool defaultRow = isDefaultRow(index);
+
+  if (defaultRow)
+    {
+      int newRow = rowCount() - 1;
+      mpUndoStack->push(new InsertGlobalQuantityRowsCommand(newRow, 1, this, QModelIndex()));
+      QModelIndex newIndex = createIndex(newRow, index.column(), Qt::DisplayRole);
+      mpUndoStack->push(new GlobalQuantityDataChangeCommand(newIndex, value, role, this));
+    }
   else
-    mpUndoStack->push(new GlobalQuantityDataChangeCommand(index, value, role, this));
+    {
+      mpUndoStack->push(new GlobalQuantityDataChangeCommand(index, value, role, this));
+    }
 
 #else
 
@@ -438,12 +466,17 @@ void CQGlobalQuantityDM::insertNewGlobalQuantityRow(int position, int rows, cons
 
 void CQGlobalQuantityDM::deleteGlobalQuantityRow(UndoGlobalQuantityData *pGlobalQuantityData)
 {
+  emit changeWidget(115);
+  qApp->processEvents();
+
   CModel * pModel = (*CCopasiRootContainer::getDatamodelList())[0]->getModel();
 
-  CModelValue * pGQ = pModel->getModelValues()[pGlobalQuantityData->getName()];
-  size_t index = pModel->getModelValues().CCopasiVector< CModelValue >::getIndex(pGQ);
+  size_t index = pModel->getModelValues().getIndex(pGlobalQuantityData->getName());
+
+  if (index == C_INVALID_INDEX)
+    return;
+
   removeRow((int) index);
-  emit changeWidget(115);
 }
 
 void CQGlobalQuantityDM::addGlobalQuantityRow(UndoGlobalQuantityData *pGlobalQuantityData)

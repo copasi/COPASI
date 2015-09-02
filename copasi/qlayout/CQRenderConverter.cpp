@@ -1,4 +1,4 @@
-// Copyright (C) 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2013 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -30,6 +30,8 @@
 #include <layout/CLGraphicalPrimitive1D.h>
 #include <report/CCopasiRootContainer.h>
 #include <CopasiDataModel/CCopasiDataModel.h>
+
+#include <copasi/UI/qtUtilities.h>
 
 #include <math.h>
 
@@ -901,7 +903,7 @@ void fillItemFromText(QGraphicsItemGroup *item, const CLBoundingBox *pBB, const 
   double x = pBB->getPosition().getX() + pText->getX().getAbsoluteValue() + pText->getX().getRelativeValue() / 100.0 * pBB->getDimensions().getWidth();
   double y = pBB->getPosition().getY() + pText->getY().getAbsoluteValue() + pText->getY().getRelativeValue() / 100.0 * pBB->getDimensions().getHeight();
 
-  QGraphicsTextItem* result = new QGraphicsTextItem(pText->getText().c_str());
+  QGraphicsTextItem* result = new QGraphicsTextItem(FROM_UTF8(pText->getText()));
   result ->setPos(x, y);
 
   if (pText->isSetStroke())

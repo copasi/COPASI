@@ -24,8 +24,8 @@
 
 #cmake_minimum_required (VERSION 2.6)
 
-file(GLOB HEADERS_UNDOFRAMEWORK undoFramework/*.h)
-file(GLOB SOURCES_UNDOFRAMEWORK undoFramework/*.cpp)
+file(GLOB HEADERS_UNDOFRAMEWORK undoFramework/*.h )
+file(GLOB SOURCES_UNDOFRAMEWORK undoFramework/*.cpp )
 
 
 # create source group for IDEs

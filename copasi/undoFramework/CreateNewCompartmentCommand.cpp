@@ -16,14 +16,15 @@
 
 #include "CreateNewCompartmentCommand.h"
 
-CreateNewCompartmentCommand::CreateNewCompartmentCommand(CQCompartment *pCompartment)
+CreateNewCompartmentCommand::CreateNewCompartmentCommand(
+  CQCompartment *pCompartment)
+  : CCopasiUndoCommand("Compartment", COMPARTMENTCREATE)
+  , mpCompartmentData(new UndoCompartmentData())
+  , mpCompartment(pCompartment)
 {
-  mpCompartment = pCompartment;
-  mpCompartmentData = new UndoCompartmentData();
   this->setText(createNewCompartmentText());
-  mType = COMPARTMENTCREATE;
-  setEntityType("Compartment");
 }
+
 void CreateNewCompartmentCommand::redo()
 {
   mpCompartment->createNewCompartment();
@@ -46,14 +47,11 @@ void CreateNewCompartmentCommand::undo()
 
 QString CreateNewCompartmentCommand::createNewCompartmentText() const
 {
-  std::string myEntityName(": Create New Compartment ");
-  char* entityName = (char*)myEntityName.c_str();
-  return QObject::tr(entityName);
+  return QObject::tr(": Created new compartment ");
 }
 
 CreateNewCompartmentCommand::~CreateNewCompartmentCommand()
 {
-  // TODO Auto-generated destructor stub
   pdelete(mpCompartmentData);
 }
 
@@ -65,4 +63,10 @@ UndoData *CreateNewCompartmentCommand::getUndoData() const
 void CreateNewCompartmentCommand::setType(const CreateNewCompartmentCommand::Type & type)
 {
   mType = COMPARTMENTCREATE;
+}
+
+CreateNewCompartmentCommand *
+CreateNewCompartmentCommand::getCreateNewCompartmentCommand()
+{
+  return this;
 }

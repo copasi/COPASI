@@ -357,8 +357,27 @@ bool CQSpecieDM::setData(const QModelIndex &index, const QVariant &value,
   // in that case no new species will be created!
   if (index.data() == value)
     return false;
+
+  if (index.column() == COL_TYPE_SPECIES &&
+      index.data().toString() == QString(FROM_UTF8(CModelEntity::StatusName[mItemToType[value.toInt()]])))
+    return false;
+
+  if (index.column() == COL_COMPARTMENT && value == "")
+    return false;
+
+  bool defaultRow = isDefaultRow(index);
+
+  if (defaultRow)
+    {
+      int newRow = rowCount() - 1;
+      mpUndoStack->push(new InsertSpecieRowsCommand(newRow, 1, this, QModelIndex()));
+      QModelIndex newIndex = createIndex(newRow, index.column(), Qt::DisplayRole);
+      mpUndoStack->push(new SpecieDataChangeCommand(newIndex, value, role, this));
+    }
   else
-    mpUndoStack->push(new SpecieDataChangeCommand(index, value, role, this));
+    {
+      mpUndoStack->push(new SpecieDataChangeCommand(index, value, role, this));
+    }
 
 #else
 

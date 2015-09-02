@@ -24,7 +24,7 @@ public:
   DeleteEventCommand(CQEventWidget1 *pEventWidget1);
   void redo();
   void undo();
-  QString deleteEventText(std::string &name) const;
+  QString deleteEventText(const std::string &name) const;
   UndoData *getUndoData() const;
   virtual ~DeleteEventCommand();
 
