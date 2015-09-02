@@ -158,7 +158,6 @@ CQNotes::CQNotes(QWidget* parent, const char* name) :
 #if COPASI_UNDO
   mpUndoStack = NULL;
 #endif
-
 }
 
 CQNotes::~CQNotes()
@@ -355,7 +354,6 @@ void CQNotes::save()
           notes = pReportDefinition->getComment();
         }
 
-
       QString qNotes(FROM_UTF8(notes));
 
       if (mpEdit->toPlainText() != qNotes)
@@ -390,8 +388,9 @@ void CQNotes::save()
               pReportDefinition->setComment(PlainText);
             }
 
-          mChanged = true;
 #endif
+
+          mChanged = true;
         }
     }
 
@@ -414,7 +413,6 @@ void CQNotes::slotOpenUrl(const QUrl & url)
   QDesktopServices::openUrl(url);
   return;
 }
-
 
 #if COPASI_UNDO
 void
@@ -443,7 +441,5 @@ CQNotes::changeNotes(const std::string& key, const std::string& notes)
     }
 
   protectedNotify(ListViews::MODEL, ListViews::CHANGE, mKey);
-
-
 }
 #endif // COPASI_UNDO

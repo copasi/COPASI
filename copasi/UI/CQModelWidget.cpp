@@ -135,8 +135,6 @@ void CQModelWidget::save()
     {
       mpUndoStack = static_cast<CQCopasiApplication*>(qApp)
                     ->getMainWindow()->getUndoStack();
-      changed = true;
-
     }
 
   if (TO_UTF8(mpComboTimeUnit->currentText()) != mpModel->getTimeUnitName())
@@ -224,7 +222,6 @@ void CQModelWidget::save()
     }
 
 #else
-
 
   if (TO_UTF8(mpComboTimeUnit->currentText()) != mpModel->getTimeUnitName())
     {
@@ -341,7 +338,6 @@ bool CQModelWidget::enterProtected()
 
   return true;
 }
-
 
 #if COPASI_UNDO
 
