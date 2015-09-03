@@ -1,14 +1,11 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CKinFunction.cpp,v $
-//   $Revision: 1.68 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/05/17 16:39:23 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
 // All rights reserved.
 
 // Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -37,7 +34,11 @@
 
 CKinFunction::CKinFunction(const std::string & name,
                            const CCopasiContainer * pParent):
-    CFunction(name, pParent, CFunction::UserDefined)
+  CFunction(name, pParent, CFunction::UserDefined),
+  mNodes(),
+  ObjList(),
+  mNidx(0)
+
 {
   CONSTRUCTOR_TRACE;
 }
@@ -45,7 +46,10 @@ CKinFunction::CKinFunction(const std::string & name,
 CKinFunction::CKinFunction(const CFunction & src,
                            CReadConfig * configBuffer,
                            const CCopasiContainer * pParent):
-    CFunction(src, pParent)
+  CFunction(src, pParent),
+  mNodes(),
+  ObjList(),
+  mNidx(0)
 {
   CONSTRUCTOR_TRACE;
 
@@ -71,7 +75,10 @@ CKinFunction::CKinFunction(const CFunction & src,
 
 CKinFunction::CKinFunction(const CKinFunction & src,
                            const CCopasiContainer * pParent):
-    CFunction(src, pParent)
+  CFunction(src, pParent),
+  mNodes(src.mNodes),
+  ObjList(src.ObjList),
+  mNidx(src.mNidx)
 {
   CONSTRUCTOR_TRACE;
   //compile();
@@ -112,9 +119,10 @@ void CKinFunction::createParameters()
         {
           // We need to check that we have no reserved name.
           const char *Reserved[] =
-            {"pi", "exponentiale", "true", "false", "infinity", "nan",
-             "PI", "EXPONENTIALE", "TRUE", "FALSE", "INFINITY", "NAN"
-            };
+          {
+            "pi", "exponentiale", "true", "false", "infinity", "nan",
+            "PI", "EXPONENTIALE", "TRUE", "FALSE", "INFINITY", "NAN"
+          };
 
           std::string Name = mNodes[i]->getName();
           size_t j, jmax = 12;

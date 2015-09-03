@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -83,14 +83,21 @@ public:
 protected:
   State setColor(const State & state) const
   {
-    if (state == Invalid)
+    QString Color;
+
+    switch (state)
       {
-        mpContainer->setStyleSheet(QString(mpContainer->metaObject()->className()) + " {background-color:" + mErrorColor.name() + ";}");
+        case Invalid:
+          Color = mErrorColor.name();
+          break;
+
+        case Acceptable:
+        case Intermediate:
+          Color = mAcceptableColor.name();
+          break;
       }
-    else
-      {
-        mpContainer->setStyleSheet(QString(mpContainer->metaObject()->className()) + " {background-color:" + mAcceptableColor.name() + ";}");
-      }
+
+    mpContainer->setStyleSheet(QString(mpContainer->metaObject()->className()) + " {background-color:" + Color + ";}");
 
     return state;
   }

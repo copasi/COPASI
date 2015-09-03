@@ -2173,10 +2173,10 @@ std::string getNextId(const std::string& base, int count)
   return str.str();
 }
 
-const CObjectInterface* getDependentOrNull(const std::map< CObjectInterface *, size_t > &  dependentMap, int index)
+const CObjectInterface * getDependentOrNull(const std::map< const CObjectInterface *, size_t > &  dependentMap, int index)
 {
 
-  std::map< CObjectInterface *, size_t >::const_iterator it = dependentMap.begin();
+  std::map< const CObjectInterface *, size_t >::const_iterator it = dependentMap.begin();
 
   while (it != dependentMap.end())
     {
@@ -2288,7 +2288,7 @@ CModel::createEventsForTimeseries(CExperiment* experiment/* = NULL*/)
   bool hadEvents = getEvents().size() > 0;
 
   size_t numCols = experiment->getNumColumns();
-  const std::map< CObjectInterface *, size_t > &  dependentMap = experiment->getDependentObjects();
+  const std::map< const CObjectInterface *, size_t > &  dependentMap = experiment->getDependentObjects();
 
   // then go through each time point
   for (size_t i = 0; i < numRows; ++i)

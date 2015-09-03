@@ -805,7 +805,7 @@ bool CMCAMethod::isValidProblem(const CCopasiProblem * pProblem)
 
   mpContainer->getTransientDependencies().getUpdateSequence(UpdateSequence, CMath::Default, mpContainer->getStateObjects(false), Requested);
 
-  if (Requested.size() > 0)
+  if (UpdateSequence.size() > 0)
     {
       CCopasiMessage(CCopasiMessage::ERROR, "MCA is not applicable for a system with changing volumes.");
       return false;

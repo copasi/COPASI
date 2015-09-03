@@ -173,9 +173,9 @@ public:
 
   /**
    * Retrieve the list of dependent data objects
-   * @return const std::map< CCopasiObject *, size_t > & dependentObjects
+   * @return const std::map< const CCopasiObject *, size_t > & dependentObjects
    */
-  const std::map< CObjectInterface *, size_t > & getDependentObjects() const;
+  const std::map< const CObjectInterface *, size_t > & getDependentObjects() const;
 
   /**
    * Calculate the sum of squares for the indexed row of the experiment.
@@ -670,7 +670,7 @@ private:
   /**
    * A map of all dependent data objects to dependent data columns;
    */
-  std::map< CObjectInterface *, size_t > mDependentObjects;
+  std::map< const CObjectInterface *, size_t > mDependentObjects;
 
   CCopasiVector< CFittingPoint > mFittingPoints;
 

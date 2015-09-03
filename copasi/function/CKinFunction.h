@@ -1,14 +1,11 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CKinFunction.h,v $
-   $Revision: 1.35 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2012/05/16 23:11:32 $
-   End CVS Header */
-
-// Copyright (C) 2012 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
 // All rights reserved.
 
 // Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -93,44 +90,11 @@ public:
   void cleanup();
 
   /**
-   *  Retreives the nodes of the function
+   *  Retrieves the nodes of the function
    */
   std::vector< CNodeK * > & getNodes();
 
 private:
-
-  /**
-      *  This function indentify the object from name
-      */
-  //bool createObjList();
-
-  /**
-      *  This  connects the nodes to build the binary function tree
-      */
-  //C_INT32 connectNodes();
-
-  /**
-   * This function is part of the algorithm that builds the binary tree.
-   * The expression to the right of the current node (mNidx) is parsed until
-   * an operand with a left priority <= the argument (right priority)
-   * is encounterd. The pointer to the top node of the parsed expression is
-   * returned.
-   * @param C_INT16 priority
-   * @return CNodeK *
-   */
-  //CNodeK * parseExpression(C_INT16 priority);
-
-  /**
-   * This function is part of the algorithm that builds the binary tree.
-   * It returns a pointer to next primary node. Here next is with repect
-   * to the internal counter mNidx. If the node is a dead end, i.e., any contant
-   * a pointer the node is returned. If then node is '(' the expression between
-   * the node and the matching ')' is parsed and a pointer to the resulting top
-   * node is returned. If the node is a function or a unary minus the argument is
-   * parsed and a pointer to the function node is returned.
-   * @return CNodeK *
-   */
-  //CNodeK * parsePrimary();
 
   /**
    *  This function creates the parameter description for older file versions

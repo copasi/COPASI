@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -63,6 +63,9 @@ CBrowserObject::~CBrowserObject()
  */
 ObjectBrowserItem::ObjectBrowserItem(QTreeWidget * parent, ObjectBrowserItem * after, const CCopasiObject* mObject, ObjectList* pList)
   : QTreeWidgetItem(parent, after)
+  , pBrowserObject(NULL)
+  , mType(FIELDATTR)
+  , mKey()
 {
   if (mObject != NULL)
     {
@@ -106,6 +109,9 @@ ObjectBrowserItem::ObjectBrowserItem(QTreeWidget * parent, ObjectBrowserItem * a
 
 ObjectBrowserItem::ObjectBrowserItem(ObjectBrowserItem * parent, ObjectBrowserItem * after , const CCopasiObject* mObject, ObjectList* pList)
   : QTreeWidgetItem(parent, after)
+  , pBrowserObject(NULL)
+  , mType(FIELDATTR)
+  , mKey()
 {
   if (mObject != NULL)
     {
@@ -171,12 +177,14 @@ int ObjectBrowserItem::nUserChecked()
                   condition = PARTCHECKED;
 
                 break;
+
               case PARTCHECKED:
 
                 if (condition == NOCHECKED || condition == ALLCHECKED)
                   condition = PARTCHECKED;
 
                 break;
+
               case NOCHECKED:
 
                 if (condition == ALLCHECKED)
@@ -379,6 +387,7 @@ void ObjectList::createBucketIndex(int max)
       if (quickIndex[tmpIndex]) //delete
         {
           pDel = pHead;
+
           if (pHead->pLast) pHead->pLast->pNext = pHead->pNext; else root = pHead->pNext;
 
           if (pHead->pNext)

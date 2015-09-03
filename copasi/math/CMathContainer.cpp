@@ -17,6 +17,8 @@
 #include "randomGenerator/CRandom.h"
 #include "lapack/blaswrap.h"
 
+// #define DEBUG_OUTPUT
+
 CMathContainer::CMathContainer():
   CCopasiContainer("Math Container", NULL, "CMathContainer"),
   mpModel(NULL),
@@ -638,15 +640,24 @@ void CMathContainer::updateInitialValues(const CModelParameter::Framework & fram
 
 void CMathContainer::applyInitialValues()
 {
+#ifdef DEBUG_OUTPUT
   std::cout << "Container Values: " << mValues << std::endl;
+#endif // DEBUG_OUTPUT
+
   C_FLOAT64 * pInitial = mInitialExtensiveValues.array();
   C_FLOAT64 * pTransient = mExtensiveValues.array();
 
   memcpy(pTransient, pInitial, (pTransient - pInitial) * sizeof(C_FLOAT64));
+
+#ifdef DEBUG_OUTPUT
   std::cout << "Container Values: " << mValues << std::endl;
+#endif // DEBUG_OUTPUT
 
   applyUpdateSequence(mApplyInitialValuesSequence);
+
+#ifdef DEBUG_OUTPUT
   std::cout << "Container Values: " << mValues << std::endl;
+#endif // DEBUG_OUTPUT
 
   // Start the process queue
   mpProcessQueue->start();
@@ -687,7 +698,9 @@ void CMathContainer::applyInitialValues()
         }
     }
 
+#ifdef DEBUG_OUTPUT
   std::cout << "Container Values: " << mValues << std::endl;
+#endif // DEBUG_OUTPUT
 
   // Determine roots which change state at the initial time point, i.e., roots which may have
   // a value of zero and a non zero derivative and check
@@ -724,8 +737,10 @@ void CMathContainer::applyInitialValues()
     }
 
   processRoots(false, FoundRoots);
-  std::cout << "Container Values: " << mValues << std::endl;
 
+#ifdef DEBUG_OUTPUT
+  std::cout << "Container Values: " << mValues << std::endl;
+#endif // DEBUG_OUTPUT
   return;
 }
 
@@ -758,6 +773,8 @@ const CObjectInterface::UpdateSequence & CMathContainer::getSynchronizeInitialVa
         return mSynchronizeInitialValuesSequenceExtensive;
         break;
     }
+
+  return mSynchronizeInitialValuesSequenceExtensive;
 }
 
 const CObjectInterface::UpdateSequence & CMathContainer::getApplyInitialValuesSequence() const
@@ -929,7 +946,9 @@ const CObjectInterface * CMathContainer::getObject(const CCopasiObjectName & cn)
 
   if (pObject == NULL)
     {
+#ifdef DEBUG_OUTPUT
       std::cout << "Data Object " << cn << " not found in model." << std::endl;
+#endif // DEBUG_OUTPUT
 
       CObjectInterface::ContainerList ListOfContainer;
       ListOfContainer.push_back(mpModel);
@@ -954,7 +973,9 @@ const CObjectInterface * CMathContainer::getObject(const CCopasiObjectName & cn)
       return pMathObject;
     }
 
+#ifdef DEBUG_OUTPUT
   std::cout << "Data Object " << cn << " (0x" << pObject << ") has no corresponding Math Object." << std::endl;
+#endif // DEBUG_OUTPUT
 
   return pObject;
 }
@@ -1077,6 +1098,7 @@ void CMathContainer::compile()
 
   CMath::sPointers Pointers;
   initializePointers(Pointers);
+
 #ifdef DEBUG_OUPUT
   printPointers(Pointers);
 #endif // DEBUG_OUPUT
@@ -1170,7 +1192,7 @@ void CMathContainer::compile()
       }
   }
 
-#ifdef COPASI_DEBUG
+#ifdef DEBUG_OUTPUT
   CMathObject *pObject = mObjects.array();
   CMathObject *pObjectEnd = pObject + mObjects.size();
 
@@ -1180,7 +1202,7 @@ void CMathContainer::compile()
     }
 
   std::cout << std::endl;
-#endif // COPASI_DEBUG
+#endif // DEBUG_OUTPUT
 }
 
 const CModel & CMathContainer::getModel() const
@@ -2497,7 +2519,9 @@ CMath::StateChange CMathContainer::processQueue(const bool & equality)
 void CMathContainer::processRoots(const bool & equality,
                                   const CVector< C_INT > & rootsFound)
 {
+#ifdef DEBUG_OUTPUT
   std::cout << rootsFound << std::endl;
+#endif // DEBUG_OUTPUT
 
   // Reevaluate all non found roots.
   CMathEvent::CTrigger::CRootProcessor ** pRoot = mRootProcessors.array();
@@ -2765,7 +2789,7 @@ void CMathContainer::printPointers(CMath::sPointers & p)
   std::cout << "  mTransitionTime:[" << Index << "]" << ((mTransitionTimes.size() <= Index) ? " Error" : "") << std::endl;
   std::cout << std::endl;
 }
-#endif // COAPSI_DEBUG
+#endif // COPASI_DEBUG
 
 void CMathContainer::initializeDiscontinuousCreationPointer()
 {

@@ -1,23 +1,11 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/steady_state_test_wrapper/copasi_wrapper.cpp,v $
-//   $Revision: 1.6 $
-//   $Name:  $
-//   $Author: bergmann $
-//   $Date: 2012/04/26 08:04:43 $
-// End CVS Header
-
-// Copyright (C) 2012 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
-// All rights reserved.
-
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
 #define COPASI_MAIN
@@ -47,7 +35,6 @@
 
 #include "copasi/report/CReportDefinitionVector.h"
 #include "copasi/report/CReportDefinition.h"
-
 
 CReportDefinition* createReport(CCopasiDataModel* pDataModel, CReportDefinitionVector* pReports)
 {
@@ -237,7 +224,6 @@ int main(int argc, char *argv[])
       pDataModel->finish();
       pSSTask->restore();
 
-
       //status output
       CSteadyStateMethod::ReturnCode rc = pSSTask->getResult();
 
@@ -246,8 +232,11 @@ int main(int argc, char *argv[])
       switch (rc)
         {
           case CSteadyStateMethod::notFound: resultCode = "###0 No steady state found."; break;
+
           case CSteadyStateMethod::found: resultCode = "###1 Steady state found."; break;
+
           case CSteadyStateMethod::foundEquilibrium: resultCode = "###2 Equilibrium found."; break;
+
           case CSteadyStateMethod::foundNegative: resultCode = "###3 Negative steady state found."; break;
         }
 
@@ -264,13 +253,11 @@ int main(int argc, char *argv[])
       std::ofstream ofs(logname.c_str());
       ofs << methodlog;
       ofs.close();
-
     }
-  catch (CCopasiException Exception)
+  catch (CCopasiException & Exception)
     {
       std::cerr << Exception.getMessage().getText() << std::endl;
     }
-
 
   std::string Text = "";
 
@@ -287,7 +274,6 @@ int main(int argc, char *argv[])
     }
 
   if (Text != "") std::cerr << Text << std::endl;
-
 
   //finish
   CCopasiRootContainer::destroy();

@@ -18,6 +18,8 @@
 
 CChemEqParserBase::CChemEqParserBase()
   : mpData(NULL)
+  , mPosition(0)
+  , mReversibility(false)
 {}
 
 CChemEqParserBase::~CChemEqParserBase()

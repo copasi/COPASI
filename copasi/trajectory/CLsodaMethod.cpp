@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -295,9 +295,15 @@ CTrajectoryMethod::Status CLsodaMethod::step(const double & deltaT)
             }
 
           // We try to recover by preventing overshooting.
+#ifdef DEBUG_OUTPUT
           std::cout << "State: " << mpContainer->getState(*mpReducedModel) << std::endl;
+#endif // DEBUG_OUTPUT
+
           mContainerState = mLastSuccessState;
+
+#ifdef DEBUG_OUTPUT
           std::cout << "State: " << mpContainer->getState(*mpReducedModel) << std::endl;
+#endif // DEBUG_OUTPUT
 
           mTime = *mpContainerStateTime;
           mTask = 4;
@@ -443,9 +449,14 @@ CTrajectoryMethod::Status CLsodaMethod::step(const double & deltaT)
             }
 
           // We try to recover by preventing overshooting.
+#ifdef DEBUG_OUTPUT
           std::cout << "State: " << mpContainer->getState(*mpReducedModel) << std::endl;
+#endif // DEBUG_OUTPUT
+
           mContainerState = mLastSuccessState;
+#ifdef DEBUG_OUTPUT
           std::cout << "State: " << mpContainer->getState(*mpReducedModel) << std::endl;
+#endif // DEBUG_OUTPUT
 
           mTime = *mpContainerStateTime;
           mTask = 4;
@@ -525,8 +536,10 @@ void CLsodaMethod::evalF(const C_FLOAT64 * t , const C_FLOAT64 * /* y */, C_FLOA
   mpContainer->updateSimulatedValues(*mpReducedModel);
   memcpy(ydot, mpYdot, mData.dim * sizeof(C_FLOAT64));
 
+#ifdef DEBUG_OUTPUT
   std::cout << "State: " << mpContainer->getState(*mpReducedModel) << std::endl;
   std::cout << "Rate:  " << mpContainer->getRate(*mpReducedModel) << std::endl;
+#endif // DEBUG_OUTPUT
 
   return;
 }
@@ -544,15 +557,19 @@ void CLsodaMethod::evalR(const C_FLOAT64 * t, const C_FLOAT64 *  /* y */,
   CVectorCore< C_FLOAT64 > RootValues(*nr, r);
   RootValues = mpContainer->getRoots();
 
+#ifdef DEBUG_OUTPUT
   std::cout << "State: " << mpContainer->getState(*mpReducedModel) << std::endl;
   std::cout << "Roots: " << RootValues << std::endl;
+#endif // DEBUG_OUTPUT
 
   if (mRootMasking != NONE)
     {
       maskRoots(RootValues);
     }
 
+#ifdef DEBUG_OUTPUT
   std::cout << "Roots: " << RootValues << std::endl;
+#endif // DEBUG_OUTPUT
 };
 
 // static
@@ -629,9 +646,14 @@ CTrajectoryMethod::Status CLsodaMethod::peekAhead()
   Status PeekAheadStatus = ROOT;
 
   CVector< C_FLOAT64 > CurrentRoots = mpContainer->getRoots();
+#ifdef DEBUG_OUTPUT
   std::cout << "Current Roots:        " << mpContainer->getRoots() << std::endl;
+#endif // DEBUG_OUTPUT
+
   CVector< C_INT > CombinedRootsFound = mRootsFound;
+#ifdef DEBUG_OUTPUT
   std::cout << "Combined Roots found: " << CombinedRootsFound << std::endl;
+#endif // DEBUG_OUTPUT
 
   C_FLOAT64 MaxPeekAheadTime = std::max(mTargetTime, mTime * (1.0 + 2.0 * *mpRelativeTolerance));
 
@@ -655,11 +677,13 @@ CTrajectoryMethod::Status CLsodaMethod::peekAhead()
 
                 for (; pCombinedRoot != pCombinedRootEnd; ++pCombinedRoot, ++pOldRoot, ++pNewRoot)
                   {
-                    *pCombinedRoot |= (*pOldRoot * *pNewRoot < 0.0);
+                    *pCombinedRoot |= (*pOldRoot **pNewRoot < 0.0);
                   }
 
+#ifdef DEBUG_OUTPUT
                 std::cout << "Current Roots:        " << mpContainer->getRoots() << std::endl;
                 std::cout << "Combined Roots found: " << CombinedRootsFound << std::endl;
+#endif // DEBUG_OUTPUT
               }
             else
               {
@@ -701,7 +725,7 @@ CTrajectoryMethod::Status CLsodaMethod::peekAhead()
 
             for (; pOld != pOldEnd; ++pOld, ++pNew, ++pAtol)
               {
-                if ((2.0 * fabs(*pNew - *pOld) > fabs(*pNew + *pOld) * *mpRelativeTolerance) &&
+                if ((2.0 * fabs(*pNew - *pOld) > fabs(*pNew + *pOld) **mpRelativeTolerance) &&
                     fabs(*pNew) > *pAtol &&
                     fabs(*pOld) > *pAtol)
                   {
@@ -733,7 +757,9 @@ CTrajectoryMethod::Status CLsodaMethod::peekAhead()
                       }
                   }
 
+#ifdef DEBUG_OUTPUT
                 std::cout << "Combined Roots found: " << CombinedRootsFound << std::endl;
+#endif // DEBUG_OUTPUT
               }
           }
           break;

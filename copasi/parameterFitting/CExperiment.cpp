@@ -809,7 +809,7 @@ bool CExperiment::compile(const CMathContainer * pMathContainer)
 
             DependentObjects.insert(pObject);
             mDependentValues[DependentCount] = (C_FLOAT64 *) pObject->getValuePointer();
-            mDependentObjects[const_cast< CObjectInterface * >(pObject)] = DependentCount;
+            mDependentObjects[pObject->getDataObject()] = DependentCount;
             mColumnScale[DependentCount] = mpObjectMap->getScale(i);
 
             DependentCount++;
@@ -1139,7 +1139,7 @@ bool CExperiment::calculateWeights()
   return true;
 }
 
-const std::map< CObjectInterface *, size_t > & CExperiment::getDependentObjects() const
+const std::map< const CObjectInterface *, size_t > & CExperiment::getDependentObjects() const
 {return mDependentObjects;}
 
 bool CExperiment::readColumnNames()
@@ -1540,7 +1540,7 @@ const C_FLOAT64 & CExperiment::getErrorMeanSD() const
 
 C_FLOAT64 CExperiment::getObjectiveValue(const CObjectInterface * pObject) const
 {
-  std::map< CObjectInterface *, size_t >::const_iterator it = mDependentObjects.find(const_cast< CObjectInterface * >(pObject));
+  std::map< const CObjectInterface *, size_t >::const_iterator it = mDependentObjects.find(const_cast< CObjectInterface * >(pObject));
 
   if (it != mDependentObjects.end())
     return mColumnObjectiveValue[it->second];
@@ -1550,7 +1550,7 @@ C_FLOAT64 CExperiment::getObjectiveValue(const CObjectInterface * pObject) const
 
 C_FLOAT64 CExperiment::getDefaultScale(const CObjectInterface * pObject) const
 {
-  std::map< CObjectInterface *, size_t>::const_iterator it = mDependentObjects.find(const_cast< CObjectInterface * >(pObject));
+  std::map< const CObjectInterface *, size_t >::const_iterator it = mDependentObjects.find(const_cast< CObjectInterface * >(pObject));
 
   if (it == mDependentObjects.end())
     return std::numeric_limits<C_FLOAT64>::quiet_NaN();
@@ -1560,7 +1560,7 @@ C_FLOAT64 CExperiment::getDefaultScale(const CObjectInterface * pObject) const
 
 C_FLOAT64 CExperiment::getRMS(const CObjectInterface * pObject) const
 {
-  std::map< CObjectInterface *, size_t >::const_iterator it = mDependentObjects.find(const_cast< CObjectInterface * >(pObject));
+  std::map< const CObjectInterface *, size_t >::const_iterator it = mDependentObjects.find(const_cast< CObjectInterface * >(pObject));
 
   if (it != mDependentObjects.end())
     return mColumnRMS[it->second];
@@ -1570,7 +1570,7 @@ C_FLOAT64 CExperiment::getRMS(const CObjectInterface * pObject) const
 
 C_FLOAT64 CExperiment::getErrorSum(const CObjectInterface * pObject) const
 {
-  std::map< CObjectInterface *, size_t >::const_iterator it = mDependentObjects.find(const_cast< CObjectInterface * >(pObject));
+  std::map< const CObjectInterface *, size_t >::const_iterator it = mDependentObjects.find(const_cast< CObjectInterface * >(pObject));
 
   if (it == mDependentObjects.end() ||
       mpDataDependentCalculated == NULL)
@@ -1602,7 +1602,7 @@ C_FLOAT64 CExperiment::getErrorSum(const CObjectInterface * pObject) const
 C_FLOAT64 CExperiment::getErrorMeanSD(const CObjectInterface * pObject,
                                       const C_FLOAT64 & errorMean) const
 {
-  std::map< CObjectInterface *, size_t >::const_iterator it = mDependentObjects.find(const_cast< CObjectInterface * >(pObject));
+  std::map< const CObjectInterface *, size_t >::const_iterator it = mDependentObjects.find(const_cast< CObjectInterface * >(pObject));
 
   if (it == mDependentObjects.end() ||
       mpDataDependentCalculated == NULL)
@@ -1638,7 +1638,7 @@ C_FLOAT64 CExperiment::getErrorMeanSD(const CObjectInterface * pObject,
 
 size_t CExperiment::getColumnValidValueCount(const CObjectInterface * pObject) const
 {
-  std::map< CObjectInterface *, size_t >::const_iterator it = mDependentObjects.find(const_cast< CObjectInterface * >(pObject));
+  std::map< const CObjectInterface *, size_t >::const_iterator it = mDependentObjects.find(const_cast< CObjectInterface * >(pObject));
 
   if (it != mDependentObjects.end())
     return mColumnValidValueCount[it->second];

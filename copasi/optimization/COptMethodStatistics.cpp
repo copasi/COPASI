@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -27,14 +27,22 @@
 COptMethodStatistics::COptMethodStatistics(const CCopasiContainer * pParent,
     const CTaskEnum::Method & methodType,
     const CTaskEnum::Task & taskType):
-  COptMethod(pParent, methodType, taskType)
+  COptMethod(pParent, methodType, taskType),
+  mIndividual(),
+  mValue(0.0),
+  mVariableSize(0),
+  mBestValue(0.0)
 {
   initObjects();
 }
 
 COptMethodStatistics::COptMethodStatistics(const COptMethodStatistics & src,
     const CCopasiContainer * pParent):
-  COptMethod(src, pParent)
+  COptMethod(src, pParent),
+  mIndividual(src.mIndividual),
+  mValue(src.mValue),
+  mVariableSize(src.mVariableSize),
+  mBestValue(src.mBestValue)
 {initObjects();}
 
 /**
