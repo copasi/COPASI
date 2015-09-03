@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -83,6 +83,7 @@ public:
   * Option to show or to hide the color legend.
   */
   void showColorLegend(bool CLegend);
+  void showEvent(QShowEvent * event);
 
 public slots:
   void saveDataToFile();

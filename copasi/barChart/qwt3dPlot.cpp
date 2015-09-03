@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -41,20 +41,11 @@ CQBarChart::CQBarChart(QWidget* parent, const char* name) :
   mpRowScale(NULL),
   mColorLegend(true)
 {
-  mpPlot->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-  mpPlot->setRotation(30, 0, 15);
-  //setScale(1,1,1);
-  mpPlot->setShift(0, 0, 0);
-
   mTitle = QString("");
   mColorLegend = true;
 
   mData.maxValue = 0;
   mData.minValue = 0;
-
-  mpPlot->coordinates()->setAutoScale(false);
-  mpPlot->updateData();
-  mpPlot->updateGL();
 }
 
 CQBarChart::~CQBarChart()
@@ -626,4 +617,19 @@ void CQBarChart::showColorLegend(bool CLegend)
 void CQBarChart::setPlotTitle(QString title)
 {
   mTitle = title;
+}
+
+void CQBarChart::showEvent(QShowEvent * event)
+{
+
+  mpPlot->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+  mpPlot->setRotation(30, 0, 15);
+  //setScale(1,1,1);
+  mpPlot->setShift(0, 0, 0);
+
+  mpPlot->coordinates()->setAutoScale(false);
+  mpPlot->updateData();
+  mpPlot->updateGL();
+
+  CQBaseWidget::showEvent(event);
 }
