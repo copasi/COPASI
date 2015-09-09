@@ -14,10 +14,13 @@
 #define UNDOEVENTDATA_H_
 
 #include <set>
+#include <QList>
 
 #include "UndoData.h"
 
 class UndoEventAssignmentData;
+class CModel;
+class CEvent;
 
 class UndoEventData: public UndoData
 {
@@ -28,24 +31,52 @@ public:
     Discontinuity,
     CutPlane
   };
+
   UndoEventData();
+
   virtual ~UndoEventData();
-  std::string getDelayExpression() const;
-  std::string getPriorityExpression() const;
-  std::string getTriggerExpression() const;
+
+  /**
+   * creates a new event in the given model, with
+   * all the data contained in this undo data.
+   *
+   * @param model the model to create the event in
+   * @return the newly created event
+   */
+  CEvent* createEventFromData(CModel* model);
+
+  const std::string& getDelayExpression() const;
+
+  const std::string& getPriorityExpression() const;
+
+  const std::string& getTriggerExpression() const;
+
   Type getType() const;
+
   bool isDelayAssignment() const;
+
   bool isFireAtInitialTime() const;
+
   bool isPersistentTrigger() const;
+
   void setDelayAssignment(bool delayAssignment);
+
   void setDelayExpression(const std::string &delayExpression);
+
   void setPriorityExpression(const std::string &priorityExpression);
+
   void setFireAtInitialTime(bool fireAtInitialTime);
+
   void setPersistentTrigger(bool persistentTrigger);
+
   void setTriggerExpression(const std::string &triggerExpression);
+
   void setType(Type &type);
+
   QList<UndoEventAssignmentData*> *getEventAssignmentData() const;
+
   void setEventAssignmentData(QList<UndoEventAssignmentData*> *eventAssignmentData);
+
   void setUndoEventAssignmentData(UndoEventAssignmentData *eventAssignData);
 
 private:
@@ -53,10 +84,12 @@ private:
    * Event expression string.
    */
   std::string priorityExpression;
+
   /**
    * Event triger expression string.
    */
   std::string triggerExpression;
+
   /**
    * Event delay expression string.
    */

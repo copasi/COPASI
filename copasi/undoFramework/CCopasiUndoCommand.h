@@ -84,6 +84,13 @@ public:
     GLOBALQUANTITY_INITIAL_EXPRESSION_CHANGE, // change of parameter initial expression
     GLOBALQUANTITY_SIMULATION_TYPE_CHANGE, // change of parameter simulation type
     GLOBALQUANTITY_EXPRESSION_CHANGE, // change of parameter assignment / ode expression
+    EVENT_TRIGGER_EXPRESSION_CHANGE, // change of event trigger expression
+    EVENT_DELAY_TYPE_CHANGE, //change of event delay type
+    EVENT_DELAY_EXPRESSION_CHANGE, //change of event delay expression
+    EVENT_ASSIGNMENT_TARGET_CHANGE, //change of event assignment target
+    EVENT_ASSIGNMENT_EXPRESSION_CHANGE, //change of event assignment value
+    EVENT_ASSIGNMENT_ADDED, // add event assignment to event
+    EVENT_ASSIGNMENT_REMOVED, // remove event assignment from event
     INVALID_TYPE
   };
 

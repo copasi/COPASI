@@ -1064,48 +1064,10 @@ bool CQSpecieDM::insertSpecieRows(QList <UndoSpecieData *> pData)
 
               if (pModel->getEvents().getIndex(eData->getName()) == C_INVALID_INDEX)
                 {
-                  CEvent *pEvent =  pModel->createEvent(eData->getName());
 
-                  if (pEvent)
-                    {
-                      std::string key = pEvent->getKey();
-                      //set the expressions
-                      pEvent->setTriggerExpression(eData->getTriggerExpression());
-                      pEvent->setDelayExpression(eData->getDelayExpression());
-                      pEvent->setPriorityExpression(eData->getPriorityExpression());
+                  CEvent* pEvent = eData->createEventFromData(pModel);
+                  emit notifyGUI(ListViews::EVENT, ListViews::ADD, pEvent->getKey());
 
-                      QList <UndoEventAssignmentData *> *assignmentData = eData->getEventAssignmentData();
-                      QList <UndoEventAssignmentData *>::const_iterator evi;
-
-                      for (evi = assignmentData->begin(); evi != assignmentData->end(); ++evi)
-                        {
-                          UndoEventAssignmentData * assignData = *evi;
-                          CCopasiObject * pObject = NULL;
-                          CCompartment * pCompartment = pModel->getCompartments()[data->getCompartment()];
-
-                          if (pCompartment->getMetabolites().getIndex(assignData->getName()) != C_INVALID_INDEX)
-                            {
-                              size_t index = pModel->findMetabByName(assignData->getName());
-                              pObject =  pModel->getMetabolites()[index];
-                            }
-                          else if (pModel->getModelValues().getIndex(assignData->getName()) != C_INVALID_INDEX)
-                            {
-                              pObject = pModel->getModelValues()[assignData->getName()];
-                            }
-                          else if (pModel->getReactions().getIndex(assignData->getName()) != C_INVALID_INDEX)
-                            {
-                              pObject = pModel->getReactions()[assignData->getName()];
-                            }
-
-                          const CModelEntity * pEntity = dynamic_cast< const CModelEntity * >(pObject);
-                          CEventAssignment *eventAssign = new CEventAssignment(pObject->getKey(), pEvent->getObjectParent());
-                          eventAssign->setExpression(assignData->getExpression());
-                          eventAssign->getExpressionPtr()->compile();
-                          pEvent->getAssignments().add(eventAssign);
-                        }
-
-                      emit notifyGUI(ListViews::EVENT, ListViews::ADD, key);
-                    }
                 }
             }
         }

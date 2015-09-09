@@ -38,6 +38,7 @@
 //#include "undoFramework/EventTypeChangeCommand.h"
 #include "undoFramework/UndoEventData.h"
 #include "undoFramework/UndoEventAssignmentData.h"
+#include <copasi/undoFramework/EventChangeCommand.h>
 #include "copasiui3window.h"
 #endif
 
@@ -177,6 +178,7 @@ void CQEventWidget1::slotAddTarget()
   mpLBTarget->addItem(FROM_UTF8(pME->getObjectDisplayName()));
 
   mpLBTarget->setCurrentRow((int)(mAssignments.size() - 1));
+
 }
 
 /*! Slot to remove the active target from the appearance
@@ -197,8 +199,28 @@ void CQEventWidget1::slotDeleteTarget()
   mCurrentTarget = mpLBTarget->currentIndex().row();
 }
 
-/*! Load all values with respect to a chosen saved event */
-bool CQEventWidget1::loadFromEvent()
+int CQEventWidget1::getDelayTypeIndex(CEvent* event)
+{
+  int index = 0;
+
+  if (event->getDelayExpression() == "")
+    {
+      index = 0; // Set Delay to "None"
+    }
+  else if (event->getDelayAssignment())
+    {
+      index = 2; // Assignment only
+    }
+  else
+    {
+      index = 1; // Calculation and Assignment
+    }
+
+  return index;
+}
+
+bool
+CQEventWidget1::loadFromEvent()
 {
   if (mpEvent == NULL) return false;
 
@@ -215,18 +237,8 @@ bool CQEventWidget1::loadFromEvent()
   mpExpressionDelay->mpExpressionWidget->setExpression(mpEvent->getDelayExpression());
   mpExpressionDelay->updateWidget();    // bring into view mode
 
-  if (mpEvent->getDelayExpression() == "")
-    {
-      mpComboBoxDelay->setCurrentIndex(0); // Set Delay to "None"
-    }
-  else if (mpEvent->getDelayAssignment())
-    {
-      mpComboBoxDelay->setCurrentIndex(2); // Assignment only
-    }
-  else
-    {
-      mpComboBoxDelay->setCurrentIndex(1); // Calculation and Assignment
-    }
+  // ** delay type
+  mpComboBoxDelay->setCurrentIndex(getDelayTypeIndex(mpEvent));
 
   // copy assignment from event
   CCopasiVectorN< CEventAssignment >::const_iterator it = mpEvent->getAssignments().begin();
@@ -290,12 +302,158 @@ bool CQEventWidget1::loadFromEvent()
 /*! The slot to save all current values of the active event widget */
 void CQEventWidget1::saveToEvent()
 {
+  // need to update object reference
+  mpObject = CCopasiRootContainer::getKeyFactory()->get(mKey);
+  mpEvent = dynamic_cast<CEvent*>(mpObject);
+
   if (mpEvent == NULL) return;
 
   const CModel * pModel =
     dynamic_cast< const CModel * >(mpEvent->getObjectAncestor("Model"));
 
   if (pModel == NULL) return;
+
+#if COPASI_UNDO
+
+  mIgnoreUpdates = true;
+
+  if (mpEvent->getTriggerExpression() != mpExpressionTrigger->mpExpressionWidget->getExpression())
+    {
+
+      mpUndoStack->push(
+        new EventChangeCommand(
+          CCopasiUndoCommand::EVENT_TRIGGER_EXPRESSION_CHANGE,
+          FROM_UTF8(mpEvent->getTriggerExpression()),
+          FROM_UTF8(mpExpressionTrigger->mpExpressionWidget->getExpression()),
+          mpEvent,
+          this
+        )
+      );
+
+      mChanged = true;
+    }
+
+  if (mpComboBoxDelay->currentIndex() != getDelayTypeIndex(mpEvent))
+    {
+      mpUndoStack->push(
+        new EventChangeCommand(
+          CCopasiUndoCommand::EVENT_DELAY_TYPE_CHANGE,
+          getDelayTypeIndex(mpEvent),
+          mpComboBoxDelay->currentIndex(),
+          mpEvent,
+          this,
+          mpEvent->getDelayExpression(),
+          mpExpressionDelay->mpExpressionWidget->getExpression()
+        )
+      );
+      mChanged = true;
+    }
+
+
+  if (mCurrentTarget != C_INVALID_INDEX)
+    {
+      mAssignments[mCurrentTarget]->setExpression(mpExpressionEA->mpExpressionWidget->getExpression());
+    }
+
+  // event assignments
+  CCopasiVector< CEventAssignment >::const_iterator it = mAssignments.begin();
+  CCopasiVector< CEventAssignment >::const_iterator end = mAssignments.end();
+
+  CCopasiVectorN< CEventAssignment > & OldAssignments = mpEvent->getAssignments();
+  size_t Found;
+
+  // We first update all assignments.
+  for (; it != end; ++it)
+    {
+      Found = OldAssignments.getIndex((*it)->getTargetKey());
+
+      if (Found == C_INVALID_INDEX)
+        {
+          mpUndoStack->push(
+            new EventChangeCommand(
+              CCopasiUndoCommand::EVENT_ASSIGNMENT_ADDED,
+              "",
+              FROM_UTF8((*it)->getTargetKey()),
+              mpEvent,
+              this,
+              (*it)->getTargetKey(),
+              (*it)->getExpression()
+            )
+          );
+
+          mChanged = true;
+        }
+      else if (OldAssignments[Found]->getExpression() != (*it)->getExpression())
+        {
+
+          mpUndoStack->push(
+            new EventChangeCommand(
+              CCopasiUndoCommand::EVENT_ASSIGNMENT_EXPRESSION_CHANGE,
+              FROM_UTF8(OldAssignments[Found]->getExpression()),
+              FROM_UTF8((*it)->getExpression()),
+              mpEvent,
+              this,
+              OldAssignments[Found]->getKey(),
+              OldAssignments[Found]->getKey()
+            )
+          );
+
+          mChanged = true;
+        }
+    }
+
+
+  // Find the deleted assignments and mark them.
+  CCopasiVectorN< CEventAssignment >::const_iterator itOld = OldAssignments.begin();
+  CCopasiVectorN< CEventAssignment >::const_iterator endOld = OldAssignments.end();
+
+  size_t DeleteCount = 0;
+
+  if (OldAssignments.size() > mAssignments.size())
+    {
+      DeleteCount = OldAssignments.size() - mAssignments.size();
+    }
+
+  std::vector< std::pair < std::string, std::string > > ToBeDeleted;
+
+  for (; itOld != endOld && DeleteCount > 0; ++itOld)
+    {
+      const std::string & key = (*itOld)->getTargetKey();
+
+      for (it = mAssignments.begin(); it != end; ++it)
+        {
+          if (key == (*it)->getTargetKey()) break;
+        }
+
+      if (it == end)
+        {
+          ToBeDeleted.push_back(std::make_pair(key, (*itOld)->getExpression()));
+          DeleteCount--;
+          mChanged = true;
+        }
+    }
+
+  // Delete the assignments marked to be deleted.
+  std::vector< std::pair < std::string, std::string > >::const_iterator itDelete = ToBeDeleted.begin();
+  std::vector< std::pair < std::string, std::string > >::const_iterator endDelete = ToBeDeleted.end();
+
+  for (; itDelete != endDelete; ++itDelete)
+    {
+      mpUndoStack->push(new EventChangeCommand(
+                          CCopasiUndoCommand::EVENT_ASSIGNMENT_REMOVED,
+                          FROM_UTF8((*itDelete).first), // target key
+                          "",
+                          mpEvent,
+                          this,
+                          (*itDelete).second,  // expression
+                          (*itDelete).first    // key
+                        ));
+    }
+
+  mIgnoreUpdates = false;
+
+#else
+
 
   if (mpEvent->getTriggerExpression() != mpExpressionTrigger->mpExpressionWidget->getExpression())
     {
@@ -417,6 +575,9 @@ void CQEventWidget1::saveToEvent()
     {
       OldAssignments.remove(*itDelete);
     }
+
+
+#endif
 
   if (mChanged)
     {
@@ -649,62 +810,102 @@ void CQEventWidget1::addEvent(UndoEventData *pSData)
   CModel * pModel = pDataModel->getModel();
   assert(pModel != NULL);
 
-  //reinsert the Event
-  CEvent *pEvent =  pModel->createEvent(pSData->getName());
+  CEvent* pEvent = pSData->createEventFromData(pModel);
+  protectedNotify(ListViews::EVENT, ListViews::ADD, pEvent->getKey());
 
-  //set the expressions
-  pEvent->setTriggerExpression(pSData->getTriggerExpression());
-  pEvent->setDelayExpression(pSData->getDelayExpression());
-  pEvent->setPriorityExpression(pSData->getPriorityExpression());
+  mpListView->switchToOtherWidget(C_INVALID_INDEX, pEvent->getKey());
+}
 
-  QList <UndoEventAssignmentData *> *assignmentData = pSData->getEventAssignmentData();
-  QList <UndoEventAssignmentData *>::const_iterator i;
-
-  for (i = assignmentData->begin(); i != assignmentData->end(); ++i)
+bool
+CQEventWidget1::changeValue(const std::string &key,
+                            CCopasiUndoCommand::Type type,
+                            const QVariant &newValue,
+                            const std::string &expression)
+{
+  if (!mIgnoreUpdates)
     {
-      UndoEventAssignmentData * assignData = *i;
-
-      CCopasiObject * pObject = NULL;
-      bool speciesExist = false;
-      size_t ci;
-
-      for (ci = 0; ci < pModel->getCompartments().size(); ci++)
-        {
-          CCompartment * pCompartment = pModel->getCompartments()[ci];
-
-          if (pCompartment->getMetabolites().getIndex(assignData->getName()) != C_INVALID_INDEX)
-            speciesExist = true;
-        }
-
-      if (speciesExist)
-        {
-          size_t index = pModel->findMetabByName(assignData->getName());
-          pObject =  pModel->getMetabolites()[index];
-        }
-      else if (pModel->getModelValues().getIndex(assignData->getName()) != C_INVALID_INDEX)
-        {
-          pObject = pModel->getModelValues()[assignData->getName()];
-        }
-      else if (pModel->getReactions().getIndex(assignData->getName()) != C_INVALID_INDEX)
-        {
-          pObject = pModel->getReactions()[assignData->getName()];
-        }
-
-      const CModelEntity * pEntity = dynamic_cast< const CModelEntity * >(pObject);
-      CEventAssignment *eventAssign = new CEventAssignment(pObject->getKey(), pEvent->getObjectParent());
-      eventAssign->setExpression(assignData->getExpression());
-      eventAssign->getExpressionPtr()->compile();
-      pEvent->getAssignments().add(eventAssign);
+      mKey = key;
+      mpObject = CCopasiRootContainer::getKeyFactory()->get(key);
+      mpEvent = dynamic_cast<CEvent*>(mpObject);
+      loadFromEvent();
     }
 
-  std::string key = pEvent->getKey();
-  protectedNotify(ListViews::EVENT, ListViews::ADD, key);
+  mpListView->switchToOtherWidget(C_INVALID_INDEX, mKey);
+  qApp->processEvents();
 
-  mpListView->switchToOtherWidget(C_INVALID_INDEX, key);
+
+  switch (type)
+    {
+      case CCopasiUndoCommand::EVENT_DELAY_EXPRESSION_CHANGE:
+        mpEvent->setDelayExpression(TO_UTF8(newValue.toString()));
+        break;
+
+      case CCopasiUndoCommand::EVENT_DELAY_TYPE_CHANGE:
+        switch (newValue.toInt())
+          {
+            case 0:
+              mpEvent->setDelayExpression("");
+              mpEvent->setDelayAssignment(false);
+              break;
+
+            case 1:
+              mpEvent->setDelayExpression(expression);
+              mpEvent->setDelayAssignment(false);
+              break;
+
+            case 2:
+              mpEvent->setDelayExpression(expression);
+              mpEvent->setDelayAssignment(true);
+              break;
+
+            default:
+              return false;
+          }
+
+        break;
+
+      case CCopasiUndoCommand::EVENT_TRIGGER_EXPRESSION_CHANGE:
+        mpEvent->setTriggerExpression(TO_UTF8(newValue.toString()));
+        break;
+
+      case CCopasiUndoCommand::EVENT_ASSIGNMENT_ADDED:
+      case CCopasiUndoCommand::EVENT_ASSIGNMENT_REMOVED:
+
+        // if newValue is empty, this means, that we want to remove the event
+        // that targets the key in expression,
+        if (newValue.toString().isEmpty() &&
+            mpEvent->getAssignments().getIndex(expression) != C_INVALID_INDEX)
+          {
+            mpEvent->getAssignments().remove(expression);
+          }
+        else
+          {
+            CEventAssignment *assignment =
+              new CEventAssignment(TO_UTF8(newValue.toString()), mpEvent->getObjectParent());
+            assignment->setExpression(expression);
+            mpEvent->getAssignments().add(assignment, true);
+          }
+
+        break;
+
+      case CCopasiUndoCommand::EVENT_ASSIGNMENT_EXPRESSION_CHANGE:
+        mpEvent->getAssignments()[expression]->setExpression(TO_UTF8(newValue.toString()));
+        break;
+
+      default:
+        return false;
+        break;
+    }
+
+  if (mIgnoreUpdates) return true;
+
+  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  (*CCopasiRootContainer::getDatamodelList())[0]->changed();
+  protectedNotify(ListViews::EVENT, ListViews::CHANGE, mKey);
+
+  loadFromEvent();
+
+  return true;
 }
 
-void CQEventWidget1::eventTypeChanged(int type)
-{
-  ; //TODO
-}
 #endif

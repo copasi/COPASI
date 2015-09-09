@@ -123,6 +123,8 @@ void CQCompartment::slotBtnNew()
 #endif
 }
 
+void CQCompartment::slotBtnCopy() {}
+
 void CQCompartment::copy()
 {
   CModel * pModel = mpDataModel->getModel();

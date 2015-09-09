@@ -67,7 +67,7 @@ private:
 
 private slots:
   void slotBtnNew();
-  void slotBtnCopy() {}; //dummy, to bypass warnings from TabWidget connections
+  void slotBtnCopy(); //dummy, to bypass warnings from TabWidget connections
   void slotBtnDelete();
   void slotTypeChanged(int type);
   void slotInitialTypeChanged(bool useInitialAssignment);
