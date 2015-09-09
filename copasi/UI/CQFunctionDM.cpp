@@ -52,8 +52,6 @@ bool CQFunctionDM::isFunctionReadOnly(const QModelIndex &index) const
 {
   const CFunction *pFunc = CCopasiRootContainer::getFunctionList()->loadedFunctions()[index.row()];
   return pFunc->isReadOnly();
-
-  return true;
 }
 
 QVariant CQFunctionDM::data(const QModelIndex &index, int role) const
