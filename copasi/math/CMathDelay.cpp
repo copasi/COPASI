@@ -1,4 +1,4 @@
-// Copyright (C) 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2014 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -60,21 +60,29 @@ void CMathDelay::modifyMathObject(CMath::DelayValueData::iterator & itValueData,
   itValueData->second.second->setExpression(Infix, pExpression->isBoolean(), *mpContainer);
 }
 
-void CMathDelay::copy(const CMathDelay & src, CMathContainer & container, const size_t & valueOffset, const size_t & objectOffset)
+void CMathDelay::copy(const CMathDelay & src, CMathContainer & container)
 {
-  mpContainer = &container;
-  mpLagObject = (CMathObject *)((size_t) src.mpLagObject + objectOffset);
+  assert(&src != this);
+  *this = src;
+}
 
-  mValueObjects.resize(src.mValueObjects.size());
+void CMathDelay::moved()
+{}
 
-  CMathObject ** pValueObject = mValueObjects.array();
-  CMathObject ** pValueObjectEnd = pValueObject + mValueObjects.size();
-  CMathObject * const * pValueObjectSrc = src.mValueObjects.array();
+void CMathDelay::relocate(const std::vector< CMath::sRelocate > & relocations)
+{
+  CMathContainer::relocateObject(mpLagObject, relocations);
 
-  for (; pValueObject != pValueObjectEnd; ++pValueObject, ++pValueObjectSrc)
+  CMathObject **ppObject = mValueObjects.array();
+  CMathObject **ppObjectEnd = ppObject + mValueObjects.size();
+
+  for (; ppObject != ppObjectEnd; ++ppObject)
     {
-      *pValueObject = (CMathObject *)((size_t) * pValueObjectSrc + objectOffset);
+      CMathContainer::relocateObject(*ppObject, relocations);
     }
+
+  CMathContainer::relocateUpdateSequence(mValueSequence, relocations);
+  CMathContainer::relocateUpdateSequence(mValueSequenceReduced, relocations);
 }
 
 void CMathDelay::createUpdateSequences()

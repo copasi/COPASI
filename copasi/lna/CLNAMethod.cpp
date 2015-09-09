@@ -127,7 +127,7 @@ int CLNAMethod::calculateCovarianceMatrixReduced()
   // code snippet: transform something into particle space:
   // *(metabs[i]->getCompartment())->getValue()*mpModel->getQuantity2NumberFactor();
 
-  CVector< CMathReaction > & Reactions = mpContainer->getReactions();
+  CVectorCore< CMathReaction > & Reactions = mpContainer->getReactions();
   const CVectorCore< C_FLOAT64 > & ParticleFluxex = mpContainer->getParticleFluxes();
 
   size_t numReacs = Reactions.size();

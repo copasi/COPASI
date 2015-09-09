@@ -58,77 +58,57 @@ CMathObject::CMathObject():
   mpDataObject(NULL)
 {}
 
+CMathObject::CMathObject(const CMathObject & src):
+  CObjectInterface(src),
+  mpExpression(src.mpExpression),
+  mpValue(src.mpValue),
+  mPrerequisites(src.mPrerequisites),
+  mValueType(src.mValueType),
+  mEntityType(src.mEntityType),
+  mSimulationType(src.mSimulationType),
+  mIsIntensiveProperty(src.mIsIntensiveProperty),
+  mIsInitialValue(src.mIsInitialValue),
+  mpCorrespondingProperty(src.mpCorrespondingProperty),
+  mpDataObject(src.mpDataObject)
+{}
+
 // virtual
 CMathObject::~CMathObject()
 {
   pdelete(mpExpression);
 }
 
-void CMathObject::copy(const CMathObject & src, CMathContainer & container, const size_t & valueOffset, const size_t & objectOffset)
+void CMathObject::copy(const CMathObject & src, CMathContainer & container)
 {
-  mpValue = (C_FLOAT64 *)((size_t) src.mpValue + valueOffset);
-  mValueType = src.mValueType;
-  mEntityType = src.mEntityType;
-  mSimulationType = src.mSimulationType;
-  mIsIntensiveProperty = src.mIsIntensiveProperty;
-  mIsInitialValue = src.mIsInitialValue;
-  mpDataObject = src.mpDataObject;
-
-  if (src.mpCorrespondingProperty != NULL)
-    {
-      mpCorrespondingProperty = (CMathObject *)((size_t) src.mpCorrespondingProperty + objectOffset);
-    }
-  else
-    {
-      mpCorrespondingProperty = NULL;
-    }
+  assert(&src != this);
+  *this = src;
 
   if (src.mpExpression != NULL)
     {
-      mpExpression = CMathExpression::copy(*src.mpExpression, container, valueOffset, objectOffset);
+      mpExpression = CMathExpression::copy(*src.mpExpression, container);
     }
   else
     {
       mpExpression = NULL;
     }
-
-  ObjectSet::const_iterator it = src.getPrerequisites().begin();
-  ObjectSet::const_iterator end = src.getPrerequisites().end();
-
-  for (; it != end; ++it)
-    {
-      mPrerequisites.insert((CMathObject *)((size_t) *it + objectOffset));
-    }
-
-  // We do not need to calculate since the value has been copied.
 }
 
-void CMathObject::reallocate(CMathContainer & container, const size_t & valueOffset, const size_t & objectOffset)
+void CMathObject::relocate(const std::vector< CMath::sRelocate > & relocations)
 {
-  mpValue = (C_FLOAT64 *)((size_t) mpValue + valueOffset);
-
-  if (mpCorrespondingProperty != NULL)
-    {
-      mpCorrespondingProperty = (CMathObject *)((size_t) mpCorrespondingProperty + objectOffset);
-    }
+  CMathContainer::relocateValue(mpValue, relocations);
+  CMathContainer::relocateObject(mpCorrespondingProperty, relocations);
 
   if (mpExpression != NULL)
     {
-      mpExpression->reallocate(container, valueOffset, objectOffset);
+      mpExpression->relocate(relocations);
     }
 
-  ObjectSet OldPrerequisites = mPrerequisites;
-  mPrerequisites.clear();
+  CMathContainer::relocateObjectSet(mPrerequisites, relocations);
+}
 
-  ObjectSet::const_iterator it = OldPrerequisites.begin();
-  ObjectSet::const_iterator end = OldPrerequisites.end();
-
-  for (; it != end; ++it)
-    {
-      mPrerequisites.insert((CMathObject *)((size_t) *it + objectOffset));
-    }
-
-  // We do not need to calculate since the value has been copied during reallocation.
+void CMathObject::moved()
+{
+  mpExpression = NULL;
 }
 
 // virtual

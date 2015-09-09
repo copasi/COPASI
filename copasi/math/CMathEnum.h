@@ -12,6 +12,7 @@
 class CCopasiObject;
 class CMathObject;
 class CEvaluationNode;
+class CObjectInterface;
 
 template <class Enum> class CMathFlags
 {
@@ -148,6 +149,22 @@ public:
     CMathObject * pDelayValueObject;
     CMathObject * pDelayLagObject;
     CMathObject * pTransitionTimeObject;
+  };
+
+  struct sRelocate
+  {
+  public:
+    C_FLOAT64 * pValueStart;
+    C_FLOAT64 * pValueEnd;
+    C_FLOAT64 * pOldValue;
+    C_FLOAT64 * pNewValue;
+
+    CObjectInterface * pObjectStart;
+    CObjectInterface * pObjectEnd;
+    CObjectInterface * pOldObject;
+    CObjectInterface * pNewObject;
+
+    size_t offset;
   };
 
 public:

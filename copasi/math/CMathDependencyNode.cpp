@@ -1,4 +1,4 @@
-// Copyright (C) 2011 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -8,6 +8,7 @@
 #include "CMathDependencyNode.h"
 #include "CMathObject.h"
 #include "CMathDependencyNodeIterator.h"
+#include "CMathContainer.h"
 
 #include "model/CMetab.h"
 
@@ -25,6 +26,14 @@ CMathDependencyNode::CMathDependencyNode(const CObjectInterface * pObject):
   mDependents(),
   mChanged(false),
   mRequested(false)
+{}
+
+CMathDependencyNode::CMathDependencyNode(const CMathDependencyNode & src):
+  mpObject(src.mpObject),
+  mPrerequisites(src.mPrerequisites),
+  mDependents(src.mDependents),
+  mChanged(src.mChanged),
+  mRequested(src.mRequested)
 {}
 
 CMathDependencyNode::~CMathDependencyNode()
@@ -272,4 +281,30 @@ void CMathDependencyNode::reset()
 {
   mChanged = false;
   mRequested = false;
+}
+
+void CMathDependencyNode::relocate(std::vector< CMath::sRelocate > & relocations)
+{
+  CMathContainer::relocateObject(mpObject, relocations);
+}
+
+void CMathDependencyNode::updateEdges(const std::map< CMathDependencyNode *, CMathDependencyNode * > & map)
+{
+  std::vector< CMathDependencyNode * >::iterator it = mPrerequisites.begin();
+  std::vector< CMathDependencyNode * >::iterator end = mPrerequisites.end();
+
+  for (; it != end; ++it)
+    {
+      std::map< CMathDependencyNode *, CMathDependencyNode * >::const_iterator found = map.find(*it);
+      *it = found->second;
+    }
+
+  it = mDependents.begin();
+  end = mDependents.end();
+
+  for (; it != end; ++it)
+    {
+      std::map< CMathDependencyNode *, CMathDependencyNode * >::const_iterator found = map.find(*it);
+      *it = found->second;
+    }
 }

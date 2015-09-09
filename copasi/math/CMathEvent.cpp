@@ -1,4 +1,4 @@
-// Copyright (C) 2011 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -27,6 +27,11 @@ CMathEvent::CAssignment::CAssignment():
   mpAssignment(NULL)
 {}
 
+CMathEvent::CAssignment::CAssignment(const CMathEvent::CAssignment & src):
+  mpTarget(src.mpTarget),
+  mpAssignment(src.mpAssignment)
+{}
+
 CMathEvent::CAssignment::~CAssignment()
 {}
 
@@ -40,12 +45,19 @@ void CMathEvent::CAssignment::initialize(CMath::sPointers & pointers)
 }
 
 void CMathEvent::CAssignment::copy(const CMathEvent::CAssignment & src,
-                                   CMathContainer & /* container */,
-                                   const size_t & /* valueOffset */,
-                                   const size_t & objectOffset)
+                                   CMathContainer & /* container */)
 {
-  mpTarget = src.mpTarget + objectOffset;
-  mpAssignment = src.mpAssignment + objectOffset;
+  assert(&src != this);
+  *this = src;
+}
+
+void CMathEvent::CAssignment::moved()
+{}
+
+void CMathEvent::CAssignment::relocate(const std::vector< CMath::sRelocate > & relocations)
+{
+  CMathContainer::relocateObject(mpTarget, relocations);
+  CMathContainer::relocateObject(mpAssignment, relocations);
 }
 
 bool CMathEvent::CAssignment::compile(CEventAssignment * pDataAssignment,
@@ -136,6 +148,16 @@ CMathEvent::CTrigger::CRootProcessor::CRootProcessor():
   mLastToggleTime(),
   mpRootValue(NULL),
   mpRootStateValue(NULL)
+{}
+
+CMathEvent::CTrigger::CRootProcessor::CRootProcessor(const CMathEvent::CTrigger::CRootProcessor & src):
+  mpRoot(src.mpRoot),
+  mpRootState(src.mpRootState),
+  mEquality(src.mEquality),
+  mDiscrete(src.mDiscrete),
+  mLastToggleTime(src.mLastToggleTime),
+  mpRootValue(src.mpRootValue),
+  mpRootStateValue(src.mpRootStateValue)
 {}
 
 CMathEvent::CTrigger::CRootProcessor::~CRootProcessor()
@@ -242,17 +264,21 @@ void CMathEvent::CTrigger::CRootProcessor::initialize(CMath::sPointers & pointer
 }
 
 void CMathEvent::CTrigger::CRootProcessor::copy(const CMathEvent::CTrigger::CRootProcessor & src,
-    CMathContainer & /* container */,
-    const size_t & valueOffset,
-    const size_t & objectOffset)
+    CMathContainer & /* container */)
 {
-  mpRoot = src.mpRoot + objectOffset;
-  mpRootState = src.mpRootState + objectOffset;
-  mEquality = src.mEquality;
-  mDiscrete = src.mDiscrete;
-  mLastToggleTime = src.mLastToggleTime;
-  mpRootValue = src.mpRootStateValue + valueOffset;
-  mpRootStateValue = src.mpRootStateValue + valueOffset;
+  assert(&src != this);
+  *this = src;
+}
+
+void CMathEvent::CTrigger::CRootProcessor::moved()
+{}
+
+void CMathEvent::CTrigger::CRootProcessor::relocate(const std::vector< CMath::sRelocate > & relocations)
+{
+  CMathContainer::relocateObject(mpRoot, relocations);
+  CMathContainer::relocateObject(mpRootState, relocations);
+  CMathContainer::relocateValue(mpRootValue, relocations);
+  CMathContainer::relocateValue(mpRootStateValue, relocations);
 }
 
 bool CMathEvent::CTrigger::CRootProcessor::compile(CEvaluationNode * pRootNode,
@@ -295,6 +321,13 @@ CMathEvent::CTrigger::CTrigger():
   mpInitialTrigger(NULL),
   mRoots(),
   mInfix()
+{}
+
+CMathEvent::CTrigger::CTrigger(const CMathEvent::CTrigger & src):
+  mpTrigger(src.mpTrigger),
+  mpInitialTrigger(src.mpInitialTrigger),
+  mRoots(src.mRoots.size()),
+  mInfix(src.mInfix)
 {}
 
 CMathEvent::CTrigger::~CTrigger()
@@ -379,13 +412,10 @@ void CMathEvent::CTrigger::initialize(CMath::sPointers & pointers)
 }
 
 void CMathEvent::CTrigger::copy(const CMathEvent::CTrigger & src,
-                                CMathContainer & container,
-                                const size_t & valueOffset,
-                                const size_t & objectOffset)
+                                CMathContainer & container)
 {
-  mInfix = src.mInfix;
-  mpTrigger = src.mpTrigger + objectOffset;
-  mpInitialTrigger = src.mpInitialTrigger + objectOffset;
+  assert(&src != this);
+  *this = src;
 
   mRoots.resize(src.mRoots.size());
   CRootProcessor * pRoot = mRoots.array();
@@ -394,7 +424,35 @@ void CMathEvent::CTrigger::copy(const CMathEvent::CTrigger & src,
 
   for (; pRoot != pRootEnd; ++pRoot, ++pRootSrc)
     {
-      pRoot->copy(*pRootSrc, container, valueOffset, objectOffset);
+      pRoot->copy(*pRootSrc, container);
+    }
+}
+
+/**
+ * Indicate that the model has moved
+ */
+void CMathEvent::CTrigger::moved()
+{
+  CRootProcessor * pRoot = mRoots.array();
+  CRootProcessor * pRootEnd = pRoot + mRoots.size();
+
+  for (; pRoot != pRootEnd; ++pRoot)
+    {
+      pRoot->moved();
+    }
+}
+
+void CMathEvent::CTrigger::relocate(const std::vector< CMath::sRelocate > & relocations)
+{
+  CMathContainer::relocateObject(mpTrigger, relocations);
+  CMathContainer::relocateObject(mpInitialTrigger, relocations);
+
+  CRootProcessor * pRoot = mRoots.array();
+  CRootProcessor * pRootEnd = pRoot + mRoots.size();
+
+  for (; pRoot != pRootEnd; ++pRoot)
+    {
+      pRoot->relocate(relocations);
     }
 }
 
@@ -709,42 +767,42 @@ CEvaluationNode * CMathEvent::CTrigger::compile(const CEvaluationNode * pTrigger
             // already processed
             switch ((int) itNode->getType())
               {
-                case(CEvaluationNode::LOGICAL | CEvaluationNodeLogical::AND):
-                case(CEvaluationNode::LOGICAL | CEvaluationNodeLogical::OR):
-                case(CEvaluationNode::LOGICAL | CEvaluationNodeLogical::XOR):
+                case (CEvaluationNode::LOGICAL | CEvaluationNodeLogical::AND):
+                case (CEvaluationNode::LOGICAL | CEvaluationNodeLogical::OR):
+                case (CEvaluationNode::LOGICAL | CEvaluationNodeLogical::XOR):
                   pNode = compileAND(*itNode, itNode.context(), variables, pRoot, container);
                   break;
 
-                case(CEvaluationNode::LOGICAL | CEvaluationNodeLogical::EQ):
+                case (CEvaluationNode::LOGICAL | CEvaluationNodeLogical::EQ):
                   pNode = compileEQ(*itNode, itNode.context(), variables, pRoot, container);
                   break;
 
-                case(CEvaluationNode::LOGICAL | CEvaluationNodeLogical::NE):
+                case (CEvaluationNode::LOGICAL | CEvaluationNodeLogical::NE):
                   pNode = compileNE(*itNode, itNode.context(), variables, pRoot, container);
                   break;
 
-                case(CEvaluationNode::LOGICAL | CEvaluationNodeLogical::LE):
-                case(CEvaluationNode::LOGICAL | CEvaluationNodeLogical::LT):
-                case(CEvaluationNode::LOGICAL | CEvaluationNodeLogical::GE):
-                case(CEvaluationNode::LOGICAL | CEvaluationNodeLogical::GT):
+                case (CEvaluationNode::LOGICAL | CEvaluationNodeLogical::LE):
+                case (CEvaluationNode::LOGICAL | CEvaluationNodeLogical::LT):
+                case (CEvaluationNode::LOGICAL | CEvaluationNodeLogical::GE):
+                case (CEvaluationNode::LOGICAL | CEvaluationNodeLogical::GT):
                   pNode = compileLE(*itNode, itNode.context(), variables, pRoot, container);
                   break;
 
-                case(CEvaluationNode::FUNCTION | CEvaluationNodeFunction::NOT):
+                case (CEvaluationNode::FUNCTION | CEvaluationNodeFunction::NOT):
                   pNode = compileNOT(*itNode, itNode.context(), variables, pRoot, container);
                   break;
 
-                case(CEvaluationNode::CALL | CEvaluationNodeCall::FUNCTION):
-                case(CEvaluationNode::CALL | CEvaluationNodeCall::EXPRESSION):
+                case (CEvaluationNode::CALL | CEvaluationNodeCall::FUNCTION):
+                case (CEvaluationNode::CALL | CEvaluationNodeCall::EXPRESSION):
                   pNode = compileFUNCTION(*itNode, itNode.context(), variables, pRoot, container);
                   break;
 
-                case(CEvaluationNode::VARIABLE | CEvaluationNodeVariable::ANY):
+                case (CEvaluationNode::VARIABLE | CEvaluationNodeVariable::ANY):
                   pNode = compileVARIABLE(*itNode, itNode.context(), variables, pRoot, container);
                   break;
 
-                case(CEvaluationNode::CONSTANT | CEvaluationNodeConstant::TRUE):
-                case(CEvaluationNode::CONSTANT | CEvaluationNodeConstant::FALSE):
+                case (CEvaluationNode::CONSTANT | CEvaluationNodeConstant::TRUE):
+                case (CEvaluationNode::CONSTANT | CEvaluationNodeConstant::FALSE):
                 default:
                   pNode = itNode->copyNode(itNode.context());
                   break;
@@ -980,12 +1038,12 @@ CEvaluationNode * CMathEvent::CTrigger::compileVARIABLE(const CEvaluationNode * 
 }
 
 // static
-void CMathEvent::allocate(CMathEvent * pEvent,
+void CMathEvent::allocate(CMathEvent & Event,
                           const CEvent * pDataEvent,
                           const CMathContainer & container)
 {
-  pEvent->mTrigger.allocate(pDataEvent, container);
-  pEvent->mAssignments.resize(pDataEvent->getAssignments().size());
+  Event.mTrigger.allocate(pDataEvent, container);
+  Event.mAssignments.resize(pDataEvent->getAssignments().size());
 }
 
 CMathEvent::CMathEvent():
@@ -1006,6 +1064,27 @@ CMathEvent::CMathEvent():
   mFireAtInitialTime(false),
   mPersistentTrigger(false),
   mDelayAssignment(true),
+  mpPendingAction(NULL)
+{}
+
+CMathEvent::CMathEvent(const CMathEvent & src):
+  mpContainer(src.mpContainer),
+  mpTime(src.mpTime),
+  mType(src.mType),
+  mTrigger(src.mTrigger),
+  mAssignments(),
+  mpDelay(src.mpDelay),
+  mpPriority(src.mpPriority),
+  mpCallback(src.mpCallback),
+  mTargetValues(),
+  mTargetPointers(src.mTargetPointers),
+  mEffectsSimulation(src.mEffectsSimulation),
+  mCreateCalculationActionSequence(src.mCreateCalculationActionSequence),
+  mTargetValuesSequence(src.mTargetValuesSequence),
+  mPostAssignmentSequence(src.mPostAssignmentSequence),
+  mFireAtInitialTime(src.mFireAtInitialTime),
+  mPersistentTrigger(src.mPersistentTrigger),
+  mDelayAssignment(src.mDelayAssignment),
   mpPendingAction(NULL)
 {}
 
@@ -1048,10 +1127,12 @@ void CMathEvent::initialize(CMath::sPointers & pointers)
                           false, false, NULL);
 }
 
-void CMathEvent::copy(const CMathEvent & src, CMathContainer & container, const size_t & valueOffset, const size_t & objectOffset)
+void CMathEvent::copy(const CMathEvent & src, CMathContainer & container)
 {
-  mType = src.mType;
-  mTrigger.copy(src.mTrigger, container, valueOffset, objectOffset);
+  assert(&src != this);
+  *this = src;
+
+  mTrigger.copy(src.mTrigger, container);
 
   mAssignments.resize(src.mAssignments.size());
   CAssignment * pAssignment = mAssignments.array();
@@ -1060,14 +1141,61 @@ void CMathEvent::copy(const CMathEvent & src, CMathContainer & container, const 
 
   for (; pAssignment != pAssignmentEnd; ++pAssignment, ++pAssignmentSrc)
     {
-      pAssignment->copy(*pAssignmentSrc, container, valueOffset, objectOffset);
+      pAssignment->copy(*pAssignmentSrc, container);
+    }
+}
+
+void CMathEvent::moved()
+{
+  mTrigger.moved();
+
+  CAssignment * pAssignment = mAssignments.array();
+  CAssignment * pAssignmentEnd = pAssignment + mAssignments.size();
+
+  for (; pAssignment != pAssignmentEnd; ++pAssignment)
+    {
+      pAssignment->moved();
+    }
+}
+
+void CMathEvent::relocate(const std::vector< CMath::sRelocate > & relocations)
+{
+  CMathContainer::relocateValue(mpTime, relocations);
+
+  mTrigger.relocate(relocations);
+
+  CAssignment * pAssignment = mAssignments.array();
+  CAssignment * pAssignmentEnd = pAssignment + mAssignments.size();
+
+  for (; pAssignment != pAssignmentEnd; ++pAssignment)
+    {
+      pAssignment->relocate(relocations);
     }
 
-  mpDelay = src.mpDelay + objectOffset;
-  mpPriority = src.mpPriority + objectOffset;
-  mFireAtInitialTime = src.mFireAtInitialTime;
-  mPersistentTrigger = src.mPersistentTrigger;
-  mDelayAssignment = src.mDelayAssignment;
+  if (mAssignments.size() > 0)
+    {
+      mTargetValues.initialize(mAssignments.size(),
+                               (C_FLOAT64 *) mAssignments[0].getAssignment()->getValuePointer());
+    }
+  else
+    {
+      mTargetValues.initialize(0, NULL);
+    }
+
+  CMathContainer::relocateObject(mpDelay, relocations);
+  CMathContainer::relocateObject(mpPriority, relocations);
+
+  C_FLOAT64 ** ppTargetPointers = mTargetPointers.array();
+  C_FLOAT64 ** ppTargetPointersEnd = ppTargetPointers + mTargetPointers.size();
+
+  for (; ppTargetPointers != ppTargetPointersEnd; ++ppTargetPointers)
+    {
+      CMathContainer::relocateValue(*ppTargetPointers, relocations);
+    }
+
+  CMathContainer::relocateUpdateSequence(mCreateCalculationActionSequence, relocations);
+  CMathContainer::relocateUpdateSequence(mTargetValuesSequence, relocations);
+  CMathContainer::relocateUpdateSequence(mPostAssignmentSequence, relocations);
 }
 
 bool CMathEvent::compile(CEvent * pDataEvent,

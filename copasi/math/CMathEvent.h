@@ -27,6 +27,11 @@ public:
     CAssignment();
 
     /**
+     * Copy constructor
+     */
+    CAssignment(const CAssignment & src);
+
+    /**
      * Destructor
      */
     ~CAssignment();
@@ -37,10 +42,19 @@ public:
      * Copy an existing object
      * @param const CAssignment & src
      * @param CMathContainer & container
-     * @param const size_t & valueOffset
-     * @param const size_t & objectOffset
      */
-    void copy(const CAssignment & src, CMathContainer & container, const size_t & valueOffset, const size_t & objectOffset);
+    void copy(const CAssignment & src, CMathContainer & container);
+
+    /**
+     * Indicate that the model has moved
+     */
+    void moved();
+
+    /**
+     * The objects and values are relocated
+     * @param const std::vector< CMath::sRelocate > & relocations
+     */
+    void relocate(const std::vector< CMath::sRelocate > & relocations);
 
     bool compile(CEventAssignment * pDataAssignment,
                  CMathContainer & container);
@@ -68,6 +82,11 @@ public:
        * Default constructor
        */
       CRootProcessor();
+
+      /**
+       * Copy constructor
+       */
+      CRootProcessor(const CRootProcessor & src);
 
       /**
        * Destructor
@@ -119,10 +138,19 @@ public:
        * Copy an existing object
        * @param const CRootProcessor & src
        * @param CMathContainer & container
-       * @param const size_t & valueOffset
-       * @param const size_t & objectOffset
        */
-      void copy(const CRootProcessor & src, CMathContainer & container, const size_t & valueOffset, const size_t & objectOffset);
+      void copy(const CRootProcessor & src, CMathContainer & container);
+
+      /**
+       * Indicate that the model has moved
+       */
+      void moved();
+
+      /**
+       * The objects and values are relocated
+       * @param const std::vector< CMath::sRelocate > & relocations
+       */
+      void relocate(const std::vector< CMath::sRelocate > & relocations);
 
       bool compile(CEvaluationNode * pRootNode,
                    const bool & equality,
@@ -144,6 +172,11 @@ public:
      * Default constructor
      */
     CTrigger();
+
+    /**
+     * Copy constructor
+     */
+    CTrigger(const CTrigger & src);
 
     /**
      * Destructor
@@ -168,10 +201,19 @@ public:
      * Copy an existing object
      * @param const CTrigger & src
      * @param CMathContainer & container
-     * @param const size_t & valueOffset
-     * @param const size_t & objectOffset
      */
-    void copy(const CTrigger & src, CMathContainer & container, const size_t & valueOffset, const size_t & objectOffset);
+    void copy(const CTrigger & src, CMathContainer & container);
+
+    /**
+     * Indicate that the model has moved
+     */
+    void moved();
+
+    /**
+     * The objects and values are relocated
+     * @param const std::vector< CMath::sRelocate > & relocations
+     */
+    void relocate(const std::vector< CMath::sRelocate > & relocations);
 
     bool compile(CEvent * pDataEvent,
                  CMathContainer & container);
@@ -259,11 +301,16 @@ public:
   CMathEvent();
 
   /**
+   * Default constructor
+   */
+  CMathEvent(const CMathEvent & src);
+
+  /**
    * Destructor
    */
   ~CMathEvent();
 
-  static void allocate(CMathEvent * pEvent,
+  static void allocate(CMathEvent & Event,
                        const CEvent * pDataEvent,
                        const CMathContainer & container);
 
@@ -273,10 +320,19 @@ public:
    * Copy an existing object
    * @param const CMathEvent & src
    * @param CMathContainer & container
-   * @param const size_t & valueOffset
-   * @param const size_t & objectOffset
+    */
+  void copy(const CMathEvent & src, CMathContainer & container);
+
+  /**
+   * Indicate that the object has moved
    */
-  void copy(const CMathEvent & src, CMathContainer & container, const size_t & valueOffset, const size_t & objectOffset);
+  void moved();
+
+  /**
+   * The objects and values are relocated
+   * @param const std::vector< CMath::sRelocate > & relocations
+   */
+  void relocate(const std::vector< CMath::sRelocate > & relocations);
 
   bool compile(CEvent * pDataEvent,
                CMathContainer & container);

@@ -120,23 +120,17 @@ CMathExpression::~CMathExpression()
 
 // static
 CMathExpression * CMathExpression::copy(const CMathExpression & src,
-                                        CMathContainer & container,
-                                        const size_t & valueOffset,
-                                        const size_t & objectOffset)
+                                        CMathContainer & container)
 {
   CMathExpression * pExpression = new CMathExpression(src.getObjectName(), container);
-
   pExpression->setRoot(src.getRoot()->copyBranch());
-  pExpression->reallocate(container, valueOffset, objectOffset);
 
   return pExpression;
 }
 
-void CMathExpression::reallocate(CMathContainer & container,
-                                 const size_t & valueOffset,
-                                 const size_t & objectOffset)
+void CMathExpression::relocate(const std::vector< CMath::sRelocate > & relocations)
 {
-  // Apply the offset to all nodes
+  // Apply the relocations to all nodes of type POINTER
   CCopasiTree<CEvaluationNode>::iterator it = getRoot();
   CCopasiTree<CEvaluationNode>::iterator end = NULL;
 
@@ -145,11 +139,13 @@ void CMathExpression::reallocate(CMathContainer & container,
       if (it->getType() == (CEvaluationNode::OBJECT | CEvaluationNodeObject::POINTER))
         {
           C_FLOAT64 * pPointer = (C_FLOAT64 *) stringToPointer(it->getData());
-          static_cast< CEvaluationNodeObject * >(&*it)->setObjectValuePtr((C_FLOAT64 *)((size_t) pPointer + valueOffset));
+          CMathContainer::relocateValue(pPointer, relocations);
+          static_cast< CEvaluationNodeObject * >(&*it)->setObjectValuePtr(pPointer);
         }
     }
 
-  compile();
+  mInfix = mpRoot->buildInfix();
+  CMathContainer::relocateObjectSet(mPrerequisites, relocations);
 }
 
 const C_FLOAT64 & CMathExpression::value()

@@ -1,4 +1,4 @@
-// Copyright (C) 2011 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -24,6 +24,11 @@ public:
    * @param const CObjectInterface * pObject
    */
   CMathDependencyNode(const CObjectInterface * pObject);
+
+  /**
+   * Copy constructor
+   */
+  CMathDependencyNode(const CMathDependencyNode & src);
 
   /**
    * Destructor
@@ -124,6 +129,14 @@ public:
    * Reset the flags requested and changed
    */
   void reset();
+
+  /**
+   * Relocate the objects in the nodes of the graph.
+   * @param std::vector< CMath::sRelocate > & relocations
+   */
+  void relocate(std::vector< CMath::sRelocate > & relocations);
+
+  void updateEdges(const std::map< CMathDependencyNode *, CMathDependencyNode * > & map);
 
   // Attributes
 private:

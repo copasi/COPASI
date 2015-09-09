@@ -1,4 +1,4 @@
-// Copyright (C) 2011 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -67,24 +67,16 @@ public:
    * Copy an expression with the given offsets
    * @param const CMathExpression & src
    * @param CMathContainer & container
-   * @param const size_t & valueOffset
-   * @param const size_t & objectOffset
    * @return CMathExpression * copy
    */
   static CMathExpression * copy(const CMathExpression & src,
-                                CMathContainer & container,
-                                const size_t & valueOffset,
-                                const size_t & objectOffset);
+                                CMathContainer & container);
 
   /**
    * Copy an expression with the given offsets
-   * @param CMathContainer & container
-   * @param const size_t & valueOffset
-   * @param const size_t & objectOffset
+   * @param const std::vector< CMath::sRelocate > & relocations
    */
-  void reallocate(CMathContainer & container,
-                  const size_t & valueOffset,
-                  const size_t & objectOffset);
+  void relocate(const std::vector< CMath::sRelocate > & relocations);
 
   /**
    * Evaluate the expression

@@ -1,4 +1,4 @@
-// Copyright (C) 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2014 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -61,10 +61,19 @@ public:
    * Copy an existing object
    * @param const CMathDelay & src
    * @param CMathContainer & container
-   * @param const size_t & valueOffset
-   * @param const size_t & objectOffset
    */
-  void copy(const CMathDelay & src, CMathContainer & container, const size_t & valueOffset, const size_t & objectOffset);
+  void copy(const CMathDelay & src, CMathContainer & container);
+
+  /**
+   * Indicate that the object has moved
+   */
+  void moved();
+
+  /**
+   * The objects and values are relocated
+   * @param const std::vector< CMath::sRelocate > & relocations
+   */
+  void relocate(const std::vector< CMath::sRelocate > & relocations);
 
   /**
    * Create the update sequences required for event processing.

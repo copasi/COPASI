@@ -30,6 +30,11 @@ public:
   CMathObject();
 
   /**
+   * Copy constructor
+   */
+  CMathObject(const CMathObject & src);
+
+  /**
    * Destructor
    */
   virtual ~CMathObject();
@@ -38,18 +43,19 @@ public:
    * Copy an existing object
    * @param const CMathObject & src
    * @param CMathContainer & container
-   * @param const size_t & valueOffset
-   * @param const size_t & objectOffset
    */
-  void copy(const CMathObject & src, CMathContainer & container, const size_t & valueOffset, const size_t & objectOffset);
+  void copy(const CMathObject & src, CMathContainer & container);
 
   /**
-   * Copy an existing object
-   * @param CMathContainer & container
-   * @param const size_t & valueOffset
-   * @param const size_t & objectOffset
+   * Relocate an existing object
+   * @param const std::vector< CMath::sRelaocte > & relocations
    */
-  void reallocate(CMathContainer & container, const size_t & valueOffset, const size_t & objectOffset);
+  void relocate(const std::vector< CMath::sRelocate > & relocations);
+
+  /**
+   * Notify an object that it has been moved;
+   */
+  void moved();
 
   /**
    * Retrieve the CN of the object

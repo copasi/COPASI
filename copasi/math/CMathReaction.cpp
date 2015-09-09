@@ -69,33 +69,46 @@ void CMathReaction::initialize(const CReaction * pReaction, CMathContainer & con
 }
 
 void CMathReaction::copy(const CMathReaction & src,
-                         CMathContainer & /* container */,
-                         const size_t & valueOffset,
-                         const size_t & objectOffset)
+                         CMathContainer & /* container */)
 {
-  mpReaction = src.mpReaction;
+  assert(&src != this);
+  *this = src;
+}
 
-  mpParticleFlux = src.mpParticleFlux + objectOffset;
-  mpFlux = src.mpFlux + objectOffset;
-  mpPropensity = src.mpPropensity + objectOffset;
+/**
+ * Indicate that the object has moved
+ */
+void CMathReaction::moved()
+{}
 
-  mNumberBalance.resize(src.mNumberBalance.size());
-  SpeciesBalance * pStepUpdate = mNumberBalance.array();
-  SpeciesBalance * pStepUpdateEnd = pStepUpdate + mNumberBalance.size();
-  const SpeciesBalance * pStepUpdateSrc = src.mNumberBalance.array();
+void CMathReaction::relocate(const std::vector< CMath::sRelocate > & relocations)
+{
+  CMathContainer::relocateObject(mpParticleFlux, relocations);
+  CMathContainer::relocateObject(mpFlux, relocations);
+  CMathContainer::relocateObject(mpPropensity, relocations);
+  CMathContainer::relocateObjectSet(mChangedSpecies, relocations);
 
-  for (; pStepUpdate != pStepUpdateEnd; ++pStepUpdate, ++pStepUpdateSrc)
+  // std::set< std::pair < const CMathObject *, C_FLOAT64 > > ObjectBalance;
+  ObjectBalance ObjectBalance;
+  ObjectBalance::iterator itObjectBalance = mObjectBalance.begin();
+  ObjectBalance::iterator endObjectBalance = mObjectBalance.end();
+
+  for (; itObjectBalance != endObjectBalance; ++itObjectBalance)
     {
-      pStepUpdate->first = pStepUpdateSrc->first + valueOffset;
-      pStepUpdate->second = pStepUpdateSrc->second;
+      const CMathObject * pObject = itObjectBalance->first;
+      CMathContainer::relocateObject(pObject, relocations);
+
+      ObjectBalance.insert(std::make_pair(pObject, itObjectBalance->second));
     }
 
-  ObjectBalance::const_iterator it = src.mObjectBalance.begin();
-  ObjectBalance::const_iterator end = src.mObjectBalance.end();
+  mObjectBalance = ObjectBalance;
 
-  for (; it != end; ++it)
+  std::pair< C_FLOAT64 *, C_FLOAT64 > * pNumberBalance = mNumberBalance.array();
+  std::pair< C_FLOAT64 *, C_FLOAT64 > * pNumberBalanceEnd = pNumberBalance + mNumberBalance.size();
+
+  for (; pNumberBalance != pNumberBalanceEnd; ++pNumberBalance)
     {
-      mObjectBalance.insert(std::pair < const CMathObject *, C_FLOAT64 >(it->first + objectOffset, it->second));
+      CMathContainer::relocateValue(pNumberBalance->first, relocations);
     }
 }
 

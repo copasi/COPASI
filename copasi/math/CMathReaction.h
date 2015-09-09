@@ -47,10 +47,19 @@ public:
    * Copy an existing object
    * @param const CMathReaction & src
    * @param CMathContainer & container
-   * @param const size_t & valueOffset
-   * @param const size_t & objectOffset
    */
-  void copy(const CMathReaction & src, CMathContainer & container, const size_t & valueOffset, const size_t & objectOffset);
+  void copy(const CMathReaction & src, CMathContainer & container);
+
+  /**
+   * Indicate that the object has moved
+   */
+  void moved();
+
+  /**
+   * The objects and values are relocated
+   * @param const std::vector< CMath::sRelocate > & relocations
+   */
+  void relocate(const std::vector< CMath::sRelocate > & relocations);
 
   /**
    * Fire the reaction count times. Note count must not necessarily be an integer

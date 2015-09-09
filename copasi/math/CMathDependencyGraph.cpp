@@ -10,6 +10,7 @@
 #include "CMathDependencyGraph.h"
 #include "CMathDependencyNode.h"
 #include "CMathObject.h"
+#include "CMathContainer.h"
 
 #include "report/CCopasiContainer.h"
 #include "report/CCopasiObjectName.h"
@@ -21,6 +22,31 @@ CMathDependencyGraph::CMathDependencyGraph():
   mObjects2Nodes(),
   mObject2Index()
 {}
+
+CMathDependencyGraph::CMathDependencyGraph(const CMathDependencyGraph & src):
+  mObjects2Nodes(),
+  mObject2Index()
+{
+  std::map< CMathDependencyNode *, CMathDependencyNode * > Src2New;
+
+  NodeMap::const_iterator itSrc = src.mObjects2Nodes.begin();
+  NodeMap::const_iterator endSrc = src.mObjects2Nodes.end();
+
+  for (; itSrc != endSrc; ++itSrc)
+    {
+      CMathDependencyNode * pNode = new CMathDependencyNode(*itSrc->second);
+      mObjects2Nodes.insert(std::make_pair(itSrc->first, pNode));
+      Src2New.insert(std::make_pair(itSrc->second, pNode));
+    }
+
+  NodeMap::iterator it = mObjects2Nodes.begin();
+  NodeMap::iterator end = mObjects2Nodes.end();
+
+  for (; it != end; ++it)
+    {
+      it->second->updateEdges(Src2New);
+    }
+}
 
 CMathDependencyGraph::~CMathDependencyGraph()
 {
@@ -284,6 +310,26 @@ bool CMathDependencyGraph::dependsOn(const CObjectInterface * pObject,
   getUpdateSequence(UpdateSequence, context, ChangedObjects, RequestedObjects);
 
   return !UpdateSequence.empty();
+}
+
+void CMathDependencyGraph::relocate(std::vector< CMath::sRelocate > & relocations)
+{
+  NodeMap Objects2Nodes;
+  const_iterator it = mObjects2Nodes.begin();
+  const_iterator end = mObjects2Nodes.end();
+
+  std::map< const CObjectInterface *, CMathDependencyNode * > m;
+
+  for (; it != end; ++it)
+    {
+      const CObjectInterface * pObject = it->first;
+      CMathContainer::relocateObject(pObject, relocations);
+      it->second->relocate(relocations);
+
+      Objects2Nodes.insert(std::make_pair(pObject, it->second));
+    }
+
+  mObjects2Nodes = Objects2Nodes;
 }
 
 void CMathDependencyGraph::exportDOTFormat(std::ostream & os, const std::string & name) const

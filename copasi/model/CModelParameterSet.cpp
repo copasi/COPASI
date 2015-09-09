@@ -84,7 +84,7 @@ void CModelParameterSet::createFromModel()
   CModelParameter * pParameter;
   CModelParameterGroup * pGroup;
 
-  // TODO CRITICAL Create the proper structure that fits the parameter overview in the GUI
+  // Create the proper structure that fits the parameter overview in the GUI
   pGroup = static_cast< CModelParameterGroup *>(CModelParameterGroup::add(Group));
   pGroup->setCN(CCopasiStaticString("Initial Time").getCN());
 

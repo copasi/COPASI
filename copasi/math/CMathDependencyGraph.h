@@ -29,6 +29,11 @@ public:
   CMathDependencyGraph();
 
   /**
+   * Copy constructor
+   */
+  CMathDependencyGraph(const CMathDependencyGraph & src);
+
+  /**
    * Destructor
    */
   ~CMathDependencyGraph();
@@ -72,6 +77,12 @@ public:
   bool dependsOn(const CObjectInterface * pObject,
                  const CMath::SimulationContextFlag & context,
                  const CObjectInterface * pChangedObject) const;
+
+  /**
+   * Relocate the objects in the nodes of the graph.
+   * @param std::vector< CMath::sRelocate > & relocations
+   */
+  void relocate(std::vector< CMath::sRelocate > & relocations);
 
   void exportDOTFormat(std::ostream & os, const std::string & name) const;
 

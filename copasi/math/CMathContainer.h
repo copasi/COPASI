@@ -41,6 +41,79 @@ private:
     CMathObject * pDiscontinuous;
   };
 
+  struct sSize
+  {
+  public:
+    size_t nFixed;
+    size_t nEventTargets; // auto determined
+    // nTime := 1
+    size_t nODE;
+    size_t nReactionSpecies; // fixed
+    size_t nAssignment;
+    size_t nIntensiveValues; // fixed
+    size_t nMoieties; // auto determined
+    size_t nEvents;
+    size_t nEventAssignments;
+    size_t nEventRoots; // auto determined
+    size_t nReactions; // fixed
+    size_t nDiscontinuities; // auto determined
+    size_t nDelayValues; // auto determined
+    size_t nDelayLags; // auto determined
+    C_FLOAT64 * pValue;
+    CMathObject * pObject;
+  };
+
+  static void createRelocation(const size_t & o, const size_t & n,
+                               CMath::sRelocate & relocate,
+                               std::vector< CMath::sRelocate > & relocations,
+                               const bool & end = true);
+
+  template < class CType > void relocateVector(CVectorCore< CType > & vector, CType *& pBuffer, size_t size,
+      std::vector< CMath::sRelocate > & relocations)
+  {
+    if (size != vector.size())
+      {
+        CVectorCore< CType > OldVector;
+        OldVector.initialize(vector);
+        pBuffer = (size > 0) ? new CType[size] : NULL;
+        vector.initialize(size, pBuffer);
+
+        CType * pOld = OldVector.array();
+        CType * pNew = vector.array();
+        CType * pNewEnd = pNew + std::min(vector.size(), OldVector.size());
+
+        for (; pNew != pNewEnd; ++pNew, ++pOld)
+          {
+            *pNew = *pOld;
+            pNew->relocate(relocations);
+            pOld->moved();
+          }
+
+        if (OldVector.array() != NULL) delete [] OldVector.array();
+      }
+    else
+      {
+        CType * pNew = vector.array();
+        CType * pNewEnd = pNew + vector.size();
+
+        for (; pNew != pNewEnd; ++pNew)
+          {
+            pNew->relocate(relocations);
+          }
+      }
+  }
+
+public:
+  static void relocateUpdateSequence(CObjectInterface::UpdateSequence & sequence, const std::vector< CMath::sRelocate > & relocations);
+  static void relocateObjectSet(CObjectInterface::ObjectSet & objectSet, const std::vector< CMath::sRelocate > & relocations);
+  static void relocateValue(C_FLOAT64 *& pValue, const std::vector< CMath::sRelocate > & relocations);
+  static void relocateValue(const C_FLOAT64 *& pValue, const std::vector< CMath::sRelocate > & relocations);
+  static void relocateObject(CObjectInterface *& pObject, const std::vector< CMath::sRelocate > & relocations);
+  static void relocateObject(const CObjectInterface *& pObject, const std::vector< CMath::sRelocate > & relocations);
+  static void relocateObject(CMathObject *& pObject, const std::vector< CMath::sRelocate > & relocations);
+  static void relocateObject(const CMathObject *& pObject, const std::vector< CMath::sRelocate > & relocations);
+
+private:
   /**
    * Default Constructor
    */
@@ -429,9 +502,9 @@ public:
 
   /**
    * Retrieve the count of independent species
-   * @return const size_t & countIndependentSpecies
+   * @return const size_t countIndependentSpecies
    */
-  const size_t & getCountIndependentSpecies() const;
+  const size_t getCountIndependentSpecies() const;
 
   /**
    * Retrieve the count of dependent species
@@ -459,15 +532,15 @@ public:
 
   /**
    * Retrieve the reactions
-   * @return CVector< CMathReaction > & reactions
+   * @return CVectorCore< CMathReaction > & reactions
    */
-  CVector< CMathReaction > & getReactions();
+  CVectorCore< CMathReaction > & getReactions();
 
   /**
    * Retrieve the reactions
-   * @return const CVector< CMathReaction > & reactions
+   * @return const CVectorCore< CMathReaction > & reactions
    */
-  const CVector< CMathReaction > & getReactions() const;
+  const CVectorCore< CMathReaction > & getReactions() const;
 
   /**
    * Retrieve the stoichiometry matrix
@@ -480,7 +553,7 @@ public:
    * Retrieve the events
    * @return const CVector< CMathEventN > & events
    */
-  const CVector< CMathEvent > & getEvents() const;
+  const CVectorCore< CMathEvent > & getEvents() const;
 
   /**
    * Retrieve the initial dependencies
@@ -583,6 +656,19 @@ public:
   C_FLOAT64 * getInitialValuePointer(const C_FLOAT64 * pValue) const;
 
   /**
+   * Add an entity to the container
+   * @param const CModelEntity & entity
+   * @return CMathObject * pEntity
+   */
+  CMathObject * addEntity(const CModelEntity & entity);
+
+  /**
+   * Remove the event from the container
+   * @param CMathObject * pEntity
+   */
+  void removeEntity(CMathObject * pEntity);
+
+  /**
    * Add an event to the container
    * @param const CEvent & dataEvent
    * @return CMathEventN * pMathEvent
@@ -611,12 +697,14 @@ private:
    */
   void allocate();
 
+  void createRelocations(const sSize & size, std::vector< CMath::sRelocate > & Relocations);
+
   /**
    * Resize the container
-   * @param const size_t & size
-   * @return std::pair< size_t, size_t > offsets
+   * @param CMathContainer::sSize & size
+   * @return std::vector< CMath::sRelocate > relocations
    */
-  std::pair< size_t, size_t > resize(const size_t & size);
+  std::vector< CMath::sRelocate > resize(sSize & size);
 
   /**
    * Initialize the pointers
@@ -823,7 +911,8 @@ private:
   CMathEventQueue * mpProcessQueue;
   CRandom * mpRandomGenerator;
 
-  CVector< C_FLOAT64 > mValues;
+  CVectorCore< C_FLOAT64 > mValues;
+  C_FLOAT64 * mpValuesBuffer;
 
   CVectorCore< C_FLOAT64 > mInitialExtensiveValues;
   CVectorCore< C_FLOAT64 > mInitialIntensiveValues;
@@ -854,14 +943,6 @@ private:
   CVectorCore< C_FLOAT64 > mDelayValues;
   CVectorCore< C_FLOAT64 > mDelayLags;
   CVectorCore< C_FLOAT64 > mTransitionTimes;
-
-  size_t mFixedCount;
-  size_t mEventTargetCount;
-  size_t mODECount;
-  size_t mIndependentCount;
-  size_t mDependentCount;
-  size_t mAssignmentCount;
-  size_t mDelayCount;
 
   /**
    * The initial state contains also all fixed values
@@ -986,17 +1067,20 @@ private:
   /**
    * A vector containing all math objects.
    */
-  CVector< CMathObject > mObjects;
+  CVectorCore< CMathObject > mObjects;
+  CMathObject * mpObjectsBuffer;
 
   /**
    * A vector containing all math events.
    */
-  CVector< CMathEvent > mEvents;
+  CVectorCore< CMathEvent > mEvents;
+  CMathEvent * mpEventsBuffer;
 
   /**
    * A vector containing all math reactions.
    */
-  CVector< CMathReaction > mReactions;
+  CVectorCore< CMathReaction > mReactions;
+  CMathReaction * mpReactionsBuffer;
 
   /**
    * A vector of Boolean values indicating whether a root is changing
@@ -1055,12 +1139,18 @@ private:
   /**
    * A vector of delays
    */
-  CVector< CMathDelay > mDelays;
+  CVectorCore< CMathDelay > mDelays;
+  CMathDelay * mpDelaysBuffer;
 
   /**
    * A flag indicating whether the model is autonomous.
    */
   bool mIsAutonomous;
+
+  /**
+   * Structure containing all the important size information
+   */
+  sSize mSize;
 };
 
 #endif // COPASI_CMathContainer
