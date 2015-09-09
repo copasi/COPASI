@@ -368,8 +368,6 @@ void CCopasiObject::getAllDependencies(CCopasiObject::DataObjectSet & dependenci
 // virtual
 bool CCopasiObject::mustBeDeleted(const CCopasiObject::DataObjectSet & deletedObjects) const
 {
-  bool MustBeDeleted = false;
-
   DataObjectSet::const_iterator it = mDependencies.begin();
   DataObjectSet::const_iterator end = mDependencies.end();
 
@@ -377,14 +375,11 @@ bool CCopasiObject::mustBeDeleted(const CCopasiObject::DataObjectSet & deletedOb
     {
       if (deletedObjects.find(*it) != deletedObjects.end())
         {
-          MustBeDeleted = true;
-          break;
+          return true;
         }
     }
 
-  MustBeDeleted = deletedObjects.find(this) != deletedObjects.end();
-
-  return MustBeDeleted;
+  return deletedObjects.find(this) != deletedObjects.end();
 }
 
 bool CCopasiObject::dependsOn(CCopasiObject::DataObjectSet candidates,
