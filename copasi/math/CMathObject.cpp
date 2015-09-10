@@ -594,7 +594,15 @@ bool CMathObject::compileInitialValue(CMathContainer & container)
             break;
 
           case CMath::Assignment:
-            success &= createConvertedExpression(pEntity->getInitialExpressionPtr(), container);
+            if (pEntity != NULL)
+              {
+                success &= createConvertedExpression(pEntity->getInitialExpressionPtr(), container);
+              }
+            else
+              {
+                compileExpression();
+              }
+
             break;
 
           case CMath::Conversion:
@@ -705,11 +713,16 @@ bool CMathObject::compileValue(CMathContainer & container)
           break;
 
           case CMath::Assignment:
-          {
-            const CModelEntity * pEntity = static_cast< const CModelEntity * >(mpDataObject->getObjectParent());
-            success &= createConvertedExpression(pEntity->getExpressionPtr(), container);
-          }
-          break;
+            if (pEntity != NULL)
+              {
+                success &= createConvertedExpression(pEntity->getExpressionPtr(), container);
+              }
+            else
+              {
+                compileExpression();
+              }
+
+            break;
 
           case CMath::SimulationTypeUndefined:
             success = false;
@@ -784,9 +797,13 @@ bool CMathObject::compileRate(CMathContainer & container)
               {
                 success &= createExtensiveODERateExpression(pSpecies, container);
               }
-            else
+            else if (pEntity != NULL)
               {
                 success &= createConvertedExpression(pEntity->getExpressionPtr(), container);
+              }
+            else
+              {
+                compileExpression();
               }
 
             break;
@@ -1204,7 +1221,7 @@ bool CMathObject::compileTransitionTime(CMathContainer & container)
 
 void CMathObject::compileExpression()
 {
-  assert(mpExpression);
+  if (mpExpression == NULL) return;
 
   if (mIsInitialValue)
     {

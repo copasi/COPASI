@@ -49,14 +49,38 @@ void CMathDependencyNode::addPrerequisite(CMathDependencyNode * pObject)
   mPrerequisites.push_back(pObject);
 }
 
+void CMathDependencyNode::removePrerequisite(CMathDependencyNode * pNode)
+{
+  std::vector< CMathDependencyNode * >::iterator it = mPrerequisites.begin();
+  std::vector< CMathDependencyNode * >::iterator end = mPrerequisites.end();
+
+  for (; it != end; ++it)
+    if (*it == pNode)
+      {
+        mPrerequisites.erase(it);
+      }
+}
+
 std::vector< CMathDependencyNode * > & CMathDependencyNode::getPrerequisites()
 {
   return mPrerequisites;
 }
 
-void CMathDependencyNode::addDependent(CMathDependencyNode * pObject)
+void CMathDependencyNode::addDependent(CMathDependencyNode * pNode)
 {
-  mDependents.push_back(pObject);
+  mDependents.push_back(pNode);
+}
+
+void CMathDependencyNode::removeDependent(CMathDependencyNode * pNode)
+{
+  std::vector< CMathDependencyNode * >::iterator it = mDependents.begin();
+  std::vector< CMathDependencyNode * >::iterator end = mDependents.end();
+
+  for (; it != end; ++it)
+    if (*it == pNode)
+      {
+        mDependents.erase(it);
+      }
 }
 
 std::vector< CMathDependencyNode * > & CMathDependencyNode::getDependents()
@@ -283,9 +307,28 @@ void CMathDependencyNode::reset()
   mRequested = false;
 }
 
-void CMathDependencyNode::relocate(std::vector< CMath::sRelocate > & relocations)
+void CMathDependencyNode::relocate(const std::vector< CMath::sRelocate > & relocations)
 {
   CMathContainer::relocateObject(mpObject, relocations);
+}
+
+void CMathDependencyNode::remove()
+{
+  std::vector< CMathDependencyNode * >::iterator it = mPrerequisites.begin();
+  std::vector< CMathDependencyNode * >::iterator end = mPrerequisites.end();
+
+  for (; it != end; ++it)
+    {
+      (*it)->removeDependent(this);
+    }
+
+  it = mDependents.begin();
+  end = mDependents.end();
+
+  for (; it != end; ++it)
+    {
+      (*it)->removePrerequisite(this);
+    }
 }
 
 void CMathDependencyNode::updateEdges(const std::map< CMathDependencyNode *, CMathDependencyNode * > & map)

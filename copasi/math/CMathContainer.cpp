@@ -222,7 +222,9 @@ CMathContainer::CMathContainer():
   mObjects(),
   mpObjectsBuffer(NULL),
   mEvents(),
+  mpEventsBuffer(NULL),
   mReactions(),
+  mpReactionsBuffer(NULL),
   mRootIsDiscrete(),
   mRootIsTimeDependent(),
   mRootProcessors(),
@@ -234,6 +236,7 @@ CMathContainer::CMathContainer():
   mDiscontinuityInfix2Object(),
   mTriggerInfix2Event(),
   mDelays(),
+  mpDelaysBuffer(NULL),
   mIsAutonomous(true),
   mSize()
 {
@@ -301,7 +304,9 @@ CMathContainer::CMathContainer(CModel & model):
   mObjects(),
   mpObjectsBuffer(NULL),
   mEvents(),
+  mpEventsBuffer(NULL),
   mReactions(),
+  mpReactionsBuffer(NULL),
   mRootIsDiscrete(),
   mRootIsTimeDependent(),
   mRootProcessors(),
@@ -312,6 +317,7 @@ CMathContainer::CMathContainer(CModel & model):
   mDiscontinuityInfix2Object(),
   mTriggerInfix2Event(),
   mDelays(),
+  mpDelaysBuffer(NULL),
   mIsAutonomous(true),
   mSize()
 {
@@ -385,7 +391,9 @@ CMathContainer::CMathContainer(const CMathContainer & src):
   mObjects(),
   mpObjectsBuffer(NULL),
   mEvents(),
+  mpEventsBuffer(NULL),
   mReactions(),
+  mpReactionsBuffer(NULL),
   mRootIsDiscrete(src.mRootIsDiscrete),
   mRootIsTimeDependent(src.mRootIsTimeDependent),
   mRootProcessors(src.mRootProcessors),
@@ -396,6 +404,7 @@ CMathContainer::CMathContainer(const CMathContainer & src):
   mDiscontinuityInfix2Object(),
   mTriggerInfix2Event(),
   mDelays(),
+  mpDelaysBuffer(NULL),
   mIsAutonomous(src.mIsAutonomous),
   mSize()
 {
@@ -1170,6 +1179,7 @@ void CMathContainer::compile()
   createDelays();
 
   createDependencyGraphs();
+  createUpdateSequences();
 
   updateInitialValues(CModelParameter::ParticleNumbers);
 
@@ -1185,14 +1195,6 @@ void CMathContainer::compile()
           pReaction->initialize(*itReaction, *this);
           ++pReaction;
         }
-    }
-
-  CMathEvent * pEvent = mEvents.array();
-  CMathEvent * pEventEnd = pEvent + mEvents.size();
-
-  for (; pEvent != pEventEnd; ++pEvent)
-    {
-      pEvent->createUpdateSequences();
     }
 
   // TODO We may have unused event triggers and roots due to optimization
@@ -1769,12 +1771,25 @@ void CMathContainer::initializeObjects(CMath::sPointers & p)
 
 void CMathContainer::initializeEvents(CMath::sPointers & p)
 {
-  // Initialize events.
   CMathEvent * pEvent = mEvents.array();
-  CMathEvent * pEventEnd = pEvent + mEvents.size();
 
-  for (; pEvent != pEventEnd; ++pEvent)
+  // User defined events
+  const CCopasiVector< CEvent > & Events = mpModel->getEvents();
+  CCopasiVector< CEvent >::const_iterator itEvent = Events.begin();
+  CCopasiVector< CEvent >::const_iterator endEvent = Events.end();
+
+  for (; itEvent != endEvent; ++itEvent, ++pEvent)
     {
+      CMathEvent::allocate(*pEvent, *itEvent, *this);
+      pEvent->initialize(p);
+    }
+
+  itEvent = mDiscontinuityEvents.begin();
+  endEvent = mDiscontinuityEvents.end();
+
+  for (; itEvent != endEvent; ++itEvent)
+    {
+      CMathEvent::allocate(*pEvent, *itEvent, *this);
       pEvent->initialize(p);
     }
 
@@ -1904,11 +1919,23 @@ void CMathContainer::createDependencyGraphs()
   mTransientDependencies.exportDOTFormat(TransientDependencies, "TransientDependencies");
 #endif // COPASI_DEBUG_TRACE
 
+  return;
+}
+
+void CMathContainer::createUpdateSequences()
+{
   createSynchronizeInitialValuesSequence();
   createApplyInitialValuesSequence();
   createUpdateSimulationValuesSequence();
   createUpdateAllTransientDataValuesSequence();
-  return;
+
+  CMathEvent * pEvent = mEvents.array();
+  CMathEvent * pEventEnd = pEvent + mEvents.size();
+
+  for (; pEvent != pEventEnd; ++pEvent)
+    {
+      pEvent->createUpdateSequences();
+    }
 }
 
 void CMathContainer::createSynchronizeInitialValuesSequence()
@@ -3072,32 +3099,600 @@ C_FLOAT64 * CMathContainer::getInitialValuePointer(const C_FLOAT64 * pValue) con
   return const_cast< C_FLOAT64 * >(pInitialValue);
 }
 
-CMathObject * CMathContainer::addEntity(const CModelEntity & entity)
+CMath::Entity< CMathObject > CMathContainer::addAnalysisObject(const CMath::Entity< CCopasiObject > & entity,
+    const CMath::SimulationType & simulationType,
+    const std::string & infix)
 {
-  // TODO CRITICAL Implement me!
-  fatalError();
+  CMath::Entity< CMathObject > Entity;
 
-  return NULL;
+  sSize Size = mSize;
+
+  switch (simulationType)
+    {
+      case CMath::Fixed:
+        Size.nFixed++;
+        break;
+
+      case CMath::ODE:
+        Size.nODE++;
+        break;
+
+      case CMath::Assignment:
+        Size.nAssignment++;
+        break;
+
+      case CMath::SimulationTypeUndefined:
+      case CMath::EventTarget:
+      case CMath::Time:
+      case CMath::Dependent:
+      case CMath::Independent:
+      case CMath::Conversion:
+        fatalError();
+        break;
+    }
+
+  resize(Size);
+
+  CExpression Expression("Source", this);
+
+  if (!Expression.setInfix(infix)) return Entity;
+
+  CMathObject * pObject = mObjects.array();
+  CMathObject * pObjectEnd = pObject + mObjects.size();
+  size_t kind = 0;
+
+  for (; pObject != pObjectEnd; ++pObject)
+    {
+      if (pObject->getValueType() != CMath::ValueTypeUndefined ||
+          pObject->getEntityType() != CMath::EntityTypeUndefined ||
+          pObject->getSimulationType() != CMath::SimulationTypeUndefined) continue;
+
+      C_FLOAT64 * pValue = (C_FLOAT64 *) pObject->getValuePointer();
+
+      switch (kind)
+        {
+          case 0:
+            CMathObject::initialize(pObject, pValue, CMath::Value, CMath::Analysis,
+                                    (simulationType == CMath::Assignment) ? CMath::Assignment : CMath::Fixed,
+                                    false, true, entity.InitialValue);
+
+            if (simulationType == CMath::Assignment)
+              {
+                CMathExpression * pExpression = new CMathExpression("Assignment", *this);
+                pExpression->CEvaluationTree::setRoot(copyBranch(Expression.getRoot(), false));
+                pExpression->convertToInitialExpression();
+                pObject->setExpressionPtr(pExpression);
+              }
+
+            Entity.InitialValue = pObject;
+            break;
+
+          case 1:
+            CMathObject::initialize(pObject, pValue, CMath::Rate, CMath::Analysis,
+                                    simulationType, false, true,
+                                    entity.InitialRate);
+
+            if (simulationType == CMath::ODE)
+              {
+                CMathExpression * pExpression = new CMathExpression("Rate", *this);
+                pExpression->CEvaluationTree::setRoot(copyBranch(Expression.getRoot(), false));
+                pExpression->convertToInitialExpression();
+                pObject->setExpressionPtr(pExpression);
+              }
+
+            Entity.InitialRate = pObject;
+            break;
+
+          case 2:
+            CMathObject::initialize(pObject, pValue, CMath::Value, CMath::Analysis,
+                                    simulationType, false, false,
+                                    entity.Value);
+
+            if (simulationType == CMath::Assignment)
+              {
+                CMathExpression * pExpression = new CMathExpression("Assignment", *this);
+                pExpression->CEvaluationTree::setRoot(copyBranch(Expression.getRoot(), false));
+                pObject->setExpressionPtr(pExpression);
+              }
+
+            Entity.Value = pObject;
+            break;
+
+          case 3:
+            CMathObject::initialize(pObject, pValue, CMath::Rate, CMath::Analysis,
+                                    simulationType, false, false,
+                                    entity.Rate);
+
+            if (simulationType == CMath::ODE)
+              {
+                CMathExpression * pExpression = new CMathExpression("Rate", *this);
+                pExpression->CEvaluationTree::setRoot(copyBranch(Expression.getRoot(), false));
+                pObject->setExpressionPtr(pExpression);
+              }
+
+            Entity.Rate = pObject;
+            break;
+        }
+
+      pObject->compile(*this);
+      mInitialDependencies.addObject(pObject);
+    }
+
+  createUpdateSequences();
+
+  return Entity;
 }
 
-void CMathContainer::removeEntity(CMathObject * pEntity)
+bool CMathContainer::removeAnalysisObject(CMath::Entity< CMathObject > & mathObjects)
 {
-  // TODO CRITICAL Implement me!
-  fatalError();
+  sSize Size = mSize;
+  size_t Index = C_INVALID_INDEX;
+
+  switch (mathObjects.Value->getSimulationType())
+    {
+      case CMath::Fixed:
+        Size.nFixed--;
+        Index += mSize.nFixed;
+        break;
+
+      case CMath::EventTarget:
+        Size.nEventTargets--;
+        Index += mSize.nFixed + mSize.nEventTargets;
+        break;
+
+      case CMath::ODE:
+        Size.nODE--;
+        Index += mSize.nFixed + mSize.nEventTargets + 2;
+        break;
+
+      case CMath::Assignment:
+        Size.nAssignment--;
+        Index += mSize.nFixed + mSize.nEventTargets + 1 + mSize.nODE + mSize.nReactionSpecies + mSize.nAssignment;
+        break;
+
+      case CMath::SimulationTypeUndefined:
+      case CMath::Time:
+      case CMath::Dependent:
+      case CMath::Independent:
+      case CMath::Conversion:
+        fatalError();
+        break;
+    }
+
+  // Check whether this is the last added entity.
+  // Entities can only be removed in reverse order
+  if (mathObjects.InitialValue != &mObjects[Index]) return false;
+
+  // Update dependencies
+  mInitialDependencies.removeObject(mathObjects.InitialValue);
+  mInitialDependencies.removeObject(mathObjects.InitialRate);
+  mTransientDependencies.removeObject(mathObjects.Value);
+  mTransientDependencies.removeObject(mathObjects.Rate);
+
+  // Remove references to removed objects
+  mathObjects.InitialValue = NULL;
+  mathObjects.InitialRate = NULL;
+  mathObjects.Value = NULL;
+  mathObjects.Rate = NULL;
+
+  // Resize
+  resize(Size);
+
+  // Create Update sequences
+  createUpdateSequences();
 }
 
-CMathEvent * CMathContainer::addEvent(const CEvent & dataEvent)
+CMathEvent * CMathContainer::addAnalysisEvent(const CEvent & dataEvent)
 {
-  // TODO CRITICAL Implement me!
-  fatalError();
+  sSize Size = mSize;
+  sSize OldSize = mSize;
 
-  return NULL;
+  CMathEvent Event;
+  CMathEvent::allocate(Event, &dataEvent, *this);
+
+  Size.nEvents++;
+  Size.nEventRoots += Event.getTrigger().getRoots().size();
+  Size.nEventAssignments += Event.getAssignments().size();
+
+  resize(Size);
+
+  // The new event is the last in the list
+  CMathEvent * pEvent = mEvents.array() + OldSize.nEvents;
+  CMathEvent::allocate(*pEvent, &dataEvent, *this);
+
+  CMath::sPointers p;
+  initializePointers(p);
+
+  // Account for pre-existing objects
+  p.pEventTriggers += OldSize.nEvents;
+  p.pEventTriggersObject += OldSize.nEvents;
+  p.pInitialEventTriggers += OldSize.nEvents;
+  p.pInitialEventTriggersObject += OldSize.nEvents;
+  p.pEventDelays += OldSize.nEvents;
+  p.pEventDelaysObject += OldSize.nEvents;
+  p.pEventPriorities += OldSize.nEvents;
+  p.pEventPrioritiesObject += OldSize.nEvents;
+
+  p.pEventRootStates += OldSize.nEventRoots;
+  p.pEventRootStatesObject += OldSize.nEventRoots;
+  p.pEventRoots += OldSize.nEventRoots;
+  p.pEventRootsObject += OldSize.nEventRoots;
+
+  p.pEventAssignments += OldSize.nAssignment;
+  p.pEventAssignmentsObject += OldSize.nAssignment;
+
+  pEvent->initialize(p);
+  pEvent->compile(&dataEvent, *this);
+
+  // Determine event targets and move objects accordingly.
+  const CMathEvent::CAssignment * pAssignment = pEvent->getAssignments().array();
+  const CMathEvent::CAssignment * pAssignmentEnd = pAssignment + pEvent->getAssignments().size();
+  CMathObject * pFixedStart = getMathObject(mExtensiveValues.array());
+  CMathObject * pFixedEnd = pFixedStart + mSize.nFixed;
+
+  for (; pAssignment != pAssignmentEnd; ++pAssignment)
+    {
+      const CMathObject * pTarget = pAssignment->getTarget();
+
+      if (pFixedStart <= pTarget && pTarget < pFixedEnd)
+        {
+          size_t CurrentIndex = (pTarget - pFixedStart);
+
+          // Create a save haven
+          CVector< C_FLOAT64 > EventTargetValues(4);
+          CVector< CMathObject > EventTargetObjects(4);
+
+          std::vector< CMath::sRelocate > Relocations;
+
+          CMath::sRelocate RelocateTarget;
+          RelocateTarget.pNewValue = EventTargetValues.array();
+          RelocateTarget.pNewObject = EventTargetObjects.array();
+
+          CMath::sRelocate RelocateOther;
+          RelocateOther.pOldValue = mValues.array();
+          RelocateOther.pNewValue = mValues.array();
+          RelocateOther.pOldObject = mObjects.array();
+          RelocateOther.pNewObject = mObjects.array();
+          RelocateOther.offset = -1;
+
+          // Initial value
+          RelocateTarget.pValueStart = mInitialExtensiveValues.array() + CurrentIndex;
+          RelocateTarget.pValueEnd = RelocateTarget.pValueStart + 1;
+          RelocateTarget.pOldValue = RelocateTarget.pValueStart;
+          RelocateTarget.pObjectStart = getMathObject(RelocateTarget.pValueStart);
+          RelocateTarget.pObjectEnd = getMathObject(RelocateTarget.pValueEnd);
+          RelocateTarget.pOldObject = getMathObject(RelocateTarget.pOldValue);
+          RelocateTarget.offset = 0;
+          Relocations.push_back(RelocateTarget);
+
+          RelocateOther.pValueStart = RelocateTarget.pValueEnd;
+          RelocateOther.pValueEnd = mInitialExtensiveValues.array() + mSize.nFixed  + mSize.nEventTargets;
+          RelocateOther.pObjectStart = getMathObject(RelocateOther.pValueStart);
+          RelocateOther.pObjectEnd = getMathObject(RelocateOther.pValueEnd);
+          Relocations.push_back(RelocateOther);
+
+          // Initial rate
+          RelocateTarget.pValueStart = mInitialExtensiveRates.array() + CurrentIndex;
+          RelocateTarget.pValueEnd = RelocateTarget.pValueStart + 1;
+          RelocateTarget.pOldValue = RelocateTarget.pValueStart;
+          RelocateTarget.pObjectStart = getMathObject(RelocateTarget.pValueStart);
+          RelocateTarget.pObjectEnd = getMathObject(RelocateTarget.pValueEnd);
+          RelocateTarget.pOldObject = getMathObject(RelocateTarget.pOldValue);
+          RelocateTarget.offset++;
+          Relocations.push_back(RelocateTarget);
+
+          RelocateOther.pValueStart = RelocateTarget.pValueEnd;
+          RelocateOther.pValueEnd = mInitialExtensiveRates.array() + mSize.nFixed  + mSize.nEventTargets;
+          RelocateOther.pObjectStart = getMathObject(RelocateOther.pValueStart);
+          RelocateOther.pObjectEnd = getMathObject(RelocateOther.pValueEnd);
+          Relocations.push_back(RelocateOther);
+
+          // Value
+          RelocateTarget.pValueStart = mExtensiveValues.array() + CurrentIndex;
+          RelocateTarget.pValueEnd = RelocateTarget.pValueStart + 1;
+          RelocateTarget.pOldValue = RelocateTarget.pValueStart;
+          RelocateTarget.pObjectStart = getMathObject(RelocateTarget.pValueStart);
+          RelocateTarget.pObjectEnd = getMathObject(RelocateTarget.pValueEnd);
+          RelocateTarget.pOldObject = getMathObject(RelocateTarget.pOldValue);
+          RelocateTarget.offset++;
+          Relocations.push_back(RelocateTarget);
+
+          RelocateOther.pValueStart = RelocateTarget.pValueEnd;
+          RelocateOther.pValueEnd = mExtensiveValues.array() + mSize.nFixed  + mSize.nEventTargets;
+          RelocateOther.pObjectStart = getMathObject(RelocateOther.pValueStart);
+          RelocateOther.pObjectEnd = getMathObject(RelocateOther.pValueEnd);
+          Relocations.push_back(RelocateOther);
+
+          // Rate
+          RelocateTarget.pValueStart = mExtensiveRates.array() + CurrentIndex;
+          RelocateTarget.pValueEnd = RelocateTarget.pValueStart + 1;
+          RelocateTarget.pOldValue = RelocateTarget.pValueStart;
+          RelocateTarget.pObjectStart = getMathObject(RelocateTarget.pValueStart);
+          RelocateTarget.pObjectEnd = getMathObject(RelocateTarget.pValueEnd);
+          RelocateTarget.pOldObject = getMathObject(RelocateTarget.pOldValue);
+          RelocateTarget.offset++;
+          Relocations.push_back(RelocateTarget);
+
+          RelocateOther.pValueStart = RelocateTarget.pValueEnd;
+          RelocateOther.pValueEnd = mExtensiveRates.array() + mSize.nFixed  + mSize.nEventTargets;
+          RelocateOther.pObjectStart = getMathObject(RelocateOther.pValueStart);
+          RelocateOther.pObjectEnd = getMathObject(RelocateOther.pValueEnd);
+          Relocations.push_back(RelocateOther);
+
+          Size = mSize;
+          Size.nFixed--;
+          Size.nEventTargets++;
+          relocate(mValues, mObjects, Size, Relocations);
+
+          // Move the event target out of the save haven.
+          Relocations.clear();
+          RelocateTarget.offset = 0;
+
+          // Initial value
+          RelocateTarget.pValueStart = EventTargetValues.array();
+          RelocateTarget.pValueEnd = RelocateTarget.pValueStart + 1;
+          RelocateTarget.pNewValue = mInitialExtensiveValues.array() + mSize.nFixed  + mSize.nEventTargets - 1;
+          RelocateTarget.pOldValue = RelocateTarget.pValueStart;
+          RelocateTarget.pObjectStart = EventTargetObjects.array();
+          RelocateTarget.pObjectEnd = RelocateTarget.pObjectStart + 1;
+          RelocateTarget.pNewObject = getMathObject(RelocateTarget.pNewValue);
+          RelocateTarget.pOldObject = RelocateTarget.pObjectStart;
+          Relocations.push_back(RelocateTarget);
+
+          // Initial Rate
+          RelocateTarget.pValueStart++;
+          RelocateTarget.pValueEnd++;
+          RelocateTarget.pNewValue = mInitialExtensiveRates.array() + mSize.nFixed  + mSize.nEventTargets - 1;
+          RelocateTarget.pOldValue = RelocateTarget.pValueStart;
+          RelocateTarget.pObjectStart++;
+          RelocateTarget.pObjectEnd++;
+          RelocateTarget.pNewObject = getMathObject(RelocateTarget.pNewValue);
+          RelocateTarget.pOldObject = RelocateTarget.pObjectStart;
+          Relocations.push_back(RelocateTarget);
+
+          // Value
+          RelocateTarget.pValueStart++;
+          RelocateTarget.pValueEnd++;
+          RelocateTarget.pNewValue = mExtensiveValues.array() + mSize.nFixed  + mSize.nEventTargets - 1;
+          RelocateTarget.pOldValue = RelocateTarget.pValueStart;
+          RelocateTarget.pObjectStart++;
+          RelocateTarget.pObjectEnd++;
+          RelocateTarget.pNewObject = getMathObject(RelocateTarget.pNewValue);
+          RelocateTarget.pOldObject = RelocateTarget.pObjectStart;
+          Relocations.push_back(RelocateTarget);
+
+          // Rate
+          RelocateTarget.pValueStart++;
+          RelocateTarget.pValueEnd++;
+          RelocateTarget.pNewValue = mExtensiveRates.array() + mSize.nFixed  + mSize.nEventTargets - 1;
+          RelocateTarget.pOldValue = RelocateTarget.pValueStart;
+          RelocateTarget.pObjectStart++;
+          RelocateTarget.pObjectEnd++;
+          RelocateTarget.pNewObject = getMathObject(RelocateTarget.pNewValue);
+          RelocateTarget.pOldObject = RelocateTarget.pObjectStart;
+          Relocations.push_back(RelocateTarget);
+
+          Size = mSize;
+          relocate(mValues, mObjects, Size, Relocations);
+
+          pFixedEnd--;
+        }
+    }
+
+  return pEvent;
 }
 
-void CMathContainer::removeEvent(CMathEvent * pMathEvent)
+bool CMathContainer::removeAnalysisEvent(CMathEvent *& pMathEvent)
 {
-  // TODO CRITICAL Implement me!
-  fatalError();
+  // We can only remove the last added event.
+  CMathEvent * pEvent = &mEvents[mSize.nEvents - 1];
+
+  if (pMathEvent != pEvent) return false;
+
+  // Determine event targets and move objects accordingly.
+  std::set< const CMathObject * > EventTargets;
+  const CMathEvent::CAssignment * pAssignment = pEvent->getAssignments().array();
+  const CMathEvent::CAssignment * pAssignmentEnd = pAssignment + pEvent->getAssignments().size();
+
+  for (; pAssignment != pAssignmentEnd; ++pAssignment)
+    {
+      EventTargets.insert(pAssignment->getTarget());
+    }
+
+  sSize Size = mSize;
+
+  Size.nEvents--;
+  Size.nEventRoots -= pEvent->getTrigger().getRoots().size();
+  Size.nEventAssignments -= pEvent->getAssignments().size();
+
+  pEvent = NULL;
+  pMathEvent = NULL;
+
+  // Resize
+  resize(Size);
+
+  CMathObject * pEventTarget = getMathObject(mExtensiveValues.array()) + mSize.nFixed;
+  CMathObject * pEventTargetEnd = pEventTarget + mSize.nEventTargets;
+
+  // We have remove them in the reverse order than they were added;
+  while (pEventTarget != pEventTargetEnd)
+    {
+      pEventTargetEnd--;
+
+      // It is save to return since we only added to the end
+      if (EventTargets.count(pEventTargetEnd) == 0) return true;
+
+      // We have found a candidate we need to make sure that this is not a target of any other event
+      // before we mark it as fixed.
+      const CMathEvent * pEvent = mEvents.array();
+      const CMathEvent * pEventEnd = pEvent + mEvents.size();
+
+      for (; pEvent != pEventEnd; ++pEvent)
+        {
+          pAssignment = pEvent->getAssignments().array();
+          pAssignmentEnd = pAssignment + pEvent->getAssignments().size();
+
+          for (; pAssignment != pAssignmentEnd; ++pAssignment)
+            {
+              // It is save to return since we only added to the end
+              if (EventTargets.count(pAssignment->getTarget()) == 0) return true;
+            }
+        }
+
+      // We have found an event target which is now fixed.
+      // Create a save haven
+      CVector< C_FLOAT64 > EventTargetValues(mSize.nEventTargets * 4);
+      CVector< CMathObject > EventTargetObjects(mSize.nEventTargets * 4);
+
+      std::vector< CMath::sRelocate > Relocations;
+
+      CMath::sRelocate RelocateTarget;
+      RelocateTarget.pNewValue = EventTargetValues.array();
+      RelocateTarget.pNewObject = EventTargetObjects.array();
+
+      // Initial value
+      RelocateTarget.pValueStart = mInitialExtensiveValues.array() + mSize.nFixed;
+      RelocateTarget.pValueEnd = RelocateTarget.pValueStart + mSize.nEventTargets;
+      RelocateTarget.pOldValue = RelocateTarget.pValueStart;
+      RelocateTarget.pObjectStart = getMathObject(RelocateTarget.pValueStart);
+      RelocateTarget.pObjectEnd = getMathObject(RelocateTarget.pValueEnd);
+      RelocateTarget.pOldObject = getMathObject(RelocateTarget.pOldValue);
+      RelocateTarget.offset = 0;
+      Relocations.push_back(RelocateTarget);
+
+      // Initial rate
+      RelocateTarget.pValueStart = mInitialExtensiveRates.array() + mSize.nFixed;
+      RelocateTarget.pValueEnd = RelocateTarget.pValueStart + mSize.nEventTargets;
+      RelocateTarget.pOldValue = RelocateTarget.pValueStart;
+      RelocateTarget.pObjectStart = getMathObject(RelocateTarget.pValueStart);
+      RelocateTarget.pObjectEnd = getMathObject(RelocateTarget.pValueEnd);
+      RelocateTarget.pOldObject = getMathObject(RelocateTarget.pOldValue);
+      RelocateTarget.offset += mSize.nEventTargets;
+      Relocations.push_back(RelocateTarget);
+
+      // Value
+      RelocateTarget.pValueStart = mExtensiveValues.array() + mSize.nFixed;
+      RelocateTarget.pValueEnd = RelocateTarget.pValueStart + mSize.nEventTargets;
+      RelocateTarget.pOldValue = RelocateTarget.pValueStart;
+      RelocateTarget.pObjectStart = getMathObject(RelocateTarget.pValueStart);
+      RelocateTarget.pObjectEnd = getMathObject(RelocateTarget.pValueEnd);
+      RelocateTarget.pOldObject = getMathObject(RelocateTarget.pOldValue);
+      RelocateTarget.offset += mSize.nEventTargets;
+      Relocations.push_back(RelocateTarget);
+
+      // Rate
+      RelocateTarget.pValueStart = mExtensiveRates.array() + mSize.nFixed;
+      RelocateTarget.pValueEnd = RelocateTarget.pValueStart + mSize.nEventTargets;
+      RelocateTarget.pOldValue = RelocateTarget.pValueStart;
+      RelocateTarget.pObjectStart = getMathObject(RelocateTarget.pValueStart);
+      RelocateTarget.pObjectEnd = getMathObject(RelocateTarget.pValueEnd);
+      RelocateTarget.pOldObject = getMathObject(RelocateTarget.pOldValue);
+      RelocateTarget.offset += mSize.nEventTargets;
+      Relocations.push_back(RelocateTarget);
+
+      Size = mSize;
+      relocate(mValues, mObjects, Size, Relocations);
+
+      Relocations.clear();
+
+      // Move the event target out of the save haven.
+      Relocations.clear();
+      RelocateTarget.offset = 0;
+
+      CMath::sRelocate RelocateOther;
+      RelocateOther.offset = 0;
+
+      // Initial value
+      RelocateTarget.pValueStart = EventTargetValues.array() + mSize.nEventTargets - 1;
+      RelocateTarget.pValueEnd = RelocateTarget.pValueStart + 1;
+      RelocateTarget.pOldValue = RelocateTarget.pValueStart;
+      RelocateTarget.pNewValue = mInitialExtensiveValues.array() + mSize.nFixed;
+      RelocateTarget.pObjectStart = EventTargetObjects.array() + mSize.nEventTargets - 1;
+      RelocateTarget.pObjectEnd = RelocateTarget.pObjectStart + 1;
+      RelocateTarget.pOldObject = RelocateTarget.pObjectStart;
+      RelocateTarget.pNewObject = getMathObject(RelocateTarget.pNewValue);
+      Relocations.push_back(RelocateTarget);
+
+      RelocateOther.pValueStart = RelocateTarget.pValueEnd;
+      RelocateOther.pValueEnd = RelocateOther.pValueStart + mSize.nEventTargets - 1;
+      RelocateOther.pOldValue = RelocateOther.pValueStart;
+      RelocateOther.pNewValue = RelocateTarget.pNewValue + 1;
+      RelocateOther.pObjectStart = RelocateTarget.pObjectEnd;
+      RelocateOther.pObjectEnd = RelocateOther.pObjectStart + mSize.nEventTargets - 1;
+      RelocateOther.pOldObject = RelocateOther.pObjectStart;
+      RelocateOther.pNewObject = getMathObject(RelocateOther.pNewValue);
+      Relocations.push_back(RelocateOther);
+
+      // Initial Rate
+      RelocateTarget.pValueStart += mSize.nEventTargets;
+      RelocateTarget.pValueEnd += mSize.nEventTargets;
+      RelocateTarget.pOldValue += mSize.nEventTargets;
+      RelocateTarget.pNewValue = mInitialExtensiveRates.array() + mSize.nFixed;
+      RelocateTarget.pObjectStart += mSize.nEventTargets;
+      RelocateTarget.pObjectEnd += mSize.nEventTargets;
+      RelocateTarget.pOldObject += mSize.nEventTargets;
+      RelocateTarget.pNewObject = getMathObject(RelocateTarget.pNewValue);
+      Relocations.push_back(RelocateTarget);
+
+      RelocateOther.pValueStart += mSize.nEventTargets;
+      RelocateOther.pValueEnd += mSize.nEventTargets;
+      RelocateOther.pOldValue += mSize.nEventTargets;
+      RelocateOther.pNewValue = RelocateTarget.pNewValue + 1;
+      RelocateOther.pObjectStart += mSize.nEventTargets;
+      RelocateOther.pObjectEnd += mSize.nEventTargets;
+      RelocateOther.pOldObject += mSize.nEventTargets;
+      RelocateOther.pNewObject = getMathObject(RelocateOther.pNewValue);
+      Relocations.push_back(RelocateOther);
+
+      // Value
+      RelocateTarget.pValueStart += mSize.nEventTargets;
+      RelocateTarget.pValueEnd += mSize.nEventTargets;
+      RelocateTarget.pOldValue += mSize.nEventTargets;
+      RelocateTarget.pNewValue = mExtensiveValues.array() + mSize.nFixed;
+      RelocateTarget.pObjectStart += mSize.nEventTargets;
+      RelocateTarget.pObjectEnd += mSize.nEventTargets;
+      RelocateTarget.pOldObject += mSize.nEventTargets;
+      RelocateTarget.pNewObject = getMathObject(RelocateTarget.pNewValue);
+      Relocations.push_back(RelocateTarget);
+
+      RelocateOther.pValueStart += mSize.nEventTargets;
+      RelocateOther.pValueEnd += mSize.nEventTargets;
+      RelocateOther.pOldValue += mSize.nEventTargets;
+      RelocateOther.pNewValue = RelocateTarget.pNewValue + 1;
+      RelocateOther.pObjectStart += mSize.nEventTargets;
+      RelocateOther.pObjectEnd += mSize.nEventTargets;
+      RelocateOther.pOldObject += mSize.nEventTargets;
+      RelocateOther.pNewObject = getMathObject(RelocateOther.pNewValue);
+      Relocations.push_back(RelocateOther);
+
+      // Rate
+      RelocateTarget.pValueStart += mSize.nEventTargets;
+      RelocateTarget.pValueEnd += mSize.nEventTargets;
+      RelocateTarget.pOldValue += mSize.nEventTargets;
+      RelocateTarget.pNewValue = mExtensiveRates.array() + mSize.nFixed;
+      RelocateTarget.pObjectStart += mSize.nEventTargets;
+      RelocateTarget.pObjectEnd += mSize.nEventTargets;
+      RelocateTarget.pOldObject += mSize.nEventTargets;
+      RelocateTarget.pNewObject = getMathObject(RelocateTarget.pNewValue);
+      Relocations.push_back(RelocateTarget);
+
+      RelocateOther.pValueStart += mSize.nEventTargets;
+      RelocateOther.pValueEnd += mSize.nEventTargets;
+      RelocateOther.pOldValue += mSize.nEventTargets;
+      RelocateOther.pNewValue = RelocateTarget.pNewValue + 1;
+      RelocateOther.pObjectStart += mSize.nEventTargets;
+      RelocateOther.pObjectEnd += mSize.nEventTargets;
+      RelocateOther.pOldObject += mSize.nEventTargets;
+      RelocateOther.pNewObject = getMathObject(RelocateOther.pNewValue);
+      Relocations.push_back(RelocateOther);
+
+      Size = mSize;
+      Size.nFixed++;
+      Size.nEventTargets--;
+      relocate(mValues, mObjects, Size, Relocations);
+    }
+
+  return true;
 }
 
 CRandom & CMathContainer::getRandomGenerator() const
@@ -3426,7 +4021,7 @@ std::vector< CMath::sRelocate > CMathContainer::resize(CMathContainer::sSize & s
 {
   // Determine the offsets
   // We have to cast all pointers to size_t to avoid pointer overflow.
-  size_t nExtensiveValues = size.nFixed + 1 + size.nODE + size.nReactionSpecies + size.nAssignment;
+  size_t nExtensiveValues = size.nFixed + size.nEventTargets + 1 + size.nODE + size.nReactionSpecies + size.nAssignment;
 
   size_t ObjectCount = 4 * (nExtensiveValues + size.nIntensiveValues) +
                        5 * size.nReactions +
@@ -3454,10 +4049,27 @@ std::vector< CMath::sRelocate > CMathContainer::resize(CMathContainer::sSize & s
   std::vector< CMath::sRelocate > Relocations;
   createRelocations(size, Relocations);
 
+  relocate(OldValues, OldObjects, size, Relocations);
+
+  // Delete the old objects
+  if (OldValues.array() != NULL) delete [] OldValues.array();
+
+  if (OldObjects.array() != NULL) delete [] OldObjects.array();
+
+  return Relocations;
+}
+
+void CMathContainer::relocate(CVectorCore< C_FLOAT64 > &oldValues,
+                              CVectorCore< CMathObject > &oldObjects,
+                              const sSize & size,
+                              const std::vector< CMath::sRelocate > & Relocations)
+{
+  size_t nExtensiveValues = size.nFixed + size.nEventTargets + 1 + size.nODE + size.nReactionSpecies + size.nAssignment;
+
   // Move the objects to the new location
-  C_FLOAT64 * pValue = OldValues.array();
-  C_FLOAT64 * pValueEnd = pValue + OldValues.size();
-  CMathObject * pObject = OldObjects.array();
+  C_FLOAT64 * pValue = oldValues.array();
+  C_FLOAT64 * pValueEnd = pValue + oldValues.size();
+  CMathObject * pObject = oldObjects.array();
 
   for (; pValue != pValueEnd; ++pValue, ++pObject)
     {
@@ -3480,11 +4092,6 @@ std::vector< CMath::sRelocate > CMathContainer::resize(CMathContainer::sSize & s
           pObject->moved();
         }
     }
-
-  // Delete the old objects
-  if (OldValues.array() != NULL) delete [] OldValues.array();
-
-  if (OldObjects.array() != NULL) delete [] OldObjects.array();
 
   C_FLOAT64 * pArray = size.pValue;
   mInitialExtensiveValues.initialize(nExtensiveValues, pArray);
@@ -3607,6 +4214,4 @@ std::vector< CMath::sRelocate > CMathContainer::resize(CMathContainer::sSize & s
   relocateVector(mDelays, mpDelaysBuffer, size.nDelayLags, Relocations);
 
   mSize = size;
-
-  return Relocations;
 }

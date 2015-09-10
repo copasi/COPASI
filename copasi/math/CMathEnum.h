@@ -167,7 +167,22 @@ public:
     size_t offset;
   };
 
-public:
+  template < class CType > class Entity
+  {
+  public:
+    CType * InitialValue;
+    CType * InitialRate;
+    CType * Value;
+    CType * Rate;
+
+    Entity()
+      : InitialValue(NULL)
+      , InitialRate(NULL)
+      , Value(NULL)
+      , Rate(NULL)
+    {}
+  };
+
   enum SimulationContext
   {
     Default = 0x0,

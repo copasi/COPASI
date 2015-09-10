@@ -95,6 +95,17 @@ CMathDependencyGraph::iterator CMathDependencyGraph::addObject(const CObjectInte
   return found;
 }
 
+void CMathDependencyGraph::removeObject(const CObjectInterface * pObject)
+{
+  iterator found = mObjects2Nodes.find(pObject);
+
+  if (found == mObjects2Nodes.end()) return;
+
+  found->second->remove();
+  delete found->second;
+  mObjects2Nodes.erase(found);
+}
+
 bool CMathDependencyGraph::getUpdateSequence(CObjectInterface::UpdateSequence & updateSequence,
     const CMath::SimulationContextFlag & context,
     const CObjectInterface::ObjectSet & changedObjects,
@@ -312,7 +323,7 @@ bool CMathDependencyGraph::dependsOn(const CObjectInterface * pObject,
   return !UpdateSequence.empty();
 }
 
-void CMathDependencyGraph::relocate(std::vector< CMath::sRelocate > & relocations)
+void CMathDependencyGraph::relocate(const std::vector< CMath::sRelocate > & relocations)
 {
   NodeMap Objects2Nodes;
   const_iterator it = mObjects2Nodes.begin();

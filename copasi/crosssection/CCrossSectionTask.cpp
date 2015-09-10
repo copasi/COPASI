@@ -155,7 +155,7 @@ void CCrossSectionTask::createEvent()
 
       Event.compile(CObjectInterface::ContainerList());
 
-      mpEvent = mpContainer->addEvent(Event);
+      mpEvent = mpContainer->addAnalysisEvent(Event);
     }
 
   setEventCallback(true);
@@ -168,8 +168,7 @@ void CCrossSectionTask::removeEvent()
 
   if (mpEvent != NULL)
     {
-      mpContainer->removeEvent(mpEvent);
-      mpEvent = NULL;
+      if (!mpContainer->removeAnalysisEvent(mpEvent)) fatalError();
     }
 }
 

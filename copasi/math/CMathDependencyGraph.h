@@ -51,6 +51,12 @@ public:
   iterator addObject(const CObjectInterface * pObject);
 
   /**
+   * Remove an object and all its prerequisites to the tree
+   * @param const CObjectInterface * pObject
+   */
+  void removeObject(const CObjectInterface * pObject);
+
+  /**
    * Construct a update sequence for the given context. Please note the calculated objects
    * must be calculated based on the same changed values and context.
    * @param const CMath::SimulationContextFlag & context
@@ -82,7 +88,7 @@ public:
    * Relocate the objects in the nodes of the graph.
    * @param std::vector< CMath::sRelocate > & relocations
    */
-  void relocate(std::vector< CMath::sRelocate > & relocations);
+  void relocate(const std::vector< CMath::sRelocate > & relocations);
 
   void exportDOTFormat(std::ostream & os, const std::string & name) const;
 

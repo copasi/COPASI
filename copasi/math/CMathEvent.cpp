@@ -456,7 +456,7 @@ void CMathEvent::CTrigger::relocate(const std::vector< CMath::sRelocate > & relo
     }
 }
 
-bool CMathEvent::CTrigger::compile(CEvent * pDataEvent,
+bool CMathEvent::CTrigger::compile(const CEvent * pDataEvent,
                                    CMathContainer & container)
 {
   bool success = true;
@@ -1198,7 +1198,7 @@ void CMathEvent::relocate(const std::vector< CMath::sRelocate > & relocations)
   CMathContainer::relocateUpdateSequence(mPostAssignmentSequence, relocations);
 }
 
-bool CMathEvent::compile(CEvent * pDataEvent,
+bool CMathEvent::compile(const CEvent * pDataEvent,
                          CMathContainer & container)
 {
   bool success = true;

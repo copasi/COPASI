@@ -215,7 +215,7 @@ public:
      */
     void relocate(const std::vector< CMath::sRelocate > & relocations);
 
-    bool compile(CEvent * pDataEvent,
+    bool compile(const CEvent * pDataEvent,
                  CMathContainer & container);
 
     const CVector< CRootProcessor > & getRoots() const;
@@ -334,7 +334,7 @@ public:
    */
   void relocate(const std::vector< CMath::sRelocate > & relocations);
 
-  bool compile(CEvent * pDataEvent,
+  bool compile(const CEvent * pDataEvent,
                CMathContainer & container);
 
   bool compile(CMathContainer & container);

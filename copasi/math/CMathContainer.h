@@ -69,7 +69,7 @@ private:
                                const bool & end = true);
 
   template < class CType > void relocateVector(CVectorCore< CType > & vector, CType *& pBuffer, size_t size,
-      std::vector< CMath::sRelocate > & relocations)
+      const std::vector< CMath::sRelocate > & relocations)
   {
     if (size != vector.size())
       {
@@ -657,29 +657,35 @@ public:
 
   /**
    * Add an entity to the container
-   * @param const CModelEntity & entity
-   * @return CMathObject * pEntity
+   * const const CMath::Entity< CCopasiObject > & dataOjects
+   * const const CMath::SimulationType & simulationType
+   * const const std::string & infix
+   * @return CMath::Entity< CMathObject > mathObjects
    */
-  CMathObject * addEntity(const CModelEntity & entity);
+  CMath::Entity< CMathObject > addAnalysisObject(const CMath::Entity< CCopasiObject > & dataOjects,
+      const CMath::SimulationType & simulationType,
+      const std::string & infix);
 
   /**
    * Remove the event from the container
-   * @param CMathObject * pEntity
+   * @param CMath::Entity< CMathObject > & mathObjects
+   * @return bool success
    */
-  void removeEntity(CMathObject * pEntity);
+  bool removeAnalysisObject(CMath::Entity< CMathObject > & mathObjects);
 
   /**
    * Add an event to the container
    * @param const CEvent & dataEvent
-   * @return CMathEventN * pMathEvent
+   * @return const CMathEvent * pMathEvent
    */
-  CMathEvent * addEvent(const CEvent & dataEvent);
+  CMathEvent * addAnalysisEvent(const CEvent & dataEvent);
 
   /**
    * Remove the event from the container
-   * @param CMathEventN * pMathEvent
+   * @param CMathEvent *& pMathEvent
+   * @return bool success
    */
-  void removeEvent(CMathEvent * pMathEvent);
+  bool removeAnalysisEvent(CMathEvent *& pMathEvent);
 
   /**
    * Retrieve the random number generator.
@@ -697,6 +703,11 @@ private:
    */
   void allocate();
 
+  /**
+   * Create relocation information
+   * @param const sSize & size
+   * @param std::vector< CMath::sRelocate > & Relocations
+   */
   void createRelocations(const sSize & size, std::vector< CMath::sRelocate > & Relocations);
 
   /**
@@ -705,6 +716,19 @@ private:
    * @return std::vector< CMath::sRelocate > relocations
    */
   std::vector< CMath::sRelocate > resize(sSize & size);
+
+  /**
+   * Relocate the objects.
+   * This works only if you relocate objects down in the existing location or out of space.
+   * @param CVectorCore< C_FLOAT64 > &oldValues
+   * @param CVectorCore< CMathObject > &oldObjects
+   * @param const sSize & size
+   * @param const std::vector< CMath::sRelocate > & Relocations
+   */
+  void relocate(CVectorCore< C_FLOAT64 > &oldValues,
+                CVectorCore< CMathObject > &oldObjects,
+                const sSize & size,
+                const std::vector< CMath::sRelocate > & Relocations);
 
   /**
    * Initialize the pointers
@@ -772,6 +796,11 @@ private:
    * Create Dependency Graphs
    */
   void createDependencyGraphs();
+
+  /**
+   * Create Update Sequences
+   */
+  void createUpdateSequences();
 
   /**
    * Analyze the number and type of roots, i.e., which roots are only changed during discrete event processing.

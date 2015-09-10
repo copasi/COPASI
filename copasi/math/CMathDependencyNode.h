@@ -48,6 +48,12 @@ public:
   void addPrerequisite(CMathDependencyNode * pNode);
 
   /**
+   * Remove a prerequisite
+   * @param CMathDependencyNode * pNode
+   */
+  void removePrerequisite(CMathDependencyNode * pNode);
+
+  /**
    * Retrieve the prerequisites
    * @return std::vector< CMathDependencyNode * > prerequisites
    */
@@ -58,6 +64,12 @@ public:
    * @param CMathDependencyNode * pNode
    */
   void addDependent(CMathDependencyNode * pNode);
+
+  /**
+   * Remove a dependent
+   * @param CMathDependencyNode * pNode
+   */
+  void removeDependent(CMathDependencyNode * pNode);
 
   /**
    * Retrieve the dependents
@@ -134,7 +146,9 @@ public:
    * Relocate the objects in the nodes of the graph.
    * @param std::vector< CMath::sRelocate > & relocations
    */
-  void relocate(std::vector< CMath::sRelocate > & relocations);
+  void relocate(const std::vector< CMath::sRelocate > & relocations);
+
+  void remove();
 
   void updateEdges(const std::map< CMathDependencyNode *, CMathDependencyNode * > & map);
 
