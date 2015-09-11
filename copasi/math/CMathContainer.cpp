@@ -119,18 +119,16 @@ void CMathContainer::relocateValue(const C_FLOAT64 *& pValue, const std::vector<
 void CMathContainer::relocateObject(CObjectInterface *& pObject,
                                     const std::vector< CMath::sRelocate > & relocations)
 {
+  if (pObject == NULL ||
+      pObject == pObject->getDataObject())
+    {
+      return;
+    }
 
-  if (pObject == NULL) return;
+  CMathObject * pMathObject = static_cast< CMathObject * >(pObject);
+  relocateObject(pMathObject, relocations);
 
-  std::vector< CMath::sRelocate >::const_iterator it = relocations.begin();
-  std::vector< CMath::sRelocate >::const_iterator end = relocations.end();
-
-  for (; it != end; ++it)
-    if (it->pObjectStart <= pObject && pObject < it->pObjectEnd)
-      {
-        pObject = it->pNewObject + (pObject - it->pOldObject) + it->offset;
-        break;
-      }
+  pObject = pMathObject;
 }
 
 // static
@@ -150,7 +148,7 @@ void CMathContainer::relocateObject(CMathObject *& pObject, const std::vector< C
   for (; it != end; ++it)
     if (it->pObjectStart <= pObject && pObject < it->pObjectEnd)
       {
-        pObject = static_cast< CMathObject * >(it->pNewObject) + (static_cast< CObjectInterface *>(pObject) - it->pOldObject) + it->offset;
+        pObject = it->pNewObject + (pObject - it->pOldObject) + it->offset;
         break;
       }
 }
@@ -3164,6 +3162,11 @@ CMath::Entity< CMathObject > CMathContainer::addAnalysisObject(const CMath::Enti
                 pObject->setExpressionPtr(pExpression);
               }
 
+            if (entity.InitialValue != NULL)
+              {
+                map(entity.InitialValue, pObject);
+              }
+
             Entity.InitialValue = pObject;
             break;
 
@@ -3178,6 +3181,11 @@ CMath::Entity< CMathObject > CMathContainer::addAnalysisObject(const CMath::Enti
                 pExpression->CEvaluationTree::setRoot(copyBranch(Expression.getRoot(), false));
                 pExpression->convertToInitialExpression();
                 pObject->setExpressionPtr(pExpression);
+              }
+
+            if (entity.InitialValue != NULL)
+              {
+                map(entity.InitialRate, pObject);
               }
 
             Entity.InitialRate = pObject;
@@ -3195,6 +3203,11 @@ CMath::Entity< CMathObject > CMathContainer::addAnalysisObject(const CMath::Enti
                 pObject->setExpressionPtr(pExpression);
               }
 
+            if (entity.InitialValue != NULL)
+              {
+                map(entity.Value, pObject);
+              }
+
             Entity.Value = pObject;
             break;
 
@@ -3208,6 +3221,11 @@ CMath::Entity< CMathObject > CMathContainer::addAnalysisObject(const CMath::Enti
                 CMathExpression * pExpression = new CMathExpression("Rate", *this);
                 pExpression->CEvaluationTree::setRoot(copyBranch(Expression.getRoot(), false));
                 pObject->setExpressionPtr(pExpression);
+              }
+
+            if (entity.InitialValue != NULL)
+              {
+                map(entity.Rate, pObject);
               }
 
             Entity.Rate = pObject;
@@ -4081,6 +4099,10 @@ void CMathContainer::relocate(CVectorCore< C_FLOAT64 > &oldValues,
         {
           *pNewValue = *pValue;
         }
+      else
+        {
+          *pNewValue = *pValue;
+        }
 
       CMathObject * pNewObject = pObject;
       relocateObject(pNewObject, Relocations);
@@ -4090,6 +4112,10 @@ void CMathContainer::relocate(CVectorCore< C_FLOAT64 > &oldValues,
           *pNewObject = *pObject;
           pNewObject->relocate(Relocations);
           pObject->moved();
+        }
+      else
+        {
+          *pNewObject = *pObject;
         }
     }
 
@@ -4186,9 +4212,9 @@ void CMathContainer::relocate(CVectorCore< C_FLOAT64 > &oldValues,
 
   for (; itDataObject2MathObject != endDataObject2MathObject; ++itDataObject2MathObject)
     {
-      CObjectInterface * pObject = itDataObject2MathObject->second;
+      pObject = itDataObject2MathObject->second;
       relocateObject(pObject, Relocations);
-      itDataObject2MathObject->second = static_cast< CMathObject * >(pObject);
+      itDataObject2MathObject->second = pObject;
     }
 
   std::map< C_FLOAT64 *, CMathObject * >::iterator itDataValue2MathObject = mDataValue2MathObject.begin();
@@ -4196,9 +4222,9 @@ void CMathContainer::relocate(CVectorCore< C_FLOAT64 > &oldValues,
 
   for (; itDataValue2MathObject != endDataValue2MathObject; ++itDataValue2MathObject)
     {
-      CObjectInterface * pObject = itDataValue2MathObject->second;
+      pObject = itDataValue2MathObject->second;
       relocateObject(pObject, Relocations);
-      itDataValue2MathObject->second = static_cast< CMathObject * >(pObject);
+      itDataValue2MathObject->second = pObject;
     }
 
   mInitialDependencies.relocate(Relocations);

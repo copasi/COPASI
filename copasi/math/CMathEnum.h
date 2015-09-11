@@ -159,10 +159,10 @@ public:
     C_FLOAT64 * pOldValue;
     C_FLOAT64 * pNewValue;
 
-    CObjectInterface * pObjectStart;
-    CObjectInterface * pObjectEnd;
-    CObjectInterface * pOldObject;
-    CObjectInterface * pNewObject;
+    CMathObject * pObjectStart;
+    CMathObject * pObjectEnd;
+    CMathObject * pOldObject;
+    CMathObject * pNewObject;
 
     size_t offset;
   };
