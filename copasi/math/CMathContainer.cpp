@@ -3342,6 +3342,25 @@ CMathEvent * CMathContainer::addAnalysisEvent(const CEvent & dataEvent)
   pEvent->initialize(p);
   pEvent->compile(&dataEvent, *this);
 
+  // Add the objects created for the event to the dependency graphs.
+  initializePointers(p);
+
+  mInitialDependencies.addObject(p.pInitialEventTriggersObject + OldSize.nEvents);
+  mTransientDependencies.addObject(p.pEventTriggersObject + OldSize.nEvents);
+  mTransientDependencies.addObject(p.pEventDelaysObject + OldSize.nEvents);
+  mTransientDependencies.addObject(p.pEventPrioritiesObject + OldSize.nEvents);
+
+  for (size_t i = OldSize.nEventRoots; i != mSize.nEventRoots; ++i)
+    {
+      mTransientDependencies.addObject(p.pEventRootStatesObject + i);
+      mTransientDependencies.addObject(p.pEventRootsObject + i);
+    }
+
+  for (size_t i = OldSize.nAssignment; i != mSize.nEventRoots; ++i)
+    {
+      mTransientDependencies.addObject(p.pEventAssignmentsObject + i);
+    }
+
   // Determine event targets and move objects accordingly.
   const CMathEvent::CAssignment * pAssignment = pEvent->getAssignments().array();
   const CMathEvent::CAssignment * pAssignmentEnd = pAssignment + pEvent->getAssignments().size();
@@ -3497,6 +3516,8 @@ CMathEvent * CMathContainer::addAnalysisEvent(const CEvent & dataEvent)
         }
     }
 
+  analyzeRoots();
+
   return pEvent;
 }
 
@@ -3522,6 +3543,26 @@ bool CMathContainer::removeAnalysisEvent(CMathEvent *& pMathEvent)
   Size.nEvents--;
   Size.nEventRoots -= pEvent->getTrigger().getRoots().size();
   Size.nEventAssignments -= pEvent->getAssignments().size();
+
+  // Remove the objects created for the event from the dependency graphs.
+  CMath::sPointers p;
+  initializePointers(p);
+
+  mInitialDependencies.removeObject(p.pInitialEventTriggersObject + Size.nEvents);
+  mTransientDependencies.removeObject(p.pEventTriggersObject + Size.nEvents);
+  mTransientDependencies.removeObject(p.pEventDelaysObject + Size.nEvents);
+  mTransientDependencies.removeObject(p.pEventPrioritiesObject + Size.nEvents);
+
+  for (size_t i = Size.nEventRoots; i != mSize.nEventRoots; ++i)
+    {
+      mTransientDependencies.removeObject(p.pEventRootStatesObject + i);
+      mTransientDependencies.removeObject(p.pEventRootsObject + i);
+    }
+
+  for (size_t i = Size.nAssignment; i != mSize.nEventRoots; ++i)
+    {
+      mTransientDependencies.removeObject(p.pEventAssignmentsObject + i);
+    }
 
   pEvent = NULL;
   pMathEvent = NULL;
@@ -3709,6 +3750,8 @@ bool CMathContainer::removeAnalysisEvent(CMathEvent *& pMathEvent)
       Size.nEventTargets--;
       relocate(mValues, mObjects, Size, Relocations);
     }
+
+  analyzeRoots();
 
   return true;
 }
