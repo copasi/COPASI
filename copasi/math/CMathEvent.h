@@ -527,14 +527,14 @@ private:
 
   /**
    * A Boolean flag indicating whether the trigger expression must remain true between
-   * trigger phase and assignment phase (mPersitenTrigger = false).
+   * trigger phase and assignment phase (mTriggerIsPersistent = false).
    */
-  bool mPersistentTrigger;
+  bool mTriggerIsPersistent;
 
   /**
    * A Boolean flag indicating whether to delay assignment phase or calculation phase.
    */
-  bool mDelayAssignment;
+  bool mDelayExecution;
 
   /**
    * A pointer to the currently pending actions for used for persistent triggers

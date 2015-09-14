@@ -145,6 +145,8 @@ void CCrossSectionTask::createEvent()
     {
       CEvent Event("__cutplane", &mpContainer->getModel());
       Event.setType(CEvent::Callback);
+      Event.setPersistentTrigger(true);
+      Event.setDelayAssignment(false);
 
       std::stringstream expression;
       expression << "<" << mpCrossSectionProblem->getSingleObjectCN() << "> "

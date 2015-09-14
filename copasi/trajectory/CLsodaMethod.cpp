@@ -23,6 +23,9 @@
 #include "model/CModel.h"
 #include "model/CState.h"
 
+// Uncomment this line below to get debug print out.
+// #define DEBUG_OUTPUT 1
+
 CLsodaMethod::CLsodaMethod(const CCopasiContainer * pParent,
                            const CTaskEnum::Method & methodType,
                            const CTaskEnum::Task & taskType):

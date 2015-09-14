@@ -1062,8 +1062,8 @@ CMathEvent::CMathEvent():
   mTargetValuesSequence(),
   mPostAssignmentSequence(),
   mFireAtInitialTime(false),
-  mPersistentTrigger(false),
-  mDelayAssignment(true),
+  mTriggerIsPersistent(false),
+  mDelayExecution(true),
   mpPendingAction(NULL)
 {}
 
@@ -1083,8 +1083,8 @@ CMathEvent::CMathEvent(const CMathEvent & src):
   mTargetValuesSequence(src.mTargetValuesSequence),
   mPostAssignmentSequence(src.mPostAssignmentSequence),
   mFireAtInitialTime(src.mFireAtInitialTime),
-  mPersistentTrigger(src.mPersistentTrigger),
-  mDelayAssignment(src.mDelayAssignment),
+  mTriggerIsPersistent(src.mTriggerIsPersistent),
+  mDelayExecution(src.mDelayExecution),
   mpPendingAction(NULL)
 {}
 
@@ -1208,8 +1208,8 @@ bool CMathEvent::compile(const CEvent * pDataEvent,
 
   mType = pDataEvent->getType();
   mFireAtInitialTime = pDataEvent->getFireAtInitialTime();
-  mPersistentTrigger = pDataEvent->getPersistentTrigger();
-  mDelayAssignment = pDataEvent->getDelayAssignment();
+  mTriggerIsPersistent = pDataEvent->getPersistentTrigger();
+  mDelayExecution = pDataEvent->getDelayAssignment();
 
   // Compile Trigger
   success &= mTrigger.compile(pDataEvent, container);
@@ -1272,8 +1272,8 @@ bool CMathEvent::compile(CMathContainer & container)
 
   mType = CEvent::Discontinuity;
   mFireAtInitialTime = false;
-  mPersistentTrigger = false;
-  mDelayAssignment = false;
+  mTriggerIsPersistent = false;
+  mDelayExecution = false;
 
   // Compile Trigger
   success &= mTrigger.compile(NULL, container);
@@ -1302,7 +1302,7 @@ void CMathEvent::createUpdateSequences()
   const CObjectInterface::ObjectSet & StateValues = mpContainer->getStateObjects();
   const CObjectInterface::ObjectSet & SimulationValues = mpContainer->getSimulationUpToDateObjects();
 
-  if (mDelayAssignment)
+  if (mDelayExecution)
     {
       mCreateCalculationActionSequence.clear();
     }
@@ -1315,7 +1315,7 @@ void CMathEvent::createUpdateSequences()
 
   CObjectInterface::ObjectSet Requested;
 
-  if (mDelayAssignment)
+  if (mDelayExecution)
     {
       Requested.insert(mpDelay);
     }
@@ -1400,7 +1400,7 @@ void CMathEvent::fire(const bool & equality)
 
   if (mTrigger.isTrue() || mType == CEvent::Discontinuity)
     {
-      if (mDelayAssignment)
+      if (mDelayExecution)
         {
           mpContainer->getProcessQueue().addAssignment(getExecutionTime(), equality, getTargetValues(), this);
         }
@@ -1409,7 +1409,7 @@ void CMathEvent::fire(const bool & equality)
           mpContainer->getProcessQueue().addCalculation(getCalculationTime(), equality, this);
         }
     }
-  else if (!mPersistentTrigger && mpPendingAction)
+  else if (!mTriggerIsPersistent && mpPendingAction)
     {
       mpContainer->getProcessQueue().removeAction(*mpPendingAction);
       pdelete(mpPendingAction);
@@ -1418,7 +1418,7 @@ void CMathEvent::fire(const bool & equality)
 
 void CMathEvent::addPendingAction(const CMathEventQueue::iterator & pendingAction)
 {
-  if (!mPersistentTrigger)
+  if (!mTriggerIsPersistent)
     {
       assert(mpPendingAction == NULL);
 
@@ -1473,7 +1473,7 @@ CMath::StateChange CMathEvent::executeAssignment()
 
 const bool & CMathEvent::delayAssignment() const
 {
-  return mDelayAssignment;
+  return mDelayExecution;
 }
 
 const bool & CMathEvent::fireAtInitialTime() const
@@ -1522,7 +1522,7 @@ const CMathObject * CMathEvent::getPriority() const
 
 C_FLOAT64 CMathEvent::getCalculationTime() const
 {
-  if (mDelayAssignment ||
+  if (mDelayExecution ||
       std::isnan(* (C_FLOAT64 *) mpDelay->getValuePointer()))
     {
       return *mpTime;
@@ -1533,7 +1533,7 @@ C_FLOAT64 CMathEvent::getCalculationTime() const
 
 C_FLOAT64 CMathEvent::getExecutionTime() const
 {
-  if (!mDelayAssignment ||
+  if (!mDelayExecution ||
       std::isnan(* (C_FLOAT64 *) mpDelay->getValuePointer()))
     {
       return *mpTime;

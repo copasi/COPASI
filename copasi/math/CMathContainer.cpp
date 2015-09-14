@@ -3517,6 +3517,7 @@ CMathEvent * CMathContainer::addAnalysisEvent(const CEvent & dataEvent)
     }
 
   analyzeRoots();
+  createUpdateSequences();
 
   return pEvent;
 }
@@ -3752,6 +3753,7 @@ bool CMathContainer::removeAnalysisEvent(CMathEvent *& pMathEvent)
     }
 
   analyzeRoots();
+  createUpdateSequences();
 
   return true;
 }
