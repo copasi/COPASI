@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -32,6 +32,11 @@
 class ParameterTable;
 class MyLineEdit;
 
+#ifdef COPASI_UNDO
+#include <copasi/undoFramework/CCopasiUndoCommand.h>
+class ReactionChangeCommand;
+#endif
+
 class ReactionsWidget1 : public CopasiWidget, public Ui::ReactionsWidget1
 {
   Q_OBJECT
@@ -39,7 +44,6 @@ class ReactionsWidget1 : public CopasiWidget, public Ui::ReactionsWidget1
 #ifdef COPASI_UNDO
   friend class DeleteReactionCommand;
   friend class CreateNewReactionCommand;
-  friend class ReactionLineEditChangedCommand;
 #endif
 
 public:
@@ -53,7 +57,7 @@ public:
 
 protected slots:
   virtual void slotBtnNew();
-  virtual void slotBtnCopy() {}; //dummy, to bypass warnings from TabWidget connections
+  virtual void slotBtnCopy(); //dummy, to bypass warnings from TabWidget connections
   virtual void slotBtnDelete();
   virtual void slotCheckBoxClicked();
   virtual void slotComboBoxSelectionChanged(const QString &);
@@ -75,12 +79,17 @@ protected:
 
   //additional functions for UNDO framework
 #ifdef COPASI_UNDO
-  void lineEditChanged();
-  void restoreLineEditChanged(std::string & eq, std::string & funcName);
   void deleteReaction();
   void addReaction(std::string & reaObjectName, CReactionInterface *pRi);
   void createNewReaction();
   void deleteReaction(CReaction *pReaction);
+public:
+  bool changeReaction(const std::string& key,
+                      CCopasiUndoCommand::Type type,
+                      const QVariant& newValue,
+                      const QVariant& newSecondValueValue,
+                      ReactionChangeCommand* command
+                     );
 #endif
 };
 

@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CChemEqInterface.h,v $
-//   $Revision: 1.21 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/03/07 19:30:49 $
-// End CVS Header
-
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2003 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -73,22 +65,29 @@ public:
   ~CChemEqInterface();
 
   std::string getChemEqString(bool expanded) const;
+
   bool setChemEqString(const std::string & ces);
 
   bool loadFromChemEq(const CChemEq & ce);
+
   bool writeToChemEq(CChemEq & ce) const;
 
   const std::vector<C_FLOAT64> & getListOfMultiplicities(CFunctionParameter::Role role) const;
+
   const std::vector<std::string> & getListOfDisplayNames(CFunctionParameter::Role role) const;
 
   /**
    * add a modifier to the chemical equation. It is only added if it is not alreay in there.
    */
   void addModifier(const std::string & name);
+
   void clearModifiers();
 
-  bool getReversibility() const {return mReversibility;};
-  void setReversibility(bool rev) {mReversibility = rev;};
+  void clearAll();
+
+  bool getReversibility() const;
+
+  void setReversibility(bool rev);
 
   /**
    * this method tries to find out if the chemical equation involves several compartments
@@ -109,18 +108,34 @@ public:
   size_t getMolecularity(CFunctionParameter::Role role) const;
 
   std::set<std::string> listOfNonUniqueMetabNames() const;
+
   std::set< std::pair< std::string, std::string > > listOfNonExistingMetabNames() const;
 
-  bool createNonExistingMetabs();
+  /**
+   * creates all necessary metabolites (and volumes)
+   *
+   * @param createdKeys this vector will be filled with keys of
+   *        created elements
+   *
+   * @return true, in case some elements were created, false otherwise
+   */
+  bool createNonExistingMetabs(std::vector<std::string> &createdKeys);
 
   //convenience methods:
+public:
+
   static std::string getChemEqString(CModel * model, const CReaction & rea, bool expanded);
+
   static void setChemEqFromString(CModel * model, CReaction & rea, const std::string & ces);
+
   static bool isValidEq(const std::string & eq);
 
 private:
+
   void buildDisplayNames();
+
   void completeCompartments();
+
   static std::string writeElement(const std::string & name, C_FLOAT64 mult, bool expanded);
 };
 

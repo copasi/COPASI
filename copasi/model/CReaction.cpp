@@ -134,6 +134,9 @@ std::string CReaction::getChildObjectUnits(const CCopasiObject * pObject) const
 
 void CReaction::cleanup()
 {
+  mChemEq.cleanup();
+  mMetabKeyMap.clear();
+  setFunction(CCopasiRootContainer::getUndefinedFunction());
   // TODO: mMap.cleanup();
   //mParameterDescription.cleanup();
 }

@@ -485,12 +485,46 @@ void CChemEqInterface::addModifier(const std::string & name)
     }
 }
 
-void CChemEqInterface::clearModifiers()
+void
+CChemEqInterface::clearModifiers()
 {
   mModifierNames.clear();
   mModifierMult.clear();
   mModifierCompartments.clear();
   mModifierDisplayNames.clear();
+}
+
+
+void
+CChemEqInterface::clearAll()
+{
+  mSubstrateNames.clear();
+  mProductNames.clear();
+  mModifierNames.clear();
+
+  mSubstrateMult.clear();
+  mProductMult.clear();
+  mModifierMult.clear();
+
+  mSubstrateCompartments.clear();
+  mProductCompartments.clear();
+  mModifierCompartments.clear();
+
+  mSubstrateDisplayNames.clear();
+  mProductDisplayNames.clear();
+  mModifierDisplayNames.clear();
+
+}
+
+bool
+CChemEqInterface::getReversibility() const
+{
+  return mReversibility;
+}
+
+void CChemEqInterface::setReversibility(bool rev)
+{
+  mReversibility = rev;
 }
 
 std::string CChemEqInterface::writeElement(const std::string & name, C_FLOAT64 mult, bool expanded)
@@ -646,9 +680,11 @@ std::set< std::pair< std::string, std::string > > CChemEqInterface::listOfNonExi
   return ret;
 }
 
-bool CChemEqInterface::createNonExistingMetabs()
+bool CChemEqInterface::createNonExistingMetabs(
+  std::vector<std::string> &createdKeys)
 {
-  std::set< std::pair< std::string, std::string > > metabs = listOfNonExistingMetabNames();
+  std::set< std::pair< std::string, std::string > > metabs
+    = listOfNonExistingMetabNames();
   bool ret;
   if (metabs.size() == 0) ret = false; else ret = true;
 
@@ -659,11 +695,23 @@ bool CChemEqInterface::createNonExistingMetabs()
   for (it = metabs.begin(); it != itEnd; ++it)
     {
       if (mpModel->getCompartments().getIndex(it->second) == C_INVALID_INDEX)
-        mpModel->createCompartment(it->second, 1);
+        {
+          CCompartment* comp = mpModel->createCompartment(it->second, 1);
 
-      mpModel->createMetabolite(it->first,
-                                it->second,
-                                1.0, CModelEntity::REACTIONS);
+          if (comp != NULL)
+            {
+              createdKeys.insert(createdKeys.begin(), comp->getKey());
+            }
+        }
+
+      CMetab* metab = mpModel->createMetabolite(it->first,
+                      it->second,
+                      1.0, CModelEntity::REACTIONS);
+
+      if (metab != NULL)
+        {
+          createdKeys.insert(createdKeys.begin(), metab->getKey());
+        }
     }
 
   // Due to the creation of metabolites the display names may have changed.

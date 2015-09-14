@@ -828,10 +828,10 @@ CQEventWidget1::changeValue(const std::string &key,
       mpObject = CCopasiRootContainer::getKeyFactory()->get(key);
       mpEvent = dynamic_cast<CEvent*>(mpObject);
       loadFromEvent();
-    }
 
-  mpListView->switchToOtherWidget(C_INVALID_INDEX, mKey);
-  qApp->processEvents();
+      mpListView->switchToOtherWidget(C_INVALID_INDEX, mKey);
+      qApp->processEvents();
+    }
 
 
   switch (type)
