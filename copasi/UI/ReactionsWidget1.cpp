@@ -605,15 +605,15 @@ void ReactionsWidget1::slotTableChanged(int index, int sub, QString newValue)
               newValue.toDouble(),
               this,
               reaction,
-              Index,
-              Index
+              index,
+              index
             )
           );
         }
       else
         {
           QList<QVariant> list;
-          list.append(Index);
+          list.append(index);
           list.append(mpRi->getLocalValue(Index));
           mpUndoStack->push(
             new ReactionChangeCommand(
@@ -639,8 +639,8 @@ void ReactionsWidget1::slotTableChanged(int index, int sub, QString newValue)
           FROM_UTF8(mpRi->getMapping(Index)),
           this,
           reaction,
-          Index,
-          Index
+          index,
+          index
         )
       );
     }
@@ -656,8 +656,8 @@ void ReactionsWidget1::slotTableChanged(int index, int sub, QString newValue)
               FROM_UTF8(mpRi->getMapping(Index)),
               this,
               reaction,
-              Index,
-              Index
+              index,
+              index
             )
           );
         }
