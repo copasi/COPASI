@@ -1,4 +1,4 @@
-// Copyright (C) 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2014 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -15,6 +15,9 @@
 
 #include "copasi/report/CCopasiRootContainer.h"
 #include "copasi/commandline/CConfigurationFile.h"
+
+// Uncomment this line below to get debug print out.
+// #define DEBUG_OUTPUT 1
 
 CMathEventQueue::CKey::CKey() :
   mExecutionTime(0.0),
@@ -277,8 +280,10 @@ CMath::StateChange CMathEventQueue::process(const bool & priorToOutput)
 
   iterator itAction = getAction();
 
+#ifdef DEBUG_OUTPUT
   std::cout << "State: " << mpContainer->getState(false) << std::endl;
   std::cout << "Roots: " << mpContainer->getRoots() << std::endl;
+#endif //DEBUG_OUTPUT
 
   // The algorithm below will work properly for user ordered events
   // as the queue enforces the proper ordering.
@@ -296,8 +301,10 @@ CMath::StateChange CMathEventQueue::process(const bool & priorToOutput)
 
       // State change does not indicate whether we have any root changes. We need to
       // explicitly check for it.
+#ifdef DEBUG_OUTPUT
       std::cout << "State: " << mpContainer->getState(false) << std::endl;
       std::cout << "Roots: " << mpContainer->getRoots() << std::endl;
+#endif // DEBUG_OUTPUT
 
       // We switch to the next cascading level so that events triggered by the
       // execution of assignments are properly scheduled.

@@ -37,6 +37,9 @@
 #include "report/CCopasiRootContainer.h"
 #include "utilities/CCopasiMessage.h"
 
+// Uncomment this line below to get debug print out.
+// #define DEBUG_OUTPUT 1
+
 // this will have to be defined somewhere else with the
 // values of other distribution types
 //#define SD_UNIFORM 0
@@ -92,9 +95,12 @@ CScanItem::CScanItem(CCopasiParameterGroup* si):
 
   mNumSteps = * si->getValue("Number of steps").pUINT;
 
-  std::string tmpString = * si->getValue("Object").pCN;
+  CCopasiProblem * pProblem = dynamic_cast< CCopasiProblem * >(si->getObjectAncestor("Problem"));
 
-  mpObject = CObjectInterface::DataObject(si->getObjectFromCN(tmpString));
+  if (pProblem != NULL)
+    {
+      mpObject = pProblem->getMathContainer()->getObject(*si->getValue("Object").pCN);
+    }
 
   if (mpObject != NULL)
     {
@@ -140,7 +146,7 @@ bool CScanItem::isValidScanItem(const bool & /* continueFromCurrentState */)
   return true;
 }
 
-const CCopasiObject * CScanItem::getObject() const
+const CObjectInterface * CScanItem::getObject() const
 {
   return mpObject;
 }
@@ -359,6 +365,8 @@ bool CScanMethod::init()
   mTotalSteps = 1;
   CObjectInterface::ObjectSet ObjectSet;
 
+  size_t Offset = mpContainer->getInitialStateObjects().size();
+
   size_t i, imax = mpProblem->getNumberOfScanItems();
   mContinueFromCurrentState = mpProblem->getContinueFromCurrentState();
 
@@ -375,24 +383,22 @@ bool CScanMethod::init()
       mScanItems.push_back(pItem);
       mTotalSteps *= pItem->getNumSteps() + 1;
 
-      const CCopasiObject * pDataObject = pItem->getObject();
-      const CObjectInterface * pObject = mpContainer->getMathObject(pDataObject);
-
-      size_t Offset = mpContainer->getInitialStateObjects().size();
+      const CObjectInterface * pObject = pItem->getObject();
 
       if (pObject != NULL)
         {
-          // If we continue from the current state we must change the transient values
-          if (mContinueFromCurrentState)
+          if (pObject != pObject->getDataObject())
             {
-              pObject += Offset;
+              // If we continue from the current state we must change the transient values
+              // unless we have a local reaction parameter
+              if (mContinueFromCurrentState &&
+                  static_cast< const CMathObject * >(pObject)->getEntityType() != CMath::LocalReactionParameter)
+                {
+                  pObject += Offset;
+                }
             }
 
           ObjectSet.insert(pObject);
-        }
-      else if (pDataObject != NULL)
-        {
-          ObjectSet.insert(pDataObject);
         }
     }
 
@@ -483,7 +489,15 @@ bool CScanMethod::loop(size_t level)
 
 bool CScanMethod::calculate()
 {
+#ifdef DEBUG_OUTPUT
+  std::cout << "CScanMethod::calculate State 1: " << mpContainer->getValues() << std::endl;
+#endif // DEBUG_OUTPUT
+
   mpContainer->applyUpdateSequence(mInitialUpdates);
+
+#ifdef DEBUG_OUTPUT
+  std::cout << "CScanMethod::calculate State 2: " << mpContainer->getValues() << std::endl;
+#endif // DEBUG_OUTPUT
 
   return mpTask->processCallback();
 }

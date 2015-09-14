@@ -17,7 +17,9 @@
 #include "randomGenerator/CRandom.h"
 #include "lapack/blaswrap.h"
 
-// #define DEBUG_OUTPUT
+// Uncomment this line below to get debug print out.
+// #define DEBUG_OUTPUT 1
+
 // static
 void CMathContainer::createRelocation(const size_t & n, const size_t & o,
                                       CMath::sRelocate & relocate,

@@ -38,7 +38,7 @@ class CScanItem
 protected:
   size_t mNumSteps;
 
-  const CCopasiObject * mpObject;
+  const CObjectInterface * mpObject;
 
   C_FLOAT64 * mpObjectValue;
 
@@ -77,9 +77,9 @@ public:
 
   /**
    * Retrieve the initial object which is scanned.
-   * @return const CCopasiObject * object
+   * @return const CObjectInterface * object
    */
-  const CCopasiObject * getObject() const;
+  const CObjectInterface * getObject() const;
 
 protected:
 
