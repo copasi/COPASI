@@ -526,7 +526,7 @@ size_t CMathEvent::CTrigger::countRoots(const CEvaluationNode * pNode,
 {
   size_t RootCount = 0;
 
-  // TODO CRITICAL We only need to count in boolean functions see compile for details.
+  // We only need to count in boolean functions see compile for details.
   CNodeContextIterator< const CEvaluationNode, std::vector< size_t > > itNode(pNode);
   itNode.setProcessingModes(CNodeIteratorMode::Before | CNodeIteratorMode::After);
 

@@ -401,7 +401,7 @@ bool COptProblem::initialize()
 
   mCPUTime.start();
 
-  // TODO CRITICAL Add the objective expression to the math container
+  // TODO CRITICAL PARRELIZATION Add the objective expression to the math container
   if (mpObjectiveExpression == NULL ||
       mpObjectiveExpression->getInfix() == "" ||
       !mpObjectiveExpression->compile(ContainerList))
@@ -514,7 +514,7 @@ bool COptProblem::calculate()
 
       mpContainer->applyUpdateSequence(mUpdateObjectiveFunction);
 
-      // TODO CRITICAL We need to point to the created container objective function
+      // TODO CRITICAL PARRELIZATION We need to point to the created container objective function
       mCalculateValue = *mpParmMaximize ? -mpObjectiveExpression->calcValue() : mpObjectiveExpression->calcValue();
     }
 
