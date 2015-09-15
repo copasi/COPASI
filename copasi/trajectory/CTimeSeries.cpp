@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -44,8 +44,8 @@ CTimeSeries::CTimeSeries():
   mAllocatedSteps(0),
   mRecordedSteps(0),
   mNumVariables(0),
-  mpIt(mArray),
-  mpEnd(mArray + size()),
+  mpIt(mpBuffer),
+  mpEnd(mpBuffer + size()),
   mContainerValues(),
   mTitles(),
   mCompartment(),
@@ -60,8 +60,8 @@ CTimeSeries::CTimeSeries(const CTimeSeries & src):
   mAllocatedSteps(src.mAllocatedSteps),
   mRecordedSteps(src.mRecordedSteps),
   mNumVariables(src.mNumVariables),
-  mpIt(mArray + mRecordedSteps * mCols),
-  mpEnd(mArray + size()),
+  mpIt(mpBuffer + mRecordedSteps * mCols),
+  mpEnd(mpBuffer + size()),
   mContainerValues(),
   mTitles(src.mTitles),
   mCompartment(src.mCompartment),
@@ -94,8 +94,8 @@ void CTimeSeries::increaseAllocation()
   mAllocatedSteps += diff;
   CMatrix< C_FLOAT64 >::resize(mAllocatedSteps, mCols, true);
 
-  mpIt = mArray + mRecordedSteps * mCols;
-  mpEnd = mArray + size();
+  mpIt = mpBuffer + mRecordedSteps * mCols;
+  mpEnd = mpBuffer + size();
 }
 
 void CTimeSeries::clear()
@@ -105,8 +105,8 @@ void CTimeSeries::clear()
   mAllocatedSteps = mRows;
   mRecordedSteps = 0;
   mNumVariables = 0;
-  mpIt = mArray;
-  mpEnd = mArray + size();
+  mpIt = mpBuffer;
+  mpEnd = mpBuffer + size();
   mTitles.clear();
   mCompartment.resize(0);
   mPivot.resize(0);
@@ -156,8 +156,8 @@ bool CTimeSeries::compile(CObjectInterface::ContainerList listOfContainer)
 
   mRecordedSteps = 0;
   mNumVariables = Fixed;
-  mpIt = mArray;
-  mpEnd = mArray + size();
+  mpIt = mpBuffer;
+  mpEnd = mpBuffer + size();
 
   mNumberToQuantityFactor = pContainer->getModel().getNumber2QuantityFactor();
 
@@ -291,7 +291,7 @@ const C_FLOAT64 & CTimeSeries::getData(const size_t & step,
                                        const size_t & var) const
 {
   if (step < mRecordedSteps && var < mNumVariables)
-    return *(mArray + step * mCols + mPivot[var]);
+    return *(mpBuffer + step * mCols + mPivot[var]);
 
   return mDummyFloat;
 }
@@ -304,9 +304,9 @@ C_FLOAT64 CTimeSeries::getConcentrationData(const size_t & step,
       const size_t & Col = mPivot[var];
 
       if (mCompartment[Col] != C_INVALID_INDEX)
-        return *(mArray + step * mCols + Col) * mNumberToQuantityFactor / *(mArray + step * mCols + mCompartment[Col]);
+        return *(mpBuffer + step * mCols + Col) * mNumberToQuantityFactor / *(mpBuffer + step * mCols + mCompartment[Col]);
       else
-        return *(mArray + step * mCols + Col);
+        return *(mpBuffer + step * mCols + Col);
     }
 
   return mDummyFloat;

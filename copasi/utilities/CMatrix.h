@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -84,7 +84,7 @@ protected:
   /**
    * The array storing the matrix elements
    */
-  CType * mArray;
+  CType * mpBuffer;
 
   // Operations
 public:
@@ -96,7 +96,7 @@ public:
   CMatrix(size_t rows = 0, size_t cols = 0) :
     mRows(0),
     mCols(0),
-    mArray(NULL)
+    mpBuffer(NULL)
   {
     resize(rows, cols);
   }
@@ -108,12 +108,12 @@ public:
   CMatrix(const CMatrix <CType> & src):
     mRows(0),
     mCols(0),
-    mArray(NULL)
+    mpBuffer(NULL)
   {
     resize(src.mRows, src.mCols);
 
     if (mRows && mCols)
-      memcpy(mArray, src.mArray, mRows * mCols * sizeof(CType));
+      memcpy(mpBuffer, src.mpBuffer, mRows * mCols * sizeof(CType));
   }
 
   /**
@@ -121,8 +121,8 @@ public:
    */
   virtual ~CMatrix()
   {
-    if (mArray)
-      delete [] mArray;
+    if (mpBuffer)
+      delete [] mpBuffer;
   }
 
   /**
@@ -154,8 +154,8 @@ public:
       {
         size_t OldRows = mRows;
         size_t OldCols = mCols;
-        CType * OldArray = mArray;
-        mArray = NULL;
+        CType * OldArray = mpBuffer;
+        mpBuffer = NULL;
 
         if (rows != 0 && cols != 0)
           {
@@ -164,20 +164,20 @@ public:
                 // We need to detect size_t overflow
                 if ((C_FLOAT64) rows * (C_FLOAT64) cols * (C_FLOAT64) sizeof(CType) >= (C_FLOAT64) std::numeric_limits< size_t >::max())
                   {
-                    mArray = NULL;
+                    mpBuffer = NULL;
                   }
                 else
                   {
-                    mArray = new CType[rows * cols];
+                    mpBuffer = new CType[rows * cols];
                   }
               }
 
             catch (...)
               {
-                mArray = NULL;
+                mpBuffer = NULL;
               }
 
-            if (mArray == NULL)
+            if (mpBuffer == NULL)
               {
                 mRows = 0;
                 mCols = 0;
@@ -186,7 +186,7 @@ public:
               }
 
             if (copy &&
-                mArray != NULL &&
+                mpBuffer != NULL &&
                 OldArray != NULL)
               {
                 // We copy the top left matrix (min(rows, OldRows), min(cols, OldCols);
@@ -195,7 +195,7 @@ public:
 
                 CType * pOldRow = OldArray;
                 CType * pOldRowEnd = pOldRow +  CopiedRows * OldCols;
-                CType * pRow = mArray;
+                CType * pRow = mpBuffer;
 
                 for (; pOldRow != pOldRowEnd; pOldRow += OldCols, pRow += cols)
                   {
@@ -224,7 +224,7 @@ public:
     if (mRows != rhs.mRows || mCols != rhs.mCols)
       resize(rhs.mRows, rhs.mCols);
 
-    memcpy(mArray, rhs.mArray, mRows * mCols * sizeof(CType));
+    memcpy(mpBuffer, rhs.mpBuffer, mRows * mCols * sizeof(CType));
 
     return *this;
   }
@@ -236,7 +236,7 @@ public:
    */
   virtual CMatrix <CType> & operator = (const CType & value)
   {
-    CType * pIt = mArray;
+    CType * pIt = mpBuffer;
     CType * pEnd = pIt + mRows * mCols;
 
     for (; pIt != pEnd; ++pIt) *pIt = value;
@@ -253,7 +253,7 @@ public:
   virtual CMatrix <CType> & operator *(const CType & value)
   {
     size_t i, imax = mRows * mCols;
-    CType * tmp = mArray;
+    CType * tmp = mpBuffer;
 
     for (i = 0; i < imax; i++, tmp++) *tmp *= value;
 
@@ -278,8 +278,8 @@ public:
     assert(mRows == rhs.mRows && mCols == rhs.mCols);
 
     size_t i, imax = mRows * mCols;
-    CType * tmp1 = mArray;
-    CType * tmp2 = rhs.mArray;
+    CType * tmp1 = mpBuffer;
+    CType * tmp2 = rhs.mpBuffer;
 
     for (i = 0; i < imax; i++, tmp1++, tmp2++) *tmp1 += *tmp2;
 
@@ -293,7 +293,7 @@ public:
    * @return CType * row
    */
   virtual inline CType * operator[](size_t row)
-  {return mArray + row * mCols;}
+  {return mpBuffer + row * mCols;}
 
   /**
    * Retrieve a row of the matrix using c-style indexing
@@ -301,7 +301,7 @@ public:
    * @return const CType * row
    */
   virtual inline const CType * operator[](size_t row) const
-  {return mArray + row * mCols;}
+  {return mpBuffer + row * mCols;}
 
   /**
    * Retrieve a matrix element using c-style indexing.
@@ -313,7 +313,7 @@ public:
                                           const size_t & col)
   {
     assert(row < mRows && col < mCols);
-    return *(mArray + row * mCols + col);
+    return *(mpBuffer + row * mCols + col);
   }
 
   /**
@@ -326,7 +326,7 @@ public:
       const size_t & col) const
   {
     assert(row < mRows && col < mCols);
-    return *(mArray + row * mCols + col);
+    return *(mpBuffer + row * mCols + col);
   }
 
   /**
@@ -334,14 +334,14 @@ public:
    * for interfacing with clapack routines.
    * @return CType * array
    */
-  virtual CType * array() {return mArray;}
+  virtual CType * array() {return mpBuffer;}
 
   /**
    * Retrieve the array of the matrix elements. This is suitable
    * for interfacing with clapack routines.
    * @return const CType * array
    */
-  virtual const CType * array() const {return mArray;}
+  virtual const CType * array() const {return mpBuffer;}
 
   /**
    * Reorder the rows according to the provided pivots
@@ -368,18 +368,18 @@ public:
 
           if (to != from)
             {
-              memcpy(pTmp, mArray + i * mCols, mCols * sizeof(CType));
+              memcpy(pTmp, mpBuffer + i * mCols, mCols * sizeof(CType));
 
               while (from != i)
                 {
-                  memcpy(mArray + to * mCols, mArray + from * mCols, mCols * sizeof(CType));
+                  memcpy(mpBuffer + to * mCols, mpBuffer + from * mCols, mCols * sizeof(CType));
                   Applied[to] = true;
 
                   to = from;
                   from = pivot[to];
                 }
 
-              memcpy(mArray + to * mCols, pTmp, mCols * sizeof(CType));
+              memcpy(mpBuffer + to * mCols, pTmp, mCols * sizeof(CType));
             }
 
           Applied[to] = true;
@@ -811,7 +811,7 @@ std::ostream &operator<<(std::ostream &os, const CMatrix< CType > & A)
   os << "Matrix(" << A.mRows << "x" << A.mCols << ")" << std::endl;
 
   size_t i, j;
-  CType * tmp = A.mArray;
+  CType * tmp = A.mpBuffer;
 
   for (i = 0; i < A.mRows; i++)
     {

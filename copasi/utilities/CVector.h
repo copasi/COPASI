@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -48,7 +48,7 @@ protected:
   /**
    * The array storing the vector elements
    */
-  CType * mVector;
+  CType * mpBuffer;
 
 public:
   // Operations
@@ -60,7 +60,7 @@ public:
   CVectorCore(const size_t & size = 0,
               CType * vector = NULL):
     mSize(size),
-    mVector(vector)
+    mpBuffer(vector)
   {}
 
 private:
@@ -70,7 +70,7 @@ private:
    */
   CVectorCore(const CVectorCore< CType > & src):
     mSize(src.mSize),
-    mVector(src.mVector)
+    mpBuffer(src.mpBuffer)
   {}
 
 public:
@@ -89,7 +89,7 @@ public:
                   CType * vector)
   {
     mSize = size;
-    mVector = vector;
+    mpBuffer = vector;
   }
 
   /**
@@ -100,7 +100,7 @@ public:
   void initialize(const CVectorCore< CType > & src)
   {
     mSize = src.mSize;
-    mVector = src.mVector;
+    mpBuffer = src.mpBuffer;
   }
 
   /**
@@ -112,17 +112,17 @@ public:
   {
     // Nothing to do
     if (this == &rhs ||
-        (mVector == rhs.mVector && mSize == rhs.mSize))
+        (mpBuffer == rhs.mpBuffer && mSize == rhs.mSize))
       {
         return *this;
       }
 
     // Behave like the assignment operator of CVector if the sizes match
-    if (mVector != rhs.mVector &&
+    if (mpBuffer != rhs.mpBuffer &&
         mSize == rhs.mSize &&
         mSize > 0)
       {
-        memcpy((void *) mVector, (void *) rhs.array(), mSize * sizeof(CType));
+        memcpy((void *) mpBuffer, (void *) rhs.array(), mSize * sizeof(CType));
         return *this;
       }
 
@@ -139,14 +139,38 @@ public:
    * for interfacing with clapack routines.
    * @return CType * array
    */
-  CType * array() {return mVector;}
+  CType * array() {return mpBuffer;}
 
   /**
    * Retrieve the array of the vector elements. This is suitable
    * for interfacing with clapack routines.
    * @return const CType * array
    */
-  const CType * array() const {return mVector;}
+  const CType * array() const {return mpBuffer;}
+
+  /**
+   * Retrieve the a pointer to the first vector element.
+   * @return CType * pFirst
+   */
+  CType * begin() {return mpBuffer;}
+
+  /**
+   * Retrieve the a pointer to the first vector element.
+   * @return const CType * pFirst
+   */
+  const CType * begin() const {return mpBuffer;}
+
+  /**
+   * Retrieve the a pointer beyond the last vector element.
+   * @return CType * pEnd
+   */
+  CType * end() {return mpBuffer + mSize;}
+
+  /**
+   * Retrieve the a pointer beyond the last vector element.
+   * @return const CType * End
+   */
+  const CType * end() const {return mpBuffer + mSize;}
 
   /**
    * Assignment operator
@@ -155,7 +179,7 @@ public:
   CVectorCore< CType> & operator = (const CType & value)
   {
     size_t i;
-    CType * tmp = mVector;
+    CType * tmp = mpBuffer;
 
     for (i = 0; i < mSize; i++, tmp++)
       {
@@ -177,7 +201,7 @@ public:
    * @return CType & element
    */
   inline CType & operator[](const size_t & row)
-  {return *(mVector + row);}
+  {return *(mpBuffer + row);}
 
   /**
    * Retrieve an element of the vector
@@ -185,7 +209,7 @@ public:
    * @return const CType & element
    */
   inline const CType & operator[](const size_t & row) const
-  {return *(mVector + row);}
+  {return *(mpBuffer + row);}
 
   /**
    * Retrieve a vector element using Fortan style indexing.
@@ -193,7 +217,7 @@ public:
    * @return const CType & element
    */
   inline CType & operator()(const size_t & row)
-  {return *(mVector + (row - 1));}
+  {return *(mpBuffer + (row - 1));}
 
   /**
    * Retrieve a vector element using Fortan style indexing.
@@ -201,7 +225,7 @@ public:
    * @return const CType & element
    */
   inline const CType & operator()(const size_t & row) const
-  {return *(mVector + (row - 1));}
+  {return *(mpBuffer + (row - 1));}
 
   /**
    * Output stream operator
@@ -249,18 +273,18 @@ public:
 
           if (to != from)
             {
-              tmp = mVector[i];
+              tmp = mpBuffer[i];
 
               while (from != i)
                 {
-                  mVector[to] = mVector[from];
+                  mpBuffer[to] = mpBuffer[from];
                   Applied[to] = true;
 
                   to = from;
                   from = pivot[to];
                 }
 
-              mVector[to] = tmp;
+              mpBuffer[to] = tmp;
             }
 
           Applied[to] = true;
@@ -317,8 +341,8 @@ public:
    */
   ~CVector()
   {
-    if (CVectorCore< CType >::mVector != NULL)
-      delete [] CVectorCore< CType >::mVector;
+    if (CVectorCore< CType >::mpBuffer != NULL)
+      delete [] CVectorCore< CType >::mpBuffer;
   }
 
   /**
@@ -352,7 +376,7 @@ public:
   CVector< CType> & operator = (const CType & value)
   {
     size_t i;
-    CType * tmp = CVectorCore< CType >::mVector;
+    CType * tmp = CVectorCore< CType >::mpBuffer;
 
     for (i = 0; i < CVectorCore< CType >::mSize; i++, tmp++)
       {
@@ -373,12 +397,12 @@ public:
     if (size == CVectorCore< CType >::mSize) return;
 
     size_t OldSize = CVectorCore< CType >::mSize;
-    CType * OldVector = CVectorCore< CType >::mVector;
+    CType * OldVector = CVectorCore< CType >::mpBuffer;
 
     //TODO: maybe we should only resize if the vector gets bigger
     //or much smaller?
     CVectorCore< CType >::mSize = size;
-    CVectorCore< CType >::mVector = NULL;
+    CVectorCore< CType >::mpBuffer = NULL;
 
     if (CVectorCore< CType >::mSize > 0)
       {
@@ -387,26 +411,26 @@ public:
             // We need to detect size_t overflow
             if ((C_FLOAT64) CVectorCore< CType >::mSize * (C_FLOAT64) sizeof(CType) >= (C_FLOAT64) std::numeric_limits< size_t >::max())
               {
-                CVectorCore< CType >::mVector = NULL;
+                CVectorCore< CType >::mpBuffer = NULL;
               }
             else
               {
-                CVectorCore< CType >::mVector = new CType[CVectorCore< CType >::mSize];
+                CVectorCore< CType >::mpBuffer = new CType[CVectorCore< CType >::mSize];
               }
           }
 
         catch (...)
           {
             CVectorCore< CType >::mSize = 0;
-            CVectorCore< CType >::mVector = NULL;
+            CVectorCore< CType >::mpBuffer = NULL;
           }
       }
 
     if (copy &&
-        CVectorCore< CType >::mVector != NULL &&
+        CVectorCore< CType >::mpBuffer != NULL &&
         OldVector != NULL)
       {
-        memcpy((void *) CVectorCore< CType >::mVector,
+        memcpy((void *) CVectorCore< CType >::mpBuffer,
                (void *) OldVector,
                std::min(CVectorCore< CType >::mSize, OldSize) * sizeof(CType));
       }
@@ -417,7 +441,7 @@ public:
       }
 
     // Check if allocation failed
-    if (CVectorCore< CType >::mVector == NULL &&
+    if (CVectorCore< CType >::mpBuffer == NULL &&
         size > 0)
       {
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCopasiBase + 1, size * sizeof(CType));
@@ -436,7 +460,7 @@ protected:
 
         if (CVectorCore< CType >::mSize != 0)
           {
-            memcpy((void *) CVectorCore< CType >::mVector,
+            memcpy((void *) CVectorCore< CType >::mpBuffer,
                    (void *) rhs.array(),
                    CVectorCore< CType >::mSize * sizeof(CType));
           }
@@ -452,7 +476,7 @@ std::ostream &operator<<(std::ostream &os, const CVectorCore< CType > & A)
   if (A.mSize)
     {
       size_t i;
-      CType * tmp = A.mVector;
+      CType * tmp = A.mpBuffer;
       os << *(tmp++);
 
       for (i = 1; i < A.mSize; i++)

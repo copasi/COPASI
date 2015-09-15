@@ -1,4 +1,4 @@
-// Copyright (C) 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2014 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -23,12 +23,12 @@ CMathHistoryCore::~CMathHistoryCore()
 
 C_FLOAT64 * CMathHistoryCore::operator [](const size_t & row)
 {
-  return mVector + row * mColsAllocated;
+  return mpBuffer + row * mColsAllocated;
 }
 
 CVectorCore< C_FLOAT64 > CMathHistoryCore::getRow(const size_t & row)
 {
-  return CVectorCore< C_FLOAT64 >(mCols, mVector + row * mColsAllocated);
+  return CVectorCore< C_FLOAT64 >(mCols, mpBuffer + row * mColsAllocated);
 }
 
 void CMathHistoryCore::setRow(const size_t & row, const CVectorCore< C_FLOAT64 > & values)
@@ -93,12 +93,12 @@ const size_t & CMathHistoryCore::size() const
 
 C_FLOAT64 * CMathHistoryCore::array()
 {
-  return mVector;
+  return mpBuffer;
 }
 
 const C_FLOAT64 * CMathHistoryCore::array() const
 {
-  return mVector;
+  return mpBuffer;
 }
 
 CMathHistory::CMathHistory(const size_t & rows,
@@ -124,7 +124,7 @@ CMathHistory::CMathHistory(const CMathHistory & src):
 // virtual
 CMathHistory::~CMathHistory()
 {
-  pdelete(mVector);
+  pdelete(mpBuffer);
 }
 
 CMathHistory & CMathHistory::operator = (const CMathHistoryCore & rhs)
@@ -158,7 +158,7 @@ void CMathHistory::resize(const size_t & rows,
       return;
     }
 
-  pdelete(mVector);
+  pdelete(mpBuffer);
 
   mSize = NewSize;
 
@@ -169,23 +169,23 @@ void CMathHistory::resize(const size_t & rows,
           // We need to detect size_t overflow
           if ((C_FLOAT64) mSize * (C_FLOAT64) sizeof(C_FLOAT64) >= (C_FLOAT64) std::numeric_limits< size_t >::max())
             {
-              mVector = NULL;
+              mpBuffer = NULL;
             }
           else
             {
-              mVector = new C_FLOAT64[mSize];
+              mpBuffer = new C_FLOAT64[mSize];
             }
         }
 
       catch (...)
         {
           mSize = 0;
-          mVector = NULL;
+          mpBuffer = NULL;
         }
     }
 
   // Check if allocation failed
-  if (mVector == NULL &&
+  if (mpBuffer == NULL &&
       NewSize > 0)
     {
       mRows = 0;
@@ -211,7 +211,7 @@ void CMathHistory::copy(const CMathHistoryCore & src)
 
       if (mSize != 0)
         {
-          memcpy((void *) mVector,
+          memcpy((void *) mpBuffer,
                  (void *) src.array(),
                  mSize * sizeof(C_FLOAT64));
         }
