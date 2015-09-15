@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -105,7 +105,6 @@ QValidator::State CQValidatorExpression::validate(QString & input, int & pos) co
       if (const_cast< CExpression * >(&mExpression)->setInfix(pExpressionWidget->getExpression()) &&
           const_cast< CExpression * >(&mExpression)->compile())
         {
-          QString Input = (*mpContainer.*mRetrieve)();
           return CQValidator< QTextEdit >::validate(input, pos);
         }
     }

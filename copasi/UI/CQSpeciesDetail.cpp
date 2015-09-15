@@ -1051,59 +1051,8 @@ void CQSpeciesDetail::addSpecie(UndoSpecieData *pSData)
 
           UndoEventData * eData = *ev;
 
-          CEvent *pEvent =  pModel->createEvent(eData->getName());
-          std::string key = pEvent->getKey();
-
-          //set the expressions
-          pEvent->setTriggerExpression(eData->getTriggerExpression());
-          pEvent->setDelayExpression(eData->getDelayExpression());
-          pEvent->setPriorityExpression(eData->getPriorityExpression());
-
-          QList <UndoEventAssignmentData *> *assignmentData = eData->getEventAssignmentData();
-          QList <UndoEventAssignmentData *>::const_iterator i;
-
-          for (i = assignmentData->begin(); i != assignmentData->end(); ++i)
-            {
-              UndoEventAssignmentData * assignData = *i;
-
-              CCopasiObject * pObject = NULL;
-              bool speciesExist = false;
-              size_t ci;
-
-              for (ci = 0; ci < pModel->getCompartments().size(); ci++)
-                {
-                  CCompartment * pCompartment = pModel->getCompartments()[ci];
-
-                  if (pCompartment->getMetabolites().getIndex(assignData->getName()) != C_INVALID_INDEX)
-                    speciesExist = true;
-                }
-
-              if (speciesExist)
-                {
-                  size_t index = pModel->findMetabByName(assignData->getName());
-                  pObject =  pModel->getMetabolites()[index];
-                }
-              else if (pModel->getModelValues().getIndex(assignData->getName()) != C_INVALID_INDEX)
-                {
-                  pObject = pModel->getModelValues()[assignData->getName()];
-                }
-              else if (pModel->getReactions().getIndex(assignData->getName()) != C_INVALID_INDEX)
-                {
-                  pObject = pModel->getReactions()[assignData->getName()];
-                }
-
-              const CModelEntity * pEntity = dynamic_cast< const CModelEntity * >(pObject);
-
-              CEventAssignment *eventAssign = new CEventAssignment(pObject->getKey(), pEvent->getObjectParent());
-
-              eventAssign->setExpression(assignData->getExpression());
-
-              eventAssign->getExpressionPtr()->compile();
-
-              pEvent->getAssignments().add(eventAssign);
-            }
-
-          protectedNotify(ListViews::EVENT, ListViews::ADD, key);
+          CEvent* pEvent = eData->createEventFromData(pModel);
+          protectedNotify(ListViews::EVENT, ListViews::ADD, pEvent->getKey());
         }
     }
 

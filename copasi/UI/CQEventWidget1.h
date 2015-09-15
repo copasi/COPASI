@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -17,6 +17,7 @@
 
 #ifdef COPASI_UNDO
 class UndoEventData;
+#include <copasi/undoFramework/CCopasiUndoCommand.h>
 #endif
 
 #include <QtCore/QVariant>
@@ -45,6 +46,18 @@ public:
 
   virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
   virtual bool leave();
+
+  /**
+   * finds the delay type index for the given event:
+   *
+   * * 0 -> no delay
+   * * 1 -> delayed assignments
+   * * 2 -> delayed calculation and assignment
+   *
+   * @param event the event to look at
+   * @return the delay type index
+   */
+  static int getDelayTypeIndex(CEvent* event);
 
 protected:
   virtual bool enterProtected();
@@ -84,7 +97,11 @@ private slots:
   void addEvent(UndoEventData *pSData);
   void createNewEvent();
   void deleteEvent(UndoEventData *pSData);
-  void eventTypeChanged(int type);
+public:
+  bool changeValue(const std::string& key,
+                   CCopasiUndoCommand::Type type,
+                   const QVariant& newValue,
+                   const std::string& expression = "");
 #endif
 };
 

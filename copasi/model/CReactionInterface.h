@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReactionInterface.h,v $
-//   $Revision: 1.23 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/05/09 21:26:57 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2005 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -105,11 +97,16 @@ public:
    */
   void setChemEqString(const std::string & eq, const std::string & newFunction);
 
-  std::string getChemEqString() const {return mChemEqI.getChemEqString(false);};
+  /**
+   * internal function that temporarily removes the equation
+   */
+  void clearChemEquation();
 
-  const CChemEqInterface & getChemEqInterface() const {return mChemEqI;};
+  std::string getChemEqString() const;
 
-  bool isReversible() const {return mChemEqI.getReversibility();};
+  const CChemEqInterface & getChemEqInterface() const;
+
+  bool isReversible() const;
 
   /**
    * this method tries to find out if the REACTION involves several compartments
@@ -150,39 +147,23 @@ public:
    */
   void setFunctionAndDoMapping(const std::string & fn);
 
-  const std::string & getFunctionName() const
-  {if (mpFunction) return mpFunction->getObjectName(); else return emptyString;};
+  const std::string & getFunctionName() const;
 
-  const std::string & getFunctionDescription() const
-  {if (mpFunction) return mpFunction->getInfix(); else return emptyString;};
+  const std::string & getFunctionDescription() const;
 
-  const CFunction * getFunction() const
-  {return mpFunction;}
+  const CFunction * getFunction() const;
 
   std::vector< std::string > getListOfPossibleFunctions() const;
 
   //query information about the function variables
 
-  size_t size() const
-  {if (mpFunction) return mpParameters->size(); else return 0;};
+  size_t size() const;
 
-  bool isVector(size_t index) const
-  {
-    if (mpFunction) return ((*mpParameters)[index]->getType() == CFunctionParameter::VFLOAT64);
-    else return (false);
-  }
+  bool isVector(size_t index) const;
 
-  CFunctionParameter::Role getUsage(size_t index) const
-  {
-    if (mpFunction) return (*mpParameters)[index]->getUsage();
-    else return CFunctionParameter::VARIABLE;
-  }
+  CFunctionParameter::Role getUsage(size_t index) const;
 
-  std::string getParameterName(size_t index) const
-  {
-    if (mpFunction) return (*mpParameters)[index]->getObjectName();
-    else return emptyString;
-  }
+  std::string getParameterName(size_t index) const;
 
   // set/get the mapping
 
@@ -190,29 +171,17 @@ public:
 
   void removeMapping(size_t index, std::string mn);
 
-  const std::vector< std::string > & getMappings(size_t index) const
-  {return mNameMap[index];}
+  const std::vector< std::string > & getMappings(size_t index) const;
 
-  const std::string & getMapping(size_t index) const
-  {
-    assert(!isVector(index));
-    return mNameMap[index][0];
-  }
+  const std::string & getMapping(size_t index) const;
 
-  void setLocalValue(size_t index, C_FLOAT64 value)
-  {
-    mValues[index] = value;
-    mIsLocal[index] = true;
-  }
+  void setLocalValue(size_t index, C_FLOAT64 value);
 
-  void setLocal(size_t index)
-  {
-    mIsLocal[index] = true;
-  }
+  void setLocal(size_t index);
 
-  const C_FLOAT64 & getLocalValue(size_t index) const {return mValues[index];}
+  const C_FLOAT64 & getLocalValue(size_t index) const;
 
-  bool isLocalValue(size_t index) const {return mIsLocal[index];};
+  bool isLocalValue(size_t index) const;
 
   /**
    *  associate the function parameter referenced by "index" with the global
@@ -244,10 +213,30 @@ public:
   bool createMetabolites();
 
   /**
+   * create all metabolites that are needed by the reaction but do
+   * not exist in the model yet.
+   *
+   * @param createdKeys vector, that will be filled with the keys
+   *        of created elements
+   *
+   * @return true in case elements were created, false otherwise
+   */
+  bool createMetabolites(std::vector<std::string>& createdKeys);
+
+  /**
    * create all other objects that are needed by the reaction but do
    * not exist in the model yet.
    */
   bool createOtherObjects() const;
+
+  /**
+   * @brief createOtherObjects
+   *
+   * @param createdKeys vector that will be filled with created keys
+   *
+   * @return true, in case elements were created, false otherwise
+   */
+  bool createOtherObjects(std::vector<std::string>& createdKeys) const;
 
   bool isValid() const;
 

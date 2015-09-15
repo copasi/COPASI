@@ -48,7 +48,7 @@
 #ifdef COPASI_UNDO
 #include "undoFramework/DeleteReactionCommand.h"
 #include "undoFramework/CreateNewReactionCommand.h"
-#include "undoFramework/ReactionLineEditChangedCommand.h"
+#include "undoFramework/ReactionChangeCommand.h"
 #include "copasiui3window.h"
 #endif
 /*
@@ -101,7 +101,7 @@ bool ReactionsWidget1::loadFromReaction(const CReaction* reaction)
   pdelete(mpRi);
   mpRi = new CReactionInterface((*CCopasiRootContainer::getDatamodelList())[0]->getModel());
 
-  mpRi->initFromReaction(reaction->getKey());
+  mpRi->initFromReaction(reaction);
 
   // update the widget.
   FillWidgetFromRI();
@@ -130,6 +130,65 @@ bool ReactionsWidget1::saveToReaction()
   CModel * pModel = pDataModel->getModel();
 
   if (pModel == NULL) return false;
+
+#if COPASI_UNDO
+
+  mIgnoreUpdates = true;
+
+  if (reac->isFast() != mpFast->isChecked())
+    {
+      mpUndoStack->push(new ReactionChangeCommand(
+                          CCopasiUndoCommand::REACTION_FAST_CHANGE,
+                          reac->isFast(),
+                          mpFast->isChecked(),
+                          this,
+                          reac
+                        ));
+    }
+
+  if (reac->isReversible() != mpRi->isReversible())
+    {
+      mpUndoStack->push(new ReactionChangeCommand(
+                          CCopasiUndoCommand::REACTION_REVERSIBLE_CHANGE,
+                          reac->isReversible(),
+                          mpRi->isReversible(),
+                          this,
+                          reac,
+                          FROM_UTF8(reac->getFunction()->getObjectName()),
+                          FROM_UTF8(mpRi->getFunctionName())
+                        ));
+    }
+
+  std::string oldScheme = CChemEqInterface::getChemEqString(pModel, *reac, false);
+  std::string newScheme = mpRi->getChemEqString();
+
+  if (oldScheme != newScheme)
+    {
+      mpUndoStack->push(new ReactionChangeCommand(
+                          CCopasiUndoCommand::REACTION_SCHEME_CHANGE,
+                          FROM_UTF8(oldScheme),
+                          FROM_UTF8(newScheme),
+                          this,
+                          reac,
+                          FROM_UTF8(reac->getFunction()->getObjectName()),
+                          FROM_UTF8(mpRi->getFunctionName())
+                        ));
+    }
+
+  if (reac->getFunction()->getObjectName() != mpRi->getFunctionName())
+    {
+      mpUndoStack->push(new ReactionChangeCommand(
+                          CCopasiUndoCommand::REACTION_FUNCTION_CHANGE,
+                          FROM_UTF8(reac->getFunction()->getObjectName()),
+                          FROM_UTF8(mpRi->getFunctionName()),
+                          this,
+                          reac
+                        ));
+    }
+
+  mIgnoreUpdates = false;
+
+#else
 
   if (reac->isFast() != mpFast->isChecked())
     {
@@ -219,6 +278,8 @@ bool ReactionsWidget1::saveToReaction()
   if (!this->isHidden())
     (*CCopasiRootContainer::getDatamodelList())[0]->changed();
 
+#endif
+
   return true;
 }
 
@@ -246,11 +307,6 @@ void ReactionsWidget1::slotComboBoxSelectionChanged(const QString & p2)
 /*This function is called when the "Chemical Reaction" LineEdit is changed.*/
 void ReactionsWidget1::slotLineEditChanged()
 {
-#ifdef COPASI_UNDO
-  mpUndoStack->push(new ReactionLineEditChangedCommand(this));
-#else
-  //std::string rName = TO_UTF8(LineEdit1->text());
-
   std::string eq = TO_UTF8(LineEdit2->text());
 
   //first check if the string is a valid equation
@@ -266,7 +322,6 @@ void ReactionsWidget1::slotLineEditChanged()
 
   // update the widget
   FillWidgetFromRI();
-#endif
 }
 
 // added 5/19/04
@@ -293,6 +348,10 @@ void ReactionsWidget1::slotBtnNew()
 //  enter(key);
   mpListView->switchToOtherWidget(C_INVALID_INDEX, key);
 #endif
+}
+
+void ReactionsWidget1::slotBtnCopy()
+{
 }
 
 void ReactionsWidget1::copy()
@@ -517,6 +576,106 @@ void ReactionsWidget1::FillWidgetFromRI()
 void ReactionsWidget1::slotTableChanged(int index, int sub, QString newValue)
 {
   size_t Index = index;
+
+#ifdef COPASI_UNDO
+  // if undo is enable we issue commands for each of the changes
+
+  CReaction* reaction = dynamic_cast<CReaction*>(
+                          CCopasiRootContainer::getKeyFactory()->get(mKey));
+
+  if (reaction == NULL)
+    return;
+
+  mIgnoreUpdates = true;
+
+  if (mpRi->getUsage(Index) == CFunctionParameter::PARAMETER)
+    {
+      if (sub != 0) return;
+
+      if (mpRi->isLocalValue(Index))
+        {
+          mpUndoStack->push(
+            new ReactionChangeCommand(
+              CCopasiUndoCommand::REACTION_LOCAL_PARAMETER_VALUE_CHANGE,
+              mpRi->getLocalValue(Index),
+              newValue.toDouble(),
+              this,
+              reaction,
+              index,
+              index
+            )
+          );
+        }
+      else
+        {
+          QList<QVariant> list;
+          list.append(index);
+          list.append(mpRi->getLocalValue(Index));
+          mpUndoStack->push(
+            new ReactionChangeCommand(
+              CCopasiUndoCommand::REACTION_MAPPING_PARAMETER_CHANGE,
+              FROM_UTF8(mpRi->getMapping(Index)),
+              newValue,
+              this,
+              reaction,
+              list,
+              list
+            )
+          );
+        }
+    }
+  else if (mpRi->getUsage(Index) == CFunctionParameter::VOLUME)
+    {
+      if (sub != 0) return;
+
+      mpUndoStack->push(
+        new ReactionChangeCommand(
+          CCopasiUndoCommand::REACTION_MAPPING_VOLUME_CHANGE,
+          newValue,
+          FROM_UTF8(mpRi->getMapping(Index)),
+          this,
+          reaction,
+          index,
+          index
+        )
+      );
+    }
+  else
+    {
+      if (sub == 0) //here we assume that vector parameters cannot be edited
+        {
+          //          mpRi->setMapping((int) Index, TO_UTF8(table->item((int) table->mIndex2Line[index], 3)->text()));
+          mpUndoStack->push(
+            new ReactionChangeCommand(
+              CCopasiUndoCommand::REACTION_MAPPING_SPECIES_CHANGE,
+              newValue,
+              FROM_UTF8(mpRi->getMapping(Index)),
+              this,
+              reaction,
+              index,
+              index
+            )
+          );
+        }
+    }
+
+  mIgnoreUpdates = false;
+
+  // if we don't stop here, we loose changes!
+  // instead just prevent updating, that way the user has a chance to correct the reaction,
+  // only if the user selects another reaction (or somehow else leaves the editing,
+  // the changes will be lost)
+  //
+  if (!mpRi->isValid())
+    return;
+
+  // update the widget
+  int rrr = table->currentRow();
+  int ccc = table->currentColumn();
+  table->setCurrentCell(rrr, ccc);
+
+#else
+
   bool SkipFillWidget = false;
 
   // setValue
@@ -565,6 +724,7 @@ void ReactionsWidget1::slotTableChanged(int index, int sub, QString newValue)
 
   // Will ultimately update mpRi for updateTable and FillWidgetFromRI
   enterProtected();
+#endif
 }
 
 void ReactionsWidget1::slotParameterStatusChanged(int index, bool local)
@@ -602,7 +762,7 @@ void ReactionsWidget1::slotNewFunction()
   std::string nname = name;
   size_t i = 0;
   CCopasiVectorN<CFunction>& FunctionList
-  = CCopasiRootContainer::getFunctionList()->loadedFunctions();
+    = CCopasiRootContainer::getFunctionList()->loadedFunctions();
   CFunction* pFunc;
 
   while (FunctionList.getIndex(nname) != C_INVALID_INDEX)
@@ -706,28 +866,9 @@ void ReactionsWidget1::setFramework(int framework)
 
 //Undo methods
 #ifdef COPASI_UNDO
-void ReactionsWidget1::lineEditChanged()
-{
-  //std::string rName = TO_UTF8(LineEdit1->text());
 
-  std::string eq = TO_UTF8(LineEdit2->text());
-
-  //first check if the string is a valid equation
-  if (!CChemEqInterface::isValidEq(eq))
-    {
-      return;  // abort further processing
-    }
-
-  // tell the reaction interface
-  //mpRi->setReactionName(rName);
-
-  mpRi->setChemEqString(eq, "");
-
-  // update the widget
-  FillWidgetFromRI();
-  mpListView->switchToOtherWidget(C_INVALID_INDEX, mKey);
-}
-void ReactionsWidget1::restoreLineEditChanged(std::string & eq, std::string &funcName)
+/*void ReactionsWidget1::restoreLineEditChanged(
+    std::string & eq, std::string &funcName)
 {
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
@@ -765,7 +906,7 @@ void ReactionsWidget1::restoreLineEditChanged(std::string & eq, std::string &fun
   // update the widget
   FillWidgetFromRI();
   mpListView->switchToOtherWidget(C_INVALID_INDEX, key); //switch to reaction widget
-}
+}*/
 
 void ReactionsWidget1::createNewReaction()
 {
@@ -827,19 +968,6 @@ void ReactionsWidget1::deleteReaction()
     }
 }
 
-void ReactionsWidget1::deleteReaction(CReaction *pReaction)
-{
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
-  assert(pDataModel != NULL);
-
-  std::string key = pDataModel->getModel()->getReactions()[pReaction->getObjectName()]->getKey();
-  pDataModel->getModel()->removeReaction(key);
-  protectedNotify(ListViews::REACTION, ListViews::DELETE, key);
-
-  mpListView->switchToOtherWidget(114, "");
-}
-
 void ReactionsWidget1::addReaction(std::string & reaObjectName, CReactionInterface *pRi)
 {
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
@@ -853,4 +981,146 @@ void ReactionsWidget1::addReaction(std::string & reaObjectName, CReactionInterfa
 
   mpListView->switchToOtherWidget(C_INVALID_INDEX, key);
 }
+
+void ReactionsWidget1::deleteReaction(CReaction *pReaction)
+{
+  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
+  assert(pDataModel != NULL);
+
+  std::string key = pDataModel->getModel()->getReactions()[pReaction->getObjectName()]->getKey();
+  pDataModel->getModel()->removeReaction(key);
+  protectedNotify(ListViews::REACTION, ListViews::DELETE, key);
+
+  mpListView->switchToOtherWidget(114, "");
+}
+
+bool ReactionsWidget1::changeReaction(
+  const std::string &key,
+  CCopasiUndoCommand::Type type,
+  const QVariant &newValue,
+  const QVariant &newSecondValue,
+  ReactionChangeCommand* command)
+{
+  if (!mIgnoreUpdates)
+    {
+      mKey = key;
+      mpObject = CCopasiRootContainer::getKeyFactory()->get(key);
+      loadFromReaction(dynamic_cast<CReaction*>(mpObject));
+
+      mpListView->switchToOtherWidget(C_INVALID_INDEX, mKey);
+      qApp->processEvents();
+    }
+
+  CReaction* pReaction = dynamic_cast<CReaction*>(mpObject);
+
+  if (pReaction == NULL)
+    return false;
+
+  switch (type)
+    {
+      case CCopasiUndoCommand::REACTION_SCHEME_CHANGE:
+      {
+
+        // remove old, no longer referred to objects
+        std::vector<std::string> previouslyCreatedObjects =
+          command->getCreatedObjects();
+
+        if (!previouslyCreatedObjects.empty())
+          {
+
+            mpRi->clearChemEquation();
+            pReaction->cleanup();
+            pReaction->compile();
+
+            ReactionChangeCommand::removeCreatedObjects(previouslyCreatedObjects,
+                pReaction->getObjectDataModel()->getModel(), pReaction);
+          }
+
+        // set new
+        mpRi->setChemEqString(
+          TO_UTF8(newValue.toString()),
+          TO_UTF8(newSecondValue.toString()));
+
+        // create new objects
+        std::vector<std::string> createdObjects;
+        bool createdMetabs = mpRi->createMetabolites(createdObjects);
+
+        if (mpRi->createOtherObjects(createdObjects) || createdMetabs
+            || !previouslyCreatedObjects.empty())
+          {
+            bool oldNotify = mIgnoreUpdates;
+            mIgnoreUpdates = false;
+            protectedNotify(ListViews::MODEL, ListViews::CHANGE, "");
+            mIgnoreUpdates = oldNotify;
+          }
+
+        command->setCreatedObjects(createdObjects);
+
+        mpRi->writeBackToReaction(pReaction);
+
+        break;
+      }
+
+      case CCopasiUndoCommand::REACTION_FAST_CHANGE:
+        pReaction->setFast(newValue.toBool());
+        break;
+
+      case CCopasiUndoCommand::REACTION_REVERSIBLE_CHANGE:
+        mpRi->setReversibility(
+          newValue.toBool(),
+          TO_UTF8(newSecondValue.toString()));
+        mpRi->writeBackToReaction(pReaction);
+        break;
+
+      case CCopasiUndoCommand::REACTION_FUNCTION_CHANGE:
+        mpRi->setFunctionAndDoMapping(TO_UTF8(newValue.toString()));
+        mpRi->writeBackToReaction(pReaction);
+        break;
+
+      case CCopasiUndoCommand::REACTION_LOCAL_PARAMETER_VALUE_CHANGE:
+        mpRi->setLocalValue(newSecondValue.toInt(), newValue.toDouble());
+        mpRi->writeBackToReaction(pReaction);
+        break;
+
+      case CCopasiUndoCommand::REACTION_MAPPING_PARAMETER_CHANGE:
+      {
+        QList<QVariant> list = newSecondValue.toList();
+        mpRi->setMapping(list.at(0).toInt(), TO_UTF8(newValue.toString()));
+
+        if (newValue.toString() == "unknown")
+          {
+            mpRi->setLocal(list.at(0).toInt());
+            mpRi->setLocalValue(list.at(0).toInt(), list.at(1).toDouble());
+          }
+
+        mpRi->writeBackToReaction(pReaction);
+        break;
+      }
+
+      case CCopasiUndoCommand::REACTION_MAPPING_VOLUME_CHANGE:
+
+//    mpRi->setMapping(newSecondValue.toInt(), TO_UTF8(newValue.toString()));
+//    mpRi->writeBackToReaction(pReaction);
+//    break;
+      case CCopasiUndoCommand::REACTION_MAPPING_SPECIES_CHANGE:
+        mpRi->setMapping(newSecondValue.toInt(), TO_UTF8(newValue.toString()));
+        mpRi->writeBackToReaction(pReaction);
+        break;
+
+      default:
+        break;
+    }
+
+  if (mIgnoreUpdates) return true;
+
+  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  (*CCopasiRootContainer::getDatamodelList())[0]->changed();
+  protectedNotify(ListViews::EVENT, ListViews::CHANGE, mKey);
+
+  FillWidgetFromRI();
+
+  return true;
+}
+
 #endif

@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -36,7 +36,7 @@ class CCompartment;
 class CChemEqInterface
 {
 private:
-  const CModel * mpModel;
+  CModel * mpModel;
 
   std::vector< std::string > mSubstrateNames;
   std::vector< std::string > mProductNames;
@@ -65,22 +65,29 @@ public:
   ~CChemEqInterface();
 
   std::string getChemEqString(bool expanded) const;
+
   bool setChemEqString(const std::string & ces);
 
   bool loadFromChemEq(const CChemEq & ce);
+
   bool writeToChemEq(CChemEq & ce) const;
 
   const std::vector<C_FLOAT64> & getListOfMultiplicities(CFunctionParameter::Role role) const;
+
   const std::vector<std::string> & getListOfDisplayNames(CFunctionParameter::Role role) const;
 
   /**
    * add a modifier to the chemical equation. It is only added if it is not already in there.
    */
   void addModifier(const std::string & name);
+
   void clearModifiers();
 
-  bool getReversibility() const {return mReversibility;};
-  void setReversibility(bool rev) {mReversibility = rev;};
+  void clearAll();
+
+  bool getReversibility() const;
+
+  void setReversibility(bool rev);
 
   /**
    * this method tries to find out if the chemical equation involves several compartments
@@ -101,18 +108,31 @@ public:
   size_t getMolecularity(CFunctionParameter::Role role) const;
 
   std::set<std::string> listOfNonUniqueMetabNames() const;
+
   std::set< std::pair< std::string, std::string > > listOfNonExistingMetabNames() const;
 
-  bool createNonExistingMetabs();
+  /**
+   * creates all necessary metabolites (and volumes)
+   *
+   * @param createdKeys this vector will be filled with keys of
+   *        created elements
+   *
+   * @return true, in case some elements were created, false otherwise
+   */
+  bool createNonExistingMetabs(std::vector<std::string> &createdKeys);
 
   //convenience methods:
   static std::string getChemEqString(const CModel * model, const CReaction & rea, bool expanded);
   static void setChemEqFromString(CModel * model, CReaction & rea, const std::string & ces);
+
   static bool isValidEq(const std::string & eq);
 
 private:
+
   void buildDisplayNames();
+
   void completeCompartments();
+
   static std::string writeElement(const std::string & name, C_FLOAT64 mult, bool expanded);
 };
 

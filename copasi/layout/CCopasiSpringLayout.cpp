@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -381,26 +381,47 @@ void CCopasiSpringLayout::finalizeState()
         {
           if (pRG->getListOfMetabReferenceGlyphs()[j]->getRole() == CLMetabReferenceGlyph::SUBSTRATE)
             {
-              s_c += 1.0;
-              s = s + pRG->getListOfMetabReferenceGlyphs()[j]->getMetabGlyph()->getBoundingBox().getCenter();
+              CLMetabGlyph* metabGlyph = pRG->getListOfMetabReferenceGlyphs()[j]->getMetabGlyph();
+
+              if (metabGlyph != NULL)
+                {
+                  s_c += 1.0;
+                  s = s + metabGlyph->getBoundingBox().getCenter();
+                }
             }
 
           if (pRG->getListOfMetabReferenceGlyphs()[j]->getRole() == CLMetabReferenceGlyph::SIDESUBSTRATE)
             {
-              s_c += 0.1;
-              s = s + pRG->getListOfMetabReferenceGlyphs()[j]->getMetabGlyph()->getBoundingBox().getCenter() * 0.1;
+              CLMetabGlyph* metabGlyph = pRG->getListOfMetabReferenceGlyphs()[j]->getMetabGlyph();
+
+              if (metabGlyph != NULL)
+                {
+                  s_c += 0.1;
+                  s = s + metabGlyph->getBoundingBox().getCenter() * 0.1;
+                }
             }
 
           if (pRG->getListOfMetabReferenceGlyphs()[j]->getRole() == CLMetabReferenceGlyph::PRODUCT)
             {
-              p_c += 1.0;
-              p = p + pRG->getListOfMetabReferenceGlyphs()[j]->getMetabGlyph()->getBoundingBox().getCenter();
+              CLMetabGlyph* metabGlyph = pRG->getListOfMetabReferenceGlyphs()[j]->getMetabGlyph();
+
+              if (metabGlyph != NULL)
+                {
+                  p_c += 1.0;
+                  p = p + metabGlyph->getBoundingBox().getCenter();
+                }
             }
 
           if (pRG->getListOfMetabReferenceGlyphs()[j]->getRole() == CLMetabReferenceGlyph::SIDEPRODUCT)
             {
-              p_c += 0.1;
-              p = p + pRG->getListOfMetabReferenceGlyphs()[j]->getMetabGlyph()->getBoundingBox().getCenter() * 0.1;
+              CLMetabGlyph* metabGlyph = pRG->getListOfMetabReferenceGlyphs()[j]->getMetabGlyph();
+
+              if (metabGlyph != NULL)
+                {
+
+                  p_c += 0.1;
+                  p = p + metabGlyph->getBoundingBox().getCenter() * 0.1;
+                }
             }
         }
 
@@ -471,7 +492,7 @@ void CCopasiSpringLayout::finalizeState()
               {
                 CLPoint reactionPoint;
 
-                if (ortho_dir.dot(pRG->getPosition() - pMRG->getMetabGlyph()->getPosition()) < 0)
+                if (pMRG->getMetabGlyph() && ortho_dir.dot(pRG->getPosition() - pMRG->getMetabGlyph()->getPosition()) < 0)
                   {
                     direction = +10.0;
                     reactionPoint = reaction_m1;
@@ -518,6 +539,9 @@ void CCopasiSpringLayout::finalizeState()
 
 CLPoint CCopasiSpringLayout::borderProjection(CLGraphicalObject* go, const CLPoint & p, double d)
 {
+  if (go == NULL)
+    return p;
+
   CLPoint center = go->getBoundingBox().getCenter();
   CLPoint diff = p - center;
 
@@ -578,6 +602,10 @@ double CCopasiSpringLayout::potEdge(const CLMetabReferenceGlyph & e, const CLRea
     dist = mpPar->values[3];
 
   const CLMetabGlyph * pMG = e.getMetabGlyph();
+
+  if (pMG == NULL)
+    return 0;
+
   double tmp = distance(pMG->getX() + pMG->getWidth() / 2, pMG->getY() + pMG->getHeight() / 2,
                         r.getX() + r.getWidth() / 2, r.getY() + r.getHeight() / 2);
 
@@ -591,6 +619,10 @@ double CCopasiSpringLayout::potSecondOrderEdge(const CLMetabReferenceGlyph & e1,
 {
   const CLMetabGlyph * pMG1 = e1.getMetabGlyph();
   const CLMetabGlyph * pMG2 = e2.getMetabGlyph();
+
+  if (pMG1 == NULL || pMG2 == NULL)
+    return 0;
+
   double tmp = distance(pMG1->getX() + pMG1->getWidth() / 2, pMG1->getY() + pMG1->getHeight() / 2,
                         pMG2->getX() + pMG2->getWidth() / 2, pMG2->getY() + pMG2->getHeight() / 2);
 
@@ -950,8 +982,14 @@ void CCopasiSpringLayout::randomize()
       size_t count;
 
       for (count = 0; count < pReactionGlyph->getListOfMetabReferenceGlyphs().size(); ++count)
-        center = center + pReactionGlyph->getListOfMetabReferenceGlyphs()[count]
-                 ->getMetabGlyph()->getBoundingBox().getCenter();
+        {
+          CLMetabGlyph* metabGlyph = pReactionGlyph->getListOfMetabReferenceGlyphs()[count]
+                                     ->getMetabGlyph();
+
+          if (metabGlyph == NULL) continue;
+
+          center = center + metabGlyph->getBoundingBox().getCenter();
+        }
 
       center = center * (1.0 / pReactionGlyph->getListOfMetabReferenceGlyphs().size());
       center = center + CLPoint(pRandom->getRandomCC() * 20 - 10,  pRandom->getRandomCC() * 20 - 10);

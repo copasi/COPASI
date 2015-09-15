@@ -9,12 +9,11 @@
  *  Created on: 3 Jul 2014
  *      Author: dada
  */
+#ifndef CCOPASIUNDOCOMMAND_H_
+#define CCOPASIUNDOCOMMAND_H_
 
 #include <QUndoCommand>
 #include <QModelIndex>
-
-#ifndef CCOPASIUNDOCOMMAND_H_
-#define CCOPASIUNDOCOMMAND_H_
 
 #include <set>
 
@@ -66,7 +65,6 @@ public:
     GLOBALQUANTITYDATACHANGE, //change global quantity data
     REACTIONDATACHANGE, //change reaction data
     SPECIEDATACHANGE, //change species data
-    REACTIONLINEEDITCHANGE, //change reaction data
     SPECIESTYPECHANGE, //change of species type
     MODEL_INITIAL_TIME_CHANGE, // change of model initial time
     MODEL_TIME_UNIT_CHANGE, // change of model time unit
@@ -84,6 +82,21 @@ public:
     GLOBALQUANTITY_INITIAL_EXPRESSION_CHANGE, // change of parameter initial expression
     GLOBALQUANTITY_SIMULATION_TYPE_CHANGE, // change of parameter simulation type
     GLOBALQUANTITY_EXPRESSION_CHANGE, // change of parameter assignment / ode expression
+    EVENT_TRIGGER_EXPRESSION_CHANGE, // change of event trigger expression
+    EVENT_DELAY_TYPE_CHANGE, //change of event delay type
+    EVENT_DELAY_EXPRESSION_CHANGE, //change of event delay expression
+    EVENT_ASSIGNMENT_TARGET_CHANGE, //change of event assignment target
+    EVENT_ASSIGNMENT_EXPRESSION_CHANGE, //change of event assignment value
+    EVENT_ASSIGNMENT_ADDED, // add event assignment to event
+    EVENT_ASSIGNMENT_REMOVED, // remove event assignment from event
+    REACTION_SCHEME_CHANGE, //change reaction scheme
+    REACTION_REVERSIBLE_CHANGE, // change of reaction reversible flag
+    REACTION_FAST_CHANGE, // change of reaction fast flag
+    REACTION_FUNCTION_CHANGE, // change of reaction kinetics
+    REACTION_LOCAL_PARAMETER_VALUE_CHANGE, // change of a local parameter value
+    REACTION_MAPPING_VOLUME_CHANGE, // mapping of volume in kinetic law changed
+    REACTION_MAPPING_SPECIES_CHANGE, // mapping of metabolite changed
+    REACTION_MAPPING_PARAMETER_CHANGE, // mapping of local / global parametr changed
     INVALID_TYPE
   };
 
