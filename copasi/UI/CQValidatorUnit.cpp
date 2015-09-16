@@ -6,6 +6,7 @@
 #include "sstream"
 #include "qtUtilities.h"
 #include "CQValidatorUnit.h"
+#include "utilities/CCopasiException.h"
 
 CQValidatorUnit::CQValidatorUnit(QLineEdit * parent, const char * name):
   CQValidator< QLineEdit >(parent, &QLineEdit::text, name)
@@ -19,15 +20,22 @@ QValidator::State CQValidatorUnit::validate(QString & input, int & pos) const
   bool success = false;
   std::istringstream buffer(TO_UTF8(input));
   CUnitParser Parser(&buffer);
-  success = (Parser.yyparse() == 0);
+
+  try
+  {
+    success = (Parser.yyparse() == 0);
+  }
+  catch (CCopasiException & /*exception*/)
+  {
+    success = false;
+  }
 
   if (success)
     {
       setColor(Acceptable);
       CurrentState = Acceptable;
     }
-
-  if (CurrentState != Acceptable)
+  else
     {
       setColor(Invalid);
       CurrentState = Intermediate;
