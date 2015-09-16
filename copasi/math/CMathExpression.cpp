@@ -170,7 +170,7 @@ bool CMathExpression::compile()
   if (!updateTree())
     {
       mUsable = false;
-      mCalculationSequence.clear();
+      mCalculationSequence.resize(0);
 
       return mUsable;
     }

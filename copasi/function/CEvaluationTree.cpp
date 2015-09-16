@@ -277,6 +277,7 @@ bool CEvaluationTree::isBoolean() const
 void CEvaluationTree::buildCalculationSequence()
 {
   CNodeIterator < CEvaluationNode > itNode(mpRoot);
+  std::vector< CEvaluationNode * > CalculationSequence;
 
   while (itNode.next() != itNode.end())
     {
@@ -288,16 +289,26 @@ void CEvaluationTree::buildCalculationSequence()
             break;
 
           default:
-            mCalculationSequence.push_back(*itNode);
+            CalculationSequence.push_back(*itNode);
             break;
         }
+    }
+
+  mCalculationSequence.resize(CalculationSequence.size());
+  CEvaluationNode ** ppIt = mCalculationSequence.begin();
+  CEvaluationNode ** ppEnd = mCalculationSequence.end();
+  std::vector< CEvaluationNode * >::const_iterator it = CalculationSequence.begin();
+
+  for (; ppIt != ppEnd; ++ppIt, ++it)
+    {
+      *ppIt = *it;
     }
 }
 
 bool CEvaluationTree::compileNodes()
 {
   clearDirectDependencies();
-  mCalculationSequence.clear();
+  mCalculationSequence.resize(0);
 
   if (mInfix == "")
     return mUsable = true;
@@ -386,12 +397,12 @@ void CEvaluationTree::calculate()
     {
       if (mpRoot != NULL)
         {
-          std::vector< CEvaluationNode * >::iterator it = mCalculationSequence.begin();
-          std::vector< CEvaluationNode * >::iterator end = mCalculationSequence.end();
+          CEvaluationNode ** ppIt = mCalculationSequence.begin();
+          CEvaluationNode ** ppEnd = mCalculationSequence.end();
 
-          for (; it != end; ++it)
+          for (; ppIt != ppEnd; ++ppIt)
             {
-              (*it)->calculate();
+              (*ppIt)->calculate();
             }
 
           mValue = mpRoot->getValue();

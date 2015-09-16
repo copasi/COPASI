@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -15,12 +15,12 @@
 #ifndef COPASI_CEvaluationTree
 #define COPASI_CEvaluationTree
 
-#include <vector>
 #include <stack>
 
 #include "copasi/model/CAnnotation.h"
 #include "copasi/function/CEvaluationNode.h"
 #include "copasi/report/CCopasiContainer.h"
+#include "copasi/utilities/CVector.h"
 
 class ASTNode;
 template <class CType> class CCopasiVectorN;
@@ -329,7 +329,7 @@ protected:
   /**
    * A vector of nodes which need to be calculated in sequence
    */
-  std::vector< CEvaluationNode * > mCalculationSequence;
+  CVector< CEvaluationNode * > mCalculationSequence;
 };
 
 #endif // COPASI_CEvaluationTree
