@@ -40,11 +40,6 @@ ID       (\"([^\\\"]|\\.)*\"|[a-z_A-Z][a-z_A-Z0-9]*)
 DIGIT    [0-9]
 
 %%
-{SCALE}/{KIND}|{SI_UNIT}   %{
-  COMMON_ACTION;
-  return SCALE;
-%}
-
 {KIND}   %{
   COMMON_ACTION;
   return KIND;
@@ -53,6 +48,11 @@ DIGIT    [0-9]
 {SI_UNIT} %{
   COMMON_ACTION;
   return SI_UNIT;
+%}
+
+{SCALE}/{KIND}|{SI_UNIT}|{ID}   %{
+  COMMON_ACTION;
+  return SCALE;
 %}
 
 "-"?{DIGIT}+("."?{DIGIT}*(((e|E)"+"?|(e|E)"-"){DIGIT}+)?)?   %{
