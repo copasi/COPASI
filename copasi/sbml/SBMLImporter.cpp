@@ -8158,26 +8158,34 @@ void SBMLImporter::checkElementUnits(const Model* pSBMLModel, CModel* pCopasiMod
       // and one for each KineticLaw in nonDefaultKineticSubstance
       std::vector<std::string>::iterator errorIt = nonDefaultSpecies.begin(), errorEndit = nonDefaultSpecies.end();
       std::ostringstream os;
+      std::string s;
 
-      while (errorIt != errorEndit)
+      if (!nonDefaultSpecies.empty())
         {
-          os << *errorIt << ", ";
-          ++errorIt;
+          while (errorIt != errorEndit)
+            {
+              os << *errorIt << ", ";
+              ++errorIt;
+            }
+
+          s = os.str();
+          CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 25, s.substr(0, s.size() - 2).c_str());
         }
 
-      std::string s = os.str();
-      CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 25 , s.substr(0, s.size() - 2).c_str());
       os.str("");
       errorIt = nonDefaultKineticSubstance.begin(), errorEndit = nonDefaultKineticSubstance.end();
 
-      while (errorIt != errorEndit)
+      if (!nonDefaultKineticSubstance.empty())
         {
-          os << *errorIt << ", ";
-          ++errorIt;
-        }
+          while (errorIt != errorEndit)
+            {
+              os << *errorIt << ", ";
+              ++errorIt;
+            }
 
-      s = os.str();
-      CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 44 , s.substr(0, s.size() - 2).c_str());
+          s = os.str();
+          CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 44, s.substr(0, s.size() - 2).c_str());
+        }
     }
 
   if (!inconsistentTimeUnits && lastTimeUnits != "" && lastTimeUnits != "time")
@@ -8201,7 +8209,7 @@ void SBMLImporter::checkElementUnits(const Model* pSBMLModel, CModel* pCopasiMod
       delete pUdef2;
     }
 
-  if (inconsistentTimeUnits)
+  if (inconsistentTimeUnits && !nonDefaultKineticTime.empty())
     {
       // warn about inconsistent time unit
       // one error for each entry in nonDefaultKineticTime
