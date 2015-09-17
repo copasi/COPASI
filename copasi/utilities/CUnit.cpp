@@ -508,8 +508,6 @@ bool CUnit::compile(const C_FLOAT64 & avogadro)
       mUsedSymbols = Parser.getSymbols();
     }
 
-  std::cout << this << ": " << *this << std::endl;
-
   return success;
 }
 
