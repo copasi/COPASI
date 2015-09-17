@@ -220,7 +220,7 @@ void fixNaryRelational(ASTNode& node)
   std::vector<ASTNode*> nodes;
   node.setType(AST_LOGICAL_AND);
 
-  for (int i = 1; i < node.getNumChildren(); ++i)
+  for (int i = 1; i < (int)node.getNumChildren(); ++i)
     {
       ASTNode *current = new ASTNode(type);
       current->addChild(node.getChild(i - 1)->deepCopy());
