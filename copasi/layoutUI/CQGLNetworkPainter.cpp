@@ -3204,7 +3204,7 @@ std::vector<std::pair<float, float> > CQGLNetworkPainter::calculateCirclePoints(
   for (i = 0; i <= n; ++i)
     {
       angle = 2 * M_PI * i / n;
-      result.push_back(std::pair<float, float>(cos(angle) * 0.5, sin(angle) * 0.5));
+      result.push_back(std::pair<float, float>(float(cos(angle) * 0.5), float(sin(angle) * 0.5)));
     }
 
   return result;
