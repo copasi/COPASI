@@ -30,6 +30,7 @@ trace
 InitialDependencies.dot
 SimulationDependencies.dot
 .kdev4/
+ninja/
 CMakeLists.txt.user*
 COPASI.kdev4
 copasi/copasi.pro.user

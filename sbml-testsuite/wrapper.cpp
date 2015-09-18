@@ -385,6 +385,8 @@ public:
           }
       }
 
+    // create a trajectory task
+    pTrajectoryTask =  new CTrajectoryTask(pDataModel->getTaskList());
     pTrajectoryTask->setScheduled(true);
 
     pTrajectoryTask->getReport().setReportDefinition(pReport);
@@ -408,10 +410,10 @@ public:
 
     pMethod->getParameter("Absolute Tolerance")->setValue(1.0e-12);
 
-    CCopasiVectorN< CCopasiTask > * TaskList = pDataModel->getTaskList();
-    TaskList->remove("Time-Course");
-    pTrajectoryTask = new CTrajectoryTask(pDataModel->getTaskList());
-    TaskList->add(pTrajectoryTask, true);
+    CCopasiVectorN< CCopasiTask > & TaskList = * pDataModel->getTaskList();
+
+    TaskList.remove("Time-Course");
+    TaskList.add(pTrajectoryTask, true);
   }
 
   /**
@@ -430,12 +432,12 @@ public:
     // Import the SBML File
     pDataModel->importSBML(sbml_filename.c_str());
 
-    // set up the simulation
-    setupSimulation();
-
     // create a report with the correct filename and all the species against
     // time.
     createReport();
+
+    // set up the simulation
+    setupSimulation();
 
     // save the file for control purposes
     if (saveCopasiFile)

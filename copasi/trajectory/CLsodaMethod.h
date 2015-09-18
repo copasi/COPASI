@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -49,6 +49,17 @@ protected:
   bool * mpReducedModel;
 
 private:
+
+  struct State
+  {
+    CVector< C_FLOAT64 > ContainerState;
+    CVector< C_FLOAT64 > DWork;
+    CVector< C_INT > IWork;
+    CVector< C_INT > RootsFound;
+
+    CTrajectoryMethod::Status Status;
+  };
+
   /**
    * A pointer to the value of "Relative Tolerance"
    */
@@ -184,6 +195,7 @@ private:
    */
   bool mPeekAheadMode;
 
+  State mSavedState;
   // Operations
 private:
   /**
@@ -290,6 +302,9 @@ private:
    * Peek ahead to detect simultaneous roots.
    */
   Status peekAhead();
+
+  void saveState();
+  void resetState();
 
 protected:
   /**

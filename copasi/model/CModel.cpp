@@ -454,6 +454,8 @@ bool CModel::compile()
 
   mpMathContainer->compile();
   mpMathContainer->fetchInitialState();
+  mpMathContainer->updateInitialValues(CModelParameterSet::ParticleNumbers);
+  mpMathContainer->pushInitialState();
 
   // CMathContainer CopyModel(MathModel);
 
@@ -1270,10 +1272,7 @@ bool CModel::buildUserOrder()
 
 bool CModel::updateInitialValues(const CModelParameter::Framework & framework)
 {
-  if (mCompileIsNecessary)
-    {
-      compileIfNecessary(NULL);
-    }
+  compileIfNecessary(NULL);
 
   mpMathContainer->fetchInitialState();
   mpMathContainer->updateInitialValues(framework);
@@ -3322,7 +3321,12 @@ bool CModel::compileEvents()
 void CModel::updateInitialValues(std::set< const CCopasiObject * > & changedObjects)
 {
   CObjectInterface::UpdateSequence UpdateSequence = buildInitialRefreshSequence(changedObjects);
+
+  mpMathContainer->fetchInitialState();
   mpMathContainer->applyUpdateSequence(UpdateSequence);
+  mpMathContainer->pushInitialState();
+
+  refreshActiveParameterSet();
 }
 
 void CModel::updateInitialValues(const CCopasiObject* changedObject)

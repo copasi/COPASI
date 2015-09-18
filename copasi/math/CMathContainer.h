@@ -46,7 +46,7 @@ private:
   public:
     size_t nFixed;
     size_t nEventTargets; // auto determined
-    // nTime := 1
+    size_t nTime; // 0 or 1
     size_t nODE;
     size_t nReactionSpecies; // fixed
     size_t nAssignment;

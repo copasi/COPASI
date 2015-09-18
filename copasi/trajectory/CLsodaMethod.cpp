@@ -203,9 +203,12 @@ void CLsodaMethod::stateChange(const CMath::StateChange & change)
 {
   if (change & (CMath::ContinuousSimulation | CMath::State))
     {
+      // We need to restart the integrator
       mLsodaStatus = 1;
+
       mTime = *mpContainerStateTime;
       mPeekAheadMode = false;
+      mSavedState.Status = FAILURE;
 
       destroyRootMask();
     }
@@ -246,77 +249,86 @@ CTrajectoryMethod::Status CLsodaMethod::step(const double & deltaT)
 
   if (mRootsFound.size() > 0)
     {
-      mLSODAR(&EvalF, //  1. evaluate F
-              &mData.dim, //  2. number of variables
-              mpY, //  3. the array of current concentrations
-              &mTime, //  4. the current time
-              &EndTime, //  5. the final time
-              &ITOL, //  6. error control
-              mpRelativeTolerance, //  7. relative tolerance array
-              mpAtol, //  8. absolute tolerance array
-              &mTask, //  9. output by overshoot & interpolation
-              &mLsodaStatus, // 10. the state control variable
-              &one, // 11. further options (one)
-              mDWork.array(), // 12. the double work array
-              &DSize, // 13. the double work array size
-              mIWork.array(), // 14. the int work array
-              &ISize, // 15. the int work array size
-              &EvalJ, // 16. evaluate J (not given)
-              &mJType, // 17. type of j evaluation 2 internal full matrix
-              &EvalR, // 18. evaluate constraint functions
-              &mNumRoots, // 19. number of constraint functions g(i)
-              mRootsFound.array()); // 20. integer array of length NG for output of root information
-
-      // There exist situations where LSODAR reports status = 3, which are actually status = -33
-      // Obviously the trivial case is where LSODAR did not advance at all, i.e, the start time
-      // equals the current time. It may also happen that a very small steps has been taken in
-      // we reset short before we reach the internal step limit.
-      if (mLsodaStatus == 3 &&
-          (mRootCounter > 0.99 * *mpMaxInternalSteps ||
-           mTime == StartTime))
+      if (mSavedState.Status != FAILURE)
         {
-          mLsodaStatus = -33;
-          mRootCounter = 0;
+          resetState();
         }
 
-      if ((mLsodaStatus <= 0 && mLsodaStatus != -33) ||
-          !mpContainer->isStateValid())
+      if (mLsodaStatus != 3)
         {
-          if (mTask != 1)
-            {
-              Status = FAILURE;
-              mPeekAheadMode = false;
+          mLSODAR(&EvalF, //  1. evaluate F
+                  &mData.dim, //  2. number of variables
+                  mpY, //  3. the array of current concentrations
+                  &mTime, //  4. the current time
+                  &EndTime, //  5. the final time
+                  &ITOL, //  6. error control
+                  mpRelativeTolerance, //  7. relative tolerance array
+                  mpAtol, //  8. absolute tolerance array
+                  &mTask, //  9. output by overshoot & interpolation
+                  &mLsodaStatus, // 10. the state control variable
+                  &one, // 11. further options (one)
+                  mDWork.array(), // 12. the double work array
+                  &DSize, // 13. the double work array size
+                  mIWork.array(), // 14. the int work array
+                  &ISize, // 15. the int work array size
+                  &EvalJ, // 16. evaluate J (not given)
+                  &mJType, // 17. type of j evaluation 2 internal full matrix
+                  &EvalR, // 18. evaluate constraint functions
+                  &mNumRoots, // 19. number of constraint functions g(i)
+                  mRootsFound.array()); // 20. integer array of length NG for output of root information
 
-              if (mLsodaStatus <= 0)
-                {
-                  CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 6, mErrorMsg.str().c_str());
-                }
-              else
-                {
-                  CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 25, mTime);
-                }
+          // There exist situations where LSODAR reports status = 3, which are actually status = -33
+          // Obviously the trivial case is where LSODAR did not advance at all, i.e, the start time
+          // equals the current time. It may also happen that a very small steps has been taken.
+          // We reset short before we reach the internal step limit.
+          if (mLsodaStatus == 3 &&
+              (mRootCounter > 0.99 * *mpMaxInternalSteps ||
+               mTime == StartTime))
+            {
+              mLsodaStatus = -33;
+              mRootCounter = 0;
             }
 
-          // We try to recover by preventing overshooting.
+          // Try without over shooting.
+          if ((mLsodaStatus <= 0 && mLsodaStatus != -33) ||
+              !mpContainer->isStateValid())
+            {
+              if (mTask != 1)
+                {
+                  Status = FAILURE;
+                  mPeekAheadMode = false;
+
+                  if (mLsodaStatus <= 0)
+                    {
+                      CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 6, mErrorMsg.str().c_str());
+                    }
+                  else
+                    {
+                      CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 25, mTime);
+                    }
+                }
+
+              // We try to recover by preventing overshooting.
 #ifdef DEBUG_OUTPUT
-          std::cout << "State: " << mpContainer->getState(*mpReducedModel) << std::endl;
+              std::cout << "State: " << mpContainer->getState(*mpReducedModel) << std::endl;
 #endif // DEBUG_OUTPUT
 
-          mContainerState = mLastSuccessState;
+              mContainerState = mLastSuccessState;
 
 #ifdef DEBUG_OUTPUT
-          std::cout << "State: " << mpContainer->getState(*mpReducedModel) << std::endl;
+              std::cout << "State: " << mpContainer->getState(*mpReducedModel) << std::endl;
 #endif // DEBUG_OUTPUT
 
-          mTime = *mpContainerStateTime;
-          mTask = 4;
-          mDWork[0] = EndTime;
-          stateChange(CMath::State);
+              mTime = *mpContainerStateTime;
+              mTask = 4;
+              mDWork[0] = EndTime;
+              stateChange(CMath::State);
 
-          Status = step(deltaT);
-          mTask = 1;
+              Status = step(deltaT);
+              mTask = 1;
 
-          return Status;
+              return Status;
+            }
         }
 
       switch (mLsodaStatus)
@@ -520,6 +532,8 @@ void CLsodaMethod::start()
     {
       mLSODAR.setOstream(mErrorMsg);
       mDiscreteRoots.initialize(mpContainer->getRootIsDiscrete());
+
+      saveState();
     }
   else
     {
@@ -638,12 +652,7 @@ void CLsodaMethod::destroyRootMask()
 CTrajectoryMethod::Status CLsodaMethod::peekAhead()
 {
   // Save the current state
-  *mpContainerStateTime = mTime;
   CVector< C_FLOAT64 > StartState = mContainerState;
-  CVector< C_FLOAT64 > ResetState = mContainerState;
-  mLSODAR.saveState();
-  CVector< C_FLOAT64 > ResetDWork = mDWork;
-  CVector< C_INT > ResetIWork = mIWork;
 
   mPeekAheadMode = true;
   Status PeekAheadStatus = ROOT;
@@ -668,6 +677,7 @@ CTrajectoryMethod::Status CLsodaMethod::peekAhead()
 
             if (mRootMasking != ALL)
               {
+                // If we are here we are certain that the state has sufficiently changed.
                 mPeekAheadMode = false;
 
                 // It is possible that LSODA does not detect a root if the original root
@@ -683,6 +693,14 @@ CTrajectoryMethod::Status CLsodaMethod::peekAhead()
                     *pCombinedRoot |= (*pOldRoot **pNewRoot < 0.0);
                   }
 
+                // Save the state for future use.
+                saveState();
+                mSavedState.Status = NORMAL;
+
+                // Set the result to the state when peakAhead was entered.
+                mContainerState = StartState;
+                mTime = *mpContainerStateTime;
+
 #ifdef DEBUG_OUTPUT
                 std::cout << "Current Roots:        " << mpContainer->getRoots() << std::endl;
                 std::cout << "Combined Roots found: " << CombinedRootsFound << std::endl;
@@ -690,7 +708,13 @@ CTrajectoryMethod::Status CLsodaMethod::peekAhead()
               }
             else
               {
-                // We need to remove the masked root
+                // If we are here LSODA returned with status -33, i.e.
+                // time did not advanced due to to indistinguishable roots
+
+                // Root masking has been enabled in step and the integrator is ready
+                // to continue with the previous state.
+
+                // Remove masked roots from the result set
                 const bool *pMask = mRootMask.array();
                 const bool *pMaskEnd = pMask + mRootMask.size();
                 C_INT * pCombinedRoot = CombinedRootsFound.array();
@@ -709,11 +733,6 @@ CTrajectoryMethod::Status CLsodaMethod::peekAhead()
                         PeekAheadStatus = ROOT;
                       }
                   }
-
-                // No we reset the integrator to the start state with root masking enabled
-                mLsodaStatus = 1;
-                mContainerState = StartState;
-                mTime = *mpContainerStateTime;
               }
 
             break;
@@ -738,15 +757,20 @@ CTrajectoryMethod::Status CLsodaMethod::peekAhead()
 
             if (pOld != pOldEnd)
               {
+                // If we are here we are certain that the state has sufficiently changed.
                 mPeekAheadMode = false;
+
+                // Save the state for future use.
+                saveState();
+                mSavedState.Status = ROOT;
+
+                // Set the result to the state when peakAhead was entered.
+                mContainerState = StartState;
+                mTime = *mpContainerStateTime;
               }
             else
               {
-                ResetState = mContainerState;
-                mLSODAR.saveState();
-                ResetDWork = mDWork;
-                ResetIWork = mIWork;
-
+                // We found more roots within the desired tolerance
                 // Combine all the roots
                 C_INT * pRoot = mRootsFound.array();
                 C_INT * pRootEnd = pRoot + mRootsFound.size();
@@ -774,14 +798,36 @@ CTrajectoryMethod::Status CLsodaMethod::peekAhead()
         }
     }
 
-  // Reset the integrator to the saved state
-  mContainerState = ResetState;
-  mTime = *mpContainerStateTime;
-  mLSODAR.resetState();
-  mDWork = ResetDWork;
-  mIWork = ResetIWork;
-
   mRootsFound = CombinedRootsFound;
 
   return PeekAheadStatus;
+}
+
+void CLsodaMethod::saveState()
+{
+  *mpContainerStateTime = mTime;
+  mSavedState.ContainerState = mContainerState;
+  mSavedState.DWork = mDWork;
+  mSavedState.IWork = mIWork;
+  mSavedState.RootsFound = mRootsFound;
+  mSavedState.Status = FAILURE;
+
+  mLSODAR.saveState();
+}
+
+void CLsodaMethod::resetState()
+{
+  if (mSavedState.Status == ROOT)
+    {
+      mLsodaStatus = 3;
+    }
+
+  mContainerState = mSavedState.ContainerState;
+  mTime = *mpContainerStateTime;
+  mDWork = mSavedState.DWork;
+  mIWork = mSavedState.IWork;
+  mRootsFound = mSavedState.RootsFound;
+  mSavedState.Status = FAILURE;
+
+  mLSODAR.resetState();
 }

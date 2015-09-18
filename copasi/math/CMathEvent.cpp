@@ -507,6 +507,7 @@ void CMathEvent::CTrigger::setExpression(const std::string & infix,
 
   compile(NULL, container);
 
+#ifdef DEBUG_OUTPUT
   std::cout << *mpTrigger;
   std::cout << *mpInitialTrigger;
 
@@ -518,6 +519,8 @@ void CMathEvent::CTrigger::setExpression(const std::string & infix,
       std::cout << *pRoot->mpRoot;
       std::cout << *pRoot->mpRootState;
     }
+
+#endif // DEBUG_OUTPUT
 }
 
 // static
@@ -1277,6 +1280,29 @@ bool CMathEvent::compile(CMathContainer & container)
 
   // Compile Trigger
   success &= mTrigger.compile(NULL, container);
+
+  CAssignment * pAssignment = mAssignments.array();
+  CAssignment * pAssignmentEnd = pAssignment + mAssignments.size();
+
+  if (pAssignment != NULL)
+    {
+      mTargetValues.initialize(mAssignments.size(),
+                               (C_FLOAT64 *) pAssignment->getAssignment()->getValuePointer());
+    }
+  else
+    {
+      mTargetValues.initialize(0, NULL);
+    }
+
+  mTargetPointers.resize(mAssignments.size());
+  C_FLOAT64 ** ppTarget = mTargetPointers.array();
+
+  // Compile assignments.
+  // Discontinuities
+  for (; pAssignment != pAssignmentEnd; ++pAssignment, ++ppTarget)
+    {
+      *ppTarget = (C_FLOAT64 *) pAssignment->getTarget()->getValuePointer();
+    }
 
   CObjectInterface::ContainerList ListOfContainer;
 
