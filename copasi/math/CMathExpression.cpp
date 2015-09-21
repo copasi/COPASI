@@ -12,6 +12,7 @@
 #include "function/CFunction.h"
 #include "function/CEvaluationNode.h"
 #include "function/CEvaluationNodeObject.h"
+#include "function/CEvaluationLexer.h"
 
 #include "utilities/CCopasiTree.h"
 
@@ -34,6 +35,8 @@ CMathExpression::CMathExpression(const CExpression & src,
   CEvaluationTree(src.getObjectName(), &container, CEvaluationTree::MathExpression),
   mPrerequisites()
 {
+  CEvaluationLexer::freeNodeList(mpNodeList);
+
   // Create a converted copy of the existing expression tree.
   mpRoot = container.copyBranch(src.getRoot(), replaceDiscontinuousNodes);
 
@@ -47,6 +50,8 @@ CMathExpression::CMathExpression(const CFunction & src,
   CEvaluationTree(src.getObjectName(), &container, CEvaluationTree::MathExpression),
   mPrerequisites()
 {
+  CEvaluationLexer::freeNodeList(mpNodeList);
+
   // Deal with the different function types
   switch (src.getType())
     {

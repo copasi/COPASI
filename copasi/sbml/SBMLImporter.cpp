@@ -2053,8 +2053,7 @@ SBMLImporter::createCCompartmentFromCompartment(const Compartment* sbmlCompartme
       appendix = numberStream.str();
     }
 
-  double value;
-  CCompartment* copasiCompartment = copasiModel->createCompartment(name + appendix, value);
+  CCompartment* copasiCompartment = copasiModel->createCompartment(name + appendix, std::numeric_limits< C_FLOAT64 >::quiet_NaN());
 
   if (this->mLevel == 1)
     {

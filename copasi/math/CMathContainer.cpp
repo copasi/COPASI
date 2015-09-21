@@ -4132,8 +4132,6 @@ std::vector< CMath::sRelocate > CMathContainer::resize(CMathContainer::sSize & s
       return Relocations;
     }
 
-  // TODO CRITICAL We should not resize if the size == mSize.
-
   // Determine the offsets
   // We have to cast all pointers to size_t to avoid pointer overflow.
   size_t nExtensiveValues = size.nFixed + size.nEventTargets + 1 + size.nODE + size.nReactionSpecies + size.nAssignment;
