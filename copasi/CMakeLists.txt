@@ -31,14 +31,6 @@ cmake_policy(SET CMP0011 NEW)
 
 include (common.cmake)
 
-execute_process(
-	COMMAND "${CMAKE_COMMAND}"
-	ARGS -DSRC_DIRECTORY=\"${CMAKE_SOURCE_DIR}\"
-		 -P "${CMAKE_SOURCE_DIR}/delete-qmake-files.cmake"
-
-	WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}"
-	)
-
 set(COPASI_SOURCES)
 set(COPASI_HEADERS)
 
