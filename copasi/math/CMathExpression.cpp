@@ -35,7 +35,7 @@ CMathExpression::CMathExpression(const CExpression & src,
   CEvaluationTree(src.getObjectName(), &container, CEvaluationTree::MathExpression),
   mPrerequisites()
 {
-  CEvaluationLexer::freeNodeList(mpNodeList);
+  delete mpRoot;
 
   // Create a converted copy of the existing expression tree.
   mpRoot = container.copyBranch(src.getRoot(), replaceDiscontinuousNodes);
@@ -50,7 +50,7 @@ CMathExpression::CMathExpression(const CFunction & src,
   CEvaluationTree(src.getObjectName(), &container, CEvaluationTree::MathExpression),
   mPrerequisites()
 {
-  CEvaluationLexer::freeNodeList(mpNodeList);
+  delete mpRoot;
 
   // Deal with the different function types
   switch (src.getType())
