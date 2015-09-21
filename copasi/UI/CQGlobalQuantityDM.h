@@ -16,7 +16,7 @@
 
 #ifdef COPASI_UNDO
 class UndoGlobalQuantityData;
-class UndoSpecieData;
+class UndoSpeciesData;
 class UndoReactionData;
 #endif
 

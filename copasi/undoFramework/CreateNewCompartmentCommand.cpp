@@ -18,16 +18,17 @@
 
 CreateNewCompartmentCommand::CreateNewCompartmentCommand(
   CQCompartment *pCompartment)
-  : CCopasiUndoCommand("Compartment", COMPARTMENTCREATE)
+  : CCopasiUndoCommand("Compartment", COMPARTMENT_CREATE)
   , mpCompartmentData(new UndoCompartmentData())
   , mpCompartment(pCompartment)
 {
-  this->setText(createNewCompartmentText());
+  this->setText(": Created new compartment ");
 }
 
 void CreateNewCompartmentCommand::redo()
 {
   mpCompartment->createNewCompartment();
+
 
   std::string sName = mpCompartment->mpCompartment->getObjectName();
   mpCompartmentData->setName(sName);
@@ -45,11 +46,6 @@ void CreateNewCompartmentCommand::undo()
   setAction("Delete");
 }
 
-QString CreateNewCompartmentCommand::createNewCompartmentText() const
-{
-  return QObject::tr(": Created new compartment ");
-}
-
 CreateNewCompartmentCommand::~CreateNewCompartmentCommand()
 {
   pdelete(mpCompartmentData);
@@ -60,13 +56,3 @@ UndoData *CreateNewCompartmentCommand::getUndoData() const
   return mpCompartmentData;
 }
 
-void CreateNewCompartmentCommand::setType(const CreateNewCompartmentCommand::Type & type)
-{
-  mType = COMPARTMENTCREATE;
-}
-
-CreateNewCompartmentCommand *
-CreateNewCompartmentCommand::getCreateNewCompartmentCommand()
-{
-  return this;
-}

@@ -21,7 +21,7 @@
 #include "InsertEventRowsCommand.h"
 
 InsertEventRowsCommand::InsertEventRowsCommand(int position, int rows, CQEventDM *pEventDM, const QModelIndex& index)
-  : CCopasiUndoCommand("Event", EVENTINSERT)
+  : CCopasiUndoCommand("Event", EVENT_INSERT)
   , mpEventDM(pEventDM)
   , mRows(rows)
   , mPosition(position)
@@ -56,10 +56,8 @@ void InsertEventRowsCommand::redo()
       for (; it != end; ++it)
         {
           const CModelEntity * pEntity = dynamic_cast< CModelEntity * >(CCopasiRootContainer::getKeyFactory()->get((*it)->getTargetKey()));
-          UndoEventAssignmentData *eventAssignData = new UndoEventAssignmentData();
-          eventAssignData->setName(pEntity->getObjectName());
-          eventAssignData->setExpression((*it)->getExpression());
-          mpEventData->getEventAssignmentData()->append(eventAssignData);
+          mpEventData->getEventAssignmentData()->append(
+            new UndoEventAssignmentData(pEntity, (*it)->getExpression()));
         }
 
       firstTime = false;

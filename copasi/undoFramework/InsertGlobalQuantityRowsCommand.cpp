@@ -22,7 +22,7 @@
 #include "InsertGlobalQuantityRowsCommand.h"
 
 InsertGlobalQuantityRowsCommand::InsertGlobalQuantityRowsCommand(int position, int rows, CQGlobalQuantityDM *pGlobalQuantityDM, const QModelIndex& index)
-  : CCopasiUndoCommand("Global Quantity", GLOBALQUANTITYINSERT)
+  : CCopasiUndoCommand("Global Quantity", GLOBALQUANTITY_INSERT)
   , mpGlobalQuantityDM(pGlobalQuantityDM)
   , mRows(rows)
   , mPosition(position)

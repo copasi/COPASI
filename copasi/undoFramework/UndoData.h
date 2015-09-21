@@ -1,4 +1,4 @@
-// Copyright (C) 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2014 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -15,17 +15,62 @@
 
 #include <string>
 
+/**
+ * Base class for all COPASI undo data
+ */
 class UndoData
 {
 public:
-  UndoData();
+  UndoData(const std::string &key = "",
+           const std::string &name = "",
+           const std::string &type = "");
   virtual ~UndoData();
-  std::string getName() const;
-  void setName(std::string name);
-  std::string getType() const;
-  void setType(std::string type);
+
+  /**
+   * @return the key of the object
+   */
+  const std::string &getKey() const;
+
+  /**
+   * sets the key for the object
+   * @param key the key
+   */
+  void setKey(const std::string &key);
+
+  /**
+   * @return true if key is set, false otherwise.
+   */
+  bool hasKey() const;
+
+  /**
+   * @return the name of the object
+   */
+  const std::string &getName() const;
+
+  /**
+   * sets the name
+   * @param name the name
+   */
+  void setName(const std::string & name);
+
+  /**
+   * @return trye if name is set, false otherwise
+   */
+  bool hasName() const;
+
+  /**
+   * @return the type of the object
+   */
+  const std::string &getType() const;
+
+  /**
+   * @param type the type
+   */
+  void setType(const std::string &type);
+
 
 private:
+  std::string mKey;
   std::string mName;
   std::string mType;
 };

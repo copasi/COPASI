@@ -17,24 +17,33 @@
 #include "UndoData.h"
 
 class CReactionInterface;
-class UndoSpecieData;
+class UndoSpeciesData;
 
 class UndoReactionData: public UndoData
 {
 public:
-  UndoReactionData();
+  UndoReactionData(const std::string &key = "",
+                   const std::string &name = "",
+                   const std::string &type = "");
   virtual ~UndoReactionData();
+
   CReactionInterface *getRi() const;
   void setRi(CReactionInterface *mpRi);
-  QList<UndoSpecieData*> *getSpecieDependencyObjects() const;
-  void setSpecieDependencyObjects(QList<UndoSpecieData*> *specieDependencyObjects);
+
+  QList<UndoSpeciesData*> *getSpeciesDependencyObjects() const;
+  void setSpeciesDependencyObjects(
+    QList<UndoSpeciesData*> *speciesDependencyObjects);
 
 private:
+  /**
+   * pointer to the reaction interface
+   */
   CReactionInterface* mpRi;
+
   /**
    * Pointer to species dependency objects
    */
-  QList<UndoSpecieData*> *mSpecieDependencyObjects;
+  QList<UndoSpeciesData*> *mSpeciesDependencyObjects;
 };
 
 #endif /* UNDOREACTIONDATA_H_ */

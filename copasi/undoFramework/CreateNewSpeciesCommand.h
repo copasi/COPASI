@@ -1,4 +1,4 @@
-// Copyright (C) 2014 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -16,21 +16,21 @@
 #include "CCopasiUndoCommand.h"
 
 class CQSpeciesDetail;
-class UndoSpecieData;
+class UndoSpeciesData;
 
-class CreateNewSpecieCommand: public CCopasiUndoCommand
+class CreateNewSpeciesCommand: public CCopasiUndoCommand
 {
 public:
-  CreateNewSpecieCommand(CQSpeciesDetail *pSpecieDetail);
+  CreateNewSpeciesCommand(CQSpeciesDetail *pSpecieDetail);
   void redo();
   void undo();
   QString createNewSpecieText() const;
   UndoData *getUndoData() const;
 
-  virtual ~CreateNewSpecieCommand();
+  virtual ~CreateNewSpeciesCommand();
 
 private:
-  UndoSpecieData *mpSpecieData;
+  UndoSpeciesData *mpSpeciesData;
   CQSpeciesDetail* mpSpecieDetail;
 };
 

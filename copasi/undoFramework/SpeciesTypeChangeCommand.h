@@ -1,4 +1,4 @@
-// Copyright (C) 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -16,22 +16,22 @@
 #include "CCopasiUndoCommand.h"
 
 class CQSpeciesDetail;
-class UndoSpecieData;
+class UndoSpeciesData;
 
-class SpecieTypeChangeCommand: public CCopasiUndoCommand
+class SpeciesTypeChangeCommand: public CCopasiUndoCommand
 {
 public:
-  SpecieTypeChangeCommand(int type, int currentType, CQSpeciesDetail *pSpecieDetail);
+  SpeciesTypeChangeCommand(int type, int currentType, CQSpeciesDetail *pSpecieDetail);
   void redo();
   void undo();
-  QString specieTypeChangeText(std::string &name) const;
+  QString specieTypeChangeText(const std::string &name) const;
 
-  virtual ~SpecieTypeChangeCommand();
+  virtual ~SpeciesTypeChangeCommand();
 
 private:
   int mNewType, mOldType;
-  CQSpeciesDetail* mpSpecieDetail;
-  UndoSpecieData *mpSpecieData;
+  CQSpeciesDetail* mpSpeciesDetail;
+  UndoSpeciesData *mpSpeciesData;
   bool mFirstTime;
   bool useInitialExpression;
 };

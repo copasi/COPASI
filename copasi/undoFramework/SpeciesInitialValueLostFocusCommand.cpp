@@ -1,10 +1,10 @@
-// Copyright (C) 2014 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
 /*
- * SpecieInitialValueLostFocusCommand.cpp
+ * SpeciesInitialValueLostFocusCommand.cpp
  *
  *  Created on: 19 Sep 2014
  *      Author: dada
@@ -16,28 +16,28 @@
 #include "UI/CQSpeciesDetail.h"
 #include "model/CCompartment.h"
 
-#include "UndoSpecieData.h"
+#include "UndoSpeciesData.h"
 
-#include "SpecieInitialValueLostFocusCommand.h"
+#include "SpeciesInitialValueLostFocusCommand.h"
 
-SpecieInitialValueLostFocusCommand::SpecieInitialValueLostFocusCommand(CQSpeciesDetail *pSpecieDetail)
+SpeciesInitialValueLostFocusCommand::SpeciesInitialValueLostFocusCommand(CQSpeciesDetail *pSpecieDetail)
 {
   mpSpecieDetail = pSpecieDetail;
   mFirstTime = true;
 
-  mpSpecieData = new UndoSpecieData();
+  mpSpeciesData = new UndoSpeciesData();
   std::string sName = mpSpecieDetail->mpMetab->getObjectName();
-  mpSpecieData->setName(sName);
-  mpSpecieData->setIConc(mpSpecieDetail->mInitialConcentration);
-  mpSpecieData->setINumber(mpSpecieDetail->mInitialNumber);
+  mpSpeciesData->setName(sName);
+  mpSpeciesData->setIConc(mpSpecieDetail->mInitialConcentration);
+  mpSpeciesData->setINumber(mpSpecieDetail->mInitialNumber);
 
   this->setText(specieInitialValueLostFocusText(sName));
 
   //set the data for UNDO history
-  mType = SPECIESTYPECHANGE;
+  mType = SPECIES_TYPE_CHANGE;
   setEntityType("Species");
   setAction("Change");
-  setName(mpSpecieData->getName());
+  setName(mpSpeciesData->getName());
 
   std::ostringstream strs;
   strs << mpSpecieDetail->mInitialConcentration;
@@ -49,7 +49,7 @@ SpecieInitialValueLostFocusCommand::SpecieInitialValueLostFocusCommand(CQSpecies
   setOldValue(str);
   setProperty("Initial Value");
 }
-void SpecieInitialValueLostFocusCommand::redo()
+void SpeciesInitialValueLostFocusCommand::redo()
 {
   if (mFirstTime)
     {
@@ -58,23 +58,23 @@ void SpecieInitialValueLostFocusCommand::redo()
     }
   else
     {
-      mpSpecieDetail->specieInitialValueLostFocus(mpSpecieData);
+      mpSpecieDetail->specieInitialValueLostFocus(mpSpeciesData);
     }
 }
-void SpecieInitialValueLostFocusCommand::undo()
+void SpeciesInitialValueLostFocusCommand::undo()
 {
-  mpSpecieDetail->specieInitialValueLostFocus(mpSpecieData);
+  mpSpecieDetail->specieInitialValueLostFocus(mpSpeciesData);
   setAction("Undone change");
 }
-QString SpecieInitialValueLostFocusCommand::specieInitialValueLostFocusText(std::string &name) const
+QString SpeciesInitialValueLostFocusCommand::specieInitialValueLostFocusText(std::string &name) const
 {
   std::string myEntityName(": Species Initial Value Change for " + name);
   char* entityName = (char*)myEntityName.c_str();
   return QObject::tr(entityName);
 }
 
-SpecieInitialValueLostFocusCommand::~SpecieInitialValueLostFocusCommand()
+SpeciesInitialValueLostFocusCommand::~SpeciesInitialValueLostFocusCommand()
 {
   // TODO Auto-generated destructor stub
-  pdelete(this->mpSpecieData);
+  pdelete(this->mpSpeciesData);
 }

@@ -47,17 +47,15 @@ RemoveAllEventRowsCommand::RemoveAllEventRowsCommand(CQEventDM * pEventDM, const
           for (; it != end; ++it)
             {
               const CModelEntity * pEntity = dynamic_cast< CModelEntity * >(CCopasiRootContainer::getKeyFactory()->get((*it)->getTargetKey()));
-              UndoEventAssignmentData *eventAssignData = new UndoEventAssignmentData();
-              eventAssignData->setName(pEntity->getObjectName());
-              eventAssignData->setExpression((*it)->getExpression());
-              data->getEventAssignmentData()->append(eventAssignData);
+              data->getEventAssignmentData()->append(
+                new UndoEventAssignmentData(pEntity, (*it)->getExpression()));
             }
 
           mpEventData.append(data);
         }
     }
 
-  mType = EVENTREMOVEALL;
+  mType = EVENT_REMOVE_ALL;
   setEntityType("Event");
   this->setText(removeAllEventRowsText());
 }

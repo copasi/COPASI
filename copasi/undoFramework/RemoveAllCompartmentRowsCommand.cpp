@@ -25,11 +25,10 @@
 #include "RemoveAllCompartmentRowsCommand.h"
 
 RemoveAllCompartmentRowsCommand::RemoveAllCompartmentRowsCommand(CQCompartmentDM * pCompartmentDM, const QModelIndex&)
-  : CCopasiUndoCommand("Compartment", COMPARTMENTREMOVEALL)
+  : CCopasiUndoCommand("Compartment", COMPARTMENT_REMOVE_ALL)
   , mpCompartmentDM(pCompartmentDM)
   , mpCompartmentData()
 {
-
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
   assert(pDataModel != NULL);
@@ -39,23 +38,11 @@ RemoveAllCompartmentRowsCommand::RemoveAllCompartmentRowsCommand(CQCompartmentDM
 
   for (int i = 0; i != pCompartmentDM->rowCount() - 1; ++i)
     {
-      UndoCompartmentData *data = new UndoCompartmentData();
+      CCompartment* compartment = pModel->getCompartments()[i];
 
-      if (pModel->getCompartments()[i])
+      if (compartment != NULL)
         {
-          mpSpecieData = new QList <UndoSpecieData*>();
-          mpReactionData = new  QList <UndoReactionData*>();
-          mpGlobalQuantityData = new  QList <UndoGlobalQuantityData*>();
-          mpEventData = new  QList <UndoEventData*>();
-          data->setName(pModel->getCompartments()[i]->getObjectName());
-          data->setStatus(pModel->getCompartments()[i]->getStatus());
-          data->setInitialValue(pModel->getCompartments()[i]->getInitialValue());
-          setDependentObjects(pModel->getCompartments()[i]->getDeletedObjects());
-          data->setReactionDependencyObjects(getReactionData());
-          data->setSpecieDependencyObjects(getSpecieData());
-          data->setGlobalQuantityDependencyObjects(getGlobalQuantityData());
-          data->setEventDependencyObjects(getEventData());
-
+          UndoCompartmentData *data = new UndoCompartmentData(compartment);
           mpCompartmentData.append(data);
         }
     }

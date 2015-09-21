@@ -19,21 +19,29 @@
 
 class CCopasiObject;
 class UndoCompartmentData;
+class CQCompartmentDM;
 
 class RemoveCompartmentRowsCommand: public CCopasiUndoCommand
 {
 public:
-  RemoveCompartmentRowsCommand(QModelIndexList rows, CQCompartmentDM * pCompartmentDM, const QModelIndex&);
-  void redo();
-  void undo();
-  QString removeCompartmentRowsText() const;
-  UndoData *getUndoData() const;
+  RemoveCompartmentRowsCommand(
+    const QModelIndexList& rows,
+    CQCompartmentDM* pCompartmentDM);
 
   virtual ~RemoveCompartmentRowsCommand();
 
+  void redo();
+  void undo();
+
+  QString removeCompartmentRowsText() const;
+
+  UndoData *getUndoData() const;
+
+
+
 private:
-  CQCompartmentDM *mpCompartmentDM;
   QModelIndexList mRows;
+  CQCompartmentDM *mpCompartmentDM;
   QList <UndoCompartmentData *> mpCompartmentData;
 
   bool mFirstTime;

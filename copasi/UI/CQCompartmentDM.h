@@ -54,13 +54,13 @@ public:
 
   //TODO Undo
 #ifdef COPASI_UNDO
-  bool compartmentDataChange(const QModelIndex &index, const QVariant &value, int role);
+  bool compartmentDataChange(const std::string &key, const QVariant &value, int column);
   void insertNewCompartmentRow(int position, int rows, const QModelIndex&);
   void addCompartmentRow(UndoCompartmentData *pCompartmentData);
   void deleteCompartmentRow(UndoCompartmentData *pCompartmentData);
-  bool removeCompartmentRows(QModelIndexList rows, const QModelIndex&);
-  bool insertCompartmentRows(QList <UndoCompartmentData *> pCompartmentData);
-  void deleteCompartmentRows(QList <UndoCompartmentData *> pCompartmentData);
+  bool removeCompartmentRows(QModelIndexList& rows, const QModelIndex&);
+  bool insertCompartmentRows(QList <UndoCompartmentData *>& pCompartmentData);
+  void deleteCompartmentRows(QList <UndoCompartmentData *>& pCompartmentData);
   bool removeAllCompartmentRows();
   bool clear();
 

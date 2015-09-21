@@ -32,7 +32,9 @@ public:
     CutPlane
   };
 
-  UndoEventData();
+  UndoEventData(const std::string &key = "",
+                const std::string &name = "",
+                const std::string &type = "");
 
   virtual ~UndoEventData();
 
@@ -47,58 +49,53 @@ public:
 
   const std::string& getDelayExpression() const;
 
+  void setDelayExpression(const std::string &mDelayExpression);
+
   const std::string& getPriorityExpression() const;
+
+  void setPriorityExpression(const std::string &mPriorityExpression);
 
   const std::string& getTriggerExpression() const;
 
+  void setTriggerExpression(const std::string &mTriggerExpression);
+
   Type getType() const;
+  void setType(Type &mType);
 
   bool isDelayAssignment() const;
-
-  bool isFireAtInitialTime() const;
-
-  bool isPersistentTrigger() const;
-
   void setDelayAssignment(bool delayAssignment);
 
-  void setDelayExpression(const std::string &delayExpression);
-
-  void setPriorityExpression(const std::string &priorityExpression);
-
+  bool isFireAtInitialTime() const;
   void setFireAtInitialTime(bool fireAtInitialTime);
 
+  bool isPersistentTrigger() const;
   void setPersistentTrigger(bool persistentTrigger);
 
-  void setTriggerExpression(const std::string &triggerExpression);
-
-  void setType(Type &type);
-
   QList<UndoEventAssignmentData*> *getEventAssignmentData() const;
-
   void setEventAssignmentData(QList<UndoEventAssignmentData*> *eventAssignmentData);
 
-  void setUndoEventAssignmentData(UndoEventAssignmentData *eventAssignData);
+  void appendEventAssignmentData(UndoEventAssignmentData *eventAssignData);
 
 private:
   /**
    * Event expression string.
    */
-  std::string priorityExpression;
+  std::string mPriorityExpression;
 
   /**
    * Event triger expression string.
    */
-  std::string triggerExpression;
+  std::string mTriggerExpression;
 
   /**
    * Event delay expression string.
    */
-  std::string delayExpression;
+  std::string mDelayExpression;
 
   /**
    * Type of the event
    */
-  Type type;
+  Type mType;
 
   /**
    * A Boolean flag indicating whether the calculation or the assignment should be delayed

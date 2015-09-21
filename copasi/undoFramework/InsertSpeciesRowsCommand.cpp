@@ -1,4 +1,4 @@
-// Copyright (C) 2014 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -17,16 +17,16 @@
 #include "model/CModel.h"
 #include "CQSpecieDM.h"
 
-#include "InsertSpecieRowsCommand.h"
-#include "UndoSpecieData.h"
+#include "InsertSpeciesRowsCommand.h"
+#include "UndoSpeciesData.h"
 
 InsertSpecieRowsCommand::InsertSpecieRowsCommand(int position, int rows, CQSpecieDM *pSpecieDM, const QModelIndex& index)
-  : CCopasiUndoCommand("Species", SPECIEINSERT)
+  : CCopasiUndoCommand("Species", SPECIES_INSERT)
   , mpSpecieDM(pSpecieDM)
   , mRows(rows)
   , mPosition(position)
   , mIndex(index)
-  , mpSpecieData(new UndoSpecieData())
+  , mpSpeciesData(new UndoSpeciesData())
   , firstTime(true)
 {
   this->setText(insertRowsText());
@@ -44,24 +44,24 @@ void InsertSpecieRowsCommand::redo()
       assert(pModel != NULL);
 
       CMetab *pSpecie = pModel->getMetabolites()[mPosition];
-      mpSpecieData->setName(pSpecie->getObjectName());
-      mpSpecieData->setIConc(pSpecie->getInitialConcentration());
-      mpSpecieData->setCompartment(pSpecie->getCompartment()->getObjectName());
+      mpSpeciesData->setName(pSpecie->getObjectName());
+      mpSpeciesData->setIConc(pSpecie->getInitialConcentration());
+      mpSpeciesData->setCompartment(pSpecie->getCompartment()->getObjectName());
       firstTime = false;
     }
   else
     {
-      mpSpecieDM->addSpecieRow(mpSpecieData);
+      mpSpecieDM->addSpecieRow(mpSpeciesData);
     }
 
   setUndoState(true);
   setAction("Add to list");
-  setName(mpSpecieData->getName());
+  setName(mpSpeciesData->getName());
 }
 
 void InsertSpecieRowsCommand::undo()
 {
-  mpSpecieDM->deleteSpecieRow(mpSpecieData);
+  mpSpecieDM->deleteSpecieRow(mpSpeciesData);
   setUndoState(false);
   setAction("Remove from list");
 }
@@ -73,10 +73,10 @@ QString InsertSpecieRowsCommand::insertRowsText() const
 
 UndoData *InsertSpecieRowsCommand::getUndoData() const
 {
-  return mpSpecieData;
+  return mpSpeciesData;
 }
 
 InsertSpecieRowsCommand::~InsertSpecieRowsCommand()
 {
-  pdelete(mpSpecieData);
+  pdelete(mpSpeciesData);
 }

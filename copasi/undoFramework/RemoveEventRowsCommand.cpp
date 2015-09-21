@@ -52,10 +52,8 @@ RemoveEventRowsCommand::RemoveEventRowsCommand(QModelIndexList rows, CQEventDM *
           for (; it != end; ++it)
             {
               const CModelEntity * pEntity = dynamic_cast< CModelEntity * >(CCopasiRootContainer::getKeyFactory()->get((*it)->getTargetKey()));
-              UndoEventAssignmentData *eventAssignData = new UndoEventAssignmentData();
-              eventAssignData->setName(pEntity->getObjectName());
-              eventAssignData->setExpression((*it)->getExpression());
-              data->getEventAssignmentData()->append(eventAssignData);
+              data->getEventAssignmentData()->append(
+                new UndoEventAssignmentData(pEntity, (*it)->getExpression()));
             }
 
           mpEventData.append(data);
@@ -63,7 +61,7 @@ RemoveEventRowsCommand::RemoveEventRowsCommand(QModelIndexList rows, CQEventDM *
     }
 
   this->setText(removeEventRowsText());
-  mType = EVENTREMOVE;
+  mType = EVENT_REMOVE;
   setEntityType("Event");
 }
 

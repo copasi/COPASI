@@ -23,11 +23,11 @@
 #include "model/CReaction.h"
 #include "model/CMetab.h"
 #include "model/CReactionInterface.h"
-#include "undoFramework/InsertSpecieRowsCommand.h"
-#include "undoFramework/RemoveSpecieRowsCommand.h"
-#include "undoFramework/RemoveAllSpecieRowsCommand.h"
-#include "undoFramework/SpecieDataChangeCommand.h"
-#include "undoFramework/UndoSpecieData.h"
+#include "undoFramework/InsertSpeciesRowsCommand.h"
+#include "undoFramework/RemoveSpeciesRowsCommand.h"
+#include "undoFramework/RemoveAllSpeciesRowsCommand.h"
+#include "undoFramework/SpeciesDataChangeCommand.h"
+#include "undoFramework/UndoSpeciesData.h"
 #include "undoFramework/UndoReactionData.h"
 #include "undoFramework/UndoGlobalQuantityData.h"
 #include "undoFramework/UndoEventData.h"
@@ -818,7 +818,7 @@ void CQSpecieDM::insertNewSpecieRow(int position, int rows, const QModelIndex&)
   endInsertRows();
 }
 
-void CQSpecieDM::deleteSpecieRow(UndoSpecieData *pSpecieData)
+void CQSpecieDM::deleteSpecieRow(UndoSpeciesData *pSpecieData)
 {
   CModel * pModel = (*CCopasiRootContainer::getDatamodelList())[0]->getModel();
   size_t index = pModel->findMetabByName(pSpecieData->getName());
@@ -826,7 +826,7 @@ void CQSpecieDM::deleteSpecieRow(UndoSpecieData *pSpecieData)
   emit changeWidget(112);
 }
 
-void CQSpecieDM::addSpecieRow(UndoSpecieData *pSpecieData)
+void CQSpecieDM::addSpecieRow(UndoSpeciesData *pSpecieData)
 {
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
@@ -889,7 +889,7 @@ bool CQSpecieDM::removeSpecieRows(QModelIndexList rows, const QModelIndex&)
   return true;
 }
 
-bool CQSpecieDM::insertSpecieRows(QList <UndoSpecieData *> pData)
+bool CQSpecieDM::insertSpecieRows(QList <UndoSpeciesData *> pData)
 {
 
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
@@ -901,11 +901,11 @@ bool CQSpecieDM::insertSpecieRows(QList <UndoSpecieData *> pData)
     return false;
 
   //reinsert all the species
-  QList <UndoSpecieData *>::const_iterator i;
+  QList <UndoSpeciesData *>::const_iterator i;
 
   for (i = pData.begin(); i != pData.end(); ++i)
     {
-      UndoSpecieData * data = *i;
+      UndoSpeciesData * data = *i;
       CCompartment * pCompartment = pModel->getCompartments()[data->getCompartment()];
 
       if (pCompartment->getMetabolites().getIndex(data->getName()) == C_INVALID_INDEX)
@@ -938,11 +938,11 @@ bool CQSpecieDM::insertSpecieRows(QList <UndoSpecieData *> pData)
     }
 
   //restore the reactions
-  QList <UndoSpecieData *>::const_iterator k;
+  QList <UndoSpeciesData *>::const_iterator k;
 
   for (k = pData.begin(); k != pData.end(); ++k)
     {
-      UndoSpecieData * data = *k;
+      UndoSpeciesData * data = *k;
 
       //reinsert the dependency global quantity
       QList <UndoGlobalQuantityData *> *pGlobalQuantityData = data->getGlobalQuantityDependencyObjects();
@@ -1010,13 +1010,13 @@ bool CQSpecieDM::insertSpecieRows(QList <UndoSpecieData *> pData)
                   rData->getRi()->writeBackToReaction(pRea);
 
                   //reaction may further has dependencies, these must be taken care of
-                  QList <UndoSpecieData *> *spData = rData->getSpecieDependencyObjects();
+                  QList <UndoSpeciesData *> *spData = rData->getSpeciesDependencyObjects();
 
-                  QList <UndoSpecieData *>::const_iterator rs;
+                  QList <UndoSpeciesData *>::const_iterator rs;
 
                   for (rs = spData->begin(); rs != spData->end(); ++rs)
                     {
-                      UndoSpecieData * data = *rs;
+                      UndoSpeciesData * data = *rs;
                       CCompartment * pCompartment = pModel->getCompartments()[data->getCompartment()];
 
                       if (pCompartment->getMetabolites().getIndex(data->getName()) == C_INVALID_INDEX)
@@ -1075,7 +1075,7 @@ bool CQSpecieDM::insertSpecieRows(QList <UndoSpecieData *> pData)
   return true;
 }
 
-void CQSpecieDM::deleteSpecieRows(QList <UndoSpecieData *> pData)
+void CQSpecieDM::deleteSpecieRows(QList <UndoSpeciesData *> pData)
 {
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
@@ -1083,11 +1083,11 @@ void CQSpecieDM::deleteSpecieRows(QList <UndoSpecieData *> pData)
 
   CModel * pModel = pDataModel->getModel();
 
-  QList <UndoSpecieData *>::const_iterator j;
+  QList <UndoSpeciesData *>::const_iterator j;
 
   for (j = pData.begin(); j != pData.end(); ++j)
     {
-      UndoSpecieData * data = *j;
+      UndoSpeciesData * data = *j;
       size_t index = pModel->findMetabByName(data->getName());
       beginRemoveRows(QModelIndex(), 1, 1);
       removeRow((int) index);

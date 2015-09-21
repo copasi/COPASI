@@ -50,7 +50,7 @@ RemoveReactionRowsCommand::RemoveReactionRowsCommand(QModelIndexList rows, CQRea
         }
     }
 
-  mType = REACTIONREMOVE;
+  mType = REACTION_REMOVE;
   setEntityType("Reaction");
 
   this->setText(removeReactionRowsText());

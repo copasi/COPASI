@@ -22,7 +22,7 @@
 #include "DeleteCompartmentCommand.h"
 
 DeleteCompartmentCommand::DeleteCompartmentCommand(CQCompartment *pCompartment)
-  : CCopasiUndoCommand("Compartment", COMPARTMENTDELETE)
+  : CCopasiUndoCommand("Compartment", COMPARTMENT_DELETE)
   , mFirstTime(true)
   , mpCompartmentData(new UndoCompartmentData())
   , mpCompartment(pCompartment)

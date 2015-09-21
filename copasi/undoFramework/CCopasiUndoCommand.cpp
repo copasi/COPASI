@@ -20,7 +20,7 @@
 #include "UndoGlobalQuantityData.h"
 #include "UndoEventData.h"
 #include "UndoEventAssignmentData.h"
-#include "UndoSpecieData.h"
+#include "UndoSpeciesData.h"
 #include "UndoData.h"
 
 #include "CCopasiUndoCommand.h"
@@ -34,7 +34,7 @@ CCopasiUndoCommand::CCopasiUndoCommand(const std::string& entityType /*= ""*/,
                                        const std::string& name /*= ""*/
                                       )
   : QUndoCommand()
-  , mpSpecieData(new QList <UndoSpecieData*>())
+  , mpSpeciesData(new QList <UndoSpeciesData*>())
   , mpReactionData(new  QList <UndoReactionData*>())
   , mpGlobalQuantityData(new  QList <UndoGlobalQuantityData*>())
   , mpEventData(new  QList <UndoEventData*>())
@@ -51,7 +51,7 @@ CCopasiUndoCommand::CCopasiUndoCommand(const std::string& entityType /*= ""*/,
 
 CCopasiUndoCommand::~CCopasiUndoCommand()
 {
-  pdelete(mpSpecieData);
+  pdelete(mpSpeciesData);
   pdelete(mpReactionData);
   pdelete(mpGlobalQuantityData);
   pdelete(mpEventData);
@@ -105,6 +105,20 @@ void CCopasiUndoCommand::setType(const CCopasiUndoCommand::Type & type)
 }
 void CCopasiUndoCommand::setDependentObjects(const std::set< const CCopasiObject * > & deletedObjects)
 {
+  CCopasiUndoCommand::setDependentObjects(deletedObjects,
+                                          *mpReactionData,
+                                          *mpSpeciesData,
+                                          *mpGlobalQuantityData,
+                                          *mpEventData);
+}
+
+void CCopasiUndoCommand::setDependentObjects(
+  const std::set<const CCopasiObject *> &deletedObjects,
+  QList<UndoReactionData *> &reactionData,
+  QList<UndoSpeciesData *> &speciesData,
+  QList<UndoGlobalQuantityData *> &globalQuantityData,
+  QList<UndoEventData *> &eventData)
+{
   if (deletedObjects.size() == 0)
     return;
 
@@ -135,7 +149,6 @@ void CCopasiUndoCommand::setDependentObjects(const std::set< const CCopasiObject
   std::set< const CCopasiObject * > Values;
   std::set< const CCopasiObject * > Compartments;
   std::set< const CCopasiObject * > Events;
-  std::set< const CCopasiObject * > Tasks;
 
   bool Used = false;
 
@@ -187,12 +200,16 @@ void CCopasiUndoCommand::setDependentObjects(const std::set< const CCopasiObject
 
               if (pRea->getDeletedObjects().size() > 0)
                 {
-                  setDependentObjects(pRea->getDeletedObjects());
-                  data->setSpecieDependencyObjects(getSpecieData());
+                  setDependentObjects(pRea->getDeletedObjects(),
+                                      reactionData,
+                                      speciesData,
+                                      globalQuantityData,
+                                      eventData);
+                  data->setSpeciesDependencyObjects(&speciesData);
                 }
 
               //  data->setRi(ri);
-              mpReactionData->append(data); //FROM_UTF8((*it)->getObjectName()));
+              reactionData.append(data); //FROM_UTF8((*it)->getObjectName()));
             }
         }
 
@@ -204,34 +221,9 @@ void CCopasiUndoCommand::setDependentObjects(const std::set< const CCopasiObject
           for (; it != end; ++it)
             {
               //store the Metabolites data
-              UndoSpecieData *data = new UndoSpecieData();
-              data->setName((*it)->getObjectName());
               const CMetab * pMetab = dynamic_cast<const CMetab*>(*it);
-              //data->setIConc(pMetab->getInitialConcentration());
-              data->setCompartment(pMetab->getCompartment()->getObjectName());
-              data->setStatus(pMetab->getStatus());
-
-              if (pMetab->getStatus() != CModelEntity::ASSIGNMENT)
-                {
-                  data->setIConc(pMetab->getInitialConcentration());
-                }
-
-              if (pMetab->getStatus() ==  CModelEntity::ASSIGNMENT || pMetab->getStatus() == CModelEntity::ODE)
-                {
-                  data->setExpression(pMetab->getExpression());
-                }
-
-              // set initial expression
-              if (pMetab->getStatus() != CModelEntity::ASSIGNMENT)
-                {
-                  data->setInitialExpression(pMetab->getInitialExpression());
-                }
-
-              //store the reaction data
-              //  QList<UndoReactionData*> *dependencyObjects = new QList <UndoReactionData*>();
-              //  setDependentObjects(pMetab->getDeletedObjects(), dependencyObjects);
-              //  data->setDependencyObjects(dependencyObjects);
-              mpSpecieData->append(data);
+              UndoSpeciesData *data = new UndoSpeciesData(pMetab);
+              speciesData.append(data);
             }
         }
 
@@ -272,7 +264,7 @@ void CCopasiUndoCommand::setDependentObjects(const std::set< const CCopasiObject
                   data->setFixed(false);
                   data->setExpression(pModelValue->getExpression());
                 }*/
-              mpGlobalQuantityData->append(data);
+              globalQuantityData.append(data);
             }
         }
 
@@ -296,14 +288,14 @@ void CCopasiUndoCommand::setDependentObjects(const std::set< const CCopasiObject
 
               for (; iit != end; ++iit)
                 {
+
                   const CModelEntity * pEntity = dynamic_cast< CModelEntity * >(CCopasiRootContainer::getKeyFactory()->get((*iit)->getTargetKey()));
-                  UndoEventAssignmentData *eventAssignData = new UndoEventAssignmentData();
-                  eventAssignData->setName(pEntity->getObjectName());
-                  eventAssignData->setExpression((*iit)->getExpression());
-                  data->getEventAssignmentData()->append(eventAssignData);
+                  data->getEventAssignmentData()->append(
+                    new UndoEventAssignmentData(pEntity, (*iit)->getExpression()));
                 }
 
-              mpEventData->append(data);
+
+              eventData.append(data);
             }
         }
     }
@@ -314,9 +306,9 @@ QList<UndoReactionData*> *CCopasiUndoCommand::getReactionData() const
   return mpReactionData;
 }
 
-QList<UndoSpecieData*> *CCopasiUndoCommand::getSpecieData() const
+QList<UndoSpeciesData*> *CCopasiUndoCommand::getSpecieData() const
 {
-  return mpSpecieData;
+  return mpSpeciesData;
 }
 
 void CCopasiUndoCommand::setReactionData(QList<UndoReactionData*> *reactionData)
@@ -324,9 +316,9 @@ void CCopasiUndoCommand::setReactionData(QList<UndoReactionData*> *reactionData)
   mpReactionData = reactionData;
 }
 
-void CCopasiUndoCommand::setSpecieData(QList<UndoSpecieData*> *specieData)
+void CCopasiUndoCommand::setSpecieData(QList<UndoSpeciesData*> *specieData)
 {
-  mpSpecieData = specieData;
+  mpSpeciesData = specieData;
 }
 
 QList<UndoGlobalQuantityData*> *CCopasiUndoCommand::getGlobalQuantityData() const
@@ -359,22 +351,22 @@ void CCopasiUndoCommand::setUndoState(bool undoState)
   this->undoState = undoState;
 }
 
-std::string CCopasiUndoCommand::getEntityType() const
+const std::string& CCopasiUndoCommand::getEntityType() const
 {
   return mEntityType;
 }
 
-std::string CCopasiUndoCommand::getNewValue() const
+const std::string& CCopasiUndoCommand::getNewValue() const
 {
   return mNewValue;
 }
 
-std::string CCopasiUndoCommand::getOldValue() const
+const std::string& CCopasiUndoCommand::getOldValue() const
 {
   return mOldValue;
 }
 
-std::string CCopasiUndoCommand::getProperty() const
+const std::string& CCopasiUndoCommand::getProperty() const
 {
   return mProperty;
 }
@@ -399,7 +391,7 @@ void CCopasiUndoCommand::setProperty(const std::string& property)
   mProperty = property;
 }
 
-std::string CCopasiUndoCommand::getAction() const
+const std::string& CCopasiUndoCommand::getAction() const
 {
   return mAction;
 }
@@ -409,7 +401,7 @@ void CCopasiUndoCommand::setAction(const std::string& action)
   mAction = action;
 }
 
-std::string CCopasiUndoCommand::getName() const
+const std::string& CCopasiUndoCommand::getName() const
 {
   return mName;
 }
@@ -418,3 +410,14 @@ void CCopasiUndoCommand::setName(const std::string& name)
 {
   mName = name;
 }
+
+const std::string& CCopasiUndoCommand::getKey() const
+{
+  return mKey;
+}
+
+void CCopasiUndoCommand::setKey(const std::string &key)
+{
+  mKey = key;
+}
+

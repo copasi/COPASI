@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -16,7 +16,7 @@
 #include "ui_CQSpeciesDetail.h"
 
 #ifdef COPASI_UNDO
-class UndoSpecieData;
+class UndoSpeciesData;
 #endif
 
 class CMetab;
@@ -27,10 +27,10 @@ class CQSpeciesDetail : public CopasiWidget, public Ui::CQSpeciesDetail
   Q_OBJECT
 
 #ifdef COPASI_UNDO
-  friend class DeleteSpecieCommand;
-  friend class CreateNewSpecieCommand;
-  friend class SpecieTypeChangeCommand;
-  friend class SpecieInitialValueLostFocusCommand;
+  friend class DeleteSpeciesCommand;
+  friend class CreateNewSpeciesCommand;
+  friend class SpeciesTypeChangeCommand;
+  friend class SpeciesInitialValueLostFocusCommand;
 #endif
 
 public:
@@ -78,13 +78,13 @@ private slots:
   //additional functions for UNDO framework
 #ifdef COPASI_UNDO
   void deleteSpecie();
-  void addSpecie(UndoSpecieData *pSData);
+  void addSpecie(UndoSpeciesData *pSData);
   void createNewSpecie();
-  void deleteSpecie(UndoSpecieData *pSData);
+  void deleteSpecie(UndoSpeciesData *pSData);
   void specieTypeChanged(int type);
-  void specieTypeChanged(UndoSpecieData *pSData, int type);
+  void specieTypeChanged(UndoSpeciesData *pSData, int type);
   void specieInitialValueLostFocus();
-  void specieInitialValueLostFocus(UndoSpecieData *pSData);
+  void specieInitialValueLostFocus(UndoSpeciesData *pSData);
 #endif
 };
 

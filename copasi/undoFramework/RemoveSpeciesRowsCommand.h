@@ -1,4 +1,4 @@
-// Copyright (C) 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -33,7 +33,7 @@ public:
 private:
   CQSpecieDM *mpSpecieDM;
   QModelIndexList mRows;
-  QList <UndoSpecieData *> mpSpecieData;
+  QList <UndoSpeciesData *> mpSpeciesData;
   //QList <UndoReactionData *> mpReactionData;
   bool mFirstTime;
 };

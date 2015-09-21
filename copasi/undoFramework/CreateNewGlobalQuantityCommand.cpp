@@ -17,7 +17,7 @@
 #include "CreateNewGlobalQuantityCommand.h"
 
 CreateNewGlobalQuantityCommand::CreateNewGlobalQuantityCommand(CQModelValue *pModelValue)
-  : CCopasiUndoCommand("Global Quantity", GLOBALQUANTITYCREATE)
+  : CCopasiUndoCommand("Global Quantity", GLOBALQUANTITY_CREATE)
   , mpGlobalQuantityData(new UndoGlobalQuantityData())
   , mpModelValue(pModelValue)
 {

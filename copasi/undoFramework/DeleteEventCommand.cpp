@@ -21,7 +21,7 @@
 #include "DeleteEventCommand.h"
 
 DeleteEventCommand::DeleteEventCommand(CQEventWidget1 *pEVentWidget1)
-  : CCopasiUndoCommand("Event", EVENTDELETE)
+  : CCopasiUndoCommand("Event", EVENT_DELETE)
   , mFirstTime(true)
   , mpEventData(new UndoEventData())
   , mpEVentWidget1(pEVentWidget1)
@@ -36,11 +36,10 @@ DeleteEventCommand::DeleteEventCommand(CQEventWidget1 *pEVentWidget1)
 
   for (; it != end; ++it)
     {
+
       const CModelEntity * pEntity = dynamic_cast< CModelEntity * >(CCopasiRootContainer::getKeyFactory()->get((*it)->getTargetKey()));
-      UndoEventAssignmentData *eventAssignData = new UndoEventAssignmentData();
-      eventAssignData->setName(pEntity->getObjectName());
-      eventAssignData->setExpression((*it)->getExpression());
-      mpEventData->getEventAssignmentData()->append(eventAssignData);
+      mpEventData->getEventAssignmentData()->append(
+        new UndoEventAssignmentData(pEntity, (*it)->getExpression()));
     }
 
   mpEventData->setTriggerExpression(mpEVentWidget1->mpEvent->getTriggerExpression());

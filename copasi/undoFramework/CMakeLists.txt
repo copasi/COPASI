@@ -22,7 +22,6 @@
 #
 ###############################################################################
 
-#cmake_minimum_required (VERSION 2.6)
 
 file(GLOB HEADERS_UNDOFRAMEWORK undoFramework/*.h )
 file(GLOB SOURCES_UNDOFRAMEWORK undoFramework/*.cpp )
@@ -35,5 +34,3 @@ source_group(undoframework FILES ${SOURCES_UNDOFRAMEWORK} ${HEADERS_UNDOFRAMEWOR
 # add files to COPASI UI sources
 set(COPASI_UI_SOURCES ${COPASI_UI_SOURCES} ${SOURCES_UNDOFRAMEWORK})
 set(COPASI_UI_HEADERS ${COPASI_UI_HEADERS} ${HEADERS_UNDOFRAMEWORK})
-
-

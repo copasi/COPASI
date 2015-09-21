@@ -28,7 +28,7 @@ InsertCompartmentRowsCommand::InsertCompartmentRowsCommand(
   int rows,
   CQCompartmentDM *pCompartmentDM,
   const QModelIndex&)
-  : CCopasiUndoCommand("Compartment", COMPARTMENTINSERT)
+  : CCopasiUndoCommand("Compartment", COMPARTMENT_INSERT)
   , mpCompartmentDM(pCompartmentDM)
   , mRows(rows)
   , mPosition(position)

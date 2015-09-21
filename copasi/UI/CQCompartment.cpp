@@ -39,7 +39,7 @@
 //#include "undoFramework/CompartmentTypeChangeCommand.h"
 #include "undoFramework/UndoCompartmentData.h"
 #include "undoFramework/UndoReactionData.h"
-#include "undoFramework/UndoSpecieData.h"
+#include "undoFramework/UndoSpeciesData.h"
 #include <copasi/undoFramework/CompartmentChangeCommand.h>
 #include "copasiui3window.h"
 #endif
@@ -787,7 +787,7 @@ void CQCompartment::deleteCompartment(UndoCompartmentData *pCompartmentData)
   mpListView->switchToOtherWidget(111, "");
 }
 
-void CQCompartment::addCompartment(UndoCompartmentData *pSData)
+void CQCompartment::addCompartment(UndoCompartmentData *pData)
 {
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
@@ -797,20 +797,20 @@ void CQCompartment::addCompartment(UndoCompartmentData *pSData)
   assert(pModel != NULL);
 
   //reinsert all the Compartments
-  CCompartment *pCompartment =  pModel->createCompartment(pSData->getName());
-  pCompartment->setInitialValue(pSData->getInitialValue());
-  pCompartment->setStatus(pSData->getStatus());
+  CCompartment *pCompartment =  pModel->createCompartment(pData->getName());
+  pCompartment->setInitialValue(pData->getInitialValue());
+  pCompartment->setStatus(pData->getStatus());
   std::string key = pCompartment->getKey();
   protectedNotify(ListViews::COMPARTMENT, ListViews::ADD, key);
 
   //restore all the dependencies
   //reinsert all the species
-  QList <UndoSpecieData *> *pSpecieData = pSData->getSpecieDependencyObjects();
-  QList <UndoSpecieData *>::const_iterator i;
+  QList <UndoSpeciesData *> *pSpecieData = pData->getSpecieDependencyObjects();
+  QList <UndoSpeciesData *>::const_iterator i;
 
   for (i = pSpecieData->begin(); i != pSpecieData->end(); ++i)
     {
-      UndoSpecieData * data = *i;
+      UndoSpeciesData * data = *i;
       //  beginInsertRows(QModelIndex(), 1, 1);
       CMetab *pSpecie =  pModel->createMetabolite(data->getName(), data->getCompartment(), data->getIConc(), data->getStatus());
       protectedNotify(ListViews::METABOLITE, ListViews::ADD, pSpecie->getKey());
@@ -818,7 +818,7 @@ void CQCompartment::addCompartment(UndoCompartmentData *pSData)
     }
 
   //reinsert the dependency reaction
-  QList <UndoReactionData *> *pReactionData = pSData->getReactionDependencyObjects();
+  QList <UndoReactionData *> *pReactionData = pData->getReactionDependencyObjects();
   QList <UndoReactionData *>::const_iterator j;
 
   for (j = pReactionData->begin(); j != pReactionData->end(); ++j)

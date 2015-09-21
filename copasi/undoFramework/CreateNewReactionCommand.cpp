@@ -20,7 +20,7 @@
 #include "UndoReactionData.h"
 
 CreateNewReactionCommand::CreateNewReactionCommand(ReactionsWidget1 *pReactionWidget)
-  : CCopasiUndoCommand("Reaction", REACTIONCREATE)
+  : CCopasiUndoCommand("Reaction", REACTION_CREATE)
   , mpReactionWidget(pReactionWidget)
   , mpReaction(NULL)
   , mpReactionData(new UndoReactionData())

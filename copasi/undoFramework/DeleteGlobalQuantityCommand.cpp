@@ -22,7 +22,7 @@
 #include "DeleteGlobalQuantityCommand.h"
 
 DeleteGlobalQuantityCommand::DeleteGlobalQuantityCommand(CQModelValue *pModelValue)
-  : CCopasiUndoCommand("Global Quantity", GLOBALQUANTITYDELETE)
+  : CCopasiUndoCommand("Global Quantity", GLOBALQUANTITY_DELETE)
   , mFirstTime(true)
   , mpGlobalQuantityData(new UndoGlobalQuantityData())
   , mpModelValue(pModelValue)

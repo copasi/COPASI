@@ -22,12 +22,11 @@ class CreateNewCompartmentCommand: public CCopasiUndoCommand
 {
 public:
   CreateNewCompartmentCommand(CQCompartment *pCompartment);
+  virtual ~CreateNewCompartmentCommand();
+
   void redo();
   void undo();
-  QString createNewCompartmentText() const;
-  virtual ~CreateNewCompartmentCommand();
-  void setType(const CreateNewCompartmentCommand::Type & type);
-  CreateNewCompartmentCommand * getCreateNewCompartmentCommand();
+
   UndoData *getUndoData() const;
 
 private:

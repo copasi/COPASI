@@ -1,4 +1,4 @@
-// Copyright (C) 2014 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -24,7 +24,7 @@
 #include "insertReactionRowsCommand.h"
 
 InsertReactionRowsCommand::InsertReactionRowsCommand(int position, int rows, CQReactionDM *pReactionDM, const QModelIndex&)
-  : CCopasiUndoCommand("Reaction", REACTIONINSERT)
+  : CCopasiUndoCommand("Reaction", REACTION_INSERT)
   , mpReactionDM(pReactionDM)
   , mRows(rows)
   , mPosition(position)

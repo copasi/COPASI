@@ -23,7 +23,7 @@ CompartmentDataChangeCommand::CompartmentDataChangeCommand(
   const QVariant& value,
   int role,
   CQCompartmentDM *pCompartmentDM)
-  : CCopasiUndoCommand("Compartment", COMPARTMENTDATACHANGE, "Change")
+  : CCopasiUndoCommand("Compartment", COMPARTMENT_DATA_CHANGE, "Change")
   , mNew(value)
   , mOld(index.data(Qt::DisplayRole))
   , mIndex(index)
@@ -47,6 +47,7 @@ CompartmentDataChangeCommand::CompartmentDataChangeCommand(
     }
 
   CCompartment *pCompartment = pModel->getCompartments()[index.row()];
+  setKey(pCompartment->getKey());
   setName(pCompartment->getObjectName());
   setOldValue(TO_UTF8(mOld.toString()));
   setNewValue(TO_UTF8(mNew.toString()));
@@ -91,13 +92,12 @@ CompartmentDataChangeCommand::CompartmentDataChangeCommand(
 
 void CompartmentDataChangeCommand::redo()
 {
-  mpCompartmentDM->compartmentDataChange(mIndex, mNew, mRole);
+  mpCompartmentDM->compartmentDataChange(mKey, mNew, mIndex.column());
 }
 
 void CompartmentDataChangeCommand::undo()
 {
-  //mIndex = pathToIndex(mPathIndex, mpCompartmentDM);
-  mpCompartmentDM->compartmentDataChange(mIndex, mOld, mRole);
+  mpCompartmentDM->compartmentDataChange(mKey, mOld, mIndex.column());
   setAction("Undone change");
 }
 

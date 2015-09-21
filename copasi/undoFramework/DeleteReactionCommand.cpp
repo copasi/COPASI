@@ -22,7 +22,7 @@
 #include "DeleteReactionCommand.h"
 
 DeleteReactionCommand::DeleteReactionCommand(ReactionsWidget1 *pReactionWidget)
-  : CCopasiUndoCommand("Reaction", REACTIONDELETE)
+  : CCopasiUndoCommand("Reaction", REACTION_DELETE)
   , mReaObjectName()
   , mpRi(NULL)
   , mpReaction(NULL)

@@ -13,17 +13,21 @@
 #include <QtCore/QList>
 
 #include "model/CMetab.h"
-#include "UndoSpecieData.h"
+#include "UndoSpeciesData.h"
 #include "UndoReactionData.h"
 
-UndoReactionData::UndoReactionData()
+UndoReactionData::UndoReactionData(const std::string &key  /*= ""*/,
+                                   const std::string &name /*= ""*/,
+                                   const std::string &type /*= ""*/)
+  : UndoData(key, name, type)
+  , mpRi(NULL)
+  , mSpeciesDependencyObjects(new QList <UndoSpeciesData*>())
 {
-  // TODO Auto-generated constructor stub
 }
 
 UndoReactionData::~UndoReactionData()
 {
-  // TODO Auto-generated destructor stub
+  pdelete(mSpeciesDependencyObjects);
 }
 
 CReactionInterface *UndoReactionData::getRi() const
@@ -31,17 +35,18 @@ CReactionInterface *UndoReactionData::getRi() const
   return mpRi;
 }
 
-void UndoReactionData::setRi(CReactionInterface *mpRi)
+void UndoReactionData::setRi(CReactionInterface *pRi)
 {
-  this->mpRi = mpRi;
+  mpRi = pRi;
 }
 
-QList<UndoSpecieData*> *UndoReactionData::getSpecieDependencyObjects() const
+QList<UndoSpeciesData*> *UndoReactionData::getSpeciesDependencyObjects() const
 {
-  return mSpecieDependencyObjects;
+  return mSpeciesDependencyObjects;
 }
 
-void UndoReactionData::setSpecieDependencyObjects(QList<UndoSpecieData*> *specieDependencyObjects)
+void UndoReactionData::setSpeciesDependencyObjects(QList<UndoSpeciesData*> *speciesDependencyObjects)
 {
-  mSpecieDependencyObjects = specieDependencyObjects;
+  pdelete(mSpeciesDependencyObjects);
+  mSpeciesDependencyObjects = speciesDependencyObjects;
 }

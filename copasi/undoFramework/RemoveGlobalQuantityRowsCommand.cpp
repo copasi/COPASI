@@ -71,7 +71,7 @@ RemoveGlobalQuantityRowsCommand::RemoveGlobalQuantityRowsCommand(QModelIndexList
         }
     }
 
-  mType = GLOBALQUANTITYREMOVE;
+  mType = GLOBALQUANTITY_REMOVE;
   setEntityType("Global Quantity");
   this->setText(removeGlobalQuantityRowsText());
 }

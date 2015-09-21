@@ -1,4 +1,4 @@
-// Copyright (C) 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2014 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -13,85 +13,163 @@
 #include <QtCore/QList>
 
 #include "model/CMetab.h"
+
+#include "CCopasiUndoCommand.h"
 #include "UndoData.h"
 #include "UndoCompartmentData.h"
 
 UndoCompartmentData::UndoCompartmentData()
+  : UndoData()
+  , mInitialValue()
+  , mInitialExpression()
+  , mExpression()
+  , mStatus()
+  , mDependencyObjects(new QList<UndoData*>())
+  , mSpecieDependencyObjects(new QList<UndoSpeciesData*>())
+  , mReactionDependencyObjects(new QList<UndoReactionData*>())
+  , mGlobalQuantityDependencyObjects(new QList<UndoGlobalQuantityData*>())
+  , mEventDependencyObjects(new QList<UndoEventData*>())
 {
-  // TODO Auto-generated constructor stub
+
+}
+
+UndoCompartmentData::UndoCompartmentData(CCompartment *compartment)
+  : UndoData(compartment->getKey(), compartment->getObjectName())
+  , mInitialValue(compartment->getInitialValue())
+  , mInitialExpression(compartment->getInitialExpression())
+  , mExpression(compartment->getExpression())
+  , mStatus(compartment->getStatus())
+  , mDependencyObjects(new QList<UndoData*>())
+  , mSpecieDependencyObjects(new QList<UndoSpeciesData*>())
+  , mReactionDependencyObjects(new QList<UndoReactionData*>())
+  , mGlobalQuantityDependencyObjects(new QList<UndoGlobalQuantityData*>())
+  , mEventDependencyObjects(new QList<UndoEventData*>())
+{
+  CCopasiUndoCommand::setDependentObjects(
+    compartment->getDeletedObjects(),
+    *mReactionDependencyObjects,
+    *mSpecieDependencyObjects,
+    *mGlobalQuantityDependencyObjects,
+    *mEventDependencyObjects);
 }
 
 UndoCompartmentData::~UndoCompartmentData()
 {
-  // TODO Auto-generated destructor stub
+  pdelete(mDependencyObjects);
+  pdelete(mSpecieDependencyObjects);
+  pdelete(mReactionDependencyObjects);
+  pdelete(mGlobalQuantityDependencyObjects);
+  pdelete(mEventDependencyObjects);
+
 }
 
-QList<UndoData*> *UndoCompartmentData::getDependencyObjects() const
+QList<UndoData*> *
+UndoCompartmentData::getDependencyObjects() const
 {
   return mDependencyObjects;
 }
 
-CModelEntity::Status UndoCompartmentData::getStatus() const
+CModelEntity::Status
+UndoCompartmentData::getStatus() const
 {
   return mStatus;
 }
 
-void UndoCompartmentData::setDependencyObjects(QList<UndoData*> *dependencyObjects)
+void
+UndoCompartmentData::setDependencyObjects(QList<UndoData*> *dependencyObjects)
 {
+  pdelete(mDependencyObjects);
   mDependencyObjects = dependencyObjects;
 }
 
-void UndoCompartmentData::setStatus(CModelEntity::Status status)
+void
+UndoCompartmentData::setStatus(CModelEntity::Status status)
 {
   mStatus = status;
 }
 
-QList<UndoReactionData*> *UndoCompartmentData::getReactionDependencyObjects() const
+QList<UndoReactionData*> *
+UndoCompartmentData::getReactionDependencyObjects() const
 {
   return mReactionDependencyObjects;
 }
 
-QList<UndoSpecieData*> *UndoCompartmentData::getSpecieDependencyObjects() const
+QList<UndoSpeciesData*> *
+UndoCompartmentData::getSpecieDependencyObjects() const
 {
   return mSpecieDependencyObjects;
 }
 
-void UndoCompartmentData::setReactionDependencyObjects(QList<UndoReactionData*> *reactionDependencyObjects)
+void
+UndoCompartmentData::setReactionDependencyObjects(QList<UndoReactionData*> *reactionDependencyObjects)
 {
+  pdelete(mReactionDependencyObjects);
   mReactionDependencyObjects = reactionDependencyObjects;
 }
 
-void UndoCompartmentData::setSpecieDependencyObjects(QList<UndoSpecieData*> *specieDependencyObjects)
+void
+UndoCompartmentData::setSpecieDependencyObjects(QList<UndoSpeciesData*> *specieDependencyObjects)
 {
+  pdelete(mSpecieDependencyObjects);
   mSpecieDependencyObjects = specieDependencyObjects;
 }
 
-double UndoCompartmentData::getInitialValue() const
+double
+UndoCompartmentData::getInitialValue() const
 {
   return mInitialValue;
 }
 
-void UndoCompartmentData::setInitialValue(double initialValue)
+void
+UndoCompartmentData::setInitialValue(double initialValue)
 {
   mInitialValue = initialValue;
 }
 
-QList<UndoGlobalQuantityData*> *UndoCompartmentData::getGlobalQuantityDependencyObjects() const
+QList<UndoGlobalQuantityData*> *
+UndoCompartmentData::getGlobalQuantityDependencyObjects() const
 {
   return mGlobalQuantityDependencyObjects;
 }
 
-void UndoCompartmentData::setGlobalQuantityDependencyObjects(QList<UndoGlobalQuantityData*> *globalQuantityDependencyObjects)
+void
+UndoCompartmentData::setGlobalQuantityDependencyObjects(QList<UndoGlobalQuantityData*> *globalQuantityDependencyObjects)
 {
+  pdelete(mGlobalQuantityDependencyObjects);
   mGlobalQuantityDependencyObjects = globalQuantityDependencyObjects;
 }
 
-QList<UndoEventData*> *UndoCompartmentData::getEventDependencyObjects() const
+QList<UndoEventData*> *
+UndoCompartmentData::getEventDependencyObjects() const
 {
   return mEventDependencyObjects;
 }
 
-void UndoCompartmentData::setEventDependencyObjects(QList<UndoEventData*> *eventDependencyObjects)
+void
+UndoCompartmentData::setEventDependencyObjects(QList<UndoEventData*> *eventDependencyObjects)
 {
+  pdelete(mEventDependencyObjects);
   mEventDependencyObjects = eventDependencyObjects;
 }
+const std::string&
+UndoCompartmentData::getInitialExpression() const
+{
+  return mInitialExpression;
+}
+
+void UndoCompartmentData::setInitialExpression(const std::string &initialExpression)
+{
+  mInitialExpression = initialExpression;
+}
+
+const std::string& UndoCompartmentData::getExpression() const
+{
+  return mExpression;
+}
+
+void UndoCompartmentData::setExpression(const std::string &expression)
+{
+  mExpression = expression;
+}
+
+

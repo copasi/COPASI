@@ -1,4 +1,4 @@
-// Copyright (C) 2014 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -17,11 +17,11 @@
 #include "CQSpecieDM.h"
 #include "function/CFunctionDB.h"
 
-#include "UndoSpecieData.h"
+#include "UndoSpeciesData.h"
 #include "UndoReactionData.h"
 #include "UndoEventData.h"
 #include "UndoGlobalQuantityData.h"
-#include "RemoveSpecieRowsCommand.h"
+#include "RemoveSpeciesRowsCommand.h"
 
 RemoveSpecieRowsCommand::RemoveSpecieRowsCommand(QModelIndexList rows, CQSpecieDM * pSpecieDM, const QModelIndex&)
 {
@@ -40,7 +40,7 @@ RemoveSpecieRowsCommand::RemoveSpecieRowsCommand(QModelIndexList rows, CQSpecieD
 
   for (i = rows.begin(); i != rows.end(); ++i)
     {
-      UndoSpecieData *data = new UndoSpecieData();
+      UndoSpeciesData *data = new UndoSpeciesData();
 
       if (!pSpecieDM->isDefaultRow(*i) && pModel->getMetabolites()[(*i).row()])
         {
@@ -73,11 +73,11 @@ RemoveSpecieRowsCommand::RemoveSpecieRowsCommand(QModelIndexList rows, CQSpecieD
           data->setGlobalQuantityDependencyObjects(getGlobalQuantityData());
           data->setEventDependencyObjects(getEventData());
 
-          mpSpecieData.append(data);
+          mpSpeciesData.append(data);
         }
     }
 
-  mType = SPECIEREMOVE;
+  mType = SPECIES_REMOVE;
   setEntityType("Species");
 
   this->setText(removeSpecieRowsText());
@@ -92,7 +92,7 @@ void RemoveSpecieRowsCommand::redo()
     }
   else
     {
-      mpSpecieDM->deleteSpecieRows(mpSpecieData);
+      mpSpecieDM->deleteSpecieRows(mpSpeciesData);
     }
 
   setUndoState(true);
@@ -101,7 +101,7 @@ void RemoveSpecieRowsCommand::redo()
 
 void RemoveSpecieRowsCommand::undo()
 {
-  mpSpecieDM->insertSpecieRows(mpSpecieData);
+  mpSpecieDM->insertSpecieRows(mpSpeciesData);
   setUndoState(false);
   setAction("Undelete set");
 }

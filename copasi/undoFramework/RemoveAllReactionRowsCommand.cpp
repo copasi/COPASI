@@ -46,7 +46,7 @@ RemoveAllReactionRowsCommand::RemoveAllReactionRowsCommand(CQReactionDM * pReaDM
         }
     }
 
-  mType = REACTIONREMOVEALL;
+  mType = REACTION_REMOVE_ALL;
   setEntityType("Reaction");
   this->setText(removeAllReactionRowsText());
 }

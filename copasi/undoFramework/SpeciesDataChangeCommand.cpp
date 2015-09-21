@@ -1,4 +1,4 @@
-// Copyright (C) 2014 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -17,14 +17,14 @@
 
 #include "qtUtilities.h"
 
-#include "SpecieDataChangeCommand.h"
+#include "SpeciesDataChangeCommand.h"
 
 SpecieDataChangeCommand::SpecieDataChangeCommand(
   const QModelIndex& index,
   const QVariant& value,
   int role,
   CQSpecieDM *pSpecieDM)
-  : CCopasiUndoCommand("Species", SPECIEDATACHANGE)
+  : CCopasiUndoCommand("Species", SPECIES_DATA_CHANGE)
   , mNew(value)
   , mOld(index.data(Qt::DisplayRole))
   , mIndex(index)

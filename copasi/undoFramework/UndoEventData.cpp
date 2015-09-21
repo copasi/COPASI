@@ -19,11 +19,14 @@
 
 #include "UndoEventAssignmentData.h"
 
-UndoEventData::UndoEventData()
-  : priorityExpression()
-  , triggerExpression()
-  , delayExpression()
-  , type(Discontinuity)
+UndoEventData::UndoEventData(const std::string &key  /*= ""*/,
+                             const std::string &name /*= ""*/,
+                             const std::string &type /*= ""*/)
+  : UndoData(key, name, type)
+  , mPriorityExpression()
+  , mTriggerExpression()
+  , mDelayExpression()
+  , mType(Discontinuity)
   , mDelayAssignment(false)
   , mFireAtInitialTime(false)
   , mPersistentTrigger(false)
@@ -39,25 +42,25 @@ UndoEventData::~UndoEventData()
 const std::string&
 UndoEventData::getDelayExpression() const
 {
-  return delayExpression;
+  return mDelayExpression;
 }
 
 const std::string&
 UndoEventData::getPriorityExpression() const
 {
-  return priorityExpression;
+  return mPriorityExpression;
 }
 
 const std::string&
 UndoEventData::getTriggerExpression() const
 {
-  return triggerExpression;
+  return mTriggerExpression;
 }
 
 UndoEventData::Type
 UndoEventData::getType() const
 {
-  return type;
+  return mType;
 }
 
 bool
@@ -87,13 +90,13 @@ UndoEventData::setDelayAssignment(bool delayAssignment)
 void
 UndoEventData::setDelayExpression(const std::string &delayExpression)
 {
-  this->delayExpression = delayExpression;
+  mDelayExpression = delayExpression;
 }
 
 void
-UndoEventData::setPriorityExpression(const std::string &priorityXxpression)
+UndoEventData::setPriorityExpression(const std::string &priorityExpression)
 {
-  this->priorityExpression = priorityExpression;
+  mPriorityExpression = priorityExpression;
 }
 
 void
@@ -111,12 +114,12 @@ UndoEventData::setPersistentTrigger(bool persistentTrigger)
 void
 UndoEventData::setTriggerExpression(const std::string &triggerExpression)
 {
-  this->triggerExpression = triggerExpression;
+  mTriggerExpression = triggerExpression;
 }
 
 void UndoEventData::setType(Type &type)
 {
-  this->type = type;
+  mType = type;
 }
 
 QList<UndoEventAssignmentData*> *
@@ -129,10 +132,11 @@ void
 UndoEventData::setEventAssignmentData(
   QList<UndoEventAssignmentData *> *eventAssignmentData)
 {
+  pdelete(mEventAssignmentData);
   mEventAssignmentData = eventAssignmentData;
 }
 
-void UndoEventData::setUndoEventAssignmentData(
+void UndoEventData::appendEventAssignmentData(
   UndoEventAssignmentData *eventAssignData)
 {
   mEventAssignmentData->append(eventAssignData);
@@ -154,8 +158,7 @@ UndoEventData::createEventFromData(CModel *pModel)
   for (i = assignmentData->begin(); i != assignmentData->end(); ++i)
     {
       UndoEventAssignmentData * assignData = *i;
-
-      assignData->addToEvent(pEvent, pModel);
+      assignData->addToEvent(pEvent);
     }
 
   return pEvent;

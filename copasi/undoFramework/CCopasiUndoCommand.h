@@ -22,7 +22,7 @@ typedef QList<PathItem> Path;
 
 class CCopasiObject;
 class UndoData;
-class UndoSpecieData;
+class UndoSpeciesData;
 class UndoReactionData;
 class UndoGlobalQuantityData;
 class UndoEventData;
@@ -35,37 +35,37 @@ public:
    */
   enum Type
   {
-    COMPARTMENTCREATE = 0 , //creation of single compartment
-    EVENTCREATE, //creation of single event
-    GLOBALQUANTITYCREATE, //creation of single global quantity
-    REACTIONCREATE, //creation of single reaction
-    SPECIECREATE, //creation of single species
-    COMPARTMENTDELETE, //deletion of single compartment
-    EVENTDELETE, //deletion of single event
-    GLOBALQUANTITYDELETE, //deletion of single global quantity
-    REACTIONDELETE, //deletion of single reaction
-    SPECIEDELETE, //deletion of single species
-    COMPARTMENTINSERT, //insert compartment
-    EVENTINSERT, //insert event
-    GLOBALQUANTITYINSERT, //insert global quantity
-    REACTIONINSERT, //insert reaction
-    SPECIEINSERT, //insert species
-    COMPARTMENTREMOVE, //remove compartment
-    EVENTREMOVE, //remove event
-    GLOBALQUANTITYREMOVE, //remove global quantity
-    REACTIONREMOVE, //remove reaction
-    SPECIEREMOVE, //remove species
-    COMPARTMENTREMOVEALL, //remove all compartment
-    EVENTREMOVEALL, //remove all event
-    GLOBALQUANTITYREMOVEALL, //remove all global quantity
-    REACTIONREMOVEALL, //remove all reaction
-    SPECIEREMOVEALL, //remove all species
-    COMPARTMENTDATACHANGE, //change compartment data
-    EVENTDATACHANGE, //change event data
-    GLOBALQUANTITYDATACHANGE, //change global quantity data
-    REACTIONDATACHANGE, //change reaction data
-    SPECIEDATACHANGE, //change species data
-    SPECIESTYPECHANGE, //change of species type
+    COMPARTMENT_CREATE = 0 , //creation of single compartment
+    EVENT_CREATE, //creation of single event
+    GLOBALQUANTITY_CREATE, //creation of single global quantity
+    REACTION_CREATE, //creation of single reaction
+    SPECIES_CREATE, //creation of single species
+    COMPARTMENT_DELETE, //deletion of single compartment
+    EVENT_DELETE, //deletion of single event
+    GLOBALQUANTITY_DELETE, //deletion of single global quantity
+    REACTION_DELETE, //deletion of single reaction
+    SPECIES_DELETE, //deletion of single species
+    COMPARTMENT_INSERT, //insert compartment
+    EVENT_INSERT, //insert event
+    GLOBALQUANTITY_INSERT, //insert global quantity
+    REACTION_INSERT, //insert reaction
+    SPECIES_INSERT, //insert species
+    COMPARTMENT_REMOVE, //remove compartment
+    EVENT_REMOVE, //remove event
+    GLOBALQUANTITY_REMOVE, //remove global quantity
+    REACTION_REMOVE, //remove reaction
+    SPECIES_REMOVE, //remove species
+    COMPARTMENT_REMOVE_ALL, //remove all compartment
+    EVENT_REMOVE_ALL, //remove all event
+    GLOBALQUANTITY_REMOVE_ALL, //remove all global quantity
+    REACTION_REMOVE_ALL, //remove all reaction
+    SPECIES_REMOVE_ALL, //remove all species
+    COMPARTMENT_DATA_CHANGE, //change compartment data
+    EVENT_DATA_CHANGE, //change event data
+    GLOBALQUANTITY_DATA_CHANGE, //change global quantity data
+    REACTION_DATA_CHANGE, //change reaction data
+    SPECIES_DATA_CHANGE, //change species data
+    SPECIES_TYPE_CHANGE, //change of species type
     MODEL_INITIAL_TIME_CHANGE, // change of model initial time
     MODEL_TIME_UNIT_CHANGE, // change of model time unit
     MODEL_QUANTITY_UNIT_CHANGE, // change of model quantity unit
@@ -141,15 +141,24 @@ public:
 
   QModelIndex pathToIndex(const Path& path, const QAbstractItemModel *model);
 
-  void setDependentObjects(const std::set<const CCopasiObject*>& deletedObjects);
+  void setDependentObjects(
+    const std::set<const CCopasiObject*>& deletedObjects);
+
+  static void setDependentObjects(
+    const std::set<const CCopasiObject*>& deletedObjects,
+    QList<UndoReactionData*>& reactionData,
+    QList<UndoSpeciesData*>& speciesData,
+    QList<UndoGlobalQuantityData*>& globalQuantityData,
+    QList<UndoEventData*>& eventData
+  );
 
   QList<UndoReactionData*> *getReactionData() const;
 
-  QList<UndoSpecieData*> *getSpecieData() const;
+  QList<UndoSpeciesData*> *getSpecieData() const;
 
   void setReactionData(QList<UndoReactionData*>* reactionData);
 
-  void setSpecieData(QList<UndoSpecieData*>* specieData);
+  void setSpecieData(QList<UndoSpeciesData*>* specieData);
 
   QList<UndoGlobalQuantityData*>* getGlobalQuantityData() const;
 
@@ -163,13 +172,13 @@ public:
 
   void setUndoState(bool undoState);
 
-  std::string getEntityType() const;
+  const std::string& getEntityType() const;
 
-  std::string getNewValue() const;
+  const std::string& getNewValue() const;
 
-  std::string getOldValue() const;
+  const std::string& getOldValue() const;
 
-  std::string getProperty() const;
+  const std::string& getProperty() const;
 
   void setEntityType(const std::string& entityType);
 
@@ -179,16 +188,19 @@ public:
 
   void setProperty(const std::string& property);
 
-  std::string getAction() const;
+  const std::string& getAction() const;
 
   void setAction(const std::string& action);
 
-  std::string getName() const;
+  const std::string& getName() const;
 
   void setName(const std::string& name);
 
+  const std::string& getKey() const;
+  void setKey(const std::string &key);
+
 protected:
-  QList<UndoSpecieData*> *mpSpecieData;
+  QList<UndoSpeciesData*> *mpSpeciesData;
   QList<UndoReactionData*> *mpReactionData;
   QList<UndoGlobalQuantityData*> *mpGlobalQuantityData;
   QList<UndoEventData*> *mpEventData;
@@ -204,6 +216,12 @@ protected:
   std::string mEntityType;
   std::string mAction;
   std::string mName;
+  /**
+   * Lookup of elements should always happen by key,
+   * pointers are not reliable, names are not unique, thus
+   * keys are most efficient.
+   */
+  std::string mKey;
 };
 
 #endif /* CCOPASIUNDOCOMMAND_H_ */

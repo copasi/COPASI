@@ -20,7 +20,7 @@
 #include "EventDataChangeCommand.h"
 
 EventDataChangeCommand::EventDataChangeCommand(QModelIndex index, const QVariant value, int role, CQEventDM *pEventDM)
-  : CCopasiUndoCommand("Event", EVENTDATACHANGE, "Change")
+  : CCopasiUndoCommand("Event", EVENT_DATA_CHANGE, "Change")
   , mNew(value)
   , mOld(index.data(Qt::DisplayRole))
   , mIndex(index)

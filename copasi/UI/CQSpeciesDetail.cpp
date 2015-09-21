@@ -21,11 +21,11 @@
 //UNDO framework classes
 #ifdef COPASI_UNDO
 #include "model/CReactionInterface.h"
-#include "undoFramework/DeleteSpecieCommand.h"
-#include "undoFramework/CreateNewSpecieCommand.h"
-#include "undoFramework/SpecieTypeChangeCommand.h"
-#include "undoFramework/SpecieInitialValueLostFocusCommand.h"
-#include "undoFramework/UndoSpecieData.h"
+#include "undoFramework/DeleteSpeciesCommand.h"
+#include "undoFramework/CreateNewSpeciesCommand.h"
+#include "undoFramework/SpeciesTypeChangeCommand.h"
+#include "undoFramework/SpeciesInitialValueLostFocusCommand.h"
+#include "undoFramework/UndoSpeciesData.h"
 #include "undoFramework/UndoReactionData.h"
 #include "undoFramework/UndoGlobalQuantityData.h"
 #include "undoFramework/UndoEventData.h"
@@ -494,7 +494,7 @@ void CQSpeciesDetail::loadReactionTable()
 void CQSpeciesDetail::slotBtnDelete()
 {
 #ifdef COPASI_UNDO
-  mpUndoStack->push(new DeleteSpecieCommand(this));
+  mpUndoStack->push(new DeleteSpeciesCommand(this));
 #else
 
   if (mpMetab == NULL) return;
@@ -599,7 +599,7 @@ void CQSpeciesDetail::copy()
 void CQSpeciesDetail::slotBtnNew()
 {
 #ifdef COPASI_UNDO
-  mpUndoStack->push(new CreateNewSpecieCommand(this));
+  mpUndoStack->push(new CreateNewSpeciesCommand(this));
 #else
   leave();
 
@@ -699,7 +699,7 @@ void CQSpeciesDetail::slotInitialTypeChanged(bool useInitialExpression)
 void CQSpeciesDetail::slotInitialValueLostFocus()
 {
 #ifdef COPASI_UNDO
-  mpUndoStack->push(new SpecieInitialValueLostFocusCommand(this));
+  mpUndoStack->push(new SpeciesInitialValueLostFocusCommand(this));
 #else
 
   if (!mpMetab || !mpCurrentCompartment) return;
@@ -780,7 +780,7 @@ void CQSpeciesDetail::slotTypeChanged(int type)
     }
   else
     {
-      mpUndoStack->push(new SpecieTypeChangeCommand(mItemToType[type], mpMetab->getStatus(), this));
+      mpUndoStack->push(new SpeciesTypeChangeCommand(mItemToType[type], mpMetab->getStatus(), this));
     }
 
 #else
@@ -910,7 +910,7 @@ void CQSpeciesDetail::deleteSpecie()
   mpListView->switchToOtherWidget(112, "");
 }
 
-void CQSpeciesDetail::deleteSpecie(UndoSpecieData *pSData)
+void CQSpeciesDetail::deleteSpecie(UndoSpeciesData *pSData)
 {
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
@@ -932,7 +932,7 @@ void CQSpeciesDetail::deleteSpecie(UndoSpecieData *pSData)
   mpListView->switchToOtherWidget(112, "");
 }
 
-void CQSpeciesDetail::addSpecie(UndoSpecieData *pSData)
+void CQSpeciesDetail::addSpecie(UndoSpeciesData *pSData)
 {
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
@@ -1107,7 +1107,7 @@ void CQSpeciesDetail::specieTypeChanged(int type)
   setFramework(mFramework);
 }
 
-void CQSpeciesDetail::specieTypeChanged(UndoSpecieData *pSData, int type)
+void CQSpeciesDetail::specieTypeChanged(UndoSpeciesData *pSData, int type)
 {
 
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
@@ -1164,7 +1164,7 @@ void CQSpeciesDetail::specieInitialValueLostFocus()
     }
 }
 
-void CQSpeciesDetail::specieInitialValueLostFocus(UndoSpecieData *pSData)
+void CQSpeciesDetail::specieInitialValueLostFocus(UndoSpeciesData *pSData)
 {
 
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);

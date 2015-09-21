@@ -17,11 +17,17 @@
 
 class CModel;
 class CEvent;
+class CModelEntity;
 
 class UndoEventAssignmentData: public UndoData
 {
 public:
-  UndoEventAssignmentData();
+  UndoEventAssignmentData(const std::string &key = "",
+                          const std::string &name = "",
+                          const std::string &type = "");
+
+  UndoEventAssignmentData(const CModelEntity* pEntity,
+                          const std::string& expression);
 
   virtual ~UndoEventAssignmentData();
 
@@ -32,9 +38,8 @@ public:
   /**
    * Adds the event assignment to the given event
    * @param pEvent the event to add the assignment to
-   * @param pModel the model that contains the references
    */
-  void addToEvent(CEvent* pEvent, CModel* pModel) const;
+  void addToEvent(CEvent* pEvent) const;
 
 private:
   /**

@@ -21,7 +21,7 @@ ReactionDataChangeCommand::ReactionDataChangeCommand(
   const QVariant& value,
   int role,
   CQReactionDM *pReactionDM)
-  : CCopasiUndoCommand("Reaction", REACTIONDATACHANGE, "Change")
+  : CCopasiUndoCommand("Reaction", REACTION_DATA_CHANGE, "Change")
   , mNew(value)
   , mOld(index.data(Qt::DisplayRole))
   , mIndex(index)

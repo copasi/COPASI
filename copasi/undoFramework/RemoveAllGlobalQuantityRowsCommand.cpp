@@ -69,7 +69,7 @@ RemoveAllGlobalQuantityRowsCommand::RemoveAllGlobalQuantityRowsCommand(CQGlobalQ
         }
     }
 
-  mType = GLOBALQUANTITYREMOVEALL;
+  mType = GLOBALQUANTITY_REMOVE_ALL;
   setEntityType("Global Quantity");
   this->setText(removeAllGlobalQuantityRowsText());
 }

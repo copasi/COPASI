@@ -16,7 +16,7 @@
 #include "CreateNewEventCommand.h"
 
 CreateNewEventCommand::CreateNewEventCommand(CQEventWidget1 *pEventWidget)
-  : CCopasiUndoCommand("Event", EVENTCREATE)
+  : CCopasiUndoCommand("Event", EVENT_CREATE)
   , mpEventData(new UndoEventData())
   , mpEventWidget(pEventWidget)
 {

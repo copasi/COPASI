@@ -26,7 +26,7 @@
 #include "undoFramework/CompartmentDataChangeCommand.h"
 #include "undoFramework/UndoCompartmentData.h"
 #include "undoFramework/UndoReactionData.h"
-#include "undoFramework/UndoSpecieData.h"
+#include "undoFramework/UndoSpeciesData.h"
 #include "undoFramework/UndoGlobalQuantityData.h"
 #include "undoFramework/UndoEventData.h"
 #include "undoFramework/UndoEventAssignmentData.h"
@@ -66,11 +66,11 @@ const std::vector< unsigned C_INT32 >& CQCompartmentDM::getItemToType()
   return mItemToType;
 }
 
-int CQCompartmentDM::rowCount(const QModelIndex& C_UNUSED(parent)) const
+int CQCompartmentDM::rowCount(const QModelIndex&) const
 {
   return (int)(*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getCompartments().size() + 1;
 }
-int CQCompartmentDM::columnCount(const QModelIndex& C_UNUSED(parent)) const
+int CQCompartmentDM::columnCount(const QModelIndex&) const
 {
   return TOTAL_COLS_COMPARTMENTS;
 }
@@ -380,7 +380,7 @@ bool CQCompartmentDM::removeRows(int position, int rows, const QModelIndex&)
 bool CQCompartmentDM::removeRows(QModelIndexList rows, const QModelIndex&)
 {
 #ifdef COPASI_UNDO
-  mpUndoStack->push(new RemoveCompartmentRowsCommand(rows, this, QModelIndex()));
+  mpUndoStack->push(new RemoveCompartmentRowsCommand(rows, this));
 #else
 
   if (rows.isEmpty())
@@ -433,50 +433,21 @@ bool CQCompartmentDM::removeRows(QModelIndexList rows, const QModelIndex&)
 
 #ifdef COPASI_UNDO
 
-bool CQCompartmentDM::compartmentDataChange(const QModelIndex &index, const QVariant &value, int role)
+bool CQCompartmentDM::compartmentDataChange(const std::string& key, const QVariant &value, int column)
 {
-  if (index.isValid() && role == Qt::EditRole)
-    {
-      //// a change of a compartment attribute should no longer
-      //// trigger a new entry to be created this is now separated
-      //// in the ::setData function
-      bool defaultRow = isDefaultRow(index);
+  CCompartment *pComp = dynamic_cast<CCompartment*>(CCopasiRootContainer::getKeyFactory()->get(key));
 
-      if (defaultRow)
-        return false;
+  if (pComp == NULL)
+    return false;
 
-      //      if (defaultRow)
-      //        {
-      //          if (index.column() == COL_TYPE_COMPARTMENTS)
-      //            {
-      //              if (index.data().toString() != QString(FROM_UTF8(CModelEntity::StatusName[mItemToType[value.toInt()]])))
-      //                insertRow();
-      //              else
-      //                return false;
-      //}
-      //          else if (index.data() != value)
-      //            insertRow();
-      //          else
-      //            return false;
-      //}
+  if (column == COL_NAME_COMPARTMENTS)
+    pComp->setObjectName(TO_UTF8(value.toString()));
+  else if (column == COL_TYPE_COMPARTMENTS)
+    pComp->setStatus((CModelEntity::Status) mItemToType[value.toInt()]);
+  else if (column == COL_IVOLUME)
+    pComp->setInitialValue(value.toDouble());
 
-      assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-      CCompartment *pComp = (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getCompartments()[index.row()];
-
-      if (index.column() == COL_NAME_COMPARTMENTS)
-        pComp->setObjectName(TO_UTF8(value.toString()));
-      else if (index.column() == COL_TYPE_COMPARTMENTS)
-        pComp->setStatus((CModelEntity::Status) mItemToType[value.toInt()]);
-      else if (index.column() == COL_IVOLUME)
-        pComp->setInitialValue(value.toDouble());
-
-      if (defaultRow && this->index(index.row(), COL_NAME_COMPARTMENTS).data().toString() == "compartment")
-        pComp->setObjectName(TO_UTF8(createNewName("compartment", COL_NAME_COMPARTMENTS)));
-
-      emit dataChanged(index, index);
-      emit notifyGUI(ListViews::COMPARTMENT, ListViews::CHANGE, pComp->getKey());
-    }
-
+  emit notifyGUI(ListViews::COMPARTMENT, ListViews::CHANGE, key);
   emit changeWidget(111);
 
   return true;
@@ -524,7 +495,7 @@ void CQCompartmentDM::addCompartmentRow(UndoCompartmentData *pCompartmentData)
   endInsertRows();
 }
 
-bool CQCompartmentDM::removeCompartmentRows(QModelIndexList rows, const QModelIndex&)
+bool CQCompartmentDM::removeCompartmentRows(QModelIndexList& rows, const QModelIndex&)
 {
 
   if (rows.isEmpty())
@@ -575,7 +546,7 @@ bool CQCompartmentDM::removeCompartmentRows(QModelIndexList rows, const QModelIn
   return true;
 }
 
-bool CQCompartmentDM::insertCompartmentRows(QList <UndoCompartmentData *> pData)
+bool CQCompartmentDM::insertCompartmentRows(QList <UndoCompartmentData *>& pData)
 {
 
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
@@ -613,15 +584,15 @@ bool CQCompartmentDM::insertCompartmentRows(QList <UndoCompartmentData *> pData)
       emit notifyGUI(ListViews::COMPARTMENT, ListViews::ADD, pCompartment->getKey());
 
       //reinsert all the species
-      QList <UndoSpecieData *> *pSpecieData = data->getSpecieDependencyObjects();
+      QList <UndoSpeciesData *> *pSpecieData = data->getSpecieDependencyObjects();
 
       if (!pSpecieData->empty())
         {
-          QList <UndoSpecieData *>::const_iterator i;
+          QList <UndoSpeciesData *>::const_iterator i;
 
           for (i = pSpecieData->begin(); i != pSpecieData->end(); ++i)
             {
-              UndoSpecieData * sData = *i;
+              UndoSpeciesData * sData = *i;
 
               //  beginInsertRows(QModelIndex(), 1, 1);
               if (pCompartment->getMetabolites().getIndex(sData->getName()) == C_INVALID_INDEX)
@@ -753,7 +724,7 @@ bool CQCompartmentDM::insertCompartmentRows(QList <UndoCompartmentData *> pData)
   return true;
 }
 
-void CQCompartmentDM::deleteCompartmentRows(QList <UndoCompartmentData *> pData)
+void CQCompartmentDM::deleteCompartmentRows(QList <UndoCompartmentData *>& pData)
 {
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];

@@ -21,8 +21,9 @@ ChangeNotesCommand::ChangeNotesCommand(CCopasiObject *pObject,
   : CCopasiUndoCommand("", INVALID_TYPE, "Change", "Notes", newName, oldName, pObject->getObjectName())
   , mpObject(pObject)
   , mpWidget(pWidget)
-  , mKey(pObject->getKey())
 {
+  mKey = pObject->getKey();
+
   if (dynamic_cast<CModel*>(pObject))
     {
       setEntityType("Model");
@@ -32,31 +33,31 @@ ChangeNotesCommand::ChangeNotesCommand(CCopasiObject *pObject,
   else if (dynamic_cast<CMetab*>(pObject))
     {
       setEntityType("Species");
-      setType(SPECIEDATACHANGE);
+      setType(SPECIES_DATA_CHANGE);
       setText(": Changed species notes");
     }
   else if (dynamic_cast<CCompartment*>(pObject))
     {
       setEntityType("Compartment");
-      setType(COMPARTMENTDATACHANGE);
+      setType(COMPARTMENT_DATA_CHANGE);
       setText(": Changed compartment notes");
     }
   else if (dynamic_cast<CReaction*>(pObject))
     {
       setEntityType("Reaction");
-      setType(REACTIONDATACHANGE);
+      setType(REACTION_DATA_CHANGE);
       setText(": Changed reaction notes");
     }
   else if (dynamic_cast<CEvent*>(pObject))
     {
       setEntityType("Event");
-      setType(EVENTDATACHANGE);
+      setType(EVENT_DATA_CHANGE);
       setText(": Changed event notes");
     }
   else if (dynamic_cast<CModelValue*>(pObject))
     {
       setEntityType("Global Quantity");
-      setType(GLOBALQUANTITYDATACHANGE);
+      setType(GLOBALQUANTITY_DATA_CHANGE);
       setText(": Changed global quantity notes");
     }
 }

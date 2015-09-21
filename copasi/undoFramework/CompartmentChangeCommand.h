@@ -29,7 +29,6 @@ public:
 
 protected:
   QVariant mOld, mNew;
-  std::string mKey;
   double mIValue;
   CCopasiObject* mpObject;
   CQCompartment* mpWidget;

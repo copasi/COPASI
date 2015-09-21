@@ -1,4 +1,4 @@
-// Copyright (C) 2014 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -21,8 +21,8 @@
 #include "model/CReaction.h"
 #include "model/CReactionInterface.h"
 
-#include "RemoveAllSpecieRowsCommand.h"
-#include "UndoSpecieData.h"
+#include "RemoveAllSpeciesRowsCommand.h"
+#include "UndoSpeciesData.h"
 #include "UndoReactionData.h"
 #include "UndoGlobalQuantityData.h"
 #include "UndoEventData.h"
@@ -40,7 +40,7 @@ RemoveAllSpecieRowsCommand::RemoveAllSpecieRowsCommand(CQSpecieDM * pSpecieDM, c
 
   for (int i = 0; i != pSpecieDM->rowCount() - 1; ++i)
     {
-      UndoSpecieData *data = new UndoSpecieData();
+      UndoSpeciesData *data = new UndoSpeciesData();
 
       if (pModel->getMetabolites()[i])
         {
@@ -72,11 +72,11 @@ RemoveAllSpecieRowsCommand::RemoveAllSpecieRowsCommand(CQSpecieDM * pSpecieDM, c
           data->setReactionDependencyObjects(getReactionData());
           data->setGlobalQuantityDependencyObjects(getGlobalQuantityData());
           data->setEventDependencyObjects(getEventData());
-          mpSpecieData.append(data);
+          mpSpeciesData.append(data);
         }
     }
 
-  mType = SPECIEREMOVEALL;
+  mType = SPECIES_REMOVE_ALL;
   setEntityType("Species");
   this->setText(removeAllSpecieRowsText());
 }
@@ -90,7 +90,7 @@ void RemoveAllSpecieRowsCommand::redo()
 
 void RemoveAllSpecieRowsCommand::undo()
 {
-  mpSpecieDM->insertSpecieRows(mpSpecieData);
+  mpSpecieDM->insertSpecieRows(mpSpeciesData);
   setUndoState(false);
   setAction("Undelete all");
 }

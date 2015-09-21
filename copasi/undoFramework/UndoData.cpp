@@ -12,7 +12,12 @@
 
 #include "UndoData.h"
 
-UndoData::UndoData()
+UndoData::UndoData(const std::string &key  /*= ""*/,
+                   const std::string &name /*= ""*/,
+                   const std::string &type /*= ""*/)
+  : mKey(key)
+  , mName(name)
+  , mType(type)
 {
 }
 
@@ -20,22 +25,49 @@ UndoData::~UndoData()
 {
 }
 
-std::string UndoData::getName() const
+const std::string &
+UndoData::getName() const
 {
   return mName;
 }
 
-void UndoData::setName(std::string name)
+void
+UndoData::setName(const std::string &name)
 {
   mName = name;
 }
 
-std::string UndoData::getType() const
+bool UndoData::hasName() const
+{
+  return mName.empty();
+}
+
+const std::string &
+UndoData::getType() const
 {
   return mType;
 }
 
-void UndoData::setType(std::string type)
+void UndoData::setType(const std::string &type)
 {
   mType = type;
 }
+
+const std::string &
+UndoData::getKey() const
+{
+  return mKey;
+}
+
+void
+UndoData::setKey(const std::string &key)
+{
+  mKey = key;
+}
+
+bool
+UndoData::hasKey() const
+{
+  return mKey.empty();
+}
+

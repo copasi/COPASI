@@ -22,12 +22,13 @@ class RemoveAllCompartmentRowsCommand: public CCopasiUndoCommand
 {
 public:
   RemoveAllCompartmentRowsCommand(CQCompartmentDM * pCompartmentDM, const QModelIndex&);
+  virtual ~RemoveAllCompartmentRowsCommand();
+
   void redo();
   void undo();
 
   QString removeAllCompartmentRowsText() const;
 
-  virtual ~RemoveAllCompartmentRowsCommand();
 
 private:
   CQCompartmentDM *mpCompartmentDM;

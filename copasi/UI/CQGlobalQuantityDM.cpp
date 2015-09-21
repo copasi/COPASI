@@ -28,7 +28,7 @@
 #include "undoFramework/GlobalQuantityDataChangeCommand.h"
 #include "undoFramework/UndoGlobalQuantityData.h"
 #include "undoFramework/UndoReactionData.h"
-#include "undoFramework/UndoSpecieData.h"
+#include "undoFramework/UndoSpeciesData.h"
 #include "undoFramework/UndoEventData.h"
 #include "undoFramework/UndoEventAssignmentData.h"
 #include <copasi/UI/CQCopasiApplication.h>
@@ -599,15 +599,15 @@ bool CQGlobalQuantityDM::insertGlobalQuantityRows(QList <UndoGlobalQuantityData 
       UndoGlobalQuantityData * data = *k;
 
       //reinsert all the species
-      QList <UndoSpecieData *> *pSpecieData = data->getSpecieDependencyObjects();
+      QList <UndoSpeciesData *> *pSpecieData = data->getSpecieDependencyObjects();
 
       if (!pSpecieData->empty())
         {
-          QList <UndoSpecieData *>::const_iterator i;
+          QList <UndoSpeciesData *>::const_iterator i;
 
           for (i = pSpecieData->begin(); i != pSpecieData->end(); ++i)
             {
-              UndoSpecieData * sData = *i;
+              UndoSpeciesData * sData = *i;
 
               //need to make sure species doesn't exist in the model already
               CMetab *pSpecie =  pModel->createMetabolite(sData->getName(), sData->getCompartment(), sData->getIConc(), sData->getStatus());

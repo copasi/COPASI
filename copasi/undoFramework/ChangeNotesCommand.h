@@ -25,7 +25,6 @@ public:
 protected:
   CCopasiObject *mpObject;
   CQNotes* mpWidget;
-  std::string mKey;
 };
 
 #endif // COPASI_NOTES_COMMAND_H

@@ -16,7 +16,7 @@
 #include "CQBaseDataModel.h"
 
 #ifdef COPASI_UNDO
-class UndoSpecieData;
+class UndoSpeciesData;
 class UndoReactionData;
 #endif
 
@@ -61,11 +61,11 @@ public:
 #ifdef COPASI_UNDO
   bool specieDataChange(const QModelIndex &index, const QVariant &value, int role);
   void insertNewSpecieRow(int position, int rows, const QModelIndex&);
-  void addSpecieRow(UndoSpecieData *pSpecieData);
-  void deleteSpecieRow(UndoSpecieData *pSpecieData);
+  void addSpecieRow(UndoSpeciesData *pSpecieData);
+  void deleteSpecieRow(UndoSpeciesData *pSpecieData);
   bool removeSpecieRows(QModelIndexList rows, const QModelIndex&);
-  bool insertSpecieRows(QList <UndoSpecieData *> pReaData);
-  void deleteSpecieRows(QList <UndoSpecieData *> pReaData);
+  bool insertSpecieRows(QList <UndoSpeciesData *> pReaData);
+  void deleteSpecieRows(QList <UndoSpeciesData *> pReaData);
   bool removeAllSpecieRows();
   bool clear();
 

@@ -1,4 +1,4 @@
-// Copyright (C) 2014 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -18,51 +18,51 @@
 #include "function/CFunctionDB.h"
 #include "UI/CQSpeciesDetail.h"
 
-#include "UndoSpecieData.h"
+#include "UndoSpeciesData.h"
 #include "UndoReactionData.h"
 #include "UndoEventData.h"
 
-#include "DeleteSpecieCommand.h"
+#include "DeleteSpeciesCommand.h"
 
-DeleteSpecieCommand::DeleteSpecieCommand(CQSpeciesDetail *pSpecieDetail)
-  : CCopasiUndoCommand("Species", SPECIEDELETE)
+DeleteSpeciesCommand::DeleteSpeciesCommand(CQSpeciesDetail *pSpecieDetail)
+  : CCopasiUndoCommand("Species", SPECIES_DELETE)
   , mFirstTime(true)
-  , mpSpecieData(new UndoSpecieData())
+  , mpSpeciesData(new UndoSpeciesData())
   , mpSpecieDetail(pSpecieDetail)
 {
 
   const std::string& sName = mpSpecieDetail->mpMetab->getObjectName();
-  mpSpecieData->setName(sName);
+  mpSpeciesData->setName(sName);
 
-  mpSpecieData->setStatus(mpSpecieDetail->mpMetab->getStatus());
+  mpSpeciesData->setStatus(mpSpecieDetail->mpMetab->getStatus());
 
   if (mpSpecieDetail->mpMetab->getStatus() != CModelEntity::ASSIGNMENT)
     {
-      mpSpecieData->setIConc(mpSpecieDetail->mpMetab->getInitialConcentration());
+      mpSpeciesData->setIConc(mpSpecieDetail->mpMetab->getInitialConcentration());
     }
 
   if (mpSpecieDetail->mpMetab->getStatus() ==  CModelEntity::ASSIGNMENT || mpSpecieDetail->mpMetab->getStatus() == CModelEntity::ODE)
     {
-      mpSpecieData->setExpression(mpSpecieDetail->mpMetab->getExpression());
+      mpSpeciesData->setExpression(mpSpecieDetail->mpMetab->getExpression());
     }
 
   // set initial expression
   if (mpSpecieDetail->mpMetab->getStatus() != CModelEntity::ASSIGNMENT)
     {
-      mpSpecieData->setInitialExpression(mpSpecieDetail->mpMetab->getInitialExpression());
+      mpSpeciesData->setInitialExpression(mpSpecieDetail->mpMetab->getInitialExpression());
     }
 
   //store to be deleted data
   setDependentObjects(mpSpecieDetail->mpMetab->getDeletedObjects());
-  mpSpecieData->setReactionDependencyObjects(getReactionData());
-  mpSpecieData->setGlobalQuantityDependencyObjects(getGlobalQuantityData());
-  mpSpecieData->setEventDependencyObjects(getEventData());
+  mpSpeciesData->setReactionDependencyObjects(getReactionData());
+  mpSpeciesData->setGlobalQuantityDependencyObjects(getGlobalQuantityData());
+  mpSpeciesData->setEventDependencyObjects(getEventData());
 
   setName(sName);
   this->setText(deleteSpecieText(sName));
 }
 
-void DeleteSpecieCommand::redo()
+void DeleteSpeciesCommand::redo()
 {
   if (mFirstTime)
     {
@@ -71,21 +71,21 @@ void DeleteSpecieCommand::redo()
     }
   else
     {
-      mpSpecieDetail->deleteSpecie(mpSpecieData);
+      mpSpecieDetail->deleteSpecie(mpSpeciesData);
     }
 
   setUndoState(true);
   setAction("Delete");
 }
 
-void DeleteSpecieCommand::undo()
+void DeleteSpeciesCommand::undo()
 {
-  mpSpecieDetail->addSpecie(mpSpecieData);
+  mpSpecieDetail->addSpecie(mpSpeciesData);
   setUndoState(false);
   setAction("Undelete");
 }
 
-QString DeleteSpecieCommand::deleteSpecieText(const std::string &name) const
+QString DeleteSpeciesCommand::deleteSpecieText(const std::string &name) const
 {
 //  std::string myEntityName(": Delete Species " + name);
 //  char* entityName = (char*)myEntityName.c_str();
@@ -93,12 +93,12 @@ QString DeleteSpecieCommand::deleteSpecieText(const std::string &name) const
   return QString(": Deleted species %1").arg(name.c_str());
 }
 
-UndoData *DeleteSpecieCommand::getUndoData() const
+UndoData *DeleteSpeciesCommand::getUndoData() const
 {
-  return mpSpecieData;
+  return mpSpeciesData;
 }
 
-DeleteSpecieCommand::~DeleteSpecieCommand()
+DeleteSpeciesCommand::~DeleteSpeciesCommand()
 {
-  pdelete(mpSpecieData);
+  pdelete(mpSpeciesData);
 }

@@ -16,8 +16,10 @@
 #include "model/CCompartment.h"
 #include "UndoData.h"
 
+#include <QList>
+
 class UndoReactionData;
-class UndoSpecieData;
+class UndoSpeciesData;
 class UndoGlobalQuantityData;
 class UndoEventData;
 
@@ -25,46 +27,82 @@ class UndoCompartmentData : public UndoData
 {
 public:
   UndoCompartmentData();
+
+  UndoCompartmentData(CCompartment* compartment);
+
   virtual ~UndoCompartmentData();
+
   QList<UndoData*> *getDependencyObjects() const;
-  CModelEntity::Status getStatus() const;
   void setDependencyObjects(QList<UndoData*> *dependencyObjects);
+
+  CModelEntity::Status getStatus() const;
   void setStatus(CModelEntity::Status status);
-  QList<UndoReactionData*> *getReactionDependencyObjects() const;
-  QList<UndoSpecieData*> *getSpecieDependencyObjects() const;
-  void setReactionDependencyObjects(QList<UndoReactionData*> *reactionDependencyObjects);
-  void setSpecieDependencyObjects(QList<UndoSpecieData*> *specieDependencyObjects);
+
   double getInitialValue() const;
   void setInitialValue(double initialValue);
+
+  QList<UndoReactionData*> *getReactionDependencyObjects() const;
+  void setReactionDependencyObjects(
+    QList<UndoReactionData*> *reactionDependencyObjects);
+
+  QList<UndoSpeciesData*> *getSpecieDependencyObjects() const;
+  void setSpecieDependencyObjects(
+    QList<UndoSpeciesData*> *specieDependencyObjects);
+
   QList<UndoGlobalQuantityData*> *getGlobalQuantityDependencyObjects() const;
   void setGlobalQuantityDependencyObjects(QList<UndoGlobalQuantityData*> *globalQuantityDependencyObjects);
+
   QList<UndoEventData*> *getEventDependencyObjects() const;
   void setEventDependencyObjects(QList<UndoEventData*> *eventDependencyObjects);
+
+  const std::string& getInitialExpression() const;
+  void setInitialExpression(const std::string &initialExpression);
+
+  const std::string& getExpression() const;
+  void setExpression(const std::string &expression);
+
 private:
+
   /**
-  *  Initial volume of the compartment as double
-  */
+   *  Initial volume of the compartment as double
+   */
   double mInitialValue;
+
+  /**
+   * initial expression of the compartment
+   */
+  std::string mInitialExpression;
+
+  /**
+   * expression of the compartment
+   */
+  std::string mExpression;
+
   /**
    * The status of the metabolite
    */
   CModelEntity::Status mStatus;
+
   /**
    * Pointer to species dependency objects
    */
   QList<UndoData*> *mDependencyObjects;
+
   /**
    * Pointer to species dependency objects
    */
-  QList<UndoSpecieData*> *mSpecieDependencyObjects;
+  QList<UndoSpeciesData*> *mSpecieDependencyObjects;
+
   /**
    * Pointer to reaction dependency objects
    */
   QList<UndoReactionData*> *mReactionDependencyObjects;
+
   /**
    * Pointer to global quantity dependency objects
    */
   QList<UndoGlobalQuantityData*> *mGlobalQuantityDependencyObjects;
+
   /**
    * Pointer to event dependency objects
    */

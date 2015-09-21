@@ -22,12 +22,15 @@
 
 #include "RemoveCompartmentRowsCommand.h"
 
-RemoveCompartmentRowsCommand::RemoveCompartmentRowsCommand(QModelIndexList rows, CQCompartmentDM * pCompartmentDM, const QModelIndex&)
+RemoveCompartmentRowsCommand::RemoveCompartmentRowsCommand(
+  const QModelIndexList& rows,
+  CQCompartmentDM * pCompartmentDM)
+  : CCopasiUndoCommand("Compartment", COMPARTMENT_REMOVE, "Remove")
+  , mRows(rows)
+  , mpCompartmentDM(pCompartmentDM)
+  , mpCompartmentData()
+  , mFirstTime(true)
 {
-  mpCompartmentDM = pCompartmentDM;
-  mRows = rows;
-  mFirstTime = true;
-
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
   assert(pDataModel != NULL);
@@ -39,31 +42,14 @@ RemoveCompartmentRowsCommand::RemoveCompartmentRowsCommand(QModelIndexList rows,
 
   for (i = rows.begin(); i != rows.end(); ++i)
     {
-      UndoCompartmentData *data = new UndoCompartmentData();
+      if (pCompartmentDM->isDefaultRow(*i))
+        continue;
 
-      if (!pCompartmentDM->isDefaultRow(*i) && pModel->getCompartments()[(*i).row()])
-        {
-          mpSpecieData = new QList <UndoSpecieData*>();
-          mpReactionData = new  QList <UndoReactionData*>();
-          mpGlobalQuantityData = new  QList <UndoGlobalQuantityData*>();
-          mpEventData = new  QList <UndoEventData*>();
-          data->setName(pModel->getCompartments()[(*i).row()]->getObjectName());
-          data->setStatus(pModel->getCompartments()[(*i).row()]->getStatus());
-          data->setInitialValue(pModel->getCompartments()[(*i).row()]->getInitialValue());
-          setDependentObjects(pModel->getCompartments()[(*i).row()]->getDeletedObjects());
-          data->setReactionDependencyObjects(getReactionData());
-          data->setSpecieDependencyObjects(getSpecieData());
-          data->setGlobalQuantityDependencyObjects(getGlobalQuantityData());
-          data->setEventDependencyObjects(getEventData());
-
-          mpCompartmentData.append(data);
-        }
+      UndoCompartmentData *data = new UndoCompartmentData(pModel->getCompartments()[(*i).row()]);
+      mpCompartmentData.append(data);
     }
 
   this->setText(removeCompartmentRowsText());
-
-  mType = COMPARTMENTREMOVE;
-  setEntityType("Compartment");
 }
 
 void RemoveCompartmentRowsCommand::redo()
@@ -102,7 +88,7 @@ UndoData *RemoveCompartmentRowsCommand::getUndoData() const
 RemoveCompartmentRowsCommand::~RemoveCompartmentRowsCommand()
 {
   // TODO Auto-generated destructor stub
-  pdelete(this->mpSpecieData);
+  pdelete(this->mpSpeciesData);
   pdelete(this->mpReactionData);
   pdelete(this->mpGlobalQuantityData);
   pdelete(this->mpEventData);
