@@ -222,9 +222,7 @@ CMathContainer::CMathContainer():
   mObjects(),
   mpObjectsBuffer(NULL),
   mEvents(),
-  mpEventsBuffer(NULL),
   mReactions(),
-  mpReactionsBuffer(NULL),
   mRootIsDiscrete(),
   mRootIsTimeDependent(),
   mRootProcessors(),
@@ -236,7 +234,6 @@ CMathContainer::CMathContainer():
   mDiscontinuityInfix2Object(),
   mTriggerInfix2Event(),
   mDelays(),
-  mpDelaysBuffer(NULL),
   mIsAutonomous(true),
   mSize()
 {
@@ -304,9 +301,7 @@ CMathContainer::CMathContainer(CModel & model):
   mObjects(),
   mpObjectsBuffer(NULL),
   mEvents(),
-  mpEventsBuffer(NULL),
   mReactions(),
-  mpReactionsBuffer(NULL),
   mRootIsDiscrete(),
   mRootIsTimeDependent(),
   mRootProcessors(),
@@ -317,7 +312,6 @@ CMathContainer::CMathContainer(CModel & model):
   mDiscontinuityInfix2Object(),
   mTriggerInfix2Event(),
   mDelays(),
-  mpDelaysBuffer(NULL),
   mIsAutonomous(true),
   mSize()
 {
@@ -391,9 +385,7 @@ CMathContainer::CMathContainer(const CMathContainer & src):
   mObjects(),
   mpObjectsBuffer(NULL),
   mEvents(),
-  mpEventsBuffer(NULL),
   mReactions(),
-  mpReactionsBuffer(NULL),
   mRootIsDiscrete(src.mRootIsDiscrete),
   mRootIsTimeDependent(src.mRootIsTimeDependent),
   mRootProcessors(src.mRootProcessors),
@@ -404,7 +396,6 @@ CMathContainer::CMathContainer(const CMathContainer & src):
   mDiscontinuityInfix2Object(),
   mTriggerInfix2Event(),
   mDelays(),
-  mpDelaysBuffer(NULL),
   mIsAutonomous(src.mIsAutonomous),
   mSize()
 {
@@ -466,6 +457,12 @@ CMathContainer::~CMathContainer()
   pdelete(mpRandomGenerator);
   pdeletev(mpValuesBuffer)
   pdeletev(mpObjectsBuffer)
+
+  if (mEvents.array()) delete [] mEvents.array();
+
+  if (mReactions.array()) delete [] mReactions.array();
+
+  if (mDelays.array()) delete [] mDelays.array();
 }
 
 const CVectorCore< C_FLOAT64 > & CMathContainer::getValues() const
@@ -4325,13 +4322,13 @@ void CMathContainer::relocate(CVectorCore< C_FLOAT64 > &oldValues,
   mTransientDependencies.relocate(Relocations);
 
   // Relocate the Events
-  relocateVector(mEvents, mpEventsBuffer, size.nEvents, Relocations);
+  relocateVector(mEvents, size.nEvents, Relocations);
 
   // Relocate the Reactions
-  relocateVector(mReactions, mpReactionsBuffer, size.nReactions, Relocations);
+  relocateVector(mReactions, size.nReactions, Relocations);
 
   // Relocate Delays
-  relocateVector(mDelays, mpDelaysBuffer, size.nDelayLags, Relocations);
+  relocateVector(mDelays, size.nDelayLags, Relocations);
 
   mSize = size;
 }

@@ -261,6 +261,8 @@ CCopasiXMLParser::~CCopasiXMLParser()
     mElementHandlerStack.pop();
 
   delete mElementHandlerStack.top();
+
+  pdelete(mCommon.pLineSegment);
 }
 
 void CCopasiXMLParser::onStartElement(const XML_Char *pszName,
@@ -6977,11 +6979,14 @@ void CCopasiXMLParser::ListOfMetabGlyphsElement::end(const XML_Char * pszName)
 
 CCopasiXMLParser::MetaboliteReferenceGlyphElement::MetaboliteReferenceGlyphElement(CCopasiXMLParser& parser, SCopasiXMLParserCommon & common):
   CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >(parser, common),
+  mpCurveElementHandler(NULL),
   mLineNumber(0)
 {}
 
 CCopasiXMLParser::MetaboliteReferenceGlyphElement::~MetaboliteReferenceGlyphElement()
-{}
+{
+  pdelete(mpCurveElementHandler);
+}
 
 void CCopasiXMLParser::MetaboliteReferenceGlyphElement::start(const XML_Char *pszName, const XML_Char** papszAttrs)
 {
@@ -7080,7 +7085,12 @@ void CCopasiXMLParser::MetaboliteReferenceGlyphElement::start(const XML_Char *ps
 
         if (!strcmp(pszName, "Curve"))
           {
-            mpCurrentHandler = new CurveElement(mParser, mCommon);
+            if (!mpCurveElementHandler)
+              {
+                mpCurveElementHandler = new CurveElement(mParser, mCommon);
+              }
+
+            mpCurrentHandler = mpCurveElementHandler;
 
             if (mCommon.pMetaboliteReferenceGlyph)
               mCommon.pCurve = &mCommon.pMetaboliteReferenceGlyph->getCurve();
@@ -7239,11 +7249,16 @@ void CCopasiXMLParser::ListOfMetaboliteReferenceGlyphsElement::end(const XML_Cha
 
 CCopasiXMLParser::ReactionGlyphElement::ReactionGlyphElement(CCopasiXMLParser& parser, SCopasiXMLParserCommon & common):
   CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >(parser, common),
+  mpCurveElementHandler(NULL),
+  mpListOfMetaboliteReferenceGlyphsElementHandler(NULL),
   mLineNumber(0)
 {}
 
 CCopasiXMLParser::ReactionGlyphElement::~ReactionGlyphElement()
-{}
+{
+  pdelete(mpCurveElementHandler);
+  pdelete(mpListOfMetaboliteReferenceGlyphsElementHandler);
+}
 
 void CCopasiXMLParser::ReactionGlyphElement::start(const XML_Char *pszName, const XML_Char** papszAttrs)
 {
@@ -7337,7 +7352,12 @@ void CCopasiXMLParser::ReactionGlyphElement::start(const XML_Char *pszName, cons
 
         if (!strcmp(pszName, "Curve"))
           {
-            mpCurrentHandler = new CurveElement(mParser, mCommon);
+            if (!mpCurveElementHandler)
+              {
+                mpCurveElementHandler = new CurveElement(mParser, mCommon);
+              }
+
+            mpCurrentHandler = mpCurveElementHandler;
 
             if (mCommon.pReactionGlyph)
               mCommon.pCurve = &mCommon.pReactionGlyph->getCurve();
@@ -7348,7 +7368,14 @@ void CCopasiXMLParser::ReactionGlyphElement::start(const XML_Char *pszName, cons
       case ListOfMetaboliteReferenceGlyphs:
 
         if (!strcmp(pszName, "ListOfMetaboliteReferenceGlyphs"))
-          mpCurrentHandler = new ListOfMetaboliteReferenceGlyphsElement(mParser, mCommon);
+          {
+            if (!mpListOfMetaboliteReferenceGlyphsElementHandler)
+              {
+                mpListOfMetaboliteReferenceGlyphsElementHandler = new ListOfMetaboliteReferenceGlyphsElement(mParser, mCommon);
+              }
+
+            mpCurrentHandler = mpListOfMetaboliteReferenceGlyphsElementHandler;
+          }
 
         break;
 

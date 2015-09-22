@@ -66,6 +66,7 @@ PlotWindow::PlotWindow(COutputHandlerPlot * pHandler, const CPlotSpecification* 
   mpHandler(pHandler),
   mpMainWindow(pMainWindow),
   mpWindowMenu(NULL),
+  mpToolBar(NULL),
   mpaCloseWindow(NULL),
   mpaShowAll(NULL),
   mpaHideAll(NULL),
@@ -176,25 +177,25 @@ void PlotWindow::createActions()
 
 void PlotWindow::createToolBar()
 {
-  QToolBar * plotTools = addToolBar("plot operations");
+  mpToolBar = addToolBar("plot operations");
 
-  plotTools->addAction(mpaPrint);
-  plotTools->addAction(mpaSaveImage);
-  plotTools->addAction(mpaSaveData);
-  plotTools->addAction(mpaZoomOut);
+  mpToolBar->addAction(mpaPrint);
+  mpToolBar->addAction(mpaSaveImage);
+  mpToolBar->addAction(mpaSaveData);
+  mpToolBar->addAction(mpaZoomOut);
 
-  plotTools->addSeparator();
-  plotTools->addAction(mpaToggleLogX);
-  plotTools->addAction(mpaToggleLogY);
+  mpToolBar->addSeparator();
+  mpToolBar->addAction(mpaToggleLogX);
+  mpToolBar->addAction(mpaToggleLogY);
 
-  plotTools->addSeparator();
+  mpToolBar->addSeparator();
 
-  plotTools->addAction(mpaShowAll);
-  plotTools->addAction(mpaHideAll);
+  mpToolBar->addAction(mpaShowAll);
+  mpToolBar->addAction(mpaHideAll);
 
-  plotTools->addSeparator();
+  mpToolBar->addSeparator();
 
-  plotTools->addAction(mpaCloseWindow);
+  mpToolBar->addAction(mpaCloseWindow);
 
   //TODO button icons...
 
@@ -461,6 +462,8 @@ PlotWindow::~PlotWindow()
 
   if (mpMainWindow != NULL)
     removeFromMainWindow(mpMainWindow);
+
+  pdelete(mpToolBar);
 }
 
 bool PlotWindow::compile(CObjectInterface::ContainerList listOfContainer)

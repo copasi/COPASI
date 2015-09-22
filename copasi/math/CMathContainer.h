@@ -68,15 +68,14 @@ private:
                                std::vector< CMath::sRelocate > & relocations,
                                const bool & end = true);
 
-  template < class CType > void relocateVector(CVectorCore< CType > & vector, CType *& pBuffer, size_t size,
+  template < class CType > void relocateVector(CVectorCore< CType > & vector, size_t size,
       const std::vector< CMath::sRelocate > & relocations)
   {
     if (size != vector.size())
       {
         CVectorCore< CType > OldVector;
         OldVector.initialize(vector);
-        pBuffer = (size > 0) ? new CType[size] : NULL;
-        vector.initialize(size, pBuffer);
+        vector.initialize(size, (size > 0) ? new CType[size] : NULL);
 
         CType * pOld = OldVector.array();
         CType * pNew = vector.array();
@@ -1103,13 +1102,11 @@ private:
    * A vector containing all math events.
    */
   CVectorCore< CMathEvent > mEvents;
-  CMathEvent * mpEventsBuffer;
 
   /**
    * A vector containing all math reactions.
    */
   CVectorCore< CMathReaction > mReactions;
-  CMathReaction * mpReactionsBuffer;
 
   /**
    * A vector of Boolean values indicating whether a root is changing
@@ -1169,7 +1166,6 @@ private:
    * A vector of delays
    */
   CVectorCore< CMathDelay > mDelays;
-  CMathDelay * mpDelaysBuffer;
 
   /**
    * A flag indicating whether the model is autonomous.

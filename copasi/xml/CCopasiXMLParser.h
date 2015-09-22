@@ -3417,6 +3417,7 @@ private:
       Curve
     };
 
+    CXMLElementHandler * mpCurveElementHandler;
     size_t mLineNumber;
 
   public:
@@ -3465,6 +3466,8 @@ private:
       ListOfMetaboliteReferenceGlyphs
     };
 
+    CXMLElementHandler * mpCurveElementHandler;
+    CXMLElementHandler * mpListOfMetaboliteReferenceGlyphsElementHandler;
     size_t mLineNumber;
 
   public:

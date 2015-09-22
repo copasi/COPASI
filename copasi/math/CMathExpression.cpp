@@ -72,6 +72,15 @@ CMathExpression::CMathExpression(const CFunction & src,
 
         // Create a converted copy of the existing expression tree.
         mpRoot = container.copyBranch(src.getRoot(), Variables, replaceDiscontinuousNodes);
+
+        // Deleted the created variables
+        CMath::Variables< CEvaluationNode * >::iterator itVar = Variables.begin();
+        CMath::Variables< CEvaluationNode * >::iterator endVar = Variables.end();
+
+        for (; itVar != endVar; ++itVar)
+          {
+            pdelete(*itVar);
+          }
       }
 
       break;
