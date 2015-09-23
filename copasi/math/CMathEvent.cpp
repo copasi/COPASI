@@ -22,6 +22,15 @@
 #include "utilities/CNodeIterator.h"
 #include "utilities/CCallback.h"
 
+
+#ifdef _MSC_VER
+namespace std
+{
+//bool isnan(double d) { return d != d; }
+extern bool isnan(double d);
+}
+#endif
+
 CMathEvent::CAssignment::CAssignment():
   mpTarget(NULL),
   mpAssignment(NULL)

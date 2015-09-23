@@ -16,6 +16,13 @@
 #include "copasi/report/CCopasiRootContainer.h"
 #include "copasi/commandline/CConfigurationFile.h"
 
+#ifdef _MSC_VER
+namespace std
+{
+bool isnan(double d) { return d != d; }
+}
+#endif
+
 // Uncomment this line below to get debug print out.
 // #define DEBUG_OUTPUT 1
 
