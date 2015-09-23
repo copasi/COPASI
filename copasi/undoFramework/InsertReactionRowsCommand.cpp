@@ -21,7 +21,7 @@
 #include "qtUtilities.h"
 
 #include "UndoReactionData.h"
-#include "insertReactionRowsCommand.h"
+#include "InsertReactionRowsCommand.h"
 
 InsertReactionRowsCommand::InsertReactionRowsCommand(int position, int rows, CQReactionDM *pReactionDM, const QModelIndex&)
   : CCopasiUndoCommand("Reaction", REACTION_INSERT)

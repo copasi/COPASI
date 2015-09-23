@@ -26,7 +26,7 @@ UndoSpeciesData::UndoSpeciesData(const std::string &key  /*= ""*/,
   , mIConc(0)
   , mINumber(0)
   , mCompartment()
-  , mStatus(CModelEntity::Status::REACTIONS)
+  , mStatus(CModelEntity::REACTIONS)
   , mInitialExpression()
   , mExpression()
   , mReactionDependencyObjects(new QList <UndoReactionData*>())

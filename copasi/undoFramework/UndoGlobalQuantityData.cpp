@@ -27,14 +27,13 @@ UndoGlobalQuantityData::UndoGlobalQuantityData(const std::string &key  /*= ""*/,
   , mModelValue()
   , mFixed(false)
   , mInitialValue()
-  , mStatus(CModelEntity::Status::FIXED)
+  , mStatus(CModelEntity::FIXED)
   , mExpression()
   , mInitialExpression()
   , mSpecieDependencyObjects(new QList<UndoSpeciesData*>())
   , mReactionDependencyObjects(new QList<UndoReactionData*>())
   , mEventDependencyObjects(new QList<UndoEventData*>())
 {
-
 }
 
 UndoGlobalQuantityData::~UndoGlobalQuantityData()

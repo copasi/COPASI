@@ -22,7 +22,7 @@
 #include "qtUtilities.h"
 
 #ifdef COPASI_UNDO
-#include "undoFramework/insertReactionRowsCommand.h"
+#include "undoFramework/InsertReactionRowsCommand.h"
 #include "undoFramework/RemoveReactionRowsCommand.h"
 #include "undoFramework/RemoveAllReactionRowsCommand.h"
 #include "undoFramework/ReactionDataChangeCommand.h"
