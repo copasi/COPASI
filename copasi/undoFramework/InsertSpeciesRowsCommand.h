@@ -1,8 +1,4 @@
-<<<<<<< HEAD:copasi/undoFramework/InsertSpecieRowsCommand.h
-// Copyright (C) 2014 - 2015 by Pedro Mendes, Virginia Tech Intellectual
-=======
 // Copyright (C) 2015 by Pedro Mendes, Virginia Tech Intellectual
->>>>>>> - issue 2186: progress rewriting undodata to use keys, rename specie -> species:copasi/undoFramework/InsertSpeciesRowsCommand.h
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
