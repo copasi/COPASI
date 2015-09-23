@@ -127,7 +127,7 @@ enum TriLogic
 };
 
 /* This is necessary to link with Intel MKL or LAPACK compiled with Intel under Visual C++ 8 */
-#if defined COPASI_MAIN && defined _MSC_VER && _MSC_VER > 1200 && defined _DLL
+#if defined COPASI_MAIN && defined _MSC_VER && _MSC_VER > 1200 && defined _DLL && _MSC_VER < 1900
 extern "C"
 {
   FILE _iob[3] = {__iob_func()[0], __iob_func()[1], __iob_func()[2]};
