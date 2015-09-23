@@ -1,12 +1,4 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/common/downcast_common.cpp,v $
-//   $Revision: 1.3 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/06/21 16:46:55 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -612,16 +604,7 @@ GetDowncastSwigTypeForCOptItem(COptItem* optItem)
 struct swig_type_info*
 GetDowncastSwigTypeForCOptMethod(COptMethod* optMethod)
 {
-  if (optMethod == NULL) return SWIGTYPE_p_COptMethod;
-
-  struct swig_type_info* pInfo = SWIGTYPE_p_COptMethod;
-
-  if (dynamic_cast<CFitMethod*>(optMethod))
-    {
-      pInfo = SWIGTYPE_p_CFitMethod;
-    }
-
-  return pInfo;
+  return SWIGTYPE_p_COptMethod;
 }
 
 
@@ -631,16 +614,7 @@ GetDowncastSwigTypeForCOptMethod(COptMethod* optMethod)
 struct swig_type_info*
 GetDowncastSwigTypeForCOptProblem(COptProblem* optProblem)
 {
-  if (optProblem == NULL) return SWIGTYPE_p_COptProblem;
-
-  struct swig_type_info* pInfo = SWIGTYPE_p_COptProblem;
-
-  if (dynamic_cast<CFitProblem*>(optProblem))
-    {
-      pInfo = SWIGTYPE_p_CFitProblem;
-    }
-
-  return pInfo;
+  return SWIGTYPE_p_COptProblem;
 }
 
 /**

@@ -51,7 +51,6 @@ enum CLASS_TYPE
   , CExperiment_Type
   , CFitConstraint_Type
   , CFitItem_Type
-  , CFitMethod_Type
   , CFitProblem_Type
   , CFitTask_Type
   , CFittingPoint_Type
@@ -132,7 +131,6 @@ class CCopasiTask;
 class CEvaluationTree;
 class CFitConstraint;
 class CFitItem;
-class CFitMethod;
 class CFitProblem;
 class CModelEntity;
 class COptItem;
@@ -347,24 +345,7 @@ int GetType_COptTask(COptTask* pPointer);
 
         if (cPtr != IntPtr.Zero)
         {
-            int type = $modulePINVOKE.GetType_COptMethod(new HandleRef(null, cPtr));
-            switch(type) {
-                case COPASI.UNDEFINED_CLASS_TYPE:
-                    break;
-                case COPASI.CFitMethod_Type:
-                    // return a CFitMethod
-                    ret = new CFitMethod(cPtr,owner);
-                    break;
-                case COPASI.COptMethod_Type:
-                    // return a COptMethod
-                    ret = new COptMethod(cPtr,owner);
-                    break;
-                default:
-                    System.Diagnostics.Debug.Assert(false,
-                            String.Format("Encountered type '{0}' that is not known to be a valid COPASI native class type",
-                                type.ToString()));
-                    break;
-            }
+				    ret = new COptMethod(cPtr,owner);
         }
 
         return ret;

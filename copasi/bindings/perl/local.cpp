@@ -183,16 +183,7 @@ GetDowncastSwigTypeForCOptProblem(COptProblem* optProblem)
 struct swig_type_info*
 GetDowncastSwigTypeForCOptMethod(COptMethod* optMethod)
 {
-  if (optMethod == NULL) return SWIGTYPE_p_COptMethod;
-
-  struct swig_type_info* pInfo = SWIGTYPE_p_COptMethod;
-
-  if (dynamic_cast<CFitMethod*>(optMethod))
-    {
-      pInfo = SWIGTYPE_p_CFitMethod;
-    }
-
-  return pInfo;
+  return SWIGTYPE_p_COptMethod;
 }
 
 /**
