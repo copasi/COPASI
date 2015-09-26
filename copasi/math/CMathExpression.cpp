@@ -35,10 +35,22 @@ CMathExpression::CMathExpression(const CExpression & src,
   CEvaluationTree(src.getObjectName(), &container, CEvaluationTree::MathExpression),
   mPrerequisites()
 {
+
+  if (mpNodeList != NULL)
+  {
+    // WARNING: mpRoot might be in mpNodeList ... if so, it will crash on windows
+    // upon the first call to updateTree.
+    for (int i = mpNodeList->size() - 1; i >= 0; --i)
+    {
+      if (mpNodeList->at(i) == mpRoot)
+        mpNodeList->erase(mpNodeList->begin() + i, mpNodeList->begin() + i+1);
+    }
+  }
   delete mpRoot;
 
   // Create a converted copy of the existing expression tree.
   mpRoot = container.copyBranch(src.getRoot(), replaceDiscontinuousNodes);
+  mpNodeList->push_back(mpRoot);
 
   compile();
 }
@@ -50,6 +62,16 @@ CMathExpression::CMathExpression(const CFunction & src,
   CEvaluationTree(src.getObjectName(), &container, CEvaluationTree::MathExpression),
   mPrerequisites()
 {
+  if (mpNodeList != NULL)
+  {
+    // WARNING: mpRoot might be in mpNodeList ... if so, it will crash on windows
+    // upon the first call to updateTree.
+    for (int i = mpNodeList->size() - 1; i >= 0; --i)
+    {
+      if (mpNodeList->at(i) == mpRoot)
+        mpNodeList->erase(mpNodeList->begin() + i, mpNodeList->begin() + i + 1);
+    }
+  }
   delete mpRoot;
 
   // Deal with the different function types

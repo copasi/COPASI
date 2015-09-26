@@ -413,15 +413,32 @@ unsigned C_INT32 strToUnsignedInt(const char * str,
 
 void * stringToPointer(const std::string str)
 {
+#ifdef _MSC_VER
+  void * pPointer;
+  std::istringstream Pointer;
+  Pointer.setf(std::ios::hex);
+  Pointer.unsetf(std::ios::showbase);
+  Pointer.str(str.substr(2));
+  Pointer >> pPointer;
+  return pPointer;
+#else
   void * pPointer;
 
   sscanf(str.c_str(), "%p", &pPointer);
 
   return pPointer;
+#endif
 }
 
 std::string pointerToString(const void * pVoid)
 {
+#ifdef _MSC_VER
+  std::ostringstream Pointer;
+  Pointer.setf(std::ios::hex);
+  Pointer.unsetf(std::ios::showbase);
+  Pointer << "0x" << pVoid;
+  return Pointer.str();
+#else
   char String[19];
 
   int Printed = sprintf(String, "%p", pVoid);
@@ -432,6 +449,7 @@ std::string pointerToString(const void * pVoid)
     }
 
   return String;
+#endif
 }
 
 std::string nameToSbmlId(const std::string & name)
