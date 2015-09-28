@@ -94,11 +94,23 @@ CModelEntity::CModelEntity(const CModelEntity & src,
   mStatus(FIXED),
   mUsed(false),
   mpModel(NULL),
-  mpUnit(src.mpUnit != NULL ? new CUnit(*src.mpUnit, this) : NULL)
+  mpUnit(NULL)
 {
   mKey = CCopasiRootContainer::getKeyFactory()->add(getObjectType(), this);
 
   initObjects();
+
+  if (src.mpUnit != NULL)
+    {
+      if (mpModel == NULL)
+        {
+          new CUnit(*src.mpUnit, CUnit::Avogadro, this);
+        }
+      else
+        {
+          new CUnit(*src.mpUnit, mpModel->getAvogadro(), this);
+        }
+    }
 
   setStatus(src.mStatus);
   setMiriamAnnotation(src.getMiriamAnnotation(), mKey, src.mKey);

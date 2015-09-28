@@ -184,14 +184,16 @@ CUnit::CUnit(const CBaseUnit::Kind & kind,
 
 // copy constructor
 CUnit::CUnit(const CUnit & src,
+             const C_FLOAT64 & avogadro,
              const CCopasiContainer * pParent):
   CCopasiContainer(src, pParent),
   mSymbol(src.mSymbol),
-  mDefinition(src.mDefinition),
-  mComponents(src.mComponents),
-  mUsedSymbols(src.mUsedSymbols)
+  mDefinition(),
+  mComponents(),
+  mUsedSymbols()
 {
   setup();
+  setDefinition(src.mDefinition, avogadro);
 }
 
 CUnit::~CUnit()

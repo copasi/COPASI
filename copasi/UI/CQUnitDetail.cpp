@@ -141,7 +141,6 @@ void CQUnitDetail::slotBtnCopy()
 //! Slot for being activated whenever Delete button is clicked
 void CQUnitDetail::slotBtnDelete()
 {
-
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
   assert(pDataModel != NULL);
@@ -288,39 +287,39 @@ bool CQUnitDetail::update(ListViews::ObjectType  objectType,
                           ListViews::Action action,
                           const std::string & key)
 {
-  switch (objectType)
-    {
-      case ListViews::MODEL:
+//  switch (objectType)
+//    {
+//      case ListViews::MODEL:
 
-        // For a new model we need to remove references to no longer existing metabolites
-        if (action == ListViews::ADD)
-          {
-            mKey = "";
-            mpObject = NULL;
-            mpUnit = NULL;
-          }
+//        // For a new model we need to remove references to no longer existing metabolites
+//        if (action == ListViews::ADD)
+//          {
+//            mKey = "";
+//            mpObject = NULL;
+//            mpUnit = NULL;
+//          }
 
-        break;
+//        break;
 
-      case ListViews::MODELVALUE:
+//      case ListViews::MODELVALUE:
 
-        // If the currently displayed metabolite is deleted we need to remove its references.
-        if (action == ListViews::DELETE && mKey == key)
-          {
-            mKey = "";
-            mpObject = NULL;
-            mpUnit = NULL;
-          }
+//        // If the currently displayed metabolite is deleted we need to remove its references.
+//        if (action == ListViews::DELETE && mKey == key)
+//          {
+//            mKey = "";
+//            mpObject = NULL;
+//            mpUnit = NULL;
+//          }
 
-        break;
+//        break;
 
-      case ListViews::STATE:
-        break;
+//      case ListViews::STATE:
+//        break;
 
-      default:
-        return true;
-        break;
-    }
+//      default:
+//        return true;
+//        break;
+//    }
 
   if (isVisible() && !mIgnoreUpdates)
     load();
@@ -470,6 +469,12 @@ void CQUnitDetail::save()
   if (mpUnit->getSymbol() != TO_UTF8(mpEditSymbol->text()))
     {
       mpUnit->setSymbol(TO_UTF8(mpEditSymbol->text()));
+      mChanged = true;
+    }
+
+  if (mpUnit->getDefinition() != TO_UTF8(mpEditDefinition->text()))
+    {
+      mpUnit->setDefinition(TO_UTF8(mpEditDefinition->text()), CUnit::Avogadro);
       mChanged = true;
     }
 

@@ -140,7 +140,7 @@ unit:      KIND
                }
              else
                {
-                 $$.pUnit = new CUnit(*pUnit);
+                 $$.pUnit = new CUnit(*pUnit, mAvogadro);
                  mSymbols.insert($1.text);
                  mSymbols.insert($$.pUnit->getUsedSymbols().begin(), $$.pUnit->getUsedSymbols().end());
                }

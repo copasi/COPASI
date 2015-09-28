@@ -87,9 +87,11 @@ public:
   /**
    * Copy constructor
    * @param const CUnit & src
+   * @param const C_FLOAT64 & avogadro
    * @param const CCopasiContainer * pParent (default: NULL)
    */
   CUnit(const CUnit & src,
+        const C_FLOAT64 & avogadro,
         const CCopasiContainer * pParent = NULL);
 
   ~CUnit();
