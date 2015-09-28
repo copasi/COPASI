@@ -21,12 +21,14 @@
 #include "RemoveReactionRowsCommand.h"
 #include "UndoReactionData.h"
 
-RemoveReactionRowsCommand::RemoveReactionRowsCommand(QModelIndexList rows, CQReactionDM * pReaDM, const QModelIndex&)
+RemoveReactionRowsCommand::RemoveReactionRowsCommand(
+  QModelIndexList rows, CQReactionDM * pReaDM, const QModelIndex&)
+  : CCopasiUndoCommand("Reaction", REACTION_REMOVE)
+  , mpReactionDM(pReaDM)
+  , mRows(rows)
+  , mpReaData()
+  , mFirstTime(true)
 {
-  mpReactionDM = pReaDM;
-  mRows = rows;
-  mFirstTime = true;
-
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
   assert(pDataModel != NULL);
@@ -50,10 +52,7 @@ RemoveReactionRowsCommand::RemoveReactionRowsCommand(QModelIndexList rows, CQRea
         }
     }
 
-  mType = REACTION_REMOVE;
-  setEntityType("Reaction");
-
-  this->setText(removeReactionRowsText());
+  setText(removeReactionRowsText());
 }
 
 void RemoveReactionRowsCommand::redo()
@@ -86,5 +85,10 @@ QString RemoveReactionRowsCommand::removeReactionRowsText() const
 
 RemoveReactionRowsCommand::~RemoveReactionRowsCommand()
 {
-  // TODO Auto-generated destructor stub
+  // freeing the memory allocated above
+  foreach(UndoReactionData * data, mpReaData)
+  {
+    pdelete(data);
+  }
+  mpReaData.clear();
 }

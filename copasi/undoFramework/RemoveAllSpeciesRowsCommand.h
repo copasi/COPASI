@@ -19,11 +19,14 @@
 
 class UndoSpeciesData;
 class UndoReactionData;
+class CQSpecieDM;
 
 class RemoveAllSpecieRowsCommand: public CCopasiUndoCommand
 {
 public:
   RemoveAllSpecieRowsCommand(CQSpecieDM * pSpecieDM, const QModelIndex&);
+  virtual ~RemoveAllSpecieRowsCommand();
+
   void redo();
   void undo();
 
@@ -32,8 +35,7 @@ public:
 private:
   CQSpecieDM *mpSpecieDM;
   QList <UndoSpeciesData *> mpSpeciesData;
-  //  QList <UndoReactionData *> mpReactionData;
-  virtual ~RemoveAllSpecieRowsCommand();
+
 };
 
 #endif /* REMOVEALLSPECIEROWSCOMMAND_H_ */

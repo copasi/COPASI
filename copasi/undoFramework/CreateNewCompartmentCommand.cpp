@@ -32,6 +32,7 @@ void CreateNewCompartmentCommand::redo()
 
   std::string sName = mpCompartment->mpCompartment->getObjectName();
   mpCompartmentData->setName(sName);
+  mpCompartmentData->setKey(mpCompartment->mpCompartment->getKey());
   mpCompartmentData->setInitialValue(mpCompartment->mpCompartment->getInitialValue());
   mpCompartmentData->setStatus(mpCompartment->mpCompartment->getStatus());
   setUndoState(true);

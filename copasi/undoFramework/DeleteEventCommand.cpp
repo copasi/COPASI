@@ -29,6 +29,7 @@ DeleteEventCommand::DeleteEventCommand(CQEventWidget1 *pEVentWidget1)
 
   const std::string& sName = mpEVentWidget1->mpEvent->getObjectName();
   mpEventData->setName(sName);
+  mpEventData->setKey(mpEVentWidget1->mpEvent->getKey());
   setName(sName);
 
   CCopasiVector< CEventAssignment >::const_iterator it = mpEVentWidget1->mpEvent->getAssignments().begin();

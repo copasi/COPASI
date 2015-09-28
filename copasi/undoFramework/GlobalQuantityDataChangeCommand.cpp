@@ -90,16 +90,16 @@ void GlobalQuantityDataChangeCommand::redo()
   CModelValue *pModelValue = pModelValue = pModel->getModelValues()[mIndex.row()];
   setName(pModelValue->getObjectName());
 }
+
 void GlobalQuantityDataChangeCommand::undo()
 {
-  //mIndex = pathToIndex(mPathIndex, mpGlobalQuantityDM);
   mpGlobalQuantityDM->globalQuantityDataChange(mIndex, mOld, mRole);
   setAction("Undone change");
 }
+
 QString GlobalQuantityDataChangeCommand::globalQuantityDataChangeText() const
 {
   return QString(": Changed global quantity %1").arg(getProperty().c_str());
-  //QObject::tr(": Changed Global Quantity Data");
 }
 
 GlobalQuantityDataChangeCommand::~GlobalQuantityDataChangeCommand()

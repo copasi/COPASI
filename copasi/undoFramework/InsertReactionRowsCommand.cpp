@@ -58,6 +58,7 @@ void InsertReactionRowsCommand::redo()
   ri->initFromReaction(mpReaction);
 
   mpReactionData->setRi(ri);
+  mpReactionData->setKey(mpReaction->getKey());
 
   setUndoState(true);
   setAction("Add to list");

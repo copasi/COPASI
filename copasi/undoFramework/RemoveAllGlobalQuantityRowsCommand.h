@@ -18,6 +18,7 @@
 #include "CCopasiUndoCommand.h"
 
 class UndoReactionData;
+class CQGlobalQuantityDM;
 
 class RemoveAllGlobalQuantityRowsCommand: public CCopasiUndoCommand
 {

@@ -43,19 +43,19 @@ SpeciesTypeChangeCommand::redo()
 {
   if (mFirstTime)
     {
-      mpSpeciesDetail->specieTypeChanged(mpSpeciesDetail->mpComboBoxType->currentIndex());
+      mpSpeciesDetail->speciesTypeChanged(mpSpeciesDetail->mpComboBoxType->currentIndex());
       mFirstTime = false;
     }
   else
     {
-      mpSpeciesDetail->specieTypeChanged(mpSpeciesData, mNewType);
+      mpSpeciesDetail->speciesTypeChanged(mpSpeciesData, mNewType);
     }
 }
 
 void
 SpeciesTypeChangeCommand::undo()
 {
-  mpSpeciesDetail->specieTypeChanged(mpSpeciesData, mOldType);
+  mpSpeciesDetail->speciesTypeChanged(mpSpeciesData, mOldType);
   setAction("Undone change");
 }
 

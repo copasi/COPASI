@@ -87,9 +87,9 @@ UndoData *RemoveCompartmentRowsCommand::getUndoData() const
 
 RemoveCompartmentRowsCommand::~RemoveCompartmentRowsCommand()
 {
-  // TODO Auto-generated destructor stub
-  pdelete(this->mpSpeciesData);
-  pdelete(this->mpReactionData);
-  pdelete(this->mpGlobalQuantityData);
-  pdelete(this->mpEventData);
+  foreach(UndoCompartmentData * data, mpCompartmentData)
+  {
+    pdelete(data);
+  }
+  mpCompartmentData.clear();
 }

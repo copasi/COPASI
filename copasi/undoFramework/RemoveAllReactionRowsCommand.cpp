@@ -21,9 +21,12 @@
 #include "RemoveAllReactionRowsCommand.h"
 #include "UndoReactionData.h"
 
-RemoveAllReactionRowsCommand::RemoveAllReactionRowsCommand(CQReactionDM * pReaDM, const QModelIndex&)
+RemoveAllReactionRowsCommand::RemoveAllReactionRowsCommand(
+  CQReactionDM * pReaDM, const QModelIndex&)
+  : CCopasiUndoCommand("Reaction", REACTION_REMOVE_ALL)
+  , mpReactionDM(pReaDM)
+  , mpReaData()
 {
-  mpReactionDM = pReaDM;
 
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
@@ -46,9 +49,7 @@ RemoveAllReactionRowsCommand::RemoveAllReactionRowsCommand(CQReactionDM * pReaDM
         }
     }
 
-  mType = REACTION_REMOVE_ALL;
-  setEntityType("Reaction");
-  this->setText(removeAllReactionRowsText());
+  setText(removeAllReactionRowsText());
 }
 
 void RemoveAllReactionRowsCommand::redo()
@@ -72,5 +73,11 @@ QString RemoveAllReactionRowsCommand::removeAllReactionRowsText() const
 
 RemoveAllReactionRowsCommand::~RemoveAllReactionRowsCommand()
 {
-  // TODO Auto-generated destructor stub
+  // freeing the memory allocated above
+  foreach(UndoReactionData * data, mpReaData)
+  {
+    pdelete(data);
+  }
+  mpReaData.clear();
+
 }

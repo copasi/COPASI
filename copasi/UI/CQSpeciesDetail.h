@@ -64,7 +64,7 @@ private:
 
 private slots:
   void slotBtnNew();
-  void slotBtnCopy() {};
+  void slotBtnCopy();
   void slotBtnDelete();
   void slotCompartmentChanged(int compartment);
   void slotTypeChanged(int type);
@@ -77,14 +77,14 @@ private slots:
 
   //additional functions for UNDO framework
 #ifdef COPASI_UNDO
-  void deleteSpecie();
-  void addSpecie(UndoSpeciesData *pSData);
-  void createNewSpecie();
-  void deleteSpecie(UndoSpeciesData *pSData);
-  void specieTypeChanged(int type);
-  void specieTypeChanged(UndoSpeciesData *pSData, int type);
-  void specieInitialValueLostFocus();
-  void specieInitialValueLostFocus(UndoSpeciesData *pSData);
+  void deleteSpecies();
+  void addSpecies(UndoSpeciesData *pSData);
+  void createNewSpecies();
+  void deleteSpecies(UndoSpeciesData *pSData);
+  void speciesTypeChanged(int type);
+  void speciesTypeChanged(UndoSpeciesData *pSData, int type);
+  void speciesInitialValueLostFocus();
+  void speciesInitialValueLostFocus(UndoSpeciesData *pSData);
 #endif
 };
 

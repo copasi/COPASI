@@ -21,17 +21,17 @@ class UndoSpeciesData;
 class CreateNewSpeciesCommand: public CCopasiUndoCommand
 {
 public:
-  CreateNewSpeciesCommand(CQSpeciesDetail *pSpecieDetail);
+  CreateNewSpeciesCommand(CQSpeciesDetail *pSpeciesDetail);
   void redo();
   void undo();
-  QString createNewSpecieText() const;
+  QString createNewSpeciesText() const;
   UndoData *getUndoData() const;
 
   virtual ~CreateNewSpeciesCommand();
 
 private:
   UndoSpeciesData *mpSpeciesData;
-  CQSpeciesDetail* mpSpecieDetail;
+  CQSpeciesDetail* mpSpeciesDetail;
 };
 
 #endif /* CREATENEWSPECIECOMMAND_H_ */

@@ -23,12 +23,14 @@
 #include "UndoGlobalQuantityData.h"
 #include "RemoveSpeciesRowsCommand.h"
 
-RemoveSpecieRowsCommand::RemoveSpecieRowsCommand(QModelIndexList rows, CQSpecieDM * pSpecieDM, const QModelIndex&)
+RemoveSpecieRowsCommand::RemoveSpecieRowsCommand(
+  QModelIndexList rows, CQSpecieDM * pSpecieDM, const QModelIndex&)
+  : CCopasiUndoCommand("Species", SPECIES_REMOVE)
+  , mpSpecieDM(pSpecieDM)
+  , mRows(rows)
+  , mpSpeciesData()
+  , mFirstTime(true)
 {
-  mpSpecieDM = pSpecieDM;
-  mRows = rows;
-  mFirstTime = true;
-
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
   assert(pDataModel != NULL);
@@ -77,9 +79,6 @@ RemoveSpecieRowsCommand::RemoveSpecieRowsCommand(QModelIndexList rows, CQSpecieD
         }
     }
 
-  mType = SPECIES_REMOVE;
-  setEntityType("Species");
-
   this->setText(removeSpecieRowsText());
 }
 
@@ -113,5 +112,10 @@ QString RemoveSpecieRowsCommand::removeSpecieRowsText() const
 
 RemoveSpecieRowsCommand::~RemoveSpecieRowsCommand()
 {
-  // TODO Auto-generated destructor stub
+  // freeing the memory allocated above
+  foreach(UndoSpeciesData * data, mpSpeciesData)
+  {
+    pdelete(data);
+  }
+  mpSpeciesData.clear();
 }

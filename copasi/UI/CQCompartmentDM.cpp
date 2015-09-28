@@ -448,7 +448,7 @@ bool CQCompartmentDM::compartmentDataChange(const std::string& key, const QVaria
     pComp->setInitialValue(value.toDouble());
 
   emit notifyGUI(ListViews::COMPARTMENT, ListViews::CHANGE, key);
-  emit changeWidget(111);
+  emit changeWidget(CCopasiUndoCommand::COMPARTMENTS);
 
   return true;
 }
@@ -468,7 +468,7 @@ void CQCompartmentDM::insertNewCompartmentRow(int position, int rows, const QMod
 
 void CQCompartmentDM::deleteCompartmentRow(UndoCompartmentData *pCompartmentData)
 {
-  emit changeWidget(111);
+  emit changeWidget(CCopasiUndoCommand::COMPARTMENTS);
   qApp->processEvents();
 
   CModel * pModel = (*CCopasiRootContainer::getDatamodelList())[0]->getModel();
@@ -491,6 +491,7 @@ void CQCompartmentDM::addCompartmentRow(UndoCompartmentData *pCompartmentData)
   CCompartment *pCompartment = pDataModel->getModel()->createCompartment(pCompartmentData->getName());
   pCompartment->setStatus(pCompartmentData->getStatus());
   std::string key = pCompartment->getKey();
+  pCompartmentData->setKey(key);
   emit notifyGUI(ListViews::COMPARTMENT, ListViews::ADD, key);
   endInsertRows();
 }
@@ -541,7 +542,7 @@ bool CQCompartmentDM::removeCompartmentRows(QModelIndexList& rows, const QModelI
         }
     }
 
-  emit changeWidget(111);
+  emit changeWidget(CCopasiUndoCommand::COMPARTMENTS);
 
   return true;
 }
@@ -719,13 +720,15 @@ bool CQCompartmentDM::insertCompartmentRows(QList <UndoCompartmentData *>& pData
       endInsertRows();
     }
 
-  emit changeWidget(111);
+  emit changeWidget(CCopasiUndoCommand::COMPARTMENTS);
 
   return true;
 }
 
 void CQCompartmentDM::deleteCompartmentRows(QList <UndoCompartmentData *>& pData)
 {
+  emit changeWidget(CCopasiUndoCommand::COMPARTMENTS);
+
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
   assert(pDataModel != NULL);
@@ -754,7 +757,6 @@ void CQCompartmentDM::deleteCompartmentRows(QList <UndoCompartmentData *>& pData
       //removeRow((int) index);
     }
 
-  emit changeWidget(111);
 }
 
 bool CQCompartmentDM::clear()

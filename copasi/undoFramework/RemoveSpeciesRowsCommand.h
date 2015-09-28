@@ -19,6 +19,7 @@
 
 class CCopasiObject;
 class UndoReactionData;
+class CQSpecieDM;
 
 class RemoveSpecieRowsCommand: public CCopasiUndoCommand
 {
@@ -34,7 +35,6 @@ private:
   CQSpecieDM *mpSpecieDM;
   QModelIndexList mRows;
   QList <UndoSpeciesData *> mpSpeciesData;
-  //QList <UndoReactionData *> mpReactionData;
   bool mFirstTime;
 };
 

@@ -20,12 +20,14 @@
 
 #include "RemoveEventRowsCommand.h"
 
-RemoveEventRowsCommand::RemoveEventRowsCommand(QModelIndexList rows, CQEventDM * pEventDM, const QModelIndex&)
+RemoveEventRowsCommand::RemoveEventRowsCommand(
+  QModelIndexList rows, CQEventDM * pEventDM, const QModelIndex&)
+  : CCopasiUndoCommand("Event", EVENT_REMOVE)
+  , mpEventDM(pEventDM)
+  , mRows(rows)
+  , mpEventData()
+  , mFirstTime(true)
 {
-  mpEventDM = pEventDM;
-  mRows = rows;
-  mFirstTime = true;
-
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
   assert(pDataModel != NULL);
@@ -61,8 +63,6 @@ RemoveEventRowsCommand::RemoveEventRowsCommand(QModelIndexList rows, CQEventDM *
     }
 
   this->setText(removeEventRowsText());
-  mType = EVENT_REMOVE;
-  setEntityType("Event");
 }
 
 void RemoveEventRowsCommand::redo()
@@ -95,5 +95,11 @@ QString RemoveEventRowsCommand::removeEventRowsText() const
 
 RemoveEventRowsCommand::~RemoveEventRowsCommand()
 {
-  // TODO Auto-generated destructor stub
+  // freeing the memory allocated above
+  foreach(UndoEventData * data, mpEventData)
+  {
+    pdelete(data);
+  }
+  mpEventData.clear();
+
 }

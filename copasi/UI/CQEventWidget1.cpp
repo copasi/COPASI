@@ -641,7 +641,7 @@ bool CQEventWidget1::enterProtected()
 
   if (!success)
     {
-      mpListView->switchToOtherWidget(114, ""); //TODO
+      mpListView->switchToOtherWidget(CCopasiUndoCommand::EVENTS, ""); //TODO
     }
 
   return success;
@@ -797,11 +797,13 @@ void CQEventWidget1::deleteEvent()
   mpEvent = NULL;
 
   protectedNotify(ListViews::EVENT, ListViews::DELETE, mKey);
-  mpListView->switchToOtherWidget(116, "");
+  mpListView->switchToOtherWidget(CCopasiUndoCommand::EVENTS, "");
 }
 
 void CQEventWidget1::deleteEvent(UndoEventData *pEventData)
 {
+  mpListView->switchToOtherWidget(CCopasiUndoCommand::EVENTS, "");
+
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
   assert(pDataModel != NULL);
@@ -809,8 +811,7 @@ void CQEventWidget1::deleteEvent(UndoEventData *pEventData)
   CModel * pModel = pDataModel->getModel();
   assert(pModel != NULL);
 
-  CEvent * pEvent = pModel->getEvents()[pEventData->getName()];
-  std::string key = pEvent->getKey();
+  std::string key = pEventData->getKey();
   pModel->removeEvent(key);
   mpEvent = NULL;
 
@@ -818,10 +819,9 @@ void CQEventWidget1::deleteEvent(UndoEventData *pEventData)
   protectedNotify(ListViews::EVENT, ListViews::DELETE, key);
   protectedNotify(ListViews::EVENT, ListViews::DELETE, "");//Refresh all as there may be dependencies.
 
-  mpListView->switchToOtherWidget(116, "");
 }
 
-void CQEventWidget1::addEvent(UndoEventData *pSData)
+void CQEventWidget1::addEvent(UndoEventData *pData)
 {
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
@@ -830,7 +830,8 @@ void CQEventWidget1::addEvent(UndoEventData *pSData)
   CModel * pModel = pDataModel->getModel();
   assert(pModel != NULL);
 
-  CEvent* pEvent = pSData->createEventFromData(pModel);
+  CEvent* pEvent = pData->createEventFromData(pModel);
+  pData->setKey(pEvent->getKey());
   protectedNotify(ListViews::EVENT, ListViews::ADD, pEvent->getKey());
 
   mpListView->switchToOtherWidget(C_INVALID_INDEX, pEvent->getKey());

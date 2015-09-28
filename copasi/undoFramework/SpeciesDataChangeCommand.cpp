@@ -118,5 +118,4 @@ void SpecieDataChangeCommand::undo()
 QString SpecieDataChangeCommand::specieDataChangeText() const
 {
   return QString(": Changed species %1").arg(getProperty().c_str());
-  //QObject::tr(": Changed Species Data");
 }

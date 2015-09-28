@@ -813,7 +813,7 @@ bool ReactionsWidget1::enterProtected()
   if (reac)
     return loadFromReaction(reac);
 
-  mpListView->switchToOtherWidget(114, "");
+  mpListView->switchToOtherWidget(CCopasiUndoCommand::REACTIONS, "");
   return false;
 }
 
@@ -959,7 +959,7 @@ void ReactionsWidget1::deleteReaction()
 
         protectedNotify(ListViews::REACTION, ListViews::DELETE, mKey);
         protectedNotify(ListViews::REACTION, ListViews::DELETE, "");//Refresh all as there may be dependencies.
-        mpListView->switchToOtherWidget(114, "");
+        mpListView->switchToOtherWidget(CCopasiUndoCommand::REACTIONS, "");
         break;
       }
 
@@ -984,15 +984,20 @@ void ReactionsWidget1::addReaction(std::string & reaObjectName, CReactionInterfa
 
 void ReactionsWidget1::deleteReaction(CReaction *pReaction)
 {
+  mpListView->switchToOtherWidget(CCopasiUndoCommand::REACTIONS, "");
+
+
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
   assert(pDataModel != NULL);
 
-  std::string key = pDataModel->getModel()->getReactions()[pReaction->getObjectName()]->getKey();
-  pDataModel->getModel()->removeReaction(key);
+  CModel * pModel = pDataModel->getModel();
+  assert(pModel != NULL);
+
+  std::string key = pReaction->getKey();
+  pModel->removeReaction(key);
   protectedNotify(ListViews::REACTION, ListViews::DELETE, key);
 
-  mpListView->switchToOtherWidget(114, "");
 }
 
 bool ReactionsWidget1::changeReaction(

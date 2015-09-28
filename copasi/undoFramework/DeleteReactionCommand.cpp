@@ -32,10 +32,11 @@ DeleteReactionCommand::DeleteReactionCommand(ReactionsWidget1 *pReactionWidget)
   mpReaction = dynamic_cast< CReaction * >(CCopasiRootContainer::getKeyFactory()->get(mpReactionWidget->mKey));
   mReaObjectName = mpReaction->getObjectName();
   mpRi = new CReactionInterface((*CCopasiRootContainer::getDatamodelList())[0]->getModel());
-  mpRi->initFromReaction(mpReaction->getKey());
+  mpRi->initFromReaction(mpReaction);
 
   mpReactionData->setName(mReaObjectName);
   mpReactionData->setRi(mpRi);
+  mpReactionData->setKey(mpReaction->getKey());
 
   this->setText(deleteReactionText(mReaObjectName));
   setName(mReaObjectName);

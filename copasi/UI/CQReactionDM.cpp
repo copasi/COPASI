@@ -502,7 +502,7 @@ bool CQReactionDM::reactionDataChange(const QModelIndex &index, const QVariant &
       emit notifyGUI(ListViews::REACTION, ListViews::CHANGE, pRea->getKey());
     }
 
-  emit changeWidget(114);
+  emit changeWidget(CCopasiUndoCommand::REACTIONS);
 
   return true;
 }

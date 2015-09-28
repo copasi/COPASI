@@ -396,7 +396,7 @@ bool CQEventDM::eventDataChange(const QModelIndex &index, const QVariant &value,
       emit notifyGUI(ListViews::EVENT, ListViews::CHANGE, pEvent->getKey());
     }
 
-  emit changeWidget(116);
+  emit changeWidget(CCopasiUndoCommand::EVENTS);
 
   return true;
 }
@@ -426,7 +426,7 @@ void CQEventDM::deleteEventRow(UndoEventData *pEventData)
 
   // careful! need to first change the widget (as this will result in the
   // event widget to save back its data in case it was active) ...
-  emit changeWidget(116);
+  emit changeWidget(CCopasiUndoCommand::EVENTS);
 
   // only then can we safely delete this item
   removeRow((int) index);
@@ -457,6 +457,8 @@ void CQEventDM::addEventRow(UndoEventData *pEventData)
     }
 
   std::string key = pEvent->getKey();
+  pEventData->setKey(key);
+
   emit notifyGUI(ListViews::EVENT, ListViews::ADD, key);
   endInsertRows();
 }
@@ -507,7 +509,7 @@ bool CQEventDM::removeEventRows(QModelIndexList rows, const QModelIndex&)
         }
     }
 
-  emit changeWidget(116);
+  emit changeWidget(CCopasiUndoCommand::EVENTS);
 
   return true;
 }
@@ -535,13 +537,15 @@ bool CQEventDM::insertEventRows(QList <UndoEventData *> pData)
       endInsertRows();
     }
 
-  emit changeWidget(116);
+  emit changeWidget(CCopasiUndoCommand::EVENTS);
 
   return true;
 }
 
 void CQEventDM::deleteEventRows(QList <UndoEventData *> pData)
 {
+  emit changeWidget(CCopasiUndoCommand::EVENTS);
+
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
   assert(pDataModel != NULL);
@@ -558,8 +562,6 @@ void CQEventDM::deleteEventRows(QList <UndoEventData *> pData)
       size_t index = pModel->getEvents().CCopasiVector< CEvent >::getIndex(pEvent);
       removeRow((int) index);
     }
-
-  emit changeWidget(116);
 }
 
 bool CQEventDM::clear()

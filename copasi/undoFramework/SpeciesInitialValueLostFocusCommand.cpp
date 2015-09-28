@@ -20,12 +20,14 @@
 
 #include "SpeciesInitialValueLostFocusCommand.h"
 
-SpeciesInitialValueLostFocusCommand::SpeciesInitialValueLostFocusCommand(CQSpeciesDetail *pSpecieDetail)
+SpeciesInitialValueLostFocusCommand::SpeciesInitialValueLostFocusCommand(
+  CQSpeciesDetail *pSpecieDetail)
+  : CCopasiUndoCommand("Species", SPECIES_TYPE_CHANGE, "Change")
+  , mpSpecieDetail(pSpecieDetail)
+  , mpSpeciesData(new UndoSpeciesData())
+  , mFirstTime(true)
 {
-  mpSpecieDetail = pSpecieDetail;
-  mFirstTime = true;
 
-  mpSpeciesData = new UndoSpeciesData();
   std::string sName = mpSpecieDetail->mpMetab->getObjectName();
   mpSpeciesData->setName(sName);
   mpSpeciesData->setIConc(mpSpecieDetail->mInitialConcentration);
@@ -34,9 +36,6 @@ SpeciesInitialValueLostFocusCommand::SpeciesInitialValueLostFocusCommand(CQSpeci
   this->setText(specieInitialValueLostFocusText(sName));
 
   //set the data for UNDO history
-  mType = SPECIES_TYPE_CHANGE;
-  setEntityType("Species");
-  setAction("Change");
   setName(mpSpeciesData->getName());
 
   std::ostringstream strs;
@@ -53,28 +52,26 @@ void SpeciesInitialValueLostFocusCommand::redo()
 {
   if (mFirstTime)
     {
-      mpSpecieDetail->specieInitialValueLostFocus();
+      mpSpecieDetail->speciesInitialValueLostFocus();
       mFirstTime = false;
     }
   else
     {
-      mpSpecieDetail->specieInitialValueLostFocus(mpSpeciesData);
+      mpSpecieDetail->speciesInitialValueLostFocus(mpSpeciesData);
     }
 }
 void SpeciesInitialValueLostFocusCommand::undo()
 {
-  mpSpecieDetail->specieInitialValueLostFocus(mpSpeciesData);
+  mpSpecieDetail->speciesInitialValueLostFocus(mpSpeciesData);
   setAction("Undone change");
 }
+
 QString SpeciesInitialValueLostFocusCommand::specieInitialValueLostFocusText(std::string &name) const
 {
-  std::string myEntityName(": Species Initial Value Change for " + name);
-  char* entityName = (char*)myEntityName.c_str();
-  return QObject::tr(entityName);
+  return QString(": Species Initial Value Change for %1").arg(FROM_UTF8(name));
 }
 
 SpeciesInitialValueLostFocusCommand::~SpeciesInitialValueLostFocusCommand()
 {
-  // TODO Auto-generated destructor stub
-  pdelete(this->mpSpeciesData);
+  pdelete(mpSpeciesData);
 }

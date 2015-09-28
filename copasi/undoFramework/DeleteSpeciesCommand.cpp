@@ -33,6 +33,7 @@ DeleteSpeciesCommand::DeleteSpeciesCommand(CQSpeciesDetail *pSpecieDetail)
 
   const std::string& sName = mpSpecieDetail->mpMetab->getObjectName();
   mpSpeciesData->setName(sName);
+  mpSpeciesData->setKey(mpSpecieDetail->mpMetab->getKey());
 
   mpSpeciesData->setStatus(mpSpecieDetail->mpMetab->getStatus());
 
@@ -66,12 +67,12 @@ void DeleteSpeciesCommand::redo()
 {
   if (mFirstTime)
     {
-      mpSpecieDetail->deleteSpecie();
+      mpSpecieDetail->deleteSpecies();
       mFirstTime = false;
     }
   else
     {
-      mpSpecieDetail->deleteSpecie(mpSpeciesData);
+      mpSpecieDetail->deleteSpecies(mpSpeciesData);
     }
 
   setUndoState(true);
@@ -80,7 +81,7 @@ void DeleteSpeciesCommand::redo()
 
 void DeleteSpeciesCommand::undo()
 {
-  mpSpecieDetail->addSpecie(mpSpeciesData);
+  mpSpecieDetail->addSpecies(mpSpeciesData);
   setUndoState(false);
   setAction("Undelete");
 }

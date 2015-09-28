@@ -52,6 +52,7 @@ void InsertCompartmentRowsCommand::redo()
 
       CCompartment *pCompartment = pModel->getCompartments()[mPosition];
       mpCompartmentData->setName(pCompartment->getObjectName());
+      mpCompartmentData->setKey(pCompartment->getKey());
       mpCompartmentData->setStatus(pCompartment->getStatus());
       mpCompartmentData->setInitialValue(pCompartment->getInitialValue());
       firstTime = false;

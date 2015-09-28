@@ -259,7 +259,7 @@ bool CQSpeciesDetail::enterProtected()
   if (!mpMetab)
     {
 
-      mpListView->switchToOtherWidget(112, "");
+      mpListView->switchToOtherWidget(CCopasiUndoCommand::SPECIES, "");
       return false;
     }
 
@@ -643,6 +643,8 @@ void CQSpeciesDetail::slotBtnNew()
 #endif
 }
 
+void CQSpeciesDetail::slotBtnCopy() {}
+
 void CQSpeciesDetail::slotCompartmentChanged(int compartment)
 {
   if (!mpMetab || !mpCurrentCompartment) return;
@@ -776,7 +778,7 @@ void CQSpeciesDetail::slotTypeChanged(int type)
 
   if (mItemToType[type] == mpMetab->getStatus())
     {
-      specieTypeChanged(type);
+      speciesTypeChanged(type);
     }
   else
     {
@@ -835,7 +837,7 @@ void CQSpeciesDetail::slotTypeChanged(int type)
 //Undo methods
 #ifdef COPASI_UNDO
 
-void CQSpeciesDetail::createNewSpecie()
+void CQSpeciesDetail::createNewSpecies()
 {
   leave();
 
@@ -877,7 +879,7 @@ void CQSpeciesDetail::createNewSpecie()
   mpListView->switchToOtherWidget(C_INVALID_INDEX, key);
 }
 
-void CQSpeciesDetail::deleteSpecie()
+void CQSpeciesDetail::deleteSpecies()
 {
   if (mpMetab == NULL) return;
 
@@ -907,11 +909,13 @@ void CQSpeciesDetail::deleteSpecie()
         break;
     }
 
-  mpListView->switchToOtherWidget(112, "");
+  mpListView->switchToOtherWidget(CCopasiUndoCommand::SPECIES, "");
 }
 
-void CQSpeciesDetail::deleteSpecie(UndoSpeciesData *pSData)
+void CQSpeciesDetail::deleteSpecies(UndoSpeciesData *pSData)
 {
+  mpListView->switchToOtherWidget(CCopasiUndoCommand::SPECIES, "");
+
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
   assert(pDataModel != NULL);
@@ -919,20 +923,16 @@ void CQSpeciesDetail::deleteSpecie(UndoSpeciesData *pSData)
   CModel * pModel = pDataModel->getModel();
   assert(pModel != NULL);
 
-  size_t index = pModel->findMetabByName(pSData->getName());
-  CMetab *pSpecie = pModel->getMetabolites()[(int) index];
-  std::string key = pSpecie->getKey();
-
+  std::string key = pSData->getKey();
   pModel->removeMetabolite(key);
 
 #undef DELETE
   protectedNotify(ListViews::METABOLITE, ListViews::DELETE, key); //mKey);
   protectedNotify(ListViews::METABOLITE, ListViews::DELETE, "");//Refresh all as there may be dependencies.
 
-  mpListView->switchToOtherWidget(112, "");
 }
 
-void CQSpeciesDetail::addSpecie(UndoSpeciesData *pSData)
+void CQSpeciesDetail::addSpecies(UndoSpeciesData *pSData)
 {
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
@@ -944,6 +944,7 @@ void CQSpeciesDetail::addSpecie(UndoSpeciesData *pSData)
   //reinsert the species
   CMetab *pSpecie =  pModel->createMetabolite(pSData->getName(), pSData->getCompartment(), 1.0, pSData->getStatus());
   std::string key = pSpecie->getKey();
+  pSData->setKey(key);
 
   if (pSData->getStatus() != CModelEntity::ASSIGNMENT)
     {
@@ -1059,7 +1060,7 @@ void CQSpeciesDetail::addSpecie(UndoSpeciesData *pSData)
   mpListView->switchToOtherWidget(C_INVALID_INDEX, key);
 }
 
-void CQSpeciesDetail::specieTypeChanged(int type)
+void CQSpeciesDetail::speciesTypeChanged(int type)
 {
   switch ((CModelEntity::Status) mItemToType[type])
     {
@@ -1107,7 +1108,7 @@ void CQSpeciesDetail::specieTypeChanged(int type)
   setFramework(mFramework);
 }
 
-void CQSpeciesDetail::specieTypeChanged(UndoSpeciesData *pSData, int type)
+void CQSpeciesDetail::speciesTypeChanged(UndoSpeciesData *pSData, int type)
 {
 
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
@@ -1126,10 +1127,10 @@ void CQSpeciesDetail::specieTypeChanged(UndoSpeciesData *pSData, int type)
   //set the species index
   mpComboBoxType->setCurrentIndex(mpComboBoxType->findText(FROM_UTF8(CModelEntity::StatusName[type])));
   mpMetab->setStatus((CModelEntity::Status)mItemToType[mpComboBoxType->currentIndex()]);
-  specieTypeChanged(mpComboBoxType->currentIndex());
+  speciesTypeChanged(mpComboBoxType->currentIndex());
 }
 
-void CQSpeciesDetail::specieInitialValueLostFocus()
+void CQSpeciesDetail::speciesInitialValueLostFocus()
 {
   if (!mpMetab || !mpCurrentCompartment) return;
 
@@ -1164,7 +1165,7 @@ void CQSpeciesDetail::specieInitialValueLostFocus()
     }
 }
 
-void CQSpeciesDetail::specieInitialValueLostFocus(UndoSpeciesData *pSData)
+void CQSpeciesDetail::speciesInitialValueLostFocus(UndoSpeciesData *pSData)
 {
 
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);

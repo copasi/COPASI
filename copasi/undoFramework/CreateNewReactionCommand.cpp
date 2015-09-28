@@ -34,6 +34,7 @@ void CreateNewReactionCommand::redo()
   mpReaction = dynamic_cast< CReaction * >(mpReactionWidget->mpObject);
   std::string sName = mpReaction->getObjectName();
   mpReactionData->setName(sName);
+  mpReactionData->setKey(mpReaction->getKey());
   CReactionInterface* ri = new CReactionInterface((*CCopasiRootContainer::getDatamodelList())[0]->getModel());
   ri->initFromReaction(mpReaction);
   mpReactionData->setRi(ri);

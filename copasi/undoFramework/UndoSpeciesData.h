@@ -18,6 +18,8 @@
 #include "qtUtilities.h"
 #include "UndoData.h"
 
+#include <copasi/model/CModelValue.h>
+
 class CMetab;
 class UndoReactionData;
 class UndoGlobalQuantityData;

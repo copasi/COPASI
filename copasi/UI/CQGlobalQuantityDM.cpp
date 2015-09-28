@@ -446,7 +446,7 @@ bool CQGlobalQuantityDM::globalQuantityDataChange(const QModelIndex &index, cons
       emit notifyGUI(ListViews::MODELVALUE, ListViews::CHANGE, pGQ->getKey());
     }
 
-  emit changeWidget(115);
+  emit changeWidget(CCopasiUndoCommand::GLOBALQUANTITYIES);
 
   return true;
 }
@@ -466,7 +466,7 @@ void CQGlobalQuantityDM::insertNewGlobalQuantityRow(int position, int rows, cons
 
 void CQGlobalQuantityDM::deleteGlobalQuantityRow(UndoGlobalQuantityData *pGlobalQuantityData)
 {
-  emit changeWidget(115);
+  emit changeWidget(CCopasiUndoCommand::GLOBALQUANTITYIES);
   qApp->processEvents();
 
   CModel * pModel = (*CCopasiRootContainer::getDatamodelList())[0]->getModel();
@@ -489,6 +489,7 @@ void CQGlobalQuantityDM::addGlobalQuantityRow(UndoGlobalQuantityData *pGlobalQua
   CModelValue *pGlobalQuantity = pDataModel->getModel()->createModelValue(pGlobalQuantityData->getName(), pGlobalQuantityData->getInitialValue());
   pGlobalQuantity->setStatus(pGlobalQuantityData->getStatus());
   std::string key = pGlobalQuantity->getKey();
+  pGlobalQuantityData->setKey(key);
   emit notifyGUI(ListViews::MODELVALUE, ListViews::ADD, key);
   endInsertRows();
 }
@@ -538,7 +539,7 @@ bool CQGlobalQuantityDM::removeGlobalQuantityRows(QModelIndexList rows, const QM
         }
     }
 
-  emit changeWidget(115);
+  emit changeWidget(CCopasiUndoCommand::GLOBALQUANTITYIES);
 
   return true;
 }
@@ -681,13 +682,15 @@ bool CQGlobalQuantityDM::insertGlobalQuantityRows(QList <UndoGlobalQuantityData 
         }
     }
 
-  emit changeWidget(115);
+  emit changeWidget(CCopasiUndoCommand::GLOBALQUANTITYIES);
 
   return true;
 }
 
 void CQGlobalQuantityDM::deleteGlobalQuantityRows(QList <UndoGlobalQuantityData *> pData)
 {
+  emit changeWidget(CCopasiUndoCommand::GLOBALQUANTITYIES);
+
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
   assert(pDataModel != NULL);
@@ -705,7 +708,6 @@ void CQGlobalQuantityDM::deleteGlobalQuantityRows(QList <UndoGlobalQuantityData 
       removeRow((int) index);
     }
 
-  emit changeWidget(115);
 }
 
 bool CQGlobalQuantityDM::clear()

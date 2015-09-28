@@ -311,7 +311,7 @@ bool CQModelValue::enterProtected()
 
   if (!mpModelValue)
     {
-      mpListView->switchToOtherWidget(115, "");
+      mpListView->switchToOtherWidget(CCopasiUndoCommand::GLOBALQUANTITYIES, "");
       return false;
     }
 
@@ -615,11 +615,13 @@ void CQModelValue::deleteGlobalQuantity()
         break;
     }
 
-  mpListView->switchToOtherWidget(115, "");
+  mpListView->switchToOtherWidget(CCopasiUndoCommand::GLOBALQUANTITYIES, "");
 }
 
 void CQModelValue::deleteGlobalQuantity(UndoGlobalQuantityData *pGlobalQuantityData)
 {
+  mpListView->switchToOtherWidget(CCopasiUndoCommand::GLOBALQUANTITYIES, "");
+
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
   assert(pDataModel != NULL);
@@ -627,19 +629,16 @@ void CQModelValue::deleteGlobalQuantity(UndoGlobalQuantityData *pGlobalQuantityD
   CModel * pModel = pDataModel->getModel();
   assert(pModel != NULL);
 
-  CModelValue * pGQ = pModel->getModelValues()[pGlobalQuantityData->getName()];
-  std::string key = pGQ->getKey();
+  std::string key = pGlobalQuantityData->getKey();
   pModel->removeModelValue(key);
   mpModelValue = NULL;
 
 #undef DELETE
   protectedNotify(ListViews::MODELVALUE, ListViews::DELETE, key);
   protectedNotify(ListViews::MODELVALUE, ListViews::DELETE, "");//Refresh all as there may be dependencies.
-
-  mpListView->switchToOtherWidget(115, "");
 }
 
-void CQModelValue::addGlobalQuantity(UndoGlobalQuantityData *pSData)
+void CQModelValue::addGlobalQuantity(UndoGlobalQuantityData *pData)
 {
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
@@ -654,25 +653,26 @@ void CQModelValue::addGlobalQuantity(UndoGlobalQuantityData *pSData)
     std::string key = pGlobalQuantity->getKey();
     protectedNotify(ListViews::MODELVALUE, ListViews::ADD, key);  */
 
-  CModelValue *pGlobalQuantity =  pModel->createModelValue(pSData->getName());
-  pGlobalQuantity->setStatus(pSData->getStatus());
+  CModelValue *pGlobalQuantity =  pModel->createModelValue(pData->getName());
+  pData->setKey(pGlobalQuantity->getKey());
+  pGlobalQuantity->setStatus(pData->getStatus());
 
-  if (pSData->getStatus() != CModelEntity::ASSIGNMENT)
+  if (pData->getStatus() != CModelEntity::ASSIGNMENT)
     {
-      pGlobalQuantity->setInitialValue(pSData->getInitialValue());
+      pGlobalQuantity->setInitialValue(pData->getInitialValue());
     }
 
   // set the expression
-  if (pSData->getStatus() != CModelEntity::FIXED)
+  if (pData->getStatus() != CModelEntity::FIXED)
     {
-      pGlobalQuantity->setExpression(pSData->getExpression());
+      pGlobalQuantity->setExpression(pData->getExpression());
       pGlobalQuantity->getExpressionPtr()->compile();
     }
 
   // set initial expression
-  if (pSData->getStatus() != CModelEntity::ASSIGNMENT)
+  if (pData->getStatus() != CModelEntity::ASSIGNMENT)
     {
-      pGlobalQuantity->setInitialExpression(pSData->getInitialExpression());
+      pGlobalQuantity->setInitialExpression(pData->getInitialExpression());
       pGlobalQuantity->getInitialExpressionPtr()->compile();
     }
 
@@ -680,10 +680,9 @@ void CQModelValue::addGlobalQuantity(UndoGlobalQuantityData *pSData)
 
   //restore the reactions the Global Quantity dependent on
   //restore the reactions
-  QList <UndoGlobalQuantityData *>::const_iterator k;
 
   //reinsert all the species
-  QList <UndoSpeciesData *> *pSpecieData = pSData->getSpecieDependencyObjects();
+  QList <UndoSpeciesData *> *pSpecieData = pData->getSpecieDependencyObjects();
 
   if (!pSpecieData->empty())
     {
@@ -722,7 +721,7 @@ void CQModelValue::addGlobalQuantity(UndoGlobalQuantityData *pSData)
         }
     }
 
-  QList <UndoReactionData *> *reactionData = pSData->getReactionDependencyObjects();
+  QList <UndoReactionData *> *reactionData = pData->getReactionDependencyObjects();
 
   QList <UndoReactionData *>::const_iterator j;
 
@@ -743,7 +742,7 @@ void CQModelValue::addGlobalQuantity(UndoGlobalQuantityData *pSData)
     }
 
   //reinsert the dependency events
-  QList <UndoEventData *> *pEventData = pSData->getEventDependencyObjects();
+  QList <UndoEventData *> *pEventData = pData->getEventDependencyObjects();
 
   if (!pEventData->empty())
     {

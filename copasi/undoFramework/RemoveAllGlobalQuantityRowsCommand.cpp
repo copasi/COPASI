@@ -23,10 +23,12 @@
 #include "UndoReactionData.h"
 #include "RemoveAllGlobalQuantityRowsCommand.h"
 
-RemoveAllGlobalQuantityRowsCommand::RemoveAllGlobalQuantityRowsCommand(CQGlobalQuantityDM * pGlobalQuantityDM, const QModelIndex&)
+RemoveAllGlobalQuantityRowsCommand::RemoveAllGlobalQuantityRowsCommand(
+  CQGlobalQuantityDM * pGlobalQuantityDM, const QModelIndex&)
+  : CCopasiUndoCommand("Global Quantity", GLOBALQUANTITY_REMOVE_ALL)
+  , mpGlobalQuantityDM(pGlobalQuantityDM)
+  , mpGlobalQuantityData()
 {
-  mpGlobalQuantityDM = pGlobalQuantityDM;
-
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
   assert(pDataModel != NULL);
@@ -69,9 +71,7 @@ RemoveAllGlobalQuantityRowsCommand::RemoveAllGlobalQuantityRowsCommand(CQGlobalQ
         }
     }
 
-  mType = GLOBALQUANTITY_REMOVE_ALL;
-  setEntityType("Global Quantity");
-  this->setText(removeAllGlobalQuantityRowsText());
+  setText(removeAllGlobalQuantityRowsText());
 }
 
 void RemoveAllGlobalQuantityRowsCommand::redo()
@@ -95,5 +95,11 @@ QString RemoveAllGlobalQuantityRowsCommand::removeAllGlobalQuantityRowsText() co
 
 RemoveAllGlobalQuantityRowsCommand::~RemoveAllGlobalQuantityRowsCommand()
 {
-  // TODO Auto-generated destructor stub
+  // freeing the memory allocated above
+  foreach(UndoGlobalQuantityData * data, mpGlobalQuantityData)
+  {
+    pdelete(data);
+  }
+  mpGlobalQuantityData.clear();
+
 }

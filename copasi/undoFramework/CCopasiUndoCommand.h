@@ -30,6 +30,60 @@ class UndoEventData;
 class CCopasiUndoCommand : public QUndoCommand
 {
 public:
+
+
+  /**
+   * rather than using integers to refer to widgets,
+   * let us use an enumeration, this will sort issues
+   * caused by misunderstandings.
+   */
+  enum TopLevelWidgets
+  {
+    DFAULT = 0, // default widget
+    MODEL = 1, // model widget
+    COMPARTMENTS = 111, // compartment overview
+    SPECIES = 112, // species overview
+    REACTIONS = 114, // reactions overview
+    GLOBALQUANTITYIES = 115, // global quantity dn
+    EVENTS = 116, // events overview
+    PARAMETER_OVERVIEW = 118, // parameter oveview widget
+    PARAMETER_SETS = 119, // parameter set overview
+    DIFFERENTIAL_EQNS = 126, // differential equations
+    MATRICES = 127, // math matrices
+    DEBUG = 128, // debug widget
+    LAYOUTS = 13, // layout overview
+    TASK_STEADY_STATE = 21, // steady state widget
+    RESULT_STEADY_STATE = 211, // steady state result
+    TASK_FLUX_MODES = 221, // elementary flux mode
+    RESULT_FLUX_MODES = 2211, // efm result widget
+    TASK_MOIETIES = 222, // moieties task
+    RESULT_MOIETIES = 2221, // moieties task result
+    TASK_TRAJECTORIES = 23, // trajectories task
+    RESULT_TRAJECTORIES = 231, // trajectory task result
+    TASK_MCA = 24, // mca task
+    RESULT_MCA = 241, // mca task result
+    TASK_LYAP = 26, // lyap task
+    RESULT_LYAP = 261, // lyap task result
+    TASK_TSSA = 27, // tssa task
+    RESULT_TSSA = 271, // tssa task result
+    TASK_CROSS_SECTION = 28, // crosssection task
+    RESULT_CROSS_SECTION = 281, // crosssection task result
+    TASK_OSCILLATION = 29, // oscillation task
+    TASK_SCAN = 31, // scan task
+    TASK_OPTIMIZATION = 32, // optimization task
+    RESULT_OPTIMIZATION = 321, // optimization task result
+    TASK_FITTING = 33, // fitting task
+    RESULT_FITTING = 331, // fitting task result
+    TASK_SENSITIVITIES = 34, // sensitivities task
+    RESULT_SENSITIVITIES = 341, // sensitivities task result
+    TASK_LNA = 35, // lna task
+    RESULT_LNA = 351, // lna task results
+    REPORTS = 43, // reports overview
+    PLOTS = 42, // plots overview
+    FUNCTIONS = 5, // functions overview
+    INVALID = -1 // invalid widget
+  };
+
   /**
    *  The valid command types for the undo history
    */

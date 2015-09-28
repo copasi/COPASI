@@ -763,11 +763,13 @@ void CQCompartment::deleteCompartment()
         break;
     }
 
-  mpListView->switchToOtherWidget(111, "");
+  mpListView->switchToOtherWidget(CCopasiUndoCommand::COMPARTMENTS, "");
 }
 
 void CQCompartment::deleteCompartment(UndoCompartmentData *pCompartmentData)
 {
+  mpListView->switchToOtherWidget(CCopasiUndoCommand::COMPARTMENTS, "");
+
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
   assert(pDataModel != NULL);
@@ -775,8 +777,7 @@ void CQCompartment::deleteCompartment(UndoCompartmentData *pCompartmentData)
   CModel * pModel = pDataModel->getModel();
   assert(pModel != NULL);
 
-  CCompartment * pCompartment = pModel->getCompartments()[pCompartmentData->getName()];
-  std::string key = pCompartment->getKey();
+  std::string key = pCompartmentData->getKey();
   pModel->removeCompartment(key);
   mpCompartment = NULL;
 
@@ -784,7 +785,6 @@ void CQCompartment::deleteCompartment(UndoCompartmentData *pCompartmentData)
   protectedNotify(ListViews::COMPARTMENT, ListViews::DELETE, key);
   protectedNotify(ListViews::COMPARTMENT, ListViews::DELETE, "");//Refresh all as there may be dependencies.
 
-  mpListView->switchToOtherWidget(111, "");
 }
 
 void CQCompartment::addCompartment(UndoCompartmentData *pData)
@@ -801,6 +801,7 @@ void CQCompartment::addCompartment(UndoCompartmentData *pData)
   pCompartment->setInitialValue(pData->getInitialValue());
   pCompartment->setStatus(pData->getStatus());
   std::string key = pCompartment->getKey();
+  pData->setKey(key);
   protectedNotify(ListViews::COMPARTMENT, ListViews::ADD, key);
 
   //restore all the dependencies

@@ -46,6 +46,7 @@ void InsertEventRowsCommand::redo()
       CEvent *pEvent = pModel->getEvents()[mPosition];
 
       mpEventData->setName(pEvent->getObjectName());
+      mpEventData->setKey(pEvent->getKey());
       mpEventData->setPriorityExpression(pEvent->getPriorityExpression());
       mpEventData->setDelayExpression(pEvent->getDelayExpression());
       mpEventData->setTriggerExpression(pEvent->getTriggerExpression());

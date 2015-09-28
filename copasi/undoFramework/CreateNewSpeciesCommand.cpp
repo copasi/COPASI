@@ -17,23 +17,24 @@
 
 #include "CreateNewSpeciesCommand.h"
 
-CreateNewSpeciesCommand::CreateNewSpeciesCommand(CQSpeciesDetail *pSpecieDetail)
+CreateNewSpeciesCommand::CreateNewSpeciesCommand(CQSpeciesDetail *pSpeciesDetail)
   : CCopasiUndoCommand("Species", SPECIES_CREATE)
   , mpSpeciesData(new UndoSpeciesData())
-  , mpSpecieDetail(pSpecieDetail)
+  , mpSpeciesDetail(pSpeciesDetail)
 {
-  this->setText(createNewSpecieText());
+  this->setText(createNewSpeciesText());
 }
 
 void CreateNewSpeciesCommand::redo()
 {
-  mpSpecieDetail->createNewSpecie();
+  mpSpeciesDetail->createNewSpecies();
 
-  std::string sName = mpSpecieDetail->mpMetab->getObjectName();
+  std::string sName = mpSpeciesDetail->mpMetab->getObjectName();
   mpSpeciesData->setName(sName);
-  mpSpeciesData->setIConc(mpSpecieDetail->mpMetab->getInitialConcentration());
-  mpSpeciesData->setCompartment(mpSpecieDetail->mpMetab->getCompartment()->getObjectName());
-  mpSpeciesData->setStatus(mpSpecieDetail->mpMetab->getStatus());
+  mpSpeciesData->setKey(mpSpeciesDetail->mpMetab->getKey());
+  mpSpeciesData->setIConc(mpSpeciesDetail->mpMetab->getInitialConcentration());
+  mpSpeciesData->setCompartment(mpSpeciesDetail->mpMetab->getCompartment()->getObjectName());
+  mpSpeciesData->setStatus(mpSpeciesDetail->mpMetab->getStatus());
   setUndoState(true);
   setAction("Create");
   setName(sName);
@@ -41,12 +42,12 @@ void CreateNewSpeciesCommand::redo()
 
 void CreateNewSpeciesCommand::undo()
 {
-  mpSpecieDetail->deleteSpecie(mpSpeciesData);
+  mpSpeciesDetail->deleteSpecies(mpSpeciesData);
   setUndoState(false);
   setAction("Delete");
 }
 
-QString CreateNewSpeciesCommand::createNewSpecieText() const
+QString CreateNewSpeciesCommand::createNewSpeciesText() const
 {
   return QObject::tr(": Created new species ");
 }

@@ -46,6 +46,7 @@ void InsertGlobalQuantityRowsCommand::redo()
 
       CModelValue *pGlobalQuantity = pModel->getModelValues()[mPosition];
       mpGlobalQuantityData->setName(pGlobalQuantity->getObjectName());
+      mpGlobalQuantityData->setKey(pGlobalQuantity->getKey());
       mpGlobalQuantityData->setInitialValue(pGlobalQuantity->getInitialValue());
       mpGlobalQuantityData->setStatus(pGlobalQuantity->getStatus());
       firstTime = false;

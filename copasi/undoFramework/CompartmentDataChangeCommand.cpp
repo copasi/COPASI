@@ -32,9 +32,6 @@ CompartmentDataChangeCommand::CompartmentDataChangeCommand(
   , mPathIndex()
 
 {
-
-  //mPathIndex = pathFromIndex(index);
-
   //set the data for UNDO history
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
@@ -104,7 +101,6 @@ void CompartmentDataChangeCommand::undo()
 QString CompartmentDataChangeCommand::compartmentDataChangeText() const
 {
   return QString(": Changed compartment %1").arg(getProperty().c_str());
-  //QObject::tr(": Changed Compartment Data");
 }
 
 CompartmentDataChangeCommand::~CompartmentDataChangeCommand()

@@ -787,7 +787,7 @@ bool CQSpecieDM::specieDataChange(const QModelIndex &index, const QVariant &valu
         }
     }
 
-  emit changeWidget(112);
+  emit changeWidget(CCopasiUndoCommand::SPECIES);
 
   return true;
 }
@@ -823,7 +823,7 @@ void CQSpecieDM::deleteSpecieRow(UndoSpeciesData *pSpecieData)
   CModel * pModel = (*CCopasiRootContainer::getDatamodelList())[0]->getModel();
   size_t index = pModel->findMetabByName(pSpecieData->getName());
   removeRow((int) index);
-  emit changeWidget(112);
+  emit changeWidget(CCopasiUndoCommand::SPECIES);
 }
 
 void CQSpecieDM::addSpecieRow(UndoSpeciesData *pSpecieData)
@@ -884,7 +884,7 @@ bool CQSpecieDM::removeSpecieRows(QModelIndexList rows, const QModelIndex&)
         }
     }
 
-  emit changeWidget(112);
+  emit changeWidget(CCopasiUndoCommand::SPECIES);
 
   return true;
 }
@@ -1071,12 +1071,15 @@ bool CQSpecieDM::insertSpecieRows(QList <UndoSpeciesData *> pData)
         }
     }
 
-  emit changeWidget(112);
+  emit changeWidget(CCopasiUndoCommand::SPECIES);
   return true;
 }
 
 void CQSpecieDM::deleteSpecieRows(QList <UndoSpeciesData *> pData)
 {
+
+  emit changeWidget(CCopasiUndoCommand::SPECIES);
+
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
   assert(pDataModel != NULL);
@@ -1094,7 +1097,6 @@ void CQSpecieDM::deleteSpecieRows(QList <UndoSpeciesData *> pData)
       endRemoveRows();
     }
 
-  emit changeWidget(112);
 }
 
 bool CQSpecieDM::clear()

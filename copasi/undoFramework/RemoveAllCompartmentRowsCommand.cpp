@@ -71,17 +71,10 @@ QString RemoveAllCompartmentRowsCommand::removeAllCompartmentRowsText() const
 
 RemoveAllCompartmentRowsCommand::~RemoveAllCompartmentRowsCommand()
 {
-  // should be freeing the memory allocated above, rather than ]
-  // the elements freed by the parent
+  // freeing the memory allocated above
   foreach(UndoCompartmentData * data, mpCompartmentData)
   {
     pdelete(data);
   }
   mpCompartmentData.clear();
-
-  //// TODO Auto-generated destructor stub
-  //pdelete(this->mpSpecieData);
-  //pdelete(this->mpReactionData);
-  //pdelete(this->mpGlobalQuantityData);
-  //pdelete(this->mpEventData);
 }

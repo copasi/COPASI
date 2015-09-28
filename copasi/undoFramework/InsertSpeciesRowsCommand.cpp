@@ -43,10 +43,11 @@ void InsertSpecieRowsCommand::redo()
       CModel * pModel = pDataModel->getModel();
       assert(pModel != NULL);
 
-      CMetab *pSpecie = pModel->getMetabolites()[mPosition];
-      mpSpeciesData->setName(pSpecie->getObjectName());
-      mpSpeciesData->setIConc(pSpecie->getInitialConcentration());
-      mpSpeciesData->setCompartment(pSpecie->getCompartment()->getObjectName());
+      CMetab *pSpecies = pModel->getMetabolites()[mPosition];
+      mpSpeciesData->setName(pSpecies->getObjectName());
+      mpSpeciesData->setKey(pSpecies->getKey());
+      mpSpeciesData->setIConc(pSpecies->getInitialConcentration());
+      mpSpeciesData->setCompartment(pSpecies->getCompartment()->getObjectName());
       firstTime = false;
     }
   else

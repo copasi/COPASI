@@ -23,11 +23,13 @@ CreateNewGlobalQuantityCommand::CreateNewGlobalQuantityCommand(CQModelValue *pMo
 {
   this->setText(createNewGlobalQuantityText());
 }
+
 void CreateNewGlobalQuantityCommand::redo()
 {
   mpModelValue->createNewGlobalQuantity();
 
   std::string sName = mpModelValue->mpModelValue->getObjectName();
+  mpGlobalQuantityData->setKey(mpModelValue->mpModelValue->getKey());
   mpGlobalQuantityData->setName(sName);
   mpGlobalQuantityData->setStatus(mpModelValue->mpModelValue->getStatus());
 
