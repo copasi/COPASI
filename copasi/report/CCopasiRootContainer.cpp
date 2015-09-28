@@ -125,7 +125,7 @@ void CCopasiRootContainer::initializeChildren()
   mpUndefined->setInfix("nan");
   mpUndefined->compile();
 
-  mpUnitList = new CCopasiVectorN< CUnit >;
+  mpUnitList = new CCopasiVectorN< CUnit >("UnitList", this);
   CUnit::updateSIUnits(*mpUnitList, CUnit::Avogadro);
 }
 
