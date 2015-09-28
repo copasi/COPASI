@@ -66,27 +66,6 @@ public:
   std::vector< CEvaluationNode * > *getNodeList()
   {return mpNodeList;}
 
-  /**
-   * Convenient function to free the list of generated nodes.
-   * @param std::vector< CEvaluationNode * > * pNodeList
-   */
-  static void freeNodeList(std::vector< CEvaluationNode * > * pNodeList)
-  {
-    if (pNodeList == NULL) return;
-
-    std::vector< CEvaluationNode * >::iterator it;
-    std::vector< CEvaluationNode * >::iterator end = pNodeList->end();
-
-    for (it = pNodeList->begin(); it != end; ++it)
-      if (*it && (*it)->getParent())
-        (*it)->getParent()->removeChild(*it);
-
-    for (it = pNodeList->begin(); it != end; ++it)
-      pdelete(*it);
-
-    pdelete(pNodeList);
-  }
-
   virtual int yylex() = 0;
 
   virtual int yyparse();
@@ -108,9 +87,9 @@ private:
   void correctErrorPosition()
   {
     std::vector< CEvaluationNode * >::iterator it
-    = mpNodeList->begin();
+      = mpNodeList->begin();
     std::vector< CEvaluationNode * >::iterator end
-    = mpNodeList->end();
+      = mpNodeList->end();
     size_t oldPosition = mPosition;
     mPosition = 0;
 

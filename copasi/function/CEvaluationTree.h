@@ -273,6 +273,11 @@ protected:
    */
   void calculate();
 
+  /**
+   * Convenient function to free the list of generated nodes.
+   */
+  void clearNodes();
+
 private:
   /**
    * Initialize the contained CCopasiObjects

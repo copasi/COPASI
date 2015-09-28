@@ -161,7 +161,7 @@ CEvaluationTree::CEvaluationTree(const CEvaluationTree & src,
 
 CEvaluationTree::~CEvaluationTree()
 {
-  CEvaluationLexer::freeNodeList(mpNodeList);
+  clearNodes();
 }
 
 const CEvaluationTree::Type & CEvaluationTree::getType() const
@@ -199,7 +199,7 @@ std::string::size_type CEvaluationTree::getErrorPosition() const
 const std::vector< CEvaluationNode * > & CEvaluationTree::getNodeList() const
 {
   if (!mpNodeList)
-    const_cast<CEvaluationTree *>(this)->mpNodeList = new std::vector< CEvaluationNode * >();
+    const_cast<CEvaluationTree *>(this)->mpNodeList = new std::vector< CEvaluationNode * >;
 
   return *mpNodeList;
 }
@@ -218,9 +218,7 @@ bool CEvaluationTree::parse()
   bool success = true;
 
   // clean up
-  CEvaluationLexer::freeNodeList(mpNodeList);
-  mpNodeList = NULL;
-  mpRoot = NULL;
+  clearNodes();
 
   if (mType == MassAction) return true;
 
@@ -245,10 +243,7 @@ bool CEvaluationTree::parse()
   if (!success)
     {
       mErrorPosition = Parser.getErrorPosition();
-
-      CEvaluationLexer::freeNodeList(mpNodeList);
-      mpNodeList = NULL;
-      mpRoot = NULL;
+      clearNodes();
     }
 
   if (success && hasCircularDependency())
@@ -419,18 +414,39 @@ void CEvaluationTree::calculate()
     }
 }
 
+/**
+ * Convenient function to free the list of generated nodes.
+ */
+void CEvaluationTree::clearNodes()
+{
+  if (mpNodeList == NULL)
+    {
+      return;
+    }
+
+  std::vector< CEvaluationNode * >::iterator it = mpNodeList->begin();
+  std::vector< CEvaluationNode * >::iterator end = mpNodeList->end();
+
+  for (; it != end; ++it)
+    if (*it && (*it)->getParent())
+      (*it)->getParent()->removeChild(*it);
+
+  for (it = mpNodeList->begin(); it != end; ++it)
+    pdelete(*it);
+
+  pdelete(mpNodeList);
+  mpRoot = NULL;
+}
+
 bool CEvaluationTree::setRoot(CEvaluationNode* pRootNode)
 {
   if (pRootNode == NULL) return false;
 
   assert(pRootNode->getParent() == NULL);
 
-  if (mpNodeList != NULL)
-    CEvaluationLexer::freeNodeList(mpNodeList);
+  clearNodes();
 
   mpRoot = pRootNode;
-
-  mpNodeList = new std::vector< CEvaluationNode * >();
 
   return updateTree();
 }
@@ -439,8 +455,7 @@ bool CEvaluationTree::updateTree()
 {
   if (mpRoot == NULL)
     {
-      CEvaluationLexer::freeNodeList(mpNodeList);
-      mpNodeList = NULL;
+      clearNodes();
 
       return false;
     }
