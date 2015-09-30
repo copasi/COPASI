@@ -1,4 +1,4 @@
-// Copyright (C) 2011 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -739,23 +739,7 @@ int GetType_COptItem(COptItem* pPointer)
 // Determine type for COptMethod
 int GetType_COptMethod(COptMethod* pPointer)
 {
-  CLASS_TYPE result = UNDEFINED_CLASS_TYPE;
-
-  if (pPointer != NULL)
-    {
-      if (dynamic_cast<CFitMethod*>(pPointer))
-        {
-          // return a CFitMethod
-          result = CFitMethod_Type;
-        }
-      else
-        {
-          // return a COptMethod
-          result = COptMethod_Type;
-        }
-    }
-
-  return (int)result;
+  return COptMethod_Type;
 }
 
 // Determine type for COptProblem

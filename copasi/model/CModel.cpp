@@ -1045,6 +1045,13 @@ const CMatrix < C_FLOAT64 >& CModel::getRedStoi() const
 const CMatrix < C_FLOAT64 >& CModel::getStoi() const
 {CCHECK return mStoi;}
 
+
+const CArrayAnnotation *
+CModel::getStoiAnnotation() const
+{
+  return mpStoiAnnotation;
+}
+
 const CCopasiVector < CMoiety > & CModel::getMoieties() const
 {return mMoieties;}
 
@@ -2191,7 +2198,7 @@ bool
 CModel::createEventsForTimeseries(CExperiment* experiment/* = NULL*/)
 {
 
-#pragma region   //find_experiment
+  #pragma region   //find_experiment
 
   if (experiment == NULL)
     {
@@ -2241,7 +2248,7 @@ CModel::createEventsForTimeseries(CExperiment* experiment/* = NULL*/)
       return createEventsForTimeseries(const_cast<CExperiment*>(theExperiment));
     }
 
-#pragma endregion //find_experiment
+  #pragma endregion //find_experiment
 
   if (experiment->getExperimentType() != CTaskEnum::timeCourse)
     {

@@ -819,3 +819,11 @@ bool CMCAMethod::isValidProblem(const CCopasiProblem * pProblem)
 
   return true;
 }
+
+const CModel*
+CMCAMethod::getModel() const
+{
+  if (mpContainer == NULL) return NULL;
+
+  return &mpContainer->getModel();
+}

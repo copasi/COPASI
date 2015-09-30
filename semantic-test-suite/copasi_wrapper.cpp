@@ -49,10 +49,10 @@ int main(int argc, char *argv[])
       CCopasiRootContainer::init(0, NULL, false);
     }
 
-  catch (copasi::autoexcept &e)
+  catch (copasi::autoexcept &/*e*/)
     {}
 
-  catch (copasi::option_error &e)
+  catch (copasi::option_error &/*e*/)
     {}
 
   if (argc < 5)
@@ -106,7 +106,7 @@ int main(int argc, char *argv[])
       // time.
       CReportDefinitionVector* pReports = pDataModel->getReportDefinitionList();
       CReportDefinition* pReport = pReports->createReportDefinition("Report", "Output for SBML testsuite run");
-      pReport->setTaskType(CCopasiTask::timeCourse);
+      pReport->setTaskType(CTaskEnum::timeCourse);
       pReport->setIsTable(true);
 
       std::vector<CRegisteredObjectName>* pTable = pReport->getTableAddr();
@@ -136,7 +136,7 @@ int main(int argc, char *argv[])
         }
 
       // create a trajectory task
-      pTrajectoryTask = new CTrajectoryTask();
+      pTrajectoryTask = new CTrajectoryTask(pDataModel->getTaskList());
       pTrajectoryTask->getProblem()->setModel(pDataModel->getModel());
 
       pTrajectoryTask->setScheduled(true);

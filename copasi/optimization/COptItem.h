@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -130,7 +130,8 @@ public:
    * @param const CObjectInterface::ContainerList listOfContainer
    * @return bool success
    */
-  virtual bool compile(CObjectInterface::ContainerList listOfContainer);
+  virtual bool compile(CObjectInterface::ContainerList listOfContainer =
+                         CCopasiContainer::EmptyList);
 
   /**
    * This functions check whether the current value is within the limits

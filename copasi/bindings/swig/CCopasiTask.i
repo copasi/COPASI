@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., University of Heidelberg, and The University 
 // of Manchester. 
 // All rights reserved. 
@@ -29,6 +29,7 @@
 
 %{
 #include <exception>
+#include "utilities/CTaskEnum.h"
 #include "utilities/CCopasiTask.h"
 #include "utilities/CCopasiException.h"
 %}
@@ -76,6 +77,10 @@
 %warnfilter(325) CDescription;
 %warnfilter(325) CResult;
 
+%template(TaskSubTypeVector) std::vector<CTaskEnum::Task>;
+%template(MethodSubTypeVector) std::vector<CTaskEnum::Method>;
+
+%include "utilities/CTaskEnum.h"
 %include "utilities/CCopasiTask.h"
 
 #if (defined SWIGJAVA || defined SWIGCSHARP)                    
@@ -104,7 +109,7 @@
     {
       std::vector<C_INT32> validMethods;
       unsigned int i=0;
-      while(self->ValidMethods[i]!=CCopasiMethod::unset)
+      while(self->ValidMethods[i]!=CTaskEnum::UnsetMethod)
       {
         validMethods.push_back(self->ValidMethods[i]);
         i++;

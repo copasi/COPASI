@@ -39,7 +39,7 @@
 CReportDefinition* createReport(CCopasiDataModel* pDataModel, CReportDefinitionVector* pReports)
 {
   CReportDefinition* pReport =  pReports->createReportDefinition("Report", "Output for batch run");
-  pReport->setTaskType(CCopasiTask::steadyState);
+  pReport->setTaskType(CTaskEnum::steadyState);
   pReport->setIsTable(false);
   pReport->setSeparator(CCopasiReportSeparator(", "));
 
@@ -169,8 +169,8 @@ int main(int argc, char *argv[])
 
       //**** create a task ****
 
-      CSteadyStateTask* pSSTask = new CSteadyStateTask();
-      pSSTask->setMethodType(CCopasiMethod::Newton);
+      CSteadyStateTask* pSSTask = new CSteadyStateTask(pDataModel->getTaskList());
+      pSSTask->setMethodType(CTaskEnum::Newton);
       pSSTask->getProblem()->setModel(pDataModel->getModel());
 
       pSSTask->setScheduled(true);

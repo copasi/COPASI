@@ -358,6 +358,11 @@ public:
   const CMatrix < C_FLOAT64 > & getStoi() const;
 
   /**
+   * @return Get the matrix annotation to the stoichiometry matrix.
+   */
+  const CArrayAnnotation * getStoiAnnotation() const;
+
+  /**
    * Return the mMoieties of this model
    * @return CCopasiVectorN < CMoiety > &
    */

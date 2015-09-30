@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., University of Heidelberg, and The University 
 // of Manchester. 
 // All rights reserved. 
@@ -32,7 +32,7 @@
 %extend CSensTask{
 
 #ifdef SWIGR
-  bool setMethodType(const CCopasiMethod::SubType& type)
+  bool setMethodType(const CTaskEnum::Method& type)
    {
       return $self->setMethodType(type);
    }
@@ -41,7 +41,7 @@
     {
       std::vector<C_INT32> validMethods;
       unsigned int i=0;
-      while($self->ValidMethods[i]!=CCopasiMethod::unset)
+      while($self->ValidMethods[i]!=CTaskEnum::UnsetMethod)
       {
         validMethods.push_back($self->ValidMethods[i]);
         i++;

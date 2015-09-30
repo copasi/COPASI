@@ -1,4 +1,4 @@
-// Copyright (C) 2012 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -84,34 +84,35 @@ TaskWidget* Worker::getWidgetForTask(CCopasiTask *task)  const
 
   switch (task->getType())
     {
-      case CCopasiTask::steadyState:
+      case CTaskEnum::steadyState:
         return reinterpret_cast<TaskWidget*>(views->getSteadyStateWidget());
 
-      case CCopasiTask::timeCourse:
+      case CTaskEnum::timeCourse:
         return reinterpret_cast<TaskWidget*>(views->getTrajectoryWidget());
 
-      case CCopasiTask::scan:
+      case CTaskEnum::scan:
         return reinterpret_cast<TaskWidget*>(views->getScanWidget());
 
-      case CCopasiTask::optimization:
+      case CTaskEnum::optimization:
         return reinterpret_cast<TaskWidget*>(views->getOptimizationWidget());
 
-      case CCopasiTask::parameterFitting:
+      case CTaskEnum::parameterFitting:
         return reinterpret_cast<TaskWidget*>(views->getFittingWidget());
 
-      case CCopasiTask::mca:
+      case CTaskEnum::mca:
         return reinterpret_cast<TaskWidget*>(views->getMCAWidget());
 
-      case CCopasiTask::lna:
+      case CTaskEnum::lna:
         return reinterpret_cast<TaskWidget*>(views->getLNAWidget());
 
-      case CCopasiTask::lyap:
-      case CCopasiTask::fluxMode:
-      case CCopasiTask::tssAnalysis:
-      case CCopasiTask::sens:
-      case CCopasiTask::moieties:
-      case CCopasiTask::crosssection:
-      case CCopasiTask::unset:
+      case CTaskEnum::lyap:
+      case CTaskEnum::fluxMode:
+      case CTaskEnum::tssAnalysis:
+      case CTaskEnum::sens:
+      case CTaskEnum::moieties:
+      case CTaskEnum::crosssection:
+
+        //case CTaskEnum::unset:
       default:
         // have no widget for these
         return NULL;
@@ -124,34 +125,35 @@ int Worker::getIndexForTask(CCopasiTask* task)
 
   switch (task->getType())
     {
-      case CCopasiTask::steadyState:
+      case CTaskEnum::steadyState:
         return 21;
 
-      case CCopasiTask::timeCourse:
+      case CTaskEnum::timeCourse:
         return 23;
 
-      case CCopasiTask::scan:
+      case CTaskEnum::scan:
         return 31;
 
-      case CCopasiTask::optimization:
+      case CTaskEnum::optimization:
         return 32;
 
-      case CCopasiTask::parameterFitting:
+      case CTaskEnum::parameterFitting:
         return 33;
 
-      case CCopasiTask::mca:
+      case CTaskEnum::mca:
         return 24;
 
-      case CCopasiTask::lna:
+      case CTaskEnum::lna:
         return 35;
 
-      case CCopasiTask::lyap:
-      case CCopasiTask::fluxMode:
-      case CCopasiTask::tssAnalysis:
-      case CCopasiTask::sens:
-      case CCopasiTask::moieties:
-      case CCopasiTask::crosssection:
-      case CCopasiTask::unset:
+      case CTaskEnum::lyap:
+      case CTaskEnum::fluxMode:
+      case CTaskEnum::tssAnalysis:
+      case CTaskEnum::sens:
+      case CTaskEnum::moieties:
+      case CTaskEnum::crosssection:
+
+        //case CTaskEnum::unset:
       default:
         // have no id
         return -1;

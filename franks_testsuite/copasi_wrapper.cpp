@@ -1,23 +1,11 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/franks_testsuite/copasi_wrapper.cpp,v $
-//   $Revision: 1.11 $
-//   $Name:  $
-//   $Author: bergmann $
-//   $Date: 2012/04/10 09:51:05 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
-// All rights reserved.
-
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
 #define COPASI_MAIN
@@ -111,7 +99,7 @@ int main(int argc, char *argv[])
       // time.
       CReportDefinitionVector* pReports = pDataModel->getReportDefinitionList();
       CReportDefinition* pReport = pReports->createReportDefinition("Report", "Output for batch run");
-      pReport->setTaskType(CCopasiTask::timeCourse);
+      pReport->setTaskType(CTaskEnum::timeCourse);
       pReport->setIsTable(false);
       pReport->setSeparator(CCopasiReportSeparator(", "));
 
@@ -185,10 +173,10 @@ int main(int argc, char *argv[])
         }
 
       // create a trajectory task
-      pTrajectoryTask = new CTrajectoryTask();
+      pTrajectoryTask = new CTrajectoryTask(pDataModel->getTaskList());
       // use LSODAR from now on since we will have events pretty soon
-      pTrajectoryTask->setMethodType(CCopasiMethod::LSODAR);
-      pTrajectoryTask->getProblem()->setModel(pDataModel->getModel());
+      pTrajectoryTask->setMethodType(CTaskEnum::LSODAR);
+      pTrajectoryTask->getProblem()->setMathContainer(&pDataModel->getModel()->getMathContainer());
 
       pTrajectoryTask->setScheduled(true);
 

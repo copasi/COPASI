@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -125,4 +125,14 @@ std::ostream &operator<<(std::ostream &os, const CCopasiProblem & o)
     }
 
   return os;
+}
+
+
+bool
+CCopasiProblem::setModel(CModel* model)
+{
+  if (model == NULL) return false;
+
+  setMathContainer(&model->getMathContainer());
+  return true;
 }

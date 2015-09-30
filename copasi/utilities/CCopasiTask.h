@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -459,6 +459,7 @@ protected:
 #ifndef SWIG
   // used by language bindings to hold last process warnings / errors
   //   however, swig stumbles over this if it sees it here
+public:
   std::string Error;
   std::string Warning;
 #endif // SWIG

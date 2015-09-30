@@ -49,7 +49,7 @@
 
 #include "FontChooser.h"
 
-#if (defined WIN32 && !defined log2)
+#if (defined WIN32 && !defined log2 && _MSC_VER < 1900)
 C_FLOAT64 log2(const C_FLOAT64 __x)
 {return log(__x) / M_LN2;}
 #endif // WIN32

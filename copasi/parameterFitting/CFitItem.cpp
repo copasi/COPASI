@@ -96,7 +96,7 @@ bool CFitItem::isValid(CCopasiParameterGroup & group)
   return tmp.isValid();
 }
 
-bool CFitItem::compile(const CObjectInterface::ContainerList listOfContainer)
+bool CFitItem::compile(CObjectInterface::ContainerList listOfContainer)
 {
   bool success = COptItem::compile(listOfContainer);
 

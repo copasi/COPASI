@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -106,6 +106,15 @@ public:
    * @result bool success
    */
   virtual bool restore(const bool & updateModel);
+
+  /**
+   * convenience method that sets the models math continer
+   * as the mathcontainer for this problem
+   *
+   * @param model the model whose mathcontainer to set
+   * @result bool success
+   */
+  virtual bool setModel(CModel* model);
 
   /**
    * calculate function for optimization

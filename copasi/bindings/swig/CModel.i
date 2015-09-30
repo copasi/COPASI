@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., University of Heidelberg, and The University 
 // of Manchester. 
 // All rights reserved. 
@@ -11,17 +11,6 @@
 // Copyright (C) 2006 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc. and EML Research, gGmbH. 
 // All rights reserved. 
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -271,21 +260,12 @@ typedef std::vector<CCopasiObject*> ObjectStdVector;
      return $self->compileIfNecessary(NULL);
    }
    
-   void applyInitialValues()
-   {
-     $self->compileIfNecessary(NULL);
-     $self->applyInitialValues();
-     $self->updateNonSimulatedValues();
-   }
-   
    void updateInitialValues(const std::vector<CCopasiObject*>& v)
    {
      std::set<const CCopasiObject*> changedObjects;
      changedObjects.insert(v.begin(),v.end());
-     std::vector<Refresh*> refreshes=$self->buildInitialRefreshSequence(changedObjects);
-     std::vector<Refresh*>::iterator refreshIt = refreshes.begin(), refreshEndit = refreshes.end();
-     while (refreshIt != refreshEndit)
-       (**refreshIt++)();
+		 
+		 $self->updateInitialValues(changedObjects);
    };
    
    CModelValue* getModelValue(const std::string& name)

@@ -86,7 +86,7 @@ public:
    * @param const CObjectInterface::ContainerList listOfContainer
    * @return bool success
    */
-  virtual bool compile(const CObjectInterface::ContainerList listOfContainer =
+  virtual bool compile(CObjectInterface::ContainerList listOfContainer =
                          CCopasiContainer::EmptyList);
 
   /**
@@ -227,6 +227,7 @@ protected:
    * The value for local items, which affect the experiments in the list.
    */
   C_FLOAT64 mLocalValue;
+
 };
 
 class CFitConstraint : public CFitItem
