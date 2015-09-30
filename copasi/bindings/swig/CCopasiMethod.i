@@ -23,7 +23,7 @@
 
 %newobject CCopasiMethod::createMethod(const CCopasiContainer * pParent,
                                       const CTaskEnum::Method & methodType,
-                                      const CTaskEnum::Task & taskType)
+                                      const CTaskEnum::Task & taskType);
 
 %ignore operator<<;
 %ignore CCopasiMethod::XMLSubType;
