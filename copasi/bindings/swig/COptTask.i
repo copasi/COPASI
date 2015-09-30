@@ -39,12 +39,14 @@
 %extend COptTask{
   std::vector<C_INT32> getValidMethods() const
     {
+		  const CTaskEnum::Method *methods = $self->getValidMethods();
+			
       std::vector<C_INT32> validMethods;
       unsigned int i=0;
-      while($self->ValidMethods[i]!=CTaskEnum::UnsetMethod)
+      while(methods!=CTaskEnum::UnsetMethod)
       {
-        validMethods.push_back($self->ValidMethods[i]);
-        i++;
+        validMethods.push_back(methods[i]);
+        ++i;
       }
       return validMethods;
     } 
