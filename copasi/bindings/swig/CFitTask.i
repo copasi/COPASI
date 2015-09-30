@@ -37,7 +37,7 @@
 			
       std::vector<C_INT32> validMethods;
       unsigned int i=0;
-      while(methods!=CTaskEnum::UnsetMethod)
+      while(methods[i]!=CTaskEnum::UnsetMethod)
       {
         validMethods.push_back(methods[i]);
         ++i;
