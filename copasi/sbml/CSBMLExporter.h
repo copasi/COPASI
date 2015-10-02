@@ -190,7 +190,10 @@ public:
    * contain a number of messages that specify why it can't be exported.
    */
   static const std::vector<SBMLIncompatibility> isModelSBMLCompatible(
-    const CCopasiDataModel& pDataModel, int sbmlLevel, int sbmlVersion);
+    const CCopasiDataModel& pDataModel,
+    int sbmlLevel,
+    int sbmlVersion,
+    std::map<std::string, const SBase*>& idMap);
 
   /**
    * This method assures that the SBMLDocument is not deleted by the destructor of the exporter.
@@ -354,6 +357,7 @@ protected:
       unsigned int sbmlLevel,
       unsigned int sbmlVersion,
       std::vector<SBMLIncompatibility>& result,
+      std::map<std::string, const SBase*>& idMap,
       bool initialExpression = false,
       std::map<const std::string, Parameter*>* initialMap = NULL);
 
@@ -430,6 +434,7 @@ protected:
                                          int sbmlLevel,
                                          int sbmlVersion,
                                          std::vector<SBMLIncompatibility>& result,
+                                         std::map<std::string, const SBase*>& idMap,
                                          const std::string& objectDescription,
                                          bool initialExression = false,
                                          std::map<const std::string, Parameter*>* initialMap = NULL);
@@ -594,7 +599,8 @@ protected:
       unsigned int sbmlLevel,
       unsigned int sbmlVersion,
       const std::string& eventName,
-      std::vector<SBMLIncompatibility>& result);
+      std::vector<SBMLIncompatibility>& result,
+      std::map<std::string, const SBase*>& idMap);
 
   /**
    * This method checks if the given event object is SBML
@@ -604,7 +610,9 @@ protected:
                                     const CCopasiDataModel& dataModel,
                                     unsigned int sbmlLevel,
                                     unsigned int sbmlVersion,
-                                    std::vector<SBMLIncompatibility>& result);
+                                    std::vector<SBMLIncompatibility>& result,
+                                    std::map<std::string, const SBase*>& idMap
+                                   );
 
   /**
    * This method creates an ASTNode tree where all the species specified in

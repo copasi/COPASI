@@ -1794,14 +1794,15 @@ void CSBMLExporter::createInitialAssignment(const CModelEntity& modelEntity, CCo
 {
   // check the expression
   std::vector<SBMLIncompatibility> result;
-  CSBMLExporter::isExpressionSBMLCompatible(*modelEntity.getInitialExpressionPtr()
-      , dataModel
-      , this->mSBMLLevel
-      , this->mSBMLVersion
-      , result
-      , std::string("initial expression for object named \"" + modelEntity.getObjectName() + "\"").c_str()
-      , true
-      , &mInitialValueMap);
+  isExpressionSBMLCompatible(*modelEntity.getInitialExpressionPtr()
+                             , dataModel
+                             , this->mSBMLLevel
+                             , this->mSBMLVersion
+                             , result
+                             , mIdMap
+                             , std::string("initial expression for object named \"" + modelEntity.getObjectName() + "\"").c_str()
+                             , true
+                             , &mInitialValueMap);
 
   // collect directly used functions
   if (result.empty())
@@ -2073,6 +2074,7 @@ void CSBMLExporter::createRule(const CModelEntity& modelEntity, CCopasiDataModel
       , this->mSBMLLevel
       , this->mSBMLVersion
       , result
+      , mIdMap
       , std::string("rule for object named \"" + modelEntity.getObjectName() + "\"").c_str()
       , false
       , &mInitialValueMap);
@@ -2429,7 +2431,7 @@ void CSBMLExporter::checkForUnsupportedObjectReferences(const CCopasiDataModel& 
 
       if (pME != NULL)
         {
-          checkForUnsupportedObjectReferences(*pME->getExpressionPtr(), dataModel, sbmlLevel, sbmlVersion, result, false, &mInitialValueMap);
+          checkForUnsupportedObjectReferences(*pME->getExpressionPtr(), dataModel, sbmlLevel, sbmlVersion, result, mIdMap, false, &mInitialValueMap);
         }
     }
 
@@ -2443,7 +2445,7 @@ void CSBMLExporter::checkForUnsupportedObjectReferences(const CCopasiDataModel& 
 
       if (pME != NULL)
         {
-          checkForUnsupportedObjectReferences(*pME->getExpressionPtr(), dataModel, sbmlLevel, sbmlVersion, result, false, &mInitialValueMap);
+          checkForUnsupportedObjectReferences(*pME->getExpressionPtr(), dataModel, sbmlLevel, sbmlVersion, result, mIdMap, false, &mInitialValueMap);
         }
     }
 
@@ -2457,7 +2459,7 @@ void CSBMLExporter::checkForUnsupportedObjectReferences(const CCopasiDataModel& 
 
       if (pME != NULL)
         {
-          checkForUnsupportedObjectReferences(*pME->getInitialExpressionPtr(), dataModel, sbmlLevel, sbmlVersion, result, false, &mInitialValueMap);
+          checkForUnsupportedObjectReferences(*pME->getInitialExpressionPtr(), dataModel, sbmlLevel, sbmlVersion, result, mIdMap, false, &mInitialValueMap);
         }
     }
 }
@@ -2475,6 +2477,7 @@ std::string getAnnotationStringFor(const CCopasiObject* pObjectParent)
  * for it.
  */
 void addToInitialValueMap(std::map<const std::string, Parameter*>* initialMap
+                          , std::map<std::string, const SBase*>& idMap
                           , const CCopasiObject* pObject
                           , const CCopasiObject* pObjectParent
                           , int sbmlLevel
@@ -2494,11 +2497,14 @@ void addToInitialValueMap(std::map<const std::string, Parameter*>* initialMap
   Parameter* initial = new Parameter(sbmlLevel, sbmlVersion);
   initial->setAnnotation(getAnnotationStringFor(pObjectParent));
   initial->initDefaults();
-  initial->setId(pObjectParent->getKey());
+  initial->setId(CSBMLExporter::createUniqueId(idMap, pObjectParent->getKey(), false));
   initial->setName("Initial for " + pObjectParent->getObjectName());
 
   if (pObject->isValueDbl())
     initial->setValue(*((const C_FLOAT64*) pObject->getValuePointer()));
+
+  idMap.insert(std::pair<const std::string, const SBase*>(initial->getId(), initial));
+
 
   (*initialMap) [cn] = initial;
 }
@@ -2509,6 +2515,7 @@ void CSBMLExporter::checkForUnsupportedObjectReferences(
   , unsigned int sbmlLevel
   , unsigned int sbmlVersion
   , std::vector<SBMLIncompatibility>& result
+  , std::map<std::string, const SBase*>& idMap
   , bool initialExpression /*= false*/
   , std::map<const std::string, Parameter*>* initialMap /*= NULL*/)
 {
@@ -2558,7 +2565,7 @@ void CSBMLExporter::checkForUnsupportedObjectReferences(
                           && (sbmlLevel > 2 || (sbmlLevel == 2 && sbmlVersion > 1)))
                         {
                           // add new parameter for the initial value
-                          addToInitialValueMap(initialMap, pObject, pObjectParent, sbmlLevel, sbmlVersion);
+                          addToInitialValueMap(initialMap, idMap, pObject, pObjectParent, sbmlLevel, sbmlVersion);
                         }
                       else if (pObject->getObjectName() != "Volume"
                                && pObject->getObjectName() != "Rate")
@@ -2584,7 +2591,7 @@ void CSBMLExporter::checkForUnsupportedObjectReferences(
                           && (sbmlLevel > 2 || (sbmlLevel == 2 && sbmlVersion > 1)))
                         {
                           // add new parameter for the initial value
-                          addToInitialValueMap(initialMap, pObject, pObjectParent, sbmlLevel, sbmlVersion);
+                          addToInitialValueMap(initialMap, idMap, pObject, pObjectParent, sbmlLevel, sbmlVersion);
                         }
                       else if (pObject->getObjectName() != "Concentration"
                                && pObject->getObjectName() != "ParticleNumber"
@@ -2612,7 +2619,7 @@ void CSBMLExporter::checkForUnsupportedObjectReferences(
                           && (sbmlLevel > 2 || (sbmlLevel == 2 && sbmlVersion > 1)))
                         {
                           // add new parameter for the initial value
-                          addToInitialValueMap(initialMap, pObject, pObjectParent, sbmlLevel, sbmlVersion);
+                          addToInitialValueMap(initialMap, idMap, pObject, pObjectParent, sbmlLevel, sbmlVersion);
                         }
                       else if (pObject->getObjectName() != "Value"
                                && pObject->getObjectName() != "Rate")
@@ -2896,11 +2903,12 @@ void CSBMLExporter::isExpressionSBMLCompatible(const CEvaluationTree& expr
     , int sbmlLevel
     , int sbmlVersion
     , std::vector<SBMLIncompatibility>& result
+    , std::map<std::string, const SBase*>& idMap
     , const std::string& objectDescription
     , bool initialExpression /* = false */
     , std::map<const std::string, Parameter*>* initialMap /* = NULL */)
 {
-  checkForUnsupportedObjectReferences(expr, dataModel, sbmlLevel, sbmlVersion, result, initialExpression, initialMap);
+  checkForUnsupportedObjectReferences(expr, dataModel, sbmlLevel, sbmlVersion, result, idMap, initialExpression, initialMap);
   std::set<CEvaluationNodeFunction::SubType> unsupportedFunctionTypes = CSBMLExporter::createUnsupportedFunctionTypeSet(sbmlLevel);
   checkForUnsupportedFunctionCalls(*expr.getRoot(), unsupportedFunctionTypes, result, objectDescription);
 }
@@ -3328,7 +3336,7 @@ void CSBMLExporter::createFunctionDefinition(CFunction& function, CCopasiDataMod
   else
     {
       std::vector<SBMLIncompatibility> result;
-      CSBMLExporter::isExpressionSBMLCompatible(function, dataModel, this->mSBMLLevel, this->mSBMLVersion, result, std::string("function with name \"" + function.getObjectName() + "\"").c_str());
+      CSBMLExporter::isExpressionSBMLCompatible(function, dataModel, this->mSBMLLevel, this->mSBMLVersion, result, mIdMap, std::string("function with name \"" + function.getObjectName() + "\"").c_str());
 
       if (result.empty())
         {
@@ -4111,7 +4119,11 @@ CSBMLExporter::exportModel(CCopasiDataModel& dataModel,
  * If it can be exported, the result vector will be empty, otherwise it will
  * contain a number of messages that specify why it can't be exported.
  */
-const std::vector<SBMLIncompatibility> CSBMLExporter::isModelSBMLCompatible(const CCopasiDataModel& dataModel, int sbmlLevel, int sbmlVersion)
+const std::vector<SBMLIncompatibility> CSBMLExporter::isModelSBMLCompatible(
+  const CCopasiDataModel& dataModel,
+  int sbmlLevel,
+  int sbmlVersion,
+  std::map<std::string, const SBase*>& idMap)
 {
   const CModel* pModel = dataModel.getModel();
   std::vector<SBMLIncompatibility> result;
@@ -4148,7 +4160,7 @@ const std::vector<SBMLIncompatibility> CSBMLExporter::isModelSBMLCompatible(cons
               // check for unsupported object references and unsupported function
               // calls
               usedFunctionNames.clear();
-              CSBMLExporter::isExpressionSBMLCompatible(*pExpression, dataModel, sbmlLevel, sbmlVersion, result, std::string("compartment with name \"" + (*compIt)->getObjectName() + "\"").c_str());
+              CSBMLExporter::isExpressionSBMLCompatible(*pExpression, dataModel, sbmlLevel, sbmlVersion, result, idMap, std::string("compartment with name \"" + (*compIt)->getObjectName() + "\"").c_str());
               CSBMLExporter::findDirectlyUsedFunctions(pExpression->getRoot(), usedFunctionNames);
             }
         }
@@ -4159,7 +4171,7 @@ const std::vector<SBMLIncompatibility> CSBMLExporter::isModelSBMLCompatible(cons
         {
           // check for unsupported object references and unsupported function
           // calls
-          CSBMLExporter::isExpressionSBMLCompatible(*pExpression, dataModel, sbmlLevel, sbmlVersion, result, std::string("initial expression for compartment named \"" + (*compIt)->getObjectName() + "\"").c_str());
+          CSBMLExporter::isExpressionSBMLCompatible(*pExpression, dataModel, sbmlLevel, sbmlVersion, result, idMap, std::string("initial expression for compartment named \"" + (*compIt)->getObjectName() + "\"").c_str());
           usedFunctionNames.clear();
           CSBMLExporter::findDirectlyUsedFunctions(pExpression->getRoot(), usedFunctionNames);
         }
@@ -4183,7 +4195,7 @@ const std::vector<SBMLIncompatibility> CSBMLExporter::isModelSBMLCompatible(cons
             {
               // check for unsupported object references and unsupported function
               // calls
-              CSBMLExporter::isExpressionSBMLCompatible(*pExpression, dataModel, sbmlLevel, sbmlVersion, result, std::string("rule for species named \"" + (*metabIt)->getObjectName() + "\"").c_str());
+              CSBMLExporter::isExpressionSBMLCompatible(*pExpression, dataModel, sbmlLevel, sbmlVersion, result, idMap, std::string("rule for species named \"" + (*metabIt)->getObjectName() + "\"").c_str());
               usedFunctionNames.clear();
               CSBMLExporter::findDirectlyUsedFunctions(pExpression->getRoot(), usedFunctionNames);
             }
@@ -4195,7 +4207,7 @@ const std::vector<SBMLIncompatibility> CSBMLExporter::isModelSBMLCompatible(cons
         {
           // check for unsupported object references and unsupported function
           // calls
-          CSBMLExporter::isExpressionSBMLCompatible(*pExpression, dataModel, sbmlLevel, sbmlVersion, result, std::string("initial species for metabolite named \"" + (*metabIt)->getObjectName() + "\"").c_str());
+          CSBMLExporter::isExpressionSBMLCompatible(*pExpression, dataModel, sbmlLevel, sbmlVersion, result, idMap, std::string("initial species for metabolite named \"" + (*metabIt)->getObjectName() + "\"").c_str());
           usedFunctionNames.clear();
           CSBMLExporter::findDirectlyUsedFunctions(pExpression->getRoot(), usedFunctionNames);
         }
@@ -4219,7 +4231,7 @@ const std::vector<SBMLIncompatibility> CSBMLExporter::isModelSBMLCompatible(cons
             {
               // check for unsupported object references and unsupported function
               // calls
-              CSBMLExporter::isExpressionSBMLCompatible(*pExpression, dataModel, sbmlLevel, sbmlVersion, result, std::string("rule for global parameter named \"" + (*mvIt)->getObjectName() + "\"").c_str());
+              CSBMLExporter::isExpressionSBMLCompatible(*pExpression, dataModel, sbmlLevel, sbmlVersion, result, idMap, std::string("rule for global parameter named \"" + (*mvIt)->getObjectName() + "\"").c_str());
               usedFunctionNames.clear();
               CSBMLExporter::findDirectlyUsedFunctions(pExpression->getRoot(), usedFunctionNames);
             }
@@ -4231,7 +4243,7 @@ const std::vector<SBMLIncompatibility> CSBMLExporter::isModelSBMLCompatible(cons
         {
           // check for unsupported object references and unsupported function
           // calls
-          CSBMLExporter::isExpressionSBMLCompatible(*pExpression, dataModel, sbmlLevel, sbmlVersion, result, std::string("initial expression for global parameter named \"" + (*mvIt)->getObjectName() + "\"").c_str());
+          CSBMLExporter::isExpressionSBMLCompatible(*pExpression, dataModel, sbmlLevel, sbmlVersion, result, idMap, std::string("initial expression for global parameter named \"" + (*mvIt)->getObjectName() + "\"").c_str());
           usedFunctionNames.clear();
           CSBMLExporter::findDirectlyUsedFunctions(pExpression->getRoot(), usedFunctionNames);
         }
@@ -4258,7 +4270,7 @@ const std::vector<SBMLIncompatibility> CSBMLExporter::isModelSBMLCompatible(cons
 
         while (eventIt != eventEndit)
           {
-            CSBMLExporter::isEventSBMLCompatible(*eventIt, dataModel, sbmlLevel, sbmlVersion, result);
+            CSBMLExporter::isEventSBMLCompatible(*eventIt, dataModel, sbmlLevel, sbmlVersion, result, idMap);
             ++eventIt;
           }
 
@@ -4435,6 +4447,7 @@ void CSBMLExporter::createEvent(CEvent& event, Event* pSBMLEvent, CCopasiDataMod
       , this->mSBMLLevel
       , this->mSBMLVersion
       , result
+      , mIdMap
       , std::string("event trigger for event with id\"+" + event.getSBMLId() + "\"")
       , false
       , &mInitialValueMap);
@@ -4535,6 +4548,7 @@ void CSBMLExporter::createEvent(CEvent& event, Event* pSBMLEvent, CCopasiDataMod
           , this->mSBMLLevel
           , this->mSBMLVersion
           , result
+          , mIdMap
           , std::string("event delay for event with id\"+" + event.getSBMLId() + "\"").c_str()
           , false
           , &mInitialValueMap);
@@ -4796,6 +4810,7 @@ void CSBMLExporter::exportEventAssignments(const CEvent& event, Event* pSBMLEven
             , this->mSBMLLevel
             , this->mSBMLVersion
             , result
+            , mIdMap
             , std::string("event assignment for variable \"" + sbmlId + "\" in event with id\"+" + event.getSBMLId() + "\"")
             , false
             , &mInitialValueMap);
@@ -7558,7 +7573,13 @@ void CSBMLExporter::setExportCOPASIMIRIAM(bool exportMiriam)
   this->mExportCOPASIMIRIAM = exportMiriam;
 }
 
-void CSBMLExporter::isEventSBMLCompatible(const CEvent* pEvent, const CCopasiDataModel& dataModel, unsigned int sbmlLevel, unsigned int sbmlVersion, std::vector<SBMLIncompatibility>& result)
+void CSBMLExporter::isEventSBMLCompatible(
+  const CEvent* pEvent,
+  const CCopasiDataModel& dataModel,
+  unsigned int sbmlLevel,
+  unsigned int sbmlVersion,
+  std::vector<SBMLIncompatibility>& result,
+  std::map<std::string, const SBase*>& idMap)
 {
   if (pEvent == NULL) return;
 
@@ -7572,7 +7593,7 @@ void CSBMLExporter::isEventSBMLCompatible(const CEvent* pEvent, const CCopasiDat
     {
       // check for unsupported object references and unsupported function
       // calls
-      CSBMLExporter::isExpressionSBMLCompatible(*pExpression, dataModel, sbmlLevel, sbmlVersion, result, std::string("trigger expression for event named \"" + pEvent->getObjectName() + "\"").c_str());
+      CSBMLExporter::isExpressionSBMLCompatible(*pExpression, dataModel, sbmlLevel, sbmlVersion, result, idMap, std::string("trigger expression for event named \"" + pEvent->getObjectName() + "\"").c_str());
       usedFunctionNames.clear();
       CSBMLExporter::findDirectlyUsedFunctions(pExpression->getRoot(), usedFunctionNames);
     }
@@ -7583,7 +7604,7 @@ void CSBMLExporter::isEventSBMLCompatible(const CEvent* pEvent, const CCopasiDat
     {
       // check for unsupported object references and unsupported function
       // calls
-      CSBMLExporter::isExpressionSBMLCompatible(*pExpression, dataModel, sbmlLevel, sbmlVersion, result, std::string("delay expression for event named \"" + pEvent->getObjectName() + "\"").c_str());
+      CSBMLExporter::isExpressionSBMLCompatible(*pExpression, dataModel, sbmlLevel, sbmlVersion, result, idMap, std::string("delay expression for event named \"" + pEvent->getObjectName() + "\"").c_str());
       usedFunctionNames.clear();
       CSBMLExporter::findDirectlyUsedFunctions(pExpression->getRoot(), usedFunctionNames);
     }
@@ -7617,11 +7638,19 @@ void CSBMLExporter::isEventSBMLCompatible(const CEvent* pEvent, const CCopasiDat
         }
 
       CSBMLExporter::isEventAssignmentSBMLCompatible(key, (*itAssignment)->getExpressionPtr(),
-          dataModel, sbmlLevel, sbmlVersion, pEvent->getObjectName(), result);
+          dataModel, sbmlLevel, sbmlVersion, pEvent->getObjectName(), result, idMap);
     }
 }
 
-void CSBMLExporter::isEventAssignmentSBMLCompatible(std::string& key, const CExpression* pExpression, const CCopasiDataModel& dataModel, unsigned int sbmlLevel, unsigned int sbmlVersion, const std::string& eventName, std::vector<SBMLIncompatibility>& result)
+void CSBMLExporter::isEventAssignmentSBMLCompatible(
+  std::string& key,
+  const CExpression* pExpression,
+  const CCopasiDataModel& dataModel,
+  unsigned int sbmlLevel,
+  unsigned int sbmlVersion,
+  const std::string& eventName,
+  std::vector<SBMLIncompatibility>& result,
+  std::map<std::string, const SBase*>& idMap)
 {
   // check if the key points to a compartment, species or global value
   const CCopasiObject* pObject = CCopasiRootContainer::getKeyFactory()->get(key);
@@ -7669,7 +7698,7 @@ void CSBMLExporter::isEventAssignmentSBMLCompatible(std::string& key, const CExp
             {
 
               std::set<std::string> usedFunctionNames;
-              CSBMLExporter::isExpressionSBMLCompatible(*pExpression, dataModel, sbmlLevel, sbmlVersion, result, std::string("assignment expression for variable named \"" + pObject->getObjectName() + "\" in event named \"" + eventName + "\"").c_str());
+              CSBMLExporter::isExpressionSBMLCompatible(*pExpression, dataModel, sbmlLevel, sbmlVersion, result, idMap, std::string("assignment expression for variable named \"" + pObject->getObjectName() + "\" in event named \"" + eventName + "\"").c_str());
               CSBMLExporter::findDirectlyUsedFunctions(pExpression->getRoot(), usedFunctionNames);
             }
           else
