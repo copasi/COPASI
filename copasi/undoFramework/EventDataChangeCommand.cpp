@@ -32,10 +32,8 @@ EventDataChangeCommand::EventDataChangeCommand(QModelIndex index, const QVariant
   //mPathIndex = pathFromIndex(index);
 
   //set the data for UNDO history
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
-  assert(pDataModel != NULL);
-  CModel * pModel = pDataModel->getModel();
+  GET_MODEL_OR_RETURN(pModel);
+
 
   if (pModel->getEvents().size() <= (size_t)index.row())
     {

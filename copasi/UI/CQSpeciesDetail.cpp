@@ -259,7 +259,7 @@ bool CQSpeciesDetail::enterProtected()
   if (!mpMetab)
     {
 
-      mpListView->switchToOtherWidget(CCopasiUndoCommand::SPECIES, "");
+      mpListView->switchToOtherWidget(112, "");
       return false;
     }
 
@@ -1110,13 +1110,7 @@ void CQSpeciesDetail::speciesTypeChanged(int type)
 
 void CQSpeciesDetail::speciesTypeChanged(UndoSpeciesData *pSData, int type)
 {
-
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
-  assert(pDataModel != NULL);
-
-  CModel * pModel = pDataModel->getModel();
-  assert(pModel != NULL);
+  GET_MODEL_OR_RETURN(pModel);
 
   //find the species of interest and switch to its widget
   size_t index = pModel->findMetabByName(pSData->getName());
@@ -1167,13 +1161,7 @@ void CQSpeciesDetail::speciesInitialValueLostFocus()
 
 void CQSpeciesDetail::speciesInitialValueLostFocus(UndoSpeciesData *pSData)
 {
-
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
-  assert(pDataModel != NULL);
-
-  CModel * pModel = pDataModel->getModel();
-  assert(pModel != NULL);
+  GET_MODEL_OR_RETURN(pModel);
 
   //find the species of interest and switch to its widget
   size_t index = pModel->findMetabByName(pSData->getName());

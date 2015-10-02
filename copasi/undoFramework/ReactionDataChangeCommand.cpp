@@ -33,8 +33,9 @@ ReactionDataChangeCommand::ReactionDataChangeCommand(
 {
   // stores the data
 
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CCopasiVectorNS < CReaction > &reactions = (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getReactions();
+  GET_MODEL_OR_RETURN(pModel);
+
+  CCopasiVectorNS < CReaction > &reactions = pModel->getReactions();
 
   if ((int)reactions.size() <= index.row())
     {

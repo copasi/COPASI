@@ -641,7 +641,7 @@ bool CQEventWidget1::enterProtected()
 
   if (!success)
     {
-      mpListView->switchToOtherWidget(CCopasiUndoCommand::EVENTS, ""); //TODO
+      mpListView->switchToOtherWidget(116, ""); //TODO
     }
 
   return success;
@@ -783,6 +783,7 @@ void CQEventWidget1::createNewEvent()
 
 void CQEventWidget1::deleteEvent()
 {
+  mpListView->switchToOtherWidget(CCopasiUndoCommand::EVENTS, "");
 
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
@@ -797,7 +798,6 @@ void CQEventWidget1::deleteEvent()
   mpEvent = NULL;
 
   protectedNotify(ListViews::EVENT, ListViews::DELETE, mKey);
-  mpListView->switchToOtherWidget(CCopasiUndoCommand::EVENTS, "");
 }
 
 void CQEventWidget1::deleteEvent(UndoEventData *pEventData)

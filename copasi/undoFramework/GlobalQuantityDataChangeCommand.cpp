@@ -83,10 +83,8 @@ GlobalQuantityDataChangeCommand::GlobalQuantityDataChangeCommand(
 void GlobalQuantityDataChangeCommand::redo()
 {
   mpGlobalQuantityDM->globalQuantityDataChange(mIndex, mNew, mRole);
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
-  assert(pDataModel != NULL);
-  CModel * pModel = pDataModel->getModel();
+  GET_MODEL_OR_RETURN(pModel);
+
   CModelValue *pModelValue = pModelValue = pModel->getModelValues()[mIndex.row()];
   setName(pModelValue->getObjectName());
 }

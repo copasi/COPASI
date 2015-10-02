@@ -311,7 +311,7 @@ bool CQModelValue::enterProtected()
 
   if (!mpModelValue)
     {
-      mpListView->switchToOtherWidget(CCopasiUndoCommand::GLOBALQUANTITYIES, "");
+      mpListView->switchToOtherWidget(115, "");
       return false;
     }
 

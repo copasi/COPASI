@@ -168,137 +168,137 @@ void CCopasiUndoCommand::setDependentObjects(
         }
     }
 
-  const CModel * pModel = NULL;
 
-  if (pDataModel != NULL)
+  if (pDataModel == NULL)
+    return;
+
+  const CModel* pModel = pDataModel->getModel();
+
+  if (pModel == NULL)
+    return;
+
+  Used |= pModel->appendDependentModelObjects(deletedObjects, Reactions, Metabolites,
+          Compartments, Values, Events);
+
+  if (Reactions.size() > 0)
     {
-      pModel = pDataModel->getModel();
+      std::set< const CCopasiObject * >::const_iterator it = Reactions.begin();
+      std::set< const CCopasiObject * >::const_iterator end = Reactions.end();
+
+      for (; it != end; ++it)
+        {
+          //store the Reactions data
+          UndoReactionData *data = new UndoReactionData();
+          data->setRi(new CReactionInterface((*CCopasiRootContainer::getDatamodelList())[0]->getModel()));
+          data->getRi()->initFromReaction((*it)->getKey());
+          //CReactionInterface* ri = new CReactionInterface((*CCopasiRootContainer::getDatamodelList())[0]->getModel());
+          //ri->initFromReaction((*it)->getKey());
+
+          data->setName((*it)->getObjectName());
+
+          const CReaction * pRea = dynamic_cast<const CReaction*>(*it);
+
+          if (pRea->getDeletedObjects().size() > 0)
+            {
+              setDependentObjects(pRea->getDeletedObjects(),
+                                  reactionData,
+                                  speciesData,
+                                  globalQuantityData,
+                                  eventData);
+              data->setSpeciesDependencyObjects(&speciesData);
+            }
+
+          //  data->setRi(ri);
+          reactionData.append(data); //FROM_UTF8((*it)->getObjectName()));
+        }
     }
 
-  if (pModel != NULL)
+  if (Metabolites.size() > 0)
     {
-      Used |= pModel->appendDependentModelObjects(deletedObjects, Reactions, Metabolites,
-              Compartments, Values, Events);
+      std::set< const CCopasiObject * >::const_iterator it = Metabolites.begin();
+      std::set< const CCopasiObject * >::const_iterator end = Metabolites.end();
 
-      if (Reactions.size() > 0)
+      for (; it != end; ++it)
         {
-          std::set< const CCopasiObject * >::const_iterator it = Reactions.begin();
-          std::set< const CCopasiObject * >::const_iterator end = Reactions.end();
-
-          for (; it != end; ++it)
-            {
-              //store the Reactions data
-              UndoReactionData *data = new UndoReactionData();
-              data->setRi(new CReactionInterface((*CCopasiRootContainer::getDatamodelList())[0]->getModel()));
-              data->getRi()->initFromReaction((*it)->getKey());
-              //CReactionInterface* ri = new CReactionInterface((*CCopasiRootContainer::getDatamodelList())[0]->getModel());
-              //ri->initFromReaction((*it)->getKey());
-
-              data->setName((*it)->getObjectName());
-
-              const CReaction * pRea = dynamic_cast<const CReaction*>(*it);
-
-              if (pRea->getDeletedObjects().size() > 0)
-                {
-                  setDependentObjects(pRea->getDeletedObjects(),
-                                      reactionData,
-                                      speciesData,
-                                      globalQuantityData,
-                                      eventData);
-                  data->setSpeciesDependencyObjects(&speciesData);
-                }
-
-              //  data->setRi(ri);
-              reactionData.append(data); //FROM_UTF8((*it)->getObjectName()));
-            }
-        }
-
-      if (Metabolites.size() > 0)
-        {
-          std::set< const CCopasiObject * >::const_iterator it = Metabolites.begin();
-          std::set< const CCopasiObject * >::const_iterator end = Metabolites.end();
-
-          for (; it != end; ++it)
-            {
-              //store the Metabolites data
-              const CMetab * pMetab = dynamic_cast<const CMetab*>(*it);
-              UndoSpeciesData *data = new UndoSpeciesData(pMetab);
-              speciesData.append(data);
-            }
-        }
-
-      if (Values.size() > 0)
-        {
-          std::set< const CCopasiObject * >::const_iterator it = Values.begin();
-          std::set< const CCopasiObject * >::const_iterator end = Values.end();
-
-          for (; it != end; ++it)
-            {
-              //store the Global Quantity data
-              UndoGlobalQuantityData *data = new UndoGlobalQuantityData();
-              data->setName((*it)->getObjectName());
-              const CModelValue * pModelValue = dynamic_cast<const CModelValue*>(*it);
-              //data->setModelValue(* pModelValue);
-              data->setStatus(pModelValue->getStatus());
-
-              if (pModelValue->getStatus() != CModelEntity::ASSIGNMENT)
-                {
-                  data->setInitialValue(pModelValue->getInitialValue());
-                }
-
-              if (pModelValue->getStatus() != CModelEntity::FIXED)
-                {
-                  data->setExpression(pModelValue->getExpression());
-                }
-
-              // set initial expression
-              if (pModelValue->getStatus() != CModelEntity::ASSIGNMENT)
-                {
-                  data->setInitialExpression(pModelValue->getInitialExpression());
-                }
-
-              /*  if(pModelValue->isFixed()){
-                  data->setFixed(true);
-                  data->setInitialValue(pModelValue->getInitialValue());
-                }else if(!pModelValue->isFixed()){
-                  data->setFixed(false);
-                  data->setExpression(pModelValue->getExpression());
-                }*/
-              globalQuantityData.append(data);
-            }
-        }
-
-      if (Events.size() > 0)
-        {
-          std::set< const CCopasiObject * >::const_iterator it = Events.begin();
-          std::set< const CCopasiObject * >::const_iterator end = Events.end();
-
-          for (; it != end; ++it)
-            {
-              //store the Event data
-              UndoEventData *data = new UndoEventData();
-              data->setName((*it)->getObjectName());
-              const CEvent * pEvent = dynamic_cast<const CEvent*>(*it);
-              data->setPriorityExpression(pEvent->getPriorityExpression());
-              data->setDelayExpression(pEvent->getDelayExpression());
-              data->setTriggerExpression(pEvent->getTriggerExpression());
-
-              CCopasiVector< CEventAssignment >::const_iterator iit = pEvent->getAssignments().begin();
-              CCopasiVector< CEventAssignment >::const_iterator end = pEvent->getAssignments().end();
-
-              for (; iit != end; ++iit)
-                {
-
-                  const CModelEntity * pEntity = dynamic_cast< CModelEntity * >(CCopasiRootContainer::getKeyFactory()->get((*iit)->getTargetKey()));
-                  data->getEventAssignmentData()->append(
-                    new UndoEventAssignmentData(pEntity, (*iit)->getExpression()));
-                }
-
-
-              eventData.append(data);
-            }
+          //store the Metabolites data
+          const CMetab * pMetab = dynamic_cast<const CMetab*>(*it);
+          UndoSpeciesData *data = new UndoSpeciesData(pMetab);
+          speciesData.append(data);
         }
     }
+
+  if (Values.size() > 0)
+    {
+      std::set< const CCopasiObject * >::const_iterator it = Values.begin();
+      std::set< const CCopasiObject * >::const_iterator end = Values.end();
+
+      for (; it != end; ++it)
+        {
+          //store the Global Quantity data
+          UndoGlobalQuantityData *data = new UndoGlobalQuantityData();
+          data->setName((*it)->getObjectName());
+          const CModelValue * pModelValue = dynamic_cast<const CModelValue*>(*it);
+          //data->setModelValue(* pModelValue);
+          data->setStatus(pModelValue->getStatus());
+
+          if (pModelValue->getStatus() != CModelEntity::ASSIGNMENT)
+            {
+              data->setInitialValue(pModelValue->getInitialValue());
+            }
+
+          if (pModelValue->getStatus() != CModelEntity::FIXED)
+            {
+              data->setExpression(pModelValue->getExpression());
+            }
+
+          // set initial expression
+          if (pModelValue->getStatus() != CModelEntity::ASSIGNMENT)
+            {
+              data->setInitialExpression(pModelValue->getInitialExpression());
+            }
+
+          /*  if(pModelValue->isFixed()){
+                      data->setFixed(true);
+                      data->setInitialValue(pModelValue->getInitialValue());
+                    }else if(!pModelValue->isFixed()){
+                      data->setFixed(false);
+                      data->setExpression(pModelValue->getExpression());
+                    }*/
+          globalQuantityData.append(data);
+        }
+    }
+
+  if (Events.size() > 0)
+    {
+      std::set< const CCopasiObject * >::const_iterator it = Events.begin();
+      std::set< const CCopasiObject * >::const_iterator end = Events.end();
+
+      for (; it != end; ++it)
+        {
+          //store the Event data
+          UndoEventData *data = new UndoEventData();
+          data->setName((*it)->getObjectName());
+          const CEvent * pEvent = dynamic_cast<const CEvent*>(*it);
+          data->setPriorityExpression(pEvent->getPriorityExpression());
+          data->setDelayExpression(pEvent->getDelayExpression());
+          data->setTriggerExpression(pEvent->getTriggerExpression());
+
+          CCopasiVector< CEventAssignment >::const_iterator iit = pEvent->getAssignments().begin();
+          CCopasiVector< CEventAssignment >::const_iterator end = pEvent->getAssignments().end();
+
+          for (; iit != end; ++iit)
+            {
+
+              const CModelEntity * pEntity = dynamic_cast< CModelEntity * >(CCopasiRootContainer::getKeyFactory()->get((*iit)->getTargetKey()));
+              data->getEventAssignmentData()->append(
+                new UndoEventAssignmentData(pEntity, (*iit)->getExpression()));
+            }
+
+
+          eventData.append(data);
+        }
+    }
+
 }
 
 QList<UndoReactionData*> *CCopasiUndoCommand::getReactionData() const

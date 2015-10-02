@@ -648,6 +648,9 @@ bool CQSpecieDM::removeRows(QModelIndexList rows, const QModelIndex&)
 
 bool CQSpecieDM::specieDataChange(const QModelIndex &index, const QVariant &value, int role)
 {
+
+  emit changeWidget(CCopasiUndoCommand::SPECIES);
+
   if (index.isValid() && role == Qt::EditRole)
     {
       bool defaultRow = isDefaultRow(index);
@@ -786,8 +789,6 @@ bool CQSpecieDM::specieDataChange(const QModelIndex &index, const QVariant &valu
           emit notifyGUI(ListViews::METABOLITE, ListViews::CHANGE, key);
         }
     }
-
-  emit changeWidget(CCopasiUndoCommand::SPECIES);
 
   return true;
 }

@@ -28,12 +28,7 @@ RemoveAllReactionRowsCommand::RemoveAllReactionRowsCommand(
   , mpReaData()
 {
 
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
-  assert(pDataModel != NULL);
-  CModel * pModel = pDataModel->getModel();
-
-  assert(pModel != NULL);
+  GET_MODEL_OR_RETURN(pModel);
 
   for (int i = 0; i != pReaDM->rowCount() - 1; ++i)
     {

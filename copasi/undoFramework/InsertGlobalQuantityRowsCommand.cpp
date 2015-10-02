@@ -38,11 +38,7 @@ void InsertGlobalQuantityRowsCommand::redo()
   if (firstTime)
     {
       mpGlobalQuantityDM->insertNewGlobalQuantityRow(mPosition, mRows, QModelIndex());
-      assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-      CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
-      assert(pDataModel != NULL);
-      CModel * pModel = pDataModel->getModel();
-      assert(pModel != NULL);
+      GET_MODEL_OR_RETURN(pModel);
 
       CModelValue *pGlobalQuantity = pModel->getModelValues()[mPosition];
       mpGlobalQuantityData->setName(pGlobalQuantity->getObjectName());

@@ -36,3 +36,6 @@ COPASI.kdev4
 copasi/copasi.pro.user
 *~
 /Tools/*.pyc
+/copasi/bindings/python/examples/example3.txt
+/copasi/bindings/python/examples/example1.cps
+/copasi/bindings/python/examples/example1.xml

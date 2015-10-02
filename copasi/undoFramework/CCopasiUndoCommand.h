@@ -27,6 +27,22 @@ class UndoReactionData;
 class UndoGlobalQuantityData;
 class UndoEventData;
 
+
+#define GET_MODEL(target)\
+  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);\
+  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];\
+  assert(pDataModel != NULL);\
+  CModel * target = pDataModel->getModel();\
+  assert(target != NULL);
+
+#define GET_MODEL_OR_RETURN(target)\
+  if (CCopasiRootContainer::getDatamodelList()->size()  == 0) return;\
+  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];\
+  if (pDataModel == NULL) return;\
+  CModel * target = pDataModel->getModel();\
+  if (target == NULL) return;
+
+
 class CCopasiUndoCommand : public QUndoCommand
 {
 public:

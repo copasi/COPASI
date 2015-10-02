@@ -37,11 +37,7 @@ void InsertSpecieRowsCommand::redo()
   if (firstTime)
     {
       mpSpecieDM->insertNewSpecieRow(mPosition, mRows, QModelIndex());
-      assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-      CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
-      assert(pDataModel != NULL);
-      CModel * pModel = pDataModel->getModel();
-      assert(pModel != NULL);
+      GET_MODEL_OR_RETURN(pModel);
 
       CMetab *pSpecies = pModel->getMetabolites()[mPosition];
       mpSpeciesData->setName(pSpecies->getObjectName());

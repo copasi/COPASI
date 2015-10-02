@@ -813,7 +813,7 @@ bool ReactionsWidget1::enterProtected()
   if (reac)
     return loadFromReaction(reac);
 
-  mpListView->switchToOtherWidget(CCopasiUndoCommand::REACTIONS, "");
+  mpListView->switchToOtherWidget(114, "");
   return false;
 }
 

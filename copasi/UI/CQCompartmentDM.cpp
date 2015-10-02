@@ -440,6 +440,8 @@ bool CQCompartmentDM::compartmentDataChange(const std::string& key, const QVaria
   if (pComp == NULL)
     return false;
 
+  emit changeWidget(CCopasiUndoCommand::COMPARTMENTS);
+
   if (column == COL_NAME_COMPARTMENTS)
     pComp->setObjectName(TO_UTF8(value.toString()));
   else if (column == COL_TYPE_COMPARTMENTS)
@@ -448,7 +450,7 @@ bool CQCompartmentDM::compartmentDataChange(const std::string& key, const QVaria
     pComp->setInitialValue(value.toDouble());
 
   emit notifyGUI(ListViews::COMPARTMENT, ListViews::CHANGE, key);
-  emit changeWidget(CCopasiUndoCommand::COMPARTMENTS);
+  emit notifyGUI(ListViews::COMPARTMENT, ListViews::CHANGE, "");
 
   return true;
 }

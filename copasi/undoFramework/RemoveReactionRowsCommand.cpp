@@ -29,12 +29,7 @@ RemoveReactionRowsCommand::RemoveReactionRowsCommand(
   , mpReaData()
   , mFirstTime(true)
 {
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
-  assert(pDataModel != NULL);
-  CModel * pModel = pDataModel->getModel();
-
-  assert(pModel != NULL);
+  GET_MODEL_OR_RETURN(pModel);
 
   QModelIndexList::const_iterator i;
 
