@@ -504,13 +504,7 @@ bool CQCompartmentDM::removeCompartmentRows(QModelIndexList& rows, const QModelI
   if (rows.isEmpty())
     return false;
 
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
-  assert(pDataModel != NULL);
-  CModel * pModel = pDataModel->getModel();
-
-  if (pModel == NULL)
-    return false;
+  GET_MODEL_OR(pModel, return false);
 
   //Build the list of pointers to items to be deleted
   //before actually deleting any item.
@@ -551,29 +545,9 @@ bool CQCompartmentDM::removeCompartmentRows(QModelIndexList& rows, const QModelI
 
 bool CQCompartmentDM::insertCompartmentRows(QList <UndoCompartmentData *>& pData)
 {
-
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
-  assert(pDataModel != NULL);
-  CModel * pModel = pDataModel->getModel();
-
-  if (pModel == NULL)
-    return false;
+  GET_MODEL_OR(pModel, return false);
 
   //reinsert all the Compartments
-  /*QList <UndoCompartmentData *>::const_iterator i;
-  for (i = pData.begin(); i != pData.end(); ++i)
-  {
-    UndoCompartmentData * data = *i;
-    beginInsertRows(QModelIndex(), 1, 1);
-    CCompartment *pCompartment =  pModel->createCompartment(data->getName());
-    pCompartment->setInitialValue(data->getInitialValue());
-    pCompartment->setStatus(data->getStatus());
-    emit notifyGUI(ListViews::COMPARTMENT, ListViews::ADD, pCompartment->getKey());
-    endInsertRows();
-  }*/
-
-  //restore all the dependencies
   QList <UndoCompartmentData *>::const_iterator k;
 
   for (k = pData.begin(); k != pData.end(); ++k)
@@ -731,11 +705,7 @@ void CQCompartmentDM::deleteCompartmentRows(QList <UndoCompartmentData *>& pData
 {
   emit changeWidget(CCopasiUndoCommand::COMPARTMENTS);
 
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
-  assert(pDataModel != NULL);
-
-  CModel * pModel = pDataModel->getModel();
+  GET_MODEL_OR_RETURN(pModel);
 
   QList <UndoCompartmentData *>::const_iterator j;
 

@@ -789,12 +789,7 @@ void CQCompartment::deleteCompartment(UndoCompartmentData *pCompartmentData)
 
 void CQCompartment::addCompartment(UndoCompartmentData *pData)
 {
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
-  assert(pDataModel != NULL);
-
-  CModel * pModel = pDataModel->getModel();
-  assert(pModel != NULL);
+  GET_MODEL_OR_RETURN(pModel);
 
   //reinsert all the Compartments
   CCompartment *pCompartment =  pModel->createCompartment(pData->getName());
