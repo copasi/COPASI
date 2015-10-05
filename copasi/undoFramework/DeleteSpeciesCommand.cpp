@@ -54,10 +54,8 @@ DeleteSpeciesCommand::DeleteSpeciesCommand(CQSpeciesDetail *pSpecieDetail)
     }
 
   //store to be deleted data
-  setDependentObjects(mpSpecieDetail->mpMetab->getDeletedObjects());
-  mpSpeciesData->setReactionDependencyObjects(getReactionData());
-  mpSpeciesData->setGlobalQuantityDependencyObjects(getGlobalQuantityData());
-  mpSpeciesData->setEventDependencyObjects(getEventData());
+  setDependentObjects(mpSpecieDetail->mpMetab->getDeletedObjects(),
+                      mpReactionData, NULL, mpGlobalQuantityData, mpEventData);
 
   setName(sName);
   this->setText(deleteSpecieText(sName));

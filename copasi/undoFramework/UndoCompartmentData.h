@@ -42,18 +42,12 @@ public:
   void setInitialValue(double initialValue);
 
   QList<UndoReactionData*> *getReactionDependencyObjects() const;
-  void setReactionDependencyObjects(
-    QList<UndoReactionData*> *reactionDependencyObjects);
 
   QList<UndoSpeciesData*> *getSpecieDependencyObjects() const;
-  void setSpecieDependencyObjects(
-    QList<UndoSpeciesData*> *specieDependencyObjects);
 
   QList<UndoGlobalQuantityData*> *getGlobalQuantityDependencyObjects() const;
-  void setGlobalQuantityDependencyObjects(QList<UndoGlobalQuantityData*> *globalQuantityDependencyObjects);
 
   QList<UndoEventData*> *getEventDependencyObjects() const;
-  void setEventDependencyObjects(QList<UndoEventData*> *eventDependencyObjects);
 
   const std::string& getInitialExpression() const;
   void setInitialExpression(const std::string &initialExpression);

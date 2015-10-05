@@ -24,12 +24,22 @@ UndoGlobalQuantityData::UndoGlobalQuantityData(const std::string &key  /*= ""*/,
     const std::string &name /*= ""*/,
     const std::string &type /*= ""*/)
   : UndoData(key, name, type)
-  , mModelValue()
-  , mFixed(false)
   , mInitialValue()
   , mStatus(CModelEntity::FIXED)
   , mExpression()
   , mInitialExpression()
+  , mSpecieDependencyObjects(new QList<UndoSpeciesData*>())
+  , mReactionDependencyObjects(new QList<UndoReactionData*>())
+  , mEventDependencyObjects(new QList<UndoEventData*>())
+{
+}
+
+UndoGlobalQuantityData::UndoGlobalQuantityData(const CModelValue* pModelValue)
+  : UndoData(pModelValue->getKey(), pModelValue->getObjectName())
+  , mInitialValue(pModelValue->getInitialValue())
+  , mStatus(pModelValue->getStatus())
+  , mExpression(pModelValue->getExpression())
+  , mInitialExpression(pModelValue->getInitialExpression())
   , mSpecieDependencyObjects(new QList<UndoSpeciesData*>())
   , mReactionDependencyObjects(new QList<UndoReactionData*>())
   , mEventDependencyObjects(new QList<UndoEventData*>())
@@ -72,25 +82,6 @@ UndoGlobalQuantityData::getReactionDependencyObjects() const
   return mReactionDependencyObjects;
 }
 
-void
-UndoGlobalQuantityData::setReactionDependencyObjects(
-  QList<UndoReactionData*> *reactionDependencyObjects)
-{
-  mReactionDependencyObjects = reactionDependencyObjects;
-}
-
-bool
-UndoGlobalQuantityData::isFixed() const
-{
-  return mFixed;
-}
-
-void
-UndoGlobalQuantityData::setFixed(bool fixed)
-{
-  this->mFixed = fixed;
-}
-
 const std::string &
 UndoGlobalQuantityData::getExpression() const
 {
@@ -101,18 +92,6 @@ void
 UndoGlobalQuantityData::setExpression(const std::string &expression)
 {
   mExpression = expression;
-}
-
-const CModelValue&
-UndoGlobalQuantityData::getModelValue() const
-{
-  return mModelValue;
-}
-
-void
-UndoGlobalQuantityData::setModelValue(const CModelValue& modelValue)
-{
-  mModelValue = modelValue;
 }
 
 const std::string & UndoGlobalQuantityData::getInitialExpression() const
@@ -133,14 +112,4 @@ QList<UndoEventData*> *UndoGlobalQuantityData::getEventDependencyObjects() const
 QList<UndoSpeciesData*> *UndoGlobalQuantityData::getSpecieDependencyObjects() const
 {
   return mSpecieDependencyObjects;
-}
-
-void UndoGlobalQuantityData::setEventDependencyObjects(QList<UndoEventData*> *eventDependencyObjects)
-{
-  mEventDependencyObjects = eventDependencyObjects;
-}
-
-void UndoGlobalQuantityData::setSpecieDependencyObjects(QList<UndoSpeciesData*> *specieDependencyObjects)
-{
-  mSpecieDependencyObjects = specieDependencyObjects;
 }

@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -214,7 +214,7 @@ void vectorOfStrings2QStringList(std::vector<std::string> vs, QStringList & qsl)
 const CopasiWidget * GetCopasiWidget(const QObject * pObject)
 {
   const QObject * pParent = pObject;
-  const CopasiWidget * pCopasiWidget;
+  const CopasiWidget * pCopasiWidget = NULL;
 
   while (pParent != NULL && pCopasiWidget == NULL)
     {

@@ -13,13 +13,16 @@
 #ifndef UNDODATA_H_
 #define UNDODATA_H_
 
+#include <QObject>
 #include <string>
 
 /**
  * Base class for all COPASI undo data
  */
-class UndoData
+class UndoData : public QObject
 {
+  Q_OBJECT
+
 public:
   UndoData(const std::string &key = "",
            const std::string &name = "",

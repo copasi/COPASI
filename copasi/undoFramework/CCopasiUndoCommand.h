@@ -226,27 +226,19 @@ public:
 
   static void setDependentObjects(
     const std::set<const CCopasiObject*>& deletedObjects,
-    QList<UndoReactionData*>& reactionData,
-    QList<UndoSpeciesData*>& speciesData,
-    QList<UndoGlobalQuantityData*>& globalQuantityData,
-    QList<UndoEventData*>& eventData
+    QList<UndoReactionData*>* reactionData,
+    QList<UndoSpeciesData*>* speciesData,
+    QList<UndoGlobalQuantityData*>* globalQuantityData,
+    QList<UndoEventData*>* eventData
   );
 
   QList<UndoReactionData*> *getReactionData() const;
 
   QList<UndoSpeciesData*> *getSpecieData() const;
 
-  void setReactionData(QList<UndoReactionData*>* reactionData);
-
-  void setSpecieData(QList<UndoSpeciesData*>* specieData);
-
   QList<UndoGlobalQuantityData*>* getGlobalQuantityData() const;
 
-  void setGlobalQuantityData(QList<UndoGlobalQuantityData*>* globalQuantityData);
-
   QList<UndoEventData*> *getEventData() const;
-
-  void setEventData(QList<UndoEventData*>* eventData);
 
   bool isUndoState() const;
 

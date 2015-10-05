@@ -31,8 +31,6 @@ public:
   void setRi(CReactionInterface *mpRi);
 
   QList<UndoSpeciesData*> *getSpeciesDependencyObjects() const;
-  void setSpeciesDependencyObjects(
-    QList<UndoSpeciesData*> *speciesDependencyObjects);
 
 private:
   /**

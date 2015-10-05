@@ -44,9 +44,3 @@ QList<UndoSpeciesData*> *UndoReactionData::getSpeciesDependencyObjects() const
 {
   return mSpeciesDependencyObjects;
 }
-
-void UndoReactionData::setSpeciesDependencyObjects(QList<UndoSpeciesData*> *speciesDependencyObjects)
-{
-  pdelete(mSpeciesDependencyObjects);
-  mSpeciesDependencyObjects = speciesDependencyObjects;
-}

@@ -72,7 +72,6 @@ public:
   void setPersistentTrigger(bool persistentTrigger);
 
   QList<UndoEventAssignmentData*> *getEventAssignmentData() const;
-  void setEventAssignmentData(QList<UndoEventAssignmentData*> *eventAssignmentData);
 
   void appendEventAssignmentData(UndoEventAssignmentData *eventAssignData);
 

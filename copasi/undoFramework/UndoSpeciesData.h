@@ -51,17 +51,16 @@ public:
   CModelEntity::Status getStatus() const;
   void setStatus(CModelEntity::Status status);
 
-  QList<UndoReactionData*> *getReactionDependencyObjects() const;
-  void setReactionDependencyObjects(QList<UndoReactionData*> *reactionDependencyObjects);
 
   double getINumber() const;
+
   void setINumber(double iNumber);
 
+  QList<UndoReactionData*> *getReactionDependencyObjects() const;
+
   QList<UndoGlobalQuantityData*> *getGlobalQuantityDependencyObjects() const;
-  void setGlobalQuantityDependencyObjects(QList<UndoGlobalQuantityData*> *globalQuantityDependencyObjects);
 
   QList<UndoEventData*> *getEventDependencyObjects() const;
-  void setEventDependencyObjects(QList<UndoEventData*> *eventDependencyObjects);
 
 private:
 

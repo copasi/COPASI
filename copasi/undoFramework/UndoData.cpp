@@ -15,7 +15,8 @@
 UndoData::UndoData(const std::string &key  /*= ""*/,
                    const std::string &name /*= ""*/,
                    const std::string &type /*= ""*/)
-  : mKey(key)
+  : QObject()
+  , mKey(key)
   , mName(name)
   , mType(type)
 {

@@ -49,10 +49,12 @@ DeleteGlobalQuantityCommand::DeleteGlobalQuantityCommand(CQModelValue *pModelVal
     }
 
   //store to be deleted data
-  setDependentObjects(mpModelValue->mpModelValue->getDeletedObjects());
-  mpGlobalQuantityData->setReactionDependencyObjects(getReactionData());
-  mpGlobalQuantityData->setSpecieDependencyObjects(getSpecieData());
-  mpGlobalQuantityData->setEventDependencyObjects(getEventData());
+  setDependentObjects(mpModelValue->mpModelValue->getDeletedObjects(),
+                      mpReactionData,
+                      mpSpeciesData,
+                      NULL,
+                      mpEventData
+                     );
 
   this->setText(deleteGlobalQuantityText(sName));
   setName(sName);

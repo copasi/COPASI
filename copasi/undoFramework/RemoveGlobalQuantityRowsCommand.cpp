@@ -36,37 +36,22 @@ RemoveGlobalQuantityRowsCommand::RemoveGlobalQuantityRowsCommand(
 
   for (i = rows.begin(); i != rows.end(); ++i)
     {
-      UndoGlobalQuantityData *data = new UndoGlobalQuantityData();
+      CModelValue* pModelValue = pModel->getModelValues()[(*i).row()];
 
-      if (!pGlobalQuantityDM->isDefaultRow(*i) && pModel->getModelValues()[(*i).row()])
-        {
-          data->setName(pModel->getModelValues()[(*i).row()]->getObjectName());
-          data->setStatus(pModel->getModelValues()[(*i).row()]->getStatus());
+      if (pGlobalQuantityDM->isDefaultRow(*i) || pModelValue == NULL)
+        continue;
 
-          if (pModel->getModelValues()[(*i).row()]->getStatus() != CModelEntity::ASSIGNMENT)
-            {
-              data->setInitialValue(pModel->getModelValues()[(*i).row()]->getInitialValue());
-            }
 
-          // set expression
-          if (pModel->getModelValues()[(*i).row()]->getStatus() != CModelEntity::FIXED)
-            {
-              data->setExpression(pModel->getModelValues()[(*i).row()]->getExpression());
-            }
+      UndoGlobalQuantityData *data = new UndoGlobalQuantityData(pModelValue);
 
-          // set initial expression
-          if (pModel->getModelValues()[(*i).row()]->getStatus() != CModelEntity::ASSIGNMENT)
-            {
-              data->setInitialExpression(pModel->getModelValues()[(*i).row()]->getInitialExpression());
-            }
+      setDependentObjects(pModelValue->getDeletedObjects(),
+                          data->getReactionDependencyObjects(),
+                          data->getSpecieDependencyObjects(),
+                          NULL,
+                          data->getEventDependencyObjects());
 
-          setDependentObjects(pModel->getModelValues()[(*i).row()]->getDeletedObjects());
-          data->setReactionDependencyObjects(getReactionData());
-          data->setSpecieDependencyObjects(getSpecieData());
-          data->setEventDependencyObjects(getEventData());
+      mpGlobalQuantityData.append(data);
 
-          mpGlobalQuantityData.append(data);
-        }
     }
 
   this->setText(removeGlobalQuantityRowsText());

@@ -37,41 +37,19 @@ RemoveSpecieRowsCommand::RemoveSpecieRowsCommand(
 
   for (i = rows.begin(); i != rows.end(); ++i)
     {
-      UndoSpeciesData *data = new UndoSpeciesData();
+      if (pSpecieDM->isDefaultRow(*i) || pModel->getMetabolites()[(*i).row()] == NULL)
+        continue;
 
-      if (!pSpecieDM->isDefaultRow(*i) && pModel->getMetabolites()[(*i).row()])
-        {
-          //  mpReactionData = new  QList <UndoReactionData*>();
-          //  mpGlobalQuantityData = new  QList <UndoGlobalQuantityData*>();
-          //  mpEventData = new  QList <UndoEventData*>();
-          data->setName(pModel->getMetabolites()[(*i).row()]->getObjectName());
-          data->setIConc(pModel->getMetabolites()[(*i).row()]->getInitialConcentration());
-          data->setCompartment(pModel->getMetabolites()[(*i).row()]->getCompartment()->getObjectName());
-          data->setStatus(pModel->getMetabolites()[(*i).row()]->getStatus());
+      UndoSpeciesData *data = new UndoSpeciesData(pModel->getMetabolites()[(*i).row()]);
 
-          if (pModel->getMetabolites()[(*i).row()]->getStatus() != CModelEntity::ASSIGNMENT)
-            {
-              data->setIConc(pModel->getMetabolites()[(*i).row()]->getInitialConcentration());
-            }
+      setDependentObjects(pModel->getMetabolites()[(*i).row()]->getDeletedObjects(),
+                          data->getReactionDependencyObjects(),
+                          NULL,
+                          data->getGlobalQuantityDependencyObjects(),
+                          data->getEventDependencyObjects());
 
-          if (pModel->getMetabolites()[(*i).row()]->getStatus() ==  CModelEntity::ASSIGNMENT || pModel->getMetabolites()[(*i).row()]->getStatus() == CModelEntity::ODE)
-            {
-              data->setExpression(pModel->getMetabolites()[(*i).row()]->getExpression());
-            }
+      mpSpeciesData.append(data);
 
-          // set initial expression
-          if (pModel->getMetabolites()[(*i).row()]->getStatus() != CModelEntity::ASSIGNMENT)
-            {
-              data->setInitialExpression(pModel->getMetabolites()[(*i).row()]->getInitialExpression());
-            }
-
-          setDependentObjects(pModel->getMetabolites()[(*i).row()]->getDeletedObjects());
-          data->setReactionDependencyObjects(getReactionData());
-          data->setGlobalQuantityDependencyObjects(getGlobalQuantityData());
-          data->setEventDependencyObjects(getEventData());
-
-          mpSpeciesData.append(data);
-        }
     }
 
   this->setText(removeSpecieRowsText());

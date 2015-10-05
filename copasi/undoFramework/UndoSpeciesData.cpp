@@ -123,14 +123,6 @@ UndoSpeciesData::getReactionDependencyObjects() const
   return mReactionDependencyObjects;
 }
 
-void
-UndoSpeciesData::setReactionDependencyObjects(
-  QList<UndoReactionData*> *reactionDependencyObjects)
-{
-  pdelete(mReactionDependencyObjects);
-  mReactionDependencyObjects = reactionDependencyObjects;
-}
-
 double
 UndoSpeciesData::getINumber() const
 {
@@ -149,24 +141,8 @@ UndoSpeciesData::getGlobalQuantityDependencyObjects() const
   return mGlobalQuantityDependencyObjects;
 }
 
-void
-UndoSpeciesData::setGlobalQuantityDependencyObjects(
-  QList<UndoGlobalQuantityData*> *globalQuantityDependencyObjects)
-{
-  pdelete(mGlobalQuantityDependencyObjects);
-  mGlobalQuantityDependencyObjects = globalQuantityDependencyObjects;
-}
-
 QList<UndoEventData*> *
 UndoSpeciesData::getEventDependencyObjects() const
 {
   return mEventDependencyObjects;
-}
-
-void
-UndoSpeciesData::setEventDependencyObjects(
-  QList<UndoEventData*> *eventDependencyObjects)
-{
-  pdelete(mEventDependencyObjects);
-  mEventDependencyObjects = eventDependencyObjects;
 }

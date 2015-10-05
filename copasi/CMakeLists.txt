@@ -247,8 +247,13 @@ MACRO (COPASI_QT4_WRAP_UI outfiles subdir )
 ENDMACRO (COPASI_QT4_WRAP_UI)
 
 foreach (dir
-  barChart layoutUI MIRIAMUI plotUI tex UI wizard qlayout
+  barChart layoutUI MIRIAMUI plotUI tex UI wizard qlayout undoFramework
 )
+
+  if (NOT ENABLE_COPASI_UNDO AND dir STREQUAL undoFramework)
+    # do not moc undo framework, unless needed
+    break()
+  endif()
 
   string(TOUPPER ${dir} suffix)
   #message(STATUS "Mocing files for subdir: ${dir}")
@@ -265,7 +270,7 @@ foreach (dir
 
   if(FORMS_${suffix})
     #message(STATUS "uic'ing files for subdir: ${dir}")
-	COPASI_QT4_WRAP_UI(TEMP_UI_FORMS "${dir}" ${FORMS_${suffix}})
+  COPASI_QT4_WRAP_UI(TEMP_UI_FORMS "${dir}" ${FORMS_${suffix}})
   endif()
 
   set(HEADERS_UI_FORMS ${HEADERS_UI_FORMS} ${TEMP_UI_FORMS})

@@ -128,14 +128,6 @@ UndoEventData::getEventAssignmentData() const
   return mEventAssignmentData;
 }
 
-void
-UndoEventData::setEventAssignmentData(
-  QList<UndoEventAssignmentData *> *eventAssignmentData)
-{
-  pdelete(mEventAssignmentData);
-  mEventAssignmentData = eventAssignmentData;
-}
-
 void UndoEventData::appendEventAssignmentData(
   UndoEventAssignmentData *eventAssignData)
 {

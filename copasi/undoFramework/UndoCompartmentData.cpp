@@ -47,10 +47,10 @@ UndoCompartmentData::UndoCompartmentData(CCompartment *compartment)
 {
   CCopasiUndoCommand::setDependentObjects(
     compartment->getDeletedObjects(),
-    *mReactionDependencyObjects,
-    *mSpecieDependencyObjects,
-    *mGlobalQuantityDependencyObjects,
-    *mEventDependencyObjects);
+    mReactionDependencyObjects,
+    mSpecieDependencyObjects,
+    mGlobalQuantityDependencyObjects,
+    mEventDependencyObjects);
 }
 
 UndoCompartmentData::~UndoCompartmentData()
@@ -100,20 +100,6 @@ UndoCompartmentData::getSpecieDependencyObjects() const
   return mSpecieDependencyObjects;
 }
 
-void
-UndoCompartmentData::setReactionDependencyObjects(QList<UndoReactionData*> *reactionDependencyObjects)
-{
-  pdelete(mReactionDependencyObjects);
-  mReactionDependencyObjects = reactionDependencyObjects;
-}
-
-void
-UndoCompartmentData::setSpecieDependencyObjects(QList<UndoSpeciesData*> *specieDependencyObjects)
-{
-  pdelete(mSpecieDependencyObjects);
-  mSpecieDependencyObjects = specieDependencyObjects;
-}
-
 double
 UndoCompartmentData::getInitialValue() const
 {
@@ -132,25 +118,12 @@ UndoCompartmentData::getGlobalQuantityDependencyObjects() const
   return mGlobalQuantityDependencyObjects;
 }
 
-void
-UndoCompartmentData::setGlobalQuantityDependencyObjects(QList<UndoGlobalQuantityData*> *globalQuantityDependencyObjects)
-{
-  pdelete(mGlobalQuantityDependencyObjects);
-  mGlobalQuantityDependencyObjects = globalQuantityDependencyObjects;
-}
-
 QList<UndoEventData*> *
 UndoCompartmentData::getEventDependencyObjects() const
 {
   return mEventDependencyObjects;
 }
 
-void
-UndoCompartmentData::setEventDependencyObjects(QList<UndoEventData*> *eventDependencyObjects)
-{
-  pdelete(mEventDependencyObjects);
-  mEventDependencyObjects = eventDependencyObjects;
-}
 const std::string&
 UndoCompartmentData::getInitialExpression() const
 {
