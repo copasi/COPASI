@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -224,7 +224,6 @@ bool COptMethodSteepestDescent::initialize()
 
 void COptMethodSteepestDescent::gradient()
 {
-  size_t i;
 
   C_FLOAT64 **ppContainerVariable = mContainerVariables.array();
   C_FLOAT64 **ppContainerVariableEnd = ppContainerVariable + mVariableSize;

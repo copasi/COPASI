@@ -203,7 +203,7 @@ bool CLinkMatrix::build(const CMatrix< C_FLOAT64 > & matrix, size_t maxRank)
 
           C_FLOAT64 sminpr, s1, c1, smaxpr, s2, c2;
 
-          while (independent < mn && independent < maxRank)
+          while (independent < mn && independent < (C_INT)maxRank)
             {
               dlaic1_(&imin, &independent, pIsmin, &smin, &M(independent, 0), &M(independent, independent), &sminpr, &s1, &c1);
               dlaic1_(&imax, &independent, pIsmax, &smax, &M(independent, 0), &M(independent, independent), &smaxpr, &s2, &c2);
@@ -213,7 +213,7 @@ bool CLinkMatrix::build(const CMatrix< C_FLOAT64 > & matrix, size_t maxRank)
                   break;
                 }
 
-              for (size_t i = 0; i < independent - 1; ++i)
+              for (C_INT i = 0; i < independent - 1; ++i)
                 {
                   *(pIsmin + i) *= s1;
                   *(pIsmax + i) *= s2;

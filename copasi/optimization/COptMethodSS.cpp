@@ -1,4 +1,4 @@
-// Copyright (C) 2013 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2013 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -203,7 +203,7 @@ bool COptMethodSS::initialize()
   // create matrix for the RefSet (population)
   mRefSet.resize(mPopulationSize);
 
-  for (i = 0; i < mPopulationSize; i++)
+  for (i = 0; i < (size_t)mPopulationSize; ++i)
     mRefSet[i] = new CVector< C_FLOAT64 >(mVariableSize);
 
   // create vector for function values (of RefSet members)
@@ -217,7 +217,7 @@ bool COptMethodSS::initialize()
   // create matrix for the RefSet children
   mChild.resize(mPopulationSize);
 
-  for (i = 0; i < mPopulationSize; i++)
+  for (i = 0; i < (size_t)mPopulationSize; ++i)
     mChild[i] = new CVector< C_FLOAT64 >(mVariableSize);
 
   // create vector for function values (of child members)
@@ -358,7 +358,7 @@ bool COptMethodSS::randomize(C_INT32 i)
   C_FLOAT64 mn, mx, la; // for boundaries of rnd
   bool Running = true;  // flag for invalid values
 
-  for (C_INT32 j = 0; j < mVariableSize; j++)
+  for (C_INT32 j = 0; j < (C_INT32)mVariableSize; ++j)
     {
       // get pointers to appropriate elements (easier reading of code)
       COptItem & OptItem = *(*mpOptItem)[j];
@@ -429,7 +429,7 @@ bool COptMethodSS::creation(void)
   // first 4 candidates as a latin hypercube
   for (i = 0; (i < 4) && Running; i++)
     {
-      for (j = 0; j < mVariableSize; j++)
+      for (j = 0; j < (C_INT32)mVariableSize; ++j)
         {
           // get pointers to appropriate elements (easier reading of code)
           COptItem & OptItem = *(*mpOptItem)[j];
@@ -484,7 +484,7 @@ bool COptMethodSS::creation(void)
     }
 
   // next we add the initial guess from the user
-  for (j = 0; j < mVariableSize; j++)
+  for (j = 0; j < (C_INT32)mVariableSize; ++j)
     {
       COptItem & OptItem = *(*mpOptItem)[j];
       C_FLOAT64 & Sol = (*mPool[i])[j];
@@ -512,12 +512,12 @@ bool COptMethodSS::creation(void)
   // calculate its fitness
   Running &= evaluate(*mPool[i]);
   mPoolVal[i] = mEvaluationValue;
-  i++;
+  ++i;
 
   // the remaining entries depend on probabilities
-  for (; (i < mPoolSize) && Running; i++)
+  for (; (i < (C_INT32)mPoolSize) && Running; ++i)
     {
-      for (j = 0; j < mVariableSize; j++)
+      for (j = 0; j < (C_INT32)mVariableSize; ++j)
         {
           // get pointers to appropriate elements (easier reading of code)
           COptItem & OptItem = *(*mpOptItem)[j];
@@ -612,7 +612,7 @@ bool COptMethodSS::creation(void)
         {
           if (child == 0) break;
 
-          parent = floor((double)(child - 1) / 2);
+          parent = (C_INT32)floor((double)(child - 1) / 2);
 
           if (mPoolVal[child] < mPoolVal[parent])
             {
@@ -630,12 +630,12 @@ bool COptMethodSS::creation(void)
         }
     }
 
-  for (i = h; i < mPoolSize; i++)
+  for (i = h; i < (C_INT32)mPoolSize; ++i)
     {
       child = 0;
 
       // check if this element is smaller than any of the leafs
-      for (size_t leaf = h / 2; leaf < h; leaf++)
+      for (size_t leaf = (size_t)h / 2; leaf < (size_t)h; ++leaf)
         {
           if (mPoolVal[i] < mPoolVal[leaf])
             {
@@ -662,7 +662,7 @@ bool COptMethodSS::creation(void)
             {
               if (child == 0) break;
 
-              parent = floor((double)(child - 1) / 2);
+              parent = (C_INT32)floor((double)(child - 1) / 2);
 
               if (mPoolVal[child] < mPoolVal[parent])
                 {
@@ -747,7 +747,7 @@ void COptMethodSS::sortRefSet(C_INT32 lower, C_INT32 upper)
         {
           if (child == 0) break;
 
-          parent = floor((double)(child - 1) / 2);
+          parent = (C_INT32)floor((double)(child - 1) / 2);
 
           if (mRefSetVal[child] < mRefSetVal[parent])
             {
@@ -757,7 +757,7 @@ void COptMethodSS::sortRefSet(C_INT32 lower, C_INT32 upper)
               mRefSetVal[parent] = tempval;
               tempval = mStuck[child];
               mStuck[child] = mStuck[parent];
-              mStuck[parent] = tempval;
+              mStuck[parent] = (C_INT32)tempval;
               tempvec = mRefSet[child];
               mRefSet[child] = mRefSet[parent];
               mRefSet[parent] = tempvec;
@@ -785,7 +785,7 @@ void COptMethodSS::sortRefSet(C_INT32 lower, C_INT32 upper)
               mRefSetVal[i + 1] = tempval;
               tempval = mStuck[i];
               mStuck[i] = mStuck[i + 1];
-              mStuck[i + 1] = tempval;
+              mStuck[i + 1] = (C_INT32)tempval;
               tempvec = mRefSet[i];
               mRefSet[i] = mRefSet[i + 1];
               mRefSet[i + 1] = tempvec;
@@ -804,7 +804,7 @@ bool COptMethodSS::closerChild(C_INT32 i, C_INT32 j, C_FLOAT64 dist)
 {
   C_FLOAT64 mx;
 
-  for (C_INT32 k = 0; k < mVariableSize; k++)
+  for (C_INT32 k = 0; k < (C_INT32)mVariableSize; ++k)
     {
       mx = (fabs((*mChild[i])[k]) + fabs((*mPool[j])[k])) / 2.0;
 
@@ -820,7 +820,7 @@ bool COptMethodSS::closerRefSet(C_INT32 i, C_INT32 j, C_FLOAT64 dist)
 {
   C_FLOAT64 mx;
 
-  for (C_INT32 k = 0; k < mVariableSize; k++)
+  for (C_INT32 k = 0; k < (C_INT32)mVariableSize; ++k)
     {
       mx = (fabs((*mRefSet[i])[k]) + fabs((*mRefSet[j])[k])) / 2.0;
 
@@ -834,7 +834,7 @@ bool COptMethodSS::closerRefSet(C_INT32 i, C_INT32 j, C_FLOAT64 dist)
 // this is a sort of (1+1)-ES strategy
 bool COptMethodSS::combination(void)
 {
-  C_INT32 i, j, k, l;   // counters
+  C_INT32 i, j, k;      // counters
   C_FLOAT64 mn, mx;     // for bounds on parameters
   C_FLOAT64 beta;       // bias
   C_FLOAT64 la;         // for orders of magnitude
@@ -874,7 +874,7 @@ bool COptMethodSS::combination(void)
               omatb = (1.0 + alpha * beta) * 0.5;
 
               // generate a child
-              for (k = 0; k < mVariableSize; k++)
+              for (k = 0; k < (C_INT32)mVariableSize; ++k)
                 {
                   // get the bounds of this parameter
                   COptItem & OptItem = *(*mpOptItem)[k];
@@ -966,7 +966,7 @@ bool COptMethodSS::combination(void)
           // while newval < childval
           for (; ;)
             {
-              for (k = 0; k < mVariableSize; k++)
+              for (k = 0; k < (C_INT32)mVariableSize; ++k)
                 {
                   dd = (xpr[i] - (*mChild[i])[k]) * lambda;
                   xnew[k] = (*mChild[i])[k] + dd * mpRandom->getRandomCC();
@@ -1021,7 +1021,7 @@ bool COptMethodSS::combination(void)
 bool COptMethodSS::childLocalMin(void)
 {
   C_INT32 i, best;
-  C_FLOAT64 bestVal, fvalmin;
+  C_FLOAT64 bestVal;
   bool Running = true;
 
   // signal nothing found yet
@@ -1042,7 +1042,7 @@ bool COptMethodSS::childLocalMin(void)
   if (best == -1) return true;
 
   // check if this child is not close to previous ones
-  for (i = 0; i < mLocalStored; i++)
+  for (i = 0; i < (C_INT32)mLocalStored; ++i)
     {
       // is the other one like me?
       if (closerChild(best, i, mCloseValue))
@@ -1076,7 +1076,6 @@ bool COptMethodSS::optimise()
   bool Running = true;
   bool needsort;
   size_t i, j;
-  C_FLOAT64 mx, mn, la;
 
   if (!initialize())
     {
@@ -1124,7 +1123,7 @@ bool COptMethodSS::optimise()
       // check for stagnation or similarity
       needsort = false;
 
-      for (i = 0; i < mPopulationSize; i++)
+      for (i = 0; i < (size_t)mPopulationSize; ++i)
         {
           // are we stuck? (20 iterations)
           if (mStuck[i] == 19)
@@ -1137,7 +1136,7 @@ bool COptMethodSS::optimise()
           else
             {
               // check if another RefSet member is similar to us (relative dist 0.1%)
-              for (j = i + 1; j < mPopulationSize; j++)
+              for (j = i + 1; j < (size_t)mPopulationSize; ++j)
                 {
                   // is the other one like me?
                   if (closerRefSet(i, j, mCloseValue))
@@ -1173,7 +1172,7 @@ bool COptMethodSS::optimise()
       // substitute the parents for children or increment stuck counter
       needsort = false;
 
-      for (i = 0; i < mPopulationSize; i++)
+      for (i = 0; i < (size_t)mPopulationSize; ++i)
         {
           // check if child was better than parent
           if (mStuck[i] == 0)

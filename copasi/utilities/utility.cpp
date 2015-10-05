@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -346,7 +346,7 @@ double strToDouble(const char * str,
 
   if (pTail != NULL && !isnan(Value))
     {
-      *pTail = str + std::min< size_t >(in.tellg(), strlen(str));
+      *pTail = str + std::min< size_t >((size_t)in.tellg(), strlen(str));
     }
 
   return Value;
@@ -375,7 +375,7 @@ C_INT32 strToInt(const char * str,
 
   if (pTail != NULL && !isnan(Value))
     {
-      *pTail = str + std::min< size_t >(in.tellg(), strlen(str));
+      *pTail = str + std::min< size_t >((size_t)in.tellg(), strlen(str));
     }
 
   return Value;
@@ -405,7 +405,7 @@ unsigned C_INT32 strToUnsignedInt(const char * str,
 
   if (pTail != NULL && !isnan(Value))
     {
-      *pTail = str + std::min< size_t >(in.tellg(), strlen(str));
+      *pTail = str + std::min< size_t >((size_t)in.tellg(), strlen(str));
     }
 
   return Value;

@@ -554,7 +554,7 @@ bool COptProblem::calculateStatistics(const C_FLOAT64 & factor,
                                       const C_FLOAT64 & resolution)
 {
   // Set the current values to the solution values.
-  size_t i, imax = mSolutionVariables.size();
+  size_t imax = mSolutionVariables.size();
 
   mGradient.resize(imax);
   mGradient = std::numeric_limits<C_FLOAT64>::quiet_NaN();
