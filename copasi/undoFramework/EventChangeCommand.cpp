@@ -63,6 +63,21 @@ EventChangeCommand::EventChangeCommand(CCopasiUndoCommand::Type type,
         setText(": Changed event assignment expression");
         break;
 
+      case EVENT_PRIORITY_EXPRESSION_CHANGE:
+        setProperty("Event Priority Expression");
+        setText(": Changed event priority expression");
+        break;
+
+      case EVENT_TRIGGER_INITIALTIME_CHANGE:
+        setProperty("Event FireAtInitialTime");
+        setText(": Changed event fire at initial time");
+        break;
+
+      case EVENT_TRIGGER_PERSISTENT_CHANGE:
+        setProperty("Event Persistent Trigger");
+        setText(": Changed persisten trigger");
+        break;
+
       default:
         break;
     }

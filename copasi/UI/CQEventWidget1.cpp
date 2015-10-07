@@ -339,6 +339,54 @@ void CQEventWidget1::saveToEvent()
       mChanged = true;
     }
 
+  if (mpEvent->getPriorityExpression() != mpExpressionPriority->mpExpressionWidget->getExpression())
+    {
+
+      mpUndoStack->push(
+        new EventChangeCommand(
+          CCopasiUndoCommand::EVENT_PRIORITY_EXPRESSION_CHANGE,
+          FROM_UTF8(mpEvent->getPriorityExpression()),
+          FROM_UTF8(mpExpressionPriority->mpExpressionWidget->getExpression()),
+          mpEvent,
+          this
+        )
+      );
+
+      mChanged = true;
+    }
+
+  if (mpEvent->getPersistentTrigger() !=  mpTriggerPersistent->isChecked())
+    {
+
+      mpUndoStack->push(
+        new EventChangeCommand(
+          CCopasiUndoCommand::EVENT_TRIGGER_PERSISTENT_CHANGE,
+          mpEvent->getPersistentTrigger(),
+          mpTriggerPersistent->isChecked(),
+          mpEvent,
+          this
+        )
+      );
+
+      mChanged = true;
+    }
+
+  if (mpEvent->getFireAtInitialTime() !=  mpFireAtInitialTime->isChecked())
+    {
+
+      mpUndoStack->push(
+        new EventChangeCommand(
+          CCopasiUndoCommand::EVENT_TRIGGER_INITIALTIME_CHANGE,
+          mpEvent->getFireAtInitialTime(),
+          mpFireAtInitialTime->isChecked(),
+          mpEvent,
+          this
+        )
+      );
+
+      mChanged = true;
+    }
+
   if (mpComboBoxDelay->currentIndex() != getDelayTypeIndex(mpEvent))
     {
       mpUndoStack->push(
@@ -886,6 +934,19 @@ CQEventWidget1::changeValue(const std::string &key,
       case CCopasiUndoCommand::EVENT_TRIGGER_EXPRESSION_CHANGE:
         mpEvent->setTriggerExpression(TO_UTF8(newValue.toString()));
         break;
+
+      case CCopasiUndoCommand::EVENT_PRIORITY_EXPRESSION_CHANGE:
+        mpEvent->setPriorityExpression(TO_UTF8(newValue.toString()));
+        break;
+
+      case CCopasiUndoCommand::EVENT_TRIGGER_INITIALTIME_CHANGE:
+        mpEvent->setFireAtInitialTime(newValue.toBool());
+        break;
+
+      case CCopasiUndoCommand::EVENT_TRIGGER_PERSISTENT_CHANGE:
+        mpEvent->setPersistentTrigger(newValue.toBool());
+        break;
+
 
       case CCopasiUndoCommand::EVENT_ASSIGNMENT_ADDED:
       case CCopasiUndoCommand::EVENT_ASSIGNMENT_REMOVED:
