@@ -1,16 +1,16 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
-// All rights reserved.
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+// and The University of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2005 - 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
-// All rights reserved.
+// Copyright (C) 2005 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc. and EML Research, gGmbH. 
+// All rights reserved. 
 
 #include "CQFittingWidget.h"
 
@@ -334,12 +334,18 @@ void CQFittingWidget::slotExperimentData()
   pdelete(pDialog);
 }
 
-void CQFittingWidget::slotPageChange(QWidget * currentPage)
+void CQFittingWidget::slotPageIndexChange(int currentIndex)
 {
-  if (mpTabWidget->tabText(mpTabWidget->indexOf(currentPage)).contains("Parameters", Qt::CaseSensitive))
+  if (mpTabWidget->tabText(currentIndex).contains("Parameters", Qt::CaseSensitive))
     mpCurrentList = mpParameters;
   else
     mpCurrentList = mpConstraints;
+}
+
+
+void CQFittingWidget::slotPageChange(QWidget * currentPage)
+{
+  slotPageIndexChange(mpTabWidget->indexOf(currentPage));
 }
 
 void CQFittingWidget::init()
