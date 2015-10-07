@@ -914,16 +914,13 @@ void CQSpeciesDetail::deleteSpecies()
 
 void CQSpeciesDetail::deleteSpecies(UndoSpeciesData *pSData)
 {
-  mpListView->switchToOtherWidget(CCopasiUndoCommand::SPECIES, "");
+  switchToWidget(CCopasiUndoCommand::SPECIES);
 
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
-  assert(pDataModel != NULL);
+  GET_MODEL_OR_RETURN(pModel);
 
-  CModel * pModel = pDataModel->getModel();
-  assert(pModel != NULL);
-
-  std::string key = pSData->getKey();
+  size_t index = pModel->findMetabByName(pSData->getName());
+  CMetab *pSpecies = pModel->getMetabolites()[(int) index];
+  std::string key = pSpecies->getKey();
   pModel->removeMetabolite(key);
 
 #undef DELETE
@@ -934,12 +931,7 @@ void CQSpeciesDetail::deleteSpecies(UndoSpeciesData *pSData)
 
 void CQSpeciesDetail::addSpecies(UndoSpeciesData *pSData)
 {
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
-  assert(pDataModel != NULL);
-
-  CModel * pModel = pDataModel->getModel();
-  assert(pModel != NULL);
+  GET_MODEL_OR_RETURN(pModel);
 
   //reinsert the species
   CMetab *pSpecie =  pModel->createMetabolite(pSData->getName(), pSData->getCompartment(), 1.0, pSData->getStatus());
@@ -1053,6 +1045,9 @@ void CQSpeciesDetail::addSpecies(UndoSpeciesData *pSData)
           UndoEventData * eData = *ev;
 
           CEvent* pEvent = eData->createEventFromData(pModel);
+
+          if (pEvent == NULL) continue;
+
           protectedNotify(ListViews::EVENT, ListViews::ADD, pEvent->getKey());
         }
     }

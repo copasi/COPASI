@@ -21,10 +21,70 @@
 #include "utilities/CCopasiParameterGroup.h"
 #include "utilities/CDirEntry.h"
 #include "copasiWidget.h"
+#include "CQCopasiApplication.h"
+#include "copasiui3window.h"
+#include "DataModelGUI.h"
+#include "listviews.h"
 
 #ifdef DEBUG_UI
 #include <QtCore/QtDebug>
 #endif
+
+bool updateGUI(C_INT32 objectType, C_INT32 action, const std::string & key /*= ""*/)
+{
+  CQCopasiApplication* app = dynamic_cast<CQCopasiApplication*>(qApp->instance());
+
+  if (app == NULL) return false;
+
+  CopasiUI3Window* win = app->getMainWindow();
+
+  if (win == NULL) return false;
+
+  DataModelGUI* dm = win->getDataModel();
+
+  if (dm == NULL) return false;
+
+  return dm->notify((ListViews::ObjectType)objectType, (ListViews::Action)action, key);
+}
+
+void switchToWidget(size_t id, const std::string & key /*= ""*/)
+{
+  CQCopasiApplication* app = dynamic_cast<CQCopasiApplication*>(qApp->instance());
+
+  if (app == NULL) return;
+
+  CopasiUI3Window* win = app->getMainWindow();
+
+  if (win == NULL) return;
+
+  ListViews *lv = win->getMainWidget();
+
+  if (lv == NULL) return;
+
+  if (lv->getCurrentItemId() != id)
+    lv->switchToOtherWidget(id, key);
+}
+
+void updateCurrentWidget()
+{
+  CQCopasiApplication* app = dynamic_cast<CQCopasiApplication*>(qApp->instance());
+
+  if (app == NULL) return;
+
+  CopasiUI3Window* win = app->getMainWindow();
+
+  if (win == NULL) return;
+
+  ListViews *lv = win->getMainWidget();
+
+  if (lv == NULL) return;
+
+  CopasiWidget* currentWidget = lv->getCurrentWidget();
+
+  if (currentWidget == NULL) return;
+
+  currentWidget->refresh();
+}
 
 QString getParameterValue(const CCopasiParameterGroup * group,
                           const size_t & index,

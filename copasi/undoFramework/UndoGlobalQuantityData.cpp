@@ -13,6 +13,9 @@
 #include <QtCore/QList>
 
 #include "model/CModelValue.h"
+#include "model/CModel.h"
+#include "function/CExpression.h"
+
 #include "UndoGlobalQuantityData.h"
 #include "UndoReactionData.h"
 #include "UndoEventData.h"
@@ -51,6 +54,44 @@ UndoGlobalQuantityData::~UndoGlobalQuantityData()
   pdelete(mSpecieDependencyObjects);
   pdelete(mReactionDependencyObjects);
   pdelete(mEventDependencyObjects);
+}
+
+CModelValue*
+UndoGlobalQuantityData::createQuantityFromData(CModel* pModel)
+{
+  if (pModel == NULL) return NULL;
+
+  if (pModel->getModelValues().getIndex(getName()) != C_INVALID_INDEX)
+    return NULL;
+
+
+  CModelValue *pGlobalQuantity =  pModel->createModelValue(getName()); //, gData->getInitialValue());
+
+  if (pGlobalQuantity == NULL)
+    return NULL;
+
+
+  pGlobalQuantity->setStatus(getStatus());
+
+  if (getStatus() != CModelEntity::ASSIGNMENT)
+    {
+      pGlobalQuantity->setInitialValue(getInitialValue());
+    }
+
+  if (getStatus() != CModelEntity::FIXED)
+    {
+      pGlobalQuantity->setExpression(getExpression());
+      pGlobalQuantity->getExpressionPtr()->compile();
+    }
+
+  // set initial expression
+  if (getStatus() != CModelEntity::ASSIGNMENT)
+    {
+      pGlobalQuantity->setInitialExpression(getInitialExpression());
+      pGlobalQuantity->getInitialExpressionPtr()->compile();
+    }
+
+  return pGlobalQuantity;
 }
 
 double

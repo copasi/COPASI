@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -54,6 +54,13 @@ bool CopasiWidget::update(ListViews::ObjectType C_UNUSED(objectType), ListViews:
 
 bool CopasiWidget::leave()
 {return true;}
+
+void CopasiWidget::refresh()
+{
+  leave();
+  qApp->processEvents();
+  enterProtected();
+}
 
 bool CopasiWidget::enter(const std::string & key)
 {

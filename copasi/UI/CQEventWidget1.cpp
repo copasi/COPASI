@@ -804,14 +804,14 @@ void CQEventWidget1::deleteEvent(UndoEventData *pEventData)
 {
   mpListView->switchToOtherWidget(CCopasiUndoCommand::EVENTS, "");
 
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
-  assert(pDataModel != NULL);
+  GET_MODEL_OR_RETURN(pModel);
 
-  CModel * pModel = pDataModel->getModel();
-  assert(pModel != NULL);
+  CEvent* pEvent = pModel->getEvents()[pEventData->getName()];
 
-  std::string key = pEventData->getKey();
+  if (pEvent == NULL)
+    return;
+
+  std::string key = pEvent->getKey();
   pModel->removeEvent(key);
   mpEvent = NULL;
 
@@ -823,14 +823,13 @@ void CQEventWidget1::deleteEvent(UndoEventData *pEventData)
 
 void CQEventWidget1::addEvent(UndoEventData *pData)
 {
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
-  assert(pDataModel != NULL);
-
-  CModel * pModel = pDataModel->getModel();
-  assert(pModel != NULL);
+  GET_MODEL_OR_RETURN(pModel);
 
   CEvent* pEvent = pData->createEventFromData(pModel);
+
+  if (pEvent == NULL)
+    return;
+
   pData->setKey(pEvent->getKey());
   protectedNotify(ListViews::EVENT, ListViews::ADD, pEvent->getKey());
 

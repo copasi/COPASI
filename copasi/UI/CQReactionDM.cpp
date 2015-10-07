@@ -465,44 +465,45 @@ bool CQReactionDM::removeRows(QModelIndexList rows, const QModelIndex&)
 #ifdef COPASI_UNDO
 bool CQReactionDM::reactionDataChange(const QModelIndex &index, const QVariant &value, int role, QString &funcName)
 {
+  switchToWidget(CCopasiUndoCommand::REACTIONS);
 
-  if (index.isValid() && role == Qt::EditRole)
+  if (!index.isValid() || role != Qt::EditRole)
+    return true;
+
+  GET_MODEL_OR(pModel, return false);
+
+  bool defaultRow = isDefaultRow(index);
+
+  if (defaultRow)
     {
-      bool defaultRow = isDefaultRow(index);
-
-      if (defaultRow)
-        {
-          if (index.data() != value)
-            insertRow();
-          else
-            return false;
-        }
-
-      // this loads the reaction into a CReactionInterface object.
-      // the gui works on this object and later writes back the changes to ri;
-      assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-      CReactionInterface ri((*CCopasiRootContainer::getDatamodelList())[0]->getModel());
-      CReaction *pRea = (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getReactions()[index.row()];
-
-      if (index.column() == COL_NAME_REACTIONS)
-        {
-          pRea->setObjectName(TO_UTF8(value.toString()));
-          emit notifyGUI(ListViews::REACTION, ListViews::RENAME, pRea->getKey());
-        }
-      else if (index.column() == COL_EQUATION)
-        {
-          setEquation(pRea, index, value);
-          updateReactionWithFunctionName(pRea, funcName);
-        }
-
-      if (defaultRow && this->index(index.row(), COL_NAME_REACTIONS).data().toString() == "reaction")
-        pRea->setObjectName(TO_UTF8(createNewName("reaction", COL_NAME_REACTIONS)));
-
-      emit dataChanged(index, index);
-      emit notifyGUI(ListViews::REACTION, ListViews::CHANGE, pRea->getKey());
+      if (index.data() != value)
+        insertRow();
+      else
+        return false;
     }
 
-  emit changeWidget(CCopasiUndoCommand::REACTIONS);
+  // this loads the reaction into a CReactionInterface object.
+  // the gui works on this object and later writes back the changes to ri;
+  CReactionInterface ri(pModel);
+  CReaction *pRea = pModel->getReactions()[index.row()];
+
+  if (index.column() == COL_NAME_REACTIONS)
+    {
+      pRea->setObjectName(TO_UTF8(value.toString()));
+      emit notifyGUI(ListViews::REACTION, ListViews::RENAME, pRea->getKey());
+    }
+  else if (index.column() == COL_EQUATION)
+    {
+      setEquation(pRea, index, value);
+      updateReactionWithFunctionName(pRea, funcName);
+    }
+
+  if (defaultRow && this->index(index.row(), COL_NAME_REACTIONS).data().toString() == "reaction")
+    pRea->setObjectName(TO_UTF8(createNewName("reaction", COL_NAME_REACTIONS)));
+
+  emit dataChanged(index, index);
+  emit notifyGUI(ListViews::REACTION, ListViews::CHANGE, pRea->getKey());
+
 
   return true;
 }
@@ -526,7 +527,6 @@ void CQReactionDM::insertNewReactionRow(int position, int rows, const QModelInde
       CReaction *pRea = (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->createReaction(TO_UTF8(createNewName("reaction", COL_NAME_REACTIONS)));
       std::string key = pRea->getKey();
       emit notifyGUI(ListViews::REACTION, ListViews::ADD, key);
-      emit changeWidget(C_INVALID_INDEX, key);
     }
 
   endInsertRows();
@@ -534,11 +534,9 @@ void CQReactionDM::insertNewReactionRow(int position, int rows, const QModelInde
 
 void CQReactionDM::addReactionRow(CReaction *pReaction)
 {
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
-  assert(pDataModel != NULL);
+  GET_MODEL_OR_RETURN(pModel);
   beginInsertRows(QModelIndex(), 1, 1);
-  CReaction *pRea = pDataModel->getModel()->createReaction(pReaction->getObjectName());
+  CReaction *pRea = pModel->createReaction(pReaction->getObjectName());
   std::string key = pRea->getKey();
   emit notifyGUI(ListViews::REACTION, ListViews::ADD, key);
   endInsertRows();
@@ -546,7 +544,7 @@ void CQReactionDM::addReactionRow(CReaction *pReaction)
 
 void CQReactionDM::deleteReactionRow(CReaction *pReaction)
 {
-  CModel * pModel = (*CCopasiRootContainer::getDatamodelList())[0]->getModel();
+  GET_MODEL_OR_RETURN(pModel);
   std::string key = pReaction->getKey();
   beginRemoveRows(QModelIndex(), 1, 1);
   pModel->removeReaction(pReaction->getKey());

@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -46,6 +46,12 @@ public:
   CopasiWidget(QWidget * parent = 0, const char * name = 0, Qt::WFlags f = 0);
   virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
   virtual bool leave();
+
+  /**
+   * leaves the widget and enters it again
+   */
+  virtual void refresh();
+
   bool enter(const std::string & key);
   virtual void setFramework(int framework);
   bool getIgnoreUpdates();

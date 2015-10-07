@@ -86,12 +86,12 @@ CompartmentDataChangeCommand::CompartmentDataChangeCommand(
 
 void CompartmentDataChangeCommand::redo()
 {
-  mpCompartmentDM->compartmentDataChange(mKey, mNew, mIndex.column());
+  mpCompartmentDM->compartmentDataChange(mIndex, mNew);
 }
 
 void CompartmentDataChangeCommand::undo()
 {
-  mpCompartmentDM->compartmentDataChange(mKey, mOld, mIndex.column());
+  mpCompartmentDM->compartmentDataChange(mIndex, mOld);
   setAction("Undone change");
 }
 

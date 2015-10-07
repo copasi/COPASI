@@ -777,7 +777,11 @@ void CQCompartment::deleteCompartment(UndoCompartmentData *pCompartmentData)
   CModel * pModel = pDataModel->getModel();
   assert(pModel != NULL);
 
-  std::string key = pCompartmentData->getKey();
+  CCompartment* pComp = pModel->getCompartments()[pCompartmentData->getName()];
+
+  if (pComp == NULL) return;
+
+  std::string key = pComp->getKey();
   pModel->removeCompartment(key);
   mpCompartment = NULL;
 

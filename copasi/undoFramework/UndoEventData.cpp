@@ -137,6 +137,11 @@ void UndoEventData::appendEventAssignmentData(
 CEvent *
 UndoEventData::createEventFromData(CModel *pModel)
 {
+  if (pModel == NULL) return NULL;
+
+  if (pModel->getEvents().getIndex(getName()) != C_INVALID_INDEX)
+    return NULL;
+
   CEvent *pEvent =  pModel->createEvent(getName());
 
   //set the expressions

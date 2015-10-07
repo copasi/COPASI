@@ -22,6 +22,7 @@ class UndoSpeciesData;
 class UndoEventData;
 class UndoReactionData;
 class CModelValue;
+class CModel;
 
 class UndoGlobalQuantityData: public UndoData
 {
@@ -31,6 +32,8 @@ public:
                          const std::string &type = "");
 
   UndoGlobalQuantityData(const CModelValue* pModelValue);
+
+  CModelValue* createQuantityFromData(CModel* pModel);
 
   virtual ~UndoGlobalQuantityData();
 

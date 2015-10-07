@@ -33,7 +33,7 @@ GlobalQuantityDataChangeCommand::GlobalQuantityDataChangeCommand(
 {
   // stores the data
 
-  if (mRole == COL_TYPE_GQ)
+  if (index.column() == COL_TYPE_GQ)
     mOld = pGlobalQuantityDM->statusToIndex(mOld.toString());
 
   //mPathIndex = pathFromIndex(index);

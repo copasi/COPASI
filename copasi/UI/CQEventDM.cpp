@@ -434,27 +434,13 @@ void CQEventDM::deleteEventRow(UndoEventData *pEventData)
 
 void CQEventDM::addEventRow(UndoEventData *pEventData)
 {
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
-  assert(pDataModel != NULL);
-  CModel * pModel = pDataModel->getModel();
+  GET_MODEL_OR_RETURN(pModel);
 
   beginInsertRows(QModelIndex(), 1, 1);
-  CEvent *pEvent = pDataModel->getModel()->createEvent(pEventData->getName());
 
-  //set the expressions
-  pEvent->setTriggerExpression(pEventData->getTriggerExpression());
-  pEvent->setDelayExpression(pEventData->getDelayExpression());
-  pEvent->setPriorityExpression(pEventData->getPriorityExpression());
+  CEvent *pEvent = pEventData->createEventFromData(pModel);
 
-  QList <UndoEventAssignmentData *> *assignmentData = pEventData->getEventAssignmentData();
-  QList <UndoEventAssignmentData *>::const_iterator i;
-
-  for (i = assignmentData->begin(); i != assignmentData->end(); ++i)
-    {
-      UndoEventAssignmentData * assignData = *i;
-      assignData->addToEvent(pEvent);
-    }
+  if (pEvent == NULL) return;
 
   std::string key = pEvent->getKey();
   pEventData->setKey(key);
@@ -468,13 +454,7 @@ bool CQEventDM::removeEventRows(QModelIndexList rows, const QModelIndex&)
   if (rows.isEmpty())
     return false;
 
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
-  assert(pDataModel != NULL);
-  CModel * pModel = pDataModel->getModel();
-
-  if (pModel == NULL)
-    return false;
+  GET_MODEL_OR(pModel, return false);
 
 //Build the list of pointers to items to be deleted
 //before actually deleting any item.
@@ -530,9 +510,12 @@ bool CQEventDM::insertEventRows(QList <UndoEventData *> pData)
 
   for (i = pData.begin(); i != pData.end(); ++i)
     {
-      UndoEventData * data = *i;
       beginInsertRows(QModelIndex(), 1, 1);
+      UndoEventData * data = *i;
       CEvent* pEvent = data->createEventFromData(pModel);
+
+      if (pEvent == NULL) continue;
+
       emit notifyGUI(ListViews::EVENT, ListViews::ADD, pEvent->getKey());
       endInsertRows();
     }

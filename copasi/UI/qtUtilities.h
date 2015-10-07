@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -22,6 +22,60 @@ class QStringList;
 class CCopasiParameterGroup;
 class CopasiWidget;
 class QObject;
+
+
+
+#define GET_MODEL(target)\
+  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);\
+  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];\
+  assert(pDataModel != NULL);\
+  CModel * target = pDataModel->getModel();\
+  assert(target != NULL);
+
+#define GET_MODEL_OR(target, code)\
+  if (CCopasiRootContainer::getDatamodelList()->size()  == 0) code;\
+  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];\
+  if (pDataModel == NULL) code;\
+  CModel * target = pDataModel->getModel();\
+  if (target == NULL) code;
+
+#define GET_MODEL_OR_RETURN(target)\
+  GET_MODEL_OR(target,return);
+
+//#define GET_MODEL_OR_RETURN(target)\
+//  if (CCopasiRootContainer::getDatamodelList()->size()  == 0) return;\
+//  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];\
+//  if (pDataModel == NULL) return;\
+//  CModel * target = pDataModel->getModel();\
+//  if (target == NULL) return;
+
+
+/**
+ * notifies the UI of a modification of the model.
+ *
+ * This function retrieves the DataModelGUI object, and notifies
+ * it about the change.
+ *
+ * @param objectType enumeration value of type ListViews::ObjectType
+ * @param action enumeration value of type ListViews::Action
+ * @param key
+ *
+ * @return success
+ */
+bool updateGUI(C_INT32 objectType, C_INT32 action, const std::string & key = "");
+
+/**
+ * switches to the given widget
+ *
+ * @param id the id of the widget
+ * @param key the key of the object to switch to
+ */
+void switchToWidget(size_t id, const std::string & key = "");
+
+/**
+ * leaves and enters the current widget
+ */
+void updateCurrentWidget();
 
 /**
  * Retrieve a parameter from a parameter group and convert it to a QString.

@@ -622,12 +622,7 @@ void CQModelValue::deleteGlobalQuantity(UndoGlobalQuantityData *pGlobalQuantityD
 {
   mpListView->switchToOtherWidget(CCopasiUndoCommand::GLOBALQUANTITYIES, "");
 
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
-  assert(pDataModel != NULL);
-
-  CModel * pModel = pDataModel->getModel();
-  assert(pModel != NULL);
+  GET_MODEL_OR_RETURN(pModel);
 
   std::string key = pGlobalQuantityData->getKey();
   pModel->removeModelValue(key);
@@ -640,12 +635,8 @@ void CQModelValue::deleteGlobalQuantity(UndoGlobalQuantityData *pGlobalQuantityD
 
 void CQModelValue::addGlobalQuantity(UndoGlobalQuantityData *pData)
 {
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
-  assert(pDataModel != NULL);
 
-  CModel * pModel = pDataModel->getModel();
-  assert(pModel != NULL);
+  GET_MODEL_OR_RETURN(pModel);
 
   //reinsert the Global Quantity
   /*  CModelValue *pGlobalQuantity =  pModel->createModelValue(pSData->getName(), pSData->getInitialValue());
@@ -653,28 +644,11 @@ void CQModelValue::addGlobalQuantity(UndoGlobalQuantityData *pData)
     std::string key = pGlobalQuantity->getKey();
     protectedNotify(ListViews::MODELVALUE, ListViews::ADD, key);  */
 
-  CModelValue *pGlobalQuantity =  pModel->createModelValue(pData->getName());
-  pData->setKey(pGlobalQuantity->getKey());
-  pGlobalQuantity->setStatus(pData->getStatus());
 
-  if (pData->getStatus() != CModelEntity::ASSIGNMENT)
-    {
-      pGlobalQuantity->setInitialValue(pData->getInitialValue());
-    }
+  CModelValue *pGlobalQuantity =  pData->createQuantityFromData(pModel);
 
-  // set the expression
-  if (pData->getStatus() != CModelEntity::FIXED)
-    {
-      pGlobalQuantity->setExpression(pData->getExpression());
-      pGlobalQuantity->getExpressionPtr()->compile();
-    }
-
-  // set initial expression
-  if (pData->getStatus() != CModelEntity::ASSIGNMENT)
-    {
-      pGlobalQuantity->setInitialExpression(pData->getInitialExpression());
-      pGlobalQuantity->getInitialExpressionPtr()->compile();
-    }
+  if (pGlobalQuantity == NULL)
+    return;
 
   protectedNotify(ListViews::MODELVALUE, ListViews::ADD, pGlobalQuantity->getKey());
 
@@ -752,12 +726,11 @@ void CQModelValue::addGlobalQuantity(UndoGlobalQuantityData *pData)
         {
           UndoEventData * eData = *ev;
 
-          if (pModel->getEvents().getIndex(eData->getName()) == C_INVALID_INDEX)
-            {
+          CEvent* pEvent = eData->createEventFromData(pModel);
 
-              CEvent* pEvent = eData->createEventFromData(pModel);
-              protectedNotify(ListViews::EVENT, ListViews::ADD, pEvent->getKey());
-            }
+          if (pEvent == NULL) continue;
+
+          protectedNotify(ListViews::EVENT, ListViews::ADD, pEvent->getKey());
         }
     }
 
