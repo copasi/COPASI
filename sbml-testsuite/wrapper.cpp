@@ -99,11 +99,11 @@ public:
     , output_filename("")
     , pTrajectoryTask(NULL)
     , pDataModel(NULL)
-
+    , methodType(CTaskEnum::deterministic)
   {
-    if (argc != 6)
+    if (argc < 6)
       {
-        THROW_COPASI_EXCEPTION("Usage: sbml-testsuite INPUT_DIRECTORY TESTNAME OUTPUTDIRECTORY SBMLLEVEL SBMLVERSION" << std::endl);
+        THROW_COPASI_EXCEPTION("Usage: sbml-testsuite INPUT_DIRECTORY TESTNAME OUTPUTDIRECTORY SBMLLEVEL SBMLVERSION [METHOD]" << std::endl);
       }
 
     in_dir = argv[1];
@@ -111,6 +111,20 @@ public:
     out_dir = argv[3];
     level = strtol(argv[4], NULL, 10);
     version = strtol(argv[5], NULL, 10);
+
+    if (argc > 6)
+      {
+        std::stringstream  MethodType;
+
+        for (int i = 6; i < argc; ++i)
+          {
+            if (i > 6) MethodType << " ";
+
+            MethodType << argv[i];
+          }
+
+        methodType = toEnum(unQuote(MethodType.str()), CTaskEnum::MethodName, CTaskEnum::deterministic);
+      }
 
     std::ostringstream os;
     os << in_dir << "/" << test_name << "/" << test_name << "-settings.txt";
@@ -406,9 +420,19 @@ public:
     pProblem->setTimeSeriesRequested(true);
     pProblem->setContinueSimultaneousEvents(true);
 
+    pTrajectoryTask->setMethodType(methodType);
+
     CTrajectoryMethod* pMethod = dynamic_cast<CTrajectoryMethod*>(pTrajectoryTask->getMethod());
 
-    pMethod->getParameter("Absolute Tolerance")->setValue(1.0e-12);
+    if (pMethod->getParameter("Absolute Tolerance") != NULL)
+      {
+        pMethod->getParameter("Absolute Tolerance")->setValue(1.0e-12);
+      }
+
+    if (pMethod->getParameter("Partitioning Strategy"))
+      {
+        pMethod->setValue("Partitioning Strategy", std::string("Deterministic Reaction Integration"));
+      }
 
     CCopasiVectorN< CCopasiTask > & TaskList = * pDataModel->getTaskList();
 
@@ -482,6 +506,7 @@ private:
   std::string output_filename;
   CTrajectoryTask* pTrajectoryTask;
   CCopasiDataModel* pDataModel;
+  CTaskEnum::Method methodType;
 };
 
 int main(int argc, char* argv[])

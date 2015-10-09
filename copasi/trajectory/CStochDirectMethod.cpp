@@ -419,7 +419,7 @@ bool CStochDirectMethod::checkRoots()
   const bool * pIsDiscrete = mpContainer->getRootIsDiscrete().array();
   const bool * pIsTimeDependent = mpContainer->getRootIsTimeDependent().array();
 
-  for (; pRootFound != pRootFoundEnd; pRootValueOld++, pRootValueNew++, pRootFound++, pRootNonZero++)
+  for (; pRootFound != pRootFoundEnd; pRootValueOld++, pRootValueNew++, pRootFound++, pRootNonZero++, pIsDiscrete++, pIsTimeDependent++)
     {
       if (*pRootValueOld **pRootValueNew < 0.0 ||
           (*pRootValueNew == 0.0 && *pIsTimeDependent && !*pIsDiscrete))

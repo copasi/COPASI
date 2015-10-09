@@ -19,7 +19,7 @@
 #ifdef _MSC_VER
 namespace std
 {
-bool isnan(double d) { return d != d; }
+bool isnan(double d) {return d != d;}
 }
 #endif
 
@@ -273,7 +273,7 @@ void CMathEventQueue::start()
 CMath::StateChange CMathEventQueue::process(const bool & priorToOutput)
 {
   if (getProcessQueueExecutionTime() > *mpTime)
-    return false;
+    return CMath::NoChange;
 
   mEquality = priorToOutput;
   mExecutionCounter = 0;

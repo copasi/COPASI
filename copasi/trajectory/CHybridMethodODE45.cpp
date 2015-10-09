@@ -78,7 +78,7 @@ CHybridMethodODE45::CHybridMethodODE45(const CCopasiContainer * pParent,
   mHasDetermReaction(false),
   mIntegrationType(HYBRID),
   mLastSuccessState(),
-  mTimeRecord(0.0),
+  mTargetTime(0.0),
   mODE45(),
   mODEInitalized(false),
   mRootCounter(0),
@@ -89,26 +89,23 @@ CHybridMethodODE45::CHybridMethodODE45(const CCopasiContainer * pParent,
   mpYdot(NULL),
   mCountContainerVariables(0),
   mSpeciesRateUpdateSequence(),
-  mODEState(ODE_NEW),
-  mSysStatus(SYS_NEW),
+  mRKMethodStatus(CRungeKutta::INITIALIZE),
   mAmuVariables(),
-  mpA0(NULL),
   mAmuPointers(),
   mA0(0.0),
   mFluxPointers(),
   mPropensitiesUpdateSequence(),
-  mHasRoot(false),
-  mHasSlow(false),
-  mNumRoots(0),
+  mEventProcessing(false),
+  mFireReaction(false),
   mRootMask(),
   mDiscreteRoots(),
   mRootMasking(NONE),
-  mRootValues(),
+  mRootValuesLeft(),
+  mRootValuesRight(),
   mpRandomGenerator(NULL),
   mOutputFile(),
   mOutputFileName(),
   mOutputCounter(0),
-  mErrorMsg(),
   mpMaxInternalSteps(NULL),
   mpRelativeTolerance(NULL),
   mpAbsoluteTolerance(NULL),
@@ -133,7 +130,7 @@ CHybridMethodODE45::CHybridMethodODE45(const CHybridMethodODE45 & src,
   mHasDetermReaction(false),
   mIntegrationType(HYBRID),
   mLastSuccessState(),
-  mTimeRecord(0.0),
+  mTargetTime(0.0),
   mODE45(),
   mODEInitalized(false),
   mRootCounter(0),
@@ -144,26 +141,23 @@ CHybridMethodODE45::CHybridMethodODE45(const CHybridMethodODE45 & src,
   mpYdot(NULL),
   mCountContainerVariables(0),
   mSpeciesRateUpdateSequence(),
-  mODEState(ODE_NEW),
-  mSysStatus(SYS_NEW),
+  mRKMethodStatus(CRungeKutta::INITIALIZE),
   mAmuVariables(),
-  mpA0(NULL),
   mAmuPointers(),
   mA0(0.0),
   mFluxPointers(),
   mPropensitiesUpdateSequence(),
-  mHasRoot(false),
-  mHasSlow(false),
-  mNumRoots(0),
+  mEventProcessing(false),
+  mFireReaction(false),
   mRootMask(),
   mDiscreteRoots(),
   mRootMasking(NONE),
-  mRootValues(),
+  mRootValuesLeft(),
+  mRootValuesRight(),
   mpRandomGenerator(NULL),
   mOutputFile(),
   mOutputFileName(),
   mOutputCounter(0),
-  mErrorMsg(),
   mpMaxInternalSteps(NULL),
   mpRelativeTolerance(NULL),
   mpAbsoluteTolerance(NULL),
@@ -223,7 +217,7 @@ bool CHybridMethodODE45::isValidProblem(const CCopasiProblem * pProblem)
  */
 void CHybridMethodODE45::initializeParameter()
 {
-  mpMaxInternalSteps = assertParameter("Max Internal Steps", CCopasiParameter::UINT, (unsigned C_INT32) MAX_STEPS_ODE);
+  mpMaxInternalSteps = assertParameter("Max Internal Steps", CCopasiParameter::UINT, (unsigned C_INT32) 100000);
   mpRelativeTolerance = assertParameter("Relative Tolerance", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0e-006);
   mpAbsoluteTolerance = assertParameter("Absolute Tolerance", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0e-009);
   mpPartitioningStrategy = assertParameter("Partitioning Strategy", CCopasiParameter::STRING, PartitioningStrategy[1]);
@@ -236,6 +230,7 @@ void CHybridMethodODE45::initializeParameter()
   while (*pStr != "")
     {
       ValidValues.push_back(std::make_pair(*pStr, *pStr));
+      pStr++;
     }
 
   getParameter("Partitioning Strategy")->setValidValues(ValidValues);
@@ -272,9 +267,14 @@ void CHybridMethodODE45::initMethod(C_FLOAT64 start_time)
   determineIntegrationType();
 
   mCountContainerVariables = mContainerState.size() - mpContainer->getTimeIndex();
-  mData.dim = mCountContainerVariables + mSlowReactions.size() + 1;
+  mData.dim = mCountContainerVariables;
+
+  if (mIntegrationType == HYBRID)
+    {
+      mData.dim += mSlowReactions.size();
+    }
+
   mY.resize(mData.dim);
-  mpA0 = mY.array() + (mData.dim - 1);
   mpYdot = mpContainer->getRate(false).array() + mpContainer->getTimeIndex();
 
   // we don't want to directly record new results into mpState, since
@@ -283,7 +283,7 @@ void CHybridMethodODE45::initMethod(C_FLOAT64 start_time)
   mAmuVariables.initialize(mSlowReactions.size(), mY.array() + mCountContainerVariables);
   mAmuVariables = 0.0;
 
-  mTimeRecord = start_time;
+  mTargetTime = start_time;
   mRootCounter = 0;
   mMaxStepsReached = false;
 
@@ -295,28 +295,28 @@ void CHybridMethodODE45::initMethod(C_FLOAT64 start_time)
     }
 
   //(6)----set attributes for ODE45
-  mSysStatus = SYS_NEW;
-  mODE45.mODEState = ODE_INIT;
-  mODE45.mDim = &mData.dim;
-
-  mODE45.mRelTol = *mpRelativeTolerance;
-  mODE45.mAbsTol = *mpAbsoluteTolerance;
-  mODE45.mHybrid = (mIntegrationType != DETERMINISTIC);
-
-  mODE45.mpY = mY.array();
-  mODE45.mDerivFunc = &CHybridMethodODE45::EvalF;
+  mRKMethodStatus = CRungeKutta::INITIALIZE;
 
   //(7)----set attributes for Event Roots
-  mRootValues.initialize(mpContainer->getRoots());
-  mNumRoots = mRootValues.size();
-  mRootsFound.resize(mNumRoots);
+  mRootValuesLeft.resize(mpContainer->getRoots().size());
+  mRootValuesRight.initialize(mpContainer->getRoots());
+  mRootsFound.resize(mpContainer->getRoots().size());
+
+  if (mIntegrationType == HYBRID)
+    {
+      mMethodRootsFound.resize(mpContainer->getRoots().size() + 1);
+      mpHybridRoot = mMethodRootsFound.array() + (mMethodRootsFound.size() - 1);
+    }
+  else
+    {
+      mMethodRootsFound.resize(mpContainer->getRoots().size());
+      mpHybridRoot = NULL;
+    }
+
   mRootsFound = 0;
   mDiscreteRoots.initialize(mpContainer->getRootIsDiscrete());
   mRootMasking    = NONE;
-
-  mODE45.mEventFunc = (mNumRoots > 0) ? &CHybridMethodODE45::EvalR : NULL;
-  mODE45.mRootNum = mNumRoots;
-  mODE45.mRootsInitialized = false;
+  mRKMethodStatus = CRungeKutta::INITIALIZE;
 
   return;
 }
@@ -387,7 +387,8 @@ void CHybridMethodODE45::partitionSystem()
 
   for (; pReaction != pReactionEnd; ++pReaction)
     {
-      if (AllSlow || !pReaction->isFast())
+      if (!AllFast &&
+          (AllSlow || !pReaction->isFast()))
         {
           *ppSlowReaction = pReaction;
           ++ppSlowReaction;
@@ -463,30 +464,35 @@ CTrajectoryMethod::Status CHybridMethodODE45::step(const double & deltaT)
 {
   // do several steps
   C_FLOAT64 time    = *mpContainerStateTime;
-  C_FLOAT64 endTime;
+  C_FLOAT64 endTime  = time + deltaT;
+  mEventProcessing = false;
 
-  if (time == mTimeRecord) //new time step
+  if (endTime != mTargetTime) //new time step
     {
-      mTimeRecord  += deltaT;
-      mRootCounter  = 0;
+      mTargetTime = endTime;
+      mRootCounter = 0;
     }
 
-  endTime = mTimeRecord;
-
-  while (mRootCounter < *mpMaxInternalSteps && time < endTime)
+  while (mRootCounter < *mpMaxInternalSteps &&
+         fabs(time - endTime) > 100.0 * (fabs(endTime) * std::numeric_limits< C_FLOAT64 >::epsilon() + std::numeric_limits< C_FLOAT64 >::min()))
     {
       time = doSingleStep(endTime);
 
-      if (mSysStatus == SYS_EVENT)
+      if (mEventProcessing)
         {
           mLastSuccessState = mContainerState;
           mRootCounter++;
+
           return ROOT;
         }
-      else if (mSysStatus == SYS_CONT)
-        continue;
-      else if (mSysStatus == SYS_ERR)
-        return FAILURE;
+      else if (mRKMethodStatus != CRungeKutta::ERROR)
+        {
+          continue;
+        }
+      else
+        {
+          return FAILURE;
+        }
     }
 
   // Warning Message
@@ -497,6 +503,7 @@ CTrajectoryMethod::Status CHybridMethodODE45::step(const double & deltaT)
     }
 
   mLastSuccessState = mContainerState;
+
   return NORMAL;
 }
 
@@ -509,41 +516,48 @@ CTrajectoryMethod::Status CHybridMethodODE45::step(const double & deltaT)
  */
 C_FLOAT64 CHybridMethodODE45::doSingleStep(C_FLOAT64 endTime)
 {
-  C_FLOAT64 ds     = 0.0;
-  size_t    rIndex = 0;
+  if (mRKMethodStatus == CRungeKutta::ERROR)
+    {
+      return *mpContainerStateTime;
+    }
+
+  C_FLOAT64 StartTime = *mpContainerStateTime;
+
+  if (mFireReaction) // Handle reaction events which were postponed due to system events
+    {
+      fireSlowReaction4Hybrid();
+
+      if (mEventProcessing)
+        {
+          return *mpContainerStateTime;
+        }
+    }
 
   integrateDeterministicPart(endTime);
-  ds = mODE45.mT;
+
+  C_FLOAT64 ds = *mpContainerStateTime;
 
   //<i> ~~~~ Doing things about mRootMasking
-  if (mSysStatus == SYS_EVENT && mHasRoot)
+  if (mRKMethodStatus == CRungeKutta::ROOTFOUND)
     {
       if (mRootCounter > 0.99 * *mpMaxInternalSteps ||
-          mODE45.mT == *mpContainerStateTime) //oscillation around roots
+          StartTime == *mpContainerStateTime) // oscillation around roots
         {
           switch (mRootMasking)
             {
               case NONE:
               case DISCRETE:
-              {
-                mLastSuccessState  = mContainerState;
+                mRKMethodStatus = CRungeKutta::RESTART;
+
+                mLastSuccessState = mContainerState;
                 createRootMask();
-                mSysStatus = SYS_NEW;
+                mRootCounter = 0;
+
                 break;
-              }
 
               case ALL:
-              {
-                mSysStatus = SYS_CONT;
                 break;
-              }
             }
-
-          mRootCounter = 0;
-        }
-      else
-        {
-          mRootsFound = mODE45.mRootFound;
         }
     }
   else
@@ -558,7 +572,8 @@ C_FLOAT64 CHybridMethodODE45::doSingleStep(C_FLOAT64 endTime)
           {
             const bool *pDiscrete = mDiscreteRoots.array();
             bool *pMask = mRootMask.array();
-            bool const * const pMaskEnd = pMask + mNumRoots;
+            bool const * const pMaskEnd = pMask + mRootMask.size();
+
             bool destroy = true;
 
             for (; pMask != pMaskEnd; ++pMask, ++pDiscrete)
@@ -577,27 +592,17 @@ C_FLOAT64 CHybridMethodODE45::doSingleStep(C_FLOAT64 endTime)
             else
               mRootMasking = DISCRETE;
 
-            if (mSysStatus != SYS_ERR) //&& (mSysStatus != SYS_EVENT))
-              mSysStatus = SYS_CONT;
+            if (mRKMethodStatus != CRungeKutta::ERROR) //&& (mRKMethodStatus != SYS_EVENT))
+              mRKMethodStatus = CRungeKutta::CONTINUE;
           }
         } //end switch
     } //end if
 
-  //<ii> ~~~~ Check mSysStatus
-  if ((mSysStatus == SYS_EVENT) && mHasSlow) //only deal with system roots
+  //
+  //<ii> ~~~~ Check mRKMethodStatus
+  if (mFireReaction && !mEventProcessing) // Handle reaction events if no system events are found
     {
       fireSlowReaction4Hybrid();
-      mSysStatus = SYS_NEW;
-    }
-  else if (mSysStatus == SYS_END) //finish this step
-    {
-      mSysStatus = SYS_NEW;
-    }
-  else if (mSysStatus != SYS_CONT && mSysStatus != SYS_EVENT && mSysStatus != SYS_NEW)
-    {
-      std::cout << "mSysStatus " << mSysStatus << std::endl;
-      std::cout << "mSysStatus Error happens, check the code..." << std::endl;
-      mSysStatus = SYS_ERR;
     }
 
   return ds;
@@ -605,12 +610,10 @@ C_FLOAT64 CHybridMethodODE45::doSingleStep(C_FLOAT64 endTime)
 
 void CHybridMethodODE45::stateChange(const CMath::StateChange & change)
 {
-  if (change & CMath::ContinuousSimulation)
+  if (change & (CMath::ContinuousSimulation | CMath::State))
     {
-      (mRootsFound.array())[mODE45.mRootId] = 0;
-      mSysStatus = SYS_NEW;
+      mRKMethodStatus = CRungeKutta::RESTART;
       destroyRootMask();
-      mODE45.mRootsInitialized = false;
     }
 
   return;
@@ -622,15 +625,62 @@ void CHybridMethodODE45::stateChange(const CMath::StateChange & change)
  */
 void CHybridMethodODE45::fireSlowReaction4Hybrid()
 {
+  // At this point the container state and the simulated values, i.e. the roots are
+  // correctly calculated
+  mRootValuesLeft = mRootValuesRight;
+
   updatePropensities();
 
   CMathReaction * pReaction = getReaction4Hybrid();
   pReaction->fire();
+  memset(mY.array() + mCountContainerVariables, 0, mSlowReactions.size() * sizeof(C_FLOAT64));
+  mA0 = log(mpRandomGenerator->getRandomOO());
+  mFireReaction = false;
 
   // Update all values needed for simulation.
   mpContainer->updateSimulatedValues(false);
 
+  if (checkRoots())
+    {
+      mRKMethodStatus = CRungeKutta::ROOTFOUND;
+    }
+  else
+    {
+      mRKMethodStatus = CRungeKutta::RESTART;
+    }
+
   return;
+}
+
+/**
+ * Check whether a root has been found
+ */
+bool CHybridMethodODE45::checkRoots()
+{
+  bool hasRoots = false;
+
+  C_FLOAT64 *pRootValueOld = mRootValuesLeft.array();
+  C_FLOAT64 *pRootValueNew = mRootValuesRight.array();
+
+  C_INT *pRootFound    = mRootsFound.array();
+  C_INT *pRootFoundEnd    = pRootFound + mRootsFound.size();
+
+  for (; pRootFound != pRootFoundEnd; pRootValueOld++, pRootValueNew++, pRootFound++)
+    {
+      if (*pRootValueOld **pRootValueNew > 0.0 ||
+          *pRootValueOld == 0.0)
+        {
+          *pRootFound = CMath::NoToggle;
+        }
+      else
+        {
+          // These root changes are not caused by the time alone as those are handled in do single step.
+          hasRoots = true;
+          *pRootFound = CMath::ToggleBoth;
+        }
+    }
+
+  return hasRoots;
 }
 
 //========Function for ODE45========
@@ -643,104 +693,81 @@ void CHybridMethodODE45::fireSlowReaction4Hybrid()
 void CHybridMethodODE45::integrateDeterministicPart(C_FLOAT64 endTime)
 {
   //1----Set Parameters for ODE45 solver
-  //=(1)= solver error message
-  mErrorMsg.str("");
 
   //=(3)= set time and old time
-  mODE45.mT    = *mpContainerStateTime;
-  mODE45.mTEnd = endTime;
-
-  // std::cout << "integrateDeterministicPart (in): T: " << mODE45.mT << std::endl;
-  // std::cout << "integrateDeterministicPart (in): Y: " << mY << std::endl;
 
   //=(4)= set y and ode status
-  if (mSysStatus == SYS_NEW)
+  if (mRKMethodStatus == CRungeKutta::INITIALIZE ||
+      mRKMethodStatus == CRungeKutta::RESTART)
     {
       //only when starts a new step, we should copy state into ode solver
       memcpy(mY.array(), mpContainerStateTime, mCountContainerVariables * sizeof(C_FLOAT64));
-
-      if (mIntegrationType == HYBRID)
-        {
-          memset(mY.array() + mCountContainerVariables, 0, mSlowReactions.size() * sizeof(C_FLOAT64));
-          *mpA0 = log(mpRandomGenerator->getRandomOO());
-        }
-
-      // std::cout << "integrateDeterministicPart (in): Y: " << mY << std::endl;
-
-      if (mODE45.mODEState != ODE_INIT)
-        {
-          mODE45.mODEState = ODE_NEW;
-        }
     }
-  else if ((mSysStatus == SYS_EVENT) || (mSysStatus == SYS_CONT))
+  else if (mRKMethodStatus != CRungeKutta::ERROR)
     {
-      mODE45.mODEState = ODE_CONT;
+      mRKMethodStatus = CRungeKutta::CONTINUE;
     }
   else
     {
-      // std::cout << "Wrong mSysStatus = " << mSysStatus << std::endl;
+      fatalError();
     }
 
   //3----If time increment is too small, do nothing
-  C_FLOAT64 tdist , d__1, d__2, w0;
-  tdist = fabs(mODE45.mTEnd - mODE45.mT); //absolute time increment
-  d__1  = fabs(mODE45.mT), d__2 = fabs(mODE45.mTEnd);
-  w0 = std::max(d__1, d__2);
+  C_FLOAT64 tdist = fabs(endTime - *mpContainerStateTime); //absolute time increment
+  C_FLOAT64 w0 = std::max(fabs(*mpContainerStateTime), fabs(endTime));
 
   if (tdist < std::numeric_limits< C_FLOAT64 >::epsilon() * 2. * w0) //just do nothing
     {
-      mODE45.mT  = mODE45.mTEnd;
-      mSysStatus = SYS_END;
-      *mpContainerStateTime = mODE45.mTEnd;
-      std::cout << "delta is too small" << std::endl;
+      mRKMethodStatus = CRungeKutta::ERROR;
+      *mpContainerStateTime = endTime;
+
+      CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 6, "delta is too small");
+      mRKMethodStatus = CRungeKutta::ERROR;
+
       return;
     }
 
   //4----just do nothing if there are no variables
   if (!mData.dim)
     {
-      mODE45.mT = mODE45.mTEnd;
-      mSysStatus = SYS_END;
-      *mpContainerStateTime = mODE45.mTEnd;
+      *mpContainerStateTime = endTime;
       return;
     }
 
-  //5----do interpolation
-  mODE45.integrate();
+  //5----do integration
+  mRKMethodStatus = mODE45(&mData.dim, mY.array(), mpContainerStateTime, &endTime,
+                           mMethodRootsFound.size(), mMethodRootsFound.array(), mRKMethodStatus,
+                           mpRelativeTolerance, mpAbsoluteTolerance, mpMaxInternalSteps, EvalF, EvalR);
 
   //6----check status
-  if (mODE45.mODEState == ODE_ERR)
+  if (mRKMethodStatus == CRungeKutta::ERROR)
     {
-      mSysStatus = SYS_ERR;
-      CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 6, mErrorMsg.str().c_str());
+      CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 6, mODE45.getErrorMesssage().c_str());
     }
-  else if (mODE45.mODEState == ODE_EVENT)
+  else if (mRKMethodStatus == CRungeKutta::ROOTFOUND)
     {
-      mHasSlow = false;
-      mHasRoot = false;
+      // We need to determine whether we have a slow reaction event or
+      // another event or both.
+      mFireReaction = (mpHybridRoot != NULL && *mpHybridRoot != 0);
 
-      if (mODE45.mRootId == SLOW_REACT)
-        mHasSlow = true;
-      else
-        mHasRoot = true;
+      mEventProcessing = false;
+      memcpy(mRootsFound.array(), mMethodRootsFound.array(), mRootsFound.size() * sizeof(C_INT));
 
-      mSysStatus = SYS_EVENT;
+      C_INT * pRootFound = mRootsFound.array();
+      C_INT * pRootFoundEnd = pRootFound + mRootsFound.size();
+
+      for (; pRootFound != pRootFoundEnd; ++pRootFound)
+        if (*pRootFound != 0)
+          {
+            mEventProcessing = true;
+            break;
+          }
     }
-  else
-    mSysStatus = SYS_END;
 
-  //7----Record State to Container
-
-  *mpContainerStateTime = mODE45.mTEnd;
-
-  //only when starts a new step, we should copy state into ode solver
-  C_FLOAT64 * stateY = mpContainerStateTime + 1; // The first value determined by an ODE or reaction.
-
-  for (size_t i = 0; i < mData.dim - 1; i++)
-    stateY[i] = mY[i];
-
-  //Dependent Reaction Metabs have been updated by ODE solver
+  // Update the container state and the simulated values.
+  memcpy(mpContainerStateTime, mY.array(), mCountContainerVariables * sizeof(C_FLOAT64));
   mpContainer->updateSimulatedValues(false);
+
   return;
 }
 
@@ -763,7 +790,13 @@ void CHybridMethodODE45::EvalR(const size_t * n, const C_FLOAT64 * t, const C_FL
  */
 void CHybridMethodODE45::evalF(const C_FLOAT64 * t, const C_FLOAT64 * y, C_FLOAT64 * ydot)
 {
+  // std::cout << "evalF: " << *t << std::endl;
+  // std::cout << "evalF: " << CVectorCore< const C_FLOAT64 >(mData.dim, y) << std::endl;
+
+  memcpy(mpContainerStateTime, y, mCountContainerVariables * sizeof(C_FLOAT64));
   *mpContainerStateTime = *t;
+
+  // std::cout << "evalF: " << mpContainer->getState(false) << std::endl;
 
   mpContainer->updateSimulatedValues(false);
 
@@ -773,17 +806,17 @@ void CHybridMethodODE45::evalF(const C_FLOAT64 * t, const C_FLOAT64 * y, C_FLOAT
       // Calculate the propensities of the slow reactions
       mpContainer->applyUpdateSequence(mPropensitiesUpdateSequence);
 
-      C_FLOAT64 ** ppSlowAmu = mAmuPointers.array();
-      C_FLOAT64 ** ppSlowAmuEnd = ppSlowAmu + mAmuPointers.size();
-      C_FLOAT64 ** ppSlowFlux = mFluxPointers.array();
-      C_FLOAT64 * pAmu = ydot + mCountContainerVariables;
-      C_FLOAT64 * pAmu0 = ydot + (mData.dim - 1);
-      *pAmu0 = 0.0;
+      C_FLOAT64 **ppSlowAmu = mAmuPointers.array();
+      C_FLOAT64 **ppSlowAmuEnd = ppSlowAmu + mAmuPointers.size();
+      C_FLOAT64 **ppSlowFlux = mFluxPointers.array();
+      C_FLOAT64 *pAmu = ydot + mCountContainerVariables;
 
       for (; ppSlowAmu != ppSlowAmuEnd; ++ppSlowAmu, ++pAmu)
         {
           *pAmu = **ppSlowAmu;
-          *pAmu0 += *pAmu;
+
+          // We temporary set the slow reaction flux to 0 so that we can correctly calculate the species
+          // rates ignoring the slow reactions. The next call to updateSimulatedValues will undo this.
           **ppSlowFlux = 0.0;
         }
 
@@ -793,8 +826,6 @@ void CHybridMethodODE45::evalF(const C_FLOAT64 * t, const C_FLOAT64 * y, C_FLOAT
 
   memcpy(ydot, mpYdot, mCountContainerVariables * sizeof(C_FLOAT64));
 
-  // std::cout << "evalF: " << *t << std::endl;
-  // std::cout << "evalF: " << CVectorCore< const C_FLOAT64 >(mData.dim, y) << std::endl;
   // std::cout << "evalF: " << CVectorCore< C_FLOAT64 >(mData.dim, ydot) << std::endl;
 
   return;
@@ -806,21 +837,45 @@ void CHybridMethodODE45::evalF(const C_FLOAT64 * t, const C_FLOAT64 * y, C_FLOAT
 void CHybridMethodODE45::evalR(const C_FLOAT64 *t, const C_FLOAT64 *y,
                                const size_t *nr, C_FLOAT64 *r)
 {
+  memcpy(mpContainerStateTime, y, mCountContainerVariables * sizeof(C_FLOAT64));
   *mpContainerStateTime = *t;
+
   mpContainer->updateSimulatedValues(false);
 
-  CVectorCore< C_FLOAT64 > RootValues(*nr, r);
+  CVectorCore< C_FLOAT64 > RootValues;
+
+  if (mIntegrationType == HYBRID)
+    {
+      RootValues.initialize(*nr - 1, r);
+
+      C_FLOAT64 * pHybridRoot = r + (*nr - 1);
+
+      const C_FLOAT64 * pAmu = y + mCountContainerVariables;
+      const C_FLOAT64 * pAmuEnd = pAmu + mAmuPointers.size();
+
+      *pHybridRoot = mA0;
+
+      for (; pAmu != pAmuEnd; ++pAmu)
+        {
+          *pHybridRoot -= *pAmu;
+        }
+    }
+  else
+    {
+      RootValues.initialize(*nr, r);
+    }
+
   RootValues = mpContainer->getRoots();
 
-  std::cout << "State: " << mpContainer->getState(false) << std::endl;
-  std::cout << "Roots: " << RootValues << std::endl;
+  // std::cout << "State: " << mpContainer->getState(false) << std::endl;
+  // std::cout << "Roots: " << RootValues << std::endl;
 
   if (mRootMasking != NONE)
     {
       maskRoots(RootValues);
     }
 
-  std::cout << "Roots: " << RootValues << std::endl;
+  // std::cout << "Roots: " << RootValues << std::endl;
 
   return;
 }
@@ -836,7 +891,7 @@ void CHybridMethodODE45::updatePropensities()
 
   for (; ppSlowAmu != ppSlowAmuEnd; ++ppSlowAmu)
     {
-      mA0 += ** ppSlowAmu;
+      mA0 += **ppSlowAmu;
     }
 }
 

@@ -191,7 +191,7 @@ void CExpRKMethod::integrate()
 
               for (; pNewRoot != pNewRootEnd; ++pNewRoot, ++pOldRoot)
                 {
-                  if (*pNewRoot * *pOldRoot <= 0)
+                  if (*pNewRoot **pOldRoot <= 0)
                     {
                       *pRootFound = 1;
                       mODEState = 3;
@@ -345,7 +345,7 @@ void CExpRKMethod::integrate()
   //  Integration Finished    //
   //~~~~~~~~~~~~~~~~~~~~~~~~~~//
 
-  mODEState = 4;
+  mODEState = 2;
   mT = mTEnd;
   /*
   for(size_t i=0; i<*mDim; i++)
@@ -395,6 +395,7 @@ void CExpRKMethod::checkODEState()
   else if (mODEState == 2)
     {
       //Deal with errors
+      /*
       if (mODEStateRecord != 3)
         {
           if (mODEStateRecord == -2)
@@ -413,6 +414,7 @@ void CExpRKMethod::checkODEState()
           mODEStateRecord = mODEState;
           return;
         }
+      */
     }
   else
     {
@@ -881,12 +883,15 @@ void CExpRKMethod::findRoots()
               case 0:
                 leftV = mRootValueOld[r]; rightV = mIn1[r];
                 break;
+
               case 1:
                 leftV = mIn1[r]; rightV = mIn2[r];
                 break;
+
               case 2:
                 leftV = mIn2[r]; rightV = mIn3[r];
                 break;
+
               case 3:
                 leftV = mIn3[r]; rightV = mRootValue[r];
                 break;

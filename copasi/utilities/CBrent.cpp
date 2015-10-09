@@ -1,4 +1,4 @@
-// Copyright (C) 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2014 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -111,7 +111,7 @@ bool CBrent::findRoot(double a,            // Left border
     }
 
   // return the smaller value of fa and fb
-  if (fabs(fa) < fabs(fb))
+  if (fabs(fa) <= fabs(fb))
     {
       *pRoot = a;
       *pRootValue = fa;
@@ -122,5 +122,5 @@ bool CBrent::findRoot(double a,            // Left border
       *pRootValue = fb;
     }
 
-  return 0;
+  return true;
 }

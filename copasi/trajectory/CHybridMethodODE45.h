@@ -43,10 +43,9 @@
 #include "copasi/utilities/CVersion.h"
 #include "copasi/utilities/CMatrix.h"
 #include "copasi/utilities/CCopasiVector.h"
-#include "CExpRKMethod.h"
+#include "copasi/trajectory/CRungeKutta.h"
 
 /* DEFINE ********************************************************************/
-#define MAX_STEPS_ODE                10000
 #define INT_EPSILON                  0.1
 #define SUBTYPE                      1
 #define USE_RANDOM_SEED              false
@@ -113,25 +112,6 @@ protected:
     HYBRID
   };
 
-  enum ODEState
-  {
-    ODE_ERR = -2,
-    ODE_INIT = 0,
-    ODE_NEW  = 1,
-    ODE_CONT = 2,
-    ODE_EVENT = 3,
-    ODE_FINISH = 4
-  };
-
-  enum SystemStatus
-  {
-    SYS_ERR = -2,
-    SYS_NEW = 1,
-    SYS_CONT = 2,
-    SYS_EVENT = 3,
-    SYS_END = 5
-  };
-
   static std::string PartitioningStrategy[];
 
   //================Function for Class================
@@ -181,6 +161,17 @@ public:
    * @return bool success
    */
   virtual bool elevateChildren();
+
+  /**
+   * This instructs the method to calculate a time step of deltaT
+   * starting with the current state, i.e., the result of the previous
+   * step.
+   * The new state (after deltaT) is expected in the current state.
+   * The return value is the actual timestep taken.
+   * @param "const double &" deltaT
+   * @return Status status
+   */
+  virtual Status step(const double & deltaT);
 
   /**
    *  This instructs the method to prepare for integration
@@ -255,19 +246,6 @@ protected:
    */
   void evalR(const C_FLOAT64 * t, const C_FLOAT64 * y, const size_t *nr, C_FLOAT64 *r);
 
-  //================Function for Simulation================
-public:
-  /**
-   * This instructs the method to calculate a time step of deltaT
-   * starting with the current state, i.e., the result of the previous
-   * step.
-   * The new state (after deltaT) is expected in the current state.
-   * The return value is the actual timestep taken.
-   * @param "const double &" deltaT
-   * @return Status status
-   */
-  virtual Status step(const double & deltaT);
-
 protected:
   /**
    * Simulates the system over the next interval of time. The current time
@@ -288,6 +266,8 @@ protected:
    * when Hybrid Method is used
    */
   void fireSlowReaction4Hybrid();
+
+  bool checkRoots();
 
   //================Function for Stoichastic Part================
 protected:
@@ -362,13 +342,15 @@ private:
   /**
    * Time Record
    */
-  C_FLOAT64 mTimeRecord;
+  C_FLOAT64 mTargetTime;
 
   //=================Attributes for ODE45 Solver================
   /**
    * mODE45
    */
-  CExpRKMethod mODE45;
+  CRungeKutta mODE45;
+
+  CRungeKutta::RKMethodStatus mRKMethodStatus;
 
   /**
    * Record whether ODE solver has been initialized
@@ -402,24 +384,13 @@ private:
   CObjectInterface::UpdateSequence mSpeciesRateUpdateSequence;
 
   /**
-   * state of ODE45, indicating what to do next in the step part
-   * -1, error emerge
-   *  0, finish all integration
-   *  1, finish one step integration
-   *  2, has event
-   */
-  ODEState mODEState;
-
-  SystemStatus mSysStatus;
-
-  /**
    * The variables handling the integrated propensities of the stochastic reactions.
    */
   CVectorCore< C_FLOAT64 > mAmuVariables;
-  C_FLOAT64 *mpA0;
-
   CVector< C_FLOAT64 * > mAmuPointers;
   C_FLOAT64 mA0;
+  CVector< C_INT > mMethodRootsFound;
+  C_INT * mpHybridRoot;
 
   CVector< C_FLOAT64 * > mFluxPointers;
 
@@ -429,13 +400,8 @@ private:
   /**
    * Status of Root and Slow Event
    */
-  bool mHasRoot;
-  bool mHasSlow;
-
-  /**
-   * Number of Roots
-   */
-  size_t mNumRoots;
+  bool mEventProcessing;
+  bool mFireReaction;
 
   /**
    * A mask which hides all roots being constant and zero.
@@ -463,9 +429,14 @@ protected:
 private:
 
   /**
-   * Value of Roots
+   * Value of Roots before a reaction event
    */
-  CVectorCore< C_FLOAT64 > mRootValues;
+  CVector< C_FLOAT64 > mRootValuesLeft;
+
+  /**
+   * Value of Roots after a reaction event
+   */
+  CVectorCore< C_FLOAT64 > mRootValuesRight;
 
   //================Stochastic Related================
   /**
@@ -488,11 +459,6 @@ private:
    * Output counter.
    */
   size_t mOutputCounter;
-
-  /**
-   *
-   */
-  std::ostringstream mErrorMsg;
 
   unsigned C_INT32 * mpMaxInternalSteps;
   C_FLOAT64 * mpRelativeTolerance;
