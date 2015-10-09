@@ -1,16 +1,16 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-// and The University of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2003 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc. and EML Research, gGmbH. 
-// All rights reserved. 
+// Copyright (C) 2003 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 #ifndef COPASI_CCopasiParameter
 #define COPASI_CCopasiParameter
@@ -34,6 +34,7 @@ class CReadConfig;
  */
 class CCopasiParameter: public CCopasiContainer
 {
+
   // Attributes
 public:
   enum Type
@@ -52,22 +53,6 @@ public:
     INVALID
   };
 
-  union Value
-  {
-    C_FLOAT64 * pDOUBLE;
-    C_FLOAT64 * pUDOUBLE;
-    C_INT32 * pINT;
-    unsigned C_INT32 * pUINT;
-    bool * pBOOL;
-    std::vector< CCopasiParameter * > * pGROUP;
-    std::string * pSTRING;
-    CRegisteredObjectName * pCN;
-    std::string * pKEY;
-    std::string * pFILE;
-    std::string * pEXPRESSION;
-    void * pVOID;
-  };
-
   /**
    * String literals for the GUI to display type names of parameters known
    * to COPASI.
@@ -78,6 +63,9 @@ public:
    * XML type names of parameters known to COPASI.
    */
   static const char* XMLType[];
+
+  static void deleteValue(const Type & type, void *& pValue);
+  static void deleteValidValues(const Type & type, void *& pValidValues);
 
 protected:
   /**
@@ -100,12 +88,17 @@ protected:
   /**
    *  A pointer to the value of the parameter.
    */
-  Value mValue;
+  void * mpValue;
 
   /**
    * A pointer to the object reference for  the value
    */
   mutable CCopasiObject * mpValueReference;
+
+  /**
+   * A pointer to the valid values;
+   */
+  void * mpValidValues;
 
   // Operations
 
@@ -165,7 +158,7 @@ public:
   {
     if (!isValidValue(value)) return false;
 
-    *(CType *) mValue.pVOID = value;
+    *static_cast< CType * >(mpValue) = value;
     return true;
   }
 
@@ -178,17 +171,15 @@ public:
    */
   bool setValue(const std::vector< CCopasiParameter * > & value);
 
-  /**
-   * Retrieve the private value of the parameter.
-   * @return const CCopasiParameter::Value & Value
-   */
-  const Value & getValue() const;
+  template < class CType > const CType & getValue() const
+  {
+    return * static_cast< const CType * >(mpValue);
+  }
 
-  /**
-   * Retrieve the private value of the parameter.
-   * @return CCopasiParameter::Value & Value
-   */
-  Value & getValue();
+  template < class CType > CType & getValue()
+  {
+    return * static_cast< CType * >(mpValue);
+  }
 
   /**
    * Retrieve the object which represents the value of the parameter
@@ -252,6 +243,59 @@ public:
   bool isValidValue(const std::vector< CCopasiParameter * > & value) const;
 
   /**
+   * All other value types are not supported
+   */
+  template < class CType > bool isValidValue(const CType & /* value */) const
+  {
+    return false;
+  }
+
+  /**
+   * Check whether valid values are specified
+   * @return bool haveValidValues
+   */
+  bool haveValidValues() const;
+
+  /**
+   * Set the valid values
+   * @param const std::vector< std::pair < CType, CType > > & validValues
+   * @return success
+   */
+  template < class CType > bool setValidValues(const std::vector< std::pair < CType, CType > > & validValues)
+  {
+    if (!isValidValue(CType())) return false;
+
+    if (mpValidValues == NULL)
+      {
+        mpValidValues = new std::vector< std::pair < CType, CType > >;
+      }
+
+    *static_cast< std::vector< std::pair < CType, CType > > * >(mpValidValues) = validValues;
+
+    return true;
+  }
+
+  /**
+   * Retrieve the list of valid values. Note the returned object is only valid if
+   * haveValidValues returns true;
+   * @return const std::vector< std::pair < CType, CType > > & validValues
+   */
+  template < class CType > const std::vector< std::pair < CType, CType > > & getValidValues() const
+  {
+    return *static_cast< const std::vector< std::pair < CType, CType > > >(mpValidValues);
+  }
+
+  /**
+   * Retrieve the list of valid values. Note the returned object is only valid if
+   * haveValidValues returns true;
+   * @return std::vector< std::pair < CType, CType > > & validValues
+   */
+  template < class CType > std::vector< std::pair < CType, CType > > & getValidValues()
+  {
+    return *static_cast< std::vector< std::pair < CType, CType > > >(mpValidValues);
+  }
+
+  /**
    * This is the output method for any object. The default implementation
    * provided with CCopasiObject uses the ostream operator<< of the object
    * to print the object.To override this default behavior one needs to
@@ -286,6 +330,7 @@ public:
 
   virtual void * getValuePointer() const;
 
+  void * getValidValuesPointer() const;
   /**
    *  Overload display name. Special treatment for reaction parameters
    *  to provide a shorter display.
@@ -295,15 +340,64 @@ public:
 private:
   /**
    * Create or copy the value
-   * @param const CCopasiParameter::Value & value
-   * @return CCopasiParameter::Value Value
+   * @param const void * pValue
    */
-  Value createValue(const Value & value);
+  void createValue(const void * pValue);
 
-  /**
-   * Delete the value
-   */
-  void deleteValue();
+  void createValidValues(const void * pValidValues);
+
+  void assignValue(const void * pValue);
+
+  void assignValidValues(const void * pValidValues);
+
+  template < class CType > bool inValidValues(const CType & value) const
+  {
+    if (!haveValidValues()) return true;
+
+    typename std::vector< std::pair< CType, CType > >::const_iterator it =
+      static_cast< std::vector< std::pair< CType, CType > > * >(mpValidValues)->begin();
+    typename std::vector< std::pair< CType, CType > >::const_iterator end =
+      static_cast< std::vector< std::pair< CType, CType > > * >(mpValidValues)->end();
+
+    for (; it != end; ++it)
+      if (it->first <= value && value <= it->second) return true;
+
+    return false;
+  }
 };
+
+template < class CType > bool compareValues(const CCopasiParameter & lhs, const CCopasiParameter & rhs)
+{
+  if (*static_cast< CType * >(lhs.getValuePointer()) != *static_cast< CType * >(rhs.getValuePointer()))
+    {
+      return false;
+    }
+
+  std::vector< std::pair< CType, CType > > * pLeft =
+    static_cast< std::vector< std::pair< CType, CType > > * >(lhs.getValidValuesPointer());
+  std::vector< std::pair< CType, CType > > * pRight =
+    static_cast< std::vector< std::pair< CType, CType > > * >(rhs.getValidValuesPointer());
+
+  if (pLeft != NULL && pRight != NULL)
+    {
+      if (pLeft->size() != pRight->size()) return false;
+
+      typename std::vector< std::pair< CType, CType > >::const_iterator itLeft = pLeft->begin();
+      typename std::vector< std::pair< CType, CType > >::const_iterator endLeft = pLeft->end();
+      typename std::vector< std::pair< CType, CType > >::const_iterator itRight = pRight->begin();
+
+      for (; itLeft != endLeft; ++itLeft, ++itRight)
+        {
+          if (itLeft->first != itRight->first ||
+              itLeft->second != itRight->second) return false;
+        }
+    }
+  else if (pLeft != NULL || pRight != NULL)
+    {
+      return false;
+    }
+
+  return true;
+}
 
 #endif // COPASI_CCopasiParameter

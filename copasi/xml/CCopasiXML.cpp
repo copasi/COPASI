@@ -683,7 +683,7 @@ bool CCopasiXML::saveModel()
                 {
                   Attr.setValue(0, pParamList->getKey(j));
                   Attr.setValue(1, pParamList->getName(j));
-                  Attr.setValue(2, * pParamList->getValue(j).pDOUBLE);
+                  Attr.setValue(2, pParamList->getValue< C_FLOAT64 >(j));
 
                   saveElement("Constant", Attr);
                 }
@@ -1132,7 +1132,7 @@ bool CCopasiXML::savePlotList()
       Attributes.add("type", CPlotSpecification::XMLType[pPlot->getType()]);
       Attributes.add("active", pPlot->isActive());
       startSaveElement("PlotSpecification", Attributes);
-      saveParameterGroup(* pPlot->CCopasiParameter::getValue().pGROUP);
+      saveParameterGroup(pPlot->CCopasiParameter::getValue< CCopasiParameterGroup::elements >());
       startSaveElement("ListOfPlotItems");
       size_t j, jmax = pPlot->getItems().size();
 
@@ -1144,7 +1144,7 @@ bool CCopasiXML::savePlotList()
           Attributes.add("name", pPlotItem->getObjectName());
           Attributes.add("type", CPlotItem::XMLType[pPlotItem->getType()]);
           startSaveElement("PlotItem", Attributes);
-          saveParameterGroup(* pPlotItem->CCopasiParameter::getValue().pGROUP);
+          saveParameterGroup(pPlotItem->CCopasiParameter::getValue< CCopasiParameterGroup::elements >());
           startSaveElement("ListOfChannels");
           size_t k, kmax = pPlotItem->getNumChannels();
 
@@ -1234,7 +1234,7 @@ bool CCopasiXML::saveTaskList()
 
       Attributes.erase();
       startSaveElement("Problem");
-      saveParameterGroup(* tProblem->CCopasiParameter::getValue().pGROUP);
+      saveParameterGroup(tProblem->CCopasiParameter::getValue< CCopasiParameterGroup::elements >());
       endSaveElement("Problem");
 
       // Method Element
@@ -1244,7 +1244,7 @@ bool CCopasiXML::saveTaskList()
       Attributes.add("name", tMethod->CCopasiParameter::getObjectName());
       Attributes.add("type", CTaskEnum::MethodXML[tMethod->getSubType()]);
       startSaveElement("Method", Attributes);
-      saveParameterGroup(* tMethod->CCopasiParameter::getValue().pGROUP);
+      saveParameterGroup(tMethod->CCopasiParameter::getValue< CCopasiParameterGroup::elements >());
       endSaveElement("Method");
 
       endSaveElement("Task");

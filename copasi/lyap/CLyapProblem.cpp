@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -70,11 +70,11 @@ bool CLyapProblem::elevateChildren()
 void CLyapProblem::initializeParameter()
 {
   mpExponentNumber =
-    assertParameter("ExponentNumber", CCopasiParameter::UINT, (unsigned C_INT32) 3)->getValue().pUINT;
+    assertParameter("ExponentNumber", CCopasiParameter::UINT, (unsigned C_INT32) 3);
   mpDivergenceRequested =
-    assertParameter("DivergenceRequested", CCopasiParameter::BOOL, (bool) true)->getValue().pBOOL;
+    assertParameter("DivergenceRequested", CCopasiParameter::BOOL, (bool) true);
   mpTransientTime =
-    assertParameter("TransientTime", CCopasiParameter::DOUBLE, (C_FLOAT64) 0.0)->getValue().pDOUBLE;
+    assertParameter("TransientTime", CCopasiParameter::DOUBLE, (C_FLOAT64) 0.0);
 
   elevateChildren();
 }

@@ -77,8 +77,8 @@ void CExperimentSet::initializeParameter()
 
 bool CExperimentSet::elevateChildren()
 {
-  index_iterator it = mValue.pGROUP->begin();
-  index_iterator end = mValue.pGROUP->end();
+  index_iterator it = beginIndex();
+  index_iterator end = endIndex();
 
   for (; it != end; ++it)
     {
@@ -87,7 +87,7 @@ bool CExperimentSet::elevateChildren()
       if (!elevate<CExperiment, CCopasiParameterGroup>(*it)) return false;
     }
 
-  mpExperiments = static_cast<std::vector<CExperiment * > * >(mValue.pVOID);
+  mpExperiments = static_cast< std::vector< CExperiment * > * >(mpValue);
 
   sort();
 
@@ -520,11 +520,8 @@ const unsigned C_INT32 & CCrossValidationSet::getThreshold() const
 
 void CCrossValidationSet::initializeParameter()
 {
-  mpWeight =
-    assertParameter("Weight", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0)->getValue().pUDOUBLE;
-
-  mpThreshold =
-    assertParameter("Threshold", CCopasiParameter::UINT, (unsigned C_INT32) 5)->getValue().pUINT;
+  mpWeight = assertParameter("Weight", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0);
+  mpThreshold = assertParameter("Threshold", CCopasiParameter::UINT, (unsigned C_INT32) 5);
 
   elevateChildren();
 }

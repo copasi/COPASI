@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -404,11 +404,11 @@ bool COptMethodLevenbergMarquardt::initialize()
   if (!COptMethod::initialize()) return false;
 
   mModulation = 0.001;
-  mIterationLimit = * getValue("Iteration Limit").pUINT;
-  mTolerance = * getValue("Tolerance").pDOUBLE;
+  mIterationLimit = getValue< unsigned C_INT32 >("Iteration Limit");
+  mTolerance = getValue< C_FLOAT64 >("Tolerance");
 
 #ifdef COPASI_DEBUG
-  mModulation = * getValue("Modulation").pDOUBLE;
+  mModulation = getValue< C_FLOAT64 >("Modulation");
 #endif // COPASI_DEBUG
 
   mIteration = 0;
@@ -560,7 +560,7 @@ void COptMethodLevenbergMarquardt::hessian()
           pCurrentResiduals = CurrentResiduals.array();
 
           for (; pCurrentResiduals != pEnd; pCurrentResiduals++, pJacobianT++)
-            *pGradient += *pJacobianT * *pCurrentResiduals;
+            *pGradient += *pJacobianT **pCurrentResiduals;
 
           // This is formally correct but cancels out with factor 2 below
           // *pGradient *= 2.0;
@@ -582,7 +582,7 @@ void COptMethodLevenbergMarquardt::hessian()
               pJacobian = mResidualJacobianT[j];
 
               for (; pJacobianT != pEnd; pJacobianT++, pJacobian++)
-                *pHessian += *pJacobianT * *pJacobian;
+                *pHessian += *pJacobianT **pJacobian;
 
               // This is formally correct but cancels out with factor 2 above
               // *pHessian *= 2.0;

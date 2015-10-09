@@ -55,7 +55,7 @@ CScanItem* CScanItem::createScanItemFromParameterGroup(CCopasiParameterGroup* si
 {
   if (!si) return NULL;
 
-  CScanProblem::Type type = *(CScanProblem::Type*)(si->getValue("Type").pUINT);
+  CScanProblem::Type type = (CScanProblem::Type) si->getValue< unsigned C_INT32 >("Type");
 
   CScanItem* tmp = NULL;
 
@@ -93,13 +93,13 @@ CScanItem::CScanItem(CCopasiParameterGroup* si):
 {
   assert(si != NULL);
 
-  mNumSteps = * si->getValue("Number of steps").pUINT;
+  mNumSteps = si->getValue< unsigned C_INT32 >("Number of steps");
 
   CCopasiProblem * pProblem = dynamic_cast< CCopasiProblem * >(si->getObjectAncestor("Problem"));
 
   if (pProblem != NULL)
     {
-      mpObject = pProblem->getMathContainer()->getObject(*si->getValue("Object").pCN);
+      mpObject = pProblem->getMathContainer()->getObject(si->getValue< CCopasiObjectName >("Object"));
     }
 
   if (mpObject != NULL)
@@ -182,9 +182,9 @@ CScanItemLinear::CScanItemLinear(CCopasiParameterGroup* si):
   CScanItem(si),
   mLog(false)
 {
-  mLog = * si->getValue("log").pBOOL;
-  mMin = * si->getValue("Minimum").pDOUBLE;
-  mMax = * si->getValue("Maximum").pDOUBLE;
+  mLog = si->getValue< bool >("log");
+  mMin = si->getValue< C_FLOAT64 >("Minimum");
+  mMax = si->getValue< C_FLOAT64 >("Maximum");
 
   if (mLog)
     {
@@ -242,11 +242,11 @@ CScanItemRandom::CScanItemRandom(CCopasiParameterGroup* si, CRandom* rg):
   mRandomType(0),
   mLog(false)
 {
-  mRandomType = * si->getValue("Distribution type").pUINT;
+  mRandomType = si->getValue< unsigned C_INT32 >("Distribution type");
 
-  mLog = * si->getValue("log").pBOOL;
-  mMin = * si->getValue("Minimum").pDOUBLE;
-  mMax = * si->getValue("Maximum").pDOUBLE;
+  mLog = si->getValue< bool >("log");
+  mMin = si->getValue< C_FLOAT64 >("Minimum");
+  mMax = si->getValue< C_FLOAT64 >("Maximum");
 
   if (mLog && mRandomType == 0)
     {

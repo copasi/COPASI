@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/CPlotItem.cpp,v $
-//   $Revision: 1.26 $
-//   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2012/05/02 23:41:49 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2004 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -75,10 +67,10 @@ const char* CPlotItem::XMLRecordingActivity[] =
 CPlotItem::CPlotItem(const std::string & name,
                      const CCopasiContainer * pParent,
                      const CPlotItem::Type & type):
-    CCopasiParameterGroup(TypeName[type], pParent, "PlotItem"),
-    mType(unset),
-    mActivity(),
-    mpXMLActivity(NULL)
+  CCopasiParameterGroup(TypeName[type], pParent, "PlotItem"),
+  mType(unset),
+  mActivity(),
+  mpXMLActivity(NULL)
 {
   //setObjectName(TypeName[mType]); //TODO
   setObjectName(name);
@@ -87,11 +79,11 @@ CPlotItem::CPlotItem(const std::string & name,
 
 CPlotItem::CPlotItem(const CPlotItem & src,
                      const CCopasiContainer * pParent):
-    CCopasiParameterGroup(src, pParent),
-    mType(unset),
-    mActivity(),
-    mpXMLActivity(NULL),
-    channels(src.getChannels())
+  CCopasiParameterGroup(src, pParent),
+  mType(unset),
+  mActivity(),
+  mpXMLActivity(NULL),
+  channels(src.getChannels())
 {
   setType(src.mType);
 }
@@ -122,8 +114,7 @@ void CPlotItem::setType(CPlotItem::Type type)
     {
       assertParameter("Color", CCopasiParameter::STRING, std::string("auto"));
 
-      mpXMLActivity =
-        assertParameter("Recording Activity", CCopasiParameter::STRING, std::string("during"))->getValue().pSTRING;
+      mpXMLActivity = assertParameter("Recording Activity", CCopasiParameter::STRING, std::string("during"));
 
       mActivity = toEnum(mpXMLActivity->c_str(), XMLRecordingActivity, COutputInterface::DURING);
 
@@ -189,7 +180,7 @@ const COutputInterface::Activity & CPlotItem::getActivity() const
 
         if (!mpXMLActivity)
           const_cast<CPlotItem *>(this)->mpXMLActivity =
-            getParameter("Recording Activity")->getValue().pSTRING;
+            &const_cast<CPlotItem *>(this)->getParameter("Recording Activity")->getValue< std::string >();
 
         Activity = toEnum(mpXMLActivity->c_str(), XMLRecordingActivity, COutputInterface::DURING);
 

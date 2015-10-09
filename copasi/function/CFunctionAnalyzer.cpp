@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -431,9 +431,10 @@ bool CFunctionAnalyzer::Result::writeResult(std::ostream & os, bool rt, bool ver
   bool isReversible = (mpFunction->isReversible() == TriTrue);
 
   std::ostringstream tmpss;
-    
+
   //only interprete the results if the kinetic law has specified reversibility.
   bool eee = true;
+
   if (mpFunction->isReversible() != TriUnspecified)
     eee = mOriginalFunction.writeAnalysis(tmpss, rt, isReversible);
 
@@ -1054,7 +1055,7 @@ void CFunctionAnalyzer::constructCallParametersActualValues(std::vector<CValue> 
 
             if (pCP)
               {
-                callParameters[i] = CValue(*pCP->getValue().pDOUBLE);
+                callParameters[i] = CValue(pCP->getValue< C_FLOAT64 >());
               }
 
             break;

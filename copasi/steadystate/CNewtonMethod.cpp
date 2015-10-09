@@ -77,30 +77,30 @@ void CNewtonMethod::initializeParameter()
   // Check whether we have a method with the old parameter names
   if ((pParm = getParameter("Newton.UseNewton")) != NULL)
     {
-      setValue("Use Newton", *pParm->getValue().pBOOL);
+      setValue("Use Newton", pParm->getValue< bool >());
       removeParameter("Newton.UseNewton");
 
       if ((pParm = getParameter("Newton.UseIntegration")) != NULL)
         {
-          setValue("Use Integration", *pParm->getValue().pBOOL);
+          setValue("Use Integration", pParm->getValue< bool >());
           removeParameter("Newton.UseIntegration");
         }
 
       if ((pParm = getParameter("Newton.UseBackIntegration")) != NULL)
         {
-          setValue("Use Back Integration", *pParm->getValue().pBOOL);
+          setValue("Use Back Integration", pParm->getValue< bool >());
           removeParameter("Newton.UseBackIntegration");
         }
 
       if ((pParm = getParameter("Newton.acceptNegativeConcentrations")) != NULL)
         {
-          setValue("Accept Negative Concentrations", *pParm->getValue().pBOOL);
+          setValue("Accept Negative Concentrations", pParm->getValue< bool >());
           removeParameter("Newton.acceptNegativeConcentrations");
         }
 
       if ((pParm = getParameter("Newton.IterationLimit")) != NULL)
         {
-          setValue("Iteration Limit", *pParm->getValue().pUINT);
+          setValue("Iteration Limit", pParm->getValue< unsigned C_INT32 >());
           removeParameter("Newton.IterationLimit");
         }
 
@@ -647,27 +647,27 @@ bool CNewtonMethod::isValidProblem(const CCopasiProblem * pProblem)
   if (!CSteadyStateMethod::isValidProblem(pProblem)) return false;
 
   if (!mpContainer->isAutonomous() &&
-      *getValue("Use Newton").pBOOL)
+      getValue< bool >("Use Newton"))
     CCopasiMessage(CCopasiMessage::WARNING, MCSteadyState + 1);
 
   //const CSteadyStateProblem * pP = dynamic_cast<const CSteadyStateProblem *>(pProblem);
 
-  if (!((* getValue("Use Newton").pBOOL)
-        || (* getValue("Use Integration").pBOOL)
-        || (* getValue("Use Back Integration").pBOOL)))
+  if (!((getValue< bool >("Use Newton"))
+        || (getValue< bool >("Use Integration"))
+        || (getValue< bool >("Use Back Integration"))))
     {
       //would do nothing
       CCopasiMessage(CCopasiMessage::ERROR, "At least one of the features \n   - UseNewton\n   - UseIntegration\n   - UseBackIntegration\nmust be activated.");
       return false;
     }
 
-  if (*getValue("Maximum duration for forward integration").pUDOUBLE <= 0)
+  if (getValue< C_FLOAT64 >("Maximum duration for forward integration") <= 0)
     {
       CCopasiMessage(CCopasiMessage::ERROR, "Maximum duration for forward integration needs to be positive.");
       return false;
     }
 
-  if (*getValue("Maximum duration for backward integration").pUDOUBLE <= 0)
+  if (getValue< C_FLOAT64 >("Maximum duration for backward integration") <= 0)
     {
       CCopasiMessage(CCopasiMessage::ERROR, "Maximum duration for backward integration needs to be positive.");
       return false;
@@ -689,25 +689,25 @@ bool CNewtonMethod::initialize(const CSteadyStateProblem * pProblem)
   mUseNewton = mUseIntegration = mUseBackIntegration = mAcceptNegative
                                  = mForceNewton = mKeepProtocol = false;
 
-  if (* getValue("Use Newton").pBOOL)
+  if (getValue< bool >("Use Newton"))
     mUseNewton = true;
 
-  if (* getValue("Use Integration").pBOOL)
+  if (getValue< bool >("Use Integration"))
     mUseIntegration = true;
 
-  if (* getValue("Use Back Integration").pBOOL)
+  if (getValue< bool >("Use Back Integration"))
     mUseBackIntegration = true;
 
-  if (* getValue("Accept Negative Concentrations").pBOOL)
+  if (getValue< bool >("Accept Negative Concentrations"))
     mAcceptNegative = true;
 
   mForceNewton = true;
   mKeepProtocol = true;
 
-  mIterationLimit = * getValue("Iteration Limit").pUINT;
+  mIterationLimit = getValue< unsigned C_INT32 >("Iteration Limit");
 
-  mMaxDurationForward = *getValue("Maximum duration for forward integration").pUDOUBLE;
-  mMaxDurationBackward = *getValue("Maximum duration for backward integration").pUDOUBLE;
+  mMaxDurationForward = getValue< C_FLOAT64 >("Maximum duration for forward integration");
+  mMaxDurationBackward = getValue< C_FLOAT64 >("Maximum duration for backward integration");
 
   mpX = mContainerStateReduced.array() + mpContainer->getTimeIndex() + 1;
   mDimension = mContainerStateReduced.size() - mpContainer->getTimeIndex() - 1;

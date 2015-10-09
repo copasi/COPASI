@@ -234,13 +234,9 @@ void CFitProblem::initializeParameter()
   mpParmObjectiveExpression = NULL;
   *mpParmMaximize = false;
 
-  mpParmSteadyStateCN =
-    assertParameter("Steady-State", CCopasiParameter::CN, CCopasiObjectName(""))->getValue().pCN;
-  mpParmTimeCourseCN =
-    assertParameter("Time-Course", CCopasiParameter::CN, CCopasiObjectName(""))->getValue().pCN;
-
-  mpCreateParameterSets =
-    assertParameter("Create Parameter Sets", CCopasiParameter::BOOL, false)-> getValue().pBOOL;
+  mpParmSteadyStateCN = assertParameter("Steady-State", CCopasiParameter::CN, CCopasiObjectName(""));
+  mpParmTimeCourseCN = assertParameter("Time-Course", CCopasiParameter::CN, CCopasiObjectName(""));
+  mpCreateParameterSets = assertParameter("Create Parameter Sets", CCopasiParameter::BOOL, false);
 
   assertGroup("Experiment Set");
 
@@ -262,10 +258,8 @@ bool CFitProblem::elevateChildren()
 
   // Due to a naming conflict the following parameters may have been overwritten during
   // the load of a CopasiML file we replace them with default values if that was the case.
-  mpParmSteadyStateCN =
-    assertParameter("Steady-State", CCopasiParameter::CN, CCopasiObjectName(""))->getValue().pCN;
-  mpParmTimeCourseCN =
-    assertParameter("Time-Course", CCopasiParameter::CN, CCopasiObjectName(""))->getValue().pCN;
+  mpParmSteadyStateCN = assertParameter("Steady-State", CCopasiParameter::CN, CCopasiObjectName(""));
+  mpParmTimeCourseCN = assertParameter("Time-Course", CCopasiParameter::CN, CCopasiObjectName(""));
 
   CCopasiVectorN< CCopasiTask > * pTasks = NULL;
   CCopasiDataModel* pDataModel = getObjectDataModel();
@@ -304,14 +298,14 @@ bool CFitProblem::elevateChildren()
   CExperiment * pExperiment;
 
   std::vector<CCopasiParameter *> * pExperiments =
-    getGroup("Experiment Set")->CCopasiParameter::getValue().pGROUP;
+    &getGroup("Experiment Set")->CCopasiParameter::getValue< CCopasiParameterGroup::elements >();
   std::vector<CCopasiParameter *>::iterator itExp;
   std::vector<CCopasiParameter *>::iterator endExp;
 
   for (itExp = pExperiments->begin(), endExp = pExperiments->end(); itExp != endExp; ++itExp)
     if ((pGroup = dynamic_cast< CCopasiParameterGroup * >(*itExp)) != NULL &&
         pGroup->getParameter("Key") != NULL)
-      ExperimentMap[*pGroup->getValue("Key").pKEY] = (*itExp)->getObjectName();
+      ExperimentMap[pGroup->getValue< std::string >("Key")] = (*itExp)->getObjectName();
 
   mpExperimentSet =
     elevate<CExperimentSet, CCopasiParameterGroup>(getGroup("Experiment Set"));
@@ -341,12 +335,12 @@ bool CFitProblem::elevateChildren()
     }
 
   pExperiments =
-    getGroup("Validation Set")->CCopasiParameter::getValue().pGROUP;
+    &getGroup("Validation Set")->CCopasiParameter::getValue< CCopasiParameterGroup::elements >();
 
   for (itExp = pExperiments->begin(), endExp = pExperiments->end(); itExp != endExp; ++itExp)
     if ((pGroup = dynamic_cast< CCopasiParameterGroup * >(*itExp)) != NULL &&
         pGroup->getParameter("Key") != NULL)
-      CrossValidationMap[*pGroup->getValue("Key").pKEY] = (*itExp)->getObjectName();
+      CrossValidationMap[pGroup->getValue< std::string >("Key")] = (*itExp)->getObjectName();
 
   // This intermediate elevation step should be not needed but Viusal C fails when directly
   // going to the CCrossValidationSet.
@@ -372,16 +366,16 @@ bool CFitProblem::elevateChildren()
         return false;
 
       pExperiments =
-        (*it)->getParameter("Affected Experiments")->getValue().pGROUP;
+        &(*it)->getParameter("Affected Experiments")->getValue< CCopasiParameterGroup::elements >();
 
       for (itExp = pExperiments->begin(), endExp = pExperiments->end(); itExp != endExp; ++itExp)
-        (*itExp)->setValue(ExperimentMap[*(*itExp)->getValue().pKEY]);
+        (*itExp)->setValue(ExperimentMap[(*itExp)->getValue< std::string >()]);
 
       pExperiments =
-        (*it)->getParameter("Affected Cross Validation Experiments")->getValue().pGROUP;
+        &(*it)->getParameter("Affected Cross Validation Experiments")->getValue< CCopasiParameterGroup::elements >();
 
       for (itExp = pExperiments->begin(), endExp = pExperiments->end(); itExp != endExp; ++itExp)
-        (*itExp)->setValue(CrossValidationMap[*(*itExp)->getValue().pKEY]);
+        (*itExp)->setValue(CrossValidationMap[(*itExp)->getValue< std::string >()]);
     }
 
   it = mpConstraintItems->begin();
@@ -393,16 +387,16 @@ bool CFitProblem::elevateChildren()
         return false;
 
       pExperiments =
-        (*it)->getParameter("Affected Experiments")->getValue().pGROUP;
+        &(*it)->getParameter("Affected Experiments")->getValue< CCopasiParameterGroup::elements >();
 
       for (itExp = pExperiments->begin(), endExp = pExperiments->end(); itExp != endExp; ++itExp)
-        (*itExp)->setValue(ExperimentMap[*(*itExp)->getValue().pKEY]);
+        (*itExp)->setValue(ExperimentMap[(*itExp)->getValue< std::string >()]);
 
       pExperiments =
-        (*it)->getParameter("Affected Cross Validation Experiments")->getValue().pGROUP;
+        &(*it)->getParameter("Affected Cross Validation Experiments")->getValue< CCopasiParameterGroup::elements >();
 
       for (itExp = pExperiments->begin(), endExp = pExperiments->end(); itExp != endExp; ++itExp)
-        (*itExp)->setValue(CrossValidationMap[*(*itExp)->getValue().pKEY]);
+        (*itExp)->setValue(CrossValidationMap[(*itExp)->getValue< std::string >()]);
     }
 
   return true;

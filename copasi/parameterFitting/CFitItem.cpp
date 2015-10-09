@@ -69,7 +69,7 @@ bool CFitItem::elevateChildren()
 
   if (pSavedValue)
     {
-      setStartValue(*pSavedValue->getValue().pDOUBLE);
+      setStartValue(pSavedValue->getValue< C_FLOAT64 >());
       removeParameter("SavedValue");
     }
 
@@ -180,7 +180,7 @@ bool CFitItem::addExperiment(const std::string & key)
   size_t i, imax = mpGrpAffectedExperiments->size();
 
   for (i = 0; i < imax; i++)
-    if (*mpGrpAffectedExperiments->getValue(i).pKEY == key) return false; // The key already exists.
+    if (mpGrpAffectedExperiments->getValue< std::string >(i) == key) return false; // The key already exists.
 
   return mpGrpAffectedExperiments->addParameter("Experiment Key", CCopasiParameter::KEY, key);
 }
@@ -190,7 +190,7 @@ const std::string & CFitItem::getExperiment(const size_t & index) const
   static const std::string Empty("");
 
   if (index < mpGrpAffectedExperiments->size())
-    return *mpGrpAffectedExperiments->getValue(index).pKEY;
+    return mpGrpAffectedExperiments->getValue< std::string >(index);
 
   return Empty;
 }
@@ -209,7 +209,7 @@ std::string CFitItem::getExperiments() const
 
   for (i = 0; i < imax; i++)
     {
-      pObject = CCopasiRootContainer::getKeyFactory()->get(*mpGrpAffectedExperiments->getValue(i).pKEY);
+      pObject = CCopasiRootContainer::getKeyFactory()->get(mpGrpAffectedExperiments->getValue< std::string >(i));
 
       if (pObject != NULL)
         {
@@ -230,7 +230,7 @@ bool CFitItem::addCrossValidation(const std::string & key)
   size_t i, imax = mpGrpAffectedCrossValidations->size();
 
   for (i = 0; i < imax; i++)
-    if (*mpGrpAffectedCrossValidations->getValue(i).pKEY == key) return false; // The key already exists.
+    if (mpGrpAffectedCrossValidations->getValue< std::string >(i) == key) return false; // The key already exists.
 
   return mpGrpAffectedCrossValidations->addParameter("Experiment Key", CCopasiParameter::KEY, key);
 }
@@ -240,7 +240,7 @@ const std::string & CFitItem::getCrossValidation(const size_t & index) const
   static const std::string Empty("");
 
   if (index < mpGrpAffectedCrossValidations->size())
-    return *mpGrpAffectedCrossValidations->getValue(index).pKEY;
+    return mpGrpAffectedCrossValidations->getValue< std::string >(index);
 
   return Empty;
 }
@@ -259,7 +259,7 @@ std::string CFitItem::getCrossValidations() const
 
   for (i = 0; i < imax; i++)
     {
-      pObject = CCopasiRootContainer::getKeyFactory()->get(*mpGrpAffectedCrossValidations->getValue(i).pKEY);
+      pObject = CCopasiRootContainer::getKeyFactory()->get(mpGrpAffectedCrossValidations->getValue< std::string >(i));
 
       if (i && pObject)
         CrossValidations += ", ";

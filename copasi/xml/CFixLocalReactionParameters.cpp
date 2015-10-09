@@ -109,8 +109,7 @@ void CFixLocalReactionParameters::changeModel()
           pReaction = static_cast< CReaction * >(pParameter->getObjectAncestor("Reaction"));
           Name += "{" + pReaction->getObjectName() + "}";
 
-          pModelValue = mpModel->createModelValue(Name,
-                                                  *pParameter->getValue().pDOUBLE);
+          pModelValue = mpModel->createModelValue(Name, pParameter->getValue< C_FLOAT64 >());
 
           // In case the created name is not unique we append _n with increasing n
           // until we succeed;
@@ -120,8 +119,7 @@ void CFixLocalReactionParameters::changeModel()
             {
               NameStream.str("");
               NameStream << Name << "_" << index++;
-              pModelValue = mpModel->createModelValue(NameStream.str(),
-                                                      *pParameter->getValue().pDOUBLE);
+              pModelValue = mpModel->createModelValue(NameStream.str(), pParameter->getValue< C_FLOAT64 >());
             }
 
           NewCNBase = "<" + pModelValue->getCN() + ",Reference=";

@@ -114,7 +114,7 @@ bool COptMethodSS::initialize()
     }
 
   // get total number of iterations
-  mIterations = * getValue("Number of Iterations").pUINT;
+  mIterations = getValue< unsigned C_INT32 >("Number of Iterations");
   // set current iteration to zero
   mIteration = 0;
 
@@ -128,8 +128,8 @@ bool COptMethodSS::initialize()
 
 #ifdef COPASI_DEBUG
   mpRandom =
-    CRandom::createGenerator(* (CRandom::Type *) getValue("Random Number Generator").pUINT,
-                             * getValue("Seed").pUINT);
+    CRandom::createGenerator((CRandom::Type) getValue< unsigned C_INT32 >("Random Number Generator"),
+                             getValue< unsigned C_INT32 >("Seed"));
 #else
   // Use the default random number generator which is the Mersenne Twister
   mpRandom = CRandom::createGenerator();

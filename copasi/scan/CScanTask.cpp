@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -242,7 +242,7 @@ bool CScanTask::initSubtask(const OutputFlag & /* of */,
   if (!pProblem) fatalError();
 
   //get the parameters from the problem
-  CTaskEnum::Task type = *(CTaskEnum::Task*) pProblem->getValue("Subtask").pUINT;
+  CTaskEnum::Task type = (CTaskEnum::Task) pProblem->getValue< unsigned C_INT32 >("Subtask");
   CCopasiDataModel* pDataModel = getObjectDataModel();
   assert(pDataModel != NULL);
 
@@ -302,7 +302,7 @@ bool CScanTask::initSubtask(const OutputFlag & /* of */,
         mpSubtask = NULL;
     }
 
-  mOutputInSubtask = * pProblem->getValue("Output in subtask").pBOOL;
+  mOutputInSubtask = pProblem->getValue< bool >("Output in subtask");
   mUseInitialValues = !pProblem->getContinueFromCurrentState();
 
   if (!mpSubtask) return false;

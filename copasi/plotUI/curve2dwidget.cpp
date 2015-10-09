@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -88,12 +88,8 @@ bool Curve2DWidget::LoadFromCurveSpec(const CPlotItem * curve)
   if (mpObjectY)
     mpEditY->setText(FROM_UTF8(mpObjectY->getObjectDisplayName()));
 
-  const void* tmp;
-
   //Type
-  if (!(tmp = curve->getValue("Line type").pVOID)) return false;
-
-  unsigned C_INT32 linetype = *(unsigned C_INT32*)tmp;
+  unsigned C_INT32 linetype = curve->getValue< unsigned C_INT32 >("Line type");
   mpBoxType->setCurrentIndex(linetype);
 
   typeChanged(linetype);
@@ -101,30 +97,22 @@ bool Curve2DWidget::LoadFromCurveSpec(const CPlotItem * curve)
   //line subtype & width
   if (linetype == 0 || linetype == 3)
     {
-      if (!(tmp = curve->getValue("Line subtype").pVOID)) return false;
-
-      mpBoxLineSubType->setCurrentIndex(*(unsigned C_INT32*)tmp);
+      mpBoxLineSubType->setCurrentIndex(curve->getValue< unsigned C_INT32 >("Line subtype"));
 
       //mpBoxWidth
-      if (!(tmp = curve->getValue("Line width").pVOID)) return false;
-
-      mpSpinBoxWidth->setValue(*(C_FLOAT64*)tmp);
+      mpSpinBoxWidth->setValue(curve->getValue< C_FLOAT64 >("Line width"));
     }
 
   // points
   if (linetype == 1)
     {
-      if (!(tmp = curve->getValue("Line width").pVOID)) return false;
-
-      mpSpinBoxWidth->setValue(*(C_FLOAT64*)tmp);
+      mpSpinBoxWidth->setValue(curve->getValue< C_FLOAT64 >("Line width"));
     }
 
   //symbol type
   if (linetype == 2 || linetype == 3)
     {
-      if (!(tmp = curve->getValue("Symbol subtype").pVOID)) return false;
-
-      mpBoxSymbolSubType->setCurrentIndex(*(unsigned C_INT32*)tmp);
+      mpBoxSymbolSubType->setCurrentIndex(curve->getValue< unsigned C_INT32 >("Symbol subtype"));
     }
 
   //color TODO
@@ -151,9 +139,7 @@ bool Curve2DWidget::LoadFromCurveSpec(const CPlotItem * curve)
       mpBoxColor->addItem(icon, CQPlotColors::getCopasiColorStr(i).c_str());
     }
 
-  if (!(tmp = curve->getValue("Color").pVOID)) return false;
-
-  std::string colorstr = *(std::string*)tmp;
+  std::string colorstr = curve->getValue< std::string >("Color");
   int tmpindex;
 
   if ((tmpindex = mpBoxColor->findText(colorstr.c_str())) != -1)
@@ -221,19 +207,19 @@ bool Curve2DWidget::SaveToCurveSpec(CPlotItem * curve, const CPlotItem *original
       if (thingsChanged || original->getType() != CPlotItem::curve2d)
         thingsChanged = true;
 
-      if (thingsChanged || *original->getValue("Line type").pUINT != lineType)
+      if (thingsChanged || original->getValue< unsigned C_INT32 >("Line type") != lineType)
         thingsChanged = true;
 
-      if (thingsChanged || *original->getValue("Line subtype").pUINT != lineSubType)
+      if (thingsChanged || original->getValue< unsigned C_INT32 >("Line subtype") != lineSubType)
         thingsChanged = true;
 
-      if (thingsChanged || *original->getValue("Symbol subtype").pUINT != symbolSubType)
+      if (thingsChanged || original->getValue< unsigned C_INT32 >("Symbol subtype") != symbolSubType)
         thingsChanged = true;
 
-      if (thingsChanged || *original->getValue("Line width").pDOUBLE != lineWidth)
+      if (thingsChanged || original->getValue< C_FLOAT64 >("Line width") != lineWidth)
         thingsChanged = true;
 
-      if (thingsChanged || *original->getValue("Color").pSTRING != color)
+      if (thingsChanged || original->getValue< std::string >("Color") != color)
         thingsChanged = true;
 
       if (thingsChanged || original->getActivity() != Activity)

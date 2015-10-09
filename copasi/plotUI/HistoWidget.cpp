@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -121,11 +121,7 @@ bool HistoWidget::LoadFromCurveSpec(const CPlotItem * curve)
     mpEditVariable->setText("");
 
   //other parameters:
-  const void* tmp;
-
-  if (!(tmp = curve->getValue("increment").pVOID)) return false;
-
-  mpEditIncrement->setText(QString::number(*(const C_FLOAT64*)tmp));
+  mpEditIncrement->setText(QString::number(curve->getValue< C_FLOAT64 >("increment")));
 
   mpCheckBefore->setChecked(curve->getActivity() & COutputInterface::BEFORE);
   mpCheckDuring->setChecked(curve->getActivity() & COutputInterface::DURING);
@@ -159,7 +155,7 @@ bool HistoWidget::SaveToCurveSpec(CPlotItem * curve, const CPlotItem *original /
       if (thingsChanged || original->getTitle() != title)
         thingsChanged = true;
 
-      if (thingsChanged || *original->getValue("increment").pDOUBLE != increment)
+      if (thingsChanged || original->getValue< C_FLOAT64 >("increment") != increment)
         thingsChanged = true;
 
       if (thingsChanged || original->getActivity() != Activity)

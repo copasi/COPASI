@@ -55,6 +55,15 @@
 #include "CExpRKMethod.h"
 #include "CHybridMethodODE45.h"
 
+// static
+std::string CHybridMethodODE45::PartitioningStrategy[] =
+{
+  "Deterministic Reaction Integration",
+  "Stochastic Reaction Integration",
+  "User specified Partition",
+  ""
+};
+
 //================Function for Class================
 /**
  * Default constructor.
@@ -72,7 +81,6 @@ CHybridMethodODE45::CHybridMethodODE45(const CCopasiContainer * pParent,
   mTimeRecord(0.0),
   mODE45(),
   mODEInitalized(false),
-  mMaxSteps(0),
   mRootCounter(0),
   mMaxStepsReached(false),
   mMaxBalance(0),
@@ -100,12 +108,16 @@ CHybridMethodODE45::CHybridMethodODE45(const CCopasiContainer * pParent,
   mOutputFile(),
   mOutputFileName(),
   mOutputCounter(0),
-  mErrorMsg()
+  mErrorMsg(),
+  mpMaxInternalSteps(NULL),
+  mpRelativeTolerance(NULL),
+  mpAbsoluteTolerance(NULL),
+  mpPartitioningStrategy(NULL),
+  mpUseRandomSeed(NULL),
+  mpRandomSeed(NULL)
 {
   assert((void *) &mData == (void *) &mData.dim);
   mData.pMethod = this;
-
-  mpRandomGenerator = CRandom::createGenerator(CRandom::mt19937);
   initializeParameter();
 }
 
@@ -124,7 +136,6 @@ CHybridMethodODE45::CHybridMethodODE45(const CHybridMethodODE45 & src,
   mTimeRecord(0.0),
   mODE45(),
   mODEInitalized(false),
-  mMaxSteps(0),
   mRootCounter(0),
   mMaxStepsReached(false),
   mMaxBalance(0),
@@ -152,12 +163,16 @@ CHybridMethodODE45::CHybridMethodODE45(const CHybridMethodODE45 & src,
   mOutputFile(),
   mOutputFileName(),
   mOutputCounter(0),
-  mErrorMsg()
+  mErrorMsg(),
+  mpMaxInternalSteps(NULL),
+  mpRelativeTolerance(NULL),
+  mpAbsoluteTolerance(NULL),
+  mpPartitioningStrategy(NULL),
+  mpUseRandomSeed(NULL),
+  mpRandomSeed(NULL)
 {
   assert((void *) &mData == (void *) &mData.dim);
   mData.pMethod = this;
-
-  mpRandomGenerator = CRandom::createGenerator(CRandom::mt19937);
   initializeParameter();
 }
 
@@ -195,7 +210,7 @@ bool CHybridMethodODE45::isValidProblem(const CCopasiProblem * pProblem)
 
   if (pTP->getDuration() < 0.0)
     {
-      //b ack integration not possible
+      // back integration not possible
       CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 9);
       return false;
     }
@@ -204,47 +219,26 @@ bool CHybridMethodODE45::isValidProblem(const CCopasiProblem * pProblem)
 }
 
 /**
- * Intialize the method parameter
+ * Initialize the method parameter
  */
 void CHybridMethodODE45::initializeParameter()
 {
-  CCopasiParameter *pParm;
+  mpMaxInternalSteps = assertParameter("Max Internal Steps", CCopasiParameter::UINT, (unsigned C_INT32) MAX_STEPS_ODE);
+  mpRelativeTolerance = assertParameter("Relative Tolerance", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0e-006);
+  mpAbsoluteTolerance = assertParameter("Absolute Tolerance", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0e-009);
+  mpPartitioningStrategy = assertParameter("Partitioning Strategy", CCopasiParameter::STRING, PartitioningStrategy[1]);
+  mpUseRandomSeed = assertParameter("Use Random Seed", CCopasiParameter::BOOL, (bool) USE_RANDOM_SEED);
+  mpRandomSeed = assertParameter("Random Seed", CCopasiParameter::UINT, (unsigned C_INT32) RANDOM_SEED);
 
-  assertParameter("Max Internal Steps", CCopasiParameter::UINT, (unsigned C_INT32) MAX_STEPS_ODE);
-  assertParameter("Use Random Seed", CCopasiParameter::BOOL, (bool) USE_RANDOM_SEED);
-  assertParameter("Random Seed", CCopasiParameter::UINT, (unsigned C_INT32) RANDOM_SEED);
+  std::vector< std::pair < std::string, std::string > > ValidValues;
+  std::string * pStr = PartitioningStrategy;
 
-  // Check whether we have a method with the old parameter names
-  if ((pParm = getParameter("HYBRID.MaxSteps")) != NULL)
+  while (*pStr != "")
     {
-
-      setValue("Max Internal Steps", *pParm->getValue().pUINT);
-      removeParameter("HYBRID.MaxSteps");
-
-      if ((pParm = getParameter("UseRandomSeed")) != NULL)
-        {
-          setValue("Use Random Seed", *pParm->getValue().pBOOL);
-          removeParameter("UseRandomSeed");
-        }
-
-      if ((pParm = getParameter("")) != NULL)
-        {
-          setValue("Random Seed", *pParm->getValue().pUINT);
-          removeParameter("");
-        }
+      ValidValues.push_back(std::make_pair(*pStr, *pStr));
     }
 
-  if ((pParm = getParameter("Relative Tolerance")) == NULL)
-    {
-      addParameter("Relative Tolerance",
-                   CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0e-006);
-    }
-
-  if ((pParm = getParameter("Absolute Tolerance")) == NULL)
-    {
-      addParameter("Absolute Tolerance",
-                   CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0e-009);
-    }
+  getParameter("Partitioning Strategy")->setValidValues(ValidValues);
 }
 
 /**
@@ -286,19 +280,18 @@ void CHybridMethodODE45::initMethod(C_FLOAT64 start_time)
   // we don't want to directly record new results into mpState, since
   // the sum of slow reaction propensities is also recorded in mY
 
-  mAmuVariables = CVectorCore< C_FLOAT64 >(mSlowReactions.size(), mY.array() + mCountContainerVariables);
+  mAmuVariables.initialize(mSlowReactions.size(), mY.array() + mCountContainerVariables);
   mAmuVariables = 0.0;
 
   mTimeRecord = start_time;
-  mMaxSteps   = * getValue("Max Internal Steps").pUINT;
   mRootCounter = 0;
   mMaxStepsReached = false;
 
   mpRandomGenerator = &mpContainer->getRandomGenerator();
 
-  if (*getValue("Use Random Seed").pBOOL)
+  if (*mpUseRandomSeed)
     {
-      mpRandomGenerator->initialize(*getValue("Random Seed").pUINT);
+      mpRandomGenerator->initialize(*mpRandomSeed);
     }
 
   //(6)----set attributes for ODE45
@@ -306,8 +299,8 @@ void CHybridMethodODE45::initMethod(C_FLOAT64 start_time)
   mODE45.mODEState = ODE_INIT;
   mODE45.mDim = &mData.dim;
 
-  mODE45.mRelTol = * getValue("Relative Tolerance").pUDOUBLE;
-  mODE45.mAbsTol = * getValue("Absolute Tolerance").pUDOUBLE;
+  mODE45.mRelTol = *mpRelativeTolerance;
+  mODE45.mAbsTol = *mpAbsoluteTolerance;
   mODE45.mHybrid = (mIntegrationType != DETERMINISTIC);
 
   mODE45.mpY = mY.array();
@@ -343,22 +336,38 @@ void CHybridMethodODE45::cleanup()
  */
 void CHybridMethodODE45::partitionSystem()
 {
-  CMathReaction * pReaction = mpContainer->getReactions().array();
-  CMathReaction * pReactionEnd = pReaction + mpContainer->getReactions().size();
-
+  bool AllFast = false;
+  bool AllSlow = false;
   size_t nFast = 0;
   size_t nSlow = 0;
 
-  for (; pReaction != pReactionEnd; ++pReaction)
+  CMathReaction * pReaction = mpContainer->getReactions().array();
+  CMathReaction * pReactionEnd = pReaction + mpContainer->getReactions().size();
+
+  if (*mpPartitioningStrategy == "Deterministic Reaction Integration")
     {
-      if (pReaction->isFast())
+      AllFast = true;
+      nFast = mpContainer->getReactions().size();
+    }
+  else if (*mpPartitioningStrategy == "User specified Partition")
+    {
+      for (; pReaction != pReactionEnd; ++pReaction)
         {
-          nFast++;
+          if (pReaction->isFast())
+            {
+              nFast++;
+            }
+          else
+            {
+              nSlow++;
+            }
         }
-      else
-        {
-          nSlow++;
-        }
+    }
+  else
+    {
+      // Default "Stochastic Reaction Integration"
+      AllSlow = true;
+      nSlow = mpContainer->getReactions().size();
     }
 
   mHasStoiReaction   = (nSlow > 0);
@@ -378,20 +387,20 @@ void CHybridMethodODE45::partitionSystem()
 
   for (; pReaction != pReactionEnd; ++pReaction)
     {
-      if (!pReaction->isFast())
+      if (AllSlow || !pReaction->isFast())
         {
           *ppSlowReaction = pReaction;
           ++ppSlowReaction;
           *ppSlowAmu = (C_FLOAT64 *) pReaction->getPropensityObject()->getValuePointer();
           ++ppSlowAmu;
           *ppSlowFlux = (C_FLOAT64 *) pReaction->getFluxObject()->getValuePointer();
+          ++ppSlowFlux;
 
           Propensities.insert(pReaction->getPropensityObject());
           Fluxes.insert(pReaction->getFluxObject());
         }
     }
 
-  // Check whether any simulation required objects depend on the fluxes.
   CObjectInterface::ObjectSet::iterator it = mpContainer->getSimulationUpToDateObjects().begin();
   CObjectInterface::ObjectSet::iterator end = mpContainer->getSimulationUpToDateObjects().end();
   CObjectInterface::ObjectSet SimulationObjects;
@@ -401,24 +410,16 @@ void CHybridMethodODE45::partitionSystem()
     {
       const CMathObject * pObject = static_cast< const CMathObject * >(*it);
 
-      if (pObject->getSimulationType() != CMath::Dependent ||
-          pObject->getSimulationType() != CMath::Independent ||
-          pObject->getValueType() != CMath::Rate)
-        {
-          SimulationObjects.insert(pObject);
-        }
-      else
+      if ((pObject->getSimulationType() == CMath::Dependent ||
+           pObject->getSimulationType() == CMath::Independent) &&
+          pObject->getValueType() == CMath::Rate)
         {
           SpeciesRates.insert(pObject);
         }
-    }
-
-  mpContainer->getTransientDependencies().getUpdateSequence(mSpeciesRateUpdateSequence, CMath::Default, Fluxes, SimulationObjects);
-
-  if (mSpeciesRateUpdateSequence.size() > 0)
-    {
-      // TODO CRITICAL Crate a meaningful error message. Ideally this check should be part of the isValidProblem check
-      fatalError();
+      else
+        {
+          SimulationObjects.insert(pObject);
+        }
     }
 
   // Create the sequence which updates the species rates discarding the contribution of the slow reactions.
@@ -426,13 +427,6 @@ void CHybridMethodODE45::partitionSystem()
 
   // Create the sequence which updates the propensities of the slow reactions.
   mpContainer->getTransientDependencies().getUpdateSequence(mPropensitiesUpdateSequence, CMath::Default, Fluxes, Propensities);
-
-  // Rates of species determined by reactions depend on the slow reactions.
-  // Since these reactions are dealt with stochastically the rate must be set to
-  // zero during deterministic integration. Since it is unclear what should happen
-  // to other entities which depend on the slow reaction rates we will prohibit it.
-
-  // 1 collect all reaction rates and propensities.
 
   return;
 }
@@ -479,7 +473,7 @@ CTrajectoryMethod::Status CHybridMethodODE45::step(const double & deltaT)
 
   endTime = mTimeRecord;
 
-  while (mRootCounter < mMaxSteps && time < endTime)
+  while (mRootCounter < *mpMaxInternalSteps && time < endTime)
     {
       time = doSingleStep(endTime);
 
@@ -496,7 +490,7 @@ CTrajectoryMethod::Status CHybridMethodODE45::step(const double & deltaT)
     }
 
   // Warning Message
-  if ((mRootCounter >= mMaxSteps) && (!mMaxStepsReached))
+  if ((mRootCounter >= *mpMaxInternalSteps) && (!mMaxStepsReached))
     {
       mMaxStepsReached = true; //only report this message once
       CCopasiMessage(CCopasiMessage::WARNING, "maximum number of reaction events was reached in at least one simulation step.\nThat means time intervals in the output may not be what you requested.");
@@ -524,7 +518,7 @@ C_FLOAT64 CHybridMethodODE45::doSingleStep(C_FLOAT64 endTime)
   //<i> ~~~~ Doing things about mRootMasking
   if (mSysStatus == SYS_EVENT && mHasRoot)
     {
-      if (mRootCounter > 0.99 * mMaxSteps ||
+      if (mRootCounter > 0.99 * *mpMaxInternalSteps ||
           mODE45.mT == *mpContainerStateTime) //oscillation around roots
         {
           switch (mRootMasking)

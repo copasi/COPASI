@@ -1,17 +1,14 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CProcessReport.cpp,v $
-   $Revision: 1.12 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2012/06/01 17:25:40 $
-   End CVS Header */
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2005 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -25,51 +22,50 @@
 #include "report/CCopasiObject.h"
 
 CProcessReportItem::CProcessReportItem():
-    CCopasiParameter("NoName", CCopasiParameter::DOUBLE),
-    mEndValue(),
-    mHasEndValue(false)
+  CCopasiParameter("NoName", CCopasiParameter::DOUBLE),
+  mpEndValue(NULL),
+  mHasEndValue(false)
 {
-  mEndValue = mValue;
-  mValue.pDOUBLE = NULL;
+  mpEndValue = mpValue;
+  mpValue = NULL;
 }
 
 CProcessReportItem::CProcessReportItem(const std::string & name,
                                        const Type & type,
                                        const void * pValue,
                                        const void * pEndValue):
-    CCopasiParameter(name, type, pEndValue, NULL, "ProcessReportItem"),
-    mEndValue(),
-    mHasEndValue(pEndValue != NULL)
+  CCopasiParameter(name, type, pEndValue, NULL, "ProcessReportItem"),
+  mpEndValue(NULL),
+  mHasEndValue(pEndValue != NULL)
 {
-  mEndValue = mValue;
-  mValue.pVOID = const_cast<void *>(pValue);
+  mpEndValue = mpValue;
+  mpValue = const_cast<void *>(pValue);
 }
 
 CProcessReportItem::CProcessReportItem(const CProcessReportItem & src):
-    CCopasiParameter(src.getObjectName(), src.getType(), src.mEndValue.pVOID, NULL, "ProcessReportItem"),
-    mEndValue(),
-    mHasEndValue(src.mHasEndValue)
+  CCopasiParameter(src.getObjectName(), src.getType(), src.mpEndValue, NULL, "ProcessReportItem"),
+  mpEndValue(NULL),
+  mHasEndValue(src.mHasEndValue)
 {
-  mEndValue = mValue;
-  mValue = src.mValue;
+  mpEndValue = mpValue;
+  mpValue = src.mpValue;
 }
 
 CProcessReportItem::~CProcessReportItem()
 {
-  mValue = mEndValue;
+  mpValue = mpEndValue;
+}
+
+void * CProcessReportItem::getEndValuePointer()
+{
+  return mpEndValue;
 }
 
 const bool & CProcessReportItem::hasEndValue() const {return mHasEndValue;}
 
-const CCopasiParameter::Value & CProcessReportItem::getEndValue() const
-{return mEndValue;}
-
-CCopasiParameter::Value & CProcessReportItem::getEndValue()
-{return mEndValue;}
-
 CProcessReport::CProcessReport(const unsigned int & maxTime):
-    mProcessReportItemList(1),
-    mpEndTime(NULL)
+  mProcessReportItemList(1),
+  mpEndTime(NULL)
 {
   mProcessReportItemList[0] = NULL;
 

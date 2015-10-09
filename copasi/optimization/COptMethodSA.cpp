@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -301,12 +301,12 @@ bool COptMethodSA::initialize()
 
   if (!COptMethod::initialize()) return false;
 
-  mTemperature = * getValue("Start Temperature").pUDOUBLE;
-  mCoolingFactor = * getValue("Cooling Factor").pUDOUBLE;
-  mTolerance = * getValue("Tolerance").pUDOUBLE;
+  mTemperature = getValue< C_FLOAT64 >("Start Temperature");
+  mCoolingFactor = getValue< C_FLOAT64 >("Cooling Factor");
+  mTolerance = getValue< C_FLOAT64 >("Tolerance");
   mpRandom =
-    CRandom::createGenerator(* (CRandom::Type *) getValue("Random Number Generator").pUINT,
-                             * getValue("Seed").pUINT);
+    CRandom::createGenerator((CRandom::Type) getValue< unsigned C_INT32 >("Random Number Generator"),
+                             getValue< unsigned C_INT32 >("Seed"));
 
   if (mpCallBack)
     mhTemperature =

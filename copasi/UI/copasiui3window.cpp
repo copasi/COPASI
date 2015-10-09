@@ -1922,7 +1922,7 @@ void CopasiUI3Window::slotOpenRecentFile(QAction * pAction)
   int index = mRecentFilesActionMap[pAction];
 
   std::string FileName =
-    *CCopasiRootContainer::getConfiguration()->getRecentFiles().getGroup("Recent Files")->getValue(index).pSTRING;
+    CCopasiRootContainer::getConfiguration()->getRecentFiles().getGroup("Recent Files")->getValue< std::string >(index);
 
   slotFileOpen(FROM_UTF8(FileName));
 }
@@ -1932,7 +1932,7 @@ void CopasiUI3Window::slotOpenRecentSBMLFile(QAction * pAction)
   int index = mRecentSBMLFilesActionMap[pAction];
 
   std::string FileName =
-    *CCopasiRootContainer::getConfiguration()->getRecentSBMLFiles().getGroup("Recent Files")->getValue(index).pSTRING;
+    CCopasiRootContainer::getConfiguration()->getRecentSBMLFiles().getGroup("Recent Files")->getValue< std::string >(index);
 
   slotImportSBML(FROM_UTF8(FileName));
 }
@@ -1964,7 +1964,7 @@ void CopasiUI3Window::refreshRecentFileMenu()
 
   for (; it != end; ++it, ++Index)
     {
-      pAction = new QAction(FROM_UTF8(*(*it)->getValue().pSTRING), mpRecentFilesActionGroup);
+      pAction = new QAction(FROM_UTF8((*it)->getValue< std::string >()), mpRecentFilesActionGroup);
       mpMenuRecentFiles->addAction(pAction);
       mRecentFilesActionMap[pAction] = Index;
     }
@@ -1997,7 +1997,7 @@ void CopasiUI3Window::refreshRecentSBMLFileMenu()
 
   for (; it != end; ++it, ++Index)
     {
-      pAction = new QAction(FROM_UTF8(*(*it)->getValue().pSTRING), mpRecentSBMLFilesActionGroup);
+      pAction = new QAction(FROM_UTF8((*it)->getValue< std::string >()), mpRecentSBMLFilesActionGroup);
       mpMenuRecentSBMLFiles->addAction(pAction);
       mRecentSBMLFilesActionMap[pAction] = Index;
     }
@@ -3104,7 +3104,7 @@ void CopasiUI3Window::refreshRecentSEDMLFileMenu()
 
   for (; it != end; ++it, ++Index)
     {
-      pAction = new QAction(FROM_UTF8(*(*it)->getValue().pSTRING), mpRecentSEDMLFilesActionGroup);
+      pAction = new QAction(FROM_UTF8((*it)->getValue< std::string >()), mpRecentSEDMLFilesActionGroup);
       mpMenuRecentSEDMLFiles->addAction(pAction);
       mRecentSEDMLFilesActionMap[pAction] = Index;
     }
@@ -3214,7 +3214,7 @@ void CopasiUI3Window::slotOpenRecentSEDMLFile(QAction * pAction)
   int index = mRecentSEDMLFilesActionMap[pAction];
 
   std::string FileName =
-    *CCopasiRootContainer::getConfiguration()->getRecentSEDMLFiles().getGroup("Recent Files")->getValue(index).pSTRING;
+    CCopasiRootContainer::getConfiguration()->getRecentSEDMLFiles().getGroup("Recent Files")->getValue< std::string >(index);
 
   slotImportSEDML(FROM_UTF8(FileName));
 }

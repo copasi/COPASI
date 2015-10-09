@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -80,9 +80,9 @@ bool CRandomSearch::initialize()
 
   if (!COptMethod::initialize()) return false;
 
-  mIterations = * getValue("Number of Iterations").pUINT;
+  mIterations = getValue< unsigned C_INT32 >("Number of Iterations");
   mpRandom = & mpContainer->getRandomGenerator();
-  mpRandom->initialize(* getValue("Seed").pUINT);
+  mpRandom->initialize(getValue< unsigned C_INT32 >("Seed"));
 
   mBestValue = std::numeric_limits<C_FLOAT64>::infinity();
 

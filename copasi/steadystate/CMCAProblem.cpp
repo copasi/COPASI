@@ -102,7 +102,7 @@ void CMCAProblem::setSteadyStateRequested(const bool & steadyStateRequested)
  * @return bool steadyStateRequested
  */
 bool CMCAProblem::isSteadyStateRequested() const
-{return (* getValue("Steady-State").pKEY != "");}
+{return (getValue< std::string >("Steady-State") != "");}
 
 CSteadyStateTask * CMCAProblem::getSubTask() const
 {
@@ -110,7 +110,7 @@ CSteadyStateTask * CMCAProblem::getSubTask() const
 
   if (isSteadyStateRequested())
     {
-      pSubTask = dynamic_cast<CSteadyStateTask *>(CCopasiRootContainer::getKeyFactory()->get(* getValue("Steady-State").pKEY));
+      pSubTask = dynamic_cast<CSteadyStateTask *>(CCopasiRootContainer::getKeyFactory()->get(getValue< std::string >("Steady-State")));
 
       if (pSubTask == NULL)
         {

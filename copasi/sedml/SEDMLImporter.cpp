@@ -672,11 +672,11 @@ SEDMLImporter::importTasks(std::map<CCopasiObject*, SedBase*>& copasi2sedmlmap)
                       }
 
                     CCopasiParameterGroup*group = pProblem->addScanItem(CScanProblem::SCAN_LINEAR, urange->getNumberOfPoints(), obj);
-                    *group->getParameter("Minimum")->getValue().pDOUBLE = urange->getStart();
-                    *group->getParameter("Maximum")->getValue().pDOUBLE = urange->getEnd();
-                    *group->getParameter("log")->getValue().pBOOL =
-                      (!urange->isSetType() || urange->getType().empty() ||  urange->getType() == "linear") ? false
-                      : true;
+                    group->setValue< C_FLOAT64 >("Minimum", urange->getStart());
+                    group->setValue< C_FLOAT64 >("Maximum", urange->getEnd());
+                    group->setValue< bool >("log", (!urange->isSetType() ||
+                                                    urange->getType().empty() ||
+                                                    urange->getType() == "linear") ? false : true);
                   }
               }
 

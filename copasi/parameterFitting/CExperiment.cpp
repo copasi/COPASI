@@ -229,7 +229,7 @@ CExperiment::~CExperiment() {}
 
 CExperiment & CExperiment::operator = (const CExperiment & rhs)
 {
-  std::string Key = *getValue("Key").pKEY;
+  std::string Key = getValue< std::string >("Key");
 
   clear();
 
@@ -238,16 +238,16 @@ CExperiment & CExperiment::operator = (const CExperiment & rhs)
 
   setValue("Key", Key);
 
-  mpFileName = getValue("File Name").pFILE;
-  mpFirstRow = getValue("First Row").pUINT;
-  mpLastRow = getValue("Last Row").pUINT;
-  mpTaskType = (CTaskEnum::Task *) getValue("Experiment Type").pUINT;
-  mpNormalizeWeightsPerExperiment = getValue("Normalize Weights per Experiment").pBOOL;
-  mpSeparator = getValue("Separator").pSTRING;
-  mpWeightMethod = (WeightMethod *) getValue("Weight Method").pUINT;
-  mpRowOriented = getValue("Data is Row Oriented").pBOOL;
-  mpHeaderRow = getValue("Row containing Names").pUINT;
-  mpNumColumns = getValue("Number of Columns").pUINT;
+  mpFileName = &getValue< std::string >("File Name");
+  mpFirstRow = &getValue< unsigned C_INT32 >("First Row");
+  mpLastRow = &getValue< unsigned C_INT32 >("Last Row");
+  mpTaskType = (CTaskEnum::Task *) &getValue< unsigned C_INT32 >("Experiment Type");
+  mpNormalizeWeightsPerExperiment = &getValue< bool >("Normalize Weights per Experiment");
+  mpSeparator = &getValue< std::string >("Separator");
+  mpWeightMethod = (WeightMethod *) &getValue< unsigned C_INT32 >("Weight Method");
+  mpRowOriented = &getValue< bool >("Data is Row Oriented");
+  mpHeaderRow = &getValue< unsigned C_INT32 >("Row containing Names");
+  mpNumColumns = &getValue< unsigned C_INT32 >("Number of Columns");
 
   elevateChildren();
 
@@ -259,29 +259,19 @@ void CExperiment::initializeParameter()
   CCopasiRootContainer::getKeyFactory()->remove(mKey);
   mKey = CCopasiRootContainer::getKeyFactory()->add("Experiment", this);
 
-  assertParameter("Key", CCopasiParameter::KEY, mKey)->setValue(mKey);
+  *assertParameter("Key", CCopasiParameter::KEY, mKey) = mKey;
 
-  mpFileName =
-    assertParameter("File Name", CCopasiParameter::FILE, std::string(""))->getValue().pFILE;
-  mpFirstRow =
-    assertParameter("First Row", CCopasiParameter::UINT, (unsigned C_INT32) InvalidIndex)->getValue().pUINT;
-  mpLastRow =
-    assertParameter("Last Row", CCopasiParameter::UINT, (unsigned C_INT32) InvalidIndex)->getValue().pUINT;
-  mpTaskType = (CTaskEnum::Task *)
-               assertParameter("Experiment Type", CCopasiParameter::UINT, (unsigned C_INT32) CTaskEnum::UnsetTask)->getValue().pUINT;
-  mpNormalizeWeightsPerExperiment =
-    assertParameter("Normalize Weights per Experiment", CCopasiParameter::BOOL, true)->getValue().pBOOL;
+  mpFileName = assertParameter("File Name", CCopasiParameter::FILE, std::string(""));
+  mpFirstRow = assertParameter("First Row", CCopasiParameter::UINT, (unsigned C_INT32) InvalidIndex);
+  mpLastRow = assertParameter("Last Row", CCopasiParameter::UINT, (unsigned C_INT32) InvalidIndex);
+  mpTaskType = (CTaskEnum::Task *) assertParameter("Experiment Type", CCopasiParameter::UINT, (unsigned C_INT32) CTaskEnum::UnsetTask);
+  mpNormalizeWeightsPerExperiment = assertParameter("Normalize Weights per Experiment", CCopasiParameter::BOOL, true);
 
-  mpSeparator =
-    assertParameter("Separator", CCopasiParameter::STRING, std::string("\t"))->getValue().pSTRING;
-  mpWeightMethod = (WeightMethod *)
-                   assertParameter("Weight Method", CCopasiParameter::UINT, (unsigned C_INT32) MEAN_SQUARE)->getValue().pUINT;
-  mpRowOriented =
-    assertParameter("Data is Row Oriented", CCopasiParameter::BOOL, (bool) true)->getValue().pBOOL;
-  mpHeaderRow =
-    assertParameter("Row containing Names", CCopasiParameter::UINT, (unsigned C_INT32) InvalidIndex)->getValue().pUINT;
-  mpNumColumns =
-    assertParameter("Number of Columns", CCopasiParameter::UINT, (unsigned C_INT32) 0)->getValue().pUINT;
+  mpSeparator = assertParameter("Separator", CCopasiParameter::STRING, std::string("\t"));
+  mpWeightMethod = (WeightMethod *) assertParameter("Weight Method", CCopasiParameter::UINT, (unsigned C_INT32) MEAN_SQUARE);
+  mpRowOriented = assertParameter("Data is Row Oriented", CCopasiParameter::BOOL, (bool) true);
+  mpHeaderRow = assertParameter("Row containing Names", CCopasiParameter::UINT, (unsigned C_INT32) InvalidIndex);
+  mpNumColumns = assertParameter("Number of Columns", CCopasiParameter::UINT, (unsigned C_INT32) 0);
 
   assertGroup("Object Map");
 
@@ -290,7 +280,7 @@ void CExperiment::initializeParameter()
 
   if (pParameter != NULL)
     {
-      *mpSeparator =  *pParameter->getValue().pSTRING;
+      *mpSeparator =  pParameter->getValue< std::string >();
       removeParameter("Seperator");
     }
 
@@ -314,7 +304,7 @@ bool CExperiment::elevateChildren()
 
       for (i = 0; i < imax; i++)
         {
-          Roles.setRole(i, *(Type *) pGroup->getValue(StringPrint("%d", i)).pUINT);
+          Roles.setRole(i, (Type) pGroup->getValue< unsigned C_INT32 >(StringPrint("%d", i)));
           Roles.setObjectCN(i, mpObjectMap->getObjectCN(i));
         }
 
@@ -1345,8 +1335,8 @@ bool CExperiment::setWeightMethod(const CExperiment::WeightMethod & weightMethod
 
   // Reset to default weights
   *mpWeightMethod = weightMethod;
-  std::vector< CCopasiParameter * >::iterator it = mpObjectMap->CCopasiParameter::getValue().pGROUP->begin();
-  std::vector< CCopasiParameter * >::iterator end = mpObjectMap->CCopasiParameter::getValue().pGROUP->end();
+  std::vector< CCopasiParameter * >::iterator it = mpObjectMap->CCopasiParameter::getValue< CCopasiParameterGroup::elements >().begin();
+  std::vector< CCopasiParameter * >::iterator end = mpObjectMap->CCopasiParameter::getValue< CCopasiParameterGroup::elements >().end();
 
   for (; it != end; ++ it)
     static_cast< CExperimentObjectMap::CDataColumn * >(*it)->setScale(std::numeric_limits<C_FLOAT64>::quiet_NaN());
@@ -1374,8 +1364,8 @@ bool CExperiment::compare(const CExperiment * lhs,
 bool operator == (const CExperiment & lhs,
                   const CExperiment & rhs)
 {
-  std::string Key = *lhs.getValue("Key").pKEY;
-  const_cast<CExperiment *>(&lhs)->setValue("Key", *rhs.getValue("Key").pKEY);
+  std::string Key = lhs.getValue< std::string >("Key");
+  const_cast<CExperiment *>(&lhs)->setValue("Key", rhs.getValue< std::string >("Key"));
 
   bool Result =
     (*static_cast<const CCopasiParameterGroup *>(&lhs) ==

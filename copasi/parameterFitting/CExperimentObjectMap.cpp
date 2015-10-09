@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -57,8 +57,8 @@ bool CExperimentObjectMap::elevateChildren()
 {
   bool success = true;
 
-  std::vector<CCopasiParameter *>::iterator itColumn = mValue.pGROUP->begin();
-  std::vector<CCopasiParameter *>::iterator endColumn = mValue.pGROUP->end();
+  elements::iterator itColumn = beginIndex();
+  elements::iterator endColumn = endIndex();
 
   if (itColumn != endColumn &&
       dynamic_cast< CCopasiParameterGroup * >(*itColumn) == NULL) // We have an old data format.
@@ -68,14 +68,14 @@ bool CExperimentObjectMap::elevateChildren()
       for (; itColumn != endColumn; ++itColumn)
         {
           CCopasiParameterGroup * pGroup = New.assertGroup((*itColumn)->getObjectName());
-          pGroup->assertParameter("Object CN", CCopasiParameter::CN, *(*itColumn)->getValue().pCN);
+          pGroup->assertParameter("Object CN", CCopasiParameter::CN, (*itColumn)->getValue< CRegisteredObjectName >());
         }
 
       clear();
       *this = New;
     }
 
-  for (itColumn = mValue.pGROUP->begin(); itColumn != endColumn; ++itColumn)
+  for (itColumn = beginIndex(); itColumn != endColumn; ++itColumn)
     if (((*itColumn) = elevate<CDataColumn, CCopasiParameterGroup>(*itColumn)) == NULL)
       success = false;
 
@@ -84,12 +84,12 @@ bool CExperimentObjectMap::elevateChildren()
 
 bool CExperimentObjectMap::setNumCols(const size_t & numCols)
 {
-  if (numCols == mValue.pGROUP->size())
+  if (numCols == size())
     return true;
 
   // We only clear the vector of parameter. We do not destroy the parameter they are still
   // accessible through CCopasiContainer::mObjects and thus will be automatically destroyed.
-  mValue.pGROUP->clear();
+  clear();
 
   bool success = true;
 
@@ -99,8 +99,8 @@ bool CExperimentObjectMap::setNumCols(const size_t & numCols)
 
       // assertGroup() adds only newly created groups to mValue.pGROUP. We need to add the existing
       // ones.
-      if (mValue.pGROUP->size() < col + 1)
-        mValue.pGROUP->push_back(pGrp);
+      if (size() < col + 1)
+        static_cast< elements * >(mpValue)->push_back(pGrp);
 
       success &= (elevate<CDataColumn, CCopasiParameterGroup>(pGrp) != NULL);
     }
@@ -110,8 +110,8 @@ bool CExperimentObjectMap::setNumCols(const size_t & numCols)
 
 size_t CExperimentObjectMap::getLastNotIgnoredColumn() const
 {
-  std::vector<CCopasiParameter *>::iterator itColumn = mValue.pGROUP->begin();
-  std::vector<CCopasiParameter *>::iterator endColumn = mValue.pGROUP->end();
+  elements::iterator itColumn = beginIndex();
+  elements::iterator endColumn = endIndex();
 
   C_INT32 LastNotIgnored = -1;
 
@@ -321,18 +321,17 @@ CExperimentObjectMap::CDataColumn::~CDataColumn()
 
 void CExperimentObjectMap::CDataColumn::initializeParameter()
 {
-  mpRole = (CExperiment::Type *)
-           assertParameter("Role", CCopasiParameter::UINT, (unsigned C_INT32) CExperiment::ignore)->getValue().pUINT;
+  mpRole = (CExperiment::Type *) assertParameter("Role", CCopasiParameter::UINT, (unsigned C_INT32) CExperiment::ignore);
 
   CCopasiParameter * pParm = getParameter("Object CN");
 
   if (pParm != NULL)
-    mpObjectCN = pParm->getValue().pCN;
+    mpObjectCN = &pParm->getValue< CRegisteredObjectName >();
 
   pParm = getParameter("Weight");
 
   if (pParm != NULL)
-    mpScale = pParm->getValue().pUDOUBLE;
+    mpScale = &pParm->getValue< C_FLOAT64 >();
 
   elevateChildren();
 }
@@ -374,7 +373,7 @@ bool CExperimentObjectMap::CDataColumn::setObjectCN(const std::string & objectCN
         *mpObjectCN = objectCN;
       else
         mpObjectCN =
-          assertParameter("Object CN", CCopasiParameter::CN, (CCopasiObjectName) objectCN)->getValue().pCN;
+          assertParameter("Object CN", CCopasiParameter::CN, (CCopasiObjectName) objectCN);
     }
 
   return true;
@@ -408,7 +407,7 @@ bool CExperimentObjectMap::CDataColumn::setScale(const C_FLOAT64 & weight)
       if (mpScale != NULL)
         *mpScale = weight;
       else
-        mpScale = assertParameter("Weight", CCopasiParameter::UDOUBLE, weight)->getValue().pUDOUBLE;
+        mpScale = assertParameter("Weight", CCopasiParameter::UDOUBLE, weight);
 
       return true;
     }

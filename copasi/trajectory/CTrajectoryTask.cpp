@@ -93,7 +93,7 @@ CTrajectoryTask::CTrajectoryTask(const CCopasiContainer * pParent,
   CCopasiParameter * pParameter = mpMethod->getParameter("Integrate Reduced Model");
 
   if (pParameter != NULL)
-    mUpdateMoieties = *pParameter->getValue().pBOOL;
+    mUpdateMoieties = pParameter->getValue< bool >();
   else
     mUpdateMoieties = false;
 
@@ -129,7 +129,7 @@ CTrajectoryTask::CTrajectoryTask(const CTrajectoryTask & src,
   CCopasiParameter * pParameter = mpMethod->getParameter("Integrate Reduced Model");
 
   if (pParameter != NULL)
-    mUpdateMoieties = *pParameter->getValue().pBOOL;
+    mUpdateMoieties = pParameter->getValue< bool >();
   else
     mUpdateMoieties = false;
 
@@ -159,7 +159,7 @@ void CTrajectoryTask::load(CReadConfig & configBuffer)
   CCopasiParameter * pParameter = mpMethod->getParameter("Integrate Reduced Model");
 
   if (pParameter != NULL)
-    mUpdateMoieties = *pParameter->getValue().pBOOL;
+    mUpdateMoieties = pParameter->getValue< bool >();
 
   ((CTrajectoryMethod *)mpMethod)->setProblem((CTrajectoryProblem *) mpProblem);
 }
@@ -183,7 +183,7 @@ bool CTrajectoryTask::initialize(const OutputFlag & of,
   CCopasiParameter * pParameter = mpMethod->getParameter("Integrate Reduced Model");
 
   if (pParameter != NULL)
-    mUpdateMoieties = *pParameter->getValue().pBOOL;
+    mUpdateMoieties = pParameter->getValue< bool >();
   else
     mUpdateMoieties = false;
 
@@ -557,7 +557,7 @@ void CTrajectoryTask::signalMethodChanged()
   CCopasiParameter * pParameter = mpMethod->getParameter("Integrate Reduced Model");
 
   if (pParameter != NULL)
-    mUpdateMoieties = *pParameter->getValue().pBOOL;
+    mUpdateMoieties = pParameter->getValue< bool >();
   else
     mUpdateMoieties = false;
 

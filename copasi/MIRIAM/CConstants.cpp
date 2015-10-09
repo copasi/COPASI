@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -244,10 +244,10 @@ void CMIRIAMResourceObject::extractId(const std::string & URI)
       CCopasiParameterGroup::index_iterator endDeprecated = pDeprecated->endIndex();
 
       for (; itDeprecated != endDeprecated; ++itDeprecated)
-        if (URI.substr(0, (*itDeprecated)->getValue().pSTRING->length()) == *(*itDeprecated)->getValue().pSTRING &&
-            URI.length() > (*itDeprecated)->getValue().pSTRING->length())
+        if (URI.substr(0, (*itDeprecated)->getValue< std::string >().length()) == (*itDeprecated)->getValue< std::string >() &&
+            URI.length() > (*itDeprecated)->getValue< std::string >().length())
           {
-            const std::string& uri = *(*itDeprecated)->getValue().pSTRING;
+            const std::string & uri = (*itDeprecated)->getValue< std::string >();
             offset = (uri[uri.length() - 1] == '/') ? 0 : 1;
             mId = URI.substr(uri.length() + offset);
             break;

@@ -610,7 +610,7 @@ void CCopasiXMLParser::COPASIElement::end(const XML_Char * pszName)
               pParameter->getType() == CCopasiParameter::KEY)
             {
               CCopasiObject * pObject =
-                mCommon.KeyMap.get(*pParameter->getValue().pKEY);
+                mCommon.KeyMap.get(pParameter->getValue< std::string >());
 
               if (pObject != NULL)
                 pParameter->setValue(pObject->getKey());
@@ -5901,50 +5901,50 @@ void CCopasiXMLParser::PlotItemElement::end(const XML_Char *pszName)
                 switch (p->getType())
                   {
                     case CCopasiParameter::INT:
-                      p->setValue(* mCommon.pCurrentParameter->getValue().pINT);
+                      p->setValue(mCommon.pCurrentParameter->getValue< C_INT32 >());
                       break;
 
                     case CCopasiParameter::UINT:
-                      p->setValue(* mCommon.pCurrentParameter->getValue().pUINT);
+                      p->setValue(mCommon.pCurrentParameter->getValue< unsigned C_INT32 >());
                       break;
 
                     case CCopasiParameter::DOUBLE:
-                      p->setValue(* mCommon.pCurrentParameter->getValue().pDOUBLE);
+                      p->setValue(mCommon.pCurrentParameter->getValue< C_FLOAT64 >());
                       break;
 
                     case CCopasiParameter::UDOUBLE:
-                      p->setValue(* mCommon.pCurrentParameter->getValue().pUDOUBLE);
+                      p->setValue(mCommon.pCurrentParameter->getValue< C_FLOAT64 >());
                       break;
 
                     case CCopasiParameter::BOOL:
-                      p->setValue(* mCommon.pCurrentParameter->getValue().pBOOL);
+                      p->setValue(mCommon.pCurrentParameter->getValue< bool >());
                       break;
 
                     case CCopasiParameter::STRING:
-                      p->setValue(* mCommon.pCurrentParameter->getValue().pSTRING);
+                      p->setValue(mCommon.pCurrentParameter->getValue< std::string >());
                       break;
 
                     case CCopasiParameter::KEY:
                     {
                       CCopasiObject * pObject =
-                        mCommon.KeyMap.get(* mCommon.pCurrentParameter->getValue().pKEY);
+                        mCommon.KeyMap.get(mCommon.pCurrentParameter->getValue< std::string >());
 
                       if (pObject)
                         p->setValue(pObject->getKey());
                       else
                         {
-                          p->setValue(*mCommon.pCurrentParameter->getValue().pKEY);
+                          p->setValue(mCommon.pCurrentParameter->getValue< std::string >());
                           mCommon.UnmappedKeyParameters.push_back(p->getKey());
                         }
                     }
                     break;
 
                     case CCopasiParameter::FILE:
-                      p->setValue(* mCommon.pCurrentParameter->getValue().pFILE);
+                      p->setValue(mCommon.pCurrentParameter->getValue< std::string >());
                       break;
 
                     case CCopasiParameter::CN:
-                      p->setValue(* mCommon.pCurrentParameter->getValue().pCN);
+                      p->setValue(mCommon.pCurrentParameter->getValue< CCopasiObjectName >());
                       break;
 
                     case CCopasiParameter::EXPRESSION:
@@ -6135,50 +6135,50 @@ void CCopasiXMLParser::PlotSpecificationElement::end(const XML_Char *pszName)
                 switch (p->getType())
                   {
                     case CCopasiParameter::INT:
-                      p->setValue(* mCommon.pCurrentParameter->getValue().pINT);
+                      p->setValue(mCommon.pCurrentParameter->getValue< C_INT32 >());
                       break;
 
                     case CCopasiParameter::UINT:
-                      p->setValue(* mCommon.pCurrentParameter->getValue().pUINT);
+                      p->setValue(mCommon.pCurrentParameter->getValue< unsigned C_INT32 >());
                       break;
 
                     case CCopasiParameter::DOUBLE:
-                      p->setValue(* mCommon.pCurrentParameter->getValue().pDOUBLE);
+                      p->setValue(mCommon.pCurrentParameter->getValue< C_FLOAT64 >());
                       break;
 
                     case CCopasiParameter::UDOUBLE:
-                      p->setValue(* mCommon.pCurrentParameter->getValue().pUDOUBLE);
+                      p->setValue(mCommon.pCurrentParameter->getValue< C_FLOAT64 >());
                       break;
 
                     case CCopasiParameter::BOOL:
-                      p->setValue(* mCommon.pCurrentParameter->getValue().pBOOL);
+                      p->setValue(mCommon.pCurrentParameter->getValue< bool >());
                       break;
 
                     case CCopasiParameter::STRING:
-                      p->setValue(* mCommon.pCurrentParameter->getValue().pSTRING);
+                      p->setValue(mCommon.pCurrentParameter->getValue< std::string >());
                       break;
 
                     case CCopasiParameter::KEY:
                     {
                       CCopasiObject * pObject =
-                        mCommon.KeyMap.get(* mCommon.pCurrentParameter->getValue().pKEY);
+                        mCommon.KeyMap.get(mCommon.pCurrentParameter->getValue< std::string >());
 
                       if (pObject)
                         p->setValue(pObject->getKey());
                       else
                         {
-                          p->setValue(*mCommon.pCurrentParameter->getValue().pKEY);
+                          p->setValue(mCommon.pCurrentParameter->getValue< std::string >());
                           mCommon.UnmappedKeyParameters.push_back(p->getKey());
                         }
                     }
                     break;
 
                     case CCopasiParameter::FILE:
-                      p->setValue(* mCommon.pCurrentParameter->getValue().pFILE);
+                      p->setValue(mCommon.pCurrentParameter->getValue< std::string >());
                       break;
 
                     case CCopasiParameter::CN:
-                      p->setValue(* mCommon.pCurrentParameter->getValue().pCN);
+                      p->setValue(mCommon.pCurrentParameter->getValue< CCopasiObjectName >());
                       break;
 
                     case CCopasiParameter::EXPRESSION:
@@ -8715,10 +8715,10 @@ void CCopasiXMLParser::TaskElement::end(const XML_Char *pszName)
 
             if (pParameter != NULL)
               {
-                if (mCommon.mKey2ObjectiveFunction.find(*pParameter->getValue().pSTRING) !=
+                if (mCommon.mKey2ObjectiveFunction.find(pParameter->getValue< std::string >()) !=
                     mCommon.mKey2ObjectiveFunction.end())
                   {
-                    std::string Infix = mCommon.mKey2ObjectiveFunction[*pParameter->getValue().pSTRING]->getInfix();
+                    std::string Infix = mCommon.mKey2ObjectiveFunction[pParameter->getValue< std::string >()]->getInfix();
                     pProblem->setValue("ObjectiveExpression", Infix);
                   }
 

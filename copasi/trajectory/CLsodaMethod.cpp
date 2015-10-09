@@ -106,24 +106,20 @@ void CLsodaMethod::initializeParameter()
 {
   CCopasiParameter *pParm;
 
-  mpReducedModel =
-    assertParameter("Integrate Reduced Model", CCopasiParameter::BOOL, (bool) false)->getValue().pBOOL;
-  mpRelativeTolerance =
-    assertParameter("Relative Tolerance", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0e-6)->getValue().pUDOUBLE;
-  mpAbsoluteTolerance =
-    assertParameter("Absolute Tolerance", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0e-12)->getValue().pUDOUBLE;
-  mpMaxInternalSteps =
-    assertParameter("Max Internal Steps", CCopasiParameter::UINT, (unsigned C_INT32) 10000)->getValue().pUINT;
+  mpReducedModel = assertParameter("Integrate Reduced Model", CCopasiParameter::BOOL, (bool) false);
+  mpRelativeTolerance = assertParameter("Relative Tolerance", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0e-6);
+  mpAbsoluteTolerance = assertParameter("Absolute Tolerance", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0e-12);
+  mpMaxInternalSteps = assertParameter("Max Internal Steps", CCopasiParameter::UINT, (unsigned C_INT32) 10000);
 
   // Check whether we have a method with the old parameter names
   if ((pParm = getParameter("LSODA.RelativeTolerance")) != NULL)
     {
-      *mpRelativeTolerance = *pParm->getValue().pUDOUBLE;
+      *mpRelativeTolerance = pParm->getValue< C_FLOAT64 >();
       removeParameter("LSODA.RelativeTolerance");
 
       if ((pParm = getParameter("LSODA.AbsoluteTolerance")) != NULL)
         {
-          *mpAbsoluteTolerance = *pParm->getValue().pUDOUBLE;
+          *mpAbsoluteTolerance = pParm->getValue< C_FLOAT64 >();
           removeParameter("LSODA.AbsoluteTolerance");
         }
 
@@ -139,7 +135,7 @@ void CLsodaMethod::initializeParameter()
 
       if ((pParm = getParameter("LSODA.MaxStepsInternal")) != NULL)
         {
-          *mpMaxInternalSteps = *pParm->getValue().pUINT;
+          *mpMaxInternalSteps = pParm->getValue< unsigned C_INT32 >();
           removeParameter("LSODA.MaxStepsInternal");
         }
     }
@@ -149,7 +145,7 @@ void CLsodaMethod::initializeParameter()
     {
       C_FLOAT64 NewValue;
 
-      if (*pParm->getValue().pBOOL)
+      if (pParm->getValue< bool >())
         {
           // The default
           NewValue = 1.e-12;

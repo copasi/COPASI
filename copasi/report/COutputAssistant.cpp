@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -1183,7 +1183,7 @@ CCopasiObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * t
 
               for (i = 0; i < num_scanitems; ++i)
                 {
-                  std::string tmpString = * pSP->getScanItem(i)->getValue("Object").pCN;
+                  std::string tmpString = pSP->getScanItem(i)->getValue< CRegisteredObjectName >("Object");
 
                   if (tmpString.size()) //the scan item references an object, this is the scan parameter
                     {
@@ -1224,7 +1224,7 @@ CCopasiObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * t
 
               for (i = 0; i < num_scanitems; ++i)
                 {
-                  std::string tmpString = * pSP->getScanItem(i)->getValue("Object").pCN;
+                  std::string tmpString = pSP->getScanItem(i)->getValue< CRegisteredObjectName >("Object");
 
                   if (tmpString.size()) //the scan item references an object, this is the scan parameter
                     {
@@ -1233,7 +1233,7 @@ CCopasiObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * t
                       if (tmpObject)
                         {
                           data2 = tmpObject; //we only keep the last scan parameter we find, this is the innermost loop.
-                          logX = *(pSP->getScanItem(i)->getValue("log").pBOOL);
+                          logX = (pSP->getScanItem(i)->getValue< bool >("log"));
                         }
                     }
                 }

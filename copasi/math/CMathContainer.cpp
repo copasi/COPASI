@@ -2220,8 +2220,8 @@ void CMathContainer::createUpdateSimulationValuesSequence()
   // Collect all objects required for simulation, which are transient rates values of simulation type:
   //   ODE, Independent, and Dependent (not needed for reduced model) and EventRoots
   // The additional cost for calculating the rates for dependent species is neglected.
-  pObject = mObjects.array() + (mExtensiveRates.array() - mValues.array()) + mSize.nFixed + mSize.nEventTargets + 1 /* Time */;
-  pObjectEnd = mObjects.array() + (mIntensiveRates.array() - mValues.array());
+  pObject = mObjects.array() + (mExtensiveRates.array() - mValues.array()) + mSize.nFixed + mSize.nEventTargets + mSize.nTime;
+  pObjectEnd = pObject + mSize.nODE + mSize.nReactionSpecies;
 
   for (; pObject != pObjectEnd; ++pObject)
     {
@@ -2253,7 +2253,7 @@ void CMathContainer::createUpdateSimulationValuesSequence()
 
   // Determine whether the model is autonomous, i.e., no simulation required value depends on time.
   CObjectInterface::ObjectSet TimeObject;
-  TimeObject.insert(getMathObject(mState.array() + getTimeIndex()));
+  TimeObject.insert(getMathObject(mState.array() + mSize.nEventTargets));
   CObjectInterface::UpdateSequence TimeChange;
   mTransientDependencies.getUpdateSequence(TimeChange, CMath::Default, TimeObject, mSimulationRequiredValues);
   mIsAutonomous = (TimeChange.size() == 0);
@@ -2293,7 +2293,7 @@ void CMathContainer::createUpdateAllTransientDataValuesSequence()
 void CMathContainer::analyzeRoots()
 {
   CObjectInterface::ObjectSet TimeValue;
-  TimeValue.insert(getMathObject(mState.array() + getTimeIndex()));
+  TimeValue.insert(getMathObject(mState.array() + mSize.nEventTargets));
 
   CObjectInterface::ObjectSet ContinousStateValues;
   const CMathObject * pStateObject = getMathObject(mState.array() + mSize.nEventTargets);
@@ -2466,13 +2466,13 @@ void CMathContainer::calculateJacobian(CMatrix< C_FLOAT64 > & jacobian,
                                        const C_FLOAT64 & derivationFactor,
                                        const bool & reduced)
 {
-  size_t Dim = getState(reduced).size() - getTimeIndex() - 1;
+  size_t Dim = getState(reduced).size() - mSize.nEventTargets - 1;
   jacobian.resize(Dim, Dim);
 
   C_FLOAT64 DerivationFactor = std::max(derivationFactor, 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon());
 
-  C_FLOAT64 * pState = mState.array() + getTimeIndex() + 1;
-  const C_FLOAT64 * pRate = mRate.array() + getTimeIndex() + 1;
+  C_FLOAT64 * pState = mState.array() + mSize.nEventTargets + mSize.nTime;
+  const C_FLOAT64 * pRate = mRate.array() + mSize.nEventTargets + mSize.nTime;
 
   size_t Col;
 
@@ -3291,7 +3291,7 @@ bool CMathContainer::removeAnalysisObject(CMath::Entity< CMathObject > & mathObj
 
       case CMath::Assignment:
         Size.nAssignment--;
-        Index += mSize.nFixed + mSize.nEventTargets + 1 + mSize.nODE + mSize.nReactionSpecies + mSize.nAssignment;
+        Index += mSize.nFixed + mSize.nEventTargets + mSize.nTime + mSize.nODE + mSize.nReactionSpecies + mSize.nAssignment;
         break;
 
       case CMath::SimulationTypeUndefined:
@@ -4131,7 +4131,7 @@ std::vector< CMath::sRelocate > CMathContainer::resize(CMathContainer::sSize & s
 
   // Determine the offsets
   // We have to cast all pointers to size_t to avoid pointer overflow.
-  size_t nExtensiveValues = size.nFixed + size.nEventTargets + 1 + size.nODE + size.nReactionSpecies + size.nAssignment;
+  size_t nExtensiveValues = size.nFixed + size.nEventTargets + size.nTime + size.nODE + size.nReactionSpecies + size.nAssignment;
 
   size_t ObjectCount = 4 * (nExtensiveValues + size.nIntensiveValues) +
                        5 * size.nReactions +
@@ -4173,7 +4173,7 @@ void CMathContainer::relocate(CVectorCore< C_FLOAT64 > &oldValues,
                               const sSize & size,
                               const std::vector< CMath::sRelocate > & Relocations)
 {
-  size_t nExtensiveValues = size.nFixed + size.nEventTargets + 1 + size.nODE + size.nReactionSpecies + size.nAssignment;
+  size_t nExtensiveValues = size.nFixed + size.nEventTargets + size.nTime + size.nODE + size.nReactionSpecies + size.nAssignment;
 
   // Move the objects to the new location
   C_FLOAT64 * pValue = oldValues.array();
@@ -4271,7 +4271,7 @@ void CMathContainer::relocate(CVectorCore< C_FLOAT64 > &oldValues,
   assert(pArray == mValues.array() + mValues.size());
 
   mInitialState.initialize(nExtensiveValues + size.nIntensiveValues,  mValues.array());
-  mState.initialize(size.nEventTargets + 1 + size.nODE + size.nReactionSpecies, mExtensiveValues.array() + size.nFixed);
+  mState.initialize(size.nEventTargets + size.nTime + size.nODE + size.nReactionSpecies, mExtensiveValues.array() + size.nFixed);
   mStateReduced.initialize(mState.size() - size.nMoieties, mExtensiveValues.array() + size.nFixed);
   mRate.initialize(mState.size(), mExtensiveRates.array() + size.nFixed);
   mRateReduced.initialize(mStateReduced.size(), mExtensiveRates.array() + size.nFixed);

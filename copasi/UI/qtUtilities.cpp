@@ -98,38 +98,38 @@ QString getParameterValue(const CCopasiParameterGroup * group,
   switch (group->getType(index))
     {
       case CCopasiParameter::DOUBLE:
-        return QString::number(* group->getValue(index).pDOUBLE);
+        return QString::number(group->getValue< C_FLOAT64 >(index));
         break;
 
       case CCopasiParameter::UDOUBLE:
-        return QString::number(* group->getValue(index).pDOUBLE);
+        return QString::number(group->getValue< C_FLOAT64 >(index));
         break;
 
       case CCopasiParameter::INT:
-        return QString::number(* group->getValue(index).pINT);
+        return QString::number(group->getValue< C_INT32 >(index));
         break;
 
       case CCopasiParameter::UINT:
-        return QString::number(* group->getValue(index).pUINT);
+        return QString::number(group->getValue< unsigned C_INT32 >(index));
         break;
 
       case CCopasiParameter::BOOL:
-        return QString::number(* group->getValue(index).pBOOL);
+        return QString::number(group->getValue< bool >(index));
         break;
 
       case CCopasiParameter::STRING:
         return
-          FROM_UTF8(* group->getValue(index).pSTRING);
+          FROM_UTF8(group->getValue< std::string >(index));
         break;
 
       case CCopasiParameter::KEY:
         return
-          FROM_UTF8(* group->getValue(index).pKEY);
+          FROM_UTF8(group->getValue< std::string >(index));
         break;
 
       case CCopasiParameter::CN:
         return
-          FROM_UTF8(* group->getValue(index).pCN);
+          FROM_UTF8(group->getValue< CCopasiObjectName >(index));
         break;
 
       case CCopasiParameter::GROUP:

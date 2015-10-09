@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -36,7 +36,7 @@ CQProgressItemText::~CQProgressItemText()
 bool CQProgressItemText::initFromProcessReportItem(CProcessReportItem * pItem)
 {
   mpItem = pItem;
-  mParameterValue = mpItem->getValue();
+  mpParameterValue = mpItem->getValuePointer();
 
   mItemName->setText(FROM_UTF8(mpItem->getObjectName()));
 
@@ -82,20 +82,20 @@ bool CQProgressItemText::reset()
 
 void CQProgressItemText::setValueFromDOUBLE()
 {
-  mValue->setText(QString::number(* mParameterValue.pDOUBLE));
+  mValue->setText(QString::number(* static_cast< C_FLOAT64 * >(mpParameterValue)));
 }
 
 void CQProgressItemText::setValueFromINT()
 {
-  mValue->setText(QString::number(* mParameterValue.pINT));
+  mValue->setText(QString::number(* static_cast< C_INT32 * >(mpParameterValue)));
 }
 
 void CQProgressItemText::setValueFromUINT()
 {
-  mValue->setText(QString::number(* mParameterValue.pUINT));
+  mValue->setText(QString::number(* static_cast< unsigned C_INT32 * >(mpParameterValue)));
 }
 
 void CQProgressItemText::setValueFromSTRING()
 {
-  mValue->setText(FROM_UTF8(* mParameterValue.pSTRING));
+  mValue->setText(FROM_UTF8(* static_cast< std::string * >(mpParameterValue)));
 }

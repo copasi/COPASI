@@ -81,22 +81,14 @@ CTrajectoryProblem::~CTrajectoryProblem()
 
 void CTrajectoryProblem::initializeParameter()
 {
-  mpStepNumber =
-    assertParameter("StepNumber", CCopasiParameter::UINT, (unsigned C_INT32) 100)->getValue().pUINT;
-  mpStepSize =
-    assertParameter("StepSize", CCopasiParameter::DOUBLE, (C_FLOAT64) 0.01)->getValue().pDOUBLE;;
-  mpDuration =
-    assertParameter("Duration", CCopasiParameter::DOUBLE, (C_FLOAT64) 1.0)->getValue().pDOUBLE;;
-  mpTimeSeriesRequested =
-    assertParameter("TimeSeriesRequested", CCopasiParameter::BOOL, (bool) true)->getValue().pBOOL;
-  mpOutputStartTime =
-    assertParameter("OutputStartTime", CCopasiParameter::DOUBLE, (C_FLOAT64) 0.0)->getValue().pDOUBLE;
-  mpOutputEvent =
-    assertParameter("Output Event", CCopasiParameter::BOOL, (bool) false)->getValue().pBOOL;
-  mpContinueSimultaneousEvents =
-    assertParameter("Continue on Simultaneous Events", CCopasiParameter::BOOL, (bool) false)->getValue().pBOOL;
-  mpStartInSteadyState =
-    assertParameter("Start in Steady State", CCopasiParameter::BOOL, false)->getValue().pBOOL;
+  mpStepNumber = assertParameter("StepNumber", CCopasiParameter::UINT, (unsigned C_INT32) 100);
+  mpStepSize = assertParameter("StepSize", CCopasiParameter::DOUBLE, (C_FLOAT64) 0.01);
+  mpDuration = assertParameter("Duration", CCopasiParameter::DOUBLE, (C_FLOAT64) 1.0);
+  mpTimeSeriesRequested = assertParameter("TimeSeriesRequested", CCopasiParameter::BOOL, (bool) true);
+  mpOutputStartTime = assertParameter("OutputStartTime", CCopasiParameter::DOUBLE, (C_FLOAT64) 0.0);
+  mpOutputEvent = assertParameter("Output Event", CCopasiParameter::BOOL, (bool) false);
+  mpContinueSimultaneousEvents = assertParameter("Continue on Simultaneous Events", CCopasiParameter::BOOL, (bool) false);
+  mpStartInSteadyState = assertParameter("Start in Steady State", CCopasiParameter::BOOL, false);
 }
 
 bool CTrajectoryProblem::elevateChildren()

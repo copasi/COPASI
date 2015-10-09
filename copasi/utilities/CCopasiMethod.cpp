@@ -360,10 +360,8 @@ std::ostream &operator<<(std::ostream &os, const CCopasiMethod & o)
 {
   os << "Method: " << o.getObjectName() << std::endl;
 
-  CCopasiParameterGroup::parameterGroup::const_iterator it =
-    o.CCopasiParameter::getValue().pGROUP->begin();
-  CCopasiParameterGroup::parameterGroup::const_iterator end =
-    o.CCopasiParameter::getValue().pGROUP->end();
+  CCopasiParameterGroup::elements::const_iterator it = o.beginIndex();
+  CCopasiParameterGroup::elements::const_iterator end = o.endIndex();
 
   for (; it != end; ++it)
     {

@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -514,7 +514,7 @@ bool CQFittingItemWidget::load(CCopasiDataModel * pDataModel,
   end = mpItemsCopy->end();
 
   std::vector< COptItem * >::const_iterator src =
-    static_cast<std::vector< COptItem * > *>(mpItems->CCopasiParameter::getValue().pVOID)->begin();
+    mpItems->CCopasiParameter::getValue< std::vector< COptItem * > >().begin();
 
   size_t i;
 
@@ -605,9 +605,9 @@ bool CQFittingItemWidget::save(const std::map<std::string, std::string> * pExper
   std::vector< COptItem * >::const_iterator end = mpItemsCopy->end();
 
   std::vector< COptItem * >::iterator target =
-    static_cast<std::vector< COptItem * > *>(mpItems->CCopasiParameter::getValue().pVOID)->begin();
+    mpItems->CCopasiParameter::getValue< std::vector< COptItem * > >().begin();
   std::vector< COptItem * >::iterator targetEnd =
-    static_cast<std::vector< COptItem * > *>(mpItems->CCopasiParameter::getValue().pVOID)->end();
+    mpItems->CCopasiParameter::getValue< std::vector< COptItem * > >().end();
 
   size_t i;
   size_t imax = std::max<size_t>(mpItemsCopy->size(), mpItems->size());

@@ -1,4 +1,4 @@
-// Copyright (C) 2012 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -338,7 +338,7 @@ bool COptMethodDE::initialize()
       return false;
     }
 
-  mGenerations = * getValue("Number of Generations").pUINT;
+  mGenerations = getValue< unsigned C_INT32 >("Number of Generations");
   mGeneration = 0;
 
   if (mpCallBack)
@@ -349,7 +349,7 @@ bool COptMethodDE::initialize()
 
   mGeneration++;
 
-  mPopulationSize = * getValue("Population Size").pUINT;
+  mPopulationSize = getValue< unsigned C_INT32 >("Population Size");
 
   if (mPopulationSize < 4)
     {
@@ -358,8 +358,8 @@ bool COptMethodDE::initialize()
     }
 
   mpRandom =
-    CRandom::createGenerator(* (CRandom::Type *) getValue("Random Number Generator").pUINT,
-                             * getValue("Seed").pUINT);
+    CRandom::createGenerator((CRandom::Type) getValue< C_INT32 >("Random Number Generator"),
+                             getValue< unsigned C_INT32 >("Seed"));
 
   mpPermutation = new CPermutation(mpRandom, mPopulationSize);
 

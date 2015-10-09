@@ -330,7 +330,7 @@ const C_FLOAT64 & CReaction::getParameterValue(const std::string & parameterName
 {
   if (!mpFunction) fatalError();
 
-  return * mParameters.getValue(parameterName).pDOUBLE;
+  return mParameters.getValue< C_FLOAT64 >(parameterName);
 }
 
 const CCopasiParameterGroup & CReaction::getParameters() const

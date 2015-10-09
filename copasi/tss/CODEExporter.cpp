@@ -1231,7 +1231,7 @@ bool CODEExporter::exportReacParamsAndFuncs(const CModel* copasiModel)
           CCopasiParameter* param;
 
           param = reac->getParameters().getParameter(j);
-          expression << *param->getValue().pDOUBLE;
+          expression << param->getValue< C_FLOAT64 >();
 
           comments << "reaction \'" << name << "\': " <<
                    " kinetic parameter \'" << param->getObjectName() << "\'";

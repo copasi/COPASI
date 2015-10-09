@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -130,25 +130,19 @@ void CScanWidgetRandom::load(const CCopasiParameterGroup * pItem)
 
   unsigned C_INT32 * tmp;
 
-  if (!(tmp = mpData->getValue("Type").pUINT))
+  if (mpData->getValue< unsigned C_INT32 >("Type") != CScanProblem::SCAN_RANDOM)
     return;
 
-  if (*(CScanProblem::Type *) tmp != CScanProblem::SCAN_RANDOM)
-    return;
+  const std::string String = mpData->getValue< std::string >("Object");
 
-  std::string *pString;
-
-  if (!(pString = mpData->getValue("Object").pSTRING))
-    return;
-
-  if (*pString == "")
+  if (String == "")
     mpObject = NULL;
   else
     {
       assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
       CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
       assert(pDataModel != NULL);
-      mpObject = CObjectInterface::DataObject(pDataModel->getObjectFromCN(*pString));
+      mpObject = CObjectInterface::DataObject(pDataModel->getObjectFromCN(String));
     }
 
   if (mpObject)
@@ -156,21 +150,13 @@ void CScanWidgetRandom::load(const CCopasiParameterGroup * pItem)
   else
     lineEditObject->setText("");
 
-  if (!(tmp = mpData->getValue("Distribution type").pUINT))
-    return;
-
-  comboBoxType->setCurrentIndex(*tmp);
+  comboBoxType->setCurrentIndex(mpData->getValue< unsigned C_INT32 >("Distribution type"));
   changeType();
 
   lineEditMin->setText(getParameterValue(mpData, "Minimum"));
   lineEditMax->setText(getParameterValue(mpData, "Maximum"));
 
-  bool * pBool;
-
-  if (!(pBool = mpData->getValue("log").pBOOL))
-    return;
-
-  checkBoxLog->setChecked(* pBool);
+  checkBoxLog->setChecked(mpData->getValue< bool >("log"));
 
   return;
 }

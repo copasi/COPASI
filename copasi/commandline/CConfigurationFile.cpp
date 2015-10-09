@@ -51,7 +51,7 @@ CRecentFiles::~CRecentFiles()
 void CRecentFiles::initializeParameter()
 {
   mpMaxFiles =
-    assertParameter("MaxFiles", CCopasiParameter::UINT, (unsigned C_INT32) 5)->getValue().pUINT;
+    assertParameter("MaxFiles", CCopasiParameter::UINT, (unsigned C_INT32) 5);
   mpRecentFiles = assertGroup("Recent Files");
 }
 
@@ -85,7 +85,7 @@ void CRecentFiles::addFile(const std::string & file)
 
   for (; it != end; ++it)
     {
-      ExistingFile = *(*it)->getValue().pSTRING;
+      ExistingFile = (*it)->getValue< std::string >();
       (*it)->setValue(NewFile);
 
       if (ExistingFile == FileName) return;
@@ -184,17 +184,16 @@ void CConfigurationFile::initializeParameter()
   assertGroup("Recent SBML Files");
   assertGroup("Recent SEDML Files");
 
-  mpApplicationFont =
-    assertParameter("Application Font", CCopasiParameter::STRING, std::string(""))->getValue().pSTRING;
+  mpApplicationFont = assertParameter("Application Font", CCopasiParameter::STRING, std::string(""));
 
   assertGroup("MIRIAM Resources");
 
-  mpValidateUnits = assertParameter("Validate Units", CCopasiParameter::BOOL, false)->getValue().pBOOL;
-  mpUseOpenGL = assertParameter("Use OpenGL", CCopasiParameter::BOOL, false)->getValue().pBOOL;
-  mpUseAdvancedSliders = assertParameter("Use Advanced Sliders", CCopasiParameter::BOOL, true)->getValue().pBOOL;
-  mpUseAdvancedEditing = assertParameter("Use Advanced Editing", CCopasiParameter::BOOL, false)->getValue().pBOOL;
-  mpNormalizePerExperiment = assertParameter("Normalize Weights per Experiment", CCopasiParameter::BOOL, true)->getValue().pBOOL;
-  mpWorkingDirectory = assertParameter("Working Directory", CCopasiParameter::STRING, std::string(""))->getValue().pSTRING;
+  mpValidateUnits = assertParameter("Validate Units", CCopasiParameter::BOOL, false);
+  mpUseOpenGL = assertParameter("Use OpenGL", CCopasiParameter::BOOL, false);
+  mpUseAdvancedSliders = assertParameter("Use Advanced Sliders", CCopasiParameter::BOOL, true);
+  mpUseAdvancedEditing = assertParameter("Use Advanced Editing", CCopasiParameter::BOOL, false);
+  mpNormalizePerExperiment = assertParameter("Normalize Weights per Experiment", CCopasiParameter::BOOL, true);
+  mpWorkingDirectory = assertParameter("Working Directory", CCopasiParameter::STRING, std::string(""));
 
   elevateChildren();
 }

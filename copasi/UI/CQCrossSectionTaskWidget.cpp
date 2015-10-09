@@ -251,15 +251,6 @@ bool CQCrossSectionTaskWidget::loadTask()
   pdelete(mpCrossSectionProblem);
   mpCrossSectionProblem = new CCrossSectionProblem(*pProblem);
 
-  //CCrossSectionMethod* pMethod =
-  //  dynamic_cast<CCrossSectionMethod *>(pTask->getMethod());
-  //assert(pMethod);
-
-  //for now, we use a trajectory method
-  //CTrajectoryMethod* pMethod =
-  //  dynamic_cast<CTrajectoryMethod *>(pTask->getMethod());
-  //assert(pMethod);
-
   // load the saved values
   const std::string &name = pProblem->getSingleObjectCN();
 

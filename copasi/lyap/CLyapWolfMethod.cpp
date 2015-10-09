@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -66,14 +66,14 @@ void CLyapWolfMethod::initializeParameter()
     {
       C_FLOAT64 NewValue;
 
-      if (*pParm->getValue().pBOOL)
+      if (pParm->getValue< bool >())
         {
           // The default
           NewValue = 1.e-12;
         }
       else
         {
-          NewValue = *getValue("Absolute Tolerance").pUDOUBLE;
+          NewValue = getValue< C_FLOAT64 >("Absolute Tolerance");
         }
 
       setValue("Absolute Tolerance", NewValue);
@@ -208,9 +208,9 @@ void CLyapWolfMethod::start(/*const CState * initialState*/)
   mpTask->mAverageDivergence = 0;
 
   /* Configure lsoda */
-  mRtol = * getValue("Relative Tolerance").pUDOUBLE;
+  mRtol = getValue< C_FLOAT64 >("Relative Tolerance");
 
-  C_FLOAT64 * pTolerance = getValue("Absolute Tolerance").pUDOUBLE;
+  C_FLOAT64 * pTolerance = &getValue< C_FLOAT64 >("Absolute Tolerance");
   CVector< C_FLOAT64 > tmpAtol = mpContainer->initializeAtolVector(*pTolerance, mReducedModel);
 
   mAtol.resize(mData.dim);
@@ -226,7 +226,7 @@ void CLyapWolfMethod::start(/*const CState * initialState*/)
   mIWork.resize(20 + mData.dim);
   mIWork[4] = mIWork[6] = mIWork[9] = 0;
 
-  mIWork[5] = * getValue("Max Internal Steps").pUINT;
+  mIWork[5] = getValue< unsigned C_INT32 >("Max Internal Steps");
   mIWork[7] = 12;
   mIWork[8] = 5;
 
@@ -287,7 +287,7 @@ void CLyapWolfMethod::evalF(const C_FLOAT64 * t, const C_FLOAT64 * y, C_FLOAT64 
           dbl3end = dbl3 + mSystemSize;
 
           for (; dbl3 != dbl3end; ++dbl3, ++dbl2)
-            *dbl1 += *dbl2 * *dbl3;
+            *dbl1 += *dbl2 **dbl3;
         }
     }
 
@@ -313,9 +313,9 @@ bool CLyapWolfMethod::calculate()
   //initialize LSODA
   start();
 
-  C_FLOAT64 stepSize = *getValue("Orthonormalization Interval").pUDOUBLE;
+  C_FLOAT64 stepSize = getValue< C_FLOAT64 >("Orthonormalization Interval");
   C_FLOAT64 transientTime = mpProblem->getTransientTime() + *mpContainerStateTime;
-  C_FLOAT64 endTime = *mpContainerStateTime + *getValue("Overall time").pUDOUBLE;
+  C_FLOAT64 endTime = *mpContainerStateTime + getValue< C_FLOAT64 >("Overall time");
   C_FLOAT64 startTime = *mpContainerStateTime;
 
   bool flagProceed = true;
@@ -435,7 +435,7 @@ C_FLOAT64 CLyapWolfMethod::norm(const C_FLOAT64* dbl1, const C_FLOAT64 * dbl2)
   C_FLOAT64 sum = 0;
 
   for (; dbl1 != dbl2; ++dbl1)
-    sum += *dbl1 * *dbl1;
+    sum += *dbl1 **dbl1;
 
   return sqrt(sum);
 }
@@ -455,7 +455,7 @@ C_FLOAT64 CLyapWolfMethod::product(const C_FLOAT64* dbl1, const C_FLOAT64* dbl1E
   C_FLOAT64 sum = 0;
 
   for (; dbl1 != dbl1End; ++dbl1, ++dbl2)
-    sum += *dbl1 * *dbl2;
+    sum += *dbl1 **dbl2;
 
   return sum;
 }
@@ -466,7 +466,7 @@ void CLyapWolfMethod::add(C_FLOAT64* dbl1, const C_FLOAT64* dbl1End,
 {
   //calculate v1 = v1 + f * v2
   for (; dbl1 != dbl1End; ++dbl1, ++dbl2)
-    *dbl1 += f * *dbl2;
+    *dbl1 += f **dbl2;
 }
 
 //virtual
@@ -477,9 +477,9 @@ bool CLyapWolfMethod::isValidProblem(const CCopasiProblem * pProblem)
   const CLyapProblem * pLP = dynamic_cast<const CLyapProblem *>(pProblem);
   assert(pLP);
 
-  C_FLOAT64 stepSize = *getValue("Orthonormalization Interval").pUDOUBLE;
+  C_FLOAT64 stepSize = getValue< C_FLOAT64 >("Orthonormalization Interval");
   C_FLOAT64 transientTime = pLP->getTransientTime();
-  C_FLOAT64 endTime = *getValue("Overall time").pUDOUBLE;
+  C_FLOAT64 endTime = getValue< C_FLOAT64 >("Overall time");
 
   if (transientTime >= endTime)
     {

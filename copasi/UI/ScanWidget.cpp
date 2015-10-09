@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -158,11 +158,7 @@ bool ScanWidget::loadTask()
 
   for (i = 0; i < imax; ++i)
     {
-      void * pTmp;
-
-      if (!(pTmp = scanProblem->getScanItem(i)->getValue("Type").pVOID)) return false;
-
-      CScanProblem::Type type = *(CScanProblem::Type*)pTmp;
+      CScanProblem::Type type = scanProblem->getScanItem(i)->getValue< CScanProblem::Type >("Type");
 
       switch (type)
         {

@@ -160,7 +160,7 @@ void CModelParameterSet::createFromModel()
           if ((*itReaction)->isLocalParameter((*itParameter)->getObjectName()))
             {
               pParameter->setSimulationType(CModelEntity::FIXED);
-              pParameter->setValue(*(*itParameter)->getValue().pDOUBLE, ParticleNumbers);
+              pParameter->setValue((*itParameter)->getValue< C_FLOAT64 >(), ParticleNumbers);
             }
           else
             {

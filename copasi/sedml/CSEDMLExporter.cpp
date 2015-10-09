@@ -220,7 +220,7 @@ std::string CSEDMLExporter::createScanTask(CCopasiDataModel& dataModel, const st
   for (size_t i = 0; i < numItems; ++i)
     {
       CCopasiParameterGroup* current = pProblem->getScanItem(i);
-      CScanProblem::Type type = (CScanProblem::Type)(*current->getParameter("Type")->getValue().pUINT);
+      CScanProblem::Type type = (CScanProblem::Type)(current->getParameter("Type")->getValue< unsigned C_INT32 >());
 
       // ignore random items
       if (type == CScanProblem::SCAN_RANDOM)
@@ -229,7 +229,7 @@ std::string CSEDMLExporter::createScanTask(CCopasiDataModel& dataModel, const st
           continue;
         }
 
-      int numSteps = (*current->getParameter("Number of steps")->getValue().pUINT);
+      int numSteps = (current->getParameter("Number of steps")->getValue< unsigned C_INT32 >());
 
       // handle repeats
       if (type == CScanProblem::SCAN_REPEAT)
@@ -250,9 +250,9 @@ std::string CSEDMLExporter::createScanTask(CCopasiDataModel& dataModel, const st
       // handle scans
       if (type == CScanProblem::SCAN_LINEAR)
         {
-          double min = (*current->getParameter("Minimum")->getValue().pDOUBLE);
-          double max = (*current->getParameter("Maximum")->getValue().pDOUBLE);
-          bool log = (*current->getParameter("log")->getValue().pBOOL);
+          double min = (current->getParameter("Minimum")->getValue< C_FLOAT64 >());
+          double max = (current->getParameter("Maximum")->getValue< C_FLOAT64 >());
+          bool log = (current->getParameter("log")->getValue< bool >());
 
           SedUniformRange *range = task->createUniformRange();
           range->setId(SEDMLUtils::getNextId("range", task->getNumRanges()));
@@ -261,7 +261,7 @@ std::string CSEDMLExporter::createScanTask(CCopasiDataModel& dataModel, const st
           range->setNumberOfPoints(numSteps);
           range->setType(log ? "log" : "linear");
 
-          const CRegisteredObjectName& cn = (*current->getParameter("Object")->getValue().pCN);
+          const CRegisteredObjectName& cn = (current->getParameter("Object")->getValue< CCopasiObjectName >());
           std::string xpath = SEDMLUtils::getXPathForObject(*static_cast<const CCopasiObject*>(dataModel.getObject(cn)));
 
           if (xpath.empty())

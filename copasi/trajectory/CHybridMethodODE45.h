@@ -132,6 +132,8 @@ protected:
     SYS_END = 5
   };
 
+  static std::string PartitioningStrategy[];
+
   //================Function for Class================
 
   //================Function for Class================
@@ -376,7 +378,6 @@ private:
   /**
    *   Max number of doSingleStep() per step()
    */
-  size_t mMaxSteps;
   size_t mRootCounter;
   bool   mMaxStepsReached;
 
@@ -492,6 +493,13 @@ private:
    *
    */
   std::ostringstream mErrorMsg;
+
+  unsigned C_INT32 * mpMaxInternalSteps;
+  C_FLOAT64 * mpRelativeTolerance;
+  C_FLOAT64 * mpAbsoluteTolerance;
+  std::string * mpPartitioningStrategy;
+  bool * mpUseRandomSeed;
+  unsigned C_INT32 * mpRandomSeed;
 };
 
 #endif // COPASI_CHybridMethodODE45

@@ -91,12 +91,12 @@ void CLNAProblem::setSteadyStateRequested(const bool & steadyStateRequested)
  * @return bool steadyStateRequested
  */
 bool CLNAProblem::isSteadyStateRequested() const
-{return (* getValue("Steady-State").pKEY != "");}
+{return (getValue< std::string >("Steady-State") != "");}
 
 CSteadyStateTask * CLNAProblem::getSubTask() const
 {
   if (isSteadyStateRequested())
-    return dynamic_cast<CSteadyStateTask *>(CCopasiRootContainer::getKeyFactory()->get(* getValue("Steady-State").pKEY));
+    return dynamic_cast<CSteadyStateTask *>(CCopasiRootContainer::getKeyFactory()->get(getValue< std::string >("Steady-State")));
   else
     return NULL;
 }

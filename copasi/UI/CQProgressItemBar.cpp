@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -20,8 +20,14 @@
  *  Constructs a CQProgressItemBar which is a child of 'parent', with the
  *  name 'name'.'
  */
-CQProgressItemBar::CQProgressItemBar(QWidget* parent, const char* name)
-  : CQProgressItem(parent, name)
+CQProgressItemBar::CQProgressItemBar(QWidget* parent, const char* name):
+  CQProgressItem(parent, name),
+  mFactor(1.0),
+  mpEnd(NULL),
+  mpStart(NULL),
+  mpValue(NULL),
+  mLastSet(0),
+  mCurrentValue(0)
 {
   Ui::CQProgressItemBar::setupUi(this);
 
@@ -40,8 +46,8 @@ CQProgressItemBar::~CQProgressItemBar()
 bool CQProgressItemBar::initFromProcessReportItem(CProcessReportItem * pItem)
 {
   mpItem = pItem;
-  mValue = mpItem->getValue();
-  mEnd = mpItem->getEndValue();
+  mpValue = mpItem->getValuePointer();
+  mpEnd = mpItem->getEndValuePointer();
 
   mItemName->setText(FROM_UTF8(mpItem->getObjectName()));
   mProgressBar->setMinimum(0);
@@ -50,7 +56,7 @@ bool CQProgressItemBar::initFromProcessReportItem(CProcessReportItem * pItem)
   mLastSet = -1; // indicates was never set;
 
   // needed so that reset() does allocation
-  if (mStart.pVOID != NULL) destroy();
+  if (mpStart != NULL) destroy();
 
   return reset();
 }
@@ -75,31 +81,31 @@ bool CQProgressItemBar::reset()
       case CCopasiParameter::DOUBLE:
       case CCopasiParameter::UDOUBLE:
 
-        if (!mStart.pDOUBLE)
-          mStart.pDOUBLE = new C_FLOAT64;
+        if (mpStart == NULL)
+          mpStart = new C_FLOAT64;
 
-        * mStart.pDOUBLE = * mValue.pDOUBLE;
-        mFactor = 100.0 / (* mEnd.pDOUBLE - * mStart.pDOUBLE);
+        * static_cast< C_FLOAT64 * >(mpStart) = * static_cast< C_FLOAT64 * >(mpValue);
+        mFactor = 100.0 / (* static_cast< C_FLOAT64 * >(mpEnd) - * static_cast< C_FLOAT64 *>(mpStart));
         mpSetValue = & CQProgressItemBar::setValueFromDOUBLE;
         break;
 
       case CCopasiParameter::INT:
 
-        if (!mStart.pINT)
-          mStart.pINT = new C_INT32;
+        if (mpStart == NULL)
+          mpStart = new C_INT32;
 
-        * mStart.pINT = * mValue.pINT;
-        mFactor = 100.0 / ((C_FLOAT64)(* mEnd.pINT - * mStart.pINT));
+        * static_cast< C_INT32 * >(mpStart) = * static_cast< C_INT32 * >(mpValue);
+        mFactor = 100.0 / ((C_FLOAT64)(* static_cast< C_INT32 * >(mpEnd) - * static_cast< C_INT32 * >(mpStart)));
         mpSetValue = & CQProgressItemBar::setValueFromINT;
         break;
 
       case CCopasiParameter::UINT:
 
-        if (!mStart.pUINT)
-          mStart.pUINT = new unsigned C_INT32;
+        if (mpStart == NULL)
+          mpStart = new unsigned C_INT32;
 
-        * mStart.pUINT = * mValue.pUINT;
-        mFactor = 100.0 / ((C_FLOAT64)(* mEnd.pUINT - * mStart.pUINT));
+        * static_cast< unsigned C_INT32 * >(mpStart) = * static_cast< unsigned C_INT32 * >(mpValue);
+        mFactor = 100.0 / ((C_FLOAT64)(* static_cast< unsigned C_INT32 * >(mpEnd) - * static_cast< unsigned C_INT32 * >(mpStart)));
         mpSetValue = & CQProgressItemBar::setValueFromUINT;
         break;
 
@@ -111,40 +117,23 @@ bool CQProgressItemBar::reset()
 }
 
 void CQProgressItemBar::setValueFromDOUBLE()
-{mCurrentValue = (C_INT32)(mFactor * (* mValue.pDOUBLE - * mStart.pDOUBLE));}
+{mCurrentValue = (C_INT32)(mFactor * (* static_cast< C_FLOAT64 * >(mpValue) - * static_cast< C_FLOAT64 * >(mpStart)));}
 
 void CQProgressItemBar::setValueFromINT()
-{mCurrentValue = (C_INT32)(mFactor * (* mValue.pINT - * mStart.pINT));}
+{mCurrentValue = (C_INT32)(mFactor * (* static_cast< C_INT32 * >(mpValue) - * static_cast< C_INT32 * >(mpStart)));}
 
 void CQProgressItemBar::setValueFromUINT()
-{mCurrentValue = (C_INT32)(mFactor * (* mValue.pUINT - * mStart.pUINT));}
+{mCurrentValue = (C_INT32)(mFactor * (* static_cast< unsigned C_INT32 * >(mpValue) - * static_cast< unsigned C_INT32 * >(mpStart)));}
 
 void CQProgressItemBar::destroy()
 {
   if (mpItem == NULL) return;
 
-  switch (mpItem->getType())
-    {
-      case CCopasiParameter::DOUBLE:
-      case CCopasiParameter::UDOUBLE:
-        pdelete(mStart.pDOUBLE);
-        break;
-
-      case CCopasiParameter::INT:
-        pdelete(mStart.pINT);
-        break;
-
-      case CCopasiParameter::UINT:
-        pdelete(mStart.pUINT);
-        break;
-
-      default:
-        break;
-    }
+  CCopasiParameter::deleteValue(mpItem->getType(), mpStart);
 }
 
 void CQProgressItemBar::init()
 {
   mpItem = NULL;
-  mStart.pVOID = NULL;
+  mpStart = NULL;
 }

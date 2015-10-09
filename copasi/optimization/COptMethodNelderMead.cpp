@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -636,9 +636,9 @@ bool COptMethodNelderMead::initialize()
 
   if (!COptMethod::initialize()) return false;
 
-  mIterationLimit = * getValue("Iteration Limit").pUINT;
-  mTolerance = * getValue("Tolerance").pUDOUBLE;
-  mScale = * getValue("Scale").pUDOUBLE;
+  mIterationLimit = getValue< unsigned C_INT32 >("Iteration Limit");
+  mTolerance = getValue< C_FLOAT64 >("Tolerance");
+  mScale = getValue< C_FLOAT64 >("Scale");
 
   mIteration = 0;
 

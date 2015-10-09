@@ -1,17 +1,14 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CProcessReport.h,v $
-   $Revision: 1.14 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2012/06/01 17:25:40 $
-   End CVS Header */
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2005 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -62,7 +59,20 @@ public:
    * returns NULL if no end value has been set.
    * @return const CCopasiParameter::Value & endValue
    */
-  const CCopasiParameter::Value & getEndValue() const;
+  template < class CType > const CType & getEndValue() const
+  {return static_cast< const CType >(mpEndValue);}
+
+  /**
+   * Retrieve the private end value of the parameter.
+   * @return CCopasiParameter::Value & endValue
+   */
+  template < class CType > CType & getEndValue()
+  {return static_cast< CType >(mpEndValue);}
+
+  /**
+   * Retrieve the raw pointer to the end value
+   */
+  void * getEndValuePointer();
 
   /**
    * Retrieve whether the item has an end value.
@@ -70,18 +80,12 @@ public:
    */
   const bool & hasEndValue() const;
 
-  /**
-   * Retrieve the private end value of the parameter.
-   * @return CCopasiParameter::Value & endValue
-   */
-  CCopasiParameter::Value & getEndValue();
-
   // Attributes
 private:
   /**
    *  A pointer to the value of the parameter.
    */
-  CCopasiParameter::Value mEndValue;
+  void * mpEndValue;
 
   /**
    * Indicator whether an endvalue has been provided

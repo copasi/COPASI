@@ -2505,7 +2505,6 @@ void addToInitialValueMap(std::map<const std::string, Parameter*>* initialMap
 
   idMap.insert(std::pair<const std::string, const SBase*>(initial->getId(), initial));
 
-
   (*initialMap) [cn] = initial;
 }
 
@@ -7767,7 +7766,7 @@ void CSBMLExporter::replace_local_parameters(ASTNode* pOrigNode, const CCopasiDa
 
                       pParameter->setId(sbmlId);
                       this->mIdMap.insert(std::pair<std::string, SBase*>(sbmlId, pParameter));
-                      pParameter->setValue(*pLocalParameter->getValue().pDOUBLE);
+                      pParameter->setValue(pLocalParameter->getValue< C_FLOAT64 >());
                       this->mParameterReplacementMap[pLocalParameter->getCN()] = pParameter;
                       pOrigNode->setName(sbmlId.c_str());
                       this->mHandledSBMLObjects.insert(pParameter);

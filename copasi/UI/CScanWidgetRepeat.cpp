@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -63,18 +63,10 @@ void CScanWidgetRepeat::load(const CCopasiParameterGroup * pItem)
 
   *mpData = *pItem;
 
-  C_INT32 * tmp;
-
-  if (!(tmp = mpData->getValue("Type").pINT))
+  if (mpData->getValue< CScanProblem::Type >("Type") != CScanProblem::SCAN_REPEAT)
     return;
 
-  if (*(CScanProblem::Type *) tmp != CScanProblem::SCAN_REPEAT)
-    return;
-
-  if (!(tmp = mpData->getValue("Number of steps").pINT))
-    return;
-
-  lineEditNumber->setText(QString::number(* tmp));
+  lineEditNumber->setText(QString::number(mpData->getValue< C_INT32 >("Number of steps")));
 
   return;
 }

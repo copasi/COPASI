@@ -209,8 +209,8 @@ bool COptMethodSteepestDescent::initialize()
 
   if (!COptMethod::initialize()) return false;
 
-  mIterations = * getValue("Iteration Limit").pUINT;
-  mTolerance = * getValue("Tolerance").pDOUBLE;
+  mIterations = getValue< unsigned C_INT32 >("Iteration Limit");
+  mTolerance = getValue< C_FLOAT64 >("Tolerance");
 
   mContinue = true;
   mVariableSize = mpOptItem->size();
@@ -261,7 +261,7 @@ C_FLOAT64 COptMethodSteepestDescent::descentLine(const C_FLOAT64 & x)
 
   for (; ppContainerVariable != ppContainerVariableEnd; ++ppContainerVariable, ++pIndividual, ++pGradient)
     {
-      **ppContainerVariable = *pIndividual + x * *pGradient;
+      **ppContainerVariable = *pIndividual + x **pGradient;
     }
 
   return evaluate();

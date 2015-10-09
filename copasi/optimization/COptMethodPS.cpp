@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -332,7 +332,7 @@ bool COptMethodPS::initialize()
 
   if (!COptMethod::initialize()) return false;
 
-  mIterationLimit = * getValue("Iteration Limit").pUINT;
+  mIterationLimit = getValue< unsigned C_INT32 >("Iteration Limit");
   mIteration = 0;
 
   if (mpCallBack)
@@ -341,7 +341,7 @@ bool COptMethodPS::initialize()
                           mIteration,
                           & mIterationLimit);
 
-  mSwarmSize = * getValue("Swarm Size").pUINT;
+  mSwarmSize = getValue< unsigned C_INT32 >("Swarm Size");
 
   if (mSwarmSize < 5)
     {
@@ -349,12 +349,12 @@ bool COptMethodPS::initialize()
       setValue("Swarm Size", mSwarmSize);
     }
 
-  mVariance = *getValue("Std. Deviation").pUDOUBLE;
+  mVariance = getValue< C_FLOAT64 >("Std. Deviation");
   mVariance *= mVariance;
 
   mpRandom =
-    CRandom::createGenerator(* (CRandom::Type *) getValue("Random Number Generator").pUINT,
-                             * getValue("Seed").pUINT);
+    CRandom::createGenerator((CRandom::Type) getValue< unsigned C_INT32 >("Random Number Generator"),
+                             getValue< unsigned C_INT32 >("Seed"));
 
   mVariableSize = mpOptItem->size();
 
@@ -477,7 +477,7 @@ bool COptMethodPS::reachedStdDeviation()
       for (; pFirstMoment != pEnd; ++pFirstMoment, ++pSecondMoment, ++pValue)
         {
           *pFirstMoment += *pValue;
-          *pSecondMoment += *pValue * *pValue;
+          *pSecondMoment += *pValue **pValue;
         }
     }
 
@@ -486,7 +486,7 @@ bool COptMethodPS::reachedStdDeviation()
 
   for (; pFirstMoment != pEnd; ++pFirstMoment, ++pSecondMoment)
     {
-      Variance = (*pSecondMoment - *pFirstMoment * *pFirstMoment / mSwarmSize) / (mSwarmSize - 1);
+      Variance = (*pSecondMoment - *pFirstMoment **pFirstMoment / mSwarmSize) / (mSwarmSize - 1);
 
       if (Variance > mVariance) return false;
     }

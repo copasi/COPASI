@@ -1113,7 +1113,7 @@ void CCSPMethod::start()
 {
   CTSSAMethod::start();
 
-  mReducedModel = *getValue("Integrate Reduced Model").pBOOL;
+  mReducedModel = getValue< bool >("Integrate Reduced Model");
   mpLsodaMethod->setValue("Integrate Reduced Model", mReducedModel);
 
   if (!mReducedModel)
@@ -1131,10 +1131,10 @@ void CCSPMethod::start()
   mG.initialize(mDim, mpFirstSpeciesRate);
 
   mYerror.resize(mDim);
-  mEps = * getValue("Ratio of Modes Separation").pUDOUBLE;
-  mRerror = * getValue("Maximum Relative Error").pUDOUBLE;
-  mAerror = * getValue("Maximum Absolute Error").pUDOUBLE;
-  mIter = * getValue("Refinement Iterations Number").pUINT;
+  mEps = getValue< C_FLOAT64 >("Ratio of Modes Separation");
+  mRerror = getValue< C_FLOAT64 >("Maximum Relative Error");
+  mAerror = getValue< C_FLOAT64 >("Maximum Absolute Error");
+  mIter = getValue< unsigned C_INT32 >("Refinement Iterations Number");
 
   mpContainer->updateSimulatedValues(mReducedModel);
 
@@ -1749,7 +1749,7 @@ void CCSPMethod::predefineAnnotation()
 {
   const CModel & Model = mpContainer->getModel();
 
-  mReducedModel = *getValue("Integrate Reduced Model").pBOOL;
+  mReducedModel = getValue< bool >("Integrate Reduced Model");
 
   C_INT N;
 

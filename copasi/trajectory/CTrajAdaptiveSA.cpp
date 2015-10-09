@@ -140,13 +140,13 @@ void CTrajAdaptiveSA::start()
 
   mpRandomGenerator = &mpContainer->getRandomGenerator();
 
-  bool useRandomSeed = * getValue("Use Random Seed").pBOOL;
-  unsigned C_INT32 randomSeed = * getValue("Random Seed").pUINT;
+  bool useRandomSeed = getValue< bool >("Use Random Seed");
+  unsigned C_INT32 randomSeed = getValue< unsigned C_INT32 >("Random Seed");
 
   if (useRandomSeed) mpRandomGenerator->initialize(randomSeed);
 
-  mMaxSteps = * getValue("Max Internal Steps").pINT;
-  mEpsilon = * getValue("Epsilon").pDOUBLE;
+  mMaxSteps = getValue< C_INT32 >("Max Internal Steps");
+  mEpsilon = getValue< C_FLOAT64 >("Epsilon");
 
   //initialize the vector of ints that contains the particle numbers
   //for the discrete simulation. This also floors all particle numbers in the model.
@@ -268,7 +268,7 @@ bool CTrajAdaptiveSA::isValidProblem(const CCopasiProblem * pProblem)
       return false;
     }
 
-  if (* getValue("Max Internal Steps").pINT <= 0)
+  if (getValue< C_INT32 >("Max Internal Steps") <= 0)
     {
       //max steps should be at least 1
       CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 15);

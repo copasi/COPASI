@@ -291,51 +291,11 @@ void CTrajectoryMethodDsaLsodar::initializeParameter()
 {
   CCopasiParameter *pParm;
 
-  mpMaxSteps =
-    assertParameter("Max Internal Steps", CCopasiParameter::UINT, (C_INT32) 1000000)->getValue().pUINT;
-  mpLowerLimit =
-    assertParameter("Lower Limit", CCopasiParameter::UDOUBLE, (C_FLOAT64) 800.0)->getValue().pUDOUBLE;
-  mpUpperLimit =
-    assertParameter("Upper Limit", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1000.0)->getValue().pUDOUBLE;
-  mpPartitioningInterval =
-    assertParameter("Partitioning Interval", CCopasiParameter::UINT, (unsigned C_INT32) 1)->getValue().pUINT;
-  mpPartitioningSteps =
-    assertParameter("Partitioning Stepsize", CCopasiParameter::UDOUBLE, (C_FLOAT64) 0.001)->getValue().pUDOUBLE;
-
-  // Check whether we have a method with the old parameter names
-  if ((pParm = getParameter("HYBRID.MaxSteps")) != NULL)
-    {
-      setValue("Max Internal Steps", *pParm->getValue().pUINT);
-      removeParameter("HYBRID.MaxSteps");
-
-      if ((pParm = getParameter("HYBRID.LowerStochLimit")) != NULL)
-        {
-          setValue("Lower Limit", *pParm->getValue().pDOUBLE);
-          removeParameter("HYBRID.LowerStochLimit");
-        }
-
-      if ((pParm = getParameter("HYBRID.UpperStochLimit")) != NULL)
-        {
-          setValue("Upper Limit", *pParm->getValue().pDOUBLE);
-          removeParameter("HYBRID.UpperStochLimit");
-        }
-
-      if ((pParm = getParameter("HYBRID.PartitioningInterval")) != NULL)
-        {
-          setValue("Partitioning Interval", *pParm->getValue().pUINT);
-          removeParameter("HYBRID.PartitioningInterval");
-        }
-
-      if ((pParm = getParameter("UseRandomSeed")) != NULL)
-        {
-          removeParameter("UseRandomSeed");
-        }
-
-      if ((pParm = getParameter("")) != NULL)
-        {
-          removeParameter("");
-        }
-    }
+  mpMaxSteps = assertParameter("Max Internal Steps", CCopasiParameter::UINT, (unsigned C_INT32) 1000000);
+  mpLowerLimit = assertParameter("Lower Limit", CCopasiParameter::UDOUBLE, (C_FLOAT64) 800.0);
+  mpUpperLimit = assertParameter("Upper Limit", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1000.0);
+  mpPartitioningInterval = assertParameter("Partitioning Interval", CCopasiParameter::UINT, (unsigned C_INT32) 1);
+  mpPartitioningSteps = assertParameter("Partitioning Stepsize", CCopasiParameter::UDOUBLE, (C_FLOAT64) 0.001);
 }
 
 // virtual
@@ -716,17 +676,9 @@ bool CTrajectoryMethodDsaLsodar::isValidProblem(const CCopasiProblem * pProblem)
       return false;
     }
 
-  /* Max Internal Steps */
-  if (* getValue("Max Internal Steps").pINT <= 0)
-    {
-      //max steps should be at least 1
-      CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 15);
-      return false;
-    }
-
   /* Lower Limit, Upper Limit */
-  *mpLowerLimit = * getValue("Lower Limit").pDOUBLE;
-  *mpUpperLimit = * getValue("Upper Limit").pDOUBLE;
+  *mpLowerLimit = getValue< C_FLOAT64 >("Lower Limit");
+  *mpUpperLimit = getValue< C_FLOAT64 >("Upper Limit");
 
   if (*mpLowerLimit > *mpUpperLimit)
     {

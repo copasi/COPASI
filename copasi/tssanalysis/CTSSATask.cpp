@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -74,7 +74,7 @@ CTSSATask::CTSSATask(const CCopasiContainer * pParent,
   CCopasiParameter * pParameter = mpMethod->getParameter("Integrate Reduced Model");
 
   if (pParameter != NULL)
-    mUpdateMoieties = *pParameter->getValue().pBOOL;
+    mUpdateMoieties = pParameter->getValue< bool >();
   else
     mUpdateMoieties = false;
 }
@@ -101,7 +101,7 @@ CTSSATask::CTSSATask(const CTSSATask & src,
   CCopasiParameter * pParameter = mpMethod->getParameter("Integrate Reduced Model");
 
   if (pParameter != NULL)
-    mUpdateMoieties = *pParameter->getValue().pBOOL;
+    mUpdateMoieties = pParameter->getValue< bool >();
   else
     mUpdateMoieties = false;
 }
@@ -145,7 +145,7 @@ bool CTSSATask::initialize(const OutputFlag & of,
   CCopasiParameter * pParameter = mpMethod->getParameter("Integrate Reduced Model");
 
   if (pParameter != NULL)
-    mUpdateMoieties = *pParameter->getValue().pBOOL;
+    mUpdateMoieties = pParameter->getValue< bool >();
   else
     mUpdateMoieties = false;
 

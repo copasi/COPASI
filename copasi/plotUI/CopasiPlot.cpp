@@ -1149,7 +1149,7 @@ bool CopasiPlot::initFromSpec(const CPlotSpecification* plotspec)
           || pCurve->getType() == CPlotItem::histoItem1d
           || pCurve->getType() == CPlotItem::bandedGraph)
         {
-          std::string colorstr = *(*itPlotItem)->getValue("Color").pSTRING;
+          std::string colorstr = (*itPlotItem)->getValue< std::string >("Color");
           color = CQPlotColors::getColor(colorstr, k);
         }
 
@@ -1164,14 +1164,14 @@ bool CopasiPlot::initFromSpec(const CPlotSpecification* plotspec)
           needLeft = true;
           pCurve->setRenderHint(QwtPlotItem::RenderAntialiased);
 
-          unsigned C_INT32 linetype = *(*itPlotItem)->getValue("Line type").pUINT;
+          unsigned C_INT32 linetype = (*itPlotItem)->getValue< unsigned C_INT32 >("Line type");
 
           if (linetype == 0      //line
               || linetype == 3)  //line+symbols
             {
               pCurve->setStyle(QwtPlotCurve::Lines);
-              unsigned C_INT32 linesubtype = *(*itPlotItem)->getValue("Line subtype").pUINT;
-              C_FLOAT64 width = *(*itPlotItem)->getValue("Line width").pUDOUBLE;
+              unsigned C_INT32 linesubtype = (*itPlotItem)->getValue< unsigned C_INT32 >("Line subtype");
+              C_FLOAT64 width = (*itPlotItem)->getValue< C_FLOAT64 >("Line width");
 
               switch (linesubtype) //symbol type
                 {
@@ -1200,7 +1200,7 @@ bool CopasiPlot::initFromSpec(const CPlotSpecification* plotspec)
 
           if (linetype == 1) //points
             {
-              C_FLOAT64 width = *(*itPlotItem)->getValue("Line width").pUDOUBLE;
+              C_FLOAT64 width = (*itPlotItem)->getValue< C_FLOAT64 >("Line width");
               pCurve->setPen(QPen(color, width, Qt::SolidLine, Qt::RoundCap));
               pCurve->setStyle(QwtPlotCurve::Dots);
             }
@@ -1213,7 +1213,7 @@ bool CopasiPlot::initFromSpec(const CPlotSpecification* plotspec)
           if (linetype == 2      //symbols
               || linetype == 3)  //line+symbols
             {
-              unsigned C_INT32 symbolsubtype = *(*itPlotItem)->getValue("Symbol subtype").pUINT;
+              unsigned C_INT32 symbolsubtype = (*itPlotItem)->getValue< unsigned C_INT32 >("Symbol subtype");
 
               switch (symbolsubtype) //symbol type
                 {
@@ -1256,7 +1256,7 @@ bool CopasiPlot::initFromSpec(const CPlotSpecification* plotspec)
 
       if (pCurve->getType() == CPlotItem::histoItem1d)
         {
-          pCurve->setIncrement(*(*itPlotItem)->getValue("increment").pDOUBLE);
+          pCurve->setIncrement((*itPlotItem)->getValue< C_FLOAT64 >("increment"));
 
           pCurve->setStyle(QwtPlotCurve::Steps);
           pCurve->setYAxis(QwtPlot::yRight);

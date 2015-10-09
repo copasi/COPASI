@@ -53,9 +53,9 @@ CMIRIAMResources::CMIRIAMResources(const CCopasiParameterGroup & group,
 void CMIRIAMResources::initializeParameter()
 {
   mpLastUpdateDate = assertParameter("LastUpdateDate", CCopasiParameter::UINT,
-                                     (unsigned C_INT32) getActDateInSeconds())->getValue().pUINT;
+                                     (unsigned C_INT32) getActDateInSeconds());
   mpUpdateFrequency = assertParameter("Frequency", CCopasiParameter::UINT,
-                                      (unsigned C_INT32) 604800)->getValue().pUINT;
+                                      (unsigned C_INT32) 604800);
   mpMIRIAMResources = assertGroup("Resources");
 
   elevateChildren();
@@ -379,7 +379,7 @@ void CMIRIAMResources::createURIMap()
 
       for (; itDeprecated != endDeprecated; ++itDeprecated)
         {
-          std::string Deprecated = *(*itDeprecated)->getValue().pSTRING;
+          std::string Deprecated = (*itDeprecated)->getValue< std::string >();
 
           //Deprecated URL style URIs do not use the ':' separator.
           if (Deprecated[Deprecated.length() - 1] != '/')
@@ -496,14 +496,10 @@ CMIRIAMResource::CMIRIAMResource(const CCopasiParameterGroup & group,
 
 void CMIRIAMResource::initializeParameter()
 {
-  mpDisplayName = assertParameter("DisplayName", CCopasiParameter::STRING,
-                                  (std::string) "")->getValue().pSTRING;
-  mpURI = assertParameter("URI", CCopasiParameter::STRING,
-                          (std::string) "")->getValue().pSTRING;
-  mpPattern = assertParameter("Pattern", CCopasiParameter::STRING,
-                              (std::string) "")->getValue().pSTRING;
-  mpCitation = assertParameter("Citation", CCopasiParameter::BOOL,
-                               false)->getValue().pBOOL;
+  mpDisplayName = assertParameter("DisplayName", CCopasiParameter::STRING, (std::string) "");
+  mpURI = assertParameter("URI", CCopasiParameter::STRING, (std::string) "");
+  mpPattern = assertParameter("Pattern", CCopasiParameter::STRING, (std::string) "");
+  mpCitation = assertParameter("Citation", CCopasiParameter::BOOL, false);
   mpDeprecated = assertGroup("Deprecated");
 }
 

@@ -1,4 +1,4 @@
-// Copyright (C) 2012 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -271,11 +271,11 @@ bool COptMethodCoranaWalk::initialize()
 
   if (!COptMethod::initialize()) return false;
 
-  mTemperature = * getValue("Temperature").pUDOUBLE;
-  mIterations = * getValue("Iterations").pUINT;
+  mTemperature = getValue< C_FLOAT64 >("Temperature");
+  mIterations = getValue< unsigned C_INT32 >("Iterations");
   mpRandom =
-    CRandom::createGenerator(* (CRandom::Type *) getValue("Random Number Generator").pUINT,
-                             * getValue("Seed").pUINT);
+    CRandom::createGenerator((CRandom::Type) getValue< unsigned C_INT32 >("Random Number Generator"),
+                             getValue< unsigned C_INT32 >("Seed"));
 
   mCurrentIteration = 0;
 

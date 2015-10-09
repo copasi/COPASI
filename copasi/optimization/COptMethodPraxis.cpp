@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -125,7 +125,7 @@ bool COptMethodPraxis::initialize()
 
   if (!COptMethod::initialize()) return false;
 
-  mTolerance = * getValue("Tolerance").pDOUBLE;
+  mTolerance = getValue< C_FLOAT64 >("Tolerance");
   mIteration = 0;
 
   mVariableSize = (C_INT) mpOptItem->size();

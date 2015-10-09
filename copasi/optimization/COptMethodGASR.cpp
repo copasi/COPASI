@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -406,7 +406,7 @@ bool COptMethodGASR::initialize()
   if (!COptMethod::initialize()) return false;
 
   mGeneration = 0;
-  mGenerations = * getValue("Number of Generations").pUINT;
+  mGenerations = getValue< unsigned C_INT32 >("Number of Generations");
 
   if (mpCallBack)
     mhGenerations =
@@ -416,8 +416,8 @@ bool COptMethodGASR::initialize()
 
   mGeneration++;
 
-  mPopulationSize = * getValue("Population Size").pUINT;
-  mPf = *(C_FLOAT64*) getValue("Pf").pDOUBLE;
+  mPopulationSize = getValue< unsigned C_INT32 >("Population Size");
+  mPf = getValue< C_FLOAT64 >("Pf");
 
   if (mPf < 0.0 || 1.0 < mPf)
     {
@@ -426,8 +426,8 @@ bool COptMethodGASR::initialize()
     }
 
   mpRandom =
-    CRandom::createGenerator(* (CRandom::Type *) getValue("Random Number Generator").pUINT,
-                             * getValue("Seed").pUINT);
+    CRandom::createGenerator((CRandom::Type) getValue< unsigned C_INT32 >("Random Number Generator"),
+                             getValue< unsigned C_INT32 >("Seed"));
 
   mVariableSize = mpOptItem->size();
 

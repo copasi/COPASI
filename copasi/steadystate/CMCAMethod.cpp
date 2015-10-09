@@ -138,12 +138,12 @@ void CMCAMethod::initializeParameter()
 
   if ((pParm = getParameter("MCA.ModulationFactor")) != NULL)
     {
-      setValue("Modulation Factor", *pParm->getValue().pUDOUBLE);
+      setValue("Modulation Factor", pParm->getValue< C_FLOAT64 >());
       removeParameter("MCA.ModulationFactor");
     }
 
-  mpUseReeder = assertParameter("Use Reeder", CCopasiParameter::BOOL, true)->getValue().pBOOL;
-  mpUseSmallbone = assertParameter("Use Smallbone", CCopasiParameter::BOOL, true)->getValue().pBOOL;
+  mpUseReeder = assertParameter("Use Reeder", CCopasiParameter::BOOL, true);
+  mpUseSmallbone = assertParameter("Use Smallbone", CCopasiParameter::BOOL, true);
 }
 
 bool CMCAMethod::elevateChildren()

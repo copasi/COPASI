@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -49,13 +49,8 @@ CSensMethod::CSensMethod(const CCopasiContainer * pParent,
   mCounter(0),
   mFailedCounter(0)
 {
-  addParameter("Delta factor",
-               CCopasiParameter::UDOUBLE, (C_FLOAT64) 1e-3);
-  mpDeltaFactor = (C_FLOAT64*)getValue("Delta factor").pUDOUBLE;
-
-  addParameter("Delta minimum",
-               CCopasiParameter::UDOUBLE, (C_FLOAT64) 1e-12);
-  mpMinDelta = (C_FLOAT64*)getValue("Delta minimum").pUDOUBLE;
+  mpDeltaFactor = assertParameter("Delta factor", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1e-3);
+  mpMinDelta = assertParameter("Delta minimum", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1e-12);
 
   CONSTRUCTOR_TRACE;
 }
@@ -160,7 +155,7 @@ bool CSensMethod::do_target_calculation(size_t level,  CCopasiArray & result, bo
 
 C_FLOAT64 CSensMethod::do_variation(C_FLOAT64 & variable)
 {
-  C_FLOAT64 delta = fabs(variable) * *mpDeltaFactor;
+  C_FLOAT64 delta = fabs(variable) **mpDeltaFactor;
 
   if (delta < *mpMinDelta) delta = *mpMinDelta;
 

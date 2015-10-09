@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -68,8 +68,8 @@ const CObjectInterface * CCopasiParameterGroup::getObject(const CCopasiObjectNam
   size_t Index = strToUnsignedInt(UniqueName.substr(pos + 1).c_str());
   size_t counter = C_INVALID_INDEX;
 
-  index_iterator it = mValue.pGROUP->begin();
-  index_iterator end = mValue.pGROUP->end();
+  index_iterator it = beginIndex();
+  index_iterator end = endIndex();
 
   for (; it != end; ++it)
     {
@@ -158,7 +158,7 @@ CCopasiParameterGroup & CCopasiParameterGroup::operator = (const CCopasiParamete
       ++itLHS;
     }
 
-  // All remaining paramter of the RHS need to be added
+  // All remaining parameter of the RHS need to be added
   while (itRHS != endRHS)
     {
       // We only assign parameters
@@ -200,10 +200,8 @@ std::ostream &operator<<(std::ostream &os, const CCopasiParameterGroup & o)
 {
   os << "<<< Parameter Group: " << o.getObjectName() << std::endl;
 
-  CCopasiParameterGroup::parameterGroup::const_iterator it =
-    o.CCopasiParameter::getValue().pGROUP->begin();
-  CCopasiParameterGroup::parameterGroup::const_iterator end =
-    o.CCopasiParameter::getValue().pGROUP->end();
+  CCopasiParameterGroup::elements::const_iterator it = o.beginIndex();
+  CCopasiParameterGroup::elements::const_iterator end = o.endIndex();
 
   for (; it != end; ++it)
     {
@@ -220,15 +218,11 @@ bool operator==(const CCopasiParameterGroup & lhs,
 {
   if (lhs.getObjectName() != rhs.getObjectName()) return false;
 
-  if (lhs.mValue.pGROUP->size() != rhs.mValue.pGROUP->size()) return false;
+  if (lhs.size() != rhs.size()) return false;
 
-  CCopasiParameterGroup::parameterGroup::const_iterator itLhs =
-    lhs.mValue.pGROUP->begin();
-  CCopasiParameterGroup::parameterGroup::const_iterator endLhs =
-    lhs.mValue.pGROUP->end();
-
-  CCopasiParameterGroup::parameterGroup::const_iterator itRhs =
-    rhs.mValue.pGROUP->begin();
+  CCopasiParameterGroup::elements::const_iterator itLhs = lhs.beginIndex();
+  CCopasiParameterGroup::elements::const_iterator endLhs = lhs.endIndex();
+  CCopasiParameterGroup::elements::const_iterator itRhs = rhs.beginIndex();
 
   for (; itLhs != endLhs; ++itLhs, ++itRhs)
     if (!(**itLhs == **itRhs)) return false;
@@ -258,7 +252,7 @@ void CCopasiParameterGroup::addParameter(CCopasiParameter * pParameter)
   if (pParameter == NULL) return;
 
   CCopasiContainer::add(pParameter, true);
-  mValue.pGROUP->push_back(pParameter);
+  static_cast< elements * >(mpValue)->push_back(pParameter);
 }
 
 CCopasiParameterGroup::name_iterator CCopasiParameterGroup::beginName() const
@@ -268,10 +262,10 @@ CCopasiParameterGroup::name_iterator CCopasiParameterGroup::endName() const
 {return const_cast< CCopasiContainer::objectMap * >(&getObjects())->end();}
 
 CCopasiParameterGroup::index_iterator CCopasiParameterGroup::beginIndex() const
-{return mValue.pGROUP->begin();}
+{return static_cast< elements * >(mpValue)->begin();}
 
 CCopasiParameterGroup::index_iterator CCopasiParameterGroup::endIndex() const
-{return mValue.pGROUP->end();}
+{return static_cast< elements * >(mpValue)->end();}
 
 bool CCopasiParameterGroup::addParameter(const std::string & name,
     const CCopasiParameter::Type type)
@@ -312,11 +306,10 @@ bool CCopasiParameterGroup::removeParameter(const std::string & name)
 
   if (index != C_INVALID_INDEX)
     {
-      index_iterator it =
-        mValue.pGROUP->begin() + index;
+      index_iterator it = static_cast< elements * >(mpValue)->begin() + index;
 
       pdelete(*it);
-      mValue.pGROUP->erase(it, it + 1);
+      static_cast< elements * >(mpValue)->erase(it, it + 1);
 
       return true;
     }
@@ -328,11 +321,10 @@ bool CCopasiParameterGroup::removeParameter(const size_t & index)
 {
   if (index < size())
     {
-      index_iterator it =
-        mValue.pGROUP->begin() + index;
+      index_iterator it = static_cast< elements * >(mpValue)->begin() + index;
 
       pdelete(*it);
-      mValue.pGROUP->erase(it, it + 1);
+      static_cast< elements * >(mpValue)->erase(it, it + 1);
 
       return true;
     }
@@ -367,7 +359,7 @@ const CCopasiParameter * CCopasiParameterGroup::getParameter(const std::string &
 CCopasiParameter * CCopasiParameterGroup::getParameter(const size_t & index)
 {
   if (index < size())
-    return *(mValue.pGROUP->begin() + index);
+    return *(static_cast< elements * >(mpValue)->begin() + index);
 
   return NULL;
 }
@@ -375,7 +367,7 @@ CCopasiParameter * CCopasiParameterGroup::getParameter(const size_t & index)
 const CCopasiParameter * CCopasiParameterGroup::getParameter(const size_t & index) const
 {
   if (index < size())
-    return *(mValue.pGROUP->begin() + index);
+    return *(static_cast< elements * >(mpValue)->begin() + index);
 
   return NULL;
 }
@@ -391,58 +383,6 @@ CCopasiParameterGroup * CCopasiParameterGroup::getGroup(const size_t & index)
 
 const CCopasiParameterGroup * CCopasiParameterGroup::getGroup(const size_t & index) const
 {return dynamic_cast<const CCopasiParameterGroup *>(getParameter(index));}
-
-const CCopasiParameter::Value & CCopasiParameterGroup::getValue(const std::string & name) const
-{
-  CCopasiParameter * pParameter =
-    const_cast< CCopasiParameterGroup * >(this)->getParameter(name);
-
-  if (!pParameter)
-    fatalError();
-
-  return pParameter->getValue();
-}
-
-const CCopasiParameter::Value & CCopasiParameterGroup::getValue(const size_t & index) const
-{
-  CCopasiParameter * pParameter =
-    const_cast< CCopasiParameterGroup * >(this)->getParameter(index);
-
-  if (!pParameter)
-    fatalError();
-
-  return pParameter->getValue();
-}
-
-CCopasiParameter::Value & CCopasiParameterGroup::getValue(const std::string & name)
-{
-  CCopasiParameter * pParameter = getParameter(name);
-
-  if (!pParameter)
-    fatalError();
-
-  return pParameter->getValue();
-}
-
-CCopasiParameter::Value & CCopasiParameterGroup::getValue(const size_t & index)
-{
-  CCopasiParameter * pParameter = getParameter(index);
-
-  if (!pParameter)
-    fatalError();
-
-  return pParameter->getValue();
-}
-
-CCopasiParameter::Type CCopasiParameterGroup::getType(const std::string & name) const
-{
-  CCopasiParameter * pParameter =
-    const_cast< CCopasiParameterGroup * >(this)->getParameter(name);
-
-  if (pParameter) return pParameter->getType();
-
-  return CCopasiParameter::INVALID;
-}
 
 CCopasiParameter::Type CCopasiParameterGroup::getType(const size_t & index) const
 {
@@ -510,25 +450,25 @@ bool CCopasiParameterGroup::swap(index_iterator & from,
 }
 
 size_t CCopasiParameterGroup::size() const
-{return mValue.pGROUP->size();}
+{return static_cast< elements * >(mpValue)->size();}
 
 void CCopasiParameterGroup::clear()
 {
-  if (mValue.pGROUP)
+  if (mpValue != NULL)
     {
-      index_iterator it = mValue.pGROUP->begin();
-      index_iterator end = mValue.pGROUP->end();
+      index_iterator it = static_cast< elements * >(mpValue)->begin();
+      index_iterator end = static_cast< elements * >(mpValue)->end();
 
       for (; it != end; ++it) pdelete(*it);
 
-      mValue.pGROUP->clear();
+      static_cast< elements * >(mpValue)->clear();
     }
 }
 
 size_t CCopasiParameterGroup::getIndex(const std::string & name) const
 {
-  index_iterator it = mValue.pGROUP->begin();
-  index_iterator end = mValue.pGROUP->end();
+  index_iterator it = static_cast< elements * >(mpValue)->begin();
+  index_iterator end = static_cast< elements * >(mpValue)->end();
 
   for (size_t i = 0; it != end; ++it, ++i)
     if (name == (*it)->getObjectName()) return i;;
@@ -543,8 +483,8 @@ std::string CCopasiParameterGroup::getUniqueParameterName(const CCopasiParameter
 
   std::string Name = pParameter->getObjectName();
 
-  index_iterator it = mValue.pGROUP->begin();
-  index_iterator end = mValue.pGROUP->end();
+  index_iterator it = static_cast< elements * >(mpValue)->begin();
+  index_iterator end = static_cast< elements * >(mpValue)->end();
 
   for (; it != end; ++it)
     {

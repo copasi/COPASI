@@ -223,7 +223,7 @@ bool CReactionInterface::loadMappingAndValues(const CReaction & rea)
 
                 if (pParameter != NULL)
                   {
-                    mValues[i] = * pParameter->getValue().pDOUBLE;
+                    mValues[i] = pParameter->getValue< C_FLOAT64 >();
                   }
                 else
                   {

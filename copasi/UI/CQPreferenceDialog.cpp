@@ -60,7 +60,7 @@ void CQPreferenceDialog::init()
     {
       QStringList Values;
       Values.append("Max Last Visited Files");
-      Values.append(QString::number(*pParameter->getValue().pUINT));
+      Values.append(QString::number(pParameter->getValue< unsigned C_INT32 >()));
 
       new QTreeWidgetItem(mpTreeWidget, Values);
     }
@@ -71,7 +71,7 @@ void CQPreferenceDialog::init()
     {
       QStringList Values;
       Values.append("Max Last Visited SBML Files");
-      Values.append(QString::number(*pParameter->getValue().pUINT));
+      Values.append(QString::number(pParameter->getValue< unsigned C_INT32 >()));
 
       new QTreeWidgetItem(mpTreeWidget, Values);
     }
@@ -82,7 +82,7 @@ void CQPreferenceDialog::init()
     {
       QStringList Values;
       Values.append("Application for opening URLs");
-      Values.append(FROM_UTF8(*pParameter->getValue().pSTRING));
+      Values.append(FROM_UTF8(pParameter->getValue< std::string >()));
 
       new QTreeWidgetItem(mpTreeWidget, Values);
     }
@@ -93,7 +93,7 @@ void CQPreferenceDialog::init()
     {
       QStringList Values;
       Values.append("Validate Units");
-      Values.append((*pParameter->getValue().pBOOL ? "YES" : "NO"));
+      Values.append((pParameter->getValue< bool >() ? "YES" : "NO"));
       new QTreeWidgetItem(mpTreeWidget, Values);
     }
 
@@ -103,7 +103,7 @@ void CQPreferenceDialog::init()
     {
       QStringList Values;
       Values.append("Use OpenGL");
-      Values.append((*pParameter->getValue().pBOOL ? "YES" : "NO"));
+      Values.append((pParameter->getValue< bool >() ? "YES" : "NO"));
       new QTreeWidgetItem(mpTreeWidget, Values);
     }
 
@@ -113,7 +113,7 @@ void CQPreferenceDialog::init()
     {
       QStringList Values;
       Values.append("Use Advanced Sliders");
-      Values.append((*pParameter->getValue().pBOOL ? "YES" : "NO"));
+      Values.append((pParameter->getValue< bool >() ? "YES" : "NO"));
       new QTreeWidgetItem(mpTreeWidget, Values);
     }
 
@@ -123,7 +123,7 @@ void CQPreferenceDialog::init()
     {
       QStringList Values;
       Values.append("Use Advanced Editing");
-      Values.append((*pParameter->getValue().pBOOL ? "YES" : "NO"));
+      Values.append((pParameter->getValue< bool >() ? "YES" : "NO"));
       new QTreeWidgetItem(mpTreeWidget, Values);
     }
 
@@ -133,7 +133,7 @@ void CQPreferenceDialog::init()
     {
       QStringList Values;
       Values.append("Normalize Weights per Experiment");
-      Values.append((*pParameter->getValue().pBOOL ? "YES" : "NO"));
+      Values.append((pParameter->getValue< bool >() ? "YES" : "NO"));
       new QTreeWidgetItem(mpTreeWidget, Values);
     }
 
@@ -143,7 +143,7 @@ void CQPreferenceDialog::init()
     {
       QStringList Values;
       Values.append("Allow Simultaneous Event Assignments");
-      Values.append((*pParameter->getValue().pBOOL ? "YES" : "NO"));
+      Values.append((pParameter->getValue< bool >() ? "YES" : "NO"));
       new QTreeWidgetItem(mpTreeWidget, Values);
     }
 }
@@ -161,7 +161,7 @@ void CQPreferenceDialog::slotBtnOk()
       pParameter != NULL)
     {
       newMaxFiles = Items[0]->text(COL_VALUE).toUInt();
-      unsigned C_INT32 maxFiles = *pParameter->getValue().pUINT;
+      unsigned C_INT32 maxFiles = pParameter->getValue< unsigned C_INT32 >();
 
       if (newMaxFiles > 0 && newMaxFiles <= 20)
         pParameter->setValue(newMaxFiles);
@@ -183,7 +183,7 @@ void CQPreferenceDialog::slotBtnOk()
       pParameter != NULL)
     {
       newMaxFiles = Items[0]->text(COL_VALUE).toUInt();
-      unsigned C_INT32 maxFiles = *pParameter->getValue().pUINT;
+      unsigned C_INT32 maxFiles = pParameter->getValue< unsigned C_INT32 >();
 
       if (newMaxFiles > 0 && newMaxFiles <= 20)
         pParameter->setValue(newMaxFiles);
@@ -205,7 +205,7 @@ void CQPreferenceDialog::slotBtnOk()
       pParameter != NULL)
     {
 
-      if (Items[0]->text(COL_VALUE) != FROM_UTF8(*pParameter->getValue().pSTRING))
+      if (Items[0]->text(COL_VALUE) != FROM_UTF8(pParameter->getValue< std::string >()))
         pParameter->setValue(std::string(TO_UTF8(Items[0]->text(COL_VALUE))));
     }
 

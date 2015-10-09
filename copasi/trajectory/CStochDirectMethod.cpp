@@ -155,14 +155,14 @@ void CStochDirectMethod::start()
   CTrajectoryMethod::start();
 
   /* get configuration data */
-  mMaxSteps = * getValue("Max Internal Steps").pINT;
+  mMaxSteps = getValue< C_INT32 >("Max Internal Steps");
 
   mpRandomGenerator = &mpContainer->getRandomGenerator();
 
-  bool useRandomSeed = * getValue("Use Random Seed").pBOOL;
-  unsigned C_INT32 randomSeed = * getValue("Random Seed").pUINT;
-
-  if (useRandomSeed) mpRandomGenerator->initialize(randomSeed);
+  if (getValue< bool >("Use Random Seed"))
+    {
+      mpRandomGenerator->initialize(getValue< unsigned C_INT32 >("Random Seed"));
+    }
 
   //mpCurrentState is initialized. This state is not used internally in the
   //stochastic solver, but it is used for returning the result after each step.
@@ -270,7 +270,7 @@ bool CStochDirectMethod::isValidProblem(const CCopasiProblem * pProblem)
       return false;
     }
 
-  if (* getValue("Max Internal Steps").pINT <= 0)
+  if (getValue< C_INT32 >("Max Internal Steps") <= 0)
     {
       //max steps should be at least 1
       CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 15);

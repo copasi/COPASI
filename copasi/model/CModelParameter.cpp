@@ -612,7 +612,7 @@ bool CModelParameter::refreshFromModel(const bool & modifyExistence)
           case ReactionParameter:
           {
             CCopasiParameter * pParameter = static_cast< CCopasiParameter * >(mpObject);
-            mValue = * pParameter->getValue().pDOUBLE;
+            mValue = pParameter->getValue< C_FLOAT64 >();
 
             // We need to update the mapping
             // Check whether this refers to a global quantity.

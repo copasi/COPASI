@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -38,9 +38,9 @@ public:
 private:
   void (CQProgressItemBar::*mpSetValue)();
   C_FLOAT64 mFactor;
-  CCopasiParameter::Value mEnd;
-  CCopasiParameter::Value mStart;
-  CCopasiParameter::Value mValue;
+  void * mpEnd;
+  void * mpStart;
+  void * mpValue;
   C_INT32 mLastSet;
   C_INT32 mCurrentValue;
 

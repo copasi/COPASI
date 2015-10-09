@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -115,22 +115,13 @@ void CScanWidgetScan::load(const CCopasiParameterGroup * pItem)
 
   *mpData = *pItem;
 
-  void * tmp;
-
-  if (!(tmp = mpData->getValue("Type").pVOID)) return;
-
-  CScanProblem::Type type = *(CScanProblem::Type*)tmp;
+  CScanProblem::Type type = mpData->getValue< CScanProblem::Type >("Type");
 
   if (type != CScanProblem::SCAN_LINEAR)
     return;
 
-  if (!(tmp = mpData->getValue("Number of steps").pVOID)) return;
-
-  lineEditNumber->setText(QString::number(*(C_INT32*)tmp));
-
-  if (!(tmp = mpData->getValue("Object").pVOID)) return;
-
-  std::string tmpString = *(std::string*)tmp;
+  lineEditNumber->setText(QString::number(mpData->getValue< C_INT32 >("Number of steps")));
+  std::string tmpString = mpData->getValue< std::string >("Object");
 
   if (tmpString == "")
     mpObject = NULL;
@@ -147,17 +138,10 @@ void CScanWidgetScan::load(const CCopasiParameterGroup * pItem)
   else
     lineEditObject->setText("");
 
-  if (!(tmp = mpData->getValue("Minimum").pVOID)) return;
+  lineEditMin->setText(QString::number(mpData->getValue< C_FLOAT64 >("Minimum")));
+  lineEditMax->setText(QString::number(mpData->getValue< C_FLOAT64 >("Maximum")));
 
-  lineEditMin->setText(QString::number(*(C_FLOAT64*)tmp));
-
-  if (!(tmp = mpData->getValue("Maximum").pVOID)) return;
-
-  lineEditMax->setText(QString::number(*(C_FLOAT64*)tmp));
-
-  if (!(tmp = mpData->getValue("log").pVOID)) return;
-
-  checkBoxLog->setChecked(*(bool*)tmp);
+  checkBoxLog->setChecked(mpData->getValue< bool >("log"));
 
   return;
 }

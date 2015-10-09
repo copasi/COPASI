@@ -1,17 +1,14 @@
-/* Begin CVS Header
-$Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiParameterGroup.h,v $
-$Revision: 1.32 $
-$Name:  $
-$Author: shoops $
-$Date: 2012/01/19 18:41:12 $
-End CVS Header */
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2003 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -34,8 +31,8 @@ End CVS Header */
 class CCopasiParameterGroup: public CCopasiParameter
 {
 public:
-  typedef std::vector< CCopasiParameter * > parameterGroup;
-  typedef parameterGroup::iterator index_iterator;
+  typedef std::vector< CCopasiParameter * > elements;
+  typedef elements::iterator index_iterator;
   typedef CCopasiContainer::objectMap::iterator name_iterator;
 
   // Operations
@@ -143,6 +140,7 @@ public:
 
     if (type == GROUP)
       {
+        // Create a temporary group with the correct name
         CCopasiParameterGroup *tmp = new CCopasiParameterGroup(name);
 
         if (!tmp->isValidValue(value))
@@ -151,13 +149,13 @@ public:
             return false;
           }
 
-        parameterGroup *pGroup = tmp->mValue.pGROUP;
-        tmp->mValue.pGROUP =
-          static_cast<parameterGroup *>(const_cast<void *>((const void *) & value));
+        void * pGroup = tmp->mpValue;
+        tmp->mpValue = const_cast<CType *>(& value);
 
+        // Create the final parameter
         pParameter = new CCopasiParameterGroup(*tmp);
 
-        tmp->mValue.pGROUP = pGroup;
+        tmp->mpValue = pGroup;
         delete tmp;
       }
     else
@@ -187,19 +185,19 @@ public:
    * @return CCopasiParameter * pParameter
    */
   template < class CType >
-  CCopasiParameter * assertParameter(const std::string & name,
-                                     const CCopasiParameter::Type type,
-                                     const CType & defaultValue)
+  CType * assertParameter(const std::string & name,
+                          const CCopasiParameter::Type type,
+                          const CType & defaultValue)
   {
     CCopasiParameter * pParm = getParameter(name);
 
-    if (pParm && pParm->getType() == type) return pParm;
+    if (pParm && pParm->getType() == type) return &pParm->getValue< CType >();
 
     if (pParm) removeParameter(name);
 
     addParameter(name, type, defaultValue);
 
-    return getParameter(name);
+    return &getParameter(name)->getValue< CType >();
   }
 
   /**
@@ -290,30 +288,62 @@ public:
   /**
    * Retrieve a pointer to the value of a parameter or subgroup
    * @param const std::string & name
-   * @return const CCopasiParameter::Value & Value
+   * @return const CType & Value
    */
-  const CCopasiParameter::Value & getValue(const std::string & name) const;
+  template <class CType> const CType & getValue(const std::string & name) const
+  {
+    const CCopasiParameter * pParameter = getParameter(name);
 
-  /**
-   * Retrieve a pointer to the value of a parameter or subgroup
-   * @param const size_t & index
-   * @return const CCopasiParameter::Value & Value
-   */
-  const CCopasiParameter::Value & getValue(const size_t & index) const;
+    if (!pParameter)
+      fatalError();
+
+    return pParameter->getValue<CType>();
+  }
 
   /**
    * Retrieve a pointer to the value of a parameter or subgroup
    * @param const std::string & name
-   * @return CCopasiParameter::Value & Value
+   * @return CType & Value
    */
-  CCopasiParameter::Value & getValue(const std::string & name);
+  template <class CType> CType & getValue(const std::string & name)
+  {
+    CCopasiParameter * pParameter = getParameter(name);
+
+    if (!pParameter)
+      fatalError();
+
+    return pParameter->getValue<CType>();
+  }
 
   /**
    * Retrieve a pointer to the value of a parameter or subgroup
    * @param const size_t & index
-   * @return CCopasiParameter::Value & Value
+   * @return const CType & Value
    */
-  CCopasiParameter::Value & getValue(const size_t & index);
+  template <class CType> const CType & getValue(const size_t & index) const
+  {
+    const CCopasiParameter * pParameter = getParameter(index);
+
+    if (!pParameter)
+      fatalError();
+
+    return pParameter->getValue<CType>();
+  }
+
+  /**
+   * Retrieve a pointer to the value of a parameter or subgroup
+   * @param const size_t & index
+   * @return CType & Value
+   */
+  template <class CType> CType & getValue(const size_t & index)
+  {
+    CCopasiParameter * pParameter = getParameter(index);
+
+    if (!pParameter)
+      fatalError();
+
+    return pParameter->getValue<CType>();
+  }
 
   /**
    * Retrieve the type of a parameter or subgroup
@@ -502,10 +532,8 @@ ElevateTo * elevate(CCopasiParameter * pParm)
 
   if (pGrp)
     {
-      std::vector< CCopasiParameter * >::iterator it =
-        pGrp->CCopasiParameter::getValue().pGROUP->begin();
-      std::vector< CCopasiParameter * >::iterator end =
-        pGrp->CCopasiParameter::getValue().pGROUP->end();
+      std::vector< CCopasiParameter * >::iterator it = pGrp->beginIndex();
+      std::vector< CCopasiParameter * >::iterator end = pGrp->endIndex();
 
       while (it != end && *it != pParm) ++it;
 

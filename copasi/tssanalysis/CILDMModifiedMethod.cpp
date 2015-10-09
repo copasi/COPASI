@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -60,7 +60,7 @@ void CILDMModifiedMethod::start()
 
   /* ILDM related staff  */
 
-  mDtol = * getValue("Deuflhard Tolerance").pUDOUBLE;
+  mDtol = getValue< C_FLOAT64 >("Deuflhard Tolerance");
 
   mVslow.resize(mDim, mDim);
   mVslow_metab.resize(mDim, mDim);
@@ -115,7 +115,7 @@ void CILDMModifiedMethod::step(const double & deltaT)
 
   for (; pSpecies != pSpeciesEnd; ++pSpecies, ++pX)
     {
-      *pX = mNumber2Concentration * *pSpecies;
+      *pX = mNumber2Concentration **pSpecies;
     }
 
   memcpy(mY_initial.array(), mpFirstSpeciesRate, mDim * sizeof(C_FLOAT64));
@@ -127,7 +127,7 @@ void CILDMModifiedMethod::step(const double & deltaT)
 
   for (; pRate != pRateEnd; ++pRate, ++pX)
     {
-      *pX = mNumber2Concentration * *pRate;
+      *pX = mNumber2Concentration **pRate;
     }
 
   mJacobian_initial = mJacobian;

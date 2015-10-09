@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -78,7 +78,7 @@ void CSteadyStateProblem::setJacobianRequested(bool & jacobianRequested)
  * @return bool jacobianRequested
  */
 bool CSteadyStateProblem::isJacobianRequested() const
-{return * getValue("JacobianRequested").pBOOL;}
+{return getValue< bool >("JacobianRequested");}
 
 /**
  * Set whether stability analysis is requested.
@@ -92,7 +92,7 @@ void CSteadyStateProblem::setStabilityAnalysisRequested(bool & stabilityAnalysis
  * @return bool stabilityAnalysisRequested
  */
 bool CSteadyStateProblem::isStabilityAnalysisRequested() const
-{return * getValue("StabilityAnalysisRequested").pBOOL;}
+{return getValue< bool >("StabilityAnalysisRequested");}
 
 /**
  * Load a steadystate problem
@@ -104,9 +104,8 @@ void CSteadyStateProblem::load(CReadConfig & configBuffer,
   if (configBuffer.getVersion() < "4.0")
     {
       configBuffer.getVariable("RepStabilityAnalysis", "bool" ,
-                               getValue("StabilityAnalysisRequested").pBOOL,
+                               &getValue< bool >("StabilityAnalysisRequested"),
                                CReadConfig::LOOP);
-      setValue("JacobianRequested",
-               * getValue("StabilityAnalysisRequested").pBOOL);
+      setValue("JacobianRequested", getValue< bool >("StabilityAnalysisRequested"));
     }
 }

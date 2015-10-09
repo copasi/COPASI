@@ -105,24 +105,24 @@ void CStochMethod::initializeParameter()
   // Check whether we have a method with the old parameter names
   if ((pParm = getParameter("STOCH.MaxSteps")) != NULL)
     {
-      setValue("Max Internal Steps", *pParm->getValue().pINT);
+      setValue("Max Internal Steps", pParm->getValue< C_INT32 >());
       removeParameter("STOCH.MaxSteps");
 
       if ((pParm = getParameter("STOCH.Subtype")) != NULL)
         {
-          setValue("Subtype", *pParm->getValue().pUINT);
+          setValue("Subtype", pParm->getValue< unsigned C_INT32 >());
           removeParameter("STOCH.Subtype");
         }
 
       if ((pParm = getParameter("STOCH.UseRandomSeed")) != NULL)
         {
-          setValue("Use Random Seed", *pParm->getValue().pBOOL);
+          setValue("Use Random Seed", pParm->getValue< bool >());
           removeParameter("STOCH.UseRandomSeed");
         }
 
       if ((pParm = getParameter("STOCH.RandomSeed")) != NULL)
         {
-          setValue("Random Seed", *pParm->getValue().pUINT);
+          setValue("Random Seed", pParm->getValue< unsigned C_INT32 >());
           removeParameter("STOCH.RandomSeed");
         }
     }
@@ -171,12 +171,12 @@ void CStochMethod::start()
 
   mpRandomGenerator = &mpContainer->getRandomGenerator();
 
-  bool useRandomSeed = * getValue("Use Random Seed").pBOOL;
-  unsigned C_INT32 randomSeed = * getValue("Random Seed").pUINT;
+  bool useRandomSeed = getValue< bool >("Use Random Seed");
+  unsigned C_INT32 randomSeed = getValue< unsigned C_INT32 >("Random Seed");
 
   if (useRandomSeed) mpRandomGenerator->initialize(randomSeed);
 
-  mMaxSteps = * getValue("Max Internal Steps").pINT;
+  mMaxSteps = getValue< C_INT32 >("Max Internal Steps");
 
   //initialize the vector of ints that contains the particle numbers
   //for the discrete simulation. This also floors all particle numbers in the model.
@@ -343,7 +343,7 @@ bool CStochMethod::isValidProblem(const CCopasiProblem * pProblem)
       return false;
     }
 
-  if (* getValue("Max Internal Steps").pINT <= 0)
+  if (getValue< C_INT32 >("Max Internal Steps") <= 0)
     {
       //max steps should be at least 1
       CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 15);

@@ -72,7 +72,7 @@ void CScanProblem::setSubtask(CTaskEnum::Task type)
 }
 
 CTaskEnum::Task CScanProblem::getSubtask() const
-{return *(CTaskEnum::Task *) getValue("Subtask").pUINT;}
+{return (CTaskEnum::Task) getValue< unsigned C_INT32 >("Subtask");}
 
 //************************************
 
@@ -82,7 +82,7 @@ void CScanProblem::setOutputInSubtask(bool ois)
 }
 
 const bool & CScanProblem::getOutputInSubtask() const
-{return * getValue("Output in subtask").pBOOL;}
+{return getValue< bool >("Output in subtask");}
 
 //************************************
 
@@ -92,7 +92,7 @@ void CScanProblem::setContinueFromCurrentState(bool aic)
 }
 
 bool CScanProblem::getContinueFromCurrentState() const
-{return * getValue("Adjust initial conditions").pBOOL;}
+{return getValue< bool >("Adjust initial conditions");}
 
 //************************************
 
@@ -201,7 +201,7 @@ void CScanProblem::fixBuild81()
       CCopasiParameterGroup * pGroup = static_cast< CCopasiParameterGroup * >(*it);
       CCopasiParameter * pParam = pGroup->getParameter("Type");
 
-      if (pParam == NULL || * (Type *) pParam->getValue().pUINT != SCAN_RANDOM)
+      if (pParam == NULL || (Type) pParam->getValue< unsigned C_INT32 >() != SCAN_RANDOM)
         {
           continue;
         }
@@ -209,7 +209,7 @@ void CScanProblem::fixBuild81()
       // Check whether distribution type is set and not uniform
       pParam = pGroup->getParameter("Distribution type");
 
-      if (pParam == NULL || * (Type *) pParam->getValue().pUINT == 0)
+      if (pParam == NULL || (Type) pParam->getValue< unsigned C_INT32 >() == 0)
         {
           continue;
         }
@@ -217,7 +217,7 @@ void CScanProblem::fixBuild81()
       // Check whether log is set and true
       pParam = pGroup->getParameter("log");
 
-      if (pParam == NULL || * pParam->getValue().pBOOL == false)
+      if (pParam == NULL || pParam->getValue< bool >() == false)
         {
           continue;
         }
@@ -227,14 +227,14 @@ void CScanProblem::fixBuild81()
 
       if (pParam != NULL)
         {
-          pParam->setValue(log(*pParam->getValue().pDOUBLE));
+          pParam->setValue(log(pParam->getValue< C_FLOAT64 >()));
         }
 
       pParam = pGroup->getParameter("Maximum");
 
       if (pParam != NULL)
         {
-          pParam->setValue(log(*pParam->getValue().pDOUBLE));
+          pParam->setValue(log(pParam->getValue< C_FLOAT64 >()));
         }
     }
 

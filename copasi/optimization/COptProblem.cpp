@@ -148,16 +148,11 @@ COptProblem::~COptProblem()
 
 void COptProblem::initializeParameter()
 {
-  mpParmSubtaskCN =
-    assertParameter("Subtask", CCopasiParameter::CN, CCopasiObjectName(""))->getValue().pCN;
-  mpParmObjectiveExpression =
-    assertParameter("ObjectiveExpression", CCopasiParameter::EXPRESSION, std::string(""))->getValue().pEXPRESSION;
-  mpParmMaximize =
-    assertParameter("Maximize", CCopasiParameter::BOOL, false)-> getValue().pBOOL;
-  mpParmRandomizeStartValues =
-    assertParameter("Randomize Start Values", CCopasiParameter::BOOL, false)-> getValue().pBOOL;
-  mpParmCalculateStatistics =
-    assertParameter("Calculate Statistics", CCopasiParameter::BOOL, true)-> getValue().pBOOL;
+  mpParmSubtaskCN = assertParameter("Subtask", CCopasiParameter::CN, CCopasiObjectName(""));
+  mpParmObjectiveExpression = assertParameter("ObjectiveExpression", CCopasiParameter::EXPRESSION, std::string(""));
+  mpParmMaximize = assertParameter("Maximize", CCopasiParameter::BOOL, false);
+  mpParmRandomizeStartValues = assertParameter("Randomize Start Values", CCopasiParameter::BOOL, false);
+  mpParmCalculateStatistics = assertParameter("Calculate Statistics", CCopasiParameter::BOOL, true);
 
   mpGrpItems = assertGroup("OptimizationItemList");
   mpGrpConstraints = assertGroup("OptimizationConstraintList");
@@ -174,7 +169,7 @@ bool COptProblem::elevateChildren()
 
       if ((pParameter = getParameter("Steady-State")) != NULL)
         {
-          if (*pParameter->getValue().pSTRING != "")
+          if (pParameter->getValue< std::string >() != "")
             {
               setSubtaskType(CTaskEnum::steadyState);
             }
@@ -184,7 +179,7 @@ bool COptProblem::elevateChildren()
 
       if ((pParameter = getParameter("Time-Course")) != NULL)
         {
-          if (*pParameter->getValue().pSTRING != "")
+          if (pParameter->getValue< std::string >() != "")
             {
               setSubtaskType(CTaskEnum::timeCourse);
             }
@@ -230,8 +225,8 @@ bool COptProblem::elevateChildren()
 
   if (!mpGrpItems) return false;
 
-  std::vector<CCopasiParameter *> * pValue =
-    mpGrpItems->CCopasiParameter::getValue().pGROUP;
+  std::vector< CCopasiParameter * > * pValue =
+    &mpGrpItems->CCopasiParameter::getValue< CCopasiParameterGroup::elements >();
 
   index_iterator it = pValue->begin();
   index_iterator end = pValue->end();
@@ -239,15 +234,14 @@ bool COptProblem::elevateChildren()
   for (; it != end; ++it)
     if (!elevate<COptItem, CCopasiParameterGroup>(*it)) return false;
 
-  mpOptItems =
-    static_cast<std::vector<COptItem * > * >(mpGrpItems->CCopasiParameter::getValue().pVOID);
+  mpOptItems = &mpGrpItems->CCopasiParameter::getValue< std::vector< COptItem * > >();
 
   mpGrpConstraints =
     elevate<CCopasiParameterGroup, CCopasiParameterGroup>(mpGrpConstraints);
 
   if (!mpGrpConstraints) return false;
 
-  pValue = mpGrpConstraints->CCopasiParameter::getValue().pGROUP;
+  pValue = &mpGrpConstraints->CCopasiParameter::getValue< CCopasiParameterGroup::elements >();
 
   it = pValue->begin();
   end = pValue->end();
@@ -256,7 +250,7 @@ bool COptProblem::elevateChildren()
     if (!elevate<COptItem, CCopasiParameterGroup>(*it)) return false;
 
   mpConstraintItems =
-    static_cast<std::vector<COptItem * > * >(mpGrpConstraints->CCopasiParameter::getValue().pVOID);
+    &mpGrpConstraints->CCopasiParameter::getValue< std::vector< COptItem * > >();
 
   return true;
 }

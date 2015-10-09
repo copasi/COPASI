@@ -388,56 +388,56 @@ bool CCopasiXMLInterface::saveParameter(const CCopasiParameter & parameter)
   switch (parameter.getType())
     {
       case CCopasiParameter::DOUBLE:
-        Attributes.add("value", * parameter.getValue().pDOUBLE);
+        Attributes.add("value", parameter.getValue< C_FLOAT64 >());
 
         if (!saveElement("Parameter", Attributes)) success = false;
 
         break;
 
       case CCopasiParameter::UDOUBLE:
-        Attributes.add("value", * parameter.getValue().pUDOUBLE);
+        Attributes.add("value", parameter.getValue< C_FLOAT64 >());
 
         if (!saveElement("Parameter", Attributes)) success = false;
 
         break;
 
       case CCopasiParameter::INT:
-        Attributes.add("value", * parameter.getValue().pINT);
+        Attributes.add("value", parameter.getValue< C_INT32 >());
 
         if (!saveElement("Parameter", Attributes)) success = false;
 
         break;
 
       case CCopasiParameter::UINT:
-        Attributes.add("value", * parameter.getValue().pUINT);
+        Attributes.add("value", parameter.getValue< unsigned C_INT32 >());
 
         if (!saveElement("Parameter", Attributes)) success = false;
 
         break;
 
       case CCopasiParameter::BOOL:
-        Attributes.add("value", * parameter.getValue().pBOOL);
+        Attributes.add("value", parameter.getValue< bool >());
 
         if (!saveElement("Parameter", Attributes)) success = false;
 
         break;
 
       case CCopasiParameter::STRING:
-        Attributes.add("value", * parameter.getValue().pSTRING);
+        Attributes.add("value", parameter.getValue< std::string >());
 
         if (!saveElement("Parameter", Attributes)) success = false;
 
         break;
 
       case CCopasiParameter::KEY:
-        Attributes.add("value", * parameter.getValue().pKEY);
+        Attributes.add("value", parameter.getValue< std::string >());
 
         if (!saveElement("Parameter", Attributes)) success = false;
 
         break;
 
       case CCopasiParameter::FILE:
-        File = * parameter.getValue().pFILE;
+        File = parameter.getValue< std::string >();
 
         if (!CDirEntry::isRelativePath(File) &&
             !CDirEntry::makePathRelative(File, mPWD))
@@ -450,7 +450,7 @@ bool CCopasiXMLInterface::saveParameter(const CCopasiParameter & parameter)
         break;
 
       case CCopasiParameter::CN:
-        Attributes.add("value", * parameter.getValue().pCN);
+        Attributes.add("value", parameter.getValue< CCopasiObjectName >());
 
         if (!saveElement("Parameter", Attributes)) success = false;
 
@@ -460,7 +460,7 @@ bool CCopasiXMLInterface::saveParameter(const CCopasiParameter & parameter)
 
         if (!startSaveElement("ParameterText", Attributes)) success = false;
 
-        if (!saveData(*parameter.getValue().pEXPRESSION)) success = false;
+        if (!saveData(parameter.getValue< std::string >())) success = false;
 
         if (!endSaveElement("ParameterText")) success = false;
 
@@ -471,7 +471,7 @@ bool CCopasiXMLInterface::saveParameter(const CCopasiParameter & parameter)
 
         if (!startSaveElement("ParameterGroup", Attributes)) success = false;
 
-        if (!saveParameterGroup(* parameter.getValue().pGROUP)) success = false;
+        if (!saveParameterGroup(parameter.getValue< CCopasiParameterGroup::elements >())) success = false;
 
         if (!endSaveElement("ParameterGroup")) success = false;
 

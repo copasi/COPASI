@@ -126,13 +126,13 @@ void CTauLeapMethod::initializeParameter()
 
       if ((pParm = getParameter("TAULEAP.UseRandomSeed")) != NULL)
         {
-          setValue("Use Random Seed", *pParm->getValue().pBOOL);
+          setValue("Use Random Seed", pParm->getValue< bool >());
           removeParameter("TAULEAP.UseRandomSeed");
         }
 
       if ((pParm = getParameter("TAULEAP.RandomSeed")) != NULL)
         {
-          setValue("Random Seed", *pParm->getValue().pUINT);
+          setValue("Random Seed", pParm->getValue< unsigned C_INT32 >());
           removeParameter("TAULEAP.RandomSeed");
         }
     }
@@ -178,15 +178,15 @@ void CTauLeapMethod::start()
 
   mpRandomGenerator = &mpContainer->getRandomGenerator();
 
-  bool useRandomSeed = * getValue("Use Random Seed").pBOOL;
-  unsigned C_INT32 randomSeed = * getValue("Random Seed").pUINT;
+  bool useRandomSeed = getValue< bool >("Use Random Seed");
+  unsigned C_INT32 randomSeed = getValue< unsigned C_INT32 >("Random Seed");
 
   if (useRandomSeed) mpRandomGenerator->initialize(randomSeed);
 
-  mEpsilon = * getValue("Epsilon").pDOUBLE;
-  mUseRandomSeed = * getValue("Use Random Seed").pBOOL;
-  mRandomSeed = * getValue("Random Seed").pUINT;
-  mMaxSteps = * getValue("Max Internal Steps").pUINT;
+  mEpsilon = getValue< C_FLOAT64 >("Epsilon");
+  mUseRandomSeed = getValue< bool >("Use Random Seed");
+  mRandomSeed = getValue< unsigned C_INT32 >("Random Seed");
+  mMaxSteps = getValue< unsigned C_INT32 >("Max Internal Steps");
 
   // Size the arrays
   mReactions.initialize(mpContainer->getReactions());
