@@ -1,4 +1,4 @@
-// Copyright (C) 2011 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -11,6 +11,7 @@
 #include "CQTaskMethodWidget.h"
 #include "CProgressBar.h"
 #include "qtUtilities.h"
+#include "CQTaskMethodParametersDM.h"
 
 #include "steadystate/CSteadyStateTask.h"
 #include "lna/CLNATask.h"
@@ -43,7 +44,26 @@ CQLNAWidget::~CQLNAWidget()
 
 void CQLNAWidget::slotSteadyStateChecked()
 {
-  loadParameterTable();
+  if (mpCheckSteadyState->isChecked())
+    {
+      CSteadyStateTask * pSteadyStateTask =
+        dynamic_cast<CSteadyStateTask *>((*(*CCopasiRootContainer::getDatamodelList())[0]->getTaskList())["Steady-State"]);
+
+      if (pSteadyStateTask != NULL)
+        {
+          mpMethodWidget->pushMethod(pSteadyStateTask->getMethod());
+        }
+    }
+  else
+    {
+      CSteadyStateTask * pSteadyStateTask =
+        dynamic_cast<CSteadyStateTask *>((*(*CCopasiRootContainer::getDatamodelList())[0]->getTaskList())["Steady-State"]);
+
+      if (pSteadyStateTask != NULL)
+        {
+          mpMethodWidget->popMethod(pSteadyStateTask->getMethod());
+        }
+    }
 }
 
 bool CQLNAWidget::runTask()
@@ -79,22 +99,30 @@ bool CQLNAWidget::loadTask()
 
   if (!pTask) return false;
 
-  loadCommon();
-//  loadMethod(); --> we cannot do that because of different structure -- 08.04.09
-
   CLNAProblem * pProblem =
     dynamic_cast< CLNAProblem * >(mpTask->getProblem());
 
   if (!pProblem) return false;
 
-  // instead calling loadMethod(), the following codes is used
+  loadCommon();
+  loadMethod();
+
   mpCheckSteadyState->setChecked(pProblem->isSteadyStateRequested());
 
-  bool success = loadParameterTable();
+  if (mpCheckSteadyState->isChecked())
+    {
+      CSteadyStateTask * pSteadyStateTask =
+        dynamic_cast<CSteadyStateTask *>((*(*CCopasiRootContainer::getDatamodelList())[0]->getTaskList())["Steady-State"]);
+
+      if (pSteadyStateTask != NULL)
+        {
+          mpMethodWidget->pushMethod(pSteadyStateTask->getMethod());
+        }
+    }
 
   mChanged = false;
 
-  return success;
+  return true;
 }
 
 bool CQLNAWidget::saveTask()
@@ -104,7 +132,7 @@ bool CQLNAWidget::saveTask()
   if (!pTask) return false;
 
   saveCommon();
-  // saveMethod();
+  saveMethod();
 
   CLNAProblem * pProblem =
     dynamic_cast< CLNAProblem * >(mpTask->getProblem());
@@ -117,14 +145,12 @@ bool CQLNAWidget::saveTask()
       mChanged = true;
     }
 
-  bool success = saveParameterTable();
-
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
 
   if (mChanged)(*CCopasiRootContainer::getDatamodelList())[0]->changed();
 
   mChanged = false;
-  return success;
+  return true;
 }
 
 void CQLNAWidget::init()
@@ -139,108 +165,4 @@ void CQLNAWidget::init()
   vboxLayout->addWidget(mpMethodWidget);
 
   vboxLayout->addWidget(mpBtnWidget);     // 'footer'
-}
-
-bool CQLNAWidget::loadParameterTable()
-{
-
-  bool init = (mpMethodWidget->mpTableParameter->rowCount() == 0);
-
-  size_t NumRows = mpMethod->size();
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-
-  if (mpCheckSteadyState->isChecked())
-    {
-      CSteadyStateTask * pSteadyStateTask =
-        dynamic_cast<CSteadyStateTask *>((*(*CCopasiRootContainer::getDatamodelList())[0]->getTaskList())["Steady-State"]);
-
-      if (!pSteadyStateTask) return false;
-
-      NumRows += pSteadyStateTask->getMethod()->size();
-    }
-
-  mpMethodWidget->mpTableParameter->setRowCount((int) NumRows);
-
-  size_t i, k;
-  CCopasiParameter::Type Type;
-  QString value;
-
-  for (i = 0; i < mpMethod->size() && init; i++)
-    {
-      mpMethodWidget->mpTableParameter->setVerticalHeaderItem((int) i, new QTableWidgetItem());
-      mpMethodWidget->mpTableParameter->verticalHeaderItem((int) i)->setText(FROM_UTF8(mpMethod->getName(i)));
-
-      value = getParameterValue(mpMethod, i, &Type);
-      QTableWidgetItem *itemValue = new QTableWidgetItem(value);
-      itemValue->setTextAlignment(Qt::AlignRight);
-      mpMethodWidget->mpTableParameter->setItem((int) i, 0, itemValue);
-    }
-
-  if (mpCheckSteadyState->isChecked())
-    {
-      CSteadyStateTask * pSteadyStateTask =
-        dynamic_cast<CSteadyStateTask *>((*(*CCopasiRootContainer::getDatamodelList())[0]->getTaskList())["Steady-State"]);
-
-      if (!pSteadyStateTask) return false;
-
-      CCopasiMethod * pMethod = pSteadyStateTask->getMethod();
-
-      for (i = mpMethod->size(), k = 0; k < pMethod->size(); k++, i++)
-        {
-          // create item of the current row and give it a name
-          mpMethodWidget->mpTableParameter->setVerticalHeaderItem((int) i, new QTableWidgetItem());
-          mpMethodWidget->mpTableParameter->verticalHeaderItem((int) i)->setText(FROM_UTF8(pMethod->getName(k)));
-
-          value = getParameterValue(pMethod, k, &Type);
-          QTableWidgetItem *itemValue = new QTableWidgetItem(value);
-          itemValue->setTextAlignment(Qt::AlignRight);
-          mpMethodWidget->mpTableParameter->setItem((int) i, 0, itemValue);
-        }
-    }
-
-  // the table will be automatically adjusted -> 31.10.09
-
-  return true;
-}
-
-bool CQLNAWidget::saveParameterTable()
-{
-  size_t i, k;
-  QString value;
-  CCopasiParameter::Type Type;
-
-  for (i = 0; i < mpMethod->size(); i++)
-    {
-      value = mpMethodWidget->mpTableParameter->item((int) i, 0)->text();
-
-      if (value != getParameterValue(mpMethod, i, &Type))
-        {
-          setParameterValue(mpMethod, i, value);
-          mChanged = true;
-        }
-    }
-
-  if (mpCheckSteadyState->isChecked())
-    {
-      assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-      CSteadyStateTask * pSteadyStateTask =
-        dynamic_cast<CSteadyStateTask *>((*(*CCopasiRootContainer::getDatamodelList())[0]->getTaskList())["Steady-State"]);
-
-      if (!pSteadyStateTask) return false;
-
-      CCopasiMethod * pMethod = pSteadyStateTask->getMethod();
-
-      for (i = mpMethod->size(), k = 0; k < pMethod->size(); i++, k++)
-        {
-          value = mpMethodWidget->mpTableParameter->item((int) i, 0)->text();
-
-          if (value != getParameterValue(pMethod, k, &Type))
-            {
-              setParameterValue(pMethod, k, value);
-              mChanged = true;
-            }
-        }
-    }
-
-  return true;
 }

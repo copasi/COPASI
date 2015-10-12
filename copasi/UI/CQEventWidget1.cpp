@@ -264,25 +264,6 @@ CQEventWidget1::loadFromEvent()
         {
           Targets.append(FROM_UTF8(pEntity->getObjectDisplayName()));
           mAssignments.add(**it);
-
-#ifdef XXXX // Add type dependent information
-
-          if (sObjectName == "Compartment")
-            {
-              sName = FROM_UTF8(CCopasiRootContainer::getKeyFactory()->get(it->first)->getObjectDisplayName() + ".Volume");
-            }
-
-          if (sObjectName == "Metabolite")
-            {
-              sName = FROM_UTF8("[" + CCopasiRootContainer::getKeyFactory()->get(it->first)->getObjectDisplayName() + "]");
-            }
-
-          if (sObjectName.contains("ModelValue"))
-            {
-              sName = FROM_UTF8(CCopasiRootContainer::getKeyFactory()->get(it->first)->getObjectDisplayName());
-            }
-
-#endif // XXXX
         }
     }
 
@@ -325,7 +306,6 @@ void CQEventWidget1::saveToEvent()
 
   if (mpEvent->getTriggerExpression() != mpExpressionTrigger->mpExpressionWidget->getExpression())
     {
-
       mpUndoStack->push(
         new EventChangeCommand(
           CCopasiUndoCommand::EVENT_TRIGGER_EXPRESSION_CHANGE,
@@ -341,44 +321,11 @@ void CQEventWidget1::saveToEvent()
 
   if (mpEvent->getPriorityExpression() != mpExpressionPriority->mpExpressionWidget->getExpression())
     {
-
       mpUndoStack->push(
         new EventChangeCommand(
           CCopasiUndoCommand::EVENT_PRIORITY_EXPRESSION_CHANGE,
           FROM_UTF8(mpEvent->getPriorityExpression()),
           FROM_UTF8(mpExpressionPriority->mpExpressionWidget->getExpression()),
-          mpEvent,
-          this
-        )
-      );
-
-      mChanged = true;
-    }
-
-  if (mpEvent->getPersistentTrigger() !=  mpTriggerPersistent->isChecked())
-    {
-
-      mpUndoStack->push(
-        new EventChangeCommand(
-          CCopasiUndoCommand::EVENT_TRIGGER_PERSISTENT_CHANGE,
-          mpEvent->getPersistentTrigger(),
-          mpTriggerPersistent->isChecked(),
-          mpEvent,
-          this
-        )
-      );
-
-      mChanged = true;
-    }
-
-  if (mpEvent->getFireAtInitialTime() !=  mpFireAtInitialTime->isChecked())
-    {
-
-      mpUndoStack->push(
-        new EventChangeCommand(
-          CCopasiUndoCommand::EVENT_TRIGGER_INITIALTIME_CHANGE,
-          mpEvent->getFireAtInitialTime(),
-          mpFireAtInitialTime->isChecked(),
           mpEvent,
           this
         )
@@ -400,6 +347,36 @@ void CQEventWidget1::saveToEvent()
           mpExpressionDelay->mpExpressionWidget->getExpression()
         )
       );
+      mChanged = true;
+    }
+
+  if (mpEvent->getFireAtInitialTime() !=  mpFireAtInitialTime->isChecked())
+    {
+      mpUndoStack->push(
+        new EventChangeCommand(
+          CCopasiUndoCommand::EVENT_TRIGGER_INITIALTIME_CHANGE,
+          mpEvent->getFireAtInitialTime(),
+          mpFireAtInitialTime->isChecked(),
+          mpEvent,
+          this
+        )
+      );
+
+      mChanged = true;
+    }
+
+  if (mpEvent->getPersistentTrigger() ==  mpTriggerPersistent->isChecked())
+    {
+      mpUndoStack->push(
+        new EventChangeCommand(
+          CCopasiUndoCommand::EVENT_TRIGGER_PERSISTENT_CHANGE,
+          mpEvent->getPersistentTrigger(),
+          !mpTriggerPersistent->isChecked(),
+          mpEvent,
+          this
+        )
+      );
+
       mChanged = true;
     }
 
@@ -438,7 +415,6 @@ void CQEventWidget1::saveToEvent()
         }
       else if (OldAssignments[Found]->getExpression() != (*it)->getExpression())
         {
-
           mpUndoStack->push(
             new EventChangeCommand(
               CCopasiUndoCommand::EVENT_ASSIGNMENT_EXPRESSION_CHANGE,
@@ -866,7 +842,6 @@ void CQEventWidget1::deleteEvent(UndoEventData *pEventData)
 #undef DELETE
   protectedNotify(ListViews::EVENT, ListViews::DELETE, key);
   protectedNotify(ListViews::EVENT, ListViews::DELETE, "");//Refresh all as there may be dependencies.
-
 }
 
 void CQEventWidget1::addEvent(UndoEventData *pData)
@@ -946,7 +921,6 @@ CQEventWidget1::changeValue(const std::string &key,
       case CCopasiUndoCommand::EVENT_TRIGGER_PERSISTENT_CHANGE:
         mpEvent->setPersistentTrigger(newValue.toBool());
         break;
-
 
       case CCopasiUndoCommand::EVENT_ASSIGNMENT_ADDED:
       case CCopasiUndoCommand::EVENT_ASSIGNMENT_REMOVED:

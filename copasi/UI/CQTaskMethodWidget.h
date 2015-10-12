@@ -1,4 +1,4 @@
-// Copyright (C) 2011 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -12,6 +12,7 @@
 #include "copasi/utilities/CCopasiMethod.h"
 
 class CCopasiTask;
+class CQTaskMethodParametersDM;
 
 class CQTaskMethodWidget: public QWidget, public Ui::CQTaskMethodWidget
 {
@@ -34,6 +35,10 @@ public:
 
   void clearHistory();
 
+  void pushMethod(CCopasiMethod * pMethod);
+
+  void popMethod(CCopasiMethod * pMethod);
+
 protected slots:
 
   void changeMethod(int);
@@ -51,6 +56,7 @@ protected:
   std::map< CTaskEnum::Method, CCopasiMethod * > mMethodHistory;
   bool mShowMethods;
   bool mShowMethodParameters;
+  CQTaskMethodParametersDM * mpMethodParameterDM;
 };
 
 #endif // COPASI_CQTaskMethodWidget

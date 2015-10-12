@@ -152,90 +152,76 @@ QString getParameterValue(const CCopasiParameterGroup * group,
                           CCopasiParameter::Type * type)
 {return getParameterValue(group, group->getIndex(name), type);}
 
-bool setParameterValue(CCopasiParameterGroup * group,
-                       const size_t & index,
-                       const QString & value)
+bool setParameterValue(CCopasiParameter * pParameter,
+                       const QVariant & value)
 {
-  if (index >= group->size())
-    return false;
+  if (pParameter == NULL) return false;
 
-  if (getParameterValue(group, index) == value) return true;
-
-  bool ok;
-
-  C_FLOAT64 DOUBLE;
-  C_INT32 INT;
-  unsigned C_INT32 UINT;
-  bool BOOL;
-  std::string STRING;
-  CCopasiObjectName CN;
-
-  switch (group->getType(index))
+  switch (pParameter->getType())
     {
       case CCopasiParameter::DOUBLE:
       case CCopasiParameter::UDOUBLE:
-        DOUBLE = value.toDouble(&ok);
-
-        if (!ok) return false;
-
-        return group->setValue(index, DOUBLE);
+        return pParameter->setValue< C_FLOAT64 >(value.toDouble());
         break;
 
       case CCopasiParameter::INT:
-        INT = value.toInt(&ok);
-
-        if (!ok) return false;
-
-        return group->setValue(index, INT);
+        return pParameter->setValue< C_INT32 >(value.toInt());
         break;
 
       case CCopasiParameter::UINT:
-        UINT = value.toUInt(&ok);
-
-        if (!ok) return false;
-
-        return group->setValue(index, UINT);
+        return pParameter->setValue< unsigned C_INT32 >(value.toUInt());
         break;
 
       case CCopasiParameter::BOOL:;
-        UINT = value.toUShort(&ok);
-
-        if (!ok) return false;
-
-        if (UINT == 1) BOOL = true;
-        else if (UINT == 0) BOOL = false;
-        else return false;
-
-        return group->setValue(index, BOOL);
+        return pParameter->setValue< bool >(value.toBool());
         break;
 
       case CCopasiParameter::STRING:
       case CCopasiParameter::KEY:
-        STRING = TO_UTF8(value);
-        return group->setValue(index, STRING);
+      case CCopasiParameter::FILE:
+      case CCopasiParameter::EXPRESSION:
+        return pParameter->setValue< std::string >(TO_UTF8(value.toString()));
         break;
 
       case CCopasiParameter::CN:
-        CN = std::string(TO_UTF8(value));
-        return group->setValue(index, CN);
+        return pParameter->setValue< CCopasiObjectName >(std::string(TO_UTF8(value.toString())));
         break;
 
       case CCopasiParameter::GROUP:
       case CCopasiParameter::INVALID:
-        return false;
-        break;
-
-      default:
         break;
     }
 
   return false;
 }
 
-bool setParameterValue(CCopasiParameterGroup * group,
+bool setParameterValue(CCopasiParameterGroup * pGroup,
+                       const size_t & index,
+                       const QVariant & value)
+{
+  return setParameterValue(pGroup->getParameter(index), value);
+}
+
+bool setParameterValue(CCopasiParameterGroup * pGroup,
+                       const size_t & index,
+                       const QString & value)
+{
+  return setParameterValue(pGroup->getParameter(index), QVariant(value));
+}
+
+bool setParameterValue(CCopasiParameterGroup * pGroup,
                        const std::string & name,
                        const QString & value)
-{return setParameterValue(group, group->getIndex(name), value);}
+{
+  return setParameterValue(pGroup->getParameter(name), QVariant(value));
+}
+
+bool setParameterValue(CCopasiParameterGroup * pGroup,
+                       const std::string & name,
+                       const QVariant & value)
+{
+  return setParameterValue(pGroup->getParameter(name), value);
+}
 
 C_INT32 checkSelection(const QString & file)
 {

@@ -15,6 +15,8 @@
 #ifndef COPASI_qtUtilities
 #define COPASI_qtUtilities
 
+#include <QtCore/QVariant>
+
 #include <QtCore/QString>
 #include "utilities/CCopasiParameter.h"
 
@@ -22,8 +24,6 @@ class QStringList;
 class CCopasiParameterGroup;
 class CopasiWidget;
 class QObject;
-
-
 
 #define GET_MODEL(target)\
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);\
@@ -48,7 +48,6 @@ class QObject;
 //  if (pDataModel == NULL) return;\
 //  CModel * target = pDataModel->getModel();\
 //  if (target == NULL) return;
-
 
 /**
  * notifies the UI of a modification of the model.
@@ -97,9 +96,34 @@ QString getParameterValue(const CCopasiParameterGroup * group,
 QString getParameterValue(const CCopasiParameterGroup * group,
                           const std::string & name,
                           CCopasiParameter::Type * type = NULL);
+
 /**
  * Set a parameter of a parameter group from a value given as a QString.
- * Success = true is returned when the set operation was succesful, i.e.,
+ * Success = true is returned when the set operation was successful, i.e.,
+ * value == getParameterValue.
+ * @param CCopasiParameter * pParameter
+ * @param const QVariant & value
+ * @return bool success.
+ */
+bool setParameterValue(CCopasiParameter * pParameter,
+                       const QVariant & value);
+
+/**
+ * Set a parameter of a parameter group from a value given as a QString.
+ * Success = true is returned when the set operation was successful, i.e.,
+ * value == getParameterValue.
+ * @param CCopasiParameterGroup * group
+ * @param const size_t & index
+ * @param const QVariant & value
+ * @return bool success.
+ */
+bool setParameterValue(CCopasiParameterGroup * group,
+                       const size_t & index,
+                       const QVariant & value);
+
+/**
+ * Set a parameter of a parameter group from a value given as a QString.
+ * Success = true is returned when the set operation was successful, i.e.,
  * value == getParameterValue.
  * @param CCopasiParameterGroup * group
  * @param const size_t & index
@@ -112,7 +136,20 @@ bool setParameterValue(CCopasiParameterGroup * group,
 
 /**
  * Set a parameter of a parameter group from a value given as a QString.
- * Success = true is returned when the set operation was succesful, i.e.,
+ * Success = true is returned when the set operation was successful, i.e.,
+ * value == getParameterValue.
+ * @param CCopasiParameterGroup * group
+ * @param const std::string & name
+ * @param const QVariant & value
+ * @return bool success.
+ */
+bool setParameterValue(CCopasiParameterGroup * group,
+                       const std::string & name,
+                       const QVariant & value);
+
+/**
+ * Set a parameter of a parameter group from a value given as a QString.
+ * Success = true is returned when the set operation was successful, i.e.,
  * value == getParameterValue.
  * @param CCopasiParameterGroup * group
  * @param const std::string & name
@@ -121,7 +158,7 @@ bool setParameterValue(CCopasiParameterGroup * group,
  */
 bool setParameterValue(CCopasiParameterGroup * group,
                        const std::string & name,
-                       const QString & value);
+                       const QVariant & value);
 
 /**
  * Convert a utf8 encoded std::string to a QString

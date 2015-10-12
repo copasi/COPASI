@@ -5,7 +5,7 @@
 
 #include "CQTaskMethodWidget.h"
 #include "qtUtilities.h"
-
+#include "CQTaskMethodParametersDM.h"
 #include "copasi.h"
 
 #include "utilities/CCopasiTask.h"
@@ -19,19 +19,24 @@ CQTaskMethodWidget::CQTaskMethodWidget(QWidget* parent, Qt::WindowFlags f):
   mpActiveMethod(NULL),
   mMethodHistory(),
   mShowMethods(false),
-  mShowMethodParameters(false)
+  mShowMethodParameters(false),
+  mpMethodParameterDM(NULL)
 {
   setupUi(this);
 
-  mpTableParameter->verticalHeader()->setResizeMode(QHeaderView::ResizeToContents);
-  mpTableParameter->horizontalHeader()->setResizeMode(QHeaderView::ResizeToContents);
-  mpTableParameter->horizontalHeader()->hide();
+  // create a new QListview to be displayed on the screen..and set its property
+  mpMethodParameterDM = new CQTaskMethodParametersDM(this);
+  mpParameterView->setModel(mpMethodParameterDM);
+
+  // mpTableParameter->verticalHeader()->setResizeMode(QHeaderView::ResizeToContents);
+  // mpTableParameter->horizontalHeader()->setResizeMode(QHeaderView::ResizeToContents);
+  // mpTableParameter->horizontalHeader()->hide();
 
   mpLblMethod->hide();
   mpBoxMethod->hide();
 
   mpLblParameter->hide();
-  mpTableParameter->hide();
+  mpParameterView->hide();
 }
 
 CQTaskMethodWidget::~CQTaskMethodWidget()
@@ -43,22 +48,6 @@ void CQTaskMethodWidget::changeMethod(int /* index */)
 {
   if (mpTask == NULL)
     return;
-
-  // We update the active methods parameters
-  if (mShowMethodParameters)
-    {
-      unsigned C_INT32 i;
-      QString Value;
-
-      for (i = 0; i < mpActiveMethod->size(); i++)
-        {
-          if (!mpTableParameter->item(i, 0))
-            continue;
-
-          Value = mpTableParameter->item(i, 0)->text();
-          setParameterValue(mpActiveMethod, i, Value);
-        }
-    }
 
   CTaskEnum::Method Type =
     toEnum(TO_UTF8(mpBoxMethod->currentText()), CTaskEnum::MethodName, CTaskEnum::UnsetMethod);
@@ -121,13 +110,13 @@ void CQTaskMethodWidget::showMethodParameters(const bool & show)
 
   if (mShowMethodParameters)
     {
-      mpLblParameter->show();
-      mpTableParameter->show();
+      mpParameterView->show();
+      mpParameterView->show();
     }
   else
     {
-      mpLblParameter->hide();
-      mpTableParameter->hide();
+      mpParameterView->hide();
+      mpParameterView->hide();
     }
 }
 
@@ -142,32 +131,6 @@ bool CQTaskMethodWidget::loadMethod()
       mpBoxMethod->setCurrentIndex(mpBoxMethod->findText(FROM_UTF8(CTaskEnum::MethodName[mpActiveMethod->getSubType()])));
     }
 
-  if (mShowMethodParameters)
-    {
-      QString Value;
-
-      mpTableParameter->setRowCount((int) mpActiveMethod->size());
-
-      unsigned C_INT32 i;
-      CCopasiParameter::Type Type;
-
-      for (i = 0; i < mpActiveMethod->size(); i++)
-        {
-          // create item of the current row and give it a name
-          mpTableParameter->setVerticalHeaderItem(i, new QTableWidgetItem());
-          mpTableParameter->verticalHeaderItem(i)->setText(FROM_UTF8(mpActiveMethod->getName(i)));
-
-          Value = getParameterValue(mpActiveMethod, i, &Type);
-
-          QTableWidgetItem *pValueItem = new QTableWidgetItem();
-          pValueItem->setData(Qt::EditRole, QVariant(Value));
-          pValueItem->setTextAlignment(Qt::AlignRight);
-          mpTableParameter->setItem(i, 0, pValueItem);
-        }
-    }
-
-  mpTableParameter->resizeColumnsToContents();
-
   return true;
 }
 
@@ -181,6 +144,14 @@ bool CQTaskMethodWidget::saveMethod()
 
   bool changed = false;
 
+  if (mShowMethodParameters)
+    {
+      if (!(*mpMethod == *mpActiveMethod))
+        {
+          changed = true;
+        }
+    }
+
   if (mShowMethods)
     {
       if (pMethod->getSubType() != mpActiveMethod->getSubType())
@@ -189,27 +160,6 @@ bool CQTaskMethodWidget::saveMethod()
           mpMethod = mpTask->getMethod();
 
           changed = true;
-        }
-    }
-
-  if (mShowMethodParameters)
-    {
-      unsigned C_INT32 i;
-      QString Value;
-      CCopasiParameter::Type Type;
-
-      for (i = 0; i < mpActiveMethod->size(); i++)
-        {
-          if (!mpTableParameter->item(i, 0))
-            continue;
-
-          Value = mpTableParameter->item(i, 0)->text();
-
-          if (Value != getParameterValue(mpActiveMethod, i, &Type))
-            {
-              setParameterValue(mpActiveMethod, i, Value);
-              changed = true;
-            }
         }
     }
 
@@ -285,6 +235,15 @@ void CQTaskMethodWidget::setActiveMethod(const CTaskEnum::Method & Type)
 
   assert(mpActiveMethod != NULL);
 
+  // We update the active methods parameters
+  if (mShowMethodParameters)
+    {
+      mpMethodParameterDM->setMethod(mpActiveMethod);
+
+      mpParameterView->expandAll();
+      mpParameterView->resizeColumnToContents(0);
+    }
+
   return;
 }
 
@@ -301,4 +260,20 @@ void CQTaskMethodWidget::clearHistory()
       }
 
   mMethodHistory.clear();
+}
+
+void CQTaskMethodWidget::pushMethod(CCopasiMethod * pMethod)
+{
+  mpMethodParameterDM->pushMethod(pMethod);
+
+  mpParameterView->expandAll();
+  mpParameterView->resizeColumnToContents(0);
+}
+
+void CQTaskMethodWidget::popMethod(CCopasiMethod * pMethod)
+{
+  mpMethodParameterDM->popMethod(pMethod);
+
+  mpParameterView->expandAll();
+  mpParameterView->resizeColumnToContents(0);
 }

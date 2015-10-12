@@ -76,7 +76,7 @@ void CQCrossSectionTaskWidget::init()
 
   mpMethodWidget->showMethodParameters(true);
   mpGridLayout->addWidget(mpMethodWidget->mpLblParameter, 11, 0, 1, 1);
-  mpGridLayout->addWidget(mpMethodWidget->mpTableParameter, 11, 1, 1, 2);
+  mpGridLayout->addWidget(mpMethodWidget->mpParameterView, 11, 1, 1, 2);
 
   // unsigned int ValidMethods = CTaskEnum::unset;
   // mpMethodWidget->setValidMethods(&ValidMethods);
