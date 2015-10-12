@@ -656,8 +656,8 @@ bool CCopasiDataModel::importSBML(const std::string & fileName,
 
   catch (CCopasiException & except)
     {
-      importer.restoreFunctionDB();
       importer.deleteCopasiModel();
+      importer.restoreFunctionDB();
       popData();
 
       mRenameHandler.setEnabled(true);
@@ -666,8 +666,8 @@ bool CCopasiDataModel::importSBML(const std::string & fileName,
 
   if (pModel == NULL)
     {
-      importer.restoreFunctionDB();
       importer.deleteCopasiModel();
+      importer.restoreFunctionDB();
       popData();
 
       mRenameHandler.setEnabled(true);
