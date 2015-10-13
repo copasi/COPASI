@@ -566,6 +566,13 @@ bool CCopasiXML::saveModel()
               endSaveElement("InitialExpression");
             }
 
+          if (pMV->getUnit().getDefinition() != "")
+            {
+              startSaveElement("Unit");
+              saveData(pMV->getUnit().getDefinition());
+              endSaveElement("Unit");
+            }
+
           endSaveElement("ModelValue");
 
           if (pMV->getSBMLId() != "")

@@ -2956,6 +2956,13 @@ void CCopasiXMLParser::ModelValueElement::start(const XML_Char *pszName,
 
             break;
 
+          case Unit:
+
+            if (!strcmp(pszName, "Unit"))
+              mpCurrentHandler = &mParser.mCharacterDataElement;
+
+            break;
+
           default:
             mCurrentElement = UNKNOWN_ELEMENT;
             mpCurrentHandler = &mParser.mUnknownElement;
@@ -3075,6 +3082,25 @@ void CCopasiXMLParser::ModelValueElement::end(const XML_Char *pszName)
           // Remove error messages created by setExpression as this may fail
           // due to incomplete model specification at this time.
 
+          while (CCopasiMessage::size() > Size)
+            CCopasiMessage::getLastMessage();
+        }
+
+        break;
+
+      case Unit:
+
+        if (strcmp(pszName, "Unit"))
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                         pszName, "Unit", mParser.getCurrentLineNumber());
+
+        {
+          size_t Size = CCopasiMessage::size();
+
+          mpMV->setUnitDefinition(mCommon.CharacterData);
+
+          // Remove error messages created by setExpression as this may fail
+          // due to incomplete model specification at this time.
           while (CCopasiMessage::size() > Size)
             CCopasiMessage::getLastMessage();
         }

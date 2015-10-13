@@ -1457,7 +1457,8 @@ private:
       ListOfUnsupportedAnnotations,
       Expression,
       InitialExpression,
-      MathML
+      MathML,
+      Unit
     };
 
     CModelValue * mpMV;

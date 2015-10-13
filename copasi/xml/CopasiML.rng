@@ -689,6 +689,9 @@
     <optional>
       <ref name="initialExpression.element"/>
     </optional>
+    <optional>
+      <ref name="unit.datatype"/>
+    </optional>
   </define>
 
   <define name="listOfModelParameterSets.datatype">
