@@ -36,13 +36,14 @@ CQParameterOverviewDM::CQParameterOverviewDM(QObject * pParent):
   QAbstractItemModel(pParent),
   mpModelParameterSet(NULL),
   mFramework(0)
-{
-}
+#ifdef COPASI_UNDO
+  , mpUndoStack(NULL)
+#endif
+{}
 
 // virtual
 CQParameterOverviewDM::~CQParameterOverviewDM()
-{
-}
+{}
 
 // virtual
 int CQParameterOverviewDM::columnCount(const QModelIndex & /* parent */) const
