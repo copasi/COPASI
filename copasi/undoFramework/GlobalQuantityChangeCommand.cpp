@@ -51,6 +51,11 @@ GlobalQuantityChangeCommand::GlobalQuantityChangeCommand(CCopasiUndoCommand::Typ
         setText(": Changed global quantity simulation type");
         break;
 
+      case GLOBALQUANTITY_UNIT_CHANGE:
+        setProperty("Unit");
+        setText(": Changed global quantity unit");
+        break;
+
       default:
         break;
     }

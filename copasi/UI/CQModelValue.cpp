@@ -394,6 +394,20 @@ void CQModelValue::save()
         }
     }
 
+  // set unit
+  if (mpModelValue->getUnit().getDefinition() != TO_UTF8(mpEditUnits->text()))
+    {
+      mpUndoStack->push(new GlobalQuantityChangeCommand(
+                          CCopasiUndoCommand::GLOBALQUANTITY_UNIT_CHANGE,
+                          FROM_UTF8(mpModelValue->getUnit().getDefinition()),
+                          mpEditUnits->text(),
+                          mpModelValue,
+                          this
+                        ));
+
+      mChanged = true;
+    }
+
   mIgnoreUpdates = false;
 
   if (mChanged)
@@ -565,6 +579,10 @@ CQModelValue::changeValue(const std::string& key,
 
       case CCopasiUndoCommand::GLOBALQUANTITY_SIMULATION_TYPE_CHANGE:
         mpModelValue->setStatus((CModelEntity::Status) newValue.toInt());
+        break;
+
+      case CCopasiUndoCommand::GLOBALQUANTITY_UNIT_CHANGE:
+        mpModelValue->setUnitDefinition(TO_UTF8(newValue.toString()));
         break;
 
       default:

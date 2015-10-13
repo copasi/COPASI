@@ -139,6 +139,7 @@ public:
     GLOBALQUANTITY_INITIAL_EXPRESSION_CHANGE, // change of parameter initial expression
     GLOBALQUANTITY_SIMULATION_TYPE_CHANGE, // change of parameter simulation type
     GLOBALQUANTITY_EXPRESSION_CHANGE, // change of parameter assignment / ode expression
+    GLOBALQUANTITY_UNIT_CHANGE, // change the unit
     EVENT_TRIGGER_EXPRESSION_CHANGE, // change of event trigger expression
     EVENT_TRIGGER_INITIALTIME_CHANGE, // change whether event can trigger at initial time
     EVENT_TRIGGER_PERSISTENT_CHANGE, // change whether event is persistent or not
