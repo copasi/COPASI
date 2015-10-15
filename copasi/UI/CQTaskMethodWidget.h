@@ -13,6 +13,7 @@
 
 class CCopasiTask;
 class CQTaskMethodParametersDM;
+class CQComboDelegate;
 
 class CQTaskMethodWidget: public QWidget, public Ui::CQTaskMethodWidget
 {
@@ -41,6 +42,9 @@ public:
 
 protected slots:
 
+protected slots:
+  void slotOpenEditor(const QModelIndex & index);
+  void slotCloseEditor(const QModelIndex & index);
   void changeMethod(int);
 
 protected:
@@ -57,6 +61,7 @@ protected:
   bool mShowMethods;
   bool mShowMethodParameters;
   CQTaskMethodParametersDM * mpMethodParameterDM;
+  CQComboDelegate* mpValueDelegate;
 };
 
 #endif // COPASI_CQTaskMethodWidget

@@ -311,7 +311,7 @@ bool CCopasiParameter::isValidValue(const CCopasiParameterGroup::elements & /* v
   return true;
 }
 
-bool CCopasiParameter::haveValidValues() const
+bool CCopasiParameter::hasValidValues() const
 {
   return mpValidValues != NULL;
 }

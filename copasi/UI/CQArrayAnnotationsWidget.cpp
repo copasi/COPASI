@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -58,7 +58,7 @@ CQArrayAnnotationsWidget::CQArrayAnnotationsWidget(QWidget* parent, bool slider)
   setupUi(this);
 
   //Setting values for Combo Box
-  mpComboDelegate = new CQComboDelegate(NULL, this);
+  mpComboDelegate = new CQComboDelegate(this);
   mpSelectionTable->setItemDelegateForColumn(1, mpComboDelegate);
 
   // The bar charts are temporary disabled

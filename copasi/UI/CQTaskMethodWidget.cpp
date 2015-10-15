@@ -6,6 +6,7 @@
 #include "CQTaskMethodWidget.h"
 #include "qtUtilities.h"
 #include "CQTaskMethodParametersDM.h"
+#include "CQComboDelegate.h"
 #include "copasi.h"
 
 #include "utilities/CCopasiTask.h"
@@ -20,13 +21,16 @@ CQTaskMethodWidget::CQTaskMethodWidget(QWidget* parent, Qt::WindowFlags f):
   mMethodHistory(),
   mShowMethods(false),
   mShowMethodParameters(false),
-  mpMethodParameterDM(NULL)
+  mpMethodParameterDM(NULL),
+  mpValueDelegate(NULL)
 {
   setupUi(this);
 
   // create a new QListview to be displayed on the screen..and set its property
   mpMethodParameterDM = new CQTaskMethodParametersDM(this);
   mpParameterView->setModel(mpMethodParameterDM);
+
+  mpValueDelegate = new CQIndexComboDelegate(this);
 
   // mpTableParameter->verticalHeader()->setResizeMode(QHeaderView::ResizeToContents);
   // mpTableParameter->horizontalHeader()->setResizeMode(QHeaderView::ResizeToContents);
@@ -37,6 +41,9 @@ CQTaskMethodWidget::CQTaskMethodWidget(QWidget* parent, Qt::WindowFlags f):
 
   mpLblParameter->hide();
   mpParameterView->hide();
+
+  connect(mpMethodParameterDM, SIGNAL(signalOpenEditor(const QModelIndex &)), this, SLOT(slotOpenEditor(const QModelIndex &)));
+  connect(mpMethodParameterDM, SIGNAL(signalCloseEditor(const QModelIndex &)), this, SLOT(slotCloseEditor(const QModelIndex &)));
 }
 
 CQTaskMethodWidget::~CQTaskMethodWidget()
@@ -276,4 +283,38 @@ void CQTaskMethodWidget::popMethod(CCopasiMethod * pMethod)
 
   mpParameterView->expandAll();
   mpParameterView->resizeColumnToContents(0);
+}
+
+void CQTaskMethodWidget::slotOpenEditor(const QModelIndex & index)
+{
+  QModelIndex Tmp = index;
+  const QAbstractItemModel *pModel = Tmp.model();
+
+  while (pModel->inherits("QSortFilterProxyModel"))
+    {
+      Tmp = static_cast< const QSortFilterProxyModel *>(pModel)->mapToSource(index);
+      pModel = Tmp.model();
+    }
+
+  mpParameterView->setItemDelegateForRow(Tmp.row(), mpValueDelegate);
+  mpParameterView->openPersistentEditor(Tmp);
+  mpParameterView->expandAll();
+}
+
+void CQTaskMethodWidget::slotCloseEditor(const QModelIndex & index)
+{
+  QModelIndex Tmp = index;
+  const QAbstractItemModel *pModel = Tmp.model();
+
+  while (pModel->inherits("QSortFilterProxyModel"))
+    {
+      Tmp = static_cast< const QSortFilterProxyModel *>(pModel)->mapToSource(index);
+      pModel = Tmp.model();
+    }
+
+  if (mpParameterView->itemDelegateForRow(Tmp.row()) == mpValueDelegate)
+    {
+      mpParameterView->setItemDelegateForRow(Tmp.row(), mpParameterView->itemDelegate());
+      mpParameterView->expandAll();
+    }
 }

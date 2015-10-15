@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -48,7 +48,7 @@ void ParameterTable::initTable()
   setRowCount(0);
   setSelectionMode(QTableWidget::NoSelection);
 
-  mpComboDelegate = new CQComboDelegate(NULL, this);
+  mpComboDelegate = new CQComboDelegate(this);
   setItemDelegateForColumn(2, mpComboDelegate);
 
   setShowGrid(false);
@@ -345,12 +345,12 @@ void ParameterTable::updateTable(const CReactionInterface & ri, const CReaction 
           else
             {
               if (usage == CFunctionParameter::SUBSTRATE)
-                mpComboDelegate->setItems(rowCounter, &mSubstrates);
+                mpComboDelegate->setItems(rowCounter, mSubstrates);
               else if (usage == CFunctionParameter::PRODUCT)
-                mpComboDelegate->setItems(rowCounter, &mProducts);
+                mpComboDelegate->setItems(rowCounter, mProducts);
               else   // must be MODIFIER
                 {
-                  mpComboDelegate->setItems(rowCounter, &mModifiers);
+                  mpComboDelegate->setItems(rowCounter, mModifiers);
                 }
 
               openPersistentEditor(pItem);
@@ -395,7 +395,7 @@ void ParameterTable::updateTable(const CReactionInterface & ri, const CReaction 
       // if line is for a kinetic parameter . . .
       else if (usage == CFunctionParameter::PARAMETER)
         {
-          mpComboDelegate->setItems(rowCounter, &mGlobalParameters);
+          mpComboDelegate->setItems(rowCounter, mGlobalParameters);
 
           if (ri.isLocalValue(i))
             {
@@ -445,7 +445,7 @@ void ParameterTable::updateTable(const CReactionInterface & ri, const CReaction 
       // if line is for a volume . . .
       else if (usage == CFunctionParameter::VOLUME)
         {
-          mpComboDelegate->setItems(rowCounter, &mVolumes);
+          mpComboDelegate->setItems(rowCounter, mVolumes);
           pItem->setText(FROM_UTF8(ri.getMapping(i)));
           openPersistentEditor(pItem);
         }
@@ -480,6 +480,7 @@ void ParameterTable::handleCurrentCell(int row, int col, int, int)
     if ((int) mIndex2Line[i] - 1 == row)
       {
         changed = true;
+
         if ((mOldRow < row) || (row == 0)) ++row; else --row;
 
         break;
@@ -507,7 +508,9 @@ void ParameterTable::slotCellChanged(int row, int col)
 
   QString newVal = item(row, col)->text();
 
-  QStringList comboList = *mpComboDelegate->getItems(row);
+  QModelIndex Index = model()->index(row, col, QModelIndex());
+
+  const QStringList & comboList = mpComboDelegate->getItems(Index);
 
   if (col == 2 && comboList[0] == "--local--") //is Parameter
     {

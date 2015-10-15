@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -15,13 +15,14 @@
 
 #include "copasi.h"
 
-CQComboDelegate::CQComboDelegate(const QStringList *pComboItems, QObject *parent, bool commitOnSelect):
+CQComboDelegate::CQComboDelegate(QObject *parent, const QStringList & comboItems, bool commitOnSelect):
   QItemDelegate(parent),
-  mpComboItems(pComboItems),
   mEditorToIndex(),
   mRowToItems(),
   mCommitOnSelect(commitOnSelect)
-{}
+{
+  mRowToItems[-1] = comboItems;
+}
 
 CQComboDelegate::~CQComboDelegate()
 {}
@@ -35,18 +36,19 @@ QWidget *CQComboDelegate::createEditor(QWidget *parent,
 
   while (pModel->inherits("QSortFilterProxyModel"))
     {
-      SourceIndex = static_cast< const QSortFilterProxyModel *>(pModel)->mapToSource(index);
+      SourceIndex = static_cast< const QSortFilterProxyModel *>(pModel)->mapToSource(SourceIndex);
       pModel = SourceIndex.model();
     }
 
   QComboBox *pEditor = new QComboBox(parent);
-
-  if (getItems(SourceIndex.row()) != NULL)
-    {
-      pEditor->addItems(*getItems(SourceIndex.row()));
-    }
-
   mEditorToIndex[pEditor] = SourceIndex;
+
+  pEditor->setAutoFillBackground(true);
+
+  if (!getItems(SourceIndex).empty())
+    {
+      pEditor->addItems(getItems(SourceIndex));
+    }
 
   connect(pEditor, SIGNAL(currentIndexChanged(int)), this, SLOT(slotCurrentIndexChanged(int)));
   connect(pEditor, SIGNAL(destroyed(QObject *)), this, SLOT(slotEditorDeleted(QObject *)));
@@ -79,26 +81,26 @@ void CQComboDelegate::updateEditorGeometry(QWidget *editor,
   editor->setGeometry(option.rect);
 }
 
-void CQComboDelegate::setItems(int row, const QStringList* pComboItems)
+void CQComboDelegate::setItems(int row, const QStringList & comboItems)
 {
-  mRowToItems[row] = pComboItems;
+  mRowToItems[row] = comboItems;
 }
 
-const QStringList * CQComboDelegate::getItems(int row) const
+QStringList CQComboDelegate::getItems(const QModelIndex & index) const
 {
-  if (mpComboItems != NULL)
+  if (!mRowToItems[-1].empty())
     {
-      return mpComboItems;
+      return mRowToItems[-1];
     }
 
-  QMap< int, const QStringList * >::const_iterator found = mRowToItems.find(row);
+  QMap< int, QStringList >::const_iterator found = mRowToItems.find(index.row());
 
   if (found != mRowToItems.end()) // OK to return found.value() = NULL
     {
       return found.value();
     }
 
-  return NULL;
+  return index.model()->data(index, Qt::UserRole).toStringList();
 }
 
 void CQComboDelegate::slotCurrentIndexChanged(int index)
@@ -130,14 +132,23 @@ CQComboDelegate::isCommitOnSelect() const
   return mCommitOnSelect;
 }
 
-void
-CQComboDelegate::setCommitOnSelect(bool commitOnSelect)
+QSize CQComboDelegate::sizeHint(const QStyleOptionViewItem & option, const QModelIndex & index) const
+{
+  QWidget * pEditor = mEditorToIndex.key(index, NULL);
+
+  if (pEditor != NULL)
+    return pEditor->sizeHint();
+
+  return QItemDelegate::sizeHint(option, index);
+}
+
+void CQComboDelegate::setCommitOnSelect(bool commitOnSelect)
 {
   mCommitOnSelect = commitOnSelect;
 }
 
-CQIndexComboDelegate::CQIndexComboDelegate(const QStringList *pComboItems, QObject *parent)
-  : CQComboDelegate(pComboItems, parent)
+CQIndexComboDelegate::CQIndexComboDelegate(QObject *parent, const QStringList & comboItems, bool commitOnSelect)
+  : CQComboDelegate(parent, comboItems, commitOnSelect)
 {}
 
 CQIndexComboDelegate::~CQIndexComboDelegate()

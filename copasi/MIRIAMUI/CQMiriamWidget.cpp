@@ -55,13 +55,13 @@ CQMiriamWidget::CQMiriamWidget(QWidget* parent, const char* name)
   mpModifiedPDM = new CQSortFilterProxyModel();
 
   //Create Required Delegates
-  mpResourceDelegate1 = new CQComboDelegate(&mResources, this, false);
+  mpResourceDelegate1 = new CQComboDelegate(this, mResources, false);
   mpTblReferences->setItemDelegateForColumn(COL_RESOURCE_REFERENCE, mpResourceDelegate1);
 
-  mpResourceDelegate2 = new CQComboDelegate(&mReferences, this, false);
+  mpResourceDelegate2 = new CQComboDelegate(this, mReferences, false);
   mpTblDescription->setItemDelegateForColumn(COL_RESOURCE_BD, mpResourceDelegate2);
 
-  mpPredicateDelegate = new CQComboDelegate(&mPredicates, this, false);
+  mpPredicateDelegate = new CQComboDelegate(this, mPredicates, false);
   mpTblDescription->setItemDelegateForColumn(COL_RELATIONSHIP, mpPredicateDelegate);
 
   mWidgets.push_back(mpTblAuthors); mDMs.push_back(mpCreatorDM); mProxyDMs.push_back(mpCreatorPDM);
@@ -79,6 +79,8 @@ CQMiriamWidget::CQMiriamWidget(QWidget* parent, const char* name)
   mPredicates.push_back(FROM_UTF8(CRDFPredicate::getDisplayName(CRDFPredicate::copasi_isHomologTo)));
   mPredicates.push_back(FROM_UTF8(CRDFPredicate::getDisplayName(CRDFPredicate::copasi_isPartOf)));
   mPredicates.push_back(FROM_UTF8(CRDFPredicate::getDisplayName(CRDFPredicate::copasi_isVersionOf)));
+
+  mpPredicateDelegate->setItems(-1, mPredicates);
 
   std::vector<CQTableView*>::const_iterator it = mWidgets.begin();
   std::vector<CQTableView*>::const_iterator end = mWidgets.end();
@@ -440,6 +442,9 @@ void CQMiriamWidget::updateResourcesList()
       mResources.push_back(FROM_UTF8(pResource->getMIRIAMResource(i).getMIRIAMDisplayName()));
     else
       mReferences.push_back(FROM_UTF8(pResource->getMIRIAMResource(i).getMIRIAMDisplayName()));
+
+  mpResourceDelegate1->setItems(-1, mResources);
+  mpResourceDelegate2->setItems(-1, mReferences);
 }
 
 void CQMiriamWidget::keyPressEvent(QKeyEvent* ev)

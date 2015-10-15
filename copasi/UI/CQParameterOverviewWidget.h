@@ -13,6 +13,7 @@
 class CModelParameterSet;
 class CQParameterOverviewDM;
 class QSortFilterProxyModel;
+class CQComboDelegate;
 
 class CQParameterOverviewWidget : public CopasiWidget, public Ui::CQParameterOverviewWidget
 {
@@ -55,6 +56,8 @@ private:
   CQParameterOverviewDM * mpParameterSetDM;
 
   QSortFilterProxyModel * mpParameterSetSortDM;
+
+  CQComboDelegate * mpComboDelegate;
 
   QStringList mGlobalQuantities;
 };

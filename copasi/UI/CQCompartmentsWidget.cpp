@@ -44,7 +44,7 @@ CQCompartmentsWidget::CQCompartmentsWidget(QWidget* parent, const char* name)
   mpProxyModel->setFilterKeyColumn(-1);
 
   //Setting values for Types comboBox
-  mpTypeDelegate = new CQIndexComboDelegate(&mpCompartmentDM->getTypes(), this);
+  mpTypeDelegate = new CQIndexComboDelegate(this, mpCompartmentDM->getTypes());
   mpTblCompartments->setItemDelegateForColumn(COL_TYPE_COMPARTMENTS, mpTypeDelegate);
 
   mpTblCompartments->verticalHeader()->setResizeMode(QHeaderView::ResizeToContents);

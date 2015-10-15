@@ -153,8 +153,8 @@ void CScanWidgetRandom::load(const CCopasiParameterGroup * pItem)
   comboBoxType->setCurrentIndex(mpData->getValue< unsigned C_INT32 >("Distribution type"));
   changeType();
 
-  lineEditMin->setText(getParameterValue(mpData, "Minimum"));
-  lineEditMax->setText(getParameterValue(mpData, "Maximum"));
+  lineEditMin->setText(getParameterValue(mpData, "Minimum").toString());
+  lineEditMax->setText(getParameterValue(mpData, "Maximum").toString());
 
   checkBoxLog->setChecked(mpData->getValue< bool >("log"));
 

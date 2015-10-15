@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -18,8 +18,9 @@ class CQComboDelegate : public QItemDelegate
   Q_OBJECT
 
 public:
-  CQComboDelegate(const QStringList* pComboItems,
-                  QObject *parent = NULL, bool commitOnSelect = true);
+  CQComboDelegate(QObject *parent = NULL,
+                  const QStringList & comboItems = QStringList(),
+                  bool commitOnSelect = true);
 
   virtual ~CQComboDelegate();
 
@@ -38,9 +39,11 @@ public:
                                     const QStyleOptionViewItem & option,
                                     const QModelIndex & index) const;
 
-  void setItems(int row, const QStringList* pComboItems);
+  virtual QSize sizeHint(const QStyleOptionViewItem & option, const QModelIndex & index) const;
 
-  const QStringList *getItems(int row) const;
+  void setItems(int row, const QStringList & comboItems);
+
+  QStringList getItems(const QModelIndex & index) const;
 
   bool isCommitOnSelect() const;
   void setCommitOnSelect(bool commitOnSelect);
@@ -53,10 +56,8 @@ signals:
   void currentIndexChanged(int, int);
 
 private:
-  const QStringList* mpComboItems;
-
   mutable QMap< QWidget * , QModelIndex > mEditorToIndex;
-  mutable QMap< int, const QStringList * > mRowToItems;
+  mutable QMap< int, QStringList > mRowToItems;
 
   bool mCommitOnSelect;
 };
@@ -64,8 +65,9 @@ private:
 class CQIndexComboDelegate : public CQComboDelegate
 {
 public:
-  CQIndexComboDelegate(const QStringList *pComboItems,
-                       QObject *parent = NULL);
+  CQIndexComboDelegate(QObject *parent = NULL,
+                       const QStringList & comboItems = QStringList(),
+                       bool commitOnSelect = true);
 
   virtual ~CQIndexComboDelegate();
 
@@ -73,4 +75,4 @@ public:
                             QAbstractItemModel * model,
                             const QModelIndex & index) const;
 };
-#endif //CQComboDelegate_H
+#endif // CQComboDelegate_H

@@ -48,11 +48,11 @@ CQSpeciesWidget::CQSpeciesWidget(QWidget* parent, const char* name)
   mpTblSpecies->setModel(mpProxyModel);
 
   //Setting values for Compartment comboBox
-  mpCompartmentDelegate = new CQComboDelegate(&mCompartments, this);
+  mpCompartmentDelegate = new CQComboDelegate(this, mCompartments);
   mpTblSpecies->setItemDelegateForColumn(COL_COMPARTMENT, mpCompartmentDelegate);
 
   //Setting values for Types comboBox
-  mpTypeDelegate = new CQIndexComboDelegate(&mpSpecieDM->getTypes(), this);
+  mpTypeDelegate = new CQIndexComboDelegate(this, mpSpecieDM->getTypes());
   mpTblSpecies->setItemDelegateForColumn(COL_TYPE_SPECIES, mpTypeDelegate);
 
   mpTblSpecies->verticalHeader()->setResizeMode(QHeaderView::ResizeToContents);
@@ -323,6 +323,8 @@ void CQSpeciesWidget::refreshCompartments()
 
   for (unsigned C_INT32 jj = 0; jj < compartments.size(); jj++)
     mCompartments.push_back(FROM_UTF8(compartments[jj]->getObjectName()));
+
+  mpCompartmentDelegate->setItems(-1, mCompartments);
 }
 
 #ifdef COPASI_UNDO

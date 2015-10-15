@@ -86,71 +86,132 @@ void updateCurrentWidget()
   currentWidget->refresh();
 }
 
-QString getParameterValue(const CCopasiParameterGroup * group,
-                          const size_t & index,
-                          CCopasiParameter::Type * type)
+QVariant getParameterValue(const CCopasiParameter * pParameter)
 {
-  if (index >= group->size())
-    return QString::fromLatin1("INVALID");
+  if (pParameter == NULL) return false;
 
-  if (type) *type = group->getType(index);
-
-  switch (group->getType(index))
+  switch (pParameter->getType())
     {
       case CCopasiParameter::DOUBLE:
-        return QString::number(group->getValue< C_FLOAT64 >(index));
-        break;
-
       case CCopasiParameter::UDOUBLE:
-        return QString::number(group->getValue< C_FLOAT64 >(index));
+        return QVariant(pParameter->getValue< C_FLOAT64 >());
         break;
 
       case CCopasiParameter::INT:
-        return QString::number(group->getValue< C_INT32 >(index));
+        return QVariant(pParameter->getValue< C_INT32 >());
         break;
 
       case CCopasiParameter::UINT:
-        return QString::number(group->getValue< unsigned C_INT32 >(index));
+        return QVariant(pParameter->getValue< unsigned C_INT32 >());
         break;
 
-      case CCopasiParameter::BOOL:
-        return QString::number(group->getValue< bool >(index));
+      case CCopasiParameter::BOOL:;
+        return QVariant(pParameter->getValue< bool >());
         break;
 
       case CCopasiParameter::STRING:
-        return
-          FROM_UTF8(group->getValue< std::string >(index));
-        break;
-
       case CCopasiParameter::KEY:
-        return
-          FROM_UTF8(group->getValue< std::string >(index));
-        break;
-
+      case CCopasiParameter::FILE:
+      case CCopasiParameter::EXPRESSION:
       case CCopasiParameter::CN:
-        return
-          FROM_UTF8(group->getValue< CCopasiObjectName >(index));
+        return QVariant(FROM_UTF8(pParameter->getValue< std::string >()));
         break;
 
       case CCopasiParameter::GROUP:
-        return FROM_UTF8((group->getName(index)));
-        break;
-
       case CCopasiParameter::INVALID:
-        return QString::fromUtf8("INVALID");
-        break;
-
-      default:
         break;
     }
 
-  return QString::fromLatin1("INVALID");
+  return QVariant();
 }
 
-QString getParameterValue(const CCopasiParameterGroup * group,
-                          const std::string & name,
-                          CCopasiParameter::Type * type)
-{return getParameterValue(group, group->getIndex(name), type);}
+QVariant getParameterValue(const CCopasiParameterGroup * pGroup,
+                           const size_t & index)
+{
+  return getParameterValue(pGroup->getParameter(index));
+}
+
+QVariant getParameterValue(const CCopasiParameterGroup * pGroup,
+                           const std::string & name)
+{
+  return getParameterValue(pGroup->getParameter(name));
+}
+
+QList< QPair < QVariant, QVariant > > getParameterValidValues(const CCopasiParameter * pParameter)
+{
+  QList< QPair < QVariant, QVariant > > ValidValues;
+
+  if (pParameter == NULL ||
+      !pParameter->hasValidValues()) return ValidValues;
+
+  switch (pParameter->getType())
+    {
+      case CCopasiParameter::DOUBLE:
+      case CCopasiParameter::UDOUBLE:
+      {
+        std::vector<std::pair< C_FLOAT64, C_FLOAT64 > >::const_iterator it =
+          pParameter->getValidValues< C_FLOAT64 >().begin();
+        std::vector<std::pair< C_FLOAT64, C_FLOAT64 > >::const_iterator end =
+          pParameter->getValidValues< C_FLOAT64 >().end();
+
+        for (; it != end; ++it)
+          ValidValues.append(
+            QPair<QVariant, QVariant>(QVariant(it->first),
+                                      QVariant(it->second)));
+      }
+      break;
+
+      case CCopasiParameter::INT:
+      {
+        std::vector< std::pair < C_INT32, C_INT32 > >::const_iterator it = pParameter->getValidValues< C_INT32 >().begin();
+        std::vector< std::pair < C_INT32, C_INT32 > >::const_iterator end = pParameter->getValidValues< C_INT32 >().end();
+
+        for (; it != end; ++it)
+          ValidValues.append(QPair< QVariant, QVariant >(QVariant(it->first), QVariant(it->second)));
+      }
+      break;
+
+      case CCopasiParameter::UINT:
+      {
+        std::vector< std::pair < unsigned C_INT32, unsigned C_INT32 > >::const_iterator it = pParameter->getValidValues< unsigned C_INT32 >().begin();
+        std::vector< std::pair < unsigned C_INT32, unsigned C_INT32 > >::const_iterator end = pParameter->getValidValues< unsigned C_INT32 >().end();
+
+        for (; it != end; ++it)
+          ValidValues.append(QPair< QVariant, QVariant >(QVariant(it->first), QVariant(it->second)));
+      }
+      break;
+
+      case CCopasiParameter::BOOL:;
+        {
+          std::vector< std::pair < bool, bool > >::const_iterator it = pParameter->getValidValues< bool >().begin();
+          std::vector< std::pair < bool, bool > >::const_iterator end = pParameter->getValidValues< bool >().end();
+
+          for (; it != end; ++it)
+            ValidValues.append(QPair< QVariant, QVariant >(QVariant(it->first), QVariant(it->second)));
+        }
+        break;
+
+      case CCopasiParameter::STRING:
+      case CCopasiParameter::KEY:
+      case CCopasiParameter::FILE:
+      case CCopasiParameter::EXPRESSION:
+      case CCopasiParameter::CN:
+      {
+        std::vector< std::pair < std::string, std::string > >::const_iterator it = pParameter->getValidValues< std::string >().begin();
+        std::vector< std::pair < std::string, std::string > >::const_iterator end = pParameter->getValidValues< std::string >().end();
+
+        for (; it != end; ++it)
+          ValidValues.append(QPair< QVariant, QVariant >(QVariant(FROM_UTF8(it->first)), QVariant(FROM_UTF8(it->second))));
+      }
+      break;
+
+      case CCopasiParameter::GROUP:
+      case CCopasiParameter::INVALID:
+        break;
+    }
+
+  return ValidValues;
+}
 
 bool setParameterValue(CCopasiParameter * pParameter,
                        const QVariant & value)

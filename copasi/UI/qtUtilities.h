@@ -78,24 +78,35 @@ void updateCurrentWidget();
 
 /**
  * Retrieve a parameter from a parameter group and convert it to a QString.
- * @param const CCopasiParameterGroup * group
- * @param const size_t & index
- * @param CCopasiParameter::Type * type (default: NULL)
- * @return QString value
+ * @param const CCopasiParameter * pParameter
+ * @return QVariant value
  */
-QString getParameterValue(const CCopasiParameterGroup * group,
-                          const size_t & index,
-                          CCopasiParameter::Type * type = NULL);
+QVariant getParameterValue(const CCopasiParameter * pParameter);
+
 /**
  * Retrieve a parameter from a parameter group and convert it to a QString.
- * @param const CCopasiParameterGroup * group
- * @param const std::string & name
- * @param CCopasiParameter::Type * type (default: NULL)
- * @return QString value
+ * @param const CCopasiParameterGroup * pGroup
+ * @param const size_t & index
+ * @return QVariant value
  */
-QString getParameterValue(const CCopasiParameterGroup * group,
-                          const std::string & name,
-                          CCopasiParameter::Type * type = NULL);
+QVariant getParameterValue(const CCopasiParameterGroup * pGroup,
+                           const size_t & index);
+
+/**
+ * Retrieve a parameter from a parameter group and convert it to a QString.
+ * @param const CCopasiParameterGroup * pGroup
+ * @param const std::string & name
+ * @return QVariant value
+ */
+QVariant getParameterValue(const CCopasiParameterGroup * pGroup,
+                           const std::string & name);
+
+/**
+ * Retrieve a valid values for the given parameter.
+ * @param const CCopasiParameter * pParameter
+ * @return QList< QPair < QVariant, QVariant > > validValues
+ */
+QList< QPair < QVariant, QVariant > > getParameterValidValues(const CCopasiParameter * pParameter);
 
 /**
  * Set a parameter of a parameter group from a value given as a QString.

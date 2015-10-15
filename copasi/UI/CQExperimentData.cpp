@@ -776,7 +776,7 @@ void CQExperimentData::init()
   mpTable->hideColumn(COL_TYPE_HIDDEN);
   mpTable->hideColumn(COL_OBJECT_HIDDEN);
 
-  mpComboDelegate = new CQComboDelegate(NULL, this);
+  mpComboDelegate = new CQComboDelegate(this);
   mpTable->setItemDelegateForColumn(COL_TYPE, mpComboDelegate);
   connect(mpComboDelegate, SIGNAL(currentIndexChanged(int, int)), this, SLOT(slotTypeChanged(int, int)));
 
@@ -837,11 +837,11 @@ void CQExperimentData::setTypeItems(const int & timeRow)
       if ((timeRow != -1 && timeRow != i) ||
           mpBtnSteadystate->isChecked())
         {
-          mpComboDelegate->setItems(i, &mTypeWithoutTimeItems);
+          mpComboDelegate->setItems(i, mTypeWithoutTimeItems);
         }
       else
         {
-          mpComboDelegate->setItems(i, &mTypeItems);
+          mpComboDelegate->setItems(i, mTypeItems);
         }
     }
 }

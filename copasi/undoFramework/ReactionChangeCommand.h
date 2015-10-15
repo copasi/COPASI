@@ -49,11 +49,6 @@ private:
   QVariant mOldSecondValue;
   QVariant mNewSecondValue;
   std::vector<std::string> mCreatedObjects;
-
-  // to be removed
-  std::string mEq, mOldEq;
-  std::string mFunctionName, mOldFunctionName;
-  bool mFirstTime;
 };
 
 #endif /* REACTION_CHANGE_COMMAND_H_ */

@@ -51,8 +51,8 @@ CQParameterOverviewWidget::CQParameterOverviewWidget(QWidget* parent, const char
   mpTreeView->setItemDelegateForColumn(1, pPushButtonDelegate);
   connect(pPushButtonDelegate, SIGNAL(clicked(const QModelIndex &)), this, SLOT(slotResolve(const QModelIndex &)));
 
-  CQComboDelegate * pComboDelegate = new CQComboDelegate(&mGlobalQuantities, this);
-  mpTreeView->setItemDelegateForColumn(5, pComboDelegate);
+  mpComboDelegate = new CQComboDelegate(this);
+  mpTreeView->setItemDelegateForColumn(5, mpComboDelegate);
 
   connect(mpParameterSetDM, SIGNAL(signalOpenEditor(const QModelIndex &)), this, SLOT(slotOpenEditor(const QModelIndex &)));
   connect(mpParameterSetDM, SIGNAL(signalCloseEditor(const QModelIndex &)), this, SLOT(slotCloseEditor(const QModelIndex &)));
@@ -245,6 +245,8 @@ void CQParameterOverviewWidget::buildSelectionList()
           mGlobalQuantities.append(FROM_UTF8((*it)->getName()));
         }
     }
+
+  mpComboDelegate->setItems(-1, mGlobalQuantities);
 }
 
 // virtual
@@ -530,6 +532,8 @@ void CQParameterOverviewWidget::slotOpenEditor(const QModelIndex & index)
     }
 
   mpTreeView->openPersistentEditor(mpParameterSetSortDM->mapFromSource(Tmp));
+
+  mpTreeView->expandAll();
 }
 
 void CQParameterOverviewWidget::slotCloseEditor(const QModelIndex & index)
@@ -572,6 +576,6 @@ void CQParameterOverviewWidget:: slotChangeWidget(int id)
 {
   leave();
   enterProtected();
-  mpListView->switchToOtherWidget(id, "");
+  // mpListView->switchToOtherWidget(id, "");
 }
 #endif

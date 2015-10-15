@@ -254,7 +254,7 @@ public:
    * Check whether valid values are specified
    * @return bool haveValidValues
    */
-  bool haveValidValues() const;
+  bool hasValidValues() const;
 
   /**
    * Set the valid values
@@ -282,7 +282,7 @@ public:
    */
   template < class CType > const std::vector< std::pair < CType, CType > > & getValidValues() const
   {
-    return *static_cast< const std::vector< std::pair < CType, CType > > >(mpValidValues);
+    return *static_cast< const std::vector< std::pair < CType, CType > > * >(mpValidValues);
   }
 
   /**
@@ -292,7 +292,7 @@ public:
    */
   template < class CType > std::vector< std::pair < CType, CType > > & getValidValues()
   {
-    return *static_cast< std::vector< std::pair < CType, CType > > >(mpValidValues);
+    return *static_cast< std::vector< std::pair < CType, CType > > * >(mpValidValues);
   }
 
   /**
@@ -352,7 +352,7 @@ private:
 
   template < class CType > bool inValidValues(const CType & value) const
   {
-    if (!haveValidValues()) return true;
+    if (!hasValidValues()) return true;
 
     typename std::vector< std::pair< CType, CType > >::const_iterator it =
       static_cast< std::vector< std::pair< CType, CType > > * >(mpValidValues)->begin();

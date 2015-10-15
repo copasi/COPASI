@@ -580,8 +580,7 @@ void ReactionsWidget1::slotTableChanged(int index, int sub, QString newValue)
 #ifdef COPASI_UNDO
   // if undo is enable we issue commands for each of the changes
 
-  CReaction* reaction = dynamic_cast<CReaction*>(
-                          CCopasiRootContainer::getKeyFactory()->get(mKey));
+  CReaction* reaction = dynamic_cast<CReaction*>(mpObject);
 
   if (reaction == NULL)
     return;
@@ -660,6 +659,10 @@ void ReactionsWidget1::slotTableChanged(int index, int sub, QString newValue)
     }
 
   mIgnoreUpdates = false;
+
+  if (mpDataModel != NULL) mpDataModel->changed();
+
+  protectedNotify(ListViews::REACTION, ListViews::CHANGE, mKey);
 
   // if we don't stop here, we loose changes!
   // instead just prevent updating, that way the user has a chance to correct the reaction,
@@ -986,7 +989,6 @@ void ReactionsWidget1::deleteReaction(CReaction *pReaction)
 {
   mpListView->switchToOtherWidget(CCopasiUndoCommand::REACTIONS, "");
 
-
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
   assert(pDataModel != NULL);
@@ -997,7 +999,6 @@ void ReactionsWidget1::deleteReaction(CReaction *pReaction)
   std::string key = pReaction->getKey();
   pModel->removeReaction(key);
   protectedNotify(ListViews::REACTION, ListViews::DELETE, key);
-
 }
 
 bool ReactionsWidget1::changeReaction(
@@ -1121,7 +1122,7 @@ bool ReactionsWidget1::changeReaction(
 
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   (*CCopasiRootContainer::getDatamodelList())[0]->changed();
-  protectedNotify(ListViews::EVENT, ListViews::CHANGE, mKey);
+  protectedNotify(ListViews::REACTION, ListViews::CHANGE, mKey);
 
   FillWidgetFromRI();
 

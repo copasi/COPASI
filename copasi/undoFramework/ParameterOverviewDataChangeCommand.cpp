@@ -19,7 +19,7 @@
 
 ParameterOverviewDataChangeCommand::ParameterOverviewDataChangeCommand(const QModelIndex &index, const QVariant &value, int role, CQParameterOverviewDM *pParameterOverviewDM)
   : CCopasiUndoCommand()
-  , mNew(value.toDouble())
+  , mNew(value)
   , mOld(index.data(Qt::EditRole))
   , mIndex(index)
   , mpParameterOverviewDM(pParameterOverviewDM)

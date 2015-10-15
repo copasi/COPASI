@@ -80,6 +80,15 @@ Qt::ItemFlags CQTaskMethodParametersDM::flags(const QModelIndex &index) const
       if (pNode->getType() == CCopasiParameter::BOOL)
         return QAbstractItemModel::flags(index) | Qt::ItemIsEnabled | Qt::ItemIsUserCheckable;;
 
+      if (pNode->hasValidValues())
+        {
+          emit signalOpenEditor(index);
+        }
+      else
+        {
+          emit signalCloseEditor(index);
+        }
+
       return QAbstractItemModel::flags(index) | Qt::ItemIsEditable | Qt::ItemIsEnabled;
     }
 
@@ -313,7 +322,7 @@ CCopasiParameter * CQTaskMethodParametersDM::nodeFromIndex(const QModelIndex & i
 
   while (pModel->inherits("QSortFilterProxyModel"))
     {
-      Tmp = static_cast< const QSortFilterProxyModel *>(pModel)->mapToSource(index);
+      Tmp = static_cast< const QSortFilterProxyModel *>(pModel)->mapToSource(Tmp);
       pModel = Tmp.model();
     }
 
@@ -389,90 +398,76 @@ QVariant CQTaskMethodParametersDM::typeData(const CCopasiParameter * pNode, int 
 
 QVariant CQTaskMethodParametersDM::valueData(const CCopasiParameter * pNode, int role)
 {
-  if (role == Qt::EditRole)
+  switch (role)
     {
-      switch (pNode->getType())
-        {
-          case CCopasiParameter::DOUBLE:
-          case CCopasiParameter::UDOUBLE:
-            return QVariant(QString::number(pNode->getValue< C_FLOAT64 >(), 'g', 10));
-            break;
+      case Qt::EditRole:
+      case Qt::DisplayRole:
+        switch (pNode->getType())
+          {
+            case CCopasiParameter::DOUBLE:
+            case CCopasiParameter::UDOUBLE:
+              return QVariant(QString::number(pNode->getValue< C_FLOAT64 >(), 'g', 10));
+              break;
 
-          case CCopasiParameter::INT:
-            return QVariant(QString::number(pNode->getValue< C_INT32 >()));
-            break;
+            case CCopasiParameter::INT:
+              return QVariant(QString::number(pNode->getValue< C_INT32 >()));
+              break;
 
-          case CCopasiParameter::UINT:
-            return QVariant(QString::number(pNode->getValue< unsigned C_INT32 >()));
-            break;
+            case CCopasiParameter::UINT:
+              return QVariant(QString::number(pNode->getValue< unsigned C_INT32 >()));
+              break;
 
-          case CCopasiParameter::BOOL:
-            return QVariant(pNode->getValue< bool >());
-            break;
+            case CCopasiParameter::BOOL:
+              if (role == Qt::DisplayRole)
+                return QVariant();
+              else
+                return QVariant(pNode->getValue< bool >());
 
-          case CCopasiParameter::GROUP:
-            return QVariant(FROM_UTF8(pNode->getObjectName()));
-            break;
+              break;
 
-          case CCopasiParameter::STRING:
-          case CCopasiParameter::FILE:
-          case CCopasiParameter::EXPRESSION:
-          case CCopasiParameter::KEY:
-            return QVariant(FROM_UTF8(pNode->getValue< std::string >()));
+            case CCopasiParameter::GROUP:
+              return QVariant(FROM_UTF8(pNode->getObjectName()));
+              break;
 
-          case CCopasiParameter::CN:
-            return QVariant(FROM_UTF8(pNode->getValue< CRegisteredObjectName >()));
-            break;
+            case CCopasiParameter::STRING:
+            case CCopasiParameter::FILE:
+            case CCopasiParameter::EXPRESSION:
+            case CCopasiParameter::KEY:
+              return QVariant(FROM_UTF8(pNode->getValue< std::string >()));
 
-          default:
-            return QVariant();
-            break;
-        }
-    }
-  else if (role == Qt::DisplayRole)
-    {
-      switch (pNode->getType())
-        {
-          case CCopasiParameter::DOUBLE:
-          case CCopasiParameter::UDOUBLE:
-            return QVariant(pNode->getValue< C_FLOAT64 >());
-            break;
+            case CCopasiParameter::CN:
+              return QVariant(FROM_UTF8(pNode->getValue< CRegisteredObjectName >()));
+              break;
 
-          case CCopasiParameter::INT:
-            return QVariant(pNode->getValue< C_INT32 >());
-            break;
+            default:
+              return QVariant();
+              break;
+          }
 
-          case CCopasiParameter::UINT:
-            return QVariant(pNode->getValue< unsigned C_INT32 >());
-            break;
+        break;
 
-          case CCopasiParameter::BOOL:
-            return QVariant();
-            break;
+      case Qt::CheckStateRole:
+        if (pNode->getType() == CCopasiParameter::BOOL)
+          {
+            return pNode->getValue< bool >() ? Qt::Checked : Qt::Unchecked;
+          }
 
-          case CCopasiParameter::GROUP:
-            return QVariant(FROM_UTF8(pNode->getObjectName()));
-            break;
+        break;
 
-          case CCopasiParameter::STRING:
-          case CCopasiParameter::FILE:
-          case CCopasiParameter::EXPRESSION:
-          case CCopasiParameter::KEY:
-            return QVariant(FROM_UTF8(pNode->getValue< std::string >()));
+      case Qt::UserRole:
+      {
+        QList< QPair < QVariant, QVariant > > ValidValues = getParameterValidValues(pNode);
 
-          case CCopasiParameter::CN:
-            return QVariant(FROM_UTF8(pNode->getValue< CRegisteredObjectName >()));
-            break;
+        QList< QPair < QVariant, QVariant > >::const_iterator it = ValidValues.constBegin();
+        QList< QPair < QVariant, QVariant > >::const_iterator end = ValidValues.constEnd();
+        QStringList ValidValueList;
 
-          default:
-            return QVariant();
-            break;
-        }
-    }
-  else if (role == Qt::CheckStateRole &&
-           pNode->getType() == CCopasiParameter::BOOL)
-    {
-      return pNode->getValue< bool >() ? Qt::Checked : Qt::Unchecked;
+        for (; it != end; ++it)
+          if (it->first == it->second) ValidValueList.append(it->first.toString());
+
+        return QVariant(ValidValueList);
+      }
+      break;
     }
 
   return QVariant();
