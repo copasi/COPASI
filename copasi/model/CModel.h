@@ -1120,11 +1120,6 @@ private:
   CCopasiVectorN< CModelParameterSet > mParameterSets;
 
   /**
-   * Vector of defined unit
-   */
-  CCopasiVectorN< CUnit > mListOfUnits;
-
-  /**
    * The key of the currently active parameter set.
    */
   std::string mActiveParameterSetKey;

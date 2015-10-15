@@ -67,7 +67,6 @@ CModel::CModel(CCopasiContainer* pParent):
   CModelEntity("New Model", pParent, "Model"),
   mStateTemplate(*this),
   mPhysicalDependencies(),
-  mListOfUnits("Units", this),
   mpVolumeUnit(NULL),
   mpAreaUnit(NULL),
   mpLengthUnit(NULL),
@@ -1428,9 +1427,6 @@ bool CModel::setQuantityUnit(const CUnit::QuantityUnit & unitEnum)
   //     return true;
 
   mpQuantityUnit->fromEnum(unitEnum);
-
-  if (mListOfUnits.getIndex(mpQuantityUnit->getObjectName()) == C_INVALID_INDEX)   // if one has already been added to the list of units, use that one
-    mListOfUnits.add(mpQuantityUnit, true);
 
   bool success = true;
 
@@ -3020,23 +3016,18 @@ void CModel::initObjects()
   // units
 
   mpVolumeUnit = new CUnit("ml");
-  mListOfUnits.add(mpVolumeUnit, true);
   mpVolumeUnit->fromEnum(CUnit::ml);
 
   mpAreaUnit = new CUnit("m2");
-  mListOfUnits.add(mpAreaUnit, true);
   mpAreaUnit->fromEnum(CUnit::m2);
 
   mpLengthUnit = new CUnit("m");
-  mListOfUnits.add(mpLengthUnit, true);
   mpLengthUnit->fromEnum(CUnit::m);
 
   mpTimeUnit = new CUnit("s");
-  mListOfUnits.add(mpTimeUnit, true);
   mpTimeUnit->fromEnum(CUnit::s);
 
   mpQuantityUnit = new CUnit("mMol");
-  mListOfUnits.add(mpQuantityUnit, true);
   mpQuantityUnit->fromEnum(CUnit::mMol);
 
   mpIValueReference->setObjectName("Initial Time");
