@@ -74,7 +74,7 @@ protected:
   CFunctionDB* mpFunctionList;
   CConfigurationFile* mpConfiguration;
   CCopasiVector<CCopasiDataModel>* mpDataModelList;
-  CCopasiVectorN<CUnit>* mpUnitList;
+  CCopasiVectorN<CUnit>* mpUnitDefinitionList;
   // flag to store if we are running a GUI or not
   bool mWithGUI;
 

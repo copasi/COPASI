@@ -47,8 +47,8 @@
         </element>
       </optional>
       <optional>
-        <element name="ListOfUnits">
-          <ref name="listOfUnits.datatype"/>
+        <element name="ListOfUnitDefinitions">
+          <ref name="listOfUnitDefinitions.datatype"/>
         </element>
       </optional>
       <optional>
@@ -352,7 +352,7 @@
     <empty/>
   </define>
 
-  <define name="listOfUnits.datatype">
+  <define name="listOfUnitDefinitions.datatype">
     <oneOrMore>
       <ref name="unit.datatype"></ref>
     </oneOrMore>

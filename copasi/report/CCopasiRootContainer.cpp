@@ -38,7 +38,7 @@ CCopasiRootContainer::CCopasiRootContainer(const bool & withGUI):
   mKeyFactory(),
   mpUnknownResource(NULL),
   mpFunctionList(NULL),
-  mpUnitList(NULL),
+  mpUnitDefinitionList(NULL),
   mpConfiguration(NULL),
   mpDataModelList(NULL),
   mWithGUI(withGUI),
@@ -68,7 +68,7 @@ CCopasiRootContainer::~CCopasiRootContainer()
   pdelete(mpFunctionList);
 
   // delete the unit list
-  pdelete(mpUnitList);
+  pdelete(mpUnitDefinitionList);
 
   // delete the undefined and the unsupported delay function
   pdelete(mpUndefined);
@@ -125,8 +125,8 @@ void CCopasiRootContainer::initializeChildren()
   mpUndefined->setInfix("nan");
   mpUndefined->compile();
 
-  mpUnitList = new CCopasiVectorN< CUnit >("UnitList", this);
-  CUnit::updateSIUnits(*mpUnitList, CUnit::Avogadro);
+  mpUnitDefinitionList = new CCopasiVectorN< CUnit >("UnitList", this);
+  CUnit::updateSIUnits(*mpUnitDefinitionList, CUnit::Avogadro);
 }
 
 // static
@@ -156,14 +156,14 @@ CCopasiVector< CCopasiDataModel > * CCopasiRootContainer::getDatamodelList()
 // static
 CCopasiVectorN< CUnit > * CCopasiRootContainer::getUnitList()
 {
-  return pRootContainer->mpUnitList;
+  return pRootContainer->mpUnitDefinitionList;
 }
 
 // static
 const CUnit * CCopasiRootContainer::getUnitFromSymbol(const std::string symbol)
 {
-  CCopasiVectorN< CUnit >::const_iterator it = pRootContainer->mpUnitList->begin();
-  CCopasiVectorN< CUnit >::const_iterator end = pRootContainer->mpUnitList->end();
+  CCopasiVectorN< CUnit >::const_iterator it = pRootContainer->mpUnitDefinitionList->begin();
+  CCopasiVectorN< CUnit >::const_iterator end = pRootContainer->mpUnitDefinitionList->end();
 
   const CUnit * pUnit = NULL;
 
