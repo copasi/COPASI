@@ -343,7 +343,7 @@ public:
 
   /**
    * Calculates the Jacobian of the full model for the current state
-   * and stores it in the provided matrix. calculateElasticityMatrix()
+   * and stores it in the provided matrix.
    * needs to be called before.
    * @param CMatrix< C_FLOAT64 > & Jacobian
    * @param const C_FLOAT64 & derivationFactor,
@@ -352,6 +352,26 @@ public:
   void calculateJacobian(CMatrix< C_FLOAT64 > & jacobian,
                          const C_FLOAT64 & derivationFactor,
                          const bool & reduced);
+
+  /**
+   * Calculates whether matrix elements in the Jacobian are identical
+   * to zero or not and stored it in the provided matrix.
+   * needs to be called before.
+   * @param CMatrix< C_FLOAT64 > & jacobianDependencies
+   * @param const bool & reduced
+   */
+  void calculateJacobianDependencies(CMatrix< C_INT32 > & jacobianDependencies,
+                                     const bool & reduced);
+
+  /**
+   * Calculates whether matrix elements in the elasticity matrix are identical
+   * to zero or not and stored it in the provided matrix.
+   * needs to be called before.
+   * @param CMatrix< C_FLOAT64 > & elasticityDependencies
+   * @param const bool & reduced
+   */
+  void calculateElasticityDependencies(CMatrix< C_INT32 > & elasticityDependencies,
+                                       const bool & reduced);
 
   /**
    * Process events scheduled at the given which a are checked for

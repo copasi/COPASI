@@ -2384,7 +2384,7 @@ void CMathContainer::calculateRootJacobian(CMatrix< C_FLOAT64 > & jacobian)
   size_t NumRows = mEventRoots.size();
 
   // Partial derivatives with respect to time and all variables determined by ODEs and reactions.
-  size_t NumCols = 1 + mSize.nODE + mSize.nReactionSpecies;
+  size_t NumCols = mSize.nTime + mSize.nODE + mSize.nReactionSpecies;
 
   // The rates of all state variables in the current state.
   CVector< C_FLOAT64 > Rate = mRate;
@@ -2466,7 +2466,7 @@ void CMathContainer::calculateJacobian(CMatrix< C_FLOAT64 > & jacobian,
                                        const C_FLOAT64 & derivationFactor,
                                        const bool & reduced)
 {
-  size_t Dim = getState(reduced).size() - mSize.nEventTargets - 1;
+  size_t Dim = getState(reduced).size() - mSize.nEventTargets - mSize.nTime;
   jacobian.resize(Dim, Dim);
 
   C_FLOAT64 DerivationFactor = std::max(derivationFactor, 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon());
@@ -2534,6 +2534,107 @@ void CMathContainer::calculateJacobian(CMatrix< C_FLOAT64 > & jacobian,
     }
 
   updateSimulatedValues(reduced);
+}
+
+void CMathContainer::calculateJacobianDependencies(CMatrix< C_INT32 > & jacobianDependencies,
+    const bool & reduced)
+{
+  size_t Dim = getState(reduced).size() - mSize.nEventTargets - 1;
+  jacobianDependencies.resize(Dim, Dim);
+  jacobianDependencies = 0;
+
+  // The required values are the rates of the variables
+  CObjectInterface * pRateObject = getMathObject(mRate.array() + mSize.nEventTargets + mSize.nTime);
+  CObjectInterface * pRateObjectEnd = pRateObject + Dim;
+
+  ObjectSet Requested;
+
+  for (; pRateObject != pRateObjectEnd; ++ pRateObject)
+    {
+      Requested.insert(pRateObject);
+    }
+
+  // Reset the pointer so that we have the appropriate boundaries for later
+  pRateObject = pRateObjectEnd - Dim;
+
+  // For each of the variables we check whether a the rate objects needs to be calculated
+  // which indicates that it is dependent.
+  CObjectInterface * pVariable = getMathObject(mState.array() + mSize.nEventTargets + mSize.nTime);
+  CObjectInterface * pVariableEnd = pVariable + Dim;
+  size_t col = 0;
+
+  for (; pVariable != pVariableEnd; ++pVariable, ++col)
+    {
+      UpdateSequence Sequence;
+      ObjectSet Changed;
+
+      Changed.insert(pVariable);
+
+      mTransientDependencies.getUpdateSequence(Sequence, reduced ? CMath::UseMoieties : CMath::Default, Changed, Requested);
+
+      UpdateSequence::const_iterator it = Sequence.begin();
+      UpdateSequence::const_iterator end = Sequence.end();
+
+      for (; it != end; ++it)
+        if (pRateObject <= *it && *it < pRateObjectEnd)
+          {
+            // it points to a rate object, i.e., it is dependent.
+            jacobianDependencies[(*it) - pRateObject][col] = 1;
+          }
+    }
+
+  return;
+}
+
+void CMathContainer::calculateElasticityDependencies(CMatrix< C_INT32 > & elasticityDependencies,
+    const bool & reduced)
+{
+  size_t Dim = getState(reduced).size() - mSize.nEventTargets - 1;
+  elasticityDependencies.resize(mSize.nReactions, Dim);
+  elasticityDependencies = 0;
+
+  // The required values are the reaction fluxes.
+
+  CObjectInterface * pFluxObject = getMathObject(mFluxes.array());
+  CObjectInterface * pFluxObjectEnd = pFluxObject + mSize.nReactions;
+
+  ObjectSet Requested;
+
+  for (; pFluxObject != pFluxObjectEnd; ++ pFluxObject)
+    {
+      Requested.insert(pFluxObject);
+    }
+
+  // Reset the pointer so that we have the appropriate boundaries for later
+  pFluxObject = pFluxObjectEnd - mSize.nReactions;
+
+  // For each of the variables we check whether a the rate objects needs to be calculated
+  // which indicates that it is dependent.
+  CObjectInterface * pVariable = getMathObject(mState.array() + mSize.nEventTargets + mSize.nTime);
+  CObjectInterface * pVariableEnd = pVariable + Dim;
+  size_t col = 0;
+
+  for (; pVariable != pVariableEnd; ++pVariable, ++col)
+    {
+      UpdateSequence Sequence;
+      ObjectSet Changed;
+
+      Changed.insert(pVariable);
+
+      mTransientDependencies.getUpdateSequence(Sequence, reduced ? CMath::UseMoieties : CMath::Default, Changed, Requested);
+
+      UpdateSequence::const_iterator it = Sequence.begin();
+      UpdateSequence::const_iterator end = Sequence.end();
+
+      for (; it != end; ++it)
+        if (pFluxObject <= *it && *it < pFluxObjectEnd)
+          {
+            // it points to a rate object, i.e., it is dependent.
+            elasticityDependencies[(*it) - pFluxObject][col] = 1;
+          }
+    }
+
+  return;
 }
 
 CMath::StateChange CMathContainer::processQueue(const bool & equality)

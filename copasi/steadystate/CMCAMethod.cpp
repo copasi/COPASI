@@ -202,6 +202,7 @@ void CMCAMethod::calculateUnscaledElasticities(C_FLOAT64 /* res */)
   size_t FirstReactionSpeciesIndex = mpContainer->getTimeIndex() + mpContainer->getCountODEs();
   size_t numReacs = mpContainer->getParticleFluxes().size();
 
+  mpContainer->calculateElasticityDependencies(mElasticityDependencies, false);
   // Calculate the dependencies of the elasticities this is helpful for scaling to determine
   // whether 0/0 is 0 or NaN
   const CMathDependencyGraph & TransientDependencies = mpContainer->getTransientDependencies();
@@ -211,16 +212,6 @@ void CMCAMethod::calculateUnscaledElasticities(C_FLOAT64 /* res */)
   CMathObject * pSpeciesObjectStart = mpContainer->getMathObject(mpContainer->getState(false).array()) + FirstReactionSpeciesIndex;
   CMathObject * pSpeciesObjectEnd = pSpeciesObjectStart + numMetabs;
   CMathObject * pSpeciesObject;
-
-  bool * pElasticityDependency = mElasticityDependencies.array();
-
-  for (; pParticleFluxObject != pParticleFluxObjectEnd; ++pParticleFluxObject)
-    {
-      for (pSpeciesObject = pSpeciesObjectStart; pSpeciesObject != pSpeciesObjectEnd; ++pSpeciesObject, ++pElasticityDependency)
-        {
-          *pElasticityDependency = TransientDependencies.dependsOn(pParticleFluxObject, CMath::Default, pSpeciesObject);
-        }
-    }
 
   // mUnscaledElasticities.resize(numReacs, numMetabs);
   C_FLOAT64 * pElasticity;
@@ -433,7 +424,7 @@ bool CMCAMethod::scaleMCA(const bool & status, C_FLOAT64 res)
   // Scale Elasticities
   C_FLOAT64 * pUnscaled;
   C_FLOAT64 * pScaled;
-  bool * pElasticityDependency;
+  C_INT32 * pElasticityDependency;
 
   size_t col = 0;
 
@@ -660,7 +651,7 @@ bool CMCAMethod::CalculateMCA(C_FLOAT64 res)
     {
       if (*mpUseReeder)
         {
-          createLinkMatrix();
+          createLinkMatrix(false);
           success &= calculateUnscaledConcentrationCC();
           success &= calculateUnscaledFluxCC(success);
           success &= scaleMCA(success, res);

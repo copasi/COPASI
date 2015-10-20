@@ -217,6 +217,6 @@ private:
 
   CMatrix< C_FLOAT64 > mReducedStoichiometry;
 
-  CMatrix< bool > mElasticityDependencies;
+  CMatrix< C_INT32 > mElasticityDependencies;
 };
 #endif // COPASI_CMca
