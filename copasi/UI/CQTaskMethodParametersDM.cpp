@@ -145,7 +145,7 @@ QModelIndex CQTaskMethodParametersDM::index(int row, int column, const QModelInd
       return QModelIndex();
     }
 
-  if (row < (int) pParent->size())
+  if (pParent != NULL && row < (int) pParent->size())
     return createIndex(row, column, *(pParent->beginIndex() + row));
   else
     return QModelIndex();
