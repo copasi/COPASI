@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., University of Heidelberg, and The University 
 // of Manchester. 
 // All rights reserved. 
@@ -58,52 +58,62 @@
     
   C_FLOAT64 getDblValue()
   {
-    return *self->getValue().pDOUBLE;
+	  C_FLOAT64 val = self->getValue<C_FLOAT64>();
+    return val;
   }
 
   C_FLOAT64 getUDblValue()
   {
-    return *self->getValue().pUDOUBLE;
+	  C_FLOAT64 val = self->getValue<C_FLOAT64>();
+    return val;
   }
 
   C_INT32 getIntValue()
   {
-    return *self->getValue().pINT;
+	  C_INT32 val = self->getValue<C_INT32>();    
+    return val;
   }
 
   unsigned C_INT32 getUIntValue()
   {
-    return *self->getValue().pUINT;
+	  unsigned C_INT32 val = self->getValue<unsigned C_INT32>();    
+    return val;
   }
 
   bool getBoolValue()
   {
-    return *self->getValue().pBOOL;
+	  bool val = self->getValue<bool>();    
+    return val;
   }
 
   std::vector<CCopasiParameter*> getGroupValue()
   {
-    return *self->getValue().pGROUP;
+	  std::vector<CCopasiParameter*> val = self->getValue< std::vector<CCopasiParameter*> >();
+    return val;
   }
 
   std::string getStringValue()
   {
-    return *self->getValue().pSTRING;
+	  std::string val = self->getValue<std::string>();
+    return val;
   }
 
   CRegisteredObjectName getCNValue()
   {
-    return *self->getValue().pCN;
+	  CRegisteredObjectName val = self->getValue<std::string>();
+    return val;
   }
 
   std::string getKeyValue()
   {
-    return *self->getValue().pKEY;
+	  std::string val = self->getValue<std::string>();
+    return val;
   }
 
   std::string getFileValue()
   {
-    return *self->getValue().pFILE;
+	  std::string val = self->getValue<std::string>();
+    return val;
   }
 
   /**
@@ -111,7 +121,8 @@
    * think. 
   void* getVoidValue()
   {
-    return self->getValue().pVOID;
+	  void* val = self->getValue<void*>();
+    return val;
   }
   */
 

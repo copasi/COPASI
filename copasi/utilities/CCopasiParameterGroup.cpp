@@ -384,6 +384,17 @@ CCopasiParameterGroup * CCopasiParameterGroup::getGroup(const size_t & index)
 const CCopasiParameterGroup * CCopasiParameterGroup::getGroup(const size_t & index) const
 {return dynamic_cast<const CCopasiParameterGroup *>(getParameter(index));}
 
+CCopasiParameter::Type CCopasiParameterGroup::getType(const std::string & name) const
+{
+  CCopasiParameter * pParameter =
+    const_cast< CCopasiParameterGroup * >(this)->getParameter(name);
+
+  if (pParameter) return pParameter->getType();
+
+  return CCopasiParameter::INVALID;
+}
+
+
 CCopasiParameter::Type CCopasiParameterGroup::getType(const size_t & index) const
 {
   CCopasiParameter * pParameter =
