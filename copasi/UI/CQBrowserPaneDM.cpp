@@ -326,6 +326,7 @@ void CQBrowserPaneDM::load()
   findNodeFromId(27)->setKey((*mpCopasiDM->getTaskList())["Time Scale Separation Analysis"]->getKey());
   findNodeFromId(26)->setKey((*mpCopasiDM->getTaskList())["Lyapunov Exponents"]->getKey());
   findNodeFromId(28)->setKey((*mpCopasiDM->getTaskList())["Cross Section"]->getKey());
+  findNodeFromId(29)->setKey((*mpCopasiDM->getTaskList())["Cross Section"]->getKey());
   findNodeFromId(31)->setKey((*mpCopasiDM->getTaskList())["Scan"]->getKey());
   findNodeFromId(32)->setKey((*mpCopasiDM->getTaskList())["Optimization"]->getKey());
   findNodeFromId(33)->setKey((*mpCopasiDM->getTaskList())["Parameter Estimation"]->getKey());
