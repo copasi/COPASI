@@ -574,7 +574,7 @@ bool CQParameterOverviewDM::parameterOverviewDataChange(const QModelIndex& _inde
         }
     }
 
-  emit changeWidget(CCopasiUndoCommand::PARAMETER_OVERVIEW);
+  switchToWidget(CCopasiUndoCommand::PARAMETER_OVERVIEW);
 
   return success;
 }

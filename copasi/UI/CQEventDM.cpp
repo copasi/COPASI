@@ -371,44 +371,53 @@ bool CQEventDM::removeRows(QModelIndexList rows, const QModelIndex&)
 bool CQEventDM::eventDataChange(const QModelIndex &index, const QVariant &value,
                                 int role)
 {
-  if (index.isValid() && role == Qt::EditRole)
+  if (!index.isValid() || role != Qt::EditRole)
+    return false;
+
+  GET_MODEL_OR(pModel, return false);
+
+  bool defaultRow = isDefaultRow(index);
+
+  if (defaultRow)
     {
-      bool defaultRow = isDefaultRow(index);
-
-      if (defaultRow)
-        {
-          if (index.data() != value)
-            insertRow();
-          else
-            return false;
-        }
-
-      assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-      CEvent *pEvent = (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getEvents()[index.row()];
-
-      if (index.column() == COL_NAME_EVENTS)
-        pEvent->setObjectName(TO_UTF8(value.toString()));
-
-      if (defaultRow && this->index(index.row(), COL_NAME_EVENTS).data().toString() == "event")
-        pEvent->setObjectName(TO_UTF8(createNewName("event", COL_NAME_EVENTS)));
-
-      emit dataChanged(index, index);
-      emit notifyGUI(ListViews::EVENT, ListViews::CHANGE, pEvent->getKey());
+      if (index.data() != value)
+        insertRow();
+      else
+        return false;
     }
 
-  emit changeWidget(CCopasiUndoCommand::EVENTS);
+  if ((int)pModel->getEvents().size() <= index.row())
+    return false;
+
+
+  switchToWidget(CCopasiUndoCommand::EVENTS);
+
+  CEvent *pEvent = pModel->getEvents()[index.row()];
+
+  if (index.column() == COL_NAME_EVENTS)
+    pEvent->setObjectName(TO_UTF8(value.toString()));
+
+  if (defaultRow && this->index(index.row(), COL_NAME_EVENTS).data().toString() == "event")
+    pEvent->setObjectName(TO_UTF8(createNewName("event", COL_NAME_EVENTS)));
+
+  emit dataChanged(index, index);
+  emit notifyGUI(ListViews::EVENT, ListViews::CHANGE, pEvent->getKey());
+
 
   return true;
 }
 
-void CQEventDM::insertNewEventRow(int position, int rows, const QModelIndex&)
+void CQEventDM::insertNewEventRow(int position, int rows)
 {
+
+  GET_MODEL_OR_RETURN(pModel);
+
   beginInsertRows(QModelIndex(), position, position + rows - 1);
 
   for (int row = 0; row < rows; ++row)
     {
       CEvent *pEvent =
-        (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->createEvent(TO_UTF8(createNewName("event", COL_NAME_EVENTS)));
+        pModel->createEvent(TO_UTF8(createNewName("event", COL_NAME_EVENTS)));
       emit notifyGUI(ListViews::EVENT, ListViews::ADD, pEvent->getKey());
     }
 
@@ -417,24 +426,24 @@ void CQEventDM::insertNewEventRow(int position, int rows, const QModelIndex&)
 
 void CQEventDM::deleteEventRow(UndoEventData *pEventData)
 {
-  CModel * pModel = (*CCopasiRootContainer::getDatamodelList())[0]->getModel();
+
+  GET_MODEL_OR_RETURN(pModel);
 
   size_t index = pModel->getEvents().getIndex(pEventData->getName());
 
   if (index == C_INVALID_INDEX)
     return;
 
-  // careful! need to first change the widget (as this will result in the
-  // event widget to save back its data in case it was active) ...
-  emit changeWidget(CCopasiUndoCommand::EVENTS);
+  switchToWidget(CCopasiUndoCommand::EVENTS);
 
-  // only then can we safely delete this item
   removeRow((int) index);
 }
 
 void CQEventDM::addEventRow(UndoEventData *pEventData)
 {
   GET_MODEL_OR_RETURN(pModel);
+
+  switchToWidget(CCopasiUndoCommand::EVENTS);
 
   beginInsertRows(QModelIndex(), 1, 1);
 
@@ -456,6 +465,8 @@ bool CQEventDM::removeEventRows(QModelIndexList rows, const QModelIndex&)
 
   GET_MODEL_OR(pModel, return false);
 
+  switchToWidget(CCopasiUndoCommand::EVENTS);
+
 //Build the list of pointers to items to be deleted
 //before actually deleting any item.
   QList <CEvent *> pEvents;
@@ -476,34 +487,28 @@ bool CQEventDM::removeEventRows(QModelIndexList rows, const QModelIndex&)
       size_t delRow =
         pModel->getEvents().CCopasiVector< CEvent >::getIndex(pEvent);
 
-      if (delRow != C_INVALID_INDEX)
-        {
-          std::set< const CCopasiObject * > deletedObjects;
-          QMessageBox::StandardButton choice =
-            CQMessageBox::confirmDelete(NULL, "event",
-                                        FROM_UTF8(pEvent->getObjectName()),
-                                        deletedObjects);
+      if (delRow == C_INVALID_INDEX)
+        continue;
 
-          if (choice == QMessageBox::Ok)
-            removeRow((int) delRow);
-        }
+      std::set< const CCopasiObject * > deletedObjects;
+      QMessageBox::StandardButton choice =
+        CQMessageBox::confirmDelete(NULL, "event",
+                                    FROM_UTF8(pEvent->getObjectName()),
+                                    deletedObjects);
+
+      if (choice == QMessageBox::Ok)
+        removeRow((int) delRow);
+
     }
-
-  emit changeWidget(CCopasiUndoCommand::EVENTS);
 
   return true;
 }
 
 bool CQEventDM::insertEventRows(QList <UndoEventData *> pData)
 {
+  GET_MODEL_OR(pModel, return false);
 
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
-  assert(pDataModel != NULL);
-  CModel * pModel = pDataModel->getModel();
-
-  if (pModel == NULL)
-    return false;
+  switchToWidget(CCopasiUndoCommand::EVENTS);
 
   //reinsert all the GlobalQuantities
   QList <UndoEventData *>::const_iterator i;
@@ -520,20 +525,14 @@ bool CQEventDM::insertEventRows(QList <UndoEventData *> pData)
       endInsertRows();
     }
 
-  emit changeWidget(CCopasiUndoCommand::EVENTS);
-
   return true;
 }
 
 void CQEventDM::deleteEventRows(QList <UndoEventData *> pData)
 {
-  emit changeWidget(CCopasiUndoCommand::EVENTS);
+  GET_MODEL_OR_RETURN(pModel);
 
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
-  assert(pDataModel != NULL);
-
-  CModel * pModel = pDataModel->getModel();
+  switchToWidget(CCopasiUndoCommand::EVENTS);
 
   QList <UndoEventData *>::const_iterator j;
 

@@ -483,6 +483,8 @@ void CQGlobalQuantityDM::addGlobalQuantityRow(UndoGlobalQuantityData *pGlobalQua
 {
   GET_MODEL_OR_RETURN(pModel);
 
+  switchToWidget(CCopasiUndoCommand::GLOBALQUANTITYIES);
+
   beginInsertRows(QModelIndex(), 1, 1);
   CModelValue *pGlobalQuantity = pModel->createModelValue(pGlobalQuantityData->getName(), pGlobalQuantityData->getInitialValue());
   pGlobalQuantity->setStatus(pGlobalQuantityData->getStatus());
@@ -521,16 +523,18 @@ bool CQGlobalQuantityDM::removeGlobalQuantityRows(QModelIndexList rows, const QM
       size_t delRow =
         pModel->getModelValues().CCopasiVector< CModelValue >::getIndex(pGQ);
 
-      if (delRow != C_INVALID_INDEX)
-        {
-          QMessageBox::StandardButton choice =
-            CQMessageBox::confirmDelete(NULL, "quantity",
-                                        FROM_UTF8(pGQ->getObjectName()),
-                                        pGQ->getDeletedObjects());
+      if (delRow == C_INVALID_INDEX)
+        continue;
 
-          if (choice == QMessageBox::Ok)
-            removeRow((int) delRow);
-        }
+
+      QMessageBox::StandardButton choice =
+        CQMessageBox::confirmDelete(NULL, "quantity",
+                                    FROM_UTF8(pGQ->getObjectName()),
+                                    pGQ->getDeletedObjects());
+
+      if (choice == QMessageBox::Ok)
+        removeRow((int) delRow);
+
     }
 
 
@@ -548,34 +552,17 @@ bool CQGlobalQuantityDM::insertGlobalQuantityRows(QList <UndoGlobalQuantityData 
     {
       UndoGlobalQuantityData * data = *i;
 
-      if (pModel->getModelValues().getIndex(data->getName()) == C_INVALID_INDEX)
-        {
-          beginInsertRows(QModelIndex(), 1, 1);
-          CModelValue *pGlobalQuantity =  pModel->createModelValue(data->getName());
-          pGlobalQuantity->setStatus(data->getStatus());
+      if (pModel->getModelValues().getIndex(data->getName()) != C_INVALID_INDEX)
+        continue;
 
-          if (data->getStatus() != CModelEntity::ASSIGNMENT)
-            {
-              pGlobalQuantity->setInitialValue(data->getInitialValue());
-            }
+      beginInsertRows(QModelIndex(), 1, 1);
+      CModelValue *pGlobalQuantity = data->createQuantityFromData(pModel);
 
-          // set the expression
-          if (data->getStatus() != CModelEntity::FIXED)
-            {
-              pGlobalQuantity->setExpression(data->getExpression());
-              pGlobalQuantity->getExpressionPtr()->compile();
-            }
+      if (pGlobalQuantity != NULL)
+        emit notifyGUI(ListViews::MODELVALUE, ListViews::ADD, pGlobalQuantity->getKey());
 
-          // set initial expression
-          if (data->getStatus() != CModelEntity::ASSIGNMENT)
-            {
-              pGlobalQuantity->setInitialExpression(data->getInitialExpression());
-              pGlobalQuantity->getInitialExpressionPtr()->compile();
-            }
+      endInsertRows();
 
-          emit notifyGUI(ListViews::MODELVALUE, ListViews::ADD, pGlobalQuantity->getKey());
-          endInsertRows();
-        }
     }
 
   //restore the reactions
@@ -599,29 +586,31 @@ bool CQGlobalQuantityDM::insertGlobalQuantityRows(QList <UndoGlobalQuantityData 
               //need to make sure species doesn't exist in the model already
               CMetab *pSpecie =  pModel->createMetabolite(sData->getName(), sData->getCompartment(), sData->getIConc(), sData->getStatus());
 
-              if (pSpecie)
+              if (pSpecie == NULL)
+                continue;
+
+
+
+              if (sData->getStatus() != CModelEntity::ASSIGNMENT)
                 {
-
-                  if (sData->getStatus() != CModelEntity::ASSIGNMENT)
-                    {
-                      pSpecie->setInitialConcentration(sData->getIConc());
-                    }
-
-                  if (sData->getStatus() == CModelEntity::ODE || sData->getStatus() == CModelEntity::ASSIGNMENT)
-                    {
-                      pSpecie->setExpression(sData->getExpression());
-                      pSpecie->getExpressionPtr()->compile();
-                    }
-
-                  // set initial expression
-                  if (sData->getStatus() != CModelEntity::ASSIGNMENT)
-                    {
-                      pSpecie->setInitialExpression(sData->getInitialExpression());
-                      pSpecie->getInitialExpressionPtr()->compile();
-                    }
-
-                  emit notifyGUI(ListViews::METABOLITE, ListViews::ADD, pSpecie->getKey());
+                  pSpecie->setInitialConcentration(sData->getIConc());
                 }
+
+              if (sData->getStatus() == CModelEntity::ODE || sData->getStatus() == CModelEntity::ASSIGNMENT)
+                {
+                  pSpecie->setExpression(sData->getExpression());
+                  pSpecie->getExpressionPtr()->compile();
+                }
+
+              // set initial expression
+              if (sData->getStatus() != CModelEntity::ASSIGNMENT)
+                {
+                  pSpecie->setInitialExpression(sData->getInitialExpression());
+                  pSpecie->getInitialExpressionPtr()->compile();
+                }
+
+              emit notifyGUI(ListViews::METABOLITE, ListViews::ADD, pSpecie->getKey());
+
             }
         }
 
@@ -635,16 +624,17 @@ bool CQGlobalQuantityDM::insertGlobalQuantityRows(QList <UndoGlobalQuantityData 
           UndoReactionData * rData = *j;
 
           //need to make sure reaction doesn't exist in the model already
-          if (pModel->getReactions().getIndex(rData->getName()) == C_INVALID_INDEX)
-            {
-              //  beginInsertRows(QModelIndex(), 1, 1);
-              CReaction *pRea =  pModel->createReaction(rData->getName());
-              rData->getRi()->createMetabolites();
-              rData->getRi()->createOtherObjects();
-              rData->getRi()->writeBackToReaction(pRea);
-              emit notifyGUI(ListViews::REACTION, ListViews::ADD, pRea->getKey());
-              //  endInsertRows();
-            }
+          if (pModel->getReactions().getIndex(rData->getName()) != C_INVALID_INDEX)
+            continue;
+
+          //  beginInsertRows(QModelIndex(), 1, 1);
+          CReaction *pRea =  pModel->createReaction(rData->getName());
+          rData->getRi()->createMetabolites();
+          rData->getRi()->createOtherObjects();
+          rData->getRi()->writeBackToReaction(pRea);
+          emit notifyGUI(ListViews::REACTION, ListViews::ADD, pRea->getKey());
+          //  endInsertRows();
+
         }
 
       //reinsert the dependency events

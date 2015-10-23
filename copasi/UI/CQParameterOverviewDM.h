@@ -64,9 +64,6 @@ signals:
   void signalOpenEditor(const QModelIndex &) const;
   void signalCloseEditor(const QModelIndex &) const;
 
-#ifdef COPASI_UNDO
-  void changeWidget(int id);
-#endif
 
 private:
   QModelIndex index(CModelParameter * pNode) const;

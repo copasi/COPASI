@@ -64,8 +64,6 @@ public:
   bool removeAllCompartmentRows();
   bool clear();
 
-signals:
-  void changeWidget(int id);
 #endif
 
 protected:

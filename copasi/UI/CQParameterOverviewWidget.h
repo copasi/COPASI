@@ -44,10 +44,6 @@ protected slots:
   void slotCloseEditor(const QModelIndex & index);
   void slotResolve(const QModelIndex & index);
 
-#ifdef COPASI_UNDO
-  virtual void slotChangeWidget(int id);
-#endif
-
 private:
   CModelParameterSet * mpParameterSet;
 

@@ -820,15 +820,21 @@ void CQSpecieDM::insertNewSpecieRow(int position, int rows, const QModelIndex&)
 
 void CQSpecieDM::deleteSpecieRow(UndoSpeciesData *pSpecieData)
 {
+  switchToWidget(CCopasiUndoCommand::SPECIES);
+
+
   CModel * pModel = (*CCopasiRootContainer::getDatamodelList())[0]->getModel();
   size_t index = pModel->findMetabByName(pSpecieData->getName());
   removeRow((int) index);
-  emit changeWidget(CCopasiUndoCommand::SPECIES);
 }
 
 void CQSpecieDM::addSpecieRow(UndoSpeciesData *pSpecieData)
 {
   GET_MODEL_OR_RETURN(pModel);
+
+  switchToWidget(CCopasiUndoCommand::SPECIES);
+
+
   CMetab *species = pModel->createMetabolite(pSpecieData->getName(), pSpecieData->getCompartment(), pSpecieData->getIConc(), CModelEntity::REACTIONS);
 
   if (species == NULL)
@@ -1031,16 +1037,17 @@ bool CQSpecieDM::insertSpecieRows(QList <UndoSpeciesData *> pData)
         }
     }
 
-  emit changeWidget(CCopasiUndoCommand::SPECIES);
+  switchToWidget(CCopasiUndoCommand::SPECIES);
+
   return true;
 }
 
 void CQSpecieDM::deleteSpecieRows(QList <UndoSpeciesData *> pData)
 {
 
-  emit changeWidget(CCopasiUndoCommand::SPECIES);
-
   GET_MODEL_OR_RETURN(pModel);
+
+  switchToWidget(CCopasiUndoCommand::SPECIES);
 
   QList <UndoSpeciesData *>::const_iterator j;
 

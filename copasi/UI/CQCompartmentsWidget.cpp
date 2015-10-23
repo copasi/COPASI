@@ -62,7 +62,6 @@ CQCompartmentsWidget::CQCompartmentsWidget(QWidget* parent, const char* name)
 #ifdef COPASI_UNDO
   CopasiUI3Window *  pWindow = dynamic_cast<CopasiUI3Window * >(parent->parent());
   mpCompartmentDM->setUndoStack(pWindow->getUndoStack());
-  connect(mpCompartmentDM, SIGNAL(changeWidget(int)), this, SLOT(slotChangeWidget(int)));
 #endif
 }
 
@@ -268,9 +267,3 @@ void CQCompartmentsWidget::slotFilterChanged()
   mpProxyModel->setFilterRegExp(regExp);
 }
 
-#ifdef COPASI_UNDO
-void CQCompartmentsWidget:: slotChangeWidget(int id)
-{
-  mpListView->switchToOtherWidget(id, "");
-}
-#endif

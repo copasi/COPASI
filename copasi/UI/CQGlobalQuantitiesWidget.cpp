@@ -63,7 +63,6 @@ CQGlobalQuantitiesWidget::CQGlobalQuantitiesWidget(QWidget* parent, const char* 
 #ifdef COPASI_UNDO
   CopasiUI3Window *  pWindow = dynamic_cast<CopasiUI3Window * >(parent->parent());
   mpGlobalQuantityDM->setUndoStack(pWindow->getUndoStack());
-  connect(mpGlobalQuantityDM, SIGNAL(changeWidget(int)), this, SLOT(slotChangeWidget(int)));
 #endif
 }
 
@@ -270,9 +269,3 @@ void CQGlobalQuantitiesWidget::slotFilterChanged()
   mpProxyModel->setFilterRegExp(regExp);
 }
 
-#ifdef COPASI_UNDO
-void CQGlobalQuantitiesWidget:: slotChangeWidget(int id)
-{
-  mpListView->switchToOtherWidget(id, "");
-}
-#endif

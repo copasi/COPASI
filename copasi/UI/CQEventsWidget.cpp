@@ -62,7 +62,6 @@ CQEventsWidget::CQEventsWidget(QWidget* parent, const char* name)
 #ifdef COPASI_UNDO
   CopasiUI3Window *  pWindow = dynamic_cast<CopasiUI3Window * >(parent->parent());
   mpEventDM->setUndoStack(pWindow->getUndoStack());
-  connect(mpEventDM, SIGNAL(changeWidget(int)), this, SLOT(slotChangeWidget(int)));
 #endif
 }
 
@@ -267,10 +266,3 @@ void CQEventsWidget::slotFilterChanged()
   QRegExp regExp(mpLEFilter->text() + "|New Event", Qt::CaseInsensitive, QRegExp::RegExp);
   mpProxyModel->setFilterRegExp(regExp);
 }
-
-#ifdef COPASI_UNDO
-void CQEventsWidget:: slotChangeWidget(int id)
-{
-  mpListView->switchToOtherWidget(id, "");
-}
-#endif

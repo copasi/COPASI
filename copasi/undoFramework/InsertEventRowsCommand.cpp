@@ -36,7 +36,7 @@ void InsertEventRowsCommand::redo()
 {
   if (firstTime)
     {
-      mpEventDM->insertNewEventRow(mPosition, mRows, QModelIndex());
+      mpEventDM->insertNewEventRow(mPosition, mRows);
       GET_MODEL_OR_RETURN(pModel);
 
       CEvent *pEvent = pModel->getEvents()[mPosition];

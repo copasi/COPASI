@@ -535,6 +535,9 @@ void CQReactionDM::insertNewReactionRow(int position, int rows, const QModelInde
 void CQReactionDM::addReactionRow(CReaction *pReaction)
 {
   GET_MODEL_OR_RETURN(pModel);
+
+  switchToWidget(CCopasiUndoCommand::REACTIONS);
+
   beginInsertRows(QModelIndex(), 1, 1);
   CReaction *pRea = pModel->createReaction(pReaction->getObjectName());
   std::string key = pRea->getKey();
@@ -545,6 +548,9 @@ void CQReactionDM::addReactionRow(CReaction *pReaction)
 void CQReactionDM::deleteReactionRow(CReaction *pReaction)
 {
   GET_MODEL_OR_RETURN(pModel);
+
+  switchToWidget(CCopasiUndoCommand::REACTIONS);
+
   std::string key = pReaction->getKey();
   beginRemoveRows(QModelIndex(), 1, 1);
   pModel->removeReaction(pReaction->getKey());
@@ -558,13 +564,9 @@ bool CQReactionDM::removeReactionRows(QModelIndexList rows, const QModelIndex&)
   if (rows.isEmpty())
     return false;
 
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
-  assert(pDataModel != NULL);
-  CModel * pModel = pDataModel->getModel();
+  GET_MODEL_OR(pModel, return false);
 
-  if (pModel == NULL)
-    return false;
+  switchToWidget(CCopasiUndoCommand::REACTIONS);
 
 //Build the list of pointers to items to be deleted
 //before actually deleting any item.
@@ -606,13 +608,10 @@ bool CQReactionDM::removeReactionRows(QModelIndexList rows, const QModelIndex&)
 bool CQReactionDM::insertReactionRows(QList <UndoReactionData *> pData)
 {
 
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
-  assert(pDataModel != NULL);
-  CModel * pModel = pDataModel->getModel();
 
-  if (pModel == NULL)
-    return false;
+  GET_MODEL_OR(pModel, return false);
+
+  switchToWidget(CCopasiUndoCommand::REACTIONS);
 
   QList <UndoReactionData *>::const_iterator j;
 
@@ -636,11 +635,10 @@ bool CQReactionDM::insertReactionRows(QList <UndoReactionData *> pData)
 }
 void CQReactionDM::deleteReactionRows(QList <UndoReactionData *> pData)
 {
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
-  assert(pDataModel != NULL);
 
-  CModel * pModel = pDataModel->getModel();
+  GET_MODEL_OR_RETURN(pModel);
+
+  switchToWidget(CCopasiUndoCommand::REACTIONS);
 
   QList <UndoReactionData *>::const_iterator j;
 

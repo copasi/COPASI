@@ -67,8 +67,6 @@ public:
   bool removeAllGlobalQuantityRows();
   bool clear();
 
-signals:
-  void changeWidget(int id);
 #endif
 
 protected:

@@ -61,8 +61,6 @@ CQReactionsWidget::CQReactionsWidget(QWidget* parent, const char* name)
 #ifdef COPASI_UNDO
   CopasiUI3Window *  pWindow = dynamic_cast<CopasiUI3Window * >(parent->parent());
   mpReactionDM->setUndoStack(pWindow->getUndoStack());
-  connect(mpReactionDM, SIGNAL(changeWidget(int, const std::string&)),
-          this, SLOT(slotChangeWidget(int, const std::string&)));
 #endif
 }
 
@@ -289,9 +287,3 @@ void CQReactionsWidget::deleteSelectedReactions()
   mpReactionDM->removeRows(mappedSelRows);
 }
 
-#ifdef COPASI_UNDO
-void CQReactionsWidget:: slotChangeWidget(int id, const std::string &key)
-{
-  mpListView->switchToOtherWidget(id, key);
-}
-#endif

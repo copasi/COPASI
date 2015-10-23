@@ -59,8 +59,6 @@ public:
   bool removeAllReactionRows();
   bool clear();
 
-signals:
-  void changeWidget(int id, const std::string& key = "");
 #endif
 
 protected:

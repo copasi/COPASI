@@ -52,9 +52,6 @@ protected slots:
                            const QModelIndex& bottomRight);
   virtual void slotFilterChanged();
 
-#ifdef COPASI_UNDO
-  virtual void slotChangeWidget(int id);
-#endif
 };
 
 #endif // CQCompartmentsWidget_h

@@ -69,9 +69,8 @@ public:
   bool removeAllSpecieRows();
   bool clear();
 
-signals:
-  void changeWidget(int id);
 #endif
+
 protected:
   bool mFlagConc;
   QStringList mTypes;
