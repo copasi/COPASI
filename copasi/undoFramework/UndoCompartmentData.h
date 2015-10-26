@@ -49,6 +49,13 @@ public:
 
   QList<UndoEventData*> *getEventDependencyObjects() const;
 
+
+  /**
+   * when overidden in subclasses this function
+   * will restore dependent objects.
+   */
+  virtual void restoreDependentObjects(CModel* pModel);
+
   const std::string& getInitialExpression() const;
   void setInitialExpression(const std::string &initialExpression);
 

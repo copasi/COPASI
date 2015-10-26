@@ -49,6 +49,13 @@ public:
   const std::string &getInitialExpression() const;
   void setInitialExpression(const std::string &initialExpression);
 
+  /**
+   * when overidden in subclasses this function
+   * will restore dependent objects.
+   */
+  virtual void restoreDependentObjects(CModel* pModel);
+
+
   QList<UndoReactionData*> *getReactionDependencyObjects() const;
 
   QList<UndoEventData*> *getEventDependencyObjects() const;

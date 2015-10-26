@@ -30,6 +30,32 @@ UndoReactionData::~UndoReactionData()
   pdelete(mSpeciesDependencyObjects);
 }
 
+CReaction *UndoReactionData::createReactionFromData(CModel *pModel)
+{
+  if (pModel == NULL) return NULL;
+
+  CReaction* pRea = pModel->createReaction(getName());
+
+  if (pRea == NULL) return NULL;
+
+  CChemEqInterface *chem = new CChemEqInterface(pModel);
+  chem->setChemEqString(getRi()->getChemEqString());
+  chem->writeToChemEq(pRea->getChemEq());
+  getRi()->createMetabolites();
+  getRi()->createOtherObjects();
+  getRi()->writeBackToReaction(pRea);
+
+  return pRea;
+
+}
+
+void UndoReactionData::restoreDependentObjects(CModel *pModel)
+{
+  if (pModel == NULL) return;
+
+  UndoData::restoreDependentObjects(pModel, getSpeciesDependencyObjects());
+}
+
 CReactionInterface *UndoReactionData::getRi() const
 {
   return mpRi;

@@ -14,6 +14,10 @@
 
 #include "model/CMetab.h"
 #include "model/CCompartment.h"
+
+#include <copasi/model/CModel.h>
+#include <copasi/function/CExpression.h>
+
 #include "UndoSpeciesData.h"
 #include "UndoReactionData.h"
 #include "UndoGlobalQuantityData.h"
@@ -54,6 +58,52 @@ UndoSpeciesData::~UndoSpeciesData()
   pdelete(mEventDependencyObjects);
   pdelete(mReactionDependencyObjects);
   pdelete(mGlobalQuantityDependencyObjects);
+}
+
+CMetab *UndoSpeciesData::createMetabFromData(CModel *pModel)
+{
+  if (pModel == NULL)
+    return NULL;
+
+  CCompartment * pCompartment = pModel->getCompartments()[getCompartment()];
+
+  if (pCompartment == NULL)
+    return NULL;
+
+  if (pCompartment->getMetabolites().getIndex(getName()) != C_INVALID_INDEX)
+    return NULL;
+
+  CMetab *pSpecies =  pModel->createMetabolite(getName(), getCompartment(), getIConc(), getStatus());
+
+  if (pSpecies == NULL)
+    return NULL;
+
+  if (getStatus() != CModelEntity::ASSIGNMENT)
+    {
+      pSpecies->setInitialConcentration(getIConc());
+    }
+
+  if (getStatus() == CModelEntity::ODE || getStatus() == CModelEntity::ASSIGNMENT)
+    {
+      pSpecies->setExpression(getExpression());
+      pSpecies->getExpressionPtr()->compile();
+    }
+
+  // set initial expression
+  if (getStatus() != CModelEntity::ASSIGNMENT)
+    {
+      pSpecies->setInitialExpression(getInitialExpression());
+      pSpecies->getInitialExpressionPtr()->compile();
+    }
+
+  return pSpecies;
+}
+
+void UndoSpeciesData::restoreDependentObjects(CModel* pModel)
+{
+  UndoData::restoreDependentObjects(pModel, getGlobalQuantityDependencyObjects());
+  UndoData::restoreDependentObjects(pModel, getReactionDependencyObjects());
+  UndoData::restoreDependentObjects(pModel, getEventDependencyObjects());
 }
 
 const std::string&

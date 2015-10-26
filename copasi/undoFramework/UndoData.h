@@ -16,6 +16,12 @@
 #include <QObject>
 #include <string>
 
+class CModel;
+class UndoGlobalQuantityData;
+class UndoReactionData;
+class UndoEventData;
+class UndoSpeciesData;
+class UndoCompartmentData;
 /**
  * Base class for all COPASI undo data
  */
@@ -27,7 +33,14 @@ public:
   UndoData(const std::string &key = "",
            const std::string &name = "",
            const std::string &type = "");
+
   virtual ~UndoData();
+
+  /**
+   * when overidden in subclasses this function
+   * will restore dependent objects.
+   */
+  virtual void restoreDependentObjects(CModel* pModel);
 
   /**
    * @return the key of the object
@@ -71,6 +84,16 @@ public:
    */
   void setType(const std::string &type);
 
+  static void restoreDependentObjects(CModel* pModel,
+                                      QList <UndoGlobalQuantityData *> *pGlobalQuantityData);
+  static void restoreDependentObjects(CModel* pModel,
+                                      QList <UndoReactionData *> *pReactionData);
+  static void restoreDependentObjects(CModel* pModel,
+                                      QList <UndoEventData *> *pEventData);
+  static void restoreDependentObjects(CModel* pModel,
+                                      QList <UndoSpeciesData *> *pSpeciesData);
+  static void restoreDependentObjects(CModel* pModel,
+                                      QList <UndoCompartmentData *> *pCompartmentData);
 
 private:
   std::string mKey;

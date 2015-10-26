@@ -27,6 +27,9 @@ CreateNewSpeciesCommand::CreateNewSpeciesCommand(CQSpeciesDetail *pSpeciesDetail
 
 void CreateNewSpeciesCommand::redo()
 {
+
+  // TODO: this should not be like that, it will not work the
+  // second time as intended
   mpSpeciesDetail->createNewSpecies();
 
   std::string sName = mpSpeciesDetail->mpMetab->getObjectName();

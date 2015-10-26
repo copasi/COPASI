@@ -145,6 +145,16 @@ void UndoGlobalQuantityData::setInitialExpression(const std::string &initialExpr
   mInitialExpression = initialExpression;
 }
 
+void UndoGlobalQuantityData::restoreDependentObjects(CModel *pModel)
+{
+  if (pModel == NULL)
+    return;
+
+  UndoData::restoreDependentObjects(pModel, getSpecieDependencyObjects());
+  UndoData::restoreDependentObjects(pModel, getReactionDependencyObjects());
+  UndoData::restoreDependentObjects(pModel, getEventDependencyObjects());
+}
+
 QList<UndoEventData*> *UndoGlobalQuantityData::getEventDependencyObjects() const
 {
   return mEventDependencyObjects;

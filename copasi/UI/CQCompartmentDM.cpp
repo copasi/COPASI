@@ -465,12 +465,16 @@ bool CQCompartmentDM::compartmentDataChange(const QModelIndex& index, const QVar
 
 void CQCompartmentDM::insertNewCompartmentRow(int position, int rows, const QModelIndex&)
 {
+  GET_MODEL_OR_RETURN(pModel);
+
   beginInsertRows(QModelIndex(), position, position + rows - 1);
 
   for (int row = 0; row < rows; ++row)
     {
-      CCompartment * pComp = (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->createCompartment(TO_UTF8(createNewName("compartment", COL_NAME_COMPARTMENTS)));
-      emit notifyGUI(ListViews::COMPARTMENT, ListViews::ADD, pComp->getKey());
+      CCompartment * pComp = pModel->createCompartment(TO_UTF8(createNewName("compartment", COL_NAME_COMPARTMENTS)));
+
+      if (pComp != NULL)
+        emit notifyGUI(ListViews::COMPARTMENT, ListViews::ADD, pComp->getKey());
     }
 
   endInsertRows();
@@ -567,140 +571,7 @@ bool CQCompartmentDM::insertCompartmentRows(QList <UndoCompartmentData *>& pData
       pCompartment->setStatus(data->getStatus());
       emit notifyGUI(ListViews::COMPARTMENT, ListViews::ADD, pCompartment->getKey());
 
-      //reinsert all the species
-      QList <UndoSpeciesData *> *pSpecieData = data->getSpecieDependencyObjects();
-
-      if (!pSpecieData->empty())
-        {
-          QList <UndoSpeciesData *>::const_iterator i;
-
-          for (i = pSpecieData->begin(); i != pSpecieData->end(); ++i)
-            {
-              UndoSpeciesData * sData = *i;
-
-              //  beginInsertRows(QModelIndex(), 1, 1);
-              if (pCompartment->getMetabolites().getIndex(sData->getName()) == C_INVALID_INDEX)
-                {
-
-                  CMetab *pSpecie =  pModel->createMetabolite(sData->getName(), sData->getCompartment(), sData->getIConc(), sData->getStatus());
-
-                  if (pSpecie)
-                    {
-                      if (sData->getStatus() != CModelEntity::ASSIGNMENT)
-                        {
-                          pSpecie->setInitialConcentration(sData->getIConc());
-                        }
-
-                      if (sData->getStatus() == CModelEntity::ODE || sData->getStatus() == CModelEntity::ASSIGNMENT)
-                        {
-                          pSpecie->setExpression(sData->getExpression());
-                          pSpecie->getExpressionPtr()->compile();
-                        }
-
-                      // set initial expression
-                      if (sData->getStatus() != CModelEntity::ASSIGNMENT)
-                        {
-                          pSpecie->setInitialExpression(sData->getInitialExpression());
-                          pSpecie->getInitialExpressionPtr()->compile();
-                        }
-
-                      emit notifyGUI(ListViews::METABOLITE, ListViews::ADD, pSpecie->getKey());
-                      //endInsertRows();
-                    }
-                }
-            }
-        }
-
-      //reinsert the dependency global quantity
-      QList <UndoGlobalQuantityData *> *pGlobalQuantityData = data->getGlobalQuantityDependencyObjects();
-
-      if (!pGlobalQuantityData->empty())
-        {
-          QList <UndoGlobalQuantityData *>::const_iterator g;
-
-          for (g = pGlobalQuantityData->begin(); g != pGlobalQuantityData->end(); ++g)
-            {
-              UndoGlobalQuantityData * gData = *g;
-
-              if (pModel->getModelValues().getIndex(gData->getName()) == C_INVALID_INDEX)
-                {
-                  CModelValue *pGlobalQuantity =  pModel->createModelValue(gData->getName());
-
-                  if (pGlobalQuantity)
-                    {
-                      pGlobalQuantity->setStatus(gData->getStatus());
-
-                      if (gData->getStatus() != CModelEntity::ASSIGNMENT)
-                        {
-                          pGlobalQuantity->setInitialValue(gData->getInitialValue());
-                        }
-
-                      if (gData->getStatus() != CModelEntity::FIXED)
-                        {
-                          pGlobalQuantity->setExpression(gData->getExpression());
-                          pGlobalQuantity->getExpressionPtr()->compile();
-                        }
-
-                      // set initial expression
-                      if (gData->getStatus() != CModelEntity::ASSIGNMENT)
-                        {
-                          pGlobalQuantity->setInitialExpression(gData->getInitialExpression());
-                          pGlobalQuantity->getInitialExpressionPtr()->compile();
-                        }
-
-                      emit notifyGUI(ListViews::MODELVALUE, ListViews::ADD, pGlobalQuantity->getKey());
-                    }
-                }
-            }
-        }
-
-      //reinsert the dependency reaction
-      QList <UndoReactionData *> *pReactionData = data->getReactionDependencyObjects();
-
-      if (!pReactionData->empty())
-        {
-          QList <UndoReactionData *>::const_iterator j;
-
-          for (j = pReactionData->begin(); j != pReactionData->end(); ++j)
-            {
-              UndoReactionData * rData = *j;
-
-              //need to make sure reaction doesn't exist in the model already
-
-              if (pModel->getReactions().getIndex(rData->getName()) == C_INVALID_INDEX)
-                {
-                  emit notifyGUI(ListViews::METABOLITE, ListViews::ADD, ""); //Refresh all dependency species.
-                  CReaction *pRea =  pModel->createReaction(rData->getName());
-                  CChemEqInterface *chem = new CChemEqInterface(pModel);
-                  chem->setChemEqString(rData->getRi()->getChemEqString());
-                  chem->writeToChemEq(pRea->getChemEq());
-                  rData->getRi()->createMetabolites();
-                  rData->getRi()->createOtherObjects();
-                  rData->getRi()->writeBackToReaction(pRea);
-
-                  emit notifyGUI(ListViews::REACTION, ListViews::ADD, pRea->getKey());
-                }
-            }
-        }
-
-      //reinsert the dependency events
-      QList <UndoEventData *> *pEventData = data->getEventDependencyObjects();
-
-      if (!pEventData->empty())
-        {
-
-          QList <UndoEventData *>::const_iterator ev;
-
-          for (ev = pEventData->begin(); ev != pEventData->end(); ++ev)
-            {
-
-              CEvent* pEvent = (*ev)->createEventFromData(pModel);
-
-              if (pEvent == NULL) continue;
-
-              emit notifyGUI(ListViews::EVENT, ListViews::ADD, pEvent->getKey());
-            }
-        }
+      data->restoreDependentObjects(pModel);
 
       endInsertRows();
     }

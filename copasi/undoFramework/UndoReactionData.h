@@ -19,6 +19,8 @@
 class CReactionInterface;
 class UndoSpeciesData;
 
+class CReaction;
+
 class UndoReactionData: public UndoData
 {
 public:
@@ -26,6 +28,15 @@ public:
                    const std::string &name = "",
                    const std::string &type = "");
   virtual ~UndoReactionData();
+
+  CReaction* createReactionFromData(CModel* pModel);
+
+  /**
+   * when overidden in subclasses this function
+   * will restore dependent objects.
+   */
+  virtual void restoreDependentObjects(CModel* pModel);
+
 
   CReactionInterface *getRi() const;
   void setRi(CReactionInterface *mpRi);

@@ -30,7 +30,7 @@ public:
 
 private:
   CQSpeciesDetail* mpSpecieDetail;
-  UndoSpeciesData *mpSpeciesData;
+  UndoSpeciesData* mpSpeciesData;
   bool mFirstTime;
 };
 

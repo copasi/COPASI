@@ -834,8 +834,7 @@ void CQSpecieDM::addSpecieRow(UndoSpeciesData *pSpecieData)
 
   switchToWidget(CCopasiUndoCommand::SPECIES);
 
-
-  CMetab *species = pModel->createMetabolite(pSpecieData->getName(), pSpecieData->getCompartment(), pSpecieData->getIConc(), CModelEntity::REACTIONS);
+  CMetab *species =  pSpecieData->createMetabFromData(pModel);
 
   if (species == NULL)
     return;
@@ -901,36 +900,17 @@ bool CQSpecieDM::insertSpecieRows(QList <UndoSpeciesData *> pData)
   for (i = pData.begin(); i != pData.end(); ++i)
     {
       UndoSpeciesData * data = *i;
-      CCompartment * pCompartment = pModel->getCompartments()[data->getCompartment()];
 
-      if (pCompartment->getMetabolites().getIndex(data->getName()) == C_INVALID_INDEX)
-        {
-          beginInsertRows(QModelIndex(), 1, 1);
+      beginInsertRows(QModelIndex(), 1, 1);
+      CMetab *pSpecies = data->createMetabFromData(pModel);
 
-          CMetab *pSpecie =  pModel->createMetabolite(data->getName(), data->getCompartment(), 1.0, data->getStatus());
+      if (pSpecies != NULL)
+        emit notifyGUI(ListViews::METABOLITE, ListViews::ADD, pSpecies->getKey());
 
-          if (data->getStatus() != CModelEntity::ASSIGNMENT)
-            {
-              pSpecie->setInitialConcentration(data->getIConc());
-            }
+      endInsertRows();
 
-          if (data->getStatus() == CModelEntity::ODE || data->getStatus() == CModelEntity::ASSIGNMENT)
-            {
-              pSpecie->setExpression(data->getExpression());
-              pSpecie->getExpressionPtr()->compile();
-            }
-
-          // set initial expression
-          if (data->getStatus() != CModelEntity::ASSIGNMENT)
-            {
-              pSpecie->setInitialExpression(data->getInitialExpression());
-              pSpecie->getInitialExpressionPtr()->compile();
-            }
-
-          emit notifyGUI(ListViews::METABOLITE, ListViews::ADD, pSpecie->getKey());
-          endInsertRows();
-        }
     }
+
 
   //restore the reactions
   QList <UndoSpeciesData *>::const_iterator k;
@@ -939,102 +919,8 @@ bool CQSpecieDM::insertSpecieRows(QList <UndoSpeciesData *> pData)
     {
       UndoSpeciesData * data = *k;
 
-      //reinsert the dependency global quantity
-      QList <UndoGlobalQuantityData *> *pGlobalQuantityData = data->getGlobalQuantityDependencyObjects();
+      data->restoreDependentObjects(pModel);
 
-      if (pGlobalQuantityData != NULL && !pGlobalQuantityData->empty())
-        {
-          QList <UndoGlobalQuantityData *>::const_iterator g;
-
-          for (g = pGlobalQuantityData->begin(); g != pGlobalQuantityData->end(); ++g)
-            {
-              CModelValue *pGlobalQuantity = (*g)->createQuantityFromData(pModel);
-
-              if (pGlobalQuantity == NULL) continue;
-
-              emit notifyGUI(ListViews::MODELVALUE, ListViews::ADD, pGlobalQuantity->getKey());
-            }
-        }
-
-      QList <UndoReactionData *> *reactionData = data->getReactionDependencyObjects();
-
-      if (!reactionData->empty())
-        {
-          QList <UndoReactionData *>::const_iterator j;
-
-          for (j = reactionData->begin(); j != reactionData->end(); ++j)
-            {
-
-              UndoReactionData * rData = *j;
-
-              //need to make sure reaction doesn't exist in the model already
-              if (pModel->getReactions().getIndex(rData->getName()) == C_INVALID_INDEX)
-                {
-                  CReaction *pRea =  pModel->createReaction(rData->getName());
-                  CChemEqInterface *chem = new CChemEqInterface(pModel);
-                  chem->setChemEqString(rData->getRi()->getChemEqString());
-                  chem->writeToChemEq(pRea->getChemEq());
-                  rData->getRi()->createMetabolites();
-                  rData->getRi()->createOtherObjects();
-                  rData->getRi()->writeBackToReaction(pRea);
-
-                  //reaction may further has dependencies, these must be taken care of
-                  QList <UndoSpeciesData *> *spData = rData->getSpeciesDependencyObjects();
-
-                  QList <UndoSpeciesData *>::const_iterator rs;
-
-                  for (rs = spData->begin(); rs != spData->end(); ++rs)
-                    {
-                      UndoSpeciesData * data = *rs;
-                      CCompartment * pCompartment = pModel->getCompartments()[data->getCompartment()];
-
-                      if (pCompartment->getMetabolites().getIndex(data->getName()) == C_INVALID_INDEX)
-                        {
-                          CMetab *pSpecie =  pModel->createMetabolite(data->getName(), data->getCompartment(), 1.0, data->getStatus());
-
-                          if (data->getStatus() != CModelEntity::ASSIGNMENT)
-                            {
-                              pSpecie->setInitialConcentration(data->getIConc());
-                            }
-
-                          if (data->getStatus() == CModelEntity::ODE || data->getStatus() == CModelEntity::ASSIGNMENT)
-                            {
-                              pSpecie->setExpression(data->getExpression());
-                              pSpecie->getExpressionPtr()->compile();
-                            }
-
-                          // set initial expression
-                          if (data->getStatus() != CModelEntity::ASSIGNMENT)
-                            {
-                              pSpecie->setInitialExpression(data->getInitialExpression());
-                              pSpecie->getInitialExpressionPtr()->compile();
-                            }
-
-                          emit notifyGUI(ListViews::METABOLITE, ListViews::ADD, pSpecie->getKey());
-                        }
-                    }
-
-                  emit notifyGUI(ListViews::REACTION, ListViews::ADD, pRea->getKey());
-                }
-            }
-        }
-
-      //reinsert the dependency events
-      QList <UndoEventData *> *pEventData = data->getEventDependencyObjects();
-
-      if (!pEventData->empty())
-        {
-          QList <UndoEventData *>::const_iterator ev;
-
-          for (ev = pEventData->begin(); ev != pEventData->end(); ++ev)
-            {
-              CEvent* pEvent = (*ev)->createEventFromData(pModel);
-
-              if (pEvent == NULL) continue;
-
-              emit notifyGUI(ListViews::EVENT, ListViews::ADD, pEvent->getKey());
-            }
-        }
     }
 
   switchToWidget(CCopasiUndoCommand::SPECIES);

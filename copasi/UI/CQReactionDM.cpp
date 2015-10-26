@@ -607,8 +607,6 @@ bool CQReactionDM::removeReactionRows(QModelIndexList rows, const QModelIndex&)
 
 bool CQReactionDM::insertReactionRows(QList <UndoReactionData *> pData)
 {
-
-
   GET_MODEL_OR(pModel, return false);
 
   switchToWidget(CCopasiUndoCommand::REACTIONS);
@@ -619,15 +617,11 @@ bool CQReactionDM::insertReactionRows(QList <UndoReactionData *> pData)
     {
       UndoReactionData * data = *j;
       beginInsertRows(QModelIndex(), 1, 1);
-      CReaction *pRea =  pModel->createReaction(data->getName());
+      CReaction *pRea = data->createReactionFromData(pModel);
 
-      CChemEqInterface *chem = new CChemEqInterface(pModel);
-      chem->setChemEqString(data->getRi()->getChemEqString());
-      chem->writeToChemEq(pRea->getChemEq());
-      data->getRi()->createMetabolites();
-      data->getRi()->createOtherObjects();
-      data->getRi()->writeBackToReaction(pRea);
-      emit notifyGUI(ListViews::REACTION, ListViews::ADD, pRea->getKey());
+      if (pRea != NULL)
+        emit notifyGUI(ListViews::REACTION, ListViews::ADD, pRea->getKey());
+
       endInsertRows();
     }
 
@@ -635,7 +629,6 @@ bool CQReactionDM::insertReactionRows(QList <UndoReactionData *> pData)
 }
 void CQReactionDM::deleteReactionRows(QList <UndoReactionData *> pData)
 {
-
   GET_MODEL_OR_RETURN(pModel);
 
   switchToWidget(CCopasiUndoCommand::REACTIONS);

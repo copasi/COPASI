@@ -124,6 +124,17 @@ UndoCompartmentData::getEventDependencyObjects() const
   return mEventDependencyObjects;
 }
 
+void UndoCompartmentData::restoreDependentObjects(CModel *pModel)
+{
+  if (pModel == NULL)
+    return;
+
+  UndoData::restoreDependentObjects(pModel, getSpecieDependencyObjects());
+  UndoData::restoreDependentObjects(pModel, getGlobalQuantityDependencyObjects());
+  UndoData::restoreDependentObjects(pModel, getReactionDependencyObjects());
+  UndoData::restoreDependentObjects(pModel, getEventDependencyObjects());
+}
+
 const std::string&
 UndoCompartmentData::getInitialExpression() const
 {

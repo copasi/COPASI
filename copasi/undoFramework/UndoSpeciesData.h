@@ -36,6 +36,14 @@ public:
 
   virtual ~UndoSpeciesData();
 
+  CMetab* createMetabFromData(CModel* pModel);
+
+  /**
+   * when overidden in subclasses this function
+   * will restore dependent objects.
+   */
+  virtual void restoreDependentObjects(CModel* pModel);
+
   const std::string& getCompartment() const;
   void setCompartment(const std::string& compartment);
 
