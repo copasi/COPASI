@@ -1853,14 +1853,23 @@ bool CModel::removeMetabolite(const CMetab* pMetabolite,
 
   if (recursive)
     {
+      std::string key = pMetabolite->getKey();
       removeDependentModelObjects(pMetabolite->getDeletedObjects());
+
+      // the metabolite might have been deleted above, need to reaquire the pointer
+      pMetabolite =
+        dynamic_cast< CMetab * >(CCopasiRootContainer::getKeyFactory()->get(key));
+
     }
 
-  /* Assure that all references are removed */
-  mMetabolites.remove((CMetab *)pMetabolite);
-  mMetabolitesX.remove((CMetab *)pMetabolite);
+  if (pMetabolite != NULL)
+    {
+      /* Assure that all references are removed */
+      mMetabolites.remove((CMetab *)pMetabolite);
+      mMetabolitesX.remove((CMetab *)pMetabolite);
 
-  pdelete(pMetabolite);
+      pdelete(pMetabolite);
+    }
 
   clearMoieties();
   mCompileIsNecessary = true;
@@ -2193,7 +2202,7 @@ bool
 CModel::createEventsForTimeseries(CExperiment* experiment/* = NULL*/)
 {
 
-#pragma region   //find_experiment
+  #pragma region   //find_experiment
 
   if (experiment == NULL)
     {
@@ -2243,7 +2252,7 @@ CModel::createEventsForTimeseries(CExperiment* experiment/* = NULL*/)
       return createEventsForTimeseries(const_cast<CExperiment*>(theExperiment));
     }
 
-#pragma endregion //find_experiment
+  #pragma endregion //find_experiment
 
   if (experiment->getExperimentType() != CTaskEnum::timeCourse)
     {
