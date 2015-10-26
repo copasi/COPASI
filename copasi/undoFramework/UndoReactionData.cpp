@@ -12,9 +12,15 @@
 
 #include <QtCore/QList>
 
-#include "model/CMetab.h"
-#include "UndoSpeciesData.h"
-#include "UndoReactionData.h"
+#include <copasi/model/CModel.h>
+#include <copasi/model/CMetab.h>
+#include <copasi/model/CReaction.h>
+#include <copasi/model/CReactionInterface.h>
+#include <copasi/model/CChemEqInterface.h>
+
+#include <copasi/undoFramework/UndoSpeciesData.h>
+#include <copasi/undoFramework/UndoReactionData.h>
+
 
 UndoReactionData::UndoReactionData(const std::string &key  /*= ""*/,
                                    const std::string &name /*= ""*/,
