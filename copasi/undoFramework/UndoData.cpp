@@ -30,6 +30,7 @@ UndoData::UndoData(const std::string &key  /*= ""*/,
                    const std::string &name /*= ""*/,
                    const std::string &type /*= ""*/)
   : QObject()
+  , mpData(NULL)
   , mKey(key)
   , mName(name)
   , mType(type)
@@ -114,6 +115,8 @@ void UndoData::restoreDependentObjects(CModel *pModel, QList<UndoReactionData *>
       //need to make sure reaction doesn't exist in the model already
       if (pModel->getReactions().getIndex(rData->getName()) != C_INVALID_INDEX)
         continue;
+
+      CReaction *pRea = rData->createReactionFromData(pModel);
 
       CReaction *pRea =  pModel->createReaction(rData->getName());
       CChemEqInterface *chem = new CChemEqInterface(pModel);

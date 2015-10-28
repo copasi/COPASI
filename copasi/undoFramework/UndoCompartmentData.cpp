@@ -12,11 +12,12 @@
 
 #include <QtCore/QList>
 
-#include "model/CMetab.h"
+#include <copasi/model/CModel.h>
+#include <copasi/model/CMetab.h>
 
-#include "CCopasiUndoCommand.h"
-#include "UndoData.h"
-#include "UndoCompartmentData.h"
+#include <copasi/undoFramework/CCopasiUndoCommand.h>
+#include <copasi/undoFramework/UndoData.h>
+#include <copasi/undoFramework/UndoCompartmentData.h>
 
 UndoCompartmentData::UndoCompartmentData()
   : UndoData()
@@ -29,11 +30,12 @@ UndoCompartmentData::UndoCompartmentData()
   , mReactionDependencyObjects(new QList<UndoReactionData*>())
   , mGlobalQuantityDependencyObjects(new QList<UndoGlobalQuantityData*>())
   , mEventDependencyObjects(new QList<UndoEventData*>())
+  , mpData(new UndoDependentData())
 {
 
 }
 
-UndoCompartmentData::UndoCompartmentData(CCompartment *compartment)
+UndoCompartmentData::UndoCompartmentData(const CCompartment *compartment)
   : UndoData(compartment->getKey(), compartment->getObjectName())
   , mInitialValue(compartment->getInitialValue())
   , mInitialExpression(compartment->getInitialExpression())
@@ -44,6 +46,7 @@ UndoCompartmentData::UndoCompartmentData(CCompartment *compartment)
   , mReactionDependencyObjects(new QList<UndoReactionData*>())
   , mGlobalQuantityDependencyObjects(new QList<UndoGlobalQuantityData*>())
   , mEventDependencyObjects(new QList<UndoEventData*>())
+  , mpData(new UndoDependentData(compartment))
 {
   CCopasiUndoCommand::setDependentObjects(
     compartment->getDeletedObjects(),
@@ -61,6 +64,22 @@ UndoCompartmentData::~UndoCompartmentData()
   pdelete(mGlobalQuantityDependencyObjects);
   pdelete(mEventDependencyObjects);
 
+}
+
+CCompartment *UndoCompartmentData::createCompartmentFromData(CModel *pModel)
+{
+  if (pModel == NULL) return NULL;
+
+  CCompartment *pCompartment = pModel->createCompartment(getName());
+
+  if (pCompartment == NULL)
+    return NULL;
+
+  pCompartment->setInitialValue(getInitialValue());
+
+  pCompartment->setStatus(getStatus());
+
+  return pCompartment;
 }
 
 QList<UndoData*> *

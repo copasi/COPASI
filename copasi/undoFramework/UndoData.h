@@ -17,11 +17,14 @@
 #include <string>
 
 class CModel;
+
 class UndoGlobalQuantityData;
 class UndoReactionData;
 class UndoEventData;
 class UndoSpeciesData;
 class UndoCompartmentData;
+class UndoDependentData;
+
 /**
  * Base class for all COPASI undo data
  */
@@ -95,7 +98,8 @@ public:
   static void restoreDependentObjects(CModel* pModel,
                                       QList <UndoCompartmentData *> *pCompartmentData);
 
-private:
+protected:
+  UndoDependentData *mpData;
   std::string mKey;
   std::string mName;
   std::string mType;

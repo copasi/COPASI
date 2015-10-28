@@ -29,25 +29,9 @@ RemoveAllEventRowsCommand::RemoveAllEventRowsCommand(
 
   for (int i = 0; i != pEventDM->rowCount() - 1; ++i)
     {
-      UndoEventData *data = new UndoEventData();
-
       if (pModel->getEvents()[i])
         {
-          data->setName(pModel->getEvents()[i]->getObjectName());
-          data->setPriorityExpression(pModel->getEvents()[i]->getPriorityExpression());
-          data->setDelayExpression(pModel->getEvents()[i]->getDelayExpression());
-          data->setTriggerExpression(pModel->getEvents()[i]->getTriggerExpression());
-
-          CCopasiVector< CEventAssignment >::const_iterator it = pModel->getEvents()[i]->getAssignments().begin();
-          CCopasiVector< CEventAssignment >::const_iterator end = pModel->getEvents()[i]->getAssignments().end();
-
-          for (; it != end; ++it)
-            {
-              const CModelEntity * pEntity = dynamic_cast< CModelEntity * >(CCopasiRootContainer::getKeyFactory()->get((*it)->getTargetKey()));
-              data->getEventAssignmentData()->append(
-                new UndoEventAssignmentData(pEntity, (*it)->getExpression()));
-            }
-
+          UndoEventData *data = new UndoEventData(pModel->getEvents()[i]);
           mpEventData.append(data);
         }
     }

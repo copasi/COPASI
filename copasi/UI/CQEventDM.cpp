@@ -328,8 +328,8 @@ bool CQEventDM::removeRows(QModelIndexList rows, const QModelIndex&)
   if (pModel == NULL)
     return false;
 
-//Build the list of pointers to items to be deleted
-//before actually deleting any item.
+  //Build the list of pointers to items to be deleted
+  //before actually deleting any item.
   QList <CEvent *> pEvents;
   QModelIndexList::const_iterator i;
 
@@ -409,7 +409,6 @@ bool CQEventDM::eventDataChange(const QModelIndex &index, const QVariant &value,
 
 void CQEventDM::insertNewEventRow(int position, int rows)
 {
-
   GET_MODEL_OR_RETURN(pModel);
 
   beginInsertRows(QModelIndex(), position, position + rows - 1);
@@ -426,7 +425,6 @@ void CQEventDM::insertNewEventRow(int position, int rows)
 
 void CQEventDM::deleteEventRow(UndoEventData *pEventData)
 {
-
   GET_MODEL_OR_RETURN(pModel);
 
   size_t index = pModel->getEvents().getIndex(pEventData->getName());
@@ -467,8 +465,8 @@ bool CQEventDM::removeEventRows(QModelIndexList rows, const QModelIndex&)
 
   switchToWidget(CCopasiUndoCommand::EVENTS);
 
-//Build the list of pointers to items to be deleted
-//before actually deleting any item.
+  //Build the list of pointers to items to be deleted
+  //before actually deleting any item.
   QList <CEvent *> pEvents;
   QModelIndexList::const_iterator i;
 
@@ -504,7 +502,7 @@ bool CQEventDM::removeEventRows(QModelIndexList rows, const QModelIndex&)
   return true;
 }
 
-bool CQEventDM::insertEventRows(QList <UndoEventData *> pData)
+bool CQEventDM::insertEventRows(QList <UndoEventData *>& pData)
 {
   GET_MODEL_OR(pModel, return false);
 
@@ -528,7 +526,7 @@ bool CQEventDM::insertEventRows(QList <UndoEventData *> pData)
   return true;
 }
 
-void CQEventDM::deleteEventRows(QList <UndoEventData *> pData)
+void CQEventDM::deleteEventRows(QList <UndoEventData *>& pData)
 {
   GET_MODEL_OR_RETURN(pModel);
 
@@ -539,9 +537,10 @@ void CQEventDM::deleteEventRows(QList <UndoEventData *> pData)
   for (j = pData.begin(); j != pData.end(); ++j)
     {
       UndoEventData * data = *j;
+      size_t index = pModel->getEvents().getIndex(data->getName());
 
-      CEvent * pEvent = pModel->getEvents()[data->getName()];
-      size_t index = pModel->getEvents().CCopasiVector< CEvent >::getIndex(pEvent);
+      if (index == C_INVALID_INDEX) continue;
+
       removeRow((int) index);
     }
 }

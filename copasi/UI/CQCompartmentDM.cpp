@@ -437,7 +437,6 @@ bool CQCompartmentDM::compartmentDataChange(const QModelIndex& index, const QVar
 {
   GET_MODEL_OR(pModel, return false);
 
-
   CCompartment *pComp = pModel->getCompartments()[index.row()];
 
   if (pComp == NULL)
@@ -501,24 +500,24 @@ void CQCompartmentDM::addCompartmentRow(UndoCompartmentData *pCompartmentData)
   switchToWidget(CCopasiUndoCommand::COMPARTMENTS);
 
   beginInsertRows(QModelIndex(), 1, 1);
-  CCompartment *pCompartment = pModel->createCompartment(pCompartmentData->getName());
-  pCompartment->setStatus(pCompartmentData->getStatus());
-  std::string key = pCompartment->getKey();
-  pCompartmentData->setKey(key);
-  emit notifyGUI(ListViews::COMPARTMENT, ListViews::ADD, key);
+
+  CCompartment *pCompartment = pCompartmentData->createCompartmentFromData(pModel);
+
+  if (pCompartment != NULL)
+    emit notifyGUI(ListViews::COMPARTMENT, ListViews::ADD, pCompartment->getKey());
+
   endInsertRows();
 }
 
 bool CQCompartmentDM::removeCompartmentRows(QModelIndexList& rows, const QModelIndex&)
 {
-
   if (rows.isEmpty())
     return false;
 
   GET_MODEL_OR(pModel, return false);
 
-  //Build the list of pointers to items to be deleted
-  //before actually deleting any item.
+  // Build the list of pointers to items to be deleted
+  // before actually deleting any item.
   QList <CCompartment *> pCompartments;
   QModelIndexList::const_iterator i;
 
@@ -539,16 +538,17 @@ bool CQCompartmentDM::removeCompartmentRows(QModelIndexList& rows, const QModelI
       size_t delRow =
         pModel->getCompartments().CCopasiVector< CCompartment >::getIndex(pCompartment);
 
-      if (delRow != C_INVALID_INDEX)
-        {
-          QMessageBox::StandardButton choice =
-            CQMessageBox::confirmDelete(NULL, "compartment",
-                                        FROM_UTF8(pCompartment->getObjectName()),
-                                        pCompartment->getDeletedObjects());
+      if (delRow == C_INVALID_INDEX)
+        continue;
 
-          if (choice == QMessageBox::Ok)
-            removeRow((int) delRow);
-        }
+      QMessageBox::StandardButton choice =
+        CQMessageBox::confirmDelete(NULL, "compartment",
+                                    FROM_UTF8(pCompartment->getObjectName()),
+                                    pCompartment->getDeletedObjects());
+
+      if (choice == QMessageBox::Ok)
+        removeRow((int) delRow);
+
     }
 
   return true;
@@ -563,16 +563,16 @@ bool CQCompartmentDM::insertCompartmentRows(QList <UndoCompartmentData *>& pData
 
   for (k = pData.begin(); k != pData.end(); ++k)
     {
-      UndoCompartmentData * data = *k;
+      UndoCompartmentData* data = *k;
 
-      beginInsertRows(QModelIndex(), 1, 1);
-      CCompartment *pCompartment =  pModel->createCompartment(data->getName());
-      pCompartment->setInitialValue(data->getInitialValue());
-      pCompartment->setStatus(data->getStatus());
-      emit notifyGUI(ListViews::COMPARTMENT, ListViews::ADD, pCompartment->getKey());
+      CCompartment *pCompartment = data->createCompartmentFromData(pModel);
+
+      if (pCompartment == NULL) continue;
 
       data->restoreDependentObjects(pModel);
 
+      beginInsertRows(QModelIndex(), 1, 1);
+      emit notifyGUI(ListViews::COMPARTMENT, ListViews::ADD, pCompartment->getKey());
       endInsertRows();
     }
 
@@ -592,21 +592,21 @@ void CQCompartmentDM::deleteCompartmentRows(QList <UndoCompartmentData *>& pData
   for (j = pData.begin(); j != pData.end(); ++j)
     {
       UndoCompartmentData * data = *j;
-      CCompartment * pCompartment = pModel->getCompartments()[data->getName()];
-      size_t index = pModel->getCompartments().CCopasiVector< CCompartment >::getIndex(pCompartment);
+      size_t index = pModel->getCompartments().getIndex(data->getName());
 
-      if (index != C_INVALID_INDEX)
-        {
-          QMessageBox::StandardButton choice =
-            CQMessageBox::confirmDelete(NULL, "compartment",
-                                        FROM_UTF8(pCompartment->getObjectName()),
-                                        pCompartment->getDeletedObjects());
+      if (index == C_INVALID_INDEX)
+        continue;
 
-          if (choice == QMessageBox::Ok)
-            removeRow((int) index);
-        }
+      CCompartment* pCompartment = pModel->getCompartments()[index];
 
-      //removeRow((int) index);
+      QMessageBox::StandardButton choice =
+        CQMessageBox::confirmDelete(NULL, "compartment",
+                                    FROM_UTF8(pCompartment->getObjectName()),
+                                    pCompartment->getDeletedObjects());
+
+      if (choice == QMessageBox::Ok)
+        removeRow((int) index);
+
     }
 
 }

@@ -187,28 +187,12 @@ void CCopasiUndoCommand::setDependentObjects(
 
       for (; it != end; ++it)
         {
-          //store the Reactions data
-          UndoReactionData *data = new UndoReactionData();
-          data->setRi(new CReactionInterface((*CCopasiRootContainer::getDatamodelList())[0]->getModel()));
-          data->getRi()->initFromReaction((*it)->getKey());
-          //CReactionInterface* ri = new CReactionInterface((*CCopasiRootContainer::getDatamodelList())[0]->getModel());
-          //ri->initFromReaction((*it)->getKey());
-
-          data->setName((*it)->getObjectName());
-
           const CReaction * pRea = dynamic_cast<const CReaction*>(*it);
 
-          if (pRea->getDeletedObjects().size() > 0)
-            {
-              setDependentObjects(pRea->getDeletedObjects(),
-                                  reactionData,
-                                  speciesData,
-                                  globalQuantityData,
-                                  eventData);
-            }
+          if (pRea == NULL) continue;
 
-          //  data->setRi(ri);
-          reactionData->append(data); //FROM_UTF8((*it)->getObjectName()));
+          UndoReactionData *data = new UndoReactionData(pRea);
+          reactionData->append(data);
         }
     }
 
@@ -255,24 +239,9 @@ void CCopasiUndoCommand::setDependentObjects(
       for (; it != end; ++it)
         {
           //store the Event data
-          UndoEventData *data = new UndoEventData();
-          data->setName((*it)->getObjectName());
           const CEvent * pEvent = dynamic_cast<const CEvent*>(*it);
-          data->setPriorityExpression(pEvent->getPriorityExpression());
-          data->setDelayExpression(pEvent->getDelayExpression());
-          data->setTriggerExpression(pEvent->getTriggerExpression());
 
-          CCopasiVector< CEventAssignment >::const_iterator iit = pEvent->getAssignments().begin();
-          CCopasiVector< CEventAssignment >::const_iterator end = pEvent->getAssignments().end();
-
-          for (; iit != end; ++iit)
-            {
-
-              const CModelEntity * pEntity = dynamic_cast< CModelEntity * >(CCopasiRootContainer::getKeyFactory()->get((*iit)->getTargetKey()));
-              data->getEventAssignmentData()->append(
-                new UndoEventAssignmentData(pEntity, (*iit)->getExpression()));
-            }
-
+          UndoEventData *data = new UndoEventData(pEvent);
           eventData->append(data);
         }
     }

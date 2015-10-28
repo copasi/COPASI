@@ -44,12 +44,6 @@ RemoveGlobalQuantityRowsCommand::RemoveGlobalQuantityRowsCommand(
 
       UndoGlobalQuantityData *data = new UndoGlobalQuantityData(pModelValue);
 
-      setDependentObjects(pModelValue->getDeletedObjects(),
-                          data->getReactionDependencyObjects(),
-                          data->getSpecieDependencyObjects(),
-                          NULL,
-                          data->getEventDependencyObjects());
-
       mpGlobalQuantityData.append(data);
 
     }

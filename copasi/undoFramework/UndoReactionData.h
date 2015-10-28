@@ -27,6 +27,10 @@ public:
   UndoReactionData(const std::string &key = "",
                    const std::string &name = "",
                    const std::string &type = "");
+
+  UndoReactionData(const CReaction* pReaction);
+
+
   virtual ~UndoReactionData();
 
   CReaction* createReactionFromData(CModel* pModel);

@@ -64,8 +64,8 @@ public:
   void addSpecieRow(UndoSpeciesData *pSpecieData);
   void deleteSpecieRow(UndoSpeciesData *pSpecieData);
   bool removeSpecieRows(QModelIndexList rows, const QModelIndex&);
-  bool insertSpecieRows(QList <UndoSpeciesData *> pReaData);
-  void deleteSpecieRows(QList <UndoSpeciesData *> pReaData);
+  bool insertSpecieRows(QList <UndoSpeciesData *>& pReaData);
+  void deleteSpecieRows(QList <UndoSpeciesData *>& pReaData);
   bool removeAllSpecieRows();
   bool clear();
 

@@ -23,30 +23,12 @@
 DeleteEventCommand::DeleteEventCommand(CQEventWidget1 *pEVentWidget1)
   : CCopasiUndoCommand("Event", EVENT_DELETE)
   , mFirstTime(true)
-  , mpEventData(new UndoEventData())
+  , mpEventData(new UndoEventData(mpEVentWidget1->mpEvent))
   , mpEVentWidget1(pEVentWidget1)
 {
 
   const std::string& sName = mpEVentWidget1->mpEvent->getObjectName();
-  mpEventData->setName(sName);
-  mpEventData->setKey(mpEVentWidget1->mpEvent->getKey());
   setName(sName);
-
-  CCopasiVector< CEventAssignment >::const_iterator it = mpEVentWidget1->mpEvent->getAssignments().begin();
-  CCopasiVector< CEventAssignment >::const_iterator end = mpEVentWidget1->mpEvent->getAssignments().end();
-
-  for (; it != end; ++it)
-    {
-
-      const CModelEntity * pEntity = dynamic_cast< CModelEntity * >(CCopasiRootContainer::getKeyFactory()->get((*it)->getTargetKey()));
-      mpEventData->getEventAssignmentData()->append(
-        new UndoEventAssignmentData(pEntity, (*it)->getExpression()));
-    }
-
-  mpEventData->setTriggerExpression(mpEVentWidget1->mpEvent->getTriggerExpression());
-  mpEventData->setDelayExpression(mpEVentWidget1->mpEvent->getDelayExpression());
-  mpEventData->setPriorityExpression(mpEVentWidget1->mpEvent->getPriorityExpression());
-
   this->setText(deleteEventText(sName));
 }
 

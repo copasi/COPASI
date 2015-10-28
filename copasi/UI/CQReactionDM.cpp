@@ -34,11 +34,11 @@ CQReactionDM::CQReactionDM(QObject *parent):
   mNewEquation()
 {}
 
-int CQReactionDM::rowCount(const QModelIndex& C_UNUSED(parent)) const
+int CQReactionDM::rowCount(const QModelIndex&) const
 {
   return (int)(*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getReactions().size() + 1;
 }
-int CQReactionDM::columnCount(const QModelIndex& C_UNUSED(parent)) const
+int CQReactionDM::columnCount(const QModelIndex&) const
 {
   return TOTAL_COLS_REACTIONS;
 }
@@ -509,8 +509,9 @@ bool CQReactionDM::reactionDataChange(const QModelIndex &index, const QVariant &
 }
 bool CQReactionDM::updateReactionWithFunctionName(CReaction *pRea, QString &funcName)
 {
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CReactionInterface ri((*CCopasiRootContainer::getDatamodelList())[0]->getModel());
+  GET_MODEL_OR(pModel, return false);
+
+  CReactionInterface ri(pModel);
   ri.initFromReaction(pRea->getKey());
   ri.setFunctionAndDoMapping(TO_UTF8(funcName));
   ri.writeBackToReaction(pRea);
@@ -519,12 +520,13 @@ bool CQReactionDM::updateReactionWithFunctionName(CReaction *pRea, QString &func
 
 void CQReactionDM::insertNewReactionRow(int position, int rows, const QModelIndex&)
 {
+  GET_MODEL_OR_RETURN(pModel);
 
   beginInsertRows(QModelIndex(), position, position + rows - 1);
 
   for (int row = 0; row < rows; ++row)
     {
-      CReaction *pRea = (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->createReaction(TO_UTF8(createNewName("reaction", COL_NAME_REACTIONS)));
+      CReaction *pRea = pModel->createReaction(TO_UTF8(createNewName("reaction", COL_NAME_REACTIONS)));
       std::string key = pRea->getKey();
       emit notifyGUI(ListViews::REACTION, ListViews::ADD, key);
     }
@@ -568,8 +570,8 @@ bool CQReactionDM::removeReactionRows(QModelIndexList rows, const QModelIndex&)
 
   switchToWidget(CCopasiUndoCommand::REACTIONS);
 
-//Build the list of pointers to items to be deleted
-//before actually deleting any item.
+  //Build the list of pointers to items to be deleted
+  //before actually deleting any item.
   QList <CReaction *> pReactions;
   QModelIndexList::const_iterator i;
 
@@ -590,22 +592,23 @@ bool CQReactionDM::removeReactionRows(QModelIndexList rows, const QModelIndex&)
       size_t delRow =
         pModel->getReactions().CCopasiVector< CReaction >::getIndex(pReaction);
 
-      if (delRow != C_INVALID_INDEX)
-        {
-          QMessageBox::StandardButton choice =
-            CQMessageBox::confirmDelete(NULL, "reaction",
-                                        FROM_UTF8(pReaction->getObjectName()),
-                                        pReaction->getDeletedObjects());
+      if (delRow == C_INVALID_INDEX)
+        continue;
 
-          if (choice == QMessageBox::Ok)
-            removeRow((int) delRow);
-        }
+      QMessageBox::StandardButton choice =
+        CQMessageBox::confirmDelete(NULL, "reaction",
+                                    FROM_UTF8(pReaction->getObjectName()),
+                                    pReaction->getDeletedObjects());
+
+      if (choice == QMessageBox::Ok)
+        removeRow((int) delRow);
+
     }
 
   return true;
 }
 
-bool CQReactionDM::insertReactionRows(QList <UndoReactionData *> pData)
+bool CQReactionDM::insertReactionRows(QList <UndoReactionData *>& pData)
 {
   GET_MODEL_OR(pModel, return false);
 
@@ -616,18 +619,19 @@ bool CQReactionDM::insertReactionRows(QList <UndoReactionData *> pData)
   for (j = pData.begin(); j != pData.end(); ++j)
     {
       UndoReactionData * data = *j;
-      beginInsertRows(QModelIndex(), 1, 1);
       CReaction *pRea = data->createReactionFromData(pModel);
 
-      if (pRea != NULL)
-        emit notifyGUI(ListViews::REACTION, ListViews::ADD, pRea->getKey());
+      if (pRea == NULL)
+        continue;
 
+      beginInsertRows(QModelIndex(), 1, 1);
+      emit notifyGUI(ListViews::REACTION, ListViews::ADD, pRea->getKey());
       endInsertRows();
     }
 
   return true;
 }
-void CQReactionDM::deleteReactionRows(QList <UndoReactionData *> pData)
+void CQReactionDM::deleteReactionRows(QList <UndoReactionData *>& pData)
 {
   GET_MODEL_OR_RETURN(pModel);
 

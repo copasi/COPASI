@@ -54,8 +54,8 @@ public:
   void deleteReactionRow(CReaction *pReaction);
   bool updateReactionWithFunctionName(CReaction *pRea, QString &funcName);
   bool removeReactionRows(QModelIndexList rows, const QModelIndex&);
-  bool insertReactionRows(QList <UndoReactionData *> pReaData);
-  void deleteReactionRows(QList <UndoReactionData *> pReaData);
+  bool insertReactionRows(QList <UndoReactionData *>& pReaData);
+  void deleteReactionRows(QList <UndoReactionData *>& pReaData);
   bool removeAllReactionRows();
   bool clear();
 

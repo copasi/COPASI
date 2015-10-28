@@ -42,13 +42,6 @@ RemoveAllSpecieRowsCommand::RemoveAllSpecieRowsCommand(
         continue;
 
       UndoSpeciesData *data = new UndoSpeciesData(pModel->getMetabolites()[i]);
-
-      setDependentObjects(pModel->getMetabolites()[i]->getDeletedObjects(),
-                          data->getReactionDependencyObjects(),
-                          NULL,
-                          data->getGlobalQuantityDependencyObjects(),
-                          data->getEventDependencyObjects());
-
       mpSpeciesData.append(data);
 
     }

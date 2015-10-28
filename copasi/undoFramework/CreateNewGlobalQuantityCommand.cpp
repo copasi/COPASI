@@ -26,6 +26,7 @@ CreateNewGlobalQuantityCommand::CreateNewGlobalQuantityCommand(CQModelValue *pMo
 
 void CreateNewGlobalQuantityCommand::redo()
 {
+  // TODO: this is again needs to happen only once
   mpModelValue->createNewGlobalQuantity();
 
   std::string sName = mpModelValue->mpModelValue->getObjectName();

@@ -156,7 +156,7 @@ public:
     REACTION_LOCAL_PARAMETER_VALUE_CHANGE, // change of a local parameter value
     REACTION_MAPPING_VOLUME_CHANGE, // mapping of volume in kinetic law changed
     REACTION_MAPPING_SPECIES_CHANGE, // mapping of metabolite changed
-    REACTION_MAPPING_PARAMETER_CHANGE, // mapping of local / global parametr changed
+    REACTION_MAPPING_PARAMETER_CHANGE, // mapping of local / global parameter changed
     INVALID_TYPE
   };
 
@@ -256,6 +256,7 @@ protected:
   QList<UndoReactionData*> *mpReactionData;
   QList<UndoGlobalQuantityData*> *mpGlobalQuantityData;
   QList<UndoEventData*> *mpEventData;
+
   /**
    *  Type of the undo command.
    */

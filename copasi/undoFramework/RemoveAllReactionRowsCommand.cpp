@@ -32,16 +32,11 @@ RemoveAllReactionRowsCommand::RemoveAllReactionRowsCommand(
 
   for (int i = 0; i != pReaDM->rowCount() - 1; ++i)
     {
-      UndoReactionData *data = new UndoReactionData();
-      CReactionInterface* ri = new CReactionInterface((*CCopasiRootContainer::getDatamodelList())[0]->getModel());
+      if (pModel->getReactions()[i] == NULL)
+        continue;
 
-      if (pModel->getReactions()[i])
-        {
-          data->setName(pModel->getReactions()[i]->getObjectName());
-          ri->initFromReaction(pModel->getReactions()[i]->getKey());
-          data->setRi(ri);
-          mpReaData.append(data);
-        }
+      UndoReactionData *data = new UndoReactionData(pModel->getReactions()[i]);
+      mpReaData.append(data);
     }
 
   setText(removeAllReactionRowsText());

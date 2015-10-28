@@ -24,6 +24,7 @@ CreateNewEventCommand::CreateNewEventCommand(CQEventWidget1 *pEventWidget)
 }
 void CreateNewEventCommand::redo()
 {
+  // TODO: should only happen once
   mpEventWidget->createNewEvent();
 
   std::string sName = mpEventWidget->mpEvent->getObjectName();

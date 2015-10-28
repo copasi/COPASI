@@ -14,6 +14,7 @@
 
 #include "model/CModel.h"
 #include <copasi/model/CEvent.h>
+#include <copasi/report/CCopasiRootContainer.h>
 
 #include "UndoEventData.h"
 
@@ -26,12 +27,34 @@ UndoEventData::UndoEventData(const std::string &key  /*= ""*/,
   , mPriorityExpression()
   , mTriggerExpression()
   , mDelayExpression()
-  , mType(Discontinuity)
+  , mType(CEvent::Discontinuity)
   , mDelayAssignment(false)
   , mFireAtInitialTime(false)
   , mPersistentTrigger(false)
   , mEventAssignmentData(new QList <UndoEventAssignmentData*>())
 {
+}
+
+UndoEventData::UndoEventData(const CEvent *pEvent)
+  : UndoData(pEvent->getKey(), pEvent->getObjectName())
+  , mPriorityExpression(pEvent->getPriorityExpression())
+  , mTriggerExpression(pEvent->getTriggerExpression())
+  , mDelayExpression(pEvent->getDelayExpression())
+  , mType(pEvent->getType())
+  , mDelayAssignment(pEvent->getDelayAssignment())
+  , mFireAtInitialTime(pEvent->getFireAtInitialTime())
+  , mPersistentTrigger(pEvent->getPersistentTrigger())
+  , mEventAssignmentData(new QList <UndoEventAssignmentData*>())
+{
+  CCopasiVector< CEventAssignment >::const_iterator it = pEvent->getAssignments().begin();
+  CCopasiVector< CEventAssignment >::const_iterator end = pEvent->getAssignments().end();
+
+  for (; it != end; ++it)
+    {
+      const CModelEntity * pEntity = dynamic_cast< CModelEntity * >(CCopasiRootContainer::getKeyFactory()->get((*it)->getTargetKey()));
+      mEventAssignmentData->append(
+        new UndoEventAssignmentData(pEntity, (*it)->getExpression()));
+    }
 }
 
 UndoEventData::~UndoEventData()
@@ -57,7 +80,7 @@ UndoEventData::getTriggerExpression() const
   return mTriggerExpression;
 }
 
-UndoEventData::Type
+CEvent::Type
 UndoEventData::getType() const
 {
   return mType;
@@ -117,7 +140,7 @@ UndoEventData::setTriggerExpression(const std::string &triggerExpression)
   mTriggerExpression = triggerExpression;
 }
 
-void UndoEventData::setType(Type &type)
+void UndoEventData::setType(CEvent::Type &type)
 {
   mType = type;
 }

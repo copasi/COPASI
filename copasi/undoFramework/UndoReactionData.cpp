@@ -18,9 +18,11 @@
 #include <copasi/model/CReactionInterface.h>
 #include <copasi/model/CChemEqInterface.h>
 
+#include <copasi/undoFramework/CCopasiUndoCommand.h>
 #include <copasi/undoFramework/UndoSpeciesData.h>
 #include <copasi/undoFramework/UndoReactionData.h>
 
+#include <copasi/report/CCopasiRootContainer.h>
 
 UndoReactionData::UndoReactionData(const std::string &key  /*= ""*/,
                                    const std::string &name /*= ""*/,
@@ -29,6 +31,22 @@ UndoReactionData::UndoReactionData(const std::string &key  /*= ""*/,
   , mpRi(NULL)
   , mSpeciesDependencyObjects(new QList <UndoSpeciesData*>())
 {
+}
+
+UndoReactionData::UndoReactionData(const CReaction *pReaction)
+  : UndoData(pReaction->getKey(), pReaction->getObjectName())
+  , mpRi(NULL)
+  , mSpeciesDependencyObjects(new QList<UndoSpeciesData*>())
+{
+  GET_MODEL_OR_RETURN(pModel);
+  mpRi = new CReactionInterface(pModel);
+  mpRi->initFromReaction(pReaction->getKey());
+
+  CCopasiUndoCommand::setDependentObjects(pReaction->getDeletedObjects(),
+                                          NULL,
+                                          mSpeciesDependencyObjects,
+                                          NULL,
+                                          NULL);
 }
 
 UndoReactionData::~UndoReactionData()
@@ -45,11 +63,11 @@ CReaction *UndoReactionData::createReactionFromData(CModel *pModel)
   if (pRea == NULL) return NULL;
 
   CChemEqInterface *chem = new CChemEqInterface(pModel);
-  chem->setChemEqString(getRi()->getChemEqString());
+  chem->setChemEqString(mpRi->getChemEqString());
   chem->writeToChemEq(pRea->getChemEq());
-  getRi()->createMetabolites();
-  getRi()->createOtherObjects();
-  getRi()->writeBackToReaction(pRea);
+  mpRi->createMetabolites();
+  mpRi->createOtherObjects();
+  mpRi->writeBackToReaction(pRea);
 
   return pRea;
 

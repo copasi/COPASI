@@ -62,8 +62,8 @@ public:
   void addGlobalQuantityRow(UndoGlobalQuantityData *pGlobalQuantityData);
   void deleteGlobalQuantityRow(UndoGlobalQuantityData *pGlobalQuantityData);
   bool removeGlobalQuantityRows(QModelIndexList rows, const QModelIndex&);
-  bool insertGlobalQuantityRows(QList <UndoGlobalQuantityData *> pGlobalQuatityData);
-  void deleteGlobalQuantityRows(QList <UndoGlobalQuantityData *> pGlobalQuantityData);
+  bool insertGlobalQuantityRows(QList <UndoGlobalQuantityData *>& pGlobalQuatityData);
+  void deleteGlobalQuantityRows(QList <UndoGlobalQuantityData *>& pGlobalQuantityData);
   bool removeAllGlobalQuantityRows();
   bool clear();
 

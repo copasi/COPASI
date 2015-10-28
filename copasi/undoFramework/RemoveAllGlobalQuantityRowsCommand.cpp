@@ -33,37 +33,10 @@ RemoveAllGlobalQuantityRowsCommand::RemoveAllGlobalQuantityRowsCommand(
 
   for (int i = 0; i != pGlobalQuantityDM->rowCount() - 1; ++i)
     {
-
-      UndoGlobalQuantityData *data = new UndoGlobalQuantityData();
-
       if (pModel->getModelValues()[i])
         {
-          data->setName(pModel->getModelValues()[i]->getObjectName());
-          data->setStatus(pModel->getModelValues()[i]->getStatus());
-
-          if (pModel->getModelValues()[i]->getStatus() != CModelEntity::ASSIGNMENT)
-            {
-              data->setInitialValue(pModel->getModelValues()[i]->getInitialValue());
-            }
-
-          // set expression
-          if (pModel->getModelValues()[i]->getStatus() != CModelEntity::FIXED)
-            {
-              data->setExpression(pModel->getModelValues()[i]->getExpression());
-            }
-
-          // set initial expression
-          if (pModel->getModelValues()[i]->getStatus() != CModelEntity::ASSIGNMENT)
-            {
-              data->setInitialExpression(pModel->getModelValues()[i]->getInitialExpression());
-            }
-
-          setDependentObjects(pModel->getModelValues()[i]->getDeletedObjects(),
-                              data->getReactionDependencyObjects(),
-                              data->getSpecieDependencyObjects(),
-                              NULL,
-                              data->getEventDependencyObjects());
-
+          UndoGlobalQuantityData *data =
+            new UndoGlobalQuantityData(pModel->getModelValues()[i]);
           mpGlobalQuantityData.append(data);
         }
     }

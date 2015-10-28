@@ -16,25 +16,22 @@
 #include <set>
 #include <QList>
 
-#include "UndoData.h"
+#include <copasi/model/CEvent.h>
+#include <copasi/undoFramework/UndoData.h>
 
 class UndoEventAssignmentData;
 class CModel;
-class CEvent;
 
 class UndoEventData: public UndoData
 {
 public:
-  enum Type
-  {
-    Assignment,
-    Discontinuity,
-    CutPlane
-  };
+
 
   UndoEventData(const std::string &key = "",
                 const std::string &name = "",
                 const std::string &type = "");
+
+  UndoEventData(const CEvent* pEvent);
 
   virtual ~UndoEventData();
 
@@ -59,8 +56,8 @@ public:
 
   void setTriggerExpression(const std::string &mTriggerExpression);
 
-  Type getType() const;
-  void setType(Type &mType);
+  CEvent::Type getType() const;
+  void setType(CEvent::Type &mType);
 
   bool isDelayAssignment() const;
   void setDelayAssignment(bool delayAssignment);
@@ -94,7 +91,7 @@ private:
   /**
    * Type of the event
    */
-  Type mType;
+  CEvent::Type mType;
 
   /**
    * A Boolean flag indicating whether the calculation or the assignment should be delayed

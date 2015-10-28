@@ -23,6 +23,8 @@
 #include "UndoGlobalQuantityData.h"
 #include "UndoEventData.h"
 
+#include <copasi/undoFramework/CCopasiUndoCommand.h>
+
 UndoSpeciesData::UndoSpeciesData(const std::string &key  /*= ""*/,
                                  const std::string &name /*= ""*/,
                                  const std::string &type /*= ""*/)
@@ -51,6 +53,12 @@ UndoSpeciesData::UndoSpeciesData(const CMetab *metab)
   , mGlobalQuantityDependencyObjects(new QList <UndoGlobalQuantityData*>())
   , mEventDependencyObjects(new QList <UndoEventData*>())
 {
+  CCopasiUndoCommand::setDependentObjects(
+    metab->getDeletedObjects(),
+    mReactionDependencyObjects,
+    NULL,
+    mGlobalQuantityDependencyObjects,
+    mEventDependencyObjects);
 }
 
 UndoSpeciesData::~UndoSpeciesData()
@@ -63,6 +71,9 @@ UndoSpeciesData::~UndoSpeciesData()
 CMetab *UndoSpeciesData::createMetabFromData(CModel *pModel)
 {
   if (pModel == NULL)
+    return NULL;
+
+  if (pModel->getCompartments().getIndex(mCompartment) == C_INVALID_INDEX)
     return NULL;
 
   CCompartment * pCompartment = pModel->getCompartments()[getCompartment()];

@@ -23,6 +23,8 @@
 
 #include "UndoGlobalQuantityData.h"
 
+#include <copasi/undoFramework/CCopasiUndoCommand.h>
+
 UndoGlobalQuantityData::UndoGlobalQuantityData(const std::string &key  /*= ""*/,
     const std::string &name /*= ""*/,
     const std::string &type /*= ""*/)
@@ -47,6 +49,12 @@ UndoGlobalQuantityData::UndoGlobalQuantityData(const CModelValue* pModelValue)
   , mReactionDependencyObjects(new QList<UndoReactionData*>())
   , mEventDependencyObjects(new QList<UndoEventData*>())
 {
+  CCopasiUndoCommand::setDependentObjects(
+    pModelValue->getDeletedObjects(),
+    mReactionDependencyObjects,
+    mSpecieDependencyObjects,
+    NULL,
+    mEventDependencyObjects);
 }
 
 UndoGlobalQuantityData::~UndoGlobalQuantityData()
@@ -65,7 +73,7 @@ UndoGlobalQuantityData::createQuantityFromData(CModel* pModel)
     return NULL;
 
 
-  CModelValue *pGlobalQuantity =  pModel->createModelValue(getName()); //, gData->getInitialValue());
+  CModelValue *pGlobalQuantity =  pModel->createModelValue(getName());
 
   if (pGlobalQuantity == NULL)
     return NULL;
@@ -135,17 +143,20 @@ UndoGlobalQuantityData::setExpression(const std::string &expression)
   mExpression = expression;
 }
 
-const std::string & UndoGlobalQuantityData::getInitialExpression() const
+const std::string&
+UndoGlobalQuantityData::getInitialExpression() const
 {
   return mInitialExpression;
 }
 
-void UndoGlobalQuantityData::setInitialExpression(const std::string &initialExpression)
+void
+UndoGlobalQuantityData::setInitialExpression(const std::string &initialExpression)
 {
   mInitialExpression = initialExpression;
 }
 
-void UndoGlobalQuantityData::restoreDependentObjects(CModel *pModel)
+void
+UndoGlobalQuantityData::restoreDependentObjects(CModel *pModel)
 {
   if (pModel == NULL)
     return;
@@ -155,7 +166,8 @@ void UndoGlobalQuantityData::restoreDependentObjects(CModel *pModel)
   UndoData::restoreDependentObjects(pModel, getEventDependencyObjects());
 }
 
-QList<UndoEventData*> *UndoGlobalQuantityData::getEventDependencyObjects() const
+QList<UndoEventData*> *
+UndoGlobalQuantityData::getEventDependencyObjects() const
 {
   return mEventDependencyObjects;
 }

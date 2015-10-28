@@ -34,25 +34,10 @@ RemoveEventRowsCommand::RemoveEventRowsCommand(
 
   for (i = rows.begin(); i != rows.end(); ++i)
     {
-      UndoEventData *data = new UndoEventData();
 
       if (!pEventDM->isDefaultRow(*i) && pModel->getEvents()[(*i).row()])
         {
-          data->setName(pModel->getEvents()[(*i).row()]->getObjectName());
-          data->setPriorityExpression(pModel->getEvents()[(*i).row()]->getPriorityExpression());
-          data->setDelayExpression(pModel->getEvents()[(*i).row()]->getDelayExpression());
-          data->setTriggerExpression(pModel->getEvents()[(*i).row()]->getTriggerExpression());
-
-          CCopasiVector< CEventAssignment >::const_iterator it = pModel->getEvents()[(*i).row()]->getAssignments().begin();
-          CCopasiVector< CEventAssignment >::const_iterator end = pModel->getEvents()[(*i).row()]->getAssignments().end();
-
-          for (; it != end; ++it)
-            {
-              const CModelEntity * pEntity = dynamic_cast< CModelEntity * >(CCopasiRootContainer::getKeyFactory()->get((*it)->getTargetKey()));
-              data->getEventAssignmentData()->append(
-                new UndoEventAssignmentData(pEntity, (*it)->getExpression()));
-            }
-
+          UndoEventData *data = new UndoEventData(pModel->getEvents()[(*i).row()]);
           mpEventData.append(data);
         }
     }

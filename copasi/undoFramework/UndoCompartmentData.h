@@ -28,9 +28,11 @@ class UndoCompartmentData : public UndoData
 public:
   UndoCompartmentData();
 
-  UndoCompartmentData(CCompartment* compartment);
+  UndoCompartmentData(const CCompartment* compartment);
 
   virtual ~UndoCompartmentData();
+
+  CCompartment* createCompartmentFromData(CModel* pModel);
 
   QList<UndoData*> *getDependencyObjects() const;
   void setDependencyObjects(QList<UndoData*> *dependencyObjects);

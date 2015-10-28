@@ -35,16 +35,13 @@ RemoveReactionRowsCommand::RemoveReactionRowsCommand(
 
   for (i = rows.begin(); i != rows.end(); ++i)
     {
-      UndoReactionData *data = new UndoReactionData();
-      CReactionInterface* ri = new CReactionInterface((*CCopasiRootContainer::getDatamodelList())[0]->getModel());
 
-      if (!pReaDM->isDefaultRow(*i) && pModel->getReactions()[(*i).row()])
-        {
-          data->setName(pModel->getReactions()[(*i).row()]->getObjectName());
-          ri->initFromReaction(pModel->getReactions()[(*i).row()]->getKey());
-          data->setRi(ri);
-          mpReaData.append(data);
-        }
+      if (pReaDM->isDefaultRow(*i) || pModel->getReactions()[(*i).row()] == NULL)
+        continue;
+
+      UndoReactionData *data = new UndoReactionData(pModel->getReactions()[(*i).row()]);
+      mpReaData.append(data);
+
     }
 
   setText(removeReactionRowsText());

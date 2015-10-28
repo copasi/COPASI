@@ -54,8 +54,8 @@ public:
   void addEventRow(UndoEventData *pEventData);
   void deleteEventRow(UndoEventData *pEventData);
   bool removeEventRows(QModelIndexList rows, const QModelIndex&);
-  bool insertEventRows(QList <UndoEventData *> pGlobalQuatityData);
-  void deleteEventRows(QList <UndoEventData *> pEventData);
+  bool insertEventRows(QList <UndoEventData *>& pGlobalQuatityData);
+  void deleteEventRows(QList <UndoEventData *>& pEventData);
   bool removeAllEventRows();
   bool clear();
 

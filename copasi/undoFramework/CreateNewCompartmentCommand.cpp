@@ -27,9 +27,8 @@ CreateNewCompartmentCommand::CreateNewCompartmentCommand(
 
 void CreateNewCompartmentCommand::redo()
 {
+  // TODO: should only happen once
   mpCompartment->createNewCompartment();
-
-
   std::string sName = mpCompartment->mpCompartment->getObjectName();
   mpCompartmentData->setName(sName);
   mpCompartmentData->setKey(mpCompartment->mpCompartment->getKey());

@@ -30,6 +30,7 @@ CreateNewReactionCommand::CreateNewReactionCommand(ReactionsWidget1 *pReactionWi
 
 void CreateNewReactionCommand::redo()
 {
+  // TODO: should only happen once
   mpReactionWidget->createNewReaction();
   mpReaction = dynamic_cast< CReaction * >(mpReactionWidget->mpObject);
   std::string sName = mpReaction->getObjectName();

@@ -467,9 +467,9 @@ void CQGlobalQuantityDM::insertNewGlobalQuantityRow(int position, int rows, cons
 
 void CQGlobalQuantityDM::deleteGlobalQuantityRow(UndoGlobalQuantityData *pGlobalQuantityData)
 {
-  switchToWidget(CCopasiUndoCommand::GLOBALQUANTITYIES);
+  GET_MODEL_OR_RETURN(pModel);
 
-  CModel * pModel = (*CCopasiRootContainer::getDatamodelList())[0]->getModel();
+  switchToWidget(CCopasiUndoCommand::GLOBALQUANTITYIES);
 
   size_t index = pModel->getModelValues().getIndex(pGlobalQuantityData->getName());
 
@@ -486,11 +486,11 @@ void CQGlobalQuantityDM::addGlobalQuantityRow(UndoGlobalQuantityData *pGlobalQua
   switchToWidget(CCopasiUndoCommand::GLOBALQUANTITYIES);
 
   beginInsertRows(QModelIndex(), 1, 1);
-  CModelValue *pGlobalQuantity = pModel->createModelValue(pGlobalQuantityData->getName(), pGlobalQuantityData->getInitialValue());
-  pGlobalQuantity->setStatus(pGlobalQuantityData->getStatus());
-  std::string key = pGlobalQuantity->getKey();
-  pGlobalQuantityData->setKey(key);
-  emit notifyGUI(ListViews::MODELVALUE, ListViews::ADD, key);
+  CModelValue *pGlobalQuantity = pGlobalQuantityData->createQuantityFromData(pModel);
+
+  if (pGlobalQuantity != NULL)
+    emit notifyGUI(ListViews::MODELVALUE, ListViews::ADD, pGlobalQuantity->getKey());
+
   endInsertRows();
 }
 
@@ -541,7 +541,7 @@ bool CQGlobalQuantityDM::removeGlobalQuantityRows(QModelIndexList rows, const QM
   return true;
 }
 
-bool CQGlobalQuantityDM::insertGlobalQuantityRows(QList <UndoGlobalQuantityData *> pData)
+bool CQGlobalQuantityDM::insertGlobalQuantityRows(QList <UndoGlobalQuantityData *>& pData)
 {
   GET_MODEL_OR(pModel, return false);
 
@@ -565,96 +565,13 @@ bool CQGlobalQuantityDM::insertGlobalQuantityRows(QList <UndoGlobalQuantityData 
 
     }
 
-  //restore the reactions
+  //restore dependent objects
   QList <UndoGlobalQuantityData *>::const_iterator k;
 
   for (k = pData.begin(); k != pData.end(); ++k)
     {
       UndoGlobalQuantityData * data = *k;
-
-      //reinsert all the species
-      QList <UndoSpeciesData *> *pSpecieData = data->getSpecieDependencyObjects();
-
-      if (!pSpecieData->empty())
-        {
-          QList <UndoSpeciesData *>::const_iterator i;
-
-          for (i = pSpecieData->begin(); i != pSpecieData->end(); ++i)
-            {
-              UndoSpeciesData * sData = *i;
-
-              //need to make sure species doesn't exist in the model already
-              CMetab *pSpecie =  pModel->createMetabolite(sData->getName(), sData->getCompartment(), sData->getIConc(), sData->getStatus());
-
-              if (pSpecie == NULL)
-                continue;
-
-
-
-              if (sData->getStatus() != CModelEntity::ASSIGNMENT)
-                {
-                  pSpecie->setInitialConcentration(sData->getIConc());
-                }
-
-              if (sData->getStatus() == CModelEntity::ODE || sData->getStatus() == CModelEntity::ASSIGNMENT)
-                {
-                  pSpecie->setExpression(sData->getExpression());
-                  pSpecie->getExpressionPtr()->compile();
-                }
-
-              // set initial expression
-              if (sData->getStatus() != CModelEntity::ASSIGNMENT)
-                {
-                  pSpecie->setInitialExpression(sData->getInitialExpression());
-                  pSpecie->getInitialExpressionPtr()->compile();
-                }
-
-              emit notifyGUI(ListViews::METABOLITE, ListViews::ADD, pSpecie->getKey());
-
-            }
-        }
-
-      QList <UndoReactionData *> *reactionData = data->getReactionDependencyObjects();
-
-      QList <UndoReactionData *>::const_iterator j;
-
-      for (j = reactionData->begin(); j != reactionData->end(); ++j)
-        {
-
-          UndoReactionData * rData = *j;
-
-          //need to make sure reaction doesn't exist in the model already
-          if (pModel->getReactions().getIndex(rData->getName()) != C_INVALID_INDEX)
-            continue;
-
-          //  beginInsertRows(QModelIndex(), 1, 1);
-          CReaction *pRea =  pModel->createReaction(rData->getName());
-          rData->getRi()->createMetabolites();
-          rData->getRi()->createOtherObjects();
-          rData->getRi()->writeBackToReaction(pRea);
-          emit notifyGUI(ListViews::REACTION, ListViews::ADD, pRea->getKey());
-          //  endInsertRows();
-
-        }
-
-      //reinsert the dependency events
-      QList <UndoEventData *> *pEventData = data->getEventDependencyObjects();
-
-      if (!pEventData->empty())
-        {
-          QList <UndoEventData *>::const_iterator ev;
-
-          for (ev = pEventData->begin(); ev != pEventData->end(); ++ev)
-            {
-              UndoEventData * eData = *ev;
-              CEvent* pEvent = eData->createEventFromData(pModel);
-
-              if (pEvent == NULL) continue;
-
-              emit notifyGUI(ListViews::EVENT, ListViews::ADD, pEvent->getKey());
-
-            }
-        }
+      data->restoreDependentObjects(pModel);
     }
 
   switchToWidget(CCopasiUndoCommand::GLOBALQUANTITYIES);
@@ -662,20 +579,18 @@ bool CQGlobalQuantityDM::insertGlobalQuantityRows(QList <UndoGlobalQuantityData 
   return true;
 }
 
-void CQGlobalQuantityDM::deleteGlobalQuantityRows(QList <UndoGlobalQuantityData *> pData)
+void CQGlobalQuantityDM::deleteGlobalQuantityRows(QList <UndoGlobalQuantityData *>& pData)
 {
-  switchToWidget(CCopasiUndoCommand::GLOBALQUANTITYIES);
-
   GET_MODEL_OR_RETURN(pModel);
+
+  switchToWidget(CCopasiUndoCommand::GLOBALQUANTITYIES);
 
   QList <UndoGlobalQuantityData *>::const_iterator j;
 
   for (j = pData.begin(); j != pData.end(); ++j)
     {
       UndoGlobalQuantityData * data = *j;
-
-      CModelValue * pGQ = pModel->getModelValues()[data->getName()];
-      size_t index = pModel->getModelValues().CCopasiVector< CModelValue >::getIndex(pGQ);
+      size_t index = pModel->getModelValues().getIndex(data->getName());
       removeRow((int) index);
     }
 
