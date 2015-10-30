@@ -272,7 +272,14 @@ finish:
     {
       updateSequence.clear();
 
-      CCopasiMessage(CCopasiMessage::ERROR, MCMathModel + 3, (*it)->getCN().c_str());
+      if (it != end)
+        {
+          CCopasiMessage(CCopasiMessage::ERROR, MCMathModel + 3, (*it)->getCN().c_str());
+        }
+      else
+        {
+          CCopasiMessage(CCopasiMessage::ERROR, MCMathModel + 3, "cn not found");
+        }
     }
 
 #ifdef DEBUG_OUTPUT
