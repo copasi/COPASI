@@ -24,38 +24,11 @@
 DeleteGlobalQuantityCommand::DeleteGlobalQuantityCommand(CQModelValue *pModelValue)
   : CCopasiUndoCommand("Global Quantity", GLOBALQUANTITY_DELETE)
   , mFirstTime(true)
-  , mpGlobalQuantityData(new UndoGlobalQuantityData())
+  , mpGlobalQuantityData(new UndoGlobalQuantityData(mpModelValue->mpModelValue))
   , mpModelValue(pModelValue)
 {
 
   const std::string& sName = mpModelValue->mpModelValue->getObjectName();
-  mpGlobalQuantityData->setName(sName);
-  mpGlobalQuantityData->setStatus(mpModelValue->mpModelValue->getStatus());
-
-  if (mpModelValue->mpModelValue->getStatus() != CModelEntity::ASSIGNMENT)
-    {
-      mpGlobalQuantityData->setInitialValue(mpModelValue->mpModelValue->getInitialValue());
-    }
-
-  if (mpModelValue->mpModelValue->getStatus() != CModelEntity::FIXED)
-    {
-      mpGlobalQuantityData->setExpression(mpModelValue->mpModelValue->getExpression());
-    }
-
-  // set initial expression
-  if (mpModelValue->mpModelValue->getStatus() != CModelEntity::ASSIGNMENT)
-    {
-      mpGlobalQuantityData->setInitialExpression(mpModelValue->mpModelValue->getInitialExpression());
-    }
-
-  //store to be deleted data
-  setDependentObjects(mpModelValue->mpModelValue->getDeletedObjects(),
-                      mpReactionData,
-                      mpSpeciesData,
-                      NULL,
-                      mpEventData
-                     );
-
   this->setText(deleteGlobalQuantityText(sName));
   setName(sName);
 }

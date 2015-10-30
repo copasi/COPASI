@@ -796,63 +796,13 @@ void CQCompartment::addCompartment(UndoCompartmentData *pData)
   GET_MODEL_OR_RETURN(pModel);
 
   //reinsert all the Compartments
-  CCompartment *pCompartment =  pModel->createCompartment(pData->getName());
-  pCompartment->setInitialValue(pData->getInitialValue());
-  pCompartment->setStatus(pData->getStatus());
-  std::string key = pCompartment->getKey();
-  pData->setKey(key);
-  protectedNotify(ListViews::COMPARTMENT, ListViews::ADD, key);
+  pData->restoreObjectIn(pModel);
+  protectedNotify(ListViews::COMPARTMENT, ListViews::ADD, pData->getKey());
 
   //restore all the dependencies
-  //reinsert all the species
-  QList <UndoSpeciesData *> *pSpecieData = pData->getSpecieDependencyObjects();
-  QList <UndoSpeciesData *>::const_iterator i;
+  pData->restoreDependentObjects(pModel);
 
-  for (i = pSpecieData->begin(); i != pSpecieData->end(); ++i)
-    {
-      UndoSpeciesData * data = *i;
-      //  beginInsertRows(QModelIndex(), 1, 1);
-      CMetab *pSpecie =  pModel->createMetabolite(data->getName(), data->getCompartment(), data->getIConc(), data->getStatus());
-      protectedNotify(ListViews::METABOLITE, ListViews::ADD, pSpecie->getKey());
-      //endInsertRows();
-    }
-
-  //reinsert the dependency reaction
-  QList <UndoReactionData *> *pReactionData = pData->getReactionDependencyObjects();
-  QList <UndoReactionData *>::const_iterator j;
-
-  for (j = pReactionData->begin(); j != pReactionData->end(); ++j)
-    {
-
-      //UndoReactionData * rData = dynamic_cast<UndoReactionData*>(*j);
-      UndoReactionData * rData = *j;
-
-      //TODO check if reaction already exist in the model, better idea may be implemented in the future
-      bool exist = false;
-
-      for (int ii = 0; ii < (int)pModel->getReactions().size(); ++ii)
-        {
-          if (pModel->getReactions()[ii]->getObjectName() == rData->getName())
-            {
-              exist = true;
-              ii = ii + pModel->getReactions().size() + 1; //jump out of the loop reaction exist already
-            }
-          else
-            {
-              exist = false;
-            }
-        }
-
-      if (!exist)
-        {
-          protectedNotify(ListViews::METABOLITE, ListViews::ADD, ""); //Refresh all dependency species.
-          CReaction *pRea =  pModel->createReaction(rData->getName());
-          rData->getRi()->writeBackToReaction(pRea);
-          protectedNotify(ListViews::REACTION, ListViews::ADD, pRea->getKey());
-        }
-    }
-
-  mpListView->switchToOtherWidget(C_INVALID_INDEX, key);
+  mpListView->switchToOtherWidget(C_INVALID_INDEX, pData->getKey());
 }
 
 bool CQCompartment::changeValue(const std::string& key,

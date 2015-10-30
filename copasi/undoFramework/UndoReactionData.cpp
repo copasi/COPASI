@@ -21,6 +21,7 @@
 #include <copasi/undoFramework/CCopasiUndoCommand.h>
 #include <copasi/undoFramework/UndoSpeciesData.h>
 #include <copasi/undoFramework/UndoReactionData.h>
+#include <copasi/undoFramework/UndoDependentData.h>
 
 #include <copasi/report/CCopasiRootContainer.h>
 
@@ -29,38 +30,62 @@ UndoReactionData::UndoReactionData(const std::string &key  /*= ""*/,
                                    const std::string &type /*= ""*/)
   : UndoData(key, name, type)
   , mpRi(NULL)
-  , mSpeciesDependencyObjects(new QList <UndoSpeciesData*>())
 {
 }
 
-UndoReactionData::UndoReactionData(const CReaction *pReaction)
+UndoReactionData::UndoReactionData(const CReaction *pReaction
+                                   , bool trackDependencies /*= true*/)
   : UndoData(pReaction->getKey(), pReaction->getObjectName())
   , mpRi(NULL)
-  , mSpeciesDependencyObjects(new QList<UndoSpeciesData*>())
 {
   GET_MODEL_OR_RETURN(pModel);
   mpRi = new CReactionInterface(pModel);
   mpRi->initFromReaction(pReaction->getKey());
 
-  CCopasiUndoCommand::setDependentObjects(pReaction->getDeletedObjects(),
-                                          NULL,
-                                          mSpeciesDependencyObjects,
-                                          NULL,
-                                          NULL);
+  if (trackDependencies)
+    mpData->initializeFrom(pReaction);
 }
 
 UndoReactionData::~UndoReactionData()
 {
-  pdelete(mSpeciesDependencyObjects);
 }
 
-CReaction *UndoReactionData::createReactionFromData(CModel *pModel)
+CReaction *
+UndoReactionData::createObjectIn(CModel *pModel)
 {
   if (pModel == NULL) return NULL;
+
+  createDependentObjects(pModel);
 
   CReaction* pRea = pModel->createReaction(getName());
 
   if (pRea == NULL) return NULL;
+
+  mKey = pRea->getKey();
+
+  return pRea;
+}
+
+CReaction *
+UndoReactionData::restoreObjectIn(CModel *pModel)
+{
+  CReaction* pRea = createObjectIn(pModel);
+
+  if (pRea == NULL) return NULL;
+
+  fillObject(pModel);
+  fillDependentObjects(pModel);
+
+  return pRea;
+}
+
+void
+UndoReactionData::fillObject(CModel *pModel)
+{
+  CReaction * pRea =
+    dynamic_cast<CReaction*>(CCopasiRootContainer::getKeyFactory()->get(mKey));
+
+  if (pRea == NULL) return;
 
   CChemEqInterface *chem = new CChemEqInterface(pModel);
   chem->setChemEqString(mpRi->getChemEqString());
@@ -69,15 +94,6 @@ CReaction *UndoReactionData::createReactionFromData(CModel *pModel)
   mpRi->createOtherObjects();
   mpRi->writeBackToReaction(pRea);
 
-  return pRea;
-
-}
-
-void UndoReactionData::restoreDependentObjects(CModel *pModel)
-{
-  if (pModel == NULL) return;
-
-  UndoData::restoreDependentObjects(pModel, getSpeciesDependencyObjects());
 }
 
 CReactionInterface *UndoReactionData::getRi() const
@@ -90,7 +106,3 @@ void UndoReactionData::setRi(CReactionInterface *pRi)
   mpRi = pRi;
 }
 
-QList<UndoSpeciesData*> *UndoReactionData::getSpeciesDependencyObjects() const
-{
-  return mSpeciesDependencyObjects;
-}

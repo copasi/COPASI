@@ -173,12 +173,6 @@ public:
   virtual void setType(const CCopasiUndoCommand::Type & type);
 
   /**
-   * Retrieve the Undo Data associated with this command.
-   * @return UndoData *undoData
-   */
-  virtual UndoData *getUndoData() const;
-
-  /**
    * constructor initializing entity type and type
    * @param entityType the entity type (or empty if not given)
    * @param type the type (or INVALID_TYPE if not given)
@@ -200,25 +194,6 @@ public:
   Path pathFromIndex(const QModelIndex & index);
 
   QModelIndex pathToIndex(const Path& path, const QAbstractItemModel *model);
-
-  void setDependentObjects(
-    const std::set<const CCopasiObject*>& deletedObjects);
-
-  static void setDependentObjects(
-    const std::set<const CCopasiObject*>& deletedObjects,
-    QList<UndoReactionData*>* reactionData,
-    QList<UndoSpeciesData*>* speciesData,
-    QList<UndoGlobalQuantityData*>* globalQuantityData,
-    QList<UndoEventData*>* eventData
-  );
-
-  QList<UndoReactionData*> *getReactionData() const;
-
-  QList<UndoSpeciesData*> *getSpecieData() const;
-
-  QList<UndoGlobalQuantityData*>* getGlobalQuantityData() const;
-
-  QList<UndoEventData*> *getEventData() const;
 
   bool isUndoState() const;
 
@@ -252,10 +227,6 @@ public:
   void setKey(const std::string &key);
 
 protected:
-  QList<UndoSpeciesData*> *mpSpeciesData;
-  QList<UndoReactionData*> *mpReactionData;
-  QList<UndoGlobalQuantityData*> *mpGlobalQuantityData;
-  QList<UndoEventData*> *mpEventData;
 
   /**
    *  Type of the undo command.

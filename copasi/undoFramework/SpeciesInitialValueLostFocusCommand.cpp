@@ -24,18 +24,12 @@ SpeciesInitialValueLostFocusCommand::SpeciesInitialValueLostFocusCommand(
   CQSpeciesDetail *pSpecieDetail)
   : CCopasiUndoCommand("Species", SPECIES_TYPE_CHANGE, "Change")
   , mpSpecieDetail(pSpecieDetail)
-  , mpSpeciesData(new UndoSpeciesData())
+  , mpSpeciesData(new UndoSpeciesData(mpSpecieDetail->mpMetab))
   , mFirstTime(true)
 {
 
   std::string sName = mpSpecieDetail->mpMetab->getObjectName();
-  mpSpeciesData->setName(sName);
-  mpSpeciesData->setIConc(mpSpecieDetail->mInitialConcentration);
-  mpSpeciesData->setINumber(mpSpecieDetail->mInitialNumber);
-
   this->setText(specieInitialValueLostFocusText(sName));
-
-  //set the data for UNDO history
   setName(mpSpeciesData->getName());
 
   std::ostringstream strs;

@@ -62,6 +62,61 @@ UndoEventData::~UndoEventData()
   pdelete(mEventAssignmentData);
 }
 
+CEvent *
+UndoEventData::createObjectIn(CModel *pModel)
+{
+  if (pModel == NULL) return NULL;
+
+  if (pModel->getEvents().getIndex(getName()) != C_INVALID_INDEX)
+    return NULL;
+
+  createDependentObjects(pModel);
+
+  CEvent *pEvent =  pModel->createEvent(getName());
+
+  if (pEvent == NULL)
+    return NULL;
+
+  mKey = pEvent->getKey();
+  return pEvent;
+}
+
+CEvent *
+UndoEventData::restoreObjectIn(CModel *pModel)
+{
+  CEvent *pEvent = createObjectIn(pModel);
+
+  if (pEvent == NULL)
+    return NULL;
+
+  fillObject(pModel);
+  fillDependentObjects(pModel);
+
+  return pEvent;
+}
+
+void UndoEventData::fillObject(CModel *)
+{
+  CEvent* pEvent = dynamic_cast<CEvent*>(CCopasiRootContainer::getKeyFactory()->get(mKey));
+
+  if (pEvent == NULL) return;
+
+  //set the expressions
+  pEvent->setTriggerExpression(getTriggerExpression());
+  pEvent->setDelayExpression(getDelayExpression());
+  pEvent->setPriorityExpression(getPriorityExpression());
+
+  QList <UndoEventAssignmentData *> *assignmentData = getEventAssignmentData();
+  QList <UndoEventAssignmentData *>::const_iterator i;
+
+  for (i = assignmentData->begin(); i != assignmentData->end(); ++i)
+    {
+      UndoEventAssignmentData * assignData = *i;
+      assignData->addToEvent(pEvent);
+    }
+
+}
+
 const std::string&
 UndoEventData::getDelayExpression() const
 {
@@ -155,31 +210,4 @@ void UndoEventData::appendEventAssignmentData(
   UndoEventAssignmentData *eventAssignData)
 {
   mEventAssignmentData->append(eventAssignData);
-}
-
-CEvent *
-UndoEventData::createEventFromData(CModel *pModel)
-{
-  if (pModel == NULL) return NULL;
-
-  if (pModel->getEvents().getIndex(getName()) != C_INVALID_INDEX)
-    return NULL;
-
-  CEvent *pEvent =  pModel->createEvent(getName());
-
-  //set the expressions
-  pEvent->setTriggerExpression(getTriggerExpression());
-  pEvent->setDelayExpression(getDelayExpression());
-  pEvent->setPriorityExpression(getPriorityExpression());
-
-  QList <UndoEventAssignmentData *> *assignmentData = getEventAssignmentData();
-  QList <UndoEventAssignmentData *>::const_iterator i;
-
-  for (i = assignmentData->begin(); i != assignmentData->end(); ++i)
-    {
-      UndoEventAssignmentData * assignData = *i;
-      assignData->addToEvent(pEvent);
-    }
-
-  return pEvent;
 }

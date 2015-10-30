@@ -17,25 +17,32 @@
 
 CreateNewEventCommand::CreateNewEventCommand(CQEventWidget1 *pEventWidget)
   : CCopasiUndoCommand("Event", EVENT_CREATE)
-  , mpEventData(new UndoEventData())
+  , mpEventData(NULL)
   , mpEventWidget(pEventWidget)
 {
   this->setText(createNewEventText());
 }
 void CreateNewEventCommand::redo()
 {
-  // TODO: should only happen once
-  mpEventWidget->createNewEvent();
+  if (mpEventData == NULL)
+    {
+      mpEventWidget->createNewEvent();
 
-  std::string sName = mpEventWidget->mpEvent->getObjectName();
-  mpEventData->setKey(mpEventWidget->mpEvent->getKey());
-  mpEventData->setName(sName);
-  mpEventData->setDelayExpression(mpEventWidget->mpEvent->getDelayExpression());
-  mpEventData->setTriggerExpression(mpEventWidget->mpEvent->getTriggerExpression());
-  mpEventData->setPriorityExpression(mpEventWidget->mpEvent->getPriorityExpression());
+      std::string sName = mpEventWidget->mpEvent->getObjectName();
+      mpEventData->setKey(mpEventWidget->mpEvent->getKey());
+      mpEventData->setName(sName);
+      mpEventData->setDelayExpression(mpEventWidget->mpEvent->getDelayExpression());
+      mpEventData->setTriggerExpression(mpEventWidget->mpEvent->getTriggerExpression());
+      mpEventData->setPriorityExpression(mpEventWidget->mpEvent->getPriorityExpression());
+      setName(sName);
+    }
+  else
+    {
+      mpEventWidget->addEvent(mpEventData);
+    }
+
   setUndoState(true);
   setAction("Create");
-  setName(sName);
 }
 
 void CreateNewEventCommand::undo()

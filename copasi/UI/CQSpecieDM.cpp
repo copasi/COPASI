@@ -837,7 +837,7 @@ void CQSpecieDM::addSpecieRow(UndoSpeciesData *pSpecieData)
 
   switchToWidget(CCopasiUndoCommand::SPECIES);
 
-  CMetab *species =  pSpecieData->createMetabFromData(pModel);
+  CMetab *species =  pSpecieData->restoreObjectIn(pModel);
 
   if (species == NULL)
     return;
@@ -902,7 +902,7 @@ bool CQSpecieDM::insertSpecieRows(QList <UndoSpeciesData *>& pData)
   for (i = pData.begin(); i != pData.end(); ++i)
     {
       UndoSpeciesData * data = *i;
-      CMetab *pSpecies = data->createMetabFromData(pModel);
+      CMetab *pSpecies = data->restoreObjectIn(pModel);
 
       if (pSpecies == NULL)
         continue;

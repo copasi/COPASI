@@ -49,6 +49,7 @@
 #include "undoFramework/DeleteReactionCommand.h"
 #include "undoFramework/CreateNewReactionCommand.h"
 #include "undoFramework/ReactionChangeCommand.h"
+#include "undoFramework/UndoReactionData.h"
 #include "copasiui3window.h"
 #endif
 /*
@@ -913,20 +914,18 @@ void ReactionsWidget1::setFramework(int framework)
 
 void ReactionsWidget1::createNewReaction()
 {
+  GET_MODEL_OR_RETURN(pModel);
   std::string name = "reaction_1";
   size_t i = 1;
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
-  assert(pDataModel != NULL);
 
-  while (!pDataModel->getModel()->createReaction(name))
+  while (!pModel->createReaction(name))
     {
       i++;
       name = "reaction_";
       name += TO_UTF8(QString::number(i));
     }
 
-  std::string key = pDataModel->getModel()->getReactions()[name]->getKey();
+  std::string key = pModel->getReactions()[name]->getKey();
   protectedNotify(ListViews::REACTION, ListViews::ADD, key);
 
   mpListView->switchToOtherWidget(C_INVALID_INDEX, key);
@@ -934,13 +933,7 @@ void ReactionsWidget1::createNewReaction()
 
 void ReactionsWidget1::deleteReaction()
 {
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
-  assert(pDataModel != NULL);
-  CModel * pModel = pDataModel->getModel();
-
-  if (pModel == NULL)
-    return;
+  GET_MODEL_OR_RETURN(pModel);
 
   CReaction * pReaction =
     dynamic_cast< CReaction * >(CCopasiRootContainer::getKeyFactory()->get(mKey));
@@ -973,11 +966,9 @@ void ReactionsWidget1::deleteReaction()
 
 void ReactionsWidget1::addReaction(std::string & reaObjectName, CReactionInterface *pRi)
 {
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
-  assert(pDataModel != NULL);
+  GET_MODEL_OR_RETURN(pModel);
 
-  CReaction *pRea = pDataModel->getModel()->createReaction(reaObjectName);
+  CReaction *pRea = pModel->createReaction(reaObjectName);
   std::string key = pRea->getKey();
   protectedNotify(ListViews::REACTION, ListViews::ADD, key);
   pRi->writeBackToReaction(pRea);
@@ -989,12 +980,7 @@ void ReactionsWidget1::deleteReaction(CReaction *pReaction)
 {
   mpListView->switchToOtherWidget(CCopasiUndoCommand::REACTIONS, "");
 
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
-  assert(pDataModel != NULL);
-
-  CModel * pModel = pDataModel->getModel();
-  assert(pModel != NULL);
+  GET_MODEL_OR_RETURN(pModel);
 
   std::string key = pReaction->getKey();
   pModel->removeReaction(key);
@@ -1127,6 +1113,23 @@ bool ReactionsWidget1::changeReaction(
   FillWidgetFromRI();
 
   return true;
+}
+
+
+void ReactionsWidget1::addReaction(UndoReactionData *pData)
+{
+  GET_MODEL_OR_RETURN(pModel);
+
+  CReaction *pReaction = pData->restoreObjectIn(pModel);
+
+  if (pReaction == NULL)
+    return;
+
+  protectedNotify(ListViews::MODELVALUE, ListViews::ADD, pReaction->getKey());
+
+  pData->restoreDependentObjects(pModel);
+
+  mpListView->switchToOtherWidget(C_INVALID_INDEX, pReaction->getKey());
 }
 
 #endif

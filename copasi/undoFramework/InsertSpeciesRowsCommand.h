@@ -33,7 +33,7 @@ private:
   int mRows, mPosition;
   QModelIndex mIndex;
   UndoSpeciesData* mpSpeciesData;
-  int firstTime;
+
 };
 
 #endif /* INSERTSPECIEROWSCOMMAND_H_ */

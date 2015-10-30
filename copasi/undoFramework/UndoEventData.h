@@ -42,7 +42,12 @@ public:
    * @param model the model to create the event in
    * @return the newly created event
    */
-  CEvent* createEventFromData(CModel* model);
+
+  virtual CEvent* createObjectIn(CModel* pModel);
+
+  virtual CEvent* restoreObjectIn(CModel* pModel);
+
+  virtual void fillObject(CModel* pModel);
 
   const std::string& getDelayExpression() const;
 

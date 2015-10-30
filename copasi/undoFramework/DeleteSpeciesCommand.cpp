@@ -27,38 +27,12 @@
 DeleteSpeciesCommand::DeleteSpeciesCommand(CQSpeciesDetail *pSpecieDetail)
   : CCopasiUndoCommand("Species", SPECIES_DELETE)
   , mFirstTime(true)
-  , mpSpeciesData(new UndoSpeciesData())
+  , mpSpeciesData(new UndoSpeciesData(mpSpecieDetail->mpMetab))
   , mpSpecieDetail(pSpecieDetail)
 {
-
   const std::string& sName = mpSpecieDetail->mpMetab->getObjectName();
-  mpSpeciesData->setName(sName);
-  mpSpeciesData->setKey(mpSpecieDetail->mpMetab->getKey());
-
-  mpSpeciesData->setStatus(mpSpecieDetail->mpMetab->getStatus());
-
-  if (mpSpecieDetail->mpMetab->getStatus() != CModelEntity::ASSIGNMENT)
-    {
-      mpSpeciesData->setIConc(mpSpecieDetail->mpMetab->getInitialConcentration());
-    }
-
-  if (mpSpecieDetail->mpMetab->getStatus() ==  CModelEntity::ASSIGNMENT || mpSpecieDetail->mpMetab->getStatus() == CModelEntity::ODE)
-    {
-      mpSpeciesData->setExpression(mpSpecieDetail->mpMetab->getExpression());
-    }
-
-  // set initial expression
-  if (mpSpecieDetail->mpMetab->getStatus() != CModelEntity::ASSIGNMENT)
-    {
-      mpSpeciesData->setInitialExpression(mpSpecieDetail->mpMetab->getInitialExpression());
-    }
-
-  //store to be deleted data
-  setDependentObjects(mpSpecieDetail->mpMetab->getDeletedObjects(),
-                      mpReactionData, NULL, mpGlobalQuantityData, mpEventData);
-
   setName(sName);
-  this->setText(deleteSpecieText(sName));
+  setText(deleteSpecieText(sName));
 }
 
 void DeleteSpeciesCommand::redo()

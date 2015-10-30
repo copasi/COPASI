@@ -501,7 +501,7 @@ void CQCompartmentDM::addCompartmentRow(UndoCompartmentData *pCompartmentData)
 
   beginInsertRows(QModelIndex(), 1, 1);
 
-  CCompartment *pCompartment = pCompartmentData->createCompartmentFromData(pModel);
+  CCompartment *pCompartment = pCompartmentData->restoreObjectIn(pModel);
 
   if (pCompartment != NULL)
     emit notifyGUI(ListViews::COMPARTMENT, ListViews::ADD, pCompartment->getKey());
@@ -565,7 +565,7 @@ bool CQCompartmentDM::insertCompartmentRows(QList <UndoCompartmentData *>& pData
     {
       UndoCompartmentData* data = *k;
 
-      CCompartment *pCompartment = data->createCompartmentFromData(pModel);
+      CCompartment *pCompartment = data->restoreObjectIn(pModel);
 
       if (pCompartment == NULL) continue;
 

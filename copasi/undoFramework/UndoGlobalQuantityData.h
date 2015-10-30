@@ -18,9 +18,6 @@
 
 #include <copasi/model/CModelValue.h>
 
-class UndoSpeciesData;
-class UndoEventData;
-class UndoReactionData;
 class CModelValue;
 class CModel;
 
@@ -31,9 +28,13 @@ public:
                          const std::string &name = "",
                          const std::string &type = "");
 
-  UndoGlobalQuantityData(const CModelValue* pModelValue);
+  UndoGlobalQuantityData(const CModelValue* pModelValue, bool trackDependencies = true);
 
-  CModelValue* createQuantityFromData(CModel* pModel);
+  virtual CModelValue* createObjectIn(CModel* pModel);
+
+  virtual CModelValue* restoreObjectIn(CModel* pModel);
+
+  virtual void fillObject(CModel* pModel);
 
   virtual ~UndoGlobalQuantityData();
 
@@ -48,19 +49,6 @@ public:
 
   const std::string &getInitialExpression() const;
   void setInitialExpression(const std::string &initialExpression);
-
-  /**
-   * when overidden in subclasses this function
-   * will restore dependent objects.
-   */
-  virtual void restoreDependentObjects(CModel* pModel);
-
-
-  QList<UndoReactionData*> *getReactionDependencyObjects() const;
-
-  QList<UndoEventData*> *getEventDependencyObjects() const;
-
-  QList<UndoSpeciesData*> *getSpecieDependencyObjects() const;
 
 private:
 
@@ -84,20 +72,6 @@ private:
    */
   std::string mInitialExpression;
 
-  /**
-   * Pointer to species dependency objects
-   */
-  QList<UndoSpeciesData*> *mSpecieDependencyObjects;
-
-  /**
-   * Pointer to species dependency objects
-   */
-  QList<UndoReactionData*> *mReactionDependencyObjects;
-
-  /**
-   * Pointer to event dependency objects
-   */
-  QList<UndoEventData*> *mEventDependencyObjects;
 };
 
 #endif /* UNDOGLOBALQUANTITYDATA_H_ */

@@ -445,7 +445,7 @@ void CQEventDM::addEventRow(UndoEventData *pEventData)
 
   beginInsertRows(QModelIndex(), 1, 1);
 
-  CEvent *pEvent = pEventData->createEventFromData(pModel);
+  CEvent *pEvent = pEventData->restoreObjectIn(pModel);
 
   if (pEvent == NULL) return;
 
@@ -515,7 +515,7 @@ bool CQEventDM::insertEventRows(QList <UndoEventData *>& pData)
     {
       beginInsertRows(QModelIndex(), 1, 1);
       UndoEventData * data = *i;
-      CEvent* pEvent = data->createEventFromData(pModel);
+      CEvent* pEvent = data->restoreObjectIn(pModel);
 
       if (pEvent == NULL) continue;
 

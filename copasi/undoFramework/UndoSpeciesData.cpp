@@ -24,6 +24,9 @@
 #include "UndoEventData.h"
 
 #include <copasi/undoFramework/CCopasiUndoCommand.h>
+#include <copasi/undoFramework/UndoDependentData.h>
+
+#include <copasi/report/CCopasiRootContainer.h>
 
 UndoSpeciesData::UndoSpeciesData(const std::string &key  /*= ""*/,
                                  const std::string &name /*= ""*/,
@@ -35,13 +38,11 @@ UndoSpeciesData::UndoSpeciesData(const std::string &key  /*= ""*/,
   , mStatus(CModelEntity::REACTIONS)
   , mInitialExpression()
   , mExpression()
-  , mReactionDependencyObjects(new QList <UndoReactionData*>())
-  , mGlobalQuantityDependencyObjects(new QList <UndoGlobalQuantityData*>())
-  , mEventDependencyObjects(new QList <UndoEventData*>())
 {
 }
 
-UndoSpeciesData::UndoSpeciesData(const CMetab *metab)
+UndoSpeciesData::UndoSpeciesData(const CMetab *metab
+                                 , bool trackDependencies /*= true*/)
   : UndoData(metab->getKey(), metab->getObjectName())
   , mIConc(metab->getInitialConcentration())
   , mINumber(metab->getInitialValue())
@@ -49,29 +50,23 @@ UndoSpeciesData::UndoSpeciesData(const CMetab *metab)
   , mStatus(metab->getStatus())
   , mInitialExpression(metab->getInitialExpression())
   , mExpression(metab->getExpression())
-  , mReactionDependencyObjects(new QList <UndoReactionData*>())
-  , mGlobalQuantityDependencyObjects(new QList <UndoGlobalQuantityData*>())
-  , mEventDependencyObjects(new QList <UndoEventData*>())
 {
-  CCopasiUndoCommand::setDependentObjects(
-    metab->getDeletedObjects(),
-    mReactionDependencyObjects,
-    NULL,
-    mGlobalQuantityDependencyObjects,
-    mEventDependencyObjects);
+  if (trackDependencies)
+    mpData->initializeFrom(metab);
 }
 
 UndoSpeciesData::~UndoSpeciesData()
 {
-  pdelete(mEventDependencyObjects);
-  pdelete(mReactionDependencyObjects);
-  pdelete(mGlobalQuantityDependencyObjects);
 }
 
-CMetab *UndoSpeciesData::createMetabFromData(CModel *pModel)
+CMetab *
+UndoSpeciesData::createObjectIn(CModel *pModel)
 {
   if (pModel == NULL)
     return NULL;
+
+
+  createDependentObjects(pModel);
 
   if (pModel->getCompartments().getIndex(mCompartment) == C_INVALID_INDEX)
     return NULL;
@@ -88,6 +83,33 @@ CMetab *UndoSpeciesData::createMetabFromData(CModel *pModel)
 
   if (pSpecies == NULL)
     return NULL;
+
+  mKey = pSpecies->getKey();
+
+  return pSpecies;
+}
+
+CMetab *
+UndoSpeciesData::restoreObjectIn(CModel *pModel)
+{
+  CMetab *pSpecies = createObjectIn(pModel);
+
+  if (pSpecies == NULL)
+    return NULL;
+
+  fillObject(pModel);
+  fillDependentObjects(pModel);
+
+  return pSpecies;
+}
+
+void
+UndoSpeciesData::fillObject(CModel *)
+{
+  CMetab * pSpecies =
+    dynamic_cast<CMetab*>(CCopasiRootContainer::getKeyFactory()->get(mKey));
+
+  if (pSpecies == NULL) return;
 
   if (getStatus() != CModelEntity::ASSIGNMENT)
     {
@@ -107,15 +129,8 @@ CMetab *UndoSpeciesData::createMetabFromData(CModel *pModel)
       pSpecies->getInitialExpressionPtr()->compile();
     }
 
-  return pSpecies;
 }
 
-void UndoSpeciesData::restoreDependentObjects(CModel* pModel)
-{
-  UndoData::restoreDependentObjects(pModel, getGlobalQuantityDependencyObjects());
-  UndoData::restoreDependentObjects(pModel, getReactionDependencyObjects());
-  UndoData::restoreDependentObjects(pModel, getEventDependencyObjects());
-}
 
 const std::string&
 UndoSpeciesData::getCompartment() const
@@ -178,12 +193,6 @@ UndoSpeciesData::setInitialExpression(
   mInitialExpression = initialExpression;
 }
 
-QList<UndoReactionData*> *
-UndoSpeciesData::getReactionDependencyObjects() const
-{
-  return mReactionDependencyObjects;
-}
-
 double
 UndoSpeciesData::getINumber() const
 {
@@ -194,16 +203,4 @@ void
 UndoSpeciesData::setINumber(double iNumber)
 {
   mINumber = iNumber;
-}
-
-QList<UndoGlobalQuantityData*> *
-UndoSpeciesData::getGlobalQuantityDependencyObjects() const
-{
-  return mGlobalQuantityDependencyObjects;
-}
-
-QList<UndoEventData*> *
-UndoSpeciesData::getEventDependencyObjects() const
-{
-  return mEventDependencyObjects;
 }

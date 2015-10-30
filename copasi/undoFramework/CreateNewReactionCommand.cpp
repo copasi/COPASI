@@ -23,25 +23,30 @@ CreateNewReactionCommand::CreateNewReactionCommand(ReactionsWidget1 *pReactionWi
   : CCopasiUndoCommand("Reaction", REACTION_CREATE)
   , mpReactionWidget(pReactionWidget)
   , mpReaction(NULL)
-  , mpReactionData(new UndoReactionData())
+  , mpReactionData(NULL)
 {
   this->setText(createNewReactionText());
 }
 
 void CreateNewReactionCommand::redo()
 {
-  // TODO: should only happen once
-  mpReactionWidget->createNewReaction();
-  mpReaction = dynamic_cast< CReaction * >(mpReactionWidget->mpObject);
-  std::string sName = mpReaction->getObjectName();
-  mpReactionData->setName(sName);
-  mpReactionData->setKey(mpReaction->getKey());
-  CReactionInterface* ri = new CReactionInterface((*CCopasiRootContainer::getDatamodelList())[0]->getModel());
-  ri->initFromReaction(mpReaction);
-  mpReactionData->setRi(ri);
+  if (mpReactionData == NULL)
+    {
+      // TODO: should only happen once
+      mpReactionWidget->createNewReaction();
+      mpReaction = dynamic_cast<CReaction *>(mpReactionWidget->mpObject);
+      std::string sName = mpReaction->getObjectName();
+      mpReactionData = new UndoReactionData(mpReaction);
+      setName(sName);
+    }
+  else
+    {
+      mpReactionWidget->addReaction(mpReactionData);
+    }
+
   setUndoState(true);
   setAction("Create");
-  setName(sName);
+
 }
 
 void CreateNewReactionCommand::undo()

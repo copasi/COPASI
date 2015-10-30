@@ -28,35 +28,21 @@ class UndoCompartmentData : public UndoData
 public:
   UndoCompartmentData();
 
-  UndoCompartmentData(const CCompartment* compartment);
+  UndoCompartmentData(const CCompartment* compartment, bool trackDependencies = true);
 
   virtual ~UndoCompartmentData();
 
-  CCompartment* createCompartmentFromData(CModel* pModel);
+  virtual CCompartment* createObjectIn(CModel* pModel);
 
-  QList<UndoData*> *getDependencyObjects() const;
-  void setDependencyObjects(QList<UndoData*> *dependencyObjects);
+  virtual CCompartment* restoreObjectIn(CModel* pModel);
+
+  virtual void fillObject(CModel* pModel);
 
   CModelEntity::Status getStatus() const;
   void setStatus(CModelEntity::Status status);
 
   double getInitialValue() const;
   void setInitialValue(double initialValue);
-
-  QList<UndoReactionData*> *getReactionDependencyObjects() const;
-
-  QList<UndoSpeciesData*> *getSpecieDependencyObjects() const;
-
-  QList<UndoGlobalQuantityData*> *getGlobalQuantityDependencyObjects() const;
-
-  QList<UndoEventData*> *getEventDependencyObjects() const;
-
-
-  /**
-   * when overidden in subclasses this function
-   * will restore dependent objects.
-   */
-  virtual void restoreDependentObjects(CModel* pModel);
 
   const std::string& getInitialExpression() const;
   void setInitialExpression(const std::string &initialExpression);
@@ -85,31 +71,6 @@ private:
    * The status of the metabolite
    */
   CModelEntity::Status mStatus;
-
-  /**
-   * Pointer to species dependency objects
-   */
-  QList<UndoData*> *mDependencyObjects;
-
-  /**
-   * Pointer to species dependency objects
-   */
-  QList<UndoSpeciesData*> *mSpecieDependencyObjects;
-
-  /**
-   * Pointer to reaction dependency objects
-   */
-  QList<UndoReactionData*> *mReactionDependencyObjects;
-
-  /**
-   * Pointer to global quantity dependency objects
-   */
-  QList<UndoGlobalQuantityData*> *mGlobalQuantityDependencyObjects;
-
-  /**
-   * Pointer to event dependency objects
-   */
-  QList<UndoEventData*> *mEventDependencyObjects;
 };
 
 #endif /* UNDOCOMPARTMENTDATA_H_ */

@@ -21,9 +21,6 @@
 #include <copasi/model/CModelValue.h>
 
 class CMetab;
-class UndoReactionData;
-class UndoGlobalQuantityData;
-class UndoEventData;
 
 class UndoSpeciesData: public UndoData
 {
@@ -32,17 +29,15 @@ public:
                   const std::string &name = "",
                   const std::string &type = "");
 
-  UndoSpeciesData(const CMetab* metab);
+  UndoSpeciesData(const CMetab* metab, bool trackDependencies = true);
 
   virtual ~UndoSpeciesData();
 
-  CMetab* createMetabFromData(CModel* pModel);
+  virtual CMetab* createObjectIn(CModel* pModel);
 
-  /**
-   * when overidden in subclasses this function
-   * will restore dependent objects.
-   */
-  virtual void restoreDependentObjects(CModel* pModel);
+  virtual CMetab* restoreObjectIn(CModel* pModel);
+
+  virtual void fillObject(CModel* pModel);
 
   const std::string& getCompartment() const;
   void setCompartment(const std::string& compartment);
@@ -59,16 +54,9 @@ public:
   CModelEntity::Status getStatus() const;
   void setStatus(CModelEntity::Status status);
 
-
   double getINumber() const;
-
   void setINumber(double iNumber);
 
-  QList<UndoReactionData*> *getReactionDependencyObjects() const;
-
-  QList<UndoGlobalQuantityData*> *getGlobalQuantityDependencyObjects() const;
-
-  QList<UndoEventData*> *getEventDependencyObjects() const;
 
 private:
 
@@ -101,21 +89,6 @@ private:
    *  the expression if it exist
    */
   std::string mExpression;
-
-  /**
-   * Pointer to species dependency objects
-   */
-  QList<UndoReactionData*> *mReactionDependencyObjects;
-
-  /**
-   * Pointer to global quantity dependency objects
-   */
-  QList<UndoGlobalQuantityData*> *mGlobalQuantityDependencyObjects;
-
-  /**
-   * Pointer to event dependency objects
-   */
-  QList<UndoEventData*> *mEventDependencyObjects;
 
 };
 

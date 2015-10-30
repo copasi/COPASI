@@ -26,25 +26,20 @@ InsertSpecieRowsCommand::InsertSpecieRowsCommand(int position, int rows, CQSpeci
   , mRows(rows)
   , mPosition(position)
   , mIndex(index)
-  , mpSpeciesData(new UndoSpeciesData())
-  , firstTime(true)
+  , mpSpeciesData(NULL)
 {
   this->setText(insertRowsText());
 }
 
 void InsertSpecieRowsCommand::redo()
 {
-  if (firstTime)
+  if (mpSpeciesData == NULL)
     {
       mpSpecieDM->insertNewSpecieRow(mPosition, mRows, QModelIndex());
       GET_MODEL_OR_RETURN(pModel);
 
       CMetab *pSpecies = pModel->getMetabolites()[mPosition];
-      mpSpeciesData->setName(pSpecies->getObjectName());
-      mpSpeciesData->setKey(pSpecies->getKey());
-      mpSpeciesData->setIConc(pSpecies->getInitialConcentration());
-      mpSpeciesData->setCompartment(pSpecies->getCompartment()->getObjectName());
-      firstTime = false;
+      mpSpeciesData = new UndoSpeciesData(pSpecies);
     }
   else
     {

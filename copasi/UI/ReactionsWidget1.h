@@ -81,6 +81,7 @@ protected:
 #ifdef COPASI_UNDO
   void deleteReaction();
   void addReaction(std::string & reaObjectName, CReactionInterface *pRi);
+  void addReaction(UndoReactionData *pData);
   void createNewReaction();
   void deleteReaction(CReaction *pReaction);
 public:

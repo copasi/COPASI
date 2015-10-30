@@ -19,7 +19,7 @@
 CreateNewCompartmentCommand::CreateNewCompartmentCommand(
   CQCompartment *pCompartment)
   : CCopasiUndoCommand("Compartment", COMPARTMENT_CREATE)
-  , mpCompartmentData(new UndoCompartmentData())
+  , mpCompartmentData(NULL)
   , mpCompartment(pCompartment)
 {
   this->setText(": Created new compartment ");
@@ -27,15 +27,17 @@ CreateNewCompartmentCommand::CreateNewCompartmentCommand(
 
 void CreateNewCompartmentCommand::redo()
 {
-  // TODO: should only happen once
-  mpCompartment->createNewCompartment();
-  std::string sName = mpCompartment->mpCompartment->getObjectName();
-  mpCompartmentData->setName(sName);
-  mpCompartmentData->setKey(mpCompartment->mpCompartment->getKey());
-  mpCompartmentData->setInitialValue(mpCompartment->mpCompartment->getInitialValue());
-  mpCompartmentData->setStatus(mpCompartment->mpCompartment->getStatus());
+  if (mpCompartmentData == NULL)
+    {
+      mpCompartment->createNewCompartment();
+      mpCompartmentData = new UndoCompartmentData(mpCompartment->mpCompartment);
+    }
+  else
+    {
+      mpCompartment->addCompartment(mpCompartmentData);
+    }
+
   setUndoState(true);
-  setName(sName);
   setAction("Create");
 }
 

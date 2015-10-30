@@ -14,10 +14,17 @@
 
 #include <copasi/model/CModel.h>
 #include <copasi/model/CMetab.h>
+#include <copasi/model/CCompartment.h>
+
+#include <copasi/function/CExpression.h>
 
 #include <copasi/undoFramework/CCopasiUndoCommand.h>
 #include <copasi/undoFramework/UndoData.h>
+#include <copasi/undoFramework/UndoDependentData.h>
 #include <copasi/undoFramework/UndoCompartmentData.h>
+
+#include <copasi/report/CCopasiRootContainer.h>
+
 
 UndoCompartmentData::UndoCompartmentData()
   : UndoData()
@@ -25,67 +32,80 @@ UndoCompartmentData::UndoCompartmentData()
   , mInitialExpression()
   , mExpression()
   , mStatus()
-  , mDependencyObjects(new QList<UndoData*>())
-  , mSpecieDependencyObjects(new QList<UndoSpeciesData*>())
-  , mReactionDependencyObjects(new QList<UndoReactionData*>())
-  , mGlobalQuantityDependencyObjects(new QList<UndoGlobalQuantityData*>())
-  , mEventDependencyObjects(new QList<UndoEventData*>())
-  , mpData(new UndoDependentData())
 {
 
 }
 
-UndoCompartmentData::UndoCompartmentData(const CCompartment *compartment)
+UndoCompartmentData::UndoCompartmentData(const CCompartment *compartment,
+    bool trackDependencies /*= true*/)
   : UndoData(compartment->getKey(), compartment->getObjectName())
   , mInitialValue(compartment->getInitialValue())
   , mInitialExpression(compartment->getInitialExpression())
   , mExpression(compartment->getExpression())
   , mStatus(compartment->getStatus())
-  , mDependencyObjects(new QList<UndoData*>())
-  , mSpecieDependencyObjects(new QList<UndoSpeciesData*>())
-  , mReactionDependencyObjects(new QList<UndoReactionData*>())
-  , mGlobalQuantityDependencyObjects(new QList<UndoGlobalQuantityData*>())
-  , mEventDependencyObjects(new QList<UndoEventData*>())
-  , mpData(new UndoDependentData(compartment))
 {
-  CCopasiUndoCommand::setDependentObjects(
-    compartment->getDeletedObjects(),
-    mReactionDependencyObjects,
-    mSpecieDependencyObjects,
-    mGlobalQuantityDependencyObjects,
-    mEventDependencyObjects);
+  if (trackDependencies)
+    mpData->initializeFrom(compartment);
 }
 
 UndoCompartmentData::~UndoCompartmentData()
 {
-  pdelete(mDependencyObjects);
-  pdelete(mSpecieDependencyObjects);
-  pdelete(mReactionDependencyObjects);
-  pdelete(mGlobalQuantityDependencyObjects);
-  pdelete(mEventDependencyObjects);
 
 }
 
-CCompartment *UndoCompartmentData::createCompartmentFromData(CModel *pModel)
+CCompartment *
+UndoCompartmentData::createObjectIn(CModel *pModel)
 {
   if (pModel == NULL) return NULL;
 
-  CCompartment *pCompartment = pModel->createCompartment(getName());
+  createDependentObjects(pModel);
+
+  CCompartment *pCompartment = pModel->createCompartment(mName);
 
   if (pCompartment == NULL)
     return NULL;
 
-  pCompartment->setInitialValue(getInitialValue());
-
-  pCompartment->setStatus(getStatus());
+  mKey = pCompartment->getKey();
 
   return pCompartment;
 }
 
-QList<UndoData*> *
-UndoCompartmentData::getDependencyObjects() const
+CCompartment *
+UndoCompartmentData::restoreObjectIn(CModel *pModel)
 {
-  return mDependencyObjects;
+  CCompartment *pCompartment = createObjectIn(pModel);
+
+  if (pCompartment == NULL)
+    return NULL;
+
+  fillObject(pModel);
+  fillDependentObjects(pModel);
+
+  return pCompartment;
+}
+
+void UndoCompartmentData::fillObject(CModel *)
+{
+  CCompartment* pCompartment = dynamic_cast<CCompartment*>(
+                                 CCopasiRootContainer::getKeyFactory()->get(mKey));
+
+  if (pCompartment == NULL) return;
+
+  pCompartment->setInitialValue(getInitialValue());
+  pCompartment->setStatus(getStatus());
+
+  if (getStatus() == CModelEntity::ODE || getStatus() == CModelEntity::ASSIGNMENT)
+    {
+      pCompartment->setExpression(getExpression());
+      pCompartment->getExpressionPtr()->compile();
+    }
+
+  // set initial expression
+  if (getStatus() != CModelEntity::ASSIGNMENT)
+    {
+      pCompartment->setInitialExpression(getInitialExpression());
+      pCompartment->getInitialExpressionPtr()->compile();
+    }
 }
 
 CModelEntity::Status
@@ -95,28 +115,9 @@ UndoCompartmentData::getStatus() const
 }
 
 void
-UndoCompartmentData::setDependencyObjects(QList<UndoData*> *dependencyObjects)
-{
-  pdelete(mDependencyObjects);
-  mDependencyObjects = dependencyObjects;
-}
-
-void
 UndoCompartmentData::setStatus(CModelEntity::Status status)
 {
   mStatus = status;
-}
-
-QList<UndoReactionData*> *
-UndoCompartmentData::getReactionDependencyObjects() const
-{
-  return mReactionDependencyObjects;
-}
-
-QList<UndoSpeciesData*> *
-UndoCompartmentData::getSpecieDependencyObjects() const
-{
-  return mSpecieDependencyObjects;
 }
 
 double
@@ -129,29 +130,6 @@ void
 UndoCompartmentData::setInitialValue(double initialValue)
 {
   mInitialValue = initialValue;
-}
-
-QList<UndoGlobalQuantityData*> *
-UndoCompartmentData::getGlobalQuantityDependencyObjects() const
-{
-  return mGlobalQuantityDependencyObjects;
-}
-
-QList<UndoEventData*> *
-UndoCompartmentData::getEventDependencyObjects() const
-{
-  return mEventDependencyObjects;
-}
-
-void UndoCompartmentData::restoreDependentObjects(CModel *pModel)
-{
-  if (pModel == NULL)
-    return;
-
-  UndoData::restoreDependentObjects(pModel, getSpecieDependencyObjects());
-  UndoData::restoreDependentObjects(pModel, getGlobalQuantityDependencyObjects());
-  UndoData::restoreDependentObjects(pModel, getReactionDependencyObjects());
-  UndoData::restoreDependentObjects(pModel, getEventDependencyObjects());
 }
 
 const std::string&

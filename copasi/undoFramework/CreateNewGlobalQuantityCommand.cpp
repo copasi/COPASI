@@ -18,7 +18,7 @@
 
 CreateNewGlobalQuantityCommand::CreateNewGlobalQuantityCommand(CQModelValue *pModelValue)
   : CCopasiUndoCommand("Global Quantity", GLOBALQUANTITY_CREATE)
-  , mpGlobalQuantityData(new UndoGlobalQuantityData())
+  , mpGlobalQuantityData(NULL)
   , mpModelValue(pModelValue)
 {
   this->setText(createNewGlobalQuantityText());
@@ -26,35 +26,22 @@ CreateNewGlobalQuantityCommand::CreateNewGlobalQuantityCommand(CQModelValue *pMo
 
 void CreateNewGlobalQuantityCommand::redo()
 {
-  // TODO: this is again needs to happen only once
-  mpModelValue->createNewGlobalQuantity();
-
-  std::string sName = mpModelValue->mpModelValue->getObjectName();
-  mpGlobalQuantityData->setKey(mpModelValue->mpModelValue->getKey());
-  mpGlobalQuantityData->setName(sName);
-  mpGlobalQuantityData->setStatus(mpModelValue->mpModelValue->getStatus());
-
-  if (mpModelValue->mpModelValue->getStatus() != CModelEntity::ASSIGNMENT)
+  if (mpGlobalQuantityData == NULL)
     {
-      mpGlobalQuantityData->setInitialValue(mpModelValue->mpModelValue->getInitialValue());
+      // TODO: this is again needs to happen only once
+      mpModelValue->createNewGlobalQuantity();
+      std::string sName = mpModelValue->mpModelValue->getObjectName();
+      mpGlobalQuantityData = new UndoGlobalQuantityData(mpModelValue->mpModelValue);
+      setName(sName);
     }
-
-  // set expression
-  if (mpModelValue->mpModelValue->getStatus() != CModelEntity::FIXED)
+  else
     {
-
-      mpGlobalQuantityData->setExpression(mpModelValue->mpModelValue->getExpression());
-    }
-
-  // set initial expression
-  if (mpModelValue->mpModelValue->getStatus() != CModelEntity::ASSIGNMENT)
-    {
-      mpGlobalQuantityData->setInitialExpression(mpModelValue->mpModelValue->getInitialExpression());
+      mpModelValue->addGlobalQuantity(mpGlobalQuantityData);
     }
 
   setUndoState(true);
   setAction("Create");
-  setName(sName);
+
 }
 
 void CreateNewGlobalQuantityCommand::undo()

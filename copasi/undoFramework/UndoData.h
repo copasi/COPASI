@@ -17,7 +17,7 @@
 #include <string>
 
 class CModel;
-
+class CCopasiObject;
 class UndoGlobalQuantityData;
 class UndoReactionData;
 class UndoEventData;
@@ -39,11 +39,31 @@ public:
 
   virtual ~UndoData();
 
+  virtual CCopasiObject* createObjectIn(CModel* pModel);
+
+  virtual CCopasiObject* restoreObjectIn(CModel* pModel);
+
+  virtual void fillObject(CModel* pModel);
+
   /**
    * when overidden in subclasses this function
    * will restore dependent objects.
+   *
+   * This function both creates the dependent objects
+   * and sets all their values.
    */
   virtual void restoreDependentObjects(CModel* pModel);
+
+  /**
+   * Creates all dependent objects, but does not set their values
+   */
+  virtual void createDependentObjects(CModel* pModel);
+
+  /**
+   * Fills the dependent object with their values.
+   */
+  virtual void fillDependentObjects(CModel* pModel);
+
 
   /**
    * @return the key of the object
@@ -86,17 +106,6 @@ public:
    * @param type the type
    */
   void setType(const std::string &type);
-
-  static void restoreDependentObjects(CModel* pModel,
-                                      QList <UndoGlobalQuantityData *> *pGlobalQuantityData);
-  static void restoreDependentObjects(CModel* pModel,
-                                      QList <UndoReactionData *> *pReactionData);
-  static void restoreDependentObjects(CModel* pModel,
-                                      QList <UndoEventData *> *pEventData);
-  static void restoreDependentObjects(CModel* pModel,
-                                      QList <UndoSpeciesData *> *pSpeciesData);
-  static void restoreDependentObjects(CModel* pModel,
-                                      QList <UndoCompartmentData *> *pCompartmentData);
 
 protected:
   UndoDependentData *mpData;

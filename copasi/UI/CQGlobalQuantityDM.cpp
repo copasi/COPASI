@@ -486,7 +486,7 @@ void CQGlobalQuantityDM::addGlobalQuantityRow(UndoGlobalQuantityData *pGlobalQua
   switchToWidget(CCopasiUndoCommand::GLOBALQUANTITYIES);
 
   beginInsertRows(QModelIndex(), 1, 1);
-  CModelValue *pGlobalQuantity = pGlobalQuantityData->createQuantityFromData(pModel);
+  CModelValue *pGlobalQuantity = pGlobalQuantityData->restoreObjectIn(pModel);
 
   if (pGlobalQuantity != NULL)
     emit notifyGUI(ListViews::MODELVALUE, ListViews::ADD, pGlobalQuantity->getKey());
@@ -556,7 +556,7 @@ bool CQGlobalQuantityDM::insertGlobalQuantityRows(QList <UndoGlobalQuantityData 
         continue;
 
       beginInsertRows(QModelIndex(), 1, 1);
-      CModelValue *pGlobalQuantity = data->createQuantityFromData(pModel);
+      CModelValue *pGlobalQuantity = data->restoreObjectIn(pModel);
 
       if (pGlobalQuantity != NULL)
         emit notifyGUI(ListViews::MODELVALUE, ListViews::ADD, pGlobalQuantity->getKey());

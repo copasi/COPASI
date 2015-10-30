@@ -927,7 +927,7 @@ void CQSpeciesDetail::addSpecies(UndoSpeciesData *pSData)
   GET_MODEL_OR_RETURN(pModel);
 
   //reinsert the species
-  CMetab *pSpecies =  pSData->createMetabFromData(pModel);
+  CMetab *pSpecies =  pSData->restoreObjectIn(pModel);
 
   if (pSpecies == NULL)
     return;

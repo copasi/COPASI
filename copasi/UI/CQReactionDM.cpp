@@ -619,7 +619,7 @@ bool CQReactionDM::insertReactionRows(QList <UndoReactionData *>& pData)
   for (j = pData.begin(); j != pData.end(); ++j)
     {
       UndoReactionData * data = *j;
-      CReaction *pRea = data->createReactionFromData(pModel);
+      CReaction *pRea = data->restoreObjectIn(pModel);
 
       if (pRea == NULL)
         continue;

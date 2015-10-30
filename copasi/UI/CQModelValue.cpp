@@ -631,7 +631,7 @@ void CQModelValue::addGlobalQuantity(UndoGlobalQuantityData *pData)
 {
   GET_MODEL_OR_RETURN(pModel);
 
-  CModelValue *pGlobalQuantity =  pData->createQuantityFromData(pModel);
+  CModelValue *pGlobalQuantity =  pData->restoreObjectIn(pModel);
 
   if (pGlobalQuantity == NULL)
     return;

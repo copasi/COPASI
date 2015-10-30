@@ -848,7 +848,7 @@ void CQEventWidget1::addEvent(UndoEventData *pData)
 {
   GET_MODEL_OR_RETURN(pModel);
 
-  CEvent* pEvent = pData->createEventFromData(pModel);
+  CEvent* pEvent = pData->restoreObjectIn(pModel);
 
   if (pEvent == NULL)
     return;

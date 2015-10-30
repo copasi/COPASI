@@ -24,6 +24,9 @@
 #include "UndoGlobalQuantityData.h"
 
 #include <copasi/undoFramework/CCopasiUndoCommand.h>
+#include <copasi/undoFramework/UndoDependentData.h>
+
+#include <copasi/report/CCopasiRootContainer.h>
 
 UndoGlobalQuantityData::UndoGlobalQuantityData(const std::string &key  /*= ""*/,
     const std::string &name /*= ""*/,
@@ -33,51 +36,66 @@ UndoGlobalQuantityData::UndoGlobalQuantityData(const std::string &key  /*= ""*/,
   , mStatus(CModelEntity::FIXED)
   , mExpression()
   , mInitialExpression()
-  , mSpecieDependencyObjects(new QList<UndoSpeciesData*>())
-  , mReactionDependencyObjects(new QList<UndoReactionData*>())
-  , mEventDependencyObjects(new QList<UndoEventData*>())
 {
 }
 
-UndoGlobalQuantityData::UndoGlobalQuantityData(const CModelValue* pModelValue)
+UndoGlobalQuantityData::UndoGlobalQuantityData(const CModelValue* pModelValue
+    , bool trackDependencies /*= true*/)
   : UndoData(pModelValue->getKey(), pModelValue->getObjectName())
   , mInitialValue(pModelValue->getInitialValue())
   , mStatus(pModelValue->getStatus())
   , mExpression(pModelValue->getExpression())
   , mInitialExpression(pModelValue->getInitialExpression())
-  , mSpecieDependencyObjects(new QList<UndoSpeciesData*>())
-  , mReactionDependencyObjects(new QList<UndoReactionData*>())
-  , mEventDependencyObjects(new QList<UndoEventData*>())
 {
-  CCopasiUndoCommand::setDependentObjects(
-    pModelValue->getDeletedObjects(),
-    mReactionDependencyObjects,
-    mSpecieDependencyObjects,
-    NULL,
-    mEventDependencyObjects);
+  if (trackDependencies)
+    mpData->initializeFrom(pModelValue);
 }
 
 UndoGlobalQuantityData::~UndoGlobalQuantityData()
 {
-  pdelete(mSpecieDependencyObjects);
-  pdelete(mReactionDependencyObjects);
-  pdelete(mEventDependencyObjects);
 }
 
-CModelValue*
-UndoGlobalQuantityData::createQuantityFromData(CModel* pModel)
+CModelValue *
+UndoGlobalQuantityData::createObjectIn(CModel *pModel)
 {
   if (pModel == NULL) return NULL;
 
   if (pModel->getModelValues().getIndex(getName()) != C_INVALID_INDEX)
     return NULL;
 
+  createDependentObjects(pModel);
 
   CModelValue *pGlobalQuantity =  pModel->createModelValue(getName());
 
   if (pGlobalQuantity == NULL)
     return NULL;
 
+  mKey = pGlobalQuantity->getKey();
+
+  return pGlobalQuantity;
+}
+
+CModelValue *
+UndoGlobalQuantityData::restoreObjectIn(CModel *pModel)
+{
+  CModelValue *pGlobalQuantity =  createObjectIn(pModel);
+
+  if (pGlobalQuantity == NULL)
+    return NULL;
+
+  fillObject(pModel);
+  fillDependentObjects(pModel);
+
+  return pGlobalQuantity;
+}
+
+void
+UndoGlobalQuantityData::fillObject(CModel *)
+{
+  CModelValue * pGlobalQuantity =
+    dynamic_cast<CModelValue*>(CCopasiRootContainer::getKeyFactory()->get(mKey));
+
+  if (pGlobalQuantity == NULL) return;
 
   pGlobalQuantity->setStatus(getStatus());
 
@@ -99,7 +117,6 @@ UndoGlobalQuantityData::createQuantityFromData(CModel* pModel)
       pGlobalQuantity->getInitialExpressionPtr()->compile();
     }
 
-  return pGlobalQuantity;
 }
 
 double
@@ -125,12 +142,6 @@ void UndoGlobalQuantityData::setStatus(CModelEntity::Status status)
   mStatus = status;
 }
 
-QList<UndoReactionData*> *
-UndoGlobalQuantityData::getReactionDependencyObjects() const
-{
-  return mReactionDependencyObjects;
-}
-
 const std::string &
 UndoGlobalQuantityData::getExpression() const
 {
@@ -153,26 +164,4 @@ void
 UndoGlobalQuantityData::setInitialExpression(const std::string &initialExpression)
 {
   mInitialExpression = initialExpression;
-}
-
-void
-UndoGlobalQuantityData::restoreDependentObjects(CModel *pModel)
-{
-  if (pModel == NULL)
-    return;
-
-  UndoData::restoreDependentObjects(pModel, getSpecieDependencyObjects());
-  UndoData::restoreDependentObjects(pModel, getReactionDependencyObjects());
-  UndoData::restoreDependentObjects(pModel, getEventDependencyObjects());
-}
-
-QList<UndoEventData*> *
-UndoGlobalQuantityData::getEventDependencyObjects() const
-{
-  return mEventDependencyObjects;
-}
-
-QList<UndoSpeciesData*> *UndoGlobalQuantityData::getSpecieDependencyObjects() const
-{
-  return mSpecieDependencyObjects;
 }

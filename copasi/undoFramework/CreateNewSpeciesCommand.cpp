@@ -19,7 +19,7 @@
 
 CreateNewSpeciesCommand::CreateNewSpeciesCommand(CQSpeciesDetail *pSpeciesDetail)
   : CCopasiUndoCommand("Species", SPECIES_CREATE)
-  , mpSpeciesData(new UndoSpeciesData())
+  , mpSpeciesData(NULL)
   , mpSpeciesDetail(pSpeciesDetail)
 {
   this->setText(createNewSpeciesText());
@@ -27,19 +27,22 @@ CreateNewSpeciesCommand::CreateNewSpeciesCommand(CQSpeciesDetail *pSpeciesDetail
 
 void CreateNewSpeciesCommand::redo()
 {
+  if (mpSpeciesData == NULL)
+    {
+      // TODO: should only happen once
+      mpSpeciesDetail->createNewSpecies();
+      std::string sName = mpSpeciesDetail->mpMetab->getObjectName();
+      mpSpeciesData = new UndoSpeciesData(mpSpeciesDetail->mpMetab);
+      setName(sName);
+    }
+  else
+    {
+      mpSpeciesDetail->addSpecies(mpSpeciesData);
+    }
 
-  // TODO: should only happen once
-  mpSpeciesDetail->createNewSpecies();
-
-  std::string sName = mpSpeciesDetail->mpMetab->getObjectName();
-  mpSpeciesData->setName(sName);
-  mpSpeciesData->setKey(mpSpeciesDetail->mpMetab->getKey());
-  mpSpeciesData->setIConc(mpSpeciesDetail->mpMetab->getInitialConcentration());
-  mpSpeciesData->setCompartment(mpSpeciesDetail->mpMetab->getCompartment()->getObjectName());
-  mpSpeciesData->setStatus(mpSpeciesDetail->mpMetab->getStatus());
   setUndoState(true);
   setAction("Create");
-  setName(sName);
+
 }
 
 void CreateNewSpeciesCommand::undo()

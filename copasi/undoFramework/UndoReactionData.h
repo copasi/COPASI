@@ -16,10 +16,11 @@
 #include "qtUtilities.h"
 #include "UndoData.h"
 
+#include <copasi/model/CReaction.h>
+
 class CReactionInterface;
 class UndoSpeciesData;
 
-class CReaction;
 
 class UndoReactionData: public UndoData
 {
@@ -28,24 +29,20 @@ public:
                    const std::string &name = "",
                    const std::string &type = "");
 
-  UndoReactionData(const CReaction* pReaction);
+  UndoReactionData(const CReaction* pReaction, bool trackDependencies = true);
 
 
   virtual ~UndoReactionData();
 
-  CReaction* createReactionFromData(CModel* pModel);
+  virtual CReaction* createObjectIn(CModel* pModel);
 
-  /**
-   * when overidden in subclasses this function
-   * will restore dependent objects.
-   */
-  virtual void restoreDependentObjects(CModel* pModel);
+  virtual CReaction* restoreObjectIn(CModel* pModel);
 
+  virtual void fillObject(CModel* pModel);
 
   CReactionInterface *getRi() const;
   void setRi(CReactionInterface *mpRi);
 
-  QList<UndoSpeciesData*> *getSpeciesDependencyObjects() const;
 
 private:
   /**
@@ -53,10 +50,6 @@ private:
    */
   CReactionInterface* mpRi;
 
-  /**
-   * Pointer to species dependency objects
-   */
-  QList<UndoSpeciesData*> *mSpeciesDependencyObjects;
 };
 
 #endif /* UNDOREACTIONDATA_H_ */
