@@ -27,7 +27,7 @@ ParameterOverviewDataChangeCommand::ParameterOverviewDataChangeCommand(const QMo
   , mPathIndex(pathFromIndex(index))
   , mFirstTime(true)
 {
-  this->setText(parameterOverviewDataChangeText());
+  setText(QObject::tr(": Changed parameter overview data"));
 }
 
 void ParameterOverviewDataChangeCommand::redo()
@@ -47,11 +47,6 @@ void ParameterOverviewDataChangeCommand::undo()
 {
   QModelIndex indx = pathToIndex(mPathIndex, mpParameterOverviewDM);
   mpParameterOverviewDM->parameterOverviewDataChange(indx, mOld, mRole);
-}
-
-QString ParameterOverviewDataChangeCommand::parameterOverviewDataChangeText() const
-{
-  return QObject::tr(": Changed parameter overview data");
 }
 
 ParameterOverviewDataChangeCommand::~ParameterOverviewDataChangeCommand()

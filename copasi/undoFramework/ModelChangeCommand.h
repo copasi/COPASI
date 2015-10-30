@@ -19,6 +19,7 @@ public:
                      const QVariant& oldValue,
                      const QVariant& newValue,
                      CQModelWidget* pWidget);
+  ~ModelChangeCommand();
 
   virtual void undo();
   virtual void redo();

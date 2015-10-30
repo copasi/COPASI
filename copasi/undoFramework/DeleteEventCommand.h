@@ -22,11 +22,10 @@ class DeleteEventCommand: public CCopasiUndoCommand
 {
 public:
   DeleteEventCommand(CQEventWidget1 *pEventWidget1);
+  virtual ~DeleteEventCommand();
+
   void redo();
   void undo();
-  QString deleteEventText(const std::string &name) const;
-  UndoData *getUndoData() const;
-  virtual ~DeleteEventCommand();
 
 private:
   bool mFirstTime;

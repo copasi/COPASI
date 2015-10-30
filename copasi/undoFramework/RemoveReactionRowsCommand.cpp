@@ -44,7 +44,7 @@ RemoveReactionRowsCommand::RemoveReactionRowsCommand(
 
     }
 
-  setText(removeReactionRowsText());
+  setText(QObject::tr(": Removed Reaction Rows"));
 }
 
 void RemoveReactionRowsCommand::redo()
@@ -68,11 +68,6 @@ void RemoveReactionRowsCommand::undo()
   mpReactionDM->insertReactionRows(mpReaData);
   setUndoState(false);
   setAction("Undelete set");
-}
-
-QString RemoveReactionRowsCommand::removeReactionRowsText() const
-{
-  return QObject::tr(": Removed Reaction Rows");
 }
 
 RemoveReactionRowsCommand::~RemoveReactionRowsCommand()

@@ -83,6 +83,11 @@ EventChangeCommand::EventChangeCommand(CCopasiUndoCommand::Type type,
     }
 }
 
+EventChangeCommand::~EventChangeCommand()
+{
+
+}
+
 void EventChangeCommand::redo()
 {
   mpWidget->changeValue(mKey, mType, mNew, mNewExpression);

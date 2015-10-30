@@ -22,10 +22,9 @@ class InsertGlobalQuantityRowsCommand: public CCopasiUndoCommand
 public:
   InsertGlobalQuantityRowsCommand(int position, int rows, CQGlobalQuantityDM *pGlobalQuantityDM, const QModelIndex&);
   virtual ~InsertGlobalQuantityRowsCommand();
+
   void redo();
   void undo();
-  QString insertRowsText() const;
-  UndoData *getUndoData() const;
 
 private:
   CQGlobalQuantityDM* mpGlobalQuantityDM;

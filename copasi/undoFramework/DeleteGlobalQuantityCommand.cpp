@@ -29,7 +29,7 @@ DeleteGlobalQuantityCommand::DeleteGlobalQuantityCommand(CQModelValue *pModelVal
 {
 
   const std::string& sName = mpModelValue->mpModelValue->getObjectName();
-  this->setText(deleteGlobalQuantityText(sName));
+  setText(QString(": Deleted global quantity %1").arg(sName.c_str()));
   setName(sName);
 }
 
@@ -54,19 +54,6 @@ void DeleteGlobalQuantityCommand::undo()
   mpModelValue->addGlobalQuantity(mpGlobalQuantityData);
   setUndoState(false);
   setAction("Undelete");
-}
-
-QString DeleteGlobalQuantityCommand::deleteGlobalQuantityText(const std::string &name) const
-{
-//  std::string myEntityName(": Delete Global Quantity " + name);
-//  char* entityName = (char*)myEntityName.c_str();
-//  return QObject::tr(entityName);
-  return QString(": Deleted global quantity %1").arg(name.c_str());
-}
-
-UndoData *DeleteGlobalQuantityCommand::getUndoData() const
-{
-  return mpGlobalQuantityData;
 }
 
 DeleteGlobalQuantityCommand::~DeleteGlobalQuantityCommand()

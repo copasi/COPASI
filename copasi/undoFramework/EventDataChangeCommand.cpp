@@ -28,9 +28,6 @@ EventDataChangeCommand::EventDataChangeCommand(QModelIndex index, const QVariant
   , mRole(role)
   , mPathIndex()
 {
-  // stores the data
-  //mPathIndex = pathFromIndex(index);
-
   //set the data for UNDO history
   GET_MODEL_OR_RETURN(pModel);
 
@@ -56,7 +53,7 @@ EventDataChangeCommand::EventDataChangeCommand(QModelIndex index, const QVariant
         break;
     }
 
-  this->setText(eventDataChangeText());
+  this->setText(QString(": Changed event %1").arg(getProperty().c_str()));
 }
 
 void EventDataChangeCommand::redo()
@@ -68,11 +65,6 @@ void EventDataChangeCommand::undo()
 {
   mpEventDM->eventDataChange(mIndex, mOld, mRole);
   setAction("Undone change");
-}
-
-QString EventDataChangeCommand::eventDataChangeText() const
-{
-  return QString(": Changed event %1").arg(getProperty().c_str());
 }
 
 EventDataChangeCommand::~EventDataChangeCommand()

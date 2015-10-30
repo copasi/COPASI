@@ -42,7 +42,7 @@ RemoveEventRowsCommand::RemoveEventRowsCommand(
         }
     }
 
-  this->setText(removeEventRowsText());
+  setText(QObject::tr(": Removed Event"));
 }
 
 void RemoveEventRowsCommand::redo()
@@ -66,11 +66,6 @@ void RemoveEventRowsCommand::undo()
   mpEventDM->insertEventRows(mpEventData);
   setUndoState(false);
   setAction("Undelete set");
-}
-
-QString RemoveEventRowsCommand::removeEventRowsText() const
-{
-  return QObject::tr(": Removed Event");
 }
 
 RemoveEventRowsCommand::~RemoveEventRowsCommand()

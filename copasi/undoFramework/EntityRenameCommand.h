@@ -18,6 +18,7 @@ public:
                       const std::string& oldName,
                       const std::string& newName,
                       CQTabWidget* pTabWidget);
+  virtual ~EntityRenameCommand();
 
   virtual void undo();
   virtual void redo();

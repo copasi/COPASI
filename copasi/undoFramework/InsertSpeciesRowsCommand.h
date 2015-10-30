@@ -23,10 +23,9 @@ class InsertSpecieRowsCommand: public CCopasiUndoCommand
 public:
   InsertSpecieRowsCommand(int position, int rows, CQSpecieDM *pSpecieDM, const QModelIndex&);
   virtual ~InsertSpecieRowsCommand();
+
   void redo();
   void undo();
-  QString insertRowsText() const;
-  UndoData *getUndoData() const;
 
 private:
   CQSpecieDM* mpSpecieDM;

@@ -25,11 +25,10 @@ class RemoveSpecieRowsCommand: public CCopasiUndoCommand
 {
 public:
   RemoveSpecieRowsCommand(QModelIndexList rows, CQSpecieDM * pSpecieDM, const QModelIndex&);
+  virtual ~RemoveSpecieRowsCommand();
+
   void redo();
   void undo();
-
-  QString removeSpecieRowsText() const;
-  virtual ~RemoveSpecieRowsCommand();
 
 private:
   CQSpecieDM *mpSpecieDM;

@@ -61,6 +61,11 @@ EntityRenameCommand::EntityRenameCommand(CCopasiObject *pObject,
     }
 }
 
+EntityRenameCommand::~EntityRenameCommand()
+{
+
+}
+
 void EntityRenameCommand::redo()
 {
   mpTabWidget->renameEntity(mKey, mNewValue);

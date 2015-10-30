@@ -23,14 +23,10 @@ public:
                                const QVariant& value,
                                int role,
                                CQCompartmentDM *pCompartmentDM);
+  virtual ~CompartmentDataChangeCommand();
 
   void redo();
-
   void undo();
-
-  QString compartmentDataChangeText() const;
-
-  virtual ~CompartmentDataChangeCommand();
 
 private:
   QVariant mNew, mOld;

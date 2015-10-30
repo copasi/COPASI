@@ -29,7 +29,7 @@ SpeciesInitialValueLostFocusCommand::SpeciesInitialValueLostFocusCommand(
 {
 
   std::string sName = mpSpecieDetail->mpMetab->getObjectName();
-  this->setText(specieInitialValueLostFocusText(sName));
+  setText(QString(": Species Initial Value Change for %1").arg(FROM_UTF8(sName)));
   setName(mpSpeciesData->getName());
 
   std::ostringstream strs;
@@ -58,11 +58,6 @@ void SpeciesInitialValueLostFocusCommand::undo()
 {
   mpSpecieDetail->speciesInitialValueLostFocus(mpSpeciesData);
   setAction("Undone change");
-}
-
-QString SpeciesInitialValueLostFocusCommand::specieInitialValueLostFocusText(std::string &name) const
-{
-  return QString(": Species Initial Value Change for %1").arg(FROM_UTF8(name));
 }
 
 SpeciesInitialValueLostFocusCommand::~SpeciesInitialValueLostFocusCommand()

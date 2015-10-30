@@ -25,10 +25,9 @@ class InsertReactionRowsCommand: public CCopasiUndoCommand
 public:
   InsertReactionRowsCommand(int position, int rows, CQReactionDM *pReactionDM, const QModelIndex&);
   virtual ~InsertReactionRowsCommand();
+
   void redo();
   void undo();
-  QString insertRowsText() const;
-  UndoData *getUndoData() const;
 
 private:
   CQReactionDM* mpReactionDM;

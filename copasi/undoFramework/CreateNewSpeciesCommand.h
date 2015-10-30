@@ -22,12 +22,10 @@ class CreateNewSpeciesCommand: public CCopasiUndoCommand
 {
 public:
   CreateNewSpeciesCommand(CQSpeciesDetail *pSpeciesDetail);
+  virtual ~CreateNewSpeciesCommand();
+
   void redo();
   void undo();
-  QString createNewSpeciesText() const;
-  UndoData *getUndoData() const;
-
-  virtual ~CreateNewSpeciesCommand();
 
 private:
   UndoSpeciesData *mpSpeciesData;

@@ -56,6 +56,11 @@ GlobalQuantityChangeCommand::GlobalQuantityChangeCommand(CCopasiUndoCommand::Typ
     }
 }
 
+GlobalQuantityChangeCommand::~GlobalQuantityChangeCommand()
+{
+
+}
+
 void GlobalQuantityChangeCommand::redo()
 {
   mpWidget->changeValue(mKey, mType, mNew, mIValue);

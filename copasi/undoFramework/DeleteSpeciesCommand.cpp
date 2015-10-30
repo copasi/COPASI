@@ -32,7 +32,7 @@ DeleteSpeciesCommand::DeleteSpeciesCommand(CQSpeciesDetail *pSpecieDetail)
 {
   const std::string& sName = mpSpecieDetail->mpMetab->getObjectName();
   setName(sName);
-  setText(deleteSpecieText(sName));
+  setText(QString(": Deleted species %1").arg(sName.c_str()));
 }
 
 void DeleteSpeciesCommand::redo()
@@ -56,19 +56,6 @@ void DeleteSpeciesCommand::undo()
   mpSpecieDetail->addSpecies(mpSpeciesData);
   setUndoState(false);
   setAction("Undelete");
-}
-
-QString DeleteSpeciesCommand::deleteSpecieText(const std::string &name) const
-{
-//  std::string myEntityName(": Delete Species " + name);
-//  char* entityName = (char*)myEntityName.c_str();
-//  return QObject::tr(entityName);
-  return QString(": Deleted species %1").arg(name.c_str());
-}
-
-UndoData *DeleteSpeciesCommand::getUndoData() const
-{
-  return mpSpeciesData;
 }
 
 DeleteSpeciesCommand::~DeleteSpeciesCommand()

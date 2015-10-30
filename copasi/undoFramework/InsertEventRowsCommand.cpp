@@ -29,7 +29,7 @@ InsertEventRowsCommand::InsertEventRowsCommand(int position, int rows, CQEventDM
   , mpEventData(new UndoEventData())
   , firstTime(true)
 {
-  this->setText(insertRowsText());
+  this->setText(QObject::tr(": Inserted new event"));
 }
 
 void InsertEventRowsCommand::redo()
@@ -74,16 +74,6 @@ void InsertEventRowsCommand::undo()
   mpEventDM->deleteEventRow(mpEventData);
   setUndoState(false);
   setAction("Remove from list");
-}
-
-QString InsertEventRowsCommand::insertRowsText() const
-{
-  return QObject::tr(": Inserted new event");
-}
-
-UndoData *InsertEventRowsCommand::getUndoData() const
-{
-  return mpEventData;
 }
 
 InsertEventRowsCommand::~InsertEventRowsCommand()

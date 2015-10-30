@@ -22,11 +22,10 @@ class SpeciesTypeChangeCommand: public CCopasiUndoCommand
 {
 public:
   SpeciesTypeChangeCommand(int type, int currentType, CQSpeciesDetail *pSpecieDetail);
+  virtual ~SpeciesTypeChangeCommand();
+
   void redo();
   void undo();
-  QString specieTypeChangeText(const std::string &name) const;
-
-  virtual ~SpeciesTypeChangeCommand();
 
 private:
   int mNewType, mOldType;

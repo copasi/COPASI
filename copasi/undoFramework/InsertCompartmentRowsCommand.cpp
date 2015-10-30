@@ -36,7 +36,7 @@ InsertCompartmentRowsCommand::InsertCompartmentRowsCommand(
   , mpCompartmentData(new UndoCompartmentData())
   , firstTime(true)
 {
-  this->setText(insertRowsText());
+  setText(QObject::tr(": Inserted new compartment"));
 }
 
 void InsertCompartmentRowsCommand::redo()
@@ -76,16 +76,6 @@ void InsertCompartmentRowsCommand::undo()
       // handle the case that the compartment does not
       // exist that is to be removed
     }
-}
-
-QString InsertCompartmentRowsCommand::insertRowsText() const
-{
-  return QObject::tr(": Inserted new compartment");
-}
-
-UndoData *InsertCompartmentRowsCommand::getUndoData() const
-{
-  return mpCompartmentData;
 }
 
 InsertCompartmentRowsCommand::~InsertCompartmentRowsCommand()

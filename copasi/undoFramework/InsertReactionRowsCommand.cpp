@@ -33,7 +33,7 @@ InsertReactionRowsCommand::InsertReactionRowsCommand(int position, int rows, CQR
   , mpReactionData(new UndoReactionData())
 
 {
-  this->setText(insertRowsText());
+  setText(QObject::tr(": Inserted new reaction"));
 }
 
 InsertReactionRowsCommand::~InsertReactionRowsCommand()
@@ -69,12 +69,3 @@ void InsertReactionRowsCommand::undo()
   setAction("Remove from list");
 }
 
-QString InsertReactionRowsCommand::insertRowsText() const
-{
-  return QObject::tr(": Inserted new reaction");
-}
-
-UndoData *InsertReactionRowsCommand::getUndoData() const
-{
-  return mpReactionData;
-}

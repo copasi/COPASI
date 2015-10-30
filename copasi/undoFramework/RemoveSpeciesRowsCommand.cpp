@@ -45,7 +45,7 @@ RemoveSpecieRowsCommand::RemoveSpecieRowsCommand(
 
     }
 
-  this->setText(removeSpecieRowsText());
+  setText(QObject::tr(": Removed Species"));
 }
 
 void RemoveSpecieRowsCommand::redo()
@@ -69,11 +69,6 @@ void RemoveSpecieRowsCommand::undo()
   mpSpecieDM->insertSpecieRows(mpSpeciesData);
   setUndoState(false);
   setAction("Undelete set");
-}
-
-QString RemoveSpecieRowsCommand::removeSpecieRowsText() const
-{
-  return QObject::tr(": Removed Species");
 }
 
 RemoveSpecieRowsCommand::~RemoveSpecieRowsCommand()

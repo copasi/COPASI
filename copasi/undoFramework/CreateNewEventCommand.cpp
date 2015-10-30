@@ -20,8 +20,9 @@ CreateNewEventCommand::CreateNewEventCommand(CQEventWidget1 *pEventWidget)
   , mpEventData(NULL)
   , mpEventWidget(pEventWidget)
 {
-  this->setText(createNewEventText());
+  this->setText(QObject::tr(": Created new event "));
 }
+
 void CreateNewEventCommand::redo()
 {
   if (mpEventData == NULL)
@@ -52,17 +53,8 @@ void CreateNewEventCommand::undo()
   setAction("Delete");
 }
 
-QString CreateNewEventCommand::createNewEventText() const
-{
-  return QObject::tr(": Created new event ");
-}
-
 CreateNewEventCommand::~CreateNewEventCommand()
 {
   pdelete(mpEventData);
 }
 
-UndoData *CreateNewEventCommand::getUndoData() const
-{
-  return mpEventData;
-}

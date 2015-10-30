@@ -914,15 +914,6 @@ bool CQSpecieDM::insertSpecieRows(QList <UndoSpeciesData *>& pData)
     }
 
 
-  //restore the reactions
-  QList <UndoSpeciesData *>::const_iterator k;
-
-  for (k = pData.begin(); k != pData.end(); ++k)
-    {
-      UndoSpeciesData * data = *k;
-      data->restoreDependentObjects(pModel);
-    }
-
   switchToWidget(CCopasiUndoCommand::SPECIES);
 
   return true;

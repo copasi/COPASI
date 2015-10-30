@@ -27,8 +27,8 @@ DeleteCompartmentCommand::DeleteCompartmentCommand(CQCompartment *pCompartment)
   , mpCompartmentData(new UndoCompartmentData(mpCompartment->mpCompartment))
   , mpCompartment(pCompartment)
 {
-  setText(deleteCompartmentText(mpCompartmentData->getName()));
   setName(mpCompartmentData->getName());
+  setText(QString(": Deleted compartment %1").arg(mpCompartmentData->getName().c_str()));
 }
 
 void DeleteCompartmentCommand::redo()
@@ -52,16 +52,6 @@ void DeleteCompartmentCommand::undo()
   mpCompartment->addCompartment(mpCompartmentData);
   setUndoState(false);
   setAction("Undelete");
-}
-
-QString DeleteCompartmentCommand::deleteCompartmentText(const std::string &name) const
-{
-  return QString(": Deleted compartment %1").arg(name.c_str());
-}
-
-UndoData *DeleteCompartmentCommand::getUndoData() const
-{
-  return mpCompartmentData;
 }
 
 DeleteCompartmentCommand::~DeleteCompartmentCommand()

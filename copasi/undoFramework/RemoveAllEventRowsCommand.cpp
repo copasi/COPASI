@@ -36,7 +36,7 @@ RemoveAllEventRowsCommand::RemoveAllEventRowsCommand(
         }
     }
 
-  setText(removeAllEventRowsText());
+  setText(QObject::tr(": Removed All Events"));
 }
 
 void RemoveAllEventRowsCommand::redo()
@@ -51,11 +51,6 @@ void RemoveAllEventRowsCommand::undo()
   mpEventDM->insertEventRows(mpEventData);
   setUndoState(false);
   setAction("Undelete all");
-}
-
-QString RemoveAllEventRowsCommand::removeAllEventRowsText() const
-{
-  return QObject::tr(": Removed All Events");
 }
 
 RemoveAllEventRowsCommand::~RemoveAllEventRowsCommand()

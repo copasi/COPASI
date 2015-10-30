@@ -92,7 +92,7 @@ SpecieDataChangeCommand::SpecieDataChangeCommand(
         break;
     }
 
-  setText(specieDataChangeText());
+  setText(QString(": Changed species %1").arg(getProperty().c_str()));
 }
 
 SpecieDataChangeCommand::~SpecieDataChangeCommand()
@@ -110,9 +110,4 @@ void SpecieDataChangeCommand::undo()
   mIndex = pathToIndex(mPathIndex, mpSpecieDM);
   mpSpecieDM->specieDataChange(mIndex, mOld, mRole);
   setAction("Undone change");
-}
-
-QString SpecieDataChangeCommand::specieDataChangeText() const
-{
-  return QString(": Changed species %1").arg(getProperty().c_str());
 }

@@ -27,12 +27,10 @@ public:
   void redo();
   void undo();
 
-  QString removeAllCompartmentRowsText() const;
-
-
 private:
   CQCompartmentDM *mpCompartmentDM;
   QList <UndoCompartmentData *> mpCompartmentData;
+
 };
 
 #endif /* REMOVEALLCOMPARTMENTROWSCOMMAND_H_ */

@@ -67,6 +67,11 @@ ModelChangeCommand::ModelChangeCommand(CCopasiUndoCommand::Type type,
     }
 }
 
+ModelChangeCommand::~ModelChangeCommand()
+{
+
+}
+
 void ModelChangeCommand::redo()
 {
   mpWidget->changeValue(mType, mNew);

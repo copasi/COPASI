@@ -25,7 +25,7 @@ CreateNewReactionCommand::CreateNewReactionCommand(ReactionsWidget1 *pReactionWi
   , mpReaction(NULL)
   , mpReactionData(NULL)
 {
-  this->setText(createNewReactionText());
+  this->setText(QObject::tr(": Created new reaction "));
 }
 
 void CreateNewReactionCommand::redo()
@@ -54,16 +54,6 @@ void CreateNewReactionCommand::undo()
   mpReactionWidget->deleteReaction(mpReaction);
   setUndoState(false);
   setAction("Delete");
-}
-
-QString CreateNewReactionCommand::createNewReactionText() const
-{
-  return QObject::tr(": Created new reaction ");
-}
-
-UndoData *CreateNewReactionCommand::getUndoData() const
-{
-  return mpReactionData;
 }
 
 CreateNewReactionCommand::~CreateNewReactionCommand()

@@ -41,7 +41,7 @@ RemoveAllGlobalQuantityRowsCommand::RemoveAllGlobalQuantityRowsCommand(
         }
     }
 
-  setText(removeAllGlobalQuantityRowsText());
+  setText(QObject::tr(": Removed All Global Quantities"));
 }
 
 void RemoveAllGlobalQuantityRowsCommand::redo()
@@ -56,11 +56,6 @@ void RemoveAllGlobalQuantityRowsCommand::undo()
   mpGlobalQuantityDM->insertGlobalQuantityRows(mpGlobalQuantityData);
   setUndoState(false);
   setAction("Undelete all");
-}
-
-QString RemoveAllGlobalQuantityRowsCommand::removeAllGlobalQuantityRowsText() const
-{
-  return QObject::tr(": Removed All Global Quantities");
 }
 
 RemoveAllGlobalQuantityRowsCommand::~RemoveAllGlobalQuantityRowsCommand()

@@ -22,11 +22,10 @@ class SpeciesInitialValueLostFocusCommand: public CCopasiUndoCommand
 {
 public:
   SpeciesInitialValueLostFocusCommand(CQSpeciesDetail *pSpecieDetail);
+  virtual ~SpeciesInitialValueLostFocusCommand();
+
   void redo();
   void undo();
-  QString specieInitialValueLostFocusText(std::string &name) const;
-
-  virtual ~SpeciesInitialValueLostFocusCommand();
 
 private:
   CQSpeciesDetail* mpSpecieDetail;

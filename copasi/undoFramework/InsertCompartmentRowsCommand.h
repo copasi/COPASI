@@ -16,18 +16,19 @@
 #include "CCopasiUndoCommand.h"
 
 class UndoCompartmentData;
+class CQCompartmentDM;
 
 class InsertCompartmentRowsCommand: public CCopasiUndoCommand
 {
 public:
-  InsertCompartmentRowsCommand(int position, int rows, CQCompartmentDM *pCompartmentDM, const QModelIndex&);
+  InsertCompartmentRowsCommand(int position,
+                               int rows,
+                               CQCompartmentDM *pCompartmentDM,
+                               const QModelIndex&);
+  virtual ~InsertCompartmentRowsCommand();
 
   void redo();
   void undo();
-  QString insertRowsText() const;
-  UndoData *getUndoData() const;
-
-  virtual ~InsertCompartmentRowsCommand();
 
 private:
   CQCompartmentDM* mpCompartmentDM;

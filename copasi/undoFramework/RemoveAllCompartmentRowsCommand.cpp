@@ -42,7 +42,7 @@ RemoveAllCompartmentRowsCommand::RemoveAllCompartmentRowsCommand(CQCompartmentDM
         }
     }
 
-  this->setText(removeAllCompartmentRowsText());
+  setText(QObject::tr(": Removed all compartments"));
 }
 
 void RemoveAllCompartmentRowsCommand::redo()
@@ -57,11 +57,6 @@ void RemoveAllCompartmentRowsCommand::undo()
   mpCompartmentDM->insertCompartmentRows(mpCompartmentData);
   setUndoState(false);
   setAction("Undelete all");
-}
-
-QString RemoveAllCompartmentRowsCommand::removeAllCompartmentRowsText() const
-{
-  return QObject::tr(": Removed all compartments");
 }
 
 RemoveAllCompartmentRowsCommand::~RemoveAllCompartmentRowsCommand()

@@ -67,7 +67,7 @@ ReactionDataChangeCommand::ReactionDataChangeCommand(
         break;
     }
 
-  this->setText(reactionDataChangeText());
+  setText(QString(": Changed reaction %1").arg(getProperty().c_str()));
 }
 
 ReactionDataChangeCommand::~ReactionDataChangeCommand()
@@ -78,14 +78,10 @@ void ReactionDataChangeCommand::redo()
 {
   mpReactionDM->reactionDataChange(mIndex, mNew, mRole, mNewFunctionName);
 }
+
 void ReactionDataChangeCommand::undo()
 {
   //mIndex = pathToIndex(mPathIndex, mpReactionDM);
   mpReactionDM->reactionDataChange(mIndex, mOld, mRole, mOldFunctionName);
   setAction("Undone change");
-}
-QString ReactionDataChangeCommand::reactionDataChangeText() const
-{
-  return QString(": Changed reaction %1").arg(getProperty().c_str());
-  // QObject::tr(": Changed Reaction Data");
 }

@@ -25,12 +25,10 @@ class DeleteSpeciesCommand: public CCopasiUndoCommand
 {
 public:
   DeleteSpeciesCommand(CQSpeciesDetail *pSpecieDetail);
+  virtual ~DeleteSpeciesCommand();
+
   void redo();
   void undo();
-  QString deleteSpecieText(const std::string &name) const;
-  UndoData *getUndoData() const;
-
-  virtual ~DeleteSpeciesCommand();
 
 private:
   bool mFirstTime;

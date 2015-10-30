@@ -19,11 +19,10 @@ class RemoveGlobalQuantityRowsCommand: public CCopasiUndoCommand
 {
 public:
   RemoveGlobalQuantityRowsCommand(QModelIndexList rows, CQGlobalQuantityDM * pGlobalQuantityDM, const QModelIndex&);
+  virtual ~RemoveGlobalQuantityRowsCommand();
+
   void redo();
   void undo();
-
-  QString removeGlobalQuantityRowsText() const;
-  virtual ~RemoveGlobalQuantityRowsCommand();
 
 private:
   CQGlobalQuantityDM *mpGlobalQuantityDM;

@@ -22,12 +22,11 @@ class CreateNewEventCommand: public CCopasiUndoCommand
 {
 public:
   CreateNewEventCommand(CQEventWidget1 *pEventsWidget);
-  void redo();
-  void undo();
-  QString createNewEventText() const;
   virtual ~CreateNewEventCommand();
 
-  UndoData *getUndoData() const;
+  void redo();
+  void undo();
+
 
 private:
   UndoEventData *mpEventData;

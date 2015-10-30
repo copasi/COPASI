@@ -39,7 +39,7 @@ RemoveAllReactionRowsCommand::RemoveAllReactionRowsCommand(
       mpReaData.append(data);
     }
 
-  setText(removeAllReactionRowsText());
+  setText(QObject::tr(": Removed All Reaction Rows"));
 }
 
 void RemoveAllReactionRowsCommand::redo()
@@ -54,11 +54,6 @@ void RemoveAllReactionRowsCommand::undo()
   mpReactionDM->insertReactionRows(mpReaData);
   setUndoState(false);
   setAction("Undelete all");
-}
-
-QString RemoveAllReactionRowsCommand::removeAllReactionRowsText() const
-{
-  return QObject::tr(": Removed All Reaction Rows");
 }
 
 RemoveAllReactionRowsCommand::~RemoveAllReactionRowsCommand()

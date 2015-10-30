@@ -23,13 +23,11 @@ public:
                           const QVariant& value,
                           int role,
                           CQSpecieDM *pSpecieDM);
+  virtual ~SpecieDataChangeCommand();
 
   void redo();
   void undo();
 
-  QString specieDataChangeText() const;
-
-  virtual ~SpecieDataChangeCommand();
 
 private:
   QVariant mNew, mOld;

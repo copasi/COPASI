@@ -20,9 +20,9 @@ class EventDataChangeCommand: public CCopasiUndoCommand
 public:
   EventDataChangeCommand(QModelIndex index, const QVariant value, int role, CQEventDM *pEventDM);
   virtual ~EventDataChangeCommand();
+
   void redo();
   void undo();
-  QString eventDataChangeText() const;
 
 private:
   QVariant mNew, mOld;

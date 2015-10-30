@@ -24,10 +24,10 @@ public:
                             const QVariant& value,
                             int role,
                             CQReactionDM *pReactionDM);
+  virtual ~ReactionDataChangeCommand();
+
   void redo();
   void undo();
-  QString reactionDataChangeText() const;
-  virtual ~ReactionDataChangeCommand();
 
 private:
   QVariant mNew, mOld;

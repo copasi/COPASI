@@ -28,7 +28,7 @@ InsertSpecieRowsCommand::InsertSpecieRowsCommand(int position, int rows, CQSpeci
   , mIndex(index)
   , mpSpeciesData(NULL)
 {
-  this->setText(insertRowsText());
+  setText(QObject::tr(": Inserted new species"));
 }
 
 void InsertSpecieRowsCommand::redo()
@@ -56,16 +56,6 @@ void InsertSpecieRowsCommand::undo()
   mpSpecieDM->deleteSpecieRow(mpSpeciesData);
   setUndoState(false);
   setAction("Remove from list");
-}
-
-QString InsertSpecieRowsCommand::insertRowsText() const
-{
-  return QObject::tr(": Inserted new species");
-}
-
-UndoData *InsertSpecieRowsCommand::getUndoData() const
-{
-  return mpSpeciesData;
 }
 
 InsertSpecieRowsCommand::~InsertSpecieRowsCommand()

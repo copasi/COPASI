@@ -35,7 +35,7 @@ SpeciesTypeChangeCommand::SpeciesTypeChangeCommand(
 
   mpSpeciesData->setStatus((CModelEntity::Status)type);
 
-  setText(specieTypeChangeText(getName()));
+  setText(QString(": Species Type Change for %1").arg(FROM_UTF8(mName)));
 }
 
 void
@@ -57,12 +57,6 @@ SpeciesTypeChangeCommand::undo()
 {
   mpSpeciesDetail->speciesTypeChanged(mpSpeciesData, mOldType);
   setAction("Undone change");
-}
-
-QString
-SpeciesTypeChangeCommand::specieTypeChangeText(const std::string &name) const
-{
-  return QString(": Species Type Change for %1").arg(FROM_UTF8(name));
 }
 
 SpeciesTypeChangeCommand::~SpeciesTypeChangeCommand()

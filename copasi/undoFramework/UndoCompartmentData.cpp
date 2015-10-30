@@ -58,12 +58,13 @@ UndoCompartmentData::createObjectIn(CModel *pModel)
 {
   if (pModel == NULL) return NULL;
 
-  createDependentObjects(pModel);
-
   CCompartment *pCompartment = pModel->createCompartment(mName);
 
   if (pCompartment == NULL)
     return NULL;
+
+  createDependentObjects(pModel);
+
 
   mKey = pCompartment->getKey();
 

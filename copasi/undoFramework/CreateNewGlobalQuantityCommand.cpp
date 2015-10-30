@@ -21,7 +21,7 @@ CreateNewGlobalQuantityCommand::CreateNewGlobalQuantityCommand(CQModelValue *pMo
   , mpGlobalQuantityData(NULL)
   , mpModelValue(pModelValue)
 {
-  this->setText(createNewGlobalQuantityText());
+  this->setText(QObject::tr(": Created new global quantity "));
 }
 
 void CreateNewGlobalQuantityCommand::redo()
@@ -51,15 +51,6 @@ void CreateNewGlobalQuantityCommand::undo()
   setAction("Delete");
 }
 
-QString CreateNewGlobalQuantityCommand::createNewGlobalQuantityText() const
-{
-  return QObject::tr(": Created new global quantity ");
-}
-
-UndoData *CreateNewGlobalQuantityCommand::getUndoData() const
-{
-  return mpGlobalQuantityData;
-}
 
 CreateNewGlobalQuantityCommand::~CreateNewGlobalQuantityCommand()
 {

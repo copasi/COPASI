@@ -28,8 +28,6 @@ public:
   void redo();
   void undo();
 
-  QString globalQuantityDataChangeText() const;
-
 private:
   QVariant mNew, mOld;
   QModelIndex mIndex;

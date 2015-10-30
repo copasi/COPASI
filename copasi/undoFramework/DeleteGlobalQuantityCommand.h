@@ -25,13 +25,10 @@ class DeleteGlobalQuantityCommand: public CCopasiUndoCommand
 {
 public:
   DeleteGlobalQuantityCommand(CQModelValue *pModelValue);
+  virtual ~DeleteGlobalQuantityCommand();
+
   void redo();
   void undo();
-  QString deleteGlobalQuantityText(const std::string &name) const;
-
-  UndoData *getUndoData() const;
-
-  virtual ~DeleteGlobalQuantityCommand();
 
 private:
   bool mFirstTime;

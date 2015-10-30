@@ -18,6 +18,7 @@
 #include "CCopasiUndoCommand.h"
 
 class ReactionsWidget1;
+class CReaction;
 
 class ReactionChangeCommand: public CCopasiUndoCommand
 {
@@ -38,7 +39,9 @@ public:
 
   static void removeCreatedObjects(const std::vector<std::string>& createdObjects,
                                    CModel* model, CReaction* reaction);
+
   void setCreatedObjects(const std::vector<std::string>& createdObjects);
+
   const std::vector<std::string>& getCreatedObjects() const;
 
 private:

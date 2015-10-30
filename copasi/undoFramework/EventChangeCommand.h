@@ -25,6 +25,7 @@ public:
                      const std::string& oldExpression = "",
                      const std::string& newExpression = ""
                     );
+  ~EventChangeCommand();
 
   virtual void undo();
   virtual void redo();

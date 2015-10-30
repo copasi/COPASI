@@ -27,17 +27,10 @@ public:
   RemoveCompartmentRowsCommand(
     const QModelIndexList& rows,
     CQCompartmentDM* pCompartmentDM);
-
   virtual ~RemoveCompartmentRowsCommand();
 
   void redo();
   void undo();
-
-  QString removeCompartmentRowsText() const;
-
-  UndoData *getUndoData() const;
-
-
 
 private:
   QModelIndexList mRows;

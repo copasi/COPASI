@@ -53,8 +53,3 @@ CreateNewCompartmentCommand::~CreateNewCompartmentCommand()
   pdelete(mpCompartmentData);
 }
 
-UndoData *CreateNewCompartmentCommand::getUndoData() const
-{
-  return mpCompartmentData;
-}
-

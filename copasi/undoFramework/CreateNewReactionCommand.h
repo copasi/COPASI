@@ -23,11 +23,10 @@ class CreateNewReactionCommand: public CCopasiUndoCommand
 {
 public:
   CreateNewReactionCommand(ReactionsWidget1 *pReactionWidget);
+  virtual ~CreateNewReactionCommand();
+
   void redo();
   void undo();
-  QString createNewReactionText() const;
-  UndoData *getUndoData() const;
-  virtual ~CreateNewReactionCommand();
 
 private:
   ReactionsWidget1* mpReactionWidget;

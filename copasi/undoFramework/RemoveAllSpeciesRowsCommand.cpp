@@ -46,7 +46,7 @@ RemoveAllSpecieRowsCommand::RemoveAllSpecieRowsCommand(
 
     }
 
-  setText(removeAllSpecieRowsText());
+  setText(QObject::tr(": Removed All Species"));
 }
 
 void RemoveAllSpecieRowsCommand::redo()
@@ -61,11 +61,6 @@ void RemoveAllSpecieRowsCommand::undo()
   mpSpecieDM->insertSpecieRows(mpSpeciesData);
   setUndoState(false);
   setAction("Undelete all");
-}
-
-QString RemoveAllSpecieRowsCommand::removeAllSpecieRowsText() const
-{
-  return QObject::tr(": Removed All Species");
 }
 
 RemoveAllSpecieRowsCommand::~RemoveAllSpecieRowsCommand()

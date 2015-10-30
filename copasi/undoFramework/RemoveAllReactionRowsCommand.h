@@ -21,10 +21,10 @@ class RemoveAllReactionRowsCommand: public CCopasiUndoCommand
 {
 public:
   RemoveAllReactionRowsCommand(CQReactionDM * pReaDM, const QModelIndex&);
+  virtual ~RemoveAllReactionRowsCommand();
+
   void redo();
   void undo();
-  QString removeAllReactionRowsText() const;
-  virtual ~RemoveAllReactionRowsCommand();
 
 private:
   CQReactionDM *mpReactionDM;

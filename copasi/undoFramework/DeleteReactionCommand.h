@@ -23,12 +23,10 @@ class DeleteReactionCommand: public CCopasiUndoCommand
 {
 public:
   DeleteReactionCommand(ReactionsWidget1 *pReactionWidget);
+  virtual ~DeleteReactionCommand();
+
   void redo();
   void undo();
-  QString deleteReactionText(std::string &name) const;
-  UndoData *getUndoData() const;
-
-  virtual ~DeleteReactionCommand();
 
 private:
   std::string mReaObjectName;

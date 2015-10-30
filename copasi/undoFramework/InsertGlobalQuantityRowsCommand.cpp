@@ -30,7 +30,7 @@ InsertGlobalQuantityRowsCommand::InsertGlobalQuantityRowsCommand(int position, i
   , mpGlobalQuantityData(new UndoGlobalQuantityData())
   , firstTime(true)
 {
-  this->setText(insertRowsText());
+  setText(QObject::tr(": Inserted new global quantity"));
 }
 
 void InsertGlobalQuantityRowsCommand::redo()
@@ -62,16 +62,6 @@ void InsertGlobalQuantityRowsCommand::undo()
   mpGlobalQuantityDM->deleteGlobalQuantityRow(mpGlobalQuantityData);
   setUndoState(false);
   setAction("Remove from list");
-}
-
-QString InsertGlobalQuantityRowsCommand::insertRowsText() const
-{
-  return QObject::tr(": Inserted new global quantity");
-}
-
-UndoData *InsertGlobalQuantityRowsCommand::getUndoData() const
-{
-  return mpGlobalQuantityData;
 }
 
 InsertGlobalQuantityRowsCommand::~InsertGlobalQuantityRowsCommand()

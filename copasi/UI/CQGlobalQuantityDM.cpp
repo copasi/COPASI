@@ -565,14 +565,6 @@ bool CQGlobalQuantityDM::insertGlobalQuantityRows(QList <UndoGlobalQuantityData 
 
     }
 
-  //restore dependent objects
-  QList <UndoGlobalQuantityData *>::const_iterator k;
-
-  for (k = pData.begin(); k != pData.end(); ++k)
-    {
-      UndoGlobalQuantityData * data = *k;
-      data->restoreDependentObjects(pModel);
-    }
 
   switchToWidget(CCopasiUndoCommand::GLOBALQUANTITYIES);
 

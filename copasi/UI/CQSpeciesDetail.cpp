@@ -936,8 +936,6 @@ void CQSpeciesDetail::addSpecies(UndoSpeciesData *pSData)
 
   protectedNotify(ListViews::METABOLITE, ListViews::ADD, key);
 
-  pSData->restoreDependentObjects(pModel);
-
   mpListView->switchToOtherWidget(C_INVALID_INDEX, key);
 }
 

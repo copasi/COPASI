@@ -44,7 +44,7 @@ RemoveCompartmentRowsCommand::RemoveCompartmentRowsCommand(
       mpCompartmentData.append(data);
     }
 
-  this->setText(removeCompartmentRowsText());
+  setText(QObject::tr(": Removed Compartments"));
 }
 
 void RemoveCompartmentRowsCommand::redo()
@@ -68,16 +68,6 @@ void RemoveCompartmentRowsCommand::undo()
   mpCompartmentDM->insertCompartmentRows(mpCompartmentData);
   setUndoState(false);
   setAction("Undelete set");
-}
-
-QString RemoveCompartmentRowsCommand::removeCompartmentRowsText() const
-{
-  return QObject::tr(": Removed Compartments");
-}
-
-UndoData *RemoveCompartmentRowsCommand::getUndoData() const
-{
-  return NULL;
 }
 
 RemoveCompartmentRowsCommand::~RemoveCompartmentRowsCommand()

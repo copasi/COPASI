@@ -23,6 +23,7 @@ public:
                               CCopasiObject* pObject,
                               CQModelValue* pWidget,
                               double iValue = std::numeric_limits<double>::quiet_NaN());
+  ~GlobalQuantityChangeCommand();
 
   virtual void undo();
   virtual void redo();

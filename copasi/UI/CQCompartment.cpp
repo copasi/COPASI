@@ -798,10 +798,6 @@ void CQCompartment::addCompartment(UndoCompartmentData *pData)
   //reinsert all the Compartments
   pData->restoreObjectIn(pModel);
   protectedNotify(ListViews::COMPARTMENT, ListViews::ADD, pData->getKey());
-
-  //restore all the dependencies
-  pData->restoreDependentObjects(pModel);
-
   mpListView->switchToOtherWidget(C_INVALID_INDEX, pData->getKey());
 }
 

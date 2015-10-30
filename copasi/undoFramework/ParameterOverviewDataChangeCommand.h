@@ -1,4 +1,4 @@
-// Copyright (C) 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2014 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -22,10 +22,10 @@ class ParameterOverviewDataChangeCommand: public CCopasiUndoCommand
 {
 public:
   ParameterOverviewDataChangeCommand(const QModelIndex &index, const QVariant &value, int role, CQParameterOverviewDM *pParameterOverviewDM);
+  virtual ~ParameterOverviewDataChangeCommand();
+
   void redo();
   void undo();
-  QString parameterOverviewDataChangeText() const;
-  virtual ~ParameterOverviewDataChangeCommand();
 
 private:
   QVariant mNew, mOld;

@@ -81,7 +81,7 @@ CompartmentDataChangeCommand::CompartmentDataChangeCommand(
         break;
     }
 
-  setText(compartmentDataChangeText());
+  setText(QString(": Changed compartment %1").arg(getProperty().c_str()));
 }
 
 void CompartmentDataChangeCommand::redo()
@@ -93,11 +93,6 @@ void CompartmentDataChangeCommand::undo()
 {
   mpCompartmentDM->compartmentDataChange(mIndex, mOld);
   setAction("Undone change");
-}
-
-QString CompartmentDataChangeCommand::compartmentDataChangeText() const
-{
-  return QString(": Changed compartment %1").arg(getProperty().c_str());
 }
 
 CompartmentDataChangeCommand::~CompartmentDataChangeCommand()

@@ -22,12 +22,10 @@ class CreateNewGlobalQuantityCommand: public CCopasiUndoCommand
 {
 public:
   CreateNewGlobalQuantityCommand(CQModelValue *pModelValue);
+  virtual ~CreateNewGlobalQuantityCommand();
+
   void redo();
   void undo();
-  QString createNewGlobalQuantityText() const;
-  UndoData *getUndoData() const;
-
-  virtual ~CreateNewGlobalQuantityCommand();
 
 private:
   UndoGlobalQuantityData *mpGlobalQuantityData;

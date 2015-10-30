@@ -16,16 +16,19 @@
 #include "CCopasiUndoCommand.h"
 
 class UndoEventData;
+class CQEventDM;
 
 class InsertEventRowsCommand: public CCopasiUndoCommand
 {
 public:
-  InsertEventRowsCommand(int position, int rows, CQEventDM *pEventDM, const QModelIndex&);
+  InsertEventRowsCommand(int position,
+                         int rows,
+                         CQEventDM *pEventDM,
+                         const QModelIndex&);
   virtual ~InsertEventRowsCommand();
+
   void redo();
   void undo();
-  QString insertRowsText() const;
-  UndoData *getUndoData() const;
 
 private:
   CQEventDM* mpEventDM;

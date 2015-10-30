@@ -22,7 +22,7 @@ CreateNewSpeciesCommand::CreateNewSpeciesCommand(CQSpeciesDetail *pSpeciesDetail
   , mpSpeciesData(NULL)
   , mpSpeciesDetail(pSpeciesDetail)
 {
-  this->setText(createNewSpeciesText());
+  this->setText(QObject::tr(": Created new species "));
 }
 
 void CreateNewSpeciesCommand::redo()
@@ -50,16 +50,6 @@ void CreateNewSpeciesCommand::undo()
   mpSpeciesDetail->deleteSpecies(mpSpeciesData);
   setUndoState(false);
   setAction("Delete");
-}
-
-QString CreateNewSpeciesCommand::createNewSpeciesText() const
-{
-  return QObject::tr(": Created new species ");
-}
-
-UndoData *CreateNewSpeciesCommand::getUndoData() const
-{
-  return mpSpeciesData;
 }
 
 CreateNewSpeciesCommand::~CreateNewSpeciesCommand()

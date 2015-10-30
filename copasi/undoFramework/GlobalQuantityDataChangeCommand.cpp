@@ -77,7 +77,7 @@ GlobalQuantityDataChangeCommand::GlobalQuantityDataChangeCommand(
         break;
     }
 
-  this->setText(globalQuantityDataChangeText());
+  setText(QString(": Changed global quantity %1").arg(getProperty().c_str()));
 }
 
 void GlobalQuantityDataChangeCommand::redo()
@@ -93,11 +93,6 @@ void GlobalQuantityDataChangeCommand::undo()
 {
   mpGlobalQuantityDM->globalQuantityDataChange(mIndex, mOld, mRole);
   setAction("Undone change");
-}
-
-QString GlobalQuantityDataChangeCommand::globalQuantityDataChangeText() const
-{
-  return QString(": Changed global quantity %1").arg(getProperty().c_str());
 }
 
 GlobalQuantityDataChangeCommand::~GlobalQuantityDataChangeCommand()

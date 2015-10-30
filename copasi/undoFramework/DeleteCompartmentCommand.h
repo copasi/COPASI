@@ -22,11 +22,10 @@ class DeleteCompartmentCommand: public CCopasiUndoCommand
 {
 public:
   DeleteCompartmentCommand(CQCompartment *pCompartment);
+  virtual ~DeleteCompartmentCommand();
+
   void redo();
   void undo();
-  QString deleteCompartmentText(const std::string &name) const;
-  UndoData *getUndoData() const;
-  virtual ~DeleteCompartmentCommand();
 
 private:
   bool mFirstTime;

@@ -23,13 +23,10 @@ class RemoveAllEventRowsCommand: public CCopasiUndoCommand
 {
 public:
   RemoveAllEventRowsCommand(CQEventDM * pEventDM, const QModelIndex&);
+  virtual ~RemoveAllEventRowsCommand();
 
   void redo();
   void undo();
-
-  QString removeAllEventRowsText() const;
-
-  virtual ~RemoveAllEventRowsCommand();
 
 private:
   CQEventDM *mpEventDM;

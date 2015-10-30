@@ -1127,8 +1127,6 @@ void ReactionsWidget1::addReaction(UndoReactionData *pData)
 
   protectedNotify(ListViews::MODELVALUE, ListViews::ADD, pReaction->getKey());
 
-  pData->restoreDependentObjects(pModel);
-
   mpListView->switchToOtherWidget(C_INVALID_INDEX, pReaction->getKey());
 }
 

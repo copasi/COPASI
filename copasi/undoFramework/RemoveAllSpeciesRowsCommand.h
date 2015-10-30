@@ -30,8 +30,6 @@ public:
   void redo();
   void undo();
 
-  QString removeAllSpecieRowsText() const;
-
 private:
   CQSpecieDM *mpSpecieDM;
   QList <UndoSpeciesData *> mpSpeciesData;

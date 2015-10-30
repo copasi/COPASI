@@ -27,8 +27,6 @@ public:
   void redo();
   void undo();
 
-  UndoData *getUndoData() const;
-
 private:
   UndoCompartmentData *mpCompartmentData;
   CQCompartment* mpCompartment;

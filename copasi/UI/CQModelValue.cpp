@@ -638,8 +638,6 @@ void CQModelValue::addGlobalQuantity(UndoGlobalQuantityData *pData)
 
   protectedNotify(ListViews::MODELVALUE, ListViews::ADD, pGlobalQuantity->getKey());
 
-  pData->restoreDependentObjects(pModel);
-
   mpListView->switchToOtherWidget(C_INVALID_INDEX, pGlobalQuantity->getKey());
 }
 
