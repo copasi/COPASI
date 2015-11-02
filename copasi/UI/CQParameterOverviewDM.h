@@ -16,6 +16,8 @@ class CModelParameter;
 
 #ifdef COPASI_UNDO
 class QUndoStack;
+#include <QList>
+#include <QPair>
 #endif
 
 class CQParameterOverviewDM : public QAbstractItemModel
@@ -57,7 +59,7 @@ public:
 #ifdef COPASI_UNDO
   void setUndoStack(QUndoStack* undoStack);
   QUndoStack* getUndoStack();
-  bool parameterOverviewDataChange(const QModelIndex &_index, const QVariant &value, int role);
+  bool parameterOverviewDataChange(const QList< QPair<int, int> > &path, const QVariant &value, int role);
 #endif
 
 signals:

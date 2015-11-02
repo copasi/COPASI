@@ -26,38 +26,20 @@ InsertEventRowsCommand::InsertEventRowsCommand(int position, int rows, CQEventDM
   , mRows(rows)
   , mPosition(position)
   , mIndex(index)
-  , mpEventData(new UndoEventData())
-  , firstTime(true)
+  , mpEventData(NULL)
 {
   this->setText(QObject::tr(": Inserted new event"));
 }
 
 void InsertEventRowsCommand::redo()
 {
-  if (firstTime)
+  if (mpEventData == NULL)
     {
       mpEventDM->insertNewEventRow(mPosition, mRows);
       GET_MODEL_OR_RETURN(pModel);
 
       CEvent *pEvent = pModel->getEvents()[mPosition];
-
-      mpEventData->setName(pEvent->getObjectName());
-      mpEventData->setKey(pEvent->getKey());
-      mpEventData->setPriorityExpression(pEvent->getPriorityExpression());
-      mpEventData->setDelayExpression(pEvent->getDelayExpression());
-      mpEventData->setTriggerExpression(pEvent->getTriggerExpression());
-
-      CCopasiVector< CEventAssignment >::const_iterator it = pEvent->getAssignments().begin();
-      CCopasiVector< CEventAssignment >::const_iterator end = pEvent->getAssignments().end();
-
-      for (; it != end; ++it)
-        {
-          const CModelEntity * pEntity = dynamic_cast< CModelEntity * >(CCopasiRootContainer::getKeyFactory()->get((*it)->getTargetKey()));
-          mpEventData->getEventAssignmentData()->append(
-            new UndoEventAssignmentData(pEntity, (*it)->getExpression()));
-        }
-
-      firstTime = false;
+      mpEventData = new UndoEventData(pEvent);
     }
   else
     {

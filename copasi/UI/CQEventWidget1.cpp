@@ -809,13 +809,7 @@ void CQEventWidget1::deleteEvent()
 {
   mpListView->switchToOtherWidget(CCopasiUndoCommand::EVENTS, "");
 
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
-
-  CModel * pModel = pDataModel->getModel();
-
-  if (pModel == NULL)
-    return;
+  GET_MODEL_OR_RETURN(pModel);
 
   pDataModel->getModel()->removeEvent(mKey);
 

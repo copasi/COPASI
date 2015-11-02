@@ -16,6 +16,7 @@
 #include "CCopasiUndoCommand.h"
 
 class UndoGlobalQuantityData;
+class CQGlobalQuantityDM;
 
 class InsertGlobalQuantityRowsCommand: public CCopasiUndoCommand
 {
@@ -31,7 +32,6 @@ private:
   int mRows, mPosition;
   QModelIndex mIndex;
   UndoGlobalQuantityData* mpGlobalQuantityData;
-  int firstTime;
 };
 
 #endif /* INSERTGLOBALQUANTITYROWSCOMMAND_H_ */

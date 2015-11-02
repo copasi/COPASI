@@ -191,9 +191,9 @@ public:
   virtual void undo() = 0;
   virtual void redo() = 0;
 
-  Path pathFromIndex(const QModelIndex & index);
+  static Path pathFromIndex(const QModelIndex & index);
 
-  QModelIndex pathToIndex(const Path& path, const QAbstractItemModel *model);
+  static QModelIndex pathToIndex(const Path& path, const QAbstractItemModel *model);
 
   bool isUndoState() const;
 

@@ -51,6 +51,7 @@ public:
   bool reactionDataChange(const QModelIndex &index, const QVariant &value, int role, QString &funcName);
   void insertNewReactionRow(int position, int rows, const QModelIndex&);
   void addReactionRow(CReaction *pReaction);
+  void addReactionRow(UndoReactionData* pData);
   void deleteReactionRow(CReaction *pReaction);
   bool updateReactionWithFunctionName(CReaction *pRea, QString &funcName);
   bool removeReactionRows(QModelIndexList rows, const QModelIndex&);

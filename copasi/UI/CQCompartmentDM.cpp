@@ -561,6 +561,8 @@ bool CQCompartmentDM::insertCompartmentRows(QList <UndoCompartmentData *>& pData
   //reinsert all the Compartments
   QList <UndoCompartmentData *>::const_iterator k;
 
+  beginInsertRows(QModelIndex(), 1, pData.count());
+
   for (k = pData.begin(); k != pData.end(); ++k)
     {
       UndoCompartmentData* data = *k;
@@ -569,10 +571,10 @@ bool CQCompartmentDM::insertCompartmentRows(QList <UndoCompartmentData *>& pData
 
       if (pCompartment == NULL) continue;
 
-      beginInsertRows(QModelIndex(), 1, 1);
       emit notifyGUI(ListViews::COMPARTMENT, ListViews::ADD, pCompartment->getKey());
-      endInsertRows();
     }
+
+  endInsertRows();
 
   switchToWidget(CCopasiUndoCommand::COMPARTMENTS);
 

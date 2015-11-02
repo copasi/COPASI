@@ -213,13 +213,7 @@ void CQEventsWidget::slotDoubleClicked(const QModelIndex proxyIndex)
       slotBtnNewClicked();
     }
 
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
-  assert(pDataModel != NULL);
-  CModel * pModel = pDataModel->getModel();
-
-  if (pModel == NULL)
-    return;
+  GET_MODEL_OR_RETURN(pModel);
 
   std::string key = pModel->getEvents()[index.row()]->getKey();
 

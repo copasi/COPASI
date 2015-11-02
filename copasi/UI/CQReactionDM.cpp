@@ -547,6 +547,7 @@ void CQReactionDM::addReactionRow(CReaction *pReaction)
   endInsertRows();
 }
 
+
 void CQReactionDM::deleteReactionRow(CReaction *pReaction)
 {
   GET_MODEL_OR_RETURN(pModel);
@@ -610,27 +611,33 @@ bool CQReactionDM::removeReactionRows(QModelIndexList rows, const QModelIndex&)
 
 bool CQReactionDM::insertReactionRows(QList <UndoReactionData *>& pData)
 {
-  GET_MODEL_OR(pModel, return false);
-
   switchToWidget(CCopasiUndoCommand::REACTIONS);
 
   QList <UndoReactionData *>::const_iterator j;
 
   for (j = pData.begin(); j != pData.end(); ++j)
     {
-      UndoReactionData * data = *j;
-      CReaction *pRea = data->restoreObjectIn(pModel);
-
-      if (pRea == NULL)
-        continue;
-
-      beginInsertRows(QModelIndex(), 1, 1);
-      emit notifyGUI(ListViews::REACTION, ListViews::ADD, pRea->getKey());
-      endInsertRows();
+      addReactionRow(*j);
     }
 
   return true;
 }
+
+void CQReactionDM::addReactionRow(UndoReactionData *pData)
+{
+  GET_MODEL_OR_RETURN(pModel);
+
+  CReaction *pReaction = pData->restoreObjectIn(pModel);
+
+  if (pReaction == NULL)
+    return;
+
+  beginInsertRows(QModelIndex(), 1, 1);
+  emit notifyGUI(ListViews::REACTION, ListViews::ADD, pReaction->getKey());
+  endInsertRows();
+}
+
+
 void CQReactionDM::deleteReactionRows(QList <UndoReactionData *>& pData)
 {
   GET_MODEL_OR_RETURN(pModel);

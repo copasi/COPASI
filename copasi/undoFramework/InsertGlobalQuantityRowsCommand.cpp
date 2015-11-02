@@ -27,25 +27,20 @@ InsertGlobalQuantityRowsCommand::InsertGlobalQuantityRowsCommand(int position, i
   , mRows(rows)
   , mPosition(position)
   , mIndex(index)
-  , mpGlobalQuantityData(new UndoGlobalQuantityData())
-  , firstTime(true)
+  , mpGlobalQuantityData(NULL)
 {
   setText(QObject::tr(": Inserted new global quantity"));
 }
 
 void InsertGlobalQuantityRowsCommand::redo()
 {
-  if (firstTime)
+  if (mpGlobalQuantityData == NULL)
     {
       mpGlobalQuantityDM->insertNewGlobalQuantityRow(mPosition, mRows, QModelIndex());
       GET_MODEL_OR_RETURN(pModel);
 
       CModelValue *pGlobalQuantity = pModel->getModelValues()[mPosition];
-      mpGlobalQuantityData->setName(pGlobalQuantity->getObjectName());
-      mpGlobalQuantityData->setKey(pGlobalQuantity->getKey());
-      mpGlobalQuantityData->setInitialValue(pGlobalQuantity->getInitialValue());
-      mpGlobalQuantityData->setStatus(pGlobalQuantity->getStatus());
-      firstTime = false;
+      mpGlobalQuantityData = new UndoGlobalQuantityData(pGlobalQuantity);
     }
   else
     {

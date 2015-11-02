@@ -43,7 +43,6 @@ RemoveGlobalQuantityRowsCommand::RemoveGlobalQuantityRowsCommand(
 
 
       UndoGlobalQuantityData *data = new UndoGlobalQuantityData(pModelValue);
-
       mpGlobalQuantityData.append(data);
 
     }

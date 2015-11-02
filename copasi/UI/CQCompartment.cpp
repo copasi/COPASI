@@ -733,13 +733,7 @@ void CQCompartment::createNewCompartment()
 
 void CQCompartment::deleteCompartment()
 {
-
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
-  assert(pDataModel != NULL);
-  CModel * pModel = pDataModel->getModel();
-
-  if (pModel == NULL) return;
+  GET_MODEL_OR_RETURN(pModel);
 
   if (mpCompartment == NULL) return;
 
@@ -763,19 +757,14 @@ void CQCompartment::deleteCompartment()
         break;
     }
 
-  mpListView->switchToOtherWidget(CCopasiUndoCommand::COMPARTMENTS, "");
+  switchToWidget(CCopasiUndoCommand::COMPARTMENTS);
 }
 
 void CQCompartment::deleteCompartment(UndoCompartmentData *pCompartmentData)
 {
-  mpListView->switchToOtherWidget(CCopasiUndoCommand::COMPARTMENTS, "");
+  GET_MODEL_OR_RETURN(pModel);
 
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
-  assert(pDataModel != NULL);
-
-  CModel * pModel = pDataModel->getModel();
-  assert(pModel != NULL);
+  switchToWidget(CCopasiUndoCommand::COMPARTMENTS);
 
   CCompartment* pComp = pModel->getCompartments()[pCompartmentData->getName()];
 
@@ -798,7 +787,7 @@ void CQCompartment::addCompartment(UndoCompartmentData *pData)
   //reinsert all the Compartments
   pData->restoreObjectIn(pModel);
   protectedNotify(ListViews::COMPARTMENT, ListViews::ADD, pData->getKey());
-  mpListView->switchToOtherWidget(C_INVALID_INDEX, pData->getKey());
+  switchToWidget(C_INVALID_INDEX, pData->getKey());
 }
 
 bool CQCompartment::changeValue(const std::string& key,
@@ -812,10 +801,9 @@ bool CQCompartment::changeValue(const std::string& key,
       mpObject = CCopasiRootContainer::getKeyFactory()->get(key);
       mpCompartment = dynamic_cast<CCompartment*>(mpObject);
       load();
+      switchToWidget(C_INVALID_INDEX, mKey);
     }
 
-  mpListView->switchToOtherWidget(C_INVALID_INDEX, mKey);
-  qApp->processEvents();
 
   switch (type)
     {

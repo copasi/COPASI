@@ -35,7 +35,6 @@ private:
   int mRows, mPosition;
   QModelIndex mIndex;
   UndoCompartmentData* mpCompartmentData;
-  int firstTime;
 };
 
 #endif /* INSERTCOMPARTMENTROWSCOMMAND_H_ */

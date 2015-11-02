@@ -34,19 +34,17 @@ void ParameterOverviewDataChangeCommand::redo()
 {
   if (mFirstTime)
     {
-      mpParameterOverviewDM->parameterOverviewDataChange(mIndex, mNew, mRole);
+      mpParameterOverviewDM->parameterOverviewDataChange(mPathIndex, mNew, mRole);
       mFirstTime = false;
     }
   else
     {
-      QModelIndex indx = pathToIndex(mPathIndex, mpParameterOverviewDM);
-      mpParameterOverviewDM->parameterOverviewDataChange(indx, mNew, mRole);
+      mpParameterOverviewDM->parameterOverviewDataChange(mPathIndex, mNew, mRole);
     }
 }
 void ParameterOverviewDataChangeCommand::undo()
 {
-  QModelIndex indx = pathToIndex(mPathIndex, mpParameterOverviewDM);
-  mpParameterOverviewDM->parameterOverviewDataChange(indx, mOld, mRole);
+  mpParameterOverviewDM->parameterOverviewDataChange(mPathIndex, mOld, mRole);
 }
 
 ParameterOverviewDataChangeCommand::~ParameterOverviewDataChangeCommand()

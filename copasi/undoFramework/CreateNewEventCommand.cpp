@@ -30,11 +30,7 @@ void CreateNewEventCommand::redo()
       mpEventWidget->createNewEvent();
 
       std::string sName = mpEventWidget->mpEvent->getObjectName();
-      mpEventData->setKey(mpEventWidget->mpEvent->getKey());
-      mpEventData->setName(sName);
-      mpEventData->setDelayExpression(mpEventWidget->mpEvent->getDelayExpression());
-      mpEventData->setTriggerExpression(mpEventWidget->mpEvent->getTriggerExpression());
-      mpEventData->setPriorityExpression(mpEventWidget->mpEvent->getPriorityExpression());
+      mpEventData = new UndoEventData(mpEventWidget->mpEvent);
       setName(sName);
     }
   else

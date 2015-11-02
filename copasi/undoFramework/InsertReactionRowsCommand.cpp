@@ -30,7 +30,7 @@ InsertReactionRowsCommand::InsertReactionRowsCommand(int position, int rows, CQR
   , mPosition(position)
   , mpReaction(NULL)
   , mpRi(NULL)
-  , mpReactionData(new UndoReactionData())
+  , mpReactionData(NULL)
 
 {
   setText(QObject::tr(": Inserted new reaction"));
@@ -43,23 +43,21 @@ InsertReactionRowsCommand::~InsertReactionRowsCommand()
 
 void InsertReactionRowsCommand::redo()
 {
-  mpReactionDM->insertNewReactionRow(mPosition, mRows, QModelIndex());
-  GET_MODEL_OR_RETURN(pModel);
-  mpReaction = pModel->getReactions()[mPosition];
-  std::string sName = mpReaction->getObjectName();
-
-  mpReactionData->setName(sName);
-
-  CReactionInterface* ri = new CReactionInterface((*CCopasiRootContainer::getDatamodelList())[0]->getModel());
-  ri->initFromReaction(mpReaction);
-
-  mpReactionData->setRi(ri);
-  mpReactionData->setKey(mpReaction->getKey());
+  if (mpReactionData == NULL)
+    {
+      mpReactionDM->insertNewReactionRow(mPosition, mRows, QModelIndex());
+      GET_MODEL_OR_RETURN(pModel);
+      mpReaction = pModel->getReactions()[mPosition];
+      mpReactionData = new UndoReactionData(mpReaction);
+    }
+  else
+    {
+      mpReactionDM->addReactionRow(mpReactionData);
+    }
 
   setUndoState(true);
   setAction("Add to list");
-
-  setName(sName);
+  setName(mpReactionData->getName());
 }
 
 void InsertReactionRowsCommand::undo()

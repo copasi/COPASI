@@ -540,9 +540,12 @@ QVariant CQParameterOverviewDM::assignmentData(const CModelParameter * pNode, in
 }
 
 #ifdef COPASI_UNDO
-bool CQParameterOverviewDM::parameterOverviewDataChange(const QModelIndex& _index, const QVariant &value, int role)
+bool CQParameterOverviewDM::parameterOverviewDataChange(const QList< QPair<int, int> >& path, const QVariant &value, int role)
 {
+  switchToWidget(CCopasiUndoCommand::PARAMETER_OVERVIEW);
+  QModelIndex _index = CCopasiUndoCommand::pathToIndex(path, this);
   CModelParameter * pNode = nodeFromIndex(_index);
+
   bool success = false;
 
   if (pNode != NULL &&
@@ -551,7 +554,7 @@ bool CQParameterOverviewDM::parameterOverviewDataChange(const QModelIndex& _inde
       switch (_index.column())
         {
           case COL_VALUE:
-            pNode->setValue(value.toDouble(), static_cast< CModelParameter::Framework >(mFramework));
+            pNode->setValue(value.toDouble(), static_cast<CModelParameter::Framework>(mFramework));
             success = true;
             break;
 
@@ -561,20 +564,29 @@ bool CQParameterOverviewDM::parameterOverviewDataChange(const QModelIndex& _inde
 
             if (pGlobalQuantity != NULL)
               {
-                static_cast< CModelParameterReactionParameter * >(pNode)->setGlobalQuantityCN(pGlobalQuantity->getCN());
+                static_cast<CModelParameterReactionParameter *>(pNode)->setGlobalQuantityCN(pGlobalQuantity->getCN());
               }
             else
               {
-                static_cast< CModelParameterReactionParameter * >(pNode)->setGlobalQuantityCN("");
+                static_cast<CModelParameterReactionParameter *>(pNode)->setGlobalQuantityCN("");
               }
           }
 
           success = true;
           break;
-        }
-    }
 
-  switchToWidget(CCopasiUndoCommand::PARAMETER_OVERVIEW);
+          default:
+            break;
+        }
+
+
+      if (success)
+        {
+          emit dataChanged(_index, _index);
+        }
+
+
+    }
 
   return success;
 }

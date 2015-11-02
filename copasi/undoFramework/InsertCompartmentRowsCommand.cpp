@@ -33,25 +33,20 @@ InsertCompartmentRowsCommand::InsertCompartmentRowsCommand(
   , mRows(rows)
   , mPosition(position)
   , mIndex()
-  , mpCompartmentData(new UndoCompartmentData())
-  , firstTime(true)
+  , mpCompartmentData(NULL)
 {
   setText(QObject::tr(": Inserted new compartment"));
 }
 
 void InsertCompartmentRowsCommand::redo()
 {
-  if (firstTime)
+  if (mpCompartmentData == NULL)
     {
       mpCompartmentDM->insertNewCompartmentRow(mPosition, mRows, QModelIndex());
       GET_MODEL_OR_RETURN(pModel);
 
       CCompartment *pCompartment = pModel->getCompartments()[mPosition];
-      mpCompartmentData->setName(pCompartment->getObjectName());
-      mpCompartmentData->setKey(pCompartment->getKey());
-      mpCompartmentData->setStatus(pCompartment->getStatus());
-      mpCompartmentData->setInitialValue(pCompartment->getInitialValue());
-      firstTime = false;
+      mpCompartmentData = new UndoCompartmentData(pCompartment);
     }
   else
     {
