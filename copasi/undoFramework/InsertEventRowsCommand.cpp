@@ -20,13 +20,26 @@
 #include "UndoEventAssignmentData.h"
 #include "InsertEventRowsCommand.h"
 
-InsertEventRowsCommand::InsertEventRowsCommand(int position, int rows, CQEventDM *pEventDM, const QModelIndex& index)
+InsertEventRowsCommand::InsertEventRowsCommand(int position, int rows, CQEventDM *pEventDM)
+  : CCopasiUndoCommand("Event", EVENT_INSERT)
+  , mpEventDM(pEventDM)
+  , mRows(rows)
+  , mPosition(position)
+  , mIndex()
+  , mpEventData(NULL)
+  , mValue()
+{
+  this->setText(QObject::tr(": Inserted new event"));
+}
+
+InsertEventRowsCommand::InsertEventRowsCommand(int position, int rows, CQEventDM *pEventDM, const QModelIndex& index, const QVariant& value)
   : CCopasiUndoCommand("Event", EVENT_INSERT)
   , mpEventDM(pEventDM)
   , mRows(rows)
   , mPosition(position)
   , mIndex(index)
   , mpEventData(NULL)
+  , mValue(value)
 {
   this->setText(QObject::tr(": Inserted new event"));
 }
@@ -35,7 +48,7 @@ void InsertEventRowsCommand::redo()
 {
   if (mpEventData == NULL)
     {
-      mpEventDM->insertNewEventRow(mPosition, mRows);
+      mpEventDM->insertNewEventRow(mPosition, mRows, mIndex, mValue);
       GET_MODEL_OR_RETURN(pModel);
 
       CEvent *pEvent = pModel->getEvents()[mPosition];

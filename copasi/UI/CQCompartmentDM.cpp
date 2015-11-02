@@ -270,10 +270,7 @@ bool CQCompartmentDM::setData(const QModelIndex &index, const QVariant &value,
   if (defaultRow && data != value)
     {
       int newRow = rowCount() - 1;
-      mpUndoStack->push(new InsertCompartmentRowsCommand(newRow, 1, this, QModelIndex()));
-      QModelIndex newIndex = createIndex(newRow, index.column(), Qt::DisplayRole);
-      mpUndoStack->push(new CompartmentDataChangeCommand(newIndex, value, role, this));
-      // select new row
+      mpUndoStack->push(new InsertCompartmentRowsCommand(newRow, 1, this, index, value));
     }
   else
     {
@@ -326,7 +323,7 @@ bool CQCompartmentDM::setData(const QModelIndex &index, const QVariant &value,
 bool CQCompartmentDM::insertRows(int position, int rows, const QModelIndex&)
 {
 #ifdef COPASI_UNDO
-  mpUndoStack->push(new InsertCompartmentRowsCommand(position, rows, this, QModelIndex()));
+  mpUndoStack->push(new InsertCompartmentRowsCommand(position, rows, this));
 #else
   beginInsertRows(QModelIndex(), position, position + rows - 1);
 
@@ -462,18 +459,41 @@ bool CQCompartmentDM::compartmentDataChange(const QModelIndex& index, const QVar
   return true;
 }
 
-void CQCompartmentDM::insertNewCompartmentRow(int position, int rows, const QModelIndex&)
+void CQCompartmentDM::insertNewCompartmentRow(int position, int rows, const QModelIndex& index,
+    const QVariant& value)
 {
   GET_MODEL_OR_RETURN(pModel);
 
   beginInsertRows(QModelIndex(), position, position + rows - 1);
 
+  int column = index.column();
+
   for (int row = 0; row < rows; ++row)
     {
-      CCompartment * pComp = pModel->createCompartment(TO_UTF8(createNewName("compartment", COL_NAME_COMPARTMENTS)));
+      QString name = index.isValid() && column == COL_NAME_COMPARTMENTS ? value.toString() :
+                     createNewName("compartment", COL_NAME_COMPARTMENTS);
 
-      if (pComp != NULL)
-        emit notifyGUI(ListViews::COMPARTMENT, ListViews::ADD, pComp->getKey());
+      CCompartment * pComp = pModel->createCompartment(TO_UTF8(name));
+
+      if (pComp == NULL)
+        continue;
+
+      emit notifyGUI(ListViews::COMPARTMENT, ListViews::ADD, pComp->getKey());
+
+      if (index.isValid())
+        {
+          if (column == COL_TYPE_COMPARTMENTS)
+            {
+              CModelEntity::Status status = (CModelEntity::Status) mItemToType[value.toInt()];
+              pComp->setStatus(status);
+            }
+
+          if (column == COL_IVOLUME)
+            {
+              pComp->setInitialValue(value.toDouble());
+            }
+        }
+
     }
 
   endInsertRows();

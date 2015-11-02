@@ -21,13 +21,27 @@
 
 #include "InsertGlobalQuantityRowsCommand.h"
 
-InsertGlobalQuantityRowsCommand::InsertGlobalQuantityRowsCommand(int position, int rows, CQGlobalQuantityDM *pGlobalQuantityDM, const QModelIndex& index)
+InsertGlobalQuantityRowsCommand::InsertGlobalQuantityRowsCommand(int position, int rows, CQGlobalQuantityDM *pGlobalQuantityDM)
+  : CCopasiUndoCommand("Global Quantity", GLOBALQUANTITY_INSERT)
+  , mpGlobalQuantityDM(pGlobalQuantityDM)
+  , mRows(rows)
+  , mPosition(position)
+  , mIndex()
+  , mpGlobalQuantityData(NULL)
+  , mValue()
+{
+  setText(QObject::tr(": Inserted new global quantity"));
+}
+
+
+InsertGlobalQuantityRowsCommand::InsertGlobalQuantityRowsCommand(int position, int rows, CQGlobalQuantityDM *pGlobalQuantityDM, const QModelIndex& index, const QVariant& value)
   : CCopasiUndoCommand("Global Quantity", GLOBALQUANTITY_INSERT)
   , mpGlobalQuantityDM(pGlobalQuantityDM)
   , mRows(rows)
   , mPosition(position)
   , mIndex(index)
   , mpGlobalQuantityData(NULL)
+  , mValue(value)
 {
   setText(QObject::tr(": Inserted new global quantity"));
 }
@@ -36,7 +50,7 @@ void InsertGlobalQuantityRowsCommand::redo()
 {
   if (mpGlobalQuantityData == NULL)
     {
-      mpGlobalQuantityDM->insertNewGlobalQuantityRow(mPosition, mRows, QModelIndex());
+      mpGlobalQuantityDM->insertNewGlobalQuantityRow(mPosition, mRows, mIndex, mValue);
       GET_MODEL_OR_RETURN(pModel);
 
       CModelValue *pGlobalQuantity = pModel->getModelValues()[mPosition];

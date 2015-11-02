@@ -49,10 +49,11 @@ public:
   //TODO Undo
 #ifdef COPASI_UNDO
   bool reactionDataChange(const QModelIndex &index, const QVariant &value, int role, QString &funcName);
-  void insertNewReactionRow(int position, int rows, const QModelIndex&);
+  void insertNewReactionRow(int position, int rows, const QModelIndex& index, const QVariant& value);
   void addReactionRow(CReaction *pReaction);
   void addReactionRow(UndoReactionData* pData);
   void deleteReactionRow(CReaction *pReaction);
+  void deleteReactionRow(UndoReactionData* pData);
   bool updateReactionWithFunctionName(CReaction *pRea, QString &funcName);
   bool removeReactionRows(QModelIndexList rows, const QModelIndex&);
   bool insertReactionRows(QList <UndoReactionData *>& pReaData);

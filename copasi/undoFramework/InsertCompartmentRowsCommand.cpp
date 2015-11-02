@@ -26,14 +26,32 @@
 InsertCompartmentRowsCommand::InsertCompartmentRowsCommand(
   int position,
   int rows,
-  CQCompartmentDM *pCompartmentDM,
-  const QModelIndex&)
+  CQCompartmentDM *pCompartmentDM)
   : CCopasiUndoCommand("Compartment", COMPARTMENT_INSERT)
   , mpCompartmentDM(pCompartmentDM)
   , mRows(rows)
   , mPosition(position)
   , mIndex()
   , mpCompartmentData(NULL)
+  , mValue()
+{
+  setText(QObject::tr(": Inserted new compartment"));
+}
+
+
+InsertCompartmentRowsCommand::InsertCompartmentRowsCommand(
+  int position,
+  int rows,
+  CQCompartmentDM *pCompartmentDM,
+  const QModelIndex &index,
+  const QVariant &value)
+  : CCopasiUndoCommand("Compartment", COMPARTMENT_INSERT)
+  , mpCompartmentDM(pCompartmentDM)
+  , mRows(rows)
+  , mPosition(position)
+  , mIndex(index)
+  , mpCompartmentData(NULL)
+  , mValue(value)
 {
   setText(QObject::tr(": Inserted new compartment"));
 }
@@ -42,8 +60,9 @@ void InsertCompartmentRowsCommand::redo()
 {
   if (mpCompartmentData == NULL)
     {
-      mpCompartmentDM->insertNewCompartmentRow(mPosition, mRows, QModelIndex());
       GET_MODEL_OR_RETURN(pModel);
+
+      mpCompartmentDM->insertNewCompartmentRow(mPosition, mRows, mIndex, mValue);
 
       CCompartment *pCompartment = pModel->getCompartments()[mPosition];
       mpCompartmentData = new UndoCompartmentData(pCompartment);

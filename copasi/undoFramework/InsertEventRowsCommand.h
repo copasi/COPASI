@@ -23,8 +23,13 @@ class InsertEventRowsCommand: public CCopasiUndoCommand
 public:
   InsertEventRowsCommand(int position,
                          int rows,
+                         CQEventDM *pEventDM);
+
+  InsertEventRowsCommand(int position,
+                         int rows,
                          CQEventDM *pEventDM,
-                         const QModelIndex&);
+                         const QModelIndex& index,
+                         const QVariant& value);
   virtual ~InsertEventRowsCommand();
 
   void redo();
@@ -35,7 +40,7 @@ private:
   int mRows, mPosition;
   QModelIndex mIndex;
   UndoEventData* mpEventData;
-  int firstTime;
+  QVariant mValue;
 };
 
 #endif /* INSERTEVENTROWSCOMMAND_H_ */

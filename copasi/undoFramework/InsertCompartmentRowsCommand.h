@@ -21,10 +21,20 @@ class CQCompartmentDM;
 class InsertCompartmentRowsCommand: public CCopasiUndoCommand
 {
 public:
+  /**
+   * Creates a new compartment at the indicated position
+   */
+  InsertCompartmentRowsCommand(int position,
+                               int rows,
+                               CQCompartmentDM *pCompartmentDM);
+
   InsertCompartmentRowsCommand(int position,
                                int rows,
                                CQCompartmentDM *pCompartmentDM,
-                               const QModelIndex&);
+                               const QModelIndex& index,
+                               const QVariant& value);
+
+
   virtual ~InsertCompartmentRowsCommand();
 
   void redo();
@@ -35,6 +45,7 @@ private:
   int mRows, mPosition;
   QModelIndex mIndex;
   UndoCompartmentData* mpCompartmentData;
+  QVariant mValue;
 };
 
 #endif /* INSERTCOMPARTMENTROWSCOMMAND_H_ */

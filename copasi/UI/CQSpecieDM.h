@@ -60,7 +60,7 @@ public:
   //TODO Undo
 #ifdef COPASI_UNDO
   bool specieDataChange(const QModelIndex &index, const QVariant &value, int role);
-  void insertNewSpecieRow(int position, int rows, const QModelIndex&);
+  QList <UndoSpeciesData *> insertNewSpecieRow(int position, int rows, const QModelIndex& index, const QVariant& value);
   void addSpecieRow(UndoSpeciesData *pSpecieData);
   void deleteSpecieRow(UndoSpeciesData *pSpecieData);
   bool removeSpecieRows(QModelIndexList rows, const QModelIndex&);

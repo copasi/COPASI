@@ -23,15 +23,31 @@
 #include "UndoReactionData.h"
 #include "InsertReactionRowsCommand.h"
 
-InsertReactionRowsCommand::InsertReactionRowsCommand(int position, int rows, CQReactionDM *pReactionDM, const QModelIndex&)
+InsertReactionRowsCommand::InsertReactionRowsCommand(int position, int rows, CQReactionDM *pReactionDM)
   : CCopasiUndoCommand("Reaction", REACTION_INSERT)
   , mpReactionDM(pReactionDM)
   , mRows(rows)
   , mPosition(position)
+  , mIndex()
   , mpReaction(NULL)
   , mpRi(NULL)
   , mpReactionData(NULL)
+  , mValue()
+{
+  setText(QObject::tr(": Inserted new reaction"));
 
+}
+
+InsertReactionRowsCommand::InsertReactionRowsCommand(int position, int rows, CQReactionDM *pReactionDM, const QModelIndex& index, const QVariant& value)
+  : CCopasiUndoCommand("Reaction", REACTION_INSERT)
+  , mpReactionDM(pReactionDM)
+  , mRows(rows)
+  , mPosition(position)
+  , mIndex(index)
+  , mpReaction(NULL)
+  , mpRi(NULL)
+  , mpReactionData(NULL)
+  , mValue(value)
 {
   setText(QObject::tr(": Inserted new reaction"));
 }
@@ -45,7 +61,7 @@ void InsertReactionRowsCommand::redo()
 {
   if (mpReactionData == NULL)
     {
-      mpReactionDM->insertNewReactionRow(mPosition, mRows, QModelIndex());
+      mpReactionDM->insertNewReactionRow(mPosition, mRows, mIndex, mValue);
       GET_MODEL_OR_RETURN(pModel);
       mpReaction = pModel->getReactions()[mPosition];
       mpReactionData = new UndoReactionData(mpReaction);
@@ -62,7 +78,7 @@ void InsertReactionRowsCommand::redo()
 
 void InsertReactionRowsCommand::undo()
 {
-  mpReactionDM->deleteReactionRow(mpReaction);
+  mpReactionDM->deleteReactionRow(mpReactionData);
   setUndoState(false);
   setAction("Remove from list");
 }

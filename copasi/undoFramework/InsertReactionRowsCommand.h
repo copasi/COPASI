@@ -23,7 +23,8 @@ class CReactionInterface;
 class InsertReactionRowsCommand: public CCopasiUndoCommand
 {
 public:
-  InsertReactionRowsCommand(int position, int rows, CQReactionDM *pReactionDM, const QModelIndex&);
+  InsertReactionRowsCommand(int position, int rows, CQReactionDM *pReactionDM);
+  InsertReactionRowsCommand(int position, int rows, CQReactionDM *pReactionDM, const QModelIndex& index, const QVariant& value);
   virtual ~InsertReactionRowsCommand();
 
   void redo();
@@ -36,6 +37,7 @@ private:
   CReaction *mpReaction;
   CReactionInterface *mpRi;
   UndoReactionData *mpReactionData;
+  QVariant mValue;
 };
 
 #endif /* INSERTREACTIONROWSCOMMAND_H_ */

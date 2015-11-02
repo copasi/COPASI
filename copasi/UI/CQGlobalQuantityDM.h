@@ -58,7 +58,7 @@ public:
   //TODO Undo
 #ifdef COPASI_UNDO
   bool globalQuantityDataChange(const QModelIndex &index, const QVariant &value, int role);
-  void insertNewGlobalQuantityRow(int position, int rows, const QModelIndex&);
+  void insertNewGlobalQuantityRow(int position, int rows, const QModelIndex& index, const QVariant& value);
   void addGlobalQuantityRow(UndoGlobalQuantityData *pGlobalQuantityData);
   void deleteGlobalQuantityRow(UndoGlobalQuantityData *pGlobalQuantityData);
   bool removeGlobalQuantityRows(QModelIndexList rows, const QModelIndex&);

@@ -200,9 +200,7 @@ bool CQReactionDM::setData(const QModelIndex &index, const QVariant &value,
   if (defaultRow)
     {
       int newRow = rowCount() - 1;
-      mpUndoStack->push(new InsertReactionRowsCommand(newRow, 1, this, QModelIndex()));
-      QModelIndex newIndex = createIndex(newRow, index.column(), Qt::DisplayRole);
-      mpUndoStack->push(new ReactionDataChangeCommand(newIndex, value, role, this));
+      mpUndoStack->push(new InsertReactionRowsCommand(newRow, 1, this, index, value));
     }
   else
     {
@@ -358,7 +356,7 @@ void CQReactionDM::setEquation(const CReaction *pRea, const QModelIndex& index, 
 bool CQReactionDM::insertRows(int position, int rows, const QModelIndex&)
 {
 #ifdef COPASI_UNDO
-  mpUndoStack->push(new InsertReactionRowsCommand(position, rows, this, QModelIndex()));
+  mpUndoStack->push(new InsertReactionRowsCommand(position, rows, this));
 #else
   beginInsertRows(QModelIndex(), position, position + rows - 1);
 
@@ -518,15 +516,28 @@ bool CQReactionDM::updateReactionWithFunctionName(CReaction *pRea, QString &func
   return false;
 }
 
-void CQReactionDM::insertNewReactionRow(int position, int rows, const QModelIndex&)
+void CQReactionDM::insertNewReactionRow(int position, int rows, const QModelIndex& index, const QVariant& value)
 {
   GET_MODEL_OR_RETURN(pModel);
 
   beginInsertRows(QModelIndex(), position, position + rows - 1);
 
+  int column = index.column();
+
   for (int row = 0; row < rows; ++row)
     {
-      CReaction *pRea = pModel->createReaction(TO_UTF8(createNewName("reaction", COL_NAME_REACTIONS)));
+      QString name = index.isValid() && column == COL_NAME_REACTIONS ?
+                     value.toString()
+                     : createNewName("reaction", COL_NAME_REACTIONS);
+      CReaction *pRea = pModel->createReaction(TO_UTF8(name));
+
+      if (pRea == NULL) continue;
+
+      if (index.isValid() && column == COL_EQUATION)
+        {
+          setEquation(pRea, index, value);
+        }
+
       std::string key = pRea->getKey();
       emit notifyGUI(ListViews::REACTION, ListViews::ADD, key);
     }
@@ -561,6 +572,8 @@ void CQReactionDM::deleteReactionRow(CReaction *pReaction)
   emit notifyGUI(ListViews::REACTION, ListViews::DELETE, "");//Refresh all as there may be dependencies.
   endRemoveRows();
 }
+
+
 
 bool CQReactionDM::removeReactionRows(QModelIndexList rows, const QModelIndex&)
 {
@@ -637,11 +650,25 @@ void CQReactionDM::addReactionRow(UndoReactionData *pData)
   endInsertRows();
 }
 
-
-void CQReactionDM::deleteReactionRows(QList <UndoReactionData *>& pData)
+void CQReactionDM::deleteReactionRow(UndoReactionData * pData)
 {
   GET_MODEL_OR_RETURN(pModel);
 
+  if (pModel->getReactions().getIndex(pData->getName()) == C_INVALID_INDEX)
+    return;
+
+  CReaction *pReaction = pModel->getReactions()[pData->getName()];
+  std::string key = pReaction->getKey();
+
+  beginRemoveRows(QModelIndex(), 1, 1);
+  pModel->removeReaction(pReaction);
+  emit notifyGUI(ListViews::REACTION, ListViews::DELETE, key);
+  emit notifyGUI(ListViews::REACTION, ListViews::DELETE, "");//Refresh all as there may be dependencies.
+  endRemoveRows();
+}
+
+void CQReactionDM::deleteReactionRows(QList <UndoReactionData *>& pData)
+{
   switchToWidget(CCopasiUndoCommand::REACTIONS);
 
   QList <UndoReactionData *>::const_iterator j;
@@ -649,13 +676,8 @@ void CQReactionDM::deleteReactionRows(QList <UndoReactionData *>& pData)
   for (j = pData.begin(); j != pData.end(); ++j)
     {
       UndoReactionData * data = *j;
-      CReaction *pReaction =  pModel->getReactions()[data->getName()];
-      std::string key = pReaction->getKey();
-      beginRemoveRows(QModelIndex(), 1, 1);
-      pModel->removeReaction(pReaction->getKey());
-      emit notifyGUI(ListViews::REACTION, ListViews::DELETE, key);
-      emit notifyGUI(ListViews::REACTION, ListViews::DELETE, "");//Refresh all as there may be dependencies.
-      endRemoveRows();
+      deleteReactionRow(data);
+
     }
 }
 

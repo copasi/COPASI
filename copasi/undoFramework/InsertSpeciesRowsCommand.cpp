@@ -20,45 +20,58 @@
 #include "InsertSpeciesRowsCommand.h"
 #include "UndoSpeciesData.h"
 
-InsertSpecieRowsCommand::InsertSpecieRowsCommand(int position, int rows, CQSpecieDM *pSpecieDM, const QModelIndex& index)
+InsertSpecieRowsCommand::InsertSpecieRowsCommand(int position, int rows, CQSpecieDM * pSpecieDM)
+  : CCopasiUndoCommand("Species", SPECIES_INSERT)
+  , mpSpecieDM(pSpecieDM)
+  , mRows(rows)
+  , mPosition(position)
+  , mIndex()
+  , mpSpeciesData()
+  , mValue()
+{
+  setText(QObject::tr(": Inserted new species"));
+}
+
+InsertSpecieRowsCommand::InsertSpecieRowsCommand(int position, int rows, CQSpecieDM *pSpecieDM, const QModelIndex& index, const QVariant& value)
   : CCopasiUndoCommand("Species", SPECIES_INSERT)
   , mpSpecieDM(pSpecieDM)
   , mRows(rows)
   , mPosition(position)
   , mIndex(index)
-  , mpSpeciesData(NULL)
+  , mpSpeciesData()
+  , mValue(value)
 {
   setText(QObject::tr(": Inserted new species"));
 }
 
 void InsertSpecieRowsCommand::redo()
 {
-  if (mpSpeciesData == NULL)
+  if (mpSpeciesData.count() == 0)
     {
-      mpSpecieDM->insertNewSpecieRow(mPosition, mRows, QModelIndex());
-      GET_MODEL_OR_RETURN(pModel);
-
-      CMetab *pSpecies = pModel->getMetabolites()[mPosition];
-      mpSpeciesData = new UndoSpeciesData(pSpecies);
+      mpSpeciesData = mpSpecieDM->insertNewSpecieRow(mPosition, mRows, mIndex, mValue);
     }
   else
     {
-      mpSpecieDM->addSpecieRow(mpSpeciesData);
+      mpSpecieDM->insertSpecieRows(mpSpeciesData);
     }
 
   setUndoState(true);
   setAction("Add to list");
-  setName(mpSpeciesData->getName());
+  setName(mpSpeciesData[0]->getName());
 }
 
 void InsertSpecieRowsCommand::undo()
 {
-  mpSpecieDM->deleteSpecieRow(mpSpeciesData);
+  mpSpecieDM->deleteSpecieRows(mpSpeciesData);
   setUndoState(false);
   setAction("Remove from list");
 }
 
 InsertSpecieRowsCommand::~InsertSpecieRowsCommand()
 {
-  pdelete(mpSpeciesData);
+  foreach(UndoSpeciesData * data, mpSpeciesData)
+  {
+    pdelete(data);
+  }
+  mpSpeciesData.clear();
 }

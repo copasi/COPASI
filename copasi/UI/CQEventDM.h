@@ -50,7 +50,7 @@ public:
   //TODO Undo
 #ifdef COPASI_UNDO
   bool eventDataChange(const QModelIndex &index, const QVariant &value, int role);
-  void insertNewEventRow(int position, int rows);
+  void insertNewEventRow(int position, int rows, const QModelIndex& index, const QVariant& value);
   void addEventRow(UndoEventData *pEventData);
   void deleteEventRow(UndoEventData *pEventData);
   bool removeEventRows(QModelIndexList rows, const QModelIndex&);

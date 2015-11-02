@@ -15,13 +15,17 @@
 
 #include "CCopasiUndoCommand.h"
 
+#include <QList>
+
 class CMetab;
 class UndoSpeciesData;
 
 class InsertSpecieRowsCommand: public CCopasiUndoCommand
 {
 public:
-  InsertSpecieRowsCommand(int position, int rows, CQSpecieDM *pSpecieDM, const QModelIndex&);
+  InsertSpecieRowsCommand(int position, int rows, CQSpecieDM *pSpecieDM);
+  InsertSpecieRowsCommand(int position, int rows, CQSpecieDM *pSpecieDM,
+                          const QModelIndex& index, const QVariant& value);
   virtual ~InsertSpecieRowsCommand();
 
   void redo();
@@ -31,7 +35,8 @@ private:
   CQSpecieDM* mpSpecieDM;
   int mRows, mPosition;
   QModelIndex mIndex;
-  UndoSpeciesData* mpSpeciesData;
+  QList<UndoSpeciesData*> mpSpeciesData;
+  QVariant mValue;
 
 };
 

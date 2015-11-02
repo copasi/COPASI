@@ -246,9 +246,7 @@ bool CQGlobalQuantityDM::setData(const QModelIndex &index, const QVariant &value
   if (defaultRow)
     {
       int newRow = rowCount() - 1;
-      mpUndoStack->push(new InsertGlobalQuantityRowsCommand(newRow, 1, this, QModelIndex()));
-      QModelIndex newIndex = createIndex(newRow, index.column(), Qt::DisplayRole);
-      mpUndoStack->push(new GlobalQuantityDataChangeCommand(newIndex, value, role, this));
+      mpUndoStack->push(new InsertGlobalQuantityRowsCommand(newRow, 1, this, index, value));
     }
   else
     {
@@ -301,7 +299,7 @@ bool CQGlobalQuantityDM::setData(const QModelIndex &index, const QVariant &value
 bool CQGlobalQuantityDM::insertRows(int position, int rows, const QModelIndex&)
 {
 #ifdef COPASI_UNDO
-  mpUndoStack->push(new InsertGlobalQuantityRowsCommand(position, rows, this, QModelIndex()));
+  mpUndoStack->push(new InsertGlobalQuantityRowsCommand(position, rows, this));
 #else
   beginInsertRows(QModelIndex(), position, position + rows - 1);
 
@@ -452,13 +450,31 @@ bool CQGlobalQuantityDM::globalQuantityDataChange(const QModelIndex &index, cons
   return true;
 }
 
-void CQGlobalQuantityDM::insertNewGlobalQuantityRow(int position, int rows, const QModelIndex&)
+void CQGlobalQuantityDM::insertNewGlobalQuantityRow(int position, int rows, const QModelIndex& index, const QVariant& value)
 {
+  GET_MODEL_OR_RETURN(pModel);
+
   beginInsertRows(QModelIndex(), position, position + rows - 1);
+
+  int column = index.column();
 
   for (int row = 0; row < rows; ++row)
     {
-      CModelValue *pGQ = (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->createModelValue(TO_UTF8(createNewName("quantity", COL_NAME_GQ)));
+      QString name = index.isValid() && column == COL_NAME_GQ ? value.toString()
+                     : createNewName("quantity", COL_NAME_GQ);
+
+      double initial = index.isValid() && column == COL_INITIAL_GQ ? value.toDouble()
+                       : 0.0;
+
+      CModelValue *pGQ = pModel->createModelValue(TO_UTF8(name), initial);
+
+      if (pGQ == NULL) continue;
+
+      if (index.isValid() && column == COL_TYPE_GQ)
+        {
+          pGQ->setStatus((CModelEntity::Status) mItemToType[value.toInt()]);
+        }
+
       emit notifyGUI(ListViews::MODELVALUE, ListViews::ADD, pGQ->getKey());
     }
 

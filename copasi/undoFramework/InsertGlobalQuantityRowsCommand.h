@@ -21,7 +21,8 @@ class CQGlobalQuantityDM;
 class InsertGlobalQuantityRowsCommand: public CCopasiUndoCommand
 {
 public:
-  InsertGlobalQuantityRowsCommand(int position, int rows, CQGlobalQuantityDM *pGlobalQuantityDM, const QModelIndex&);
+  InsertGlobalQuantityRowsCommand(int position, int rows, CQGlobalQuantityDM *pGlobalQuantityDM);
+  InsertGlobalQuantityRowsCommand(int position, int rows, CQGlobalQuantityDM *pGlobalQuantityDM, const QModelIndex& index, const QVariant& value);
   virtual ~InsertGlobalQuantityRowsCommand();
 
   void redo();
@@ -32,6 +33,7 @@ private:
   int mRows, mPosition;
   QModelIndex mIndex;
   UndoGlobalQuantityData* mpGlobalQuantityData;
+  QVariant mValue;
 };
 
 #endif /* INSERTGLOBALQUANTITYROWSCOMMAND_H_ */

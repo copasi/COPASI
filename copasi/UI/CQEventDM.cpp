@@ -217,9 +217,7 @@ bool CQEventDM::setData(const QModelIndex &index, const QVariant &value,
   if (defaultRow)
     {
       int newRow = rowCount() - 1;
-      mpUndoStack->push(new InsertEventRowsCommand(newRow, 1, this, QModelIndex()));
-      QModelIndex newIndex = createIndex(newRow, index.column(), Qt::DisplayRole);
-      mpUndoStack->push(new EventDataChangeCommand(newIndex, value, role, this));
+      mpUndoStack->push(new InsertEventRowsCommand(newRow, 1, this, index, value));
     }
   else
     {
@@ -261,7 +259,7 @@ bool CQEventDM::setData(const QModelIndex &index, const QVariant &value,
 bool CQEventDM::insertRows(int position, int rows, const QModelIndex&)
 {
 #ifdef COPASI_UNDO
-  mpUndoStack->push(new InsertEventRowsCommand(position, rows, this, QModelIndex()));
+  mpUndoStack->push(new InsertEventRowsCommand(position, rows, this));
 #else
   beginInsertRows(QModelIndex(), position, position + rows - 1);
 
@@ -407,7 +405,7 @@ bool CQEventDM::eventDataChange(const QModelIndex &index, const QVariant &value,
   return true;
 }
 
-void CQEventDM::insertNewEventRow(int position, int rows)
+void CQEventDM::insertNewEventRow(int position, int rows, const QModelIndex& index, const QVariant& value)
 {
   GET_MODEL_OR_RETURN(pModel);
 
@@ -415,8 +413,10 @@ void CQEventDM::insertNewEventRow(int position, int rows)
 
   for (int row = 0; row < rows; ++row)
     {
+      QString name = index.isValid() && index.column() == COL_NAME_EVENTS ?
+                     value.toString() : createNewName("event", COL_NAME_EVENTS);
       CEvent *pEvent =
-        pModel->createEvent(TO_UTF8(createNewName("event", COL_NAME_EVENTS)));
+        pModel->createEvent(TO_UTF8(name));
       emit notifyGUI(ListViews::EVENT, ListViews::ADD, pEvent->getKey());
     }
 
