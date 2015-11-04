@@ -26,12 +26,14 @@
 #include "undoFramework/RemoveReactionRowsCommand.h"
 #include "undoFramework/RemoveAllReactionRowsCommand.h"
 #include "undoFramework/ReactionDataChangeCommand.h"
+#include "undoFramework/ReactionChangeCommand.h"
 #include "undoFramework/UndoReactionData.h"
 #endif
 
-CQReactionDM::CQReactionDM(QObject *parent):
-  CQBaseDataModel(parent),
-  mNewEquation()
+CQReactionDM::CQReactionDM(QObject *parent)
+  : CQBaseDataModel(parent)
+  , mNewEquation()
+  , mCreatedKeys()
 {}
 
 int CQReactionDM::rowCount(const QModelIndex&) const
@@ -248,18 +250,13 @@ void CQReactionDM::setEquation(const CReaction *pRea, const QModelIndex& index, 
 {
   std::string objKey = pRea->getKey();
   mNewEquation = value.toString();
+  mCreatedKeys.clear();
 
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
-  assert(pDataModel != NULL);
-  CModel * pModel = pDataModel->getModel();
-
-  if (pModel == NULL) return;
+  GET_MODEL_OR_RETURN(pModel);
 
   // this loads the reaction into a CReactionInterface object.
   // the gui works on this object and later writes back the changes to ri;
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CReactionInterface ri((*CCopasiRootContainer::getDatamodelList())[0]->getModel());
+  CReactionInterface ri(pModel);
   ri.initFromReaction(objKey);
 
   if (TO_UTF8(mNewEquation) != ri.getChemEqString())
@@ -333,8 +330,8 @@ void CQReactionDM::setEquation(const CReaction *pRea, const QModelIndex& index, 
     }
 
   //first check if new metabolites need to be created
-  bool createdMetabs = ri.createMetabolites();
-  bool createdObjects = ri.createOtherObjects();
+  bool createdMetabs = ri.createMetabolites(mCreatedKeys);
+  bool createdObjects = ri.createOtherObjects(mCreatedKeys);
   //this writes all changes to the reaction
   ri.writeBackToReaction(NULL);
 
@@ -461,7 +458,11 @@ bool CQReactionDM::removeRows(QModelIndexList rows, const QModelIndex&)
 }
 
 #ifdef COPASI_UNDO
-bool CQReactionDM::reactionDataChange(const QModelIndex &index, const QVariant &value, int role, QString &funcName)
+bool CQReactionDM::reactionDataChange(const QModelIndex &index,
+                                      const QVariant &value,
+                                      int role,
+                                      QString &funcName,
+                                      std::vector<std::string>& createdObjects)
 {
   switchToWidget(CCopasiUndoCommand::REACTIONS);
 
@@ -482,8 +483,8 @@ bool CQReactionDM::reactionDataChange(const QModelIndex &index, const QVariant &
 
   // this loads the reaction into a CReactionInterface object.
   // the gui works on this object and later writes back the changes to ri;
-  CReactionInterface ri(pModel);
   CReaction *pRea = pModel->getReactions()[index.row()];
+  bool refreshAll = false;
 
   if (index.column() == COL_NAME_REACTIONS)
     {
@@ -492,8 +493,21 @@ bool CQReactionDM::reactionDataChange(const QModelIndex &index, const QVariant &
     }
   else if (index.column() == COL_EQUATION)
     {
+      mCreatedKeys.clear();
+
+      if (!createdObjects.empty())
+        {
+          pRea->cleanup();
+          pRea->compile();
+
+          ReactionChangeCommand::removeCreatedObjects(createdObjects,
+              pModel, pRea);
+          refreshAll = true;
+        }
+
       setEquation(pRea, index, value);
       updateReactionWithFunctionName(pRea, funcName);
+      createdObjects.assign(mCreatedKeys.begin(), mCreatedKeys.end());
     }
 
   if (defaultRow && this->index(index.row(), COL_NAME_REACTIONS).data().toString() == "reaction")
@@ -501,6 +515,7 @@ bool CQReactionDM::reactionDataChange(const QModelIndex &index, const QVariant &
 
   emit dataChanged(index, index);
   emit notifyGUI(ListViews::REACTION, ListViews::CHANGE, pRea->getKey());
+  emit notifyGUI(ListViews::REACTION, ListViews::CHANGE, "");
 
 
   return true;
@@ -516,9 +531,15 @@ bool CQReactionDM::updateReactionWithFunctionName(CReaction *pRea, QString &func
   return false;
 }
 
-void CQReactionDM::insertNewReactionRow(int position, int rows, const QModelIndex& index, const QVariant& value)
+void CQReactionDM::insertNewReactionRow(InsertReactionRowsCommand* command)
 {
   GET_MODEL_OR_RETURN(pModel);
+
+  int position = command->position();
+  int rows = command->rows();
+  const QModelIndex& index = command->index();
+  const QVariant& value = command->value();
+
 
   beginInsertRows(QModelIndex(), position, position + rows - 1);
 
@@ -526,6 +547,7 @@ void CQReactionDM::insertNewReactionRow(int position, int rows, const QModelInde
 
   for (int row = 0; row < rows; ++row)
     {
+      mCreatedKeys.clear();
       QString name = index.isValid() && column == COL_NAME_REACTIONS ?
                      value.toString()
                      : createNewName("reaction", COL_NAME_REACTIONS);
@@ -537,6 +559,8 @@ void CQReactionDM::insertNewReactionRow(int position, int rows, const QModelInde
         {
           setEquation(pRea, index, value);
         }
+
+      command->initializeUndoData(pRea, mCreatedKeys);
 
       std::string key = pRea->getKey();
       emit notifyGUI(ListViews::REACTION, ListViews::ADD, key);
@@ -648,6 +672,7 @@ void CQReactionDM::addReactionRow(UndoReactionData *pData)
   beginInsertRows(QModelIndex(), 1, 1);
   emit notifyGUI(ListViews::REACTION, ListViews::ADD, pReaction->getKey());
   endInsertRows();
+  emit notifyGUI(ListViews::REACTION, ListViews::ADD, "");//Refresh all as there may be dependencies.
 }
 
 void CQReactionDM::deleteReactionRow(UndoReactionData * pData)
@@ -662,6 +687,7 @@ void CQReactionDM::deleteReactionRow(UndoReactionData * pData)
 
   beginRemoveRows(QModelIndex(), 1, 1);
   pModel->removeReaction(pReaction);
+  ReactionChangeCommand::removeCreatedObjects(pData->getAdditionalKeys(), pModel, NULL);
   emit notifyGUI(ListViews::REACTION, ListViews::DELETE, key);
   emit notifyGUI(ListViews::REACTION, ListViews::DELETE, "");//Refresh all as there may be dependencies.
   endRemoveRows();
@@ -675,9 +701,7 @@ void CQReactionDM::deleteReactionRows(QList <UndoReactionData *>& pData)
 
   for (j = pData.begin(); j != pData.end(); ++j)
     {
-      UndoReactionData * data = *j;
-      deleteReactionRow(data);
-
+      deleteReactionRow(*j);
     }
 }
 

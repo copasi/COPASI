@@ -11,6 +11,9 @@
 #ifndef CQReactionDM_H
 #define CQReactionDM_H
 
+#include <vector>
+#include <string>
+
 #include "model/CModel.h"
 #include "CQBaseDataModel.h"
 
@@ -24,6 +27,7 @@
 #ifdef COPASI_UNDO
 class CReactionInterface;
 class UndoReactionData;
+class InsertReactionRowsCommand;
 #endif
 
 class CQReactionDM : public CQBaseDataModel
@@ -48,8 +52,13 @@ public:
 
   //TODO Undo
 #ifdef COPASI_UNDO
-  bool reactionDataChange(const QModelIndex &index, const QVariant &value, int role, QString &funcName);
-  void insertNewReactionRow(int position, int rows, const QModelIndex& index, const QVariant& value);
+  bool reactionDataChange(const QModelIndex &index,
+                          const QVariant &value,
+                          int role,
+                          QString &funcName,
+                          std::vector<std::string>& createdObjects);
+
+  void insertNewReactionRow(InsertReactionRowsCommand* command);
   void addReactionRow(CReaction *pReaction);
   void addReactionRow(UndoReactionData* pData);
   void deleteReactionRow(CReaction *pReaction);
@@ -71,6 +80,7 @@ private:
   void setEquation(const CReaction *pRea, const QModelIndex& index, const QVariant &value);
 
   QString mNewEquation;
+  std::vector<std::string> mCreatedKeys;
 };
 
 #endif //CQReactionDM_H

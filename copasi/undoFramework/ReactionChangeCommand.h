@@ -40,9 +40,8 @@ public:
   static void removeCreatedObjects(const std::vector<std::string>& createdObjects,
                                    CModel* model, CReaction* reaction);
 
-  void setCreatedObjects(const std::vector<std::string>& createdObjects);
-
   const std::vector<std::string>& getCreatedObjects() const;
+  void setCreatedObjects(const std::vector<std::string>& createdObjects);
 
 private:
   ReactionsWidget1* mpReactionWidget;

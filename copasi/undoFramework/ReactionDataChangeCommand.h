@@ -13,6 +13,9 @@
 #ifndef REACTIONDATACHANGECOMMAND_H_
 #define REACTIONDATACHANGECOMMAND_H_
 
+#include <vector>
+#include <string>
+
 #include "CCopasiUndoCommand.h"
 
 class CQReactionDM;
@@ -36,6 +39,7 @@ private:
   int mRole;
   Path mPathIndex;
   QString mOldFunctionName, mNewFunctionName;
+  std::vector<std::string> mCreatedObjects;
 };
 
 #endif /* REACTIONDATACHANGECOMMAND_H_ */

@@ -90,8 +90,9 @@ UndoReactionData::fillObject(CModel *pModel)
   CChemEqInterface *chem = new CChemEqInterface(pModel);
   chem->setChemEqString(mpRi->getChemEqString());
   chem->writeToChemEq(pRea->getChemEq());
-  mpRi->createMetabolites();
-  mpRi->createOtherObjects();
+  mAdditionalKeys.clear();
+  mpRi->createMetabolites(mAdditionalKeys);
+  mpRi->createOtherObjects(mAdditionalKeys);
   mpRi->writeBackToReaction(pRea);
 
 }
@@ -105,4 +106,16 @@ void UndoReactionData::setRi(CReactionInterface *pRi)
 {
   mpRi = pRi;
 }
+
+const std::vector<std::string>& UndoReactionData::getAdditionalKeys() const
+{
+  return mAdditionalKeys;
+}
+
+void
+UndoReactionData::setAdditionalKeys(const std::vector<std::string> &additionalKeys)
+{
+  mAdditionalKeys = additionalKeys;
+}
+
 

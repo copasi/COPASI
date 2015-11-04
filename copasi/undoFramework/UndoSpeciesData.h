@@ -58,6 +58,9 @@ public:
   void setINumber(double iNumber);
 
 
+  bool getCreatedCompartment() const;
+  void setCreatedCompartment(bool createdCompartment);
+
 private:
 
   /**
@@ -89,6 +92,8 @@ private:
    *  the expression if it exist
    */
   std::string mExpression;
+
+  bool mCreatedCompartment;
 
 };
 

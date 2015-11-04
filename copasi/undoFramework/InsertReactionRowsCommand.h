@@ -13,6 +13,9 @@
 #ifndef INSERTREACTIONROWSCOMMAND_H_
 #define INSERTREACTIONROWSCOMMAND_H_
 
+#include <vector>
+#include <string>
+
 #include "CCopasiUndoCommand.h"
 
 class UndoReactionData;
@@ -29,6 +32,20 @@ public:
 
   void redo();
   void undo();
+
+  const QVariant& value() const;
+  void setValue(const QVariant &value);
+
+  const QModelIndex& index() const;
+  void setIndex(const QModelIndex &index);
+
+  int position() const;
+  void setPosition(int position);
+
+  int rows() const;
+  void setRows(int rows);
+
+  void initializeUndoData(CReaction * reaction, const std::vector<std::string> &createdKeys);
 
 private:
   CQReactionDM* mpReactionDM;

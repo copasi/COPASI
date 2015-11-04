@@ -38,6 +38,7 @@ UndoSpeciesData::UndoSpeciesData(const std::string &key  /*= ""*/,
   , mStatus(CModelEntity::REACTIONS)
   , mInitialExpression()
   , mExpression()
+  , mCreatedCompartment(false)
 {
 }
 
@@ -50,6 +51,7 @@ UndoSpeciesData::UndoSpeciesData(const CMetab *metab
   , mStatus(metab->getStatus())
   , mInitialExpression(metab->getInitialExpression())
   , mExpression(metab->getExpression())
+  , mCreatedCompartment(false)
 {
   if (trackDependencies)
     mpData->initializeFrom(metab);
@@ -204,3 +206,14 @@ UndoSpeciesData::setINumber(double iNumber)
 {
   mINumber = iNumber;
 }
+
+bool UndoSpeciesData::getCreatedCompartment() const
+{
+  return mCreatedCompartment;
+}
+
+void UndoSpeciesData::setCreatedCompartment(bool createdCompartment)
+{
+  mCreatedCompartment = createdCompartment;
+}
+

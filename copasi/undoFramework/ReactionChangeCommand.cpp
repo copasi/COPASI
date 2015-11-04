@@ -122,14 +122,10 @@ ReactionChangeCommand::removeCreatedObjects(const std::vector<std::string>& crea
       if (objectType == "Compartment")
         {
           model->removeCompartment(key, true);
-          /*dynamic_cast<CQCopasiApplication*>(qApp)->getMainWindow()->getDataModel()
-            ->notify(ListViews::COMPARTMENT, ListViews::DELETE, key);*/
         }
       else if (objectType == "Metabolite")
         {
           model->removeMetabolite(key, true);
-          /*  dynamic_cast<CQCopasiApplication*>(qApp)->getMainWindow()->getDataModel()
-              ->notify(ListViews::METABOLITE, ListViews::DELETE, key);*/
         }
       else
         {

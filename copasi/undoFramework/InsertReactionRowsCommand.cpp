@@ -10,6 +10,8 @@
  *      Author: dada
  */
 
+
+
 #include <QUndoCommand>
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "report/CCopasiRootContainer.h"
@@ -57,14 +59,12 @@ InsertReactionRowsCommand::~InsertReactionRowsCommand()
   pdelete(mpReactionData)
 }
 
-void InsertReactionRowsCommand::redo()
+void
+InsertReactionRowsCommand::redo()
 {
   if (mpReactionData == NULL)
     {
-      mpReactionDM->insertNewReactionRow(mPosition, mRows, mIndex, mValue);
-      GET_MODEL_OR_RETURN(pModel);
-      mpReaction = pModel->getReactions()[mPosition];
-      mpReactionData = new UndoReactionData(mpReaction);
+      mpReactionDM->insertNewReactionRow(this);
     }
   else
     {
@@ -76,10 +76,67 @@ void InsertReactionRowsCommand::redo()
   setName(mpReactionData->getName());
 }
 
-void InsertReactionRowsCommand::undo()
+void
+InsertReactionRowsCommand::undo()
 {
   mpReactionDM->deleteReactionRow(mpReactionData);
   setUndoState(false);
   setAction("Remove from list");
+}
+
+const QVariant&
+InsertReactionRowsCommand::value() const
+{
+  return mValue;
+}
+
+void
+InsertReactionRowsCommand::setValue(const QVariant &value)
+{
+  mValue = value;
+}
+
+const QModelIndex&
+InsertReactionRowsCommand::index() const
+{
+  return mIndex;
+}
+
+void
+InsertReactionRowsCommand::setIndex(const QModelIndex &index)
+{
+  mIndex = index;
+}
+
+int
+InsertReactionRowsCommand::position() const
+{
+  return mPosition;
+}
+
+void
+InsertReactionRowsCommand::setPosition(int position)
+{
+  mPosition = position;
+}
+
+int
+InsertReactionRowsCommand::rows() const
+{
+  return mRows;
+}
+
+void
+InsertReactionRowsCommand::setRows(int rows)
+{
+  mRows = rows;
+}
+
+void InsertReactionRowsCommand::initializeUndoData(CReaction * reaction, const std::vector<std::string>& createdKeys)
+{
+  pdelete(mpReactionData);
+  mpReactionData = new UndoReactionData(reaction);
+  mpReactionData->setAdditionalKeys(createdKeys);
+
 }
 

@@ -30,6 +30,7 @@ ReactionDataChangeCommand::ReactionDataChangeCommand(
   , mPathIndex()
   , mOldFunctionName()
   , mNewFunctionName("")
+  , mCreatedObjects()
 {
   // stores the data
 
@@ -76,12 +77,12 @@ ReactionDataChangeCommand::~ReactionDataChangeCommand()
 
 void ReactionDataChangeCommand::redo()
 {
-  mpReactionDM->reactionDataChange(mIndex, mNew, mRole, mNewFunctionName);
+  mpReactionDM->reactionDataChange(mIndex, mNew, mRole, mNewFunctionName, mCreatedObjects);
 }
 
 void ReactionDataChangeCommand::undo()
 {
   //mIndex = pathToIndex(mPathIndex, mpReactionDM);
-  mpReactionDM->reactionDataChange(mIndex, mOld, mRole, mOldFunctionName);
+  mpReactionDM->reactionDataChange(mIndex, mOld, mRole, mOldFunctionName, mCreatedObjects);
   setAction("Undone change");
 }

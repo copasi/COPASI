@@ -795,9 +795,12 @@ QList <UndoSpeciesData *> CQSpecieDM::insertNewSpecieRow(int position, int rows,
   QList <UndoSpeciesData *> result;
   GET_MODEL_OR(pModel, return result);
 
+  bool createdCompartment = false;
+
   if (pModel->getCompartments().size() == 0)
     {
       CCompartment* pComp = pModel->createCompartment("compartment");
+      createdCompartment = true;
 
       if (mNotify)
         {
@@ -835,7 +838,9 @@ QList <UndoSpeciesData *> CQSpecieDM::insertNewSpecieRow(int position, int rows,
           emit notifyGUI(ListViews::METABOLITE, ListViews::ADD, mpSpecies->getKey());
         }
 
-      result.append(new UndoSpeciesData(mpSpecies));
+      UndoSpeciesData* data = new UndoSpeciesData(mpSpecies);
+      data->setCreatedCompartment(row == 0 && createdCompartment);
+      result.append(data);
     }
 
   endInsertRows();
@@ -853,6 +858,21 @@ void CQSpecieDM::deleteSpecieRow(UndoSpeciesData *pSpecieData)
   if (index == C_INVALID_INDEX) return;
 
   removeRow((int) index);
+
+  if (!pSpecieData->getCreatedCompartment()) return;
+
+  index = pModel->getCompartments().getIndex(pSpecieData->getCompartment());
+
+  if (index == C_INVALID_INDEX) return;
+
+  CCompartment* pComp = pModel->getCompartments()[index];
+
+  if (pComp == NULL) return;
+
+  std::string key = pComp->getKey();
+  pModel->removeCompartment(index);
+  emit notifyGUI(ListViews::COMPARTMENT, ListViews::DELETE, key);
+
 }
 
 void CQSpecieDM::addSpecieRow(UndoSpeciesData *pSpecieData)
@@ -953,12 +973,7 @@ void CQSpecieDM::deleteSpecieRows(QList <UndoSpeciesData *>& pData)
 
   for (j = pData.begin(); j != pData.end(); ++j)
     {
-      UndoSpeciesData * data = *j;
-      size_t index = pModel->findMetabByName(data->getName());
-
-      if (index == C_INVALID_INDEX) continue;
-
-      removeRow((int) index);
+      deleteSpecieRow(*j);
     }
 }
 
