@@ -555,6 +555,9 @@ void CQReactionDM::insertNewReactionRow(InsertReactionRowsCommand* command)
 
       if (pRea == NULL) continue;
 
+      std::string key = pRea->getKey();
+      emit notifyGUI(ListViews::REACTION, ListViews::ADD, key);
+
       if (index.isValid() && column == COL_EQUATION)
         {
           setEquation(pRea, index, value);
@@ -562,8 +565,6 @@ void CQReactionDM::insertNewReactionRow(InsertReactionRowsCommand* command)
 
       command->initializeUndoData(pRea, mCreatedKeys);
 
-      std::string key = pRea->getKey();
-      emit notifyGUI(ListViews::REACTION, ListViews::ADD, key);
     }
 
   endInsertRows();
@@ -672,7 +673,7 @@ void CQReactionDM::addReactionRow(UndoReactionData *pData)
   beginInsertRows(QModelIndex(), 1, 1);
   emit notifyGUI(ListViews::REACTION, ListViews::ADD, pReaction->getKey());
   endInsertRows();
-  emit notifyGUI(ListViews::REACTION, ListViews::ADD, "");//Refresh all as there may be dependencies.
+  emit notifyGUI(ListViews::MODEL, ListViews::CHANGE, "");//Refresh all as there may be dependencies.
 }
 
 void CQReactionDM::deleteReactionRow(UndoReactionData * pData)
