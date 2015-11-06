@@ -1,4 +1,4 @@
-// Copyright (C) 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2014 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -24,7 +24,7 @@ public:
 
   C_FLOAT64 * operator [](const size_t & row);
 
-  CVectorCore< C_FLOAT64 > getRow(const size_t & row);
+  const CVectorCore< C_FLOAT64 > & getRow(const size_t & row);
 
   void setRow(const size_t & row, const CVectorCore< C_FLOAT64 > & values);
 

@@ -26,14 +26,20 @@ C_FLOAT64 * CMathHistoryCore::operator [](const size_t & row)
   return mpBuffer + row * mColsAllocated;
 }
 
-CVectorCore< C_FLOAT64 > CMathHistoryCore::getRow(const size_t & row)
+const CVectorCore< C_FLOAT64 > & CMathHistoryCore::getRow(const size_t & row)
 {
-  return CVectorCore< C_FLOAT64 >(mCols, mpBuffer + row * mColsAllocated);
+  static CVectorCore< C_FLOAT64 > Row;
+  Row.initialize(mCols, mpBuffer + row * mColsAllocated);
+
+  return Row;
 }
 
 void CMathHistoryCore::setRow(const size_t & row, const CVectorCore< C_FLOAT64 > & values)
 {
-  getRow(row) = values;
+  CVectorCore< C_FLOAT64 > Row;
+  Row.initialize(mCols, mpBuffer + row * mColsAllocated);
+
+  Row = values;
 }
 
 void CMathHistoryCore::initialize(const size_t & rows,

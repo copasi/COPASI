@@ -259,6 +259,7 @@ bool CMathDependencyNode::buildUpdateSequence(const CMath::SimulationContextFlag
                     ((pMathObject = dynamic_cast< const CMathObject *>(pObject)) == NULL &&
                      (pParticleNumber = dynamic_cast< const CParticleReference *>(pObject)) == NULL) ||
                     (pMathObject != NULL &&
+                     pMathObject->getCorrespondingProperty() != static_cast< const CMathObject *>(mpObject) &&
                      (pMathObject->getSimulationType() != CMath::Dependent ||
                       pMathObject->getValueType() != CMath::Value)) ||
                     (pParticleNumber != NULL &&

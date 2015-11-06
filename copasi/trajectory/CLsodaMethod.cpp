@@ -550,8 +550,8 @@ void CLsodaMethod::evalF(const C_FLOAT64 * t , const C_FLOAT64 * /* y */, C_FLOA
   memcpy(ydot, mpYdot, mData.dim * sizeof(C_FLOAT64));
 
 #ifdef DEBUG_OUTPUT
-  std::cout << "State: " << mpContainer->getState(*mpReducedModel) << std::endl;
-  std::cout << "Rate:  " << mpContainer->getRate(*mpReducedModel) << std::endl;
+  std::cout << "State:     " << mpContainer->getState(false) << std::endl;
+  std::cout << "Rate:      " << mpContainer->getRate(false) << std::endl;
 #endif // DEBUG_OUTPUT
 
   return;

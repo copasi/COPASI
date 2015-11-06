@@ -1,16 +1,16 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-// and The University of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2002 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc. and EML Research, gGmbH. 
-// All rights reserved. 
+// Copyright (C) 2002 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 #ifndef COPASI_CVector
 #define COPASI_CVector
@@ -33,9 +33,6 @@ std::ostream &operator<<(std::ostream &os, const CVectorCore< CType > & A);
 
 template <class CType> class CVectorCore
 {
-  friend class CMathHistoryCore;
-  friend class CMathContainer;
-
 public:
   typedef CType elementType;
 
@@ -56,17 +53,19 @@ public:
   /**
    * Specific constructor
    * @param const size_t & size (default: 0)
-   * @param CType * vector (default: NULL)
+   * @param CType * buffer (default: NULL)
    */
   CVectorCore(const size_t & size = 0,
-              CType * vector = NULL):
+              CType * buffer = NULL):
     mSize(size),
-    mpBuffer(vector)
+    mpBuffer(buffer)
   {}
 
 private:
   /**
-   * Copy constructor
+   * Copy constructor.
+   * Note, this is intentionally private as this constructor must not be accessed,
+   * i.e., do not declare any class or method as friend.
    * @param const CVectorCore< CType > & src
    */
   CVectorCore(const CVectorCore< CType > & src):
@@ -120,10 +119,13 @@ public:
 
     // Behave like the assignment operator of CVector if the sizes match
     if (mpBuffer != rhs.mpBuffer &&
-        mSize == rhs.mSize &&
-        mSize > 0)
+        mSize == rhs.mSize)
       {
-        memcpy((void *) mpBuffer, (void *) rhs.array(), mSize * sizeof(CType));
+        if (mSize > 0)
+          {
+            memcpy((void *) mpBuffer, (void *) rhs.array(), mSize * sizeof(CType));
+          }
+
         return *this;
       }
 
