@@ -27,7 +27,7 @@
 DeleteSpeciesCommand::DeleteSpeciesCommand(CQSpeciesDetail *pSpecieDetail)
   : CCopasiUndoCommand("Species", SPECIES_DELETE)
   , mFirstTime(true)
-  , mpSpeciesData(new UndoSpeciesData(mpSpecieDetail->mpMetab))
+  , mpSpeciesData(new UndoSpeciesData(pSpecieDetail->mpMetab))
   , mpSpecieDetail(pSpecieDetail)
 {
   const std::string& sName = mpSpecieDetail->mpMetab->getObjectName();

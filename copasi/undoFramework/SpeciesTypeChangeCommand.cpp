@@ -24,7 +24,7 @@ SpeciesTypeChangeCommand::SpeciesTypeChangeCommand(
   int type, int currentType, CQSpeciesDetail *pSpeciesDetail)
   : CCopasiUndoCommand("Species", SPECIES_TYPE_CHANGE, "Change", "Type",
                        CModelEntity::XMLStatus[type], CModelEntity::XMLStatus[currentType],
-                       mpSpeciesDetail->mpMetab->getObjectName())
+                       pSpeciesDetail->mpMetab->getObjectName())
   , mNewType(type)
   , mOldType(currentType)
   , mpSpeciesDetail(pSpeciesDetail)

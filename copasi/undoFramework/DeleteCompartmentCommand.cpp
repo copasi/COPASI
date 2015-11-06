@@ -24,7 +24,7 @@
 DeleteCompartmentCommand::DeleteCompartmentCommand(CQCompartment *pCompartment)
   : CCopasiUndoCommand("Compartment", COMPARTMENT_DELETE)
   , mFirstTime(true)
-  , mpCompartmentData(new UndoCompartmentData(mpCompartment->mpCompartment))
+  , mpCompartmentData(new UndoCompartmentData(pCompartment->mpCompartment))
   , mpCompartment(pCompartment)
 {
   setName(mpCompartmentData->getName());

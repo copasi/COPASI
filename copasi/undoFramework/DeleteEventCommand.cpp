@@ -23,7 +23,7 @@
 DeleteEventCommand::DeleteEventCommand(CQEventWidget1 *pEVentWidget1)
   : CCopasiUndoCommand("Event", EVENT_DELETE)
   , mFirstTime(true)
-  , mpEventData(new UndoEventData(mpEVentWidget1->mpEvent))
+  , mpEventData(new UndoEventData(pEVentWidget1->mpEvent))
   , mpEVentWidget1(pEVentWidget1)
 {
   const std::string& sName = mpEVentWidget1->mpEvent->getObjectName();

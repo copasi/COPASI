@@ -24,7 +24,7 @@
 DeleteGlobalQuantityCommand::DeleteGlobalQuantityCommand(CQModelValue *pModelValue)
   : CCopasiUndoCommand("Global Quantity", GLOBALQUANTITY_DELETE)
   , mFirstTime(true)
-  , mpGlobalQuantityData(new UndoGlobalQuantityData(mpModelValue->mpModelValue))
+  , mpGlobalQuantityData(new UndoGlobalQuantityData(pModelValue->mpModelValue))
   , mpModelValue(pModelValue)
 {
 
