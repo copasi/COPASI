@@ -1144,11 +1144,6 @@ CMathObject * CMathContainer::getLargestReactionCompartment(const CMathReaction 
 
 void CMathContainer::compile()
 {
-  // Clear old maps before allocation
-  mDataObject2MathObject.clear();
-  mDataValue2MathObject.clear();
-  mDataValue2DataObject.clear();
-
   allocate();
 
   CMath::sPointers Pointers;
@@ -1543,6 +1538,63 @@ CMathContainer::replaceDiscontinuousNode(const CEvaluationNode * pSrc,
 
 void CMathContainer::allocate()
 {
+  // Allocations is always done from scratch
+
+  memset(&mSize, 0, sizeof(mSize));
+
+  // Delete the old objects
+  if (mValues.array() != NULL)
+    {
+      delete [] mValues.array();
+      mValues.initialize(0, NULL);
+    }
+
+  if (mObjects.array() != NULL)
+    {
+      delete [] mObjects.array();
+      mObjects.initialize(0, NULL);
+    }
+
+  if (mEvents.array())
+    {
+      delete [] mEvents.array();
+      mEvents.initialize(0, NULL);
+    }
+
+  if (mReactions.array())
+    {
+      delete [] mReactions.array();
+      mReactions.initialize(0, NULL);
+    }
+
+  if (mDelays.array())
+    {
+      delete [] mDelays.array();
+      mDelays.initialize(0, NULL);
+    }
+
+  mSynchronizeInitialValuesSequenceExtensive.clear();
+  mSynchronizeInitialValuesSequenceIntensive.clear();
+  mApplyInitialValuesSequence.clear();
+  mSimulationValuesSequence.clear();
+  mSimulationValuesSequenceReduced.clear();
+  mPrioritySequence.clear();
+  mTransientDataObjectSequence.clear();
+
+  mInitialStateValueExtensive.clear();
+  mInitialStateValueIntensive.clear();
+  mInitialStateValueAll.clear();
+  mStateValues.clear();
+  mReducedStateValues.clear();
+  mSimulationRequiredValues.clear();
+
+  mDataObject2MathObject.clear();
+  mDataValue2MathObject.clear();
+  mDataValue2DataObject.clear();
+
+  mInitialDependencies.clear();
+  mTransientDependencies.clear();
+
   sSize Size;
 
   Size.nFixed = CObjectLists::getListOfConstObjects(CObjectLists::ALL_LOCAL_PARAMETER_VALUES, mpModel).size();
