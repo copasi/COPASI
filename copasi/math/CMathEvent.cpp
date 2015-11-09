@@ -1435,6 +1435,8 @@ void CMathEvent::fire(const bool & equality)
 
   if (mTrigger.isTrue() || mType == CEvent::Discontinuity)
     {
+      if (mpDelay != NULL) mpDelay->calculateValue();
+
       if (mDelayExecution)
         {
           mpContainer->getProcessQueue().addAssignment(getExecutionTime(), equality, getTargetValues(), this);
