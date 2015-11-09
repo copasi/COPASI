@@ -298,6 +298,8 @@ void CQNotes::slotValidateXML()
 
 void CQNotes::load()
 {
+  mpObject = CCopasiRootContainer::getKeyFactory()->get(mKey);
+
   if (mpObject != NULL)
     {
       QString Notes;

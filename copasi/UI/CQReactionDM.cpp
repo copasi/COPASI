@@ -678,6 +678,8 @@ void CQReactionDM::addReactionRow(UndoReactionData *pData)
 
 void CQReactionDM::deleteReactionRow(UndoReactionData * pData)
 {
+  switchToWidget(CCopasiUndoCommand::REACTIONS);
+
   GET_MODEL_OR_RETURN(pModel);
 
   if (pModel->getReactions().getIndex(pData->getName()) == C_INVALID_INDEX)
