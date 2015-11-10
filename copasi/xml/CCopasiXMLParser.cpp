@@ -2030,7 +2030,7 @@ void CCopasiXMLParser::CommentElement::start(const XML_Char *pszName,
         mLevel = 0;
         mParser.enableCharacterDataHandler();
         mParser.enableSkippedEntityHandler();
-        mParser.mCharacterDataEncoding = CCopasiXMLInterface::standard;
+        mParser.mCharacterDataEncoding = CCopasiXMLInterface::character;
 
         mElementEmpty.push(false);
         break;
