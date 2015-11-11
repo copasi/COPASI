@@ -1,4 +1,4 @@
-// Copyright (C) 2012 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -612,9 +612,9 @@ void CQPlotSubwidget::addBandedGraph()
     {
       for (i = 0; i < objects2.size(); ++i)
         {
-          addBandedGraphTab(pDataModel->getDataObject(objects2[i])->getObjectDisplayName()
+          addBandedGraphTab(pDataModel->getObject(objects2[i])->getObjectDisplayName()
                             + "|"
-                            + pDataModel->getDataObject(objects1[0])->getObjectDisplayName(),
+                            + pDataModel->getObject(objects1[0])->getObjectDisplayName(),
                             objects1[0], objects2[i]);
         }
     }
@@ -622,9 +622,9 @@ void CQPlotSubwidget::addBandedGraph()
     {
       for (i = 0; i < objects1.size(); ++i)
         {
-          addBandedGraphTab(pDataModel->getDataObject(objects2[0])->getObjectDisplayName()
+          addBandedGraphTab(pDataModel->getObject(objects2[0])->getObjectDisplayName()
                             + "|"
-                            + pDataModel->getDataObject(objects1[i])->getObjectDisplayName(),
+                            + pDataModel->getObject(objects1[i])->getObjectDisplayName(),
                             objects1[i], objects2[0]);
         }
     }
@@ -639,9 +639,9 @@ void CQPlotSubwidget::addBandedGraph()
 
       for (i = 0; i < imax; ++i)
         {
-          addBandedGraphTab(pDataModel->getDataObject(objects2[i])->getObjectDisplayName()
+          addBandedGraphTab(pDataModel->getObject(objects2[i])->getObjectDisplayName()
                             + "|"
-                            + pDataModel->getDataObject(objects1[i])->getObjectDisplayName() ,
+                            + pDataModel->getObject(objects1[i])->getObjectDisplayName() ,
                             objects1[i], objects2[i]);
         }
     }

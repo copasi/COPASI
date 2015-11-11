@@ -1,4 +1,4 @@
-// Copyright (C) 2011 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -55,9 +55,9 @@ BandedGraphWidget::~BandedGraphWidget()
 }
 
 bool
-BandedGraphWidget::LoadFromCurveSpec(const CPlotItem * curve)
+BandedGraphWidget::LoadFromCurveSpec(const CPlotItem * pCurve)
 {
-  if (!curve)
+  if (!pCurve)
     {
       // We need to reset the widget to defaults
       mpEditTitle->setText("");
@@ -75,11 +75,11 @@ BandedGraphWidget::LoadFromCurveSpec(const CPlotItem * curve)
       return true;
     }
 
-  if (curve->getType() != CPlotItem::bandedGraph) return false;
+  if (pCurve->getType() != CPlotItem::bandedGraph) return false;
 
-  //if (curve->getChannels().getSize != 3) return false;
+  //if (pCurve->getChannels().getSize != 3) return false;
 
-  mpEditTitle->setText(FROM_UTF8(curve->getTitle()));
+  mpEditTitle->setText(FROM_UTF8(pCurve->getTitle()));
 
   //TODO: check if objects exist....
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
@@ -87,15 +87,15 @@ BandedGraphWidget::LoadFromCurveSpec(const CPlotItem * curve)
   assert(pDataModel != NULL);
   mpObjectX = mpObjectYone = mpObjectYtwo = NULL;
 
-  if (curve->getChannels().size() >= 1)
-    mpObjectX = pDataModel->getDataObject(curve->getChannels()[0]);
+  if (pCurve->getChannels().size() >= 1)
+    mpObjectX = dynamic_cast<const CCopasiObject*>(pDataModel->getObject(pCurve->getChannels()[0]));
 
-  if (curve->getChannels().size() >= 2)
-    mpObjectYone = pDataModel->getDataObject(curve->getChannels()[1]);
+  if (pCurve->getChannels().size() >= 2)
+    mpObjectYone = dynamic_cast<const CCopasiObject*>(pDataModel->getObject(pCurve->getChannels()[1]));
 
-  if (curve->getChannels().size() >= 3)
+  if (pCurve->getChannels().size() >= 3)
     {
-      mpObjectYtwo = pDataModel->getDataObject(curve->getChannels()[2]);
+      mpObjectYtwo = dynamic_cast<const CCopasiObject*>(pDataModel->getObject(pCurve->getChannels()[2]));
 
       if ((mpObjectYtwo->getObjectDisplayName() == "(CN)Root") && mpObjectYone)
         mpObjectYtwo = mpObjectYone;  // as long as we haven't a second Y-axis chooser, this has to suffice.
@@ -112,11 +112,11 @@ BandedGraphWidget::LoadFromCurveSpec(const CPlotItem * curve)
 
   const void* tmp;
 
-  if (!(tmp = curve->getValue("Line type").pVOID)) return false;
+  if (!(tmp = pCurve->getValue<void*>("Line type"))) return false;
 
-  mpCheckBefore->setChecked(curve->getActivity() & COutputInterface::BEFORE);
-  mpCheckDuring->setChecked(curve->getActivity() & COutputInterface::DURING);
-  mpCheckAfter->setChecked(curve->getActivity() & COutputInterface::AFTER);
+  mpCheckBefore->setChecked(pCurve->getActivity() & COutputInterface::BEFORE);
+  mpCheckDuring->setChecked(pCurve->getActivity() & COutputInterface::DURING);
+  mpCheckAfter->setChecked(pCurve->getActivity() & COutputInterface::AFTER);
 
   return true;
 }
