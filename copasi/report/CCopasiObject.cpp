@@ -37,7 +37,7 @@
 #include "copasi/function/CFunctionDB.h"
 
 //static
-const C_FLOAT64 CCopasiObject::DummyValue = 0.0;
+C_FLOAT64 CCopasiObject::DummyValue = 0.0;
 
 //static
 CRenameHandler * CCopasiObject::smpRenameHandler = NULL;

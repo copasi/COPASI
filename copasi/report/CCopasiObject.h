@@ -190,11 +190,10 @@ private:
    */
   DataObjectSet mDependencies;
 
-private:
-
-  static const C_FLOAT64 DummyValue;
-
 protected:
+
+  static C_FLOAT64 DummyValue;
+
   static CRenameHandler * smpRenameHandler;
 
   //Operations

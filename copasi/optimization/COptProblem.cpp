@@ -370,9 +370,17 @@ bool COptProblem::initialize()
     {
       success &= (*it)->compile(ContainerList);
 
-      changedObjects.insert((*it)->getObject());
-      mContainerVariables[i] = (C_FLOAT64 *)(*it)->getObject()->getValuePointer();
-      mOriginalVariables[i] = *mContainerVariables[i];
+      if ((*it)->getObject() != NULL)
+        {
+          changedObjects.insert((*it)->getObject());
+          mContainerVariables[i] = (C_FLOAT64 *)(*it)->getObject()->getValuePointer();
+          mOriginalVariables[i] = *mContainerVariables[i];
+        }
+      else
+        {
+          mContainerVariables[i] = &DummyValue;
+          mOriginalVariables[i] = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
+        }
     }
 
   changedObjects.erase(NULL);
@@ -388,7 +396,10 @@ bool COptProblem::initialize()
     {
       success &= (*it)->compile(ContainerList);
 
-      Objects.insert((*it)->getObject());
+      if ((*it)->getObject() != NULL)
+        {
+          Objects.insert((*it)->getObject());
+        }
     }
 
   mpContainer->getTransientDependencies().getUpdateSequence(mUpdateConstraints, CMath::Default, mpContainer->getStateObjects(false), Objects, mpContainer->getSimulationUpToDateObjects());
