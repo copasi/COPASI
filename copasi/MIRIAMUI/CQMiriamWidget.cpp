@@ -55,10 +55,10 @@ CQMiriamWidget::CQMiriamWidget(QWidget* parent, const char* name)
   mpModifiedPDM = new CQSortFilterProxyModel();
 
   //Create Required Delegates
-  mpResourceDelegate1 = new CQComboDelegate(this, mResources, false);
+  mpResourceDelegate1 = new CQComboDelegate(this, mReferences, false);
   mpTblReferences->setItemDelegateForColumn(COL_RESOURCE_REFERENCE, mpResourceDelegate1);
 
-  mpResourceDelegate2 = new CQComboDelegate(this, mReferences, false);
+  mpResourceDelegate2 = new CQComboDelegate(this, mResources, false);
   mpTblDescription->setItemDelegateForColumn(COL_RESOURCE_BD, mpResourceDelegate2);
 
   mpPredicateDelegate = new CQComboDelegate(this, mPredicates, false);
@@ -427,24 +427,50 @@ const CMIRIAMInfo & CQMiriamWidget::getMIRIAMInfo() const
 
 void CQMiriamWidget::updateResourcesList()
 {
-  mResources.clear();
-  mReferences.clear();
   // Build the list of known resources
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   const CMIRIAMResources * pResource = &CCopasiRootContainer::getConfiguration()->getRecentMIRIAMResources();
-  mResources.push_back("-- select --");
-  mReferences.push_back("-- select --");
+  QMap< QString, QString > ResourceMap;
+  QMap< QString, QString > ReferenceMap;
 
   size_t i, imax = pResource->getResourceList().size();
 
   for (i = 0; i < imax; i++)
     if (pResource->getMIRIAMResource(i).getMIRIAMCitation())
-      mResources.push_back(FROM_UTF8(pResource->getMIRIAMResource(i).getMIRIAMDisplayName()));
+      {
+        QString Name = FROM_UTF8(pResource->getMIRIAMResource(i).getMIRIAMDisplayName());
+        ReferenceMap.insert(Name.toLower(), Name);
+      }
     else
-      mReferences.push_back(FROM_UTF8(pResource->getMIRIAMResource(i).getMIRIAMDisplayName()));
+      {
+        QString Name = FROM_UTF8(pResource->getMIRIAMResource(i).getMIRIAMDisplayName());
+        ResourceMap.insert(Name.toLower(), Name);
+      }
 
-  mpResourceDelegate1->setItems(-1, mResources);
-  mpResourceDelegate2->setItems(-1, mReferences);
+  mResources.clear();
+  mResources.push_back("-- select --");
+
+  QMap< QString, QString >::const_iterator it = ResourceMap.begin();
+  QMap< QString, QString >::const_iterator end = ResourceMap.end();
+
+  for (; it != end; ++it)
+    {
+      mResources.push_back(it.value());
+    }
+
+  mReferences.clear();
+  mReferences.push_back("-- select --");
+
+  it = ReferenceMap.begin();
+  end = ReferenceMap.end();
+
+  for (; it != end; ++it)
+    {
+      mReferences.push_back(it.value());
+    }
+
+  mpResourceDelegate1->setItems(-1, mReferences);
+  mpResourceDelegate2->setItems(-1, mResources);
 }
 
 void CQMiriamWidget::keyPressEvent(QKeyEvent* ev)
