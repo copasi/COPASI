@@ -508,7 +508,7 @@ private:
   /**
    * The update sequence executed prior to creating calculation actions.
    */
-  CObjectInterface::UpdateSequence mCreateCalculationActionSequence;
+  CObjectInterface::UpdateSequence mDelaySequence;
 
   /**
    * The update sequence executed prior to creating assignment actions.

@@ -22,11 +22,10 @@
 #include "utilities/CNodeIterator.h"
 #include "utilities/CCallback.h"
 
-
 #ifdef _MSC_VER
 namespace std
 {
-//bool isnan(double d) { return d != d; }
+//bool isnan(double d) {return d != d;}
 extern bool isnan(double d);
 }
 #endif
@@ -1070,7 +1069,7 @@ CMathEvent::CMathEvent():
   mTargetValues(),
   mTargetPointers(),
   mEffectsSimulation(CMath::NoChange),
-  mCreateCalculationActionSequence(),
+  mDelaySequence(),
   mTargetValuesSequence(),
   mPostAssignmentSequence(),
   mFireAtInitialTime(false),
@@ -1091,7 +1090,7 @@ CMathEvent::CMathEvent(const CMathEvent & src):
   mTargetValues(),
   mTargetPointers(src.mTargetPointers),
   mEffectsSimulation(src.mEffectsSimulation),
-  mCreateCalculationActionSequence(src.mCreateCalculationActionSequence),
+  mDelaySequence(src.mDelaySequence),
   mTargetValuesSequence(src.mTargetValuesSequence),
   mPostAssignmentSequence(src.mPostAssignmentSequence),
   mFireAtInitialTime(src.mFireAtInitialTime),
@@ -1205,7 +1204,7 @@ void CMathEvent::relocate(const std::vector< CMath::sRelocate > & relocations)
       CMathContainer::relocateValue(*ppTargetPointers, relocations);
     }
 
-  CMathContainer::relocateUpdateSequence(mCreateCalculationActionSequence, relocations);
+  CMathContainer::relocateUpdateSequence(mDelaySequence, relocations);
   CMathContainer::relocateUpdateSequence(mTargetValuesSequence, relocations);
   CMathContainer::relocateUpdateSequence(mPostAssignmentSequence, relocations);
 }
@@ -1337,24 +1336,11 @@ void CMathEvent::createUpdateSequences()
   const CObjectInterface::ObjectSet & StateValues = mpContainer->getStateObjects();
   const CObjectInterface::ObjectSet & SimulationValues = mpContainer->getSimulationUpToDateObjects();
 
-  if (mDelayExecution)
-    {
-      mCreateCalculationActionSequence.clear();
-    }
-  else
-    {
-      CObjectInterface::ObjectSet Requested;
-      Requested.insert(mpDelay);
-      mpContainer->getTransientDependencies().getUpdateSequence(mCreateCalculationActionSequence, CMath::Default, StateValues, Requested, SimulationValues);
-    }
-
   CObjectInterface::ObjectSet Requested;
+  Requested.insert(mpDelay);
+  mpContainer->getTransientDependencies().getUpdateSequence(mDelaySequence, CMath::Default, StateValues, Requested, SimulationValues);
 
-  if (mDelayExecution)
-    {
-      Requested.insert(mpDelay);
-    }
-
+  Requested.clear();
   CObjectInterface::ObjectSet EventTargets;
   const CAssignment * pAssignment = mAssignments.array();
   const CAssignment * pAssignmentEnd = pAssignment + mAssignments.size();
@@ -1435,8 +1421,6 @@ void CMathEvent::fire(const bool & equality)
 
   if (mTrigger.isTrue() || mType == CEvent::Discontinuity)
     {
-      if (mpDelay != NULL) mpDelay->calculateValue();
-
       if (mDelayExecution)
         {
           mpContainer->getProcessQueue().addAssignment(getExecutionTime(), equality, getTargetValues(), this);
@@ -1559,6 +1543,8 @@ const CMathObject * CMathEvent::getPriority() const
 
 C_FLOAT64 CMathEvent::getCalculationTime() const
 {
+  mpContainer->applyUpdateSequence(mDelaySequence);
+
   if (mDelayExecution ||
       std::isnan(* (C_FLOAT64 *) mpDelay->getValuePointer()))
     {
@@ -1570,6 +1556,8 @@ C_FLOAT64 CMathEvent::getCalculationTime() const
 
 C_FLOAT64 CMathEvent::getExecutionTime() const
 {
+  mpContainer->applyUpdateSequence(mDelaySequence);
+
   if (!mDelayExecution ||
       std::isnan(* (C_FLOAT64 *) mpDelay->getValuePointer()))
     {
