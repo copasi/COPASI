@@ -1521,7 +1521,7 @@ bool CCopasiXML::saveLayoutList()
                 {
                   Attributes.add("metabolite", cg->getModelObjectKey());
                 }
-              else
+              else if (cg->getObjectRole() != "invisible")
                 {
                   // we set the model reference to the empty string so that
                   // the warnings message only appears on the first save operation
