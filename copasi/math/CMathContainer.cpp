@@ -2647,12 +2647,12 @@ void CMathContainer::calculateElasticityDependencies(CMatrix< C_INT32 > & elasti
 
   // The required values are the reaction fluxes.
 
-  CObjectInterface * pFluxObject = getMathObject(mFluxes.array());
-  CObjectInterface * pFluxObjectEnd = pFluxObject + mSize.nReactions;
+  CMathObject * pFluxObject = getMathObject(mFluxes.array());
+  CMathObject * pFluxObjectEnd = pFluxObject + mSize.nReactions;
 
   ObjectSet Requested;
 
-  for (; pFluxObject != pFluxObjectEnd; ++ pFluxObject)
+  for (; pFluxObject != pFluxObjectEnd; ++pFluxObject)
     {
       Requested.insert(pFluxObject);
     }
@@ -2662,8 +2662,8 @@ void CMathContainer::calculateElasticityDependencies(CMatrix< C_INT32 > & elasti
 
   // For each of the variables we check whether a the rate objects needs to be calculated
   // which indicates that it is dependent.
-  CObjectInterface * pVariable = getMathObject(mState.array() + mSize.nEventTargets + mSize.nTime);
-  CObjectInterface * pVariableEnd = pVariable + Dim;
+  CMathObject * pVariable = getMathObject(mState.array() + mSize.nEventTargets + mSize.nTime);
+  CMathObject * pVariableEnd = pVariable + Dim;
   size_t col = 0;
 
   for (; pVariable != pVariableEnd; ++pVariable, ++col)
@@ -2679,11 +2679,15 @@ void CMathContainer::calculateElasticityDependencies(CMatrix< C_INT32 > & elasti
       UpdateSequence::const_iterator end = Sequence.end();
 
       for (; it != end; ++it)
-        if (pFluxObject <= *it && *it < pFluxObjectEnd)
-          {
-            // it points to a rate object, i.e., it is dependent.
-            elasticityDependencies[(*it) - pFluxObject][col] = 1;
-          }
+        {
+          CMathObject * pObject = dynamic_cast< CMathObject * >(*it);
+
+          if (pFluxObject <= pObject && pObject < pFluxObjectEnd)
+            {
+              // it points to a rate object, i.e., it is dependent.
+              elasticityDependencies[pObject - pFluxObject][col] = 1;
+            }
+        }
     }
 
   return;

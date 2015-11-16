@@ -16,6 +16,7 @@
 #include "report/CCopasiObjectName.h"
 #include "utilities/CCopasiMessage.h"
 
+// Uncomment this line below to get debug print out.
 // #define DEBUG_OUTPUT 1
 
 CMathDependencyGraph::CMathDependencyGraph():
@@ -199,6 +200,10 @@ bool CMathDependencyGraph::getUpdateSequence(CObjectInterface::UpdateSequence & 
   // Mark all nodes which are requested and its prerequisites.
   for (; it != end && success; ++it)
     {
+#ifdef DEBUG_OUTPUT
+      std::cout << *it << std::endl;
+#endif // DEBUG_OUTPUT
+
       // We may have data objects which are ignored as they cannot be calculated
       if ((*it)->getDataObject() == *it)
         {
