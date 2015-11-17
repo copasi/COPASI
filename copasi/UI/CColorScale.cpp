@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -17,7 +17,7 @@ CColorScale1::CColorScale1()
 {}
 
 //virtual
-QColor CColorScale1::getColor(const C_FLOAT64 & number)
+QColor CColorScale1::getColor(const C_FLOAT64 & number) const
 {
   QColor color;
 
@@ -41,7 +41,7 @@ CColorScaleSimple::CColorScaleSimple()
 {}
 
 //virtual
-QColor CColorScaleSimple::getColor(const C_FLOAT64 & number)
+QColor CColorScaleSimple::getColor(const C_FLOAT64 & number) const
 {
   C_FLOAT64 tmp = (number - mMin) / (mMax - mMin); //scale to 0..1
 
@@ -133,7 +133,7 @@ void CColorScaleAdvanced::setColorMax(QColor col)
   mColorMax = col;
 }
 
-QColor CColorScaleAdvanced::getColor(const C_FLOAT64 & number)
+QColor CColorScaleAdvanced::getColor(const C_FLOAT64 & number) const
 {
   C_FLOAT64 tmp = (number - mMin) / (mMax - mMin); //scale to 0..1
 
@@ -203,7 +203,7 @@ CColorScaleBiLog::CColorScaleBiLog()
 {}
 
 //virtual
-QColor CColorScaleBiLog::getColor(const C_FLOAT64 & number)
+QColor CColorScaleBiLog::getColor(const C_FLOAT64 & number) const
 {
   C_FLOAT64 logtmp = log(fabs(number));
 

@@ -53,5 +53,6 @@
     <file>images/viewmagPlus.png</file>
     <file>images/viewmag1.png</file>
     <file>images/viewmagfit.png</file>
+    <file>images/reset.png</file>
   </qresource>
 </RCC>

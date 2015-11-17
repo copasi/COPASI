@@ -23,6 +23,8 @@
 #include "CQArrayAnnotationsWidget.h"
 #include "qtUtilities.h"
 #include "CQComboDelegate.h"
+#include "CQArrayAnnotationsWidgetDM.h"
+#include "CQSortFilterProxyModel.h"
 
 #include <iostream>
 
@@ -49,13 +51,17 @@ CQArrayAnnotationsWidget::CQArrayAnnotationsWidget(QWidget* parent, bool slider)
   mBarChartFilled(false),
   mOneDimensional(false),
   mComboEntries(),
-  mpComboDelegate(NULL)
+  mpComboDelegate(NULL),
+  mpDataModel(NULL),
+  mpProxyModel(NULL)
 {
 #ifdef DEBUG_UI
   qDebug() << "-- in constructor -- \n";
 #endif
 
   setupUi(this);
+
+  mpButtonReset->hide();
 
   //Setting values for Combo Box
   mpComboDelegate = new CQComboDelegate(this);
@@ -81,10 +87,17 @@ CQArrayAnnotationsWidget::CQArrayAnnotationsWidget(QWidget* parent, bool slider)
       connect(mpButton, SIGNAL(clicked()), this, SLOT(changeContents()));
     }
 
-  connect(mpContentTable, SIGNAL(cellDoubleClicked(int, int)), this, SLOT(slotContentDoubleClicked()));
-  connect(mpContentTable, SIGNAL(cellClicked(int, int)), this, SLOT(slotContentCellClicked(int, int)));
-  connect(mpContentTable->horizontalHeader(), SIGNAL(sectionResized(int, int, int)), this, SLOT(setColumnSize(int, int, int)));
+  mpDataModel = new CQArrayAnnotationsWidgetDM(this);
+  mpProxyModel = new CQSortFilterProxyModel();
+  mpProxyModel->setSourceModel(mpDataModel);
+  mpContentTableView->setModel(mpProxyModel);
+  mpContentTableView->verticalHeader()->setTextElideMode(Qt::ElideRight);
+  mpContentTableView->horizontalHeader()->setTextElideMode(Qt::ElideRight);
 
+  connect(mpContentTableView, SIGNAL(doubleClicked(const QModelIndex)), this, SLOT(slotContentDoubleClicked(const QModelIndex)));
+  connect(mpContentTableView, SIGNAL(clicked(const QModelIndex)), this, SLOT(slotContentCellClicked(const QModelIndex)));
+  connect(mpContentTableView->horizontalHeader(), SIGNAL(sectionResized(int, int, int)), this, SLOT(setColumnSize(int, int, int)));
+  connect(mpButtonReset, SIGNAL(clicked(bool)), this, SLOT(slotResetSortOrder()));
   connect(mpComboDelegate, SIGNAL(currentIndexChanged(int, int)), this, SLOT(slotCurrentSelectionIndexChanged(int, int)));
 }
 
@@ -265,10 +278,8 @@ void CQArrayAnnotationsWidget::clearWidget()
   qDebug() << "-- in clearWidget -- \n";
 #endif
 
-  //mpSelectionTable->setColumnCount(2);
   mpSelectionTable->setRowCount(0);
-  mpContentTable->setColumnCount(0);
-  mpContentTable->setRowCount(0);
+  mpDataModel->setContext(NULL, NULL, std::vector< size_t >(), C_INVALID_INDEX, C_INVALID_INDEX);
 
   if (mWithBarChart && mBarChartFilled)
     {
@@ -289,6 +300,17 @@ void CQArrayAnnotationsWidget::setLegendEnabled(bool b)
     mpSelectionTable->show();
   else
     mpSelectionTable->hide();
+}
+
+void CQArrayAnnotationsWidget::setSortingEnabled(bool b)
+{
+  if (b)
+    mpButtonReset->show();
+  else
+    mpButtonReset->hide();
+
+  mpContentTableView->setSortingEnabled(b);
+  mpProxyModel->sort(-1);
 }
 
 void CQArrayAnnotationsWidget::slotRowSelectionChanged(int row)
@@ -373,45 +395,10 @@ void CQArrayAnnotationsWidget::fillTableN(size_t rowIndex, size_t colIndex,
   assert(rowIndex < index.size());
   assert(colIndex < index.size());
 
-  mpContentTable->setColumnCount((int) mpArray->size()[colIndex]);
-  mpContentTable->setRowCount((int) mpArray->size()[rowIndex]);
-
-  std::vector<std::string> rowdescr = mpArray->getAnnotationsString(rowIndex);
-  std::vector<std::string> coldescr = mpArray->getAnnotationsString(colIndex);
-
   size_t i, imax = mpArray->size()[rowIndex];
   size_t j, jmax = mpArray->size()[colIndex];
 
   if (jmax == 0) return;
-
-  int TableWidth = mpContentTable->size().width();
-  mpContentTable->verticalHeader()->setMaximumWidth(TableWidth / std::min< size_t >(jmax, 5));
-  mpContentTable->verticalHeader()->setTextElideMode(Qt::ElideRight);
-  mpContentTable->horizontalHeader()->setTextElideMode(Qt::ElideRight);
-
-  QString DisplayName;
-
-  //annotations
-  for (i = 0; i < imax; ++i)
-    {
-      DisplayName = FROM_UTF8(rowdescr[i]);
-      QTableWidgetItem * pItem = new QTableWidgetItem(DisplayName);
-      pItem->setToolTip(DisplayName);
-      mpContentTable->setVerticalHeaderItem(i, pItem);
-    }
-
-  for (j = 0; j < jmax; ++j)
-    {
-      // :TODO: This is a hack we need a smarter way possibly using getObjectDisplayName.
-      DisplayName = FROM_UTF8(coldescr[j]).replace("; {", "\n{");
-      QTableWidgetItem * pItem = new QTableWidgetItem(DisplayName);
-      pItem->setToolTip(DisplayName);
-      mpContentTable->setHorizontalHeaderItem((int) j, pItem);;
-
-#ifdef DEBUG_UI
-      qDebug() << "text on col " << j << " = " << FROM_UTF8(coldescr[j]).replace("; {", "\n{");
-#endif
-    }
 
   CCopasiAbstractArray::index_type Index = index;
 
@@ -431,27 +418,15 @@ void CQArrayAnnotationsWidget::fillTableN(size_t rowIndex, size_t colIndex,
       mpColorScale->finishAutomaticParameterCalculation();
     }
 
-  //table contents
-  for (i = 0; i < imax; ++i)
-    for (j = 0; j < jmax; ++j)
-      {
-        Index[rowIndex] = i;
-        Index[colIndex] = j;
+  int TableWidth = mpContentTableView->size().width();
+  mpContentTableView->verticalHeader()->setMaximumWidth(TableWidth / std::min< size_t >(jmax, 5));
 
-        QTableWidgetItem * pItem = new QTableWidgetItem(QVariant::Double);
-        pItem->setData(Qt::DisplayRole, (*mpArray->array())[Index]);
-        mpContentTable->setItem((int) i, (int) j, pItem);
-
-        if (mpColorScale != NULL)
-          {
-            pItem->setBackground(QBrush(mpColorScale->getColor((*mpArray->array())[Index])));
-          }
-      }
+  mpDataModel->setContext(mpColorScale, mpArray, index, rowIndex, colIndex);
 
   mOneDimensional = false;
 
-  mpContentTable->resizeRowsToContents();
-  mpContentTable->resizeColumnsToContents();
+  mpContentTableView->resizeRowsToContents();
+  mpContentTableView->resizeColumnsToContents();
 
 //  if (mpStack->id(mpStack->visibleWidget()) == 1)
   if (mpStack->currentIndex() == 1)
@@ -468,11 +443,6 @@ void CQArrayAnnotationsWidget::fillTable1(size_t rowIndex,
   if (!mpArray) return;
 
   assert(rowIndex < index.size());
-
-  mpContentTable->setColumnCount(1);
-  mpContentTable->setRowCount((int) mpArray->size()[rowIndex]);
-
-  mpContentTable->setHorizontalHeaderItem(0, new QTableWidgetItem(""));
 
   size_t i, imax = mpArray->size()[rowIndex];
 
@@ -492,28 +462,12 @@ void CQArrayAnnotationsWidget::fillTable1(size_t rowIndex,
       mpColorScale->finishAutomaticParameterCalculation();
     }
 
-  //table contents and annotations
-  const std::vector<std::string> & rowdescr = mpArray->getAnnotationsString(rowIndex);
-
-  for (i = 0; i < imax; ++i)
-    {
-      Index[rowIndex] = i;
-      QTableWidgetItem * pItem = new QTableWidgetItem(FROM_UTF8(rowdescr[i]));
-      mpContentTable->setVerticalHeaderItem((int) i, pItem);
-
-      pItem = new QTableWidgetItem(QString::number((*mpArray->array())[Index]));
-      mpContentTable->setItem((int) i, 0, pItem);
-
-      if (mpColorScale != NULL)
-        {
-          pItem->setBackground(QBrush(mpColorScale->getColor((*mpArray->array())[Index])));
-        }
-    }
+  mpDataModel->setContext(mpColorScale, mpArray, index, rowIndex, C_INVALID_INDEX);
 
   mOneDimensional = true;
 
-  mpContentTable->resizeRowsToContents();
-  mpContentTable->resizeColumnsToContents();
+  mpContentTableView->resizeRowsToContents();
+  mpContentTableView->resizeColumnsToContents();
 
   if (mpStack->currentIndex() == 1)
     fillBarChart();
@@ -527,17 +481,12 @@ void CQArrayAnnotationsWidget::fillTable0()
 
   if (!mpArray) return;
 
-  mpContentTable->setColumnCount(0);
-  mpContentTable->setRowCount(0);
-  mpContentTable->setColumnCount(1);
-  mpContentTable->setRowCount(1);
+  CCopasiAbstractArray::index_type Index;
+  mpColorScale->startAutomaticParameterCalculation();
+  mpColorScale->passValue((*mpArray->array())[Index]);
+  mpColorScale->finishAutomaticParameterCalculation();
 
-  mpContentTable->setHorizontalHeaderItem(0, new QTableWidgetItem(""));
-  mpContentTable->setVerticalHeaderItem(0, new QTableWidgetItem(""));
-
-  CCopasiAbstractArray::index_type index; index.resize(0);
-  //mpContentTable->verticalHeader()->setLabel(i, FROM_UTF8(rowdescr[i]));
-  mpContentTable->setItem(0, 0, new QTableWidgetItem(QString::number((*mpArray->array())[index])));
+  mpDataModel->setContext(mpColorScale, mpArray, Index, C_INVALID_INDEX, C_INVALID_INDEX);
 }
 
 void CQArrayAnnotationsWidget::changeContents()
@@ -589,7 +538,7 @@ void CQArrayAnnotationsWidget::switchToTable()
 #endif
 
 //  mpStack->raiseWidget(0);
-  mpStack->setCurrentWidget(mpContentTable);
+  mpStack->setCurrentWidget(mpContentTableView);
 
 #ifdef DEBUG_UI
   qDebug() << "B mpStack->currentIndex() = " << mpStack->currentIndex();
@@ -599,6 +548,11 @@ void CQArrayAnnotationsWidget::switchToTable()
     {
       mpButton->setIcon(CQIconResource::icon(CQIconResource::bars));
       setFocusOnTable();
+    }
+
+  if (mpContentTableView->isSortingEnabled())
+    {
+      mpButtonReset->show();
     }
 }
 
@@ -616,19 +570,15 @@ void CQArrayAnnotationsWidget::switchToBarChart()
       if (!mpPlot3d)
         createBarChart();
 
-//      setFocusOnBars();
-
       if (!mBarChartFilled)
         fillBarChart();
 
-//      setFocusOnBars();
       setFocusOnBars();
 
-//      mpStack->raiseWidget(1);
       mpStack->setCurrentWidget(mpPlot3d);
       mpPlot3d->show();
-
       mpButton->setIcon(CQIconResource::icon(CQIconResource::table));
+      mpButtonReset->hide();
     }
 }
 
@@ -676,32 +626,33 @@ void CQArrayAnnotationsWidget::setFocusOnTable()
       qDebug() << "col = " << col << " - row = " << row;
 #endif
 
-      mpContentTable->clearSelection();
+      mpContentTableView->clearSelection();
 
-      if (col < mpContentTable->columnCount())
+      if (col < mpDataModel->columnCount())
         {
-          if (row < mpContentTable->rowCount())
+          if (row < mpDataModel->rowCount())
             {
-              mpContentTable->setCurrentCell(row, col);
-              mpContentTable->scrollToItem(mpContentTable->item(mpContentTable->currentRow(), mpContentTable->currentColumn()));
-              mpContentTable->setFocus();
+              QModelIndex Index = mpProxyModel->mapFromSource(mpDataModel->index(row, col));
+              mpContentTableView->setCurrentIndex(Index);
+              mpContentTableView->scrollTo(Index);
+              mpContentTableView->setFocus();
             }
           else
             {
-              mpContentTable->selectColumn(col);
-              mpContentTable->setFocus();
+              mpContentTableView->selectColumn(col);
+              mpContentTableView->setFocus();
             }
         }
       else
         {
-          if (row < mpContentTable->rowCount())
+          if (row < mpDataModel->rowCount())
             {
-              mpContentTable->selectRow(row);
-              mpContentTable->setFocus();
+              mpContentTableView->selectRow(row);
+              mpContentTableView->setFocus();
             }
           else
             {
-              mpContentTable->setCurrentCell(-1, -1);
+              mpContentTableView->scrollTo(QModelIndex());
             }
         }
 
@@ -728,77 +679,98 @@ void CQArrayAnnotationsWidget::setFocusOnBars()
 {
   if (mWithBarChart && mpPlot3d && mpPlot3d->isSliderActive())
     {
-      QList<QTableWidgetSelectionRange> Ranges = mpContentTable->selectedRanges();
+      QModelIndexList SelectedIndexes = mpContentTableView->selectionModel()->selectedIndexes();
 
-      if (Ranges.size() == 1)
+      QModelIndexList::const_iterator it = SelectedIndexes.begin();
+      QModelIndexList::const_iterator end = SelectedIndexes.end();
+
+      int LeftColumn = std::numeric_limits< int >::max();
+      int RightColumn = -1;
+      int TopRow = std::numeric_limits< int >::max();
+      int BottomRow = -1;
+
+      for (; it != end; ++it)
         {
-          int SliderColumn = Ranges[0].leftColumn() * mpPlot3d->scaleFactor();
-          int SliderRow = Ranges[0].topRow() * mpPlot3d->scaleFactor();
+          if (it->column() < LeftColumn) LeftColumn = it->column();
 
-          if (Ranges[0].leftColumn() == Ranges[0].rightColumn() &&
-              Ranges[0].topRow() == Ranges[0].bottomRow())
-            {
-              mpPlot3d->mpSliderColumn->setValue(SliderColumn);
-              mpPlot3d->mpSliderRow->setValue(SliderRow);
-              mpPlot3d->sliderMoved(Ranges[0].leftColumn(), Ranges[0].topRow());
-              mpPlot3d->setSlider();
+          if (it->column() > RightColumn) RightColumn = it->column();
 
-              return;
-            }
-          else if (Ranges[0].leftColumn() == Ranges[0].rightColumn())
-            {
-              mpPlot3d->mpSliderColumn->setValue(SliderColumn);
-              mpPlot3d->mpSliderRow->setValue(-1);
-              mpPlot3d->sliderMoved(Ranges[0].leftColumn(), mpContentTable->rowCount());
-              mpPlot3d->setSlider();
+          if (it->row() < TopRow) TopRow = it->row();
 
-              return;
-            }
-          else if (Ranges[0].topRow() == Ranges[0].bottomRow())
-            {
-              mpPlot3d->mpSliderColumn->setValue(-1);
-              mpPlot3d->mpSliderRow->setValue(SliderRow);
-              mpPlot3d->sliderMoved(mpContentTable->columnCount(), Ranges[0].topRow());
-              mpPlot3d->setSlider();
+          if (it->row() > BottomRow) BottomRow = it->row();
+        }
 
-              return;
-            }
+      int SliderColumn = LeftColumn * mpPlot3d->scaleFactor();
+      int SliderRow = TopRow * mpPlot3d->scaleFactor();
+
+      if (LeftColumn == RightColumn &&
+          TopRow == BottomRow)
+        {
+          mpPlot3d->mpSliderColumn->setValue(SliderColumn);
+          mpPlot3d->mpSliderRow->setValue(SliderRow);
+          mpPlot3d->sliderMoved(LeftColumn, TopRow);
+          mpPlot3d->setSlider();
+
+          return;
+        }
+      else if (LeftColumn == RightColumn)
+        {
+          mpPlot3d->mpSliderColumn->setValue(SliderColumn);
+          mpPlot3d->mpSliderRow->setValue(-1);
+          mpPlot3d->sliderMoved(LeftColumn, mpDataModel->rowCount());
+          mpPlot3d->setSlider();
+
+          return;
+        }
+      else if (TopRow == BottomRow)
+        {
+          mpPlot3d->mpSliderColumn->setValue(-1);
+          mpPlot3d->mpSliderRow->setValue(SliderRow);
+          mpPlot3d->sliderMoved(mpDataModel->columnCount(), TopRow);
+          mpPlot3d->setSlider();
+
+          return;
         }
 
       mpPlot3d->mpSliderColumn->setValue(-1);
       mpPlot3d->mpSliderRow->setValue(-1);
-      mpPlot3d->sliderMoved(mpContentTable->columnCount(), mpContentTable->rowCount());
+      mpPlot3d->sliderMoved(mpDataModel->columnCount(), mpDataModel->rowCount());
       mpPlot3d->setSlider();
     }
 
   return;
 }
 
-void CQArrayAnnotationsWidget::slotContentCellClicked(int row, int col)
+void CQArrayAnnotationsWidget::slotContentCellClicked(const QModelIndex & index)
 {
+  QModelIndex SourceIndex = index;
+
+  while (SourceIndex.model()->inherits("QSortFilterProxyModel"))
+    {
+      SourceIndex = static_cast< const QSortFilterProxyModel * >(SourceIndex.model())->mapToSource(SourceIndex);
+    }
+
   switch (mSelectedCell.size())
     {
       case 0:
         break;
 
       case 1:
-        mSelectedCell[mRowIndex] = row;
+        mSelectedCell[mRowIndex] = SourceIndex.row();
         break;
 
       default:
-        mSelectedCell[mRowIndex] = row;
-        mSelectedCell[mColIndex] = col;
+        mSelectedCell[mRowIndex] = SourceIndex.row();
+        mSelectedCell[mColIndex] = SourceIndex.column();
         break;
     }
 
   return;
 }
 
-void CQArrayAnnotationsWidget::slotContentDoubleClicked()
+void CQArrayAnnotationsWidget::slotContentDoubleClicked(const QModelIndex & index)
 {
-#ifdef DEBUG_UI
-  qDebug() << "-- in slotContentDoubleClicked -- \n";
-#endif
+  slotContentCellClicked(index);
 
   if (mpPlot3d && mpPlot3d->isSliderActive())
     switchToBarChart();
@@ -806,7 +778,7 @@ void CQArrayAnnotationsWidget::slotContentDoubleClicked()
 
 void CQArrayAnnotationsWidget::setColumnSize(int col, int /*size0*/, int /*size*/)
 {
-  disconnect(mpContentTable->horizontalHeader(), SIGNAL(sectionResized(int, int, int)), this, SLOT(setColumnSize(int, int, int)));
+  disconnect(mpContentTableView->horizontalHeader(), SIGNAL(sectionResized(int, int, int)), this, SLOT(setColumnSize(int, int, int)));
 
 #ifdef DEBUG_UI
   qDebug() << "-- in setColumnSize -- \n";
@@ -816,18 +788,23 @@ void CQArrayAnnotationsWidget::setColumnSize(int col, int /*size0*/, int /*size*
   C_FLOAT64 sum = 0;
 
   for (i = 0; i <= col; ++i)
-    sum += mpContentTable->horizontalHeader()->sectionSize(i);
+    sum += mpContentTableView->horizontalHeader()->sectionSize(i);
 
   C_FLOAT64 newSize = sum / (col + 1);
 
   if (newSize < 5) newSize = 5;
 
-  for (i = 0; i < mpContentTable->columnCount(); i++)
-    mpContentTable->setColumnWidth(i, ((int)(newSize * (i + 1))) - ((int)(newSize * i)));
+  for (i = 0; i < mpDataModel->columnCount(); i++)
+    mpContentTableView->setColumnWidth(i, ((int)(newSize * (i + 1))) - ((int)(newSize * i)));
 
-  mpContentTable->horizontalHeader()->repaint();
+  mpContentTableView->horizontalHeader()->repaint();
 
-  connect(mpContentTable->horizontalHeader(), SIGNAL(sectionResized(int, int, int)), this, SLOT(setColumnSize(int, int, int)));
+  connect(mpContentTableView->horizontalHeader(), SIGNAL(sectionResized(int, int, int)), this, SLOT(setColumnSize(int, int, int)));
+}
+
+void CQArrayAnnotationsWidget::slotResetSortOrder()
+{
+  mpProxyModel->sort(-1);
 }
 
 void CQArrayAnnotationsWidget::fillBarChart()
@@ -862,15 +839,6 @@ void CQArrayAnnotationsWidget::fillBarChart()
       mBarChartFilled = false;
       return;
     }
-
-  mpContentTable->setRowCount((int) imax);
-
-  if (mOneDimensional)
-    mpContentTable->setColumnCount(1);
-  else
-    mpContentTable->setColumnCount((int) jmax);
-
-//  mpContentTable->horizontalHeader()->setLabel(0, "");  --> ???
 
   std::vector<std::string> rowdescr = mpArray->getAnnotationsString(mRowIndex);
 

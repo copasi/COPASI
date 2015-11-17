@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -39,7 +39,7 @@ public:
   /**
    * this method maps a number to a color.
    */
-  virtual QColor getColor(const C_FLOAT64 & number) = 0;
+  virtual QColor getColor(const C_FLOAT64 & number) const = 0;
 
   /**
    * this method starts the calculation of the scaling parameters.
@@ -86,7 +86,7 @@ public:
 
   void setThreshold(const C_FLOAT64 & n) {m1 = n;};
 
-  virtual QColor getColor(const C_FLOAT64 & number);
+  virtual QColor getColor(const C_FLOAT64 & number) const;
 
 protected:
   C_FLOAT64 m1;
@@ -119,7 +119,7 @@ public:
   */
   void setSymmetric(bool s) {mSym = s;};
 
-  virtual QColor getColor(const C_FLOAT64 & number);
+  virtual QColor getColor(const C_FLOAT64 & number) const;
 
   virtual void startAutomaticParameterCalculation();
   virtual void passValue(const C_FLOAT64 & number);
@@ -143,7 +143,7 @@ public:
 
   CColorScaleAdvanced();
 
-  virtual QColor getColor(const C_FLOAT64 & number);
+  virtual QColor getColor(const C_FLOAT64 & number) const;
 
   void setColorMin(QColor col);
   void setColorMax(QColor col);
@@ -195,7 +195,7 @@ public:
   */
   void setMaxIntensityPoint(const C_FLOAT64 & n);
 
-  virtual QColor getColor(const C_FLOAT64 & number);
+  virtual QColor getColor(const C_FLOAT64 & number) const;
 
   virtual void startAutomaticParameterCalculation();
   virtual void passValue(const C_FLOAT64 & number);

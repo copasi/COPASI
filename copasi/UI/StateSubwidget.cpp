@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -39,10 +39,17 @@
  */
 StateSubwidget::StateSubwidget(QWidget* parent, const char* name)
   : CopasiWidget(parent, name)
+  , mpModel(NULL)
+  , mpTask(NULL)
 {
   setupUi(this);
 
-  init();
+  topLabel->setText("");
+
+  mpJacobianAnnotationWidget->setSortingEnabled(true);
+  mpJacobianXAnnotationWidget->setSortingEnabled(true);
+
+  setFramework(mFramework);
 }
 
 /*
@@ -51,16 +58,6 @@ StateSubwidget::StateSubwidget(QWidget* parent, const char* name)
 StateSubwidget::~StateSubwidget()
 {
   // no need to delete child widgets, Qt does it all for us
-}
-
-void StateSubwidget::init()
-{
-  topLabel->setText("");
-
-  mpModel = NULL;
-  mpTask = NULL;
-
-  setFramework(mFramework);
 }
 
 void StateSubwidget::loadMetabolites()

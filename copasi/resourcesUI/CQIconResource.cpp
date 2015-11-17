@@ -1,7 +1,7 @@
-// Copyright (C) 2012 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2012 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 /*
  * CQIconResource.cpp
@@ -82,6 +82,7 @@ void CQIconResource::init()
   Icons[viewmagPlus].addFile(QString::fromUtf8(":/images/viewmagPlus.png"), QSize(), QIcon::Normal, QIcon::On);
   Icons[viewmag1].addFile(QString::fromUtf8(":/images/viewmag1.png"), QSize(), QIcon::Normal, QIcon::On);
   Icons[viewmagfit].addFile(QString::fromUtf8(":/images/viewmagfit.png"), QSize(), QIcon::Normal, QIcon::On);
+  Icons[reset].addFile(QString::fromUtf8(":/images/reset.png"), QSize(), QIcon::Normal, QIcon::On);
 
   needInit = false;
 }

@@ -46,10 +46,15 @@
  */
 CMCAResultSubwidget::CMCAResultSubwidget(QWidget* parent, const char* name, Qt::WindowFlags fl)
   : CopasiWidget(parent, name, fl)
+  , mMCAMethod(NULL)
 {
   setupUi(this);
 
-  init();
+  mpArrayElasticities->setSortingEnabled(true);
+  mpArrayFCC->setSortingEnabled(true);
+  mpArrayCCC->setSortingEnabled(true);
+
+  clear();
 }
 
 /*
@@ -58,17 +63,6 @@ CMCAResultSubwidget::CMCAResultSubwidget(QWidget* parent, const char* name, Qt::
 CMCAResultSubwidget::~CMCAResultSubwidget()
 {
   // no need to delete child widgets, Qt does it all for us
-}
-
-void CMCAResultSubwidget::init()
-{
-  /*
-    mSaveButton->setEnabled(false);
-    mSaveButton->hide();
-  */
-  mMCAMethod = NULL;
-
-  clear();
 }
 
 void CMCAResultSubwidget::loadAll(const CMCAMethod * mcaMethod)

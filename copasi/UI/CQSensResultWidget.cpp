@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -40,7 +40,24 @@ CQSensResultWidget::CQSensResultWidget(QWidget* parent, const char* name, Qt::WF
 {
   setupUi(this);
 
-  init();
+  CColorScaleBiLog * tcs = new CColorScaleBiLog();
+  mArrayWidget->setColorCoding(tcs);
+  mArrayWidget->setColorScalingAutomatic(true);
+  mArrayWidget->setSortingEnabled(true);
+
+  //scaled array
+  CColorScaleAverage* tcs2 = new CColorScaleAverage();
+  mArrayWidgetScaled->setColorCoding(tcs2);
+  tcs2->setFactor(3.0);
+  mArrayWidgetScaled->setColorScalingAutomatic(true);
+  mArrayWidgetScaled->setSortingEnabled(true);
+
+  //scaled array
+  CColorScaleAverage* tcs3 = new CColorScaleAverage();
+  mArrayWidgetCollapsed->setColorCoding(tcs3);
+  tcs3->setFactor(3.0);
+  mArrayWidgetCollapsed->setColorScalingAutomatic(true);
+  mArrayWidgetCollapsed->setSortingEnabled(true);
 }
 
 /*
@@ -48,26 +65,6 @@ CQSensResultWidget::CQSensResultWidget(QWidget* parent, const char* name, Qt::WF
  */
 CQSensResultWidget::~CQSensResultWidget()
 {}
-
-void CQSensResultWidget::init()
-{
-  // unscaled array
-  CColorScaleBiLog * tcs = new CColorScaleBiLog();
-  mArrayWidget->setColorCoding(tcs);
-  mArrayWidget->setColorScalingAutomatic(true);
-
-  //scaled array
-  CColorScaleAverage* tcs2 = new CColorScaleAverage();
-  mArrayWidgetScaled->setColorCoding(tcs2);
-  tcs2->setFactor(3.0);
-  mArrayWidgetScaled->setColorScalingAutomatic(true);
-
-  //scaled array
-  CColorScaleAverage* tcs3 = new CColorScaleAverage();
-  mArrayWidgetCollapsed->setColorCoding(tcs3);
-  tcs3->setFactor(3.0);
-  mArrayWidgetCollapsed->setColorScalingAutomatic(true);
-}
 
 void CQSensResultWidget::newResult()
 {

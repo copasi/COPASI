@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -26,6 +26,8 @@ class QLabel;
 
 class CQBarChart;
 class CQComboDelegate;
+class CQArrayAnnotationsWidgetDM;
+class CQSortFilterProxyModel;
 
 /**
  * This Widget displays a CArrayAnnotation (no editing yet)
@@ -60,9 +62,14 @@ public:
   void setColorScalingAutomatic(bool s) {mAutomaticColorScaling = s;};
 
   /**
-   * enable or disable the display of the dimensions annotation (the upper table)
+   * Enable or disable the display of the dimensions annotation (the upper table)
    */
   void setLegendEnabled(bool b);
+
+  /**
+   * Enable or disable the display of sorting by columns
+   */
+  void setSortingEnabled(bool b);
 
   void disableBarChart();
 
@@ -84,13 +91,15 @@ protected slots:
 
   void slotCurrentSelectionIndexChanged(int row, int index);
 
-  void slotContentCellClicked(int row, int col);
+  void slotContentCellClicked(const QModelIndex & index);
 
-  void slotContentDoubleClicked();
+  void slotContentDoubleClicked(const QModelIndex & index);
 
   void changeContents();
 
   void setColumnSize(int col, int size0, int size);
+
+  void slotResetSortOrder();
 
 protected:
   void fillTable();
@@ -144,6 +153,9 @@ protected:
 
   QStringList mComboEntries;
   CQComboDelegate* mpComboDelegate;
+
+  CQArrayAnnotationsWidgetDM * mpDataModel;
+  CQSortFilterProxyModel * mpProxyModel;
 };
 
 #endif
