@@ -30,7 +30,7 @@ CQTaskMethodWidget::CQTaskMethodWidget(QWidget* parent, Qt::WindowFlags f):
   mpMethodParameterDM = new CQTaskMethodParametersDM(this);
   mpParameterView->setModel(mpMethodParameterDM);
 
-  mpValueDelegate = new CQIndexComboDelegate(this);
+  mpValueDelegate = new CQComboDelegate(this);
 
   // mpTableParameter->verticalHeader()->setResizeMode(QHeaderView::ResizeToContents);
   // mpTableParameter->horizontalHeader()->setResizeMode(QHeaderView::ResizeToContents);
