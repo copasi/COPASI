@@ -216,7 +216,7 @@ void CStochMethod::start()
     }
 
   mNumReactionSpecies = mpContainer->getCountIndependentSpecies() + mpContainer->getCountDependentSpecies();
-  mFirstReactionSpeciesIndex = mpContainer->getTimeIndex() + mpContainer->getCountODEs();
+  mFirstReactionSpeciesIndex = mpContainer->getCountFixedEventTargets() + mpContainer->getCountODEs();
 
   C_FLOAT64 * pSpecies = mContainerState.array() + mFirstReactionSpeciesIndex;
   C_FLOAT64 * pSpeciesEnd = pSpecies + mNumReactionSpecies;

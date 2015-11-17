@@ -241,7 +241,7 @@ bool CSteadyStateMethod::initialize(const CSteadyStateProblem * pProblem)
 
   mContainerState.initialize(mpContainer->getState(false));
   mContainerStateReduced.initialize(mpContainer->getState(true));
-  mpContainerStateTime = mContainerState.array() + mpContainer->getTimeIndex();
+  mpContainerStateTime = mContainerState.array() + mpContainer->getCountFixedEventTargets();
 
   return true;
 }

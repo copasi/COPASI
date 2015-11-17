@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -202,7 +202,7 @@ bool CLyapTask::process(const bool & useInitialValues)
 
   mResultAvailable = true;
   mResultHasDivergence = mpLyapProblem->divergenceRequested();
-  mModelVariablesInResult = mpContainer->getState(true).size() - mpContainer->getTimeIndex() - 1;
+  mModelVariablesInResult = mpContainer->getState(true).size() - mpContainer->getCountFixedEventTargets() - 1;
   mNumExponentsCalculated = mpLyapProblem->getExponentNumber();
 
   return true;

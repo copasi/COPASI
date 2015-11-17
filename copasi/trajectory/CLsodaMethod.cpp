@@ -509,10 +509,10 @@ void CLsodaMethod::start()
   mAtol = mpContainer->initializeAtolVector(*mpAbsoluteTolerance, *mpReducedModel);
 
   // We ignore fixed event targets and start with the time
-  mData.dim = (C_INT)(mContainerState.size() - mpContainer->getTimeIndex());
+  mData.dim = (C_INT)(mContainerState.size() - mpContainer->getCountFixedEventTargets());
   mpY = mpContainerStateTime;
-  mpYdot = mpContainer->getRate(*mpReducedModel).array() + mpContainer->getTimeIndex();
-  mpAtol = mAtol.array() + mpContainer->getTimeIndex();
+  mpYdot = mpContainer->getRate(*mpReducedModel).array() + mpContainer->getCountFixedEventTargets();
+  mpAtol = mAtol.array() + mpContainer->getCountFixedEventTargets();
 
   /* Configure lsoda(r) */
   mDWork.resize(22 + mData.dim * std::max<C_INT>(16, mData.dim + 9) + 3 * mNumRoots);

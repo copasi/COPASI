@@ -199,7 +199,7 @@ void CMCAMethod::calculateUnscaledElasticities(C_FLOAT64 /* res */)
 {
   // We need the number of metabolites determined by reactions.
   size_t numMetabs = mpContainer->getCountIndependentSpecies() + mpContainer->getCountDependentSpecies();
-  size_t FirstReactionSpeciesIndex = mpContainer->getTimeIndex() + mpContainer->getCountODEs();
+  size_t FirstReactionSpeciesIndex = mpContainer->getCountFixedEventTargets() + 1 + mpContainer->getCountODEs();
   size_t numReacs = mpContainer->getParticleFluxes().size();
 
   mpContainer->calculateElasticityDependencies(mElasticityDependencies, false);

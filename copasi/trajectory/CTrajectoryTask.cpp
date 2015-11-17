@@ -215,7 +215,7 @@ void CTrajectoryTask::signalMathContainerChanged()
   if (mpContainer != NULL)
     {
       mContainerState.initialize(mpContainer->getState(mUpdateMoieties));
-      mpContainerStateTime = mContainerState.array() + mpContainer->getTimeIndex();
+      mpContainerStateTime = mContainerState.array() + mpContainer->getCountFixedEventTargets();
     }
   else
     {
@@ -373,7 +373,7 @@ bool CTrajectoryTask::process(const bool & useInitialValues)
 void CTrajectoryTask::processStart(const bool & useInitialValues)
 {
   mContainerState.initialize(mpContainer->getState(mUpdateMoieties));
-  mpContainerStateTime = mContainerState.array() + mpContainer->getTimeIndex();
+  mpContainerStateTime = mContainerState.array() + mpContainer->getCountFixedEventTargets();
 
   if (useInitialValues)
     {

@@ -482,7 +482,7 @@ bool CFitProblem::initialize()
     }
 
   mInitialState = mpContainer->getInitialState();
-  mpInitialStateTime = mpContainer->getInitialState().array() + mpContainer->getTimeIndex();
+  mpInitialStateTime = mpContainer->getInitialState().array() + mpContainer->getCountFixedEventTargets();
 
   if (!mpExperimentSet->compile(mpContainer)) return false;
 

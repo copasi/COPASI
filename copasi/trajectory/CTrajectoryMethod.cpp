@@ -81,7 +81,7 @@ void CTrajectoryMethod::signalMathContainerChanged()
         UpdateMoieties = pParameter->getValue< bool >();
 
       mContainerState.initialize(mpContainer->getState(UpdateMoieties));
-      mpContainerStateTime = mContainerState.array() + mpContainer->getTimeIndex();
+      mpContainerStateTime = mContainerState.array() + mpContainer->getCountFixedEventTargets();
     }
   else
     {
@@ -123,7 +123,7 @@ void CTrajectoryMethod::start()
     UpdateMoieties = pParameter->getValue< bool >();
 
   mContainerState.initialize(mpContainer->getState(UpdateMoieties));
-  mpContainerStateTime = mContainerState.array() + mpContainer->getTimeIndex();
+  mpContainerStateTime = mContainerState.array() + mpContainer->getCountFixedEventTargets();
 
   return;
 }

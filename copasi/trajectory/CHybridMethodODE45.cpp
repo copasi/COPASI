@@ -266,7 +266,7 @@ void CHybridMethodODE45::initMethod(C_FLOAT64 start_time)
   // Determine the integration type
   determineIntegrationType();
 
-  mCountContainerVariables = mContainerState.size() - mpContainer->getTimeIndex();
+  mCountContainerVariables = mContainerState.size() - mpContainer->getCountFixedEventTargets();
   mData.dim = mCountContainerVariables;
 
   if (mIntegrationType == HYBRID)
@@ -275,7 +275,7 @@ void CHybridMethodODE45::initMethod(C_FLOAT64 start_time)
     }
 
   mY.resize(mData.dim);
-  mpYdot = mpContainer->getRate(false).array() + mpContainer->getTimeIndex();
+  mpYdot = mpContainer->getRate(false).array() + mpContainer->getCountFixedEventTargets();
 
   // we don't want to directly record new results into mpState, since
   // the sum of slow reaction propensities is also recorded in mY

@@ -186,7 +186,7 @@ void CTrajAdaptiveSA::start()
     }
 
   mNumReactionSpecies = mpContainer->getCountIndependentSpecies() + mpContainer->getCountDependentSpecies();
-  mFirstReactionSpeciesIndex = mpContainer->getTimeIndex() + mpContainer->getCountODEs();
+  mFirstReactionSpeciesIndex = mpContainer->getCountFixedEventTargets() + mpContainer->getCountODEs();
 
   mPartitionedDependencies.resize(mNumReactions);
   mMaxReactionFiring.resize(mNumReactions);

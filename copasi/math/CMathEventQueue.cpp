@@ -257,7 +257,7 @@ void CMathEventQueue::start()
 {
   mActions.clear();
 
-  mpTime = mpContainer->getState(false).array() + mpContainer->getTimeIndex();
+  mpTime = mpContainer->getState(false).array() + mpContainer->getCountFixedEventTargets();
 
   size_t NumRoots = mpContainer->getRoots().size();
   mRootsFound.resize(NumRoots);

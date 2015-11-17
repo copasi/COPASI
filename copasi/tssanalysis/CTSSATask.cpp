@@ -170,7 +170,7 @@ bool CTSSATask::initialize(const OutputFlag & of,
   success &= CCopasiTask::initialize(of, pOutputHandler, pOstream);
 
   mContainerState.initialize(mpContainer->getState(mUpdateMoieties));
-  mpContainerStateTime = mContainerState.array() + mpContainer->getTimeIndex();
+  mpContainerStateTime = mContainerState.array() + mpContainer->getCountFixedEventTargets();
 
   return success;
 }

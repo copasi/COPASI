@@ -158,9 +158,9 @@ const CEigen & CSteadyStateTask::getEigenValuesReduced() const
 bool CSteadyStateTask::updateMatrices()
 {
   // init Jacobians
-  size_t sizeReduced = mpContainer->getState(true).size() - mpContainer->getTimeIndex() - 1;
+  size_t sizeReduced = mpContainer->getState(true).size() - mpContainer->getCountFixedEventTargets() - 1;
   mJacobianReduced.resize(sizeReduced, sizeReduced);
-  size_t size = mpContainer->getState(false).size() - mpContainer->getTimeIndex() - 1;
+  size_t size = mpContainer->getState(false).size() - mpContainer->getCountFixedEventTargets() - 1;
   mJacobian.resize(size, size);
 
   // Jacobian Annotations
@@ -168,7 +168,7 @@ bool CSteadyStateTask::updateMatrices()
   mpJacobianAnn->resize();
   mpJacobianXAnn->resize();
 
-  const CMathObject * pObject = mpContainer->getMathObject(mpContainer->getState(false).array() + mpContainer->getTimeIndex() + 1);
+  const CMathObject * pObject = mpContainer->getMathObject(mpContainer->getState(false).array() + mpContainer->getCountFixedEventTargets() + 1);
   const CMathObject * pObjectEnd = pObject + sizeReduced;
 
   size_t i;
@@ -245,7 +245,7 @@ bool CSteadyStateTask::process(const bool & useInitialValues)
   // A steady-state makes only sense in an autonomous model,
   // i.e., the time of the steady-state must not be changed
   // during simulation.
-  C_FLOAT64 InitialTime = mSteadyState[mpContainer->getTimeIndex()];
+  C_FLOAT64 InitialTime = mSteadyState[mpContainer->getCountFixedEventTargets()];
 
   CSteadyStateMethod* pMethod =
     dynamic_cast<CSteadyStateMethod *>(mpMethod);
@@ -265,7 +265,7 @@ bool CSteadyStateTask::process(const bool & useInitialValues)
   // Reset the time for an autonomous model.
   if (mpContainer->isAutonomous())
     {
-      mSteadyState[mpContainer->getTimeIndex()] = InitialTime;
+      mSteadyState[mpContainer->getCountFixedEventTargets()] = InitialTime;
     }
 
   if (mResult == CSteadyStateMethod::notFound)

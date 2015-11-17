@@ -150,14 +150,14 @@ void CLyapWolfMethod::start(/*const CState * initialState*/)
   mContainerState.initialize(mpContainer->getState(mReducedModel));
 
   //mY = mpState->beginIndependent();
-  mpContainerStateTime = mContainerState.array() + mpContainer->getTimeIndex();
+  mpContainerStateTime = mContainerState.array() + mpContainer->getCountFixedEventTargets();
 
-  mSystemSize = mContainerState.size() - mpContainer->getTimeIndex() - 1;
+  mSystemSize = mContainerState.size() - mpContainer->getCountFixedEventTargets() - 1;
 
   //initialize the vector on which lsoda will work
   mVariables.initialize(mSystemSize, mpContainerStateTime + 1);
 
-  mpYdot = mpContainer->getRate(mReducedModel).array() + mpContainer->getTimeIndex() + 1;
+  mpYdot = mpContainer->getRate(mReducedModel).array() + mpContainer->getCountFixedEventTargets() + 1;
 
   mNumExp = mpProblem->getExponentNumber();
   mDoDivergence = mpProblem->divergenceRequested();

@@ -709,14 +709,14 @@ bool CNewtonMethod::initialize(const CSteadyStateProblem * pProblem)
   mMaxDurationForward = getValue< C_FLOAT64 >("Maximum duration for forward integration");
   mMaxDurationBackward = getValue< C_FLOAT64 >("Maximum duration for backward integration");
 
-  mpX = mContainerStateReduced.array() + mpContainer->getTimeIndex() + 1;
-  mDimension = mContainerStateReduced.size() - mpContainer->getTimeIndex() - 1;
+  mpX = mContainerStateReduced.array() + mpContainer->getCountFixedEventTargets() + 1;
+  mDimension = mContainerStateReduced.size() - mpContainer->getCountFixedEventTargets() - 1;
 
   mAtol = mpContainer->initializeAtolVector(*mpSSResolution, true);
 
   mH.resize(mDimension);
   mXold.resize(mDimension);
-  mdxdt.initialize(mDimension, mpContainer->getRate(true).array() + mpContainer->getTimeIndex() + 1);
+  mdxdt.initialize(mDimension, mpContainer->getRate(true).array() + mpContainer->getCountFixedEventTargets() + 1);
   mIpiv = new C_INT [mDimension];
 
   if (mUseIntegration || mUseBackIntegration)

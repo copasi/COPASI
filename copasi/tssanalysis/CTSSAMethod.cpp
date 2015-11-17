@@ -165,9 +165,9 @@ void CTSSAMethod::start()
 
   mContainerState.initialize(mpContainer->getState(true));
 
-  mpContainerStateTime = mContainerState.array() + mpContainer->getTimeIndex();
-  mpFirstSpecies = mContainerState.array() + mpContainer->getTimeIndex() + 1 /* Time */ + mpContainer->getCountODEs();
-  mpFirstSpeciesRate = mpContainer->getRate(true).array() + mpContainer->getTimeIndex() + 1 /* Time */ + mpContainer->getCountODEs();
+  mpContainerStateTime = mContainerState.array() + mpContainer->getCountFixedEventTargets();
+  mpFirstSpecies = mContainerState.array() + mpContainer->getCountFixedEventTargets() + 1 /* Time */ + mpContainer->getCountODEs();
+  mpFirstSpeciesRate = mpContainer->getRate(true).array() + mpContainer->getCountFixedEventTargets() + 1 /* Time */ + mpContainer->getCountODEs();
 
   const CModel & Model = mpContainer->getModel();
 
@@ -1654,7 +1654,7 @@ void CTSSAMethod::calculateDerivatives(C_FLOAT64 * X1, C_FLOAT64 * Y1, bool useR
 
   for (; pSpecies != pSpeciesEnd; ++pSpecies, ++pX)
     {
-      *pSpecies = mConcentration2Number * *pX;
+      *pSpecies = mConcentration2Number **pX;
     }
 
   mpContainer->updateSimulatedValues(useReducedModel);
@@ -1665,7 +1665,7 @@ void CTSSAMethod::calculateDerivatives(C_FLOAT64 * X1, C_FLOAT64 * Y1, bool useR
 
   for (; pRate != pRateEnd; ++pRate, ++pY)
     {
-      *pY = mNumber2Concentration * *pRate;
+      *pY = mNumber2Concentration **pRate;
     }
 
   mpContainer->setValues(SavedState);

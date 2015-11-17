@@ -376,7 +376,7 @@ void CCrossSectionTask::eventCallBack(void * /* pData */, void * /* pCaller */)
               if (tmp < mpCrossSectionProblem->getConvergenceOutTolerance())
                 {
                   mPeriodicity = mStatesRingCounter - i;
-                  mPeriod = *mpContainerStateTime - mStatesRing[i % RING_SIZE][mpContainer->getTimeIndex()];
+                  mPeriod = *mpContainerStateTime - mStatesRing[i % RING_SIZE][mpContainer->getCountFixedEventTargets()];
                   mFreq = 1 / mPeriod;
                   mAveragePeriod = mPeriod / ((C_FLOAT64)mPeriodicity);
                   mAverageFreq = 1 / mAveragePeriod;
@@ -411,7 +411,7 @@ void CCrossSectionTask::eventCallBack(void * /* pData */, void * /* pCaller */)
               if (tmp < mpCrossSectionProblem->getConvergenceTolerance())
                 {
                   mPeriodicity = mStatesRingCounter - i;
-                  mPeriod = *mpContainerStateTime - mStatesRing[i % RING_SIZE][mpContainer->getTimeIndex()];
+                  mPeriod = *mpContainerStateTime - mStatesRing[i % RING_SIZE][mpContainer->getCountFixedEventTargets()];
                   mFreq = 1 / mPeriod;
                   mAveragePeriod = mPeriod / ((C_FLOAT64)mPeriodicity);
                   mAverageFreq = 1 / mAveragePeriod;
@@ -459,7 +459,7 @@ C_FLOAT64 CCrossSectionTask::relativeDifferenceOfStates(const CVectorCore< C_FLO
 
   const C_FLOAT64 * p1 = s1.array();
   const C_FLOAT64 * p1End = p1 + s1.size();
-  const C_FLOAT64 * pTime = p1 + mpContainer->getTimeIndex();
+  const C_FLOAT64 * pTime = p1 + mpContainer->getCountFixedEventTargets();
   const C_FLOAT64 * p2 = s2.array();
 
   for (; p1 != p1End; ++p1, ++p2)

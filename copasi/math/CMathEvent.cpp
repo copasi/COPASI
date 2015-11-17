@@ -1215,7 +1215,7 @@ bool CMathEvent::compile(const CEvent * pDataEvent,
   bool success = true;
 
   mpContainer = &container;
-  mpTime = container.getState(false).array() + container.getTimeIndex();
+  mpTime = container.getState(false).array() + container.getCountFixedEventTargets();
 
   mType = pDataEvent->getType();
   mFireAtInitialTime = pDataEvent->getFireAtInitialTime();
@@ -1279,7 +1279,7 @@ bool CMathEvent::compile(CMathContainer & container)
   bool success = true;
 
   mpContainer = &container;
-  mpTime = container.getState(false).array() + container.getTimeIndex();
+  mpTime = container.getState(false).array() + container.getCountFixedEventTargets();
 
   mType = CEvent::Discontinuity;
   mFireAtInitialTime = false;

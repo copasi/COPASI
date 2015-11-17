@@ -45,7 +45,7 @@ private:
   {
   public:
     size_t nFixed;
-    size_t nEventTargets; // auto determined
+    size_t nFixedEventTargets; // auto determined
     size_t nTime; // 0 or 1
     size_t nODE;
     size_t nReactionSpecies; // fixed
@@ -542,12 +542,6 @@ public:
    * @return const size_t & countDependentSpecies
    */
   const size_t & getCountFixed() const;
-
-  /**
-   * Retrieve the index in the state of the time variable
-   * @return const size_t & timeIndex
-   */
-  const size_t & getTimeIndex() const;
 
   /**
    * Retrieve the reactions
