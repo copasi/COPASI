@@ -28,7 +28,7 @@ struct SIUnit
 {
   const char * name;
   const char * symbol;
-  const char * definition;
+  const char * infix;
 };
 
 SIUnit SIUnits[] =
@@ -80,7 +80,7 @@ CUnit CUnit::getSIUnit(const std::string & si,
 
   if (strcmp(pSIUnit->symbol, "mol"))
     {
-      buffer << pSIUnit->definition;
+      buffer << pSIUnit->infix;
     }
   else
     {
@@ -124,7 +124,7 @@ void CUnit::updateSIUnits(CCopasiVectorN< CUnit > & Units,
 
       if (strcmp(pSIUnit->symbol, "mol"))
         {
-          buffer << pSIUnit->definition;
+          buffer << pSIUnit->infix;
         }
       else
         {
