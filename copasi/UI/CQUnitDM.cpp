@@ -94,7 +94,7 @@ QVariant CQUnitDM::data(const QModelIndex &index, int role) const
                 return QVariant(QString(FROM_UTF8(pUnit->getSymbol())));
 
               case COL_DEFINITION_UNITS:
-                return QVariant(QString(FROM_UTF8(pUnit->getDefinition())));
+                return QVariant(QString(FROM_UTF8(pUnit->getInfix())));
             }
         }
     }

@@ -680,7 +680,7 @@ bool CModelValue::setUnitDefinition(const std::string & unitDefinition)
       Avogadro = pModel->getAvogadro();
     }
 
-  return mpUnit->setDefinition(unitDefinition, Avogadro);
+  return mpUnit->setInfix(unitDefinition, Avogadro);
 }
 
 // virtual

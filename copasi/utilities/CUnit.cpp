@@ -91,7 +91,7 @@ CUnit CUnit::getSIUnit(const std::string & si,
 
   SIunit.setObjectName(pSIUnit->name);
   SIunit.setSymbol(pSIUnit->symbol);
-  SIunit.setDefinition(buffer.str(), avogadro);
+  SIunit.setInfix(buffer.str(), avogadro);
 
   return SIunit;
 }
@@ -131,7 +131,7 @@ void CUnit::updateSIUnits(CCopasiVectorN< CUnit > & Units,
           buffer << CCopasiXMLInterface::DBL(avogadro) << "*#";
         }
 
-      pUnit->setDefinition(buffer.str(), avogadro);
+      pUnit->setInfix(buffer.str(), avogadro);
 
       pSIUnit++;
     }
@@ -163,7 +163,7 @@ CUnit::CUnit(const std::string & name,
              const CCopasiContainer * pParent):
   CCopasiContainer(name, pParent, "Unit"),
   mSymbol("none"),
-  mDefinition(),
+  mInfix(),
   mComponents(),
   mUsedSymbols()
 {
@@ -174,7 +174,7 @@ CUnit::CUnit(const CBaseUnit::Kind & kind,
              const CCopasiContainer * pParent):
   CCopasiContainer(CBaseUnit::Name[kind], pParent, "Unit"),
   mSymbol(CBaseUnit::getSymbol(kind)),
-  mDefinition(CBaseUnit::getSymbol(kind)),
+  mInfix(CBaseUnit::getSymbol(kind)),
   mComponents(),
   mUsedSymbols()
 {
@@ -188,12 +188,12 @@ CUnit::CUnit(const CUnit & src,
              const CCopasiContainer * pParent):
   CCopasiContainer(src, pParent),
   mSymbol(src.mSymbol),
-  mDefinition(),
+  mInfix(),
   mComponents(),
   mUsedSymbols()
 {
   setup();
-  setDefinition(src.mDefinition, avogadro);
+  setInfix(src.mInfix, avogadro);
 }
 
 CUnit::~CUnit()
@@ -487,10 +487,10 @@ std::string CUnit::getSymbol() const
   return mSymbol;
 }
 
-bool CUnit::setDefinition(const std::string & definition,
+bool CUnit::setInfix(const std::string & definition,
                           const C_FLOAT64 & avogadro)
 {
-  mDefinition = definition;
+  mInfix = definition;
 
   return compile(avogadro);
 }
@@ -498,7 +498,7 @@ bool CUnit::setDefinition(const std::string & definition,
 bool CUnit::compile(const C_FLOAT64 & avogadro)
 {
   // parse the definition into a linked node tree
-  std::istringstream buffer(mDefinition);
+  std::istringstream buffer(mInfix);
   CUnitParser Parser(&buffer);
   Parser.setAvogadro(avogadro);
 
@@ -513,9 +513,9 @@ bool CUnit::compile(const C_FLOAT64 & avogadro)
   return success;
 }
 
-std::string CUnit::getDefinition() const
+std::string CUnit::getInfix() const
 {
-  return mDefinition;
+  return mInfix;
 }
 
 const std::set< std::string > & CUnit::getUsedSymbols() const
@@ -605,7 +605,7 @@ CUnit CUnit::operator*(const CUnit & rhs) const
 bool CUnit::operator==(const CUnit & rhs) const
 {
   return (mSymbol == rhs.mSymbol &&
-          mDefinition == rhs.mDefinition);
+          mInfix == rhs.mInfix);
 }
 
 bool CUnit::isEquivalent(const CUnit & rhs) const
@@ -637,7 +637,7 @@ std::ostream &operator<<(std::ostream &os, const CUnit & o)
 {
   os << "Name: " << o.getObjectName() << ", ";
   os << "Symbol: " << o.mSymbol << ", ";
-  os << "Definition: " << o.mDefinition << ", ";
+  os << "Definition: " << o.mInfix << ", ";
   os << "Components: " << std::endl;
 
   std::set< CUnitComponent >::const_iterator it = o.mComponents.begin();

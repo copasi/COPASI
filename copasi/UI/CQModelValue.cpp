@@ -269,7 +269,7 @@ void CQModelValue::load()
   if (mpModelValue == NULL) return;
 
   // Units
-  mpEditUnits->setText(FROM_UTF8(mpModelValue->getUnit().getDefinition()));
+  mpEditUnits->setText(FROM_UTF8(mpModelValue->getUnit().getInfix()));
 
   // Type
   mpComboBoxType->setCurrentIndex(mpComboBoxType->findText(FROM_UTF8(CModelEntity::StatusName[mpModelValue->getStatus()])));
@@ -395,11 +395,11 @@ void CQModelValue::save()
     }
 
   // set unit
-  if (mpModelValue->getUnit().getDefinition() != TO_UTF8(mpEditUnits->text()))
+  if (mpModelValue->getUnit().getInfix() != TO_UTF8(mpEditUnits->text()))
     {
       mpUndoStack->push(new GlobalQuantityChangeCommand(
                           CCopasiUndoCommand::GLOBALQUANTITY_UNIT_CHANGE,
-                          FROM_UTF8(mpModelValue->getUnit().getDefinition()),
+                          FROM_UTF8(mpModelValue->getUnit().getInfix()),
                           mpEditUnits->text(),
                           mpModelValue,
                           this

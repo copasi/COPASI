@@ -382,7 +382,7 @@ void CQUnitDetail::load()
   if (mpUnit == NULL) return;
 
   // Definition
-  mpEditDefinition->setText(FROM_UTF8(mpUnit->getDefinition()));
+  mpEditDefinition->setText(FROM_UTF8(mpUnit->getInfix()));
 
   // Definition
   mpEditSymbol->setText(FROM_UTF8(mpUnit->getSymbol()));
@@ -472,9 +472,9 @@ void CQUnitDetail::save()
       mChanged = true;
     }
 
-  if (mpUnit->getDefinition() != TO_UTF8(mpEditDefinition->text()))
+  if (mpUnit->getInfix() != TO_UTF8(mpEditDefinition->text()))
     {
-      mpUnit->setDefinition(TO_UTF8(mpEditDefinition->text()), CUnit::Avogadro);
+      mpUnit->setInfix(TO_UTF8(mpEditDefinition->text()), CUnit::Avogadro);
       mChanged = true;
     }
 

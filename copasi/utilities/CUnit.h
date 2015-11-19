@@ -107,10 +107,10 @@ public:
   void setSymbol(const std::string & symbol);
   std::string getSymbol() const;
 
-  bool setDefinition(const std::string & definition,
+  bool setInfix(const std::string & definition,
                      const C_FLOAT64 & avogadro);
 
-  std::string getDefinition() const;
+  std::string getInfix() const;
 
   const std::set< std::string > & getUsedSymbols() const;
 
@@ -127,7 +127,7 @@ public:
 
 private:
   std::string mSymbol;
-  std::string mDefinition;
+  std::string mInfix;
   std::set< CUnitComponent > mComponents;
   std::set< std::string > mUsedSymbols;
 
