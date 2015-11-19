@@ -664,8 +664,8 @@ bool CUnit::isEquivalent(const CUnit & rhs) const
         {
           continue;
         }
-
-      return false;
+      else
+        return false;
     }
 
   return true;
