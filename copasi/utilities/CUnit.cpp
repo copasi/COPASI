@@ -586,45 +586,6 @@ CUnit & CUnit::exponentiate(double exp)
   return *this;
 }
 
-std::string CUnit::prefixFromScale(int scale)
-{
-  switch (scale)
-    {
-      case 3:
-        return "k";  // kilo
-
-      case 2:
-        return "h";  // hecto
-
-      case 1:
-        return "da"; // deca
-
-      case -1:
-        return "d";  // deci
-
-      case -2:
-        return "c";  // centi
-
-      case -3:
-        return "m";  // milli
-
-      case -6:
-        return "\xc2\xb5";  // micro
-
-      case -9:
-        return "n";  // nano
-
-      case -12:
-        return "p";  // pico
-
-      case -15:
-        return "f";  // femto
-
-      default:
-        return "";  // anything else, including scale = 0
-    }
-}
-
 // Putting units next to each other implies multiplying them.
 CUnit CUnit::operator*(const CUnit & rhs) const
 {

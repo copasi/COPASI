@@ -121,7 +121,6 @@ public:
   bool compile(const C_FLOAT64 & avogadro);
 
   CUnit & exponentiate(double exp);
-  std::string prefixFromScale(int scale);
   CUnit operator*(const CUnit & rhs) const;
   bool operator==(const CUnit & rhs) const;
   bool isEquivalent(const CUnit & rhs) const;
