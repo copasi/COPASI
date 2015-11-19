@@ -501,13 +501,16 @@ C_FLOAT64 CStochDirectMethod::rootValue(const C_FLOAT64 & time)
   const C_FLOAT64 * pRootNew = mpRootValueNew->array();
 
   C_FLOAT64 MaxRootValue = - std::numeric_limits< C_FLOAT64 >::infinity();
+  C_FLOAT64 RootValue;
 
   for (; pRoot != pRootEnd; ++pRoot, ++pRootOld, ++pRootNew)
     {
       // We are only looking for roots which change sign in [pOld, pNew]
-      if (*pRootOld **pRootNew < 0)
+      if (*pRootOld **pRootNew < 0 || *pRootNew == 0)
         {
-          C_FLOAT64 RootValue = (*pRootNew > 0) ? *pRoot : -*pRoot;
+          // Assure that the RootValue is increasing between old and new for each
+          // candidate root.
+          RootValue = (*pRootNew >= *pRootOld) ? *pRoot : -*pRoot;
 
           if (RootValue > MaxRootValue)
             {

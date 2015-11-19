@@ -25,6 +25,9 @@
 
 #include "CRungeKutta.h"
 
+// Uncomment this line below to get debug print out.
+// #define DEBUG_OUTPUT 1
+
 //*********************************//
 //* Constructor and Destructor    *//
 //*********************************//
@@ -155,6 +158,10 @@ CRungeKutta::RKMethodStatus CRungeKutta::operator()(const size_t * pDim,
 
   if (mMethodStatus == ERROR) return mMethodStatus;
 
+#ifdef DEBUG_OUTPUT
+  std::cout << "Status:    " << mMethodStatus << std::endl;
+#endif // DEBUG_OUTPUT
+
   if (status == INITIALIZE)
     {
       initialize(pDim, pY, pTime, pEndTime, rootCount, pRoots, status, rtol, atol, pMaxSteps, pEvalDerivatives, pEvalRoots);
@@ -177,6 +184,11 @@ CRungeKutta::RKMethodStatus CRungeKutta::operator()(const size_t * pDim,
         {
           (*mpEventFunc)(mpDim, &mTLeft, mYLeft, &mRootNum, mRootValuesLeft);
         }
+
+#ifdef DEBUG_OUTPUT
+      std::cout << "old Y:    " << CVectorCore< C_FLOAT64 >(*mpDim, mYLeft) << std::endl;
+      std::cout << "old Root: " << CVectorCore< C_FLOAT64 >(mRootNum, mRootValuesLeft) << std::endl;
+#endif // DEBUG_OUTPUT
     }
   else if (mMethodStatus != CONTINUE) // has event
     {
@@ -808,6 +820,12 @@ void CRungeKutta::checkRoots()
               C_FLOAT64 RootValue;
 
               // Find the "exact" location of the left most root.
+
+#ifdef DEBUG_OUTPUT
+              std::cout << "old Y: " << CVectorCore< C_FLOAT64 >(*mpDim, mYLeft) << std::endl;
+              std::cout << "new Y: " << CVectorCore< C_FLOAT64 >(*mpDim, mYRight) << std::endl;
+#endif // DEBUG_OUTPUT
+
               if (!CBrent::findRoot(LeftTime, RightTime, mpRootValueCalculator, &RootTime, &RootValue, mRelTol * fabs(RightTime)))
                 {
                   fatalError();
@@ -844,8 +862,17 @@ void CRungeKutta::checkRoots()
                           *pRootFound = 1; // CMath::ToggleBoth
                           mMethodStatus = ROOTFOUND;
                         }
+                      else
+                        {
+                          *pRootFound = 0;
+                        }
                     }
                 }
+
+#ifdef DEBUG_OUTPUT
+              std::cout << "root value: " << CVectorCore< C_FLOAT64 >(mRootNum, mRootValueTmp) << std::endl;
+              std::cout << "root found: " << mRootFound << std::endl;
+#endif // DEBUG_OUTPUT
 
               break;
             }
@@ -891,7 +918,7 @@ C_FLOAT64 CRungeKutta::rootValue(const C_FLOAT64 & time)
         {
           // Assure that the RootValue is increasing between old and new for each
           // candidate root.
-          RootValue = (*pRootNew > 0) ? *pRoot : -*pRoot;
+          RootValue = (*pRootNew >= *pRootOld) ? *pRoot : -*pRoot;
 
           if (RootValue > MaxRootValue)
             {
@@ -900,7 +927,13 @@ C_FLOAT64 CRungeKutta::rootValue(const C_FLOAT64 & time)
         }
     }
 
-  // std::cout << "rootValue: " << time << ", " << CVectorCore< C_FLOAT64 >(*mpDim, mZ1) << ", " << MaxRootValue << std::endl;
+#ifdef DEBUG_OUTPUT
+  std::cout << "old Value: " << CVectorCore< C_FLOAT64 >(mRootNum, mRootValuesLeft) << std::endl;
+  std::cout << "tmp Value: " << CVectorCore< C_FLOAT64 >(mRootNum, mRootValueTmp) << std::endl;
+  std::cout << "new Value: " << CVectorCore< C_FLOAT64 >(mRootNum, mRootValueRight) << std::endl;
+
+  std::cout << "rootValue: " << CVectorCore< C_FLOAT64 >(*mpDim, mZ1) << ", " << MaxRootValue << std::endl;
+#endif // DEBUG_OUTPUT
 
   return MaxRootValue;
 }

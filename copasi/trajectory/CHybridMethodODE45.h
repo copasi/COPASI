@@ -71,18 +71,6 @@ class CDependencyGraph;
 class CModelEntity;
 
 /**
- * Internal representation of the balances of each reaction.
- * The index of each metabolite in the reaction is provided.
- */
-class CHybridODE45Balance
-{
-public:
-  size_t  mIndex;
-  C_FLOAT64 mMultiplicity;
-  CMetab *mpMetabolite;
-};
-
-/**
  * A class to record whether a metab is slow or fast
  * @param fastReactions is applied to store which reactions this
  *        metab participates
@@ -167,11 +155,18 @@ public:
    * starting with the current state, i.e., the result of the previous
    * step.
    * The new state (after deltaT) is expected in the current state.
-   * The return value is the actual timestep taken.
+   * The return value is the actual time step taken.
    * @param "const double &" deltaT
    * @return Status status
    */
   virtual Status step(const double & deltaT);
+
+  /**
+   * Inform the trajectory method that the state has changed outside
+   * its control
+   * @param const CMath::StateChange & change
+   */
+  virtual void stateChange(const CMath::StateChange & change);
 
   /**
    *  This instructs the method to prepare for integration
@@ -180,12 +175,6 @@ public:
   virtual void start();
 
 protected:
-  /**
-   * Initializes the solver.
-   * @param time the current time
-   */
-  void initMethod(C_FLOAT64 time);
-
   /**
    *   Cleans up memory, etc.
    */
@@ -257,15 +246,10 @@ protected:
   C_FLOAT64 doSingleStep(C_FLOAT64 endTime);
 
   /**
-   * Update all propensities and calculate the total,
-   */
-  void updatePropensities();
-
-  /**
    * Fire slow reaction and update populations and propensities
    * when Hybrid Method is used
    */
-  void fireSlowReaction4Hybrid();
+  void fireReaction();
 
   bool checkRoots();
 
@@ -277,17 +261,10 @@ protected:
    * at the event time.
    * @return CMathReaction * pReaction
    */
-  CMathReaction * getReaction4Hybrid();
-
+  CMathReaction * getReactionToFire();
   //================Function for Root==============
-private:
-  /**
-   * Inform the trajectory method that the state has changed outside
-   * its control
-   * @param const CMath::StateChange & change
-   */
-  virtual void stateChange(const CMath::StateChange & change);
 
+private:
   void maskRoots(CVectorCore<C_FLOAT64> & rootValues);
 
   void createRootMask();
@@ -314,10 +291,8 @@ private:
    */
   CVector< CMathReaction * >  mSlowReactions;
 
-  /**
-   * A pointer to the first species controlled by reactions
-   */
-  const C_FLOAT64 * mpFirstOdeVariable;
+  size_t mFirstReactionSpeciesIndex;
+  size_t mCountReactionSpecies;
 
   /**
    * Bool value
@@ -392,6 +367,8 @@ private:
   CVector< C_INT > mMethodRootsFound;
   C_INT * mpHybridRoot;
 
+  CVectorCore< C_FLOAT64 > mContainerFluxes;
+  CVector< C_FLOAT64 > mSavedFluxes;
   CVector< C_FLOAT64 * > mFluxPointers;
 
   CObjectInterface::UpdateSequence mPropensitiesUpdateSequence;
@@ -437,6 +414,11 @@ private:
    * Value of Roots after a reaction event
    */
   CVectorCore< C_FLOAT64 > mRootValuesRight;
+
+  /**
+   * 2 Vector for storing root value
+   */
+  CVector< C_FLOAT64 > mRootsNonZero;
 
   //================Stochastic Related================
   /**

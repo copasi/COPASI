@@ -1,5 +1,5 @@
 #!/bin/bash 
-# Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and The University 
 # of Manchester. 
 # All rights reserved. 
@@ -19,7 +19,7 @@ CUT=cut
 SED=sed
 
 if [ $# != 5 ] ; then
-  echo -e "\nUsage: run.sh WRAPPER TESTSDIR MODEL_LIST_FILE METHOD NUM_REPEATS\n";
+  echo -e "\nUsage: run.sh WRAPPER TESTSDIR [MODEL_LIST_FILE|MODEL] METHOD NUM_REPEATS\n";
   exit 1;
 fi  
 
@@ -29,8 +29,11 @@ MODELFILE=$3
 METHOD=$4
 NUM_REPEATS=$5
 
-MODELS=`cat $MODELFILE` 
-
+if [ -e $MODELFILE ]; then
+  MODELS=`cat $MODELFILE` 
+else
+  MODELS=$MODELFILE
+fi
 
 function getSpecies()
 {
