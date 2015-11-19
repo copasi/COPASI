@@ -947,10 +947,10 @@ bool CCopasiXML::saveAnnotation(const CAnnotation * pAnnotation)
 
       for (; it != end; ++it)
         {
-          Attributes.setValue(0, it->first);
+          Attributes.setValue(0, (*it).first);
 
           startSaveElement("UnsupportedAnnotation", Attributes);
-          *mpOstream << it->second << std::endl;
+          *mpOstream << (*it).second << std::endl;
           endSaveElement("UnsupportedAnnotation");
         }
 
@@ -1852,8 +1852,8 @@ bool CCopasiXML::saveSBMLReference()
 
   for (; it != end; ++it)
     {
-      Attributes.setValue(0, it->first);
-      Attributes.setValue(1, it->second);
+      Attributes.setValue(0, (*it).first);
+      Attributes.setValue(1, (*it).second);
 
       saveElement("SBMLMap", Attributes);
     }
