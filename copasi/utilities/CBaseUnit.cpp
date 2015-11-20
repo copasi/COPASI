@@ -5,6 +5,7 @@
 
 #include "copasi/utilities/CBaseUnit.h"
 #include "copasi/utilities/CCopasiMessage.h"
+#include "copasi/UI/qtUtilities.h"
 
 // static
 const char * CBaseUnit::Name[] =
@@ -87,7 +88,7 @@ const CBaseUnit::Scale CBaseUnit::scaleFromPrefix(const std::string & prefix)
 
   if (prefix == "p") return pico;
 
-  if (prefix == "u") return micro;
+  if (prefix == "u" || prefix == "\xc2\xb5") return micro;
 
   if (prefix == "m") return milli;
 
