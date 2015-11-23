@@ -1103,6 +1103,17 @@ CCopasiObject * CMathContainer::getDataObject(const C_FLOAT64 * pDataValue) cons
   return NULL;
 }
 
+CMathReaction * CMathContainer::getMathReaction(const CReaction * pReaction) const
+{
+  if (pReaction == NULL) return NULL;
+
+  CMathObject * pFlux = getMathObject(pReaction->getFluxReference());
+
+  if (pFlux == NULL) return NULL;
+
+  return const_cast< CMathReaction * >(&mReactions[(C_FLOAT64 *) pFlux->getValuePointer() - mFluxes.array()]);
+}
+
 CMathObject * CMathContainer::getCompartment(const CMathObject * pObject) const
 {
   if (pObject == NULL ||

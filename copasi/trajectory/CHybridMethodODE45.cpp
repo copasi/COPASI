@@ -355,72 +355,87 @@ void CHybridMethodODE45::cleanup()
  */
 void CHybridMethodODE45::partitionSystem()
 {
-  bool AllFast = false;
-  bool AllSlow = false;
   size_t nFast = 0;
   size_t nSlow = 0;
 
-  CMathReaction * pReaction = mpContainer->getReactions().array();
-  CMathReaction * pReactionEnd = pReaction + mpContainer->getReactions().size();
-
   if (*mpPartitioningStrategy == "Deterministic Reaction Integration")
     {
-      AllFast = true;
       nFast = mpContainer->getReactions().size();
     }
   else if (*mpPartitioningStrategy == "User specified Partition")
     {
-      for (; pReaction != pReactionEnd; ++pReaction)
-        {
-          if (pReaction->isFast())
-            {
-              nFast++;
-            }
-          else
-            {
-              nSlow++;
-            }
-        }
+      nFast = mpFastReactions->size();
+      nSlow = mpContainer->getReactions().size() - nFast;
+    }
+  else if ("Stochastic Reaction Integration")
+    {
+      nSlow = mpContainer->getReactions().size();
     }
   else
     {
-      // Default "Stochastic Reaction Integration"
-      AllSlow = true;
-      nSlow = mpContainer->getReactions().size();
+      fatalError();
     }
 
   mHasStoiReaction   = (nSlow > 0);
   mHasDetermReaction = (nFast > 0);
 
-  mContainerFluxes.initialize(mpContainer->getFluxes()),
-
-                              mSlowReactions.resize(nSlow);
+  mContainerFluxes.initialize(mpContainer->getFluxes()), mSlowReactions.resize(nSlow);
   mAmuPointers.resize(nSlow);
   mFluxPointers.resize(nSlow);
-
-  CMathReaction ** ppSlowReaction = mSlowReactions.array();
-  C_FLOAT64 ** ppSlowAmu = mAmuPointers.array();
-  C_FLOAT64 ** ppSlowFlux = mFluxPointers.array();
 
   CObjectInterface::ObjectSet Propensities;
   CObjectInterface::ObjectSet Fluxes;
 
-  pReaction = mpContainer->getReactions().array();
-
-  for (; pReaction != pReactionEnd; ++pReaction)
+  if (*mpPartitioningStrategy != "Deterministic Reaction Integration")
     {
-      if (!AllFast &&
-          (AllSlow || !pReaction->isFast()))
+      std::set< CMathReaction * > SlowReactions;
+
+      // All reactions are slow
+      CMathReaction * pReaction = mpContainer->getReactions().array();
+      CMathReaction * pReactionEnd = pReaction + mpContainer->getReactions().size();
+
+      for (; pReaction != pReactionEnd; ++pReaction)
         {
-          *ppSlowReaction = pReaction;
+          SlowReactions.insert(pReaction);
+        }
+
+      if (*mpPartitioningStrategy == "User specified Partition")
+        {
+          CCopasiParameterGroup::elements::const_iterator it = mpFastReactions->beginIndex();
+          CCopasiParameterGroup::elements::const_iterator end = mpFastReactions->endIndex();
+
+          for (; it != end; ++it)
+            {
+              const CReaction * pModelReaction = dynamic_cast< const CReaction * >(getObjectFromCN((*it)->getValue< CCopasiObjectName >()));
+
+              if (pModelReaction == NULL) continue;
+
+              pReaction = mpContainer->getMathReaction(pModelReaction);
+
+              if (pReaction == NULL) continue;
+
+              SlowReactions.erase(pReaction);
+            }
+        }
+
+      std::set< CMathReaction * >::iterator itSlow = SlowReactions.begin();
+      std::set< CMathReaction * >::iterator endSlow = SlowReactions.end();
+
+      CMathReaction ** ppSlowReaction = mSlowReactions.array();
+      C_FLOAT64 ** ppSlowAmu = mAmuPointers.array();
+      C_FLOAT64 ** ppSlowFlux = mFluxPointers.array();
+
+      for (; itSlow != endSlow; ++itSlow)
+        {
+          *ppSlowReaction = *itSlow;
           ++ppSlowReaction;
-          *ppSlowAmu = (C_FLOAT64 *) pReaction->getPropensityObject()->getValuePointer();
+          *ppSlowAmu = (C_FLOAT64 *)(*itSlow)->getPropensityObject()->getValuePointer();
           ++ppSlowAmu;
-          *ppSlowFlux = (C_FLOAT64 *) pReaction->getFluxObject()->getValuePointer();
+          *ppSlowFlux = (C_FLOAT64 *)(*itSlow)->getFluxObject()->getValuePointer();
           ++ppSlowFlux;
 
-          Propensities.insert(pReaction->getPropensityObject());
-          Fluxes.insert(pReaction->getFluxObject());
+          Propensities.insert((*itSlow)->getPropensityObject());
+          Fluxes.insert((*itSlow)->getFluxObject());
         }
     }
 

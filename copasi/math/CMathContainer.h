@@ -457,8 +457,8 @@ public:
   virtual const CObjectInterface * getObjectFromCN(const CCopasiObjectName & cn) const;
 
   /**
-   * Retrieve a pointer to corresponding the mathematical object
-   * for the given abject if it exists otherwise NULL
+   * Retrieve a pointer to the corresponding the mathematical object
+   * for the given object if it exists otherwise NULL
    * @param const CObjectInterface * pObject
    * @return CMathObject * pMathObject
    */
@@ -484,6 +484,14 @@ public:
    * @return CCopasiObject * pDataObject
    */
   CCopasiObject * getDataObject(const C_FLOAT64 * pDataValue) const;
+
+  /**
+   * Retrieve a pointer to the corresponding the mathematical reaction
+   * for the given reaction if it exists otherwise NULL
+   * @param const CObjectInterface * pObject
+   * @return CMathReaction * pMathReaction
+   */
+  CMathReaction * getMathReaction(const CReaction * pReaction) const;
 
   /**
    * Retrieve the pointer to the compartment of a species related object
