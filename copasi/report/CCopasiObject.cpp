@@ -311,13 +311,13 @@ bool CCopasiObject::setObjectName(const std::string & name)
 }
 
 /*virtual*/
-std::string CCopasiObject::getObjectDisplayName(bool regular /*=true*/, bool richtext /*=false*/) const
+std::string CCopasiObject::getObjectDisplayName() const
 {
   std::string ret = "";
 
   if (mpObjectParent)
     {
-      ret = mpObjectParent->getObjectDisplayName(regular, richtext);
+      ret = mpObjectParent->getObjectDisplayName();
 
       if (ret == "(CN)Root" ||
           ret == "ModelList[]" ||

@@ -1,4 +1,4 @@
-// Copyright (C) 2011 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -135,8 +135,6 @@ void CQSimpleSelectionTree::populateTree(const CModel * pModel,
       treeItems[pItem] = pObject;
     }
 
-  removeEmptySubTree(&mpTimeSubtree);
-
   // find all species (aka metabolites) and create items in the metabolite subtree
   const CCopasiVector<CMetab>& metabolites = pModel->getMetabolites();
   size_t counter;
@@ -214,14 +212,6 @@ void CQSimpleSelectionTree::populateTree(const CModel * pModel,
         }
     }
 
-  removeEmptySubTree(&mpMetaboliteInitialNumberSubtree);
-  removeEmptySubTree(&mpMetaboliteTransientNumberSubtree);
-  removeEmptySubTree(&mpMetaboliteRateNumberSubtree);
-  removeEmptySubTree(&mpMetaboliteInitialConcentrationSubtree);
-  removeEmptySubTree(&mpMetaboliteTransientConcentrationSubtree);
-  removeEmptySubTree(&mpMetaboliteRateConcentrationSubtree);
-  removeEmptySubTree(&mpMetaboliteSubtree);
-
   // find all reactions and create items in the reaction subtree
   const CCopasiVectorNS<CReaction>& reactions = pModel->getReactions();
   maxCount = reactions.size();
@@ -276,11 +266,6 @@ void CQSimpleSelectionTree::populateTree(const CModel * pModel,
       removeEmptySubTree(&pItem);
     }
 
-  removeEmptySubTree(&mpReactionFluxNumberSubtree);
-  removeEmptySubTree(&mpReactionFluxConcentrationSubtree);
-  removeEmptySubTree(&mpReactionParameterSubtree);
-  removeEmptySubTree(&mpReactionSubtree);
-
   // find all global parameters (aka model values) variables
   const CCopasiVector<CModelValue>& objects = pModel->getModelValues();
   maxCount = objects.size();
@@ -318,11 +303,6 @@ void CQSimpleSelectionTree::populateTree(const CModel * pModel,
         }
     }
 
-  removeEmptySubTree(&mpModelQuantityRateSubtree);
-  removeEmptySubTree(&mpModelQuantityInitialValueSubtree);
-  removeEmptySubTree(&mpModelQuantityTransientValueSubtree);
-  removeEmptySubTree(&mpModelQuantitySubtree);
-
   // find all compartments
   const CCopasiVector<CCompartment>& objects2 = pModel->getCompartments();
   maxCount = objects2.size();
@@ -359,11 +339,6 @@ void CQSimpleSelectionTree::populateTree(const CModel * pModel,
             }
         }
     }
-
-  removeEmptySubTree(&mpCompartmentRateSubtree);
-  removeEmptySubTree(&mpCompartmentInitialVolumeSubtree);
-  removeEmptySubTree(&mpCompartmentTransientVolumeSubtree);
-  removeEmptySubTree(&mpCompartmentSubtree);
 
   pObject = static_cast< const CCopasiObject * >(pModel->getObject(CCopasiObjectName("Reference=Avogadro Constant")));
 
@@ -423,8 +398,6 @@ void CQSimpleSelectionTree::populateTree(const CModel * pModel,
           treeItems[pItem] = pObject;
         }
     }
-
-  removeEmptySubTree(&mpModelMatrixSubtree);
 
   // find all result matrices
   // Metabolic Control Analysis
@@ -572,12 +545,6 @@ void CQSimpleSelectionTree::populateTree(const CModel * pModel,
   catch (...)
     {}
 
-  removeEmptySubTree(&mpResultMCASubtree);
-  removeEmptySubTree(&mpResultTSSASubtree);
-  removeEmptySubTree(&mpResultSensitivitySubtree);
-  removeEmptySubTree(&mpResultSteadyStateSubtree);
-  removeEmptySubTree(&mpResultMatrixSubtree);
-
   if (selectionMode() == QAbstractItemView::NoSelection)
     {
       // see if some objects are there, if yes set to single selection
@@ -604,6 +571,8 @@ void CQSimpleSelectionTree::populateTree(const CModel * pModel,
           ++it;
         }
     }
+
+  removeAllEmptySubTrees();
 }
 
 bool CQSimpleSelectionTree::treeHasSelection()
@@ -623,6 +592,195 @@ bool CQSimpleSelectionTree::treeHasSelection()
     }
 
   return hasSelection;
+}
+
+void CQSimpleSelectionTree::populateTree(const std::vector< const CCopasiObject * > & objectList)
+{
+  QTreeWidgetItem * pItem;
+
+  // We add all objects to the appropriate subtree;
+  std::vector< const CCopasiObject * >::const_iterator it = objectList.begin();
+  std::vector< const CCopasiObject * >::const_iterator end = objectList.end();
+
+  const CReaction * pReaction = NULL;
+  const CMetab * pMetab = NULL;
+  const CCompartment * pCompartment = NULL;
+  const CModelValue * pModelValue = NULL;
+  const CModel * pModel = NULL;
+  std::map< const CCopasiObject *, QTreeWidgetItem * > Object2Subtree;
+
+  // We currently only deal with descendants of the Model.
+  for (; it != end; ++it)
+    {
+      if ((pReaction = static_cast< CReaction * >((*it)->getObjectAncestor("Reaction"))) != NULL)
+        {
+          std::string name = "flux(" + pReaction->getObjectName() + ")";
+
+          if ((*it) == pReaction->getFluxReference())
+            {
+              pItem = new QTreeWidgetItem(mpReactionFluxConcentrationSubtree, QStringList(FROM_UTF8(name)));
+              treeItems[pItem] = *it;
+            }
+          else if ((*it) == pReaction->getParticleFluxReference())
+            {
+              pItem = new QTreeWidgetItem(mpReactionFluxNumberSubtree, QStringList(FROM_UTF8("particle " + name)));
+              treeItems[pItem] = *it;
+            }
+          else
+            {
+              // We must have a reaction parameter which are in a subtree with the reaction name.
+              // 1) Find or Create a subtree
+              std::map< const CCopasiObject *, QTreeWidgetItem * >::iterator Found = Object2Subtree.find(pReaction);
+
+              if (Found == Object2Subtree.end())
+                {
+                  Found = Object2Subtree.insert(std::make_pair(pReaction,
+                                                new QTreeWidgetItem(mpReactionParameterSubtree,
+                                                    QStringList(FROM_UTF8(pReaction->getObjectName()))))).first;
+                }
+
+              // 2) Add the parameter to the subtree
+              pItem = new QTreeWidgetItem(Found->second, QStringList(FROM_UTF8((*it)->getObjectName())));
+              treeItems[pItem] = *it;
+            }
+        }
+      else if ((pMetab = static_cast< CMetab * >((*it)->getObjectAncestor("Metabolite"))) != NULL)
+        {
+          pModel = static_cast< CModel * >(pMetab->getObjectAncestor("Model"));
+          std::string name = pMetab->getObjectName();
+
+          if (!isMetaboliteNameUnique(name, pModel->getMetabolites()))
+            {
+              pCompartment = pMetab->getCompartment();
+
+              if (pCompartment)
+                {
+                  name = name + "(" + pCompartment->getObjectName() + ")";
+                }
+            }
+
+          if ((*it) == pMetab->getInitialValueReference())
+            {
+              pItem = new QTreeWidgetItem(mpMetaboliteInitialNumberSubtree, QStringList(FROM_UTF8(name + "(t=0)")));
+              treeItems[pItem] = *it;
+            }
+          else if ((*it) == pMetab->getValueReference())
+            {
+              pItem = new QTreeWidgetItem(mpMetaboliteTransientNumberSubtree, QStringList(FROM_UTF8(name + "(t)")));
+              treeItems[pItem] = *it;
+            }
+          else if ((*it) == pMetab->getRateReference())
+            {
+              pItem = new QTreeWidgetItem(mpMetaboliteRateNumberSubtree, QStringList(FROM_UTF8("d(" + name + ")/dt")));
+              treeItems[pItem] = *it;
+            }
+          else if ((*it) == pMetab->getInitialConcentrationReference())
+            {
+              pItem = new QTreeWidgetItem(mpMetaboliteInitialConcentrationSubtree, QStringList(FROM_UTF8("[" + name + "](t=0)")));
+              treeItems[pItem] = *it;
+            }
+          else if ((*it) == pMetab->getConcentrationReference())
+            {
+              pItem = new QTreeWidgetItem(mpMetaboliteTransientConcentrationSubtree, QStringList(FROM_UTF8("[" + name + "](t)")));
+              treeItems[pItem] = *it;
+            }
+          else if ((*it) == pMetab->getConcentrationRateReference())
+            {
+              pItem = new QTreeWidgetItem(mpMetaboliteRateConcentrationSubtree, QStringList(FROM_UTF8("d([" + name + "])/dt")));
+              treeItems[pItem] = *it;
+            }
+        }
+      else if ((pCompartment = static_cast< CCompartment * >((*it)->getObjectAncestor("Compartment"))) != NULL)
+        {
+          std::string name = pCompartment->getObjectName();
+
+          if ((*it) == pCompartment->getInitialValueReference())
+            {
+              pItem = new QTreeWidgetItem(mpCompartmentInitialVolumeSubtree, QStringList(FROM_UTF8(name + "(t=0)")));
+              treeItems[pItem] = *it;
+            }
+          else if ((*it) == pCompartment->getValueReference())
+            {
+              pItem = new QTreeWidgetItem(mpCompartmentTransientVolumeSubtree, QStringList(FROM_UTF8(name + "(t)")));
+              treeItems[pItem] = *it;
+            }
+          else if ((*it) == pCompartment->getRateReference())
+            {
+              pItem = new QTreeWidgetItem(mpCompartmentRateSubtree, QStringList(FROM_UTF8("d(" + name + ")/dt")));
+              treeItems[pItem] = *it;
+            }
+        }
+      else if ((pModelValue = static_cast< CModelValue * >((*it)->getObjectAncestor("ModelValue"))) != NULL)
+        {
+          std::string name = pModelValue->getObjectName();
+
+          if ((*it) == pModelValue->getInitialValueReference())
+            {
+              pItem = new QTreeWidgetItem(mpModelQuantityInitialValueSubtree, QStringList(FROM_UTF8(name + "(t=0)")));
+              treeItems[pItem] = *it;
+            }
+          else if ((*it) == pModelValue->getValueReference())
+            {
+              pItem = new QTreeWidgetItem(mpModelQuantityTransientValueSubtree, QStringList(FROM_UTF8(name + "(t)")));
+              treeItems[pItem] = *it;
+            }
+          else if ((*it) == pModelValue->getRateReference())
+            {
+              pItem = new QTreeWidgetItem(mpModelQuantityRateSubtree, QStringList(FROM_UTF8("d(" + name + ")/dt")));
+              treeItems[pItem] = *it;
+            }
+        }
+      else if ((pModel = static_cast< CModel * >((*it)->getObjectAncestor("Model"))) != NULL)
+        {
+          if ((*it) == pModel->getValueReference())
+            {
+              pItem = new QTreeWidgetItem(mpTimeSubtree, QStringList("Model Time"));
+              treeItems[pItem] = *it;
+            }
+          else if ((*it) == pModel->getInitialValueReference())
+            {
+              pItem = new QTreeWidgetItem(mpTimeSubtree, QStringList("Model Initial Time"));
+              treeItems[pItem] = *it;
+            }
+          else if ((*it)->getObjectType() == "Reaction")
+            {
+              pItem = new QTreeWidgetItem(mpReactionSubtree, QStringList(FROM_UTF8((*it)->getObjectName())));
+              treeItems[pItem] = *it;
+            }
+          else if ((*it)->getObjectType() == "Metabolite")
+            {
+              pMetab = static_cast< CMetab * >((*it)->getObjectAncestor("Metabolite"));
+              pModel = static_cast< CModel * >(pMetab->getObjectAncestor("Model"));
+              std::string name = pMetab->getObjectName();
+
+              if (!isMetaboliteNameUnique(name, pModel->getMetabolites()))
+                {
+                  pCompartment = pMetab->getCompartment();
+
+                  if (pCompartment)
+                    {
+                      name = name + "(" + pCompartment->getObjectName() + ")";
+                    }
+                }
+
+              pItem = new QTreeWidgetItem(mpMetaboliteSubtree, QStringList(FROM_UTF8(name)));
+              treeItems[pItem] = *it;
+            }
+          else if ((*it)->getObjectType() == "Compartment")
+            {
+              pItem = new QTreeWidgetItem(mpCompartmentSubtree, QStringList(FROM_UTF8((*it)->getObjectName())));
+              treeItems[pItem] = *it;
+            }
+          else if ((*it)->getObjectType() == "ModelValue")
+            {
+              pItem = new QTreeWidgetItem(mpModelQuantitySubtree, QStringList(FROM_UTF8((*it)->getObjectName())));
+              treeItems[pItem] = *it;
+            }
+        }
+    }
+
+  // Remove all empty subtrees
+  removeAllEmptySubTrees();
 }
 
 std::vector<const CCopasiObject * > * CQSimpleSelectionTree::getTreeSelection()
@@ -750,6 +908,7 @@ void CQSimpleSelectionTree::selectObjects(std::vector< const CCopasiObject * > *
 {
   // clear selection on tree and select new objects
   clearSelection();
+
   size_t i;
   size_t iMax = objects->size();
 
@@ -783,7 +942,7 @@ void CQSimpleSelectionTree::selectObjects(std::vector< const CCopasiObject * > *
             }
         }
 
-      setCurrentItem(item);
+      setItemSelected(item, true);
     }
 
   removeEmptySubTree(&mpExpertSubtree);
@@ -961,4 +1120,42 @@ void CQSimpleSelectionTree::removeEmptySubTree(QTreeWidgetItem ** ppSubTree)
       *ppSubTree != NULL &&
       (*ppSubTree)->childCount() == 0)
     pdelete(*ppSubTree);
+}
+
+void CQSimpleSelectionTree::removeAllEmptySubTrees()
+{
+  removeEmptySubTree(&mpTimeSubtree);
+
+  removeEmptySubTree(&mpMetaboliteInitialNumberSubtree);
+  removeEmptySubTree(&mpMetaboliteTransientNumberSubtree);
+  removeEmptySubTree(&mpMetaboliteRateNumberSubtree);
+  removeEmptySubTree(&mpMetaboliteInitialConcentrationSubtree);
+  removeEmptySubTree(&mpMetaboliteTransientConcentrationSubtree);
+  removeEmptySubTree(&mpMetaboliteRateConcentrationSubtree);
+  removeEmptySubTree(&mpMetaboliteSubtree);
+
+  removeEmptySubTree(&mpReactionFluxNumberSubtree);
+  removeEmptySubTree(&mpReactionFluxConcentrationSubtree);
+  removeEmptySubTree(&mpReactionParameterSubtree);
+  removeEmptySubTree(&mpReactionSubtree);
+
+  removeEmptySubTree(&mpModelQuantityRateSubtree);
+  removeEmptySubTree(&mpModelQuantityInitialValueSubtree);
+  removeEmptySubTree(&mpModelQuantityTransientValueSubtree);
+  removeEmptySubTree(&mpModelQuantitySubtree);
+
+  removeEmptySubTree(&mpCompartmentRateSubtree);
+  removeEmptySubTree(&mpCompartmentInitialVolumeSubtree);
+  removeEmptySubTree(&mpCompartmentTransientVolumeSubtree);
+  removeEmptySubTree(&mpCompartmentSubtree);
+
+  removeEmptySubTree(&mpModelMatrixSubtree);
+
+  removeEmptySubTree(&mpResultMCASubtree);
+  removeEmptySubTree(&mpResultTSSASubtree);
+  removeEmptySubTree(&mpResultSensitivitySubtree);
+  removeEmptySubTree(&mpResultSteadyStateSubtree);
+  removeEmptySubTree(&mpResultMatrixSubtree);
+
+  removeEmptySubTree(&mpTimeSubtree);
 }

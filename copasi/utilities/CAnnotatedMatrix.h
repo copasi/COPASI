@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -246,7 +246,7 @@ public:
   /**
    * generate a display name for the array annotation.
    */
-  virtual std::string getObjectDisplayName(bool regular = true, bool richtext = false) const;
+  virtual std::string getObjectDisplayName() const;
 
   virtual void print(std::ostream * ostream) const;
 

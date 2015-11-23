@@ -1701,23 +1701,23 @@ CFittingPoint::CFittingPoint(const CFittingPoint & src,
 CFittingPoint::~CFittingPoint() {}
 
 // virtual
-std::string CFittingPoint::getObjectDisplayName(bool regular, bool richtext) const
+std::string CFittingPoint::getObjectDisplayName() const
 {
   const CCopasiDataModel * pDataModel = this->getObjectDataModel();
 
   if (pDataModel == NULL)
     {
-      return CCopasiContainer::getObjectDisplayName(regular, richtext);
+      return CCopasiContainer::getObjectDisplayName();
     }
 
   const CCopasiObject * pObject = dynamic_cast< const CCopasiObject * >(pDataModel->getObject(mModelObjectCN));
 
   if (pObject == NULL)
     {
-      return CCopasiContainer::getObjectDisplayName(regular, richtext);
+      return CCopasiContainer::getObjectDisplayName();
     }
 
-  return pObject->getObjectDisplayName(regular, richtext);
+  return pObject->getObjectDisplayName();
 }
 
 const std::string & CFittingPoint::getModelObjectCN() const

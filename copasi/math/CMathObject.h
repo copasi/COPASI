@@ -69,7 +69,7 @@ public:
    * @param bool richtext (default: false)
    * @return std::string objectDisplayName
    */
-  virtual std::string getObjectDisplayName(bool regular = true, bool richtext = false) const;
+  virtual std::string getObjectDisplayName() const;
 
   /**
    * Retrieve a descendant object by its CN.

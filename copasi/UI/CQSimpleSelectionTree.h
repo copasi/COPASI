@@ -1,4 +1,4 @@
-// Copyright (C) 2011 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -44,6 +44,7 @@ public:
   ~CQSimpleSelectionTree();
 
   void populateTree(const CModel * pModel, const ObjectClasses & classes);
+  void populateTree(const std::vector< const CCopasiObject * > & objectList);
   void setOutputVector(std::vector< const CCopasiObject * > * outputVector);
 
 public slots:
@@ -87,6 +88,8 @@ protected:
   void selectObjects(std::vector< const CCopasiObject * > * objects);
   std::vector<const CCopasiObject * > * getTreeSelection();
   void removeEmptySubTree(QTreeWidgetItem ** ppSubTree);
+  void removeAllEmptySubTrees();
+
 protected:
 
 public:

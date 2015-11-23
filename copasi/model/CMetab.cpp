@@ -935,7 +935,7 @@ C_INT32 CMetab::load(CReadConfig &configbuffer)
   return Fail;
 }
 
-std::string CMetab::getObjectDisplayName(bool regular, bool richtext) const
+std::string CMetab::getObjectDisplayName() const
 {
   CModel* tmp = dynamic_cast<CModel*>(this->getObjectAncestor("Model"));
 
@@ -944,7 +944,7 @@ std::string CMetab::getObjectDisplayName(bool regular, bool richtext) const
       return CMetabNameInterface::getDisplayName(tmp, *this, false);
     }
 
-  return CCopasiObject::getObjectDisplayName(regular, richtext);
+  return CCopasiObject::getObjectDisplayName();
 }
 
 void CMetab::setDependsOnMoiety(const CMoiety * pMoiety)

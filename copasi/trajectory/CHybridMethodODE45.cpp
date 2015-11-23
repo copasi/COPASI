@@ -118,7 +118,8 @@ CHybridMethodODE45::CHybridMethodODE45(const CCopasiContainer * pParent,
   mpAbsoluteTolerance(NULL),
   mpPartitioningStrategy(NULL),
   mpUseRandomSeed(NULL),
-  mpRandomSeed(NULL)
+  mpRandomSeed(NULL),
+  mpFastReactions(NULL)
 {
   assert((void *) &mData == (void *) &mData.dim);
   mData.pMethod = this;
@@ -174,7 +175,8 @@ CHybridMethodODE45::CHybridMethodODE45(const CHybridMethodODE45 & src,
   mpAbsoluteTolerance(NULL),
   mpPartitioningStrategy(NULL),
   mpUseRandomSeed(NULL),
-  mpRandomSeed(NULL)
+  mpRandomSeed(NULL),
+  mpFastReactions(NULL)
 {
   assert((void *) &mData == (void *) &mData.dim);
   mData.pMethod = this;
@@ -232,6 +234,7 @@ void CHybridMethodODE45::initializeParameter()
   mpRelativeTolerance = assertParameter("Relative Tolerance", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0e-006);
   mpAbsoluteTolerance = assertParameter("Absolute Tolerance", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0e-009);
   mpPartitioningStrategy = assertParameter("Partitioning Strategy", CCopasiParameter::STRING, PartitioningStrategy[1]);
+  mpFastReactions = assertGroup("Fast Reactions");
   mpUseRandomSeed = assertParameter("Use Random Seed", CCopasiParameter::BOOL, (bool) USE_RANDOM_SEED);
   mpRandomSeed = assertParameter("Random Seed", CCopasiParameter::UINT, (unsigned C_INT32) RANDOM_SEED);
 
@@ -245,6 +248,12 @@ void CHybridMethodODE45::initializeParameter()
     }
 
   getParameter("Partitioning Strategy")->setValidValues(ValidValues);
+
+  CCopasiParameter FastReactionTemplate("Reaction", CCopasiParameter::CN);
+  std::vector< std::pair < CCopasiObjectName, CCopasiObjectName > > Reactions;
+  Reactions.push_back(std::make_pair(CCopasiObjectName("Reactions"), CCopasiObjectName("Reactions")));
+  FastReactionTemplate.setValidValues(Reactions);
+  mpFastReactions->getElementTemplates().push_back(FastReactionTemplate);
 }
 
 /**

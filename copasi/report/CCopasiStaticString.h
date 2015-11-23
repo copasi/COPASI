@@ -1,12 +1,14 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiStaticString.h,v $
-   $Revision: 1.10 $
-   $Name:  $
-   $Author: gauges $
-   $Date: 2006/10/15 08:00:56 $
-   End CVS Header */
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2003 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -26,45 +28,45 @@
 #include "report/CCopasiObject.h"
 
 class CCopasiStaticString: public CCopasiObject
-  {
-    // Attributes
-  private:
-    std::string mStaticString;
+{
+  // Attributes
+private:
+  std::string mStaticString;
 
-    // Operations
-  public:
-    CCopasiStaticString(const std::string & name = "",
-                        const CCopasiContainer * pParent = NULL,
-                        const std::string & type = "String",
-                        const unsigned C_INT32 & flag = CCopasiObject::StaticString);
+  // Operations
+public:
+  CCopasiStaticString(const std::string & name = "",
+                      const CCopasiContainer * pParent = NULL,
+                      const std::string & type = "String",
+                      const unsigned C_INT32 & flag = CCopasiObject::StaticString);
 
-    CCopasiStaticString(const CCopasiStaticString & src,
-                        const CCopasiContainer * pParent = NULL);
+  CCopasiStaticString(const CCopasiStaticString & src,
+                      const CCopasiContainer * pParent = NULL);
 
-    ~CCopasiStaticString();
+  ~CCopasiStaticString();
 
-    virtual std::string getObjectDisplayName(bool regular = true, bool richtext = false) const;
+  virtual std::string getObjectDisplayName() const;
 
-    CCopasiStaticString & operator = (const std::string & rhs);
+  CCopasiStaticString & operator = (const std::string & rhs);
 
-    virtual void print(std::ostream * ostream) const;
+  virtual void print(std::ostream * ostream) const;
 
-    const std::string & getStaticString() const;
-  };
+  const std::string & getStaticString() const;
+};
 
 class CCopasiReportSeparator: public CCopasiStaticString
-  {
-  public:
-    CCopasiReportSeparator(const std::string & name = "",
-                           const CCopasiContainer * pParent = NULL);
+{
+public:
+  CCopasiReportSeparator(const std::string & name = "",
+                         const CCopasiContainer * pParent = NULL);
 
-    CCopasiReportSeparator(const CCopasiStaticString & src,
-                           const CCopasiContainer * pParent = NULL);
+  CCopasiReportSeparator(const CCopasiStaticString & src,
+                         const CCopasiContainer * pParent = NULL);
 
-    ~CCopasiReportSeparator();
+  ~CCopasiReportSeparator();
 
-    virtual std::string getObjectDisplayName(bool regular = true, bool richtext = false) const;
+  virtual std::string getObjectDisplayName() const;
 
-    CCopasiReportSeparator & operator = (const std::string & rhs);
-  };
+  CCopasiReportSeparator & operator = (const std::string & rhs);
+};
 #endif // COPASI_CCopasiStaticString

@@ -1,4 +1,4 @@
-// Copyright (C) 2011 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -104,17 +104,20 @@ void CQPushButtonDelegate::setEditorData(QWidget * pEditor, const QModelIndex & 
     }
 }
 
-// We do not do anything since the signal clicked of the editor is reemited with the correct row index.
 void CQPushButtonDelegate::setModelData(QWidget * /* pEditor */,
                                         QAbstractItemModel * /* pModel */,
                                         const QModelIndex & /* index */) const
-{}
+{
+  // We do not do anything since the signal clicked of the editor is used to perform an action
+  // and is re-emitted with the correct row index.
+}
 
-void CQPushButtonDelegate::updateEditorGeometry(QWidget * pEditor,
-    const QStyleOptionViewItem & option,
+void CQPushButtonDelegate::updateEditorGeometry(QWidget * pEditor, const QStyleOptionViewItem & option,
     const QModelIndex & /* index */) const
 {
-  pEditor->setGeometry(option.rect);
+  QRect Rectangle = option.rect;
+  Rectangle.setRight(Rectangle.left() + std::min(Rectangle.width(), std::max(pEditor->sizeHint().width(), Rectangle.height())));
+  pEditor->setGeometry(Rectangle);
 }
 
 void CQPushButtonDelegate::slotButtonClicked()

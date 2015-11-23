@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -43,8 +43,10 @@ void CQDateTimeEditDelegate::setModelData(QWidget *editor, QAbstractItemModel *m
   model->setData(index, value, Qt::EditRole);
 }
 
-void CQDateTimeEditDelegate::updateEditorGeometry(QWidget *editor,
-    const QStyleOptionViewItem &option, const QModelIndex & C_UNUSED(index)) const
+void CQDateTimeEditDelegate::updateEditorGeometry(QWidget *pEditor, const QStyleOptionViewItem &option,
+    const QModelIndex & /* index */) const
 {
-  editor->setGeometry(option.rect);
+  QRect Rectangle = option.rect;
+  Rectangle.setRight(Rectangle.left() + std::min(Rectangle.width(), std::max(pEditor->sizeHint().width(), Rectangle.height())));
+  pEditor->setGeometry(Rectangle);
 }

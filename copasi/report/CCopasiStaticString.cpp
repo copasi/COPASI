@@ -1,12 +1,14 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiStaticString.cpp,v $
-   $Revision: 1.13 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:31:09 $
-   End CVS Header */
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2003 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -20,14 +22,14 @@ CCopasiStaticString::CCopasiStaticString(const std::string & name,
     const CCopasiContainer * pParent,
     const std::string & type,
     const unsigned C_INT32 & flag):
-    CCopasiObject(name, pParent, type, flag | CCopasiObject::StaticString),
-    mStaticString(name)
+  CCopasiObject(name, pParent, type, flag | CCopasiObject::StaticString),
+  mStaticString(name)
 {}
 
 CCopasiStaticString::CCopasiStaticString(const CCopasiStaticString & src,
     const CCopasiContainer * pParent):
-    CCopasiObject(src, pParent),
-    mStaticString(src.mStaticString)
+  CCopasiObject(src, pParent),
+  mStaticString(src.mStaticString)
 {}
 
 CCopasiStaticString::~CCopasiStaticString() {}
@@ -40,35 +42,33 @@ CCopasiStaticString & CCopasiStaticString::operator = (const std::string & rhs)
 }
 
 void CCopasiStaticString::print(std::ostream * ostream) const
-  {(*ostream) << mStaticString;}
+{(*ostream) << mStaticString;}
 
-std::string CCopasiStaticString::getObjectDisplayName(bool C_UNUSED(regular) /*=true*/,
-    bool C_UNUSED(richtext) /*=false*/) const
-  {
-    if (mStaticString == "\n")
-      return "<linebreak>";
+std::string CCopasiStaticString::getObjectDisplayName() const
+{
+  if (mStaticString == "\n")
+    return "<linebreak>";
 
-    return "'" + mStaticString + "'";
-  }
+  return "'" + mStaticString + "'";
+}
 
 const std::string & CCopasiStaticString::getStaticString() const
 {return mStaticString;}
 
 CCopasiReportSeparator::CCopasiReportSeparator(const std::string & name,
     const CCopasiContainer * pParent):
-    CCopasiStaticString(name, pParent, "Separator", CCopasiObject::Separator)
+  CCopasiStaticString(name, pParent, "Separator", CCopasiObject::Separator)
 {}
 
 CCopasiReportSeparator::CCopasiReportSeparator(const CCopasiStaticString & src,
     const CCopasiContainer * pParent):
-    CCopasiStaticString(src, pParent)
+  CCopasiStaticString(src, pParent)
 {}
 
 CCopasiReportSeparator::~CCopasiReportSeparator() {}
 
-std::string CCopasiReportSeparator::getObjectDisplayName(bool C_UNUSED(regular) /*=true*/,
-    bool C_UNUSED(richtext) /*=false*/) const
-  {return getObjectType();}
+std::string CCopasiReportSeparator::getObjectDisplayName() const
+{return getObjectType();}
 
 CCopasiReportSeparator & CCopasiReportSeparator::operator = (const std::string & rhs)
 {

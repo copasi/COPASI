@@ -38,7 +38,7 @@ public:
 
   ~CFittingPoint();
 
-  virtual std::string getObjectDisplayName(bool regular = true, bool richtext = false) const;
+  virtual std::string getObjectDisplayName() const;
 
   const std::string & getModelObjectCN() const;
 

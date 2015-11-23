@@ -84,7 +84,7 @@ public:
    * Overload display name. Special treatment for reaction to
    * provide a shorter display
    */
-  virtual std::string getObjectDisplayName(bool regular = true, bool richtext = false) const;
+  virtual std::string getObjectDisplayName() const;
 
   /**
    * Loads an object with data coming from a CReadConfig object.

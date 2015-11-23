@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -44,6 +44,11 @@ void CCopasiSelectionWidget::populateTree(const CModel * model,
     const CQSimpleSelectionTree::ObjectClasses & classes)
 {
   this->mpSimpleTree->populateTree(model, classes);
+}
+
+void CCopasiSelectionWidget::populateTree(const std::vector< const CCopasiObject * > & objectList)
+{
+  this->mpSimpleTree->populateTree(objectList);
 }
 
 void CCopasiSelectionWidget::setOutputVector(std::vector< const CCopasiObject * > * outputVector)

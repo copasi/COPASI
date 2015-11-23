@@ -739,7 +739,7 @@ void CCopasiParameter::deleteValidValues(const Type & type, void *& pValidValues
 }
 
 // virtual
-std::string CCopasiParameter::getObjectDisplayName(bool regular, bool richtext) const
+std::string CCopasiParameter::getObjectDisplayName() const
 {
   // if one of the ancestors is a reaction and the parameter is not a group
   // it is (hopefully) a kinetic parameter
@@ -748,7 +748,7 @@ std::string CCopasiParameter::getObjectDisplayName(bool regular, bool richtext) 
 
   if (tmp && getType() != GROUP)
     {
-      return tmp->getObjectDisplayName(regular, richtext) + "." + getObjectName();
+      return tmp->getObjectDisplayName() + "." + getObjectName();
     }
 
   CCopasiContainer * pObjectParent = getObjectParent();
@@ -757,7 +757,7 @@ std::string CCopasiParameter::getObjectDisplayName(bool regular, bool richtext) 
   if (pObjectParent != NULL &&
       (pGroup = dynamic_cast< CCopasiParameterGroup * >(pObjectParent)) != NULL)
     {
-      std::string DisplayName = pGroup->getObjectDisplayName(regular, richtext);
+      std::string DisplayName = pGroup->getObjectDisplayName();
 
       if (DisplayName.length() >= 2 &&
           (DisplayName.substr(DisplayName.length() - 2) == "[]"))
@@ -782,5 +782,5 @@ std::string CCopasiParameter::getObjectDisplayName(bool regular, bool richtext) 
       return DisplayName;
     }
 
-  return CCopasiObject::getObjectDisplayName(regular, richtext);
+  return CCopasiObject::getObjectDisplayName();
 }

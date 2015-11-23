@@ -60,10 +60,14 @@ public:
 
   void setFramework(const int & framework);
 
+  void beginResetModel();
+  void endResetModel();
+
   static CCopasiParameter * nodeFromIndex(const QModelIndex & index);
 
 signals:
-  void signalOpenEditor(const QModelIndex &) const;
+  void signalCreateComboBox(const QModelIndex &) const;
+  void signalCreatePushButton(const QModelIndex &) const;
   void signalCloseEditor(const QModelIndex &) const;
 
 private:

@@ -74,41 +74,27 @@ public:
   virtual void print(std::ostream * ostream) const
   {(*ostream) << *mpReference;};
 
-  virtual std::string getObjectDisplayName(bool regular = true, bool richtext = false) const
+  virtual std::string getObjectDisplayName() const
   {
     //Suppress "Value"
     if (getObjectParent() && getObjectName() == "Value")
-      return getObjectParent()->getObjectDisplayName(regular, richtext);
+      return getObjectParent()->getObjectDisplayName();
 
     //special treatment of metab children
     if (getObjectParent()->getObjectType() == "Metabolite")
       {
         if (getObjectName() == "Concentration")
           {
-            if (richtext)
-              {
-                return "<font color=\"#2222cc\">[</font>"
-                       + getObjectParent()->getObjectDisplayName(regular, richtext)
-                       + "<font color=\"#2222cc\">]</font>";
-              }
-            else
-              {return "[" + getObjectParent()->getObjectDisplayName(regular, richtext) + "]";}
+            return "[" + getObjectParent()->getObjectDisplayName() + "]";
           }
 
         if (getObjectName() == "InitialConcentration")
           {
-            if (richtext)
-              {
-                return "<font color=\"#2222cc\">[</font>"
-                       + getObjectParent()->getObjectDisplayName(regular, richtext)
-                       + "<font color=\"#2222cc\">]<sub>0</sub></font>";
-              }
-            else
-              {return "[" + getObjectParent()->getObjectDisplayName(regular, richtext) + "]_0";}
+            return "[" + getObjectParent()->getObjectDisplayName() + "]_0";
           }
       }
 
-    return CCopasiObject::getObjectDisplayName(regular, richtext);
+    return CCopasiObject::getObjectDisplayName();
   }
 };
 

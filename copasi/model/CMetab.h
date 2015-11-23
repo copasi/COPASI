@@ -273,7 +273,7 @@ public:
    */
   virtual void * getValuePointer() const;
 
-  virtual std::string getObjectDisplayName(bool regular = true, bool richtext = false) const;
+  virtual std::string getObjectDisplayName() const;
 
   /**
    *  Cleanup

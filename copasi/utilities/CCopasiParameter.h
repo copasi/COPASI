@@ -335,7 +335,7 @@ public:
    *  Overload display name. Special treatment for reaction parameters
    *  to provide a shorter display.
    */
-  virtual std::string getObjectDisplayName(bool regular = true, bool richtext = false) const;
+  virtual std::string getObjectDisplayName() const;
 
 private:
   /**

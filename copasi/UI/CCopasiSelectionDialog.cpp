@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -86,6 +86,11 @@ void CCopasiSelectionDialog::setModel(const CModel* pModel,
                                       const CQSimpleSelectionTree::ObjectClasses & classes)
 {
   this->mpSelectionWidget->populateTree(pModel, classes);
+}
+
+void CCopasiSelectionDialog::setValidObjects(const std::vector< const CCopasiObject * > & objectList)
+{
+  this->mpSelectionWidget->populateTree(objectList);
 }
 
 void CCopasiSelectionDialog::setOutputVector(std::vector< const CCopasiObject * > * outputVector)
@@ -224,6 +229,57 @@ std::vector< const CCopasiObject * > CCopasiSelectionDialog::getObjectVector(QWi
     }
 
   //  return Selection;
+}
+
+std::vector< const CCopasiObject * > CCopasiSelectionDialog::getObjectVector(QWidget * parent,
+    const std::vector< const CCopasiObject * > & objectList,
+    const std::vector< const CCopasiObject * > * pCurrentSelection)
+{
+  std::vector< const CCopasiObject * > Selection;
+
+  if (pCurrentSelection)
+    Selection = *pCurrentSelection;
+
+  CCopasiSelectionDialog * pDialog = new CCopasiSelectionDialog(parent);
+  pDialog->setWindowTitle("Select Items");
+  pDialog->setToolTip("Select multiple items by holding down the Ctrl or Shift (or equivalent) key.");
+  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  pDialog->enableExpertMode(false);
+  pDialog->setValidObjects(objectList);
+  pDialog->setSingleSelection(false);
+  pDialog->setOutputVector(&Selection);
+
+  if (pDialog->exec() == QDialog::Rejected)
+    {
+      return Selection;
+    }
+
+  std::vector<const CCopasiObject *> newSelection;
+  std::vector< const CCopasiObject * >::iterator itSelection = Selection.begin();
+  std::vector< const CCopasiObject * >::iterator endSelection = Selection.end();
+
+  for (; itSelection != endSelection; ++itSelection)
+    {
+      // if the current object is an array then select firstly one cell of it
+      const CArrayAnnotation * pArray;
+
+      if ((pArray = dynamic_cast< const CArrayAnnotation * >(*itSelection)))
+        {
+          // second parameter is false in order 'ALL' options on the matrix dialog to appear
+          std::vector<const CCopasiObject *> tmp = chooseCellMatrix(pArray, false, true); //TODO value flag
+          std::vector<const CCopasiObject *>::const_iterator tmpit, tmpitEnd = tmp.end();
+
+          for (tmpit = tmp.begin(); tmpit != tmpitEnd; ++tmpit)
+            newSelection.push_back(*tmpit);
+        }
+      // otherwise, just put it into newSelection
+      else
+        {
+          newSelection.push_back(*itSelection);
+        }
+    }
+
+  return newSelection;
 }
 
 std::vector<const CCopasiObject*>

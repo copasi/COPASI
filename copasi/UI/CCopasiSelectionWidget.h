@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -35,6 +35,7 @@ public:
 
   void populateTree(const CModel * model,
                     const CQSimpleSelectionTree::ObjectClasses & classes);
+  void populateTree(const std::vector< const CCopasiObject * > & objectList);
   void setOutputVector(std::vector< const CCopasiObject * > * outputVector);
   void setSingleSelection(bool singleSelection);
   bool isSingleSelection() const;

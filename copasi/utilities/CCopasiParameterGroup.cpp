@@ -30,12 +30,14 @@
 #include "utilities/utility.h"
 
 CCopasiParameterGroup::CCopasiParameterGroup():
-  CCopasiParameter("NoName", GROUP)
+  CCopasiParameter("NoName", GROUP),
+  mElementTemplates()
 {}
 
 CCopasiParameterGroup::CCopasiParameterGroup(const CCopasiParameterGroup & src,
     const CCopasiContainer * pParent):
-  CCopasiParameter(src, pParent)
+  CCopasiParameter(src, pParent),
+  mElementTemplates(src.mElementTemplates)
 {
   *this = src;
 }
@@ -43,7 +45,8 @@ CCopasiParameterGroup::CCopasiParameterGroup(const CCopasiParameterGroup & src,
 CCopasiParameterGroup::CCopasiParameterGroup(const std::string & name,
     const CCopasiContainer * pParent,
     const std::string & objectType):
-  CCopasiParameter(name, CCopasiParameter::GROUP, NULL, pParent, objectType)
+  CCopasiParameter(name, CCopasiParameter::GROUP, NULL, pParent, objectType),
+  mElementTemplates()
 {}
 
 CCopasiParameterGroup::~CCopasiParameterGroup()
@@ -255,6 +258,16 @@ void CCopasiParameterGroup::addParameter(CCopasiParameter * pParameter)
   static_cast< elements * >(mpValue)->push_back(pParameter);
 }
 
+std::vector< CCopasiParameter > & CCopasiParameterGroup::getElementTemplates()
+{
+  return mElementTemplates;
+}
+
+const std::vector< CCopasiParameter > & CCopasiParameterGroup::getElementTemplates() const
+{
+  return mElementTemplates;
+}
+
 CCopasiParameterGroup::name_iterator CCopasiParameterGroup::beginName() const
 {return const_cast< CCopasiContainer::objectMap * >(&getObjects())->begin();}
 
@@ -393,7 +406,6 @@ CCopasiParameter::Type CCopasiParameterGroup::getType(const std::string & name) 
 
   return CCopasiParameter::INVALID;
 }
-
 
 CCopasiParameter::Type CCopasiParameterGroup::getType(const size_t & index) const
 {

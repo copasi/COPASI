@@ -488,12 +488,17 @@ public:
   friend bool operator==(const CCopasiParameterGroup & lhs,
                          const CCopasiParameterGroup & rhs);
 
-public:
   /**
    * Add a parameter
    * @param CCopasiParameter * pParameter
    */
   void addParameter(CCopasiParameter * pParameter);
+
+  std::vector< CCopasiParameter > & getElementTemplates();
+  const std::vector< CCopasiParameter > & getElementTemplates() const;
+
+private:
+  std::vector< CCopasiParameter > mElementTemplates;
 };
 
 // :TODO: This should be a member function but Visual C++ 6.0

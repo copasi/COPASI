@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -86,110 +86,6 @@ TaskWidget::~TaskWidget()
 {
   pdelete(mpTaskThread);
 }
-
-//************************************************************
-#ifdef XXXX
-void TaskWidget::addHeaderToGrid(unsigned int row)
-{
-  if (!mpMethodLayout)
-    {
-      static_cast<QVBoxLayout *>(mpBtnWidget->layout())->insertStretch(0, 0);
-
-      mpMethodLayout = new QGridLayout();
-      mpMethodLayout->setAlignment(Qt::AlignLeft | Qt::AlignTop);
-      static_cast<QVBoxLayout *>(mpBtnWidget->layout())->insertLayout(0, mpMethodLayout);
-    }
-
-  mpMethodLayout->addMultiCellWidget(mpHeaderWidget, row, row, 1, 2);
-}
-
-bool TaskWidget::addHLineToGrid(QGridLayout* grid, unsigned int row, unsigned int maxcol)
-{
-  QFrame * line = new QFrame(this, "line");
-  line->setFrameShape(QFrame::HLine);
-  line->setFrameShadow(QFrame::Sunken);
-  grid->addMultiCellWidget(line, row, row, 0, maxcol);
-
-  return true;
-}
-
-void TaskWidget::addMethodParameterTable(unsigned int row)
-{
-  if (mpTblParameter) return;
-
-  if (!mpMethodLayout)
-    {
-      static_cast<QVBoxLayout *>(mpBtnWidget->layout())->insertStretch(0, 0);
-
-      mpMethodLayout = new QGridLayout();
-      mpMethodLayout->setAlignment(Qt::AlignLeft | Qt::AlignTop);
-      static_cast<QVBoxLayout *>(mpBtnWidget->layout())->insertLayout(0, mpMethodLayout);
-      static_cast<QVBoxLayout *>(mpBtnWidget->layout())->setStretchFactor(mpMethodLayout, 10);
-    }
-
-  mpLblParameter = new QLabel(this, "mpLblParameter");
-  mpLblParameter->setText(tr("Parameter"));
-  mpLblParameter->setAlignment(int(Qt::AlignTop | Qt::AlignRight));
-
-  mpTblParameter = new QTableWidget(this);
-  mpTblParameter->setSelectionMode(QAbstractItemView::SingleSelection);
-  mpTblParameter->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-
-  mpTblParameter->setColumnCount(1);
-
-  mpTblParameter->setHorizontalHeaderItem(0, new QTableWidgetItem());
-  mpTblParameter->horizontalHeaderItem(0)->setText("Value");
-  mpTblParameter->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Maximum);
-
-  mpTblParameter->verticalHeader()->setResizeMode(QHeaderView::ResizeToContents);
-  mpTblParameter->horizontalHeader()->setResizeMode(QHeaderView::ResizeToContents);
-  mpTblParameter->horizontalHeader()->hide();
-
-  mpMethodLayout->addWidget(mpLblParameter, row, 0);
-  mpMethodLayout->addWidget(mpTblParameter, row, 1, row, 2);
-
-#ifdef DEBUG_UI
-  qDebug() << "row = " << row;
-#endif
-
-  connect(mpTblParameter, SIGNAL(cellChanged(int, int)), this, SLOT(adjustTable()));
-
-  return;
-}
-
-void TaskWidget::addMethodSelectionBox(const unsigned C_INT32 * validMethods, unsigned int row)
-{
-  if (!mpMethodLayout)
-    {
-      static_cast<QVBoxLayout *>(mpBtnWidget->layout())->insertStretch(0, 0);
-
-      mpMethodLayout = new QGridLayout();
-      mpMethodLayout->setAlignment(Qt::AlignLeft | Qt::AlignTop);
-      static_cast<QVBoxLayout *>(mpBtnWidget->layout())->insertLayout(0, mpMethodLayout);
-    }
-
-  mpLblMethod = new QLabel(0, "mpLblMethod");
-  mpLblMethod->setText(tr("Method"));
-  mpLblMethod->setAlignment(int(Qt::AlignTop | Qt::AlignRight));
-
-  mpBoxMethod = new QComboBox(this);
-
-  unsigned C_INT32 i;
-
-  for (i = 0; validMethods[i] != CTaskEnum::unset; i++)
-    mpBoxMethod->insertItem(QString::fromUtf8(CTaskEnum::MethodName[validMethods[i]]));
-
-  mpSpacer2 = new QSpacerItem(0, 0, QSizePolicy::MinimumExpanding, QSizePolicy::Minimum);
-
-  mpMethodLayout->addWidget(mpLblMethod, row, 0);
-  mpMethodLayout->addWidget(mpBoxMethod, row, 1);
-  mpMethodLayout->addItem(mpSpacer2, row, 2);
-
-  connect(mpBoxMethod, SIGNAL(activated(int)), this, SLOT(changeMethod(int)));
-
-  return;
-}
-#endif // XXXX
 
 void TaskWidget::revertBtnClicked()
 {

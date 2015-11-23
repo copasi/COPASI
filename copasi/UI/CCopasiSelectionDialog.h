@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -56,6 +56,7 @@ public:
   void setOutputVector(std::vector< const CCopasiObject * > * outputVector);
   void setModel(const CModel* model,
                 const CQSimpleSelectionTree::ObjectClasses & classes);
+  void setValidObjects(const std::vector< const CCopasiObject * > & objectList);
   void setSingleSelection(bool singleSelectionMode);
   void enableExpertMode(bool enable);
 
@@ -66,6 +67,11 @@ public:
   static
   std::vector< const CCopasiObject * > getObjectVector(QWidget * pParent,
       const CQSimpleSelectionTree::ObjectClasses & classes,
+      const std::vector< const CCopasiObject * > * pCurrentSelection = NULL);
+
+  static
+  std::vector< const CCopasiObject * > getObjectVector(QWidget * pParent,
+      const std::vector< const CCopasiObject * > & objectList,
       const std::vector< const CCopasiObject * > * pCurrentSelection = NULL);
 
   /**

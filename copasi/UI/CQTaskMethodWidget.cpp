@@ -7,8 +7,14 @@
 #include "qtUtilities.h"
 #include "CQTaskMethodParametersDM.h"
 #include "CQComboDelegate.h"
+#include "CQPushButtonDelegate.h"
+#include "CCopasiSelectionDialog.h"
+#include "resourcesUI/CQIconResource.h"
+
 #include "copasi.h"
 
+#include "CopasiDataModel/CCopasiDataModel.h"
+#include "model/CObjectLists.h"
 #include "utilities/CCopasiTask.h"
 #include "utilities/CCopasiMethod.h"
 #include "utilities/utility.h"
@@ -22,7 +28,8 @@ CQTaskMethodWidget::CQTaskMethodWidget(QWidget* parent, Qt::WindowFlags f):
   mShowMethods(false),
   mShowMethodParameters(false),
   mpMethodParameterDM(NULL),
-  mpValueDelegate(NULL)
+  mpComboBoxDelegate(NULL),
+  mpPushButtonDelegate(NULL)
 {
   setupUi(this);
 
@@ -30,11 +37,9 @@ CQTaskMethodWidget::CQTaskMethodWidget(QWidget* parent, Qt::WindowFlags f):
   mpMethodParameterDM = new CQTaskMethodParametersDM(this);
   mpParameterView->setModel(mpMethodParameterDM);
 
-  mpValueDelegate = new CQComboDelegate(this);
-
-  // mpTableParameter->verticalHeader()->setResizeMode(QHeaderView::ResizeToContents);
-  // mpTableParameter->horizontalHeader()->setResizeMode(QHeaderView::ResizeToContents);
-  // mpTableParameter->horizontalHeader()->hide();
+  mpComboBoxDelegate = new CQComboDelegate(this);
+  mpPushButtonDelegate = new CQPushButtonDelegate(CQIconResource::icon(CQIconResource::copasi), QString(),
+      CQPushButtonDelegate::ToolButton, this);
 
   mpLblMethod->hide();
   mpBoxMethod->hide();
@@ -42,8 +47,10 @@ CQTaskMethodWidget::CQTaskMethodWidget(QWidget* parent, Qt::WindowFlags f):
   mpLblParameter->hide();
   mpParameterView->hide();
 
-  connect(mpMethodParameterDM, SIGNAL(signalOpenEditor(const QModelIndex &)), this, SLOT(slotOpenEditor(const QModelIndex &)));
+  connect(mpMethodParameterDM, SIGNAL(signalCreateComboBox(const QModelIndex &)), this, SLOT(slotCreateComboBox(const QModelIndex &)));
+  connect(mpMethodParameterDM, SIGNAL(signalCreatePushButton(const QModelIndex &)), this, SLOT(slotCreatePushButton(const QModelIndex &)));
   connect(mpMethodParameterDM, SIGNAL(signalCloseEditor(const QModelIndex &)), this, SLOT(slotCloseEditor(const QModelIndex &)));
+  connect(mpPushButtonDelegate, SIGNAL(clicked(const QModelIndex &)), this, SLOT(slotPushButtonClicked(const QModelIndex &)));
 }
 
 CQTaskMethodWidget::~CQTaskMethodWidget()
@@ -51,7 +58,7 @@ CQTaskMethodWidget::~CQTaskMethodWidget()
   clearHistory();
 }
 
-void CQTaskMethodWidget::changeMethod(int /* index */)
+void CQTaskMethodWidget::slotChangeMethod(int /* index */)
 {
   if (mpTask == NULL)
     return;
@@ -99,7 +106,7 @@ void CQTaskMethodWidget::setValidMethods(const CTaskEnum::Method * validMethods)
       mpLblMethod->show();
       mpBoxMethod->show();
 
-      connect(mpBoxMethod, SIGNAL(activated(int)), this, SLOT(changeMethod(int)));
+      connect(mpBoxMethod, SIGNAL(activated(int)), this, SLOT(slotChangeMethod(int)));
     }
   else
     {
@@ -107,7 +114,7 @@ void CQTaskMethodWidget::setValidMethods(const CTaskEnum::Method * validMethods)
       mpLblMethod->hide();
       mpBoxMethod->hide();
 
-      disconnect(mpBoxMethod, SIGNAL(activated(int)), this, SLOT(changeMethod(int)));
+      disconnect(mpBoxMethod, SIGNAL(activated(int)), this, SLOT(slotChangeMethod(int)));
     }
 }
 
@@ -285,36 +292,132 @@ void CQTaskMethodWidget::popMethod(CCopasiMethod * pMethod)
   mpParameterView->resizeColumnToContents(0);
 }
 
-void CQTaskMethodWidget::slotOpenEditor(const QModelIndex & index)
+void CQTaskMethodWidget::slotCreateComboBox(const QModelIndex & index)
 {
-  QModelIndex Tmp = index;
-  const QAbstractItemModel *pModel = Tmp.model();
+  QModelIndex Source = index;
 
-  while (pModel->inherits("QSortFilterProxyModel"))
+  while (Source.model()->inherits("QSortFilterProxyModel"))
     {
-      Tmp = static_cast< const QSortFilterProxyModel *>(pModel)->mapToSource(index);
-      pModel = Tmp.model();
+      Source = static_cast< const QSortFilterProxyModel *>(Source.model())->mapToSource(index);
     }
 
-  mpParameterView->setItemDelegateForRow(Tmp.row(), mpValueDelegate);
-  mpParameterView->openPersistentEditor(Tmp);
+  mpParameterView->setItemDelegateForRow(Source.row(), mpComboBoxDelegate);
+  mpParameterView->openPersistentEditor(Source);
+  mpParameterView->expandAll();
+}
+
+void CQTaskMethodWidget::slotCreatePushButton(const QModelIndex & index)
+{
+  QModelIndex Source = index;
+
+  while (Source.model()->inherits("QSortFilterProxyModel"))
+    {
+      Source = static_cast< const QSortFilterProxyModel *>(Source.model())->mapToSource(index);
+    }
+
+  mpParameterView->setItemDelegateForRow(Source.row(), mpPushButtonDelegate);
+  mpParameterView->openPersistentEditor(Source);
   mpParameterView->expandAll();
 }
 
 void CQTaskMethodWidget::slotCloseEditor(const QModelIndex & index)
 {
-  QModelIndex Tmp = index;
-  const QAbstractItemModel *pModel = Tmp.model();
+  QModelIndex Source = index;
 
-  while (pModel->inherits("QSortFilterProxyModel"))
+  while (Source.model()->inherits("QSortFilterProxyModel"))
     {
-      Tmp = static_cast< const QSortFilterProxyModel *>(pModel)->mapToSource(index);
-      pModel = Tmp.model();
+      Source = static_cast< const QSortFilterProxyModel *>(Source.model())->mapToSource(index);
     }
 
-  if (mpParameterView->itemDelegateForRow(Tmp.row()) == mpValueDelegate)
+  if (mpParameterView->itemDelegateForRow(Source.row()) != mpComboBoxDelegate) return;
+
+  mpParameterView->setItemDelegateForRow(Source.row(), mpParameterView->itemDelegate());
+  mpParameterView->expandAll();
+}
+
+void CQTaskMethodWidget::slotPushButtonClicked(const QModelIndex & index)
+{
+  QModelIndex Source = index;
+
+  while (Source.model()->inherits("QSortFilterProxyModel"))
     {
-      mpParameterView->setItemDelegateForRow(Tmp.row(), mpParameterView->itemDelegate());
-      mpParameterView->expandAll();
+      Source = static_cast< const QSortFilterProxyModel *>(Source.model())->mapToSource(index);
     }
+
+  if (mpParameterView->itemDelegateForRow(Source.row()) != mpPushButtonDelegate) return;
+
+  CCopasiParameter * pParameter = CQTaskMethodParametersDM::nodeFromIndex(Source);
+
+  if (pParameter->getType() != CCopasiParameter::GROUP) return;
+
+  CCopasiParameterGroup * pGroup = static_cast< CCopasiParameterGroup * >(pParameter);
+
+  std::vector< CCopasiParameter >::const_iterator it = pGroup->getElementTemplates().begin();
+  std::vector< CCopasiParameter >::const_iterator end = pGroup->getElementTemplates().end();
+
+  for (; it != end; ++it)
+    {
+      switch (it->getType())
+        {
+          case CCopasiParameter::CN:
+            modifySelectCNs(*pGroup, *it);
+            break;
+
+          default:
+            break;
+        }
+    }
+}
+
+void CQTaskMethodWidget::modifySelectCNs(CCopasiParameterGroup & group, const CCopasiParameter & cnTemplate)
+{
+  // OpenSelectionDialog
+  std::vector< const CCopasiObject * > Selection;
+  CObjectInterface::ContainerList ContainerList;
+  ContainerList.push_back(group.getObjectDataModel());
+
+  // Create the current selection
+  CCopasiParameterGroup::elements::iterator it = group.beginIndex();
+  CCopasiParameterGroup::elements::iterator end = group.endIndex();
+
+  for (; it != end; ++it)
+    {
+      const CCopasiObject * pObject = CObjectInterface::DataObject(CObjectInterface::GetObjectFromCN(ContainerList, (*it)->getValue< CCopasiObjectName >()));
+
+      if (pObject != NULL)
+        {
+          Selection.push_back(pObject);
+        }
+    }
+
+  CModel * pModel = group.getObjectDataModel()->getModel();
+
+  std::vector<const CCopasiObject * > ValidObjects;
+
+  const std::vector< std::pair < CCopasiObjectName, CCopasiObjectName > > & ValidValues = cnTemplate.getValidValues< CCopasiObjectName >();
+  std::vector< std::pair < CCopasiObjectName, CCopasiObjectName > >::const_iterator itValidValues = ValidValues.begin();
+  std::vector< std::pair < CCopasiObjectName, CCopasiObjectName > >::const_iterator endValidValues = ValidValues.end();
+
+  for (; itValidValues != endValidValues; ++itValidValues)
+    {
+      CObjectLists::ListType ListType = toEnum(itValidValues->first, CObjectLists::ListTypeName, CObjectLists::EMPTY_LIST);
+      std::vector<const CCopasiObject * > Tmp = CObjectLists::getListOfConstObjects(ListType, pModel);
+      ValidObjects.insert(ValidObjects.end(), Tmp.begin(), Tmp.end());
+    }
+
+  std::vector< const CCopasiObject * > NewSelection = CCopasiSelectionDialog::getObjectVector(this, ValidObjects, &Selection);
+
+  // Modify group parameters;
+  mpMethodParameterDM->beginResetModel();
+  group.clear();
+
+  std::vector< const CCopasiObject * >::const_iterator itNew = NewSelection.begin();
+  std::vector< const CCopasiObject * >::const_iterator endNew = NewSelection.end();
+
+  for (; itNew != endNew; ++itNew)
+    {
+      group.addParameter("Reaction", CCopasiParameter::CN, (*itNew)->getCN());
+    }
+
+  mpMethodParameterDM->endResetModel();
 }

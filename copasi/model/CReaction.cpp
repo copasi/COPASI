@@ -1677,7 +1677,7 @@ std::string CReaction::escapeId(const std::string& id)
   return s;
 }
 
-std::string CReaction::getObjectDisplayName(bool regular, bool richtext) const
+std::string CReaction::getObjectDisplayName() const
 {
   CModel* tmp = dynamic_cast<CModel*>(this->getObjectAncestor("Model"));
 
@@ -1686,7 +1686,7 @@ std::string CReaction::getObjectDisplayName(bool regular, bool richtext) const
       return "(" + getObjectName() + ")";
     }
 
-  return CCopasiObject::getObjectDisplayName(regular, richtext);
+  return CCopasiObject::getObjectDisplayName();
 }
 
 const CFunctionParameterMap & CReaction::getMap() const

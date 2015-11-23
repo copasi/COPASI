@@ -14,6 +14,8 @@
 class CCopasiTask;
 class CQTaskMethodParametersDM;
 class CQComboDelegate;
+class CQPushButtonDelegate;
+class CCopasiParameterGroup;
 
 class CQTaskMethodWidget: public QWidget, public Ui::CQTaskMethodWidget
 {
@@ -43,15 +45,18 @@ public:
 protected slots:
 
 protected slots:
-  void slotOpenEditor(const QModelIndex & index);
+  void slotCreateComboBox(const QModelIndex & index);
+  void slotCreatePushButton(const QModelIndex & index);
   void slotCloseEditor(const QModelIndex & index);
-  void changeMethod(int);
+  void slotPushButtonClicked(const QModelIndex & index);
+  void slotChangeMethod(int);
 
 protected:
   void addToHistory(CCopasiMethod * pMethod);
   void removeFromHistory(CCopasiMethod * pMethod);
   CCopasiMethod * getFromHistory(const CTaskEnum::Method & Type) const;
   void setActiveMethod(const CTaskEnum::Method & Type);
+  void modifySelectCNs(CCopasiParameterGroup & group, const CCopasiParameter & cnTemplate);
 
 protected:
   CCopasiTask * mpTask;
@@ -61,7 +66,8 @@ protected:
   bool mShowMethods;
   bool mShowMethodParameters;
   CQTaskMethodParametersDM * mpMethodParameterDM;
-  CQComboDelegate* mpValueDelegate;
+  CQComboDelegate * mpComboBoxDelegate;
+  CQPushButtonDelegate * mpPushButtonDelegate;
 };
 
 #endif // COPASI_CQTaskMethodWidget

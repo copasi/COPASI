@@ -53,12 +53,12 @@ QVariant CQTaskMethodParametersDM::data(const QModelIndex & index, int role) con
         return nameData(pNode, role);
         break;
 
-      case COL_TYPE:
-        return typeData(pNode, role);
-        break;
-
       case COL_VALUE:
         return valueData(pNode, role);
+        break;
+
+      case COL_TYPE:
+        return typeData(pNode, role);
         break;
     }
 
@@ -82,11 +82,21 @@ Qt::ItemFlags CQTaskMethodParametersDM::flags(const QModelIndex &index) const
 
       if (pNode->hasValidValues())
         {
-          emit signalOpenEditor(index);
+          emit signalCreateComboBox(index);
+        }
+      else if (pNode->getType() == CCopasiParameter::GROUP &&
+               static_cast< CCopasiParameterGroup * >(pNode)->getElementTemplates().size() > 0)
+        {
+          emit signalCreatePushButton(index);
         }
       else
         {
           emit signalCloseEditor(index);
+        }
+
+      if (pNode->getType() == CCopasiParameter::CN)
+        {
+          return (QAbstractItemModel::flags(index) | Qt::ItemIsEnabled) & ~Qt::ItemIsEditable;
         }
 
       return QAbstractItemModel::flags(index) | Qt::ItemIsEditable | Qt::ItemIsEnabled;
@@ -279,9 +289,19 @@ void CQTaskMethodParametersDM::popMethod(CCopasiMethod * pMethod)
 
 void CQTaskMethodParametersDM::setFramework(const int & framework)
 {
-  beginResetModel();
+  QAbstractItemModel::beginResetModel();
   mFramework = framework;
-  endResetModel();
+  QAbstractItemModel::endResetModel();
+}
+
+void CQTaskMethodParametersDM::beginResetModel()
+{
+  QAbstractItemModel::beginResetModel();
+}
+
+void CQTaskMethodParametersDM::endResetModel()
+{
+  QAbstractItemModel::endResetModel();
 }
 
 QModelIndex CQTaskMethodParametersDM::index(CCopasiParameter * pNode) const
@@ -307,7 +327,7 @@ bool CQTaskMethodParametersDM::isMethod(CCopasiParameter * pNode) const
   QVector< CCopasiMethod * >::const_iterator end = mMethods.constEnd();
 
   for (; it != end; ++it)
-    if (*it != static_cast< CCopasiMethod * >(pNode)) return true;
+    if (*it == static_cast< CCopasiMethod * >(pNode)) return true;
 
   return false;
 }
@@ -317,16 +337,14 @@ CCopasiParameter * CQTaskMethodParametersDM::nodeFromIndex(const QModelIndex & i
 {
   if (!index.isValid()) return NULL;
 
-  QModelIndex Tmp = index;
-  const QAbstractItemModel *pModel = Tmp.model();
+  QModelIndex Source = index;
 
-  while (pModel->inherits("QSortFilterProxyModel"))
+  while (Source.model()->inherits("QSortFilterProxyModel"))
     {
-      Tmp = static_cast< const QSortFilterProxyModel *>(pModel)->mapToSource(Tmp);
-      pModel = Tmp.model();
+      Source = static_cast< const QSortFilterProxyModel *>(Source.model())->mapToSource(index);
     }
 
-  return static_cast< CCopasiParameter * >(Tmp.internalPointer());
+  return static_cast< CCopasiParameter * >(Source.internalPointer());
 }
 
 int CQTaskMethodParametersDM::getRow(const CCopasiParameter * pNode) const
@@ -426,7 +444,12 @@ QVariant CQTaskMethodParametersDM::valueData(const CCopasiParameter * pNode, int
               break;
 
             case CCopasiParameter::GROUP:
-              return QVariant(FROM_UTF8(pNode->getObjectName()));
+              if (static_cast< const CCopasiParameterGroup * >(pNode)->getElementTemplates().size() > 0)
+                {
+                  QVariant(QString("Add"));
+                }
+
+              return QVariant();
               break;
 
             case CCopasiParameter::STRING:
@@ -436,8 +459,17 @@ QVariant CQTaskMethodParametersDM::valueData(const CCopasiParameter * pNode, int
               return QVariant(FROM_UTF8(pNode->getValue< std::string >()));
 
             case CCopasiParameter::CN:
-              return QVariant(FROM_UTF8(pNode->getValue< CRegisteredObjectName >()));
-              break;
+            {
+              const CObjectInterface * pObject = pNode->getObjectFromCN(pNode->getValue< CRegisteredObjectName >());
+
+              if (pObject != NULL)
+                {
+                  return QVariant(FROM_UTF8(pObject->getObjectDisplayName()));
+                }
+
+              return QVariant("Object not found");
+            }
+            break;
 
             default:
               return QVariant();

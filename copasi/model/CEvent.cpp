@@ -481,14 +481,14 @@ bool CEvent::setObjectParent(const CCopasiContainer * pParent)
   return success;
 }
 
-std::string CEvent::getObjectDisplayName(bool regular, bool richtext) const
+std::string CEvent::getObjectDisplayName() const
 {
   CModel* tmp = dynamic_cast<CModel*>(this->getObjectAncestor("Model"));
 
   if (tmp)
     return "((" + getObjectName() + "))";
 
-  return CCopasiObject::getObjectDisplayName(regular, richtext);
+  return CCopasiObject::getObjectDisplayName();
 }
 
 bool CEvent::setTriggerExpression(const std::string & expression)

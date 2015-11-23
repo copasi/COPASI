@@ -251,7 +251,7 @@ void CopasiSlider::updateLabel()
 
   if (object)
     {
-      labelString += FROM_UTF8(object->getObjectDisplayName(true, true));
+      labelString += FROM_UTF8(object->getObjectDisplayName());
       labelString += " : [";
       labelString += QString::number(minValue);
       labelString += "-";

@@ -120,14 +120,14 @@ CCopasiObjectName CMathObject::getCN() const
   return mpDataObject->getCN();
 }
 
-std::string CMathObject::getObjectDisplayName(bool regular, bool richtext) const
+std::string CMathObject::getObjectDisplayName() const
 {
   if (mpDataObject == NULL)
     {
       return "Math Container Internal Object";
     }
 
-  return mpDataObject->getObjectDisplayName(regular, richtext);
+  return mpDataObject->getObjectDisplayName();
 }
 
 //virtual

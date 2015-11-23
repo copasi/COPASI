@@ -75,10 +75,12 @@ void CQComboDelegate::setModelData(QWidget *editor, QAbstractItemModel *model,
   model->setData(index, value, Qt::EditRole);
 }
 
-void CQComboDelegate::updateEditorGeometry(QWidget *editor,
-    const QStyleOptionViewItem &option, const QModelIndex & C_UNUSED(index)) const
+void CQComboDelegate::updateEditorGeometry(QWidget *pEditor, const QStyleOptionViewItem &option,
+    const QModelIndex & /* index */) const
 {
-  editor->setGeometry(option.rect);
+  QRect Rectangle = option.rect;
+  Rectangle.setRight(Rectangle.left() + std::min(Rectangle.width(), std::max(pEditor->sizeHint().width(), Rectangle.height())));
+  pEditor->setGeometry(Rectangle);
 }
 
 void CQComboDelegate::setItems(int row, const QStringList & comboItems)

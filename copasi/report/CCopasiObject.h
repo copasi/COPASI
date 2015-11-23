@@ -136,7 +136,7 @@ public:
    * @param bool richtext (default: false)
    * @return std::string objectDisplayName
    */
-  virtual std::string getObjectDisplayName(bool regular = true, bool richtext = false) const = 0;
+  virtual std::string getObjectDisplayName() const = 0;
 };
 
 class CCopasiObject: public CObjectInterface
@@ -241,7 +241,7 @@ public:
    * @param bool richtext (default: false)
    * @return std::string objectDisplayName
    */
-  virtual std::string getObjectDisplayName(bool regular = true, bool richtext = false) const;
+  virtual std::string getObjectDisplayName() const;
 
   const std::string & getObjectType() const;
 

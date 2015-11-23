@@ -1,11 +1,9 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CArrayElementReference.h,v $
-//   $Revision: 1.5 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/01/07 19:04:15 $
-// End CVS Header
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
@@ -27,66 +25,66 @@
  * array that the CArrayAnnotation points to.
  */
 class CArrayElementReference: public CCopasiObject
-  {
+{
 
-  private:
-    //CCopasiAbstractArray::data_type * mpReference;
+private:
+  //CCopasiAbstractArray::data_type * mpReference;
 
-    /**
-     * this contains the index in string format, e.g. "[2][7]"
-     */
-    CCopasiObjectName mIndex;
+  /**
+   * this contains the index in string format, e.g. "[2][7]"
+   */
+  CCopasiObjectName mIndex;
 
-  private:
-    /**
-     * make the default constructor unaccessible
-     */
-    CArrayElementReference();
+private:
+  /**
+   * make the default constructor unaccessible
+   */
+  CArrayElementReference();
 
-    /**
-     * make the copy constructor unaccessible
-     */
-    CArrayElementReference(const CArrayElementReference & src);
+  /**
+   * make the copy constructor unaccessible
+   */
+  CArrayElementReference(const CArrayElementReference & src);
 
-    /**
-     * this method does nothing at the moment!
-     */
-    void updateMethod(const CCopasiAbstractArray::data_type & value);
+  /**
+   * this method does nothing at the moment!
+   */
+  void updateMethod(const CCopasiAbstractArray::data_type & value);
 
-  public:
-    /**
-     * create an element reference with a given index. The index
-     * is passed as a string, e.g. "[3][2]"
-     * The object name will be the index string, the type is "ElementReference"
-     * pParent may not be NULL.
-     */
-    CArrayElementReference(const std::string & index,
-                           const CCopasiContainer * pParent);
+public:
+  /**
+   * create an element reference with a given index. The index
+   * is passed as a string, e.g. "[3][2]"
+   * The object name will be the index string, the type is "ElementReference"
+   * pParent may not be NULL.
+   */
+  CArrayElementReference(const std::string & index,
+                         const CCopasiContainer * pParent);
 
-    virtual ~CArrayElementReference() {}
+  virtual ~CArrayElementReference() {}
 
-    /**
-     * returns a pointer to the numerical values of the array element
-     * this will be a *C_FLOAT64 for this class.
-     */
-    virtual void * getValuePointer() const;
+  /**
+   * returns a pointer to the numerical values of the array element
+   * this will be a *C_FLOAT64 for this class.
+   */
+  virtual void * getValuePointer() const;
 
-    virtual const CCopasiObject * getValueObject() const {return this;}
+  virtual const CCopasiObject * getValueObject() const {return this;}
 
-    /**
-     *
-     */
-    virtual void print(std::ostream * ostream) const;
+  /**
+   *
+   */
+  virtual void print(std::ostream * ostream) const;
 
-    /**
-     * generate a display name.
-     */
-    virtual std::string getObjectDisplayName(bool regular = true, bool richtext = false) const;
+  /**
+   * generate a display name.
+   */
+  virtual std::string getObjectDisplayName() const;
 
-    /**
-     *
-     */
-    virtual CCopasiObjectName getCN() const;
-  };
+  /**
+   *
+   */
+  virtual CCopasiObjectName getCN() const;
+};
 
 #endif

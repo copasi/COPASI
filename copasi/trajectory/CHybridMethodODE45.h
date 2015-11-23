@@ -448,6 +448,7 @@ private:
   std::string * mpPartitioningStrategy;
   bool * mpUseRandomSeed;
   unsigned C_INT32 * mpRandomSeed;
+  CCopasiParameterGroup * mpFastReactions;
 };
 
 #endif // COPASI_CHybridMethodODE45
