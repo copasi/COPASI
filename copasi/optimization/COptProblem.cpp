@@ -315,7 +315,12 @@ bool COptProblem::initializeSubtaskBeforeOutput()
 
 bool COptProblem::initialize()
 {
-  mWorstValue = (*mpParmMaximize ? - std::numeric_limits<C_FLOAT64>::infinity() : std::numeric_limits<C_FLOAT64>::infinity());
+  mWorstValue = std::numeric_limits<C_FLOAT64>::infinity();
+
+  if (*mpParmMaximize)
+    {
+      mWorstValue *= -1.0;
+    }
 
   if (mpContainer == NULL) return false;
 
@@ -332,7 +337,7 @@ bool COptProblem::initialize()
   CObjectInterface::ContainerList ContainerList;
   ContainerList.push_back(mpContainer);
 
-  COptTask * pTask = dynamic_cast<COptTask *>(getObjectParent());
+  COptTask * pTask = dynamic_cast< COptTask * >(getObjectParent());
 
   if (pTask)
     {
@@ -421,19 +426,16 @@ bool COptProblem::initialize()
   return success;
 }
 
-void COptProblem::restoreModel(const bool & updateModel)
+void COptProblem::updateContainer(const bool & update)
 {
   C_FLOAT64 **ppContainerVariable = mContainerVariables.array();
   C_FLOAT64 **ppContainerVariableEnd = ppContainerVariable + mContainerVariables.size();
-  C_FLOAT64 *pRestore = (updateModel && mSolutionValue != mWorstValue) ? mSolutionVariables.array() : mOriginalVariables.array();
+  C_FLOAT64 *pRestore = (update && mSolutionValue != mWorstValue) ? mSolutionVariables.array() : mOriginalVariables.array();
 
   for (; ppContainerVariable != ppContainerVariableEnd; ++ppContainerVariable, ++pRestore)
     {
       **ppContainerVariable = *pRestore;
     }
-
-  mpContainer->applyUpdateSequence(mInitialRefreshSequence);
-  mpContainer->pushInitialState();
 }
 
 bool COptProblem::restore(const bool & updateModel)
@@ -443,7 +445,9 @@ bool COptProblem::restore(const bool & updateModel)
   if (mpSubtask != NULL)
     success &= mpSubtask->restore();
 
-  restoreModel(updateModel);
+  updateContainer(updateModel);
+  mpContainer->applyUpdateSequence(mInitialRefreshSequence);
+  mpContainer->pushInitialState();
 
   if (mFailedCounter * 20 > mCounter) // > 5% failure rate
     CCopasiMessage(CCopasiMessage::WARNING, MCOptimization + 8, mFailedCounter, mCounter);

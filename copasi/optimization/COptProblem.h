@@ -118,13 +118,6 @@ public:
   void reset();
 
   /**
-   * Do all necessary restore procedures for the model
-   * is in the same state as before.
-   * @param const bool & updateModel
-   */
-  void restoreModel(const bool & updateModel);
-
-  /**
    * Do all necessary restore procedures so that the
    * model and task are in the same state as before.
    * @param const bool & updateModel
@@ -361,6 +354,14 @@ public:
    * @param std::ostream * ostream
    */
   virtual void printResult(std::ostream * ostream) const;
+
+protected:
+  /**
+   * Do all necessary restore procedures for the container
+   * is in the same state as before or the new state if update is true.
+   * @param const bool & update
+   */
+  virtual void updateContainer(const bool & update);
 
 private:
   /**

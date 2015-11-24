@@ -211,7 +211,7 @@ bool CScanTask::processCallback()
 
       if (problem != NULL)
         {
-          problem->restoreModel(true);
+          problem->restore(true);
         }
     }
 

@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -22,6 +22,7 @@
 #include "report/CCopasiRootContainer.h"
 #include "commandline/CLocaleString.h"
 #include "model/CModel.h"
+#include "math/CMathContainer.h"
 
 /*
  *  Constructs a CQOptimizationResult which is a child of 'parent', with the
@@ -225,5 +226,8 @@ void CQOptimizationResult::slotSave(void)
 
 void CQOptimizationResult::slotUpdateModel()
 {
-  const_cast< COptProblem * >(mpProblem)->restoreModel(true);
+  const_cast< COptProblem * >(mpProblem)->restore(true);
+
+  // We need to notify the GUI to update all values
+  protectedNotify(ListViews::STATE, ListViews::CHANGE, mpTask->getMathContainer()->getModel().getKey());
 }

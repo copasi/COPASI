@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -259,6 +259,22 @@ public:
    * sets should be created automatically.
    */
   const bool & getCreateParameterSets() const;
+
+  void createParameterSets();
+
+protected:
+  /**
+   * Do all necessary restore procedures for the container
+   * is in the same state as before or the new state if update is true.
+   * @param const bool & update
+   */
+  virtual void updateContainer(const bool & update);
+
+  /**
+   * Create a parameter set with the given name and the current model values
+   *
+   */
+  void createParameterSet(const std::string & Name);
 
 private:
   /**

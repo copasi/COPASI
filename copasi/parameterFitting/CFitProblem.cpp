@@ -761,23 +761,22 @@ bool CFitProblem::checkFunctionalConstraints()
 /**
  * Utility function creating a parameter set for each experiment
  */
-void createParameterSetsForExperiment(CExperiment* pExp)
+void CFitProblem::createParameterSet(const std::string & Name)
 {
-  if (pExp == NULL) return;
-
-  CModel* model = pExp->getObjectDataModel()->getModel();
-  std::string origname = "PE: "  + UTCTimeStamp() + " Exp: " + pExp->getObjectName();
+  CModel * pModel = const_cast< CModel * >(&mpContainer->getModel())
+                    ;
+  std::string origname = "PE: "  + UTCTimeStamp() + " Exp: " + Name;
   std::string name = origname;
   int count = 0;
 
-  while (model->getModelParameterSets().getIndex(name) != C_INVALID_INDEX)
+  while (pModel->getModelParameterSets().getIndex(name) != C_INVALID_INDEX)
     {
       std::stringstream str; str << origname << " (" << ++count << ")";
       name = str.str();
     }
 
   CModelParameterSet* set = new CModelParameterSet(name);
-  model->getModelParameterSets().add(set, true);
+  pModel->getModelParameterSets().add(set, true);
   set->createFromModel();
 }
 
@@ -861,11 +860,6 @@ bool CFitProblem::calculate()
                       mCalculateValue += pExp->sumOfSquares(j, Residuals);
                   }
 
-                if (mStoreResults && *mpCreateParameterSets)
-                  {
-                    createParameterSetsForExperiment(pExp);
-                  }
-
                 break;
 
               case CTaskEnum::timeCourse:
@@ -940,11 +934,6 @@ bool CFitProblem::calculate()
                       }
                   }
 
-                if (mStoreResults && *mpCreateParameterSets)
-                  {
-                    createParameterSetsForExperiment(pExp);
-                  }
-
                 break;
 
               default:
@@ -963,15 +952,6 @@ bool CFitProblem::calculate()
       CCopasiMessage::getLastMessage();
 
       mFailedCounter++;
-#ifdef XXX
-      std::vector<COptItem * >::iterator it = mpOptItems->begin();
-      std::vector<COptItem * >::iterator end = mpOptItems->end();
-
-      for (; it != end; it++)
-        std::cout << *(*it)->getObjectValue() << " ";
-
-      std::cout << std::endl;
-#endif
       mCalculateValue = mWorstValue;
 
       // Restore the containers initial state. This includes all local reaction parameter
@@ -1020,6 +1000,84 @@ bool CFitProblem::restore(const bool & updateModel)
   return success;
 }
 
+// virtual
+void CFitProblem::updateContainer(const bool & update)
+{
+  COptProblem::updateContainer(update);
+
+  size_t i, imax = mpExperimentSet->getExperimentCount();
+  std::vector<COptItem *>::iterator itItem;
+  std::vector<COptItem *>::iterator endItem = mpOptItems->end();
+  C_FLOAT64 ** pUpdate = mExperimentValues.array();
+
+  CExperiment * pExp = NULL;
+
+  for (i = 0; i < imax; i++) // For each experiment
+    {
+      pExp = mpExperimentSet->getExperiment(i);
+
+      // set the global and experiment local fit item values.
+      for (itItem = mpOptItems->begin(); itItem != endItem; itItem++, pUpdate++)
+        if (*pUpdate)
+          {
+            **pUpdate = static_cast<CFitItem *>(*itItem)->getLocalValue();
+          }
+    }
+}
+
+void CFitProblem::createParameterSets()
+{
+  if (!*mpCreateParameterSets) return;
+
+  // Store the current initial state
+  CVector< C_FLOAT64 > CurrentInitialState = mpContainer->getInitialState();
+
+  // We create an original parameter set and one for each experiment.
+  // Restore the original data and create a parameter set
+  updateContainer(false);
+  mpContainer->applyUpdateSequence(mInitialRefreshSequence);
+  mpContainer->pushInitialState();
+  CVector< C_FLOAT64 > OriginalInitialState = mpContainer->getInitialState();
+
+  createParameterSet("Original");
+
+  // Apply the current solution values
+  COptProblem::updateContainer(true);
+
+  // Loop through all experiments and create
+  size_t i, imax = mpExperimentSet->getExperimentCount();
+  std::vector<COptItem *>::iterator itItem;
+  std::vector<COptItem *>::iterator endItem = mpOptItems->end();
+  C_FLOAT64 ** pUpdate = mExperimentValues.array();
+
+  CExperiment * pExp = NULL;
+
+  for (i = 0; i < imax; i++) // For each experiment
+    {
+      mpContainer->setInitialState(OriginalInitialState);
+
+      pExp = mpExperimentSet->getExperiment(i);
+
+      // set the global and experiment local fit item values.
+      for (itItem = mpOptItems->begin(); itItem != endItem; itItem++, pUpdate++)
+        if (*pUpdate)
+          {
+            **pUpdate = static_cast<CFitItem *>(*itItem)->getLocalValue();
+          }
+
+      // Update the independent data.
+      pExp->updateModelWithIndependentData(0);
+
+      // Synchronize the initial state.
+      mpContainer->applyUpdateSequence(mExperimentInitialUpdates[i]);
+
+      mpContainer->pushInitialState();
+      createParameterSet(pExp->getObjectName());
+    }
+
+  // Restore the current initial state
+  mpContainer->setInitialState(CurrentInitialState);
+}
 void CFitProblem::print(std::ostream * ostream) const
 {*ostream << *this;}
 
