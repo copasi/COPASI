@@ -85,12 +85,12 @@ DIGIT    [0-9]
   return EXPONENT;
 %}
 
-"xc2\xb2"   %{
+"\xc2\xb2"   %{
   COMMON_ACTION;
   return SUPERSCRIPT_2;
 %}
 
-"xc2\xb3"   %{
+"\xc2\xb3"   %{
   COMMON_ACTION;
   return SUPERSCRIPT_3;
 %}
