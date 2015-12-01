@@ -1470,7 +1470,6 @@ bool CModel::setQuantityUnit(const CUnit::QuantityUnit & unitEnum)
         break;
 
       default:
-        mpQuantityUnit->setSymbol("number");
         mQuantity2NumberFactor = 1.0;
         success = false;
         break;
