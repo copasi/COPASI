@@ -1,4 +1,4 @@
-// Copyright (C) 2012 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -22,6 +22,8 @@ class CQPlotEditWidget;
 class BandedGraphWidget;
 #endif
 
+class CQSpectogramWidget;
+
 class CQPlotSubwidget : public CopasiWidget, public Ui::CQPlotSubwidget
 {
   Q_OBJECT
@@ -32,6 +34,7 @@ private:
 #ifdef COPASI_BANDED_GRAPH
   BandedGraphWidget* mpBandedGraphWidget;
 #endif
+  CQSpectogramWidget* mpSpectogramWidget;
 
   CQPlotEditWidget* selectControl(CPlotItem::Type type);
 
@@ -96,6 +99,14 @@ protected:
 #endif // COPASI_BANDED_GRAPH
 
   /**
+  * creates banded graph widget and adds it to the tab bar
+  */
+  void addSpectrumTab(const std::string & title,
+                      const CPlotDataChannelSpec & x,
+                      const CPlotDataChannelSpec & yone,
+                      const CPlotDataChannelSpec & ytwo = CPlotDataChannelSpec());
+
+  /**
    * creates histogram widget and adds it to the tab bar
    */
   void addHisto1DTab(const std::string & title,
@@ -113,6 +124,7 @@ protected slots:
 #ifdef COPASI_BANDED_GRAPH
   void addBandedGraphSlot();
 #endif // COPASI_BANDED_GRAPH
+  void addSpectrumSlot();
   void addHistoSlot();
 
   void  itemSelectionChanged();
@@ -155,6 +167,8 @@ protected:
    * or several curve descriptions are generated.
    */
   void addCurve2D();
+
+  void addSpectrum();
 
 #ifdef COPASI_BANDED_GRAPH
   /**

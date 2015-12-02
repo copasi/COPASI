@@ -1,17 +1,14 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/CPlotItem.h,v $
-   $Revision: 1.18 $
-   $Name:  $
-   $Author: ssahle $
-   $Date: 2012/05/02 23:41:49 $
-   End CVS Header */
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2004 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -53,7 +50,7 @@ public:
   bool maxAutoscale;
 
   CPlotDataChannelSpec()
-      : CRegisteredObjectName(),
+    : CRegisteredObjectName(),
       min(0.0),
       max(0.0),
       minAutoscale(true),
@@ -61,7 +58,7 @@ public:
   {}
 
   CPlotDataChannelSpec(const CCopasiObjectName & obj)
-      : CRegisteredObjectName(obj),
+    : CRegisteredObjectName(obj),
       min(0.0),
       max(0.0),
       minAutoscale(true),
@@ -69,12 +66,13 @@ public:
   {}
 
   CPlotDataChannelSpec(const CCopasiObjectName & obj, C_FLOAT64 minimum, C_FLOAT64 maximum)
-      : CRegisteredObjectName(obj),
+    : CRegisteredObjectName(obj),
       min(minimum),
       max(maximum),
       minAutoscale(false),
       maxAutoscale(false)
-  {}};
+  {}
+};
 
 //****************************************************************************************
 
@@ -89,7 +87,8 @@ public:
     unset = 0, curve2d, histoItem1d,            //for plot items
     bandedGraph,
     surface,
-    plot2d, simWiz   //for plot specifications
+    plot2d, simWiz,   //for plot specifications
+    spectogram
   };
 
   /**

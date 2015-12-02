@@ -26,6 +26,7 @@ const std::string CPlotItem::TypeName[] =
 
   "2D Plot",
   "SimWiz",
+  "Spectogram",
   ""
 };
 
@@ -39,6 +40,7 @@ const char* CPlotItem::XMLType[] =
 
   "Plot2D",
   "SimWiz",
+  "Spectogram",
   NULL
 };
 
@@ -105,12 +107,21 @@ void CPlotItem::setType(CPlotItem::Type type)
       assertParameter("Symbol subtype", CCopasiParameter::UINT, (unsigned C_INT32) 0);
     }
 
+  if (type == spectogram)
+    {
+      assertParameter("logZ", CCopasiParameter::BOOL, false);
+      assertParameter("bilinear", CCopasiParameter::BOOL, true);
+      assertParameter("contours", CCopasiParameter::STRING, std::string(""));
+      assertParameter("maxZ", CCopasiParameter::STRING, std::string(""));
+      assertParameter("colorMap", CCopasiParameter::STRING, std::string("Default"));
+    }
+
   if (type == histoItem1d)
     {
       assertParameter("increment", CCopasiParameter::DOUBLE, (C_FLOAT64) 1.0);
     }
 
-  if (type == curve2d || type == histoItem1d || type == bandedGraph || type == surface)
+  if (type == curve2d || type == histoItem1d || type == bandedGraph || type == surface || type == spectogram)
     {
       assertParameter("Color", CCopasiParameter::STRING, std::string("auto"));
 
@@ -156,6 +167,7 @@ void CPlotItem::setActivity(const COutputInterface::Activity & activity)
       case curve2d:
       case bandedGraph:
       case histoItem1d:
+      case spectogram:
       case surface:
         mActivity = activity;
         *mpXMLActivity = XMLRecordingActivity[mActivity];
@@ -176,6 +188,7 @@ const COutputInterface::Activity & CPlotItem::getActivity() const
       case curve2d:
       case bandedGraph:
       case histoItem1d:
+      case spectogram:
       case surface:
 
         if (!mpXMLActivity)

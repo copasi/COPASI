@@ -307,7 +307,7 @@ void CScanItemRandom::step()
         }
     }
 
-  if (mpObjectValue != NULL)
+  if (mpObjectValue != NULL && mIndex <= mNumSteps)
     {
       *mpObjectValue = Value;
     }

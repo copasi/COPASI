@@ -26,7 +26,10 @@
 #else
 #include <qwt_legend_item.h>
 #endif
+
 #include <qwt_scale_engine.h>
+#include <qwt_color_map.h>
+#include <qwt_scale_widget.h>
 
 #include <limits>
 #include <algorithm>
@@ -42,6 +45,9 @@
 #include "report/CCopasiRootContainer.h"
 #include "model/CModel.h"
 #include "commandline/CLocaleString.h"
+
+
+#include <QApplication>
 
 #define ActivitySize 8
 
@@ -466,6 +472,8 @@ CBandedGraphData::reallocated(const CVector< double > * pX, const CVector< doubl
 
 CBandedGraphData & CBandedGraphData::operator = (const CBandedGraphData & rhs)
 {
+  if (&rhs == this) return *this;
+
   mpX = rhs.mpX;
   mpY1 = rhs.mpY1;
   mpY2 = rhs.mpY2;
@@ -681,6 +689,16 @@ CHistoCurveData & CHistoCurveData::operator = (const CHistoCurveData & rhs)
 }
 
 //********************  curve  ********************************************
+
+C2DPlotCurve::C2DPlotCurve(QMutex *pMutex, const CPlotItem::Type &type, const COutputInterface::Activity &activity, const QString &title):
+  QwtPlotCurve(title),
+  mpMutex(pMutex),
+  mCurveType(type),
+  mIncrement(1.0),
+  mActivity(activity)
+{
+  assert(mpMutex != NULL);
+}
 
 void C2DPlotCurve::setDataSize(const size_t & size)
 {
@@ -993,6 +1011,8 @@ CopasiPlot::CopasiPlot(QWidget* parent):
   QwtPlot(parent),
   mCurves(0),
   mCurveMap(),
+  mSpectograms(0),
+  mSpectogramMap(),
   mDataBefore(0),
   mDataDuring(0),
   mDataAfter(0),
@@ -1010,6 +1030,8 @@ CopasiPlot::CopasiPlot(const CPlotSpecification* plotspec, QWidget* parent):
   QwtPlot(parent),
   mCurves(0),
   mCurveMap(),
+  mSpectograms(0),
+  mSpectogramMap(),
   mDataBefore(0),
   mDataDuring(0),
   mDataAfter(0),
@@ -1082,6 +1104,103 @@ void CopasiPlot::legendChecked(const QVariant &itemInfo, bool on)
 }
 #endif
 
+CPlotSpectogram *CopasiPlot::createSpectogram(CPlotItem *plotItem)
+{
+  QString strLimitZ = FROM_UTF8(plotItem->getValue<std::string>("maxZ"));
+  bool flag;
+  double limitZ = strLimitZ.toDouble(&flag);
+
+  if (!flag)
+    limitZ = std::numeric_limits<double>::quiet_NaN();
+
+  bool logZ = plotItem->getValue<bool>("logZ");
+
+  CPlotSpectogram *pSpectogram = new CPlotSpectogram(
+    &mMutex,
+    plotItem->getType(),
+    plotItem->getActivity(),
+    FROM_UTF8(plotItem->getTitle()),
+    logZ,
+    limitZ,
+    plotItem->getValue<bool>("bilinear"));
+
+  pSpectogram->attach(this);
+  pSpectogram->setRenderHint(QwtPlotItem::RenderAntialiased);
+  pSpectogram->setDefaultContourPen(QPen(0.5));
+
+  std::string colorMap = *plotItem->assertParameter("colorMap", CCopasiParameter::STRING, std::string("Default"));
+
+  if (colorMap == "Grayscale")
+    {
+      QwtLinearColorMap colorMap(Qt::white, Qt::black);
+      pSpectogram->setColorMap(colorMap);
+
+    }
+  else if (colorMap == "Yellow-Red")
+    {
+      QwtLinearColorMap colorMap(Qt::yellow, Qt::red);
+      pSpectogram->setColorMap(colorMap);
+    }
+  else
+    {
+      QwtLinearColorMap colorMap(Qt::darkCyan, Qt::red);
+      colorMap.addColorStop(0.1, Qt::cyan);
+      colorMap.addColorStop(0.6, Qt::green);
+      colorMap.addColorStop(0.95, Qt::yellow);
+
+      pSpectogram->setColorMap(colorMap);
+    }
+
+  QString contours = FROM_UTF8(* plotItem->assertParameter("contours", CCopasiParameter::STRING, std::string("")));
+
+  int levels = contours.toInt(&flag);
+
+  if (flag)
+    {
+      // have only a certain number of levels, applying them here
+      QwtValueList contourLevels;
+
+      for (double level = 0.5; level < 10.0; level += 1.0)
+        contourLevels += level;
+
+      pSpectogram->setContourLevels(contourLevels);
+      pSpectogram->setDisplayMode(QwtPlotSpectrogram::ContourMode, true);
+
+    }
+  else
+    {
+      // have explicit list of numbers to plot
+      QStringList list = contours.split(QRegExp(",| |;"), QString::SplitBehavior::SkipEmptyParts);
+      QwtValueList contourLevels;
+      foreach(const QString & level, list)
+      {
+        contourLevels += level.toDouble();
+      }
+      pSpectogram->setContourLevels(contourLevels);
+      pSpectogram->setDisplayMode(QwtPlotSpectrogram::ContourMode, true);
+    }
+
+  CCopasiDataModel* dataModel = (*CCopasiRootContainer::getDatamodelList())[0];
+
+  setAxisTitle(xBottom, FROM_UTF8(dataModel->getObject((plotItem->getChannels()[0]))->getObjectDisplayName()));
+  enableAxis(xBottom);
+
+  setAxisTitle(yLeft, FROM_UTF8(dataModel->getObject((plotItem->getChannels()[1]))->getObjectDisplayName()));
+  enableAxis(yLeft);
+
+  setAxisScaleEngine(xTop,
+                     logZ ? (QwtScaleEngine *)new QwtLog10ScaleEngine() : (QwtScaleEngine *)new QwtLinearScaleEngine());
+  setAxisTitle(xTop, FROM_UTF8(dataModel->getObject((plotItem->getChannels()[2]))->getObjectDisplayName()));
+  QwtScaleWidget *topAxis = axisWidget(QwtPlot::xTop);
+  topAxis->setColorBarEnabled(true);
+
+  enableAxis(xTop);
+
+
+
+  return pSpectogram;
+}
+
 bool CopasiPlot::initFromSpec(const CPlotSpecification* plotspec)
 {
   mIgnoreUpdate = true;
@@ -1095,6 +1214,10 @@ bool CopasiPlot::initFromSpec(const CPlotSpecification* plotspec)
 
   mCurves.resize(mpPlotSpecification->getItems().size());
   mCurves = NULL;
+
+  mSpectograms.resize(mpPlotSpecification->getItems().size());
+  mSpectograms = NULL;
+
 
   std::map< std::string, C2DPlotCurve * >::iterator found;
 
@@ -1124,15 +1247,39 @@ bool CopasiPlot::initFromSpec(const CPlotSpecification* plotspec)
 
   mCurveMap.clear();
 
+  std::map< std::string, CPlotSpectogram * >::iterator it2 = mSpectogramMap.begin();
+  std::map< std::string, CPlotSpectogram * >::iterator end2 = mSpectogramMap.end();
+
+  for (; it2 != end2; ++it2)
+    pdelete(it2->second);
+
+  mSpectogramMap.clear();
+
+
   itPlotItem = mpPlotSpecification->getItems().begin();
   pVisible = Visible.array();
   C2DPlotCurve ** ppCurve = mCurves.array();
+  CPlotSpectogram** ppSpectogram = mSpectograms.array();
   unsigned long int k = 0;
   bool needLeft = false;
   bool needRight = false;
 
-  for (; itPlotItem != endPlotItem; ++itPlotItem, ++pVisible, ++ppCurve, ++k)
+  for (; itPlotItem != endPlotItem; ++itPlotItem, ++pVisible, ++ppCurve, ++ppSpectogram, ++k)
     {
+      if ((*itPlotItem)->getType() == CPlotItem::spectogram)
+        {
+          CPlotSpectogram* pSpectogram = createSpectogram(*itPlotItem);
+
+          *ppSpectogram = pSpectogram;
+          mSpectogramMap[(*itPlotItem)->CCopasiParameter::getKey()] = pSpectogram;
+
+          showCurve(pSpectogram, *pVisible);
+
+          needLeft = true;
+
+          continue;
+        }
+
       // set up the curve
       C2DPlotCurve * pCurve = new C2DPlotCurve(&mMutex,
           (*itPlotItem)->getType(),
@@ -1431,6 +1578,8 @@ bool CopasiPlot::compile(CObjectInterface::ContainerList listOfContainer)
 
   for (; itCurves != endCurves; ++itCurves, ++k)
     {
+      if (*itCurves == NULL) continue;
+
       std::vector< CVector< double > * > & data = mData[(*itCurves)->getActivity()];
 
       switch ((*itCurves)->getType())
@@ -1472,6 +1621,52 @@ bool CopasiPlot::compile(CObjectInterface::ContainerList listOfContainer)
                                                  mCurves[k]->getIncrement()));
 #endif
             break;
+
+          default:
+            fatalError();
+            break;
+        }
+    }
+
+  k = 0;
+  CPlotSpectogram ** itSpectrograms = mSpectograms.array();
+  CPlotSpectogram ** endSpectrograms = itSpectrograms + mSpectograms.size();
+
+  for (; itSpectrograms != endSpectrograms; ++itSpectrograms, ++k)
+    {
+      if (*itSpectrograms == NULL) continue;
+
+      std::vector< CVector< double > * > & data = mData[(*itSpectrograms)->getActivity()];
+
+      switch ((*itSpectrograms)->getType())
+        {
+          case CPlotItem::spectogram:
+#if QWT_VERSION > 0x060000
+            (*itSpectrograms)->setData(
+              new CSpectorgramData(
+                *data[mDataIndex[k][0].second],
+                *data[mDataIndex[k][1].second],
+                *data[mDataIndex[k][2].second],
+                0,
+                (*itSpectrograms)->getLogZ(),
+                (*itSpectrograms)->getLimitZ(),
+                (*itSpectrograms)->getBilinear()
+              )
+            );
+#else
+            (*itSpectrograms)->setData(
+              CSpectorgramData(
+                *data[mDataIndex[k][0].second],
+                *data[mDataIndex[k][1].second],
+                *data[mDataIndex[k][2].second],
+                0,
+                (*itSpectrograms)->getLogZ(),
+                (*itSpectrograms)->getLimitZ(),
+                (*itSpectrograms)->getBilinear()
+              ));
+#endif
+            break;
+
 
           default:
             fatalError();
@@ -1560,9 +1755,12 @@ void CopasiPlot::separate(const Activity & activity)
 
 void CopasiPlot::finish()
 {
+
+
   // We need to force a replot, i.e., the next mNextPlotTime should be in the past.
   mNextPlotTime = 0;
   replot();
+
 
   if (mpZoomer)
     {
@@ -1570,6 +1768,7 @@ void CopasiPlot::finish()
       mpZoomer->setZoomBase();
     }
 }
+
 
 void CopasiPlot::updateCurves(const size_t & activity)
 {
@@ -1588,10 +1787,43 @@ void CopasiPlot::updateCurves(const size_t & activity)
   C2DPlotCurve ** endCurves = itCurves + mCurves.size();
 
   for (; itCurves != endCurves; ++itCurves, ++k)
-    if ((size_t)(*itCurves)->getActivity() == activity)
-      {
-        (*itCurves)->setDataSize(mDataSize[activity]);
-      }
+    {
+      if (*itCurves == NULL) continue;
+
+      if ((size_t)(*itCurves)->getActivity() == activity)
+        {
+          (*itCurves)->setDataSize(mDataSize[activity]);
+        }
+    }
+
+  // skip rendering when shift is pressed
+  Qt::KeyboardModifiers mods = QApplication::keyboardModifiers();
+
+  if (((int)mods & (int)Qt::ShiftModifier) == (int)Qt::ShiftModifier)
+    return;
+
+  k = 0;
+  CPlotSpectogram ** itSpectograms = mSpectograms.array();
+  CPlotSpectogram ** endSpectograms = itSpectograms + mSpectograms.size();
+
+  for (; itSpectograms != endSpectograms; ++itSpectograms, ++k)
+    {
+      if (*itSpectograms == NULL) continue;
+
+      if ((size_t)(*itSpectograms)->getActivity() == activity)
+        {
+          (*itSpectograms)->setDataSize(mDataSize[activity]);
+
+          QwtScaleWidget *topAxis = axisWidget(QwtPlot::xTop);
+          topAxis->setColorBarEnabled(true);
+          topAxis->setColorMap((*itSpectograms)->data().range(),
+                               (*itSpectograms)->colorMap());
+          setAxisScale(QwtPlot::xTop,
+                       (*itSpectograms)->data().range().minValue(),
+                       (*itSpectograms)->data().range().maxValue());
+
+        }
+    }
 }
 
 void CopasiPlot::resizeCurveData(const size_t & activity)
@@ -1622,6 +1854,8 @@ void CopasiPlot::resizeCurveData(const size_t & activity)
 
   for (; itCurves != endCurves; ++itCurves, ++k)
     {
+      if (*itCurves == NULL) continue;
+
       if ((size_t)(*itCurves)->getActivity() == activity)
         {
           std::vector< CVector< double > * > & data = mData[activity];
@@ -1642,6 +1876,33 @@ void CopasiPlot::resizeCurveData(const size_t & activity)
               case CPlotItem::histoItem1d:
                 (*itCurves)->reallocatedData(data[mDataIndex[k][0].second],
                                              NULL);
+                break;
+
+              default:
+                fatalError();
+                break;
+            }
+        }
+    }
+
+  k = 0;
+  CPlotSpectogram ** itSpectograms = mSpectograms.array();
+  CPlotSpectogram ** endSpectograms = itSpectograms + mSpectograms.size();
+
+  for (; itSpectograms != endSpectograms; ++itSpectograms, ++k)
+    {
+      if (*itSpectograms == NULL) continue;
+
+      if ((size_t)(*itSpectograms)->getActivity() == activity)
+        {
+          std::vector< CVector< double > * > & data = mData[activity];
+
+          switch ((*itSpectograms)->getType())
+            {
+              case CPlotItem::spectogram:
+                (*itSpectograms)->reallocatedData(data[mDataIndex[k][0].second],
+                                                  data[mDataIndex[k][1].second],
+                                                  data[mDataIndex[k][2].second]);
                 break;
 
               default:
@@ -1899,6 +2160,8 @@ bool CopasiPlot::saveData(const std::string & filename)
 
   for (; itCurves != endCurves; ++itCurves)
     {
+      if (*itCurves == NULL) continue;
+
       if ((*itCurves)->getType() == CPlotItem::histoItem1d)
         {
           if (FirstHistogram)
@@ -2073,3 +2336,615 @@ void CopasiPlot::replot()
 
   mReplotFinished = true;
 }
+
+CSpectorgramData::CSpectorgramData()
+  : QwtRasterData()
+  , mpX(NULL)
+  , mpY(NULL)
+  , mpZ(NULL)
+  , mSize(0)
+  , mMaxSize(0)
+  , mLastRectangle(0)
+  , mMinX(std::numeric_limits<double>::quiet_NaN())
+  , mMaxX(std::numeric_limits<double>::quiet_NaN())
+  , mMinY(std::numeric_limits<double>::quiet_NaN())
+  , mMaxY(std::numeric_limits<double>::quiet_NaN())
+  , mMinZ(std::numeric_limits<double>::quiet_NaN())
+  , mMaxZ(std::numeric_limits<double>::quiet_NaN())
+  , mpMatrix(NULL)
+  , mLogZ(false)
+  , mLimitZ(std::numeric_limits<double>::quiet_NaN())
+  , mBilinear(true)
+{
+
+}
+
+CSpectorgramData::CSpectorgramData(const CVector<double> &x,
+                                   const CVector<double> &y,
+                                   const CVector<double> &z,
+                                   size_t size,
+                                   bool logZ,
+                                   double limitZ,
+                                   bool bilinear)
+  : QwtRasterData(QwtDoubleRect(0, 0, 100, 100))
+  , mpX(x.array())
+  , mpY(y.array())
+  , mpZ(z.array())
+  , mSize(size)
+  , mMaxSize(x.size())
+  , mLastRectangle(0)
+  , mMinX(std::numeric_limits<double>::quiet_NaN())
+  , mMaxX(std::numeric_limits<double>::quiet_NaN())
+  , mMinY(std::numeric_limits<double>::quiet_NaN())
+  , mMaxY(std::numeric_limits<double>::quiet_NaN())
+  , mMinZ(std::numeric_limits<double>::quiet_NaN())
+  , mMaxZ(std::numeric_limits<double>::quiet_NaN())
+  , mpMatrix(NULL)
+  , mLogZ(logZ)
+  , mLimitZ(limitZ)
+  , mBilinear(bilinear)
+
+{
+
+}
+
+
+CSpectorgramData::CSpectorgramData(const CSpectorgramData& other)
+  : QwtRasterData(other)
+  , mpX(other.mpX)
+  , mpY(other.mpY)
+  , mpZ(other.mpZ)
+  , mSize(other.mSize)
+  , mMaxSize(other.mMaxSize)
+  , mLastRectangle(other.mLastRectangle)
+  , mMinX(other.mMinX)
+  , mMaxX(other.mMaxX)
+  , mMinY(other.mMinY)
+  , mMaxY(other.mMaxY)
+  , mMinZ(other.mMinZ)
+  , mMaxZ(other.mMaxZ)
+  , mpMatrix(NULL)
+  , mLogZ(other.mLogZ)
+  , mLimitZ(other.mLimitZ)
+  , mBilinear(other.mBilinear)
+{
+
+}
+
+CSpectorgramData &CSpectorgramData::operator =(const CSpectorgramData &rhs)
+{
+  if (&rhs == this) return *this;
+
+  mpX = rhs.mpX;
+  mpY = rhs.mpY;
+  mpZ = rhs.mpZ;
+
+  mSize = rhs.mSize;
+  mMaxSize = rhs.mMaxSize;
+  mLastRectangle = rhs.mLastRectangle;
+
+  mMinX = rhs.mMinX;
+  mMaxX = rhs.mMaxX;
+  mMinY = rhs.mMinY;
+  mMaxY = rhs.mMaxY;
+  mMinZ = rhs.mMinZ;
+  mMaxZ = rhs.mMaxZ;
+
+  mpMatrix = NULL;
+
+  mLogZ = rhs.mLogZ;
+  mLimitZ = rhs.mLimitZ;
+  mBilinear = rhs.mBilinear;
+
+  return *this;
+}
+
+
+CSpectorgramData::~CSpectorgramData()
+{
+  pdelete(mpMatrix);
+}
+
+QwtRasterData *CSpectorgramData::copy() const
+{
+  CSpectorgramData * pCopy = new CSpectorgramData(*this);
+
+  return pCopy;
+}
+
+void
+CSpectorgramData::calculateExtremes() const
+{
+  if (mLastRectangle == mSize)
+    return;
+
+  const double *xIt = mpX + mLastRectangle;
+  const double *yIt = mpY + mLastRectangle;
+  const double *zIt = mpZ + mLastRectangle;
+  const double *end = mpX + mSize;
+
+  mLastRectangle = mSize;
+
+  // We have to remember whether we have an initial NaN
+  bool MinXisNaN = isnan(mMinX);
+  bool MaxXisNaN = isnan(mMaxX);
+  bool MinYisNaN = isnan(mMinY);
+  bool MaxYisNaN = isnan(mMaxY);
+  bool MinZisNaN = isnan(mMinZ);
+  bool MaxZisNaN = isnan(mMaxZ);
+
+  while (xIt < end)
+    {
+      const double xv = *xIt++;
+
+      if (!isnan(xv))
+        {
+          if (xv < mMinX || MinXisNaN)
+            {
+              mMinX = xv;
+              MinXisNaN = false;
+            }
+
+          if (xv > mMaxX || MaxXisNaN)
+            {
+              mMaxX = xv;
+              MaxXisNaN = false;
+            }
+        }
+
+      double yv = *yIt++;
+
+      if (!isnan(yv))
+        {
+          if (yv < mMinY || MinYisNaN)
+            {
+              mMinY = yv;
+              MinYisNaN = false;
+            }
+
+          if (yv > mMaxY || MaxYisNaN)
+            {
+              mMaxY = yv;
+              MaxYisNaN = false;
+            }
+        }
+
+      double zv = *zIt++;
+
+      if (!isnan(zv))
+        {
+          if (zv < mMinZ || MinZisNaN)
+            {
+              mMinZ = zv;
+              MinZisNaN = false;
+            }
+
+          if (zv > mMaxZ || MaxZisNaN)
+            {
+              mMaxZ = zv;
+              MaxZisNaN = false;
+            }
+        }
+    }
+
+  if (isnan(mMinX + mMaxX + mMinY + mMaxY))
+    return;
+
+  // We need to avoid very small data ranges (absolute and relative)
+  C_FLOAT64 minRange = fabs(mMinX + mMaxX) * 5.e-5 + std::numeric_limits< C_FLOAT64 >::min() * 100.0;
+
+  if (mMaxX - mMinX < minRange)
+    {
+      mMinX = mMinX - minRange * 0.5;
+      mMaxX = mMaxX + minRange * 0.5;
+    }
+
+  minRange = fabs(mMinY + mMaxY) * 5e-5 + std::numeric_limits< C_FLOAT64 >::min() * 100.0;
+
+  if (mMaxY - mMinY < minRange)
+    {
+      mMinY = mMinY - minRange * 0.5;
+      mMaxY = mMaxY + minRange * 0.5;
+    }
+}
+
+
+QwtDoubleRect CSpectorgramData::boundingRect() const
+{
+  if (mSize <= 0)
+    return QwtDoubleRect(1.0, 1.0, -0.1, -0.1); // invalid
+
+  calculateExtremes();
+
+  if (isnan(mMinX + mMaxX + mMinY + mMaxY))
+    return QwtDoubleRect(1.0, 1.0, -0.1, -0.1); // invalid
+
+  return QwtDoubleRect(mMinX, mMinY, mMaxX - mMinX, mMaxY - mMinY);
+}
+
+QwtDoubleInterval CSpectorgramData::range() const
+{
+  if (mSize == 0)
+    return QwtDoubleInterval(0, 1);
+
+  if (mLimitZ == mLimitZ)
+    return QwtDoubleInterval(mMinZ, std::min(mMaxZ, mLimitZ));
+
+  return QwtDoubleInterval(mMinZ, mMaxZ);
+}
+
+size_t CSpectorgramData::size() const
+{
+  return 2 * mSize;
+}
+
+double
+CSpectorgramData::bilinearAround(int xIndex, int yIndex,
+                                 double x,
+                                 double y) const
+{
+  int dimX = mValuesX.size();
+  int dimY = mValuesY.size();
+
+  double x1 = mValuesX[xIndex];
+  double y1 = mValuesY[yIndex];
+  double diffXX1 = x - x1;
+  double diffYY1 = y - y1;
+  int xNeighbor = xIndex +
+                  (std::signbit(diffXX1) ? -1 : 1);
+
+  if (xNeighbor >= dimX) xNeighbor = dimX - 1;
+
+  if (xNeighbor < 0) xNeighbor = 0;
+
+  int yNeighbor = yIndex +
+                  (std::signbit(diffYY1) ? -1 : 1);
+
+  if (yNeighbor >= dimY) yNeighbor = dimY - 1;
+
+  if (yNeighbor < 0) yNeighbor = 0;
+
+  double x2 = mValuesX[xNeighbor];
+  double y2 = mValuesY[yNeighbor];
+
+  double x1y1 = (*mpMatrix)(xIndex, yIndex);
+
+  if (x2 == x1 || y2 == y1) return  x1y1;
+
+  double x2y1 = (*mpMatrix)(xNeighbor, yIndex);
+  double x1y2 = (*mpMatrix)(xIndex, yNeighbor);
+  double x2y2 = (*mpMatrix)(xNeighbor, yNeighbor);
+
+
+  return
+    ((y2 - y) / (y2 - y1))
+    * ((x2 - x) / (x2 - x1) * x1y1 + (x - x1) / (x2 - x1) * x2y1)
+    + ((y - y1) / (y2 - y1))
+    * ((x2 - x) / (x2 - x1) * x1y2 + (x - x1) / (x2 - x1) * x2y2);
+
+}
+
+bool
+CSpectorgramData::getBilinear() const
+{
+  return mBilinear;
+}
+
+void
+CSpectorgramData::setBilinear(bool bilinear)
+{
+  mBilinear = bilinear;
+}
+
+
+
+
+
+double
+CSpectorgramData::value(double x, double y) const
+{
+
+  if (mpMatrix == NULL || mSize == 0 || mValuesX.size() < 2 || mValuesY.size() < 2)
+    return 0;
+
+  double distanceX = fabs(mValuesX[1] - mValuesX[0]);
+  double distanceY = fabs(mValuesY[1] - mValuesY[0]);
+
+  int xpos = 0;
+  int ypos = 0;
+  std::vector<double>::const_iterator curX = mValuesX.begin();
+
+  for (; curX != mEndX; ++curX)
+    {
+      if (fabs(*curX - x) < distanceX)
+        break;
+
+      ++xpos;
+    }
+
+  std::vector<double>::const_iterator curY = mValuesY.begin();
+
+  for (; curY != mEndY; ++curY)
+    {
+      if (fabs(*curY - y) < distanceY)
+        break;
+
+      ++ypos;
+    }
+
+  if (xpos == mValuesX.size()) --xpos;
+
+  if (ypos == mValuesY.size()) --ypos;
+
+  double value = mBilinear
+                 ? bilinearAround(xpos, ypos, x, y)
+                 : mpMatrix->operator()(xpos, ypos);
+
+  if (value != value)
+    return 0;
+
+  if (mLimitZ == mLimitZ && value > mLimitZ)
+    return mLimitZ;
+
+  if (mLogZ && value > 0)
+    return log(value);
+
+  return value;
+
+}
+
+void
+CSpectorgramData::setSize(const size_t &size)
+{
+  mSize = size;
+
+  initializeMatrix();
+
+  setBoundingRect(boundingRect());
+
+  assert(mSize <= mMaxSize);
+}
+
+void
+CSpectorgramData::reallocated(const CVector<double> *pX, const CVector<double> *pY, const CVector<double> *pZ)
+{
+  mpX = pX->array();
+  mpY = pY->array();
+  mpZ = pZ->array();
+  mMaxSize = pX->size();
+
+  assert(mSize <= mMaxSize);
+
+}
+
+void
+CSpectorgramData::initializeMatrix()
+{
+  if (mSize == 0) return;
+
+  pdelete(mpMatrix);
+
+  calculateExtremes();
+
+  const double *xIt = mpX;
+  const double *yIt = mpY;
+  const double *end = mpX + mSize;
+  const double *endY = mpY + mSize;
+
+
+  mValuesX.clear();
+  mValuesY.clear();
+
+  for (; xIt != end; ++xIt)
+    {
+      double current = *xIt;
+
+      if (current != current)
+        continue;
+
+      if (std::find(mValuesX.begin(), mValuesX.end(), current) != mValuesX.end())
+        continue;
+
+      mValuesX.push_back(current);
+    }
+
+  for (; yIt != endY; ++yIt)
+    {
+      double current = *yIt;
+
+      if (current != current)
+        continue;
+
+      if (std::find(mValuesY.begin(), mValuesY.end(), current) != mValuesY.end())
+        continue;
+
+      mValuesY.push_back(current);
+    }
+
+  std::sort(mValuesX.begin(), mValuesX.end());
+  std::sort(mValuesY.begin(), mValuesY.end());
+
+  mEndX = mValuesX.cend();
+  mEndY = mValuesY.cend();
+
+  mpMatrix = new CMatrix<double>(mValuesX.size(), mValuesY.size());
+  *mpMatrix = std::numeric_limits<double>::quiet_NaN();
+
+  xIt = mpX;
+  yIt = mpY;
+  const double *zIt = mpZ;
+
+  std::vector<double>::const_iterator curX;
+  std::vector<double>::const_iterator curY;
+
+  for (; xIt != end; ++xIt, ++yIt, ++zIt)
+    {
+      curX = std::find(mValuesX.cbegin(), mEndX, *xIt);
+
+      if (curX == mEndX) continue;
+
+      curY = std::find(mValuesY.cbegin(), mEndY, *yIt);
+
+      if (curY == mEndY) continue;
+
+      int xpos = curX - mValuesX.begin();
+      int ypos = curY - mValuesY.begin();
+
+
+      (*mpMatrix)(xpos, ypos) = *zIt;
+
+    }
+
+}
+double
+CSpectorgramData::getLimitZ() const
+{
+  return mLimitZ;
+}
+
+void
+CSpectorgramData::setLimitZ(double limitZ)
+{
+  mLimitZ = limitZ;
+}
+
+
+CPlotSpectogram::CPlotSpectogram(QMutex *pMutex,
+                                 const CPlotItem::Type &type,
+                                 const COutputInterface::Activity &activity,
+                                 const QString &title,
+                                 bool logZ,
+                                 double limitZ,
+                                 bool bilinear)
+  : QwtPlotSpectrogram(title)
+  , mpMutex(pMutex)
+  , mType(type)
+  , mActivity(activity)
+  , mLogZ(logZ)
+  , mLimitZ(limitZ)
+  , mBilinear(bilinear)
+{
+
+}
+
+void CPlotSpectogram::setDataSize(const size_t &size)
+{
+#if QWT_VERSION > 0x060000
+
+  switch (mType)
+    {
+
+      case CPlotItem::spectogram:
+        QwtRasterData *pData = const_cast<QwtRasterData *>(data());
+        static_cast< CSpectorgramData * >(pData)->setSize(size);
+        break;
+
+      default:
+        fatalError();
+        break;
+    }
+
+#else
+
+  switch (mType)
+    {
+
+      case CPlotItem::spectogram:
+      {
+        QwtRasterData *pData = const_cast<QwtRasterData *>(&data());
+        static_cast<CSpectorgramData *>(pData)->setSize(size);
+        break;
+      }
+
+      default:
+        fatalError();
+        break;
+    }
+
+#endif
+}
+
+void CPlotSpectogram::reallocatedData(const CVector<double> *pX,
+                                      const CVector<double> *pY,
+                                      const CVector<double> *pZ)
+{
+#if QWT_VERSION > 0x060000
+
+  switch (mType)
+    {
+      case CPlotItem::spectogram:
+        QwtRasterData *pData = const_cast<QwtRasterData *>(data());
+        static_cast< CSpectorgramData * >(pData)->reallocated(pX, pY, pZ);
+        break;
+
+      default:
+        fatalError();
+        break;
+    }
+
+#else
+
+  switch (mType)
+    {
+      case CPlotItem::spectogram:
+      {
+        QwtRasterData *pData = const_cast<QwtRasterData *>(&data());
+        static_cast<CSpectorgramData *>(pData)->reallocated(pX, pY, pZ);
+        break;
+      }
+
+      default:
+        fatalError();
+        break;
+    }
+
+#endif
+}
+
+const CPlotItem::Type &
+CPlotSpectogram::getType() const
+{
+  return mType;
+}
+
+const COutputInterface::Activity &
+CPlotSpectogram::getActivity() const
+{
+  return mActivity;
+}
+
+bool
+CPlotSpectogram::getLogZ() const
+{
+  return mLogZ;
+}
+
+void
+CPlotSpectogram::setLogZ(bool logZ)
+{
+  mLogZ = logZ;
+}
+
+double
+CPlotSpectogram::getLimitZ() const
+{
+  return mLimitZ;
+}
+
+void
+CPlotSpectogram::setLimitZ(double limitZ)
+{
+  mLimitZ = limitZ;
+}
+bool CPlotSpectogram::getBilinear() const
+{
+  return mBilinear;
+}
+
+void CPlotSpectogram::setBilinear(bool bilinear)
+{
+  mBilinear = bilinear;
+}
+
+
+

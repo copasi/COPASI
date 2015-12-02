@@ -35,9 +35,11 @@
 #include <qwt_compat.h>
 #else
 #include <qwt_data.h>
+#include <qwt_raster_data.h>
 #endif
 
 #include <qwt_plot_curve.h>
+#include <qwt_plot_spectrogram.h>
 
 #include "plot/CPlotItem.h"
 
@@ -45,6 +47,7 @@
 #include "utilities/COutputHandler.h"
 #include "utilities/CopasiTime.h"
 #include "utilities/CVector.h"
+#include "utilities/CMatrix.h"
 
 // NaN are ignored bounding rectangle
 class C2DCurveData :
@@ -147,6 +150,94 @@ private:
   mutable double mMaxY;
 };
 
+
+
+class CSpectorgramData :
+#if QWT_VERSION > 0x060000
+  public QwtSeriesData<QPointF>
+#else
+  public QwtRasterData
+#endif
+
+{
+public:
+  CSpectorgramData();
+  CSpectorgramData(const CSpectorgramData& other);
+  CSpectorgramData(const CVector< double > & x,
+                   const CVector< double > & y,
+                   const CVector< double > & z,
+                   size_t size,
+                   bool logZ,
+                   double limitZ = std::numeric_limits<double>::quiet_NaN(),
+                   bool bilinear = true);
+  virtual ~CSpectorgramData();
+
+#if QWT_VERSION > 0x060000
+  virtual QwtSeriesData<QPointF> *copy() const;
+  virtual QPointF sample(size_t i) const;
+#else
+  virtual QwtRasterData *copy() const;
+#endif
+
+  virtual QwtDoubleRect boundingRect() const;
+
+  virtual QwtDoubleInterval range() const;
+
+  virtual size_t size() const;
+
+  virtual double value(double x, double y) const;
+
+  void setSize(const size_t & size);
+
+  void reallocated(const CVector< double > * pX,
+                   const CVector< double > * pY,
+                   const CVector< double > * pZ);
+
+  double getLimitZ() const;
+  void setLimitZ(double limitZ);
+
+  bool getBilinear() const;
+  void setBilinear(bool bilinear);
+
+protected:
+  CSpectorgramData &operator = (const CSpectorgramData & rhs);
+
+private:
+
+  void calculateExtremes() const;
+  void initializeMatrix();
+  double bilinearAround(int xIndex, int yIndex,
+                        double x,
+                        double y) const;
+
+  const double * mpX;
+  const double * mpY;
+  const double * mpZ;
+
+  size_t mSize;
+  size_t mMaxSize;
+
+  mutable size_t mLastRectangle;
+  mutable double mMinX;
+  mutable double mMaxX;
+  mutable double mMinY;
+  mutable double mMaxY;
+  mutable double mMinZ;
+  mutable double mMaxZ;
+
+  std::vector<double> mValuesX;
+  std::vector<double> mValuesY;
+  std::vector<double>::const_iterator mEndX;
+  std::vector<double>::const_iterator mEndY;
+
+  CMatrix<double>* mpMatrix;
+
+  bool mLogZ;
+  double mLimitZ;
+  bool mBilinear;
+
+};
+
 class CHistoCurveData :
 #if QWT_VERSION > 0x060000
   public QwtSeriesData<QPointF>
@@ -200,20 +291,58 @@ private:
   mutable CVector< double > mHistoY;
 };
 
+
+class CPlotSpectogram : public QwtPlotSpectrogram
+{
+public:
+  CPlotSpectogram(QMutex * pMutex,
+                  const CPlotItem::Type & type,
+                  const COutputInterface::Activity & activity,
+                  const QString & title,
+                  bool logZ = false,
+                  double limitZ = std::numeric_limits<double>::quiet_NaN(),
+                  bool bilinear = true);
+
+  void setDataSize(const size_t & size);
+
+  void reallocatedData(const CVector< double > * pX,
+                       const CVector< double > * pY,
+                       const CVector< double > * pZ);
+
+  const CPlotItem::Type & getType() const;
+
+  const COutputInterface::Activity & getActivity() const;
+
+  bool getLogZ() const;
+  void setLogZ(bool logZ);
+
+  double getLimitZ() const;
+  void setLimitZ(double limitZ);
+
+  bool getBilinear() const;
+  void setBilinear(bool bilinear);
+
+protected:
+
+
+private:
+  QMutex * mpMutex;
+
+  CPlotItem::Type mType;
+
+  COutputInterface::Activity mActivity;
+
+  bool mLogZ;
+  double mLimitZ;
+  bool mBilinear;
+};
+
 // NaN in data splits curve
 class C2DPlotCurve : public QwtPlotCurve
 {
 public:
   C2DPlotCurve(QMutex * pMutex, const CPlotItem::Type & type,
-               const COutputInterface::Activity & activity, const QString & title):
-    QwtPlotCurve(title),
-    mpMutex(pMutex),
-    mCurveType(type),
-    mIncrement(1.0),
-    mActivity(activity)
-  {
-    assert(mpMutex != NULL);
-  }
+               const COutputInterface::Activity & activity, const QString & title);
 
   void setDataSize(const size_t & size);
 
@@ -348,6 +477,12 @@ public slots:
 #endif
 
 private:
+
+  /**
+   * @return a spectogram for the given plot item.
+   */
+  CPlotSpectogram* createSpectogram(CPlotItem *plotItem);
+
   /**
    * Tell the curves where the data is located. It must be called
    * after reallocating the memory for the curve data.
@@ -448,6 +583,16 @@ private:
    * A map between a specification identified by its key and a curve
    */
   std::map< std::string, C2DPlotCurve * > mCurveMap;
+
+  /**
+   * The list of spectograms
+   */
+  CVector< CPlotSpectogram * > mSpectograms;
+
+  /**
+   * A map between a specification identified by its key and a curve
+   */
+  std::map< std::string, CPlotSpectogram* > mSpectogramMap;
 
   /**
    * Vector of the activity of each item (curve)
