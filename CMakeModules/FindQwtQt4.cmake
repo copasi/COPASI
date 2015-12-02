@@ -62,13 +62,41 @@ set(QWT_FOUND "NO")
 
 if(QWT_LIBRARY AND QWT_INCLUDE_DIR)
   set(QWT_FOUND "YES")
+
+  if (EXISTS "${QWT_INCLUDE_DIR}/qwt_global.h")
+
+    file(STRINGS "${QWT_INCLUDE_DIR}/qwt_global.h" QWT_H REGEX "^#define QWT_VERSION[ ]*[^\"]*$")
+
+    string(REGEX REPLACE ".*QWT_VERSION[ ]*0x([0-9]+).*$" "\\1" QWT_VERSION_HEX "${QWT_H}")
+    set(QWT_VERSION_HEX 0x${QWT_VERSION_HEX} CACHE STRING "")
+
+    file(STRINGS "${QWT_INCLUDE_DIR}/qwt_global.h" QWT_H REGEX "^#define QWT_VERSION_STR[ ]*\"[^\"]*\"$")
+
+    string(REGEX REPLACE ".*QWT_VERSION_STR[ ]*\"([0-9]+).*$" "\\1" QWT_VERSION_MAJOR "${QWT_H}")
+    string(REGEX REPLACE ".*QWT_VERSION_STR[ ]*\"[0-9]+\\.([0-9]+).*$" "\\1" QWT_VERSION_MINOR  "${QWT_H}")
+    string(REGEX REPLACE ".*QWT_VERSION_STR[ ]*\"[0-9]+\\.[0-9]+\\.([0-9]+).*$" "\\1" QWT_VERSION_PATCH "${QWT_H}")
+    set(QWT_VERSION_STRING "${QWT_VERSION_MAJOR}.${QWT_VERSION_MINOR}.${QWT_VERSION_PATCH}" CACHE STRING "")
+
+    # only append a TWEAK version if it exists:
+    set(QWT_VERSION_TWEAK "")
+    if( "${QWT_H}" MATCHES "QWT_VERSION_STR \"[0-9]+\\.[0-9]+\\.[0-9]+\\.([0-9]+)")
+        set(QWT_VERSION_TWEAK "${CMAKE_MATCH_1}")
+        set(QWT_VERSION_STRING "${QWT_VERSION_STRING}.${QWT_VERSION_TWEAK}")
+    endif()
+
+    set(QWT_MAJOR_VERSION "${QWT_VERSION_MAJOR}")
+    set(QWT_MINOR_VERSION "${QWT_VERSION_MINOR}")
+    set(QWT_PATCH_VERSION "${QWT_VERSION_PATCH}")
+
+  endif()
+
 endif(QWT_LIBRARY AND QWT_INCLUDE_DIR)
 
 # handle the QUIETLY and REQUIRED arguments and set QWT_FOUND to TRUE if
 # all listed variables are TRUE
 
 include(FindPackageHandleStandardArgs)
-FIND_PACKAGE_HANDLE_STANDARD_ARGS(QWT DEFAULT_MSG QWT_LIBRARY QWT_INCLUDE_DIR)
+FIND_PACKAGE_HANDLE_STANDARD_ARGS(QWT DEFAULT_MSG QWT_LIBRARY QWT_INCLUDE_DIR QWT_VERSION_HEX QWT_VERSION_STRING)
 
 mark_as_advanced(QWT_INCLUDE_DIR QWT_LIBRARY)
 
