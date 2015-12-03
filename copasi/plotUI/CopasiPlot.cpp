@@ -1130,6 +1130,28 @@ CPlotSpectogram *CopasiPlot::createSpectogram(CPlotItem *plotItem)
 
   std::string colorMap = *plotItem->assertParameter("colorMap", CCopasiParameter::STRING, std::string("Default"));
 
+#if QWT_VERSION > 0x060000
+if (colorMap == "Grayscale")
+    {
+      QwtLinearColorMap *colorMap = new QwtLinearColorMap(Qt::white, Qt::black);
+      pSpectogram->setColorMap(colorMap);
+
+    }
+  else if (colorMap == "Yellow-Red")
+    {
+      QwtLinearColorMap *colorMap = new QwtLinearColorMap(Qt::yellow, Qt::red);
+      pSpectogram->setColorMap(colorMap);
+    }
+  else
+    {
+      QwtLinearColorMap *colorMap = new QwtLinearColorMap(Qt::darkCyan, Qt::red);
+      colorMap->addColorStop(0.1, Qt::cyan);
+      colorMap->addColorStop(0.6, Qt::green);
+      colorMap->addColorStop(0.95, Qt::yellow);
+
+      pSpectogram->setColorMap(colorMap);
+    }
+#else
   if (colorMap == "Grayscale")
     {
       QwtLinearColorMap colorMap(Qt::white, Qt::black);
@@ -1150,6 +1172,7 @@ CPlotSpectogram *CopasiPlot::createSpectogram(CPlotItem *plotItem)
 
       pSpectogram->setColorMap(colorMap);
     }
+#endif
 
   QString contours = FROM_UTF8(* plotItem->assertParameter("contours", CCopasiParameter::STRING, std::string("")));
 
@@ -1170,7 +1193,7 @@ CPlotSpectogram *CopasiPlot::createSpectogram(CPlotItem *plotItem)
   else
     {
       // have explicit list of numbers to plot
-      QStringList list = contours.split(QRegExp(",| |;"), QString::SplitBehavior::SkipEmptyParts);
+      QStringList list = contours.split(QRegExp(",| |;"), QString::SkipEmptyParts);
       QwtValueList contourLevels;
       foreach(const QString & level, list)
       {
@@ -1188,9 +1211,13 @@ CPlotSpectogram *CopasiPlot::createSpectogram(CPlotItem *plotItem)
   setAxisTitle(yLeft, FROM_UTF8(dataModel->getObject((plotItem->getChannels()[1]))->getObjectDisplayName()));
   enableAxis(yLeft);
 
+#if QWT_VERSION > 0x060000
+  // TODO
+#else
   setAxisScaleEngine(xTop,
                      logZ ? (QwtScaleEngine *)new QwtLog10ScaleEngine() : (QwtScaleEngine *)new QwtLinearScaleEngine());
   setAxisTitle(xTop, FROM_UTF8(dataModel->getObject((plotItem->getChannels()[2]))->getObjectDisplayName()));
+#endif
   QwtScaleWidget *topAxis = axisWidget(QwtPlot::xTop);
   topAxis->setColorBarEnabled(true);
 
@@ -1813,6 +1840,9 @@ void CopasiPlot::updateCurves(const size_t & activity)
       if ((size_t)(*itSpectograms)->getActivity() == activity)
         {
           (*itSpectograms)->setDataSize(mDataSize[activity]);
+#if QWT_VERSION > 0x060000
+  // TODO
+#else
 
           QwtScaleWidget *topAxis = axisWidget(QwtPlot::xTop);
           topAxis->setColorBarEnabled(true);
@@ -1821,7 +1851,7 @@ void CopasiPlot::updateCurves(const size_t & activity)
           setAxisScale(QwtPlot::xTop,
                        (*itSpectograms)->data().range().minValue(),
                        (*itSpectograms)->data().range().maxValue());
-
+#endif
         }
     }
 }
@@ -2366,7 +2396,11 @@ CSpectorgramData::CSpectorgramData(const CVector<double> &x,
                                    bool logZ,
                                    double limitZ,
                                    bool bilinear)
+#if QWT_VERSION > 0x060000
+  : QwtRasterData()
+#else
   : QwtRasterData(QwtDoubleRect(0, 0, 100, 100))
+#endif
   , mpX(x.array())
   , mpY(y.array())
   , mpZ(z.array())
@@ -2390,7 +2424,11 @@ CSpectorgramData::CSpectorgramData(const CVector<double> &x,
 
 
 CSpectorgramData::CSpectorgramData(const CSpectorgramData& other)
+#if QWT_VERSION > 0x060000
+  : QwtRasterData()
+#else
   : QwtRasterData(other)
+#endif
   , mpX(other.mpX)
   , mpY(other.mpY)
   , mpZ(other.mpZ)
@@ -2700,7 +2738,11 @@ CSpectorgramData::setSize(const size_t &size)
 
   initializeMatrix();
 
+#if QWT_VERSION > 0x060000
+  // TODO
+#else
   setBoundingRect(boundingRect());
+#endif
 
   assert(mSize <= mMaxSize);
 }
@@ -2764,8 +2806,8 @@ CSpectorgramData::initializeMatrix()
   std::sort(mValuesX.begin(), mValuesX.end());
   std::sort(mValuesY.begin(), mValuesY.end());
 
-  mEndX = mValuesX.cend();
-  mEndY = mValuesY.cend();
+  mEndX = mValuesX.end();
+  mEndY = mValuesY.end();
 
   mpMatrix = new CMatrix<double>(mValuesX.size(), mValuesY.size());
   *mpMatrix = std::numeric_limits<double>::quiet_NaN();
@@ -2779,11 +2821,12 @@ CSpectorgramData::initializeMatrix()
 
   for (; xIt != end; ++xIt, ++yIt, ++zIt)
     {
-      curX = std::find(mValuesX.cbegin(), mEndX, *xIt);
+      double dX = *xIt; double dY = *yIt;
+      curX = std::find(mValuesX.begin(), mEndX, *xIt);
 
       if (curX == mEndX) continue;
 
-      curY = std::find(mValuesY.cbegin(), mEndY, *yIt);
+      curY = std::find(mValuesY.begin(), mEndY, *yIt);
 
       if (curY == mEndY) continue;
 
@@ -2835,10 +2878,11 @@ void CPlotSpectogram::setDataSize(const size_t &size)
     {
 
       case CPlotItem::spectogram:
-        QwtRasterData *pData = const_cast<QwtRasterData *>(data());
-        static_cast< CSpectorgramData * >(pData)->setSize(size);
-        break;
-
+	{
+          QwtRasterData *pData = const_cast<QwtRasterData *>(data());
+          static_cast< CSpectorgramData * >(pData)->setSize(size);
+          break;
+	}
       default:
         fatalError();
         break;
@@ -2873,10 +2917,11 @@ void CPlotSpectogram::reallocatedData(const CVector<double> *pX,
   switch (mType)
     {
       case CPlotItem::spectogram:
-        QwtRasterData *pData = const_cast<QwtRasterData *>(data());
-        static_cast< CSpectorgramData * >(pData)->reallocated(pX, pY, pZ);
-        break;
-
+	{
+          QwtRasterData *pData = const_cast<QwtRasterData *>(data());
+          static_cast< CSpectorgramData * >(pData)->reallocated(pX, pY, pZ);
+          break;
+	}
       default:
         fatalError();
         break;

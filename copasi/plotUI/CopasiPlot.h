@@ -153,12 +153,7 @@ private:
 
 
 class CSpectorgramData :
-#if QWT_VERSION > 0x060000
-  public QwtSeriesData<QPointF>
-#else
   public QwtRasterData
-#endif
-
 {
 public:
   CSpectorgramData();
@@ -172,12 +167,7 @@ public:
                    bool bilinear = true);
   virtual ~CSpectorgramData();
 
-#if QWT_VERSION > 0x060000
-  virtual QwtSeriesData<QPointF> *copy() const;
-  virtual QPointF sample(size_t i) const;
-#else
   virtual QwtRasterData *copy() const;
-#endif
 
   virtual QwtDoubleRect boundingRect() const;
 
@@ -227,8 +217,8 @@ private:
 
   std::vector<double> mValuesX;
   std::vector<double> mValuesY;
-  std::vector<double>::const_iterator mEndX;
-  std::vector<double>::const_iterator mEndY;
+  std::vector<double>::iterator mEndX;
+  std::vector<double>::iterator mEndY;
 
   CMatrix<double>* mpMatrix;
 
