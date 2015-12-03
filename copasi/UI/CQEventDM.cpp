@@ -216,8 +216,7 @@ bool CQEventDM::setData(const QModelIndex &index, const QVariant &value,
 
   if (defaultRow)
     {
-      int newRow = rowCount() - 1;
-      mpUndoStack->push(new InsertEventRowsCommand(newRow, 1, this, index, value));
+      mpUndoStack->push(new InsertEventRowsCommand(rowCount(), 1, this, index, value));
     }
   else
     {
@@ -276,7 +275,7 @@ bool CQEventDM::insertRows(int position, int rows, const QModelIndex&)
   return true;
 }
 
-bool CQEventDM::removeRows(int position, int rows, const QModelIndex&)
+bool CQEventDM::removeRows(int position, int rows)
 {
   if (rows <= 0)
     return true;
@@ -379,14 +378,13 @@ bool CQEventDM::eventDataChange(const QModelIndex &index, const QVariant &value,
   if (defaultRow)
     {
       if (index.data() != value)
-        insertRow();
+        insertRow(rowCount(), index);
       else
         return false;
     }
 
   if ((int)pModel->getEvents().size() <= index.row())
     return false;
-
 
   switchToWidget(CCopasiUndoCommand::EVENTS);
 
@@ -401,7 +399,6 @@ bool CQEventDM::eventDataChange(const QModelIndex &index, const QVariant &value,
   emit dataChanged(index, index);
   emit notifyGUI(ListViews::EVENT, ListViews::CHANGE, pEvent->getKey());
 
-
   return true;
 }
 
@@ -413,10 +410,8 @@ void CQEventDM::insertNewEventRow(int position, int rows, const QModelIndex& ind
 
   for (int row = 0; row < rows; ++row)
     {
-      QString name = index.isValid() && index.column() == COL_NAME_EVENTS ?
-                     value.toString() : createNewName("event", COL_NAME_EVENTS);
-      CEvent *pEvent =
-        pModel->createEvent(TO_UTF8(name));
+      QString name = createNewName(index.isValid() && index.column() == COL_NAME_EVENTS ? value.toString() : "event", COL_NAME_EVENTS);
+      CEvent *pEvent = pModel->createEvent(TO_UTF8(name));
       emit notifyGUI(ListViews::EVENT, ListViews::ADD, pEvent->getKey());
     }
 
@@ -496,7 +491,6 @@ bool CQEventDM::removeEventRows(QModelIndexList rows, const QModelIndex&)
 
       if (choice == QMessageBox::Ok)
         removeRow((int) delRow);
-
     }
 
   return true;

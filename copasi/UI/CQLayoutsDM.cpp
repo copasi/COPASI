@@ -1,4 +1,4 @@
-// Copyright (C) 2011 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -15,7 +15,8 @@
 
 CQLayoutsDM::CQLayoutsDM(QObject *parent) :
   CQBaseDataModel(parent),
-  mpListOfLayouts(NULL)
+  mpListOfLayouts(NULL),
+  mNewName("layout")
 {}
 
 CQLayoutsDM::~CQLayoutsDM()
@@ -50,9 +51,6 @@ Qt::ItemFlags CQLayoutsDM::flags(const QModelIndex &index) const
         break;
 
       case COL_NAME:
-        return QAbstractItemModel::flags(index) & ~Qt::ItemIsEditable;
-        break;
-
       case COL_SHOW:
         return QAbstractItemModel::flags(index) | Qt::ItemIsEditable | Qt::ItemIsEnabled;
         break;
@@ -121,7 +119,7 @@ QVariant CQLayoutsDM::headerData(int section, Qt::Orientation orientation,
   return QString("%1").arg(section + 1);
 }
 
-bool CQLayoutsDM::setData(const QModelIndex &index, const QVariant & /* value */, int role)
+bool CQLayoutsDM::setData(const QModelIndex &index, const QVariant & value, int role)
 {
   if (mpListOfLayouts == NULL) return false;
 
@@ -138,7 +136,7 @@ bool CQLayoutsDM::setData(const QModelIndex &index, const QVariant & /* value */
             break;
 
           case COL_NAME:
-            return false;
+            return (*mpListOfLayouts)[index.row()]->setObjectName(TO_UTF8(createNewName(value.toString(), COL_NAME)));
             break;
 
           case COL_SHOW:
@@ -160,17 +158,19 @@ bool CQLayoutsDM::isDefaultRow(const QModelIndex & /* index */) const
   return false;
 }
 
-bool CQLayoutsDM::insertRows(int position, int rows, const QModelIndex&)
+bool CQLayoutsDM::insertRows(int position, int rows, const QModelIndex & source)
 {
   if (mpListOfLayouts == NULL) return false;
 
-  if (position + rows > (int) mpListOfLayouts->size())  return false;
+  int Position = source.isValid() ? source.row() : position;
+
+  if (Position + rows > (int) mpListOfLayouts->size())  return false;
 
   beginInsertRows(QModelIndex(), position, position + rows - 1);
 
   for (int row = 0; row < rows; ++row)
     {
-      emit notifyGUI(ListViews::LAYOUT, ListViews::ADD, (*mpListOfLayouts)[position + row]->getKey());
+      emit notifyGUI(ListViews::LAYOUT, ListViews::ADD, (*mpListOfLayouts)[Position + row]->getKey());
     }
 
   endInsertRows();
@@ -178,7 +178,7 @@ bool CQLayoutsDM::insertRows(int position, int rows, const QModelIndex&)
   return true;
 }
 
-bool CQLayoutsDM::removeRows(int position, int rows, const QModelIndex&)
+bool CQLayoutsDM::removeRows(int position, int rows)
 {
   if (rows <= 0) return true;
 
@@ -235,7 +235,7 @@ bool CQLayoutsDM::removeRows(QModelIndexList rows, const QModelIndex & /* index 
     {
       CLayout * pLayout = *j;
 
-      size_t delRow = mpListOfLayouts->getIndex(pLayout);
+      size_t delRow = mpListOfLayouts->CCopasiVector< CLayout >::getIndex(pLayout);
 
       if (delRow != C_INVALID_INDEX)
         {

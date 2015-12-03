@@ -1,4 +1,4 @@
-// Copyright (C) 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2013 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -35,12 +35,12 @@ public:
   bool removeRows(QModelIndexList rows, const QModelIndex &index = QModelIndex());
   void setListOfModelParameterSets(CCopasiVectorN< CModelParameterSet > * pListOfModelParameterSets);
 
-  virtual bool insertRows(int position, int rows, const QModelIndex &index = QModelIndex());
+  virtual bool insertRows(int position, int rows, const QModelIndex & source);
 
   virtual bool clear();
 
 protected:
-  virtual bool removeRows(int position, int rows, const QModelIndex &index = QModelIndex());
+  virtual bool removeRows(int position, int rows);
 
 private:
   CCopasiVectorN< CModelParameterSet > * mpListOfParameterSets;

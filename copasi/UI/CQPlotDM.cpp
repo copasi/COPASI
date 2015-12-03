@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -21,7 +21,7 @@
 
 CQPlotDM::CQPlotDM(QObject *parent)
   : CQBaseDataModel(parent)
-
+  , mNewName("plot")
 {
 }
 
@@ -66,8 +66,10 @@ QVariant CQPlotDM::data(const QModelIndex &index, int role) const
             {
               case COL_ROW_NUMBER:
                 return QVariant(QString(""));
+
               case COL_NAME_PLOTS:
                 return QVariant(QString("New Plot"));
+
               case COL_ACTIVE_PLOTS:
 
                 if (role == Qt::DisplayRole)
@@ -121,12 +123,16 @@ QVariant CQPlotDM::headerData(int section, Qt::Orientation orientation,
         {
           case COL_ROW_NUMBER:
             return QVariant(QString("#"));
+
           case COL_NAME_PLOTS:
             return QVariant(QString("Name"));
+
           case COL_CURVES_PLOTS:
             return QVariant(QString("Nr. of Curves"));
+
           case COL_ACTIVE_PLOTS:
             return QVariant(QString("Active"));
+
           default:
             return QVariant();
         }
@@ -147,7 +153,9 @@ bool CQPlotDM::setData(const QModelIndex &index, const QVariant &value,
         {
           if (index.data() != value)
             {
-              insertRow();
+              mNewName = (index.column() == COL_NAME_PLOTS) ? value.toString() : "plot";
+
+              insertRow(rowCount(), index);
               changed = true;
             }
           else
@@ -182,12 +190,6 @@ bool CQPlotDM::setData(const QModelIndex &index, const QVariant &value,
             break;
         }
 
-      if (defaultRow && this->index(index.row(), COL_NAME_PLOTS).data().toString() == "plot")
-        {
-          pPS->setObjectName(TO_UTF8(createNewName("plot", COL_NAME_PLOTS)));
-          changed = true;
-        }
-
       if (changed)
         {
           emit dataChanged(index, index);
@@ -203,22 +205,26 @@ bool CQPlotDM::setData(const QModelIndex &index, const QVariant &value,
   return true;
 }
 
-bool CQPlotDM::insertRows(int position, int rows, const QModelIndex&)
+bool CQPlotDM::insertRows(int position, int rows, const QModelIndex & source)
 {
   beginInsertRows(QModelIndex(), position, position + rows - 1);
 
   for (int row = 0; row < rows; ++row)
     {
-      CPlotSpecification *pPS = (*CCopasiRootContainer::getDatamodelList())[0]->getPlotDefinitionList()->createPlotSpec(TO_UTF8(createNewName("plot", COL_NAME_PLOTS)), CPlotItem::plot2d);
+      QString Name = this->createNewName(mNewName, COL_NAME_PLOTS);
+
+      CPlotSpecification *pPS = (*CCopasiRootContainer::getDatamodelList())[0]->getPlotDefinitionList()->createPlotSpec(TO_UTF8(Name), CPlotItem::plot2d);
       emit notifyGUI(ListViews::PLOT, ListViews::ADD, pPS->CCopasiParameter::getKey());
     }
 
   endInsertRows();
 
+  mNewName = "plot";
+
   return true;
 }
 
-bool CQPlotDM::removeRows(int position, int rows, const QModelIndex&)
+bool CQPlotDM::removeRows(int position, int rows)
 {
   if (rows <= 0)
     return true;

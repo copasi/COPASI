@@ -73,8 +73,8 @@ public:
 #endif
 
 protected:
-  bool insertRows(int position, int rows, const QModelIndex &index = QModelIndex());
-  bool removeRows(int position, int rows, const QModelIndex &index = QModelIndex());
+  virtual bool insertRows(int position, int rows, const QModelIndex & source);
+  virtual bool removeRows(int position, int rows);
 
 private:
   void setEquation(const CReaction *pRea, const QModelIndex& index, const QVariant &value);

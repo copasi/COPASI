@@ -269,8 +269,7 @@ bool CQCompartmentDM::setData(const QModelIndex &index, const QVariant &value,
 
   if (defaultRow && data != value)
     {
-      int newRow = rowCount() - 1;
-      mpUndoStack->push(new InsertCompartmentRowsCommand(newRow, 1, this, index, value));
+      mpUndoStack->push(new InsertCompartmentRowsCommand(rowCount(), 1, this, index, value));
     }
   else
     {
@@ -339,7 +338,7 @@ bool CQCompartmentDM::insertRows(int position, int rows, const QModelIndex&)
   return true;
 }
 
-bool CQCompartmentDM::removeRows(int position, int rows, const QModelIndex&)
+bool CQCompartmentDM::removeRows(int position, int rows)
 {
   if (rows <= 0)
     return true;
@@ -459,7 +458,7 @@ bool CQCompartmentDM::compartmentDataChange(const QModelIndex& index, const QVar
   return true;
 }
 
-void CQCompartmentDM::insertNewCompartmentRow(int position, int rows, const QModelIndex& index,
+void CQCompartmentDM::insertNewCompartmentRow(int position, int rows, const QModelIndex & index,
     const QVariant& value)
 {
   GET_MODEL_OR_RETURN(pModel);
@@ -470,8 +469,7 @@ void CQCompartmentDM::insertNewCompartmentRow(int position, int rows, const QMod
 
   for (int row = 0; row < rows; ++row)
     {
-      QString name = index.isValid() && column == COL_NAME_COMPARTMENTS ? value.toString() :
-                     createNewName("compartment", COL_NAME_COMPARTMENTS);
+      QString name = createNewName(index.isValid() && column == COL_NAME_COMPARTMENTS ? value.toString() : "compartment", COL_NAME_COMPARTMENTS);
 
       CCompartment * pComp = pModel->createCompartment(TO_UTF8(name));
 
@@ -493,7 +491,6 @@ void CQCompartmentDM::insertNewCompartmentRow(int position, int rows, const QMod
               pComp->setInitialValue(value.toDouble());
             }
         }
-
     }
 
   endInsertRows();
@@ -568,7 +565,6 @@ bool CQCompartmentDM::removeCompartmentRows(QModelIndexList& rows, const QModelI
 
       if (choice == QMessageBox::Ok)
         removeRow((int) delRow);
-
     }
 
   return true;
@@ -626,9 +622,7 @@ void CQCompartmentDM::deleteCompartmentRows(QList <UndoCompartmentData *>& pData
 
       if (choice == QMessageBox::Ok)
         removeRow((int) index);
-
     }
-
 }
 
 bool CQCompartmentDM::clear()

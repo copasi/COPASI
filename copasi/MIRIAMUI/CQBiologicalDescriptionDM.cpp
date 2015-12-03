@@ -1,17 +1,9 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/CQBiologicalDescriptionDM.cpp,v $
-//   $Revision: 1.9 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/05/02 18:56:24 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
@@ -24,7 +16,7 @@
 #include "MIRIAM/CModelMIRIAMInfo.h"
 
 CQBiologicalDescriptionDM::CQBiologicalDescriptionDM(CMIRIAMInfo* MIRIAMInfo, QObject *parent)
-    : CQBaseDataModel(parent)
+  : CQBaseDataModel(parent)
 
 {
   mpMIRIAMInfo = MIRIAMInfo;
@@ -64,10 +56,13 @@ QVariant CQBiologicalDescriptionDM::data(const QModelIndex &index, int role) con
             {
               case COL_ROW_NUMBER:
                 return QVariant(index.row() + 1);
+
               case COL_RELATIONSHIP:
                 return QVariant(QString(FROM_UTF8(mpMIRIAMInfo->getBiologicalDescriptions()[index.row()]->getPredicate())));
+
               case COL_RESOURCE_BD:
                 return QVariant(QString(FROM_UTF8(mpMIRIAMInfo->getBiologicalDescriptions()[index.row()]->getResource())));
+
               case COL_ID_BD:
                 return QVariant(QString(FROM_UTF8(mpMIRIAMInfo->getBiologicalDescriptions()[index.row()]->getId())));
             }
@@ -89,12 +84,16 @@ QVariant CQBiologicalDescriptionDM::headerData(int section, Qt::Orientation orie
         {
           case COL_ROW_NUMBER:
             return QVariant(QString("#"));
+
           case COL_RELATIONSHIP:
             return QVariant(QString("Relationship"));
+
           case COL_RESOURCE_BD:
             return QVariant(QString("                 Resource                 "));
+
           case COL_ID_BD:
             return QVariant(QString("ID"));
+
           default:
             return QVariant();
         }
@@ -111,7 +110,7 @@ bool CQBiologicalDescriptionDM::setData(const QModelIndex &index, const QVariant
       if (isDefaultRow(index))
         {
           if (index.data() != value)
-            insertRow();
+            insertRow(rowCount(), index);
           else
             return false;
         }
@@ -121,9 +120,11 @@ bool CQBiologicalDescriptionDM::setData(const QModelIndex &index, const QVariant
           case COL_RELATIONSHIP:
             mpMIRIAMInfo->getBiologicalDescriptions()[index.row()]->setPredicate(TO_UTF8(value.toString()));
             break;
+
           case COL_RESOURCE_BD:
             mpMIRIAMInfo->getBiologicalDescriptions()[index.row()]->setResource(TO_UTF8(value.toString()));
             break;
+
           case COL_ID_BD:
             mpMIRIAMInfo->getBiologicalDescriptions()[index.row()]->setId(TO_UTF8(value.toString()));
             break;
@@ -151,7 +152,7 @@ bool CQBiologicalDescriptionDM::insertRows(int position, int rows, const QModelI
   return true;
 }
 
-bool CQBiologicalDescriptionDM::removeRows(int position, int rows, const QModelIndex&)
+bool CQBiologicalDescriptionDM::removeRows(int position, int rows)
 {
   if (rows <= 0)
     return true;

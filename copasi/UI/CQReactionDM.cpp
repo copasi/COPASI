@@ -201,8 +201,7 @@ bool CQReactionDM::setData(const QModelIndex &index, const QVariant &value,
 
   if (defaultRow)
     {
-      int newRow = rowCount() - 1;
-      mpUndoStack->push(new InsertReactionRowsCommand(newRow, 1, this, index, value));
+      mpUndoStack->push(new InsertReactionRowsCommand(rowCount(), 1, this, index, value));
     }
   else
     {
@@ -369,7 +368,7 @@ bool CQReactionDM::insertRows(int position, int rows, const QModelIndex&)
   return true;
 }
 
-bool CQReactionDM::removeRows(int position, int rows, const QModelIndex&)
+bool CQReactionDM::removeRows(int position, int rows)
 {
   if (rows <= 0)
     return true;
@@ -476,7 +475,7 @@ bool CQReactionDM::reactionDataChange(const QModelIndex &index,
   if (defaultRow)
     {
       if (index.data() != value)
-        insertRow();
+        insertRow(rowCount(), index);
       else
         return false;
     }
@@ -517,7 +516,6 @@ bool CQReactionDM::reactionDataChange(const QModelIndex &index,
   emit notifyGUI(ListViews::REACTION, ListViews::CHANGE, pRea->getKey());
   emit notifyGUI(ListViews::REACTION, ListViews::CHANGE, "");
 
-
   return true;
 }
 bool CQReactionDM::updateReactionWithFunctionName(CReaction *pRea, QString &funcName)
@@ -540,7 +538,6 @@ void CQReactionDM::insertNewReactionRow(InsertReactionRowsCommand* command)
   const QModelIndex& index = command->index();
   const QVariant& value = command->value();
 
-
   beginInsertRows(QModelIndex(), position, position + rows - 1);
 
   int column = index.column();
@@ -548,9 +545,7 @@ void CQReactionDM::insertNewReactionRow(InsertReactionRowsCommand* command)
   for (int row = 0; row < rows; ++row)
     {
       mCreatedKeys.clear();
-      QString name = index.isValid() && column == COL_NAME_REACTIONS ?
-                     value.toString()
-                     : createNewName("reaction", COL_NAME_REACTIONS);
+      QString name = createNewName(index.isValid() && column == COL_NAME_REACTIONS ? value.toString() : "reaction", COL_NAME_REACTIONS);
       CReaction *pRea = pModel->createReaction(TO_UTF8(name));
 
       if (pRea == NULL) continue;
@@ -564,7 +559,6 @@ void CQReactionDM::insertNewReactionRow(InsertReactionRowsCommand* command)
         }
 
       command->initializeUndoData(pRea, mCreatedKeys);
-
     }
 
   endInsertRows();
@@ -583,7 +577,6 @@ void CQReactionDM::addReactionRow(CReaction *pReaction)
   endInsertRows();
 }
 
-
 void CQReactionDM::deleteReactionRow(CReaction *pReaction)
 {
   GET_MODEL_OR_RETURN(pModel);
@@ -597,8 +590,6 @@ void CQReactionDM::deleteReactionRow(CReaction *pReaction)
   emit notifyGUI(ListViews::REACTION, ListViews::DELETE, "");//Refresh all as there may be dependencies.
   endRemoveRows();
 }
-
-
 
 bool CQReactionDM::removeReactionRows(QModelIndexList rows, const QModelIndex&)
 {
@@ -641,7 +632,6 @@ bool CQReactionDM::removeReactionRows(QModelIndexList rows, const QModelIndex&)
 
       if (choice == QMessageBox::Ok)
         removeRow((int) delRow);
-
     }
 
   return true;

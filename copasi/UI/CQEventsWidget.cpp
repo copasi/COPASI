@@ -77,7 +77,7 @@ CQEventsWidget::~CQEventsWidget()
 
 void CQEventsWidget::slotBtnNewClicked()
 {
-  mpEventDM->insertRow();
+  mpEventDM->insertRow(mpEventDM->rowCount() - 1, QModelIndex());
   updateDeleteBtns();
 }
 

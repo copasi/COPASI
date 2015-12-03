@@ -1,12 +1,4 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQTableView.h,v $
-//   $Revision: 1.2 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/03/07 19:37:51 $
-// End CVS Header
-
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -22,8 +14,7 @@
 #define COPASI_QTableView
 
 #include <QtGui/QTableView>
-
-class QTimer;
+#include <QModelIndex>
 
 class CQTableView : public QTableView
 {
@@ -32,23 +23,17 @@ class CQTableView : public QTableView
 public:
   CQTableView(QWidget * pParent = NULL);
   virtual ~CQTableView();
-
   virtual void setModel(QAbstractItemModel * model);
 
 protected:
-  virtual void keyPressEvent(QKeyEvent * pEvent);
-
-  virtual void mousePressEvent(QMouseEvent * pEvent);
+  virtual void keyPressEvent(QKeyEvent * pKeyEvent);
 
 protected slots:
-  void slotSingleClick();
-  void slotMoveDown();
+  void slotRowInserted(const QModelIndex & parent, int start, int end);
 
 private:
-  QTimer * mpTimer;
-  QMouseEvent * mpMouseEvent;
-  bool mMoveDown;
-  QAbstractItemModel * mpModel;
+  int mNextRow;
+  int mNextColumn;
 };
 
 #endif // COPASI_QTableView

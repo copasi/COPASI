@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -130,7 +130,7 @@ bool CQEFMReactionDM::insertRows(int /* position */, int /* rows */, const QMode
 }
 
 // virtual
-bool CQEFMReactionDM::removeRows(int /* position */, int /* rows */, const QModelIndex & /* index */)
+bool CQEFMReactionDM::removeRows(int /* position */, int /* rows */)
 {
   return false;
 }

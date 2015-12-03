@@ -1,4 +1,4 @@
-// Copyright (C) 2011 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -110,7 +110,7 @@ bool CQTimeSeriesDM::insertRows(int /* position */, int /* rows */, const QModel
 }
 
 // virtual
-bool CQTimeSeriesDM::removeRows(int /* position */, int /* rows */, const QModelIndex & /* index */)
+bool CQTimeSeriesDM::removeRows(int /* position */, int /* rows */)
 {
   return false;
 }

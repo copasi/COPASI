@@ -21,7 +21,7 @@
 
 CQFunctionDM::CQFunctionDM(QObject *parent)
   : CQBaseDataModel(parent)
-
+  , mNewName("function")
 {
 }
 
@@ -157,7 +157,10 @@ bool CQFunctionDM::setData(const QModelIndex &index, const QVariant &value,
       if (defaultRow)
         {
           if (index.data() != value)
-            insertRow();
+            {
+              mNewName = (index.column() == COL_NAME_FUNCTIONS) ? value.toString() : "function";
+              insertRow(rowCount(), index);
+            }
           else
             return false;
         }
@@ -199,9 +202,6 @@ bool CQFunctionDM::setData(const QModelIndex &index, const QVariant &value,
             }
         }
 
-      if (defaultRow && this->index(index.row(), COL_NAME_FUNCTIONS).data().toString() == "function")
-        pFunc->setObjectName(TO_UTF8(createNewName("function", COL_NAME_FUNCTIONS)));
-
       emit dataChanged(index, index);
       emit notifyGUI(ListViews::FUNCTION, ListViews::CHANGE, pFunc->getKey());
     }
@@ -216,16 +216,20 @@ bool CQFunctionDM::insertRows(int position, int rows, const QModelIndex&)
   for (int row = 0; row < rows; ++row)
     {
       CFunction *pFunc;
-      CCopasiRootContainer::getFunctionList()->add(pFunc = new CKinFunction(TO_UTF8(createNewName("function", COL_NAME_FUNCTIONS))), true);
+      QString Name = createNewName(mNewName, COL_NAME_FUNCTIONS);
+
+      CCopasiRootContainer::getFunctionList()->add(pFunc = new CKinFunction(TO_UTF8(Name)), true);
       emit notifyGUI(ListViews::FUNCTION, ListViews::ADD, pFunc->getKey());
     }
 
   endInsertRows();
 
+  mNewName = "function";
+
   return true;
 }
 
-bool CQFunctionDM::removeRows(int position, int rows, const QModelIndex&)
+bool CQFunctionDM::removeRows(int position, int rows)
 {
   if (rows <= 0)
     return true;

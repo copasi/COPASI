@@ -1,17 +1,9 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQEFMSpeciesDM.h,v $
-//   $Revision: 1.5 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/09/23 18:39:01 $
-// End CVS Header
-
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
@@ -51,8 +43,8 @@ public:
   void setTask(const CEFMTask * pTask);
 
 protected:
-  virtual bool insertRows(int position, int rows, const QModelIndex &index = QModelIndex());
-  virtual bool removeRows(int position, int rows, const QModelIndex &index = QModelIndex());
+  virtual bool insertRows(int position, int rows, const QModelIndex & source);
+  virtual bool removeRows(int position, int rows);
 
 private:
   const CEFMTask * mpTask;

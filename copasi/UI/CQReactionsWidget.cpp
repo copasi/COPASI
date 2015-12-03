@@ -76,7 +76,7 @@ CQReactionsWidget::~CQReactionsWidget()
 
 void CQReactionsWidget::slotBtnNewClicked()
 {
-  mpReactionDM->insertRow();
+  mpReactionDM->insertRow(mpReactionDM->rowCount() - 1, QModelIndex());
   updateDeleteBtns();
 }
 
@@ -286,4 +286,3 @@ void CQReactionsWidget::deleteSelectedReactions()
 
   mpReactionDM->removeRows(mappedSelRows);
 }
-

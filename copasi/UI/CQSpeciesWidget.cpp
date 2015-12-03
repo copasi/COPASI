@@ -87,7 +87,7 @@ CQSpeciesWidget::~CQSpeciesWidget()
 
 void CQSpeciesWidget::slotBtnNewClicked()
 {
-  mpSpecieDM->insertRow();
+  mpSpecieDM->insertRow(mpSpecieDM->rowCount() - 1, QModelIndex());
   updateDeleteBtns();
 }
 

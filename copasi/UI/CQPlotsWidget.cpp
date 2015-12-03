@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -105,7 +105,7 @@ void CQPlotsWidget::slotBtnDeactivateAllClicked()
 
 void CQPlotsWidget::slotBtnNewClicked()
 {
-  mpPlotDM->insertRow();
+  mpPlotDM->insertRow(mpPlotDM->rowCount() - 1, QModelIndex());
   updateDeleteBtns();
 }
 

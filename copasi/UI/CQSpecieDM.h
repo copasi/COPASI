@@ -87,8 +87,8 @@ protected:
 
   bool mNotify;
 
-  bool insertRows(int position, int rows, const QModelIndex &index = QModelIndex());
-  bool removeRows(int position, int rows, const QModelIndex &index = QModelIndex());
+  virtual bool insertRows(int position, int rows, const QModelIndex & source);
+  virtual bool removeRows(int position, int rows);
 };
 
 #endif //CQSpecieDM_H

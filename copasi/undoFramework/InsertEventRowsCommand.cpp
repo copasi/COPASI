@@ -51,7 +51,9 @@ void InsertEventRowsCommand::redo()
       mpEventDM->insertNewEventRow(mPosition, mRows, mIndex, mValue);
       GET_MODEL_OR_RETURN(pModel);
 
-      CEvent *pEvent = pModel->getEvents()[mPosition];
+      int Index = mIndex.isValid() ? mIndex.row() : mPosition;
+
+      CEvent *pEvent = pModel->getEvents()[Index];
       mpEventData = new UndoEventData(pEvent);
     }
   else

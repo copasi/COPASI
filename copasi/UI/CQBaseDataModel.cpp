@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -30,9 +30,9 @@ Qt::ItemFlags CQBaseDataModel::flags(const QModelIndex &index) const
     return QAbstractItemModel::flags(index) | Qt::ItemIsEditable;
 }
 
-bool CQBaseDataModel::insertRow()
+bool CQBaseDataModel::insertRow(int position, const QModelIndex & source)
 {
-  return insertRows(rowCount() - 1, 1);
+  return insertRows(position, 1, source);
 }
 
 bool CQBaseDataModel::removeRow(int position)
@@ -63,16 +63,16 @@ bool CQBaseDataModel::isDefaultRow(const QModelIndex& i) const
 QString CQBaseDataModel::createNewName(const QString name, const int nameCol)
 {
   QString nname = name;
-  unsigned C_INT32 j, jmax = rowCount();
+  unsigned C_INT32 j, jmax = rowCount() - 1;
 
   for (unsigned C_INT32 i = 1;; ++i)
     {
-      nname = name + "_" + QString::number(i);
-
       for (j = 0; j < jmax; ++j)
         if (index(j, nameCol).data() == nname) break;
 
       if (j == jmax) break;
+
+      nname = name + "_" + QString::number(i);
     }
 
   return nname;

@@ -79,7 +79,7 @@ CQGlobalQuantitiesWidget::~CQGlobalQuantitiesWidget()
 
 void CQGlobalQuantitiesWidget::slotBtnNewClicked()
 {
-  mpGlobalQuantityDM->insertRow();
+  mpGlobalQuantityDM->insertRow(mpGlobalQuantityDM->rowCount() - 1, QModelIndex());
   updateDeleteBtns();
 }
 
@@ -268,4 +268,3 @@ void CQGlobalQuantitiesWidget::slotFilterChanged()
   QRegExp regExp(mpLEFilter->text() + "|New Quantity", Qt::CaseInsensitive, QRegExp::RegExp);
   mpProxyModel->setFilterRegExp(regExp);
 }
-

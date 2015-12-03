@@ -270,7 +270,7 @@ void CQLayoutsWidget::slotBtnNewClicked()
   pListOfLayouts->addLayout(pLayout, m);
 
   // update the table
-  mpLayoutsDM->insertRows(pListOfLayouts->size() - 1, 1);
+  mpLayoutsDM->insertRows(mpLayoutsDM->rowCount() - 1, 1, mpLayoutsDM->index(mpLayoutsDM->rowCount() - 1, 0));
   dataChanged(QModelIndex(), QModelIndex());
 
   LayoutWindow *window = createLayoutWindow(pListOfLayouts->size() - 1, pLayout);

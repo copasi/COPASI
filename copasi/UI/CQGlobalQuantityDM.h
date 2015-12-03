@@ -75,8 +75,8 @@ protected:
     * A vector mapping the item index to a model valu type
     */
   std::vector< unsigned C_INT32 > mItemToType;
-  bool insertRows(int position, int rows, const QModelIndex &index = QModelIndex());
-  bool removeRows(int position, int rows, const QModelIndex &index = QModelIndex());
+  virtual bool insertRows(int position, int rows, const QModelIndex & source);
+  virtual bool removeRows(int position, int rows);
 };
 
 #endif //CQGlobalQuantityDM_H

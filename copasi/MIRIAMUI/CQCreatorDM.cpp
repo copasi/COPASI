@@ -113,7 +113,7 @@ bool CQCreatorDM::setData(const QModelIndex &index, const QVariant &value,
       if (isDefaultRow(index))
         {
           if (index.data() != value)
-            insertRow();
+            insertRow(rowCount(), index);
           else
             return false;
         }
@@ -160,7 +160,7 @@ bool CQCreatorDM::insertRows(int position, int rows, const QModelIndex&)
   return true;
 }
 
-bool CQCreatorDM::removeRows(int position, int rows, const QModelIndex&)
+bool CQCreatorDM::removeRows(int position, int rows)
 {
   if (rows <= 0)
     return true;

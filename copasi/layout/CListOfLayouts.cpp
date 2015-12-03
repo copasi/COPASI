@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -56,7 +56,7 @@
 
 CListOfLayouts::CListOfLayouts(const std::string & name,
                                const CCopasiContainer * pParent):
-  CCopasiVector<CLayout>(name, pParent),
+  CCopasiVectorN< CLayout >(name, pParent),
   mKey(CCopasiRootContainer::getKeyFactory()->add("Layout", this))
   , mvGlobalRenderInformationObjects("ListOfGlobalRenderInformationObjects", this)
 {}

@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -31,7 +31,7 @@ public:
   virtual Qt::ItemFlags flags(const QModelIndex &index) const;
   virtual bool setData(const QModelIndex &index, const QVariant &value,
                        int role = Qt::EditRole) = 0;
-  bool insertRow();
+  bool insertRow(int position, const QModelIndex & source);
   bool removeRow(int position);
   virtual bool clear();
   virtual bool isDefaultRow(const QModelIndex& i) const;
@@ -43,8 +43,8 @@ public:
 #endif
 
 protected:
-  virtual bool insertRows(int position, int rows, const QModelIndex &index = QModelIndex()) = 0;
-  virtual bool removeRows(int position, int rows, const QModelIndex &index = QModelIndex()) = 0;
+  virtual bool insertRows(int position, int rows, const QModelIndex & source) = 0;
+  virtual bool removeRows(int position, int rows) = 0;
 
 #ifdef COPASI_UNDO
   QUndoStack *mpUndoStack;

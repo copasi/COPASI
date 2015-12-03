@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -26,7 +26,7 @@ class ListOf;
  * this class stores a list of layouts. It should also keep the maps
  * that translate from sbml IDs to COPASI keys
  */
-class CListOfLayouts : public CCopasiVector<CLayout>
+class CListOfLayouts : public CCopasiVectorN< CLayout >
 {
 private:
   std::string mKey;

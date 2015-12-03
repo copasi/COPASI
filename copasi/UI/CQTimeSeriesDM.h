@@ -1,12 +1,4 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQTimeSeriesDM.h,v $
-//   $Revision: 1.1 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/09/23 18:39:00 $
-// End CVS Header
-
-// Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -44,9 +36,8 @@ public:
   void setFramework(int framework);
 
 protected:
-  virtual bool insertRows(int position, int rows, const QModelIndex &index = QModelIndex());
-  virtual bool removeRows(int position, int rows, const QModelIndex &index = QModelIndex());
-
+  virtual bool insertRows(int position, int rows, const QModelIndex & source);
+  virtual bool removeRows(int position, int rows);
 
 private:
   const CTimeSeries * mpTimeSeries;

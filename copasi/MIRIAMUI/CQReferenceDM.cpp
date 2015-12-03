@@ -1,17 +1,9 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/CQReferenceDM.cpp,v $
-//   $Revision: 1.12 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/05/02 18:56:24 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
@@ -23,7 +15,7 @@
 #include "MIRIAM/CModelMIRIAMInfo.h"
 
 CQReferenceDM::CQReferenceDM(CMIRIAMInfo* MIRIAMInfo, QObject *parent)
-    : CQBaseDataModel(parent)
+  : CQBaseDataModel(parent)
 
 {
   mpMIRIAMInfo = MIRIAMInfo;
@@ -63,10 +55,13 @@ QVariant CQReferenceDM::data(const QModelIndex &index, int role) const
             {
               case COL_ROW_NUMBER:
                 return QVariant(index.row() + 1);
+
               case COL_RESOURCE_REFERENCE:
                 return QVariant(QString(FROM_UTF8(mpMIRIAMInfo->getReferences()[index.row()]->getResource())));
+
               case COL_ID_REFERENCE:
                 return QVariant(QString(FROM_UTF8(mpMIRIAMInfo->getReferences()[index.row()]->getId())));
+
               case COL_DESCRIPTION:
                 return QVariant(QString(FROM_UTF8(mpMIRIAMInfo->getReferences()[index.row()]->getDescription())));
             }
@@ -88,12 +83,16 @@ QVariant CQReferenceDM::headerData(int section, Qt::Orientation orientation,
         {
           case COL_ROW_NUMBER:
             return QVariant(QString("#"));
+
           case COL_RESOURCE_REFERENCE:
             return QVariant(QString("  Resource  "));
+
           case COL_ID_REFERENCE:
             return QVariant(QString("ID   "));
+
           case COL_DESCRIPTION:
             return QVariant(QString("Description"));
+
           default:
             return QVariant();
         }
@@ -110,7 +109,7 @@ bool CQReferenceDM::setData(const QModelIndex &index, const QVariant &value,
       if (isDefaultRow(index))
         {
           if (index.data() != value)
-            insertRow();
+            insertRow(rowCount(), index);
           else
             return false;
         }
@@ -120,9 +119,11 @@ bool CQReferenceDM::setData(const QModelIndex &index, const QVariant &value,
           case COL_RESOURCE_REFERENCE:
             mpMIRIAMInfo->getReferences()[index.row()]->setResource(TO_UTF8(value.toString()));
             break;
+
           case COL_ID_REFERENCE:
             mpMIRIAMInfo->getReferences()[index.row()]->setId(TO_UTF8(value.toString()));
             break;
+
           case COL_DESCRIPTION:
             mpMIRIAMInfo->getReferences()[index.row()]->setDescription(TO_UTF8(value.toString()));
             break;
@@ -151,7 +152,7 @@ bool CQReferenceDM::insertRows(int position, int rows, const QModelIndex&)
   return true;
 }
 
-bool CQReferenceDM::removeRows(int position, int rows, const QModelIndex&)
+bool CQReferenceDM::removeRows(int position, int rows)
 {
   if (rows <= 0)
     return true;

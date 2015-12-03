@@ -38,7 +38,6 @@ InsertCompartmentRowsCommand::InsertCompartmentRowsCommand(
   setText(QObject::tr(": Inserted new compartment"));
 }
 
-
 InsertCompartmentRowsCommand::InsertCompartmentRowsCommand(
   int position,
   int rows,
@@ -64,7 +63,9 @@ void InsertCompartmentRowsCommand::redo()
 
       mpCompartmentDM->insertNewCompartmentRow(mPosition, mRows, mIndex, mValue);
 
-      CCompartment *pCompartment = pModel->getCompartments()[mPosition];
+      int Index = mIndex.isValid() ? mIndex.row() : mPosition;
+
+      CCompartment *pCompartment = pModel->getCompartments()[Index];
       mpCompartmentData = new UndoCompartmentData(pCompartment);
     }
   else

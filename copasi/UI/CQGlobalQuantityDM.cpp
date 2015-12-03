@@ -47,14 +47,12 @@ CQGlobalQuantityDM::CQGlobalQuantityDM(QObject *parent)
   mItemToType.push_back(CModelEntity::ODE);
 }
 
-const QString&
-CQGlobalQuantityDM::indexToStatus(int index) const
+const QString & CQGlobalQuantityDM::indexToStatus(int index) const
 {
   return mTypes[index];
 }
 
-int
-CQGlobalQuantityDM::statusToIndex(const QString& status) const
+int CQGlobalQuantityDM::statusToIndex(const QString& status) const
 {
   return mTypes.indexOf(status);
 }
@@ -245,8 +243,7 @@ bool CQGlobalQuantityDM::setData(const QModelIndex &index, const QVariant &value
 
   if (defaultRow)
     {
-      int newRow = rowCount() - 1;
-      mpUndoStack->push(new InsertGlobalQuantityRowsCommand(newRow, 1, this, index, value));
+      mpUndoStack->push(new InsertGlobalQuantityRowsCommand(rowCount(), 1, this, index, value));
     }
   else
     {
@@ -316,7 +313,7 @@ bool CQGlobalQuantityDM::insertRows(int position, int rows, const QModelIndex&)
   return true;
 }
 
-bool CQGlobalQuantityDM::removeRows(int position, int rows, const QModelIndex&)
+bool CQGlobalQuantityDM::removeRows(int position, int rows)
 {
   if (rows <= 0)
     return true;
@@ -418,12 +415,12 @@ bool CQGlobalQuantityDM::globalQuantityDataChange(const QModelIndex &index, cons
       if (index.column() == COL_TYPE_GQ)
         {
           if (index.data().toString() != QString(FROM_UTF8(CModelEntity::StatusName[mItemToType[value.toInt()]])))
-            insertRow();
+            insertRow(rowCount(), index);
           else
             return false;
         }
       else if (index.data() != value)
-        insertRow();
+        insertRow(rowCount(), index);
       else
         return false;
     }
@@ -460,11 +457,9 @@ void CQGlobalQuantityDM::insertNewGlobalQuantityRow(int position, int rows, cons
 
   for (int row = 0; row < rows; ++row)
     {
-      QString name = index.isValid() && column == COL_NAME_GQ ? value.toString()
-                     : createNewName("quantity", COL_NAME_GQ);
+      QString name = createNewName(index.isValid() && column == COL_NAME_GQ ? value.toString() : "quantity", COL_NAME_GQ);
 
-      double initial = index.isValid() && column == COL_INITIAL_GQ ? value.toDouble()
-                       : 0.0;
+      double initial = index.isValid() && column == COL_INITIAL_GQ ? value.toDouble() : 0.0;
 
       CModelValue *pGQ = pModel->createModelValue(TO_UTF8(name), initial);
 
@@ -542,7 +537,6 @@ bool CQGlobalQuantityDM::removeGlobalQuantityRows(QModelIndexList rows, const QM
       if (delRow == C_INVALID_INDEX)
         continue;
 
-
       QMessageBox::StandardButton choice =
         CQMessageBox::confirmDelete(NULL, "quantity",
                                     FROM_UTF8(pGQ->getObjectName()),
@@ -550,9 +544,7 @@ bool CQGlobalQuantityDM::removeGlobalQuantityRows(QModelIndexList rows, const QM
 
       if (choice == QMessageBox::Ok)
         removeRow((int) delRow);
-
     }
-
 
   return true;
 }
@@ -578,9 +570,7 @@ bool CQGlobalQuantityDM::insertGlobalQuantityRows(QList <UndoGlobalQuantityData 
         emit notifyGUI(ListViews::MODELVALUE, ListViews::ADD, pGlobalQuantity->getKey());
 
       endInsertRows();
-
     }
-
 
   switchToWidget(CCopasiUndoCommand::GLOBALQUANTITYIES);
 
@@ -601,7 +591,6 @@ void CQGlobalQuantityDM::deleteGlobalQuantityRows(QList <UndoGlobalQuantityData 
       size_t index = pModel->getModelValues().getIndex(data->getName());
       removeRow((int) index);
     }
-
 }
 
 bool CQGlobalQuantityDM::clear()

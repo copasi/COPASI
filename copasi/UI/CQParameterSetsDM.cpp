@@ -1,4 +1,4 @@
-// Copyright (C) 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2013 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -163,7 +163,7 @@ bool CQParameterSetsDM::insertRows(int position, int rows, const QModelIndex&)
   return true;
 }
 
-bool CQParameterSetsDM::removeRows(int position, int rows, const QModelIndex&)
+bool CQParameterSetsDM::removeRows(int position, int rows)
 {
   if (rows <= 0) return true;
 

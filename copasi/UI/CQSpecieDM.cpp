@@ -369,8 +369,7 @@ bool CQSpecieDM::setData(const QModelIndex &index, const QVariant &value,
 
   if (defaultRow)
     {
-      int newRow = rowCount() - 1;
-      mpUndoStack->push(new InsertSpecieRowsCommand(newRow, 1, this, index, value));
+      mpUndoStack->push(new InsertSpecieRowsCommand(rowCount(), 1, this, index, value));
     }
   else
     {
@@ -554,7 +553,7 @@ bool CQSpecieDM::insertRows(int position, int rows, const QModelIndex&)
   return true;
 }
 
-bool CQSpecieDM::removeRows(int position, int rows, const QModelIndex&)
+bool CQSpecieDM::removeRows(int position, int rows)
 {
   if (rows <= 0)
     return true;
@@ -674,7 +673,7 @@ bool CQSpecieDM::specieDataChange(const QModelIndex &index, const QVariant &valu
 
       mNotify = false;
 
-      insertRow();
+      insertRow(rowCount(), index);
       mNotify = true;
     }
   else
@@ -814,14 +813,11 @@ QList <UndoSpeciesData *> CQSpecieDM::insertNewSpecieRow(int position, int rows,
 
   for (int row = 0; row < rows; ++row)
     {
-      QString name = index.isValid() && column == COL_NAME_SPECIES ? value.toString() :
-                     createNewName("species", COL_NAME_SPECIES);
+      QString name = createNewName(index.isValid() && column == COL_NAME_SPECIES ? value.toString() : "species", COL_NAME_SPECIES);
 
-      QString compartment = index.isValid() && column == COL_COMPARTMENT ? value.toString() :
-                            "";
+      QString compartment = index.isValid() && column == COL_COMPARTMENT ? value.toString() : "";
 
-      double initial = index.isValid() && column == COL_ICONCENTRATION ? value.toDouble() :
-                       1.0;
+      double initial = index.isValid() && column == COL_ICONCENTRATION ? value.toDouble() : 1.0;
 
       CModelEntity::Status status = index.isValid() && column == COL_TYPE_SPECIES ?
                                     (CModelEntity::Status) mItemToType[value.toInt()] : CModelEntity::REACTIONS;
@@ -831,7 +827,6 @@ QList <UndoSpeciesData *> CQSpecieDM::insertNewSpecieRow(int position, int rows,
 
       if (mpSpecies == NULL)
         continue;
-
 
       if (mNotify)
         {
@@ -872,7 +867,6 @@ void CQSpecieDM::deleteSpecieRow(UndoSpeciesData *pSpecieData)
   std::string key = pComp->getKey();
   pModel->removeCompartment(index);
   emit notifyGUI(ListViews::COMPARTMENT, ListViews::DELETE, key);
-
 }
 
 void CQSpecieDM::addSpecieRow(UndoSpeciesData *pSpecieData)
@@ -930,7 +924,6 @@ bool CQSpecieDM::removeSpecieRows(QModelIndexList rows, const QModelIndex&)
 
       if (choice == QMessageBox::Ok)
         removeRow((int) delRow);
-
     }
 
   return true;
@@ -954,9 +947,7 @@ bool CQSpecieDM::insertSpecieRows(QList <UndoSpeciesData *>& pData)
       beginInsertRows(QModelIndex(), 1, 1);
       emit notifyGUI(ListViews::METABOLITE, ListViews::ADD, pSpecies->getKey());
       endInsertRows();
-
     }
-
 
   switchToWidget(CCopasiUndoCommand::SPECIES);
 

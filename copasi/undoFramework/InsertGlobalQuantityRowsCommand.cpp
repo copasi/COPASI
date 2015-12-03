@@ -33,7 +33,6 @@ InsertGlobalQuantityRowsCommand::InsertGlobalQuantityRowsCommand(int position, i
   setText(QObject::tr(": Inserted new global quantity"));
 }
 
-
 InsertGlobalQuantityRowsCommand::InsertGlobalQuantityRowsCommand(int position, int rows, CQGlobalQuantityDM *pGlobalQuantityDM, const QModelIndex& index, const QVariant& value)
   : CCopasiUndoCommand("Global Quantity", GLOBALQUANTITY_INSERT)
   , mpGlobalQuantityDM(pGlobalQuantityDM)
@@ -53,7 +52,8 @@ void InsertGlobalQuantityRowsCommand::redo()
       mpGlobalQuantityDM->insertNewGlobalQuantityRow(mPosition, mRows, mIndex, mValue);
       GET_MODEL_OR_RETURN(pModel);
 
-      CModelValue *pGlobalQuantity = pModel->getModelValues()[mPosition];
+      int Index = mIndex.isValid() ? mIndex.row() : mPosition;
+      CModelValue *pGlobalQuantity = pModel->getModelValues()[Index];
       mpGlobalQuantityData = new UndoGlobalQuantityData(pGlobalQuantity);
     }
   else

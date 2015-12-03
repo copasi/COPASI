@@ -1,17 +1,9 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/CQModifiedDM.cpp,v $
-//   $Revision: 1.12 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/05/02 18:56:24 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
@@ -26,7 +18,7 @@
 #include "MIRIAM/CModelMIRIAMInfo.h"
 
 CQModifiedDM::CQModifiedDM(CMIRIAMInfo* MIRIAMInfo, QObject *parent)
-    : CQBaseDataModel(parent)
+  : CQBaseDataModel(parent)
 
 {
   mpMIRIAMInfo = MIRIAMInfo;
@@ -71,6 +63,7 @@ QVariant CQModifiedDM::data(const QModelIndex &index, int role) const
             {
               case COL_ROW_NUMBER:
                 return QVariant(index.row() + 1);
+
               case COL_DATE_MODIFIED:
                 QDateTime dt(QDateTime::fromString(FROM_UTF8(mpMIRIAMInfo->getModifications()[index.row()]->getDate()), Qt::ISODate));
 
@@ -95,8 +88,10 @@ QVariant CQModifiedDM::headerData(int section, Qt::Orientation orientation,
         {
           case COL_ROW_NUMBER:
             return QVariant(QString("#"));
+
           case COL_DATE_MODIFIED:
             return QVariant(QString("Date and Time Modified"));
+
           default:
             return QVariant();
         }
@@ -113,7 +108,7 @@ bool CQModifiedDM::setData(const QModelIndex &index, const QVariant &value,
       if (isDefaultRow(index))
         {
           if (index.data() != value)
-            insertRow();
+            insertRow(rowCount(), index);
           else
             return false;
         }
@@ -149,7 +144,7 @@ bool CQModifiedDM::insertRows(int position, int rows, const QModelIndex&)
   return true;
 }
 
-bool CQModifiedDM::removeRows(int position, int rows, const QModelIndex&)
+bool CQModifiedDM::removeRows(int position, int rows)
 {
   if (rows <= 0)
     return true;

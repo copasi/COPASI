@@ -4,24 +4,19 @@
 // All rights reserved.
 
 #include "CQTableView.h"
+#include "qtUtilities.h"
 
-#include <QtGui/QKeyEvent>
-#include <QtCore/QTimer>
+#include <QKeyEvent>
+#include <QFocusEvent>
 
 #include <iostream>
 
 CQTableView::CQTableView(QWidget * pParent):
   QTableView(pParent),
-  mpTimer(NULL),
-  mpMouseEvent(NULL),
-  mMoveDown(false),
-  mpModel(NULL)
+  mNextRow(-1),
+  mNextColumn(-1)
 {
-  mpTimer = new QTimer(this);
-  mpTimer->setSingleShot(true);
-  mpTimer->setInterval(250);
-
-  connect(mpTimer, SIGNAL(timeout()), this, SLOT(slotSingleClick()));
+  // setEditTriggers(QAbstractItemView::AllEditTriggers);
 }
 
 // virtual
@@ -29,75 +24,63 @@ CQTableView::~CQTableView()
 {}
 
 // virtual
-void CQTableView::setModel(QAbstractItemModel * model)
+void CQTableView::setModel(QAbstractItemModel * pModel)
 {
-  if (mpModel != NULL)
-    disconnect(mpModel, SIGNAL(dataChanged(const QModelIndex &, const QModelIndex)),
-               this, SLOT(slotMoveDown()));
+  if (model() != NULL)
+    {
+      disconnect(model(), SIGNAL(rowsInserted(const QModelIndex &, int, int)), this, SLOT(slotRowInserted(const QModelIndex &, int, int)));
+    }
 
-  mpModel = model;
+  QTableView::setModel(pModel);
 
-  if (mpModel != NULL)
-    connect(mpModel, SIGNAL(dataChanged(const QModelIndex &, const QModelIndex)),
-            this, SLOT(slotMoveDown()));
-
-  QTableView::setModel(model);
+  if (model() != NULL)
+    {
+      connect(model(), SIGNAL(rowsInserted(const QModelIndex &, int, int)), this, SLOT(slotRowInserted(const QModelIndex &, int, int)));
+    }
 }
 
 // virtual
-void CQTableView::keyPressEvent(QKeyEvent * pEvent)
+void CQTableView::keyPressEvent(QKeyEvent * pKeyEvent)
 {
-  QTableView::keyPressEvent(pEvent);
-
-  switch (pEvent->key())
+  switch (pKeyEvent->key())
     {
       case Qt::Key_Return:
       case Qt::Key_Enter:
-        mMoveDown = true;
-        break;
+      {
+        mNextRow = currentIndex().row() + 1;
+        mNextColumn = currentIndex().column();
+
+        QModelIndex Index = model()->index(mNextRow, mNextColumn, currentIndex().parent());
+
+        if (Index.isValid())
+          {
+            setCurrentIndex(Index);
+            pKeyEvent->accept();
+
+            mNextRow = -1;
+            mNextColumn = -1;
+          }
+      }
+      break;
 
       default:
-        mMoveDown = false;
+        QTableView::keyPressEvent(pKeyEvent);
         break;
     }
+
+  return;
 }
 
-// virtual
-void CQTableView::mousePressEvent(QMouseEvent * pEvent)
+void CQTableView::slotRowInserted(const QModelIndex & parent, int start, int end)
 {
-  if (mpMouseEvent != NULL)
+  QModelIndex Index = model()->index(mNextRow, mNextColumn);
+
+  if (Index.isValid())
     {
-      delete mpMouseEvent;
-      mpMouseEvent = NULL;
+      setCurrentIndex(Index);
+      emit activated(Index);
     }
 
-  if (mpTimer->isActive())
-    {
-      QTableView::mousePressEvent(pEvent);
-      emit doubleClicked(currentIndex());
-
-      return;
-    }
-
-  mpMouseEvent = new QMouseEvent(*pEvent);
-  pEvent->accept();
-  mpTimer->start();
-}
-
-void CQTableView::slotSingleClick()
-{
-  if (mpMouseEvent != NULL)
-    {
-      QTableView::mousePressEvent(mpMouseEvent);
-      mpMouseEvent = NULL;
-    }
-}
-
-void CQTableView::slotMoveDown()
-{
-  if (mMoveDown)
-    {
-      QKeyEvent Down(QEvent::KeyPress, Qt::Key_Down, Qt::NoModifier);
-      QTableView::keyPressEvent(&Down);
-    }
+  mNextRow = -1;
+  mNextColumn = -1;
 }

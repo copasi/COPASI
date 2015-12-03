@@ -78,7 +78,7 @@ CQCompartmentsWidget::~CQCompartmentsWidget()
 
 void CQCompartmentsWidget::slotBtnNewClicked()
 {
-  mpCompartmentDM->insertRow();
+  mpCompartmentDM->insertRow(mpCompartmentDM->rowCount() - 1, QModelIndex());
   updateDeleteBtns();
 }
 
@@ -266,4 +266,3 @@ void CQCompartmentsWidget::slotFilterChanged()
   QRegExp regExp(mpLEFilter->text() + "|New Compartment", Qt::CaseInsensitive, QRegExp::RegExp);
   mpProxyModel->setFilterRegExp(regExp);
 }
-

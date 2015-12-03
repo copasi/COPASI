@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -22,7 +22,7 @@
 
 CQReportDM::CQReportDM(QObject *parent)
   : CQBaseDataModel(parent)
-
+  , mNewName("report")
 {
 }
 
@@ -65,8 +65,10 @@ QVariant CQReportDM::data(const QModelIndex &index, int role) const
             {
               case COL_ROW_NUMBER:
                 return QVariant(QString(""));
+
               case COL_NAME_REPORTS:
                 return QVariant(QString("New Report"));
+
               default:
                 return QVariant(QString(""));
             }
@@ -101,8 +103,10 @@ QVariant CQReportDM::headerData(int section, Qt::Orientation orientation,
         {
           case COL_ROW_NUMBER:
             return QVariant(QString("#"));
+
           case COL_NAME_REPORTS:
             return QVariant(QString("Name"));
+
           default:
             return QVariant();
         }
@@ -121,7 +125,10 @@ bool CQReportDM::setData(const QModelIndex &index, const QVariant &value,
       if (defaultRow)
         {
           if (index.data() != value)
-            insertRow();
+            {
+              mNewName = (index.column() == COL_NAME_REPORTS) ? value.toString() : "report";
+              insertRow(rowCount(), index);
+            }
           else
             return false;
         }
@@ -131,9 +138,6 @@ bool CQReportDM::setData(const QModelIndex &index, const QVariant &value,
       if (index.column() == COL_NAME_REPORTS)
         pRepDef->setObjectName(TO_UTF8(value.toString()));
 
-      if (defaultRow && this->index(index.row(), COL_NAME_REPORTS).data().toString() == "report")
-        pRepDef->setObjectName(TO_UTF8(createNewName("report", COL_NAME_REPORTS)));
-
       emit dataChanged(index, index);
       emit notifyGUI(ListViews::REPORT, ListViews::CHANGE, pRepDef->getKey());
     }
@@ -141,23 +145,25 @@ bool CQReportDM::setData(const QModelIndex &index, const QVariant &value,
   return true;
 }
 
-bool CQReportDM::insertRows(int position, int rows, const QModelIndex&)
+bool CQReportDM::insertRows(int position, int rows, const QModelIndex & source)
 {
   beginInsertRows(QModelIndex(), position, position + rows - 1);
 
   for (int row = 0; row < rows; ++row)
     {
-      CReportDefinition *pRepDef =
-        (*CCopasiRootContainer::getDatamodelList())[0]->getReportDefinitionList()->createReportDefinition(TO_UTF8(createNewName("report", COL_NAME_REPORTS)), "");
+      QString Name = createNewName(mNewName, COL_NAME_REPORTS);
+      CReportDefinition *pRepDef = (*CCopasiRootContainer::getDatamodelList())[0]->getReportDefinitionList()->createReportDefinition(TO_UTF8(Name), "");
       emit notifyGUI(ListViews::REPORT, ListViews::ADD, pRepDef->getKey());
     }
 
   endInsertRows();
 
+  mNewName = "report";
+
   return true;
 }
 
-bool CQReportDM::removeRows(int position, int rows, const QModelIndex&)
+bool CQReportDM::removeRows(int position, int rows)
 {
   if (rows <= 0)
     return true;
