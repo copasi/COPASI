@@ -277,7 +277,7 @@ void CQUnitDetail::init()
 //  mInitialExpressionValid = false;
 //  mpInitialExpressionEMW->mpExpressionWidget->setExpressionType(CQExpressionWidget::InitialExpression);
 
-  mpEditDefinition->setValidator(new CQValidatorUnit(mpEditDefinition));
+  mpEditExpression->setValidator(new CQValidatorUnit(mpEditExpression));
 }
 
 void CQUnitDetail::destroy()
@@ -381,10 +381,10 @@ void CQUnitDetail::load()
 {
   if (mpUnit == NULL) return;
 
-  // Definition
-  mpEditDefinition->setText(FROM_UTF8(mpUnit->getInfix()));
+  // Expression
+  mpEditExpression->setText(FROM_UTF8(mpUnit->getExpression()));
 
-  // Definition
+  // Symbol
   mpEditSymbol->setText(FROM_UTF8(mpUnit->getSymbol()));
 
 //  // Expression
@@ -472,9 +472,9 @@ void CQUnitDetail::save()
       mChanged = true;
     }
 
-  if (mpUnit->getInfix() != TO_UTF8(mpEditDefinition->text()))
+  if (mpUnit->getExpression() != TO_UTF8(mpEditExpression->text()))
     {
-      mpUnit->setInfix(TO_UTF8(mpEditDefinition->text()), CUnit::Avogadro);
+      mpUnit->setExpression(TO_UTF8(mpEditExpression->text()), CUnit::Avogadro);
       mChanged = true;
     }
 

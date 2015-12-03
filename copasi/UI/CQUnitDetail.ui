@@ -22,7 +22,7 @@
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="0" column="1" colspan="2">
-    <widget class="QLineEdit" name="mpEditDefinition">
+    <widget class="QLineEdit" name="mpEditExpression">
      <property name="sizePolicy">
       <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
        <horstretch>0</horstretch>
@@ -75,7 +75,7 @@
       </sizepolicy>
      </property>
      <property name="text">
-      <string>Definition</string>
+      <string>Expression</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignRight|Qt::AlignTop|Qt::AlignTrailing</set>

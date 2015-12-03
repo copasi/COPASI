@@ -3097,7 +3097,7 @@ void CCopasiXMLParser::ModelValueElement::end(const XML_Char *pszName)
         {
           size_t Size = CCopasiMessage::size();
 
-          mpMV->setUnitDefinition(mCommon.CharacterData);
+          mpMV->setUnitExpression(mCommon.CharacterData);
 
           // Remove error messages created by setExpression as this may fail
           // due to incomplete model specification at this time.

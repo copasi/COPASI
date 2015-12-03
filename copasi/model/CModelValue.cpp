@@ -371,7 +371,7 @@ std::string CModelEntity::getInitialExpression() const
 }
 
 // virtual
-bool CModelEntity::setUnitDefinition(const std::string & unitDefinition)
+bool CModelEntity::setUnitExpression(const std::string & unitExpression)
 {
   return false;
 }
@@ -664,7 +664,7 @@ void CModelValue::initObjects()
 {}
 
 // virtual
-bool CModelValue::setUnitDefinition(const std::string & unitDefinition)
+bool CModelValue::setUnitExpression(const std::string & unitExpression)
 {
   if (mpUnit == NULL)
     {
@@ -680,7 +680,7 @@ bool CModelValue::setUnitDefinition(const std::string & unitDefinition)
       Avogadro = pModel->getAvogadro();
     }
 
-  return mpUnit->setInfix(unitDefinition, Avogadro);
+  return mpUnit->setExpression(unitExpression, Avogadro);
 }
 
 // virtual

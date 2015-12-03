@@ -566,10 +566,10 @@ bool CCopasiXML::saveModel()
               endSaveElement("InitialExpression");
             }
 
-          if (pMV->getUnit().getInfix() != "")
+          if (pMV->getUnit().getExpression() != "")
             {
               startSaveElement("Unit");
-              saveData(pMV->getUnit().getInfix());
+              saveData(pMV->getUnit().getExpression());
               endSaveElement("Unit");
             }
 

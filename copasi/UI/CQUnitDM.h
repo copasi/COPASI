@@ -12,7 +12,7 @@
 
 #define COL_NAME_UNITS         1
 #define COL_SYMBOL_UNITS       2
-#define COL_DEFINITION_UNITS   3
+#define COL_EXPRESSION_UNITS   3
 #define TOTAL_COLS_UNITS       4
 
 class CQUnitDM : public CQBaseDataModel

@@ -139,7 +139,7 @@ QVariant CQGlobalQuantityDM::data(const QModelIndex &index, int role) const
                 return QVariant(QString(FROM_UTF8(pGQ->getObjectName())));
 
               case COL_UNIT_GQ:
-                return QVariant(QString(FROM_UTF8(pGQ->getUnit().getInfix())));
+                return QVariant(QString(FROM_UTF8(pGQ->getUnit().getExpression())));
 
               case COL_TYPE_GQ:
                 return QVariant(QString(FROM_UTF8(CModelEntity::StatusName[pGQ->getStatus()])));

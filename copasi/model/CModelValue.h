@@ -279,7 +279,7 @@ public:
    * @param const CUnit & unit
    * @return bool success
    */
-  virtual bool setUnitDefinition(const std::string & unitDefinition);
+  virtual bool setUnitExpression(const std::string & unitExpression);
 
   /**
    * Set the unit.
@@ -460,7 +460,7 @@ public:
    * @param const CUnit & unit
    * @return bool success
    */
-  virtual bool setUnitDefinition(const std::string & unitDefinition);
+  virtual bool setUnitExpression(const std::string & unitExpression);
 
   /**
    * Set the unit.

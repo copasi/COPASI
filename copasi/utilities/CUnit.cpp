@@ -23,12 +23,12 @@ CUnit CUnit::EmptyUnit("empty_unit");
 // static
 C_FLOAT64 CUnit::Avogadro(6.02214129e23); // http://physics.nist.gov/cgi-bin/cuu/Value?na (Wed Jan 29 18:33:36 EST 2014)
 
-// SI Name, Symbol, Definition
+// SI Name, Symbol, Expression
 struct SIUnit
 {
   const char * name;
   const char * symbol;
-  const char * infix;
+  const char * expression;
 };
 
 SIUnit SIUnits[] =
@@ -80,7 +80,7 @@ CUnit CUnit::getSIUnit(const std::string & si,
 
   if (strcmp(pSIUnit->symbol, "mol"))
     {
-      buffer << pSIUnit->infix;
+      buffer << pSIUnit->expression;
     }
   else
     {
@@ -91,7 +91,7 @@ CUnit CUnit::getSIUnit(const std::string & si,
 
   SIunit.setObjectName(pSIUnit->name);
   SIunit.setSymbol(pSIUnit->symbol);
-  SIunit.setInfix(buffer.str(), avogadro);
+  SIunit.setExpression(buffer.str(), avogadro);
 
   return SIunit;
 }
@@ -124,14 +124,14 @@ void CUnit::updateSIUnits(CCopasiVectorN< CUnit > & Units,
 
       if (strcmp(pSIUnit->symbol, "mol"))
         {
-          buffer << pSIUnit->infix;
+          buffer << pSIUnit->expression;
         }
       else
         {
           buffer << CCopasiXMLInterface::DBL(avogadro) << "*#";
         }
 
-      pUnit->setInfix(buffer.str(), avogadro);
+      pUnit->setExpression(buffer.str(), avogadro);
 
       pSIUnit++;
     }
@@ -163,7 +163,7 @@ CUnit::CUnit(const std::string & name,
              const CCopasiContainer * pParent):
   CCopasiContainer(name, pParent, "Unit"),
   mSymbol("none"),
-  mInfix(),
+  mExpression(),
   mComponents(),
   mUsedSymbols()
 {
@@ -174,7 +174,7 @@ CUnit::CUnit(const CBaseUnit::Kind & kind,
              const CCopasiContainer * pParent):
   CCopasiContainer(CBaseUnit::Name[kind], pParent, "Unit"),
   mSymbol(CBaseUnit::getSymbol(kind)),
-  mInfix(CBaseUnit::getSymbol(kind)),
+  mExpression(CBaseUnit::getSymbol(kind)),
   mComponents(),
   mUsedSymbols()
 {
@@ -188,12 +188,12 @@ CUnit::CUnit(const CUnit & src,
              const CCopasiContainer * pParent):
   CCopasiContainer(src, pParent),
   mSymbol(src.mSymbol),
-  mInfix(),
+  mExpression(),
   mComponents(),
   mUsedSymbols()
 {
   setup();
-  setInfix(src.mInfix, avogadro);
+  setExpression(src.mExpression, avogadro);
 }
 
 CUnit::~CUnit()
@@ -487,18 +487,18 @@ std::string CUnit::getSymbol() const
   return mSymbol;
 }
 
-bool CUnit::setInfix(const std::string & definition,
+bool CUnit::setExpression(const std::string & expression,
                           const C_FLOAT64 & avogadro)
 {
-  mInfix = definition;
+  mExpression = expression;
 
   return compile(avogadro);
 }
 
 bool CUnit::compile(const C_FLOAT64 & avogadro)
 {
-  // parse the definition into a linked node tree
-  std::istringstream buffer(mInfix);
+  // parse the expression into a linked node tree
+  std::istringstream buffer(mExpression);
   CUnitParser Parser(&buffer);
   Parser.setAvogadro(avogadro);
 
@@ -513,9 +513,9 @@ bool CUnit::compile(const C_FLOAT64 & avogadro)
   return success;
 }
 
-std::string CUnit::getInfix() const
+std::string CUnit::getExpression() const
 {
-  return mInfix;
+  return mExpression;
 }
 
 const std::set< std::string > & CUnit::getUsedSymbols() const
@@ -605,7 +605,7 @@ CUnit CUnit::operator*(const CUnit & rhs) const
 bool CUnit::operator==(const CUnit & rhs) const
 {
   return (mSymbol == rhs.mSymbol &&
-          mInfix == rhs.mInfix);
+          mExpression == rhs.mExpression);
 }
 
 bool CUnit::isEquivalent(const CUnit & rhs) const
@@ -637,7 +637,7 @@ std::ostream &operator<<(std::ostream &os, const CUnit & o)
 {
   os << "Name: " << o.getObjectName() << ", ";
   os << "Symbol: " << o.mSymbol << ", ";
-  os << "Definition: " << o.mInfix << ", ";
+  os << "Expression: " << o.mExpression << ", ";
   os << "Components: " << std::endl;
 
   std::set< CUnitComponent >::const_iterator it = o.mComponents.begin();

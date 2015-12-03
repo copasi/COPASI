@@ -68,7 +68,7 @@ QVariant CQUnitDM::data(const QModelIndex &index, int role) const
               case COL_SYMBOL_UNITS:
                 return QVariant(QString(""));
 
-              case COL_DEFINITION_UNITS:
+              case COL_EXPRESSION_UNITS:
                 return QVariant(QString(""));
 
               default:
@@ -93,8 +93,8 @@ QVariant CQUnitDM::data(const QModelIndex &index, int role) const
               case COL_SYMBOL_UNITS:
                 return QVariant(QString(FROM_UTF8(pUnit->getSymbol())));
 
-              case COL_DEFINITION_UNITS:
-                return QVariant(QString(FROM_UTF8(pUnit->getInfix())));
+              case COL_EXPRESSION_UNITS:
+                return QVariant(QString(FROM_UTF8(pUnit->getExpression())));
             }
         }
     }
@@ -121,8 +121,8 @@ QVariant CQUnitDM::headerData(int section, Qt::Orientation orientation,
           case COL_SYMBOL_UNITS:
             return QVariant(QString("Symbol"));
 
-          case COL_DEFINITION_UNITS:
-            return QVariant(QString("Definition"));
+          case COL_EXPRESSION_UNITS:
+            return QVariant(QString("Expression"));
 
           default:
             return QVariant();
@@ -156,15 +156,15 @@ bool CQUnitDM::setData(const QModelIndex &index, const QVariant &value,
         pUnit->setObjectName(TO_UTF8(value.toString()));
       else if (index.column() == COL_SYMBOL_UNITS)
         pUnit->setSymbol(TO_UTF8(value.toString()));
-      else if (index.column() == COL_DEFINITION_UNITS)
+      else if (index.column() == COL_EXPRESSION_UNITS)
         {
           if (index.data() != value)
             {
               QString msg;
-              msg = "Definition must not be changed for '" + FROM_UTF8(pUnit->getObjectName()) + "'.\n";
+              msg = "Expression must not be changed for '" + FROM_UTF8(pUnit->getObjectName()) + "'.\n";
 
               CQMessageBox::information(NULL,
-                                        "Unable to change Unit Definition",
+                                        "Unable to change Unit Expression",
                                         msg,
                                         QMessageBox::Ok, QMessageBox::Ok);
             }
