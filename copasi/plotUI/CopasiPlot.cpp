@@ -1131,7 +1131,9 @@ CPlotSpectogram *CopasiPlot::createSpectogram(CPlotItem *plotItem)
   std::string colorMap = *plotItem->assertParameter("colorMap", CCopasiParameter::STRING, std::string("Default"));
 
 #if QWT_VERSION > 0x060000
-if (colorMap == "Grayscale")
+  pSpectogram->setRenderThreadCount ( 0 );
+
+  if (colorMap == "Grayscale")
     {
       QwtLinearColorMap *colorMap = new QwtLinearColorMap(Qt::white, Qt::black);
       pSpectogram->setColorMap(colorMap);
@@ -1216,8 +1218,10 @@ if (colorMap == "Grayscale")
 #else
   setAxisScaleEngine(xTop,
                      logZ ? (QwtScaleEngine *)new QwtLog10ScaleEngine() : (QwtScaleEngine *)new QwtLinearScaleEngine());
-  setAxisTitle(xTop, FROM_UTF8(dataModel->getObject((plotItem->getChannels()[2]))->getObjectDisplayName()));
 #endif
+
+  setAxisTitle(xTop, FROM_UTF8(dataModel->getObject((plotItem->getChannels()[2]))->getObjectDisplayName()));
+
   QwtScaleWidget *topAxis = axisWidget(QwtPlot::xTop);
   topAxis->setColorBarEnabled(true);
 
@@ -1841,7 +1845,14 @@ void CopasiPlot::updateCurves(const size_t & activity)
         {
           (*itSpectograms)->setDataSize(mDataSize[activity]);
 #if QWT_VERSION > 0x060000
-  // TODO
+          QwtScaleWidget *topAxis = axisWidget(QwtPlot::xTop);
+          const QwtInterval zInterval = (*itSpectograms)->data()->interval( Qt::ZAxis );
+          topAxis->setColorBarEnabled(true);
+          topAxis->setColorMap(zInterval,
+                               const_cast<QwtColorMap*>((*itSpectograms)->colorMap()));
+          setAxisScale(QwtPlot::xTop,
+                       zInterval.minValue(),
+                       zInterval.maxValue());
 #else
 
           QwtScaleWidget *topAxis = axisWidget(QwtPlot::xTop);
@@ -2674,10 +2685,6 @@ CSpectorgramData::setBilinear(bool bilinear)
   mBilinear = bilinear;
 }
 
-
-
-
-
 double
 CSpectorgramData::value(double x, double y) const
 {
@@ -2739,7 +2746,13 @@ CSpectorgramData::setSize(const size_t &size)
   initializeMatrix();
 
 #if QWT_VERSION > 0x060000
-  // TODO
+  boundingRect();
+  setInterval(Qt::XAxis, QwtInterval(mMinX, mMaxX) );
+  setInterval(Qt::YAxis, QwtInterval(mMinY, mMaxY) );
+  if (mLimitZ == mLimitZ)
+    setInterval(Qt::ZAxis, QwtInterval(mMinZ, std::min(mMaxZ, mLimitZ)) );
+  else 
+    setInterval(Qt::ZAxis, QwtInterval(mMinZ, mMaxZ) );
 #else
   setBoundingRect(boundingRect());
 #endif
