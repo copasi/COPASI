@@ -142,7 +142,7 @@ bool CQUnitDM::setData(const QModelIndex &index, const QVariant &value,
       if (defaultRow)
         {
           if (index.data() != value)
-            insertRow();
+            insertRow(rowCount(), index);
           else
             return false;
         }
@@ -196,7 +196,7 @@ bool CQUnitDM::insertRows(int position, int rows, const QModelIndex&)
   return true;
 }
 
-bool CQUnitDM::removeRows(int position, int rows, const QModelIndex&)
+bool CQUnitDM::removeRows(int position, int rows)
 {
   if (rows <= 0)
     return true;

@@ -33,7 +33,7 @@ public:
 
 protected:
   bool insertRows(int position, int rows, const QModelIndex &index = QModelIndex());
-  bool removeRows(int position, int rows, const QModelIndex &index = QModelIndex());
+  bool removeRows(int position, int rows);
 
 private:
   bool isFunctionReadOnly(const QModelIndex &index) const;

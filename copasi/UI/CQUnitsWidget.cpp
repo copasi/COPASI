@@ -64,7 +64,7 @@ CQUnitsWidget::~CQUnitsWidget()
 
 void CQUnitsWidget::slotBtnNewClicked()
 {
-  mpUnitDM->insertRow();
+  mpUnitDM->insertRow(mpUnitDM->rowCount() - 1, QModelIndex());
   updateDeleteBtns();
 }
 
