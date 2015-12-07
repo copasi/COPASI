@@ -3,6 +3,9 @@
 // of Manchester.
 // All rights reserved.
 
+#include <limits>
+#include <algorithm>
+#include <cmath>
 
 #include <copasi/plotUI/CSpectorgramData.h>
 
