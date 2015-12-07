@@ -31,24 +31,38 @@ std::string SEDMLUtils::findIdByNameAndType(
   std::map<CCopasiObject*, SBase*>::const_iterator it = map.begin();
 
   std::string::size_type compartmentStart = name.find("{");
-  std::string nameOnly = name.substr(0, compartmentStart);
+
+  std::string compId = "";
+
+  if (compartmentStart != std::string::npos)
+    {
+      std::string compName = name.substr(compartmentStart + 1, name.size() - compartmentStart - 2);
+      SEDMLUtils::removeCharactersFromString(compName, "\"");
+
+      compId = findIdByNameAndType(map, SBML_COMPARTMENT, compName);
+    }
+
 
   while (it != map.end())
     {
       SBase* current = it->second;
+      CCopasiObject* object = it->first;
+      std::string displayName = object->getObjectDisplayName();
 
-      if (((current->getTypeCode() & typeCode) == typeCode) &&
-          current->getName() == name)
+      if (((current->getTypeCode() & typeCode) != typeCode))
+        {
+          ++it;
+          continue;
+        }
+
+      if (current->getName() == name)
         return current->getId();
 
       if (typeCode == SBML_SPECIES  && compartmentStart != std::string::npos)
         {
-          if (((current->getTypeCode() & typeCode) == typeCode) &&
-              current->getName() == nameOnly)
+          if (displayName == name)
             {
-              std::string compName = name.substr(compartmentStart + 1, name.size() - compartmentStart  - 2);
-              std::string compId = findIdByNameAndType(map, SBML_COMPARTMENT, compName);
-              Species* species = (Species*) current;
+              Species* species = (Species*)current;
 
               if (species->getCompartment() == compId)
                 return species->getId();
