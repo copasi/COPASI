@@ -112,7 +112,11 @@ CConfigurationFile::CConfigurationFile(const std::string & name,
   mpUseAdvancedSliders(NULL),
   mpUseAdvancedEditing(NULL),
   mpNormalizePerExperiment(NULL),
-  mpWorkingDirectory(NULL)
+  mpWorkingDirectory(NULL),
+  mpProxyServer(NULL),
+  mpProxyPort(NULL),
+  mpProxyUser(NULL),
+  mpProxyPass(NULL)
 {initializeParameter();}
 
 CConfigurationFile::CConfigurationFile(const CConfigurationFile & src,
@@ -128,7 +132,11 @@ CConfigurationFile::CConfigurationFile(const CConfigurationFile & src,
   mpUseAdvancedSliders(NULL),
   mpUseAdvancedEditing(NULL),
   mpNormalizePerExperiment(NULL),
-  mpWorkingDirectory(NULL)
+  mpWorkingDirectory(NULL),
+  mpProxyServer(NULL),
+  mpProxyPort(NULL),
+  mpProxyUser(NULL),
+  mpProxyPass(NULL)
 {initializeParameter();}
 
 CConfigurationFile::CConfigurationFile(const CCopasiParameterGroup & group,
@@ -144,7 +152,11 @@ CConfigurationFile::CConfigurationFile(const CCopasiParameterGroup & group,
   mpUseAdvancedSliders(NULL),
   mpUseAdvancedEditing(NULL),
   mpNormalizePerExperiment(NULL),
-  mpWorkingDirectory(NULL)
+  mpWorkingDirectory(NULL),
+  mpProxyServer(NULL),
+  mpProxyPort(NULL),
+  mpProxyUser(NULL),
+  mpProxyPass(NULL)
 {initializeParameter();}
 
 CConfigurationFile::~CConfigurationFile()
@@ -194,6 +206,11 @@ void CConfigurationFile::initializeParameter()
   mpUseAdvancedEditing = assertParameter("Use Advanced Editing", CCopasiParameter::BOOL, false);
   mpNormalizePerExperiment = assertParameter("Normalize Weights per Experiment", CCopasiParameter::BOOL, true);
   mpWorkingDirectory = assertParameter("Working Directory", CCopasiParameter::STRING, std::string(""));
+
+  mpProxyServer = assertParameter("Proxy Server", CCopasiParameter::STRING, std::string(""));
+  mpProxyPort = assertParameter("Proxy Port", CCopasiParameter::INT, 0);
+  mpProxyUser = assertParameter("Proxy User", CCopasiParameter::STRING, std::string(""));
+  mpProxyPass = assertParameter("Proxy Password", CCopasiParameter::STRING, std::string(""));
 
   elevateChildren();
 }
@@ -332,6 +349,46 @@ const std::string CConfigurationFile::getWorkingDirectory() const
 void CConfigurationFile::setWorkingDirectory(const std::string & workingDirectory)
 {
   *mpWorkingDirectory = workingDirectory;
+}
+
+const std::string CConfigurationFile::getProxyServer() const
+{
+  return *mpProxyServer;
+}
+
+void CConfigurationFile::setProxyServer(const std::string &proxyServer)
+{
+  *mpProxyServer = proxyServer;
+}
+
+C_INT32 CConfigurationFile::getProxyPort() const
+{
+  return *mpProxyPort;
+}
+
+void CConfigurationFile::setProxyPort(C_INT32 proxyPort)
+{
+  *mpProxyPort = proxyPort;
+}
+
+const std::string CConfigurationFile::getProxyUser() const
+{
+  return *mpProxyUser;
+}
+
+void CConfigurationFile::setProxyUser(const std::string &proxyUser)
+{
+  *mpProxyUser = proxyUser;
+}
+
+const std::string CConfigurationFile::getProxyPassword() const
+{
+  return *mpProxyPass;
+}
+
+void CConfigurationFile::setProxyPassword(const std::string &proxyPassword)
+{
+  *mpProxyPass = proxyPassword;
 }
 
 void CConfigurationFile::setValidateUnits(bool validateUnits)

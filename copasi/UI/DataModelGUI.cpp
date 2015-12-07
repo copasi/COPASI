@@ -68,10 +68,14 @@
 #include <sbml/packages/layout/extension/LayoutModelPlugin.h>
 #endif
 
+#include <QInputDialog>
+#include <QNetworkProxy>
 #include <QByteArray>
 #include <QNetworkAccessManager>
 #include <QNetworkRequest>
 #include <QNetworkReply>
+
+#include <copasi/UI/CQCopasiApplication.h>
 
 #include <copasi/commandline/COptions.h>
 
@@ -582,12 +586,43 @@ bool DataModelGUI::updateMIRIAM(CMIRIAMResources & miriamResources)
 
   mpMiriamResources = &miriamResources;
 
+  QNetworkAccessManager *manager = new QNetworkAccessManager(this);
+
+  QString server = FROM_UTF8(CCopasiRootContainer::getConfiguration()->getProxyServer());
+
+  // if we have a proxy server use it
+  if (!server.isEmpty())
+    {
+      int port = CCopasiRootContainer::getConfiguration()->getProxyPort();
+      QString user = FROM_UTF8(CCopasiRootContainer::getConfiguration()->getProxyUser());
+      QString pass = FROM_UTF8(CCopasiRootContainer::getConfiguration()->getProxyPassword());
+
+      // if we have a username, but no password stored (which would be in clear text), then
+      // ask for password.
+      if (!user.isEmpty() && pass.isEmpty())
+        {
+          bool flag = false;
+          QString temp = QInputDialog::getText(
+                           (QWidget*)((CQCopasiApplication*)qApp)->getMainWindow(),
+                           QString("Enter proxy password"),
+                           QString("You specified a proxy username, but no pasword, please enter the proxy password"),
+                           QLineEdit::Password,
+                           QString(""),
+                           &flag
+                         );
+
+          if (flag)
+            pass = temp;
+        }
+
+      manager->setProxy(QNetworkProxy(QNetworkProxy::HttpProxy, server, port, user, pass));
+    }
+
+  // start progress dialog
   mpProgressBar = CProgressBar::create();
   mpProgressBar->setName("MIRIAM Resources Update...");
   mDownloadedBytes = 0; mDownloadedTotalBytes = 100;
   mUpdateItem = ((CProcessReport*)mpProgressBar)->addItem("Download MIRIAM info", mDownloadedBytes, &mDownloadedTotalBytes);
-
-  QNetworkAccessManager *manager = new QNetworkAccessManager(this);
 
   connect(manager, SIGNAL(finished(QNetworkReply*)),
           this, SLOT(miriamDownloadFinished(QNetworkReply*)));

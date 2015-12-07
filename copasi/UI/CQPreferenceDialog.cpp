@@ -146,6 +146,48 @@ void CQPreferenceDialog::init()
       Values.append((pParameter->getValue< bool >() ? "YES" : "NO"));
       new QTreeWidgetItem(mpTreeWidget, Values);
     }
+
+  pParameter = configFile->getParameter("Proxy Server");
+
+  if (pParameter != NULL)
+    {
+      QStringList Values;
+      Values.append("Proxy Server");
+      Values.append(FROM_UTF8(pParameter->getValue< std::string >()));
+      new QTreeWidgetItem(mpTreeWidget, Values);
+    }
+
+  pParameter = configFile->getParameter("Proxy Port");
+
+  if (pParameter != NULL)
+    {
+      QStringList Values;
+      Values.append("Proxy Port");
+      Values.append(QString::number(pParameter->getValue< C_INT32 >()));
+      new QTreeWidgetItem(mpTreeWidget, Values);
+    }
+
+  pParameter = configFile->getParameter("Proxy User");
+
+  if (pParameter != NULL)
+    {
+      QStringList Values;
+      Values.append("Proxy User");
+      Values.append(FROM_UTF8(pParameter->getValue< std::string >()));
+      new QTreeWidgetItem(mpTreeWidget, Values);
+    }
+
+  pParameter = configFile->getParameter("Proxy Password");
+
+  if (pParameter != NULL)
+    {
+      QStringList Values;
+      Values.append("Proxy Password");
+      Values.append(FROM_UTF8(pParameter->getValue< std::string >()));
+      new QTreeWidgetItem(mpTreeWidget, Values);
+    }
+
+
 }
 
 void CQPreferenceDialog::slotBtnOk()
@@ -261,6 +303,49 @@ void CQPreferenceDialog::slotBtnOk()
       pParameter != NULL)
     {
       pParameter->setValue(Items[0]->text(COL_VALUE).toUpper() == "YES");
+    }
+
+  Items = mpTreeWidget->findItems("Proxy Server", 0, 0);
+  pParameter = configFile->getParameter("Proxy Server");
+
+  if (Items.size() > 0 &&
+      pParameter != NULL)
+    {
+
+      if (Items[0]->text(COL_VALUE) != FROM_UTF8(pParameter->getValue< std::string >()))
+        pParameter->setValue(std::string(TO_UTF8(Items[0]->text(COL_VALUE))));
+    }
+
+  Items = mpTreeWidget->findItems("Proxy Port", 0, 0);
+  pParameter = configFile->getParameter("Proxy Port");
+
+  if (Items.size() > 0 &&
+      pParameter != NULL)
+    {
+      C_INT32 port = Items[0]->text(COL_VALUE).toInt();
+      pParameter->setValue(port);
+    }
+
+  Items = mpTreeWidget->findItems("Proxy User", 0, 0);
+  pParameter = configFile->getParameter("Proxy User");
+
+  if (Items.size() > 0 &&
+      pParameter != NULL)
+    {
+
+      if (Items[0]->text(COL_VALUE) != FROM_UTF8(pParameter->getValue< std::string >()))
+        pParameter->setValue(std::string(TO_UTF8(Items[0]->text(COL_VALUE))));
+    }
+
+  Items = mpTreeWidget->findItems("Proxy Password", 0, 0);
+  pParameter = configFile->getParameter("Proxy Password");
+
+  if (Items.size() > 0 &&
+      pParameter != NULL)
+    {
+
+      if (Items[0]->text(COL_VALUE) != FROM_UTF8(pParameter->getValue< std::string >()))
+        pParameter->setValue(std::string(TO_UTF8(Items[0]->text(COL_VALUE))));
     }
 
   done(1);

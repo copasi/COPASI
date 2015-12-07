@@ -226,7 +226,7 @@ public:
   void setNormalizePerExperiment(bool flag);
 
   /**
-   * Retrieve the web working directory
+   * Retrieve the working directory
    * @return const std::string & workingDirectory
    */
   const std::string getWorkingDirectory() const;
@@ -236,6 +236,51 @@ public:
    * @param const std::string & workingDirectory
    */
   void setWorkingDirectory(const std::string & workingDirectory);
+
+  /**
+   * Retrieve the proxy server
+   */
+  const std::string getProxyServer() const;
+
+  /**
+   * Set the proxy server.
+   * @param proxyServer the proxy server
+   */
+  void setProxyServer(const std::string & proxyServer);
+
+  /**
+   * Retrieve the proxy port
+   */
+  C_INT32 getProxyPort() const;
+
+  /**
+   * Set the proxy port.
+   * @param proxyPort the proxy port
+   */
+  void setProxyPort(C_INT32 proxyPort);
+
+  /**
+   * Retrieve the proxy user name
+   */
+  const std::string getProxyUser() const;
+
+  /**
+   * Set the proxy user name.
+   * @param proxyUser the proxy username
+   */
+  void setProxyUser(const std::string & proxyUser);
+
+  /**
+   * Retrieve the proxy user password
+   */
+  const std::string getProxyPassword() const;
+
+  /**
+   * Set the proxy user password.
+   * @param proxyPassword the proxy password
+   */
+  void setProxyPassword(const std::string & proxyPassword);
+
 
 private:
   /**
@@ -358,6 +403,26 @@ private:
    * A pointer to the last used working directory of the GUI.
    */
   std::string * mpWorkingDirectory;
+
+  /**
+   * A pointer to the proxy server.
+   */
+  std::string * mpProxyServer;
+
+  /**
+   * A pointer to the proxy port.
+   */
+  C_INT32* mpProxyPort;
+
+  /**
+   * A pointer to the proxy user name.
+   */
+  std::string * mpProxyUser;
+
+  /**
+   * A pointer to the proxy password.
+   */
+  std::string * mpProxyPass;
 };
 
 #endif // COPASI_CConfigurationFile
