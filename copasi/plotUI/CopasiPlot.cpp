@@ -1415,7 +1415,7 @@ void CopasiPlot::setAxisUnits(const C_INT32 & index,
 
   if (pObject == NULL) return;
 
-  std::string Units = pObject->getUnits();
+  std::string Units = pObject->getUnits().getExpression();
 
   if (Units != "")
     setAxisTitle(index, FROM_UTF8(Units));
