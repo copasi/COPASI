@@ -71,6 +71,9 @@
 #include "report/CCopasiRootContainer.h"
 
 #include "crosssection/CCrossSectionTask.h"
+//--- ETTORE start ---
+#include "analytics/CAnalyticsTask.h"
+//--- ETTORE end -----
 
 CDataModelRenameHandler::CDataModelRenameHandler():
   CRenameHandler(),
@@ -1511,6 +1514,12 @@ CCopasiTask * CCopasiDataModel::addTask(const CTaskEnum::Task & taskType)
       case CTaskEnum::crosssection:
         pTask = new CCrossSectionTask(mData.pTaskList);
         break;
+      //--- ETTORE start ---
+
+      case CTaskEnum::analytics:
+        pTask = new CAnalyticsTask(mData.pTaskList);
+        break;
+      //--- ETTORE end -----
 
       default:
         return pTask;

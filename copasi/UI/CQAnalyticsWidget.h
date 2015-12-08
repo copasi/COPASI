@@ -16,7 +16,7 @@
 
 #include "UI/TaskWidget.h"
 
-class CCrossSectionProblem;
+class CAnalyticsProblem;
 class CQValidatorInt;
 class CQValidatorDouble;
 
@@ -49,7 +49,7 @@ private:
   void setSingleObject(const CCopasiObject * pSingleVariable);
 
   const CCopasiObject * mpSingleVariable;
-  CCrossSectionProblem * mpCrossSectionProblem;
+  CAnalyticsProblem * mpAnalyticsProblem;
 
   CQValidatorInt * mpValidatorLC;
   CQValidatorDouble * mpValidatorTime;

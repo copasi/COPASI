@@ -28,6 +28,9 @@ public:
     sens,
     moieties,
     crosssection,
+    //--- ETTORE start ---
+    analytics,
+    //--- ETTORE end -----
     lna,
     UnsetTask
   };
@@ -92,6 +95,9 @@ public:
     EFMBitPatternAlgorithm,
     Householder,
     crossSectionMethod,
+    //--- ETTORE start ---
+    analyticsMethod,
+    //--- ETTORE end -----
     linearNoiseApproximation
   };
 

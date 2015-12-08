@@ -30,18 +30,18 @@
 #include "utilities/CCopasiException.h"
 #include "report/CKeyFactory.h"
 
-#include "crosssection/CCrossSectionTask.h"
-#include "crosssection/CCrossSectionProblem.h"
+#include "analytics/CAnalyticsTask.h"
+#include "analytics/CAnalyticsProblem.h"
 //#include "crosssection/CCrossSectionMethod.h"
 
 /*
- *  Constructs a CQCrossSectionWidget which is a child of 'parent', with the
+ *  Constructs a CQAnalyticsWidget which is a child of 'parent', with the
  *  name 'name'.'
  */
 CQAnalyticsWidget::CQAnalyticsWidget(QWidget* parent, const char* name)
   : TaskWidget(parent, name)
   , mpSingleVariable(NULL)
-  , mpCrossSectionProblem(NULL)
+  , mpAnalyticsProblem(NULL)
   , mpValidatorLC(NULL)
   , mpValidatorTime(NULL)
   , mpValidatorTolerance(NULL)
@@ -68,7 +68,7 @@ CQAnalyticsWidget::~CQAnalyticsWidget()
 
 void CQAnalyticsWidget::init()
 {
-  mpCrossSectionProblem = NULL;
+  mpAnalyticsProblem = NULL;
 
   mpHeaderWidget->setTaskName("Analytics");
 
@@ -121,22 +121,22 @@ void CQAnalyticsWidget::destroy()
 
 void CQAnalyticsWidget::commitInput()
 {
-  if (!mpCrossSectionProblem) return;
+  if (!mpAnalyticsProblem) return;
 
-  mpCrossSectionProblem->setFlagLimitCrossings(mpCheckSimCrossings->isChecked());
-  mpCrossSectionProblem->setCrossingsLimit(mpTxtCrossings->text().toULong());
-  mpCrossSectionProblem->setFlagLimitOutCrossings(mpCheckOutputCrossings->isChecked());
-  mpCrossSectionProblem->setOutCrossingsLimit(mpTxtOutCrossings->text().toULong());
-  mpCrossSectionProblem->setTimeLimit(mpTxtTime->text().toDouble());
-  mpCrossSectionProblem->setOutputStartTime(mpTxtOutTime->text().toDouble());
-  mpCrossSectionProblem->setFlagLimitOutTime(mpCheckOutputDelay->isChecked());
-  mpCrossSectionProblem->setFlagLimitConvergence(mpCheckSimConvergence->isChecked());
-  mpCrossSectionProblem->setConvergenceTolerance(mpTxtConvergence->text().toDouble());
-  mpCrossSectionProblem->setFlagLimitOutConvergence(mpCheckOutputConvergence->isChecked());
-  mpCrossSectionProblem->setConvergenceOutTolerance(mpTxtOutConvergence->text().toDouble());
-  mpCrossSectionProblem->setSingleObjectCN(mpSingleVariable);
-  mpCrossSectionProblem->setPositiveDirection(mpDirectionPositive->isChecked());
-  mpCrossSectionProblem->setThreshold(mpLineEditValue->text().toDouble());
+  mpAnalyticsProblem->setFlagLimitCrossings(mpCheckSimCrossings->isChecked());
+  mpAnalyticsProblem->setCrossingsLimit(mpTxtCrossings->text().toULong());
+  mpAnalyticsProblem->setFlagLimitOutCrossings(mpCheckOutputCrossings->isChecked());
+  mpAnalyticsProblem->setOutCrossingsLimit(mpTxtOutCrossings->text().toULong());
+  mpAnalyticsProblem->setTimeLimit(mpTxtTime->text().toDouble());
+  mpAnalyticsProblem->setOutputStartTime(mpTxtOutTime->text().toDouble());
+  mpAnalyticsProblem->setFlagLimitOutTime(mpCheckOutputDelay->isChecked());
+  mpAnalyticsProblem->setFlagLimitConvergence(mpCheckSimConvergence->isChecked());
+  mpAnalyticsProblem->setConvergenceTolerance(mpTxtConvergence->text().toDouble());
+  mpAnalyticsProblem->setFlagLimitOutConvergence(mpCheckOutputConvergence->isChecked());
+  mpAnalyticsProblem->setConvergenceOutTolerance(mpTxtOutConvergence->text().toDouble());
+  mpAnalyticsProblem->setSingleObjectCN(mpSingleVariable);
+  mpAnalyticsProblem->setPositiveDirection(mpDirectionPositive->isChecked());
+  mpAnalyticsProblem->setThreshold(mpLineEditValue->text().toDouble());
 }
 
 bool CQAnalyticsWidget::runTask()
@@ -158,8 +158,8 @@ bool CQAnalyticsWidget::runTask()
 bool CQAnalyticsWidget::saveTask()
 {
   // check the existence of Task
-  CCrossSectionTask * pTask =
-    dynamic_cast< CCrossSectionTask * >(mpTask);
+  CAnalyticsTask * pTask =
+    dynamic_cast< CAnalyticsTask * >(mpTask);
 
   if (!pTask) return false;
 
@@ -168,8 +168,8 @@ bool CQAnalyticsWidget::saveTask()
   saveMethod();
 
   // check the existence of Problem
-  CCrossSectionProblem* pProblem =
-    dynamic_cast<CCrossSectionProblem *>(pTask->getProblem());
+  CAnalyticsProblem* pProblem =
+    dynamic_cast<CAnalyticsProblem *>(pTask->getProblem());
   assert(pProblem);
 
   // save the actual changes
@@ -182,6 +182,10 @@ bool CQAnalyticsWidget::saveTask()
   pProblem->setTimeLimit(mpTxtTime->text().toDouble());
 
   pProblem->setSingleObjectCN(mpSingleVariable);
+
+  //--- ETTORE start ---
+  pProblem->retrieveSelectedObject(mpSingleVariable);
+  //--- ETTORE end -----
 
   pProblem->setFlagLimitOutTime(mpCheckOutputDelay->isChecked());
 
@@ -232,8 +236,8 @@ bool CQAnalyticsWidget::taskFinishedEvent()
 bool CQAnalyticsWidget::loadTask()
 {
   // load Task
-  CCrossSectionTask * pTask =
-    dynamic_cast< CCrossSectionTask * >(mpTask);
+  CAnalyticsTask * pTask =
+    dynamic_cast< CAnalyticsTask * >(mpTask);
 
   if (!pTask) return false;
 
@@ -244,12 +248,12 @@ bool CQAnalyticsWidget::loadTask()
   showUnits();
 
   // load Problem
-  CCrossSectionProblem* pProblem =
-    dynamic_cast<CCrossSectionProblem *>(pTask->getProblem());
+  CAnalyticsProblem* pProblem =
+    dynamic_cast<CAnalyticsProblem *>(pTask->getProblem());
   assert(pProblem);
 
-  pdelete(mpCrossSectionProblem);
-  mpCrossSectionProblem = new CCrossSectionProblem(*pProblem);
+  pdelete(mpAnalyticsProblem);
+  mpAnalyticsProblem = new CAnalyticsProblem(*pProblem);
 
   // load the saved values
   const std::string &name = pProblem->getSingleObjectCN();
@@ -259,9 +263,10 @@ bool CQAnalyticsWidget::loadTask()
   else
     setSingleObject(static_cast<const CCopasiObject*>(pTask->getObjectDataModel()->getObject(name)));
 
+
   mpLineEditValue->setText(QString::number(pProblem->getThreshold()));
-  mpDirectionPositive->setChecked(mpCrossSectionProblem->isPositiveDirection());
-  mpDirectionNegative->setChecked(!mpCrossSectionProblem->isPositiveDirection());
+  mpDirectionPositive->setChecked(mpAnalyticsProblem->isPositiveDirection());
+  mpDirectionNegative->setChecked(!mpAnalyticsProblem->isPositiveDirection());
 
   mpCheckSimConvergence->setChecked(pProblem->getFlagLimitConvergence());
   mpTxtConvergence->setEnabled(pProblem->getFlagLimitConvergence());
@@ -324,9 +329,15 @@ bool CQAnalyticsWidget::loadTask()
 
 void CQAnalyticsWidget::slotChooseVariable()
 {
+  //--- ETTORE start ---
+  //const CCopasiObject * pObject =
+  //  CCopasiSelectionDialog::getObjectSingle(this,
+  //      CQSimpleSelectionTree::Variables + CQSimpleSelectionTree::ObservedValues, mpSingleVariable);
   const CCopasiObject * pObject =
     CCopasiSelectionDialog::getObjectSingle(this,
-        CQSimpleSelectionTree::Variables + CQSimpleSelectionTree::ObservedValues, mpSingleVariable);
+        CQSimpleSelectionTree::Variables, mpSingleVariable);
+
+ //--- ETTORE end -----
 
   setSingleObject(pObject);
 }
@@ -358,8 +369,8 @@ void CQAnalyticsWidget::slotUpdateCrossings(bool b)
 
   try
     {
-      mpCrossSectionProblem->setFlagLimitCrossings(b);
-      mpCrossSectionProblem->setCrossingsLimit(mpTxtCrossings->text().toULong());
+      mpAnalyticsProblem->setFlagLimitCrossings(b);
+      mpAnalyticsProblem->setCrossingsLimit(mpTxtCrossings->text().toULong());
     }
 
   catch (...)
@@ -381,7 +392,7 @@ void CQAnalyticsWidget::slotUpdateConvergence(bool b)
 
   try
     {
-      mpCrossSectionProblem->setConvergenceTolerance(mpTxtConvergence->text().toDouble());
+      mpAnalyticsProblem->setConvergenceTolerance(mpTxtConvergence->text().toDouble());
     }
 
   catch (...)
@@ -403,7 +414,7 @@ void CQAnalyticsWidget::slotOutputDelay(bool b)
 
   try
     {
-      mpCrossSectionProblem->setOutputStartTime(mpTxtOutTime->text().toDouble());
+      mpAnalyticsProblem->setOutputStartTime(mpTxtOutTime->text().toDouble());
     }
 
   catch (...)
@@ -425,7 +436,7 @@ void CQAnalyticsWidget::slotOutputCrossings(bool b)
 
   try
     {
-      mpCrossSectionProblem->setOutCrossingsLimit(mpTxtOutCrossings->text().toDouble());
+      mpAnalyticsProblem->setOutCrossingsLimit(mpTxtOutCrossings->text().toDouble());
     }
 
   catch (...)
@@ -444,7 +455,7 @@ void CQAnalyticsWidget::slotOutputConvergence(bool b)
 
   try
     {
-      mpCrossSectionProblem->setConvergenceOutTolerance(mpTxtOutConvergence->text().toDouble());
+      mpAnalyticsProblem->setConvergenceOutTolerance(mpTxtOutConvergence->text().toDouble());
     }
 
   catch (...)
@@ -503,25 +514,25 @@ void CQAnalyticsWidget::slotOutputDelayTime()
 
 void CQAnalyticsWidget::updateValues()
 {
-  mpTxtCrossings->setText(QString::number(mpCrossSectionProblem->getCrossingsLimit()));
+  mpTxtCrossings->setText(QString::number(mpAnalyticsProblem->getCrossingsLimit()));
   mpValidatorLC->revalidate();
 
-  mpTxtOutCrossings->setText(QString::number(mpCrossSectionProblem->getOutCrossingsLimit()));
+  mpTxtOutCrossings->setText(QString::number(mpAnalyticsProblem->getOutCrossingsLimit()));
   mpValidatorOutLC->revalidate();
 
-  mpTxtTime->setText(QString::number(mpCrossSectionProblem->getTimeLimit()));
+  mpTxtTime->setText(QString::number(mpAnalyticsProblem->getTimeLimit()));
   mpValidatorTime->revalidate();
 
-  mpTxtOutTime->setText(QString::number(mpCrossSectionProblem->getOutputStartTime()));
+  mpTxtOutTime->setText(QString::number(mpAnalyticsProblem->getOutputStartTime()));
   mpValidatorOutTime->revalidate();
 
-  mpTxtConvergence->setText(QString::number(mpCrossSectionProblem->getConvergenceTolerance()));
+  mpTxtConvergence->setText(QString::number(mpAnalyticsProblem->getConvergenceTolerance()));
   mpValidatorTolerance->revalidate();
 
-  mpTxtOutConvergence->setText(QString::number(mpCrossSectionProblem->getConvergenceOutTolerance()));
+  mpTxtOutConvergence->setText(QString::number(mpAnalyticsProblem->getConvergenceOutTolerance()));
   mpValidatorOutTolerance->revalidate();
 
-  mpLineEditValue->setText(QString::number(mpCrossSectionProblem->getThreshold()));
+  mpLineEditValue->setText(QString::number(mpAnalyticsProblem->getThreshold()));
   mpValidatorCrossing->revalidate();
 }
 
