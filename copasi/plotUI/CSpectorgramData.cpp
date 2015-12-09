@@ -348,7 +348,7 @@ CSpectorgramData::value(double x, double y) const
                  : mpMatrix->operator()(xpos, ypos);
 
   if (value != value)
-    return 0;
+    return value;
 
   if (mLimitZ == mLimitZ && value > mLimitZ)
     return mLimitZ;

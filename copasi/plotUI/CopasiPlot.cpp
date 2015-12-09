@@ -54,17 +54,11 @@
 #include <copasi/plotUI/C2DPlotCurve.h>
 #include <copasi/plotUI/CPlotSpectogram.h>
 
+#include <copasi/plotUI/CLinearColorMap.h>
+
 #include <QApplication>
 
 #define ActivitySize 8
-
-//********************  data  *********************************************
-
-//********************  data  *********************************************
-
-//********************  curve  ********************************************
-
-//************************************
 C_FLOAT64 CopasiPlot::MissingValue = std::numeric_limits<C_FLOAT64>::quiet_NaN();
 
 CopasiPlot::CopasiPlot(QWidget* parent):
@@ -195,18 +189,18 @@ CPlotSpectogram *CopasiPlot::createSpectogram(CPlotItem *plotItem)
 
   if (colorMap == "Grayscale")
     {
-      QwtLinearColorMap *colorMap = new QwtLinearColorMap(Qt::white, Qt::black);
+      QwtLinearColorMap *colorMap = new CLinearColorMap(Qt::white, Qt::black);
       pSpectogram->setColorMap(colorMap);
 
     }
   else if (colorMap == "Yellow-Red")
     {
-      QwtLinearColorMap *colorMap = new QwtLinearColorMap(Qt::yellow, Qt::red);
+      QwtLinearColorMap *colorMap = new CLinearColorMap(Qt::yellow, Qt::red);
       pSpectogram->setColorMap(colorMap);
     }
   else
     {
-      QwtLinearColorMap *colorMap = new QwtLinearColorMap(Qt::darkCyan, Qt::red);
+      QwtLinearColorMap *colorMap = new CLinearColorMap(Qt::darkCyan, Qt::red);
       colorMap->addColorStop(0.1, Qt::cyan);
       colorMap->addColorStop(0.6, Qt::green);
       colorMap->addColorStop(0.95, Qt::yellow);
@@ -218,18 +212,18 @@ CPlotSpectogram *CopasiPlot::createSpectogram(CPlotItem *plotItem)
 
   if (colorMap == "Grayscale")
     {
-      QwtLinearColorMap colorMap(Qt::white, Qt::black);
+      CLinearColorMap colorMap(Qt::white, Qt::black);
       pSpectogram->setColorMap(colorMap);
 
     }
   else if (colorMap == "Yellow-Red")
     {
-      QwtLinearColorMap colorMap(Qt::yellow, Qt::red);
+      CLinearColorMap colorMap(Qt::yellow, Qt::red);
       pSpectogram->setColorMap(colorMap);
     }
   else
     {
-      QwtLinearColorMap colorMap(Qt::darkCyan, Qt::red);
+      CLinearColorMap colorMap(Qt::darkCyan, Qt::red);
       colorMap.addColorStop(0.1, Qt::cyan);
       colorMap.addColorStop(0.6, Qt::green);
       colorMap.addColorStop(0.95, Qt::yellow);
