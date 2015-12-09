@@ -158,7 +158,8 @@ void CopasiPlot::legendChecked(const QVariant &itemInfo, bool on)
 }
 #endif
 
-CPlotSpectogram *CopasiPlot::createSpectogram(CPlotItem *plotItem)
+CPlotSpectogram *
+CopasiPlot::createSpectogram(CPlotItem *plotItem)
 {
   QString strLimitZ = FROM_UTF8(plotItem->getValue<std::string>("maxZ"));
   bool flag;
@@ -198,6 +199,12 @@ CPlotSpectogram *CopasiPlot::createSpectogram(CPlotItem *plotItem)
       QwtLinearColorMap *colorMap = new CLinearColorMap(Qt::yellow, Qt::red);
       pSpectogram->setColorMap(colorMap);
     }
+  else if (colorMap == "Blue-White-Red")
+    {
+      QwtLinearColorMap *colorMap = new CLinearColorMap(Qt::blue, Qt::red);
+      colorMap->setAbsoluteStop(0.0, Qt::white);
+      pSpectogram->setColorMap(colorMap);
+    }
   else
     {
       QwtLinearColorMap *colorMap = new CLinearColorMap(Qt::darkCyan, Qt::red);
@@ -219,6 +226,12 @@ CPlotSpectogram *CopasiPlot::createSpectogram(CPlotItem *plotItem)
   else if (colorMap == "Yellow-Red")
     {
       CLinearColorMap colorMap(Qt::yellow, Qt::red);
+      pSpectogram->setColorMap(colorMap);
+    }
+  else if (colorMap == "Blue-White-Red")
+    {
+      CLinearColorMap colorMap(Qt::blue, Qt::red);
+      colorMap.setAbsoluteStop(0.0, Qt::white);
       pSpectogram->setColorMap(colorMap);
     }
   else

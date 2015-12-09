@@ -24,8 +24,15 @@ public:
 
   virtual QRgb rgb(const QwtDoubleInterval &, double value) const;
 
+  void setAbsoluteStop(double value, const QColor& color);
+
 protected:
   QColor mMissingColor;
+
+  double mAbsoluteStop;
+  QColor mAbsoluteStopColor;
+  CLinearColorMap *mpLower;
+  CLinearColorMap *mpUpper;
 
 };
 
