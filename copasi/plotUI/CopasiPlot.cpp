@@ -1426,7 +1426,10 @@ void CopasiPlot::replot()
 
       if (((int)mods & (int)Qt::ShiftModifier) == (int)Qt::ShiftModifier &&
           !mNextPlotTime.isZero())
-        return;
+        {
+          mReplotFinished = true;
+          return;
+        }
 
       CCopasiTimeVariable Delta = CCopasiTimeVariable::getCurrentWallTime();
 
