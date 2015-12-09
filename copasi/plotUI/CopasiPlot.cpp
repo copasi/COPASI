@@ -273,6 +273,7 @@ CPlotSpectogram *CopasiPlot::createSpectogram(CPlotItem *plotItem)
   setAxisTitle(xBottom, FROM_UTF8(dataModel->getObject((plotItem->getChannels()[0]))->getObjectDisplayName()));
   enableAxis(xBottom);
 
+
   setAxisTitle(yLeft, FROM_UTF8(dataModel->getObject((plotItem->getChannels()[1]))->getObjectDisplayName()));
   enableAxis(yLeft);
 
@@ -540,6 +541,7 @@ bool CopasiPlot::initFromSpec(const CPlotSpecification* plotspec)
       setAxisTitle(yRight, "Percent %");
       enableAxis(yRight);
     }
+
 
   mIgnoreUpdate = false;
 
@@ -854,8 +856,8 @@ void CopasiPlot::finish()
 
   // We need to force a replot, i.e., the next mNextPlotTime should be in the past.
   mNextPlotTime = 0;
-  replot();
 
+  replot();
 
   if (mpZoomer)
     {
@@ -891,12 +893,6 @@ void CopasiPlot::updateCurves(const size_t & activity)
         }
     }
 
-  // skip rendering when shift is pressed
-  Qt::KeyboardModifiers mods = QApplication::keyboardModifiers();
-
-  if (((int)mods & (int)Qt::ShiftModifier) == (int)Qt::ShiftModifier)
-    return;
-
   k = 0;
   CPlotSpectogram ** itSpectograms = mSpectograms.array();
   CPlotSpectogram ** endSpectograms = itSpectograms + mSpectograms.size();
@@ -914,9 +910,7 @@ void CopasiPlot::updateCurves(const size_t & activity)
           topAxis->setColorBarEnabled(true);
           topAxis->setColorMap(zInterval,
                                const_cast<QwtColorMap*>((*itSpectograms)->colorMap()));
-          setAxisScale(QwtPlot::xTop,
-                       zInterval.minValue(),
-                       zInterval.maxValue());
+          setAxisScale(QwtPlot::xTop, zInterval.minValue(), zInterval.maxValue());
 #else
 
           QwtScaleWidget *topAxis = axisWidget(QwtPlot::xTop);
@@ -926,6 +920,7 @@ void CopasiPlot::updateCurves(const size_t & activity)
           setAxisScale(QwtPlot::xTop,
                        (*itSpectograms)->data().range().minValue(),
                        (*itSpectograms)->data().range().maxValue());
+
 #endif
         }
     }
@@ -1426,6 +1421,13 @@ void CopasiPlot::replot()
 {
   if (mNextPlotTime < CCopasiTimeVariable::getCurrentWallTime())
     {
+      // skip rendering when shift is pressed
+      Qt::KeyboardModifiers mods = QApplication::keyboardModifiers();
+
+      if (((int)mods & (int)Qt::ShiftModifier) == (int)Qt::ShiftModifier &&
+          !mNextPlotTime.isZero())
+        return;
+
       CCopasiTimeVariable Delta = CCopasiTimeVariable::getCurrentWallTime();
 
       {
@@ -1436,7 +1438,11 @@ void CopasiPlot::replot()
       QwtPlot::replot();
 
       Delta = CCopasiTimeVariable::getCurrentWallTime() - Delta;
-      mNextPlotTime = CCopasiTimeVariable::getCurrentWallTime() + 3 * Delta.getMicroSeconds();
+
+      if (!mSpectogramMap.empty())
+        mNextPlotTime = CCopasiTimeVariable::getCurrentWallTime() + 10 * Delta.getMicroSeconds();
+      else
+        mNextPlotTime = CCopasiTimeVariable::getCurrentWallTime() + 3 * Delta.getMicroSeconds();
     }
 
   mReplotFinished = true;

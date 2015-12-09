@@ -113,6 +113,12 @@ private:
   double mLimitZ;
   bool mBilinear;
 
+  double mDistanceX;
+  double mDistanceY;
+
+  size_t mSizeX;
+  size_t mSizeY;
+
 };
 
 #endif // CSPECTOGRAMDATA_H

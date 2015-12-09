@@ -27,6 +27,10 @@ CSpectorgramData::CSpectorgramData()
   , mLogZ(false)
   , mLimitZ(std::numeric_limits<double>::quiet_NaN())
   , mBilinear(true)
+  , mDistanceX()
+  , mDistanceY()
+  , mSizeX(0)
+  , mSizeY(0)
 {
 
 }
@@ -59,7 +63,10 @@ CSpectorgramData::CSpectorgramData(const CVector<double> &x,
   , mLogZ(logZ)
   , mLimitZ(limitZ)
   , mBilinear(bilinear)
-
+  , mDistanceX()
+  , mDistanceY()
+  , mSizeX(0)
+  , mSizeY(0)
 {
 
 }
@@ -87,6 +94,11 @@ CSpectorgramData::CSpectorgramData(const CSpectorgramData& other)
   , mLogZ(other.mLogZ)
   , mLimitZ(other.mLimitZ)
   , mBilinear(other.mBilinear)
+  , mDistanceX(other.mDistanceX)
+  , mDistanceY(other.mDistanceY)
+  , mSizeX()
+  , mSizeY(0)
+
 {
 
 }
@@ -210,22 +222,6 @@ CSpectorgramData::calculateExtremes() const
   if (isnan(mMinX + mMaxX + mMinY + mMaxY))
     return;
 
-  // We need to avoid very small data ranges (absolute and relative)
-  C_FLOAT64 minRange = fabs(mMinX + mMaxX) * 5.e-5 + std::numeric_limits< C_FLOAT64 >::min() * 100.0;
-
-  if (mMaxX - mMinX < minRange)
-    {
-      mMinX = mMinX - minRange * 0.5;
-      mMaxX = mMaxX + minRange * 0.5;
-    }
-
-  minRange = fabs(mMinY + mMaxY) * 5e-5 + std::numeric_limits< C_FLOAT64 >::min() * 100.0;
-
-  if (mMaxY - mMinY < minRange)
-    {
-      mMinY = mMinY - minRange * 0.5;
-      mMaxY = mMaxY + minRange * 0.5;
-    }
 }
 
 
@@ -263,9 +259,6 @@ CSpectorgramData::bilinearAround(int xIndex, int yIndex,
                                  double x,
                                  double y) const
 {
-  int dimX = mValuesX.size();
-  int dimY = mValuesY.size();
-
   double x1 = mValuesX[xIndex];
   double y1 = mValuesY[yIndex];
   double diffXX1 = x - x1;
@@ -273,14 +266,14 @@ CSpectorgramData::bilinearAround(int xIndex, int yIndex,
   int xNeighbor = xIndex +
                   (std::signbit(diffXX1) ? -1 : 1);
 
-  if (xNeighbor >= dimX) xNeighbor = dimX - 1;
+  if (xNeighbor >= (int)mSizeX) xNeighbor = mSizeX - 1;
 
   if (xNeighbor < 0) xNeighbor = 0;
 
   int yNeighbor = yIndex +
                   (std::signbit(diffYY1) ? -1 : 1);
 
-  if (yNeighbor >= dimY) yNeighbor = dimY - 1;
+  if (yNeighbor >= (int)mSizeY) yNeighbor = mSizeY - 1;
 
   if (yNeighbor < 0) yNeighbor = 0;
 
@@ -320,11 +313,9 @@ double
 CSpectorgramData::value(double x, double y) const
 {
 
-  if (mpMatrix == NULL || mSize == 0 || mValuesX.size() < 2 || mValuesY.size() < 2)
+  if (mpMatrix == NULL || mSize == 0)
     return 0;
 
-  double distanceX = fabs(mValuesX[1] - mValuesX[0]);
-  double distanceY = fabs(mValuesY[1] - mValuesY[0]);
 
   int xpos = 0;
   int ypos = 0;
@@ -332,7 +323,7 @@ CSpectorgramData::value(double x, double y) const
 
   for (; curX != mEndX; ++curX)
     {
-      if (fabs(*curX - x) < distanceX)
+      if (fabs(*curX - x) < mDistanceX)
         break;
 
       ++xpos;
@@ -342,15 +333,15 @@ CSpectorgramData::value(double x, double y) const
 
   for (; curY != mEndY; ++curY)
     {
-      if (fabs(*curY - y) < distanceY)
+      if (fabs(*curY - y) < mDistanceY)
         break;
 
       ++ypos;
     }
 
-  if (xpos == mValuesX.size()) --xpos;
+  if (xpos == mSizeX) --xpos;
 
-  if (ypos == mValuesY.size()) --ypos;
+  if (ypos == mSizeY) --ypos;
 
   double value = mBilinear
                  ? bilinearAround(xpos, ypos, x, y)
@@ -454,13 +445,24 @@ CSpectorgramData::initializeMatrix()
       mValuesY.push_back(current);
     }
 
-  std::sort(mValuesX.begin(), mValuesX.end());
-  std::sort(mValuesY.begin(), mValuesY.end());
 
   mEndX = mValuesX.end();
   mEndY = mValuesY.end();
 
-  mpMatrix = new CMatrix<double>(mValuesX.size(), mValuesY.size());
+  std::sort(mValuesX.begin(), mEndX);
+  std::sort(mValuesY.begin(), mEndY);
+
+  mSizeX = mValuesX.size();
+  mSizeY = mValuesY.size();
+
+  if (mSizeX > 2)
+    mDistanceX = fabs(mValuesX[1] - mValuesX[0]);
+
+  if (mSizeY > 2)
+    mDistanceY = fabs(mValuesY[1] - mValuesY[0]);
+
+
+  mpMatrix = new CMatrix<double>(mSizeX, mSizeY);
   *mpMatrix = std::numeric_limits<double>::quiet_NaN();
 
   xIt = mpX;
@@ -472,7 +474,6 @@ CSpectorgramData::initializeMatrix()
 
   for (; xIt != end; ++xIt, ++yIt, ++zIt)
     {
-      double dX = *xIt; double dY = *yIt;
       curX = std::find(mValuesX.begin(), mEndX, *xIt);
 
       if (curX == mEndX) continue;

@@ -1,17 +1,14 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CopasiTime.cpp,v $
-   $Revision: 1.17 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2012/04/10 12:32:09 $
-   End CVS Header */
-
-// Copyright (C) 2012 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2004 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -39,15 +36,15 @@
 #include "utility.h"
 
 CCopasiTimeVariable::CCopasiTimeVariable():
-    mTime(LLONG_CONST(0))
+  mTime(LLONG_CONST(0))
 {}
 
 CCopasiTimeVariable::CCopasiTimeVariable(const CCopasiTimeVariable & src):
-    mTime(src.mTime)
+  mTime(src.mTime)
 {}
 
 CCopasiTimeVariable::CCopasiTimeVariable(const C_INT64 & value):
-    mTime(value)
+  mTime(value)
 {}
 
 CCopasiTimeVariable::~CCopasiTimeVariable() {}
@@ -152,6 +149,11 @@ C_INT64 CCopasiTimeVariable::getDays() const
   C_INT64 Days = mTime / LLONG_CONST(86400000000);
 
   return Days;
+}
+
+bool CCopasiTimeVariable::isZero() const
+{
+  return mTime == 0;
 }
 
 #ifndef WIN32
