@@ -287,12 +287,12 @@ bool CQCompartmentDM::setData(const QModelIndex &index, const QVariant &value,
           if (index.column() == COL_TYPE_COMPARTMENTS)
             {
               if (index.data().toString() != QString(FROM_UTF8(CModelEntity::StatusName[mItemToType[value.toInt()]])))
-                insertRow();
+                insertRow(rowCount() - 1, QModelIndex());
               else
                 return false;
             }
           else if (index.data() != value)
-            insertRow();
+            insertRow(rowCount() - 1, QModelIndex());
           else
             return false;
         }

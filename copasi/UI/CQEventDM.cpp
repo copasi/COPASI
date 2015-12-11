@@ -232,7 +232,7 @@ bool CQEventDM::setData(const QModelIndex &index, const QVariant &value,
       if (defaultRow)
         {
           if (index.data() != value)
-            insertRow();
+            insertRow(rowCount() - 1, QModelIndex());
           else
             return false;
         }

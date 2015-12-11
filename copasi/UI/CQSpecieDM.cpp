@@ -399,7 +399,7 @@ bool CQSpecieDM::setData(const QModelIndex &index, const QVariant &value,
             }
 
           mNotify = false;
-          insertRow();
+          insertRow(rowCount() - 1, QModelIndex());
           mNotify = true;
         }
       else
