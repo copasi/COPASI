@@ -289,7 +289,7 @@ void StateSubwidget::showUnits()
   if (!TimeUnits.isEmpty())
     TimeUnits = "\n(" + TimeUnits + ")";
 
-  QString FrequencyUnits = FROM_UTF8(mpModel->getFrequencyUnit().getSymbol());
+  QString FrequencyUnits = FROM_UTF8(mpModel->getFrequencyUnit().getExpression());
 
   if (FrequencyUnits != "none")
     FrequencyUnits = "\n(" + FrequencyUnits + ")";

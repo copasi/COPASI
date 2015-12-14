@@ -171,7 +171,7 @@ QVariant CQReactionDM::headerData(int section, Qt::Orientation orientation,
             QString FrequencyUnits;
 
             if (pModel)
-              FrequencyUnits = FROM_UTF8(pModel->getFrequencyUnit().getSymbol());
+              FrequencyUnits = FROM_UTF8(pModel->getFrequencyUnit().getExpression());
 
             if (FrequencyUnits != "none")
               FrequencyUnits = "\n(" + FrequencyUnits + ")";

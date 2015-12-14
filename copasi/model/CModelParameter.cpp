@@ -131,7 +131,7 @@ const std::string CModelParameter::getUnit(const Framework & framework) const
             return "";
           }
 
-        return pCompartment->getChildObjectUnits(pCompartment->getInitialValueReference()).getSymbol();
+        return pCompartment->getChildObjectUnits(pCompartment->getInitialValueReference()).getExpression();
       }
       break;
 
@@ -146,10 +146,10 @@ const std::string CModelParameter::getUnit(const Framework & framework) const
 
         if (framework == Concentration)
           {
-            return pSpecies->getChildObjectUnits(pSpecies->getInitialConcentrationReference()).getSymbol();
+            return pSpecies->getChildObjectUnits(pSpecies->getInitialConcentrationReference()).getExpression();
           }
 
-        return pSpecies->getChildObjectUnits(pSpecies->getInitialValueReference()).getSymbol();
+        return pSpecies->getChildObjectUnits(pSpecies->getInitialValueReference()).getExpression();
       }
       break;
 

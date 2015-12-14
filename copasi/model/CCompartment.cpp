@@ -96,7 +96,7 @@ CUnit CCompartment::getChildObjectUnits(const CCopasiObject * pObject) const
     }
   else if (pObject == mpRateReference)
     {
-      std::string Unit = getChildObjectUnits(mpValueReference).getSymbol();
+      std::string Unit = getChildObjectUnits(mpValueReference).getExpression();
       std::string TimeUnit = mpModel->getTimeUnitsDisplayString();
 
       if (Unit == "")

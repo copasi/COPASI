@@ -141,9 +141,9 @@ CUnit CMetab::getChildObjectUnits(const CCopasiObject * pObject) const
       if (pObject == mpIConcReference ||
           pObject == mpConcReference)
         {
-          if (Unit.getSymbol() == "none")
+          if (Unit.getExpression() == "")
             {
-              if (CompartmentUnit.getSymbol() == "none")
+              if (CompartmentUnit.getExpression() == "")
                 {
                   return CUnit();
                 }
@@ -152,7 +152,7 @@ CUnit CMetab::getChildObjectUnits(const CCopasiObject * pObject) const
               return CompartmentUnit;
             }
 
-          if (CompartmentUnit.getSymbol() == "none")
+          if (CompartmentUnit.getExpression() == "")
             {
               return Unit;
             }
@@ -162,11 +162,11 @@ CUnit CMetab::getChildObjectUnits(const CCopasiObject * pObject) const
         }
       else if (pObject == this->mpConcRateReference)
         {
-          if (Unit.getSymbol() == "none")
+          if (Unit.getExpression() == "")
             {
-              if (CompartmentUnit.getSymbol() == "none")
+              if (CompartmentUnit.getExpression() == "")
                 {
-                  if (TimeUnit.getSymbol() == "none")
+                  if (TimeUnit.getExpression() == "")
                     {
                       return CUnit();
                     }
@@ -175,7 +175,7 @@ CUnit CMetab::getChildObjectUnits(const CCopasiObject * pObject) const
                   return TimeUnit;
                 }
 
-              if (TimeUnit.getSymbol() == "none")
+              if (TimeUnit.getExpression() == "")
                 {
                   CompartmentUnit.exponentiate(-1);
                   return CompartmentUnit;
@@ -187,9 +187,9 @@ CUnit CMetab::getChildObjectUnits(const CCopasiObject * pObject) const
             }
           else
             {
-              if (CompartmentUnit.getSymbol() == "none")
+              if (CompartmentUnit.getExpression() == "")
                 {
-                  if (TimeUnit.getSymbol() == "none")
+                  if (TimeUnit.getExpression() == "")
                     {
                       return Unit;
                     }
@@ -198,7 +198,7 @@ CUnit CMetab::getChildObjectUnits(const CCopasiObject * pObject) const
                   return Unit * TimeUnit;
                 }
 
-              if (TimeUnit.getSymbol() == "none")
+              if (TimeUnit.getExpression() == "")
                 {
                   CompartmentUnit.exponentiate(-1);
                   return Unit * CompartmentUnit;

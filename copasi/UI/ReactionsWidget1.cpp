@@ -643,7 +643,7 @@ void ReactionsWidget1::setFramework(int framework)
       case 1:
 
         if (pModel)
-          Units = FROM_UTF8(pModel->getFrequencyUnit().getSymbol());
+          Units = FROM_UTF8(pModel->getFrequencyUnit().getExpression());
 
         if (Units != "none")
           Units = " (" + Units + ")";
