@@ -38,7 +38,7 @@ CMCAMethod::CMCAMethod(const CCopasiContainer * pParent,
                        const CTaskEnum::Method & methodType,
                        const CTaskEnum::Task & taskType):
   CCopasiMethod(pParent, methodType, taskType),
-  mpUseReeder(NULL),
+  mpUseReder(NULL),
   mpUseSmallbone(NULL),
   mFactor(1.0e-9),
   mSteadyStateResolution(1.0e-9),
@@ -55,7 +55,7 @@ CMCAMethod::CMCAMethod(const CCopasiContainer * pParent,
 CMCAMethod::CMCAMethod(const CMCAMethod & src,
                        const CCopasiContainer * pParent):
   CCopasiMethod(src, pParent),
-  mpUseReeder(NULL),
+  mpUseReder(NULL),
   mpUseSmallbone(NULL),
   mFactor(src.mFactor),
   mSteadyStateResolution(src.mSteadyStateResolution),
@@ -135,6 +135,8 @@ void CMCAMethod::initializeParameter()
   CCopasiParameter *pParm;
 
   assertParameter("Modulation Factor", CCopasiParameter::UDOUBLE, 1.0e-009);
+  mpUseReder = assertParameter("Use Reder", CCopasiParameter::BOOL, true);
+  mpUseSmallbone = assertParameter("Use Smallbone", CCopasiParameter::BOOL, true);
 
   if ((pParm = getParameter("MCA.ModulationFactor")) != NULL)
     {
@@ -142,8 +144,11 @@ void CMCAMethod::initializeParameter()
       removeParameter("MCA.ModulationFactor");
     }
 
-  mpUseReeder = assertParameter("Use Reeder", CCopasiParameter::BOOL, true);
-  mpUseSmallbone = assertParameter("Use Smallbone", CCopasiParameter::BOOL, true);
+  if ((pParm = getParameter("Use Reeder")) != NULL)
+    {
+      *mpUseReder = pParm->getValue< bool >();
+      removeParameter("Use Reeder");
+    }
 }
 
 bool CMCAMethod::elevateChildren()
@@ -649,7 +654,7 @@ bool CMCAMethod::CalculateMCA(C_FLOAT64 res)
 
   if (mSSStatus == CSteadyStateMethod::found)
     {
-      if (*mpUseReeder)
+      if (*mpUseReder)
         {
           createLinkMatrix(false);
           success &= calculateUnscaledConcentrationCC();
@@ -802,9 +807,9 @@ bool CMCAMethod::isValidProblem(const CCopasiProblem * pProblem)
       return false;
     }
 
-  if (!*mpUseReeder && !*mpUseSmallbone)
+  if (!*mpUseReder && !*mpUseSmallbone)
     {
-      CCopasiMessage(CCopasiMessage::ERROR, "At least one of the algorithm Reeder or Smallbone must be selected.");
+      CCopasiMessage(CCopasiMessage::ERROR, "At least one of the algorithm Reder or Smallbone must be selected.");
       return false;
     }
 

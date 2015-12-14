@@ -166,7 +166,7 @@ private:
   bool createLinkMatrix(const bool & useSmallbone = false);
 
 private:
-  bool * mpUseReeder;
+  bool * mpUseReder;
 
   bool * mpUseSmallbone;
 
