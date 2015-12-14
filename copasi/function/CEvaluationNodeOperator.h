@@ -23,7 +23,10 @@
 #ifndef COPASI_CEvaluationNodeOperator
 #define COPASI_CEvaluationNodeOperator
 
+#include "copasi.h"
+LIBSBML_CPP_NAMESPACE_BEGIN
 class ASTNode;
+LIBSBML_CPP_NAMESPACE_END
 class CCopasiDataModel;
 
 /**

@@ -16,6 +16,7 @@
 #include <sbml/packages/render/sbml/Ellipse.h>
 
 #define sbmlEllipse Ellipse
+
 #include "CLEllipse.h"
 
 #include "copasi/report/CCopasiRootContainer.h"

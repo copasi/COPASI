@@ -22,7 +22,9 @@
 
 #include <string>
 
+LIBSBML_CPP_NAMESPACE_BEGIN
 class RenderGroup;
+LIBSBML_CPP_NAMESPACE_END
 
 class CLImage;
 class CLRectangle;

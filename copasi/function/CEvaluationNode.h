@@ -23,7 +23,9 @@
 #include "CFunctionAnalyzer.h"
 
 class CEvaluationTree;
+LIBSBML_CPP_NAMESPACE_BEGIN
 class ASTNode;
+LIBSBML_CPP_NAMESPACE_END
 class ConverterASTNode;
 class CCopasiDataModel;
 

@@ -21,7 +21,9 @@
 #include <string>
 #include "copasi/copasi.h"
 
+LIBSBML_CPP_NAMESPACE_BEGIN
 class SBase;
+LIBSBML_CPP_NAMESPACE_END
 
 class SBMLUtils
 {

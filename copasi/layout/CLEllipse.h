@@ -21,7 +21,10 @@
 #include "copasi/report/CCopasiObject.h"
 
 class CCopasiContainer;
+
+LIBSBML_CPP_NAMESPACE_BEGIN
 class sbmlEllipse;
+LIBSBML_CPP_NAMESPACE_END
 
 class CLEllipse : public CLGraphicalPrimitive2D, public CCopasiObject
 {

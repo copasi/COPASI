@@ -22,7 +22,10 @@
 #include "copasi/utilities/CCopasiVector.h"
 
 class CCopasiContainer;
+
+LIBSBML_CPP_NAMESPACE_BEGIN
 class GlobalRenderInformation;
+LIBSBML_CPP_NAMESPACE_END
 
 class CLGlobalRenderInformation : public CLRenderInformationBase
 {

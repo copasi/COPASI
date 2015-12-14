@@ -19,7 +19,9 @@
 
 #include "copasi/layout/CLStyle.h"
 
+LIBSBML_CPP_NAMESPACE_BEGIN
 class LocalStyle;
+LIBSBML_CPP_NAMESPACE_END
 
 class CLLocalStyle : public CLStyle
 {

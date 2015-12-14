@@ -11,6 +11,8 @@
 // Copyright (C) 2008 - 2009 by Sven Sahle and University of Heidelberg
 // All rights reserved.
 
+#include "copasi.h"
+
 #include "Expression2PresentationMMLUnits.h"
 #include <sbml/Model.h>
 #include "CSBMLunitInterface.h"

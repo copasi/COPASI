@@ -20,9 +20,11 @@
 
 #include "CLGraphicalObject.h"
 
+LIBSBML_CPP_NAMESPACE_BEGIN
 class SpeciesGlyph;
 class CompartmentGlyph;
 class TextGlyph;
+LIBSBML_CPP_NAMESPACE_END
 
 /**
  * Graphical representation of a metabolite

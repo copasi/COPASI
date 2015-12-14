@@ -18,11 +18,13 @@
 #include "copasi.h"
 #include <string>
 
+LIBSBML_CPP_NAMESPACE_BEGIN
 class SBase;
-
 class BoundingBox;
 class Dimensions;
 class Point;
+LIBSBML_CPP_NAMESPACE_END
+
 class CLPoint;
 
 /**

@@ -21,7 +21,9 @@
 #include "copasi/layout/CLGradientStop.h"
 #include "copasi/utilities/CCopasiVector.h"
 
+LIBSBML_CPP_NAMESPACE_BEGIN
 class GradientBase;
+LIBSBML_CPP_NAMESPACE_END
 
 class CLGradientBase : public CLBase, public CCopasiContainer
 {

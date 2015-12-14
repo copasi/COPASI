@@ -23,16 +23,19 @@ class CPlotSpecification;
 
 class CModelValue;
 class CReaction;
-class Event;
 class CModelEntity;
+class SBMLIncompatibility;
+
+LIBSBML_CPP_NAMESPACE_BEGIN
+class Event;
 class KineticLaw;
 class Model;
 class Parameter;
 class Rule;
 class SBase;
 class SBMLDocument;
-class SBMLIncompatibility;
 class XMLNode;
+LIBSBML_CPP_NAMESPACE_END
 
 class CSEDMLExporter
 {

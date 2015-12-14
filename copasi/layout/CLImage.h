@@ -21,7 +21,10 @@
 #include "copasi/report/CCopasiObject.h"
 
 class CCopasiContainer;
+
+LIBSBML_CPP_NAMESPACE_BEGIN
 class Image;
+LIBSBML_CPP_NAMESPACE_END
 
 class CLImage : public CLTransformation2D, public CCopasiObject
 {

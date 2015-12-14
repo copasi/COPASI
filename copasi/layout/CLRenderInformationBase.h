@@ -25,7 +25,9 @@
 
 #include "copasi/report/CCopasiContainer.h"
 
+LIBSBML_CPP_NAMESPACE_BEGIN
 class RenderInformationBase;
+LIBSBML_CPP_NAMESPACE_END
 
 class CLRenderInformationBase: public CLBase, public CCopasiContainer
 {

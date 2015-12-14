@@ -14,6 +14,8 @@
 #include <cctype>
 #include <algorithm>
 
+#include "copasi.h"
+
 #include <sbml/packages/render/sbml/Transformation.h>
 
 // this define is needed so that the glFogCoordf function is found

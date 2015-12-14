@@ -18,7 +18,10 @@
 #include "copasi/layout/CLLocalStyle.h"
 
 class CCopasiContainer;
+
+LIBSBML_CPP_NAMESPACE_BEGIN
 class LocalRenderInformation;
+LIBSBML_CPP_NAMESPACE_END
 
 class CLLocalRenderInformation: public CLRenderInformationBase
 {

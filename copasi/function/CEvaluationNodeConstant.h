@@ -23,7 +23,12 @@
 #ifndef COPASI_CEvaluationNodeConstant
 #define COPASI_CEvaluationNodeConstant
 
+#include "copasi.h"
+
+LIBSBML_CPP_NAMESPACE_BEGIN
 class ASTNode;
+LIBSBML_CPP_NAMESPACE_END
+
 class CCopasiDataModel;
 
 /**

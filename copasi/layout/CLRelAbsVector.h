@@ -17,7 +17,11 @@
 #include <string>
 #include <ostream>
 
+#include "copasi.h"
+
+LIBSBML_CPP_NAMESPACE_BEGIN
 class RelAbsVector;
+LIBSBML_CPP_NAMESPACE_END
 
 class CLRelAbsVector
 {

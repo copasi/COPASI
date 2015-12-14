@@ -17,7 +17,9 @@
 #include "copasi/layout/CLBase.h"
 #include "copasi/layout/CLRelAbsVector.h"
 
+LIBSBML_CPP_NAMESPACE_BEGIN
 class RenderPoint;
+LIBSBML_CPP_NAMESPACE_END
 
 class CLRenderPoint : public CLBase
 {

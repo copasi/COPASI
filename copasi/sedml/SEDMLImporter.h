@@ -26,10 +26,13 @@
 
 #include <sedml/common/sedmlfwd.h>
 
+LIBSBML_CPP_NAMESPACE_BEGIN
+class Model;
+LIBSBML_CPP_NAMESPACE_END
+
 class CTrajectoryTask;
 class CCompartment;
 class CMetab;
-class Model;
 class CProcessReport;
 class CPlotSpecification;
 class CReportDefinition;

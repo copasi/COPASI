@@ -20,7 +20,10 @@
 #include "copasi/layout/CLRelAbsVector.h"
 
 class CCopasiContainer;
+
+LIBSBML_CPP_NAMESPACE_BEGIN
 class LinearGradient;
+LIBSBML_CPP_NAMESPACE_END
 
 class CLLinearGradient : public CLGradientBase
 {

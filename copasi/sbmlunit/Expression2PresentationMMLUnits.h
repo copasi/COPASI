@@ -14,12 +14,16 @@
 #ifndef EXPRESSION2PRESENTATIONMMLUNITS_H
 #define EXPRESSION2PRESENTATIONMMLUNITS_H
 
+#include "copasi.h"
 #include "Expression2PresentationMML.h"
 
 class CSBMLunitInterface;
 class CSBMLunitInformation;
+
+LIBSBML_CPP_NAMESPACE_BEGIN
 class UnitDefinition;
 class Unit;
+LIBSBML_CPP_NAMESPACE_END
 
 class Expression2PresentationMMLUnits : public Expression2PresentationMML
 {

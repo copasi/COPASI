@@ -22,6 +22,7 @@
 #include "CLGraphicalObject.h"
 #include "CLGlyphs.h"
 
+LIBSBML_CPP_NAMESPACE_BEGIN
 class SpeciesReferenceGlyph;
 class ReactionGlyph;
 
@@ -29,6 +30,7 @@ class ReactionGlyph;
 class ReferenceGlyph;
 class GeneralGlyph;
 #endif // LIBSBML_VERSION >= 50800
+LIBSBML_CPP_NAMESPACE_END
 
 class CLGlyphWithCurve : public CLGraphicalObject
 {

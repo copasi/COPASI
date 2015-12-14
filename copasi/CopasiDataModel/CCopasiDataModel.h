@@ -17,6 +17,7 @@
 
 #include <map>
 
+#include "copasi.h"
 #include "utilities/COutputHandler.h"
 #include "utilities/CCopasiTask.h"
 
@@ -26,8 +27,10 @@ class COutputDefinitionVector;
 class CFunctionDB;
 class CFunction;
 class SCopasiXMLGUI;
+LIBSBML_CPP_NAMESPACE_BEGIN
 class SBMLDocument;
 class SBase;
+LIBSBML_CPP_NAMESPACE_END
 class CProcessReport;
 class CConfigurationFile;
 class SBMLIncompatibility;
@@ -35,8 +38,10 @@ class CListOfLayouts;
 
 //TODO SEDML
 #ifdef COPASI_SEDML
+LIBSEDML_CPP_NAMESPACE_BEGIN
 class SedBase;
 class SedDocument;
+LIBSEDML_CPP_NAMESPACE_END
 class CPlotItem;
 #endif
 

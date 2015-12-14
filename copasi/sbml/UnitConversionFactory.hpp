@@ -18,6 +18,8 @@
 #ifndef UnitConversionFactory_hpp__
 #define UnitConversionFactory_hpp__
 
+#include "copasi.h"
+
 //#include "sbml/SBMLTypes.h"
 #include "sbml/UnitDefinition.h"
 #include "sbml/Unit.h"

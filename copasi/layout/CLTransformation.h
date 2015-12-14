@@ -18,7 +18,9 @@
 
 #include "copasi/layout/CLBase.h"
 
+LIBSBML_CPP_NAMESPACE_BEGIN
 class Transformation;
+LIBSBML_CPP_NAMESPACE_END
 
 class CLTransformation : public CLBase
 {

@@ -19,7 +19,9 @@
 
 #include "copasi/layout/CLTransformation2D.h"
 
+LIBSBML_CPP_NAMESPACE_BEGIN
 class GraphicalPrimitive1D;
+LIBSBML_CPP_NAMESPACE_END
 
 class CLGraphicalPrimitive1D : public CLTransformation2D
 {

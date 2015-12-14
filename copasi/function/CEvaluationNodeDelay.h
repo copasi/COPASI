@@ -9,9 +9,13 @@
 #include <iostream>
 #include <vector>
 
+#include "copasi.h"
 #include "copasi/function/CEvaluationNode.h"
 
+LIBSBML_CPP_NAMESPACE_BEGIN
 class ASTNode;
+LIBSBML_CPP_NAMESPACE_END
+
 class CCopasiDataModel;
 
 /**

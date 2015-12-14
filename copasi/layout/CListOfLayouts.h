@@ -20,7 +20,9 @@
 
 #include "copasi/layout/CLGlobalRenderInformation.h"
 
+LIBSBML_CPP_NAMESPACE_BEGIN
 class ListOf;
+LIBSBML_CPP_NAMESPACE_END
 
 /**
  * this class stores a list of layouts. It should also keep the maps

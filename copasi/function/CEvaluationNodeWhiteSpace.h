@@ -18,7 +18,10 @@
 #ifndef COPASI_CEvaluationNodeWhiteSpace
 #define COPASI_CEvaluationNodeWhiteSpace
 
+#include "copasi.h"
+LIBSBML_CPP_NAMESPACE_BEGIN
 class ASTNode;
+LIBSBML_CPP_NAMESPACE_END
 class CCopasiDataModel;
 
 /**

@@ -25,7 +25,9 @@
 
 #include "copasi/layout/CLLocalRenderInformation.h"
 
+LIBSBML_CPP_NAMESPACE_BEGIN
 class Layout;
+LIBSBML_CPP_NAMESPACE_END
 
 /**
  * This class describes a reaction network layout. Its structure

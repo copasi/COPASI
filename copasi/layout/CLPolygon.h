@@ -22,7 +22,10 @@
 class CLRenderPoint;
 class CLRenderCubicBezier;
 class CCopasiContainer;
+
+LIBSBML_CPP_NAMESPACE_BEGIN
 class sbmlPolygon;
+LIBSBML_CPP_NAMESPACE_END
 
 class CLPolygon : public CLGraphicalPrimitive2D, public CCopasiObject
 {

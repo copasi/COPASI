@@ -20,7 +20,9 @@
 
 #include "CLBase.h"
 
+LIBSBML_CPP_NAMESPACE_BEGIN
 class GraphicalObject;
+LIBSBML_CPP_NAMESPACE_END
 
 /**
  * This is the base class for the layout objects in copasi.

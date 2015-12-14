@@ -33,12 +33,14 @@ class CLTransformation2D;
 class CLRenderInformationBase;
 class CLTransformation2D;
 
+LIBSBML_CPP_NAMESPACE_BEGIN
 class Layout;
 class SBase;
 class TextGlyph;
 
 class Transformation2D;
 class RenderInformationBase;
+LIBSBML_CPP_NAMESPACE_END
 
 class SBMLDocumentLoader
 {

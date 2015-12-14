@@ -19,7 +19,10 @@
 
 #include <string>
 
+LIBSBML_CPP_NAMESPACE_BEGIN
 class GraphicalPrimitive2D;
+LIBSBML_CPP_NAMESPACE_END
+
 
 class CLGraphicalPrimitive2D: public CLGraphicalPrimitive1D
 {

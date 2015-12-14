@@ -23,9 +23,14 @@
 #define EXPRESSION2PRESENTATIONMML_H
 
 #include <iostream>
+
+#include "copasi.h"
+
+LIBSBML_CPP_NAMESPACE_BEGIN
 class ASTNode;
 class Model;
 class Reaction;
+LIBSBML_CPP_NAMESPACE_END
 
 class Expression2PresentationMML
 {

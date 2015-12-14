@@ -24,6 +24,7 @@
 
 #include "copasi/function/CEvaluationNodeFunction.h"
 #include <sbml/FunctionDefinition.h>
+#include <sbml/SBMLIncompatibility.h>
 
 class CAnnotation;
 class CChemEqElement;
@@ -38,17 +39,20 @@ class CFunctionDB;
 class CMetab;
 class CModelValue;
 class CReaction;
-class Event;
 class CModelEntity;
+class SBMLIncompatibility;
+class CProcessReport;
+
+LIBSBML_CPP_NAMESPACE_BEGIN
+class Event;
 class KineticLaw;
 class Model;
 class Parameter;
 class Rule;
 class SBase;
 class SBMLDocument;
-class SBMLIncompatibility;
 class XMLNode;
-class CProcessReport;
+LIBSBML_CPP_NAMESPACE_END
 
 class CSBMLExporter
 {

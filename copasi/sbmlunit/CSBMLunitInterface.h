@@ -14,8 +14,10 @@
 #include <set>
 #include "CSBMLunit.h"
 
+LIBSBML_CPP_NAMESPACE_BEGIN
 class Model;
 class ASTNode;
+LIBSBML_CPP_NAMESPACE_END
 
 /**
  * This class contains a copy of the unit information of an sbml model in the

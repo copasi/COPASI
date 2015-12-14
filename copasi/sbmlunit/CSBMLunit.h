@@ -10,9 +10,14 @@
 #define CUNIT
 
 #include <string>
+
+#include "copasi.h"
+
 #include <sbml/UnitDefinition.h>
 
+LIBSBML_CPP_NAMESPACE_BEGIN
 class UnitDefinition;
+LIBSBML_CPP_NAMESPACE_END
 
 /**
  * The current implementation of the units is just a wrapper for the

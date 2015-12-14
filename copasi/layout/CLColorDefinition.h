@@ -19,7 +19,10 @@
 #include "copasi/layout/CLBase.h"
 #include "copasi/report/CCopasiObject.h"
 
+LIBSBML_CPP_NAMESPACE_BEGIN
 class ColorDefinition;
+LIBSBML_CPP_NAMESPACE_END
+
 class CCopasiContainer;
 
 class CLColorDefinition : public CLBase, public CCopasiObject

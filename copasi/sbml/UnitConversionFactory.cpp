@@ -15,12 +15,16 @@
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
-class UnitDefinition;
 
 #include "UnitConversionFactory.hpp"
 #include "sbml/UnitKind.h"
 #include <cmath>
 #include <sstream>
+
+LIBSBML_CPP_NAMESPACE_BEGIN
+class UnitDefinition;
+LIBSBML_CPP_NAMESPACE_END
+
 
 /**
  * The SBML Level that is passed to constructors of unit definitions.

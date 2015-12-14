@@ -22,7 +22,10 @@
 #include <string>
 
 class CCopasiContainer;
+
+LIBSBML_CPP_NAMESPACE_BEGIN
 class Text;
+LIBSBML_CPP_NAMESPACE_END
 
 class CLText : public CLGraphicalPrimitive1D, public CCopasiObject
 {

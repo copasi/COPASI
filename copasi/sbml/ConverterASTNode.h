@@ -18,6 +18,8 @@
 #ifndef ConverterASTNode_HPP__
 #define ConverterASTNode_HPP__
 
+#include "copasi.h"
+
 #include "sbml/math/ASTNode.h"
 
 class ConverterASTNode : public ASTNode

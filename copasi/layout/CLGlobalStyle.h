@@ -17,7 +17,10 @@
 #include "copasi/layout/CLStyle.h"
 
 class CCopasiContainer;
+
+LIBSBML_CPP_NAMESPACE_BEGIN
 class GlobalStyle;
+LIBSBML_CPP_NAMESPACE_END
 
 class CLGlobalStyle : public CLStyle
 {

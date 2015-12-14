@@ -21,7 +21,9 @@
 #include "copasi/layout/CLBase.h"
 #include "copasi/report/CCopasiContainer.h"
 
+LIBSBML_CPP_NAMESPACE_BEGIN
 class LineEnding;
+LIBSBML_CPP_NAMESPACE_END
 
 class CLLineEnding : public CLGraphicalPrimitive2D, public CCopasiContainer
 {

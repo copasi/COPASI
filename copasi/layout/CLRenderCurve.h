@@ -22,7 +22,10 @@
 
 class CLRenderCubicBezier;
 class CLRenderPoint;
+
+LIBSBML_CPP_NAMESPACE_BEGIN
 class RenderCurve;
+LIBSBML_CPP_NAMESPACE_END
 
 class CLRenderCurve : public CLGraphicalPrimitive1D, public CCopasiObject
 {

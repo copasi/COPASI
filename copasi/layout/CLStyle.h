@@ -22,7 +22,9 @@
 
 #include "copasi/report/CCopasiContainer.h"
 
+LIBSBML_CPP_NAMESPACE_BEGIN
 class Style;
+LIBSBML_CPP_NAMESPACE_END
 
 class CLStyle : public CLBase, public CCopasiContainer
 {

@@ -13,6 +13,8 @@
 #include <utility>
 #include <limits>
 
+#include "copasi.h"
+
 #include <sbml/packages/layout/sbml/BoundingBox.h>
 #include <sbml/packages/layout/sbml/Curve.h>
 #include <sbml/packages/layout/sbml/Dimensions.h>
@@ -22,6 +24,7 @@
 
 #include "copasi/utilities/CCopasiNode.h"
 
+LIBSBML_CPP_NAMESPACE_BEGIN
 class ColorDefinition;
 class GraphicalObject;
 class RenderGroup;
@@ -34,6 +37,7 @@ class SBase;
 class SBMLDocument;
 class SpeciesReferenceGlyphs;
 class XMLNode;
+LIBSBML_CPP_NAMESPACE_END
 
 enum SPECIES_CLASS
 {

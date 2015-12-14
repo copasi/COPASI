@@ -23,7 +23,11 @@
 #ifndef COPASI_CEvaluationNodeLogical
 #define COPASI_CEvaluationNodeLogical
 
+#include "copasi.h"
+LIBSBML_CPP_NAMESPACE_BEGIN
 class ASTNode;
+LIBSBML_CPP_NAMESPACE_END
+
 class CCopasiDataModel;
 
 /**
@@ -146,7 +150,7 @@ public:
   virtual std::string getDisplayString(const std::vector< std::string > & children) const;
 
   /**
-   * Retrieve the display string of the node and its eventual child nodes in C.
+   * Retrieve the disclass ASTNode;play string of the node and its eventual child nodes in C.
    * @return const Data & value
    */
   virtual std::string getCCodeString(const std::vector< std::string > & children) const;

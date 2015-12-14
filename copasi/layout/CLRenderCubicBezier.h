@@ -19,7 +19,9 @@
 #include "copasi/layout/CLRenderPoint.h"
 #include "copasi/layout/CLRelAbsVector.h"
 
+LIBSBML_CPP_NAMESPACE_BEGIN
 class RenderCubicBezier;
+LIBSBML_CPP_NAMESPACE_END
 
 class CLRenderCubicBezier : public CLRenderPoint
 {

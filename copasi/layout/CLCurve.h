@@ -22,10 +22,13 @@
 #include "copasi/report/CCopasiObject.h"
 
 class CCopasiObject;
+
+LIBSBML_CPP_NAMESPACE_BEGIN
 class LineSegment;
 class Curve;
 class CubicBezier;
 class LineSegment;
+LIBSBML_CPP_NAMESPACE_END
 
 /**
  * This class describes a line segment.

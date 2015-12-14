@@ -19,9 +19,14 @@
 #include <string>
 #include <map>
 
+#include "copasi.h"
+
+LIBSBML_CPP_NAMESPACE_BEGIN
 class ASTNode;
-class CNormalFraction;
 class ListOfFunctionDefinitions;
+LIBSBML_CPP_NAMESPACE_END
+
+class CNormalFraction;
 class CNormalBase;
 class ConverterASTNode;
 class CEvaluationNode;

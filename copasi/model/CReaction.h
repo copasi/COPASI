@@ -38,7 +38,9 @@
 #include "copasi/function/CFunctionParameters.h"
 
 class CReadConfig;
+LIBSBML_CPP_NAMESPACE_BEGIN
 class SBase;
+LIBSBML_CPP_NAMESPACE_END
 class CFunctionDB;
 
 class CReaction : public CCopasiContainer, public CAnnotation

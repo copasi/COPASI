@@ -21,7 +21,10 @@
 #include "copasi/report/CCopasiObject.h"
 
 class CCopasiContainer;
+
+LIBSBML_CPP_NAMESPACE_BEGIN
 class GradientStop;
+LIBSBML_CPP_NAMESPACE_END
 
 class CLGradientStop : public CLBase, public CCopasiObject
 {

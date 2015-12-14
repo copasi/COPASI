@@ -19,7 +19,10 @@
 #include "copasi/report/CCopasiObject.h"
 
 class CCopasiContainer;
+
+LIBSBML_CPP_NAMESPACE_BEGIN
 class sbmlRectangle;
+LIBSBML_CPP_NAMESPACE_END
 
 class CLRectangle : public CLGraphicalPrimitive2D, public CCopasiObject
 {

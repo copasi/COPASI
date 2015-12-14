@@ -16,7 +16,9 @@
 
 #include "copasi/layout/CLTransformation.h"
 
+LIBSBML_CPP_NAMESPACE_BEGIN
 class Transformation2D;
+LIBSBML_CPP_NAMESPACE_END
 
 class CLTransformation2D : public CLTransformation
 {
