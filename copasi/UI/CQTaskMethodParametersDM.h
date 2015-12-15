@@ -54,9 +54,9 @@ public:
   virtual bool setData(const QModelIndex &index, const QVariant &value,
                        int role = Qt::EditRole);
 
-  void setMethod(CCopasiMethod * pMethod);
   void pushMethod(CCopasiMethod * pMethod);
   void popMethod(CCopasiMethod * pMethod);
+  void clearMethods();
 
   void setFramework(const int & framework);
 

@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -172,6 +172,10 @@ public:
   virtual void print(std::ostream * ostream) const;
 
 private:
+  /**
+   * Initialize the method parameter
+   */
+  void initializeParameter();
 
   void initObjects();
 

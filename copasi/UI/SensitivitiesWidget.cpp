@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -106,60 +106,61 @@ bool SensitivitiesWidget::saveTask()
   // subtask
   problem->setSubTaskType((CSensProblem::SubTaskType)SubTaskChooser->currentIndex());
 
-  CSensItem tmp;
-
   // target function
+  CSensItem TargetFunctions;
+
   if (FunctionChooser->getCurrentObjectList() == CObjectLists::SINGLE_OBJECT)
     {
       if (mpSingleFunction)
-        tmp.setSingleObjectCN(mpSingleFunction->getCN());
+        TargetFunctions.setSingleObjectCN(mpSingleFunction->getCN());
     }
   else
-    tmp.setListType(FunctionChooser->getCurrentObjectList());
+    TargetFunctions.setListType(FunctionChooser->getCurrentObjectList());
 
-  problem->setTargetFunctions(tmp);
+  if (problem->getTargetFunctions() != TargetFunctions)
+    {
+      problem->setTargetFunctions(TargetFunctions);
+      mChanged = true;
+    }
 
   // variables 1
+  CSensItem FirstVariables;
+
   if (VariableChooser->getCurrentObjectList() == CObjectLists::SINGLE_OBJECT)
     {
       if (mpSingleVariable)
-        tmp.setSingleObjectCN(mpSingleVariable->getCN());
+        FirstVariables.setSingleObjectCN(mpSingleVariable->getCN());
     }
   else
-    tmp.setListType(VariableChooser->getCurrentObjectList());
+    FirstVariables.setListType(VariableChooser->getCurrentObjectList());
 
-  problem->removeVariables();
-
-  if (tmp.getListType() != CObjectLists::EMPTY_LIST)
-    problem->addVariables(tmp);
-  else
-    return true;
+  if (problem->getNumberOfVariables() < 1 ||
+      problem->getVariables(0) != FirstVariables)
+    {
+      problem->changeVariables(0, FirstVariables);
+      mChanged = true;
+    }
 
   //variables 2
-  CSensItem tmp2;
+  CSensItem SecondVariables;
 
   if (Variable2Chooser->getCurrentObjectList() == CObjectLists::SINGLE_OBJECT)
     {
       if (mpSingleVariable2)
-        tmp2.setSingleObjectCN(mpSingleVariable2->getCN());
+        SecondVariables.setSingleObjectCN(mpSingleVariable2->getCN());
     }
   else
-    tmp2.setListType(Variable2Chooser->getCurrentObjectList());
+    SecondVariables.setListType(Variable2Chooser->getCurrentObjectList());
 
-  // write variables to problem
-  problem->removeVariables();
-
-  if (tmp.getListType() != CObjectLists::EMPTY_LIST)
+  if (problem->getNumberOfVariables() < 2 ||
+      problem->getVariables(1) != SecondVariables)
     {
-      problem->addVariables(tmp);
-
-      if (tmp2.getListType() != CObjectLists::EMPTY_LIST)
-        problem->addVariables(tmp2);
+      problem->changeVariables(1, SecondVariables);
+      mChanged = true;
     }
 
-  // :TODO Bug 322: This should only be called when actual changes have been saved.
-  // However we do not track the changes for the variables we just delete them and add them again.
-  if (true)
+  // Bug 322: This should only be called when actual changes have been saved.
+  if (mChanged)
     {
       if (mpDataModel != NULL)
         {

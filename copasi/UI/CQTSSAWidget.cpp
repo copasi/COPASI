@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -93,7 +93,11 @@ void CQTSSAWidget::init()
 
 void CQTSSAWidget::destroy()
 {
-  pdelete(mpTSSAProblem);
+  if (mpTSSAProblem != NULL)
+    {
+      mpTSSAProblem->setObjectParent(NULL);
+      delete mpTSSAProblem;
+    }
 }
 
 void CQTSSAWidget::slotDuration()
@@ -202,8 +206,14 @@ bool CQTSSAWidget::loadTask()
     dynamic_cast<CTSSAProblem *>(pTask->getProblem());
   assert(tssaproblem);
 
-  pdelete(mpTSSAProblem);
+  if (mpTSSAProblem != NULL)
+    {
+      mpTSSAProblem->setObjectParent(NULL);
+      delete mpTSSAProblem;
+    }
+
   mpTSSAProblem = new CTSSAProblem(*tssaproblem);
+  mpTSSAProblem->getObjectParent()->remove(mpTSSAProblem);
 
   //numbers
   mpEditIntervalSize->setText(QString::number(tssaproblem->getStepSize()));

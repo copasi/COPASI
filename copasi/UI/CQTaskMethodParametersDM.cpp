@@ -240,24 +240,6 @@ bool CQTaskMethodParametersDM::setData(const QModelIndex &_index, const QVariant
   return success;
 }
 
-void CQTaskMethodParametersDM::setMethod(CCopasiMethod * pMethod)
-{
-  assert(pMethod != NULL);
-
-  beginResetModel();
-
-  if (mMethods.size() <= 0)
-    {
-      mMethods.append(pMethod);
-    }
-  else
-    {
-      mMethods[0] = pMethod;
-    }
-
-  endResetModel();
-}
-
 void CQTaskMethodParametersDM::pushMethod(CCopasiMethod * pMethod)
 {
   assert(pMethod != NULL);
@@ -285,6 +267,13 @@ void CQTaskMethodParametersDM::popMethod(CCopasiMethod * pMethod)
         mMethods.erase(it);
         endResetModel();
       }
+}
+
+void CQTaskMethodParametersDM::clearMethods()
+{
+  beginResetModel();
+  mMethods.clear();
+  endResetModel();
 }
 
 void CQTaskMethodParametersDM::setFramework(const int & framework)
@@ -420,6 +409,7 @@ QVariant CQTaskMethodParametersDM::valueData(const CCopasiParameter * pNode, int
     {
       case Qt::EditRole:
       case Qt::DisplayRole:
+
         switch (pNode->getType())
           {
             case CCopasiParameter::DOUBLE:
@@ -436,6 +426,7 @@ QVariant CQTaskMethodParametersDM::valueData(const CCopasiParameter * pNode, int
               break;
 
             case CCopasiParameter::BOOL:
+
               if (role == Qt::DisplayRole)
                 return QVariant();
               else
@@ -444,6 +435,7 @@ QVariant CQTaskMethodParametersDM::valueData(const CCopasiParameter * pNode, int
               break;
 
             case CCopasiParameter::GROUP:
+
               if (static_cast< const CCopasiParameterGroup * >(pNode)->getElementTemplates().size() > 0)
                 {
                   QVariant(QString("Add"));
@@ -479,6 +471,7 @@ QVariant CQTaskMethodParametersDM::valueData(const CCopasiParameter * pNode, int
         break;
 
       case Qt::CheckStateRole:
+
         if (pNode->getType() == CCopasiParameter::BOOL)
           {
             return pNode->getValue< bool >() ? Qt::Checked : Qt::Unchecked;

@@ -252,7 +252,7 @@ void CQTaskMethodWidget::setActiveMethod(const CTaskEnum::Method & Type)
   // We update the active methods parameters
   if (mShowMethodParameters)
     {
-      mpMethodParameterDM->setMethod(mpActiveMethod);
+      mpMethodParameterDM->pushMethod(mpActiveMethod);
 
       mpParameterView->expandAll();
       mpParameterView->resizeColumnToContents(0);
@@ -263,6 +263,8 @@ void CQTaskMethodWidget::setActiveMethod(const CTaskEnum::Method & Type)
 
 void CQTaskMethodWidget::clearHistory()
 {
+  mpMethodParameterDM->clearMethods();
+
   std::map< CTaskEnum::Method, CCopasiMethod * >::iterator it = mMethodHistory.begin();
   std::map< CTaskEnum::Method, CCopasiMethod * >::iterator end = mMethodHistory.end();
 

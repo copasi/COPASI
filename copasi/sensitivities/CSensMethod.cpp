@@ -517,6 +517,14 @@ bool CSensMethod::initialize(CSensProblem* problem)
 
   //initialize the variables pointers
   size_t i, imax = mpProblem->getNumberOfVariables();
+
+  while (imax > 0)
+    {
+      if (mpProblem->getVariables(imax - 1).getListType() != CObjectLists::EMPTY_LIST) break;
+
+      imax--;
+    }
+
   mLocalData.resize(imax);
   CObjectInterface::ObjectSet IntialStateObjects;
 
