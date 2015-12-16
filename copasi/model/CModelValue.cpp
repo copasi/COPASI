@@ -104,11 +104,11 @@ CModelEntity::CModelEntity(const CModelEntity & src,
     {
       if (mpModel == NULL)
         {
-          new CUnit(*src.mpUnit, CUnit::Avogadro, this);
+          new CUnit(*src.mpUnit, CUnit::Avogadro);
         }
       else
         {
-          new CUnit(*src.mpUnit, mpModel->getAvogadro(), this);
+          new CUnit(*src.mpUnit, mpModel->getAvogadro());
         }
     }
 
@@ -387,7 +387,7 @@ const CUnit & CModelEntity::getUnit() const
 {
   if (mpUnit == NULL)
     {
-      return CUnit::EmptyUnit;
+      return CUnit();
     }
 
   return *mpUnit;

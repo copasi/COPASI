@@ -47,7 +47,7 @@
 CQUnitDetail::CQUnitDetail(QWidget* parent, const char* name)
   : CopasiWidget(parent, name),
     mKeyToCopy(""),
-    mpUnit(NULL)
+    mpUnitDefinition(NULL)
 {
   setupUi(this);
 
@@ -73,8 +73,8 @@ void CQUnitDetail::slotBtnNew()
 {
  std::string name = "unit_1";
  int i = 1;
- CUnit* pUnit;
- CCopasiVectorN<CUnit> * unitList
+ CUnitDefinition* pUnitDef;
+ CCopasiVectorN<CUnitDefinition> * unitList
    = CCopasiRootContainer::getUnitList();
 
  while (unitList->getIndex(name) != C_INVALID_INDEX)
@@ -84,9 +84,9 @@ void CQUnitDetail::slotBtnNew()
      name += TO_UTF8(QString::number(i));
    }
 
- CCopasiRootContainer::getUnitList()->add(pUnit = new CUnit(name), true);
+ CCopasiRootContainer::getUnitList()->add(pUnitDef = new CUnitDefinition(name), true);
 
- std::string key = pUnit->getKey();
+ std::string key = pUnitDef->getKey();
  protectedNotify(ListViews::UNIT, ListViews::ADD, key);
  // enter(key);
  mpListView->switchToOtherWidget(C_INVALID_INDEX, key);
@@ -110,20 +110,20 @@ void CQUnitDetail::slotBtnCopy()
 //  if (pModel == NULL)
 //    return;
 
-//  if (mpUnit == NULL)
+//  if (mpUnitDefinition == NULL)
 //    return;
 
 //  QMessageBox::StandardButton choice =
 //    CQMessageBox::confirmDelete(this, "unit",
-//                                FROM_UTF8(mpUnit->getObjectName()),
-//                                mpUnit->getDeletedObjects());
+//                                FROM_UTF8(mpUnitDefinition->getObjectName()),
+//                                mpUnitDefinition->getDeletedObjects());
 
 //  switch (choice)
 //    {
 //      case QMessageBox::Ok:
 //      {
 //        pDataModel->getModel()->re(mKey);
-//        mpUnit = NULL;
+//        mpUnitDefinition = NULL;
 
 //#undef DELETE
 //        protectedNotify(ListViews::UNIT, ListViews::DELETE, mKey);
@@ -149,17 +149,17 @@ void CQUnitDetail::slotBtnDelete()
   if (pModel == NULL)
     return;
 
-  CCopasiVectorN<CUnit>* pUnits = CCopasiRootContainer::getUnitList();
+  CCopasiVectorN<CUnitDefinition>* pUnitDefs = CCopasiRootContainer::getUnitList();
 
-  if (pUnits == NULL)
+  if (pUnitDefs == NULL)
     return;
 
-  CUnit * pUnit = dynamic_cast<CUnit *>(CCopasiRootContainer::getKeyFactory()->get(mKey));
+  CUnitDefinition * pUnitDef = dynamic_cast<CUnitDefinition *>(CCopasiRootContainer::getKeyFactory()->get(mKey));
 
-  if (pUnit == NULL)
+  if (pUnitDef == NULL)
     return;
 
-  CCopasiObject::DataObjectSet uses = pModel->getUnitSymbolUsage(pUnit->getSymbol());
+  CCopasiObject::DataObjectSet uses = pModel->getUnitSymbolUsage(pUnitDef->getSymbol());
 
   if (!uses.empty())
   {
@@ -174,18 +174,18 @@ void CQUnitDetail::slotBtnDelete()
     }
 
     CQMessageBox::information(this,
-                              "Unable to delete " + FROM_UTF8(pUnit->getObjectName()),
+                              "Unable to delete " + FROM_UTF8(pUnitDef->getObjectName()),
                               text,
                               QMessageBox::Ok, QMessageBox::Ok);
   }
   else
   {
-    int ret = CQMessageBox::question(this, tr("Confirm Delete"), "Delete " + FROM_UTF8(pUnit->getObjectName()) + "?",
+    int ret = CQMessageBox::question(this, tr("Confirm Delete"), "Delete " + FROM_UTF8(pUnitDef->getObjectName()) + "?",
                                      QMessageBox::Yes | QMessageBox::No, QMessageBox::No);
 
     if (ret == QMessageBox::Yes)
     {
-      delete pUnit;
+      delete pUnitDef;
       protectedNotify(ListViews::UNIT, ListViews::DELETE, mKey);
     }
   }
@@ -296,7 +296,7 @@ bool CQUnitDetail::update(ListViews::ObjectType  objectType,
 //          {
 //            mKey = "";
 //            mpObject = NULL;
-//            mpUnit = NULL;
+//            mpUnitDefinition = NULL;
 //          }
 
 //        break;
@@ -308,7 +308,7 @@ bool CQUnitDetail::update(ListViews::ObjectType  objectType,
 //          {
 //            mKey = "";
 //            mpObject = NULL;
-//            mpUnit = NULL;
+//            mpUnitDefinition = NULL;
 //          }
 
 //        break;
@@ -348,19 +348,19 @@ bool CQUnitDetail::leave()
 
 bool CQUnitDetail::enterProtected()
 {
-  mpUnit = NULL;
+  mpUnitDefinition = NULL;
 
   if (mKeyToCopy != "")
     {
-      mpUnit = dynamic_cast<CUnit *>(CCopasiRootContainer::getKeyFactory()->get(mKeyToCopy));
+      mpUnitDefinition = dynamic_cast<CUnitDefinition *>(CCopasiRootContainer::getKeyFactory()->get(mKeyToCopy));
       mKeyToCopy = "";
     }
   else
     {
-      mpUnit = dynamic_cast<CUnit *>(mpObject);
+      mpUnitDefinition = dynamic_cast<CUnitDefinition *>(mpObject);
     }
 
-  if (!mpUnit)
+  if (!mpUnitDefinition)
     {
       mpListView->switchToOtherWidget(6, "");
       return false;
@@ -369,7 +369,7 @@ bool CQUnitDetail::enterProtected()
   load();
 
   // This is needed, in the case the unit is copied.
-  mpUnit = dynamic_cast<CUnit *>(mpObject);
+  mpUnitDefinition = dynamic_cast<CUnitDefinition *>(mpObject);
 
   return true;
 }
@@ -379,13 +379,13 @@ bool CQUnitDetail::enterProtected()
  */
 void CQUnitDetail::load()
 {
-  if (mpUnit == NULL) return;
+  if (mpUnitDefinition == NULL) return;
 
   // Expression
-  mpEditExpression->setText(FROM_UTF8(mpUnit->getExpression()));
+  mpEditExpression->setText(FROM_UTF8(mpUnitDefinition->getExpression()));
 
   // Symbol
-  mpEditSymbol->setText(FROM_UTF8(mpUnit->getSymbol()));
+  mpEditSymbol->setText(FROM_UTF8(mpUnitDefinition->getSymbol()));
 
 //  // Expression
 //  mpExpressionEMW->mpExpressionWidget->setExpression(mpModelValue->getExpression());
@@ -423,7 +423,7 @@ void CQUnitDetail::load()
  */
 void CQUnitDetail::save()
 {
-  if (mpUnit == NULL) return;
+  if (mpUnitDefinition == NULL) return;
 
   // set status
 //  if (mpModelValue->getStatus() != (CModelEntity::Status) mItemToType[mpComboBoxType->currentIndex()])
@@ -466,15 +466,15 @@ void CQUnitDetail::save()
 //    }
 
   // set unit symbol
-  if (mpUnit->getSymbol() != TO_UTF8(mpEditSymbol->text()))
+  if (mpUnitDefinition->getSymbol() != TO_UTF8(mpEditSymbol->text()))
     {
-      mpUnit->setSymbol(TO_UTF8(mpEditSymbol->text()));
+      mpUnitDefinition->setSymbol(TO_UTF8(mpEditSymbol->text()));
       mChanged = true;
     }
 
-  if (mpUnit->getExpression() != TO_UTF8(mpEditExpression->text()))
+  if (mpUnitDefinition->getExpression() != TO_UTF8(mpEditExpression->text()))
     {
-      mpUnit->setExpression(TO_UTF8(mpEditExpression->text()), CUnit::Avogadro);
+      mpUnitDefinition->setExpression(TO_UTF8(mpEditExpression->text()), CUnit::Avogadro);
       mChanged = true;
     }
 

@@ -125,7 +125,11 @@ CUnit CReaction::getChildObjectUnits(const CCopasiObject * pObject) const
   if (Name == "ParticleFlux")
     return pModel->getFrequencyUnit();
   else if (Name == "Flux")
-    return pModel->getQuantityRateUnitsDisplayString();
+    {
+      CUnit unit = CUnit();
+      unit.setExpression(pModel->getQuantityRateUnitsDisplayString(), pModel->getAvogadro());
+      return unit;
+    }
   else if (Name == "Propensity")
     return pModel->getFrequencyUnit();
 

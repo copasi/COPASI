@@ -125,8 +125,8 @@ void CCopasiRootContainer::initializeChildren()
   mpUndefined->setInfix("nan");
   mpUndefined->compile();
 
-  mpUnitDefinitionList = new CCopasiVectorN< CUnit >("UnitList", this);
-  CUnit::updateSIUnits(*mpUnitDefinitionList, CUnit::Avogadro);
+  mpUnitDefinitionList = new CCopasiVectorN< CUnitDefinition >("UnitList", this);
+  CUnitDefinition::updateSIUnitDefinitions(*mpUnitDefinitionList, CUnit::Avogadro);
 }
 
 // static
@@ -154,29 +154,29 @@ CCopasiVector< CCopasiDataModel > * CCopasiRootContainer::getDatamodelList()
 }
 
 // static
-CCopasiVectorN< CUnit > * CCopasiRootContainer::getUnitList()
+CCopasiVectorN<CUnitDefinition> *CCopasiRootContainer::getUnitList()
 {
   return pRootContainer->mpUnitDefinitionList;
 }
 
 // static
-const CUnit * CCopasiRootContainer::getUnitFromSymbol(const std::string symbol)
+const CUnitDefinition * CCopasiRootContainer::getUnitFromSymbol(const std::string symbol)
 {
-  CCopasiVectorN< CUnit >::const_iterator it = pRootContainer->mpUnitDefinitionList->begin();
-  CCopasiVectorN< CUnit >::const_iterator end = pRootContainer->mpUnitDefinitionList->end();
+  CCopasiVectorN< CUnitDefinition >::const_iterator it = pRootContainer->mpUnitDefinitionList->begin();
+  CCopasiVectorN< CUnitDefinition >::const_iterator end = pRootContainer->mpUnitDefinitionList->end();
 
-  const CUnit * pUnit = NULL;
+  const CUnitDefinition * pUnitDef = NULL;
 
   for (; it != end; ++it)
     {
       if (symbol == (*it)->getSymbol())
         {
-          pUnit = *it;
+          pUnitDef = *it;
           break;
         }
     }
 
-  return pUnit;
+  return pUnitDef;
 }
 
 // static

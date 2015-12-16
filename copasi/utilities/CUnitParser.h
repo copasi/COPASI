@@ -7,6 +7,7 @@
 #define COPASI_CUnitParser
 
 #include "copasi/utilities/CUnit.h"
+#include "copasi/utilities/CUnitDefinition.h"
 //#include <vector>
 //#include <string>
 

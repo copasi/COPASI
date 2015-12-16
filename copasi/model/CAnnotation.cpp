@@ -26,7 +26,7 @@
 #include "model/CEvent.h"
 #include "model/CModelParameterSet.h"
 #include "function/CFunction.h"
-#include "utilities/CUnit.h"
+#include "utilities/CUnitDefinition.h"
 #include "report/CCopasiRootContainer.h"
 
 // static
@@ -36,7 +36,7 @@ CAnnotation * CAnnotation::castObject(CCopasiObject * pObject)
   CEvent * pEvent = NULL;
   CReaction * pReaction = NULL;
   CFunction * pFunction = NULL;
-  CUnit * pUnit = NULL;
+  CUnitDefinition * pUnitDefinition = NULL;
   CModelParameterSet * pParameterSet = NULL;
 
   if ((pEntity = dynamic_cast< CModelEntity * >(pObject)) != NULL)
@@ -54,8 +54,8 @@ CAnnotation * CAnnotation::castObject(CCopasiObject * pObject)
   if ((pFunction = dynamic_cast< CFunction * >(pObject)) != NULL)
     return static_cast< CAnnotation * >(pFunction);
 
-  if ((pUnit = dynamic_cast< CUnit * >(pObject)) != NULL)
-    return static_cast< CAnnotation * >(pUnit);
+  if ((pUnitDefinition = dynamic_cast< CUnitDefinition * >(pObject)) != NULL)
+    return static_cast< CAnnotation * >(pUnitDefinition);
 
   return NULL;
 }
@@ -67,7 +67,7 @@ const CAnnotation * CAnnotation::castObject(const CCopasiObject * pObject)
   const CEvent * pEvent = NULL;
   const CReaction * pReaction = NULL;
   const CFunction * pFunction = NULL;
-  const CUnit * pUnit = NULL;
+  const CUnitDefinition * pUnitDefinition = NULL;
 
   if ((pEntity = dynamic_cast< const CModelEntity * >(pObject)) != NULL)
     return static_cast< const CAnnotation * >(pEntity);
@@ -81,8 +81,8 @@ const CAnnotation * CAnnotation::castObject(const CCopasiObject * pObject)
   if ((pFunction = dynamic_cast< const CFunction * >(pObject)) != NULL)
     return static_cast< const CAnnotation * >(pFunction);
 
-  if ((pUnit = dynamic_cast< const CUnit * >(pObject)) != NULL)
-    return static_cast< const CAnnotation * >(pUnit);
+  if ((pUnitDefinition = dynamic_cast< const CUnitDefinition * >(pObject)) != NULL)
+    return static_cast< const CAnnotation * >(pUnitDefinition);
 
   return NULL;
 }

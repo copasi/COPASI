@@ -77,9 +77,9 @@ QVariant CQUnitDM::data(const QModelIndex &index, int role) const
         }
       else
         {
-          const CUnit * pUnit = (* CCopasiRootContainer::getUnitList())[index.row()];
+          const CUnitDefinition * pUnitDef = (* CCopasiRootContainer::getUnitList())[index.row()];
 
-          if (pUnit == NULL)
+          if (pUnitDef == NULL)
             return QVariant();
 
           switch (index.column())
@@ -88,13 +88,13 @@ QVariant CQUnitDM::data(const QModelIndex &index, int role) const
                 return QVariant(index.row() + 1);
 
               case COL_NAME_UNITS:
-                return QVariant(QString(FROM_UTF8(pUnit->getObjectName())));
+                return QVariant(QString(FROM_UTF8(pUnitDef->getObjectName())));
 
               case COL_SYMBOL_UNITS:
-                return QVariant(QString(FROM_UTF8(pUnit->getSymbol())));
+                return QVariant(QString(FROM_UTF8(pUnitDef->getSymbol())));
 
               case COL_EXPRESSION_UNITS:
-                return QVariant(QString(FROM_UTF8(pUnit->getExpression())));
+                return QVariant(QString(FROM_UTF8(pUnitDef->getExpression())));
             }
         }
     }
@@ -147,21 +147,21 @@ bool CQUnitDM::setData(const QModelIndex &index, const QVariant &value,
             return false;
         }
 
-      CUnit *pUnit = (* CCopasiRootContainer::getUnitList())[index.row()];
+      CUnitDefinition *pUnitDef = (* CCopasiRootContainer::getUnitList())[index.row()];
 
-      if (pUnit == NULL)
+      if (pUnitDef == NULL)
         return false;
 
       if (index.column() == COL_NAME_UNITS)
-        pUnit->setObjectName(TO_UTF8(value.toString()));
+        pUnitDef->setObjectName(TO_UTF8(value.toString()));
       else if (index.column() == COL_SYMBOL_UNITS)
-        pUnit->setSymbol(TO_UTF8(value.toString()));
+        pUnitDef->setSymbol(TO_UTF8(value.toString()));
       else if (index.column() == COL_EXPRESSION_UNITS)
         {
           if (index.data() != value)
             {
               QString msg;
-              msg = "Expression must not be changed for '" + FROM_UTF8(pUnit->getObjectName()) + "'.\n";
+              msg = "Expression must not be changed for '" + FROM_UTF8(pUnitDef->getObjectName()) + "'.\n";
 
               CQMessageBox::information(NULL,
                                         "Unable to change Unit Expression",
@@ -171,10 +171,10 @@ bool CQUnitDM::setData(const QModelIndex &index, const QVariant &value,
         }
 
       if (defaultRow && this->index(index.row(), COL_SYMBOL_UNITS).data().toString() == "unit")
-        pUnit->setObjectName(TO_UTF8(createNewName("unit", COL_SYMBOL_UNITS)));
+        pUnitDef->setObjectName(TO_UTF8(createNewName("unit", COL_SYMBOL_UNITS)));
 
       emit dataChanged(index, index);
-      emit notifyGUI(ListViews::UNIT, ListViews::CHANGE, pUnit->getKey());
+      emit notifyGUI(ListViews::UNIT, ListViews::CHANGE, pUnitDef->getKey());
     }
 
   return true;
@@ -186,9 +186,9 @@ bool CQUnitDM::insertRows(int position, int rows, const QModelIndex&)
 
   for (int row = 0; row < rows; ++row)
     {
-      CUnit *pUnit;
-      CCopasiRootContainer::getUnitList()->add(pUnit = new CUnit(TO_UTF8(createNewName("unit", COL_SYMBOL_UNITS))), true);
-      emit notifyGUI(ListViews::UNIT, ListViews::ADD, pUnit->getKey());
+      CUnitDefinition *pUnitDef;
+      CCopasiRootContainer::getUnitList()->add(pUnitDef = new CUnitDefinition(TO_UTF8(createNewName("unit", COL_SYMBOL_UNITS))), true);
+      emit notifyGUI(ListViews::UNIT, ListViews::ADD, pUnitDef->getKey());
     }
 
   endInsertRows();
@@ -207,7 +207,7 @@ bool CQUnitDM::removeRows(int position, int rows)
   std::vector< std::string >::iterator itDeletedKey;
   std::vector< std::string >::iterator endDeletedKey = DeletedKeys.end();
 
-  CCopasiVector< CUnit >::const_iterator itRow =
+  CCopasiVector< CUnitDefinition >::const_iterator itRow =
     CCopasiRootContainer::getUnitList()->begin() + position;
   int row = 0;
 
@@ -222,9 +222,9 @@ bool CQUnitDM::removeRows(int position, int rows)
     {
       if (*itDeletedKey != "")
         {
-          CCopasiObject * pUnit = CCopasiRootContainer::getKeyFactory()->get(*itDeletedKey);
+          CCopasiObject * pUnitDef = CCopasiRootContainer::getKeyFactory()->get(*itDeletedKey);
 
-          if (pUnit != NULL) delete pUnit;
+          if (pUnitDef != NULL) delete pUnitDef;
 
           emit notifyGUI(ListViews::UNIT, ListViews::DELETE, *itDeletedKey);
         }
@@ -251,20 +251,20 @@ bool CQUnitDM::removeRows(QModelIndexList rows, const QModelIndex&)
   // Build the list of pointers to items to be deleted
   // before actually deleting any item.
 
-  QList <CUnit *> pUnits;
+  QList <CUnitDefinition *> pUnitDefs;
   QModelIndexList::const_iterator i;
 
   // TODO: Skip (don't delete) our SI units.
   for (i = rows.begin(); i != rows.end(); ++i)
     {
       if (!isDefaultRow(*i) && (*CCopasiRootContainer::getUnitList())[(*i).row()])
-        pUnits.append((*CCopasiRootContainer::getUnitList())[(*i).row()]);
+        pUnitDefs.append((*CCopasiRootContainer::getUnitList())[(*i).row()]);
     }
 
-  for (QList <CUnit *>::const_iterator j = pUnits.begin(); j != pUnits.end(); ++j)
+  for (QList <CUnitDefinition *>::const_iterator j = pUnitDefs.begin(); j != pUnitDefs.end(); ++j)
     {
       size_t delRow =
-        CCopasiRootContainer::getUnitList()->CCopasiVector< CUnit >::getIndex(*j);
+        CCopasiRootContainer::getUnitList()->CCopasiVector< CUnitDefinition >::getIndex(*j);
 
       if (delRow != C_INVALID_INDEX)
         {

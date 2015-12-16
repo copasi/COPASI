@@ -19,7 +19,7 @@
 class UndoGlobalQuantityData;
 #endif
 
-class CUnit;
+#include "copasi/utilities/CUnitDefinition.h"
 
 #include "ui_CQUnitDetail.h"
 
@@ -52,7 +52,7 @@ protected slots:
 
 private:
   std::vector< int > mItemToType;
-  CUnit * mpUnit;
+  CUnitDefinition * mpUnitDefinition;
   bool mChanged;
 
   void init();

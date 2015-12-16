@@ -15,6 +15,7 @@
 #include "copasi/report/CKeyFactory.h"
 #include "copasi/CopasiDataModel/CCopasiDataModel.h"
 #include "copasi/utilities/CCopasiVector.h"
+#include "copasi/utilities/CUnitDefinition.h"
 
 class CMIRIAMResource;
 class CFunctionDB;
@@ -74,7 +75,7 @@ protected:
   CFunctionDB* mpFunctionList;
   CConfigurationFile* mpConfiguration;
   CCopasiVector<CCopasiDataModel>* mpDataModelList;
-  CCopasiVectorN<CUnit>* mpUnitDefinitionList;
+  CCopasiVectorN<CUnitDefinition>* mpUnitDefinitionList;
   // flag to store if we are running a GUI or not
   bool mWithGUI;
 
@@ -114,12 +115,12 @@ public:
   /**
    * Returns a pointer to the list of units.
    */
-  static CCopasiVectorN< CUnit > *getUnitList();
+  static CCopasiVectorN< CUnitDefinition > *getUnitList();
 
   /**
    * Retrieve the unit for the given symbol
    */
-  static const CUnit * getUnitFromSymbol(const std::string symbol);
+  static const CUnitDefinition * getUnitFromSymbol(const std::string symbol);
 
   /**
    * Creates a new datamodel instance and adds it to the list.

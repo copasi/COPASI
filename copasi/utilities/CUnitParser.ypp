@@ -76,7 +76,7 @@ compound_unit: unit
            }
          | compound_unit MULTIPLY compound_unit
            {
-             $$.pUnit = new CUnit("");
+             $$.pUnit = new CUnit();
              *$$.pUnit = *$1.pUnit * *$3.pUnit;
              pdelete($1.pUnit);
              pdelete($3.pUnit);
@@ -84,7 +84,7 @@ compound_unit: unit
            }
          | compound_unit DIVIDE compound_unit
            {
-             $$.pUnit = new CUnit("");
+             $$.pUnit = new CUnit();
              *$$.pUnit = *$1.pUnit * $3.pUnit->exponentiate(-1);
              pdelete($1.pUnit);
              pdelete($3.pUnit);
@@ -142,7 +142,7 @@ unit:      KIND
            }
          | SI_UNIT
            {
-             $$.pUnit = new CUnit(CUnit::getSIUnit($1.text, mAvogadro));
+             $$.pUnit = new CUnit(CUnitDefinition::getSIUnitDefinition($1.text, mAvogadro));
              mSymbols.insert($1.text);
              mSymbols.insert($$.pUnit->getUsedSymbols().begin(), $$.pUnit->getUsedSymbols().end());
            }

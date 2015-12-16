@@ -4,9 +4,8 @@
 // All rights reserved.
 
 // This class defines a unit, which might be considered
-// an enhanced form of metadata, in COPASI. It can merely
-// contain the name and symbol of the unit, but is intended
-// to also contain a list of the SI units it is derived from.
+// an enhanced form of metadata, in COPASI. It can contains
+// the expression of the unit, and a list of the SI units it is derived from.
 // This is intended to facilitate unit analysis, user input parsing,
 // and easy compatibility to the SBML units representation.
 
@@ -14,16 +13,13 @@
 #define CUNIT_H
 
 #include "copasi/utilities/CUnitComponent.h"
-#include "copasi/report/CCopasiContainer.h"
 #include "copasi/utilities/CCopasiVector.h"
-#include "model/CAnnotation.h"
 
-class CUnit : public CCopasiContainer, public CAnnotation
+class CUnit
 {
   friend std::ostream &operator<<(std::ostream &os, const CUnit & o);
 
 public:
-  static CUnit EmptyUnit;
 
   static C_FLOAT64 Avogadro;
 
@@ -61,51 +57,33 @@ public:
   // String representation of valid quantity units
   static const char * QuantityUnitNames[];
 
-  static CUnit getSIUnit(const std::string & si,
-                         const C_FLOAT64 & avogadro);
-
-  static void updateSIUnits(CCopasiVectorN< CUnit > & Units,
-                            const C_FLOAT64 & avogadro);
-
   // constructors
   /**
    * Default constructor
-   * @param const std::string & name (default: "NoName")
-   * @param const CCopasiContainer * pParent (default: NULL)
    */
-  CUnit(const std::string & name = "NoName",
-        const CCopasiContainer * pParent = NULL);
+  CUnit();
 
   /**
    * Default constructor
    * @param const CBaseUnit::Kind & kind
-   * @param const CCopasiContainer * pParent (default: NULL)
    */
-  CUnit(const CBaseUnit::Kind & kind,
-        const CCopasiContainer * pParent = NULL);
+  CUnit(const CBaseUnit::Kind & kind);
 
   /**
    * Copy constructor
    * @param const CUnit & src
    * @param const C_FLOAT64 & avogadro
-   * @param const CCopasiContainer * pParent (default: NULL)
    */
   CUnit(const CUnit & src,
-        const C_FLOAT64 & avogadro,
-        const CCopasiContainer * pParent = NULL);
+        const C_FLOAT64 & avogadro);
 
   ~CUnit();
-
-  virtual const std::string & getKey() const;
 
   void fromEnum(VolumeUnit volEnum);
   void fromEnum(AreaUnit areaEnum);
   void fromEnum(LengthUnit lengthEnum);
   void fromEnum(TimeUnit timeEnum);
-  void fromEnum(QuantityUnit quantityEnum);
-
-  void setSymbol(const std::string & symbol);
-  std::string getSymbol() const;
+  void fromEnum(QuantityUnit quantityEnum, C_FLOAT64 avogadro);
 
   bool setExpression(const std::string & expression,
                      const C_FLOAT64 & avogadro);
@@ -118,7 +96,7 @@ public:
   void addComponent(const CUnitComponent & component);
   const std::set< CUnitComponent > & getComponents() const;
 
-  bool compile(const C_FLOAT64 & avogadro);
+  bool compile(const C_FLOAT64 & avogadro = Avogadro);
 
   CUnit & exponentiate(double exp);
   CUnit operator*(const CUnit & rhs) const;
@@ -126,7 +104,6 @@ public:
   bool isEquivalent(const CUnit & rhs) const;
 
 private:
-  std::string mSymbol;
   std::string mExpression;
   std::set< CUnitComponent > mComponents;
   std::set< std::string > mUsedSymbols;

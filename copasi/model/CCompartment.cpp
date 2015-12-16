@@ -70,7 +70,9 @@ CCompartment::~CCompartment()
 // virtual
 CUnit CCompartment::getChildObjectUnits(const CCopasiObject * pObject) const
 {
-  if (mpModel == NULL) return CUnit();
+  CUnit unit = CUnit();
+
+  if (mpModel == NULL) return unit;
 
   if (pObject == mpValueReference ||
       pObject == mpIValueReference)
@@ -78,46 +80,42 @@ CUnit CCompartment::getChildObjectUnits(const CCopasiObject * pObject) const
       switch (mDimensionality)
         {
           case 1:
-            return mpModel->getLengthUnitsDisplayString();
+            unit = mpModel->getLengthUnit();
             break;
 
           case 2:
-            return mpModel->getAreaUnitsDisplayString();
+            unit = mpModel->getAreaUnit();
             break;
 
           case 3:
-            return mpModel->getVolumeUnitsDisplayString();
+            unit = mpModel->getVolumeUnit();
             break;
 
           default:
-            return CUnit();
             break;
         }
     }
   else if (pObject == mpRateReference)
     {
-      std::string Unit = getChildObjectUnits(mpValueReference).getExpression();
-      std::string TimeUnit = mpModel->getTimeUnitsDisplayString();
+      std::string unitExpression = getChildObjectUnits(mpValueReference).getExpression();
+      std::string timeUnitExpression = mpModel->getTimeUnitsDisplayString();
 
-      if (Unit == "")
+      if (unitExpression != "" || timeUnitExpression != "")
         {
-          if (TimeUnit == "")
+          if (unitExpression == "")
             {
-              return CUnit();
+              unitExpression = "1";
+            }
+          if (timeUnitExpression != "")
+            {
+              timeUnitExpression = "/" + timeUnitExpression;
             }
 
-          return "1/" + TimeUnit;
+          unit.setExpression(unitExpression + timeUnitExpression, mpModel->getAvogadro());
         }
-
-      if (TimeUnit == "")
-        {
-          return Unit;
-        }
-
-      return Unit + "/" + TimeUnit;
     }
 
-  return CUnit();
+  return unit;
 }
 
 void CCompartment::cleanup() {mMetabolites.cleanup();}

@@ -1431,7 +1431,7 @@ bool CModel::setQuantityUnit(const CUnit::QuantityUnit & unitEnum)
   // //      *mpQuantityUnit == unitEnum) //create appropriate comparison operator
   //     return true;
 
-  mpQuantityUnit->fromEnum(unitEnum);
+  mpQuantityUnit->fromEnum(unitEnum,mAvogadro);
 
   bool success = true;
 
@@ -1522,7 +1522,7 @@ void CModel::setAvogadro(const C_FLOAT64 & avogadro)
 
   setQuantityUnit(mpQuantityUnit->getExpression());
 
-  CUnit::updateSIUnits(*CCopasiRootContainer::getUnitList(), avogadro);  // TODO Eventually need to deal with case of more than one model (different Avogadro constants)
+  CUnitDefinition::updateSIUnitDefinitions(*CCopasiRootContainer::getUnitList(), avogadro);  // TODO Eventually need to deal with case of more than one model (different Avogadro constants)
 }
 
 const C_FLOAT64 & CModel::getAvogadro() const
@@ -3029,20 +3029,20 @@ void CModel::initObjects()
 
   // units
 
-  mpVolumeUnit = new CUnit("ml");
+  mpVolumeUnit = new CUnit();
   mpVolumeUnit->fromEnum(CUnit::ml);
 
-  mpAreaUnit = new CUnit("m2");
+  mpAreaUnit = new CUnit();
   mpAreaUnit->fromEnum(CUnit::m2);
 
-  mpLengthUnit = new CUnit("m");
+  mpLengthUnit = new CUnit();
   mpLengthUnit->fromEnum(CUnit::m);
 
-  mpTimeUnit = new CUnit("s");
+  mpTimeUnit = new CUnit();
   mpTimeUnit->fromEnum(CUnit::s);
 
-  mpQuantityUnit = new CUnit("mMol");
-  mpQuantityUnit->fromEnum(CUnit::mMol);
+  mpQuantityUnit = new CUnit();
+  mpQuantityUnit->fromEnum(CUnit::mMol, mAvogadro);
 
   mpIValueReference->setObjectName("Initial Time");
   mpValueReference->setObjectName("Time");
