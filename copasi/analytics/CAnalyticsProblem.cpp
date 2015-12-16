@@ -130,9 +130,6 @@ void CAnalyticsProblem::setCrossingsLimit(const unsigned C_INT32 &crossingLimit)
 void CAnalyticsProblem::setFlagLimitOutCrossings(bool flagLimitCrossing)
 {*mpFlagLimitOutCrossings = flagLimitCrossing;}
 
-void CAnalyticsProblem::setOutCrossingsLimit(const unsigned C_INT32 &crossingLimit)
-{*mpOutCrossingsLimit = crossingLimit;}
-
 void CAnalyticsProblem::setFlagLimitOutTime(bool flagLimitTime)
 {*mpFlagLimitOutTime = flagLimitTime;}
 
@@ -199,11 +196,6 @@ void CAnalyticsProblem::setFlagLimitConvergence(bool flagLimitConvergence)
   *mpFlagLimitConvergence = flagLimitConvergence;
 }
 
-void CAnalyticsProblem::setConvergenceTolerance(const C_FLOAT64 &convergenceTolerance)
-{
-  *mpConvergenceTolerance = convergenceTolerance;
-}
-
 bool CAnalyticsProblem::getFlagLimitOutConvergence() const
 {
   return *mpFlagLimitOutConvergence;
@@ -217,9 +209,4 @@ const C_FLOAT64 &CAnalyticsProblem::getConvergenceOutTolerance() const
 void CAnalyticsProblem::setFlagLimitOutConvergence(bool flagLimitConvergence)
 {
   *mpFlagLimitOutConvergence = flagLimitConvergence;
-}
-
-void CAnalyticsProblem::setConvergenceOutTolerance(const C_FLOAT64 &convergenceTolerance)
-{
-  *mpConvergenceOutTolerance = convergenceTolerance;
 }

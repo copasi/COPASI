@@ -68,6 +68,7 @@ CQAnalyticsWidget::~CQAnalyticsWidget()
 
 void CQAnalyticsWidget::init()
 {
+  mpHeaderWidget->mpUpdateModel->hide();
   mpAnalyticsProblem = NULL;
 
   mpHeaderWidget->setTaskName("Analytics");
@@ -85,29 +86,12 @@ void CQAnalyticsWidget::init()
   // verticalLayout->addWidget(mpMethodWidget);
   verticalLayout->addWidget(mpBtnWidget);
 
-  mpValidatorCrossing = new CQValidatorDouble(mpLineEditValue);
-  mpLineEditValue->setValidator(mpValidatorCrossing);
-
-  mpValidatorLC = new CQValidatorInt(mpTxtCrossings);
-  mpValidatorLC->setRange(0, std::numeric_limits< int >::max());
-  mpTxtCrossings->setValidator(mpValidatorLC);
-
   mpValidatorTime = new CQValidatorDouble(mpTxtTime);
   mpValidatorTime->setRange(0, std::numeric_limits< double >::max());
   mpTxtTime->setValidator(mpValidatorTime);
 
   mpValidatorOutTime = new CQValidatorDouble(mpTxtOutTime);
   mpTxtOutTime->setValidator(mpValidatorOutTime);
-
-  mpValidatorTolerance = new CQValidatorDouble(mpTxtConvergence);
-  mpTxtConvergence->setValidator(mpValidatorTolerance);
-
-  mpValidatorOutLC = new CQValidatorInt(mpTxtOutCrossings);
-  mpValidatorOutLC->setRange(0, std::numeric_limits< int >::max());
-  mpTxtOutCrossings->setValidator(mpValidatorOutLC);
-
-  mpValidatorOutTolerance = new CQValidatorDouble(mpTxtOutConvergence);
-  mpTxtOutConvergence->setValidator(mpValidatorOutTolerance);
 
   CQTimeSeriesWidget * pResult =
     dynamic_cast< CQTimeSeriesWidget * >(mpListView->findWidgetFromId(291));
@@ -123,20 +107,17 @@ void CQAnalyticsWidget::commitInput()
 {
   if (!mpAnalyticsProblem) return;
 
-  mpAnalyticsProblem->setFlagLimitCrossings(mpCheckSimCrossings->isChecked());
-  mpAnalyticsProblem->setCrossingsLimit(mpTxtCrossings->text().toULong());
-  mpAnalyticsProblem->setFlagLimitOutCrossings(mpCheckOutputCrossings->isChecked());
-  mpAnalyticsProblem->setOutCrossingsLimit(mpTxtOutCrossings->text().toULong());
+  mpAnalyticsProblem->setFlagLimitCrossings(false);
+  mpAnalyticsProblem->setCrossingsLimit(false);
+  mpAnalyticsProblem->setFlagLimitOutCrossings(false);
   mpAnalyticsProblem->setTimeLimit(mpTxtTime->text().toDouble());
   mpAnalyticsProblem->setOutputStartTime(mpTxtOutTime->text().toDouble());
-  mpAnalyticsProblem->setFlagLimitOutTime(mpCheckOutputDelay->isChecked());
-  mpAnalyticsProblem->setFlagLimitConvergence(mpCheckSimConvergence->isChecked());
-  mpAnalyticsProblem->setConvergenceTolerance(mpTxtConvergence->text().toDouble());
-  mpAnalyticsProblem->setFlagLimitOutConvergence(mpCheckOutputConvergence->isChecked());
-  mpAnalyticsProblem->setConvergenceOutTolerance(mpTxtOutConvergence->text().toDouble());
+  mpAnalyticsProblem->setFlagLimitOutTime(false);
+  mpAnalyticsProblem->setFlagLimitConvergence(false);
+  mpAnalyticsProblem->setFlagLimitOutConvergence(false);
   mpAnalyticsProblem->setSingleObjectCN(mpSingleVariable);
   mpAnalyticsProblem->setPositiveDirection(mpDirectionPositive->isChecked());
-  mpAnalyticsProblem->setThreshold(mpLineEditValue->text().toDouble());
+  mpAnalyticsProblem->setThreshold(0.0);
 }
 
 bool CQAnalyticsWidget::runTask()
@@ -172,42 +153,23 @@ bool CQAnalyticsWidget::saveTask()
     dynamic_cast<CAnalyticsProblem *>(pTask->getProblem());
   assert(pProblem);
 
-  // save the actual changes
-  if (mpCheckSimConvergence->isChecked())
-    pProblem->setCrossingsLimit(mpTxtCrossings->text().toULong());
-
   pProblem->setPositiveDirection(mpDirectionPositive->isChecked());
-  pProblem->setThreshold(mpLineEditValue->text().toDouble());
-  //if (mpCheckLT->isChecked())
+
+  pProblem->setThreshold(0.0);
+
   pProblem->setTimeLimit(mpTxtTime->text().toDouble());
 
   pProblem->setSingleObjectCN(mpSingleVariable);
 
-  //--- ETTORE start ---
   pProblem->retrieveSelectedObject(mpSingleVariable);
-  //--- ETTORE end -----
 
-  pProblem->setFlagLimitOutTime(mpCheckOutputDelay->isChecked());
+  pProblem->setFlagLimitOutTime(false);
 
-  if (mpCheckOutputDelay->isChecked())
-    {
-      pProblem->setOutputStartTime(mpTxtOutTime->text().toDouble());
-    }
+  pProblem->setFlagLimitCrossings(false);
+  pProblem->setFlagLimitOutCrossings(false);
+  pProblem->setFlagLimitConvergence(false);
+  pProblem->setFlagLimitOutConvergence(false);
 
-  pProblem->setFlagLimitCrossings(mpCheckSimCrossings->isChecked());
-  pProblem->setCrossingsLimit(mpTxtCrossings->text().toULong());
-  pProblem->setFlagLimitOutCrossings(mpCheckOutputCrossings->isChecked());
-  pProblem->setOutCrossingsLimit(mpTxtOutCrossings->text().toULong());
-  pProblem->setFlagLimitConvergence(mpCheckSimConvergence->isChecked());
-  pProblem->setConvergenceTolerance(mpTxtConvergence->text().toDouble());
-  pProblem->setFlagLimitOutConvergence(mpCheckOutputConvergence->isChecked());
-  pProblem->setConvergenceOutTolerance(mpTxtOutConvergence->text().toDouble());
-
-  mpValidatorCrossing->saved();
-  mpValidatorTolerance->saved();
-  mpValidatorOutTolerance->saved();
-  mpValidatorLC->saved();
-  mpValidatorOutLC->saved();
   mpValidatorTime->saved();
   mpValidatorOutTime->saved();
 
@@ -264,63 +226,11 @@ bool CQAnalyticsWidget::loadTask()
     setSingleObject(static_cast<const CCopasiObject*>(pTask->getObjectDataModel()->getObject(name)));
 
 
-  mpLineEditValue->setText(QString::number(pProblem->getThreshold()));
   mpDirectionPositive->setChecked(mpAnalyticsProblem->isPositiveDirection());
   mpDirectionNegative->setChecked(!mpAnalyticsProblem->isPositiveDirection());
 
-  mpCheckSimConvergence->setChecked(pProblem->getFlagLimitConvergence());
-  mpTxtConvergence->setEnabled(pProblem->getFlagLimitConvergence());
-
-  if (pProblem->getFlagLimitConvergence())
-    mpTxtConvergence->setText(QString::number(pProblem->getConvergenceTolerance()));
-  else
-    mpTxtConvergence->setText("");
-
-  mpCheckOutputConvergence->setChecked(pProblem->getFlagLimitOutConvergence());
-  mpTxtOutConvergence->setEnabled(pProblem->getFlagLimitOutConvergence());
-
-  if (pProblem->getFlagLimitOutConvergence())
-    mpTxtOutConvergence->setText(QString::number(pProblem->getConvergenceOutTolerance()));
-  else
-    mpTxtOutConvergence->setText("");
-
-  mpCheckSimCrossings->setChecked(pProblem->getFlagLimitCrossings());
-  mpTxtCrossings->setEnabled(pProblem->getFlagLimitCrossings());
-
-  if (pProblem->getFlagLimitCrossings())
-    mpTxtCrossings->setText(QString::number(pProblem->getCrossingsLimit()));
-  else
-    mpTxtCrossings->setText("");
-
-  mpCheckOutputCrossings->setChecked(pProblem->getFlagLimitOutCrossings());
-  mpTxtOutCrossings->setEnabled(pProblem->getFlagLimitOutCrossings());
-
-  if (pProblem->getFlagLimitOutCrossings())
-    mpTxtOutCrossings->setText(QString::number(pProblem->getOutCrossingsLimit()));
-  else
-    mpTxtOutCrossings->setText("");
-
-  //mpCheckLT->setChecked(pProblem->getFlagLimitTime());
-  if (pProblem->getFlagLimitOutTime())
-    {
-      mpCheckOutputDelay->setChecked(true);
-      mpTxtOutTime->setEnabled(true);
-      mpTxtOutTime->setText(QString::number(pProblem->getOutputStartTime()));
-    }
-  else
-    {
-      mpCheckOutputDelay->setChecked(false);
-      mpTxtOutTime->setEnabled(false);
-      mpTxtOutTime->setText("");
-    }
-
   mpTxtTime->setText(QString::number(pProblem->getTimeLimit()));
 
-  mpValidatorCrossing->saved();
-  mpValidatorTolerance->saved();
-  mpValidatorOutTolerance->saved();
-  mpValidatorLC->saved();
-  mpValidatorOutLC->saved();
   mpValidatorTime->saved();
   mpValidatorOutTime->saved();
 
@@ -329,15 +239,9 @@ bool CQAnalyticsWidget::loadTask()
 
 void CQAnalyticsWidget::slotChooseVariable()
 {
-  //--- ETTORE start ---
-  //const CCopasiObject * pObject =
-  //  CCopasiSelectionDialog::getObjectSingle(this,
-  //      CQSimpleSelectionTree::Variables + CQSimpleSelectionTree::ObservedValues, mpSingleVariable);
   const CCopasiObject * pObject =
     CCopasiSelectionDialog::getObjectSingle(this,
         CQSimpleSelectionTree::Variables, mpSingleVariable);
-
- //--- ETTORE end -----
 
   setSingleObject(pObject);
 }
@@ -352,56 +256,20 @@ void CQAnalyticsWidget::setSingleObject(const CCopasiObject * pSingleVariable)
     mpLineEditVariable->setText(FROM_UTF8(pSingleVariable->getObjectDisplayName()));
 }
 
+
 void CQAnalyticsWidget::slotValueRate()
 {
-  if (!mpLineEditValue->hasAcceptableInput())
-    return;
-
   commitInput();
 }
 
+
 void CQAnalyticsWidget::slotUpdateCrossings(bool b)
 {
-  mpTxtCrossings->setEnabled(b);
-
-  if (!mpTxtCrossings->hasAcceptableInput())
-    return;
-
-  try
-    {
-      mpAnalyticsProblem->setFlagLimitCrossings(b);
-      mpAnalyticsProblem->setCrossingsLimit(mpTxtCrossings->text().toULong());
-    }
-
-  catch (...)
-    {
-      CQMessageBox::information(this, QString("Information"),
-                                FROM_UTF8(CCopasiMessage::getAllMessageText()),
-                                QMessageBox::Ok, QMessageBox::Ok);
-    }
-
 //  updateValues();
 }
 
 void CQAnalyticsWidget::slotUpdateConvergence(bool b)
 {
-  mpTxtConvergence->setEnabled(b);
-
-  if (!mpTxtConvergence->hasAcceptableInput())
-    return;
-
-  try
-    {
-      mpAnalyticsProblem->setConvergenceTolerance(mpTxtConvergence->text().toDouble());
-    }
-
-  catch (...)
-    {
-      CQMessageBox::information(this, QString("Information"),
-                                FROM_UTF8(CCopasiMessage::getAllMessageText()),
-                                QMessageBox::Ok, QMessageBox::Ok);
-    }
-
 //  updateValues();
 }
 
@@ -428,43 +296,10 @@ void CQAnalyticsWidget::slotOutputDelay(bool b)
 }
 
 void CQAnalyticsWidget::slotOutputCrossings(bool b)
-{
-  mpTxtOutCrossings->setEnabled(b);
+{}
 
-  if (!mpTxtOutCrossings->hasAcceptableInput())
-    return;
-
-  try
-    {
-      mpAnalyticsProblem->setOutCrossingsLimit(mpTxtOutCrossings->text().toDouble());
-    }
-
-  catch (...)
-    {
-      CQMessageBox::information(this, QString("Information"),
-                                FROM_UTF8(CCopasiMessage::getAllMessageText()),
-                                QMessageBox::Ok, QMessageBox::Ok);
-    }
-}
 void CQAnalyticsWidget::slotOutputConvergence(bool b)
-{
-  mpTxtOutConvergence->setEnabled(b);
-
-  if (!mpTxtOutConvergence->hasAcceptableInput())
-    return;
-
-  try
-    {
-      mpAnalyticsProblem->setConvergenceOutTolerance(mpTxtOutConvergence->text().toDouble());
-    }
-
-  catch (...)
-    {
-      CQMessageBox::information(this, QString("Information"),
-                                FROM_UTF8(CCopasiMessage::getAllMessageText()),
-                                QMessageBox::Ok, QMessageBox::Ok);
-    }
-}
+{}
 
 void CQAnalyticsWidget::slotUpdateTime()
 {
@@ -475,35 +310,24 @@ void CQAnalyticsWidget::slotUpdateTime()
 
   // TODO: Implement
 }
+
 void CQAnalyticsWidget::slotUpdateConvergenceTolerance()
 {
-  if (!mpTxtConvergence->hasAcceptableInput())
-    return;
-
   // TODO: Implement
 }
+
 void CQAnalyticsWidget::slotUpdateCrossingsLimit()
 {
-  if (!mpTxtCrossings->hasAcceptableInput())
-    return;
-
   // TODO: Implement
 }
 
 void CQAnalyticsWidget::slotOutputConvergenceTolerance()
 {
-  if (!mpTxtOutConvergence->hasAcceptableInput())
-    return;
-
   // TODO: Implement
 }
 void CQAnalyticsWidget::slotOutputCrossingsLimit()
-{
-  if (!mpTxtOutCrossings->hasAcceptableInput())
-    return;
+{}
 
-  // TODO: Implement
-}
 void CQAnalyticsWidget::slotOutputDelayTime()
 {
   if (!mpTxtOutTime->hasAcceptableInput())
@@ -514,26 +338,11 @@ void CQAnalyticsWidget::slotOutputDelayTime()
 
 void CQAnalyticsWidget::updateValues()
 {
-  mpTxtCrossings->setText(QString::number(mpAnalyticsProblem->getCrossingsLimit()));
-  mpValidatorLC->revalidate();
-
-  mpTxtOutCrossings->setText(QString::number(mpAnalyticsProblem->getOutCrossingsLimit()));
-  mpValidatorOutLC->revalidate();
-
   mpTxtTime->setText(QString::number(mpAnalyticsProblem->getTimeLimit()));
   mpValidatorTime->revalidate();
 
   mpTxtOutTime->setText(QString::number(mpAnalyticsProblem->getOutputStartTime()));
   mpValidatorOutTime->revalidate();
-
-  mpTxtConvergence->setText(QString::number(mpAnalyticsProblem->getConvergenceTolerance()));
-  mpValidatorTolerance->revalidate();
-
-  mpTxtOutConvergence->setText(QString::number(mpAnalyticsProblem->getConvergenceOutTolerance()));
-  mpValidatorOutTolerance->revalidate();
-
-  mpLineEditValue->setText(QString::number(mpAnalyticsProblem->getThreshold()));
-  mpValidatorCrossing->revalidate();
 }
 
 // virtual
@@ -569,6 +378,6 @@ void CQAnalyticsWidget::showUnits()
       TimeUnits = "(" + FROM_UTF8(pModel->getTimeUnitsDisplayString()) + ")";
     }
 
-  mpLblDurationLimit->setText("if detection time " + TimeUnits + " larger:");
-  mpCheckOutputDelay->setText("if time " + TimeUnits + " larger:");
+  mpLblEndTime->setText("End-time " + TimeUnits + ": ");
+  mpCheckOutputDelay->setText("Start-time " + TimeUnits + ": ");
 }

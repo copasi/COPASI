@@ -95,11 +95,6 @@ public:
   void setFlagLimitConvergence(bool flagLimitConvergence);
 
   /**
-   * Function to set mpConvergenceTolerance
-   */
-  void setConvergenceTolerance(const C_FLOAT64 &convergenceTolerance);
-
-  /**
    * Function to get mpFlagLimitOutConvergence
    */
   bool getFlagLimitOutConvergence() const;
@@ -113,11 +108,6 @@ public:
   * Function to set mpFlagLimitOutConvergence
   */
   void setFlagLimitOutConvergence(bool flagLimitConvergence);
-
-  /**
-   * Function to set mpConvergenceOutTolerance
-   */
-  void setConvergenceOutTolerance(const C_FLOAT64 &convergenceTolerance);
 
   bool isPositiveDirection() const;
   void setPositiveDirection(bool isPositive);
@@ -136,11 +126,6 @@ public:
    * Function to set mpFlagLimitOutCrossings
    */
   void setFlagLimitOutCrossings(bool flagLimitCrossing);
-
-  /**
-   * Function to set mpOutCrossingsLimit
-   */
-  void setOutCrossingsLimit(const unsigned C_INT32 &crossingLimit);
 
   /**
    * Function to set mpFlagLimitOutTime
