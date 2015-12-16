@@ -68,7 +68,7 @@ CQAnalyticsWidget::~CQAnalyticsWidget()
 
 void CQAnalyticsWidget::init()
 {
-  mpHeaderWidget->mpUpdateModel->hide();
+  mpHeaderWidget->mpUpdateModel->hide(); // There is no sense in allowing the model to be updated after running this task.
   mpAnalyticsProblem = NULL;
 
   mpHeaderWidget->setTaskName("Analytics");
