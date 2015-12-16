@@ -257,14 +257,16 @@ CLMetabReferenceGlyph::CLMetabReferenceGlyph(const std::string & name,
     const CCopasiContainer * pParent)
   : CLGlyphWithCurve(name, pParent),
     mMetabGlyphKey(),
-    mRole(UNDEFINED)
+    mRole(UNDEFINED),
+    mFunctionalRole(UNDEFINED)
 {}
 
 CLMetabReferenceGlyph::CLMetabReferenceGlyph(const CLMetabReferenceGlyph & src,
     const CCopasiContainer * pParent)
   : CLGlyphWithCurve(src, pParent),
     mMetabGlyphKey(src.mMetabGlyphKey),
-    mRole(src.mRole)
+    mRole(src.mRole),
+    mFunctionalRole(src.mFunctionalRole)
 {}
 
 CLMetabReferenceGlyph::CLMetabReferenceGlyph(const SpeciesReferenceGlyph & sbml,
@@ -273,7 +275,8 @@ CLMetabReferenceGlyph::CLMetabReferenceGlyph(const SpeciesReferenceGlyph & sbml,
     const CCopasiContainer * pParent)
   : CLGlyphWithCurve(sbml, modelmap, layoutmap, pParent),
     mMetabGlyphKey(), //initialized in the body below
-    mRole((Role)sbml.getRole())
+    mRole((Role)sbml.getRole()),
+    mFunctionalRole(UNDEFINED) //initialized in the body below TODO!!!
 {
   //get the copasi key corresponding to the sbml id for the species reference
   if (sbml.getSpeciesReferenceId() != "")

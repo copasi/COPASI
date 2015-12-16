@@ -179,7 +179,15 @@ private:
    */
   std::string mMetabGlyphKey;
 
+  /**
+   * The role of the metab, as used for rendering, this is also used in SBML
+   */
   Role mRole;
+  
+  /**
+   * The role of the metab, logically. This may be used for automatic layout
+   */
+  Role mFunctionalRole;
 
 public:
   CLMetabReferenceGlyph(const std::string & name = "MetabReferenceGlyph",
@@ -207,6 +215,10 @@ public:
 
   Role getRole() const {return mRole;};
   void setRole(Role r) {mRole = r;};
+
+  Role getFunctionalRole() const {return mFunctionalRole;};
+  void setFunctionalRole(Role r) {mFunctionalRole = r;};
+
 
   const std::string & getRoleDisplayName() const
   {return RoleName[mRole];};
