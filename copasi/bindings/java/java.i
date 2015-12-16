@@ -42,55 +42,55 @@
 		if (cPtr == 0) return null;
 		CCopasiTask task = new CCopasiTask(cPtr,false);
 		int taskType = task.getType();
-		if (taskType == CCopasiTask.steadyState)
+		if (taskType == CTaskEnum.steadyState)
 		{	
 			return new CSteadyStateTask(cPtr, owner);
 		} 
-		else if (taskType == CCopasiTask.timeCourse)
+		else if (taskType == CTaskEnum.timeCourse)
 		{	
 			return new CTrajectoryTask(cPtr, owner);
 		}
-		else if (taskType == CCopasiTask.scan)
+		else if (taskType == CTaskEnum.scan)
 		{	
 			return new CScanTask(cPtr, owner);
 		}
-		else if (taskType == CCopasiTask.fluxMode)
+		else if (taskType == CTaskEnum.fluxMode)
 		{	
 			return new CEFMTask(cPtr, owner);
 		}
-		else if (taskType == CCopasiTask.optimization)
+		else if (taskType == CTaskEnum.optimization)
 		{	
 			return new COptTask(cPtr, owner);
 		}
-		else if (taskType == CCopasiTask.parameterFitting)
+		else if (taskType == CTaskEnum.parameterFitting)
 		{	
 			return new  CFitTask(cPtr, owner);
 		}
-		else if (taskType == CCopasiTask.mca)
+		else if (taskType == CTaskEnum.mca)
 		{	
 			return new CMCATask(cPtr, owner);
 		}
-		else if (taskType == CCopasiTask.lyap)
+		else if (taskType == CTaskEnum.lyap)
 		{	
 			return new CLyapTask(cPtr, owner);
 		}		
-		else if (taskType == CCopasiTask.tssAnalysis)
+		else if (taskType == CTaskEnum.tssAnalysis)
 		{	
 			return new CTSSATask(cPtr, owner);
 		}
-		else if (taskType == CCopasiTask.sens)
+		else if (taskType == CTaskEnum.sens)
 		{	
 			return new CSensTask(cPtr, owner);
 		}
-		else if (taskType == CCopasiTask.moieties)
+		else if (taskType == CTaskEnum.moieties)
 		{	
 			return new CMoietiesTask(cPtr, owner);
 		}
-		else if (taskType == CCopasiTask.crosssection)
+		else if (taskType == CTaskEnum.crosssection)
 		{	
 			return new CCrossSectionTask(cPtr, owner);
 		}
-		else if (taskType == CCopasiTask.lna)
+		else if (taskType == CTaskEnum.lna)
 		{	
 			return new CLNATask(cPtr, owner);
 		}
@@ -105,58 +105,58 @@
 		int methodType = method.getType();
 		int methodSubType = method.getSubType();
 		
-		if (methodType == CCopasiTask.parameterFitting)
+		if (methodType == CTaskEnum.parameterFitting)
 		{
 			return new COptMethod(cPtr, owner);
 		}
-		else if (methodType == CCopasiTask.lyap)
+		else if (methodType == CTaskEnum.lyap)
 		{
 			return new CLyapMethod(cPtr, owner);
 		}
-		else if (methodType == CCopasiTask.mca)
+		else if (methodType == CTaskEnum.mca)
 		{
 			return new CMCAMethod(cPtr, owner);
 		}
-		else if (methodType == CCopasiTask.tssAnalysis)
+		else if (methodType == CTaskEnum.tssAnalysis)
 		{
 			return new  CTSSAMethod(cPtr, owner);
 		}
-		else if (methodType == CCopasiTask.moieties)
+		else if (methodType == CTaskEnum.moieties)
 		{
 			return new CMoietiesMethod(cPtr, owner);
 		}
-		else if (methodType == CCopasiTask.crosssection)
+		else if (methodType == CTaskEnum.crosssection)
 		{
 			return new CCrossSectionMethod(cPtr, owner);
 		}
-		else if (methodType == CCopasiTask.lna)
+		else if (methodType == CTaskEnum.lna)
 		{
 			return new CLNAMethod(cPtr, owner);
 		}
-		else if (methodType == CCopasiTask.fluxMode)
+		else if (methodType == CTaskEnum.fluxMode)
 		{
 			return new CEFMMethod(cPtr, owner);
 		}
-		else if (methodType == CCopasiTask.steadyState)
+		else if (methodType == CTaskEnum.steadyState)
 		{
-			if (methodSubType == CCopasiMethod.Newton)
+			if (methodSubType == CTaskEnum.Newton)
 				return new CNewtonMethod(cPtr, owner);
 				
 			return new CSteadyStateMethod(cPtr, owner);
 		}
-		else if (methodType == CCopasiTask.optimization)
+		else if (methodType == CTaskEnum.optimization)
 		{
 			return new COptMethod(cPtr, owner);
 		}
-		else if (methodType == CCopasiTask.scan)
+		else if (methodType == CTaskEnum.scan)
 		{
 			return new CScanMethod(cPtr, owner);
 		}
-		else if (methodType == CCopasiTask.sens)
+		else if (methodType == CTaskEnum.sens)
 		{
 			return new CSensMethod(cPtr, owner);
 		}
-		else if (methodType == CCopasiTask.timeCourse)
+		else if (methodType == CTaskEnum.timeCourse)
 		{
 			return new CTrajectoryMethod(cPtr, owner);
 		}
@@ -212,55 +212,55 @@
 		if (cPtr == 0) return null;
 		CCopasiProblem problem = new CCopasiProblem(cPtr,false);
 		int problemType = problem.getType();
-		if (problemType == CCopasiTask.steadyState)
+		if (problemType == CTaskEnum.steadyState)
 		{	
 			return new CSteadyStateProblem(cPtr, owner);
 		} 
-		else if (problemType == CCopasiTask.timeCourse)
+		else if (problemType == CTaskEnum.timeCourse)
 		{	
 			return new CTrajectoryProblem(cPtr, owner);
 		}
-		else if (problemType == CCopasiTask.scan)
+		else if (problemType == CTaskEnum.scan)
 		{	
 			return new CScanProblem(cPtr, owner);
 		}
-		else if (problemType == CCopasiTask.fluxMode)
+		else if (problemType == CTaskEnum.fluxMode)
 		{	
 			return new CEFMProblem(cPtr, owner);
 		}
-		else if (problemType == CCopasiTask.optimization)
+		else if (problemType == CTaskEnum.optimization)
 		{	
 			return new COptProblem(cPtr, owner);
 		}
-		else if (problemType == CCopasiTask.parameterFitting)
+		else if (problemType == CTaskEnum.parameterFitting)
 		{	
 			return new CFitProblem(cPtr, owner);
 		}
-		else if (problemType == CCopasiTask.mca)
+		else if (problemType == CTaskEnum.mca)
 		{	
 			return new CMCAProblem(cPtr, owner);
 		}
-		else if (problemType == CCopasiTask.lyap)
+		else if (problemType == CTaskEnum.lyap)
 		{	
 			return new CLyapProblem(cPtr, owner);
 		}
-		else if (problemType == CCopasiTask.tssAnalysis)
+		else if (problemType == CTaskEnum.tssAnalysis)
 		{	
 			return new CTSSAProblem(cPtr, owner);
 		}
-		else if (problemType == CCopasiTask.sens)
+		else if (problemType == CTaskEnum.sens)
 		{	
 			return new CSensProblem(cPtr, owner);
 		}
-		else if (problemType == CCopasiTask.moieties)
+		else if (problemType == CTaskEnum.moieties)
 		{	
 			return new CMoietiesProblem(cPtr, owner);
 		}
-		else if (problemType == CCopasiTask.crosssection)
+		else if (problemType == CTaskEnum.crosssection)
 		{	
 			return new CCrossSectionProblem(cPtr, owner);
 		}
-		else if (problemType == CCopasiTask.lna)
+		else if (problemType == CTaskEnum.lna)
 		{	
 			return new CLNAProblem(cPtr, owner);
 		}

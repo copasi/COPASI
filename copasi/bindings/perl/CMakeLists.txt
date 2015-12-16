@@ -58,7 +58,13 @@ ADD_CUSTOM_COMMAND(
           -c++
           -perl5
           #-proxy    
-          ${SWIG_EXTRA_ARGS}     
+          -DLIBSBML_CPP_NAMESPACE_USE
+          -DLIBSBML_CPP_NAMESPACE_BEGIN
+          -DLIBSBML_CPP_NAMESPACE_END
+          -DLIBSEDML_CPP_NAMESPACE_USE
+          -DLIBSEDML_CPP_NAMESPACE_BEGIN
+          -DLIBSEDML_CPP_NAMESPACE_END
+          ${SWIG_EXTRA_ARGS}
           -o ${CMAKE_CURRENT_BINARY_DIR}/copasi_wrapper.cpp 
           ${CMAKE_CURRENT_SOURCE_DIR}/perl.i
     COMMAND "${CMAKE_COMMAND}"

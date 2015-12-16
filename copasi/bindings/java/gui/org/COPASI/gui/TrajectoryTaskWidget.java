@@ -1,14 +1,15 @@
-// Begin CVS Header 
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/java/gui/org/COPASI/gui/TrajectoryTaskWidget.java,v $ 
-//   $Revision: 1.13 $ 
-//   $Name:  $ 
-//   $Author: gauges $ 
-//   $Date: 2009/03/06 08:47:52 $ 
-// End CVS Header 
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
 // and The University of Manchester. 
+// All rights reserved. 
+
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc. and EML Research, gGmbH. 
 // All rights reserved. 
 
 package org.COPASI.gui;
@@ -33,6 +34,7 @@ import org.COPASI.CCopasiException;
 import org.COPASI.CCopasiMessage;
 import org.COPASI.CTimeSeries;
 import org.COPASI.CTrajectoryTask;
+import org.COPASI.CTaskEnum;
 
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
@@ -158,7 +160,7 @@ public class TrajectoryTaskWidget extends TaskWidget  implements FocusListener{
 		  long i=0;
 		  while(t==null && i < size)
 		  {
-		  	if(mDataModel.getTask(i).getType()==CCopasiTask.timeCourse)
+		  	if(mDataModel.getTask(i).getType()==CTaskEnum.timeCourse)
 		  	{
 		  		t=mDataModel.getTask(i);
 		  	}

@@ -29,6 +29,14 @@ find_package(Java COMPONENTS Development REQUIRED)
 include(${SWIG_USE_FILE})
 
 
+file(GLOB SWIG_DEPENDENCIES 
+	${CMAKE_CURRENT_SOURCE_DIR}/*.i 
+	${CMAKE_CURRENT_SOURCE_DIR}/*.h 
+	${CMAKE_CURRENT_SOURCE_DIR}/*.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/../swig/*.i
+	${CMAKE_CURRENT_SOURCE_DIR}/../swig/*.h
+)
+
 ####################################################################
 #
 # ensure that javac and jar are available
@@ -89,6 +97,12 @@ add_custom_command(
          -I${LIBSBML_INCLUDE_DIR}
          -c++
          -java
+         -DLIBSBML_CPP_NAMESPACE_USE
+         -DLIBSBML_CPP_NAMESPACE_BEGIN
+         -DLIBSBML_CPP_NAMESPACE_END
+         -DLIBSEDML_CPP_NAMESPACE_USE
+         -DLIBSEDML_CPP_NAMESPACE_BEGIN
+         -DLIBSEDML_CPP_NAMESPACE_END
          -package org.COPASI
          ${SWIG_EXTRA_ARGS}
          -outdir ${CMAKE_CURRENT_BINARY_DIR}/java-files/org/COPASI

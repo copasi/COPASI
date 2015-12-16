@@ -20,6 +20,7 @@
 
 %ignore CTrajectoryTask::load;
 %ignore CTrajectoryTask::initialize;
+
 #ifdef SWIGR
 // we ignore the method that takes an int and create a new method that takes
 // the enum from CCopasiTask

@@ -54,15 +54,21 @@ ADD_CUSTOM_COMMAND(
 
     COMMAND "${SWIG_EXECUTABLE}"
 
-    ARGS	-I${CMAKE_CURRENT_SOURCE_DIR}/../swig/
-	        -I${CMAKE_CURRENT_SOURCE_DIR}/../../
-                -I${CMAKE_CURRENT_SOURCE_DIR}
-		-I${CMAKE_SOURCE_DIR}
-		-c++
-		-octave		
-		${SWIG_EXTRA_ARGS}		 
-		-o ${CMAKE_CURRENT_BINARY_DIR}/copasi_wrapper.cpp 
-		${CMAKE_CURRENT_SOURCE_DIR}/octave.i
+    ARGS -I${CMAKE_CURRENT_SOURCE_DIR}/../swig/
+         -I${CMAKE_CURRENT_SOURCE_DIR}/../../
+         -I${CMAKE_CURRENT_SOURCE_DIR}
+         -I${CMAKE_SOURCE_DIR}
+         -c++
+         -octave
+         -DLIBSBML_CPP_NAMESPACE_USE
+         -DLIBSBML_CPP_NAMESPACE_BEGIN
+         -DLIBSBML_CPP_NAMESPACE_END
+         -DLIBSEDML_CPP_NAMESPACE_USE
+         -DLIBSEDML_CPP_NAMESPACE_BEGIN
+         -DLIBSEDML_CPP_NAMESPACE_END
+         ${SWIG_EXTRA_ARGS}
+         -o ${CMAKE_CURRENT_BINARY_DIR}/copasi_wrapper.cpp 
+         ${CMAKE_CURRENT_SOURCE_DIR}/octave.i
 
   COMMAND "${CMAKE_COMMAND}"
 

@@ -149,10 +149,10 @@
   try
   {
       return (CCopasiObject*)((*self)[name]);
-	  }
+    }
       catch(...)
       {
-	return NULL;
+  return NULL;
       }
   }
 }

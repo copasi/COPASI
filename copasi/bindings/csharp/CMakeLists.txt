@@ -98,22 +98,28 @@ add_custom_command(
     ARGS  -E make_directory "${COPASI_CS_FILES}"
     COMMAND "${SWIG_EXECUTABLE}"
     ARGS -I${CMAKE_CURRENT_SOURCE_DIR}/../swig/
-	     -I${CMAKE_CURRENT_SOURCE_DIR}/../../
-	     -I${CMAKE_CURRENT_SOURCE_DIR}
+         -I${CMAKE_CURRENT_SOURCE_DIR}/../../
+         -I${CMAKE_CURRENT_SOURCE_DIR}
          -I${CMAKE_SOURCE_DIR}
-	     -c++
-	     -csharp
-	     -namespace org.COPASI
-	     -DSWIG_CSHARP_NO_IMCLASS_STATIC_CONSTRUCTOR
-	     -dllimport copasics ${SWIG_EXTRA_ARGS}
-	     ${SWIG_EXTRA_FLAGS}		 
-	     -outdir ${COPASI_CS_FILES}
-	     -o ${COPASI_NATIVE_WRAPPER}
-	     ${CMAKE_CURRENT_SOURCE_DIR}/csharp.i
+         -c++
+         -csharp
+         -namespace org.COPASI
+         -DSWIG_CSHARP_NO_IMCLASS_STATIC_CONSTRUCTOR
+         -DLIBSBML_CPP_NAMESPACE_USE
+         -DLIBSBML_CPP_NAMESPACE_BEGIN
+         -DLIBSBML_CPP_NAMESPACE_END
+         -DLIBSEDML_CPP_NAMESPACE_USE
+         -DLIBSEDML_CPP_NAMESPACE_BEGIN
+         -DLIBSEDML_CPP_NAMESPACE_END
+         -dllimport copasics ${SWIG_EXTRA_ARGS}
+         ${SWIG_EXTRA_FLAGS}		 
+         -outdir ${COPASI_CS_FILES}
+         -o ${COPASI_NATIVE_WRAPPER}
+         ${CMAKE_CURRENT_SOURCE_DIR}/csharp.i
 
     MAIN_DEPENDENCY ${CMAKE_CURRENT_SOURCE_DIR}/csharp.i 
-	DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/../swig/copasi.i
-	        ${CMAKE_CURRENT_SOURCE_DIR}/local.cpp
+    DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/../swig/copasi.i
+            ${CMAKE_CURRENT_SOURCE_DIR}/local.cpp
     COMMENT "Swig C# source") 
 
 add_custom_target(binding_csharp_swig DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/csharp.i

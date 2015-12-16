@@ -107,8 +107,8 @@
 
   std::vector<C_INT32> getValidMethods() const
     {
-		  const CTaskEnum::Method *methods = $self->getValidMethods();
-			
+      const CTaskEnum::Method *methods = $self->getValidMethods();
+      
       std::vector<C_INT32> validMethods;
       unsigned int i=0;
       while(methods[i]!=CTaskEnum::UnsetMethod)
