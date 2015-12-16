@@ -1,4 +1,4 @@
-// Copyright (C) 2011 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -88,15 +88,17 @@ public:
   virtual bool process(const bool & useInitialValues);
 
   /**
-   * Perform neccessary cleanup procedures
+   * Perform necessary cleanup procedures
    */
   virtual bool restore();
 
+#ifndef SWIG
   /**
    * Retrieve the list of valid methods
    * @return const CTaskEnum::Method * pValidMethods
    */
   virtual const CTaskEnum::Method * getValidMethods() const;
+#endif
 
   /**
    * Loads parameters for this solver with data coming from a

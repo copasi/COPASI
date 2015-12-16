@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -76,10 +76,14 @@ public:
    */
   virtual bool restore();
 
+#ifndef SWIG
+
   /**
    * Retrieve the list of valid methods
    * @return const CTaskEnum::Method * pValidMethods
    */
   virtual const CTaskEnum::Method * getValidMethods() const;
+#endif
+
 };
 #endif // COPASI_CMoietiesTask

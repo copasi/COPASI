@@ -85,11 +85,13 @@ public:
    */
   virtual bool restore();
 
+#ifndef SWIG
   /**
    * Retrieve the list of valid methods
    * @return const CTaskEnum::Method * pValidMethods
    */
   virtual const CTaskEnum::Method * getValidMethods() const;
+#endif
 
 private:
   /**
