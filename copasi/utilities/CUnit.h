@@ -107,8 +107,6 @@ private:
   std::string mExpression;
   std::set< CUnitComponent > mComponents;
   std::set< std::string > mUsedSymbols;
-
-  void setup();
 };
 
 #endif // CUNIT_H

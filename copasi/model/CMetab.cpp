@@ -117,101 +117,53 @@ CMetab::~CMetab()
 // virtual
 CUnit CMetab::getChildObjectUnits(const CCopasiObject * pObject) const
 {
-  if (mpModel == NULL) return CUnit();
+  CUnit unit = CUnit(); // to be left, modified, or reassigned, and returned at end
 
-  if (pObject == mpIValueReference ||
+  if (mpModel == NULL ||
+      pObject == mpIValueReference ||
       pObject == mpValueReference)
-    {
-      return CUnit();
-    }
+    ; // Leave unit = CUnit()
   else if (pObject == mpRateReference)
     {
-      return mpModel->getFrequencyUnit();
+      unit = mpModel->getFrequencyUnit();
     }
   else if (pObject == mpTTReference)
     {
-      return mpModel->getTimeUnit();
+      unit = mpModel->getTimeUnit();
     }
-  else if (mpCompartment != NULL)
+  else if (mpCompartment != NULL &&
+           (pObject == mpIConcReference ||
+            pObject == mpConcReference ||
+            pObject == mpConcRateReference))
     {
-      CUnit Unit = mpModel->getQuantityUnit();
-      CUnit CompartmentUnit = mpCompartment->getChildObjectUnits(mpCompartment->getInitialValueReference());
-      CUnit TimeUnit = mpModel->getTimeUnit();
+      std::string unitExpression = mpModel->getQuantityUnit().getExpression();
+      std::string compartmentUnitExpression = mpCompartment->getChildObjectUnits(mpCompartment->getInitialValueReference()).getExpression();
+      std::string timeUnitExpression = mpModel->getTimeUnit().getExpression();
 
-      if (pObject == mpIConcReference ||
-          pObject == mpConcReference)
+      if (unitExpression != "" ||
+          compartmentUnitExpression != "" ||
+          timeUnitExpression != "")
         {
-          if (Unit.getExpression() == "")
+          if (unitExpression == "")
             {
-              if (CompartmentUnit.getExpression() == "")
-                {
-                  return CUnit();
-                }
-
-              CompartmentUnit.exponentiate(-1);
-              return CompartmentUnit;
+              unitExpression = "1";
             }
-
-          if (CompartmentUnit.getExpression() == "")
+          if (compartmentUnitExpression != "" ||
+              timeUnitExpression != "")
             {
-              return Unit;
+              compartmentUnitExpression = "/(" + compartmentUnitExpression;
+              if (timeUnitExpression != "" &&
+                  compartmentUnitExpression != "")
+                {
+                  timeUnitExpression = "*" + timeUnitExpression;
+                }
+              timeUnitExpression = timeUnitExpression + ")";
             }
-
-          CompartmentUnit.exponentiate(-1);
-          return CompartmentUnit;
-        }
-      else if (pObject == this->mpConcRateReference)
-        {
-          if (Unit.getExpression() == "")
-            {
-              if (CompartmentUnit.getExpression() == "")
-                {
-                  if (TimeUnit.getExpression() == "")
-                    {
-                      return CUnit();
-                    }
-
-                  TimeUnit.exponentiate(-1);
-                  return TimeUnit;
-                }
-
-              if (TimeUnit.getExpression() == "")
-                {
-                  CompartmentUnit.exponentiate(-1);
-                  return CompartmentUnit;
-                }
-
-              CompartmentUnit.exponentiate(-1);
-              TimeUnit.exponentiate(-1);
-              return CompartmentUnit * TimeUnit;
-            }
-          else
-            {
-              if (CompartmentUnit.getExpression() == "")
-                {
-                  if (TimeUnit.getExpression() == "")
-                    {
-                      return Unit;
-                    }
-
-                  TimeUnit.exponentiate(-1);
-                  return Unit * TimeUnit;
-                }
-
-              if (TimeUnit.getExpression() == "")
-                {
-                  CompartmentUnit.exponentiate(-1);
-                  return Unit * CompartmentUnit;
-                }
-
-              CompartmentUnit.exponentiate(-1);
-              TimeUnit.exponentiate(-1);
-              return Unit * CompartmentUnit * TimeUnit;
-            }
+          unit.setExpression(unitExpression + compartmentUnitExpression + timeUnitExpression, mpModel->getAvogadro());
         }
     }
 
-  return CUnit();
+  return unit;
 }
 
 void CMetab::cleanup() {}
