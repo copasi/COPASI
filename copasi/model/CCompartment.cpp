@@ -70,11 +70,11 @@ CCompartment::~CCompartment()
 // virtual
 CUnit CCompartment::getChildObjectUnits(const CCopasiObject * pObject) const
 {
-  CUnit unit = CUnit();
+  CUnit unit = CUnit(); //potentially manipulated, and returned at the end
 
-  if (mpModel == NULL) return unit;
-
-  if (pObject == mpValueReference ||
+  if (mpModel == NULL)
+    ; // leave unit = CUnit
+  else if (pObject == mpValueReference ||
       pObject == mpIValueReference)
     {
       switch (mDimensionality)
@@ -114,7 +114,6 @@ CUnit CCompartment::getChildObjectUnits(const CCopasiObject * pObject) const
           unit.setExpression(unitExpression + timeUnitExpression, mpModel->getAvogadro());
         }
     }
-
   return unit;
 }
 
