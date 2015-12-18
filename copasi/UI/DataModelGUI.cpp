@@ -170,17 +170,25 @@ void DataModelGUI::addModelRun()
       mSuccess = false;
     }
 
-  CModel *pModel = (*CCopasiRootContainer::getDatamodelList())[0]->getModel();
-  CModel *pMergeModel = (*CCopasiRootContainer::getDatamodelList())[1]->getModel();
+  C_INT32 numDatamodels=CCopasiRootContainer::getDatamodelList()->size();
+  CModel *pModel = NULL;
+  CModel *pMergeModel = NULL;
 
-  //CModelAdd add(pModel, mModel);
-  //add.simpleCall();
+  if (numDatamodels>=2 && mSuccess) //after loading the model to be merged there should be at least 2 datamodels...
+  {
+    //the base model is assumed to be the first one
+    pModel = (*CCopasiRootContainer::getDatamodelList())[0]->getModel();
+    //the model to be merged is the last one
+    pMergeModel = (*CCopasiRootContainer::getDatamodelList())[numDatamodels-1]->getModel();
+  }
 
   if (mSuccess && pModel && pMergeModel)
     {
       CModelExpansion expand(pModel);
       (*CCopasiRootContainer::getDatamodelList())[0]->mLastAddedObjects = expand.copyCompleteModel(pMergeModel);
     }
+  if (pMergeModel)
+    CCopasiRootContainer::removeDatamodel(numDatamodels-1);
 }
 
 void DataModelGUI::addModelFinished()

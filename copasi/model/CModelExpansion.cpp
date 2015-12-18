@@ -593,6 +593,7 @@ void CModelExpansion::duplicateMetab(const CMetab* source, const std::string & i
   if (!sourceSet.contains(sourceParent))
     {
       parent = sourceParent; //use the original parent compartment
+      //this should never happen when copying across models.
       nameflag = true; //metab needs renaming
     }
   else //use a copy of the parent compartment
