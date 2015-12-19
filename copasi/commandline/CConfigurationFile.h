@@ -281,6 +281,49 @@ public:
    */
   void setProxyPassword(const std::string & proxyPassword);
 
+  /**
+     * Retrieve the Current Author GivenName
+     * @return const std::string & CurrentAuthorGivenName
+     */
+    const std::string getCurrentAuthorGivenName() const;
+
+    /**
+     * Set the Current Author Given Name.
+     * @param const std::string & CurrentAuthorGivenName
+     */
+    void setCurrentAuthorGivenName(const std::string & CurrentAuthorGivenName);
+    /**
+     * Retrieve the Current Author Familyname
+     * @return const std::string & CurrentAuthorFamilyName
+     */
+    const std::string getCurrentAuthorFamilyName() const;
+    /**
+     * Set the Current Author  Familyname.
+     * @param const std::string & CurrentAuthorFamilyName
+     */
+    void setCurrentAuthorFamilyName(const std::string & CurrentAuthorFamilyName);
+    /**
+     * Retrieve the Current Author Organization
+     * @return const std::string & CurrentAuthorOrganization
+     */
+    const std::string getCurrentAuthorOrganization() const;
+
+    /**
+     * Set the Current Author Organization.
+     * @param const std::string & CurrentAuthorOrganization
+     */
+    void setCurrentAuthorOrganization(const std::string & CurrentAuthorOrganization);
+    /**
+     * Retrieve the Current Author Email
+     * @return const std::string & CurrentAuthorEmail
+     */
+    const std::string getCurrentAuthorEmail() const;
+
+    /**
+     * Set the Current Author Email.
+     * @param const std::string & CurrentAuthorEmail
+     */
+    void setCurrentAuthorEmail(const std::string & CurrentAuthorEmail);
 
 private:
   /**
@@ -423,6 +466,24 @@ private:
    * A pointer to the proxy password.
    */
   std::string * mpProxyPass;
+
+   //This part is added by Peyman to keep current author information
+   /**
+    * A pointer to the Given name of the current author.
+    */
+  std::string * mpCurrentAuthorGivenName;
+   /**
+    * A pointer to the Familyname of the current author.
+    */
+   std::string * mpCurrentAuthorFamilyName;
+   /**
+    * A pointer to the Organization of the current author.
+    */
+   std::string * mpCurrentAuthorOrganization;
+   /**
+    * A pointer to the Email of the current author.
+    */
+   std::string * mpCurrentAuthorEmail;
 };
 
 #endif // COPASI_CConfigurationFile

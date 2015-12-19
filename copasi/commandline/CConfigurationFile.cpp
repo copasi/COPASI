@@ -116,7 +116,11 @@ CConfigurationFile::CConfigurationFile(const std::string & name,
   mpProxyServer(NULL),
   mpProxyPort(NULL),
   mpProxyUser(NULL),
-  mpProxyPass(NULL)
+  mpProxyPass(NULL),
+  mpCurrentAuthorGivenName(NULL),
+  mpCurrentAuthorFamilyName(NULL),
+  mpCurrentAuthorOrganization(NULL),
+  mpCurrentAuthorEmail(NULL)
 {initializeParameter();}
 
 CConfigurationFile::CConfigurationFile(const CConfigurationFile & src,
@@ -136,7 +140,11 @@ CConfigurationFile::CConfigurationFile(const CConfigurationFile & src,
   mpProxyServer(NULL),
   mpProxyPort(NULL),
   mpProxyUser(NULL),
-  mpProxyPass(NULL)
+  mpProxyPass(NULL),
+  mpCurrentAuthorGivenName(NULL),
+  mpCurrentAuthorFamilyName(NULL),
+  mpCurrentAuthorOrganization(NULL),
+  mpCurrentAuthorEmail(NULL)
 {initializeParameter();}
 
 CConfigurationFile::CConfigurationFile(const CCopasiParameterGroup & group,
@@ -156,7 +164,11 @@ CConfigurationFile::CConfigurationFile(const CCopasiParameterGroup & group,
   mpProxyServer(NULL),
   mpProxyPort(NULL),
   mpProxyUser(NULL),
-  mpProxyPass(NULL)
+  mpProxyPass(NULL),
+  mpCurrentAuthorGivenName(NULL),
+  mpCurrentAuthorFamilyName(NULL),
+  mpCurrentAuthorOrganization(NULL),
+  mpCurrentAuthorEmail(NULL)
 {initializeParameter();}
 
 CConfigurationFile::~CConfigurationFile()
@@ -211,6 +223,11 @@ void CConfigurationFile::initializeParameter()
   mpProxyPort = assertParameter("Proxy Port", CCopasiParameter::INT, 0);
   mpProxyUser = assertParameter("Proxy User", CCopasiParameter::STRING, std::string(""));
   mpProxyPass = assertParameter("Proxy Password", CCopasiParameter::STRING, std::string(""));
+
+  mpCurrentAuthorGivenName = assertParameter("Given Name", CCopasiParameter::STRING, std::string("Anonymous"));
+  mpCurrentAuthorFamilyName = assertParameter("Famliy Name", CCopasiParameter::STRING, std::string("Anonymous"));
+  mpCurrentAuthorOrganization = assertParameter("Organization", CCopasiParameter::STRING, std::string(""));
+  mpCurrentAuthorEmail = assertParameter("Email", CCopasiParameter::STRING, std::string("An.other@mailinator.com"));
 
   elevateChildren();
 }
@@ -500,3 +517,37 @@ void CConfigurationFile::CXML::setConfiguration(const CCopasiParameterGroup & co
 
 const CCopasiParameterGroup & CConfigurationFile::CXML::getConfiguration() const
 {return mConfiguration;}
+
+// set and get for the current author added by Peyman
+const std::string CConfigurationFile::getCurrentAuthorGivenName() const
+{
+  return *mpCurrentAuthorGivenName;
+}
+void CConfigurationFile::setCurrentAuthorGivenName(const std::string & CurrentAuthorGivenName)
+{
+  *mpCurrentAuthorGivenName = CurrentAuthorGivenName;
+}
+const std::string CConfigurationFile::getCurrentAuthorFamilyName() const
+{
+  return *mpCurrentAuthorFamilyName;
+}
+void CConfigurationFile::setCurrentAuthorFamilyName(const std::string & CurrentAuthorFamilyName)
+{
+  *mpCurrentAuthorFamilyName = CurrentAuthorFamilyName;
+}
+const std::string CConfigurationFile::getCurrentAuthorOrganization() const
+{
+  return *mpCurrentAuthorOrganization;
+}
+void CConfigurationFile::setCurrentAuthorOrganization(const std::string & CurrentAuthorOrganization)
+{
+  *mpCurrentAuthorOrganization = CurrentAuthorOrganization;
+}
+const std::string CConfigurationFile::getCurrentAuthorEmail() const
+{
+  return *mpCurrentAuthorEmail;
+}
+void CConfigurationFile::setCurrentAuthorEmail(const std::string & CurrentAuthorEmail)
+{
+  *mpCurrentAuthorEmail = CurrentAuthorEmail;
+}
