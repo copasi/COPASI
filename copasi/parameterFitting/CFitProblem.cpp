@@ -484,7 +484,7 @@ bool CFitProblem::initialize()
   mInitialState = mpContainer->getInitialState();
   mpInitialStateTime = mpContainer->getInitialState().array() + mpContainer->getCountFixedEventTargets();
 
-  if (!mpExperimentSet->compile(mpContainer)) return false;
+  success &= mpExperimentSet->compile(mpContainer);
 
   // Initialize the object set which the experiment independent objects.
   std::vector< CObjectInterface::ObjectSet > ObjectSet;
@@ -818,7 +818,7 @@ bool CFitProblem::calculate()
 
           // set the global and experiment local fit item values.
           for (itItem = mpOptItems->begin(); itItem != endItem; itItem++, pUpdate++)
-            if (*pUpdate)
+            if (pUpdate != NULL && *pUpdate != NULL)
               {
                 **pUpdate = static_cast<CFitItem *>(*itItem)->getLocalValue();
               }
@@ -1018,7 +1018,7 @@ void CFitProblem::updateContainer(const bool & update)
 
       // set the global and experiment local fit item values.
       for (itItem = mpOptItems->begin(); itItem != endItem; itItem++, pUpdate++)
-        if (*pUpdate)
+        if (pUpdate != NULL && *pUpdate != NULL)
           {
             **pUpdate = static_cast<CFitItem *>(*itItem)->getLocalValue();
           }

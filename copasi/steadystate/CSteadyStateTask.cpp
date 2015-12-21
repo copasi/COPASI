@@ -361,7 +361,9 @@ bool CSteadyStateTask::restore()
 
   if (mUpdateModel)
     {
-      mpContainer->setInitialState(mSteadyState);
+      mpContainer->setState(mSteadyState);
+      mpContainer->updateSimulatedValues(true);
+      mpContainer->setInitialState(mpContainer->getState(false));
       mpContainer->updateInitialValues(CModelParameter::ParticleNumbers);
       mpContainer->pushInitialState();
     }

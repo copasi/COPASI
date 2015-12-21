@@ -133,9 +133,15 @@ bool CExperimentSet::compile(const CMathContainer * pMathContainer)
             }
         }
 
-      if (!(*it)->read(in, CurrentLineNumber)) return false;
+      if (!(*it)->read(in, CurrentLineNumber))
+        {
+          return false;
+        }
 
-      if (!(*it)->compile(pMathContainer)) return false;
+      if (!(*it)->compile(pMathContainer))
+        {
+          return false;
+        }
 
       const std::map< const CObjectInterface *, size_t > & ExpDependentObjects = (*it)->getDependentObjects();
       std::map< const CObjectInterface *, size_t >::const_iterator itObject  = ExpDependentObjects.begin();
