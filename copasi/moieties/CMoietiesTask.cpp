@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -87,6 +87,7 @@ bool CMoietiesTask::process(const bool & /* useInitialValues */)
     {
       CObjectInterface::ContainerList ListOfContainer;
       ListOfContainer.push_back(this);
+      ListOfContainer.push_back(mpContainer);
 
       size_t Size = CCopasiMessage::size();
 

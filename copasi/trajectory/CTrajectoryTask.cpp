@@ -227,6 +227,7 @@ void CTrajectoryTask::signalMathContainerChanged()
 bool CTrajectoryTask::process(const bool & useInitialValues)
 {
   //*****
+  mProceed = true;
 
   processStart(useInitialValues);
 

@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -139,13 +139,16 @@ CTrajectoryMethod::Status CStochDirectMethod::step(const double & deltaT)
           return ROOT;
         }
 
+      if (mpProblem->getAutomaticStepSize())
+        {
+          break;
+        }
+
       if (++mSteps > mMaxSteps)
         {
           CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 12);
         }
     }
-
-  mContainerState = mpContainer->getState(false);
 
   return NORMAL;
 }
