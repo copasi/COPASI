@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -75,9 +75,20 @@ public:
   /**
    * Set the size a integration step the trajectory method should do.
    * @param "const C_FLOAT64 &" stepSize
-   * @parem bool success
    */
   void setStepSize(const C_FLOAT64 & stepSize);
+
+  /**
+   * Retrieve the size a integration step the trajectory method should do.
+   * @return const bool & automaticStepSize
+   */
+  const bool & getAutomaticStepSize() const;
+
+  /**
+   * Set the size a integration step the trajectory method should do.
+   * @param const bool & automaticStepSize
+   */
+  void setAutomaticStepSize(const bool & automaticStepSize);
 
   /**
    * Retrieve the size a integration step the trajectory method should do.
@@ -174,6 +185,11 @@ protected:
    * Pointer to parameter value for duration.
    */
   C_FLOAT64 * mpDuration;
+
+  /**
+   * Pointer to parameter value indicating automatic step size.
+   */
+  bool * mpAutomaticStepSize;
 
   /**
    * Pointer to parameter value for step size.

@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -32,6 +32,8 @@
 #include "CHybridMethodODE45.h"
 #include "CTrajectoryMethodDsaLsodar.h"
 #include "CTrajectoryProblem.h"
+#include "CTrajectoryTask.h"
+
 #include "model/CState.h"
 #include "model/CCompartment.h"
 #include "math/CMathContainer.h"
@@ -44,10 +46,13 @@ CTrajectoryMethod::CTrajectoryMethod(const CCopasiContainer * pParent,
                                      const CTaskEnum::Task & taskType):
   CCopasiMethod(pParent, methodType, taskType),
   mContainerState(),
-  mpProblem(NULL),
   mpContainerStateTime(NULL),
+  mpTask(NULL),
+  mpProblem(NULL),
   mRootsFound(0)
-{CONSTRUCTOR_TRACE;}
+{
+  mpTask = const_cast< CTrajectoryTask * >(dynamic_cast< const CTrajectoryTask * >(getObjectParent()));
+}
 
 /**
  *  Copy constructor.
@@ -58,9 +63,12 @@ CTrajectoryMethod::CTrajectoryMethod(const CTrajectoryMethod & src,
   CCopasiMethod(src, pParent),
   mContainerState(),
   mpContainerStateTime(NULL),
+  mpTask(NULL),
   mpProblem(NULL),
   mRootsFound(0)
-{}
+{
+  mpTask = const_cast< CTrajectoryTask * >(dynamic_cast< const CTrajectoryTask * >(getObjectParent()));
+}
 
 /**
  *  Destructor.
@@ -87,6 +95,20 @@ void CTrajectoryMethod::signalMathContainerChanged()
     {
       mContainerState.initialize(0, NULL);
       mpContainerStateTime = NULL;
+    }
+}
+
+void CTrajectoryMethod::output(const bool & useMoieties)
+{
+  if (mpContainer != NULL)
+    {
+      mpContainer->setState(mContainerState);
+      mpContainer->updateSimulatedValues(useMoieties);
+    }
+
+  if (mpTask != NULL)
+    {
+      mpTask->output(COutputInterface::DURING);
     }
 }
 

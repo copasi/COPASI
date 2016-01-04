@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -29,6 +29,7 @@
 #include "copasi/utilities/CCopasiMethod.h"
 #include "copasi/utilities/CVector.h"
 
+class CTrajectoryTask;
 class CTrajectoryProblem;
 class CMathContainer;
 
@@ -124,6 +125,8 @@ protected:
    */
   virtual void signalMathContainerChanged();
 
+  void output(const bool & useMoieties);
+
   // Attributes
 protected:
   /**
@@ -137,6 +140,11 @@ protected:
    * A pointer to the time value of the current state.
    */
   C_FLOAT64 * mpContainerStateTime;
+
+  /**
+   * The task calling the method
+   */
+  CTrajectoryTask * mpTask;
 
   /**
    *  A pointer to the trajectory problem.

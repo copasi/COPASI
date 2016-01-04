@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -170,6 +170,12 @@ void CQTrajectoryWidget::slotOutputDelay(bool checked)
   updateIntervals();
 }
 
+void CQTrajectoryWidget::slotAutomaticIntervals(bool checked)
+{
+  mpEditIntervals->setEnabled(!checked);
+  mpEditIntervalSize->setEnabled(!checked);
+}
+
 bool CQTrajectoryWidget::saveTask()
 {
   CTrajectoryTask * pTask =
@@ -202,6 +208,12 @@ bool CQTrajectoryWidget::saveTask()
       trajectoryproblem->getDuration() != mpEditDuration->text().toDouble())
     {
       trajectoryproblem->setDuration(mpEditDuration->text().toDouble());
+      mChanged = true;
+    }
+
+  if (mpCheckAutomaticInterval->isChecked() != trajectoryproblem->getAutomaticStepSize())
+    {
+      trajectoryproblem->setAutomaticStepSize(mpCheckAutomaticInterval->isChecked());
       mChanged = true;
     }
 
@@ -297,6 +309,7 @@ bool CQTrajectoryWidget::loadTask()
   mpEditIntervalSize->setText(QString::number(TrajectoryProblem->getStepSize()));
   mpEditIntervals->setText(QString::number(TrajectoryProblem->getStepNumber()));
   mpEditDuration->setText(QString::number(TrajectoryProblem->getDuration()));
+  mpCheckAutomaticInterval->setChecked(TrajectoryProblem->getAutomaticStepSize());
 
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   C_FLOAT64 InitialTime = (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getInitialTime();

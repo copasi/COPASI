@@ -1,4 +1,4 @@
-// Copyright (C) 2011 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -238,6 +238,11 @@ CCopasiMethod * CQTaskMethodWidget::getFromHistory(const CTaskEnum::Method & Typ
 
 void CQTaskMethodWidget::setActiveMethod(const CTaskEnum::Method & Type)
 {
+  if (mShowMethodParameters)
+    {
+      mpMethodParameterDM->clearMethods();
+    }
+
   mpActiveMethod = getFromHistory(Type);
 
   if (mpActiveMethod == NULL)

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
-<comment> Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual </comment>
+<comment> Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual </comment>
 <comment> Properties, Inc., University of Heidelberg, and The University </comment>
 <comment> of Manchester. </comment>
 <comment> All rights reserved. </comment>
@@ -14,9 +14,6 @@
 <comment> Properties, Inc. and EML Research, gGmbH. </comment>
 <comment> All rights reserved. </comment>
 
-
-
-
  <comment> All rights reserved. </comment>
  <class>CQTrajectoryWidget</class>
  <widget class="TaskWidget" name="CQTrajectoryWidget">
@@ -24,7 +21,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>462</width>
+    <width>463</width>
     <height>184</height>
    </rect>
   </property>
@@ -50,26 +47,20 @@
        </property>
       </widget>
      </item>
-     <item row="0" column="1">
-      <widget class="QLineEdit" name="mpEditDuration"/>
+     <item row="2" column="3">
+      <widget class="QLineEdit" name="mpEditIntervals"/>
      </item>
-     <item row="1" column="0">
-      <widget class="QLabel" name="mpLblIntervalSize">
-       <property name="text">
-        <string>Interval Size</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-       </property>
-       <property name="wordWrap">
-        <bool>false</bool>
+     <item row="9" column="1">
+      <widget class="QLineEdit" name="mpEditIntegrationInterval">
+       <property name="readOnly">
+        <bool>true</bool>
        </property>
       </widget>
      </item>
-     <item row="1" column="1">
-      <widget class="QLineEdit" name="mpEditIntervalSize"/>
+     <item row="0" column="1">
+      <widget class="QLineEdit" name="mpEditDuration"/>
      </item>
-     <item row="1" column="2">
+     <item row="2" column="2">
       <widget class="QLabel" name="mpLblIntervals">
        <property name="text">
         <string>Intervals</string>
@@ -82,40 +73,63 @@
        </property>
       </widget>
      </item>
-     <item row="1" column="3">
-      <widget class="QLineEdit" name="mpEditIntervals"/>
+     <item row="2" column="0">
+      <widget class="QLabel" name="mpLblIntervalSize">
+       <property name="text">
+        <string>Interval Size</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+       <property name="wordWrap">
+        <bool>false</bool>
+       </property>
+      </widget>
      </item>
-     <item row="2" column="1" colspan="3">
-      <layout class="QHBoxLayout" name="mpLayoutDelayed">
-       <item>
-        <widget class="QCheckBox" name="mpCheckDelay">
-         <property name="text">
-          <string>Suppress Output Before</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QLineEdit" name="mpEditDelay"/>
-       </item>
-       <item>
-        <spacer name="mpSpacerDelay">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-         <property name="sizeType">
-          <enum>QSizePolicy::Expanding</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>40</width>
-           <height>20</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-      </layout>
+     <item row="9" column="3">
+      <widget class="QLineEdit" name="mpEditOutputInterval">
+       <property name="readOnly">
+        <bool>true</bool>
+       </property>
+      </widget>
      </item>
-     <item row="3" column="1" colspan="3">
+     <item row="2" column="1">
+      <widget class="QLineEdit" name="mpEditIntervalSize"/>
+     </item>
+     <item row="9" column="0">
+      <widget class="QLabel" name="mpLblIntegrationInterval">
+       <property name="text">
+        <string>Integration Interval</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+       <property name="wordWrap">
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="9" column="2">
+      <widget class="QLabel" name="mpLblOutputInterval">
+       <property name="text">
+        <string>Output Interval</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+       <property name="wordWrap">
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="4">
+      <widget class="QCheckBox" name="mpCheckAutomaticInterval">
+       <property name="text">
+        <string>Automatic</string>
+       </property>
+      </widget>
+     </item>
+     <item row="6" column="1" colspan="4">
       <layout class="QHBoxLayout" name="mpLayoutEvents">
        <item>
         <widget class="QCheckBox" name="mpCheckOutputEvent">
@@ -146,7 +160,37 @@
        </item>
       </layout>
      </item>
-     <item row="4" column="1" colspan="3">
+     <item row="5" column="1" colspan="4">
+      <layout class="QHBoxLayout" name="mpLayoutDelayed">
+       <item>
+        <widget class="QCheckBox" name="mpCheckDelay">
+         <property name="text">
+          <string>Suppress Output Before</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLineEdit" name="mpEditDelay"/>
+       </item>
+       <item>
+        <spacer name="mpSpacerDelay">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeType">
+          <enum>QSizePolicy::Expanding</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </item>
+     <item row="7" column="1" colspan="4">
       <layout class="QHBoxLayout" name="mpLayoutMemory">
        <item>
         <widget class="QCheckBox" name="mpCheckSave">
@@ -155,16 +199,16 @@
          </property>
         </widget>
        </item>
-        <item>
-          <widget class="QCheckBox" name="mpCheckStartInSteadyState">
-            <property name="text">
-              <string>Start in Steady State</string>
-            </property>
-            <property name="toolTip">
-              <string>Bring the model into steady state before simulating.</string>
-            </property>
-          </widget>
-        </item>
+       <item>
+        <widget class="QCheckBox" name="mpCheckStartInSteadyState">
+         <property name="toolTip">
+          <string>Bring the model into steady state before simulating.</string>
+         </property>
+         <property name="text">
+          <string>Start in Steady State</string>
+         </property>
+        </widget>
+       </item>
        <item>
         <spacer name="mpSpacerMemory">
          <property name="orientation">
@@ -180,7 +224,7 @@
        </item>
       </layout>
      </item>
-     <item row="5" column="0" colspan="4">
+     <item row="8" column="0" colspan="5">
       <widget class="Line" name="mpLine2">
        <property name="frameShape">
         <enum>QFrame::HLine</enum>
@@ -190,47 +234,7 @@
        </property>
       </widget>
      </item>
-     <item row="6" column="0">
-      <widget class="QLabel" name="mpLblIntegrationInterval">
-       <property name="text">
-        <string>Integration Interval</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-       </property>
-       <property name="wordWrap">
-        <bool>false</bool>
-       </property>
-      </widget>
-     </item>
-     <item row="6" column="1">
-      <widget class="QLineEdit" name="mpEditIntegrationInterval">
-       <property name="readOnly">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item row="6" column="2">
-      <widget class="QLabel" name="mpLblOutputInterval">
-       <property name="text">
-        <string>Output Interval</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-       </property>
-       <property name="wordWrap">
-        <bool>false</bool>
-       </property>
-      </widget>
-     </item>
-     <item row="6" column="3">
-      <widget class="QLineEdit" name="mpEditOutputInterval">
-       <property name="readOnly">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item row="7" column="0" colspan="4">
+     <item row="10" column="0" colspan="5">
       <widget class="Line" name="mpLine1">
        <property name="frameShape">
         <enum>QFrame::HLine</enum>
@@ -272,8 +276,8 @@
    <slot>slotDuration()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>20</x>
-     <y>20</y>
+     <x>140</x>
+     <y>25</y>
     </hint>
     <hint type="destinationlabel">
      <x>20</x>
@@ -288,8 +292,8 @@
    <slot>slotIntervalSize()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>20</x>
-     <y>20</y>
+     <x>140</x>
+     <y>52</y>
     </hint>
     <hint type="destinationlabel">
      <x>20</x>
@@ -304,8 +308,8 @@
    <slot>slotIntervals()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>20</x>
-     <y>20</y>
+     <x>426</x>
+     <y>52</y>
     </hint>
     <hint type="destinationlabel">
      <x>20</x>
@@ -320,8 +324,8 @@
    <slot>updateIntervals()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>20</x>
-     <y>20</y>
+     <x>308</x>
+     <y>80</y>
     </hint>
     <hint type="destinationlabel">
      <x>20</x>
@@ -336,12 +340,28 @@
    <slot>slotOutputDelay(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>20</x>
-     <y>20</y>
+     <x>141</x>
+     <y>81</y>
     </hint>
     <hint type="destinationlabel">
      <x>20</x>
      <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mpCheckAutomaticInterval</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>CQTrajectoryWidget</receiver>
+   <slot>slotAutomaticIntervals(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>415</x>
+     <y>43</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>231</x>
+     <y>91</y>
     </hint>
    </hints>
   </connection>

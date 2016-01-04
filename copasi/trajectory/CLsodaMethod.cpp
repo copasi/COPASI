@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -47,6 +47,7 @@ CLsodaMethod::CLsodaMethod(const CCopasiContainer * pParent,
   mLSODA(),
   mLSODAR(),
   mTask(),
+  mDefaultTask(),
   mDWork(),
   mIWork(),
   mJType(),
@@ -83,6 +84,7 @@ CLsodaMethod::CLsodaMethod(const CLsodaMethod & src,
   mLSODA(),
   mLSODAR(),
   mTask(src.mTask),
+  mDefaultTask(src.mDefaultTask),
   mDWork(src.mDWork),
   mIWork(src.mIWork),
   mJType(src.mJType),
@@ -289,7 +291,7 @@ CTrajectoryMethod::Status CLsodaMethod::step(const double & deltaT)
           if ((mLsodaStatus <= 0 && mLsodaStatus != -33) ||
               !mpContainer->isStateValid())
             {
-              if (mTask != 1)
+              if (mTask != mDefaultTask)
                 {
                   Status = FAILURE;
                   mPeekAheadMode = false;
@@ -316,12 +318,12 @@ CTrajectoryMethod::Status CLsodaMethod::step(const double & deltaT)
 #endif // DEBUG_OUTPUT
 
               mTime = *mpContainerStateTime;
-              mTask = 4;
+              mTask = mDefaultTask + 3;
               mDWork[0] = EndTime;
               stateChange(CMath::State);
 
               Status = step(deltaT);
-              mTask = 1;
+              mTask = mDefaultTask;
 
               return Status;
             }
@@ -444,7 +446,7 @@ CTrajectoryMethod::Status CLsodaMethod::step(const double & deltaT)
       if (mLsodaStatus <= 0 ||
           !mpContainer->isStateValid())
         {
-          if (mTask != 1)
+          if (mTask != mDefaultTask)
             {
               Status = FAILURE;
               mPeekAheadMode = false;
@@ -470,12 +472,12 @@ CTrajectoryMethod::Status CLsodaMethod::step(const double & deltaT)
 #endif // DEBUG_OUTPUT
 
           mTime = *mpContainerStateTime;
-          mTask = 4;
+          mTask = mDefaultTask + 3;
           mDWork[0] = EndTime;
           stateChange(CMath::State);
 
           Status = step(deltaT);
-          mTask = 1;
+          mTask = mDefaultTask;
 
           return Status;
         }
@@ -492,7 +494,9 @@ void CLsodaMethod::start()
 
   /* Reset lsoda */
   mLsodaStatus = 1;
-  mTask = 1;
+
+  mDefaultTask = mpProblem->getAutomaticStepSize() ? 2 : 1;
+  mTask = mDefaultTask;
   mJType = 2;
   mErrorMsg.str("");
 

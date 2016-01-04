@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -238,8 +238,12 @@ bool CTrajectoryTask::process(const bool & useInitialValues)
   C_FLOAT64 StepSize = mpTrajectoryProblem->getStepSize();
   C_FLOAT64 StepNumber = fabs(Duration) / StepSize;
 
-  if (isnan(StepNumber) || StepNumber < 1.0)
-    StepNumber = 1.0;
+  if (mpTrajectoryProblem->getAutomaticStepSize() ||
+      isnan(StepNumber) ||
+      StepNumber < 1.0)
+    {
+      StepNumber = 1.0;
+    }
 
   //the output starts only after "outputStartTime" has passed
   if (useInitialValues)
@@ -289,7 +293,7 @@ bool CTrajectoryTask::process(const bool & useInitialValues)
   C_FLOAT64 Percentage = 0;
   size_t hProcess;
 
-  if (mpCallBack != NULL && StepNumber > 1.0)
+  if (mpCallBack != NULL && StepNumber >= 1.0)
     {
       mpCallBack->setName("performing simulation...");
       C_FLOAT64 hundred = 100;
@@ -441,7 +445,8 @@ bool CTrajectoryTask::processStep(const C_FLOAT64 & endTime)
             // TODO Provide a call back method for resolving simultaneous assignments.
             StateChange = mpContainer->processQueue(true);
 
-            if (fabs(*mpContainerStateTime - endTime) < Tolerance)
+            if (fabs(*mpContainerStateTime - endTime) < Tolerance ||
+                (*mpLessOrEqual)(endTime, *mpContainerStateTime))
               {
                 if (StateChange != CMath::NoChange)
                   {
@@ -464,6 +469,10 @@ bool CTrajectoryTask::processStep(const C_FLOAT64 & endTime)
                 mContainerState = mpContainer->getState(mUpdateMoieties);
                 mpTrajectoryMethod->stateChange(StateChange);
                 StateChange = CMath::NoChange;
+              }
+            else if (mpTrajectoryProblem->getAutomaticStepSize())
+              {
+                output(COutputInterface::DURING);
               }
 
             break;
@@ -488,7 +497,8 @@ bool CTrajectoryTask::processStep(const C_FLOAT64 & endTime)
 
             // If the root happens to coincide with end of the step we have to return and
             // inform the integrator of eventual state changes.
-            if (fabs(*mpContainerStateTime - endTime) < Tolerance)
+            if (fabs(*mpContainerStateTime - endTime) < Tolerance ||
+                (*mpLessOrEqual)(endTime, *mpContainerStateTime))
               {
                 if (StateChange != CMath::NoChange)
                   {
@@ -504,6 +514,10 @@ bool CTrajectoryTask::processStep(const C_FLOAT64 & endTime)
                 mpTrajectoryProblem->getOutputEvent() &&
                 (StateChange != CMath::NoChange ||
                  *mpContainerStateTime == mpContainer->getProcessQueueExecutionTime()))
+              {
+                output(COutputInterface::DURING);
+              }
+            else if (mpTrajectoryProblem->getAutomaticStepSize())
               {
                 output(COutputInterface::DURING);
               }

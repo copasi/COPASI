@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -36,6 +36,7 @@
  */
 CTrajectoryProblem::CTrajectoryProblem(const CCopasiContainer * pParent):
   CCopasiProblem(CTaskEnum::timeCourse, pParent),
+  mpAutomaticStepSize(NULL),
   mpDuration(NULL),
   mpStepSize(NULL),
   mpStepNumber(NULL),
@@ -58,6 +59,7 @@ CTrajectoryProblem::CTrajectoryProblem(const CCopasiContainer * pParent):
 CTrajectoryProblem::CTrajectoryProblem(const CTrajectoryProblem & src,
                                        const CCopasiContainer * pParent):
   CCopasiProblem(src, pParent),
+  mpAutomaticStepSize(NULL),
   mpDuration(NULL),
   mpStepSize(NULL),
   mpStepNumber(NULL),
@@ -81,6 +83,7 @@ CTrajectoryProblem::~CTrajectoryProblem()
 
 void CTrajectoryProblem::initializeParameter()
 {
+  mpAutomaticStepSize = assertParameter("AutomaticStepSize", CCopasiParameter::BOOL, (bool) false);
   mpStepNumber = assertParameter("StepNumber", CCopasiParameter::UINT, (unsigned C_INT32) 100);
   mpStepSize = assertParameter("StepSize", CCopasiParameter::DOUBLE, (C_FLOAT64) 0.01);
   mpDuration = assertParameter("Duration", CCopasiParameter::DOUBLE, (C_FLOAT64) 1.0);
@@ -143,6 +146,16 @@ void CTrajectoryProblem::setStepSize(const C_FLOAT64 & stepSize)
  */
 const C_FLOAT64 & CTrajectoryProblem::getStepSize() const
 {return *mpStepSize;}
+
+const bool & CTrajectoryProblem::getAutomaticStepSize() const
+{
+  return *mpAutomaticStepSize;
+}
+
+void CTrajectoryProblem::setAutomaticStepSize(const bool & automaticStepSize)
+{
+  *mpAutomaticStepSize = automaticStepSize;
+}
 
 /**
  * Set the end time.
