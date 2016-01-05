@@ -1,4 +1,4 @@
-// Copyright (C) 2013 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2013 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -52,7 +52,6 @@
 #include "utilities/CVersion.h"
 #include "randomGenerator/CRandom.h"
 #include "math/CMathContainer.h"
-#include "CExpRKMethod.h"
 #include "CHybridMethodODE45.h"
 
 // Uncomment this line below to get debug print out.
