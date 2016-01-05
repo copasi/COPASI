@@ -188,7 +188,7 @@ void CTrajAdaptiveSA::start()
     }
 
   mNumReactionSpecies = mpContainer->getCountIndependentSpecies() + mpContainer->getCountDependentSpecies();
-  mFirstReactionSpeciesIndex = mpContainer->getCountFixedEventTargets() + mpContainer->getCountODEs();
+  mFirstReactionSpeciesIndex = mpContainer->getCountFixedEventTargets() + 1 /* Time */ + mpContainer->getCountODEs();
 
   mPartitionedDependencies.resize(mNumReactions);
   mMaxReactionFiring.resize(mNumReactions);
@@ -488,7 +488,6 @@ C_FLOAT64 CTrajAdaptiveSA::doSingleTauLeapStep(const C_FLOAT64 & curTime, const 
         }
 
       const C_FLOAT64 * pSpecies = mContainerState.array() + mFirstReactionSpeciesIndex;
-
       const C_FLOAT64 * pSpeciesEnd = pSpecies + mNumReactionSpecies;
 
       for (; pSpecies != pSpeciesEnd; ++pSpecies)
@@ -512,6 +511,8 @@ C_FLOAT64 CTrajAdaptiveSA::doSingleTauLeapStep(const C_FLOAT64 & curTime, const 
 
   // Update the model time (for explicitly time dependent models)
   *mpContainerStateTime = curTime + Tau;
+  mpContainer->updateSimulatedValues(false);
+
   mA0 = 0;
 
   CMathObject * pPropensity = mPropensityObjects.array();

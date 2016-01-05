@@ -199,7 +199,7 @@ void CTauLeapMethod::start()
   mK.resize(mNumReactions);
 
   mNumReactionSpecies = mpContainer->getCountIndependentSpecies() + mpContainer->getCountDependentSpecies();
-  mFirstReactionSpeciesIndex = mpContainer->getCountFixedEventTargets() + mpContainer->getCountODEs();
+  mFirstReactionSpeciesIndex = mpContainer->getCountFixedEventTargets() + 1 /* Time */ + mpContainer->getCountODEs();
 
   mAvgDX.resize(mNumReactionSpecies);
   mSigDX.resize(mNumReactionSpecies);
