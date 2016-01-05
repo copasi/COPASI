@@ -146,11 +146,6 @@ private:
   C_INT mTask;
 
   /**
-   * The task instructions to the integrator
-   */
-  C_INT mDefaultTask;
-
-  /**
    * LSODA C_FLOAT64 work area
    */
   CVector< C_FLOAT64 > mDWork;
