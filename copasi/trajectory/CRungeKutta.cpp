@@ -1,4 +1,4 @@
-// Copyright (C) 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2015 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -145,6 +145,7 @@ CRungeKutta::RKMethodStatus CRungeKutta::operator()(const size_t * pDim,
     const size_t rootCount,
     C_INT * pRoots,
     const CRungeKutta::RKMethodStatus & status,
+    const bool & oneStep,
     C_FLOAT64 * rtol,
     C_FLOAT64 * atol,
     unsigned C_INT32 * pMaxSteps,
@@ -327,6 +328,8 @@ CRungeKutta::RKMethodStatus CRungeKutta::operator()(const size_t * pDim,
       // (5) Advance New Step //
       //~~~~~~~~~~~~~~~~~~~~~~//
       advanceStep();
+
+      if (oneStep) break;
     } // end while
 
   if (StepCounter < mMaxSteps)
@@ -344,10 +347,6 @@ CRungeKutta::RKMethodStatus CRungeKutta::operator()(const size_t * pDim,
       mMethodStatus = ERROR;
     }
 
-  /*
-  for(size_t i=0; i<*mDim; i++)
-      mY[i] = mYNew[i];
-  */
   memcpy(mpY, mYRight, *mpDim * sizeof(C_FLOAT64));
   *pTime = *mpY;
 

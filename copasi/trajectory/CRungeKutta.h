@@ -1,4 +1,4 @@
-// Copyright (C) 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2015 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -98,6 +98,7 @@ public:
                             const size_t rootCount,
                             C_INT * pRoots,
                             const RKMethodStatus & status,
+                            const bool & oneStep,
                             C_FLOAT64 * rtol,
                             C_FLOAT64 * atol,
                             unsigned C_INT32 * pMaxSteps,

@@ -518,6 +518,8 @@ CTrajectoryMethod::Status CHybridMethodODE45::step(const double & deltaT)
         }
       else if (mRKMethodStatus != CRungeKutta::ERROR)
         {
+          if (mpProblem->getAutomaticStepSize()) break;
+
           continue;
         }
       else
@@ -718,7 +720,7 @@ void CHybridMethodODE45::integrateDeterministicPart(C_FLOAT64 endTime)
 
   //5----do integration
   mRKMethodStatus = mODE45(&mData.dim, mY.array(), mpContainerStateTime, &endTime,
-                           mMethodRootsFound.size(), mMethodRootsFound.array(), mRKMethodStatus,
+                           mMethodRootsFound.size(), mMethodRootsFound.array(), mRKMethodStatus, mpProblem->getAutomaticStepSize(),
                            mpRelativeTolerance, mpAbsoluteTolerance, mpMaxInternalSteps, EvalF, EvalR);
 
   //6----check status
