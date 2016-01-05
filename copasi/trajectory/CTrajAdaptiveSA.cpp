@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -125,6 +125,8 @@ CTrajectoryMethod::Status CTrajAdaptiveSA::step(const double & deltaT)
         {
           CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 12);
         }
+
+      if (mpProblem->getAutomaticStepSize()) break;
     }
 
   *mpContainerStateTime = Time;
