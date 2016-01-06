@@ -1,16 +1,16 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-// and The University of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2002 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc. and EML Research, gGmbH. 
-// All rights reserved. 
+// Copyright (C) 2002 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 #include <sbml/SBMLDocument.h>
 
@@ -18,8 +18,9 @@
 #include <sedml/SedDocument.h>
 #endif
 
-#ifdef COPASI_UNDO
 #include <QUndoStack>
+
+#ifdef COPASI_UNDO
 #include "CQUndoHistoryDialog.h"
 #endif
 
@@ -218,9 +219,7 @@ CopasiUI3Window::CopasiUI3Window():
   updateTitle();
 
   //initialise Undo stack
-#ifdef COPASI_UNDO
   mpUndoStack = new QUndoStack(this);
-#endif
 
   createActions();
   createToolBar(); // creates a tool bar
@@ -308,9 +307,7 @@ CopasiUI3Window::~CopasiUI3Window()
   pdelete(mpListView);
 
   //clear the undo stack
-#ifdef COPASI_UNDO
   pdelete(mpUndoStack);
-#endif
 }
 
 void CopasiUI3Window::createActions()
@@ -433,7 +430,6 @@ void CopasiUI3Window::createActions()
 
   mpaClearUndoHistory = new QAction("&Clear Undo History", this);
   connect(mpaClearUndoHistory, SIGNAL(triggered()), this, SLOT(slotClearUndoHistory()));
-
 #endif
 
   mpaParameterEstimationResult = new QAction("Load Parameter Estimation Protocol", this);
@@ -824,9 +820,7 @@ void CopasiUI3Window::newDoc()
   mSaveAsRequired = true;
   mCommitRequired = true;
 
-#ifdef COPASI_UNDO
   mpUndoStack->clear();
-#endif
 }
 
 void CopasiUI3Window::openInitialDocument(const QString & file)
@@ -940,10 +934,7 @@ void CopasiUI3Window::slotFileOpen(QString file)
 
 void CopasiUI3Window::slotFileOpenFinished(bool success)
 {
-
-#ifdef COPASI_UNDO
   mpUndoStack->clear();
-#endif
 
   disconnect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(slotFileOpenFinished(bool)));
   unsetCursor();
@@ -1421,9 +1412,7 @@ void CopasiUI3Window::importSBMLFromString(const std::string& sbmlDocumentText)
 
 void CopasiUI3Window::slotImportSBMLFromStringFinished(bool success)
 {
-#ifdef COPASI_UNDO
   mpUndoStack->clear();
-#endif
 
   disconnect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(slotImportSBMLFromStringFinished(bool)));
   unsetCursor();
@@ -1542,9 +1531,7 @@ void CopasiUI3Window::slotImportSBML(QString file)
 
 void CopasiUI3Window::slotImportSBMLFinished(bool success)
 {
-#ifdef COPASI_UNDO
   mpUndoStack->clear();
-#endif
 
   disconnect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(slotImportSBMLFinished(bool)));
   unsetCursor();
@@ -2910,10 +2897,7 @@ void CopasiUI3Window::slotFileExamplesSEDMLFiles(QString file)
 }
 void CopasiUI3Window::slotImportSEDMLFromStringFinished(bool success)
 {
-
-#ifdef COPASI_UNDO
   mpUndoStack->clear();
-#endif
 
   disconnect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(slotImportSEDMLFromStringFinished(bool)));
   unsetCursor();
@@ -2961,10 +2945,7 @@ void CopasiUI3Window::slotImportSEDMLFromStringFinished(bool success)
 
 void CopasiUI3Window::slotImportSEDMLFinished(bool success)
 {
-
-#ifdef COPASI_UNDO
   mpUndoStack->clear();
-#endif
 
   disconnect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(slotImportSEDMLFinished(bool)));
   unsetCursor();
@@ -3220,10 +3201,10 @@ void CopasiUI3Window::slotOpenRecentSEDMLFile(QAction * pAction)
 }
 #endif
 
-#ifdef COPASI_UNDO
+QUndoStack *CopasiUI3Window::getUndoStack() {return mpUndoStack; };
 
-void
-CopasiUI3Window::slotClearUndoHistory()
+#ifdef COPASI_UNDO
+void CopasiUI3Window::slotClearUndoHistory()
 {
   mpUndoStack->clear();
 }
@@ -3234,5 +3215,4 @@ void CopasiUI3Window::slotUndoHistory()
   undoDialog->setWindowTitle("Undo History");
   undoDialog->exec();
 }
-QUndoStack *CopasiUI3Window::getUndoStack() {return mpUndoStack; };
 #endif

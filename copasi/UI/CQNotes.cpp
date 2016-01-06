@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -29,11 +29,9 @@
 #include "copasi/report/CCopasiRootContainer.h"
 #include "commandline/CConfigurationFile.h"
 
-#if COPASI_UNDO
 #include <copasi/UI/copasiui3window.h>
 #include <copasi/UI/CQCopasiApplication.h>
 #include <copasi/undoFramework/ChangeNotesCommand.h>
-#endif // COPASI_UNDO
 
 CQValidatorXML::CQValidatorXML(QPlainTextEdit * parent, const char * name):
   CQValidator< QPlainTextEdit >(parent, &QPlainTextEdit::toPlainText, name),
@@ -155,9 +153,7 @@ CQNotes::CQNotes(QWidget* parent, const char* name) :
 
   mpWebView->page()->setLinkDelegationPolicy(QWebPage::DelegateAllLinks);
 
-#if COPASI_UNDO
   mpUndoStack = NULL;
-#endif
 }
 
 CQNotes::~CQNotes()
@@ -368,8 +364,6 @@ void CQNotes::save()
               PlainText = "<body xmlns=\"http://www.w3.org/1999/xhtml\">" + PlainText + "</body>";
             }
 
-#if COPASI_UNDO
-
           if (mpUndoStack == NULL)
             {
               CopasiUI3Window *  pWindow = static_cast<CQCopasiApplication*>(qApp)->getMainWindow();
@@ -379,18 +373,6 @@ void CQNotes::save()
             }
 
           mpUndoStack->push(new ChangeNotesCommand(mpObject, notes, PlainText, this));
-#else
-
-          if (pAnnotation != NULL)
-            {
-              pAnnotation->setNotes(PlainText);
-            }
-          else if (pReportDefinition != NULL)
-            {
-              pReportDefinition->setComment(PlainText);
-            }
-
-#endif
 
           mChanged = true;
         }
@@ -416,9 +398,7 @@ void CQNotes::slotOpenUrl(const QUrl & url)
   return;
 }
 
-#if COPASI_UNDO
-void
-CQNotes::changeNotes(const std::string& key, const std::string& notes)
+void CQNotes::changeNotes(const std::string& key, const std::string& notes)
 {
   mKey = key;
   load();
@@ -444,4 +424,3 @@ CQNotes::changeNotes(const std::string& key, const std::string& notes)
 
   protectedNotify(ListViews::MODEL, ListViews::CHANGE, mKey);
 }
-#endif // COPASI_UNDO

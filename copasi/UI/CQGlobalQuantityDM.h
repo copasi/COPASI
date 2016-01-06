@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -14,11 +14,9 @@
 #include "model/CModel.h"
 #include "CQBaseDataModel.h"
 
-#ifdef COPASI_UNDO
 class UndoGlobalQuantityData;
 class UndoSpeciesData;
 class UndoReactionData;
-#endif
 
 #define COL_NAME_GQ         1
 #define COL_TYPE_GQ         2
@@ -33,10 +31,8 @@ class CQGlobalQuantityDM : public CQBaseDataModel
 {
   Q_OBJECT
 
-#ifdef COPASI_UNDO
   friend class GlobalQuantityDataChangeCommand;
   friend class InsertGlobalQuantityRowsCommand;
-#endif
 
 public:
   CQGlobalQuantityDM(QObject *parent = 0);
@@ -56,7 +52,6 @@ public:
   int statusToIndex(const QString& status) const;
 
   //TODO Undo
-#ifdef COPASI_UNDO
   bool globalQuantityDataChange(const QModelIndex &index, const QVariant &value, int role);
   void insertNewGlobalQuantityRow(int position, int rows, const QModelIndex& index, const QVariant& value);
   void addGlobalQuantityRow(UndoGlobalQuantityData *pGlobalQuantityData);
@@ -66,8 +61,6 @@ public:
   void deleteGlobalQuantityRows(QList <UndoGlobalQuantityData *>& pGlobalQuantityData);
   bool removeAllGlobalQuantityRows();
   bool clear();
-
-#endif
 
 protected:
   QStringList mTypes;

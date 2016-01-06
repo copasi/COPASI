@@ -176,12 +176,8 @@ if(BUILD_GUI)
   include(tex/CMakeLists.txt)
   include(wizard/CMakeLists.txt)
   include(UI/CMakeLists.txt)
-
-# add the directory for UNDO framework
-if(ENABLE_COPASI_UNDO)
- include(undoFramework/CMakeLists.txt)
- set(COPASI_UI_MOC_OPTIONS ${COPASI_UI_MOC_OPTIONS} -DCOPASI_UNDO=1)
-endif()
+  include(undoFramework/CMakeLists.txt)
+  set(COPASI_UI_MOC_OPTIONS ${COPASI_UI_MOC_OPTIONS})
 
 set(COPASI_UI_MOC_OPTIONS)
 if (ENABLE_SBW_INTEGRATION)
@@ -250,11 +246,6 @@ ENDMACRO (COPASI_QT4_WRAP_UI)
 foreach (dir
   barChart layoutUI MIRIAMUI plotUI tex UI wizard qlayout undoFramework
 )
-
-  if (NOT ENABLE_COPASI_UNDO AND dir STREQUAL undoFramework)
-    # do not moc undo framework, unless needed
-    break()
-  endif()
 
   string(TOUPPER ${dir} suffix)
   #message(STATUS "Mocing files for subdir: ${dir}")

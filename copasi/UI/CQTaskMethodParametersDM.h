@@ -1,4 +1,4 @@
-// Copyright (C) 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2015 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -20,17 +20,13 @@
 class CCopasiMethod;
 class CCopasiParameter;
 
-#ifdef COPASI_UNDO
 class QUndoStack;
-#endif
 
 class CQTaskMethodParametersDM : public QAbstractItemModel
 {
   Q_OBJECT
 
-#ifdef COPASI_UNDO
   friend class TaskMethodParametersDataChangeCommand;
-#endif
 
 public:
   CQTaskMethodParametersDM(QObject * pParent);

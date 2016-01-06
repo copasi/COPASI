@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -15,10 +15,8 @@
 #include "listviews.h"
 #include "CQBaseDataModel.h"
 
-#ifdef COPASI_UNDO
 class UndoSpeciesData;
 class UndoReactionData;
-#endif
 
 #define COL_NAME_SPECIES          1
 #define COL_COMPARTMENT           2
@@ -37,10 +35,8 @@ class CQSpecieDM : public CQBaseDataModel
 {
   Q_OBJECT
 
-#ifdef COPASI_UNDO
   friend class SpecieDataChangeCommand;
   friend class InsertSpecieRowsCommand;
-#endif
 
 public:
   CQSpecieDM(QObject *parent = 0);
@@ -58,7 +54,6 @@ public:
   bool removeRows(QModelIndexList rows, const QModelIndex &index = QModelIndex());
 
   //TODO Undo
-#ifdef COPASI_UNDO
   bool specieDataChange(const QModelIndex &index, const QVariant &value, int role);
   QList <UndoSpeciesData *> insertNewSpecieRow(int position, int rows, const QModelIndex& index, const QVariant& value);
   void addSpecieRow(UndoSpeciesData *pSpecieData);
@@ -68,8 +63,6 @@ public:
   void deleteSpecieRows(QList <UndoSpeciesData *>& pReaData);
   bool removeAllSpecieRows();
   bool clear();
-
-#endif
 
 protected:
   bool mFlagConc;

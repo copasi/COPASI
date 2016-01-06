@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -26,9 +26,7 @@
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "report/CCopasiRootContainer.h"
 
-#ifdef COPASI_UNDO
 #include "copasiui3window.h"
-#endif
 
 /*
  *  Constructs a CQEventsWidget which is a child of 'parent', with the
@@ -59,10 +57,8 @@ CQEventsWidget::CQEventsWidget(QWidget* parent, const char* name)
   connect(mpLEFilter, SIGNAL(textChanged(const QString &)),
           this, SLOT(slotFilterChanged()));
 
-#ifdef COPASI_UNDO
   CopasiUI3Window *  pWindow = dynamic_cast<CopasiUI3Window * >(parent->parent());
   mpEventDM->setUndoStack(pWindow->getUndoStack());
-#endif
 }
 
 /*

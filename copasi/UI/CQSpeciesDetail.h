@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -15,9 +15,7 @@
 
 #include "ui_CQSpeciesDetail.h"
 
-#ifdef COPASI_UNDO
 class UndoSpeciesData;
-#endif
 
 class CMetab;
 class CCompartment;
@@ -26,12 +24,10 @@ class CQSpeciesDetail : public CopasiWidget, public Ui::CQSpeciesDetail
 {
   Q_OBJECT
 
-#ifdef COPASI_UNDO
   friend class DeleteSpeciesCommand;
   friend class CreateNewSpeciesCommand;
   friend class SpeciesTypeChangeCommand;
   friend class SpeciesInitialValueLostFocusCommand;
-#endif
 
 public:
   CQSpeciesDetail(QWidget* parent = 0, const char* name = 0);
@@ -76,7 +72,6 @@ private slots:
   void slotInitialValueLostFocus();
 
   //additional functions for UNDO framework
-#ifdef COPASI_UNDO
   void deleteSpecies();
   void addSpecies(UndoSpeciesData *pSData);
   void createNewSpecies();
@@ -85,7 +80,6 @@ private slots:
   void speciesTypeChanged(UndoSpeciesData *pSData, int type);
   void speciesInitialValueLostFocus();
   void speciesInitialValueLostFocus(UndoSpeciesData *pSData);
-#endif
 };
 
 #endif // CQSpeciesDetail_h

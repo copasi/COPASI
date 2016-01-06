@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -32,19 +32,15 @@
 class ParameterTable;
 class MyLineEdit;
 
-#ifdef COPASI_UNDO
 #include <copasi/undoFramework/CCopasiUndoCommand.h>
 class ReactionChangeCommand;
-#endif
 
 class ReactionsWidget1 : public CopasiWidget, public Ui::ReactionsWidget1
 {
   Q_OBJECT
 
-#ifdef COPASI_UNDO
   friend class DeleteReactionCommand;
   friend class CreateNewReactionCommand;
-#endif
 
 public:
   ReactionsWidget1(QWidget* parent = 0, const char* name = 0, Qt::WFlags fl = 0);
@@ -78,7 +74,6 @@ protected:
   CReactionInterface * mpRi;
 
   //additional functions for UNDO framework
-#ifdef COPASI_UNDO
   void deleteReaction();
   void addReaction(std::string & reaObjectName, CReactionInterface *pRi);
   void addReaction(UndoReactionData *pData);
@@ -91,7 +86,6 @@ public:
                       const QVariant& newSecondValueValue,
                       ReactionChangeCommand* command
                      );
-#endif
 };
 
 #endif // REACTIONSWIDGET1_H

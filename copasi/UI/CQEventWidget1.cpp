@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -32,15 +32,12 @@
 #include "report/CCopasiRootContainer.h"
 
 //UNDO framework classes
-#ifdef COPASI_UNDO
 #include "undoFramework/DeleteEventCommand.h"
 #include "undoFramework/CreateNewEventCommand.h"
-//#include "undoFramework/EventTypeChangeCommand.h"
 #include "undoFramework/UndoEventData.h"
 #include "undoFramework/UndoEventAssignmentData.h"
 #include <copasi/undoFramework/EventChangeCommand.h>
 #include "copasiui3window.h"
-#endif
 
 /*
  *  Constructs a CQEventWidget1 which is a child of 'parent', with the
@@ -54,10 +51,8 @@ CQEventWidget1::CQEventWidget1(QWidget * parent, const char * name):
 
   init();
 
-#ifdef COPASI_UNDO
   CopasiUI3Window *  pWindow = dynamic_cast<CopasiUI3Window * >(parent->parent());
   setUndoStack(pWindow->getUndoStack());
-#endif
 }
 
 /*
@@ -71,53 +66,13 @@ CQEventWidget1::~CQEventWidget1()
 /*! Slot to delete the active event widget */
 void CQEventWidget1::slotBtnDelete()
 {
-#ifdef COPASI_UNDO
   mpUndoStack->push(new DeleteEventCommand(this));
-#else
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
-
-  CModel * pModel = pDataModel->getModel();
-
-  if (pModel == NULL)
-    return;
-
-  pDataModel->getModel()->removeEvent(mKey);
-
-  mpEvent = NULL;
-
-  protectedNotify(ListViews::EVENT, ListViews::DELETE, mKey);
-#endif
 }
 
 /// Slot to create a new event; activated whenever the New button is clicked
 void CQEventWidget1::slotBtnNew()
 {
-#ifdef COPASI_UNDO
   mpUndoStack->push(new CreateNewEventCommand(this));
-#else
-  // save the current setting values
-  saveToEvent();
-
-  // standard name
-  std::string name = "event_1";
-
-  // if the standard name already exists then creating the new event will fail
-  // thus, a growing index will automatically be added to the standard name
-  int i = 1;
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-
-  while (!(*CCopasiRootContainer::getDatamodelList())[0]->getModel()->createEvent(name))
-    {
-      i++;
-      name = "event_";
-      name += TO_UTF8(QString::number(i));
-    }
-
-  std::string key = (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getEvents()[name]->getKey();
-  protectedNotify(ListViews::EVENT, ListViews::ADD, key);
-  mpListView->switchToOtherWidget(C_INVALID_INDEX, key);
-#endif
 }
 
 void CQEventWidget1::slotBtnCopy()
@@ -300,8 +255,6 @@ void CQEventWidget1::saveToEvent()
 
   if (pModel == NULL) return;
 
-#if COPASI_UNDO
-
   mIgnoreUpdates = true;
 
   if (mpEvent->getTriggerExpression() != mpExpressionTrigger->mpExpressionWidget->getExpression())
@@ -480,149 +433,6 @@ void CQEventWidget1::saveToEvent()
 
   mIgnoreUpdates = false;
 
-#else
-
-  if (mpEvent->getTriggerExpression() != mpExpressionTrigger->mpExpressionWidget->getExpression())
-    {
-      mpEvent->setTriggerExpression(mpExpressionTrigger->mpExpressionWidget->getExpression());
-      mChanged = true;
-    }
-
-  if (mpEvent->getPriorityExpression() != mpExpressionPriority->mpExpressionWidget->getExpression())
-    {
-      mpEvent->setPriorityExpression(mpExpressionPriority->mpExpressionWidget->getExpression());
-      mChanged = true;
-    }
-
-  switch (mpComboBoxDelay->currentIndex())
-    {
-      case 0:
-        mpEvent->setDelayExpression("");
-
-        if (mpEvent->getDelayAssignment() != false)
-          {
-            mpEvent->setDelayAssignment(false);
-            mChanged = true;
-          }
-
-        break;
-
-      case 1:
-
-        if (mpEvent->getDelayExpression() != mpExpressionDelay->mpExpressionWidget->getExpression())
-          {
-            mpEvent->setDelayExpression(mpExpressionDelay->mpExpressionWidget->getExpression());
-            mChanged = true;
-          }
-
-        if (mpEvent->getDelayAssignment() != false)
-          {
-            mpEvent->setDelayAssignment(false);
-            mChanged = true;
-          }
-
-        break;
-
-      case 2:
-
-        if (mpEvent->getDelayExpression() != mpExpressionDelay->mpExpressionWidget->getExpression())
-          {
-            mpEvent->setDelayExpression(mpExpressionDelay->mpExpressionWidget->getExpression());
-            mChanged = true;
-          }
-
-        if (mpEvent->getDelayAssignment() != true)
-          {
-            mpEvent->setDelayAssignment(true);
-            mChanged = true;
-          }
-
-        break;
-    }
-
-  if (mpEvent->getFireAtInitialTime() != mpFireAtInitialTime->isChecked())
-    {
-      mpEvent->setFireAtInitialTime(mpFireAtInitialTime->isChecked());
-      mChanged = true;
-    }
-
-  if (mpEvent->getPersistentTrigger() == mpTriggerPersistent->isChecked())
-    {
-      mpEvent->setPersistentTrigger(!mpTriggerPersistent->isChecked());
-      mChanged = true;
-    }
-
-  // Save the event assignments
-  // First we make sure that the current assignment is saved
-  if (mCurrentTarget != C_INVALID_INDEX)
-    {
-      mAssignments[mCurrentTarget]->setExpression(mpExpressionEA->mpExpressionWidget->getExpression());
-    }
-
-  CCopasiVector< CEventAssignment >::const_iterator it = mAssignments.begin();
-  CCopasiVector< CEventAssignment >::const_iterator end = mAssignments.end();
-
-  CCopasiVectorN< CEventAssignment > & OldAssignments = mpEvent->getAssignments();
-  size_t Found;
-
-  // We first update all assignments.
-  for (; it != end; ++it)
-    {
-      Found = OldAssignments.getIndex((*it)->getTargetKey());
-
-      if (Found == C_INVALID_INDEX)
-        {
-          OldAssignments.add(**it);
-          mChanged = true;
-        }
-      else if (OldAssignments[Found]->getExpression() != (*it)->getExpression())
-        {
-          OldAssignments[Found]->setExpression((*it)->getExpression());
-          mChanged = true;
-        }
-    }
-
-  // Find the deleted assignments and mark them.
-  CCopasiVectorN< CEventAssignment >::const_iterator itOld = OldAssignments.begin();
-  CCopasiVectorN< CEventAssignment >::const_iterator endOld = OldAssignments.end();
-
-  size_t DeleteCount = 0;
-
-  if (OldAssignments.size() > mAssignments.size())
-    {
-      DeleteCount = OldAssignments.size() - mAssignments.size();
-    }
-
-  std::vector< std::string > ToBeDeleted;
-
-  for (; itOld != endOld && DeleteCount > 0; ++itOld)
-    {
-      const std::string & key = (*itOld)->getTargetKey();
-
-      for (it = mAssignments.begin(); it != end; ++it)
-        {
-          if (key == (*it)->getTargetKey()) break;
-        }
-
-      if (it == end)
-        {
-          ToBeDeleted.push_back(key);
-          DeleteCount--;
-          mChanged = true;
-        }
-    }
-
-  // Delete the assignments marked to be deleted.
-  std::vector< std::string >::const_iterator itDelete = ToBeDeleted.begin();
-  std::vector< std::string >::const_iterator endDelete = ToBeDeleted.end();
-
-  for (; itDelete != endDelete; ++itDelete)
-    {
-      OldAssignments.remove(*itDelete);
-    }
-
-#endif
-
   if (mChanged)
     {
       assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
@@ -777,8 +587,6 @@ void CQEventWidget1::slotChooseDelay(int choice)
 }
 
 //Undo methods
-#ifdef COPASI_UNDO
-
 void CQEventWidget1::createNewEvent()
 {
 
@@ -955,5 +763,3 @@ CQEventWidget1::changeValue(const std::string &key,
 
   return true;
 }
-
-#endif

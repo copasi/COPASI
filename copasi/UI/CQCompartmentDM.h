@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -15,10 +15,8 @@
 
 #include "copasi/UI/CQBaseDataModel.h"
 
-#ifdef COPASI_UNDO
 class UndoCompartmentData;
 class UndoReactionData;
-#endif
 
 #define COL_NAME_COMPARTMENTS         1
 #define COL_TYPE_COMPARTMENTS         2
@@ -33,10 +31,8 @@ class CQCompartmentDM : public CQBaseDataModel
 {
   Q_OBJECT
 
-#ifdef COPASI_UNDO
   friend class CompartmentDataChangeCommand;
   friend class InsertCompartmentRowsCommand;
-#endif
 
 public:
   CQCompartmentDM(QObject *parent = 0);
@@ -53,7 +49,6 @@ public:
   bool removeRows(QModelIndexList rows, const QModelIndex &index = QModelIndex());
 
   //TODO Undo
-#ifdef COPASI_UNDO
   bool compartmentDataChange(const QModelIndex& index, const QVariant &value);
   void insertNewCompartmentRow(int position, int rows, const QModelIndex& index,
                                const QVariant& value);
@@ -64,8 +59,6 @@ public:
   void deleteCompartmentRows(QList <UndoCompartmentData *>& pCompartmentData);
   bool removeAllCompartmentRows();
   bool clear();
-
-#endif
 
 protected:
   QStringList mTypes;

@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -19,7 +19,6 @@
 #include "model/CModelExpansion.h"    //for Copy button and options
 
 //UNDO framework classes
-#ifdef COPASI_UNDO
 #include "model/CReactionInterface.h"
 #include "undoFramework/DeleteSpeciesCommand.h"
 #include "undoFramework/CreateNewSpeciesCommand.h"
@@ -31,7 +30,6 @@
 #include "undoFramework/UndoEventData.h"
 #include "undoFramework/UndoEventAssignmentData.h"
 #include "copasiui3window.h"
-#endif
 
 /*
  *  Constructs a CQSpeciesDetail which is a child of 'parent', with the
@@ -77,10 +75,8 @@ CQSpeciesDetail::CQSpeciesDetail(QWidget* parent, const char* name) :
   mpReactionTable->horizontalHeader()->hide();
   mpReactionTable->horizontalHeader()->setResizeMode(QHeaderView::ResizeToContents);
 
-#ifdef COPASI_UNDO
   CopasiUI3Window *  pWindow = dynamic_cast<CopasiUI3Window * >(parent->parent());
   setUndoStack(pWindow->getUndoStack());
-#endif
 }
 
 CQSpeciesDetail::~CQSpeciesDetail()
@@ -493,39 +489,7 @@ void CQSpeciesDetail::loadReactionTable()
 
 void CQSpeciesDetail::slotBtnDelete()
 {
-#ifdef COPASI_UNDO
   mpUndoStack->push(new DeleteSpeciesCommand(this));
-#else
-
-  if (mpMetab == NULL) return;
-
-  CModel * pModel = const_cast< CModel *>(mpMetab->getModel());
-
-  if (pModel == NULL) return;
-
-  QMessageBox::StandardButton choice =
-    CQMessageBox::confirmDelete(this, "species",
-                                FROM_UTF8(mpMetab->getObjectName()),
-                                mpMetab->getDeletedObjects());
-
-  switch (choice)
-    {
-      case QMessageBox::Ok:
-      {
-        pModel->removeMetabolite(mKey);
-
-#undef DELETE
-        protectedNotify(ListViews::METABOLITE, ListViews::DELETE, mKey);
-        protectedNotify(ListViews::METABOLITE, ListViews::DELETE, "");//Refresh all as there may be dependencies.
-        //TODO notify about reactions
-        break;
-      }
-
-      default:
-        break;
-    }
-
-#endif
 }
 
 void CQSpeciesDetail::copy()
@@ -598,49 +562,7 @@ void CQSpeciesDetail::copy()
 
 void CQSpeciesDetail::slotBtnNew()
 {
-#ifdef COPASI_UNDO
   mpUndoStack->push(new CreateNewSpeciesCommand(this));
-#else
-  leave();
-
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
-  assert(pDataModel != NULL);
-
-  CModel * pModel = pDataModel->getModel();
-
-  if (pModel == NULL)
-    return;
-
-  if (pModel->getCompartments().size() == 0)
-    pModel->createCompartment("compartment");
-
-  std::string name = "species_1";
-  int i = 1;
-
-  while (!(mpMetab = pModel->createMetabolite(name, "", 1.0, CModelEntity::REACTIONS)))
-    {
-      i++;
-      name = "species_";
-      name += TO_UTF8(QString::number(i));
-    }
-
-  switch (mFramework)
-    {
-      case 0:
-        mpMetab->setInitialConcentration(1.0);
-        break;
-
-      case 1:
-        mpMetab->setInitialValue(100.0);
-        break;
-    }
-
-  std::string key = mpMetab->getKey();
-  protectedNotify(ListViews::METABOLITE, ListViews::ADD, key);
-  mpListView->switchToOtherWidget(C_INVALID_INDEX, key);
-
-#endif
 }
 
 void CQSpeciesDetail::slotBtnCopy() {}
@@ -700,43 +622,7 @@ void CQSpeciesDetail::slotInitialTypeChanged(bool useInitialExpression)
 
 void CQSpeciesDetail::slotInitialValueLostFocus()
 {
-#ifdef COPASI_UNDO
   mpUndoStack->push(new SpeciesInitialValueLostFocusCommand(this));
-#else
-
-  if (!mpMetab || !mpCurrentCompartment) return;
-
-  const CModel * pModel = mpMetab->getModel();
-
-  if (pModel == NULL)
-    return;
-
-  switch (mFramework)
-    {
-      case 0:
-
-        if (QString::number(mInitialConcentration, 'g', 10) == mpEditInitialValue->text())
-          return;
-
-        mInitialConcentration = mpEditInitialValue->text().toDouble();
-        mInitialNumber = CMetab::convertToNumber(mInitialConcentration,
-                         *mpCurrentCompartment,
-                         *pModel);
-        break;
-
-      case 1:
-
-        if (QString::number(mInitialNumber, 'g', 10) == mpEditInitialValue->text())
-          return;
-
-        mInitialNumber = mpEditInitialValue->text().toDouble();
-        mInitialConcentration = CMetab::convertToConcentration(mInitialNumber,
-                                *mpCurrentCompartment,
-                                *pModel);
-        break;
-    }
-
-#endif
 }
 
 void CQSpeciesDetail::slotNameLostFocus()
@@ -774,8 +660,6 @@ void CQSpeciesDetail::slotSwitchToReaction(int row, int /* column */)
 
 void CQSpeciesDetail::slotTypeChanged(int type)
 {
-#ifdef COPASI_UNDO
-
   if (mItemToType[type] == mpMetab->getStatus())
     {
       speciesTypeChanged(type);
@@ -784,59 +668,9 @@ void CQSpeciesDetail::slotTypeChanged(int type)
     {
       mpUndoStack->push(new SpeciesTypeChangeCommand(mItemToType[type], mpMetab->getStatus(), this));
     }
-
-#else
-
-  switch ((CModelEntity::Status) mItemToType[type])
-    {
-      case CModelEntity::FIXED:
-        mpLblExpression->hide();
-        mpExpressionEMW->hide();
-
-        mpBoxUseInitialExpression->setEnabled(true);
-        slotInitialTypeChanged(mpBoxUseInitialExpression->isChecked());
-        break;
-
-      case CModelEntity::ASSIGNMENT:
-        mpLblExpression->show();
-        mpExpressionEMW->show();
-
-        mpBoxUseInitialExpression->setEnabled(false);
-        slotInitialTypeChanged(false);
-
-        mpExpressionEMW->updateWidget();
-        break;
-
-      case CModelEntity::ODE:
-        mpLblExpression->show();
-        mpExpressionEMW->show();
-
-        mpBoxUseInitialExpression->setEnabled(true);
-        slotInitialTypeChanged(mpBoxUseInitialExpression->isChecked());
-
-        mpExpressionEMW->updateWidget();
-        break;
-
-      case CModelEntity::REACTIONS:
-        mpLblExpression->hide();
-        mpExpressionEMW->hide();
-
-        mpBoxUseInitialExpression->setEnabled(true);
-        slotInitialTypeChanged(mpBoxUseInitialExpression->isChecked());
-        break;
-
-      default:
-        break;
-    }
-
-  // This will update the unit display.
-  setFramework(mFramework);
-#endif
 }
 
 //Undo methods
-#ifdef COPASI_UNDO
-
 void CQSpeciesDetail::createNewSpecies()
 {
   GET_MODEL_OR_RETURN(pModel);
@@ -919,7 +753,6 @@ void CQSpeciesDetail::deleteSpecies(UndoSpeciesData *pSData)
 #undef DELETE
   protectedNotify(ListViews::METABOLITE, ListViews::DELETE, key); //mKey);
   protectedNotify(ListViews::METABOLITE, ListViews::DELETE, "");//Refresh all as there may be dependencies.
-
 }
 
 void CQSpeciesDetail::addSpecies(UndoSpeciesData *pSData)
@@ -1071,4 +904,3 @@ void CQSpeciesDetail::speciesInitialValueLostFocus(UndoSpeciesData *pSData)
         break;
     }
 }
-#endif

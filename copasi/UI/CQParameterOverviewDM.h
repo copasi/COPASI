@@ -1,4 +1,4 @@
-// Copyright (C) 2012 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -14,19 +14,15 @@ class CModelParameterSet;
 class CModelParameterGroup;
 class CModelParameter;
 
-#ifdef COPASI_UNDO
 class QUndoStack;
 #include <QList>
 #include <QPair>
-#endif
 
 class CQParameterOverviewDM : public QAbstractItemModel
 {
   Q_OBJECT
 
-#ifdef COPASI_UNDO
   friend class ParameterOverviewDataChangeCommand;
-#endif
 
 public:
   CQParameterOverviewDM(QObject * pParent);
@@ -56,16 +52,13 @@ public:
 
   static CModelParameter * nodeFromIndex(const QModelIndex & index);
 
-#ifdef COPASI_UNDO
   void setUndoStack(QUndoStack* undoStack);
   QUndoStack* getUndoStack();
   bool parameterOverviewDataChange(const QList< QPair<int, int> > &path, const QVariant &value, int role);
-#endif
 
 signals:
   void signalOpenEditor(const QModelIndex &) const;
   void signalCloseEditor(const QModelIndex &) const;
-
 
 private:
   QModelIndex index(CModelParameter * pNode) const;
@@ -89,9 +82,7 @@ private:
 
   int mFramework;
 
-#ifdef COPASI_UNDO
   QUndoStack *mpUndoStack;
-#endif
 };
 
 #endif // COPASI_CQParameterOverviewDM

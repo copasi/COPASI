@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -24,19 +24,15 @@
 #define COL_PARTICLE_FLUX    5
 #define TOTAL_COLS_REACTIONS 6
 
-#ifdef COPASI_UNDO
 class CReactionInterface;
 class UndoReactionData;
 class InsertReactionRowsCommand;
-#endif
 
 class CQReactionDM : public CQBaseDataModel
 {
   Q_OBJECT
 
-#ifdef COPASI_UNDO
   friend class ReactionDataChangeCommand;
-#endif
 
 public:
   CQReactionDM(QObject *parent = 0);
@@ -51,7 +47,6 @@ public:
   bool removeRows(QModelIndexList rows, const QModelIndex &index = QModelIndex());
 
   //TODO Undo
-#ifdef COPASI_UNDO
   bool reactionDataChange(const QModelIndex &index,
                           const QVariant &value,
                           int role,
@@ -69,8 +64,6 @@ public:
   void deleteReactionRows(QList <UndoReactionData *>& pReaData);
   bool removeAllReactionRows();
   bool clear();
-
-#endif
 
 protected:
   virtual bool insertRows(int position, int rows, const QModelIndex & source);

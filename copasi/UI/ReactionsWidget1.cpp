@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -45,13 +45,11 @@
 #include "model/CModelExpansion.h"    //for Copy button and options
 
 //UNDO framework
-#ifdef COPASI_UNDO
 #include "undoFramework/DeleteReactionCommand.h"
 #include "undoFramework/CreateNewReactionCommand.h"
 #include "undoFramework/ReactionChangeCommand.h"
 #include "undoFramework/UndoReactionData.h"
 #include "copasiui3window.h"
-#endif
 /*
  *  Constructs a ReactionsWidget which is a child of 'parent', with the
  *  name 'name' and widget flags set to 'f'.
@@ -75,10 +73,8 @@ ReactionsWidget1::ReactionsWidget1(QWidget *parent, const char * name, Qt::WFlag
   mpFast->hide();
 #endif
 
-#ifdef COPASI_UNDO
   CopasiUI3Window *  pWindow = dynamic_cast<CopasiUI3Window * >(parent->parent());
   setUndoStack(pWindow->getUndoStack());
-#endif
 }
 
 ReactionsWidget1::~ReactionsWidget1()
@@ -131,8 +127,6 @@ bool ReactionsWidget1::saveToReaction()
   CModel * pModel = pDataModel->getModel();
 
   if (pModel == NULL) return false;
-
-#if COPASI_UNDO
 
   mIgnoreUpdates = true;
 
@@ -189,98 +183,6 @@ bool ReactionsWidget1::saveToReaction()
 
   mIgnoreUpdates = false;
 
-#else
-
-  if (reac->isFast() != mpFast->isChecked())
-    {
-      reac->setFast(mpFast->isChecked());
-    }
-
-  // Before we save any changes we must check whether any local reaction parameters,
-  // which are used in any mathematical expression in the model are removed.
-  // If that is the case the user must have option to cancel the changes or remove the
-  // affected expressions.
-  std::set< const CCopasiObject * > DeletedParameters = mpRi->getDeletedParameters();
-
-  if (DeletedParameters.size() != 0)
-    {
-      QString ObjectType = "parameter(s)";
-      QString Objects;
-
-      std::set< const CCopasiObject * >::const_iterator itParameter, endParameter = DeletedParameters.end();
-      std::set< const CCopasiObject * > DeletedObjects;
-
-      for (itParameter = DeletedParameters.begin(); itParameter != endParameter; ++itParameter) //all parameters
-        {
-          Objects.append(FROM_UTF8((*itParameter)->getObjectName()) + ", ");
-          DeletedObjects.insert(static_cast< const CCopasiObject * >((*itParameter)->getObject(CCopasiObjectName("Reference=Value"))));
-        }
-
-      Objects.remove(Objects.length() - 2, 2);
-
-      QMessageBox::StandardButton choice =
-        CQMessageBox::confirmDelete(NULL, ObjectType,
-                                    Objects, DeletedObjects);
-
-      switch (choice)
-        {
-          case QMessageBox::Ok:
-
-            for (itParameter = DeletedParameters.begin(); itParameter != endParameter; ++itParameter) //all parameters
-              pModel->removeLocalReactionParameter((*itParameter)->getKey());
-
-            protectedNotify(ListViews::REACTION, ListViews::DELETE, "");
-            break;
-
-          default:
-            return true;
-            break;
-        }
-    }
-
-  // We need to check whether the current reaction still exists, since it is possible that
-  // removing a local reaction parameter triggers its deletion.
-  reac = dynamic_cast< CReaction * >(CCopasiRootContainer::getKeyFactory()->get(mKey));
-
-  if (reac == NULL)
-    {
-      mpRi->setFunctionWithEmptyMapping("");
-
-      protectedNotify(ListViews::REACTION, ListViews::DELETE, mKey);
-      protectedNotify(ListViews::REACTION, ListViews::DELETE, ""); //Refresh all as there may be dependencies.
-      return true;
-    }
-
-  //first check if new metabolites need to be created
-  bool createdMetabs = mpRi->createMetabolites();
-  bool createdObjects = mpRi->createOtherObjects();
-
-  //this writes all changes to the reaction
-  mpRi->writeBackToReaction(reac);
-
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  //(*CCopasiRootContainer::getDatamodelList())[0]->getModel()->compile();
-
-  //this tells the gui what it needs to know.
-  if (createdObjects)
-    protectedNotify(ListViews::MODEL, ListViews::CHANGE, "");
-  else
-    {
-      if (createdMetabs) protectedNotify(ListViews::METABOLITE, ListViews::ADD, "");
-
-      // :TODO Bug 322: This should only be called when actual changes have been saved.
-      if (!this->isHidden())
-        protectedNotify(ListViews::REACTION, ListViews::CHANGE, mKey);
-    }
-
-  //TODO: detect rename events (mpRi->writeBackToReaction has to do this)
-
-  // :TODO Bug 322: This should only be called when actual changes have been saved.
-  if (!this->isHidden())
-    (*CCopasiRootContainer::getDatamodelList())[0]->changed();
-
-#endif
-
   return true;
 }
 
@@ -328,27 +230,7 @@ void ReactionsWidget1::slotLineEditChanged()
 // added 5/19/04
 void ReactionsWidget1::slotBtnNew()
 {
-#ifdef COPASI_UNDO
   mpUndoStack->push(new CreateNewReactionCommand(this));
-#else
-  std::string name = "reaction_1";
-  size_t i = 1;
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
-  assert(pDataModel != NULL);
-
-  while (!pDataModel->getModel()->createReaction(name))
-    {
-      i++;
-      name = "reaction_";
-      name += TO_UTF8(QString::number(i));
-    }
-
-  std::string key = pDataModel->getModel()->getReactions()[name]->getKey();
-  protectedNotify(ListViews::REACTION, ListViews::ADD, key);
-//  enter(key);
-  mpListView->switchToOtherWidget(C_INVALID_INDEX, key);
-#endif
 }
 
 void ReactionsWidget1::slotBtnCopy()
@@ -490,45 +372,7 @@ void ReactionsWidget1::copy()
 // Just added 5/18/04
 void ReactionsWidget1::slotBtnDelete()
 {
-#ifdef COPASI_UNDO
   mpUndoStack->push(new DeleteReactionCommand(this));
-#else
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
-  assert(pDataModel != NULL);
-  CModel * pModel = pDataModel->getModel();
-
-  if (pModel == NULL)
-    return;
-
-  CReaction * pReaction =
-    dynamic_cast< CReaction * >(CCopasiRootContainer::getKeyFactory()->get(mKey));
-
-  if (pReaction == NULL) return;
-
-  QMessageBox::StandardButton choice =
-    CQMessageBox::confirmDelete(NULL, "reaction",
-                                FROM_UTF8(pReaction->getObjectName()),
-                                pReaction->getDeletedObjects());
-
-  switch (choice)
-    {
-      case QMessageBox::Ok:                                                     // Yes or Enter
-      {
-        pDataModel->getModel()->removeReaction(mKey);
-
-        mpRi->setFunctionWithEmptyMapping("");
-
-        protectedNotify(ListViews::REACTION, ListViews::DELETE, mKey);
-        protectedNotify(ListViews::REACTION, ListViews::DELETE, "");//Refresh all as there may be dependencies.
-        break;
-      }
-
-      default:                                                     // No or Escape
-        break;
-    }
-
-#endif
 }
 
 void ReactionsWidget1::FillWidgetFromRI()
@@ -577,9 +421,6 @@ void ReactionsWidget1::FillWidgetFromRI()
 void ReactionsWidget1::slotTableChanged(int index, int sub, QString newValue)
 {
   size_t Index = index;
-
-#ifdef COPASI_UNDO
-  // if undo is enable we issue commands for each of the changes
 
   CReaction* reaction = dynamic_cast<CReaction*>(mpObject);
 
@@ -677,58 +518,6 @@ void ReactionsWidget1::slotTableChanged(int index, int sub, QString newValue)
   int rrr = table->currentRow();
   int ccc = table->currentColumn();
   table->setCurrentCell(rrr, ccc);
-
-#else
-
-  bool SkipFillWidget = false;
-
-  // setValue
-  if (mpRi->getUsage(Index) == CFunctionParameter::PARAMETER)
-    {
-      if (sub != 0) return;
-
-      if (mpRi->isLocalValue(Index))
-        {
-          mpRi->setLocalValue(Index, newValue.toDouble()); // TODO: check
-          SkipFillWidget = true;
-        }
-      else
-        mpRi->setMapping(Index, TO_UTF8(newValue));
-    }
-  else if (mpRi->getUsage(Index) == CFunctionParameter::VOLUME)
-    {
-      if (sub != 0) return;
-
-      mpRi->setMapping(Index, TO_UTF8(newValue));
-    }
-  else
-    {
-      if (sub == 0) //here we assume that vector parameters cannot be edited
-        {
-//          mpRi->setMapping((int) Index, TO_UTF8(table->item((int) table->mIndex2Line[index], 3)->text()));
-          mpRi->setMapping((int) Index, TO_UTF8(newValue));
-        }
-    }
-
-  // if we don't stop here, we loose changes!
-  // instead just prevent updating, that way the user has a chance to correct the reaction,
-  // only if the user selects another reaction (or somehow else leaves the editing,
-  // the changes will be lost)
-  //
-  if (!mpRi->isValid())
-    return;
-
-  // update the widget
-  int rrr = table->currentRow();
-  int ccc = table->currentColumn();
-  table->setCurrentCell(rrr, ccc);
-
-  // Save changes when leaving cell
-  leave();
-
-  // Will ultimately update mpRi for updateTable and FillWidgetFromRI
-  enterProtected();
-#endif
 }
 
 void ReactionsWidget1::slotParameterStatusChanged(int index, bool local)
@@ -869,49 +658,6 @@ void ReactionsWidget1::setFramework(int framework)
 }
 
 //Undo methods
-#ifdef COPASI_UNDO
-
-/*void ReactionsWidget1::restoreLineEditChanged(
-    std::string & eq, std::string &funcName)
-{
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
-  assert(pDataModel != NULL);
-
-  if (eq == "")
-    {
-      mpListView->switchToOtherWidget(114, "");
-      CReaction *pRea = dynamic_cast< CReaction * >(mpObject);
-      std::string key = pRea->getKey();
-      std::string rName = pRea->getObjectName();
-      pDataModel->getModel()->removeReaction(key);
-      protectedNotify(ListViews::REACTION, ListViews::DELETE, key);
-
-      //recreate empty reaction
-      pDataModel->getModel()->createReaction(rName);
-      std::string newKey = pDataModel->getModel()->getReactions()[rName]->getKey();
-      protectedNotify(ListViews::REACTION, ListViews::ADD, newKey);
-
-      mpListView->switchToOtherWidget(C_INVALID_INDEX, newKey);
-      return;
-    }
-
-  //first check if the string is a valid equation
-  if (!CChemEqInterface::isValidEq(eq))
-    {
-      return;  // abort further processing
-    }
-
-  CReaction *pRea = dynamic_cast< CReaction * >(mpObject);
-  std::string key = pRea->getKey();
-  mpRi->setChemEqString(eq, funcName);
-  mpRi->writeBackToReaction(NULL);
-
-  // update the widget
-  FillWidgetFromRI();
-  mpListView->switchToOtherWidget(C_INVALID_INDEX, key); //switch to reaction widget
-}*/
-
 void ReactionsWidget1::createNewReaction()
 {
   GET_MODEL_OR_RETURN(pModel);
@@ -1115,7 +861,6 @@ bool ReactionsWidget1::changeReaction(
   return true;
 }
 
-
 void ReactionsWidget1::addReaction(UndoReactionData *pData)
 {
   GET_MODEL_OR_RETURN(pModel);
@@ -1129,5 +874,3 @@ void ReactionsWidget1::addReaction(UndoReactionData *pData)
 
   mpListView->switchToOtherWidget(C_INVALID_INDEX, pReaction->getKey());
 }
-
-#endif

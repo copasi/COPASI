@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -21,14 +21,12 @@
 #include "CQReactionDM.h"
 #include "qtUtilities.h"
 
-#ifdef COPASI_UNDO
 #include "undoFramework/InsertReactionRowsCommand.h"
 #include "undoFramework/RemoveReactionRowsCommand.h"
 #include "undoFramework/RemoveAllReactionRowsCommand.h"
 #include "undoFramework/ReactionDataChangeCommand.h"
 #include "undoFramework/ReactionChangeCommand.h"
 #include "undoFramework/UndoReactionData.h"
-#endif
 
 CQReactionDM::CQReactionDM(QObject *parent)
   : CQBaseDataModel(parent)
@@ -192,8 +190,6 @@ QVariant CQReactionDM::headerData(int section, Qt::Orientation orientation,
 bool CQReactionDM::setData(const QModelIndex &index, const QVariant &value,
                            int role)
 {
-#ifdef COPASI_UNDO
-
   if (index.data() == value)
     return false;
 
@@ -207,40 +203,6 @@ bool CQReactionDM::setData(const QModelIndex &index, const QVariant &value,
     {
       mpUndoStack->push(new ReactionDataChangeCommand(index, value, role, this));
     }
-
-#else
-
-  if (index.isValid() && role == Qt::EditRole)
-    {
-      bool defaultRow = isDefaultRow(index);
-
-      if (defaultRow)
-        {
-          if (index.data() != value)
-            insertRow(rowCount() - 1, QModelIndex());
-          else
-            return false;
-        }
-
-      // this loads the reaction into a CReactionInterface object.
-      // the gui works on this object and later writes back the changes to ri;
-      assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-      CReactionInterface ri((*CCopasiRootContainer::getDatamodelList())[0]->getModel());
-      CReaction *pRea = (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getReactions()[index.row()];
-
-      if (index.column() == COL_NAME_REACTIONS)
-        pRea->setObjectName(TO_UTF8(value.toString()));
-      else if (index.column() == COL_EQUATION)
-        setEquation(pRea, index, value);
-
-      if (defaultRow && this->index(index.row(), COL_NAME_REACTIONS).data().toString() == "reaction")
-        pRea->setObjectName(TO_UTF8(createNewName("reaction", COL_NAME_REACTIONS)));
-
-      emit dataChanged(index, index);
-      emit notifyGUI(ListViews::REACTION, ListViews::CHANGE, pRea->getKey());
-    }
-
-#endif
 
   return true;
 }
@@ -351,19 +313,7 @@ void CQReactionDM::setEquation(const CReaction *pRea, const QModelIndex& index, 
 
 bool CQReactionDM::insertRows(int position, int rows, const QModelIndex&)
 {
-#ifdef COPASI_UNDO
   mpUndoStack->push(new InsertReactionRowsCommand(position, rows, this));
-#else
-  beginInsertRows(QModelIndex(), position, position + rows - 1);
-
-  for (int row = 0; row < rows; ++row)
-    {
-      CReaction *pRea = (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->createReaction(TO_UTF8(createNewName("reaction", COL_NAME_REACTIONS)));
-      emit notifyGUI(ListViews::REACTION, ListViews::ADD, pRea->getKey());
-    }
-
-  endInsertRows();
-#endif
 
   return true;
 }
@@ -404,59 +354,10 @@ bool CQReactionDM::removeRows(int position, int rows)
 
 bool CQReactionDM::removeRows(QModelIndexList rows, const QModelIndex&)
 {
-#ifdef COPASI_UNDO
   mpUndoStack->push(new RemoveReactionRowsCommand(rows, this, QModelIndex()));
   return true;
-#else
-
-  if (rows.isEmpty())
-    return false;
-
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
-  assert(pDataModel != NULL);
-  CModel * pModel = pDataModel->getModel();
-
-  if (pModel == NULL)
-    return false;
-
-//Build the list of pointers to items to be deleted
-//before actually deleting any item.
-  QList <CReaction *> pReactions;
-  QModelIndexList::const_iterator i;
-
-  for (i = rows.begin(); i != rows.end(); ++i)
-    {
-      if (!isDefaultRow(*i) && pModel->getReactions()[(*i).row()])
-        pReactions.append(pModel->getReactions()[(*i).row()]);
-    }
-
-  QList <CReaction *>::const_iterator j;
-
-  for (j = pReactions.begin(); j != pReactions.end(); ++j)
-    {
-      CReaction * pReaction = *j;
-
-      size_t delRow =
-        pModel->getReactions().CCopasiVector< CReaction >::getIndex(pReaction);
-
-      if (delRow != C_INVALID_INDEX)
-        {
-          QMessageBox::StandardButton choice =
-            CQMessageBox::confirmDelete(NULL, "reaction",
-                                        FROM_UTF8(pReaction->getObjectName()),
-                                        pReaction->getDeletedObjects());
-
-          if (choice == QMessageBox::Ok)
-            removeRow((int) delRow);
-        }
-    }
-
-  return true;
-#endif
 }
 
-#ifdef COPASI_UNDO
 bool CQReactionDM::reactionDataChange(const QModelIndex &index,
                                       const QVariant &value,
                                       int role,
@@ -708,4 +609,3 @@ bool CQReactionDM::removeAllReactionRows()
 {
   return removeRows(0, rowCount() - 1);
 }
-#endif

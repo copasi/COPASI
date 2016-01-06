@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -26,7 +26,6 @@
 #include "report/CCopasiRootContainer.h"
 
 //UNDO framework classes
-#ifdef COPASI_UNDO
 #include "model/CReactionInterface.h"
 #include "undoFramework/DeleteGlobalQuantityCommand.h"
 #include "undoFramework/CreateNewGlobalQuantityCommand.h"
@@ -40,8 +39,6 @@
 #include <copasi/undoFramework/GlobalQuantityChangeCommand.h>
 #include "copasiui3window.h"
 
-#endif
-
 /*
  *  Constructs a CQModelValue which is a child of 'parent', with the
  *  name 'name'.'
@@ -54,10 +51,8 @@ CQModelValue::CQModelValue(QWidget* parent, const char* name)
 
   init();
 
-#ifdef COPASI_UNDO
   CopasiUI3Window *  pWindow = dynamic_cast<CopasiUI3Window * >(parent->parent());
   setUndoStack(pWindow->getUndoStack());
-#endif
 }
 
 /*
@@ -72,31 +67,7 @@ CQModelValue::~CQModelValue()
 /// Slot to create a new quantity; activated whenever the New button is clicked
 void CQModelValue::slotBtnNew()
 {
-#ifdef COPASI_UNDO
   mpUndoStack->push(new CreateNewGlobalQuantityCommand(this));
-#else
-  // save the current setting values
-  leave();
-
-  // standard name
-  std::string name = "quantity_1";
-
-  // if the standard name already exists then creating the new event will fail
-  // thus, a growing index will automatically be added to the standard name
-  int i = 1;
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-
-  while (!(mpModelValue = (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->createModelValue(name)))
-    {
-      i++;
-      name = "quantity_";
-      name += TO_UTF8(QString::number(i));
-    }
-
-  std::string key = mpModelValue->getKey();
-  protectedNotify(ListViews::MODELVALUE, ListViews::ADD, key);
-  mpListView->switchToOtherWidget(C_INVALID_INDEX, key);
-#endif
 }
 
 void CQModelValue::slotBtnCopy()
@@ -106,43 +77,7 @@ void CQModelValue::slotBtnCopy()
 
 void CQModelValue::slotBtnDelete()
 {
-#ifdef COPASI_UNDO
   mpUndoStack->push(new DeleteGlobalQuantityCommand(this));
-#else
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
-  assert(pDataModel != NULL);
-  CModel * pModel = pDataModel->getModel();
-
-  if (pModel == NULL)
-    return;
-
-  if (mpModelValue == NULL)
-    return;
-
-  QMessageBox::StandardButton choice =
-    CQMessageBox::confirmDelete(this, "quantity",
-                                FROM_UTF8(mpModelValue->getObjectName()),
-                                mpModelValue->getDeletedObjects());
-
-  switch (choice)
-    {
-      case QMessageBox::Ok:
-      {
-        pDataModel->getModel()->removeModelValue(mKey);
-        mpModelValue = NULL;
-
-#undef DELETE
-        protectedNotify(ListViews::MODELVALUE, ListViews::DELETE, mKey);
-        protectedNotify(ListViews::MODELVALUE, ListViews::DELETE, "");//Refresh all as there may be dependencies.
-        break;
-      }
-
-      default:
-        break;
-    }
-
-#endif
 }
 
 /*!
@@ -379,8 +314,6 @@ void CQModelValue::save()
 {
   if (mpModelValue == NULL) return;
 
-#if COPASI_UNDO
-
   mIgnoreUpdates = true;
 
   // set status
@@ -465,57 +398,6 @@ void CQModelValue::save()
       load();
     }
 
-#else
-
-  // set status
-  if (mpModelValue->getStatus() != (CModelEntity::Status) mItemToType[mpComboBoxType->currentIndex()])
-    {
-      mpModelValue->setStatus((CModelEntity::Status) mItemToType[mpComboBoxType->currentIndex()]);
-      mChanged = true;
-    }
-
-  // set initial value
-  if (QString::number(mpModelValue->getInitialValue(), 'g', 10) != mpEditInitialValue->text() &&
-      mpModelValue->getStatus() != CModelEntity::ASSIGNMENT)
-    {
-      mpModelValue->setInitialValue(mpEditInitialValue->text().toDouble());
-      mChanged = true;
-    }
-
-  // set expression
-  if (mpModelValue->getExpression() != mpExpressionEMW->mpExpressionWidget->getExpression())
-    {
-      //      mpModelValue->setExpression(((CQExpressionWidget *)mpEditExpression->widget(0))->getExpression());
-      mpModelValue->setExpression(mpExpressionEMW->mpExpressionWidget->getExpression());
-      mChanged = true;
-    }
-
-  // set initial expression
-  if ((CModelEntity::Status) mItemToType[mpComboBoxType->currentIndex()] != CModelEntity::ASSIGNMENT)
-    {
-      if (mpBoxUseInitialExpression->isChecked() &&
-          mpModelValue->getInitialExpression() != mpInitialExpressionEMW->mpExpressionWidget->getExpression())
-        {
-          mpModelValue->setInitialExpression(mpInitialExpressionEMW->mpExpressionWidget->getExpression());
-          mChanged = true;
-        }
-      else if (!mpBoxUseInitialExpression->isChecked() &&
-               mpModelValue->getInitialExpression() != "")
-        {
-          mpModelValue->setInitialExpression("");
-          mChanged = true;
-        }
-    }
-
-  if (mChanged)
-    {
-      assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-      (*CCopasiRootContainer::getDatamodelList())[0]->changed();
-      protectedNotify(ListViews::MODELVALUE, ListViews::CHANGE, mKey);
-    }
-
-#endif
-
   mChanged = false;
 }
 
@@ -552,8 +434,6 @@ void CQModelValue::slotInitialTypeChanged(bool useInitialAssignment)
 }
 
 //Undo methods
-#ifdef COPASI_UNDO
-
 void CQModelValue::createNewGlobalQuantity()
 {
   // save the current setting values
@@ -693,5 +573,3 @@ CQModelValue::changeValue(const std::string& key,
 
   return true;
 }
-
-#endif

@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -33,10 +33,7 @@ class QResizeEvent;
 class ListViews;
 class CCopasiDataModel;
 class CCopasiObject;
-
-#ifdef COPASI_UNDO
 class QUndoStack;
-#endif
 
 class CopasiWidget : public QWidget
 {
@@ -58,17 +55,13 @@ public:
   void setIgnoreUpdates(bool v);
   CCopasiDataModel * getDataModel() const;
 
-#ifdef COPASI_UNDO
   void setUndoStack(QUndoStack* undoStack);
   QUndoStack* getUndoStack();
-#endif
 
 protected:
   virtual bool enterProtected();
 
-#ifdef COPASI_UNDO
   QUndoStack *mpUndoStack;
-#endif
 
   ListViews * mpListView;
   std::string mKey;

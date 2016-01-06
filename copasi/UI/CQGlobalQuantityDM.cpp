@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -19,7 +19,6 @@
 #include "CQGlobalQuantityDM.h"
 #include "qtUtilities.h"
 
-#ifdef COPASI_UNDO
 #include "model/CReaction.h"
 #include "model/CReactionInterface.h"
 #include "undoFramework/InsertGlobalQuantityRowsCommand.h"
@@ -32,7 +31,6 @@
 #include "undoFramework/UndoEventData.h"
 #include "undoFramework/UndoEventAssignmentData.h"
 #include <copasi/UI/CQCopasiApplication.h>
-#endif
 
 CQGlobalQuantityDM::CQGlobalQuantityDM(QObject *parent)
   : CQBaseDataModel(parent)
@@ -231,8 +229,6 @@ QVariant CQGlobalQuantityDM::headerData(int section, Qt::Orientation orientation
 bool CQGlobalQuantityDM::setData(const QModelIndex &index, const QVariant &value,
                                  int role)
 {
-#ifdef COPASI_UNDO
-
   if (index.data() == value)
     return false;
 
@@ -250,65 +246,12 @@ bool CQGlobalQuantityDM::setData(const QModelIndex &index, const QVariant &value
       mpUndoStack->push(new GlobalQuantityDataChangeCommand(index, value, role, this));
     }
 
-#else
-
-  if (index.isValid() && role == Qt::EditRole)
-    {
-      bool defaultRow = isDefaultRow(index);
-
-      if (defaultRow)
-        {
-          if (index.column() == COL_TYPE_GQ)
-            {
-              if (index.data().toString() != QString(FROM_UTF8(CModelEntity::StatusName[mItemToType[value.toInt()]])))
-                insertRow(rowCount() - 1, QModelIndex());
-              else
-                return false;
-            }
-          else if (index.data() != value)
-            insertRow(rowCount() - 1, QModelIndex());
-          else
-            return false;
-        }
-
-      assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-      CModelValue *pGQ = (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getModelValues()[index.row()];
-
-      if (index.column() == COL_NAME_GQ)
-        pGQ->setObjectName(TO_UTF8(value.toString()));
-      else if (index.column() == COL_TYPE_GQ)
-        pGQ->setStatus((CModelEntity::Status) mItemToType[value.toInt()]);
-      else if (index.column() == COL_INITIAL_GQ)
-        pGQ->setInitialValue(value.toDouble());
-
-      if (defaultRow && this->index(index.row(), COL_NAME_GQ).data().toString() == "quantity")
-        pGQ->setObjectName(TO_UTF8(createNewName("quantity", COL_NAME_GQ)));
-
-      emit dataChanged(index, index);
-      emit notifyGUI(ListViews::MODELVALUE, ListViews::CHANGE, pGQ->getKey());
-    }
-
-#endif
-
   return true;
 }
 
 bool CQGlobalQuantityDM::insertRows(int position, int rows, const QModelIndex&)
 {
-#ifdef COPASI_UNDO
   mpUndoStack->push(new InsertGlobalQuantityRowsCommand(position, rows, this));
-#else
-  beginInsertRows(QModelIndex(), position, position + rows - 1);
-
-  for (int row = 0; row < rows; ++row)
-    {
-      CModelValue *pGQ = (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->createModelValue(TO_UTF8(createNewName("quantity", COL_NAME_GQ)));
-      emit notifyGUI(ListViews::MODELVALUE, ListViews::ADD, pGQ->getKey());
-    }
-
-  endInsertRows();
-
-#endif
 
   return true;
 }
@@ -349,59 +292,10 @@ bool CQGlobalQuantityDM::removeRows(int position, int rows)
 
 bool CQGlobalQuantityDM::removeRows(QModelIndexList rows, const QModelIndex&)
 {
-#ifdef COPASI_UNDO
   mpUndoStack->push(new RemoveGlobalQuantityRowsCommand(rows, this, QModelIndex()));
-#else
-
-  if (rows.isEmpty())
-    return false;
-
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
-  assert(pDataModel != NULL);
-  CModel * pModel = pDataModel->getModel();
-
-  if (pModel == NULL)
-    return false;
-
-//Build the list of pointers to items to be deleted
-//before actually deleting any item.
-  QList <CModelValue *> pGlobalQuantities;
-  QModelIndexList::const_iterator i;
-
-  for (i = rows.begin(); i != rows.end(); ++i)
-    {
-      if (!isDefaultRow(*i) && pModel->getModelValues()[(*i).row()])
-        pGlobalQuantities.append(pModel->getModelValues()[(*i).row()]);
-    }
-
-  QList <CModelValue *>::const_iterator j;
-
-  for (j = pGlobalQuantities.begin(); j != pGlobalQuantities.end(); ++j)
-    {
-      CModelValue * pGQ = *j;
-
-      size_t delRow =
-        pModel->getModelValues().CCopasiVector< CModelValue >::getIndex(pGQ);
-
-      if (delRow != C_INVALID_INDEX)
-        {
-          QMessageBox::StandardButton choice =
-            CQMessageBox::confirmDelete(NULL, "quantity",
-                                        FROM_UTF8(pGQ->getObjectName()),
-                                        pGQ->getDeletedObjects());
-
-          if (choice == QMessageBox::Ok)
-            removeRow((int) delRow);
-        }
-    }
-
-#endif
 
   return true;
 }
-
-#ifdef COPASI_UNDO
 
 bool CQGlobalQuantityDM::globalQuantityDataChange(const QModelIndex &index, const QVariant &value, int role)
 {
@@ -603,4 +497,3 @@ bool CQGlobalQuantityDM::removeAllGlobalQuantityRows()
 {
   return removeRows(0, rowCount() - 1);
 }
-#endif

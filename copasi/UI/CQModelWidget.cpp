@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -17,12 +17,10 @@
 #include "copasi/utilities/CUnit.h"
 #include "copasi/report/CCopasiRootContainer.h"
 
-#if COPASI_UNDO
 #include <QUndoStack>
 #include <copasi/undoFramework/ModelChangeCommand.h>
 #include <copasi/UI/copasiui3window.h>
 #include <copasi/UI/CQCopasiApplication.h>
-#endif
 
 CQModelWidget::CQModelWidget(QWidget* parent, const char* name) :
   CopasiWidget(parent, name),
@@ -81,9 +79,7 @@ CQModelWidget::CQModelWidget(QWidget* parent, const char* name) :
   mpComboQuantityUnit->clear();
   mpComboQuantityUnit->insertItems(0, ComboEntries);
 
-#if COPASI_UNDO
   mpUndoStack = NULL;
-#endif
 
 #ifndef COPASI_EXTUNIT
   mpLblAreaUnit->hide();
@@ -126,8 +122,6 @@ void CQModelWidget::save()
     return;
 
   bool changed = false;
-
-#if COPASI_UNDO
 
   mIgnoreUpdates = true;
 
@@ -221,69 +215,6 @@ void CQModelWidget::save()
       load();
     }
 
-#else
-
-  if (TO_UTF8(mpComboTimeUnit->currentText()) != mpModel->getTimeUnitName())
-    {
-      mpModel->setTimeUnit(TO_UTF8(mpComboTimeUnit->currentText()));
-      changed = true;
-    }
-
-  if (TO_UTF8(mpComboVolumeUnit->currentText()) != mpModel->getVolumeUnitName())
-    {
-      mpModel->setVolumeUnit(TO_UTF8(mpComboVolumeUnit->currentText()));
-      changed = true;
-    }
-
-  if (TO_UTF8(mpComboAreaUnit->currentText()) != mpModel->getAreaUnitName())
-    {
-      mpModel->setAreaUnit(TO_UTF8(mpComboAreaUnit->currentText()));
-      changed = true;
-    }
-
-  if (TO_UTF8(mpComboLengthUnit->currentText()) != mpModel->getLengthUnitName())
-    {
-      mpModel->setLengthUnit(TO_UTF8(mpComboLengthUnit->currentText()));
-      changed = true;
-    }
-
-  if (TO_UTF8(mpComboQuantityUnit->currentText()) != mpModel->getQuantityUnitName())
-    {
-      mpModel->setQuantityUnit(TO_UTF8(mpComboQuantityUnit->currentText()));
-      changed = true;
-    }
-
-  if (mpCheckStochasticCorrection->isChecked() != (mpModel->getModelType() == CModel::deterministic))
-    {
-      if (mpCheckStochasticCorrection->isChecked())
-        {
-          mpModel->setModelType(CModel::deterministic);
-        }
-      else
-        {
-          mpModel->setModelType(CModel::stochastic);
-        }
-
-      changed = true;
-    }
-
-  if (mpEditInitialTime->text() != QString::number(mpModel->getInitialTime()))
-    {
-      mpModel->setInitialTime(mpEditInitialTime->text().toDouble());
-      changed = true;
-    }
-
-  if (changed)
-    {
-      if (mpDataModel != NULL)
-        {
-          mpDataModel->changed();
-        }
-
-      protectedNotify(ListViews::MODEL, ListViews::CHANGE, mKey);
-    }
-
-#endif
   return;
 }
 
@@ -338,8 +269,6 @@ bool CQModelWidget::enterProtected()
 
   return true;
 }
-
-#if COPASI_UNDO
 
 bool
 CQModelWidget::changeValue(CCopasiUndoCommand::Type type, const QVariant& newValue)
@@ -400,5 +329,3 @@ CQModelWidget::changeValue(CCopasiUndoCommand::Type type, const QVariant& newVal
 
   return true;
 }
-
-#endif

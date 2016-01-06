@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -19,14 +19,12 @@
 #include "CQEventDM.h"
 #include "qtUtilities.h"
 
-#ifdef COPASI_UNDO
 #include "undoFramework/InsertEventRowsCommand.h"
 #include "undoFramework/RemoveEventRowsCommand.h"
 #include "undoFramework/RemoveAllEventRowsCommand.h"
 #include "undoFramework/EventDataChangeCommand.h"
 #include "undoFramework/UndoEventData.h"
 #include "undoFramework/UndoEventAssignmentData.h"
-#endif
 
 CQEventDM::CQEventDM(QObject *parent)
   : CQBaseDataModel(parent)
@@ -207,8 +205,6 @@ QVariant CQEventDM::headerData(int section, Qt::Orientation orientation,
 bool CQEventDM::setData(const QModelIndex &index, const QVariant &value,
                         int role)
 {
-#ifdef COPASI_UNDO
-
   if (index.data() == value)
     return false;
 
@@ -223,54 +219,12 @@ bool CQEventDM::setData(const QModelIndex &index, const QVariant &value,
       mpUndoStack->push(new EventDataChangeCommand(index, value, role, this));
     }
 
-#else
-
-  if (index.isValid() && role == Qt::EditRole)
-    {
-      bool defaultRow = isDefaultRow(index);
-
-      if (defaultRow)
-        {
-          if (index.data() != value)
-            insertRow(rowCount() - 1, QModelIndex());
-          else
-            return false;
-        }
-
-      assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-      CEvent *pEvent = (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getEvents()[index.row()];
-
-      if (index.column() == COL_NAME_EVENTS)
-        pEvent->setObjectName(TO_UTF8(value.toString()));
-
-      if (defaultRow && this->index(index.row(), COL_NAME_EVENTS).data().toString() == "event")
-        pEvent->setObjectName(TO_UTF8(createNewName("event", COL_NAME_EVENTS)));
-
-      emit dataChanged(index, index);
-      emit notifyGUI(ListViews::EVENT, ListViews::CHANGE, pEvent->getKey());
-    }
-
-#endif
-
   return true;
 }
 
 bool CQEventDM::insertRows(int position, int rows, const QModelIndex&)
 {
-#ifdef COPASI_UNDO
   mpUndoStack->push(new InsertEventRowsCommand(position, rows, this));
-#else
-  beginInsertRows(QModelIndex(), position, position + rows - 1);
-
-  for (int row = 0; row < rows; ++row)
-    {
-      CEvent *pEvent =
-        (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->createEvent(TO_UTF8(createNewName("event", COL_NAME_EVENTS)));
-      emit notifyGUI(ListViews::EVENT, ListViews::ADD, pEvent->getKey());
-    }
-
-  endInsertRows();
-#endif
 
   return true;
 }
@@ -310,60 +264,10 @@ bool CQEventDM::removeRows(int position, int rows)
 
 bool CQEventDM::removeRows(QModelIndexList rows, const QModelIndex&)
 {
-#ifdef COPASI_UNDO
   mpUndoStack->push(new RemoveEventRowsCommand(rows, this, QModelIndex()));
-#else
-
-  if (rows.isEmpty())
-    return false;
-
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
-  assert(pDataModel != NULL);
-  CModel * pModel = pDataModel->getModel();
-
-  if (pModel == NULL)
-    return false;
-
-  //Build the list of pointers to items to be deleted
-  //before actually deleting any item.
-  QList <CEvent *> pEvents;
-  QModelIndexList::const_iterator i;
-
-  for (i = rows.begin(); i != rows.end(); ++i)
-    {
-      if (!isDefaultRow(*i) && pModel->getEvents()[(*i).row()])
-        pEvents.append(pModel->getEvents()[(*i).row()]);
-    }
-
-  QList <CEvent *>::const_iterator j;
-
-  for (j = pEvents.begin(); j != pEvents.end(); ++j)
-    {
-      CEvent * pEvent = *j;
-
-      size_t delRow =
-        pModel->getEvents().CCopasiVector< CEvent >::getIndex(pEvent);
-
-      if (delRow != C_INVALID_INDEX)
-        {
-          std::set< const CCopasiObject * > deletedObjects;
-          QMessageBox::StandardButton choice =
-            CQMessageBox::confirmDelete(NULL, "event",
-                                        FROM_UTF8(pEvent->getObjectName()),
-                                        deletedObjects);
-
-          if (choice == QMessageBox::Ok)
-            removeRow((int) delRow);
-        }
-    }
-
-#endif
 
   return true;
 }
-
-#ifdef COPASI_UNDO
 
 bool CQEventDM::eventDataChange(const QModelIndex &index, const QVariant &value,
                                 int role)
@@ -549,4 +453,3 @@ bool CQEventDM::removeAllEventRows()
 {
   return removeRows(0, rowCount() - 1);
 }
-#endif

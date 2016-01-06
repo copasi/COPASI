@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -15,7 +15,6 @@
 #include "CQMessageBox.h"
 #include "qtUtilities.h"
 
-#ifdef COPASI_UNDO
 #include "model/CReaction.h"
 #include "model/CMetab.h"
 #include "model/CReactionInterface.h"
@@ -31,9 +30,7 @@
 #include "undoFramework/UndoEventData.h"
 #include "undoFramework/UndoEventAssignmentData.h"
 
-#include <copasi/UI/CQCopasiApplication.h>
-
-#endif
+#include "UI/CQCopasiApplication.h"
 
 #include "copasi.h"
 
@@ -255,8 +252,6 @@ QVariant CQCompartmentDM::headerData(int section, Qt::Orientation orientation,
 bool CQCompartmentDM::setData(const QModelIndex &index, const QVariant &value,
                               int role)
 {
-#ifdef COPASI_UNDO
-
   QVariant data = index.data();
 
   if (data == value)
@@ -276,64 +271,12 @@ bool CQCompartmentDM::setData(const QModelIndex &index, const QVariant &value,
       mpUndoStack->push(new CompartmentDataChangeCommand(index, value, role, this));
     }
 
-#else
-
-  if (index.isValid() && role == Qt::EditRole)
-    {
-      bool defaultRow = isDefaultRow(index);
-
-      if (defaultRow)
-        {
-          if (index.column() == COL_TYPE_COMPARTMENTS)
-            {
-              if (index.data().toString() != QString(FROM_UTF8(CModelEntity::StatusName[mItemToType[value.toInt()]])))
-                insertRow(rowCount() - 1, QModelIndex());
-              else
-                return false;
-            }
-          else if (index.data() != value)
-            insertRow(rowCount() - 1, QModelIndex());
-          else
-            return false;
-        }
-
-      assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-      CCompartment *pComp = (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getCompartments()[index.row()];
-
-      if (index.column() == COL_NAME_COMPARTMENTS)
-        pComp->setObjectName(TO_UTF8(value.toString()));
-      else if (index.column() == COL_TYPE_COMPARTMENTS)
-        pComp->setStatus((CModelEntity::Status) mItemToType[value.toInt()]);
-      else if (index.column() == COL_IVOLUME)
-        pComp->setInitialValue(value.toDouble());
-
-      if (defaultRow && this->index(index.row(), COL_NAME_COMPARTMENTS).data().toString() == "compartment")
-        pComp->setObjectName(TO_UTF8(createNewName("compartment", COL_NAME_COMPARTMENTS)));
-
-      emit dataChanged(index, index);
-      emit notifyGUI(ListViews::COMPARTMENT, ListViews::CHANGE, pComp->getKey());
-    }
-
-#endif
-
   return true;
 }
 
 bool CQCompartmentDM::insertRows(int position, int rows, const QModelIndex&)
 {
-#ifdef COPASI_UNDO
   mpUndoStack->push(new InsertCompartmentRowsCommand(position, rows, this));
-#else
-  beginInsertRows(QModelIndex(), position, position + rows - 1);
-
-  for (int row = 0; row < rows; ++row)
-    {
-      CCompartment * pComp = (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->createCompartment(TO_UTF8(createNewName("compartment", COL_NAME_COMPARTMENTS)));
-      emit notifyGUI(ListViews::COMPARTMENT, ListViews::ADD, pComp->getKey());
-    }
-
-  endInsertRows();
-#endif
 
   return true;
 }
@@ -375,59 +318,10 @@ bool CQCompartmentDM::removeRows(int position, int rows)
 
 bool CQCompartmentDM::removeRows(QModelIndexList rows, const QModelIndex&)
 {
-#ifdef COPASI_UNDO
   mpUndoStack->push(new RemoveCompartmentRowsCommand(rows, this));
-#else
-
-  if (rows.isEmpty())
-    return false;
-
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
-  assert(pDataModel != NULL);
-  CModel * pModel = pDataModel->getModel();
-
-  if (pModel == NULL)
-    return false;
-
-//Build the list of pointers to items to be deleted
-//before actually deleting any item.
-  QList <CCompartment *> pCompartments;
-  QModelIndexList::const_iterator i;
-
-  for (i = rows.begin(); i != rows.end(); ++i)
-    {
-      if (!isDefaultRow(*i) && pModel->getCompartments()[(*i).row()])
-        pCompartments.append(pModel->getCompartments()[(*i).row()]);
-    }
-
-  QList <CCompartment *>::const_iterator j;
-
-  for (j = pCompartments.begin(); j != pCompartments.end(); ++j)
-    {
-      CCompartment * pCompartment = *j;
-
-      size_t delRow =
-        pModel->getCompartments().CCopasiVector< CCompartment >::getIndex(pCompartment);
-
-      if (delRow != C_INVALID_INDEX)
-        {
-          QMessageBox::StandardButton choice =
-            CQMessageBox::confirmDelete(NULL, "compartment",
-                                        FROM_UTF8(pCompartment->getObjectName()),
-                                        pCompartment->getDeletedObjects());
-
-          if (choice == QMessageBox::Ok)
-            removeRow((int) delRow);
-        }
-    }
-
-#endif
 
   return true;
 }
-
-#ifdef COPASI_UNDO
 
 bool CQCompartmentDM::compartmentDataChange(const QModelIndex& index, const QVariant &value)
 {
@@ -635,4 +529,3 @@ bool CQCompartmentDM::removeAllCompartmentRows()
 {
   return removeRows(0, rowCount() - 1);
 }
-#endif

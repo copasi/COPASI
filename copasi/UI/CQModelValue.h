@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -15,11 +15,9 @@
 #ifndef CQMODELVALUE_H
 #define CQMODELVALUE_H
 
-#ifdef COPASI_UNDO
 class UndoGlobalQuantityData;
 #include <limits>
 #include <copasi/undoFramework/CCopasiUndoCommand.h>
-#endif
 
 class CQExpressionWidget;
 class CModelValue;
@@ -35,11 +33,8 @@ class CQModelValue : public CopasiWidget, public Ui::CQModelValue
 {
   Q_OBJECT
 
-#ifdef COPASI_UNDO
   friend class DeleteGlobalQuantityCommand;
   friend class CreateNewGlobalQuantityCommand;
-//  friend class GlobalQuantityTypeChangeCommand;
-#endif
 
 public:
   CQModelValue(QWidget* parent = 0, const char* name = 0);
@@ -76,17 +71,16 @@ private slots:
   void slotInitialTypeChanged(bool useInitialAssignment);
 
   //additional functions for UNDO framework
-#ifdef COPASI_UNDO
   void deleteGlobalQuantity();
   void addGlobalQuantity(UndoGlobalQuantityData *pSData);
   void createNewGlobalQuantity();
   void deleteGlobalQuantity(UndoGlobalQuantityData *pSData);
+
 public:
   bool changeValue(const std::string& key,
                    CCopasiUndoCommand::Type type,
                    const QVariant& newValue,
                    double iValue = std::numeric_limits<double>::quiet_NaN());
-#endif
 };
 
 #endif // CQMODELVALUE_H

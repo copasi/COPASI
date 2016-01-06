@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -37,18 +37,14 @@ public:
   virtual bool isDefaultRow(const QModelIndex& i) const;
   QString createNewName(const QString name, const int nameCol);
 
-#ifdef COPASI_UNDO
   void setUndoStack(QUndoStack* undoStack);
   QUndoStack* getUndoStack();
-#endif
 
 protected:
   virtual bool insertRows(int position, int rows, const QModelIndex & source) = 0;
   virtual bool removeRows(int position, int rows) = 0;
 
-#ifdef COPASI_UNDO
   QUndoStack *mpUndoStack;
-#endif
 
 signals:
   void notifyGUI(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key = "");

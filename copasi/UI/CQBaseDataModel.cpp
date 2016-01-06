@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -8,9 +8,7 @@
 // and The University of Manchester.
 // All rights reserved.
 
-#ifdef COPASI_UNDO
 #include <QUndoStack>
-#endif
 
 #include "copasi.h"
 #include "CQBaseDataModel.h"
@@ -78,13 +76,12 @@ QString CQBaseDataModel::createNewName(const QString name, const int nameCol)
   return nname;
 }
 
-#ifdef COPASI_UNDO
 void CQBaseDataModel::setUndoStack(QUndoStack* undoStack)
 {
   mpUndoStack = undoStack;
 }
+
 QUndoStack* CQBaseDataModel::getUndoStack()
 {
   return mpUndoStack;
 }
-#endif

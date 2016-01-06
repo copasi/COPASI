@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -17,9 +17,7 @@
 //////////////////////////////////////////////////////////////////////
 #include <QtGui/QApplication>
 
-#ifdef COPASI_UNDO
 #include <QUndoStack>
-#endif
 
 #include "copasi/UI/copasiWidget.h"
 #include "copasi/UI/listviews.h"
@@ -118,13 +116,12 @@ CCopasiDataModel * CopasiWidget::getDataModel() const
   return mpDataModel;
 }
 
-#ifdef COPASI_UNDO
 void CopasiWidget::setUndoStack(QUndoStack* undoStack)
 {
   mpUndoStack = undoStack;
 }
+
 QUndoStack* CopasiWidget::getUndoStack()
 {
   return mpUndoStack;
 }
-#endif

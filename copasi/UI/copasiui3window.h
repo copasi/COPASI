@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -50,10 +50,7 @@ class CMIRIAMResourceObject;
 class QEvent;
 class QActionGroup;
 class QThread;
-
-#ifdef COPASI_UNDO
 class QUndoStack;
-#endif
 
 class CopasiUI3Window : public QMainWindow
 #ifdef COPASI_SBW_INTEGRATION
@@ -111,9 +108,7 @@ public:
 #endif
 
   //UNDO framework
-#ifdef COPASI_UNDO
   QUndoStack *getUndoStack();
-#endif
 
   void addWindow(QMainWindow * pWindow);
   void removeWindow(QMainWindow * pWindow);
@@ -336,8 +331,9 @@ private:
   QAction* mpaRedo;
   QAction* mpaUndoHistory;
   QAction* mpaClearUndoHistory;
-  QUndoStack *mpUndoStack;
 #endif
+
+  QUndoStack *mpUndoStack;
 
 #ifdef COPASI_SBW_INTEGRATION
 public:

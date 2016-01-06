@@ -1,4 +1,4 @@
-// Copyright (C) 2012 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -21,11 +21,9 @@
 #include "UI/CQSpeciesDetail.h"
 #include "UI/ReactionsWidget1.h"
 
-#if COPASI_UNDO
 #include <QUndoStack>
 #include <copasi/undoFramework/EntityRenameCommand.h>
 #include <copasi/UI/copasiui3window.h>
-#endif
 
 CQTabWidget::CQTabWidget(const ListViews::ObjectType & objectType, CopasiWidget * pCopasiWidget,
                          QWidget * parent, Qt::WindowFlags f) :
@@ -76,10 +74,8 @@ CQTabWidget::CQTabWidget(const ListViews::ObjectType & objectType, CopasiWidget 
   mPages.push_back(pRDFTreeView);
   mpTabWidget->addTab(pRDFTreeView, "RDF Browser");
 
-#ifdef COPASI_UNDO
   CopasiUI3Window *  pWindow = dynamic_cast<CopasiUI3Window * >(parent->parent());
   setUndoStack(pWindow->getUndoStack());
-#endif
 }
 
 CQTabWidget::~CQTabWidget()
@@ -187,37 +183,10 @@ bool CQTabWidget::save()
 
   if (mpObject->getObjectName() != TO_UTF8(mpEditName->text()))
     {
-#if COPASI_UNDO
       mpUndoStack->push(new EntityRenameCommand(mpObject,
                         mpObject->getObjectName(),
                         TO_UTF8(mpEditName->text()),
                         this));
-#else
-
-      if (!mpObject->setObjectName(TO_UTF8(mpEditName->text())))
-        {
-          QString msg;
-          msg = "Unable to rename " + FROM_UTF8(ListViews::ObjectTypeName[mObjectType]).toLower() + " '" + FROM_UTF8(mpObject->getObjectName()) + "'\n"
-                + "to '" + mpEditName->text() + "' since a " + FROM_UTF8(ListViews::ObjectTypeName[mObjectType]).toLower() + " with that name already exists.\n";
-
-          CQMessageBox::information(this,
-                                    "Unable to rename " + FROM_UTF8(ListViews::ObjectTypeName[mObjectType]),
-                                    msg,
-                                    QMessageBox::Ok, QMessageBox::Ok);
-
-          mpEditName->setText(FROM_UTF8(mpObject->getObjectName()));
-        }
-      else
-        {
-          protectedNotify(mObjectType, ListViews::RENAME, mKey);
-
-          if (mpDataModel != NULL)
-            {
-              mpDataModel->changed();
-            }
-        }
-
-#endif // COPASI_UNDO
     }
 
   // We need to tell the sub-widgets to accept notifications again
@@ -294,9 +263,7 @@ void CQTabWidget::slotBtnCopy()
   mIgnoreLeave = false;
 }
 
-#if COPASI_UNDO
-bool
-CQTabWidget::renameEntity(const std::string& key, const std::string& newName)
+bool CQTabWidget::renameEntity(const std::string& key, const std::string& newName)
 {
   mKey = key;
   load();
@@ -329,5 +296,3 @@ CQTabWidget::renameEntity(const std::string& key, const std::string& newName)
 
   return true;
 }
-
-#endif

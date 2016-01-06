@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -14,9 +14,7 @@
 #include "model/CModel.h"
 #include "CQBaseDataModel.h"
 
-#ifdef COPASI_UNDO
 class UndoEventData;
-#endif
 
 #define COL_NAME_EVENTS             1
 #define COL_TRIGGER_EVENTS          2
@@ -30,10 +28,8 @@ class CQEventDM : public CQBaseDataModel
 {
   Q_OBJECT
 
-#ifdef COPASI_UNDO
   friend class EventDataChangeCommand;
   friend class InsertEventRowsCommand;
-#endif
 
 public:
   CQEventDM(QObject *parent = 0);
@@ -48,7 +44,6 @@ public:
   bool removeRows(QModelIndexList rows, const QModelIndex &index = QModelIndex());
 
   //TODO Undo
-#ifdef COPASI_UNDO
   bool eventDataChange(const QModelIndex &index, const QVariant &value, int role);
   void insertNewEventRow(int position, int rows, const QModelIndex& index, const QVariant& value);
   void addEventRow(UndoEventData *pEventData);
@@ -58,8 +53,6 @@ public:
   void deleteEventRows(QList <UndoEventData *>& pEventData);
   bool removeAllEventRows();
   bool clear();
-
-#endif
 
 protected:
   virtual bool insertRows(int position, int rows, const QModelIndex & source);

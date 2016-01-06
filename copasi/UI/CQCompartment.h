@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -15,11 +15,9 @@
 #ifndef CQCOMPARTMENT_H
 #define CQCOMPARTMENT_H
 
-#ifdef COPASI_UNDO
 class UndoCompartmentData;
 #include <copasi/undoFramework/CCopasiUndoCommand.h>
 #include <limits>
-#endif
 
 #include <QtCore/QVariant>
 
@@ -33,11 +31,9 @@ class CQCompartment : public CopasiWidget, public Ui::CQCompartment
 {
   Q_OBJECT
 
-#ifdef COPASI_UNDO
   friend class DeleteCompartmentCommand;
   friend class CreateNewCompartmentCommand;
-//  friend class CompartmentTypeChangeCommand;
-#endif
+  friend class CompartmentChangeCommand;
 
 public:
   CQCompartment(QWidget* parent = 0, const char* name = 0);
@@ -76,17 +72,14 @@ private slots:
   void slotMetaboliteTableCurrentChanged(int row, int col);
 
   //additional functions for UNDO framework
-#ifdef COPASI_UNDO
   void deleteCompartment();
   void addCompartment(UndoCompartmentData *pSData);
   void createNewCompartment();
   void deleteCompartment(UndoCompartmentData *pSData);
-public:
   bool changeValue(const std::string& key,
                    CCopasiUndoCommand::Type type,
                    const QVariant& newValue,
                    double iValue = std::numeric_limits<double>::quiet_NaN());
-#endif
 };
 
 #endif // CQCOMPARTMENT_H

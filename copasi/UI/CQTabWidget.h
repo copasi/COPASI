@@ -1,4 +1,4 @@
-// Copyright (C) 2012 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -33,9 +33,7 @@ public:
 
   void selectTab(int index) const;
 
-#if COPASI_UNDO
   bool renameEntity(const std::string& key, const std::string& newName);
-#endif
 
 protected:
   virtual bool enterProtected();

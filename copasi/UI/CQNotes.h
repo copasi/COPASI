@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -13,9 +13,7 @@
 #include "copasi/UI/ui_CQNotes.h"
 #include "copasi/UI/CQValidator.h"
 
-#if COPASI_UNDO
 class QUndoStack;
-#endif
 
 class CQValidatorXML : public CQValidator< QPlainTextEdit >
 {
@@ -79,9 +77,7 @@ public:
   virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
   virtual bool leave();
 
-#if COPASI_UNDO
   void changeNotes(const std::string& key, const std::string& notes);
-#endif
 
 protected slots:
   void slotToggleMode();
@@ -103,9 +99,7 @@ private:
 
   std::string mKeyToCopy;
 
-#if COPASI_UNDO
   QUndoStack* mpUndoStack;
-#endif
 };
 
 #endif // COPASI_CQNotes

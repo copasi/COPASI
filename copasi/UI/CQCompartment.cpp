@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -32,7 +32,6 @@
 #include "report/CCopasiContainer.h"
 
 //UNDO framework classes
-#ifdef COPASI_UNDO
 #include "model/CReactionInterface.h"
 #include "undoFramework/DeleteCompartmentCommand.h"
 #include "undoFramework/CreateNewCompartmentCommand.h"
@@ -42,7 +41,6 @@
 #include "undoFramework/UndoSpeciesData.h"
 #include <copasi/undoFramework/CompartmentChangeCommand.h>
 #include "copasiui3window.h"
-#endif
 
 /*
  *  Constructs a CQCompartment which is a child of 'parent', with the
@@ -82,10 +80,8 @@ CQCompartment::CQCompartment(QWidget* parent, const char* name):
   mpComboBoxDim->hide();
 #endif
 
-#ifdef COPASI_UNDO
   CopasiUI3Window *  pWindow = dynamic_cast<CopasiUI3Window * >(parent->parent());
   setUndoStack(pWindow->getUndoStack());
-#endif
 }
 
 /*
@@ -98,29 +94,7 @@ CQCompartment::~CQCompartment()
 
 void CQCompartment::slotBtnNew()
 {
-#ifdef COPASI_UNDO
   mpUndoStack->push(new CreateNewCompartmentCommand(this));
-#else
-  leave();
-
-  std::string name = "compartment_1";
-  int i = 1;
-
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-
-  while (!(mpCompartment = (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->createCompartment(name)))
-    {
-      i++;
-      name = "compartment_";
-      name += TO_UTF8(QString::number(i));
-    }
-
-  std::string key = mpCompartment->getKey();
-
-  protectedNotify(ListViews::COMPARTMENT, ListViews::ADD, key);
-  mpListView->switchToOtherWidget(C_INVALID_INDEX, key);
-
-#endif
 }
 
 void CQCompartment::slotBtnCopy() {}
@@ -220,39 +194,7 @@ void CQCompartment::copy()
 
 void CQCompartment::slotBtnDelete()
 {
-#ifdef COPASI_UNDO
   mpUndoStack->push(new DeleteCompartmentCommand(this));
-#else
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
-  assert(pDataModel != NULL);
-  CModel * pModel = pDataModel->getModel();
-
-  if (pModel == NULL) return;
-
-  if (mpCompartment == NULL) return;
-
-  QMessageBox::StandardButton choice =
-    CQMessageBox::confirmDelete(this, "compartment",
-                                FROM_UTF8(mpCompartment->getObjectName()),
-                                mpCompartment->getDeletedObjects());
-
-  switch (choice)
-    {
-      case QMessageBox::Ok:
-      {
-        pDataModel->getModel()->removeCompartment(mKey);
-
-        protectedNotify(ListViews::COMPARTMENT, ListViews::DELETE, mKey);
-        protectedNotify(ListViews::COMPARTMENT, ListViews::DELETE, ""); //Refresh all as there may be dependencies.
-        break;
-      }
-
-      default:
-        break;
-    }
-
-#endif
 }
 
 /*!
@@ -486,10 +428,7 @@ void CQCompartment::load()
 
 void CQCompartment::save()
 {
-
   if (mpCompartment == NULL) return;
-
-#if COPASI_UNDO
 
   mIgnoreUpdates = true;
 
@@ -592,66 +531,6 @@ void CQCompartment::save()
       load();
     }
 
-#else
-
-#ifdef COPASI_EXTUNIT
-
-  //Dimensionality
-  if ((C_INT32)mpCompartment->getDimensionality() != mpComboBoxDim->currentIndex()) //this makes assumptions about the order of entries in the combo box!
-    {
-      mpCompartment->setDimensionality(mpComboBoxDim->currentIndex());
-      mChanged = true;
-    }
-
-#endif
-
-  // Type
-  if (mpCompartment->getStatus() != (CModelEntity::Status) mItemToType[mpComboBoxType->currentIndex()])
-    {
-      mpCompartment->setStatus((CModelEntity::Status) mItemToType[mpComboBoxType->currentIndex()]);
-      mChanged = true;
-    }
-
-  // Initial Volume
-  if (QString::number(mpCompartment->getInitialValue(), 'g', 10) != mpEditInitialVolume->text())
-    {
-      mpCompartment->setInitialValue(mpEditInitialVolume->text().toDouble());
-      mChanged = true;
-    }
-
-  // Expression
-  if (mpCompartment->getExpression() != mpExpressionEMW->mpExpressionWidget->getExpression())
-    {
-      mpCompartment->setExpression(mpExpressionEMW->mpExpressionWidget->getExpression());
-      mChanged = true;
-    }
-
-  // Initial Expression
-  if ((CModelEntity::Status) mItemToType[mpComboBoxType->currentIndex()] != CModelEntity::ASSIGNMENT)
-    {
-      if (mpBoxUseInitialExpression->isChecked() &&
-          mpCompartment->getInitialExpression() != mpInitialExpressionEMW->mpExpressionWidget->getExpression())
-        {
-          mpCompartment->setInitialExpression(mpInitialExpressionEMW->mpExpressionWidget->getExpression());
-          mChanged = true;
-        }
-      else if (!mpBoxUseInitialExpression->isChecked() &&
-               mpCompartment->getInitialExpression() != "")
-        {
-          mpCompartment->setInitialExpression("");
-          mChanged = true;
-        }
-    }
-
-  if (mChanged)
-    {
-      assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-      (*CCopasiRootContainer::getDatamodelList())[0]->changed();
-      protectedNotify(ListViews::COMPARTMENT, ListViews::CHANGE, mKey);
-    }
-
-#endif
-
   mChanged = false;
 }
 
@@ -707,8 +586,6 @@ void CQCompartment::loadMetaboliteTable()
 }
 
 //Undo methods
-#ifdef COPASI_UNDO
-
 void CQCompartment::createNewCompartment()
 {
   leave();
@@ -777,7 +654,6 @@ void CQCompartment::deleteCompartment(UndoCompartmentData *pCompartmentData)
 #undef DELETE
   protectedNotify(ListViews::COMPARTMENT, ListViews::DELETE, key);
   protectedNotify(ListViews::COMPARTMENT, ListViews::DELETE, "");//Refresh all as there may be dependencies.
-
 }
 
 void CQCompartment::addCompartment(UndoCompartmentData *pData)
@@ -803,7 +679,6 @@ bool CQCompartment::changeValue(const std::string& key,
       load();
       switchToWidget(C_INVALID_INDEX, mKey);
     }
-
 
   switch (type)
     {
@@ -847,4 +722,3 @@ bool CQCompartment::changeValue(const std::string& key,
 
   return true;
 }
-#endif

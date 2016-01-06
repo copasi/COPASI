@@ -1,4 +1,4 @@
-// Copyright (C) 2012 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -17,11 +17,9 @@
 #include "function/CExpression.h"
 #include "resourcesUI/CQIconResource.h"
 
-#ifdef COPASI_UNDO
 #include <QUndoStack>
 #include "model/CModel.h"
 #include "undoFramework/ParameterOverviewDataChangeCommand.h"
-#endif
 
 #define COL_NAME       0
 #define COL_DIFF       1
@@ -36,9 +34,7 @@ CQParameterOverviewDM::CQParameterOverviewDM(QObject * pParent):
   QAbstractItemModel(pParent),
   mpModelParameterSet(NULL),
   mFramework(0)
-#ifdef COPASI_UNDO
   , mpUndoStack(NULL)
-#endif
 {}
 
 // virtual
@@ -236,8 +232,6 @@ int CQParameterOverviewDM::rowCount(const QModelIndex & parent) const
 // virtual
 bool CQParameterOverviewDM::setData(const QModelIndex &_index, const QVariant &value, int role)
 {
-#ifdef COPASI_UNDO
-
   if (role != Qt::EditRole) return false;
 
   if (_index.data(Qt::EditRole) == value)
@@ -246,41 +240,6 @@ bool CQParameterOverviewDM::setData(const QModelIndex &_index, const QVariant &v
     mpUndoStack->push(new ParameterOverviewDataChangeCommand(_index, value, role, this));
 
   return true;
-#else
-  CModelParameter * pNode = nodeFromIndex(_index);
-  bool success = false;
-
-  if (pNode != NULL &&
-      role == Qt::EditRole)
-    {
-      switch (_index.column())
-        {
-          case COL_VALUE:
-            pNode->setValue(value.toDouble(), static_cast< CModelParameter::Framework >(mFramework));
-            success = true;
-            break;
-
-          case COL_ASSIGNMENT:
-          {
-            CModelParameter * pGlobalQuantity = pNode->getSet()->getModelParameter(TO_UTF8(value.toString()), CModelParameter::ModelValue);
-
-            if (pGlobalQuantity != NULL)
-              {
-                static_cast< CModelParameterReactionParameter * >(pNode)->setGlobalQuantityCN(pGlobalQuantity->getCN());
-              }
-            else
-              {
-                static_cast< CModelParameterReactionParameter * >(pNode)->setGlobalQuantityCN("");
-              }
-          }
-
-          success = true;
-          break;
-        }
-    }
-
-  return success;
-#endif
 }
 
 void CQParameterOverviewDM::setModelParameterset(CModelParameterSet * pModelParameterSet)
@@ -539,7 +498,6 @@ QVariant CQParameterOverviewDM::assignmentData(const CModelParameter * pNode, in
   return QVariant();
 }
 
-#ifdef COPASI_UNDO
 bool CQParameterOverviewDM::parameterOverviewDataChange(const QList< QPair<int, int> >& path, const QVariant &value, int role)
 {
   switchToWidget(CCopasiUndoCommand::PARAMETER_OVERVIEW);
@@ -579,13 +537,10 @@ bool CQParameterOverviewDM::parameterOverviewDataChange(const QList< QPair<int, 
             break;
         }
 
-
       if (success)
         {
           emit dataChanged(_index, _index);
         }
-
-
     }
 
   return success;
@@ -595,8 +550,8 @@ void CQParameterOverviewDM::setUndoStack(QUndoStack* undoStack)
 {
   mpUndoStack = undoStack;
 }
+
 QUndoStack* CQParameterOverviewDM::getUndoStack()
 {
   return mpUndoStack;
 }
-#endif
