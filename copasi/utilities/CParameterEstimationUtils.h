@@ -1,4 +1,4 @@
-// Copyright (C) 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2015 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -13,7 +13,7 @@ class CCopasiDataModel;
 class CFitTask;
 class COptTask;
 
-void replaceAllSubStrings(std::string& str, const std::string& from, const std::string& to);
+void replaceAllSubStringsInPlace(std::string& str, const std::string& from, const std::string& to);
 
 std::string sanitizeName(const std::string& name);
 
