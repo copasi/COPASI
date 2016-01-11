@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
-<comment> Copyright (C) 2012 - 2014 by Pedro Mendes, Virginia Tech Intellectual </comment>
+<comment> Copyright (C) 2012 - 2016 by Pedro Mendes, Virginia Tech Intellectual </comment>
 <comment> Properties, Inc., University of Heidelberg, and The University </comment>
 <comment> of Manchester. </comment>
 <comment> All rights reserved. </comment>
@@ -12,8 +12,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>496</width>
-    <height>359</height>
+    <width>548</width>
+    <height>390</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -48,14 +48,14 @@
      <item>
       <widget class="QCheckBox" name="checkLogX">
        <property name="text">
-        <string>log X-axis</string>
+        <string>log X-Axis</string>
        </property>
       </widget>
      </item>
      <item>
       <widget class="QCheckBox" name="checkLogY">
        <property name="text">
-        <string>log Y-axis</string>
+        <string>log Y-Axis</string>
        </property>
       </widget>
      </item>
@@ -64,7 +64,7 @@
    <item row="2" column="0">
     <widget class="QLabel" name="labelScale">
      <property name="text">
-      <string>Axis scales</string>
+      <string>Axis Scales</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -132,7 +132,7 @@
         </sizepolicy>
        </property>
        <property name="text">
-        <string>Curve specifications</string>
+        <string>Curve Specifications</string>
        </property>
       </widget>
      </item>
@@ -176,6 +176,13 @@
       </widget>
      </item>
      <item>
+      <widget class="QPushButton" name="addContourButton">
+       <property name="text">
+        <string>New Contour </string>
+       </property>
+      </widget>
+     </item>
+     <item>
       <widget class="QPushButton" name="deleteCurveButton">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
@@ -184,7 +191,7 @@
         </sizepolicy>
        </property>
        <property name="text">
-        <string>Delete</string>
+        <string>Delete Curve</string>
        </property>
       </widget>
      </item>
@@ -433,8 +440,25 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>addContourButton</sender>
+   <signal>clicked()</signal>
+   <receiver>CQPlotSubwidget</receiver>
+   <slot>addSpectrumSlot()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>443</x>
+     <y>106</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>302</x>
+     <y>194</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
+  <slot>addSpectrumSlot()</slot>
   <slot>addCurveSlot()</slot>
   <slot>addHistoSlot()</slot>
   <slot>removeCurve()</slot>

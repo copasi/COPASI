@@ -1,4 +1,4 @@
-// Copyright (C) 2012 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -68,15 +68,8 @@ CQPlotSubwidget::CQPlotSubwidget(QWidget* parent, const char* name, Qt::WFlags f
 
 #endif // COPASI_BANDED_GRAPH
 
-  QToolButton * buttonSpectogramGraph = new QToolButton(this);
-  buttonSpectogramGraph->setText("New Contour");
-  layoutCurves->addWidget(buttonSpectogramGraph);
-  connect(buttonSpectogramGraph, SIGNAL(clicked()), this, SLOT(addSpectrumSlot()));
-
   mpSpectogramWidget = new CQSpectogramWidget(this);
   mpStack->addWidget(mpSpectogramWidget);
-
-
 }
 
 CPlotItem* CQPlotSubwidget::updateItem(CPlotItem* item)
@@ -342,7 +335,6 @@ CQPlotEditWidget* CQPlotSubwidget::selectControl(CPlotItem::Type type)
 #endif
         return mpSpectogramWidget;
       }
-
 
       default:
         return NULL;
