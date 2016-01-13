@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -362,10 +362,7 @@ void CCopasiSpringLayout::finalizeState()
   //update the positions of the dependent glyphs
   //this can be done here since we assume that those glyphs
   //do not affect the layout.
-  std::vector<CoordinateRelation>::const_iterator it, itEnd = mFixedRelations.end();
-
-  for (it = mFixedRelations.begin(); it != itEnd; ++it)
-    it->target->setPosition(it->source->getPosition() + it->diff);
+  updateFixedRelations();
 
   //for now, only create curves for the reaction glyphs
   for (i = 0; i < mpLayout->getListOfReactionGlyphs().size() ; ++i)
@@ -425,15 +422,29 @@ void CCopasiSpringLayout::finalizeState()
             }
         }
 
+      CLPoint position = pRG->getPosition();
+
+      if (position.getX() == 0 && position.getY() == 0
+          && pRG->getDimensions().getWidth() == 0
+          && pRG->getDimensions().getHeight() == 0
+          && pRG->getCurve().getNumCurveSegments() > 0)
+        {
+          position = pRG->getCurve().getCurveSegments()[0].getStart();
+          pRG->setPosition(position);
+        }
+
+
       if (s_c > 0)
         s = s * (1 / s_c);
       else
-        s = pRG->getPosition();
+        {
+          s = position;
+        }
 
       if (p_c > 0)
         p = p * (1 / p_c);
       else
-        p = pRG->getPosition();
+        p = position;
 
       CLPoint dir = p - s; //overall direction of reaction
 
@@ -443,10 +454,10 @@ void CCopasiSpringLayout::finalizeState()
       CLPoint ortho_dir = CLPoint(dir.getY(), -dir.getX());
       ortho_dir.scale(1 / sqrt(pow(ortho_dir.getX(), 2) + pow(ortho_dir.getY(), 2)));
 
-      CLPoint reaction_s = pRG->getPosition() - (dir * 0.05);
-      CLPoint reaction_p = pRG->getPosition() + (dir * 0.05);
-      CLPoint reaction_m1 = pRG->getPosition() + ortho_dir * 10;
-      CLPoint reaction_m2 = pRG->getPosition() - ortho_dir * 10;
+      CLPoint reaction_s = position - (dir * 0.05);
+      CLPoint reaction_p = position + (dir * 0.05);
+      CLPoint reaction_m1 = position + ortho_dir * 10;
+      CLPoint reaction_m2 = position - ortho_dir * 10;
 
       pRG->getCurve().clear();
       pRG->getCurve().addCurveSegment(CLLineSegment(reaction_s, reaction_p));
@@ -535,6 +546,14 @@ void CCopasiSpringLayout::finalizeState()
 
   //calculate bounding box for the layout, or recenter the layout
   mpLayout->calculateAndAssignBounds();
+}
+
+void CCopasiSpringLayout::updateFixedRelations()
+{
+  std::vector<CoordinateRelation>::const_iterator it, itEnd = mFixedRelations.end();
+
+  for (it = mFixedRelations.begin(); it != itEnd; ++it)
+    it->target->setPosition(it->source->getPosition() + it->diff);
 }
 
 CLPoint CCopasiSpringLayout::borderProjection(CLGraphicalObject* go, const CLPoint & p, double d)
