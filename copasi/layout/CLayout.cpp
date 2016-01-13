@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -100,9 +100,9 @@ CLayout::CLayout(const CLayout & src,
       for (size_t i = 0; i < r->getListOfMetabReferenceGlyphs().size(); ++i)
         {
           forward[(*reactIt)->getListOfMetabReferenceGlyphs()[i]->getKey()]
-          = r->getListOfMetabReferenceGlyphs()[i]->getKey();
+            = r->getListOfMetabReferenceGlyphs()[i]->getKey();
           reverse[r->getListOfMetabReferenceGlyphs()[i]->getKey()]
-          = (*reactIt)->getListOfMetabReferenceGlyphs()[i]->getKey();
+            = (*reactIt)->getListOfMetabReferenceGlyphs()[i]->getKey();
         }
     }
 
@@ -128,17 +128,17 @@ CLayout::CLayout(const CLayout & src,
       for (size_t i = 0; i < general->getListOfReferenceGlyphs().size(); ++i)
         {
           forward[(*generalIt)->getListOfReferenceGlyphs()[i]->getKey()]
-          = general->getListOfReferenceGlyphs()[i]->getKey();
+            = general->getListOfReferenceGlyphs()[i]->getKey();
           reverse[general->getListOfReferenceGlyphs()[i]->getKey()]
-          = (*generalIt)->getListOfReferenceGlyphs()[i]->getKey();
+            = (*generalIt)->getListOfReferenceGlyphs()[i]->getKey();
         }
 
       for (size_t i = 0; i < general->getListOfSubglyphs().size(); ++i)
         {
           forward[(*generalIt)->getListOfSubglyphs()[i]->getKey()]
-          = general->getListOfSubglyphs()[i]->getKey();
+            = general->getListOfSubglyphs()[i]->getKey();
           reverse[general->getListOfSubglyphs()[i]->getKey()]
-          = (*generalIt)->getListOfSubglyphs()[i]->getKey();
+            = (*generalIt)->getListOfSubglyphs()[i]->getKey();
         }
     }
 
@@ -402,6 +402,7 @@ void CLayout::exportToSBML(Layout * layout, const std::map<const CCopasiObject*,
   //Name and ID
   std::string id = CSBMLExporter::createUniqueId(sbmlIDs, "layout", true);
   layout->setId(id);
+  layout->setName(getObjectName());
   sbmlIDs.insert(std::pair<const std::string, const SBase*>(id, layout));
   //we do not check if the layout is already present in the libsbml data
   //structures. This is no big deal since at the moment no software
