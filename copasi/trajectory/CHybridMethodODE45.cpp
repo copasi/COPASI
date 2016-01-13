@@ -438,8 +438,8 @@ void CHybridMethodODE45::partitionSystem()
         }
     }
 
-  CObjectInterface::ObjectSet::iterator it = mpContainer->getSimulationUpToDateObjects().begin();
-  CObjectInterface::ObjectSet::iterator end = mpContainer->getSimulationUpToDateObjects().end();
+  CObjectInterface::ObjectSet::const_iterator it = mpContainer->getSimulationUpToDateObjects().begin();
+  CObjectInterface::ObjectSet::const_iterator end = mpContainer->getSimulationUpToDateObjects().end();
   CObjectInterface::ObjectSet SpeciesRates;
 
   for (; it != end; ++it)
