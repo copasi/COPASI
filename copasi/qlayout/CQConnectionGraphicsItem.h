@@ -1,4 +1,4 @@
-// Copyright (C) 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2013 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -22,13 +22,13 @@ public:
   CQConnectionGraphicsItem(const CLGlyphWithCurve* glyph, const CLRenderResolver* resolver = NULL);
   virtual ~CQConnectionGraphicsItem();
   static QSharedPointer<QPainterPath> getPath(const CLCurve& curve);
-
+  virtual QPainterPath shape() const;
 protected:
   virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option = new QStyleOptionGraphicsItem() , QWidget *widget = 0);
   void mouseReleaseEvent(QGraphicsSceneMouseEvent* event);
   virtual QVariant itemChange(GraphicsItemChange change, const QVariant &value);
-
   bool mWasMoved;
+  QPainterPath mShape;
 };
 
 #endif

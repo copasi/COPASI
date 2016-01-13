@@ -1,4 +1,4 @@
-// Copyright (C) 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2013 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -42,6 +42,11 @@ QSharedPointer<QPainterPath> CQConnectionGraphicsItem::getPath(const CLCurve& cu
     }
 
   return result;
+}
+
+QPainterPath CQConnectionGraphicsItem::shape() const
+{
+  return mShape;
 }
 
 void CQConnectionGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
@@ -88,6 +93,7 @@ CQConnectionGraphicsItem::CQConnectionGraphicsItem(const CLGlyphWithCurve* curve
   setData(COPASI_LAYOUT_KEY, QString(curveGlyph->getKey().c_str()));
 
   QSharedPointer<QPainterPath> path = getPath(curveGlyph->getCurve());
+  mShape.addPath(*path);
   QGraphicsPathItem* item;
   QGraphicsItemGroup* itemGroup;
 
@@ -117,6 +123,8 @@ CQConnectionGraphicsItem::CQConnectionGraphicsItem(const CLGlyphWithCurve* curve
           if (metab->getCurve().getNumCurveSegments() > 0)
             {
               path = getPath(metab->getCurve());
+              //mShape.addPath(*path);
+
               item = new QGraphicsPathItem(*path);
               itemGroup = new QGraphicsItemGroup();
               itemGroup->addToGroup(item);
@@ -142,6 +150,8 @@ CQConnectionGraphicsItem::CQConnectionGraphicsItem(const CLGlyphWithCurve* curve
           if (glyph ->getCurve().getNumCurveSegments() > 0)
             {
               path = getPath(glyph ->getCurve());
+              //mShape.addPath(*path);
+
               item = new QGraphicsPathItem(*path);
               itemGroup = new QGraphicsItemGroup();
               itemGroup->addToGroup(item);
