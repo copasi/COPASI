@@ -302,6 +302,21 @@ void moveObject(CLGraphicalObject* obj, const CLPoint& delta, CLayout* layout)
 {
   if (obj == NULL) return;
 
+  CLReactionGlyph* pRG  = dynamic_cast<CLReactionGlyph*>(obj);
+  if (pRG != NULL)
+  {
+   CLPoint position = pRG->getPosition();
+
+      if (position.getX() == 0 && position.getY() == 0
+          && pRG->getDimensions().getWidth() == 0
+          && pRG->getDimensions().getHeight() == 0
+          && pRG->getCurve().getNumCurveSegments() > 0)
+        {
+          position = pRG->getCurve().getCurveSegments()[0].getStart();
+          pRG->setPosition(position);
+        }
+  }
+
   // move object
   obj->moveBy(delta);
 
