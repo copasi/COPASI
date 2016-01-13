@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -443,7 +443,12 @@ bool COptProblem::restore(const bool & updateModel)
   bool success = true;
 
   if (mpSubtask != NULL)
-    success &= mpSubtask->restore();
+    {
+      bool update = mpSubtask->isUpdateModel();
+      mpSubtask->setUpdateModel(false);
+      success &= mpSubtask->restore();
+      mpSubtask->setUpdateModel(update);
+    }
 
   updateContainer(updateModel);
   mpContainer->applyUpdateSequence(mInitialRefreshSequence);

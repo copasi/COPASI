@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -177,7 +177,10 @@ bool CScanTask::restore()
 
   if (mpSubtask != NULL)
     {
+      bool update = mpSubtask->isUpdateModel();
+      mpSubtask->setUpdateModel(false);
       success &= mpSubtask->restore();
+      mpSubtask->setUpdateModel(update);
     }
 
   success = CCopasiTask::restore();

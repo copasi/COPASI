@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -217,7 +217,7 @@ public:
    * Set whether the task must update the model
    * @param const bool & updateModel
    */
-  void setUpdateModel(const bool & updateModel);
+  virtual void setUpdateModel(const bool & updateModel);
 
   /**
    * Check whether the task must update the model

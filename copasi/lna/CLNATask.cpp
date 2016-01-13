@@ -1,4 +1,4 @@
-// Copyright (C) 2011 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -185,7 +185,12 @@ bool CLNATask::restore()
     dynamic_cast<CLNAProblem *>(mpProblem)->getSubTask();
 
   if (pSubTask)
-    success &= pSubTask->restore();
+    {
+      bool update = pSubTask->isUpdateModel();
+      pSubTask->setUpdateModel(false);
+      success &= pSubTask->restore();
+      pSubTask->setUpdateModel(update);
+    }
 
   return success;
 }
