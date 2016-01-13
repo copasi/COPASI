@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -114,6 +114,12 @@ public:
    *  that would make it necessary to recalculate the matrix decomposition
    */
   void setCompileFlag(bool flag = true);
+
+  /**
+   * Check whether a model compile is necessary.
+   * @return const bool & isCompileNecessary
+   */
+  const bool & isCompileNecessary() const;
 
   /**
    * Compile the model if necessary

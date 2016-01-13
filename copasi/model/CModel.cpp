@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -500,6 +500,11 @@ bool CModel::buildDependencyGraphs()
 void CModel::setCompileFlag(bool flag)
 {
   mCompileIsNecessary = flag;
+}
+
+const bool & CModel::isCompileNecessary() const
+{
+  return mCompileIsNecessary;
 }
 
 bool CModel::compileIfNecessary(CProcessReport* pProcessReport)
@@ -1859,7 +1864,6 @@ bool CModel::removeMetabolite(const CMetab* pMetabolite,
       // the metabolite might have been deleted above, need to reaquire the pointer
       pMetabolite =
         dynamic_cast< CMetab * >(CCopasiRootContainer::getKeyFactory()->get(key));
-
     }
 
   if (pMetabolite != NULL)
@@ -2202,7 +2206,7 @@ bool
 CModel::createEventsForTimeseries(CExperiment* experiment/* = NULL*/)
 {
 
-  #pragma region   //find_experiment
+#pragma region   //find_experiment
 
   if (experiment == NULL)
     {
@@ -2252,7 +2256,7 @@ CModel::createEventsForTimeseries(CExperiment* experiment/* = NULL*/)
       return createEventsForTimeseries(const_cast<CExperiment*>(theExperiment));
     }
 
-  #pragma endregion //find_experiment
+#pragma endregion //find_experiment
 
   if (experiment->getExperimentType() != CTaskEnum::timeCourse)
     {

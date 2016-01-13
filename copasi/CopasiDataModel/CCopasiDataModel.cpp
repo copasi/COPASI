@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -2128,7 +2128,10 @@ void CCopasiDataModel::commonAfterLoad(CProcessReport* pProcessReport,
 
 #endif
 
-  mData.pModel->getActiveModelParameterSet().updateModel();
+  if (mData.pModel->isCompileNecessary())
+    {
+      mData.pModel->getActiveModelParameterSet().updateModel();
+    }
 
   // We need to initialize all the task so that results are available
 

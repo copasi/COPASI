@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -239,18 +239,24 @@ bool CCopasiContainer::add(CCopasiObject * pObject,
 
 bool CCopasiContainer::remove(CCopasiObject * pObject)
 {
-  objectMap::iterator it = mObjects.begin();
-  objectMap::iterator end = mObjects.end();
+  std::pair< objectMap::iterator, objectMap::iterator > Range =
+    mObjects.equal_range(pObject->getObjectName());
+  objectMap::iterator it = Range.first;
+  objectMap::iterator end = Range.second;
 
-  /*
-    std::pair< objectMap::iterator, objectMap::iterator > range =
-      mObjects.equal_range(pObject->getObjectName());
-    objectMap::iterator it;
-  */
   for (; it != end; ++it)
     if (it->second == pObject) break;
 
-  if (it == end) return false;
+  if (it == end)
+    {
+      it = mObjects.begin();
+      end = mObjects.end();
+
+      for (; it != end; ++it)
+        if (it->second == pObject) break;
+
+      if (it == end) return false;
+    }
 
   // Note: erase does not delete pointed to objects
   mObjects.erase(it);
