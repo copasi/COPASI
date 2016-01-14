@@ -202,6 +202,16 @@ bool CTrajectoryTask::initialize(const OutputFlag & of,
       mTimeSeries.clear();
     }
 
+  mpSteadyState = NULL;
+
+  if (mpTrajectoryProblem->getStartInSteadyState())
+    {
+      CCopasiDataModel* pDataModel = getObjectDataModel();
+
+      if (pDataModel && pDataModel->getTaskList())
+        mpSteadyState = dynamic_cast<CSteadyStateTask *>((*pDataModel->getTaskList())["Steady-State"]);
+    }
+
   success &= CCopasiTask::initialize(of, pOutputHandler, pOstream);
 
   signalMathContainerChanged();
@@ -384,7 +394,8 @@ void CTrajectoryTask::processStart(const bool & useInitialValues)
     {
       if (mpTrajectoryProblem->getStartInSteadyState())
         {
-          if (!mpSteadyState->process(true))
+          if (mpSteadyState != NULL &&
+              !mpSteadyState->process(true))
             {
               CCopasiMessage(CCopasiMessage::ERROR, "Steady state could not be reached.");
             }
@@ -471,7 +482,8 @@ bool CTrajectoryTask::processStep(const C_FLOAT64 & endTime)
                 mpTrajectoryMethod->stateChange(StateChange);
                 StateChange = CMath::NoChange;
               }
-            else if (mpTrajectoryProblem->getAutomaticStepSize())
+            else if ((*mpLessOrEqual)(mOutputStartTime, *mpContainerStateTime) &&
+                     mpTrajectoryProblem->getAutomaticStepSize())
               {
                 output(COutputInterface::DURING);
               }
@@ -518,7 +530,8 @@ bool CTrajectoryTask::processStep(const C_FLOAT64 & endTime)
               {
                 output(COutputInterface::DURING);
               }
-            else if (mpTrajectoryProblem->getAutomaticStepSize())
+            else if ((*mpLessOrEqual)(mOutputStartTime, *mpContainerStateTime) &&
+                     mpTrajectoryProblem->getAutomaticStepSize())
               {
                 output(COutputInterface::DURING);
               }
