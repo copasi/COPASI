@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -85,6 +85,25 @@ CLGlyphWithCurve & CLGlyphWithCurve::operator= (const CLGlyphWithCurve & rhs)
   return *this;
 }
 
+const CLCurve &
+CLGlyphWithCurve::getCurve() const
+{
+  return mCurve;
+}
+
+CLCurve &
+CLGlyphWithCurve::getCurve()
+{
+  return mCurve;
+}
+
+void
+CLGlyphWithCurve::setCurve(const CLCurve &c)
+{
+  mCurve = c;
+}
+
+
 void CLGlyphWithCurve::moveBy(const CLPoint &p)
 {
   CLGraphicalObject::moveBy(p);
@@ -164,10 +183,41 @@ CLReferenceGlyph & CLReferenceGlyph::operator= (const CLReferenceGlyph & rhs)
   return *this;
 }
 
+const std::string &
+CLReferenceGlyph::getRole() const
+{
+  return mRole;
+}
+
+void
+CLReferenceGlyph::setRole(const std::string &r)
+{
+  mRole = r;
+}
+
+const std::string &
+CLReferenceGlyph::getTargetGlyphKey() const
+{
+  return mGlyphKey;
+}
+
+
 CLGraphicalObject* CLReferenceGlyph::getTargetGlyph() const
 {
   CCopasiObject* tmp = CCopasiRootContainer::getKeyFactory()->get(mGlyphKey);
   return dynamic_cast<CLMetabGlyph*>(tmp);
+}
+
+void
+CLReferenceGlyph::setTargetGlyphKey(const std::string &k)
+{
+  mGlyphKey = k;
+}
+
+CLGraphicalObject *
+CLReferenceGlyph::clone() const
+{
+  return new CLReferenceGlyph(*this, NULL);
 }
 
 void CLReferenceGlyph::exportToSBML(ReferenceGlyph * g, //TODO
@@ -317,10 +367,61 @@ CLMetabReferenceGlyph & CLMetabReferenceGlyph::operator= (const CLMetabReference
   return *this;
 }
 
+const std::string &
+CLMetabReferenceGlyph::getMetabGlyphKey() const
+{
+  return mMetabGlyphKey;
+}
+
 CLMetabGlyph* CLMetabReferenceGlyph::getMetabGlyph() const
 {
   CCopasiObject* tmp = CCopasiRootContainer::getKeyFactory()->get(mMetabGlyphKey);
   return dynamic_cast<CLMetabGlyph*>(tmp);
+}
+
+void
+CLMetabReferenceGlyph::setMetabGlyphKey(const std::string &k)
+{
+  mMetabGlyphKey = k;
+}
+
+CLMetabReferenceGlyph::Role
+CLMetabReferenceGlyph::getRole() const
+{
+  return mRole;
+}
+
+void
+CLMetabReferenceGlyph::setRole(CLMetabReferenceGlyph::Role r)
+{
+  mRole = r;
+}
+
+CLMetabReferenceGlyph::Role
+CLMetabReferenceGlyph::getFunctionalRole() const
+{
+  if (mFunctionalRole == CLMetabReferenceGlyph::UNDEFINED)
+    return getRole();
+
+  return mFunctionalRole;
+}
+
+void
+CLMetabReferenceGlyph::setFunctionalRole(CLMetabReferenceGlyph::Role r)
+{
+  mFunctionalRole = r;
+}
+
+const std::string &
+CLMetabReferenceGlyph::getRoleDisplayName() const
+{
+  return RoleName[mRole];
+}
+
+CLGraphicalObject *
+CLMetabReferenceGlyph::clone() const
+{
+  return new CLMetabReferenceGlyph(*this, NULL);
 }
 
 void CLMetabReferenceGlyph::exportToSBML(SpeciesReferenceGlyph * g,
@@ -491,6 +592,30 @@ CLGeneralGlyph & CLGeneralGlyph::operator= (const CLGeneralGlyph & rhs)
   return *this;
 }
 
+const CCopasiVector<CLReferenceGlyph> &
+CLGeneralGlyph::getListOfReferenceGlyphs() const
+{
+  return mvReferences;
+}
+
+CCopasiVector<CLReferenceGlyph> &
+CLGeneralGlyph::getListOfReferenceGlyphs()
+{
+  return mvReferences;
+}
+
+const CCopasiVector<CLGraphicalObject> &
+CLGeneralGlyph::getListOfSubglyphs() const
+{
+  return mvSubglyphs;
+}
+
+CCopasiVector<CLGraphicalObject> &
+CLGeneralGlyph::getListOfSubglyphs()
+{
+  return mvSubglyphs;
+}
+
 void CLGeneralGlyph::addSubglyph(CLGraphicalObject * glyph)
 {
   if (glyph)
@@ -516,6 +641,12 @@ void CLGeneralGlyph::moveBy(const CLPoint &p)
 
   for (i = 0; i < imax; ++i)
     mvSubglyphs[i]->moveBy(p);
+}
+
+CLGraphicalObject *
+CLGeneralGlyph::clone() const
+{
+  return new CLGeneralGlyph(*this, NULL);
 }
 
 void CLGeneralGlyph::exportToSBML(GraphicalObject * g, //TODO
@@ -739,6 +870,18 @@ CLReactionGlyph & CLReactionGlyph::operator= (const CLReactionGlyph & rhs)
   return *this;
 }
 
+const CCopasiVector<CLMetabReferenceGlyph> &
+CLReactionGlyph::getListOfMetabReferenceGlyphs() const
+{
+  return mvMetabReferences;
+}
+
+CCopasiVector<CLMetabReferenceGlyph> &
+CLReactionGlyph::getListOfMetabReferenceGlyphs()
+{
+  return mvMetabReferences;
+}
+
 /*const std::vector<CLMetabReferenceGlyph*> CLReactionGlyph::getListOfMetabReferenceGlyphs() const
 {
     std::vector<CLMetabReferenceGlyph*> ret;
@@ -767,6 +910,12 @@ void CLReactionGlyph::moveBy(const CLPoint &p)
 
   for (i = 0; i < imax; ++i)
     mvMetabReferences[i]->moveBy(p);
+}
+
+CLGraphicalObject *
+CLReactionGlyph::clone() const
+{
+  return new CLReactionGlyph(*this, NULL);
 }
 
 void CLReactionGlyph::exportToSBML(ReactionGlyph * g,

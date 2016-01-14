@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -57,9 +57,11 @@ public:
    */
   CLGlyphWithCurve & operator= (const CLGlyphWithCurve & rhs);
 
-  const CLCurve & getCurve() const {return mCurve;};
-  CLCurve & getCurve() {return mCurve;};
-  void setCurve(const CLCurve & c) {mCurve = c;};
+  const CLCurve & getCurve() const;
+
+  CLCurve & getCurve();
+
+  void setCurve(const CLCurve & c);
 
   virtual void moveBy(const CLPoint &p);
 
@@ -67,6 +69,7 @@ public:
    * insert operator
    */
   friend std::ostream & operator<<(std::ostream &os, const CLGlyphWithCurve & g);
+
   void print(std::ostream * ostream) const;
 };
 
@@ -106,14 +109,17 @@ public:
    */
   CLReferenceGlyph & operator= (const CLReferenceGlyph & rhs);
 
-  const std::string& getRole() const {return mRole;}
-  void setRole(const std::string& r) {mRole = r;}
+  const std::string& getRole() const;
 
-  const std::string & getTargetGlyphKey() const {return mGlyphKey;}
+  void setRole(const std::string& r);
+
+  const std::string & getTargetGlyphKey() const;
+
   CLGraphicalObject* getTargetGlyph() const;
-  void setTargetGlyphKey(const std::string & k) {mGlyphKey = k;}
 
-  virtual CLGraphicalObject* clone() const {return new CLReferenceGlyph(*this, NULL);};
+  void setTargetGlyphKey(const std::string & k);
+
+  virtual CLGraphicalObject* clone() const;
 
 #if LIBSBML_VERSION >= 50800
   /**
@@ -132,6 +138,7 @@ public:
    * insert operator
    */
   friend std::ostream & operator<<(std::ostream &os, const CLReferenceGlyph & g);
+
   void print(std::ostream * ostream) const;
 };
 
@@ -183,7 +190,7 @@ private:
    * The role of the metab, as used for rendering, this is also used in SBML
    */
   Role mRole;
-  
+
   /**
    * The role of the metab, logically. This may be used for automatic layout
    */
@@ -209,21 +216,24 @@ public:
    */
   CLMetabReferenceGlyph & operator= (const CLMetabReferenceGlyph & rhs);
 
-  const std::string & getMetabGlyphKey() const {return mMetabGlyphKey;};
+  const std::string & getMetabGlyphKey() const;
+
   CLMetabGlyph* getMetabGlyph() const;
-  void setMetabGlyphKey(const std::string & k) {mMetabGlyphKey = k;};
 
-  Role getRole() const {return mRole;};
-  void setRole(Role r) {mRole = r;};
+  void setMetabGlyphKey(const std::string & k);
 
-  Role getFunctionalRole() const {return mFunctionalRole;};
-  void setFunctionalRole(Role r) {mFunctionalRole = r;};
+  Role getRole() const;
+
+  void setRole(Role r);
+
+  Role getFunctionalRole() const;
+
+  void setFunctionalRole(Role r);
 
 
-  const std::string & getRoleDisplayName() const
-  {return RoleName[mRole];};
+  const std::string & getRoleDisplayName() const;
 
-  virtual CLGraphicalObject* clone() const {return new CLMetabReferenceGlyph(*this, NULL);};
+  virtual CLGraphicalObject* clone() const;
 
   /**
    * This method writes the information of the COPASI layout object into the
@@ -240,6 +250,7 @@ public:
    * insert operator
    */
   friend std::ostream & operator<<(std::ostream &os, const CLMetabReferenceGlyph & g);
+
   void print(std::ostream * ostream) const;
 };
 
@@ -278,17 +289,13 @@ public:
    */
   CLGeneralGlyph & operator= (const CLGeneralGlyph & rhs);
 
-  const CCopasiVector<CLReferenceGlyph> & getListOfReferenceGlyphs() const
-  {return mvReferences;};
+  const CCopasiVector<CLReferenceGlyph> & getListOfReferenceGlyphs() const;
 
-  CCopasiVector<CLReferenceGlyph> & getListOfReferenceGlyphs()
-  {return mvReferences;};
+  CCopasiVector<CLReferenceGlyph> & getListOfReferenceGlyphs();
 
-  const CCopasiVector<CLGraphicalObject> & getListOfSubglyphs() const
-  {return mvSubglyphs;};
+  const CCopasiVector<CLGraphicalObject> & getListOfSubglyphs() const;
 
-  CCopasiVector<CLGraphicalObject> & getListOfSubglyphs()
-  {return mvSubglyphs;};
+  CCopasiVector<CLGraphicalObject> & getListOfSubglyphs();
 
   /**
    *  add Glyph to general glyph. The general glyph takes ownership of the glyph.
@@ -302,7 +309,7 @@ public:
 
   virtual void moveBy(const CLPoint &p);
 
-  virtual CLGraphicalObject* clone() const {return new CLGeneralGlyph(*this, NULL);};
+  virtual CLGraphicalObject* clone() const;
 
   /**
    * this exports the general glyph to a generic SBML GraphicalObject (throwing away most of the information)
@@ -349,11 +356,9 @@ public:
    */
   CLReactionGlyph & operator= (const CLReactionGlyph & rhs);
 
-  const CCopasiVector<CLMetabReferenceGlyph> & getListOfMetabReferenceGlyphs() const
-  {return mvMetabReferences;};
+  const CCopasiVector<CLMetabReferenceGlyph> & getListOfMetabReferenceGlyphs() const;
 
-  CCopasiVector<CLMetabReferenceGlyph> & getListOfMetabReferenceGlyphs()
-  {return mvMetabReferences;};
+  CCopasiVector<CLMetabReferenceGlyph> & getListOfMetabReferenceGlyphs();
 
   /**
    *  add Glyph to reaction glyph. The reaction glyph takes ownership of the glyph.
@@ -362,7 +367,8 @@ public:
 
   virtual void moveBy(const CLPoint &p);
 
-  virtual CLGraphicalObject* clone() const {return new CLReactionGlyph(*this, NULL);};
+  virtual CLGraphicalObject* clone() const;
+
   /**
    * This method writes the information of the COPASI layout object into the
    * corresponding SBML object
@@ -378,6 +384,7 @@ public:
    * insert operator
    */
   friend std::ostream & operator<<(std::ostream &os, const CLReactionGlyph & g);
+
   void print(std::ostream * ostream) const;
 };
 

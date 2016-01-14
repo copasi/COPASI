@@ -376,7 +376,7 @@ void CCopasiSpringLayout::finalizeState()
 
       for (j = 0; j < jmax; ++j)
         {
-          if (pRG->getListOfMetabReferenceGlyphs()[j]->getRole() == CLMetabReferenceGlyph::SUBSTRATE)
+          if (pRG->getListOfMetabReferenceGlyphs()[j]->getFunctionalRole() == CLMetabReferenceGlyph::SUBSTRATE)
             {
               CLMetabGlyph* metabGlyph = pRG->getListOfMetabReferenceGlyphs()[j]->getMetabGlyph();
 
@@ -387,7 +387,7 @@ void CCopasiSpringLayout::finalizeState()
                 }
             }
 
-          if (pRG->getListOfMetabReferenceGlyphs()[j]->getRole() == CLMetabReferenceGlyph::SIDESUBSTRATE)
+          if (pRG->getListOfMetabReferenceGlyphs()[j]->getFunctionalRole() == CLMetabReferenceGlyph::SIDESUBSTRATE)
             {
               CLMetabGlyph* metabGlyph = pRG->getListOfMetabReferenceGlyphs()[j]->getMetabGlyph();
 
@@ -398,7 +398,7 @@ void CCopasiSpringLayout::finalizeState()
                 }
             }
 
-          if (pRG->getListOfMetabReferenceGlyphs()[j]->getRole() == CLMetabReferenceGlyph::PRODUCT)
+          if (pRG->getListOfMetabReferenceGlyphs()[j]->getFunctionalRole() == CLMetabReferenceGlyph::PRODUCT)
             {
               CLMetabGlyph* metabGlyph = pRG->getListOfMetabReferenceGlyphs()[j]->getMetabGlyph();
 
@@ -409,7 +409,7 @@ void CCopasiSpringLayout::finalizeState()
                 }
             }
 
-          if (pRG->getListOfMetabReferenceGlyphs()[j]->getRole() == CLMetabReferenceGlyph::SIDEPRODUCT)
+          if (pRG->getListOfMetabReferenceGlyphs()[j]->getFunctionalRole() == CLMetabReferenceGlyph::SIDEPRODUCT)
             {
               CLMetabGlyph* metabGlyph = pRG->getListOfMetabReferenceGlyphs()[j]->getMetabGlyph();
 
@@ -471,7 +471,7 @@ void CCopasiSpringLayout::finalizeState()
           double direction;
           //double modifierLength = -0.2;
 
-          switch (pMRG->getRole())
+          switch (pMRG->getFunctionalRole())
             {
               case CLMetabReferenceGlyph::SUBSTRATE :
               case CLMetabReferenceGlyph::SIDESUBSTRATE :
@@ -800,7 +800,7 @@ double CCopasiSpringLayout::getPotential()
           tmp += potEdge(*pRG->getListOfMetabReferenceGlyphs()[j], *pRG);
 
           //second order
-          CLMetabReferenceGlyph::Role role = pRG->getListOfMetabReferenceGlyphs()[j]->getRole();
+          CLMetabReferenceGlyph::Role role = pRG->getListOfMetabReferenceGlyphs()[j]->getFunctionalRole();
 
           if (role != CLMetabReferenceGlyph::SUBSTRATE && role != CLMetabReferenceGlyph::SIDESUBSTRATE)
             continue;
@@ -810,7 +810,7 @@ double CCopasiSpringLayout::getPotential()
 
           for (k = 0; k < pRG->getListOfMetabReferenceGlyphs().size(); ++k)
             {
-              CLMetabReferenceGlyph::Role role2 = pRG->getListOfMetabReferenceGlyphs()[k]->getRole();
+              CLMetabReferenceGlyph::Role role2 = pRG->getListOfMetabReferenceGlyphs()[k]->getFunctionalRole();
 
               if (role2 != CLMetabReferenceGlyph::PRODUCT && role2 != CLMetabReferenceGlyph::SIDEPRODUCT)
                 continue;
@@ -1134,6 +1134,7 @@ CLayout* CCopasiSpringLayout::createLayout(
 
           CLMetabGlyph* pMetabGlyph = NULL;
           CLMetabReferenceGlyph::Role role; // = CLMetabReferenceGlyph::SUBSTRATE;
+          CLMetabReferenceGlyph::Role functionalRole;
 
           //is it a side reactant? If yes, create a new metab glyph
           if (sideMetabs.find(pMetab) != sideMetabs.end())
@@ -1173,6 +1174,7 @@ CLayout* CCopasiSpringLayout::createLayout(
               role = isReversible
                      ? CLMetabReferenceGlyph::SIDEPRODUCT
                      : CLMetabReferenceGlyph::SIDESUBSTRATE;
+              functionalRole = CLMetabReferenceGlyph::SIDESUBSTRATE;
             }
           else
             {
@@ -1186,6 +1188,7 @@ CLayout* CCopasiSpringLayout::createLayout(
               role = isReversible
                      ? CLMetabReferenceGlyph::PRODUCT
                      : CLMetabReferenceGlyph::SUBSTRATE;
+              functionalRole = CLMetabReferenceGlyph::SUBSTRATE;
             }
 
           if (!pMetabGlyph)
@@ -1195,6 +1198,7 @@ CLayout* CCopasiSpringLayout::createLayout(
           //pResult->setModelObjectKey(modelobjectkey);
           pRefGlyph->setMetabGlyphKey(pMetabGlyph->getKey());
           pRefGlyph->setRole(role);
+          pRefGlyph->setFunctionalRole(functionalRole);
           pReactionGlyph->addMetabReferenceGlyph(pRefGlyph);
           substrateExists = true;
         } //substrates
@@ -1211,6 +1215,7 @@ CLayout* CCopasiSpringLayout::createLayout(
           //pResult->setModelObjectKey(modelobjectkey);
           pRefGlyph->setMetabGlyphKey(pMetabGlyph->getKey());
           pRefGlyph->setRole(CLMetabReferenceGlyph::SUBSTRATE); //TODO side substr?
+          pRefGlyph->setFunctionalRole(CLMetabReferenceGlyph::SUBSTRATE);
           pReactionGlyph->addMetabReferenceGlyph(pRefGlyph);
         }
 
@@ -1227,6 +1232,8 @@ CLayout* CCopasiSpringLayout::createLayout(
 
           CLMetabGlyph* pMetabGlyph = NULL;
           CLMetabReferenceGlyph::Role role; // = CLMetabReferenceGlyph::SUBSTRATE;
+          CLMetabReferenceGlyph::Role functionalRole;
+
 
           //is it a side reactant? If yes, create a new metab glyph
           if (sideMetabs.find(pMetab) != sideMetabs.end())
@@ -1264,6 +1271,7 @@ CLayout* CCopasiSpringLayout::createLayout(
               compInfo[pComp].add((width + 4) * (height + 4));
 
               role = CLMetabReferenceGlyph::SIDEPRODUCT;
+              functionalRole = CLMetabReferenceGlyph::SIDEPRODUCT;
             }
           else
             {
@@ -1275,6 +1283,7 @@ CLayout* CCopasiSpringLayout::createLayout(
                 pMetabGlyph = mmIt->second;
 
               role = CLMetabReferenceGlyph::PRODUCT;
+              functionalRole = CLMetabReferenceGlyph::PRODUCT;
             }
 
           if (!pMetabGlyph)
@@ -1284,6 +1293,7 @@ CLayout* CCopasiSpringLayout::createLayout(
           //pResult->setModelObjectKey(modelobjectkey);
           pRefGlyph->setMetabGlyphKey(pMetabGlyph->getKey());
           pRefGlyph->setRole(role);
+          pRefGlyph->setFunctionalRole(functionalRole);
           pReactionGlyph->addMetabReferenceGlyph(pRefGlyph);
           productExists = true;
         } //products

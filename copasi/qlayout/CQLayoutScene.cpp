@@ -1,4 +1,4 @@
-// Copyright (C) 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2013 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -29,6 +29,13 @@
 #include "layout/CLLocalRenderInformation.h"
 #include "layout/CLDefaultStyles.h"
 #include "layout/CCopasiSpringLayout.h"
+
+#include <copasi/model/CModel.h>
+#include <copasi/model/CCompartment.h>
+#include <copasi/model/CMetab.h>
+#include <copasi/model/CReaction.h>
+#include <copasi/model/CChemEq.h>
+
 
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "copasi/report/CCopasiRootContainer.h"
@@ -279,8 +286,21 @@ CLGraphicalObject* getTextForItem(const CLayout* layout, const CLGraphicalObject
   return NULL;
 }
 
-#include <model/CCompartment.h>
-#include <model/CMetab.h>
+CLGraphicalObject* getReactionGlyphForKey(const CLayout* layout, const std::string& key)
+{
+  const CCopasiVector<CLReactionGlyph> & reactions = layout->getListOfReactionGlyphs();
+  CCopasiVector<CLReactionGlyph>::const_iterator it = reactions.begin();
+
+  while (it != reactions.end())
+    {
+      if ((*it)->getModelObjectKey() == key)
+        return *it;
+
+      ++it;
+    }
+
+  return NULL;
+}
 
 CLGraphicalObject* getMetabGlyphForKey(const CLayout* layout, const CMetab* metab)
 {
@@ -303,9 +323,10 @@ void moveObject(CLGraphicalObject* obj, const CLPoint& delta, CLayout* layout)
   if (obj == NULL) return;
 
   CLReactionGlyph* pRG  = dynamic_cast<CLReactionGlyph*>(obj);
+
   if (pRG != NULL)
-  {
-   CLPoint position = pRG->getPosition();
+    {
+      CLPoint position = pRG->getPosition();
 
       if (position.getX() == 0 && position.getY() == 0
           && pRG->getDimensions().getWidth() == 0
@@ -315,7 +336,7 @@ void moveObject(CLGraphicalObject* obj, const CLPoint& delta, CLayout* layout)
           position = pRG->getCurve().getCurveSegments()[0].getStart();
           pRG->setPosition(position);
         }
-  }
+    }
 
   // move object
   obj->moveBy(delta);
@@ -340,11 +361,40 @@ void moveObject(CLGraphicalObject* obj, const CLPoint& delta, CLayout* layout)
   CCopasiVectorNS < CMetab > & metabs = comp->getMetabolites();
   CCopasiVectorNS < CMetab >::const_iterator it = metabs.begin();
 
+  std::set<std::string> reactionKeys;
+
   while (it != metabs.end())
     {
       moveObject(getMetabGlyphForKey(layout, (*it)), delta, layout);
+
+      CCopasiVectorNS < CReaction > &  reactions = comp->getObjectDataModel()->getModel()->getReactions();
+      CCopasiVectorNS < CReaction >::const_iterator rit = reactions.begin();
+
+      for (; rit != reactions.end(); ++rit)
+        {
+          const CReaction* reaction = *rit;
+          const CChemEq& eqn = reaction->getChemEq();
+
+          const std::set< const CCompartment * >& compartments = eqn.getCompartments();
+          std::set< const CCompartment * >::const_iterator cit = compartments.begin();
+
+          for (; cit != compartments.end(); ++cit)
+            {
+              if ((*cit)->getKey() == comp->getKey())
+                reactionKeys.insert(reaction->getKey());
+            }
+        }
+
       ++it;
     }
+
+  std::set<std::string>::const_iterator kit = reactionKeys.begin();
+
+  for (; kit != reactionKeys.end(); ++kit)
+    {
+      moveObject(getReactionGlyphForKey(layout, (*kit)), delta, layout);
+    }
+
 }
 
 void CQLayoutScene::updatePosition(const QString& key, const QPointF& newPos)
