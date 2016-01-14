@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -195,14 +195,14 @@ public:
     iterator End = end();
 
     for (; it != End; it++)
-      if (*it)
-        if ((*it)->getObjectParent() == this)
-          {
-            CCopasiContainer::remove(*it);
-            (*it)->setObjectParent(NULL);
-            delete(*it);
-            *it = NULL;
-          }
+      if (*it != NULL &&
+          (*it)->getObjectParent() == this)
+        {
+          CCopasiContainer::remove(*it);
+          (*it)->setObjectParent(NULL);
+          delete(*it);
+          *it = NULL;
+        }
 
     CCopasiVector< CType >::clear();
   }

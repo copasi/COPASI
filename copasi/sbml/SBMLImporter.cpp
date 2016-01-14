@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -6306,8 +6306,8 @@ bool SBMLImporter::removeUnusedFunctions(CFunctionDB* pTmpFunctionDB, std::map<C
   // here we could have a dialog asking the user if unused functions should
   // be removed.
 
-  CCopasiVectorN < CFunction >::const_iterator it = pTmpFunctionDB->loadedFunctions().begin();
-  CCopasiVectorN < CFunction >::const_iterator end = pTmpFunctionDB->loadedFunctions().end();
+  CCopasiVectorN < CFunction >::iterator it = pTmpFunctionDB->loadedFunctions().begin();
+  CCopasiVectorN < CFunction >::iterator end = pTmpFunctionDB->loadedFunctions().end();
 
   for (; it != end; ++it)
     {
@@ -6316,7 +6316,17 @@ bool SBMLImporter::removeUnusedFunctions(CFunctionDB* pTmpFunctionDB, std::map<C
       if (functionNameSet.find(pTree->getObjectName()) == functionNameSet.end())
         {
           mUsedFunctions.erase(pTree->getObjectName());
+
+          // We remove pTree from pFunctionDB which deletes pTree if pFunctionDB->loadedFunctions() owns it, thus we
+          // also have to remove it from pTmpFunctionDB->loadedFunctions()
+
+          if (pTree->getObjectParent() == &pFunctionDB->loadedFunctions())
+            {
+              *it = NULL;
+            }
+
           pFunctionDB->loadedFunctions().remove(pTree->getObjectName());
+
           // delete the entry from the copasi2sbmlmap.
           std::map<CCopasiObject*, SBase*>::iterator pos = copasi2sbmlmap.find(pTree);
           assert(pos != copasi2sbmlmap.end());
