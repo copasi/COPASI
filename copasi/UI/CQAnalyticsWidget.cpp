@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2015 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -112,7 +112,7 @@ void CQAnalyticsWidget::commitInput()
   mpAnalyticsProblem->setFlagLimitOutCrossings(false);
   mpAnalyticsProblem->setTimeLimit(mpTxtTime->text().toDouble());
   mpAnalyticsProblem->setOutputStartTime(mpTxtOutTime->text().toDouble());
-  mpAnalyticsProblem->setFlagLimitOutTime(false);
+  mpAnalyticsProblem->setFlagLimitOutTime(mpCheckOutputDelay->isChecked());
   mpAnalyticsProblem->setFlagLimitConvergence(false);
   mpAnalyticsProblem->setFlagLimitOutConvergence(false);
   mpAnalyticsProblem->setSingleObjectCN(mpSingleVariable);
@@ -163,7 +163,12 @@ bool CQAnalyticsWidget::saveTask()
 
   pProblem->retrieveSelectedObject(mpSingleVariable);
 
-  pProblem->setFlagLimitOutTime(false);
+  pProblem->setFlagLimitOutTime(mpCheckOutputDelay->isChecked());
+
+  if (mpCheckOutputDelay->isChecked())
+    {
+      pProblem->setOutputStartTime(mpTxtOutTime->text().toDouble());
+    }
 
   pProblem->setFlagLimitCrossings(false);
   pProblem->setFlagLimitOutCrossings(false);
@@ -214,8 +219,14 @@ bool CQAnalyticsWidget::loadTask()
     dynamic_cast<CAnalyticsProblem *>(pTask->getProblem());
   assert(pProblem);
 
-  pdelete(mpAnalyticsProblem);
+  if (mpAnalyticsProblem != NULL)
+    {
+      mpAnalyticsProblem->setObjectParent(NULL);
+      delete mpAnalyticsProblem;
+    }
+
   mpAnalyticsProblem = new CAnalyticsProblem(*pProblem);
+  mpAnalyticsProblem->getObjectParent()->remove(mpAnalyticsProblem);
 
   // load the saved values
   const std::string &name = pProblem->getSingleObjectCN();
@@ -225,9 +236,22 @@ bool CQAnalyticsWidget::loadTask()
   else
     setSingleObject(static_cast<const CCopasiObject*>(pTask->getObjectDataModel()->getObject(name)));
 
-
   mpDirectionPositive->setChecked(mpAnalyticsProblem->isPositiveDirection());
   mpDirectionNegative->setChecked(!mpAnalyticsProblem->isPositiveDirection());
+
+  //mpCheckLT->setChecked(pProblem->getFlagLimitTime());
+  if (pProblem->getFlagLimitOutTime())
+    {
+      mpCheckOutputDelay->setChecked(true);
+      mpTxtOutTime->setEnabled(true);
+      mpTxtOutTime->setText(QString::number(pProblem->getOutputStartTime()));
+    }
+  else
+    {
+      mpCheckOutputDelay->setChecked(false);
+      mpTxtOutTime->setEnabled(false);
+      mpTxtOutTime->setText("");
+    }
 
   mpTxtTime->setText(QString::number(pProblem->getTimeLimit()));
 
@@ -256,12 +280,10 @@ void CQAnalyticsWidget::setSingleObject(const CCopasiObject * pSingleVariable)
     mpLineEditVariable->setText(FROM_UTF8(pSingleVariable->getObjectDisplayName()));
 }
 
-
 void CQAnalyticsWidget::slotValueRate()
 {
   commitInput();
 }
-
 
 void CQAnalyticsWidget::slotUpdateCrossings(bool b)
 {
