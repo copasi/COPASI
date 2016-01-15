@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., University of Heidelberg, and The University 
 // of Manchester. 
 // All rights reserved. 
@@ -64,15 +64,6 @@ public class example9
 
    // get the trajectory task object
    CSteadyStateTask task = (CSteadyStateTask)dataModel.getTask("Steady-State");
-
-   // if there isn't one
-   if (task == null)
-   {
-       // create a new one
-       task = new CSteadyStateTask();
-       // add the new task to the task list
-       dataModel.getTaskList().addAndOwn(task);
-   }
 
    CCopasiMessage.clearDeque();
 

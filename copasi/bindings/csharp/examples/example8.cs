@@ -69,8 +69,8 @@ class example8
         // the matrix where the result is to be stored
         // the second parameter is the derivationFactor for the calculation
         // it basically represents a relative delta value for the calculation of the derivatives
-        // the third parameter termed resolution in the C++ API is currently ignores
-        // so it does not matter what value you give here.
+        // the third parameter is a boolean indicating whether the jacobian should
+        // be calculated from the reduced (true) or full (false) system
         model.getMathContainer().calculateJacobian(jacobian, 1e-12, true);
         // now we print the result
         // the jacobian stores the values in the order they are

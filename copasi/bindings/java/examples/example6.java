@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., University of Heidelberg, and The University 
 // of Manchester. 
 // All rights reserved. 
@@ -49,20 +49,9 @@ public class example6
         // get the trajectory task object
         CTrajectoryTask trajectoryTask = (CTrajectoryTask)dataModel.getTask("Time-Course");
         assert trajectoryTask != null;
-        // if there isn't one
-        if (trajectoryTask == null)
-        {
-            // create a new one
-            trajectoryTask = new CTrajectoryTask();
-
-            // add the new time course task to the task list
-            // this method makes sure that the object is now owned 
-            // by the list and that it does not get deleted by SWIG
-            dataModel.getTaskList().addAndOwn(trajectoryTask);
-        }
 
         // run a deterministic time course
-        trajectoryTask.setMethodType(CCopasiMethod.deterministic);
+        trajectoryTask.setMethodType(CTaskEnum.deterministic);
 
         // pass a pointer of the model to the problem
         trajectoryTask.getProblem().setModel(dataModel.getModel());
@@ -214,7 +203,7 @@ public class example6
         assert reaction.isLocalParameter(0);
         reaction.setParameterValue("k1",random);
 
-        CFitTask fitTask=(CFitTask)dataModel.addTask(CCopasiTask.parameterFitting);
+        CFitTask fitTask=(CFitTask)dataModel.addTask(CTaskEnum.parameterFitting);
         assert fitTask != null;
         // the method in a fit task is an instance of COptMethod or a subclass of
         // it.
@@ -244,8 +233,8 @@ public class example6
         assert experiment.getLastRow()==4001;
         experiment.setHeaderRow(1);
         assert experiment.getHeaderRow()==1;
-        experiment.setExperimentType(CCopasiTask.timeCourse);
-        assert experiment.getExperimentType()==CCopasiTask.timeCourse;
+        experiment.setExperimentType(CTaskEnum.timeCourse);
+        assert experiment.getExperimentType()==CTaskEnum.timeCourse;
         experiment.setNumColumns(4);
         assert experiment.getNumColumns()==4;
         CExperimentObjectMap objectMap=experiment.getObjectMap();

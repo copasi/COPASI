@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., University of Heidelberg, and The University 
 // of Manchester. 
 // All rights reserved. 
@@ -34,9 +34,9 @@ public class example5
      // get the model from the datamodel
      CModel model = dataModel.getModel();
      assert model != null;
-     model.setVolumeUnit(CModel.fl);
-     model.setTimeUnit(CModel.s);
-     model.setQuantityUnit(CModel.fMol);
+     model.setVolumeUnit(CUnit.fl);
+     model.setTimeUnit(CUnit.s);
+     model.setQuantityUnit(CUnit.fMol);
      CModelValue fixedModelValue=model.createModelValue("F");
      assert fixedModelValue != null;
      fixedModelValue.setStatus(CModelEntity.FIXED);
@@ -66,7 +66,7 @@ public class example5
      // since for this example it really doesn't matter how long we run the time course 
      // we run for 1 second and calculate 10 steps
      // run a deterministic time course
-     timeCourseTask.setMethodType(CCopasiMethod.deterministic);
+     timeCourseTask.setMethodType(CTaskEnum.deterministic);
 
      // pass a pointer of the model to the problem
      timeCourseTask.getProblem().setModel(dataModel.getModel());
@@ -88,12 +88,12 @@ public class example5
      COptTask optTask=(COptTask)dataModel.getTask("Optimization");
      assert optTask != null;
      // we want to use Levenberg-Marquardt as the optimization method
-     optTask.setMethodType(CCopasiMethod.LevenbergMarquardt);
+     optTask.setMethodType(CTaskEnum.LevenbergMarquardt);
      
      // next we need to set subtask type on the problem
      COptProblem optProblem=(COptProblem)optTask.getProblem();
      assert optProblem != null;
-     optProblem.setSubtaskType(CCopasiTask.timeCourse);
+     optProblem.setSubtaskType(CTaskEnum.timeCourse);
      
      // we create the objective function
      // we want to minimize the value of the variable model value at the end of
@@ -137,7 +137,7 @@ public class example5
      // create a new report definition object
      CReportDefinition report = reports.createReportDefinition("Report", "Output for optimization");
      // set the task type for the report definition to timecourse
-     report.setTaskType(CCopasiTask.optimization);
+     report.setTaskType(CTaskEnum.optimization);
      // we don't want a table
      report.setIsTable(false);
      // the entries in the output should be seperated by a ", "

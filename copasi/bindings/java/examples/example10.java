@@ -1,4 +1,4 @@
-// Copyright (C) 2012 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2012 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., University of Heidelberg, and The University 
 // of Manchester. 
 // All rights reserved. 
@@ -81,16 +81,6 @@ public class example10
       // get the metabolic control analysis task object
       CMCATask pTask = (CMCATask)(pDataModel.getTask("Metabolic Control Analysis"));
 
-      // The task should always be there, but just to be sure, we check and create it, if it wasn't.
-      if (pTask == null)
-        {
-          // create a new one
-          pTask = new CMCATask();
-
-          // add the new task to the task list
-          TaskList.add(pTask, true);
-        }
-
       // we can set some options
       // e.g. if we want to calculate the MCA at a steady state
       CMCAProblem pMCAProblem = (CMCAProblem)(pTask.getProblem());
@@ -129,17 +119,6 @@ public class example10
       // sometime the setValue methods needs to passed the correct type
       // to disambiguate the function call
       pSSMethod.getParameter("Iteration Limit").setIntValue(70);
-
-      // again, better safe than sorry, we check if the task was actually there and if not, we delete it
-      if (pSSTask == null)
-        {
-          // create a new one
-          pSSTask = new CSteadyStateTask();
-
-          // add the new task to the task list
-          TaskList.add(pSSTask, true);
-        }
-
 
       CCopasiMessage.clearDeque();
 
