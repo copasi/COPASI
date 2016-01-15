@@ -71,7 +71,7 @@ typedef std::vector<CCopasiObject*> ObjectStdVector;
 %ignore CModel::getReactions() const;
 %ignore CModel::getEvents() const;
 %ignore CModel::getCompartments() const;
-%ignore CModel::getStateTemplate() const;
+//%ignore CModel::getStateTemplate() const;
 %ignore CModel::processQueue;
 %ignore CModel::processRoots;
 %ignore CModel::calculateDerivatives;

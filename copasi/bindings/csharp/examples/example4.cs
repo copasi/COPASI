@@ -34,7 +34,7 @@ class example4
         // create a new report definition object
         CReportDefinition report = reports.createReportDefinition("Report", "Output for timecourse");
         // set the task type for the report definition to timecourse
-        report.setTaskType(CCopasiTask.timeCourse);
+        report.setTaskType(CTaskEnum.timeCourse);
         // we don't want a table
         report.setIsTable(false);
         // the entries in the output should be seperated by a ", "
@@ -79,21 +79,9 @@ class example4
 
         // get the trajectory task object
         CTrajectoryTask trajectoryTask = (CTrajectoryTask)dataModel.getTask("Time-Course");
-        Debug.Assert(trajectoryTask != null);
-        // if there isn't one
-        if (trajectoryTask == null)
-        {
-            // create a new one
-            trajectoryTask = new CTrajectoryTask();
-            
-            // add the new time course task to the task list
-            // this method makes sure that the object is now owned 
-            // by the list and that it does not get deleted by SWIG
-            dataModel.getTaskList().addAndOwn(trajectoryTask);
-        }
-
+        
         // run a stochastic time course
-        trajectoryTask.setMethodType(CCopasiMethod.stochastic);
+        trajectoryTask.setMethodType(CTaskEnum.stochastic);
 
         // pass a pointer of the model to the problem
         trajectoryTask.getProblem().setModel(dataModel.getModel());
@@ -116,16 +104,6 @@ class example4
 
         // now we set up the scan
         CScanTask scanTask = (CScanTask)dataModel.getTask("Scan");
-        Debug.Assert(scanTask != null);
-        if (scanTask == null)
-        {
-            // create a new scan task
-            scanTask = new CScanTask();
-            // add the new scan task
-            // this method makes sure that the object is now owned 
-            // by the list and that it does not get deleted by SWIG
-            dataModel.getTaskList().addAndOwn(scanTask);
-        }
 
         // get the problem
         CScanProblem scanProblem = (CScanProblem)scanTask.getProblem();
@@ -147,7 +125,7 @@ class example4
         scanTask.getReport().setAppend(false);
 
         // tell the scan that we want to make a scan over a trajectory task
-        scanProblem.setSubtask(CCopasiTask.timeCourse);
+        scanProblem.setSubtask(CTaskEnum.timeCourse);
 
         // we just want to run the timecourse task a number of times, so we
         // create a repeat item with 100 repeats

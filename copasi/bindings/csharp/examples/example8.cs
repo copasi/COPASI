@@ -71,7 +71,7 @@ class example8
         // it basically represents a relative delta value for the calculation of the derivatives
         // the third parameter termed resolution in the C++ API is currently ignores
         // so it does not matter what value you give here.
-        model.calculateJacobian(jacobian, 1e-12, 1.0);
+        model.getMathContainer().calculateJacobian(jacobian, 1e-12, true);
         // now we print the result
         // the jacobian stores the values in the order they are
         // given in the user order in the state template so it is not really straight
@@ -131,7 +131,7 @@ class example8
 
         // we can also calculate the jacobian of the reduced system
         // in a similar way
-        model.calculateJacobianX(jacobian, 1e-12, 1.0);
+        model.getMathContainer().calculateJacobian(jacobian, 1e-12, true);
         // this time generating the output is actually simpler because the rows
         // and columns are ordered in the same way as the independent variables of the state temple
         System.Console.WriteLine(System.String.Format("{0}{0}",System.Environment.NewLine));

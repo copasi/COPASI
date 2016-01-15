@@ -59,15 +59,6 @@ class example9
    // get the trajectory task object
    CSteadyStateTask task = (CSteadyStateTask)dataModel.getTask("Steady-State");
 
-   // if there isn't one
-   if (task == null)
-   {
-       // create a new one
-       task = new CSteadyStateTask();
-       // add the new task to the task list
-       dataModel.getTaskList().addAndOwn(task);
-   }
-
    CCopasiMessage.clearDeque();
 
    try

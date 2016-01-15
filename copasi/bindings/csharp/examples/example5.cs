@@ -51,7 +51,7 @@ class example5
      // since for this example it really doesn't matter how long we run the time course 
      // we run for 1 second and calculate 10 steps
      // run a deterministic time course
-     timeCourseTask.setMethodType(CCopasiMethod.deterministic);
+     timeCourseTask.setMethodType(CTaskEnum.deterministic);
 
      // pass a pointer of the model to the problem
      timeCourseTask.getProblem().setModel(dataModel.getModel());
@@ -73,12 +73,12 @@ class example5
      COptTask optTask=(COptTask)dataModel.getTask("Optimization");
      Debug.Assert(optTask != null);
      // we want to use Levenberg-Marquardt as the optimization method
-     optTask.setMethodType(CCopasiMethod.LevenbergMarquardt);
+     optTask.setMethodType(CTaskEnum.LevenbergMarquardt);
      
      // next we need to set subtask type on the problem
      COptProblem optProblem=(COptProblem)optTask.getProblem();
      Debug.Assert(optProblem != null);
-     optProblem.setSubtaskType(CCopasiTask.timeCourse);
+     optProblem.setSubtaskType(CTaskEnum.timeCourse);
      
      // we create the objective function
      // we want to minimize the value of the variable model value at the end of
@@ -122,7 +122,7 @@ class example5
      // create a new report definition object
      CReportDefinition report = reports.createReportDefinition("Report", "Output for optimization");
      // set the task type for the report definition to timecourse
-     report.setTaskType(CCopasiTask.optimization);
+     report.setTaskType(CTaskEnum.optimization);
      // we don't want a table
      report.setIsTable(false);
      // the entries in the output should be seperated by a ", "
