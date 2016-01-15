@@ -200,7 +200,7 @@ endif(MSVC OR USING_INTEL)
 endif(WIN32)
 
 add_library(binding_r_lib SHARED copasi_wrapper.cpp)
-add_dependencies( binding_r_lib binding_python_swig) 
+add_dependencies( binding_r_lib binding_r_swig) 
 
 set_target_properties (binding_r_lib PROPERTIES OUTPUT_NAME "COPASI")
 if (UNIX)

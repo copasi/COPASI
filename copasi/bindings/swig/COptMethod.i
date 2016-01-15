@@ -16,7 +16,7 @@
 
 %}
 
-%newobject COptMethod::createMethod(CCopasiMethod::SubType subType);
+%newobject COptMethod::createMethod(CTaskEnum::Method& subType);
 
 %include "optimization/COptMethod.h"
 

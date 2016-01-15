@@ -17,7 +17,7 @@
 
 %}
 
-%newobject CTrajectoryMethod::createSensMethod(CCopasiMethod::SubType subType = CCopasiMethod::sensMethod);
+%newobject CTrajectoryMethod::createSensMethod(CTaskEnum::Method subType = CTaskEnum::sensMethod);
 
 %include "sensitivities/CSensMethod.h"
 

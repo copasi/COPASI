@@ -38,7 +38,7 @@
    
 #ifdef SWIGR
 %extend CScanTask{
-   bool setMethodType(const CCopasiMethod::SubType& type)
+   bool setMethodType(const CTaskEnum::Method& type)
    {
       return $self->setMethodType(type);
    }

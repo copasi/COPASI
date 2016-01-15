@@ -25,7 +25,7 @@
 
 %}
 
-%newobject CSteadyStateMethod::createSteadyStateMethod(CCopasiMethod::SubType subType = CCopasiMethod::Newton);
+%newobject CSteadyStateMethod::createSteadyStateMethod(CTaskEnum::Method subType = CTaskEnum::Newton);
 
 %ignore CSteadyStateMethod::process;
 

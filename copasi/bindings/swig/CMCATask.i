@@ -44,7 +44,7 @@
    
 #ifdef SWIGR
 %extend CMCATask{
-    bool setMethodType(const CCopasiMethod::SubType& type)
+    bool setMethodType(const CTaskEnum::Method& type)
    {
       return $self->setMethodType(type);
    }
