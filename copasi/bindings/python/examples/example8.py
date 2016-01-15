@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and The University 
 # of Manchester. 
 # All rights reserved. 
@@ -68,9 +68,9 @@ def main():
         # the matrix where the result is to be stored
         # the second parameter is the derivationFactor for the calculation
         # it basically represents a relative delta value for the calculation of the derivatives
-        # the third parameter termed resolution in the C++ API is currently ignores
-        # so it does not matter what value you give here.
-        model.calculateJacobian(jacobian, 1e-12, 1.0)
+        # the third parameter is a boolean indicating whether the jacobian should
+        # be calculated from the reduced (true) or full (false) system
+        model.getMathContainer().calculateJacobian(jacobian, 1e-12, False)
         # now we print the result
         # the jacobian stores the values in the order they are
         # given in the user order in the state template so it is not really straight
@@ -118,7 +118,7 @@ def main():
 
         # we can also calculate the jacobian of the reduced system
         # in a similar way
-        model.calculateJacobianX(jacobian, 1e-12, 1.0)
+        model.getMathContainer().calculateJacobian(jacobian, 1e-12, True)
         # this time generating the output is actually simpler because the rows
         # and columns are ordered in the same way as the independent variables of the state temple
         print ("")

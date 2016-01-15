@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and The University 
 # of Manchester. 
 # All rights reserved. 
@@ -117,7 +117,7 @@ def main(args):
    # create a report definition object
    report = reports.createReportDefinition("Report", "Output for timecourse")
    # set the task type for the report definition to timecourse
-   report.setTaskType(CCopasiTask.timeCourse)
+   report.setTaskType(CTaskEnum.timeCourse)
    # we don't want a table
    report.setIsTable(False)
    # the entries in the output should be seperated by a ", "
@@ -157,18 +157,9 @@ def main(args):
    # get the trajectory task object
    trajectoryTask = dataModel.getTask("Time-Course")
    assert trajectoryTask != None
-   # if there isn't one
-   if trajectoryTask == None:
-       # create a one
-       trajectoryTask = CTrajectoryTask()
-       # add the time course task to the task list
-       # this method makes sure the object is now owned by the list
-       # and that SWIG does not delete it
-       dataModel.getTaskList().addAndOwn(trajectoryTask)
-
 
    # run a stochastic time course
-   trajectoryTask.setMethodType(CCopasiMethod.stochastic)
+   trajectoryTask.setMethodType(CTaskEnum.stochastic)
 
    # pass a pointer of the model to the problem
    trajectoryTask.getProblem().setModel(dataModel.getModel())
@@ -192,13 +183,6 @@ def main(args):
    # now we set up the scan
    scanTask = dataModel.getTask("Scan")
    assert scanTask != None
-   if scanTask == None:
-       # create a scan task
-       scanTask = CScanTask()
-       # add the scan task
-       # this method makes sure the object is now owned by the list
-       # and that SWIG does not delete it
-       dataModel.getTaskList().addAndOwn(scanTask)
 
    # get the problem
    scanProblem = scanTask.getProblem()
@@ -220,7 +204,7 @@ def main(args):
    scanTask.getReport().setAppend(False)
 
    # tell the scan that we want to make a scan over a trajectory task
-   scanProblem.setSubtask(CCopasiTask.timeCourse)
+   scanProblem.setSubtask(CTaskEnum.timeCourse)
 
    # we just want to run the timecourse task a number of times, so we
    # create a repeat item with 100 repeats

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and The University 
 # of Manchester. 
 # All rights reserved. 
@@ -57,13 +57,6 @@ def main():
 
   # get the trajectory task object
   task = dataModel.getTask("Steady-State")
-
-  # if there isn't one
-  if task == None:
-      # create a new one
-      task = CSteadyStateTask()
-      # add the new task to the task list
-      dataModel.getTaskList().addAndOwn(task)
 
   CCopasiMessage.clearDeque()
 

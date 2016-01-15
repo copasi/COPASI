@@ -1,6 +1,6 @@
 
 # -*- coding: utf-8 -*-
-# Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and The University 
 # of Manchester. 
 # All rights reserved. 
@@ -114,18 +114,9 @@ def main():
    # get the trajectory task object
    trajectoryTask = dataModel.getTask("Time-Course")
    assert trajectoryTask != None
-   # if there isn't one
-   if trajectoryTask == None:
-       # create one
-       trajectoryTask = CTrajectoryTask()
-
-       # add the time course task to the task list
-       # this method makes sure that the object is now owned 
-       # by the list and that it does not get deleted by SWIG
-       dataModel.getTaskList().addAndOwn(trajectoryTask)
 
    # run a deterministic time course
-   trajectoryTask.setMethodType(CCopasiMethod.deterministic)
+   trajectoryTask.setMethodType(CTaskEnum.deterministic)
 
    # pass a pointer of the model to the problem
    trajectoryTask.getProblem().setModel(dataModel.getModel())
@@ -182,7 +173,7 @@ def main():
    assert timeSeries.getRecordedSteps() == 4001
    iMax = timeSeries.getNumVariables()
    # there should be four variables, the three metabolites and time
-   assert iMax == 5
+   assert iMax == 4
    lastIndex = timeSeries.getRecordedSteps() - 1
    # open the file
    # we need to remember in which order the variables are written to file
@@ -247,7 +238,7 @@ def main():
    assert reaction.isLocalParameter(0)
    reaction.setParameterValue("k1",rand)
 
-   fitTask=dataModel.addTask(CCopasiTask.parameterFitting)
+   fitTask=dataModel.addTask(CTaskEnum.parameterFitting)
    assert fitTask != None
    # the method in a fit task is an instance of COptMethod or a subclass of
    # it.
@@ -277,8 +268,8 @@ def main():
    assert experiment.getLastRow()==4001
    experiment.setHeaderRow(1)
    assert experiment.getHeaderRow()==1
-   experiment.setExperimentType(CCopasiTask.timeCourse)
-   assert experiment.getExperimentType()==CCopasiTask.timeCourse
+   experiment.setExperimentType(CTaskEnum.timeCourse)
+   assert experiment.getExperimentType()==CTaskEnum.timeCourse
    experiment.setNumColumns(4)
    assert experiment.getNumColumns()==4
    objectMap=experiment.getObjectMap()
