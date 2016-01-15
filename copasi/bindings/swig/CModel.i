@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., University of Heidelberg, and The University 
 // of Manchester. 
 // All rights reserved. 
@@ -18,6 +18,13 @@
 
 #include <copasi/utilities/CUnitComponent.h>
 #include <copasi/utilities/CUnit.h>
+#include "copasi/math/CMathObject.h"
+#include "copasi/math/CMathEvent.h"
+#include "copasi/math/CMathDependencyGraph.h"
+#include "copasi/math/CMathReaction.h"
+#include "copasi/math/CMathDelay.h"
+#include "copasi/math/CMathHistory.h"
+#include "copasi/math/CMathContainer.h"
 #include "model/CModel.h"
 
 %}
@@ -103,6 +110,14 @@ typedef std::vector<CCopasiObject*> ObjectStdVector;
 %ignore CUnitComponent::setKind;
 %include <copasi/utilities/CUnitComponent.h>
 %include <copasi/utilities/CUnit.h>
+%include "copasi/math/CMathObject.h"
+%include "copasi/math/CMathEvent.h"
+%include "copasi/math/CMathDependencyGraph.h"
+%include "copasi/math/CMathReaction.h"
+%include "copasi/math/CMathDelay.h"
+%include "copasi/math/CMathHistory.h"
+%include "copasi/math/CMathContainer.h"
+
 %include "model/CModel.h"
 
 
