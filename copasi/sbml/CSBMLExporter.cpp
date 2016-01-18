@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -5470,7 +5470,19 @@ std::vector<CModelEntity*> CSBMLExporter::orderRules(const CCopasiDataModel& dat
       const CExpression* pExpr = (*it)->getExpressionPtr();
       assert(pExpr != NULL);
       std::set<const CModelEntity*> dependencies;
-      CSBMLExporter::findModelEntityDependencies(pExpr->getRoot(), dataModel, dependencies);
+
+      try
+        {
+          CSBMLExporter::findModelEntityDependencies(pExpr->getRoot(), dataModel, dependencies);
+        }
+      catch (...)
+        {
+          std::stringstream str;
+          str << "The rule for '" << (*it)->getObjectName()
+              << "' cannot be exported, as its expression is invalid.";
+          throw CCopasiMessage(CCopasiMessage::EXCEPTION, str.str().c_str());
+        }
+
       /*
       std::vector<CModelEntity*>::iterator it2 = this->mAssignmentVector.begin(), endit2 = this->mAssignmentVector.end();
       while (it2 != endit2)
