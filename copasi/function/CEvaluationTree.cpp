@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -352,7 +352,14 @@ bool CEvaluationTree::compileNodes()
         mErrorPosition += (*it)->getData().length();
 
       mErrorPosition -= (*--it)->getData().length();
-      CCopasiMessage(CCopasiMessage::ERROR, MCFunction + 3, getObjectName().c_str(), mErrorPosition);
+
+      std::stringstream str;
+      str << getObjectName();
+
+      if (getObjectParent() != NULL)
+        str << " of element '" << getObjectParent()->getObjectName() << "'";
+
+      CCopasiMessage(CCopasiMessage::ERROR, MCFunction + 3, str.str().c_str(), mErrorPosition);
     }
   else
     {
