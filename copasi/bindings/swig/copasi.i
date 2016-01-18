@@ -22,9 +22,6 @@
 
 
 
-
-
-
 %module COPASI
 
 %warnfilter(402) CCopasiObjectName;
@@ -55,6 +52,11 @@
 %ignore CEFMProblem::getFluxModes() const;
 %ignore CEFMProblem::getReorderedReactions() const;
 
+#if SWIGR
+
+%include "typemaps.i"
+%typemap("rtype") size_t, size_t *, size_t &, const size_t&      "integer";
+#endif 
 
 %{
 
