@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -55,7 +55,7 @@ static char DataModeltxt[] =
   "29:291:Result\n"
   //--- ETTORE end -----
 #ifdef COPASI_NONLIN_DYN_OSCILLATION
-  "2:29:Oscillation\n"
+  "2:36:Oscillation\n"
 #endif
   //  "0:3:Multiple Task\n"
   "2:31:Parameter Scan\n"

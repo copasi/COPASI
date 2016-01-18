@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -598,6 +598,7 @@ void ListViews::ConstructNodeWidgets()
       analyticsWidget = new CQAnalyticsWidget(this);
       mpStackedWidget->addWidget(analyticsWidget);
     }
+
   //--- ETTORE end -----
 
 #ifdef COPASI_NONLIN_DYN_OSCILLATION
@@ -826,6 +827,7 @@ CopasiWidget* ListViews::findWidgetFromId(const size_t & id) const
       case 281:
         return crossSectionTimeSeriesWidget;
         break;
+
       //--- ETTORE start ---
       case 29:
         return analyticsWidget;
@@ -834,10 +836,10 @@ CopasiWidget* ListViews::findWidgetFromId(const size_t & id) const
       case 291:
         return analyticsResultWidget;
         break;
-      //--- ETTORE end -----
+        //--- ETTORE end -----
 #ifdef COPASI_NONLIN_DYN_OSCILLATION
 
-      case 29:
+      case 36:
         return oscillationTaskWidget;
         break;
 #endif
