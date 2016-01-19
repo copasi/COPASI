@@ -187,7 +187,7 @@ bool CQUnitDM::insertRows(int position, int rows, const QModelIndex&)
   for (int row = 0; row < rows; ++row)
     {
       CUnitDefinition *pUnitDef;
-      CCopasiRootContainer::getUnitList()->add(pUnitDef = new CUnitDefinition(TO_UTF8(createNewName("unit", COL_SYMBOL_UNITS))), true);
+      CCopasiRootContainer::getUnitList()->add(pUnitDef = new CUnitDefinition(TO_UTF8(createNewName("unit", COL_NAME_UNITS)), CCopasiRootContainer::getUnitList()), true);
       emit notifyGUI(ListViews::UNIT, ListViews::ADD, pUnitDef->getKey());
     }
 

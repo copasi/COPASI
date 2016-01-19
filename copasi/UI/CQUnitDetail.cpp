@@ -74,7 +74,7 @@ void CQUnitDetail::slotBtnNew()
  std::string name = "unit_1";
  int i = 1;
  CUnitDefinition* pUnitDef;
- CCopasiVectorN<CUnitDefinition> * unitList
+ CUnitDefinitionDB * unitList
    = CCopasiRootContainer::getUnitList();
 
  while (unitList->getIndex(name) != C_INVALID_INDEX)
@@ -84,7 +84,7 @@ void CQUnitDetail::slotBtnNew()
      name += TO_UTF8(QString::number(i));
    }
 
- CCopasiRootContainer::getUnitList()->add(pUnitDef = new CUnitDefinition(name), true);
+ unitList->add(pUnitDef = new CUnitDefinition(name, unitList), true);
 
  std::string key = pUnitDef->getKey();
  protectedNotify(ListViews::UNIT, ListViews::ADD, key);

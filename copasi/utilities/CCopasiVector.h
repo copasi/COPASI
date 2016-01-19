@@ -214,24 +214,22 @@ public:
    */
   virtual bool add(const CType & src)
   {
-    CType * Element;
-
     try
       {
-        Element = new CType(src);
+        mRecentElement = new CType(src);
       }
     catch (...)
       {
-        Element = NULL;
+        mRecentElement = NULL;
       }
 
-    if (Element == NULL)
+    if (mRecentElement == NULL)
       CCopasiMessage ex(CCopasiMessage::EXCEPTION, MCopasiBase + 1, sizeof(CType));
 
     // This is not very efficient !!!
     // It results in a lot of resizing of the vector !!!
-    std::vector< CType * >::push_back(Element);
-    return CCopasiContainer::add(Element);
+    std::vector< CType * >::push_back(mRecentElement);
+    return CCopasiContainer::add(mRecentElement);
   }
 
   /**
@@ -488,6 +486,10 @@ public:
                                       const CCopasiVector<CType> & d);
 #endif // WIN32
 #endif // SWIG
+
+protected:
+
+  CType * mRecentElement;
 };
 
 template < class CType > class CCopasiVectorS: public CCopasiVector < CType >

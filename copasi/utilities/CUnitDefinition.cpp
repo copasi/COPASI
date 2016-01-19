@@ -14,7 +14,7 @@
 //#include "copasi/model/CModel.h"
 #include "copasi/xml/CCopasiXMLInterface.h"
 
-#include "CCopasiException.h"
+//#include "CCopasiException.h"
 
 // SI Name, Symbol, Definition
 struct SIUnit
@@ -80,9 +80,8 @@ CUnitDefinition CUnitDefinition::getSIUnitDefinition(const std::string & symbol,
       buffer << CCopasiXMLInterface::DBL(avogadro) << "*#";
     }
 
-  CUnitDefinition SIunit = CUnitDefinition();
+  CUnitDefinition SIunit = CUnitDefinition(pSIUnit->name, CCopasiRootContainer::getUnitList());
 
-  SIunit.setObjectName(pSIUnit->name);
   SIunit.setSymbol(pSIUnit->symbol);
   SIunit.setExpression(buffer.str(), avogadro);
 
@@ -90,7 +89,7 @@ CUnitDefinition CUnitDefinition::getSIUnitDefinition(const std::string & symbol,
 }
 
 // static
-void CUnitDefinition::updateSIUnitDefinitions(CCopasiVectorN< CUnitDefinition > & Units,
+void CUnitDefinition::updateSIUnitDefinitions(CUnitDefinitionDB * Units,
                           const C_FLOAT64 & avogadro)
 {
   SIUnit * pSIUnit = SIUnits;
@@ -98,19 +97,17 @@ void CUnitDefinition::updateSIUnitDefinitions(CCopasiVectorN< CUnitDefinition > 
   while (pSIUnit->name)
     {
       CUnitDefinition * pUnitDef = NULL;
-      size_t Index = Units.getIndex(pSIUnit->name);
+      size_t Index = Units->getIndex(pSIUnit->name);
 
       if (Index != C_INVALID_INDEX)
         {
-          pUnitDef = Units[Index];
+          pUnitDef = Units->operator [](Index);
         }
       else
         {
-          pUnitDef = new CUnitDefinition();
-
-          pUnitDef->setObjectName(pSIUnit->name);
+          pUnitDef = new CUnitDefinition(pSIUnit->name, Units);
           pUnitDef->setSymbol(pSIUnit->symbol);
-          Units.add(pUnitDef, true);
+          Units->add(pUnitDef, true);
         }
 
       std::ostringstream buffer;
@@ -135,7 +132,7 @@ void CUnitDefinition::updateSIUnitDefinitions(CCopasiVectorN< CUnitDefinition > 
 CUnitDefinition::CUnitDefinition(const std::string & name,
              const CCopasiContainer * pParent):
   CCopasiContainer(name, pParent, "Unit"),
-  mSymbol("none")
+  mSymbol(name + "_symbol")
 {
   setup();
 }
@@ -158,6 +155,9 @@ CUnitDefinition::CUnitDefinition(const CUnitDefinition &src,
   CCopasiContainer(src, pParent),
   mSymbol(src.mSymbol)
 {
+  // The following ought to trigger the exception
+  // if the symbol is already in the CUnitDefinitionDB
+  setSymbol(src.mSymbol);
   setup();
 }
 
@@ -168,6 +168,14 @@ CUnitDefinition::~CUnitDefinition()
 
 void CUnitDefinition::setup()
 {
+  // CUnitDefinitions should always be in a CUnitDefintionDB
+  if(dynamic_cast < CUnitDefinitionDB * >(getObjectParent()) == NULL)
+     CCopasiMessage ex(CCopasiMessage::EXCEPTION, MCUnitDefinition + 1);
+
+  // The following ought to trigger the exception for
+  // a symbol already in the CUnitDefinitionDB
+  setSymbol(mSymbol);
+
   mKey = CCopasiRootContainer::getKeyFactory()->add("Unit", this);
 }
 
@@ -179,10 +187,28 @@ const std::string & CUnitDefinition::getKey() const
 
 void CUnitDefinition::setSymbol(const std::string & symbol)
 {
-  mSymbol = symbol;
+  // All CUnitDefinition symbols in a CUnitDefinitionDB should be unique
+  if((dynamic_cast < CUnitDefinitionDB *>(getObjectParent()))->containsSymbol(symbol))
+    CCopasiMessage ex(CCopasiMessage::EXCEPTION, MCUnitDefinition + 2, symbol.c_str());
+  else
+    mSymbol = symbol;
 }
 
 std::string CUnitDefinition::getSymbol() const
 {
   return mSymbol;
+}
+
+CUnitDefinition & CUnitDefinition::operator=(const CUnitDefinition & src)
+{
+  // All CUnitDefinition symbols in a CUnitDefinitionDB should be unique
+  // This should protect that for cases like this:
+  // *aCunitDefDB[i] = someCunitDef;
+
+  if((dynamic_cast < CUnitDefinitionDB *>(getObjectParent()))->containsSymbol(src.getSymbol()))
+    CCopasiMessage ex(CCopasiMessage::EXCEPTION, MCUnitDefinition + 2);
+
+  *this = src;
+
+  return *this;
 }

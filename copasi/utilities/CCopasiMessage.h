@@ -69,6 +69,7 @@ Message;
 #define MCSEDML                  MCopasiBase + 5000
 #define MCMCA                    MCopasiBase + 5100
 #define MCUnit                   MCopasiBase + 5200
+#define MCUnitDefinition         MCopasiBase + 5300
 
 /**
  *  This throws an exception with information where the error occurred.

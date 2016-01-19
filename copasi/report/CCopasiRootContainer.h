@@ -16,6 +16,7 @@
 #include "copasi/CopasiDataModel/CCopasiDataModel.h"
 #include "copasi/utilities/CCopasiVector.h"
 #include "copasi/utilities/CUnitDefinition.h"
+#include "copasi/utilities/CUnitDefinitionDB.h"
 
 class CMIRIAMResource;
 class CFunctionDB;
@@ -75,7 +76,7 @@ protected:
   CFunctionDB* mpFunctionList;
   CConfigurationFile* mpConfiguration;
   CCopasiVector<CCopasiDataModel>* mpDataModelList;
-  CCopasiVectorN<CUnitDefinition>* mpUnitDefinitionList;
+  CUnitDefinitionDB * mpUnitDefinitionList;
   // flag to store if we are running a GUI or not
   bool mWithGUI;
 
@@ -115,7 +116,7 @@ public:
   /**
    * Returns a pointer to the list of units.
    */
-  static CCopasiVectorN< CUnitDefinition > *getUnitList();
+  static CUnitDefinitionDB *getUnitList();
 
   /**
    * Retrieve the unit for the given symbol

@@ -483,9 +483,13 @@ const MESSAGES Messages[] =
 
   {MCMCA + 1, "CMCA (1): Numerical instabilities encountered, at least one of the the Summation Theorems is violated."},
 
-  // Function
-  {MCUnit + 1, "Unit (1): Parser error near character position: '%d'."},
-  {MCUnit + 2, "Unit (2): Lexer error near character position: '%d'."},
+  // Unit
+  {MCUnit + 1, "CUnit (1): Parser error near character position: '%d'."},
+  {MCUnit + 2, "CUnit (2): Lexer error near character position: '%d'."},
+
+  // UnitDefinition
+  {MCUnitDefinition + 1, "CUnitDefinition (1): CUnitDefintion needs to be child of a CUnitDefinitionDB."},
+  {MCUnitDefinition + 2, "CUnitDefinition (2): Symbol '%s' is already in use."},
 
   // This must be the last element of the message list! Do not delete!
   {0, NULL}

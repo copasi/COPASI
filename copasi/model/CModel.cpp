@@ -1522,7 +1522,7 @@ void CModel::setAvogadro(const C_FLOAT64 & avogadro)
 
   setQuantityUnit(mpQuantityUnit->getExpression());
 
-  CUnitDefinition::updateSIUnitDefinitions(*CCopasiRootContainer::getUnitList(), avogadro);  // TODO Eventually need to deal with case of more than one model (different Avogadro constants)
+  CUnitDefinition::updateSIUnitDefinitions(CCopasiRootContainer::getUnitList(), avogadro);  // TODO Eventually need to deal with case of more than one model (different Avogadro constants)
 }
 
 const C_FLOAT64 & CModel::getAvogadro() const

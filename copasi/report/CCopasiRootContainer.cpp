@@ -125,8 +125,8 @@ void CCopasiRootContainer::initializeChildren()
   mpUndefined->setInfix("nan");
   mpUndefined->compile();
 
-  mpUnitDefinitionList = new CCopasiVectorN< CUnitDefinition >("UnitList", this);
-  CUnitDefinition::updateSIUnitDefinitions(*mpUnitDefinitionList, CUnit::Avogadro);
+  mpUnitDefinitionList = new CUnitDefinitionDB("UnitList", this);
+  CUnitDefinition::updateSIUnitDefinitions(mpUnitDefinitionList, CUnit::Avogadro);
 }
 
 // static
@@ -154,7 +154,7 @@ CCopasiVector< CCopasiDataModel > * CCopasiRootContainer::getDatamodelList()
 }
 
 // static
-CCopasiVectorN<CUnitDefinition> *CCopasiRootContainer::getUnitList()
+CUnitDefinitionDB *CCopasiRootContainer::getUnitList()
 {
   return pRootContainer->mpUnitDefinitionList;
 }

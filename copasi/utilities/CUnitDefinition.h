@@ -14,8 +14,11 @@
 #define CUNIT_DEFINITION_H
 
 #include "copasi/utilities/CUnit.h"
+//#include "copasi/utilities/CUnitDefinitionDB.h"
 #include "copasi/report/CCopasiContainer.h"
 #include "model/CAnnotation.h"
+
+class CUnitDefinitionDB;
 
 class CUnitDefinition : public CUnit, public CCopasiContainer, public CAnnotation
 {
@@ -56,11 +59,13 @@ public:
   static CUnitDefinition getSIUnitDefinition(const std::string & symbol,
                          const C_FLOAT64 & avogadro);
 
-  static void updateSIUnitDefinitions(CCopasiVectorN< CUnitDefinition > & Units,
+  static void updateSIUnitDefinitions(CUnitDefinitionDB * Units,
                             const C_FLOAT64 & avogadro);
 
-  void setSymbol(const std::string & symbol);
+  void setSymbol(const std::string &symbol);
   std::string getSymbol() const;
+
+  CUnitDefinition & operator=(const CUnitDefinition & src);
 
 private:
   std::string mSymbol;
