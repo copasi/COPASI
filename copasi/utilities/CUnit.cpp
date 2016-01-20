@@ -331,6 +331,13 @@ bool CUnit::setExpression(const std::string & expression,
 {
   mExpression = expression;
 
+  if(expression.empty())
+  {
+    mComponents.clear();
+    mComponents.insert(CUnitComponent(CBaseUnit::dimensionless));
+    return true;
+  }
+
   return compile(avogadro);
 }
 

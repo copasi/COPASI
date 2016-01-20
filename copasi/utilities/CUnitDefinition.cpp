@@ -26,6 +26,16 @@ struct SIUnit
 
 SIUnit SIUnits[] =
 {
+  //SI base
+  {"meter",      "m",        "m"},
+  {"gram",       "g",        "g"},
+  {"second",     "s",        "s"},
+  {"ampere",     "A",        "A"},
+  {"kelvin",     "K",        "K"},
+  {"mole",      "mol",      "mol"},
+  {"candela",   "cd",       "cd"},
+
+  //SI derived
   {"becquerel",  "Bq",       "s^-1"},
   {"coulomb",    "C",        "s*A"},
   {"farad",      "F",        "m^-2*kg^-1*s^4*A^2"},
@@ -48,6 +58,8 @@ SIUnit SIUnits[] =
   {"watt",       "W",        "m^2*kg*s^-3"},
   {"weber",      "Wb",       "m^2*kg*s^-2*A^-1"},
 
+  {"dimensionless", "",      ""},
+  {"item",       "#",        "#"},
   {"minute",     "min",      "60*s"},
   {"hour",       "h",        "3600*s"},
   {"day",        "d",        "86400*s"},
