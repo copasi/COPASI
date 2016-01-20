@@ -1,4 +1,4 @@
-// Copyright (C) 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2013 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -21,6 +21,7 @@ class CLayout;
 class QWidget;
 class QDockWidget;
 class CCopasiSpringLayout;
+class CLayoutEngine;
 
 class CQLayoutThread : public QThread
 {
@@ -87,6 +88,7 @@ protected:
   QWaitCondition mPauseCond;
   bool mPause;
   CCopasiSpringLayout *mpCurrent;
+  CLayoutEngine* mpCurrentEngine;
 };
 
 Q_DECLARE_METATYPE(QSharedPointer<CLayoutState>)

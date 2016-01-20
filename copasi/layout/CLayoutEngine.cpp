@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -11,8 +11,9 @@
 #include "CAbstractLayoutInterface.h"
 
 CLayoutEngine::CLayoutEngine(CAbstractLayoutInterface * l, bool /* so */)
-  : mpLayout(l),
-    mSecondOrder(false)
+  : mpLayout(l)
+  , mSecondOrder(false)
+  , mStopRequested(false)
 {
   if (!mpLayout) return;
 
@@ -64,6 +65,9 @@ void CLayoutEngine::calcRHS(std::vector<double> & state, double* rhs)
 
   for (i = 0; i < imax; ++i)
     {
+      if (mStopRequested)
+        break;
+
       if (mSecondOrder)
         {
           rhs[i + imax] = (forces[i] * 0.04 - state[i + imax] * 0.05) / mpLayout->getMassVector()[i];
@@ -106,6 +110,9 @@ void CLayoutEngine::calcForces(std::vector<double> & state, std::vector<double> 
 
   for (i = 0; i < imax; ++i)
     {
+      if (mStopRequested)
+        break;
+
       store = state[i];
       //std::cout << "var " << store;
       state[i] -= 0.5;
@@ -124,6 +131,8 @@ void CLayoutEngine::calcForces(std::vector<double> & state, std::vector<double> 
 double CLayoutEngine::step()
 {
   if (!mpLayout) return -1.0;
+
+  mStopRequested = false;
 
   unsigned int i, imax = mVariables.size();
 
@@ -147,6 +156,8 @@ double CLayoutEngine::step()
     {
       mpLayout->setState(mVariables);
       newpot = mpLayout->getPotential();
+
+      if (mStopRequested) break;
 
       if (newpot < pot) break;
 
@@ -263,4 +274,9 @@ void CLayoutEngine::evalF(const C_FLOAT64 * /* t */, const C_FLOAT64 * /* y */, 
   calcRHS(mVariables, ydot);
 
   return;
+}
+
+void CLayoutEngine::requestStop()
+{
+  mStopRequested = true;
 }

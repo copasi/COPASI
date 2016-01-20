@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -34,6 +34,12 @@ public:
 
   // /tell the engine that a variable was changed outside
   //void changeVar(int index, double value);
+
+  /**
+   * request the current operation to stop
+   */
+  void requestStop();
+
 
 protected:
 
@@ -95,6 +101,9 @@ protected:
    *  This evaluates the derivatives
    */
   void evalF(const C_FLOAT64 * t, const C_FLOAT64 * y, C_FLOAT64 * ydot);
+
+  bool mStopRequested;
+
 };
 
 #endif // CLAYOUTENGINE_H

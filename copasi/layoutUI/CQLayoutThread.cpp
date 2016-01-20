@@ -1,4 +1,4 @@
-// Copyright (C) 2013 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2013 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -26,6 +26,7 @@ CQLayoutThread::CQLayoutThread(QWidget* parent)
   , mStopLayout(false)
   , mPause(false)
   , mpCurrent(NULL)
+  , mpCurrentEngine(NULL)
 {
   qRegisterMetaType<QSharedPointer<CLayoutState> >();
   mpParameterWindow = new CQSpringLayoutParameterWindow("Layout Parameters", parent);
@@ -36,6 +37,10 @@ void CQLayoutThread::terminateLayout()
 {
   mSync.lock();
   mStopLayout = true;
+
+  if (mpCurrentEngine != NULL)
+    mpCurrentEngine->requestStop();
+
   mPauseCond.wakeAll();
   mSync.unlock();
 
@@ -103,6 +108,10 @@ void CQLayoutThread::finalize()
 void CQLayoutThread::stopLayout()
 {
   mStopLayout = true;
+
+  if (mpCurrentEngine != NULL)
+    mpCurrentEngine->requestStop();
+
   mPauseCond.wakeAll();
 }
 
@@ -124,6 +133,7 @@ void CQLayoutThread::run()
   mpCurrent ->createVariables();
 
   CLayoutEngine le(mpCurrent, false);
+  mpCurrentEngine = &le;
   int i = 0;
   qint64 tick, last = 0;
   double pot, oldPot = -1.0;
@@ -169,6 +179,8 @@ void CQLayoutThread::run()
           emit layoutUpdated();
         }
     }
+
+  mpCurrentEngine = NULL;
 
   // calculate new curves and emit state
   finalize();
