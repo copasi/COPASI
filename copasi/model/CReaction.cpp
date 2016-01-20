@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -1403,9 +1403,7 @@ CFunction * CReaction::setFunctionFromExpressionTree(const CExpression & express
         {
           if (SBMLImporter::areEqualFunctions(pExistingFunction, pTmpFunction))
             {
-              removeDirectDependency(mpFunction);
-              mpFunction = pExistingFunction;
-              addDirectDependency(mpFunction);
+              setFunction(pExistingFunction);
 
               // The functions and their signature are equal however the role of the variables
               // might not be defined for the existing function if this is the first time it is used
