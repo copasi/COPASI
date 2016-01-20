@@ -32,7 +32,7 @@ public:
   virtual void remove(const std::string & name);
 
   bool containsSymbol(std::string symbol);
-  const CUnitDefinition * CUnitDefinitionFromSymbol(std::string symbol);
+  const CUnitDefinition * getUnitDefFromSymbol(std::string symbol);
 
 private:
 

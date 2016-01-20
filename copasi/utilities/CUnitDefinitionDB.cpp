@@ -79,7 +79,7 @@ bool CUnitDefinitionDB::containsSymbol(std::string symbol)
     return false;
 }
 
-const CUnitDefinition * CUnitDefinitionDB::CUnitDefinitionFromSymbol(std::string symbol)
+const CUnitDefinition * CUnitDefinitionDB::getUnitDefFromSymbol(std::string symbol)
 {
   return mSymbolToUnitDefinitions[symbol];
 }

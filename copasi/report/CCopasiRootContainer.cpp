@@ -162,21 +162,7 @@ CUnitDefinitionDB *CCopasiRootContainer::getUnitList()
 // static
 const CUnitDefinition * CCopasiRootContainer::getUnitFromSymbol(const std::string symbol)
 {
-  CCopasiVectorN< CUnitDefinition >::const_iterator it = pRootContainer->mpUnitDefinitionList->begin();
-  CCopasiVectorN< CUnitDefinition >::const_iterator end = pRootContainer->mpUnitDefinitionList->end();
-
-  const CUnitDefinition * pUnitDef = NULL;
-
-  for (; it != end; ++it)
-    {
-      if (symbol == (*it)->getSymbol())
-        {
-          pUnitDef = *it;
-          break;
-        }
-    }
-
-  return pUnitDef;
+  return pRootContainer->mpUnitDefinitionList->getUnitDefFromSymbol(symbol);
 }
 
 // static
