@@ -1,4 +1,4 @@
-// Copyright (C) 2014 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2015 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -33,7 +33,7 @@ SIUnit SIUnits[] =
   {"henry",      "H",        "m^2*kg*s^-2*A^-2"},
   {"hertz",      "Hz",       "s^-1"},
   {"joule",      "J",        "m^2*kg*s^-2"},
-  {"katal",      "ka",       "s^-1*mol"},
+  {"katal",      "kat",      "s^-1*mol"},
   {"liter",      "l",        "0.001*m^3"},
   {"lumen",      "lm",       "cd"},
   {"lux",        "lx",       "m^-2*cd"},
@@ -58,8 +58,8 @@ SIUnit SIUnits[] =
 
 // static
 
-CUnitDefinition CUnitDefinition::getSIUnitDefinition(const std::string & symbol,
-                       const C_FLOAT64 & avogadro)
+CUnit CUnitDefinition::getSIUnit(const std::string & symbol,
+                                 const C_FLOAT64 & avogadro)
 {
   SIUnit * pSIUnit = SIUnits;
 
@@ -80,9 +80,7 @@ CUnitDefinition CUnitDefinition::getSIUnitDefinition(const std::string & symbol,
       buffer << CCopasiXMLInterface::DBL(avogadro) << "*#";
     }
 
-  CUnitDefinition SIunit = CUnitDefinition(pSIUnit->name, CCopasiRootContainer::getUnitList());
-
-  SIunit.setSymbol(pSIUnit->symbol);
+  CUnit SIunit = CUnit();
   SIunit.setExpression(buffer.str(), avogadro);
 
   return SIunit;
@@ -90,7 +88,7 @@ CUnitDefinition CUnitDefinition::getSIUnitDefinition(const std::string & symbol,
 
 // static
 void CUnitDefinition::updateSIUnitDefinitions(CUnitDefinitionDB * Units,
-                          const C_FLOAT64 & avogadro)
+    const C_FLOAT64 & avogadro)
 {
   SIUnit * pSIUnit = SIUnits;
 
@@ -130,8 +128,10 @@ void CUnitDefinition::updateSIUnitDefinitions(CUnitDefinitionDB * Units,
 // constructors
 // default
 CUnitDefinition::CUnitDefinition(const std::string & name,
-             const CCopasiContainer * pParent):
+                                 const CCopasiContainer * pParent):
   CCopasiContainer(name, pParent, "Unit"),
+  CUnit(),
+  CAnnotation(),
   mSymbol(name + "_symbol")
 {
   setup();
@@ -139,20 +139,22 @@ CUnitDefinition::CUnitDefinition(const std::string & name,
 
 // kind
 CUnitDefinition::CUnitDefinition(const CBaseUnit::Kind & kind,
-             const CCopasiContainer * pParent):
+                                 const CCopasiContainer * pParent):
   CCopasiContainer(CBaseUnit::Name[kind], pParent, "Unit"),
-  mSymbol(CBaseUnit::getSymbol(kind)),
-  CUnit(kind)
+  CUnit(kind),
+  CAnnotation(),
+  mSymbol(CBaseUnit::getSymbol(kind))
 {
   setup();
 }
 
 // copy
 CUnitDefinition::CUnitDefinition(const CUnitDefinition &src,
-             const C_FLOAT64 & avogadro,
-             const CCopasiContainer * pParent):
-  CUnit(src, avogadro),
+                                 const C_FLOAT64 & avogadro,
+                                 const CCopasiContainer * pParent):
   CCopasiContainer(src, pParent),
+  CUnit(src, avogadro),
+  CAnnotation(src),
   mSymbol(src.mSymbol)
 {
   // The following ought to trigger the exception
@@ -169,8 +171,8 @@ CUnitDefinition::~CUnitDefinition()
 void CUnitDefinition::setup()
 {
   // CUnitDefinitions should always be in a CUnitDefintionDB
-  if(dynamic_cast < CUnitDefinitionDB * >(getObjectParent()) == NULL)
-     CCopasiMessage ex(CCopasiMessage::EXCEPTION, MCUnitDefinition + 1);
+  if (dynamic_cast < CUnitDefinitionDB * >(getObjectParent()) == NULL)
+    CCopasiMessage ex(CCopasiMessage::EXCEPTION, MCUnitDefinition + 1);
 
   // The following ought to trigger the exception for
   // a symbol already in the CUnitDefinitionDB
@@ -188,7 +190,7 @@ const std::string & CUnitDefinition::getKey() const
 void CUnitDefinition::setSymbol(const std::string & symbol)
 {
   // All CUnitDefinition symbols in a CUnitDefinitionDB should be unique
-  if((dynamic_cast < CUnitDefinitionDB *>(getObjectParent()))->containsSymbol(symbol))
+  if ((dynamic_cast < CUnitDefinitionDB *>(getObjectParent()))->containsSymbol(symbol))
     CCopasiMessage ex(CCopasiMessage::EXCEPTION, MCUnitDefinition + 2, symbol.c_str());
   else
     mSymbol = symbol;
@@ -205,7 +207,7 @@ CUnitDefinition & CUnitDefinition::operator=(const CUnitDefinition & src)
   // This should protect that for cases like this:
   // *aCunitDefDB[i] = someCunitDef;
 
-  if((dynamic_cast < CUnitDefinitionDB *>(getObjectParent()))->containsSymbol(src.getSymbol()))
+  if ((dynamic_cast < CUnitDefinitionDB *>(getObjectParent()))->containsSymbol(src.getSymbol()))
     CCopasiMessage ex(CCopasiMessage::EXCEPTION, MCUnitDefinition + 2);
 
   *this = src;

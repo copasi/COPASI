@@ -1,4 +1,4 @@
-// Copyright (C) 2014 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2015 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -20,28 +20,28 @@
 
 class CUnitDefinitionDB;
 
-class CUnitDefinition : public CUnit, public CCopasiContainer, public CAnnotation
+class CUnitDefinition : public CCopasiContainer, public CUnit, public CAnnotation
 {
 //  friend std::ostream &operator<<(std::ostream &os, const CUnitDefinition::& o);
 
 public:
 
- // constructors
- /**
-  * Default constructor
-  * @param const std::string & name (default: "NoName")
-  * @param const CCopasiContainer * pParent (default: NULL)
-  */
+// constructors
+  /**
+   * Default constructor
+   * @param const std::string & name (default: "NoName")
+   * @param const CCopasiContainer * pParent (default: NULL)
+   */
   CUnitDefinition(const std::string & name = "NoName",
-        const CCopasiContainer * pParent = NULL);
+                  const CCopasiContainer * pParent = NULL);
 
- /**
-  * Kind constructor
-  * @param const CBaseUnit::Kind & kind
-  * @param const CCopasiContainer * pParent (default: NULL)
-  */
+  /**
+   * Kind constructor
+   * @param const CBaseUnit::Kind & kind
+   * @param const CCopasiContainer * pParent (default: NULL)
+   */
   CUnitDefinition(const CBaseUnit::Kind & kind,
-        const CCopasiContainer * pParent = NULL);
+                  const CCopasiContainer * pParent = NULL);
 
   /**
   * Copy constructor
@@ -49,18 +49,18 @@ public:
   * @param const C_FLOAT64 & avogadro
   * @param const CCopasiContainer * pParent (default: NULL)
   */
- CUnitDefinition(const CUnitDefinition & src,
-       const C_FLOAT64 & avogadro,
-       const CCopasiContainer * pParent = NULL);
+  CUnitDefinition(const CUnitDefinition & src,
+                  const C_FLOAT64 & avogadro,
+                  const CCopasiContainer * pParent = NULL);
   ~CUnitDefinition();
 
   virtual const std::string & getKey() const;
 
-  static CUnitDefinition getSIUnitDefinition(const std::string & symbol,
+  static CUnit getSIUnit(const std::string & symbol,
                          const C_FLOAT64 & avogadro);
 
   static void updateSIUnitDefinitions(CUnitDefinitionDB * Units,
-                            const C_FLOAT64 & avogadro);
+                                      const C_FLOAT64 & avogadro);
 
   void setSymbol(const std::string &symbol);
   std::string getSymbol() const;

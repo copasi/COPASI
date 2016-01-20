@@ -1,4 +1,4 @@
-// Copyright (C) 2014 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -14,7 +14,6 @@ CUnitDefinitionDB::CUnitDefinitionDB(const std::string & name,
   CCopasiVectorN(name, pParent),
   mSymbolToUnitDefinitions()
 {
-
 }
 
 //virtual
@@ -41,11 +40,11 @@ bool CUnitDefinitionDB::add(CUnitDefinition * src, bool adopt)
   if (containsSymbol(src->getSymbol()))
     success = false;
   else
-  {
-    CCopasiVectorN::add(src, adopt);
-    mSymbolToUnitDefinitions[src->getSymbol()] = mRecentElement;
-    success = true;
-  }
+    {
+      CCopasiVectorN::add(src, adopt);
+      mSymbolToUnitDefinitions[src->getSymbol()] = mRecentElement;
+      success = true;
+    }
 
   return success;
 }
@@ -73,7 +72,7 @@ void CUnitDefinitionDB::remove(const std::string & name)
 
 bool CUnitDefinitionDB::containsSymbol(std::string symbol)
 {
-  if(mSymbolToUnitDefinitions.count(symbol))
+  if (mSymbolToUnitDefinitions.count(symbol))
     return true;
   else
     return false;
@@ -81,5 +80,12 @@ bool CUnitDefinitionDB::containsSymbol(std::string symbol)
 
 const CUnitDefinition * CUnitDefinitionDB::getUnitDefFromSymbol(std::string symbol)
 {
-  return mSymbolToUnitDefinitions[symbol];
+  std::map<std::string, CUnitDefinition *>::const_iterator found = mSymbolToUnitDefinitions.find(symbol);
+
+  if (found != mSymbolToUnitDefinitions.end())
+    {
+      return found->second;
+    }
+
+  return NULL;
 }
