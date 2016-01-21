@@ -1,4 +1,4 @@
-// Copyright (C) 2011 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -4175,10 +4175,14 @@ void CMathContainer::createDelays()
         {
           if (itDelayValue->first != ValueKey)
             {
-              ValueKey = itDelayValue->first;
-              ++pDelayValueObject;
-              ++index;
+              // Advance the pointers except for the first time
+              if (ValueKey != "")
+                {
+                  ++pDelayValueObject;
+                  ++index;
+                }
 
+              ValueKey = itDelayValue->first;
               pDelay->addValueObject(itDelayValue, index, pDelayValueObject);
             }
 

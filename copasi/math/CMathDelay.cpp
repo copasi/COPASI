@@ -1,4 +1,4 @@
-// Copyright (C) 2014 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2014 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -37,6 +37,8 @@ void CMathDelay::addValueObject(CMath::DelayValueData::iterator & itValueData,
                                 const size_t & index,
                                 CMathObject * pValueObject)
 {
+  assert(index < mValueObjects.size());
+
   mValueObjects[index] = pValueObject;
   pValueObject->setExpression(itValueData->first, false, *mpContainer);
 }
@@ -47,12 +49,12 @@ void CMathDelay::modifyMathObject(CMath::DelayValueData::iterator & itValueData,
   const CMathExpression * pExpression = itValueData->second.second->getExpressionPtr();
 
   std::string Infix = pExpression->getInfix();
-  const std::string Search = itValueData->second.first->buildInfix();
+  const std::string Search = itValueData->second.first;
   std::string Replace = "delay(" + pointerToString(mValueObjects[index]) + ", " + pointerToString(mpLagObject) + ")";
 
   size_t pos = 0;
 
-  if ((pos = Infix.find(Search, pos)) != std::string::npos)
+  while ((pos = Infix.find(Search, pos)) != std::string::npos)
     {
       Infix.replace(pos, Search.length(), Replace);
     }
@@ -94,13 +96,14 @@ void CMathDelay::createUpdateSequences()
   CMathObject **pObjectEnd = pObject + mValueObjects.size();
 
   for (; pObject != pObjectEnd; ++pObject)
-    {
-      Requested.insert(*pObject);
-    }
+    if (*pObject != NULL)
+      {
+        Requested.insert(*pObject);
+      }
 
   mpContainer->getTransientDependencies().getUpdateSequence(mValueSequence, CMath::DelayValues,
       mpContainer->getStateObjects(false), Requested);
-  mpContainer->getTransientDependencies().getUpdateSequence(mValueSequence, CMath::UseMoieties | CMath::DelayValues,
+  mpContainer->getTransientDependencies().getUpdateSequence(mValueSequenceReduced, CMath::UseMoieties | CMath::DelayValues,
       mpContainer->getStateObjects(true), Requested);
 }
 

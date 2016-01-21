@@ -1,4 +1,4 @@
-// Copyright (C) 2011 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -438,16 +438,17 @@ void CMathObject::appendDelays(CMath::DelayData & Delays) const
           case CEvaluationNode::DELAY:
           {
             CEvaluationNode * pValueExpression = static_cast< CEvaluationNode * >((*it)->getChild());
-            std::string LagExpression = static_cast< CEvaluationNode * >(pValueExpression->getSibling())->buildInfix();
+            std::string Expression = static_cast< CEvaluationNode * >(pValueExpression->getSibling())->buildInfix();
 
-            CMath::DelayData::iterator found = Delays.find(LagExpression);
+            CMath::DelayData::iterator found = Delays.find(Expression);
 
             if (found == Delays.end())
               {
-                found = Delays.insert(std::make_pair(LagExpression, CMath::DelayValueData()));
+                found = Delays.insert(std::make_pair(Expression, CMath::DelayValueData()));
               }
 
-            found->second.insert(std::make_pair(pValueExpression->buildInfix(), std::make_pair(*it, const_cast< CMathObject * >(this))));
+            Expression = pValueExpression->buildInfix();
+            found->second.insert(std::make_pair(Expression, std::make_pair((*it)->buildInfix(), const_cast< CMathObject * >(this))));
           }
           break;
 

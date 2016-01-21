@@ -1,4 +1,4 @@
-// Copyright (C) 2011 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -84,7 +84,7 @@ private:
 class CMath
 {
 public:
-  typedef std::multimap< std::string, std::pair< CEvaluationNode *, CMathObject * > > DelayValueData;
+  typedef std::multimap< std::string, std::pair< std::string, CMathObject * > > DelayValueData;
   typedef std::multimap< std::string, DelayValueData > DelayData;
 
   struct sPointers
