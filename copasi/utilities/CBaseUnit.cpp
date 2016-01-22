@@ -1,11 +1,10 @@
-// Copyright (C) 2014 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2014 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
 #include "copasi/utilities/CBaseUnit.h"
 #include "copasi/utilities/CCopasiMessage.h"
-#include "copasi/UI/qtUtilities.h"
 
 // static
 const char * CBaseUnit::Name[] =
