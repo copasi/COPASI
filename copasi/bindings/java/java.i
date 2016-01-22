@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., University of Heidelberg, and The University 
 // of Manchester. 
 // All rights reserved. 
@@ -425,6 +425,14 @@
 		else if (type.equals("ParameterGroup"))
 		{
 			return DowncastCCopasiParameterGroup(cPtr, owner);			
+		}
+		else if (type.equals("ScanItem"))
+		{
+			return CScanItem(cPtr, owner);
+		}
+		else if (type.equals("PlotItem"))
+		{
+			return CPlotItem(cPtr, owner);
 		}
 		else if (type.equals("Problem"))
 		{

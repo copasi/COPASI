@@ -1,4 +1,4 @@
-// Copyright (C) 2011 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -81,6 +81,16 @@ int GetType_CCopasiContainer(CCopasiContainer* pPointer)
         {
           // return a CBiologicalDescription
           result = CBiologicalDescription_Type;
+        }
+      else if (dynamic_cast<CPlotItem*>(pPointer))
+        {
+          // return a CScanItem
+          result = CPlotItem_Type;
+        }
+      else if (dynamic_cast<CScanItem*>(pPointer))
+        {
+          // return a CScanItem
+          result = CScanItem_Type;
         }
       else if (dynamic_cast<CMIRIAMInfo*>(pPointer))
         {

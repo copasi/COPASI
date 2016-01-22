@@ -1,4 +1,4 @@
-// Copyright (C) 2011 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -149,6 +149,14 @@ GetDowncastSwigTypeForCCopasiContainer(CCopasiContainer* container)
   else if (dynamic_cast<CCreator*>(container))
     {
       pInfo = SWIGTYPE_p_CCreator;
+    }
+  else if (dynamic_cast<CScanItem*>(container))
+    {
+      pInfo = SWIGTYPE_p_CScanItem;
+    }
+  else if (dynamic_cast<CPlotItem*>(container))
+    {
+      pInfo = SWIGTYPE_p_CPlotItem;
     }
   else if (dynamic_cast<CMIRIAMInfo*>(container))
     {

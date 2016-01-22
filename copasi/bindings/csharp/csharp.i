@@ -1,4 +1,4 @@
-// Copyright (C) 2011 - 2015 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2011 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., University of Heidelberg, and The University 
 // of Manchester. 
 // All rights reserved. 
@@ -83,6 +83,8 @@ enum CLASS_TYPE
   , CScanMethod_Type
   , CScanProblem_Type
   , CScanTask_Type
+  , CScanItem_Type
+  , CPlotItem_Type
   , CSensMethod_Type
   , CSensProblem_Type
   , CSensTask_Type
@@ -490,6 +492,14 @@ int GetType_COptTask(COptTask* pPointer);
                     // return a CBiologicalDescription
                     ret = new CBiologicalDescription(cPtr,owner);
                     break;
+                case COPASI.CPlotItem_Type:
+                    // return a CScanItem
+                    ret = new CPlotItem(cPtr,owner);
+                    break;
+                case COPASI.CScanItem_Type:
+                    // return a CScanItem
+                    ret = new CScanItem(cPtr,owner);
+                    break;
                 case COPASI.CMIRIAMInfo_Type:
                     // return a CMIRIAMInfo
                     ret = new CMIRIAMInfo(cPtr,owner);
@@ -723,9 +733,9 @@ int GetType_COptTask(COptTask* pPointer);
                 case COPASI.CCopasiContainer_Type:
                     ret = InstantiateConcrete_CCopasiContainer(cPtr, owner);
                     break;
-				case COPASI.CCopasiParameter_Type:
-					ret = InstantiateConcrete_CCopasiParameter(cPtr, owner);
-					break;
+                case COPASI.CCopasiParameter_Type:
+                    ret = InstantiateConcrete_CCopasiParameter(cPtr, owner);
+                    break;
                 case COPASI.CPlotSpecification_Type:
                     // return a CPlotSpecification
                     ret = new CPlotSpecification(cPtr,owner);
