@@ -60,7 +60,7 @@ void CUnitDefinitionDB::remove(const size_t & index)
 bool CUnitDefinitionDB::remove(CUnitDefinition * unitDef)
 {
   mSymbolToUnitDefinitions.erase(unitDef->getSymbol());
-  CCopasiVector::remove(unitDef);
+  return CCopasiVector::remove(unitDef);
 }
 
 //virtual
