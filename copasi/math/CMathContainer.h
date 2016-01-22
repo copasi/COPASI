@@ -1,4 +1,4 @@
-// Copyright (C) 2011 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -388,14 +388,14 @@ public:
    * @param const CVector< C_INT > & rootsFound
    */
   void processRoots(const bool & equality,
-                    const CVector< C_INT > & rootsFound);
+                    const CVector< C_INT32 > & rootsFound);
 
   /**
    * Check whether the roots which have value 1 lead to firing of
    * events and schedule them if needed.
    * @param const CVector< C_INT > & rootsFound
    */
-  void processRoots(const CVector< C_INT > & rootsFound);
+  void processRoots(const CVector< C_INT32 > & rootsFound);
 
   /**
    * Retrieve the event processing queue.

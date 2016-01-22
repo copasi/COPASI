@@ -622,7 +622,7 @@ CVector< C_FLOAT64 > CMathContainer::initializeAtolVector(const C_FLOAT64 & atol
 
             break;
 
-            // These are fixed event targets the absolute tolerance can be large since they do not change
+          // These are fixed event targets the absolute tolerance can be large since they do not change
           default:
             *pAtol = std::max(1.0, *pAtol);
         }
@@ -1366,7 +1366,7 @@ CEvaluationNode * CMathContainer::copyBranch(const CEvaluationNode * pNode,
       // We need to replace variables, expand called trees, and handle discrete nodes.
       switch ((int) itNode->getType())
         {
-            // Handle object nodes which are of type CN
+          // Handle object nodes which are of type CN
           case (CEvaluationNode::OBJECT | CEvaluationNodeObject::CN):
           {
             // We need to map the object to a math object if possible.
@@ -2081,7 +2081,7 @@ void CMathContainer::createSynchronizeInitialValuesSequence()
 
             break;
 
-            // Everything which is not a value must be calculated.
+          // Everything which is not a value must be calculated.
           default:
             RequestedExtensive.insert(pObject);
             RequestedIntensive.insert(pObject);
@@ -2176,11 +2176,11 @@ void CMathContainer::createApplyInitialValuesSequence()
 
             break;
 
-            // Delay values are always calculate in a separate step
+          // Delay values are always calculate in a separate step
           case CMath::DelayValue:
             break;
 
-            // Everything else must be calculated.
+          // Everything else must be calculated.
           default:
             Requested.insert(pObject);
             break;
@@ -2705,7 +2705,7 @@ CMath::StateChange CMathContainer::processQueue(const bool & equality)
 }
 
 void CMathContainer::processRoots(const bool & equality,
-                                  const CVector< C_INT > & rootsFound)
+                                  const CVector< C_INT32 > & rootsFound)
 {
 #ifdef DEBUG_OUTPUT
   std::cout << rootsFound << std::endl;
@@ -2779,7 +2779,7 @@ void CMathContainer::processRoots(const bool & equality,
   return;
 }
 
-void CMathContainer::processRoots(const CVector< C_INT > & rootsFound)
+void CMathContainer::processRoots(const CVector< C_INT32 > & rootsFound)
 {
   // Calculate the trigger values and store them before the root processors
   // are changing the state
@@ -3992,8 +3992,8 @@ void CMathContainer::createDiscontinuityEvents(const CEvaluationTree * pTree)
             createDiscontinuityDataEvent(*itNode);
             break;
 
-            // Call nodes may include discontinuities but each called tree is handled
-            // separately.
+          // Call nodes may include discontinuities but each called tree is handled
+          // separately.
           case (CEvaluationNode::CALL | CEvaluationNodeCall::FUNCTION):
           case (CEvaluationNode::CALL | CEvaluationNodeCall::EXPRESSION):
             createDiscontinuityEvents(static_cast< const CEvaluationNodeCall * >(*itNode)->getCalledTree());
