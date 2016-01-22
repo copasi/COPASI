@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., University of Heidelberg, and The University 
 // of Manchester. 
 // All rights reserved. 
@@ -34,6 +34,7 @@
 %ignore operator()(const size_t & ) const;
 %ignore operator = (const CType &);
 %ignore operator = (const CVector <CType> &);
+%ignore operator = (const CVectorCore <CType> &);
 %ignore CVector::operator=;
 %ignore CVectorCore::array() const;
 %ignore CVectorCore::array();

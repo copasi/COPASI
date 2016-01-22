@@ -39,6 +39,10 @@ typedef std::vector<CCopasiObject*> ObjectStdVector;
 %ignore CUnit::QuantityUnitOldXMLNames;
 %ignore CUnit::QuantityUnitNames;
 %ignore CUnit::fromEnum;
+%rename(mul)             CUnit::operator*;
+%rename(isEqual)         CUnit::operator==;
+%rename(isEqual)         CUnitComponent::operator==;
+
 
 %ignore CModel::getInitialUpdateSequence;
 %ignore CModel::getTransientUpdateSequence;
@@ -60,6 +64,22 @@ typedef std::vector<CCopasiObject*> ObjectStdVector;
 %ignore CModel::appendDependentEvents;
 %ignore CModel::removeDependentModelObjects;
 %ignore CModel::getUptoDateObjects;
+
+%ignore CMathContainer::relocateValue(double const *&,std::vector< CMath::sRelocate > const &);
+%ignore CMathContainer::relocateObject(CObjectInterface const *&,std::vector< CMath::sRelocate > const &);
+%ignore CMathContainer::relocateObject(CObjectInterface *&,std::vector< CMath::sRelocate > const &);
+%ignore CMathContainer::relocateObject(CMathObject const *&,std::vector< CMath::sRelocate > const &);
+%ignore CMathHistoryCore::array() const;
+
+%rename(assign) CMathHistoryCore::operator =;
+
+%ignore CMathContainer::getValues() const;
+%ignore CMathContainer::getInitialState() const;
+%ignore CMathContainer::getReactions() const;
+%ignore CModel::getActiveModelParameterSet() const;
+%ignore CModel::getMathContainer() const;
+%ignore CCopasiParameterGroup::getElementTemplates() const;
+
 
 // according to Stefan, the method to calculate the elasticities is no longer used
 // and might actually not work at all

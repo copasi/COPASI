@@ -105,7 +105,7 @@
         }
     }
 }
-
+/*
 %extend CState
 {
     C_FLOAT64 getIndependent(unsigned C_INT32 index)
@@ -170,5 +170,5 @@
     }
   }
 }
-
+*/
 
