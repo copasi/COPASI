@@ -9,6 +9,8 @@
 // here we add the declaration in alphabetic order so that we can use all function in
 // other functions below without having to worry about the order
 
+#include <copasi/plot/CPlotItem.h>
+
 // CCopasiAbstractArray
 struct swig_type_info*
 GetDowncastSwigTypeForCCopasiAbstractArray(CCopasiAbstractArray* array);
@@ -73,8 +75,6 @@ GetDowncastSwigTypeForCOptProblem(COptProblem* optProblem);
 struct swig_type_info*
 GetDowncastSwigTypeForCOptTask(COptTask* optTask);
 
-
-
 /**
  * @return the most specific Swig type for the given CCopasiAbstractArray object.
  */
@@ -98,7 +98,6 @@ GetDowncastSwigTypeForCCopasiAbstractArray(CCopasiAbstractArray* array)
     */
   return pInfo;
 }
-
 
 /**
  * @return the most specific Swig type for the given CCopasiContainer object.
@@ -474,7 +473,6 @@ GetDowncastSwigTypeForProblem(CCopasiProblem* problem)
       pInfo = SWIGTYPE_p_CSensProblem;
     }
 
-
   return pInfo;
 }
 
@@ -538,7 +536,6 @@ GetDowncastSwigTypeForCEvaluationTree(CEvaluationTree* tree)
   return pInfo;
 }
 
-
 /**
  * @return the most specific Swig type for the given CFitItem object.
  */
@@ -587,7 +584,6 @@ GetDowncastSwigTypeForCModelEntity(CModelEntity* entity)
   return pInfo;
 }
 
-
 /**
  * @return the most specific Swig type for the given COptItem object.
  */
@@ -615,7 +611,6 @@ GetDowncastSwigTypeForCOptMethod(COptMethod* optMethod)
   return SWIGTYPE_p_COptMethod;
 }
 
-
 /**
  * @return the most specific Swig type for the given COptProblem object.
  */
@@ -642,5 +637,3 @@ GetDowncastSwigTypeForCOptTask(COptTask* optTask)
 
   return pInfo;
 }
-
-

@@ -38,7 +38,7 @@ find_package(PythonLibs)
 # ensure that LAPACK variables are there for swig
 # 
 if (APPLE)
-  set(SWIG_EXTRA_ARGS ${SWIG_EXTRA_ARGS} -DDarwin)
+  set(SWIG_EXTRA_ARGS ${SWIG_EXTRA_ARGS} -DDarwin -DF2C_INTEGER=int)
 endif(APPLE)
 
 if (CLAPACK_FOUND)
