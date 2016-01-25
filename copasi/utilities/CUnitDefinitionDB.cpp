@@ -11,7 +11,7 @@
 
 CUnitDefinitionDB::CUnitDefinitionDB(const std::string & name,
                                      const CCopasiContainer * pParent):
-  CCopasiVectorN(name, pParent),
+  CCopasiVectorN< CUnitDefinition >(name, pParent),
   mSymbolToUnitDefinitions()
 {
 }

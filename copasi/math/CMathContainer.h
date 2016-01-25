@@ -529,9 +529,9 @@ public:
 
   /**
    * Retrieve the count of independent species
-   * @return const size_t countIndependentSpecies
+   * @return size_t countIndependentSpecies
    */
-  const size_t getCountIndependentSpecies() const;
+  size_t getCountIndependentSpecies() const;
 
   /**
    * Retrieve the count of dependent species

@@ -55,7 +55,7 @@ const std::string CBaseUnit::getSymbol(Kind kind)
 }
 
 // static (because CBaseUnit is not meant to be constructed)
-const CBaseUnit::Kind CBaseUnit::fromSymbol(const std::string & symbol)
+CBaseUnit::Kind CBaseUnit::fromSymbol(const std::string & symbol)
 {
   if (symbol == "m") return meter;
 
@@ -79,7 +79,7 @@ const CBaseUnit::Kind CBaseUnit::fromSymbol(const std::string & symbol)
 }
 
 // static (because CBaseUnit is not meant to be constructed)
-const CBaseUnit::Scale CBaseUnit::scaleFromPrefix(const std::string & prefix)
+CBaseUnit::Scale CBaseUnit::scaleFromPrefix(const std::string & prefix)
 {
   if (prefix == "a") return atto;
 
