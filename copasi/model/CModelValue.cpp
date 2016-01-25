@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -387,7 +387,8 @@ const CUnit & CModelEntity::getUnit() const
 {
   if (mpUnit == NULL)
     {
-      return CUnit();
+      static CUnit Unit;
+      return Unit;
     }
 
   return *mpUnit;
