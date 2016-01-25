@@ -131,6 +131,10 @@ public:
    */
   unsigned C_INT32 getDimensionality() const;
 
+  // Return the compartment unit string, based
+  // on the model length unit, and dimensionality
+  std::string getUnitString() const;
+
   /**
    * Friend declaration for ostream operator <<
    * @param std::ostream & os
