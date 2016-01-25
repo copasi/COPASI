@@ -1,4 +1,4 @@
-// Copyright (C) 2014 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2014 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -34,7 +34,7 @@ public:
 
   static const std::string getSymbol(Kind kind);
 
-  static const Kind fromSymbol(const std::string & symbol);
+  static Kind fromSymbol(const std::string & symbol);
 
   //http://physics.nist.gov/cuu/Units/prefixes.html
   enum Scale
@@ -57,7 +57,7 @@ public:
     peta = 15
   };
 
-  static const Scale scaleFromPrefix(const std::string & prefix);
+  static Scale scaleFromPrefix(const std::string & prefix);
 };
 
 #endif // CBASEUNIT_H
