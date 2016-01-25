@@ -141,19 +141,19 @@ CUnit CMetab::getChildObjectUnits(const CCopasiObject * pObject) const
       std::string timeUnitExpression = mpModel->getTimeUnit().getExpression();
 
       if (unitExpression != "" ||
-          compartmentUnitExpression != "dimensionless" ||
+          compartmentUnitExpression != "" ||
           timeUnitExpression != "")
         {
           if (unitExpression == "")
             {
               unitExpression = "1";
             }
-          if (compartmentUnitExpression != "dimensionless" ||
+          if (compartmentUnitExpression != "" ||
               timeUnitExpression != "")
             {
               compartmentUnitExpression = "/(" + compartmentUnitExpression;
               if (timeUnitExpression != "" &&
-                  compartmentUnitExpression != "dimensionless")
+                  compartmentUnitExpression != "")
                 {
                   timeUnitExpression = "*" + timeUnitExpression;
                 }

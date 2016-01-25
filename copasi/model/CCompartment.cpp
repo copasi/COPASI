@@ -208,7 +208,7 @@ std::string CCompartment::getUnitString() const
   if (mpModel == NULL ||
       mDimensionality > 3 ||
       mDimensionality < 1)
-    return "dimensionless";
+    return "";
 
   // Default; assumes mDimensionality == 1
   std::string unitString = mpModel->getLengthUnit().getExpression();
