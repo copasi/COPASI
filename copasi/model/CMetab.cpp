@@ -137,23 +137,23 @@ CUnit CMetab::getChildObjectUnits(const CCopasiObject * pObject) const
             pObject == mpConcRateReference))
     {
       std::string unitExpression = mpModel->getQuantityUnit().getExpression();
-      std::string compartmentUnitExpression = mpCompartment->getChildObjectUnits(mpCompartment->getInitialValueReference()).getExpression();
+      std::string compartmentUnitExpression = mpCompartment->getUnitString();
       std::string timeUnitExpression = mpModel->getTimeUnit().getExpression();
 
       if (unitExpression != "" ||
-          compartmentUnitExpression != "" ||
+          compartmentUnitExpression != "dimensionless" ||
           timeUnitExpression != "")
         {
           if (unitExpression == "")
             {
               unitExpression = "1";
             }
-          if (compartmentUnitExpression != "" ||
+          if (compartmentUnitExpression != "dimensionless" ||
               timeUnitExpression != "")
             {
               compartmentUnitExpression = "/(" + compartmentUnitExpression;
               if (timeUnitExpression != "" &&
-                  compartmentUnitExpression != "")
+                  compartmentUnitExpression != "dimensionless")
                 {
                   timeUnitExpression = "*" + timeUnitExpression;
                 }

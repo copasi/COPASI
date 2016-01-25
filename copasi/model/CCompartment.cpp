@@ -203,6 +203,24 @@ unsigned C_INT32 CCompartment::getDimensionality() const
   return mDimensionality;
 }
 
+std::string CCompartment::getUnitString() const
+{
+  if (mpModel == NULL ||
+      mDimensionality > 3 ||
+      mDimensionality < 1)
+    return "dimensionless";
+
+  // Default; assumes mDimensionality == 1
+  std::string unitString = mpModel->getLengthUnit().getExpression();
+
+  if (mDimensionality == 2)
+    unitString += "\xc2\xb2"; // Add superscript 2
+  else if (mDimensionality == 3)
+    unitString += "\xc2\xb3"; // Add superscript 3
+
+  return unitString;
+}
+
 void CCompartment::initObjects()
 {
   mpIValueReference->setObjectName("InitialVolume");
