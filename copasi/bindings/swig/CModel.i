@@ -70,6 +70,12 @@ typedef std::vector<CCopasiObject*> ObjectStdVector;
 %ignore CMathContainer::relocateObject(CObjectInterface *&,std::vector< CMath::sRelocate > const &);
 %ignore CMathContainer::relocateObject(CMathObject const *&,std::vector< CMath::sRelocate > const &);
 %ignore CMathHistoryCore::array() const;
+// issue 2225: C_INT is either int or long depending on
+// architecture, but we need it to be the same for universal
+// bindings
+%ignore CMathContainer::processRoots(const bool & equality,
+         const CVector< C_INT > & rootsFound);
+%ignore CMathContainer::processRoots(const CVector< C_INT > & rootsFound);
 
 %rename(assign) CMathHistoryCore::operator =;
 
