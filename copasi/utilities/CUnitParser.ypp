@@ -149,7 +149,7 @@ unit:      KIND
            }
          | USER_DEFINED_UNIT
            {
-             const CUnitDefinition * pUnitDefinition = CCopasiRootContainer::getUnitFromSymbol($1.text);
+             const CUnitDefinition * pUnitDefinition = CCopasiRootContainer::getUnitDefFromSymbol($1.text);
              
              if (pUnitDefinition == NULL)
                {
