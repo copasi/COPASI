@@ -1,4 +1,4 @@
-// Copyright (C) 2014 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -34,9 +34,10 @@ public:
   bool containsSymbol(std::string symbol);
   const CUnitDefinition * getUnitDefFromSymbol(std::string symbol);
 
+  bool changeSymbol(CUnitDefinition *pUnitDef, const std::string & symbol);
+
 private:
 
   std::map<std::string, CUnitDefinition *> mSymbolToUnitDefinitions;
-
 };
 #endif // CUNIT_DEFINITION_DB_H

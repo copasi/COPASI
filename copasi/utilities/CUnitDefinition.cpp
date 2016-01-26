@@ -203,7 +203,7 @@ bool CUnitDefinition::setSymbol(const std::string & symbol)
   CUnitDefinitionDB * pUnitDefinitionDB = dynamic_cast < CUnitDefinitionDB * >(getObjectParent());
 
   if (pUnitDefinitionDB != NULL &&
-      pUnitDefinitionDB->containsSymbol(symbol))
+      !pUnitDefinitionDB->changeSymbol(this, symbol))
     {
       CCopasiMessage(CCopasiMessage::ERROR, MCUnitDefinition + 2, symbol.c_str());
 
