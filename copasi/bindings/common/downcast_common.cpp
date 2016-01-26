@@ -149,14 +149,14 @@ GetDowncastSwigTypeForCCopasiContainer(CCopasiContainer* container)
     {
       pInfo = SWIGTYPE_p_CCreator;
     }
-  else if (dynamic_cast<CScanItem*>(container))
+  /*else if (dynamic_cast<CScanItem*>(container))
     {
       pInfo = SWIGTYPE_p_CScanItem;
     }
   else if (dynamic_cast<CPlotItem*>(container))
     {
       pInfo = SWIGTYPE_p_CPlotItem;
-    }
+    }*/
   else if (dynamic_cast<CMIRIAMInfo*>(container))
     {
       pInfo = SWIGTYPE_p_CMIRIAMInfo;

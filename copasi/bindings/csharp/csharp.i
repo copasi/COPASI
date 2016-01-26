@@ -492,14 +492,14 @@ int GetType_COptTask(COptTask* pPointer);
                     // return a CBiologicalDescription
                     ret = new CBiologicalDescription(cPtr,owner);
                     break;
-                case COPASI.CPlotItem_Type:
+                /*case COPASI.CPlotItem_Type:
                     // return a CScanItem
                     ret = new CPlotItem(cPtr,owner);
                     break;
                 case COPASI.CScanItem_Type:
                     // return a CScanItem
                     ret = new CScanItem(cPtr,owner);
-                    break;
+                    break;*/
                 case COPASI.CMIRIAMInfo_Type:
                     // return a CMIRIAMInfo
                     ret = new CMIRIAMInfo(cPtr,owner);

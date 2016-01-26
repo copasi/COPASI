@@ -426,14 +426,14 @@
 		{
 			return DowncastCCopasiParameterGroup(cPtr, owner);			
 		}
-		else if (type.equals("ScanItem"))
+                /*else if (type.equals("ScanItem"))
 		{
 			return CScanItem(cPtr, owner);
-		}
+                }
 		else if (type.equals("PlotItem"))
 		{
 			return CPlotItem(cPtr, owner);
-		}
+                }*/
 		else if (type.equals("Problem"))
 		{
 			return DowncastCCopasiProblem(cPtr, owner);		    
