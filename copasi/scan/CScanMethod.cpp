@@ -108,7 +108,7 @@ CScanItem::CScanItem(CCopasiParameterGroup* si):
     }
 }
 
-size_t CScanItem::getNumSteps() const {return mNumSteps;};
+size_t CScanItem::getNumSteps() const {return mNumSteps;}
 
 void CScanItem::restoreValue() const
 {
@@ -116,7 +116,7 @@ void CScanItem::restoreValue() const
     {
       *mpObjectValue = mStoreValue;
     }
-};
+}
 
 void CScanItem::storeValue()
 {
@@ -124,7 +124,7 @@ void CScanItem::storeValue()
     {
       mStoreValue = *mpObjectValue;
     }
-};
+}
 
 void CScanItem::reset()
 {
@@ -133,7 +133,11 @@ void CScanItem::reset()
   this->step(); //purely virtual
 }
 
-bool CScanItem::isFinished() const {return mFlagFinished;};
+bool CScanItem::isFinished() const {return mFlagFinished;}
+
+bool CScanItem::isNesting() const {return true;}
+
+CScanItem::~CScanItem() {}
 
 bool CScanItem::isValidScanItem(const bool & /* continueFromCurrentState */)
 {

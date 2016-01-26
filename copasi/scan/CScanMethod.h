@@ -65,9 +65,9 @@ public:
 
   virtual void step() = 0;
 
-  virtual bool isNesting() const {return true;};
+  virtual bool isNesting() const;
 
-  virtual ~CScanItem() {};
+  virtual ~CScanItem();
 
   /**
    * perform checks. This is used in the method::isValidProblem() method.
