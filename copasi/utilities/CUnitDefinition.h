@@ -47,11 +47,11 @@ public:
   * Copy constructor
   * @param const CUnitDefinition::& src
   * @param const C_FLOAT64 & avogadro
-  * @param const CCopasiContainer * pParent (default: NULL)
+  * @param const CCopasiContainer * pParent
   */
   CUnitDefinition(const CUnitDefinition & src,
                   const C_FLOAT64 & avogadro,
-                  const CCopasiContainer * pParent = NULL);
+                  const CCopasiContainer * pParent);
   ~CUnitDefinition();
 
   virtual const std::string & getKey() const;

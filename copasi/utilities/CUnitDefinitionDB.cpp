@@ -19,14 +19,26 @@ CUnitDefinitionDB::CUnitDefinitionDB(const std::string & name,
 //virtual
 bool CUnitDefinitionDB::add(const CUnitDefinition & src)
 {
+  if (containsSymbol(src.getSymbol())) return false;
+
   // This form will construct a copy, before adding (inherited
   // from CCopasiVectorN). When the CUnitDefinition
   // copy constructor is called, an exception will be thrown if
   // the symbol is already in use.
-  CCopasiVectorN::add(src);
-  mSymbolToUnitDefinitions[src.getSymbol()] = mRecentElement;
 
-  return true;
+  CUnitDefinition * pCopy = NULL;
+
+  try
+    {
+      pCopy = new CUnitDefinition(src, CUnit::Avogadro, this);
+    }
+
+  catch (...)
+    {
+      return false;
+    }
+
+  return add(pCopy, true);
 }
 
 //virtual
@@ -41,8 +53,14 @@ bool CUnitDefinitionDB::add(CUnitDefinition * src, bool adopt)
     success = false;
   else
     {
-      CCopasiVectorN::add(src, adopt);
-      mSymbolToUnitDefinitions[src->getSymbol()] = mRecentElement;
+      CCopasiVectorN< CUnitDefinition >::add(src, adopt);
+      mSymbolToUnitDefinitions[src->getSymbol()] = src;
+
+      if (src->getSymbol() == "\xCE\xA9")
+        {
+          mSymbolToUnitDefinitions["O"] = src;
+        }
+
       success = true;
     }
 

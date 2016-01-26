@@ -454,7 +454,7 @@ static const yytype_uint8 yytranslate[] =
 static const yytype_uint8 yyrline[] =
 {
   0,    57,    57,    62,    67,    77,    85,    93,   104,   115,
-  120,   126,   132,   138,   143,   149,   164
+  120,   126,   132,   138,   143,   150,   165
 };
 #endif
 
@@ -1409,35 +1409,36 @@ yyreduce:
 #line 144 "CUnitParser.ypp" /* yacc.c:1646  */
         {
           (yyval).pUnit = new CUnit(CUnitDefinition::getSIUnit((yyvsp[0]).text, mAvogadro), mAvogadro);
+
           mSymbols.insert((yyvsp[0]).text);
           mSymbols.insert((yyval).pUnit->getUsedSymbols().begin(), (yyval).pUnit->getUsedSymbols().end());
         }
 
-#line 1385 "CUnitParser_yacc.cpp" /* yacc.c:1646  */
+#line 1386 "CUnitParser_yacc.cpp" /* yacc.c:1646  */
         break;
 
       case 15:
-#line 150 "CUnitParser.ypp" /* yacc.c:1646  */
+#line 151 "CUnitParser.ypp" /* yacc.c:1646  */
         {
-          const CUnit * pUnit = CCopasiRootContainer::getUnitFromSymbol((yyvsp[0]).text);
+          const CUnitDefinition * pUnitDefinition = CCopasiRootContainer::getUnitDefFromSymbol((yyvsp[0]).text);
 
-          if (pUnit == NULL)
+          if (pUnitDefinition == NULL)
             {
               yyerror((yyvsp[0]).text);
             }
           else
             {
-              (yyval).pUnit = new CUnit(*pUnit, mAvogadro);
-              mSymbols.insert((yyvsp[0]).text);
+              (yyval).pUnit = new CUnit(*pUnitDefinition, mAvogadro);
+              mSymbols.insert(pUnitDefinition->getSymbol());
               mSymbols.insert((yyval).pUnit->getUsedSymbols().begin(), (yyval).pUnit->getUsedSymbols().end());
             }
         }
 
-#line 1404 "CUnitParser_yacc.cpp" /* yacc.c:1646  */
+#line 1405 "CUnitParser_yacc.cpp" /* yacc.c:1646  */
         break;
 
       case 16:
-#line 165 "CUnitParser.ypp" /* yacc.c:1646  */
+#line 166 "CUnitParser.ypp" /* yacc.c:1646  */
         {
           CUnitComponent component;
           component.setKind(CBaseUnit::dimensionless);
@@ -1447,10 +1448,10 @@ yyreduce:
           (yyval).pUnit->addComponent(component);
         }
 
-#line 1417 "CUnitParser_yacc.cpp" /* yacc.c:1646  */
+#line 1418 "CUnitParser_yacc.cpp" /* yacc.c:1646  */
         break;
 
-#line 1421 "CUnitParser_yacc.cpp" /* yacc.c:1646  */
+#line 1422 "CUnitParser_yacc.cpp" /* yacc.c:1646  */
 
       default: break;
     }
@@ -1689,4 +1690,4 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 174 "CUnitParser.ypp" /* yacc.c:1906  */
+#line 175 "CUnitParser.ypp" /* yacc.c:1906  */
