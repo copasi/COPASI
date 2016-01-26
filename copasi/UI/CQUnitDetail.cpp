@@ -1,15 +1,6 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2015 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
-// All rights reserved.
-
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
-// All rights reserved.
-
-// Copyright (C) 2006 - 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
 #include "CQUnitDetail.h"
@@ -71,25 +62,25 @@ CQUnitDetail::~CQUnitDetail()
 /// Slot to create a new unit; activated whenever the New button is clicked
 void CQUnitDetail::slotBtnNew()
 {
- std::string name = "unit_1";
- int i = 1;
- CUnitDefinition* pUnitDef;
- CUnitDefinitionDB * unitList
-   = CCopasiRootContainer::getUnitList();
+  std::string name = "unit_1";
+  int i = 1;
+  CUnitDefinition* pUnitDef;
+  CUnitDefinitionDB * unitList
+    = CCopasiRootContainer::getUnitList();
 
- while (unitList->getIndex(name) != C_INVALID_INDEX)
-   {
-     i++;
-     name = "unit_";
-     name += TO_UTF8(QString::number(i));
-   }
+  while (unitList->getIndex(name) != C_INVALID_INDEX)
+    {
+      i++;
+      name = "unit_";
+      name += TO_UTF8(QString::number(i));
+    }
 
- unitList->add(pUnitDef = new CUnitDefinition(name, unitList), true);
+  unitList->add(pUnitDef = new CUnitDefinition(name, unitList), true);
 
- std::string key = pUnitDef->getKey();
- protectedNotify(ListViews::UNIT, ListViews::ADD, key);
- // enter(key);
- mpListView->switchToOtherWidget(C_INVALID_INDEX, key);
+  std::string key = pUnitDef->getKey();
+  protectedNotify(ListViews::UNIT, ListViews::ADD, key);
+// enter(key);
+  mpListView->switchToOtherWidget(C_INVALID_INDEX, key);
 }
 
 void CQUnitDetail::slotBtnCopy()
@@ -129,11 +120,11 @@ void CQUnitDetail::slotBtnCopy()
 //        protectedNotify(ListViews::UNIT, ListViews::DELETE, mKey);
 //        protectedNotify(ListViews::UNIT, ListViews::DELETE, "");//Refresh all as there may be dependencies.
 //        break;
-//      }
+//}
 
 //      default:
 //        break;
-//    }
+//}
 
 //////#endif
 //}
@@ -162,37 +153,36 @@ void CQUnitDetail::slotBtnDelete()
   CCopasiObject::DataObjectSet uses = pModel->getUnitSymbolUsage(pUnitDef->getSymbol());
 
   if (!uses.empty())
-  {
-    QString text = "It is being used in . . .\n";
-
-    CCopasiObject::DataObjectSet::const_iterator it = uses.begin();
-    CCopasiObject::DataObjectSet::const_iterator end = uses.end();
-
-    for (; it != end; ++it)
     {
-      text += FROM_UTF8((*it)->getObjectName()) + "\n";
-    }
+      QString text = "It is being used in . . .\n";
 
-    CQMessageBox::information(this,
-                              "Unable to delete " + FROM_UTF8(pUnitDef->getObjectName()),
-                              text,
-                              QMessageBox::Ok, QMessageBox::Ok);
-  }
+      CCopasiObject::DataObjectSet::const_iterator it = uses.begin();
+      CCopasiObject::DataObjectSet::const_iterator end = uses.end();
+
+      for (; it != end; ++it)
+        {
+          text += FROM_UTF8((*it)->getObjectName()) + "\n";
+        }
+
+      CQMessageBox::information(this,
+                                "Unable to delete " + FROM_UTF8(pUnitDef->getObjectName()),
+                                text,
+                                QMessageBox::Ok, QMessageBox::Ok);
+    }
   else
-  {
-    int ret = CQMessageBox::question(this, tr("Confirm Delete"), "Delete " + FROM_UTF8(pUnitDef->getObjectName()) + "?",
-                                     QMessageBox::Yes | QMessageBox::No, QMessageBox::No);
-
-    if (ret == QMessageBox::Yes)
     {
-      delete pUnitDef;
-      protectedNotify(ListViews::UNIT, ListViews::DELETE, mKey);
+      int ret = CQMessageBox::question(this, tr("Confirm Delete"), "Delete " + FROM_UTF8(pUnitDef->getObjectName()) + "?",
+                                       QMessageBox::Yes | QMessageBox::No, QMessageBox::No);
+
+      if (ret == QMessageBox::Yes)
+        {
+          delete pUnitDef;
+          protectedNotify(ListViews::UNIT, ListViews::DELETE, mKey);
+        }
     }
-  }
 
   return;
 }
-
 
 /*!
     If the simulation type is changed then COPASI will automatically adjust its appearance,
@@ -245,7 +235,7 @@ void CQUnitDetail::slotBtnDelete()
 
 //      default:
 //        break;
-//    }
+//}
 //}
 
 ///*!
@@ -297,7 +287,7 @@ bool CQUnitDetail::update(ListViews::ObjectType  objectType,
 //            mKey = "";
 //            mpObject = NULL;
 //            mpUnitDefinition = NULL;
-//          }
+//}
 
 //        break;
 
@@ -309,7 +299,7 @@ bool CQUnitDetail::update(ListViews::ObjectType  objectType,
 //            mKey = "";
 //            mpObject = NULL;
 //            mpUnitDefinition = NULL;
-//          }
+//}
 
 //        break;
 
@@ -319,7 +309,7 @@ bool CQUnitDetail::update(ListViews::ObjectType  objectType,
 //      default:
 //        return true;
 //        break;
-//    }
+//}
 
   if (isVisible() && !mIgnoreUpdates)
     load();
@@ -333,13 +323,13 @@ bool CQUnitDetail::leave()
 //    {
 //      // -- Expression --
 //      mpExpressionEMW->updateWidget();
-//    }
+//}
 
 //  if (mpBoxUseInitialExpression->isChecked())
 //    {
 //      // -- Initial Expression --
 //      mpInitialExpressionEMW->updateWidget();
-//    }
+//}
 
   save();
 
@@ -408,12 +398,12 @@ void CQUnitDetail::load()
 //    {
 //      mpBoxUseInitialExpression->setChecked(false);
 //      //      slotInitialTypeChanged(false);
-//    }
+//}
 //  else
 //    {
 //      mpBoxUseInitialExpression->setChecked(true);
 //      //      slotInitialTypeChanged(true);
-//    }
+//}
 
   mChanged = false;
 }
@@ -425,51 +415,24 @@ void CQUnitDetail::save()
 {
   if (mpUnitDefinition == NULL) return;
 
-  // set status
-//  if (mpModelValue->getStatus() != (CModelEntity::Status) mItemToType[mpComboBoxType->currentIndex()])
-//    {
-//      mpModelValue->setStatus((CModelEntity::Status) mItemToType[mpComboBoxType->currentIndex()]);
-//      mChanged = true;
-//    }
-
-  // set initial value
-//  if (QString::number(mpModelValue->getInitialValue(), 'g', 10) != mpEditInitialValue->text() &&
-//      mpModelValue->getStatus() != CModelEntity::ASSIGNMENT)
-//    {
-//      mpModelValue->setInitialValue(mpEditInitialValue->text().toDouble());
-//      mChanged = true;
-//    }
-
-  // set expression
-//  if (mpModelValue->getExpression() != mpExpressionEMW->mpExpressionWidget->getExpression())
-//    {
-//      //      mpModelValue->setExpression(((CQExpressionWidget *)mpEditExpression->widget(0))->getExpression());
-//      mpModelValue->setExpression(mpExpressionEMW->mpExpressionWidget->getExpression());
-//      mChanged = true;
-//    }
-
-  // set initial expression
-//  if ((CModelEntity::Status) mItemToType[mpComboBoxType->currentIndex()] != CModelEntity::ASSIGNMENT)
-//    {
-//      if (mpBoxUseInitialExpression->isChecked() &&
-//          mpModelValue->getInitialExpression() != mpInitialExpressionEMW->mpExpressionWidget->getExpression())
-//        {
-//          mpModelValue->setInitialExpression(mpInitialExpressionEMW->mpExpressionWidget->getExpression());
-//          mChanged = true;
-//        }
-//      else if (!mpBoxUseInitialExpression->isChecked() &&
-//               mpModelValue->getInitialExpression() != "")
-//        {
-//          mpModelValue->setInitialExpression("");
-//          mChanged = true;
-//        }
-//    }
-
   // set unit symbol
   if (mpUnitDefinition->getSymbol() != TO_UTF8(mpEditSymbol->text()))
     {
-      mpUnitDefinition->setSymbol(TO_UTF8(mpEditSymbol->text()));
-      mChanged = true;
+      if (!mpUnitDefinition->setSymbol(TO_UTF8(mpEditSymbol->text())))
+        {
+          QString msg;
+          msg = "Unable set Symbol of Unit '" + FROM_UTF8(mpObject->getObjectName()) + "'\n"
+                + "to '" + mpEditSymbol->text() + "' since a Unit with that symbol already exists.\n";
+
+          CQMessageBox::information(this,
+                                    "Unable set Symbol",
+                                    msg,
+                                    QMessageBox::Ok, QMessageBox::Ok);
+        }
+      else
+        {
+          mChanged = true;
+        }
     }
 
   if (mpUnitDefinition->getExpression() != TO_UTF8(mpEditExpression->text()))
@@ -506,7 +469,7 @@ void CQUnitDetail::save()
 
 //      // update the Initial Expression Widget
 //      mpInitialExpressionEMW->updateWidget();
-//    }
+//}
 //  else  // mpBoxUseInitialExpression is not checked
 //    {
 //      // hide label, widget, and all buttons
@@ -517,7 +480,7 @@ void CQUnitDetail::save()
 //      mpEditInitialValue->setEnabled((CModelEntity::Status) mItemToType[mpComboBoxType->currentIndex()] != CModelEntity::ASSIGNMENT);
 
 //      // we don't need to update the Initial Expression Widget
-//    }
+//}
 //}
 
 //Undo methods
@@ -541,7 +504,7 @@ void CQUnitDetail::save()
 //      i++;
 //      name = "quantity_";
 //      name += TO_UTF8(QString::number(i));
-//    }
+//}
 
 //  std::string key = mpModelValue->getKey();
 //  protectedNotify(ListViews::MODELVALUE, ListViews::ADD, key);
@@ -578,11 +541,11 @@ void CQUnitDetail::save()
 //        protectedNotify(ListViews::MODELVALUE, ListViews::DELETE, mKey);
 //        protectedNotify(ListViews::MODELVALUE, ListViews::DELETE, "");//Refresh all as there may be dependencies.
 //        break;
-//      }
+//}
 
 //      default:
 //        break;
-//    }
+//}
 
 //  mpListView->switchToOtherWidget(115, "");
 //}
@@ -629,21 +592,21 @@ void CQUnitDetail::save()
 //  if (pSData->getStatus() != CModelEntity::ASSIGNMENT)
 //    {
 //      pGlobalQuantity->setInitialValue(pSData->getInitialValue());
-//    }
+//}
 
 //  // set the expression
 //  if (pSData->getStatus() != CModelEntity::FIXED)
 //    {
 //      pGlobalQuantity->setExpression(pSData->getExpression());
 //      pGlobalQuantity->getExpressionPtr()->compile();
-//    }
+//}
 
 //  // set initial expression
 //  if (pSData->getStatus() != CModelEntity::ASSIGNMENT)
 //    {
 //      pGlobalQuantity->setInitialExpression(pSData->getInitialExpression());
 //      pGlobalQuantity->getInitialExpressionPtr()->compile();
-//    }
+//}
 
 //  protectedNotify(ListViews::MODELVALUE, ListViews::ADD, pGlobalQuantity->getKey());
 
@@ -671,25 +634,25 @@ void CQUnitDetail::save()
 //              if (sData->getStatus() != CModelEntity::ASSIGNMENT)
 //                {
 //                  pSpecie->setInitialConcentration(sData->getIConc());
-//                }
+//}
 
 //              if (sData->getStatus() == CModelEntity::ODE || sData->getStatus() == CModelEntity::ASSIGNMENT)
 //                {
 //                  pSpecie->setExpression(sData->getExpression());
 //                  pSpecie->getExpressionPtr()->compile();
-//                }
+//}
 
 //              // set initial expression
 //              if (sData->getStatus() != CModelEntity::ASSIGNMENT)
 //                {
 //                  pSpecie->setInitialExpression(sData->getInitialExpression());
 //                  pSpecie->getInitialExpressionPtr()->compile();
-//                }
+//}
 
 //              protectedNotify(ListViews::METABOLITE, ListViews::ADD, pSpecie->getKey());
-//            }
-//        }
-//    }
+//}
+//}
+//}
 
 //  QList <UndoReactionData *> *reactionData = pSData->getReactionDependencyObjects();
 
@@ -708,8 +671,8 @@ void CQUnitDetail::save()
 //          rData->getRi()->createOtherObjects();
 //          rData->getRi()->writeBackToReaction(pRea);
 //          protectedNotify(ListViews::REACTION, ListViews::ADD, pRea->getKey());
-//        }
-//    }
+//}
+//}
 
 //  //reinsert the dependency events
 //  QList <UndoEventData *> *pEventData = pSData->getEventDependencyObjects();
@@ -751,21 +714,21 @@ void CQUnitDetail::save()
 
 //                          if (pCompartment->getMetabolites().getIndex(assignData->getName()) != C_INVALID_INDEX)
 //                            speciesExist = true;
-//                        }
+//}
 
 //                      if (speciesExist)
 //                        {
 //                          size_t index = pModel->findMetabByName(assignData->getName());
 //                          pObject =  pModel->getMetabolites()[index];
-//                        }
+//}
 //                      else if (pModel->getModelValues().getIndex(assignData->getName()) != C_INVALID_INDEX)
 //                        {
 //                          pObject = pModel->getModelValues()[assignData->getName()];
-//                        }
+//}
 //                      else if (pModel->getReactions().getIndex(assignData->getName()) != C_INVALID_INDEX)
 //                        {
 //                          pObject = pModel->getReactions()[assignData->getName()];
-//                        }
+//}
 
 //                      const CModelEntity * pEntity = dynamic_cast< const CModelEntity * >(pObject);
 
@@ -776,13 +739,13 @@ void CQUnitDetail::save()
 //                      eventAssign->getExpressionPtr()->compile();
 
 //                      pEvent->getAssignments().add(eventAssign);
-//                    }
+//}
 
 //                  protectedNotify(ListViews::EVENT, ListViews::ADD, key);
-//                }
-//            }
-//        }
-//    }
+//}
+//}
+//}
+//}
 
 //  mpListView->switchToOtherWidget(C_INVALID_INDEX, pGlobalQuantity->getKey());
 //}

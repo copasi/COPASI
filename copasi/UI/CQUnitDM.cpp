@@ -1,4 +1,4 @@
-// Copyright (C) 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2015 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -155,7 +155,19 @@ bool CQUnitDM::setData(const QModelIndex &index, const QVariant &value,
       if (index.column() == COL_NAME_UNITS)
         pUnitDef->setObjectName(TO_UTF8(value.toString()));
       else if (index.column() == COL_SYMBOL_UNITS)
-        pUnitDef->setSymbol(TO_UTF8(value.toString()));
+        {
+          if (!pUnitDef->setSymbol(TO_UTF8(value.toString())))
+            {
+              QString msg;
+              msg = "Unable set Symbol of Unit '" + FROM_UTF8(pUnitDef->getObjectName()) + "'\n"
+                    + "to '" + value.toString() + "' since a Unit with that symbol already exists.\n";
+
+              CQMessageBox::information(NULL,
+                                        "Unable set Symbol",
+                                        msg,
+                                        QMessageBox::Ok, QMessageBox::Ok);
+            }
+        }
       else if (index.column() == COL_EXPRESSION_UNITS)
         {
           if (index.data() != value)

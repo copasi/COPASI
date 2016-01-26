@@ -169,9 +169,6 @@ CUnitDefinition::CUnitDefinition(const CUnitDefinition &src,
   CAnnotation(src),
   mSymbol(src.mSymbol)
 {
-  // The following ought to trigger the exception
-  // if the symbol is already in the CUnitDefinitionDB
-  setSymbol(src.mSymbol);
   setup();
 }
 
@@ -183,14 +180,16 @@ CUnitDefinition::~CUnitDefinition()
 void CUnitDefinition::setup()
 {
   // CUnitDefinitions should always be in a CUnitDefintionDB
-  if (dynamic_cast < CUnitDefinitionDB * >(getObjectParent()) == NULL)
-    CCopasiMessage ex(CCopasiMessage::EXCEPTION, MCUnitDefinition + 1);
+  assert(dynamic_cast < CUnitDefinitionDB * >(getObjectParent()) != NULL);
+
+  mKey = CCopasiRootContainer::getKeyFactory()->add("Unit", this);
 
   // The following ought to trigger the exception for
   // a symbol already in the CUnitDefinitionDB
-  setSymbol(mSymbol);
-
-  mKey = CCopasiRootContainer::getKeyFactory()->add("Unit", this);
+  if (!setSymbol(mSymbol))
+    {
+      CCopasiMessage(CCopasiMessage::EXCEPTION, CCopasiMessage::getLastMessage().getText().c_str());
+    }
 }
 
 // virtual
@@ -199,16 +198,24 @@ const std::string & CUnitDefinition::getKey() const
   return CAnnotation::getKey();
 }
 
-void CUnitDefinition::setSymbol(const std::string & symbol)
+bool CUnitDefinition::setSymbol(const std::string & symbol)
 {
-  // All CUnitDefinition symbols in a CUnitDefinitionDB should be unique
-  if ((dynamic_cast < CUnitDefinitionDB *>(getObjectParent()))->containsSymbol(symbol))
-    CCopasiMessage ex(CCopasiMessage::EXCEPTION, MCUnitDefinition + 2, symbol.c_str());
-  else
-    mSymbol = symbol;
+  CUnitDefinitionDB * pUnitDefinitionDB = dynamic_cast < CUnitDefinitionDB * >(getObjectParent());
+
+  if (pUnitDefinitionDB != NULL &&
+      pUnitDefinitionDB->containsSymbol(symbol))
+    {
+      CCopasiMessage(CCopasiMessage::ERROR, MCUnitDefinition + 2, symbol.c_str());
+
+      return false;
+    }
+
+  mSymbol = symbol;
+
+  return true;
 }
 
-std::string CUnitDefinition::getSymbol() const
+const std::string & CUnitDefinition::getSymbol() const
 {
   return mSymbol;
 }
