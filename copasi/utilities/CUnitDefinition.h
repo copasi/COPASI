@@ -62,8 +62,9 @@ public:
   static void updateSIUnitDefinitions(CUnitDefinitionDB * Units,
                                       const C_FLOAT64 & avogadro);
 
-  void setSymbol(const std::string &symbol);
-  std::string getSymbol() const;
+  bool setSymbol(const std::string & symbol);
+
+  const std::string & getSymbol() const;
 
   CUnitDefinition & operator=(const CUnitDefinition & src);
 
