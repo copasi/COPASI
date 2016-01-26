@@ -115,9 +115,9 @@ void CUnitDefinition::updateSIUnitDefinitions(CUnitDefinitionDB * Units,
         }
       else
         {
-          pUnitDef = new CUnitDefinition(pSIUnit->name, Units);
-          pUnitDef->setSymbol(pSIUnit->symbol);
+          pUnitDef = new CUnitDefinition(pSIUnit->name, NULL);
           Units->add(pUnitDef, true);
+          pUnitDef->setSymbol(pSIUnit->symbol);
         }
 
       std::ostringstream buffer;
@@ -179,9 +179,6 @@ CUnitDefinition::~CUnitDefinition()
 
 void CUnitDefinition::setup()
 {
-  // CUnitDefinitions should always be in a CUnitDefintionDB
-  assert(dynamic_cast < CUnitDefinitionDB * >(getObjectParent()) != NULL);
-
   mKey = CCopasiRootContainer::getKeyFactory()->add("Unit", this);
 
   // The following ought to trigger the exception for
@@ -202,17 +199,17 @@ bool CUnitDefinition::setSymbol(const std::string & symbol)
 {
   CUnitDefinitionDB * pUnitDefinitionDB = dynamic_cast < CUnitDefinitionDB * >(getObjectParent());
 
-  if (pUnitDefinitionDB != NULL &&
-      !pUnitDefinitionDB->changeSymbol(this, symbol))
+  if (pUnitDefinitionDB == NULL ||
+      pUnitDefinitionDB->changeSymbol(this, symbol))
     {
-      CCopasiMessage(CCopasiMessage::ERROR, MCUnitDefinition + 2, symbol.c_str());
+      mSymbol = symbol;
 
-      return false;
+      return true;
     }
 
-  mSymbol = symbol;
+  CCopasiMessage(CCopasiMessage::ERROR, MCUnitDefinition + 2, symbol.c_str());
 
-  return true;
+  return false;
 }
 
 const std::string & CUnitDefinition::getSymbol() const

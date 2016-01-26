@@ -28,7 +28,7 @@ public:
   virtual bool add(const CUnitDefinition & src);
   virtual bool add(CUnitDefinition * src, bool adopt = false);
   virtual void remove(const size_t & index);
-  virtual bool remove(CUnitDefinition *unitDef);
+  virtual bool remove(CCopasiObject * pObject);
   virtual void remove(const std::string & name);
 
   bool containsSymbol(std::string symbol);

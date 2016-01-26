@@ -74,10 +74,16 @@ void CUnitDefinitionDB::remove(const size_t & index)
 }
 
 //virtual
-bool CUnitDefinitionDB::remove(CUnitDefinition * unitDef)
+bool CUnitDefinitionDB::remove(CCopasiObject * pObject)
 {
-  mSymbolToUnitDefinitions.erase(unitDef->getSymbol());
-  return CCopasiVector< CUnitDefinition >::remove(unitDef);
+  CUnitDefinition * pUnitDef = dynamic_cast< CUnitDefinition * >(pObject);
+
+  if (pUnitDef)
+    {
+      mSymbolToUnitDefinitions.erase(pUnitDef->getSymbol());
+    }
+
+  return CCopasiVector< CUnitDefinition >::remove(pObject);
 }
 
 //virtual
