@@ -25,7 +25,6 @@ bool CUnitDefinitionDB::add(const CUnitDefinition & src)
   // from CCopasiVectorN). When the CUnitDefinition
   // copy constructor is called, an exception will be thrown if
   // the symbol is already in use.
-
   CUnitDefinition * pCopy = NULL;
 
   try
@@ -71,21 +70,21 @@ bool CUnitDefinitionDB::add(CUnitDefinition * src, bool adopt)
 void CUnitDefinitionDB::remove(const size_t & index)
 {
   mSymbolToUnitDefinitions.erase(operator [](index)->getSymbol());
-  CCopasiVector::remove(index);
+  CCopasiVector< CUnitDefinition >::remove(index);
 }
 
 //virtual
 bool CUnitDefinitionDB::remove(CUnitDefinition * unitDef)
 {
   mSymbolToUnitDefinitions.erase(unitDef->getSymbol());
-  return CCopasiVector::remove(unitDef);
+  return CCopasiVector< CUnitDefinition >::remove(unitDef);
 }
 
 //virtual
 void CUnitDefinitionDB::remove(const std::string & name)
 {
   mSymbolToUnitDefinitions.erase(operator [](name)->getSymbol());
-  CCopasiVectorN::remove(name);
+  CCopasiVectorN< CUnitDefinition >::remove(name);
 }
 
 bool CUnitDefinitionDB::containsSymbol(std::string symbol)
