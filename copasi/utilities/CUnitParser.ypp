@@ -143,21 +143,22 @@ unit:      KIND
          | SI_UNIT
            {
              $$.pUnit = new CUnit(CUnitDefinition::getSIUnit($1.text, mAvogadro), mAvogadro);
+             
              mSymbols.insert($1.text);
              mSymbols.insert($$.pUnit->getUsedSymbols().begin(), $$.pUnit->getUsedSymbols().end());
            }
          | USER_DEFINED_UNIT
            {
-             const CUnit * pUnit = CCopasiRootContainer::getUnitFromSymbol($1.text);
+             const CUnitDefinition * pUnitDefinition = CCopasiRootContainer::getUnitFromSymbol($1.text);
              
-             if (pUnit == NULL)
+             if (pUnitDefinition == NULL)
                {
                  yyerror($1.text);
                }
              else
                {
-                 $$.pUnit = new CUnit(*pUnit, mAvogadro);
-                 mSymbols.insert($1.text);
+                 $$.pUnit = new CUnit(*pUnitDefinition, mAvogadro);
+                 mSymbols.insert(pUnitDefinition->getSymbol());
                  mSymbols.insert($$.pUnit->getUsedSymbols().begin(), $$.pUnit->getUsedSymbols().end());
                }
            }

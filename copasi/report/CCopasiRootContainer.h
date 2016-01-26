@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -121,7 +121,7 @@ public:
   /**
    * Retrieve the unit for the given symbol
    */
-  static const CUnitDefinition * getUnitFromSymbol(const std::string symbol);
+  static const CUnitDefinition * getUnitDefFromSymbol(const std::string symbol);
 
   /**
    * Creates a new datamodel instance and adds it to the list.

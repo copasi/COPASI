@@ -1,4 +1,4 @@
-﻿// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -160,7 +160,7 @@ CUnitDefinitionDB *CCopasiRootContainer::getUnitList()
 }
 
 // static
-const CUnitDefinition * CCopasiRootContainer::getUnitFromSymbol(const std::string symbol)
+const CUnitDefinition * CCopasiRootContainer::getUnitDefFromSymbol(const std::string symbol)
 {
   return pRootContainer->mpUnitDefinitionList->getUnitDefFromSymbol(symbol);
 }

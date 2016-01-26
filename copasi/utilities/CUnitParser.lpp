@@ -35,7 +35,7 @@
 
 SCALE    ([afpnumcdhkMGTP]|\xc2\xb5)
 KIND     ([mgsAK#]|cd)
-SI_UNIT  (Hz|N|Pa|J|W|C|V|F|\xCE\xA9|O|S|Wb|T|H|lm|lx|Bq|Gy|Sv|kat|l|mol|min|h|d)
+SI_UNIT  (Hz|N|Pa|J|W|C|V|F|\xCE\xA9|S|Wb|T|H|lm|lx|Bq|Gy|Sv|kat|l|mol|min|h|d)
 ID       (\"([^\\\"]|\\.)*\"|[a-z_A-Z][a-z_A-Z0-9]*)
 DIGIT    [0-9]
 
