@@ -230,3 +230,14 @@ CUnitDefinition & CUnitDefinition::operator=(const CUnitDefinition & src)
 
   return *this;
 }
+
+//static
+bool CUnitDefinition::isBuiltinUnitSymbol(std::string symbol)
+{
+  SIUnit * pSIUnit = SIUnits;
+
+  while (pSIUnit->symbol && strcmp(pSIUnit->symbol, symbol.c_str()) != 0)
+    ++pSIUnit;
+
+  return (pSIUnit->symbol != NULL);
+}

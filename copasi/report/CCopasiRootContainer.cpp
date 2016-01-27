@@ -125,7 +125,7 @@ void CCopasiRootContainer::initializeChildren()
   mpUndefined->setInfix("nan");
   mpUndefined->compile();
 
-  mpUnitDefinitionList = new CUnitDefinitionDB("UnitList", this);
+  mpUnitDefinitionList = new CUnitDefinitionDB("Units list", this);
   CUnitDefinition::updateSIUnitDefinitions(mpUnitDefinitionList, CUnit::Avogadro);
 }
 
