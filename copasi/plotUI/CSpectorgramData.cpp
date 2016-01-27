@@ -1,4 +1,4 @@
-// Copyright (C) 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2015 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -264,14 +264,14 @@ CSpectorgramData::bilinearAround(int xIndex, int yIndex,
   double diffXX1 = x - x1;
   double diffYY1 = y - y1;
   int xNeighbor = xIndex +
-                  (std::signbit(diffXX1) ? -1 : 1);
+                  (diffXX1 < 0.0 ? -1 : 1);
 
   if (xNeighbor >= (int)mSizeX) xNeighbor = mSizeX - 1;
 
   if (xNeighbor < 0) xNeighbor = 0;
 
   int yNeighbor = yIndex +
-                  (std::signbit(diffYY1) ? -1 : 1);
+                  (diffYY1 < 0.0 ? -1 : 1);
 
   if (yNeighbor >= (int)mSizeY) yNeighbor = mSizeY - 1;
 
