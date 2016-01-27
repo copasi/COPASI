@@ -68,6 +68,8 @@ public:
 
   CUnitDefinition & operator=(const CUnitDefinition & src);
 
+  static bool isBuiltinUnitSymbol(std::string symbol);
+
 private:
   std::string mSymbol;
 

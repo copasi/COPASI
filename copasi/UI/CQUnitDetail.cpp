@@ -154,7 +154,7 @@ void CQUnitDetail::slotBtnDelete()
 
   if (!uses.empty())
     {
-      QString text = "It is being used in . . .\n";
+      QString text = "It is required for . . .\n";
 
       CCopasiObject::DataObjectSet::const_iterator it = uses.begin();
       CCopasiObject::DataObjectSet::const_iterator end = uses.end();

@@ -3843,5 +3843,9 @@ CCopasiObject::DataObjectSet CModel::getUnitSymbolUsage(std::string symbol)
       mpQuantityUnit->getUsedSymbols().count(symbol))
     usages.insert(this);
 
+  // Is it in COPASI's unit list
+  if (CUnitDefinition::isBuiltinUnitSymbol(symbol))
+    usages.insert(CCopasiRootContainer::getUnitList());
+
   return usages;
 }
