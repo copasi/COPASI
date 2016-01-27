@@ -70,6 +70,8 @@ public:
 
   static bool isBuiltinUnitSymbol(std::string symbol);
 
+  bool isReadOnly() const;
+
 private:
   std::string mSymbol;
 

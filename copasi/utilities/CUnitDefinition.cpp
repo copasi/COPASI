@@ -241,3 +241,8 @@ bool CUnitDefinition::isBuiltinUnitSymbol(std::string symbol)
 
   return (pSIUnit->symbol != NULL);
 }
+
+bool CUnitDefinition::isReadOnly() const
+{
+  return isBuiltinUnitSymbol(mSymbol);
+}

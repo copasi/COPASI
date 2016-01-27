@@ -160,6 +160,15 @@ void CQTabWidget::load()
           mpBtnRevert->setEnabled(!readOnly);
           mpBtnDelete->setEnabled(!readOnly);
         }
+      else if (mObjectType == ListViews::UNIT)
+        {
+          bool readOnly = static_cast< const CUnitDefinition * >(mpObject)->isReadOnly();
+
+          mpEditName->setReadOnly(readOnly);
+          mpBtnCommit->setEnabled(!readOnly);
+          mpBtnRevert->setEnabled(!readOnly);
+          mpBtnDelete->setEnabled(!readOnly);
+        }
     }
   else
     {
