@@ -20,6 +20,7 @@
 #include "UI/CQCompartment.h"
 #include "UI/CQSpeciesDetail.h"
 #include "UI/ReactionsWidget1.h"
+#include "UI/CQUnitDetail.h"
 
 #include <QUndoStack>
 #include <copasi/undoFramework/EntityRenameCommand.h>
@@ -262,6 +263,10 @@ void CQTabWidget::slotBtnCopy()
     {
       ReactionsWidget1 * pReactionsWidget1 = dynamic_cast< ReactionsWidget1 * >(mPages[0]);
       pReactionsWidget1->copy();
+    }
+  else if (QString(mPages[0]->metaObject()->className()) == "CQUnitDetail")
+    {
+      emit copyClicked();
     }
   else
     {
