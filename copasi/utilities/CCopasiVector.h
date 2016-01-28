@@ -265,12 +265,19 @@ public:
    * @param const bool & adopt (Default: false)
    * @return bool success
    */
-  virtual bool add(CType * src, bool adopt = false)
+  virtual bool add(CCopasiObject * pObject, const bool & adopt = true)
   {
     // This is not very efficient !!!
     // It results in a lot of resizing of the vector !!!
-    std::vector< CType * >::push_back(src);
-    return CCopasiContainer::add(src, adopt);
+
+    CType * pNew = dynamic_cast< CType * >(pObject);
+
+    if (pNew != NULL)
+      {
+        std::vector< CType * >::push_back(pNew);
+      }
+
+    return CCopasiContainer::add(pObject, adopt);
   }
 
   /**
@@ -646,19 +653,26 @@ public:
    * @param const bool & adopt (Default: false)
    * @return bool success
    */
-  virtual bool add(CType * src, const bool & adopt = false)
+  virtual bool add(CCopasiObject * pObject, const bool & adopt = true)
   {
-    if (!isInsertAllowed(src))
-      {
-        CCopasiMessage ex(CCopasiMessage::ERROR,
-                          MCCopasiVector + 2, src->getObjectName().c_str());
-        return false;
-      }
-
     // This is not very efficient !!!
     // It results in a lot of resizing of the vector !!!
-    std::vector< CType * >::push_back(src);
-    return CCopasiContainer::add(src, adopt);
+
+    CType * pNew = dynamic_cast< CType * >(pObject);
+
+    if (pNew != NULL)
+      {
+        if (!isInsertAllowed(pNew))
+          {
+            CCopasiMessage ex(CCopasiMessage::ERROR,
+                              MCCopasiVector + 2, pNew->getObjectName().c_str());
+            return false;
+          }
+
+        std::vector< CType * >::push_back(pNew);
+      }
+
+    return CCopasiContainer::add(pObject, adopt);
   }
 
   /**
