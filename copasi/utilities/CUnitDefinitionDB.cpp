@@ -3,7 +3,8 @@
 // of Manchester.
 // All rights reserved.
 
-#include "copasi/utilities/CUnitDefinitionDB.h"
+#include "utilities/CUnitDefinitionDB.h"
+#include "utilities/CUnitDefinition.h"
 #include "utilities/CCopasiMessage.h"
 
 //CCopasiVectorN(const std::string & name = "NoName",
@@ -129,7 +130,10 @@ bool CUnitDefinitionDB::changeSymbol(CUnitDefinition *pUnitDef, const std::strin
     {
       if (pUnitDef->getSymbol() == symbol) return true;
 
-      mSymbolToUnitDefinitions.erase(found);
+      if (found->second == pUnitDef)
+        {
+          mSymbolToUnitDefinitions.erase(found);
+        }
     }
 
   mSymbolToUnitDefinitions.insert(std::make_pair(symbol, pUnitDef));

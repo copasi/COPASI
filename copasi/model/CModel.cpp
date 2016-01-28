@@ -1431,7 +1431,7 @@ bool CModel::setQuantityUnit(const CUnit::QuantityUnit & unitEnum)
   // //      *mpQuantityUnit == unitEnum) //create appropriate comparison operator
   //     return true;
 
-  mpQuantityUnit->fromEnum(unitEnum,mAvogadro);
+  mpQuantityUnit->fromEnum(unitEnum, mAvogadro);
 
   bool success = true;
 
@@ -1828,7 +1828,7 @@ CMetab* CModel::createMetabolite(const std::string & name,
   pMetab->setInitialConcentration(iconc);
   pMetab->refreshInitialValue();
 
-  if (!mMetabolites.add(pMetab))
+  if (!mMetabolites.add(pMetab, false))
     return NULL;
 
   mCompileIsNecessary = true;
@@ -3825,7 +3825,7 @@ CEvaluationNode* CModel::prepareElasticity(const CReaction * pReaction, const CM
 // Return a set of any Copasi object using this symbol.
 CCopasiObject::DataObjectSet CModel::getUnitSymbolUsage(std::string symbol)
 {
-   DataObjectSet usages;
+  DataObjectSet usages;
 
   //Is it used in the Model Values?
   CCopasiVector< CModelValue >::const_iterator it = getModelValues().begin();

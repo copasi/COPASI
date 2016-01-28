@@ -75,7 +75,7 @@ public:
 private:
   std::string mSymbol;
 
-  void setup(const CCopasiContainer * pParent);
+  void setup();
 };
 
 #endif // CUNIT_DEFINITION_H
