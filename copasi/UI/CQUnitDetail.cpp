@@ -36,7 +36,6 @@
  */
 CQUnitDetail::CQUnitDetail(QWidget* parent, const char* name)
   : CopasiWidget(parent, name),
-    mKeyToCopy(""),
     mpUnitDefinition(NULL)
 {
   setupUi(this);
@@ -84,7 +83,33 @@ void CQUnitDetail::slotBtnNew()
 
 void CQUnitDetail::slotBtnCopy()
 {
-  mKeyToCopy = mKey;
+  CUnitDefinitionDB * unitList = CCopasiRootContainer::getUnitList();
+  std::string base_name, name;
+  base_name = mpUnitDefinition->getObjectName() + "_copy";
+  name = base_name;
+  int i = 0;
+  while (unitList->getIndex(name) != C_INVALID_INDEX)
+    {
+      i++;
+      name = base_name + "_";
+      name += TO_UTF8(QString::number(i));
+    }
+
+  CUnitDefinition * pUnitDef = new CUnitDefinition(name, unitList);
+
+  C_FLOAT64 Avogadro = CUnit::Avogadro;
+  const CModel * pModel = static_cast<const CModel *>(mpUnitDefinition->getObjectAncestor("Model"));
+  if (pModel != NULL)
+    {
+      Avogadro = pModel->getAvogadro();
+    }
+  pUnitDef->setExpression(mpUnitDefinition->getExpression(), Avogadro);
+
+  unitList->add(pUnitDef, true);
+
+  std::string key = pUnitDef->getKey();
+  protectedNotify(ListViews::UNIT, ListViews::ADD, key);
+  mpListView->switchToOtherWidget(C_INVALID_INDEX, key);
 }
 
 //void CQUnitDetail::slotBtnDelete()
@@ -339,17 +364,9 @@ bool CQUnitDetail::leave()
 
 bool CQUnitDetail::enterProtected()
 {
-  mpUnitDefinition = NULL;
+//  mpUnitDefinition = NULL;
 
-  if (mKeyToCopy != "")
-    {
-      mpUnitDefinition = dynamic_cast<CUnitDefinition *>(CCopasiRootContainer::getKeyFactory()->get(mKeyToCopy));
-      mKeyToCopy = "";
-    }
-  else
-    {
-      mpUnitDefinition = dynamic_cast<CUnitDefinition *>(mpObject);
-    }
+  mpUnitDefinition = dynamic_cast<CUnitDefinition *>(mpObject);
 
   if (!mpUnitDefinition)
     {
@@ -358,9 +375,6 @@ bool CQUnitDetail::enterProtected()
     }
 
   load();
-
-  // This is needed, in the case the unit is copied.
-  mpUnitDefinition = dynamic_cast<CUnitDefinition *>(mpObject);
 
   return true;
 }

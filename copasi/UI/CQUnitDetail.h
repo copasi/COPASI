@@ -61,7 +61,6 @@ private:
   void destroy();
   void load();
   void save();
-  std::string mKeyToCopy;
 
 private slots:
   void slotBtnNew();
