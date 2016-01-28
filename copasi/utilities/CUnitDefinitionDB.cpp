@@ -116,18 +116,19 @@ const CUnitDefinition * CUnitDefinitionDB::getUnitDefFromSymbol(std::string symb
 
 bool CUnitDefinitionDB::changeSymbol(CUnitDefinition *pUnitDef, const std::string & symbol)
 {
-  assert(pUnitDef->getObjectParent() == this);
-
-  if (pUnitDef->getSymbol() == symbol) return true;
+  if (pUnitDef->getObjectParent() != this) return true;
 
   std::map<std::string, CUnitDefinition *>::iterator found = mSymbolToUnitDefinitions.find(symbol);
 
-  if (found != mSymbolToUnitDefinitions.end()) return false;
+  if (found != mSymbolToUnitDefinitions.end() &&
+      found->second != pUnitDef) return false;
 
   found = mSymbolToUnitDefinitions.find(pUnitDef->getSymbol());
 
   if (found != mSymbolToUnitDefinitions.end())
     {
+      if (pUnitDef->getSymbol() == symbol) return true;
+
       mSymbolToUnitDefinitions.erase(found);
     }
 

@@ -115,8 +115,7 @@ void CUnitDefinition::updateSIUnitDefinitions(CUnitDefinitionDB * Units,
         }
       else
         {
-          pUnitDef = new CUnitDefinition(pSIUnit->name, NULL);
-          Units->add(pUnitDef, true);
+          pUnitDef = new CUnitDefinition(pSIUnit->name, Units);
           pUnitDef->setSymbol(pSIUnit->symbol);
         }
 
@@ -141,35 +140,35 @@ void CUnitDefinition::updateSIUnitDefinitions(CUnitDefinitionDB * Units,
 // default
 CUnitDefinition::CUnitDefinition(const std::string & name,
                                  const CCopasiContainer * pParent):
-  CCopasiContainer(name, pParent, "Unit"),
+  CCopasiContainer(name, NULL, "Unit"),
   CUnit(),
   CAnnotation(),
-  mSymbol(name + "_symbol")
+  mSymbol("symbol")
 {
-  setup();
+  setup(pParent);
 }
 
 // kind
 CUnitDefinition::CUnitDefinition(const CBaseUnit::Kind & kind,
                                  const CCopasiContainer * pParent):
-  CCopasiContainer(CBaseUnit::Name[kind], pParent, "Unit"),
+  CCopasiContainer(CBaseUnit::Name[kind], NULL, "Unit"),
   CUnit(kind),
   CAnnotation(),
   mSymbol(CBaseUnit::getSymbol(kind))
 {
-  setup();
+  setup(pParent);
 }
 
 // copy
 CUnitDefinition::CUnitDefinition(const CUnitDefinition &src,
                                  const C_FLOAT64 & avogadro,
                                  const CCopasiContainer * pParent):
-  CCopasiContainer(src, pParent),
+  CCopasiContainer(src, NULL),
   CUnit(src, avogadro),
   CAnnotation(src),
   mSymbol(src.mSymbol)
 {
-  setup();
+  setup(pParent);
 }
 
 CUnitDefinition::~CUnitDefinition()
@@ -177,16 +176,26 @@ CUnitDefinition::~CUnitDefinition()
   CCopasiRootContainer::getKeyFactory()->remove(mKey);
 }
 
-void CUnitDefinition::setup()
+void CUnitDefinition::setup(const CCopasiContainer * pParent)
 {
+  setObjectParent(pParent);
+
   mKey = CCopasiRootContainer::getKeyFactory()->add("Unit", this);
 
   // The following ought to trigger the exception for
   // a symbol already in the CUnitDefinitionDB
-  if (!setSymbol(mSymbol))
+  std::stringstream Symbol;
+
+  Symbol.str(mSymbol.c_str());
+  int i = 1;
+
+  while (!setSymbol(Symbol.str()))
     {
-      CCopasiMessage(CCopasiMessage::EXCEPTION, CCopasiMessage::getLastMessage().getText().c_str());
+      Symbol.str(mSymbol.c_str());
+      Symbol << "_" << i++;
     }
+
+  mSymbol = Symbol.str();
 }
 
 // virtual
