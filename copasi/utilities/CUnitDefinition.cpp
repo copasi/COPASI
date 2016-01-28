@@ -140,62 +140,72 @@ void CUnitDefinition::updateSIUnitDefinitions(CUnitDefinitionDB * Units,
 // default
 CUnitDefinition::CUnitDefinition(const std::string & name,
                                  const CCopasiContainer * pParent):
-  CCopasiContainer(name, NULL, "Unit"),
+  CCopasiContainer(name, pParent, "Unit"),
   CUnit(),
   CAnnotation(),
   mSymbol("symbol")
 {
-  setup(pParent);
+  setup();
 }
 
 // kind
 CUnitDefinition::CUnitDefinition(const CBaseUnit::Kind & kind,
                                  const CCopasiContainer * pParent):
-  CCopasiContainer(CBaseUnit::Name[kind], NULL, "Unit"),
+  CCopasiContainer(CBaseUnit::Name[kind], pParent, "Unit"),
   CUnit(kind),
   CAnnotation(),
   mSymbol(CBaseUnit::getSymbol(kind))
 {
-  setup(pParent);
+  setup();
 }
 
 // copy
 CUnitDefinition::CUnitDefinition(const CUnitDefinition &src,
                                  const C_FLOAT64 & avogadro,
                                  const CCopasiContainer * pParent):
-  CCopasiContainer(src, NULL),
+  CCopasiContainer(src, pParent),
   CUnit(src, avogadro),
   CAnnotation(src),
   mSymbol(src.mSymbol)
 {
-  setup(pParent);
+  setup();
 }
 
 CUnitDefinition::~CUnitDefinition()
 {
   CCopasiRootContainer::getKeyFactory()->remove(mKey);
+
+  CCopasiContainer * pParent = getObjectParent();
+
+  if (pParent != NULL)
+    {
+      pParent->remove(this);
+    }
 }
 
-void CUnitDefinition::setup(const CCopasiContainer * pParent)
+void CUnitDefinition::setup()
 {
-  setObjectParent(pParent);
+  CCopasiContainer * pParent = getObjectParent();
+
+  if (pParent != NULL)
+    {
+      pParent->add(this, true);
+    }
 
   mKey = CCopasiRootContainer::getKeyFactory()->add("Unit", this);
 
   // The following ought to trigger the exception for
   // a symbol already in the CUnitDefinitionDB
-  std::stringstream Symbol;
+  std::ostringstream Symbol;
 
   Symbol.str(mSymbol.c_str());
   int i = 1;
 
   while (!setSymbol(Symbol.str()))
     {
-      Symbol.str(mSymbol.c_str());
-      Symbol << "_" << i++;
+      Symbol.str("");
+      Symbol << mSymbol << "_" << i++;
     }
-
-  mSymbol = Symbol.str();
 }
 
 // virtual

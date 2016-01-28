@@ -12,7 +12,7 @@
 
 //#include <unordered_map>
 #include "copasi/utilities/CCopasiVector.h"
-#include "copasi/utilities/CUnitDefinition.h"
+class CUnitDefinition;
 
 class CUnitDefinitionDB: public CCopasiVectorN< CUnitDefinition >
 {
