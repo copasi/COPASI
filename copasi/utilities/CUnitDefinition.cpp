@@ -243,7 +243,11 @@ bool CUnitDefinition::isBuiltinUnitSymbol(std::string symbol)
 }
 
 bool CUnitDefinition::isReadOnly() const
-{  
-  if(isBuiltinUnitSymbol(mSymbol)) return true;
-  else return false;
+{
+  SIUnit * pSIUnit = SIUnits;
+
+  while (pSIUnit->name && getObjectName() != pSIUnit->name)
+    ++pSIUnit;
+
+  return (pSIUnit->name != NULL);
 }

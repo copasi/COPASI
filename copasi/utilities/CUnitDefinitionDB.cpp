@@ -119,11 +119,17 @@ bool CUnitDefinitionDB::changeSymbol(CUnitDefinition *pUnitDef, const std::strin
 
   if (pUnitDef->getSymbol() == symbol) return true;
 
-  std::map<std::string, CUnitDefinition *>::iterator found = mSymbolToUnitDefinitions.find(pUnitDef->getSymbol());
+  std::map<std::string, CUnitDefinition *>::iterator found = mSymbolToUnitDefinitions.find(symbol);
 
-  if (found == mSymbolToUnitDefinitions.end()) return false;
+  if (found != mSymbolToUnitDefinitions.end()) return false;
 
-  mSymbolToUnitDefinitions.erase(found);
+  found = mSymbolToUnitDefinitions.find(pUnitDef->getSymbol());
+
+  if (found != mSymbolToUnitDefinitions.end())
+    {
+      mSymbolToUnitDefinitions.erase(found);
+    }
+
   mSymbolToUnitDefinitions.insert(std::make_pair(symbol, pUnitDef));
 
   return true;
