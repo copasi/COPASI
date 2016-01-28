@@ -243,6 +243,7 @@ bool CUnitDefinition::isBuiltinUnitSymbol(std::string symbol)
 }
 
 bool CUnitDefinition::isReadOnly() const
-{
-  return isBuiltinUnitSymbol(mSymbol);
+{  
+  if(isBuiltinUnitSymbol(mSymbol)) return true;
+  else return false;
 }

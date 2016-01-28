@@ -15,7 +15,6 @@
 //#include "function/CExpression.h"
 #include "report/CKeyFactory.h"
 #include "report/CCopasiRootContainer.h"
-#include "UI/CQValidatorUnit.h"
 
 ////UNDO framework classes
 //#ifdef COPASI_UNDO
@@ -266,12 +265,14 @@ void CQUnitDetail::init()
 
 //  mInitialExpressionValid = false;
 //  mpInitialExpressionEMW->mpExpressionWidget->setExpressionType(CQExpressionWidget::InitialExpression);
-
-  mpEditExpression->setValidator(new CQValidatorUnit(mpEditExpression));
+  mpExpressionValidator = new CQValidatorUnit(mpEditExpression);
+  mpEditExpression->setValidator(mpExpressionValidator);
 }
 
 void CQUnitDetail::destroy()
-{}
+{
+  delete mpExpressionValidator;
+}
 
 bool CQUnitDetail::update(ListViews::ObjectType  objectType,
                           ListViews::Action action,
@@ -373,9 +374,21 @@ void CQUnitDetail::load()
 
   // Expression
   mpEditExpression->setText(FROM_UTF8(mpUnitDefinition->getExpression()));
+  mpExpressionValidator->saved();
 
   // Symbol
   mpEditSymbol->setText(FROM_UTF8(mpUnitDefinition->getSymbol()));
+
+  if (mpUnitDefinition->isReadOnly())
+  {
+    mpEditExpression->setEnabled(false);
+    mpEditSymbol->setEnabled(false);
+  }
+  else
+  {
+    mpEditExpression->setEnabled(true);
+    mpEditSymbol->setEnabled(true);
+  }
 
 //  // Expression
 //  mpExpressionEMW->mpExpressionWidget->setExpression(mpModelValue->getExpression());

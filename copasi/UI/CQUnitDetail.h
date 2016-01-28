@@ -20,6 +20,7 @@ class UndoGlobalQuantityData;
 #endif
 
 #include "copasi/utilities/CUnitDefinition.h"
+#include "UI/CQValidatorUnit.h"
 
 #include "ui_CQUnitDetail.h"
 
@@ -53,6 +54,7 @@ protected slots:
 private:
   std::vector< int > mItemToType;
   CUnitDefinition * mpUnitDefinition;
+  CQValidatorUnit * mpExpressionValidator;
   bool mChanged;
 
   void init();
