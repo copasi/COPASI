@@ -15,6 +15,9 @@ CQValidatorUnit::CQValidatorUnit(QLineEdit * parent, const char * name):
 
 QValidator::State CQValidatorUnit::validate(QString & input, int & pos) const
 {
+  if (input.isEmpty())
+    return CQValidator< QLineEdit >::validate(input, pos);
+
   State CurrentState = Invalid;
 
   bool success = false;
@@ -32,8 +35,9 @@ QValidator::State CQValidatorUnit::validate(QString & input, int & pos) const
 
   if (success)
     {
-      setColor(Acceptable);
-      CurrentState = Acceptable;
+//      setColor(Acceptable);
+//      CurrentState = Acceptable;
+      return CQValidator< QLineEdit >::validate(input, pos);
     }
   else
     {
