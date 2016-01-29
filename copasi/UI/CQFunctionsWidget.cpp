@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -97,18 +97,27 @@ void CQFunctionsWidget::deleteSelectedFunctions()
     {return;}
 
   mpFunctionDM->removeRows(mappedSelRows);
+
+  updateDeleteBtns();
 }
 
 void CQFunctionsWidget::slotBtnClearClicked()
 {
-
   int ret = CQMessageBox::question(this, tr("Confirm Delete"), "Delete all Functions?",
                                    QMessageBox::Yes | QMessageBox::No, QMessageBox::No);
 
-  if (ret == QMessageBox::Yes)
+  QModelIndexList mappedSelRows;
+  size_t i, imax = mpFunctionDM->rowCount();
+
+  for (i = 0; i < imax; i++)
     {
-      mpFunctionDM->clear();
+      mappedSelRows.append(mpFunctionDM->index((int) i, 0));
     }
+
+  if (mappedSelRows.empty())
+    {return;}
+
+  mpFunctionDM->removeRows(mappedSelRows);
 
   updateDeleteBtns();
 }

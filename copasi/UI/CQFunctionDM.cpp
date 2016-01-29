@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -289,11 +289,14 @@ bool CQFunctionDM::removeRows(QModelIndexList rows, const QModelIndex&)
 //Build the list of pointers to items to be deleted
 //before actually deleting any item.
   QList <CEvaluationTree *> pFunctions;
+  CFunction * pFunction;
   QModelIndexList::const_iterator i;
 
   for (i = rows.begin(); i != rows.end(); ++i)
     {
-      if (!isDefaultRow(*i) && CCopasiRootContainer::getFunctionList()->loadedFunctions()[(*i).row()])
+      if (!isDefaultRow(*i) &&
+          (pFunction = CCopasiRootContainer::getFunctionList()->loadedFunctions()[(*i).row()]) != NULL &&
+          !pFunction->isReadOnly())
         pFunctions.append(CCopasiRootContainer::getFunctionList()->loadedFunctions()[(*i).row()]);
     }
 
