@@ -106,18 +106,21 @@ void CQFunctionsWidget::slotBtnClearClicked()
   int ret = CQMessageBox::question(this, tr("Confirm Delete"), "Delete all Functions?",
                                    QMessageBox::Yes | QMessageBox::No, QMessageBox::No);
 
-  QModelIndexList mappedSelRows;
-  size_t i, imax = mpFunctionDM->rowCount();
+  if (ret == QMessageBox::Yes)
+  {
+    QModelIndexList mappedSelRows;
+    size_t i, imax = mpFunctionDM->rowCount();
 
-  for (i = 0; i < imax; i++)
+    for (i = 0; i < imax; i++)
     {
       mappedSelRows.append(mpFunctionDM->index((int) i, 0));
     }
 
-  if (mappedSelRows.empty())
-    {return;}
+    if (mappedSelRows.empty())
+      return;
 
-  mpFunctionDM->removeRows(mappedSelRows);
+    mpFunctionDM->removeRows(mappedSelRows);
+  }
 
   updateDeleteBtns();
 }
