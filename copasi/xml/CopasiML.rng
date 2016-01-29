@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<!-- Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual -->
+<!-- Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual -->
 <!-- Properties, Inc., University of Heidelberg, and The University -->
 <!-- of Manchester. -->
 <!-- All rights reserved. -->
@@ -354,23 +354,23 @@
 
   <define name="listOfUnitDefinitions.datatype">
     <oneOrMore>
-      <ref name="unit.datatype"></ref>
+      <ref name="unitDefinition.datatype"></ref>
     </oneOrMore>
   </define>
   
-  <define name="unit.datatype">
-    <element name="Unit">
+  <define name="unitDefinition.datatype">
+    <element name="UnitDefinition">
       <ref name="name.attribute"/>
       <attribute name="symbol">
         <data type="string"/>
       </attribute>
       <ref name="annotation.datatype"/>
-      <element name="Definition">
+      <element name="Expression">
         <ref name="expression.simpletype"/>
       </element>
     </element>
   </define>
-  
+
   <define name="listOfFunctions.datatype">
     <oneOrMore>
       <ref name="function.datatype"/>
@@ -682,15 +682,15 @@
         <value type="string">fixed</value>
       </choice>
     </attribute>
+    <attribute name="unit">
+      <data type="string"/>
+    </attribute>
     <ref name="annotation.datatype"/>
     <optional>
       <ref name="expression.element"/>
     </optional>
     <optional>
       <ref name="initialExpression.element"/>
-    </optional>
-    <optional>
-      <ref name="unit.datatype"/>
     </optional>
   </define>
 
