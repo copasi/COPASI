@@ -1,4 +1,4 @@
-// Copyright (C) 2011 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -600,7 +600,7 @@ protected:
   /**
    * a map that stores the name of a CellDesigner species with its id.
    */
-  std::map<std::string, std::pair<std::string, SpeciesIdentity> > mIncludedSpeciesNameMap;;
+  std::map<std::string, std::pair<std::string, SpeciesIdentity> > mIncludedSpeciesNameMap;
 
   /**
    * a map that associated a modifier type with  the corresponding style.
@@ -734,7 +734,10 @@ protected:
    * Takes a node that contains a number of baseReactants or baseProducts
    * and creates species reference glyphs for each one.
    */
-  bool createSpeciesReferenceGlyphs(ReactionGlyph* pRGlyph, const std::vector<LinkTarget>& link, std::map<SpeciesReferenceGlyph*, Point>& startsMap, bool reactants);
+  bool createSpeciesReferenceGlyphs(ReactionGlyph* pRGlyph,
+                                    const std::vector<LinkTarget>& link,
+                                    std::map<SpeciesReferenceGlyph*, Point>& startsMap,
+                                    bool reactants);
 
   /**
    * Takes a bounding box and a position string and retirns the position on the bounding box that corresponds
@@ -781,52 +784,61 @@ protected:
    * The first child that fits the name and the prefix or NULL is returned.
    * If recursive is true, the tree is searched recursively.
    */
-  static const XMLNode* findChildNode(const XMLNode* pNode, const std::string& prefix, const std::string& name, bool recursive = false);
+  static const XMLNode* findChildNode(const XMLNode* pNode,
+                                      const std::string& prefix,
+                                      const std::string& name,
+                                      bool recursive = false);
 
   /**
    * Parses the node which represents a speciesIdentity node and fills the given SpeciesIdentity
    * structure with the data.
    * If the parsing fails, false is returned.
    */
-  static bool parseSpeciesIdentity(const XMLNode* pNode, SpeciesIdentity& identity);
+  static bool parseSpeciesIdentity(const XMLNode* pNode,
+                                   SpeciesIdentity& identity);
 
   /**
    * Parses the node which represents the state in a speciesIdentity node and fills the given SpeciesState
    * structure with the data.
    * If the parsing fails, false is returned.
    */
-  static bool parseSpeciesState(const XMLNode* pNode, SpeciesState& state);
+  static bool parseSpeciesState(const XMLNode* pNode,
+                                SpeciesState& state);
 
   /**
    * Parses the node which represents a modification ion a species node and fills the given SpeciesModification
    * structure with the data.
    * If the parsing fails, false is returned.
    */
-  static bool parseSpeciesModification(const XMLNode* pNode, SpeciesModification& mod);
+  static bool parseSpeciesModification(const XMLNode* pNode,
+                                       SpeciesModification& mod);
 
   /**
    * Tries to parse the species annotation in the given node and stores the data in the given
    * SpeciesAnnotation structure.
    * If parsing fails, false is returned.
    */
-  static bool parseSpeciesAnnotation(const XMLNode* pNode, SpeciesAnnotation& anno);
+  static bool parseSpeciesAnnotation(const XMLNode* pNode,
+                                     SpeciesAnnotation& anno);
 
   /**
    * Tries to parse the compartment annotation in the given node and stores the data in the given
    * CompartmentAnnotation structure.
    * If parsing fails, false is returned.
    */
-  static bool parseCompartmentAnnotation(const XMLNode* pNode, CompartmentAnnotation& anno);
+  static bool parseCompartmentAnnotation(const XMLNode* pNode,
+                                         CompartmentAnnotation& anno);
 
   /**
    * Tries to parse the reaction annotation in the given node and stores the data in the given
    * ReactionAnnotation structure.
    * If parsing fails, false is returned.
    */
-  static bool parseReactionAnnotation(const XMLNode* pNode, ReactionAnnotation& ranno);
+  static bool parseReactionAnnotation(const XMLNode* pNode,
+                                      ReactionAnnotation& ranno);
 
   /**
-   * Parses the given node and stored the information i  n the width and height attribute
+   * Parses the given node and stored the information in the width and height attribute
    * in the given dimensions object.
    * If parsinf fails, false is returned.
    */
@@ -868,7 +880,9 @@ protected:
    * and stores it in the given CompartmentAlias structure.
    * If parsing fails, false is returned.
    */
-  static bool parseCompartmentAlias(const XMLNode* pNode, CompartmentAlias& ca, const Dimensions& layout_dimensions);
+  static bool parseCompartmentAlias(const XMLNode* pNode,
+                                    CompartmentAlias& ca,
+                                    const Dimensions& layout_dimensions);
 
   /**
    * Parses the given XMLNode which represents a double line element.
@@ -931,7 +945,8 @@ protected:
    * vector of ReactionModifications.
    * If parsing fails, false is returned.
    */
-  static bool parseReactionModifications(const XMLNode* pNode, std::vector<ReactionModification>& rmods);
+  static bool parseReactionModifications(const XMLNode* pNode,
+                                         std::vector<ReactionModification>& rmods);
 
   /**
    * Tries to parse the link target in the given node and stores the data in the given
@@ -1046,7 +1061,9 @@ protected:
    * The vector is cleared by the method.
    * If something goes wrong false is returned.
    */
-  static bool splitString(const std::string& s, std::vector<std::string>& parts, const std::string& splitChars);
+  static bool splitString(const std::string& s,
+                          std::vector<std::string>& parts,
+                          const std::string& splitChars);
 
   /**
    * This method creates a new local style based on the passed in CompartmentAlias object.
@@ -1067,7 +1084,9 @@ protected:
    * The style is associated with the text glyph via the id
    * of the text glyph.
    */
-  bool createTextGlyphStyle(double size, Text::TEXT_ANCHOR hAlign, Text::TEXT_ANCHOR vAlign, const std::string& objectReference);
+  bool createTextGlyphStyle(double size, Text::TEXT_ANCHOR hAlign,
+                            Text::TEXT_ANCHOR vAlign,
+                            const std::string& objectReference);
 
   /**
    * TODO right now, we use default styles for species reference glyphs
@@ -1091,7 +1110,10 @@ protected:
    * If the method fails, e.g. because one of the vectors is empty or the bounding box contains
    * values we can't use for calculations (ing,NAN), false is returned.
    */
-  static bool findShortestConnection(std::vector<POSITION>& pos1, std::vector<POSITION>& pos2, const BoundingBox& box1, const BoundingBox& box2);
+  static bool findShortestConnection(std::vector<POSITION>& pos1,
+                                     std::vector<POSITION>& pos2,
+                                     const BoundingBox& box1,
+                                     const BoundingBox& box2);
 
   /**
    * Finds the shortest connection between the given point and the object which is
@@ -1099,7 +1121,9 @@ protected:
    * If the method fails, e.g. because one of the vectors is empty or the bounding box contains
    * values we can't use for calculations (ing,NAN), POSITION_UNDEFINED
    */
-  static POSITION findShortestConnection(const Point& p, std::vector<POSITION>& pos, const BoundingBox& box);
+  static POSITION findShortestConnection(const Point& p,
+                                         std::vector<POSITION>& pos,
+                                         const BoundingBox& box);
 
   /**
    * Calculate the distance between the two points.
@@ -1126,7 +1150,10 @@ protected:
    * The formula for that is:
    * p1 + p.x * (p2 - p1) + p.y * (p3 - p1)
    */
-  static Point calculateAbsoluteValue(const Point& p, const Point& p1, const Point& p2, const Point& p3);
+  static Point calculateAbsoluteValue(const Point& p,
+                                      const Point& p1,
+                                      const Point& p2,
+                                      const Point& p3);
 
   /**
    * Tries to set the species glyph id in the given species reference glyph.
@@ -1136,20 +1163,25 @@ protected:
   /**
    * Tries to set the species reference id on the given SPeciesReferenceGlyph.
    */
-  bool setSpeciesReferenceId(SpeciesReferenceGlyph* pGlyph, const LinkTarget& link, const std::string& reactionId);
+  bool setSpeciesReferenceId(SpeciesReferenceGlyph* pGlyph,
+                             const LinkTarget& link,
+                             const std::string& reactionId);
 
   /**
    * Creates the structures for the extra product links.
    * If processing fails, false is returned;
    */
-  bool handleExtraReactionElements(ReactionGlyph* pRGlyph, ReactionAnnotation& ranno, bool substrate);
+  bool handleExtraReactionElements(ReactionGlyph* pRGlyph,
+                                   ReactionAnnotation& ranno,
+                                   bool substrate);
 
   /**
    * Creates the structures for the modification links
    * in a reaction.
    * If processing fails, false is returned;
    */
-  bool handleModificationLinks(ReactionGlyph* pRGlyph, ReactionAnnotation& ranno);
+  bool handleModificationLinks(ReactionGlyph* pRGlyph,
+                               ReactionAnnotation& ranno);
 
   /**
    * Create default style for reaction glyphs.

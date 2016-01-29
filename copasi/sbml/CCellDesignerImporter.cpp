@@ -1,4 +1,4 @@
-// Copyright (C) 2011 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -80,18 +80,18 @@
     result = false;\
     CCopasiMessage(CCopasiMessage::WARNING_FILTERED, str.str().c_str());\
   }\
-
+   
 #define COULD_NOT_CREATE(result)\
   {\
     FAIL_WITH_ERROR(result, "could not create element");\
   }\
-
+   
 #define FAIL_WITH_ERROR_AND_RETURN(result, message)\
   {\
     FAIL_WITH_ERROR(result, message);\
     return result;\
   }\
-
+   
 /**
  * Constructor that takes a pointer to an
  * SBMLDocument.
@@ -146,7 +146,8 @@ void CCellDesignerImporter::removeCurrentLayout()
  * If the pointer is not NULL, the class will try
  * to directly convert the CellDesigner layout if there is one.
  */
-void CCellDesignerImporter::setSBMLDocument(SBMLDocument* pDocument)
+void
+CCellDesignerImporter::setSBMLDocument(SBMLDocument* pDocument)
 {
   if (pDocument == this->mpDocument)
     return;
@@ -172,19 +173,21 @@ void CCellDesignerImporter::setSBMLDocument(SBMLDocument* pDocument)
 }
 
 /**
- * Method to return a const poiner to the SBMLDocument.
+ * Method to return a const pointer to the SBMLDocument.
  */
-const SBMLDocument* CCellDesignerImporter::getSBMLDocument() const
+const SBMLDocument*
+CCellDesignerImporter::getSBMLDocument() const
 {
   return this->mpDocument;
 }
 
 /**
  * Method to return the layout object.
- * Since the laoyut object is owned by the importer,
+ * Since the layout object is owned by the importer,
  * the caller should make a copy of the layout.
  */
-const Layout* CCellDesignerImporter::getLayout() const
+const Layout*
+CCellDesignerImporter::getLayout() const
 {
   return this->mpLayout;
 }
@@ -197,7 +200,8 @@ const Layout* CCellDesignerImporter::getLayout() const
  * If the current SBMLDocument is NULL or if no CellDesigner annotation
  * is found, ULL is returned.
  */
-const XMLNode* CCellDesignerImporter::findCellDesignerAnnotation(SBMLDocument* pDocument,
+const XMLNode*
+CCellDesignerImporter::findCellDesignerAnnotation(SBMLDocument* pDocument,
     const XMLNode* pAnnotation)
 {
   const XMLNode* pNode = NULL;
@@ -265,7 +269,8 @@ const XMLNode* CCellDesignerImporter::findCellDesignerAnnotation(SBMLDocument* p
  * The method returns a pair of bool and string. The bool determines if the namespace was
  * found and the string specifies the prefix for the namespace.
  */
-std::pair<bool, std::string> CCellDesignerImporter::findCellDesignerNamespace(const SBMLDocument* pDocument)
+std::pair<bool, std::string>
+CCellDesignerImporter::findCellDesignerNamespace(const SBMLDocument* pDocument)
 {
   std::pair<bool, std::string> result(false, "");
 
@@ -341,7 +346,8 @@ std::pair<bool, std::string> CCellDesignerImporter::findCellDesignerNamespace(co
  * This method tries to convert the CellDesigner annotation to an SBML Layout.
  * On success the method will return true and false otherwise.
  */
-bool CCellDesignerImporter::convertCellDesignerLayout(const XMLNode* pCellDesignerAnnotation)
+bool
+CCellDesignerImporter::convertCellDesignerLayout(const XMLNode* pCellDesignerAnnotation)
 {
   bool result = true;
 
@@ -411,13 +417,14 @@ bool CCellDesignerImporter::convertCellDesignerLayout(const XMLNode* pCellDesign
           // set a program name
           // set the background color to white
           this->mpLocalRenderInfo->setBackgroundColor("#FFFFFFFF");
-          this->mpLocalRenderInfo->setName("render info from celldesigner");
+          this->mpLocalRenderInfo->setName("render info from CellDesigner");
           this->mpLocalRenderInfo->setProgramName("CellDesignerImporter");
           this->mpLocalRenderInfo->setProgramVersion("0.0.1");
           std::string render_id = this->createUniqueId("RenderInformation");
           this->mpLocalRenderInfo->setId(id);
           this->mIdMap.insert(std::pair<std::string, const SBase*>(render_id, this->mpLocalRenderInfo));
           // since we use black for the edge of all objects, we create a color definition for that
+
           std::string color_id = this->createUniqueId("black");
           ColorDefinition* pBlack = this->mpLocalRenderInfo->createColorDefinition();
 
@@ -1309,7 +1316,14 @@ bool CCellDesignerImporter::createPrimitive(RenderGroup* pGroup,
                     // xstart = (short_side - width) * 0.5;
 
                     pP->setX(xstart);
-                    pP->setY((short_side - height) * 0.5 + short_side);
+
+                    double ystart  =
+                      offset.y() + bounds.getPosition()->y() + height * 0.5
+                      + short_side / 2;
+                    //ystart = (short_side - height) * 0.5 + short_side;
+
+                    pP->setY(ystart);
+
                     pP = pCurve->createPoint();
                     assert(pP != NULL);
 
@@ -1317,7 +1331,8 @@ bool CCellDesignerImporter::createPrimitive(RenderGroup* pGroup,
                       {
                         pP->setX(xstart + short_side);
                         //pP->setX((short_side - width) * 0.5 + short_side);
-                        pP->setY((short_side - height) * 0.5);
+                        //pP->setY((short_side - height) * 0.5);
+                        pP->setY((ystart - short_side));
                       }
                     else
                       {
@@ -2190,7 +2205,6 @@ bool CCellDesignerImporter::createProteinModification(RenderGroup* pGroup,
 {
   double radius = 7.0;
   // as far as i can tell the positions start with the right middle ..
-  Point center = getCenter(bounds);
   Point p;
   p.setXOffset(bounds.width() / 2.0f);
   p.setYOffset(0);
@@ -2502,7 +2516,7 @@ bool CCellDesignerImporter::convertReactionAnnotation(Reaction* pReaction, const
                   }
 
                 // p2 now points to the end of the section that contains the reaction glyph
-                // now we assing p3 to be the start of the segment that contains the reaction glyph
+                // now we assign p3 to be the start of the segment that contains the reaction glyph
                 // which is the last point we added to the reactants
                 p3 = reactantPoints.back();
 
@@ -8911,7 +8925,7 @@ bool CCellDesignerImporter::createCatalysisStyles()
                   pEllipse->setRY(RelAbsVector(5.0, 0.0));
                   pEllipse->setStrokeWidth(1.0);
                   pEllipse->setStroke("#000000");
-                  pEllipse->setFillColor("none");
+                  pEllipse->setFillColor("#ffffff");
                 }
               else
                 {
@@ -10301,7 +10315,8 @@ bool CCellDesignerImporter::findNameForSpeciesIdentity(const SpeciesIdentity& id
  * Goes through the dependency graph
  * and tries to find the root element for the given species alias id.
  */
-std::string CCellDesignerImporter::findRootElementId(const std::string& id) const
+std::string
+CCellDesignerImporter::findRootElementId(const std::string& id) const
 {
   std::list<CCopasiNode<std::string>*>::const_iterator nit = this->mComplexDependencies.begin(), nendit = this->mComplexDependencies.end();
   const CCopasiNode<std::string>* pCurrent = NULL;
@@ -10515,6 +10530,15 @@ double CCellDesignerImporter::angle(const Point& v)
         {
           result = M_PI;
         }
+
+      if (fabs(result - M_PI) < 0.02)
+        result = M_PI;
+      else if (fabs(result - 2. * M_PI) < 0.02)
+        result = 2. * M_PI;
+      else if (fabs(result - 3. * M_PI) < 0.02)
+        result = 3. * M_PI;
+      else if (fabs(result - 4. * M_PI) < 0.02)
+        result = 4. * M_PI;
     }
 
   return result;
