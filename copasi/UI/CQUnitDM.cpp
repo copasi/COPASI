@@ -263,17 +263,19 @@ bool CQUnitDM::removeRows(QModelIndexList rows, const QModelIndex&)
   // Build the list of pointers to items to be deleted
   // before actually deleting any item.
 
-  QList <CUnitDefinition *> pUnitDefs;
+  QList <CUnitDefinition *> pUnitDefQList;
   QModelIndexList::const_iterator i;
+  CUnitDefinition * pUnitDef;
 
-  // TODO: Skip (don't delete) our SI units.
   for (i = rows.begin(); i != rows.end(); ++i)
     {
-      if (!isDefaultRow(*i) && (*CCopasiRootContainer::getUnitList())[(*i).row()])
-        pUnitDefs.append((*CCopasiRootContainer::getUnitList())[(*i).row()]);
+      if (!isDefaultRow(*i) &&
+          (pUnitDef = (*CCopasiRootContainer::getUnitList())[(*i).row()]) != NULL &&
+          pModel->getUnitSymbolUsage(pUnitDef->getSymbol()).empty()) //Don't delete built-ins or used units
+        pUnitDefQList.append((*CCopasiRootContainer::getUnitList())[(*i).row()]);
     }
 
-  for (QList <CUnitDefinition *>::const_iterator j = pUnitDefs.begin(); j != pUnitDefs.end(); ++j)
+  for (QList <CUnitDefinition *>::const_iterator j = pUnitDefQList.begin(); j != pUnitDefQList.end(); ++j)
     {
       size_t delRow =
         CCopasiRootContainer::getUnitList()->CCopasiVector< CUnitDefinition >::getIndex(*j);

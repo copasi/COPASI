@@ -100,13 +100,24 @@ void CQUnitsWidget::deleteSelectedUnits()
 void CQUnitsWidget::slotBtnClearClicked()
 {
 
-  int ret = CQMessageBox::question(this, tr("Confirm Delete"), "Delete all Units?",
+  int ret = CQMessageBox::question(this, tr("Confirm Delete"), "Delete all unused or non-built-in Units?",
                                    QMessageBox::Yes | QMessageBox::No, QMessageBox::No);
 
   if (ret == QMessageBox::Yes)
+  {
+    QModelIndexList mappedSelRows;
+    size_t i, imax = mpUnitDM->rowCount();
+
+    for (i = 0; i < imax; i++)
     {
-      mpUnitDM->clear();
+      mappedSelRows.append(mpUnitDM->index((int) i, 0));
     }
+
+    if (mappedSelRows.empty())
+      return;
+
+    mpUnitDM->removeRows(mappedSelRows);
+  }
 
   updateDeleteBtns();
 }
