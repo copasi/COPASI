@@ -12,32 +12,6 @@
 // Properties, Inc. and EML Research, gGmbH. 
 // All rights reserved. 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 %{
 
 #include "CopasiDataModel/CCopasiDataModel.h"
@@ -120,7 +94,7 @@
       $action
    } catch (...) {
       PyErr_SetString(PyExc_IndexError, "Unknown exception");
-      return false;
+      return NULL;
    }
 }
 #endif // SWIGPYTHON
