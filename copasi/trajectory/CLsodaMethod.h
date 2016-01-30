@@ -250,7 +250,7 @@ public:
    *  @param "const double &" deltaT
    *  @return Status status
    */
-  virtual Status step(const double & deltaT);
+  virtual CTrajectoryMethod::Status step(const double & deltaT);
 
   /**
    *  This instructs the method to prepare for integration
@@ -301,7 +301,7 @@ private:
   /**
    * Peek ahead to detect simultaneous roots.
    */
-  Status peekAhead();
+  CTrajectoryMethod::Status peekAhead();
 
   void saveState();
   void resetState();
