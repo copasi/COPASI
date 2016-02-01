@@ -537,6 +537,7 @@ bool CCopasiXML::saveModel()
       Attributes.add("key", "");
       Attributes.add("name", "");
       Attributes.add("simulationType", "");
+      Attributes.add("unit", "");
 
       for (i = 0; i < imax; i++)
         {
@@ -546,6 +547,7 @@ bool CCopasiXML::saveModel()
           Attributes.setValue(1, pMV->getObjectName());
           CModelEntity::Status SimulationType = pMV->getStatus();
           Attributes.setValue(2, CModelEntity::XMLStatus[SimulationType]);
+          Attributes.setValue(3, pMV->getUnit().getExpression());
 
           startSaveElement("ModelValue", Attributes);
 
@@ -564,13 +566,6 @@ bool CCopasiXML::saveModel()
               startSaveElement("InitialExpression");
               saveData(pMV->getInitialExpression());
               endSaveElement("InitialExpression");
-            }
-
-          if (pMV->getUnit().getExpression() != "")
-            {
-              startSaveElement("Unit");
-              saveData(pMV->getUnit().getExpression());
-              endSaveElement("Unit");
             }
 
           endSaveElement("ModelValue");
