@@ -52,10 +52,11 @@ public:
   LogPlotZoomer(QwtPlotCanvas *canvas);
 #endif
 
-public slots:
 #if QWT_VERSION > 0x060000
-  virtual void moveTo(const QPointF &   pos);
+public slots:
+  virtual void moveTo(const QPointF &pos);
 #else
+public slots:
   virtual void move(double x, double y);
 #endif
 

@@ -724,6 +724,7 @@ message(STATUS "-----------------------------------------------------------
 
    QWT lib           = ${QWT_LIBRARY}
    QWT include       = ${QWT_INCLUDE_DIR}
+   QWT version       = ${QWT_VERSION_HEX}
 
    qwtplot3d lib     = ${QWTPLOT3D_LIBRARY}
    qwtplot3d include = ${QWTPLOT3D_INCLUDE_DIR}
