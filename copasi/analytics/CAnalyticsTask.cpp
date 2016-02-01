@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2015 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -30,9 +30,15 @@
 #include  "CopasiDataModel/CCopasiDataModel.h"
 
 CAnalyticsTask::CAnalyticsTask(const CCopasiContainer * pParent,
-                                     const CTaskEnum::Task & type):
+                               const CTaskEnum::Task & type):
   CTrajectoryTask(pParent, type),
   mpAnalyticsProblem(NULL),
+  mIndex(-1),
+  mStatVal(),
+  mStatTime(),
+  mpStatValAnn(NULL),
+  mpStatTimeAnn(NULL),
+  mpSelectedObject(NULL),
   mStartTime(0.0),
   mNumCrossings(0),
   mOutputStartNumCrossings(0),
@@ -62,9 +68,15 @@ CAnalyticsTask::CAnalyticsTask(const CCopasiContainer * pParent,
 }
 
 CAnalyticsTask::CAnalyticsTask(const CAnalyticsTask & src,
-                                     const CCopasiContainer * pParent):
+                               const CCopasiContainer * pParent):
   CTrajectoryTask(src, pParent),
   mpAnalyticsProblem(NULL),
+  mIndex(-1),
+  mStatVal(),
+  mStatTime(),
+  mpStatValAnn(NULL),
+  mpStatTimeAnn(NULL),
+  mpSelectedObject(NULL),
   mStartTime(0.0),
   mNumCrossings(0),
   mOutputStartNumCrossings(0),
@@ -113,13 +125,31 @@ void CAnalyticsTask::initObjects()
   addObjectReference("Last Frequency", mLastFreq, CCopasiObject::ValueDbl);
   addObjectReference("Frequency", mFreq, CCopasiObject::ValueDbl);
   addObjectReference("Average Frequency", mAverageFreq, CCopasiObject::ValueDbl);
+
+  //--- ETTORE --- Start ---
+  mStatVal.resize(1, 1);
+  mStatTime.resize(1, 1);
+  mpStatValAnn = new CArrayAnnotation("Min/Max", this,
+                                      new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mStatVal), false);
+  mpStatValAnn->setMode(CArrayAnnotation::OBJECTS);
+  mpStatValAnn->setDescription("Statistics");
+  mpStatValAnn->setDimensionDescription(0, "che ne so (0)");
+  mpStatValAnn->setDimensionDescription(1, "che ne so (1)");
+
+  mpStatTimeAnn = new CArrayAnnotation("Time", this,
+                                       new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mStatTime), false);
+  mpStatTimeAnn->setMode(CArrayAnnotation::OBJECTS);
+  mpStatTimeAnn->setDescription("Statistics");
+  mpStatTimeAnn->setDimensionDescription(0, "che ne so (0)");
+  mpStatTimeAnn->setDimensionDescription(1, "che ne so (1)");
+  //--- ETTORE --- End -----
 }
 
 #define RING_SIZE 16
 
 bool CAnalyticsTask::initialize(const OutputFlag & of,
-                                   COutputHandler * pOutputHandler,
-                                   std::ostream * pOstream)
+                                COutputHandler * pOutputHandler,
+                                std::ostream * pOstream)
 {
   assert(mpProblem && mpMethod);
 
@@ -136,7 +166,6 @@ bool CAnalyticsTask::initialize(const OutputFlag & of,
 
   return success;
 }
-
 
 //--- ETTORE --- This creates the event that will trigger the callback functiuon
 // so that a snapshot of the system will be taken at that time.
@@ -157,19 +186,19 @@ void CAnalyticsTask::createEvent()
       // Stefan's suggestion:
       //
       // 0) Retrieve object selected by the user
-      const CCopasiObject * pSelectedObject = mpAnalyticsProblem->getSelectedObject();
+      mpSelectedObject = mpAnalyticsProblem->getSelectedObject();
 
       // 1) Retrieve the corresponding CMathObject:
-      CMathObject * pMathObject = mpContainer->getMathObject(pSelectedObject);
+      CMathObject * pMathObject = mpContainer->getMathObject(mpSelectedObject);
 
       // 2) Determine the index of the Object in the state:
       CMathObject * pFirstStateObject =
-          mpContainer->getMathObject(mpContainer->getState(false).array());
-      size_t Index = pMathObject - pFirstStateObject;
+        mpContainer->getMathObject(mpContainer->getState(false).array());
+      mIndex = pMathObject - pFirstStateObject;
 
       // 3) Get the rate object:
       CMathObject * pRateObject =
-          mpContainer->getMathObject(mpContainer->getRate(false).array()) + Index;
+        mpContainer->getMathObject(mpContainer->getRate(false).array()) + mIndex;
 
       std::string rateObjectName = pRateObject->getCN();
 
@@ -177,7 +206,6 @@ void CAnalyticsTask::createEvent()
 
       std::stringstream expression;
       expression << "<" << rateObjectName << "> "
-      //expression << "<" << mpAnalyticsProblem->getSingleObjectCN() << "> "
                  << (mpAnalyticsProblem->isPositiveDirection() ? std::string(" > ") : std::string(" < "))
                  << mpAnalyticsProblem->getThreshold();
 
@@ -216,9 +244,14 @@ bool CAnalyticsTask::process(const bool & useInitialValues)
   mAverageFreq = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
 
   //--- ETTORE start ---
-  /* Retrieve initial value of variables.
+  /* Retrieve initial value of the selected variablevariables.
    * 'false' means I want the entire state, not the reduced one. */
-  //mInitialState = mpContainer->getState(false);
+  if (mIndex >= 0) // If an object was selected...
+    {
+      mValues.push_back(*(mpContainer->getState(false).array() + mIndex));
+      mTimes.push_back(*mpContainerStateTime);
+    }
+
   //--- ETTORE end -----
 
   C_FLOAT64 MaxDuration = mpAnalyticsProblem->getDuration();
@@ -302,32 +335,6 @@ bool CAnalyticsTask::process(const bool & useInitialValues)
       throw CCopasiException(Exception.getMessage());
     }
 
-  //--- ETTORE start ---
-  // Add something here to deal with situations in which there are no max or min found.
-
-  //if (mNumCrossings == 0)
-  //  {
-  //    mNumCrossings = 1;
-  //    mFinalState = mpContainer->getState(false);
-
-      // Now retrieve the value of the specific variables from initial and final states.
-      // TO DO
-  //    const CObjectInterface *obj = mpContainer->getObjectFromCN(mpAnalyticsProblem->getSingleObjectCN());
-
-
-      //CModel & pModel = mpContainer->getModel();
-      //pModel->getObject(CCopasiObjectName())
-      //const CObjectInterface * final = mpContainer->getObjectFromCN(mpAnalyticsProblem->getSingleObjectCN());
-      
-      // Compare initial and final value for variable.
-      // TO DO
-      
-      // Push the result of teh comparison to the output
-      // TO DO
-
-  //  }
-  //--- ETTORE end -----
-
   finish();
 
   return true;
@@ -337,7 +344,41 @@ void CAnalyticsTask::finish()
 {
   if (mpCallBack != NULL) mpCallBack->finishItem(mhProgress);
 
+  //ComputeRequestedStatistics
   output(COutputInterface::AFTER);
+
+  if (mIndex >= 0) // If an object was selected...
+    {
+      mValues.push_back(*(mpContainer->getState(false).array() + mIndex));
+      mTimes.push_back(*mpContainerStateTime);
+      //computeSelectedStatistics(mValues, mTimes);
+    }
+}
+
+void CAnalyticsTask::computeSelectedStatistics(std::vector< C_FLOAT64 > mValues, std::vector< C_FLOAT64 > mTimes)
+{
+  mStatVal = mValues[mValues.size() - 1];
+  mStatTime = mTimes[mTimes.size() - 1];
+
+  for (int i = mValues.size() - 1; i >= 0 ; i--)
+    {
+      if (mpAnalyticsProblem->isPositiveDirection())     //Looking for minimum
+        {
+          if (mValues[i] <= mStatVal(0, 0))
+            {
+              mStatVal = mValues[i];
+              mStatTime = mTimes[i];
+            }
+        }
+      else                                               //Looking for maximum
+        {
+          if (mValues[i] >= mStatVal(0, 0))
+            {
+              mStatVal = mValues[i];
+              mStatTime = mTimes[i];
+            }
+        }
+    }
 }
 
 bool CAnalyticsTask::restore()
@@ -402,6 +443,12 @@ void CAnalyticsTask::eventCallBack(void * /* pData */, void * /* pCaller */)
 
   // count the crossings
   ++mNumCrossings;
+
+  //--- ETTORE start ---
+  // I store the max / min of the variable and the corresponding times
+  mValues.push_back(mContainerState[mIndex]);
+  mTimes.push_back(*mpContainerStateTime);
+  //--- ETTORE end -----
 
   // now check if we can transition to the main state
   if (mState == TRANSIENT)
