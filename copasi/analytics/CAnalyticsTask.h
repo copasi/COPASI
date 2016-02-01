@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2015 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -22,6 +22,8 @@
 #include "copasi/utilities/CReadConfig.h"
 #include "copasi/trajectory/CTimeSeries.h"
 #include "copasi/utilities/CVector.h"
+#include "utilities/CAnnotatedMatrix.h"
+#include "utilities/CMatrix.h"
 
 class CAnalyticsProblem;
 class CState;
@@ -43,7 +45,7 @@ public:
    * @param const CTaskEnum::Task & type (default: analytics)
    */
   CAnalyticsTask(const CCopasiContainer * pParent,
-                    const CTaskEnum::Task & type = CTaskEnum::analytics);
+                 const CTaskEnum::Task & type = CTaskEnum::analytics);
 
   /**
    * Copy constructor
@@ -51,7 +53,7 @@ public:
    * @param const CCopasiContainer * pParent (default: NULL)
    */
   CAnalyticsTask(const CAnalyticsTask & src,
-                    const CCopasiContainer * pParent = NULL);
+                 const CCopasiContainer * pParent = NULL);
 
   /**
    * Destructor
@@ -122,9 +124,18 @@ private:
   C_FLOAT64 relativeDifferenceOfStates(const CVectorCore< C_FLOAT64 > & s1,
                                        const CVectorCore< C_FLOAT64 > & s2);
 
+  /**
+   * Compute the max or min of the values contained in the first parameter vector
+   */
+  void computeSelectedStatistics(std::vector< C_FLOAT64 >, std::vector< C_FLOAT64 >);
+
 private:
 
   // Attributes
+  /**
+   * Index of the selected object for the task
+   */
+  size_t mIndex;
 
   /**
    * A pointer to the trajectory Problem
@@ -186,6 +197,10 @@ private:
 
   std::vector< CVector< C_FLOAT64 > > mStatesRing;
   //std::vector<C_FLOAT64> mvTimesRing;
+  //--- ETTORE start ---
+  std::vector< C_FLOAT64 > mValues;
+  std::vector< C_FLOAT64 > mTimes;
+  //--- ETTORE end -----
 
   //the number of states already pushed to the ring buffer
   size_t mStatesRingCounter;
@@ -200,11 +215,18 @@ private:
   C_FLOAT64 mAverageFreq;
 
   //--- ETTORE start ---
-  CVectorCore< C_FLOAT64 > mInitialState;
-  CVectorCore< C_FLOAT64 > mFinalState;
-
+  const CCopasiObject *mpSelectedObject;
   CCopasiObject * mpObjectSelected;
   CCopasiObject * mpObjectRate;
+
+  /**
+   *  This holds the result
+   */
+  CMatrix < C_FLOAT64 > mStatVal;
+  CMatrix < C_FLOAT64 > mStatTime;
+
+  CArrayAnnotation * mpStatValAnn;
+  CArrayAnnotation * mpStatTimeAnn;
   //--- ETTORE end -----
 };
 #endif // COPASI_CAnalyticsTask

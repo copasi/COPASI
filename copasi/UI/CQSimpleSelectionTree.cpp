@@ -1,4 +1,4 @@
-// Copyright (C) 2011 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -40,6 +40,9 @@ CQSimpleSelectionTree::CQSimpleSelectionTree(QWidget* parent):
 
   mpResultMatrixSubtree = new QTreeWidgetItem(this, QStringList("Results"));
   mpResultSteadyStateSubtree = new QTreeWidgetItem(mpResultMatrixSubtree, QStringList("Steady State"));
+  //--- ETTORE start ---
+  mpResultAnalyticsSubtree = new QTreeWidgetItem(mpResultMatrixSubtree, QStringList("Analytics"));
+  //--- ETTORE end -----
   mpResultSensitivitySubtree = new QTreeWidgetItem(mpResultMatrixSubtree, QStringList("Sensitivity"));
   mpResultMCASubtree = new QTreeWidgetItem(mpResultMatrixSubtree, QStringList("Metabolic Control Analysis"));
   mpResultTSSASubtree = new QTreeWidgetItem(mpResultMatrixSubtree, QStringList("Time Scale Separation Analysis"));
@@ -513,6 +516,38 @@ void CQSimpleSelectionTree::populateTree(const CModel * pModel,
     }
   catch (...)
     {}
+
+  //--- ETTORE Start ---
+  // Analytics
+  task = dynamic_cast<CCopasiTask *>((*pDataModel->getTaskList())["Analytics"]);
+
+  try
+    {
+      if (task && task->updateMatrices())
+        {
+          //for analytics the results are in the task
+          const CCopasiContainer::objectMap * pObjects = & task->getObjects();
+          CCopasiContainer::objectMap::const_iterator its = pObjects->begin();
+          CArrayAnnotation *ann;
+
+          for (; its != pObjects->end(); ++its)
+            {
+              ann = dynamic_cast<CArrayAnnotation*>(its->second);
+
+              if (!ann) continue;
+
+              if (!ann->isEmpty() && filter(classes, ann))
+                {
+                  pItem = new QTreeWidgetItem(this->mpResultAnalyticsSubtree, QStringList(FROM_UTF8(ann->getObjectName())));
+                  treeItems[pItem] = ann;
+                }
+            }
+        }
+    }
+  catch (...)
+    {}
+
+  //--- ETTORE End -----
 
   // Sensitivities
   task = dynamic_cast<CCopasiTask *>((*pDataModel->getTaskList())["Sensitivities"]);
