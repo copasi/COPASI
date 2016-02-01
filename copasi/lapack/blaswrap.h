@@ -1,4 +1,4 @@
-// Copyright (C) 2013 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2013 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -92,8 +92,7 @@ extern "C"
 # define dnrm2_(N, X, INCX) cblas_dnrm2(*N, X, *INCX)
 # define idamax_(N, X, INCX) \
   cblas_idamax(*N, X, *INCX)
-# include <cmath>
-using std::isnan;
+
 #endif // HAVE_APPLE
 
 #ifdef min

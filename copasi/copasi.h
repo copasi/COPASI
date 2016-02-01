@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -58,6 +58,11 @@ LIBSEDML_CPP_NAMESPACE_USE
 
 #ifdef max
 # undef max
+#endif
+
+#if HAVE_APPLE || __GNUC__ > 5
+# include <cmath>
+using std::isnan;
 #endif
 
 #if (defined SunOS || defined __CYGWIN__ || defined Darwin)
