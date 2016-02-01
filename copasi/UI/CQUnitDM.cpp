@@ -271,7 +271,8 @@ bool CQUnitDM::removeRows(QModelIndexList rows, const QModelIndex&)
     {
       if (!isDefaultRow(*i) &&
           (pUnitDef = (*CCopasiRootContainer::getUnitList())[(*i).row()]) != NULL &&
-          pModel->getUnitSymbolUsage(pUnitDef->getSymbol()).empty()) //Don't delete built-ins or used units
+          pModel->getUnitSymbolUsage(pUnitDef->getSymbol()).empty() &&
+          !pUnitDef->isReadOnly())//Don't delete built-ins or used units
         pUnitDefQList.append((*CCopasiRootContainer::getUnitList())[(*i).row()]);
     }
 
