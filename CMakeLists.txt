@@ -184,6 +184,10 @@ if(ENABLE_COPASI_DEBUG_TRACE)
   add_definitions(-DCOPASI_DEBUG_TRACE)
 endif(ENABLE_COPASI_DEBUG_TRACE)
 
+# another option to create the COPASI SE library directly from the files, instead of first building an 
+# object library (necessary sometimes as the object library messes up debugging on VS2013)
+option(DISABLE_CORE_OBJECT_LIBRARY "Disable creation of libCOPASISE-core object library and just create libCOPASISE-static" OFF)
+mark_as_advanced(DISABLE_CORE_OBJECT_LIBRARY)
 
 
 # Sven developed an option of scaling the residuals in the parameter estimation
@@ -724,7 +728,7 @@ message(STATUS "-----------------------------------------------------------
 
    QWT lib           = ${QWT_LIBRARY}
    QWT include       = ${QWT_INCLUDE_DIR}
-   QWT version       = ${QWT_VERSION_HEX}
+   QWT version       = ${QWT_VERSION_STRING} (0x${QWT_VERSION_NUMERIC})
 
    qwtplot3d lib     = ${QWTPLOT3D_LIBRARY}
    qwtplot3d include = ${QWTPLOT3D_INCLUDE_DIR}
