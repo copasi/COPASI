@@ -426,7 +426,7 @@ void CCrossSectionTask::eventCallBack(void * /* pData */, void * /* pCaller */)
             }
         }
 
-      if (mPreviousCrossingTime == mPreviousCrossingTime)
+      if (!isnan(mPreviousCrossingTime))
         {
           mLastPeriod = *mpContainerStateTime - mPreviousCrossingTime;
         }
