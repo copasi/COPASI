@@ -58,7 +58,7 @@ SIUnit SIUnits[] =
   {"watt",       "W",        "m^2*kg*s^-3"},
   {"weber",      "Wb",       "m^2*kg*s^-2*A^-1"},
 
-  {"dimensionless", "",      ""},
+  {"dimensionless", "1",      "1"},
   {"item",       "#",        "#"},
   {"minute",     "min",      "60*s"},
   {"hour",       "h",        "3600*s"},

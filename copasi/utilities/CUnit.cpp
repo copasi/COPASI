@@ -1,4 +1,4 @@
-// Copyright (C) 2014 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2014 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -331,18 +331,20 @@ bool CUnit::setExpression(const std::string & expression,
 {
   mExpression = expression;
 
-  if(expression.empty())
-  {
-    mComponents.clear();
-    mComponents.insert(CUnitComponent(CBaseUnit::dimensionless));
-    return true;
-  }
+  if (expression.empty())
+    {
+      mComponents.clear();
+      return true;
+    }
 
   return compile(avogadro);
 }
 
 bool CUnit::compile(const C_FLOAT64 & avogadro)
 {
+  mComponents.clear();
+  mUsedSymbols.clear();
+
   // parse the expression into a linked node tree
   std::istringstream buffer(mExpression);
   CUnitParser Parser(&buffer);
@@ -397,9 +399,13 @@ void CUnit::addComponent(const CUnitComponent & component)
     {
       CUnitComponent * pComponent = const_cast< CUnitComponent * >(&*it);
 
-      pComponent->setExponent(pComponent->getExponent() + component.getExponent());
       pComponent->setScale(pComponent->getScale() + component.getScale());
       pComponent->setMultiplier(pComponent->getMultiplier() * component.getMultiplier());
+
+      if (pComponent->getKind() != CBaseUnit::dimensionless)
+        {
+          pComponent->setExponent(pComponent->getExponent() + component.getExponent());
+        }
     }
   else
     {
@@ -420,8 +426,13 @@ CUnit & CUnit::exponentiate(double exp)
     {
       CUnitComponent * pComponent = const_cast< CUnitComponent * >(&*it);
 
-      pComponent->setMultiplier(pow(pComponent->getExponent(), exp));
-      pComponent->setExponent(pComponent->getExponent() * exp);
+      pComponent->setMultiplier(pow(pComponent->getMultiplier(), exp));
+      pComponent->setScale(pComponent->getScale() * exp);
+
+      if (pComponent->getKind() != CBaseUnit::dimensionless)
+        {
+          pComponent->setExponent(pComponent->getExponent() * exp);
+        }
     }
 
   return *this;
