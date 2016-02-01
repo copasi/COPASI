@@ -1,4 +1,4 @@
-// Copyright (C) 2014 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2014 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -15,13 +15,6 @@
 
 #include "copasi/report/CCopasiRootContainer.h"
 #include "copasi/commandline/CConfigurationFile.h"
-
-#ifdef _MSC_VER
-namespace std
-{
-bool isnan(double d) {return d != d;}
-}
-#endif
 
 // Uncomment this line below to get debug print out.
 // #define DEBUG_OUTPUT 1
@@ -207,7 +200,7 @@ bool CMathEventQueue::addAssignment(const C_FLOAT64 & executionTime,
   // If the assignment is in the future or it has a priority the
   // cascading level must be zero.
   if (executionTime > *mpTime ||
-      !std::isnan(* (C_FLOAT64 *) pEvent->getPriority()->getValuePointer()))
+      !isnan(* (C_FLOAT64 *) pEvent->getPriority()->getValuePointer()))
     CascadingLevel = 0;
 
   pEvent->addPendingAction(mActions.insert(std::make_pair(CKey(executionTime, equality, CascadingLevel),
@@ -228,7 +221,7 @@ bool CMathEventQueue::addCalculation(const C_FLOAT64 & executionTime,
   // If the assignment is in the future or it has a priority the
   // cascading level must be zero.
   if (executionTime > *mpTime ||
-      !std::isnan(* (C_FLOAT64 *) pEvent->getPriority()->getValuePointer()))
+      !isnan(* (C_FLOAT64 *) pEvent->getPriority()->getValuePointer()))
     CascadingLevel = 0;
 
   pEvent->addPendingAction(mActions.insert(std::make_pair(CKey(executionTime, equality, CascadingLevel),
@@ -371,7 +364,7 @@ CMathEventQueue::iterator CMathEventQueue::getAction()
   for (; itAction != PendingActions.second; ++itAction)
     {
       // Events without priority are ignored
-      if (std::isnan(itAction->second.getPriority()))
+      if (isnan(itAction->second.getPriority()))
         {
           continue;
         }
@@ -398,18 +391,18 @@ CMathEventQueue::iterator CMathEventQueue::getAction()
 
   switch (PriorityActions.size())
     {
-        // No prioritized actions
+      // No prioritized actions
       case 0:
         // We arbitrarily pick the first
         return PendingActions.first;
         break;
 
-        // One action has the highest priority
+      // One action has the highest priority
       case 1:
         return PriorityActions[0];
         break;
 
-        // Pick one randomly
+      // Pick one randomly
       default:
         return PriorityActions[mpContainer->getRandomGenerator().getRandomU(PriorityActions.size() - 1)];
         break;

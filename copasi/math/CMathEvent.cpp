@@ -1,4 +1,4 @@
-// Copyright (C) 2011 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -178,7 +178,7 @@ void CMathEvent::CTrigger::CRootProcessor::toggle(const C_FLOAT64 & time,
   // value of the root expression changes sign. In that case it is save
   // to toggle the state.
 
-  if (!std::isnan(mLastToggleTime) &&
+  if (!isnan(mLastToggleTime) &&
       mLastToggleTime == time)
     {
       return;
@@ -1546,7 +1546,7 @@ C_FLOAT64 CMathEvent::getCalculationTime() const
   mpContainer->applyUpdateSequence(mDelaySequence);
 
   if (mDelayExecution ||
-      std::isnan(* (C_FLOAT64 *) mpDelay->getValuePointer()))
+      isnan(* (C_FLOAT64 *) mpDelay->getValuePointer()))
     {
       return *mpTime;
     }
@@ -1559,7 +1559,7 @@ C_FLOAT64 CMathEvent::getExecutionTime() const
   mpContainer->applyUpdateSequence(mDelaySequence);
 
   if (!mDelayExecution ||
-      std::isnan(* (C_FLOAT64 *) mpDelay->getValuePointer()))
+      isnan(* (C_FLOAT64 *) mpDelay->getValuePointer()))
     {
       return *mpTime;
     }
