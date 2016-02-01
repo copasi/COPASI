@@ -40,6 +40,7 @@ class CLPoint;
 class CLDimensions;
 class CLBoundingBox;
 class CLCurve;
+class CUnitDefinitionDB;
 
 class CCopasiParameter;
 class CCopasiParameterGroup;
@@ -285,6 +286,12 @@ public:
    * @return bool success
    */
   bool freeLayoutList();
+
+  /**
+   * Save the Unit Definition list.
+   * @return bool success
+   */
+  bool saveUnitDefinitionList();
 
 private:
   /**
@@ -544,6 +551,8 @@ private:
    */
   void saveRenderPoint(const CLRenderPoint& point);
 
+
+
   // Attributes
 
   /**
@@ -602,6 +611,11 @@ private:
    * Remember if we already issued MCXML21
    */
   bool mMCXML21Issued;
+
+  /**
+   * Pointer to a vector of unit definitions used by the model
+   */
+  CUnitDefinitionDB * mpUnitDefList;
 };
 
 #endif // COPASI_CCopasiXML
