@@ -125,13 +125,13 @@ compound_unit: unit
            }
          | compound_unit SUPERSCRIPT_2
            {
-             $1.pUnit->exponentiate(2);
+             $1.pUnit->exponentiate(2.0);
              $$.pUnit = $1.pUnit;
              mpUnit = $$.pUnit;
            }
          | compound_unit SUPERSCRIPT_3
            {
-             $1.pUnit->exponentiate(3);
+             $1.pUnit->exponentiate(3.0);
              $$.pUnit = $1.pUnit;
              mpUnit = $$.pUnit;
            }
