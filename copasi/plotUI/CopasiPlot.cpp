@@ -201,7 +201,7 @@ CopasiPlot::createSpectogram(CPlotItem *plotItem)
     }
   else if (colorMap == "Blue-White-Red")
     {
-      QwtLinearColorMap *colorMap = new CLinearColorMap(Qt::blue, Qt::red);
+      CLinearColorMap *colorMap = new CLinearColorMap(Qt::blue, Qt::red);
       colorMap->setAbsoluteStop(0.0, Qt::white);
       pSpectogram->setColorMap(colorMap);
     }

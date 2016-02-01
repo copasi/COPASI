@@ -18,7 +18,11 @@ CLinearColorMap::CLinearColorMap(const QColor &from, const QColor &to, QwtColorM
 }
 
 CLinearColorMap::CLinearColorMap(const CLinearColorMap &other)
+#if QWT_VERSION > 0x060000
+  : QwtLinearColorMap(other.color1(), other.color2(), other.format())
+#else
   : QwtLinearColorMap(other)
+#endif
   , mMissingColor(other.mMissingColor)
   , mAbsoluteStop(other.mAbsoluteStop)
   , mAbsoluteStopColor(other.mAbsoluteStopColor)
@@ -42,8 +46,19 @@ CLinearColorMap &CLinearColorMap::operator=(const CLinearColorMap &rhs)
 {
   if (&rhs == this) return *this;
 
+#if QWT_VERSION > 0x060000
+  
+#else
   QwtLinearColorMap::operator =(rhs);
+#endif
   mMissingColor = rhs.mMissingColor;
+  mAbsoluteStop = rhs.mAbsoluteStop;
+  
+  if (rhs.mpLower != NULL)
+    mpLower = new CLinearColorMap(*rhs.mpLower);
+
+  if (rhs.mpUpper != NULL)
+    mpUpper = new CLinearColorMap(*rhs.mpUpper);
 
   return *this;
 }

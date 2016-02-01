@@ -60,23 +60,8 @@ QwtText LogPlotZoomer::trackerText(const QwtDoublePoint &pos) const
   return QwtText(); // make some dumb compilers happy
 }
 
-/*void QwtPlotZoomer::move(double x, double y)
-{
-    x = qwtMax(x, zoomBase().left());
-    x = qwtMin(x, zoomBase().right() - zoomRect().width());
-
-    y = qwtMax(y, zoomBase().top());
-    y = qwtMin(y, zoomBase().bottom() - zoomRect().height());
-
-    if (x != zoomRect().left() || y != zoomRect().top())
-    {
-        d_data->zoomStack[d_data->zoomRectIndex].moveTo(x, y);
-        rescale();
-    }
-}*/
-
 #if QWT_VERSION > 0x060000
-void LogPlotZoomer::moveTo(const QPointF &  pos)
+void LogPlotZoomer::moveTo(const QPointF& pos)
 {
   double x = pos.x();
   double y = pos.y();
