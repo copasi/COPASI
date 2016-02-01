@@ -1,22 +1,14 @@
-/* Begin CVS Header
- $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CReportDefinitionVector.cpp,v $
- $Revision: 1.23 $
- $Name:  $
- $Author: shoops $
- $Date: 2011/09/16 12:12:08 $
- End CVS Header */
-
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2003 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -35,8 +27,8 @@
 
 CReportDefinitionVector::CReportDefinitionVector(const std::string & name,
     const CCopasiContainer * pParent):
-    CCopasiVectorN< CReportDefinition >(name, pParent),
-    mKey(CCopasiRootContainer::getKeyFactory()->add("CReportDefinitionVector", this))
+  CCopasiVectorN< CReportDefinition >(name, pParent),
+  mKey(CCopasiRootContainer::getKeyFactory()->add("CReportDefinitionVector", this))
 {}
 
 CReportDefinitionVector::~CReportDefinitionVector()
@@ -66,7 +58,7 @@ CReportDefinition* CReportDefinitionVector::createReportDefinition(const std::st
   pNewReportDef->setComment(comment);
   pNewReportDef->setObjectName(name);
 
-  add(pNewReportDef);
+  add(pNewReportDef, true);
   return pNewReportDef;
 }
 

@@ -1514,18 +1514,18 @@ CCopasiTask * CCopasiDataModel::addTask(const CTaskEnum::Task & taskType)
       case CTaskEnum::crosssection:
         pTask = new CCrossSectionTask(mData.pTaskList);
         break;
-      //--- ETTORE start ---
+        //--- ETTORE start ---
 
       case CTaskEnum::analytics:
         pTask = new CAnalyticsTask(mData.pTaskList);
         break;
-      //--- ETTORE end -----
+        //--- ETTORE end -----
 
       default:
         return pTask;
     }
 
-  mData.pTaskList->add(pTask);
+  mData.pTaskList->add(pTask, true);
 
   return pTask;
 }

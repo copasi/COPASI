@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -157,7 +157,7 @@ CCopasiObject::CCopasiObject(const std::string & name,
   if (mpObjectParent != NULL &&
       mpObjectParent->isContainer())
     {
-      mpObjectParent->add(this);
+      mpObjectParent->add(this, true);
     }
 }
 
@@ -177,7 +177,7 @@ CCopasiObject::CCopasiObject(const CCopasiObject & src,
 
   if (mpObjectParent != NULL)
     {
-      mpObjectParent->add(this);
+      mpObjectParent->add(this, true);
     }
 }
 

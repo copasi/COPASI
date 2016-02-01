@@ -232,7 +232,7 @@ public:
     // This is not very efficient !!!
     // It results in a lot of resizing of the vector !!!
     std::vector< CType * >::push_back(pCopy);
-    return CCopasiContainer::add(pCopy);
+    return CCopasiContainer::add(pCopy, true);
   }
 
   /**
@@ -643,7 +643,7 @@ public:
       CCopasiMessage ex(CCopasiMessage::EXCEPTION, MCopasiBase + 1, sizeof(CType));
 
     std::vector< CType * >::push_back(Element);
-    return CCopasiContainer::add(Element);
+    return CCopasiContainer::add(Element, true);
   }
 
   /**
