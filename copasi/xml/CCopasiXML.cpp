@@ -54,6 +54,7 @@
 #include "layout/CListOfLayouts.h"
 #include "parameterFitting/CFitTask.h"
 #include "scan/CScanTask.h"
+#include "utilities/CUnitDefinition.h"
 
 #include "copasi/layout/CLLocalRenderInformation.h"
 #include "copasi/layout/CLGlobalRenderInformation.h"
@@ -94,7 +95,8 @@ CCopasiXML::CCopasiXML():
   mpGUI(NULL),
   mpLayoutList(NULL),
   mpDataModel(NULL),
-  mMCXML21Issued(false)
+  mMCXML21Issued(false),
+  mpUnitDefList(NULL)
 {}
 
 CCopasiXML::~CCopasiXML() {}
@@ -160,6 +162,8 @@ bool CCopasiXML::save(std::ostream & os,
   if (!saveLayoutList()) success = false;
 
   if (!saveSBMLReference()) success = false;
+
+  if (!saveUnitDefinitionList()) success = false;
 
   endSaveElement("COPASI");
 
@@ -2760,4 +2764,51 @@ void CCopasiXML::saveRenderPoint(const CLRenderPoint& point)
     }
 
   saveElement("Element", attributes);
+}
+
+bool CCopasiXML::saveUnitDefinitionList()
+{
+  bool success = true;
+
+  mpUnitDefList = CCopasiRootContainer::getUnitList();
+
+  if (!mpUnitDefList) return success;
+
+  size_t i, imax = mpUnitDefList->size();
+
+  if (!imax) return success;
+
+  CXMLAttributeList Attributes;
+  CUnitDefinition * pUnitDef = NULL;
+
+  startSaveElement("ListOfUnitDefinitions");
+
+  for (i = 0; i < imax; i++)
+    {
+      pUnitDef = (*mpUnitDefList)[i];
+
+      // Don't save if the unit is not used in/for a model unit.
+      if(mpModel->getUnitSymbolUsage(pUnitDef->getSymbol()).empty()) continue;
+
+      Attributes.erase();
+      Attributes.add("key", pUnitDef->getKey());
+      Attributes.add("name", pUnitDef->getObjectName());
+      Attributes.add("symbol", pUnitDef->getSymbol());
+
+      startSaveElement("UnitDefinition", Attributes);
+
+        saveAnnotation(pUnitDef);
+
+        startSaveElement("Expression");
+
+          saveData(pUnitDef->getExpression());
+
+        endSaveElement("Expression");
+
+      endSaveElement("UnitDefinition");
+    }
+
+  endSaveElement("ListOfUnitDefinitions");
+
+  return success;
 }
