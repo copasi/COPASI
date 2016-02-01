@@ -269,8 +269,11 @@ bool CQUnitDM::removeRows(QModelIndexList rows, const QModelIndex&)
   // TODO: Skip (don't delete) our SI units.
   for (i = rows.begin(); i != rows.end(); ++i)
     {
-      if (!isDefaultRow(*i) && (*CCopasiRootContainer::getUnitList())[(*i).row()])
-        pUnitDefs.append((*CCopasiRootContainer::getUnitList())[(*i).row()]);
+      if (!isDefaultRow(*i) &&
+          (pUnitDef = (*CCopasiRootContainer::getUnitList())[(*i).row()]) != NULL &&
+          pModel->getUnitSymbolUsage(pUnitDef->getSymbol()).empty() &&
+          !pUnitDef->isReadOnly())//Don't delete built-ins or used units
+        pUnitDefQList.append((*CCopasiRootContainer::getUnitList())[(*i).row()]);
     }
 
   for (QList <CUnitDefinition *>::const_iterator j = pUnitDefs.begin(); j != pUnitDefs.end(); ++j)
