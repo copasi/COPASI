@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -738,7 +738,7 @@ bool CFitProblem::initialize()
 
   setResidualsRequired(false);
 
-  return true;
+  return success;
 }
 
 bool CFitProblem::checkFunctionalConstraints()
@@ -871,7 +871,7 @@ bool CFitProblem::calculate()
                     //calculate a reasonable number of intermediate points
                     numIntermediateSteps = 4; //TODO
                     //resize the storage for the extended time series
-                    pExp->initExtendedTimeSeries(numIntermediateSteps * kmax - numIntermediateSteps + 1);
+                    pExp->initExtendedTimeSeries(numIntermediateSteps * (kmax > 0 ? kmax - 1 : 0) + 1);
                   }
 
                 for (j = 0; j < kmax && Continue; j++) // For each data row;

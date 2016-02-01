@@ -1,4 +1,4 @@
-// Copyright (C) 2013 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2013 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -733,7 +733,7 @@ SEDMLImporter::importTasks(std::map<CCopasiObject*, SedBase*>& copasi2sedmlmap)
 
   for (; it != mReportMap.end(); ++it)
     {
-      mpDataModel->getReportDefinitionList()->add(it->first);
+      mpDataModel->getReportDefinitionList()->add(it->first, true);
       CReport& report = ((*mpDataModel->getTaskList())[it->second])->getReport();
       report.setReportDefinition(it->first);
       report.setTarget(it->second + ".txt");
