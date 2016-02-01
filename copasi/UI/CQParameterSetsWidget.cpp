@@ -1,4 +1,4 @@
-// Copyright (C) 2013 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2013 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -112,7 +112,7 @@ void CQParameterSetsWidget::slotBtnClearClicked()
 
 bool CQParameterSetsWidget::update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & C_UNUSED(key))
 {
-  if (mIgnoreUpdates)
+  if (mIgnoreUpdates || !isVisible())
     {
       return true;
     }

@@ -132,7 +132,7 @@ void CQSpeciesWidget::slotBtnClearClicked()
 
 bool CQSpeciesWidget::update(ListViews::ObjectType C_UNUSED(objectType), ListViews::Action C_UNUSED(action), const std::string & C_UNUSED(key))
 {
-  if (!mIgnoreUpdates)
+  if (!mIgnoreUpdates && isVisible())
     {
       enterProtected();
     }
