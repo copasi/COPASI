@@ -107,27 +107,27 @@ void CQFunctionsWidget::slotBtnClearClicked()
                                    QMessageBox::Yes | QMessageBox::No, QMessageBox::No);
 
   if (ret == QMessageBox::Yes)
-  {
-    QModelIndexList mappedSelRows;
-    size_t i, imax = mpFunctionDM->rowCount();
-
-    for (i = 0; i < imax; i++)
     {
-      mappedSelRows.append(mpFunctionDM->index((int) i, 0));
+      QModelIndexList mappedSelRows;
+      size_t i, imax = mpFunctionDM->rowCount();
+
+      for (i = 0; i < imax; i++)
+        {
+          mappedSelRows.append(mpFunctionDM->index((int) i, 0));
+        }
+
+      if (mappedSelRows.empty())
+        return;
+
+      mpFunctionDM->removeRows(mappedSelRows);
     }
-
-    if (mappedSelRows.empty())
-      return;
-
-    mpFunctionDM->removeRows(mappedSelRows);
-  }
 
   updateDeleteBtns();
 }
 
 bool CQFunctionsWidget::update(ListViews::ObjectType C_UNUSED(objectType), ListViews::Action C_UNUSED(action), const std::string & C_UNUSED(key))
 {
-  if (!mIgnoreUpdates)
+  if (!mIgnoreUpdates && isVisible())
     {
       enterProtected();
     }
