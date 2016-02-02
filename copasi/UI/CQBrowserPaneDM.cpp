@@ -1,4 +1,4 @@
-// Copyright (C) 2011 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -328,9 +328,11 @@ void CQBrowserPaneDM::load()
   findNodeFromId(27)->setKey((*mpCopasiDM->getTaskList())["Time Scale Separation Analysis"]->getKey());
   findNodeFromId(26)->setKey((*mpCopasiDM->getTaskList())["Lyapunov Exponents"]->getKey());
   findNodeFromId(28)->setKey((*mpCopasiDM->getTaskList())["Cross Section"]->getKey());
-  //--- ETTORE start ---
+
+#ifdef WITH_ANALYTICS
   findNodeFromId(29)->setKey((*mpCopasiDM->getTaskList())["Analytics"]->getKey());
-  //--- ETTORE end -----
+#endif // WITH_ANALYTICS
+
   findNodeFromId(31)->setKey((*mpCopasiDM->getTaskList())["Scan"]->getKey());
   findNodeFromId(32)->setKey((*mpCopasiDM->getTaskList())["Optimization"]->getKey());
   findNodeFromId(33)->setKey((*mpCopasiDM->getTaskList())["Parameter Estimation"]->getKey());

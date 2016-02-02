@@ -46,9 +46,11 @@ include(MIRIAM/CMakeLists.txt)
 include(commandline/CMakeLists.txt)
 include(compareExpressions/CMakeLists.txt)
 include(crosssection/CMakeLists.txt)
-#--- ETTORE start ---
+
+if(ENABLE_ANALYTICS)
 include(analytics/CMakeLists.txt)
-#--- ETTORE end -----
+endif()
+
 include(elementaryFluxModes/CMakeLists.txt)
 include(function/CMakeLists.txt)
 include(layout/CMakeLists.txt)

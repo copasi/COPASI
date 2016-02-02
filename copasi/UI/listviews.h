@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -66,9 +66,9 @@ class CQTSSAWidget;
 class CQTSSAResultWidget;
 class CQTSSAResultSubWidget;
 class CQCrossSectionTaskWidget;
-//--- ETTORE start ---
+#ifdef WITH_ANALYTICS
 class CQAnalyticsWidget;
-//--- ETTORE end -----
+#endif // WITH_ANALYTICS
 
 #ifdef COPASI_NONLIN_DYN_OSCILLATION
 class CQOscillationTaskWidget;
@@ -119,20 +119,20 @@ public:
   // CHANGE does not include RENAME
   enum Action {CHANGE = 0, ADD, DELETE, RENAME};
   enum ObjectType {METABOLITE = 0
-  , COMPARTMENT
-  , REACTION
-  , FUNCTION
-  , MODEL
-  , STATE
-  , REPORT
-  , PLOT
-  , MODELVALUE
-  , EVENT
-  , MIRIAM
-  , LAYOUT
-  , PARAMETEROVERVIEW
-  , MODELPARAMETERSET
-  , UNIT
+                                , COMPARTMENT
+                   , REACTION
+                   , FUNCTION
+                   , MODEL
+                   , STATE
+                   , REPORT
+                   , PLOT
+                   , MODELVALUE
+                   , EVENT
+                   , MIRIAM
+                   , LAYOUT
+                   , PARAMETEROVERVIEW
+                   , MODELPARAMETERSET
+                   , UNIT
                   };
 
   void setDataModel(DataModelGUI* pDM);
@@ -161,9 +161,9 @@ public:
   CQOptimizationWidget* getOptimizationWidget();
 
   CQCrossSectionTaskWidget* getCrossSectionWidget();
-  //--- ETTORE start ---
+#ifdef WITH_ANALYTICS
   CQAnalyticsWidget* getAnalyticsWidget();
-  //--- ETTORE end -----
+#endif // WITH_ANALYTICS
 
 signals:
   void signalFolderChanged(const QModelIndex & index);
@@ -247,10 +247,11 @@ private:
   CQTSSAResultWidget *tssaResultWidget;
   CQCrossSectionTaskWidget *crossSectionTaskWidget;
   CQTimeSeriesWidget *crossSectionTimeSeriesWidget;
-  //--- ETTORE start ---
+
+#ifdef WITH_ANALYTICS
   CQAnalyticsWidget *analyticsWidget;
   CQTimeSeriesWidget *analyticsResultWidget;
-  //--- ETTORE end -----
+#endif // WITH_ANALYTICS
 
 #ifdef COPASI_NONLIN_DYN_OSCILLATION
   CQOscillationTaskWidget *oscillationTaskWidget;

@@ -1,5 +1,4 @@
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
-
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -51,10 +50,10 @@ static char DataModeltxt[] =
   "27:271:Result\n"
   "2:28:Cross Section\n"
   "28:281:Result\n"
-  //--- ETTORE start ---
+#ifdef WITH_ANALYTICS
   "2:29:Analytics\n"
   "29:291:Result\n"
-  //--- ETTORE end -----
+#endif // WITH_ANALYTICS
 #ifdef COPASI_NONLIN_DYN_OSCILLATION
   "2:36:Oscillation\n"
 #endif

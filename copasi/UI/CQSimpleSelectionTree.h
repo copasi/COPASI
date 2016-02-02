@@ -76,9 +76,11 @@ protected:
   QTreeWidgetItem* mpResultMatrixSubtree;
   QTreeWidgetItem* mpResultSteadyStateSubtree;
   QTreeWidgetItem* mpResultSensitivitySubtree;
-  //--- ETTORE start ---
+
+#ifdef WITH_ANALYTICS
   QTreeWidgetItem* mpResultAnalyticsSubtree;
-  //--- ETTORE end -----
+#endif // WITH_ANALYTICS
+
   QTreeWidgetItem* mpResultMCASubtree;
   QTreeWidgetItem* mpResultTSSASubtree;
 

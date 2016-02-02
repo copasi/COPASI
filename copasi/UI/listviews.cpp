@@ -103,9 +103,10 @@
 #include "plotUI/CQPlotSubwidget.h"
 #include "model/CModel.h"
 #include "CQCrossSectionTaskWidget.h"
-//--- ETTORE start ---
-#include "CQAnalyticsWidget.h"
-//--- ETTORE end -----
+
+#ifdef WITH_ANALYTICS
+# include "CQAnalyticsWidget.h"
+#endif // WITH_ANALYTICS
 
 #ifdef COPASI_NONLIN_DYN_OSCILLATION
 #include "CQOscillationTaskWidget.h"
@@ -204,10 +205,11 @@ ListViews::ListViews(QWidget *parent, const char *name):
   tssaResultWidget(NULL),
   crossSectionTaskWidget(NULL),
   crossSectionTimeSeriesWidget(NULL),
-  //--- ETTORE start ---
+#ifdef WITH_ANALYTICS
   analyticsWidget(NULL),
   analyticsResultWidget(NULL),
-  //--- ETTORE end -----
+#endif // WITH_ANALYTICS
+
 #ifdef COPASI_NONLIN_DYN_OSCILLATION
   oscillationTaskWidget(NULL),
 #endif
@@ -603,7 +605,8 @@ void ListViews::ConstructNodeWidgets()
       mpStackedWidget->addWidget(crossSectionTaskWidget);
     }
 
-  //--- ETTORE start ---
+#ifdef WITH_ANALYTICS
+
   if (!analyticsResultWidget)
     {
       analyticsResultWidget = new CQTimeSeriesWidget(this);
@@ -616,7 +619,7 @@ void ListViews::ConstructNodeWidgets()
       mpStackedWidget->addWidget(analyticsWidget);
     }
 
-  //--- ETTORE end -----
+#endif // WITH_ANALYTICS
 
 #ifdef COPASI_NONLIN_DYN_OSCILLATION
 
@@ -849,7 +852,8 @@ CopasiWidget* ListViews::findWidgetFromId(const size_t & id) const
         return crossSectionTimeSeriesWidget;
         break;
 
-      //--- ETTORE start ---
+#ifdef WITH_ANALYTICS
+
       case 29:
         return analyticsWidget;
         break;
@@ -857,7 +861,8 @@ CopasiWidget* ListViews::findWidgetFromId(const size_t & id) const
       case 291:
         return analyticsResultWidget;
         break;
-        //--- ETTORE end -----
+#endif // WITH_ANALYTICS
+
 #ifdef COPASI_NONLIN_DYN_OSCILLATION
 
       case 36:
