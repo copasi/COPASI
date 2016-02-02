@@ -449,7 +449,7 @@ if(ENABLE_COPASI_SEDML)
 endif(ENABLE_COPASI_SEDML)
 
 #Option for the COPASI support for UNDO Framework currently being developed by Joseph 
-option (ENABLE_COPASI_UNDO "Enables UNDO support." OFF)
+option (ENABLE_COPASI_UNDO "Enables UNDO support." ON)
 mark_as_advanced(ENABLE_COPASI_UNDO)
 if(ENABLE_COPASI_UNDO)
   add_definitions(-DCOPASI_UNDO)
