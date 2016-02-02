@@ -1190,6 +1190,9 @@ void CQSimpleSelectionTree::removeAllEmptySubTrees()
   removeEmptySubTree(&mpResultTSSASubtree);
   removeEmptySubTree(&mpResultSensitivitySubtree);
   removeEmptySubTree(&mpResultSteadyStateSubtree);
+  //--- ETTORE start ---
+  removeEmptySubTree(&mpResultAnalyticsSubtree);
+  //--- ETTORE end -----
   removeEmptySubTree(&mpResultMatrixSubtree);
 
   removeEmptySubTree(&mpTimeSubtree);
