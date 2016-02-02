@@ -40,9 +40,11 @@ CQSimpleSelectionTree::CQSimpleSelectionTree(QWidget* parent):
 
   mpResultMatrixSubtree = new QTreeWidgetItem(this, QStringList("Results"));
   mpResultSteadyStateSubtree = new QTreeWidgetItem(mpResultMatrixSubtree, QStringList("Steady State"));
-  //--- ETTORE start ---
+
+#ifdef WITH_ANALYTICS
   mpResultAnalyticsSubtree = new QTreeWidgetItem(mpResultMatrixSubtree, QStringList("Analytics"));
-  //--- ETTORE end -----
+#endif // WITH_ANALYTICS
+
   mpResultSensitivitySubtree = new QTreeWidgetItem(mpResultMatrixSubtree, QStringList("Sensitivity"));
   mpResultMCASubtree = new QTreeWidgetItem(mpResultMatrixSubtree, QStringList("Metabolic Control Analysis"));
   mpResultTSSASubtree = new QTreeWidgetItem(mpResultMatrixSubtree, QStringList("Time Scale Separation Analysis"));
@@ -517,8 +519,7 @@ void CQSimpleSelectionTree::populateTree(const CModel * pModel,
   catch (...)
     {}
 
-  //--- ETTORE Start ---
-  // Analytics
+#ifdef WITH_ANALYTICS  // Analytics
   task = dynamic_cast<CCopasiTask *>((*pDataModel->getTaskList())["Analytics"]);
 
   try
@@ -547,7 +548,7 @@ void CQSimpleSelectionTree::populateTree(const CModel * pModel,
   catch (...)
     {}
 
-  //--- ETTORE End -----
+#endif // WITH_ANALYTICS
 
   // Sensitivities
   task = dynamic_cast<CCopasiTask *>((*pDataModel->getTaskList())["Sensitivities"]);
@@ -1190,9 +1191,11 @@ void CQSimpleSelectionTree::removeAllEmptySubTrees()
   removeEmptySubTree(&mpResultTSSASubtree);
   removeEmptySubTree(&mpResultSensitivitySubtree);
   removeEmptySubTree(&mpResultSteadyStateSubtree);
-  //--- ETTORE start ---
+
+#ifdef WITH_ANALYTICS
   removeEmptySubTree(&mpResultAnalyticsSubtree);
-  //--- ETTORE end -----
+#endif // WITH_ANALYTICS
+
   removeEmptySubTree(&mpResultMatrixSubtree);
 
   removeEmptySubTree(&mpTimeSubtree);

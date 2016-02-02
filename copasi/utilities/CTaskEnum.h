@@ -1,4 +1,4 @@
-// Copyright (C) 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2014 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -28,9 +28,7 @@ public:
     sens,
     moieties,
     crosssection,
-    //--- ETTORE start ---
     analytics,
-    //--- ETTORE end -----
     lna,
     UnsetTask
   };
@@ -95,9 +93,7 @@ public:
     EFMBitPatternAlgorithm,
     Householder,
     crossSectionMethod,
-    //--- ETTORE start ---
     analyticsMethod,
-    //--- ETTORE end -----
     linearNoiseApproximation
   };
 
