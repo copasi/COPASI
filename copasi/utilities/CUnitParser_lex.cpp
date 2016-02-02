@@ -576,14 +576,16 @@ static yyconst flex_int16_t yy_chk[306] =
 #define YY_USER_INIT \
   pdelete(mpUnit); \
   mPosition = 0; \
-  mSymbols.clear();
+  mSymbols.clear(); \
+  mReplacedExpression = "";
 
 #define COMMON_ACTION \
   CUnitParserlval.pUnit = NULL; \
   CUnitParserlval.text = yytext; \
-  mPosition += yyleng;
+  mPosition += yyleng; \
+  if (mOldSymbol != mNewSymbol) {mReplacedExpression += (CUnitParserlval.token == USER_DEFINED_UNIT && mOldSymbol == yytext) ? mNewSymbol : yytext;}
 
-#line 576 "CUnitParser_lex.cpp"
+#line 578 "CUnitParser_lex.cpp"
 
 #define INITIAL 0
 
@@ -687,9 +689,9 @@ register yy_state_type yy_current_state;
 register char * yy_cp, *yy_bp;
 register int yy_act;
 
-#line 42 "utilities/CUnitParser.lpp"
+#line 44 "utilities/CUnitParser.lpp"
 
-#line 683 "CUnitParser_lex.cpp"
+#line 685 "CUnitParser_lex.cpp"
 
 if (!(yy_init))
   {
@@ -814,125 +816,137 @@ do_action:  /* This label is used only to access EOF actions. */
           /* beginning of action switch */
         case 1:
           YY_RULE_SETUP
-#line 43 "utilities/CUnitParser.lpp"
+#line 45 "utilities/CUnitParser.lpp"
 
+          CUnitParserlval.token = KIND;
           COMMON_ACTION;
-          return KIND;
+          return CUnitParserlval.token;
 
           YY_BREAK
 
         case 2:
           YY_RULE_SETUP
-#line 48 "utilities/CUnitParser.lpp"
+#line 51 "utilities/CUnitParser.lpp"
 
+          CUnitParserlval.token = SI_UNIT;
           COMMON_ACTION;
-          return SI_UNIT;
+          return CUnitParserlval.token;
 
           YY_BREAK
 
         case 3:
           /* rule 3 can match eol */
           YY_RULE_SETUP
-#line 53 "utilities/CUnitParser.lpp"
+#line 57 "utilities/CUnitParser.lpp"
 
+          CUnitParserlval.token = SCALE;
           COMMON_ACTION;
-          return SCALE;
+          return CUnitParserlval.token;
 
           YY_BREAK
 
         case 4:
           YY_RULE_SETUP
-#line 58 "utilities/CUnitParser.lpp"
+#line 63 "utilities/CUnitParser.lpp"
 
+          CUnitParserlval.token = NUMBER;
           COMMON_ACTION;
-          return NUMBER;
+          return CUnitParserlval.token;
 
           YY_BREAK
 
         case 5:
           YY_RULE_SETUP
-#line 63 "utilities/CUnitParser.lpp"
+#line 69 "utilities/CUnitParser.lpp"
 
+          CUnitParserlval.token = MULTIPLY;
           COMMON_ACTION;
-          return MULTIPLY;
+          return CUnitParserlval.token;
 
           YY_BREAK
 
         case 6:
           YY_RULE_SETUP
-#line 68 "utilities/CUnitParser.lpp"
+#line 75 "utilities/CUnitParser.lpp"
 
+          CUnitParserlval.token = DIVIDE;
           COMMON_ACTION;
-          return DIVIDE;
+          return CUnitParserlval.token;
 
           YY_BREAK
 
         case 7:
           YY_RULE_SETUP
-#line 73 "utilities/CUnitParser.lpp"
+#line 81 "utilities/CUnitParser.lpp"
 
+          CUnitParserlval.token = START_PARENS;
           COMMON_ACTION;
-          return START_PARENS;
+          return CUnitParserlval.token;
 
           YY_BREAK
 
         case 8:
           YY_RULE_SETUP
-#line 78 "utilities/CUnitParser.lpp"
+#line 87 "utilities/CUnitParser.lpp"
 
+          CUnitParserlval.token = END_PARENS;
           COMMON_ACTION;
-          return END_PARENS;
+          return CUnitParserlval.token;
 
           YY_BREAK
 
         case 9:
           YY_RULE_SETUP
-#line 83 "utilities/CUnitParser.lpp"
+#line 93 "utilities/CUnitParser.lpp"
 
+          CUnitParserlval.token = EXPONENT;
           COMMON_ACTION;
-          return EXPONENT;
+          return CUnitParserlval.token;
 
           YY_BREAK
 
         case 10:
           YY_RULE_SETUP
-#line 88 "utilities/CUnitParser.lpp"
+#line 99 "utilities/CUnitParser.lpp"
 
+          CUnitParserlval.token = SUPERSCRIPT_2;
           COMMON_ACTION;
-          return SUPERSCRIPT_2;
+          return CUnitParserlval.token;
 
           YY_BREAK
 
         case 11:
           YY_RULE_SETUP
-#line 93 "utilities/CUnitParser.lpp"
+#line 105 "utilities/CUnitParser.lpp"
 
+          CUnitParserlval.token = SUPERSCRIPT_3;
           COMMON_ACTION;
-          return SUPERSCRIPT_3;
+          return CUnitParserlval.token;
 
           YY_BREAK
 
         case 12:
           /* rule 12 can match eol */
           YY_RULE_SETUP
-#line 98 "utilities/CUnitParser.lpp"
+#line 111 "utilities/CUnitParser.lpp"
 
+          CUnitParserlval.token = USER_DEFINED_UNIT;
           COMMON_ACTION;
-          return USER_DEFINED_UNIT;
+          return CUnitParserlval.token;
 
           YY_BREAK
 
         case 13:
           /* rule 13 can match eol */
           YY_RULE_SETUP
-#line 103 "utilities/CUnitParser.lpp"
+#line 117 "utilities/CUnitParser.lpp"
 
           COMMON_ACTION;
 
           YY_BREAK
 
         case YY_STATE_EOF(INITIAL):
-#line 107 "utilities/CUnitParser.lpp"
+#line 121 "utilities/CUnitParser.lpp"
 
           return 0;
 
@@ -940,7 +954,7 @@ do_action:  /* This label is used only to access EOF actions. */
 
         case 14:
           YY_RULE_SETUP
-#line 111 "utilities/CUnitParser.lpp"
+#line 125 "utilities/CUnitParser.lpp"
 
           CCopasiMessage(CCopasiMessage::ERROR, MCUnit + 2, mPosition);
           return YYERRCODE;
@@ -949,10 +963,10 @@ do_action:  /* This label is used only to access EOF actions. */
 
         case 15:
           YY_RULE_SETUP
-#line 116 "utilities/CUnitParser.lpp"
+#line 130 "utilities/CUnitParser.lpp"
           ECHO;
           YY_BREAK
-#line 920 "CUnitParser_lex.cpp"
+#line 934 "CUnitParser_lex.cpp"
 
         case YY_END_OF_BUFFER:
         {
@@ -1844,4 +1858,4 @@ void CUnitParserfree(void * ptr)
 
 #define YYTABLES_NAME "yytables"
 
-#line 116 "utilities/CUnitParser.lpp"
+#line 130 "utilities/CUnitParser.lpp"

@@ -1,4 +1,4 @@
-// Copyright (C) 2014 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2014 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -11,7 +11,10 @@ CUnitParserBase::CUnitParserBase():
   mPosition(0),
   mpUnit(NULL),
   mAvogadro(CUnit::Avogadro),
-  mSymbols()
+  mSymbols(),
+  mOldSymbol(),
+  mNewSymbol(),
+  mReplacedExpression()
 {}
 
 CUnitParserBase::~CUnitParserBase()
@@ -36,6 +39,17 @@ const std::set< std::string > & CUnitParserBase::getSymbols() const
 void CUnitParserBase::setAvogadro(const C_FLOAT64 & avogadro)
 {
   mAvogadro = avogadro;
+}
+
+void CUnitParserBase::replaceSymbol(const std::string & oldSymbol, const std::string & newSymbol)
+{
+  mOldSymbol = oldSymbol;
+  mNewSymbol = newSymbol;
+}
+
+const std::string & CUnitParserBase::getReplacedExpression() const
+{
+  return mReplacedExpression;
 }
 
 void CUnitParserBase::correctErrorPosition()
