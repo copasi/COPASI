@@ -39,6 +39,20 @@ const char * CUnit::QuantityUnitOldXMLNames[] =
 const char * CUnit::QuantityUnitNames[] =
 {"dimensionless", "mol", "mmol", "\xc2\xb5mol", "nmol", "pmol", "fmol", "#", NULL};
 
+// static
+std::string CUnit::replaceSymbol(const std::string & expression,
+                                 const std::string & oldSymbol,
+                                 const std::string & newSymbol)
+{
+  std::istringstream buffer(expression);
+
+  CUnitParser Parser(&buffer);
+  Parser.setAvogadro(CUnit::Avogadro);
+  Parser.replaceSymbol(oldSymbol, newSymbol);
+
+  return (Parser.yyparse() == 0) ? Parser.getReplacedExpression() : expression;
+}
+
 // constructors
 // default
 CUnit::CUnit():

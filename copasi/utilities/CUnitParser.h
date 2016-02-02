@@ -1,4 +1,4 @@
-// Copyright (C) 2014 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2014 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -53,6 +53,9 @@ public:
 
   void setAvogadro(const C_FLOAT64 & avogadro);
 
+  void replaceSymbol(const std::string & oldSymbol, const std::string & newSymbol);
+  const std::string & getReplacedExpression() const;
+
 protected:
   void correctErrorPosition();
 
@@ -63,6 +66,7 @@ public:
   {
     CUnit *pUnit;
     std::string text;
+    int token;
   };
 protected:
 
@@ -70,6 +74,9 @@ protected:
   unsigned C_INT32 mPosition;
   C_FLOAT64 mAvogadro;
   std::set< std::string > mSymbols;
+  std::string mOldSymbol;
+  std::string mNewSymbol;
+  std::string mReplacedExpression;
 };
 
 class CUnitParser: public FlexLexer, public yyYaccParser

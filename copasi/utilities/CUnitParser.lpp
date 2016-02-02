@@ -24,12 +24,14 @@
 #define YY_USER_INIT \
     pdelete(mpUnit); \
     mPosition = 0; \
-    mSymbols.clear();
+    mSymbols.clear(); \
+    mReplacedExpression = "";
 
 #define COMMON_ACTION \
     CUnitParserlval.pUnit = NULL; \
     CUnitParserlval.text = yytext; \
-    mPosition += yyleng;
+    mPosition += yyleng; \
+    if (mOldSymbol != mNewSymbol) {mReplacedExpression += (CUnitParserlval.token == USER_DEFINED_UNIT && mOldSymbol == yytext) ? mNewSymbol : yytext;}  
     
 %}
 
@@ -41,63 +43,75 @@ DIGIT    [0-9]
 
 %%
 {KIND}   %{
+  CUnitParserlval.token = KIND;
   COMMON_ACTION;
-  return KIND;
+  return CUnitParserlval.token;
 %}
 
 {SI_UNIT} %{
+  CUnitParserlval.token = SI_UNIT;
   COMMON_ACTION;
-  return SI_UNIT;
+  return CUnitParserlval.token;
 %}
 
 {SCALE}/{KIND}|{SI_UNIT}|{ID}   %{
+  CUnitParserlval.token = SCALE;
   COMMON_ACTION;
-  return SCALE;
+  return CUnitParserlval.token;
 %}
 
 "-"?{DIGIT}+("."?{DIGIT}*(((e|E)"+"?|(e|E)"-"){DIGIT}+)?)?   %{
+  CUnitParserlval.token = NUMBER;
   COMMON_ACTION;
-  return NUMBER;
+  return CUnitParserlval.token;
 %}
 
 "*"   %{
+  CUnitParserlval.token = MULTIPLY;
   COMMON_ACTION;
-  return MULTIPLY;
+  return CUnitParserlval.token;
 %}
 
 "/"   %{
+  CUnitParserlval.token = DIVIDE;
   COMMON_ACTION;
-  return DIVIDE;
+  return CUnitParserlval.token;
 %}
 
 "("   %{
+  CUnitParserlval.token = START_PARENS;
   COMMON_ACTION;
-  return START_PARENS;
+  return CUnitParserlval.token;
 %}
 
 ")"   %{
+  CUnitParserlval.token = END_PARENS;
   COMMON_ACTION;
-  return END_PARENS;
+  return CUnitParserlval.token;
 %}
 
 "^"   %{
+  CUnitParserlval.token = EXPONENT;
   COMMON_ACTION;
-  return EXPONENT;
+  return CUnitParserlval.token;
 %}
 
 "\xc2\xb2"   %{
+  CUnitParserlval.token = SUPERSCRIPT_2;
   COMMON_ACTION;
-  return SUPERSCRIPT_2;
+  return CUnitParserlval.token;
 %}
 
 "\xc2\xb3"   %{
+  CUnitParserlval.token = SUPERSCRIPT_3;
   COMMON_ACTION;
-  return SUPERSCRIPT_3;
+  return CUnitParserlval.token;
 %}
 
 {ID}  %{
+  CUnitParserlval.token = USER_DEFINED_UNIT;
   COMMON_ACTION;
-  return USER_DEFINED_UNIT;
+  return CUnitParserlval.token;
 %}
   
 [ \t\r\n]+ %{
