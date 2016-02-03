@@ -682,15 +682,15 @@
         <value type="string">fixed</value>
       </choice>
     </attribute>
-    <attribute name="unit">
-      <data type="string"/>
-    </attribute>
     <ref name="annotation.datatype"/>
     <optional>
       <ref name="expression.element"/>
     </optional>
     <optional>
       <ref name="initialExpression.element"/>
+    </optional>
+    <optional>
+      <ref name="unit.element"/>
     </optional>
   </define>
 
@@ -1223,6 +1223,12 @@
     </element>
   </define>
 
+  <define name="unit.element">
+    <element name="Unit">
+      <ref name="expression.simpletype"/>
+    </element>
+  </define>
+  
   <define name="object.element">
     <element name="Object">
       <attribute name="cn">
