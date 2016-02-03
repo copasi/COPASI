@@ -34,6 +34,8 @@
 #include "report/CKeyFactory.h"
 #include "report/CReportDefinitionVector.h"
 #include "report/CReportDefinition.h"
+#include "utilities/CUnitDefinitionDB.h"
+#include "utilities/CUnitDefinition.h"
 
 #include "utilities/CVersion.h"
 #include "utilities/CCopasiParameter.h"
@@ -246,6 +248,8 @@ CCopasiXMLParser::CCopasiXMLParser(CVersion & version) :
   mCommon.pGroup = NULL;
   mCommon.pText = NULL;
   mCommon.pListOfCurveElements = NULL;
+  mCommon.pFileUnitDefinitionList = NULL;
+  mCommon.pCurrentUnitDefinition = NULL;
 
   enableElementHandler(true);
 }
@@ -521,6 +525,13 @@ void CCopasiXMLParser::COPASIElement::start(const XML_Char *pszName,
 
         if (!strcmp(pszName, "ListOfFunctions"))
           mpCurrentHandler = new ListOfFunctionsElement(mParser, mCommon);
+
+        break;
+
+      case ListOfUnitDefinitions:
+
+        if (!strcmp(pszName, "ListOfUnitDefinitions"))
+          mpCurrentHandler = new ListOfUnitDefinitionsElement(mParser, mCommon);
 
         break;
 
@@ -14681,5 +14692,7 @@ SCopasiXMLParserCommon::SCopasiXMLParserCommon():
   taskReferenceMap(),
   reportReferenceMap(),
   pGUI(NULL),
-  pDataModel(NULL)
+  pDataModel(NULL),
+  pFileUnitDefinitionList(NULL),
+  pCurrentUnitDefinition(NULL)
 {}

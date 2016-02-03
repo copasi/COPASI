@@ -1,16 +1,16 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-// and The University of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2003 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc. and EML Research, gGmbH. 
-// All rights reserved. 
+// Copyright (C) 2003 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 /**
  * CCopasiXMLParser class.
@@ -83,6 +83,8 @@ class CLStyle;
 class CLGroup;
 class CLText;
 class CLRenderPoint;
+class CUnitDefinitionDB;
+class CUnitDefinition;
 
 struct SCopasiXMLParserCommon
 {
@@ -310,6 +312,10 @@ public:
    * A pointer to the datamodel.
    */
   CCopasiDataModel* pDataModel;
+
+  CUnitDefinitionDB * pFileUnitDefinitionList;
+
+  CUnitDefinition * pCurrentUnitDefinition;
 };
 
 class CCopasiXMLParser : public CExpat
@@ -1798,6 +1804,8 @@ public:
 private:
 #include "copasi/xml/ListOfModelParameterSets.h"
 
+#include "copasi/xml/ListOfUnitDefinitions.h"
+
 private:
   class ModelElement:
     public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
@@ -2821,6 +2829,7 @@ private:
     {
       COPASI = 0,
       ListOfFunctions,
+      ListOfUnitDefinitions,
       Model,
       ListOfTasks,
       ListOfReports,

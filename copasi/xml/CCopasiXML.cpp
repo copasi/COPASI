@@ -141,29 +141,24 @@ bool CCopasiXML::save(std::ostream & os,
 
   if (haveModel() && !haveFunctionList())
     {
-      if (!buildFunctionList()) success = false;
-
-      if (!saveFunctionList()) success = false;
-
-      if (!freeFunctionList()) success = false;
+      success &= buildFunctionList();
+      success &= saveFunctionList();
+      success &= freeFunctionList();
     }
-  else if (!saveFunctionList()) success = false;
+  else
+    {
+      success &= saveFunctionList();
+    }
 
-  if (!saveModel()) success = false;
+  success &= saveUnitDefinitionList();
+  success &= saveModel();
+  success &= saveTaskList();
+  success &= saveReportList();
+  success &= savePlotList();
+  success &= saveGUI();
+  success &= saveLayoutList();
+  success &= saveSBMLReference();
 
-  if (!saveTaskList()) success = false;
-
-  if (!saveReportList()) success = false;
-
-  if (!savePlotList()) success = false;
-
-  if (!saveGUI()) success = false;
-
-  if (!saveLayoutList()) success = false;
-
-  if (!saveSBMLReference()) success = false;
-
-  if (!saveUnitDefinitionList()) success = false;
 
   endSaveElement("COPASI");
 
@@ -254,6 +249,52 @@ bool CCopasiXML::load(std::istream & is,
 
   return success;
 }
+
+//CUnitDefinitionDB * pCopasiUnitDefinitionList = CCopasiRootContainer::getUnitList();
+
+//CCopasiVectorN< CUnitDefinition >::const_iterator it = mCommon.pFileUnitDefinitionList->begin();
+//CCopasiVectorN< CUnitDefinition >::const_iterator end = mCommon.pFileUnitDefinitionList->end();
+
+//bool needSymbolChange = false;
+//std::ostringstream symbol;
+
+//for (; it != end; ++it) // For all the UnitDefinitions, read in from the file . . .
+//{
+//   symbol.str("");
+//   symbol << (*it)->getSymbol();
+//   int i =1;
+
+//   // Create a symbol not already in Copasi, as well as not in conflict
+//   // with any of the other UnitDefinition symbols in the file
+//   while (pCopasiUnitDefinitionList->containsSymbol(symbol.str()))
+//   {
+//     needSymbolChange = true;
+//     symbol.str("";)
+//     symbol << (*it)->getSymbol() << "_" << i++;
+
+//     while (!(*it)->setSymbol(symbol.str()))
+//     {
+//       symbol.str("";)
+//       symbol << (*it)->getSymbol() << "_" << i++;
+//     }
+//   }
+
+//   pCopasiUnitDefinitionList->add(it, true);
+
+//   delete mCommon.pFileUnitDefinitionList;
+
+//   if(needSymbolChange) // True if a conflicting symbol needed to be changed.
+//   {
+//     CCopasiVectorN< CModelValue >::iterator itMV = mCommon.pModel->getModelValues()->begin();
+//     CCopasiVectorN< CModelValue >::iterator endMV = mCommon.pModel->getModelValues()->end();
+
+//     // Update Model Values to use the new, non-conflicting symbol
+//     for (; itMV != endMV; ++itMV)
+//     {
+//       itMV->setUnitExpression(CUnit::replaceSymbol(itMV->getUnit()->getExpression(), (*it)->getSymbol(), symbol));
+//     }
+//   }
+// }
 
 bool CCopasiXML::setModel(CModel * pModel)
 {
@@ -541,7 +582,6 @@ bool CCopasiXML::saveModel()
       Attributes.add("key", "");
       Attributes.add("name", "");
       Attributes.add("simulationType", "");
-      Attributes.add("unit", "");
 
       for (i = 0; i < imax; i++)
         {
@@ -551,7 +591,6 @@ bool CCopasiXML::saveModel()
           Attributes.setValue(1, pMV->getObjectName());
           CModelEntity::Status SimulationType = pMV->getStatus();
           Attributes.setValue(2, CModelEntity::XMLStatus[SimulationType]);
-          Attributes.setValue(3, pMV->getUnit().getExpression());
 
           startSaveElement("ModelValue", Attributes);
 
@@ -570,6 +609,13 @@ bool CCopasiXML::saveModel()
               startSaveElement("InitialExpression");
               saveData(pMV->getInitialExpression());
               endSaveElement("InitialExpression");
+            }
+
+          if (pMV->getUnit().getExpression() != "")
+            {
+              startSaveElement("Unit");
+              saveData(pMV->getUnit().getExpression());
+              endSaveElement("Unit");
             }
 
           endSaveElement("ModelValue");
