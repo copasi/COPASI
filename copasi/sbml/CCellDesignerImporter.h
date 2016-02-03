@@ -31,6 +31,7 @@ class RenderGroup;
 class Layout;
 class LocalRenderInformation;
 class Model;
+class LocalStyle;
 class Reaction;
 class ReactionGlyph;
 class SBase;
@@ -570,7 +571,7 @@ protected:
   // These are used as TextGlyphs on gene nodes
   //std::map<std::string,std::string> mGeneNameMap;
 
-  // a map that maps color strings to the coorespnding id of the ColorDefinition
+  // a map that maps color strings to the corresponding id of the ColorDefinition
   std::map<std::string, std::string> mColorStringMap;
 
   // a map that stores the CompartmentAlias information for a certain CompartmentGlyph
@@ -582,7 +583,7 @@ protected:
   std::map<const SpeciesGlyph*, SpeciesAlias> mSpeciesAliasMap;
 
   /**
-   * a map that associates the parsed alias data woth the id
+   * a map that associates the parsed alias data with the id
    * of the species alias or complex species alias
    */
   std::map<std::string, SpeciesAlias> mSpeciesAliases;
@@ -631,13 +632,13 @@ public:
   void setSBMLDocument(SBMLDocument* pDocument);
 
   /**
-   * Method to return a const poiner to the SBMLDocument.
+   * Method to return a const pointer to the SBMLDocument.
    */
   const SBMLDocument* getSBMLDocument() const;
 
   /**
    * Method to return the layout object.
-   * Since the laoyut object is owned by the importer,
+   * Since the layout object is owned by the importer,
    * the caller should make a copy of the layout.
    */
   const Layout* getLayout() const;
@@ -669,7 +670,65 @@ public:
    */
   static double determineVersion(const XMLNode* pNode);
 
+  /**
+   * removes the current layout
+   */
   void removeCurrentLayout();
+
+  /**
+   * @brief creates a curve connecting one substrate to one product
+   * @param ranno the reaction annotation
+   * @param pRGlyph the reaction glyph
+   * @param pReactionStyle the style of the current reaction
+   * @return status whether creation worked or not
+   */
+  bool createUniUniCurve(ReactionAnnotation& ranno,
+                         ReactionGlyph* pRGlyph,
+                         LocalStyle* pReactionStyle);
+
+  /**
+   * @brief creates a curve connecting one substrate to two products
+   * @param ranno the reaction annotation
+   * @param pRGlyph the reaction glyph
+   * @param pReactionStyle the style of the current reaction
+   * @return status whether creation worked or not
+   */
+  bool createUniBiCurve(ReactionAnnotation& ranno,
+                        ReactionGlyph* pRGlyph,
+                        LocalStyle* pReactionStyle);
+
+  /**
+   * @brief creates a curve connecting two substrates to one product
+   * @param ranno the reaction annotation
+   * @param pRGlyph the reaction glyph
+   * @param pReactionStyle the style of the current reaction
+   * @return status whether creation worked or not
+   */
+  bool createBiUniCurve(ReactionAnnotation& ranno,
+                        ReactionGlyph* pRGlyph,
+                        LocalStyle* pReactionStyle);
+
+  bool createSubstrate(std::vector<Point>& reactantPoints,
+                       ReactionGlyph* pRGlyph,
+                       LocalStyle* pReactionStyle,
+                       ReactionAnnotation& ranno
+                      );
+
+  bool createProduct(std::vector<Point>& productPoints,
+                     ReactionGlyph* pRGlyph,
+                     LocalStyle* pReactionStyle,
+                     ReactionAnnotation& ranno
+                    );
+
+  void setProductStyle(const std::string& id, LocalStyle* pReactionStyle);
+
+  void enforceSquare(const ConnectScheme& connectScheme,
+                     Point &p,
+                     const Point &pStart,
+                     const Point &pEnd,
+                     int &directionCount,
+                     bool isLast,
+                     const std::vector<Point> &points);
 protected:
   /**
    * This method tries to convert the CellDesigner annotation to an SBML Layout.
@@ -725,10 +784,12 @@ protected:
   bool convertSpeciesAnnotations();
 
   /**
-   * Looks for CellDesigner annotation in the given reaction and ries to convert
+   * Looks for CellDesigner annotation in the given reaction and tries to convert
    * the information in that annotation into a ReactionGlyph.
    */
   bool convertReactionAnnotation(Reaction* pReaction, const Model* pModel);
+
+  LocalStyle* createStyleFromLine(Line &line, const std::string &glyphId);
 
   /**
    * Takes a node that contains a number of baseReactants or baseProducts
@@ -740,7 +801,7 @@ protected:
                                     bool reactants);
 
   /**
-   * Takes a bounding box and a position string and retirns the position on the bounding box that corresponds
+   * Takes a bounding box and a position string and returns the position on the bounding box that corresponds
    * to the given position.
    */
   static Point getPositionPoint(const BoundingBox& box, POSITION position);
@@ -963,7 +1024,7 @@ protected:
   static bool parseLineDirection(const XMLNode* pNode, LineDirection& d);
 
   /**
-   * Tries to parse the wreactant link in the given node and stores the data in the given
+   * Tries to parse the reactant link in the given node and stores the data in the given
    * vector of ReactionLink structure.
    * If parsing fails, false is returned.
    */
@@ -997,19 +1058,19 @@ protected:
   bool handleIncludedSpecies(const XMLNode* pNode);
 
   /**
-   * Converts the given paint scheme string to the correspnding PAINT_SCHEME enum value.
+   * Converts the given paint scheme string to the corresponding PAINT_SCHEME enum value.
    * If no enum is found, PAINT_UNDEFINED is returned.
    */
   static PAINT_SCHEME paintSchemeToEnum(std::string s);
 
   /*
-   * Converts the given modification string to the correspnding MODIFICATION_TYPE enum value.
+   * Converts the given modification string to the corresponding MODIFICATION_TYPE enum value.
    * If no enum is found, UNDEFINED_MOD_TYPE is returned.
    */
   static SPECIES_MODIFICATION_TYPE speciesModificationTypeToEnum(std::string cl);
 
   /**
-  * Converts the given class string to the correspnding SPECIES_CLASS enum value.
+  * Converts the given class string to the corresponding SPECIES_CLASS enum value.
   * If no enum is found, UNDEFINED is returned.
   */
   static SPECIES_CLASS classToEnum(std::string cl);
@@ -1108,7 +1169,7 @@ protected:
    * connection positions for each object and the bounding boxes for each object.
    * The result is returned in the original vectors as position values.
    * If the method fails, e.g. because one of the vectors is empty or the bounding box contains
-   * values we can't use for calculations (ing,NAN), false is returned.
+   * values we can't use for calculations (inf,NAN), false is returned.
    */
   static bool findShortestConnection(std::vector<POSITION>& pos1,
                                      std::vector<POSITION>& pos2,
@@ -1119,7 +1180,7 @@ protected:
    * Finds the shortest connection between the given point and the object which is
    * defined by its connection positions and its bounding box.
    * If the method fails, e.g. because one of the vectors is empty or the bounding box contains
-   * values we can't use for calculations (ing,NAN), POSITION_UNDEFINED
+   * values we can't use for calculations (inf,NAN), POSITION_UNDEFINED
    */
   static POSITION findShortestConnection(const Point& p,
                                          std::vector<POSITION>& pos,
@@ -1265,7 +1326,7 @@ protected:
   /**
    * Tries to find the name for the given species identity.
    * If the name was found, it is returned in the name argument.
-   * If something goes wrong, false is returend.
+   * If something goes wrong, false is returned.
    */
   //bool findNameForSpeciesIdentity(const SpeciesIdentity& identity,std::string& name);
 
@@ -1313,7 +1374,7 @@ protected:
   /**
    * This method takes a pointer to a curve object
    * as well as a start iterator and an end iterator which
-   * both iterate over a datastructure that contains points.
+   * both iterate over a data structure that contains points.
    * For each point pair, a line segment is created and added to
    * curve.
    * The new curve segments are added to the end of the curve.
@@ -1376,6 +1437,10 @@ protected:
 
   static void replaceStringInPlace(std::string& subject, const std::string& search,
                                    const std::string& replace);
+
+  static bool isDefaultOrEmpty(const Line &line);
 };
 
 #endif // CCellDesignerImporter_H__
+
+
