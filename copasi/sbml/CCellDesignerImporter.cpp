@@ -1099,14 +1099,22 @@ bool CCellDesignerImporter::addProteinModifications(RenderGroup* pGroup,
   return result;
 }
 
-bool CCellDesignerImporter::createPrimitive(RenderGroup* pGroup,
-    const SpeciesIdentity& si,
-    const BoundingBox& bounds,
-    const Point& offset,
-    double stroke_width,
-    const std::string& stroke_color,
-    const std::string& fill_color,
-    const std::string& text /* = "" */)
+bool
+CCellDesignerImporter::isDefaultOrEmpty(const Line &line)
+{
+  return (line.mColor != "#000000FF" && line.mWidth != 1.0) // default reaction style
+         && (line.mColor != "#FF000000" && line.mWidth != 0.0);  // empty
+}
+
+bool
+CCellDesignerImporter::createPrimitive(RenderGroup* pGroup,
+                                       const SpeciesIdentity& si,
+                                       const BoundingBox& bounds,
+                                       const Point& offset,
+                                       double stroke_width,
+                                       const std::string& stroke_color,
+                                       const std::string& fill_color,
+                                       const std::string& text /* = "" */)
 {
   bool result = true;
 
@@ -2186,7 +2194,8 @@ bool CCellDesignerImporter::createPrimitive(RenderGroup* pGroup,
   return result;
 }
 
-Point getCenter(const BoundingBox& bounds)
+Point
+getCenter(const BoundingBox& bounds)
 {
   Point result;
   result.setXOffset(bounds.x() + 0.5 * bounds.width());
@@ -2197,7 +2206,8 @@ Point getCenter(const BoundingBox& bounds)
 /**
  * Takes a protein modification description and creates the corresponding primitive.
  */
-bool CCellDesignerImporter::createProteinModification(RenderGroup* pGroup,
+bool
+CCellDesignerImporter::createProteinModification(RenderGroup* pGroup,
     SPECIES_MODIFICATION_TYPE type,
     const BoundingBox& bounds,
     const std::string& stroke_color,
@@ -2332,7 +2342,8 @@ bool CCellDesignerImporter::createProteinModification(RenderGroup* pGroup,
 /**
  * Creates a unique id with the given prefix.
  */
-std::string CCellDesignerImporter::createUniqueId(const std::string& prefix)
+std::string
+CCellDesignerImporter::createUniqueId(const std::string& prefix)
 {
   static std::ostringstream os;
   unsigned int index = 1;
@@ -2355,7 +2366,8 @@ std::string CCellDesignerImporter::createUniqueId(const std::string& prefix)
  * Traverses the reactions of the model and looks for CellDesigner annotations.
  * These are used to create reaction glyphs.
  */
-bool CCellDesignerImporter::convertReactionAnnotations()
+bool
+CCellDesignerImporter::convertReactionAnnotations()
 {
   bool result = true;
 
@@ -2372,11 +2384,915 @@ bool CCellDesignerImporter::convertReactionAnnotations()
   return result;
 }
 
+
+bool CCellDesignerImporter::createSubstrate(std::vector<Point>& reactantPoints,
+    ReactionGlyph* pRGlyph,
+    LocalStyle* pReactionStyle,
+    ReactionAnnotation& ranno)
+{
+  bool result = true;
+  SpeciesReferenceGlyph* pGlyph = pRGlyph->createSpeciesReferenceGlyph();
+
+  if (pGlyph == NULL) return false;
+
+  std::string id = createUniqueId("SpeciesReferenceGlyph");
+  pGlyph->setId(id);
+
+  if (pReactionStyle != NULL)
+    pReactionStyle->addId(id);
+
+  // set the role
+  pGlyph->setRole(SPECIES_ROLE_SUBSTRATE);
+
+  // set the curve
+  Curve* pCurve = pGlyph->getCurve();
+
+  if (pCurve == NULL) return false;
+
+  result = CCellDesignerImporter::createLineSegments(pCurve, reactantPoints.rbegin(), reactantPoints.rend());
+
+  // make sure the role is set because setSpeciesReferenceId relies on it
+  setSpeciesGlyphId(pGlyph, ranno.mBaseReactants[0]);
+  setSpeciesReferenceId(pGlyph, ranno.mBaseReactants[0], pRGlyph->getReactionId());
+
+  mIdMap.insert(std::pair<std::string, const SBase*>(id, pGlyph));
+  return result;
+}
+
+void CCellDesignerImporter::setProductStyle(const std::string &id, LocalStyle* pReactionStyle)
+{
+  // if we don't have a custom reaction style, we can bail and use the
+  // default assignment via role.
+
+  if (pReactionStyle == NULL) return;
+
+  LocalStyle *productStyle = NULL;
+
+  RenderGroup* reactionGroup = pReactionStyle->getGroup();
+  // check whether we have a product style that matches the current reaction style
+  unsigned int max = mpLocalRenderInfo->getNumStyles();
+
+  for (unsigned int i = 0; i < max; ++i)
+    {
+      LocalStyle* current = mpLocalRenderInfo->getStyle(i);
+      RenderGroup* currentGroup = current->getGroup();
+
+      if (currentGroup == NULL) continue;
+
+      if (currentGroup->getStroke() == reactionGroup->getStroke() &&
+          currentGroup->getStrokeWidth() == reactionGroup->getStrokeWidth() &&
+          currentGroup->getEndHead() == "product_arrow")
+        {
+          productStyle = current;
+          break;
+        }
+    }
+
+  // otherwise clone the reaction style and assign the product head.
+  if (productStyle == NULL)
+    {
+      productStyle = mpLocalRenderInfo->createStyle(createUniqueId("productStyle"));
+      productStyle->getGroup()->setStroke(reactionGroup->getStroke());
+      productStyle->getGroup()->setStrokeWidth(reactionGroup->getStrokeWidth());
+      productStyle->getGroup()->setEndHead("product_arrow");
+    }
+
+  productStyle->addId(id);
+
+}
+
+bool CCellDesignerImporter::createProduct(std::vector<Point>& productPoints,
+    ReactionGlyph* pRGlyph,
+    LocalStyle* pReactionStyle,
+    ReactionAnnotation& ranno)
+{
+  bool result = true;
+  SpeciesReferenceGlyph* pGlyph = pRGlyph->createSpeciesReferenceGlyph();
+
+  if (pGlyph == NULL) return false;
+
+  std::string id = this->createUniqueId("SpeciesReferenceGlyph");
+  pGlyph->setId(id);
+
+  setProductStyle(id, pReactionStyle);
+
+  // set the role
+  pGlyph->setRole(SPECIES_ROLE_PRODUCT);
+
+  Curve* pCurve = pGlyph->getCurve();
+
+  if (pCurve == NULL) return false;
+
+  result = CCellDesignerImporter::createLineSegments(pCurve, productPoints.begin(), productPoints.end());
+
+  // make sure the role is set because setSpeciesReferenceId relies on it
+  setSpeciesGlyphId(pGlyph, ranno.mBaseProducts[0]);
+  setSpeciesReferenceId(pGlyph, ranno.mBaseProducts[0], pRGlyph->getReactionId());
+
+  mIdMap.insert(std::pair<std::string, const SBase*>(id, pGlyph));
+  return result;
+}
+
+void CCellDesignerImporter::enforceSquare(const ConnectScheme& connectScheme,
+    Point &current,
+    const Point &pStart,
+    const Point &pEnd,
+    int &directionCount,
+    bool isLast,
+    const std::vector<Point> &points)
+{
+  bool isFirst = directionCount == 0;
+
+  if (connectScheme.mPolicy != POLICY_SQUARE ||
+      directionCount >= connectScheme.mLineDirections.size())
+    return;
+
+  if (connectScheme.mLineDirections[directionCount].mValue == DIRECTION_HORIZONTAL)
+    {
+      if (isFirst)
+        {
+          current.setY(pStart.y());
+        }
+
+      else
+        {
+          current.setY(points.back().y());
+        }
+
+      if (isLast)
+        {
+          current.setX(pEnd.x());
+        }
+
+    }
+  else
+    {
+      if (isFirst)
+        {
+          current.setX(pStart.x());
+        }
+      else
+        {
+          current.setX(points.back().x());
+        }
+
+      if (isLast)
+        {
+          current.setY(pEnd.y());
+        }
+    }
+
+  ++directionCount;
+
+}
+
+bool
+CCellDesignerImporter::createUniUniCurve(ReactionAnnotation& ranno,
+    ReactionGlyph* pRGlyph,
+    LocalStyle* pReactionStyle
+                                        )
+{
+  bool result = true;
+  assert(ranno.mBaseReactants.size() == 1);
+  assert(ranno.mBaseProducts.size() == 1);
+
+  // check if both elements have a link anchor
+  this->checkLinkAnchors(ranno.mBaseReactants[0], ranno.mBaseProducts[0]);
+
+  if (ranno.mBaseReactants[0].mPosition != POSITION_UNDEFINED &&
+      ranno.mBaseProducts[0].mPosition != POSITION_UNDEFINED &&
+      !ranno.mBaseReactants[0].mAlias.empty() &&
+      !ranno.mBaseProducts[0].mAlias.empty()
+     )
+    {
+      // we should have a start and an end point now
+      // and the reaction box lies in the middle between these two points
+      std::map<std::string, BoundingBox>::const_iterator box_pos1 = this->mCDBounds.find(ranno.mBaseReactants[0].mAlias);
+      std::map<std::string, BoundingBox>::const_iterator box_pos2 = this->mCDBounds.find(ranno.mBaseProducts[0].mAlias);
+      assert(box_pos1 != this->mCDBounds.end());
+      assert(box_pos2 != this->mCDBounds.end());
+
+      if (box_pos1 != this->mCDBounds.end() && box_pos2 != this->mCDBounds.end())
+        {
+          // calculate the absolute values of all points
+          // and put them in a vector
+          // then we go through the vector and create
+          // the line segments
+          // add all edit points
+          //
+          // pReactantAnchor stores the coordinates of the anchor point at the reactant
+          Point pReactantAnchor = CCellDesignerImporter::getPositionPoint(box_pos1->second, ranno.mBaseReactants[0].mPosition);
+          // pProductAnchor stores the coordinates of the anchor point at the product
+          Point pProductAnchor = CCellDesignerImporter::getPositionPoint(box_pos2->second, ranno.mBaseProducts[0].mPosition);
+          Point v1(new LayoutPkgNamespaces(), pProductAnchor.x() - pReactantAnchor.x(), pProductAnchor.y() - pReactantAnchor.y());
+          Point v2(new LayoutPkgNamespaces());
+          result = CCellDesignerImporter::createOrthogonal(v1, v2);
+
+          Point p3(new LayoutPkgNamespaces(), pReactantAnchor.x() + v2.x(), pReactantAnchor.y() + v2.y());
+          Point p(new LayoutPkgNamespaces());
+          std::vector<Point> points;
+
+          // we add pReactantAnchor and pProductAnchor to the points vector
+          // then the values would be save and we could use the entries from the vector below
+          // which would be save even if pReactantAnchor and pProductAnchor got new values
+          points.push_back(pReactantAnchor);
+
+          std::vector<Point>::const_iterator pointIt = ranno.mEditPoints.mPoints.begin(),
+                                             pointsEnd = ranno.mEditPoints.mPoints.end();
+          int directionCount = 0;
+          const ConnectScheme& connectScheme = ranno.mConnectScheme;
+
+          while (pointIt != pointsEnd)
+            {
+              // create the absolute point
+              p = CCellDesignerImporter::calculateAbsoluteValue(*pointIt,
+                  pReactantAnchor,
+                  pProductAnchor, p3);
+
+              // adjust point slightly
+              enforceSquare(connectScheme,
+                            p,
+                            pReactantAnchor,
+                            pProductAnchor,
+                            directionCount,
+                            (pointIt + 1) == pointsEnd,
+                            points);
+
+
+              points.push_back(p);
+              ++pointIt;
+            }
+
+          points.push_back(pProductAnchor);
+
+          std::vector<Point> reactantPoints;
+          pointIt = points.begin(), pointsEnd = points.end();
+          reactantPoints.push_back(*pointIt);
+          ++pointIt;
+
+          std::vector<Point> productPoints;
+          int index = 0;
+          int rectangleIndex = ranno.mConnectScheme.mRectangleIndex;
+
+          // rectangle index marks the segment that contains the "process symbol",
+          // i.e. the reaction glyph
+          while (index < rectangleIndex)
+            {
+              reactantPoints.push_back(*pointIt);
+              ++index;
+              ++pointIt;
+            }
+
+          assert(pointIt != pointsEnd);
+
+          if (pointIt != pointsEnd)
+            {
+              pProductAnchor = *pointIt;
+            }
+
+          // p2 now points to the end of the section that contains the reaction glyph
+          // now we assign p3 to be the start of the segment that contains the reaction glyph
+          // which is the last point we added to the reactants
+          p3 = reactantPoints.back();
+
+          double distance = CCellDesignerImporter::distance(p3, pProductAnchor);
+          Point v(new LayoutPkgNamespaces(), (pProductAnchor.x() - p3.x()) / distance, (pProductAnchor.y() - p3.y()) / distance);
+          // create the curve for the reaction glyph
+          // right now, the reaction glyph consists of a short
+          // line segment
+          // the curve should not be longer than 1/3 the distance
+          distance /= 6.0;
+
+          if (distance >= 7.5)
+            {
+              distance = 7.5;
+            }
+
+          Curve* pCurve = pRGlyph->getCurve();
+          assert(pCurve != NULL);
+          LineSegment* pLS = pCurve->createLineSegment();
+          Point center(new LayoutPkgNamespaces(), (p3.x() + pProductAnchor.x()) * 0.5, (p3.y() + pProductAnchor.y()) * 0.5);
+          pLS->setStart(center.x() - distance * v.x(), center.y() - distance * v.y());
+          pLS->setEnd(center.x() + distance * v.x(), center.y() + distance * v.y());
+          // add a new substrate point
+          // the substrate points are in reverse order
+          reactantPoints.push_back(*pLS->getStart());
+          // add a new product point
+          productPoints.push_back(*pLS->getEnd());
+
+          if (pointIt == pointsEnd)
+            {
+              productPoints.push_back(pProductAnchor);
+            }
+
+          while (pointIt != pointsEnd)
+            {
+              productPoints.push_back(*pointIt);
+              ++pointIt;
+            }
+
+          // create the speciesReferenceGlyphs
+          createSubstrate(reactantPoints, pRGlyph, pReactionStyle, ranno);
+          createProduct(productPoints, pRGlyph, pReactionStyle, ranno);
+        }
+      else
+        {
+          FAIL_WITH_ERROR(result, "bound not found.");
+        }
+    }
+  else
+    {
+      FAIL_WITH_ERROR(result, "reaction links not defined");
+    }
+
+  return result;
+}
+
 /**
  * Looks for CellDesigner annotation in the given reaction and ries to convert
  * the information in that annotation into a ReactionGlyph.
  */
-bool CCellDesignerImporter::convertReactionAnnotation(Reaction* pReaction, const Model* pModel)
+bool
+CCellDesignerImporter::createUniBiCurve(ReactionAnnotation& ranno,
+                                        ReactionGlyph* pRGlyph,
+                                        LocalStyle* pReactionStyle)
+{
+  bool result = true;
+  assert(ranno.mBaseReactants.size() == 1);
+  assert(ranno.mBaseProducts.size() == 2);
+  // there must be some edit points
+  assert(!ranno.mEditPoints.mPoints.empty());
+  // there should be a tShapeIndex or an omittedShapeIndex element
+  // that tells us, which of the points is the connection point
+  // center_product1 - center_substrate_1)
+  // if no tShapeIndex or omittedSHapeIndex is given, we assume it is 0
+  Point connectionPoint(new LayoutPkgNamespaces());
+
+  if (ranno.mEditPoints.mTShapeIndex < (int)ranno.mEditPoints.mPoints.size())
+    {
+      connectionPoint = ranno.mEditPoints.mPoints[ranno.mEditPoints.mTShapeIndex];
+    }
+  else if (ranno.mEditPoints.mOmittedShapeIndex < (int)ranno.mEditPoints.mPoints.size())
+    {
+      connectionPoint = ranno.mEditPoints.mPoints[ranno.mEditPoints.mOmittedShapeIndex];
+    }
+  else
+    {
+      connectionPoint = ranno.mEditPoints.mPoints[0];
+    }
+
+  // calculate the absolute position
+  // the position for the relative points coordinates is calculated as
+  // center_substrate1 + x*(center_substrate_2 - center_substrate_1)+y*(
+  std::string alias1 = ranno.mBaseReactants[0].mAlias;
+  assert(!alias1.empty());
+  std::string alias2 = ranno.mBaseProducts[0].mAlias;
+  assert(!alias2.empty());
+  std::string alias3 = ranno.mBaseProducts[1].mAlias;
+  assert(!alias3.empty());
+  std::map<std::string, BoundingBox>::const_iterator pos1, pos2, pos3;
+  pos1 = this->mCDBounds.find(alias1);
+  assert(pos1 != this->mCDBounds.end());
+  pos2 = this->mCDBounds.find(alias2);
+  assert(pos2 != this->mCDBounds.end());
+  pos3 = this->mCDBounds.find(alias3);
+  assert(pos3 != this->mCDBounds.end());
+
+  if (!alias1.empty() &&
+      !alias3.empty() &&
+      !alias3.empty() &&
+      pos1 != this->mCDBounds.end() &&
+      pos2 != this->mCDBounds.end() &&
+      pos3 != this->mCDBounds.end())
+    {
+      Point p1(new LayoutPkgNamespaces(), pos1->second.getPosition()->x() + pos1->second.getDimensions()->getWidth() * 0.5, pos1->second.getPosition()->y() + pos1->second.getDimensions()->getHeight() * 0.5);
+      Point p2(new LayoutPkgNamespaces(), pos2->second.getPosition()->x() + pos2->second.getDimensions()->getWidth() * 0.5, pos2->second.getPosition()->y() + pos2->second.getDimensions()->getHeight() * 0.5);
+      Point p3(new LayoutPkgNamespaces(), pos3->second.getPosition()->x() + pos3->second.getDimensions()->getWidth() * 0.5, pos3->second.getPosition()->y() + pos3->second.getDimensions()->getHeight() * 0.5);
+      Point v1(new LayoutPkgNamespaces(), p2.x() - p1.x(), p2.y() - p1.y());
+      Point v2(new LayoutPkgNamespaces(), p3.x() - p1.x(), p3.y() - p1.y());
+      Point p(new LayoutPkgNamespaces(), p1.x() + connectionPoint.x()*v1.x() + connectionPoint.y()*v2.x(), p1.y() + connectionPoint.x()*v1.y() + connectionPoint.y()*v2.y());
+      // p is the start point of the reaction glyph
+      // i.e. the point where the substrates connect
+      // create the curve for the reaction glyph
+      // the end point is a short distance further along the
+      // path the the only product
+
+      // first we have to check if we have linkAnchors for all
+      // elements
+      // if not, we create them based on the shortest distance to the
+      // connection point
+
+      CCellDesignerImporter::checkLinkAnchor(ranno.mBaseReactants[0], p);
+      CCellDesignerImporter::checkLinkAnchor(ranno.mBaseProducts[0], p);
+      CCellDesignerImporter::checkLinkAnchor(ranno.mBaseProducts[1], p);
+      assert(ranno.mBaseReactants[0].mPosition != POSITION_UNDEFINED);
+      assert(ranno.mBaseProducts[0].mPosition != POSITION_UNDEFINED);
+      assert(ranno.mBaseProducts[1].mPosition != POSITION_UNDEFINED);
+
+      if (ranno.mBaseReactants[0].mPosition != POSITION_UNDEFINED &&
+          ranno.mBaseProducts[0].mPosition != POSITION_UNDEFINED &&
+          ranno.mBaseProducts[1].mPosition != POSITION_UNDEFINED)
+        {
+          // p is the end point of the reaction glyph
+          // i.e. the point where the products connect
+          // the start point is a short distance further along the
+          // path the to the only substrate
+          Curve* pCurve = pRGlyph->getCurve();
+          assert(pCurve != NULL);
+
+          if (pCurve != NULL)
+            {
+              LineSegment* pLS = pCurve->createLineSegment();
+              assert(pLS != NULL);
+
+              if (pLS != NULL)
+                {
+                  pLS->setEnd(p.x(), p.y());
+
+                  Point p1 = CCellDesignerImporter::getPositionPoint(pos1->second, ranno.mBaseReactants[0].mPosition);
+                  double dist = CCellDesignerImporter::distance(p1, p);
+                  assert(dist != 0.0);
+                  Point v(new LayoutPkgNamespaces(), (p1.x() - p.x()) / dist, (p1.y() - p.y()) / dist);
+                  dist /= 3.0;
+
+                  if (dist > 15.0)
+                    {
+                      dist = 15.0;
+                    }
+
+                  pLS->setStart(p.x() + dist * v.x(), p.y() + dist * v.y());
+
+                  // create the species reference glyphs
+                  // since we already know the endpoint for the substrate, we start
+                  // with that
+                  SpeciesReferenceGlyph* pSRefGlyph = pRGlyph->createSpeciesReferenceGlyph();
+                  assert(pSRefGlyph != NULL);
+
+                  if (pSRefGlyph != NULL)
+                    {
+                      // set the curve
+                      pCurve = pSRefGlyph->getCurve();
+
+                      if (pCurve != NULL)
+                        {
+                          LineSegment* pLS2 = pCurve->createLineSegment();
+                          assert(pLS2 != NULL);
+
+                          if (pLS2 != NULL)
+                            {
+                              pLS2->setStart(pLS->getStart()->x(), pLS->getStart()->y());
+                              pLS2->setEnd(p1.x(), p1.y());
+                            }
+                          else
+                            {
+                              COULD_NOT_CREATE(result);
+                            }
+                        }
+                      else
+                        {
+                          FAIL_WITH_ERROR(result, "curve NULL");
+                        }
+
+                      // set an id
+                      std::string id = this->createUniqueId("SpeciesReferenceGlyph");
+                      pSRefGlyph->setId(id);
+
+                      if (pReactionStyle != NULL)
+                        pReactionStyle->addId(id);
+
+                      this->mIdMap.insert(std::pair<std::string, const SBase*>(id, pSRefGlyph));
+                      // set the role
+                      pSRefGlyph->setRole(SPECIES_ROLE_SUBSTRATE);
+                      // set the species glyph id
+                      this->setSpeciesGlyphId(pSRefGlyph, ranno.mBaseReactants[0]);
+                      // set the species reference id
+                      this->setSpeciesReferenceId(pSRefGlyph, ranno.mBaseReactants[0], pRGlyph->getReactionId());
+                    }
+                  else
+                    {
+                      COULD_NOT_CREATE(result);
+                    }
+
+                  // first product
+                  if (result == true)
+                    {
+                      p1 = CCellDesignerImporter::getPositionPoint(pos2->second, ranno.mBaseProducts[0].mPosition);
+                      pSRefGlyph = pRGlyph->createSpeciesReferenceGlyph();
+                      assert(pSRefGlyph != NULL);
+
+                      if (pSRefGlyph != NULL)
+                        {
+                          // set the curve
+                          pCurve = pSRefGlyph->getCurve();
+
+                          if (pCurve != NULL)
+                            {
+                              LineSegment* pLS2 = pCurve->createLineSegment();
+                              assert(pLS2 != NULL);
+
+                              if (pLS2 != NULL)
+                                {
+                                  pLS2->setStart(pLS->getEnd()->x(), pLS->getEnd()->y());
+                                  pLS2->setEnd(p1.x(), p1.y());
+                                }
+                              else
+                                {
+                                  COULD_NOT_CREATE(result);
+                                }
+                            }
+                          else
+                            {
+                              FAIL_WITH_ERROR(result, "curve null");
+                            }
+
+                          // set an id
+                          std::string id = this->createUniqueId("SpeciesReferenceGlyph");
+                          pSRefGlyph->setId(id);
+
+                          if (pReactionStyle != NULL)
+                            pReactionStyle->addId(id);
+
+                          this->mIdMap.insert(std::pair<std::string, const SBase*>(id, pSRefGlyph));
+                          // set the role
+                          pSRefGlyph->setRole(SPECIES_ROLE_PRODUCT);
+                          // set the species glyph id
+                          this->setSpeciesGlyphId(pSRefGlyph, ranno.mBaseProducts[0]);
+                          // set the species reference id
+                          this->setSpeciesReferenceId(pSRefGlyph, ranno.mBaseProducts[0], pRGlyph->getReactionId());
+                        }
+                      else
+                        {
+                          COULD_NOT_CREATE(result);
+                        }
+                    }
+
+                  // second product
+                  if (result == true)
+                    {
+                      p1 = CCellDesignerImporter::getPositionPoint(pos3->second, ranno.mBaseProducts[1].mPosition);
+                      pSRefGlyph = pRGlyph->createSpeciesReferenceGlyph();
+                      assert(pSRefGlyph != NULL);
+
+                      if (pSRefGlyph != NULL)
+                        {
+                          // set the curve
+                          pCurve = pSRefGlyph->getCurve();
+
+                          if (pCurve != NULL)
+                            {
+                              LineSegment* pLS2 = pCurve->createLineSegment();
+                              assert(pLS2 != NULL);
+
+                              if (pLS2 != NULL)
+                                {
+                                  pLS2->setStart(pLS->getEnd()->x(), pLS->getEnd()->y());
+                                  pLS2->setEnd(p1.x(), p1.y());
+                                }
+                              else
+                                {
+                                  COULD_NOT_CREATE(result);
+                                }
+                            }
+                          else
+                            {
+                              FAIL_WITH_ERROR(result, "curve NULL");
+                            }
+
+                          // set an id
+                          std::string id = this->createUniqueId("SpeciesReferenceGlyph");
+                          pSRefGlyph->setId(id);
+
+                          if (pReactionStyle != NULL)
+                            pReactionStyle->addId(id);
+
+                          this->mIdMap.insert(std::pair<std::string, const SBase*>(id, pSRefGlyph));
+                          // set the role
+                          pSRefGlyph->setRole(SPECIES_ROLE_PRODUCT);
+                          // set the species glyph id
+                          this->setSpeciesGlyphId(pSRefGlyph, ranno.mBaseProducts[1]);
+                          // set the species reference id
+                          this->setSpeciesReferenceId(pSRefGlyph, ranno.mBaseProducts[1], pRGlyph->getReactionId());
+                        }
+                      else
+                        {
+                          COULD_NOT_CREATE(result);
+                        }
+                    }
+                }
+              else
+                {
+                  COULD_NOT_CREATE(result);
+                }
+            }
+          else
+            {
+              FAIL_WITH_ERROR(result, "curve NULL");
+            }
+        }
+      else
+        {
+          FAIL_WITH_ERROR(result, "link anchor not defined.");
+        }
+    }
+  else
+    {
+      FAIL_WITH_ERROR(result, "bound not found.");
+    }
+
+  return result;
+}
+
+bool CCellDesignerImporter::createBiUniCurve(ReactionAnnotation& ranno,
+    ReactionGlyph* pRGlyph,
+    LocalStyle* pReactionStyle)
+{
+  bool result = true;
+  assert(ranno.mBaseReactants.size() == 2);
+  assert(ranno.mBaseProducts.size() == 1);
+  // assert that all elements have a link anchor
+  assert(!ranno.mEditPoints.mPoints.empty());
+  // there should be a tShapeIndex or an omittedShapeIndex element
+  // that tells us, which of the points is the connection point
+  Point connectionPoint(new LayoutPkgNamespaces());
+
+  if (ranno.mEditPoints.mTShapeIndex < (int)ranno.mEditPoints.mPoints.size())
+    {
+      connectionPoint = ranno.mEditPoints.mPoints[ranno.mEditPoints.mTShapeIndex];
+    }
+  else if (ranno.mEditPoints.mOmittedShapeIndex < (int)ranno.mEditPoints.mPoints.size())
+    {
+      connectionPoint = ranno.mEditPoints.mPoints[ranno.mEditPoints.mOmittedShapeIndex];
+    }
+  else
+    {
+      connectionPoint = ranno.mEditPoints.mPoints[0];
+    }
+
+  // calculate the absolute position
+  // the position for the relative points coordinates is calculated as
+  // center_substrat1 + x*(center_product1 - center_substrate_1)+y*(
+  // center_product2 - center_substrate_1)
+  // if no tShapeIndex or omittedShapeIndex is given, we assume it is 0
+  std::string alias1 = ranno.mBaseReactants[0].mAlias;
+  assert(!alias1.empty());
+  std::string alias2 = ranno.mBaseReactants[1].mAlias;
+  assert(!alias2.empty());
+  std::string alias3 = ranno.mBaseProducts[0].mAlias;
+  assert(!alias3.empty());
+  std::map<std::string, BoundingBox>::const_iterator pos1, pos2, pos3;
+  pos1 = this->mCDBounds.find(alias1);
+  assert(pos1 != this->mCDBounds.end());
+  pos2 = this->mCDBounds.find(alias2);
+  assert(pos2 != this->mCDBounds.end());
+  pos3 = this->mCDBounds.find(alias3);
+  assert(pos3 != this->mCDBounds.end());
+
+  if (!alias1.empty() &&
+      !alias3.empty() &&
+      !alias3.empty() &&
+      pos1 != this->mCDBounds.end() &&
+      pos2 != this->mCDBounds.end() &&
+      pos3 != this->mCDBounds.end())
+    {
+      Point p1(new LayoutPkgNamespaces(),
+               pos1->second.getPosition()->x() + pos1->second.getDimensions()->getWidth() * 0.5,
+               pos1->second.getPosition()->y() + pos1->second.getDimensions()->getHeight() * 0.5);
+      Point p2(new LayoutPkgNamespaces(),
+               pos2->second.getPosition()->x() + pos2->second.getDimensions()->getWidth() * 0.5,
+               pos2->second.getPosition()->y() + pos2->second.getDimensions()->getHeight() * 0.5);
+      Point p3(new LayoutPkgNamespaces(),
+               pos3->second.getPosition()->x() + pos3->second.getDimensions()->getWidth() * 0.5,
+               pos3->second.getPosition()->y() + pos3->second.getDimensions()->getHeight() * 0.5);
+
+      Point p = CCellDesignerImporter::calculateAbsoluteValue(connectionPoint, p1, p2, p3);
+
+      // first we have to check if we have linkAnchors for all
+      // elements
+      // if not, we create them based on the shortest distance to the
+      // connection point
+      CCellDesignerImporter::checkLinkAnchor(ranno.mBaseReactants[0], p);
+      CCellDesignerImporter::checkLinkAnchor(ranno.mBaseReactants[1], p);
+      CCellDesignerImporter::checkLinkAnchor(ranno.mBaseProducts[0], p);
+      assert(ranno.mBaseReactants[0].mPosition != POSITION_UNDEFINED);
+      assert(ranno.mBaseReactants[1].mPosition != POSITION_UNDEFINED);
+      assert(ranno.mBaseProducts[0].mPosition != POSITION_UNDEFINED);
+
+      if (ranno.mBaseReactants[0].mPosition != POSITION_UNDEFINED &&
+          ranno.mBaseReactants[1].mPosition != POSITION_UNDEFINED &&
+          ranno.mBaseProducts[0].mPosition != POSITION_UNDEFINED)
+        {
+          // p is the start point of the reaction glyph
+          // i.e. the point where the substrates connect
+          // create the curve for the reaction glyph
+          // the end point is a short distance further along the
+          // path the to the only product
+          Curve* pCurve = pRGlyph->getCurve();
+          assert(pCurve != NULL);
+
+          if (pCurve != NULL)
+            {
+              LineSegment* pLS = pCurve->createLineSegment();
+              assert(pLS != NULL);
+
+              if (pLS != NULL)
+                {
+                  pLS->setStart(p.x(), p.y());
+
+                  Point p3 = CCellDesignerImporter::getPositionPoint(pos3->second, ranno.mBaseProducts[0].mPosition);
+                  double dist = CCellDesignerImporter::distance(p3, p);
+                  assert(dist != 0.0);
+                  Point v(new LayoutPkgNamespaces(), (p3.x() - p.x()) / dist, (p3.y() - p.y()) / dist);
+                  dist /= 3.0;
+
+                  if (dist > 15.0)
+                    {
+                      dist = 15.0;
+                    }
+
+                  pLS->setEnd(p.x() + dist * v.x(), p.y() + dist * v.y());
+
+                  // create the species reference glyphs
+                  // since we already know the endpoint for the product, we start
+                  // with that
+                  SpeciesReferenceGlyph* pSRefGlyph = pRGlyph->createSpeciesReferenceGlyph();
+                  assert(pSRefGlyph != NULL);
+
+                  if (pSRefGlyph != NULL)
+                    {
+                      // set the curve
+                      pCurve = pSRefGlyph->getCurve();
+
+                      if (pCurve != NULL)
+                        {
+                          LineSegment* pLS2 = pCurve->createLineSegment();
+                          assert(pLS2 != NULL);
+
+                          if (pLS2 != NULL)
+                            {
+                              pLS2->setStart(p.x(), p.y());
+                              pLS2->setEnd(p3.x(), p3.y());
+                            }
+                          else
+                            {
+                              COULD_NOT_CREATE(result);
+                            }
+                        }
+                      else
+                        {
+                          FAIL_WITH_ERROR(result, "curve NULL");
+                        }
+
+                      // set an id
+                      std::string id = this->createUniqueId("SpeciesReferenceGlyph");
+                      pSRefGlyph->setId(id);
+
+                      if (pReactionStyle != NULL)
+                        pReactionStyle->addId(id);
+
+                      this->mIdMap.insert(std::pair<std::string, const SBase*>(id, pSRefGlyph));
+                      // set the role
+                      pSRefGlyph->setRole(SPECIES_ROLE_PRODUCT);
+                      // set the species glyph id
+                      this->setSpeciesGlyphId(pSRefGlyph, ranno.mBaseProducts[0]);
+                      // set the species reference id
+                      this->setSpeciesReferenceId(pSRefGlyph, ranno.mBaseProducts[0], pRGlyph->getReactionId());
+                    }
+                  else
+                    {
+                      COULD_NOT_CREATE(result);
+                    }
+
+                  // first substrate
+                  if (result == true)
+                    {
+                      p3 = CCellDesignerImporter::getPositionPoint(pos1->second, ranno.mBaseReactants[0].mPosition);
+                      pSRefGlyph = pRGlyph->createSpeciesReferenceGlyph();
+                      assert(pSRefGlyph != NULL);
+
+                      if (pSRefGlyph != NULL)
+                        {
+                          // set the curve
+                          pCurve = pSRefGlyph->getCurve();
+
+                          if (pCurve != NULL)
+                            {
+                              LineSegment* pLS2 = pCurve->createLineSegment();
+                              assert(pLS2 != NULL);
+
+                              if (pLS2 != NULL)
+                                {
+                                  pLS2->setStart(pLS->getStart()->x(), pLS->getStart()->y());
+                                  pLS2->setEnd(p3.x(), p3.y());
+                                }
+                              else
+                                {
+                                  COULD_NOT_CREATE(result);
+                                }
+                            }
+                          else
+                            {
+                              FAIL_WITH_ERROR(result, "curve null");
+                            }
+
+                          // set an id
+                          std::string id = this->createUniqueId("SpeciesReferenceGlyph");
+                          pSRefGlyph->setId(id);
+
+                          if (pReactionStyle != NULL)
+                            pReactionStyle->addId(id);
+
+                          this->mIdMap.insert(std::pair<std::string, const SBase*>(id, pSRefGlyph));
+                          // set the role
+                          pSRefGlyph->setRole(SPECIES_ROLE_SUBSTRATE);
+                          // set the species glyph id
+                          this->setSpeciesGlyphId(pSRefGlyph, ranno.mBaseReactants[0]);
+                          // set the species reference id
+                          this->setSpeciesReferenceId(pSRefGlyph, ranno.mBaseReactants[0], pRGlyph->getReactionId());
+                        }
+                      else
+                        {
+                          COULD_NOT_CREATE(result);
+                        }
+                    }
+
+                  // second substrate
+                  if (result == true)
+                    {
+                      p3 = CCellDesignerImporter::getPositionPoint(pos2->second, ranno.mBaseReactants[1].mPosition);
+                      pSRefGlyph = pRGlyph->createSpeciesReferenceGlyph();
+                      assert(pSRefGlyph != NULL);
+
+                      if (pSRefGlyph != NULL)
+                        {
+                          // set the curve
+                          pCurve = pSRefGlyph->getCurve();
+
+                          if (pCurve != NULL)
+                            {
+                              LineSegment* pLS2 = pCurve->createLineSegment();
+                              assert(pLS2 != NULL);
+
+                              if (pLS2 != NULL)
+                                {
+                                  pLS2->setStart(pLS->getStart()->x(), pLS->getStart()->y());
+                                  pLS2->setEnd(p3.x(), p3.y());
+                                }
+                              else
+                                {
+                                  COULD_NOT_CREATE(result);
+                                }
+                            }
+                          else
+                            {
+                              FAIL_WITH_ERROR(result, "curve null");
+                            }
+
+                          // set an id
+                          std::string id = this->createUniqueId("SpeciesReferenceGlyph");
+                          pSRefGlyph->setId(id);
+
+                          if (pReactionStyle != NULL)
+                            pReactionStyle->addId(id);
+
+                          this->mIdMap.insert(std::pair<std::string, const SBase*>(id, pSRefGlyph));
+                          // set the role
+                          pSRefGlyph->setRole(SPECIES_ROLE_SUBSTRATE);
+                          // set the species glyph id
+                          this->setSpeciesGlyphId(pSRefGlyph, ranno.mBaseReactants[1]);
+                          // set the species reference id
+                          this->setSpeciesReferenceId(pSRefGlyph, ranno.mBaseReactants[1], pRGlyph->getReactionId());
+                        }
+                      else
+                        {
+                          COULD_NOT_CREATE(result);
+                        }
+                    }
+                }
+              else
+                {
+                  COULD_NOT_CREATE(result);
+                }
+            }
+          else
+            {
+              FAIL_WITH_ERROR(result, "curve null");
+            }
+        }
+      else
+        {
+          FAIL_WITH_ERROR(result, "link anchor not defined.");
+        }
+    }
+  else
+    {
+      FAIL_WITH_ERROR(result, "bounds not found.");
+    }
+
+  return result;
+}
+
+bool
+CCellDesignerImporter::convertReactionAnnotation(Reaction* pReaction, const Model* pModel)
 {
   bool result = true;
 
@@ -2408,6 +3324,12 @@ bool CCellDesignerImporter::convertReactionAnnotation(Reaction* pReaction, const
   pRGlyph->setId(id);
   pRGlyph->setReactionId(pReaction->getId());
   this->mIdMap.insert(std::pair<std::string, const SBase*>(id, pRGlyph));
+
+  LocalStyle* pReactionStyle = NULL;
+
+  pReactionStyle = createStyleFromLine(ranno.mLine, pRGlyph->getId());
+
+
   // the reactionType element has a text element
   // that defines the type of reaction
 
@@ -2439,731 +3361,20 @@ bool CCellDesignerImporter::convertReactionAnnotation(Reaction* pReaction, const
       case TRANSLATIONAL_ACTIVATION_RTYPE:
       case TRANSLATIONAL_INHIBITION_RTYPE:
       {
-        assert(ranno.mBaseReactants.size() == 1);
-        assert(ranno.mBaseProducts.size() == 1);
-        // check if both elements have a link anchor
-        this->checkLinkAnchors(ranno.mBaseReactants[0], ranno.mBaseProducts[0]);
-
-        if (ranno.mBaseReactants[0].mPosition != POSITION_UNDEFINED &&
-            ranno.mBaseProducts[0].mPosition != POSITION_UNDEFINED &&
-            !ranno.mBaseReactants[0].mAlias.empty() &&
-            !ranno.mBaseProducts[0].mAlias.empty()
-           )
-          {
-            // we should have a start and an end point now
-            // and the reaction box lies in the middle between these two points
-            std::map<std::string, BoundingBox>::const_iterator box_pos1 = this->mCDBounds.find(ranno.mBaseReactants[0].mAlias);
-            std::map<std::string, BoundingBox>::const_iterator box_pos2 = this->mCDBounds.find(ranno.mBaseProducts[0].mAlias);
-            assert(box_pos1 != this->mCDBounds.end());
-            assert(box_pos2 != this->mCDBounds.end());
-
-            if (box_pos1 != this->mCDBounds.end() && box_pos2 != this->mCDBounds.end())
-              {
-                // calculate the absolute values of all points
-                // and put them in a vector
-                // then we go through the vector and create
-                // the line segments
-                // add all edit points
-                //
-                // p1 stores the coordinates of the anchor point at the reactant
-                Point p1 = CCellDesignerImporter::getPositionPoint(box_pos1->second, ranno.mBaseReactants[0].mPosition);
-                // p2 stores the coordinates of the anchor point at the product
-                Point p2 = CCellDesignerImporter::getPositionPoint(box_pos2->second, ranno.mBaseProducts[0].mPosition);
-                Point v1(new LayoutPkgNamespaces(), p2.x() - p1.x(), p2.y() - p1.y());
-                Point v2(new LayoutPkgNamespaces());
-                result = CCellDesignerImporter::createOrthogonal(v1, v2);
-
-                Point p3(new LayoutPkgNamespaces(), p1.x() + v2.x(), p1.y() + v2.y());
-                std::vector<Point>::const_iterator pointIt = ranno.mEditPoints.mPoints.begin(), pointsEnd = ranno.mEditPoints.mPoints.end();
-                Point p(new LayoutPkgNamespaces());
-                std::vector<Point> points;
-                // we add p1 and p2 to the points vector
-                // then the values would be save and we could use the entries from the vector below
-                // which would be save even if p1 and p2 got new values
-                points.push_back(p1);
-
-                while (pointIt != pointsEnd)
-                  {
-                    // create the absolute point
-                    p = CCellDesignerImporter::calculateAbsoluteValue(*pointIt, p1, p2, p3);
-                    points.push_back(p);
-                    ++pointIt;
-                  }
-
-                points.push_back(p2);
-
-                std::vector<Point> reactantPoints;
-                pointIt = points.begin(), pointsEnd = points.end();
-                reactantPoints.push_back(*pointIt);
-                ++pointIt;
-                std::vector<Point> productPoints;
-                int index = 0;
-                int rectangleIndex = ranno.mConnectScheme.mRectangleIndex;
-
-                // rectangle index marks the segment that contains the "process symbol", i.e. the reaction glyph
-                while (index < rectangleIndex)
-                  {
-                    reactantPoints.push_back(*pointIt);
-                    ++index;
-                    ++pointIt;
-                  }
-
-                assert(pointIt != pointsEnd);
-
-                if (pointIt != pointsEnd)
-                  {
-                    p2 = *pointIt;
-                  }
-
-                // p2 now points to the end of the section that contains the reaction glyph
-                // now we assign p3 to be the start of the segment that contains the reaction glyph
-                // which is the last point we added to the reactants
-                p3 = reactantPoints.back();
-
-                double distance = CCellDesignerImporter::distance(p3, p2);
-                Point v(new LayoutPkgNamespaces(), (p2.x() - p3.x()) / distance, (p2.y() - p3.y()) / distance);
-                // create the curve for the reaction glyph
-                // right now, the reaction glyph consists of a short
-                // line segment
-                // the curve should not be longer than 1/3 the distance
-                distance /= 6.0;
-
-                if (distance >= 7.5)
-                  {
-                    distance = 7.5;
-                  }
-
-                Curve* pCurve = pRGlyph->getCurve();
-                assert(pCurve != NULL);
-                LineSegment* pLS = pCurve->createLineSegment();
-                Point center(new LayoutPkgNamespaces(), (p3.x() + p2.x()) * 0.5, (p3.y() + p2.y()) * 0.5);
-                pLS->setStart(center.x() - distance * v.x(), center.y() - distance * v.y());
-                pLS->setEnd(center.x() + distance * v.x(), center.y() + distance * v.y());
-                // add a new substrate point
-                // the substrate points are in reverse order
-                reactantPoints.push_back(*pLS->getStart());
-                // add a new product point
-                productPoints.push_back(*pLS->getEnd());
-
-                if (pointIt == pointsEnd)
-                  {
-                    productPoints.push_back(p2);
-                  }
-
-                while (pointIt != pointsEnd)
-                  {
-                    productPoints.push_back(*pointIt);
-                    ++pointIt;
-                  }
-
-                // create the speciesReferenceGlyphs
-                SpeciesReferenceGlyph* pSRefGlyph1 = pRGlyph->createSpeciesReferenceGlyph();
-                SpeciesReferenceGlyph* pSRefGlyph2 = pRGlyph->createSpeciesReferenceGlyph();
-                assert(pSRefGlyph1 != NULL);
-                assert(pSRefGlyph2 != NULL);
-
-                if (pSRefGlyph1 != NULL && pSRefGlyph2 != NULL)
-                  {
-                    // set the ids
-                    std::string id = this->createUniqueId("SpeciesReferenceGlyph");
-                    pSRefGlyph1->setId(id);
-                    this->mIdMap.insert(std::pair<std::string, const SBase*>(id, pSRefGlyph1));
-                    id = this->createUniqueId("SpeciesReferenceGlyph");
-                    pSRefGlyph2->setId(id);
-                    this->mIdMap.insert(std::pair<std::string, const SBase*>(id, pSRefGlyph2));
-                    // set the role
-                    pSRefGlyph1->setRole(SPECIES_ROLE_SUBSTRATE);
-                    pSRefGlyph2->setRole(SPECIES_ROLE_PRODUCT);
-                    // set the curve
-                    pCurve = pSRefGlyph1->getCurve();
-                    assert(pCurve != NULL);
-
-                    if (pCurve != NULL && result == true)
-                      {
-                        assert(reactantPoints.size() > 1);
-                        result = CCellDesignerImporter::createLineSegments(pCurve, reactantPoints.rbegin(), reactantPoints.rend());
-                      }
-                    else
-                      {
-                        FAIL_WITH_ERROR(result, "curve null");
-                      }
-
-                    pCurve = pSRefGlyph2->getCurve();
-                    assert(pCurve != NULL);
-
-                    if (pCurve != NULL && result == true)
-                      {
-                        assert(productPoints.size() > 1);
-                        result = CCellDesignerImporter::createLineSegments(pCurve, productPoints.begin(), productPoints.end());
-                      }
-
-                    // make sure the role is set because setSpeciesReferenceId relies on it
-                    this->setSpeciesGlyphId(pSRefGlyph1, ranno.mBaseReactants[0]);
-                    this->setSpeciesReferenceId(pSRefGlyph1, ranno.mBaseReactants[0], pRGlyph->getReactionId());
-                    this->setSpeciesGlyphId(pSRefGlyph2, ranno.mBaseProducts[0]);
-                    this->setSpeciesReferenceId(pSRefGlyph2, ranno.mBaseProducts[0], pRGlyph->getReactionId());
-                  }
-                else
-                  {
-                    COULD_NOT_CREATE(result);
-                  }
-              }
-            else
-              {
-                FAIL_WITH_ERROR(result, "bound not found.");
-              }
-          }
-        else
-          {
-            FAIL_WITH_ERROR(result, "reaction links not defined");
-          }
+        result = createUniUniCurve(ranno, pRGlyph, pReactionStyle);
       }
       break;
 
       case DISSOCIATION_RTYPE:
       case TRUNCATION_RTYPE:
       {
-        assert(ranno.mBaseReactants.size() == 1);
-        assert(ranno.mBaseProducts.size() == 2);
-        // there must be some edit points
-        assert(!ranno.mEditPoints.mPoints.empty());
-        // there should be a tShapeIndex or an omittedShapeIndex element
-        // that tells us, which of the points is the connection point
-        // center_product1 - center_substrate_1)
-        // if no tShapeIndex or omittedSHapeIndex is given, we assume it is 0
-        Point connectionPoint(new LayoutPkgNamespaces());
-
-        if (ranno.mEditPoints.mTShapeIndex < (int)ranno.mEditPoints.mPoints.size())
-          {
-            connectionPoint = ranno.mEditPoints.mPoints[ranno.mEditPoints.mTShapeIndex];
-          }
-        else if (ranno.mEditPoints.mOmittedShapeIndex < (int)ranno.mEditPoints.mPoints.size())
-          {
-            connectionPoint = ranno.mEditPoints.mPoints[ranno.mEditPoints.mOmittedShapeIndex];
-          }
-        else
-          {
-            connectionPoint = ranno.mEditPoints.mPoints[0];
-          }
-
-        // calculate the absolute position
-        // the position for the relative points coordinates is calculated as
-        // center_substrate1 + x*(center_substrate_2 - center_substrate_1)+y*(
-        std::string alias1 = ranno.mBaseReactants[0].mAlias;
-        assert(!alias1.empty());
-        std::string alias2 = ranno.mBaseProducts[0].mAlias;
-        assert(!alias2.empty());
-        std::string alias3 = ranno.mBaseProducts[1].mAlias;
-        assert(!alias3.empty());
-        std::map<std::string, BoundingBox>::const_iterator pos1, pos2, pos3;
-        pos1 = this->mCDBounds.find(alias1);
-        assert(pos1 != this->mCDBounds.end());
-        pos2 = this->mCDBounds.find(alias2);
-        assert(pos2 != this->mCDBounds.end());
-        pos3 = this->mCDBounds.find(alias3);
-        assert(pos3 != this->mCDBounds.end());
-
-        if (!alias1.empty() &&
-            !alias3.empty() &&
-            !alias3.empty() &&
-            pos1 != this->mCDBounds.end() &&
-            pos2 != this->mCDBounds.end() &&
-            pos3 != this->mCDBounds.end())
-          {
-            Point p1(new LayoutPkgNamespaces(), pos1->second.getPosition()->x() + pos1->second.getDimensions()->getWidth() * 0.5, pos1->second.getPosition()->y() + pos1->second.getDimensions()->getHeight() * 0.5);
-            Point p2(new LayoutPkgNamespaces(), pos2->second.getPosition()->x() + pos2->second.getDimensions()->getWidth() * 0.5, pos2->second.getPosition()->y() + pos2->second.getDimensions()->getHeight() * 0.5);
-            Point p3(new LayoutPkgNamespaces(), pos3->second.getPosition()->x() + pos3->second.getDimensions()->getWidth() * 0.5, pos3->second.getPosition()->y() + pos3->second.getDimensions()->getHeight() * 0.5);
-            Point v1(new LayoutPkgNamespaces(), p2.x() - p1.x(), p2.y() - p1.y());
-            Point v2(new LayoutPkgNamespaces(), p3.x() - p1.x(), p3.y() - p1.y());
-            Point p(new LayoutPkgNamespaces(), p1.x() + connectionPoint.x()*v1.x() + connectionPoint.y()*v2.x(), p1.y() + connectionPoint.x()*v1.y() + connectionPoint.y()*v2.y());
-            // p is the start point of the reaction glyph
-            // i.e. the point where the substrates connect
-            // create the curve for the reaction glyph
-            // the end point is a short distance further along the
-            // path the the only product
-
-            // first we have to check if we have linkAnchors for all
-            // elements
-            // if not, we create them based on the shortest distance to the
-            // connection point
-
-            CCellDesignerImporter::checkLinkAnchor(ranno.mBaseReactants[0], p);
-            CCellDesignerImporter::checkLinkAnchor(ranno.mBaseProducts[0], p);
-            CCellDesignerImporter::checkLinkAnchor(ranno.mBaseProducts[1], p);
-            assert(ranno.mBaseReactants[0].mPosition != POSITION_UNDEFINED);
-            assert(ranno.mBaseProducts[0].mPosition != POSITION_UNDEFINED);
-            assert(ranno.mBaseProducts[1].mPosition != POSITION_UNDEFINED);
-
-            if (ranno.mBaseReactants[0].mPosition != POSITION_UNDEFINED &&
-                ranno.mBaseProducts[0].mPosition != POSITION_UNDEFINED &&
-                ranno.mBaseProducts[1].mPosition != POSITION_UNDEFINED)
-              {
-                // p is the end point of the reaction glyph
-                // i.e. the point where the products connect
-                // the start point is a short distance further along the
-                // path the to the only substrate
-                Curve* pCurve = pRGlyph->getCurve();
-                assert(pCurve != NULL);
-
-                if (pCurve != NULL)
-                  {
-                    LineSegment* pLS = pCurve->createLineSegment();
-                    assert(pLS != NULL);
-
-                    if (pLS != NULL)
-                      {
-                        pLS->setEnd(p.x(), p.y());
-
-                        Point p1 = CCellDesignerImporter::getPositionPoint(pos1->second, ranno.mBaseReactants[0].mPosition);
-                        double dist = CCellDesignerImporter::distance(p1, p);
-                        assert(dist != 0.0);
-                        Point v(new LayoutPkgNamespaces(), (p1.x() - p.x()) / dist, (p1.y() - p.y()) / dist);
-                        dist /= 3.0;
-
-                        if (dist > 15.0)
-                          {
-                            dist = 15.0;
-                          }
-
-                        pLS->setStart(p.x() + dist * v.x(), p.y() + dist * v.y());
-
-                        // create the species reference glyphs
-                        // since we already know the endpoint for the substrate, we start
-                        // with that
-                        SpeciesReferenceGlyph* pSRefGlyph = pRGlyph->createSpeciesReferenceGlyph();
-                        assert(pSRefGlyph != NULL);
-
-                        if (pSRefGlyph != NULL)
-                          {
-                            // set the curve
-                            pCurve = pSRefGlyph->getCurve();
-
-                            if (pCurve != NULL)
-                              {
-                                LineSegment* pLS2 = pCurve->createLineSegment();
-                                assert(pLS2 != NULL);
-
-                                if (pLS2 != NULL)
-                                  {
-                                    pLS2->setStart(pLS->getStart()->x(), pLS->getStart()->y());
-                                    pLS2->setEnd(p1.x(), p1.y());
-                                  }
-                                else
-                                  {
-                                    COULD_NOT_CREATE(result);
-                                  }
-                              }
-                            else
-                              {
-                                FAIL_WITH_ERROR(result, "curve NULL");
-                              }
-
-                            // set an id
-                            std::string id = this->createUniqueId("SpeciesReferenceGlyph");
-                            pSRefGlyph->setId(id);
-                            this->mIdMap.insert(std::pair<std::string, const SBase*>(id, pSRefGlyph));
-                            // set the role
-                            pSRefGlyph->setRole(SPECIES_ROLE_SUBSTRATE);
-                            // set the species glyph id
-                            this->setSpeciesGlyphId(pSRefGlyph, ranno.mBaseReactants[0]);
-                            // set the species reference id
-                            this->setSpeciesReferenceId(pSRefGlyph, ranno.mBaseReactants[0], pRGlyph->getReactionId());
-                          }
-                        else
-                          {
-                            COULD_NOT_CREATE(result);
-                          }
-
-                        // first product
-                        if (result == true)
-                          {
-                            p1 = CCellDesignerImporter::getPositionPoint(pos2->second, ranno.mBaseProducts[0].mPosition);
-                            pSRefGlyph = pRGlyph->createSpeciesReferenceGlyph();
-                            assert(pSRefGlyph != NULL);
-
-                            if (pSRefGlyph != NULL)
-                              {
-                                // set the curve
-                                pCurve = pSRefGlyph->getCurve();
-
-                                if (pCurve != NULL)
-                                  {
-                                    LineSegment* pLS2 = pCurve->createLineSegment();
-                                    assert(pLS2 != NULL);
-
-                                    if (pLS2 != NULL)
-                                      {
-                                        pLS2->setStart(pLS->getEnd()->x(), pLS->getEnd()->y());
-                                        pLS2->setEnd(p1.x(), p1.y());
-                                      }
-                                    else
-                                      {
-                                        COULD_NOT_CREATE(result);
-                                      }
-                                  }
-                                else
-                                  {
-                                    FAIL_WITH_ERROR(result, "curve null");
-                                  }
-
-                                // set an id
-                                std::string id = this->createUniqueId("SpeciesReferenceGlyph");
-                                pSRefGlyph->setId(id);
-                                this->mIdMap.insert(std::pair<std::string, const SBase*>(id, pSRefGlyph));
-                                // set the role
-                                pSRefGlyph->setRole(SPECIES_ROLE_PRODUCT);
-                                // set the species glyph id
-                                this->setSpeciesGlyphId(pSRefGlyph, ranno.mBaseProducts[0]);
-                                // set the species reference id
-                                this->setSpeciesReferenceId(pSRefGlyph, ranno.mBaseProducts[0], pRGlyph->getReactionId());
-                              }
-                            else
-                              {
-                                COULD_NOT_CREATE(result);
-                              }
-                          }
-
-                        // second product
-                        if (result == true)
-                          {
-                            p1 = CCellDesignerImporter::getPositionPoint(pos3->second, ranno.mBaseProducts[1].mPosition);
-                            pSRefGlyph = pRGlyph->createSpeciesReferenceGlyph();
-                            assert(pSRefGlyph != NULL);
-
-                            if (pSRefGlyph != NULL)
-                              {
-                                // set the curve
-                                pCurve = pSRefGlyph->getCurve();
-
-                                if (pCurve != NULL)
-                                  {
-                                    LineSegment* pLS2 = pCurve->createLineSegment();
-                                    assert(pLS2 != NULL);
-
-                                    if (pLS2 != NULL)
-                                      {
-                                        pLS2->setStart(pLS->getEnd()->x(), pLS->getEnd()->y());
-                                        pLS2->setEnd(p1.x(), p1.y());
-                                      }
-                                    else
-                                      {
-                                        COULD_NOT_CREATE(result);
-                                      }
-                                  }
-                                else
-                                  {
-                                    FAIL_WITH_ERROR(result, "curve NULL");
-                                  }
-
-                                // set an id
-                                std::string id = this->createUniqueId("SpeciesReferenceGlyph");
-                                pSRefGlyph->setId(id);
-                                this->mIdMap.insert(std::pair<std::string, const SBase*>(id, pSRefGlyph));
-                                // set the role
-                                pSRefGlyph->setRole(SPECIES_ROLE_PRODUCT);
-                                // set the species glyph id
-                                this->setSpeciesGlyphId(pSRefGlyph, ranno.mBaseProducts[1]);
-                                // set the species reference id
-                                this->setSpeciesReferenceId(pSRefGlyph, ranno.mBaseProducts[1], pRGlyph->getReactionId());
-                              }
-                            else
-                              {
-                                COULD_NOT_CREATE(result);
-                              }
-                          }
-                      }
-                    else
-                      {
-                        COULD_NOT_CREATE(result);
-                      }
-                  }
-                else
-                  {
-                    FAIL_WITH_ERROR(result, "curve NULL");
-                  }
-              }
-            else
-              {
-                FAIL_WITH_ERROR(result, "link anchor not defined.");
-              }
-          }
-        else
-          {
-            FAIL_WITH_ERROR(result, "bound not found.");
-          }
+        result = createUniBiCurve(ranno, pRGlyph, pReactionStyle);
       }
       break;
 
       case HETERODIMER_ASSOCIATION_RTYPE:
       {
-        assert(ranno.mBaseReactants.size() == 2);
-        assert(ranno.mBaseProducts.size() == 1);
-        // assert that all elements have a link anchor
-        assert(!ranno.mEditPoints.mPoints.empty());
-        // there should be a tShapeIndex or an omittedShapeIndex element
-        // that tells us, which of the points is the connection point
-        Point connectionPoint(new LayoutPkgNamespaces());
-
-        if (ranno.mEditPoints.mTShapeIndex < (int)ranno.mEditPoints.mPoints.size())
-          {
-            connectionPoint = ranno.mEditPoints.mPoints[ranno.mEditPoints.mTShapeIndex];
-          }
-        else if (ranno.mEditPoints.mOmittedShapeIndex < (int)ranno.mEditPoints.mPoints.size())
-          {
-            connectionPoint = ranno.mEditPoints.mPoints[ranno.mEditPoints.mOmittedShapeIndex];
-          }
-        else
-          {
-            connectionPoint = ranno.mEditPoints.mPoints[0];
-          }
-
-        // calculate the absolute position
-        // the position for the relative points coordinates is calculated as
-        // center_substrat1 + x*(center_product1 - center_substrate_1)+y*(
-        // center_product2 - center_substrate_1)
-        // if no tShapeIndex or omittedShapeIndex is given, we assume it is 0
-        std::string alias1 = ranno.mBaseReactants[0].mAlias;
-        assert(!alias1.empty());
-        std::string alias2 = ranno.mBaseReactants[1].mAlias;
-        assert(!alias2.empty());
-        std::string alias3 = ranno.mBaseProducts[0].mAlias;
-        assert(!alias3.empty());
-        std::map<std::string, BoundingBox>::const_iterator pos1, pos2, pos3;
-        pos1 = this->mCDBounds.find(alias1);
-        assert(pos1 != this->mCDBounds.end());
-        pos2 = this->mCDBounds.find(alias2);
-        assert(pos2 != this->mCDBounds.end());
-        pos3 = this->mCDBounds.find(alias3);
-        assert(pos3 != this->mCDBounds.end());
-
-        if (!alias1.empty() &&
-            !alias3.empty() &&
-            !alias3.empty() &&
-            pos1 != this->mCDBounds.end() &&
-            pos2 != this->mCDBounds.end() &&
-            pos3 != this->mCDBounds.end())
-          {
-            Point p1(new LayoutPkgNamespaces(),
-                     pos1->second.getPosition()->x() + pos1->second.getDimensions()->getWidth() * 0.5,
-                     pos1->second.getPosition()->y() + pos1->second.getDimensions()->getHeight() * 0.5);
-            Point p2(new LayoutPkgNamespaces(),
-                     pos2->second.getPosition()->x() + pos2->second.getDimensions()->getWidth() * 0.5,
-                     pos2->second.getPosition()->y() + pos2->second.getDimensions()->getHeight() * 0.5);
-            Point p3(new LayoutPkgNamespaces(),
-                     pos3->second.getPosition()->x() + pos3->second.getDimensions()->getWidth() * 0.5,
-                     pos3->second.getPosition()->y() + pos3->second.getDimensions()->getHeight() * 0.5);
-
-            Point p = CCellDesignerImporter::calculateAbsoluteValue(connectionPoint, p1, p2, p3);
-
-            // first we have to check if we have linkAnchors for all
-            // elements
-            // if not, we create them based on the shortest distance to the
-            // connection point
-            CCellDesignerImporter::checkLinkAnchor(ranno.mBaseReactants[0], p);
-            CCellDesignerImporter::checkLinkAnchor(ranno.mBaseReactants[1], p);
-            CCellDesignerImporter::checkLinkAnchor(ranno.mBaseProducts[0], p);
-            assert(ranno.mBaseReactants[0].mPosition != POSITION_UNDEFINED);
-            assert(ranno.mBaseReactants[1].mPosition != POSITION_UNDEFINED);
-            assert(ranno.mBaseProducts[0].mPosition != POSITION_UNDEFINED);
-
-            if (ranno.mBaseReactants[0].mPosition != POSITION_UNDEFINED &&
-                ranno.mBaseReactants[1].mPosition != POSITION_UNDEFINED &&
-                ranno.mBaseProducts[0].mPosition != POSITION_UNDEFINED)
-              {
-                // p is the start point of the reaction glyph
-                // i.e. the point where the substrates connect
-                // create the curve for the reaction glyph
-                // the end point is a short distance further along the
-                // path the to the only product
-                Curve* pCurve = pRGlyph->getCurve();
-                assert(pCurve != NULL);
-
-                if (pCurve != NULL)
-                  {
-                    LineSegment* pLS = pCurve->createLineSegment();
-                    assert(pLS != NULL);
-
-                    if (pLS != NULL)
-                      {
-                        pLS->setStart(p.x(), p.y());
-
-                        Point p3 = CCellDesignerImporter::getPositionPoint(pos3->second, ranno.mBaseProducts[0].mPosition);
-                        double dist = CCellDesignerImporter::distance(p3, p);
-                        assert(dist != 0.0);
-                        Point v(new LayoutPkgNamespaces(), (p3.x() - p.x()) / dist, (p3.y() - p.y()) / dist);
-                        dist /= 3.0;
-
-                        if (dist > 15.0)
-                          {
-                            dist = 15.0;
-                          }
-
-                        pLS->setEnd(p.x() + dist * v.x(), p.y() + dist * v.y());
-
-                        // create the species reference glyphs
-                        // since we already know the endpoint for the product, we start
-                        // with that
-                        SpeciesReferenceGlyph* pSRefGlyph = pRGlyph->createSpeciesReferenceGlyph();
-                        assert(pSRefGlyph != NULL);
-
-                        if (pSRefGlyph != NULL)
-                          {
-                            // set the curve
-                            pCurve = pSRefGlyph->getCurve();
-
-                            if (pCurve != NULL)
-                              {
-                                LineSegment* pLS2 = pCurve->createLineSegment();
-                                assert(pLS2 != NULL);
-
-                                if (pLS2 != NULL)
-                                  {
-                                    pLS2->setStart(p.x(), p.y());
-                                    pLS2->setEnd(p3.x(), p3.y());
-                                  }
-                                else
-                                  {
-                                    COULD_NOT_CREATE(result);
-                                  }
-                              }
-                            else
-                              {
-                                FAIL_WITH_ERROR(result, "curve NULL");
-                              }
-
-                            // set an id
-                            std::string id = this->createUniqueId("SpeciesReferenceGlyph");
-                            pSRefGlyph->setId(id);
-                            this->mIdMap.insert(std::pair<std::string, const SBase*>(id, pSRefGlyph));
-                            // set the role
-                            pSRefGlyph->setRole(SPECIES_ROLE_PRODUCT);
-                            // set the species glyph id
-                            this->setSpeciesGlyphId(pSRefGlyph, ranno.mBaseProducts[0]);
-                            // set the species reference id
-                            this->setSpeciesReferenceId(pSRefGlyph, ranno.mBaseProducts[0], pRGlyph->getReactionId());
-                          }
-                        else
-                          {
-                            COULD_NOT_CREATE(result);
-                          }
-
-                        // first substrate
-                        if (result == true)
-                          {
-                            p3 = CCellDesignerImporter::getPositionPoint(pos1->second, ranno.mBaseReactants[0].mPosition);
-                            pSRefGlyph = pRGlyph->createSpeciesReferenceGlyph();
-                            assert(pSRefGlyph != NULL);
-
-                            if (pSRefGlyph != NULL)
-                              {
-                                // set the curve
-                                pCurve = pSRefGlyph->getCurve();
-
-                                if (pCurve != NULL)
-                                  {
-                                    LineSegment* pLS2 = pCurve->createLineSegment();
-                                    assert(pLS2 != NULL);
-
-                                    if (pLS2 != NULL)
-                                      {
-                                        pLS2->setStart(pLS->getStart()->x(), pLS->getStart()->y());
-                                        pLS2->setEnd(p3.x(), p3.y());
-                                      }
-                                    else
-                                      {
-                                        COULD_NOT_CREATE(result);
-                                      }
-                                  }
-                                else
-                                  {
-                                    FAIL_WITH_ERROR(result, "curve null");
-                                  }
-
-                                // set an id
-                                std::string id = this->createUniqueId("SpeciesReferenceGlyph");
-                                pSRefGlyph->setId(id);
-                                this->mIdMap.insert(std::pair<std::string, const SBase*>(id, pSRefGlyph));
-                                // set the role
-                                pSRefGlyph->setRole(SPECIES_ROLE_SUBSTRATE);
-                                // set the species glyph id
-                                this->setSpeciesGlyphId(pSRefGlyph, ranno.mBaseReactants[0]);
-                                // set the species reference id
-                                this->setSpeciesReferenceId(pSRefGlyph, ranno.mBaseReactants[0], pRGlyph->getReactionId());
-                              }
-                            else
-                              {
-                                COULD_NOT_CREATE(result);
-                              }
-                          }
-
-                        // second substrate
-                        if (result == true)
-                          {
-                            p3 = CCellDesignerImporter::getPositionPoint(pos2->second, ranno.mBaseReactants[1].mPosition);
-                            pSRefGlyph = pRGlyph->createSpeciesReferenceGlyph();
-                            assert(pSRefGlyph != NULL);
-
-                            if (pSRefGlyph != NULL)
-                              {
-                                // set the curve
-                                pCurve = pSRefGlyph->getCurve();
-
-                                if (pCurve != NULL)
-                                  {
-                                    LineSegment* pLS2 = pCurve->createLineSegment();
-                                    assert(pLS2 != NULL);
-
-                                    if (pLS2 != NULL)
-                                      {
-                                        pLS2->setStart(pLS->getStart()->x(), pLS->getStart()->y());
-                                        pLS2->setEnd(p3.x(), p3.y());
-                                      }
-                                    else
-                                      {
-                                        COULD_NOT_CREATE(result);
-                                      }
-                                  }
-                                else
-                                  {
-                                    FAIL_WITH_ERROR(result, "curve null");
-                                  }
-
-                                // set an id
-                                std::string id = this->createUniqueId("SpeciesReferenceGlyph");
-                                pSRefGlyph->setId(id);
-                                this->mIdMap.insert(std::pair<std::string, const SBase*>(id, pSRefGlyph));
-                                // set the role
-                                pSRefGlyph->setRole(SPECIES_ROLE_SUBSTRATE);
-                                // set the species glyph id
-                                this->setSpeciesGlyphId(pSRefGlyph, ranno.mBaseReactants[1]);
-                                // set the species reference id
-                                this->setSpeciesReferenceId(pSRefGlyph, ranno.mBaseReactants[1], pRGlyph->getReactionId());
-                              }
-                            else
-                              {
-                                COULD_NOT_CREATE(result);
-                              }
-                          }
-                      }
-                    else
-                      {
-                        COULD_NOT_CREATE(result);
-                      }
-                  }
-                else
-                  {
-                    FAIL_WITH_ERROR(result, "curve null");
-                  }
-              }
-            else
-              {
-                FAIL_WITH_ERROR(result, "link anchor not defined.");
-              }
-          }
-        else
-          {
-            FAIL_WITH_ERROR(result, "bounds not found.");
-          }
+        result = createBiUniCurve(ranno, pRGlyph, pReactionStyle);
       }
       break;
 
@@ -3192,6 +3403,38 @@ bool CCellDesignerImporter::convertReactionAnnotation(Reaction* pReaction, const
     }
 
   return result;
+}
+
+LocalStyle *
+CCellDesignerImporter::createStyleFromLine(Line &line, const std::string& glyphId)
+{
+  if (mpLocalRenderInfo == NULL) return NULL;
+
+  LocalStyle* pReactionStyle = NULL;
+
+  if (isDefaultOrEmpty(line))
+    {
+      std::string style_id = this->createUniqueId("ReactionGlyphStyle");
+      pReactionStyle = this->mpLocalRenderInfo->createStyle(style_id);
+
+      if (pReactionStyle != NULL)
+        {
+          this->mIdMap.insert(std::pair<std::string, const SBase*>(style_id, pReactionStyle));
+
+          if (pReactionStyle->getGroup() != NULL)
+            {
+              std::string colorId;
+              findOrCreateColorDefinition(line.mColor, colorId);
+              pReactionStyle->getGroup()->setStroke(colorId);
+              pReactionStyle->getGroup()->setStrokeWidth(line.mWidth);
+              // we also use this as fall back to species reference glyphs that don't
+              // specify a role
+              pReactionStyle->addId(glyphId);
+            }
+        }
+    }
+
+  return pReactionStyle;
 }
 
 /**
@@ -3225,7 +3468,7 @@ bool CCellDesignerImporter::createSpeciesReferenceGlyphs(ReactionGlyph* pRGlyph,
               if (pos != this->mCDBounds.end())
                 {
                   // now we have to find the layout element that corresponds to this alias
-                  // there are two posibilities
+                  // there are two possibilities
                   // a) the alias belongs directly to the layout element
                   // b) the alias is part of a complex and the complex root
                   //    represents the layout element
@@ -3354,7 +3597,7 @@ bool CCellDesignerImporter::createSpeciesReferenceGlyphs(ReactionGlyph* pRGlyph,
                             {
                               if (pLink->mPosition != POSITION_UNDEFINED)
                                 {
-                                  // get the point on the boundingbox of the species glyph
+                                  // get the point on the bounding box of the species glyph
                                   // that corresponds to position
                                   Point p = this->getPositionPoint(pos->second, pLink->mPosition);
                                   startsMap.insert(std::pair<SpeciesReferenceGlyph*, Point>(pSRG, p));
@@ -4939,7 +5182,7 @@ POSITION CCellDesignerImporter::positionToEnum(std::string pos)
 }
 
 /**
- * Converts the given paint scheme string to the correspnding PAINT_SCHEME enum value.
+ * Converts the given paint scheme string to the corresponding PAINT_SCHEME enum value.
  * If no enum is found, PAINT_UNDEFINED is returned.
  */
 PAINT_SCHEME CCellDesignerImporter::paintSchemeToEnum(std::string s)
@@ -4960,7 +5203,7 @@ PAINT_SCHEME CCellDesignerImporter::paintSchemeToEnum(std::string s)
 }
 
 /**
- * Converts the given class string to the correspnding SPECIES_CLASS enum value.
+ * Converts the given class string to the corresponding SPECIES_CLASS enum value.
  * If no enum is found, UNDEFINED is returned.
  */
 SPECIES_CLASS CCellDesignerImporter::classToEnum(std::string cl)
@@ -5120,79 +5363,66 @@ bool CCellDesignerImporter::parseReactionElements(const XMLNode* pNode, std::vec
  */
 bool CCellDesignerImporter::parseConnectScheme(const XMLNode* pNode, ConnectScheme& scheme)
 {
+  if (pNode == NULL || pNode->getName() != "connectScheme")
+    return true;
+
   bool result = true;
 
-  if (pNode != NULL && pNode->getName() == "connectScheme")
+  // attributes
+  // policy
+  const XMLAttributes& attr = pNode->getAttributes();
+
+  if (!attr.hasAttribute("connectPolicy"))
+    return true;
+
+
+  std::string s = attr.getValue("connectPolicy");
+  scheme.mPolicy = CCellDesignerImporter::connectionPolicyToEnum(s);
+
+  if (scheme.mPolicy == POLICY_UNDEFINED)
+    return true;
+
+
+  // reactangleIndex (optional)
+  if (attr.hasAttribute("rectangleIndex"))
     {
-      // attributes
-      // policy
-      const XMLAttributes& attr = pNode->getAttributes();
+      s = attr.getValue("rectangleIndex");
+      char** err = NULL;
+      long val = strtol(s.c_str(), err, 10);
 
-      if (attr.hasAttribute("connectPolicy"))
+      if (!err || *err != s.c_str())
         {
-          std::string s = attr.getValue("connectPolicy");
-          scheme.mPolicy = CCellDesignerImporter::connectionPolicyToEnum(s);
-
-          if (scheme.mPolicy != POLICY_UNDEFINED)
-            {
-              // reactangleIndex (optional)
-              if (attr.hasAttribute("rectangleIndex"))
-                {
-                  s = attr.getValue("rectangleIndex");
-                  char** err = NULL;
-                  long val = strtol(s.c_str(), err, 10);
-
-                  if (!err || *err != s.c_str())
-                    {
-                      scheme.mRectangleIndex = val;
-                    }
-                  else
-                    {
-                      FAIL_WITH_ERROR(result, "invalid rectangle index.");
-                    }
-                }
-
-              // children
-              const XMLNode* pDirections = CCellDesignerImporter::findChildNode(pNode, pNode->getPrefix(), "listOfLineDirection");
-
-              if (pDirections != NULL)
-                {
-                  // list of lineDirectionElements
-                  unsigned int i, iMax = pDirections->getNumChildren();
-                  const XMLNode* pChild = NULL;
-
-                  for (i = 0; i < iMax && result == true; ++i)
-                    {
-                      pChild = &pDirections->getChild(i);
-
-                      if (pChild != NULL &&
-                          pChild->getPrefix() == pDirections->getPrefix() &&
-                          pChild->getName() == "lineDirection")
-                        {
-                          LineDirection l;
-                          result = CCellDesignerImporter::parseLineDirection(pChild, l);
-                          scheme.mLineDirections.push_back(l);
-                        }
-                    }
-                }
-              else
-                {
-                  FAIL_WITH_ERROR(result, "list of line directions not found.");
-                }
-            }
-          else
-            {
-              FAIL_WITH_ERROR(result, "invalid connectPolicy.");
-            }
+          scheme.mRectangleIndex = val;
         }
       else
         {
-          FAIL_WITH_ERROR(result, "connectPolicy not found.");
+          FAIL_WITH_ERROR(result, "invalid rectangle index.");
         }
     }
-  else
+
+  // children
+  const XMLNode* pDirections = CCellDesignerImporter::findChildNode(pNode, pNode->getPrefix(), "listOfLineDirection");
+
+  if (pDirections == NULL)
+    return true;
+
+
+  // list of lineDirectionElements
+  unsigned int i, iMax = pDirections->getNumChildren();
+  const XMLNode* pChild = NULL;
+
+  for (i = 0; i < iMax && result == true; ++i)
     {
-      FAIL_WITH_ERROR(result, "invalid connectScheme.");
+      pChild = &pDirections->getChild(i);
+
+      if (pChild != NULL &&
+          pChild->getPrefix() == pDirections->getPrefix() &&
+          pChild->getName() == "lineDirection")
+        {
+          LineDirection l;
+          result = CCellDesignerImporter::parseLineDirection(pChild, l);
+          scheme.mLineDirections.push_back(l);
+        }
     }
 
   return result;
@@ -5217,6 +5447,8 @@ bool CCellDesignerImporter::parseLine(const XMLNode* pNode, Line& line)
         {
           std::string s = attr.getValue("color");
           line.mColor = s;
+          std::transform(line.mColor.begin(), line.mColor.end(), line.mColor.begin(), ::toupper);
+          line.mColor = "#" + line.mColor.substr(2) + line.mColor.substr(0, 2);
           s = attr.getValue("width");
           char** err = NULL;
           double dbl = strtod(s.c_str(), err);
@@ -5522,7 +5754,7 @@ bool CCellDesignerImporter::parseLineDirection(const XMLNode* pNode, LineDirecti
   if (pNode != NULL &&
       pNode->getName() == "lineDirection")
     {
-      // attributesd index and value are mandatory
+      // attributes index and value are mandatory
       // attribute arm is optional
       const XMLAttributes& attr = pNode->getAttributes();
 
@@ -5535,6 +5767,7 @@ bool CCellDesignerImporter::parseLineDirection(const XMLNode* pNode, LineDirecti
           if (!err || *err != s.c_str())
             {
               d.mIndex = val;
+              d.mArm = 0;
               err = NULL;
               s = attr.getValue("value");
               d.mValue = CCellDesignerImporter::directionToEnum(s);
@@ -9055,7 +9288,7 @@ bool CCellDesignerImporter::createDefaultProductStyle()
           headId = this->createUniqueId("product_arrow");
           pLE->setId(headId);
           this->mIdMap.insert(std::pair<std::string, const SBase*>(headId, pLE));
-          pos = Point(new LayoutPkgNamespaces(), -5.0, -5.0);
+          pos = Point(new LayoutPkgNamespaces(), -10.0, -5.0);
           dim = Dimensions(new LayoutPkgNamespaces(), 10.0, 10.0);
           box.setPosition(&pos);
           box.setDimensions(&dim);
@@ -9135,6 +9368,7 @@ bool CCellDesignerImporter::createDefaultProductStyle()
 
               if (pStyle->getGroup() != NULL)
                 {
+
                   std::map<std::string, std::string>::const_iterator pos = this->mColorStringMap.find("#000000FF");
 
                   if (pos != this->mColorStringMap.end())
@@ -9887,10 +10121,16 @@ bool CCellDesignerImporter::handleModificationLinks(ReactionGlyph* pRGlyph, Reac
                                           Point p(new LayoutPkgNamespaces());
                                           std::vector<Point> points;
 
+                                          int directionCount = 0;
+                                          const ConnectScheme& connectScheme = mod.mConnectScheme;
+
                                           while (pointIt != pointsEnd)
                                             {
                                               // create the absolute point
                                               p = CCellDesignerImporter::calculateAbsoluteValue(*pointIt, targetPoint, connectionPoint, p3);
+
+                                              enforceSquare(connectScheme, p, targetPoint, connectionPoint, directionCount, (pointIt + 1) == pointsEnd, points);
+
                                               points.push_back(p);
                                               ++pointIt;
                                             }
