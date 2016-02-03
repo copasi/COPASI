@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -495,7 +495,7 @@ CCompressedColumnFormat::~CCompressedColumnFormat()
 {
   pdelete(mpValue);
   pdelete(mpRowIndex);
-  pdelete(mpColumnStart);
+  pdeletev(mpColumnStart);
 }
 
 size_t CCompressedColumnFormat::numRows() const
