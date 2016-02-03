@@ -47,7 +47,7 @@ include(commandline/CMakeLists.txt)
 include(compareExpressions/CMakeLists.txt)
 include(crosssection/CMakeLists.txt)
 
-if(ENABLE_ANALYTICS)
+if(ENABLE_WITH_ANALYTICS)
 include(analytics/CMakeLists.txt)
 endif()
 

@@ -218,10 +218,10 @@ if (ENABLE_WITH_MERGEMODEL)
   add_definitions(-DWITH_MERGEMODEL)
 endif(ENABLE_WITH_MERGEMODEL)
 
-option(ENABLE_ANALYTICS "Enable Analytics Task" OFF)
-if (ENABLE_ANALYTICS)
+option(ENABLE_WITH_ANALYTICS "Enable Analytics Task" OFF)
+if (ENABLE_WITH_ANALYTICS)
 add_definitions(-DWITH_ANALYTICS)
-endif(ENABLE_ANALYTICS)
+endif(ENABLE_WITH_ANALYTICS)
 
 
 option(ENABLE_PE_EVENT_CREATION "Enable Event Creation out of time series data" ON)
@@ -752,7 +752,7 @@ message(STATUS "-----------------------------------------------------------
    SEDML support            = ${ENABLE_COPASI_SEDML}
    GPROF support            = ${ENABLE_GPROF}
    UNDO framework           = ${ENABLE_COPASI_UNDO}
-   Analytics Task           = ${ENABLE_ANALYTICS}
+   Analytics Task           = ${ENABLE_WITH_ANALYTICS}
    Additional Defines       = ${DirDefs}
 
   Language Bindings:
