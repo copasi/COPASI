@@ -238,21 +238,23 @@ const std::string & CUnitDefinition::getSymbol() const
 
 CUnitDefinition & CUnitDefinition::operator=(const CUnitDefinition & src)
 {
-   if (this == &src) return *this;
+  if (this == &src) return *this;
 
   // All CUnitDefinition symbols in a CUnitDefinitionDB should be unique
   // This should protect that for cases like this:
   // *aCunitDefDB[i] = someCunitDef;
 
-   CUnitDefinitionDB * pDB =
-       dynamic_cast < CUnitDefinitionDB * >(getObjectParent());
+  CUnitDefinitionDB * pDB = dynamic_cast < CUnitDefinitionDB * >(getObjectParent());
 
-     if (pDB != NULL &&
-         pDB->containsSymbol(src.getSymbol()) &&
-         pDB->getIndex(src.getObjectName()) != C_INVALID_INDEX)
-       CCopasiMessage ex(CCopasiMessage::EXCEPTION, MCUnitDefinition + 2);
+  if (pDB != NULL &&
+      pDB->containsSymbol(src.getSymbol()) &&
+      pDB->getIndex(src.getObjectName()) != C_INVALID_INDEX)
+    CCopasiMessage ex(CCopasiMessage::EXCEPTION, MCUnitDefinition + 2);
 
-  *this = src;
+  CUnit::operator = (src);
+
+  setObjectName(src.getObjectName());
+  setSymbol(src.mSymbol);
 
   return *this;
 }
