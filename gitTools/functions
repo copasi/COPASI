@@ -75,7 +75,7 @@ if [ _$(uname) = _Darwin -o _$(uname) = _FreeBSD ]; then
   }
 else
   function getPermissions () {
-    stat -c %a $f $@
+    stat -c %a $@
   }
 fi  
 
