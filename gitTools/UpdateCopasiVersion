@@ -10,13 +10,22 @@ fi
 GAWK=`gitTool gawk`
 WGET=`gitTool wget`
 
-remoteCommit=`git rev-parse origin/${branch} 2>/dev/null`
+current_major=4
+current_minor=12
+current_build=81
+current_comment=Source
+current_commit=1d8d55d2500dd50673a0545a104c081a48827533
 
 # We only register a build.
 if [ "_$1" == "_--registerBuild" ]; then
-  major=`${GAWK} -- '$2 ~ "VERSION_MAJOR" {print $3}' ${GitTools}/../copasi/CopasiVersion.h`
-  minor=`${GAWK} -- '$2 ~ "VERSION_MINOR" {print $3}' ${GitTools}/../copasi/CopasiVersion.h`
-  echo Version: `${WGET} -qO- "horsa.bioinformatics.vt.edu/buildnumber/${major}.${minor}.${remoteCommit}"`
+  latestBuild=`git ls-remote --tags | ${GAWK} -- '$0 ~ /Build-/ {printf "%s %s\n", gensub(/.*Build-([0-9]+).*/, "\\\\1", "g", $0), $1}' | sort -k1rn | head -n 1`
+  echo latest build: \'${latestBuild%% *}\' \'${latestBuild##* }\'
+
+  if [ "`git log -1 --pretty=format:%H`" != "${latestBuild##* }" ]; then
+    newBuild=Build-$((${latestBuild%% *}+1))
+    git tag --force ${newBuild}
+    git push origin ${newBuild}
+  fi
 
   exit
 fi
@@ -42,45 +51,31 @@ echo lastCommit=$localCommit > ${GitTools}/.UpdateCopasiVersion
 
 echo Updating ${GitTools}/../copasi/CopasiVersion.h
 
-current_major=4
-current_minor=9
-current_build=45
-current_comment=Source
-current_commit=daa20f3198bf8bb44e098ceb862943b36448d596
+version=`git log --pretty="%H %d" ${current_commit}..@{upstream} | ${GAWK} -- '$0 ~ /Version-/ {printf "%s\n", gensub(/.*Version-([0-9]+).([0-9]+).*/, "\\\\1 \\\\2", "g", $0)}' | sort -k1rn -k2rn | head -n 1`
 
+if [ "_${version}" != _ ]; then
+  current_major=${version%% *}
+  current_minor=${version##* }
+fi
+ 
 commitList=`git log --pretty=%H $current_commit..HEAD`
-buildList=`${WGET} -qO- "horsa.bioinformatics.vt.edu/buildnumber/list" | \
-           sed -e 's/<table>//g' \
-               -e 's/<tr>//g' \
-               -e 's/<td>//g' \
-               -e 's?</table>??' \
-               -e 's?</td></tr>?,?g' \
-               -e 's?</td>? ?g'`
+buildList=`git log --pretty="%H %d" ${current_commit}..@{upstream} | ${GAWK} -- '$0 ~ /Build-/ {printf "%s %s,", gensub(/.*Build-([0-9]+).*/, "\\\\1", "g", $0), $1}'`
 
 SAVEIFS=$IFS
 IFS=','
 
 echo $current_build > $$
 
-compatibility="{"
-
 for b in $buildList; do
-  major=${b#major=}
-  major=${major%% *}
-  minor=${b#*minor=}
-  minor=${minor%% *}
-  build=${b#*build=}
-  build=${build%% *}
-  commit=${b#*commit=}
+  build=${b%% *}
+  commit=${b##* }
   
   if [ `echo $commitList | grep ${commit}` ]; then
-    if [ $current_build == 45 ]; then 
-      current_major=${major}
-      current_minor=${minor}
+    if [ $current_build == 81 ]; then 
       current_build=${build}
       current_commit=${commit}
     fi
-	
+    
     echo $build >> $$
   fi
 done 
@@ -88,8 +83,8 @@ done
 IFS=$SAVEIFS
 
 compatible=all
-previous=44
-next=45
+previous=80
+next=81
 
 compatibility={
 
@@ -129,7 +124,7 @@ sed -e 's/COPASI_VERSION_MAJOR.*/COPASI_VERSION_MAJOR '$current_major'/' \
     -e 's/COPASI_VERSION_MINOR.*/COPASI_VERSION_MINOR '$current_minor'/' \
     -e 's/COPASI_VERSION_BUILD.*/COPASI_VERSION_BUILD '$current_build'/' \
     -e 's/COPASI_VERSION_MODIFIED.*/COPASI_VERSION_MODIFIED '$modified'/' \
-    -e 's/COPASI_VERSION_COMPATIBILITY.*/COPASI_VERSION_COMPATIBILITY '$compatibility'/' \
+    -e 's/COPASI_VERSION_COMPATIBILITY.*/COPASI_VERSION_COMPATIBILITY '"$compatibility"'/' \
     -e 's/COPASI_VERSION_COMMENT.*/COPASI_VERSION_COMMENT "'$current_comment'"/' \
     -e 's/COPASI_VERSION_CREATOR.*/COPASI_VERSION_CREATOR "'$creator'"/' \
     ${GitTools}/../copasi/CopasiVersion.h.in > ${GitTools}/../copasi/CopasiVersion.h
