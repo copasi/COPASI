@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -551,8 +551,6 @@ private:
    */
   void saveRenderPoint(const CLRenderPoint& point);
 
-
-
   // Attributes
 
   /**
@@ -611,5 +609,6 @@ private:
    * Remember if we already issued MCXML21
    */
   bool mMCXML21Issued;
+};
 
 #endif // COPASI_CCopasiXML
