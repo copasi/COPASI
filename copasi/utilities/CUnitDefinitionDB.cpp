@@ -20,12 +20,19 @@ CUnitDefinitionDB::CUnitDefinitionDB(const std::string & name,
 //virtual
 bool CUnitDefinitionDB::add(const CUnitDefinition & src)
 {
-  if (containsSymbol(src.getSymbol())) return false;
-
   // This form will construct a copy, before adding (inherited
   // from CCopasiVectorN). When the CUnitDefinition
   // copy constructor is called, an exception will be thrown if
   // the symbol is already in use.
+  // If it's symbol is already present, this form will not add
+  // a pointer to the src object, and will return false.
+
+  if (containsSymbol(src.getSymbol()) ||
+      getIndex(src.getObjectName()) == C_INVALID_INDEX)
+    {
+      return false;
+    }
+
   CUnitDefinition * pCopy = NULL;
 
   try
@@ -38,7 +45,7 @@ bool CUnitDefinitionDB::add(const CUnitDefinition & src)
       return false;
     }
 
-  return add(pCopy, true);
+  return true;
 }
 
 //virtual
@@ -47,31 +54,27 @@ bool CUnitDefinitionDB::add(CUnitDefinition * src, bool adopt)
 
   // If it's symbol is already present, this form will not add
   // a pointer to the src object, and will return false.
-  bool success = false;
-
-  if (containsSymbol(src->getSymbol()))
-    success = false;
-  else
+  if (containsSymbol(src->getSymbol()) ||
+      getIndex(src->getObjectName()) == C_INVALID_INDEX)
     {
-      CCopasiVectorN< CUnitDefinition >::add(src, adopt);
-      mSymbolToUnitDefinitions[src->getSymbol()] = src;
-
-      if (src->getSymbol() == "\xCE\xA9")
-        {
-          mSymbolToUnitDefinitions["O"] = src;
-        }
-
-      success = true;
+      return false;
     }
 
-  return success;
+  CCopasiVectorN< CUnitDefinition >::add(src, adopt);
+  mSymbolToUnitDefinitions[src->getSymbol()] = src;
+
+  if (src->getSymbol() == "\xCE\xA9")
+    {
+      mSymbolToUnitDefinitions["O"] = src;
+    }
+
+  return true;
 }
 
 //virtual
 void CUnitDefinitionDB::remove(const size_t & index)
 {
-  mSymbolToUnitDefinitions.erase(operator [](index)->getSymbol());
-  CCopasiVector< CUnitDefinition >::remove(index);
+  remove(operator [](index));
 }
 
 //virtual
@@ -90,8 +93,7 @@ bool CUnitDefinitionDB::remove(CCopasiObject * pObject)
 //virtual
 void CUnitDefinitionDB::remove(const std::string & name)
 {
-  mSymbolToUnitDefinitions.erase(operator [](name)->getSymbol());
-  CCopasiVectorN< CUnitDefinition >::remove(name);
+  remove(operator [](name));
 }
 
 bool CUnitDefinitionDB::containsSymbol(std::string symbol)
