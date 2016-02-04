@@ -2816,11 +2816,11 @@ bool CCopasiXML::saveUnitDefinitionList()
 {
   bool success = true;
 
-  mpUnitDefList = CCopasiRootContainer::getUnitList();
+  CUnitDefinitionDB * pUnitDefList = CCopasiRootContainer::getUnitList();
 
-  if (!mpUnitDefList) return success;
+  if (!pUnitDefList) return success;
 
-  size_t i, imax = mpUnitDefList->size();
+  size_t i, imax = pUnitDefList->size();
 
   if (!imax) return success;
 
@@ -2831,7 +2831,7 @@ bool CCopasiXML::saveUnitDefinitionList()
 
   for (i = 0; i < imax; i++)
     {
-      pUnitDef = (*mpUnitDefList)[i];
+      pUnitDef = (*pUnitDefList)[i];
 
       // Don't save if the unit is not used in/for a model unit.
       if(mpModel->getUnitSymbolUsage(pUnitDef->getSymbol()).empty()) continue;
