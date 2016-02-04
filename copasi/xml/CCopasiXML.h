@@ -612,10 +612,4 @@ private:
    */
   bool mMCXML21Issued;
 
-  /**
-   * Pointer to a vector of unit definitions used by the model
-   */
-  CUnitDefinitionDB * mpUnitDefList;
-};
-
 #endif // COPASI_CCopasiXML
