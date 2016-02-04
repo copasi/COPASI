@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -95,8 +95,7 @@ CCopasiXML::CCopasiXML():
   mpGUI(NULL),
   mpLayoutList(NULL),
   mpDataModel(NULL),
-  mMCXML21Issued(false),
-  mpUnitDefList(NULL)
+  mMCXML21Issued(false)
 {}
 
 CCopasiXML::~CCopasiXML() {}
@@ -158,7 +157,6 @@ bool CCopasiXML::save(std::ostream & os,
   success &= saveGUI();
   success &= saveLayoutList();
   success &= saveSBMLReference();
-
 
   endSaveElement("COPASI");
 
@@ -276,8 +274,8 @@ bool CCopasiXML::load(std::istream & is,
 //     {
 //       symbol.str("";)
 //       symbol << (*it)->getSymbol() << "_" << i++;
-//     }
-//   }
+//}
+//}
 
 //   pCopasiUnitDefinitionList->add(it, true);
 
@@ -292,9 +290,9 @@ bool CCopasiXML::load(std::istream & is,
 //     for (; itMV != endMV; ++itMV)
 //     {
 //       itMV->setUnitExpression(CUnit::replaceSymbol(itMV->getUnit()->getExpression(), (*it)->getSymbol(), symbol));
-//     }
-//   }
-// }
+//}
+//}
+//}
 
 bool CCopasiXML::setModel(CModel * pModel)
 {
@@ -2834,7 +2832,7 @@ bool CCopasiXML::saveUnitDefinitionList()
       pUnitDef = (*pUnitDefList)[i];
 
       // Don't save if the unit is not used in/for a model unit.
-      if(mpModel->getUnitSymbolUsage(pUnitDef->getSymbol()).empty()) continue;
+      if (mpModel->getUnitSymbolUsage(pUnitDef->getSymbol()).empty()) continue;
 
       Attributes.erase();
       Attributes.add("key", pUnitDef->getKey());
@@ -2843,13 +2841,13 @@ bool CCopasiXML::saveUnitDefinitionList()
 
       startSaveElement("UnitDefinition", Attributes);
 
-        saveAnnotation(pUnitDef);
+      saveAnnotation(pUnitDef);
 
-        startSaveElement("Expression");
+      startSaveElement("Expression");
 
-          saveData(pUnitDef->getExpression());
+      saveData(pUnitDef->getExpression());
 
-        endSaveElement("Expression");
+      endSaveElement("Expression");
 
       endSaveElement("UnitDefinition");
     }
