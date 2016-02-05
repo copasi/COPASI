@@ -28,7 +28,7 @@ bool CUnitDefinitionDB::add(const CUnitDefinition & src)
   // a pointer to the src object, and will return false.
 
   if (containsSymbol(src.getSymbol()) ||
-      getIndex(src.getObjectName()) == C_INVALID_INDEX)
+      getIndex(src.getObjectName()) != C_INVALID_INDEX)
     {
       return false;
     }
@@ -55,7 +55,7 @@ bool CUnitDefinitionDB::add(CUnitDefinition * src, bool adopt)
   // If it's symbol is already present, this form will not add
   // a pointer to the src object, and will return false.
   if (containsSymbol(src->getSymbol()) ||
-      getIndex(src->getObjectName()) == C_INVALID_INDEX)
+      getIndex(src->getObjectName()) != C_INVALID_INDEX)
     {
       return false;
     }
