@@ -313,7 +313,7 @@ public:
    */
   CCopasiDataModel* pDataModel;
 
-  CUnitDefinitionDB * pFileUnitDefinitionList;
+  CUnitDefinitionDB * pUnitDefinitionImportList;
 
   CUnitDefinition * pCurrentUnitDefinition;
 };
@@ -4976,6 +4976,13 @@ public:
    * @return CListOfLayouts * pLayoutList
    */
   CListOfLayouts * getLayoutList() const;
+
+  /**
+   * Retrieve Unit Definitions to be added
+   * to the Root Container's global list.
+   * @return CUnitDefinitionDB * pUnitDefinitionImportList
+   */
+  CUnitDefinitionDB *getUnitDefinitionImportList() const;
 
   /**
    * Retrieve a pointer to the current group if available

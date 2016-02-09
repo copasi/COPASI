@@ -223,6 +223,7 @@ bool CCopasiXML::load(std::istream & is,
   mpTaskList = Parser.getTaskList();
   mpPlotList = Parser.getPlotList();
   mpLayoutList = Parser.getLayoutList();
+  CUnitDefinitionDB * pUnitDefinitionImportList = Parser.getUnitDefinitionImportList();
 
   if (!success)
     {
@@ -231,7 +232,10 @@ bool CCopasiXML::load(std::istream & is,
       pdelete(mpTaskList);
       pdelete(mpPlotList);
       pdelete(mpLayoutList);
+      pdelete(pUnitDefinitionImportList);
     }
+  else
+    mergeUnitDefinitions(pUnitDefinitionImportList);
 
   // The range in which the fix needs to be applied
   if (36 <= FileVersion.getVersionDevel() && FileVersion.getVersionDevel() <= 58)
@@ -250,51 +254,97 @@ bool CCopasiXML::load(std::istream & is,
   return success;
 }
 
-//CUnitDefinitionDB * pCopasiUnitDefinitionList = CCopasiRootContainer::getUnitList();
+void CCopasiXML::mergeUnitDefinitions(CUnitDefinitionDB * pUnitDefImportList)
+{
 
-//CCopasiVectorN< CUnitDefinition >::const_iterator it = mCommon.pFileUnitDefinitionList->begin();
-//CCopasiVectorN< CUnitDefinition >::const_iterator end = mCommon.pFileUnitDefinitionList->end();
+  CUnitDefinitionDB * pCopasiUnitDefinitionList = CCopasiRootContainer::getUnitList();
 
-//bool needSymbolChange = false;
-//std::ostringstream symbol;
+  if (pUnitDefImportList == NULL ||
+      pCopasiUnitDefinitionList == NULL)
+    return;
 
-//for (; it != end; ++it) // For all the UnitDefinitions, read in from the file . . .
-//{
-//   symbol.str("");
-//   symbol << (*it)->getSymbol();
-//   int i =1;
+  bool needSymbolUpdate = false;
+  std::ostringstream name, symbol;
+  CUnitDefinition * pUnitDefToAdd, * pUnitDefInRootContainer;
+  std::set<CUnitDefinition *> unitDefsToAdd;
 
-//   // Create a symbol not already in Copasi, as well as not in conflict
-//   // with any of the other UnitDefinition symbols in the file
-//   while (pCopasiUnitDefinitionList->containsSymbol(symbol.str()))
-//   {
-//     needSymbolChange = true;
-//     symbol.str("";)
-//     symbol << (*it)->getSymbol() << "_" << i++;
+  // Add them if they don't already exist. First change name and/or
+  // symbol if there are collisions.
+  CCopasiVectorN< CUnitDefinition >::iterator itIL = pUnitDefImportList->begin(),
+                                              endIL = pUnitDefImportList->end();
 
-//     while (!(*it)->setSymbol(symbol.str()))
-//     {
-//       symbol.str("";)
-//       symbol << (*it)->getSymbol() << "_" << i++;
-//}
-//}
+  for (; itIL != endIL; ++itIL) //For all of the Unit Defintions to potentially import . . .
+    {
+      name.str("");
+      name << (*itIL)->getObjectName();
 
-//   pCopasiUnitDefinitionList->add(it, true);
+      symbol.str("");
+      symbol << (*itIL)->getSymbol();
 
-//   delete mCommon.pFileUnitDefinitionList;
+      // If an object of this name already exists, we'll want more information.
+      if (pCopasiUnitDefinitionList->getIndex(name.str()) != C_INVALID_INDEX)
+        pUnitDefInRootContainer = pCopasiUnitDefinitionList->operator [](name.str());
+      else
+        pUnitDefInRootContainer = NULL;
 
-//   if(needSymbolChange) // True if a conflicting symbol needed to be changed.
-//   {
-//     CCopasiVectorN< CModelValue >::iterator itMV = mCommon.pModel->getModelValues()->begin();
-//     CCopasiVectorN< CModelValue >::iterator endMV = mCommon.pModel->getModelValues()->end();
+      if (pUnitDefInRootContainer != NULL && //implies name conflict
+          pUnitDefInRootContainer->getSymbol() == symbol.str() &&
+          pUnitDefInRootContainer->getExpression() == (*itIL)->getExpression())
+        continue; // No need to add an identical unit
 
-//     // Update Model Values to use the new, non-conflicting symbol
-//     for (; itMV != endMV; ++itMV)
-//     {
-//       itMV->setUnitExpression(CUnit::replaceSymbol(itMV->getUnit()->getExpression(), (*it)->getSymbol(), symbol));
-//}
-//}
-//}
+      // If necessary, generate, then set, a non-conflicting name.
+      int i = 0;
+
+      while (pCopasiUnitDefinitionList->getIndex(name.str()) != C_INVALID_INDEX)
+        {
+          name.str("");
+          name << (*itIL)->getObjectName() << "_" << ++i;
+        }
+
+      // By now we know we will add a copy of this one.
+      pUnitDefToAdd = new CUnitDefinition(name.str(), NULL); // name should now not conflict
+      pUnitDefToAdd->setExpression((*itIL)->getExpression(), CUnit::Avogadro);
+
+      // If necessary, generate, then set, a non-conflicting symbol.
+      if (pCopasiUnitDefinitionList->containsSymbol(symbol.str()))
+        {
+          i = 0;
+
+          while (pCopasiUnitDefinitionList->containsSymbol(symbol.str()) ||
+                 pUnitDefImportList->containsSymbol(symbol.str()))
+            {
+              symbol.str("");
+              symbol << (*itIL)->getSymbol() << "_" << ++i;
+            }
+
+          // for all the ones aready chosen to add (includes current one)
+          std::set< CUnitDefinition * >::iterator itChosen = unitDefsToAdd.begin(),
+                                                  endChosen = unitDefsToAdd.end();
+
+          for (; itChosen != endChosen; ++itChosen)
+            {
+              (*itChosen)->setExpression(CUnit::replaceSymbol((*itChosen)->getExpression() , (*itIL)->getSymbol(), pUnitDefToAdd->getSymbol()), CUnit::Avogadro);
+            }
+
+          // for all the ones remaining in the Import List
+          CCopasiVectorN< CUnitDefinition >::iterator itILrem = itIL;
+
+          for (; itILrem != endIL; ++itILrem)
+            {
+              (*itILrem)->setExpression(CUnit::replaceSymbol((*itILrem)->getExpression() , (*itIL)->getSymbol(), pUnitDefToAdd->getSymbol()), CUnit::Avogadro);
+            }
+
+          // for any units used in the model
+          mpModel->changeUnitExpressionSymbols((*itIL)->getSymbol(), pUnitDefToAdd->getSymbol());
+        }
+
+      pUnitDefToAdd->setSymbol(symbol.str());
+
+      // Finally we can add, and allow the Copasi Unit Definition List to adopt, it.
+      pCopasiUnitDefinitionList->add(pUnitDefToAdd, true);
+      unitDefsToAdd.insert(pUnitDefToAdd); // keep track of this, in-case need symbol update
+    }
+}
 
 bool CCopasiXML::setModel(CModel * pModel)
 {
@@ -2833,8 +2883,10 @@ bool CCopasiXML::saveUnitDefinitionList()
     {
       pUnitDef = (*pUnitDefList)[i];
 
-      // Don't save if the unit is not used in/for a model unit.
-      if (mpModel->getUnitSymbolUsage(pUnitDef->getSymbol()).empty()) continue;
+      // Don't save if the unit is not used in/for a model unit and
+      // it's not a user-created unit (i.e. it is a built-in)
+      if (mpModel->getUnitSymbolUsage(pUnitDef->getSymbol()).empty() &&
+          pUnitDef->isReadOnly()) continue;
 
       Attributes.erase();
       Attributes.add("key", pUnitDef->getKey());

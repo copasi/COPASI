@@ -44,6 +44,9 @@ std::string CUnit::replaceSymbol(const std::string & expression,
                                  const std::string & oldSymbol,
                                  const std::string & newSymbol)
 {
+  if (oldSymbol == newSymbol)
+    return expression;
+
   std::istringstream buffer(expression);
 
   CUnitParser Parser(&buffer);

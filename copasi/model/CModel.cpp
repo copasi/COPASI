@@ -3851,3 +3851,24 @@ CCopasiObject::DataObjectSet CModel::getUnitSymbolUsage(std::string symbol)
 
   return usages;
 }
+
+// Return a set of any Copasi object using this symbol.
+void CModel::changeUnitExpressionSymbols(std::string oldSymbol, std::string newSymbol)
+{
+  //Model Values
+  CCopasiVector< CModelValue >::const_iterator it = getModelValues().begin(),
+                                               end = getModelValues().end();
+
+  for (; it != end; ++it)
+    {
+      (*it)->setUnitExpression(CUnit::replaceSymbol((*it)->getUnitExpression(), oldSymbol, newSymbol));
+    }
+
+  mpVolumeUnit->setExpression(CUnit::replaceSymbol(mpVolumeUnit->getExpression(), oldSymbol, newSymbol), getAvogadro());
+  mpAreaUnit->setExpression(CUnit::replaceSymbol(mpAreaUnit->getExpression(), oldSymbol, newSymbol), getAvogadro());
+  mpLengthUnit->setExpression(CUnit::replaceSymbol(mpLengthUnit->getExpression(), oldSymbol, newSymbol), getAvogadro());
+  mpTimeUnit->setExpression(CUnit::replaceSymbol(mpTimeUnit->getExpression(), oldSymbol, newSymbol), getAvogadro());
+  mpQuantityUnit->setExpression(CUnit::replaceSymbol(mpQuantityUnit->getExpression(), oldSymbol, newSymbol), getAvogadro());
+
+  return;
+}

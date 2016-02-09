@@ -17,7 +17,6 @@
 #define START_ELEMENT   -1
 #define UNKNOWN_ELEMENT -2
 
-
 CCopasiXMLParser::UnitDefinitionElement::UnitDefinitionElement(CCopasiXMLParser & parser,
     SCopasiXMLParserCommon & common):
   CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >(parser, common),
@@ -56,15 +55,13 @@ void CCopasiXMLParser::UnitDefinitionElement::start(const XML_Char *pszName,
             Name = mParser.getAttributeValue("name", papszAttrs);
             Symbol = mParser.getAttributeValue("symbol", papszAttrs);
 
-            // Need a CUnitDefinition, as a child of the FileUnitDefinitionDB
+            // Need a CUnitDefinition.
             // This is manipulated in this case and the Expression case.
             // No test for NULL here. If this already was pointing to something,
             // we don't want that object for this.
-            mCommon.pCurrentUnitDefinition = new CUnitDefinition(Name, mCommon.pFileUnitDefinitionList);
+            mCommon.pCurrentUnitDefinition = new CUnitDefinition(Name, NULL);
 
             mCommon.pCurrentUnitDefinition->setSymbol(Symbol);
-
-            mCommon.pFileUnitDefinitionList->add(mCommon.pCurrentUnitDefinition);
 
             return;
 
@@ -125,9 +122,7 @@ void CCopasiXMLParser::UnitDefinitionElement::end(const XML_Char *pszName)
           CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
                          pszName, "UnitDefinition", mParser.getCurrentLineNumber());
 
-        mCommon.pFileUnitDefinitionList->add(mCommon.pCurrentUnitDefinition);
-
-        mCommon.pCurrentUnitDefinition = NULL;
+        mCommon.pUnitDefinitionImportList->add(mCommon.pCurrentUnitDefinition, true);
 
         mParser.popElementHandler();
         mLastKnownElement = START_ELEMENT;
@@ -173,9 +168,9 @@ void CCopasiXMLParser::UnitDefinitionElement::end(const XML_Char *pszName)
                          pszName, "Expression", mParser.getCurrentLineNumber());
 
         {
-          size_t Size = CCopasiMessage::size();
-
           mCommon.pCurrentUnitDefinition->setExpression(mCommon.CharacterData, CUnit::Avogadro);
+
+          size_t Size = CCopasiMessage::size();
 
           // Remove error messages created by setExpression as this may fail
           // due to incomplete model specification at this time.
@@ -228,8 +223,8 @@ void CCopasiXMLParser::ListOfUnitDefinitionsElement::start(const XML_Char *pszNa
               CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
                              pszName, "ListOfUnitDefinitions", mParser.getCurrentLineNumber());
 
-            if (!mCommon.pFileUnitDefinitionList)
-              mCommon.pFileUnitDefinitionList = new CUnitDefinitionDB("importUnitDefintionsList");
+            if (!mCommon.pUnitDefinitionImportList)
+              mCommon.pUnitDefinitionImportList = new CUnitDefinitionDB("importUnitDefintionsList");
 
             mLastKnownElement = ListOfUnitDefinitions;
 

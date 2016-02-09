@@ -551,6 +551,13 @@ private:
    */
   void saveRenderPoint(const CLRenderPoint& point);
 
+  /**
+   * Load in Unit Definitions we don't already have.
+   * Create new names and symbols for conflicts.
+   * Update model to use any created symbols.
+   */
+  void mergeUnitDefinitions(CUnitDefinitionDB * pUnitDefImportList);
+
   // Attributes
 
   /**
