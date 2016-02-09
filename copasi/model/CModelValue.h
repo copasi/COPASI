@@ -283,7 +283,7 @@ public:
 
   /**
    * Get the unit.
-   * @return const CUnit &
+   * @return CUnit &
    */
   virtual const std::string &getUnitExpression() const;
 

@@ -248,7 +248,7 @@ CCopasiXMLParser::CCopasiXMLParser(CVersion & version) :
   mCommon.pGroup = NULL;
   mCommon.pText = NULL;
   mCommon.pListOfCurveElements = NULL;
-  mCommon.pFileUnitDefinitionList = NULL;
+  mCommon.pUnitDefinitionImportList = NULL;
   mCommon.pCurrentUnitDefinition = NULL;
 
   enableElementHandler(true);
@@ -267,6 +267,8 @@ CCopasiXMLParser::~CCopasiXMLParser()
   delete mElementHandlerStack.top();
 
   pdelete(mCommon.pLineSegment);
+
+  pdelete(mCommon.pUnitDefinitionImportList);
 }
 
 void CCopasiXMLParser::onStartElement(const XML_Char *pszName,
@@ -394,6 +396,9 @@ void CCopasiXMLParser::setLayoutList(CListOfLayouts * pLayoutList)
 
 CListOfLayouts * CCopasiXMLParser::getLayoutList() const
 {return mCommon.pLayoutList;}
+
+CUnitDefinitionDB * CCopasiXMLParser::getUnitDefinitionImportList() const
+{return mCommon.pUnitDefinitionImportList;}
 
 const CCopasiParameterGroup * CCopasiXMLParser::getCurrentGroup() const
 {return dynamic_cast< const CCopasiParameterGroup * >(mCommon.pCurrentParameter);}
@@ -5931,6 +5936,7 @@ void CCopasiXMLParser::PlotItemElement::end(const XML_Char *pszName)
         if (!strcmp(pszName, "Parameter"))
           {
             p = mCommon.pCurrentPlotItem->getParameter(mCommon.pCurrentParameter->getObjectName());
+
             //TODO warning if type mismatch. Is silently ignored currently.
 
             if (p && p->getType() == mCommon.pCurrentParameter->getType())
@@ -8201,16 +8207,16 @@ void CCopasiXMLParser::LayoutElement::end(const XML_Char *pszName)
     {
       switch (mCurrentElement)
         {
-            //     case Layout:
-            //       if (strcmp(pszName, "Layout"))
-            //         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
-            //                        pszName, "Layout", mParser.getCurrentLineNumber());
-            //       mParser.popElementHandler();
-            //       mCurrentElement = START_ELEMENT;
-            //
-            //       /* Tell the parent element we are done. */
-            //       mParser.onEndElement(pszName);
-            //       break;
+          //     case Layout:
+          //       if (strcmp(pszName, "Layout"))
+          //         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+          //                        pszName, "Layout", mParser.getCurrentLineNumber());
+          //       mParser.popElementHandler();
+          //       mCurrentElement = START_ELEMENT;
+          //
+          //       /* Tell the parent element we are done. */
+          //       mParser.onEndElement(pszName);
+          //       break;
 
           case Dimensions:
 
@@ -12861,7 +12867,7 @@ void CCopasiXMLParser::GroupElement::start(const XML_Char * pszName,
         return;
         break;
 
-        // a group can have many different children
+      // a group can have many different children
       case GroupChild:
 
         // handle the possible children
@@ -14693,6 +14699,6 @@ SCopasiXMLParserCommon::SCopasiXMLParserCommon():
   reportReferenceMap(),
   pGUI(NULL),
   pDataModel(NULL),
-  pFileUnitDefinitionList(NULL),
+  pUnitDefinitionImportList(NULL),
   pCurrentUnitDefinition(NULL)
 {}
