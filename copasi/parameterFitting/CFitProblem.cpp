@@ -545,8 +545,13 @@ bool CFitProblem::initialize()
         {
           for (i = 0, imax = mpExperimentSet->getExperimentCount(); i < imax; i++)
             {
-              mExperimentValues(i, j) = (C_FLOAT64 *) pItem->getObject()->getValuePointer();
-              ObjectSet[i].insert(pItem->getObject());
+              const CObjectInterface * object = pItem->getObject();
+
+              if (object != NULL)
+                {
+                  mExperimentValues(i, j) = (C_FLOAT64 *)object->getValuePointer();
+                  ObjectSet[i].insert(object);
+                }
             }
         }
       else
