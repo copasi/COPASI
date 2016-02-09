@@ -149,7 +149,6 @@ bool CCopasiXML::save(std::ostream & os,
       success &= saveFunctionList();
     }
 
-  success &= saveUnitDefinitionList();
   success &= saveModel();
   success &= saveTaskList();
   success &= saveReportList();
@@ -157,6 +156,9 @@ bool CCopasiXML::save(std::ostream & os,
   success &= saveGUI();
   success &= saveLayoutList();
   success &= saveSBMLReference();
+
+  // moved to the end, so that older version of COPASI can still read the model.
+  success &= saveUnitDefinitionList();
 
   endSaveElement("COPASI");
 
