@@ -3828,12 +3828,18 @@ CCopasiObject::DataObjectSet CModel::getUnitSymbolUsage(std::string symbol)
   DataObjectSet usages;
 
   //Is it used in the Model Values?
-  CCopasiVector< CModelValue >::const_iterator it = getModelValues().begin();
-  CCopasiVector< CModelValue >::const_iterator end = getModelValues().end();
+  CCopasiVector< CModelValue >::const_iterator it = getModelValues().begin(),
+                                               end = getModelValues().end();
+
+  CUnit unit;
 
   for (; it != end; ++it)
-    if ((*it)->getUnit().getUsedSymbols().count(symbol))
-      usages.insert(*it);
+    {
+      unit.setExpression((*it)->getUnitExpression(), getAvogadro());
+
+      if (unit.getUsedSymbols().count(symbol))
+        usages.insert(*it);
+    }
 
   //Is it used for any of the default model units?
   if (mpVolumeUnit->getUsedSymbols().count(symbol) ||

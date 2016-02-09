@@ -73,7 +73,7 @@ CModelEntity::CModelEntity(const std::string & name,
   mStatus(FIXED),
   mUsed(false),
   mpModel(NULL),
-  mpUnit(NULL)
+  mUnitExpression("")
 {
   mKey = CCopasiRootContainer::getKeyFactory()->add(getObjectType(), this);
 
@@ -94,23 +94,11 @@ CModelEntity::CModelEntity(const CModelEntity & src,
   mStatus(FIXED),
   mUsed(false),
   mpModel(NULL),
-  mpUnit(NULL)
+  mUnitExpression(src.mUnitExpression)
 {
   mKey = CCopasiRootContainer::getKeyFactory()->add(getObjectType(), this);
 
   initObjects();
-
-  if (src.mpUnit != NULL)
-    {
-      if (mpModel == NULL)
-        {
-          new CUnit(*src.mpUnit, CUnit::Avogadro);
-        }
-      else
-        {
-          new CUnit(*src.mpUnit, mpModel->getAvogadro());
-        }
-    }
 
   setStatus(src.mStatus);
   setMiriamAnnotation(src.getMiriamAnnotation(), mKey, src.mKey);
@@ -124,7 +112,6 @@ CModelEntity::~CModelEntity()
   // After the above call we definitely own the data and
   // therefore must destroy them.
 
-  pdelete(mpUnit);
   // since the expressions now have the model entity as parent, they should
   // automatically be destroyed be the destructor of CCopasiContainer
   //pdelete(mpExpression);
@@ -371,27 +358,21 @@ std::string CModelEntity::getInitialExpression() const
 }
 
 // virtual
-bool CModelEntity::setUnitExpression(const std::string & unitExpression)
+bool CModelEntity::setUnitExpression(std::string unitExpression)
 {
-  return false;
-}
-
-// virtual
-bool CModelEntity::setUnit(const CUnit & unit)
-{
-  return false;
-}
-
-// virtual
-const CUnit & CModelEntity::getUnit() const
-{
-  if (mpUnit == NULL)
+  if (unitExpression == mUnitExpression)
+    return false;
+  else
     {
-      static CUnit Unit;
-      return Unit;
+      mUnitExpression = unitExpression;
+      return true;
     }
+}
 
-  return *mpUnit;
+// virtual
+const std::string & CModelEntity::getUnitExpression() const
+{
+  return mUnitExpression;
 }
 
 /**
@@ -663,41 +644,6 @@ CModelValue::~CModelValue()
 
 void CModelValue::initObjects()
 {}
-
-// virtual
-bool CModelValue::setUnitExpression(const std::string & unitExpression)
-{
-  if (mpUnit == NULL)
-    {
-      mpUnit = new CUnit();
-    }
-
-  C_FLOAT64 Avogadro = CUnit::Avogadro;
-
-  const CModel * pModel = static_cast<const CModel *>(getObjectAncestor("Model"));
-
-  if (pModel != NULL)
-    {
-      Avogadro = pModel->getAvogadro();
-    }
-
-  return mpUnit->setExpression(unitExpression, Avogadro);
-}
-
-// virtual
-bool CModelValue::setUnit(const CUnit & unit)
-{
-  if (mpUnit == NULL)
-    {
-      mpUnit = new CUnit(unit);
-    }
-  else
-    {
-      *mpUnit = unit;
-    }
-
-  return true;
-}
 
 std::ostream & operator<<(std::ostream &os, const CModelValue & d)
 {
