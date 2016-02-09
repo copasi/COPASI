@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -279,20 +279,13 @@ public:
    * @param const CUnit & unit
    * @return bool success
    */
-  virtual bool setUnitExpression(const std::string & unitExpression);
-
-  /**
-   * Set the unit.
-   * @param const CUnit & unit
-   * @return bool success
-   */
-  virtual bool setUnit(const CUnit & unit);
+  virtual bool setUnitExpression(std::string unitExpression);
 
   /**
    * Get the unit.
    * @return const CUnit &
    */
-  virtual const CUnit & getUnit() const;
+  virtual const std::string &getUnitExpression() const;
 
   /**
    * Set whether the model entity is used during simulation
@@ -353,7 +346,7 @@ protected:
   /**
    * Pointer to the Unit of the model entity.
    */
-  CUnit * mpUnit;
+  std::string mUnitExpression;
 
 private:
   /**
@@ -454,20 +447,6 @@ public:
    *  Destructor.
    */
   ~CModelValue();
-
-  /**
-   * Set the unit.
-   * @param const CUnit & unit
-   * @return bool success
-   */
-  virtual bool setUnitExpression(const std::string & unitExpression);
-
-  /**
-   * Set the unit.
-   * @param const CUnit & unit
-   * @return bool success
-   */
-  virtual bool setUnit(const CUnit & unit);
 
   /**
    * insert operator

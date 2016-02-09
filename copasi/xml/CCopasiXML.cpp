@@ -611,10 +611,10 @@ bool CCopasiXML::saveModel()
               endSaveElement("InitialExpression");
             }
 
-          if (pMV->getUnit().getExpression() != "")
+          if (pMV->getUnitExpression() != "")
             {
               startSaveElement("Unit");
-              saveData(pMV->getUnit().getExpression());
+              saveData(pMV->getUnitExpression());
               endSaveElement("Unit");
             }
 
