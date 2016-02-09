@@ -1,4 +1,4 @@
-// Copyright (C) 2012 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -117,90 +117,91 @@ void CCopasiXMLParser::UnitDefinitionElement::start(const XML_Char *pszName,
 
 void CCopasiXMLParser::UnitDefinitionElement::end(const XML_Char *pszName)
 {
-    switch (mCurrentElement)
-      {
-        case UnitDefinition:
+  switch (mCurrentElement)
+    {
+      case UnitDefinition:
 
-          if (strcmp(pszName, "UnitDefinition"))
-            CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
-                           pszName, "UnitDefinition", mParser.getCurrentLineNumber());
-
-          mCommon.pFileUnitDefinitionList->add(mCommon.pCurrentUnitDefinition);
-
-          mCommon.pCurrentUnitDefinition = NULL;
-
-          mParser.popElementHandler();
-          mLastKnownElement = START_ELEMENT;
-
-          /* Tell the parent element we are done. */
-          mParser.onEndElement(pszName);
-          break;
-
-        case MiriamAnnotation:
-
-          if (strcmp(pszName, "MiriamAnnotation"))
-            CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
-                           pszName, "MiriamAnnotation", mParser.getCurrentLineNumber());
-
-          mCommon.pCurrentUnitDefinition->setMiriamAnnotation(mCommon.CharacterData, mCommon.pCurrentUnitDefinition->getKey(), mKey);
-          mCommon.CharacterData = "";
-          break;
-
-        case Comment:
-
-          if (strcmp(pszName, "Comment"))
-            CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
-                           pszName, "Comment", mParser.getCurrentLineNumber());
-
-          mCommon.pCurrentUnitDefinition->setNotes(mCommon.CharacterData);
-          mCommon.CharacterData = "";
-          break;
-
-        case ListOfUnsupportedAnnotations:
-
-          if (strcmp(pszName, "ListOfUnsupportedAnnotations"))
-            CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
-                           pszName, "ListOfUnsupportedAnnotations", mParser.getCurrentLineNumber());
-
-          mCommon.pCurrentUnitDefinition->getUnsupportedAnnotations() = mParser.mListOfUnsupportedAnnotationsElement.getUnsupportedAnnotations();
-
-          break;
-
-        case Expression:
-
-          if (strcmp(pszName, "Expression"))
-            CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
-                           pszName, "Expression", mParser.getCurrentLineNumber());
-
-          {
-            size_t Size = CCopasiMessage::size();
-
-            mCommon.pCurrentUnitDefinition->setExpression(mCommon.CharacterData, CUnit::Avogadro);
-
-            // Remove error messages created by setExpression as this may fail
-            // due to incomplete model specification at this time.
-            while (CCopasiMessage::size() > Size)
-              CCopasiMessage::getLastMessage();
-          }
-          break;
-
-        case UNKNOWN_ELEMENT:
-          break;
-
-        default:
+        if (strcmp(pszName, "UnitDefinition"))
           CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
-                         pszName, "???", mParser.getCurrentLineNumber());
-          break;
-      }
+                         pszName, "UnitDefinition", mParser.getCurrentLineNumber());
 
-    mCurrentElement = UnitDefinition;
-    return;
+        mCommon.pFileUnitDefinitionList->add(mCommon.pCurrentUnitDefinition);
+
+        mCommon.pCurrentUnitDefinition = NULL;
+
+        mParser.popElementHandler();
+        mLastKnownElement = START_ELEMENT;
+
+        /* Tell the parent element we are done. */
+        mParser.onEndElement(pszName);
+        break;
+
+      case MiriamAnnotation:
+
+        if (strcmp(pszName, "MiriamAnnotation"))
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                         pszName, "MiriamAnnotation", mParser.getCurrentLineNumber());
+
+        mCommon.pCurrentUnitDefinition->setMiriamAnnotation(mCommon.CharacterData, mCommon.pCurrentUnitDefinition->getKey(), mKey);
+        mCommon.CharacterData = "";
+        break;
+
+      case Comment:
+
+        if (strcmp(pszName, "Comment"))
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                         pszName, "Comment", mParser.getCurrentLineNumber());
+
+        mCommon.pCurrentUnitDefinition->setNotes(mCommon.CharacterData);
+        mCommon.CharacterData = "";
+        break;
+
+      case ListOfUnsupportedAnnotations:
+
+        if (strcmp(pszName, "ListOfUnsupportedAnnotations"))
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                         pszName, "ListOfUnsupportedAnnotations", mParser.getCurrentLineNumber());
+
+        mCommon.pCurrentUnitDefinition->getUnsupportedAnnotations() = mParser.mListOfUnsupportedAnnotationsElement.getUnsupportedAnnotations();
+
+        break;
+
+      case Expression:
+
+        if (strcmp(pszName, "Expression"))
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                         pszName, "Expression", mParser.getCurrentLineNumber());
+
+        {
+          size_t Size = CCopasiMessage::size();
+
+          mCommon.pCurrentUnitDefinition->setExpression(mCommon.CharacterData, CUnit::Avogadro);
+
+          // Remove error messages created by setExpression as this may fail
+          // due to incomplete model specification at this time.
+          while (CCopasiMessage::size() > Size)
+            CCopasiMessage::getLastMessage();
+        }
+        break;
+
+      case UNKNOWN_ELEMENT:
+        break;
+
+      default:
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                       pszName, "???", mParser.getCurrentLineNumber());
+        break;
+    }
+
+  mCurrentElement = UnitDefinition;
+  return;
 }
 
 // List of Unit Definitions
 CCopasiXMLParser::ListOfUnitDefinitionsElement::ListOfUnitDefinitionsElement(CCopasiXMLParser & parser,
-    SCopasiXMLParserCommon & common):
-  CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >(parser, common)
+    SCopasiXMLParserCommon & common)
+  : CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >(parser, common)
+  , mpUnitDefinitionElement(NULL)
 {}
 
 // virtual
@@ -240,7 +241,7 @@ void CCopasiXMLParser::ListOfUnitDefinitionsElement::start(const XML_Char *pszNa
             if (!strcmp(pszName, "UnitDefinition"))
               {
                 /* If we do not have a UnitDefinition element handler we create one. */
-                if (!mpUnitDefinitionElement )
+                if (!mpUnitDefinitionElement)
                   mpUnitDefinitionElement = new UnitDefinitionElement(mParser, mCommon);
 
                 mpCurrentHandler = mpUnitDefinitionElement;
