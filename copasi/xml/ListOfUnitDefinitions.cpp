@@ -8,10 +8,6 @@
 #include "CExpat.h"
 #include "CCopasiXMLParser.h"
 #include "CCopasiXMLInterface.h"
-
-#include "model/CModel.h"
-//#include "ListOfUnitDefinitions.h"
-//#include "utilities/CUnitDefinition.h"
 #include "report/CCopasiRootContainer.h"
 
 #define START_ELEMENT   -1
@@ -125,10 +121,13 @@ void CCopasiXMLParser::UnitDefinitionElement::end(const XML_Char *pszName)
         mCommon.pUnitDefinitionImportList->add(mCommon.pCurrentUnitDefinition, true);
 
         mParser.popElementHandler();
-        mLastKnownElement = START_ELEMENT;
+        mCurrentElement = START_ELEMENT;
+        mLastKnownElement = mCurrentElement;
 
         /* Tell the parent element we are done. */
         mParser.onEndElement(pszName);
+
+        return;
         break;
 
       case MiriamAnnotation:
@@ -168,9 +167,9 @@ void CCopasiXMLParser::UnitDefinitionElement::end(const XML_Char *pszName)
                          pszName, "Expression", mParser.getCurrentLineNumber());
 
         {
-          mCommon.pCurrentUnitDefinition->setExpression(mCommon.CharacterData, CUnit::Avogadro);
-
           size_t Size = CCopasiMessage::size();
+
+          mCommon.pCurrentUnitDefinition->setExpression(mCommon.CharacterData, CUnit::Avogadro);
 
           // Remove error messages created by setExpression as this may fail
           // due to incomplete model specification at this time.
@@ -276,10 +275,11 @@ void CCopasiXMLParser::ListOfUnitDefinitionsElement::end(const XML_Char *pszName
 
         mParser.popElementHandler();
         mCurrentElement = START_ELEMENT;
+        mLastKnownElement = mCurrentElement;
 
         /* Tell the parent element we are done. */
         mParser.onEndElement(pszName);
-
+        return;
         break;
 
       case UnitDefinition:

@@ -232,7 +232,6 @@ bool CCopasiXML::load(std::istream & is,
       pdelete(mpTaskList);
       pdelete(mpPlotList);
       pdelete(mpLayoutList);
-      pdelete(pUnitDefinitionImportList);
     }
   else
     mergeUnitDefinitions(pUnitDefinitionImportList);
