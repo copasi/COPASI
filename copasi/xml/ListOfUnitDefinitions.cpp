@@ -122,6 +122,8 @@ void CCopasiXMLParser::UnitDefinitionElement::end(const XML_Char *pszName)
           CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 23,
                          mCommon.pCurrentUnitDefinition->getObjectName().c_str(), mParser.getCurrentLineNumber());
 
+        mCommon.KeyMap.addFix(mKey, mCommon.pCurrentUnitDefinition);
+
         mParser.popElementHandler();
         mCurrentElement = START_ELEMENT;
         mLastKnownElement = mCurrentElement;
