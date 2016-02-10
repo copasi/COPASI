@@ -118,7 +118,9 @@ void CCopasiXMLParser::UnitDefinitionElement::end(const XML_Char *pszName)
           CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
                          pszName, "UnitDefinition", mParser.getCurrentLineNumber());
 
-        mCommon.pUnitDefinitionImportList->add(mCommon.pCurrentUnitDefinition, true);
+        if (!mCommon.pUnitDefinitionImportList->add(mCommon.pCurrentUnitDefinition, true))
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 23,
+                         mCommon.pCurrentUnitDefinition->getObjectName().c_str(), mParser.getCurrentLineNumber());
 
         mParser.popElementHandler();
         mCurrentElement = START_ELEMENT;
