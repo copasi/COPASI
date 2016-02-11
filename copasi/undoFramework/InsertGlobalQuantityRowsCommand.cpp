@@ -1,4 +1,4 @@
-// Copyright (C) 2014 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2014 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -53,7 +53,7 @@ void InsertGlobalQuantityRowsCommand::redo()
       GET_MODEL_OR_RETURN(pModel);
 
       int Index = mIndex.isValid() ? mIndex.row() : mPosition;
-      CModelValue *pGlobalQuantity = pModel->getModelValues()[Index];
+      CModelValue *pGlobalQuantity = &pModel->getModelValues()[Index];
       mpGlobalQuantityData = new UndoGlobalQuantityData(pGlobalQuantity);
     }
   else

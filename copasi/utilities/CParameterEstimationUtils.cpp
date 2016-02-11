@@ -182,7 +182,7 @@ CFitTask *ResultData::getFitTask()
 
   for (size_t i = 0; i < taskList.size(); i++)
     {
-      CFitTask* task = dynamic_cast<CFitTask*>(taskList[i]);
+      CFitTask* task = dynamic_cast<CFitTask*>(&taskList[i]);
 
       if (task != NULL)
         return task;
@@ -197,14 +197,14 @@ COptTask *ResultData::getOptTask()
 
   CCopasiVectorN<CCopasiTask>& taskList = *mpDataModel->getTaskList();
 
-  COptTask* optTask = dynamic_cast<COptTask*>(taskList["Optimization"]);
+  COptTask* optTask = dynamic_cast<COptTask*>(&taskList["Optimization"]);
 
   if (optTask != NULL)
     return optTask;
 
   for (size_t i = 0; i < taskList.size(); i++)
     {
-      COptTask* task = dynamic_cast<COptTask*>(taskList[i]);
+      COptTask* task = dynamic_cast<COptTask*>(&taskList[i]);
 
       if (task != NULL)
         return task;

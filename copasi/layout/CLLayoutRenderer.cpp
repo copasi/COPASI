@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -4838,12 +4838,12 @@ void CLLayoutRenderer::setDeduceSpeciesReferenceRoles(bool deduce)
 
                   for (i = 0; i < iMax; ++i)
                     {
-                      pRG = this->mpLayout->getListOfReactionGlyphs()[i];
+                      pRG = &this->mpLayout->getListOfReactionGlyphs()[i];
                       jMax = pRG->getListOfMetabReferenceGlyphs().size();
 
                       for (j = 0; j < jMax; ++j)
                         {
-                          pSRG = pRG->getListOfMetabReferenceGlyphs()[j];
+                          pSRG = &pRG->getListOfMetabReferenceGlyphs()[j];
 
                           if (pSRG->getObjectRole().empty() && !pSRG->getModelObjectKey().empty())
                             {
@@ -4867,12 +4867,12 @@ void CLLayoutRenderer::setDeduceSpeciesReferenceRoles(bool deduce)
 
                               for (i = 0; i < iMax; ++i)
                                 {
-                                  pReaction = this->mpModel->getReactions()[i];
+                                  pReaction = &this->mpModel->getReactions()[i];
                                   jMax = pReaction->getChemEq().getSubstrates().size();
 
                                   for (j = 0; j < jMax; ++j)
                                     {
-                                      pSSR = pReaction->getChemEq().getSubstrates()[j];
+                                      pSSR = &pReaction->getChemEq().getSubstrates()[j];
 
                                       if (pReaction->isReversible())
                                         {
@@ -4888,7 +4888,7 @@ void CLLayoutRenderer::setDeduceSpeciesReferenceRoles(bool deduce)
 
                                   for (j = 0; j < jMax; ++j)
                                     {
-                                      pSSR = pReaction->getChemEq().getProducts()[j];
+                                      pSSR = &pReaction->getChemEq().getProducts()[j];
                                       speciesReferenceRoles[pSSR->getKey()] = "product";
                                     }
 
@@ -4896,7 +4896,7 @@ void CLLayoutRenderer::setDeduceSpeciesReferenceRoles(bool deduce)
 
                                   for (j = 0; j < jMax; ++j)
                                     {
-                                      pSSR = pReaction->getChemEq().getModifiers()[j];
+                                      pSSR = &pReaction->getChemEq().getModifiers()[j];
                                       speciesReferenceRoles[pSSR->getKey()] = "modifier";
                                     }
                                 }
@@ -5125,7 +5125,7 @@ std::multiset<CLGraphicalObject*, compareGraphicalObjectsBySize> CLLayoutRendere
 
           for (i = 0; i < iMax; ++i)
             {
-              pGO = this->mpLayout->getListOfCompartmentGlyphs()[i];
+              pGO = &this->mpLayout->getListOfCompartmentGlyphs()[i];
               pBB = &pGO->getBoundingBox();
               bbx = pBB->getPosition().getX();
               bby = pBB->getPosition().getY();
@@ -5142,7 +5142,7 @@ std::multiset<CLGraphicalObject*, compareGraphicalObjectsBySize> CLLayoutRendere
 
           for (i = 0; i < iMax; ++i)
             {
-              pGO = this->mpLayout->getListOfMetaboliteGlyphs()[i];
+              pGO = &this->mpLayout->getListOfMetaboliteGlyphs()[i];
               pBB = &pGO->getBoundingBox();
               bbx = pBB->getPosition().getX();
               bby = pBB->getPosition().getY();
@@ -5159,7 +5159,7 @@ std::multiset<CLGraphicalObject*, compareGraphicalObjectsBySize> CLLayoutRendere
 
           for (i = 0; i < iMax; ++i)
             {
-              pRG = this->mpLayout->getListOfReactionGlyphs()[i];
+              pRG = &this->mpLayout->getListOfReactionGlyphs()[i];
               assert(pRG != NULL);
 
               // we have to look at all points of the curve if there is one
@@ -5199,7 +5199,7 @@ std::multiset<CLGraphicalObject*, compareGraphicalObjectsBySize> CLLayoutRendere
 
               for (j = 0; j < jMax; ++j)
                 {
-                  pSRG = pRG->getListOfMetabReferenceGlyphs()[j];
+                  pSRG = &pRG->getListOfMetabReferenceGlyphs()[j];
                   assert(pSRG != NULL);
 
                   // we have to look at all points of the curve if there is one
@@ -5241,7 +5241,7 @@ std::multiset<CLGraphicalObject*, compareGraphicalObjectsBySize> CLLayoutRendere
 
           for (i = 0; i < iMax; ++i)
             {
-              pGO = this->mpLayout->getListOfTextGlyphs()[i];
+              pGO = &this->mpLayout->getListOfTextGlyphs()[i];
               pBB = &pGO->getBoundingBox();
               bbx = pBB->getPosition().getX();
               bby = pBB->getPosition().getY();
@@ -5258,7 +5258,7 @@ std::multiset<CLGraphicalObject*, compareGraphicalObjectsBySize> CLLayoutRendere
 
           for (i = 0; i < iMax; ++i)
             {
-              CLGeneralGlyph* pGG = this->mpLayout->getListOfGeneralGlyphs()[i];
+              CLGeneralGlyph* pGG = &this->mpLayout->getListOfGeneralGlyphs()[i];
               assert(pGG != NULL);
 
               // we have to look at all points of the curve if there is one
@@ -5298,7 +5298,7 @@ std::multiset<CLGraphicalObject*, compareGraphicalObjectsBySize> CLLayoutRendere
 
               for (j = 0; j < jMax; ++j)
                 {
-                  CLReferenceGlyph* pRefG = pGG->getListOfReferenceGlyphs()[j];
+                  CLReferenceGlyph* pRefG = &pGG->getListOfReferenceGlyphs()[j];
                   assert(pRefG != NULL);
 
                   // we have to look at all points of the curve if there is one
@@ -6089,7 +6089,7 @@ std::vector<CLGraphicalObject*> CLLayoutRenderer::getObjectsInBoundingBox(double
 
       for (i = 0; i < iMax; ++i)
         {
-          pGO = this->mpLayout->getListOfCompartmentGlyphs()[i];
+          pGO = &this->mpLayout->getListOfCompartmentGlyphs()[i];
           pBB = &pGO->getBoundingBox();
           x = pBB->getPosition().getX();
           y = pBB->getPosition().getY();
@@ -6131,7 +6131,7 @@ std::vector<CLGraphicalObject*> CLLayoutRenderer::getObjectsInBoundingBox(double
 
       for (i = 0; i < iMax; ++i)
         {
-          pGO = this->mpLayout->getListOfMetaboliteGlyphs()[i];
+          pGO = &this->mpLayout->getListOfMetaboliteGlyphs()[i];
           pBB = &pGO->getBoundingBox();
           x = pBB->getPosition().getX();
           y = pBB->getPosition().getY();
@@ -6173,7 +6173,7 @@ std::vector<CLGraphicalObject*> CLLayoutRenderer::getObjectsInBoundingBox(double
 
       for (i = 0; i < iMax; ++i)
         {
-          pRG = this->mpLayout->getListOfReactionGlyphs()[i];
+          pRG = &this->mpLayout->getListOfReactionGlyphs()[i];
           assert(pRG != NULL);
 
           // we have to look at all points of the curve if there is one
@@ -6230,7 +6230,7 @@ std::vector<CLGraphicalObject*> CLLayoutRenderer::getObjectsInBoundingBox(double
 
           for (j = 0; j < jMax; ++j)
             {
-              pSRG = pRG->getListOfMetabReferenceGlyphs()[j];
+              pSRG = &pRG->getListOfMetabReferenceGlyphs()[j];
               assert(pSRG != NULL);
 
               // we have to look at all points of the curve if there is one
@@ -6288,7 +6288,7 @@ std::vector<CLGraphicalObject*> CLLayoutRenderer::getObjectsInBoundingBox(double
 
       for (i = 0; i < iMax; ++i)
         {
-          pGO = this->mpLayout->getListOfTextGlyphs()[i];
+          pGO = &this->mpLayout->getListOfTextGlyphs()[i];
           pBB = &pGO->getBoundingBox();
           x = pBB->getPosition().getX();
           y = pBB->getPosition().getY();
@@ -6330,7 +6330,7 @@ std::vector<CLGraphicalObject*> CLLayoutRenderer::getObjectsInBoundingBox(double
 
       for (i = 0; i < iMax; ++i)
         {
-          CLGeneralGlyph* pGG = this->mpLayout->getListOfGeneralGlyphs()[i];
+          CLGeneralGlyph* pGG = &this->mpLayout->getListOfGeneralGlyphs()[i];
           assert(pGG != NULL);
 
           // we have to look at all points of the curve if there is one
@@ -6387,7 +6387,7 @@ std::vector<CLGraphicalObject*> CLLayoutRenderer::getObjectsInBoundingBox(double
 
           for (j = 0; j < jMax; ++j)
             {
-              CLGraphicalObject *pSubglyph = pGG->getListOfSubglyphs()[j];
+              CLGraphicalObject *pSubglyph = &pGG->getListOfSubglyphs()[j];
               pBB = &pSubglyph->getBoundingBox();
               x = pBB->getPosition().getX();
               y = pBB->getPosition().getY();
@@ -6429,7 +6429,7 @@ std::vector<CLGraphicalObject*> CLLayoutRenderer::getObjectsInBoundingBox(double
 
           for (j = 0; j < jMax; ++j)
             {
-              CLReferenceGlyph* pRefG = pGG->getListOfReferenceGlyphs()[j];
+              CLReferenceGlyph* pRefG = &pGG->getListOfReferenceGlyphs()[j];
               assert(pRefG != NULL);
 
               // we have to look at all points of the curve if there is one
@@ -6595,7 +6595,7 @@ void CLLayoutRenderer::update_associations()
   mSpeciesReferenceToReactionMap.clear();
   mReactionToSpeciesReferenceMap.clear();
 
-  std::map<std::string, CLGraphicalObject*> idMap;
+  std::map<std::string, const CLGraphicalObject*> idMap;
 
   if (this->mpLayout)
     {
@@ -6608,26 +6608,26 @@ void CLLayoutRenderer::update_associations()
 
       for (i = 0; i < iMax; ++i)
         {
-          pReaction = this->mpModel->getReactions()[i];
+          pReaction = &this->mpModel->getReactions()[i];
           jMax = pReaction->getChemEq().getSubstrates().size();
 
           for (j = 0; j < jMax; ++j)
             {
-              modifierMap[pReaction->getChemEq().getSubstrates()[j]->getKey()] = false;
+              modifierMap[pReaction->getChemEq().getSubstrates()[j].getKey()] = false;
             }
 
           jMax = pReaction->getChemEq().getProducts().size();
 
           for (j = 0; j < jMax; ++j)
             {
-              modifierMap[pReaction->getChemEq().getProducts()[j]->getKey()] = false;
+              modifierMap[pReaction->getChemEq().getProducts()[j].getKey()] = false;
             }
 
           jMax = pReaction->getChemEq().getModifiers().size();
 
           for (j = 0; j < jMax; ++j)
             {
-              modifierMap[pReaction->getChemEq().getModifiers()[j]->getKey()] = true;
+              modifierMap[pReaction->getChemEq().getModifiers()[j].getKey()] = true;
             }
         }
 
@@ -6639,14 +6639,14 @@ void CLLayoutRenderer::update_associations()
           modifierMap.erase(pos);
         }
 
-      CLGraphicalObject* pGO = NULL;
+      const CLGraphicalObject* pGO = NULL;
       CLReactionGlyph* pRG = NULL;
       CLMetabReferenceGlyph* pSRG = NULL;
       iMax = this->mpLayout->getListOfCompartmentGlyphs().size();
 
       for (i = 0; i < iMax; ++i)
         {
-          pGO = this->mpLayout->getListOfCompartmentGlyphs()[i];
+          pGO = &this->mpLayout->getListOfCompartmentGlyphs()[i];
           idMap[pGO->getKey()] = pGO;
         }
 
@@ -6654,7 +6654,7 @@ void CLLayoutRenderer::update_associations()
 
       for (i = 0; i < iMax; ++i)
         {
-          pGO = this->mpLayout->getListOfMetaboliteGlyphs()[i];
+          pGO = &this->mpLayout->getListOfMetaboliteGlyphs()[i];
           idMap[pGO->getKey()] = pGO;
         }
 
@@ -6662,14 +6662,14 @@ void CLLayoutRenderer::update_associations()
 
       for (i = 0; i < iMax; ++i)
         {
-          pRG = this->mpLayout->getListOfReactionGlyphs()[i];
+          pRG = &this->mpLayout->getListOfReactionGlyphs()[i];
           idMap[pRG->getKey()] = pRG;
           this->mReactionToSpeciesReferenceMap[pRG] = std::set<std::pair<CLMetabReferenceGlyph*, bool> >();
           jMax = pRG->getListOfMetabReferenceGlyphs().size();
 
           for (j = 0; j < jMax; ++j)
             {
-              pSRG = pRG->getListOfMetabReferenceGlyphs()[j];
+              pSRG = &pRG->getListOfMetabReferenceGlyphs()[j];
               assert(pSRG != NULL);
               idMap[pSRG->getKey()] = pSRG;
               bool modifier = false;
@@ -6686,11 +6686,11 @@ void CLLayoutRenderer::update_associations()
                     }
 
                   this->mReactionToSpeciesReferenceMap[pRG].insert(std::pair<CLMetabReferenceGlyph*, bool>(pSRG, modifier));
-                  std::map<std::string, CLGraphicalObject*>::iterator pos = idMap.find(pSRG->getMetabGlyphKey());
+                  std::map<std::string, const CLGraphicalObject*>::iterator pos = idMap.find(pSRG->getMetabGlyphKey());
 
                   if (pos != idMap.end())
                     {
-                      CLMetabGlyph* pSG = dynamic_cast<CLMetabGlyph*>(pos->second);
+                      CLMetabGlyph* pSG = const_cast< CLMetabGlyph * >(dynamic_cast<const CLMetabGlyph * >(pos->second));
                       assert(pSG != NULL);
                       this->mSpeciesReferenceToSpeciesMap[pSRG] = std::pair<CLMetabGlyph*, bool>(pSG, modifier);
                       std::map<CLMetabGlyph*, std::set<std::pair<CLMetabReferenceGlyph*, bool> > >::iterator pos2 = this->mSpeciesToSpeciesReferenceMap.find(pSG);
@@ -6758,7 +6758,7 @@ void CLLayoutRenderer::update_associations()
 
       for (i = 0; i < iMax; ++i)
         {
-          pGO = this->mpLayout->getListOfGeneralGlyphs()[i];
+          pGO = &this->mpLayout->getListOfGeneralGlyphs()[i];
           idMap[pGO->getKey()] = pGO;
         }
 
@@ -6766,7 +6766,7 @@ void CLLayoutRenderer::update_associations()
 
       for (i = 0; i < iMax; ++i)
         {
-          pGO = this->mpLayout->getListOfTextGlyphs()[i];
+          pGO = &this->mpLayout->getListOfTextGlyphs()[i];
           idMap[pGO->getKey()] = pGO;
         }
 
@@ -6774,7 +6774,7 @@ void CLLayoutRenderer::update_associations()
 
       for (i = 0; i < iMax; ++i)
         {
-          pTG = this->mpLayout->getListOfTextGlyphs()[i];
+          pTG = &this->mpLayout->getListOfTextGlyphs()[i];
 
           if (!pTG->getGraphicalObjectKey().empty())
             {
@@ -6783,18 +6783,20 @@ void CLLayoutRenderer::update_associations()
                   std::cerr << "Error. CLText* glyph \"" << pTG->getKey() << "\" is referencing itself." << std::endl;
                 }
 
-              std::map<std::string, CLGraphicalObject*>::iterator pos = idMap.find(pTG->getGraphicalObjectKey());
+              std::map<std::string, const CLGraphicalObject*>::iterator pos = idMap.find(pTG->getGraphicalObjectKey());
 
               if (pos != idMap.end())
                 {
-                  mTextGlyphToGraphicalObjectMap[pTG] = pos->second;
+                  CLGraphicalObject * pGO = const_cast< CLGraphicalObject * >(pos->second);
 
-                  if (this->mGraphicalObjectToTextGlyphMap.find(pos->second) == this->mGraphicalObjectToTextGlyphMap.end())
+                  mTextGlyphToGraphicalObjectMap[pTG] = pGO;
+
+                  if (this->mGraphicalObjectToTextGlyphMap.find(pGO) == this->mGraphicalObjectToTextGlyphMap.end())
                     {
-                      this->mGraphicalObjectToTextGlyphMap[pos->second] = std::set<CLTextGlyph*>();
+                      this->mGraphicalObjectToTextGlyphMap[pGO] = std::set<CLTextGlyph*>();
                     }
 
-                  this->mGraphicalObjectToTextGlyphMap[pos->second].insert(pTG);
+                  this->mGraphicalObjectToTextGlyphMap[pGO].insert(pTG);
                 }
               else
                 {

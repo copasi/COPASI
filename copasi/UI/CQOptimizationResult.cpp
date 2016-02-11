@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -64,11 +64,11 @@ bool CQOptimizationResult::leave()
 bool CQOptimizationResult::enterProtected()
 {
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
+  CCopasiDataModel* pDataModel = &CCopasiRootContainer::getDatamodelList()->operator[](0);
   assert(pDataModel != NULL);
 
   mpTask =
-    dynamic_cast<COptTask *>((*(*CCopasiRootContainer::getDatamodelList())[0]->getTaskList())["Optimization"]);
+    dynamic_cast<COptTask *>(&CCopasiRootContainer::getDatamodelList()->operator[](0).getTaskList()->operator[]("Optimization"));
 
   if (!mpTask) return false;
 

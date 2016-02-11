@@ -1,4 +1,4 @@
-// Copyright (C) 2014 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2014 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -31,13 +31,12 @@ EventDataChangeCommand::EventDataChangeCommand(QModelIndex index, const QVariant
   //set the data for UNDO history
   GET_MODEL_OR_RETURN(pModel);
 
-
   if (pModel->getEvents().size() <= (size_t)index.row())
     {
       return;
     }
 
-  CEvent *pEvent = pModel->getEvents()[index.row()];
+  CEvent *pEvent = &pModel->getEvents()[index.row()];
   setName(pEvent->getObjectName());
   setOldValue(TO_UTF8(mOld.toString()));
   setNewValue(TO_UTF8(mNew.toString()));

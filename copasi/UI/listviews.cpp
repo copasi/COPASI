@@ -290,7 +290,7 @@ void ListViews::setDataModel(DataModelGUI* pDM)
   mpDataModelGUI = pDM;
   mpTreeDM->setGuiDM(mpDataModelGUI);
 
-  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
+  CCopasiDataModel* pDataModel = &CCopasiRootContainer::getDatamodelList()->operator[](0);
   assert(pDataModel != NULL);
 
   //Set Model for the TableView
@@ -1018,7 +1018,7 @@ bool ListViews::slotNotify(ObjectType objectType, Action action, std::string key
       action != ADD)
     {
       assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-      (*CCopasiRootContainer::getDatamodelList())[0]->changed();
+      CCopasiRootContainer::getDatamodelList()->operator[](0).changed();
     }
 
   bool success = true;

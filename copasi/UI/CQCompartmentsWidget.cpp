@@ -210,14 +210,14 @@ void CQCompartmentsWidget::slotDoubleClicked(const QModelIndex proxyIndex)
     }
 
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
+  CCopasiDataModel* pDataModel = &CCopasiRootContainer::getDatamodelList()->operator[](0);
   assert(pDataModel != NULL);
   CModel * pModel = pDataModel->getModel();
 
   if (pModel == NULL)
     return;
 
-  std::string key = pModel->getCompartments()[index.row()]->getKey();
+  std::string key = pModel->getCompartments()[index.row()].getKey();
 
   if (CCopasiRootContainer::getKeyFactory()->get(key))
     mpListView->switchToOtherWidget(C_INVALID_INDEX, key);

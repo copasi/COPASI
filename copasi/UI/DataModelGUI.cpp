@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -111,7 +111,7 @@ DataModelGUI::DataModelGUI(QObject * parent):
 
 {
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  (*CCopasiRootContainer::getDatamodelList())[0]->addInterface(&mOutputHandlerPlot);
+  CCopasiRootContainer::getDatamodelList()->operator[](0).addInterface(&mOutputHandlerPlot);
 
   //mpMathModel = NULL;
   //mMathModelUpdateScheduled = false;
@@ -126,7 +126,7 @@ DataModelGUI::~DataModelGUI()
 void DataModelGUI::linkDataModelToGUI()
 {
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
+  CCopasiDataModel* pDataModel = &CCopasiRootContainer::getDatamodelList()->operator[](0);
   assert(pDataModel != NULL);
 
   std::set< ListViews * >::iterator it = mListViews.begin();
@@ -170,25 +170,26 @@ void DataModelGUI::addModelRun()
       mSuccess = false;
     }
 
-  C_INT32 numDatamodels=CCopasiRootContainer::getDatamodelList()->size();
+  C_INT32 numDatamodels = CCopasiRootContainer::getDatamodelList()->size();
   CModel *pModel = NULL;
   CModel *pMergeModel = NULL;
 
-  if (numDatamodels>=2 && mSuccess) //after loading the model to be merged there should be at least 2 datamodels...
-  {
-    //the base model is assumed to be the first one
-    pModel = (*CCopasiRootContainer::getDatamodelList())[0]->getModel();
-    //the model to be merged is the last one
-    pMergeModel = (*CCopasiRootContainer::getDatamodelList())[numDatamodels-1]->getModel();
-  }
+  if (numDatamodels >= 2 && mSuccess) //after loading the model to be merged there should be at least 2 datamodels...
+    {
+      //the base model is assumed to be the first one
+      pModel = &CCopasiRootContainer::getDatamodelList()->operator[](0).getModel();
+      //the model to be merged is the last one
+      pMergeModel = (*CCopasiRootContainer::getDatamodelList())[numDatamodels - 1]->getModel();
+    }
 
   if (mSuccess && pModel && pMergeModel)
     {
       CModelExpansion expand(pModel);
-      (*CCopasiRootContainer::getDatamodelList())[0]->mLastAddedObjects = expand.copyCompleteModel(pMergeModel);
+      &CCopasiRootContainer::getDatamodelList()->operator[](0).mLastAddedObjects = expand.copyCompleteModel(pMergeModel);
     }
+
   if (pMergeModel)
-    CCopasiRootContainer::removeDatamodel(numDatamodels-1);
+    CCopasiRootContainer::removeDatamodel(numDatamodels - 1);
 }
 
 void DataModelGUI::addModelFinished()
@@ -212,9 +213,9 @@ bool DataModelGUI::createModel()
 {
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
 
-  if (!(*CCopasiRootContainer::getDatamodelList())[0]->newModel(NULL, false)) return false;
+  if (!CCopasiRootContainer::getDatamodelList()->operator[](0).newModel(NULL, false)) return false;
 
-  mOutputHandlerPlot.setOutputDefinitionVector((*CCopasiRootContainer::getDatamodelList())[0]->getPlotDefinitionList());
+  mOutputHandlerPlot.setOutputDefinitionVector(CCopasiRootContainer::getDatamodelList()->operator[](0).getPlotDefinitionList());
 
   linkDataModelToGUI();
   return true;
@@ -237,7 +238,7 @@ void DataModelGUI::loadModelRun()
   try
     {
       assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-      mSuccess = (*CCopasiRootContainer::getDatamodelList())[0]->loadModel(mFileName, mpProgressBar, false);
+      mSuccess = CCopasiRootContainer::getDatamodelList()->operator[](0).loadModel(mFileName, mpProgressBar, false);
     }
 
   catch (...)
@@ -252,7 +253,7 @@ void DataModelGUI::loadModelFinished()
     {
       CCopasiRootContainer::getConfiguration()->getRecentFiles().addFile(mFileName);
 
-      mOutputHandlerPlot.setOutputDefinitionVector((*CCopasiRootContainer::getDatamodelList())[0]->getPlotDefinitionList());
+      mOutputHandlerPlot.setOutputDefinitionVector(CCopasiRootContainer::getDatamodelList()->operator[](0).getPlotDefinitionList());
       linkDataModelToGUI();
     }
 
@@ -279,7 +280,7 @@ void DataModelGUI::saveModelRun()
   try
     {
       assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-      mSuccess = (*CCopasiRootContainer::getDatamodelList())[0]->saveModel(mFileName, mpProgressBar, mOverWrite);
+      mSuccess = CCopasiRootContainer::getDatamodelList()->operator[](0).saveModel(mFileName, mpProgressBar, mOverWrite);
     }
 
   catch (...)
@@ -315,7 +316,7 @@ void DataModelGUI::importSBMLFromStringRun()
   try
     {
       assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-      mSuccess = (*CCopasiRootContainer::getDatamodelList())[0]->importSBMLFromString(mSBMLImportString, mpProgressBar, false);
+      mSuccess = CCopasiRootContainer::getDatamodelList()->operator[](0).importSBMLFromString(mSBMLImportString, mpProgressBar, false);
     }
 
   catch (...)
@@ -334,7 +335,7 @@ void DataModelGUI::importSBMLFromStringFinished()
       // TODO maybe put the main part of this routine in a separate thread after
       // TODO asking the user
       this->importCellDesigner();
-      mOutputHandlerPlot.setOutputDefinitionVector((*CCopasiRootContainer::getDatamodelList())[0]->getPlotDefinitionList());
+      mOutputHandlerPlot.setOutputDefinitionVector(CCopasiRootContainer::getDatamodelList()->operator[](0).getPlotDefinitionList());
       linkDataModelToGUI();
     }
 
@@ -378,7 +379,7 @@ void DataModelGUI::importSBMLRun()
   try
     {
       assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-      mSuccess = (*CCopasiRootContainer::getDatamodelList())[0]->importSBML(mFileName, mpProgressBar, false);
+      mSuccess = CCopasiRootContainer::getDatamodelList()->operator[](0).importSBML(mFileName, mpProgressBar, false);
     }
 
   catch (...)
@@ -394,7 +395,7 @@ void DataModelGUI::importSBMLFinished()
       this->importCellDesigner();
       CCopasiRootContainer::getConfiguration()->getRecentSBMLFiles().addFile(mFileName);
 
-      mOutputHandlerPlot.setOutputDefinitionVector((*CCopasiRootContainer::getDatamodelList())[0]->getPlotDefinitionList());
+      mOutputHandlerPlot.setOutputDefinitionVector(CCopasiRootContainer::getDatamodelList()->operator[](0).getPlotDefinitionList());
       linkDataModelToGUI();
     }
 
@@ -420,7 +421,7 @@ void DataModelGUI::exportSBMLToStringRun()
   try
     {
       assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-      *mpSBMLExportString = (*CCopasiRootContainer::getDatamodelList())[0]->exportSBMLToString(mpProgressBar, 2, 4);
+      *mpSBMLExportString = CCopasiRootContainer::getDatamodelList()->operator[](0).exportSBMLToString(mpProgressBar, 2, 4);
     }
 
   catch (...)
@@ -476,7 +477,7 @@ void DataModelGUI::exportSBMLRun()
   try
     {
       assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-      mSuccess = (*CCopasiRootContainer::getDatamodelList())[0]->exportSBML(mFileName, mOverWrite, mSBMLLevel, mSBMLVersion, mSBMLExportIncomplete, mSBMLExportCOPASIMIRIAM, mpProgressBar);
+      mSuccess = CCopasiRootContainer::getDatamodelList()->operator[](0).exportSBML(mFileName, mOverWrite, mSBMLLevel, mSBMLVersion, mSBMLExportIncomplete, mSBMLExportCOPASIMIRIAM, mpProgressBar);
     }
 
   catch (...)
@@ -514,7 +515,7 @@ void DataModelGUI::exportMathModelRun()
   try
     {
       assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-      mSuccess = (*CCopasiRootContainer::getDatamodelList())[0]->exportMathModel(mFileName, mpProgressBar, mExportFormat, mOverWrite);
+      mSuccess = CCopasiRootContainer::getDatamodelList()->operator[](0).exportMathModel(mFileName, mpProgressBar, mExportFormat, mOverWrite);
     }
 
   catch (...)
@@ -679,7 +680,7 @@ void DataModelGUI::deregisterListView(ListViews * pListView)
 void DataModelGUI::refreshInitialValues()
 {
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CModel * pModel = (*CCopasiRootContainer::getDatamodelList())[0]->getModel();
+  CModel * pModel = CCopasiRootContainer::getDatamodelList()->operator[](0).getModel();
   pModel->updateInitialValues(static_cast< CModelParameter::Framework >(mFramework));
 }
 
@@ -725,7 +726,7 @@ void DataModelGUI::importCellDesigner()
 {
   // add code to check for CellDesigner annotations
   // ask the user if the annotations should be imported
-  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
+  CCopasiDataModel* pDataModel = &CCopasiRootContainer::getDatamodelList()->operator[](0);
   assert(pDataModel != NULL);
 
   if (pDataModel != NULL)
@@ -781,8 +782,8 @@ void DataModelGUI::importCellDesigner()
                               // create the model map
                               std::string s1, s2;
                               std::map<std::string, std::string> modelmap;
-                              std::map<CCopasiObject*, SBase*>::const_iterator it;
-                              std::map<CCopasiObject*, SBase*>::const_iterator itEnd = pDataModel->getCopasi2SBMLMap().end();
+                              std::map<const CCopasiObject*, SBase*>::const_iterator it;
+                              std::map<const CCopasiObject*, SBase*>::const_iterator itEnd = pDataModel->getCopasi2SBMLMap().end();
 
                               for (it = pDataModel->getCopasi2SBMLMap().begin(); it != itEnd; ++it)
                                 {
@@ -854,7 +855,7 @@ void DataModelGUI::importSEDMLFromStringRun()
   try
     {
       assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-      mSuccess = (*CCopasiRootContainer::getDatamodelList())[0]->importSEDMLFromString(mSEDMLImportString, mpProgressBar, false);
+      mSuccess = CCopasiRootContainer::getDatamodelList()->operator[](0).importSEDMLFromString(mSEDMLImportString, mpProgressBar, false);
     }
 
   catch (...)
@@ -869,7 +870,7 @@ void DataModelGUI::importSEDMLFromStringFinished()
 
   if (mSuccess)
     {
-      mOutputHandlerPlot.setOutputDefinitionVector((*CCopasiRootContainer::getDatamodelList())[0]->getPlotDefinitionList());
+      mOutputHandlerPlot.setOutputDefinitionVector(CCopasiRootContainer::getDatamodelList()->operator[](0).getPlotDefinitionList());
       linkDataModelToGUI();
     }
 
@@ -893,7 +894,7 @@ void DataModelGUI::importSEDMLRun()
   try
     {
       assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-      mSuccess = (*CCopasiRootContainer::getDatamodelList())[0]->importSEDML(mFileName, mpProgressBar, false);
+      mSuccess = CCopasiRootContainer::getDatamodelList()->operator[](0).importSEDML(mFileName, mpProgressBar, false);
     }
 
   catch (...)
@@ -908,7 +909,7 @@ void DataModelGUI::importSEDMLFinished()
     {
       CCopasiRootContainer::getConfiguration()->getRecentSEDMLFiles().addFile(mFileName);
 
-      mOutputHandlerPlot.setOutputDefinitionVector((*CCopasiRootContainer::getDatamodelList())[0]->getPlotDefinitionList());
+      mOutputHandlerPlot.setOutputDefinitionVector(CCopasiRootContainer::getDatamodelList()->operator[](0).getPlotDefinitionList());
       linkDataModelToGUI();
     }
 
@@ -961,7 +962,7 @@ void DataModelGUI::exportSEDMLToStringRun()
   try
     {
       assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-      *mpSEDMLExportString = (*CCopasiRootContainer::getDatamodelList())[0]->exportSEDMLToString(mpProgressBar, 1, 1);
+      *mpSEDMLExportString = CCopasiRootContainer::getDatamodelList()->operator[](0).exportSEDMLToString(mpProgressBar, 1, 1);
     }
 
   catch (...)
@@ -982,7 +983,7 @@ void DataModelGUI::exportSEDMLRun()
   try
     {
       assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-      mSuccess = (*CCopasiRootContainer::getDatamodelList())[0]->exportSEDML(mFileName, mOverWrite, mSEDMLLevel, mSEDMLVersion, mSEDMLExportIncomplete, mSEDMLExportCOPASIMIRIAM, mpProgressBar);
+      mSuccess = CCopasiRootContainer::getDatamodelList()->operator[](0).exportSEDML(mFileName, mOverWrite, mSEDMLLevel, mSEDMLVersion, mSEDMLExportIncomplete, mSEDMLExportCOPASIMIRIAM, mpProgressBar);
     }
 
   catch (...)

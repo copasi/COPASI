@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -141,7 +141,7 @@ bool CQMoietiesTaskResult::enterProtected()
 void CQMoietiesTaskResult::load()
 {
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
+  CCopasiDataModel* pDataModel = &CCopasiRootContainer::getDatamodelList()->operator[](0);
   assert(pDataModel != NULL);
   CModel * pModel = pDataModel->getModel();
 
@@ -165,16 +165,16 @@ void CQMoietiesTaskResult::load()
 
   for (; it != end; ++it, i++)
     {
-      pItem = new QTableWidgetItem(FROM_UTF8((*it)->getObjectName()));
+      pItem = new QTableWidgetItem(FROM_UTF8(it->getObjectName()));
       mpMoieties->setItem(i, COL_SPECIES, pItem);;
 
       pItem = new QTableWidgetItem(QVariant::Double);
-      pItem->setData(Qt::DisplayRole, (*it)->getNumber());
+      pItem->setData(Qt::DisplayRole, it->getNumber());
       mpMoieties->setItem(i, COL_NUMBER, pItem);
 
-      (*it)->refreshAmount();
+      it.constCast()->refreshAmount();
       pItem = new QTableWidgetItem(QVariant::Double);
-      pItem->setData(Qt::DisplayRole, (*it)->getAmount());
+      pItem->setData(Qt::DisplayRole, it->getAmount());
       mpMoieties->setItem(i, COL_AMOUNT, pItem);
 
       pItem = new QTableWidgetItem("");
@@ -185,7 +185,7 @@ void CQMoietiesTaskResult::load()
       pItem->setFlags(pItem->flags() | Qt::ItemIsEditable | Qt::ItemIsEnabled);
       mpMoieties->openPersistentEditor(pItem);
 
-      pItem = new QTableWidgetItem(FROM_UTF8((*it)->getDescription(pModel)));
+      pItem = new QTableWidgetItem(FROM_UTF8(it->getDescription(pModel)));
       mpMoieties->setItem(i, COL_EQUATION, pItem);
     }
 
@@ -257,7 +257,7 @@ void CQMoietiesTaskResult::slotCreateGlobalQuantity(const QModelIndex & index)
   int row = index.row();
 
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CModel * pModel = (*CCopasiRootContainer::getDatamodelList())[0]->getModel();
+  CModel * pModel = CCopasiRootContainer::getDatamodelList()->operator[](0).getModel();
 
   if (pModel == NULL) return;
 
@@ -265,7 +265,7 @@ void CQMoietiesTaskResult::slotCreateGlobalQuantity(const QModelIndex & index)
 
   if (row >= (C_INT32) Moieties.size()) return;
 
-  const CMoiety * pMoiety = Moieties[row];
+  const CMoiety * pMoiety = &Moieties[row];
 
   CModelValue * pMV = pModel->createModelValue("Moiety[" + pMoiety->getObjectName() + "].TotalAmount");
 

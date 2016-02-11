@@ -948,9 +948,9 @@ bool CMathObject::compilePropensity(CMathContainer & container)
 
           for (; itSubstrate != endSubstrate; ++itSubstrate)
             {
-              const std::string NumberPointer = pointerToString(container.getMathObject((*itSubstrate)->getMetabolite()->getValueReference())->getValuePointer());
+              const std::string NumberPointer = pointerToString(container.getMathObject(itSubstrate->getMetabolite()->getValueReference())->getValuePointer());
 
-              C_FLOAT64 Multiplicity = (*itSubstrate)->getMultiplicity();
+              C_FLOAT64 Multiplicity = itSubstrate->getMultiplicity();
 
               Multiplicity -= 1.0; // Nothing to correct if the multiplicity is 1.
 
@@ -1154,17 +1154,17 @@ bool CMathObject::compileTransitionTime(CMathContainer & container)
         for (; it != end; ++it)
           {
             const CCopasiVector< CChemEqElement > &Balances =
-              (*it)->getChemEq().getBalances();
+              it->getChemEq().getBalances();
             CCopasiVector< CChemEqElement >::const_iterator itChem = Balances.begin();
             CCopasiVector< CChemEqElement >::const_iterator endChem = Balances.end();
 
             for (; itChem != endChem; ++itChem)
-              if ((*itChem)->getMetaboliteKey() == Key)
+              if (itChem->getMetaboliteKey() == Key)
                 break;
 
             if (itChem != endChem)
               {
-                const C_FLOAT64 & Multiplicity = (*itChem)->getMultiplicity();
+                const C_FLOAT64 & Multiplicity = itChem->getMultiplicity();
 
                 if (!First)
                   {
@@ -1193,8 +1193,8 @@ bool CMathObject::compileTransitionTime(CMathContainer & container)
 
                 PositiveFlux << "*";
                 NegativeFlux << "*";
-                PositiveFlux << pointerToString(container.getMathObject((*it)->getParticleFluxReference())->getValuePointer());
-                NegativeFlux << pointerToString(container.getMathObject((*it)->getParticleFluxReference())->getValuePointer());
+                PositiveFlux << pointerToString(container.getMathObject(it->getParticleFluxReference())->getValuePointer());
+                NegativeFlux << pointerToString(container.getMathObject(it->getParticleFluxReference())->getValuePointer());
 
                 PositiveFlux << ",0)";
                 NegativeFlux << ",0)";
@@ -1438,17 +1438,17 @@ bool CMathObject::createExtensiveReactionRateExpression(const CMetab * pSpecies,
   for (; it != end; ++it)
     {
       const CCopasiVector< CChemEqElement > &Balances =
-        (*it)->getChemEq().getBalances();
+        it->getChemEq().getBalances();
       CCopasiVector< CChemEqElement >::const_iterator itChem = Balances.begin();
       CCopasiVector< CChemEqElement >::const_iterator endChem = Balances.end();
 
       for (; itChem != endChem; ++itChem)
-        if ((*itChem)->getMetaboliteKey() == Key)
+        if (itChem->getMetaboliteKey() == Key)
           break;
 
       if (itChem != endChem)
         {
-          const C_FLOAT64 & Multiplicity = (*itChem)->getMultiplicity();
+          const C_FLOAT64 & Multiplicity = itChem->getMultiplicity();
 
           if (First || Multiplicity < 0.0)
             {
@@ -1480,7 +1480,7 @@ bool CMathObject::createExtensiveReactionRateExpression(const CMetab * pSpecies,
           First = false;
 
           Infix << "*";
-          Infix << pointerToString(container.getMathObject((*it)->getParticleFluxReference())->getValuePointer());
+          Infix << pointerToString(container.getMathObject(it->getParticleFluxReference())->getValuePointer());
         }
     }
 

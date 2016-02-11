@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -84,7 +84,7 @@ bool CQLyapWidget::loadTask()
 
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   bool enabled =
-    ((*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getInitialTime() != pProblem->getTransientTime());
+    (CCopasiRootContainer::getDatamodelList()->operator[](0).getModel()->getInitialTime() != pProblem->getTransientTime());
 
   mpCheckDelay->setChecked(enabled);
   mpEditDelay->setEnabled(enabled);
@@ -119,7 +119,7 @@ bool CQLyapWidget::saveTask()
 
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   bool enabled =
-    ((*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getInitialTime() != pProblem->getTransientTime());
+    (CCopasiRootContainer::getDatamodelList()->operator[](0).getModel()->getInitialTime() != pProblem->getTransientTime());
 
   if (mpCheckDelay->isChecked() != enabled ||
       (mpCheckDelay->isChecked() &&
@@ -128,7 +128,7 @@ bool CQLyapWidget::saveTask()
       if (mpCheckDelay->isChecked())
         pProblem->setTransientTime(mpEditDelay->text().toDouble());
       else
-        pProblem->setTransientTime((*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getInitialTime());
+        pProblem->setTransientTime(CCopasiRootContainer::getDatamodelList()->operator[](0).getModel()->getInitialTime());
 
       mChanged = true;
     }
@@ -139,7 +139,7 @@ bool CQLyapWidget::saveTask()
       mChanged = true;
     }
 
-  if (mChanged)(*CCopasiRootContainer::getDatamodelList())[0]->changed();
+  if (mChanged) CCopasiRootContainer::getDatamodelList()->operator[](0).changed();
 
   mChanged = false;
   return true;

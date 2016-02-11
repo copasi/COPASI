@@ -1,17 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLayoutInitializer.cpp,v $
-//   $Revision: 1.4 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/03/07 19:28:47 $
-// End CVS Header
-
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -108,7 +105,7 @@ CLReactionGlyph * CLayoutInitializer::createReactionGlyph(const CReaction * r,
       rg->addMetabReferenceGlyph(tmpMRG);
 
       //get the metab key from the copasi reaction
-      std::string metabKey = ce.getSubstrates()[i]->getMetaboliteKey();
+      std::string metabKey = ce.getSubstrates()[i].getMetaboliteKey();
 
       //set the corresponding metab glyph key
       const std::map<std::string, std::string>::const_iterator it = mm.find(metabKey);
@@ -128,7 +125,7 @@ CLReactionGlyph * CLayoutInitializer::createReactionGlyph(const CReaction * r,
       rg->addMetabReferenceGlyph(tmpMRG);
 
       //get the metab key from the copasi reaction
-      std::string metabKey = ce.getProducts()[i]->getMetaboliteKey();
+      std::string metabKey = ce.getProducts()[i].getMetaboliteKey();
 
       //set the corresponding metab glyph key
       const std::map<std::string, std::string>::const_iterator it = mm.find(metabKey);
@@ -148,7 +145,7 @@ CLReactionGlyph * CLayoutInitializer::createReactionGlyph(const CReaction * r,
       rg->addMetabReferenceGlyph(tmpMRG);
 
       //get the metab key from the copasi reaction
-      std::string metabKey = ce.getModifiers()[i]->getMetaboliteKey();
+      std::string metabKey = ce.getModifiers()[i].getMetaboliteKey();
 
       //set the corresponding metab glyph key
       const std::map<std::string, std::string>::const_iterator it = mm.find(metabKey);

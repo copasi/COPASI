@@ -1,4 +1,4 @@
-// Copyright (C) 2013 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2013 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -54,7 +54,7 @@ public:
 
   static std::string& removeCharactersFromString(std::string& str, const std::string& characters);
 
-  static std::string findIdByNameAndType(const std::map<CCopasiObject*, SBase*>& map,
+  static std::string findIdByNameAndType(const std::map<const CCopasiObject*, SBase*>& map,
                                          int typeCode,
                                          const std::string& name);
 

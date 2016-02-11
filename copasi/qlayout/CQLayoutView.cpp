@@ -1,4 +1,4 @@
-// Copyright (C) 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2013 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -37,7 +37,7 @@ void updateLayoutList(QComboBox* list, CCopasiDataModel* dataModel)
 
   while (it != layouts.end())
     {
-      const CLayout* layout = *it;
+      const CLayout* layout = it;
       list->addItem(layout->getObjectName().c_str());
       ++it;
     }
@@ -76,7 +76,7 @@ CLRenderInformationBase* updateRenderInformationList(QComboBox* list, CCopasiDat
 
       while (it != render.end())
         {
-          CLLocalRenderInformation* current = *it;
+          CLLocalRenderInformation* current = it;
 
           if (result == NULL) result = current;
 
@@ -93,7 +93,7 @@ CLRenderInformationBase* updateRenderInformationList(QComboBox* list, CCopasiDat
   if (skipGlobal)
     {
       if (result == NULL && dataModel->getListOfLayouts()->getListOfGlobalRenderInformationObjects().size() > 0)
-        result = dataModel->getListOfLayouts()->getListOfGlobalRenderInformationObjects()[0];
+        result = &dataModel->getListOfLayouts()->getListOfGlobalRenderInformationObjects()[0];
 
       if (result == NULL && getNumDefaultStyles() > 0)
         result = getDefaultStyle(0);
@@ -108,14 +108,13 @@ CLRenderInformationBase* updateRenderInformationList(QComboBox* list, CCopasiDat
 
     while (it != render.end())
       {
-        CLGlobalRenderInformation* current = *it;
 
-        if (result == NULL) result = current;
+        if (result == NULL) result = it.constCast();
 
-        if (current->getName().empty())
-          list->addItem(current->getKey().c_str(), QVariant::fromValue(RENDERINFORMATION_TYPE_GLOBAL));
+        if (it->getName().empty())
+          list->addItem(it->getKey().c_str(), QVariant::fromValue(RENDERINFORMATION_TYPE_GLOBAL));
         else
-          list->addItem(current->getName().c_str(), QVariant::fromValue(RENDERINFORMATION_TYPE_GLOBAL));
+          list->addItem(it->getName().c_str(), QVariant::fromValue(RENDERINFORMATION_TYPE_GLOBAL));
 
         ++it;
       }
@@ -161,14 +160,14 @@ void CQLayoutView::slotRenderInformationChanged(int index)
 
   if (numLocal > index)
     {
-      render  = current->getCurrentLayout()->getListOfLocalRenderInformationObjects()[index];
+      render  = &current->getCurrentLayout()->getListOfLocalRenderInformationObjects()[index];
     }
 
   int numGlobal = mpDataModel->getListOfLayouts()->getListOfGlobalRenderInformationObjects().size();
 
   if (render == NULL && numLocal + numGlobal > index)
     {
-      render = mpDataModel->getListOfLayouts()->getListOfGlobalRenderInformationObjects()[index - numLocal];
+      render = &mpDataModel->getListOfLayouts()->getListOfGlobalRenderInformationObjects()[index - numLocal];
     }
 
   size_t numDefault = getNumDefaultStyles();
@@ -195,7 +194,7 @@ void CQLayoutView::slotLayoutChanged(int index)
 
   if (current == NULL) return;
 
-  CLayout* layout  = (*mpDataModel->getListOfLayouts())[index];
+  CLayout* layout  = &mpDataModel->getListOfLayouts()->operator[](index);
 
   if (layout == NULL || layout == current->getCurrentLayout()) return;
 

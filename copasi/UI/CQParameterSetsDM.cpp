@@ -1,4 +1,4 @@
-// Copyright (C) 2013 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2013 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -75,7 +75,7 @@ QVariant CQParameterSetsDM::data(const QModelIndex &index, int role) const
             break;
 
           case COL_NAME:
-            return QVariant(FROM_UTF8((*mpListOfParameterSets)[index.row()]->getObjectName()));
+            return QVariant(FROM_UTF8(mpListOfParameterSets->operator[](index.row()).getObjectName()));
             break;
         }
     }
@@ -155,7 +155,7 @@ bool CQParameterSetsDM::insertRows(int position, int rows, const QModelIndex&)
 
   for (int row = 0; row < rows; ++row)
     {
-      emit notifyGUI(ListViews::LAYOUT, ListViews::ADD, (*mpListOfParameterSets)[position + row]->getKey());
+      emit notifyGUI(ListViews::LAYOUT, ListViews::ADD, mpListOfParameterSets->operator[](position + row).getKey());
     }
 
   endInsertRows();
@@ -177,11 +177,11 @@ bool CQParameterSetsDM::removeRows(int position, int rows)
   std::vector< CModelParameterSet * >::iterator itDeletedModelParameterSet;
   std::vector< CModelParameterSet * >::iterator endDeletedModelParameterSet = DeletedModelParameterSets.end();
 
-  CCopasiVectorN< CModelParameterSet >::const_iterator itRow = mpListOfParameterSets->begin() + position;
+  CCopasiVectorN< CModelParameterSet >::iterator itRow = mpListOfParameterSets->begin() + position;
 
   for (itDeletedModelParameterSet = DeletedModelParameterSets.begin(); itDeletedModelParameterSet != endDeletedModelParameterSet; ++itDeletedModelParameterSet, ++itRow)
     {
-      *itDeletedModelParameterSet = *itRow;
+      *itDeletedModelParameterSet = itRow;
     }
 
   for (itDeletedModelParameterSet = DeletedModelParameterSets.begin(); itDeletedModelParameterSet != endDeletedModelParameterSet; ++itDeletedModelParameterSet)
@@ -211,7 +211,7 @@ bool CQParameterSetsDM::removeRows(QModelIndexList rows, const QModelIndex & /* 
 
   for (i = rows.begin(); i != rows.end(); ++i)
     {
-      ModelParameterSets.append((*mpListOfParameterSets)[(*i).row()]);
+      ModelParameterSets.append(&mpListOfParameterSets->operator[](i->row()));
     }
 
   QList< CModelParameterSet * >::const_iterator j;

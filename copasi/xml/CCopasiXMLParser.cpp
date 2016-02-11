@@ -733,7 +733,7 @@ void CCopasiXMLParser::ListOfFunctionsElement::end(const XML_Char *pszName)
           for (i = imax - 1; i != C_INVALID_INDEX; i--)
             {
               CFunction * pFunction =
-                dynamic_cast<CFunction *>((*mCommon.pFunctionList)[i]);
+                dynamic_cast<CFunction *>(&mCommon.pFunctionList->operator[](i));
 
               if (pFunction && !pFunction->compile())
                 {
@@ -855,14 +855,14 @@ void CCopasiXMLParser::FunctionElement::start(const XML_Char *pszName,
                   {
                     mExistingFunctionIndex.insert(Index);
 
-                    switch ((*mCommon.pFunctionList)[Index]->getType())
+                    switch ((*mCommon.pFunctionList)[Index].getType())
                       {
                         case CEvaluationTree::MassAction:
 
                           if (Type == CEvaluationTree::MassAction)
                             {
                               pdelete(mCommon.pFunction);
-                              mCommon.pFunction = (*mCommon.pFunctionList)[Index];
+                              mCommon.pFunction = &mCommon.pFunctionList->operator[](Index);
                               mCommon.mPredefinedFunction = true;
                             }
                           else
@@ -894,7 +894,7 @@ void CCopasiXMLParser::FunctionElement::start(const XML_Char *pszName,
                           if (Type == CEvaluationTree::PreDefined)
                             {
                               pdelete(mCommon.pFunction);
-                              mCommon.pFunction = (*mCommon.pFunctionList)[Index];
+                              mCommon.pFunction = &mCommon.pFunctionList->operator[](Index);
                               mCommon.mPredefinedFunction = true;
                             }
                           else
@@ -1054,12 +1054,12 @@ void CCopasiXMLParser::FunctionElement::end(const XML_Char *pszName)
 
                 for (; it != end; ++it)
                   {
-                    CFunction * pFunction = (*mCommon.pFunctionList)[*it];
+                    CFunction * pFunction = &mCommon.pFunctionList->operator[](*it);
 
                     if (*pFunction == *mCommon.pFunction)
                       {
                         pdelete(mCommon.pFunction);
-                        mCommon.pFunction = (*mCommon.pFunctionList)[*it];
+                        mCommon.pFunction = &mCommon.pFunctionList->operator[](*it);
 
                         break;
                       }
@@ -8207,16 +8207,16 @@ void CCopasiXMLParser::LayoutElement::end(const XML_Char *pszName)
     {
       switch (mCurrentElement)
         {
-          //     case Layout:
-          //       if (strcmp(pszName, "Layout"))
-          //         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
-          //                        pszName, "Layout", mParser.getCurrentLineNumber());
-          //       mParser.popElementHandler();
-          //       mCurrentElement = START_ELEMENT;
-          //
-          //       /* Tell the parent element we are done. */
-          //       mParser.onEndElement(pszName);
-          //       break;
+            //     case Layout:
+            //       if (strcmp(pszName, "Layout"))
+            //         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+            //                        pszName, "Layout", mParser.getCurrentLineNumber());
+            //       mParser.popElementHandler();
+            //       mCurrentElement = START_ELEMENT;
+            //
+            //       /* Tell the parent element we are done. */
+            //       mParser.onEndElement(pszName);
+            //       break;
 
           case Dimensions:
 
@@ -12867,7 +12867,7 @@ void CCopasiXMLParser::GroupElement::start(const XML_Char * pszName,
         return;
         break;
 
-      // a group can have many different children
+        // a group can have many different children
       case GroupChild:
 
         // handle the possible children
@@ -14217,7 +14217,7 @@ void CCopasiXMLParser::GlobalRenderInformationElement::start(const XML_Char * ps
         mCommon.pLayoutList->addGlobalRenderInformation(new CLGlobalRenderInformation());
         // delete the global render information again since the addGlobalRenderInformationObject method made a copy
         assert(mCommon.pLayoutList->getListOfGlobalRenderInformationObjects().size() > 0);
-        mCommon.pRenderInformation = mCommon.pLayoutList->getListOfGlobalRenderInformationObjects()[mCommon.pLayoutList->getListOfGlobalRenderInformationObjects().size() - 1];
+        mCommon.pRenderInformation = &mCommon.pLayoutList->getListOfGlobalRenderInformationObjects()[mCommon.pLayoutList->getListOfGlobalRenderInformationObjects().size() - 1];
         background = mParser.getAttributeValue("backgroundColor", papszAttrs);
         assert(background != NULL);
 
@@ -14388,7 +14388,7 @@ void CCopasiXMLParser::LocalRenderInformationElement::start(const XML_Char * psz
         mCommon.pCurrentLayout->addLocalRenderInformation(new CLLocalRenderInformation());
         // delete the global render information again since the addLocalRenderInformationObject method made a copy
         assert(mCommon.pCurrentLayout->getListOfLocalRenderInformationObjects().size() > 0);
-        mCommon.pRenderInformation = mCommon.pCurrentLayout->getListOfLocalRenderInformationObjects()[mCommon.pCurrentLayout->getListOfLocalRenderInformationObjects().size() - 1];
+        mCommon.pRenderInformation = &mCommon.pCurrentLayout->getListOfLocalRenderInformationObjects()[mCommon.pCurrentLayout->getListOfLocalRenderInformationObjects().size() - 1];
         background = mParser.getAttributeValue("backgroundColor", papszAttrs);
         assert(background != NULL);
 

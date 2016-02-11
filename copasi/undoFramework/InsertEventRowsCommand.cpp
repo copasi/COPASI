@@ -1,4 +1,4 @@
-// Copyright (C) 2014 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2014 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -53,7 +53,7 @@ void InsertEventRowsCommand::redo()
 
       int Index = mIndex.isValid() ? mIndex.row() : mPosition;
 
-      CEvent *pEvent = pModel->getEvents()[Index];
+      CEvent *pEvent = &pModel->getEvents()[Index];
       mpEventData = new UndoEventData(pEvent);
     }
   else

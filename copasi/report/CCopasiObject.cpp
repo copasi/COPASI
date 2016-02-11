@@ -629,34 +629,14 @@ std::ostream &operator<<(std::ostream &os, const CCopasiObject & o)
  * If there is no instance of CCopasiDataModel in the ancestor tree, NULL
  * is returned.
  */
-CCopasiDataModel* CCopasiObject::getObjectDataModel()
-{
-  CCopasiObject * pObject = this;
-
-  while (pObject != NULL)
-    {
-      if (pObject->isDataModel())
-        return static_cast<CCopasiDataModel *>(pObject);
-
-      pObject = pObject->getObjectParent();
-    }
-
-  return NULL;
-}
-
-/**
- * Returns a const pointer to the CCopasiDataModel the element belongs to.
- * If there is no instance of CCopasiDataModel in the ancestor tree, NULL
- * is returned.
- */
-const CCopasiDataModel* CCopasiObject::getObjectDataModel() const
+CCopasiDataModel* CCopasiObject::getObjectDataModel() const
 {
   const CCopasiObject * pObject = this;
 
   while (pObject != NULL)
     {
       if (pObject->isDataModel())
-        return static_cast<const CCopasiDataModel *>(pObject);
+        return const_cast< CCopasiDataModel * >(static_cast<const CCopasiDataModel * >(pObject));
 
       pObject = pObject->getObjectParent();
     }

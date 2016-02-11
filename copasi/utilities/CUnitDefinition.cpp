@@ -111,7 +111,7 @@ void CUnitDefinition::updateSIUnitDefinitions(CUnitDefinitionDB * Units,
 
       if (Index != C_INVALID_INDEX)
         {
-          pUnitDef = Units->operator [](Index);
+          pUnitDef = &Units->operator [](Index);
         }
       else
         {

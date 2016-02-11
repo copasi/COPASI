@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -100,7 +100,7 @@ bool CODEExporter::exportModelValuesExpressions(const CModel *copasiModel)
 
   for (i = 0; i < size; ++i)
     {
-      CModelEntity* entity = copasiModel->getModelValues()[i];
+      const CModelEntity* entity = &copasiModel->getModelValues()[i];
 
       if (entity->getStatus() == CModelEntity::ASSIGNMENT)
         {
@@ -116,7 +116,7 @@ bool CODEExporter::exportModelValuesExpressions(const CModel *copasiModel)
 
   for (i = 0; i < size; ++i)
     {
-      CModelEntity* entity = copasiModel->getMetabolites()[i];
+      const CModelEntity* entity = &copasiModel->getMetabolites()[i];
 
       if (entity->getStatus() == CModelEntity::ASSIGNMENT)
         {
@@ -132,7 +132,7 @@ bool CODEExporter::exportModelValuesExpressions(const CModel *copasiModel)
 
   for (i = 0; i < size; ++i)
     {
-      CModelEntity* entity = copasiModel->getCompartments()[i];
+      const CModelEntity* entity = &copasiModel->getCompartments()[i];
 
       if (entity->getStatus() == CModelEntity::ASSIGNMENT)
         {
@@ -526,13 +526,7 @@ std::string CODEExporter::isModelEntityExpressionODEExporterCompatible(const CMo
 
 size_t getReactionIndex(const CCopasiVector< CReaction > & reacs, const CReaction *react)
 {
-  for (size_t i = 0; i < reacs.size(); ++i)
-    {
-      if (reacs[i] == react)
-        return i;
-    }
-
-  return C_INVALID_INDEX;
+  return reacs.getIndex(react);
 }
 
 std::string getQuantityParameterOrValue(const std::map< std::string, std::string >& map, const CCopasiDataModel* pDataModel)
@@ -543,9 +537,9 @@ std::string getQuantityParameterOrValue(const std::map< std::string, std::string
 
   for (; it != vals.end(); ++it)
     {
-      std::map< std::string, std::string >::const_iterator key = map.find((*it)->getKey());
+      std::map< std::string, std::string >::const_iterator key = map.find(it->getKey());
 
-      if ((*it)->getInitialValue() == val && key != map.end())
+      if (it->getInitialValue() == val && key != map.end())
         return key->second;
     }
 
@@ -604,7 +598,7 @@ std::string CODEExporter::exportExpression(const CExpression* pExpression, const
               if (objectName == "Initial Time")
                 {
                   const CTrajectoryTask * pTrajectory =
-                    dynamic_cast<CTrajectoryTask *>((*const_cast<CCopasiDataModel*>(pDataModel)->getTaskList())["Time-Course"]);
+                    dynamic_cast<CTrajectoryTask *>(&const_cast<CCopasiDataModel*>(pDataModel)->getTaskList()->operator[]("Time-Course"));
 
                   const CTrajectoryProblem * pTrajectoryProblem =
                     dynamic_cast<const CTrajectoryProblem *>(pTrajectory->getProblem());
@@ -768,7 +762,7 @@ std::string CODEExporter::exportExpression(const CExpression* pExpression, const
                     {
                       if (fabs(redStoi[j1][index]) > 0.0)
                         {
-                          jequation << equations[metabs[ode_size + j1]->getKey()];
+                          jequation << equations[metabs[ode_size + j1].getKey()];
                         }
                     }
 
@@ -798,7 +792,7 @@ bool CODEExporter::preprocess(const CModel* copasiModel)
 
   for (i = 0; i < metabs_size; i++)
     {
-      CMetab * metab = metabs[i];
+      const CMetab * metab = &metabs[i];
 
       //if (metab->isUsed()) //changed
       {
@@ -826,7 +820,7 @@ bool CODEExporter::preprocess(const CModel* copasiModel)
 
   for (i = 0; i < comps_size; i++)
     {
-      CCompartment* comp = comps[i];
+      const CCompartment* comp = &comps[i];
       std::string name = translateObjectName(comp->getObjectName());
       NameMap[comp->getKey()] = name;
 
@@ -843,7 +837,7 @@ bool CODEExporter::preprocess(const CModel* copasiModel)
 
   for (i = 0; i < modvals_size; i++)
     {
-      CModelValue* modval = modvals[i];
+      const CModelValue* modval = &modvals[i];
       std::string name = translateObjectName(modval->getObjectName());
       NameMap[modval->getKey()] = name;
 
@@ -863,14 +857,14 @@ bool CODEExporter::preprocess(const CModel* copasiModel)
     {
       size_t params_size;
 
-      params_size = reacs[i]->getParameters().size();
+      params_size = reacs[i].getParameters().size();
 
       for (j = 0; j < params_size; ++j)
         {
-          if (reacs[i]->isLocalParameter(j))
+          if (reacs[i].isLocalParameter(j))
             {
-              NameMap[reacs[i]->getParameters().getParameter(j)->getKey()] =
-                translateObjectName(reacs[i]->getParameters().getParameter(j)->getObjectName());
+              NameMap[reacs[i].getParameters().getParameter(j)->getKey()] =
+                translateObjectName(reacs[i].getParameters().getParameter(j)->getObjectName());
             }
         }
     }
@@ -904,8 +898,7 @@ bool CODEExporter::exportMetabolites(const CModel* copasiModel)
 
   for (i = 0; i < metabs_size; i++)
     {
-      const CMetab * metab;
-      metab = metabs[i];
+      const CMetab * metab = &metabs[i];
 
       //if (!metab->isUsed()) continue;
 
@@ -986,12 +979,12 @@ bool CODEExporter::exportMetabolites(const CModel* copasiModel)
                           }
 
                         std::ostringstream jsmKey;
-                        jsmKey << "sm_" << metabs[ode_size + j]->getKey();
+                        jsmKey << "sm_" << metabs[ode_size + j].getKey();
 
                         tmp << NameMap[jsmKey.str()];
-                        const CCompartment * compj = metabs[ode_size + j]->getCompartment();
+                        const CCompartment * compj = metabs[ode_size + j].getCompartment();
 
-                        value -= L(i - ode_size, j) * metabs[ode_size + j]->getInitialConcentration() * compj->getInitialValue();
+                        value -= L(i - ode_size, j) * metabs[ode_size + j].getInitialConcentration() * compj->getInitialValue();
                       }
 
                     // comments << "  dependent ";
@@ -1043,8 +1036,7 @@ bool CODEExporter::exportMetabolitesConcentrations(const CModel* copasiModel)
 
   for (i = 0; i < metabs_size; i++)
     {
-      const CMetab * metab;
-      metab = metabs[i];
+      const CMetab * metab = &metabs[i];
 
       //if (!metab->isUsed()) continue;
 
@@ -1060,7 +1052,7 @@ bool CODEExporter::exportMetabolitesConcentrations(const CModel* copasiModel)
       std::ostringstream smKey;
       smKey << "sm_" << metab->getKey();
 
-      expression << NameMap[smKey.str()] << "/" << NameMap[metabs[i]->getCompartment()->getKey()];
+      expression << NameMap[smKey.str()] << "/" << NameMap[metabs[i].getCompartment()->getKey()];
 
       str1 = expression.str();
       str2 = comments.str();
@@ -1083,8 +1075,7 @@ bool CODEExporter::exportCompartments(const CModel* copasiModel)
 
   for (i = 0; i < comps_size; i++)
     {
-      CCompartment* comp;
-      comp = comps[i];
+      const CCompartment* comp = &comps[i];
 
       std::ostringstream comments;
       std::ostringstream expression;
@@ -1141,8 +1132,7 @@ bool CODEExporter::exportModelValues(const CModel* copasiModel)
 
   for (i = 0; i < modvals_size; i++)
     {
-      CModelValue* modval;
-      modval = modvals[i];
+      const CModelValue* modval = &modvals[i];
 
       std::ostringstream comments;
       std::ostringstream expression;
@@ -1213,8 +1203,7 @@ bool CODEExporter::exportReacParamsAndFuncs(const CModel* copasiModel)
 
   for (i = 0; i < reacs_size; ++i)
     {
-      CReaction* reac;
-      reac = reacs[i];
+      const CReaction* reac = &reacs[i];
 
       std::string name = reac->getObjectName();
 
@@ -1228,7 +1217,7 @@ bool CODEExporter::exportReacParamsAndFuncs(const CModel* copasiModel)
           std::ostringstream comments;
           std::ostringstream expression;
 
-          CCopasiParameter* param;
+          const CCopasiParameter* param;
 
           param = reac->getParameters().getParameter(j);
           expression << param->getValue< C_FLOAT64 >();
@@ -1254,7 +1243,7 @@ bool CODEExporter::exportReacParamsAndFuncs(const CModel* copasiModel)
                 jequation << "-";
               else
                 {
-                  std::string str1 = equations[metabs[ode_size + j]->getKey()];
+                  std::string str1 = equations[metabs[ode_size + j].getKey()];
 
                   if (!(isEmptyString(str1)))
                     jequation << "+";
@@ -1265,9 +1254,9 @@ bool CODEExporter::exportReacParamsAndFuncs(const CModel* copasiModel)
 
               jequation << KineticFunction2ODEmember(reac);
 
-              if (reac->getCompartmentNumber() == 1) jequation << "*" << NameMap[metabs[ode_size + j]->getCompartment()->getKey()];
+              if (reac->getCompartmentNumber() == 1) jequation << "*" << NameMap[metabs[ode_size + j].getCompartment()->getKey()];
 
-              equations[metabs[ode_size + j]->getKey()] += jequation.str();
+              equations[metabs[ode_size + j].getKey()] += jequation.str();
             }
         }
     }
@@ -1287,7 +1276,7 @@ bool CODEExporter::exportODEs(const CModel* copasiModel)
 
   for (i = 0; i < indep_size && i + ode_size < metabs_size; ++i)
     {
-      CMetab * metab = metabs[ode_size + i];
+      const CMetab * metab = &metabs[ode_size + i];
 
       std::string str1 = equations[metab->getKey()];
       std::string str2 = " ";
@@ -1298,7 +1287,7 @@ bool CODEExporter::exportODEs(const CModel* copasiModel)
 
   for (i = indep_size; i + ode_size < metabs_size; ++i)
     {
-      CMetab * metab = metabs[ode_size + i];
+      const CMetab * metab = &metabs[ode_size + i];
 
       if (metab->getStatus() == CModelEntity::REACTIONS && !metab->isDependent())
         {
@@ -1362,7 +1351,7 @@ bool CODEExporter::exportSingleParameter(const CCopasiParameter * /* param */,
     std::string & /* comments */)
 {return true;}
 
-bool CODEExporter::exportKineticFunction(CReaction* reac)
+bool CODEExporter::exportKineticFunction(const CReaction* reac)
 {
 
   std::ostringstream comments;
@@ -1460,8 +1449,8 @@ bool CODEExporter::exportKineticFunction(CReaction* reac)
       size_t substrs_size = substrs.size(), prods_size = prods.size();
       size_t k, m, mult;
 
-      CChemEqElement* substr;
-      CChemEqElement* prod;
+      const CChemEqElement* substr;
+      const CChemEqElement* prod;
 
       const CMassAction cMassAction = *static_cast<const CMassAction*>(reac->getFunction());
 
@@ -1482,7 +1471,7 @@ bool CODEExporter::exportKineticFunction(CReaction* reac)
 
       for (k = 0; k < substrs_size; ++k)
         {
-          substr = substrs[k];
+          substr = &substrs[k];
           mult = (size_t) substr->getMultiplicity();
 
           expression << "*" << NameMap[substr->getMetaboliteKey()];
@@ -1513,7 +1502,7 @@ bool CODEExporter::exportKineticFunction(CReaction* reac)
 
           for (k = 0; k < prods_size; ++k)
             {
-              prod = prods[k];
+              prod = &prods[k];
               mult = (size_t) prod->getMultiplicity();
 
               expression << "*" << NameMap[prod->getMetaboliteKey()];

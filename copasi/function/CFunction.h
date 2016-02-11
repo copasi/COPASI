@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -184,11 +184,11 @@ public:
 
   /**
    * Complete the list of evaluation tree such that all called trees are includes.
-   * @param std::vector< CFunction * > & list
+   * @param std::vector< const CFunction * > & list
    * @param const size_t & added (Default: list.size())
    * @return bool success
    */
-  static bool completeFunctionList(std::vector< CFunction * > & list,
+  static bool completeFunctionList(std::vector< const CFunction * > & list,
                                    const size_t & added = 0);
 
 protected:

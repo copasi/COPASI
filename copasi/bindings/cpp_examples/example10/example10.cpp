@@ -1,4 +1,4 @@
-// Copyright (C) 2011 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -93,7 +93,7 @@ int main(int argc, char** argv)
       CCopasiVectorN< CCopasiTask > & TaskList = * pDataModel->getTaskList();
 
       // get the metabolic control analysis task object
-      CMCATask* pTask = dynamic_cast<CMCATask*>(TaskList["Metabolic Control Analysis"]);
+      CMCATask* pTask = dynamic_cast<CMCATask*>(&TaskList["Metabolic Control Analysis"]);
 
       // The task should always be there, but just to be sure, we check and create it, if it wasn't.
       if (pTask == NULL)
@@ -138,7 +138,7 @@ int main(int argc, char** argv)
       // "Maximum duration for backward integration" double 1e6
       // the parameters have to be set on the steady state method directly
       // get the trajectory task object
-      CSteadyStateTask* pSSTask = dynamic_cast<CSteadyStateTask*>(TaskList["Steady-State"]);
+      CSteadyStateTask* pSSTask = dynamic_cast<CSteadyStateTask*>(&TaskList["Steady-State"]);
       assert(pSSTask != NULL);
       CSteadyStateMethod* pSSMethod = dynamic_cast<CSteadyStateMethod*>(pSSTask->getMethod());
       assert(pSSMethod != NULL);
@@ -197,8 +197,10 @@ int main(int argc, char** argv)
           case CSteadyStateMethod::found:
             // everything is fine, we found a steady state
             break;
+
           case CSteadyStateMethod::notFound:
           case CSteadyStateMethod::foundEquilibrium:
+
             // we are also not interested in steady states with negative concentrations
           case CSteadyStateMethod::foundNegative:
             std::cerr << "Could not find a steady state with non-negative concentrations, so I can't output control coefficients." << std::endl;
@@ -237,7 +239,7 @@ int main(int argc, char** argv)
               return 1;
             }
 
-          const CReaction* pReaction = pDataModel->getModel()->getReactions()[numReactions - 1];
+          const CReaction* pReaction = &pDataModel->getModel()->getReactions()[numReactions - 1];
 
           assert(pReaction != NULL);
 

@@ -413,7 +413,7 @@ void CQModelValue::save()
   if (mChanged)
     {
       assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-      (*CCopasiRootContainer::getDatamodelList())[0]->changed();
+      CCopasiRootContainer::getDatamodelList()->operator[](0).changed();
       protectedNotify(ListViews::MODELVALUE, ListViews::CHANGE, mKey);
 
       load();
@@ -468,7 +468,7 @@ void CQModelValue::createNewGlobalQuantity()
   int i = 1;
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
 
-  while (!(mpModelValue = (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->createModelValue(name)))
+  while (!(mpModelValue = CCopasiRootContainer::getDatamodelList()->operator[](0).getModel()->createModelValue(name)))
     {
       i++;
       name = "quantity_";
@@ -591,7 +591,7 @@ CQModelValue::changeValue(const std::string& key,
 
   if (mIgnoreUpdates) return true;
 
-  (*CCopasiRootContainer::getDatamodelList())[0]->changed();
+  CCopasiRootContainer::getDatamodelList()->operator[](0).changed();
   protectedNotify(ListViews::MODELVALUE, ListViews::CHANGE, mKey);
 
   load();

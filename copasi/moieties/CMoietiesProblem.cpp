@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -46,9 +46,9 @@ void CMoietiesProblem::printResult(std::ostream * pOstream) const
 
   for (; it != end; ++it)
     {
-      *pOstream << (*it)->getObjectName() << "\t";
-      *pOstream << (*it)->getNumber() << "\t";
-      *pOstream << (*it)->getDescription(&Model) << std::endl;
+      *pOstream << it->getObjectName() << "\t";
+      *pOstream << it->getNumber() << "\t";
+      *pOstream << it->getDescription(&Model) << std::endl;
     }
 
   *pOstream << std::endl;

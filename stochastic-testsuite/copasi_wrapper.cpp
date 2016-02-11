@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -196,7 +196,7 @@ int main(int argc, char *argv[])
 
           for (j = 0; j < jMax; ++j)
             {
-              if (metabolites[j]->getSBMLId() == SBMLId)
+              if (metabolites[j].getSBMLId() == SBMLId)
                 {
                   break;
                 }
@@ -209,7 +209,7 @@ int main(int argc, char *argv[])
             }
 
           pHeader->push_back(CCopasiStaticString(SBMLId).getCN());
-          pBody->push_back(metabolites[j]->getObject(CCopasiObjectName("Reference=ParticleNumber"))->getCN());
+          pBody->push_back(metabolites[j].getObject(CCopasiObjectName("Reference=ParticleNumber"))->getCN());
         }
 
       CCopasiVectorN< CCopasiTask > & TaskList = * pDataModel->getTaskList();

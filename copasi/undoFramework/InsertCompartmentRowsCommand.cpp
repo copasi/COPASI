@@ -1,4 +1,4 @@
-// Copyright (C) 2014 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2014 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -65,7 +65,7 @@ void InsertCompartmentRowsCommand::redo()
 
       int Index = mIndex.isValid() ? mIndex.row() : mPosition;
 
-      CCompartment *pCompartment = pModel->getCompartments()[Index];
+      CCompartment *pCompartment = &pModel->getCompartments()[Index];
       mpCompartmentData = new UndoCompartmentData(pCompartment);
     }
   else

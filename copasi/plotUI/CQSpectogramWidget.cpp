@@ -1,4 +1,4 @@
-// Copyright (C) 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2015 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -84,7 +84,7 @@ CQSpectogramWidget::LoadFromCurveSpec(const CPlotItem * pCurve)
 
   //TODO: check if objects exist....
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
+  CCopasiDataModel* pDataModel = &CCopasiRootContainer::getDatamodelList()->operator[](0);
   assert(pDataModel != NULL);
   mpObjectX = mpObjectY = mpObjectZ = NULL;
 
@@ -188,7 +188,6 @@ CQSpectogramWidget::SaveToCurveSpec(CPlotItem * curve, const CPlotItem *original
 
       if (thingsChanged || *curve->assertParameter("bilinear", CCopasiParameter::BOOL, true) != mpBilinear->isChecked())
         thingsChanged = true;
-
     }
   else thingsChanged = true;
 

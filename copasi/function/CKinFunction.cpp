@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -218,35 +218,35 @@ void CKinFunction::createParameters()
   imax = Substrates.size();
 
   for (i = 0; i < imax; i++)
-    getVariables().add(Substrates[i], true);
+    getVariables().add(&Substrates[i], true);
 
   Substrates.cleanup();
 
   imax = Products.size();
 
   for (i = 0; i < imax; i++)
-    getVariables().add(Products[i], true);
+    getVariables().add(&Products[i], true);
 
   Products.cleanup();
 
   imax = Modifiers.size();
 
   for (i = 0; i < imax; i++)
-    getVariables().add(Modifiers[i], true);
+    getVariables().add(&Modifiers[i], true);
 
   Modifiers.cleanup();
 
   imax = Parameters.size();
 
   for (i = 0; i < imax; i++)
-    getVariables().add(Parameters[i], true);
+    getVariables().add(&Parameters[i], true);
 
   Parameters.cleanup();
 
   imax = Volumes.size();
 
   for (i = 0; i < imax; i++)
-    getVariables().add(Volumes[i], true);
+    getVariables().add(&Volumes[i], true);
 
   Volumes.cleanup();
 }

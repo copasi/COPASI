@@ -1,17 +1,9 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/cpp_examples/example2/example2.cpp,v $
-//   $Revision: 1.2 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/03/07 19:25:43 $
-// End CVS Header
-
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
@@ -71,7 +63,7 @@ int main(int argc, char** argv)
 
       for (i = 0; i < iMax; ++i)
         {
-          CCompartment* pCompartment = pModel->getCompartments()[i];
+          CCompartment* pCompartment = &pModel->getCompartments()[i];
           assert(pCompartment != NULL);
           std::cout << "\t" << pCompartment->getObjectName() << std::endl;
         }
@@ -83,7 +75,7 @@ int main(int argc, char** argv)
 
       for (i = 0; i < iMax; ++i)
         {
-          CMetab* pMetab = pModel->getMetabolites()[i];
+          CMetab* pMetab = &pModel->getMetabolites()[i];
           assert(pMetab != NULL);
           std::cout << "\t" << pMetab->getObjectName() << std::endl;
         }
@@ -95,7 +87,7 @@ int main(int argc, char** argv)
 
       for (i = 0; i < iMax; ++i)
         {
-          CReaction* pReaction = pModel->getReactions()[i];
+          CReaction* pReaction = &pModel->getReactions()[i];
           assert(pReaction != NULL);
           std::cout << "\t" << pReaction->getObjectName() << std::endl;
         }

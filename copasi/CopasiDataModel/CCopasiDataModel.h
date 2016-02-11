@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -130,7 +130,7 @@ private:
      * corresponding SBML object if the current model
      * was created by an SBML import.
      */
-    std::map<CCopasiObject*, SBase*> mCopasi2SBMLMap;
+    std::map<const CCopasiObject*, SBase*> mCopasi2SBMLMap;
 
     // if we want to display images in the render extension,
     // those images can be png or jpg files with a relative path name.
@@ -245,7 +245,7 @@ public:
   bool setSBMLFileName(const std::string & fileName);
   const std::string & getSBMLFileName() const;
 
-  std::map<CCopasiObject*, SBase*>& getCopasi2SBMLMap();
+  std::map<const CCopasiObject*, SBase*>& getCopasi2SBMLMap();
 
 public:
   const std::string& getReferenceDirectory() const;
@@ -290,7 +290,7 @@ public:
   CCopasiVectorS < CMetabOld > * pOldMetabolites;
 
   //the objects that were added by the last model adding action.
-  std::set<CCopasiObject*> mLastAddedObjects;
+  std::set< const CCopasiObject * > mLastAddedObjects;
 
 protected:
   void removeSBMLIdFromFunctions();

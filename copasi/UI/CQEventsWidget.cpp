@@ -211,7 +211,7 @@ void CQEventsWidget::slotDoubleClicked(const QModelIndex proxyIndex)
 
   GET_MODEL_OR_RETURN(pModel);
 
-  std::string key = pModel->getEvents()[index.row()]->getKey();
+  std::string key = pModel->getEvents()[index.row()].getKey();
 
   if (CCopasiRootContainer::getKeyFactory()->get(key))
     mpListView->switchToOtherWidget(C_INVALID_INDEX, key);

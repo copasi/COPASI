@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -55,16 +55,16 @@ QVariant CQCreatorDM::data(const QModelIndex &index, int role) const
                 return QVariant(index.row() + 1);
 
               case COL_FAMILY_NAME:
-                return QVariant(QString(FROM_UTF8(mpMIRIAMInfo->getCreators()[index.row()]->getFamilyName())));
+                return QVariant(QString(FROM_UTF8(mpMIRIAMInfo->getCreators()[index.row()].getFamilyName())));
 
               case COL_GIVEN_NAME:
-                return QVariant(QString(FROM_UTF8(mpMIRIAMInfo->getCreators()[index.row()]->getGivenName())));
+                return QVariant(QString(FROM_UTF8(mpMIRIAMInfo->getCreators()[index.row()].getGivenName())));
 
               case COL_EMAIL:
-                return QVariant(QString(FROM_UTF8(mpMIRIAMInfo->getCreators()[index.row()]->getEmail())));
+                return QVariant(QString(FROM_UTF8(mpMIRIAMInfo->getCreators()[index.row()].getEmail())));
 
               case COL_ORG:
-                return QVariant(QString(FROM_UTF8(mpMIRIAMInfo->getCreators()[index.row()]->getORG())));
+                return QVariant(QString(FROM_UTF8(mpMIRIAMInfo->getCreators()[index.row()].getORG())));
             }
         }
     }
@@ -121,19 +121,19 @@ bool CQCreatorDM::setData(const QModelIndex &index, const QVariant &value,
       switch (index.column())
         {
           case COL_FAMILY_NAME:
-            mpMIRIAMInfo->getCreators()[index.row()]->setFamilyName(TO_UTF8(value.toString()));
+            mpMIRIAMInfo->getCreators()[index.row()].setFamilyName(TO_UTF8(value.toString()));
             break;
 
           case COL_GIVEN_NAME:
-            mpMIRIAMInfo->getCreators()[index.row()]->setGivenName(TO_UTF8(value.toString()));
+            mpMIRIAMInfo->getCreators()[index.row()].setGivenName(TO_UTF8(value.toString()));
             break;
 
           case COL_EMAIL:
-            mpMIRIAMInfo->getCreators()[index.row()]->setEmail(TO_UTF8(value.toString()));
+            mpMIRIAMInfo->getCreators()[index.row()].setEmail(TO_UTF8(value.toString()));
             break;
 
           case COL_ORG:
-            mpMIRIAMInfo->getCreators()[index.row()]->setORG(TO_UTF8(value.toString()));
+            mpMIRIAMInfo->getCreators()[index.row()].setORG(TO_UTF8(value.toString()));
             break;
         }
 
@@ -190,8 +190,8 @@ bool CQCreatorDM::removeRows(QModelIndexList rows, const QModelIndex&)
 
   for (i = rows.begin(); i != rows.end(); ++i)
     {
-      if (!isDefaultRow(*i) && mpMIRIAMInfo->getCreators()[(*i).row()])
-        pCreators.append(mpMIRIAMInfo->getCreators()[(*i).row()]);
+      if (!isDefaultRow(*i) && &mpMIRIAMInfo->getCreators()[i->row()])
+        pCreators.append(&mpMIRIAMInfo->getCreators()[i->row()]);
     }
 
   bool retVal = false, askEveryItem = true;

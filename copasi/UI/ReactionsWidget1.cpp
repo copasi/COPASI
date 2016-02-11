@@ -96,7 +96,7 @@ bool ReactionsWidget1::loadFromReaction(const CReaction* reaction)
   // this loads the reaction into a CReactionInterface object.
   // the gui works on this object and later writes back the changes to the reaction
   pdelete(mpRi);
-  mpRi = new CReactionInterface((*CCopasiRootContainer::getDatamodelList())[0]->getModel());
+  mpRi = new CReactionInterface(CCopasiRootContainer::getDatamodelList()->operator[](0).getModel());
 
   mpRi->initFromReaction(reaction);
 
@@ -121,7 +121,7 @@ bool ReactionsWidget1::saveToReaction()
   if (!mpRi->isValid()) return false;
 
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
+  CCopasiDataModel* pDataModel = &CCopasiRootContainer::getDatamodelList()->operator[](0);
   assert(pDataModel != NULL);
 
   CModel * pModel = pDataModel->getModel();
@@ -273,7 +273,7 @@ void ReactionsWidget1::copy()
   // Collect and load list of compartment names in comboBox
   for (; Compartment_it != end; ++Compartment_it)
     {
-      SelectionList.append(FROM_UTF8((*Compartment_it)->getObjectName()));
+      SelectionList.append(FROM_UTF8(Compartment_it->getObjectName()));
     }
 
   pDialog->setSelectionList(SelectionList);
@@ -288,8 +288,8 @@ void ReactionsWidget1::copy()
 
   for (MetabIt = substratesToCopy.begin(); MetabIt != substratesToCopy.end(); MetabIt++)
     {
-      pDialog->setWindowTitle("Create copy of " + FROM_UTF8((*MetabIt)->getMetabolite()->getObjectName()) + "?");
-      origCompartment = (*MetabIt)->getMetabolite()->getCompartment();
+      pDialog->setWindowTitle("Create copy of " + FROM_UTF8(MetabIt->getMetabolite()->getObjectName()) + "?");
+      origCompartment = MetabIt->getMetabolite()->getCompartment();
       origCompartmentIndex = pDialog->mpSelectionBox->findText(FROM_UTF8(origCompartment->getObjectName()));
       pDialog->mpSelectionBox->setCurrentIndex(origCompartmentIndex);
 
@@ -302,11 +302,11 @@ void ReactionsWidget1::copy()
           if (origCompartmentIndex != pDialog->mpSelectionBox->currentIndex())
             {
               sourceObjects.addCompartment(origCompartment);
-              origToCopyMapping.add(origCompartment, *(Compartment_it + pDialog->mpSelectionBox->currentIndex()));
+              origToCopyMapping.add(origCompartment, (Compartment_it + pDialog->mpSelectionBox->currentIndex()).constCast());
             }
 
-          sourceObjects.addMetab((*MetabIt)->getMetabolite());
-          cModelExpObj.duplicateMetab((*MetabIt)->getMetabolite(), "_copy", sourceObjects, origToCopyMapping);
+          sourceObjects.addMetab(MetabIt->getMetabolite());
+          cModelExpObj.duplicateMetab(MetabIt->getMetabolite(), "_copy", sourceObjects, origToCopyMapping);
         }
     }
 
@@ -314,8 +314,8 @@ void ReactionsWidget1::copy()
 
   for (MetabIt = productsToCopy.begin(); MetabIt != productsToCopy.end(); MetabIt++)
     {
-      pDialog->setWindowTitle("Create copy of " + FROM_UTF8((*MetabIt)->getMetabolite()->getObjectName()) + "?");
-      origCompartment = (*MetabIt)->getMetabolite()->getCompartment();
+      pDialog->setWindowTitle("Create copy of " + FROM_UTF8(MetabIt->getMetabolite()->getObjectName()) + "?");
+      origCompartment = MetabIt->getMetabolite()->getCompartment();
       origCompartmentIndex = pDialog->mpSelectionBox->findText(FROM_UTF8(origCompartment->getObjectName()));
       pDialog->mpSelectionBox->setCurrentIndex(origCompartmentIndex);
 
@@ -326,11 +326,11 @@ void ReactionsWidget1::copy()
           if (origCompartmentIndex != pDialog->mpSelectionBox->currentIndex())
             {
               sourceObjects.addCompartment(origCompartment);
-              origToCopyMapping.add(origCompartment, *(Compartment_it + pDialog->mpSelectionBox->currentIndex()));
+              origToCopyMapping.add(origCompartment, (Compartment_it + pDialog->mpSelectionBox->currentIndex()).constCast());
             }
 
-          sourceObjects.addMetab((*MetabIt)->getMetabolite());
-          cModelExpObj.duplicateMetab((*MetabIt)->getMetabolite(), "_copy", sourceObjects, origToCopyMapping);
+          sourceObjects.addMetab(MetabIt->getMetabolite());
+          cModelExpObj.duplicateMetab(MetabIt->getMetabolite(), "_copy", sourceObjects, origToCopyMapping);
         }
     }
 
@@ -338,8 +338,8 @@ void ReactionsWidget1::copy()
 
   for (MetabIt = modifiersToCopy.begin(); MetabIt != modifiersToCopy.end(); MetabIt++)
     {
-      pDialog->setWindowTitle("Create copy of " + FROM_UTF8((*MetabIt)->getMetabolite()->getObjectName()) + "?");
-      origCompartment = (*MetabIt)->getMetabolite()->getCompartment();
+      pDialog->setWindowTitle("Create copy of " + FROM_UTF8(MetabIt->getMetabolite()->getObjectName()) + "?");
+      origCompartment = MetabIt->getMetabolite()->getCompartment();
       origCompartmentIndex = pDialog->mpSelectionBox->findText(FROM_UTF8(origCompartment->getObjectName()));
       pDialog->mpSelectionBox->setCurrentIndex(origCompartmentIndex);
 
@@ -350,11 +350,11 @@ void ReactionsWidget1::copy()
           if (origCompartmentIndex != pDialog->mpSelectionBox->currentIndex())
             {
               sourceObjects.addCompartment(origCompartment);
-              origToCopyMapping.add(origCompartment, *(Compartment_it + pDialog->mpSelectionBox->currentIndex()));
+              origToCopyMapping.add(origCompartment, (Compartment_it + pDialog->mpSelectionBox->currentIndex()).constCast());
             }
 
-          sourceObjects.addMetab((*MetabIt)->getMetabolite());
-          cModelExpObj.duplicateMetab((*MetabIt)->getMetabolite(), "_copy", sourceObjects, origToCopyMapping);
+          sourceObjects.addMetab(MetabIt->getMetabolite());
+          cModelExpObj.duplicateMetab(MetabIt->getMetabolite(), "_copy", sourceObjects, origToCopyMapping);
         }
     }
 
@@ -671,7 +671,7 @@ void ReactionsWidget1::createNewReaction()
       name += TO_UTF8(QString::number(i));
     }
 
-  std::string key = pModel->getReactions()[name]->getKey();
+  std::string key = pModel->getReactions()[name].getKey();
   protectedNotify(ListViews::REACTION, ListViews::ADD, key);
 
   mpListView->switchToOtherWidget(C_INVALID_INDEX, key);
@@ -853,7 +853,7 @@ bool ReactionsWidget1::changeReaction(
   if (mIgnoreUpdates) return true;
 
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  (*CCopasiRootContainer::getDatamodelList())[0]->changed();
+  CCopasiRootContainer::getDatamodelList()->operator[](0).changed();
   protectedNotify(ListViews::REACTION, ListViews::CHANGE, mKey);
 
   FillWidgetFromRI();

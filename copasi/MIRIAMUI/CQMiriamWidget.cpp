@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -221,7 +221,7 @@ void CQMiriamWidget::slotBtnBrowseReference(const QModelIndex& index)
       index.row() >= (int)mpMIRIAMInfo->getReferences().size())
     return;
 
-  const CReference *pRef = mpMIRIAMInfo->getReferences()[index.row()];
+  const CReference *pRef = &mpMIRIAMInfo->getReferences()[index.row()];
 
   openMiriamReference(pRef->getMIRIAMResourceObject().getIdentifiersOrgURL() + "?profile=most_reliable");
 }
@@ -234,7 +234,7 @@ void CQMiriamWidget::slotBtnBrowseDescription(const QModelIndex& index)
       index.row() >= (int)mpMIRIAMInfo->getBiologicalDescriptions().size())
     return;
 
-  const CBiologicalDescription *pRef = mpMIRIAMInfo->getBiologicalDescriptions()[index.row()];
+  const CBiologicalDescription *pRef = &mpMIRIAMInfo->getBiologicalDescriptions()[index.row()];
 
   openMiriamReference(pRef->getMIRIAMResourceObject().getIdentifiersOrgURL() + "?profile=most_reliable");
 }

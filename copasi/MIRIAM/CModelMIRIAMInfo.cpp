@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -53,6 +53,9 @@ CMIRIAMInfo::~CMIRIAMInfo()
 CRDFGraph * CMIRIAMInfo::getRDFGraph()
 {return mpRDFGraph;}
 
+CCopasiVector <CCreator> & CMIRIAMInfo::getCreators()
+{return mCreators;}
+
 const CCopasiVector <CCreator> & CMIRIAMInfo::getCreators() const
 {return mCreators;}
 
@@ -85,7 +88,7 @@ CCreator* CMIRIAMInfo::createCreator(const std::string & /* objectName */)
 
 bool CMIRIAMInfo::removeCreator(int position)
 {
-  CCreator * pCreator = mCreators[position];
+  CCreator * pCreator = &mCreators[position];
 
   if (!pCreator)
     return false;
@@ -131,6 +134,9 @@ void CMIRIAMInfo::loadCreators()
   return;
 }
 
+CCopasiVector <CReference> & CMIRIAMInfo::getReferences()
+{return mReferences;}
+
 const CCopasiVector <CReference> & CMIRIAMInfo::getReferences() const
 {return mReferences;}
 
@@ -163,7 +169,7 @@ CReference* CMIRIAMInfo::createReference(const std::string & /* objectName */)
 
 bool CMIRIAMInfo::removeReference(int position)
 {
-  CReference * pReference = mReferences[position];
+  CReference * pReference = &mReferences[position];
 
   if (!pReference)
     return false;
@@ -242,6 +248,9 @@ void CMIRIAMInfo::setCreatedDT(const std::string& dt)
   mCreated.pObject->setFieldValue(Date, CRDFPredicate::dcterms_W3CDTF, mCreated.pObject->getPath());
 }
 
+CCopasiVector <CModification> & CMIRIAMInfo::getModifications()
+{return mModifications;}
+
 const CCopasiVector <CModification> & CMIRIAMInfo::getModifications() const
 {return mModifications;}
 
@@ -277,7 +286,7 @@ CModification * CMIRIAMInfo::createModification(const std::string& dateTime)
 
 bool CMIRIAMInfo::removeModification(int position)
 {
-  CModification * pModified = mModifications[position];
+  CModification * pModified = &mModifications[position];
 
   if (!pModified)
     return false;
@@ -305,6 +314,9 @@ void CMIRIAMInfo::loadModifications()
 
   return;
 }
+
+CCopasiVector <CBiologicalDescription> & CMIRIAMInfo::getBiologicalDescriptions()
+{return mBiologicalDescriptions;}
 
 const CCopasiVector <CBiologicalDescription> & CMIRIAMInfo::getBiologicalDescriptions() const
 {return mBiologicalDescriptions;}
@@ -336,7 +348,7 @@ CBiologicalDescription* CMIRIAMInfo::createBiologicalDescription()
 bool CMIRIAMInfo::removeBiologicalDescription(int position)
 {
   CBiologicalDescription * pBiologicalDescription =
-    mBiologicalDescriptions[position];
+    &mBiologicalDescriptions[position];
 
   if (!pBiologicalDescription)
     return false;

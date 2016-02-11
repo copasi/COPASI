@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -347,10 +347,10 @@ void CExperiment::updateFittedPointValues(const size_t & index, bool includeSimu
       mpDataDependentCalculated == NULL)
     {
       for (; it != end; ++it)
-        (*it)->setValues(std::numeric_limits<C_FLOAT64>::quiet_NaN(),
-                         std::numeric_limits<C_FLOAT64>::quiet_NaN(),
-                         std::numeric_limits<C_FLOAT64>::quiet_NaN(),
-                         std::numeric_limits<C_FLOAT64>::quiet_NaN());
+        it->setValues(std::numeric_limits<C_FLOAT64>::quiet_NaN(),
+                      std::numeric_limits<C_FLOAT64>::quiet_NaN(),
+                      std::numeric_limits<C_FLOAT64>::quiet_NaN(),
+                      std::numeric_limits<C_FLOAT64>::quiet_NaN());
 
       return;
     }
@@ -377,10 +377,10 @@ void CExperiment::updateFittedPointValues(const size_t & index, bool includeSimu
       Residual = (*pDataDependentCalculated - *pDataDependent) **pScale;
 #endif
 
-      (*it)->setValues(Independent,
-                       *pDataDependent,
-                       includeSimulation ? *pDataDependentCalculated : std::numeric_limits<C_FLOAT64>::quiet_NaN(),
-                       Residual);
+      it->setValues(Independent,
+                    *pDataDependent,
+                    includeSimulation ? *pDataDependentCalculated : std::numeric_limits<C_FLOAT64>::quiet_NaN(),
+                    Residual);
     }
 
   return;
@@ -394,10 +394,10 @@ void CExperiment::updateFittedPointValuesFromExtendedTimeSeries(const size_t & i
   if (index >= extendedTimeSeriesSize())
     {
       for (; it != end; ++it)
-        (*it)->setValues(std::numeric_limits<C_FLOAT64>::quiet_NaN(),
-                         std::numeric_limits<C_FLOAT64>::quiet_NaN(),
-                         std::numeric_limits<C_FLOAT64>::quiet_NaN(),
-                         std::numeric_limits<C_FLOAT64>::quiet_NaN());
+        it->setValues(std::numeric_limits<C_FLOAT64>::quiet_NaN(),
+                      std::numeric_limits<C_FLOAT64>::quiet_NaN(),
+                      std::numeric_limits<C_FLOAT64>::quiet_NaN(),
+                      std::numeric_limits<C_FLOAT64>::quiet_NaN());
 
       return;
     }
@@ -406,10 +406,10 @@ void CExperiment::updateFittedPointValuesFromExtendedTimeSeries(const size_t & i
 
   for (i = 1; it != end; ++it, ++i)
     {
-      (*it)->setValues(mExtendedTimeSeries[index * (mDataDependent.numCols() + 1)],
-                       std::numeric_limits<C_FLOAT64>::quiet_NaN(),
-                       mExtendedTimeSeries[index * (mDataDependent.numCols() + 1) + i] ,
-                       std::numeric_limits<C_FLOAT64>::quiet_NaN());
+      it->setValues(mExtendedTimeSeries[index * (mDataDependent.numCols() + 1)],
+                    std::numeric_limits<C_FLOAT64>::quiet_NaN(),
+                    mExtendedTimeSeries[index * (mDataDependent.numCols() + 1) + i] ,
+                    std::numeric_limits<C_FLOAT64>::quiet_NaN());
     }
 }
 

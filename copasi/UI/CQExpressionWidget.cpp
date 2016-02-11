@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -81,7 +81,7 @@ CQValidatorExpression::CQValidatorExpression(QTextEdit * parent, const char * na
   CQValidator< QTextEdit >(parent, &QTextEdit::toPlainText, name),
   mExpression()
 {
-  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
+  CCopasiDataModel* pDataModel = &CCopasiRootContainer::getDatamodelList()->operator[](0);
   assert(pDataModel != NULL);
 
   mExpression.setObjectParent(pDataModel);
@@ -132,7 +132,7 @@ CQValidatorFunction::CQValidatorFunction(QTextEdit * parent, const char * name):
   CQValidator< QTextEdit >(parent, &QTextEdit::toPlainText, name),
   mFunction()
 {
-  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
+  CCopasiDataModel* pDataModel = &CCopasiRootContainer::getDatamodelList()->operator[](0);
   assert(pDataModel != NULL);
 
   mFunction.setObjectParent(pDataModel);
@@ -566,7 +566,7 @@ void CQExpressionWidget::setExpression(const std::string & expression)
 
   CFunctionDB* pFunDB = CCopasiRootContainer::getFunctionList();
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
+  CCopasiDataModel* pDataModel = &CCopasiRootContainer::getDatamodelList()->operator[](0);
   assert(pDataModel != NULL);
   CObjectInterface::ContainerList containers;
   containers.push_back(pDataModel);
@@ -671,7 +671,7 @@ const CCopasiObject* findObjectByDisplayName(const CCopasiDataModel* dataModel, 
 
       for (CCopasiVectorN< CCompartment >::const_iterator it = compartments.begin(); it != compartments.end(); ++it)
         {
-          const CCompartment *current = *it;
+          const CCompartment *current = it;
 
           if (current->getObjectDisplayName() == displayString)
             {
@@ -703,7 +703,7 @@ const CCopasiObject* findObjectByDisplayName(const CCopasiDataModel* dataModel, 
 
       for (CCopasiVectorN< CModelValue >::const_iterator it = values.begin(); it != values.end(); ++it)
         {
-          const CModelValue *current = *it;
+          const CModelValue *current = it;
 
           if (current->getObjectDisplayName() == displayString)
             {
@@ -733,7 +733,7 @@ const CCopasiObject* findObjectByDisplayName(const CCopasiDataModel* dataModel, 
 
     for (CCopasiVector< CMetab >::const_iterator it = metabs.begin(); it != metabs.end(); ++it)
       {
-        const CMetab *current = *it;
+        const CMetab *current = it;
 
         if (current->getObjectDisplayName() == displayString)
           {
@@ -827,7 +827,7 @@ std::string CQExpressionWidget::getExpression() const
 
           // here we don't have an object recognized, what we ought to do is to find it in the model
           const CCopasiObject* object = findObjectByDisplayName(
-                                          mpCurrentObject != NULL ? mpCurrentObject->getObjectDataModel() : (*CCopasiRootContainer::getDatamodelList())[0],
+                                          mpCurrentObject != NULL ? mpCurrentObject->getObjectDataModel() : &CCopasiRootContainer::getDatamodelList()->operator[](0),
                                           DisplayName);
 
           if (object != NULL)

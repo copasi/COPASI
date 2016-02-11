@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -339,7 +339,7 @@ std::string CTimeSeries::getSBMLId(const size_t & var, const CCopasiDataModel* p
 
       if (pObject != NULL)
         {
-          std::map<CCopasiObject*, SBase*>::const_iterator pos = const_cast<CCopasiDataModel*>(pDataModel)->getCopasi2SBMLMap().find(const_cast<CCopasiObject*>(pObject));
+          std::map<const CCopasiObject*, SBase*>::const_iterator pos = const_cast<CCopasiDataModel*>(pDataModel)->getCopasi2SBMLMap().find(const_cast<CCopasiObject*>(pObject));
 
           if (pos != const_cast<CCopasiDataModel*>(pDataModel)->getCopasi2SBMLMap().end())
             {

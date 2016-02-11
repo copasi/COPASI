@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -86,7 +86,7 @@ const CCopasiVector<CLLocalStyle>* CLLocalRenderInformation::getListOfStyles() c
  */
 CLLocalStyle* CLLocalRenderInformation::getStyle(size_t i)
 {
-  return (i < this->mListOfStyles.size()) ? this->mListOfStyles[i] : NULL;
+  return (i < this->mListOfStyles.size()) ? &this->mListOfStyles[i] : NULL;
 }
 
 /**
@@ -95,7 +95,7 @@ CLLocalStyle* CLLocalRenderInformation::getStyle(size_t i)
  */
 const CLLocalStyle* CLLocalRenderInformation::getStyle(size_t i) const
 {
-  return (i < this->mListOfStyles.size()) ? this->mListOfStyles[i] : NULL;
+  return (i < this->mListOfStyles.size()) ? &this->mListOfStyles[i] : NULL;
 }
 
 CLLocalStyle* CLLocalRenderInformation::createStyle()

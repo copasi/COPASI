@@ -646,19 +646,19 @@ void CReaction::compile()
   CCopasiVector < CChemEqElement >::const_iterator end = mChemEq.getSubstrates().end();
 
   for (; it != end; ++it)
-    addDirectDependency((*it)->getMetabolite());
+    addDirectDependency(it->getMetabolite());
 
   it = mChemEq.getProducts().begin();
   end = mChemEq.getProducts().end();
 
   for (; it != end; ++it)
-    addDirectDependency((*it)->getMetabolite());
+    addDirectDependency(it->getMetabolite());
 
   it = mChemEq.getModifiers().begin();
   end = mChemEq.getModifiers().end();
 
   for (; it != end; ++it)
-    addDirectDependency((*it)->getMetabolite());
+    addDirectDependency(it->getMetabolite());
 
   mpFluxReference->setDirectDependencies(Dependencies);
   mpParticleFluxReference->setDirectDependencies(Dependencies);
@@ -708,8 +708,8 @@ bool CReaction::loadOneRole(CReadConfig & configbuffer,
           name = StringPrint(std::string(prefix + "%d").c_str(), i);
           configbuffer.getVariable(name, "C_INT32", &index);
 
-          metabName = (*pDataModel->pOldMetabolites)[index]->getObjectName();
-          addParameterMapping(parName, Metabolites[pModel->findMetabByName(metabName)]->getKey());
+          metabName = (*pDataModel->pOldMetabolites)[index].getObjectName();
+          addParameterMapping(parName, Metabolites[pModel->findMetabByName(metabName)].getKey());
         }
     }
   else //no vector
@@ -727,7 +727,7 @@ bool CReaction::loadOneRole(CReadConfig & configbuffer,
           name = StringPrint(std::string(prefix + "%d").c_str(), i);
           configbuffer.getVariable(name, "C_INT32", &index);
 
-          metabName = (*pDataModel->pOldMetabolites)[index]->getObjectName();
+          metabName = (*pDataModel->pOldMetabolites)[index].getObjectName();
 
           pParameter = mMap.getFunctionParameters().getParameterByUsage(role, pos);
 
@@ -744,12 +744,12 @@ bool CReaction::loadOneRole(CReadConfig & configbuffer,
             }
 
           parName = pParameter->getObjectName();
-          setParameterMapping(parName, Metabolites[pModel->findMetabByName(metabName)]->getKey());
+          setParameterMapping(parName, Metabolites[pModel->findMetabByName(metabName)].getKey());
 
           // in the old files the chemical equation does not contain
           // information about modifiers. This has to be extracted from here.
           if (role == CFunctionParameter::MODIFIER)
-            mChemEq.addMetabolite(Metabolites[pModel->findMetabByName(metabName)]->getKey(),
+            mChemEq.addMetabolite(Metabolites[pModel->findMetabByName(metabName)].getKey(),
                                   1, CChemEq::MODIFIER);
         }
 
@@ -886,9 +886,9 @@ void CReaction::setScalingFactor()
       const CMetab *pMetab = NULL;
 
       if (mChemEq.getSubstrates().size())
-        pMetab = mChemEq.getSubstrates()[0]->getMetabolite();
+        pMetab = mChemEq.getSubstrates()[0].getMetabolite();
       else if (mChemEq.getProducts().size())
-        pMetab = mChemEq.getProducts()[0]->getMetabolite();
+        pMetab = mChemEq.getProducts()[0].getMetabolite();
 
       if (pMetab != NULL)
         pCompartment = pMetab->getCompartment();
@@ -1072,7 +1072,7 @@ std::ostream & operator<<(std::ostream &os, const CReaction & d)
   return os;
 }
 
-CEvaluationNodeVariable* CReaction::object2variable(const CEvaluationNodeObject* objectNode, std::map<std::string, std::pair<CCopasiObject*, CFunctionParameter*> >& replacementMap, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap)
+CEvaluationNodeVariable* CReaction::object2variable(const CEvaluationNodeObject* objectNode, std::map<std::string, std::pair<CCopasiObject*, CFunctionParameter*> >& replacementMap, std::map<const CCopasiObject*, SBase*>& copasi2sbmlmap)
 {
   CEvaluationNodeVariable* pVariableNode = NULL;
   std::string objectCN = objectNode->getData();
@@ -1089,7 +1089,7 @@ CEvaluationNodeVariable* CReaction::object2variable(const CEvaluationNodeObject*
 
           if (object)
             {
-              std::map<CCopasiObject*, SBase*>::iterator pos = copasi2sbmlmap.find(object);
+              std::map<const CCopasiObject*, SBase*>::iterator pos = copasi2sbmlmap.find(object);
 
               //assert(pos!=copasi2sbmlmap.end());
               // check if it is a CMetab, a CModelValue or a CCompartment
@@ -1126,7 +1126,7 @@ CEvaluationNodeVariable* CReaction::object2variable(const CEvaluationNodeObject*
 
                       for (i = 0; i < v->size(); ++i)
                         {
-                          if (((*v)[i]->getMetabolite()) == static_cast<CMetab *>(object))
+                          if (((*v)[i].getMetabolite()) == static_cast<CMetab *>(object))
                             {
                               found = true;
                               usage = CFunctionParameter::SUBSTRATE;
@@ -1140,7 +1140,7 @@ CEvaluationNodeVariable* CReaction::object2variable(const CEvaluationNodeObject*
 
                           for (i = 0; i < v->size(); ++i)
                             {
-                              if (((*v)[i]->getMetabolite()) == static_cast<CMetab *>(object))
+                              if (((*v)[i].getMetabolite()) == static_cast<CMetab *>(object))
                                 {
                                   found = true;
                                   usage = CFunctionParameter::PRODUCT;
@@ -1154,7 +1154,7 @@ CEvaluationNodeVariable* CReaction::object2variable(const CEvaluationNodeObject*
 
                               for (i = 0; i < v->size(); ++i)
                                 {
-                                  if (((*v)[i]->getMetabolite()) == static_cast<CMetab *>(object))
+                                  if (((*v)[i].getMetabolite()) == static_cast<CMetab *>(object))
                                     {
                                       found = true;
                                       usage = CFunctionParameter::MODIFIER;
@@ -1278,7 +1278,7 @@ CEvaluationNodeVariable* CReaction::object2variable(const CEvaluationNodeObject*
   return pVariableNode;
 }
 
-CEvaluationNode* CReaction::objects2variables(const CEvaluationNode* pNode, std::map<std::string, std::pair<CCopasiObject*, CFunctionParameter*> >& replacementMap, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap)
+CEvaluationNode* CReaction::objects2variables(const CEvaluationNode* pNode, std::map<std::string, std::pair<CCopasiObject*, CFunctionParameter*> >& replacementMap, std::map<const CCopasiObject*, SBase*>& copasi2sbmlmap)
 {
   CNodeContextIterator< const CEvaluationNode, std::vector< CEvaluationNode * > > itNode(pNode);
 
@@ -1336,7 +1336,7 @@ CEvaluationNode* CReaction::objects2variables(const CEvaluationNode* pNode, std:
   return pResult;
 }
 
-CFunction * CReaction::setFunctionFromExpressionTree(const CExpression & expression, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap, CFunctionDB* pFunctionDB)
+CFunction * CReaction::setFunctionFromExpressionTree(const CExpression & expression, std::map<const CCopasiObject*, SBase*>& copasi2sbmlmap, CFunctionDB* pFunctionDB)
 {
   // walk the tree and replace all object nodes with variable nodes.
   CFunction* pTmpFunction = NULL;
@@ -1640,7 +1640,7 @@ CEvaluationNode* CReaction::getExpressionTree()
   return this->variables2objects(const_cast<CFunction*>(this->getFunction())->getRoot());
 }
 
-void CReaction::setSBMLId(const std::string& id)
+void CReaction::setSBMLId(const std::string& id) const
 {
   this->mSBMLId = id;
 }

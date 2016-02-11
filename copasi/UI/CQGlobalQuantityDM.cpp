@@ -67,7 +67,7 @@ const std::vector< unsigned C_INT32 >& CQGlobalQuantityDM::getItemToType()
 
 int CQGlobalQuantityDM::rowCount(const QModelIndex& C_UNUSED(parent)) const
 {
-  return (int)(*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getModelValues().size() + 1;
+  return CCopasiRootContainer::getDatamodelList()->operator[](0).getModel()->getModelValues().size() + 1;
 }
 int CQGlobalQuantityDM::columnCount(const QModelIndex& C_UNUSED(parent)) const
 {
@@ -127,7 +127,7 @@ QVariant CQGlobalQuantityDM::data(const QModelIndex &index, int role) const
         }
       else
         {
-          CModelValue *pGQ = (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getModelValues()[index.row()];
+          CModelValue *pGQ = &CCopasiRootContainer::getDatamodelList()->operator[](0).getModel()->getModelValues()[index.row()];
           const CExpression * pExpression = NULL;
 
           switch (index.column())
@@ -269,7 +269,7 @@ bool CQGlobalQuantityDM::removeRows(int position, int rows)
 
   beginRemoveRows(QModelIndex(), position, position + rows - 1);
 
-  CModel * pModel = (*CCopasiRootContainer::getDatamodelList())[0]->getModel();
+  CModel * pModel = CCopasiRootContainer::getDatamodelList()->operator[](0).getModel();
 
   std::vector< std::string > DeletedKeys;
   DeletedKeys.resize(rows);
@@ -281,7 +281,7 @@ bool CQGlobalQuantityDM::removeRows(int position, int rows)
 
   for (itDeletedKey = DeletedKeys.begin(); itDeletedKey != endDeletedKey; ++itDeletedKey, ++itRow)
     {
-      *itDeletedKey = (*itRow)->getKey();
+      *itDeletedKey = itRow->getKey();
     }
 
   for (itDeletedKey = DeletedKeys.begin(); itDeletedKey != endDeletedKey; ++itDeletedKey)
@@ -329,7 +329,7 @@ bool CQGlobalQuantityDM::globalQuantityDataChange(const QModelIndex &index, cons
 
   switchToWidget(CCopasiUndoCommand::GLOBALQUANTITYIES);
 
-  CModelValue *pGQ = pModel->getModelValues()[index.row()];
+  CModelValue *pGQ = &pModel->getModelValues()[index.row()];
 
   if (index.column() == COL_NAME_GQ)
     pGQ->setObjectName(TO_UTF8(value.toString()));
@@ -421,8 +421,8 @@ bool CQGlobalQuantityDM::removeGlobalQuantityRows(QModelIndexList rows, const QM
 
   for (i = rows.begin(); i != rows.end(); ++i)
     {
-      if (!isDefaultRow(*i) && pModel->getModelValues()[(*i).row()])
-        pGlobalQuantities.append(pModel->getModelValues()[(*i).row()]);
+      if (!isDefaultRow(*i) && &pModel->getModelValues()[i->row()])
+        pGlobalQuantities.append(&pModel->getModelValues()[i->row()]);
     }
 
   QList <CModelValue *>::const_iterator j;

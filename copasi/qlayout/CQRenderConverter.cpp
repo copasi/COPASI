@@ -1,4 +1,4 @@
-// Copyright (C) 2013 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2013 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -940,7 +940,7 @@ void fillItemFromImage(QGraphicsItemGroup *item, const CLBoundingBox *pBB, const
   if (!fileName->exists())
     {
       delete fileName;
-      std::string file = ((*CCopasiRootContainer::getDatamodelList())[0])->getReferenceDirectory() + "/" + pImage->getImageReference();
+      std::string file = CCopasiRootContainer::getDatamodelList()->operator[](0).getReferenceDirectory() + "/" + pImage->getImageReference();
       fileName = new QFile(file.c_str());
     }
 

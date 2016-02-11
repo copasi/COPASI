@@ -65,7 +65,7 @@ const std::vector< unsigned C_INT32 >& CQCompartmentDM::getItemToType()
 
 int CQCompartmentDM::rowCount(const QModelIndex&) const
 {
-  return (int)(*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getCompartments().size() + 1;
+  return CCopasiRootContainer::getDatamodelList()->operator[](0).getModel()->getCompartments().size() + 1;
 }
 int CQCompartmentDM::columnCount(const QModelIndex&) const
 {
@@ -125,7 +125,7 @@ QVariant CQCompartmentDM::data(const QModelIndex &index, int role) const
         }
       else
         {
-          CCompartment *pComp = (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getCompartments()[index.row()];
+          CCompartment *pComp = &CCopasiRootContainer::getDatamodelList()->operator[](0).getModel()->getCompartments()[index.row()];
           const CExpression * pExpression = NULL;
 
           switch (index.column())
@@ -188,7 +188,7 @@ QVariant CQCompartmentDM::headerData(int section, Qt::Orientation orientation,
     {
       QString ValueUnits, RateUnits, ExpressionUnits;
       assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-      const CModel * pModel = (*CCopasiRootContainer::getDatamodelList())[0]->getModel();
+      const CModel * pModel = CCopasiRootContainer::getDatamodelList()->operator[](0).getModel();
 
       if (pModel)
         {
@@ -288,7 +288,7 @@ bool CQCompartmentDM::removeRows(int position, int rows)
 
   beginRemoveRows(QModelIndex(), position, position + rows - 1);
 
-  CModel * pModel = (*CCopasiRootContainer::getDatamodelList())[0]->getModel();
+  CModel * pModel = CCopasiRootContainer::getDatamodelList()->operator[](0).getModel();
 
   std::vector< std::string > DeletedKeys;
   DeletedKeys.resize(rows);
@@ -300,12 +300,12 @@ bool CQCompartmentDM::removeRows(int position, int rows)
 
   for (itDeletedKey = DeletedKeys.begin(); itDeletedKey != endDeletedKey; ++itDeletedKey, ++itRow)
     {
-      *itDeletedKey = (*itRow)->getKey();
+      *itDeletedKey = itRow->getKey();
     }
 
   for (itDeletedKey = DeletedKeys.begin(); itDeletedKey != endDeletedKey; ++itDeletedKey)
     {
-      (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->removeCompartment(*itDeletedKey);
+      CCopasiRootContainer::getDatamodelList()->operator[](0).getModel()->removeCompartment(*itDeletedKey);
       emit notifyGUI(ListViews::COMPARTMENT, ListViews::DELETE, *itDeletedKey);
       emit notifyGUI(ListViews::COMPARTMENT, ListViews::DELETE, "");
       emit notifyGUI(ListViews::METABOLITE, ListViews::DELETE, ""); //Refresh all as there may be dependencies.
@@ -327,7 +327,7 @@ bool CQCompartmentDM::compartmentDataChange(const QModelIndex& index, const QVar
 {
   GET_MODEL_OR(pModel, return false);
 
-  CCompartment *pComp = pModel->getCompartments()[index.row()];
+  CCompartment *pComp = &pModel->getCompartments()[index.row()];
 
   if (pComp == NULL)
     return false;
@@ -434,8 +434,8 @@ bool CQCompartmentDM::removeCompartmentRows(QModelIndexList& rows, const QModelI
 
   for (i = rows.begin(); i != rows.end(); ++i)
     {
-      if (!isDefaultRow(*i) && pModel->getCompartments()[(*i).row()])
-        pCompartments.append(pModel->getCompartments()[(*i).row()]);
+      if (!isDefaultRow(*i) && &pModel->getCompartments()[i->row()])
+        pCompartments.append(&pModel->getCompartments()[i->row()]);
     }
 
   switchToWidget(CCopasiUndoCommand::COMPARTMENTS);
@@ -507,7 +507,7 @@ void CQCompartmentDM::deleteCompartmentRows(QList <UndoCompartmentData *>& pData
       if (index == C_INVALID_INDEX)
         continue;
 
-      CCompartment* pCompartment = pModel->getCompartments()[index];
+      CCompartment* pCompartment = &pModel->getCompartments()[index];
 
       QMessageBox::StandardButton choice =
         CQMessageBox::confirmDelete(NULL, "compartment",

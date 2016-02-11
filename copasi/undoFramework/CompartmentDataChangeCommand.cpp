@@ -1,4 +1,4 @@
-// Copyright (C) 2014 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2014 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -40,7 +40,7 @@ CompartmentDataChangeCommand::CompartmentDataChangeCommand(
       return;
     }
 
-  CCompartment *pCompartment = pModel->getCompartments()[index.row()];
+  CCompartment *pCompartment = &pModel->getCompartments()[index.row()];
   setKey(pCompartment->getKey());
   setName(pCompartment->getObjectName());
   setOldValue(TO_UTF8(mOld.toString()));

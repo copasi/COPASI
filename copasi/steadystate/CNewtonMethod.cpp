@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -725,7 +725,7 @@ bool CNewtonMethod::initialize(const CSteadyStateProblem * pProblem)
       CCopasiDataModel* pDataModel = getObjectDataModel();
       assert(pDataModel != NULL);
       CTrajectoryTask * pSrc =
-        dynamic_cast< CTrajectoryTask * >((*pDataModel->getTaskList())["Time-Course"]);
+        dynamic_cast< CTrajectoryTask * >(&pDataModel->getTaskList()->operator[]("Time-Course"));
 
       if (pSrc)
         mpTrajectory = new CTrajectoryTask(*pSrc, this);

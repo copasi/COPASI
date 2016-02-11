@@ -208,7 +208,7 @@ bool CCopasiRootContainer::removeDatamodel(const CCopasiDataModel * pDatamodel)
 // static
 bool CCopasiRootContainer::removeDatamodel(const unsigned C_INT32 index)
 {
-  const CCopasiDataModel* pDatamodel = (*CCopasiRootContainer::getDatamodelList())[index];
+  const CCopasiDataModel* pDatamodel = &CCopasiRootContainer::getDatamodelList()->operator[](index);
   return CCopasiRootContainer::removeDatamodel(pDatamodel);
 }
 

@@ -1,4 +1,4 @@
-// Copyright (C) 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2015 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -37,12 +37,11 @@ RemoveSpecieRowsCommand::RemoveSpecieRowsCommand(
 
   for (i = rows.begin(); i != rows.end(); ++i)
     {
-      if (pSpecieDM->isDefaultRow(*i) || pModel->getMetabolites()[(*i).row()] == NULL)
+      if (pSpecieDM->isDefaultRow(*i) || &pModel->getMetabolites()[i->row()] == NULL)
         continue;
 
-      UndoSpeciesData *data = new UndoSpeciesData(pModel->getMetabolites()[(*i).row()]);
+      UndoSpeciesData *data = new UndoSpeciesData(&pModel->getMetabolites()[i->row()]);
       mpSpeciesData.append(data);
-
     }
 
   setText(QObject::tr(": Removed Species"));

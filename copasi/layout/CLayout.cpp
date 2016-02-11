@@ -72,37 +72,37 @@ CLayout::CLayout(const CLayout & src,
 
   for (; compIt != src.mvCompartments.end(); ++compIt)
     {
-      CLCompartmentGlyph *comp = new CLCompartmentGlyph(*(*compIt));
+      CLCompartmentGlyph *comp = new CLCompartmentGlyph(*compIt);
       mvCompartments.add(comp, true);
-      forward[(*compIt)->getKey()] = comp->getKey();
-      reverse[comp->getKey()] = (*compIt)->getKey();
+      forward[compIt->getKey()] = comp->getKey();
+      reverse[comp->getKey()] = compIt->getKey();
     }
 
   CCopasiVector<CLMetabGlyph>::const_iterator metabIt = src.mvMetabs.begin();
 
   for (; metabIt != src.mvMetabs.end(); ++metabIt)
     {
-      CLMetabGlyph *metab = new CLMetabGlyph(*(*metabIt));
+      CLMetabGlyph *metab = new CLMetabGlyph(*metabIt);
       mvMetabs.add(metab, true);
-      forward[(*metabIt)->getKey()] = metab->getKey();
-      reverse[metab->getKey()] = (*metabIt)->getKey();
+      forward[metabIt->getKey()] = metab->getKey();
+      reverse[metab->getKey()] = metabIt->getKey();
     }
 
   CCopasiVector<CLReactionGlyph>::const_iterator reactIt = src.mvReactions.begin();
 
   for (; reactIt != src.mvReactions.end(); ++reactIt)
     {
-      CLReactionGlyph *r = new CLReactionGlyph(*(*reactIt));
+      CLReactionGlyph *r = new CLReactionGlyph(*reactIt);
       mvReactions.add(r, true);
-      forward[(*reactIt)->getKey()] = r->getKey();
-      reverse[r->getKey()] = (*reactIt)->getKey();
+      forward[reactIt->getKey()] = r->getKey();
+      reverse[r->getKey()] = reactIt->getKey();
 
       for (size_t i = 0; i < r->getListOfMetabReferenceGlyphs().size(); ++i)
         {
-          forward[(*reactIt)->getListOfMetabReferenceGlyphs()[i]->getKey()]
-            = r->getListOfMetabReferenceGlyphs()[i]->getKey();
-          reverse[r->getListOfMetabReferenceGlyphs()[i]->getKey()]
-            = (*reactIt)->getListOfMetabReferenceGlyphs()[i]->getKey();
+          forward[reactIt->getListOfMetabReferenceGlyphs()[i].getKey()]
+            = r->getListOfMetabReferenceGlyphs()[i].getKey();
+          reverse[r->getListOfMetabReferenceGlyphs()[i].getKey()]
+            = reactIt->getListOfMetabReferenceGlyphs()[i].getKey();
         }
     }
 
@@ -110,35 +110,35 @@ CLayout::CLayout(const CLayout & src,
 
   for (; textIt != src.mvLabels.end(); ++textIt)
     {
-      CLTextGlyph *text = new CLTextGlyph(*(*textIt));
+      CLTextGlyph *text = new CLTextGlyph(*textIt);
       mvLabels.add(text, true);
-      forward[(*textIt)->getKey()] = text->getKey();
-      reverse[text->getKey()] = (*textIt)->getKey();
+      forward[textIt->getKey()] = text->getKey();
+      reverse[text->getKey()] = textIt->getKey();
     }
 
   CCopasiVector<CLGeneralGlyph>::const_iterator generalIt = src.mvGraphicalObjects.begin();
 
   for (; generalIt != src.mvGraphicalObjects.end(); ++generalIt)
     {
-      CLGeneralGlyph *general = new CLGeneralGlyph(*(*generalIt));
+      CLGeneralGlyph *general = new CLGeneralGlyph(*generalIt);
       mvGraphicalObjects.add(general, true);
-      forward[(*generalIt)->getKey()] = general->getKey();
-      reverse[general->getKey()] = (*generalIt)->getKey();
+      forward[generalIt->getKey()] = general->getKey();
+      reverse[general->getKey()] = generalIt->getKey();
 
       for (size_t i = 0; i < general->getListOfReferenceGlyphs().size(); ++i)
         {
-          forward[(*generalIt)->getListOfReferenceGlyphs()[i]->getKey()]
-            = general->getListOfReferenceGlyphs()[i]->getKey();
-          reverse[general->getListOfReferenceGlyphs()[i]->getKey()]
-            = (*generalIt)->getListOfReferenceGlyphs()[i]->getKey();
+          forward[generalIt->getListOfReferenceGlyphs()[i].getKey()]
+            = general->getListOfReferenceGlyphs()[i].getKey();
+          reverse[general->getListOfReferenceGlyphs()[i].getKey()]
+            = generalIt->getListOfReferenceGlyphs()[i].getKey();
         }
 
       for (size_t i = 0; i < general->getListOfSubglyphs().size(); ++i)
         {
-          forward[(*generalIt)->getListOfSubglyphs()[i]->getKey()]
-            = general->getListOfSubglyphs()[i]->getKey();
-          reverse[general->getListOfSubglyphs()[i]->getKey()]
-            = (*generalIt)->getListOfSubglyphs()[i]->getKey();
+          forward[generalIt->getListOfSubglyphs()[i].getKey()]
+            = general->getListOfSubglyphs()[i].getKey();
+          reverse[general->getListOfSubglyphs()[i].getKey()]
+            = generalIt->getListOfSubglyphs()[i].getKey();
         }
     }
 
@@ -150,7 +150,7 @@ CLayout::CLayout(const CLayout & src,
 
     for (; textIt != mvLabels.end(); ++textIt)
       {
-        CLTextGlyph *text = *textIt;
+        CLTextGlyph *text = textIt;
         const std::string& key = text->getGraphicalObjectKey();
         constIt = forward.find(key);
 
@@ -164,12 +164,12 @@ CLayout::CLayout(const CLayout & src,
 
     for (; reactIt != mvReactions.end(); ++reactIt)
       {
-        CLReactionGlyph *r = *reactIt;
+        CLReactionGlyph *r = reactIt;
         CCopasiVector<CLMetabReferenceGlyph>::iterator refIt = r->getListOfMetabReferenceGlyphs().begin();
 
         for (; refIt != r->getListOfMetabReferenceGlyphs().end(); ++refIt)
           {
-            CLMetabReferenceGlyph* current = *refIt;
+            CLMetabReferenceGlyph* current = refIt;
             const std::string& key = current->getMetabGlyphKey();
             constIt = forward.find(key);
 
@@ -184,12 +184,12 @@ CLayout::CLayout(const CLayout & src,
 
     for (; generalIt != mvGraphicalObjects.end(); ++generalIt)
       {
-        CLGeneralGlyph *g = *generalIt;
+        CLGeneralGlyph *g = generalIt;
         CCopasiVector<CLReferenceGlyph>::iterator refIt = g->getListOfReferenceGlyphs().begin();
 
         for (; refIt != g->getListOfReferenceGlyphs().end(); ++refIt)
           {
-            CLReferenceGlyph* current = *refIt;
+            CLReferenceGlyph* current = refIt;
             const std::string& key = current->getTargetGlyphKey();
             constIt = forward.find(key);
 
@@ -279,7 +279,7 @@ std::ostream & operator<<(std::ostream &os, const CLayout & l)
       os << "List of compartment glyphs: \n\n";
 
       for (i = 0; i < imax; ++i)
-        os << *l.mvCompartments[i];
+        os << l.mvCompartments[i];
     }
 
   imax = l.mvMetabs.size();
@@ -289,7 +289,7 @@ std::ostream & operator<<(std::ostream &os, const CLayout & l)
       os << "\nList of species glyphs: \n\n";
 
       for (i = 0; i < imax; ++i)
-        os << *l.mvMetabs[i];
+        os << l.mvMetabs[i];
     }
 
   imax = l.mvReactions.size();
@@ -299,7 +299,7 @@ std::ostream & operator<<(std::ostream &os, const CLayout & l)
       os << "\nList of reaction glyphs: \n\n";
 
       for (i = 0; i < imax; ++i)
-        os << *l.mvReactions[i];
+        os << l.mvReactions[i];
     }
 
   imax = l.mvLabels.size();
@@ -309,7 +309,7 @@ std::ostream & operator<<(std::ostream &os, const CLayout & l)
       os << "\nList of labels: \n\n";
 
       for (i = 0; i < imax; ++i)
-        os << *l.mvLabels[i];
+        os << l.mvLabels[i];
     }
 
   imax = l.mvGraphicalObjects.size();
@@ -319,7 +319,7 @@ std::ostream & operator<<(std::ostream &os, const CLayout & l)
       os << "\nList of graphical objects: \n\n";
 
       for (i = 0; i < imax; ++i)
-        os << *l.mvGraphicalObjects[i];
+        os << l.mvGraphicalObjects[i];
     }
 
   return os;
@@ -337,7 +337,7 @@ void CLayout::exportToDotFile(std::ostream & os) const
 
   for (i = 0; i < imax; ++i)
     {
-      writeDotNode(os, mvMetabs[i]->getKey(), mvMetabs[i]->getModelObjectDisplayName());
+      writeDotNode(os, mvMetabs[i].getKey(), mvMetabs[i].getModelObjectDisplayName());
     }
 
   //reaction glyphs
@@ -345,20 +345,20 @@ void CLayout::exportToDotFile(std::ostream & os) const
 
   for (i = 0; i < imax; ++i)
     {
-      writeDotNode(os, mvReactions[i]->getKey() + "_S", "", 1);
-      writeDotNode(os, mvReactions[i]->getKey() + "_P", "", 1);
-      writeDotEdge(os, mvReactions[i]->getKey() + "_S", mvReactions[i]->getKey() + "_P", 1);
+      writeDotNode(os, mvReactions[i].getKey() + "_S", "", 1);
+      writeDotNode(os, mvReactions[i].getKey() + "_P", "", 1);
+      writeDotEdge(os, mvReactions[i].getKey() + "_S", mvReactions[i].getKey() + "_P", 1);
 
-      size_t j, jmax = mvReactions[i]->getListOfMetabReferenceGlyphs().size();
+      size_t j, jmax = mvReactions[i].getListOfMetabReferenceGlyphs().size();
 
       for (j = 0; j < jmax; ++j)
         {
-          CLMetabReferenceGlyph* mrg = mvReactions[i]->getListOfMetabReferenceGlyphs()[j];
+          const CLMetabReferenceGlyph* mrg = &mvReactions[i].getListOfMetabReferenceGlyphs()[j];
 
           if (mrg->getRole() == CLMetabReferenceGlyph::SUBSTRATE)
-            writeDotEdge(os, mrg->getMetabGlyphKey(), mvReactions[i]->getKey() + "_S");
+            writeDotEdge(os, mrg->getMetabGlyphKey(), mvReactions[i].getKey() + "_S");
           else if (mrg->getRole() == CLMetabReferenceGlyph::PRODUCT)
-            writeDotEdge(os, mvReactions[i]->getKey() + "_P", mrg->getMetabGlyphKey());
+            writeDotEdge(os, mvReactions[i].getKey() + "_P", mrg->getMetabGlyphKey());
         }
     }
 
@@ -427,7 +427,7 @@ void CLayout::exportToSBML(Layout * layout, const std::map<const CCopasiObject*,
 
   for (i = 0; i < imax; ++i)
     {
-      CLCompartmentGlyph * tmp = mvCompartments[i];
+      const CLCompartmentGlyph * tmp = &mvCompartments[i];
 
       //check if the compartment glyph exists in the libsbml data
       std::map<const CCopasiObject*, SBase*>::const_iterator it;
@@ -453,7 +453,7 @@ void CLayout::exportToSBML(Layout * layout, const std::map<const CCopasiObject*,
 
   for (i = 0; i < imax; ++i)
     {
-      CLMetabGlyph * tmp = mvMetabs[i];
+      const CLMetabGlyph * tmp = &mvMetabs[i];
 
       //check if the glyph exists in the libsbml data
       std::map<const CCopasiObject*, SBase*>::const_iterator it;
@@ -479,7 +479,7 @@ void CLayout::exportToSBML(Layout * layout, const std::map<const CCopasiObject*,
 
   for (i = 0; i < imax; ++i)
     {
-      CLReactionGlyph * tmp = mvReactions[i];
+      const CLReactionGlyph * tmp = &mvReactions[i];
 
       //check if the glyph exists in the libsbml data
       std::map<const CCopasiObject*, SBase*>::const_iterator it;
@@ -508,7 +508,7 @@ void CLayout::exportToSBML(Layout * layout, const std::map<const CCopasiObject*,
 
   for (i = 0; i < imax; ++i)
     {
-      CLTextGlyph * tmp = mvLabels[i];
+      const CLTextGlyph * tmp = &mvLabels[i];
 
       //check if the glyph exists in the libsbml data
       std::map<const CCopasiObject*, SBase*>::const_iterator it;
@@ -534,7 +534,7 @@ void CLayout::exportToSBML(Layout * layout, const std::map<const CCopasiObject*,
 
   for (i = 0; i < imax; ++i)
     {
-      CLGeneralGlyph * tmp = mvGraphicalObjects[i];
+      const CLGeneralGlyph * tmp = &mvGraphicalObjects[i];
 
       //check if the glyph exists in the libsbml data
       std::map<const CCopasiObject*, SBase*>::const_iterator it;
@@ -567,7 +567,7 @@ void CLayout::exportToSBML(Layout * layout, const std::map<const CCopasiObject*,
 
   for (i = 0; i < imax; ++i)
     {
-      const CLTextGlyph * tmp = mvLabels[i];
+      const CLTextGlyph * tmp = &mvLabels[i];
 
       //find the corresponding SBML object
       std::map<const CLBase*, const SBase*>::const_iterator it = layoutmap.find(tmp);
@@ -596,9 +596,9 @@ void CLayout::exportToSBML(Layout * layout, const std::map<const CCopasiObject*,
       //colorKeyToIdMap.clear();
       //gradientKeyToIdMap.clear();
       //lineEndingKeyToIdMap.clear();
-      //pLRI=this->mvLocalRenderInformationObjects[i]->toSBML(colorKeyToIdMap,gradientKeyToIdMap,lineEndingKeyToIdMap);
-      pLRI = this->mvLocalRenderInformationObjects[i]->toSBML(layout->getLevel(), layout->getVersion());
-      keyToIdMap.insert(std::pair<std::string, std::string>(this->mvLocalRenderInformationObjects[i]->getKey(), pLRI->getId()));
+      //pLRI=this->mvLocalRenderInformationObjects[i].toSBML(colorKeyToIdMap,gradientKeyToIdMap,lineEndingKeyToIdMap);
+      pLRI = this->mvLocalRenderInformationObjects[i].toSBML(layout->getLevel(), layout->getVersion());
+      keyToIdMap.insert(std::pair<std::string, std::string>(this->mvLocalRenderInformationObjects[i].getKey(), pLRI->getId()));
       //colorKeyToIdMapMap.insert(std::pair<std::string,std::map<std::string,std::string> >(pLRI->getId(),colorKeyToIdMap));
       //gradientKeyToIdMapMap.insert(std::pair<std::string,std::map<std::string,std::string> >(pLRI->getId(),gradientKeyToIdMap));
       //lineEndingKeyToIdMapMap.insert(std::pair<std::string,std::map<std::string,std::string> >(pLRI->getId(),lineEndingKeyToIdMap));
@@ -660,7 +660,7 @@ const CLLocalRenderInformation* CLayout::getRenderInformation(size_t index) cons
 {
   if (index >= this->mvLocalRenderInformationObjects.size()) return NULL;
 
-  return this->mvLocalRenderInformationObjects[index];
+  return &this->mvLocalRenderInformationObjects[index];
 }
 
 /**
@@ -671,7 +671,7 @@ CLLocalRenderInformation* CLayout::getRenderInformation(size_t index)
 {
   if (index >= this->mvLocalRenderInformationObjects.size()) return NULL;
 
-  return this->mvLocalRenderInformationObjects[index];
+  return &this->mvLocalRenderInformationObjects[index];
 }
 
 /**
@@ -699,7 +699,7 @@ CLBoundingBox CLayout::calculateBoundingBox() const
 
   for (i = 0; i < iMax; ++i)
     {
-      pObject = this->getListOfCompartmentGlyphs()[i];
+      pObject = &this->getListOfCompartmentGlyphs()[i];
       pBB = &pObject->getBoundingBox();
       pP = &pBB->getPosition();
       x = pP->getX();
@@ -717,7 +717,7 @@ CLBoundingBox CLayout::calculateBoundingBox() const
 
   for (i = 0; i < iMax; ++i)
     {
-      pObject = this->getListOfMetaboliteGlyphs()[i];
+      pObject = &this->getListOfMetaboliteGlyphs()[i];
       pBB = &pObject->getBoundingBox();
       pP = &pBB->getPosition();
       x = pP->getX();
@@ -735,7 +735,7 @@ CLBoundingBox CLayout::calculateBoundingBox() const
 
   for (i = 0; i < iMax; ++i)
     {
-      pObject = this->getListOfTextGlyphs()[i];
+      pObject = &this->getListOfTextGlyphs()[i];
       pBB = &pObject->getBoundingBox();
       pP = &pBB->getPosition();
       x = pP->getX();
@@ -756,7 +756,7 @@ CLBoundingBox CLayout::calculateBoundingBox() const
 
   for (i = 0; i < iMax; ++i)
     {
-      pGG = this->getListOfGeneralGlyphs()[i];
+      pGG = &this->getListOfGeneralGlyphs()[i];
 
       if (pGG->getCurve().getNumCurveSegments() > 0)
         {
@@ -792,7 +792,7 @@ CLBoundingBox CLayout::calculateBoundingBox() const
 
       for (j = 0; j < jMax; ++j)
         {
-          pRefG = pGG->getListOfReferenceGlyphs()[j];
+          pRefG = &pGG->getListOfReferenceGlyphs()[j];
 
           if (pRefG->getCurve().getNumCurveSegments() > 0)
             {
@@ -834,7 +834,7 @@ CLBoundingBox CLayout::calculateBoundingBox() const
 
   for (i = 0; i < iMax; ++i)
     {
-      pRG = this->getListOfReactionGlyphs()[i];
+      pRG = &this->getListOfReactionGlyphs()[i];
 
       if (pRG->getCurve().getNumCurveSegments() > 0)
         {
@@ -870,7 +870,7 @@ CLBoundingBox CLayout::calculateBoundingBox() const
 
       for (j = 0; j < jMax; ++j)
         {
-          pSRG = pRG->getListOfMetabReferenceGlyphs()[j];
+          pSRG = &pRG->getListOfMetabReferenceGlyphs()[j];
 
           if (pSRG->getCurve().getNumCurveSegments() > 0)
             {
@@ -916,7 +916,7 @@ void CLayout::moveBy(const CLPoint &p)
 
   for (i = 0; i < iMax; ++i)
     {
-      pObject = this->getListOfCompartmentGlyphs()[i];
+      pObject = &this->getListOfCompartmentGlyphs()[i];
       pObject->moveBy(p);
     }
 
@@ -924,7 +924,7 @@ void CLayout::moveBy(const CLPoint &p)
 
   for (i = 0; i < iMax; ++i)
     {
-      pObject = this->getListOfMetaboliteGlyphs()[i];
+      pObject = &this->getListOfMetaboliteGlyphs()[i];
       pObject->moveBy(p);
     }
 
@@ -932,7 +932,7 @@ void CLayout::moveBy(const CLPoint &p)
 
   for (i = 0; i < iMax; ++i)
     {
-      pObject = this->getListOfReactionGlyphs()[i];
+      pObject = &this->getListOfReactionGlyphs()[i];
       pObject->moveBy(p);
     }
 
@@ -940,7 +940,7 @@ void CLayout::moveBy(const CLPoint &p)
 
   for (i = 0; i < iMax; ++i)
     {
-      pObject = this->getListOfTextGlyphs()[i];
+      pObject = &this->getListOfTextGlyphs()[i];
       pObject->moveBy(p);
     }
 
@@ -948,7 +948,7 @@ void CLayout::moveBy(const CLPoint &p)
 
   for (i = 0; i < iMax; ++i)
     {
-      pObject = this->getListOfGeneralGlyphs()[i];
+      pObject = &this->getListOfGeneralGlyphs()[i];
       pObject->moveBy(p);
     }
 }

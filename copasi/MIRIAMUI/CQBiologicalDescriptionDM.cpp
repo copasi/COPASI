@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -58,13 +58,13 @@ QVariant CQBiologicalDescriptionDM::data(const QModelIndex &index, int role) con
                 return QVariant(index.row() + 1);
 
               case COL_RELATIONSHIP:
-                return QVariant(QString(FROM_UTF8(mpMIRIAMInfo->getBiologicalDescriptions()[index.row()]->getPredicate())));
+                return QVariant(QString(FROM_UTF8(mpMIRIAMInfo->getBiologicalDescriptions()[index.row()].getPredicate())));
 
               case COL_RESOURCE_BD:
-                return QVariant(QString(FROM_UTF8(mpMIRIAMInfo->getBiologicalDescriptions()[index.row()]->getResource())));
+                return QVariant(QString(FROM_UTF8(mpMIRIAMInfo->getBiologicalDescriptions()[index.row()].getResource())));
 
               case COL_ID_BD:
-                return QVariant(QString(FROM_UTF8(mpMIRIAMInfo->getBiologicalDescriptions()[index.row()]->getId())));
+                return QVariant(QString(FROM_UTF8(mpMIRIAMInfo->getBiologicalDescriptions()[index.row()].getId())));
             }
         }
     }
@@ -118,15 +118,15 @@ bool CQBiologicalDescriptionDM::setData(const QModelIndex &index, const QVariant
       switch (index.column())
         {
           case COL_RELATIONSHIP:
-            mpMIRIAMInfo->getBiologicalDescriptions()[index.row()]->setPredicate(TO_UTF8(value.toString()));
+            mpMIRIAMInfo->getBiologicalDescriptions()[index.row()].setPredicate(TO_UTF8(value.toString()));
             break;
 
           case COL_RESOURCE_BD:
-            mpMIRIAMInfo->getBiologicalDescriptions()[index.row()]->setResource(TO_UTF8(value.toString()));
+            mpMIRIAMInfo->getBiologicalDescriptions()[index.row()].setResource(TO_UTF8(value.toString()));
             break;
 
           case COL_ID_BD:
-            mpMIRIAMInfo->getBiologicalDescriptions()[index.row()]->setId(TO_UTF8(value.toString()));
+            mpMIRIAMInfo->getBiologicalDescriptions()[index.row()].setId(TO_UTF8(value.toString()));
             break;
         }
 
@@ -182,8 +182,8 @@ bool CQBiologicalDescriptionDM::removeRows(QModelIndexList rows, const QModelInd
 
   for (i = rows.begin(); i != rows.end(); ++i)
     {
-      if (!isDefaultRow(*i) && mpMIRIAMInfo->getBiologicalDescriptions()[(*i).row()])
-        pBiologicalDescriptions.append(mpMIRIAMInfo->getBiologicalDescriptions()[(*i).row()]);
+      if (!isDefaultRow(*i) && &mpMIRIAMInfo->getBiologicalDescriptions()[i->row()])
+        pBiologicalDescriptions.append(&mpMIRIAMInfo->getBiologicalDescriptions()[i->row()]);
     }
 
   bool retVal = false, askEveryItem = true;

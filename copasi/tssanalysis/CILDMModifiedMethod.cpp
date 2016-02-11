@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -1135,7 +1135,7 @@ void CILDMModifiedMethod::printResult(std::ostream * ostream) const
 
       for (j = 0; j < mDim; j++)
         {
-          os << Model.getMetabolitesX()[j]->getObjectName() << "   ";
+          os << Model.getMetabolitesX()[j].getObjectName() << "   ";
         }
 
       os << std::endl;
@@ -1181,7 +1181,7 @@ void CILDMModifiedMethod::printResult(std::ostream * ostream) const
 
       for (j = 0; j < mDim; j++)
         {
-          os << Model.getMetabolitesX()[j]->getObjectName() << "  ";
+          os << Model.getMetabolitesX()[j].getObjectName() << "  ";
 
           for (i = 0; i < mDim; i++)
             os << mVec_mVslowMetab[istep][j][i] << "  ";
@@ -1206,7 +1206,7 @@ void CILDMModifiedMethod::printResult(std::ostream * ostream) const
 
       for (j = 0; j < mDim; j++)
         {
-          os << Model.getMetabolitesX()[j]->getObjectName() << "  ";
+          os << Model.getMetabolitesX()[j].getObjectName() << "  ";
           os << mVec_mVslowSpace[istep][j] << "  ";
 
           os << std::endl;
@@ -1228,7 +1228,7 @@ void CILDMModifiedMethod::printResult(std::ostream * ostream) const
 
       for (j = 0; j < mDim; j++)
         {
-          os << Model.getMetabolitesX()[j]->getObjectName() << "  ";
+          os << Model.getMetabolitesX()[j].getObjectName() << "  ";
           os << mVec_mVfastSpace[istep][j] << "  ";
 
           os << std::endl;

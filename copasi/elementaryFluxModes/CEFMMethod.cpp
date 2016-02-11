@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -116,9 +116,9 @@ bool CEFMMethod::isValidProblem(const CCopasiProblem * pProblem)
 
   if (pValue != pValueEnd)
     {
-      const CReaction * pReaction = Model.getReactions()[(pValue - RedStoi.array()) % RedStoi.numCols()];
+      const CReaction & Reaction = Model.getReactions()[(pValue - RedStoi.array()) % RedStoi.numCols()];
 
-      CCopasiMessage(CCopasiMessage::ERROR, MCEFMAnalysis + 3, pReaction->getObjectName().c_str());
+      CCopasiMessage(CCopasiMessage::ERROR, MCEFMAnalysis + 3, Reaction.getObjectName().c_str());
 
       return false;
     }

@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -229,7 +229,7 @@ public:
    * Sets the SBMLId.
    * @param const std::string & id
    */
-  void setSBMLId(const std::string & id);
+  void setSBMLId(const std::string & id) const;
 
   /**
    * Returns a reference to the SBML Id.
@@ -467,7 +467,7 @@ private:
    * This value is either set upon importing an SBML file,
    * or when the object is first exported to an SBML file.
    */
-  std::string mSBMLId;
+  mutable std::string mSBMLId;
 
 private:
 

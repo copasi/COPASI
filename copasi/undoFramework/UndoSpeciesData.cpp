@@ -1,4 +1,4 @@
-// Copyright (C) 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2015 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -67,13 +67,12 @@ UndoSpeciesData::createObjectIn(CModel *pModel)
   if (pModel == NULL)
     return NULL;
 
-
   createDependentObjects(pModel);
 
   if (pModel->getCompartments().getIndex(mCompartment) == C_INVALID_INDEX)
     return NULL;
 
-  CCompartment * pCompartment = pModel->getCompartments()[getCompartment()];
+  CCompartment * pCompartment = &pModel->getCompartments()[getCompartment()];
 
   if (pCompartment == NULL)
     return NULL;
@@ -130,9 +129,7 @@ UndoSpeciesData::fillObject(CModel *)
       pSpecies->setInitialExpression(getInitialExpression());
       pSpecies->getInitialExpressionPtr()->compile();
     }
-
 }
-
 
 const std::string&
 UndoSpeciesData::getCompartment() const
@@ -216,4 +213,3 @@ void UndoSpeciesData::setCreatedCompartment(bool createdCompartment)
 {
   mCreatedCompartment = createdCompartment;
 }
-

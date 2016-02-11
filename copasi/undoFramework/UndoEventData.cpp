@@ -1,4 +1,4 @@
-// Copyright (C) 2014 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2014 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -51,9 +51,9 @@ UndoEventData::UndoEventData(const CEvent *pEvent)
 
   for (; it != end; ++it)
     {
-      const CModelEntity * pEntity = dynamic_cast< CModelEntity * >(CCopasiRootContainer::getKeyFactory()->get((*it)->getTargetKey()));
+      const CModelEntity * pEntity = dynamic_cast< CModelEntity * >(CCopasiRootContainer::getKeyFactory()->get(it->getTargetKey()));
       mEventAssignmentData->append(
-        new UndoEventAssignmentData(pEntity, (*it)->getExpression()));
+        new UndoEventAssignmentData(pEntity, it->getExpression()));
     }
 }
 
@@ -114,7 +114,6 @@ void UndoEventData::fillObject(CModel *)
       UndoEventAssignmentData * assignData = *i;
       assignData->addToEvent(pEvent);
     }
-
 }
 
 const std::string&

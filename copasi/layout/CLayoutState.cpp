@@ -1,4 +1,4 @@
-// Copyright (C) 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2013 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -23,17 +23,17 @@ void CLayoutState::tagLayout(CLayout* layout)
 
   while (generalIt != general.end())
     {
-      tagKey((*generalIt));
+      tagKey(generalIt);
 
-      CCopasiVector<CLReferenceGlyph>::iterator refIt = (*generalIt)->getListOfReferenceGlyphs().begin();
+      CCopasiVector<CLReferenceGlyph>::iterator refIt = generalIt->getListOfReferenceGlyphs().begin();
 
-      for (; refIt != (*generalIt)->getListOfReferenceGlyphs().end(); ++refIt)
-        tagKey(*refIt);
+      for (; refIt != generalIt->getListOfReferenceGlyphs().end(); ++refIt)
+        tagKey(refIt);
 
-      CCopasiVector<CLGraphicalObject>::iterator subIt = (*generalIt)->getListOfSubglyphs().begin();
+      CCopasiVector<CLGraphicalObject>::iterator subIt = generalIt->getListOfSubglyphs().begin();
 
-      for (; subIt  != (*generalIt)->getListOfSubglyphs().end(); ++subIt)
-        tagKey(*subIt);
+      for (; subIt  != generalIt->getListOfSubglyphs().end(); ++subIt)
+        tagKey(subIt);
 
       ++generalIt;
     }
@@ -43,7 +43,7 @@ void CLayoutState::tagLayout(CLayout* layout)
 
   while (compIt != comps.end())
     {
-      tagKey((*compIt));
+      tagKey(compIt);
       ++compIt;
     }
 
@@ -52,12 +52,12 @@ void CLayoutState::tagLayout(CLayout* layout)
 
   while (reactIt != reactions.end())
     {
-      tagKey((*reactIt));
+      tagKey(reactIt);
 
-      CCopasiVector<CLMetabReferenceGlyph>::iterator refIt = (*reactIt)->getListOfMetabReferenceGlyphs().begin();
+      CCopasiVector<CLMetabReferenceGlyph>::iterator refIt = reactIt->getListOfMetabReferenceGlyphs().begin();
 
-      for (; refIt != (*reactIt)->getListOfMetabReferenceGlyphs().end(); ++refIt)
-        tagKey(*refIt);
+      for (; refIt != reactIt->getListOfMetabReferenceGlyphs().end(); ++refIt)
+        tagKey(refIt);
 
       ++reactIt;
     }
@@ -67,7 +67,7 @@ void CLayoutState::tagLayout(CLayout* layout)
 
   while (speciesIt != species.end())
     {
-      tagKey((*speciesIt));
+      tagKey(speciesIt);
       ++speciesIt;
     }
 
@@ -76,7 +76,7 @@ void CLayoutState::tagLayout(CLayout* layout)
 
   while (textIt != texts .end())
     {
-      tagKey((*textIt));
+      tagKey(textIt);
       ++textIt;
     }
 }
@@ -96,7 +96,7 @@ CLayoutState::CLayoutState(const CLayout* layout)
 
   while (generalIt != general.end())
     {
-      mAdditionalState[(*generalIt)->getTag()] = new CLBoundingBox((*generalIt)->getBoundingBox());
+      mAdditionalState[generalIt->getTag()] = new CLBoundingBox(generalIt->getBoundingBox());
       ++generalIt;
     }
 
@@ -105,7 +105,7 @@ CLayoutState::CLayoutState(const CLayout* layout)
 
   while (compIt != comps.end())
     {
-      mCompartmentState[(*compIt)->getTag()] = new CLBoundingBox((*compIt)->getBoundingBox());
+      mCompartmentState[compIt->getTag()] = new CLBoundingBox(compIt->getBoundingBox());
       ++compIt;
     }
 
@@ -114,14 +114,14 @@ CLayoutState::CLayoutState(const CLayout* layout)
 
   while (reactIt != reactions.end())
     {
-      mReactionState[(*reactIt)->getTag()] = new CLBoundingBox((*reactIt)->getBoundingBox());
+      mReactionState[reactIt->getTag()] = new CLBoundingBox(reactIt->getBoundingBox());
 
-      mCurves[(*reactIt)->getTag()] = new CLCurve((*reactIt)->getCurve());
+      mCurves[reactIt->getTag()] = new CLCurve(reactIt->getCurve());
 
-      CCopasiVector<CLMetabReferenceGlyph>::const_iterator refIt = (*reactIt)->getListOfMetabReferenceGlyphs().begin();
+      CCopasiVector<CLMetabReferenceGlyph>::const_iterator refIt = reactIt->getListOfMetabReferenceGlyphs().begin();
 
-      for (; refIt != (*reactIt)->getListOfMetabReferenceGlyphs().end(); ++refIt)
-        mCurves[(*refIt)->getTag()] = new CLCurve((*refIt)->getCurve());
+      for (; refIt != reactIt->getListOfMetabReferenceGlyphs().end(); ++refIt)
+        mCurves[refIt->getTag()] = new CLCurve(refIt->getCurve());
 
       ++reactIt;
     }
@@ -131,7 +131,7 @@ CLayoutState::CLayoutState(const CLayout* layout)
 
   while (speciesIt != species.end())
     {
-      mSpeciesState[(*speciesIt)->getTag()] = new CLBoundingBox((*speciesIt)->getBoundingBox());
+      mSpeciesState[speciesIt->getTag()] = new CLBoundingBox(speciesIt->getBoundingBox());
       ++speciesIt;
     }
 
@@ -140,7 +140,7 @@ CLayoutState::CLayoutState(const CLayout* layout)
 
   while (textIt != texts .end())
     {
-      mTextState[(*textIt)->getTag()] = new CLBoundingBox((*textIt)->getBoundingBox());
+      mTextState[textIt->getTag()] = new CLBoundingBox(textIt->getBoundingBox());
       ++textIt;
     }
 }
@@ -186,12 +186,12 @@ CLayoutState::~CLayoutState()
   {\
     for (;it != endIt; ++it)\
       {\
-        const std::string& key = ((*it)->getTag());\
+        const std::string& key = (it->getTag());\
         StringBoundMap::const_iterator boundIt = objectMap.find(key);\
         if (boundIt == objectMap.end()) \
           continue;    \
         CLBoundingBox* current = boundIt->second;\
-        (*it)->setPosition(current->getPosition());\
+        it->setPosition(current->getPosition());\
       }\
   }
 
@@ -215,27 +215,27 @@ void CLayoutState::applyTo(CLayout *layout) const
 
   for (reactIt = reactions.begin(); reactIt != reactions.end(); ++reactIt)
     {
-      const std::string& rkey = ((*reactIt)->getTag());
+      const std::string& rkey = (reactIt->getTag());
       StringCurveMap::const_iterator cIt = mCurves.find(rkey);
 
       if (cIt != mCurves.end())
         {
           CLCurve* current = cIt->second;
-          (*reactIt)->setCurve(*current);
+          reactIt->setCurve(*current);
         }
 
-      CCopasiVector<CLMetabReferenceGlyph>::iterator refIt = (*reactIt)->getListOfMetabReferenceGlyphs().begin();
+      CCopasiVector<CLMetabReferenceGlyph>::iterator refIt = reactIt->getListOfMetabReferenceGlyphs().begin();
 
-      for (; refIt != (*reactIt)->getListOfMetabReferenceGlyphs().end(); ++refIt)
+      for (; refIt != reactIt->getListOfMetabReferenceGlyphs().end(); ++refIt)
         {
-          const std::string& key = ((*refIt)->getTag());
+          const std::string& key = (refIt->getTag());
           cIt = mCurves.find(key);
 
           if (cIt == mCurves.end())
             continue;
 
           CLCurve* current = cIt->second;
-          (*refIt)->setCurve(*current);
+          refIt->setCurve(*current);
         }
     }
 

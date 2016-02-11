@@ -319,25 +319,25 @@ void CQBrowserPaneDM::load()
   findNodeFromId(119)->setKey(mpCopasiDM->getModel()->getKey());
   load(119); // Model Parameter Sets
 
-  findNodeFromId(21)->setKey((*mpCopasiDM->getTaskList())["Steady-State"]->getKey());
-  findNodeFromId(221)->setKey((*mpCopasiDM->getTaskList())["Elementary Flux Modes"]->getKey());
-  findNodeFromId(222)->setKey((*mpCopasiDM->getTaskList())["Moieties"]->getKey());
-  findNodeFromId(2221)->setKey((*mpCopasiDM->getTaskList())["Moieties"]->getKey());
-  findNodeFromId(23)->setKey((*mpCopasiDM->getTaskList())["Time-Course"]->getKey());
-  findNodeFromId(24)->setKey((*mpCopasiDM->getTaskList())["Metabolic Control Analysis"]->getKey());
-  findNodeFromId(27)->setKey((*mpCopasiDM->getTaskList())["Time Scale Separation Analysis"]->getKey());
-  findNodeFromId(26)->setKey((*mpCopasiDM->getTaskList())["Lyapunov Exponents"]->getKey());
-  findNodeFromId(28)->setKey((*mpCopasiDM->getTaskList())["Cross Section"]->getKey());
+  findNodeFromId(21)->setKey(mpCopasiDM->getTaskList()->operator[]("Steady-State").getKey());
+  findNodeFromId(221)->setKey(mpCopasiDM->getTaskList()->operator[]("Elementary Flux Modes").getKey());
+  findNodeFromId(222)->setKey(mpCopasiDM->getTaskList()->operator[]("Moieties").getKey());
+  findNodeFromId(2221)->setKey(mpCopasiDM->getTaskList()->operator[]("Moieties").getKey());
+  findNodeFromId(23)->setKey(mpCopasiDM->getTaskList()->operator[]("Time-Course").getKey());
+  findNodeFromId(24)->setKey(mpCopasiDM->getTaskList()->operator[]("Metabolic Control Analysis").getKey());
+  findNodeFromId(27)->setKey(mpCopasiDM->getTaskList()->operator[]("Time Scale Separation Analysis").getKey());
+  findNodeFromId(26)->setKey(mpCopasiDM->getTaskList()->operator[]("Lyapunov Exponents").getKey());
+  findNodeFromId(28)->setKey(mpCopasiDM->getTaskList()->operator[]("Cross Section").getKey());
 
 #ifdef WITH_ANALYTICS
-  findNodeFromId(29)->setKey((*mpCopasiDM->getTaskList())["Analytics"]->getKey());
+  findNodeFromId(29)->setKey(mpCopasiDM->getTaskList()->operator[]("Analytics").getKey());
 #endif // WITH_ANALYTICS
 
-  findNodeFromId(31)->setKey((*mpCopasiDM->getTaskList())["Scan"]->getKey());
-  findNodeFromId(32)->setKey((*mpCopasiDM->getTaskList())["Optimization"]->getKey());
-  findNodeFromId(33)->setKey((*mpCopasiDM->getTaskList())["Parameter Estimation"]->getKey());
-  findNodeFromId(34)->setKey((*mpCopasiDM->getTaskList())["Sensitivities"]->getKey());
-  findNodeFromId(35)->setKey((*mpCopasiDM->getTaskList())["Linear Noise Approximation"]->getKey());
+  findNodeFromId(31)->setKey(mpCopasiDM->getTaskList()->operator[]("Scan").getKey());
+  findNodeFromId(32)->setKey(mpCopasiDM->getTaskList()->operator[]("Optimization").getKey());
+  findNodeFromId(33)->setKey(mpCopasiDM->getTaskList()->operator[]("Parameter Estimation").getKey());
+  findNodeFromId(34)->setKey(mpCopasiDM->getTaskList()->operator[]("Sensitivities").getKey());
+  findNodeFromId(35)->setKey(mpCopasiDM->getTaskList()->operator[]("Linear Noise Approximation").getKey());
 
   findNodeFromId(42)->setKey(mpCopasiDM->getPlotDefinitionList()->getKey());
   load(42); // Plot Specifications
@@ -418,17 +418,17 @@ void CQBrowserPaneDM::load(const size_t & id)
     {
       CNode * pChild = static_cast< CNode *>(pChildData);
 
-      pChild->setKey((*it)->getKey());
+      pChild->setKey(it->getKey());
 
       QString DisplayRole;
 
       if (isSpecies)
         {
-          DisplayRole = FROM_UTF8(CMetabNameInterface::getDisplayName(pModel, *static_cast<const CMetab *>(*it), false));
+          DisplayRole = FROM_UTF8(CMetabNameInterface::getDisplayName(pModel, *static_cast<const CMetab * >(static_cast<const CCopasiObject * >(it)), false));
         }
       else
         {
-          DisplayRole = FROM_UTF8((*it)->getObjectName());
+          DisplayRole = FROM_UTF8(it->getObjectName());
         }
 
       if (pChild->getDisplayRole() != DisplayRole)
@@ -467,14 +467,14 @@ void CQBrowserPaneDM::load(const size_t & id)
 
           if (isSpecies)
             {
-              DisplayRole = FROM_UTF8(CMetabNameInterface::getDisplayName(pModel, *static_cast<const CMetab *>(*it), false));
+              DisplayRole = FROM_UTF8(CMetabNameInterface::getDisplayName(pModel, *static_cast<const CMetab * >(static_cast<const CCopasiObject * >(it)), false));
             }
           else
             {
-              DisplayRole = FROM_UTF8((*it)->getObjectName());
+              DisplayRole = FROM_UTF8(it->getObjectName());
             }
 
-          new CNode(C_INVALID_INDEX, (*it)->getKey(), DisplayRole, pParent);
+          new CNode(C_INVALID_INDEX, it->getKey(), DisplayRole, pParent);
         }
 
       endInsertRows();

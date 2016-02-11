@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -314,7 +314,7 @@ public:
 
     for (i = 0; i < iMax; ++i)
       {
-        variableMap.insert(std::pair<std::string, const CModelEntity*>(metabolites[i]->getSBMLId(), metabolites[i]));
+        variableMap.insert(std::pair<std::string, const CModelEntity*>(metabolites[i].getSBMLId(), &metabolites[i]));
       }
 
     const CCopasiVector<CCompartment>& compartments = pDataModel->getModel()->getCompartments();
@@ -323,7 +323,7 @@ public:
 
     for (i = 0; i < iMax; ++i)
       {
-        variableMap.insert(std::pair<std::string, const CModelEntity*>(compartments[i]->getSBMLId(), compartments[i]));
+        variableMap.insert(std::pair<std::string, const CModelEntity*>(compartments[i].getSBMLId(), &compartments[i]));
       }
 
     const CCopasiVector<CModelValue>& modelValues = pDataModel->getModel()->getModelValues();
@@ -332,7 +332,7 @@ public:
 
     for (i = 0; i < iMax; ++i)
       {
-        variableMap.insert(std::pair<std::string, const CModelEntity*>(modelValues[i]->getSBMLId(), modelValues[i]));
+        variableMap.insert(std::pair<std::string, const CModelEntity*>(modelValues[i].getSBMLId(), &modelValues[i]));
       }
 
     std::list<std::string>::const_iterator it = variables.begin(), endit = variables.end();

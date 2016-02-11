@@ -1,4 +1,4 @@
-// Copyright (C) 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2015 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -105,7 +105,18 @@ void CQUnitsWidget::slotBtnClearClicked()
 
   if (ret == QMessageBox::Yes)
     {
-      mpUnitDM->clear();
+      QModelIndexList mappedSelRows;
+      size_t i, imax = mpUnitDM->rowCount();
+
+      for (i = 0; i < imax; i++)
+        {
+          mappedSelRows.append(mpUnitDM->index((int) i, 0));
+        }
+
+      if (mappedSelRows.empty())
+        return;
+
+      mpUnitDM->removeRows(mappedSelRows);
     }
 
   updateDeleteBtns();
@@ -203,7 +214,7 @@ void CQUnitsWidget::slotDoubleClicked(const QModelIndex proxyIndex)
     }
 
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
+  CCopasiDataModel* pDataModel = &CCopasiRootContainer::getDatamodelList()->operator[](0);
   assert(pDataModel != NULL);
 
   if (!pDataModel->getModel())
@@ -211,7 +222,7 @@ void CQUnitsWidget::slotDoubleClicked(const QModelIndex proxyIndex)
 
   // How do I deal with this?
 //  std::string key = pDataModel->getReportDefinitionList()->operator[](index.row())->getKey();
-  std::string key = CCopasiRootContainer::getUnitList()->operator[](index.row())->getKey();
+  std::string key = CCopasiRootContainer::getUnitList()->operator[](index.row()).getKey();
 
   if (CCopasiRootContainer::getKeyFactory()->get(key))
     mpListView->switchToOtherWidget(C_INVALID_INDEX, key);

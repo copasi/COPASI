@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -27,7 +27,7 @@ CQPlotDM::CQPlotDM(QObject *parent)
 
 int CQPlotDM::rowCount(const QModelIndex& C_UNUSED(parent)) const
 {
-  return (int)(*CCopasiRootContainer::getDatamodelList())[0]->getPlotDefinitionList()->size() + 1;
+  return CCopasiRootContainer::getDatamodelList()->operator[](0).getPlotDefinitionList()->size() + 1;
 }
 int CQPlotDM::columnCount(const QModelIndex& C_UNUSED(parent)) const
 {
@@ -83,7 +83,7 @@ QVariant CQPlotDM::data(const QModelIndex &index, int role) const
         }
       else
         {
-          const CPlotSpecification *pPS = dynamic_cast<const CPlotSpecification*>((*CCopasiRootContainer::getDatamodelList())[0]->getPlotDefinitionList()->operator[](index.row()));
+          const CPlotSpecification *pPS = dynamic_cast<const CPlotSpecification *>(&CCopasiRootContainer::getDatamodelList()->operator[](0).getPlotDefinitionList()->operator[](index.row()));
 
           switch (index.column())
             {
@@ -162,7 +162,7 @@ bool CQPlotDM::setData(const QModelIndex &index, const QVariant &value,
             return false;
         }
 
-      CPlotSpecification *pPS = (CPlotSpecification*)(*CCopasiRootContainer::getDatamodelList())[0]->getPlotDefinitionList()->operator[](index.row());
+      CPlotSpecification *pPS = &CCopasiRootContainer::getDatamodelList()->operator[](0).getPlotDefinitionList()->operator[](index.row());
 
       switch (index.column())
         {
@@ -213,7 +213,7 @@ bool CQPlotDM::insertRows(int position, int rows, const QModelIndex & source)
     {
       QString Name = this->createNewName(mNewName, COL_NAME_PLOTS);
 
-      CPlotSpecification *pPS = (*CCopasiRootContainer::getDatamodelList())[0]->getPlotDefinitionList()->createPlotSpec(TO_UTF8(Name), CPlotItem::plot2d);
+      CPlotSpecification *pPS = CCopasiRootContainer::getDatamodelList()->operator[](0).getPlotDefinitionList()->createPlotSpec(TO_UTF8(Name), CPlotItem::plot2d);
       emit notifyGUI(ListViews::PLOT, ListViews::ADD, pPS->CCopasiParameter::getKey());
     }
 
@@ -234,9 +234,9 @@ bool CQPlotDM::removeRows(int position, int rows)
   for (int row = 0; row < rows; ++row)
     {
       CPlotSpecification* pPS =
-        (CPlotSpecification*)(*CCopasiRootContainer::getDatamodelList())[0]->getPlotDefinitionList()->operator[](position);
+        &CCopasiRootContainer::getDatamodelList()->operator[](0).getPlotDefinitionList()->operator[](position);
       std::string deletedKey = pPS->CCopasiParameter::getKey();
-      (*CCopasiRootContainer::getDatamodelList())[0]->getPlotDefinitionList()->CCopasiVector< CPlotSpecification >::remove(position);
+      CCopasiRootContainer::getDatamodelList()->operator[](0).getPlotDefinitionList()->CCopasiVector< CPlotSpecification >::remove(position);
       emit notifyGUI(ListViews::PLOT, ListViews::DELETE, deletedKey);
     }
 
@@ -250,7 +250,7 @@ bool CQPlotDM::removeRows(QModelIndexList rows, const QModelIndex&)
   if (rows.isEmpty())
     return false;
 
-  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
+  CCopasiDataModel* pDataModel = &CCopasiRootContainer::getDatamodelList()->operator[](0);
   assert(pDataModel != NULL);
 
   if (!pDataModel->getModel())
@@ -264,9 +264,9 @@ bool CQPlotDM::removeRows(QModelIndexList rows, const QModelIndex&)
 
   for (i = rows.begin(); i != rows.end(); ++i)
     {
-      if (!isDefaultRow(*i) && pDataModel->getPlotDefinitionList()->operator[]((*i).row()))
+      if (!isDefaultRow(*i) && &pDataModel->getPlotDefinitionList()->operator[](i->row()))
         {
-          pPS = pDataModel->getPlotDefinitionList()->operator[]((*i).row());
+          pPS = &pDataModel->getPlotDefinitionList()->operator[](i->row());
           pPSs.append(pPS);
         }
     }

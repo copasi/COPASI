@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelAnalyzer.cpp,v $
-//   $Revision: 1.11 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/03/07 19:30:51 $
-// End CVS Header
-
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -45,7 +37,7 @@ void CModelAnalyzer::checkModel(const CModel* model)
 
   for (i = 0; i < imax; ++i)
     {
-      mReactionResults.push_back(checkReaction(model->getReactions()[i]));
+      mReactionResults.push_back(checkReaction(&model->getReactions()[i]));
     }
 }
 
@@ -88,7 +80,7 @@ CModelAnalyzer::ReactionResult CModelAnalyzer::checkReaction(const CReaction* re
   for (i = 0; i < imax; ++i)
     {
       //each substrate of the reaction needs to be mapped to a function parameter with role SUBSTRATE
-      std::string tmpkey = reaction->getChemEq().getSubstrates()[i]->getMetaboliteKey();
+      std::string tmpkey = reaction->getChemEq().getSubstrates()[i].getMetaboliteKey();
 
       size_t j, jmax = reaction->getFunctionParameters().size();
 
@@ -103,7 +95,7 @@ CModelAnalyzer::ReactionResult CModelAnalyzer::checkReaction(const CReaction* re
         {
           //warning/error?
           // A substrate of this reaction is not mapped to a corresponding function parameter.
-          const CMetab * pM = reaction->getChemEq().getSubstrates()[i]->getMetabolite();
+          const CMetab * pM = reaction->getChemEq().getSubstrates()[i].getMetabolite();
 
           if (pM)
             ret.mChemEqSubs.push_back(pM->getObjectName());
@@ -117,7 +109,7 @@ CModelAnalyzer::ReactionResult CModelAnalyzer::checkReaction(const CReaction* re
 
       for (i = 0; i < imax; ++i)
         {
-          std::string tmpkey = reaction->getChemEq().getProducts()[i]->getMetaboliteKey();
+          std::string tmpkey = reaction->getChemEq().getProducts()[i].getMetaboliteKey();
 
           size_t j, jmax = reaction->getFunctionParameters().size();
 
@@ -132,7 +124,7 @@ CModelAnalyzer::ReactionResult CModelAnalyzer::checkReaction(const CReaction* re
             {
               //warning/error?
               // A product of this reaction is not mapped to a corresponding function parameter.
-              const CMetab * pM = reaction->getChemEq().getProducts()[i]->getMetabolite();
+              const CMetab * pM = reaction->getChemEq().getProducts()[i].getMetabolite();
 
               if (pM)
                 ret.mChemEqProds.push_back(pM->getObjectName());
@@ -145,7 +137,7 @@ CModelAnalyzer::ReactionResult CModelAnalyzer::checkReaction(const CReaction* re
   for (i = 0; i < imax; ++i)
     {
       //each modifier of the reaction should be mapped to a function parameter with role MODIFIER
-      std::string tmpkey = reaction->getChemEq().getModifiers()[i]->getMetaboliteKey();
+      std::string tmpkey = reaction->getChemEq().getModifiers()[i].getMetaboliteKey();
 
       size_t j, jmax = reaction->getFunctionParameters().size();
 
@@ -160,7 +152,7 @@ CModelAnalyzer::ReactionResult CModelAnalyzer::checkReaction(const CReaction* re
         {
           //warning
           // A modifier of this reaction is not mapped to a corresponding function parameter.
-          const CMetab * pM = reaction->getChemEq().getModifiers()[i]->getMetabolite();
+          const CMetab * pM = reaction->getChemEq().getModifiers()[i].getMetabolite();
 
           if (pM)
             ret.mChemEqMods.push_back(pM->getObjectName());
@@ -198,7 +190,7 @@ CModelAnalyzer::ReactionResult CModelAnalyzer::checkReaction(const CReaction* re
             for (j = 0; j < jmax; ++j)
               {
                 if (reaction->getParameterMappings()[i][0]
-                    == reaction->getChemEq().getSubstrates()[j]->getMetaboliteKey())
+                    == reaction->getChemEq().getSubstrates()[j].getMetaboliteKey())
                   break;
               }
 
@@ -218,7 +210,7 @@ CModelAnalyzer::ReactionResult CModelAnalyzer::checkReaction(const CReaction* re
             for (j = 0; j < jmax; ++j)
               {
                 if (reaction->getParameterMappings()[i][0]
-                    == reaction->getChemEq().getProducts()[j]->getMetaboliteKey())
+                    == reaction->getChemEq().getProducts()[j].getMetaboliteKey())
                   break;
               }
 
@@ -238,7 +230,7 @@ CModelAnalyzer::ReactionResult CModelAnalyzer::checkReaction(const CReaction* re
             for (j = 0; j < jmax; ++j)
               {
                 if (reaction->getParameterMappings()[i][0]
-                    == reaction->getChemEq().getModifiers()[j]->getMetaboliteKey())
+                    == reaction->getChemEq().getModifiers()[j].getMetaboliteKey())
                   break;
               }
 
@@ -272,7 +264,7 @@ CModelAnalyzer::ReactionResult CModelAnalyzer::checkReaction(const CReaction* re
                 for (j = 0; j < jmax; ++j)
                   {
                     if (reaction->getParameterMappings()[i][0]
-                        == mpModel->getModelValues()[j]->getKey())
+                        == mpModel->getModelValues()[j].getKey())
                       break;
                   }
 
@@ -292,7 +284,7 @@ CModelAnalyzer::ReactionResult CModelAnalyzer::checkReaction(const CReaction* re
             for (j = 0; j < jmax; ++j)
               {
                 if (reaction->getParameterMappings()[i][0]
-                    == mpModel->getCompartments()[j]->getKey())
+                    == mpModel->getCompartments()[j].getKey())
                   break;
               }
 

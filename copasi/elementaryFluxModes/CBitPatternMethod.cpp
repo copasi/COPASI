@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -335,13 +335,13 @@ void CBitPatternMethod::buildKernelMatrix(CMatrix< C_INT64 > & kernelInt)
 
   for (; itReaction != endReaction; ++itReaction, ++ReactionCounter)
     {
-      if ((*itReaction)->isReversible())
+      if (itReaction->isReversible())
         {
           // mpReorderedReactons->push_back(*itReaction);
           mReactionForward.push_back(std::make_pair(ReactionCounter, false));
         }
 
-      mpReorderedReactions->push_back(*itReaction);
+      mpReorderedReactions->push_back(itReaction);
       mReactionForward.push_back(std::make_pair(ReactionCounter, true));
     }
 
@@ -783,7 +783,7 @@ bool CBitPatternMethod::CalculateKernel(CMatrix< C_INT64 > & matrix,
               // Assert that we do not have a numerical overflow.
               assert(fabs(((C_FLOAT64) alpha) * ((C_FLOAT64) * pCurrent) - ((C_FLOAT64) beta) * ((C_FLOAT64) * pActiveRow)) < std::numeric_limits< C_INT64 >::max());
 
-              *pCurrent = alpha * *pCurrent - beta * *pActiveRow;
+              *pCurrent = alpha **pCurrent - beta **pActiveRow;
 
               // We check that the row values do not have any common divisor.
               if (GCD1 > 1 &&

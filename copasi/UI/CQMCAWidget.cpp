@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -55,7 +55,7 @@ void CQMCAWidget::slotSteadyStateChecked()
   if (mpCheckSteadyState->isChecked())
     {
       CSteadyStateTask * pSteadyStateTask =
-        dynamic_cast<CSteadyStateTask *>((*(*CCopasiRootContainer::getDatamodelList())[0]->getTaskList())["Steady-State"]);
+        dynamic_cast<CSteadyStateTask *>(&CCopasiRootContainer::getDatamodelList()->operator[](0).getTaskList()->operator[]("Steady-State"));
 
       if (pSteadyStateTask != NULL)
         {
@@ -65,7 +65,7 @@ void CQMCAWidget::slotSteadyStateChecked()
   else
     {
       CSteadyStateTask * pSteadyStateTask =
-        dynamic_cast<CSteadyStateTask *>((*(*CCopasiRootContainer::getDatamodelList())[0]->getTaskList())["Steady-State"]);
+        dynamic_cast<CSteadyStateTask *>(&CCopasiRootContainer::getDatamodelList()->operator[](0).getTaskList()->operator[]("Steady-State"));
 
       if (pSteadyStateTask != NULL)
         {
@@ -120,7 +120,7 @@ bool CQMCAWidget::loadTask()
   if (mpCheckSteadyState->isChecked())
     {
       CSteadyStateTask * pSteadyStateTask =
-        dynamic_cast<CSteadyStateTask *>((*(*CCopasiRootContainer::getDatamodelList())[0]->getTaskList())["Steady-State"]);
+        dynamic_cast<CSteadyStateTask *>(&CCopasiRootContainer::getDatamodelList()->operator[](0).getTaskList()->operator[]("Steady-State"));
 
       if (pSteadyStateTask != NULL)
         {
@@ -155,7 +155,7 @@ bool CQMCAWidget::saveTask()
 
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
 
-  if (mChanged)(*CCopasiRootContainer::getDatamodelList())[0]->changed();
+  if (mChanged) CCopasiRootContainer::getDatamodelList()->operator[](0).changed();
 
   mChanged = false;
   return true;

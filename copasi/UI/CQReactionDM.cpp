@@ -36,7 +36,7 @@ CQReactionDM::CQReactionDM(QObject *parent)
 
 int CQReactionDM::rowCount(const QModelIndex&) const
 {
-  return (int)(*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getReactions().size() + 1;
+  return (int) CCopasiRootContainer::getDatamodelList()->operator[](0).getModel()->getReactions().size() + 1;
 }
 int CQReactionDM::columnCount(const QModelIndex&) const
 {
@@ -83,7 +83,7 @@ QVariant CQReactionDM::data(const QModelIndex &index, int role) const
         }
       else
         {
-          CReaction *pRea = (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getReactions()[index.row()];
+          CReaction *pRea = &CCopasiRootContainer::getDatamodelList()->operator[](0).getModel()->getReactions()[index.row()];
 
           switch (index.column())
             {
@@ -97,7 +97,7 @@ QVariant CQReactionDM::data(const QModelIndex &index, int role) const
 
                 if (mNewEquation.isEmpty())
                   {
-                    return QVariant(QString(FROM_UTF8(CChemEqInterface::getChemEqString((*CCopasiRootContainer::getDatamodelList())[0]->getModel(), *pRea, false))));
+                    return QVariant(QString(FROM_UTF8(CChemEqInterface::getChemEqString(CCopasiRootContainer::getDatamodelList()->operator[](0).getModel(), *pRea, false))));
                   }
                 else
                   {
@@ -147,7 +147,7 @@ QVariant CQReactionDM::headerData(int section, Qt::Orientation orientation,
 
           case COL_FLUX:
           {
-            const CModel * pModel = (*CCopasiRootContainer::getDatamodelList())[0]->getModel();
+            const CModel * pModel = CCopasiRootContainer::getDatamodelList()->operator[](0).getModel();
 
             if (pModel == NULL) return QVariant();
 
@@ -164,7 +164,7 @@ QVariant CQReactionDM::headerData(int section, Qt::Orientation orientation,
 
           case COL_PARTICLE_FLUX:
           {
-            const CModel * pModel = (*CCopasiRootContainer::getDatamodelList())[0]->getModel();
+            const CModel * pModel = CCopasiRootContainer::getDatamodelList()->operator[](0).getModel();
 
             if (pModel == NULL) return QVariant();
 
@@ -296,7 +296,7 @@ void CQReactionDM::setEquation(const CReaction *pRea, const QModelIndex& index, 
   //this writes all changes to the reaction
   ri.writeBackToReaction(NULL);
 
-  //(*CCopasiRootContainer::getDatamodelList())[0]->getModel()->compile();
+  //&CCopasiRootContainer::getDatamodelList()->operator[](0).getModel()->compile();
   //this tells the gui what it needs to know.
   if (createdObjects ||
       DeletedParameters.size() != 0)
@@ -325,7 +325,7 @@ bool CQReactionDM::removeRows(int position, int rows)
 
   beginRemoveRows(QModelIndex(), position, position + rows - 1);
 
-  CModel * pModel = (*CCopasiRootContainer::getDatamodelList())[0]->getModel();
+  CModel * pModel = CCopasiRootContainer::getDatamodelList()->operator[](0).getModel();
 
   std::vector< std::string > DeletedKeys;
   DeletedKeys.resize(rows);
@@ -337,7 +337,7 @@ bool CQReactionDM::removeRows(int position, int rows)
 
   for (itDeletedKey = DeletedKeys.begin(); itDeletedKey != endDeletedKey; ++itDeletedKey, ++itRow)
     {
-      *itDeletedKey = (*itRow)->getKey();
+      *itDeletedKey = itRow->getKey();
     }
 
   for (itDeletedKey = DeletedKeys.begin(); itDeletedKey != endDeletedKey; ++itDeletedKey)
@@ -383,7 +383,7 @@ bool CQReactionDM::reactionDataChange(const QModelIndex &index,
 
   // this loads the reaction into a CReactionInterface object.
   // the gui works on this object and later writes back the changes to ri;
-  CReaction *pRea = pModel->getReactions()[index.row()];
+  CReaction *pRea = &pModel->getReactions()[index.row()];
   bool refreshAll = false;
 
   if (index.column() == COL_NAME_REACTIONS)
@@ -508,9 +508,9 @@ bool CQReactionDM::removeReactionRows(QModelIndexList rows, const QModelIndex&)
 
   for (i = rows.begin(); i != rows.end(); ++i)
     {
-      if (!isDefaultRow(*i) && pModel->getReactions()[(*i).row()])
+      if (!isDefaultRow(*i) && &pModel->getReactions()[i->row()])
         {
-          pReactions.append(pModel->getReactions()[(*i).row()]);
+          pReactions.append(&pModel->getReactions()[i->row()]);
         }
     }
 
@@ -576,7 +576,7 @@ void CQReactionDM::deleteReactionRow(UndoReactionData * pData)
   if (pModel->getReactions().getIndex(pData->getName()) == C_INVALID_INDEX)
     return;
 
-  CReaction *pReaction = pModel->getReactions()[pData->getName()];
+  CReaction *pReaction = &pModel->getReactions()[pData->getName()];
   std::string key = pReaction->getKey();
 
   beginRemoveRows(QModelIndex(), 1, 1);

@@ -1,4 +1,4 @@
-// Copyright (C) 2013 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2013 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -183,7 +183,7 @@ std::string CSEDMLExporter::createScanTask(CCopasiDataModel& dataModel, const st
   // need L1V2 to export repeated tasks
   if (mpSEDMLDocument->getVersion() != 2) return "";
 
-  CScanTask* pTask =  dynamic_cast<CScanTask*>((*dataModel.getTaskList())["Scan"]);
+  CScanTask* pTask =  dynamic_cast<CScanTask*>(&dataModel.getTaskList()->operator[]("Scan"));
 
   if (pTask == NULL) return "";
 
@@ -308,7 +308,7 @@ std::string CSEDMLExporter::createTimeCourseTask(CCopasiDataModel& dataModel, co
   mpTimecourse = this->mpSEDMLDocument->createUniformTimeCourse();
   mpTimecourse->setId(SEDMLUtils::getNextId("sim", mpSEDMLDocument->getNumSimulations()));
   //presently SEDML only supports time course
-  CCopasiTask* pTask = (*dataModel.getTaskList())["Time-Course"];
+  CCopasiTask* pTask = &dataModel.getTaskList()->operator[]("Time-Course");
   CTrajectoryProblem* tProblem = static_cast<CTrajectoryProblem*>(pTask->getProblem());
   mpTimecourse->setInitialTime(0.0);
   mpTimecourse->setOutputStartTime(tProblem->getOutputStartTime());
@@ -340,7 +340,7 @@ std::string CSEDMLExporter::createSteadyStateTask(CCopasiDataModel& dataModel, c
   SedSteadyState *steady  = this->mpSEDMLDocument->createSteadyState();
   steady->setId(SEDMLUtils::getNextId("steady", mpSEDMLDocument->getNumSimulations()));
   //presently SEDML only supports time course
-  CCopasiTask* pTask = (*dataModel.getTaskList())["Steady-State"];
+  CCopasiTask* pTask = &dataModel.getTaskList()->operator[]("Steady-State");
   CTrajectoryProblem* tProblem = static_cast<CTrajectoryProblem*>(pTask->getProblem());
 
   // set the correct KISAO Term
@@ -376,12 +376,12 @@ void CSEDMLExporter::createTasks(CCopasiDataModel& dataModel, std::string & mode
   std::string modelId = modelRef.substr(0, modelRef.length() - 4);
   // create time course task
   std::string taskId = createTimeCourseTask(dataModel, modelId);
-  createDataGenerators(dataModel, taskId, (*dataModel.getTaskList())["Time-Course"]);
+  createDataGenerators(dataModel, taskId, &dataModel.getTaskList()->operator[]("Time-Course"));
 
   taskId = createScanTask(dataModel, modelId);
 
   if (!taskId.empty())
-    createDataGenerators(dataModel, taskId, (*dataModel.getTaskList())["Scan"]);
+    createDataGenerators(dataModel, taskId, &dataModel.getTaskList()->operator[]("Scan"));
 }
 
 SedDataGenerator * createDataGenerator(
@@ -536,7 +536,7 @@ void CSEDMLExporter::createDataGenerators(CCopasiDataModel & dataModel,
   for (i = 0; i < imax; i++)
     {
       pPSedPlot = this->mpSEDMLDocument->createPlot2D();
-      const CPlotSpecification* pPlot = (*dataModel.getPlotDefinitionList())[i];
+      const CPlotSpecification* pPlot = &dataModel.getPlotDefinitionList()->operator[](i);
       std::string plotName = pPlot->getObjectName();
 
       SEDMLUtils::removeCharactersFromString(plotName, "[]");
@@ -548,7 +548,7 @@ void CSEDMLExporter::createDataGenerators(CCopasiDataModel & dataModel,
 
       for (j = 0; j < jmax; j++)
         {
-          const CPlotItem* pPlotItem = pPlot->getItems()[j];
+          const CPlotItem* pPlotItem = & pPlot->getItems()[j];
 
           const CCopasiObject *objectX, *objectY;
 

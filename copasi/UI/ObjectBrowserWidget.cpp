@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -266,6 +266,7 @@ void ObjectBrowserWidget::toggleViewClicked()
         ObjectListView->hide();
         ObjectItemText->show();
         break;
+
       case SELECTEDITEMPAGE:
         currentPage = LISTVIEWPAGE;
 
@@ -483,7 +484,7 @@ void ObjectBrowserWidget::loadChild(ObjectBrowserItem* parent,
 {
   unsigned int i;
   ObjectBrowserItem* last = NULL;
-  CCopasiObject* current = NULL;
+  const CCopasiObject* current = NULL;
 
   ObjectList* childStack = new ObjectList();
 
@@ -494,7 +495,7 @@ void ObjectBrowserWidget::loadChild(ObjectBrowserItem* parent,
   if ((copaParent->isVector()) && (nField))
     {
       if ((static_cast< const CCopasiVector < CCopasiObject > * >(copaParent)->size() >= 1) &&
-          ((*static_cast< const CCopasiVector < CCopasiObject > * >(copaParent))[0]->isContainer()))
+          (static_cast< const CCopasiVector < CCopasiObject > * >(copaParent)->operator[](0).isContainer()))
         {
           //add attribute list
           ObjectBrowserItem* fieldChild = new ObjectBrowserItem(parent, NULL, NULL, objectItemList);
@@ -511,7 +512,7 @@ void ObjectBrowserWidget::loadChild(ObjectBrowserItem* parent,
     {
       for (i = 0; i < static_cast< const CCopasiVector < CCopasiObject > * >(copaParent)->size(); i++)
         {
-          current = (*static_cast< const CCopasiVector < CCopasiObject > * >(copaParent))[i];
+          current = &static_cast< const CCopasiVector < CCopasiObject > * >(copaParent)->operator[](i);
           ObjectBrowserItem* currentItem = new ObjectBrowserItem(parent, last, current, objectItemList);
           last = currentItem;
           currentItem->setText(0, FROM_UTF8(current->getObjectName()));
@@ -524,7 +525,7 @@ void ObjectBrowserWidget::loadChild(ObjectBrowserItem* parent,
               if (current->isVector())
                 currentItem->setText(0, currentItem->text(0) + "[]");
 
-              loadChild(currentItem, static_cast< CCopasiContainer * >(current), nField);
+              loadChild(currentItem, static_cast< const CCopasiContainer * >(current), nField);
             }
           else
             {
@@ -540,7 +541,7 @@ void ObjectBrowserWidget::loadChild(ObjectBrowserItem* parent,
           current = it->second;
 
           // Skip all strings
-          if (dynamic_cast<CCopasiStaticString *>(current))
+          if (dynamic_cast< const CCopasiStaticString * >(current))
             {
               it++;
               continue;
@@ -558,7 +559,7 @@ void ObjectBrowserWidget::loadChild(ObjectBrowserItem* parent,
               if (current->isVector())
                 currentItem->setText(0, currentItem->text(0) + "[]");
 
-              loadChild(currentItem, static_cast< CCopasiContainer * >(current), nField);
+              loadChild(currentItem, static_cast< const CCopasiContainer * >(current), nField);
             }
           else
             {
@@ -589,10 +590,10 @@ void ObjectBrowserWidget::loadField(ObjectBrowserItem* parent, CCopasiVector <CC
   ObjectBrowserItem* lastObjectItem = NULL;
   CCopasiObject* currentObject = NULL;
 
-  if ((copaParent->size() < 1) || (!(*copaParent)[0]->isContainer())) return; //empty list
+  if ((copaParent->size() < 1) || (!copaParent->operator[](0).isContainer())) return; //empty list
 
   const CCopasiContainer::objectMap * pFieldList =
-    &(static_cast< CCopasiContainer * >((*copaParent)[0])->getObjects());
+    &static_cast< CCopasiContainer * >(&copaParent->operator[](0))->getObjects();
 
   CCopasiContainer::objectMap::const_iterator fieldIt = pFieldList->begin();
   CCopasiContainer::objectMap::const_iterator fieldEnd = pFieldList->end();
@@ -610,7 +611,7 @@ void ObjectBrowserWidget::loadField(ObjectBrowserItem* parent, CCopasiVector <CC
       for (i = 0; i < copaParent->size(); i++)
         {
           CCopasiObject* pSubField;
-          currentObject = (*static_cast< CCopasiVector < CCopasiObject > * >(copaParent))[i];
+          currentObject = &static_cast< CCopasiVector < CCopasiObject > * >(copaParent)->operator[](i);
 
           if (currentObject->isContainer())
             pSubField =
@@ -687,9 +688,11 @@ void ObjectBrowserWidget::setCheckMark(ObjectBrowserItem* pCurrent)
       case NOCHECKED:
         pCurrent->setIcon(0, QIcon(*pObjectNone));
         break;
+
       case ALLCHECKED:
         pCurrent->setIcon(0, QIcon(*pObjectAll));
         break;
+
       case PARTCHECKED:
         pCurrent->setIcon(0, QIcon(*pObjectParts));
         break;

@@ -209,7 +209,7 @@ bool CTrajectoryTask::initialize(const OutputFlag & of,
       CCopasiDataModel* pDataModel = getObjectDataModel();
 
       if (pDataModel && pDataModel->getTaskList())
-        mpSteadyState = dynamic_cast<CSteadyStateTask *>((*pDataModel->getTaskList())["Steady-State"]);
+        mpSteadyState = dynamic_cast<CSteadyStateTask *>(&pDataModel->getTaskList()->operator[]("Steady-State"));
     }
 
   success &= CCopasiTask::initialize(of, pOutputHandler, pOstream);

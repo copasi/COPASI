@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -49,9 +49,9 @@ CQMergingData::~CQMergingData()
   // no need to delete child widgets, Qt does it all for us
 }
 
-void CQMergingData::fillTree(QTreeWidget* pW, const CModel* pModel, std::map<QTreeWidgetItem*, CCopasiObject*> & itemMap,
+void CQMergingData::fillTree(QTreeWidget* pW, const CModel* pModel, std::map< QTreeWidgetItem *, const CCopasiObject * > & itemMap,
                              bool flagGlobalQuantities, bool flagReactions,
-                             const std::set<CCopasiObject*> & added,
+                             const std::set< const CCopasiObject * > & added,
                              bool highlightInvolved)
 {
   itemMap.clear();
@@ -67,12 +67,12 @@ void CQMergingData::fillTree(QTreeWidget* pW, const CModel* pModel, std::map<QTr
 
   for (i = 0; i < imax; ++i)
     {
-      CCopasiObject * pObj = pModel->getCompartments()[i];
+      const CCopasiObject * pObj = &pModel->getCompartments()[i];
       QTreeWidgetItem * pItem = new QTreeWidgetItem((QTreeWidget*)NULL, 1000);
       pItem->setText(0,  FROM_UTF8(pObj->getObjectName()));
 
       //highlight new objects
-      std::set<CCopasiObject*>::const_iterator it = added.find(pObj);
+      std::set<const CCopasiObject * >::const_iterator it = added.find(pObj);
 
       if (it != added.end())
         {
@@ -93,17 +93,17 @@ void CQMergingData::fillTree(QTreeWidget* pW, const CModel* pModel, std::map<QTr
 
       //add species
       //QTreeWidgetItem * pChild;
-      size_t j, jmax = pModel->getCompartments()[i]->getMetabolites().size();
+      size_t j, jmax = pModel->getCompartments()[i].getMetabolites().size();
 
       for (j = 0; j < jmax; ++j)
         {
-          pObj = pModel->getCompartments()[i]->getMetabolites()[j];
+          pObj = &pModel->getCompartments()[i].getMetabolites()[j];
           QTreeWidgetItem * pChild = new QTreeWidgetItem(pItem, 1001);
           pChild->setText(0,  FROM_UTF8(pObj->getObjectName()));
           pW->setFirstItemColumnSpanned(pChild, true);
 
           //highlight new objects
-          std::set<CCopasiObject*>::const_iterator it = added.find(pObj);
+          std::set< const CCopasiObject * >::const_iterator it = added.find(pObj);
 
           if (it != added.end())
             {
@@ -136,13 +136,13 @@ void CQMergingData::fillTree(QTreeWidget* pW, const CModel* pModel, std::map<QTr
 
       for (j = 0; j < jmax; ++j)
         {
-          CCopasiObject * pObj = pModel->getModelValues()[j];
+          const CCopasiObject * pObj = &pModel->getModelValues()[j];
           QTreeWidgetItem * pChild = new QTreeWidgetItem(pItem, 1001);
           pChild->setText(0,  FROM_UTF8(pObj->getObjectName()));
           pW->setFirstItemColumnSpanned(pChild, true);
 
           //highlight new objects
-          std::set<CCopasiObject*>::const_iterator it = added.find(pObj);
+          std::set< const CCopasiObject * >::const_iterator it = added.find(pObj);
 
           if (it != added.end())
             {
@@ -178,7 +178,7 @@ void CQMergingData::fillTree(QTreeWidget* pW, const CModel* pModel, std::map<QTr
 
       for (j = 0; j < jmax; ++j)
         {
-          CCopasiObject * pObj = pModel->getReactions()[j];
+          const CCopasiObject * pObj = &pModel->getReactions()[j];
           QTreeWidgetItem * pChild = new QTreeWidgetItem(pItem, 1001);
           pChild->setText(0,  FROM_UTF8(pObj->getObjectName()));
           pW->setFirstItemColumnSpanned(pChild, false);
@@ -192,7 +192,7 @@ void CQMergingData::fillTree(QTreeWidget* pW, const CModel* pModel, std::map<QTr
           pChild->setFont(1, tmpFontSmall);
 
           //highlight new objects
-          std::set<CCopasiObject*>::const_iterator it = added.find(pObj);
+          std::set< const CCopasiObject * >::const_iterator it = added.find(pObj);
 
           if (it != added.end())
             {
@@ -219,9 +219,9 @@ void CQMergingData::fillTree(QTreeWidget* pW, const CModel* pModel, std::map<QTr
 void CQMergingData::treeSelectionChanged()
 {
   // only enable the merging button if the selected items match and are not identical
-  CCopasiObject* p1 = NULL;
-  CCopasiObject* p2 = NULL;
-  std::map<QTreeWidgetItem*, CCopasiObject*>::const_iterator it;
+  const CCopasiObject* p1 = NULL;
+  const CCopasiObject* p2 = NULL;
+  std::map< QTreeWidgetItem *, const CCopasiObject * >::const_iterator it;
   it = mItemMap1.find(mpTree1->currentItem());
 
   if (it != mItemMap1.end())
@@ -243,10 +243,10 @@ void CQMergingData::load()
 
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
 
-  mpModel = (*CCopasiRootContainer::getDatamodelList())[0]->getModel();
+  mpModel = CCopasiRootContainer::getDatamodelList()->operator[](0).getModel();
 
-  fillTree(mpTree1, mpModel, mItemMap1, true, true, (*CCopasiRootContainer::getDatamodelList())[0]->mLastAddedObjects, true);
-  fillTree(mpTree2, mpModel, mItemMap2, true, true, (*CCopasiRootContainer::getDatamodelList())[0]->mLastAddedObjects, false);
+  fillTree(mpTree1, mpModel, mItemMap1, true, true, CCopasiRootContainer::getDatamodelList()->operator[](0).mLastAddedObjects, true);
+  fillTree(mpTree1, mpModel, mItemMap1, true, true, CCopasiRootContainer::getDatamodelList()->operator[](0).mLastAddedObjects, false);
 
   treeSelectionChanged();
 }
@@ -254,10 +254,10 @@ void CQMergingData::load()
 void CQMergingData::slotBtnMerge()
 {
   //simple, preliminary
-  CCopasiObject* p1 = NULL;
-  CCopasiObject* p2 = NULL;
+  const CCopasiObject* p1 = NULL;
+  const CCopasiObject* p2 = NULL;
 
-  std::map<QTreeWidgetItem*, CCopasiObject*>::const_iterator it;
+  std::map< QTreeWidgetItem *, const CCopasiObject * >::const_iterator it;
   it = mItemMap1.find(mpTree1->currentItem());
 
   if (it != mItemMap1.end())
@@ -291,7 +291,7 @@ void CQMergingData::slotBtnMerge()
 
   //TODO it would be better to check this constantly and disable the merge button accordingly
 
-  //pModel = (*CCopasiRootContainer::getDatamodelList())[0]->getModel();
+  //pModel = &CCopasiRootContainer::getDatamodelList()->operator[](0).getModel();
   CModelExpansion expa(mpModel);
   CModelExpansion::ElementsMap emap;
   emap.add(p1, p2);

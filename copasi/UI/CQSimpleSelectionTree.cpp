@@ -147,7 +147,7 @@ void CQSimpleSelectionTree::populateTree(const CModel * pModel,
 
   for (counter = maxCount; counter != 0; --counter)
     {
-      const CMetab* metab = metabolites[counter - 1];
+      const CMetab* metab = &metabolites[counter - 1];
       std::string name = metab->getObjectName();
       bool unique = isMetaboliteNameUnique(name, metabolites);
 
@@ -223,7 +223,7 @@ void CQSimpleSelectionTree::populateTree(const CModel * pModel,
 
   for (counter = maxCount; counter != 0; --counter)
     {
-      const CReaction* react = reactions[counter - 1];
+      const CReaction* react = &reactions[counter - 1];
       std::string name = "flux(" + react->getObjectName() + ")";
 
       pObject = static_cast< const CCopasiObject * >(react->getObject(CCopasiObjectName("Reference=Flux")));
@@ -277,7 +277,7 @@ void CQSimpleSelectionTree::populateTree(const CModel * pModel,
 
   for (counter = maxCount; counter != 0; --counter)
     {
-      const CModelEntity* object = objects[counter - 1];
+      const CModelEntity* object = &objects[counter - 1];
       std::string name = object->getObjectName();
 
       pObject = object->getInitialValueReference();
@@ -314,7 +314,7 @@ void CQSimpleSelectionTree::populateTree(const CModel * pModel,
 
   for (counter = maxCount; counter != 0; --counter)
     {
-      const CModelEntity* object = objects2[counter - 1];
+      const CModelEntity* object = &objects2[counter - 1];
       std::string name = object->getObjectName();
 
       pObject = object->getInitialValueReference();
@@ -408,10 +408,10 @@ void CQSimpleSelectionTree::populateTree(const CModel * pModel,
   // Metabolic Control Analysis
   CCopasiTask *task;
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
+  CCopasiDataModel* pDataModel = &CCopasiRootContainer::getDatamodelList()->operator[](0);
   assert(pDataModel != NULL);
   // MCA
-  task = dynamic_cast<CCopasiTask*>((*pDataModel->getTaskList())["Metabolic Control Analysis"]);
+  task = dynamic_cast<CCopasiTask*>(&pDataModel->getTaskList()->operator[]("Metabolic Control Analysis"));
 
   try
     {
@@ -442,7 +442,7 @@ void CQSimpleSelectionTree::populateTree(const CModel * pModel,
     {}
 
 // TSSA
-  task = dynamic_cast<CCopasiTask*>((*pDataModel->getTaskList())["Time Scale Separation Analysis"]);
+  task = dynamic_cast<CCopasiTask*>(&pDataModel->getTaskList()->operator[]("Time Scale Separation Analysis"));
 
   try
     {
@@ -491,7 +491,7 @@ void CQSimpleSelectionTree::populateTree(const CModel * pModel,
     {}
 
   // Steady State
-  task = dynamic_cast<CCopasiTask *>((*pDataModel->getTaskList())["Steady-State"]);
+  task = dynamic_cast<CCopasiTask *>(&pDataModel->getTaskList()->operator[]("Steady-State"));
 
   try
     {
@@ -520,9 +520,9 @@ void CQSimpleSelectionTree::populateTree(const CModel * pModel,
     {}
 
 #ifdef WITH_ANALYTICS  // Analytics
-  task = dynamic_cast<CCopasiTask *>((*pDataModel->getTaskList())["Analytics"]);
+  task = dynamic_cast<CCopasiTask *>((&pDataModel->getTaskList()->operator[]("Analytics"]);
 
-  try
+                                     try
     {
       if (task && task->updateMatrices())
         {
@@ -551,9 +551,9 @@ void CQSimpleSelectionTree::populateTree(const CModel * pModel,
 #endif // WITH_ANALYTICS
 
   // Sensitivities
-  task = dynamic_cast<CCopasiTask *>((*pDataModel->getTaskList())["Sensitivities"]);
+  task = dynamic_cast<CCopasiTask *>(&pDataModel->getTaskList()->operator[]("Sensitivities"));
 
-  try
+         try
     {
       if (task && task->updateMatrices())
         {
@@ -582,9 +582,9 @@ void CQSimpleSelectionTree::populateTree(const CModel * pModel,
     {}
 
   if (selectionMode() == QAbstractItemView::NoSelection)
-    {
-      // see if some objects are there, if yes set to single selection
-      QTreeWidgetItemIterator it(this);
+  {
+    // see if some objects are there, if yes set to single selection
+    QTreeWidgetItemIterator it(this);
 
       while (*it)
         {
@@ -903,7 +903,7 @@ bool CQSimpleSelectionTree::isMetaboliteNameUnique(const std::string & name, con
 
   for (counter = 0; counter < metabolites.size(); ++counter)
     {
-      const std::string& thisName = metabolites[counter]->getObjectName();
+      const std::string& thisName = metabolites[counter].getObjectName();
 
       if (name == thisName)
         {

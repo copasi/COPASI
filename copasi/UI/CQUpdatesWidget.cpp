@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -95,7 +95,7 @@ CQUpdatesWidget::~CQUpdatesWidget()
 void CQUpdatesWidget::loadWidget()
 {
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CModel* pModel = (*CCopasiRootContainer::getDatamodelList())[0]->getModel();
+  CModel* pModel = CCopasiRootContainer::getDatamodelList()->operator[](0).getModel();
 
   if (!pModel) return;
 
@@ -165,7 +165,7 @@ void CQUpdatesWidget::loadObjectsTable(CModel* pModel)
     {
       mpTableObj->setVerticalHeaderItem((int) i, new QTableWidgetItem(QString::number(i)));
 
-      CMetab* pM = pModel->getMetabolites()[i];
+      CMetab* pM = &pModel->getMetabolites()[i];
 
       QColor c(100, 100, 100);
 
@@ -204,7 +204,7 @@ void CQUpdatesWidget::loadObjectsTable(CModel* pModel)
 
   for (i = 0; i < imax; ++i)
     {
-      CMetab* pM = pModel->getMetabolitesX()[i];
+      CMetab* pM = &pModel->getMetabolitesX()[i];
 
       QColor c(100, 100, 100);
 

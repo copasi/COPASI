@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -265,7 +265,7 @@ public:
    * Converts the scaling name to the corresponding enum.
    * @return const char* scaleName
    */
-  const char* convertScaleToScaleName(Scale scale);
+  const char* convertScaleToScaleName(Scale scale) const;
 
   /**
    * Checks whether the object the slider points to actually

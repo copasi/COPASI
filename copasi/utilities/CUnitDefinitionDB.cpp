@@ -74,7 +74,7 @@ bool CUnitDefinitionDB::add(CUnitDefinition * src, bool adopt)
 //virtual
 void CUnitDefinitionDB::remove(const size_t & index)
 {
-  remove(operator [](index));
+  remove(&operator [](index));
 }
 
 //virtual
@@ -93,7 +93,7 @@ bool CUnitDefinitionDB::remove(CCopasiObject * pObject)
 //virtual
 void CUnitDefinitionDB::remove(const std::string & name)
 {
-  remove(operator [](name));
+  remove(&operator [](name));
 }
 
 bool CUnitDefinitionDB::containsSymbol(std::string symbol)

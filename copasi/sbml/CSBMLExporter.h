@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -60,9 +60,9 @@ protected:
   SBMLDocument* mpSBMLDocument;
   unsigned int mSBMLLevel;
   unsigned int mSBMLVersion;
-  std::vector<CModelEntity*> mAssignmentVector;
-  std::vector<CModelEntity*> mODEVector;
-  std::vector<CModelEntity*> mInitialAssignmentVector;
+  std::vector<const CModelEntity*> mAssignmentVector;
+  std::vector<const CModelEntity*> mODEVector;
+  std::vector<const CModelEntity*> mInitialAssignmentVector;
   std::map<const CCopasiObject*, SBase*> mCOPASI2SBMLMap;
   std::set<SBase*> mHandledSBMLObjects;
   std::set<CFunction*> mUsedFunctions;
@@ -282,7 +282,7 @@ protected:
   /**
    * Creates the compartment for the given COPASI compartment.
    */
-  void createCompartment(CCompartment& compartment);
+  void createCompartment(const CCompartment& compartment);
 
   /**
    * Creates the compartments for the model.
@@ -292,7 +292,7 @@ protected:
   /**
    * Creates the species for the given COPASI metabolite.
    */
-  void createMetabolite(CMetab& metab);
+  void createMetabolite(const CMetab& metab);
 
   /**
    * Creates the parameters for the model.
@@ -302,7 +302,7 @@ protected:
   /**
    * Creates the parameter for the given COPASI parameter.
    */
-  void createParameter(CModelValue& parameter);
+  void createParameter(const CModelValue& parameter);
 
   /**
    * Creates the reactions for the model.
@@ -312,7 +312,7 @@ protected:
   /**
    * Creates the reaction for the given COPASI reaction.
    */
-  void createReaction(CReaction& reaction, CCopasiDataModel& dataModel);
+  void createReaction(const CReaction& reaction, CCopasiDataModel& dataModel);
 
   /**
    * Creates the initial assignments for the model.
@@ -506,7 +506,7 @@ protected:
    * Create the kinetic law for the given reaction.
    * On failure NULL is returned.
    */
-  KineticLaw* createKineticLaw(CReaction& reaction, CCopasiDataModel& dataModel,
+  KineticLaw* createKineticLaw(const CReaction& reaction, CCopasiDataModel& dataModel,
                                unsigned int level, unsigned int version);
 
   /**
@@ -569,7 +569,7 @@ protected:
   /**
    * Sorts the rules.
    */
-  std::vector<CModelEntity*> orderRules(const CCopasiDataModel& dataModel);
+  std::vector<const CModelEntity*> orderRules(const CCopasiDataModel& dataModel);
 
   /**
    * Creates a new COPASI2SBMLMap baed on the old map and the copied
@@ -585,7 +585,7 @@ protected:
   /**
    * Creates an SBML Event for the given COPASI event.
    */
-  void createEvent(CEvent& event, Event* pSBMLEvent, CCopasiDataModel& dataModel);
+  void createEvent(const CEvent& event, Event* pSBMLEvent, CCopasiDataModel& dataModel);
 
   /**
    * This method creates the individual event assignments for the given

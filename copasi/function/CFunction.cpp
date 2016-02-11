@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -318,7 +318,7 @@ bool CFunction::isSuitable(const size_t noSubstrates,
   return true;
 }
 
-bool CFunction::completeFunctionList(std::vector< CFunction * > & list,
+bool CFunction::completeFunctionList(std::vector< const CFunction * > & list,
                                      const size_t & added)
 {
   unsigned Added = 0;
@@ -326,7 +326,7 @@ bool CFunction::completeFunctionList(std::vector< CFunction * > & list,
   size_t i, imax = list.size();
   size_t Index;
 
-  CEvaluationTree * pTree;
+  const CEvaluationTree * pTree;
   std::vector< CEvaluationNode * >::const_iterator it;
   std::vector< CEvaluationNode * >::const_iterator end;
 
@@ -341,9 +341,9 @@ bool CFunction::completeFunctionList(std::vector< CFunction * > & list,
         {
           if (((*it)->getType() & 0xFF000000) == CEvaluationNode::CALL &&
               (Index = Functions.getIndex((*it)->getData())) != C_INVALID_INDEX &&
-              list.end() == std::find(list.begin(), list.end(), Functions[Index]))
+              list.end() == std::find(list.begin(), list.end(), &Functions[Index]))
             {
-              list.push_back(Functions[Index]);
+              list.push_back(&Functions[Index]);
               Added++;
             }
         }

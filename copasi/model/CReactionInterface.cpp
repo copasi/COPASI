@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -111,7 +111,7 @@ void CReactionInterface::initFromReaction(const std::string & key)
 
 void CReactionInterface::initFromReaction(const C_INT32 index)
 {
-  const CReaction *rea = mpModel->getReactions()[index];
+  const CReaction *rea = &mpModel->getReactions()[index];
 
   mReactionReferenceKey = rea->getKey();
   assert(rea);
@@ -298,13 +298,13 @@ bool CReactionInterface::writeBackToReaction(CReaction * rea)
             else
               {
                 rea->setParameterValue(getParameterName(i), mValues[i], false);
-                rea->setParameterMapping(i, mpModel->getModelValues()[mNameMap[i][0]]->getKey());
+                rea->setParameterMapping(i, mpModel->getModelValues()[mNameMap[i][0]].getKey());
               }
 
             break;
 
           case CFunctionParameter::VOLUME:
-            rea->setParameterMapping(i, mpModel->getCompartments()[mNameMap[i][0]]->getKey());
+            rea->setParameterMapping(i, mpModel->getCompartments()[mNameMap[i][0]].getKey());
             break;
 
           case CFunctionParameter::TIME:
@@ -766,7 +766,7 @@ CReactionInterface::connectNonMetabolites()
           case CFunctionParameter::PARAMETER:
 
             if (mpModel->getModelValues().size() == 1)
-              mNameMap[i][0] = mpModel->getModelValues()[0]->getObjectName();
+              mNameMap[i][0] = mpModel->getModelValues()[0].getObjectName();
 
             break;
 

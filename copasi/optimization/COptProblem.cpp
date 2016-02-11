@@ -206,7 +206,7 @@ bool COptProblem::elevateChildren()
       if (Index != C_INVALID_INDEX)
         {
           pObjectiveFunction =
-            dynamic_cast<CExpression *>(CCopasiRootContainer::getFunctionList()->loadedFunctions()[Index]);
+            dynamic_cast<CExpression *>(&CCopasiRootContainer::getFunctionList()->loadedFunctions()[Index]);
         }
 
       if (pObjectiveFunction != NULL &&
@@ -739,9 +739,9 @@ bool COptProblem::setSubtaskType(const CTaskEnum::Task & subtaskType)
       size_t i, imax = pTasks->size();
 
       for (i = 0; i < imax; i++)
-        if ((*pTasks)[i]->getType() == subtaskType)
+        if (pTasks->operator[](i).getType() == subtaskType)
           {
-            mpSubtask = (*pTasks)[i];
+            mpSubtask = &pTasks->operator[](i);
             *mpParmSubtaskCN = mpSubtask->getCN();
             return true;
           }

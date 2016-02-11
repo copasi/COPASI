@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -474,32 +474,32 @@ bool CSensMethod::initialize(CSensProblem* problem)
 
       case CSensProblem::SteadyState:
         mpSubTask = dynamic_cast<CCopasiTask*>
-                    ((*pDataModel->getTaskList())["Steady-State"]);
+                    (&pDataModel->getTaskList()->operator[]("Steady-State"));
         break;
 
       case CSensProblem::TimeSeries:
         mpSubTask = dynamic_cast<CCopasiTask*>
-                    ((*pDataModel->getTaskList())["Time-Course"]);
+                    (&pDataModel->getTaskList()->operator[]("Time-Course"));
         break;
 
         /*    case CSensProblem::LyapunovExp:
               mpSubTask = dynamic_cast<CCopasiTask*>
-                          ((*pDataModel->getTaskList())["Lyapunov Exponents"]);
+                          (&pDataModel->getTaskList()->operator[]("Lyapunov Exponents"));
               break;*/
 
       case CSensProblem::ParameterEstimation:
         mpSubTask = dynamic_cast<CCopasiTask*>
-                    ((*pDataModel->getTaskList())["Parameter Estimation"]);
+                    (&pDataModel->getTaskList()->operator[]("Parameter Estimation"));
         break;
 
       case CSensProblem::Optimization:
         mpSubTask = dynamic_cast<CCopasiTask*>
-                    ((*pDataModel->getTaskList())["Optimization"]);
+                    (&pDataModel->getTaskList()->operator[]("Optimization"));
         break;
 
       case CSensProblem::CrossSection:
         mpSubTask = dynamic_cast<CCopasiTask*>
-                    ((*pDataModel->getTaskList())["Cross Section"]);
+                    (&pDataModel->getTaskList()->operator[]("Cross Section"));
         break;
     }
 

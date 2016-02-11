@@ -51,7 +51,7 @@ CReportDefinition* CReportDefinitionVector::createReportDefinition(const std::st
   size_t i;
 
   for (i = 0; i < size(); i++)
-    if ((*this)[i]->getObjectName() == name)
+    if (operator[](i).getObjectName() == name)
       return NULL; // duplicate name
 
   CReportDefinition* pNewReportDef = new CReportDefinition(name, this);

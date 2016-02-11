@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -272,9 +272,9 @@ void CQLayoutMainWindow::loadSBMLFile()
   CListOfLayouts *pLayoutList;
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
 
-  if ((*CCopasiRootContainer::getDatamodelList())[0] != NULL)
+  if (&CCopasiRootContainer::getDatamodelList()->operator[](0) != NULL)
     {
-      pLayoutList = (*CCopasiRootContainer::getDatamodelList())[0]->getListOfLayouts();
+      pLayoutList = CCopasiRootContainer::getDatamodelList()->operator[](0).getListOfLayouts();
     }
   else
     pLayoutList = NULL;
@@ -287,7 +287,7 @@ void CQLayoutMainWindow::loadSBMLFile()
 
       if (pLayoutList->size() > 0)
         {
-          pLayout = (*pLayoutList)[0];
+          pLayout = &pLayoutList->operator[](0);
           mpGLViewport->createGraph(pLayout); // create local data structures
         }
     }

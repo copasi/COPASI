@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -49,7 +49,7 @@ public:
 
   static void readListOfLayouts(CListOfLayouts & lol,
                                 const ListOf & sbmlList,
-                                const std::map<CCopasiObject*, SBase*> & copasimodelmap);
+                                const std::map<const CCopasiObject*, SBase*> & copasimodelmap);
 
   // createLayout is now needed by the code for the CellDesigner import
   static CLayout * createLayout(const Layout & sbmlLayout,
@@ -83,7 +83,7 @@ public:
 
     for (i = 0; i < iMax; ++i)
       {
-        pRI = list[i];
+        pRI = &list[i];
 
         if (pRI->getReferenceRenderInformationKey().find_first_not_of(" \t\n\r") != std::string::npos)
           {

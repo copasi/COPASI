@@ -1,4 +1,4 @@
-// Copyright (C) 2014 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2014 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -32,10 +32,10 @@ RemoveAllReactionRowsCommand::RemoveAllReactionRowsCommand(
 
   for (int i = 0; i != pReaDM->rowCount() - 1; ++i)
     {
-      if (pModel->getReactions()[i] == NULL)
+      if (&pModel->getReactions()[i] == NULL)
         continue;
 
-      UndoReactionData *data = new UndoReactionData(pModel->getReactions()[i]);
+      UndoReactionData *data = new UndoReactionData(&pModel->getReactions()[i]);
       mpReaData.append(data);
     }
 
@@ -64,5 +64,4 @@ RemoveAllReactionRowsCommand::~RemoveAllReactionRowsCommand()
     pdelete(data);
   }
   mpReaData.clear();
-
 }

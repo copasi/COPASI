@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -87,7 +87,7 @@ int main()
   CCopasiVectorN< CCopasiTask > & TaskList = * pDataModel->getTaskList();
 
   // get the optimization task
-  COptTask* pOptTask = dynamic_cast<COptTask*>(TaskList["Optimization"]);
+  COptTask* pOptTask = dynamic_cast<COptTask*>(&TaskList["Optimization"]);
   assert(pOptTask != NULL);
   // we want to use Levenberg-Marquardt as the optimization method
   pOptTask->setMethodType(CTaskEnum::LevenbergMarquardt);
@@ -97,7 +97,7 @@ int main()
   assert(pOptProblem != NULL);
   pOptProblem->setSubtaskType(CTaskEnum::timeCourse);
 
-  CTrajectoryTask* pTimeCourseTask = dynamic_cast<CTrajectoryTask*>(TaskList["Time-Course"]);
+  CTrajectoryTask* pTimeCourseTask = dynamic_cast<CTrajectoryTask*>(&TaskList["Time-Course"]);
   assert(pTimeCourseTask != NULL);
   // since for this example it really doesn't matter how long we run the time course
   // we run for 1 second and calculate 10 steps

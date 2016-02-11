@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -122,10 +122,10 @@ std::set< const CCompartment * > CChemEq::getCompartments() const
 
   for (; it != end; ++it)
     {
-      if ((*it)->getMetabolite() == NULL)
+      if (it->getMetabolite() == NULL)
         continue;
 
-      if ((pCompartment = (*it)->getMetabolite()->getCompartment()) != NULL)
+      if ((pCompartment = it->getMetabolite()->getCompartment()) != NULL)
         {
           Compartments.insert(pCompartment);
         }
@@ -144,9 +144,9 @@ const CCompartment * CChemEq::getLargestCompartment() const
 
   for (i = 0, imax = mSubstrates.size(); i < imax; i++)
     {
-      if (!mSubstrates[i]->getMetabolite()) continue;
+      if (!mSubstrates[i].getMetabolite()) continue;
 
-      tmp = mSubstrates[i]->getMetabolite()->getCompartment()->getValue();
+      tmp = mSubstrates[i].getMetabolite()->getCompartment()->getValue();
 
       if (tmp > maxVol)
         {
@@ -157,9 +157,9 @@ const CCompartment * CChemEq::getLargestCompartment() const
 
   for (i = 0, imax = mProducts.size(); i < imax; i++)
     {
-      if (!mProducts[i]->getMetabolite()) continue;
+      if (!mProducts[i].getMetabolite()) continue;
 
-      tmp = mProducts[i]->getMetabolite()->getCompartment()->getValue();
+      tmp = mProducts[i].getMetabolite()->getCompartment()->getValue();
 
       if (tmp > maxVol)
         {
@@ -169,10 +169,10 @@ const CCompartment * CChemEq::getLargestCompartment() const
     }
 
   if (indexProducts != C_INVALID_INDEX)
-    return mProducts[indexProducts]->getMetabolite()->getCompartment();
+    return mProducts[indexProducts].getMetabolite()->getCompartment();
 
   if (indexSubstrates != C_INVALID_INDEX)
-    return mSubstrates[indexSubstrates]->getMetabolite()->getCompartment();
+    return mSubstrates[indexSubstrates].getMetabolite()->getCompartment();
 
   return NULL;
 }
@@ -189,7 +189,7 @@ void CChemEq::addElement(CCopasiVector < CChemEqElement > & structure,
     return; // don�t add empty element
 
   for (i = 0; i < structure.size(); i++)
-    if (key == structure[i]->getMetaboliteKey())
+    if (key == structure[i].getMetaboliteKey())
       break;
 
   if (i >= structure.size())
@@ -202,9 +202,9 @@ void CChemEq::addElement(CCopasiVector < CChemEqElement > & structure,
       structure.add(Element, true);
     }
   else if (role == CChemEq::SUBSTRATE)
-    structure[i]->addToMultiplicity(- element.getMultiplicity());
+    structure[i].addToMultiplicity(- element.getMultiplicity());
   else
-    structure[i]->addToMultiplicity(element.getMultiplicity());
+    structure[i].addToMultiplicity(element.getMultiplicity());
 }
 
 size_t CChemEq::getMolecularity(const MetaboliteRole role) const
@@ -234,7 +234,7 @@ size_t CChemEq::getMolecularity(const MetaboliteRole role) const
   ccc = 0;
 
   for (i = 0; i < imax; ++i)
-    ccc += (size_t) floor((*tmpVector)[i]->getMultiplicity());
+    ccc += (size_t) floor((*tmpVector)[i].getMultiplicity());
 
   return ccc;
 }
@@ -293,7 +293,7 @@ bool CChemEq::setMultiplicity(const CMetab* pMetab, C_FLOAT64 newMult, Metabolit
 
       while (it != endit)
         {
-          if ((*it)->getMetaboliteKey() == key)
+          if (it->getMetaboliteKey() == key)
             {
               break;
             }
@@ -308,16 +308,16 @@ bool CChemEq::setMultiplicity(const CMetab* pMetab, C_FLOAT64 newMult, Metabolit
       else
         {
           // set the new multiplicity and update the balances
-          C_FLOAT64 diff = newMult - (*it)->getMultiplicity();
+          C_FLOAT64 diff = newMult - it->getMultiplicity();
 
           // we only make changes if there actually is a difference
           if (fabs(diff) > 1e-9)
             {
               // we have to add the difference between the new and the old
               // multiplicity to the balances
-              (*it)->setMultiplicity(newMult);
+              it->setMultiplicity(newMult);
               // copy the element
-              CChemEqElement tmp(**it);
+              CChemEqElement tmp(*it);
               // set the difference of the multiplicities
               // as the multiplicity of the copy
               tmp.setMultiplicity(diff);

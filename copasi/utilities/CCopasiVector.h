@@ -22,6 +22,8 @@
 #include <vector>
 #include <string>
 #include <iostream>
+#include <iterator>
+#include <cstddef>
 
 #include "utilities/CCopasiMessage.h"
 #include "utilities/utility.h"
@@ -44,9 +46,165 @@ template < class CType > class CCopasiVector:
   protected std::vector< CType * >, public CCopasiContainer
 {
 public:
-  typedef typename std::vector< CType * >::value_type value_type;
-  typedef typename std::vector< CType * >::iterator iterator;
-  typedef typename std::vector< CType * >::const_iterator const_iterator;
+  // typedef typename std::vector< CType * >::value_type value_type;
+  // typedef typename std::vector< CType * >::iterator iterator;
+  // typedef typename std::vector< CType * >::const_iterator const_iterator;
+
+public:
+  class iterator: public std::vector< CType * >::iterator
+  {
+  public:
+    iterator(): std::vector< CType * >::iterator() {}
+
+    iterator(const iterator & src): std::vector< CType * >::iterator(src) {}
+
+    iterator(const typename std::vector< CType * >::iterator & src): std::vector< CType * >::iterator(src) {}
+
+    ~iterator() {}
+
+    CType & operator*() const
+    {
+      return *std::vector< CType * >::iterator::operator*();
+    }
+
+    CType * operator->() const
+    {
+      return std::vector< CType * >::iterator::operator*();
+    }
+
+    operator CType * () const
+    {
+      return std::vector< CType * >::iterator::operator*();
+    }
+
+    iterator & operator=(CType * pType)
+    {
+      std::vector< CType * >::iterator::operator*() = pType;
+      return *this;
+    }
+
+    iterator & operator++()
+    {
+      std::vector< CType * >::iterator::operator++();
+      return *this;
+    }
+
+    iterator operator++(int)
+    {
+      return iterator(std::vector< CType * >::iterator::operator++());
+    }
+
+    iterator & operator--()
+    {
+      std::vector< CType * >::iterator::operator--();
+      return *this;
+    }
+
+    iterator operator--(int)
+    {
+      return iterator(std::vector< CType * >::iterator::operator--());
+    }
+
+    iterator & operator+=(const typename std::vector< CType * >::iterator::difference_type & n)
+    {
+      std::vector< CType * >::iterator::operator+=(n);
+      return *this;
+    }
+
+    iterator operator+(const typename std::vector< CType * >::iterator::difference_type & n) const
+    {
+      return iterator(std::vector< CType * >::iterator::operator+(n));
+    }
+
+    iterator & operator-=(const typename std::vector< CType * >::iterator::difference_type & n)
+    {
+      std::vector< CType * >::iterator::operator-=(n);
+      return *this;
+    }
+
+    iterator operator-(const typename std::vector< CType * >::iterator::difference_type & n) const
+    {
+      return iterator(std::vector< CType * >::iterator::operator-(n));
+    }
+  };
+
+  class const_iterator: public std::vector< CType * >::const_iterator
+  {
+  public:
+    const_iterator(): std::vector< CType * >::const_iterator() {}
+
+    const_iterator(const const_iterator & src): std::vector< CType * >::const_iterator(src) {}
+
+    const_iterator(const iterator & src): std::vector< CType * >::const_iterator(src) {}
+
+    const_iterator(const typename std::vector< CType * >::const_iterator & src): std::vector< CType * >::const_iterator(src) {}
+
+    ~const_iterator() {}
+
+    const CType & operator*() const
+    {
+      return *std::vector< CType * >::const_iterator::operator*();
+    }
+
+    const CType * operator->() const
+    {
+      return std::vector< CType * >::const_iterator::operator*();
+    }
+
+    operator const CType * () const
+    {
+      return std::vector< CType * >::const_iterator::operator*();
+    }
+
+    const_iterator & operator++()
+    {
+      std::vector< CType * >::const_iterator::operator++();
+      return *this;
+    }
+
+    const_iterator operator++(int)
+    {
+      return const_iterator(std::vector< CType * >::const_iterator::operator++());
+    }
+
+    const_iterator & operator--()
+    {
+      std::vector< CType * >::const_iterator::operator--();
+      return *this;
+    }
+
+    const_iterator operator--(int)
+    {
+      return const_iterator(std::vector< CType * >::const_iterator::operator--());
+    }
+
+    const_iterator & operator+=(const typename std::vector< CType * >::const_iterator::difference_type & n)
+    {
+      std::vector< CType * >::const_iterator::operator+=(n);
+      return *this;
+    }
+
+    const_iterator operator+(const typename std::vector< CType * >::const_iterator::difference_type & n) const
+    {
+      return const_iterator(std::vector< CType * >::const_iterator::operator+(n));
+    }
+
+    const_iterator & operator-=(const typename std::vector< CType * >::const_iterator::difference_type & n)
+    {
+      std::vector< CType * >::const_iterator::operator-=(n);
+      return *this;
+    }
+
+    const_iterator operator-(const typename std::vector< CType * >::const_iterator::difference_type & n) const
+    {
+      return const_iterator(std::vector< CType * >::const_iterator::operator-(n));
+    }
+
+    CType * constCast()
+    {
+      return const_cast< CType * >(std::vector< CType * >::const_iterator::operator*());
+    }
+  };
 
   // Operations
 
@@ -85,14 +243,14 @@ public:
       {
         try
           {
-            *Target = new CType(**Source, this);
+            Target = new CType(*Source, this);
           }
         catch (...)
           {
-            *Target = NULL;
+            Target = NULL;
           }
 
-        if (*Target == NULL)
+        if (Target == NULL)
           CCopasiMessage ex(CCopasiMessage::EXCEPTION, MCopasiBase + 1, imax * sizeof(CType));
       }
   }
@@ -117,8 +275,8 @@ public:
   {
     cleanup();
 
-    const_iterator it = rhs.begin();
-    const_iterator end = rhs.end();
+    typename std::vector< CType * >::const_iterator it = rhs.begin();
+    typename std::vector< CType * >::const_iterator end = rhs.end();
 
     for (; it != end; ++it)
       add(*it, false);
@@ -162,37 +320,33 @@ public:
       {
         try
           {
-            *Target = new CType(**Source, this);
+            Target = new CType(*Source, this);
           }
         catch (...)
           {
-            *Target = NULL;
+            Target = NULL;
           }
 
-        if (*Target == NULL)
+        if (Target == NULL)
           CCopasiMessage ex(CCopasiMessage::EXCEPTION, MCopasiBase + 1, imax * sizeof(CType));
       }
   }
 
-  iterator begin()
-  {return std::vector< CType * >::begin();}
+  iterator begin() {return iterator(std::vector< CType * >::begin());}
 
-  const_iterator begin() const
-  {return std::vector< CType * >::begin();}
+  const_iterator begin() const  {return const_iterator(std::vector< CType * >::begin());}
 
-  iterator end()
-  {return std::vector< CType * >::end();}
+  iterator end()  {return iterator(std::vector< CType * >::end());}
 
-  const_iterator end() const
-  {return std::vector< CType * >::end();}
+  const_iterator end() const  {return const_iterator(std::vector< CType * >::end());}
 
   /**
    *  Cleanup
    */
   virtual void cleanup()
   {
-    iterator it = begin();
-    iterator End = end();
+    typename std::vector< CType * >::iterator it = std::vector< CType * >::begin();
+    typename std::vector< CType * >::iterator End = std::vector< CType * >::end();
 
     for (; it != End; it++)
       if (*it != NULL &&
@@ -250,10 +404,10 @@ public:
     if (!(indexTo < Size))
       CCopasiMessage ex(CCopasiMessage::EXCEPTION, MCCopasiVector + 3, indexTo, Size - 1);
 
-    iterator from = begin() + indexFrom;
-    iterator to = begin() + indexTo;
+    typename std::vector< CType * >::iterator from = std::vector< CType * >::begin() + indexFrom;
+    typename std::vector< CType * >::iterator to = std::vector< CType * >::begin() + indexTo;
 
-    value_type tmp = *from;
+    typename std::vector< CType * >::value_type tmp = *from;
     *from = *to;
     *to = tmp;
   }
@@ -289,7 +443,7 @@ public:
     if (!(index < size()))
       return;
 
-    iterator Target = begin() + index;
+    typename std::vector< CType * >::iterator Target = std::vector< CType * >::begin() + index;
 
     if (*Target)
       {
@@ -319,7 +473,7 @@ public:
 
     if (index != C_INVALID_INDEX)
       {
-        iterator Target = begin() + index;
+        typename std::vector< CType * >::iterator Target = std::vector< CType * >::begin() + index;
         // Note: erase does not delete pointed to objects
         std::vector< CType * >::erase(Target, Target + 1);
       }
@@ -336,12 +490,12 @@ public:
    * @param const size_t & index
    * @return const value_type & object
    */
-  const value_type & operator[](const size_t & index) const
+  const CType & operator[](const size_t & index) const
   {
     if (!(index < size()))
       CCopasiMessage ex(CCopasiMessage::EXCEPTION, MCCopasiVector + 3, index, size() - 1);
 
-    return *(begin() + index);
+    return **(std::vector< CType *>::begin() + index);
   }
 
   /**
@@ -349,12 +503,12 @@ public:
    * @param const size_t & index
    * @return value_type & object
    */
-  value_type & operator[](const size_t & index)
+  CType & operator[](const size_t & index)
   {
     if (!(index < size()))
       CCopasiMessage ex(CCopasiMessage::EXCEPTION, MCCopasiVector + 3, index, size() - 1);
 
-    return *(begin() + index);
+    return **(std::vector< CType *>::begin() + index);
   }
 
   /**
@@ -368,7 +522,7 @@ public:
 
     if (Index < size())
       {
-        CCopasiObject * pObject = *(begin() + Index);
+        CCopasiObject * pObject = *(std::vector< CType * >::begin() + Index);
 
         if (name.getObjectType() == pObject->getObjectType())
           return pObject; //exact match of type and name
@@ -402,15 +556,15 @@ public:
         std::vector< CType * >::resize(newSize);
 
         size_t i;
-        iterator Target = begin() + OldSize;
+        typename std::vector< CType * >::iterator Target = std::vector< CType * >::begin() + OldSize;
 
         for (i = OldSize; i < newSize; i++, Target++)
           *Target = NULL;
       }
     else
       {
-        iterator Target = begin() + newSize;
-        iterator End = end();
+        typename std::vector< CType * >::iterator Target = std::vector< CType * >::begin() + newSize;
+        typename std::vector< CType * >::iterator End = std::vector< CType * >::end();
 
         for (; Target != End; Target++)
           if (*Target)
@@ -435,8 +589,8 @@ public:
 
     if (OldSize == 0) return; // Nothing to do.
 
-    iterator Target = begin();
-    iterator End = end();
+    typename std::vector< CType * >::iterator Target = std::vector< CType * >::begin();
+    typename std::vector< CType * >::iterator End = std::vector< CType * >::end();
 
     for (; Target != End; Target++)
       if (*Target)
@@ -463,7 +617,7 @@ public:
   virtual size_t getIndex(const CCopasiObject * pObject) const
   {
     size_t i, imax = size();
-    const_iterator Target = begin();
+    typename std::vector< CType * >::const_iterator Target = std::vector< CType * >::begin();
 
     for (i = 0; i < imax; i++, Target++)
       {
@@ -543,11 +697,11 @@ public:
     CCopasiVector< CType >::cleanup();
     CCopasiVector< CType >::resize(size);
 
-    iterator Target = CCopasiVector< CType >::begin();
+    typename std::vector< CType * >::iterator Target = std::vector< CType * >::begin();
 
     for (i = 0; i < size; i++, Target++)*Target = NULL;
 
-    for (i = 0, Target = CCopasiVector< CType >::begin(); i < size; i++, Target++)
+    for (i = 0, Target = std::vector< CType * >::begin(); i < size; i++, Target++)
       {
         try
           {
@@ -569,9 +723,9 @@ public:
 template < class CType > class CCopasiVectorN: public CCopasiVector < CType >
 {
 public:
-  typedef typename std::vector< CType * >::value_type value_type;
-  typedef typename std::vector< CType * >::iterator iterator;
-  typedef typename std::vector< CType * >::const_iterator const_iterator;
+  // typedef typename std::vector< CType * >::value_type value_type;
+  // typedef typename std::vector< CType * >::iterator iterator;
+  // typedef typename std::vector< CType * >::const_iterator const_iterator;
 
   // Operations
 public:
@@ -699,7 +853,7 @@ public:
    * @param const size_t & index
    * @return value_type & object
    */
-  value_type & operator[](const size_t & index)
+  CType & operator[](const size_t & index)
   {return CCopasiVector< CType >::operator[](index);}
 
   /**
@@ -707,7 +861,7 @@ public:
    * @param const size_t & index
    * @return const value_type & object
    */
-  const value_type & operator[](const size_t & index) const
+  const CType & operator[](const size_t & index) const
   {return CCopasiVector< CType >::operator[](index);}
 
   /**
@@ -715,7 +869,7 @@ public:
    * @param const std::string & name
    * @return value_type & object
    */
-  value_type & operator[](const std::string & name)
+  CType & operator[](const std::string & name)
   {
     size_t Index = getIndex(name);
 
@@ -723,7 +877,7 @@ public:
       CCopasiMessage ex(CCopasiMessage::EXCEPTION,
                         MCCopasiVector + 1, name.c_str());
 
-    return *(CCopasiVector< CType >::begin() + Index);
+    return **(std::vector< CType *>::begin() + Index);
   }
 
   /**
@@ -731,7 +885,7 @@ public:
    * @param const std::string & name
    * @return const value_type & object
    */
-  const value_type & operator[](const std::string &name) const
+  const CType & operator[](const std::string &name) const
   {
     size_t Index = getIndex(name);
 
@@ -739,7 +893,7 @@ public:
       CCopasiMessage ex(CCopasiMessage::EXCEPTION,
                         MCCopasiVector + 1, name.c_str());
 
-    return *(CCopasiVector< CType >::begin() + Index);
+    return **(std::vector< CType *>::begin() + Index);
   }
 
   /**
@@ -753,7 +907,7 @@ public:
 
     if (Index == C_INVALID_INDEX) return NULL;
 
-    CCopasiObject * pObject = *(CCopasiVector< CType >::begin() + Index);
+    CCopasiObject * pObject = *(std::vector< CType * >::begin() + Index);
 
     if (name.getObjectType() == pObject->getObjectType())
       return pObject; //exact match of type and name
@@ -782,7 +936,7 @@ public:
   virtual size_t getIndex(const std::string &name) const
   {
     size_t i, imax = CCopasiVector< CType >::size();
-    const_iterator Target = CCopasiVector< CType >::begin();
+    typename std::vector< CType * >::const_iterator Target = std::vector< CType * >::begin();
 
     std::string Name = unQuote(name);
 
@@ -807,11 +961,6 @@ private:
 
 template < class CType > class CCopasiVectorNS: public CCopasiVectorN < CType >
 {
-public:
-  typedef typename std::vector< CType * >::value_type value_type;
-  typedef typename std::vector< CType * >::iterator iterator;
-  typedef typename std::vector< CType * >::const_iterator const_iterator;
-
   // Operations
 public:
   /**
@@ -851,11 +1000,11 @@ public:
     CCopasiVector< CType >::cleanup();
     CCopasiVector< CType >::resize(size);
 
-    iterator Target = CCopasiVector< CType >::begin();
+    typename std::vector< CType * >::iterator Target = std::vector< CType * >::begin();
 
     for (i = 0; i < size; i++, Target++) *Target = NULL;
 
-    for (i = 0, Target = CCopasiVector< CType >::begin(); i < size; i++, Target++)
+    for (i = 0, Target = std::vector< CType * >::begin(); i < size; i++, Target++)
       {
         try
           {
@@ -882,7 +1031,7 @@ std::ostream &operator<<(std::ostream &os, const CCopasiVector<CType> & d)
   unsigned int i;
 
   for (i = 0; i < d.size(); i++)
-    os << "   " << *(d[i]);
+    os << "   " << d[i];
 
   if (d.size() == 0)
     os << "   empty" << std::endl;

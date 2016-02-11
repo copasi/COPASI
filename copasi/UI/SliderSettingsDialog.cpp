@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -404,7 +404,7 @@ void SliderSettingsDialog::browseButtonPressed()
       if (mpSlider == NULL)
         {
           // temporarily add the slider the the first datamodel
-          mpSlider = new CSlider("slider", (*CCopasiRootContainer::getDatamodelList())[0]);
+          mpSlider = new CSlider("slider", &CCopasiRootContainer::getDatamodelList()->operator[](0));
           mpSlider->setSliderObject(const_cast< CCopasiObject * >(pObject));
 
           if (pAncestor)
@@ -540,24 +540,31 @@ void SliderSettingsDialog::updateInternalValues()
       case VALUE:
         objectValueChanged();
         break;
+
       case ORIGVAL:
         originalValueChanged();
         break;
+
       case MIN:
         minValueChanged();
         break;
+
       case MAX:
         maxValueChanged();
         break;
+
       case TICKFACTOR:
         minorMajorFactorChanged();
         break;
+
       case TICKSIZE:
         minorTickSizeChanged();
         break;
+
       case NUMTICKS:
         numMinorTicksChanged();
         break;
+
       default:
         break;
     }

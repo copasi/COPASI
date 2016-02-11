@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -130,6 +130,11 @@ public:
    * returns the reference of the Report Tag
    */
   CReportDefinition* getReportDefinition();
+
+  /**
+   * returns the reference of the Report Tag
+   */
+  const CReportDefinition* getReportDefinition() const;
 
   /**
    * Open the defined target stream or use the given argument

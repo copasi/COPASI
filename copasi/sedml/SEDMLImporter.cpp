@@ -99,8 +99,7 @@ void SEDMLImporter::updateCopasiTaskForSimulation(SedSimulation* sedmlsim,
     {
       case SEDML_SIMULATION_UNIFORMTIMECOURSE:
       {
-
-        CTrajectoryTask *tTask = static_cast<CTrajectoryTask*>((*mpDataModel->getTaskList())["Time-Course"]);
+        CTrajectoryTask *tTask = static_cast<CTrajectoryTask*>(&mpDataModel->getTaskList()->operator[]("Time-Course"));
         tTask->setScheduled(true);
 
         CTrajectoryProblem* tProblem = static_cast<CTrajectoryProblem*>(tTask->getProblem());
@@ -130,7 +129,7 @@ void SEDMLImporter::updateCopasiTaskForSimulation(SedSimulation* sedmlsim,
       case SEDML_SIMULATION_ONESTEP:
       {
 
-        CTrajectoryTask *tTask = static_cast<CTrajectoryTask*>((*mpDataModel->getTaskList())["Time-Course"]);
+        CTrajectoryTask *tTask = static_cast<CTrajectoryTask*>(&mpDataModel->getTaskList()->operator[]("Time-Course"));
         tTask->setScheduled(true);
 
         CTrajectoryProblem* tProblem = static_cast<CTrajectoryProblem*>(tTask->getProblem());
@@ -147,7 +146,7 @@ void SEDMLImporter::updateCopasiTaskForSimulation(SedSimulation* sedmlsim,
       case SEDML_SIMULATION_STEADYSTATE:
       {
         // nothing to be done for this one
-        CSteadyStateTask *tTask = static_cast<CSteadyStateTask*>((*mpDataModel->getTaskList())["Steady-State"]);
+        CSteadyStateTask *tTask = static_cast<CSteadyStateTask*>(&mpDataModel->getTaskList()->operator[]("Steady-State"));
         tTask->setScheduled(true);
 
         // TODO read kisao terms
@@ -237,7 +236,7 @@ void SEDMLImporter::readListOfPlotsFromSedMLOutput(
 {
   size_t i, numOutput = pSEDMLDocument->getNumOutputs();
 
-  std::map<CCopasiObject*, SBase*>& copasiMap = pModel->getObjectDataModel()->getCopasi2SBMLMap();
+  std::map<const CCopasiObject*, SBase*>& copasiMap = pModel->getObjectDataModel()->getCopasi2SBMLMap();
 
   CReportDefinitionVector* pReports = mpDataModel->getReportDefinitionList();
 
@@ -642,7 +641,7 @@ SEDMLImporter::importTasks(std::map<CCopasiObject*, SedBase*>& copasi2sedmlmap)
               }
 
             SedUniformRange* urange = static_cast<SedUniformRange*>(range);
-            CScanTask *tTask = static_cast<CScanTask*>((*mpDataModel->getTaskList())["Scan"]);
+            CScanTask *tTask = static_cast<CScanTask*>(&mpDataModel->getTaskList()->operator[]("Scan"));
             tTask->setScheduled(true);
             CScanProblem *pProblem = static_cast<CScanProblem*>(tTask->getProblem());
 
@@ -734,7 +733,7 @@ SEDMLImporter::importTasks(std::map<CCopasiObject*, SedBase*>& copasi2sedmlmap)
   for (; it != mReportMap.end(); ++it)
     {
       mpDataModel->getReportDefinitionList()->add(it->first, true);
-      CReport& report = ((*mpDataModel->getTaskList())[it->second])->getReport();
+      CReport& report = mpDataModel->getTaskList()->operator[](it->second).getReport();
       report.setReportDefinition(it->first);
       report.setTarget(it->second + ".txt");
       report.setConfirmOverwrite(false);
@@ -893,7 +892,7 @@ CModel* SEDMLImporter::importFirstSBMLModel(CProcessReport* pImportHandler,
 
   mpCopasiModel = NULL;
 
-  std::map<CCopasiObject*, SBase*> Copasi2SBMLMap;
+  std::map<const CCopasiObject*, SBase*> Copasi2SBMLMap;
 
   try
     {

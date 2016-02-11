@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -396,7 +396,7 @@ CSlider::Scale CSlider::convertScaleNameToScale(const char* scaleName)
     }
 }
 
-const char* CSlider::convertScaleToScaleName(Scale scale)
+const char* CSlider::convertScaleToScaleName(Scale scale) const
 {
   if (scale < 0 || scale > CSlider::undefinedScale) return ScaleName[undefinedScale];
 

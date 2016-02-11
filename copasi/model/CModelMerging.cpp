@@ -1,17 +1,9 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelMerging.cpp,v $
-//   $Revision: 1.18 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/03/14 19:19:37 $
-// End CVS Header
-
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
@@ -26,7 +18,7 @@
 #include "model/CChemEqElement.h"
 
 CModelAdd::CModelAdd(CModel* pModel, CModel* mModel)
-    : mpModel(pModel), mmModel(mModel)
+  : mpModel(pModel), mmModel(mModel)
 {
 }
 
@@ -81,7 +73,7 @@ bool CModelAdd::addEvents(std::string name)
 
   for (i = 0; i < imax; ++i)
     {
-      const CEvent* sourceEvent = mmModel->getEvents()[i];
+      const CEvent* sourceEvent = &mmModel->getEvents()[i];
 
       if (!sourceEvent) return info;
 
@@ -139,7 +131,7 @@ bool CModelAdd::addEvents(std::string name)
 
       for (j = 0; j < jmax; ++j)
         {
-          const CEventAssignment* sourceAssignment = sourceEvent->getAssignments()[j];
+          const CEventAssignment* sourceAssignment = &sourceEvent->getAssignments()[j];
 
           if (!sourceAssignment) return info;
 
@@ -452,7 +444,7 @@ bool CModelAdd::addCompartments(std::string name)
 
   for (i = 0; i < imax; ++i)
     {
-      const CCompartment* sourceComp = mmModel->getCompartments()[i];
+      const CCompartment* sourceComp = &mmModel->getCompartments()[i];
 
       if (!sourceComp) return false;
 
@@ -484,7 +476,7 @@ bool CModelAdd::addCompartmentsExpressions()
 
   for (i = 0; i < imax; ++i)
     {
-      const CCompartment* sourceComp = mmModel->getCompartments()[i];
+      const CCompartment* sourceComp = &mmModel->getCompartments()[i];
 
       if (!sourceComp) return info;
 
@@ -501,6 +493,7 @@ bool CModelAdd::addCompartmentsExpressions()
           case CModelEntity::FIXED:
 
             break;
+
           case CModelEntity::ASSIGNMENT:
 
             if (!copyExpression(sourceComp, newComp)) return info;
@@ -535,7 +528,7 @@ bool CModelAdd::addMetabolites(std::string name)
 
   for (i = 0; i < imax; ++i)
     {
-      const CMetab* sourceMetab = mmModel->getMetabolites()[i];
+      const CMetab* sourceMetab = &mmModel->getMetabolites()[i];
       const CCompartment* sourceComp =  sourceMetab->getCompartment();
 
       if (!sourceMetab) return info;
@@ -567,7 +560,7 @@ bool CModelAdd::addMetabolitesExpressions()
 
   for (i = 0; i < imax; ++i)
     {
-      const CMetab* sourceMetab = mmModel->getMetabolites()[i];
+      const CMetab* sourceMetab = &mmModel->getMetabolites()[i];
 
       if (!sourceMetab) return info;
 
@@ -584,6 +577,7 @@ bool CModelAdd::addMetabolitesExpressions()
           case CModelEntity::FIXED:
 
             break;
+
           case CModelEntity::ASSIGNMENT:
 
             if (!copyExpression(sourceMetab, newMetab)) return info;
@@ -602,6 +596,7 @@ bool CModelAdd::addMetabolitesExpressions()
           case CModelEntity::REACTIONS:
 
             break;
+
           default:
 
             return info;
@@ -621,7 +616,7 @@ bool CModelAdd::addModelValues(std::string name)
 
   for (i = 0; i < imax; ++i)
     {
-      const CModelValue* sourceModVal = mmModel->getModelValues()[i];
+      const CModelValue* sourceModVal = &mmModel->getModelValues()[i];
 
       if (!sourceModVal) return info;
 
@@ -650,7 +645,7 @@ bool CModelAdd::addModelValuesExpressions()
 
   for (i = 0; i < imax; ++i)
     {
-      const CModelValue* sourceModVal = mmModel->getModelValues()[i];
+      const CModelValue* sourceModVal = &mmModel->getModelValues()[i];
 
       if (!sourceModVal) return info;
 
@@ -667,6 +662,7 @@ bool CModelAdd::addModelValuesExpressions()
           case CModelEntity::FIXED:
 
             break;
+
           case CModelEntity::ASSIGNMENT:
 
             if (!copyExpression(sourceModVal, newModVal)) return info;
@@ -706,13 +702,13 @@ bool CModelAdd::addReactions(std::string name)
 
   for (ic = 0; ic < icmax; ++ic)
     {
-      const CCompartment* sourceComp = mmModel->getCompartments()[ic];
+      const CCompartment* sourceComp = &mmModel->getCompartments()[ic];
 
       if (!sourceComp) return info;
 
       for (i = 0; i < imax; ++i)
         {
-          CReaction * sourceReac = mmModel->getReactions()[i];
+          CReaction * sourceReac = &mmModel->getReactions()[i];
 
           if (reactionInvolvesCompartment(sourceReac, sourceComp))
             {
@@ -732,7 +728,7 @@ bool CModelAdd::addReactions(std::string name)
 
               for (j = 0; j < jmax; ++j)
                 {
-                  const CChemEqElement * sourceElement = sourceReac->getChemEq().getSubstrates()[j];
+                  const CChemEqElement * sourceElement = &sourceReac->getChemEq().getSubstrates()[j];
                   //check if the metab is in the map. If yes, translate it, otherwise not.
                   mapIt = keyMap.find(sourceElement->getMetaboliteKey());
 
@@ -750,7 +746,7 @@ bool CModelAdd::addReactions(std::string name)
 
               for (j = 0; j < jmax; ++j)
                 {
-                  const CChemEqElement * sourceElement = sourceReac->getChemEq().getProducts()[j];
+                  const CChemEqElement * sourceElement = &sourceReac->getChemEq().getProducts()[j];
                   //check if the metab is in the map. If yes, translate it, otherwise not.
                   mapIt = keyMap.find(sourceElement->getMetaboliteKey());
 
@@ -768,7 +764,7 @@ bool CModelAdd::addReactions(std::string name)
 
               for (j = 0; j < jmax; ++j)
                 {
-                  const CChemEqElement * sourceElement = sourceReac->getChemEq().getModifiers()[j];
+                  const CChemEqElement * sourceElement = &sourceReac->getChemEq().getModifiers()[j];
                   //check if the metab is in the map. If yes, translate it, otherwise not.
 
                   mapIt = keyMap.find(sourceElement->getMetaboliteKey());
@@ -904,19 +900,19 @@ bool CModelAdd::reactionInvolvesCompartment(const CReaction * reac, const CCompa
   size_t i, imax = reac->getChemEq().getSubstrates().size();
 
   for (i = 0; i < imax; ++i)
-    if (reac->getChemEq().getSubstrates()[i]->getMetabolite()->getCompartment() == comp)
+    if (reac->getChemEq().getSubstrates()[i].getMetabolite()->getCompartment() == comp)
       return true;
 
   imax = reac->getChemEq().getProducts().size();
 
   for (i = 0; i < imax; ++i)
-    if (reac->getChemEq().getProducts()[i]->getMetabolite()->getCompartment() == comp)
+    if (reac->getChemEq().getProducts()[i].getMetabolite()->getCompartment() == comp)
       return true;
 
   imax = reac->getChemEq().getModifiers().size();
 
   for (i = 0; i < imax; ++i)
-    if (reac->getChemEq().getModifiers()[i]->getMetabolite()->getCompartment() == comp)
+    if (reac->getChemEq().getModifiers()[i].getMetabolite()->getCompartment() == comp)
       return true;
 
   return false;
@@ -930,7 +926,7 @@ const std::string CModelMerging::TypeName[] =
 };
 
 CModelMerging::CModelMerging(CModel* pModel)
-    : mpModel(pModel)
+  : mpModel(pModel)
 {
 }
 
@@ -955,13 +951,13 @@ void  CModelMerging::simpleCall(std::vector< std::string > & /* toKey */, std::v
 
   for (i = 0; i < imax; ++i)
     {
-      metab = mpModel->getMetabolites()[i];
+      metab = &mpModel->getMetabolites()[i];
 
       for (j = 0; j < imax; ++j)
         {
           if (objectKey[i] != "")
             {
-              tmp = mpModel->getMetabolites()[j];
+              tmp = &mpModel->getMetabolites()[j];
 
               if (tmp->getKey() == objectKey[i])
                 {
@@ -998,13 +994,13 @@ bool CModelMerging::mergeMetabolites(std::string toKey, std::string  key)
 
   for (i = 0; i < imax; ++i)
     {
-      CReaction * reac = mpModel->getReactions()[i];
+      CReaction * reac = &mpModel->getReactions()[i];
 
       jmax = reac->getChemEq().getSubstrates().size();
 
       for (j = 0; j < jmax; ++j)
         {
-          CChemEqElement * subst = reac->getChemEq().getSubstrates()[j];
+          CChemEqElement * subst = const_cast< CChemEqElement * >(&reac->getChemEq().getSubstrates()[j]);
 
           if (subst->getMetabolite()->getKey() == key)
             subst->setMetabolite(toKey);
@@ -1014,7 +1010,7 @@ bool CModelMerging::mergeMetabolites(std::string toKey, std::string  key)
 
       for (j = 0; j < jmax; ++j)
         {
-          CChemEqElement * prod = reac->getChemEq().getProducts()[j];
+          CChemEqElement * prod = const_cast< CChemEqElement * >(&reac->getChemEq().getProducts()[j]);
 
           if (prod->getMetabolite()->getKey() == key)
             prod->setMetabolite(toKey);
@@ -1024,7 +1020,7 @@ bool CModelMerging::mergeMetabolites(std::string toKey, std::string  key)
 
       for (j = 0; j < jmax; ++j)
         {
-          CChemEqElement * modif = reac->getChemEq().getModifiers()[j];
+          CChemEqElement * modif = const_cast< CChemEqElement * >(&reac->getChemEq().getModifiers()[j]);
 
           if (modif->getMetabolite()->getKey() == key)
             modif->setMetabolite(toKey);
@@ -1073,7 +1069,7 @@ bool CModelMerging::mergeMetabolites(std::string toKey, std::string  key)
 
   for (i = 0; i < imax; ++i)
     {
-      CEvent* event = mpModel->getEvents()[i];
+      CEvent * event = &mpModel->getEvents()[i];
 
       if (!event) return info;
 
@@ -1094,7 +1090,7 @@ bool CModelMerging::mergeMetabolites(std::string toKey, std::string  key)
 
       for (j = 0; j < jmax; ++j)
         {
-          CEventAssignment* assignment = event->getAssignments()[j];
+          CEventAssignment* assignment = &event->getAssignments()[j];
 
           if (!assignment) return info;
 
@@ -1114,7 +1110,7 @@ bool CModelMerging::mergeMetabolites(std::string toKey, std::string  key)
 
   for (i = 0; i < imax; ++i)
     {
-      CMetab* metab = mpModel->getMetabolites()[i];
+      CMetab* metab = &mpModel->getMetabolites()[i];
 
       if (!metab) return info;
 
@@ -1124,6 +1120,7 @@ bool CModelMerging::mergeMetabolites(std::string toKey, std::string  key)
           case CModelEntity::REACTIONS:
 
             break;
+
           case CModelEntity::ASSIGNMENT:
 
             if (!mergeInExpression(toKey, key, metab->getExpressionPtr())) return info;
@@ -1149,7 +1146,7 @@ bool CModelMerging::mergeMetabolites(std::string toKey, std::string  key)
 
   for (i = 0; i < imax; ++i)
     {
-      CCompartment* comp = mpModel->getCompartments()[i];
+      CCompartment* comp = &mpModel->getCompartments()[i];
 
       if (!comp) return info;
 
@@ -1158,6 +1155,7 @@ bool CModelMerging::mergeMetabolites(std::string toKey, std::string  key)
           case CModelEntity::FIXED:
 
             break;
+
           case CModelEntity::ASSIGNMENT:
 
             if (!mergeInExpression(toKey, key, comp->getExpressionPtr())) return info;
@@ -1183,7 +1181,7 @@ bool CModelMerging::mergeMetabolites(std::string toKey, std::string  key)
 
   for (i = 0; i < imax; ++i)
     {
-      CModelValue* modval = mpModel->getModelValues()[i];
+      CModelValue* modval = &mpModel->getModelValues()[i];
 
       if (!modval) return info;
 
@@ -1192,6 +1190,7 @@ bool CModelMerging::mergeMetabolites(std::string toKey, std::string  key)
           case CModelEntity::FIXED:
 
             break;
+
           case CModelEntity::ASSIGNMENT:
 
             if (!mergeInExpression(toKey, key, modval->getExpressionPtr())) return info;

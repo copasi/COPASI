@@ -88,6 +88,7 @@ void CQUnitDetail::slotBtnCopy()
   base_name = mpUnitDefinition->getObjectName() + "_copy";
   name = base_name;
   int i = 0;
+
   while (unitList->getIndex(name) != C_INVALID_INDEX)
     {
       i++;
@@ -99,10 +100,12 @@ void CQUnitDetail::slotBtnCopy()
 
   C_FLOAT64 Avogadro = CUnit::Avogadro;
   const CModel * pModel = static_cast<const CModel *>(mpUnitDefinition->getObjectAncestor("Model"));
+
   if (pModel != NULL)
     {
       Avogadro = pModel->getAvogadro();
     }
+
   pUnitDef->setExpression(mpUnitDefinition->getExpression(), Avogadro);
 
   unitList->add(pUnitDef, true);
@@ -118,7 +121,7 @@ void CQUnitDetail::slotBtnCopy()
 ////  mpUndoStack->push(new DeleteGlobalQuantityCommand(this));
 ////#else
 //  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-//  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
+//  CCopasiDataModel* pDataModel = &CCopasiRootContainer::getDatamodelList()->operator[](0);
 //  assert(pDataModel != NULL);
 //  CModel * pModel = pDataModel->getModel();
 
@@ -157,7 +160,7 @@ void CQUnitDetail::slotBtnCopy()
 void CQUnitDetail::slotBtnDelete()
 {
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
+  CCopasiDataModel* pDataModel = &CCopasiRootContainer::getDatamodelList()->operator[](0);
   assert(pDataModel != NULL);
   CModel * pModel = pDataModel->getModel();
 
@@ -394,15 +397,15 @@ void CQUnitDetail::load()
   mpEditSymbol->setText(FROM_UTF8(mpUnitDefinition->getSymbol()));
 
   if (mpUnitDefinition->isReadOnly())
-  {
-    mpEditExpression->setEnabled(false);
-    mpEditSymbol->setEnabled(false);
-  }
+    {
+      mpEditExpression->setEnabled(false);
+      mpEditSymbol->setEnabled(false);
+    }
   else
-  {
-    mpEditExpression->setEnabled(true);
-    mpEditSymbol->setEnabled(true);
-  }
+    {
+      mpEditExpression->setEnabled(true);
+      mpEditSymbol->setEnabled(true);
+    }
 
 //  // Expression
 //  mpExpressionEMW->mpExpressionWidget->setExpression(mpModelValue->getExpression());
@@ -471,7 +474,7 @@ void CQUnitDetail::save()
   if (mChanged)
     {
       assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-      (*CCopasiRootContainer::getDatamodelList())[0]->changed();
+      CCopasiRootContainer::getDatamodelList()->operator[](0).changed();
       protectedNotify(ListViews::UNIT, ListViews::CHANGE, mKey);
     }
 
@@ -526,7 +529,7 @@ void CQUnitDetail::save()
 //  int i = 1;
 //  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
 
-//  while (!(mpModelValue = (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->createModelValue(name)))
+//  while (!(mpModelValue = CCopasiRootContainer::getDatamodelList()->operator[](0).getModel()->createModelValue(name)))
 //    {
 //      i++;
 //      name = "quantity_";
@@ -542,7 +545,7 @@ void CQUnitDetail::save()
 //{
 
 //  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-//  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
+//  CCopasiDataModel* pDataModel = &CCopasiRootContainer::getDatamodelList()->operator[](0);
 //  assert(pDataModel != NULL);
 //  CModel * pModel = pDataModel->getModel();
 
@@ -580,7 +583,7 @@ void CQUnitDetail::save()
 //void CQUnitDetail::deleteGlobalQuantity(UndoGlobalQuantityData *pGlobalQuantityData)
 //{
 //  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-//  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
+//  CCopasiDataModel* pDataModel = &CCopasiRootContainer::getDatamodelList()->operator[](0);
 //  assert(pDataModel != NULL);
 
 //  CModel * pModel = pDataModel->getModel();
@@ -601,7 +604,7 @@ void CQUnitDetail::save()
 //void CQUnitDetail::addGlobalQuantity(UndoGlobalQuantityData *pSData)
 //{
 //  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-//  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
+//  CCopasiDataModel* pDataModel = &CCopasiRootContainer::getDatamodelList()->operator[](0);
 //  assert(pDataModel != NULL);
 
 //  CModel * pModel = pDataModel->getModel();

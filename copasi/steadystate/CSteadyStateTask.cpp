@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -457,7 +457,7 @@ std::ostream &operator<<(std::ostream &os, const CSteadyStateTask &A)
 
   for (i = 0; i < imax; ++i)
     {
-      pMetab = Metabolites[i];
+      pMetab = &Metabolites[i];
       os << CMetabNameInterface::getDisplayName(pModel, *pMetab, false) << "\t";
       os << pMetab->getConcentration() << "\t";
       os << pMetab->getConcentrationRate() << "\t";
@@ -494,7 +494,7 @@ std::ostream &operator<<(std::ostream &os, const CSteadyStateTask &A)
 
   for (i = 0; i < imax; ++i)
     {
-      pReaction = Reactions[i];
+      pReaction = &Reactions[i];
       os << pReaction->getObjectName() << "\t";
       os << pReaction->getFlux() << "\t";
       os << pReaction->getParticleFlux() << std::endl;

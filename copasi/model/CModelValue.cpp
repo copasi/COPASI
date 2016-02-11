@@ -602,7 +602,7 @@ bool CModelEntity::mustBeDeleted(const CCopasiObject::DataObjectSet & deletedObj
   return MustBeDeleted;
 }
 
-void CModelEntity::setSBMLId(const std::string& id)
+void CModelEntity::setSBMLId(const std::string& id) const
 {
   this->mSBMLId = id;
 }

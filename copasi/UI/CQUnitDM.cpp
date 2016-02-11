@@ -77,7 +77,7 @@ QVariant CQUnitDM::data(const QModelIndex &index, int role) const
         }
       else
         {
-          const CUnitDefinition * pUnitDef = (* CCopasiRootContainer::getUnitList())[index.row()];
+          const CUnitDefinition * pUnitDef = &CCopasiRootContainer::getUnitList()->operator[](index.row());
 
           if (pUnitDef == NULL)
             return QVariant();
@@ -147,7 +147,7 @@ bool CQUnitDM::setData(const QModelIndex &index, const QVariant &value,
             return false;
         }
 
-      CUnitDefinition *pUnitDef = (* CCopasiRootContainer::getUnitList())[index.row()];
+      CUnitDefinition *pUnitDef = &CCopasiRootContainer::getUnitList()->operator[](index.row());
 
       if (pUnitDef == NULL)
         return false;
@@ -225,7 +225,7 @@ bool CQUnitDM::removeRows(int position, int rows)
 
   for (itDeletedKey = DeletedKeys.begin(), row = 0; itDeletedKey != endDeletedKey; ++itDeletedKey, ++itRow, ++row)
     {
-      *itDeletedKey = (*itRow)->getKey();
+      *itDeletedKey = itRow->getKey();
     }
 
   beginRemoveRows(QModelIndex(), position, position + row - 1);
@@ -253,7 +253,7 @@ bool CQUnitDM::removeRows(QModelIndexList rows, const QModelIndex&)
     return false;
 
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
+  CCopasiDataModel* pDataModel = &CCopasiRootContainer::getDatamodelList()->operator[](0);
   assert(pDataModel != NULL);
   CModel * pModel = pDataModel->getModel();
 
@@ -270,10 +270,10 @@ bool CQUnitDM::removeRows(QModelIndexList rows, const QModelIndex&)
   for (i = rows.begin(); i != rows.end(); ++i)
     {
       if (!isDefaultRow(*i) &&
-          (pUnitDef = (*CCopasiRootContainer::getUnitList())[(*i).row()]) != NULL &&
+          (pUnitDef = &CCopasiRootContainer::getUnitList()->operator[](i->row())) != NULL &&
           pModel->getUnitSymbolUsage(pUnitDef->getSymbol()).empty() &&
           !pUnitDef->isReadOnly())//Don't delete built-ins or used units
-        pUnitDefQList.append((*CCopasiRootContainer::getUnitList())[(*i).row()]);
+        pUnitDefQList.append(&CCopasiRootContainer::getUnitList()->operator[](i->row()));
     }
 
   for (QList <CUnitDefinition *>::const_iterator j = pUnitDefQList.begin(); j != pUnitDefQList.end(); ++j)

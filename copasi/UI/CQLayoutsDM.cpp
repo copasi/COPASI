@@ -1,4 +1,4 @@
-// Copyright (C) 2011 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -76,7 +76,7 @@ QVariant CQLayoutsDM::data(const QModelIndex &index, int role) const
             break;
 
           case COL_NAME:
-            return QVariant(FROM_UTF8((*mpListOfLayouts)[index.row()]->getObjectName()));
+            return QVariant(FROM_UTF8(mpListOfLayouts->operator[](index.row()).getObjectName()));
             break;
 
           case COL_SHOW:
@@ -136,7 +136,7 @@ bool CQLayoutsDM::setData(const QModelIndex &index, const QVariant & value, int 
             break;
 
           case COL_NAME:
-            return (*mpListOfLayouts)[index.row()]->setObjectName(TO_UTF8(createNewName(value.toString(), COL_NAME)));
+            return mpListOfLayouts->operator[](index.row()).setObjectName(TO_UTF8(createNewName(value.toString(), COL_NAME)));
             break;
 
           case COL_SHOW:
@@ -170,7 +170,7 @@ bool CQLayoutsDM::insertRows(int position, int rows, const QModelIndex & source)
 
   for (int row = 0; row < rows; ++row)
     {
-      emit notifyGUI(ListViews::LAYOUT, ListViews::ADD, (*mpListOfLayouts)[Position + row]->getKey());
+      emit notifyGUI(ListViews::LAYOUT, ListViews::ADD, mpListOfLayouts->operator[](Position + row).getKey());
     }
 
   endInsertRows();
@@ -192,11 +192,11 @@ bool CQLayoutsDM::removeRows(int position, int rows)
   std::vector< CLayout * >::iterator itDeletedLayout;
   std::vector< CLayout * >::iterator endDeletedLayout = DeletedLayouts.end();
 
-  CListOfLayouts::const_iterator itRow = mpListOfLayouts->begin() + position;
+  CListOfLayouts::iterator itRow = mpListOfLayouts->begin() + position;
 
   for (itDeletedLayout = DeletedLayouts.begin(); itDeletedLayout != endDeletedLayout; ++itDeletedLayout, ++itRow)
     {
-      *itDeletedLayout = *itRow;
+      *itDeletedLayout = itRow;
     }
 
   for (itDeletedLayout = DeletedLayouts.begin(); itDeletedLayout != endDeletedLayout; ++itDeletedLayout)
@@ -226,7 +226,7 @@ bool CQLayoutsDM::removeRows(QModelIndexList rows, const QModelIndex & /* index 
 
   for (i = rows.begin(); i != rows.end(); ++i)
     {
-      Layouts.append((*mpListOfLayouts)[(*i).row()]);
+      Layouts.append(&mpListOfLayouts->operator[](i->row()));
     }
 
   QList< CLayout * >::const_iterator j;

@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -104,13 +104,25 @@ bool CReportDefinition::preCompileTable(const CObjectInterface::ContainerList & 
 std::vector<CRegisteredObjectName>* CReportDefinition::getBodyAddr()
 {return &mBodyVector;}
 
+const std::vector<CRegisteredObjectName>* CReportDefinition::getBodyAddr() const
+{return &mBodyVector;}
+
 std::vector<CRegisteredObjectName>* CReportDefinition::getHeaderAddr()
+{return &mHeaderVector;}
+
+const std::vector<CRegisteredObjectName>* CReportDefinition::getHeaderAddr() const
 {return &mHeaderVector;}
 
 std::vector<CRegisteredObjectName>* CReportDefinition::getFooterAddr()
 {return &mFooterVector;}
 
+const std::vector<CRegisteredObjectName>* CReportDefinition::getFooterAddr() const
+{return &mFooterVector;}
+
 std::vector<CRegisteredObjectName>* CReportDefinition::getTableAddr()
+{return &mTableVector;}
+
+const std::vector<CRegisteredObjectName>* CReportDefinition::getTableAddr() const
 {return &mTableVector;}
 
 bool CReportDefinition::setTaskType(const CTaskEnum::Task & taskType)

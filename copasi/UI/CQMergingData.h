@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -29,8 +29,8 @@ public:
   CQMergingData(QWidget* parent = 0, Qt::WindowFlags fl = 0, bool simple = false);
   ~CQMergingData();
 
-  std::map<QTreeWidgetItem*, CCopasiObject*> mItemMap1;
-  std::map<QTreeWidgetItem*, CCopasiObject*> mItemMap2;
+  std::map< QTreeWidgetItem *, const CCopasiObject * > mItemMap1;
+  std::map< QTreeWidgetItem *, const CCopasiObject * > mItemMap2;
 
 protected:
   CModel* mpModel;
@@ -49,9 +49,9 @@ private:
    * If highlightInvolved is true, items that are actually referred to in other parts of the model are
    * highlighted (these are the items that it is useful to replace)
    */
-  void fillTree(QTreeWidget* pW, const CModel* pModel, std::map<QTreeWidgetItem*, CCopasiObject*>& itemMap,
+  void fillTree(QTreeWidget* pW, const CModel* pModel, std::map<QTreeWidgetItem*, const CCopasiObject*>& itemMap,
                 bool flagGlobalQuantities, bool flagReactions,
-                const std::set<CCopasiObject*> & added,
+                const std::set<const CCopasiObject*> & added,
                 bool highlightInvolved);
 
   void load();

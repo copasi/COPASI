@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -600,12 +600,12 @@ void CQGLNetworkPainter::createGraph(CLayout *lP)
 
   for (i = 0; i < compartmentNodes.size(); i++)
     {
-      std::string nKey = (*compartmentNodes[i]).getKey();
-      std::string oKey = (*compartmentNodes[i]).getModelObjectKey();
+      std::string nKey = compartmentNodes[i].getKey();
+      std::string oKey = compartmentNodes[i].getModelObjectKey();
       viewerCompartmentNodes.push_back(nKey);
       compartmentNodeMap.insert(std::pair<std::string, CCompartmentGraphNode>
                                 (nKey,
-                                 CCompartmentGraphNode(*compartmentNodes[i])));
+                                 CCompartmentGraphNode(compartmentNodes[i])));
       keyMap.insert(std::pair<std::string, std::string>
                     (oKey, nKey));
     }
@@ -616,12 +616,12 @@ void CQGLNetworkPainter::createGraph(CLayout *lP)
 
   for (i = 0; i < nodes.size(); i++)
     {
-      std::string nKey = (*nodes[i]).getKey();
-      std::string oKey = (*nodes[i]).getModelObjectKey();
+      std::string nKey = nodes[i].getKey();
+      std::string oKey = nodes[i].getModelObjectKey();
       viewerNodes.push_back(nKey);
       nodeMap.insert(std::pair<std::string, CGraphNode>
                      (nKey,
-                      CGraphNode(*nodes[i])));
+                      CGraphNode(nodes[i])));
       keyMap.insert(std::pair<std::string, std::string>
                     (oKey, nKey));
     }
@@ -635,21 +635,21 @@ void CQGLNetworkPainter::createGraph(CLayout *lP)
   //first get reaction arrow
   for (i = 0; i < reactions.size(); i++)
     {
-      CGraphCurve curveR = CGraphCurve((reactions[i])->getCurve());
+      CGraphCurve curveR = CGraphCurve(reactions[i].getCurve());
       viewerCurves.push_back(curveR);
 
       CCopasiVector<CLMetabReferenceGlyph> edgesToNodesOfReaction;
-      edgesToNodesOfReaction = reactions[i]->getListOfMetabReferenceGlyphs();
+      edgesToNodesOfReaction = reactions[i].getListOfMetabReferenceGlyphs();
       unsigned int j2;
 
       for (j2 = 0; j2 < edgesToNodesOfReaction.size(); j2++)
         {
-          CGraphCurve curve = CGraphCurve(edgesToNodesOfReaction[j2]->getCurve());
+          CGraphCurve curve = CGraphCurve(edgesToNodesOfReaction[j2].getCurve());
           std::string nodeKey = "";
 
-          if (edgesToNodesOfReaction[j2]->getMetabGlyph() != NULL) // i.e. there is an associated node
+          if (edgesToNodesOfReaction[j2].getMetabGlyph() != NULL) // i.e. there is an associated node
             {
-              nodeKey = std::string(edgesToNodesOfReaction[j2]->getMetabGlyph()->getKey());
+              nodeKey = std::string(edgesToNodesOfReaction[j2].getMetabGlyph()->getKey());
               std::map<std::string, CGraphNode>::iterator itNode;
               itNode = nodeMap.find(nodeKey);
 
@@ -662,10 +662,10 @@ void CQGLNetworkPainter::createGraph(CLayout *lP)
                 }
             }
 
-          CLMetabReferenceGlyph::Role r = edgesToNodesOfReaction[j2]->getRole();
+          CLMetabReferenceGlyph::Role r = edgesToNodesOfReaction[j2].getRole();
           curve.setRole(r);
 
-          if (edgesToNodesOfReaction[j2]->getMetabGlyph() != NULL)  // if there is an associated species node look whether an arrow has to be created
+          if (edgesToNodesOfReaction[j2].getMetabGlyph() != NULL)  // if there is an associated species node look whether an arrow has to be created
             {
               // if role is product or sideproduct, create arrow for line
               if ((r == CLMetabReferenceGlyph::PRODUCT) || (r == CLMetabReferenceGlyph::SIDEPRODUCT) || (r == CLMetabReferenceGlyph::ACTIVATOR) || (r == CLMetabReferenceGlyph::INHIBITOR) || (r == CLMetabReferenceGlyph::MODIFIER))
@@ -766,16 +766,16 @@ void CQGLNetworkPainter::createGraph(CLayout *lP)
   for (i = 0; i < labels.size(); i++)
     {
       labelNodeMap.insert(std::pair<std::string, std::string>
-                          (labels[i]->getKey(),
-                           labels[i]->getGraphicalObjectKey()));
-      std::string s1 = labels[i]->getKey();
-      std::string s2 = labels[i]->getGraphicalObjectKey();
-      viewerLabels.push_back(CLabel(*labels[i]));
-      itNode = nodeMap.find(labels[i]->getGraphicalObjectKey());
+                          (labels[i].getKey(),
+                           labels[i].getGraphicalObjectKey()));
+      std::string s1 = labels[i].getKey();
+      std::string s2 = labels[i].getGraphicalObjectKey();
+      viewerLabels.push_back(CLabel(labels[i]));
+      itNode = nodeMap.find(labels[i].getGraphicalObjectKey());
 
       if (itNode != nodeMap.end())
         {
-          (*itNode).second.setLabelText(labels[i]->getText());
+          (*itNode).second.setLabelText(labels[i].getText());
         }
     }
 
@@ -2053,9 +2053,9 @@ bool CQGLNetworkPainter::createDataSets()
   bool loadDataSuccessful = false;
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
 
-  if ((*CCopasiRootContainer::getDatamodelList())[0] != NULL)
+  if (&CCopasiRootContainer::getDatamodelList()->operator[](0) != NULL)
     {
-      CTrajectoryTask *ptask = dynamic_cast< CTrajectoryTask * >((*(*CCopasiRootContainer::getDatamodelList())[0]->getTaskList())["Time-Course"]);
+      CTrajectoryTask *ptask = dynamic_cast< CTrajectoryTask * >(&CCopasiRootContainer::getDatamodelList()->operator[](0).getTaskList()->operator[]("Time-Course"));
       const CTimeSeries* pTimeSer = &ptask->getTimeSeries();
       CTimeSeries dummyTimeSeries;
 

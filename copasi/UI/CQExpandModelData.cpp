@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -39,16 +39,16 @@ void CQExpandModelData::load()
 {
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
 
-  pModel = (*CCopasiRootContainer::getDatamodelList())[0]->getModel();
+  pModel = CCopasiRootContainer::getDatamodelList()->operator[](0).getModel();
 
   size_t i, imax = pModel->getCompartments().size();
 
   for (i = 0; i < imax; ++i)
     {
       QTreeWidgetItem * pItem = new QTreeWidgetItem((QTreeWidget*)NULL, 1000);
-      pItem->setText(0,  FROM_UTF8(pModel->getCompartments()[i]->getObjectName()));
+      pItem->setText(0,  FROM_UTF8(pModel->getCompartments()[i].getObjectName()));
       pItem->setCheckState(0, Qt::Unchecked);
-      mItemCompartmentMap[pItem] = pModel->getCompartments()[i];
+      mItemCompartmentMap[pItem] = &pModel->getCompartments()[i];
       mpTreeWidget->addTopLevelItem(pItem);
     }
 
@@ -81,9 +81,9 @@ void CQExpandModelData::slotCompartmentActivated(QTreeWidgetItem* pItem, int col
       for (i = 0; i < imax; ++i)
         {
           QTreeWidgetItem * pChild = new QTreeWidgetItem(pItem, 1001);
-          pChild->setText(0,  FROM_UTF8(pComp->getMetabolites()[i]->getObjectName()));
+          pChild->setText(0,  FROM_UTF8(pComp->getMetabolites()[i].getObjectName()));
           pChild->setCheckState(1, Qt::Unchecked);
-          mItemMetabMap[pChild] = pComp->getMetabolites()[i];
+          mItemMetabMap[pChild] = &pComp->getMetabolites()[i];
         }
 
       pItem->setExpanded(true);

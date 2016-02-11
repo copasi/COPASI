@@ -1,4 +1,4 @@
-// Copyright (C) 2011 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -101,10 +101,10 @@ void CModelParameterSet::createFromModel()
   for (; itCompartment != endCompartment; ++itCompartment)
     {
       pParameter = pGroup->add(Compartment);
-      pParameter->setCN((*itCompartment)->getCN());
-      pParameter->setSimulationType((*itCompartment)->getStatus());
-      pParameter->setValue((*itCompartment)->getInitialValue(), ParticleNumbers);
-      pParameter->setInitialExpression((*itCompartment)->getInitialExpression());
+      pParameter->setCN(itCompartment->getCN());
+      pParameter->setSimulationType(itCompartment->getStatus());
+      pParameter->setValue(itCompartment->getInitialValue(), ParticleNumbers);
+      pParameter->setInitialExpression(itCompartment->getInitialExpression());
     }
 
   pGroup = static_cast< CModelParameterGroup *>(CModelParameterGroup::add(Group));
@@ -116,10 +116,10 @@ void CModelParameterSet::createFromModel()
   for (; itSpecies != endSpecies; ++itSpecies)
     {
       pParameter = pGroup->add(Species);
-      pParameter->setCN((*itSpecies)->getCN());
-      pParameter->setSimulationType((*itSpecies)->getStatus());
-      pParameter->setValue((*itSpecies)->getInitialValue(), ParticleNumbers);
-      pParameter->setInitialExpression((*itSpecies)->getInitialExpression());
+      pParameter->setCN(itSpecies->getCN());
+      pParameter->setSimulationType(itSpecies->getStatus());
+      pParameter->setValue(itSpecies->getInitialValue(), ParticleNumbers);
+      pParameter->setInitialExpression(itSpecies->getInitialExpression());
     }
 
   pGroup = static_cast< CModelParameterGroup *>(CModelParameterGroup::add(Group));
@@ -131,10 +131,10 @@ void CModelParameterSet::createFromModel()
   for (; itModelValue != endModelValue; ++itModelValue)
     {
       pParameter = pGroup->add(ModelValue);
-      pParameter->setCN((*itModelValue)->getCN());
-      pParameter->setSimulationType((*itModelValue)->getStatus());
-      pParameter->setValue((*itModelValue)->getInitialValue(), ParticleNumbers);
-      pParameter->setInitialExpression((*itModelValue)->getInitialExpression());
+      pParameter->setCN(itModelValue->getCN());
+      pParameter->setSimulationType(itModelValue->getStatus());
+      pParameter->setValue(itModelValue->getInitialValue(), ParticleNumbers);
+      pParameter->setInitialExpression(itModelValue->getInitialExpression());
     }
 
   pGroup = static_cast< CModelParameterGroup *>(CModelParameterGroup::add(Group));
@@ -146,10 +146,10 @@ void CModelParameterSet::createFromModel()
   for (; itReaction != endReaction; ++itReaction)
     {
       CModelParameterGroup * pReaction = static_cast< CModelParameterGroup *>(pGroup->add(Reaction));
-      pReaction->setCN((*itReaction)->getCN());
+      pReaction->setCN(itReaction->getCN());
 
-      CCopasiParameterGroup::index_iterator itParameter = (*itReaction)->getParameters().beginIndex();
-      CCopasiParameterGroup::index_iterator endParameter = (*itReaction)->getParameters().endIndex();
+      CCopasiParameterGroup::index_iterator itParameter = itReaction->getParameters().beginIndex();
+      CCopasiParameterGroup::index_iterator endParameter = itReaction->getParameters().endIndex();
 
       for (; itParameter != endParameter; ++itParameter)
         {
@@ -157,7 +157,7 @@ void CModelParameterSet::createFromModel()
           pParameter->setCN((*itParameter)->getCN());
 
           // Check whether this refers to a global quantity.
-          if ((*itReaction)->isLocalParameter((*itParameter)->getObjectName()))
+          if (itReaction->isLocalParameter((*itParameter)->getObjectName()))
             {
               pParameter->setSimulationType(CModelEntity::FIXED);
               pParameter->setValue((*itParameter)->getValue< C_FLOAT64 >(), ParticleNumbers);
@@ -165,7 +165,7 @@ void CModelParameterSet::createFromModel()
           else
             {
               pParameter->setSimulationType(CModelEntity::ASSIGNMENT);
-              const std::vector<std::string> ModelValue = (*itReaction)->getParameterMapping((*itParameter)->getObjectName());
+              const std::vector<std::string> ModelValue = itReaction->getParameterMapping((*itParameter)->getObjectName());
 
               if (ModelValue.size() != 1) fatalError();
 

@@ -50,7 +50,7 @@ Qt::ItemFlags CQFunctionDM::flags(const QModelIndex &index) const
 
 bool CQFunctionDM::isFunctionReadOnly(const QModelIndex &index) const
 {
-  const CFunction *pFunc = CCopasiRootContainer::getFunctionList()->loadedFunctions()[index.row()];
+  const CFunction *pFunc = &CCopasiRootContainer::getFunctionList()->loadedFunctions()[index.row()];
   return pFunc->isReadOnly();
 }
 
@@ -86,7 +86,7 @@ QVariant CQFunctionDM::data(const QModelIndex &index, int role) const
         }
       else
         {
-          const CEvaluationTree *pFunc = CCopasiRootContainer::getFunctionList()->loadedFunctions()[index.row()];
+          const CEvaluationTree *pFunc = &CCopasiRootContainer::getFunctionList()->loadedFunctions()[index.row()];
 
           if (pFunc == NULL)
             return QVariant();
@@ -165,7 +165,7 @@ bool CQFunctionDM::setData(const QModelIndex &index, const QVariant &value,
             return false;
         }
 
-      CEvaluationTree *pFunc = CCopasiRootContainer::getFunctionList()->loadedFunctions()[index.row()];
+      CEvaluationTree *pFunc = &CCopasiRootContainer::getFunctionList()->loadedFunctions()[index.row()];
 
       if (pFunc == NULL)
         return false;
@@ -252,7 +252,7 @@ bool CQFunctionDM::removeRows(int position, int rows)
         }
       else
         {
-          *itDeletedKey = (*itRow)->getKey();
+          *itDeletedKey = itRow->getKey();
         }
     }
 
@@ -279,7 +279,7 @@ bool CQFunctionDM::removeRows(QModelIndexList rows, const QModelIndex&)
     return false;
 
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
+  CCopasiDataModel* pDataModel = &CCopasiRootContainer::getDatamodelList()->operator[](0);
   assert(pDataModel != NULL);
   CModel * pModel = pDataModel->getModel();
 
@@ -295,9 +295,9 @@ bool CQFunctionDM::removeRows(QModelIndexList rows, const QModelIndex&)
   for (i = rows.begin(); i != rows.end(); ++i)
     {
       if (!isDefaultRow(*i) &&
-          (pFunction = CCopasiRootContainer::getFunctionList()->loadedFunctions()[(*i).row()]) != NULL &&
+          (pFunction = &CCopasiRootContainer::getFunctionList()->loadedFunctions()[i->row()]) != NULL &&
           !pFunction->isReadOnly())
-        pFunctions.append(CCopasiRootContainer::getFunctionList()->loadedFunctions()[(*i).row()]);
+        pFunctions.append(&CCopasiRootContainer::getFunctionList()->loadedFunctions()[i->row()]);
     }
 
   QList <CEvaluationTree *>::const_iterator j;

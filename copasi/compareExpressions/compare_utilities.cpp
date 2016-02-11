@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -303,6 +303,7 @@ void normalize_variable_names(CNormalBase* pBase, std::map<std::string, std::str
               }
 
             break;
+
           default:
             break;
         }
@@ -1258,10 +1259,10 @@ bool contains_necessary_mass_action_elements(const CCopasiVector<CChemEqElement>
                           while (tmpVIt != tmpVEndit)
                             {
                               // check if we have found the metab and if the exponent is correct
-                              if (pMetab == (*tmpVIt)->getMetabolite() && fabs((*tmpVIt)->getMultiplicity() - (*iit)->getExp()) < 1e-23)
+                              if (pMetab == tmpVIt->getMetabolite() && fabs(tmpVIt->getMultiplicity() - (*iit)->getExp()) < 1e-23)
                                 {
                                   // delete the item from tmpV
-                                  tmpV.remove(*tmpVIt);
+                                  tmpV.remove(tmpVIt);
                                   break;
                                 }
 

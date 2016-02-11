@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -68,7 +68,7 @@ void CQSteadyStateResult::loadResult()
 {
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   mpTask =
-    dynamic_cast<CSteadyStateTask *>((*(*CCopasiRootContainer::getDatamodelList())[0]->getTaskList())["Steady-State"]);
+    dynamic_cast<CSteadyStateTask *>(&CCopasiRootContainer::getDatamodelList()->operator[](0).getTaskList()->operator[]("Steady-State"));
 
   if (!mpTask) return;
 

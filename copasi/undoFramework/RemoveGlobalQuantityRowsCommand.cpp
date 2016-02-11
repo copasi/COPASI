@@ -1,4 +1,4 @@
-// Copyright (C) 2014 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2014 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -36,15 +36,13 @@ RemoveGlobalQuantityRowsCommand::RemoveGlobalQuantityRowsCommand(
 
   for (i = rows.begin(); i != rows.end(); ++i)
     {
-      CModelValue* pModelValue = pModel->getModelValues()[(*i).row()];
+      CModelValue* pModelValue = &pModel->getModelValues()[i->row()];
 
       if (pGlobalQuantityDM->isDefaultRow(*i) || pModelValue == NULL)
         continue;
 
-
       UndoGlobalQuantityData *data = new UndoGlobalQuantityData(pModelValue);
       mpGlobalQuantityData.append(data);
-
     }
 
   setText(QObject::tr(": Removed Global Quantity"));

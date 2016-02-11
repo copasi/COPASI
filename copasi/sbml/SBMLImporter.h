@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -112,7 +112,7 @@ protected:
   std::set<std::string> mReactionsWithReplacedLocalParameters;
   std::set<std::string> mExplicitelyTimeDependentFunctionDefinitions;
   std::vector<std::string> mIgnoredParameterUnits;
-  std::map<const ASTNode*, CChemEqElement* > mStoichiometricExpressionMap;
+  std::map<const ASTNode*, const CChemEqElement* > mStoichiometricExpressionMap;
   bool mDelayFound;
   std::set<const Parameter*> mPotentialAvogadroNumbers;
   bool mAvogadroCreated;
@@ -131,7 +131,7 @@ protected:
   // of the chemical equation elements
   const CModelValue* mpModelConversionFactor;
   // we only store the id of the species as the value and use this value as the key into the mSpeciesConversionParameterMap below
-  std::map<CChemEqElement*, std::pair<std::string, CChemEq::MetaboliteRole> > mChemEqElementSpeciesIdMap;
+  std::map<const CChemEqElement*, std::pair<std::string, CChemEq::MetaboliteRole> > mChemEqElementSpeciesIdMap;
   // yet another map that stores conversion parameters per species id
   // This will speed up the assignment of
   std::map<std::string, const CModelValue*> mSpeciesConversionParameterMap;
@@ -187,7 +187,7 @@ protected:
    * Creates and returns a COPASI CModel from the SBMLDocument given as argument.
    */
   CModel* createCModelFromSBMLDocument(SBMLDocument * doc,
-                                       std::map<CCopasiObject*, SBase*>& copasi2sbmlmap);
+                                       std::map<const CCopasiObject*, SBase*>& copasi2sbmlmap);
 
   /**
    * @brief imports the units from the given sbml model
@@ -202,11 +202,11 @@ protected:
   CFunction* createCFunctionFromFunctionDefinition(const FunctionDefinition* sbmlFunction,
       CFunctionDB* pTmpFunctionDB,
       Model* pSBMLModel,
-      std::map<CCopasiObject*, SBase*>& copasi2sbmlmap);
+      std::map<const CCopasiObject*, SBase*>& copasi2sbmlmap);
 
   CFunction* createCFunctionFromFunctionTree(const FunctionDefinition* pSBMLFunction,
       Model* pSBMLModel,
-      std::map<CCopasiObject*, SBase*>& copasi2sbmlmap);
+      std::map<const CCopasiObject*, SBase*>& copasi2sbmlmap);
 
   /**
    * Creates and returns a COPASI CCompartment from the SBML Compartment
@@ -214,7 +214,7 @@ protected:
    */
   CCompartment* createCCompartmentFromCompartment(const Compartment* sbmlComp,
       CModel* copasiModel,
-      std::map<CCopasiObject*, SBase*>& copasi2sbmlmap,
+      std::map<const CCopasiObject *, SBase*>& copasi2sbmlmap,
       const Model* pSBMLModel);
 
   /**
@@ -223,7 +223,7 @@ protected:
   CMetab* createCMetabFromSpecies(const Species* sbmlSpecies,
                                   CModel* copasiModel,
                                   CCompartment* copasiCompartment,
-                                  std::map<CCopasiObject*, SBase*>& copasi2sbmlmap,
+                                  std::map<const CCopasiObject*, SBase*>& copasi2sbmlmap,
                                   const Model* pSBMLModel);
 
   /**
@@ -235,16 +235,16 @@ protected:
    * Imports the given Rule if COPASI supports this kind of Rule, otherwise a warning is created.
    */
   void importSBMLRule(const Rule* sbmlRule,
-                      std::map<CCopasiObject*, SBase*>& copasi2sbmlmap,
+                      std::map<const CCopasiObject*, SBase*>& copasi2sbmlmap,
                       Model* pSBMLModel);
 
   /**
    * Imports the given AssignmentRule which is for a global parameter.
    */
   void importRuleForModelEntity(const Rule* rule,
-                                CModelEntity* pMV,
+                                const CModelEntity* pMV,
                                 CModelEntity::Status ruleType,
-                                std::map<CCopasiObject*, SBase*>& copasi2sbmlmap,
+                                std::map<const CCopasiObject*, SBase*>& copasi2sbmlmap,
                                 Model* pSBMLModel);
 
   /**
@@ -252,7 +252,7 @@ protected:
    */
   void importEvents(Model* pSBMLModel,
                     CModel* pCopasiModel,
-                    std::map<CCopasiObject*, SBase*>& copasi2sbmlmap);
+                    std::map<const CCopasiObject*, SBase*>& copasi2sbmlmap);
 
   /**
    * Imports the given event.
@@ -260,14 +260,14 @@ protected:
   void importEvent(const Event* pEvent,
                    Model* pSBMLModel,
                    CModel* pCopasiModel,
-                   std::map<CCopasiObject*, SBase*>& copasi2sbmlmap);
+                   std::map<const CCopasiObject*, SBase*>& copasi2sbmlmap);
 
   /**
    * Imports the given RateRule if COPASI supports this kind of RateRule, otherwise a warning is created.
    */
   void importRule(const Rule* rule,
                   CModelEntity::Status ruleType,
-                  std::map<CCopasiObject*, SBase*>& copasi2sbmlmap,
+                  std::map<const CCopasiObject*, SBase*>& copasi2sbmlmap,
                   Model* pSBMLModel);
 
   /**
@@ -284,14 +284,14 @@ protected:
    * rules.
    */
   void checkRuleMathConsistency(const Rule* pRule,
-                                std::map<CCopasiObject*, SBase*>& copasi2sbmlmap);
+                                std::map<const CCopasiObject*, SBase*>& copasi2sbmlmap);
 
   /**
    * Creates and returns a COPASI CModelValue from the given SBML Parameter object.
    */
   CModelValue* createCModelValueFromParameter(const Parameter* sbmlParameter,
       CModel* copasiModel,
-      std::map<CCopasiObject*, SBase*>& copasi2sbmlmap);
+      std::map<const CCopasiObject*, SBase*>& copasi2sbmlmap);
 
   /**
    * Creates and returns a COPASI CReaction object from the given SBML
@@ -299,7 +299,7 @@ protected:
    */
   CReaction* createCReactionFromReaction(Reaction* sbmlReaction,
                                          Model* sbmlModel,
-                                         CModel* cmodel, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap,
+                                         CModel* cmodel, std::map<const CCopasiObject*, SBase*>& copasi2sbmlmap,
                                          CFunctionDB* pTmpFunctionDB);
 
   /**
@@ -383,7 +383,7 @@ protected:
    * the correspondingCopasi Common Names.
    */
   bool sbmlId2CopasiCN(ASTNode* pNode,
-                       std::map<CCopasiObject*, SBase*>& copasi2sbmlmap,
+                       std::map<const CCopasiObject*, SBase*>& copasi2sbmlmap,
                        CCopasiParameterGroup& pParamGroup);
 
   /**
@@ -403,7 +403,7 @@ protected:
    */
   void replace_delay_nodes(ConverterASTNode* pNode,
                            Model* pModel,
-                           std::map<CCopasiObject*, SBase*>& copasi2sbmlmap,
+                           std::map<const CCopasiObject*, SBase*>& copasi2sbmlmap,
                            Reaction* pSBMLReaction,
                            std::map<std::string, std::string>& localReplacementMap
                           );
@@ -428,7 +428,7 @@ protected:
                                       Model* pModel,
                                       std::map<std::string, std::string>& localReplacementMap,
                                       const std::set<std::string>& localIds,
-                                      std::map<CCopasiObject*, SBase*>& copasi2sbmlmap
+                                      std::map<const CCopasiObject*, SBase*>& copasi2sbmlmap
                                      );
 
   /**
@@ -462,7 +462,7 @@ protected:
    */
   void preprocessNode(ConverterASTNode* pNode,
                       Model* pSBMLModel,
-                      std::map<CCopasiObject*, SBase*>& copasi2sbmlmap,
+                      std::map<const CCopasiObject*, SBase*>& copasi2sbmlmap,
                       Reaction* pSBMLReaction = NULL);
 
   CFunction* findCorrespondingFunction(const CExpression * pExpression, const CReaction* reaction);
@@ -532,7 +532,7 @@ protected:
    * Finds all functions that are used and removes those that are not.
    */
   bool removeUnusedFunctions(CFunctionDB* pTmpFunctionDB,
-                             std::map<CCopasiObject*, SBase*>& copasi2sbmlmap);
+                             std::map<const CCopasiObject*, SBase*>& copasi2sbmlmap);
 
   /**
    * Finds all functions calls directly or indirectly used in a function
@@ -556,7 +556,7 @@ protected:
   void replace_time_with_initial_time(ASTNode* pNode, const CModel* pCOPASIModel);
 
   void replaceObjectNames(ASTNode* pNode,
-                          const std::map<CCopasiObject*, SBase*>& copasi2sbmlmap,
+                          const std::map<const CCopasiObject*, SBase*>& copasi2sbmlmap,
                           bool initialExpression = false);
 
   /**
@@ -587,7 +587,7 @@ protected:
    * If the entity has not been set in any way, an error message is created.
    */
   bool setInitialValues(CModel* pModel,
-                        const std::map<CCopasiObject*, SBase*>& copasi2sbmlmap);
+                        const std::map<const CCopasiObject*, SBase*>& copasi2sbmlmap);
 
   void checkElementUnits(const Model* pSBMLModel,
                          CModel* pCopasiModel,
@@ -609,13 +609,13 @@ protected:
   /**
    * Imports all initial assignments if there are any.
    */
-  void importInitialAssignments(Model* pSBMLModel, std::map<CCopasiObject*, SBase*>& copasi2sbmlMap, const CModel* pCOPASIModel);
+  void importInitialAssignments(Model* pSBMLModel, std::map<const CCopasiObject*, SBase*>& copasi2sbmlMap, const CModel* pCOPASIModel);
 
   /**
    * This method evaluates all stoichiometric expressions and sets them as
    * constants on the CChemEqElement.
    */
-  void applyStoichiometricExpressions(std::map<CCopasiObject*, SBase*>& copasi2sbmlmap,
+  void applyStoichiometricExpressions(std::map<const CCopasiObject*, SBase*>& copasi2sbmlmap,
                                       Model* pSBMLModel);
 
   /**
@@ -640,7 +640,7 @@ protected:
   void replaceAmountReferences(ConverterASTNode* pNode,
                                Model* pSBMLModel,
                                double factor,
-                               std::map<CCopasiObject*, SBase*>& copasi2sbmlmap);
+                               std::map<const CCopasiObject*, SBase*>& copasi2sbmlmap);
 
   /**
    * This method creates a global parameter the represents the factor that is
@@ -651,7 +651,7 @@ protected:
    */
   void createHasOnlySubstanceUnitFactor(Model* pSBMLModel,
                                         double factor,
-                                        std::map<CCopasiObject*, SBase*>& copasi2sbmlmap);
+                                        std::map<const CCopasiObject*, SBase*>& copasi2sbmlmap);
 
   /**
    * Multiplies all species nodes that belong to species with the
@@ -676,7 +676,7 @@ protected:
    * So we have to import the function definitions in the correct order.
    */
   CFunctionDB* importFunctionDefinitions(Model* pSBMLModel,
-                                         std::map<CCopasiObject*, SBase*>& copasi2sbmlmap);
+                                         std::map<const CCopasiObject*, SBase*>& copasi2sbmlmap);
 
   /**
    * static method that finds all direct function dependencies of a given
@@ -699,7 +699,7 @@ public:
   CModel* readSBML(std::string filename,
                    CFunctionDB* funDB,
                    SBMLDocument*& pSBMLDocument,
-                   std::map<CCopasiObject*, SBase*>& copasi2sbmlmap,
+                   std::map<const CCopasiObject*, SBase*>& copasi2sbmlmap,
                    CListOfLayouts *& prLol,
                    CCopasiDataModel* pDataModel);
 
@@ -708,7 +708,7 @@ public:
   CModel* parseSBML(const std::string& sbmlDocumentText,
                     CFunctionDB* funDB,
                     SBMLDocument *& pSBMLDocument,
-                    std::map<CCopasiObject*, SBase*>& copasi2sbmlmap,
+                    std::map<const CCopasiObject*, SBase*>& copasi2sbmlmap,
                     CListOfLayouts *& prLol,
                     CCopasiDataModel* pDataModel);
 

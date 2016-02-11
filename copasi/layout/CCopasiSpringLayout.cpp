@@ -97,7 +97,7 @@ bool CCopasiSpringLayout::initFromLayout(CLayout* layout, Parameters* ppp)
 
   for (i = 0; i < mpLayout->getListOfMetaboliteGlyphs().size() ; ++i)
     {
-      CMetab* metab = dynamic_cast<CMetab*>(mpLayout->getListOfMetaboliteGlyphs()[i]->getModelObject());
+      CMetab* metab = dynamic_cast<CMetab*>(mpLayout->getListOfMetaboliteGlyphs()[i].getModelObject());
       CLCompartmentGlyph*  tmp = NULL;
 
       if (metab)
@@ -105,20 +105,20 @@ bool CCopasiSpringLayout::initFromLayout(CLayout* layout, Parameters* ppp)
           unsigned int j;
 
           for (j = 0; j < mpLayout->getListOfCompartmentGlyphs().size(); ++j)
-            if (mpLayout->getListOfCompartmentGlyphs()[j]->getModelObjectKey() == metab->getCompartment()->getKey())
+            if (mpLayout->getListOfCompartmentGlyphs()[j].getModelObjectKey() == metab->getCompartment()->getKey())
               {
-                tmp = mpLayout->getListOfCompartmentGlyphs()[j];
+                tmp = &mpLayout->getListOfCompartmentGlyphs()[j];
                 break;
               }
         }
 
-      mCompartmentMap[mpLayout->getListOfMetaboliteGlyphs()[i]] = tmp;
+      mCompartmentMap[&mpLayout->getListOfMetaboliteGlyphs()[i]] = tmp;
     }
 
   //store the compartment glyph for each reaction glyph (if it exists)
   for (i = 0; i < mpLayout->getListOfReactionGlyphs().size() ; ++i)
     {
-      mCompartmentMap[mpLayout->getListOfReactionGlyphs()[i]] = findCompartmentForReactionNode(*mpLayout->getListOfReactionGlyphs()[i]);
+      mCompartmentMap[&mpLayout->getListOfReactionGlyphs()[i]] = findCompartmentForReactionNode(mpLayout->getListOfReactionGlyphs()[i]);
     }
 
   //create the list of constant positional relations
@@ -129,8 +129,8 @@ bool CCopasiSpringLayout::initFromLayout(CLayout* layout, Parameters* ppp)
   for (i = 0; i < mpLayout->getListOfTextGlyphs().size(); ++i)
     {
       CoordinateRelation tmp;
-      tmp.target = mpLayout->getListOfTextGlyphs()[i];
-      tmp.source = mpLayout->getListOfTextGlyphs()[i]->getGraphicalObject();
+      tmp.target = &mpLayout->getListOfTextGlyphs()[i];
+      tmp.source = mpLayout->getListOfTextGlyphs()[i].getGraphicalObject();
 
       if (tmp.source)
         {
@@ -151,7 +151,7 @@ CLCompartmentGlyph* CCopasiSpringLayout::findCompartmentForReactionNode(CLReacti
 
   for (i = 0; i < r.getListOfMetabReferenceGlyphs().size(); ++i)
     {
-      std::map<CLBase*, CLCompartmentGlyph*>::const_iterator mapIt = mCompartmentMap.find(r.getListOfMetabReferenceGlyphs()[i]->getMetabGlyph());
+      std::map<CLBase*, CLCompartmentGlyph*>::const_iterator mapIt = mCompartmentMap.find(r.getListOfMetabReferenceGlyphs()[i].getMetabGlyph());
 
       if (mapIt == mCompartmentMap.end())
         {
@@ -193,19 +193,19 @@ bool CCopasiSpringLayout::createVariables()
   // add variables for the coordinates of all metabs
   for (i = 0; i < mpLayout->getListOfMetaboliteGlyphs().size() ; ++i)
     {
-      addPositionVariables(mpLayout->getListOfMetaboliteGlyphs()[i]);
+      addPositionVariables(&mpLayout->getListOfMetaboliteGlyphs()[i]);
     }
 
   // add variables for the coordinates of all reaction glyphs
   for (i = 0; i < mpLayout->getListOfReactionGlyphs().size() ; ++i)
     {
-      addReactionVariables(mpLayout->getListOfReactionGlyphs()[i]);
+      addReactionVariables(&mpLayout->getListOfReactionGlyphs()[i]);
     }
 
   // add variables for the coordinates of all general glyphs
   for (i = 0; i < mpLayout->getListOfGeneralGlyphs().size() ; ++i)
     {
-      addPositionVariables(mpLayout->getListOfGeneralGlyphs()[i]);
+      addPositionVariables(&mpLayout->getListOfGeneralGlyphs()[i]);
     }
 
   // add variables for text glyphs that are not fixed to anything.
@@ -367,7 +367,7 @@ void CCopasiSpringLayout::finalizeState()
   //for now, only create curves for the reaction glyphs
   for (i = 0; i < mpLayout->getListOfReactionGlyphs().size() ; ++i)
     {
-      CLReactionGlyph* pRG = mpLayout->getListOfReactionGlyphs()[i];
+      CLReactionGlyph* pRG = &mpLayout->getListOfReactionGlyphs()[i];
 
       //Determine the average position of substrates and products, giving less weight to side reactants
       CLPoint s, p;
@@ -376,9 +376,9 @@ void CCopasiSpringLayout::finalizeState()
 
       for (j = 0; j < jmax; ++j)
         {
-          if (pRG->getListOfMetabReferenceGlyphs()[j]->getFunctionalRole() == CLMetabReferenceGlyph::SUBSTRATE)
+          if (pRG->getListOfMetabReferenceGlyphs()[j].getFunctionalRole() == CLMetabReferenceGlyph::SUBSTRATE)
             {
-              CLMetabGlyph* metabGlyph = pRG->getListOfMetabReferenceGlyphs()[j]->getMetabGlyph();
+              CLMetabGlyph* metabGlyph = pRG->getListOfMetabReferenceGlyphs()[j].getMetabGlyph();
 
               if (metabGlyph != NULL)
                 {
@@ -387,9 +387,9 @@ void CCopasiSpringLayout::finalizeState()
                 }
             }
 
-          if (pRG->getListOfMetabReferenceGlyphs()[j]->getFunctionalRole() == CLMetabReferenceGlyph::SIDESUBSTRATE)
+          if (pRG->getListOfMetabReferenceGlyphs()[j].getFunctionalRole() == CLMetabReferenceGlyph::SIDESUBSTRATE)
             {
-              CLMetabGlyph* metabGlyph = pRG->getListOfMetabReferenceGlyphs()[j]->getMetabGlyph();
+              CLMetabGlyph* metabGlyph = pRG->getListOfMetabReferenceGlyphs()[j].getMetabGlyph();
 
               if (metabGlyph != NULL)
                 {
@@ -398,9 +398,9 @@ void CCopasiSpringLayout::finalizeState()
                 }
             }
 
-          if (pRG->getListOfMetabReferenceGlyphs()[j]->getFunctionalRole() == CLMetabReferenceGlyph::PRODUCT)
+          if (pRG->getListOfMetabReferenceGlyphs()[j].getFunctionalRole() == CLMetabReferenceGlyph::PRODUCT)
             {
-              CLMetabGlyph* metabGlyph = pRG->getListOfMetabReferenceGlyphs()[j]->getMetabGlyph();
+              CLMetabGlyph* metabGlyph = pRG->getListOfMetabReferenceGlyphs()[j].getMetabGlyph();
 
               if (metabGlyph != NULL)
                 {
@@ -409,9 +409,9 @@ void CCopasiSpringLayout::finalizeState()
                 }
             }
 
-          if (pRG->getListOfMetabReferenceGlyphs()[j]->getFunctionalRole() == CLMetabReferenceGlyph::SIDEPRODUCT)
+          if (pRG->getListOfMetabReferenceGlyphs()[j].getFunctionalRole() == CLMetabReferenceGlyph::SIDEPRODUCT)
             {
-              CLMetabGlyph* metabGlyph = pRG->getListOfMetabReferenceGlyphs()[j]->getMetabGlyph();
+              CLMetabGlyph* metabGlyph = pRG->getListOfMetabReferenceGlyphs()[j].getMetabGlyph();
 
               if (metabGlyph != NULL)
                 {
@@ -432,7 +432,6 @@ void CCopasiSpringLayout::finalizeState()
           position = pRG->getCurve().getCurveSegments()[0].getStart();
           pRG->setPosition(position);
         }
-
 
       if (s_c > 0)
         s = s * (1 / s_c);
@@ -467,7 +466,7 @@ void CCopasiSpringLayout::finalizeState()
           //here we need to generate the curves for the MetabReferenceGlyphs.
           //we will need to consider the size of the glyphs, role of the metab in the reaction, etc.
           //For now, only a primitive implementation: TODO: improve
-          CLMetabReferenceGlyph* pMRG = pRG->getListOfMetabReferenceGlyphs()[j];
+          CLMetabReferenceGlyph* pMRG = &pRG->getListOfMetabReferenceGlyphs()[j];
           double direction;
           //double modifierLength = -0.2;
 
@@ -528,13 +527,13 @@ void CCopasiSpringLayout::finalizeState()
   //update the curves in the general glyph
   for (i = 0; i < mpLayout->getListOfGeneralGlyphs().size() ; ++i)
     {
-      CLGeneralGlyph* pGG = mpLayout->getListOfGeneralGlyphs()[i];
+      CLGeneralGlyph* pGG = &mpLayout->getListOfGeneralGlyphs()[i];
 
       size_t j;
 
       for (j = 0; j < pGG->getListOfReferenceGlyphs().size(); ++j)
         {
-          CLReferenceGlyph* pRG = pGG->getListOfReferenceGlyphs()[j];
+          CLReferenceGlyph* pRG = &pGG->getListOfReferenceGlyphs()[j];
 
           if (pRG->getCurve().getNumCurveSegments() == 0) continue;
 
@@ -768,7 +767,7 @@ double CCopasiSpringLayout::getPotential()
     for (j = i + 1; j < mpLayout->getListOfMetaboliteGlyphs().size(); ++j)
       {
         if (i != j)
-          tmp += mpPar->values[0] * potSpeciesSpecies(*mpLayout->getListOfMetaboliteGlyphs()[i], *mpLayout->getListOfMetaboliteGlyphs()[j]);
+          tmp += mpPar->values[0] * potSpeciesSpecies(mpLayout->getListOfMetaboliteGlyphs()[i], mpLayout->getListOfMetaboliteGlyphs()[j]);
       }
 
   // only if we have reactions!
@@ -778,7 +777,7 @@ double CCopasiSpringLayout::getPotential()
       for (i = 0; i < mpLayout->getListOfMetaboliteGlyphs().size(); ++i)
         for (j = 0; j < mpLayout->getListOfReactionGlyphs().size(); ++j)
           {
-            tmp += mpPar->values[0] * potSpeciesReaction(*mpLayout->getListOfMetaboliteGlyphs()[i], *mpLayout->getListOfReactionGlyphs()[j]);
+            tmp += mpPar->values[0] * potSpeciesReaction(mpLayout->getListOfMetaboliteGlyphs()[i], mpLayout->getListOfReactionGlyphs()[j]);
           }
 
       //repulsion between reaction nodes
@@ -786,21 +785,21 @@ double CCopasiSpringLayout::getPotential()
         for (j = i + 1; j < mpLayout->getListOfReactionGlyphs().size(); ++j)
           {
             if (i != j)
-              tmp += mpPar->values[0] * potReactionReaction(*mpLayout->getListOfReactionGlyphs()[i], *mpLayout->getListOfReactionGlyphs()[j]);
+              tmp += mpPar->values[0] * potReactionReaction(mpLayout->getListOfReactionGlyphs()[i], mpLayout->getListOfReactionGlyphs()[j]);
           }
     }
 
   //spring force for species references
   for (i = 0; i < mpLayout->getListOfReactionGlyphs().size(); ++i)
     {
-      CLReactionGlyph* pRG = mpLayout->getListOfReactionGlyphs()[i];
+      CLReactionGlyph* pRG = &mpLayout->getListOfReactionGlyphs()[i];
 
       for (j = 0; j < pRG->getListOfMetabReferenceGlyphs().size(); ++j)
         {
-          tmp += potEdge(*pRG->getListOfMetabReferenceGlyphs()[j], *pRG);
+          tmp += potEdge(pRG->getListOfMetabReferenceGlyphs()[j], *pRG);
 
           //second order
-          CLMetabReferenceGlyph::Role role = pRG->getListOfMetabReferenceGlyphs()[j]->getFunctionalRole();
+          CLMetabReferenceGlyph::Role role = pRG->getListOfMetabReferenceGlyphs()[j].getFunctionalRole();
 
           if (role != CLMetabReferenceGlyph::SUBSTRATE && role != CLMetabReferenceGlyph::SIDESUBSTRATE)
             continue;
@@ -810,25 +809,25 @@ double CCopasiSpringLayout::getPotential()
 
           for (k = 0; k < pRG->getListOfMetabReferenceGlyphs().size(); ++k)
             {
-              CLMetabReferenceGlyph::Role role2 = pRG->getListOfMetabReferenceGlyphs()[k]->getFunctionalRole();
+              CLMetabReferenceGlyph::Role role2 = pRG->getListOfMetabReferenceGlyphs()[k].getFunctionalRole();
 
               if (role2 != CLMetabReferenceGlyph::PRODUCT && role2 != CLMetabReferenceGlyph::SIDEPRODUCT)
                 continue;
 
               dist += role2 == CLMetabReferenceGlyph::PRODUCT ? mpPar->values[1] : mpPar->values[3];
 
-              tmp += mpPar->values[5] * potSecondOrderEdge(*pRG->getListOfMetabReferenceGlyphs()[j], *pRG->getListOfMetabReferenceGlyphs()[k], dist);
+              tmp += mpPar->values[5] * potSecondOrderEdge(pRG->getListOfMetabReferenceGlyphs()[j], pRG->getListOfMetabReferenceGlyphs()[k], dist);
             }
         }
     }
 
   for (i = 0; i < mpLayout->getListOfGeneralGlyphs().size(); ++i)
     {
-      CLGeneralGlyph* pRG = mpLayout->getListOfGeneralGlyphs()[i];
+      CLGeneralGlyph* pRG = &mpLayout->getListOfGeneralGlyphs()[i];
 
       for (j = 0; j < pRG->getListOfReferenceGlyphs().size(); ++j)
         {
-          tmp += potGeneralEdge(*pRG->getListOfReferenceGlyphs()[j], *pRG);
+          tmp += potGeneralEdge(pRG->getListOfReferenceGlyphs()[j], *pRG);
         }
     }
 
@@ -843,7 +842,7 @@ double CCopasiSpringLayout::getPotential()
   //force to keep species in compartment
   for (i = 0; i < mpLayout->getListOfMetaboliteGlyphs().size(); ++i)
     {
-      CLMetabGlyph* tmpMG = mpLayout->getListOfMetaboliteGlyphs()[i];
+      CLMetabGlyph* tmpMG = &mpLayout->getListOfMetaboliteGlyphs()[i];
       std::map<CLBase*, CLCompartmentGlyph*>::const_iterator mapIt = mCompartmentMap.find(tmpMG);
 
       if (mapIt == mCompartmentMap.end())
@@ -864,7 +863,7 @@ double CCopasiSpringLayout::getPotential()
   //force to keep reaction nodes in compartment
   for (i = 0; i < mpLayout->getListOfReactionGlyphs().size(); ++i)
     {
-      CLReactionGlyph* tmpRG = mpLayout->getListOfReactionGlyphs()[i];
+      CLReactionGlyph* tmpRG = &mpLayout->getListOfReactionGlyphs()[i];
       std::map<CLBase*, CLCompartmentGlyph*>::const_iterator mapIt = mCompartmentMap.find(tmpRG);
 
       if (mapIt == mCompartmentMap.end())
@@ -939,7 +938,7 @@ void placeTextGlyphs(CLayout* pLayout)
 
   for (i = 0; i < pLayout->getListOfTextGlyphs().size(); ++i)
     {
-      CLTextGlyph* pTG = pLayout->getListOfTextGlyphs()[i];
+      CLTextGlyph* pTG = &pLayout->getListOfTextGlyphs()[i];
       CLGraphicalObject* pGO = pTG->getGraphicalObject();
 
       if (!pGO)
@@ -964,7 +963,7 @@ void CCopasiSpringLayout::randomize()
   //metab glyphs
   for (i = 0; i < mpLayout->getListOfMetaboliteGlyphs().size(); ++i)
     {
-      CLMetabGlyph* pMetabGlyph = mpLayout->getListOfMetaboliteGlyphs()[i];
+      CLMetabGlyph* pMetabGlyph = &mpLayout->getListOfMetaboliteGlyphs()[i];
       const CMetab* pMetab = dynamic_cast<const CMetab*>(pMetabGlyph->getModelObject());
 
       if (!pMetab)
@@ -980,10 +979,10 @@ void CCopasiSpringLayout::randomize()
       size_t j;
 
       for (j = 0; j < mpLayout->getListOfCompartmentGlyphs().size(); ++j)
-        if (mpLayout->getListOfCompartmentGlyphs()[j]->getModelObjectKey()
+        if (mpLayout->getListOfCompartmentGlyphs()[j].getModelObjectKey()
             == pComp->getKey())
           {
-            pCompGlyph = mpLayout->getListOfCompartmentGlyphs()[j];
+            pCompGlyph = &mpLayout->getListOfCompartmentGlyphs()[j];
             break;
           }
 
@@ -996,14 +995,13 @@ void CCopasiSpringLayout::randomize()
   //reaction glyphs
   for (i = 0; i < mpLayout->getListOfReactionGlyphs().size(); ++i)
     {
-      CLReactionGlyph* pReactionGlyph = mpLayout->getListOfReactionGlyphs()[i];
+      CLReactionGlyph* pReactionGlyph = &mpLayout->getListOfReactionGlyphs()[i];
       CLPoint center(0, 0);
       size_t count;
 
       for (count = 0; count < pReactionGlyph->getListOfMetabReferenceGlyphs().size(); ++count)
         {
-          CLMetabGlyph* metabGlyph = pReactionGlyph->getListOfMetabReferenceGlyphs()[count]
-                                     ->getMetabGlyph();
+          CLMetabGlyph* metabGlyph = pReactionGlyph->getListOfMetabReferenceGlyphs()[count].getMetabGlyph();
 
           if (metabGlyph == NULL) continue;
 
@@ -1127,7 +1125,7 @@ CLayout* CCopasiSpringLayout::createLayout(
 
       for (elIt = substrates.begin(); elIt != substrates.end(); ++elIt)
         {
-          const CMetab* pMetab = (*elIt)->getMetabolite();
+          const CMetab* pMetab = elIt->getMetabolite();
 
           if (!pMetab)
             continue;
@@ -1225,7 +1223,7 @@ CLayout* CCopasiSpringLayout::createLayout(
 
       for (elIt = products.begin(); elIt != products.end(); ++elIt)
         {
-          const CMetab* pMetab = (*elIt)->getMetabolite();
+          const CMetab* pMetab = elIt->getMetabolite();
 
           if (!pMetab)
             continue;
@@ -1233,7 +1231,6 @@ CLayout* CCopasiSpringLayout::createLayout(
           CLMetabGlyph* pMetabGlyph = NULL;
           CLMetabReferenceGlyph::Role role; // = CLMetabReferenceGlyph::SUBSTRATE;
           CLMetabReferenceGlyph::Role functionalRole;
-
 
           //is it a side reactant? If yes, create a new metab glyph
           if (sideMetabs.find(pMetab) != sideMetabs.end())
@@ -1318,7 +1315,7 @@ CLayout* CCopasiSpringLayout::createLayout(
 
       for (elIt = modifiers.begin(); elIt != modifiers.end(); ++elIt)
         {
-          const CMetab* pMetab = (*elIt)->getMetabolite();
+          const CMetab* pMetab = elIt->getMetabolite();
 
           if (!pMetab)
             continue;
@@ -1391,7 +1388,7 @@ CLayout* CCopasiSpringLayout::createLayout(
 
   for (i = 0; i < pResult->getListOfMetaboliteGlyphs().size(); ++i)
     {
-      const CLMetabGlyph* pMetabGlyph = pResult->getListOfMetaboliteGlyphs()[i];
+      const CLMetabGlyph* pMetabGlyph = &pResult->getListOfMetaboliteGlyphs()[i];
       const CMetab* pMetab = dynamic_cast<const CMetab*>(pMetabGlyph->getModelObject());
 
       if (!pMetab)

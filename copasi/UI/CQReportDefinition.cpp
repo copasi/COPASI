@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -150,7 +150,7 @@ void CQReportDefinition::btnAdvancedClicked()
 void CQReportDefinition::btnItemClicked()
 {
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CModel* pModel = (*CCopasiRootContainer::getDatamodelList())[0]->getModel();
+  CModel* pModel = CCopasiRootContainer::getDatamodelList()->operator[](0).getModel();
 
   if (!pModel) return;
 
@@ -372,7 +372,7 @@ void CQReportDefinition::btnDeleteReportClicked()
         size_t Size = pReportList->size();
 
         if (Size > 0)
-          enter((*pReportList)[std::min(Index, Size - 1)]->getKey());
+          enter((*pReportList)[std::min(Index, Size - 1)].getKey());
         else
           enter("");
 
@@ -395,7 +395,7 @@ void CQReportDefinition::btnNewReportClicked()
   CReportDefinition* pRep;
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
 
-  while (!(pRep = (*CCopasiRootContainer::getDatamodelList())[0]->getReportDefinitionList()->createReportDefinition(Name, "")))
+  while (!(pRep = CCopasiRootContainer::getDatamodelList()->operator[](0).getReportDefinitionList()->createReportDefinition(Name, "")))
     {
       i++;
       Name = "report_";
@@ -654,7 +654,7 @@ bool CQReportDefinition::save()
     }
 
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  (*CCopasiRootContainer::getDatamodelList())[0]->changed();
+  CCopasiRootContainer::getDatamodelList()->operator[](0).changed();
 
   mChanged = false;
   return false;

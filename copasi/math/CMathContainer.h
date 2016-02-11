@@ -910,7 +910,7 @@ private:
    * @param CCopasiObject * pDataObject
    * @param CMathObject * pMathObject
    */
-  void map(CCopasiObject * pDataObject, CMathObject * pMathObject);
+  void map(const CCopasiObject * pDataObject, CMathObject * pMathObject);
 
   /**
    * Create an event of type CEvent::Discontinuity for each discontinuity in the model
@@ -1155,7 +1155,7 @@ private:
   /**
    * A map from data objects to math objects
    */
-  std::map< CCopasiObject *, CMathObject * > mDataObject2MathObject;
+  std::map< const CCopasiObject *, CMathObject * > mDataObject2MathObject;
 
   /**
    * A map from data objects values to math objects

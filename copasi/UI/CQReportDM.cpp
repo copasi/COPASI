@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -28,7 +28,7 @@ CQReportDM::CQReportDM(QObject *parent)
 
 int CQReportDM::rowCount(const QModelIndex& C_UNUSED(parent)) const
 {
-  return (int)(*CCopasiRootContainer::getDatamodelList())[0]->getReportDefinitionList()->size() + 1;
+  return CCopasiRootContainer::getDatamodelList()->operator[](0).getReportDefinitionList()->size() + 1;
 }
 int CQReportDM::columnCount(const QModelIndex& C_UNUSED(parent)) const
 {
@@ -75,7 +75,7 @@ QVariant CQReportDM::data(const QModelIndex &index, int role) const
         }
       else
         {
-          CReportDefinition *pRepDef = (*CCopasiRootContainer::getDatamodelList())[0]->getReportDefinitionList()->operator[](index.row());
+          CReportDefinition *pRepDef = &CCopasiRootContainer::getDatamodelList()->operator[](0).getReportDefinitionList()->operator[](index.row());
 
           switch (index.column())
             {
@@ -133,7 +133,7 @@ bool CQReportDM::setData(const QModelIndex &index, const QVariant &value,
             return false;
         }
 
-      CReportDefinition *pRepDef = (*CCopasiRootContainer::getDatamodelList())[0]->getReportDefinitionList()->operator[](index.row());
+      CReportDefinition *pRepDef = &CCopasiRootContainer::getDatamodelList()->operator[](0).getReportDefinitionList()->operator[](index.row());
 
       if (index.column() == COL_NAME_REPORTS)
         pRepDef->setObjectName(TO_UTF8(value.toString()));
@@ -152,7 +152,7 @@ bool CQReportDM::insertRows(int position, int rows, const QModelIndex & source)
   for (int row = 0; row < rows; ++row)
     {
       QString Name = createNewName(mNewName, COL_NAME_REPORTS);
-      CReportDefinition *pRepDef = (*CCopasiRootContainer::getDatamodelList())[0]->getReportDefinitionList()->createReportDefinition(TO_UTF8(Name), "");
+      CReportDefinition *pRepDef = CCopasiRootContainer::getDatamodelList()->operator[](0).getReportDefinitionList()->createReportDefinition(TO_UTF8(Name), "");
       emit notifyGUI(ListViews::REPORT, ListViews::ADD, pRepDef->getKey());
     }
 
@@ -168,7 +168,7 @@ bool CQReportDM::removeRows(int position, int rows)
   if (rows <= 0)
     return true;
 
-  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
+  CCopasiDataModel* pDataModel = &CCopasiRootContainer::getDatamodelList()->operator[](0);
 
   if (pDataModel == NULL)
     return false;
@@ -182,7 +182,7 @@ bool CQReportDM::removeRows(int position, int rows)
 
   for (int row = 0; row < rows; ++row)
     {
-      CReportDefinition * pReport = (*pReportList)[position];
+      CReportDefinition * pReport = &pReportList->operator[](position);
 
       if (pReport == NULL)
         continue;
@@ -218,7 +218,7 @@ bool CQReportDM::removeRows(QModelIndexList rows, const QModelIndex&)
   if (rows.isEmpty())
     return false;
 
-  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
+  CCopasiDataModel* pDataModel = &CCopasiRootContainer::getDatamodelList()->operator[](0);
   assert(pDataModel != NULL);
 
   CCopasiVector< CReportDefinition > * pReportList = pDataModel->getReportDefinitionList();
@@ -232,8 +232,8 @@ bool CQReportDM::removeRows(QModelIndexList rows, const QModelIndex&)
 
   for (i = rows.begin(); i != rows.end(); ++i)
     {
-      if (!isDefaultRow(*i) && (*pReportList)[(*i).row()])
-        Reports.append((*pReportList)[(*i).row()]);
+      if (!isDefaultRow(*i) && &pReportList->operator[](i->row()))
+        Reports.append(&pReportList->operator[](i->row()));
     }
 
   QList< CReportDefinition * >::const_iterator j;
