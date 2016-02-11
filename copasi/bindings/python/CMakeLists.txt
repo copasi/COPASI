@@ -26,12 +26,12 @@
 find_package(SWIG REQUIRED)
 include(${SWIG_USE_FILE})
 
-find_package(PythonInterp)
+find_package(PythonInterp REQUIRED)
 
 # specify that the same python library should be found 
 # as the one the selected interpreter uses
 set (Python_ADDITIONAL_VERSIONS ${PYTHON_VERSION_STRING})
-find_package(PythonLibs)
+find_package(PythonLibs REQUIRED)
 
 ####################################################################
 #
