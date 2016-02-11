@@ -47,11 +47,6 @@
         </element>
       </optional>
       <optional>
-        <element name="ListOfUnitDefinitions">
-          <ref name="listOfUnitDefinitions.datatype"/>
-        </element>
-      </optional>
-      <optional>
         <element name="Model">
           <ref name="model.datatype"/>
         </element>
@@ -100,6 +95,11 @@
               </attribute>
             </element>
           </oneOrMore>
+        </element>
+      </optional>
+      <optional>
+        <element name="ListOfUnitDefinitions">
+          <ref name="listOfUnitDefinitions.datatype"/>
         </element>
       </optional>
       <zeroOrMore>
@@ -360,6 +360,11 @@
   
   <define name="unitDefinition.datatype">
     <element name="UnitDefinition">
+    <attribute name="key">
+      <data type="ID">
+        <param name="pattern">Unit_\d+</param>
+      </data>
+    </attribute>
       <ref name="name.attribute"/>
       <attribute name="symbol">
         <data type="string"/>
