@@ -1000,7 +1000,7 @@ bool CSBMLExporter::createCompartments(CCopasiDataModel& dataModel)
 
   while (it != endit)
     {
-      createCompartment(**it);
+      createCompartment(*it);
       ++it;
 
       ++mCurrentStepCounter;
@@ -1015,7 +1015,7 @@ bool CSBMLExporter::createCompartments(CCopasiDataModel& dataModel)
 /**
  * Creates the compartment for the given COPASI compartment.
  */
-void CSBMLExporter::createCompartment(CCompartment& compartment)
+void CSBMLExporter::createCompartment(const CCompartment& compartment)
 {
   Compartment* pSBMLCompartment = NULL;
   std::string sbmlId = compartment.getSBMLId();
@@ -1172,7 +1172,7 @@ CSBMLExporter::createMetabolites(CCopasiDataModel& dataModel)
 
   while (it != endit)
     {
-      createMetabolite(**it);
+      createMetabolite(*it);
       ++it;
 
       ++mCurrentStepCounter;
@@ -1201,7 +1201,7 @@ CSBMLExporter::createMetabolites(CCopasiDataModel& dataModel)
 /**
  * Creates the species for the given COPASI metabolite.
  */
-void CSBMLExporter::createMetabolite(CMetab& metab)
+void CSBMLExporter::createMetabolite(const CMetab& metab)
 {
   Species* pSBMLSpecies = NULL;
   std::string sbmlId = metab.getSBMLId();
@@ -1393,7 +1393,7 @@ bool CSBMLExporter::createParameters(CCopasiDataModel& dataModel)
 
   while (it != endit)
     {
-      createParameter(**it);
+      createParameter(*it);
       ++it;
 
       ++mCurrentStepCounter;
@@ -1408,7 +1408,7 @@ bool CSBMLExporter::createParameters(CCopasiDataModel& dataModel)
 /**
  * Creates the parameter for the given COPASI parameter.
  */
-void CSBMLExporter::createParameter(CModelValue& modelValue)
+void CSBMLExporter::createParameter(const CModelValue& modelValue)
 {
   Parameter* pParameter = NULL;
   std::string sbmlId = modelValue.getSBMLId();
@@ -1531,7 +1531,7 @@ bool CSBMLExporter::createReactions(CCopasiDataModel& dataModel)
 
   while (it != endit)
     {
-      createReaction(**it, dataModel);
+      createReaction(*it, dataModel);
       ++it;
 
       ++mCurrentStepCounter;
@@ -1546,7 +1546,7 @@ bool CSBMLExporter::createReactions(CCopasiDataModel& dataModel)
 /**
  * Creates the reaction for the given COPASI reaction.
  */
-void CSBMLExporter::createReaction(CReaction& reaction, CCopasiDataModel& dataModel)
+void CSBMLExporter::createReaction(const CReaction& reaction, CCopasiDataModel& dataModel)
 {
   // make sure the mCOPASI2SBMLMap is already updated
   Reaction* pSBMLReaction = NULL;
@@ -1610,7 +1610,7 @@ void CSBMLExporter::createReaction(CReaction& reaction, CCopasiDataModel& dataMo
 
   for (counter = 0; counter < chemicalEquation.getSubstrates().size(); counter++)
     {
-      const CChemEqElement* element = chemicalEquation.getSubstrates()[counter];
+      const CChemEqElement* element = &chemicalEquation.getSubstrates()[counter];
       const CMetab* pMetabolite = element->getMetabolite();
       assert(pMetabolite);
       SpeciesReference* sRef = NULL;
@@ -1648,7 +1648,7 @@ void CSBMLExporter::createReaction(CReaction& reaction, CCopasiDataModel& dataMo
 
   for (counter = 0; counter < chemicalEquation.getProducts().size(); counter++)
     {
-      const CChemEqElement* element = chemicalEquation.getProducts()[counter];
+      const CChemEqElement* element = &chemicalEquation.getProducts()[counter];
       const CMetab* pMetabolite = element->getMetabolite();
       assert(pMetabolite);
       SpeciesReference* sRef = NULL;
@@ -1687,7 +1687,7 @@ void CSBMLExporter::createReaction(CReaction& reaction, CCopasiDataModel& dataMo
 
   for (counter = 0; counter < chemicalEquation.getModifiers().size(); counter++)
     {
-      const CChemEqElement* element = chemicalEquation.getModifiers()[counter];
+      const CChemEqElement* element = &chemicalEquation.getModifiers()[counter];
       const CMetab* pMetabolite = element->getMetabolite(); assert(pMetabolite);
       ModifierSpeciesReference* sRef = NULL;
 
@@ -1961,7 +1961,7 @@ bool CSBMLExporter::createRules(CCopasiDataModel& dataModel)
   // rules in Level 2 are not ordered.
   //if (this->mSBMLLevel == 1 || (this->mSBMLLevel == 2 && this->mSBMLVersion == 1))
   //  {
-  std::vector<CModelEntity*> orderedAssignmentRules = orderRules(dataModel);
+  std::vector<const CModelEntity*> orderedAssignmentRules = orderRules(dataModel);
   //}
   //
   // remove all rules from the SBML model
@@ -2741,14 +2741,14 @@ void CSBMLExporter::check_for_spatial_size_units(const CCopasiDataModel& dataMod
         {
           CCopasiVector<CMetab>::const_iterator it = pModel->getMetabolites().begin(), endit = pModel->getMetabolites().end();
           std::set<std::string> badSpecies;
-          const std::map<CCopasiObject*, SBase*>& copasi2sbmlmap = const_cast<CCopasiDataModel&>(dataModel).getCopasi2SBMLMap();
-          std::map<CCopasiObject*, SBase*>::const_iterator pos;
+          const std::map<const CCopasiObject*, SBase*>& copasi2sbmlmap = const_cast<CCopasiDataModel&>(dataModel).getCopasi2SBMLMap();
+          std::map<const CCopasiObject*, SBase*>::const_iterator pos;
           const Species* pSBMLSpecies = NULL;
           std::string spatialSizeUnits;
 
           while (it != endit)
             {
-              pos = copasi2sbmlmap.find(*it);
+              pos = copasi2sbmlmap.find(it);
 
               if (pos != copasi2sbmlmap.end())
                 {
@@ -2876,14 +2876,14 @@ void CSBMLExporter::checkForODESpeciesInNonfixedCompartment(const CCopasiDataMod
 
   while (it != endit)
     {
-      if ((*it)->getStatus() == CModelValue::ODE)
+      if (it->getStatus() == CModelValue::ODE)
         {
-          const CCompartment* pCompartment = (*it)->getCompartment();
+          const CCompartment* pCompartment = it->getCompartment();
           assert(pCompartment != NULL);
 
           if (pCompartment->getStatus() != CModelValue::FIXED)
             {
-              result.push_back(SBMLIncompatibility(3, (*it)->getObjectName().c_str(), pCompartment->getObjectName().c_str()));
+              result.push_back(SBMLIncompatibility(3, it->getObjectName().c_str(), pCompartment->getObjectName().c_str()));
             }
         }
 
@@ -3030,9 +3030,9 @@ void CSBMLExporter::checkForInitialAssignments(const CCopasiDataModel& dataModel
 
       while (compIt != compEndit)
         {
-          if ((*compIt)->getInitialExpression() != "")
+          if (compIt->getInitialExpression() != "")
             {
-              result.push_back(SBMLIncompatibility(5, "Compartment", (*compIt)->getObjectName().c_str()));
+              result.push_back(SBMLIncompatibility(5, "Compartment", compIt->getObjectName().c_str()));
             }
 
           ++compIt;
@@ -3044,9 +3044,9 @@ void CSBMLExporter::checkForInitialAssignments(const CCopasiDataModel& dataModel
 
       while (metabIt != metabEndit)
         {
-          if ((*metabIt)->getInitialExpression() != "")
+          if (metabIt->getInitialExpression() != "")
             {
-              result.push_back(SBMLIncompatibility(5, "Metabolite", (*metabIt)->getObjectName().c_str()));
+              result.push_back(SBMLIncompatibility(5, "Metabolite", metabIt->getObjectName().c_str()));
             }
 
           ++metabIt;
@@ -3058,9 +3058,9 @@ void CSBMLExporter::checkForInitialAssignments(const CCopasiDataModel& dataModel
 
       while (mvIt != mvEndit)
         {
-          if ((*mvIt)->getInitialExpression() != "")
+          if (mvIt->getInitialExpression() != "")
             {
-              result.push_back(SBMLIncompatibility(5, "Parameter", (*mvIt)->getObjectName().c_str()));
+              result.push_back(SBMLIncompatibility(5, "Parameter", mvIt->getObjectName().c_str()));
             }
 
           ++mvIt;
@@ -4147,11 +4147,11 @@ const std::vector<SBMLIncompatibility> CSBMLExporter::isModelSBMLCompatible(
 
   while (compIt != compEndit)
     {
-      status = (*compIt)->getStatus();
+      status = compIt->getStatus();
 
       if (status == CModelEntity::ODE || status == CModelEntity::ASSIGNMENT)
         {
-          pExpression = (*compIt)->getExpressionPtr();
+          pExpression = compIt->getExpressionPtr();
           assert(pExpression != NULL);
 
           if (pExpression != NULL)
@@ -4159,18 +4159,18 @@ const std::vector<SBMLIncompatibility> CSBMLExporter::isModelSBMLCompatible(
               // check for unsupported object references and unsupported function
               // calls
               usedFunctionNames.clear();
-              CSBMLExporter::isExpressionSBMLCompatible(*pExpression, dataModel, sbmlLevel, sbmlVersion, result, idMap, std::string("compartment with name \"" + (*compIt)->getObjectName() + "\"").c_str());
+              CSBMLExporter::isExpressionSBMLCompatible(*pExpression, dataModel, sbmlLevel, sbmlVersion, result, idMap, std::string("compartment with name \"" + compIt->getObjectName() + "\"").c_str());
               CSBMLExporter::findDirectlyUsedFunctions(pExpression->getRoot(), usedFunctionNames);
             }
         }
 
-      pExpression = (*compIt)->getInitialExpressionPtr();
+      pExpression = compIt->getInitialExpressionPtr();
 
       if (pExpression != NULL)
         {
           // check for unsupported object references and unsupported function
           // calls
-          CSBMLExporter::isExpressionSBMLCompatible(*pExpression, dataModel, sbmlLevel, sbmlVersion, result, idMap, std::string("initial expression for compartment named \"" + (*compIt)->getObjectName() + "\"").c_str());
+          CSBMLExporter::isExpressionSBMLCompatible(*pExpression, dataModel, sbmlLevel, sbmlVersion, result, idMap, std::string("initial expression for compartment named \"" + compIt->getObjectName() + "\"").c_str());
           usedFunctionNames.clear();
           CSBMLExporter::findDirectlyUsedFunctions(pExpression->getRoot(), usedFunctionNames);
         }
@@ -4183,30 +4183,30 @@ const std::vector<SBMLIncompatibility> CSBMLExporter::isModelSBMLCompatible(
 
   while (metabIt != metabEndit)
     {
-      status = (*metabIt)->getStatus();
+      status = metabIt->getStatus();
 
       if (status == CModelEntity::ODE || status == CModelEntity::ASSIGNMENT)
         {
-          pExpression = (*metabIt)->getExpressionPtr();
+          pExpression = metabIt->getExpressionPtr();
           assert(pExpression != NULL);
 
           if (pExpression != NULL)
             {
               // check for unsupported object references and unsupported function
               // calls
-              CSBMLExporter::isExpressionSBMLCompatible(*pExpression, dataModel, sbmlLevel, sbmlVersion, result, idMap, std::string("rule for species named \"" + (*metabIt)->getObjectName() + "\"").c_str());
+              CSBMLExporter::isExpressionSBMLCompatible(*pExpression, dataModel, sbmlLevel, sbmlVersion, result, idMap, std::string("rule for species named \"" + metabIt->getObjectName() + "\"").c_str());
               usedFunctionNames.clear();
               CSBMLExporter::findDirectlyUsedFunctions(pExpression->getRoot(), usedFunctionNames);
             }
         }
 
-      pExpression = (*metabIt)->getInitialExpressionPtr();
+      pExpression = metabIt->getInitialExpressionPtr();
 
       if (pExpression != NULL)
         {
           // check for unsupported object references and unsupported function
           // calls
-          CSBMLExporter::isExpressionSBMLCompatible(*pExpression, dataModel, sbmlLevel, sbmlVersion, result, idMap, std::string("initial species for metabolite named \"" + (*metabIt)->getObjectName() + "\"").c_str());
+          CSBMLExporter::isExpressionSBMLCompatible(*pExpression, dataModel, sbmlLevel, sbmlVersion, result, idMap, std::string("initial species for metabolite named \"" + metabIt->getObjectName() + "\"").c_str());
           usedFunctionNames.clear();
           CSBMLExporter::findDirectlyUsedFunctions(pExpression->getRoot(), usedFunctionNames);
         }
@@ -4219,30 +4219,30 @@ const std::vector<SBMLIncompatibility> CSBMLExporter::isModelSBMLCompatible(
 
   while (mvIt != mvEndit)
     {
-      status = (*mvIt)->getStatus();
+      status = mvIt->getStatus();
 
       if (status == CModelEntity::ODE || status == CModelEntity::ASSIGNMENT)
         {
-          pExpression = (*mvIt)->getExpressionPtr();
+          pExpression = mvIt->getExpressionPtr();
           assert(pExpression != NULL);
 
           if (pExpression != NULL)
             {
               // check for unsupported object references and unsupported function
               // calls
-              CSBMLExporter::isExpressionSBMLCompatible(*pExpression, dataModel, sbmlLevel, sbmlVersion, result, idMap, std::string("rule for global parameter named \"" + (*mvIt)->getObjectName() + "\"").c_str());
+              CSBMLExporter::isExpressionSBMLCompatible(*pExpression, dataModel, sbmlLevel, sbmlVersion, result, idMap, std::string("rule for global parameter named \"" + mvIt->getObjectName() + "\"").c_str());
               usedFunctionNames.clear();
               CSBMLExporter::findDirectlyUsedFunctions(pExpression->getRoot(), usedFunctionNames);
             }
         }
 
-      pExpression = (*mvIt)->getInitialExpressionPtr();
+      pExpression = mvIt->getInitialExpressionPtr();
 
       if (pExpression != NULL)
         {
           // check for unsupported object references and unsupported function
           // calls
-          CSBMLExporter::isExpressionSBMLCompatible(*pExpression, dataModel, sbmlLevel, sbmlVersion, result, idMap, std::string("initial expression for global parameter named \"" + (*mvIt)->getObjectName() + "\"").c_str());
+          CSBMLExporter::isExpressionSBMLCompatible(*pExpression, dataModel, sbmlLevel, sbmlVersion, result, idMap, std::string("initial expression for global parameter named \"" + mvIt->getObjectName() + "\"").c_str());
           usedFunctionNames.clear();
           CSBMLExporter::findDirectlyUsedFunctions(pExpression->getRoot(), usedFunctionNames);
         }
@@ -4269,7 +4269,7 @@ const std::vector<SBMLIncompatibility> CSBMLExporter::isModelSBMLCompatible(
 
         while (eventIt != eventEndit)
           {
-            CSBMLExporter::isEventSBMLCompatible(*eventIt, dataModel, sbmlLevel, sbmlVersion, result, idMap);
+            CSBMLExporter::isEventSBMLCompatible(eventIt, dataModel, sbmlLevel, sbmlVersion, result, idMap);
             ++eventIt;
           }
 
@@ -4341,7 +4341,7 @@ bool CSBMLExporter::createEvents(CCopasiDataModel& dataModel)
   while (it != endit)
     {
       // find the old event if there is one
-      pos = this->mCOPASI2SBMLMap.find(*it);
+      pos = this->mCOPASI2SBMLMap.find(it);
 
       if (pos != this->mCOPASI2SBMLMap.end())
         {
@@ -4355,7 +4355,7 @@ bool CSBMLExporter::createEvents(CCopasiDataModel& dataModel)
       // remove the event from the set
       if (pSBMLEvent) eventSet.erase(pSBMLEvent);
 
-      this->createEvent(**it, pSBMLEvent, dataModel);
+      this->createEvent(*it, pSBMLEvent, dataModel);
       ++it;
 
       ++mCurrentStepCounter;
@@ -4377,7 +4377,7 @@ bool CSBMLExporter::createEvents(CCopasiDataModel& dataModel)
   return true;
 }
 
-void CSBMLExporter::createEvent(CEvent& event, Event* pSBMLEvent, CCopasiDataModel& dataModel)
+void CSBMLExporter::createEvent(const CEvent& event, Event* pSBMLEvent, CCopasiDataModel& dataModel)
 {
   // once events are functional, we create them here
   // don't forget to call replaceSpeciesReferences
@@ -4689,7 +4689,7 @@ void CSBMLExporter::exportEventAssignments(const CEvent& event, Event* pSBMLEven
     {
       //    ii) for each assignment, check if there already is an old assignment
       //        for this variable
-      std::string key = (*itAssignment)->getTargetKey();
+      std::string key = itAssignment->getTargetKey();
 
       //        now we have to get the object for the key, check if the object is a
       //        compartment, species or global parameter,
@@ -4798,7 +4798,7 @@ void CSBMLExporter::exportEventAssignments(const CEvent& event, Event* pSBMLEven
 
       pAssignment->setVariable(sbmlId);
       //    iv) for each assignment, check the assignment expression if it is valid
-      const CExpression * pExpression = (*itAssignment)->getExpressionPtr();
+      const CExpression * pExpression = itAssignment->getExpressionPtr();
 
       if (pExpression != NULL)
         {
@@ -4942,9 +4942,9 @@ void CSBMLExporter::updateCOPASI2SBMLMap(const CCopasiDataModel& dataModel)
   // objects updated with objects from the copied
   // model
   this->mCOPASI2SBMLMap.clear();
-  std::map<CCopasiObject*, SBase*>& modelMap = const_cast<CCopasiDataModel&>(dataModel).getCopasi2SBMLMap();
-  std::map<CCopasiObject*, SBase*>::const_iterator it = modelMap.begin();
-  std::map<CCopasiObject*, SBase*>::const_iterator endit = modelMap.end();
+  std::map<const CCopasiObject*, SBase*>& modelMap = const_cast<CCopasiDataModel&>(dataModel).getCopasi2SBMLMap();
+  std::map<const CCopasiObject*, SBase*>::const_iterator it = modelMap.begin();
+  std::map<const CCopasiObject*, SBase*>::const_iterator endit = modelMap.end();
 
   while (it != endit)
     {
@@ -4959,7 +4959,7 @@ void CSBMLExporter::updateCOPASI2SBMLMap(const CCopasiDataModel& dataModel)
     }
 }
 
-KineticLaw* CSBMLExporter::createKineticLaw(CReaction& reaction, CCopasiDataModel& dataModel, unsigned int level, unsigned int version)
+KineticLaw* CSBMLExporter::createKineticLaw(const CReaction& reaction, CCopasiDataModel& dataModel, unsigned int level, unsigned int version)
 {
   KineticLaw* pKLaw = NULL;
 
@@ -5069,7 +5069,7 @@ KineticLaw* CSBMLExporter::createKineticLaw(CReaction& reaction, CCopasiDataMode
 
       if (reaction.getCompartmentNumber() == 1)
         {
-          const CCompartment& compartment = (reaction.getChemEq().getSubstrates().size() != 0) ? (*reaction.getChemEq().getSubstrates()[0]->getMetabolite()->getCompartment()) : (*reaction.getChemEq().getProducts()[0]->getMetabolite()->getCompartment());
+          const CCompartment& compartment = (reaction.getChemEq().getSubstrates().size() != 0) ? (*reaction.getChemEq().getSubstrates()[0].getMetabolite()->getCompartment()) : (*reaction.getChemEq().getProducts()[0].getMetabolite()->getCompartment());
 
           if (compartment.getDimensionality() != 0)
             {
@@ -5250,12 +5250,12 @@ CEvaluationNode* CSBMLExporter::createKineticExpression(CFunction* pFun, const s
 ASTNode* CSBMLExporter::createTimesTree(const CCopasiVector<CChemEqElement >& vect, unsigned int pos)
 {
   ASTNode* pNode = NULL;
-  double multiplicity = vect[pos]->getMultiplicity();
+  double multiplicity = vect[pos].getMultiplicity();
 
   if (pos == vect.size() - 1)
     {
       pNode = new ASTNode(AST_NAME);
-      const CMetab* pMetab = vect[pos]->getMetabolite();
+      const CMetab* pMetab = vect[pos].getMetabolite();
       assert(pMetab);
 
       pNode->setName(pMetab->getSBMLId().c_str());
@@ -5275,7 +5275,7 @@ ASTNode* CSBMLExporter::createTimesTree(const CCopasiVector<CChemEqElement >& ve
     {
       pNode = new ASTNode(AST_TIMES);
       ASTNode* pChild = new ASTNode(AST_NAME);
-      const CMetab* pMetab = vect[pos]->getMetabolite();
+      const CMetab* pMetab = vect[pos].getMetabolite();
       assert(pMetab);
 
       pChild->setName(pMetab->getSBMLId().c_str());
@@ -5459,11 +5459,12 @@ const std::set<CFunction*> CSBMLExporter::createFunctionSetFromFunctionNames(con
   return result;
 }
 
-std::vector<CModelEntity*> CSBMLExporter::orderRules(const CCopasiDataModel& dataModel)
+std::vector<const CModelEntity*> CSBMLExporter::orderRules(const CCopasiDataModel& dataModel)
 {
   // make sure the vector of rules is filled
-  std::map<CModelEntity*, std::set<const CModelEntity*> > dependencyMap;
-  std::vector<CModelEntity*>::iterator it = this->mAssignmentVector.begin(), endit = this->mAssignmentVector.end();
+  std::map<const CModelEntity*, std::set<const CModelEntity*> > dependencyMap;
+  std::vector<const CModelEntity*>::iterator it = this->mAssignmentVector.begin();
+  std::vector<const CModelEntity*>::iterator endit = this->mAssignmentVector.end();
 
   while (it != endit)
     {
@@ -5501,10 +5502,10 @@ std::vector<CModelEntity*> CSBMLExporter::orderRules(const CCopasiDataModel& dat
 
   // now sort the entities according to their dependencies
   bool error = false;
-  std::vector<CModelEntity*> orderedRules;
+  std::vector<const CModelEntity*> orderedRules;
   // remove all dependencies that don't have assignment rules themselves
-  std::map<CModelEntity*, std::set<const CModelEntity*> > reducedDependencyMap;
-  std::map<CModelEntity*, std::set<const CModelEntity*> >::iterator mapIt = dependencyMap.begin(), mapEndit = dependencyMap.end();
+  std::map<const CModelEntity*, std::set<const CModelEntity*> > reducedDependencyMap;
+  std::map<const CModelEntity*, std::set<const CModelEntity*> >::iterator mapIt = dependencyMap.begin(), mapEndit = dependencyMap.end();
 
   while (mapIt != mapEndit)
     {
@@ -5538,7 +5539,7 @@ std::vector<CModelEntity*> CSBMLExporter::orderRules(const CCopasiDataModel& dat
           // we remove all entities that have been removed already
           if (!mapIt->second.empty())
             {
-              std::vector<CModelEntity*>::iterator vIt = orderedRules.begin(), vEndit = orderedRules.end();
+              std::vector<const CModelEntity*>::iterator vIt = orderedRules.begin(), vEndit = orderedRules.end();
 
               while (vIt != vEndit)
                 {
@@ -5934,7 +5935,7 @@ void CSBMLExporter::checkForPiecewiseFunctions(const CCopasiDataModel& dataModel
 
   for (i = 0; i < iMax; ++i)
     {
-      pME = compartments[i];
+      pME = &compartments[i];
 
       if (pME->getStatus() == CModelEntity::ODE || pME->getStatus() == CModelEntity::ASSIGNMENT)
         {
@@ -5950,7 +5951,7 @@ void CSBMLExporter::checkForPiecewiseFunctions(const CCopasiDataModel& dataModel
 
   for (i = 0; i < iMax; ++i)
     {
-      pME = metabolites[i];
+      pME = &metabolites[i];
 
       if (pME->getStatus() == CModelEntity::ODE || pME->getStatus() == CModelEntity::ASSIGNMENT)
         {
@@ -5966,7 +5967,7 @@ void CSBMLExporter::checkForPiecewiseFunctions(const CCopasiDataModel& dataModel
 
   for (i = 0; i < iMax; ++i)
     {
-      pME = modelvalues[i];
+      pME = &modelvalues[i];
 
       if (pME->getStatus() == CModelEntity::ODE || pME->getStatus() == CModelEntity::ASSIGNMENT)
         {
@@ -5978,13 +5979,13 @@ void CSBMLExporter::checkForPiecewiseFunctions(const CCopasiDataModel& dataModel
 
   // go through all reactions and check the function called in the kinetic
   // laws.
-  CReaction* pReaction = NULL;
+  const CReaction* pReaction = NULL;
   const CCopasiVectorNS<CReaction>& reactions = pModel->getReactions();
   iMax = reactions.size();
 
   for (i = 0; i < iMax; ++i)
     {
-      pReaction = reactions[i];
+      pReaction = &reactions[i];
 
       if (pReaction->getFunction() != NULL)
         {
@@ -6725,13 +6726,13 @@ void CSBMLExporter::findAvogadro(const CCopasiDataModel& dataModel)
 
   while (it != endit)
     {
-      if ((*it)->getStatus() == CModelEntity::FIXED)
+      if (it->getStatus() == CModelEntity::FIXED)
         {
-          double value = (*it)->getInitialValue();
+          double value = it->getInitialValue();
 
           if (fabs((factor - value) / factor) <= 1e-3)
             {
-              this->mpAvogadro = *it;
+              this->mpAvogadro = it;
             }
         }
 
@@ -6798,7 +6799,7 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CCopasiObject* pCOPASIObject, S
 
   for (i = 0; i < iMax; ++i)
     {
-      pDescription = descriptions[i];
+      pDescription = &descriptions[i];
       assert(pDescription != NULL);
 
       switch (pDescription->getTriplet().Predicate.getType())
@@ -6940,7 +6941,7 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CCopasiObject* pCOPASIObject, S
 
   for (i = 0; i < iMax; ++i)
     {
-      pReference = references[i];
+      pReference = &references[i];
       assert(pReference != NULL);
 
       CRDFPredicate::ePredicateType Predicates[] =
@@ -7047,7 +7048,7 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CCopasiObject* pCOPASIObject, S
 
       for (i = 0; i < iMax; ++i)
         {
-          pCreator = creators[i];
+          pCreator = &creators[i];
           assert(pCreator != NULL);
           // a model creator can have a family name, a given name, and email
           // address and an organization
@@ -7088,13 +7089,13 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CCopasiObject* pCOPASIObject, S
       if (iMax != 0)
         {
           modified = true;
-          const CModification* pModification = modifications[0];
+          const CModification* pModification = &modifications[0];
           assert(pModification != NULL);
           std::string lastDateString = pModification->getDate();
 
           for (i = 1; i < iMax; ++i)
             {
-              pModification = modifications[i];
+              pModification = &modifications[i];
               assert(pModification != NULL);
               std::string dateString = pModification->getDate();
 
@@ -7628,7 +7629,7 @@ void CSBMLExporter::isEventSBMLCompatible(
 
   for (; itAssignment != endAssignment; ++itAssignment)
     {
-      std::string key = (*itAssignment)->getTargetKey();
+      std::string key = itAssignment->getTargetKey();
 
       if (objectKeys.find(key) == objectKeys.end())
         {
@@ -7648,7 +7649,7 @@ void CSBMLExporter::isEventSBMLCompatible(
             }
         }
 
-      CSBMLExporter::isEventAssignmentSBMLCompatible(key, (*itAssignment)->getExpressionPtr(),
+      CSBMLExporter::isEventAssignmentSBMLCompatible(key, itAssignment->getExpressionPtr(),
           dataModel, sbmlLevel, sbmlVersion, pEvent->getObjectName(), result, idMap);
     }
 }
@@ -7865,7 +7866,7 @@ void CSBMLExporter::collectIds(const CCopasiDataModel& dataModel, std::map<std::
 
   for (i = 0; i < iMax; ++i)
     {
-      const CFunction* pFun = CCopasiRootContainer::getFunctionList()->loadedFunctions()[i];
+      const CFunction* pFun = &CCopasiRootContainer::getFunctionList()->loadedFunctions()[i];
       id = pFun->getSBMLId();
 
       if (!id.empty())
@@ -7887,7 +7888,7 @@ void CSBMLExporter::collectIds(const CCopasiDataModel& dataModel, std::map<std::
 
   for (i = 0; i < iMax; ++i)
     {
-      const CCompartment* pObj = pModel->getCompartments()[i];
+      const CCompartment* pObj = &pModel->getCompartments()[i];
       id = pObj->getSBMLId();
 
       if (!id.empty())
@@ -7900,7 +7901,7 @@ void CSBMLExporter::collectIds(const CCopasiDataModel& dataModel, std::map<std::
 
   for (i = 0; i < iMax; ++i)
     {
-      const CMetab* pObj = pModel->getMetabolites()[i];
+      const CMetab* pObj = &pModel->getMetabolites()[i];
       id = pObj->getSBMLId();
 
       if (!id.empty())
@@ -7913,7 +7914,7 @@ void CSBMLExporter::collectIds(const CCopasiDataModel& dataModel, std::map<std::
 
   for (i = 0; i < iMax; ++i)
     {
-      const CModelValue* pObj = pModel->getModelValues()[i];
+      const CModelValue* pObj = &pModel->getModelValues()[i];
       id = pObj->getSBMLId();
 
       if (!id.empty())
@@ -7926,7 +7927,7 @@ void CSBMLExporter::collectIds(const CCopasiDataModel& dataModel, std::map<std::
 
   for (i = 0; i < iMax; ++i)
     {
-      const CReaction* pObj = pModel->getReactions()[i];
+      const CReaction* pObj = &pModel->getReactions()[i];
       id = pObj->getSBMLId();
 
       if (!id.empty())
@@ -7939,7 +7940,7 @@ void CSBMLExporter::collectIds(const CCopasiDataModel& dataModel, std::map<std::
 
   for (i = 0; i < iMax; ++i)
     {
-      const CEvent* pObj = pModel->getEvents()[i];
+      const CEvent* pObj = &pModel->getEvents()[i];
       id = pObj->getSBMLId();
 
       if (!id.empty())
@@ -7956,10 +7957,10 @@ void CSBMLExporter::assignSBMLIdsToReactions(CModel* pModel)
 
   while (it != endit)
     {
-      if ((*it)->getSBMLId().empty())
+      if (it->getSBMLId().empty())
         {
-          sbmlId = CSBMLExporter::createUniqueId(this->mIdMap, (*it)->getObjectName(), false);
-          (*it)->setSBMLId(sbmlId);
+          sbmlId = CSBMLExporter::createUniqueId(this->mIdMap, it->getObjectName(), false);
+          it->setSBMLId(sbmlId);
           this->mIdMap.insert(std::pair<const std::string, const SBase*>(sbmlId, (const SBase*)NULL));
         }
 
@@ -7983,14 +7984,14 @@ bool CSBMLExporter::hasVolumeAssignment(const CCopasiDataModel& dataModel)
 
   while (it != endit && result == false)
     {
-      status = (*it)->getStatus();
+      status = it->getStatus();
 
       if (status == CModelEntity::ASSIGNMENT || status == CModelEntity::ODE)
         {
           result = true;
         }
 
-      if ((*it)->getInitialExpression() != "" && result == false)
+      if (it->getInitialExpression() != "" && result == false)
         {
           if (this->mSBMLLevel > 2 || (this->mSBMLLevel == 2 && this->mSBMLVersion >= 2))
             {
@@ -8009,12 +8010,12 @@ bool CSBMLExporter::hasVolumeAssignment(const CCopasiDataModel& dataModel)
 
   while (eit != eendit && result == false)
     {
-      CCopasiVectorN< CEventAssignment >::const_iterator itAssignment = (*eit)->getAssignments().begin();
-      CCopasiVectorN< CEventAssignment >::const_iterator endAssignment = (*eit)->getAssignments().end();
+      CCopasiVectorN< CEventAssignment >::const_iterator itAssignment = eit->getAssignments().begin();
+      CCopasiVectorN< CEventAssignment >::const_iterator endAssignment = eit->getAssignments().end();
 
       while (itAssignment != endAssignment && result == false)
         {
-          key = (*itAssignment)->getTargetKey();
+          key = itAssignment->getTargetKey();
 
           //        now we have to get the object for the key, check if the object is a
           //        compartment, species or global parameter,

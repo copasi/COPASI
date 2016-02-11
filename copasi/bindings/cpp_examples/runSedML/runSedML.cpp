@@ -1,4 +1,4 @@
-// Copyright (C) 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2014 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -96,8 +96,8 @@ int main(int argc, char** argv)
   CCopasiVectorN< CCopasiTask > & TaskList = * pDataModel->getTaskList();
 
   // run supported tasks, when scheduled
-  runTaskIfScheduled(TaskList["Time-Course"], outDir);
-  runTaskIfScheduled(TaskList["Scan"], outDir);
+  runTaskIfScheduled(&TaskList["Time-Course"], outDir);
+  runTaskIfScheduled(&TaskList["Scan"], outDir);
 
   // clean up the library
   CCopasiRootContainer::destroy();

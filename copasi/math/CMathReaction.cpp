@@ -1,4 +1,4 @@
-// Copyright (C) 2013 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2013 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -51,15 +51,15 @@ void CMathReaction::initialize(const CReaction * pReaction, CMathContainer & con
 
   for (; it != end; ++it)
     {
-      CMathObject * pParticleNumber = container.getMathObject((*it)->getMetabolite()->getValueReference());
+      CMathObject * pParticleNumber = container.getMathObject(it->getMetabolite()->getValueReference());
 
       if (pParticleNumber->getSimulationType() == CMath::Independent ||
           pParticleNumber->getSimulationType() == CMath::Dependent)
         {
           mChangedSpecies.insert(pParticleNumber);
-          mObjectBalance.insert(std::pair < const CMathObject *, C_FLOAT64 >(pParticleNumber, (*it)->getMultiplicity()));
+          mObjectBalance.insert(std::pair < const CMathObject *, C_FLOAT64 >(pParticleNumber, it->getMultiplicity()));
           pStepUpdate->first = (C_FLOAT64 *) pParticleNumber->getValuePointer();
-          pStepUpdate->second = (*it)->getMultiplicity();
+          pStepUpdate->second = it->getMultiplicity();
 
           ++pStepUpdate;
         }

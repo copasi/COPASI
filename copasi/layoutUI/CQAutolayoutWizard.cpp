@@ -1,4 +1,4 @@
-// Copyright (C) 2011 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -419,7 +419,7 @@ void CQSelectionWizardPage::fillTree(const CModel& model)
 
       while (i < iMax)
         {
-          pCompartment = compartments[i];
+          pCompartment = &compartments[i];
           assert(pCompartment != NULL);
           pChild1 = new CQModelElementTreeWidgetItem(QStringList(QString(pCompartment->getObjectDisplayName().c_str())), pCompartment->getKey());
           pChild1->setFlags(pChild1->flags() & (!Qt::ItemIsUserCheckable | Qt::ItemIsEnabled));
@@ -439,7 +439,7 @@ void CQSelectionWizardPage::fillTree(const CModel& model)
 
               while (j < jMax)
                 {
-                  pMetab = (*pMetabs)[j];
+                  pMetab = &pMetabs->operator[](j);
                   assert(pMetab != NULL);
                   pItem3 = new CQModelElementTreeWidgetItem(QStringList(QString(pMetab->getObjectDisplayName().c_str())), pMetab->getKey());
                   pItem3->setFlags(pItem3->flags() | (Qt::ItemIsUserCheckable | Qt::ItemIsEnabled));
@@ -472,7 +472,7 @@ void CQSelectionWizardPage::fillTree(const CModel& model)
 
           while (i < iMax)
             {
-              pReaction = reactions[i];
+              pReaction = &reactions[i];
               assert(pReaction != NULL);
               pChild1 = new CQModelElementTreeWidgetItem(QStringList(QString(pReaction->getObjectDisplayName().c_str())), pReaction->getKey());
               pChild1->setFlags(pChild1->flags() | (Qt::ItemIsUserCheckable | Qt::ItemIsEnabled));

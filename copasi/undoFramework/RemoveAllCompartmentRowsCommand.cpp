@@ -1,4 +1,4 @@
-// Copyright (C) 2014 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2014 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -33,7 +33,7 @@ RemoveAllCompartmentRowsCommand::RemoveAllCompartmentRowsCommand(CQCompartmentDM
 
   for (int i = 0; i != pCompartmentDM->rowCount() - 1; ++i)
     {
-      CCompartment* compartment = pModel->getCompartments()[i];
+      CCompartment* compartment = &pModel->getCompartments()[i];
 
       if (compartment != NULL)
         {

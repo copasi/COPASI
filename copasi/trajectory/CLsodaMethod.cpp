@@ -167,8 +167,8 @@ void CLsodaMethod::initializeParameter()
               C_FLOAT64 Volume = std::numeric_limits< C_FLOAT64 >::max();
 
               for (i = 0, imax = Compartment.size(); i < imax; i++)
-                if (Compartment[i]->getValue() < Volume)
-                  Volume = Compartment[i]->getValue();
+                if (Compartment[i].getValue() < Volume)
+                  Volume = Compartment[i].getValue();
 
               if (Volume == std::numeric_limits< C_FLOAT64 >::max())
                 // The default

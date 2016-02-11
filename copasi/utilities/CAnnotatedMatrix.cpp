@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -194,10 +194,10 @@ bool CArrayAnnotation::createAnnotationsCNFromCopasiVector(size_t d,
 
   for (i = 0; i < mAnnotationsCN[d].size(); ++i)
     {
-      if (!(*pVector)[i])
+      if (!&pVector->operator[](i))
         return false;
       else
-        mAnnotationsCN[d][i] = (*pVector)[i]->getCN();
+        mAnnotationsCN[d][i] = pVector->operator[](i).getCN();
     }
 
   return true;

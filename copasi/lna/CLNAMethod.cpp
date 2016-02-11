@@ -1,4 +1,4 @@
-// Copyright (C) 2011 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -665,7 +665,7 @@ bool CLNAMethod::isValidProblem(const CCopasiProblem * pProblem)
   CCopasiVector< CCompartment >::const_iterator end = Model.getCompartments().end();
 
   for (; it != end; ++it)
-    if ((*it)->getStatus() != CModelEntity::FIXED)
+    if (it->getStatus() != CModelEntity::FIXED)
       {
         CCopasiMessage(CCopasiMessage::ERROR, "LNA is not applicable for a system with changing volumes, e.g. compartment assignments or ODEs.");
         return false;
@@ -680,7 +680,7 @@ bool CLNAMethod::isValidProblem(const CCopasiProblem * pProblem)
   for (i = 0; i < numReacs; i++) // for every reaction
     {
       // TEST isReversible() == 0
-      if (reacs[i]->isReversible() != 0)
+      if (reacs[i].isReversible() != 0)
         {
           CCopasiMessage(CCopasiMessage::ERROR, "At least one reaction is reversible. That means it is not possible to calculate the LNA. \nYou can use \"Tools|Convert to irreversible\" which will split the reversible reactions \n into two irreversible reactions. However you should check the kinetics afterwards.");
           return false;

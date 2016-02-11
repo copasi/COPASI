@@ -138,7 +138,7 @@ bool CQParameterOverviewWidget::leave()
       mpParameterSet->assignSetContent(*mpParameterSetCopy, false);
 
       assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-      (*CCopasiRootContainer::getDatamodelList())[0]->changed();
+      CCopasiRootContainer::getDatamodelList()->operator[](0).changed();
 
       if (mpParameterSet->isActive())
         {
@@ -321,7 +321,7 @@ void CQParameterOverviewWidget::slotBtnNew()
 
       for (; it != end; ++it)
         {
-          SelectionList.append(FROM_UTF8((*it)->getName()));
+          SelectionList.append(FROM_UTF8(it->getName()));
         }
 
       Dialog.setSelectionList(SelectionList);
@@ -341,7 +341,7 @@ void CQParameterOverviewWidget::slotBtnNew()
             }
           else
             {
-              CModelParameterSet * pExisting = Sets[TO_UTF8(Name)];
+              CModelParameterSet * pExisting = &Sets[TO_UTF8(Name)];
               pExisting->assignSetContent(pModel->getActiveModelParameterSet(), false);
 
               // Notify the GUI of the insert
@@ -477,7 +477,7 @@ void CQParameterOverviewWidget::slotBtnSaveAs()
 
   for (; it != end; ++it)
     {
-      SelectionList.append(FROM_UTF8((*it)->getName()));
+      SelectionList.append(FROM_UTF8(it->getName()));
     }
 
   Dialog.setSelectionList(SelectionList);
@@ -505,7 +505,7 @@ void CQParameterOverviewWidget::slotBtnSaveAs()
     }
   else
     {
-      CModelParameterSet * pExisting = Sets[TO_UTF8(Name)];
+      CModelParameterSet * pExisting = &Sets[TO_UTF8(Name)];
       pExisting->assignSetContent(*mpParameterSet, false);
 
       // Notify the GUI of the insert

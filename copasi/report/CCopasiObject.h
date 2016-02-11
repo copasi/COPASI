@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -255,14 +255,7 @@ public:
    * If there is no instance of CCopasiDataModel in the ancestor tree, NULL
    * is returned.
    */
-  CCopasiDataModel* getObjectDataModel();
-
-  /**
-   * Returns a const pointer to the CCopasiDataModel the element belongs to.
-   * If there is no instance of CCopasiDataModel in the ancestor tree, NULL
-   * is returned.
-   */
-  const CCopasiDataModel* getObjectDataModel() const;
+  CCopasiDataModel* getObjectDataModel() const;
 
   CCopasiContainer * getObjectAncestor(const std::string & type) const;
 

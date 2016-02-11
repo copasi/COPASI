@@ -103,7 +103,6 @@ CLGlyphWithCurve::setCurve(const CLCurve &c)
   mCurve = c;
 }
 
-
 void CLGlyphWithCurve::moveBy(const CLPoint &p)
 {
   CLGraphicalObject::moveBy(p);
@@ -200,7 +199,6 @@ CLReferenceGlyph::getTargetGlyphKey() const
 {
   return mGlyphKey;
 }
-
 
 CLGraphicalObject* CLReferenceGlyph::getTargetGlyph() const
 {
@@ -501,7 +499,7 @@ CLGeneralGlyph::CLGeneralGlyph(const CLGeneralGlyph & src,
   size_t i, imax = src.mvSubglyphs.size();
 
   for (i = 0; i < imax; ++i)
-    addSubglyph(src.mvSubglyphs[i]->clone());
+    addSubglyph(src.mvSubglyphs[i].clone());
 }
 
 //TODO this is a placeholder for the upcoming sbml generalGlyph handling
@@ -581,13 +579,13 @@ CLGeneralGlyph & CLGeneralGlyph::operator= (const CLGeneralGlyph & rhs)
   mvReferences.clear();
 
   for (i = 0; i < imax; ++i)
-    addReferenceGlyph(new CLReferenceGlyph(*rhs.mvReferences[i]));
+    addReferenceGlyph(new CLReferenceGlyph(rhs.mvReferences[i]));
 
   imax = rhs.mvSubglyphs.size();
   mvSubglyphs.clear();
 
   for (i = 0; i < imax; ++i)
-    addSubglyph(rhs.mvSubglyphs[i]->clone());
+    addSubglyph(rhs.mvSubglyphs[i].clone());
 
   return *this;
 }
@@ -635,12 +633,12 @@ void CLGeneralGlyph::moveBy(const CLPoint &p)
   size_t i, imax = mvReferences.size();
 
   for (i = 0; i < imax; ++i)
-    mvReferences[i]->moveBy(p);
+    mvReferences[i].moveBy(p);
 
   imax = mvSubglyphs.size();
 
   for (i = 0; i < imax; ++i)
-    mvSubglyphs[i]->moveBy(p);
+    mvSubglyphs[i].moveBy(p);
 }
 
 CLGraphicalObject *
@@ -700,7 +698,7 @@ void CLGeneralGlyph::exportToSBML(GraphicalObject * g, //TODO
 
   for (i = 0; i < imax; ++i)
     {
-      CLReferenceGlyph * tmp = mvReferences[i];
+      const CLReferenceGlyph * tmp = &mvReferences[i];
 
       //check if the glyph exists in the libsbml data
       std::map<const CCopasiObject*, SBase*>::const_iterator it;
@@ -725,7 +723,7 @@ void CLGeneralGlyph::exportToSBML(GraphicalObject * g, //TODO
 
   for (i = 0; i < imax; ++i)
     {
-      CLGraphicalObject * tmp = mvSubglyphs[i];
+      CLGraphicalObject * tmp = const_cast< CLGraphicalObject * >(&mvSubglyphs[i]);
       CLMetabGlyph * metab =  dynamic_cast<CLMetabGlyph*>(tmp);
       CLCompartmentGlyph* comp =  dynamic_cast<CLCompartmentGlyph*>(tmp);
       CLGeneralGlyph* gg =  dynamic_cast<CLGeneralGlyph*>(tmp);
@@ -784,7 +782,7 @@ std::ostream & operator<<(std::ostream &os, const CLGeneralGlyph & g)
       os << "  List of reference glyphs: \n";
 
       for (i = 0; i < imax; ++i)
-        os << *g.mvReferences[i];
+        os << g.mvReferences[i];
     }
 
   imax = g.mvSubglyphs.size();
@@ -794,7 +792,7 @@ std::ostream & operator<<(std::ostream &os, const CLGeneralGlyph & g)
       os << "  List of reference glyphs: \n";
 
       for (i = 0; i < imax; ++i)
-        os << *g.mvSubglyphs[i];
+        os << g.mvSubglyphs[i];
     }
 
   return os;
@@ -865,7 +863,7 @@ CLReactionGlyph & CLReactionGlyph::operator= (const CLReactionGlyph & rhs)
   size_t i, imax = rhs.mvMetabReferences.size();
 
   for (i = 0; i < imax; ++i)
-    addMetabReferenceGlyph(new CLMetabReferenceGlyph(*rhs.mvMetabReferences[i]));
+    addMetabReferenceGlyph(new CLMetabReferenceGlyph(rhs.mvMetabReferences[i]));
 
   return *this;
 }
@@ -909,7 +907,7 @@ void CLReactionGlyph::moveBy(const CLPoint &p)
   size_t i, imax = mvMetabReferences.size();
 
   for (i = 0; i < imax; ++i)
-    mvMetabReferences[i]->moveBy(p);
+    mvMetabReferences[i].moveBy(p);
 }
 
 CLGraphicalObject *
@@ -950,7 +948,7 @@ void CLReactionGlyph::exportToSBML(ReactionGlyph * g,
 
   for (i = 0; i < imax; ++i)
     {
-      CLMetabReferenceGlyph * tmp = mvMetabReferences[i];
+      const CLMetabReferenceGlyph * tmp = &mvMetabReferences[i];
 
       //check if the glyph exists in the libsbml data
       std::map<const CCopasiObject*, SBase*>::const_iterator it;
@@ -985,7 +983,7 @@ std::ostream & operator<<(std::ostream &os, const CLReactionGlyph & g)
       os << "  List of metab reference glyphs: \n";
 
       for (i = 0; i < imax; ++i)
-        os << *g.mvMetabReferences[i];
+        os << g.mvMetabReferences[i];
     }
 
   return os;

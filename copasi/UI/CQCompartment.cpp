@@ -130,7 +130,7 @@ void CQCompartment::copy()
 
         for (itMetab = Metabolites.begin(); itMetab != Metabolites.end(); ++itMetab)
           {
-            compartmentObjectsToCopy.addMetab(*itMetab);
+            compartmentObjectsToCopy.addMetab(itMetab);
           }
       }
 
@@ -147,7 +147,7 @@ void CQCompartment::copy()
 
         for (itMetab = Metabolites.begin(); itMetab != Metabolites.end(); ++itMetab)
           {
-            compartmentObjectsToCopy.addMetab(*itMetab);
+            compartmentObjectsToCopy.addMetab(itMetab);
           }
 
         // Now get the reactions which are not multi-compartment
@@ -157,12 +157,12 @@ void CQCompartment::copy()
 
         for (; it != end; ++it)
           {
-            pRi->initFromReaction((*it)->getKey());
+            pRi->initFromReaction(it->getKey());
 
             if (!pRi->isMulticompartment())
               {
                 if (pRi->getChemEqInterface().getCompartment()->getKey() == mKey)
-                  compartmentObjectsToCopy.addReaction(*it);
+                  compartmentObjectsToCopy.addReaction(it);
               }
           }
 
@@ -525,7 +525,7 @@ void CQCompartment::save()
   if (mChanged)
     {
       assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-      (*CCopasiRootContainer::getDatamodelList())[0]->changed();
+      CCopasiRootContainer::getDatamodelList()->operator[](0).changed();
       protectedNotify(ListViews::COMPARTMENT, ListViews::CHANGE, mKey);
 
       load();
@@ -595,7 +595,7 @@ void CQCompartment::createNewCompartment()
 
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
 
-  while (!(mpCompartment = (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->createCompartment(name)))
+  while (!(mpCompartment = CCopasiRootContainer::getDatamodelList()->operator[](0).getModel()->createCompartment(name)))
     {
       i++;
       name = "compartment_";
@@ -643,7 +643,7 @@ void CQCompartment::deleteCompartment(UndoCompartmentData *pCompartmentData)
 
   switchToWidget(CCopasiUndoCommand::COMPARTMENTS);
 
-  CCompartment* pComp = pModel->getCompartments()[pCompartmentData->getName()];
+  CCompartment* pComp = &pModel->getCompartments()[pCompartmentData->getName()];
 
   if (pComp == NULL) return;
 
@@ -715,7 +715,7 @@ bool CQCompartment::changeValue(const std::string& key,
   if (mIgnoreUpdates) return true;
 
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  (*CCopasiRootContainer::getDatamodelList())[0]->changed();
+  CCopasiRootContainer::getDatamodelList()->operator[](0).changed();
   protectedNotify(ListViews::COMPARTMENT, ListViews::CHANGE, mKey);
 
   load();

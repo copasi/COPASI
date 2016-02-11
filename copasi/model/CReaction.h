@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -436,7 +436,7 @@ public:
    * and sets the mapping for the reaction.
    */
   CFunction * setFunctionFromExpressionTree(const CExpression & tree,
-      std::map<CCopasiObject*, SBase*> & copasi2sbmlmap,
+      std::map<const CCopasiObject*, SBase*> & copasi2sbmlmap,
       CFunctionDB* pFunctionDB);
 
   /**
@@ -448,7 +448,7 @@ public:
   /**
    * Sets the SBMLId.
    */
-  void setSBMLId(const std::string& id);
+  void setSBMLId(const std::string& id) const;
 
   /**
    * Returns a reference to the SBML Id.
@@ -519,7 +519,7 @@ private:
    */
   CEvaluationNode* objects2variables(const CEvaluationNode* expression,
                                      std::map<std::string, std::pair<CCopasiObject*, CFunctionParameter*> >& replacementMap,
-                                     std::map<CCopasiObject*, SBase*>& copasi2sbmlmap);
+                                     std::map<const CCopasiObject*, SBase*>& copasi2sbmlmap);
 
   /**
    * Converts a single object node to a variable node.
@@ -529,7 +529,7 @@ private:
    */
   CEvaluationNodeVariable* object2variable(const CEvaluationNodeObject* objectNode,
       std::map<std::string, std::pair<CCopasiObject*, CFunctionParameter*> >& replacementMap,
-      std::map<CCopasiObject*, SBase*>& copasi2sbmlmap);
+      std::map<const CCopasiObject*, SBase*>& copasi2sbmlmap);
 
   /**
    * Replaces all variable nodes in a function tree by object nodes.
@@ -618,7 +618,7 @@ private:
    * This value is either set upon importing an SBML file,
    * or when the object is first exported to an SBML file.
    */
-  std::string mSBMLId;
+  mutable std::string mSBMLId;
 
   /**
    * This flag indicates whether the reaction is treated as fast. The interpretation of fast

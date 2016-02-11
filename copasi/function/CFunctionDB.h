@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -196,9 +196,9 @@ public:
 
   /**
    * Retrieves a list of all functions used in the model
-   * @return std::vector< CEvaluationTree * > usedFunctions
+   * @return std::vector< const CFunction * > usedFunctions
    */
-  std::vector< CFunction * > getUsedFunctions(const CModel* pModel) const;
+  std::vector< const CFunction * > getUsedFunctions(const CModel* pModel) const;
 };
 
 #endif // COPASI_CFunctionDB

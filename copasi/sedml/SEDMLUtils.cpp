@@ -1,4 +1,4 @@
-// Copyright (C) 2013 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2013 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -24,11 +24,11 @@
 #include <copasi/CopasiDataModel/CCopasiDataModel.h>
 
 std::string SEDMLUtils::findIdByNameAndType(
-  const std::map<CCopasiObject*, SBase*>& map,
+  const std::map<const CCopasiObject*, SBase*>& map,
   int typeCode,
   const std::string& name)
 {
-  std::map<CCopasiObject*, SBase*>::const_iterator it = map.begin();
+  std::map<const CCopasiObject*, SBase*>::const_iterator it = map.begin();
 
   std::string::size_type compartmentStart = name.find("{");
 
@@ -42,11 +42,10 @@ std::string SEDMLUtils::findIdByNameAndType(
       compId = findIdByNameAndType(map, SBML_COMPARTMENT, compName);
     }
 
-
   while (it != map.end())
     {
       SBase* current = it->second;
-      CCopasiObject* object = it->first;
+      const CCopasiObject* object = it->first;
       std::string displayName = object->getObjectDisplayName();
 
       if (((current->getTypeCode() & typeCode) != typeCode))
@@ -83,7 +82,7 @@ SEDMLUtils::getXPathAndName(std::string& sbmlId,
 {
   std::vector<std::string> stringsContainer;
   std::string targetXPathString;
-  const std::map<CCopasiObject*, SBase*>& copasi2sbmlmap =
+  const std::map<const CCopasiObject*, SBase*>& copasi2sbmlmap =
     const_cast<CCopasiDataModel&>(dataModel).getCopasi2SBMLMap();
   std::string displayName = sbmlId;
 
@@ -397,14 +396,14 @@ SEDMLUtils::getObjectForSbmlId(const CModel* pModel, const std::string& id, cons
       for (iMet = 0; iMet < imax; ++iMet)
         {
           // the importer should not need to change the initial concentration
-          // pModel->getMetabolites()[iMet]->setInitialConcentration(0.896901);
+          // pModel->getMetabolites()[iMet].setInitialConcentration(0.896901);
 
-          if (pModel->getMetabolites()[iMet]->getSBMLId() == id)
+          if (pModel->getMetabolites()[iMet].getSBMLId() == id)
             {
               if (initial)
-                return pModel->getMetabolites()[iMet]->getInitialConcentrationReference();
+                return pModel->getMetabolites()[iMet].getInitialConcentrationReference();
 
-              return pModel->getMetabolites()[iMet]->getConcentrationReference();
+              return pModel->getMetabolites()[iMet].getConcentrationReference();
             }
         }
     }
@@ -414,12 +413,12 @@ SEDMLUtils::getObjectForSbmlId(const CModel* pModel, const std::string& id, cons
 
       for (iMet = 0; iMet < imax; ++iMet)
         {
-          if (pModel->getReactions()[iMet]->getSBMLId() == id)
+          if (pModel->getReactions()[iMet].getSBMLId() == id)
             {
               if (initial)
                 return NULL;
 
-              return pModel->getReactions()[iMet]->getFluxReference();
+              return pModel->getReactions()[iMet].getFluxReference();
             }
         }
     }
@@ -429,12 +428,12 @@ SEDMLUtils::getObjectForSbmlId(const CModel* pModel, const std::string& id, cons
 
       for (iMet = 0; iMet < imax; ++iMet)
         {
-          if (pModel->getModelValues()[iMet]->getSBMLId() == id)
+          if (pModel->getModelValues()[iMet].getSBMLId() == id)
             {
               if (initial)
-                return pModel->getModelValues()[iMet]->getInitialValueReference();
+                return pModel->getModelValues()[iMet].getInitialValueReference();
 
-              return pModel->getModelValues()[iMet]->getValueReference();
+              return pModel->getModelValues()[iMet].getValueReference();
             }
         }
     }
@@ -445,12 +444,12 @@ SEDMLUtils::getObjectForSbmlId(const CModel* pModel, const std::string& id, cons
 
       for (iComp = 0; iComp < imax; ++iComp)
         {
-          if (pModel->getCompartments()[iComp]->getSBMLId() == id)
+          if (pModel->getCompartments()[iComp].getSBMLId() == id)
             {
               if (initial)
-                return pModel->getCompartments()[iComp]->getInitialValueReference();
+                return pModel->getCompartments()[iComp].getInitialValueReference();
 
-              return pModel->getCompartments()[iComp]->getValueReference();
+              return pModel->getCompartments()[iComp].getValueReference();
             }
         }
     }

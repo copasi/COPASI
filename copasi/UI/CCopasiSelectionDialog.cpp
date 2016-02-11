@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -150,7 +150,7 @@ CCopasiSelectionDialog::getObjectSingle(QWidget * parent,
   CCopasiSelectionDialog * pDialog = new CCopasiSelectionDialog(parent);
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   pDialog->setWindowTitle("Select Item");
-  pDialog->setModel((*CCopasiRootContainer::getDatamodelList())[0]->getModel(), classes);
+  pDialog->setModel(CCopasiRootContainer::getDatamodelList()->operator[](0).getModel(), classes);
   pDialog->setSingleSelection(true);
   pDialog->setOutputVector(&Selection);
 
@@ -191,7 +191,7 @@ std::vector< const CCopasiObject * > CCopasiSelectionDialog::getObjectVector(QWi
   pDialog->setWindowTitle("Select Items");
   pDialog->setToolTip("Select multiple items by holding down the Ctrl or Shift (or equivalent) key.");
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  pDialog->setModel((*CCopasiRootContainer::getDatamodelList())[0]->getModel(), classes);
+  pDialog->setModel(CCopasiRootContainer::getDatamodelList()->operator[](0).getModel(), classes);
   pDialog->setSingleSelection(false);
   pDialog->setOutputVector(&Selection);
 

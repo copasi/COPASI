@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -89,7 +89,7 @@ void CMCAProblem::setSteadyStateRequested(const bool & steadyStateRequested)
   assert(pDataModel != NULL);
 
   if (pDataModel && pDataModel->getTaskList())
-    pSubTask = dynamic_cast<CSteadyStateTask *>((*pDataModel->getTaskList())["Steady-State"]);
+    pSubTask = dynamic_cast<CSteadyStateTask *>(&pDataModel->getTaskList()->operator[]("Steady-State"));
 
   if (steadyStateRequested && pSubTask)
     setValue("Steady-State", pSubTask->getKey());
@@ -114,12 +114,12 @@ CSteadyStateTask * CMCAProblem::getSubTask() const
 
       if (pSubTask == NULL)
         {
-          const CCopasiDataModel * pDataModel = getObjectDataModel();
+          CCopasiDataModel * pDataModel = getObjectDataModel();
           assert(pDataModel != NULL);
 
           if (pDataModel && pDataModel->getTaskList())
             {
-              pSubTask = dynamic_cast<CSteadyStateTask *>((*pDataModel->getTaskList())["Steady-State"]);
+              pSubTask = dynamic_cast<CSteadyStateTask *>(&pDataModel->getTaskList()->operator[]("Steady-State"));
             }
         }
     }

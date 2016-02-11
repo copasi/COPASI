@@ -1,17 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CModelMIRIAMInfo.h,v $
-//   $Revision: 1.17 $
-//   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2009/02/23 05:12:35 $
-// End CVS Header
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -36,51 +33,55 @@
 #include "copasi/report/CCopasiContainer.h"
 
 class CMIRIAMInfo : public CCopasiContainer
-  {
-    // Attributes
-  private:
-    std::string mKey;
-    CCopasiVector <CCreator> mCreators;
-    CCopasiVector <CReference> mReferences;
-    CCopasiVector <CModification> mModifications;
-    CCopasiVector <CBiologicalDescription> mBiologicalDescriptions;
-    CRDFObject mCreatedObj;
-    CRDFGraph * mpRDFGraph;
-    CRDFTriplet mTriplet;
-    CRDFTriplet mCreated;
+{
+  // Attributes
+private:
+  std::string mKey;
+  CCopasiVector <CCreator> mCreators;
+  CCopasiVector <CReference> mReferences;
+  CCopasiVector <CModification> mModifications;
+  CCopasiVector <CBiologicalDescription> mBiologicalDescriptions;
+  CRDFObject mCreatedObj;
+  CRDFGraph * mpRDFGraph;
+  CRDFTriplet mTriplet;
+  CRDFTriplet mCreated;
 
-    // Operations
-  public:
-    CMIRIAMInfo();
-    ~CMIRIAMInfo();
-    void load(const std::string& key = "");
-    bool save();
-    CRDFGraph* getRDFGraph();
+  // Operations
+public:
+  CMIRIAMInfo();
+  ~CMIRIAMInfo();
+  void load(const std::string& key = "");
+  bool save();
+  CRDFGraph* getRDFGraph();
 
-    const CCopasiVector <CCreator> & getCreators() const;
-    CCreator* createCreator(const std::string& objectName);
-    bool removeCreator(int position);
-    void loadCreators();
+  CCopasiVector <CCreator> & getCreators();
+  const CCopasiVector <CCreator> & getCreators() const;
+  CCreator* createCreator(const std::string& objectName);
+  bool removeCreator(int position);
+  void loadCreators();
 
-    const CCopasiVector <CReference> & getReferences() const;
-    CReference* createReference(const std::string& objectName);
-    bool removeReference(int position);
-    void loadReferences();
+  CCopasiVector <CReference> & getReferences();
+  const CCopasiVector <CReference> & getReferences() const;
+  CReference* createReference(const std::string& objectName);
+  bool removeReference(int position);
+  void loadReferences();
 
-    const std::string getCreatedDT() const;
-    void setCreatedDT(const std::string& dt);
+  const std::string getCreatedDT() const;
+  void setCreatedDT(const std::string& dt);
 
-    const CCopasiVector <CModification> & getModifications() const;
-    CModification* createModification(const std::string& objectName);
-    bool removeModification(int position);
-    void loadModifications();
+  CCopasiVector <CModification> & getModifications();
+  const CCopasiVector <CModification> & getModifications() const;
+  CModification* createModification(const std::string& objectName);
+  bool removeModification(int position);
+  void loadModifications();
 
-    const CCopasiVector <CBiologicalDescription> & getBiologicalDescriptions() const;
-    CBiologicalDescription* createBiologicalDescription();
-    bool removeBiologicalDescription(int position);
-    void loadBiologicalDescriptions();
+  CCopasiVector <CBiologicalDescription> & getBiologicalDescriptions();
+  const CCopasiVector <CBiologicalDescription> & getBiologicalDescriptions() const;
+  CBiologicalDescription* createBiologicalDescription();
+  bool removeBiologicalDescription(int position);
+  void loadBiologicalDescriptions();
 
-    virtual const std::string & getKey() const;
-  };
+  virtual const std::string & getKey() const;
+};
 
 #endif //COPASI_CMODELMIRIAMINFO

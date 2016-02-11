@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -65,7 +65,7 @@ const std::vector<std::string> ParameterTable::getListOfAllMetabNames(const CMod
   size_t i, imax = model.getMetabolites().size();
 
   for (i = 0; i < imax; ++i)
-    ret.push_back(CMetabNameInterface::getDisplayName(&model, *model.getMetabolites()[i], false));
+    ret.push_back(CMetabNameInterface::getDisplayName(&model, model.getMetabolites()[i], false));
 
   //now all the metabs from the ReactionInterface (that have not yet been committed to the model)
   std::vector<std::string> lll;
@@ -134,7 +134,7 @@ QStringList ParameterTable::getListOfAllGlobalParameterNames(const CModel & mode
   size_t i, imax = model.getNumModelValues();
 
   for (i = 0; i < imax; ++i)
-    ret += FROM_UTF8(model.getModelValues()[i]->getObjectName());
+    ret += FROM_UTF8(model.getModelValues()[i].getObjectName());
 
   return ret;
 }
@@ -150,7 +150,7 @@ QStringList ParameterTable::getListOfAllCompartmentNames(const CModel & model)
   size_t i, imax = model.getCompartments().size();
 
   for (i = 0; i < imax; ++i)
-    ret += FROM_UTF8(model.getCompartments()[i]->getObjectName());
+    ret += FROM_UTF8(model.getCompartments()[i].getObjectName());
 
   return ret;
 }

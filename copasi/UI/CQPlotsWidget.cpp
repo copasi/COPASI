@@ -71,7 +71,7 @@ CQPlotsWidget::~CQPlotsWidget()
 
 void CQPlotsWidget::slotBtnActivateAllClicked()
 {
-  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
+  CCopasiDataModel* pDataModel = &CCopasiRootContainer::getDatamodelList()->operator[](0);
   assert(pDataModel != NULL);
 
   if (!pDataModel->getModel())
@@ -79,7 +79,7 @@ void CQPlotsWidget::slotBtnActivateAllClicked()
 
   for (size_t i = 0; i < pDataModel->getPlotDefinitionList()->size(); i++)
     {
-      CPlotSpecification *pPS = static_cast<CPlotSpecification *>(pDataModel->getPlotDefinitionList()->operator[](i));
+      CPlotSpecification *pPS = static_cast<CPlotSpecification *>(&pDataModel->getPlotDefinitionList()->operator[](i));
       pPS->setActive(true);
     }
 
@@ -88,7 +88,7 @@ void CQPlotsWidget::slotBtnActivateAllClicked()
 
 void CQPlotsWidget::slotBtnDeactivateAllClicked()
 {
-  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
+  CCopasiDataModel* pDataModel = &CCopasiRootContainer::getDatamodelList()->operator[](0);
   assert(pDataModel != NULL);
 
   if (!pDataModel->getModel())
@@ -96,7 +96,7 @@ void CQPlotsWidget::slotBtnDeactivateAllClicked()
 
   for (size_t i = 0; i < pDataModel->getPlotDefinitionList()->size(); i++)
     {
-      CPlotSpecification *pPS = static_cast<CPlotSpecification *>(pDataModel->getPlotDefinitionList()->operator[](i));
+      CPlotSpecification *pPS = static_cast<CPlotSpecification *>(&pDataModel->getPlotDefinitionList()->operator[](i));
       pPS->setActive(false);
     }
 
@@ -244,13 +244,13 @@ void CQPlotsWidget::slotDoubleClicked(const QModelIndex proxyIndex)
     }
 
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
+  CCopasiDataModel* pDataModel = &CCopasiRootContainer::getDatamodelList()->operator[](0);
   assert(pDataModel != NULL);
 
   if (!pDataModel->getModel())
     return;
 
-  CPlotSpecification *pPS = static_cast<CPlotSpecification *>(pDataModel->getPlotDefinitionList()->operator[](index.row()));
+  CPlotSpecification *pPS = static_cast<CPlotSpecification *>(&pDataModel->getPlotDefinitionList()->operator[](index.row()));
   const std::string key = static_cast<CCopasiParameter *>(pPS)->getKey();
 
   if (CCopasiRootContainer::getKeyFactory()->get(key))

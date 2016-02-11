@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -110,9 +110,19 @@ public:
   std::vector<CRegisteredObjectName>* getBodyAddr();
 
   /**
+   *gets the body in the report tag
+   */
+  const std::vector<CRegisteredObjectName>* getBodyAddr() const;
+
+  /**
    *gets the header in the report tag
    */
   std::vector<CRegisteredObjectName>* getHeaderAddr();
+
+  /**
+   *gets the header in the report tag
+   */
+  const std::vector<CRegisteredObjectName>* getHeaderAddr() const;
 
   /**
    *gets the footer in the report tag
@@ -122,7 +132,17 @@ public:
   /**
    *gets the footer in the report tag
    */
+  const std::vector<CRegisteredObjectName>* getFooterAddr() const;
+
+  /**
+   *gets the footer in the report tag
+   */
   std::vector<CRegisteredObjectName>* getTableAddr();
+
+  /**
+   *gets the footer in the report tag
+   */
+  const std::vector<CRegisteredObjectName>* getTableAddr() const;
 
   /**
    *

@@ -60,7 +60,7 @@ CQSpeciesDetail::CQSpeciesDetail(QWidget* parent, const char* name) :
 
 //  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
 //  int Width = fontMetrics().width("Concentration (" +
-//                                  FROM_UTF8((*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getConcentrationUnitsDisplayString()) +
+//                                  FROM_UTF8(CCopasiRootContainer::getDatamodelList()->operator[](0).getModel()->getConcentrationUnitsDisplayString()) +
 //                                  ")");
 //
 
@@ -294,7 +294,7 @@ void CQSpeciesDetail::load()
 
   for (m = 0; m < Compartments.size(); m++)
     {
-      pCompartment = Compartments[m];
+      pCompartment = &Compartments[m];
       mpComboBoxCompartment->insertItem(mpComboBoxCompartment->count(), FROM_UTF8(pCompartment->getObjectName()));
     }
 
@@ -360,7 +360,7 @@ void CQSpeciesDetail::save()
       QString Compartment = mpComboBoxCompartment->currentText();
       std::string CompartmentToRemove = mpMetab->getCompartment()->getObjectName();
 
-      if (!pModel->getCompartments()[TO_UTF8(Compartment)]->addMetabolite(mpMetab))
+      if (!pModel->getCompartments()[TO_UTF8(Compartment)].addMetabolite(mpMetab))
         {
           QString msg;
           msg = "Unable to move species '" + FROM_UTF8(mpMetab->getObjectName()) + "'\n"
@@ -379,7 +379,7 @@ void CQSpeciesDetail::save()
         }
       else
         {
-          pModel->getCompartments()[CompartmentToRemove]->getMetabolites().remove(mpMetab->getObjectName());
+          pModel->getCompartments()[CompartmentToRemove].getMetabolites().remove(mpMetab->getObjectName());
           pModel->setCompileFlag();
           pModel->initializeMetabolites();
           protectedNotify(ListViews::COMPARTMENT, ListViews::CHANGE, "");
@@ -525,7 +525,7 @@ void CQSpeciesDetail::copy()
   // Collect and load list of compartment names in comboBox
   for (; it != end; ++it)
     {
-      SelectionList.append(FROM_UTF8((*it)->getObjectName()));
+      SelectionList.append(FROM_UTF8(it->getObjectName()));
     }
 
   pDialog->setSelectionList(SelectionList);
@@ -545,7 +545,7 @@ void CQSpeciesDetail::copy()
       if (origCompartmentIndex != pDialog->mpSelectionBox->currentIndex())
         {
           sourceObjects.addCompartment(mpMetab->getCompartment());
-          origToCopyMapping.add(mpMetab->getCompartment(), *(it + pDialog->mpSelectionBox->currentIndex()));
+          origToCopyMapping.add(mpMetab->getCompartment(), (it + pDialog->mpSelectionBox->currentIndex()).constCast());
         }
 
       sourceObjects.addMetab(mpMetab);
@@ -578,7 +578,7 @@ void CQSpeciesDetail::slotCompartmentChanged(int compartment)
 
   QString Compartment = mpComboBoxCompartment->itemText(compartment);
   const CCompartment * pNewCompartment =
-    pModel->getCompartments()[TO_UTF8(Compartment)];
+    &pModel->getCompartments()[TO_UTF8(Compartment)];
 
   if (pNewCompartment == mpCurrentCompartment ||
       pNewCompartment == NULL) return;
@@ -746,7 +746,7 @@ void CQSpeciesDetail::deleteSpecies(UndoSpeciesData *pSData)
   switchToWidget(CCopasiUndoCommand::SPECIES);
 
   size_t index = pModel->findMetabByName(pSData->getName());
-  CMetab *pSpecies = pModel->getMetabolites()[(int) index];
+  CMetab *pSpecies = &pModel->getMetabolites()[index];
   std::string key = pSpecies->getKey();
   pModel->removeMetabolite(key);
 
@@ -829,7 +829,7 @@ void CQSpeciesDetail::speciesTypeChanged(UndoSpeciesData *pSData, int type)
 
   if (index != C_INVALID_INDEX)
     {
-      CMetab *pSpecie = pModel->getMetabolites()[(int) index];
+      CMetab *pSpecie = &pModel->getMetabolites()[index];
       std::string key = pSpecie->getKey();
       mpListView->switchToOtherWidget(C_INVALID_INDEX, key);
     }
@@ -884,7 +884,7 @@ void CQSpeciesDetail::speciesInitialValueLostFocus(UndoSpeciesData *pSData)
 
   if (index != C_INVALID_INDEX)
     {
-      CMetab *pSpecie = pModel->getMetabolites()[(int) index];
+      CMetab *pSpecie = &pModel->getMetabolites()[index];
       std::string key = pSpecie->getKey();
       mpListView->switchToOtherWidget(C_INVALID_INDEX, key);
     }

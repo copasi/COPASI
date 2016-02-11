@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -70,7 +70,7 @@ void CQMathMatrixWidget::loadMatrices()
 {
 
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  const CModel* pModel = (*CCopasiRootContainer::getDatamodelList())[0]->getModel();
+  const CModel* pModel = CCopasiRootContainer::getDatamodelList()->operator[](0).getModel();
 
   const CArrayAnnotation * tmp;
 
@@ -122,7 +122,7 @@ void CQMathMatrixWidget::slotDerivButtonPressed()
 #ifdef _DERIV_TEST_
   std::cout << "Deriv" << std::endl;
 
-  CModel* pModel = (*CCopasiRootContainer::getDatamodelList())[0]->getModel();
+  CModel* pModel = &CCopasiRootContainer::getDatamodelList()->operator[](0).getModel();
   CEvaluationNode* tmpnode = pModel->prepareElasticity(pModel->getReactions()[0],
                              pModel->getMetabolites()[0], false);
 

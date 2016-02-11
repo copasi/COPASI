@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -53,7 +53,7 @@ bool COutputHandlerPlot::compile(CObjectInterface::ContainerList listOfContainer
 
       for (i = 0; i < imax; i++)
         {
-          CPlotSpecification * pSpecification = (*mpDefinitionVector)[i];
+          CPlotSpecification * pSpecification = &mpDefinitionVector->operator[](i);
 
           if (pSpecification->isActive())
             {

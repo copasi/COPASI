@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -49,8 +49,8 @@ void CFixLocalReactionParameters::checkModel()
   for (; itReaction != endReaction; ++itReaction)
     {
       // Check for all local parameters
-      CCopasiParameterGroup::index_iterator itParameter = (*itReaction)->getParameters().beginIndex();
-      CCopasiParameterGroup::index_iterator endParameter = (*itReaction)->getParameters().endIndex();
+      CCopasiParameterGroup::index_iterator itParameter = itReaction->getParameters().beginIndex();
+      CCopasiParameterGroup::index_iterator endParameter = itReaction->getParameters().endIndex();
 
       for (; itParameter != endParameter; ++itParameter)
         {

@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMMLOutput.cpp,v $
-//   $Revision: 1.12 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/05/16 23:14:34 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -83,9 +75,9 @@ void CMMLOutput::writeRHS(std::ostream & out,
 
   for (i = 0; i < imax; ++i)
     {
-      if (balances[i]->getMetaboliteKey() == pMetab->getKey())
+      if (balances[i].getMetaboliteKey() == pMetab->getKey())
         {
-          balance = balances[i]->getMultiplicity();
+          balance = balances[i].getMultiplicity();
           break;
         }
     }
@@ -106,12 +98,12 @@ void CMMLOutput::writeRHS(std::ostream & out,
   else if (balance < 0.0)
     {
       out << SPC(l + 1) << "<mo>" << "-" << "</mo><mn>" << -balance << "</mn>"
-      << "<mo>" << "&CenterDot;" << "</mo>" << std::endl;
+          << "<mo>" << "&CenterDot;" << "</mo>" << std::endl;
     }
   else // >0
     {
       out << SPC(l + 1) << "<mo>" << "+" << "</mo><mn>" << balance << "</mn>"
-      << "<mo>" << "&CenterDot;" << "</mo>" << std::endl;
+          << "<mo>" << "&CenterDot;" << "</mo>" << std::endl;
     }
 
   //compartment volume?
@@ -119,7 +111,7 @@ void CMMLOutput::writeRHS(std::ostream & out,
     {
       std::string compName = pMetab->getCompartment()->getObjectName();
       out << SPC(l + 1) << "<msub><mi>V</mi><mi>" << CMathMl::fixName(compName)
-      << "</mi></msub>" << std::endl;
+          << "</mi></msub>" << std::endl;
       out << SPC(l + 1) << "<mo>" << "&CenterDot;" << "</mo>" << std::endl;
     }
 
@@ -289,7 +281,7 @@ void CMMLOutput::writeDifferentialEquations(std::ostream & mml, CModel * model, 
 
   for (i = 0; i < imax; i++)
     {
-      if (model->getCompartments()[i]->getStatus() == CModelEntity::ODE)
+      if (model->getCompartments()[i].getStatus() == CModelEntity::ODE)
         {
           mml << SPC(l + 1) << "<mtr>" << std::endl;
 
@@ -301,8 +293,8 @@ void CMMLOutput::writeDifferentialEquations(std::ostream & mml, CModel * model, 
           mml << SPC(l + 5) << "<mo>d</mo>" << std::endl;
 
           mml << SPC(l + 5) << "<msub><mi>V</mi><mi>"
-          << CMathMl::fixName(model->getCompartments()[i]->getObjectName())
-          << "</mi></msub>" << std::endl;
+              << CMathMl::fixName(model->getCompartments()[i].getObjectName())
+              << "</mi></msub>" << std::endl;
 
           mml << SPC(l + 4) << "</mrow>" << std::endl;
           mml << SPC(l + 3) << "<mrow>" << std::endl;
@@ -320,21 +312,21 @@ void CMMLOutput::writeDifferentialEquations(std::ostream & mml, CModel * model, 
           //third column (rhs)
           mml << SPC(l + 2) << "<mtd columnalign='left'>" << std::endl;
 
-          writeRHS_ModelEntity(mml, model->getCompartments()[i],
+          writeRHS_ModelEntity(mml, &model->getCompartments()[i],
                                expandFull, l + 3);
           mml << SPC(l + 2) << "</mtd>" << std::endl;
 
           mml << SPC(l + 1) << "</mtr>" << std::endl;
         }
-      else if (model->getCompartments()[i]->getStatus() == CModelEntity::ASSIGNMENT)
+      else if (model->getCompartments()[i].getStatus() == CModelEntity::ASSIGNMENT)
         {
           mml << SPC(l + 1) << "<mtr>" << std::endl;
 
           //first column (lhs)
           mml << SPC(l + 2) << "<mtd>" << std::endl;
           mml << SPC(l + 3) << "<msub><mi>V</mi><mi>"
-          << CMathMl::fixName(model->getCompartments()[i]->getObjectName())
-          << "</mi></msub>" << std::endl;
+              << CMathMl::fixName(model->getCompartments()[i].getObjectName())
+              << "</mi></msub>" << std::endl;
           mml << SPC(l + 2) << "</mtd>" << std::endl;
 
           //second column ("=")
@@ -344,7 +336,7 @@ void CMMLOutput::writeDifferentialEquations(std::ostream & mml, CModel * model, 
 
           //third column (rhs)
           mml << SPC(l + 2) << "<mtd columnalign='left'>" << std::endl;
-          writeRHS_ModelEntity(mml, model->getCompartments()[i],
+          writeRHS_ModelEntity(mml, &model->getCompartments()[i],
                                expandFull, l + 3);
           mml << SPC(l + 2) << "</mtd>" << std::endl;
 
@@ -357,10 +349,10 @@ void CMMLOutput::writeDifferentialEquations(std::ostream & mml, CModel * model, 
 
   for (i = 0; i < imax; i++)
     {
-      if (model->getMetabolites()[i]->getStatus() == CModelEntity::REACTIONS)
+      if (model->getMetabolites()[i].getStatus() == CModelEntity::REACTIONS)
         {
 
-          std::set<std::string> reacKeys = listReactionsForMetab(model, model->getMetabolites()[i]->getKey());
+          std::set<std::string> reacKeys = listReactionsForMetab(model, model->getMetabolites()[i].getKey());
           std::set<std::string>::const_iterator it, itEnd = reacKeys.end();
 
           for (it = reacKeys.begin(); it != itEnd; ++it)
@@ -373,8 +365,8 @@ void CMMLOutput::writeDifferentialEquations(std::ostream & mml, CModel * model, 
               mml << SPC(l + 2) << "<mtd>" << std::endl;
 
               if (it == reacKeys.begin())
-                writeLHS(mml, model->getMetabolites()[i]->getObjectDisplayName(),
-                         model->getMetabolites()[i]->getCompartment()->getObjectName(), l + 3);
+                writeLHS(mml, model->getMetabolites()[i].getObjectDisplayName(),
+                         model->getMetabolites()[i].getCompartment()->getObjectName(), l + 3);
 
               mml << SPC(l + 2) << "</mtd>" << std::endl;
 
@@ -388,7 +380,7 @@ void CMMLOutput::writeDifferentialEquations(std::ostream & mml, CModel * model, 
 
               //third column (rhs)
               mml << SPC(l + 2) << "<mtd columnalign='left'>" << std::endl;
-              writeRHS(mml, model->getMetabolites()[i],
+              writeRHS(mml, &model->getMetabolites()[i],
                        dynamic_cast<CReaction*>(CCopasiRootContainer::getKeyFactory()->get(*it)) ,
                        localParameterNumbers, expand, expandFull, l + 3);
               mml << SPC(l + 2) << "</mtd>" << std::endl;
@@ -396,14 +388,14 @@ void CMMLOutput::writeDifferentialEquations(std::ostream & mml, CModel * model, 
               mml << SPC(l + 1) << "</mtr>" << std::endl;
             }
         }
-      else if (model->getMetabolites()[i]->getStatus() == CModelEntity::ODE)
+      else if (model->getMetabolites()[i].getStatus() == CModelEntity::ODE)
         {
           mml << SPC(l + 1) << "<mtr>" << std::endl;
 
           //first column (lhs)
           mml << SPC(l + 2) << "<mtd>" << std::endl;
-          writeLHS(mml, model->getMetabolites()[i]->getObjectDisplayName(),
-                   model->getMetabolites()[i]->getCompartment()->getObjectName(), l + 3);
+          writeLHS(mml, model->getMetabolites()[i].getObjectDisplayName(),
+                   model->getMetabolites()[i].getCompartment()->getObjectName(), l + 3);
           mml << SPC(l + 2) << "</mtd>" << std::endl;
 
           //second column ("=")
@@ -414,24 +406,24 @@ void CMMLOutput::writeDifferentialEquations(std::ostream & mml, CModel * model, 
           //third column (rhs)
           mml << SPC(l + 2) << "<mtd columnalign='left'>" << std::endl;
 
-          std::string compName = model->getMetabolites()[i]->getCompartment()->getObjectName();
+          std::string compName = model->getMetabolites()[i].getCompartment()->getObjectName();
           mml << SPC(l + 3) << "<msub><mi>V</mi><mi>" << CMathMl::fixName(compName)
-          << "</mi></msub>" << std::endl;
+              << "</mi></msub>" << std::endl;
           mml << SPC(l + 3) << "<mo>" << "&CenterDot;" << "</mo>" << std::endl;
 
-          writeRHS_ModelEntity(mml, model->getMetabolites()[i],
+          writeRHS_ModelEntity(mml, &model->getMetabolites()[i],
                                expandFull, l + 3);
           mml << SPC(l + 2) << "</mtd>" << std::endl;
 
           mml << SPC(l + 1) << "</mtr>" << std::endl;
         }
-      else if (model->getMetabolites()[i]->getStatus() == CModelEntity::ASSIGNMENT)
+      else if (model->getMetabolites()[i].getStatus() == CModelEntity::ASSIGNMENT)
         {
           mml << SPC(l + 1) << "<mtr>" << std::endl;
 
           //first column (lhs)
           mml << SPC(l + 2) << "<mtd>" << std::endl;
-          mml << SPC(l + 3) << "<mi>" << CMathMl::fixName("[" + model->getMetabolites()[i]->getObjectName() + "]") << "</mi>" << std::endl;
+          mml << SPC(l + 3) << "<mi>" << CMathMl::fixName("[" + model->getMetabolites()[i].getObjectName() + "]") << "</mi>" << std::endl;
           mml << SPC(l + 2) << "</mtd>" << std::endl;
 
           //second column ("=")
@@ -441,7 +433,7 @@ void CMMLOutput::writeDifferentialEquations(std::ostream & mml, CModel * model, 
 
           //third column (rhs)
           mml << SPC(l + 2) << "<mtd columnalign='left'>" << std::endl;
-          writeRHS_ModelEntity(mml, model->getMetabolites()[i],
+          writeRHS_ModelEntity(mml, &model->getMetabolites()[i],
                                expandFull, l + 3);
           mml << SPC(l + 2) << "</mtd>" << std::endl;
 
@@ -453,14 +445,14 @@ void CMMLOutput::writeDifferentialEquations(std::ostream & mml, CModel * model, 
   imax = model->getModelValues().size();
 
   for (i = 0; i < imax; ++i)
-    if (model->getModelValues()[i]->getStatus() == CModelEntity::ODE)
+    if (model->getModelValues()[i].getStatus() == CModelEntity::ODE)
       {
         hasContents = true;
         mml << SPC(l + 1) << "<mtr>" << std::endl;
 
         //first column (lhs)
         mml << SPC(l + 2) << "<mtd columnalign='right'>" << std::endl;
-        writeLHS_ModelValue(mml, model->getModelValues()[i]->getObjectName(), l + 3);
+        writeLHS_ModelValue(mml, model->getModelValues()[i].getObjectName(), l + 3);
         mml << SPC(l + 2) << "</mtd>" << std::endl;
 
         //second column ("=")
@@ -470,7 +462,7 @@ void CMMLOutput::writeDifferentialEquations(std::ostream & mml, CModel * model, 
 
         //third column (rhs)
         mml << SPC(l + 2) << "<mtd columnalign='left'>" << std::endl;
-        writeRHS_ModelEntity(mml, model->getModelValues()[i],
+        writeRHS_ModelEntity(mml, &model->getModelValues()[i],
                              expandFull, l + 3);
         mml << SPC(l + 2) << "</mtd>" << std::endl;
 
@@ -481,15 +473,15 @@ void CMMLOutput::writeDifferentialEquations(std::ostream & mml, CModel * model, 
   imax = model->getModelValues().size();
 
   for (i = 0; i < imax; ++i)
-    if (model->getModelValues()[i]->getStatus() == CModelEntity::ASSIGNMENT)
+    if (model->getModelValues()[i].getStatus() == CModelEntity::ASSIGNMENT)
       {
         hasContents = true;
         mml << SPC(l + 1) << "<mtr>" << std::endl;
 
         //first column (lhs)
         mml << SPC(l + 2) << "<mtd columnalign='right'>" << std::endl;
-        mml << SPC(l + 3) << "<mi>" << CMathMl::fixName(model->getModelValues()[i]->getObjectName()) << "</mi>" << std::endl;
-        //writeLHS_ModelValue(mml, model->getModelValues()[i]->getObjectName(), l + 3);
+        mml << SPC(l + 3) << "<mi>" << CMathMl::fixName(model->getModelValues()[i].getObjectName()) << "</mi>" << std::endl;
+        //writeLHS_ModelValue(mml, model->getModelValues()[i].getObjectName(), l + 3);
         mml << SPC(l + 2) << "</mtd>" << std::endl;
 
         //second column ("=")
@@ -499,7 +491,7 @@ void CMMLOutput::writeDifferentialEquations(std::ostream & mml, CModel * model, 
 
         //third column (rhs)
         mml << SPC(l + 2) << "<mtd columnalign='left'>" << std::endl;
-        writeRHS_ModelEntity(mml, model->getModelValues()[i],
+        writeRHS_ModelEntity(mml, &model->getModelValues()[i],
                              expandFull, l + 3);
         mml << SPC(l + 2) << "</mtd>" << std::endl;
 
@@ -518,13 +510,13 @@ std::set<std::string> CMMLOutput::listReactionsForMetab(const CModel* model,
 
   for (j = 0; j < jmax; j++)
     {
-      const CCopasiVector <CChemEqElement> &Balances = Reactions[j]->getChemEq().getBalances();
+      const CCopasiVector <CChemEqElement> &Balances = Reactions[j].getChemEq().getBalances();
       size_t i, imax = Balances.size();
 
       for (i = 0; i < imax; i++)
-        if (key == Balances[i]->getMetaboliteKey() && Balances[i]->getMultiplicity() != 0)
+        if (key == Balances[i].getMetaboliteKey() && Balances[i].getMultiplicity() != 0)
           {
-            Keys.insert(Reactions[j]->getKey());
+            Keys.insert(Reactions[j].getKey());
             break;
           }
     }

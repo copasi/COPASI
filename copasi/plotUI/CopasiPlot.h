@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -48,7 +48,6 @@
 #include "utilities/CopasiTime.h"
 #include "utilities/CVector.h"
 #include "utilities/CMatrix.h"
-
 
 //*******************************************************
 
@@ -136,7 +135,7 @@ private:
   /**
    * @return a spectogram for the given plot item.
    */
-  CPlotSpectogram* createSpectogram(CPlotItem *plotItem);
+  CPlotSpectogram* createSpectogram(const CPlotItem *plotItem);
 
   /**
    * Tell the curves where the data is located. It must be called

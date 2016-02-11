@@ -68,7 +68,7 @@ void CMathEvent::CAssignment::relocate(const std::vector< CMath::sRelocate > & r
   CMathContainer::relocateObject(mpAssignment, relocations);
 }
 
-bool CMathEvent::CAssignment::compile(CEventAssignment * pDataAssignment,
+bool CMathEvent::CAssignment::compile(const CEventAssignment * pDataAssignment,
                                       CMathContainer & container)
 {
   // A compiled pDataAssignment is prerequisite.
@@ -1247,7 +1247,7 @@ bool CMathEvent::compile(const CEvent * pDataEvent,
   // Data events with assignments
   for (; pAssignment != pAssignmentEnd && itAssignment != endAssignment; ++pAssignment, ++itAssignment, ++ppTarget)
     {
-      success &= pAssignment->compile(*itAssignment, container);
+      success &= pAssignment->compile(itAssignment, container);
       *ppTarget = (C_FLOAT64 *) pAssignment->getTarget()->getValuePointer();
     }
 

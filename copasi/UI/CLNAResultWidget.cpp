@@ -1,4 +1,4 @@
-// Copyright (C) 2011 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -46,7 +46,7 @@ bool CLNAResultWidget::loadFromBackend()
 {
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   CLNATask * pTask =
-    dynamic_cast<CLNATask *>((*(*CCopasiRootContainer::getDatamodelList())[0]->getTaskList())["Linear Noise Approximation"]);
+    dynamic_cast<CLNATask *>(&CCopasiRootContainer::getDatamodelList()->operator[](0).getTaskList()->operator[]("Linear Noise Approximation"));
 
   if (!pTask) return false;
 

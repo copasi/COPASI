@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -1146,7 +1146,7 @@ void CQExperimentData::loadTable(CExperiment * pExperiment, const bool & guess)
   CExperiment::Type Type;
   QTableWidgetItem *pItem = NULL;
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CCopasiDataModel *pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
+  CCopasiDataModel *pDataModel = &CCopasiRootContainer::getDatamodelList()->operator[](0);
   assert(pDataModel != NULL);
 
   for (i = 0; i < imax; i++)
@@ -1290,7 +1290,7 @@ void CQExperimentData::slotTypeChanged(int row, int index)
 
   CCopasiObjectName CN = CCopasiObjectName(TO_UTF8(mpTable->item(row, COL_OBJECT_HIDDEN)->text()));
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
+  CCopasiDataModel* pDataModel = &CCopasiRootContainer::getDatamodelList()->operator[](0);
   assert(pDataModel != NULL);
 
   switch (NewType)

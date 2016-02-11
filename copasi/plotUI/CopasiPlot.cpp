@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -159,7 +159,7 @@ void CopasiPlot::legendChecked(const QVariant &itemInfo, bool on)
 #endif
 
 CPlotSpectogram *
-CopasiPlot::createSpectogram(CPlotItem *plotItem)
+CopasiPlot::createSpectogram(const CPlotItem *plotItem)
 {
   QString strLimitZ = FROM_UTF8(plotItem->getValue<std::string>("maxZ"));
   bool flag;
@@ -183,7 +183,7 @@ CopasiPlot::createSpectogram(CPlotItem *plotItem)
   pSpectogram->setRenderHint(QwtPlotItem::RenderAntialiased);
   pSpectogram->setDefaultContourPen(QPen(0.5));
 
-  std::string colorMap = *plotItem->assertParameter("colorMap", CCopasiParameter::STRING, std::string("Default"));
+  std::string colorMap = *const_cast< CPlotItem * >(plotItem)->assertParameter("colorMap", CCopasiParameter::STRING, std::string("Default"));
 
 #if QWT_VERSION > 0x060000
   pSpectogram->setRenderThreadCount(0);
@@ -192,7 +192,6 @@ CopasiPlot::createSpectogram(CPlotItem *plotItem)
     {
       QwtLinearColorMap *colorMap = new CLinearColorMap(Qt::white, Qt::black);
       pSpectogram->setColorMap(colorMap);
-
     }
   else if (colorMap == "Yellow-Red")
     {
@@ -221,7 +220,6 @@ CopasiPlot::createSpectogram(CPlotItem *plotItem)
     {
       CLinearColorMap colorMap(Qt::white, Qt::black);
       pSpectogram->setColorMap(colorMap);
-
     }
   else if (colorMap == "Yellow-Red")
     {
@@ -246,7 +244,7 @@ CopasiPlot::createSpectogram(CPlotItem *plotItem)
 
 #endif
 
-  QString contours = FROM_UTF8(* plotItem->assertParameter("contours", CCopasiParameter::STRING, std::string("")));
+  QString contours = FROM_UTF8(* const_cast< CPlotItem * >(plotItem)->assertParameter("contours", CCopasiParameter::STRING, std::string("")));
 
   int levels = contours.toInt(&flag);
 
@@ -260,7 +258,6 @@ CopasiPlot::createSpectogram(CPlotItem *plotItem)
 
       pSpectogram->setContourLevels(contourLevels);
       pSpectogram->setDisplayMode(QwtPlotSpectrogram::ContourMode, true);
-
     }
   else
     {
@@ -275,11 +272,10 @@ CopasiPlot::createSpectogram(CPlotItem *plotItem)
       pSpectogram->setDisplayMode(QwtPlotSpectrogram::ContourMode, true);
     }
 
-  CCopasiDataModel* dataModel = (*CCopasiRootContainer::getDatamodelList())[0];
+  CCopasiDataModel* dataModel = &CCopasiRootContainer::getDatamodelList()->operator[](0);
 
   setAxisTitle(xBottom, FROM_UTF8(dataModel->getObject((plotItem->getChannels()[0]))->getObjectDisplayName()));
   enableAxis(xBottom);
-
 
   setAxisTitle(yLeft, FROM_UTF8(dataModel->getObject((plotItem->getChannels()[1]))->getObjectDisplayName()));
   enableAxis(yLeft);
@@ -298,8 +294,6 @@ CopasiPlot::createSpectogram(CPlotItem *plotItem)
   topAxis->setColorBarEnabled(true);
 
   enableAxis(xTop);
-
-
 
   return pSpectogram;
 }
@@ -321,7 +315,6 @@ bool CopasiPlot::initFromSpec(const CPlotSpecification* plotspec)
   mSpectograms.resize(mpPlotSpecification->getItems().size());
   mSpectograms = NULL;
 
-
   std::map< std::string, C2DPlotCurve * >::iterator found;
 
   CCopasiVector< CPlotItem >::const_iterator itPlotItem = mpPlotSpecification->getItems().begin();
@@ -335,7 +328,7 @@ bool CopasiPlot::initFromSpec(const CPlotSpecification* plotspec)
     {
       // Qwt does not like it to reuse the curve as this may lead to access
       // violation. We therefore delete the curves but remember their visibility.
-      if ((found = mCurveMap.find((*itPlotItem)->CCopasiParameter::getKey())) != mCurveMap.end())
+      if ((found = mCurveMap.find(itPlotItem->CCopasiParameter::getKey())) != mCurveMap.end())
         {
           *pVisible = found->second->isVisible();
         }
@@ -358,7 +351,6 @@ bool CopasiPlot::initFromSpec(const CPlotSpecification* plotspec)
 
   mSpectogramMap.clear();
 
-
   itPlotItem = mpPlotSpecification->getItems().begin();
   pVisible = Visible.array();
   C2DPlotCurve ** ppCurve = mCurves.array();
@@ -369,12 +361,12 @@ bool CopasiPlot::initFromSpec(const CPlotSpecification* plotspec)
 
   for (; itPlotItem != endPlotItem; ++itPlotItem, ++pVisible, ++ppCurve, ++ppSpectogram, ++k)
     {
-      if ((*itPlotItem)->getType() == CPlotItem::spectogram)
+      if (itPlotItem->getType() == CPlotItem::spectogram)
         {
-          CPlotSpectogram* pSpectogram = createSpectogram(*itPlotItem);
+          CPlotSpectogram* pSpectogram = createSpectogram(itPlotItem);
 
           *ppSpectogram = pSpectogram;
-          mSpectogramMap[(*itPlotItem)->CCopasiParameter::getKey()] = pSpectogram;
+          mSpectogramMap[itPlotItem->CCopasiParameter::getKey()] = pSpectogram;
 
           showCurve(pSpectogram, *pVisible);
 
@@ -385,12 +377,12 @@ bool CopasiPlot::initFromSpec(const CPlotSpecification* plotspec)
 
       // set up the curve
       C2DPlotCurve * pCurve = new C2DPlotCurve(&mMutex,
-          (*itPlotItem)->getType(),
-          (*itPlotItem)->getActivity(),
-          FROM_UTF8((*itPlotItem)->getTitle()));
+          itPlotItem->getType(),
+          itPlotItem->getActivity(),
+          FROM_UTF8(itPlotItem->getTitle()));
       *ppCurve = pCurve;
 
-      mCurveMap[(*itPlotItem)->CCopasiParameter::getKey()] = pCurve;
+      mCurveMap[itPlotItem->CCopasiParameter::getKey()] = pCurve;
 
       //color handling should be similar for different curve types
       QColor color;
@@ -399,7 +391,7 @@ bool CopasiPlot::initFromSpec(const CPlotSpecification* plotspec)
           || pCurve->getType() == CPlotItem::histoItem1d
           || pCurve->getType() == CPlotItem::bandedGraph)
         {
-          std::string colorstr = (*itPlotItem)->getValue< std::string >("Color");
+          std::string colorstr = itPlotItem->getValue< std::string >("Color");
           color = CQPlotColors::getColor(colorstr, k);
         }
 
@@ -414,14 +406,14 @@ bool CopasiPlot::initFromSpec(const CPlotSpecification* plotspec)
           needLeft = true;
           pCurve->setRenderHint(QwtPlotItem::RenderAntialiased);
 
-          unsigned C_INT32 linetype = (*itPlotItem)->getValue< unsigned C_INT32 >("Line type");
+          unsigned C_INT32 linetype = itPlotItem->getValue< unsigned C_INT32 >("Line type");
 
           if (linetype == 0      //line
               || linetype == 3)  //line+symbols
             {
               pCurve->setStyle(QwtPlotCurve::Lines);
-              unsigned C_INT32 linesubtype = (*itPlotItem)->getValue< unsigned C_INT32 >("Line subtype");
-              C_FLOAT64 width = (*itPlotItem)->getValue< C_FLOAT64 >("Line width");
+              unsigned C_INT32 linesubtype = itPlotItem->getValue< unsigned C_INT32 >("Line subtype");
+              C_FLOAT64 width = itPlotItem->getValue< C_FLOAT64 >("Line width");
 
               switch (linesubtype) //symbol type
                 {
@@ -450,7 +442,7 @@ bool CopasiPlot::initFromSpec(const CPlotSpecification* plotspec)
 
           if (linetype == 1) //points
             {
-              C_FLOAT64 width = (*itPlotItem)->getValue< C_FLOAT64 >("Line width");
+              C_FLOAT64 width = itPlotItem->getValue< C_FLOAT64 >("Line width");
               pCurve->setPen(QPen(color, width, Qt::SolidLine, Qt::RoundCap));
               pCurve->setStyle(QwtPlotCurve::Dots);
             }
@@ -463,7 +455,7 @@ bool CopasiPlot::initFromSpec(const CPlotSpecification* plotspec)
           if (linetype == 2      //symbols
               || linetype == 3)  //line+symbols
             {
-              unsigned C_INT32 symbolsubtype = (*itPlotItem)->getValue< unsigned C_INT32 >("Symbol subtype");
+              unsigned C_INT32 symbolsubtype = itPlotItem->getValue< unsigned C_INT32 >("Symbol subtype");
 
               switch (symbolsubtype) //symbol type
                 {
@@ -506,7 +498,7 @@ bool CopasiPlot::initFromSpec(const CPlotSpecification* plotspec)
 
       if (pCurve->getType() == CPlotItem::histoItem1d)
         {
-          pCurve->setIncrement((*itPlotItem)->getValue< C_FLOAT64 >("increment"));
+          pCurve->setIncrement(itPlotItem->getValue< C_FLOAT64 >("increment"));
 
           pCurve->setStyle(QwtPlotCurve::Steps);
           pCurve->setYAxis(QwtPlot::yRight);
@@ -549,7 +541,6 @@ bool CopasiPlot::initFromSpec(const CPlotSpecification* plotspec)
       enableAxis(yRight);
     }
 
-
   mIgnoreUpdate = false;
 
   return true; //TODO really check!
@@ -576,7 +567,7 @@ bool CopasiPlot::compile(CObjectInterface::ContainerList listOfContainer)
 
   for (i = 0; i < imax; ++i)
     {
-      CPlotItem * pItem = mpPlotSpecification->getItems()[i];
+      const CPlotItem * pItem = &mpPlotSpecification->getItems()[i];
       Activity ItemActivity = pItem->getActivity();
       DataIndex.first = ItemActivity;
 
@@ -771,7 +762,6 @@ bool CopasiPlot::compile(CObjectInterface::ContainerList listOfContainer)
 #endif
             break;
 
-
           default:
             fatalError();
             break;
@@ -860,7 +850,6 @@ void CopasiPlot::separate(const Activity & activity)
 void CopasiPlot::finish()
 {
 
-
   // We need to force a replot, i.e., the next mNextPlotTime should be in the past.
   mNextPlotTime = 0;
 
@@ -872,7 +861,6 @@ void CopasiPlot::finish()
       mpZoomer->setZoomBase();
     }
 }
-
 
 void CopasiPlot::updateCurves(const size_t & activity)
 {
@@ -1457,5 +1445,3 @@ void CopasiPlot::replot()
 
   mReplotFinished = true;
 }
-
-

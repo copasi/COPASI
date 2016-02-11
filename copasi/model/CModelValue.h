@@ -46,7 +46,7 @@ protected:
    * This value is either set upon importing an SBML file,
    * or when the object is first exported to an SBML file.
    */
-  std::string mSBMLId;
+  mutable std::string mSBMLId;
 
 public:
   /**
@@ -203,7 +203,7 @@ public:
   /**
    * Sets the SBMLId.
    */
-  void setSBMLId(const std::string& id);
+  void setSBMLId(const std::string& id) const;
 
   /**
    * Returns a reference to the SBML Id.

@@ -43,7 +43,7 @@ CPlotSpecification* COutputDefinitionVector::createPlotSpec(const std::string & 
   size_t i;
 
   for (i = 0; i < size(); i++)
-    if ((*this)[i]->getObjectName() == name)
+    if (operator[](i).getObjectName() == name)
       return NULL; // duplicate name
 
   CPlotSpecification* pNewPlotSpec = new CPlotSpecification(name, this, type);

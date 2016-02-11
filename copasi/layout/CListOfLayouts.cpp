@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -124,10 +124,10 @@ void CListOfLayouts::exportToSBML(ListOf * lol, std::map<const CCopasiObject*, S
       //lineEndingKeyToIdMap.clear();
       //pGRI=this->mvGlobalRenderInformationObjects[i]->toSBML(colorKeyToIdMap,gradientKeyToIdMap,lineEndingKeyToIdMap);
       pGRI = rlolPlugin->createGlobalRenderInformation();
-      this->mvGlobalRenderInformationObjects[i]->toSBML(pGRI, pLoL->getLevel(), pLoL->getVersion());
+      this->mvGlobalRenderInformationObjects[i].toSBML(pGRI, pLoL->getLevel(), pLoL->getVersion());
       // add the id and key to the map
       assert(pGRI != NULL);
-      keyToIdMap.insert(std::pair<std::string, std::string>(this->mvGlobalRenderInformationObjects[i]->getKey(), pGRI->getId()));
+      keyToIdMap.insert(std::pair<std::string, std::string>(this->mvGlobalRenderInformationObjects[i].getKey(), pGRI->getId()));
       //colorKeyToIdMapMap.insert(std::pair<std::string,std::map<std::string,std::string> >(pGRI->getId(),colorKeyToIdMap));
       //gradientKeyToIdMapMap.insert(std::pair<std::string,std::map<std::string,std::string> >(pGRI->getId(),gradientKeyToIdMap));
       //lineEndingKeyToIdMapMap.insert(std::pair<std::string,std::map<std::string,std::string> >(pGRI->getId(),lineEndingKeyToIdMap));
@@ -154,7 +154,7 @@ void CListOfLayouts::exportToSBML(ListOf * lol, std::map<const CCopasiObject*, S
 
   for (i = 0; i < imax; ++i)
     {
-      CLayout * tmp = (*this)[i];
+      const CLayout * tmp = &this->operator[](i);
 
       //check if the layout exists in the libsbml data
       std::map<const CCopasiObject*, SBase*>::const_iterator it;
@@ -226,7 +226,7 @@ CLGlobalRenderInformation* CListOfLayouts::getRenderInformation(size_t index)
 {
   if (index < this->mvGlobalRenderInformationObjects.size())
     {
-      return this->mvGlobalRenderInformationObjects[index];
+      return &this->mvGlobalRenderInformationObjects[index];
     }
 
   return NULL;
@@ -240,7 +240,7 @@ const CLGlobalRenderInformation* CListOfLayouts::getRenderInformation(size_t ind
 {
   if (index < this->mvGlobalRenderInformationObjects.size())
     {
-      return this->mvGlobalRenderInformationObjects[index];
+      return &this->mvGlobalRenderInformationObjects[index];
     }
 
   return NULL;

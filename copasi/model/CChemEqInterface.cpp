@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -145,7 +145,7 @@ void CChemEqInterface::completeCompartments()
   if (mpModel->getCompartments().size() == 0)
     DefaultCompartment = "compartment";
   else
-    DefaultCompartment = mpModel->getCompartments()[0]->getObjectName();
+    DefaultCompartment = mpModel->getCompartments()[0].getObjectName();
 
   // We try to find a reaction compartment. Note, it is not possible to use
   // getCompartment as writeToChemEq may fail;
@@ -315,9 +315,9 @@ bool CChemEqInterface::loadFromChemEq(const CChemEq & ce)
 
   for (i = 0; i < imax; ++i)
     {
-      mSubstrateNames[i] = (*elements)[i]->getMetabolite()->getObjectName();
-      mSubstrateMult[i] = (*elements)[i]->getMultiplicity();
-      mSubstrateCompartments[i] = (*elements)[i]->getMetabolite()->getCompartment()->getObjectName();
+      mSubstrateNames[i] = (*elements)[i].getMetabolite()->getObjectName();
+      mSubstrateMult[i] = (*elements)[i].getMultiplicity();
+      mSubstrateCompartments[i] = (*elements)[i].getMetabolite()->getCompartment()->getObjectName();
     }
 
   elements = &ce.getProducts();
@@ -328,9 +328,9 @@ bool CChemEqInterface::loadFromChemEq(const CChemEq & ce)
 
   for (i = 0; i < imax; ++i)
     {
-      mProductNames[i] = (*elements)[i]->getMetabolite()->getObjectName();
-      mProductMult[i] = (*elements)[i]->getMultiplicity();
-      mProductCompartments[i] = (*elements)[i]->getMetabolite()->getCompartment()->getObjectName();
+      mProductNames[i] = (*elements)[i].getMetabolite()->getObjectName();
+      mProductMult[i] = (*elements)[i].getMultiplicity();
+      mProductCompartments[i] = (*elements)[i].getMetabolite()->getCompartment()->getObjectName();
     }
 
   elements = &ce.getModifiers();
@@ -341,9 +341,9 @@ bool CChemEqInterface::loadFromChemEq(const CChemEq & ce)
 
   for (i = 0; i < imax; ++i)
     {
-      mModifierNames[i] = (*elements)[i]->getMetabolite()->getObjectName();
-      mModifierMult[i] = (*elements)[i]->getMultiplicity();
-      mModifierCompartments[i] = (*elements)[i]->getMetabolite()->getCompartment()->getObjectName();
+      mModifierNames[i] = (*elements)[i].getMetabolite()->getObjectName();
+      mModifierMult[i] = (*elements)[i].getMultiplicity();
+      mModifierCompartments[i] = (*elements)[i].getMetabolite()->getCompartment()->getObjectName();
     }
 
   mReversibility = ce.getReversibility();
@@ -772,9 +772,9 @@ const CCompartment * CChemEqInterface::getCompartment() const
       const CMetab * metab = NULL;
 
       if (ce.getSubstrates().size())
-        metab = ce.getSubstrates()[0]->getMetabolite();
+        metab = ce.getSubstrates()[0].getMetabolite();
       else if (ce.getProducts().size())
-        metab = ce.getProducts()[0]->getMetabolite();
+        metab = ce.getProducts()[0].getMetabolite();
 
       if (metab)
         return metab->getCompartment();

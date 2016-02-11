@@ -115,7 +115,7 @@ CModel::CModel(CCopasiContainer* pParent):
   size_t i, imax = mSteps.size();
 
   for (i = 0; i < imax; i++)
-    mSteps[i]->compile(/*mCompartments*/);
+    mSteps[i].compile(/*mCompartments*/);
 
   initializeMetabolites();
 
@@ -175,7 +175,7 @@ CModel::CModel(CCopasiContainer* pParent):
 //   size_t i, imax = mSteps.size();
 //
 //   for (i = 0; i < imax; i++)
-//     mSteps[i]->compile(/*mCompartments*/);
+//     mSteps[i].compile(/*mCompartments*/);
 //
 //   initializeMetabolites();
 //
@@ -307,10 +307,9 @@ C_INT32 CModel::load(CReadConfig & configBuffer)
   for (i = 0; i < pDataModel->pOldMetabolites->size(); i++)
     {
       pMetabolite = new CMetab;
-      mCompartments[(*pDataModel->pOldMetabolites)[i]->getIndex()]->
-      addMetabolite(pMetabolite);
+      mCompartments[pDataModel->pOldMetabolites->operator[](i).getIndex()].addMetabolite(pMetabolite);
 
-      (*pMetabolite) = *(*pDataModel->pOldMetabolites)[i];
+      (*pMetabolite) = pDataModel->pOldMetabolites->operator[](i);
     }
 
   initializeMetabolites();
@@ -325,7 +324,7 @@ C_INT32 CModel::load(CReadConfig & configBuffer)
   mSteps.load(configBuffer, Size); // slow
 
   for (i = 0; i < mSteps.size(); i++)
-    mSteps[i]->compile(/*mCompartments*/);
+    mSteps[i].compile(/*mCompartments*/);
 
   pDataModel->pOldMetabolites->cleanup();
 
@@ -427,7 +426,7 @@ bool CModel::compile()
 
     for (; itSpecies != endSpecies; ++itSpecies)
       {
-        (*itSpecies)->compileIsInitialConcentrationChangeAllowed();
+        itSpecies->compileIsInitialConcentrationChangeAllowed();
       }
   }
 
@@ -575,25 +574,25 @@ void CModel::buildStoi()
 
       // Since we are stepping through the reactions we can check whether
       // the kinetic functions are usable.
-      if (!(*itStep)->getFunction()->isUsable())
+      if (!itStep->getFunction()->isUsable())
         CCopasiMessage(CCopasiMessage::ERROR, MCReaction + 11,
-                       (*itStep)->getObjectName().c_str(),
-                       (*itStep)->getFunction()->getObjectName().c_str());
+                       itStep->getObjectName().c_str(),
+                       itStep->getFunction()->getObjectName().c_str());
 
-      const CCopasiVector< CChemEqElement > & Balance = (*itStep)->getChemEq().getBalances();
+      const CCopasiVector< CChemEqElement > & Balance = itStep->getChemEq().getBalances();
       CCopasiVector< CChemEqElement >::const_iterator itBalance = Balance.begin();
       CCopasiVector< CChemEqElement >::const_iterator endBalance = Balance.end();
 
       for (; itBalance != endBalance; ++itBalance)
         {
-          const std::string & key = (*itBalance)->getMetaboliteKey();
+          const std::string & key = itBalance->getMetaboliteKey();
 
-          for (pRow = pCol, itMetab = mMetabolitesX.begin() + mNumMetabolitesODE;
+          for (pRow = pCol, itMetab = CCopasiVector< CMetab >::const_iterator(mMetabolitesX.begin()) + mNumMetabolitesODE;
                pRow < pRowEnd;
                pRow += numCols, ++itMetab)
-            if ((*itMetab)->getKey() == key)
+            if (itMetab->getKey() == key)
               {
-                *pRow = (*itBalance)->getMultiplicity();
+                *pRow = itBalance->getMultiplicity();
                 break;
               }
         }
@@ -667,16 +666,16 @@ bool CModel::handleUnusedMetabolites()
     {
       if (itUnused != endUnused && i == *itUnused)
         {
-          (*itMetab)->setUsed(false);
-          *itUnusedMetabolites = (*itMetab);
+          itMetab->setUsed(false);
+          *itUnusedMetabolites = itMetab;
 
           ++itUnusedMetabolites;
           ++itUnused;
         }
       else
         {
-          (*itMetab)->setUsed(true);
-          *itUsedMetabolites = (*itMetab);
+          itMetab->setUsed(true);
+          *itUsedMetabolites = itMetab;
           ++itUsedMetabolites;
 
           // The row needs to be copied to the new stoichiometry matrix
@@ -694,21 +693,21 @@ bool CModel::handleUnusedMetabolites()
   std::vector< CMetab * >::iterator itMetabolitesEnd = UsedMetabolites.end();
 
   for (; itUsedMetabolites != itMetabolitesEnd; ++itUsedMetabolites, ++itMetab)
-    *itMetab = *itUsedMetabolites;
+    itMetab = *itUsedMetabolites;
 
   // Handle metabolites determined by assignment and marked as fixed
   // This is just a shift of NumUnused.
   endMetab = itMetab + mNumMetabolitesAssignment + mNumMetabolitesUnused;
 
   for (; itMetab != endMetab; ++itMetab)
-    *itMetab = *(itMetab + NumUnused);
+    itMetab = itMetab + NumUnused;
 
   // Handle newly marked unused metabolites
   itUnusedMetabolites = UnusedMetabolites.begin();
   itMetabolitesEnd = UnusedMetabolites.end();
 
   for (; itUnusedMetabolites != itMetabolitesEnd; ++itUnusedMetabolites, ++itMetab)
-    *itMetab = *itUnusedMetabolites;
+    itMetab = *itUnusedMetabolites;
 
   // Now its time to update the number of metabolites determined by reactions
   // and the one being unused.
@@ -737,7 +736,7 @@ void CModel::buildRedStoi()
 
   for (; ppMetab != ppMetabEnd; ++ppMetab, ++itMetabX)
     {
-      *ppMetab = *itMetabX;
+      *ppMetab = itMetabX;
     }
 
   // Apply the pivot on the temporary copy
@@ -749,7 +748,7 @@ void CModel::buildRedStoi()
 
   for (; ppMetab != ppMetabEnd; ++ppMetab, ++itMetabX)
     {
-      *itMetabX = *ppMetab;
+      itMetabX = *ppMetab;
     }
 
   return;
@@ -761,7 +760,7 @@ void CModel::updateMatrixAnnotations()
   mpStoiAnnotation->resize();
   mpRedStoiAnnotation->resize();
 
-  CCopasiVector< CMetab >::const_iterator it = mMetabolitesX.begin() + mNumMetabolitesODE;
+  CCopasiVector< CMetab >::const_iterator it = CCopasiVector< CMetab >::const_iterator(mMetabolitesX.begin()) + mNumMetabolitesODE;
   CCopasiVector< CMetab >::const_iterator end = it + mNumMetabolitesReactionIndependent;
 
   CCopasiObjectName CN;
@@ -769,7 +768,7 @@ void CModel::updateMatrixAnnotations()
 
   for (j = 0; it != end; ++it, j++)
     {
-      CN = (*it)->getCN();
+      CN = it->getCN();
 
       mpStoiAnnotation->setAnnotationCN(0, j, CN);
       mpLinkMatrixAnnotation->setAnnotationCN(0, j, CN);
@@ -781,7 +780,7 @@ void CModel::updateMatrixAnnotations()
 
   for (; it != end; ++it, j++)
     {
-      CN = (*it)->getCN();
+      CN = it->getCN();
 
       mpStoiAnnotation->setAnnotationCN(0, j, CN);
       mpLinkMatrixAnnotation->setAnnotationCN(0, j, CN);
@@ -794,7 +793,7 @@ void CModel::updateMoietyValues()
   CCopasiVector< CMoiety >::iterator end = mMoieties.end();
 
   for (; it != end; ++it)
-    (*it)->refreshInitialValue();
+    it->refreshInitialValue();
 }
 
 void CModel::buildMoieties()
@@ -814,14 +813,14 @@ void CModel::buildMoieties()
 
   for (; itDependent != endDependent; ++itDependent)
     {
-      pMoiety = new CMoiety((*itDependent)->getObjectName());
-      pMoiety->add(1.0, *itDependent);
+      pMoiety = new CMoiety(itDependent->getObjectName());
+      pMoiety->add(1.0, itDependent);
 
       if (pFactor != NULL)
         {
           for (itIndependent = mMetabolitesX.begin() + mNumMetabolitesODE; itIndependent != endIndependent; ++itIndependent, ++pFactor)
             if (fabs(*pFactor) > std::numeric_limits< C_FLOAT64 >::epsilon())
-              pMoiety->add(- *pFactor, *itIndependent);
+              pMoiety->add(- *pFactor, itIndependent);
         }
 
       mMoieties.add(pMoiety, true);
@@ -852,34 +851,34 @@ void CModel::initializeMetabolites()
 
   for (; itCompartment != endCompartment; ++itCompartment)
     {
-      itMetab = (*itCompartment)->getMetabolites().begin();
-      endMetab = (*itCompartment)->getMetabolites().end();
+      itMetab = itCompartment->getMetabolites().begin();
+      endMetab = itCompartment->getMetabolites().end();
 
       for (; itMetab != endMetab; ++itMetab)
         {
           // Reset all moieties
-          (*itMetab)->setDependsOnMoiety(NULL);
+          itMetab->setDependsOnMoiety(NULL);
 
-          switch ((*itMetab)->getStatus())
+          switch (itMetab->getStatus())
             {
               case FIXED:
-                FixedMetabs.push_back(*itMetab);
-                (*itMetab)->setUsed(false);
+                FixedMetabs.push_back(itMetab);
+                itMetab->setUsed(false);
                 break;
 
               case ASSIGNMENT:
-                AssignmentMetabs.push_back(*itMetab);
-                (*itMetab)->setUsed(true);
+                AssignmentMetabs.push_back(itMetab);
+                itMetab->setUsed(true);
                 break;
 
               case ODE:
-                ODEMetabs.push_back(*itMetab);
-                (*itMetab)->setUsed(true);
+                ODEMetabs.push_back(itMetab);
+                itMetab->setUsed(true);
                 break;
 
               case REACTIONS:
-                ReactionMetabs.push_back(*itMetab);
-                (*itMetab)->setUsed(true);
+                ReactionMetabs.push_back(itMetab);
+                itMetab->setUsed(true);
                 break;
 
               default:
@@ -900,25 +899,25 @@ void CModel::initializeMetabolites()
   std::vector< CMetab *>::const_iterator endSorted = ODEMetabs.end();
 
   for (; itSorted != endSorted; ++itSorted, ++itMetab)
-    *itMetab = *itSorted;
+    itMetab = *itSorted;
 
   itSorted = ReactionMetabs.begin();
   endSorted = ReactionMetabs.end();
 
   for (; itSorted != endSorted; ++itSorted, ++itMetab)
-    *itMetab = *itSorted;
+    itMetab = *itSorted;
 
   itSorted = AssignmentMetabs.begin();
   endSorted = AssignmentMetabs.end();
 
   for (; itSorted != endSorted; ++itSorted, ++itMetab)
-    *itMetab = *itSorted;
+    itMetab = *itSorted;
 
   itSorted = FixedMetabs.begin();
   endSorted = FixedMetabs.end();
 
   for (; itSorted != endSorted; ++itSorted, ++itMetab)
-    *itMetab = *itSorted;
+    itMetab = *itSorted;
 
   mMetabolitesX = mMetabolites;
 }
@@ -1102,9 +1101,9 @@ size_t CModel::findMetabByName(const std::string & name) const
   std::string Name = unQuote(name);
 
   for (i = 0; i < imax; i++, Target++)
-    if (*Target &&
-        ((*Target)->getObjectName() == name ||
-         (*Target)->getObjectName() == Name)) return i;
+    if (Target &&
+        (Target->getObjectName() == name ||
+         Target->getObjectName() == Name)) return i;
 
   return C_INVALID_INDEX;
 }
@@ -1121,7 +1120,7 @@ size_t CModel::findMoiety(const std::string &Target) const
 
   for (i = 0; i < s; i++)
     {
-      name = mMoieties[i]->getObjectName();
+      name = mMoieties[i].getObjectName();
 
       if (name == Target)
         return i;
@@ -1156,20 +1155,20 @@ bool CModel::buildStateTemplate()
   CCopasiVector< CModelValue >::iterator endValue = mValues.end();
 
   for (; itValue != endValue; ++itValue)
-    if ((*itValue)->getStatus() == ODE)
+    if (itValue->getStatus() == ODE)
       {
-        (*itValue)->setUsed(true);
-        *ppEntity++ = *itValue;
+        itValue->setUsed(true);
+        *ppEntity++ = itValue;
       }
 
   CCopasiVector< CCompartment >::iterator itCompartment = mCompartments.begin();
   CCopasiVector< CCompartment >::iterator endCompartment = mCompartments.end();
 
   for (; itCompartment != endCompartment; ++itCompartment)
-    if ((*itCompartment)->getStatus() == ODE)
+    if (itCompartment->getStatus() == ODE)
       {
-        (*itCompartment)->setUsed(true);
-        *ppEntity++ = *itCompartment;
+        itCompartment->setUsed(true);
+        *ppEntity++ = itCompartment;
       }
 
   CCopasiVector< CMetab >::iterator itMetab = mMetabolitesX.begin();
@@ -1177,43 +1176,43 @@ bool CModel::buildStateTemplate()
 
   for (; itMetab != endMetab; ++itMetab)
     {
-      if (!(*itMetab)->isUsed()) break;
+      if (!itMetab->isUsed()) break;
 
-      *ppEntity++ = *itMetab;
+      *ppEntity++ = itMetab;
     }
 
   itCompartment = mCompartments.begin();
 
   for (; itCompartment != endCompartment; ++itCompartment)
-    if ((*itCompartment)->getStatus() == ASSIGNMENT)
+    if (itCompartment->getStatus() == ASSIGNMENT)
       {
-        (*itCompartment)->setUsed(true);
-        *ppEntity++ = *itCompartment;
+        itCompartment->setUsed(true);
+        *ppEntity++ = itCompartment;
       }
 
   itValue = mValues.begin();
 
   for (; itValue != endValue; ++itValue)
-    if ((*itValue)->getStatus() == ASSIGNMENT)
+    if (itValue->getStatus() == ASSIGNMENT)
       {
-        (*itValue)->setUsed(true);
-        *ppEntity++ = *itValue;
+        itValue->setUsed(true);
+        *ppEntity++ = itValue;
       }
 
   for (; itMetab != endMetab; ++itMetab)
-    *ppEntity++ = *itMetab;
+    *ppEntity++ = itMetab;
 
   itCompartment = mCompartments.begin();
 
   for (; itCompartment != endCompartment; ++itCompartment)
-    if ((*itCompartment)->isFixed())
-      *ppEntity++ = *itCompartment;
+    if (itCompartment->isFixed())
+      *ppEntity++ = itCompartment;
 
   itValue = mValues.begin();
 
   for (; itValue != endValue; ++itValue)
-    if ((*itValue)->isFixed())
-      *ppEntity++ = *itValue;
+    if (itValue->isFixed())
+      *ppEntity++ = itValue;
 
   mStateTemplate.reorder(Entities);
   mReorderNeeded = false;
@@ -1229,7 +1228,7 @@ bool CModel::buildStateTemplate()
   CCopasiVector< CReaction >::iterator endReaction = mSteps.end();
 
   for (; itReaction != endReaction; ++itReaction)
-    (*itReaction)->compile();
+    itReaction->compile();
 
   return true;
 }
@@ -1243,19 +1242,19 @@ bool CModel::buildUserOrder()
   CCopasiVector< CMetab >::iterator endMetab = mMetabolites.end();
 
   for (; itMetab != endMetab; ++itMetab)
-    *ppEntity++ = *itMetab;;
+    *ppEntity++ = itMetab;;
 
   CCopasiVector< CCompartment >::iterator itCompartment = mCompartments.begin();
   CCopasiVector< CCompartment >::iterator endCompartment = mCompartments.end();
 
   for (; itCompartment != endCompartment; ++itCompartment)
-    *ppEntity++ = *itCompartment;
+    *ppEntity++ = itCompartment;
 
   CCopasiVector< CModelValue >::iterator itValue = mValues.begin();
   CCopasiVector< CModelValue >::iterator endValue = mValues.end();
 
   for (; itValue != endValue; ++itValue)
-    *ppEntity++ = *itValue;
+    *ppEntity++ = itValue;
 
   mStateTemplate.setUserOrder(UserEntities);
 
@@ -1483,8 +1482,8 @@ bool CModel::setQuantityUnit(const CUnit::QuantityUnit & unitEnum)
   for (i = 0; i < imax; ++i)
     {
       //update particle numbers
-      mMetabolites[i]->setInitialConcentration(mMetabolites[i]->getInitialConcentration());
-      mMetabolites[i]->setConcentration(mMetabolites[i]->getConcentration());
+      mMetabolites[i].setInitialConcentration(mMetabolites[i].getInitialConcentration());
+      mMetabolites[i].setConcentration(mMetabolites[i].getConcentration());
     }
 
   return success;
@@ -1662,14 +1661,14 @@ bool CModel::appendDependentReactions(std::set< const CCopasiObject * > candidat
   CCopasiObject::DataObjectSet::const_iterator endSet;
 
   for (; it != end; ++it)
-    if (candidates.find(*it) == candidates.end())
+    if (candidates.find(it) == candidates.end())
       {
         // Check whether the reaction is already in the list of deleted objects
-        if (candidates.find(*it) == candidates.end())
+        if (candidates.find(it) == candidates.end())
           {
-            if ((*it)->mustBeDeleted(candidates))
+            if (it->mustBeDeleted(candidates))
               {
-                dependents.insert(*it);
+                dependents.insert(it);
               }
           }
       }
@@ -1695,17 +1694,17 @@ bool CModel::appendDependentMetabolites(std::set< const CCopasiObject * > candid
 
   for (; itComp != endComp; ++itComp)
     {
-      it = (*itComp)->getMetabolites().begin();
-      end = (*itComp)->getMetabolites().end();
+      it = itComp->getMetabolites().begin();
+      end = itComp->getMetabolites().end();
 
       for (; it != end; ++it)
         {
           // Check whether the species is already in the list of deleted objects
-          if (candidates.find(*it) == candidates.end())
+          if (candidates.find(it) == candidates.end())
             {
-              if ((*it)->mustBeDeleted(candidates))
+              if (it->mustBeDeleted(candidates))
                 {
-                  dependents.insert(*it);
+                  dependents.insert(it);
                 }
             }
         }
@@ -1730,11 +1729,11 @@ bool CModel::appendDependentCompartments(std::set< const CCopasiObject * > candi
   for (; it != end; ++it)
     {
       // Check whether the compartment is already in the list of deleted objects
-      if (candidates.find(*it) == candidates.end())
+      if (candidates.find(it) == candidates.end())
         {
-          if ((*it)->mustBeDeleted(candidates))
+          if (it->mustBeDeleted(candidates))
             {
-              dependents.insert(*it);
+              dependents.insert(it);
             }
         }
     }
@@ -1758,11 +1757,11 @@ bool CModel::appendDependentModelValues(std::set< const CCopasiObject * > candid
   for (; it != end; ++it)
 
     // Check whether the model value is already in the list of deleted objects
-    if (candidates.find(*it) == candidates.end())
+    if (candidates.find(it) == candidates.end())
       {
-        if ((*it)->mustBeDeleted(candidates))
+        if (it->mustBeDeleted(candidates))
           {
-            dependents.insert(*it);
+            dependents.insert(it);
           }
       }
 
@@ -1785,11 +1784,11 @@ bool CModel::appendDependentEvents(std::set< const CCopasiObject * > candidates,
   for (; it != end; ++it)
 
     // Check whether the model value is already in the list of deleted objects
-    if (candidates.find(*it) == candidates.end())
+    if (candidates.find(it) == candidates.end())
       {
-        if ((*it)->mustBeDeleted(candidates))
+        if (it->mustBeDeleted(candidates))
           {
-            dependents.insert(*it);
+            dependents.insert(it);
           }
       }
 
@@ -1813,12 +1812,12 @@ CMetab* CModel::createMetabolite(const std::string & name,
   else if ((Index = mCompartments.getIndex(compartment)) == C_INVALID_INDEX)
     return NULL;
 
-  if (mCompartments[Index]->getMetabolites().getIndex(name) != C_INVALID_INDEX)
+  if (mCompartments[Index].getMetabolites().getIndex(name) != C_INVALID_INDEX)
     return NULL;
 
   CMetab * pMetab = new CMetab(name);
 
-  if (!mCompartments[Index]->addMetabolite(pMetab))
+  if (!mCompartments[Index].addMetabolite(pMetab))
     {
       delete pMetab;
       return NULL;
@@ -1839,7 +1838,7 @@ CMetab* CModel::createMetabolite(const std::string & name,
 bool CModel::removeMetabolite(const size_t index,
                               const bool & recursive)
 {
-  const CMetab* pMetabolite = getMetabolites()[index];
+  const CMetab* pMetabolite = &getMetabolites()[index];
   return removeMetabolite(pMetabolite, recursive);
 }
 
@@ -1907,7 +1906,7 @@ CCompartment* CModel::createCompartment(const std::string & name,
 bool CModel::removeCompartment(const size_t index,
                                const bool & recursive)
 {
-  const CCompartment * pCompartment = getCompartments()[index];
+  const CCompartment * pCompartment = &getCompartments()[index];
   return removeCompartment(pCompartment, recursive);
 }
 
@@ -1972,7 +1971,7 @@ bool CModel::removeReaction(const std::string & key,
 bool CModel::removeReaction(const size_t index,
                             const bool & recursive)
 {
-  const CReaction * pReaction = getReactions()[index];
+  const CReaction * pReaction = &getReactions()[index];
   return removeReaction(pReaction, recursive);
 }
 
@@ -2076,7 +2075,7 @@ void CModel::removeDependentModelObjects(const std::set<const CCopasiObject*> & 
 bool CModel::removeModelValue(const size_t index,
                               const bool & recursive)
 {
-  const CModelValue * pMV = getModelValues()[index];
+  const CModelValue * pMV = &getModelValues()[index];
   return removeModelValue(pMV, recursive);
 }
 bool CModel::removeModelValue(const std::string & key,
@@ -2132,7 +2131,7 @@ CEvent* CModel::createEvent(const std::string & name)
 bool CModel::removeEvent(const size_t index,
                          const bool & recursive)
 {
-  const CEvent * pEvent = mEvents[index];
+  const CEvent * pEvent = &mEvents[index];
 
   return removeEvent(pEvent, recursive);
 }
@@ -2215,7 +2214,7 @@ CModel::createEventsForTimeseries(CExperiment* experiment/* = NULL*/)
       const CExperiment* theExperiment = NULL;
 
       const CCopasiDataModel* dataModel = getObjectDataModel();
-      const CFitTask* task = dynamic_cast<const CFitTask*>((*dataModel->getTaskList())["Parameter Estimation"]);
+      const CFitTask* task = dynamic_cast<const CFitTask*>(&dataModel->getTaskList()->operator[]("Parameter Estimation"));
 
       if (task == NULL)
         {
@@ -2367,7 +2366,7 @@ CModel::createEventsForTimeseries(CExperiment* experiment/* = NULL*/)
 
   if (!hadEvents) return true;
 
-  CTrajectoryTask* task = dynamic_cast<CTrajectoryTask*>((*getObjectDataModel()->getTaskList())["Time-Course"]);
+  CTrajectoryTask* task = dynamic_cast<CTrajectoryTask*>(&getObjectDataModel()->getTaskList()->operator[]("Time-Course"));
 
   if (task != NULL)
     {
@@ -2413,11 +2412,11 @@ bool CModel::convert2NonReversible()
   size_t i, imax = steps.size();
 
   for (i = 0; i < imax; ++i)
-    if (steps[i]->isReversible())
+    if (steps[i].isReversible())
       {
         std::vector< std::pair< const CCopasiObject * , const CCopasiObject * > > ParameterMap;
 
-        reac0 = steps[i];
+        reac0 = &steps[i];
         rn1 = reac0->getObjectName() + " (forward)";
         rn2 = reac0->getObjectName() + " (backward)";
 
@@ -2469,15 +2468,15 @@ bool CModel::convert2NonReversible()
         imax = reac0->getChemEq().getSubstrates().size();
 
         for (i = 0; i < imax; ++i)
-          reac1->addSubstrate(reac0->getChemEq().getSubstrates()[i]->getMetaboliteKey(),
-                              reac0->getChemEq().getSubstrates()[i]->getMultiplicity());
+          reac1->addSubstrate(reac0->getChemEq().getSubstrates()[i].getMetaboliteKey(),
+                              reac0->getChemEq().getSubstrates()[i].getMultiplicity());
 
         //products
         imax = reac0->getChemEq().getProducts().size();
 
         for (i = 0; i < imax; ++i)
-          reac1->addProduct(reac0->getChemEq().getProducts()[i]->getMetaboliteKey(),
-                            reac0->getChemEq().getProducts()[i]->getMultiplicity());
+          reac1->addProduct(reac0->getChemEq().getProducts()[i].getMetaboliteKey(),
+                            reac0->getChemEq().getProducts()[i].getMultiplicity());
 
         //function
         reac1->setFunction(tmp.first);
@@ -2489,15 +2488,15 @@ bool CModel::convert2NonReversible()
         imax = reac0->getChemEq().getSubstrates().size();
 
         for (i = 0; i < imax; ++i)
-          reac2->addProduct(reac0->getChemEq().getSubstrates()[i]->getMetaboliteKey(),
-                            reac0->getChemEq().getSubstrates()[i]->getMultiplicity());
+          reac2->addProduct(reac0->getChemEq().getSubstrates()[i].getMetaboliteKey(),
+                            reac0->getChemEq().getSubstrates()[i].getMultiplicity());
 
         //products -> substrates
         imax = reac0->getChemEq().getProducts().size();
 
         for (i = 0; i < imax; ++i)
-          reac2->addSubstrate(reac0->getChemEq().getProducts()[i]->getMetaboliteKey(),
-                              reac0->getChemEq().getProducts()[i]->getMultiplicity());
+          reac2->addSubstrate(reac0->getChemEq().getProducts()[i].getMetaboliteKey(),
+                              reac0->getChemEq().getProducts()[i].getMultiplicity());
 
         //function
         reac2->setFunction(tmp.second);
@@ -2654,7 +2653,7 @@ bool CModel::convert2NonReversible()
 
             for (; itComp != endComp; ++itComp)
               {
-                const CExpression * pExpression = (*itComp)->getExpressionPtr();
+                const CExpression * pExpression = itComp->getExpressionPtr();
 
                 if (pExpression != NULL)
                   {
@@ -2662,13 +2661,13 @@ bool CModel::convert2NonReversible()
 
                     if (Dependencies.find(itParameter->first) != Dependencies.end())
                       {
-                        Infix = (*itComp)->getExpression();
+                        Infix = itComp->getExpression();
                         stringReplace(Infix, Old, New);
-                        (*itComp)->setExpression(Infix);
+                        itComp->setExpression(Infix);
                       }
                   }
 
-                pExpression = (*itComp)->getInitialExpressionPtr();
+                pExpression = itComp->getInitialExpressionPtr();
 
                 if (pExpression != NULL)
                   {
@@ -2676,9 +2675,9 @@ bool CModel::convert2NonReversible()
 
                     if (Dependencies.find(itParameter->first) != Dependencies.end())
                       {
-                        Infix = (*itComp)->getInitialExpression();
+                        Infix = itComp->getInitialExpression();
                         stringReplace(Infix, Old, New);
-                        (*itComp)->setInitialExpression(Infix);
+                        itComp->setInitialExpression(Infix);
                       }
                   }
               }
@@ -2689,7 +2688,7 @@ bool CModel::convert2NonReversible()
 
             for (; itMetab != endMetab; ++itMetab)
               {
-                const CExpression * pExpression = (*itMetab)->getExpressionPtr();
+                const CExpression * pExpression = itMetab->getExpressionPtr();
 
                 if (pExpression != NULL)
                   {
@@ -2697,13 +2696,13 @@ bool CModel::convert2NonReversible()
 
                     if (Dependencies.find(itParameter->first) != Dependencies.end())
                       {
-                        Infix = (*itMetab)->getExpression();
+                        Infix = itMetab->getExpression();
                         stringReplace(Infix, Old, New);
-                        (*itMetab)->setExpression(Infix);
+                        itMetab->setExpression(Infix);
                       }
                   }
 
-                pExpression = (*itMetab)->getInitialExpressionPtr();
+                pExpression = itMetab->getInitialExpressionPtr();
 
                 if (pExpression != NULL)
                   {
@@ -2711,9 +2710,9 @@ bool CModel::convert2NonReversible()
 
                     if (Dependencies.find(itParameter->first) != Dependencies.end())
                       {
-                        Infix = (*itMetab)->getInitialExpression();
+                        Infix = itMetab->getInitialExpression();
                         stringReplace(Infix, Old, New);
-                        (*itMetab)->setInitialExpression(Infix);
+                        itMetab->setInitialExpression(Infix);
                       }
                   }
               }
@@ -2724,7 +2723,7 @@ bool CModel::convert2NonReversible()
 
             for (; itValue != endValue; ++itValue)
               {
-                const CExpression * pExpression = (*itValue)->getExpressionPtr();
+                const CExpression * pExpression = itValue->getExpressionPtr();
 
                 if (pExpression != NULL)
                   {
@@ -2732,13 +2731,13 @@ bool CModel::convert2NonReversible()
 
                     if (Dependencies.find(itParameter->first) != Dependencies.end())
                       {
-                        Infix = (*itValue)->getExpression();
+                        Infix = itValue->getExpression();
                         stringReplace(Infix, Old, New);
-                        (*itValue)->setExpression(Infix);
+                        itValue->setExpression(Infix);
                       }
                   }
 
-                pExpression = (*itValue)->getInitialExpressionPtr();
+                pExpression = itValue->getInitialExpressionPtr();
 
                 if (pExpression != NULL)
                   {
@@ -2746,9 +2745,9 @@ bool CModel::convert2NonReversible()
 
                     if (Dependencies.find(itParameter->first) != Dependencies.end())
                       {
-                        Infix = (*itValue)->getInitialExpression();
+                        Infix = itValue->getInitialExpression();
                         stringReplace(Infix, Old, New);
-                        (*itValue)->setInitialExpression(Infix);
+                        itValue->setInitialExpression(Infix);
                       }
                   }
               }
@@ -2759,7 +2758,7 @@ bool CModel::convert2NonReversible()
 
             for (; itEvent != endEvent; ++itEvent)
               {
-                const CExpression * pExpression = (*itEvent)->getTriggerExpressionPtr();
+                const CExpression * pExpression = itEvent->getTriggerExpressionPtr();
 
                 if (pExpression != NULL)
                   {
@@ -2767,13 +2766,13 @@ bool CModel::convert2NonReversible()
 
                     if (Dependencies.find(itParameter->first) != Dependencies.end())
                       {
-                        Infix = (*itEvent)->getTriggerExpression();
+                        Infix = itEvent->getTriggerExpression();
                         stringReplace(Infix, Old, New);
-                        (*itEvent)->setTriggerExpression(Infix);
+                        itEvent->setTriggerExpression(Infix);
                       }
                   }
 
-                pExpression = (*itEvent)->getDelayExpressionPtr();
+                pExpression = itEvent->getDelayExpressionPtr();
 
                 if (pExpression != NULL)
                   {
@@ -2781,18 +2780,18 @@ bool CModel::convert2NonReversible()
 
                     if (Dependencies.find(itParameter->first) != Dependencies.end())
                       {
-                        Infix = (*itEvent)->getDelayExpression();
+                        Infix = itEvent->getDelayExpression();
                         stringReplace(Infix, Old, New);
-                        (*itEvent)->setDelayExpression(Infix);
+                        itEvent->setDelayExpression(Infix);
                       }
                   }
 
-                CCopasiVector< CEventAssignment >::iterator itAssignment = (*itEvent)->getAssignments().begin();
-                CCopasiVector< CEventAssignment >::iterator endAssignment = (*itEvent)->getAssignments().end();
+                CCopasiVector< CEventAssignment >::iterator itAssignment = itEvent->getAssignments().begin();
+                CCopasiVector< CEventAssignment >::iterator endAssignment = itEvent->getAssignments().end();
 
                 for (; itAssignment != endAssignment; ++itAssignment)
                   {
-                    pExpression = (*itAssignment)->getExpressionPtr();
+                    pExpression = itAssignment->getExpressionPtr();
 
                     if (pExpression != NULL)
                       {
@@ -2800,9 +2799,9 @@ bool CModel::convert2NonReversible()
 
                         if (Dependencies.find(itParameter->first) != Dependencies.end())
                           {
-                            Infix = (*itAssignment)->getExpression();
+                            Infix = itAssignment->getExpression();
                             stringReplace(Infix, Old, New);
-                            (*itAssignment)->setExpression(Infix);
+                            itAssignment->setExpression(Infix);
                           }
                       }
                   }
@@ -2895,11 +2894,11 @@ bool CModel::convert2NonReversible()
 
             for (; itAssignment != endAssignment; ++itAssignment)
               {
-                Infix = (*itAssignment)->getExpression();
+                Infix = itAssignment->getExpression();
 
                 if (stringReplace(Infix, Old, New))
                   {
-                    (*itAssignment)->setExpression(Infix);
+                    itAssignment->setExpression(Infix);
                   }
               }
           }
@@ -2987,11 +2986,11 @@ bool CModel::convert2NonReversible()
 
             for (; itAssignment != endAssignment; ++itAssignment)
               {
-                Infix = (*itAssignment)->getExpression();
+                Infix = itAssignment->getExpression();
 
                 if (stringReplace(Infix, Old, New))
                   {
-                    (*itAssignment)->setExpression(Infix);
+                    itAssignment->setExpression(Infix);
                   }
               }
           }
@@ -3093,7 +3092,7 @@ bool CModel::hasReversibleReaction() const
 {
   size_t i, imax = mSteps.size();
 
-  for (i = 0; i < imax; ++i) if (mSteps[i]->isReversible()) return true;
+  for (i = 0; i < imax; ++i) if (mSteps[i].isReversible()) return true;
 
   return false;
 }
@@ -3109,10 +3108,10 @@ std::string CModel::suitableForStochasticSimulation() const
   for (i = 0; i < reactSize; i++) // for every reaction
     {
       // TEST getCompartmentNumber() == 1
-      //if (mSteps[i]->getCompartmentNumber() != 1) return - 1;
+      //if (mSteps[i].getCompartmentNumber() != 1) return - 1;
 
       // TEST isReversible() == 0
-      if (mSteps[i]->isReversible() != 0)
+      if (mSteps[i].isReversible() != 0)
         return "At least one reaction is reversible. That means stochastic simulation is not possible. \nYou can use \"Tools|Convert to irreversible\" which will split the reversible reactions \n into two irreversible reactions. However you should check the kinetics afterwards.";
 
       // TEST integer stoichiometry
@@ -3131,7 +3130,7 @@ std::string CModel::suitableForStochasticSimulation() const
 
   for (i = 0; i < mMetabolites.size(); ++i)
     {
-      if (mMetabolites[i]->getInitialValue() > std::numeric_limits< C_INT64 >::max())
+      if (mMetabolites[i].getInitialValue() > std::numeric_limits< C_INT64 >::max())
         return "At least one particle number in the initial state is too big.";
     }
 
@@ -3289,10 +3288,10 @@ std::vector< const CEvaluationTree * > CModel::getTreesWithDiscontinuities() con
 
   for (; itReaction != endReaction; ++itReaction)
     {
-      if ((*itReaction)->getFunction() &&
-          (*itReaction)->getFunction()->hasDiscontinuity())
+      if (itReaction->getFunction() &&
+          itReaction->getFunction()->hasDiscontinuity())
         {
-          TreesWithDiscontinuities.push_back((*itReaction)->getFunction());
+          TreesWithDiscontinuities.push_back(itReaction->getFunction());
         }
     }
 
@@ -3302,10 +3301,10 @@ std::vector< const CEvaluationTree * > CModel::getTreesWithDiscontinuities() con
 
   for (; itEvent != endEvent; ++itEvent)
     {
-      if ((*itEvent)->getTriggerExpressionPtr() &&
-          (*itEvent)->getTriggerExpressionPtr()->hasDiscontinuity())
+      if (itEvent->getTriggerExpressionPtr() &&
+          itEvent->getTriggerExpressionPtr()->hasDiscontinuity())
         {
-          TreesWithDiscontinuities.push_back((*itEvent)->getTriggerExpressionPtr());
+          TreesWithDiscontinuities.push_back(itEvent->getTriggerExpressionPtr());
         }
     }
 
@@ -3323,7 +3322,7 @@ bool CModel::compileEvents()
 
   for (; it != end; ++ it)
     {
-      success &= (*it)->compile(ListOfContainer);
+      success &= it->compile(ListOfContainer);
     }
 
   return success;
@@ -3444,7 +3443,7 @@ std::string CModel::printParameterOverview()
       oss << "Initial volumes:\n\n";
 
       for (i = 0; i < imax; ++i)
-        oss << comps[i]->getObjectName() << " \t" << comps[i]->getInitialValue()
+        oss << comps[i].getObjectName() << " \t" << comps[i].getInitialValue()
             << " " << model->getVolumeUnitsDisplayString() << "\n";
 
       oss << "\n";
@@ -3459,8 +3458,8 @@ std::string CModel::printParameterOverview()
       oss << "Initial concentrations:\n\n";
 
       for (i = 0; i < imax; ++i)
-        oss << CMetabNameInterface::getDisplayName(model, *metabs[i], false) << " \t"
-            << metabs[i]->getInitialConcentration() << " "
+        oss << CMetabNameInterface::getDisplayName(model, metabs[i], false) << " \t"
+            << metabs[i].getInitialConcentration() << " "
             << model->getConcentrationUnitsDisplayString() << "\n";
 
       oss << "\n";
@@ -3475,8 +3474,8 @@ std::string CModel::printParameterOverview()
       oss << "Initial values of global quantities:\n\n";
 
       for (i = 0; i < imax; ++i)
-        oss << params[i]->getObjectName() << " \t"
-            << params[i]->getInitialValue() << "\n";
+        oss << params[i].getObjectName() << " \t"
+            << params[i].getInitialValue() << "\n";
 
       oss << "\n";
     }
@@ -3488,11 +3487,11 @@ std::string CModel::printParameterOverview()
   if (imax)
     {
       oss << "Reaction parameters:\n\n";
-      CReaction* reac;
+      const CReaction* reac;
 
       for (i = 0; i < imax; ++i)
         {
-          reac = reacs[i];
+          reac = &reacs[i];
           oss << reac->getObjectName() << "\n";
 
           //calculate units
@@ -3828,17 +3827,16 @@ CCopasiObject::DataObjectSet CModel::getUnitSymbolUsage(std::string symbol)
   DataObjectSet usages;
 
   //Is it used in the Model Values?
-  CCopasiVector< CModelValue >::const_iterator it = getModelValues().begin(),
-                                               end = getModelValues().end();
-
+  CCopasiVector< CModelValue >::const_iterator it = getModelValues().begin();
+  CCopasiVector< CModelValue >::const_iterator end = getModelValues().end();
   CUnit unit;
 
   for (; it != end; ++it)
     {
-      unit.setExpression((*it)->getUnitExpression(), getAvogadro());
+      unit.setExpression(it->getUnitExpression(), getAvogadro());
 
       if (unit.getUsedSymbols().count(symbol))
-        usages.insert(*it);
+        usages.insert(it);
     }
 
   //Is it used for any of the default model units?
@@ -3856,12 +3854,12 @@ CCopasiObject::DataObjectSet CModel::getUnitSymbolUsage(std::string symbol)
 void CModel::changeUnitExpressionSymbols(std::string oldSymbol, std::string newSymbol)
 {
   //Model Values
-  CCopasiVector< CModelValue >::const_iterator it = getModelValues().begin(),
-                                               end = getModelValues().end();
+  CCopasiVector< CModelValue >::iterator it = getModelValues().begin();
+  CCopasiVector< CModelValue >::iterator end = getModelValues().end();
 
   for (; it != end; ++it)
     {
-      (*it)->setUnitExpression(CUnit::replaceSymbol((*it)->getUnitExpression(), oldSymbol, newSymbol));
+      it->setUnitExpression(CUnit::replaceSymbol(it->getUnitExpression(), oldSymbol, newSymbol));
     }
 
   mpVolumeUnit->setExpression(CUnit::replaceSymbol(mpVolumeUnit->getExpression(), oldSymbol, newSymbol), getAvogadro());

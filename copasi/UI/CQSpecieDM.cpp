@@ -66,7 +66,7 @@ const std::vector< unsigned C_INT32 >& CQSpecieDM::getItemToType()
 
 int CQSpecieDM::rowCount(const QModelIndex&) const
 {
-  return (int)(*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getMetabolites().size() + 1;
+  return CCopasiRootContainer::getDatamodelList()->operator[](0).getModel()->getMetabolites().size() + 1;
 }
 
 int CQSpecieDM::columnCount(const QModelIndex&) const
@@ -96,7 +96,7 @@ Qt::ItemFlags CQSpecieDM::flags(const QModelIndex &index) const
     }
   else if (index.column() == COL_ICONCENTRATION)
     {
-      mpSpecies = (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getMetabolites()[index.row()];
+      mpSpecies = &CCopasiRootContainer::getDatamodelList()->operator[](0).getModel()->getMetabolites()[index.row()];
 
       if (this->index(index.row(), COL_TYPE_SPECIES).data().toString() == QString(FROM_UTF8(CModelEntity::StatusName[CModelEntity::ASSIGNMENT]))
           || !(this->index(index.row(), COL_IEXPRESSION_SPECIES).data().toString().isEmpty()))
@@ -147,10 +147,10 @@ QVariant CQSpecieDM::data(const QModelIndex &index, int role) const
               case COL_COMPARTMENT:
               {
                 const CCopasiVector < CCompartment > & compartments =
-                  (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getCompartments();
+                  CCopasiRootContainer::getDatamodelList()->operator[](0).getModel()->getCompartments();
 
                 if (compartments.size())
-                  return QVariant(QString(FROM_UTF8(compartments[0]->getObjectName())));
+                  return QVariant(QString(FROM_UTF8(compartments[0].getObjectName())));
                 else
                   return QVariant(QString(""));
               }
@@ -180,7 +180,7 @@ QVariant CQSpecieDM::data(const QModelIndex &index, int role) const
         }
       else
         {
-          mpSpecies = (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getMetabolites()[index.row()];
+          mpSpecies = &CCopasiRootContainer::getDatamodelList()->operator[](0).getModel()->getMetabolites()[index.row()];
 
           switch (index.column())
             {
@@ -263,7 +263,7 @@ QVariant CQSpecieDM::headerData(int section, Qt::Orientation orientation,
 
   if (orientation == Qt::Horizontal)
     {
-      const CModel * pModel = (*CCopasiRootContainer::getDatamodelList())[0]->getModel();
+      const CModel * pModel = CCopasiRootContainer::getDatamodelList()->operator[](0).getModel();
 
       if (pModel == NULL) return QVariant();
 
@@ -389,7 +389,7 @@ bool CQSpecieDM::removeRows(int position, int rows)
 
   beginRemoveRows(QModelIndex(), position, position + rows - 1);
 
-  CModel * pModel = (*CCopasiRootContainer::getDatamodelList())[0]->getModel();
+  CModel * pModel = CCopasiRootContainer::getDatamodelList()->operator[](0).getModel();
 
   std::vector< std::string > DeletedKeys;
   DeletedKeys.resize(rows);
@@ -401,7 +401,7 @@ bool CQSpecieDM::removeRows(int position, int rows)
 
   for (itDeletedKey = DeletedKeys.begin(); itDeletedKey != endDeletedKey; ++itDeletedKey, ++itRow)
     {
-      *itDeletedKey = (*itRow)->getKey();
+      *itDeletedKey = itRow->getKey();
     }
 
   for (itDeletedKey = DeletedKeys.begin(); itDeletedKey != endDeletedKey; ++itDeletedKey)
@@ -458,7 +458,7 @@ bool CQSpecieDM::specieDataChange(const QModelIndex &index, const QVariant &valu
     }
   else
     {
-      mpSpecies = pModel->getMetabolites()[index.row()];
+      mpSpecies = &pModel->getMetabolites()[index.row()];
     }
 
   const CCompartment * pCompartment = NULL;
@@ -486,7 +486,7 @@ bool CQSpecieDM::specieDataChange(const QModelIndex &index, const QVariant &valu
         {
           std::string CompartmentToRemove = mpSpecies->getCompartment()->getObjectName();
 
-          if (!(pModel->getCompartments()[Compartment]->addMetabolite(mpSpecies)))
+          if (!(pModel->getCompartments()[Compartment].addMetabolite(mpSpecies)))
             {
               QString msg;
               msg = "Unable to move species '" + FROM_UTF8(mpSpecies->getObjectName()) + "'\n"
@@ -501,7 +501,7 @@ bool CQSpecieDM::specieDataChange(const QModelIndex &index, const QVariant &valu
             }
           else
             {
-              pModel->getCompartments()[CompartmentToRemove]->getMetabolites().remove(mpSpecies->getObjectName());
+              pModel->getCompartments()[CompartmentToRemove].getMetabolites().remove(mpSpecies->getObjectName());
               pModel->setCompileFlag();
               pModel->initializeMetabolites();
 
@@ -640,7 +640,7 @@ void CQSpecieDM::deleteSpecieRow(UndoSpeciesData *pSpecieData)
 
   if (index == C_INVALID_INDEX) return;
 
-  CCompartment* pComp = pModel->getCompartments()[index];
+  CCompartment* pComp = &pModel->getCompartments()[index];
 
   if (pComp == NULL) return;
 
@@ -681,8 +681,8 @@ bool CQSpecieDM::removeSpecieRows(QModelIndexList rows, const QModelIndex&)
 
   for (i = rows.begin(); i != rows.end(); ++i)
     {
-      if (!isDefaultRow(*i) && pModel->getMetabolites()[(*i).row()])
-        pSpecies.append(pModel->getMetabolites()[(*i).row()]);
+      if (!isDefaultRow(*i) && &pModel->getMetabolites()[i->row()])
+        pSpecies.append(&pModel->getMetabolites()[i->row()]);
     }
 
   QList <CMetab *>::const_iterator j;

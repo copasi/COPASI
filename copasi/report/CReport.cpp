@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -81,6 +81,9 @@ void CReport::cleanup()
 }
 
 CReportDefinition* CReport::getReportDefinition()
+{return mpReportDef;}
+
+const CReportDefinition* CReport::getReportDefinition() const
 {return mpReportDef;}
 
 void CReport::setReportDefinition(CReportDefinition* reportDef)

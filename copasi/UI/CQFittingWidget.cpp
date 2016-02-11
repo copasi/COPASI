@@ -1,16 +1,16 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-// and The University of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2005 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc. and EML Research, gGmbH. 
-// All rights reserved. 
+// Copyright (C) 2005 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 #include "CQFittingWidget.h"
 
@@ -215,7 +215,7 @@ bool CQFittingWidget::saveTask()
 
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
 
-  if (mChanged)(*CCopasiRootContainer::getDatamodelList())[0]->changed();
+  if (mChanged) CCopasiRootContainer::getDatamodelList()->operator[](0).changed();
 
   mChanged = false;
   return true;
@@ -315,7 +315,7 @@ bool CQFittingWidget::taskFinishedEvent()
 
   for (size_t i = mnParamterSetsBeforeRun; i < finalCount; ++i)
     {
-      protectedNotify(ListViews::MODELPARAMETERSET, ListViews::ADD, pTask->getObjectDataModel()->getModel()->getModelParameterSets()[i]->getKey());
+      protectedNotify(ListViews::MODELPARAMETERSET, ListViews::ADD, pTask->getObjectDataModel()->getModel()->getModelParameterSets()[i].getKey());
     }
 
   return true;
@@ -341,7 +341,6 @@ void CQFittingWidget::slotPageIndexChange(int currentIndex)
   else
     mpCurrentList = mpConstraints;
 }
-
 
 void CQFittingWidget::slotPageChange(QWidget * currentPage)
 {

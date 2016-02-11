@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -172,7 +172,7 @@ const CCopasiVector<CLColorDefinition>* CLRenderInformationBase::getListOfColorD
  */
 CLColorDefinition* CLRenderInformationBase::getColorDefinition(size_t index)
 {
-  return (index < this->mListOfColorDefinitions.size()) ? this->mListOfColorDefinitions[index] : NULL;
+  return (index < this->mListOfColorDefinitions.size()) ? &this->mListOfColorDefinitions[index] : NULL;
 }
 
 /**
@@ -181,7 +181,7 @@ CLColorDefinition* CLRenderInformationBase::getColorDefinition(size_t index)
  */
 const CLColorDefinition* CLRenderInformationBase::getColorDefinition(size_t index) const
 {
-  return (index < this->mListOfColorDefinitions.size()) ? this->mListOfColorDefinitions[index] : NULL;
+  return (index < this->mListOfColorDefinitions.size()) ? &this->mListOfColorDefinitions[index] : NULL;
 }
 
 /**
@@ -244,7 +244,7 @@ const CCopasiVector<CLGradientBase>* CLRenderInformationBase::getListOfGradientD
  */
 CLGradientBase* CLRenderInformationBase::getGradientDefinition(size_t index)
 {
-  return (index < this->mListOfGradientDefinitions.size()) ? this->mListOfGradientDefinitions[index] : NULL;
+  return (index < this->mListOfGradientDefinitions.size()) ? &this->mListOfGradientDefinitions[index] : NULL;
 }
 
 /**
@@ -253,7 +253,7 @@ CLGradientBase* CLRenderInformationBase::getGradientDefinition(size_t index)
  */
 const CLGradientBase* CLRenderInformationBase::getGradientDefinition(size_t index) const
 {
-  return (index < this->mListOfGradientDefinitions.size()) ? this->mListOfGradientDefinitions[index] : NULL;
+  return (index < this->mListOfGradientDefinitions.size()) ? &this->mListOfGradientDefinitions[index] : NULL;
 }
 
 /**
@@ -333,7 +333,7 @@ const CCopasiVector<CLLineEnding>* CLRenderInformationBase::getListOfLineEndings
  */
 CLLineEnding* CLRenderInformationBase::getLineEnding(size_t index)
 {
-  return (index < this->mListOfLineEndings.size()) ? this->mListOfLineEndings[index] : NULL;
+  return (index < this->mListOfLineEndings.size()) ? &this->mListOfLineEndings[index] : NULL;
 }
 
 /**
@@ -342,7 +342,7 @@ CLLineEnding* CLRenderInformationBase::getLineEnding(size_t index)
  */
 const CLLineEnding* CLRenderInformationBase::getLineEnding(size_t index) const
 {
-  return (index < this->mListOfLineEndings.size()) ? this->mListOfLineEndings[index] : NULL;
+  return (index < this->mListOfLineEndings.size()) ? &this->mListOfLineEndings[index] : NULL;
 }
 
 /**

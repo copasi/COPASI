@@ -225,14 +225,14 @@ void CQSpeciesWidget::slotDoubleClicked(const QModelIndex proxyIndex)
     }
 
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
+  CCopasiDataModel* pDataModel = &CCopasiRootContainer::getDatamodelList()->operator[](0);
   assert(pDataModel != NULL);
   CModel * pModel = pDataModel->getModel();
 
   if (pModel == NULL)
     return;
 
-  std::string key = pModel->getMetabolites()[index.row()]->getKey();
+  std::string key = pModel->getMetabolites()[index.row()].getKey();
 
   if (CCopasiRootContainer::getKeyFactory()->get(key))
     mpListView->switchToOtherWidget(C_INVALID_INDEX, key);
@@ -313,11 +313,11 @@ void CQSpeciesWidget::setFramework(int framework)
 void CQSpeciesWidget::refreshCompartments()
 {
   const CCopasiVector < CCompartment > & compartments =
-    (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getCompartments();
+    CCopasiRootContainer::getDatamodelList()->operator[](0).getModel()->getCompartments();
   mCompartments.clear();
 
   for (unsigned C_INT32 jj = 0; jj < compartments.size(); jj++)
-    mCompartments.push_back(FROM_UTF8(compartments[jj]->getObjectName()));
+    mCompartments.push_back(FROM_UTF8(compartments[jj].getObjectName()));
 
   mpCompartmentDelegate->setItems(-1, mCompartments);
 }

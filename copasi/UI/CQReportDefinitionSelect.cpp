@@ -1,4 +1,4 @@
-// Copyright (C) 2012 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -49,21 +49,21 @@ void CQReportDefinitionSelect::setReport(CReport * newReport)
 void CQReportDefinitionSelect::loadReportDefinitionVector()
 {
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CReportDefinitionVector* pReportDefinitionVector = (*CCopasiRootContainer::getDatamodelList())[0]->getReportDefinitionList();
+  CReportDefinitionVector* pReportDefinitionVector = CCopasiRootContainer::getDatamodelList()->operator[](0).getReportDefinitionList();
   unsigned C_INT32 i;
 
   for (i = 0; i < pReportDefinitionVector->size(); i++)
     mpComboDefinition->
-    insertItem(mpComboDefinition->count(), FROM_UTF8((*(pReportDefinitionVector))[i]->getObjectName()));
+    insertItem(mpComboDefinition->count(), FROM_UTF8(pReportDefinitionVector->operator[](i).getObjectName()));
 
   // if it is an empty list
   if (mpComboDefinition->count() == 0)
     {
       std::string name = "ReportDefinition_0";
-      (*CCopasiRootContainer::getDatamodelList())[0]->getReportDefinitionList()->createReportDefinition(name, "");
+      CCopasiRootContainer::getDatamodelList()->operator[](0).getReportDefinitionList()->createReportDefinition(name, "");
       mpComboDefinition->insertItem(mpComboDefinition->count(), FROM_UTF8(name));
       mpComboDefinition->setCurrentIndex(1);
-      mpReport->setReportDefinition((*(*CCopasiRootContainer::getDatamodelList())[0]->getReportDefinitionList())[0]); //first one report definition
+      mpReport->setReportDefinition(&CCopasiRootContainer::getDatamodelList()->operator[](0).getReportDefinitionList()->operator[](0)); //first one report definition
       mpReport->setAppend(mpCheckAppend->isChecked());
       mpReport->setConfirmOverwrite(mpCheckConfirmOverwrite->isChecked());
       mpReport->setTarget(TO_UTF8(mpEditTarget->text()));
@@ -81,7 +81,7 @@ void CQReportDefinitionSelect::loadReportDefinitionVector()
     {
       C_INT32 row;
       row = mpComboDefinition->currentIndex();
-      mpReport->setReportDefinition((*(pReportDefinitionVector))[row]);
+      mpReport->setReportDefinition(&pReportDefinitionVector->operator[](row));
       mpReport->setAppend(mpCheckAppend->isChecked());
       mpReport->setConfirmOverwrite(mpCheckConfirmOverwrite->isChecked());
       mpReport->setTarget(TO_UTF8(mpEditTarget->text()));
@@ -118,10 +118,10 @@ void CQReportDefinitionSelect::accept()
     return;
 
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CReportDefinitionVector* pReportDefinitionVector = (*CCopasiRootContainer::getDatamodelList())[0]->getReportDefinitionList();
+  CReportDefinitionVector* pReportDefinitionVector = CCopasiRootContainer::getDatamodelList()->operator[](0).getReportDefinitionList();
   C_INT32 row;
   row = mpComboDefinition->currentIndex();
-  mpReport->setReportDefinition((*(pReportDefinitionVector))[row]);
+  mpReport->setReportDefinition(&pReportDefinitionVector->operator[](row));
   mpReport->setAppend(mpCheckAppend->isChecked());
   mpReport->setConfirmOverwrite(mpCheckConfirmOverwrite->isChecked());
   mpReport->setTarget(TO_UTF8(mpEditTarget->text()));
@@ -138,10 +138,10 @@ void CQReportDefinitionSelect::reject()
 void CQReportDefinitionSelect::slotEdit()
 {
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CReportDefinitionVector* pReportDefinitionVector = (*CCopasiRootContainer::getDatamodelList())[0]->getReportDefinitionList();
+  CReportDefinitionVector* pReportDefinitionVector = CCopasiRootContainer::getDatamodelList()->operator[](0).getReportDefinitionList();
   C_INT32 row;
   row = mpComboDefinition->currentIndex();
-  mpListView->switchToOtherWidget(C_INVALID_INDEX, (*pReportDefinitionVector)[row]->getKey());
+  mpListView->switchToOtherWidget(C_INVALID_INDEX, pReportDefinitionVector->operator[](row).getKey());
   accept(); // if shown then close
   mShow = false; // if not shown then close
 }

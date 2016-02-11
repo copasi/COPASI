@@ -1,4 +1,4 @@
-// Copyright (C) 2012 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -52,7 +52,7 @@ Arguments::Arguments(int argc, char* argv[])
 
 CCopasiTask* Arguments::getFirstScheduledTask()
 {
-  CCopasiVectorN<CCopasiTask> &taskList = *(*CCopasiRootContainer::getDatamodelList())[0]->getTaskList();
+  CCopasiVectorN<CCopasiTask> &taskList = CCopasiRootContainer::getDatamodelList()->operator[](0).getTaskList();
 
   for (size_t i = 0; i < taskList.size(); ++i)
     {
@@ -67,7 +67,7 @@ CCopasiTask* Arguments::getFirstScheduledTask()
 
 CCopasiTask* Arguments::getTaskForName(const std::string& name) const
 {
-  CCopasiVectorN<CCopasiTask> &taskList = *(*CCopasiRootContainer::getDatamodelList())[0]->getTaskList();
+  CCopasiVectorN<CCopasiTask> &taskList = CCopasiRootContainer::getDatamodelList()->operator[](0).getTaskList();
 
   for (size_t i = 0; i < taskList.size(); ++i)
     {
@@ -325,14 +325,14 @@ std::string Arguments::prepareModel() const
 {
   if (!isValid()) return "";
 
-  CCopasiDataModel* model = (*CCopasiRootContainer::getDatamodelList())[0];
+  CCopasiDataModel* model = &CCopasiRootContainer::getDatamodelList()->operator[](0);
   model->loadModel(getFilename(), NULL);
 
   if (mDisablePlots)
     {
       for (size_t index = 0; index < model->getPlotDefinitionList()->size(); ++index)
         {
-          (*model->getPlotDefinitionList())[index]->setActive(false);
+          (*model->getPlotDefinitionList())[index].setActive(false);
         }
     }
 
@@ -340,7 +340,7 @@ std::string Arguments::prepareModel() const
     {
       for (size_t index = 0; index < model->getTaskList()->size(); ++index)
         {
-          (*model->getTaskList())[index]->getReport().setTarget("");
+          (*model->getTaskList())[index].getReport().setTarget("");
         }
     }
 

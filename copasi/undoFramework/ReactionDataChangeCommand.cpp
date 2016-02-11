@@ -1,4 +1,4 @@
-// Copyright (C) 2014 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2014 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -43,7 +43,7 @@ ReactionDataChangeCommand::ReactionDataChangeCommand(
       return;
     }
 
-  CReaction *pRea = reactions[index.row()];
+  CReaction *pRea = &reactions[index.row()];
   mOldFunctionName = FROM_UTF8(pRea->getFunction()->getObjectName());
 
   //mPathIndex = pathFromIndex(index);

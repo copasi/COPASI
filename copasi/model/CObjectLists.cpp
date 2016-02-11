@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CObjectLists.cpp,v $
-//   $Revision: 1.28 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/04/19 14:42:58 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2005 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -28,7 +20,6 @@
 #include "report/CKeyFactory.h"
 #include "copasi/report/CCopasiRootContainer.h"
 #include "utilities/CAnnotatedMatrix.h"
-
 
 //static
 const std::string CObjectLists::ListTypeName[] =
@@ -142,146 +133,146 @@ CObjectLists::getListOfConstObjects(ListType t, const CModel* pModel)
       case METABS:
 
         for (; itMetab != endMetab; ++itMetab)
-          ret.push_back(*itMetab);
+          ret.push_back(itMetab);
 
         break;
 
       case METAB_INITIAL_CONCENTRATIONS:
 
         for (; itMetab != endMetab; ++itMetab)
-          if ((*itMetab)->getStatus() != CModelEntity::ASSIGNMENT)
-            ret.push_back((*itMetab)->getInitialConcentrationReference());
+          if (itMetab->getStatus() != CModelEntity::ASSIGNMENT)
+            ret.push_back(itMetab->getInitialConcentrationReference());
 
         break;
 
       case METAB_INITIAL_NUMBERS:
 
         for (; itMetab != endMetab; ++itMetab)
-          if ((*itMetab)->getStatus() != CModelEntity::ASSIGNMENT)
-            ret.push_back((*itMetab)->getInitialValueReference());
+          if (itMetab->getStatus() != CModelEntity::ASSIGNMENT)
+            ret.push_back(itMetab->getInitialValueReference());
 
         break;
 
       case METAB_CONCENTRATIONS:
 
         for (; itMetab != endMetab; ++itMetab)
-          ret.push_back((*itMetab)->getConcentrationReference());
+          ret.push_back(itMetab->getConcentrationReference());
 
         break;
 
       case METAB_NUMBERS:
 
         for (; itMetab != endMetab; ++itMetab)
-          ret.push_back((*itMetab)->getValueReference());
+          ret.push_back(itMetab->getValueReference());
 
         break;
 
       case NON_CONST_METAB_CONCENTRATIONS:
 
         for (; itMetab != endMetab; ++itMetab)
-          if ((*itMetab)->getStatus() != CModelEntity::FIXED ||
-              EventTargets.count(*itMetab) > 0)
-            ret.push_back((*itMetab)->getConcentrationReference());
+          if (itMetab->getStatus() != CModelEntity::FIXED ||
+              EventTargets.count(itMetab) > 0)
+            ret.push_back(itMetab->getConcentrationReference());
 
         break;
 
       case NON_CONST_METAB_NUMBERS:
 
         for (; itMetab != endMetab; ++itMetab)
-          if ((*itMetab)->getStatus() != CModelEntity::FIXED ||
-              EventTargets.count(*itMetab) > 0)
-            ret.push_back((*itMetab)->getValueReference());
+          if (itMetab->getStatus() != CModelEntity::FIXED ||
+              EventTargets.count(itMetab) > 0)
+            ret.push_back(itMetab->getValueReference());
 
         break;
 
       case CONST_METAB_CONCENTRATIONS:
 
         for (; itMetab != endMetab; ++itMetab)
-          if ((*itMetab)->getStatus() == CModelEntity::FIXED)
-            ret.push_back((*itMetab)->getConcentrationReference());
+          if (itMetab->getStatus() == CModelEntity::FIXED)
+            ret.push_back(itMetab->getConcentrationReference());
 
         break;
 
       case CONST_METAB_NUMBERS:
 
         for (; itMetab != endMetab; ++itMetab)
-          if ((*itMetab)->getStatus() == CModelEntity::FIXED)
-            ret.push_back((*itMetab)->getValueReference());
+          if (itMetab->getStatus() == CModelEntity::FIXED)
+            ret.push_back(itMetab->getValueReference());
 
         break;
 
       case ODE_METAB_CONCENTRATIONS:
 
         for (; itMetab != endMetab; ++itMetab)
-          if ((*itMetab)->getStatus() == CModelEntity::ODE)
-            ret.push_back((*itMetab)->getConcentrationReference());
+          if (itMetab->getStatus() == CModelEntity::ODE)
+            ret.push_back(itMetab->getConcentrationReference());
 
         break;
 
       case ODE_METAB_NUMBERS:
 
         for (; itMetab != endMetab; ++itMetab)
-          if ((*itMetab)->getStatus() == CModelEntity::ODE)
-            ret.push_back((*itMetab)->getValueReference());
+          if (itMetab->getStatus() == CModelEntity::ODE)
+            ret.push_back(itMetab->getValueReference());
 
         break;
 
       case REACTION_METAB_CONCENTRATIONS:
 
         for (; itMetab != endMetab; ++itMetab)
-          if ((*itMetab)->getStatus() == CModelEntity::REACTIONS)
-            ret.push_back((*itMetab)->getConcentrationReference());
+          if (itMetab->getStatus() == CModelEntity::REACTIONS)
+            ret.push_back(itMetab->getConcentrationReference());
 
         break;
 
       case REACTION_METAB_NUMBERS:
 
         for (; itMetab != endMetab; ++itMetab)
-          if ((*itMetab)->getStatus() == CModelEntity::REACTIONS)
-            ret.push_back((*itMetab)->getValueReference());
+          if (itMetab->getStatus() == CModelEntity::REACTIONS)
+            ret.push_back(itMetab->getValueReference());
 
         break;
 
       case ASS_METAB_CONCENTRATIONS:
 
         for (; itMetab != endMetab; ++itMetab)
-          if ((*itMetab)->getStatus() == CModelEntity::ASSIGNMENT)
-            ret.push_back((*itMetab)->getConcentrationReference());
+          if (itMetab->getStatus() == CModelEntity::ASSIGNMENT)
+            ret.push_back(itMetab->getConcentrationReference());
 
         break;
 
       case ASS_METAB_NUMBERS:
 
         for (; itMetab != endMetab; ++itMetab)
-          if ((*itMetab)->getStatus() == CModelEntity::ASSIGNMENT)
-            ret.push_back((*itMetab)->getValueReference());
+          if (itMetab->getStatus() == CModelEntity::ASSIGNMENT)
+            ret.push_back(itMetab->getValueReference());
 
         break;
 
       case METAB_CONC_RATES:
 
         for (; itMetab != endMetab; ++itMetab)
-          if ((*itMetab)->getStatus() == CModelEntity::ODE ||
-              (*itMetab)->getStatus() == CModelEntity::REACTIONS)
-            ret.push_back((*itMetab)->getConcentrationRateReference());
+          if (itMetab->getStatus() == CModelEntity::ODE ||
+              itMetab->getStatus() == CModelEntity::REACTIONS)
+            ret.push_back(itMetab->getConcentrationRateReference());
 
         break; //not possible at the moment
 
       case METAB_PART_RATES:
 
         for (; itMetab != endMetab; ++itMetab)
-          if ((*itMetab)->getStatus() == CModelEntity::ODE ||
-              (*itMetab)->getStatus() == CModelEntity::REACTIONS)
-            ret.push_back((*itMetab)->getRateReference());
+          if (itMetab->getStatus() == CModelEntity::ODE ||
+              itMetab->getStatus() == CModelEntity::REACTIONS)
+            ret.push_back(itMetab->getRateReference());
 
         break;
 
       case METAB_TRANSITION_TIME:
 
         for (; itMetab != endMetab; ++itMetab)
-          if ((*itMetab)->getStatus() == CModelEntity::ODE ||
-              (*itMetab)->getStatus() == CModelEntity::REACTIONS)
-            ret.push_back(static_cast< const CCopasiObject * >((*itMetab)->getObject(CCopasiObjectName("Reference=TransitionTime"))));
+          if (itMetab->getStatus() == CModelEntity::ODE ||
+              itMetab->getStatus() == CModelEntity::REACTIONS)
+            ret.push_back(static_cast< const CCopasiObject * >(itMetab->getObject(CCopasiObjectName("Reference=TransitionTime"))));
 
         break;
 
@@ -289,21 +280,21 @@ CObjectLists::getListOfConstObjects(ListType t, const CModel* pModel)
       case REACTIONS:
 
         for (; itReaction != endReaction; ++itReaction)
-          ret.push_back(*itReaction);
+          ret.push_back(itReaction);
 
         break;
 
       case REACTION_CONC_FLUXES:
 
         for (; itReaction != endReaction; ++itReaction)
-          ret.push_back(static_cast< const CCopasiObject * >((*itReaction)->getObject(CCopasiObjectName("Reference=Flux"))));
+          ret.push_back(static_cast< const CCopasiObject * >(itReaction->getObject(CCopasiObjectName("Reference=Flux"))));
 
         break;
 
       case REACTION_PART_FLUXES:
 
         for (; itReaction != endReaction; ++itReaction)
-          ret.push_back(static_cast< const CCopasiObject * >((*itReaction)->getObject(CCopasiObjectName("Reference=ParticleFlux"))));
+          ret.push_back(static_cast< const CCopasiObject * >(itReaction->getObject(CCopasiObjectName("Reference=ParticleFlux"))));
 
         break;
 
@@ -311,63 +302,63 @@ CObjectLists::getListOfConstObjects(ListType t, const CModel* pModel)
       case GLOBAL_PARAMETERS:
 
         for (; itValue != endValue; ++itValue)
-          ret.push_back(*itValue);
+          ret.push_back(itValue);
 
         break;
 
       case GLOBAL_PARAMETER_INITIAL_VALUES:
 
         for (; itValue != endValue; ++itValue)
-          if ((*itValue)->getStatus() != CModelEntity::ASSIGNMENT)
-            ret.push_back((*itValue)->getInitialValueReference());
+          if (itValue->getStatus() != CModelEntity::ASSIGNMENT)
+            ret.push_back(itValue->getInitialValueReference());
 
         break;
 
       case GLOBAL_PARAMETER_VALUES:
 
         for (; itValue != endValue; ++itValue)
-          ret.push_back((*itValue)->getValueReference());
+          ret.push_back(itValue->getValueReference());
 
         break;
 
       case NON_CONST_GLOBAL_PARAMETER_VALUES:
 
         for (; itValue != endValue; ++itValue)
-          if ((*itValue)->getStatus() != CModelEntity::FIXED ||
-              EventTargets.count(*itValue) > 0)
-            ret.push_back((*itValue)->getValueReference());
+          if (itValue->getStatus() != CModelEntity::FIXED ||
+              EventTargets.count(itValue) > 0)
+            ret.push_back(itValue->getValueReference());
 
         break;
 
       case CONST_GLOBAL_PARAMETER_INITIAL_VALUES:
 
         for (; itValue != endValue; ++itValue)
-          if ((*itValue)->getStatus() == CModelEntity::FIXED)
-            ret.push_back((*itValue)->getInitialValueReference());
+          if (itValue->getStatus() == CModelEntity::FIXED)
+            ret.push_back(itValue->getInitialValueReference());
 
         break;
 
       case ODE_GLOBAL_PARAMETER_VALUES:
 
         for (; itValue != endValue; ++itValue)
-          if ((*itValue)->getStatus() == CModelEntity::ODE)
-            ret.push_back((*itValue)->getValueReference());
+          if (itValue->getStatus() == CModelEntity::ODE)
+            ret.push_back(itValue->getValueReference());
 
         break;
 
       case ASS_GLOBAL_PARAMETER_VALUES:
 
         for (; itValue != endValue; ++itValue)
-          if ((*itValue)->getStatus() == CModelEntity::ASSIGNMENT)
-            ret.push_back((*itValue)->getValueReference());
+          if (itValue->getStatus() == CModelEntity::ASSIGNMENT)
+            ret.push_back(itValue->getValueReference());
 
         break;
 
       case GLOBAL_PARAMETER_RATES:
 
         for (; itValue != endValue; ++itValue)
-          if ((*itValue)->getStatus() == CModelEntity::ODE)
-            ret.push_back((*itValue)->getRateReference());
+          if (itValue->getStatus() == CModelEntity::ODE)
+            ret.push_back(itValue->getRateReference());
 
         break;
 
@@ -375,63 +366,63 @@ CObjectLists::getListOfConstObjects(ListType t, const CModel* pModel)
       case COMPARTMENTS:
 
         for (; itComp != endComp; ++itComp)
-          ret.push_back(*itComp);
+          ret.push_back(itComp);
 
         break;
 
       case COMPARTMENT_INITIAL_VOLUMES:
 
         for (; itComp != endComp; ++itComp)
-          if ((*itComp)->getStatus() != CModelEntity::ASSIGNMENT)
-            ret.push_back((*itComp)->getInitialValueReference());
+          if (itComp->getStatus() != CModelEntity::ASSIGNMENT)
+            ret.push_back(itComp->getInitialValueReference());
 
         break;
 
       case COMPARTMENT_VOLUMES:
 
         for (; itComp != endComp; ++itComp)
-          ret.push_back((*itComp)->getValueReference());
+          ret.push_back(itComp->getValueReference());
 
         break;
 
       case NON_CONST_COMPARTMENT_VOLUMES:
 
         for (; itComp != endComp; ++itComp)
-          if ((*itComp)->getStatus() != CModelEntity::FIXED ||
-              EventTargets.count(*itComp) > 0)
-            ret.push_back((*itComp)->getValueReference());
+          if (itComp->getStatus() != CModelEntity::FIXED ||
+              EventTargets.count(itComp) > 0)
+            ret.push_back(itComp->getValueReference());
 
         break;
 
       case CONST_COMPARTMENT_VOLUMES:
 
         for (; itComp != endComp; ++itComp)
-          if ((*itComp)->getStatus() == CModelEntity::FIXED)
-            ret.push_back((*itComp)->getValueReference());
+          if (itComp->getStatus() == CModelEntity::FIXED)
+            ret.push_back(itComp->getValueReference());
 
         break;
 
       case ODE_COMPARTMENT_VOLUMES:
 
         for (; itComp != endComp; ++itComp)
-          if ((*itComp)->getStatus() == CModelEntity::ODE)
-            ret.push_back((*itComp)->getValueReference());
+          if (itComp->getStatus() == CModelEntity::ODE)
+            ret.push_back(itComp->getValueReference());
 
         break;
 
       case ASS_COMPARTMENT_VOLUMES:
 
         for (; itComp != endComp; ++itComp)
-          if ((*itComp)->getStatus() == CModelEntity::ASSIGNMENT)
-            ret.push_back((*itComp)->getValueReference());
+          if (itComp->getStatus() == CModelEntity::ASSIGNMENT)
+            ret.push_back(itComp->getValueReference());
 
         break;
 
       case COMPARTMENT_RATES:
 
         for (; itComp != endComp; ++itComp)
-          if ((*itComp)->getStatus() == CModelEntity::ODE)
-            ret.push_back((*itComp)->getRateReference());
+          if (itComp->getStatus() == CModelEntity::ODE)
+            ret.push_back(itComp->getRateReference());
 
         break;
 
@@ -451,16 +442,16 @@ CObjectLists::getListOfConstObjects(ListType t, const CModel* pModel)
       {
         for (; itReaction != endReaction; ++itReaction)
           {
-            const CFunctionParameters & params = (*itReaction)->getFunctionParameters();
+            const CFunctionParameters & params = itReaction->getFunctionParameters();
             size_t j, jmax = params.size();
 
             for (j = 0; j < jmax; ++j)
               if (params[j]->getUsage() == CFunctionParameter::PARAMETER)
-                if ((*itReaction)->isLocalParameter(j))
+                if (itReaction->isLocalParameter(j))
                   {
                     CCopasiParameter * par =
                       dynamic_cast<CCopasiParameter*>
-                      (CCopasiRootContainer::getKeyFactory()->get((*itReaction)->getParameterMappings()[j][0]));
+                      (CCopasiRootContainer::getKeyFactory()->get(itReaction->getParameterMappings()[j][0]));
 
                     if (par)
                       ret.push_back(par->getValueReference());
@@ -542,7 +533,6 @@ CObjectLists::getListOfConstObjects(ListType t, const CModel* pModel)
 
         for (i = 0; i < imax; ++i)
           ret.push_back(static_cast< const CCopasiObject * >(pEV->addElementReference(i, 1)));
-
       }
       break;
 
@@ -561,7 +551,7 @@ bool CObjectLists::existsFixedMetab(const CModel* pModel)
   size_t i, imax = metabs.size();
 
   for (i = 0; i < imax; ++i)
-    if (metabs[i]->getStatus() == CModelEntity::FIXED)
+    if (metabs[i].getStatus() == CModelEntity::FIXED)
       {fixedMetab = true; break;}
 
   return fixedMetab;
@@ -580,14 +570,14 @@ std::set< const CModelEntity * > CObjectLists::getEventTargets(const CModel* pMo
   for (; itEvent != endEvent; ++itEvent)
     {
       CCopasiVectorN< CEventAssignment >::const_iterator itAssignment =
-        (*itEvent)->getAssignments().begin();
+        itEvent->getAssignments().begin();
       CCopasiVectorN< CEventAssignment >::const_iterator endAssignment =
-        (*itEvent)->getAssignments().end();
+        itEvent->getAssignments().end();
 
       for (; itAssignment != endAssignment; ++itAssignment)
         {
           const CModelEntity * pModelEntity =
-            dynamic_cast< const CModelEntity * >(pKeyFactory->get((*itAssignment)->getObjectName()));
+            dynamic_cast< const CModelEntity * >(pKeyFactory->get(itAssignment->getObjectName()));
 
           if (pModelEntity != NULL)
             {

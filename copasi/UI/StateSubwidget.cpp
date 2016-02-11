@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -72,31 +72,31 @@ void StateSubwidget::loadMetabolites()
   QTableWidgetItem * pItem;  // for use with setData method, to set numberical sorting of appropriate columns
 
   for (; it != end; ++it)
-    if ((*it)->getStatus() == CModelEntity::ODE ||
-        ((*it)->getStatus() == CModelEntity::REACTIONS && (*it)->isUsed()))
+    if (it->getStatus() == CModelEntity::ODE ||
+        (it->getStatus() == CModelEntity::REACTIONS && it->isUsed()))
       {
-        mpTblMetabolites->setItem(i, 0, new QTableWidgetItem(FROM_UTF8(CMetabNameInterface::getDisplayName(mpModel, **it, false))));
+        mpTblMetabolites->setItem(i, 0, new QTableWidgetItem(FROM_UTF8(CMetabNameInterface::getDisplayName(mpModel, *it, false))));
 
-        mpTblMetabolites->setItem(i, 1, new QTableWidgetItem(FROM_UTF8(CModelEntity::StatusName[(*it)->getStatus()])));
+        mpTblMetabolites->setItem(i, 1, new QTableWidgetItem(FROM_UTF8(CModelEntity::StatusName[it->getStatus()])));
 
         pItem = new QTableWidgetItem(QVariant::Double);
-        pItem->setData(Qt::DisplayRole, (*it)->getConcentration());
+        pItem->setData(Qt::DisplayRole, it->getConcentration());
         mpTblMetabolites->setItem(i, 2, pItem);
 
         pItem = new QTableWidgetItem(QVariant::Double);
-        pItem->setData(Qt::DisplayRole, (*it)->getValue());
+        pItem->setData(Qt::DisplayRole, it->getValue());
         mpTblMetabolites->setItem(i, 3, pItem);
 
         pItem = new QTableWidgetItem(QVariant::Double);
-        pItem->setData(Qt::DisplayRole, (*it)->getConcentrationRate());
+        pItem->setData(Qt::DisplayRole, it->getConcentrationRate());
         mpTblMetabolites->setItem(i, 4, pItem);
 
         pItem = new QTableWidgetItem(QVariant::Double);
-        pItem->setData(Qt::DisplayRole, (*it)->getRate());
+        pItem->setData(Qt::DisplayRole, it->getRate());
         mpTblMetabolites->setItem(i, 5, pItem);
 
         pItem = new QTableWidgetItem(QVariant::Double);
-        pItem->setData(Qt::DisplayRole, (*it)->getTransitionTime());
+        pItem->setData(Qt::DisplayRole, it->getTransitionTime());
         mpTblMetabolites->setItem(i, 6, pItem);
 
         i++;
@@ -118,17 +118,17 @@ void StateSubwidget::loadCompartments()
   QTableWidgetItem * pItem;
 
   for (; it != end; ++it)
-    if ((*it)->getStatus() == CModelEntity::ODE)
+    if (it->getStatus() == CModelEntity::ODE)
       {
-        mpTblCompartments->setItem(i, 0, new QTableWidgetItem(FROM_UTF8((*it)->getObjectName())));
-        mpTblCompartments->setItem(i, 1, new QTableWidgetItem(FROM_UTF8(CModelEntity::StatusName[(*it)->getStatus()])));
+        mpTblCompartments->setItem(i, 0, new QTableWidgetItem(FROM_UTF8(it->getObjectName())));
+        mpTblCompartments->setItem(i, 1, new QTableWidgetItem(FROM_UTF8(CModelEntity::StatusName[it->getStatus()])));
 
         pItem = new QTableWidgetItem(QVariant::Double);
-        pItem->setData(Qt::DisplayRole, (*it)->getValue());
+        pItem->setData(Qt::DisplayRole, it->getValue());
         mpTblCompartments->setItem(i, 2, pItem);
 
         pItem = new QTableWidgetItem(QVariant::Double);
-        pItem->setData(Qt::DisplayRole, (*it)->getRate());
+        pItem->setData(Qt::DisplayRole, it->getRate());
         mpTblCompartments->setItem(i, 3, pItem);
 
         i++;
@@ -152,17 +152,17 @@ void StateSubwidget::loadReactions()
 
   for (; it != end; ++it)
     {
-      mpTblReactions->setItem(i, 0, new QTableWidgetItem(FROM_UTF8((*it)->getObjectName())));
+      mpTblReactions->setItem(i, 0, new QTableWidgetItem(FROM_UTF8(it->getObjectName())));
 
       pItem = new QTableWidgetItem(QVariant::Double);
-      pItem->setData(Qt::DisplayRole, (*it)->getFlux());
+      pItem->setData(Qt::DisplayRole, it->getFlux());
       mpTblReactions->setItem(i, 1, pItem);
 
       pItem = new QTableWidgetItem(QVariant::Double);
-      pItem->setData(Qt::DisplayRole, (*it)->getParticleFlux());
+      pItem->setData(Qt::DisplayRole, it->getParticleFlux());
       mpTblReactions->setItem(i, 2, pItem);
 
-      mpTblReactions->setItem(i, 3, new QTableWidgetItem(FROM_UTF8(CChemEqInterface::getChemEqString(mpModel, **it, false))));
+      mpTblReactions->setItem(i, 3, new QTableWidgetItem(FROM_UTF8(CChemEqInterface::getChemEqString(mpModel, *it, false))));
 
       i++;
     }
@@ -182,17 +182,17 @@ void StateSubwidget::loadModelValues()
   QTableWidgetItem * pItem;
 
   for (; it != end; ++it)
-    if ((*it)->getStatus() == CModelEntity::ODE)
+    if (it->getStatus() == CModelEntity::ODE)
       {
-        mpTblModelValues->setItem(i, 0, new QTableWidgetItem(FROM_UTF8((*it)->getObjectName())));
-        mpTblModelValues->setItem(i, 1, new QTableWidgetItem(FROM_UTF8(CModelEntity::StatusName[(*it)->getStatus()])));
+        mpTblModelValues->setItem(i, 0, new QTableWidgetItem(FROM_UTF8(it->getObjectName())));
+        mpTblModelValues->setItem(i, 1, new QTableWidgetItem(FROM_UTF8(CModelEntity::StatusName[it->getStatus()])));
 
         pItem = new QTableWidgetItem(QVariant::Double);
-        pItem->setData(Qt::DisplayRole, (*it)->getValue());
+        pItem->setData(Qt::DisplayRole, it->getValue());
         mpTblModelValues->setItem(i, 2, pItem);
 
         pItem = new QTableWidgetItem(QVariant::Double);
-        pItem->setData(Qt::DisplayRole, (*it)->getRate());
+        pItem->setData(Qt::DisplayRole, it->getRate());
         mpTblModelValues->setItem(i, 3, pItem);
 
         i++;
@@ -336,7 +336,7 @@ bool StateSubwidget::loadAll(const CSteadyStateTask * pTask)
 {
   mpTask = pTask;
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  mpModel = (*CCopasiRootContainer::getDatamodelList())[0]->getModel();
+  mpModel = CCopasiRootContainer::getDatamodelList()->operator[](0).getModel();
 
   if (mpTask == NULL || mpModel == NULL)
     {
@@ -467,7 +467,7 @@ bool StateSubwidget::update(ListViews::ObjectType objectType,
           {
             case ListViews::ADD:
               assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-              mpModel = (*CCopasiRootContainer::getDatamodelList())[0]->getModel();
+              mpModel = CCopasiRootContainer::getDatamodelList()->operator[](0).getModel();
               clear();
               showUnits();
               mpTask = NULL;

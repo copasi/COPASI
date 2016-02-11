@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -165,7 +165,7 @@ QMessageBox::StandardButton CQMessageBox::confirmDelete(QWidget *parent,
   if (pFunctionDB != NULL)
     {
       // TODO In case a function is deleted we need to loop through all data models
-      pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
+      pDataModel = &CCopasiRootContainer::getDatamodelList()->operator[](0);
     }
   else
     {

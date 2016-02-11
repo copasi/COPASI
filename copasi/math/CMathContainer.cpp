@@ -601,7 +601,7 @@ CVector< C_FLOAT64 > CMathContainer::initializeAtolVector(const C_FLOAT64 & atol
           case CMath::Species:
           {
             const CMetab * pMetab = static_cast< const CMetab * >(pObject->getDataObject()->getObjectParent());
-            std::map< CCopasiObject *, CMathObject * >::const_iterator itFound
+            std::map< const CCopasiObject *, CMathObject * >::const_iterator itFound
               = mDataObject2MathObject.find(pMetab->getCompartment()->getInitialValueReference());
 
             C_FLOAT64 Limit = fabs(* (C_FLOAT64 *) itFound->second->getValuePointer())
@@ -622,7 +622,7 @@ CVector< C_FLOAT64 > CMathContainer::initializeAtolVector(const C_FLOAT64 & atol
 
             break;
 
-          // These are fixed event targets the absolute tolerance can be large since they do not change
+            // These are fixed event targets the absolute tolerance can be large since they do not change
           default:
             *pAtol = std::max(1.0, *pAtol);
         }
@@ -1050,7 +1050,7 @@ CMathObject * CMathContainer::getMathObject(const CObjectInterface * pObject) co
   if (pObject == NULL)
     return NULL;
 
-  std::map< CCopasiObject *, CMathObject * >::const_iterator found =
+  std::map< const CCopasiObject *, CMathObject * >::const_iterator found =
     mDataObject2MathObject.find(const_cast<CCopasiObject*>(static_cast< const CCopasiObject * >(pObject)));
 
   if (found != mDataObject2MathObject.end())
@@ -1193,9 +1193,9 @@ void CMathContainer::compile()
   for (; itReaction != endReaction; ++itReaction)
     {
       // We ignore reactions which do not have any effect.
-      if ((*itReaction)->getChemEq().getBalances().size() > 0)
+      if (itReaction->getChemEq().getBalances().size() > 0)
         {
-          pReaction->initialize(*itReaction, *this);
+          pReaction->initialize(itReaction, *this);
           ++pReaction;
         }
     }
@@ -1366,7 +1366,7 @@ CEvaluationNode * CMathContainer::copyBranch(const CEvaluationNode * pNode,
       // We need to replace variables, expand called trees, and handle discrete nodes.
       switch ((int) itNode->getType())
         {
-          // Handle object nodes which are of type CN
+            // Handle object nodes which are of type CN
           case (CEvaluationNode::OBJECT | CEvaluationNodeObject::CN):
           {
             // We need to map the object to a math object if possible.
@@ -1641,7 +1641,7 @@ void CMathContainer::allocate()
   for (; itReaction != endReaction; ++itReaction)
     {
       // We ignore reactions which do not have any effect.
-      if ((*itReaction)->getChemEq().getBalances().size() > 0)
+      if (itReaction->getChemEq().getBalances().size() > 0)
         {
           Size.nReactions++;
         }
@@ -1671,7 +1671,7 @@ void CMathContainer::allocate()
   for (; itEvent != endEvent; ++itEvent)
     {
       CMathEvent Event;
-      CMathEvent::allocate(Event, *itEvent, *this);
+      CMathEvent::allocate(Event, itEvent, *this);
 
       Size.nEventRoots += Event.getTrigger().getRoots().size();
       Size.nEventAssignments += Event.getAssignments().size();
@@ -1683,7 +1683,7 @@ void CMathContainer::allocate()
   for (; itEvent != endEvent; ++itEvent)
     {
       CMathEvent Event;
-      CMathEvent::allocate(Event, *itEvent, *this);
+      CMathEvent::allocate(Event, itEvent, *this);
       Size.nEventRoots += Event.getTrigger().getRoots().size();
 
       // We do not have to allocate an assignment as discontinuity object suffices
@@ -1857,7 +1857,7 @@ void CMathContainer::initializeEvents(CMath::sPointers & p)
 
   for (; itEvent != endEvent; ++itEvent, ++pEvent)
     {
-      CMathEvent::allocate(*pEvent, *itEvent, *this);
+      CMathEvent::allocate(*pEvent, itEvent, *this);
       pEvent->initialize(p);
     }
 
@@ -1866,7 +1866,7 @@ void CMathContainer::initializeEvents(CMath::sPointers & p)
 
   for (; itEvent != endEvent; ++itEvent, ++pEvent)
     {
-      CMathEvent::allocate(*pEvent, *itEvent, *this);
+      CMathEvent::allocate(*pEvent, itEvent, *this);
       pEvent->initialize(p);
     }
 
@@ -1899,7 +1899,7 @@ bool CMathContainer::compileEvents()
 
   for (; itEvent != endEvent; ++pItEvent, ++itEvent)
     {
-      success &= pItEvent->compile(*itEvent, *this);
+      success &= pItEvent->compile(itEvent, *this);
     }
 
   // Events representing discontinuities.
@@ -2081,7 +2081,7 @@ void CMathContainer::createSynchronizeInitialValuesSequence()
 
             break;
 
-          // Everything which is not a value must be calculated.
+            // Everything which is not a value must be calculated.
           default:
             RequestedExtensive.insert(pObject);
             RequestedIntensive.insert(pObject);
@@ -2176,11 +2176,11 @@ void CMathContainer::createApplyInitialValuesSequence()
 
             break;
 
-          // Delay values are always calculate in a separate step
+            // Delay values are always calculate in a separate step
           case CMath::DelayValue:
             break;
 
-          // Everything else must be calculated.
+            // Everything else must be calculated.
           default:
             Requested.insert(pObject);
             break;
@@ -3187,7 +3187,7 @@ void CMathContainer::initializeMathObjects(const CCopasiVector< CReaction > & re
   for (; it != end; ++it)
     {
       // We ignore reactions which do not have any effect.
-      if ((*it)->getChemEq().getBalances().size() == 0)
+      if (it->getChemEq().getBalances().size() == 0)
         {
           continue;
         }
@@ -3195,30 +3195,30 @@ void CMathContainer::initializeMathObjects(const CCopasiVector< CReaction > & re
       // Initial Particle Flux
       CMathObject::initialize(p.pInitialParticleFluxesObject, p.pInitialParticleFluxes,
                               CMath::ParticleFlux, CMath::Reaction, CMath::SimulationTypeUndefined, false, true,
-                              (*it)->getParticleFluxReference());
+                              it->getParticleFluxReference());
 
       // Particle Flux
-      map((*it)->getParticleFluxReference(), p.pParticleFluxesObject);
+      map(it->getParticleFluxReference(), p.pParticleFluxesObject);
       CMathObject::initialize(p.pParticleFluxesObject, p.pParticleFluxes,
                               CMath::ParticleFlux, CMath::Reaction, CMath::SimulationTypeUndefined, false, false,
-                              (*it)->getParticleFluxReference());
+                              it->getParticleFluxReference());
 
       // Initial Flux
       CMathObject::initialize(p.pInitialFluxesObject, p.pInitialFluxes,
                               CMath::Flux, CMath::Reaction, CMath::SimulationTypeUndefined, false, true,
-                              (*it)->getFluxReference());
+                              it->getFluxReference());
 
       // Flux
-      map((*it)->getFluxReference(), p.pFluxesObject);
+      map(it->getFluxReference(), p.pFluxesObject);
       CMathObject::initialize(p.pFluxesObject, p.pFluxes,
                               CMath::Flux, CMath::Reaction, CMath::SimulationTypeUndefined, false, false,
-                              (*it)->getFluxReference());
+                              it->getFluxReference());
 
       // Propensity
-      map((*it)->getPropensityReference(), p.pPropensitiesObject);
+      map(it->getPropensityReference(), p.pPropensitiesObject);
       CMathObject::initialize(p.pPropensitiesObject, p.pPropensities,
                               CMath::Propensity, CMath::Reaction, CMath::SimulationTypeUndefined, false, false,
-                              (*it)->getPropensityReference());
+                              it->getPropensityReference());
     }
 }
 
@@ -3234,19 +3234,19 @@ void CMathContainer::initializeMathObjects(const CCopasiVector< CMoiety > & moie
       // Initial Total Mass
       CMathObject::initialize(p.pInitialTotalMassesObject, p.pInitialTotalMasses,
                               CMath::TotalMass, CMath::Moiety, CMath::SimulationTypeUndefined, false, true,
-                              (*it)->getTotalNumberReference());
+                              it->getTotalNumberReference());
 
       // Total Mass
-      map((*it)->getTotalNumberReference(), p.pTotalMassesObject);
+      map(it->getTotalNumberReference(), p.pTotalMassesObject);
       CMathObject::initialize(p.pTotalMassesObject, p.pTotalMasses,
                               CMath::TotalMass, CMath::Moiety, CMath::SimulationTypeUndefined, false, false,
-                              (*it)->getTotalNumberReference());
+                              it->getTotalNumberReference());
 
       // Dependent
-      map((*it)->getDependentNumberReference(), p.pDependentMassesObject);
+      map(it->getDependentNumberReference(), p.pDependentMassesObject);
       CMathObject::initialize(p.pDependentMassesObject, p.pDependentMasses,
                               CMath::DependentMass, CMath::Moiety, CMath::SimulationTypeUndefined, false, false,
-                              (*it)->getDependentNumberReference());
+                              it->getDependentNumberReference());
     }
 }
 
@@ -3263,7 +3263,7 @@ bool CMathContainer::hasDependencies(const CCopasiObject * pObject)
   return Dependencies.size() > 0;
 }
 
-void CMathContainer::map(CCopasiObject * pDataObject, CMathObject * pMathObject)
+void CMathContainer::map(const CCopasiObject * pDataObject, CMathObject * pMathObject)
 {
   if (pDataObject != NULL)
     {
@@ -3992,8 +3992,8 @@ void CMathContainer::createDiscontinuityEvents(const CEvaluationTree * pTree)
             createDiscontinuityDataEvent(*itNode);
             break;
 
-          // Call nodes may include discontinuities but each called tree is handled
-          // separately.
+            // Call nodes may include discontinuities but each called tree is handled
+            // separately.
           case (CEvaluationNode::CALL | CEvaluationNodeCall::FUNCTION):
           case (CEvaluationNode::CALL | CEvaluationNodeCall::EXPRESSION):
             createDiscontinuityEvents(static_cast< const CEvaluationNodeCall * >(*itNode)->getCalledTree());
@@ -4465,8 +4465,8 @@ void CMathContainer::relocate(CVectorCore< C_FLOAT64 > &oldValues,
   relocateObjectSet(mReducedStateValues, Relocations);
   relocateObjectSet(mSimulationRequiredValues, Relocations);
 
-  std::map< CCopasiObject *, CMathObject * >::iterator itDataObject2MathObject = mDataObject2MathObject.begin();
-  std::map< CCopasiObject *, CMathObject * >::iterator endDataObject2MathObject = mDataObject2MathObject.end();
+  std::map< const CCopasiObject *, CMathObject * >::iterator itDataObject2MathObject = mDataObject2MathObject.begin();
+  std::map< const CCopasiObject *, CMathObject * >::iterator endDataObject2MathObject = mDataObject2MathObject.end();
 
   for (; itDataObject2MathObject != endDataObject2MathObject; ++itDataObject2MathObject)
     {

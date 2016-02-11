@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -275,7 +275,7 @@ bool TaskWidget::commonAfterRunTask()
   CCopasiMessage::clearDeque();
 
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  (*CCopasiRootContainer::getDatamodelList())[0]->finish();
+  CCopasiRootContainer::getDatamodelList()->operator[](0).finish();
 
   // Update all values shown in the GUI
   CMathContainer * pContainer = mpTask->getMathContainer();
@@ -299,7 +299,7 @@ bool TaskWidget::commonRunTask()
     {
       assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
 
-      if (!mpTask->initialize(CCopasiTask::OUTPUT_UI, (*CCopasiRootContainer::getDatamodelList())[0], NULL))
+      if (!mpTask->initialize(CCopasiTask::OUTPUT_UI, &CCopasiRootContainer::getDatamodelList()->operator[](0), NULL))
         throw CCopasiException(CCopasiMessage::peekLastMessage());
     }
 

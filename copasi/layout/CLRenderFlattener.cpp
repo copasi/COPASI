@@ -1,12 +1,4 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLRenderFlattener.cpp,v $
-//   $Revision: 1.3 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/09/30 16:35:21 $
-// End CVS Header
-
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -64,7 +56,6 @@ CLRenderInformationBase* CLRenderFlattener::flatten(const CLRenderInformationBas
   // the result should be of the same type as the type that is passed in
   bool local = dynamic_cast<const CLLocalRenderInformation*>(&renderInformation) != NULL;
 
-
   // create a list of referenced render information objects
   std::vector< const CLRenderInformationBase * > referenceChain;
   const CLRenderInformationBase* pCurrent = &renderInformation;
@@ -91,9 +82,9 @@ CLRenderInformationBase* CLRenderFlattener::flatten(const CLRenderInformationBas
 
               while (j < jMax)
                 {
-                  if (localList[j]->getKey() == referenceKey)
+                  if (localList[j].getKey() == referenceKey)
                     {
-                      pNext = dynamic_cast<const CLRenderInformationBase*>(localList[j]);
+                      pNext = dynamic_cast<const CLRenderInformationBase*>(&localList[j]);
                       break;
                     }
 
@@ -108,9 +99,9 @@ CLRenderInformationBase* CLRenderFlattener::flatten(const CLRenderInformationBas
 
               while (j < jMax)
                 {
-                  if (globalList[j]->getKey() == referenceKey)
+                  if (globalList[j].getKey() == referenceKey)
                     {
-                      pNext = dynamic_cast<const CLRenderInformationBase*>(globalList[j]);
+                      pNext = dynamic_cast<const CLRenderInformationBase*>(&globalList[j]);
                       break;
                     }
 

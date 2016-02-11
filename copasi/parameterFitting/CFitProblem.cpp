@@ -277,18 +277,18 @@ bool CFitProblem::elevateChildren()
       if (!mpParmSteadyStateCN->compare(0, 5 , "Task_") ||
           *mpParmSteadyStateCN == "")
         for (i = 0; i < imax; i++)
-          if ((*pTasks)[i]->getType() == CTaskEnum::steadyState)
+          if (pTasks->operator[](i).getType() == CTaskEnum::steadyState)
             {
-              *mpParmSteadyStateCN = (*pTasks)[i]->getCN();
+              *mpParmSteadyStateCN = pTasks->operator[](i).getCN();
               break;
             }
 
       if (!mpParmTimeCourseCN->compare(0, 5 , "Task_") ||
           *mpParmTimeCourseCN == "")
         for (i = 0; i < imax; i++)
-          if ((*pTasks)[i]->getType() == CTaskEnum::timeCourse)
+          if (pTasks->operator[](i).getType() == CTaskEnum::timeCourse)
             {
-              *mpParmTimeCourseCN = (*pTasks)[i]->getCN();
+              *mpParmTimeCourseCN = pTasks->operator[](i).getCN();
               break;
             }
     }
@@ -436,7 +436,7 @@ bool CFitProblem::initialize()
       if (mpSteadyState == NULL)
         {
           mpSteadyState =
-            static_cast<CSteadyStateTask *>((*pDataModel->getTaskList())["Steady-State"]);
+            static_cast<CSteadyStateTask *>(&pDataModel->getTaskList()->operator[]("Steady-State"));
         }
 
       if (mpSteadyState == NULL) fatalError();
@@ -460,7 +460,7 @@ bool CFitProblem::initialize()
       if (mpTrajectory == NULL)
         {
           mpTrajectory =
-            static_cast<CTrajectoryTask *>((*pDataModel->getTaskList())["Time-Course"]);
+            static_cast<CTrajectoryTask *>(&pDataModel->getTaskList()->operator[]("Time-Course"));
         }
 
       if (mpTrajectory == NULL) fatalError();

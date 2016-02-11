@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -46,7 +46,7 @@
 //static
 void SBMLDocumentLoader::readListOfLayouts(CListOfLayouts & lol,
     const ListOf & sbmlList,
-    const std::map<CCopasiObject*, SBase*> & copasimodelmap)
+    const std::map<const CCopasiObject*, SBase*> & copasimodelmap)
 {
   unsigned C_INT32 i, iMax;
 
@@ -100,8 +100,8 @@ void SBMLDocumentLoader::readListOfLayouts(CListOfLayouts & lol,
   std::map<std::string, std::string> modelmap;
 
   std::string s1, s2;
-  std::map<CCopasiObject*, SBase*>::const_iterator it;
-  std::map<CCopasiObject*, SBase*>::const_iterator itEnd = copasimodelmap.end();
+  std::map<const CCopasiObject*, SBase*>::const_iterator it;
+  std::map<const CCopasiObject*, SBase*>::const_iterator itEnd = copasimodelmap.end();
 
   for (it = copasimodelmap.begin(); it != itEnd; ++it)
     {
@@ -123,7 +123,7 @@ void SBMLDocumentLoader::readListOfLayouts(CListOfLayouts & lol,
     {
       std::map<std::string, std::string> layoutmap;
       const Layout* tmp
-      = dynamic_cast<const Layout*>(sbmlList.get(i));
+        = dynamic_cast<const Layout*>(sbmlList.get(i));
 
       if (tmp)
         {
@@ -154,7 +154,7 @@ CLayout * SBMLDocumentLoader::createLayout(const Layout & sbmlLayout,
   for (i = 0; i < iMax; ++i)
     {
       const CompartmentGlyph* tmp
-      = dynamic_cast<const CompartmentGlyph*>(sbmlLayout.getListOfCompartmentGlyphs()->get(i));
+        = dynamic_cast<const CompartmentGlyph*>(sbmlLayout.getListOfCompartmentGlyphs()->get(i));
 
       if (tmp)
         layout->addCompartmentGlyph(new CLCompartmentGlyph(*tmp, modelmap, layoutmap));
@@ -166,7 +166,7 @@ CLayout * SBMLDocumentLoader::createLayout(const Layout & sbmlLayout,
   for (i = 0; i < iMax; ++i)
     {
       const SpeciesGlyph* tmp
-      = dynamic_cast<const SpeciesGlyph*>(sbmlLayout.getListOfSpeciesGlyphs()->get(i));
+        = dynamic_cast<const SpeciesGlyph*>(sbmlLayout.getListOfSpeciesGlyphs()->get(i));
 
       if (tmp)
         layout->addMetaboliteGlyph(new CLMetabGlyph(*tmp, modelmap, layoutmap));
@@ -178,7 +178,7 @@ CLayout * SBMLDocumentLoader::createLayout(const Layout & sbmlLayout,
   for (i = 0; i < iMax; ++i)
     {
       const ReactionGlyph* tmp
-      = dynamic_cast<const ReactionGlyph*>(sbmlLayout.getListOfReactionGlyphs()->get(i));
+        = dynamic_cast<const ReactionGlyph*>(sbmlLayout.getListOfReactionGlyphs()->get(i));
 
       if (tmp)
         layout->addReactionGlyph(new CLReactionGlyph(*tmp, modelmap, layoutmap));
@@ -190,7 +190,7 @@ CLayout * SBMLDocumentLoader::createLayout(const Layout & sbmlLayout,
   for (i = 0; i < iMax; ++i)
     {
       const TextGlyph* tmp
-      = dynamic_cast<const TextGlyph*>(sbmlLayout.getListOfTextGlyphs()->get(i));
+        = dynamic_cast<const TextGlyph*>(sbmlLayout.getListOfTextGlyphs()->get(i));
 
       if (tmp)
         layout->addTextGlyph(new CLTextGlyph(*tmp, modelmap, layoutmap));
@@ -202,7 +202,7 @@ CLayout * SBMLDocumentLoader::createLayout(const Layout & sbmlLayout,
   for (i = 0; i < iMax; ++i)
     {
       const GraphicalObject* graphical
-      = dynamic_cast<const GraphicalObject*>(sbmlLayout.getListOfAdditionalGraphicalObjects()->get(i));
+        = dynamic_cast<const GraphicalObject*>(sbmlLayout.getListOfAdditionalGraphicalObjects()->get(i));
 
       if (graphical)
         layout->addGeneralGlyph(new CLGeneralGlyph(*graphical, modelmap, layoutmap));
@@ -215,7 +215,7 @@ CLayout * SBMLDocumentLoader::createLayout(const Layout & sbmlLayout,
   for (i = 0; i < iMax; ++i)
     {
       const TextGlyph* tmp
-      = dynamic_cast<const TextGlyph*>(sbmlLayout.getListOfTextGlyphs()->get(i));
+        = dynamic_cast<const TextGlyph*>(sbmlLayout.getListOfTextGlyphs()->get(i));
 
       if (tmp)
         postprocessTextGlyph(*tmp, layoutmap);

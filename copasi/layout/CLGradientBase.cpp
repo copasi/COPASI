@@ -1,12 +1,4 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLGradientBase.cpp,v $
-//   $Revision: 1.5 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/04/23 15:44:52 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -27,11 +19,11 @@
  * Constructor.
  */
 CLGradientBase::CLGradientBase(const std::string& name, CCopasiContainer* pParent):
-    CLBase(),
-    CCopasiContainer(name, pParent),
-    mSpreadMethod(CLGradientBase::PAD),
-    mKey(""),
-    mId("")
+  CLBase(),
+  CCopasiContainer(name, pParent),
+  mSpreadMethod(CLGradientBase::PAD),
+  mKey(""),
+  mId("")
 {
 }
 
@@ -39,12 +31,12 @@ CLGradientBase::CLGradientBase(const std::string& name, CCopasiContainer* pParen
  * Copy Constructor.
  */
 CLGradientBase::CLGradientBase(const CLGradientBase& source, CCopasiContainer* pParent):
-    CLBase(source),
-    CCopasiContainer(source, pParent),
-    mSpreadMethod(source.mSpreadMethod),
-    mGradientStops(source.mGradientStops, this),
-    mKey(""),
-    mId(source.mId)
+  CLBase(source),
+  CCopasiContainer(source, pParent),
+  mSpreadMethod(source.mSpreadMethod),
+  mGradientStops(source.mGradientStops, this),
+  mKey(""),
+  mId(source.mId)
 {
 }
 
@@ -52,19 +44,21 @@ CLGradientBase::CLGradientBase(const CLGradientBase& source, CCopasiContainer* p
  * Constructor to generate object from the corresponding SBML object.
  */
 CLGradientBase::CLGradientBase(const GradientBase& source, const std::string& name, CCopasiContainer* pParent):
-    CLBase(),
-    CCopasiContainer(name, pParent),
-    mKey(""),
-    mId(source.getId())
+  CLBase(),
+  CCopasiContainer(name, pParent),
+  mKey(""),
+  mId(source.getId())
 {
   switch (source.getSpreadMethod())
     {
       case GradientBase::REFLECT:
         this->mSpreadMethod = CLGradientBase::REFLECT;
         break;
+
       case GradientBase::REPEAT:
         this->mSpreadMethod = CLGradientBase::REPEAT;
         break;
+
       default:
         this->mSpreadMethod = CLGradientBase::PAD;
         break;
@@ -134,7 +128,7 @@ const CCopasiVector<CLGradientStop>* CLGradientBase::getListOfGradientStops() co
  */
 CLGradientStop* CLGradientBase::getGradientStop(size_t i)
 {
-  return (i < this->mGradientStops.size()) ? (this->mGradientStops[i]) : NULL;
+  return (i < this->mGradientStops.size()) ? (&this->mGradientStops[i]) : NULL;
 }
 
 /**
@@ -143,7 +137,7 @@ CLGradientStop* CLGradientBase::getGradientStop(size_t i)
  */
 const CLGradientStop* CLGradientBase::getGradientStop(size_t i) const
 {
-  return (i < this->mGradientStops.size()) ? (this->mGradientStops[i]) : NULL;
+  return (i < this->mGradientStops.size()) ? (&this->mGradientStops[i]) : NULL;
 }
 
 /**
@@ -200,9 +194,11 @@ void CLGradientBase::addSBMLAttributes(GradientBase* pBase) const
       case CLGradientBase::REFLECT:
         pBase->setSpreadMethod(GradientBase::REFLECT);
         break;
+
       case CLGradientBase::REPEAT:
         pBase->setSpreadMethod(GradientBase::REPEAT);
         break;
+
       default:
         pBase->setSpreadMethod(GradientBase::PAD);
         break;
@@ -212,6 +208,6 @@ void CLGradientBase::addSBMLAttributes(GradientBase* pBase) const
 
   for (i = 0; i < iMax; ++i)
     {
-      pBase->addGradientStop(this->mGradientStops[i]->toSBML(pBase->getLevel(), pBase->getVersion()));
+      pBase->addGradientStop(this->mGradientStops[i].toSBML(pBase->getLevel(), pBase->getVersion()));
     }
 }

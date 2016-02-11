@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -60,7 +60,7 @@ bool CODEExporterBM::exportTitleData(const CCopasiDataModel* pDataModel, std::os
   os << "STARTTIME = 0" << std::endl;
 
   const CTrajectoryTask * pTrajectory =
-    dynamic_cast<const CTrajectoryTask *>((*const_cast<CCopasiDataModel*>(pDataModel)->getTaskList())["Time-Course"]);
+    dynamic_cast<const CTrajectoryTask *>(&const_cast<CCopasiDataModel*>(pDataModel)->getTaskList()->operator[]("Time-Course"));
   const CTrajectoryProblem * pTrajectoryProblem =
     dynamic_cast<const CTrajectoryProblem *>(pTrajectory->getProblem());
 

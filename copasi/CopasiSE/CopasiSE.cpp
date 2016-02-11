@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -395,27 +395,27 @@ int main(int argc, char *argv[])
               size_t i, imax = TaskList.size();
 
               for (i = 0; i < imax; i++)
-                if (TaskList[i]->isScheduled())
+                if (TaskList[i].isScheduled())
                   {
-                    TaskList[i]->setCallBack(pProcessReport);
+                    TaskList[i].setCallBack(pProcessReport);
 
                     bool success = true;
 
                     try
                       {
-                        success = TaskList[i]->initialize(CCopasiTask::OUTPUT_SE, pDataModel, NULL);
+                        success = TaskList[i].initialize(CCopasiTask::OUTPUT_SE, pDataModel, NULL);
 
                         // We need to check whether the result is saved in any form.
                         // If not we need to stop right here to avoid wasting time.
                         if (CCopasiMessage::checkForMessage(MCCopasiTask + 5) &&
-                            (!TaskList[i]->isUpdateModel() ||
+                            (!TaskList[i].isUpdateModel() ||
                              COptions::compareValue("Save", std::string(""))))
                           {
                             success = false;
                           }
 
                         if (success)
-                          success &= TaskList[i]->process(true);
+                          success &= TaskList[i].process(true);
                       }
 
                     catch (...)
@@ -423,12 +423,12 @@ int main(int argc, char *argv[])
                         success = false;
                       }
 
-                    TaskList[i]->restore();
+                    TaskList[i].restore();
 
                     if (!success)
                       {
                         std::cerr << "File: " << pDataModel->getFileName() << std::endl;
-                        std::cerr << "Task: " << TaskList[i]->getObjectName() << std::endl;
+                        std::cerr << "Task: " << TaskList[i].getObjectName() << std::endl;
                         std::cerr << CCopasiMessage::getAllMessageText() << std::endl;
 
                         retcode = 1;
@@ -439,7 +439,7 @@ int main(int argc, char *argv[])
                         pProcessReport->finish();
                       }
 
-                    TaskList[i]->setCallBack(NULL);
+                    TaskList[i].setCallBack(NULL);
                     pDataModel->finish();
                   }
 
@@ -499,24 +499,24 @@ int validate()
   // We are already sure that the COPASI model compiled. That means
   // we only need to test the active tasks
   assert(CCopasiRootContainer::getDatamodelList()->size() != 0);
-  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
+  CCopasiDataModel* pDataModel = &CCopasiRootContainer::getDatamodelList()->operator[](0);
   CCopasiVectorN< CCopasiTask > & TaskList = * pDataModel->getTaskList();
   size_t i, imax = TaskList.size();
 
   for (i = 0; i < imax; i++)
-    if (TaskList[i]->isScheduled())
+    if (TaskList[i].isScheduled())
       {
         bool success = true;
 
         try
           {
             success =
-              TaskList[i]->initialize(CCopasiTask::OUTPUT_SE, pDataModel, NULL);
+              TaskList[i].initialize(CCopasiTask::OUTPUT_SE, pDataModel, NULL);
 
             // We need to check whether the result is saved in any form.
             // If not we need to stop right here to avoid wasting time.
             if (CCopasiMessage::checkForMessage(MCCopasiTask + 5) &&
-                (!TaskList[i]->isUpdateModel() ||
+                (!TaskList[i].isUpdateModel() ||
                  COptions::compareValue("Save", std::string(""))))
               success = false;
           }
@@ -526,12 +526,12 @@ int validate()
             success = false;
           }
 
-        TaskList[i]->restore();
+        TaskList[i].restore();
 
         if (!success)
           {
             std::cerr << "File: " << pDataModel->getFileName() << std::endl;
-            std::cerr << "Task: " << TaskList[i]->getObjectName() << std::endl;
+            std::cerr << "Task: " << TaskList[i].getObjectName() << std::endl;
             std::cerr << CCopasiMessage::getAllMessageText() << std::endl;
 
             retcode = 1;
@@ -601,7 +601,7 @@ int exportSBML()
 
   assert(CCopasiRootContainer::getDatamodelList()->size() != 0);
 
-  if (!(*CCopasiRootContainer::getDatamodelList())[0]->exportSBML(ExportSBML, true, Level, Version))
+  if (!CCopasiRootContainer::getDatamodelList()->operator[](0).exportSBML(ExportSBML, true, Level, Version))
     {
       std::cerr << "SBML Export File: " << ExportSBML << std::endl;
       std::cerr << CCopasiMessage::getAllMessageText() << std::endl;

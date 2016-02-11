@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -189,26 +189,26 @@ void CModelExpansion::SetOfModelElements::fillComplete(const CModel* pModel)
   size_t i;
 
   for (i = 0; i < pModel->getCompartments().size(); ++i)
-    addCompartment(pModel->getCompartments()[i]);
+    addCompartment(&pModel->getCompartments()[i]);
 
   for (i = 0; i < pModel->getMetabolites().size(); ++i)
-    addMetab(pModel->getMetabolites()[i]);
+    addMetab(&pModel->getMetabolites()[i]);
 
   for (i = 0; i < pModel->getReactions().size(); ++i)
-    addReaction(pModel->getReactions()[i]);
+    addReaction(&pModel->getReactions()[i]);
 
   for (i = 0; i < pModel->getModelValues().size(); ++i)
-    addGlobalQuantity(pModel->getModelValues()[i]);
+    addGlobalQuantity(&pModel->getModelValues()[i]);
 
   for (i = 0; i < pModel->getEvents().size(); ++i)
-    addEvent(pModel->getEvents()[i]);
+    addEvent(&pModel->getEvents()[i]);
 }
 
 //***************************************************************************************
 
 bool CModelExpansion::ElementsMap::exists(const CCopasiObject* source) const
 {
-  std::map<const CCopasiObject*, CCopasiObject*>::const_iterator it;
+  std::map< const CCopasiObject *, const CCopasiObject * >::const_iterator it;
   it = mMap.find(source);
   return (it != mMap.end() && it->second != NULL);
 }
@@ -219,14 +219,14 @@ bool CModelExpansion::ElementsMap::exists(const std::string & sourceKey) const
   return exists(tmp);
 }
 
-void CModelExpansion::ElementsMap::add(const CCopasiObject* source, CCopasiObject* copy)
+void CModelExpansion::ElementsMap::add(const CCopasiObject* source, const CCopasiObject* copy)
 {
   mMap[source] = copy;
 }
 
-CCopasiObject* CModelExpansion::ElementsMap::getDuplicatePtr(const CCopasiObject* source) const
+const CCopasiObject* CModelExpansion::ElementsMap::getDuplicatePtr(const CCopasiObject* source) const
 {
-  std::map<const CCopasiObject*, CCopasiObject*>::const_iterator it;
+  std::map<const CCopasiObject*, const CCopasiObject * >::const_iterator it;
   it = mMap.find(source);
 
   if (it != mMap.end())
@@ -252,7 +252,7 @@ std::string CModelExpansion::ElementsMap::getDuplicateKey(const std::string & so
     return "";
 }
 
-const std::map<const CCopasiObject*, CCopasiObject*> & CModelExpansion::ElementsMap::getMap() const
+const std::map<const CCopasiObject*, const CCopasiObject*> & CModelExpansion::ElementsMap::getMap() const
 {
   return mMap;
 }
@@ -475,7 +475,7 @@ void CModelExpansion::createRectangularArray(const SetOfModelElements & source, 
   mpModel->compileIfNecessary(NULL);
 }
 
-std::set<CCopasiObject*> CModelExpansion::copyCompleteModel(const CModel* pSourceModel)
+std::set< const CCopasiObject * > CModelExpansion::copyCompleteModel(const CModel* pSourceModel)
 {
   mpSourceModel = pSourceModel;
 
@@ -485,8 +485,8 @@ std::set<CCopasiObject*> CModelExpansion::copyCompleteModel(const CModel* pSourc
   duplicate(sourceElements, "[merge]", map);
   mpModel->compileIfNecessary(NULL);
 
-  std::set<CCopasiObject*> ret;
-  std::map<const CCopasiObject*, CCopasiObject*>::const_iterator it;
+  std::set< const CCopasiObject * > ret;
+  std::map< const CCopasiObject *, const CCopasiObject * >::const_iterator it;
 
   for (it = map.getMap().begin(); it != map.getMap().end(); ++it)
     {
@@ -606,7 +606,7 @@ void CModelExpansion::duplicateMetab(const CMetab* source, const std::string & i
           duplicateCompartment(sourceParent, index, sourceSet, emap);
         }
 
-      parent = dynamic_cast<CCompartment *>(emap.getDuplicatePtr(sourceParent));
+      parent = dynamic_cast< const CCompartment * >(emap.getDuplicatePtr(sourceParent));
     }
 
   //try creating the object until we find a name that is not yet used
@@ -669,7 +669,7 @@ void CModelExpansion::duplicateReaction(const CReaction* source, const std::stri
 
   for (i = 0; i < source->getChemEq().getSubstrates().size(); ++i)
     {
-      const CChemEqElement * sourceElement = source->getChemEq().getSubstrates()[i];
+      const CChemEqElement * sourceElement = &source->getChemEq().getSubstrates()[i];
       const CMetab* pMetab = NULL;
 
       if (sourceSet.contains(sourceElement->getMetabolite()))
@@ -690,7 +690,7 @@ void CModelExpansion::duplicateReaction(const CReaction* source, const std::stri
 
   for (i = 0; i < source->getChemEq().getProducts().size(); ++i)
     {
-      const CChemEqElement * sourceElement = source->getChemEq().getProducts()[i];
+      const CChemEqElement * sourceElement = &source->getChemEq().getProducts()[i];
       const CMetab* pMetab = NULL;
 
       if (sourceSet.contains(sourceElement->getMetabolite()))
@@ -711,7 +711,7 @@ void CModelExpansion::duplicateReaction(const CReaction* source, const std::stri
 
   for (i = 0; i < source->getChemEq().getModifiers().size(); ++i)
     {
-      const CChemEqElement * sourceElement = source->getChemEq().getModifiers()[i];
+      const CChemEqElement * sourceElement = &source->getChemEq().getModifiers()[i];
       const CMetab* pMetab = NULL;
 
       if (sourceSet.contains(sourceElement->getMetabolite()))
@@ -920,7 +920,7 @@ void CModelExpansion::duplicateEvent(CEvent* source, const std::string & index, 
 
   for (i = 0; i < source->getAssignments().size(); ++i)
     {
-      const CEventAssignment* pSourceAssignment = source->getAssignments()[i];
+      const CEventAssignment* pSourceAssignment = &source->getAssignments()[i];
 
       //const CModelEntity * pSourceTarget = dynamic_cast<const CModelEntity * >(CCopasiRootContainer::getKeyFactory()->get(pSourceAssignment->getTargetKey()));
       if (sourceSet.contains(pSourceAssignment->getTargetKey()))
@@ -1098,30 +1098,30 @@ void CModelExpansion::replaceInModel(const ElementsMap & emap, bool remove)
   size_t i;
 
   for (i = 0; i < mpModel->getCompartments().size(); ++i)
-    replaceInCompartment(mpModel->getCompartments()[i], emap);
+    replaceInCompartment(&mpModel->getCompartments()[i], emap);
 
   std::vector<CMetab*> metvec;
 
   for (i = 0; i < mpModel->getMetabolites().size(); ++i)
-    metvec.push_back(mpModel->getMetabolites()[i]);
+    metvec.push_back(&mpModel->getMetabolites()[i]);
 
   for (i = 0; i < metvec.size(); ++i)
     replaceInMetab(metvec[i], emap);
 
   for (i = 0; i < mpModel->getReactions().size(); ++i)
-    replaceInReaction(mpModel->getReactions()[i], emap);
+    replaceInReaction(&mpModel->getReactions()[i], emap);
 
   for (i = 0; i < mpModel->getModelValues().size(); ++i)
-    replaceInModelEntity(mpModel->getModelValues()[i], emap);
+    replaceInModelEntity(&mpModel->getModelValues()[i], emap);
 
   for (i = 0; i < mpModel->getEvents().size(); ++i)
-    replaceInEvent(mpModel->getEvents()[i], emap);
+    replaceInEvent(&mpModel->getEvents()[i], emap);
 
   mpModel->forceCompile(NULL);
 
   if (remove)
     {
-      std::map<const CCopasiObject*, CCopasiObject*>::const_iterator it;
+      std::map< const CCopasiObject *, const CCopasiObject * >::const_iterator it;
 
       for (it = emap.getMap().begin(); it != emap.getMap().end(); ++it)
         {
@@ -1172,7 +1172,7 @@ void CModelExpansion::replaceInMetab(CMetab* pX, const ElementsMap & emap)
     {
       //move the metab to the new compartment
       CCompartment* oldComp = const_cast<CCompartment*>(pX->getCompartment());
-      CCompartment* newComp = dynamic_cast<CCompartment*>(emap.getDuplicatePtr(pX->getCompartment()));
+      CCompartment* newComp = const_cast<CCompartment*>(dynamic_cast<const CCompartment*>(emap.getDuplicatePtr(pX->getCompartment())));
       bool success = false;
 
       do
@@ -1203,7 +1203,7 @@ void CModelExpansion::replaceInReaction(CReaction* pX, const ElementsMap & emap)
 
   for (i = 0; i < pX->getChemEq().getSubstrates().size(); ++i)
     {
-      CChemEqElement * sourceElement = pX->getChemEq().getSubstrates()[i];
+      CChemEqElement * sourceElement = const_cast< CChemEqElement * >(&pX->getChemEq().getSubstrates()[i]);
       const CMetab* pMetab = dynamic_cast<const CMetab*>(emap.getDuplicatePtr(sourceElement->getMetabolite()));
 
       if (pMetab)
@@ -1214,7 +1214,7 @@ void CModelExpansion::replaceInReaction(CReaction* pX, const ElementsMap & emap)
 
   for (i = 0; i < pX->getChemEq().getProducts().size(); ++i)
     {
-      CChemEqElement * sourceElement = pX->getChemEq().getProducts()[i];
+      CChemEqElement * sourceElement = const_cast< CChemEqElement * >(&pX->getChemEq().getProducts()[i]);
       const CMetab* pMetab = dynamic_cast<const CMetab*>(emap.getDuplicatePtr(sourceElement->getMetabolite()));
 
       if (pMetab)
@@ -1225,7 +1225,7 @@ void CModelExpansion::replaceInReaction(CReaction* pX, const ElementsMap & emap)
 
   for (i = 0; i < pX->getChemEq().getModifiers().size(); ++i)
     {
-      CChemEqElement * sourceElement = pX->getChemEq().getModifiers()[i];
+      CChemEqElement * sourceElement = const_cast< CChemEqElement * >(&pX->getChemEq().getModifiers()[i]);
       const CMetab* pMetab = dynamic_cast<const CMetab*>(emap.getDuplicatePtr(sourceElement->getMetabolite()));
 
       if (pMetab)
@@ -1283,7 +1283,7 @@ void CModelExpansion::replaceInEvent(CEvent* pX, const ElementsMap & emap)
 
   for (i = 0; i < pX->getAssignments().size(); ++i)
     {
-      CEventAssignment* pAssignment = pX->getAssignments()[i];
+      CEventAssignment* pAssignment = &pX->getAssignments()[i];
       replaceInExpression(pAssignment->getExpressionPtr(), emap);
 
       std::string replacekey = emap.getDuplicateKey(pAssignment->getTargetKey());

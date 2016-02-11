@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -74,7 +74,7 @@ void CQSensResultWidget::newResult()
   clearArrays();
 
   CSensTask * pTask =
-    dynamic_cast<CSensTask*>((*(*CCopasiRootContainer::getDatamodelList())[0]->getTaskList())["Sensitivities"]);
+    dynamic_cast<CSensTask*>(&CCopasiRootContainer::getDatamodelList()->operator[](0).getTaskList()->operator[]("Sensitivities"));
 
   if (!pTask)
     return;
@@ -134,7 +134,7 @@ bool CQSensResultWidget::enterProtected()
   //clear the widget if the pointer to the result has changed
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   CSensTask * pTask =
-    dynamic_cast<CSensTask*>((*(*CCopasiRootContainer::getDatamodelList())[0]->getTaskList())["Sensitivities"]);
+    dynamic_cast<CSensTask*>(&CCopasiRootContainer::getDatamodelList()->operator[](0).getTaskList()->operator[]("Sensitivities"));
 
   if (!pTask)
     {
@@ -185,7 +185,7 @@ void CQSensResultWidget::saveToFile()
 
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   CSensTask * pTask =
-    dynamic_cast<CSensTask*>((*(*CCopasiRootContainer::getDatamodelList())[0]->getTaskList())["Sensitivities"]);
+    dynamic_cast<CSensTask*>(&CCopasiRootContainer::getDatamodelList()->operator[](0).getTaskList()->operator[]("Sensitivities"));
 
   if (pTask != NULL)
     file << pTask->getResult();

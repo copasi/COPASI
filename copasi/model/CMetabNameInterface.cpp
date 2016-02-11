@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -63,7 +63,7 @@ std::string CMetabNameInterface::getDisplayName(const CModel* model,
   if (model->getCompartments().size() == 0)
     DefaultCompartment = "compartment";
   else
-    DefaultCompartment = model->getCompartments()[0]->getObjectName();
+    DefaultCompartment = model->getCompartments()[0].getObjectName();
 
   std::string Metabolite = quoted ? quote(metabolite, "{}") : metabolite;
 
@@ -109,12 +109,12 @@ CMetab * CMetabNameInterface::getMetabolite(const CModel* model,
 
       if (Index != C_INVALID_INDEX)
         {
-          CCompartment *pCompartment = model->getCompartments()[Index];
+          const CCompartment *pCompartment = &model->getCompartments()[Index];
 
           Index = pCompartment->getMetabolites().getIndex(metabolite);
 
           if (Index != C_INVALID_INDEX)
-            return pCompartment->getMetabolites()[Index];
+            return const_cast< CMetab * >(&pCompartment->getMetabolites()[Index]);
         }
 
       return NULL;
@@ -123,7 +123,7 @@ CMetab * CMetabNameInterface::getMetabolite(const CModel* model,
   Index = model->findMetabByName(metabolite);
 
   if (Index != C_INVALID_INDEX)
-    return model->getMetabolites()[Index];
+    return const_cast< CMetab * >(&model->getMetabolites()[Index]);
 
   return NULL;
 }
@@ -137,7 +137,7 @@ bool CMetabNameInterface::isUnique(const CModel* model, const std::string & name
 
   for (i = 0; i < metabs.size(); i++)
     {
-      metabName = metabs[i]->getObjectName();
+      metabName = metabs[i].getObjectName();
 
       if (metabName == name)
         {
@@ -161,7 +161,7 @@ bool CMetabNameInterface::doesExist(const CModel* model,
 
       if (Index == C_INVALID_INDEX) return false;
 
-      Index = model->getCompartments()[Index]->getMetabolites().getIndex(metabolite);
+      Index = model->getCompartments()[Index].getMetabolites().getIndex(metabolite);
 
       return (Index != C_INVALID_INDEX);
     }

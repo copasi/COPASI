@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -106,7 +106,7 @@ bool CPlotSpecification::createDefaultPlot(const CModel* model)
 
   for (i = 0; i < imax; ++i)
     {
-      tmp = model->getMetabolites()[i]->getConcentrationReference();
+      tmp = model->getMetabolites()[i].getConcentrationReference();
       name2 = tmp->getCN();
       itemTitle = tmp->getObjectDisplayName();
 

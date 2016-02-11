@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -132,11 +132,11 @@ void CQLayoutsWidget::deleteSelectedLayouts()
   QModelIndexList::const_iterator end = mappedSelRows.end();
 
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CListOfLayouts * pListOfLayouts = (*CCopasiRootContainer::getDatamodelList())[0]->getListOfLayouts();
+  CListOfLayouts * pListOfLayouts = CCopasiRootContainer::getDatamodelList()->operator[](0).getListOfLayouts();
 
   for (; it != end; ++it)
     {
-      LayoutWindowMap::iterator itWindow = mLayoutWindowMap.find((*pListOfLayouts)[it->row()]->getKey());
+      LayoutWindowMap::iterator itWindow = mLayoutWindowMap.find((*pListOfLayouts)[it->row()].getKey());
 
       if (itWindow != mLayoutWindowMap.end())
         {
@@ -164,12 +164,12 @@ bool CQLayoutsWidget::enterProtected()
     }
 
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CListOfLayouts * pListOfLayouts = (*CCopasiRootContainer::getDatamodelList())[0]->getListOfLayouts();
+  CListOfLayouts * pListOfLayouts = CCopasiRootContainer::getDatamodelList()->operator[](0).getListOfLayouts();
   mpLayoutsDM->setListOfLayouts(pListOfLayouts);
 
   // check if we have at least a compartment
   // that we can lay out.
-  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
+  CCopasiDataModel* pDataModel = &CCopasiRootContainer::getDatamodelList()->operator[](0);
 
   if (pDataModel != NULL &&
       pDataModel->getModel() != NULL &&
@@ -188,12 +188,12 @@ bool CQLayoutsWidget::enterProtected()
 
   for (; it != end; ++it)
     {
-      LayoutWindowMap::iterator pos = mLayoutWindowMap.find((*it)->getKey());
+      LayoutWindowMap::iterator pos = mLayoutWindowMap.find(it->getKey());
 
       // if this layout does not have an entry in the layout window map, add one
       if (pos == mLayoutWindowMap.end())
         {
-          mLayoutWindowMap.insert(std::pair<std::string, LayoutWindow*>((*it)->getKey(), (LayoutWindow*)NULL));
+          mLayoutWindowMap.insert(std::pair<std::string, LayoutWindow*>(it->getKey(), (LayoutWindow*)NULL));
         }
     }
 
@@ -220,7 +220,7 @@ bool hasLayout(const CListOfLayouts& layouts, const std::string &name)
 
   for (size_t i = 0; i < layouts.size(); ++i)
     {
-      const CLayout *layout = layouts[i];
+      const CLayout *layout = &layouts[i];
       const std::string &current = layout->getObjectName();
 
       if (current == name)
@@ -233,7 +233,7 @@ bool hasLayout(const CListOfLayouts& layouts, const std::string &name)
 // virtual
 void CQLayoutsWidget::slotBtnNewClicked()
 {
-  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
+  CCopasiDataModel* pDataModel = &CCopasiRootContainer::getDatamodelList()->operator[](0);
   const CModel* pModel = pDataModel->getModel();
   assert(pModel != NULL);
 
@@ -374,16 +374,16 @@ CQLayoutsWidget::LayoutWindow * CQLayoutsWidget::createLayoutWindow(int row, CLa
 
   if (CCopasiRootContainer::getConfiguration()->useOpenGL())
     {
-      pWin = new CQNewMainWindow((*CCopasiRootContainer::getDatamodelList())[0]);
+      pWin = new CQNewMainWindow(&CCopasiRootContainer::getDatamodelList()->operator[](0));
       (static_cast<CQNewMainWindow*>(pWin))->slotLayoutChanged(row);
     }
   else
     {
-      pWin = new CQAnimationWindow(pLayout, (*CCopasiRootContainer::getDatamodelList())[0]);
+      pWin = new CQAnimationWindow(pLayout, &CCopasiRootContainer::getDatamodelList()->operator[](0));
     }
 
 #else
-  pWin = new CQNewMainWindow((*CCopasiRootContainer::getDatamodelList())[0]);
+  pWin = new CQNewMainWindow(CCopasiRootContainer::getDatamodelList()->operator[](0));
   (static_cast<CQNewMainWindow*>(pWin))->slotLayoutChanged(row);
 #endif //DISABLE_QT_LAYOUT_RENDERING
 
@@ -401,9 +401,9 @@ void CQLayoutsWidget::slotShowLayout(const QModelIndex & index)
   int row = index.row();
 
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CListOfLayouts* pListOfLayouts = (*CCopasiRootContainer::getDatamodelList())[0]->getListOfLayouts();
+  CListOfLayouts* pListOfLayouts = CCopasiRootContainer::getDatamodelList()->operator[](0).getListOfLayouts();
 
-  CLayout* pLayout = (* pListOfLayouts)[row];
+  CLayout* pLayout = &pListOfLayouts->operator[](row);
   std::string Key = pLayout->getKey();
 
   if (pLayout != NULL)

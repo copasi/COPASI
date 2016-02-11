@@ -93,7 +93,6 @@ void CDataModelRenameHandler::handle(const std::string & oldCN, const std::strin
 
       for (; it != itEnd; ++it)
         {
-          currentSize = (*it)->size();
 
           // We need to make sure that we not change partial names
           if ((currentSize == oldSize ||
@@ -207,9 +206,9 @@ bool CCopasiDataModel::loadModel(std::istream & in,
           return false;
         }
 
-      static_cast<CTrajectoryTask *>((*mData.pTaskList)["Time-Course"])->load(inbuf);
+      static_cast<CTrajectoryTask *>(&mData.pTaskList->operator[]("Time-Course"))->load(inbuf);
 
-      static_cast<CSteadyStateTask *>((*mData.pTaskList)["Steady-State"])->load(inbuf);
+      static_cast<CSteadyStateTask *>(&mData.pTaskList->operator[]("Steady-State"))->load(inbuf);
     }
   else if (Line.find("<COPASI") != std::string::npos)
     {
@@ -557,7 +556,7 @@ bool CCopasiDataModel::importSBMLFromString(const std::string& sbmlDocumentText,
   CModel* pModel = NULL;
 
   SBMLDocument * pSBMLDocument = NULL;
-  std::map<CCopasiObject*, SBase*> Copasi2SBMLMap;
+  std::map<const CCopasiObject*, SBase*> Copasi2SBMLMap;
 
   CListOfLayouts * pLol = NULL; //
 
@@ -607,7 +606,7 @@ bool CCopasiDataModel::importSBMLFromString(const std::string& sbmlDocumentText,
 
   // when importing from SBML, allow continuation on simultaneous events.
   static_cast<CTrajectoryProblem *>(
-    static_cast<CTrajectoryTask *>((*mData.pTaskList)["Time-Course"])->getProblem()
+    static_cast<CTrajectoryTask *>(&mData.pTaskList->operator[]("Time-Course"))->getProblem()
   )->setContinueSimultaneousEvents(true);
 
   mRenameHandler.setEnabled(true);
@@ -642,7 +641,7 @@ bool CCopasiDataModel::importSBML(const std::string & fileName,
   CModel* pModel = NULL;
 
   SBMLDocument * pSBMLDocument = NULL;
-  std::map<CCopasiObject*, SBase*> Copasi2SBMLMap;
+  std::map<const CCopasiObject*, SBase*> Copasi2SBMLMap;
 
   CListOfLayouts * pLol = NULL;
 
@@ -698,7 +697,7 @@ bool CCopasiDataModel::importSBML(const std::string & fileName,
 
   // when importing from SBML, allow continuation on simultaneous events.
   static_cast<CTrajectoryProblem *>(
-    static_cast<CTrajectoryTask *>((*mData.pTaskList)["Time-Course"])->getProblem()
+    static_cast<CTrajectoryTask *>(&mData.pTaskList->operator[]("Time-Course"))->getProblem()
   )->setContinueSimultaneousEvents(true);
 
   mData.mSaveFileName = CDirEntry::dirName(FileName)
@@ -979,7 +978,7 @@ CCopasiDataModel::exportMathModelToString(
   CCopasiVector< CModelValue >::const_iterator end = mData.pModel->getModelValues().end();
 
   for (; it != end; ++it)
-    if ((*it)->isUsed()) break;
+    if (it->isUsed()) break;
 
   if (it != end)
     CCopasiMessage(CCopasiMessage::WARNING, MCODEExporter + 2);
@@ -1042,7 +1041,7 @@ bool CCopasiDataModel::exportMathModel(const std::string & fileName, CProcessRep
   CCopasiVector< CModelValue >::const_iterator end = mData.pModel->getModelValues().end();
 
   for (; it != end; ++it)
-    if ((*it)->isUsed()) break;
+    if (it->isUsed()) break;
 
   if (it != end)
     CCopasiMessage(CCopasiMessage::WARNING, MCODEExporter + 2);
@@ -1551,8 +1550,8 @@ bool CCopasiDataModel::appendDependentTasks(std::set< const CCopasiObject * > ca
   std::set< const CCopasiObject * >::const_iterator it = candidates.begin();
   std::set< const CCopasiObject * >::const_iterator end = candidates.end();
 
-  CCopasiVectorN< CCopasiTask >::const_iterator itTask = mData.pTaskList->begin();
-  CCopasiVectorN< CCopasiTask >::const_iterator endTask = mData.pTaskList->end();
+  CCopasiVectorN< CCopasiTask >::iterator itTask = mData.pTaskList->begin();
+  CCopasiVectorN< CCopasiTask >::iterator endTask = mData.pTaskList->end();
 
   for (; it != end; ++it)
     {
@@ -1565,9 +1564,9 @@ bool CCopasiDataModel::appendDependentTasks(std::set< const CCopasiObject * > ca
 
       for (; itTask != endTask; ++itTask)
         {
-          if ((*itTask)->getReport().getReportDefinition() == pReportDefinition)
+          if (itTask->getReport().getReportDefinition() == pReportDefinition)
             {
-              dependentTasks.insert(*itTask);
+              dependentTasks.insert(itTask);
             }
         }
     }
@@ -1774,13 +1773,13 @@ bool CCopasiDataModel::addDefaultReports()
       CReportDefinition* pReportDef = NULL;
 
       if (mData.pReportDefinitionList->getIndex(CTaskEnum::TaskName[i]) != C_INVALID_INDEX)
-        pReportDef = (*mData.pReportDefinitionList)[CTaskEnum::TaskName[i]];
+        pReportDef = &mData.pReportDefinitionList->operator[](CTaskEnum::TaskName[i]);
 
       //see if the task exists
       CCopasiTask* pTask = NULL;
 
       if (mData.pTaskList->getIndex(CTaskEnum::TaskName[i]) != C_INVALID_INDEX)
-        pTask = (*mData.pTaskList)[CTaskEnum::TaskName[i]];
+        pTask = &mData.pTaskList->operator[](CTaskEnum::TaskName[i]);
 
       if (pTask && pReportDef) //task and report definition exist
         {
@@ -1885,7 +1884,7 @@ bool CCopasiDataModel::setSBMLFileName(const std::string & fileName)
 const std::string & CCopasiDataModel::getSBMLFileName() const
 {return mData.mSBMLFileName;}
 
-std::map<CCopasiObject*, SBase*>& CCopasiDataModel::getCopasi2SBMLMap()
+std::map<const CCopasiObject*, SBase*>& CCopasiDataModel::getCopasi2SBMLMap()
 {
   return mData.mCopasi2SBMLMap;
 }
@@ -1897,7 +1896,7 @@ void CCopasiDataModel::removeSBMLIdFromFunctions()
 
   for (i = 0; i < iMax; ++i)
     {
-      pFunDB->loadedFunctions()[i]->setSBMLId("");
+      pFunDB->loadedFunctions()[i].setSBMLId("");
     }
 }
 
@@ -2158,14 +2157,14 @@ void CCopasiDataModel::commonAfterLoad(CProcessReport* pProcessReport,
         {
           // need initialize, so that all objects are created for the
           // object browser
-          (*it)->initialize(CCopasiTask::NO_OUTPUT, NULL, NULL);
+          it->initialize(CCopasiTask::NO_OUTPUT, NULL, NULL);
 
           // but we should restore any possible changes made to the model
           // by the task, without updating the model
-          bool update = (*it)->isUpdateModel();
-          (*it)->setUpdateModel(false);
-          (*it)->restore();
-          (*it)->setUpdateModel(update);
+          bool update = it->isUpdateModel();
+          it->setUpdateModel(false);
+          it->restore();
+          it->setUpdateModel(update);
         }
 
       catch (...) {}

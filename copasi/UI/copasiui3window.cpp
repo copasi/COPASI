@@ -266,7 +266,7 @@ CopasiUI3Window::CopasiUI3Window():
 
   // Assure that the changed flag is still false;
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  (*CCopasiRootContainer::getDatamodelList())[0]->changed(false);
+  CCopasiRootContainer::getDatamodelList()->operator[](0).changed(false);
   this->mpSliders->setChanged(false);
 
   mpAutoSaveTimer = new QTimer(this);
@@ -439,7 +439,7 @@ void CopasiUI3Window::createActions()
 void
 CopasiUI3Window::slotLoadParameterEstimationProtocol()
 {
-  CQParameterEstimationResult *dlg = new CQParameterEstimationResult(this, (*CCopasiRootContainer::getDatamodelList())[0]);
+  CQParameterEstimationResult *dlg = new CQParameterEstimationResult(this, &CCopasiRootContainer::getDatamodelList()->operator[](0));
   dlg->exec();
   dlg->deleteLater();
 }
@@ -700,7 +700,7 @@ void CopasiUI3Window::slotFileSaveFinished(bool success)
   if (success)
     {
       assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-      (*CCopasiRootContainer::getDatamodelList())[0]->changed(false);
+      CCopasiRootContainer::getDatamodelList()->operator[](0).changed(false);
       this->mpSliders->setChanged(false);
       updateTitle();
 
@@ -759,7 +759,9 @@ void CopasiUI3Window::newDoc()
 
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
 
-  if (mpDataModelGUI && ((*CCopasiRootContainer::getDatamodelList())[0]->isChanged() || this->mpSliders->isChanged()))
+  if (mpDataModelGUI &&
+      (CCopasiRootContainer::getDatamodelList()->operator[](0).isChanged() ||
+       this->mpSliders->isChanged()))
     {
       switch (CQMessageBox::question(this, "COPASI",
                                      "The document contains unsaved changes\n"
@@ -788,7 +790,7 @@ void CopasiUI3Window::newDoc()
     }
 
   mpDataModelGUI->notify(ListViews::MODEL, ListViews::DELETE,
-                         (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getKey());
+                         CCopasiRootContainer::getDatamodelList()->operator[](0).getModel()->getKey());
 
   mpListView->switchToOtherWidget(0, "");
 
@@ -797,7 +799,7 @@ void CopasiUI3Window::newDoc()
 
   mpDataModelGUI->createModel();
   this->mpSliders->setChanged(false);
-  mpDataModelGUI->notify(ListViews::MODEL, ListViews::ADD, (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getKey());
+  mpDataModelGUI->notify(ListViews::MODEL, ListViews::ADD, CCopasiRootContainer::getDatamodelList()->operator[](0).getModel()->getKey());
   //if (!mbObject_browser_open)
   //mpFileMenu->setItemEnabled(nobject_browser, true);
 
@@ -887,7 +889,9 @@ void CopasiUI3Window::slotFileOpen(QString file)
     {
       assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
 
-      if (mpDataModelGUI && ((*CCopasiRootContainer::getDatamodelList())[0]->isChanged() || this->mpSliders->isChanged()))
+      if (mpDataModelGUI &&
+          (CCopasiRootContainer::getDatamodelList()->operator[](0).isChanged() ||
+           this->mpSliders->isChanged()))
         {
           switch (CQMessageBox::question(this, "COPASI",
                                          "The document contains unsaved changes\n"
@@ -916,7 +920,7 @@ void CopasiUI3Window::slotFileOpen(QString file)
         }
 
       mpDataModelGUI->notify(ListViews::MODEL, ListViews::DELETE,
-                             (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getKey());
+                             CCopasiRootContainer::getDatamodelList()->operator[](0).getModel()->getKey());
 
       mpListView->switchToOtherWidget(0, "");
 
@@ -1016,14 +1020,14 @@ void CopasiUI3Window::slotFileOpenFinished(bool success)
   else
     mSaveAsRequired = true;
 
-  if (!(*CCopasiRootContainer::getDatamodelList())[0]->getModel())
+  if (!CCopasiRootContainer::getDatamodelList()->operator[](0).getModel())
     {
       newDoc();
       mSaveAsRequired = true;
     }
 
   mpDataModelGUI->notify(ListViews::MODEL, ListViews::ADD,
-                         (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getKey());
+                         CCopasiRootContainer::getDatamodelList()->operator[](0).getModel()->getKey());
 
   mpaSave->setEnabled(true);
   mpaSaveAs->setEnabled(true);
@@ -1131,7 +1135,7 @@ void CopasiUI3Window::slotAddFileOpenFinished(bool success)
                             QMessageBox::Ok, QMessageBox::Ok);
     }
 
-  (*CCopasiRootContainer::getDatamodelList())[0]->changed();
+  CCopasiRootContainer::getDatamodelList()->operator[](0).changed();
 
   mpaSave->setEnabled(true);
   mpaSaveAs->setEnabled(true);
@@ -1155,7 +1159,7 @@ void CopasiUI3Window::slotFileSave()
   //  mpDataModelGUI->commit(); --> remove to the line after checking the following condition (07.04.08)
 
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  std::string FileName = (*CCopasiRootContainer::getDatamodelList())[0]->getFileName();
+  std::string FileName = CCopasiRootContainer::getDatamodelList()->operator[](0).getFileName();
 
   if (mSaveAsRequired || FileName == "")
     {
@@ -1225,7 +1229,9 @@ void CopasiUI3Window::slotQuit()
 
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
 
-  if (mpDataModelGUI && ((*CCopasiRootContainer::getDatamodelList())[0]->isChanged() || this->mpSliders->isChanged()))
+  if (mpDataModelGUI &&
+      (CCopasiRootContainer::getDatamodelList()->operator[](0).isChanged() ||
+       this->mpSliders->isChanged()))
     {
       connect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(slotQuitFinished(bool)));
 
@@ -1370,7 +1376,9 @@ void CopasiUI3Window::importSBMLFromString(const std::string& sbmlDocumentText)
     {
       assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
 
-      if (mpDataModelGUI && ((*CCopasiRootContainer::getDatamodelList())[0]->isChanged() || this->mpSliders->isChanged()))
+      if (mpDataModelGUI &&
+          (CCopasiRootContainer::getDatamodelList()->operator[](0).isChanged() ||
+           this->mpSliders->isChanged()))
         {
           switch (CQMessageBox::question(this, "COPASI",
                                          "The document contains unsaved changes\n"
@@ -1394,7 +1402,7 @@ void CopasiUI3Window::importSBMLFromString(const std::string& sbmlDocumentText)
         }
 
       mpDataModelGUI->notify(ListViews::MODEL, ListViews::DELETE,
-                             (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getKey());
+                             CCopasiRootContainer::getDatamodelList()->operator[](0).getModel()->getKey());
 
       mpListView->switchToOtherWidget(0, "");
 
@@ -1440,7 +1448,7 @@ void CopasiUI3Window::slotImportSBMLFromStringFinished(bool success)
     }
 
   mpDataModelGUI->notify(ListViews::MODEL, ListViews::ADD,
-                         (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getKey());
+                         CCopasiRootContainer::getDatamodelList()->operator[](0).getModel()->getKey());
 
   //if (!bobject_browser_open)
   //       mpFileMenu->setItemEnabled(nsaveas_menu_id, true);
@@ -1481,7 +1489,9 @@ void CopasiUI3Window::slotImportSBML(QString file)
     {
       assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
 
-      if (mpDataModelGUI && ((*CCopasiRootContainer::getDatamodelList())[0]->isChanged() || this->mpSliders->isChanged()))
+      if (mpDataModelGUI &&
+          (CCopasiRootContainer::getDatamodelList()->operator[](0).isChanged() ||
+           this->mpSliders->isChanged()))
         {
           switch (CQMessageBox::question(this, "COPASI",
                                          "The document contains unsaved changes\n"
@@ -1510,7 +1520,7 @@ void CopasiUI3Window::slotImportSBML(QString file)
         }
 
       mpDataModelGUI->notify(ListViews::MODEL, ListViews::DELETE,
-                             (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getKey());
+                             CCopasiRootContainer::getDatamodelList()->operator[](0).getModel()->getKey());
 
       mpListView->switchToOtherWidget(0, "");
 
@@ -1552,7 +1562,7 @@ void CopasiUI3Window::slotImportSBMLFinished(bool success)
     this->checkPendingMessages();
 
   mpDataModelGUI->notify(ListViews::MODEL, ListViews::ADD,
-                         (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getKey());
+                         CCopasiRootContainer::getDatamodelList()->operator[](0).getModel()->getKey());
 
   mpaSave->setEnabled(true);
   mpaSaveAs->setEnabled(true);
@@ -1589,11 +1599,11 @@ void CopasiUI3Window::slotExportSBML()
       QString Default = QString::null;
       assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
 
-      if ((*CCopasiRootContainer::getDatamodelList())[0]->getFileName() != "")
+      if (CCopasiRootContainer::getDatamodelList()->operator[](0).getFileName() != "")
         Default
-          = FROM_UTF8(CDirEntry::dirName((*CCopasiRootContainer::getDatamodelList())[0]->getFileName())
+          = FROM_UTF8(CDirEntry::dirName(CCopasiRootContainer::getDatamodelList()->operator[](0).getFileName())
                       + CDirEntry::Separator
-                      + CDirEntry::baseName((*CCopasiRootContainer::getDatamodelList())[0]->getFileName())
+                      + CDirEntry::baseName(CCopasiRootContainer::getDatamodelList()->operator[](0).getFileName())
                       + ".xml");
       else
         {
@@ -1603,10 +1613,10 @@ void CopasiUI3Window::slotExportSBML()
       // if there already is an SBML model, we present the user with the Level
       // and Version of that document as the selected Level and Version to
       // export to.
-      if ((*CCopasiRootContainer::getDatamodelList())[0]->getCurrentSBMLDocument() != NULL)
+      if (CCopasiRootContainer::getDatamodelList()->operator[](0).getCurrentSBMLDocument() != NULL)
         {
-          sbmlLevel = (*CCopasiRootContainer::getDatamodelList())[0]->getCurrentSBMLDocument()->getLevel();
-          sbmlVersion = (*CCopasiRootContainer::getDatamodelList())[0]->getCurrentSBMLDocument()->getVersion();
+          sbmlLevel = CCopasiRootContainer::getDatamodelList()->operator[](0).getCurrentSBMLDocument()->getLevel();
+          sbmlVersion = CCopasiRootContainer::getDatamodelList()->operator[](0).getCurrentSBMLDocument()->getVersion();
         }
 
       std::pair<QString, std::pair<unsigned C_INT32, unsigned C_INT32> > nameAndVersion =
@@ -1650,7 +1660,7 @@ void CopasiUI3Window::slotExportMathModel()
   C_INT32 Answer = QMessageBox::No;
   QString tmp;
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
+  CCopasiDataModel* pDataModel = &CCopasiRootContainer::getDatamodelList()->operator[](0);
   assert(pDataModel != NULL);
 
   QString *userFilter = new QString;
@@ -1713,7 +1723,7 @@ void CopasiUI3Window::slotCreateEventsForTimeseries()
 {
   if (CCopasiRootContainer::getDatamodelList()->size() == 0) return;
 
-  CModel* model = (*CCopasiRootContainer::getDatamodelList())[0]->getModel();
+  CModel* model = CCopasiRootContainer::getDatamodelList()->operator[](0).getModel();
 
   if (model == NULL) return;
 
@@ -1743,7 +1753,7 @@ void CopasiUI3Window::slotCreateEventsForTimeseries()
       CCopasiMessage::clearDeque();
     }
 
-  (*CCopasiRootContainer::getDatamodelList())[0]->changed();
+  CCopasiRootContainer::getDatamodelList()->operator[](0).changed();
 
   mpDataModelGUI->notify(ListViews::MODEL, ListViews::CHANGE, "");
 }
@@ -1752,7 +1762,7 @@ void CopasiUI3Window::slotCreateEventsForTimeseries()
 void CopasiUI3Window::slotConvertToIrreversible()
 {
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CModel* model = (*CCopasiRootContainer::getDatamodelList())[0]->getModel();
+  CModel* model = CCopasiRootContainer::getDatamodelList()->operator[](0).getModel();
 
   if (!model) return;
 
@@ -1771,7 +1781,7 @@ void CopasiUI3Window::slotConvertToIrreversible()
       CCopasiMessage::clearDeque();
     }
 
-  (*CCopasiRootContainer::getDatamodelList())[0]->changed();
+  CCopasiRootContainer::getDatamodelList()->operator[](0).changed();
 
   mpDataModelGUI->notify(ListViews::MODEL, ListViews::CHANGE, "");
 }
@@ -1855,7 +1865,7 @@ void CopasiUI3Window::checkPendingMessages()
 void CopasiUI3Window::updateTitle()
 {
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  QString FileName = FROM_UTF8((*CCopasiRootContainer::getDatamodelList())[0]->getFileName());
+  QString FileName = FROM_UTF8(CCopasiRootContainer::getDatamodelList()->operator[](0).getFileName());
 
 #ifdef WIN32 // Windows allows mixing of '/' and '\' as separator.
   FileName.replace("\\", "/");
@@ -1889,7 +1899,7 @@ void CopasiUI3Window::autoSave()
     {
       mSuspendAutoSave = true;
       assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-      (*CCopasiRootContainer::getDatamodelList())[0]->autoSave();
+      CCopasiRootContainer::getDatamodelList()->operator[](0).autoSave();
       mSuspendAutoSave = false;
     }
 
@@ -2143,7 +2153,7 @@ const bool & CopasiUI3Window::messageShown() const
 void CopasiUI3Window::slotCheckModel()
 {
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CModelAnalyzer MA((*CCopasiRootContainer::getDatamodelList())[0]->getModel());
+  CModelAnalyzer MA(CCopasiRootContainer::getDatamodelList()->operator[](0).getModel());
 
   std::ostringstream ss;
   // MA.writeReport(ss, true, false);
@@ -2218,14 +2228,14 @@ void CopasiUI3Window::slotApplyInitialState()
   mpDataModelGUI->commit();
 
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CModel *pModel = (*CCopasiRootContainer::getDatamodelList())[0]->getModel();
+  CModel *pModel = CCopasiRootContainer::getDatamodelList()->operator[](0).getModel();
 
   if (pModel != NULL)
     {
       pModel->compileIfNecessary(NULL);
       pModel->applyInitialValues();
 
-      mpDataModelGUI->notify(ListViews::STATE, ListViews::CHANGE, (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getKey());
+      mpDataModelGUI->notify(ListViews::STATE, ListViews::CHANGE, CCopasiRootContainer::getDatamodelList()->operator[](0).getModel()->getKey());
     }
 }
 
@@ -2234,14 +2244,14 @@ void CopasiUI3Window::slotUpdateInitialState()
   mpDataModelGUI->commit();
 
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CModel *pModel = (*CCopasiRootContainer::getDatamodelList())[0]->getModel();
+  CModel *pModel = CCopasiRootContainer::getDatamodelList()->operator[](0).getModel();
 
   if (pModel != NULL)
     {
       pModel->compileIfNecessary(NULL);
       pModel->stateToIntialState();
 
-      mpDataModelGUI->notify(ListViews::STATE, ListViews::CHANGE, (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getKey());
+      mpDataModelGUI->notify(ListViews::STATE, ListViews::CHANGE, CCopasiRootContainer::getDatamodelList()->operator[](0).getModel()->getKey());
     }
 }
 
@@ -2354,7 +2364,7 @@ void CopasiUI3Window::slotMergeModels()
 
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
 
-  CModel *pModel = (*CCopasiRootContainer::getDatamodelList())[0]->getModel();
+  CModel *pModel = CCopasiRootContainer::getDatamodelList()->operator[](0).getModel();
 
   CQMergingData *widget = new CQMergingData(NULL, 0, true);
   widget->exec();
@@ -2925,7 +2935,7 @@ void CopasiUI3Window::slotImportSEDMLFromStringFinished(bool success)
     }
 
   mpDataModelGUI->notify(ListViews::MODEL, ListViews::ADD,
-                         (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getKey());
+                         CCopasiRootContainer::getDatamodelList()->operator[](0).getModel()->getKey());
 
   //if (!bobject_browser_open)
   //       mpFileMenu->setItemEnabled(nsaveas_menu_id, true);
@@ -2966,7 +2976,7 @@ void CopasiUI3Window::slotImportSEDMLFinished(bool success)
     this->checkPendingMessages();
 
   mpDataModelGUI->notify(ListViews::MODEL, ListViews::ADD,
-                         (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getKey());
+                         CCopasiRootContainer::getDatamodelList()->operator[](0).getModel()->getKey());
 
   mpaSave->setEnabled(true);
   mpaSaveAs->setEnabled(true);
@@ -3010,7 +3020,9 @@ void CopasiUI3Window::slotImportSEDML(QString file)
     {
       assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
 
-      if (mpDataModelGUI && ((*CCopasiRootContainer::getDatamodelList())[0]->isChanged() || this->mpSliders->isChanged()))
+      if (mpDataModelGUI &&
+          (CCopasiRootContainer::getDatamodelList()->operator[](0).isChanged() ||
+           this->mpSliders->isChanged()))
         {
           switch (CQMessageBox::question(this, "COPASI",
                                          "The document contains unsaved changes\n"
@@ -3039,7 +3051,7 @@ void CopasiUI3Window::slotImportSEDML(QString file)
         }
 
       mpDataModelGUI->notify(ListViews::MODEL, ListViews::DELETE,
-                             (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getKey());
+                             CCopasiRootContainer::getDatamodelList()->operator[](0).getModel()->getKey());
 
       mpListView->switchToOtherWidget(0, "");
 
@@ -3145,11 +3157,11 @@ void CopasiUI3Window::slotExportSEDML()
       QString Default = QString::null;
       assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
 
-      if ((*CCopasiRootContainer::getDatamodelList())[0]->getFileName() != "")
+      if (CCopasiRootContainer::getDatamodelList()->operator[](0).getFileName() != "")
         Default
-          = FROM_UTF8(CDirEntry::dirName((*CCopasiRootContainer::getDatamodelList())[0]->getFileName())
+          = FROM_UTF8(CDirEntry::dirName(CCopasiRootContainer::getDatamodelList()->operator[](0).getFileName())
                       + CDirEntry::Separator
-                      + CDirEntry::baseName((*CCopasiRootContainer::getDatamodelList())[0]->getFileName())
+                      + CDirEntry::baseName(CCopasiRootContainer::getDatamodelList()->operator[](0).getFileName())
                       + ".sedml");
       else
         {
@@ -3159,10 +3171,10 @@ void CopasiUI3Window::slotExportSEDML()
       // if there already is an SBML model, we present the user with the Level
       // and Version of that document as the selected Level and Version to
       // export to.
-      if ((*CCopasiRootContainer::getDatamodelList())[0]->getCurrentSEDMLDocument() != NULL)
+      if (CCopasiRootContainer::getDatamodelList()->operator[](0).getCurrentSEDMLDocument() != NULL)
         {
-          sedmlLevel = (*CCopasiRootContainer::getDatamodelList())[0]->getCurrentSEDMLDocument()->getLevel();
-          sedmlVersion = (*CCopasiRootContainer::getDatamodelList())[0]->getCurrentSEDMLDocument()->getVersion();
+          sedmlLevel = CCopasiRootContainer::getDatamodelList()->operator[](0).getCurrentSEDMLDocument()->getLevel();
+          sedmlVersion = CCopasiRootContainer::getDatamodelList()->operator[](0).getCurrentSEDMLDocument()->getVersion();
         }
 
       std::pair<QString, std::pair<unsigned C_INT32, unsigned C_INT32> > nameAndVersion =

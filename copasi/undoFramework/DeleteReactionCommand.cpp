@@ -1,4 +1,4 @@
-// Copyright (C) 2014 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2014 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -31,7 +31,7 @@ DeleteReactionCommand::DeleteReactionCommand(ReactionsWidget1 *pReactionWidget)
 {
   mpReaction = dynamic_cast< CReaction * >(CCopasiRootContainer::getKeyFactory()->get(mpReactionWidget->mKey));
   mReaObjectName = mpReaction->getObjectName();
-  mpRi = new CReactionInterface((*CCopasiRootContainer::getDatamodelList())[0]->getModel());
+  mpRi = new CReactionInterface(CCopasiRootContainer::getDatamodelList()->operator[](0).getModel());
   mpRi->initFromReaction(mpReaction);
 
   mpReactionData = new UndoReactionData(mpReaction);

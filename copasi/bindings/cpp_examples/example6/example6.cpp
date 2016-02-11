@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -79,7 +79,7 @@ int main()
   CCopasiVectorN< CCopasiTask > & TaskList = * pDataModel->getTaskList();
 
   // get the optimization task
-  CTrajectoryTask* pTrajectoryTask = dynamic_cast<CTrajectoryTask*>(TaskList["Time-Course"]);
+  CTrajectoryTask* pTrajectoryTask = dynamic_cast<CTrajectoryTask*>(&TaskList["Time-Course"]);
   assert(pTrajectoryTask != NULL);
 
   // if there isn't one
@@ -248,7 +248,7 @@ int main()
   // now we change the parameter values to see if the parameter fitting
   // can really find the original values
   random = (double)rand() / (double)RAND_MAX * 10.0;
-  CReaction* pReaction = pDataModel->getModel()->getReactions()[0];
+  CReaction* pReaction = &pDataModel->getModel()->getReactions()[0];
   // we know that it is an irreversible mass action, so there is one
   // parameter
   assert(pReaction->getParameters().size() == 1);
@@ -256,14 +256,14 @@ int main()
   // the parameter of a irreversible mass action is called k1
   pReaction->setParameterValue("k1", random);
 
-  pReaction = pDataModel->getModel()->getReactions()[1];
+  pReaction = &pDataModel->getModel()->getReactions()[1];
   // we know that it is an irreversible mass action, so there is one
   // parameter
   assert(pReaction->getParameters().size() == 1);
   assert(pReaction->isLocalParameter(0));
   pReaction->setParameterValue("k1", random);
 
-  CFitTask* pFitTask = dynamic_cast<CFitTask*>(TaskList["Parameter Estimation"]);
+  CFitTask* pFitTask = dynamic_cast<CFitTask*>(&TaskList["Parameter Estimation"]);
   assert(pFitTask != NULL);
   // the method in a fit task is an instance of COptMethod or a subclass of
   // it.
@@ -344,7 +344,7 @@ int main()
 
   // now we have to define the two fit items for the two local parameters
   // of the two reactions
-  pReaction = pModel->getReactions()[0];
+  pReaction = &pModel->getReactions()[0];
   assert(pReaction != NULL);
   assert(pReaction->isLocalParameter(0) == true);
   CCopasiParameter* pParameter = pReaction->getParameters().getParameter(0);
@@ -366,7 +366,7 @@ int main()
   // add the fit item
   pOptimizationItemGroup->addParameter(pFitItem1);
 
-  pReaction = pModel->getReactions()[1];
+  pReaction = &pModel->getReactions()[1];
   assert(pReaction != NULL);
   assert(pReaction->isLocalParameter(0) == true);
   pParameter = pReaction->getParameters().getParameter(0);

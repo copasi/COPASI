@@ -1054,10 +1054,10 @@ C_INT32 CHybridMethodODE45::checkModel(CModel * model)
   for (i = 0; i < numReactions; i++) // for every reaction
     {
       // TEST getCompartmentNumber() == 1
-      if ((*mpReactions)[i]->getCompartmentNumber() != 1) return - 1;
+      if ((*mpReactions)[i].getCompartmentNumber() != 1) return - 1;
 
       // TEST isReversible() == 0
-      if ((*mpReactions)[i]->isReversible() != 0) return - 2;
+      if ((*mpReactions)[i].isReversible() != 0) return - 2;
 
       // TEST integer stoichometry
       // Iterate through each the metabolites

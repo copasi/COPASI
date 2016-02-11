@@ -1,4 +1,4 @@
-// Copyright (C) 2014 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2014 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -85,7 +85,7 @@ void GlobalQuantityDataChangeCommand::redo()
   mpGlobalQuantityDM->globalQuantityDataChange(mIndex, mNew, mRole);
   GET_MODEL_OR_RETURN(pModel);
 
-  CModelValue *pModelValue = pModelValue = pModel->getModelValues()[mIndex.row()];
+  CModelValue *pModelValue = pModelValue = &pModel->getModelValues()[mIndex.row()];
   setName(pModelValue->getObjectName());
 }
 

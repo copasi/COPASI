@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -284,7 +284,7 @@ void CMCAResultSubwidget::slotSave()
 
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   CCopasiTask* mpTask =
-    dynamic_cast<CMCATask *>((*(*CCopasiRootContainer::getDatamodelList())[0]->getTaskList())["Metabolic Control Analysis"]);
+    dynamic_cast<CMCATask *>(&CCopasiRootContainer::getDatamodelList()->operator[](0).getTaskList()->operator[]("Metabolic Control Analysis"));
 
   if (mpTask != NULL)
     file << mpTask->getResult();

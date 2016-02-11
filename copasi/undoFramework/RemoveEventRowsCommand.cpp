@@ -1,4 +1,4 @@
-// Copyright (C) 2014 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2014 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -35,9 +35,9 @@ RemoveEventRowsCommand::RemoveEventRowsCommand(
   for (i = rows.begin(); i != rows.end(); ++i)
     {
 
-      if (!pEventDM->isDefaultRow(*i) && pModel->getEvents()[(*i).row()])
+      if (!pEventDM->isDefaultRow(*i) && &pModel->getEvents()[i->row()])
         {
-          UndoEventData *data = new UndoEventData(pModel->getEvents()[(*i).row()]);
+          UndoEventData *data = new UndoEventData(&pModel->getEvents()[i->row()]);
           mpEventData.append(data);
         }
     }
@@ -76,5 +76,4 @@ RemoveEventRowsCommand::~RemoveEventRowsCommand()
     pdelete(data);
   }
   mpEventData.clear();
-
 }

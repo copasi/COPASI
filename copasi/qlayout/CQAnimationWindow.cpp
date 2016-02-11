@@ -1,4 +1,4 @@
-// Copyright (C) 2013 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2013 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -43,7 +43,7 @@ class QConservedSpeciesAnimation : public CQCopasiAnimation
 
     while (it != metabs.end())
       {
-        mEntries.push_back(new CQEffectDescription((*it)->getCN()));
+        mEntries.push_back(new CQEffectDescription(it->getCN()));
         ++it;
       }
 
@@ -62,7 +62,7 @@ class QConservedSpeciesAnimation : public CQCopasiAnimation
 
     if (moieties.size() <= (size_t)step) return;
 
-    const CMoiety* moiety = moieties[step];
+    const CMoiety* moiety = &moieties[step];
     const std::vector<std::pair< C_FLOAT64, CMetab * > > &eqn = moiety->getEquation();
     std::map<std::string, double> cnValueMap;
     std::vector<std::pair< C_FLOAT64, CMetab * > >::const_iterator it = eqn.begin();
@@ -94,14 +94,14 @@ public:
 
     while (it != reactions.end())
       {
-        mEntries.push_back(new CQEffectDescription((*it)->getCN(), CQEffectDescription::Colorize, Qt::black, Qt::red));
-        indexMap[count] = (*it)->getCN();
+        mEntries.push_back(new CQEffectDescription(it->getCN(), CQEffectDescription::Colorize, Qt::black, Qt::red));
+        indexMap[count] = it->getCN();
         ++it;
         ++count;
       }
 
     // initialize number of steps
-    CEFMTask *task = dynamic_cast< CEFMTask * >((*mpDataModel->getTaskList())["Elementary Flux Modes"]);
+    const CEFMTask *task = dynamic_cast< const CEFMTask * >(&mpDataModel->getTaskList()->operator[]("Elementary Flux Modes"));
 
     if (task == NULL) return;
 
@@ -116,7 +116,7 @@ public:
   {
     if (mpDataModel == NULL) return;
 
-    CEFMTask *task = dynamic_cast< CEFMTask * >((*mpDataModel->getTaskList())["Elementary Flux Modes"]);
+    const CEFMTask *task = dynamic_cast< const CEFMTask * >(&mpDataModel->getTaskList()->operator[]("Elementary Flux Modes"));
 
     if (task == NULL) return;
 
@@ -206,7 +206,7 @@ public:
   {
     if (mpDataModel == NULL) return;
 
-    CTrajectoryTask *task = dynamic_cast< CTrajectoryTask * >((*mpDataModel->getTaskList())["Time-Course"]);
+    const CTrajectoryTask *task = dynamic_cast< const CTrajectoryTask * >(&mpDataModel->getTaskList()->operator[]("Time-Course"));
 
     if (task == NULL) return;
 
@@ -240,13 +240,13 @@ public:
 
     while (it != metabs.end())
       {
-        mEntries.push_back(new CQEffectDescription((*it)->getCN(), CQEffectDescription::Scale));
-        keyMap[(*it)->getCN()] = (*it)->getKey();
+        mEntries.push_back(new CQEffectDescription(it->getCN(), CQEffectDescription::Scale));
+        keyMap[it->getCN()] = it->getKey();
         ++it;
       }
 
     // initialize number of steps
-    CTrajectoryTask *task = dynamic_cast< CTrajectoryTask * >((*mpDataModel->getTaskList())["Time-Course"]);
+    const CTrajectoryTask *task = dynamic_cast< const CTrajectoryTask * >(&mpDataModel->getTaskList()->operator[]("Time-Course"));
 
     if (task == NULL) return;
 

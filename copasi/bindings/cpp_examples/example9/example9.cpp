@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -138,7 +138,7 @@ int main()
   CCopasiVectorN< CCopasiTask > & TaskList = * pDataModel->getTaskList();
 
   // get the trajectory task object
-  CSteadyStateTask* pTask = dynamic_cast<CSteadyStateTask*>(TaskList["Steady-State"]);
+  CSteadyStateTask* pTask = dynamic_cast<CSteadyStateTask*>(&TaskList["Steady-State"]);
 
   // if there isn't one
   if (pTask == NULL)

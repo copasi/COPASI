@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -1254,7 +1254,7 @@ void CCSPMethod::CSPOutput(C_INT & N, C_INT & M, C_INT & R)
       std::cout << "reaction mode " << m << " :" << std::endl;
 
       for (r = 0; r < R; r++)
-        std::cout << reacs[r]->getObjectName() << " :" << mFastReactionPointer(r, m) << std::endl;
+        std::cout << reacs[r].getObjectName() << " :" << mFastReactionPointer(r, m) << std::endl;
     }
 
   std::cout << std::endl;
@@ -1266,7 +1266,7 @@ void CCSPMethod::CSPOutput(C_INT & N, C_INT & M, C_INT & R)
       std::cout << "reaction mode " << i << " :" << std::endl;
 
       for (r = 0; r < R; r++)
-        std::cout << reacs[r]->getObjectName() << " :" << mParticipationIndex(r, i) << std::endl;
+        std::cout << reacs[r].getObjectName() << " :" << mParticipationIndex(r, i) << std::endl;
     }
 
   std::cout << std::endl;
@@ -1280,7 +1280,7 @@ void CCSPMethod::CSPOutput(C_INT & N, C_INT & M, C_INT & R)
                 << " :" << std::endl;
 
       for (r = 0; r < R; r++)
-        std::cout << reacs[r]->getObjectName() << " :" << mImportanceIndex(r, i) << std::endl;
+        std::cout << reacs[r].getObjectName() << " :" << mImportanceIndex(r, i) << std::endl;
     }
 
   return;
@@ -1769,7 +1769,7 @@ void CCSPMethod::predefineAnnotation()
 
   for (j = 0; j < N; j++)
     {
-      metabs[j] = static_cast< CMetab * >(const_cast< CModelEntity * >(Model.getStateTemplate().beginIndependent()[j]));
+      metabs.add(static_cast< CMetab * >(const_cast< CModelEntity * >(Model.getStateTemplate().beginIndependent()[j])), false);
     }
 
   mImportanceIndexTab.resize(Model.getReactions().size(),
@@ -2044,7 +2044,7 @@ bool CCSPMethod::setAnnotationM(size_t step)
   // FIXED:  for (j = 0; j < mDim; j++)
   for (j = 0; j < N; j++)
     {
-      metabs[j] = static_cast< CMetab * >(const_cast< CModelEntity * >(Model.getStateTemplate().beginIndependent()[j]));
+      metabs.add(static_cast< CMetab * >(const_cast< CModelEntity * >(Model.getStateTemplate().beginIndependent()[j])), false);
     }
 
   pRadicalPointerAnn->setCopasiVector(0, &metabs);
@@ -2461,7 +2461,7 @@ void CCSPMethod::printResult(std::ostream * ostream) const
 
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   CTSSATask* pTask =
-    dynamic_cast<CTSSATask *>((*(*CCopasiRootContainer::getDatamodelList())[0]->getTaskList())["Time Scale Separation Analysis"]);
+    dynamic_cast<CTSSATask *>(&CCopasiRootContainer::getDatamodelList()->operator[](0).getTaskList()->operator[]("Time Scale Separation Analysis"));
 
   CTSSAProblem* pProblem = dynamic_cast<CTSSAProblem*>(pTask->getProblem());
 
@@ -2497,7 +2497,7 @@ void CCSPMethod::printResult(std::ostream * ostream) const
   os << " Reactions : " << std::endl;
 
   for (r = 0; r < (C_INT) reacs.size(); r++)
-    os << reacs[r]->getObjectName() << std::endl;
+    os << reacs[r].getObjectName() << std::endl;
 
   os << std::endl;
 

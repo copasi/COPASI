@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -76,11 +76,11 @@ CLGroup::CLGroup(const CLGroup& source, CCopasiContainer* pParent):
   this->mKey = CCopasiRootContainer::getKeyFactory()->add("RenderGroup", this);
   // copy the elements
   size_t i, iMax = source.mElements.size();
-  CCopasiObject* pChild = NULL;
+  const CCopasiObject* pChild = NULL;
 
   for (i = 0; i < iMax; ++i)
     {
-      pChild = source.mElements[i];
+      pChild = &source.mElements[i];
 
       if (dynamic_cast<const CLRectangle*>(pChild))
         {
@@ -410,7 +410,7 @@ CCopasiObject* CLGroup::getElement(size_t n)
 {
   if (n < this->mElements.size())
     {
-      return this->mElements[n];
+      return &this->mElements[n];
     }
   else
     {
@@ -426,7 +426,7 @@ const CCopasiObject* CLGroup::getElement(size_t n) const
 {
   if (n < this->mElements.size())
     {
-      return this->mElements[n];
+      return &this->mElements[n];
     }
   else
     {
@@ -881,7 +881,7 @@ RenderGroup* CLGroup::toSBML(unsigned int level, unsigned int version) const
   for (i = 0; i < iMax; ++i)
     {
       const Transformation2D* pChild = NULL;
-      const CCopasiObject* pObject = this->mElements[i];
+      const CCopasiObject* pObject = &this->mElements[i];
 
       if (dynamic_cast<const CLRectangle*>(pObject))
         {

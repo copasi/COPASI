@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -65,7 +65,7 @@ QVariant CQModifiedDM::data(const QModelIndex &index, int role) const
                 return QVariant(index.row() + 1);
 
               case COL_DATE_MODIFIED:
-                QDateTime dt(QDateTime::fromString(FROM_UTF8(mpMIRIAMInfo->getModifications()[index.row()]->getDate()), Qt::ISODate));
+                QDateTime dt(QDateTime::fromString(FROM_UTF8(mpMIRIAMInfo->getModifications()[index.row()].getDate()), Qt::ISODate));
 
                 if (dt.isValid())
                   return QVariant(dt);
@@ -116,7 +116,7 @@ bool CQModifiedDM::setData(const QModelIndex &index, const QVariant &value,
       switch (index.column())
         {
           case COL_DATE_MODIFIED:
-            mpMIRIAMInfo->getModifications()[index.row()]->setDate(TO_UTF8(value.toDateTime().toString(Qt::ISODate)));
+            mpMIRIAMInfo->getModifications()[index.row()].setDate(TO_UTF8(value.toDateTime().toString(Qt::ISODate)));
             break;
         }
 
@@ -174,8 +174,8 @@ bool CQModifiedDM::removeRows(QModelIndexList rows, const QModelIndex&)
 
   for (i = rows.begin(); i != rows.end(); ++i)
     {
-      if (!isDefaultRow(*i) && mpMIRIAMInfo->getModifications()[(*i).row()])
-        pModifieds.append(mpMIRIAMInfo->getModifications()[(*i).row()]);
+      if (!isDefaultRow(*i) && &mpMIRIAMInfo->getModifications()[i->row()])
+        pModifieds.append(&mpMIRIAMInfo->getModifications()[i->row()]);
     }
 
   bool retVal = false, askEveryItem = true;

@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -321,14 +321,14 @@ bool CEvent::mustBeDeleted(const CCopasiObject::DataObjectSet & deletedObjects) 
 
   for (; itAssignment != endAssignment; ++itAssignment)
     {
-      if ((*itAssignment)->getTargetObject() != NULL)
+      if (itAssignment->getTargetObject() != NULL)
         {
-          ChildObjects.insert((*itAssignment)->getTargetObject());
+          ChildObjects.insert(itAssignment->getTargetObject());
         }
 
-      if ((*itAssignment)->getExpressionPtr() != NULL)
+      if (itAssignment->getExpressionPtr() != NULL)
         {
-          ChildObjects.insert((*itAssignment)->getExpressionPtr());
+          ChildObjects.insert(itAssignment->getExpressionPtr());
         }
     }
 
@@ -374,8 +374,8 @@ bool CEvent::compile(CObjectInterface::ContainerList listOfContainer)
 
   for (; itAssignment != endAssignment; ++itAssignment)
     {
-      success &= (*itAssignment)->compile(listOfContainer);
-      addDirectDependency(*itAssignment);
+      success &= itAssignment->compile(listOfContainer);
+      addDirectDependency(itAssignment);
     }
 
   return success;
@@ -399,7 +399,7 @@ std::ostream & operator<<(std::ostream &os, const CEvent & d)
   return os;
 }
 
-void CEvent::setSBMLId(const std::string& id)
+void CEvent::setSBMLId(const std::string& id) const
 {
   this->mSBMLId = id;
 }

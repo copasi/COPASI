@@ -1,17 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunctionParameters.cpp,v $
-//   $Revision: 1.43 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/03/07 19:28:18 $
-// End CVS Header
-
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2002 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -28,14 +25,14 @@
 
 CFunctionParameters::CFunctionParameters(const std::string & name,
     const CCopasiContainer * pParent):
-    CCopasiContainer(name, pParent, "Variable Description"),
-    mParameters("Variables", this)
+  CCopasiContainer(name, pParent, "Variable Description"),
+  mParameters("Variables", this)
 {CONSTRUCTOR_TRACE;}
 
 CFunctionParameters::CFunctionParameters(const CFunctionParameters & src,
     const CCopasiContainer * pParent):
-    CCopasiContainer(src, pParent),
-    mParameters(src.mParameters, this)
+  CCopasiContainer(src, pParent),
+  mParameters(src.mParameters, this)
 {CONSTRUCTOR_TRACE;}
 
 CFunctionParameters::~CFunctionParameters() {DESTRUCTOR_TRACE;}
@@ -86,16 +83,16 @@ void CFunctionParameters::remove(const std::string & name)
 }
 
 CFunctionParameter * CFunctionParameters::operator[](size_t index)
-{return mParameters[index];}
+{return &mParameters[index];}
 
 const CFunctionParameter * CFunctionParameters::operator[](size_t index) const
-{return mParameters[index];}
+{return &mParameters[index];}
 
 CFunctionParameter * CFunctionParameters::operator[](const std::string &name)
-{return mParameters[name];}
+{return &mParameters[name];}
 
 const CFunctionParameter * CFunctionParameters::operator[](const std::string &name) const
-{return mParameters[name];}
+{return &mParameters[name];}
 
 size_t CFunctionParameters::size() const {return mParameters.size();}
 
@@ -109,10 +106,10 @@ CFunctionParameters::getParameterByUsage(CFunctionParameter::Role usage,
   size_t i, imax = mParameters.size();
 
   for (i = pos; i < imax; i++)
-    if (mParameters[i]->getUsage() == usage)
+    if (mParameters[i].getUsage() == usage)
       {
         pos = i + 1;
-        return mParameters[i];
+        return & mParameters[i];
       }
 
   CCopasiMessage(CCopasiMessage::WARNING,
@@ -128,7 +125,7 @@ size_t CFunctionParameters::getNumberOfParametersByUsage(CFunctionParameter::Rol
   size_t count = 0;
 
   for (i = 0; i < imax; i++)
-    if (mParameters[i]->getUsage() == usage) ++count;
+    if (mParameters[i].getUsage() == usage) ++count;
 
   return count;
 }
@@ -142,11 +139,11 @@ size_t CFunctionParameters::findParameterByName(const std::string & name,
 
   for (i = 0; i < imax; i++)
     {
-      Name = mParameters[i]->getObjectName();
+      Name = mParameters[i].getObjectName();
 
       if (Name == name)
         {
-          dataType = mParameters[i]->getType();
+          dataType = mParameters[i].getType();
           return i;
         }
     }
@@ -159,8 +156,8 @@ bool CFunctionParameters::isVector(CFunctionParameter::Role role) const
   size_t i, imax = mParameters.size();
 
   for (i = 0; i < imax; i++)
-    if (mParameters[i]->getUsage() == role)
-      return mParameters[i]->getType() >= CFunctionParameter::VINT32;
+    if (mParameters[i].getUsage() == role)
+      return mParameters[i].getType() >= CFunctionParameter::VINT32;
 
   //this assumes that if a parameter is not a vector then there
   //will not be a vector parameter with the same role.
@@ -177,12 +174,12 @@ bool CFunctionParameters::operator==(const CFunctionParameters & rhs) const
 
   for (i = 0; i < imax; ++i)
     {
-      if (mParameters[i]->getObjectName() != rhs.mParameters[i]->getObjectName()) return false;
+      if (mParameters[i].getObjectName() != rhs.mParameters[i].getObjectName()) return false;
 
-      if (mParameters[i]->getType() != rhs.mParameters[i]->getType()) return false;
+      if (mParameters[i].getType() != rhs.mParameters[i].getType()) return false;
 
-      lhsRole = mParameters[i]->getUsage();
-      rhsRole = rhs.mParameters[i]->getUsage();
+      lhsRole = mParameters[i].getUsage();
+      rhsRole = rhs.mParameters[i].getUsage();
 
       // We do not destinguish between PARAMETER and VARIABLE
       if ((lhsRole == CFunctionParameter::PARAMETER || lhsRole == CFunctionParameter::VARIABLE) &&
@@ -210,7 +207,7 @@ std::ostream & operator<<(std::ostream &os, const CFunctionParameters & d)
       else
         os << "    ";
 
-      os << *d.mParameters[i];
+      os << d.mParameters[i];
 
       if (imax - 1 == i)
         os << ")\n";

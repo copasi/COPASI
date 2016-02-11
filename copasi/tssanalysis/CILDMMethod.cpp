@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -1448,7 +1448,7 @@ void CILDMMethod::printResult(std::ostream * ostream) const // temporary tabs ar
 
       for (j = 0; j < mDim; j++)
         {
-          os << Model.getMetabolitesX()[j]->getObjectName() << "   ";
+          os << Model.getMetabolitesX()[j].getObjectName() << "   ";
         }
 
       os << std::endl;
@@ -1494,7 +1494,7 @@ void CILDMMethod::printResult(std::ostream * ostream) const // temporary tabs ar
 
       for (j = 0; j < mDim; j++)
         {
-          os << Model.getMetabolitesX()[j]->getObjectName() << "  ";
+          os << Model.getMetabolitesX()[j].getObjectName() << "  ";
 
           for (i = 0; i < mDim; i++)
             os << mVec_mVslowMetab[istep][j][i] << "  ";
@@ -1519,7 +1519,7 @@ void CILDMMethod::printResult(std::ostream * ostream) const // temporary tabs ar
 
       for (j = 0; j < mDim; j++)
         {
-          os << Model.getMetabolitesX()[j]->getObjectName() << "  ";
+          os << Model.getMetabolitesX()[j].getObjectName() << "  ";
           os << mVec_mVslowSpace[istep][j] << "  ";
 
           os << std::endl;
@@ -1541,7 +1541,7 @@ void CILDMMethod::printResult(std::ostream * ostream) const // temporary tabs ar
 
       for (j = 0; j < mDim; j++)
         {
-          os << Model.getMetabolitesX()[j]->getObjectName() << "  ";
+          os << Model.getMetabolitesX()[j].getObjectName() << "  ";
           os << mVec_mVfastSpace[istep][j] << "  ";
 
           os << std::endl;
@@ -1556,7 +1556,7 @@ void CILDMMethod::printResult(std::ostream * ostream) const // temporary tabs ar
 
       for (j = 0; j < (C_INT32) Model.getReactions().size(); j++)
         {
-          os << Model.getReactions()[j]->getObjectName() << "  ";
+          os << Model.getReactions()[j].getObjectName() << "  ";
           os << mVec_mReacSlowSpace[istep][j] << "  ";
 
           os << std::endl;

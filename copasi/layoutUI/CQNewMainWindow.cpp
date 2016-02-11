@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -534,7 +534,7 @@ void CQNewMainWindow::slotFitToScreen()
 void CQNewMainWindow::slotLayoutChanged(int index)
 {
   //std::cout << "new layout " << index << std::endl;
-  CLayout* pTmpLayout = (*this->mpDataModel->getListOfLayouts())[index];
+  CLayout* pTmpLayout = &mpDataModel->getListOfLayouts()->operator[](index);
 
   if (pTmpLayout != this->mpCurrentLayout)
     {
@@ -1001,7 +1001,7 @@ void CQNewMainWindow::updateLayoutList()
 
   for (i = 0; i < iMax; ++i)
     {
-      pTmpLayout = (*this->mpDataModel->getListOfLayouts())[i];
+      pTmpLayout = &mpDataModel->getListOfLayouts()->operator[](i);
       std::string text = pTmpLayout->getKey();
 
       if (!pTmpLayout->getObjectName().empty())
@@ -1017,7 +1017,7 @@ void CQNewMainWindow::updateLayoutList()
 
   if (iMax > 0)
     {
-      this->mpCurrentLayout = (*this->mpDataModel->getListOfLayouts())[0];
+      this->mpCurrentLayout = &mpDataModel->getListOfLayouts()->operator[](0);
     }
 
   this->updateRenderInformationList();
@@ -1136,7 +1136,7 @@ void CQNewMainWindow::checkForElementaryModesSlot()
       if (pTaskList != NULL)
         {
           // get the metabolic control analysis task object
-          const CEFMTask* pTask = dynamic_cast<const CEFMTask*>((*pTaskList)["Elementary Flux Modes"]);
+          const CEFMTask* pTask = dynamic_cast<const CEFMTask*>(&pTaskList->operator[]("Elementary Flux Modes"));
 
           if (pTask != NULL)
             {
@@ -1229,7 +1229,7 @@ void CQNewMainWindow::elementaryModeTriggeredSlot(QAction* pAction)
       if (pTaskList != NULL)
         {
           // get the metabolic control analysis task object
-          const CEFMTask* pTask = dynamic_cast<const CEFMTask*>((*pTaskList)["Elementary Flux Modes"]);
+          const CEFMTask* pTask = dynamic_cast<const CEFMTask*>(&pTaskList->operator[]("Elementary Flux Modes"));
 
           if (pTask != NULL)
             {
@@ -1284,7 +1284,7 @@ void CQNewMainWindow::elementaryModeTriggeredSlot(QAction* pAction)
               while (it != endit)
                 {
                   assert(this->mpDataModel->getModel()->getReactions().size() > it->first);
-                  pReaction = this->mpDataModel->getModel()->getReactions()[it->first];
+                  pReaction = &mpDataModel->getModel()->getReactions()[it->first];
                   assert(pReaction != NULL);
                   this->selectReaction(pReaction, mask, s);
                   ++it;
@@ -1329,14 +1329,14 @@ void CQNewMainWindow::selectReaction(const CReaction* pReaction, unsigned int se
 
       while (it != endit)
         {
-          if ((*it)->getModelObject() == pReaction)
+          if (it->getModelObject() == pReaction)
             {
               if (selectionMask & CQNewMainWindow::REACTION_GLYPH)
                 {
-                  s.insert((*it));
+                  s.insert(it);
                 }
 
-              const CCopasiVector<CLMetabReferenceGlyph>& mrgv = (*it)->getListOfMetabReferenceGlyphs();
+              const CCopasiVector<CLMetabReferenceGlyph>& mrgv = it->getListOfMetabReferenceGlyphs();
 
               CCopasiVector<CLMetabReferenceGlyph>::const_iterator it2 = mrgv.begin(), endit2 = mrgv.end();
 
@@ -1347,14 +1347,14 @@ void CQNewMainWindow::selectReaction(const CReaction* pReaction, unsigned int se
               while (it2 != endit2)
                 {
                   // check the role
-                  switch ((*it2)->getRole())
+                  switch (it2->getRole())
                     {
                       case CLMetabReferenceGlyph::UNDEFINED:
 
                         if (selectionMask & CQNewMainWindow::ROLE_UNSPECIFIED)
                           {
-                            s.insert(*it2);
-                            key = (*it2)->getMetabGlyphKey();
+                            s.insert(it2);
+                            key = it2->getMetabGlyphKey();
                             pObject = CCopasiRootContainer::getKeyFactory()->get(key);
 
                             if (pObject != NULL && dynamic_cast<const CLMetabGlyph*>(pObject) != NULL && (selectionMask & CQNewMainWindow::ASSOCIATED_SPECIES_GLYPHS))
@@ -1369,8 +1369,8 @@ void CQNewMainWindow::selectReaction(const CReaction* pReaction, unsigned int se
 
                         if (selectionMask & CQNewMainWindow::ROLE_SUBSTRATE)
                           {
-                            s.insert(*it2);
-                            key = (*it2)->getMetabGlyphKey();
+                            s.insert(it2);
+                            key = it2->getMetabGlyphKey();
                             pObject = CCopasiRootContainer::getKeyFactory()->get(key);
 
                             if (pObject != NULL && dynamic_cast<const CLMetabGlyph*>(pObject) != NULL && (selectionMask & CQNewMainWindow::ASSOCIATED_SPECIES_GLYPHS))
@@ -1385,8 +1385,8 @@ void CQNewMainWindow::selectReaction(const CReaction* pReaction, unsigned int se
 
                         if (selectionMask & CQNewMainWindow::ROLE_PRODUCT)
                           {
-                            s.insert(*it2);
-                            key = (*it2)->getMetabGlyphKey();
+                            s.insert(it2);
+                            key = it2->getMetabGlyphKey();
                             pObject = CCopasiRootContainer::getKeyFactory()->get(key);
 
                             if (pObject != NULL && dynamic_cast<const CLMetabGlyph*>(pObject) != NULL && (selectionMask & CQNewMainWindow::ASSOCIATED_SPECIES_GLYPHS))
@@ -1401,8 +1401,8 @@ void CQNewMainWindow::selectReaction(const CReaction* pReaction, unsigned int se
 
                         if (selectionMask & CQNewMainWindow::ROLE_SIDESUBSTRATE)
                           {
-                            s.insert(*it2);
-                            key = (*it2)->getMetabGlyphKey();
+                            s.insert(it2);
+                            key = it2->getMetabGlyphKey();
                             pObject = CCopasiRootContainer::getKeyFactory()->get(key);
 
                             if (pObject != NULL && dynamic_cast<const CLMetabGlyph*>(pObject) != NULL && (selectionMask & CQNewMainWindow::ASSOCIATED_SPECIES_GLYPHS))
@@ -1417,8 +1417,8 @@ void CQNewMainWindow::selectReaction(const CReaction* pReaction, unsigned int se
 
                         if (selectionMask & CQNewMainWindow::ROLE_SIDEPRODUCT)
                           {
-                            s.insert(*it2);
-                            key = (*it2)->getMetabGlyphKey();
+                            s.insert(it2);
+                            key = it2->getMetabGlyphKey();
                             pObject = CCopasiRootContainer::getKeyFactory()->get(key);
 
                             if (pObject != NULL && dynamic_cast<const CLMetabGlyph*>(pObject) != NULL && (selectionMask & CQNewMainWindow::ASSOCIATED_SPECIES_GLYPHS))
@@ -1433,8 +1433,8 @@ void CQNewMainWindow::selectReaction(const CReaction* pReaction, unsigned int se
 
                         if (selectionMask & CQNewMainWindow::ROLE_MODIFIER)
                           {
-                            s.insert(*it2);
-                            key = (*it2)->getMetabGlyphKey();
+                            s.insert(it2);
+                            key = it2->getMetabGlyphKey();
                             pObject = CCopasiRootContainer::getKeyFactory()->get(key);
 
                             if (pObject != NULL && dynamic_cast<const CLMetabGlyph*>(pObject) != NULL && (selectionMask & CQNewMainWindow::ASSOCIATED_SPECIES_GLYPHS))
@@ -1449,8 +1449,8 @@ void CQNewMainWindow::selectReaction(const CReaction* pReaction, unsigned int se
 
                         if (selectionMask & CQNewMainWindow::ROLE_ACTIVATOR)
                           {
-                            s.insert(*it2);
-                            key = (*it2)->getMetabGlyphKey();
+                            s.insert(it2);
+                            key = it2->getMetabGlyphKey();
                             pObject = CCopasiRootContainer::getKeyFactory()->get(key);
 
                             if (pObject != NULL && dynamic_cast<const CLMetabGlyph*>(pObject) != NULL && (selectionMask & CQNewMainWindow::ASSOCIATED_SPECIES_GLYPHS))
@@ -1465,8 +1465,8 @@ void CQNewMainWindow::selectReaction(const CReaction* pReaction, unsigned int se
 
                         if (selectionMask & CQNewMainWindow::ROLE_INHIBITOR)
                           {
-                            s.insert(*it2);
-                            key = (*it2)->getMetabGlyphKey();
+                            s.insert(it2);
+                            key = it2->getMetabGlyphKey();
                             pObject = CCopasiRootContainer::getKeyFactory()->get(key);
 
                             if (pObject != NULL && dynamic_cast<const CLMetabGlyph*>(pObject) != NULL && (selectionMask & CQNewMainWindow::ASSOCIATED_SPECIES_GLYPHS))
@@ -1505,9 +1505,9 @@ void CQNewMainWindow::selectMetabolite(const CMetab* pMetab, std::set<const CLGr
 
       while (it != endit)
         {
-          if ((*it)->getModelObject() == pMetab)
+          if (it->getModelObject() == pMetab)
             {
-              s.insert((*it));
+              s.insert(it);
             }
 
           ++it;

@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -602,7 +602,7 @@ CCopasiObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * t
       case 910:  // :TODO: Implement me!
       {
         CPlotSpecification * pPlotSpecification = NULL;
-        CCopasiTask * pTask = (*pDataModel->getTaskList())["Parameter Estimation"];
+        CCopasiTask * pTask = &pDataModel->getTaskList()->operator[]("Parameter Estimation");
 
         if (pTask == NULL) return NULL;
 
@@ -633,11 +633,11 @@ CCopasiObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * t
             if (it == end) continue;
 
             data2 =
-              static_cast< const CCopasiObject * >((*it)->getObject(CCopasiObjectName("Reference=Independent Value")));
+              static_cast< const CCopasiObject * >(it->getObject(CCopasiObjectName("Reference=Independent Value")));
 
             for (; it != end; ++it)
               {
-                std::string Name = (*it)->getModelObjectCN();
+                std::string Name = it->getModelObjectCN();
                 const CCopasiObject * pObject =
                   dynamic_cast< const CCopasiObject * >(pDataModel->getObject(Name));
 
@@ -647,7 +647,7 @@ CCopasiObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * t
                 Name = pExperiment->getObjectName() + "," + Name;
 
                 //1
-                data1.push_back(static_cast< const CCopasiObject * >((*it)->getObject(CCopasiObjectName("Reference=Measured Value"))));
+                data1.push_back(static_cast< const CCopasiObject * >(it->getObject(CCopasiObjectName("Reference=Measured Value"))));
                 ChannelX.push_back(data2->getCN());
                 Names.push_back(Name + "(Measured Value)");
                 LineTypes.push_back(3); //symbols & lines
@@ -656,7 +656,7 @@ CCopasiObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * t
                 Colors.push_back(CPlotColors::getCopasiColorStr(colorcounter));
 
                 //2
-                data1.push_back(static_cast< const CCopasiObject * >((*it)->getObject(CCopasiObjectName("Reference=Fitted Value"))));
+                data1.push_back(static_cast< const CCopasiObject * >(it->getObject(CCopasiObjectName("Reference=Fitted Value"))));
                 ChannelX.push_back(data2->getCN());
                 Names.push_back(Name + "(Fitted Value)");
 
@@ -675,7 +675,7 @@ CCopasiObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * t
                 Colors.push_back(CPlotColors::getCopasiColorStr(colorcounter));
 
                 //3
-                data1.push_back(static_cast< const CCopasiObject * >((*it)->getObject(CCopasiObjectName("Reference=Weighted Error"))));
+                data1.push_back(static_cast< const CCopasiObject * >(it->getObject(CCopasiObjectName("Reference=Weighted Error"))));
                 ChannelX.push_back(data2->getCN());
                 Names.push_back(Name + "(Weighted Error)");
                 LineTypes.push_back(2); //symbols
@@ -693,8 +693,8 @@ CCopasiObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * t
         if (pPlotSpecification != NULL)
           {
             CCopasiVector< CPlotItem > & Items = pPlotSpecification->getItems();
-            CCopasiVector< CPlotItem >::const_iterator itItem = Items.begin();
-            CCopasiVector< CPlotItem >::const_iterator endItem = Items.end();
+            CCopasiVector< CPlotItem >::iterator itItem = Items.begin();
+            CCopasiVector< CPlotItem >::iterator endItem = Items.end();
             std::vector< std::string >::const_iterator itChannelX = ChannelX.begin();
             std::vector< std::string >::const_iterator itName = Names.begin();
             std::vector< unsigned C_INT32 >::const_iterator itLineType = LineTypes.begin();
@@ -704,13 +704,14 @@ CCopasiObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * t
 
             while (itItem != endItem)
               {
-                (*itItem)->getChannels()[0] = CPlotDataChannelSpec(*itChannelX++);
-                (*itItem)->setTitle(*itName++);
-                (*itItem)->setActivity(COutputInterface::AFTER);
-                (*itItem)->setValue("Line type", *itLineType++);
-                (*itItem)->setValue("Symbol subtype", *itSymbolSubType++);
-                (*itItem)->setValue("Line subtype", *itLineSubType++);
-                (*itItem++)->setValue("Color", *itColor++);
+                itItem->getChannels()[0] = CPlotDataChannelSpec(*itChannelX++);
+                itItem->setTitle(*itName++);
+                itItem->setActivity(COutputInterface::AFTER);
+                itItem->setValue("Line type", *itLineType++);
+                itItem->setValue("Symbol subtype", *itSymbolSubType++);
+                itItem->setValue("Line subtype", *itLineSubType++);
+                itItem->setValue("Color", *itColor++);
+                itItem++;
               }
           }
 
@@ -721,7 +722,7 @@ CCopasiObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * t
       case 911:
       {
         CPlotSpecification * pPlotSpecification = NULL;
-        CCopasiTask * pTask = (*pDataModel->getTaskList())["Parameter Estimation"];
+        CCopasiTask * pTask = &pDataModel->getTaskList()->operator[]("Parameter Estimation");
 
         if (pTask == NULL) return NULL;
 
@@ -742,14 +743,14 @@ CCopasiObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * t
 
             if (it == end) continue;
 
-            data2 = static_cast< const CCopasiObject * >((*it)->getObject(CCopasiObjectName("Reference=Independent Value")));
+            data2 = static_cast< const CCopasiObject * >(it->getObject(CCopasiObjectName("Reference=Independent Value")));
             data1.clear();
 
             for (; it != end; ++it)
               {
-                data1.push_back(static_cast< const CCopasiObject * >((*it)->getObject(CCopasiObjectName("Reference=Measured Value"))));
-                data1.push_back(static_cast< const CCopasiObject * >((*it)->getObject(CCopasiObjectName("Reference=Fitted Value"))));
-                data1.push_back(static_cast< const CCopasiObject * >((*it)->getObject(CCopasiObjectName("Reference=Weighted Error"))));
+                data1.push_back(static_cast< const CCopasiObject * >(it->getObject(CCopasiObjectName("Reference=Measured Value"))));
+                data1.push_back(static_cast< const CCopasiObject * >(it->getObject(CCopasiObjectName("Reference=Fitted Value"))));
+                data1.push_back(static_cast< const CCopasiObject * >(it->getObject(CCopasiObjectName("Reference=Weighted Error"))));
               }
 
             pPlotSpecification =
@@ -758,8 +759,8 @@ CCopasiObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * t
             if (pPlotSpecification != NULL)
               {
                 CCopasiVector< CPlotItem > & Items = pPlotSpecification->getItems();
-                CCopasiVector< CPlotItem >::const_iterator itItem = Items.begin();
-                CCopasiVector< CPlotItem >::const_iterator endItem = Items.end();
+                CCopasiVector< CPlotItem >::iterator itItem = Items.begin();
+                CCopasiVector< CPlotItem >::iterator endItem = Items.end();
                 it = FittingPoints.begin();
 
                 unsigned C_INT32 LineType;
@@ -773,31 +774,34 @@ CCopasiObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * t
 
                 while (itItem != endItem)
                   {
-                    std::string Name = (*it++)->getModelObjectCN();
+                    std::string Name = it++->getModelObjectCN();
                     const CCopasiObject * pObject =
                       dynamic_cast< const CCopasiObject * >(pDataModel->getObject(Name));
 
                     if (pObject != NULL)
                       Name = pObject->getObjectDisplayName();
 
-                    (*itItem)->setTitle(Name + "(Measured Value)");
-                    (*itItem)->setActivity(COutputInterface::AFTER);
-                    (*itItem)->setValue("Line type", (unsigned C_INT32) 3); //symbols and lines
-                    (*itItem)->setValue("Symbol subtype", (unsigned C_INT32) 1); //fat cross
-                    (*itItem)->setValue("Line subtype", (unsigned C_INT32) 1); //dotted
-                    (*itItem++)->setValue("Color", CPlotColors::getCopasiColorStr(colorcounter));
+                    itItem->setTitle(Name + "(Measured Value)");
+                    itItem->setActivity(COutputInterface::AFTER);
+                    itItem->setValue("Line type", (unsigned C_INT32) 3); //symbols and lines
+                    itItem->setValue("Symbol subtype", (unsigned C_INT32) 1); //fat cross
+                    itItem->setValue("Line subtype", (unsigned C_INT32) 1); //dotted
+                    itItem->setValue("Color", CPlotColors::getCopasiColorStr(colorcounter));
+                    itItem++;
 
-                    (*itItem)->setTitle(Name + "(Fitted Value)");
-                    (*itItem)->setActivity(COutputInterface::AFTER);
-                    (*itItem)->setValue("Line type", (unsigned C_INT32) LineType);
-                    (*itItem)->setValue("Symbol subtype", (unsigned C_INT32) 0);
-                    (*itItem++)->setValue("Color", CPlotColors::getCopasiColorStr(colorcounter));
+                    itItem->setTitle(Name + "(Fitted Value)");
+                    itItem->setActivity(COutputInterface::AFTER);
+                    itItem->setValue("Line type", (unsigned C_INT32) LineType);
+                    itItem->setValue("Symbol subtype", (unsigned C_INT32) 0);
+                    itItem->setValue("Color", CPlotColors::getCopasiColorStr(colorcounter));
+                    itItem++;
 
-                    (*itItem)->setTitle(Name + "(Weighted Error)");
-                    (*itItem)->setActivity(COutputInterface::AFTER);
-                    (*itItem)->setValue("Line type", (unsigned C_INT32) 2);
-                    (*itItem)->setValue("Symbol subtype", (unsigned C_INT32) 2);
-                    (*itItem++)->setValue("Color", CPlotColors::getCopasiColorStr(colorcounter));
+                    itItem->setTitle(Name + "(Weighted Error)");
+                    itItem->setActivity(COutputInterface::AFTER);
+                    itItem->setValue("Line type", (unsigned C_INT32) 2);
+                    itItem->setValue("Symbol subtype", (unsigned C_INT32) 2);
+                    itItem->setValue("Color", CPlotColors::getCopasiColorStr(colorcounter));
+                    itItem++;
 
                     ++colorcounter;
                   }
@@ -811,7 +815,7 @@ CCopasiObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * t
       case 912:
       {
         CPlotSpecification * pPlotSpecification = NULL;
-        CCopasiTask * pTask = (*pDataModel->getTaskList())["Parameter Estimation"];
+        CCopasiTask * pTask = &pDataModel->getTaskList()->operator[]("Parameter Estimation");
 
         if (pTask == NULL) return NULL;
 
@@ -837,7 +841,7 @@ CCopasiObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * t
 
             std::string Name = pExperiment->getObjectName();
             CPlotDataChannelSpec ChannelX =
-              (*it)->getObject(CCopasiObjectName("Reference=Independent Value"))->getCN();
+              it->getObject(CCopasiObjectName("Reference=Independent Value"))->getCN();
             unsigned C_INT32 LineType;
 
             if (pExperiment->getExperimentType() == CTaskEnum::timeCourse)
@@ -848,7 +852,7 @@ CCopasiObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * t
             for (; it != end; ++it)
               {
                 const CCopasiObject * pObject =
-                  dynamic_cast< const CCopasiObject * >(pDataModel->getObject((*it)->getModelObjectCN()));
+                  dynamic_cast< const CCopasiObject * >(pDataModel->getObject(it->getModelObjectCN()));
 
                 if (pObject == NULL) continue;
 
@@ -885,7 +889,7 @@ CCopasiObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * t
                     pItem->setValue("Symbol subtype", (unsigned C_INT32) 1); //fat cross
                     pItem->setValue("Color", CPlotColors::getCopasiColorStr(colorindex));
                     pItem->addChannel(ChannelX);
-                    pItem->addChannel((*it)->getObject(CCopasiObjectName("Reference=Measured Value"))->getCN());
+                    pItem->addChannel(it->getObject(CCopasiObjectName("Reference=Measured Value"))->getCN());
 
                     pItem =
                       pPlotSpecification->createItem(Name + "(Fitted Value)", CPlotItem::curve2d);
@@ -894,7 +898,7 @@ CCopasiObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * t
                     pItem->setValue("Symbol subtype", (unsigned C_INT32) 0);
                     pItem->setValue("Color", CPlotColors::getCopasiColorStr(colorindex));
                     pItem->addChannel(ChannelX);
-                    pItem->addChannel((*it)->getObject(CCopasiObjectName("Reference=Fitted Value"))->getCN());
+                    pItem->addChannel(it->getObject(CCopasiObjectName("Reference=Fitted Value"))->getCN());
 
                     pItem =
                       pPlotSpecification->createItem(Name + "(Weighted Error)", CPlotItem::curve2d);
@@ -903,7 +907,7 @@ CCopasiObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * t
                     pItem->setValue("Symbol subtype", (unsigned C_INT32) 2);
                     pItem->setValue("Color", CPlotColors::getCopasiColorStr(colorindex));
                     pItem->addChannel(ChannelX);
-                    pItem->addChannel((*it)->getObject(CCopasiObjectName("Reference=Weighted Error"))->getCN());
+                    pItem->addChannel(it->getObject(CCopasiObjectName("Reference=Weighted Error"))->getCN());
                   }
               }
           }
@@ -915,7 +919,7 @@ CCopasiObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * t
       case 913:
       {
         CPlotSpecification * pPlotSpecification = NULL;
-        CCopasiTask * pTask = (*pDataModel->getTaskList())["Parameter Estimation"];
+        CCopasiTask * pTask = &pDataModel->getTaskList()->operator[]("Parameter Estimation");
 
         if (pTask == NULL) return NULL;
 
@@ -936,14 +940,15 @@ CCopasiObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * t
           {
             pPlotSpecification->setLogY(true);
             CCopasiVector< CPlotItem > & Items = pPlotSpecification->getItems();
-            CCopasiVector< CPlotItem >::const_iterator itItem = Items.begin();
-            CCopasiVector< CPlotItem >::const_iterator endItem = Items.end();
+            CCopasiVector< CPlotItem >::iterator itItem = Items.begin();
+            CCopasiVector< CPlotItem >::iterator endItem = Items.end();
 
             while (itItem != endItem)
               {
-                (*itItem)->setTitle("sum of squares");
-                (*itItem)->setActivity(COutputInterface::DURING);
-                (*itItem++)->setValue("Line type", (unsigned C_INT32) 0);
+                itItem->setTitle("sum of squares");
+                itItem->setActivity(COutputInterface::DURING);
+                itItem->setValue("Line type", (unsigned C_INT32) 0);
+                itItem++;
               }
           }
 
@@ -954,7 +959,7 @@ CCopasiObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * t
       case 914:
       {
         CPlotSpecification * pPlotSpecification = NULL;
-        CCopasiTask * pTask = (*pDataModel->getTaskList())["Optimization"];
+        CCopasiTask * pTask = &pDataModel->getTaskList()->operator[]("Optimization");
 
         if (pTask == NULL) return NULL;
 
@@ -976,14 +981,15 @@ CCopasiObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * t
           {
             pPlotSpecification->setLogY(true);
             CCopasiVector< CPlotItem > & Items = pPlotSpecification->getItems();
-            CCopasiVector< CPlotItem >::const_iterator itItem = Items.begin();
-            CCopasiVector< CPlotItem >::const_iterator endItem = Items.end();
+            CCopasiVector< CPlotItem >::iterator itItem = Items.begin();
+            CCopasiVector< CPlotItem >::iterator endItem = Items.end();
 
             while (itItem != endItem)
               {
-                (*itItem)->setTitle("target function");
-                (*itItem)->setActivity(COutputInterface::DURING);
-                (*itItem++)->setValue("Line type", (unsigned C_INT32) 0);
+                itItem->setTitle("target function");
+                itItem->setActivity(COutputInterface::DURING);
+                itItem->setValue("Line type", (unsigned C_INT32) 0);
+                itItem++;
               }
           }
 
@@ -1139,7 +1145,7 @@ CCopasiObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * t
 
       case 51: //parameter estimation target function
       {
-        CCopasiTask * pTask = (*pDataModel->getTaskList())["Parameter Estimation"];
+        CCopasiTask * pTask = &pDataModel->getTaskList()->operator[]("Parameter Estimation");
 
         if (pTask == NULL) break;
 
@@ -1154,7 +1160,7 @@ CCopasiObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * t
 
       case 52: //optimization target function
       {
-        CCopasiTask * pTask = (*pDataModel->getTaskList())["Optimization"];
+        CCopasiTask * pTask = &pDataModel->getTaskList()->operator[]("Optimization");
 
         if (pTask == NULL) break;
 

@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -794,7 +794,7 @@ bool CMCAMethod::isValidProblem(const CCopasiProblem * pProblem)
 
   for (; it != end; ++it)
     {
-      Requested.insert(mpContainer->getMathObject((*it)->getValueReference()));
+      Requested.insert(mpContainer->getMathObject(it->getValueReference()));
     }
 
   CObjectInterface::UpdateSequence UpdateSequence;

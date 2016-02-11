@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -233,9 +233,9 @@ std::pair< C_FLOAT64, C_FLOAT64 > CEFMTask::getSpeciesChanges(const CFluxMode & 
 
       for (; it != end; ++it)
         {
-          if ((*it)->getMetaboliteKey() == Key)
+          if (it->getMetaboliteKey() == Key)
             {
-              *pIn += fabs(itReaction->second) * (*it)->getMultiplicity();
+              *pIn += fabs(itReaction->second) * it->getMultiplicity();
               break;
             }
         }
@@ -245,9 +245,9 @@ std::pair< C_FLOAT64, C_FLOAT64 > CEFMTask::getSpeciesChanges(const CFluxMode & 
 
       for (; it != end; ++it)
         {
-          if ((*it)->getMetaboliteKey() == Key)
+          if (it->getMetaboliteKey() == Key)
             {
-              *pOut += fabs(itReaction->second) * (*it)->getMultiplicity();
+              *pOut += fabs(itReaction->second) * it->getMultiplicity();
               break;
             }
         }
@@ -362,7 +362,7 @@ std::map< const CMetab *, C_FLOAT64 > CEFMTask::getNetReactionData(const CFluxMo
 
       for (; it != end; ++it)
         {
-          pSpecies = (*it)->getMetabolite();
+          pSpecies = it->getMetabolite();
 
           if (NetReaction.count(pSpecies) == 0)
             {
@@ -376,7 +376,7 @@ std::map< const CMetab *, C_FLOAT64 > CEFMTask::getNetReactionData(const CFluxMo
 
       for (; it != end; ++it)
         {
-          pSpecies = (*it)->getMetabolite();
+          pSpecies = it->getMetabolite();
 
           if (NetReaction.count(pSpecies) == 0)
             {

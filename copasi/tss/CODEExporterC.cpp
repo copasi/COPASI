@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -107,14 +107,14 @@ bool CODEExporterC::exportTitleData(const CModel* copasiModel, std::ostream & os
 
   size_t i, j, num_params, count;
   const CCopasiVector< CReaction > & reacs = copasiModel->getReactions();
-  CReaction* reac;
+  const CReaction* reac;
 
   count = 0;
 
   for (i = 0; i < reacs_size; ++i)
     {
 
-      reac = reacs[i];
+      reac = &reacs[i];
       num_params = reac->getParameters().size();
 
       for (j = 0; j < num_params; ++j)
@@ -537,7 +537,7 @@ bool CODEExporterC::preprocess(const CModel* copasiModel)
 
   for (i = 0; i < metabs_size; i++)
     {
-      CMetab * metab = metabs[i];
+      const CMetab * metab = &metabs[i];
 
       //if (metab->isUsed())
       {
@@ -570,7 +570,7 @@ bool CODEExporterC::preprocess(const CModel* copasiModel)
 
   for (i = 0; i < comps_size; i++)
     {
-      CCompartment * comp = comps[i];
+      const CCompartment * comp = &comps[i];
 
       std::string name;
       dependent = 0;
@@ -592,7 +592,7 @@ bool CODEExporterC::preprocess(const CModel* copasiModel)
 
   for (i = 0; i < modvals_size; i++)
     {
-      CModelValue* modval = modvals[i];
+      const CModelValue* modval = &modvals[i];
       std::string name = setExportName(modval->getStatus(), n, 0);
       NameMap[modval->getKey()] = name;
 
@@ -614,11 +614,11 @@ bool CODEExporterC::preprocess(const CModel* copasiModel)
     {
       size_t params_size;
 
-      params_size = reacs[i]->getParameters().size();
+      params_size = reacs[i].getParameters().size();
 
       for (j = 0; j < params_size; ++j)
         {
-          if (!reacs[i]->isLocalParameter(reacs[i]->getParameters().getParameter(j)->getObjectName()))
+          if (!reacs[i].isLocalParameter(reacs[i].getParameters().getParameter(j)->getObjectName()))
             continue;
 
           std::ostringstream name;
@@ -626,10 +626,10 @@ bool CODEExporterC::preprocess(const CModel* copasiModel)
           name << "p[" << n[0] << "]";
           n[0] ++;
 
-          NameMap[reacs[i]->getParameters().getParameter(j)->getKey()] = name.str();
+          NameMap[reacs[i].getParameters().getParameter(j)->getKey()] = name.str();
         }
 
-      const CFunction* func = reacs[i]->getFunction();
+      const CFunction* func = reacs[i].getFunction();
 
       std::string name = func->getObjectName();
 
@@ -890,13 +890,13 @@ bool CODEExporterC::exportKineticFunctionGroup(const CModel* copasiModel)
 {
   const CCopasiVector< CReaction > & reacs = copasiModel->getReactions();
   size_t size = reacs.size();
-  CReaction* reac;
+  const CReaction* reac;
 
   size_t i;
 
   for (i = 0; i < size; ++i)
     {
-      reac = reacs[i];
+      reac = &reacs[i];
       const CFunction* func = reac->getFunction();
 
       if (func->getRoot())
@@ -1096,8 +1096,8 @@ std::string CODEExporterC::KineticFunction2ODEmember(const CReaction *reac)
       size_t substrs_size = substrs.size(), prods_size = prods.size();
       size_t k, m, mult;
 
-      CChemEqElement* substr;
-      CChemEqElement* prod;
+      const CChemEqElement* substr;
+      const CChemEqElement* prod;
 
       const CMassAction cMassAction = *static_cast<const CMassAction*>(reac->getFunction());
 
@@ -1122,7 +1122,7 @@ std::string CODEExporterC::KineticFunction2ODEmember(const CReaction *reac)
 
       for (k = 0; k < substrs_size; ++k)
         {
-          substr = substrs[k];
+          substr = &substrs[k];
           mult = (size_t) substr->getMultiplicity();
 
           assert(substr->getMetabolite());
@@ -1156,7 +1156,7 @@ std::string CODEExporterC::KineticFunction2ODEmember(const CReaction *reac)
 
           for (k = 0; k < prods_size; ++k)
             {
-              prod = prods[k];
+              prod = &prods[k];
               mult = (size_t) prod->getMultiplicity();
 
               assert(prod->getMetabolite());

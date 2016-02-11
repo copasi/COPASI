@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -832,7 +832,7 @@ CLGlobalRenderInformation* getDefaultStyle(size_t index)
 
   if (DEFAULT_STYLES != NULL && index < DEFAULT_STYLES->size())
     {
-      pResult = static_cast<CLGlobalRenderInformation*>((*DEFAULT_STYLES)[index]);
+      pResult = static_cast<CLGlobalRenderInformation*>(&DEFAULT_STYLES->operator[](index));
     }
 
   return pResult;

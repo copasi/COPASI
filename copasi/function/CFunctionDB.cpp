@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -271,10 +271,10 @@ CFunction * CFunctionDB::addAndAdaptName(CFunction * pFunction)
   while ((Index = mLoadedFunctions.getIndex(name)) != C_INVALID_INDEX)
     {
       // Check whether the new functions and the old are the same.
-      if (*mLoadedFunctions[Index] == *pFunction)
+      if (mLoadedFunctions[Index] == *pFunction)
         {
           pdelete(pFunction);
-          return mLoadedFunctions[Index];
+          return &mLoadedFunctions[Index];
         }
 
       i++;
@@ -296,11 +296,11 @@ bool CFunctionDB::removeFunction(size_t index)
   CCopasiVector< CCopasiDataModel >::iterator it = CCopasiRootContainer::getDatamodelList()->begin();
   CCopasiVector< CCopasiDataModel >::iterator end = CCopasiRootContainer::getDatamodelList()->end();
 
-  std::set< const CCopasiObject * > DeletedObjects = mLoadedFunctions[index]->getDeletedObjects();
+  std::set< const CCopasiObject * > DeletedObjects = mLoadedFunctions[index].getDeletedObjects();
 
   for (; it != end; ++it)
     {
-      (*it)->getModel()->removeDependentModelObjects(DeletedObjects);
+      it->getModel()->removeDependentModelObjects(DeletedObjects);
     }
 
   mLoadedFunctions.CCopasiVector<CFunction>::remove(index);
@@ -327,7 +327,7 @@ CFunction * CFunctionDB::findFunction(const std::string & functionName)
   size_t index = mLoadedFunctions.getIndex(functionName);
 
   if (index != C_INVALID_INDEX)
-    return mLoadedFunctions[index];
+    return &mLoadedFunctions[index];
   else
     return NULL;
 }
@@ -337,8 +337,8 @@ CFunction * CFunctionDB::findLoadFunction(const std::string & functionName)
   size_t i;
 
   for (i = 0; i < mLoadedFunctions.size(); i++)
-    if (functionName == mLoadedFunctions[i]->getObjectName())
-      return mLoadedFunctions[i];
+    if (functionName == mLoadedFunctions[i].getObjectName())
+      return &mLoadedFunctions[i];
 
   return NULL;
 }
@@ -358,7 +358,7 @@ CFunctionDB::suitableFunctions(const size_t noSubstrates,
 
   for (i = 0; i < imax; i++)
     {
-      pFunction = dynamic_cast<CFunction *>(mLoadedFunctions[i]);
+      pFunction = dynamic_cast<CFunction *>(&mLoadedFunctions[i]);
 
       if (!pFunction) continue;
 
@@ -403,9 +403,9 @@ bool CFunctionDB::appendDependentFunctions(std::set< const CCopasiObject * > can
   CCopasiVectorN< CFunction >::const_iterator end = mLoadedFunctions.end();
 
   for (; it != end; ++it)
-    if (candidates.find(*it) == candidates.end() &&
-        (*it)->CEvaluationTree::dependsOn(candidates))
-      dependentFunctions.insert((*it));
+    if (candidates.find(it) == candidates.end() &&
+        it->CEvaluationTree::dependsOn(candidates))
+      dependentFunctions.insert(it);
 
   return Size < dependentFunctions.size();
 }
@@ -419,22 +419,22 @@ CFunctionDB::listDependentTrees(const std::string & name) const
   CCopasiVectorN < CFunction >::const_iterator end = mLoadedFunctions.end();
 
   for (; it != end; ++it)
-    if ((*it)->dependsOnTree(name))
-      List.insert((*it)->getObjectName());
+    if (it->dependsOnTree(name))
+      List.insert(it->getObjectName());
 
   return List;
 }
 
-std::vector< CFunction * > CFunctionDB::getUsedFunctions(const CModel* pModel) const
+std::vector< const CFunction * > CFunctionDB::getUsedFunctions(const CModel* pModel) const
 {
-  std::vector< CFunction * > UsedFunctions;
+  std::vector< const CFunction * > UsedFunctions;
   CCopasiVectorN < CFunction >::const_iterator it = mLoadedFunctions.begin();
   CCopasiVectorN < CFunction >::const_iterator end = mLoadedFunctions.end();
 
   for (; it != end; ++it)
     {
       std::set< const CCopasiObject * > Function;
-      Function.insert(*it);
+      Function.insert(it);
 
       std::set< const CCopasiObject * > Reactions;
       std::set< const CCopasiObject * > Metabolites;
@@ -445,7 +445,7 @@ std::vector< CFunction * > CFunctionDB::getUsedFunctions(const CModel* pModel) c
       if (pModel->appendDependentModelObjects(Function,
                                               Reactions, Metabolites, Compartments, Values, Events))
         {
-          UsedFunctions.push_back(*it);
+          UsedFunctions.push_back(it);
           continue;
         }
     }

@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -156,7 +156,7 @@ bool CEFMAlgorithm::initialize()
   /* and keep track of the rearrangement */
   for (row = 0; row < numRows; row++)
     {
-      if (Reaction[row]->isReversible())
+      if (Reaction[row].isReversible())
         {
           Insert = InsertReversible++;
           mReversible++;
@@ -164,7 +164,7 @@ bool CEFMAlgorithm::initialize()
       else
         Insert = InsertIrreversible--;
 
-      (*mpReorderedReactions)[Insert] = Reaction[row];
+      (*mpReorderedReactions)[Insert] = &Reaction[row];
 
       for (col = 0; col < numCols; col++)
         mStoi[Insert][col] = ModelStoi(row, col);

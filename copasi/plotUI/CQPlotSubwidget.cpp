@@ -357,7 +357,7 @@ void CQPlotSubwidget::selectPlotItem(CPlotItem* item)
       mpStack->setEnabled(false);
     }
 
-  current->setModel((*CCopasiRootContainer::getDatamodelList())[0]->getModel());
+  current->setModel(CCopasiRootContainer::getDatamodelList()->operator[](0).getModel());
   current->LoadFromCurveSpec(item);
 
   pdelete(mLastItem);
@@ -384,7 +384,7 @@ void CQPlotSubwidget::addCurve2D()
   std::vector< const CCopasiObject * > vector2;
   pBrowser->setOutputVectors(&vector1, &vector2);
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
+  CCopasiDataModel* pDataModel = &CCopasiRootContainer::getDatamodelList()->operator[](0);
   assert(pDataModel != NULL);
   pBrowser->setModel(pDataModel->getModel(), CQSimpleSelectionTree::NumericValues);
 
@@ -527,7 +527,7 @@ void CQPlotSubwidget::addSpectrum()
   std::vector< const CCopasiObject * > vector2;
   pBrowser->setOutputVectors(&vector1, &vector2);
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
+  CCopasiDataModel* pDataModel = &CCopasiRootContainer::getDatamodelList()->operator[](0);
   assert(pDataModel != NULL);
 
   pBrowser->setModel(pDataModel->getModel(), CQSimpleSelectionTree::NumericValues);
@@ -685,7 +685,7 @@ void CQPlotSubwidget::addBandedGraph()
   std::vector< const CCopasiObject * > vector2;
   pBrowser->setOutputVectors(&vector1, &vector2);
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
+  CCopasiDataModel* pDataModel = &CCopasiRootContainer::getDatamodelList()->operator[](0);
   assert(pDataModel != NULL);
   pBrowser->setModel(pDataModel->getModel(), CQSimpleSelectionTree::NumericValues);
 
@@ -905,7 +905,7 @@ void CQPlotSubwidget::deletePlot()
   size_t Index, Size;
 
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
+  CCopasiDataModel* pDataModel = &CCopasiRootContainer::getDatamodelList()->operator[](0);
   assert(pDataModel != NULL);
 
   if (!pDataModel->getModel())
@@ -923,7 +923,7 @@ void CQPlotSubwidget::deletePlot()
   Size = pDataModel->getPlotDefinitionList()->size();
 
   if (Size > 0)
-    enter((*pDataModel->getPlotDefinitionList())[std::min(Index, Size - 1)]->CCopasiParameter::getKey());
+    enter(pDataModel->getPlotDefinitionList()->operator[](std::min(Index, Size - 1)).CCopasiParameter::getKey());
   else
     enter("");
 
@@ -1046,10 +1046,10 @@ bool CQPlotSubwidget::loadFromPlotSpec(const CPlotSpecification *pspec)
 
   for (; it != end; ++it)
     {
-      QString title = FROM_UTF8((*it)->getTitle());
+      QString title = FROM_UTF8(it->getTitle());
       PlotItems.append(title);
 
-      CPlotItem * pItem = new CPlotItem(**it);
+      CPlotItem * pItem = new CPlotItem(*it);
 
       // The copy has the same parent as the original, i.e., it has been added to the plot specification.
       const_cast< CPlotSpecification * >(pspec)->getItems().remove(pItem);

@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -57,13 +57,13 @@ QVariant CQReferenceDM::data(const QModelIndex &index, int role) const
                 return QVariant(index.row() + 1);
 
               case COL_RESOURCE_REFERENCE:
-                return QVariant(QString(FROM_UTF8(mpMIRIAMInfo->getReferences()[index.row()]->getResource())));
+                return QVariant(QString(FROM_UTF8(mpMIRIAMInfo->getReferences()[index.row()].getResource())));
 
               case COL_ID_REFERENCE:
-                return QVariant(QString(FROM_UTF8(mpMIRIAMInfo->getReferences()[index.row()]->getId())));
+                return QVariant(QString(FROM_UTF8(mpMIRIAMInfo->getReferences()[index.row()].getId())));
 
               case COL_DESCRIPTION:
-                return QVariant(QString(FROM_UTF8(mpMIRIAMInfo->getReferences()[index.row()]->getDescription())));
+                return QVariant(QString(FROM_UTF8(mpMIRIAMInfo->getReferences()[index.row()].getDescription())));
             }
         }
     }
@@ -117,15 +117,15 @@ bool CQReferenceDM::setData(const QModelIndex &index, const QVariant &value,
       switch (index.column())
         {
           case COL_RESOURCE_REFERENCE:
-            mpMIRIAMInfo->getReferences()[index.row()]->setResource(TO_UTF8(value.toString()));
+            mpMIRIAMInfo->getReferences()[index.row()].setResource(TO_UTF8(value.toString()));
             break;
 
           case COL_ID_REFERENCE:
-            mpMIRIAMInfo->getReferences()[index.row()]->setId(TO_UTF8(value.toString()));
+            mpMIRIAMInfo->getReferences()[index.row()].setId(TO_UTF8(value.toString()));
             break;
 
           case COL_DESCRIPTION:
-            mpMIRIAMInfo->getReferences()[index.row()]->setDescription(TO_UTF8(value.toString()));
+            mpMIRIAMInfo->getReferences()[index.row()].setDescription(TO_UTF8(value.toString()));
             break;
         }
 
@@ -182,8 +182,8 @@ bool CQReferenceDM::removeRows(QModelIndexList rows, const QModelIndex&)
 
   for (i = rows.begin(); i != rows.end(); ++i)
     {
-      if (!isDefaultRow(*i) && mpMIRIAMInfo->getReferences()[(*i).row()])
-        pReferences.append(mpMIRIAMInfo->getReferences()[(*i).row()]);
+      if (!isDefaultRow(*i) && &mpMIRIAMInfo->getReferences()[i->row()])
+        pReferences.append(&mpMIRIAMInfo->getReferences()[i->row()]);
     }
 
   bool retVal = false, askEveryItem = true;

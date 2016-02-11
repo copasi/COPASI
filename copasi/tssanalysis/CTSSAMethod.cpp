@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -171,8 +171,8 @@ void CTSSAMethod::start()
 
   const CModel & Model = mpContainer->getModel();
 
-  mNumber2Concentration = Model.getNumber2QuantityFactor() / Model.getCompartments()[0]->getInitialValue();
-  mConcentration2Number =  Model.getQuantity2NumberFactor() * Model.getCompartments()[0]->getInitialValue();
+  mNumber2Concentration = Model.getNumber2QuantityFactor() / Model.getCompartments()[0].getInitialValue();
+  mConcentration2Number =  Model.getQuantity2NumberFactor() * Model.getCompartments()[0].getInitialValue();
 
   return;
 }
@@ -239,7 +239,8 @@ bool CTSSAMethod::isValidProblem(const CCopasiProblem * pProblem)
   CCopasiVector< CCompartment >::const_iterator end = Model.getCompartments().end();
 
   for (; it != end; ++it)
-    if ((*it)->getStatus() == CModelEntity::ODE || (*it)->getStatus() ==  CModelEntity::ASSIGNMENT)
+    if (it->getStatus() == CModelEntity::ODE ||
+        it->getStatus() ==  CModelEntity::ASSIGNMENT)
 
       {
         CCopasiMessage(CCopasiMessage::ERROR, " TSSA can not be applyed for systems with non-constant  volumes");
@@ -252,7 +253,7 @@ bool CTSSAMethod::isValidProblem(const CCopasiProblem * pProblem)
 
   for (i = 0; i < Model.getModelValues().size(); i++)
     {
-      if (Model.getModelValues()[i]->getStatus() == CModelEntity::ODE)
+      if (Model.getModelValues()[i].getStatus() == CModelEntity::ODE)
         {
           CCopasiMessage(CCopasiMessage::ERROR, "TSSA can not be applyed for systems with parameters defined by ODE.");
           return false;

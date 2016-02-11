@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -27,14 +27,14 @@ class QObject;
 
 #define GET_MODEL(target)\
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);\
-  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];\
+  CCopasiDataModel* pDataModel = &CCopasiRootContainer::getDatamodelList()->operator[](0);\
   assert(pDataModel != NULL);\
   CModel * target = pDataModel->getModel();\
   assert(target != NULL);
 
 #define GET_MODEL_OR(target, code)\
   if (CCopasiRootContainer::getDatamodelList()->size()  == 0) code;\
-  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];\
+  CCopasiDataModel* pDataModel = &CCopasiRootContainer::getDatamodelList()->operator[](0);\
   if (pDataModel == NULL) code;\
   CModel * target = pDataModel->getModel();\
   if (target == NULL) code;
@@ -44,7 +44,7 @@ class QObject;
 
 //#define GET_MODEL_OR_RETURN(target)\
 //  if (CCopasiRootContainer::getDatamodelList()->size()  == 0) return;\
-//  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];\
+//  CCopasiDataModel* pDataModel = &CCopasiRootContainer::getDatamodelList()->operator[](0);\
 //  if (pDataModel == NULL) return;\
 //  CModel * target = pDataModel->getModel();\
 //  if (target == NULL) return;

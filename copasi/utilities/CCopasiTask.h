@@ -331,6 +331,11 @@ public:
   CReport & getReport();
 
   /**
+   * Retrieve the report
+   */
+  const CReport & getReport() const;
+
+  /**
    * Retrieve the description
    */
   const CDescription & getDescription() const;

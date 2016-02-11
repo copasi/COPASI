@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -87,7 +87,7 @@ int main()
 
   for (i = 0; i < iMax; ++i)
     {
-      CMetab* pMetab = pModel->getMetabolites()[i];
+      CMetab* pMetab = &pModel->getMetabolites()[i];
       assert(pMetab != NULL);
 
       // we don't want output for FIXED metabolites right now
@@ -126,7 +126,7 @@ int main()
   CCopasiVectorN< CCopasiTask > & TaskList = * pDataModel->getTaskList();
 
   // get the trajectory task object
-  CTrajectoryTask* pTrajectoryTask = dynamic_cast<CTrajectoryTask*>(TaskList["Time-Course"]);
+  CTrajectoryTask* pTrajectoryTask = dynamic_cast<CTrajectoryTask*>(&TaskList["Time-Course"]);
 
   // if there isn't one
   if (pTrajectoryTask == NULL)
@@ -162,7 +162,7 @@ int main()
   pProblem->setTimeSeriesRequested(true);
 
   // now we set up the scan
-  CScanTask* pScanTask = dynamic_cast<CScanTask*>(TaskList["Scan"]);
+  CScanTask* pScanTask = dynamic_cast<CScanTask*>(&TaskList["Scan"]);
 
   if (pScanTask == NULL)
     {

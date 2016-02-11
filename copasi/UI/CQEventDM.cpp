@@ -34,7 +34,7 @@ CQEventDM::CQEventDM(QObject *parent)
 
 int CQEventDM::rowCount(const QModelIndex&) const
 {
-  return (int)(*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getEvents().size() + 1;
+  return CCopasiRootContainer::getDatamodelList()->operator[](0).getModel()->getEvents().size() + 1;
 }
 int CQEventDM::columnCount(const QModelIndex&) const
 {
@@ -54,7 +54,7 @@ Qt::ItemFlags CQEventDM::flags(const QModelIndex &index) const
 
 QVariant CQEventDM::data(const QModelIndex &index, int role) const
 {
-  CExpression * pExpression = NULL;
+  const CExpression * pExpression = NULL;
 
   if (!index.isValid())
     return QVariant();
@@ -83,7 +83,7 @@ QVariant CQEventDM::data(const QModelIndex &index, int role) const
         }
       else
         {
-          CEvent *pEvent = (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getEvents()[index.row()];
+          CEvent *pEvent = &CCopasiRootContainer::getDatamodelList()->operator[](0).getModel()->getEvents()[index.row()];
           QString assignmentTarget = "";
           QString assignmentExpression = "";
 
@@ -96,7 +96,7 @@ QVariant CQEventDM::data(const QModelIndex &index, int role) const
               for (; it != end; ++it)
                 {
                   const CModelEntity * pEntity =
-                    dynamic_cast< CModelEntity * >(CCopasiRootContainer::getKeyFactory()->get((*it)->getTargetKey()));
+                    dynamic_cast< CModelEntity * >(CCopasiRootContainer::getKeyFactory()->get(it->getTargetKey()));
 
                   if (pEntity != NULL)
                     {
@@ -107,12 +107,12 @@ QVariant CQEventDM::data(const QModelIndex &index, int role) const
                         }
 
                       assignmentTarget += FROM_UTF8(pEntity->getObjectDisplayName());
-                      pExpression = (*it)->getExpressionPtr();
+                      pExpression = it->getExpressionPtr();
 
                       if (pExpression != NULL)
                         assignmentExpression += pExpression->getDisplayString().c_str();
                       else
-                        assignmentExpression += FROM_UTF8((*it)->getExpression());
+                        assignmentExpression += FROM_UTF8(it->getExpression());
                     }
                 }
             }
@@ -236,7 +236,7 @@ bool CQEventDM::removeRows(int position, int rows)
 
   beginRemoveRows(QModelIndex(), position, position + rows - 1);
 
-  CModel * pModel = (*CCopasiRootContainer::getDatamodelList())[0]->getModel();
+  CModel * pModel = CCopasiRootContainer::getDatamodelList()->operator[](0).getModel();
 
   std::vector< std::string > DeletedKeys;
   DeletedKeys.resize(rows);
@@ -248,12 +248,12 @@ bool CQEventDM::removeRows(int position, int rows)
 
   for (itDeletedKey = DeletedKeys.begin(); itDeletedKey != endDeletedKey; ++itDeletedKey, ++itRow)
     {
-      *itDeletedKey = (*itRow)->getKey();
+      *itDeletedKey = itRow->getKey();
     }
 
   for (itDeletedKey = DeletedKeys.begin(); itDeletedKey != endDeletedKey; ++itDeletedKey)
     {
-      (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->removeEvent(*itDeletedKey);
+      CCopasiRootContainer::getDatamodelList()->operator[](0).getModel()->removeEvent(*itDeletedKey);
       emit notifyGUI(ListViews::EVENT, ListViews::DELETE, *itDeletedKey);
     }
 
@@ -292,7 +292,7 @@ bool CQEventDM::eventDataChange(const QModelIndex &index, const QVariant &value,
 
   switchToWidget(CCopasiUndoCommand::EVENTS);
 
-  CEvent *pEvent = pModel->getEvents()[index.row()];
+  CEvent *pEvent = &pModel->getEvents()[index.row()];
 
   if (index.column() == COL_NAME_EVENTS)
     pEvent->setObjectName(TO_UTF8(value.toString()));
@@ -371,8 +371,8 @@ bool CQEventDM::removeEventRows(QModelIndexList rows, const QModelIndex&)
 
   for (i = rows.begin(); i != rows.end(); ++i)
     {
-      if (!isDefaultRow(*i) && pModel->getEvents()[(*i).row()])
-        pEvents.append(pModel->getEvents()[(*i).row()]);
+      if (!isDefaultRow(*i) && &pModel->getEvents()[i->row()])
+        pEvents.append(&pModel->getEvents()[i->row()]);
     }
 
   QList <CEvent *>::const_iterator j;

@@ -1,4 +1,4 @@
-// Copyright (C) 2014 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2014 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -33,10 +33,10 @@ RemoveAllGlobalQuantityRowsCommand::RemoveAllGlobalQuantityRowsCommand(
 
   for (int i = 0; i != pGlobalQuantityDM->rowCount() - 1; ++i)
     {
-      if (pModel->getModelValues()[i])
+      if (&pModel->getModelValues()[i])
         {
           UndoGlobalQuantityData *data =
-            new UndoGlobalQuantityData(pModel->getModelValues()[i]);
+            new UndoGlobalQuantityData(&pModel->getModelValues()[i]);
           mpGlobalQuantityData.append(data);
         }
     }
@@ -66,5 +66,4 @@ RemoveAllGlobalQuantityRowsCommand::~RemoveAllGlobalQuantityRowsCommand()
     pdelete(data);
   }
   mpGlobalQuantityData.clear();
-
 }

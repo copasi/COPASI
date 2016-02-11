@@ -269,26 +269,26 @@ void CCopasiXML::mergeUnitDefinitions(CUnitDefinitionDB * pUnitDefImportList)
 
   // Add them if they don't already exist. First change name and/or
   // symbol if there are collisions.
-  CCopasiVectorN< CUnitDefinition >::iterator itIL = pUnitDefImportList->begin(),
-                                              endIL = pUnitDefImportList->end();
+  CCopasiVectorN< CUnitDefinition >::iterator itIL = pUnitDefImportList->begin();
+  CCopasiVectorN< CUnitDefinition >::iterator endIL = pUnitDefImportList->end();
 
   for (; itIL != endIL; ++itIL) //For all of the Unit Defintions to potentially import . . .
     {
       name.str("");
-      name << (*itIL)->getObjectName();
+      name << itIL->getObjectName();
 
       symbol.str("");
-      symbol << (*itIL)->getSymbol();
+      symbol << itIL->getSymbol();
 
       // If an object of this name already exists, we'll want more information.
       if (pCopasiUnitDefinitionList->getIndex(name.str()) != C_INVALID_INDEX)
-        pUnitDefInRootContainer = pCopasiUnitDefinitionList->operator [](name.str());
+        pUnitDefInRootContainer = &pCopasiUnitDefinitionList->operator [](name.str());
       else
         pUnitDefInRootContainer = NULL;
 
       if (pUnitDefInRootContainer != NULL && //implies name conflict
           pUnitDefInRootContainer->getSymbol() == symbol.str() &&
-          pUnitDefInRootContainer->getExpression() == (*itIL)->getExpression())
+          pUnitDefInRootContainer->getExpression() == itIL->getExpression())
         continue; // No need to add an identical unit
 
       // If necessary, generate, then set, a non-conflicting name.
@@ -297,12 +297,12 @@ void CCopasiXML::mergeUnitDefinitions(CUnitDefinitionDB * pUnitDefImportList)
       while (pCopasiUnitDefinitionList->getIndex(name.str()) != C_INVALID_INDEX)
         {
           name.str("");
-          name << (*itIL)->getObjectName() << "_" << ++i;
+          name << itIL->getObjectName() << "_" << ++i;
         }
 
       // By now we know we will add a copy of this one.
       pUnitDefToAdd = new CUnitDefinition(name.str(), NULL); // name should now not conflict
-      pUnitDefToAdd->setExpression((*itIL)->getExpression(), CUnit::Avogadro);
+      pUnitDefToAdd->setExpression(itIL->getExpression(), CUnit::Avogadro);
 
       // If necessary, generate, then set, a non-conflicting symbol.
       if (pCopasiUnitDefinitionList->containsSymbol(symbol.str()))
@@ -313,16 +313,16 @@ void CCopasiXML::mergeUnitDefinitions(CUnitDefinitionDB * pUnitDefImportList)
                  pUnitDefImportList->containsSymbol(symbol.str()))
             {
               symbol.str("");
-              symbol << (*itIL)->getSymbol() << "_" << ++i;
+              symbol << itIL->getSymbol() << "_" << ++i;
             }
 
           // for all the ones aready chosen to add (includes current one)
-          std::set< CUnitDefinition * >::iterator itChosen = unitDefsToAdd.begin(),
-                                                  endChosen = unitDefsToAdd.end();
+          std::set< CUnitDefinition * >::iterator itChosen = unitDefsToAdd.begin();
+          std::set< CUnitDefinition * >::iterator endChosen = unitDefsToAdd.end();
 
           for (; itChosen != endChosen; ++itChosen)
             {
-              (*itChosen)->setExpression(CUnit::replaceSymbol((*itChosen)->getExpression() , (*itIL)->getSymbol(), pUnitDefToAdd->getSymbol()), CUnit::Avogadro);
+              (*itChosen)->setExpression(CUnit::replaceSymbol((*itChosen)->getExpression() , itIL->getSymbol(), pUnitDefToAdd->getSymbol()), CUnit::Avogadro);
             }
 
           // for all the ones remaining in the Import List
@@ -330,11 +330,11 @@ void CCopasiXML::mergeUnitDefinitions(CUnitDefinitionDB * pUnitDefImportList)
 
           for (; itILrem != endIL; ++itILrem)
             {
-              (*itILrem)->setExpression(CUnit::replaceSymbol((*itILrem)->getExpression() , (*itIL)->getSymbol(), pUnitDefToAdd->getSymbol()), CUnit::Avogadro);
+              itILrem->setExpression(CUnit::replaceSymbol(itILrem->getExpression() , itIL->getSymbol(), pUnitDefToAdd->getSymbol()), CUnit::Avogadro);
             }
 
           // for any units used in the model
-          mpModel->changeUnitExpressionSymbols((*itIL)->getSymbol(), pUnitDefToAdd->getSymbol());
+          mpModel->changeUnitExpressionSymbols(itIL->getSymbol(), pUnitDefToAdd->getSymbol());
         }
 
       pUnitDefToAdd->setSymbol(symbol.str());
@@ -536,7 +536,7 @@ bool CCopasiXML::saveModel()
 
       for (i = 0; i < imax; i++)
         {
-          CCompartment * pComp = mpModel->getCompartments()[i];
+          const CCompartment * pComp = &mpModel->getCompartments()[i];
 
           Attributes.setValue(0, pComp->getKey());
           Attributes.setValue(1, pComp->getObjectName());
@@ -585,7 +585,7 @@ bool CCopasiXML::saveModel()
 
       for (i = 0; i < imax; i++)
         {
-          CMetab * pMetab = mpModel->getMetabolites()[i];
+          const CMetab * pMetab = &mpModel->getMetabolites()[i];
 
           Attributes.setValue(0, pMetab->getKey());
           Attributes.setValue(1, pMetab->getObjectName());
@@ -634,7 +634,7 @@ bool CCopasiXML::saveModel()
 
       for (i = 0; i < imax; i++)
         {
-          CModelValue * pMV = mpModel->getModelValues()[i];
+          const CModelValue * pMV = &mpModel->getModelValues()[i];
 
           Attributes.setValue(0, pMV->getKey());
           Attributes.setValue(1, pMV->getObjectName());
@@ -696,7 +696,7 @@ bool CCopasiXML::saveModel()
 
       for (i = 0; i < imax; i++)
         {
-          CReaction * pReaction = mpModel->getReactions()[i];
+          const CReaction * pReaction = &mpModel->getReactions()[i];
 
           Attributes.setValue(0, pReaction->getKey());
           Attributes.setValue(1, pReaction->getObjectName());
@@ -722,8 +722,8 @@ bool CCopasiXML::saveModel()
 
               for (j = 0; j < jmax; j++)
                 {
-                  Attr.setValue(0, (*pReactantList)[j]->getMetaboliteKey());
-                  Attr.setValue(1, (*pReactantList)[j]->getMultiplicity());
+                  Attr.setValue(0, (*pReactantList)[j].getMetaboliteKey());
+                  Attr.setValue(1, (*pReactantList)[j].getMultiplicity());
 
                   saveElement("Substrate", Attr);
                 }
@@ -741,8 +741,8 @@ bool CCopasiXML::saveModel()
 
               for (j = 0; j < jmax; j++)
                 {
-                  Attr.setValue(0, (*pReactantList)[j]->getMetaboliteKey());
-                  Attr.setValue(1, (*pReactantList)[j]->getMultiplicity());
+                  Attr.setValue(0, (*pReactantList)[j].getMetaboliteKey());
+                  Attr.setValue(1, (*pReactantList)[j].getMultiplicity());
 
                   saveElement("Product", Attr);
                 }
@@ -758,8 +758,8 @@ bool CCopasiXML::saveModel()
 
               for (j = 0, jmax = pReactantList->size(); j < jmax; j++)
                 {
-                  Attr.setValue(0, (*pReactantList)[j]->getMetaboliteKey());
-                  Attr.setValue(1, (*pReactantList)[j]->getMultiplicity());
+                  Attr.setValue(0, (*pReactantList)[j].getMetaboliteKey());
+                  Attr.setValue(1, (*pReactantList)[j].getMultiplicity());
 
                   saveElement("Modifier", Attr);
                 }
@@ -851,7 +851,7 @@ bool CCopasiXML::saveModel()
 
       for (i = 0; i < imax; i++)
         {
-          CEvent * pEvent = mpModel->getEvents()[i];
+          const CEvent * pEvent = &mpModel->getEvents()[i];
 
           Attributes.setValue(0, pEvent->getKey());
           Attributes.setValue(1, pEvent->getObjectName());
@@ -900,12 +900,12 @@ bool CCopasiXML::saveModel()
 
               for (; it != end; ++it)
                 {
-                  Attr.setValue(0, (*it)->getTargetKey());
+                  Attr.setValue(0, it->getTargetKey());
 
                   startSaveElement("Assignment", Attr);
 
                   startSaveElement("Expression");
-                  saveData((*it)->getExpression());
+                  saveData(it->getExpression());
                   endSaveElement("Expression");
 
                   endSaveElement("Assignment");
@@ -957,7 +957,7 @@ bool CCopasiXML::saveModel()
 
   for (i = 0; i < imax; i++)
     {
-      pSet = mpModel->getModelParameterSets()[i];
+      pSet = &mpModel->getModelParameterSets()[i];
 
       Attributes.setValue(0, pSet->getKey());
       Attributes.setValue(1, pSet->getObjectName());
@@ -1127,13 +1127,13 @@ bool CCopasiXML::saveFunctionList()
   if (!imax) return success;
 
   CXMLAttributeList Attributes;
-  CFunction * pFunction = NULL;
+  const CFunction * pFunction = NULL;
 
   startSaveElement("ListOfFunctions");
 
   for (i = 0; i < imax; i++)
     {
-      pFunction = (*mpFunctionList)[i];
+      pFunction = &mpFunctionList->operator[](i);
 
       Attributes.erase();
       Attributes.add("key", pFunction->getKey());
@@ -1174,7 +1174,7 @@ bool CCopasiXML::saveFunctionList()
           startSaveElement("ListOfParameterDescriptions");
 
           size_t j, jmax = pFunction->getVariables().size();
-          CFunctionParameter * pParameter;
+          const CFunctionParameter * pParameter;
 
           Attributes.erase();
           Attributes.add("key", "");
@@ -1226,7 +1226,7 @@ bool CCopasiXML::savePlotList()
 
   for (i = 0; i < imax; i++)
     {
-      const CPlotSpecification* pPlot = (*mpPlotList)[i];
+      const CPlotSpecification* pPlot = &mpPlotList->operator[](i);
 
       Attributes.erase();
       Attributes.add("name", pPlot->getObjectName());
@@ -1240,7 +1240,7 @@ bool CCopasiXML::savePlotList()
       //std::cerr << "Saving " << jmax << "PlotItems." << std::endl;
       for (j = 0; j < jmax; j++)
         {
-          const CPlotItem* pPlotItem = pPlot->getItems()[j];
+          const CPlotItem* pPlotItem = &pPlot->getItems()[j];
           Attributes.erase();
           Attributes.add("name", pPlotItem->getObjectName());
           Attributes.add("type", CPlotItem::XMLType[pPlotItem->getType()]);
@@ -1293,13 +1293,13 @@ bool CCopasiXML::saveTaskList()
   if (!imax) return success;
 
   CXMLAttributeList Attributes;
-  CCopasiTask * pTask = NULL;
+  const CCopasiTask * pTask = NULL;
 
   startSaveElement("ListOfTasks");
 
   for (i = 0; i < imax; i++)
     {
-      pTask = (*mpTaskList)[i];
+      pTask = &mpTaskList->operator[](i);
 
       Attributes.erase();
       Attributes.add("key", pTask->getKey());
@@ -1311,7 +1311,7 @@ bool CCopasiXML::saveTaskList()
       startSaveElement("Task", Attributes);
 
       // Report Element
-      CReport & tReport = pTask->getReport();
+      const CReport & tReport = pTask->getReport();
 
       if (tReport.getReportDefinition())
         {
@@ -1331,7 +1331,7 @@ bool CCopasiXML::saveTaskList()
         }
 
       //Problem Element
-      CCopasiProblem *tProblem = pTask->getProblem();
+      const CCopasiProblem *tProblem = pTask->getProblem();
 
       Attributes.erase();
       startSaveElement("Problem");
@@ -1339,7 +1339,7 @@ bool CCopasiXML::saveTaskList()
       endSaveElement("Problem");
 
       // Method Element
-      CCopasiMethod *tMethod = pTask->getMethod();
+      const CCopasiMethod *tMethod = pTask->getMethod();
 
       Attributes.erase();
       Attributes.add("name", tMethod->CCopasiParameter::getObjectName());
@@ -1400,13 +1400,13 @@ bool CCopasiXML::saveReportList()
   if (!imax) return success;
 
   CXMLAttributeList Attributes;
-  CReportDefinition * pReport = NULL;
+  const CReportDefinition * pReport = NULL;
 
   startSaveElement("ListOfReports");
 
   for (i = 0; i < imax; i++)
     {
-      pReport = (*mpReportList)[i];
+      pReport = &mpReportList->operator[](i);
 
       Attributes.erase();
       Attributes.add("key", pReport->getKey());
@@ -1534,13 +1534,13 @@ bool CCopasiXML::saveLayoutList()
   if (!imax) return success;
 
   CXMLAttributeList Attributes;
-  CLayout * pLayout = NULL;
+  const CLayout * pLayout = NULL;
   Attributes.add("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance");
   startSaveElement("ListOfLayouts", Attributes);
 
   for (i = 0; i < imax; i++)
     {
-      pLayout = (*mpLayoutList)[i];
+      pLayout = &mpLayoutList->operator[](i);
 
       Attributes.erase();
       Attributes.add("key", pLayout->getKey());
@@ -1563,7 +1563,7 @@ bool CCopasiXML::saveLayoutList()
 
           for (j = 0; j < jmax; ++j)
             {
-              CLCompartmentGlyph* cg = pLayout->getListOfCompartmentGlyphs()[j];
+              const CLCompartmentGlyph* cg = &pLayout->getListOfCompartmentGlyphs()[j];
               Attributes.erase();
               Attributes.add("key", cg->getKey());
               Attributes.add("name", cg->getObjectName());
@@ -1576,7 +1576,7 @@ bool CCopasiXML::saveLayoutList()
                 {
                   // we set the model reference to the empty string so that
                   // the warnings message only appears on the first save operation
-                  cg->setModelObjectKey("");
+                  const_cast< CLCompartmentGlyph * >(cg)->setModelObjectKey("");
 
                   if (!this->mMCXML21Issued)
                     {
@@ -1613,7 +1613,7 @@ bool CCopasiXML::saveLayoutList()
 
           for (j = 0; j < jmax; ++j)
             {
-              CLMetabGlyph* cg = pLayout->getListOfMetaboliteGlyphs()[j];
+              const CLMetabGlyph* cg = &pLayout->getListOfMetaboliteGlyphs()[j];
               Attributes.erase();
               Attributes.add("key", cg->getKey());
               Attributes.add("name", cg->getObjectName());
@@ -1626,7 +1626,7 @@ bool CCopasiXML::saveLayoutList()
                 {
                   // we set the model reference to the empty string so that
                   // the warnings message only appears on the first save operation
-                  cg->setModelObjectKey("");
+                  const_cast< CLMetabGlyph * >(cg)->setModelObjectKey("");
 
                   if (!this->mMCXML21Issued)
                     {
@@ -1663,7 +1663,7 @@ bool CCopasiXML::saveLayoutList()
 
           for (j = 0; j < jmax; ++j)
             {
-              CLReactionGlyph* cg = pLayout->getListOfReactionGlyphs()[j];
+              const CLReactionGlyph* cg = &pLayout->getListOfReactionGlyphs()[j];
               Attributes.erase();
               Attributes.add("key", cg->getKey());
               Attributes.add("name", cg->getObjectName());
@@ -1676,7 +1676,7 @@ bool CCopasiXML::saveLayoutList()
                 {
                   // we set the model reference to the empty string so that
                   // the warnings message only appears on the first save operation
-                  cg->setModelObjectKey("");
+                  const_cast< CLReactionGlyph * >(cg)->setModelObjectKey("");
 
                   if (!this->mMCXML21Issued)
                     {
@@ -1703,7 +1703,7 @@ bool CCopasiXML::saveLayoutList()
 
               for (k = 0; k < kmax; ++k)
                 {
-                  CLMetabReferenceGlyph * mrg = cg->getListOfMetabReferenceGlyphs()[k];
+                  const CLMetabReferenceGlyph * mrg = &cg->getListOfMetabReferenceGlyphs()[k];
                   Attributes.erase();
                   Attributes.add("key", mrg->getKey());
                   Attributes.add("name", mrg->getObjectName());
@@ -1743,7 +1743,7 @@ bool CCopasiXML::saveLayoutList()
 
           for (j = 0; j < jmax; ++j)
             {
-              CLTextGlyph* cg = pLayout->getListOfTextGlyphs()[j];
+              const CLTextGlyph* cg = &pLayout->getListOfTextGlyphs()[j];
               // we only export the text glyph if it either has a text
               // or a valid originOfText
               std::string id = cg->getModelObjectKey();
@@ -1771,8 +1771,8 @@ bool CCopasiXML::saveLayoutList()
                           // set the text to unset instead
                           Attributes.add("text", "unset");
                           // set the invalid key to the empty string
-                          cg->setModelObjectKey("");
-                          cg->setText("unset");
+                          const_cast< CLTextGlyph * >(cg)->setModelObjectKey("");
+                          const_cast< CLTextGlyph * >(cg)->setText("unset");
 
                           if (!this->mMCXML21Issued)
                             {
@@ -1807,7 +1807,7 @@ bool CCopasiXML::saveLayoutList()
 
           for (j = 0; j < jmax; ++j)
             {
-              CLGeneralGlyph* cg = pLayout->getListOfGeneralGlyphs()[j];
+              const CLGeneralGlyph* cg = &pLayout->getListOfGeneralGlyphs()[j];
               Attributes.erase();
               Attributes.add("key", cg->getKey());
               Attributes.add("name", cg->getObjectName());
@@ -1820,7 +1820,7 @@ bool CCopasiXML::saveLayoutList()
                 {
                   // we set the model reference to the empty string so that
                   // the warnings message only appears on the first save operation
-                  cg->setModelObjectKey("");
+                  const_cast< CLGeneralGlyph * >(cg)->setModelObjectKey("");
 
                   //a general glyph does not necessarily have a model reference.
                   //so no warning is issued
@@ -1883,7 +1883,7 @@ bool CCopasiXML::saveGUI()
     {
       startSaveElement("ListOfSliders");
 
-      CSlider * pSlider;
+      const CSlider * pSlider;
       CXMLAttributeList Attributes;
 
       Attributes.add("key", "");
@@ -1901,7 +1901,7 @@ bool CCopasiXML::saveGUI()
 
       for (i = 0; i < imax; i++)
         {
-          pSlider = (*mpGUI->getSliderList())[i];
+          pSlider = &mpGUI->getSliderList()->operator[](i);
           Attributes.setValue(0, pSlider->getKey());
           Attributes.setValue(1, pSlider->getAssociatedEntityKey());
           Attributes.setValue(2, pSlider->getSliderObjectCN());
@@ -1971,7 +1971,8 @@ bool CCopasiXML::buildFunctionList()
   CCopasiVectorN< CFunction > * pFunctionList
     = new CCopasiVectorN< CFunction >;
 
-  *pFunctionList = CCopasiRootContainer::getFunctionList()->getUsedFunctions(this->mpDataModel->getModel());
+  std::vector< const CFunction * > FunctionList = CCopasiRootContainer::getFunctionList()->getUsedFunctions(this->mpDataModel->getModel());
+  *pFunctionList = *reinterpret_cast< std::vector< CFunction * > * >(&FunctionList);
 
   if (!setFunctionList(pFunctionList)) success = false;
 
@@ -1986,7 +1987,7 @@ void CCopasiXML::fixBuild55()
 
   if (Index == C_INVALID_INDEX) return;
 
-  CFitTask * pTask = dynamic_cast< CFitTask * >((*mpTaskList)[Index]);
+  CFitTask * pTask = dynamic_cast< CFitTask * >(&mpTaskList->operator[](Index));
 
   if (pTask == NULL) return;
 
@@ -2003,7 +2004,7 @@ void CCopasiXML::fixBuild81()
 
   if (Index == C_INVALID_INDEX) return;
 
-  CScanTask * pTask = dynamic_cast< CScanTask * >((*mpTaskList)[Index]);
+  CScanTask * pTask = dynamic_cast< CScanTask * >(&mpTaskList->operator[](Index));
 
   if (pTask == NULL) return;
 
@@ -2022,7 +2023,7 @@ void CCopasiXML::saveListOfGlobalRenderInformation(const CCopasiVector< CLGlobal
 
   for (i = 0; i < iMax; ++i)
     {
-      saveGlobalRenderInformation(*list[i]);
+      saveGlobalRenderInformation(list[i]);
     }
 
   endSaveElement("ListOfGlobalRenderInformation");
@@ -2038,7 +2039,7 @@ void CCopasiXML::saveListOfLocalRenderInformation(const CCopasiVector<CLLocalRen
 
   for (i = 0; i < iMax; ++i)
     {
-      saveLocalRenderInformation(*list[i]);
+      saveLocalRenderInformation(list[i]);
     }
 
   endSaveElement("ListOfRenderInformation");
@@ -2874,13 +2875,13 @@ bool CCopasiXML::saveUnitDefinitionList()
   if (!imax) return success;
 
   CXMLAttributeList Attributes;
-  CUnitDefinition * pUnitDef = NULL;
+  const CUnitDefinition * pUnitDef = NULL;
 
   startSaveElement("ListOfUnitDefinitions");
 
   for (i = 0; i < imax; i++)
     {
-      pUnitDef = (*pUnitDefList)[i];
+      pUnitDef = &pUnitDefList->operator[](i);
 
       // Don't save if the unit is not used in/for a model unit and
       // it's not a user-created unit (i.e. it is a built-in)

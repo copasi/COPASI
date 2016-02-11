@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -148,17 +148,21 @@ CUnit CMetab::getChildObjectUnits(const CCopasiObject * pObject) const
             {
               unitExpression = "1";
             }
+
           if (compartmentUnitExpression != "" ||
               timeUnitExpression != "")
             {
               compartmentUnitExpression = "/(" + compartmentUnitExpression;
+
               if (timeUnitExpression != "" &&
                   compartmentUnitExpression != "")
                 {
                   timeUnitExpression = "*" + timeUnitExpression;
                 }
+
               timeUnitExpression = timeUnitExpression + ")";
             }
+
           unit.setExpression(unitExpression + compartmentUnitExpression + timeUnitExpression, mpModel->getAvogadro());
         }
     }
@@ -466,21 +470,21 @@ bool CMetab::compile()
           for (; it != end; ++it)
             {
               const CCopasiVector< CChemEqElement > &Balances =
-                (*it)->getChemEq().getBalances();
+                it->getChemEq().getBalances();
               CCopasiVector< CChemEqElement >::const_iterator itChem = Balances.begin();
               CCopasiVector< CChemEqElement >::const_iterator endChem = Balances.end();
 
               for (; itChem != endChem; ++itChem)
-                if ((*itChem)->getMetaboliteKey() == mKey)
+                if (itChem->getMetaboliteKey() == mKey)
                   break;
 
               if (itChem != endChem)
                 {
-                  Dependencies.insert((*it)->getParticleFluxReference());
+                  Dependencies.insert(it->getParticleFluxReference());
 
                   std::pair< C_FLOAT64, const C_FLOAT64 * > Insert;
-                  Insert.first = (*itChem)->getMultiplicity();
-                  Insert.second = &(*it)->getParticleFlux();
+                  Insert.first = itChem->getMultiplicity();
+                  Insert.second = &it->getParticleFlux();
 
                   mRateVector.push_back(Insert);
                 }

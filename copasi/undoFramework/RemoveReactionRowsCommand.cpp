@@ -1,4 +1,4 @@
-// Copyright (C) 2014 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2014 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -36,12 +36,11 @@ RemoveReactionRowsCommand::RemoveReactionRowsCommand(
   for (i = rows.begin(); i != rows.end(); ++i)
     {
 
-      if (pReaDM->isDefaultRow(*i) || pModel->getReactions()[(*i).row()] == NULL)
+      if (pReaDM->isDefaultRow(*i) || &pModel->getReactions()[i->row()] == NULL)
         continue;
 
-      UndoReactionData *data = new UndoReactionData(pModel->getReactions()[(*i).row()]);
+      UndoReactionData *data = new UndoReactionData(&pModel->getReactions()[i->row()]);
       mpReaData.append(data);
-
     }
 
   setText(QObject::tr(": Removed Reaction Rows"));

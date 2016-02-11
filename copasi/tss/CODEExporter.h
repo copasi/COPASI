@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -119,7 +119,7 @@ public:
   bool exportSingleFunction(CEvaluationNode* pNode, const CReaction *reac, size_t &index);
   bool exportSingleFunction(CEvaluationNode* pNode, const std::string& key, size_t &index);
 
-  virtual bool exportKineticFunction(CReaction* reac);
+  virtual bool exportKineticFunction(const CReaction* reac);
 
   virtual bool exportSingleODE(const CModelEntity* mentity, std::string & equation, std::string & comments);
 

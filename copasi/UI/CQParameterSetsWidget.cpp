@@ -224,7 +224,7 @@ void CQParameterSetsWidget::slotDoubleClicked(const QModelIndex proxyIndex)
       return;
     }
 
-  std::string key = static_cast< CModel * >(mpObject)->getModelParameterSets()[index.row()]->getKey();
+  std::string key = static_cast< CModel * >(mpObject)->getModelParameterSets()[index.row()].getKey();
 
   if (CCopasiRootContainer::getKeyFactory()->get(key))
     mpListView->switchToOtherWidget(C_INVALID_INDEX, key);

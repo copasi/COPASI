@@ -36,7 +36,6 @@
 #include <copasi/model/CReaction.h>
 #include <copasi/model/CChemEq.h>
 
-
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "copasi/report/CCopasiRootContainer.h"
 #include "copasi/report/CKeyFactory.h"
@@ -111,9 +110,9 @@ void CQLayoutScene::initializeResolver(CCopasiDataModel* model, CLRenderInformat
   if (renderInformation == NULL)
     {
       if (mpLayout != NULL && mpLayout->getListOfLocalRenderInformationObjects().size() > 0)
-        mpRender = mpLayout->getListOfLocalRenderInformationObjects()[0];
+        mpRender = &mpLayout->getListOfLocalRenderInformationObjects()[0];
       else if (model->getListOfLayouts()->getListOfGlobalRenderInformationObjects().size() > 0)
-        mpRender = model->getListOfLayouts()->getListOfGlobalRenderInformationObjects()[0];
+        mpRender = &model->getListOfLayouts()->getListOfGlobalRenderInformationObjects()[0];
       else
         mpRender = getDefaultStyle(0);
     }
@@ -196,7 +195,7 @@ void CQLayoutScene::addGlyph(const CLGraphicalObject* go)
 
       while (it != subGlyphs.end())
         {
-          addGlyph(*it);
+          addGlyph(it);
           ++it;
         }
     }
@@ -225,7 +224,7 @@ void CQLayoutScene::fillFromLayout(const CLayout* layout)
 
   while (itComp != comps.end())
     {
-      addGlyph(*itComp);
+      addGlyph(itComp);
       ++itComp;
     }
 
@@ -235,7 +234,7 @@ void CQLayoutScene::fillFromLayout(const CLayout* layout)
 
   while (itReactions != reactions.end())
     {
-      addGlyph(*itReactions);
+      addGlyph(itReactions);
       ++itReactions;
     }
 
@@ -245,7 +244,7 @@ void CQLayoutScene::fillFromLayout(const CLayout* layout)
 
   while (itSpecies != species.end())
     {
-      addGlyph(*itSpecies);
+      addGlyph(itSpecies);
       ++itSpecies;
     }
 
@@ -255,7 +254,7 @@ void CQLayoutScene::fillFromLayout(const CLayout* layout)
 
   while (itTexts != texts.end())
     {
-      addGlyph(*itTexts);
+      addGlyph(itTexts);
       ++itTexts;
     }
 
@@ -265,7 +264,7 @@ void CQLayoutScene::fillFromLayout(const CLayout* layout)
 
   while (itList != list.end())
     {
-      addGlyph(*itList);
+      addGlyph(itList);
       ++itList;
     }
 }
@@ -277,8 +276,8 @@ CLGraphicalObject* getTextForItem(const CLayout* layout, const CLGraphicalObject
 
   while (it != texts.end())
     {
-      if ((*it)->getGraphicalObjectKey() == obj->getKey())
-        return *it;
+      if (it->getGraphicalObjectKey() == obj->getKey())
+        return it.constCast();
 
       ++it;
     }
@@ -293,8 +292,8 @@ CLGraphicalObject* getReactionGlyphForKey(const CLayout* layout, const std::stri
 
   while (it != reactions.end())
     {
-      if ((*it)->getModelObjectKey() == key)
-        return *it;
+      if (it->getModelObjectKey() == key)
+        return it.constCast();
 
       ++it;
     }
@@ -309,8 +308,8 @@ CLGraphicalObject* getMetabGlyphForKey(const CLayout* layout, const CMetab* meta
 
   while (it != metabs.end())
     {
-      if ((*it)->getModelObjectKey() == metab->getKey())
-        return *it;
+      if (it->getModelObjectKey() == metab->getKey())
+        return it.constCast();
 
       ++it;
     }
@@ -365,14 +364,14 @@ void moveObject(CLGraphicalObject* obj, const CLPoint& delta, CLayout* layout)
 
   while (it != metabs.end())
     {
-      moveObject(getMetabGlyphForKey(layout, (*it)), delta, layout);
+      moveObject(getMetabGlyphForKey(layout, it), delta, layout);
 
       CCopasiVectorNS < CReaction > &  reactions = comp->getObjectDataModel()->getModel()->getReactions();
       CCopasiVectorNS < CReaction >::const_iterator rit = reactions.begin();
 
       for (; rit != reactions.end(); ++rit)
         {
-          const CReaction* reaction = *rit;
+          const CReaction* reaction = rit;
           const CChemEq& eqn = reaction->getChemEq();
 
           const std::set< const CCompartment * >& compartments = eqn.getCompartments();
@@ -394,7 +393,6 @@ void moveObject(CLGraphicalObject* obj, const CLPoint& delta, CLayout* layout)
     {
       moveObject(getReactionGlyphForKey(layout, (*kit)), delta, layout);
     }
-
 }
 
 void CQLayoutScene::updatePosition(const QString& key, const QPointF& newPos)

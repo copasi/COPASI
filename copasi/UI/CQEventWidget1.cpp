@@ -213,12 +213,12 @@ CQEventWidget1::loadFromEvent()
   for (; it != end; ++it, ijk++)
     {
       const CModelEntity * pEntity =
-        dynamic_cast< CModelEntity * >(CCopasiRootContainer::getKeyFactory()->get((*it)->getTargetKey()));
+        dynamic_cast< CModelEntity * >(CCopasiRootContainer::getKeyFactory()->get(it->getTargetKey()));
 
       if (pEntity != NULL)
         {
           Targets.append(FROM_UTF8(pEntity->getObjectDisplayName()));
-          mAssignments.add(**it);
+          mAssignments.add(*it);
         }
     }
 
@@ -335,7 +335,7 @@ void CQEventWidget1::saveToEvent()
 
   if (mCurrentTarget != C_INVALID_INDEX)
     {
-      mAssignments[mCurrentTarget]->setExpression(mpExpressionEA->mpExpressionWidget->getExpression());
+      mAssignments[mCurrentTarget].setExpression(mpExpressionEA->mpExpressionWidget->getExpression());
     }
 
   // event assignments
@@ -348,7 +348,7 @@ void CQEventWidget1::saveToEvent()
   // We first update all assignments.
   for (; it != end; ++it)
     {
-      Found = OldAssignments.getIndex((*it)->getTargetKey());
+      Found = OldAssignments.getIndex(it->getTargetKey());
 
       if (Found == C_INVALID_INDEX)
         {
@@ -356,27 +356,27 @@ void CQEventWidget1::saveToEvent()
             new EventChangeCommand(
               CCopasiUndoCommand::EVENT_ASSIGNMENT_ADDED,
               "",
-              FROM_UTF8((*it)->getTargetKey()),
+              FROM_UTF8(it->getTargetKey()),
               mpEvent,
               this,
-              (*it)->getTargetKey(),
-              (*it)->getExpression()
+              it->getTargetKey(),
+              it->getExpression()
             )
           );
 
           mChanged = true;
         }
-      else if (OldAssignments[Found]->getExpression() != (*it)->getExpression())
+      else if (OldAssignments[Found].getExpression() != it->getExpression())
         {
           mpUndoStack->push(
             new EventChangeCommand(
               CCopasiUndoCommand::EVENT_ASSIGNMENT_EXPRESSION_CHANGE,
-              FROM_UTF8(OldAssignments[Found]->getExpression()),
-              FROM_UTF8((*it)->getExpression()),
+              FROM_UTF8(OldAssignments[Found].getExpression()),
+              FROM_UTF8(it->getExpression()),
               mpEvent,
               this,
-              OldAssignments[Found]->getKey(),
-              OldAssignments[Found]->getKey()
+              OldAssignments[Found].getKey(),
+              OldAssignments[Found].getKey()
             )
           );
 
@@ -399,16 +399,16 @@ void CQEventWidget1::saveToEvent()
 
   for (; itOld != endOld && DeleteCount > 0; ++itOld)
     {
-      const std::string & key = (*itOld)->getTargetKey();
+      const std::string & key = itOld->getTargetKey();
 
       for (it = mAssignments.begin(); it != end; ++it)
         {
-          if (key == (*it)->getTargetKey()) break;
+          if (key == it->getTargetKey()) break;
         }
 
       if (it == end)
         {
-          ToBeDeleted.push_back(std::make_pair(key, (*itOld)->getExpression()));
+          ToBeDeleted.push_back(std::make_pair(key, itOld->getExpression()));
           DeleteCount--;
           mChanged = true;
         }
@@ -436,7 +436,7 @@ void CQEventWidget1::saveToEvent()
   if (mChanged)
     {
       assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-      (*CCopasiRootContainer::getDatamodelList())[0]->changed();
+      CCopasiRootContainer::getDatamodelList()->operator[](0).changed();
       protectedNotify(ListViews::EVENT, ListViews::CHANGE, mKey);
     }
 
@@ -512,7 +512,7 @@ void CQEventWidget1::slotSelectObject()
 
   if (pME == NULL) return;
 
-  if (mAssignments[mCurrentTarget]->setTargetKey(pME->getKey()))
+  if (mAssignments[mCurrentTarget].setTargetKey(pME->getKey()))
     {
       // If the target key change was successful we need to update the label.
       mpLBTarget->item((int) mCurrentTarget)->setText(FROM_UTF8(pME->getObjectDisplayName()));
@@ -534,7 +534,7 @@ void CQEventWidget1::slotActualizeAssignmentExpression(int index)
   if (NewTarget != mCurrentTarget &&
       mCurrentTarget < mAssignments.size())
     {
-      mAssignments[mCurrentTarget]->setExpression(mpExpressionEA->mpExpressionWidget->getExpression());
+      mAssignments[mCurrentTarget].setExpression(mpExpressionEA->mpExpressionWidget->getExpression());
     }
 
   mCurrentTarget = NewTarget;
@@ -553,7 +553,7 @@ void CQEventWidget1::slotActualizeAssignmentExpression(int index)
       mpLabelEA->setEnabled(true);
       mpExpressionEA->setEnabled(true);
 
-      mpExpressionEA->mpExpressionWidget->setExpression(mAssignments[mCurrentTarget]->getExpression());
+      mpExpressionEA->mpExpressionWidget->setExpression(mAssignments[mCurrentTarget].getExpression());
       mpExpressionEA->updateWidget();
     }
 }
@@ -601,14 +601,14 @@ void CQEventWidget1::createNewEvent()
   int i = 1;
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
 
-  while (!(*CCopasiRootContainer::getDatamodelList())[0]->getModel()->createEvent(name))
+  while (!CCopasiRootContainer::getDatamodelList()->operator[](0).getModel()->createEvent(name))
     {
       i++;
       name = "event_";
       name += TO_UTF8(QString::number(i));
     }
 
-  std::string key = (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getEvents()[name]->getKey();
+  std::string key = CCopasiRootContainer::getDatamodelList()->operator[](0).getModel()->getEvents()[name].getKey();
   protectedNotify(ListViews::EVENT, ListViews::ADD, key);
   mpListView->switchToOtherWidget(C_INVALID_INDEX, key);
 }
@@ -632,7 +632,7 @@ void CQEventWidget1::deleteEvent(UndoEventData *pEventData)
 
   GET_MODEL_OR_RETURN(pModel);
 
-  CEvent* pEvent = pModel->getEvents()[pEventData->getName()];
+  CEvent* pEvent = &pModel->getEvents()[pEventData->getName()];
 
   if (pEvent == NULL)
     return;
@@ -745,7 +745,7 @@ CQEventWidget1::changeValue(const std::string &key,
         break;
 
       case CCopasiUndoCommand::EVENT_ASSIGNMENT_EXPRESSION_CHANGE:
-        mpEvent->getAssignments()[expression]->setExpression(TO_UTF8(newValue.toString()));
+        mpEvent->getAssignments()[expression].setExpression(TO_UTF8(newValue.toString()));
         break;
 
       default:
@@ -756,7 +756,7 @@ CQEventWidget1::changeValue(const std::string &key,
   if (mIgnoreUpdates) return true;
 
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  (*CCopasiRootContainer::getDatamodelList())[0]->changed();
+  CCopasiRootContainer::getDatamodelList()->operator[](0).changed();
   protectedNotify(ListViews::EVENT, ListViews::CHANGE, mKey);
 
   loadFromEvent();
