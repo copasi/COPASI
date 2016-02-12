@@ -1,4 +1,4 @@
-// Copyright (C) 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2015 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -32,13 +32,10 @@ SpeciesInitialValueLostFocusCommand::SpeciesInitialValueLostFocusCommand(
   setText(QString(": Species Initial Value Change for %1").arg(FROM_UTF8(sName)));
   setName(mpSpeciesData->getName());
 
+  setNewValue(TO_UTF8(mpSpecieDetail->mpEditInitialValue->text()));
   std::ostringstream strs;
   strs << mpSpecieDetail->mInitialConcentration;
   std::string str = strs.str();
-  setNewValue(str);
-  strs.clear();
-  strs << mpSpecieDetail->mpMetab->getInitialConcentration();
-  str = strs.str();
   setOldValue(str);
   setProperty("Initial Value");
 }
