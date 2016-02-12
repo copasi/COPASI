@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., University of Heidelberg, and The University 
 // of Manchester. 
 // All rights reserved. 
@@ -65,6 +65,9 @@
 %ignore CCopasiTask::ONLY_TIME_SERIES;
 
 #endif // SWIGJAVA || SWIGCSHARP                      
+
+
+%ignore CCopasiTask::getReport() const;
 
 #ifdef SWIGR
 // we ignore the method that takes an int and create a new method that takes

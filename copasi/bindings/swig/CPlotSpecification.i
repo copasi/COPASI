@@ -1,4 +1,4 @@
-// Copyright (C) 2012 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2012 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., University of Heidelberg, and The University 
 // of Manchester. 
 // All rights reserved. 
@@ -26,11 +26,11 @@
 		return $self->getItems().size();
 	}
 
-	CPlotItem* getItem(int index) const
+	const CPlotItem* getItem(int index) const
 	{
 	try
 	{
-		return $self->getItems()[index];
+		return &$self->getItems()[index];
 	}
 	   catch (...)
 	   {

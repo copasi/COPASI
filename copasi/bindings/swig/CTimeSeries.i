@@ -1,6 +1,16 @@
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
-// All rights reserved.
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
+
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+// and The University of Manchester. 
+// All rights reserved. 
+
+// Copyright (C) 2006 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc. and EML Research, gGmbH. 
+// All rights reserved. 
 
 %{
 
@@ -21,9 +31,9 @@
         std::cerr << "Calling getSBMLId(index) for instances of CTimeSeries is obsolete, please use getSBMLId(index,datamodel) instead." << std::endl;
         // we do this for the first model
         std::string result("");
-        if(CCopasiRootContainer::getDatamodelList()->size() > 0 && (*CCopasiRootContainer::getDatamodelList())[0] != NULL)
+        if(CCopasiRootContainer::getDatamodelList()->size() > 0 && &(*CCopasiRootContainer::getDatamodelList())[0] != NULL)
         {
-          const CCopasiDataModel* pDatamodel=(*CCopasiRootContainer::getDatamodelList())[0];
+          const CCopasiDataModel* pDatamodel=&(*CCopasiRootContainer::getDatamodelList())[0];
           result=self->getSBMLId((size_t)variable,pDatamodel);
         }
         return result;
