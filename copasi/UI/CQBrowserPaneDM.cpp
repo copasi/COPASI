@@ -457,7 +457,10 @@ void CQBrowserPaneDM::load(const size_t & id)
   if (it != end)
     {
       int first = pParent->getNumChildren();
-      int last = first + (end - it) - 1;
+      size_t current = pVector->getIndex(it);
+      int last = first + (pVector->size() - current) - 1;
+      // used to be
+      //int last = first + (end - it) - 1;
 
       beginInsertRows(index(pParent), first, last);
 

@@ -177,15 +177,15 @@ void DataModelGUI::addModelRun()
   if (numDatamodels >= 2 && mSuccess) //after loading the model to be merged there should be at least 2 datamodels...
     {
       //the base model is assumed to be the first one
-      pModel = &CCopasiRootContainer::getDatamodelList()->operator[](0).getModel();
+      pModel = CCopasiRootContainer::getDatamodelList()->operator[](0).getModel();
       //the model to be merged is the last one
-      pMergeModel = (*CCopasiRootContainer::getDatamodelList())[numDatamodels - 1]->getModel();
+      pMergeModel = (*CCopasiRootContainer::getDatamodelList())[numDatamodels - 1].getModel();
     }
 
   if (mSuccess && pModel && pMergeModel)
     {
       CModelExpansion expand(pModel);
-      &CCopasiRootContainer::getDatamodelList()->operator[](0).mLastAddedObjects = expand.copyCompleteModel(pMergeModel);
+      CCopasiRootContainer::getDatamodelList()->operator[](0).mLastAddedObjects = expand.copyCompleteModel(pMergeModel);
     }
 
   if (pMergeModel)

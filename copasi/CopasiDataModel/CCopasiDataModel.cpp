@@ -93,6 +93,9 @@ void CDataModelRenameHandler::handle(const std::string & oldCN, const std::strin
 
       for (; it != itEnd; ++it)
         {
+          // either need to take currentSize out, or need to use the variable
+          // using it uninitialized makes no sense.
+          currentSize = (*it)->size();
 
           // We need to make sure that we not change partial names
           if ((currentSize == oldSize ||
