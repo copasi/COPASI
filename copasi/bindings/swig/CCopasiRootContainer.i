@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., University of Heidelberg, and The University 
 // of Manchester. 
 // All rights reserved. 
@@ -38,12 +38,12 @@
 {
    static CCopasiDataModel* get(unsigned C_INT32 index)
     {
-      return (CCopasiDataModel*)(*CCopasiRootContainer::getDatamodelList())[index];
+      return (CCopasiDataModel*)&(*CCopasiRootContainer::getDatamodelList())[index];
     };
 
     CCopasiDataModel* getDatamodel(unsigned C_INT32 index)
     {
-      return (*$self->getDatamodelList())[index];
+      return &(*$self->getDatamodelList())[index];
     };
 
     static void init()

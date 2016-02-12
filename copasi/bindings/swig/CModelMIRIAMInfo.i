@@ -1,4 +1,4 @@
-// Copyright (C) 2011 - 2014 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2011 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., University of Heidelberg, and The University 
 // of Manchester. 
 // All rights reserved. 
@@ -21,6 +21,11 @@
 #include "MIRIAM/CModelMIRIAMInfo.h"
 
 %}
+
+%ignore CMIRIAMInfo::getCreators() const;
+%ignore CMIRIAMInfo::getReferences() const;
+%ignore CMIRIAMInfo::getModifications() const;
+%ignore CMIRIAMInfo::getBiologicalDescriptions() const;
 
 %ignore CMIRIAMResources::updateMIRIAMResources(CProcessReport * pProcessReport);
 %ignore CMIRIAMResourceObject::CMIRIAMResourceObject(CRDFNode * pNode);

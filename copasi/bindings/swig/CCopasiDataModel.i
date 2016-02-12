@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., University of Heidelberg, and The University 
 // of Manchester. 
 // All rights reserved. 
@@ -180,7 +180,7 @@
     bool removeReportDefinition(unsigned C_INT32 index)
     {
       CCopasiVector< CReportDefinition > * pReportList = self->getReportDefinitionList();
-      CReportDefinition * pReport = (*pReportList)[index];
+      CReportDefinition * pReport = &(*pReportList)[index];
 
       if (pReport == NULL)
         return false;
@@ -210,7 +210,7 @@
     {
       CCopasiVector< CPlotSpecification > * pPlotList = self->getPlotDefinitionList();
 
-      CPlotSpecification * pPlot = (*pPlotList)[index];
+      CPlotSpecification * pPlot = &(*pPlotList)[index];
 
       if (pPlot == NULL)
         return false;
@@ -228,7 +228,7 @@
     {
       try
       {
-        return (*$self->getReportDefinitionList())[index];
+        return &(*$self->getReportDefinitionList())[index];
       }
       catch(...)
       {
@@ -240,7 +240,7 @@
     {
       try
       {
-        return (*$self->getReportDefinitionList())[name];
+        return &(*$self->getReportDefinitionList())[name];
       }
       catch(...)
       {
@@ -252,7 +252,7 @@
     {
       try
       {
-        return (*$self->getPlotDefinitionList())[index];
+        return &(*$self->getPlotDefinitionList())[index];
       }
       catch(...)
       {
@@ -264,7 +264,7 @@
     {
       try
       {
-        return (*$self->getPlotDefinitionList())[name];
+        return &(*$self->getPlotDefinitionList())[name];
       }
       catch(...)
       {
@@ -281,7 +281,7 @@
     {
       try
       {
-        return (*$self->getTaskList())[index];
+        return &(*$self->getTaskList())[index];
       }
       catch(...)
       {
@@ -293,7 +293,7 @@
     {
       try
       {
-         return (*$self->getTaskList())[name];
+         return &(*$self->getTaskList())[name];
       }
       catch(...)
       {
@@ -310,7 +310,7 @@
         CCopasiDataModel* pDatamodel=NULL;
         if(CCopasiRootContainer::getDatamodelList()->size() != 0)
         {
-            pDatamodel=(*CCopasiRootContainer::getDatamodelList())[0];
+            pDatamodel=&(*CCopasiRootContainer::getDatamodelList())[0];
         }
         else
         {
@@ -330,12 +330,12 @@
     // needed for CellDesigner
     static CCopasiDataModel* getGlobal()
     {
-        std::cerr << "Calling static method getGlobal on CCopasiDataModel is obsolete, please see the documentation for CCopasiRootContainer on how to handle this in newer versions of the COPASI API." << std::endl;
+        std::cerr << "Calling static method getGlobal on CCopasiDataModel is obsolete, please see the documentation for CCopasiRootContainer on how to handle this in newer versions of the COPASI API."  << std::endl;
         // check if there is a model and if not, create one
         CCopasiDataModel* pDatamodel=NULL;
         if(CCopasiRootContainer::getDatamodelList()->size() != 0)
         {
-            pDatamodel=(*CCopasiRootContainer::getDatamodelList())[0];
+            pDatamodel=&(*CCopasiRootContainer::getDatamodelList())[0];
         }
         else
         {

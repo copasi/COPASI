@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., University of Heidelberg, and The University 
 // of Manchester. 
 // All rights reserved. 
@@ -31,11 +31,11 @@
 
 %extend CChemEq
 {
-    CChemEqElement* getSubstrate(unsigned C_INT32 index)
+    const CChemEqElement* getSubstrate(unsigned C_INT32 index)
     {
 	try
 	{
-      return self->getSubstrates()[index];
+      return &self->getSubstrates()[index];
 	}
 	catch(...)
 	{
@@ -43,11 +43,11 @@
 	}
     }
 
-    CChemEqElement* getProduct(unsigned C_INT32 index)
+    const CChemEqElement* getProduct(unsigned C_INT32 index)
     {
 	try
 	{
-      return self->getProducts()[index];
+      return &self->getProducts()[index];
 	  }
 	catch(...)
 	{
@@ -55,11 +55,11 @@
 	}
     }
 
-    CChemEqElement* getModifier(unsigned C_INT32 index)
+    const CChemEqElement* getModifier(unsigned C_INT32 index)
     {
 	try
 	{
-      return self->getModifiers()[index];
+      return &self->getModifiers()[index];
 	  }
 	catch(...)
 	{
@@ -67,11 +67,11 @@
 	}
     }
 
-    CChemEqElement const* getBalance(unsigned C_INT32 index)
+    const CChemEqElement * getBalance(unsigned C_INT32 index)
     {
 	try
 	{
-      return self->getBalances()[index];
+      return &self->getBalances()[index];
 	  }
 	catch(...)
 	{

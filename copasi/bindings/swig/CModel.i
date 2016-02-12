@@ -181,7 +181,7 @@ typedef std::vector<CCopasiObject*> ObjectStdVector;
        return NULL;
      try
      {
-       return self->getReactions()[index];
+       return &self->getReactions()[index];
      }
      catch (...)
      {
@@ -193,7 +193,7 @@ typedef std::vector<CCopasiObject*> ObjectStdVector;
    {
      try
      {
-       return self->getReactions()[name];
+       return &self->getReactions()[name];
      }
      catch (...)
      {
@@ -208,7 +208,7 @@ typedef std::vector<CCopasiObject*> ObjectStdVector;
    
      try
      {
-       return self->getCompartments()[index];
+       return &self->getCompartments()[index];
      }
      catch (...)
      {
@@ -220,7 +220,7 @@ typedef std::vector<CCopasiObject*> ObjectStdVector;
    {
      try
      {
-       return self->getCompartments()[name];
+       return &self->getCompartments()[name];
      }
      catch (...)
      {
@@ -236,7 +236,7 @@ typedef std::vector<CCopasiObject*> ObjectStdVector;
    
      try
      {
-       return self->getMetabolites()[index];
+       return &self->getMetabolites()[index];
      }
      catch (...)
      {
@@ -253,7 +253,7 @@ typedef std::vector<CCopasiObject*> ObjectStdVector;
        if (index >= self->getMetabolites().size())
          return NULL;
 
-	    return self->getMetabolites()[index];
+	    return &self->getMetabolites()[index];
      }
      catch (...)
      {
@@ -268,7 +268,7 @@ typedef std::vector<CCopasiObject*> ObjectStdVector;
    
      try
      {
-       return self->getModelValues()[index];
+       return &self->getModelValues()[index];
      }
      catch (...)
      {
@@ -276,14 +276,14 @@ typedef std::vector<CCopasiObject*> ObjectStdVector;
      }
    }
    
-   CMoiety* getMoiety(unsigned C_INT32 index)
+   const CMoiety* getMoiety(unsigned C_INT32 index)
    {
      if (index >= self->getMoieties().size())
        return NULL;
    
      try
      {
-       return self->getMoieties()[index];
+       return &self->getMoieties()[index];
      }
      catch (...)
      {
@@ -313,7 +313,7 @@ typedef std::vector<CCopasiObject*> ObjectStdVector;
    {
      try
      {
-       return $self->getModelValues()[name];
+       return &$self->getModelValues()[name];
      }
      catch(...)
      {
@@ -325,7 +325,7 @@ typedef std::vector<CCopasiObject*> ObjectStdVector;
    {
      try
      {
-       return $self->getEvents()[name];
+       return &$self->getEvents()[name];
      }
      catch(...)
      {
@@ -374,7 +374,7 @@ typedef std::vector<CCopasiObject*> ObjectStdVector;
    
      try
      {
-       return $self->getEvents()[index];
+       return &$self->getEvents()[index];
      }
      catch(...)
      {
