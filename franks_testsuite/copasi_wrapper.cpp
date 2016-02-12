@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -128,11 +128,11 @@ int main(int argc, char *argv[])
 
       for (j = 0; j < jMax; ++j)
         {
-          if (metabolites[j]->getStatus() != CModelEntity::FIXED)
+          if (metabolites[j].getStatus() != CModelEntity::FIXED)
             {
-              pBody->push_back(metabolites[j]->getObject(CCopasiObjectName("Reference=Concentration"))->getCN());
+              pBody->push_back(metabolites[j].getObject(CCopasiObjectName("Reference=Concentration"))->getCN());
               pBody->push_back(pReport->getSeparator().getCN());
-              pHeader->push_back(CCopasiStaticString(metabolites[j]->getSBMLId()).getCN());
+              pHeader->push_back(CCopasiStaticString(metabolites[j].getSBMLId()).getCN());
               pHeader->push_back(pReport->getSeparator().getCN());
             }
         }
