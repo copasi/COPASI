@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -120,9 +120,9 @@ int main(int argc, char *argv[])
 
           for (j = 0; j < jMax; ++j)
             {
-              if (metabolites[j]->getSBMLId() == pSBMLSpeciesIds[i])
+              if (metabolites[j].getSBMLId() == pSBMLSpeciesIds[i])
                 {
-                  pTable->push_back(metabolites[j]->getObject(CCopasiObjectName("Reference=Concentration"))->getCN());
+                  pTable->push_back(metabolites[j].getObject(CCopasiObjectName("Reference=Concentration"))->getCN());
                   //std::cout << "adding metabolite " << metabolites[j]->getObjectName() << " to report." << std::endl;
                   break;
                 }

@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -58,11 +58,11 @@ CReportDefinition* createReport(CCopasiDataModel* pDataModel, CReportDefinitionV
 
   for (j = 0; j < jMax; ++j)
     {
-      if (compartments[j]->getStatus() != CModelEntity::FIXED)
+      if (compartments[j].getStatus() != CModelEntity::FIXED)
         {
-          pFoot->push_back(compartments[j]->getObject(CCopasiObjectName("Reference=Volume"))->getCN());
+          pFoot->push_back(compartments[j].getObject(CCopasiObjectName("Reference=Volume"))->getCN());
           pFoot->push_back(pReport->getSeparator().getCN());
-          pHeader->push_back(CCopasiStaticString(compartments[j]->getSBMLId()).getCN());
+          pHeader->push_back(CCopasiStaticString(compartments[j].getSBMLId()).getCN());
           pHeader->push_back(pReport->getSeparator().getCN());
         }
     }
@@ -73,11 +73,11 @@ CReportDefinition* createReport(CCopasiDataModel* pDataModel, CReportDefinitionV
 
   for (j = 0; j < jMax; ++j)
     {
-      if (metabolites[j]->getStatus() != CModelEntity::FIXED)
+      if (metabolites[j].getStatus() != CModelEntity::FIXED)
         {
-          pFoot->push_back(metabolites[j]->getObject(CCopasiObjectName("Reference=Concentration"))->getCN());
+          pFoot->push_back(metabolites[j].getObject(CCopasiObjectName("Reference=Concentration"))->getCN());
           pFoot->push_back(pReport->getSeparator().getCN());
-          pHeader->push_back(CCopasiStaticString(metabolites[j]->getSBMLId()).getCN());
+          pHeader->push_back(CCopasiStaticString(metabolites[j].getSBMLId()).getCN());
           pHeader->push_back(pReport->getSeparator().getCN());
         }
     }
@@ -88,11 +88,11 @@ CReportDefinition* createReport(CCopasiDataModel* pDataModel, CReportDefinitionV
 
   for (j = 0; j < jMax; ++j)
     {
-      if (parameters[j]->getStatus() != CModelEntity::FIXED)
+      if (parameters[j].getStatus() != CModelEntity::FIXED)
         {
-          pFoot->push_back(parameters[j]->getObject(CCopasiObjectName("Reference=Value"))->getCN());
+          pFoot->push_back(parameters[j].getObject(CCopasiObjectName("Reference=Value"))->getCN());
           pFoot->push_back(pReport->getSeparator().getCN());
-          pHeader->push_back(CCopasiStaticString(parameters[j]->getSBMLId()).getCN());
+          pHeader->push_back(CCopasiStaticString(parameters[j].getSBMLId()).getCN());
           pHeader->push_back(pReport->getSeparator().getCN());
         }
     }
@@ -163,7 +163,7 @@ int main(int argc, char *argv[])
       // create a report with the correct filename and all the species against
       // time.
       CReportDefinitionVector* pReports = pDataModel->getReportDefinitionList();
-      CReportDefinition* pSteadyState = (*pReports)["Steady-State"];
+      CReportDefinition* pSteadyState = &(*pReports)["Steady-State"];
 
       CReportDefinition* pReport = createReport(pDataModel, pReports);
 
