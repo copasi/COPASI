@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., University of Heidelberg, and The University 
 // of Manchester. 
 // All rights reserved. 
@@ -29,7 +29,7 @@
 %ignore SpecificUpdateMethod;
 %ignore Refresh;
 %ignore operator<<;
-%ignore CCopasiObject::getObjectDataModel() const;
+%ignore CCopasiObject::setRenameHandler;
 %ignore CCopasiObject::setRenameHandler;
 %ignore CCopasiObject::getValuePointer;
 %ignore CCopasiObject::print;
