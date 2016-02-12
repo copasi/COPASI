@@ -51,6 +51,7 @@ public:
   // typedef typename std::vector< CType * >::const_iterator const_iterator;
 
 public:
+#ifndef SWIG
   class iterator: public std::vector< CType * >::iterator
   {
   public:
@@ -206,6 +207,7 @@ public:
     }
   };
 
+#endif // SWIG
   // Operations
 
 public:
