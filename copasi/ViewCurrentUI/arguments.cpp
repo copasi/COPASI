@@ -52,14 +52,14 @@ Arguments::Arguments(int argc, char* argv[])
 
 CCopasiTask* Arguments::getFirstScheduledTask()
 {
-  CCopasiVectorN<CCopasiTask> &taskList = CCopasiRootContainer::getDatamodelList()->operator[](0).getTaskList();
+  CCopasiVectorN<CCopasiTask> &taskList = *CCopasiRootContainer::getDatamodelList()->operator[](0).getTaskList();
 
   for (size_t i = 0; i < taskList.size(); ++i)
     {
-      CCopasiTask *current = taskList[i];
+      CCopasiTask &current = taskList[i];
 
-      if (current->isScheduled())
-        return current;
+      if (current.isScheduled())
+        return &current;
     }
 
   return NULL;
@@ -67,14 +67,14 @@ CCopasiTask* Arguments::getFirstScheduledTask()
 
 CCopasiTask* Arguments::getTaskForName(const std::string& name) const
 {
-  CCopasiVectorN<CCopasiTask> &taskList = CCopasiRootContainer::getDatamodelList()->operator[](0).getTaskList();
+  CCopasiVectorN<CCopasiTask> &taskList = *CCopasiRootContainer::getDatamodelList()->operator[](0).getTaskList();
 
   for (size_t i = 0; i < taskList.size(); ++i)
     {
-      CCopasiTask *current = taskList[i];
+      CCopasiTask &current = taskList[i];
 
-      if (current->getObjectName() == name)
-        return current;
+      if (current.getObjectName() == name)
+        return &current;
     }
 
   return NULL;
@@ -134,10 +134,10 @@ bool Arguments::handleCommandLine() const
 
   for (size_t i = 0; i < model.getListOfLayouts()->size(); ++i)
     {
-      CLayout* layout = (*model.getListOfLayouts())[i];
-      CQLayoutScene scene(layout, &model);
+      CLayout& layout = (*model.getListOfLayouts())[i];
+      CQLayoutScene scene(&layout, &model);
       scene.recreate();
-      scene.saveToFile(mOutputDir + "/" + QFileInfo(mFilename.c_str()).baseName().toStdString() + "_" + layout->getObjectName() + "." + mFileType, mFileType);
+      scene.saveToFile(mOutputDir + "/" + QFileInfo(mFilename.c_str()).baseName().toStdString() + "_" + layout.getObjectName() + "." + mFileType, mFileType);
     }
 
   return true;
