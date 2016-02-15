@@ -24,6 +24,7 @@
 #include "copasi/utilities/CVector.h"
 #include "utilities/CAnnotatedMatrix.h"
 #include "utilities/CMatrix.h"
+#include "analytics/CStatistics.h"
 
 class CAnalyticsProblem;
 class CState;
@@ -222,11 +223,14 @@ private:
   /**
    *  This holds the result
    */
-  CMatrix < C_FLOAT64 > mStatVal;
-  CMatrix < C_FLOAT64 > mStatTime;
+  //CMatrix < C_FLOAT64 > mStatVal;
+  //CMatrix < C_FLOAT64 > mStatTime;
 
-  CArrayAnnotation * mpStatValAnn;
-  CArrayAnnotation * mpStatTimeAnn;
+  C_FLOAT64 mStatVal;
+  C_FLOAT64 mStatTime;
+
+  //CArrayAnnotation * mpStatValAnn;
+  //CArrayAnnotation * mpStatTimeAnn;
   //--- ETTORE end -----
 };
 #endif // COPASI_CAnalyticsTask

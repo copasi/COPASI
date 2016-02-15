@@ -36,6 +36,10 @@
 
 #include "copasi/math/CMathDependencyGraph.h"
 
+#ifdef WITH_ANALYTICS
+#include "copasi/analytics/CStatistics.h"
+#endif //WITH_ANALYTICS
+
 class CMathContainer;
 class CProcessReport;
 class CArrayAnnotation;
@@ -1090,6 +1094,9 @@ private:
    */
   CCopasiVector< CMetab > mMetabolites;
 
+#ifdef WITH_ANALYTICS
+  CCopasiVector < CStatistics > mStatistics;
+#endif // WITH_ANALYTICS
   /**
    *  Vector of reference to metabolites in reduced model representation
    */
@@ -1285,6 +1292,37 @@ public:
   CCopasiObject::DataObjectSet getUnitSymbolUsage(std::string symbol);
 
   void changeUnitExpressionSymbols(std::string oldSymbol, std::string newSymbol);
+
+#ifdef WITH_ANALYTICS
+
+  /**
+   * Return the statistics of this model
+   * @return CCopasiVectorN< CMetab > & metabolites
+   */
+  const CCopasiVector< CStatistics > & getModelStats() const;
+  CCopasiVector< CStatistics > & getModelStats();
+
+  /**
+   * Add a statistic to the model
+   * @param const std::string & name
+   * @param const CCopasiContainer * pParent,
+   * @param const std::string & type
+   * @param const unsigned C_INT32 & flag
+   * @param C_FLOAT64 value
+   * @return pointer to the statistics created (*CStatsitics)
+   * @see CMetab for more information
+   */
+  CStatistics* createModelStats(const std::string & name,
+                                const CCopasiContainer * pParent,
+                                const std::string & type,
+                                const unsigned C_INT32 & flag,
+                                C_FLOAT64 value);
+  /**
+   * Remove a metabolite from the model
+   */
+  void removeModelStats();
+
+#endif
 };
 
 #endif // CModel
