@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -54,8 +54,10 @@ void CQMatrixDialog::setArray(const CArrayAnnotation *tmp, bool single)
     }
   else
     {
+      const std::vector<std::string> & Items = tmp->getAnnotationsString(0, true);
+
       for (i = 0; i < nRows; i++)
-        mpCBRow->insertItem(mpCBRow->count(), FROM_UTF8(tmp->getAnnotationsString(0, true)[i]));
+        mpCBRow->insertItem(mpCBRow->count(), FROM_UTF8(Items[i]));
     }
 
   mpLabelColumn->hide();
@@ -82,8 +84,10 @@ void CQMatrixDialog::setArray(const CArrayAnnotation *tmp, bool single)
         }
       else
         {
+          const std::vector<std::string> & Items = tmp->getAnnotationsString(1, true);
+
           for (i = 0; i < nCols; i++)
-            mpCBColumn->insertItem(mpCBColumn->count(), FROM_UTF8(tmp->getAnnotationsString(1, true)[i]));
+            mpCBColumn->insertItem(mpCBColumn->count(), FROM_UTF8(Items[i]));
         }
 
       if (tmp->dimensionality() == 3)
@@ -97,8 +101,10 @@ void CQMatrixDialog::setArray(const CArrayAnnotation *tmp, bool single)
           if (!single)
             mpCBDim3->insertItem(mpCBDim3->count(), "ALL");
 
+          const std::vector<std::string> & Items = tmp->getAnnotationsString(2, true);
+
           for (i = 0; i < nDims; i++)
-            mpCBDim3->insertItem(mpCBDim3->count(), FROM_UTF8(tmp->getAnnotationsString(2, true)[i]));
+            mpCBDim3->insertItem(mpCBDim3->count(), FROM_UTF8(Items[i]));
         }
     }
 }
