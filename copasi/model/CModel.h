@@ -1036,11 +1036,6 @@ private:
    */
   bool compileEvents();
 
-#ifdef COPASI_DEBUG
-public:
-  void check() const;
-#endif
-
   // Attributes
 private:
   /**

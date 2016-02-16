@@ -3137,11 +3137,6 @@ std::string CModel::suitableForStochasticSimulation() const
   return ""; // Model is appropriate for hybrid simulation
 }
 
-#ifdef COPASI_DEBUG
-void CModel::check() const
-{}
-#endif
-
 void CModel::buildLinkZero()
 {
   mL.build(mStoi);
