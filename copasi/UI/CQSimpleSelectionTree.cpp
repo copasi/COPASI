@@ -41,9 +41,9 @@ CQSimpleSelectionTree::CQSimpleSelectionTree(QWidget* parent):
   mpResultMatrixSubtree = new QTreeWidgetItem(this, QStringList("Results"));
   mpResultSteadyStateSubtree = new QTreeWidgetItem(mpResultMatrixSubtree, QStringList("Steady State"));
 
-//#ifdef WITH_ANALYTICS
+#ifdef WITH_ANALYTICS
   mpResultAnalyticsSubtree = new QTreeWidgetItem(mpResultMatrixSubtree, QStringList("Analytics"));
-//#endif // WITH_ANALYTICS
+#endif // WITH_ANALYTICS
 
   mpResultSensitivitySubtree = new QTreeWidgetItem(mpResultMatrixSubtree, QStringList("Sensitivity"));
   mpResultMCASubtree = new QTreeWidgetItem(mpResultMatrixSubtree, QStringList("Metabolic Control Analysis"));

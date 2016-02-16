@@ -1,17 +1,9 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiArray.cpp,v $
-//   $Revision: 1.2 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/03/07 19:32:38 $
-// End CVS Header
-
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
@@ -19,7 +11,7 @@
 #include "CCopasiArray.h"
 
 CCopasiArray::CCopasiArray()
-    : mDim(0) {mData.resize(1);}
+  : mDim(0) {mData.resize(1);}
 
 CCopasiArray::CCopasiArray(const index_type & sizes)
 {
@@ -52,10 +44,17 @@ CCopasiArray::data_type & CCopasiArray::operator[](const index_type & index)
 #endif
 
   size_t tmpindex = 0;
-  index_type::const_iterator itIndex, it, itEnd = mFactors.end();
+  index_type::const_iterator itSize = mSizes.begin();
+  index_type::const_iterator itFactor = mFactors.begin();
+  index_type::const_iterator it = index.begin();
+  index_type::const_iterator end = index.end();
 
-  for (itIndex = index.begin(), it = mFactors.begin(); it != itEnd; ++it, ++itIndex)
-    tmpindex += *itIndex * *it;
+  for (; it != end; ++it, ++itSize, ++itFactor)
+    {
+      if (*it >= *itSize) return * (data_type *) NULL;
+
+      tmpindex += *itFactor **it;
+    }
 
   return mData[tmpindex];
 }
@@ -67,10 +66,23 @@ const CCopasiArray::data_type & CCopasiArray::operator[](const index_type & inde
 #endif
 
   size_t tmpindex = 0;
-  index_type::const_iterator itIndex, it, itEnd = mFactors.end();
+  index_type::const_iterator itSize = mSizes.begin();
+  index_type::const_iterator itFactor = mFactors.begin();
+  index_type::const_iterator it = index.begin();
+  index_type::const_iterator end = index.end();
 
-  for (itIndex = index.begin(), it = mFactors.begin(); it != itEnd; ++it, ++itIndex)
-    tmpindex += *itIndex * *it;
+  for (; it != end; ++it, ++itSize, ++itFactor)
+    {
+      if (*it >= *itSize) return * (const data_type *) NULL;
+
+      tmpindex += *itFactor **it;
+    }
 
   return mData[tmpindex];
 }
+
+const CCopasiArray::index_type & CCopasiArray::size() const
+{return mSizes;}
+
+size_t CCopasiArray::dimensionality() const
+{return mDim;}

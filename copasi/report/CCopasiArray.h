@@ -1,17 +1,9 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiArray.h,v $
-//   $Revision: 1.4 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/10/07 11:57:11 $
-// End CVS Header
-
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
@@ -20,6 +12,7 @@
 #define COPASIARRAY_H
 
 #include <vector>
+#include <map>
 
 #include "copasi/copasi.h"
 
@@ -54,8 +47,6 @@ public:
 class CCopasiArray: public CCopasiAbstractArray
 {
 public:
-  //typedef std::vector<size_t> index_type;
-  //typedef C_FLOAT64 data_type;
 
   CCopasiArray();
   CCopasiArray(const index_type & sizes);
@@ -63,21 +54,18 @@ public:
 
   void resize(const index_type & sizes);
 
-  data_type & operator[](const index_type & index);
-  const data_type & operator[](const index_type & index) const;
+  virtual data_type & operator[](const index_type & index);
+  virtual const data_type & operator[](const index_type & index) const;
+
+  const index_type & size() const;
+
+  size_t dimensionality() const;
 
 private:
   std::vector<data_type> mData;
-  std::vector<size_t> mSizes;
+  index_type mSizes;
   size_t mDim;
-  std::vector<size_t> mFactors;
-
-public:
-  const index_type & size() const
-  {return mSizes;}
-
-  size_t dimensionality() const
-  {return mDim;}
+  index_type mFactors;
 };
 
 /**
@@ -91,7 +79,7 @@ class CCopasiMatrixInterface: public CCopasiAbstractArray
 public:
 
   CCopasiMatrixInterface(MatrixType * matrix)
-      : mMatrix(matrix)
+    : mMatrix(matrix)
   {
     assert(mMatrix);
     mSizes.resize(2);
@@ -150,7 +138,7 @@ class CCopasiVectorInterface: public CCopasiAbstractArray
 public:
 
   CCopasiVectorInterface(VectorType * vector)
-      : mVector(vector)
+    : mVector(vector)
   {
     assert(mVector);
     mSizes.resize(1);

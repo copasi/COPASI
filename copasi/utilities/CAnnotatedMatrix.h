@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -36,6 +36,9 @@
 class CArrayAnnotation: public CCopasiContainer
 {
 public:
+  typedef C_FLOAT64 data_type;
+  typedef CCopasiArray::index_type index_type;
+  typedef std::vector< CRegisteredObjectName > name_index_type;
 
   /**
    * The annotation to an array can work in different modes. The mode
@@ -65,27 +68,9 @@ public:
   };
 
 private:
-  CCopasiAbstractArray * mpArray;
-  bool mDestructArray;
-
-  mutable std::vector< std::vector<CRegisteredObjectName> > mAnnotationsCN;
-  mutable std::vector< std::vector<std::string> > mAnnotationsString;
-
-  std::vector< std::string > mDimensionDescriptions;
-  CObjectInterface::ContainerList mCopasiVectors;
-
-  /**
-   * This contains the mode for the different dimensions
-   */
-  std::vector<Mode> mModes;
-
-  /**
-   * This contains the default mode that is used if during a resize()
-   * the dimensionality is increased.
-   */
-  Mode mDefaultMode;
-
-  std::string mDescription;
+  CArrayAnnotation();
+  CArrayAnnotation(const CArrayAnnotation &);
+  CArrayAnnotation & operator=(const CArrayAnnotation &);
 
 public:
   CArrayAnnotation(const std::string & name,
@@ -94,13 +79,6 @@ public:
                    const bool & adopt);
 
   virtual ~CArrayAnnotation();
-
-private:
-  CArrayAnnotation();
-  CArrayAnnotation(const CArrayAnnotation &);
-  CArrayAnnotation & operator=(const CArrayAnnotation &);
-
-public:
 
   /**
    *  let the ArrayAnnotation point to a different array.
@@ -187,17 +165,18 @@ public:
    * most of the work will be done by getObject(). If the element already
    * exists, the existing element will be returned.
    */
-  const CObjectInterface * addElementReference(CCopasiAbstractArray::index_type index) const;
+  const CCopasiObject * addElementReference(const index_type & index) const;
+  const CCopasiObject * addElementReference(const name_index_type & nameIndex) const;
 
   /**
    * a convenience function for 2-dimensional arrays.
    */
-  const CObjectInterface * addElementReference(C_INT32 u, C_INT32 v) const;
+  const CCopasiObject * addElementReference(C_INT32 u, C_INT32 v) const;
 
   /**
    * a convenience function for 1-dimensional arrays.
    */
-  const CObjectInterface * addElementReference(C_INT32 u) const;
+  const CCopasiObject * addElementReference(C_INT32 u) const;
 
   /**
    * Appends all element references to the set of objects
@@ -231,17 +210,13 @@ public:
    *  generate the list of CNs from the COPASI vector v.
    *  v needs to be a CCopasiVector (or derived from it)!
    */
-  bool createAnnotationsCNFromCopasiVector(size_t d, const CCopasiContainer* v) const;
-
-  void createNumbers(size_t d) const;
+  bool createAnnotationsCNFromCopasiVector(size_t d, const CCopasiContainer* v);
 
   //void printDebug(std::ostream & out) const;
 
   void printRecursively(std::ostream & ostream, size_t level,
                         CCopasiAbstractArray::index_type & index,
                         const std::vector<std::vector<std::string> > & display) const;
-
-public:
 
   /**
    * generate a display name for the array annotation.
@@ -251,6 +226,35 @@ public:
   virtual void print(std::ostream * ostream) const;
 
   friend std::ostream &operator<<(std::ostream &os, const CArrayAnnotation & o);
+
+  data_type & operator[](const name_index_type & nameIndex);
+  const data_type & operator[](const name_index_type & nameIndex) const;
+  name_index_type displayNamesToCN(const std::vector< std::string > & DisplayNames) const;
+  index_type cnToIndex(const name_index_type & cnIndex) const;
+private:
+  std::string createDisplayName(const std::string & cn) const;
+
+  CCopasiAbstractArray * mpArray;
+  bool mDestructArray;
+
+  std::vector< std::vector<CRegisteredObjectName> > mAnnotationsCN;
+  std::vector< std::vector<std::string> > mAnnotationsString;
+
+  std::vector< std::string > mDimensionDescriptions;
+  CObjectInterface::ContainerList mCopasiVectors;
+
+  /**
+   * This contains the mode for the different dimensions
+   */
+  std::vector<Mode> mModes;
+
+  /**
+   * This contains the default mode that is used if during a resize()
+   * the dimensionality is increased.
+   */
+  Mode mDefaultMode;
+
+  std::string mDescription;
 };
 
 #endif

@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -351,6 +351,7 @@ double strToDouble(const char * str,
 
   return Value;
 }
+
 C_INT32 strToInt(const char * str,
                  char const ** pTail)
 {
