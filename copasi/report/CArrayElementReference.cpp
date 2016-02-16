@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -12,64 +12,60 @@
 #include "CCopasiContainer.h"
 #include "utilities/CAnnotatedMatrix.h"
 
-CArrayElementReference::CArrayElementReference(const std::string & index, const CCopasiContainer * pParent)
-  : CCopasiObject(index, pParent, "ElementReference",
+CArrayElementReference::CArrayElementReference(const std::vector< CRegisteredObjectName > & index, const CCopasiContainer * pParent)
+  : CCopasiObject("Value", pParent, "ElementReference",
                   CCopasiObject::Reference |
                   CCopasiObject::NonUniqueName |
                   CCopasiObject::ValueDbl),
   //    mpReference(NULL),
-  mIndex(index)
+  mIndex(index),
+  mIgnoreUpdateObjectName(false)
 {
   assert(pParent != NULL);
+
+  updateObjectName();
 }
 
-void CArrayElementReference::updateMethod(const CCopasiAbstractArray::data_type & /*value*/)
+void CArrayElementReference::updateObjectName()
 {
-  //  if (mpReference)
-  //    *mpReference = value;
+  if (mIgnoreUpdateObjectName) return;
+
+  mIgnoreUpdateObjectName = true;
+
+  std::string ObjectName;
+  std::vector< CRegisteredObjectName >::const_iterator it = mIndex.begin();
+  std::vector< CRegisteredObjectName >::const_iterator end = mIndex.end();
+
+  for (; it != end; ++it)
+    {
+      const CCopasiObject * pObject = CObjectInterface::DataObject(getObjectFromCN(*it));
+
+      ObjectName += "[" + ((pObject != NULL) ? CCopasiObjectName::escape(pObject->getObjectDisplayName()) : std::string("not found")) + "]";
+    }
+
+  setObjectName(ObjectName);
+
+  mIgnoreUpdateObjectName = false;
 }
 
 void * CArrayElementReference::getValuePointer() const
 {
-  CArrayAnnotation * tmpAA = dynamic_cast<CArrayAnnotation*>(getObjectParent());
+  CArrayAnnotation * pArray = dynamic_cast< CArrayAnnotation * >(getObjectParent());
 
-  if (!tmpAA) return NULL;
-
-  //now get the array indices. At the moment only numerical indices...
-  //this could be done in the constructor, actually
-  unsigned C_INT32 ii = 0;
-  CCopasiArray::index_type index;
-  std::string tmpIndexString;
-
-  while ((tmpIndexString = mIndex.getElementName(ii, false)) != "")
+  if (pArray != NULL)
     {
-      if (tmpIndexString == ".")
-        break; //"." indicates 0-dimensional array. This means index should stay empty
-
-      index.push_back(mIndex.getElementIndex(ii));
-      ++ii;
+      return &pArray->operator [](mIndex);
     }
 
-  if (index.size() != tmpAA->dimensionality())  //wrong number of indices for this array
-    return NULL;
-
-  for (ii = 0; ii < tmpAA->dimensionality(); ++ii)
-    if (index[ii] >= tmpAA->size()[ii]) //out of range
-      return NULL;
-
-  return &(*tmpAA->array())[index];
-
-  //TODO
-  //TODO perhaps we should cache the pointer. This would mean we need to invalidate the pointer
-  //if somthing with the array changes
-
-  //return mpReference;
+  return NULL;
 }
 
 std::string CArrayElementReference::getObjectDisplayName() const
 {
   if (getObjectParent())
     {
+      const_cast< CArrayElementReference * >(this)->updateObjectName();
+
       //if the array has as task as ancestor, use the task (skip the problem/method)
       CCopasiContainer* pT = getObjectAncestor("Task");
 
@@ -81,18 +77,22 @@ std::string CArrayElementReference::getObjectDisplayName() const
         part = getObjectParent()->getObjectParent()->getObjectDisplayName() + ".";
 
       //now part contains the display name of the task, or the parent of the parent
-      return part + getObjectParent()->getObjectName() + mIndex;
+      return part + getObjectParent()->getObjectName() + getObjectName();
     }
   else
-    return "Array" + mIndex;
+    return "Array" + getObjectName();
 }
 
 CCopasiObjectName CArrayElementReference::getCN() const
 {
+  const_cast< CArrayElementReference * >(this)->updateObjectName();
+
   if (getObjectParent())
-    return getObjectParent()->getCN() + mIndex;
+    {
+      return getObjectParent()->getCN() + getObjectName();
+    }
   else
-    return "Array" + mIndex;
+    return "Array" + getObjectName();
 }
 
 void CArrayElementReference::print(std::ostream * ostream) const

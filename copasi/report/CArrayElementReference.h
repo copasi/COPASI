@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -33,7 +33,8 @@ private:
   /**
    * this contains the index in string format, e.g. "[2][7]"
    */
-  CCopasiObjectName mIndex;
+  std::vector< CRegisteredObjectName > mIndex;
+  bool mIgnoreUpdateObjectName;
 
 private:
   /**
@@ -46,10 +47,7 @@ private:
    */
   CArrayElementReference(const CArrayElementReference & src);
 
-  /**
-   * this method does nothing at the moment!
-   */
-  void updateMethod(const CCopasiAbstractArray::data_type & value);
+  void updateObjectName();
 
 public:
   /**
@@ -58,7 +56,7 @@ public:
    * The object name will be the index string, the type is "ElementReference"
    * pParent may not be NULL.
    */
-  CArrayElementReference(const std::string & index,
+  CArrayElementReference(const std::vector< CRegisteredObjectName > & index,
                          const CCopasiContainer * pParent);
 
   virtual ~CArrayElementReference() {}
