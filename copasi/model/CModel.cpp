@@ -52,12 +52,6 @@
 #include "lapack/blaswrap.h"
 #include "lapack/lapackwrap.h"
 
-#ifdef COPASI_DEBUG
-#define CCHECK {check();}
-#else
-#define CCHECK
-#endif
-
 #define MNumMetabolitesReactionDependent (mNumMetabolitesReaction - mNumMetabolitesReactionIndependent)
 
 const char * CModel::ModelTypeNames[] =
@@ -940,10 +934,10 @@ const CCopasiVector< CMetab > & CModel::getMetabolites() const
 {return mMetabolites;}
 
 CCopasiVector< CMetab > & CModel::getMetabolitesX()
-{CCHECK return mMetabolitesX;}
+{return mMetabolitesX;}
 
 const CCopasiVector< CMetab > & CModel::getMetabolitesX() const
-{CCHECK return mMetabolitesX;}
+{return mMetabolitesX;}
 
 const CCopasiVectorN< CModelValue > & CModel::getModelValues() const
 {return mValues;}
@@ -1010,16 +1004,16 @@ size_t CModel::getNumVariableMetabs() const
 {return mNumMetabolitesODE + mNumMetabolitesReaction + mNumMetabolitesAssignment;}
 
 size_t CModel::getNumODEMetabs() const
-{CCHECK return mNumMetabolitesODE;}
+{return mNumMetabolitesODE;}
 
 size_t CModel::getNumAssignmentMetabs() const
-{CCHECK return mNumMetabolitesAssignment;}
+{return mNumMetabolitesAssignment;}
 
 size_t CModel::getNumIndependentReactionMetabs() const
-{CCHECK return mNumMetabolitesReactionIndependent;}
+{return mNumMetabolitesReactionIndependent;}
 
 size_t CModel::getNumDependentReactionMetabs() const
-{CCHECK return mNumMetabolitesReaction - mNumMetabolitesReactionIndependent;}
+{return mNumMetabolitesReaction - mNumMetabolitesReactionIndependent;}
 
 size_t CModel::getTotSteps() const
 {return mSteps.size();}
@@ -1040,13 +1034,13 @@ const CCopasiVectorNS < CCompartment > & CModel::getCompartments() const
  *  Get the Reduced Stoichiometry Matrix of this Model
  */
 const CMatrix < C_FLOAT64 >& CModel::getRedStoi() const
-{CCHECK return mRedStoi;}
+{return mRedStoi;}
 
 /**
  *  Get the reordered stoichiometry matrix of this model
  */
 const CMatrix < C_FLOAT64 >& CModel::getStoi() const
-{CCHECK return mStoi;}
+{return mStoi;}
 
 const CArrayAnnotation *
 CModel::getStoiAnnotation() const
@@ -1058,13 +1052,13 @@ const CCopasiVector < CMoiety > & CModel::getMoieties() const
 {return mMoieties;}
 
 const CLinkMatrixView & CModel::getL() const
-{CCHECK return mLView;}
+{return mLView;}
 
 const CLinkMatrix & CModel::getL0() const
 {return mL;}
 
 const CStateTemplate & CModel::getStateTemplate() const
-{CCHECK return mStateTemplate;}
+{return mStateTemplate;}
 
 void CModel::addModelEntity(const CModelEntity * pModelEntity)
 {
