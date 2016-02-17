@@ -141,32 +141,7 @@ const CObjectInterface * CCopasiContainer::getObject(const CCopasiObjectName & c
       if (cn.getElementName(0, false) == "") //no indices
         return it->second->getObject(cn.getRemainder());
 
-      //get the indices from the CN
-      std::string indices;
-      std::string tmp;
-      C_INT32 ii = 0;
-
-      while ((tmp = cn.getElementName(ii, false)) != "")
-        {
-          indices += "[" + tmp + "]";
-          ++ii;
-        }
-
-      //try to get the array element from the indices
-      pObject = it->second->getObject(indices);
-
-      //if the element could not be resolved, just return NULL. If there is no
-      //remainder, just return the array element.
-      //In all other cases we call getObject() on the array element with the remainder
-      //of the CN. The special treatment of the empty remainder is probably necessary
-      //since not all implementations of getObject(cn) handle the case of empty CN.
-      if (!pObject)
-        return NULL;
-
-      if (cn.getRemainder() == "")
-        return pObject;
-      else
-        return pObject->getObject(cn.getRemainder());
+      return it->second->getObject(cn);
     }
 
   //handle generic containers.
