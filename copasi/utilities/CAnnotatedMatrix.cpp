@@ -286,7 +286,7 @@ const CObjectInterface * CArrayAnnotation::getObject(const CCopasiObjectName & c
   //if there are no indices there could still be other children. This can be handled
   //by the container base class
   if (cn.getElementName(0, false) == "") //no indices
-    return this->CCopasiContainer::getObject(cn);
+    return CCopasiContainer::getObject(cn);
 
   //first get the index string
   std::string tmp;
