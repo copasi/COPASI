@@ -75,19 +75,36 @@ size_t CArrayAnnotation::dimensionality() const
 
 void CArrayAnnotation::setCopasiVector(size_t d, const CCopasiContainer* v)
 {
-  assert(d < mCopasiVectors.size());
+  assert(d < dimensionality());
   assert((mModes[d] == VECTOR) || (mModes[d] == VECTOR_ON_THE_FLY));
 
-  mCopasiVectors[d] = v;
+  if (v == NULL || !(v->isVector() || v->isNameVector())) return;
 
-  if (mModes[d] == VECTOR)
-    createAnnotationsCNFromCopasiVector(d, mCopasiVectors[d]);
+  //now we know we have a vector. A CCopasiVector[N/S], hopefully, so that the following cast is valid:
+  const CCopasiVector< CCopasiObject > * pVector = reinterpret_cast<const CCopasiVector< CCopasiObject > * >(v);
+
+  size_t i;
+
+  for (i = 0; i < mAnnotationsCN[d].size() && i < pVector->size(); ++i)
+    {
+      if (!&pVector->operator[](i))
+        {
+          mAnnotationsCN[d][i] = CRegisteredObjectName("String=???");
+          mAnnotationsString[d][i] = "???";
+
+          continue;
+        }
+
+      mAnnotationsCN[d][i] = pVector->operator[](i).getCN();
+      mAnnotationsString[d][i] = createDisplayName(mAnnotationsCN[d][i]);
+    }
+
+  return;
 }
 
 void CArrayAnnotation::setAnnotationCN(size_t d, size_t i, const std::string cn)
 {
-  assert(d < mAnnotationsCN.size());
-  assert(mModes[d] == OBJECTS);
+  assert(d < dimensionality());
 
   resizeOneDimension(d);
   assert(i < mAnnotationsCN[d].size());
@@ -98,10 +115,7 @@ void CArrayAnnotation::setAnnotationCN(size_t d, size_t i, const std::string cn)
 
 void CArrayAnnotation::setAnnotationString(size_t d, size_t i, const std::string s)
 {
-  assert(d < mAnnotationsString.size());
-  assert(mModes[d] == STRINGS);
-
-  resizeOneDimension(d);
+  assert(d < dimensionality());
   assert(i < mAnnotationsString[d].size());
 
   mAnnotationsCN[d][i] = "String=" + s;
@@ -110,14 +124,6 @@ void CArrayAnnotation::setAnnotationString(size_t d, size_t i, const std::string
 
 const std::vector<CRegisteredObjectName> & CArrayAnnotation::getAnnotationsCN(size_t d) const
 {
-  assert(d < mModes.size());
-  assert(mModes[d] != STRINGS);
-  assert(mModes[d] != NUMBERS);
-
-  if (mModes[d] == VECTOR_ON_THE_FLY ||
-      mModes[d] == VECTOR)
-    const_cast< CArrayAnnotation * >(this)->createAnnotationsCNFromCopasiVector(d, mCopasiVectors[d]);
-
   return mAnnotationsCN[d];
 }
 
@@ -125,10 +131,14 @@ const std::vector<std::string> & CArrayAnnotation::getAnnotationsString(size_t d
 {
   assert(d < mModes.size());
 
-  //generate CNs (if necessary)
-  if (mModes[d] == VECTOR_ON_THE_FLY ||
-      mModes[d] == VECTOR)
-    const_cast< CArrayAnnotation * >(this)->createAnnotationsCNFromCopasiVector(d, mCopasiVectors[d]);
+  std::vector<CRegisteredObjectName>::const_iterator itCN = mAnnotationsCN[d].begin();
+  std::vector<CRegisteredObjectName>::const_iterator endCN = mAnnotationsCN[d].end();
+  std::vector< std::string >::iterator itName = mAnnotationsString[d].begin();
+
+  for (; itCN != endCN; ++itCN, ++itName)
+    {
+      *itName = createDisplayName(*itCN);
+    }
 
   return mAnnotationsString[d];
 }
@@ -151,60 +161,20 @@ const std::string & CArrayAnnotation::getDescription() const
 void CArrayAnnotation::setDescription(const std::string & s)
 {mDescription = s;}
 
-bool CArrayAnnotation::createAnnotationsCNFromCopasiVector(size_t d, const CCopasiContainer* v)
-{
-  if (!v) return false;
-
-  if (!(v->isVector() || v->isNameVector())) return false;
-
-  if (d >= mpArray->dimensionality()) return false;
-
-  //now we know we have a vector. A CCopasiVector[N/S], hopefully, so that the following cast is valid:
-  const CCopasiVector< CCopasiObject > * pVector =
-    reinterpret_cast<const CCopasiVector< CCopasiObject > * >(v);
-
-  mAnnotationsCN[d].resize(pVector->size());
-  mAnnotationsString[d].resize(pVector->size());
-
-  //if (pVector->size() < mAnnotations[d].size()) return false;
-
-  size_t i;
-
-  for (i = 0; i < mAnnotationsCN[d].size(); ++i)
-    {
-      if (!&pVector->operator[](i))
-        {
-          mAnnotationsCN[d][i] = CRegisteredObjectName("String=???");
-          mAnnotationsString[d][i] = "???";
-
-          continue;
-        }
-
-      mAnnotationsCN[d][i] = pVector->operator[](i).getCN();
-      mAnnotationsString[d][i] = createDisplayName(mAnnotationsCN[d][i]);
-    }
-
-  return true;
-}
-
 //private
 void CArrayAnnotation::reDimensionalize(size_t d)
 {
   mAnnotationsCN.resize(d);
   mAnnotationsString.resize(d);
   mDimensionDescriptions.resize(d);
-  mCopasiVectors.resize(d);
   mModes.resize(d, mDefaultMode);
 }
 
 //private
 void CArrayAnnotation::resizeOneDimension(size_t d)
 {
-  if (mModes[d] != VECTOR)
-    {
-      mAnnotationsCN[d].resize(mpArray->size()[d]);
-      mAnnotationsString[d].resize(mpArray->size()[d]);
-    }
+  mAnnotationsCN[d].resize(mpArray->size()[d]);
+  mAnnotationsString[d].resize(mpArray->size()[d]);
 }
 
 void CArrayAnnotation::resize()
@@ -536,6 +506,25 @@ std::string CArrayAnnotation::createDisplayName(const std::string & cn) const
     return pObject->getObjectDisplayName();
 
   return "not found";
+}
+
+void CArrayAnnotation::updateDisplayNames() const
+{
+  std::vector< std::vector<CRegisteredObjectName> >::const_iterator itCNs = mAnnotationsCN.begin();
+  std::vector< std::vector<CRegisteredObjectName> >::const_iterator endCNs = mAnnotationsCN.end();
+  std::vector< std::vector< std::string > >::iterator itNames = mAnnotationsString.begin();
+
+  for (; itCNs != endCNs; ++itCNs, ++itNames)
+    {
+      std::vector<CRegisteredObjectName>::const_iterator itCN = itCNs->begin();
+      std::vector<CRegisteredObjectName>::const_iterator endCN = itCNs->end();
+      std::vector< std::string >::iterator itName = itNames->begin();
+
+      for (; itCN != endCN; ++itCN, ++itName)
+        {
+          *itName = createDisplayName(*itCN);
+        }
+    }
 }
 
 // void CArrayAnnotation::printDebugLoop(std::ostream & out, CCopasiAbstractArray::index_type & index, size_t level) const

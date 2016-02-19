@@ -184,16 +184,18 @@ void CMCAMethod::resizeAllMatrices()
   mScaledElasticitiesAnn->setCopasiVector(1, &Model.getMetabolitesX());
 
   // Reactions are columns, species are rows
-  mScaledConcCC.resize(mUnscaledConcCC.numRows(), mUnscaledConcCC.numCols());
+  mScaledConcCC.resize(mUnscaledConcCC.numRows(), mUnscaledConcCC.numCols() + 1);
   mScaledConcCCAnn->resize();
   mScaledConcCCAnn->setCopasiVector(0, &Model.getMetabolitesX());
   mScaledConcCCAnn->setCopasiVector(1, &Model.getReactions());
+  mScaledConcCCAnn->setAnnotationString(1, mUnscaledConcCC.numCols(), "Summation Error");
 
   // Reactions are columns and rows
-  mScaledFluxCC.resize(mUnscaledFluxCC.numRows(), mUnscaledFluxCC.numCols());
+  mScaledFluxCC.resize(mUnscaledFluxCC.numRows(), mUnscaledFluxCC.numCols() + 1);
   mScaledFluxCCAnn->resize();
   mScaledFluxCCAnn->setCopasiVector(0, &Model.getReactions());
   mScaledFluxCCAnn->setCopasiVector(1, &Model.getReactions());
+  mScaledFluxCCAnn->setAnnotationString(1, mUnscaledFluxCC.numCols(), "Summation Error");
 
   mElasticityDependencies.resize(mUnscaledElasticities.numRows(), mUnscaledElasticities.numCols());
 }
@@ -483,7 +485,7 @@ bool CMCAMethod::scaleMCA(const bool & status, C_FLOAT64 res)
   // In rare occasions the concentration might not be updated
   mpContainer->updateTransientDataValues();
 
-  for (pSpeciesObject = pSpeciesObjectStart; pSpeciesObject != pSpeciesObjectEnd; ++pSpeciesObject)
+  for (pSpeciesObject = pSpeciesObjectStart; pSpeciesObject != pSpeciesObjectEnd; ++pSpeciesObject, ++pScaled)
     {
       C_FLOAT64 alt = fabs(*(C_FLOAT64 *)pSpeciesObject->getCorrespondingProperty()->getValuePointer());
 
@@ -507,7 +509,7 @@ bool CMCAMethod::scaleMCA(const bool & status, C_FLOAT64 res)
   pUnscaled = mUnscaledFluxCC.array();
   pScaled = mScaledFluxCC.array();
 
-  for (pFlux = mpContainer->getFluxes().array(); pFlux != pFluxEnd; ++pFlux, ++pReaction)
+  for (pFlux = mpContainer->getFluxes().array(); pFlux != pFluxEnd; ++pFlux, ++pReaction, ++pScaled)
     {
       CMathObject * pCompartment = mpContainer->getLargestReactionCompartment(pReaction);
       C_FLOAT64 Resolution = (pCompartment != NULL) ?  res **(C_FLOAT64*)pCompartment->getValuePointer() : res;
@@ -583,19 +585,17 @@ bool CMCAMethod::checkSummationTheorems(const C_FLOAT64 & resolution)
   bool success = true;
 
   C_FLOAT64 * pScaled = mScaledConcCC.array();
-  C_FLOAT64 * pScaledRowEnd = pScaled + mScaledConcCC.numCols();
+  C_FLOAT64 * pScaledRowEnd = pScaled + mScaledConcCC.numCols() - 1;
   C_FLOAT64 * pScaledEnd = pScaled + mScaledConcCC.size();
 
   CVector< C_FLOAT64 > Sum(mScaledConcCC.numRows());
   CVector< C_FLOAT64 > Max(mScaledConcCC.numRows());
-  CVector< C_FLOAT64 > Error(mScaledConcCC.numRows());
   Sum = 0.0;
   Max = 0.0;
   C_FLOAT64 * pSum = Sum.array();
   C_FLOAT64 * pMax = Max.array();
-  C_FLOAT64 * pError = Error.array();
 
-  for (; pScaled != pScaledEnd; pScaledRowEnd += mScaledConcCC.numCols(), ++pSum, ++pMax, ++pError)
+  for (; pScaled != pScaledEnd; pScaledRowEnd += mScaledConcCC.numCols(), ++pSum, ++pMax, ++pScaled)
     {
       for (; pScaled != pScaledRowEnd; ++pScaled)
         {
@@ -605,25 +605,23 @@ bool CMCAMethod::checkSummationTheorems(const C_FLOAT64 & resolution)
           *pMax = std::max(*pMax, fabs(*pScaled));
         }
 
-      *pError = (*pMax > 100.0 * std::numeric_limits< C_FLOAT64 >::min()) ? fabs(*pSum) / *pMax : 0.0;
-      success &= *pError < resolution;
+      *pScaledRowEnd = (*pMax > 100.0 * std::numeric_limits< C_FLOAT64 >::min()) ? fabs(*pSum) / *pMax : 0.0;
+      success &= *pScaledRowEnd < resolution;
     }
 
   pScaled = mScaledFluxCC.array();
-  pScaledRowEnd = pScaled + mScaledFluxCC.numCols();
+  pScaledRowEnd = pScaled + mScaledFluxCC.numCols() - 1;
   pScaledEnd = pScaled + mScaledFluxCC.size();
 
   Sum.resize(mScaledFluxCC.numRows());
   Max.resize(mScaledFluxCC.numRows());
-  Error.resize(mScaledFluxCC.numRows());
   Sum = 0.0;
   Max = 0.0;
 
   pSum = Sum.array();
   pMax = Max.array();
-  pError = Error.array();
 
-  for (; pScaled != pScaledEnd; pScaledRowEnd += mScaledConcCC.numCols(), ++pSum, ++pMax, ++pError)
+  for (; pScaled != pScaledEnd; pScaledRowEnd += mScaledConcCC.numCols(), ++pSum, ++pMax, ++pScaled)
     {
       for (; pScaled != pScaledRowEnd; ++pScaled)
         {
@@ -633,8 +631,8 @@ bool CMCAMethod::checkSummationTheorems(const C_FLOAT64 & resolution)
           *pMax = std::max(*pMax, fabs(*pScaled));
         }
 
-      *pError = (*pMax > 100.0 * std::numeric_limits< C_FLOAT64 >::min()) ? fabs(1.0 - *pSum) / *pMax : 0.0;
-      success &= *pError < resolution;
+      *pScaledRowEnd = (*pMax > 100.0 * std::numeric_limits< C_FLOAT64 >::min()) ? fabs(1.0 - *pSum) / *pMax : 0.0;
+      success &= *pScaledRowEnd < resolution;
     }
 
   return success;
