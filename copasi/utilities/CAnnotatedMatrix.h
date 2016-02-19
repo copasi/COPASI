@@ -206,12 +206,6 @@ public:
 
   //void printDebugLoop(std::ostream & out, CCopasiAbstractArray::index_type & index, size_t level) const;
 
-  /**
-   *  generate the list of CNs from the COPASI vector v.
-   *  v needs to be a CCopasiVector (or derived from it)!
-   */
-  bool createAnnotationsCNFromCopasiVector(size_t d, const CCopasiContainer* v);
-
   //void printDebug(std::ostream & out) const;
 
   void printRecursively(std::ostream & ostream, size_t level,
@@ -233,15 +227,15 @@ public:
   index_type cnToIndex(const name_index_type & cnIndex) const;
 private:
   std::string createDisplayName(const std::string & cn) const;
+  void updateDisplayNames() const;
 
   CCopasiAbstractArray * mpArray;
   bool mDestructArray;
 
   std::vector< std::vector<CRegisteredObjectName> > mAnnotationsCN;
-  std::vector< std::vector<std::string> > mAnnotationsString;
+  mutable std::vector< std::vector<std::string> > mAnnotationsString;
 
   std::vector< std::string > mDimensionDescriptions;
-  CObjectInterface::ContainerList mCopasiVectors;
 
   /**
    * This contains the mode for the different dimensions
