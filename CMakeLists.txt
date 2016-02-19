@@ -455,6 +455,14 @@ if(ENABLE_COPASI_UNDO)
   add_definitions(-DCOPASI_UNDO)
 endif(ENABLE_COPASI_UNDO)
 
+#Option for the COPASI support for Versioning Framework currently being developed by Peyman
+option (ENABLE_COPASI_Versioning "Enables Versioning support." OFF)
+mark_as_advanced(ENABLE_COPASI_Versioning)
+if(ENABLE_COPASI_Versioning)
+  add_definitions(-DCOPASI_Versioning)
+endif(ENABLE_COPASI_Versioning)
+
+
 # if the MML widget is available, we need to enable "HAVE_MML"
 
 option(ENABLE_MML "Enable the MML widget" ON)
@@ -752,6 +760,7 @@ message(STATUS "-----------------------------------------------------------
    SEDML support            = ${ENABLE_COPASI_SEDML}
    GPROF support            = ${ENABLE_GPROF}
    UNDO framework           = ${ENABLE_COPASI_UNDO}
+   Versioning framework     = ${ENABLE_COPASI_Versioning}
    Analytics Task           = ${ENABLE_ANALYTICS}
    Additional Defines       = ${DirDefs}
 

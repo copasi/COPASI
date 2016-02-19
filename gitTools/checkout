@@ -1,0 +1,10 @@
+copasi/UI/CBrowseModelVersionDialog.cpp
+copasi/UI/CBrowseModelVersionDialog.h
+copasi/UI/CBrowseModelVersionDialog.ui
+copasi/UI/CCreateModelVersionDialog.cpp
+copasi/UI/CCreateModelVersionDialog.h
+copasi/UI/CCreateModelVersionDialog.ui
+copasi/UI/copasiui3window.cpp
+copasi/UI/copasiui3window.h
+copasi/versioning/CModelVersion.cpp
+copasi/versioning/CModelVersion.h

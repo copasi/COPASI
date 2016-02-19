@@ -93,6 +93,11 @@
 #include <QtCore/QtDebug>
 #endif
 
+#ifdef COPASI_Versioning
+#include "CBrowseModelVersionDialog.h"
+#include "CCreateModelVersionDialog.h"
+#endif
+
 // static
 CopasiUI3Window * CopasiUI3Window::pMainWindow = NULL;
 
@@ -221,6 +226,11 @@ CopasiUI3Window::CopasiUI3Window():
   //initialise Undo stack
   mpUndoStack = new QUndoStack(this);
 
+#ifdef COPASI_Versioning
+  //initialise Model Version Hierarchy
+  mpVersionHierarchy = new CModelVersion(this);
+#endif
+
   createActions();
   createToolBar(); // creates a tool bar
   createMenuBar();  // creates a menu bar
@@ -308,6 +318,11 @@ CopasiUI3Window::~CopasiUI3Window()
 
   //clear the undo stack
   pdelete(mpUndoStack);
+
+#ifdef COPASI_Versioning
+  //Delete the Model Versions
+  pdelete(mpVersionHierarchy);
+#endif
 }
 
 void CopasiUI3Window::createActions()
@@ -430,6 +445,13 @@ void CopasiUI3Window::createActions()
 
   mpaClearUndoHistory = new QAction("&Clear Undo History", this);
   connect(mpaClearUndoHistory, SIGNAL(triggered()), this, SLOT(slotClearUndoHistory()));
+#endif
+
+#ifdef COPASI_Versioning
+  mpaCreateVersion = new QAction("Create", this);
+  connect(mpaCreateVersion, SIGNAL(triggered()), this, SLOT(slotCreateVersion()));
+  mpaBrowseVersion = new QAction("Browse", this);
+  connect(mpaBrowseVersion, SIGNAL(triggered()), this, SLOT(slotBrowseVersion()));
 #endif
 
   mpaParameterEstimationResult = new QAction("Load Parameter Estimation Protocol", this);
@@ -591,6 +613,13 @@ void CopasiUI3Window::createMenuBar()
   pEditMenu->addAction(mpaRedo);
   pEditMenu->addAction(mpaUndoHistory);
   pEditMenu->addAction(mpaClearUndoHistory);
+#endif
+
+  //********** Version menu ************
+#ifdef COPASI_Versioning
+  QMenu * pVersionMenu = menuBar()->addMenu("&Version");
+  pVersionMenu->addAction(mpaCreateVersion);
+  pVersionMenu->addAction(mpaBrowseVersion);
 #endif
 
   //****** tools menu **************
@@ -823,6 +852,9 @@ void CopasiUI3Window::newDoc()
   mCommitRequired = true;
 
   mpUndoStack->clear();
+#ifdef COPASI_Versioning
+  mpVersionHierarchy->clear();
+#endif
 }
 
 void CopasiUI3Window::openInitialDocument(const QString & file)
@@ -939,6 +971,29 @@ void CopasiUI3Window::slotFileOpen(QString file)
 void CopasiUI3Window::slotFileOpenFinished(bool success)
 {
   mpUndoStack->clear();
+
+#ifdef COPASI_Versioning
+  // Clear the previous Model Version Hierarchy
+  mpVersionHierarchy->clear();
+  // Open the Model Verion Hierarchy for the current Model
+  // First set the path to versioning folder
+  mpVersionHierarchy->setPathFile(FROM_UTF8(CCopasiRootContainer::getConfiguration()->getWorkingDirectory()));
+  // retrieve versioning information from Versioning XML file
+  int i = mpVersionHierarchy->readVersionXML(); // i = 0 : fine XML  ,  1 : No XML file exists , 2 : XML parsed but file may have error  3: incorrect XML
+
+  if (i == 2)
+    {
+      CQMessageBox::information(this, QString("Warning"), "Version XML File parsed, but some error(s) occured",
+                                QMessageBox::Ok, QMessageBox::Ok);
+    }
+
+  if (i == 3)
+    {
+      CQMessageBox::critical(this, QString("Error"), "Version XML File has error",
+                             QMessageBox::Ok, QMessageBox::Ok);
+    }
+
+#endif
 
   disconnect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(slotFileOpenFinished(bool)));
   unsetCursor();
@@ -1422,6 +1477,10 @@ void CopasiUI3Window::slotImportSBMLFromStringFinished(bool success)
 {
   mpUndoStack->clear();
 
+#ifdef COPASI_Versioning
+  mpVersionHierarchy->clear();
+#endif
+
   disconnect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(slotImportSBMLFromStringFinished(bool)));
   unsetCursor();
   mCommitRequired = true;
@@ -1542,6 +1601,10 @@ void CopasiUI3Window::slotImportSBML(QString file)
 void CopasiUI3Window::slotImportSBMLFinished(bool success)
 {
   mpUndoStack->clear();
+
+#ifdef COPASI_Versioning
+  mpVersionHierarchy->clear();
+#endif
 
   disconnect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(slotImportSBMLFinished(bool)));
   unsetCursor();
@@ -2909,6 +2972,10 @@ void CopasiUI3Window::slotImportSEDMLFromStringFinished(bool success)
 {
   mpUndoStack->clear();
 
+#ifdef COPASI_Versioning
+  mpVersionHierarchy->clear();
+#endif
+
   disconnect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(slotImportSEDMLFromStringFinished(bool)));
   unsetCursor();
   mCommitRequired = true;
@@ -2956,6 +3023,10 @@ void CopasiUI3Window::slotImportSEDMLFromStringFinished(bool success)
 void CopasiUI3Window::slotImportSEDMLFinished(bool success)
 {
   mpUndoStack->clear();
+
+#ifdef COPASI_Versioning
+  mpVersionHierarchy->clear();
+#endif
 
   disconnect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(slotImportSEDMLFinished(bool)));
   unsetCursor();
@@ -3226,5 +3297,75 @@ void CopasiUI3Window::slotUndoHistory()
   CQUndoHistoryDialog* undoDialog = new CQUndoHistoryDialog(this, mpUndoStack); //, "Undo History Dialog", 76, 30);
   undoDialog->setWindowTitle("Undo History");
   undoDialog->exec();
+}
+#endif
+
+#ifdef COPASI_Versioning
+CModelVersion * CopasiUI3Window::getVersionHierarchy()
+{
+  return(mpVersionHierarchy);
+}
+void CopasiUI3Window::slotCreateVersion() //Slot Version Create
+{
+  // save a new version
+  if (CCopasiRootContainer::getDatamodelList()->operator[](0).getModel() != NULL)
+    {
+      CCreateModelVersionDialog* CreateVersionDialog = new CCreateModelVersionDialog(this);
+      CreateVersionDialog->setWindowTitle("Create Version Information");
+      CreateVersionDialog->exec();
+
+      if (CreateVersionDialog->isDataCaptured())
+        {
+          int i = mpVersionHierarchy->addNewVersion(CreateVersionDialog->getVersion(), CreateVersionDialog->getGivenName(),  CreateVersionDialog->getFamilyName(), CreateVersionDialog->getOrganization(), CreateVersionDialog->getEmail(), CreateVersionDialog->getComments());
+
+          if (i == 1)
+            {
+              CQMessageBox::critical(this, QString("Error"), "Version name must be unique",
+                                     QMessageBox::Ok, QMessageBox::Ok);
+            }
+          else if (i == 2)
+            {
+              CQMessageBox::critical(this, QString("Error"), "Version name is obligatory",
+                                     QMessageBox::Ok, QMessageBox::Ok);
+            }
+          // if create is successful add the current model to the combined archive
+          else
+            {
+              // Save a new version to Versioning folder
+              if (i == 3) // warning about updating Versioning XML file
+                {
+                  CQMessageBox::information(this, QString("Warning"), "Problem while updating version hierarchy XML file",
+                                            QMessageBox::Ok, QMessageBox::Ok);
+                }
+
+              QString dataFile;
+
+              if (mpVersionHierarchy->getPathFile() == "")
+                {
+                  dataFile = CreateVersionDialog->getVersion();
+                }
+              else
+                {
+                  dataFile = mpVersionHierarchy->getPathFile() + "/" + CreateVersionDialog->getVersion();
+                }
+
+              mpDataModelGUI->saveModel(dataFile.toStdString(), true);
+            }
+        }
+
+      CreateVersionDialog->~CCreateModelVersionDialog();
+    }
+  else
+    {
+      CQMessageBox::critical(this, QString("Error"), "No current model exists",
+                             QMessageBox::Ok, QMessageBox::Ok);
+    }
+}
+void CopasiUI3Window::slotBrowseVersion() // Slot Version Browse
+{
+  CBrowseModelVersionDialog* ModelVersionDialog = new  CBrowseModelVersionDialog(this, mpVersionHierarchy, mpDataModelGUI);
+  ModelVersionDialog->setWindowTitle("Model Versions");
+  ModelVersionDialog->exec();
+  ModelVersionDialog->~CBrowseModelVersionDialog();
 }
 #endif

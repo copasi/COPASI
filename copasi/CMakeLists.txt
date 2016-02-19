@@ -77,6 +77,7 @@ include(tssanalysis/CMakeLists.txt)
 include(utilities/CMakeLists.txt)
 include(xml/CMakeLists.txt)
 
+
 if(ENABLE_COPASI_SEDML)
 include(sedml/CMakeLists.txt)
 include_directories(${LIBSEDML_INCLUDE_DIR})
@@ -185,6 +186,9 @@ if(BUILD_GUI)
   include(wizard/CMakeLists.txt)
   include(UI/CMakeLists.txt)
   include(undoFramework/CMakeLists.txt)
+if(ENABLE_COPASI_Versioning)
+ include(versioning/CMakeLists.txt)
+endif()
   set(COPASI_UI_MOC_OPTIONS ${COPASI_UI_MOC_OPTIONS})
 
 set(COPASI_UI_MOC_OPTIONS)

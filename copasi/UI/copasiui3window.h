@@ -51,6 +51,9 @@ class QEvent;
 class QActionGroup;
 class QThread;
 class QUndoStack;
+#ifdef COPASI_Versioning
+class CModelVersion;
+#endif
 
 class CopasiUI3Window : public QMainWindow
 #ifdef COPASI_SBW_INTEGRATION
@@ -109,6 +112,10 @@ public:
 
   //UNDO framework
   QUndoStack *getUndoStack();
+
+#ifdef COPASI_Versioning
+  CModelVersion * getVersionHierarchy();
+#endif
 
   void addWindow(QMainWindow * pWindow);
   void removeWindow(QMainWindow * pWindow);
@@ -227,6 +234,12 @@ protected slots:
   void slotUndoHistory();
   void slotClearUndoHistory();
 #endif
+
+#ifdef COPASI_Versioning
+  void slotBrowseVersion();
+  void slotCreateVersion();
+#endif
+
   void slotLoadParameterEstimationProtocol();
 private:
   CopasiUI3Window();
@@ -334,6 +347,12 @@ private:
 #endif
 
   QUndoStack *mpUndoStack;
+
+#ifdef COPASI_Versioning
+  QAction* mpaCreateVersion;
+  QAction* mpaBrowseVersion;
+  CModelVersion*  mpVersionHierarchy;
+#endif
 
 #ifdef COPASI_SBW_INTEGRATION
 public:
