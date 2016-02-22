@@ -129,6 +129,7 @@ bool ReactionsWidget1::saveToReaction()
   if (pModel == NULL) return false;
 
   mIgnoreUpdates = true;
+  bool changed = false;
 
   if (reac->isFast() != mpFast->isChecked())
     {
@@ -139,6 +140,8 @@ bool ReactionsWidget1::saveToReaction()
                           this,
                           reac
                         ));
+
+      changed = true;
     }
 
   if (reac->isReversible() != mpRi->isReversible())
@@ -152,6 +155,8 @@ bool ReactionsWidget1::saveToReaction()
                           FROM_UTF8(reac->getFunction()->getObjectName()),
                           FROM_UTF8(mpRi->getFunctionName())
                         ));
+
+      changed = true;
     }
 
   std::string oldScheme = CChemEqInterface::getChemEqString(pModel, *reac, false);
@@ -168,6 +173,8 @@ bool ReactionsWidget1::saveToReaction()
                           FROM_UTF8(reac->getFunction()->getObjectName()),
                           FROM_UTF8(mpRi->getFunctionName())
                         ));
+
+      changed = true;
     }
 
   if (reac->getFunction()->getObjectName() != mpRi->getFunctionName())
@@ -179,9 +186,19 @@ bool ReactionsWidget1::saveToReaction()
                           this,
                           reac
                         ));
+
+      changed = true;
     }
 
   mIgnoreUpdates = false;
+
+  if (changed)
+    {
+      if (mpDataModel)
+        mpDataModel->changed();
+
+      protectedNotify(ListViews::REACTION, ListViews::CHANGE, mKey);   //Refresh all
+    }
 
   return true;
 }
