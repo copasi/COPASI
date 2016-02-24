@@ -388,24 +388,18 @@ const std::set< std::string > & CUnit::getUsedSymbols() const
   return mUsedSymbols;
 }
 
-// See if the component units cancel (divide to 1).
-// The CUnitComponent::Kind enumerator uses only prime numbers.
-// Multiplying all the components should give 1, if numerators and
-// denominators have the same combination of units.
 bool CUnit::isDimensionless() const
 {
-  std::set< CUnitComponent >::const_iterator it = mComponents.begin();
-
-  double reduction = 1;
-
-  for (; it != mComponents.end(); it++)
-    {
-      reduction *= pow((double)(*it).getKind(), (*it).getExponent());
-    }
-
-  // If the vector is empty, it will loop 0 times, and the reduction
-  // will remain ==1 (i.e. dimensionless if no components)
-  return reduction == 1;
+  // Components are a set of unique Kinds.
+  // consolodateDimensionless() should ensure any zero-exponent
+  // components are integrated into a single, dimensionless, one.
+  // So the following should work to retrieve if a unit is dimensionless,
+  // but not undefined (no components).
+  if (mComponents.size() == 1 &&
+      (*mComponents.begin()).getKind() == CBaseUnit::dimensionless)
+    return true;
+  else
+    return false;
 }
 
 void CUnit::addComponent(const CUnitComponent & component)
@@ -428,6 +422,8 @@ void CUnit::addComponent(const CUnitComponent & component)
     {
       mComponents.insert(component);
     }
+
+  consolodateDimensionless();
 }
 
 const std::set< CUnitComponent > & CUnit::getComponents() const
@@ -451,6 +447,8 @@ CUnit & CUnit::exponentiate(double exp)
           pComponent->setExponent(pComponent->getExponent() * exp);
         }
     }
+
+  consolodateDimensionless();
 
   return *this;
 }
@@ -498,6 +496,43 @@ bool CUnit::isEquivalent(const CUnit & rhs) const
     }
 
   return true;
+}
+
+void CUnit::consolodateDimensionless()
+{
+  // nothing to consolodate
+  if (mComponents.empty()) return;
+
+  std::set< CUnitComponent >::iterator it = mComponents.begin(),
+                                       itEnd; //initialized later
+
+  // logical default
+  CUnitComponent tmpDimensionlessComponent = CUnitComponent(CBaseUnit::dimensionless);
+
+  // If a dimensionless component already exists, it will be the first element
+  // (set is ordered by Kind) and we should copy that one to the temporary one.
+  if ((*it).getKind() == CBaseUnit::dimensionless)
+    {
+      tmpDimensionlessComponent = *it;
+      mComponents.erase(it); // can't modify in-place, so may as well erase now
+    }
+
+  it = mComponents.begin(); // in case the previous *it was erased
+  itEnd = mComponents.end();
+
+  for (it; it != itEnd;)
+    {
+      if ((*it).getExponent() == 0)
+        {
+          tmpDimensionlessComponent.setScale(tmpDimensionlessComponent.getScale() + (*it).getScale());
+          tmpDimensionlessComponent.setMultiplier(tmpDimensionlessComponent.getMultiplier() * (*it).getMultiplier());
+          mComponents.erase(it++); // Increment after erasing current one. This should be safe (C++ Standard 23.1.2.8)
+        }
+      else
+        ++it;
+    }
+
+  mComponents.insert(tmpDimensionlessComponent);
 }
 
 // friend

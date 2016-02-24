@@ -19,7 +19,6 @@ class CBaseUnit
 public:
   enum Kind
   {
-    // prime numbers to make reliable to quickly calculate if CUnit is dimensionless
     dimensionless = 0,
     meter,
     gram,
