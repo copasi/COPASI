@@ -68,10 +68,16 @@ public:
   CUnit();
 
   /**
-   * Default constructor
+   * Kind constructor
    * @param const CBaseUnit::Kind & kind
    */
   CUnit(const CBaseUnit::Kind & kind);
+
+  /**
+   * Expression constructor
+   * @param const CBaseUnit::Kind & kind
+   */
+  CUnit(std::string expression);
 
   /**
    * Copy constructor
