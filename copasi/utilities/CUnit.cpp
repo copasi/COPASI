@@ -65,6 +65,15 @@ CUnit::CUnit():
 {
 }
 
+// expression
+CUnit::CUnit(std::string expression):
+  mExpression(""),
+  mComponents(),
+  mUsedSymbols()
+{
+  setExpression(expression, Avogadro);
+}
+
 // kind
 CUnit::CUnit(const CBaseUnit::Kind & kind):
   mExpression(CBaseUnit::getSymbol(kind)),
