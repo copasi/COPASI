@@ -454,6 +454,32 @@ void CQModelValue::slotInitialTypeChanged(bool useInitialAssignment)
     }
 }
 
+void CQModelValue::slotUnitChanged()
+{
+  if (mpModelValue->getUnitExpression() == TO_UTF8(mpEditUnits->text())) return;
+
+  std::string OldUnit = mpModelValue->getUnitExpression();
+  mpModelValue->setUnitExpression(TO_UTF8(mpEditUnits->text()));
+
+  CUnit Unit;
+  Unit.setExpression(mpModelValue->getUnitExpression(), CUnit::Avogadro);
+
+  if (Unit.isUndefined())
+    {
+      mpLblInitialValue->setText("Initial Value");
+      mpLblValue->setText("Value");
+      mpLblRate->setText("Rate");
+    }
+  else
+    {
+      mpLblInitialValue->setText(FROM_UTF8("Initial Value (" + mpModelValue->getInitialValueReference()->getUnits().getExpression()) + ")");
+      mpLblValue->setText(FROM_UTF8("Value (" + mpModelValue->getValueReference()->getUnits().getExpression()) + ")");
+      mpLblRate->setText(FROM_UTF8("Rate (" + mpModelValue->getRateReference()->getUnits().getExpression()) + ")");
+    }
+
+  mpModelValue->setUnitExpression(OldUnit);
+}
+
 //Undo methods
 void CQModelValue::createNewGlobalQuantity()
 {

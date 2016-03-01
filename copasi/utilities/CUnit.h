@@ -103,6 +103,7 @@ public:
   const std::set< std::string > & getUsedSymbols() const;
 
   bool isDimensionless() const;
+  bool isUndefined() const;
   void addComponent(const CUnitComponent & component);
   const std::set< CUnitComponent > & getComponents() const;
 

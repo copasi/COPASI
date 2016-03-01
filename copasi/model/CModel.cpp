@@ -194,9 +194,16 @@ CModel::~CModel()
 // virtual
 CUnit CModel::getChildObjectUnits(const CCopasiObject * pObject) const
 {
-  if (pObject->getObjectName() == "Initial Time" ||
-      pObject->getObjectName() == "Time")
-    return getTimeUnit();
+  if (pObject == mpRateReference)
+    {
+      return CModelEntity::getChildObjectUnits(pObject);
+    }
+
+  if (pObject == mpIValueReference ||
+      pObject == mpValueReference)
+    {
+      return getTimeUnit();
+    }
 
   return CUnit();
 }
@@ -3810,8 +3817,8 @@ CEvaluationNode* CModel::prepareElasticity(const CReaction * pReaction, const CM
   return tmp;
 }
 
-// Return a set of any Copasi object using this symbol.
-CCopasiObject::DataObjectSet CModel::getUnitSymbolUsage(std::string symbol)
+// Return a set of any COPASI object using this symbol.
+CCopasiObject::DataObjectSet CModel::getUnitSymbolUsage(std::string symbol) const
 {
   DataObjectSet usages;
 
@@ -3858,6 +3865,28 @@ void CModel::changeUnitExpressionSymbols(std::string oldSymbol, std::string newS
   mpQuantityUnit->setExpression(CUnit::replaceSymbol(mpQuantityUnit->getExpression(), oldSymbol, newSymbol), getAvogadro());
 
   return;
+}
+
+std::map< std::string, CUnit > CModel::getUsedUnits() const
+{
+  std::map< std::string, CUnit > UsedUnits;
+
+  //Model Values
+  CCopasiVector< CModelValue >::const_iterator it = getModelValues().begin();
+  CCopasiVector< CModelValue >::const_iterator end = getModelValues().end();
+
+  for (; it != end; ++it)
+    {
+      UsedUnits[it->getUnitExpression()] = it->getUnits();
+    }
+
+  UsedUnits[mpVolumeUnit->getExpression()] = *mpVolumeUnit;
+  UsedUnits[mpAreaUnit->getExpression()] = *mpAreaUnit;
+  UsedUnits[mpLengthUnit->getExpression()] = *mpLengthUnit;
+  UsedUnits[mpTimeUnit->getExpression()] = *mpTimeUnit;
+  UsedUnits[mpQuantityUnit->getExpression()] = *mpQuantityUnit;
+
+  return UsedUnits;
 }
 
 #ifdef WITH_ANALYTICS

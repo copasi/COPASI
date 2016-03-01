@@ -61,6 +61,12 @@ private:
   void save();
   std::string mKeyToCopy;
 
+  //additional functions for UNDO framework
+  void deleteGlobalQuantity();
+  void addGlobalQuantity(UndoGlobalQuantityData *pSData);
+  void createNewGlobalQuantity();
+  void deleteGlobalQuantity(UndoGlobalQuantityData *pSData);
+
 private slots:
   void slotBtnNew();
   void slotBtnCopy();
@@ -69,12 +75,7 @@ private slots:
   void slotExpressionValid(bool valid);
   void slotInitialExpressionValid(bool valid);
   void slotInitialTypeChanged(bool useInitialAssignment);
-
-  //additional functions for UNDO framework
-  void deleteGlobalQuantity();
-  void addGlobalQuantity(UndoGlobalQuantityData *pSData);
-  void createNewGlobalQuantity();
-  void deleteGlobalQuantity(UndoGlobalQuantityData *pSData);
+  void slotUnitChanged();
 
 public:
   bool changeValue(const std::string& key,

@@ -411,6 +411,11 @@ bool CUnit::isDimensionless() const
     return false;
 }
 
+bool CUnit::isUndefined() const
+{
+  return mComponents.empty();
+}
+
 void CUnit::addComponent(const CUnitComponent & component)
 {
   std::set< CUnitComponent >::iterator it = mComponents.find(component);

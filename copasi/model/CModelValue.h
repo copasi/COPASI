@@ -288,6 +288,12 @@ public:
   virtual const std::string &getUnitExpression() const;
 
   /**
+   * Retrieve the units of the child object.
+   * @return const & CUnit units
+   */
+  virtual CUnit getChildObjectUnits(const CCopasiObject * pObject) const;
+
+  /**
    * Set whether the model entity is used during simulation
    * @param const bool & used
    */
@@ -447,6 +453,12 @@ public:
    *  Destructor.
    */
   ~CModelValue();
+
+  /**
+   * Retrieve the units of the child object.
+   * @return const & CUnit units
+   */
+  virtual CUnit getChildObjectUnits(const CCopasiObject * pObject) const;
 
   /**
    * insert operator
