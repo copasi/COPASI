@@ -241,7 +241,7 @@ bool CCopasiContainer::remove(CCopasiObject * pObject)
 }
 
 // virtual
-CUnit CCopasiContainer::getUnits()
+const CUnit CCopasiContainer::getUnits() const
 {return CUnit();}
 
 // virtual

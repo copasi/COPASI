@@ -375,6 +375,26 @@ const std::string & CModelEntity::getUnitExpression() const
   return mUnitExpression;
 }
 
+// virtual
+CUnit CModelEntity::getChildObjectUnits(const CCopasiObject * pObject) const
+{
+  CUnit unit = CUnit(); //potentially manipulated, and returned at the end
+
+  if (pObject == mpRateReference)
+    {
+      CUnit ValueUnit = getChildObjectUnits(mpValueReference);
+      CUnit TimeUnit = (mpModel != NULL) ? mpModel->getTimeUnit() : CUnit();
+
+      if (!ValueUnit.isUndefined() &&
+          !TimeUnit.isUndefined())
+        {
+          unit = ValueUnit * TimeUnit.exponentiate(-1.0);
+        }
+    }
+
+  return unit;
+}
+
 /**
  * Return rate of production of this entity
  */
@@ -644,6 +664,25 @@ CModelValue::~CModelValue()
 
 void CModelValue::initObjects()
 {}
+
+// virtual
+CUnit CModelValue::getChildObjectUnits(const CCopasiObject * pObject) const
+{
+  if (pObject == mpRateReference)
+    {
+      return CModelEntity::getChildObjectUnits(pObject);
+    }
+
+  CUnit unit = CUnit(); //potentially manipulated, and returned at the end
+
+  if (pObject == mpValueReference ||
+      pObject == mpIValueReference)
+    {
+      unit.setExpression(mUnitExpression, (mpModel != NULL) ? mpModel->getAvogadro() : CUnit::Avogadro);
+    }
+
+  return unit;
+}
 
 std::ostream & operator<<(std::ostream &os, const CModelValue & d)
 {

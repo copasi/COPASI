@@ -1277,9 +1277,11 @@ public:
 
   CEvaluationNode* prepareElasticity(const CReaction * pReaction, const CModelEntity* pVar, bool simplify);
 
-  CCopasiObject::DataObjectSet getUnitSymbolUsage(std::string symbol);
+  CCopasiObject::DataObjectSet getUnitSymbolUsage(std::string symbol) const;
 
   void changeUnitExpressionSymbols(std::string oldSymbol, std::string newSymbol);
+
+  std::map< std::string, CUnit > getUsedUnits() const;
 };
 
 #endif // CModel

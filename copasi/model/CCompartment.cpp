@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -70,50 +70,35 @@ CCompartment::~CCompartment()
 // virtual
 CUnit CCompartment::getChildObjectUnits(const CCopasiObject * pObject) const
 {
+  if (pObject == mpRateReference)
+    {
+      return CModelEntity::getChildObjectUnits(pObject);
+    }
+
   CUnit unit = CUnit(); //potentially manipulated, and returned at the end
 
-  if (mpModel == NULL)
-    ; // leave unit = CUnit
-  else if (pObject == mpValueReference ||
+  if (pObject == mpValueReference ||
       pObject == mpIValueReference)
     {
       switch (mDimensionality)
         {
           case 1:
-            unit = mpModel->getLengthUnit();
+            unit = (mpModel != NULL) ? mpModel->getLengthUnit() : CUnit();
             break;
 
           case 2:
-            unit = mpModel->getAreaUnit();
+            unit = (mpModel != NULL) ? mpModel->getAreaUnit() : CUnit();
             break;
 
           case 3:
-            unit = mpModel->getVolumeUnit();
+            unit = (mpModel != NULL) ? mpModel->getVolumeUnit() : CUnit();
             break;
 
           default:
             break;
         }
     }
-  else if (pObject == mpRateReference)
-    {
-      std::string unitExpression = getChildObjectUnits(mpValueReference).getExpression();
-      std::string timeUnitExpression = mpModel->getTimeUnitsDisplayString();
 
-      if (unitExpression != "" || timeUnitExpression != "")
-        {
-          if (unitExpression == "")
-            {
-              unitExpression = "1";
-            }
-          if (timeUnitExpression != "")
-            {
-              timeUnitExpression = "/" + timeUnitExpression;
-            }
-
-          unit.setExpression(unitExpression + timeUnitExpression, mpModel->getAvogadro());
-        }
-    }
   return unit;
 }
 

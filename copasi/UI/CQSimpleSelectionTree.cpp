@@ -519,41 +519,10 @@ void CQSimpleSelectionTree::populateTree(const CModel * pModel,
   catch (...)
     {}
 
-#ifdef WITH_ANALYTICS  // Analytics
-  task = dynamic_cast<CCopasiTask *>((&pDataModel->getTaskList()->operator[]("Analytics"]);
-
-                                     try
-    {
-      if (task && task->updateMatrices())
-        {
-          //for analytics the results are in the task
-          const CCopasiContainer::objectMap * pObjects = & task->getObjects();
-          CCopasiContainer::objectMap::const_iterator its = pObjects->begin();
-          CArrayAnnotation *ann;
-
-          for (; its != pObjects->end(); ++its)
-            {
-              ann = dynamic_cast<CArrayAnnotation*>(its->second);
-
-              if (!ann) continue;
-
-              if (!ann->isEmpty() && filter(classes, ann))
-                {
-                  pItem = new QTreeWidgetItem(this->mpResultAnalyticsSubtree, QStringList(FROM_UTF8(ann->getObjectName())));
-                  treeItems[pItem] = ann;
-                }
-            }
-        }
-    }
-  catch (...)
-    {}
-
-#endif // WITH_ANALYTICS
-
   // Sensitivities
   task = dynamic_cast<CCopasiTask *>(&pDataModel->getTaskList()->operator[]("Sensitivities"));
 
-         try
+  try
     {
       if (task && task->updateMatrices())
         {
@@ -582,9 +551,9 @@ void CQSimpleSelectionTree::populateTree(const CModel * pModel,
     {}
 
   if (selectionMode() == QAbstractItemView::NoSelection)
-  {
-    // see if some objects are there, if yes set to single selection
-    QTreeWidgetItemIterator it(this);
+    {
+      // see if some objects are there, if yes set to single selection
+      QTreeWidgetItemIterator it(this);
 
       while (*it)
         {
