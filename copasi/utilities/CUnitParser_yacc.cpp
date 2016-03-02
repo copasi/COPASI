@@ -84,6 +84,8 @@
   if (yychar != YYERRCODE) correctErrorPosition(); \
   CCopasiMessage(CCopasiMessage::EXCEPTION, MCUnit + 1, mPosition)
 
+#include <cmath>
+
 #include "copasi.h"
 #include "CUnitParser.h"
 
@@ -94,7 +96,7 @@
 #undef yyparse
 #define yyparse CUnitParserBase::yyparse
 
-#line 95 "CUnitParser_yacc.cpp" /* yacc.c:339  */
+#line 97 "CUnitParser_yacc.cpp" /* yacc.c:339  */
 
 # ifndef YY_NULLPTR
 #  if defined __cplusplus && 201103L <= __cplusplus
@@ -134,13 +136,14 @@ enum yytokentype
   SI_UNIT = 260,
   USER_DEFINED_UNIT = 261,
   NUMBER = 262,
-  MULTIPLY = 263,
-  DIVIDE = 264,
-  START_PARENS = 265,
-  END_PARENS = 266,
-  EXPONENT = 267,
-  SUPERSCRIPT_2 = 268,
-  SUPERSCRIPT_3 = 269
+  POWER_OF_TEN = 263,
+  MULTIPLY = 264,
+  DIVIDE = 265,
+  START_PARENS = 266,
+  END_PARENS = 267,
+  EXPONENT = 268,
+  SUPERSCRIPT_2 = 269,
+  SUPERSCRIPT_3 = 270
 };
 #endif
 
@@ -157,7 +160,7 @@ extern YYSTYPE CUnitParserlval;
 
 /* Copy the second part of user declarations.  */
 
-#line 161 "CUnitParser_yacc.cpp" /* yacc.c:358  */
+#line 164 "CUnitParser_yacc.cpp" /* yacc.c:358  */
 
 #ifdef short
 # undef short
@@ -395,23 +398,23 @@ union yyalloc
 #endif /* !YYCOPY_NEEDED */
 
 /* YYFINAL -- State number of the termination state.  */
-#define YYFINAL  14
+#define YYFINAL  16
 /* YYLAST -- Last index in YYTABLE.  */
-#define YYLAST   46
+#define YYLAST   50
 
 /* YYNTOKENS -- Number of terminals.  */
-#define YYNTOKENS  15
+#define YYNTOKENS  16
 /* YYNNTS -- Number of nonterminals.  */
-#define YYNNTS  4
+#define YYNNTS  5
 /* YYNRULES -- Number of rules.  */
-#define YYNRULES  16
+#define YYNRULES  19
 /* YYNSTATES -- Number of states.  */
-#define YYNSTATES  27
+#define YYNSTATES  32
 
 /* YYTRANSLATE[YYX] -- Symbol number corresponding to YYX as returned
    by yylex, with out-of-bounds checking.  */
 #define YYUNDEFTOK  2
-#define YYMAXUTOK   269
+#define YYMAXUTOK   270
 
 #define YYTRANSLATE(YYX)                                                \
   ((unsigned int) (YYX) <= YYMAXUTOK ? yytranslate[YYX] : YYUNDEFTOK)
@@ -446,15 +449,16 @@ static const yytype_uint8 yytranslate[] =
   2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
   2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
   2,     2,     2,     2,     2,     2,     1,     2,     3,     4,
-  5,     6,     7,     8,     9,    10,    11,    12,    13,    14
+  5,     6,     7,     8,     9,    10,    11,    12,    13,    14,
+  15
 };
 
 #if YYDEBUG
 /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-  0,    57,    57,    62,    67,    77,    85,    93,   104,   115,
-  120,   126,   132,   138,   143,   150,   165
+  0,    61,    61,    66,    71,    79,    87,    95,   103,   111,
+  119,   124,   130,   136,   142,   147,   154,   169,   179,   188
 };
 #endif
 
@@ -464,9 +468,10 @@ static const yytype_uint8 yyrline[] =
 static const char *const yytname[] =
 {
   "$end", "error", "$undefined", "SCALE", "KIND", "SI_UNIT",
-  "USER_DEFINED_UNIT", "NUMBER", "MULTIPLY", "DIVIDE", "START_PARENS",
-  "END_PARENS", "EXPONENT", "SUPERSCRIPT_2", "SUPERSCRIPT_3", "$accept",
-  "compound_unit", "unit", "scaled_unit", YY_NULLPTR
+  "USER_DEFINED_UNIT", "NUMBER", "POWER_OF_TEN", "MULTIPLY", "DIVIDE",
+  "START_PARENS", "END_PARENS", "EXPONENT", "SUPERSCRIPT_2",
+  "SUPERSCRIPT_3", "$accept", "compound_unit", "unit", "scaled_unit",
+  "multiplier", YY_NULLPTR
 };
 #endif
 
@@ -476,14 +481,14 @@ static const char *const yytname[] =
 static const yytype_uint16 yytoknum[] =
 {
   0,   256,   257,   258,   259,   260,   261,   262,   263,   264,
-  265,   266,   267,   268,   269
+  265,   266,   267,   268,   269,   270
 };
 # endif
 
-#define YYPACT_NINF -6
+#define YYPACT_NINF -8
 
 #define yypact_value_is_default(Yystate) \
-  (!!((Yystate) == (-6)))
+  (!!((Yystate) == (-8)))
 
 #define YYTABLE_NINF -1
 
@@ -494,9 +499,10 @@ static const yytype_uint16 yytoknum[] =
    STATE-NUM.  */
 static const yytype_int8 yypact[] =
 {
-  12,    -2,    -6,    -6,    -6,    31,    12,     0,    -6,    -6,
-  -6,    12,    12,    23,    -6,    12,    20,    13,    -6,    -6,
-  29,    32,    -6,    29,    31,    32,    -6
+  14,    -2,    -8,    -8,    -8,    -5,    -7,    14,     0,    -8,
+  -8,    -1,    -8,    14,    16,    26,    -8,    14,    23,    17,
+  -8,    -8,    14,    35,    -8,    -8,    32,    -8,    -5,    35,
+  -8,    32
 };
 
 /* YYDEFACT[STATE-NUM] -- Default reduction number in state STATE-NUM.
@@ -504,21 +510,22 @@ static const yytype_int8 yypact[] =
    means the default is an error.  */
 static const yytype_uint8 yydefact[] =
 {
-  0,     0,    13,    14,    15,     0,     0,     0,     2,     3,
-  16,     0,     0,     0,     1,     0,     0,     0,    11,    12,
-  4,     7,     9,     5,     8,     6,    10
+  0,     0,    14,    15,    16,    18,     0,     0,     0,     2,
+  3,     0,    17,     0,     0,     0,     1,     0,     0,     0,
+  12,    13,     0,     7,    19,    10,     5,     6,     9,     8,
+  11,     4
 };
 
 /* YYPGOTO[NTERM-NUM].  */
 static const yytype_int8 yypgoto[] =
 {
-  -6,    -5,     4,    -6
+  -8,    -6,    31,    -8,    20
 };
 
 /* YYDEFGOTO[NTERM-NUM].  */
 static const yytype_int8 yydefgoto[] =
 {
-  -1,     7,     8,     9
+  -1,     8,     9,    10,    11
 };
 
 /* YYTABLE[YYPACT[STATE-NUM]] -- What to do in state STATE-NUM.  If
@@ -526,43 +533,46 @@ static const yytype_int8 yydefgoto[] =
    number is the opposite.  If YYTABLE_NINF, syntax error.  */
 static const yytype_uint8 yytable[] =
 {
-  14,    13,     2,     3,     4,    10,    20,    21,    15,    16,
-  23,    25,    17,    18,    19,     1,     2,     3,     4,     5,
-  26,     0,     6,     1,     2,     3,     4,    24,     0,     0,
-  6,    15,    16,     0,    22,    17,    18,    19,    16,    11,
-  12,    17,    18,    19,    17,    18,    19
+  16,    15,     2,     3,     4,    13,    14,    23,    22,    17,
+  18,    26,    29,    19,    20,    21,    31,     1,     2,     3,
+  4,     5,     6,    24,    30,     7,     1,     2,     3,     4,
+  28,     6,    12,     0,     7,    17,    18,    27,    25,    19,
+  20,    21,    18,     0,     0,    19,    20,    21,    19,    20,
+  21
 };
 
 static const yytype_int8 yycheck[] =
 {
-  0,     6,     4,     5,     6,     1,    11,    12,     8,     9,
-  15,    16,    12,    13,    14,     3,     4,     5,     6,     7,
-  7,    -1,    10,     3,     4,     5,     6,     7,    -1,    -1,
-  10,     8,     9,    -1,    11,    12,    13,    14,     9,     8,
-  9,    12,    13,    14,    12,    13,    14
+  0,     7,     4,     5,     6,    10,    13,    13,     9,     9,
+  10,    17,    18,    13,    14,    15,    22,     3,     4,     5,
+  6,     7,     8,     7,     7,    11,     3,     4,     5,     6,
+  7,     8,     1,    -1,    11,     9,    10,    17,    12,    13,
+  14,    15,    10,    -1,    -1,    13,    14,    15,    13,    14,
+  15
 };
 
 /* YYSTOS[STATE-NUM] -- The (internal number of the) accessing
    symbol of state STATE-NUM.  */
 static const yytype_uint8 yystos[] =
 {
-  0,     3,     4,     5,     6,     7,    10,    16,    17,    18,
-  17,     8,     9,    16,     0,     8,     9,    12,    13,    14,
-  16,    16,    11,    16,     7,    16,     7
+  0,     3,     4,     5,     6,     7,     8,    11,    17,    18,
+  19,    20,    18,    10,    13,    17,     0,     9,    10,    13,
+  14,    15,     9,    17,     7,    12,    17,    20,     7,    17,
+  7,    17
 };
 
 /* YYR1[YYN] -- Symbol number of symbol that rule YYN derives.  */
 static const yytype_uint8 yyr1[] =
 {
-  0,    15,    16,    16,    16,    16,    16,    16,    16,    16,
-  16,    16,    16,    17,    17,    17,    18
+  0,    16,    17,    17,    17,    17,    17,    17,    17,    17,
+  17,    17,    17,    17,    18,    18,    18,    19,    20,    20
 };
 
 /* YYR2[YYN] -- Number of symbols on the right hand side of rule YYN.  */
 static const yytype_uint8 yyr2[] =
 {
   0,     2,     1,     1,     3,     3,     3,     3,     3,     3,
-  3,     2,     2,     1,     1,     1,     2
+  3,     3,     2,     2,     1,     1,     1,     2,     1,     3
 };
 
 #define yyerrok         (yyerrstatus = 0)
@@ -1260,42 +1270,27 @@ yyreduce:
   switch (yyn)
     {
       case 2:
-#line 58 "CUnitParser.ypp" /* yacc.c:1646  */
+#line 62 "CUnitParser.ypp" /* yacc.c:1646  */
         {
           (yyval).pUnit = (yyvsp[0]).pUnit;
           mpUnit = (yyval).pUnit;
         }
 
-#line 1250 "CUnitParser_yacc.cpp" /* yacc.c:1646  */
+#line 1260 "CUnitParser_yacc.cpp" /* yacc.c:1646  */
         break;
 
       case 3:
-#line 63 "CUnitParser.ypp" /* yacc.c:1646  */
+#line 67 "CUnitParser.ypp" /* yacc.c:1646  */
         {
           (yyval).pUnit = (yyvsp[0]).pUnit;
           mpUnit = (yyval).pUnit;
         }
 
-#line 1259 "CUnitParser_yacc.cpp" /* yacc.c:1646  */
+#line 1269 "CUnitParser_yacc.cpp" /* yacc.c:1646  */
         break;
 
       case 4:
-#line 68 "CUnitParser.ypp" /* yacc.c:1646  */
-        {
-          CUnitComponent component;
-          component.setKind(CBaseUnit::dimensionless);
-          component.setMultiplier(strToDouble((yyvsp[-2]).text.c_str(), NULL));
-
-          (yyval).pUnit = (yyvsp[0]).pUnit;
-          (yyval).pUnit->addComponent(component);
-          mpUnit = (yyval).pUnit;
-        }
-
-#line 1273 "CUnitParser_yacc.cpp" /* yacc.c:1646  */
-        break;
-
-      case 5:
-#line 78 "CUnitParser.ypp" /* yacc.c:1646  */
+#line 72 "CUnitParser.ypp" /* yacc.c:1646  */
         {
           (yyval).pUnit = new CUnit();
           *(yyval).pUnit = *(yyvsp[-2]).pUnit **(yyvsp[0]).pUnit;
@@ -1304,11 +1299,37 @@ yyreduce:
           mpUnit = (yyval).pUnit;
         }
 
-#line 1285 "CUnitParser_yacc.cpp" /* yacc.c:1646  */
+#line 1281 "CUnitParser_yacc.cpp" /* yacc.c:1646  */
+        break;
+
+      case 5:
+#line 80 "CUnitParser.ypp" /* yacc.c:1646  */
+        {
+          (yyval).pUnit = new CUnit();
+          *(yyval).pUnit = *(yyvsp[-2]).pUnit **(yyvsp[0]).pUnit;
+          pdelete((yyvsp[-2]).pUnit);
+          pdelete((yyvsp[0]).pUnit);
+          mpUnit = (yyval).pUnit;
+        }
+
+#line 1293 "CUnitParser_yacc.cpp" /* yacc.c:1646  */
         break;
 
       case 6:
-#line 86 "CUnitParser.ypp" /* yacc.c:1646  */
+#line 88 "CUnitParser.ypp" /* yacc.c:1646  */
+        {
+          (yyval).pUnit = new CUnit();
+          *(yyval).pUnit = *(yyvsp[-2]).pUnit **(yyvsp[0]).pUnit;
+          pdelete((yyvsp[-2]).pUnit);
+          pdelete((yyvsp[0]).pUnit);
+          mpUnit = (yyval).pUnit;
+        }
+
+#line 1305 "CUnitParser_yacc.cpp" /* yacc.c:1646  */
+        break;
+
+      case 7:
+#line 96 "CUnitParser.ypp" /* yacc.c:1646  */
         {
           (yyval).pUnit = new CUnit();
           *(yyval).pUnit = *(yyvsp[-2]).pUnit * (yyvsp[0]).pUnit->exponentiate(-1);
@@ -1317,96 +1338,90 @@ yyreduce:
           mpUnit = (yyval).pUnit;
         }
 
-#line 1297 "CUnitParser_yacc.cpp" /* yacc.c:1646  */
-        break;
-
-      case 7:
-#line 94 "CUnitParser.ypp" /* yacc.c:1646  */
-        {
-          CUnitComponent component;
-          component.setKind(CBaseUnit::dimensionless);
-          component.setMultiplier(strToDouble((yyvsp[-2]).text.c_str(), NULL));
-
-          (yyval).pUnit = (yyvsp[0]).pUnit;
-          (yyval).pUnit->exponentiate(-1);
-          (yyval).pUnit->addComponent(component);
-          mpUnit = (yyval).pUnit;
-        }
-
-#line 1312 "CUnitParser_yacc.cpp" /* yacc.c:1646  */
+#line 1317 "CUnitParser_yacc.cpp" /* yacc.c:1646  */
         break;
 
       case 8:
-#line 105 "CUnitParser.ypp" /* yacc.c:1646  */
+#line 104 "CUnitParser.ypp" /* yacc.c:1646  */
         {
-          CUnitComponent component;
-          component.setKind(CBaseUnit::dimensionless);
-          component.setMultiplier(1.0 / strToDouble((yyvsp[-2]).text.c_str(), NULL));
-          component.setExponent(-1.0);
-
-          (yyval).pUnit = (yyvsp[-2]).pUnit;
-          (yyval).pUnit->addComponent(component);
+          (yyval).pUnit = new CUnit();
+          *(yyval).pUnit = *(yyvsp[-2]).pUnit * (yyvsp[0]).pUnit->exponentiate(-1);
+          pdelete((yyvsp[-2]).pUnit);
+          pdelete((yyvsp[0]).pUnit);
           mpUnit = (yyval).pUnit;
         }
 
-#line 1327 "CUnitParser_yacc.cpp" /* yacc.c:1646  */
+#line 1329 "CUnitParser_yacc.cpp" /* yacc.c:1646  */
         break;
 
       case 9:
-#line 116 "CUnitParser.ypp" /* yacc.c:1646  */
+#line 112 "CUnitParser.ypp" /* yacc.c:1646  */
+        {
+          (yyval).pUnit = new CUnit();
+          *(yyval).pUnit = *(yyvsp[-2]).pUnit * (yyvsp[0]).pUnit->exponentiate(-1);
+          pdelete((yyvsp[-2]).pUnit);
+          pdelete((yyvsp[0]).pUnit);
+          mpUnit = (yyval).pUnit;
+        }
+
+#line 1341 "CUnitParser_yacc.cpp" /* yacc.c:1646  */
+        break;
+
+      case 10:
+#line 120 "CUnitParser.ypp" /* yacc.c:1646  */
         {
           (yyval) = (yyvsp[-1]);
           mpUnit = (yyval).pUnit;
         }
 
-#line 1336 "CUnitParser_yacc.cpp" /* yacc.c:1646  */
+#line 1350 "CUnitParser_yacc.cpp" /* yacc.c:1646  */
         break;
 
-      case 10:
-#line 121 "CUnitParser.ypp" /* yacc.c:1646  */
+      case 11:
+#line 125 "CUnitParser.ypp" /* yacc.c:1646  */
         {
           (yyvsp[-2]).pUnit->exponentiate(strToDouble((yyvsp[0]).text.c_str(), NULL));
           (yyval).pUnit = (yyvsp[-2]).pUnit;
           mpUnit = (yyval).pUnit;
         }
 
-#line 1346 "CUnitParser_yacc.cpp" /* yacc.c:1646  */
+#line 1360 "CUnitParser_yacc.cpp" /* yacc.c:1646  */
         break;
 
-      case 11:
-#line 127 "CUnitParser.ypp" /* yacc.c:1646  */
+      case 12:
+#line 131 "CUnitParser.ypp" /* yacc.c:1646  */
         {
           (yyvsp[-1]).pUnit->exponentiate(2.0);
           (yyval).pUnit = (yyvsp[-1]).pUnit;
           mpUnit = (yyval).pUnit;
         }
 
-#line 1356 "CUnitParser_yacc.cpp" /* yacc.c:1646  */
+#line 1370 "CUnitParser_yacc.cpp" /* yacc.c:1646  */
         break;
 
-      case 12:
-#line 133 "CUnitParser.ypp" /* yacc.c:1646  */
+      case 13:
+#line 137 "CUnitParser.ypp" /* yacc.c:1646  */
         {
           (yyvsp[-1]).pUnit->exponentiate(3.0);
           (yyval).pUnit = (yyvsp[-1]).pUnit;
           mpUnit = (yyval).pUnit;
         }
 
-#line 1366 "CUnitParser_yacc.cpp" /* yacc.c:1646  */
+#line 1380 "CUnitParser_yacc.cpp" /* yacc.c:1646  */
         break;
 
-      case 13:
-#line 139 "CUnitParser.ypp" /* yacc.c:1646  */
+      case 14:
+#line 143 "CUnitParser.ypp" /* yacc.c:1646  */
         {
           (yyval).pUnit = new CUnit(CBaseUnit::fromSymbol((yyvsp[0]).text));
           mSymbols.insert((yyvsp[0]).text);
         }
 
-#line 1375 "CUnitParser_yacc.cpp" /* yacc.c:1646  */
+#line 1389 "CUnitParser_yacc.cpp" /* yacc.c:1646  */
         break;
 
-      case 14:
-#line 144 "CUnitParser.ypp" /* yacc.c:1646  */
+      case 15:
+#line 148 "CUnitParser.ypp" /* yacc.c:1646  */
         {
           (yyval).pUnit = new CUnit(CUnitDefinition::getSIUnit((yyvsp[0]).text, mAvogadro), mAvogadro);
 
@@ -1414,11 +1429,11 @@ yyreduce:
           mSymbols.insert((yyval).pUnit->getUsedSymbols().begin(), (yyval).pUnit->getUsedSymbols().end());
         }
 
-#line 1386 "CUnitParser_yacc.cpp" /* yacc.c:1646  */
+#line 1400 "CUnitParser_yacc.cpp" /* yacc.c:1646  */
         break;
 
-      case 15:
-#line 151 "CUnitParser.ypp" /* yacc.c:1646  */
+      case 16:
+#line 155 "CUnitParser.ypp" /* yacc.c:1646  */
         {
           const CUnitDefinition * pUnitDefinition = CCopasiRootContainer::getUnitDefFromSymbol((yyvsp[0]).text);
 
@@ -1434,11 +1449,11 @@ yyreduce:
             }
         }
 
-#line 1405 "CUnitParser_yacc.cpp" /* yacc.c:1646  */
+#line 1419 "CUnitParser_yacc.cpp" /* yacc.c:1646  */
         break;
 
-      case 16:
-#line 166 "CUnitParser.ypp" /* yacc.c:1646  */
+      case 17:
+#line 170 "CUnitParser.ypp" /* yacc.c:1646  */
         {
           CUnitComponent component;
           component.setKind(CBaseUnit::dimensionless);
@@ -1448,10 +1463,38 @@ yyreduce:
           (yyval).pUnit->addComponent(component);
         }
 
-#line 1418 "CUnitParser_yacc.cpp" /* yacc.c:1646  */
+#line 1432 "CUnitParser_yacc.cpp" /* yacc.c:1646  */
         break;
 
-#line 1422 "CUnitParser_yacc.cpp" /* yacc.c:1646  */
+      case 18:
+#line 180 "CUnitParser.ypp" /* yacc.c:1646  */
+        {
+          CUnitComponent component;
+          component.setKind(CBaseUnit::dimensionless);
+          component.setMultiplier(strToDouble((yyvsp[0]).text.c_str(), NULL));
+
+          (yyval).pUnit = new CUnit();
+          (yyval).pUnit->addComponent(component);
+        }
+
+#line 1445 "CUnitParser_yacc.cpp" /* yacc.c:1646  */
+        break;
+
+      case 19:
+#line 189 "CUnitParser.ypp" /* yacc.c:1646  */
+        {
+          CUnitComponent component;
+          component.setKind(CBaseUnit::dimensionless);
+          component.setMultiplier(pow(10.0, strToDouble((yyvsp[0]).text.c_str(), NULL)));
+
+          (yyval).pUnit = new CUnit();
+          (yyval).pUnit->addComponent(component);
+        }
+
+#line 1458 "CUnitParser_yacc.cpp" /* yacc.c:1646  */
+        break;
+
+#line 1462 "CUnitParser_yacc.cpp" /* yacc.c:1646  */
 
       default: break;
     }
@@ -1690,4 +1733,4 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 175 "CUnitParser.ypp" /* yacc.c:1906  */
+#line 198 "CUnitParser.ypp" /* yacc.c:1906  */

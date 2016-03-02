@@ -66,6 +66,12 @@ DIGIT    [0-9]
   return CUnitParserlval.token;
 %}
 
+"-"?10/^  %{
+  CUnitParserlval.token = POWER_OF_TEN;
+  COMMON_ACTION;
+  return CUnitParserlval.token;
+%}
+
 "*"   %{
   CUnitParserlval.token = MULTIPLY;
   COMMON_ACTION;
