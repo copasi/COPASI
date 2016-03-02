@@ -5,6 +5,8 @@
 %option never-interactive
 %option c++
 
+%s sNUMBER sANY
+
 %{
 #include <vector>
 
@@ -42,85 +44,87 @@ ID       (\"([^\\\"]|\\.)*\"|[a-z_A-Z][a-z_A-Z0-9]*)
 DIGIT    [0-9]
 
 %%
-{KIND}   %{
+<INITIAL,sANY>{KIND}   %{
   CUnitParserlval.token = KIND;
   COMMON_ACTION;
   return CUnitParserlval.token;
 %}
 
-{SI_UNIT} %{
+<INITIAL,sANY>{SI_UNIT} %{
   CUnitParserlval.token = SI_UNIT;
   COMMON_ACTION;
   return CUnitParserlval.token;
 %}
 
-{SCALE}/{KIND}|{SI_UNIT}|{ID}   %{
+<INITIAL,sANY>{SCALE}/{KIND}|{SI_UNIT}|{ID}   %{
   CUnitParserlval.token = SCALE;
   COMMON_ACTION;
   return CUnitParserlval.token;
 %}
 
-"-"?{DIGIT}+("."?{DIGIT}*(((e|E)"+"?|(e|E)"-"){DIGIT}+)?)?   %{
+<INITIAL,sANY,sNUMBER>"-"?{DIGIT}+("."?{DIGIT}*(((e|E)"+"?|(e|E)"-"){DIGIT}+)?)?   %{
+  BEGIN(sANY);
   CUnitParserlval.token = NUMBER;
   COMMON_ACTION;
   return CUnitParserlval.token;
 %}
 
-"-"?10/^  %{
+<INITIAL,sANY>"-"?10/^  %{
   CUnitParserlval.token = POWER_OF_TEN;
   COMMON_ACTION;
   return CUnitParserlval.token;
 %}
 
-"*"   %{
+<INITIAL,sANY>"*"   %{
   CUnitParserlval.token = MULTIPLY;
   COMMON_ACTION;
   return CUnitParserlval.token;
 %}
 
-"/"   %{
+<INITIAL,sANY>"/"   %{
   CUnitParserlval.token = DIVIDE;
   COMMON_ACTION;
   return CUnitParserlval.token;
 %}
 
-"("   %{
+<INITIAL,sANY>"("   %{
   CUnitParserlval.token = START_PARENS;
   COMMON_ACTION;
   return CUnitParserlval.token;
 %}
 
-")"   %{
+<INITIAL,sANY>")"   %{
   CUnitParserlval.token = END_PARENS;
   COMMON_ACTION;
   return CUnitParserlval.token;
 %}
 
-"^"   %{
+<INITIAL,sANY>"^"   %{
+  BEGIN(sNUMBER);
   CUnitParserlval.token = EXPONENT;
   COMMON_ACTION;
   return CUnitParserlval.token;
 %}
 
-"\xc2\xb2"   %{
+<INITIAL,sANY>"\xc2\xb2"   %{
   CUnitParserlval.token = SUPERSCRIPT_2;
   COMMON_ACTION;
   return CUnitParserlval.token;
 %}
 
-"\xc2\xb3"   %{
+<INITIAL,sANY>"\xc2\xb3"   %{
   CUnitParserlval.token = SUPERSCRIPT_3;
   COMMON_ACTION;
   return CUnitParserlval.token;
 %}
 
-{ID}  %{
+<INITIAL,sANY>{ID}  %{
   CUnitParserlval.token = USER_DEFINED_UNIT;
   COMMON_ACTION;
   return CUnitParserlval.token;
 %}
   
-[ \t\r\n]+ %{
+<INITIAL,sANY,sNUMBER>[ \t\r\n]+ %{
   COMMON_ACTION;
 %} 
 

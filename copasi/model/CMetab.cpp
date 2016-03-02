@@ -158,6 +158,7 @@ CUnit CMetab::getChildObjectUnits(const CCopasiObject * pObject) const
         }
     }
 
+  unit.buildExpression();
   return unit;
 }
 

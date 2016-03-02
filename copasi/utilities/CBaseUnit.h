@@ -19,9 +19,9 @@ class CBaseUnit
 public:
   enum Kind
   {
-    dimensionless = 0,
-    meter,
+    dimensionless = 0, // must be the lowest value
     gram,
+    meter,
     second,
     ampere,
     kelvin,
@@ -57,6 +57,7 @@ public:
   };
 
   static Scale scaleFromPrefix(const std::string & prefix);
+  static std::string prefixFromScale(int scale);
 };
 
 #endif // CBASEUNIT_H

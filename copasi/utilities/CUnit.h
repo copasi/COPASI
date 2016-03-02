@@ -113,6 +113,7 @@ public:
   CUnit operator*(const CUnit & rhs) const;
   bool operator==(const CUnit & rhs) const;
   bool isEquivalent(const CUnit & rhs) const;
+  void buildExpression();
 
 private:
   std::string mExpression;

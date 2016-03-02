@@ -392,6 +392,8 @@ CUnit CModelEntity::getChildObjectUnits(const CCopasiObject * pObject) const
         }
     }
 
+  unit.buildExpression();
+
   return unit;
 }
 
@@ -680,6 +682,8 @@ CUnit CModelValue::getChildObjectUnits(const CCopasiObject * pObject) const
     {
       unit.setExpression(mUnitExpression, (mpModel != NULL) ? mpModel->getAvogadro() : CUnit::Avogadro);
     }
+
+  unit.buildExpression();
 
   return unit;
 }

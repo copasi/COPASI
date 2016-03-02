@@ -3,11 +3,11 @@
 // of Manchester.
 // All rights reserved.
 
-/* A Bison parser, made by GNU Bison 3.0.2.  */
+/* A Bison parser, made by GNU Bison 2.7.12-4996.  */
 
 /* Bison interface for Yacc-like parsers in C
 
-   Copyright (C) 1984, 1989-1990, 2000-2013 Free Software Foundation, Inc.
+      Copyright (C) 1984, 1989-1990, 2000-2013 Free Software Foundation, Inc.
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -37,7 +37,7 @@
 
 #ifndef YY_CUNITPARSER_CUNITPARSER_TAB_HPP_INCLUDED
 # define YY_CUNITPARSER_CUNITPARSER_TAB_HPP_INCLUDED
-/* Debug traces.  */
+/* Enabling traces.  */
 #ifndef YYDEBUG
 # define YYDEBUG 1
 #endif
@@ -45,9 +45,11 @@
 extern int CUnitParserdebug;
 #endif
 
-/* Token type.  */
+/* Tokens.  */
 #ifndef YYTOKENTYPE
 # define YYTOKENTYPE
+/* Put the tokens into the symbol table, so that GDB and other debuggers
+   know about them.  */
 enum yytokentype
 {
   SCALE = 258,
@@ -66,15 +68,27 @@ enum yytokentype
 };
 #endif
 
-/* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 typedef int YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
+# define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1
 #endif
 
 extern YYSTYPE CUnitParserlval;
 
+#ifdef YYPARSE_PARAM
+#if defined __STDC__ || defined __cplusplus
+int CUnitParserparse(void *YYPARSE_PARAM);
+#else
+int CUnitParserparse();
+#endif
+#else /* ! YYPARSE_PARAM */
+#if defined __STDC__ || defined __cplusplus
 int CUnitParserparse(void);
+#else
+int CUnitParserparse();
+#endif
+#endif /* ! YYPARSE_PARAM */
 
 #endif /* !YY_CUNITPARSER_CUNITPARSER_TAB_HPP_INCLUDED  */

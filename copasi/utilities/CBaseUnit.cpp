@@ -111,3 +111,55 @@ CBaseUnit::Scale CBaseUnit::scaleFromPrefix(const std::string & prefix)
 
   return zero;
 }
+
+// static
+std::string CBaseUnit::prefixFromScale(int scale)
+{
+  switch (scale)
+    {
+      case atto:
+        return "a";
+
+      case femto:
+        return "f";
+
+      case pico:
+        return "p";
+
+      case micro:
+        return "u";
+
+      case milli:
+        return "m";
+
+      case centi:
+        return "c";
+
+      case deci:
+        return "d";
+
+      case zero:
+        return "";
+
+      case hecto:
+        return "h";
+
+      case kilo:
+        return "k";
+
+      case mega:
+        return "M";
+
+      case giga:
+        return "G";
+
+      case tera:
+        return "T";
+
+      case peta:
+        return "P";
+
+      default:
+        return "unknown";
+    }
+}

@@ -99,6 +99,8 @@ CUnit CCompartment::getChildObjectUnits(const CCopasiObject * pObject) const
         }
     }
 
+  unit.buildExpression();
+
   return unit;
 }
 
