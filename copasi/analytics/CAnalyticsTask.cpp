@@ -37,8 +37,6 @@ CAnalyticsTask::CAnalyticsTask(const CCopasiContainer * pParent,
   mIndex(-1),
   mStatVal(),
   mStatTime(),
-  //mpStatValAnn(NULL),
-  //mpStatTimeAnn(NULL),
   mpSelectedObject(NULL),
   mStartTime(0.0),
   mNumCrossings(0),
@@ -75,8 +73,6 @@ CAnalyticsTask::CAnalyticsTask(const CAnalyticsTask & src,
   mIndex(-1),
   mStatVal(),
   mStatTime(),
-  //mpStatValAnn(NULL),
-  //mpStatTimeAnn(NULL),
   mpSelectedObject(NULL),
   mStartTime(0.0),
   mNumCrossings(0),
@@ -126,24 +122,6 @@ void CAnalyticsTask::initObjects()
   addObjectReference("Last Frequency", mLastFreq, CCopasiObject::ValueDbl);
   addObjectReference("Frequency", mFreq, CCopasiObject::ValueDbl);
   addObjectReference("Average Frequency", mAverageFreq, CCopasiObject::ValueDbl);
-
-  //--- ETTORE --- Start ---
-  //mStatVal.resize(1, 1);
-  //mStatTime.resize(1, 1);
-  //mpStatValAnn = new CArrayAnnotation("Min/Max", this,
-  //                                    new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mStatVal), false);
-  //mpStatValAnn->setMode(CArrayAnnotation::OBJECTS);
-  //mpStatValAnn->setDescription("Statistics");
-  //mpStatValAnn->setDimensionDescription(0, "che ne so (0)");
-  //mpStatValAnn->setDimensionDescription(1, "che ne so (1)");
-
-  //mpStatTimeAnn = new CArrayAnnotation("Time", this,
-  //                                     new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mStatTime), false);
-  //mpStatTimeAnn->setMode(CArrayAnnotation::OBJECTS);
-  //mpStatTimeAnn->setDescription("Statistics");
-  //mpStatTimeAnn->setDimensionDescription(0, "che ne so (0)");
-  //mpStatTimeAnn->setDimensionDescription(1, "che ne so (1)");
-  //--- ETTORE --- End -----
 }
 
 #define RING_SIZE 16
@@ -381,30 +359,33 @@ void CAnalyticsTask::computeSelectedStatistics(std::vector< C_FLOAT64 > mValues,
         }
     }
 
-  const CModel& rModel = mpContainer->getModel(); // get (constant) reference of CModel
-  const CModel *pModel = &rModel; // from (constant) reference to (constant) pointer
-  CModel* mpModel = const_cast<CModel *>(pModel);// from constant to non-constant poineter
+  //const CModel& rModel = mpContainer->getModel(); // get (constant) reference of CModel
+  //const CModel *pModel = &rModel; // from (constant) reference to (constant) pointer
+  //CModel* mpModel = const_cast<CModel *>(pModel); // from constant to non-constant pointer
 
   // At this stage we want only one statistics on the dynamics,
   // so we first empty the vector containing previous statistics.
   // Later we may consider to keep previous statistics and the
   // following line will be commented out.
-  mpModel->removeModelStats();
+  //mpModel->removeModelStats();
 
   // Create the new statistics object to be added to the model.
   std::string nameStats = "";
+  std::string nameStatsTime = "";
 
   if (mpAnalyticsProblem->isPositiveDirection())
     nameStats = "min(" + mpSelectedObject->getObjectDisplayName() + ")";
   else
     nameStats = "max(" + mpSelectedObject->getObjectDisplayName() + ")";
 
-  const CCopasiContainer * pParent = 0;
+  nameStatsTime = "Time of " + nameStats;
+
+  const CCopasiContainer * pParent = this;
   const std::string & type = "Statistics";
   const unsigned C_INT32 & flag = CCopasiObject::ValueDbl;
-  mpModel->createModelStats(nameStats, pParent, type, flag, mStatVal);
 
-  mpModel->createModelStats("StatisticsTime", pParent, type, flag, mStatTime);
+  pStats = new CStatistics(nameStats, pParent, type, flag, mStatVal);
+  pStatsTime = new CStatistics(nameStatsTime, pParent, type, flag, mStatTime);
 }
 
 bool CAnalyticsTask::restore()

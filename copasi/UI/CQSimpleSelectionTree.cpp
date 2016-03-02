@@ -361,29 +361,6 @@ void CQSimpleSelectionTree::populateTree(const CModel * pModel,
       treeItems[pItem] = pObject;
     }
 
-#ifdef WITH_ANALYTICS
-  // find all statistics and create items in the analytics subtree
-  const CCopasiVector<CStatistics>& statistics = pModel->getModelStats();
-  maxCount = statistics.size();
-
-  for (counter = maxCount; counter != 0; --counter)
-    {
-      const CStatistics* pStats = &statistics[counter - 1];
-      std::string name = pStats->getObjectName();
-
-      pObject = pStats->getStatValueReference();
-
-      //if (filter(classes, pObject))
-      //{
-      pItem = new QTreeWidgetItem(mpResultAnalyticsSubtree, QStringList(FROM_UTF8(name)));
-      treeItems[pItem] = pObject;
-      //}
-
-      //removeEmptySubTree(&pItem);
-    }
-
-#endif // WITH_ANALYTICS
-
   // find all model matrices
   const CMatrix<C_FLOAT64> &StoiMatrix = pModel->getStoi();
 
@@ -512,6 +489,34 @@ void CQSimpleSelectionTree::populateTree(const CModel * pModel,
     }
   catch (...)
     {}
+
+#ifdef WITH_ANALYTICS
+  // ANALYTICS
+  task = dynamic_cast<CCopasiTask*>(&pDataModel->getTaskList()->operator[]("Analytics"));
+
+  try
+    {
+      const CCopasiContainer::objectMap * pObjects = & task->getObjects();
+      CCopasiContainer::objectMap::const_iterator its = pObjects->begin();
+      CArrayAnnotation *ann;
+
+      for (; its != pObjects->end(); ++its)
+        {
+          ann = dynamic_cast<CArrayAnnotation*>(its->second);
+
+          if (!ann) continue;
+
+          if (!ann->isEmpty() && filter(classes, ann))
+            {
+              pItem = new QTreeWidgetItem(this->mpResultAnalyticsSubtree, QStringList(FROM_UTF8(ann->getObjectName())));
+              treeItems[pItem] = ann;
+            }
+        }
+    }
+  catch (...)
+    {}
+
+#endif //WITH_ANALYTICS
 
   // Steady State
   task = dynamic_cast<CCopasiTask *>(&pDataModel->getTaskList()->operator[]("Steady-State"));

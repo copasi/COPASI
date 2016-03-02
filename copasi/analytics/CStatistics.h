@@ -9,8 +9,34 @@
 #include "copasi/model/CModelValue.h"
 #include "copasi/report/CCopasiObjectReference.h"
 #include "copasi/report/CCopasiObject.h"
+#include "copasi/report/CCopasiContainer.h"
 
-class CStatistics : public CModelEntity
+class CStatisticsReference : public CCopasiObjectReference< C_FLOAT64 >
+{
+private:
+  /**
+   * Hidden default constructor
+   */
+  CStatisticsReference();
+
+public:
+  /**
+   * Specific constructor
+   * @param const std::string & name
+   * @param const CCopasiContainer * pParent,
+   * @param C_FLOAT64 & reference,
+   */
+  CStatisticsReference(const std::string & name,
+                       const CCopasiContainer * pParent,
+                       C_FLOAT64 & reference);
+
+  /**
+   * Destructor
+   */
+  ~CStatisticsReference();
+};
+
+class CStatistics : public CCopasiContainer // CModelEntity //
 {
 
 // Operations
@@ -35,8 +61,6 @@ public:
   */
   ~CStatistics();
 
-  //virtual std::string getObjectDisplayName() const;
-
   /**
   * Retrieves the value of the statistics
   * @return const C_FLOAT64 & mStatValue
@@ -47,7 +71,7 @@ public:
   * Retrieve object referencing the concentration
   * @return CConcentrationReference * concentrationReference
   */
-  CCopasiObjectReference <C_FLOAT64> * getStatValueReference() const;
+  CStatisticsReference * getStatValueReference() const;
 
 // Attributes
 private:
@@ -56,12 +80,14 @@ private:
    *  Value of the statistics.
    */
   C_FLOAT64 mStatValue;
-  CCopasiObjectReference <C_FLOAT64> *mpStatValueReference;
+
+protected:
+  CStatisticsReference *mpStatValueReference;
 
   /**
   * Initialize the contained CCopasiObjects
   */
-  void initObjects();
+  void initObjects(const std::string & name, C_FLOAT64 & value);
 };
 
 #endif // CSTATISTICS_H

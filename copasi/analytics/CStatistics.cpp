@@ -6,7 +6,13 @@
 #include "CStatistics.h"
 #include "copasi/model/CModelValue.h"
 
-CStatistics::CStatistics()
+CStatisticsReference::CStatisticsReference(const std::string & name,
+    const CCopasiContainer *pParent,
+    C_FLOAT64 & reference):
+  CCopasiObjectReference< C_FLOAT64 >(name, pParent, reference)
+{}
+
+CStatisticsReference::~CStatisticsReference()
 {}
 
 CStatistics::CStatistics(const std::string & name,
@@ -14,10 +20,11 @@ CStatistics::CStatistics(const std::string & name,
                          const std::string & type,
                          const unsigned C_INT32 & flag,
                          C_FLOAT64 statValue):
-  CModelEntity(name, pParent, type, flag),
+  //CModelEntity(name, pParent, type, flag),
+  CCopasiContainer(name, pParent, type, flag | CCopasiObject::ValueDbl),
   mStatValue(statValue)
 {
-  initObjects();
+  initObjects(name, statValue);
 }
 
 CStatistics::~CStatistics()
@@ -25,14 +32,15 @@ CStatistics::~CStatistics()
   DESTRUCTOR_TRACE;
 }
 
-void CStatistics::initObjects()
+void CStatistics::initObjects(const std::string & name, C_FLOAT64 & value)
 {
-  mpStatValueReference =
-    static_cast<CCopasiObjectReference <C_FLOAT64> *>(addObjectReference("Statistics (Reference)", mStatValue, CCopasiObject::ValueDbl));
+
+  pdelete(mpStatValueReference);
+  mpStatValueReference = new CStatisticsReference(name + "Reference", this, value);
 }
 
 const C_FLOAT64 & CStatistics::getStatValue() const
 {return mStatValue;}
 
-CCopasiObjectReference <C_FLOAT64> * CStatistics::getStatValueReference() const
+CStatisticsReference *CStatistics::getStatValueReference() const
 {return mpStatValueReference;}
