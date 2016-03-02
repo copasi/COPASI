@@ -92,7 +92,7 @@ compound_unit: unit
              pdelete($3.pUnit);
              mpUnit = $$.pUnit;
            }
-         | NUMBER DIVIDE compound_unit
+         | multiplier DIVIDE compound_unit
            {
              $$.pUnit = new CUnit();
              *$$.pUnit = *$1.pUnit * $3.pUnit->exponentiate(-1);
@@ -108,7 +108,7 @@ compound_unit: unit
              pdelete($3.pUnit);
              mpUnit = $$.pUnit;
            }
-         | compound_unit DIVIDE NUMBER
+         | compound_unit DIVIDE multiplier
            {
              $$.pUnit = new CUnit();
              *$$.pUnit = *$1.pUnit * $3.pUnit->exponentiate(-1);

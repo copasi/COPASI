@@ -235,16 +235,18 @@ CQSpectogramWidget::buttonPressedX()
       mpEditX->setText(FROM_UTF8(mpObjectX->getObjectDisplayName()));
 
       if (mpObjectY)
-        if (mpObjectZ && (mpObjectZ != mpObjectY))
-          mpEditTitle->setText(FROM_UTF8(mpObjectY->getObjectDisplayName()
-                                         + "/"
-                                         + mpObjectZ->getObjectDisplayName()
-                                         + "|"
-                                         + mpObjectX->getObjectDisplayName()));
-        else
-          mpEditTitle->setText(FROM_UTF8(mpObjectY->getObjectDisplayName()
-                                         + "|"
-                                         + mpObjectX->getObjectDisplayName()));
+        {
+          if (mpObjectZ && (mpObjectZ != mpObjectY))
+            mpEditTitle->setText(FROM_UTF8(mpObjectY->getObjectDisplayName()
+                                           + "/"
+                                           + mpObjectZ->getObjectDisplayName()
+                                           + "|"
+                                           + mpObjectX->getObjectDisplayName()));
+          else
+            mpEditTitle->setText(FROM_UTF8(mpObjectY->getObjectDisplayName()
+                                           + "|"
+                                           + mpObjectX->getObjectDisplayName()));
+        }
 
       //TODO update tab title
     }
@@ -266,16 +268,18 @@ CQSpectogramWidget::buttonPressedY()
       mpEditY->setText(FROM_UTF8(mpObjectY->getObjectDisplayName()));
 
       if (mpObjectX)
-        if (mpObjectZ && (mpObjectZ != mpObjectY))
-          mpEditTitle->setText(FROM_UTF8(mpObjectY->getObjectDisplayName()
-                                         + "/"
-                                         + mpObjectZ->getObjectDisplayName()
-                                         + "|"
-                                         + mpObjectX->getObjectDisplayName()));
-        else
-          mpEditTitle->setText(FROM_UTF8(mpObjectY->getObjectDisplayName()
-                                         + "|"
-                                         + mpObjectX->getObjectDisplayName()));
+        {
+          if (mpObjectZ && (mpObjectZ != mpObjectY))
+            mpEditTitle->setText(FROM_UTF8(mpObjectY->getObjectDisplayName()
+                                           + "/"
+                                           + mpObjectZ->getObjectDisplayName()
+                                           + "|"
+                                           + mpObjectX->getObjectDisplayName()));
+          else
+            mpEditTitle->setText(FROM_UTF8(mpObjectY->getObjectDisplayName()
+                                           + "|"
+                                           + mpObjectX->getObjectDisplayName()));
+        }
 
       //TODO update tab title
     }
@@ -297,16 +301,18 @@ CQSpectogramWidget::buttonPressedZ()
       mpEditZ->setText(FROM_UTF8(mpObjectZ->getObjectDisplayName()));
 
       if (mpObjectX)
-        if (mpObjectY && (mpObjectY != mpObjectZ))
-          mpEditTitle->setText(FROM_UTF8(mpObjectY->getObjectDisplayName()
-                                         + "/"
-                                         + mpObjectZ->getObjectDisplayName()
-                                         + "|"
-                                         + mpObjectX->getObjectDisplayName()));
-        else
-          mpEditTitle->setText(FROM_UTF8(mpObjectZ->getObjectDisplayName()
-                                         + "|"
-                                         + mpObjectX->getObjectDisplayName()));
+        {
+          if (mpObjectY && (mpObjectY != mpObjectZ))
+            mpEditTitle->setText(FROM_UTF8(mpObjectY->getObjectDisplayName()
+                                           + "/"
+                                           + mpObjectZ->getObjectDisplayName()
+                                           + "|"
+                                           + mpObjectX->getObjectDisplayName()));
+          else
+            mpEditTitle->setText(FROM_UTF8(mpObjectZ->getObjectDisplayName()
+                                           + "|"
+                                           + mpObjectX->getObjectDisplayName()));
+        }
 
       //TODO update tab title
     }
