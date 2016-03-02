@@ -1510,6 +1510,9 @@ void CSBMLExporter::createParameter(const CModelValue& modelValue)
         }
     }
 
+  if (!modelValue.getUnitExpression().empty())
+    exportAndAssignUnit(CUnit(modelValue.getUnitExpression()), pParameter);
+
   if (pParameter != NULL)
     {
       CSBMLExporter::setSBMLNotes(pParameter, &modelValue);
@@ -3394,6 +3397,125 @@ void CSBMLExporter::createFunctionDefinition(CFunction& function, CCopasiDataMod
     }
 
   CSBMLExporter::updateMIRIAMAnnotation(&function, pFunDef, this->mMetaIdMap);
+}
+
+UnitDefinition *CSBMLExporter::createUnitDefinitionFor(const CUnit &unit)
+{
+  if (mpSBMLDocument == NULL || unit.isUndefined()) return NULL;
+
+  Model* pModel = mpSBMLDocument->getModel();
+
+  if (pModel == NULL) return NULL;
+
+  UnitDefinition* result = NULL;
+
+  // look whether we created the unit before
+  for (size_t i = 0; i < pModel->getNumUnitDefinitions(); ++i)
+    {
+      result = pModel->getUnitDefinition(i);
+
+      if (result->getName() == unit.getExpression())
+        return result;
+    }
+
+  // otherwise create a new one
+  result = pModel->createUnitDefinition();
+
+  result->setId(createUniqueId(mIdMap, "unit", true));
+  mIdMap.insert(std::make_pair(result->getId(), result));
+  result->setName(unit.getExpression());
+
+  std::set< CUnitComponent >::const_iterator it = unit.getComponents().begin();
+
+  for (; it != unit.getComponents().end(); ++it)
+    {
+      const CUnitComponent& component = *it;
+      Unit* pUnit = pModel->createUnit();
+
+      pUnit->setExponent(component.getExponent());
+      pUnit->setScale(component.getScale());
+      pUnit->setMultiplier(component.getMultiplier());
+
+      switch (component.getKind())
+        {
+          case CBaseUnit::dimensionless:
+            pUnit->setKind(UNIT_KIND_DIMENSIONLESS);
+            break;
+
+          case CBaseUnit::meter:
+            pUnit->setKind(UNIT_KIND_METRE);
+            break;
+
+          case CBaseUnit::gram:
+            pUnit->setKind(UNIT_KIND_GRAM);
+            break;
+
+          case CBaseUnit::second:
+            pUnit->setKind(UNIT_KIND_SECOND);
+            break;
+
+          case CBaseUnit::ampere:
+            pUnit->setKind(UNIT_KIND_AMPERE);
+            break;
+
+          case CBaseUnit::kelvin:
+            pUnit->setKind(UNIT_KIND_KELVIN);
+            break;
+
+          case CBaseUnit::item:
+            pUnit->setKind(UNIT_KIND_ITEM);
+            break;
+
+          case CBaseUnit::candela:
+            pUnit->setKind(UNIT_KIND_CANDELA);
+            break;
+
+          default:
+            fatalError();
+            break;
+        }
+
+    }
+
+  return result;
+}
+
+void CSBMLExporter::exportAndAssignUnit(const CUnit &unit, SBase *sbmlElement)
+{
+  if (sbmlElement == NULL || mpSBMLDocument == NULL || unit.isUndefined()) return;
+
+  Model* pModel = mpSBMLDocument->getModel();
+
+  if (pModel == NULL) return;
+
+  UnitDefinition* pUnit = createUnitDefinitionFor(unit);
+
+  if (pUnit == NULL) return;
+
+  Parameter* pParameter = dynamic_cast<Parameter*>(sbmlElement);
+
+  if (pParameter != NULL)
+    {
+      pParameter->setUnits(pUnit->getId());
+      return;
+    }
+
+  Species* pSpecies = dynamic_cast<Species*>(sbmlElement);
+
+  if (pSpecies != NULL)
+    {
+      pSpecies->setUnits(pUnit->getId());
+      return;
+    }
+
+  Compartment* pCompartment = dynamic_cast<Compartment*>(sbmlElement);
+
+  if (pCompartment != NULL)
+    {
+      pCompartment->setUnits(pUnit->getId());
+      return;
+    }
+
 }
 
 /*
