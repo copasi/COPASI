@@ -20,7 +20,6 @@ CStatistics::CStatistics(const std::string & name,
                          const std::string & type,
                          const unsigned C_INT32 & flag,
                          C_FLOAT64 statValue):
-  //CModelEntity(name, pParent, type, flag),
   CCopasiContainer(name, pParent, type, flag | CCopasiObject::ValueDbl),
   mStatValue(statValue)
 {

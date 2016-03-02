@@ -359,16 +359,6 @@ void CAnalyticsTask::computeSelectedStatistics(std::vector< C_FLOAT64 > mValues,
         }
     }
 
-  //const CModel& rModel = mpContainer->getModel(); // get (constant) reference of CModel
-  //const CModel *pModel = &rModel; // from (constant) reference to (constant) pointer
-  //CModel* mpModel = const_cast<CModel *>(pModel); // from constant to non-constant pointer
-
-  // At this stage we want only one statistics on the dynamics,
-  // so we first empty the vector containing previous statistics.
-  // Later we may consider to keep previous statistics and the
-  // following line will be commented out.
-  //mpModel->removeModelStats();
-
   // Create the new statistics object to be added to the model.
   std::string nameStats = "";
   std::string nameStatsTime = "";

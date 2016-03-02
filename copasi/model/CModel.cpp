@@ -3888,32 +3888,3 @@ std::map< std::string, CUnit > CModel::getUsedUnits() const
 
   return UsedUnits;
 }
-
-#ifdef WITH_ANALYTICS
-
-const CCopasiVector < CStatistics > & CModel::getModelStats() const
-{return mStatistics;}
-
-CCopasiVector < CStatistics > & CModel::getModelStats()
-{return mStatistics;}
-
-CStatistics* CModel::createModelStats(const std::string & name,
-                                      const CCopasiContainer * pParent,
-                                      const std::string & type,
-                                      const unsigned C_INT32 & flag,
-                                      C_FLOAT64 value)
-{
-  CStatistics * pStats = new CStatistics(name, pParent, type, flag, value);
-
-  if (!mStatistics.add(pStats, false))
-    return NULL;
-
-  return pStats;
-}
-
-void CModel::removeModelStats()
-{
-  mStatistics.clear();
-}
-
-#endif
