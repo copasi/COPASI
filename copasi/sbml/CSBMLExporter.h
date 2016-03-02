@@ -51,6 +51,7 @@ class Parameter;
 class Rule;
 class SBase;
 class SBMLDocument;
+class UnitDefinition;
 class XMLNode;
 LIBSBML_CPP_NAMESPACE_END
 
@@ -343,6 +344,21 @@ protected:
    * Create the SBML function definition from the given COPASI function.
    */
   void createFunctionDefinition(CFunction& function, CCopasiDataModel& dataModel);
+
+  /**
+   * @brief creates and SBML UnitDefinition for the given unit
+   * @param unit the COPASI unit element
+   * @return the SBML UnitDefinition
+   */
+  UnitDefinition* createUnitDefinitionFor(const CUnit& unit);
+
+  /**
+   * @brief exports the given unit to the sbmlElement
+   * @param unit the unit to export
+   * @param sbmlElement the sbml element that the unit should be assigned to
+   */
+  void exportAndAssignUnit(const CUnit& unit, SBase* sbmlElement);
+
 
   /**
    * Checks all assignments (initial and transient) for references to objects
