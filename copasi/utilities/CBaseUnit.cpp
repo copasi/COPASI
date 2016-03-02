@@ -87,6 +87,8 @@ CBaseUnit::Scale CBaseUnit::scaleFromPrefix(const std::string & prefix)
 
   if (prefix == "p") return pico;
 
+  if (prefix == "n") return nano;
+
   if (prefix == "u" || prefix == "\xc2\xb5") return micro;
 
   if (prefix == "m") return milli;

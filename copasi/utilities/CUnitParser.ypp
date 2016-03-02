@@ -11,6 +11,8 @@
   if (yychar != YYERRCODE) correctErrorPosition(); \
   CCopasiMessage(CCopasiMessage::EXCEPTION, MCUnit + 1, mPosition)
 
+#include <cmath>
+
 #include "copasi.h"
 #include "CUnitParser.h"
 
@@ -28,6 +30,7 @@
 %token SI_UNIT
 %token USER_DEFINED_UNIT
 %token NUMBER
+%token POWER_OF_TEN
 %token MULTIPLY
 %token DIVIDE
 %token START_PARENS
@@ -42,6 +45,7 @@
 %left SI_UNIT
 %left USER_DEFINED_UNIT
 %left NUMBER
+%left POWER_OF_TEN
 %left MULTIPLY
 %left DIVIDE
 %left START_PARENS
@@ -64,20 +68,34 @@ compound_unit: unit
              $$.pUnit = $1.pUnit;
              mpUnit = $$.pUnit;
            }
-         | NUMBER MULTIPLY compound_unit
+         | multiplier MULTIPLY compound_unit
            { 
-             CUnitComponent component;
-             component.setKind(CBaseUnit::dimensionless);
-             component.setMultiplier(strToDouble($1.text.c_str(), NULL));
-             
-             $$.pUnit = $3.pUnit;
-             $$.pUnit->addComponent(component);
+             $$.pUnit = new CUnit();
+             *$$.pUnit = *$1.pUnit * *$3.pUnit;
+             pdelete($1.pUnit);
+             pdelete($3.pUnit);
              mpUnit = $$.pUnit;
            }
          | compound_unit MULTIPLY compound_unit
            {
              $$.pUnit = new CUnit();
              *$$.pUnit = *$1.pUnit * *$3.pUnit;
+             pdelete($1.pUnit);
+             pdelete($3.pUnit);
+             mpUnit = $$.pUnit;
+           }
+         | compound_unit MULTIPLY multiplier
+           {
+             $$.pUnit = new CUnit();
+             *$$.pUnit = *$1.pUnit * *$3.pUnit;
+             pdelete($1.pUnit);
+             pdelete($3.pUnit);
+             mpUnit = $$.pUnit;
+           }
+         | NUMBER DIVIDE compound_unit
+           {
+             $$.pUnit = new CUnit();
+             *$$.pUnit = *$1.pUnit * $3.pUnit->exponentiate(-1);
              pdelete($1.pUnit);
              pdelete($3.pUnit);
              mpUnit = $$.pUnit;
@@ -90,26 +108,12 @@ compound_unit: unit
              pdelete($3.pUnit);
              mpUnit = $$.pUnit;
            }
-         | NUMBER DIVIDE compound_unit
-           {
-             CUnitComponent component;
-             component.setKind(CBaseUnit::dimensionless);
-             component.setMultiplier(strToDouble($1.text.c_str(), NULL));
-             
-             $$.pUnit = $3.pUnit;
-             $$.pUnit->exponentiate(-1);
-             $$.pUnit->addComponent(component);
-             mpUnit = $$.pUnit;
-           }
          | compound_unit DIVIDE NUMBER
            {
-             CUnitComponent component;
-             component.setKind(CBaseUnit::dimensionless);
-             component.setMultiplier(1.0/strToDouble($1.text.c_str(), NULL));
-             component.setExponent(-1.0);
-             
-             $$.pUnit = $1.pUnit;
-             $$.pUnit->addComponent(component);
+             $$.pUnit = new CUnit();
+             *$$.pUnit = *$1.pUnit * $3.pUnit->exponentiate(-1);
+             pdelete($1.pUnit);
+             pdelete($3.pUnit);
              mpUnit = $$.pUnit;
            }
          | START_PARENS compound_unit END_PARENS
@@ -171,6 +175,25 @@ scaled_unit:  SCALE unit
              $$.pUnit = $2.pUnit;
              $$.pUnit->addComponent(component);
            }
-           
+
+multiplier:  NUMBER
+           {
+             CUnitComponent component;
+             component.setKind(CBaseUnit::dimensionless);
+             component.setMultiplier(strToDouble($1.text.c_str(), NULL));
+             
+             $$.pUnit = new CUnit();
+             $$.pUnit->addComponent(component);
+           }
+         | POWER_OF_TEN EXPONENT NUMBER
+           {
+             CUnitComponent component;
+             component.setKind(CBaseUnit::dimensionless);
+             component.setMultiplier(pow(10.0, strToDouble($3.text.c_str(), NULL)));
+             
+             $$.pUnit = new CUnit();
+             $$.pUnit->addComponent(component);
+           }
+                    
 %%
 
