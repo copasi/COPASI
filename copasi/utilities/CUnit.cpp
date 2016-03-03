@@ -512,54 +512,6 @@ bool CUnit::isEquivalent(const CUnit & rhs) const
   return true;
 }
 
-////SI derived
-//{"becquerel",  "Bq",       "s^-1"},
-//{"coulomb",    "C",        "s*A"},
-//{"farad",      "F",        "m^-2*kg^-1*s^4*A^2"},
-//{"gray",       "Gy",       "m^2*s^-2"},
-//{"henry",      "H",        "m^2*kg*s^-2*A^-2"},
-//{"hertz",      "Hz",       "s^-1"},
-//{"joule",      "J",        "m^2*kg*s^-2"},
-//{"katal",      "kat",      "s^-1*mol"},
-//{"liter",      "l",        "0.001*m^3"},
-//{"lumen",      "lm",       "cd"},
-//{"lux",        "lx",       "m^-2*cd"},
-//{"mole",       "mol",      "Avogadro*#"},
-//{"newton",     "N",        "m*kg*s^-2"},
-//{"ohm",        "\xCE\xA9", "m^2*kg*s^-3*A^-2"},
-//{"pascal",     "Pa",       "m^-1*kg*s^-2"},
-//{"siemens",    "S",        "m^-2*kg^-1*s^3*A^2"},
-//{"sievert",    "Sv",       "m^2*s^-2"},
-//{"tesla",      "T",        "kg*s^-2*A^-1"},
-//{"volt",       "V",        "m^2*kg*s^-3*A^-1"},
-//{"watt",       "W",        "m^2*kg*s^-3"},
-//{"weber",      "Wb",       "m^2*kg*s^-2*A^-1"},
-
-//{"dimensionless", "1",      "1"},
-//{"item",       "#",        "#"},
-//{"minute",     "min",      "60*s"},
-//{"hour",       "h",        "3600*s"},
-//{"day",        "d",        "86400*s"},
-
-//CBaseUnit::Kind getKind() const;
-//double getMultiplier() const;
-//int getScale() const;
-//double getExponent() const;
-
-//void setMultiplier(double multiplier);
-//void setScale(int scale);
-
-//std::ostringstream Symbol;
-
-//Symbol.str(mSymbol.c_str());
-//int i = 1;
-
-//while (!setSymbol(Symbol.str()))
-//  {
-//    Symbol.str("");
-//    Symbol << mSymbol << "_" << i++;
-//}
-
 void CUnit::buildExpression()
 {
   if (mComponents.empty())
@@ -577,6 +529,8 @@ void CUnit::buildExpression()
   std::set< CUnitComponent >::const_iterator it = mComponents.begin();
   std::set< CUnitComponent >::const_iterator end = mComponents.end();
 
+  // Find the dimensionless component, and the/a first components
+  // which can in the numerator and denominator
   std::set< CUnitComponent >::const_iterator itDimensionless = end;
   std::set< CUnitComponent >::const_iterator itNumerator = end;
   std::set< CUnitComponent >::const_iterator itDenominator = end;
@@ -638,7 +592,7 @@ void CUnit::buildExpression()
       multiplier = 1.0 / multiplier;
     }
 
-  // Now that the dimentionless unit information
+  // Now that the dimensionless unit information
   // has been utilized, work on the rest.
 
   size_t NumeratorCount = 0;
@@ -661,13 +615,13 @@ void CUnit::buildExpression()
         {
           if (multiplier != 1.0) numerator << multiplier << "*";
 
-          numerator  <<  CBaseUnit::prefixFromScale(scale);
+          numerator << CBaseUnit::prefixFromScale(scale);
         }
 
       if (it == itDenominator &&
           itNumerator == end)
         {
-          denominator  <<  CBaseUnit::prefixFromScale(-scale);
+          denominator << CBaseUnit::prefixFromScale(-scale);
         }
 
       if (exponent == 1.0)

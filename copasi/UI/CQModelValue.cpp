@@ -268,11 +268,11 @@ void CQModelValue::load()
 {
   if (mpModelValue == NULL) return;
 
-  // Update the labels
-  slotUnitChanged();
-
   // Unit expression
   mpEditUnits->setText(FROM_UTF8(mpModelValue->getUnitExpression()));
+
+  // Update the unit labels
+  slotUnitChanged();
 
   // Type
   mpComboBoxType->setCurrentIndex(mpComboBoxType->findText(FROM_UTF8(CModelEntity::StatusName[mpModelValue->getStatus()])));
