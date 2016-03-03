@@ -701,7 +701,7 @@ bool CModel::handleUnusedMetabolites()
   endMetab = itMetab + mNumMetabolitesAssignment + mNumMetabolitesUnused;
 
   for (; itMetab != endMetab; ++itMetab)
-    itMetab = itMetab + NumUnused;
+    itMetab = static_cast< CMetab * >(itMetab + NumUnused);
 
   // Handle newly marked unused metabolites
   itUnusedMetabolites = UnusedMetabolites.begin();
