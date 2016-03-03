@@ -268,6 +268,9 @@ void CQModelValue::load()
 {
   if (mpModelValue == NULL) return;
 
+  // Update the labels
+  slotUnitChanged();
+
   // Unit expression
   mpEditUnits->setText(FROM_UTF8(mpModelValue->getUnitExpression()));
 
