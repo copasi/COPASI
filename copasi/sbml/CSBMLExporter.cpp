@@ -3421,7 +3421,16 @@ UnitDefinition *CSBMLExporter::createUnitDefinitionFor(const CUnit &unit)
   // otherwise create a new one
   result = pModel->createUnitDefinition();
 
-  result->setId(createUniqueId(mIdMap, "unit", true));
+  std::string id("unit_0");
+  int count = 0;
+
+  while (pModel->getUnitDefinition(id) != NULL)
+    {
+      std::stringstream str; str << "unit_" << ++count;
+      id = str.str();
+    }
+
+  result->setId(id);
   mIdMap.insert(std::make_pair(result->getId(), result));
   result->setName(unit.getExpression());
 
