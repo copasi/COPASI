@@ -167,6 +167,8 @@ public:
 
 #endif
 
+std::string unitKindToString(UnitKind_t kind);
+
 // static
 C_FLOAT64 SBMLImporter::round(const C_FLOAT64 & x)
 {
@@ -4482,13 +4484,7 @@ SBMLImporter::handleVolumeUnit(const UnitDefinition* uDef)
 
 CModelValue* SBMLImporter::createCModelValueFromParameter(const Parameter* sbmlParameter, CModel* copasiModel, std::map<const CCopasiObject*, SBase*>& copasi2sbmlmap)
 {
-  if (sbmlParameter->isSetUnits())
-    {
-      /* !!!! create a warning that the units will be ignored. */
-      //CCopasiMessage Message(CCopasiMessage::WARNING, MCSBML + 26, sbmlParameter->getId().c_str());
-      mIgnoredParameterUnits.push_back(sbmlParameter->getId());
-      const_cast<Parameter*>(sbmlParameter)->unsetUnits();
-    }
+
 
   std::string name = sbmlParameter->getName();
 
@@ -4529,6 +4525,30 @@ CModelValue* SBMLImporter::createCModelValueFromParameter(const Parameter* sbmlP
   if (this->mLevel > 2)
     {
       this->mSBMLIdModelValueMap[sbmlId] = pMV;
+    }
+
+  if (sbmlParameter->isSetUnits())
+    {
+      /* !!!! create a warning that the units will be ignored. */
+      //CCopasiMessage Message(CCopasiMessage::WARNING, MCSBML + 26, sbmlParameter->getId().c_str());
+
+      const UnitDefinition* pSBMLUnit = sbmlParameter->getModel()->getUnitDefinition(sbmlParameter->getUnits());
+
+      if (pSBMLUnit != NULL)
+        {
+          pMV->setUnitExpression(createUnitExpressionFor(pSBMLUnit));
+        }
+      else
+        {
+          // chances are that it is one of the default units.
+          UnitKind_t kind = UnitKind_forName(sbmlParameter->getUnits().c_str());
+
+          if (kind != UNIT_KIND_INVALID)
+            pMV->setUnitExpression(unitKindToString(kind));
+        }
+
+      //mIgnoredParameterUnits.push_back(sbmlParameter->getId());
+      //const_cast<Parameter*>(sbmlParameter)->unsetUnits();
     }
 
   return pMV;
@@ -8351,6 +8371,155 @@ void SBMLImporter::checkElementUnits(const Model* pSBMLModel, CModel* pCopasiMod
   delete pDimensionlessUnits;
   delete pLengthUnits;
   delete pAreaUnits;
+}
+
+std::string unitKindToString(UnitKind_t kind)
+{
+  switch (kind)
+    {
+      case UNIT_KIND_AMPERE:
+        return "A";
+
+      case UNIT_KIND_AVOGADRO:
+        // TODO: verify what to do here
+        return "";
+
+      case UNIT_KIND_BECQUEREL:
+        return "Bq";
+
+      case UNIT_KIND_CANDELA:
+        return "cd";
+
+      case UNIT_KIND_COULOMB:
+        return "C";
+
+      case UNIT_KIND_DIMENSIONLESS:
+        return "1";
+
+      case UNIT_KIND_FARAD:
+        return "F";
+
+      case UNIT_KIND_GRAM:
+        return "g";
+
+      case UNIT_KIND_GRAY:
+        return "Gy";
+
+      case UNIT_KIND_HENRY:
+        return "H";
+
+      case UNIT_KIND_HERTZ:
+        return "Hz";
+
+      case UNIT_KIND_ITEM:
+        return "#";
+
+      case UNIT_KIND_JOULE:
+        return "J";
+
+      case UNIT_KIND_KATAL:
+        return "kat";
+
+      case UNIT_KIND_KELVIN:
+        return "K";
+
+      case UNIT_KIND_KILOGRAM:
+        return "kg";
+
+      case UNIT_KIND_LITER:
+      case UNIT_KIND_LITRE:
+        return "l";
+
+      case UNIT_KIND_LUMEN:
+        return "lm";
+
+      case UNIT_KIND_LUX:
+        return "lx";
+
+      case UNIT_KIND_METER:
+      case UNIT_KIND_METRE:
+        return "m";
+
+      case UNIT_KIND_MOLE:
+        return "mol";
+
+      case UNIT_KIND_NEWTON:
+        return "N";
+
+      case UNIT_KIND_OHM:
+        return "\xCE\xA9";
+
+      case UNIT_KIND_PASCAL:
+        return "Pa";
+
+      case UNIT_KIND_RADIAN:
+        return "rad";
+
+      case UNIT_KIND_SECOND:
+        return "s";
+
+      case UNIT_KIND_SIEMENS:
+        return "S";
+
+      case UNIT_KIND_SIEVERT:
+        return "Sv";
+
+      case UNIT_KIND_STERADIAN:
+        return "sr";
+
+      case UNIT_KIND_TESLA:
+        return "T";
+
+      case UNIT_KIND_VOLT:
+        return "V";
+
+      case UNIT_KIND_WATT:
+        return "W";
+
+      case UNIT_KIND_WEBER:
+        return "Wb";
+
+      case UNIT_KIND_INVALID:
+      default:
+        return "";
+    }
+}
+
+std::string SBMLImporter::createUnitExpressionFor(const UnitDefinition *pSBMLUnit) const
+{
+  if (pSBMLUnit == NULL)
+    return "";
+
+  std::stringstream str;
+  CUnit test;
+
+  for (size_t i = 0; i < pSBMLUnit->getNumUnits(); ++i)
+    {
+      const Unit* current = pSBMLUnit->getUnit(i);
+
+      if (i > 0)  str << "*";
+
+      if (current->getMultiplier() == -1)
+        str << "-";
+      else if (current->getMultiplier() != 1)
+        str << current->getMultiplier() << "*";
+
+      if (current->getScale() != 0)
+        str << "1e" << current->getScale() << "*";
+
+      std::string kind = unitKindToString(current->getKind());
+
+      if (kind.empty()) continue;
+
+      str << kind;
+
+      if (current->getExponent() != 1)
+        str << "^" << current->getExponent();
+
+    }
+
+
+  return str.str();
 }
 
 /**

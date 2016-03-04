@@ -595,6 +595,13 @@ protected:
                          int version);
 
   /**
+   * Converts the given SBML unit to a COPASI Unit
+   * @param pSBMLUnit the SBML unit
+   * @return a string corresponding to the unit
+   */
+  std::string createUnitExpressionFor(const UnitDefinition* pSBMLUnit) const;
+
+  /**
    * If the given UnitDefinition can be converted to a form of litre, the
    * function return the UnitDefinition in litre, otherwise NULL is returned.
    */
