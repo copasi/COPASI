@@ -1,4 +1,4 @@
-// Copyright (C) 2014 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2014 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -29,11 +29,9 @@ class UndoReactionData;
 class UndoGlobalQuantityData;
 class UndoEventData;
 
-
 class CCopasiUndoCommand : public QUndoCommand
 {
 public:
-
 
   /**
    * rather than using integers to refer to widgets,
@@ -227,6 +225,8 @@ public:
   const std::string& getKey() const;
   void setKey(const std::string &key);
 
+  const std::string& getTime() const;
+
 protected:
 
   /**
@@ -241,6 +241,7 @@ protected:
   std::string mEntityType;
   std::string mAction;
   std::string mName;
+  std::string mTime;
   /**
    * Lookup of elements should always happen by key,
    * pointers are not reliable, names are not unique, thus
