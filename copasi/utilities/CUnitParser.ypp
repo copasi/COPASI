@@ -154,6 +154,16 @@ unit:      KIND
          | USER_DEFINED_UNIT
            {
              const CUnitDefinition * pUnitDefinition = CCopasiRootContainer::getUnitDefFromSymbol($1.text);
+
+             if (pUnitDefinition == NULL)
+               {
+                 size_t Index = CCopasiRootContainer::getUnitList()->getIndex($1.text);
+                 
+                 if (Index != C_INVALID_INDEX)
+                   {
+                     pUnitDefinition = CCopasiRootContainer::getUnitList()->begin() + Index;
+                   }
+               }
              
              if (pUnitDefinition == NULL)
                {
