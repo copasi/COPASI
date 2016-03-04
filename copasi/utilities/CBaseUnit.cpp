@@ -73,9 +73,7 @@ CBaseUnit::Kind CBaseUnit::fromSymbol(const std::string & symbol)
 
   if (symbol == "1") return dimensionless;
 
-  fatalError();
-
-  return dimensionless;
+  return undefined;
 }
 
 // static (because CBaseUnit is not meant to be constructed)
@@ -125,6 +123,9 @@ std::string CBaseUnit::prefixFromScale(int scale)
 
       case pico:
         return "p";
+
+      case nano:
+        return "n";
 
       case micro:
         return "u";

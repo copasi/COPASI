@@ -163,10 +163,9 @@ CUnitDefinition::CUnitDefinition(const CBaseUnit::Kind & kind,
 
 // copy
 CUnitDefinition::CUnitDefinition(const CUnitDefinition &src,
-                                 const C_FLOAT64 & avogadro,
                                  const CCopasiContainer * pParent):
   CCopasiContainer(src, pParent),
-  CUnit(src, avogadro),
+  CUnit(src),
   CAnnotation(src),
   mSymbol(src.mSymbol)
 {

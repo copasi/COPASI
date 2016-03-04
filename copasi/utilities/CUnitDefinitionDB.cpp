@@ -37,7 +37,7 @@ bool CUnitDefinitionDB::add(const CUnitDefinition & src)
 
   try
     {
-      pCopy = new CUnitDefinition(src, CUnit::Avogadro, this);
+      pCopy = new CUnitDefinition(src, this);
     }
 
   catch (...)

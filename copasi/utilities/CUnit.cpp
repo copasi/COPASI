@@ -7,6 +7,8 @@
 #include <string.h>
 #include <algorithm>
 
+#include "copasi/report/CCopasiRootContainer.h"
+#include "copasi/utilities/CUnitDefinition.h"
 #include "copasi/utilities/CUnit.h"
 #include "copasi/utilities/CUnitParser.h"
 #include "copasi/model/CModel.h"
@@ -84,18 +86,14 @@ CUnit::CUnit(const CBaseUnit::Kind & kind):
 }
 
 // copy constructor
-CUnit::CUnit(const CUnit & src,
-             const C_FLOAT64 & avogadro):
-  mExpression(),
-  mComponents(),
-  mUsedSymbols()
-{
-  setExpression(src.mExpression, avogadro);
-}
+CUnit::CUnit(const CUnit & src):
+  mExpression(src.mExpression),
+  mComponents(src.mComponents),
+  mUsedSymbols(src.mUsedSymbols)
+{}
 
 CUnit::~CUnit()
-{
-}
+{}
 
 void CUnit::fromEnum(VolumeUnit volEnum)
 {
@@ -437,7 +435,7 @@ void CUnit::addComponent(const CUnitComponent & component)
       mComponents.insert(component);
     }
 
-  consolodateDimensionless();
+  consolidateDimensionless();
 }
 
 const std::set< CUnitComponent > & CUnit::getComponents() const
@@ -445,11 +443,14 @@ const std::set< CUnitComponent > & CUnit::getComponents() const
   return mComponents;
 }
 
-CUnit & CUnit::exponentiate(double exp)
+CUnit CUnit::exponentiate(double exp) const
 {
-  std::set< CUnitComponent >::iterator it = mComponents.begin();
+  CUnit Unit(*this);
 
-  for (; it != mComponents.end(); it++)
+  std::set< CUnitComponent >::iterator it = Unit.getComponents().begin();
+  std::set< CUnitComponent >::iterator end = Unit.getComponents().end();
+
+  for (; it != end; it++)
     {
       CUnitComponent * pComponent = const_cast< CUnitComponent * >(&*it);
 
@@ -462,25 +463,28 @@ CUnit & CUnit::exponentiate(double exp)
         }
     }
 
-  consolodateDimensionless();
+  Unit.consolidateDimensionless();
 
-  return *this;
+  return Unit;
 }
 
 // Putting units next to each other implies multiplying them.
-CUnit CUnit::operator*(const CUnit & rhs) const
+CUnit & CUnit::operator*(const CUnit & rhs) const
 {
+  static CUnit Unit; // Make a copy of the first CUnit
+  Unit = *this; // Make a copy of the first CUnit
+
   std::set< CUnitComponent >::const_iterator it = rhs.mComponents.begin();
   std::set< CUnitComponent >::const_iterator end = rhs.mComponents.end();
 
-  CUnit combined_unit = *this; // Make a copy of the first CUnit
-
   for (; it != end; ++it)
     {
-      combined_unit.addComponent(*it);
+      Unit.addComponent(*it);
     }
 
-  return combined_unit; // The calling code might want to call simplifyComponents() on the returned unit.
+  Unit.mUsedSymbols.insert(rhs.mUsedSymbols.begin(), rhs.mUsedSymbols.end());
+
+  return Unit; // The calling code might want to call simplifyComponents() on the returned unit.
 }
 
 bool CUnit::operator==(const CUnit & rhs) const
@@ -512,6 +516,151 @@ bool CUnit::isEquivalent(const CUnit & rhs) const
   return true;
 }
 
+// static
+C_INT32 CUnit::getExponentOfSymbol(const std::string & symbol, CUnit & unit)
+{
+  // We ignore base units
+  if (CBaseUnit::fromSymbol(symbol) != CBaseUnit::undefined) return 0;
+
+  const CUnitDefinition * pUnitDef = CCopasiRootContainer::getUnitDefFromSymbol(symbol);
+
+  if (pUnitDef == NULL) return 0;
+
+  C_INT32 Exponent = 0;
+
+  // First try multiplication
+  while (true)
+    {
+      CUnit Tmp = unit **pUnitDef;
+
+      // Compare symbols to determine whether this simplified the unit
+      if (Tmp.getComponents().size() < unit.getComponents().size())
+        {
+          unit = Tmp;
+          Exponent++;
+
+          continue;
+        }
+
+      std::set< CUnitComponent >::const_iterator itOld = unit.getComponents().begin();
+      std::set< CUnitComponent >::const_iterator endOld = unit.getComponents().end();
+      std::set< CUnitComponent >::const_iterator itNew = Tmp.getComponents().begin();
+      std::set< CUnitComponent >::const_iterator endNew = Tmp.getComponents().end();
+
+      int improvement = 0;
+
+      while (itOld != endOld && itNew != endNew)
+        {
+          if (itNew->getKind() > itOld->getKind())
+            {
+              improvement += fabs(itOld->getExponent());
+              ++itOld;
+            }
+          else if (itNew->getKind() < itOld->getKind())
+            {
+              improvement -= fabs(itNew->getExponent());
+              ++itNew;
+            }
+          else
+            {
+              // The kind is the same.
+              improvement += fabs(itOld->getExponent()) - fabs(itNew->getExponent());
+              ++itOld;
+              ++itNew;
+            }
+        }
+
+      for (; itNew != endNew; ++itNew)
+        {
+          improvement -= fabs(itNew->getExponent());
+        }
+
+      for (; itOld != endOld; ++itOld)
+        {
+          improvement += fabs(itOld->getExponent());
+        }
+
+      if (improvement > 0)
+        {
+          unit = Tmp;
+          Exponent++;
+
+          continue;
+        }
+
+      break;
+    }
+
+  if (Exponent > 0) return -Exponent;
+
+  // Now try division
+  CUnit Inverse = pUnitDef->exponentiate(-1.0);
+
+  while (true)
+    {
+      CUnit Tmp = unit * Inverse;
+
+      // Compare symbols to determine whether this simplified the unit
+      if (Tmp.getComponents().size() < unit.getComponents().size())
+        {
+          unit = Tmp;
+          Exponent++;
+
+          continue;
+        }
+
+      std::set< CUnitComponent >::const_iterator itOld = unit.getComponents().begin();
+      std::set< CUnitComponent >::const_iterator endOld = unit.getComponents().end();
+      std::set< CUnitComponent >::const_iterator itNew = Tmp.getComponents().begin();
+      std::set< CUnitComponent >::const_iterator endNew = Tmp.getComponents().end();
+
+      int improvement = 0;
+
+      while (itOld != endOld && itNew != endNew)
+        {
+          if (itNew->getKind() > itOld->getKind())
+            {
+              improvement += fabs(itOld->getExponent());
+              ++itOld;
+            }
+          else if (itNew->getKind() < itOld->getKind())
+            {
+              improvement -= fabs(itNew->getExponent());
+              ++itNew;
+            }
+          else
+            {
+              // The kind is the same.
+              improvement += fabs(itOld->getExponent()) - fabs(itNew->getExponent());
+              ++itOld;
+              ++itNew;
+            }
+        }
+
+      for (; itNew != endNew; ++itNew)
+        {
+          improvement -= fabs(itNew->getExponent());
+        }
+
+      for (; itOld != endOld; ++itOld)
+        {
+          improvement += fabs(itOld->getExponent());
+        }
+
+      if (improvement > 0)
+        {
+          unit = Tmp;
+          Exponent++;
+
+          continue;
+        }
+
+      break;
+    }
+
+  return Exponent;
+}
+
 void CUnit::buildExpression()
 {
   if (mComponents.empty())
@@ -526,14 +675,60 @@ void CUnit::buildExpression()
   numerator.str("");
   denominator.str("");
 
-  std::set< CUnitComponent >::const_iterator it = mComponents.begin();
-  std::set< CUnitComponent >::const_iterator end = mComponents.end();
+  CUnit Tmp(*this);
+
+  std::set< std::string >::const_iterator itSymbol = mUsedSymbols.begin();
+  std::set< std::string >::const_iterator endSymbol = mUsedSymbols.end();
+
+  int FirstNumeratorExponent = 0;
+  int FirstDenominatorExponent = 0;
+  size_t NumeratorCount = 0;
+  size_t DenominatorCount = 0;
+
+  for (; itSymbol != endSymbol; ++itSymbol)
+    {
+      C_INT32 Exponent = getExponentOfSymbol(*itSymbol, Tmp);
+
+      if (Exponent == 0) continue;
+
+      if (Exponent > 0)
+        {
+          if (FirstNumeratorExponent > 0)
+            numerator << "*";
+          else
+            FirstNumeratorExponent = Exponent;
+
+          if (Exponent == 1)
+            numerator << *itSymbol;
+          else
+            numerator << *itSymbol << "^" << Exponent;
+
+          NumeratorCount++;
+        }
+      else
+        {
+          if (FirstDenominatorExponent > 0)
+            denominator << "*";
+          else
+            FirstDenominatorExponent = -Exponent;
+
+          if (Exponent == -1)
+            denominator << *itSymbol;
+          else
+            denominator << *itSymbol << "^" << -Exponent;
+
+          DenominatorCount++;
+        }
+    }
+
+  // At this point we have only base kinds left in Tmp
+
+  std::set< CUnitComponent >::const_iterator it = Tmp.getComponents().begin();
+  std::set< CUnitComponent >::const_iterator end = Tmp.getComponents().end();
 
   // Find the dimensionless component, and the/a first components
   // which can in the numerator and denominator
   std::set< CUnitComponent >::const_iterator itDimensionless = end;
-  std::set< CUnitComponent >::const_iterator itNumerator = end;
-  std::set< CUnitComponent >::const_iterator itDenominator = end;
 
   for (; it != end; ++it)
     {
@@ -544,34 +739,51 @@ void CUnit::buildExpression()
           continue;
         }
 
-      if (itNumerator == end &&
-          it->getExponent() > 0)
-        {
-          itNumerator = it;
-          continue;
-        }
+      C_INT32 Exponent = it->getExponent();
 
-      if (itDenominator == end &&
-          it->getExponent() < 0)
+      if (Exponent > 0)
         {
-          itDenominator = it;
-          continue;
+          if (FirstNumeratorExponent > 0)
+            numerator << "*";
+          else
+            FirstNumeratorExponent = Exponent;
+
+          if (Exponent == 1)
+            numerator << CBaseUnit::getSymbol(it->getKind());
+          else
+            numerator << CBaseUnit::getSymbol(it->getKind()) << "^" << Exponent;
+
+          NumeratorCount++;
+        }
+      else
+        {
+          if (FirstDenominatorExponent > 0)
+            denominator << "*";
+          else
+            FirstDenominatorExponent = -Exponent;
+
+          if (Exponent == -1)
+            denominator << CBaseUnit::getSymbol(it->getKind());
+          else
+            denominator << CBaseUnit::getSymbol(it->getKind()) << "^" << -Exponent;
+
+          DenominatorCount++;
         }
     }
 
   double exponent = 1;
 
-  if (itNumerator != end)
-    exponent = fabs(itNumerator->getExponent());
-  else if (itDenominator != end)
-    exponent = fabs(itDenominator->getExponent());
+  if (FirstNumeratorExponent > 0)
+    exponent = FirstNumeratorExponent;
+  else if (FirstDenominatorExponent > 0)
+    exponent = FirstDenominatorExponent;
 
   double multiplier = fabs(itDimensionless->getMultiplier()) * pow(10.0, itDimensionless->getScale());
   int scale = 0;
 
   // Only one, if either, of the
   // following loops should run,
-  // to ensure the muliplier is
+  // to ensure the multiplier is
   // from 1 up to 1000
   while (multiplier >= (1.0 - 100 * std::numeric_limits< double >::epsilon()) * pow(1000, exponent) && scale < 15)
     {
@@ -592,95 +804,45 @@ void CUnit::buildExpression()
       multiplier = 1.0 / multiplier;
     }
 
-  // Now that the dimensionless unit information
-  // has been utilized, work on the rest.
+  std::ostringstream expression;
 
-  size_t NumeratorCount = 0;
-  size_t DenominatorCount = 0;
-
-  if (itNumerator == end)
+  if (multiplier != 1.0 ||
+      (DenominatorCount > 0 && NumeratorCount == 0))
     {
-      if (multiplier != 1.0 ||
-          itDenominator != end)
-        {
-          numerator << multiplier;
-        }
+      expression << multiplier;
     }
 
-  for (it = ++mComponents.begin(); it != end; it++)
+  if (NumeratorCount > 0)
     {
-      exponent = it->getExponent();
+      if (multiplier != 1.0) expression << "*";
 
-      if (it == itNumerator)
-        {
-          if (multiplier != 1.0) numerator << multiplier << "*";
-
-          numerator << CBaseUnit::prefixFromScale(scale);
-        }
-
-      if (it == itDenominator &&
-          itNumerator == end)
-        {
-          denominator << CBaseUnit::prefixFromScale(-scale);
-        }
-
-      if (exponent == 1.0)
-        {
-          if (it != itNumerator) numerator << "*";
-
-          numerator << CBaseUnit::getSymbol(it->getKind());
-          NumeratorCount++;
-        }
-      else if (exponent > 1.0)
-        {
-          if (it != itNumerator) numerator << "*";
-
-          numerator << CBaseUnit::getSymbol(it->getKind()) << "^" << exponent;
-          NumeratorCount++;
-        }
-      else if (exponent == -1.0)
-        {
-          if (it != itDenominator) denominator << "*";
-
-          denominator << CBaseUnit::getSymbol(it->getKind());
-          DenominatorCount++;
-        }
-      else if (exponent <= -1.0)
-        {
-          if (it != itDenominator) denominator << "*";
-
-          denominator << CBaseUnit::getSymbol(it->getKind()) << "^" << -exponent;
-          DenominatorCount++;
-        }
-      else
-        {
-          assert(false);
-        }
+      expression << CBaseUnit::prefixFromScale(scale) << numerator.str();
+      scale = 0;
     }
-
-  mExpression = numerator.str();
 
   if (DenominatorCount > 1)
     {
-      mExpression += "/(" +  denominator.str() + ")";
+      expression << "/(" <<  CBaseUnit::prefixFromScale(scale) << denominator.str() << ")";
     }
   else if (DenominatorCount > 0)
     {
-      mExpression += "/" + denominator.str();
+      expression << "/" << CBaseUnit::prefixFromScale(scale) << denominator.str();
     }
 
-  if (itNumerator == end &&
-      itDenominator == end)
+  if (NumeratorCount == 0 &&
+      DenominatorCount == 0)
     {
-      if (mExpression != "") mExpression += "*";
+      if (multiplier != 1.0) expression << "*";
 
-      mExpression += CBaseUnit::prefixFromScale(scale) + "1";
+      expression << CBaseUnit::prefixFromScale(scale) << "1";
     }
+
+  mExpression = expression.str();
 }
 
-void CUnit::consolodateDimensionless()
+void CUnit::consolidateDimensionless()
 {
-  // nothing to consolodate
+  // nothing to consolidate
   if (mComponents.empty()) return;
 
   std::set< CUnitComponent >::iterator it = mComponents.begin(),

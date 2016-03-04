@@ -82,10 +82,8 @@ public:
   /**
    * Copy constructor
    * @param const CUnit & src
-   * @param const C_FLOAT64 & avogadro
    */
-  CUnit(const CUnit & src,
-        const C_FLOAT64 & avogadro);
+  CUnit(const CUnit & src);
 
   ~CUnit();
 
@@ -109,8 +107,8 @@ public:
 
   bool compile(const C_FLOAT64 & avogadro = Avogadro);
 
-  CUnit & exponentiate(double exp);
-  CUnit operator*(const CUnit & rhs) const;
+  CUnit exponentiate(double exp) const;
+  CUnit & operator*(const CUnit & rhs) const;
   bool operator==(const CUnit & rhs) const;
   bool isEquivalent(const CUnit & rhs) const;
   void buildExpression();
@@ -122,7 +120,9 @@ private:
 
   // Consolodate any components with exponent == 0
   // into a/the single dimensionless component
-  void consolodateDimensionless();
+  void consolidateDimensionless();
+
+  static C_INT32 getExponentOfSymbol(const std::string & symbol, CUnit & unit);
 };
 
 #endif // CUNIT_H
