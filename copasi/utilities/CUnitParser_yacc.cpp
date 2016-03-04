@@ -1378,7 +1378,7 @@ yyreduce:
       case 11:
 #line 125 "CUnitParser.ypp" /* yacc.c:1646  */
         {
-          (yyvsp[-2]).pUnit->exponentiate(strToDouble((yyvsp[0]).text.c_str(), NULL));
+          *(yyvsp[-2]).pUnit = (yyvsp[-2]).pUnit->exponentiate(strToDouble((yyvsp[0]).text.c_str(), NULL));
           (yyval).pUnit = (yyvsp[-2]).pUnit;
           mpUnit = (yyval).pUnit;
         }
@@ -1389,7 +1389,7 @@ yyreduce:
       case 12:
 #line 131 "CUnitParser.ypp" /* yacc.c:1646  */
         {
-          (yyvsp[-1]).pUnit->exponentiate(2.0);
+          *(yyvsp[-1]).pUnit = (yyvsp[-1]).pUnit->exponentiate(2.0);
           (yyval).pUnit = (yyvsp[-1]).pUnit;
           mpUnit = (yyval).pUnit;
         }
@@ -1400,7 +1400,7 @@ yyreduce:
       case 13:
 #line 137 "CUnitParser.ypp" /* yacc.c:1646  */
         {
-          (yyvsp[-1]).pUnit->exponentiate(3.0);
+          *(yyvsp[-1]).pUnit = (yyvsp[-1]).pUnit->exponentiate(3.0);
           (yyval).pUnit = (yyvsp[-1]).pUnit;
           mpUnit = (yyval).pUnit;
         }
@@ -1421,7 +1421,7 @@ yyreduce:
       case 15:
 #line 148 "CUnitParser.ypp" /* yacc.c:1646  */
         {
-          (yyval).pUnit = new CUnit(CUnitDefinition::getSIUnit((yyvsp[0]).text, mAvogadro), mAvogadro);
+          (yyval).pUnit = new CUnit(CUnitDefinition::getSIUnit((yyvsp[0]).text, mAvogadro));
 
           mSymbols.insert((yyvsp[0]).text);
           mSymbols.insert((yyval).pUnit->getUsedSymbols().begin(), (yyval).pUnit->getUsedSymbols().end());
@@ -1451,7 +1451,7 @@ yyreduce:
             }
           else
             {
-              (yyval).pUnit = new CUnit(*pUnitDefinition, mAvogadro);
+              (yyval).pUnit = new CUnit(*pUnitDefinition);
               mSymbols.insert(pUnitDefinition->getSymbol());
               mSymbols.insert((yyval).pUnit->getUsedSymbols().begin(), (yyval).pUnit->getUsedSymbols().end());
             }

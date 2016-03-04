@@ -123,19 +123,19 @@ compound_unit: unit
            }
          | compound_unit EXPONENT NUMBER
            {
-             $1.pUnit->exponentiate(strToDouble($3.text.c_str(), NULL));
+             *$1.pUnit = $1.pUnit->exponentiate(strToDouble($3.text.c_str(), NULL));
              $$.pUnit = $1.pUnit; 
              mpUnit = $$.pUnit;
            }
          | compound_unit SUPERSCRIPT_2
            {
-             $1.pUnit->exponentiate(2.0);
+             *$1.pUnit = $1.pUnit->exponentiate(2.0);
              $$.pUnit = $1.pUnit;
              mpUnit = $$.pUnit;
            }
          | compound_unit SUPERSCRIPT_3
            {
-             $1.pUnit->exponentiate(3.0);
+             *$1.pUnit = $1.pUnit->exponentiate(3.0);
              $$.pUnit = $1.pUnit;
              mpUnit = $$.pUnit;
            }
@@ -146,7 +146,7 @@ unit:      KIND
            }
          | SI_UNIT
            {
-             $$.pUnit = new CUnit(CUnitDefinition::getSIUnit($1.text, mAvogadro), mAvogadro);
+             $$.pUnit = new CUnit(CUnitDefinition::getSIUnit($1.text, mAvogadro));
              
              mSymbols.insert($1.text);
              mSymbols.insert($$.pUnit->getUsedSymbols().begin(), $$.pUnit->getUsedSymbols().end());
@@ -171,7 +171,7 @@ unit:      KIND
                }
              else
                {
-                 $$.pUnit = new CUnit(*pUnitDefinition, mAvogadro);
+                 $$.pUnit = new CUnit(*pUnitDefinition);
                  mSymbols.insert(pUnitDefinition->getSymbol());
                  mSymbols.insert($$.pUnit->getUsedSymbols().begin(), $$.pUnit->getUsedSymbols().end());
                }

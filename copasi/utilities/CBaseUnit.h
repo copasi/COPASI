@@ -26,7 +26,8 @@ public:
     ampere,
     kelvin,
     item,  // mole can be derived with the current value of Avagadro's Number
-    candela
+    candela,
+    undefined
   };
 
   static const char * Name[];
