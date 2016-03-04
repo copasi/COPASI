@@ -1,4 +1,4 @@
-// Copyright (C) 2014 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2014 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -10,6 +10,7 @@
  *      Author: dada
  */
 
+#include <QDateTime>
 #include "report/CCopasiRootContainer.h"
 #include "model/CModelValue.h"
 #include "model/CReactionInterface.h"
@@ -42,6 +43,7 @@ CCopasiUndoCommand::CCopasiUndoCommand(const std::string& entityType /*= ""*/,
   , mEntityType(entityType)
   , mAction(action)
   , mName(name)
+  , mTime(QDateTime::currentDateTime().toString().toStdString())
 {
 }
 
@@ -82,7 +84,6 @@ CCopasiUndoCommand::getType() const
 {
   return mType;
 }
-
 
 void CCopasiUndoCommand::setType(const CCopasiUndoCommand::Type & type)
 {
@@ -172,3 +173,7 @@ void CCopasiUndoCommand::setKey(const std::string &key)
   mKey = key;
 }
 
+const std::string& CCopasiUndoCommand::getTime() const
+{
+  return mTime;
+}
