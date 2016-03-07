@@ -848,7 +848,23 @@ bool CUnit::isValidTimeUnit()
   if (mComponents.size() >= 1 && // has to be one or two components
       mComponents.size() <= 2 &&
       (lastComponent->getKind() == CBaseUnit::dimensionless ||
-       lastComponent->getKind() == CBaseUnit::second))
+       (lastComponent->getKind() == CBaseUnit::second &&
+        lastComponent->getExponent() == 0)))
+    return true;
+  else // includes 0 exponents (undefined)
+    return false;
+}
+
+bool CUnit::isValidLengthUnit()
+{
+  std::set< CUnitComponent >::const_iterator lastComponent = mComponents.end();
+  --lastComponent;
+
+  if (mComponents.size() >= 1 && // has to be one or two components
+      mComponents.size() <= 2 &&
+      (lastComponent->getKind() == CBaseUnit::dimensionless ||
+       (lastComponent->getKind() == CBaseUnit::meter &&
+        lastComponent->getExponent() == 0)))
     return true;
   else // includes 0 exponents (undefined)
     return false;
