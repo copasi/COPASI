@@ -6928,6 +6928,8 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CCopasiObject* pCOPASIObject, S
   // COPASI only uses Biological Qualifiers
   cvTerm.setQualifierType(BIOLOGICAL_QUALIFIER);
 
+  std::string sboTerm;
+
   for (i = 0; i < iMax; ++i)
     {
       pDescription = &descriptions[i];
@@ -6969,6 +6971,10 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CCopasiObject* pCOPASIObject, S
             // biological qualifier type if the qualifier type is set
             cvTerm.setModelQualifierType(BQM_UNKNOWN);
             cvTerm.setBiologicalQualifierType(BQB_IS);
+
+            if (pDescription->getResource() == "Systems Biology Ontology")
+              sboTerm = pDescription->getId();
+
             break;
 
             // IS DESCRIBED BY is handled in the references below
@@ -7028,6 +7034,10 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CCopasiObject* pCOPASIObject, S
             // biological qualifier type if the qualifier type is set
             cvTerm.setBiologicalQualifierType(BQB_UNKNOWN);
             cvTerm.setModelQualifierType(BQM_IS);
+
+            if (pDescription->getResource() == "Systems Biology Ontology")
+              sboTerm = pDescription->getId();
+
             break;
 
             // IS DESCRIBED BY is handled in the references below
@@ -7063,6 +7073,10 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CCopasiObject* pCOPASIObject, S
           pSBMLObject->addCVTerm(&cvTerm, true);
         }
     }
+
+  // set SBO Term if we found it and have no SBO Term on the object
+  if (!pSBMLObject->isSetSBOTerm() && !sboTerm.empty())
+    pSBMLObject->setSBOTerm(sboTerm);
 
   const CCopasiVector<CReference>& references = miriamInfo.getReferences();
 
