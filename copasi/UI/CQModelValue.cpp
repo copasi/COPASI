@@ -459,8 +459,6 @@ void CQModelValue::slotInitialTypeChanged(bool useInitialAssignment)
 
 void CQModelValue::slotUnitChanged()
 {
-  if (mpModelValue->getUnitExpression() == TO_UTF8(mpEditUnits->text())) return;
-
   std::string OldUnit = mpModelValue->getUnitExpression();
   mpModelValue->setUnitExpression(TO_UTF8(mpEditUnits->text()));
 

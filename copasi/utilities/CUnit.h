@@ -19,6 +19,14 @@ class CUnit
 {
   friend std::ostream &operator<<(std::ostream &os, const CUnit & o);
 
+  typedef struct
+  {
+    std::string symbol;
+    double multiplier;
+    int scale;
+    double exponent;
+  } SymbolComponent;
+
 public:
 
   static C_FLOAT64 Avogadro;
@@ -108,10 +116,11 @@ public:
   bool compile(const C_FLOAT64 & avogadro = Avogadro);
 
   CUnit exponentiate(double exp) const;
-  CUnit & operator*(const CUnit & rhs) const;
+  CUnit operator*(const CUnit & rhs) const;
   bool operator==(const CUnit & rhs) const;
   bool isEquivalent(const CUnit & rhs) const;
   void buildExpression();
+  std::vector< SymbolComponent > getSymbolComponents() const;
   bool isValidTimeUnit();
   bool isValidQuantityUnit();
   bool isValidVolumeUnit();
