@@ -35,6 +35,7 @@ class Parameter;
 class FunctionDefinition;
 class SBase;
 class Rule;
+class UnitDefinition;
 LIBSBML_CPP_NAMESPACE_END
 
 class CCompartment;
@@ -125,6 +126,7 @@ protected:
   bool mAvogadroSet;
   std::map<std::string, std::string> mKnownCustomUserDefinedFunctions;
   std::map<std::string, std::string> mKnownInitalValues;
+  std::map<const UnitDefinition*, std::string> mUnitExpressions;
 
 #if LIBSBML_VERSION >= 40100
   // this map is used for storing the parameters that are used as factors that have to be applied to the multiplicities
@@ -599,7 +601,7 @@ protected:
    * @param pSBMLUnit the SBML unit
    * @return a string corresponding to the unit
    */
-  std::string createUnitExpressionFor(const UnitDefinition* pSBMLUnit) const;
+  std::string createUnitExpressionFor(const UnitDefinition* pSBMLUnit);
 
   /**
    * If the given UnitDefinition can be converted to a form of litre, the

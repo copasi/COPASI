@@ -937,6 +937,7 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
   /* Create an empty model and set the title. */
   this->mpCopasiModel = new CModel(mpDataModel);
   copasi2sbmlmap[this->mpCopasiModel] = sbmlModel;
+  mUnitExpressions = std::map<const UnitDefinition*, std::string>();
   this->mpCopasiModel->setLengthUnit(CUnit::m);
   this->mpCopasiModel->setAreaUnit(CUnit::m2);
   this->mpCopasiModel->setVolumeUnit(CUnit::l);
@@ -3143,7 +3144,8 @@ SBMLImporter::SBMLImporter():
   mConversionFactorFound(false),
 #endif // LIBSBML_VERSION >= 40100
   mCompartmentMap(),
-  mChangedObjects()
+  mChangedObjects(),
+  mUnitExpressions()
 {
   this->speciesMap = std::map<std::string, CMetab*>();
   this->functionDB = NULL;
@@ -8485,41 +8487,47 @@ std::string unitKindToString(UnitKind_t kind)
     }
 }
 
-std::string SBMLImporter::createUnitExpressionFor(const UnitDefinition *pSBMLUnit) const
+std::string SBMLImporter::createUnitExpressionFor(const UnitDefinition *pSBMLUnit)
 {
   if (pSBMLUnit == NULL)
     return "";
 
-  std::stringstream str;
-  CUnit test;
+  // if we have an expression already for this unit, return it
+  std::string previousExpression = mUnitExpressions[pSBMLUnit];
+
+  if (!previousExpression.empty())
+    return previousExpression;
+
+  // otherwise
+  CUnit copasiUnit;
 
   for (size_t i = 0; i < pSBMLUnit->getNumUnits(); ++i)
     {
       const Unit* current = pSBMLUnit->getUnit(i);
+      std::string symbol = unitKindToString(current->getKind());
 
-      if (i > 0)  str << "*";
+      // skip invalid / unsupported
+      if (symbol.empty())
+        continue;
 
-      if (current->getMultiplier() == -1)
-        str << "-";
-      else if (current->getMultiplier() != 1)
-        str << current->getMultiplier() << "*";
-
-      if (current->getScale() != 0)
-        str << "1e" << current->getScale() << "*";
-
-      std::string kind = unitKindToString(current->getKind());
-
-      if (kind.empty()) continue;
-
-      str << kind;
-
-      if (current->getExponent() != 1)
-        str << "^" << current->getExponent();
+      CUnit tmp = CUnit(symbol).exponentiate(current->getExponentAsDouble());
+      tmp.addComponent(
+        CUnitComponent(
+          CBaseUnit::dimensionless,
+          current->getMultiplier(),
+          current->getScale()));
+      copasiUnit = copasiUnit * tmp;
 
     }
 
+  // construct expression
+  copasiUnit.buildExpression();
 
-  return str.str();
+  // store expression
+  mUnitExpressions[pSBMLUnit] = copasiUnit.getExpression();
+
+  // return expression
+  return copasiUnit.getExpression();
 }
 
 /**
