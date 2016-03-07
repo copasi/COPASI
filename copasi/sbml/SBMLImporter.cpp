@@ -98,6 +98,9 @@
 
 #include "utilities/CCopasiMessage.h"
 
+#include <copasi/MIRIAM/CBiologicalDescription.h>
+#include <copasi/MIRIAM/CModelMIRIAMInfo.h>
+
 #if LIBSBML_VERSION >= 50903 && LIBSBML_HAS_PACKAGE_COMP
 
 #include <sbml/util/PrefixTransformer.h>
@@ -9476,7 +9479,7 @@ bool SBMLImporter::importMIRIAM(const SBase* pSBMLObject, CCopasiObject* pCOPASI
   if (pAnnotation != NULL)
     {
       unsigned int i, iMax = pAnnotation->getNumChildren();
-      // the top level MIRIAM node must be a diret child to the annotation
+      // the top level MIRIAM node must be a direct child to the annotation
       // node and since there can be only one in a valid SBML file, we can
       // stop after we found one
       std::string nameSpace;
@@ -9650,6 +9653,71 @@ bool SBMLImporter::importMIRIAM(const SBase* pSBMLObject, CCopasiObject* pCOPASI
                 break;
             }
         }
+    }
+
+  if (pSBMLObject->isSetSBOTerm())
+    {
+      // import it by adding it to the miriam information
+      CAnnotation* annotation = CAnnotation::castObject(pCOPASIObject);
+      std::string uri = pSBMLObject->getSBOTermAsURL();
+      std::string miriamString = annotation->getMiriamAnnotation();
+
+      if (miriamString.empty())
+        {
+          std::stringstream str;
+
+          str << "<rdf:RDF xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#' xmlns:dc='http://purl.org/dc/elements/1.1/' xmlns:dcterms='http://purl.org/dc/terms/' xmlns:vCard='http://www.w3.org/2001/vcard-rdf/3.0#' xmlns:bqbiol='http://biomodels.net/biology-qualifiers/' xmlns:bqmodel='http://biomodels.net/model-qualifiers/'>"
+              << "  <rdf:Description rdf:about='#COPASI0'>\n"
+              << "    <bqmodel:is>\n"
+              << "      <rdf:Bag>\n"
+              << "        <rdf:li rdf:resource='" << uri << "' />\n"
+              << "      </rdf:Bag>\n"
+              << "    </bqmodel:is>\n"
+              << "  </rdf:Description>\n"
+              << "</rdf:RDF>";
+
+          miriamString = str.str();
+
+          annotation->setMiriamAnnotation(miriamString, annotation->getKey(), "");
+        }
+      else
+        {
+          std::string sboTerm = pSBMLObject->getSBOTermID();
+          // load miriam info
+          CMIRIAMInfo info;
+          info.load(annotation->getKey());
+
+          // check whether term is already there
+          CCopasiVector <CBiologicalDescription>& descriptons = info.getBiologicalDescriptions();
+          CCopasiVector <CBiologicalDescription>::const_iterator it = descriptons.begin()
+              , end = descriptons.end();
+
+          bool found = false;
+
+          for (; it != end; ++it)
+            {
+              const CBiologicalDescription& current = *it;
+
+              if (it->getId() == sboTerm)
+                {
+                  found = true;
+                  break;
+                }
+            }
+
+          // add if it wasn't there
+          if (!found)
+            {
+              CBiologicalDescription* bqBiol = info.createBiologicalDescription();
+              bqBiol->setPredicate("is");
+              bqBiol->setResource("Systems Biology Ontology");
+              bqBiol->setId(sboTerm);
+              info.save();
+            }
+
+
+        }
+
     }
 
   return result;
