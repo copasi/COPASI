@@ -447,8 +447,8 @@ CUnit CUnit::exponentiate(double exp) const
 {
   CUnit Unit(*this);
 
-  std::set< CUnitComponent >::iterator it = Unit.getComponents().begin();
-  std::set< CUnitComponent >::iterator end = Unit.getComponents().end();
+  std::set< CUnitComponent >::const_iterator it = Unit.getComponents().begin();
+  std::set< CUnitComponent >::const_iterator end = Unit.getComponents().end();
 
   for (; it != end; it++)
     {

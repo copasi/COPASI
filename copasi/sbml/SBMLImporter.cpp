@@ -9696,8 +9696,6 @@ bool SBMLImporter::importMIRIAM(const SBase* pSBMLObject, CCopasiObject* pCOPASI
 
           for (; it != end; ++it)
             {
-              const CBiologicalDescription& current = *it;
-
               if (it->getId() == sboTerm)
                 {
                   found = true;
