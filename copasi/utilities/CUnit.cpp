@@ -870,6 +870,21 @@ bool CUnit::isValidVolumeUnit()
     return false;
 }
 
+bool CUnit::isValidAreaUnit()
+{
+  std::set< CUnitComponent >::const_iterator lastComponent = mComponents.end();
+  --lastComponent;
+
+  if (mComponents.size() >= 1 && // has to be one or two components
+      mComponents.size() <= 2 &&
+      (lastComponent->getKind() == CBaseUnit::dimensionless ||
+       (lastComponent->getKind() == CBaseUnit::meter &&
+        lastComponent->getExponent() == 2)))
+    return true;
+  else // includes 0 exponents (undefined)
+    return false;
+}
+
 bool CUnit::isValidLengthUnit()
 {
   std::set< CUnitComponent >::const_iterator lastComponent = mComponents.end();
