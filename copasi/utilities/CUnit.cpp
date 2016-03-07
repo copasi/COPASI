@@ -840,6 +840,20 @@ void CUnit::buildExpression()
   mExpression = expression.str();
 }
 
+bool CUnit::isValidTimeUnit()
+{
+  std::set< CUnitComponent >::const_iterator lastComponent = mComponents.end();
+  --lastComponent;
+
+  if (mComponents.size() >= 1 && // has to be one or two components
+      mComponents.size() <= 2 &&
+      (lastComponent->getKind() == CBaseUnit::dimensionless ||
+       lastComponent->getKind() == CBaseUnit::second))
+    return true;
+  else // includes 0 exponents (undefined)
+    return false;
+}
+
 void CUnit::consolidateDimensionless()
 {
   // nothing to consolidate
