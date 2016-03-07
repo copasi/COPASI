@@ -114,6 +114,7 @@ public:
   void buildExpression();
   bool isValidTimeUnit();
   bool isValidVolumeUnit();
+  bool isValidAreaUnit();
   bool isValidLengthUnit();
 
 private:
