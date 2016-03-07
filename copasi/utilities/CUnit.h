@@ -113,6 +113,7 @@ public:
   bool isEquivalent(const CUnit & rhs) const;
   void buildExpression();
   bool isValidTimeUnit();
+  bool isValidQuantityUnit();
   bool isValidVolumeUnit();
   bool isValidAreaUnit();
   bool isValidLengthUnit();
