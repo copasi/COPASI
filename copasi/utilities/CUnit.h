@@ -112,6 +112,7 @@ public:
   bool operator==(const CUnit & rhs) const;
   bool isEquivalent(const CUnit & rhs) const;
   void buildExpression();
+  bool isValidTimeUnit();
 
 private:
   std::string mExpression;
