@@ -855,6 +855,21 @@ bool CUnit::isValidTimeUnit()
     return false;
 }
 
+bool CUnit::isValidQuantityUnit()
+{
+  std::set< CUnitComponent >::const_iterator lastComponent = mComponents.end();
+  --lastComponent;
+
+  if (mComponents.size() >= 1 && // has to be one or two components
+      mComponents.size() <= 2 &&
+      (lastComponent->getKind() == CBaseUnit::dimensionless ||
+       (lastComponent->getKind() == CBaseUnit::item &&
+        lastComponent->getExponent() == 1)))
+    return true;
+  else // includes 0 exponents (undefined)
+    return false;
+}
+
 bool CUnit::isValidVolumeUnit()
 {
   std::set< CUnitComponent >::const_iterator lastComponent = mComponents.end();
