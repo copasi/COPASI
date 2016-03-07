@@ -463,16 +463,13 @@ CUnit CUnit::exponentiate(double exp) const
         }
     }
 
-  Unit.consolidateDimensionless();
-
   return Unit;
 }
 
 // Putting units next to each other implies multiplying them.
-CUnit & CUnit::operator*(const CUnit & rhs) const
+CUnit  CUnit::operator*(const CUnit & rhs) const
 {
-  static CUnit Unit; // Make a copy of the first CUnit
-  Unit = *this; // Make a copy of the first CUnit
+  CUnit Unit(*this); // Make a copy of the first CUnit
 
   std::set< CUnitComponent >::const_iterator it = rhs.mComponents.begin();
   std::set< CUnitComponent >::const_iterator end = rhs.mComponents.end();
@@ -533,7 +530,7 @@ C_INT32 CUnit::getExponentOfSymbol(const std::string & symbol, CUnit & unit)
     {
       CUnit Tmp = unit **pUnitDef;
 
-      // Compare symbols to determine whether this simplified the unit
+      // Compare components to determine whether this simplified the unit
       if (Tmp.getComponents().size() < unit.getComponents().size())
         {
           unit = Tmp;
@@ -564,6 +561,14 @@ C_INT32 CUnit::getExponentOfSymbol(const std::string & symbol, CUnit & unit)
           else
             {
               // The kind is the same.
+              if ((fabs(1.0 - itOld->getMultiplier()) < 100 * std::numeric_limits< C_FLOAT64 >::epsilon() &&
+                   fabs(1.0 - itNew->getMultiplier()) >= 100 * std::numeric_limits< C_FLOAT64 >::epsilon()) ||
+                  (itOld->getMultiplier() < 1.0 && itNew->getMultiplier() < itOld->getMultiplier()) ||
+                  (itOld->getMultiplier() > 1.0 && itNew->getMultiplier() > itOld->getMultiplier()))
+                {
+                  improvement -= 100;
+                }
+
               improvement += fabs(itOld->getExponent()) - fabs(itNew->getExponent());
               ++itOld;
               ++itNew;
@@ -631,6 +636,15 @@ C_INT32 CUnit::getExponentOfSymbol(const std::string & symbol, CUnit & unit)
           else
             {
               // The kind is the same.
+              if ((fabs(1.0 - itOld->getMultiplier()) < 100 * std::numeric_limits< C_FLOAT64 >::epsilon() &&
+                   fabs(1.0 - itNew->getMultiplier()) >= 100 * std::numeric_limits< C_FLOAT64 >::epsilon()) ||
+                  (itOld->getMultiplier() < 1.0 && itNew->getMultiplier() < itOld->getMultiplier()) ||
+                  (itOld->getMultiplier() > 1.0 && itNew->getMultiplier() > itOld->getMultiplier()))
+                {
+                  improvement -= 100;
+                }
+
+              // The kind is the same.
               improvement += fabs(itOld->getExponent()) - fabs(itNew->getExponent());
               ++itOld;
               ++itNew;
@@ -661,67 +675,64 @@ C_INT32 CUnit::getExponentOfSymbol(const std::string & symbol, CUnit & unit)
   return Exponent;
 }
 
-void CUnit::buildExpression()
+std::vector< CUnit::SymbolComponent > CUnit::getSymbolComponents() const
 {
-  if (mComponents.empty())
-    {
-      mExpression = "";
-      return;
-    }
-
-  if (isEquivalent(CUnit(mExpression))) return;
-
-  std::ostringstream numerator, denominator;
-  numerator.str("");
-  denominator.str("");
-
-  CUnit Tmp(*this);
-
-  std::set< std::string >::const_iterator itSymbol = mUsedSymbols.begin();
-  std::set< std::string >::const_iterator endSymbol = mUsedSymbols.end();
-
+  std::vector< SymbolComponent > SymbolComponents;
+  size_t FirstNumeratorIndex = C_INVALID_INDEX;
+  size_t FirstDenominatorIndex = C_INVALID_INDEX;
   int FirstNumeratorExponent = 0;
   int FirstDenominatorExponent = 0;
-  size_t NumeratorCount = 0;
-  size_t DenominatorCount = 0;
 
-  for (; itSymbol != endSymbol; ++itSymbol)
+  SymbolComponent Component;
+
+  Component.symbol = "1"; // default dimensionless
+  Component.multiplier = 1.0;
+  Component.scale = 0;
+  Component.exponent = 0;
+
+  CUnit Tmp(*this);
+  Tmp.consolidateDimensionless();
+
+  std::set< std::string > UsedSymbols = mUsedSymbols;
+  size_t Index = 0;
+
+  while (true)
     {
-      C_INT32 Exponent = getExponentOfSymbol(*itSymbol, Tmp);
+      std::set< std::string >::const_iterator itSymbol = UsedSymbols.begin();
+      std::set< std::string >::const_iterator endSymbol = UsedSymbols.end();
 
-      if (Exponent == 0) continue;
-
-      if (Exponent > 0)
+      for (; itSymbol != endSymbol; ++itSymbol)
         {
-          if (FirstNumeratorExponent > 0)
-            numerator << "*";
-          else
-            FirstNumeratorExponent = Exponent;
+          C_INT32 Exponent = getExponentOfSymbol(*itSymbol, Tmp);
 
-          if (Exponent == 1)
-            numerator << *itSymbol;
-          else
-            numerator << *itSymbol << "^" << Exponent;
+          if (Exponent == 0) continue;
 
-          NumeratorCount++;
+          Component.symbol = *itSymbol;
+          Component.exponent = Exponent;
+
+          SymbolComponents.push_back(Component);
+
+          if (Exponent > 0 &&
+              FirstNumeratorIndex == C_INVALID_INDEX)
+            {
+              FirstNumeratorIndex = Index;
+              FirstNumeratorExponent = Exponent;
+            }
+          else if (Exponent < 0 &&
+                   FirstDenominatorIndex == C_INVALID_INDEX)
+            {
+              FirstDenominatorIndex = Index;
+              FirstDenominatorExponent = -Exponent;
+            }
+
+          Index++;
+          break;
         }
-      else
-        {
-          if (FirstDenominatorExponent > 0)
-            denominator << "*";
-          else
-            FirstDenominatorExponent = -Exponent;
 
-          if (Exponent == -1)
-            denominator << *itSymbol;
-          else
-            denominator << *itSymbol << "^" << -Exponent;
+      if (itSymbol == endSymbol) break;
 
-          DenominatorCount++;
-        }
+      UsedSymbols.erase(itSymbol);
     }
-
-  // At this point we have only base kinds left in Tmp
 
   std::set< CUnitComponent >::const_iterator it = Tmp.getComponents().begin();
   std::set< CUnitComponent >::const_iterator end = Tmp.getComponents().end();
@@ -741,34 +752,25 @@ void CUnit::buildExpression()
 
       C_INT32 Exponent = it->getExponent();
 
-      if (Exponent > 0)
+      Component.symbol = CBaseUnit::getSymbol(it->getKind());
+      Component.exponent = Exponent;
+
+      SymbolComponents.push_back(Component);
+
+      if (Exponent > 0 &&
+          FirstNumeratorIndex == C_INVALID_INDEX)
         {
-          if (FirstNumeratorExponent > 0)
-            numerator << "*";
-          else
-            FirstNumeratorExponent = Exponent;
-
-          if (Exponent == 1)
-            numerator << CBaseUnit::getSymbol(it->getKind());
-          else
-            numerator << CBaseUnit::getSymbol(it->getKind()) << "^" << Exponent;
-
-          NumeratorCount++;
+          FirstNumeratorIndex = Index;
+          FirstNumeratorExponent = Exponent;
         }
-      else
+      else if (Exponent < 0 &&
+               FirstDenominatorIndex == C_INVALID_INDEX)
         {
-          if (FirstDenominatorExponent > 0)
-            denominator << "*";
-          else
-            FirstDenominatorExponent = -Exponent;
-
-          if (Exponent == -1)
-            denominator << CBaseUnit::getSymbol(it->getKind());
-          else
-            denominator << CBaseUnit::getSymbol(it->getKind()) << "^" << -Exponent;
-
-          DenominatorCount++;
+          FirstDenominatorIndex = Index;
+          FirstDenominatorExponent = -Exponent;
         }
+
+      Index++;
     }
 
   double exponent = 1;
@@ -778,7 +780,7 @@ void CUnit::buildExpression()
   else if (FirstDenominatorExponent > 0)
     exponent = FirstDenominatorExponent;
 
-  double multiplier = fabs(itDimensionless->getMultiplier()) * pow(10.0, itDimensionless->getScale());
+  double multiplier = itDimensionless != end ? fabs(itDimensionless->getMultiplier()) * pow(10.0, itDimensionless->getScale()) : 1.0;
   int scale = 0;
 
   // Only one, if either, of the
@@ -804,40 +806,126 @@ void CUnit::buildExpression()
       multiplier = 1.0 / multiplier;
     }
 
-  std::ostringstream expression;
-
-  if (multiplier != 1.0 ||
-      (DenominatorCount > 0 && NumeratorCount == 0))
+  if (itDimensionless != end)
     {
-      expression << multiplier;
+      if (FirstNumeratorIndex != C_INVALID_INDEX)
+        {
+          SymbolComponents[FirstNumeratorIndex].multiplier = multiplier;
+          SymbolComponents[FirstNumeratorIndex].scale = scale;
+        }
+      else if (FirstDenominatorIndex != C_INVALID_INDEX)
+        {
+          SymbolComponents[FirstDenominatorIndex].multiplier = multiplier;
+          SymbolComponents[FirstDenominatorIndex].scale = -scale;
+        }
+      else
+        {
+          Component.multiplier = multiplier;
+          Component.scale = scale;
+          SymbolComponents.push_back(Component);
+        }
+    }
+
+  return SymbolComponents;
+}
+
+void CUnit::buildExpression()
+{
+  std::vector< SymbolComponent > Components = getSymbolComponents();
+
+  if (Components.empty())
+    {
+      mExpression = "";
+      return;
+    }
+
+  std::ostringstream numerator, denominator;
+  numerator.str("");
+  denominator.str("");
+
+  std::vector< SymbolComponent >::const_iterator it = Components.begin();
+  std::vector< SymbolComponent >::const_iterator end = Components.end();
+
+  size_t NumeratorCount = 0;
+  size_t DenominatorCount = 0;
+
+  for (; it != end; ++it)
+    {
+      if (it->exponent > 0)
+        {
+          if (NumeratorCount > 0)
+            {
+              numerator << "*";
+            }
+          else if (fabs(1.0 - it->multiplier) > 100 * std::numeric_limits< double >::epsilon())
+            {
+              numerator << it->multiplier << "*";
+            }
+
+          numerator << CBaseUnit::prefixFromScale(it->scale) << it->symbol;
+
+          if (it->exponent > 1.0)
+            {
+              numerator << "^" << it->exponent;
+            }
+
+          NumeratorCount++;
+        }
+      else if (it->exponent < 0)
+        {
+          if (DenominatorCount > 0)
+            {
+              denominator << "*";
+            }
+          else if (fabs(1.0 - it->multiplier) > 100 * std::numeric_limits< double >::epsilon())
+            {
+              denominator << it->multiplier << "*";
+              DenominatorCount++;
+            }
+
+          denominator << CBaseUnit::prefixFromScale(it->scale) << it->symbol;
+
+          if (it->exponent < -1.0)
+            {
+              denominator << "^" << -it->exponent;
+            }
+
+          DenominatorCount++;
+        }
+      else
+        {
+          if (fabs(1.0 - it->multiplier) > 100 * std::numeric_limits< double >::epsilon())
+            {
+              numerator << it->multiplier << "*";
+            }
+
+          numerator << CBaseUnit::prefixFromScale(it->scale) << it->symbol;
+          NumeratorCount++;
+        }
+    }
+
+  mExpression = "";
+
+  if (NumeratorCount == 0 &&
+      DenominatorCount > 0)
+    {
+      numerator << 1.0;
+      NumeratorCount++;
     }
 
   if (NumeratorCount > 0)
     {
-      if (multiplier != 1.0) expression << "*";
-
-      expression << CBaseUnit::prefixFromScale(scale) << numerator.str();
-      scale = 0;
+      mExpression += numerator.str();
     }
 
   if (DenominatorCount > 1)
     {
-      expression << "/(" <<  CBaseUnit::prefixFromScale(scale) << denominator.str() << ")";
+      mExpression += "/(" + denominator.str() + ")";
     }
   else if (DenominatorCount > 0)
     {
-      expression << "/" << CBaseUnit::prefixFromScale(scale) << denominator.str();
+      mExpression += "/" + denominator.str();
     }
-
-  if (NumeratorCount == 0 &&
-      DenominatorCount == 0)
-    {
-      if (multiplier != 1.0) expression << "*";
-
-      expression << CBaseUnit::prefixFromScale(scale) << "1";
-    }
-
-  mExpression = expression.str();
 }
 
 bool CUnit::isValidTimeUnit()
