@@ -201,6 +201,7 @@ private:
   //--- ETTORE start ---
   std::vector< C_FLOAT64 > mValues;
   std::vector< C_FLOAT64 > mTimes;
+  std::vector< CVector< C_FLOAT64 > > mValuesSeries;
   //--- ETTORE end -----
 
   //the number of states already pushed to the ring buffer

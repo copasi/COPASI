@@ -229,6 +229,7 @@ bool CAnalyticsTask::process(const bool & useInitialValues)
     {
       mValues.push_back(*(mpContainer->getState(false).array() + mIndex));
       mTimes.push_back(*mpContainerStateTime);
+      mValuesSeries.push_back(mpContainer->getState(false));
     }
 
   //--- ETTORE end -----
@@ -324,18 +325,22 @@ void CAnalyticsTask::finish()
   if (mpCallBack != NULL) mpCallBack->finishItem(mhProgress);
 
   //ComputeRequestedStatistics
-  output(COutputInterface::AFTER);
-
   if (mIndex >= 0) // If an object was selected...
     {
       mValues.push_back(*(mpContainer->getState(false).array() + mIndex));
       mTimes.push_back(*mpContainerStateTime);
       computeSelectedStatistics(mValues, mTimes);
     }
+
+  output(COutputInterface::DURING);
+  output(COutputInterface::AFTER);
 }
 
 void CAnalyticsTask::computeSelectedStatistics(std::vector< C_FLOAT64 > mValues, std::vector< C_FLOAT64 > mTimes)
 {
+
+  int StatsIndex = mValues.size() - 1;
+
   mStatVal = mValues[mValues.size() - 1];
   mStatTime = mTimes[mTimes.size() - 1];
 
@@ -343,21 +348,27 @@ void CAnalyticsTask::computeSelectedStatistics(std::vector< C_FLOAT64 > mValues,
     {
       if (mpAnalyticsProblem->isPositiveDirection())     //Looking for minimum
         {
-          if (mValues[i] <= mStatVal)
+          if (mValues[i] <= (mStatVal))
             {
               mStatVal = mValues[i];
               mStatTime = mTimes[i];
+              StatsIndex = i;
             }
         }
       else                                               //Looking for maximum
         {
-          if (mValues[i] >= mStatVal)
+          if (mValues[i] >= (mStatVal))
             {
               mStatVal = mValues[i];
               mStatTime = mTimes[i];
+              StatsIndex = i;
             }
         }
     }
+
+  // The state of the system and the corresponding time
+  // when the stats was reached...
+  mpContainer->setState(mValuesSeries[StatsIndex]);
 
   // Create the new statistics object to be added to the model.
   std::string nameStats = "";
@@ -443,8 +454,9 @@ void CAnalyticsTask::eventCallBack(void * /* pData */, void * /* pCaller */)
 
   //--- ETTORE start ---
   // I store the max / min of the variable and the corresponding times
-  mValues.push_back(mContainerState[mIndex]);
+  mValues.push_back(*(mpContainer->getState(false).array() + mIndex));
   mTimes.push_back(*mpContainerStateTime);
+  mValuesSeries.push_back(mContainerState);
   //--- ETTORE end -----
 
   // now check if we can transition to the main state
@@ -537,7 +549,7 @@ void CAnalyticsTask::eventCallBack(void * /* pData */, void * /* pCaller */)
 
       mLastFreq = 1 / mLastPeriod;
 
-      output(COutputInterface::DURING);
+      //output(COutputInterface::DURING);
 
       //check if the conditions for stopping are met
       //we don't have to check for maximum duration, this is done elsewhere
