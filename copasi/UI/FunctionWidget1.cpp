@@ -126,7 +126,7 @@ bool FunctionWidget1::loadParameterTable()
   assert(pModel != NULL);
 
   CFindDimensions ddd(mpFunction, CUnit(pModel->getQuantityUnit()).isDimensionless(),
-                      pModel->getVolumeUnit().isDimensionless(),
+                      CUnit(pModel->getVolumeUnit()).isDimensionless(),
                       pModel->getTimeUnit().isDimensionless(),
                       pModel->getAreaUnit().isDimensionless(),
                       pModel->getLengthUnit().isDimensionless()

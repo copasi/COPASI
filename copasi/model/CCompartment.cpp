@@ -91,7 +91,7 @@ CUnit CCompartment::getChildObjectUnits(const CCopasiObject * pObject) const
             break;
 
           case 3:
-            unit = (mpModel != NULL) ? mpModel->getVolumeUnit() : CUnit();
+            unit = (mpModel != NULL) ? CUnit(mpModel->getVolumeUnit()) : CUnit();
             break;
 
           default:

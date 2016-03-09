@@ -169,7 +169,7 @@ const std::string CModelParameter::getUnit(const Framework & framework) const
 
         CFindDimensions Units(pReaction->getFunction(),
                               CUnit(pModel->getQuantityUnit()).isDimensionless(),
-                              pModel->getVolumeUnit().isDimensionless(),
+                              CUnit(pModel->getVolumeUnit()).isDimensionless(),
                               pModel->getTimeUnit().isDimensionless(),
                               pModel->getAreaUnit().isDimensionless(),
                               pModel->getLengthUnit().isDimensionless());
