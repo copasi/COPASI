@@ -171,7 +171,7 @@ const std::string CModelParameter::getUnit(const Framework & framework) const
                               CUnit(pModel->getQuantityUnit()).isDimensionless(),
                               CUnit(pModel->getVolumeUnit()).isDimensionless(),
                               pModel->getTimeUnit().isDimensionless(),
-                              pModel->getAreaUnit().isDimensionless(),
+                              CUnit(pModel->getAreaUnit()).isDimensionless(),
                               pModel->getLengthUnit().isDimensionless());
         Units.setUseHeuristics(true);
 

@@ -477,7 +477,7 @@ public:
    * Get the current area unit of the model
    * @return const CUnit & areaunit
    */
-  const CUnit & getAreaUnit() const;
+  const std::string &getAreaUnit() const;
 
   /**
    * Get the unit for areas
@@ -1053,7 +1053,7 @@ private:
   /**
    * The volume unit used in the Model
    */
-  CUnit * mpAreaUnit;
+  std::string mAreaUnit;
 
   /**
    * The volume unit used in the Model

@@ -95,58 +95,6 @@ CUnit::CUnit(const CUnit & src):
 CUnit::~CUnit()
 {}
 
-void CUnit::fromEnum(AreaUnit areaEnum)
-{
-  mComponents.clear();
-
-  mExpression = AreaUnitNames[areaEnum];
-
-  if (areaEnum == CUnit::dimensionlessArea)
-    return; // no need to add component
-
-  CUnitComponent tmpComponent = CUnitComponent(CBaseUnit::meter);
-  tmpComponent.setExponent(2);
-
-  switch (areaEnum)
-    {
-      case CUnit::m2:  //default scale = 0
-        break;
-
-      case CUnit::dm2:
-        tmpComponent.setScale(-2);
-        break;
-
-      case CUnit::cm2:
-        tmpComponent.setScale(-4);
-        break;
-
-      case CUnit::mm2:
-        tmpComponent.setScale(-6);
-        break;
-
-      case CUnit::microm2:
-        tmpComponent.setScale(-12);
-        break;
-
-      case CUnit::nm2:
-        tmpComponent.setScale(-18);
-        break;
-
-      case CUnit::pm2:
-        tmpComponent.setScale(-24);
-        break;
-
-      case CUnit::fm2:
-        tmpComponent.setScale(-30);
-        break;
-
-      default:
-        return; // just to silence compiler warning
-    }
-
-  addComponent(tmpComponent);
-}
-
 void CUnit::fromEnum(LengthUnit lengthEnum)
 {
   mComponents.clear();

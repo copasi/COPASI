@@ -87,7 +87,7 @@ CUnit CCompartment::getChildObjectUnits(const CCopasiObject * pObject) const
             break;
 
           case 2:
-            unit = (mpModel != NULL) ? mpModel->getAreaUnit() : CUnit();
+            unit = (mpModel != NULL) ? CUnit(mpModel->getAreaUnit()) : CUnit();
             break;
 
           case 3:
