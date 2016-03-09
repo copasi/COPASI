@@ -166,7 +166,7 @@ void ParameterTable::updateTable(const CReactionInterface & ri, const CReaction 
   CModel * pModel = dynamic_cast< CModel * >(pReaction->getObjectAncestor("Model"));
 
   //first get the units strings
-  CFindDimensions units(ri.getFunction(), pModel->getQuantityUnit().isDimensionless(),
+  CFindDimensions units(ri.getFunction(), CUnit(pModel->getQuantityUnit()).isDimensionless(),
                         pModel->getVolumeUnit().isDimensionless(),
                         pModel->getTimeUnit().isDimensionless(),
                         pModel->getAreaUnit().isDimensionless(),

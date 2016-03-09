@@ -128,7 +128,7 @@ CUnit CMetab::getChildObjectUnits(const CCopasiObject * pObject) const
   if (pObject == mpIValueReference ||
       pObject == mpValueReference)
     {
-      unit = (mpModel != NULL) ? mpModel->getQuantityUnit() : CUnit();
+      unit = (mpModel != NULL) ? CUnit(mpModel->getQuantityUnit()) : CUnit();
     }
   else if (pObject == mpTTReference)
     {
@@ -137,7 +137,7 @@ CUnit CMetab::getChildObjectUnits(const CCopasiObject * pObject) const
   else if (pObject == mpIConcReference ||
            pObject == mpConcReference)
     {
-      CUnit QunatityUnit = (mpModel != NULL) ? mpModel->getQuantityUnit() : CUnit();
+      CUnit QunatityUnit = (mpModel != NULL) ? CUnit(mpModel->getQuantityUnit()) : CUnit();
       CUnit CompartmentUnit = (mpCompartment != NULL) ? mpCompartment->getUnits() : CUnit();
 
       if (!QunatityUnit.isUndefined() &&

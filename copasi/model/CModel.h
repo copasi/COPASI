@@ -581,7 +581,7 @@ public:
    * Get the current quantity unit of the model
    * @return const CUnit & quantityunit
    */
-  const CUnit & getQuantityUnit() const;
+  const std::string getQuantityUnit() const;
 
   /**
    * Get the unit for quantities
@@ -1068,7 +1068,7 @@ private:
   /**
    * The quantity unit used in the Model
    */
-  CUnit * mpQuantityUnit;
+  std::string mQuantityUnit;
 
   /**
    * The type of the model
