@@ -95,7 +95,6 @@ public:
 
   ~CUnit();
 
-  void fromEnum(AreaUnit areaEnum);
   void fromEnum(LengthUnit lengthEnum);
   void fromEnum(TimeUnit timeEnum);
 

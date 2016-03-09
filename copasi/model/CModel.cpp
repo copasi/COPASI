@@ -62,7 +62,7 @@ CModel::CModel(CCopasiContainer* pParent):
   mStateTemplate(*this),
   mPhysicalDependencies(),
   mVolumeUnit(""),
-  mpAreaUnit(NULL),
+  mAreaUnit(""),
   mpLengthUnit(NULL),
   mpTimeUnit(NULL),
   mQuantityUnit(""),
@@ -1335,23 +1335,23 @@ bool CModel::setAreaUnit(const std::string & name)
 
 bool CModel::setAreaUnit(const CUnit::AreaUnit & unitEnum)
 {
-  mpAreaUnit->setExpression(CUnit::AreaUnitNames[unitEnum], mAvogadro);
+  mAreaUnit = CUnit::AreaUnitNames[unitEnum];
   return true;
 }
 
-const CUnit & CModel::getAreaUnit() const
+const std::string & CModel::getAreaUnit() const
 {
-  return *mpAreaUnit;
+  return mAreaUnit;
 }
 
 std::string CModel::getAreaUnitName() const
 {
-  return mpAreaUnit->getExpression();
+  return mAreaUnit;
 }
 
 CUnit::AreaUnit CModel::getAreaUnitEnum() const
 {
-  return toEnum(mpAreaUnit->getExpression().c_str(), CUnit::AreaUnitNames, CUnit::m2);
+  return toEnum(mAreaUnit.c_str(), CUnit::AreaUnitNames, CUnit::m2);
 }
 
 //****
@@ -3031,8 +3031,7 @@ void CModel::initObjects()
 
   mVolumeUnit = "ml";
 
-  mpAreaUnit = new CUnit();
-  mpAreaUnit->fromEnum(CUnit::m2);
+  mAreaUnit = "m\xc2\xb2";
 
   mpLengthUnit = new CUnit();
   mpLengthUnit->fromEnum(CUnit::m);
@@ -3492,7 +3491,7 @@ std::string CModel::printParameterOverview()
           CFindDimensions units(reac->getFunction(), CUnit(getQuantityUnit()).isDimensionless(),
                                 CUnit(getVolumeUnit()).isDimensionless(),
                                 getTimeUnit().isDimensionless(),
-                                getAreaUnit().isDimensionless(),
+                                CUnit(getAreaUnit()).isDimensionless(),
                                 getLengthUnit().isDimensionless());
           units.setUseHeuristics(true);
           units.setChemicalEquation(&reac->getChemEq());
@@ -3562,10 +3561,10 @@ std::string CModel::getVolumeUnitsDisplayString() const
 
 std::string CModel::getAreaUnitsDisplayString() const
 {
-  if (mpAreaUnit->isDimensionless())
+  if (CUnit(mAreaUnit).isDimensionless())
     return "";
 
-  return mpAreaUnit->getExpression();
+  return mAreaUnit;
 }
 
 std::string CModel::getLengthUnitsDisplayString() const
@@ -3835,7 +3834,7 @@ CCopasiObject::DataObjectSet CModel::getUnitSymbolUsage(std::string symbol) cons
 
   //Is it used for any of the default model units?
   if (CUnit(mVolumeUnit).getUsedSymbols().count(symbol) ||
-      mpAreaUnit->getUsedSymbols().count(symbol) ||
+      CUnit(mAreaUnit).getUsedSymbols().count(symbol) ||
       mpLengthUnit->getUsedSymbols().count(symbol) ||
       mpTimeUnit->getUsedSymbols().count(symbol) ||
       CUnit(mQuantityUnit).getUsedSymbols().count(symbol))
@@ -3857,7 +3856,7 @@ void CModel::changeUnitExpressionSymbols(std::string oldSymbol, std::string newS
     }
 
   mVolumeUnit = CUnit::replaceSymbol(mVolumeUnit, oldSymbol, newSymbol);
-  mpAreaUnit->setExpression(CUnit::replaceSymbol(mpAreaUnit->getExpression(), oldSymbol, newSymbol), getAvogadro());
+  mAreaUnit = CUnit::replaceSymbol(mAreaUnit, oldSymbol, newSymbol);
   mpLengthUnit->setExpression(CUnit::replaceSymbol(mpLengthUnit->getExpression(), oldSymbol, newSymbol), getAvogadro());
   mpTimeUnit->setExpression(CUnit::replaceSymbol(mpTimeUnit->getExpression(), oldSymbol, newSymbol), getAvogadro());
   mQuantityUnit = CUnit::replaceSymbol(mQuantityUnit, oldSymbol, newSymbol);
@@ -3879,7 +3878,7 @@ std::map< std::string, CUnit > CModel::getUsedUnits() const
     }
 
   UsedUnits[mVolumeUnit] = CUnit(mVolumeUnit);
-  UsedUnits[mpAreaUnit->getExpression()] = *mpAreaUnit;
+  UsedUnits[mAreaUnit] = CUnit(mAreaUnit);
   UsedUnits[mpLengthUnit->getExpression()] = *mpLengthUnit;
   UsedUnits[mpTimeUnit->getExpression()] = *mpTimeUnit;
   UsedUnits[mQuantityUnit] = CUnit(mQuantityUnit);
