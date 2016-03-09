@@ -298,58 +298,6 @@ void CUnit::fromEnum(TimeUnit timeEnum)
   addComponent(tmpComponent);
 }
 
-void CUnit::fromEnum(QuantityUnit quantityEnum, C_FLOAT64 avogadro)
-{
-  mComponents.clear();
-
-  mExpression = QuantityUnitNames[quantityEnum];
-
-  if (quantityEnum == CUnit::dimensionlessQuantity)
-    return; // no need to add component
-
-  CUnitComponent tmpComponent = CUnitComponent(CBaseUnit::item);
-
-  tmpComponent.setMultiplier(avogadro);
-
-  //   enum QuantityUnit {dimensionlessQuantity = 0, Mol, mMol, microMol, nMol, pMol, fMol, number, OldXML};
-
-  switch (quantityEnum)
-    {
-      case CUnit::Mol:
-        break;
-
-      case CUnit::mMol:
-        tmpComponent.setScale(-3);
-        break;
-
-      case CUnit::microMol:
-        tmpComponent.setScale(-6);
-        break;
-
-      case CUnit::nMol:
-        tmpComponent.setScale(-9);
-        break;
-
-      case CUnit::pMol:
-        tmpComponent.setScale(-12);
-        break;
-
-      case CUnit::fMol:
-        tmpComponent.setScale(-15);
-        break;
-
-      case CUnit::number:
-      case CUnit::OldXML:
-        tmpComponent.setMultiplier(1);
-        break;
-
-      default:
-        return; // just to silence compiler warning
-    }
-
-  addComponent(tmpComponent);
-}
-
 bool CUnit::setExpression(const std::string & expression,
                           const C_FLOAT64 & avogadro)
 {

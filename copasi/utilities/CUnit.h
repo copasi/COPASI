@@ -99,7 +99,6 @@ public:
   void fromEnum(AreaUnit areaEnum);
   void fromEnum(LengthUnit lengthEnum);
   void fromEnum(TimeUnit timeEnum);
-  void fromEnum(QuantityUnit quantityEnum, C_FLOAT64 avogadro);
 
   bool setExpression(const std::string & expression,
                      const C_FLOAT64 & avogadro);
