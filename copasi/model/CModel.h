@@ -481,7 +481,7 @@ public:
    * Get the current area unit of the model
    * @return const CUnit & areaunit
    */
-  const std::string &getAreaUnit() const;
+  const std::string & getAreaUnit() const;
 
   /**
    * Get the unit for areas
@@ -513,7 +513,7 @@ public:
    * Get the current length unit of the model
    * @return const CUnit & lengthunit
    */
-  const CUnit & getLengthUnit() const;
+  const std::string & getLengthUnit() const;
 
   /**
    * Get the unit for lengths
@@ -1062,7 +1062,7 @@ private:
   /**
    * The volume unit used in the Model
    */
-  CUnit * mpLengthUnit;
+  std::string mLengthUnit;
 
   /**
    * The time unit used in the Model
