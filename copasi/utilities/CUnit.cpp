@@ -95,58 +95,6 @@ CUnit::CUnit(const CUnit & src):
 CUnit::~CUnit()
 {}
 
-void CUnit::fromEnum(TimeUnit timeEnum)
-{
-  mComponents.clear();
-
-  mExpression = TimeUnitNames[timeEnum];
-
-  if (timeEnum == CUnit::dimensionlessTime)
-    return; // no need to add component
-
-  CUnitComponent tmpComponent = CUnitComponent(CBaseUnit::second);
-
-  switch (timeEnum)
-    {
-      case CUnit::d:
-        tmpComponent.setMultiplier(60 * 60 * 24);
-        break;
-
-      case CUnit::h:
-        tmpComponent.setMultiplier(60 * 60);
-        break;
-
-      case CUnit::min:
-      case CUnit::OldMinute:
-        tmpComponent.setMultiplier(60);
-        break;
-
-      case CUnit::s:  // defaults are appropriate
-        break;
-
-      case CUnit::micros:
-        tmpComponent.setScale(-6);
-        break;
-
-      case CUnit::ns:
-        tmpComponent.setScale(-9);
-        break;
-
-      case CUnit::ps:
-        tmpComponent.setScale(-12);
-        break;
-
-      case CUnit::fs:
-        tmpComponent.setScale(-15);
-        break;
-
-      default:
-        return; // just to silence compiler warning
-    }
-
-  addComponent(tmpComponent);
-}
-
 bool CUnit::setExpression(const std::string & expression,
                           const C_FLOAT64 & avogadro)
 {

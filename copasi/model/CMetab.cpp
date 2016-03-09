@@ -132,7 +132,7 @@ CUnit CMetab::getChildObjectUnits(const CCopasiObject * pObject) const
     }
   else if (pObject == mpTTReference)
     {
-      unit = (mpModel != NULL) ? mpModel->getTimeUnit() : CUnit();
+      unit = (mpModel != NULL) ? CUnit(mpModel->getTimeUnit()) : CUnit();
     }
   else if (pObject == mpIConcReference ||
            pObject == mpConcReference)
@@ -149,7 +149,7 @@ CUnit CMetab::getChildObjectUnits(const CCopasiObject * pObject) const
   else if (pObject == mpConcRateReference)
     {
       CUnit ConcentrationUnit = getChildObjectUnits(mpConcReference);
-      CUnit TimeUnit = (mpModel != NULL) ? mpModel->getTimeUnit() : CUnit();
+      CUnit TimeUnit = (mpModel != NULL) ? CUnit(mpModel->getTimeUnit()) : CUnit();
 
       if (!ConcentrationUnit.isUndefined() &&
           !TimeUnit.isUndefined())

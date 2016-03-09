@@ -545,7 +545,7 @@ public:
    * Get the current time unit of the model
    * @return const CUnit & timeunit
    */
-  const CUnit & getTimeUnit() const;
+  const std::string & getTimeUnit() const;
 
   /**
    * Get the unit for time
@@ -1063,7 +1063,7 @@ private:
   /**
    * The time unit used in the Model
    */
-  CUnit * mpTimeUnit;
+  std::string mTimeUnit;
 
   /**
    * The quantity unit used in the Model

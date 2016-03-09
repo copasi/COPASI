@@ -383,7 +383,7 @@ CUnit CModelEntity::getChildObjectUnits(const CCopasiObject * pObject) const
   if (pObject == mpRateReference)
     {
       CUnit ValueUnit = getChildObjectUnits(mpValueReference);
-      CUnit TimeUnit = (mpModel != NULL) ? mpModel->getTimeUnit() : CUnit();
+      CUnit TimeUnit = (mpModel != NULL) ? CUnit(mpModel->getTimeUnit()) : CUnit();
 
       if (!ValueUnit.isUndefined() &&
           !TimeUnit.isUndefined())
