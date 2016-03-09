@@ -95,54 +95,6 @@ CUnit::CUnit(const CUnit & src):
 CUnit::~CUnit()
 {}
 
-void CUnit::fromEnum(VolumeUnit volEnum)
-{
-  mComponents.clear();
-
-  mExpression = VolumeUnitNames[volEnum];
-
-  if (volEnum == CUnit::dimensionlessVolume)
-    return; // no need to add component
-
-  CUnitComponent tmpComponent = CUnitComponent(CBaseUnit::meter);
-  tmpComponent.setExponent(3);
-
-  switch (volEnum)
-    {
-      case CUnit::m3:  //default scale = 0
-        break;
-
-      case CUnit::l:
-        tmpComponent.setScale(-3);
-        break;
-
-      case CUnit::ml:
-        tmpComponent.setScale(-6);
-        break;
-
-      case CUnit::microl:
-        tmpComponent.setScale(-9);
-        break;
-
-      case CUnit::nl:
-        tmpComponent.setScale(-12);
-        break;
-
-      case CUnit::pl:
-        tmpComponent.setScale(-15);
-        break;
-
-      case CUnit::fl:
-        tmpComponent.setScale(-18);
-        break;
-
-      default:
-        return; // just to silence compiler warning
-    }
-
-  addComponent(tmpComponent);
-}
-
 void CUnit::fromEnum(AreaUnit areaEnum)
 {
   mComponents.clear();

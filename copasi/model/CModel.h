@@ -449,7 +449,7 @@ public:
    * Get the current volume unit of the model
    * @return const CUnit & volumeunit
    */
-  const CUnit & getVolumeUnit() const;
+  const std::string & getVolumeUnit() const;
 
   /**
    * Get the unit for volumes
@@ -1052,7 +1052,7 @@ private:
   /**
    * The volume unit used in the Model
    */
-  CUnit * mpVolumeUnit;
+  std::string mVolumeUnit;
 
   /**
    * The volume unit used in the Model
