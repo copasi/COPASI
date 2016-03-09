@@ -129,7 +129,7 @@ bool FunctionWidget1::loadParameterTable()
                       CUnit(pModel->getVolumeUnit()).isDimensionless(),
                       pModel->getTimeUnit().isDimensionless(),
                       CUnit(pModel->getAreaUnit()).isDimensionless(),
-                      pModel->getLengthUnit().isDimensionless()
+                      CUnit(pModel->getLengthUnit()).isDimensionless()
                      );
 
   ddd.setUseHeuristics(true);

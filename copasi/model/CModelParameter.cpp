@@ -172,7 +172,7 @@ const std::string CModelParameter::getUnit(const Framework & framework) const
                               CUnit(pModel->getVolumeUnit()).isDimensionless(),
                               pModel->getTimeUnit().isDimensionless(),
                               CUnit(pModel->getAreaUnit()).isDimensionless(),
-                              pModel->getLengthUnit().isDimensionless());
+                              CUnit(pModel->getLengthUnit()).isDimensionless());
         Units.setUseHeuristics(true);
 
         Units.setChemicalEquation(&pReaction->getChemEq());

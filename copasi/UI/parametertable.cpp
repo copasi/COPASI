@@ -170,7 +170,7 @@ void ParameterTable::updateTable(const CReactionInterface & ri, const CReaction 
                         CUnit(pModel->getVolumeUnit()).isDimensionless(),
                         pModel->getTimeUnit().isDimensionless(),
                         CUnit(pModel->getAreaUnit()).isDimensionless(),
-                        pModel->getLengthUnit().isDimensionless()
+                        CUnit(pModel->getLengthUnit()).isDimensionless()
                        );
   units.setUseHeuristics(true);
   units.setMolecularitiesForMassAction(ri.getChemEqInterface().getMolecularity(CFunctionParameter::SUBSTRATE),

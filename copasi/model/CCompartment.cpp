@@ -83,7 +83,7 @@ CUnit CCompartment::getChildObjectUnits(const CCopasiObject * pObject) const
       switch (mDimensionality)
         {
           case 1:
-            unit = (mpModel != NULL) ? mpModel->getLengthUnit() : CUnit();
+            unit = (mpModel != NULL) ? CUnit(mpModel->getLengthUnit()) : CUnit();
             break;
 
           case 2:
@@ -198,7 +198,7 @@ std::string CCompartment::getUnitString() const
     return "";
 
   // Default; assumes mDimensionality == 1
-  std::string unitString = mpModel->getLengthUnit().getExpression();
+  std::string unitString = mpModel->getLengthUnit();
 
   if (mDimensionality == 2)
     unitString += "\xc2\xb2"; // Add superscript 2

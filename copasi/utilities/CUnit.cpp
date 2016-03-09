@@ -95,57 +95,6 @@ CUnit::CUnit(const CUnit & src):
 CUnit::~CUnit()
 {}
 
-void CUnit::fromEnum(LengthUnit lengthEnum)
-{
-  mComponents.clear();
-
-  mExpression = LengthUnitNames[lengthEnum];
-
-  if (lengthEnum == CUnit::dimensionlessLength)
-    return; // no need to add component
-
-  CUnitComponent tmpComponent = CUnitComponent(CBaseUnit::meter);
-
-  switch (lengthEnum)
-    {
-      case CUnit::m:  //default scale = 0
-        break;
-
-      case CUnit::dm:
-        tmpComponent.setScale(-1);
-        break;
-
-      case CUnit::cm:
-        tmpComponent.setScale(-2);
-        break;
-
-      case CUnit::mm:
-        tmpComponent.setScale(-3);
-        break;
-
-      case CUnit::microm:
-        tmpComponent.setScale(-6);
-        break;
-
-      case CUnit::nm:
-        tmpComponent.setScale(-9);
-        break;
-
-      case CUnit::pm:
-        tmpComponent.setScale(-12);
-        break;
-
-      case CUnit::fm:
-        tmpComponent.setScale(-15);
-        break;
-
-      default:
-        return; // just to silence compiler warning
-    }
-
-  addComponent(tmpComponent);
-}
-
 void CUnit::fromEnum(TimeUnit timeEnum)
 {
   mComponents.clear();
