@@ -95,9 +95,6 @@ public:
 
   ~CUnit();
 
-  void fromEnum(LengthUnit lengthEnum);
-  void fromEnum(TimeUnit timeEnum);
-
   bool setExpression(const std::string & expression,
                      const C_FLOAT64 & avogadro);
 

@@ -168,7 +168,7 @@ void ParameterTable::updateTable(const CReactionInterface & ri, const CReaction 
   //first get the units strings
   CFindDimensions units(ri.getFunction(), CUnit(pModel->getQuantityUnit()).isDimensionless(),
                         CUnit(pModel->getVolumeUnit()).isDimensionless(),
-                        pModel->getTimeUnit().isDimensionless(),
+                        CUnit(pModel->getTimeUnit()).isDimensionless(),
                         CUnit(pModel->getAreaUnit()).isDimensionless(),
                         CUnit(pModel->getLengthUnit()).isDimensionless()
                        );
