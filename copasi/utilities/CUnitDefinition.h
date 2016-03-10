@@ -33,7 +33,7 @@ public:
    * @param const CCopasiContainer * pParent (default: NULL)
    */
   CUnitDefinition(const std::string & name = "NoName",
-                  const CCopasiContainer * pParent = NULL);
+                  const CCopasiContainer * pParent = NO_PARENT);
 
   /**
    * Kind constructor
@@ -41,7 +41,7 @@ public:
    * @param const CCopasiContainer * pParent (default: NULL)
    */
   CUnitDefinition(const CBaseUnit::Kind & kind,
-                  const CCopasiContainer * pParent = NULL);
+                  const CCopasiContainer * pParent = NO_PARENT);
 
   /**
   * Copy constructor

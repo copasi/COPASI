@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -419,15 +419,15 @@ void CQFittingItemWidget::slotParamEdit()
             {
               case OPT_ITEM:
               case OPT_CONSTRAINT:
-                pItem = new COptItem(*pSrc);
+                pItem = new COptItem(*pSrc, NO_PARENT);
                 break;
 
               case FIT_ITEM:
-                pItem = new CFitItem(*pSrc);
+                pItem = new CFitItem(*pSrc, NO_PARENT);
                 break;
 
               case FIT_CONSTRAINT:
-                pItem = new CFitConstraint(*pSrc);
+                pItem = new CFitConstraint(*pSrc, NO_PARENT);
                 break;
             }
 
@@ -524,15 +524,15 @@ bool CQFittingItemWidget::load(CCopasiDataModel * pDataModel,
         {
           case OPT_ITEM:
           case OPT_CONSTRAINT:
-            *it = new COptItem(**src);
+            *it = new COptItem(**src, NO_PARENT);
             break;
 
           case FIT_ITEM:
-            *it = new CFitItem(**src);
+            *it = new CFitItem(**src, NO_PARENT);
             break;
 
           case FIT_CONSTRAINT:
-            *it = new CFitConstraint(**src);
+            *it = new CFitConstraint(**src, NO_PARENT);
             break;
         }
 
@@ -764,15 +764,15 @@ bool CQFittingItemWidget::save(const std::map<std::string, std::string> * pExper
         {
           case OPT_ITEM:
           case OPT_CONSTRAINT:
-            pItem = new COptItem(**it);
+            pItem = new COptItem(**it, NO_PARENT);
             break;
 
           case FIT_ITEM:
-            pItem = new CFitItem(**it);
+            pItem = new CFitItem(**it, NO_PARENT);
             break;
 
           case FIT_CONSTRAINT:
-            pItem = new CFitConstraint(**it);
+            pItem = new CFitConstraint(**it, NO_PARENT);
             break;
         }
 
@@ -941,15 +941,15 @@ void CQFittingItemWidget::slotCopy()
     {
       case OPT_ITEM:
       case OPT_CONSTRAINT:
-        pItem = new COptItem(*pSrc);
+        pItem = new COptItem(*pSrc, NO_PARENT);
         break;
 
       case FIT_ITEM:
-        pItem = new CFitItem(*pSrc);
+        pItem = new CFitItem(*pSrc, NO_PARENT);
         break;
 
       case FIT_CONSTRAINT:
-        pItem = new CFitConstraint(*pSrc);
+        pItem = new CFitConstraint(*pSrc, NO_PARENT);
         break;
     }
 
@@ -1063,11 +1063,11 @@ void CQFittingItemWidget::slotDuplicatePerExperiment()
       switch (mItemType)
         {
           case FIT_ITEM:
-            pTemplate = new CFitItem(*(*mpItemsCopy)[*mSelection.begin()]);
+            pTemplate = new CFitItem(*(*mpItemsCopy)[*mSelection.begin()], NO_PARENT);
             break;
 
           case FIT_CONSTRAINT:
-            pTemplate = new CFitConstraint(*(*mpItemsCopy)[*mSelection.begin()]);
+            pTemplate = new CFitConstraint(*(*mpItemsCopy)[*mSelection.begin()], NO_PARENT);
             break;
 
           default:
@@ -1084,11 +1084,11 @@ void CQFittingItemWidget::slotDuplicatePerExperiment()
           switch (mItemType)
             {
               case FIT_ITEM:
-                pItem = new CFitItem(*pTemplate);
+                pItem = new CFitItem(*pTemplate, NO_PARENT);
                 break;
 
               case FIT_CONSTRAINT:
-                pItem = new CFitConstraint(*pTemplate);
+                pItem = new CFitConstraint(*pTemplate, NO_PARENT);
                 break;
 
               default:
@@ -1116,7 +1116,7 @@ void CQFittingItemWidget::slotDuplicatePerExperiment()
           // Create imax - 1 copies
           for (i = imax - 1; i != 0; i--)
             {
-              pItem = new CFitItem(*(*mpItemsCopy)[*mSelection.begin()]);
+              pItem = new CFitItem(*(*mpItemsCopy)[*mSelection.begin()], NO_PARENT);
               pItem->addExperiment((*mppExperimentSet)->getExperiment(i)->CCopasiParameter::getKey());
 
               mpItemsCopy->insert(mpItemsCopy->begin() + row, pItem);

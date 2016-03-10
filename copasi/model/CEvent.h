@@ -40,7 +40,7 @@ public:
    * @param "const CCopasiContainer * pParent (default: NULL)
    */
   CEventAssignment(const std::string & targetKey = "",
-                   const CCopasiContainer * pParent = NULL);
+                   const CCopasiContainer * pParent = NO_PARENT);
 
   /**
    * Copy constructor
@@ -48,7 +48,7 @@ public:
    * @param "const CCopasiContainer * pParent (default: NULL)
    */
   CEventAssignment(const CEventAssignment & src,
-                   const CCopasiContainer * pParent = NULL);
+                   const CCopasiContainer * pParent);
 
   /**
    * Destructor
@@ -167,7 +167,7 @@ public:
    * @param const CCopasiContainer * pParent (default: NULL)
    */
   CEvent(const std::string & name = "NoName",
-         const CCopasiContainer * pParent = NULL);
+         const CCopasiContainer * pParent = NO_PARENT);
 
   /**
    * Copy constructor
@@ -175,7 +175,7 @@ public:
    * @param const CCopasiContainer * pParent (default: NULL)
    */
   CEvent(const CEvent & src,
-         const CCopasiContainer * pParent = NULL);
+         const CCopasiContainer * pParent);
 
 private:
   CEvent & operator= (const CEvent &);

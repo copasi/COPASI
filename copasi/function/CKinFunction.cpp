@@ -44,8 +44,8 @@ CKinFunction::CKinFunction(const std::string & name,
 }
 
 CKinFunction::CKinFunction(const CFunction & src,
-                           CReadConfig * configBuffer,
-                           const CCopasiContainer * pParent):
+                           const CCopasiContainer * pParent,
+                           CReadConfig * configBuffer):
   CFunction(src, pParent),
   mNodes(),
   ObjList(),

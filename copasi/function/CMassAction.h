@@ -1,14 +1,11 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CMassAction.h,v $
-//   $Revision: 1.29 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/05/16 23:11:32 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
 // All rights reserved.
 
 // Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -35,6 +32,9 @@ class CMassAction : public CFunction
 public:
   static const char * Infix[];
 
+protected:
+  CMassAction(const CMassAction & src);
+
   // Operations
 public:
   /**
@@ -43,7 +43,7 @@ public:
    * @param const CCopasiContainer * pParent (default: NULL)
    */
   CMassAction(const std::string & name = "NoName",
-              const CCopasiContainer * pParent = NULL);
+              const CCopasiContainer * pParent = NO_PARENT);
 
   /**
    * Copy constructor
@@ -51,14 +51,14 @@ public:
    * @param const CCopasiContainer * pParent (default: NULL)
    */
   CMassAction(const CFunction & src,
-              const CCopasiContainer * pParent = NULL);
+              const CCopasiContainer * pParent);
 
   /**
    * Specified constructor
    * @param const CCopasiContainer * pParent (default: NULL)
    */
   CMassAction(const TriLogic & reversible,
-              const CCopasiContainer * pParent = NULL);
+              const CCopasiContainer * pParent = NO_PARENT);
 
   /**
    *  Destructor
@@ -96,7 +96,6 @@ public:
 
   virtual std::string writeMathML(const std::vector< std::vector< std::string > > & variables,
                                   bool expand = true, bool fullExpand = true) const;
-
 };
 
 #endif // COPASI_CMassAction

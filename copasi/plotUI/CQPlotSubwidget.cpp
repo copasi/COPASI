@@ -161,7 +161,7 @@ void CQPlotSubwidget::storeChanges()
 
           std::vector<CPlotDataChannelSpec> channels = current->getChannels();
 
-          CPlotItem* newItem = new CPlotItem(*common);
+          CPlotItem* newItem = new CPlotItem(*common, NO_PARENT);
           newItem->setType(current->getType());
           newItem->setTitle(current->getTitle());
           newItem->getChannels() = channels;
@@ -295,7 +295,7 @@ void CQPlotSubwidget::addPlotItem(CPlotItem* item)
 
   QListWidgetItem *listItem = new QListWidgetItem(FROM_UTF8(item->getTitle()));
   mpListPlotItems->addItem(listItem);
-  mList.insert(FROM_UTF8(item->getTitle()), new CPlotItem(*item));
+  mList.insert(FROM_UTF8(item->getTitle()), new CPlotItem(*item, NO_PARENT));
   mpListPlotItems->setCurrentRow(mpListPlotItems->count() - 1);
 }
 
@@ -363,7 +363,7 @@ void CQPlotSubwidget::selectPlotItem(CPlotItem* item)
   pdelete(mLastItem);
 
   if (item != NULL)
-    mLastItem = new CPlotItem(*item);
+    mLastItem = new CPlotItem(*item, NO_PARENT);
 }
 
 void CQPlotSubwidget::addCurveTab(const std::string & title,
@@ -941,7 +941,7 @@ void CQPlotSubwidget::copyPlot()
 
   if (pDataModel == NULL) return;
 
-  CPlotSpecification * pPl = new CPlotSpecification(*dynamic_cast<CPlotSpecification*>(CCopasiRootContainer::getKeyFactory()->get(mKey)));
+  CPlotSpecification * pPl = new CPlotSpecification(*dynamic_cast<CPlotSpecification*>(CCopasiRootContainer::getKeyFactory()->get(mKey)), NO_PARENT);
 
   std::string baseName = pPl->getObjectName() + "_copy";
   std::string name = baseName;
@@ -1049,7 +1049,7 @@ bool CQPlotSubwidget::loadFromPlotSpec(const CPlotSpecification *pspec)
       QString title = FROM_UTF8(it->getTitle());
       PlotItems.append(title);
 
-      CPlotItem * pItem = new CPlotItem(*it);
+      CPlotItem * pItem = new CPlotItem(*it, NO_PARENT);
 
       // The copy has the same parent as the original, i.e., it has been added to the plot specification.
       const_cast< CPlotSpecification * >(pspec)->getItems().remove(pItem);
@@ -1107,7 +1107,7 @@ bool CQPlotSubwidget::saveToPlotSpec()
 
       if (currentItem == NULL) continue;
 
-      item = new CPlotItem(*currentItem);
+      item = new CPlotItem(*currentItem, NO_PARENT);
       pspec->getItems().add(item, true);
     }
 

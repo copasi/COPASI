@@ -261,7 +261,7 @@ void CQMoietiesTaskResult::slotCreateGlobalQuantity(const QModelIndex & index)
 
   if (pModel == NULL) return;
 
-  CCopasiVector< CMoiety > Moieties = pModel->getMoieties();
+  const CCopasiVector< CMoiety > & Moieties = pModel->getMoieties();
 
   if (row >= (C_INT32) Moieties.size()) return;
 

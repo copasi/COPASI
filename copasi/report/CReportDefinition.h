@@ -57,18 +57,21 @@ private:
   bool mbTitle;
   unsigned C_INT32 mPrecision;
 
+protected:
+  CReportDefinition(const CReportDefinition & src);
+
 public:
   /**
    *  Default constructor.
    */
   CReportDefinition(const std::string & name = "NoName",
-                    const CCopasiContainer * pParent = NULL);
+                    const CCopasiContainer * pParent = NO_PARENT);
 
   /**
    *  Copy constructor.
    */
   CReportDefinition(const CReportDefinition & src,
-                    const CCopasiContainer * pParent = NULL);
+                    const CCopasiContainer * pParent);
 
   /**
    *  Destructor.

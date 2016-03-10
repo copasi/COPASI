@@ -48,7 +48,7 @@ public:
    * @param const CCopasiContainer * pParent (default: NULL)
    */
   CCompartment(const std::string & name = "NoName",
-               const CCopasiContainer * pParent = NULL);
+               const CCopasiContainer * pParent = NO_PARENT);
 
   /**
    * Copy constructor.
@@ -56,7 +56,7 @@ public:
    * @param const CCopasiContainer * pParent (default: NULL)
    */
   CCompartment(const CCompartment & src,
-               const CCopasiContainer * pParent = NULL);
+               const CCopasiContainer * pParent);
 
   /**
    * Destructor.

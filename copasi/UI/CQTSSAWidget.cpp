@@ -212,7 +212,7 @@ bool CQTSSAWidget::loadTask()
       delete mpTSSAProblem;
     }
 
-  mpTSSAProblem = new CTSSAProblem(*tssaproblem);
+  mpTSSAProblem = new CTSSAProblem(*tssaproblem, NO_PARENT);
   mpTSSAProblem->getObjectParent()->remove(mpTSSAProblem);
 
   //numbers

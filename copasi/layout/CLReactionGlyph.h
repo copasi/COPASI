@@ -37,12 +37,14 @@ class CLGlyphWithCurve : public CLGraphicalObject
 protected:
   CLCurve mCurve;
 
+  CLGlyphWithCurve(const CLGlyphWithCurve & src);
+
 public:
   CLGlyphWithCurve(const std::string & name = "ReferenceGlyph",
-                   const CCopasiContainer * pParent = NULL);
+                   const CCopasiContainer * pParent = NO_PARENT);
 
   CLGlyphWithCurve(const CLGlyphWithCurve & src,
-                   const CCopasiContainer * pParent = NULL);
+                   const CCopasiContainer * pParent);
 
   /**
    * constructor from libsbml object
@@ -50,7 +52,7 @@ public:
   CLGlyphWithCurve(const GraphicalObject & sbml, //TODO preliminary
                    const std::map<std::string, std::string> & modelmap,
                    std::map<std::string, std::string> & layoutmap,
-                   const CCopasiContainer * pParent = NULL);
+                   const CCopasiContainer * pParent = NO_PARENT);
 
   /**
    * assignment operator.
@@ -87,12 +89,14 @@ protected:
   std::string mGlyphKey;
   std::string mRole;
 
+  CLReferenceGlyph(const CLReferenceGlyph & src);
+
 public:
   CLReferenceGlyph(const std::string & name = "ReferenceGlyph",
-                   const CCopasiContainer * pParent = NULL);
+                   const CCopasiContainer * pParent = NO_PARENT);
 
   CLReferenceGlyph(const CLReferenceGlyph & src,
-                   const CCopasiContainer * pParent = NULL);
+                   const CCopasiContainer * pParent);
 
 #if LIBSBML_VERSION >= 50800
   /**
@@ -101,7 +105,7 @@ public:
   CLReferenceGlyph(const ReferenceGlyph & sbml, //TODO preliminary
                    const std::map<std::string, std::string> & modelmap,
                    std::map<std::string, std::string> & layoutmap,
-                   const CCopasiContainer * pParent = NULL);
+                   const CCopasiContainer * pParent = NO_PARENT);
 #endif // LIBSBML_VERSION >= 50800
 
   /**
@@ -196,12 +200,15 @@ private:
    */
   Role mFunctionalRole;
 
+protected:
+  CLMetabReferenceGlyph(const CLMetabReferenceGlyph & src);
+
 public:
   CLMetabReferenceGlyph(const std::string & name = "MetabReferenceGlyph",
-                        const CCopasiContainer * pParent = NULL);
+                        const CCopasiContainer * pParent = NO_PARENT);
 
   CLMetabReferenceGlyph(const CLMetabReferenceGlyph & src,
-                        const CCopasiContainer * pParent = NULL);
+                        const CCopasiContainer * pParent);
 
   /**
    * constructor from libsbml object
@@ -209,7 +216,7 @@ public:
   CLMetabReferenceGlyph(const SpeciesReferenceGlyph & sbml,
                         const std::map<std::string, std::string> & modelmap,
                         std::map<std::string, std::string> & layoutmap,
-                        const CCopasiContainer * pParent = NULL);
+                        const CCopasiContainer * pParent = NO_PARENT);
 
   /**
    * assignment operator.
@@ -229,7 +236,6 @@ public:
   Role getFunctionalRole() const;
 
   void setFunctionalRole(Role r);
-
 
   const std::string & getRoleDisplayName() const;
 
@@ -262,13 +268,14 @@ class CLGeneralGlyph : public CLGlyphWithCurve
 protected:
   CCopasiVector<CLReferenceGlyph> mvReferences;
   CCopasiVector<CLGraphicalObject> mvSubglyphs;
+  CLGeneralGlyph(const CLGeneralGlyph & src);
 
 public:
   CLGeneralGlyph(const std::string & name = "GeneralGlyph",
-                 const CCopasiContainer * pParent = NULL);
+                 const CCopasiContainer * pParent = NO_PARENT);
 
   CLGeneralGlyph(const CLGeneralGlyph & src,
-                 const CCopasiContainer * pParent = NULL);
+                 const CCopasiContainer * pParent);
 
   /**
    * constructor from libsbml object
@@ -276,12 +283,12 @@ public:
   CLGeneralGlyph(const GraphicalObject & sbml, //TODO
                  const std::map<std::string, std::string> & modelmap,
                  std::map<std::string, std::string> & layoutmap,
-                 const CCopasiContainer * pParent = NULL);
+                 const CCopasiContainer * pParent = NO_PARENT);
 
 //    CLGeneralGlyph(const ReactionGlyph & sbml, //TODO
 //                   const std::map<std::string, std::string> & modelmap,
 //                   std::map<std::string, std::string> & layoutmap,
-//                   const CCopasiContainer * pParent = NULL);
+//                   const CCopasiContainer * pParent = NO_PARENT);
 
   /**
    * assignment operator.
@@ -335,12 +342,14 @@ class CLReactionGlyph : public CLGlyphWithCurve
 protected:
   CCopasiVector<CLMetabReferenceGlyph> mvMetabReferences;
 
+  CLReactionGlyph(const CLReactionGlyph & src);
+
 public:
   CLReactionGlyph(const std::string & name = "ReactionGlyph",
-                  const CCopasiContainer * pParent = NULL);
+                  const CCopasiContainer * pParent = NO_PARENT);
 
   CLReactionGlyph(const CLReactionGlyph & src,
-                  const CCopasiContainer * pParent = NULL);
+                  const CCopasiContainer * pParent);
 
   /**
    * constructor from libsbml object
@@ -348,7 +357,7 @@ public:
   CLReactionGlyph(const ReactionGlyph & sbml,
                   const std::map<std::string, std::string> & modelmap,
                   std::map<std::string, std::string> & layoutmap,
-                  const CCopasiContainer * pParent = NULL);
+                  const CCopasiContainer * pParent = NO_PARENT);
 
   /**
    * assignment operator.

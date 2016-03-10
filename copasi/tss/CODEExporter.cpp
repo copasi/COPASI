@@ -1367,7 +1367,7 @@ bool CODEExporter::exportKineticFunction(const CReaction* reac)
   if (func->getType() != CEvaluationTree::MassAction)
     {
       CFunction* tmpfunc;
-      tmpfunc = new CFunction(*func);
+      tmpfunc = new CFunction(*func, NO_PARENT);
 
       const std::vector<std::vector<std::string> > & keyMap = reac->getParameterMappings();
       CCopasiTree< CEvaluationNode>::iterator treeIt = tmpfunc->getRoot();
@@ -1452,7 +1452,7 @@ bool CODEExporter::exportKineticFunction(const CReaction* reac)
       const CChemEqElement* substr;
       const CChemEqElement* prod;
 
-      const CMassAction cMassAction = *static_cast<const CMassAction*>(reac->getFunction());
+      const CMassAction & cMassAction = *static_cast<const CMassAction*>(reac->getFunction());
 
       obj = CCopasiRootContainer::getKeyFactory()->get(keyMap[0][0]);
 
@@ -1551,7 +1551,7 @@ bool CODEExporter::exportSingleFunction(CEvaluationNode* pNode, const std::strin
               func = static_cast<CFunction*>(pFunctionDB->findFunction((*treeIt).getData()));
 
               CFunction* tmpfunc = NULL;
-              tmpfunc = new CFunction(*func);
+              tmpfunc = new CFunction(*func, NO_PARENT);
 
               std::ostringstream localKey;
 

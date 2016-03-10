@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -138,13 +138,16 @@ private:
    */
   void initObjects();
 
+protected:
+  CPlotItem(const CPlotItem & src);
+
 public:
   CPlotItem(const std::string & name = "NoName",
-            const CCopasiContainer * pParent = NULL,
+            const CCopasiContainer * pParent = NO_PARENT,
             const Type & type = curve2d);
 
   CPlotItem(const CPlotItem & src,
-            const CCopasiContainer * pParent = NULL);
+            const CCopasiContainer * pParent);
 
   /**
    * Destructor

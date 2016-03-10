@@ -143,7 +143,7 @@ const CCopasiVectorNS < CMetab > & CCompartment::getMetabolites() const
    In the case the compartment is part of a model also mpModel is set. */
 bool CCompartment::createMetabolite(const CMetab & metabolite)
 {
-  CMetab * pMetab = new CMetab(metabolite);
+  CMetab * pMetab = new CMetab(metabolite, NO_PARENT);
 
   if (addMetabolite(pMetab)) return true;
 

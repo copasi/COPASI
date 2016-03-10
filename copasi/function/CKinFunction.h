@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -51,6 +51,9 @@ private:
    */
   unsigned C_INT32 mNidx;
 
+protected:
+  CKinFunction(const CFunction & src);
+
   // Operations
 public:
   /**
@@ -59,17 +62,17 @@ public:
    * @param const CCopasiContainer * pParent (default: NULL)
    */
   CKinFunction(const std::string & name = "NoName",
-               const CCopasiContainer * pParent = NULL);
+               const CCopasiContainer * pParent = NO_PARENT);
 
   /**
    * Copy constructor
    * @param "const CFunction &" src
+   * @param const CCopasiContainer * pParent
    * @param "CReadConfig *" configBuffer (Default = NULL)
-   * @param const CCopasiContainer * pParent (default: NULL)
    */
   CKinFunction(const CFunction & src,
-               CReadConfig * configBuffer = NULL,
-               const CCopasiContainer * pParent = NULL);
+               const CCopasiContainer * pParent,
+               CReadConfig * configBuffer = NULL);
 
   /**
    * Copy constructor
@@ -77,7 +80,7 @@ public:
    * @param const CCopasiContainer * pParent (default: NULL)
    */
   CKinFunction(const CKinFunction & src,
-               const CCopasiContainer * pParent = NULL);
+               const CCopasiContainer * pParent);
 
   /**
    *  Destructor

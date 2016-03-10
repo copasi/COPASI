@@ -1,17 +1,9 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CCreator.h,v $
-//   $Revision: 1.7 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2010/07/16 19:00:06 $
-// End CVS Header
-
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
@@ -59,7 +51,7 @@ public:
    * @param const CCopasiContainer * pParent (default: NULL)
    */
   CCreator(const std::string & objectName,
-           const CCopasiContainer * pParent = NULL);
+           const CCopasiContainer * pParent = NO_PARENT);
 
   /**
    * Specific constructor
@@ -69,7 +61,7 @@ public:
    */
   CCreator(const CRDFTriplet & triplet,
            const std::string & objectName = "",
-           const CCopasiContainer * pParent = NULL);
+           const CCopasiContainer * pParent = NO_PARENT);
 
   /**
    * Copy constructor
@@ -77,7 +69,7 @@ public:
    * @param const CCopasiContainer * pParent (default: NULL)
    */
   CCreator(const CCreator & src,
-           const CCopasiContainer * pParent = NULL);
+           const CCopasiContainer * pParent);
 
   /**
    * Destructor

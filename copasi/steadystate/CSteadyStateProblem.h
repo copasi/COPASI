@@ -1,12 +1,14 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateProblem.h,v $
-   $Revision: 1.13 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:31:49 $
-   End CVS Header */
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2002 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -27,79 +29,79 @@
 #include "utilities/CReadConfig.h"
 
 class CSteadyStateProblem: public CCopasiProblem
-  {
-    // Attributes
-  private:
-    /**
-     *  The initial state, i.e., the starting conditions of the trajectroy.
-     */
-    //CState mInitialState;
+{
+  // Attributes
+private:
+  /**
+   *  The initial state, i.e., the starting conditions of the trajectroy.
+   */
+  //CState mInitialState;
 
-    /**
-     *  was a initial state set?
-     */
-    //bool mHasInitialState;
+  /**
+   *  was a initial state set?
+   */
+  //bool mHasInitialState;
 
-  public:
-    // Operations
+public:
+  // Operations
 
-    /**
-     * Default constructor.
-     * @param const CCopasiContainer * pParent (default: NULL)
-     */
-    CSteadyStateProblem(const CCopasiContainer * pParent = NULL);
+  /**
+   * Default constructor.
+   * @param const CCopasiContainer * pParent (default: NULL)
+   */
+  CSteadyStateProblem(const CCopasiContainer * pParent = NO_PARENT);
 
-    /**
-     *  Copy constructor.
-     *  @param "const CSteadyStateProblem &" src
-     * @paramconst CCopasiContainer * pParent (default: NULL)
-     */
-    CSteadyStateProblem(const CSteadyStateProblem & src,
-                        const CCopasiContainer * pParent = NULL);
+  /**
+   *  Copy constructor.
+   *  @param "const CSteadyStateProblem &" src
+   * @paramconst CCopasiContainer * pParent (default: NULL)
+   */
+  CSteadyStateProblem(const CSteadyStateProblem & src,
+                      const CCopasiContainer * pParent);
 
-    /**
-     *  Destructor.
-     */
-    virtual ~CSteadyStateProblem();
+  /**
+   *  Destructor.
+   */
+  virtual ~CSteadyStateProblem();
 
-    /**
-     * Do all neccessary initialization so that calls to caluclate will
-     * be successful. This is called once from CCopasiTask::process()
-     * @result bool succes
-     */
-    virtual bool initialize();
+  /**
+   * Do all neccessary initialization so that calls to caluclate will
+   * be successful. This is called once from CCopasiTask::process()
+   * @result bool succes
+   */
+  virtual bool initialize();
 
-    /**
-     * Set whether the jacobian is requested.
-     * @param bool & jacobianRequested
-     */
-    void setJacobianRequested(bool & jacobianRequested);
+  /**
+   * Set whether the jacobian is requested.
+   * @param bool & jacobianRequested
+   */
+  void setJacobianRequested(bool & jacobianRequested);
 
-    /**
-     * Retrieve whether the jacobian is requested.
-     * @return bool jacobianRequested
-     */
-    bool isJacobianRequested() const;
+  /**
+   * Retrieve whether the jacobian is requested.
+   * @return bool jacobianRequested
+   */
+  bool isJacobianRequested() const;
 
-    /**
-     * Set whether stabilty analysis is requested.
-     * @param bool & stabilityAnalysisRequested
-     */
-    void setStabilityAnalysisRequested(bool & stabilityAnalysisRequested);
+  /**
+   * Set whether stabilty analysis is requested.
+   * @param bool & stabilityAnalysisRequested
+   */
+  void setStabilityAnalysisRequested(bool & stabilityAnalysisRequested);
 
-    /**
-     * Retrieve whether the stabilty analysis is requested.
-     * @return bool stabilityAnalysisRequested
-     */
-    bool isStabilityAnalysisRequested() const;
+  /**
+   * Retrieve whether the stabilty analysis is requested.
+   * @return bool stabilityAnalysisRequested
+   */
+  bool isStabilityAnalysisRequested() const;
 
-    /**
-     * Load a trajectory problem
-     * @param "CReadConfig &" configBuffer
-     * @param "CReadConfig::Mode mode (Default: CReadConfig::NEXT)
-     */
-    void load(CReadConfig & configBuffer,
-              CReadConfig::Mode mode = CReadConfig::NEXT);
-  };
+  /**
+   * Load a trajectory problem
+   * @param "CReadConfig &" configBuffer
+   * @param "CReadConfig::Mode mode (Default: CReadConfig::NEXT)
+   */
+  void load(CReadConfig & configBuffer,
+            CReadConfig::Mode mode = CReadConfig::NEXT);
+};
 
 #endif // COPASI_CSteadyStateProblem

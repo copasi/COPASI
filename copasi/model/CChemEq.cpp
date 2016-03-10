@@ -194,7 +194,7 @@ void CChemEq::addElement(CCopasiVector < CChemEqElement > & structure,
 
   if (i >= structure.size())
     {
-      CChemEqElement * Element = new CChemEqElement(element);
+      CChemEqElement * Element = new CChemEqElement(element, NO_PARENT);
 
       if (role == CChemEq::SUBSTRATE)
         Element->setMultiplicity(- Element->getMultiplicity());
@@ -317,7 +317,7 @@ bool CChemEq::setMultiplicity(const CMetab* pMetab, C_FLOAT64 newMult, Metabolit
               // multiplicity to the balances
               it->setMultiplicity(newMult);
               // copy the element
-              CChemEqElement tmp(*it);
+              CChemEqElement tmp(*it, NO_PARENT);
               // set the difference of the multiplicities
               // as the multiplicity of the copy
               tmp.setMultiplicity(diff);

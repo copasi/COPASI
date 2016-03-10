@@ -29,6 +29,9 @@
 class CFunction:
   public CEvaluationTree, public CAnnotation
 {
+protected:
+  CFunction(const CFunction & src);
+
   // Operations
 public:
   /**
@@ -38,7 +41,7 @@ public:
    * @param const CCopasiContainer * pParent (default: NULL)
    */
   CFunction(const std::string & name = "NoName",
-            const CCopasiContainer * pParent = NULL,
+            const CCopasiContainer * pParent = NO_PARENT,
             const Type & type = Function);
 
   /**
@@ -47,7 +50,7 @@ public:
    * @param const CCopasiContainer * pParent (default: NULL)
    */
   CFunction(const CFunction & src,
-            const CCopasiContainer * pParent = NULL);
+            const CCopasiContainer * pParent);
 
   /**
    * Destructor

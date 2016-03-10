@@ -1,17 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CTSSAProblem.h,v $
-//   $Revision: 1.7 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/08/13 20:20:33 $
-// End CVS Header
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -63,6 +60,9 @@ private:
    */
   bool mStepNumberSetLast;
 
+protected:
+  CTSSAProblem(const CTSSAProblem & src);
+
 public:
   // Operations
 
@@ -70,7 +70,7 @@ public:
    * Default constructor.
    * @param const CCopasiContainer * pParent (default: NULL)
    */
-  CTSSAProblem(const CCopasiContainer * pParent = NULL);
+  CTSSAProblem(const CCopasiContainer * pParent = NO_PARENT);
 
   /**
    * Copy constructor.
@@ -78,7 +78,7 @@ public:
    * @paramconst CCopasiContainer * pParent (default: NULL)
    */
   CTSSAProblem(const CTSSAProblem & src,
-               const CCopasiContainer * pParent = NULL);
+               const CCopasiContainer * pParent);
 
   /**
    *  Destructor.

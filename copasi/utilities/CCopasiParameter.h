@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -101,6 +101,7 @@ protected:
   void * mpValidValues;
 
   // Operations
+  CCopasiParameter(const CCopasiParameter & src);
 
 private:
   /**
@@ -115,7 +116,7 @@ public:
    * @param const CCopasiContainer * pParent (default: NULL)
    */
   CCopasiParameter(const CCopasiParameter & src,
-                   const CCopasiContainer * pParent = NULL);
+                   const CCopasiContainer * pParent);
 
   /**
    * Specific constructor
@@ -128,7 +129,7 @@ public:
   CCopasiParameter(const std::string & name,
                    const Type & type,
                    const void * pValue = NULL,
-                   const CCopasiContainer * pParent = NULL,
+                   const CCopasiContainer * pParent = NO_PARENT,
                    const std::string & objectType = "Parameter");
 
   /**

@@ -118,6 +118,14 @@ CQGLNetworkPainter::CQGLNetworkPainter(const QGLFormat& format, QWidget *parent)
 
 CQGLNetworkPainter::~CQGLNetworkPainter()
 {
+  std::map< std::string, CCompartmentGraphNode * >::iterator itComp = compartmentNodeMap.begin();
+  std::map< std::string, CCompartmentGraphNode * >::iterator endComp = compartmentNodeMap.end();
+
+  for (; itComp != endComp; ++itComp)
+    {
+      pdelete(itComp->second);
+    }
+
   std::map<std::string, RGTextureSpec*>::iterator it = labelTextureMap.begin(), endit = labelTextureMap.end();
 
   while (it != endit)
@@ -582,8 +590,17 @@ void CQGLNetworkPainter::draw()
 
 void CQGLNetworkPainter::createGraph(CLayout *lP)
 {
-  keyMap.clear();
+  std::map< std::string, CCompartmentGraphNode * >::iterator it = compartmentNodeMap.begin();
+  std::map< std::string, CCompartmentGraphNode * >::iterator end = compartmentNodeMap.end();
+
+  for (; it != end; ++it)
+    {
+      pdelete(it->second);
+    }
+
   compartmentNodeMap.clear();
+
+  keyMap.clear();
   nodeMap.clear();
   labelNodeMap.clear();
   nodeArrowMap.clear();
@@ -594,7 +611,7 @@ void CQGLNetworkPainter::createGraph(CLayout *lP)
   curvesWithArrow.clear();
   int numberOfInvertedCurves = 0;
   // copy graph to local variables
-  CCopasiVector<CLCompartmentGlyph> compartmentNodes = lP->getListOfCompartmentGlyphs();
+  const CCopasiVector<CLCompartmentGlyph> & compartmentNodes = lP->getListOfCompartmentGlyphs();
   viewerCompartmentNodes = std::vector<std::string>();
   unsigned int i;
 
@@ -603,9 +620,7 @@ void CQGLNetworkPainter::createGraph(CLayout *lP)
       std::string nKey = compartmentNodes[i].getKey();
       std::string oKey = compartmentNodes[i].getModelObjectKey();
       viewerCompartmentNodes.push_back(nKey);
-      compartmentNodeMap.insert(std::pair<std::string, CCompartmentGraphNode>
-                                (nKey,
-                                 CCompartmentGraphNode(compartmentNodes[i])));
+      compartmentNodeMap.insert(std::make_pair(nKey, new CCompartmentGraphNode(compartmentNodes[i], NO_PARENT)));
       keyMap.insert(std::pair<std::string, std::string>
                     (oKey, nKey));
     }
@@ -621,7 +636,7 @@ void CQGLNetworkPainter::createGraph(CLayout *lP)
       viewerNodes.push_back(nKey);
       nodeMap.insert(std::pair<std::string, CGraphNode>
                      (nKey,
-                      CGraphNode(nodes[i])));
+                      CGraphNode(nodes[i], NO_PARENT)));
       keyMap.insert(std::pair<std::string, std::string>
                     (oKey, nKey));
     }
@@ -834,7 +849,7 @@ void CQGLNetworkPainter::drawGraph()
     } // end color mode
 
   // draw curves to (reactant) nodes and arrows and circular nodes when in appropriate mode
-  std::map<std::string, CCompartmentGraphNode>::iterator itCompartmentNode;
+  std::map< std::string, CCompartmentGraphNode * >::const_iterator itCompartmentNode;
   std::map<std::string, CGraphNode>::iterator itNode;
   std::multimap<std::string, CGraphCurve>::iterator itCurve;
   std::multimap<std::string, CArrow>::iterator itArrow;
@@ -848,7 +863,7 @@ void CQGLNetworkPainter::drawGraph()
       // draw node as rectangle
       if (itCompartmentNode != compartmentNodeMap.end())
         {
-          drawNode((*itCompartmentNode).second);
+          drawNode(*itCompartmentNode->second);
         }
     }
 
@@ -1000,7 +1015,7 @@ void CQGLNetworkPainter::drawColorLegend()
 }
 
 // draw compartment node as rectangle
-void CQGLNetworkPainter::drawNode(CCompartmentGraphNode &n)
+void CQGLNetworkPainter::drawNode(const CCompartmentGraphNode &n)
 {
   float width = n.getWidth();
   float height = n.getHeight();

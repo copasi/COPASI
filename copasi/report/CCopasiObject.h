@@ -23,6 +23,9 @@
 #ifndef COPASI_CCopasiObject
 #define COPASI_CCopasiObject
 
+#define NO_PARENT static_cast< CCopasiContainer * >((void *) 0)
+#define INHERIT_PARENT static_cast< CCopasiContainer * >((void *) -1)
+
 #include <string>
 #include <iostream>
 #include <vector>
@@ -201,13 +204,15 @@ protected:
   CCopasiObject();
 
   CCopasiObject(const std::string & name,
-                const CCopasiContainer * pParent = NULL,
+                const CCopasiContainer * pParent = NO_PARENT,
                 const std::string & type = "CN",
                 const unsigned C_INT32 & flag = 0);
 
+  CCopasiObject(const CCopasiObject & src);
+
 public:
   CCopasiObject(const CCopasiObject & src,
-                const CCopasiContainer * pParent = NULL);
+                const CCopasiContainer * pParent);
 
   virtual ~CCopasiObject();
 

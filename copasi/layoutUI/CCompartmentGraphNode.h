@@ -1,12 +1,9 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CCompartmentGraphNode.h,v $
-//   $Revision: 1.1 $
-//   $Name:  $
-//   $Author: gauges $
-//   $Date: 2008/09/15 15:03:13 $
-// End CVS Header
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
@@ -17,27 +14,30 @@
 #include "layout/CLGlyphs.h"
 
 class CCompartmentGraphNode : public CLCompartmentGlyph
-  {
-  private:
-    std::string mOrigNodeKey;
-    std::string mObjectKey; // corresponding sbml object key
+{
+private:
+  std::string mOrigNodeKey;
+  std::string mObjectKey; // corresponding sbml object key
 
-  public:
-    CCompartmentGraphNode(const CCompartmentGraphNode & src,
-                          const CCopasiContainer * pParent = NULL);
+protected:
+  CCompartmentGraphNode(const CCompartmentGraphNode & src);
 
-    CCompartmentGraphNode(const std::string & name = "GraphNode",
-                          const CCopasiContainer * pParent = NULL);
+public:
+  CCompartmentGraphNode(const CCompartmentGraphNode & src,
+                        const CCopasiContainer * pParent);
 
-    CCompartmentGraphNode(const CLCompartmentGlyph & src,
-                          const CCopasiContainer * pParent = NULL);
+  CCompartmentGraphNode(const std::string & name = "GraphNode",
+                        const CCopasiContainer * pParent = NO_PARENT);
 
-    std::string getObjectKey(){return this->mObjectKey;}
-    void setObjectKey(std::string key){mObjectKey = key;}
+  CCompartmentGraphNode(const CLCompartmentGlyph & src,
+                        const CCopasiContainer * pParent);
 
-    std::string getOrigNodeKey(){return this->mOrigNodeKey;}
+  std::string getObjectKey() {return this->mObjectKey;}
+  void setObjectKey(std::string key) {mObjectKey = key;}
 
-    friend std::ostream & operator<<(std::ostream &os, const CCompartmentGraphNode & gn);
-  };
+  std::string getOrigNodeKey() {return this->mOrigNodeKey;}
+
+  friend std::ostream & operator<<(std::ostream &os, const CCompartmentGraphNode & gn);
+};
 
 #endif // CCOMPARTMENTGRAPHNODE_H_

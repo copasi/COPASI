@@ -170,7 +170,7 @@ CCopasiObject::CCopasiObject(const CCopasiObject & src,
   mpObjectDisplayName(NULL),
   mObjectFlag(src.mObjectFlag)
 {
-  if (pParent != NULL)
+  if (pParent != INHERIT_PARENT)
     {
       mpObjectParent = const_cast<CCopasiContainer *>(pParent);
     }

@@ -718,7 +718,7 @@ bool CQExperimentData::load(CExperimentSet * pExperimentSet, CCopasiDataModel * 
 
   pdelete(mpExperimentSetCopy);
 
-  mpExperimentSetCopy = new CExperimentSet(*pExperimentSet);
+  mpExperimentSetCopy = new CExperimentSet(*pExperimentSet, NO_PARENT);
 
   if (mCrossValidation)
     mpExperimentSetCopy = elevate< CCrossValidationSet, CExperimentSet >(mpExperimentSetCopy);

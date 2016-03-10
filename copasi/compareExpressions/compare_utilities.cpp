@@ -1221,7 +1221,8 @@ bool contains_necessary_mass_action_elements(const CCopasiVector<CChemEqElement>
       CObjectInterface::ContainerList listOfContainers;
       listOfContainers.push_back(const_cast<CModel*>(pModel));
 
-      CCopasiVector<CChemEqElement> tmpV = elements;
+      CCopasiVector<CChemEqElement> tmpV(elements, NO_PARENT);
+
       std::vector<const CCopasiObject*> tmpObjects;
       const std::set<CNormalItemPower*, compareItemPowers >& itemPowers = pProduct->getItemPowers();
       std::set <CNormalItemPower*, compareItemPowers >::const_iterator iit = itemPowers.begin(), iendit = itemPowers.end();

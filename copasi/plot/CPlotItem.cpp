@@ -87,7 +87,6 @@ CPlotItem::CPlotItem(const CPlotItem & src,
   mpXMLActivity(NULL),
   channels(src.getChannels())
 {
-  setObjectParent(pParent);
   setType(src.mType);
 }
 

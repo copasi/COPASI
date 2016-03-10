@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -26,6 +26,9 @@ class CMathContainer;
 
 class CExperimentSet: public CCopasiParameterGroup
 {
+protected:
+  CExperimentSet(const CExperimentSet & src);
+
 public:
   /**
    * Default constructor
@@ -41,7 +44,7 @@ public:
    * @param const CCopasiContainer * pParent (default: src data model)
    */
   CExperimentSet(const CExperimentSet & src,
-                 const CCopasiContainer * pParent = NULL);
+                 const CCopasiContainer * pParent);
 
   /**
    * Specific constructor used for reading COPASI files
@@ -49,7 +52,7 @@ public:
    * @param const CCopasiContainer * pParent (default: group data model)
    */
   CExperimentSet(const CCopasiParameterGroup & group,
-                 const CCopasiContainer * pParent = NULL);
+                 const CCopasiContainer * pParent);
 
   /**
    * Destructor
@@ -275,6 +278,9 @@ private:
 
 class CCrossValidationSet : public CExperimentSet
 {
+protected:
+  CCrossValidationSet(const CCrossValidationSet & src);
+
 public:
   /**
    * Default constructor
@@ -290,7 +296,7 @@ public:
    * @param const CCopasiContainer * pParent (default: src data model)
    */
   CCrossValidationSet(const CCrossValidationSet & src,
-                      const CCopasiContainer * pParent = NULL);
+                      const CCopasiContainer * pParent);
 
   /**
    * Specific constructor used for reading COPASI files
@@ -298,7 +304,7 @@ public:
    * @param const CCopasiContainer * pParent (default: group data model)
    */
   CCrossValidationSet(const CCopasiParameterGroup & group,
-                      const CCopasiContainer * pParent = NULL);
+                      const CCopasiContainer * pParent);
 
   /**
    * Destructor

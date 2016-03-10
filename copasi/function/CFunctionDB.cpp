@@ -113,17 +113,16 @@ C_INT32 CFunctionDB::load(CReadConfig &configbuffer)
       switch (Function.getType())
         {
           case CEvaluationTree::Function:
-            pFunction = new CFunction(Function);
+            pFunction = new CFunction(Function, NO_PARENT);
             break;
 
           case CEvaluationTree::MassAction:
-            pFunction = new CMassAction(Function);
+            pFunction = new CMassAction(Function, NO_PARENT);
             break;
 
           case CEvaluationTree::PreDefined:
           case CEvaluationTree::UserDefined:
-            pFunction = new CKinFunction(Function,
-                                         &configbuffer);
+            pFunction = new CKinFunction(Function, NO_PARENT, &configbuffer);
             break;
 
           default:

@@ -1,17 +1,9 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CLabel.cpp,v $
-//   $Revision: 1.2 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/12/13 19:49:57 $
-// End CVS Header
-
-// Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
@@ -23,19 +15,19 @@
 #include "copasi/report/CCopasiRootContainer.h"
 
 CLabel::CLabel()
-    : CLTextGlyph()
+  : CLTextGlyph()
 {
   initOrigValues();
 }
 
 CLabel::CLabel(const CLTextGlyph & tg)
-    : CLTextGlyph(tg)
+  : CLTextGlyph(tg, NO_PARENT)
 {
   initOrigValues();
 }
 
 CLabel::CLabel(const CLabel & l)
-    : CLTextGlyph(l)
+  : CLTextGlyph(l, NO_PARENT)
 {
   initOrigValues();
 }
@@ -97,5 +89,3 @@ std::string CLabel::getText() const
         }
     }
 }
-
-

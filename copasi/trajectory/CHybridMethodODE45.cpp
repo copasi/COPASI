@@ -252,7 +252,8 @@ void CHybridMethodODE45::initializeParameter()
   std::vector< std::pair < CCopasiObjectName, CCopasiObjectName > > Reactions;
   Reactions.push_back(std::make_pair(CCopasiObjectName("Reactions"), CCopasiObjectName("Reactions")));
   FastReactionTemplate.setValidValues(Reactions);
-  mpFastReactions->getElementTemplates().push_back(FastReactionTemplate);
+
+  mpFastReactions->getElementTemplates().addParameter(FastReactionTemplate);
 }
 
 /**

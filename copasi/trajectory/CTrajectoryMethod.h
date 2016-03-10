@@ -70,7 +70,7 @@ public:
    * @param const CCopasiContainer * pParent (default: NULL)
    */
   CTrajectoryMethod(const CTrajectoryMethod & src,
-                    const CCopasiContainer * pParent = NULL);
+                    const CCopasiContainer * pParent);
 
   /**
    *  Destructor.

@@ -72,7 +72,7 @@ CLayout::CLayout(const CLayout & src,
 
   for (; compIt != src.mvCompartments.end(); ++compIt)
     {
-      CLCompartmentGlyph *comp = new CLCompartmentGlyph(*compIt);
+      CLCompartmentGlyph *comp = new CLCompartmentGlyph(*compIt, NO_PARENT);
       mvCompartments.add(comp, true);
       forward[compIt->getKey()] = comp->getKey();
       reverse[comp->getKey()] = compIt->getKey();
@@ -82,7 +82,7 @@ CLayout::CLayout(const CLayout & src,
 
   for (; metabIt != src.mvMetabs.end(); ++metabIt)
     {
-      CLMetabGlyph *metab = new CLMetabGlyph(*metabIt);
+      CLMetabGlyph *metab = new CLMetabGlyph(*metabIt, NO_PARENT);
       mvMetabs.add(metab, true);
       forward[metabIt->getKey()] = metab->getKey();
       reverse[metab->getKey()] = metabIt->getKey();
@@ -92,7 +92,7 @@ CLayout::CLayout(const CLayout & src,
 
   for (; reactIt != src.mvReactions.end(); ++reactIt)
     {
-      CLReactionGlyph *r = new CLReactionGlyph(*reactIt);
+      CLReactionGlyph *r = new CLReactionGlyph(*reactIt, NO_PARENT);
       mvReactions.add(r, true);
       forward[reactIt->getKey()] = r->getKey();
       reverse[r->getKey()] = reactIt->getKey();
@@ -110,7 +110,7 @@ CLayout::CLayout(const CLayout & src,
 
   for (; textIt != src.mvLabels.end(); ++textIt)
     {
-      CLTextGlyph *text = new CLTextGlyph(*textIt);
+      CLTextGlyph *text = new CLTextGlyph(*textIt, NO_PARENT);
       mvLabels.add(text, true);
       forward[textIt->getKey()] = text->getKey();
       reverse[text->getKey()] = textIt->getKey();
@@ -120,7 +120,7 @@ CLayout::CLayout(const CLayout & src,
 
   for (; generalIt != src.mvGraphicalObjects.end(); ++generalIt)
     {
-      CLGeneralGlyph *general = new CLGeneralGlyph(*generalIt);
+      CLGeneralGlyph *general = new CLGeneralGlyph(*generalIt, NO_PARENT);
       mvGraphicalObjects.add(general, true);
       forward[generalIt->getKey()] = general->getKey();
       reverse[general->getKey()] = generalIt->getKey();

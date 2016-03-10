@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -49,7 +49,8 @@ public:
    * @param const CFitTask & src
    * @param const CCopasiContainer * pParent (default: NULL)
    */
-  CFitTask(const CFitTask & src, const CCopasiContainer * pParent = NULL);
+  CFitTask(const CFitTask & src,
+           const CCopasiContainer * pParent);
 
   /**
    * Destructor

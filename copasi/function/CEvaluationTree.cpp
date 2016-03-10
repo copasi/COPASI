@@ -102,20 +102,20 @@ CEvaluationTree::copy(const CEvaluationTree & src)
   switch (src.getType())
     {
       case Function:
-        pNew = new CFunction(*static_cast<const CFunction *>(&src));
+        pNew = new CFunction(*static_cast<const CFunction *>(&src), NO_PARENT);
         break;
 
       case MassAction:
-        pNew = new CMassAction(*static_cast<const CMassAction *>(&src));
+        pNew = new CMassAction(*static_cast<const CMassAction *>(&src), NO_PARENT);
         break;
 
       case PreDefined:
       case UserDefined:
-        pNew = new CKinFunction(*static_cast<const CKinFunction *>(&src));
+        pNew = new CKinFunction(*static_cast<const CKinFunction *>(&src), NO_PARENT);
         break;
 
       case Expression:
-        pNew = new CExpression(*static_cast<const CExpression *>(&src));
+        pNew = new CExpression(*static_cast<const CExpression *>(&src), NO_PARENT);
         break;
 
       default:

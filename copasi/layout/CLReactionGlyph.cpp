@@ -579,7 +579,7 @@ CLGeneralGlyph & CLGeneralGlyph::operator= (const CLGeneralGlyph & rhs)
   mvReferences.clear();
 
   for (i = 0; i < imax; ++i)
-    addReferenceGlyph(new CLReferenceGlyph(rhs.mvReferences[i]));
+    addReferenceGlyph(new CLReferenceGlyph(rhs.mvReferences[i], NO_PARENT));
 
   imax = rhs.mvSubglyphs.size();
   mvSubglyphs.clear();
@@ -863,7 +863,7 @@ CLReactionGlyph & CLReactionGlyph::operator= (const CLReactionGlyph & rhs)
   size_t i, imax = rhs.mvMetabReferences.size();
 
   for (i = 0; i < imax; ++i)
-    addMetabReferenceGlyph(new CLMetabReferenceGlyph(rhs.mvMetabReferences[i]));
+    addMetabReferenceGlyph(new CLMetabReferenceGlyph(rhs.mvMetabReferences[i], NO_PARENT));
 
   return *this;
 }

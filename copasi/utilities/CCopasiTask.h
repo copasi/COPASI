@@ -77,11 +77,14 @@ public:
 
   class CDescription: public CCopasiObject
   {
+  protected:
+    CDescription(const CDescription & src);
+
   public:
     /**
      * Default constructor
      */
-    CDescription(const CCopasiContainer * pParent = NULL);
+    CDescription(const CCopasiContainer * pParent = NO_PARENT);
 
     /**
      * Copy constructor
@@ -89,7 +92,7 @@ public:
      * @param const CCopasiContainer * pParent (default: NULL)
      */
     CDescription(const CDescription & src,
-                 const CCopasiContainer * pParent = NULL);
+                 const CCopasiContainer * pParent);
 
     /**
      * Destructor
@@ -116,11 +119,14 @@ public:
 
   class CResult: public CCopasiObject
   {
+  protected:
+    CResult(const CResult & src);
+
   public:
     /**
      * Default constructor
      */
-    CResult(const CCopasiContainer * pParent = NULL);
+    CResult(const CCopasiContainer * pParent = NO_PARENT);
 
     /**
      * Copy constructor
@@ -128,7 +134,7 @@ public:
      * @param const CCopasiContainer * pParent (default: NULL)
      */
     CResult(const CResult & src,
-            const CCopasiContainer * pParent = NULL);
+            const CCopasiContainer * pParent);
 
     /**
      * Destructor
@@ -176,7 +182,7 @@ public:
    * @param const CCopasiContainer * pParent (default: NULL)
    */
   CCopasiTask(const CCopasiTask & src,
-              const CCopasiContainer * pParent = NULL);
+              const CCopasiContainer * pParent);
 
   /**
    * Destructor

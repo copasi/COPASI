@@ -148,6 +148,16 @@ CCopasiDataModel::CCopasiDataModel(const std::string & name,
   new CCopasiTimer(CCopasiTimer::PROCESS, this);
 }
 
+CCopasiDataModel::CCopasiDataModel(const CCopasiDataModel & src,
+                                   const CCopasiContainer * pParent):
+  CCopasiContainer(src, pParent),
+  COutputHandler(src),
+  mData(src.mData),
+  mOldData(src.mOldData),
+  mRenameHandler(src.mRenameHandler),
+  pOldMetabolites((src.pOldMetabolites != NULL) ? new CCopasiVectorS < CMetabOld >(*pOldMetabolites, NO_PARENT) : NULL)
+{}
+
 CCopasiDataModel::~CCopasiDataModel()
 {
   CCopasiObject::setRenameHandler(NULL);

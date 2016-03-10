@@ -220,7 +220,7 @@ public:
    * @param const CCopasiContainer * pParent (default: NULL)
    */
   CLsodaMethod(const CLsodaMethod & src,
-               const CCopasiContainer * pParent = NULL);
+               const CCopasiContainer * pParent);
 
   /**
    *  Destructor.

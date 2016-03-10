@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -40,7 +40,7 @@ CFunctionParameterMap::CFunctionParameterMap():
 CFunctionParameterMap::CFunctionParameterMap(const CFunctionParameterMap & src):
   mPointers(src.mPointers),
   mObjects(src.mObjects),
-  mpFunctionParameters(new CFunctionParameters(*src.mpFunctionParameters))
+  mpFunctionParameters(new CFunctionParameters(*src.mpFunctionParameters, NO_PARENT))
 {
   size_t i, imax = mpFunctionParameters->size();
 
@@ -63,7 +63,7 @@ void CFunctionParameterMap::initializeFromFunctionParameters(const CFunctionPara
   clearCallParameters();
 
   pdelete(mpFunctionParameters)
-  mpFunctionParameters = new CFunctionParameters(src);
+  mpFunctionParameters = new CFunctionParameters(src, NO_PARENT);
 
   initCallParameters();
 }

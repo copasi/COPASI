@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -339,6 +339,16 @@ bool CMIRIAMResources::elevateChildren()
     *it = elevate<CMIRIAMResource, CCopasiParameterGroup>(*it);
 
   return success;
+}
+
+const CMIRIAMResources & CMIRIAMResources::operator=(const CCopasiParameterGroup & rhs)
+{
+  if (static_cast< CCopasiParameterGroup * >(this) == &rhs) return * this;
+
+  CCopasiParameterGroup::operator=(rhs);
+  initializeParameter();
+
+  return *this;
 }
 
 void CMIRIAMResources::createDisplayNameMap()

@@ -1,17 +1,9 @@
-/* Begin CVS Header
- $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CChemEqElement.h,v $
- $Revision: 1.31 $
- $Name:  $
- $Author: shoops $
- $Date: 2011/03/21 15:48:16 $
- End CVS Header */
-
-// Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
@@ -53,6 +45,9 @@ private:
    */
   C_FLOAT64 mMultiplicity;
 
+protected:
+  CChemEqElement(const CChemEqElement & src);
+
 public:
   /**
    * Default constructor
@@ -60,7 +55,7 @@ public:
    * @param const CCopasiContainer * pParent (default: NULL)
    */
   CChemEqElement(const std::string & name = "Chem Eq Element",
-                 const CCopasiContainer * pParent = NULL);
+                 const CCopasiContainer * pParent = NO_PARENT);
 
   /**
    * Copy constructor
@@ -68,7 +63,7 @@ public:
    * @param const CCopasiContainer * pParent (default: NULL)
    */
   CChemEqElement(const CChemEqElement & src,
-                 const CCopasiContainer * pParent = NULL);
+                 const CCopasiContainer * pParent);
 
   /**
    * Destructor

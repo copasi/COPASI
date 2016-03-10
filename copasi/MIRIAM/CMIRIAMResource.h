@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -40,7 +40,7 @@ public:
      * @param const CCopasiContainer * pParent (default: NULL)
      */
   CMIRIAMResource(const std::string & name = "MIRIAM Resource",
-                  const CCopasiContainer * pParent = NULL);
+                  const CCopasiContainer * pParent = NO_PARENT);
 
   /**
    * Copy constructor
@@ -48,14 +48,15 @@ public:
    * @param const CCopasiContainer * pParent (default: NULL)
    */
   CMIRIAMResource(const CMIRIAMResource & src,
-                  const CCopasiContainer * pParent = NULL);
+                  const CCopasiContainer * pParent);
+
   /**
    * Specific constructor
    * @param const CCopasiParameterGroup & group
    * @param const CCopasiContainer * pParent (default: NULL)
    */
   CMIRIAMResource(const CCopasiParameterGroup & group,
-                  const CCopasiContainer * pParent = NULL);
+                  const CCopasiContainer * pParent);
 
   /**
    * Destructor
@@ -180,7 +181,7 @@ public:
    * @param const CCopasiContainer * pParent (default: NULL)
    */
   CMIRIAMResources(const std::string & name = "MIRIAM Resources",
-                   const CCopasiContainer * pParent = NULL);
+                   const CCopasiContainer * pParent = NO_PARENT);
 
   /**
    * Copy constructor
@@ -188,14 +189,14 @@ public:
    * @param const CCopasiContainer * pParent (default: NULL)
    */
   CMIRIAMResources(const CMIRIAMResources & src,
-                   const CCopasiContainer * pParent = NULL);
+                   const CCopasiContainer * pParent);
   /**
    * Specific constructor
    * @param const CCopasiParameterGroup & group
    * @param const CCopasiContainer * pParent (default: NULL)
    */
   CMIRIAMResources(const CCopasiParameterGroup & group,
-                   const CCopasiContainer * pParent = NULL);
+                   const CCopasiContainer * pParent);
 
   /**
    * Destructor
@@ -208,6 +209,13 @@ public:
    * @return bool success
    */
   virtual bool elevateChildren();
+
+  /**
+   * Assignment operator
+   * @param const CCopasiParameterGroup & rhs
+   * @return const CMIRIAMResources & self
+   */
+  const CMIRIAMResources & operator=(const CCopasiParameterGroup & rhs);
 
   /**
    * Add a MIRIAM Resource to the list of MIRIAM Resources

@@ -21,7 +21,7 @@ public:
   // constructors
   // default
   CUnitDefinitionDB(const std::string & name = "NoName",
-                    const CCopasiContainer * pParent = NULL);
+                    const CCopasiContainer * pParent = NO_PARENT);
 
   ~CUnitDefinitionDB() {}
 

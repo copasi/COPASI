@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -29,7 +29,7 @@ private:
   /**
    * Default Constructor
    */
-  COptMethodEP(const CCopasiContainer * pParent = NULL);
+  COptMethodEP(const CCopasiContainer * pParent = NO_PARENT);
 
   /**
    * Initialize arrays and pointer.
@@ -111,7 +111,7 @@ public:
    * @param const COptMethodEP & src
    */
   COptMethodEP(const COptMethodEP& src,
-               const CCopasiContainer * pParent = NULL);
+               const CCopasiContainer * pParent);
 
   /**
    * Destructor

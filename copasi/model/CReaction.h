@@ -52,7 +52,7 @@ public:
    * @param const CCopasiContainer * pParent (default: NULL)
    */
   CReaction(const std::string & name = "NoName",
-            const CCopasiContainer * pParent = NULL);
+            const CCopasiContainer * pParent = NO_PARENT);
 
   /**
    * Copy constructor
@@ -60,7 +60,7 @@ public:
    * @param const CCopasiContainer * pParent (default: NULL)
    */
   CReaction(const CReaction & src,
-            const CCopasiContainer * pParent = NULL);
+            const CCopasiContainer * pParent);
 
 private:
   CReaction & operator= (const CReaction &);

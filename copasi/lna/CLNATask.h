@@ -1,4 +1,4 @@
-// Copyright (C) 2011 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -51,7 +51,7 @@ public:
    * @param const CCopasiContainer * pParent (default: NULL)
    */
   CLNATask(const CLNATask & src,
-           const CCopasiContainer * pParent = NULL);
+           const CCopasiContainer * pParent);
 
   /**
    * Destructor

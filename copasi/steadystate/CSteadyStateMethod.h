@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -113,7 +113,7 @@ protected:
    * @param const CCopasiContainer * pParent (default: NULL)
    */
   CSteadyStateMethod(CTaskEnum::Method subType,
-                     const CCopasiContainer * pParent = NULL);
+                     const CCopasiContainer * pParent = NO_PARENT);
 
   /**
    * initialize parameters and handle parameters of old COPASI files
@@ -127,7 +127,7 @@ public:
    * @param const CCopasiContainer * pParent (default: NULL)
    */
   CSteadyStateMethod(const CSteadyStateMethod & src,
-                     const CCopasiContainer * pParent = NULL);
+                     const CCopasiContainer * pParent);
 
   /**
    *  Destructor.

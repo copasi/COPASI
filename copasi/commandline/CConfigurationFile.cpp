@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -147,30 +147,6 @@ CConfigurationFile::CConfigurationFile(const CConfigurationFile & src,
   mpCurrentAuthorEmail(NULL)
 {initializeParameter();}
 
-CConfigurationFile::CConfigurationFile(const CCopasiParameterGroup & group,
-                                       const CCopasiContainer * pParent):
-  CCopasiParameterGroup(group, pParent),
-  mpRecentFiles(NULL),
-  mpRecentSBMLFiles(NULL),
-  mpRecentSEDMLFiles(NULL),
-  mpRecentMIRIAMResources(NULL),
-  mpApplicationFont(NULL),
-  mpValidateUnits(NULL),
-  mpUseOpenGL(NULL),
-  mpUseAdvancedSliders(NULL),
-  mpUseAdvancedEditing(NULL),
-  mpNormalizePerExperiment(NULL),
-  mpWorkingDirectory(NULL),
-  mpProxyServer(NULL),
-  mpProxyPort(NULL),
-  mpProxyUser(NULL),
-  mpProxyPass(NULL),
-  mpCurrentAuthorGivenName(NULL),
-  mpCurrentAuthorFamilyName(NULL),
-  mpCurrentAuthorOrganization(NULL),
-  mpCurrentAuthorEmail(NULL)
-{initializeParameter();}
-
 CConfigurationFile::~CConfigurationFile()
 {}
 
@@ -285,6 +261,16 @@ bool CConfigurationFile::load()
     }
 
   return success;
+}
+
+const CConfigurationFile & CConfigurationFile::operator=(const CCopasiParameterGroup & rhs)
+{
+  if (static_cast< CCopasiParameterGroup * >(this) == &rhs) return * this;
+
+  CCopasiParameterGroup::operator=(rhs);
+  initializeParameter();
+
+  return *this;
 }
 
 CRecentFiles & CConfigurationFile::getRecentFiles()

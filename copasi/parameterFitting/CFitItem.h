@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -30,6 +30,8 @@ protected:
    */
   CFitItem();
 
+  CFitItem(const CFitItem & src);
+
 public:
   /**
    * Specific constructor
@@ -45,7 +47,7 @@ public:
    * @param const CCopasiContainer * pParent (default: src data model)
    */
   CFitItem(const CFitItem & src,
-           const CCopasiContainer * pParent = NULL);
+           const CCopasiContainer * pParent);
 
   /**
    * Specific constructor used for reading COPASI files
@@ -53,7 +55,7 @@ public:
    * @param const CCopasiContainer * pParent (default: group data model)
    */
   CFitItem(const CCopasiParameterGroup & group,
-           const CCopasiContainer * pParent = NULL);
+           const CCopasiContainer * pParent);
 
   /**
    * Destructor
@@ -227,7 +229,6 @@ protected:
    * The value for local items, which affect the experiments in the list.
    */
   C_FLOAT64 mLocalValue;
-
 };
 
 class CFitConstraint : public CFitItem
@@ -238,6 +239,8 @@ protected:
    * Default constructor
    */
   CFitConstraint();
+
+  CFitConstraint(const CFitConstraint & src);
 
 public:
   /**
@@ -254,7 +257,7 @@ public:
    * @param const CCopasiContainer * pParent (default: src data model)
    */
   CFitConstraint(const CFitConstraint & src,
-                 const CCopasiContainer * pParent = NULL);
+                 const CCopasiContainer * pParent);
 
   /**
    * Specific constructor used for reading COPASI files
@@ -262,7 +265,7 @@ public:
    * @param const CCopasiContainer * pParent (default: group data model)
    */
   CFitConstraint(const CCopasiParameterGroup & group,
-                 const CCopasiContainer * pParent = NULL);
+                 const CCopasiContainer * pParent);
 
   /**
    * Destructor

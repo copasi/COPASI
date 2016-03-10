@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -33,15 +33,18 @@ class CCopasiStaticString: public CCopasiObject
 private:
   std::string mStaticString;
 
+protected:
+  CCopasiStaticString(const CCopasiStaticString & src);
+
   // Operations
 public:
   CCopasiStaticString(const std::string & name = "",
-                      const CCopasiContainer * pParent = NULL,
+                      const CCopasiContainer * pParent = NO_PARENT,
                       const std::string & type = "String",
                       const unsigned C_INT32 & flag = CCopasiObject::StaticString);
 
   CCopasiStaticString(const CCopasiStaticString & src,
-                      const CCopasiContainer * pParent = NULL);
+                      const CCopasiContainer * pParent);
 
   ~CCopasiStaticString();
 
@@ -56,12 +59,15 @@ public:
 
 class CCopasiReportSeparator: public CCopasiStaticString
 {
+protected:
+  CCopasiReportSeparator(const CCopasiReportSeparator & src);
+
 public:
   CCopasiReportSeparator(const std::string & name = "",
-                         const CCopasiContainer * pParent = NULL);
+                         const CCopasiContainer * pParent = NO_PARENT);
 
   CCopasiReportSeparator(const CCopasiStaticString & src,
-                         const CCopasiContainer * pParent = NULL);
+                         const CCopasiContainer * pParent);
 
   ~CCopasiReportSeparator();
 

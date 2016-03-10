@@ -52,14 +52,17 @@ private:
   // Operations
   CCopasiContainer();
 
+protected:
+  CCopasiContainer(const CCopasiContainer & src);
+
 public:
   CCopasiContainer(const std::string & name,
-                   const CCopasiContainer * pParent = NULL,
+                   const CCopasiContainer * pParent = NO_PARENT,
                    const std::string & type = "CN",
                    const unsigned C_INT32 & flag = CCopasiObject::Container);
 
   CCopasiContainer(const CCopasiContainer & src,
-                   const CCopasiContainer * pParent = NULL);
+                   const CCopasiContainer * pParent);
 
   virtual ~CCopasiContainer();
 

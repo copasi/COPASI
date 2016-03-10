@@ -474,7 +474,7 @@ bool CFitProblem::initialize()
       mpTrajectory->initialize(CCopasiTask::NO_OUTPUT, NULL, NULL);
 
       mpTrajectoryProblem =
-        new CTrajectoryProblem(*static_cast<CTrajectoryProblem *>(mpTrajectory->getProblem()));
+        new CTrajectoryProblem(*static_cast<CTrajectoryProblem *>(mpTrajectory->getProblem()), NO_PARENT);
     }
   else
     {

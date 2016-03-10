@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -52,7 +52,7 @@ public:
    * @param const CCopasiContainer * pParent (default: NULL)
    */
   CILDMModifiedMethod(const CILDMModifiedMethod & src,
-                      const CCopasiContainer * pParent = NULL);
+                      const CCopasiContainer * pParent);
 
   /**
    *  Destructor.

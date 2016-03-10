@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -31,22 +31,22 @@
 
 CCopasiParameterGroup::CCopasiParameterGroup():
   CCopasiParameter("NoName", GROUP),
-  mElementTemplates()
+  mpElementTemplates(NULL)
 {}
 
 CCopasiParameterGroup::CCopasiParameterGroup(const CCopasiParameterGroup & src,
     const CCopasiContainer * pParent):
   CCopasiParameter(src, pParent),
-  mElementTemplates(src.mElementTemplates)
+  mpElementTemplates(src.mpElementTemplates != NULL ? new CCopasiParameterGroup(*src.mpElementTemplates, this) : NULL)
 {
-  *this = src;
+  operator=(src);
 }
 
 CCopasiParameterGroup::CCopasiParameterGroup(const std::string & name,
     const CCopasiContainer * pParent,
     const std::string & objectType):
   CCopasiParameter(name, CCopasiParameter::GROUP, NULL, pParent, objectType),
-  mElementTemplates()
+  mpElementTemplates(NULL)
 {}
 
 CCopasiParameterGroup::~CCopasiParameterGroup()
@@ -186,9 +186,9 @@ CCopasiParameterGroup & CCopasiParameterGroup::operator = (const CCopasiParamete
   for (; itToBeAdded != endToBeAdded; ++itToBeAdded)
     {
       if ((*itToBeAdded)->getType() == GROUP)
-        pParameter = new CCopasiParameterGroup(* static_cast< CCopasiParameterGroup * >(*itToBeAdded));
+        pParameter = new CCopasiParameterGroup(* static_cast< CCopasiParameterGroup * >(*itToBeAdded), NO_PARENT);
       else
-        pParameter = new CCopasiParameter(**itToBeAdded);
+        pParameter = new CCopasiParameter(**itToBeAdded, NO_PARENT);
 
       addParameter(pParameter);
     }
@@ -238,12 +238,12 @@ bool CCopasiParameterGroup::addParameter(const CCopasiParameter & parameter)
   if (parameter.getType() == CCopasiParameter::GROUP)
     {
       CCopasiParameterGroup * pGroup =
-        new CCopasiParameterGroup(*dynamic_cast<const CCopasiParameterGroup *>(&parameter));
+        new CCopasiParameterGroup(*dynamic_cast<const CCopasiParameterGroup *>(&parameter), NO_PARENT);
       addParameter(pGroup);
     }
   else
     {
-      CCopasiParameter * pParameter = new CCopasiParameter(parameter);
+      CCopasiParameter * pParameter = new CCopasiParameter(parameter, NO_PARENT);
       addParameter(pParameter);
     }
 
@@ -258,14 +258,24 @@ void CCopasiParameterGroup::addParameter(CCopasiParameter * pParameter)
   static_cast< elements * >(mpValue)->push_back(pParameter);
 }
 
-std::vector< CCopasiParameter > & CCopasiParameterGroup::getElementTemplates()
+CCopasiParameterGroup & CCopasiParameterGroup::getElementTemplates()
 {
-  return mElementTemplates;
+  if (mpElementTemplates == NULL)
+    {
+      mpElementTemplates = new CCopasiParameterGroup("Element Templates", this);
+    }
+
+  return *mpElementTemplates;
 }
 
-const std::vector< CCopasiParameter > & CCopasiParameterGroup::getElementTemplates() const
+const CCopasiParameterGroup & CCopasiParameterGroup::getElementTemplates() const
 {
-  return mElementTemplates;
+  if (mpElementTemplates == NULL)
+    {
+      mpElementTemplates = new CCopasiParameterGroup("Element Templates", this);
+    }
+
+  return *mpElementTemplates;
 }
 
 CCopasiParameterGroup::name_iterator CCopasiParameterGroup::beginName() const

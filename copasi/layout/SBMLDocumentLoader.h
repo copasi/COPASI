@@ -56,7 +56,7 @@ public:
                                 const std::map<std::string, std::string> & modelmap,
                                 std::map<std::string, std::string> & layoutmap
                                 , const std::map<std::string, std::string>& globalIdToKeyMap
-                                , const CCopasiContainer * pParent = NULL
+                                , const CCopasiContainer * pParent = NO_PARENT
                                );
 
 protected:
