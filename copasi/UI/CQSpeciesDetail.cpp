@@ -176,7 +176,7 @@ void CQSpeciesDetail::setFramework(int framework)
   QString FrequencyUnits;
 
   if (pModel)
-    FrequencyUnits = FROM_UTF8(pModel->getFrequencyUnit().getExpression());
+    FrequencyUnits = FROM_UTF8(pModel->getFrequencyUnit());
 
   if (FrequencyUnits != "none")
     FrequencyUnits = " (" + FrequencyUnits + ")";

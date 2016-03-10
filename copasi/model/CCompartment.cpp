@@ -68,14 +68,12 @@ CCompartment::~CCompartment()
 }
 
 // virtual
-CUnit CCompartment::getChildObjectUnits(const CCopasiObject * pObject) const
+std::string CCompartment::getChildObjectUnits(const CCopasiObject * pObject) const
 {
   if (pObject == mpRateReference)
     {
       return CModelEntity::getChildObjectUnits(pObject);
     }
-
-  CUnit unit = CUnit(); //potentially manipulated, and returned at the end
 
   if (pObject == mpValueReference ||
       pObject == mpIValueReference)
@@ -83,25 +81,22 @@ CUnit CCompartment::getChildObjectUnits(const CCopasiObject * pObject) const
       switch (mDimensionality)
         {
           case 1:
-            unit = (mpModel != NULL) ? CUnit(mpModel->getLengthUnit()) : CUnit();
+            return mpModel->getLengthUnit();
             break;
 
           case 2:
-            unit = (mpModel != NULL) ? CUnit(mpModel->getAreaUnit()) : CUnit();
+            return mpModel->getAreaUnit();
             break;
 
           case 3:
-            unit = (mpModel != NULL) ? CUnit(mpModel->getVolumeUnit()) : CUnit();
+            return mpModel->getVolumeUnit();
             break;
 
           default:
+            return "";
             break;
         }
     }
-
-  unit.buildExpression();
-
-  return unit;
 }
 
 void CCompartment::cleanup() {mMetabolites.cleanup();}

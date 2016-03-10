@@ -264,10 +264,12 @@ CopasiPlot::createSpectogram(const CPlotItem *plotItem)
       // have explicit list of numbers to plot
       QStringList list = contours.split(QRegExp(",| |;"), QString::SkipEmptyParts);
       QwtValueList contourLevels;
-      foreach(const QString & level, list)
-      {
-        contourLevels += level.toDouble();
-      }
+
+      foreach (const QString & level, list)
+        {
+          contourLevels += level.toDouble();
+        }
+
       pSpectogram->setContourLevels(contourLevels);
       pSpectogram->setDisplayMode(QwtPlotSpectrogram::ContourMode, true);
     }
@@ -1403,7 +1405,7 @@ void CopasiPlot::setAxisUnits(const C_INT32 & index,
 
   if (pObject == NULL) return;
 
-  std::string Units = pObject->getUnits().getExpression();
+  std::string Units = pObject->getUnits();
 
   if (Units != "")
     setAxisTitle(index, FROM_UTF8(Units));

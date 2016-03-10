@@ -363,9 +363,9 @@ public:
 
   /**
    * Retrieve the units of the object.
-   * @return CUnit units
+   * @return std::string units
    */
-  virtual const CUnit getUnits() const;
+  virtual const std::string getUnits() const;
 
   /**
    * Comparison operator which can be used to sort objects based on their dependencies

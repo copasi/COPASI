@@ -113,12 +113,12 @@ CReaction::~CReaction()
 }
 
 // virtual
-CUnit CReaction::getChildObjectUnits(const CCopasiObject * pObject) const
+std::string CReaction::getChildObjectUnits(const CCopasiObject * pObject) const
 {
   const CModel * pModel =
     dynamic_cast< const CModel * >(getObjectAncestor("Model"));
 
-  if (pModel == NULL) return CUnit();
+  if (pModel == NULL) return "";
 
   const std::string & Name = pObject->getObjectName();
 
@@ -126,14 +126,12 @@ CUnit CReaction::getChildObjectUnits(const CCopasiObject * pObject) const
     return pModel->getFrequencyUnit();
   else if (Name == "Flux")
     {
-      CUnit unit = CUnit();
-      unit.setExpression(pModel->getQuantityRateUnitsDisplayString(), pModel->getAvogadro());
-      return unit;
+      return pModel->getQuantityRateUnitsDisplayString();
     }
   else if (Name == "Propensity")
     return pModel->getFrequencyUnit();
 
-  return CUnit();
+  return "";
 }
 
 void CReaction::cleanup()
