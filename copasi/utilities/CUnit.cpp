@@ -212,38 +212,74 @@ CUnit CUnit::exponentiate(double exp) const
 }
 
 // Putting units next to each other implies multiplying them.
-CUnit  CUnit::operator*(const CUnit & rhs) const
+CUnit  CUnit::operator*(const CUnit & rightSide) const
 {
   CUnit Unit(*this); // Make a copy of the first CUnit
 
-  std::set< CUnitComponent >::const_iterator it = rhs.mComponents.begin();
-  std::set< CUnitComponent >::const_iterator end = rhs.mComponents.end();
+  std::set< CUnitComponent >::const_iterator it = rightSide.mComponents.begin();
+  std::set< CUnitComponent >::const_iterator end = rightSide.mComponents.end();
 
   for (; it != end; ++it)
     {
       Unit.addComponent(*it);
     }
 
-  Unit.mUsedSymbols.insert(rhs.mUsedSymbols.begin(), rhs.mUsedSymbols.end());
+  Unit.mUsedSymbols.insert(rightSide.mUsedSymbols.begin(), rightSide.mUsedSymbols.end());
 
   return Unit; // The calling code might want to call simplifyComponents() on the returned unit.
 }
 
-bool CUnit::operator==(const CUnit & rhs) const
+bool CUnit::operator==(const CUnit & rightSide) const
 {
-  return (mExpression == rhs.mExpression);
+  return (mExpression == rightSide.mExpression);
 }
 
-bool CUnit::isEquivalent(const CUnit & rhs) const
+bool CUnit::operator<(const CUnit & rightSide) const
 {
-  if (mComponents.size() != rhs.mComponents.size())
+  std::set< CUnitComponent > RSComponents = rightSide.getComponents();
+
+  if ((mComponents.size() == 0 && // both undefined
+       RSComponents.size() == 0) ||
+      mComponents.size() < RSComponents.size()) // RS has more components
+    return true;
+  else if (mComponents.size() > RSComponents.size())
+    return false;
+
+  // same (non-zero) number of components
+  std::set< CUnitComponent >::const_iterator itLS = mComponents.begin(),
+                                             itRS = RSComponents.begin();
+
+  double LSMultiplier = itLS->getMultiplier(), // Prepare for scale tie-breaker
+         RSMultiplier = itRS->getMultiplier();
+
+  if (mComponents.size() > 1) // should always be true, b/c of consolodateDimensionless, but . . .
+    {
+      ++itLS;
+      ++itRS;
+      LSMultiplier *= itLS->getMultiplier(); // a reasonable tie-breaker, which accounts
+      RSMultiplier *= itRS->getMultiplier(); // for the first two components
+    }
+
+  if (itLS->getScale() < itRS->getScale())
+    return true;
+  else if (itLS->getScale() > itRS->getScale())
+    return false;
+  else if (LSMultiplier <= RSMultiplier) // Scales are equal, at this point.
+    return true;                        // Parser pushes multiplier to first
+  else                                  // (dimensionless) component.
+    return false;
+}
+
+bool CUnit::isEquivalent(const CUnit & rightSide) const
+{
+  if (mComponents.size() != rightSide.mComponents.size())
     {
       return false;
     }
 
-  std::set< CUnitComponent >::const_iterator it = mComponents.begin();
-  std::set< CUnitComponent >::const_iterator end = mComponents.end();
-  std::set< CUnitComponent >::const_iterator itRhs = rhs.mComponents.begin();
+  std::set< CUnitComponent >::const_iterator it = mComponents.begin(),
+                                             end = mComponents.end(),
+                                             itRhs = rightSide.mComponents.begin();
 
   for (; it != end; ++it, ++itRhs)
     {
