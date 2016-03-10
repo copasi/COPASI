@@ -473,9 +473,9 @@ void CQModelValue::slotUnitChanged()
     }
   else
     {
-      mpLblInitialValue->setText(FROM_UTF8("Initial Value (" + mpModelValue->getInitialValueReference()->getUnits().getExpression()) + ")");
-      mpLblValue->setText(FROM_UTF8("Value (" + mpModelValue->getValueReference()->getUnits().getExpression()) + ")");
-      mpLblRate->setText(FROM_UTF8("Rate (" + mpModelValue->getRateReference()->getUnits().getExpression()) + ")");
+      mpLblInitialValue->setText(FROM_UTF8("Initial Value (" + mpModelValue->getInitialValueReference()->getUnits()) + ")");
+      mpLblValue->setText(FROM_UTF8("Value (" + mpModelValue->getValueReference()->getUnits()) + ")");
+      mpLblRate->setText(FROM_UTF8("Rate (" + mpModelValue->getRateReference()->getUnits()) + ")");
     }
 
   mpModelValue->setUnitExpression(OldUnit);

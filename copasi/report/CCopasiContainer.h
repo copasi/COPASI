@@ -75,15 +75,15 @@ public:
 
   /**
    * Retrieve the units of the object.
-   * @return CUnit units
+   * @return std::string units
    */
-  virtual const CUnit getUnits() const;
+  virtual const std::string getUnits() const;
 
   /**
    * Retrieve the units of the child object.
    * @return std::string units
    */
-  virtual CUnit getChildObjectUnits(const CCopasiObject * pObject) const;
+  virtual std::string getChildObjectUnits(const CCopasiObject * pObject) const;
 
 protected:
   void initObjects();

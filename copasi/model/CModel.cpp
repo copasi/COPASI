@@ -192,7 +192,7 @@ CModel::~CModel()
 }
 
 // virtual
-CUnit CModel::getChildObjectUnits(const CCopasiObject * pObject) const
+std::string CModel::getChildObjectUnits(const CCopasiObject * pObject) const
 {
   if (pObject == mpRateReference)
     {
@@ -202,10 +202,10 @@ CUnit CModel::getChildObjectUnits(const CCopasiObject * pObject) const
   if (pObject == mpIValueReference ||
       pObject == mpValueReference)
     {
-      return CUnit(getTimeUnit());
+      return getTimeUnit();
     }
 
-  return CUnit();
+  return "";
 }
 
 C_INT32 CModel::load(CReadConfig & configBuffer)
@@ -3542,11 +3542,11 @@ std::string CModel::getTimeUnitsDisplayString() const
   return mTimeUnit;
 }
 
-CUnit CModel::getFrequencyUnit() const
+std::string CModel::getFrequencyUnit() const
 {
-  CUnit frequencyUnit = CUnit(CUnit(getTimeUnit()).exponentiate(-1));
-  frequencyUnit.buildExpression();
-  return frequencyUnit;
+  CUnit frequencyCUnit = CUnit(getTimeUnit()).exponentiate(-1);
+  frequencyCUnit.buildExpression();
+  return frequencyCUnit.getExpression();
 }
 
 std::string CModel::getVolumeUnitsDisplayString() const

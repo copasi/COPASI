@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -262,7 +262,7 @@ public:
    * Retrieve the units of the child object.
    * @return const & CUnit units
    */
-  virtual CUnit getChildObjectUnits(const CCopasiObject * pObject) const;
+  virtual std::string getChildObjectUnits(const CCopasiObject * pObject) const;
 
   /**
    * Retrieve the object representing the value;

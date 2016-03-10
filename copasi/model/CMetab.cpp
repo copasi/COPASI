@@ -115,24 +115,23 @@ CMetab::~CMetab()
 }
 
 // virtual
-CUnit CMetab::getChildObjectUnits(const CCopasiObject * pObject) const
+std::string CMetab::getChildObjectUnits(const CCopasiObject * pObject) const
 {
   if (pObject == mpRateReference)
     {
       return CModelEntity::getChildObjectUnits(pObject);
     }
 
-  CUnit unit = CUnit(); //potentially manipulated, and returned at the end
-  C_FLOAT64 Avogadro = (mpModel != NULL) ? mpModel->getAvogadro() : CUnit::Avogadro;
+  CUnit unit;
 
   if (pObject == mpIValueReference ||
       pObject == mpValueReference)
     {
-      unit = (mpModel != NULL) ? CUnit(mpModel->getQuantityUnit()) : CUnit();
+      return mpModel->getQuantityUnit();
     }
   else if (pObject == mpTTReference)
     {
-      unit = (mpModel != NULL) ? CUnit(mpModel->getTimeUnit()) : CUnit();
+      return mpModel->getTimeUnit();
     }
   else if (pObject == mpIConcReference ||
            pObject == mpConcReference)
@@ -159,7 +158,7 @@ CUnit CMetab::getChildObjectUnits(const CCopasiObject * pObject) const
     }
 
   unit.buildExpression();
-  return unit;
+  return unit.getExpression();
 }
 
 void CMetab::cleanup() {}

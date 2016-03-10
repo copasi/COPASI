@@ -440,7 +440,7 @@ std::ostream &operator<<(std::ostream &os, const CSteadyStateTask &A)
   os << "Particle Number" << "\t";
 
   os << "Particle Number Rate";
-  Units = pModel->getFrequencyUnit().getExpression();
+  Units = pModel->getFrequencyUnit();
 
   if (Units != "")
     os << " (" << Units << ")";
@@ -485,7 +485,7 @@ std::ostream &operator<<(std::ostream &os, const CSteadyStateTask &A)
   os << "\t";
 
   os << "Particle Flux";
-  Units = pModel->getFrequencyUnit().getExpression();
+  Units = pModel->getFrequencyUnit();
 
   if (Units != "")
     os << " (" << Units << ")";

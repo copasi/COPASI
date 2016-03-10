@@ -75,7 +75,7 @@ public:
    * Retrieve the units of the child object.
    * @return std::string units
    */
-  virtual CUnit getChildObjectUnits(const CCopasiObject * pObject) const;
+  virtual std::string getChildObjectUnits(const CCopasiObject * pObject) const;
 
   /**
    * Delete
