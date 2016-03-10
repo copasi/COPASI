@@ -110,9 +110,10 @@ public:
   bool compile(const C_FLOAT64 & avogadro = Avogadro);
 
   CUnit exponentiate(double exp) const;
-  CUnit operator*(const CUnit & rhs) const;
-  bool operator==(const CUnit & rhs) const;
-  bool isEquivalent(const CUnit & rhs) const;
+  CUnit operator*(const CUnit & rightSide) const;
+  bool operator==(const CUnit & rightSide) const;
+  bool operator<(const CUnit & rightSide) const;
+  bool isEquivalent(const CUnit & rightSide) const;
   void buildExpression();
   std::vector< SymbolComponent > getSymbolComponents() const;
   bool isValidTimeUnit();
