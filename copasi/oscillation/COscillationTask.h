@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -39,7 +39,7 @@ public:
    * @param const CCopasiContainer * pParent (default: NULL)
    */
   //COscillationTask(const CTaskEnum::Task & type = CTaskEnum::oscillation,
-  //                 const CCopasiContainer * pParent = NULL);
+  //                 const CCopasiContainer * pParent = NO_PARENT);
   COscillationTask(const CTaskEnum::Task & type ,
                    const CCopasiContainer * pParent);
 
@@ -47,7 +47,8 @@ public:
    * Copy constructor
    * @param const COscillationTask & src
    */
-  COscillationTask(const COscillationTask & src, const CCopasiContainer * pParent = NULL);
+  COscillationTask(const COscillationTask & src,
+                   const CCopasiContainer * pParent);
 
   /**
    * Destructor

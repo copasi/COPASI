@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -48,13 +48,15 @@ protected:
   CCopasiVector<CLGeneralGlyph> mvGraphicalObjects;
   CCopasiVector<CLLocalRenderInformation> mvLocalRenderInformationObjects;
 
+  CLayout(const CLayout & src);
+
 public:
 
   CLayout(const std::string & name = "Layout",
-          const CCopasiContainer * pParent = NULL);
+          const CCopasiContainer * pParent = NO_PARENT);
 
   CLayout(const CLayout & src,
-          const CCopasiContainer * pParent = NULL);
+          const CCopasiContainer * pParent);
 
   /**
    * constructor from libsbml object.
@@ -63,7 +65,7 @@ public:
    */
   CLayout(const Layout & sbml,
           std::map<std::string, std::string> & layoutmap,
-          const CCopasiContainer * pParent = NULL);
+          const CCopasiContainer * pParent = NO_PARENT);
 
   ~CLayout();
 

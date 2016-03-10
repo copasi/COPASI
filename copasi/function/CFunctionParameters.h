@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -41,6 +41,9 @@ private:
   /** @dia:route 0,3; h,15.1888,24.6765,8.71728,7.21973,10.7176 */
   CCopasiVectorNS < CFunctionParameter > mParameters;
 
+protected:
+  CFunctionParameters(const CFunctionParameters & src);
+
 public:
   /**
    * Default constructor
@@ -48,7 +51,7 @@ public:
    * @param const CCopasiContainer * pParent (default: NULL)
    */
   CFunctionParameters(const std::string & name = "NoName",
-                      const CCopasiContainer * pParent = NULL);
+                      const CCopasiContainer * pParent = NO_PARENT);
 
   /**
    * Copy constructor
@@ -56,7 +59,7 @@ public:
    * @param const CCopasiContainer * pParent (default: NULL)
    */
   CFunctionParameters(const CFunctionParameters & src,
-                      const CCopasiContainer * pParent = NULL);
+                      const CCopasiContainer * pParent);
 
   /**
    *  Destructor

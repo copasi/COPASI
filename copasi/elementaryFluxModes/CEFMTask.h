@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -51,7 +51,8 @@ public:
    * @param const COptTask & src
    */
   //-COptTask(const CEFMTask & src);
-  CEFMTask(const CEFMTask & src, const CCopasiContainer * pParent = NULL);
+  CEFMTask(const CEFMTask & src,
+           const CCopasiContainer * pParent);
 
   /**
    * Destructor

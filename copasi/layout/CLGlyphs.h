@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -31,12 +31,15 @@ LIBSBML_CPP_NAMESPACE_END
  */
 class CLMetabGlyph : public CLGraphicalObject
 {
+protected:
+  CLMetabGlyph(const CLMetabGlyph & src);
+
 public:
   CLMetabGlyph(const std::string & name = "MetabGlyph",
-               const CCopasiContainer * pParent = NULL);
+               const CCopasiContainer * pParent = NO_PARENT);
 
   CLMetabGlyph(const CLMetabGlyph & src,
-               const CCopasiContainer * pParent = NULL);
+               const CCopasiContainer * pParent);
 
   /**
    * constructor from libsbml object
@@ -44,7 +47,7 @@ public:
   CLMetabGlyph(const SpeciesGlyph & sbml,
                const std::map<std::string, std::string> & modelmap,
                std::map<std::string, std::string> & layoutmap,
-               const CCopasiContainer * pParent = NULL);
+               const CCopasiContainer * pParent = NO_PARENT);
 
   /**
    * assignment operator
@@ -75,12 +78,15 @@ public:
  */
 class CLCompartmentGlyph : public CLGraphicalObject
 {
+protected:
+  CLCompartmentGlyph(const CLCompartmentGlyph & src);
+
 public:
   CLCompartmentGlyph(const std::string & name = "CompartmentGlyph",
-                     const CCopasiContainer * pParent = NULL);
+                     const CCopasiContainer * pParent = NO_PARENT);
 
   CLCompartmentGlyph(const CLCompartmentGlyph & src,
-                     const CCopasiContainer * pParent = NULL);
+                     const CCopasiContainer * pParent);
 
   /**
    * constructor from libsbml object
@@ -88,7 +94,7 @@ public:
   CLCompartmentGlyph(const CompartmentGlyph & sbml,
                      const std::map<std::string, std::string> & modelmap,
                      std::map<std::string, std::string> & layoutmap,
-                     const CCopasiContainer * pParent = NULL);
+                     const CCopasiContainer * pParent = NO_PARENT);
 
   //virtual void scale (const double & scaleFactor){this->mBBox.scale(scaleFactor);}
 
@@ -134,12 +140,14 @@ protected:
    */
   std::string mGraphicalObjectKey;
 
+  CLTextGlyph(const CLTextGlyph & src);
+
 public:
   CLTextGlyph(const std::string & name = "TextGlyph",
-              const CCopasiContainer * pParent = NULL);
+              const CCopasiContainer * pParent = NO_PARENT);
 
   CLTextGlyph(const CLTextGlyph & src,
-              const CCopasiContainer * pParent = NULL);
+              const CCopasiContainer * pParent);
 
   /**
    * constructor from libsbml object
@@ -147,7 +155,7 @@ public:
   CLTextGlyph(const TextGlyph & sbml,
               const std::map<std::string, std::string> & modelmap,
               std::map<std::string, std::string> & layoutmap,
-              const CCopasiContainer * pParent = NULL);
+              const CCopasiContainer * pParent = NO_PARENT);
 
   /**
    * assignment operator.

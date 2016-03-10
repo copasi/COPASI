@@ -916,7 +916,7 @@ bool CODEExporterC::exportSingleFunction(const CFunction *func, std::set<std::st
   CFunctionDB* pFunctionDB = CCopasiRootContainer::getFunctionList();
 
   CFunction* tmpfunc = NULL;
-  tmpfunc = new CFunction(*func);
+  tmpfunc = new CFunction(*func, NO_PARENT);
 
   if (func->getType() != CEvaluationTree::MassAction)
     {
@@ -1099,7 +1099,7 @@ std::string CODEExporterC::KineticFunction2ODEmember(const CReaction *reac)
       const CChemEqElement* substr;
       const CChemEqElement* prod;
 
-      const CMassAction cMassAction = *static_cast<const CMassAction*>(reac->getFunction());
+      const CMassAction & cMassAction = *static_cast<const CMassAction*>(reac->getFunction());
 
       equation << "(";
 

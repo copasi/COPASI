@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -53,20 +53,22 @@ protected:
 
   CLBoundingBox mBBox;
 
+  CLGraphicalObject(const CLGraphicalObject & src);
+
 public:
 
   CLGraphicalObject(const std::string & name = "GraphicalObject",
-                    const CCopasiContainer * pParent = NULL);
+                    const CCopasiContainer * pParent = NO_PARENT);
 
   CLGraphicalObject(const CLGraphicalObject & src,
-                    const CCopasiContainer * pParent = NULL);
+                    const CCopasiContainer * pParent);
 
   /**
    * constructor from libsbml object
    */
   CLGraphicalObject(const GraphicalObject & sbml,
                     std::map<std::string, std::string> & layoutmap,
-                    const CCopasiContainer * pParent = NULL);
+                    const CCopasiContainer * pParent = NO_PARENT);
 
   ~CLGraphicalObject();
 

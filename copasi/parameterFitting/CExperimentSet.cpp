@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -343,7 +343,7 @@ CExperiment * CExperimentSet::addExperiment(const CExperiment & experiment)
       name = StringPrint("%s_%d", experiment.getObjectName().c_str(), i);
     }
 
-  CExperiment * pExperiment = new CExperiment(experiment);
+  CExperiment * pExperiment = new CExperiment(experiment, NO_PARENT);
   pExperiment->setObjectName(name);
   addParameter(pExperiment);
 

@@ -301,7 +301,7 @@ bool CQTrajectoryWidget::loadTask()
 
   pdelete(mpTrajectoryProblem);
 
-  mpTrajectoryProblem = new CTrajectoryProblem(*TrajectoryProblem);
+  mpTrajectoryProblem = new CTrajectoryProblem(*TrajectoryProblem, NO_PARENT);
   mpTask->remove(mpTrajectoryProblem);
   mpTrajectoryProblem->setObjectParent(NULL);
 

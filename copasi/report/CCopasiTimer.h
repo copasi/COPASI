@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -38,7 +38,7 @@ public:
    * @param const CCopasiContainer * pParent (default: NULL)
    */
   CCopasiTimer(const Type & type = WALL,
-               const CCopasiContainer * pParent = NULL);
+               const CCopasiContainer * pParent = NO_PARENT);
 
   /**
    * Copy constructor
@@ -46,7 +46,7 @@ public:
    * @param const CCopasiContainer * pParent (default: NULL)
    */
   CCopasiTimer(const CCopasiTimer & src,
-               const CCopasiContainer * pParent = NULL);
+               const CCopasiContainer * pParent);
 
   /**
    *  Destructor.

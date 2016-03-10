@@ -165,7 +165,9 @@ public:
 
     const_iterator operator++(int)
     {
-      return const_iterator(std::vector< CType * >::const_iterator::operator++());
+      const_iterator Tmp(*this);
+      operator++();
+      return Tmp;
     }
 
     const_iterator & operator--()
@@ -176,7 +178,9 @@ public:
 
     const_iterator operator--(int)
     {
-      return const_iterator(std::vector< CType * >::const_iterator::operator--());
+      const_iterator Tmp(*this);
+      operator--();
+      return Tmp;
     }
 
     const_iterator & operator+=(const typename std::vector< CType * >::const_iterator::difference_type & n)
@@ -209,6 +213,8 @@ public:
 
 #endif // SWIG
   // Operations
+protected:
+  CCopasiVector(const CCopasiVector < CType > & src);
 
 public:
   /**
@@ -218,9 +224,8 @@ public:
    * @param const size_t & flag (Default: flag | CCopasiObject::Vector)
    */
   CCopasiVector(const std::string & name = "NoName",
-                const CCopasiContainer * pParent = NULL,
-                const unsigned C_INT32 &
-                flag = CCopasiObject::Vector):
+                const CCopasiContainer * pParent = NO_PARENT,
+                const unsigned C_INT32 & flag = CCopasiObject::Vector):
     std::vector< CType * >(),
     CCopasiContainer(name, pParent, "Vector", flag | CCopasiObject::Vector)
   {CONSTRUCTOR_TRACE;}
@@ -231,7 +236,7 @@ public:
    * @param const CCopasiContainer * pParent (Default: NULL)
    */
   CCopasiVector(const CCopasiVector < CType > & src,
-                const CCopasiContainer * pParent = NULL):
+                const CCopasiContainer * pParent):
     std::vector< CType * >(src),
     CCopasiContainer(src, pParent)
   {
@@ -374,7 +379,7 @@ public:
 
     try
       {
-        pCopy = new CType(src);
+        pCopy = new CType(src, this);
       }
 
     catch (...)
@@ -669,7 +674,7 @@ public:
    * @param const CCopasiContainer * pParent (Default: NULL)
    */
   CCopasiVectorS(const std::string & name = "NoName",
-                 const CCopasiContainer * pParent = NULL):
+                 const CCopasiContainer * pParent = NO_PARENT):
     CCopasiVector< CType >(name, pParent) {}
 
   /**
@@ -678,7 +683,7 @@ public:
    * @param const CCopasiContainer * pParent (Default: NULL)
    */
   CCopasiVectorS(const CCopasiVectorS < CType > & src,
-                 const CCopasiContainer * pParent = NULL) :
+                 const CCopasiContainer * pParent) :
     CCopasiVector < CType > (src, pParent) {}
 
   /**
@@ -737,7 +742,7 @@ public:
    * @param const CCopasiContainer * pParent (Default: NULL)
    */
   CCopasiVectorN(const std::string & name = "NoName",
-                 const CCopasiContainer * pParent = NULL):
+                 const CCopasiContainer * pParent = NO_PARENT):
     CCopasiVector< CType >(name, pParent,
                            CCopasiObject::Container
                            + CCopasiObject::Vector
@@ -750,7 +755,7 @@ public:
    * @param const CCopasiContainer * pParent (Default: NULL)
    */
   CCopasiVectorN(const CCopasiVectorN < CType > & src,
-                 const CCopasiContainer * pParent = NULL) :
+                 const CCopasiContainer * pParent) :
     CCopasiVector < CType > (src, pParent)
   {}
 
@@ -788,7 +793,7 @@ public:
 
     try
       {
-        Element = new CType(src);
+        Element = new CType(src, this);
       }
     catch (...)
       {
@@ -971,7 +976,7 @@ public:
    * @param const CCopasiContainer * pParent (Default: NULL)
    */
   CCopasiVectorNS(const std::string & name = "NoName",
-                  const CCopasiContainer * pParent = NULL):
+                  const CCopasiContainer * pParent = NO_PARENT):
     CCopasiVectorN< CType >(name, pParent)
   {}
 
@@ -981,7 +986,7 @@ public:
    * @param const CCopasiContainer * pParent (Default: NULL)
    */
   CCopasiVectorNS(const CCopasiVectorNS < CType > & src,
-                  const CCopasiContainer * pParent = NULL) :
+                  const CCopasiContainer * pParent) :
     CCopasiVectorN< CType >(src, pParent) {}
 
   /**

@@ -235,6 +235,8 @@ protected:
   CCopasiObjectReference<C_FLOAT64> *mpConcRateReference;
   CCopasiObjectReference<C_FLOAT64> *mpTTReference;
 
+  CMetab(const CMetab & src);
+
   // Operations
 public:
   /**
@@ -243,7 +245,7 @@ public:
    * @param const CCopasiContainer * pParent (default: NULL)
    */
   CMetab(const std::string & name = "NoName",
-         const CCopasiContainer * pParent = NULL);
+         const CCopasiContainer * pParent = NO_PARENT);
 
   /**
    * Copy constructor
@@ -251,7 +253,7 @@ public:
    * @param const CCopasiContainer * pParent (default: NULL)
    */
   CMetab(const CMetab & src,
-         const CCopasiContainer * pParent = NULL);
+         const CCopasiContainer * pParent);
 
   /**
    *  Destructor.
@@ -509,7 +511,7 @@ public:
    * @param const CCopasiContainer * pParent (default: NULL)
    */
   CMetabOld(const std::string & name = "NoName",
-            const CCopasiContainer * pParent = NULL);
+            const CCopasiContainer * pParent = NO_PARENT);
 
   /**
    * Copy constructor
@@ -517,7 +519,7 @@ public:
    * @param const CCopasiContainer * pParent (default: NULL)
    */
   CMetabOld(const CMetabOld & src,
-            const CCopasiContainer * pParent = NULL);
+            const CCopasiContainer * pParent);
 
   /**
    *  Destructor.

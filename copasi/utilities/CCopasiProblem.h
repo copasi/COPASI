@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -50,7 +50,9 @@ protected:
    * @param const CCopasiContainer * pParent (default: NULL)
    */
   CCopasiProblem(const CTaskEnum::Task & type,
-                 const CCopasiContainer * pParent = NULL);
+                 const CCopasiContainer * pParent);
+
+  CCopasiProblem(const CCopasiProblem & src);
 
 public:
   /**
@@ -59,7 +61,7 @@ public:
    * @param const CCopasiContainer * pParent (default: NULL)
    */
   CCopasiProblem(const CCopasiProblem & src,
-                 const CCopasiContainer * pParent = NULL);
+                 const CCopasiContainer * pParent);
 
   /**
    * Destructor

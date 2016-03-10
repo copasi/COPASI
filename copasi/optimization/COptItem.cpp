@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -313,7 +313,7 @@ bool COptItem::isValid() const
 
 bool COptItem::isValid(CCopasiParameterGroup & group)
 {
-  COptItem tmp(group);
+  COptItem tmp(group, NO_PARENT);
 
   return tmp.isValid();
 }

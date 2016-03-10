@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -26,9 +26,9 @@ class CSSAMethod : public CEFMAlgorithm
 {
 public:
   CSSAMethod(const CSSAMethod & src,
-             const CCopasiContainer * pParent = NULL);
+             const CCopasiContainer * pParent);
 
-  CSSAMethod(const CCopasiContainer * pParent = NULL);
+  CSSAMethod(const CCopasiContainer * pParent = NO_PARENT);
 
   bool process(CProcessReport * handler);
 

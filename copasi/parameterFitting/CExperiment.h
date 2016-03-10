@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -31,10 +31,10 @@ class CFittingPoint: public CCopasiContainer
   // Operations
 public:
   CFittingPoint(const std::string & name = "unknown",
-                const CCopasiContainer * pParent = NULL);
+                const CCopasiContainer * pParent = NO_PARENT);
 
   CFittingPoint(const CFittingPoint & src,
-                const CCopasiContainer * pParent = NULL);
+                const CCopasiContainer * pParent);
 
   ~CFittingPoint();
 
@@ -106,6 +106,10 @@ public:
    */
   static const char* WeightMethodType[];
 
+protected:
+  CExperiment(const CExperiment & src);
+
+public:
   /**
    * Default constructor
    * @param const CCopasiContainer * pParent
@@ -120,7 +124,7 @@ public:
    * @param const CCopasiContainer * pParent (default: src data model)
    */
   CExperiment(const CExperiment & src,
-              const CCopasiContainer * pParent = NULL);
+              const CCopasiContainer * pParent);
 
   /**
    * Specific constructor used for reading COPASI files
@@ -128,7 +132,7 @@ public:
    * @param const CCopasiContainer * pParent (default: group data model)
    */
   CExperiment(const CCopasiParameterGroup & group,
-              const CCopasiContainer * pParent = NULL);
+              const CCopasiContainer * pParent);
 
   /**
    * Destructor

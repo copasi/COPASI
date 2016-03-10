@@ -128,7 +128,7 @@ void CReactionInterface::initFromReaction(const CReaction *rea)
       //function
       mpFunction = rea->getFunction();
       pdelete(mpParameters)
-      mpParameters = new CFunctionParameters(mpFunction->getVariables());
+      mpParameters = new CFunctionParameters(mpFunction->getVariables(), NO_PARENT);
 
       //mapping
       loadMappingAndValues(*rea);
@@ -646,7 +646,7 @@ CReactionInterface::getDeletedParameters() const
 void
 CReactionInterface::initMapping()
 {
-  mpParameters = new CFunctionParameters(mpFunction->getVariables());
+  mpParameters = new CFunctionParameters(mpFunction->getVariables(), NO_PARENT);
   //make sure mpParameters is deleted! (e.g. in copyMapping())
   mNameMap.resize(size());
   mValues.resize(size());

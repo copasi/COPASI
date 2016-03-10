@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -84,7 +84,7 @@ public:
   const CLPoint& getGraphMax();
   void createGraph(CLayout *lP); // create local data structures
   void drawGraph(); // create OpenGL display list with graph objects
-  void drawNode(CCompartmentGraphNode &n); // draw comaprtment node as a green rectangle
+  void drawNode(const CCompartmentGraphNode &n); // draw comaprtment node as a green rectangle
   void drawNode(CGraphNode &n);
   void drawEdge(CGraphCurve &c);
   void drawArrow(CArrow a, CLMetabReferenceGlyph::Role role);
@@ -237,7 +237,7 @@ private:
 
   std::map<std::string, std::string> keyMap; // maps Copasi SBML object keys to layout node keys
   std::map<std::string, CGraphNode>nodeMap;
-  std::map<std::string, CCompartmentGraphNode> compartmentNodeMap;
+  std::map< std::string, CCompartmentGraphNode * > compartmentNodeMap;
   std::map<std::string, std::string>labelNodeMap; // maps label keys to node keys
 
   std::map<std::string, RGTextureSpec*>labelTextureMap; // maps label texts to texture info

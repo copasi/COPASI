@@ -1,17 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CGraphNode.h,v $
-//   $Revision: 1.10 $
-//   $Name:  $
-//   $Author: gauges $
-//   $Date: 2010/01/24 11:33:17 $
-// End CVS Header
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -40,14 +37,14 @@ private:
 public:
 
   CGraphNode(const std::string & name = "GraphNode",
-             const CCopasiContainer * pParent = NULL);
+             const CCopasiContainer * pParent = NO_PARENT);
 
   CGraphNode(const CLMetabGlyph & src,
-             const CCopasiContainer * pParent = NULL);
+             const CCopasiContainer * pParent);
 
   CGraphNode(const CGraphNode & src,
 
-             const CCopasiContainer * pParent = NULL);
+             const CCopasiContainer * pParent = NO_PARENT);
 
   C_FLOAT64 getSize() {return this->msize;}
   //void setSize(C_FLOAT64 newSize, std::vector<CLCurve> *viewerCurves);

@@ -7,9 +7,6 @@
 #include "utilities/CUnitDefinition.h"
 #include "utilities/CCopasiMessage.h"
 
-//CCopasiVectorN(const std::string & name = "NoName",
-//               const CCopasiContainer * pParent = NULL):
-
 CUnitDefinitionDB::CUnitDefinitionDB(const std::string & name,
                                      const CCopasiContainer * pParent):
   CCopasiVectorN< CUnitDefinition >(name, pParent),

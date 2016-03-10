@@ -239,7 +239,7 @@ bool CQFittingWidget::loadTask()
   pdelete(mpExperimentSet)
   CExperimentSet * pExperimentSet =
     dynamic_cast<CExperimentSet *>(pProblem->getGroup("Experiment Set"));
-  mpExperimentSet = new CExperimentSet(*pExperimentSet);
+  mpExperimentSet = new CExperimentSet(*pExperimentSet, NO_PARENT);
 
   mExperimentKeyMap.clear();
   size_t i, imax = mpExperimentSet->getExperimentCount();
@@ -251,7 +251,7 @@ bool CQFittingWidget::loadTask()
   pdelete(mpCrossValidationSet)
   CCrossValidationSet * pCrossValidationSet =
     dynamic_cast<CCrossValidationSet *>(pProblem->getGroup("Validation Set"));
-  mpCrossValidationSet = new CCrossValidationSet(*pCrossValidationSet);
+  mpCrossValidationSet = new CCrossValidationSet(*pCrossValidationSet, NO_PARENT);
 
   mCrossValidationKeyMap.clear();
   imax = mpCrossValidationSet->getExperimentCount();

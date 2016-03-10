@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -91,7 +91,7 @@ bool CFitItem::isValid() const
 
 bool CFitItem::isValid(CCopasiParameterGroup & group)
 {
-  CFitItem tmp(group);
+  CFitItem tmp(group, NO_PARENT);
 
   return tmp.isValid();
 }

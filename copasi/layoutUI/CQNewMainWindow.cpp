@@ -1740,7 +1740,7 @@ void CQNewMainWindow::createSpringLayout(int numIterations, int updateInterval)
       mpCopy = NULL;
     }
 
-  mpCopy = new CLayout(*mpCurrentLayout);
+  mpCopy = new CLayout(*mpCurrentLayout, NO_PARENT);
 
   mpLayoutThread->createSpringLayout(mpCopy, numIterations);
 }

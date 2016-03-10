@@ -30,6 +30,9 @@
 
 class CTrajectoryProblem : public CCopasiProblem
 {
+protected:
+  CTrajectoryProblem(const CTrajectoryProblem & src);
+
 public:
   // Operations
 
@@ -37,7 +40,7 @@ public:
    * Default constructor.
    * @param const CCopasiContainer * pParent (default: NULL)
    */
-  CTrajectoryProblem(const CCopasiContainer * pParent = NULL);
+  CTrajectoryProblem(const CCopasiContainer * pParent = NO_PARENT);
 
   /**
    * Copy constructor.
@@ -45,7 +48,7 @@ public:
    * @paramconst CCopasiContainer * pParent (default: NULL)
    */
   CTrajectoryProblem(const CTrajectoryProblem & src,
-                     const CCopasiContainer * pParent = NULL);
+                     const CCopasiContainer * pParent);
 
   /**
    *  Destructor.

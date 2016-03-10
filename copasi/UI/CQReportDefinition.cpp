@@ -416,7 +416,7 @@ void CQReportDefinition::btnCopyReportClicked()
 
   if (pDataModel == NULL) return;
 
-  CReportDefinition * pRep = new CReportDefinition(*dynamic_cast<CReportDefinition*>(CCopasiRootContainer::getKeyFactory()->get(mKey)));
+  CReportDefinition * pRep = new CReportDefinition(*dynamic_cast<CReportDefinition*>(CCopasiRootContainer::getKeyFactory()->get(mKey)), NO_PARENT);
 
   std::string baseName = pRep->getObjectName() + "_copy";
   std::string name = baseName;

@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -40,7 +40,7 @@ public:
    * Default constructor.
    * @param const CCopasiContainer * pParent (default: NULL)
    */
-  CMCAProblem(const CCopasiContainer * pParent = NULL);
+  CMCAProblem(const CCopasiContainer * pParent = NO_PARENT);
 
   /**
    *  Copy constructor.
@@ -48,7 +48,7 @@ public:
    * @paramconst CCopasiContainer * pParent (default: NULL)
    */
   CMCAProblem(const CMCAProblem & src,
-              const CCopasiContainer * pParent = NULL);
+              const CCopasiContainer * pParent);
 
   /**
    *  Destructor.

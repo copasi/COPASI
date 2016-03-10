@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -72,7 +72,7 @@ bool CExperimentObjectMap::elevateChildren()
         }
 
       clear();
-      *this = New;
+      operator=(New);
     }
 
   for (itColumn = beginIndex(); itColumn != endColumn; ++itColumn)
@@ -80,6 +80,16 @@ bool CExperimentObjectMap::elevateChildren()
       success = false;
 
   return success;
+}
+
+const CExperimentObjectMap & CExperimentObjectMap::operator=(const CCopasiParameterGroup & rhs)
+{
+  if (static_cast< CCopasiParameterGroup * >(this) == &rhs) return * this;
+
+  CCopasiParameterGroup::operator=(rhs);
+  initializeParameter();
+
+  return *this;
 }
 
 bool CExperimentObjectMap::setNumCols(const size_t & numCols)

@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -35,7 +35,7 @@ public:
      * @param const CCopasiContainer * pParent (default: NULL)
      */
     CDataColumn(const std::string & name = "Object Map",
-                const CCopasiContainer * pParent = NULL);
+                const CCopasiContainer * pParent = NO_PARENT);
 
     /**
      * Copy constructor
@@ -43,7 +43,7 @@ public:
      * @param const CCopasiContainer * pParent (default: NULL)
      */
     CDataColumn(const CDataColumn & src,
-                const CCopasiContainer * pParent = NULL);
+                const CCopasiContainer * pParent);
 
     /**
      * Specific constructor used for reading COPASI files
@@ -51,7 +51,7 @@ public:
      * @param const CCopasiContainer * pParent (default: NULL)
      */
     CDataColumn(const CCopasiParameterGroup & group,
-                const CCopasiContainer * pParent = NULL);
+                const CCopasiContainer * pParent);
 
     /**
      * Destructor
@@ -147,7 +147,7 @@ public:
    * @param const CCopasiContainer * pParent (default: NULL)
    */
   CExperimentObjectMap(const std::string & name = "Object Map",
-                       const CCopasiContainer * pParent = NULL);
+                       const CCopasiContainer * pParent = NO_PARENT);
 
   /**
    * Copy constructor
@@ -155,7 +155,7 @@ public:
    * @param const CCopasiContainer * pParent (default: NULL)
    */
   CExperimentObjectMap(const CExperimentObjectMap & src,
-                       const CCopasiContainer * pParent = NULL);
+                       const CCopasiContainer * pParent);
 
   /**
    * Specific constructor used for reading copasi files
@@ -163,7 +163,7 @@ public:
    * @param const CCopasiContainer * pParent (default: NULL)
    */
   CExperimentObjectMap(const CCopasiParameterGroup & group,
-                       const CCopasiContainer * pParent = NULL);
+                       const CCopasiContainer * pParent);
 
   /**
    * Destructor
@@ -184,6 +184,13 @@ public:
    * @return bool success
    */
   virtual bool elevateChildren();
+
+  /**
+   * Assignment operator
+   * @param const CCopasiParameterGroup & rhs
+   * @return const CExperimentObjectMap & self
+   */
+  const CExperimentObjectMap & operator=(const CCopasiParameterGroup & rhs);
 
   /**
    * Set the number of data columns

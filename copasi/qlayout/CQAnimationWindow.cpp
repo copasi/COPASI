@@ -516,6 +516,6 @@ void CQAnimationWindow::slotAutoLayout()
       mpCopy = NULL;
     }
 
-  mpCopy = new CLayout(*mpScene->getCurrentLayout());
+  mpCopy = new CLayout(*mpScene->getCurrentLayout(), NO_PARENT);
   mpLayoutThread->createSpringLayout(mpCopy, 100000);
 }

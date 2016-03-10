@@ -55,8 +55,6 @@ public:
    * @param const std::string & name (default: "NoName")
    * @param const CCopasiContainer * pParent (default: NULL)
    */
-  //CFunctionDB(const std::string & name = "FunctionDB",
-  //            const CCopasiContainer * pParent = NULL);
   CFunctionDB(const std::string & name,
               const CCopasiContainer * pParent);
 

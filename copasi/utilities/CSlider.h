@@ -49,7 +49,7 @@ public:
    * @param const CCopasiContainer * pParent (default: NULL)
    */
   CSlider(const std::string & name = "Slider",
-          const CCopasiContainer * pParent = NULL);
+          const CCopasiContainer * pParent = NO_PARENT);
 
   /**
    * Copy constructor
@@ -57,7 +57,7 @@ public:
    * @param const CCopasiContainer * pParent (default: NULL)
    */
   CSlider(const CSlider & src,
-          const CCopasiContainer * pParent = NULL);
+          const CCopasiContainer * pParent);
 
   /**
    *  Destructor.

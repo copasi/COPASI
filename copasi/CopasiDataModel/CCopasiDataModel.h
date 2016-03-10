@@ -165,9 +165,12 @@ public:
   CCopasiDataModel(const bool withGUI = false);
 
   CCopasiDataModel(const std::string & name,
-                   const CCopasiContainer * pParent = NULL,
+                   const CCopasiContainer * pParent = NO_PARENT,
                    const std::string & type = "CN",
                    bool withGUI = false);
+
+  CCopasiDataModel(const CCopasiDataModel & src,
+                   const CCopasiContainer * pParent);
 
   virtual ~CCopasiDataModel();
 

@@ -1,17 +1,9 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CModified.h,v $
-//   $Revision: 1.8 $
-//   $Name:  $
-//   $Author: gauges $
-//   $Date: 2010/08/12 16:23:21 $
-// End CVS Header
-
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
@@ -55,7 +47,7 @@ public:
    * @param const CCopasiContainer * pParent (default: NULL)
    */
   CModification(const std::string & objectName,
-                const CCopasiContainer * pParent = NULL);
+                const CCopasiContainer * pParent = NO_PARENT);
 
   /**
    * Specific constructor
@@ -65,7 +57,7 @@ public:
    */
   CModification(const CRDFTriplet & triplet,
                 const std::string & objectName = "",
-                const CCopasiContainer * pParent = NULL);
+                const CCopasiContainer * pParent = NO_PARENT);
 
   /**
    * Copy constructor
@@ -73,7 +65,7 @@ public:
    * @param const CCopasiContainer * pParent (default: NULL)
    */
   CModification(const CModification & src,
-                const CCopasiContainer * pParent = NULL);
+                const CCopasiContainer * pParent);
 
   /**
    * Destructor

@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -10,12 +10,15 @@
 
 class CCrossSectionProblem : public CTrajectoryProblem
 {
+protected:
+  CCrossSectionProblem(const CCrossSectionProblem & src);
+
 public:
   /**
    * Default constructor.
    * @param const CCopasiContainer * pParent (default: NULL)
    */
-  CCrossSectionProblem(const CCopasiContainer * pParent = NULL);
+  CCrossSectionProblem(const CCopasiContainer * pParent = NO_PARENT);
 
   /**
    *  Copy constructor.
@@ -23,7 +26,7 @@ public:
    * @paramconst CCopasiContainer * pParent (default: NULL)
    */
   CCrossSectionProblem(const CCrossSectionProblem & src,
-                       const CCopasiContainer * pParent = NULL);
+                       const CCopasiContainer * pParent);
 
   /**
    *  Destructor.

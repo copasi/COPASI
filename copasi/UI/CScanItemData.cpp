@@ -1,4 +1,4 @@
-// Copyright (C) 2011 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -19,7 +19,7 @@ CScanItemData::CScanItemData(const CScanProblem::Type & type) :
 
 CScanItemData::CScanItemData(const CScanItemData & src) :
   mType(src.mType),
-  mpData(src.mpData != NULL ? new CCopasiParameterGroup(*src.mpData) : NULL)
+  mpData(src.mpData != NULL ? new CCopasiParameterGroup(*src.mpData, NO_PARENT) : NULL)
 {}
 
 // virtual

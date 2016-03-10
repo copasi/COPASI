@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -42,6 +42,8 @@ protected:
    */
   CCopasiParameterGroup();
 
+  CCopasiParameterGroup(const CCopasiParameterGroup & src);
+
 public:
   /**
    * Copy constructor
@@ -49,7 +51,7 @@ public:
    * @param const CCopasiContainer * pParent (default: NULL)
    */
   CCopasiParameterGroup(const CCopasiParameterGroup & src,
-                        const CCopasiContainer * pParent = NULL);
+                        const CCopasiContainer * pParent);
 
   /**
    * Specific constructor
@@ -58,7 +60,7 @@ public:
    * @param const std::string & objectType (default: "ParameterGroup")
    */
   CCopasiParameterGroup(const std::string & name,
-                        const CCopasiContainer * pParent = NULL,
+                        const CCopasiContainer * pParent = NO_PARENT,
                         const std::string & objectType = "ParameterGroup");
 
   /**
@@ -153,7 +155,7 @@ public:
         tmp->mpValue = const_cast<CType *>(& value);
 
         // Create the final parameter
-        pParameter = new CCopasiParameterGroup(*tmp);
+        pParameter = new CCopasiParameterGroup(*tmp, NO_PARENT);
 
         tmp->mpValue = pGroup;
         delete tmp;
@@ -494,11 +496,11 @@ public:
    */
   void addParameter(CCopasiParameter * pParameter);
 
-  std::vector< CCopasiParameter > & getElementTemplates();
-  const std::vector< CCopasiParameter > & getElementTemplates() const;
+  CCopasiParameterGroup & getElementTemplates();
+  const CCopasiParameterGroup & getElementTemplates() const;
 
 private:
-  std::vector< CCopasiParameter > mElementTemplates;
+  mutable CCopasiParameterGroup *mpElementTemplates;
 };
 
 // :TODO: This should be a member function but Visual C++ 6.0
@@ -548,14 +550,14 @@ ElevateTo * elevate(CCopasiParameter * pParm)
           return NULL;
         }
 
-      pTo = new ElevateTo(*pFrom);
+      pTo = new ElevateTo(*pFrom, NO_PARENT);
       delete pParm;
 
       pGrp->CCopasiContainer::add(pTo, true);
       *it = pTo;
     }
   else
-    pTo = new ElevateTo(*pFrom);
+    pTo = new ElevateTo(*pFrom, NO_PARENT);
 
   return pTo;
 }

@@ -359,15 +359,15 @@ void CQTaskMethodWidget::slotPushButtonClicked(const QModelIndex & index)
 
   CCopasiParameterGroup * pGroup = static_cast< CCopasiParameterGroup * >(pParameter);
 
-  std::vector< CCopasiParameter >::const_iterator it = pGroup->getElementTemplates().begin();
-  std::vector< CCopasiParameter >::const_iterator end = pGroup->getElementTemplates().end();
+  CCopasiParameterGroup::elements::const_iterator it = pGroup->getElementTemplates().beginIndex();
+  CCopasiParameterGroup::elements::const_iterator end = pGroup->getElementTemplates().endIndex();
 
   for (; it != end; ++it)
     {
-      switch (it->getType())
+      switch ((*it)->getType())
         {
           case CCopasiParameter::CN:
-            modifySelectCNs(*pGroup, *it);
+            modifySelectCNs(*pGroup, **it);
             break;
 
           default:

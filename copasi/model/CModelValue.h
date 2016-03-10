@@ -48,6 +48,8 @@ protected:
    */
   mutable std::string mSBMLId;
 
+  CModelEntity(const CModelEntity & src);
+
 public:
   /**
    *  The valid states for metabolites
@@ -79,7 +81,7 @@ public:
    * @param const CCopasiContainer * pParent (default: NULL)
    */
   CModelEntity(const std::string & name = "NoName",
-               const CCopasiContainer * pParent = NULL,
+               const CCopasiContainer * pParent = NO_PARENT,
                const std::string & type = "ModelEntity",
                const unsigned C_INT32 & flag = CCopasiObject::Container | CCopasiObject::ValueDbl);
 
@@ -89,7 +91,7 @@ public:
    * @param const CCopasiContainer * pParent (default: NULL)
    */
   CModelEntity(const CModelEntity & src,
-               const CCopasiContainer * pParent = NULL);
+               const CCopasiContainer * pParent);
 
   /**
    * Destructor.
@@ -439,7 +441,7 @@ public:
    * @param const CCopasiContainer * pParent (default: NULL)
    */
   CModelValue(const std::string & name = "NoName",
-              const CCopasiContainer * pParent = NULL);
+              const CCopasiContainer * pParent = NO_PARENT);
 
   /**
    * Copy constructor
@@ -447,7 +449,7 @@ public:
    * @param const CCopasiContainer * pParent (default: NULL)
    */
   CModelValue(const CModelValue & src,
-              const CCopasiContainer * pParent = NULL);
+              const CCopasiContainer * pParent);
 
   /**
    *  Destructor.

@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -55,6 +55,9 @@ public:
    */
   static const char * XMLType[];
 
+protected:
+  CEvaluationTree(const CEvaluationTree & src);
+
   // Operations
 public:
   /**
@@ -82,7 +85,7 @@ public:
    * @param const CEvaluationTree::Type & type (default: Function)
    */
   CEvaluationTree(const std::string & name = "NoName",
-                  const CCopasiContainer * pParent = NULL,
+                  const CCopasiContainer * pParent = NO_PARENT,
                   const Type & type = Function);
 
   /**
@@ -91,7 +94,7 @@ public:
    * @param const CCopasiContainer * pParent (default: NULL)
    */
   CEvaluationTree(const CEvaluationTree & src,
-                  const CCopasiContainer * pParent = NULL);
+                  const CCopasiContainer * pParent);
 
   /**
    * Destructor
