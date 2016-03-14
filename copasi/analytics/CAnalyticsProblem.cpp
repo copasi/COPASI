@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2015 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -17,7 +17,7 @@ CAnalyticsProblem::CAnalyticsProblem(const CCopasiContainer * pParent):
   mpFlagLimitOutCrossings(NULL),
   mpOutCrossingsLimit(NULL),
   mpFlagLimitOutTime(NULL),
-  mSingleObjectCN(NULL),
+  mpSingleObjectCN(NULL),
   mpFlagPositiveDirection(NULL),
   mpThreshold(NULL)
 //--- ETTORE start ---
@@ -30,7 +30,7 @@ CAnalyticsProblem::CAnalyticsProblem(const CCopasiContainer * pParent):
 }
 
 CAnalyticsProblem::CAnalyticsProblem(const CAnalyticsProblem & src,
-    const CCopasiContainer * pParent):
+                                     const CCopasiContainer * pParent):
   CTrajectoryProblem(src, pParent),
   mpFlagLimitCrossings(NULL),
   mpCrossingsLimit(NULL),
@@ -41,7 +41,7 @@ CAnalyticsProblem::CAnalyticsProblem(const CAnalyticsProblem & src,
   mpFlagLimitOutCrossings(NULL),
   mpOutCrossingsLimit(NULL),
   mpFlagLimitOutTime(NULL),
-  mSingleObjectCN(NULL),
+  mpSingleObjectCN(NULL),
   mpFlagPositiveDirection(NULL),
   mpThreshold(NULL)
 //--- ETTORE start ---
@@ -67,7 +67,7 @@ void CAnalyticsProblem::initializeParameter()
   mpFlagLimitOutConvergence = assertParameter("DelayOutputUntilConvergence", CCopasiParameter::BOOL, false);
   mpConvergenceOutTolerance = assertParameter("OutputConvergenceTolerance", CCopasiParameter::DOUBLE, (C_FLOAT64)1E-6);
   mpTriggerExpression = assertParameter("TriggerExpression", CCopasiParameter::EXPRESSION, std::string(""));
-  mSingleObjectCN = assertParameter("SingleVariable", CCopasiParameter::CN, CCopasiObjectName(""));
+  mpSingleObjectCN = assertParameter("SingleVariable", CCopasiParameter::CN, CCopasiObjectName(""));
   setOutputEvent(false);
 }
 
@@ -141,7 +141,7 @@ void CAnalyticsProblem::setTimeLimit(const C_FLOAT64 &timeLimit)
  */
 const std::string& CAnalyticsProblem::getSingleObjectCN() const
 {
-  return *mSingleObjectCN;
+  return *mpSingleObjectCN;
 }
 
 void CAnalyticsProblem::setSingleObjectCN(const CCopasiObject* pObject)
@@ -157,12 +157,12 @@ void CAnalyticsProblem::retrieveSelectedObject(const CCopasiObject* pObject)
   mpObjectSelected = pObject;
 }
 
-const CCopasiObject* CAnalyticsProblem::getSelectedObject(){
+const CCopasiObject* CAnalyticsProblem::getSelectedObject()
+{
   return mpObjectSelected;
 }
 
 //--- ETTORE end -----
-
 
 const C_FLOAT64& CAnalyticsProblem::getThreshold() const
 {
@@ -178,7 +178,7 @@ void CAnalyticsProblem::setThreshold(const C_FLOAT64 &threshold)
  */
 void CAnalyticsProblem::setSingleObjectCN(const std::string& cn)
 {
-  *mSingleObjectCN = cn;
+  *mpSingleObjectCN = cn;
 }
 
 bool CAnalyticsProblem::getFlagLimitConvergence() const

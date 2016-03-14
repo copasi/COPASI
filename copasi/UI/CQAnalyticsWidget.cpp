@@ -215,18 +215,11 @@ bool CQAnalyticsWidget::loadTask()
   showUnits();
 
   // load Problem
-  CAnalyticsProblem* pProblem =
-    dynamic_cast<CAnalyticsProblem *>(pTask->getProblem());
+  CAnalyticsProblem * pProblem = dynamic_cast<CAnalyticsProblem *>(pTask->getProblem());
   assert(pProblem);
 
-  if (mpAnalyticsProblem != NULL)
-    {
-      mpAnalyticsProblem->setObjectParent(NULL);
-      delete mpAnalyticsProblem;
-    }
-
-  mpAnalyticsProblem = new CAnalyticsProblem(*pProblem);
-  mpAnalyticsProblem->getObjectParent()->remove(mpAnalyticsProblem);
+  pdelete(mpAnalyticsProblem);
+  mpAnalyticsProblem = new CAnalyticsProblem(*pProblem, NO_PARENT);
 
   // load the saved values
   const std::string &name = pProblem->getSingleObjectCN();
