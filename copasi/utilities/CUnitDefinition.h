@@ -22,7 +22,7 @@ class CUnitDefinitionDB;
 
 class CUnitDefinition : public CCopasiContainer, public CUnit, public CAnnotation
 {
-//  friend std::ostream &operator<<(std::ostream &os, const CUnitDefinition::& o);
+  friend std::ostream &operator<<(std::ostream &os, const CUnitDefinition & o);
 
 public:
 
@@ -49,7 +49,7 @@ public:
   * @param const CCopasiContainer * pParent
   */
   CUnitDefinition(const CUnitDefinition & src,
-                  const CCopasiContainer * pParent);
+                  const CCopasiContainer * pParent = NO_PARENT);
   ~CUnitDefinition();
 
   virtual const std::string & getKey() const;

@@ -83,6 +83,7 @@ CUnit::CUnit(const CBaseUnit::Kind & kind):
   mUsedSymbols()
 {
   mComponents.insert(CUnitComponent(kind));
+  consolidateDimensionless();
 }
 
 // copy constructor
@@ -90,7 +91,9 @@ CUnit::CUnit(const CUnit & src):
   mExpression(src.mExpression),
   mComponents(src.mComponents),
   mUsedSymbols(src.mUsedSymbols)
-{}
+{
+  consolidateDimensionless();
+}
 
 CUnit::~CUnit()
 {}
@@ -114,7 +117,6 @@ bool CUnit::compile(const C_FLOAT64 & avogadro)
   mComponents.clear();
   mUsedSymbols.clear();
 
-  // parse the expression into a linked node tree
   std::istringstream buffer(mExpression);
   CUnitParser Parser(&buffer);
   Parser.setAvogadro(avogadro);
@@ -709,76 +711,51 @@ void CUnit::buildExpression()
     }
 }
 
-bool CUnit::isValidTimeUnit()
+bool CUnit::isUnitType(UnitType type) const
 {
+  CBaseUnit::Kind kind = CBaseUnit::undefined;
+  int exponent;
+
+  switch (type)
+    {
+      case time:
+        kind = CBaseUnit::second;
+        exponent = 1;
+        break;
+
+      case quantity:
+        kind = CBaseUnit::item;
+        exponent = 1;
+        break;
+
+      case volume:
+        kind = CBaseUnit::meter;
+        exponent = 3;
+        break;
+
+      case area:
+        kind = CBaseUnit::meter;
+        exponent = 2;
+        break;
+
+      case length:
+        kind = CBaseUnit::meter;
+        exponent = 1;
+        break;
+
+      default:
+        return false;
+    }
+
   std::set< CUnitComponent >::const_iterator lastComponent = mComponents.end();
-  --lastComponent;
+  --lastComponent; // (because end points to one after the last one)
 
   if (mComponents.size() >= 1 && // has to be one or two components
       mComponents.size() <= 2 &&
-      (lastComponent->getKind() == CBaseUnit::dimensionless ||
-       (lastComponent->getKind() == CBaseUnit::second &&
-        lastComponent->getExponent() == 1)))
-    return true;
-  else // includes 0 exponents (undefined)
-    return false;
-}
-
-bool CUnit::isValidQuantityUnit()
-{
-  std::set< CUnitComponent >::const_iterator lastComponent = mComponents.end();
-  --lastComponent;
-
-  if (mComponents.size() >= 1 && // has to be one or two components
-      mComponents.size() <= 2 &&
-      (lastComponent->getKind() == CBaseUnit::dimensionless ||
-       (lastComponent->getKind() == CBaseUnit::item &&
-        lastComponent->getExponent() == 1)))
-    return true;
-  else // includes 0 exponents (undefined)
-    return false;
-}
-
-bool CUnit::isValidVolumeUnit()
-{
-  std::set< CUnitComponent >::const_iterator lastComponent = mComponents.end();
-  --lastComponent;
-
-  if (mComponents.size() >= 1 && // has to be one or two components
-      mComponents.size() <= 2 &&
-      (lastComponent->getKind() == CBaseUnit::dimensionless ||
-       (lastComponent->getKind() == CBaseUnit::meter &&
-        lastComponent->getExponent() == 3)))
-    return true;
-  else // includes 0 exponents (undefined)
-    return false;
-}
-
-bool CUnit::isValidAreaUnit()
-{
-  std::set< CUnitComponent >::const_iterator lastComponent = mComponents.end();
-  --lastComponent;
-
-  if (mComponents.size() >= 1 && // has to be one or two components
-      mComponents.size() <= 2 &&
-      (lastComponent->getKind() == CBaseUnit::dimensionless ||
-       (lastComponent->getKind() == CBaseUnit::meter &&
-        lastComponent->getExponent() == 2)))
-    return true;
-  else // includes 0 exponents (undefined)
-    return false;
-}
-
-bool CUnit::isValidLengthUnit()
-{
-  std::set< CUnitComponent >::const_iterator lastComponent = mComponents.end();
-  --lastComponent;
-
-  if (mComponents.size() >= 1 && // has to be one or two components
-      mComponents.size() <= 2 &&
-      (lastComponent->getKind() == CBaseUnit::dimensionless ||
-       (lastComponent->getKind() == CBaseUnit::meter &&
-        lastComponent->getExponent() == 1)))
+      ((lastComponent->getKind() == CBaseUnit::dimensionless &&
+        getExpression() == "1") || // Include dimensionless, but not rad, sr, etc.
+       (lastComponent->getKind() == kind &&
+        lastComponent->getExponent() == double(exponent))))
     return true;
   else // includes 0 exponents (undefined)
     return false;
@@ -824,7 +801,7 @@ void CUnit::consolidateDimensionless()
 // friend
 std::ostream &operator<<(std::ostream &os, const CUnit & o)
 {
-  os << "Expression: " << o.mExpression << ", ";
+  os << "Expression: " << o.mExpression << std::endl;
   os << "Components: " << std::endl;
 
   std::set< CUnitComponent >::const_iterator it = o.mComponents.begin();

@@ -28,56 +28,7 @@ CQModelWidget::CQModelWidget(QWidget* parent, const char* name) :
 {
   setupUi(this);
 
-  QStringList ComboEntries;
-  const char ** pComboEntries;
-
-  for (pComboEntries = CUnit::TimeUnitNames; *pComboEntries != NULL; ++pComboEntries)
-    {
-      ComboEntries.push_front(QString::fromUtf8(*pComboEntries));
-    }
-
-  mpComboTimeUnit->clear();
-  mpComboTimeUnit->insertItems(0, ComboEntries);
-
-  ComboEntries.clear();
-
-  for (pComboEntries = CUnit::VolumeUnitNames; *pComboEntries != NULL; ++pComboEntries)
-    {
-      ComboEntries.push_front(QString::fromUtf8(*pComboEntries));
-    }
-
-  mpComboVolumeUnit->clear();
-  mpComboVolumeUnit->insertItems(0, ComboEntries);
-
-  ComboEntries.clear();
-
-  for (pComboEntries = CUnit::AreaUnitNames; *pComboEntries != NULL; ++pComboEntries)
-    {
-      ComboEntries.push_front(QString::fromUtf8(*pComboEntries));
-    }
-
-  mpComboAreaUnit->clear();
-  mpComboAreaUnit->insertItems(0, ComboEntries);
-
-  ComboEntries.clear();
-
-  for (pComboEntries = CUnit::LengthUnitNames; *pComboEntries != NULL; ++pComboEntries)
-    {
-      ComboEntries.push_front(QString::fromUtf8(*pComboEntries));
-    }
-
-  mpComboLengthUnit->clear();
-  mpComboLengthUnit->insertItems(0, ComboEntries);
-
-  ComboEntries.clear();
-
-  for (pComboEntries = CUnit::QuantityUnitNames; *pComboEntries != NULL; ++pComboEntries)
-    {
-      ComboEntries.push_front(QString::fromUtf8(*pComboEntries));
-    }
-
-  mpComboQuantityUnit->clear();
-  mpComboQuantityUnit->insertItems(0, ComboEntries);
+  updateUnitComboBoxes();
 
   mpUndoStack = NULL;
 
@@ -240,6 +191,10 @@ bool CQModelWidget::update(ListViews::ObjectType objectType,
         enter(key);
         break;
 
+      case ListViews::UNIT:
+        updateUnitComboBoxes();
+        break;
+
       default:
         break;
     }
@@ -328,4 +283,102 @@ CQModelWidget::changeValue(CCopasiUndoCommand::Type type, const QVariant& newVal
   load();
 
   return true;
+}
+
+void CQModelWidget::updateUnitComboBoxes()
+{
+  QStringList ComboEntries;
+
+  // Take advantage of the implicit sorting in std::set
+  std::set< CUnitDefinition > timeUnitDefSet,
+      quantityUnitDefSet,
+      volumeUnitDefSet,
+      areaUnitDefSet,
+      lengthUnitDefSet;
+
+  CUnitDefinitionDB::const_iterator it = CCopasiRootContainer::getUnitList()->begin(),
+                                    end = CCopasiRootContainer::getUnitList()->end();
+
+  // Grab the appropriate units
+  for (; it != end; ++it)
+    {
+      if (it->isUnitType(CUnit::time))
+        timeUnitDefSet.insert(CUnitDefinition(*it, NULL));
+
+      if (it->isUnitType(CUnit::quantity))
+        quantityUnitDefSet.insert(CUnitDefinition(*it, NULL));
+
+      if (it->isUnitType(CUnit::volume))
+        volumeUnitDefSet.insert(CUnitDefinition(*it, NULL));
+
+      if (it->isUnitType(CUnit::area))
+        areaUnitDefSet.insert(CUnitDefinition(*it, NULL));
+
+      if (it->isUnitType(CUnit::length))
+        lengthUnitDefSet.insert(CUnitDefinition(*it, NULL));
+    }
+
+  std::set< CUnitDefinition >::const_iterator itDS = timeUnitDefSet.begin(),
+                                              endDS = timeUnitDefSet.end();
+
+  // Set time unit options
+  for (; itDS != endDS; ++itDS)
+    {
+      ComboEntries.push_back(QString::fromUtf8(itDS->getSymbol().c_str()));
+    }
+
+  mpComboTimeUnit->clear();
+  mpComboTimeUnit->insertItems(0, ComboEntries);
+
+  // Set quantity unit options
+  ComboEntries.clear();
+  itDS = quantityUnitDefSet.begin();
+  endDS = quantityUnitDefSet.end();
+
+  for (; itDS != endDS; ++itDS)
+    {
+      ComboEntries.push_back(QString::fromUtf8(itDS->getSymbol().c_str()));
+    }
+
+  mpComboQuantityUnit->clear();
+  mpComboQuantityUnit->insertItems(0, ComboEntries);
+
+  // Set volume unit options
+  ComboEntries.clear();
+  itDS = volumeUnitDefSet.begin();
+  endDS = volumeUnitDefSet.end();
+
+  for (; itDS != endDS; ++itDS)
+    {
+      ComboEntries.push_back(QString::fromUtf8(itDS->getSymbol().c_str()));
+    }
+
+  mpComboVolumeUnit->clear();
+  mpComboVolumeUnit->insertItems(0, ComboEntries);
+
+  // Set area unit options
+  ComboEntries.clear();
+  itDS = areaUnitDefSet.begin();
+  endDS = areaUnitDefSet.end();
+
+  for (; itDS != endDS; ++itDS)
+    {
+      ComboEntries.push_back(QString::fromUtf8(itDS->getSymbol().c_str()));
+    }
+
+  mpComboAreaUnit->clear();
+  mpComboAreaUnit->insertItems(0, ComboEntries);
+
+  // Set length unit options
+  ComboEntries.clear();
+  itDS = lengthUnitDefSet.begin();
+  endDS = lengthUnitDefSet.end();
+
+  for (; itDS != endDS; ++itDS)
+    {
+      ComboEntries.push_back(QString::fromUtf8(itDS->getSymbol().c_str()));
+    }
+
+  mpComboLengthUnit->clear();
+  mpComboLengthUnit->insertItems(0, ComboEntries);
 }

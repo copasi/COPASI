@@ -51,6 +51,7 @@ private:
   CModel * mpModel;
 
   QUndoStack *mpUndoStack;
+  void updateUnitComboBoxes();
 };
 
 #endif // COPASI_CQModelWidget
