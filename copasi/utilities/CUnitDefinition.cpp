@@ -60,18 +60,48 @@ SIUnit SIUnits[] =
   {"watt",       "W",        "m^2*kg*s^-3"},
   {"weber",      "Wb",       "m^2*kg*s^-2*A^-1"},
 
-  {"dimensionless", "1",      "1"},
-  {"item",       "#",        "#"},
-  {"minute",     "min",      "60*s"},
-  {"hour",       "h",        "3600*s"},
-  {"day",        "d",        "86400*s"},
+  // Fill in some COPASI default unit options
+  {"dimensionless",     "1",                 "1"},
+  {"item",              "#",                 "#"},
+  {"millimole",         "mmol",              "mmol"},
+  {"micromole",         "\xc2\xb5mol",       "umol"},
+  {"nanomole",          "nmol",              "nmol"},
+  {"picomole",          "pmol",              "pmol"},
+  {"femtomole",         "fmol",              "fmol"},
+  {"cubic_meter",       "m\xc2\xb3",         "m^3"},
+  {"milliliter",        "ml",                "ml"},
+  {"microliter",        "\xc2\xb5l",         "\xc2\xb5l"},
+  {"nanoliter",         "nl",                "nl"},
+  {"picoliter",         "pl",                "pl"},
+  {"femtoliter",        "fl",                "fl"},
+  {"square_meter",      "m\xc2\xb2",         "m^2"},
+  {"square_decimeter",  "dm\xc2\xb2",        "(dm)^2"},
+  {"square_centimeter", "cm\xc2\xb2",        "(cm)^2"},
+  {"square_millimeter", "mm\xc2\xb2",        "(mm)^2"},
+  {"square_micrometer", "\xc2\xb5m\xc2\xb2", "(um)^2"},
+  {"square_nanometer",  "nm\xc2\xb2",        "(nm)^2"},
+  {"square_picometer",  "pm\xc2\xb2",        "(pm)^2"},
+  {"square_femtometer", "fm\xc2\xb2",        "(fm)^2"},
+  {"decimeter",         "dm",                "dm"},
+  {"centimeter",        "cm",                "cm"},
+  {"millimeter",        "mm",                "mm"},
+  {"micrometer",        "\xc2\xb5m",         "um"},
+  {"nanometer",         "nm",                "nm"},
+  {"picometer",         "pm",                "pm"},
+  {"femtometer",        "fm",                "fm"},
+  {"millisecond",       "ms",                "ms"},
+  {"microsecond",       "\xc2\xb5s",         "us"},
+  {"nanosecond",        "ns",                "ns"},
+  {"picosecond",        "ps",                "ps"},
+  {"femtosecond",       "fs",                "fs"},
+  {"minute",            "min",               "60*s"},
+  {"hour",              "h",                 "3600*s"},
+  {"day",               "d",                 "86400*s"},
 
   // This must be the last element of the SI unit list! Do not delete!
   {NULL,         NULL,        NULL}
 };
-
 // static
-
 CUnit CUnitDefinition::getSIUnit(const std::string & symbol,
                                  const C_FLOAT64 & avogadro)
 {
@@ -279,4 +309,14 @@ bool CUnitDefinition::isReadOnly() const
     ++pSIUnit;
 
   return (pSIUnit->name != NULL);
+}
+
+// friend
+std::ostream &operator<<(std::ostream &os, const CUnitDefinition & o)
+{
+  os << "Object Name: " << o.getObjectName() << ", ";
+  os << "Symbol: " << o.mSymbol << ", ";
+  os << static_cast< CUnit >(o);
+
+  return os;
 }

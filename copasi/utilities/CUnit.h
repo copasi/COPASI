@@ -31,6 +31,9 @@ public:
 
   static C_FLOAT64 Avogadro;
 
+  // Enum of unit types
+  enum UnitType {time = 0, quantity, volume, area, length};
+
   // Enum of valid volume units
   enum VolumeUnit {dimensionlessVolume = 0, m3, l, ml, microl, nl, pl, fl};
 
@@ -116,11 +119,7 @@ public:
   bool isEquivalent(const CUnit & rightSide) const;
   void buildExpression();
   std::vector< SymbolComponent > getSymbolComponents() const;
-  bool isValidTimeUnit();
-  bool isValidQuantityUnit();
-  bool isValidVolumeUnit();
-  bool isValidAreaUnit();
-  bool isValidLengthUnit();
+  bool isUnitType(UnitType type) const;
 
 private:
   std::string mExpression;
