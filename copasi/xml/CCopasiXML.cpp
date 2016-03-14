@@ -236,6 +236,11 @@ bool CCopasiXML::load(std::istream & is,
   else
     mergeUnitDefinitions(pUnitDefinitionImportList);
 
+  if (FileVersion.getVersionDevel() <= 18)
+    {
+      fixBuild18();
+    }
+
   // The range in which the fix needs to be applied
   if (36 <= FileVersion.getVersionDevel() && FileVersion.getVersionDevel() <= 58)
     {
@@ -1977,6 +1982,28 @@ bool CCopasiXML::buildFunctionList()
   if (!setFunctionList(pFunctionList)) success = false;
 
   return success;
+}
+
+void CCopasiXML::fixBuild18()
+{
+  if (mpModel == NULL) return;
+
+  std::string quantityUnit = mpModel->getQuantityUnit();
+
+  if (quantityUnit == "Mol")
+    mpModel->setQuantityUnit("mol");
+  else if (quantityUnit == "mMol")
+    mpModel->setQuantityUnit("mmol");
+  else if (quantityUnit == "\xc2\xb5Mol")
+    mpModel->setQuantityUnit("\xc2\xb5mol");
+  else if (quantityUnit == "nMol")
+    mpModel->setQuantityUnit("nmol");
+  else if (quantityUnit == "pMol")
+    mpModel->setQuantityUnit("pmol");
+  else if (quantityUnit == "fMol")
+    mpModel->setQuantityUnit("fmol");
+
+  return;
 }
 
 void CCopasiXML::fixBuild55()

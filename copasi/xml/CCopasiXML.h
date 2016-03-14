@@ -375,6 +375,11 @@ private:
   bool buildFunctionList();
 
   /**
+   * Fix files written with Version 4.0.18, which used units Mol, Min, etc. instead of mol, min . . .
+   */
+  void fixBuild18();
+
+  /**
    * Fix files written with Version 4.10.55, which wrote the square root of user defined weights for the
    * parameter fitting task
    */
