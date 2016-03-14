@@ -458,68 +458,19 @@
       <value type="string">time</value>
     </attribute>
     <attribute name="timeUnit">
-      <choice>
-        <value type="string">d</value>
-        <value type="string">ps</value>
-        <value type="string">ms</value>
-        <value type="string">fs</value>
-        <value type="string">&#xb5;s</value>
-        <value type="string">min</value>
-        <value type="string">h</value>
-        <value type="string">ns</value>
-        <value type="string">s</value>
-        <value type="string">dimensionless</value>
-      </choice>
+      <data type="string"/>
     </attribute>
     <attribute name="volumeUnit">
-      <choice>
-        <value type="string">pl</value>
-        <value type="string">m&#xb3;</value>
-        <value type="string">nl</value>
-        <value type="string">&#xb5;l</value>
-        <value type="string">l</value>
-        <value type="string">fl</value>
-        <value type="string">ml</value>
-        <value type="string">dimensionless</value>
-      </choice>
+      <data type="string"/>
     </attribute>
     <attribute name="areaUnit">
-      <choice>
-        <value type="string">&#xb5;m&#xb2;</value>
-        <value type="string">mm&#xb2;</value>
-        <value type="string">pm&#xb2;</value>
-        <value type="string">nm&#xb2;</value>
-        <value type="string">m&#xb2;</value>
-        <value type="string">cm&#xb2;</value>
-        <value type="string">fm&#xb2;</value>
-        <value type="string">dm&#xb2;</value>
-        <value type="string">dimensionless</value>
-      </choice>
+      <data type="string"/>
     </attribute>
     <attribute name="lengthUnit">
-      <choice>
-        <value type="string">m</value>
-        <value type="string">fm</value>
-        <value type="string">mm</value>
-        <value type="string">dm</value>
-        <value type="string">cm</value>
-        <value type="string">pm</value>
-        <value type="string">nm</value>
-        <value type="string">&#xb5;m</value>
-        <value type="string">dimensionless</value>
-      </choice>
+      <data type="string"/>
     </attribute>
     <attribute name="quantityUnit">
-      <choice>
-        <value type="string">mmol</value>
-        <value type="string">&#xb5;mol</value>
-        <value type="string">fmol</value>
-        <value type="string">mol</value>
-        <value type="string">pmol</value>
-        <value type="string">#</value>
-        <value type="string">nmol</value>
-        <value type="string">dimensionless</value>
-      </choice>
+      <data type="string"/>
     </attribute>
     <attribute name="type">
       <choice>
