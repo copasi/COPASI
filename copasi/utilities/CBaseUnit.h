@@ -20,8 +20,8 @@ public:
   enum Kind
   {
     dimensionless = 0, // must be the lowest value
-    gram,
     meter,
+    gram,
     second,
     ampere,
     kelvin,
