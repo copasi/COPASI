@@ -250,18 +250,11 @@ bool CQCrossSectionTaskWidget::loadTask()
   showUnits();
 
   // load Problem
-  CCrossSectionProblem* pProblem =
-    dynamic_cast<CCrossSectionProblem *>(pTask->getProblem());
+  CCrossSectionProblem * pProblem = dynamic_cast<CCrossSectionProblem *>(pTask->getProblem());
   assert(pProblem);
 
-  if (mpCrossSectionProblem != NULL)
-    {
-      mpCrossSectionProblem->setObjectParent(NULL);
-      delete mpCrossSectionProblem;
-    }
-
+  pdelete(mpCrossSectionProblem);
   mpCrossSectionProblem = new CCrossSectionProblem(*pProblem, NO_PARENT);
-  mpCrossSectionProblem->getObjectParent()->remove(mpCrossSectionProblem);
 
   // load the saved values
   const std::string &name = pProblem->getSingleObjectCN();

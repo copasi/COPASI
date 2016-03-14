@@ -385,8 +385,8 @@ void CAnalyticsTask::computeSelectedStatistics(std::vector< C_FLOAT64 > mValues,
   const std::string & type = "Statistics";
   const unsigned C_INT32 & flag = CCopasiObject::ValueDbl;
 
-  pStats = new CStatistics(nameStats, pParent, type, flag, mStatVal);
-  pStatsTime = new CStatistics(nameStatsTime, pParent, type, flag, mStatTime);
+  mpStats = new CStatistics(nameStats, pParent, type, flag, mStatVal);
+  mpStatsTime = new CStatistics(nameStatsTime, pParent, type, flag, mStatTime);
 }
 
 bool CAnalyticsTask::restore()

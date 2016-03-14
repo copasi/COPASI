@@ -230,8 +230,8 @@ private:
   C_FLOAT64 mStatVal;
   C_FLOAT64 mStatTime;
 
-  CStatistics * pStats;
-  CStatistics * pStatsTime;
+  CStatistics * mpStats;
+  CStatistics * mpStatsTime;
 
   //CArrayAnnotation * mpStatValAnn;
   //CArrayAnnotation * mpStatTimeAnn;

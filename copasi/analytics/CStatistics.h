@@ -11,31 +11,6 @@
 #include "copasi/report/CCopasiObject.h"
 #include "copasi/report/CCopasiContainer.h"
 
-class CStatisticsReference : public CCopasiObjectReference< C_FLOAT64 >
-{
-private:
-  /**
-   * Hidden default constructor
-   */
-  CStatisticsReference();
-
-public:
-  /**
-   * Specific constructor
-   * @param const std::string & name
-   * @param const CCopasiContainer * pParent,
-   * @param C_FLOAT64 & reference,
-   */
-  CStatisticsReference(const std::string & name,
-                       const CCopasiContainer * pParent,
-                       C_FLOAT64 & reference);
-
-  /**
-   * Destructor
-   */
-  ~CStatisticsReference();
-};
-
 class CStatistics : public CCopasiContainer // CModelEntity //
 {
 
@@ -71,7 +46,7 @@ public:
   * Retrieve object referencing the concentration
   * @return CConcentrationReference * concentrationReference
   */
-  CStatisticsReference * getStatValueReference() const;
+  CCopasiObject * getStatValueReference() const;
 
 // Attributes
 private:
@@ -82,12 +57,12 @@ private:
   C_FLOAT64 mStatValue;
 
 protected:
-  CStatisticsReference *mpStatValueReference;
+  CCopasiObject * mpStatValueReference;
 
   /**
   * Initialize the contained CCopasiObjects
   */
-  void initObjects(const std::string & name, C_FLOAT64 & value);
+  void initObjects();
 };
 
 #endif // CSTATISTICS_H

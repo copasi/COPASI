@@ -36,10 +36,6 @@
 
 #include "copasi/math/CMathDependencyGraph.h"
 
-#ifdef WITH_ANALYTICS
-#include "copasi/analytics/CStatistics.h"
-#endif //WITH_ANALYTICS
-
 class CMathContainer;
 class CProcessReport;
 class CArrayAnnotation;

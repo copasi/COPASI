@@ -202,18 +202,11 @@ bool CQTSSAWidget::loadTask()
   loadCommon();
   loadMethod();
 
-  CTSSAProblem* tssaproblem =
-    dynamic_cast<CTSSAProblem *>(pTask->getProblem());
+  CTSSAProblem * tssaproblem = dynamic_cast<CTSSAProblem *>(pTask->getProblem());
   assert(tssaproblem);
 
-  if (mpTSSAProblem != NULL)
-    {
-      mpTSSAProblem->setObjectParent(NULL);
-      delete mpTSSAProblem;
-    }
-
+  pdelete(mpTSSAProblem);
   mpTSSAProblem = new CTSSAProblem(*tssaproblem, NO_PARENT);
-  mpTSSAProblem->getObjectParent()->remove(mpTSSAProblem);
 
   //numbers
   mpEditIntervalSize->setText(QString::number(tssaproblem->getStepSize()));

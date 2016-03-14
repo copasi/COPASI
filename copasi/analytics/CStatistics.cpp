@@ -6,15 +6,6 @@
 #include "CStatistics.h"
 #include "copasi/model/CModelValue.h"
 
-CStatisticsReference::CStatisticsReference(const std::string & name,
-    const CCopasiContainer *pParent,
-    C_FLOAT64 & reference):
-  CCopasiObjectReference< C_FLOAT64 >(name, pParent, reference)
-{}
-
-CStatisticsReference::~CStatisticsReference()
-{}
-
 CStatistics::CStatistics(const std::string & name,
                          const CCopasiContainer * pParent,
                          const std::string & type,
@@ -23,7 +14,7 @@ CStatistics::CStatistics(const std::string & name,
   CCopasiContainer(name, pParent, type, flag | CCopasiObject::ValueDbl),
   mStatValue(statValue)
 {
-  initObjects(name, statValue);
+  initObjects();
 }
 
 CStatistics::~CStatistics()
@@ -31,15 +22,15 @@ CStatistics::~CStatistics()
   DESTRUCTOR_TRACE;
 }
 
-void CStatistics::initObjects(const std::string & name, C_FLOAT64 & value)
+void CStatistics::initObjects()
 {
 
   pdelete(mpStatValueReference);
-  mpStatValueReference = new CStatisticsReference(name + "Reference", this, value);
+  mpStatValueReference = this->addObjectReference(getObjectName(), mStatValue);
 }
 
 const C_FLOAT64 & CStatistics::getStatValue() const
 {return mStatValue;}
 
-CStatisticsReference *CStatistics::getStatValueReference() const
+CCopasiObject * CStatistics::getStatValueReference() const
 {return mpStatValueReference;}

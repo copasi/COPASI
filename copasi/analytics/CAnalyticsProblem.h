@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2015 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -10,6 +10,9 @@
 
 class CAnalyticsProblem : public CTrajectoryProblem
 {
+protected:
+  CAnalyticsProblem(const CAnalyticsProblem & src);
+
 public:
   /**
    * Default constructor.
@@ -23,7 +26,7 @@ public:
    * @paramconst CCopasiContainer * pParent (default: NULL)
    */
   CAnalyticsProblem(const CAnalyticsProblem & src,
-                       const CCopasiContainer * pParent = NULL);
+                    const CCopasiContainer * pParent);
 
   /**
    *  Destructor.
@@ -74,7 +77,6 @@ public:
   void retrieveSelectedObject(const CCopasiObject* pObject);
   const CCopasiObject *getSelectedObject();
   //--- ETTORE end -----
-
 
   const C_FLOAT64& getThreshold() const;
   void setThreshold(const C_FLOAT64 &threshold);
@@ -245,7 +247,7 @@ private:
 
   //--- ETTORE start ---
   /**
-   * this variables is a pointer to the Copasi object selected by the user
+   * this variables is a pointer to the COPASI object selected by the user
    * in the Analytics widget.
    */
   const CCopasiObject* mpObjectSelected;
@@ -257,7 +259,7 @@ private:
    * this member variable is mapped to a CCopasiParameter
    */
   std::string * mpTriggerExpression;
-  std::string * mSingleObjectCN;
+  std::string * mpSingleObjectCN;
   bool * mpFlagPositiveDirection;
   C_FLOAT64 * mpThreshold;
 };
