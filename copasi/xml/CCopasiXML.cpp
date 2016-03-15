@@ -252,6 +252,11 @@ bool CCopasiXML::load(std::istream & is,
       fixBuild81();
     }
 
+  if (FileVersion.getVersionDevel() < 104)
+    {
+      fixBuildBefore104();
+    }
+
   if (!CVersion::VERSION.isCompatible(FileVersion))
     CCopasiMessage(CCopasiMessage::WARNING, MCXML + 9, FileVersion.getVersion().c_str());
 
@@ -2038,6 +2043,14 @@ void CCopasiXML::fixBuild81()
   pTask->fixBuild81();
 
   return;
+}
+
+void CCopasiXML::fixBuildBefore104()
+{
+  if (mpModel == NULL) return;
+
+  if (mpModel->getTimeUnit() == "m")
+    mpModel->setTimeUnit("min");
 }
 
 /**

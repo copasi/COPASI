@@ -375,7 +375,7 @@ private:
   bool buildFunctionList();
 
   /**
-   * Fix files written with Version 4.0.18, which used units Mol, Min, etc. instead of mol, min . . .
+   * Fix files written with Version 4.0.18, which used units Mol, etc., instead of mol, . . .
    */
   void fixBuild18();
 
@@ -390,6 +390,11 @@ private:
    * normal random distributions in the scan task.
    */
   void fixBuild81();
+
+  /**
+   * After Build 104, at least, we shouldn't see any "m" in place of "min" for timeUnit.
+   */
+  void fixBuildBefore104();
 
   /**
    * Saves the list of global render information objects.
