@@ -1486,10 +1486,6 @@ CMathContainer::replaceDiscontinuousNode(const CEvaluationNode * pSrc,
       mCreateDiscontinuousPointer.pDiscontinuous->setValueType(CMath::ValueTypeUndefined);
       mCreateDiscontinuousPointer.pDiscontinuous += 1;
 
-      // Mark the event as unused by setting the trigger to ''
-      mCreateDiscontinuousPointer.pEvent->setTriggerExpression("", *this);
-      mCreateDiscontinuousPointer.pEvent += 1;
-
       pdelete(pNode);
 
       // Return a pointer to a node pointing to the value of discontinuous object.
@@ -1517,7 +1513,21 @@ CMathContainer::replaceDiscontinuousNode(const CEvaluationNode * pSrc,
   // We need to create an event.
   if (itEvent == mTriggerInfix2Event.end())
     {
-      pEvent = mCreateDiscontinuousPointer.pEvent;
+      CEvent DataEvent;
+      DataEvent.setType(CEvent::Discontinuity);
+      DataEvent.setTriggerExpression(TriggerInfix);
+
+      CMathEvent Event;
+      CMathEvent::allocate(Event, &DataEvent, *this);
+      size_t RootCount = Event.getTrigger().getRoots().size();
+
+      std::multimap< size_t, size_t >::iterator found = mRootCount2Events.find(RootCount);
+
+      if (found == mRootCount2Events.end()) fatalError();
+
+      pEvent = mCreateDiscontinuousPointer.pEvent + found->second;
+
+      mRootCount2Events.erase(found);
 
       // Set the trigger
       pEvent->setTriggerExpression(TriggerInfix, *this);
@@ -1528,12 +1538,7 @@ CMathContainer::replaceDiscontinuousNode(const CEvaluationNode * pSrc,
   else
     {
       pEvent = itEvent->second;
-
-      // Mark the event as unused by setting the trigger to ''
-      mCreateDiscontinuousPointer.pEvent->setTriggerExpression("", *this);
     }
-
-  mCreateDiscontinuousPointer.pEvent += 1;
 
   // Add the current discontinuity as an assignment.
   pEvent->addAssignment(pDiscontinuity, pDiscontinuity);
@@ -1679,12 +1684,15 @@ void CMathContainer::allocate()
 
   itEvent = mDiscontinuityEvents.begin();
   endEvent = mDiscontinuityEvents.end();
+  size_t DiscontinuityEventIndex = 0;
 
-  for (; itEvent != endEvent; ++itEvent)
+  for (; itEvent != endEvent; ++itEvent, ++DiscontinuityEventIndex)
     {
       CMathEvent Event;
       CMathEvent::allocate(Event, itEvent, *this);
       Size.nEventRoots += Event.getTrigger().getRoots().size();
+
+      mRootCount2Events.insert(std::make_pair(Event.getTrigger().getRoots().size(), DiscontinuityEventIndex));
 
       // We do not have to allocate an assignment as discontinuity object suffices
       // as target and assignment expression.
@@ -1903,6 +1911,15 @@ bool CMathContainer::compileEvents()
     }
 
   // Events representing discontinuities.
+  std::multimap< size_t, size_t >::iterator itUnused = mRootCount2Events.begin();
+  std::multimap< size_t, size_t >::iterator endUnused = mRootCount2Events.end();
+
+  for (; itUnused != endUnused; ++itUnused)
+    {
+      // Mark the event as unused by setting the trigger to ''
+      (mCreateDiscontinuousPointer.pEvent + itUnused->second)->setTriggerExpression("", *this);
+    }
+
   itEvent = mDiscontinuityEvents.begin();
   endEvent = mDiscontinuityEvents.end();
 

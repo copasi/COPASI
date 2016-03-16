@@ -1185,6 +1185,11 @@ private:
   std::map< std::string,  CMathEvent * > mTriggerInfix2Event;
 
   /**
+   * A map of root counts to math events.
+   */
+  std::multimap< size_t, size_t > mRootCount2Events;
+
+  /**
    * A vector of delays
    */
   CVectorCore< CMathDelay > mDelays;
