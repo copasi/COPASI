@@ -49,6 +49,8 @@ void CQModelWidget::load()
   if (mpModel == NULL)
     return;
 
+  updateUnitComboBoxes(); //findText, below, needs any newly loaded units to be available to match.
+
   mpComboTimeUnit->setCurrentIndex(mpComboTimeUnit->findText(FROM_UTF8(mpModel->getTimeUnitName())));
   mpComboVolumeUnit->setCurrentIndex(mpComboVolumeUnit->findText(FROM_UTF8(mpModel->getVolumeUnitName())));
   mpComboQuantityUnit->setCurrentIndex(mpComboQuantityUnit->findText(FROM_UTF8(mpModel->getQuantityUnitName())));
