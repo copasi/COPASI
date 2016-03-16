@@ -1638,15 +1638,10 @@ void CCopasiXMLParser::ModelElement::start(const XML_Char *pszName,
 {
   const char * Name;
   const char * timeUnit;
-  CUnit::TimeUnit TimeUnit;
   const char * volumeUnit;
-  CUnit::VolumeUnit VolumeUnit;
   const char * areaUnit;
-  CUnit::AreaUnit AreaUnit;
   const char * lengthUnit;
-  CUnit::LengthUnit LengthUnit;
   const char * quantityUnit;
-  CUnit::QuantityUnit QuantityUnit;
   CModel::ModelType ModelType;
   C_FLOAT64 Avogadro;
 
@@ -1665,24 +1660,16 @@ void CCopasiXMLParser::ModelElement::start(const XML_Char *pszName,
         Name = mParser.getAttributeValue("name", papszAttrs);
 
         timeUnit = mParser.getAttributeValue("timeUnit", papszAttrs);
-        TimeUnit = toEnum(timeUnit, CUnit::TimeUnitNames, CUnit::OldMinute);
 
         volumeUnit = mParser.getAttributeValue("volumeUnit", papszAttrs);
-        VolumeUnit = toEnum(volumeUnit, CUnit::VolumeUnitNames, CUnit::ml);
 
         //the next 2 attributes are introduced in Build 31, they have a default for
         //reading older cps files
         areaUnit = mParser.getAttributeValue("areaUnit", papszAttrs, "m\xc2\xb2");
-        AreaUnit = toEnum(areaUnit, CUnit::AreaUnitNames, CUnit::m2);
 
         lengthUnit = mParser.getAttributeValue("lengthUnit", papszAttrs, "m");
-        LengthUnit = toEnum(lengthUnit, CUnit::LengthUnitNames, CUnit::m);
 
         quantityUnit = mParser.getAttributeValue("quantityUnit", papszAttrs);
-        QuantityUnit = toEnum(quantityUnit, CUnit::QuantityUnitNames, CUnit::OldXML);
-
-        if (QuantityUnit == CUnit::OldXML)
-          QuantityUnit = toEnum(quantityUnit, CUnit::QuantityUnitOldXMLNames, CUnit::mMol);
 
         ModelType = toEnum(mParser.getAttributeValue("type", papszAttrs, "deterministic"),
                            CModel::ModelTypeNames, CModel::deterministic);
@@ -1703,11 +1690,11 @@ void CCopasiXMLParser::ModelElement::start(const XML_Char *pszName,
 
         addFix(mKey, mCommon.pModel);
         mCommon.pModel->setObjectName(Name);
-        mCommon.pModel->setTimeUnit(TimeUnit);
-        mCommon.pModel->setVolumeUnit(VolumeUnit);
-        mCommon.pModel->setAreaUnit(AreaUnit);
-        mCommon.pModel->setLengthUnit(LengthUnit);
-        mCommon.pModel->setQuantityUnit(QuantityUnit);
+        mCommon.pModel->setTimeUnit(timeUnit);
+        mCommon.pModel->setVolumeUnit(volumeUnit);
+        mCommon.pModel->setAreaUnit(areaUnit);
+        mCommon.pModel->setLengthUnit(lengthUnit);
+        mCommon.pModel->setQuantityUnit(quantityUnit);
         mCommon.pModel->setModelType(ModelType);
         mCommon.pModel->setAvogadro(Avogadro);
 

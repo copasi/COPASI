@@ -1302,7 +1302,8 @@ void CModel::stateToIntialState()
 
 bool CModel::setVolumeUnit(const std::string & name)
 {
-  return setVolumeUnit(toEnum(name.c_str(), CUnit::VolumeUnitNames, CUnit::ml));
+  mVolumeUnit = name;
+  return true;
 }
 
 bool CModel::setVolumeUnit(const CUnit::VolumeUnit & unitEnum)
@@ -1330,7 +1331,8 @@ CUnit::VolumeUnit CModel::getVolumeUnitEnum() const
 
 bool CModel::setAreaUnit(const std::string & name)
 {
-  return setAreaUnit(toEnum(name.c_str(), CUnit::AreaUnitNames, CUnit::m2));
+  mAreaUnit = name;
+  return true;
 }
 
 bool CModel::setAreaUnit(const CUnit::AreaUnit & unitEnum)
@@ -1357,7 +1359,8 @@ CUnit::AreaUnit CModel::getAreaUnitEnum() const
 //****
 bool CModel::setLengthUnit(const std::string & name)
 {
-  return setLengthUnit(toEnum(name.c_str(), CUnit::LengthUnitNames, CUnit::m));
+  mLengthUnit = name;
+  return true;
 }
 
 bool CModel::setLengthUnit(const CUnit::LengthUnit & unitEnum)
@@ -1385,7 +1388,9 @@ CUnit::LengthUnit CModel::getLengthUnitEnum() const
 
 bool CModel::setTimeUnit(const std::string & name)
 {
-  return setTimeUnit(toEnum(name.c_str(), CUnit::TimeUnitNames, CUnit::s));
+//  return setTimeUnit(toEnum(name.c_str(), CUnit::TimeUnitNames, CUnit::s));
+  mTimeUnit = name;
+  return true;
 }
 
 bool CModel::setTimeUnit(const CUnit::TimeUnit & unitEnum)
