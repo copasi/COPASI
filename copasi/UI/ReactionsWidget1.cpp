@@ -506,14 +506,16 @@ void ReactionsWidget1::slotTableChanged(int index, int sub, QString newValue)
           mpUndoStack->push(
             new ReactionChangeCommand(
               CCopasiUndoCommand::REACTION_MAPPING_SPECIES_CHANGE,
-              newValue,
               FROM_UTF8(mpRi->getMapping(Index)),
+              newValue,
               this,
               reaction,
               index,
               index
             )
           );
+
+          LineEdit2->setText(FROM_UTF8(mpRi->getChemEqString()));
         }
     }
 

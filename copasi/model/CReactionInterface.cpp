@@ -266,10 +266,6 @@ bool CReactionInterface::writeBackToReaction(CReaction * rea)
 
   if (rea == NULL) return false;
 
-  // Now we can safely write to the equation as we are sure that only unique metabolites
-  // may have the empty string as compartments
-  mChemEqI.writeToChemEq(rea->getChemEq());
-
   if (!isValid()) return false; // do nothing
 
   if (mpFunction == NULL) return false;
@@ -279,6 +275,10 @@ bool CReactionInterface::writeBackToReaction(CReaction * rea)
   if (mpParameters == NULL) return false;
 
   if (!(*mpParameters == mpFunction->getVariables())) return false; // do nothing
+
+  // Now we can safely write to the equation as we are sure that only unique metabolites
+  // may have the empty string as compartments
+  mChemEqI.writeToChemEq(rea->getChemEq());
 
   // TODO. check if function has changed since it was set in the R.I.
   rea->setFunction(mpFunction->getObjectName());
