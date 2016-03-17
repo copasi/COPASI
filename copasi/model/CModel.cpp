@@ -1430,7 +1430,7 @@ bool CModel::setQuantityUnit(const std::string & name)
   std::set< CUnitComponent >::const_iterator it = pTmpCUnitDef->getComponents().begin();
 
   // Avogadro, if present, will be in the multiplier
-  mQuantity2NumberFactor = it->getMultiplier() * pow(10, it->getScale());
+  mQuantity2NumberFactor = it->getMultiplier() * pow(10.0, it->getScale());
 
   mNumber2QuantityFactor = 1.0 / mQuantity2NumberFactor;
 

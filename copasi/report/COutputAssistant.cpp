@@ -1352,7 +1352,7 @@ CReportDefinition* COutputAssistant::createTable(const std::string & name,
   pReport->setTaskType(taskType);
 
   pReport->setIsTable(true);
-  pReport->setSeparator(CCopasiReportSeparator("\t"));
+  pReport->setSeparator("\t");
 
   for (it = d.begin(); it != itEnd; ++it)
     {

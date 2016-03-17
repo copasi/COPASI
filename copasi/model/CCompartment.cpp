@@ -97,6 +97,8 @@ std::string CCompartment::getChildObjectUnits(const CCopasiObject * pObject) con
             break;
         }
     }
+
+  return "";
 }
 
 void CCompartment::cleanup() {mMetabolites.cleanup();}

@@ -131,8 +131,8 @@ bool CReportDefinition::setTaskType(const CTaskEnum::Task & taskType)
 const CTaskEnum::Task & CReportDefinition::getTaskType() const
 {return mTaskType;}
 
-void CReportDefinition::setSeparator(const CCopasiReportSeparator & Separator)
-{mSeparator = Separator;}
+void CReportDefinition::setSeparator(const std::string & separator)
+{mSeparator = separator;}
 
 const CCopasiReportSeparator & CReportDefinition::getSeparator() const
 {return mSeparator;}

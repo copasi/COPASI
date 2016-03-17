@@ -1598,7 +1598,7 @@ CReportDefinition * CCopasiDataModel::addReport(const CTaskEnum::Task & taskType
         pReport->setTaskType(taskType);
         pReport->setComment("Automatically generated report.");
         pReport->setIsTable(false);
-        pReport->setSeparator(CCopasiReportSeparator("\t"));
+        pReport->setSeparator("\t");
         pReport->getFooterAddr()->push_back(CCopasiObjectName("CN=Root,Vector=TaskList[Steady-State]"));
         break;
 
@@ -1615,7 +1615,7 @@ CReportDefinition * CCopasiDataModel::addReport(const CTaskEnum::Task & taskType
         pReport->setTaskType(taskType);
         pReport->setComment("Automatically generated report.");
         pReport->setIsTable(false);
-        pReport->setSeparator(CCopasiReportSeparator("\t"));
+        pReport->setSeparator("\t");
         pReport->getFooterAddr()->push_back(CCopasiObjectName("CN=Root,Vector=TaskList[Elementary Flux Modes],Object=Result"));
         break;
 
@@ -1625,7 +1625,7 @@ CReportDefinition * CCopasiDataModel::addReport(const CTaskEnum::Task & taskType
         pReport->setComment("Automatically generated report.");
         pReport->setIsTable(false);
         pReport->setTitle(false);
-        pReport->setSeparator(CCopasiReportSeparator("\t"));
+        pReport->setSeparator("\t");
 
         // Header
         pReport->getHeaderAddr()->push_back(CCopasiObjectName("CN=Root,Vector=TaskList[Optimization],Object=Description"));
@@ -1654,7 +1654,7 @@ CReportDefinition * CCopasiDataModel::addReport(const CTaskEnum::Task & taskType
         pReport->setComment("Automatically generated report.");
         pReport->setIsTable(false);
         pReport->setTitle(false);
-        pReport->setSeparator(CCopasiReportSeparator("\t"));
+        pReport->setSeparator("\t");
 
         // Header
         pReport->getHeaderAddr()->push_back(CCopasiObjectName("CN=Root,Vector=TaskList[Parameter Estimation],Object=Description"));
@@ -1683,7 +1683,7 @@ CReportDefinition * CCopasiDataModel::addReport(const CTaskEnum::Task & taskType
         pReport->setComment("Automatically generated report.");
         pReport->setIsTable(false);
         pReport->setTitle(false);
-        pReport->setSeparator(CCopasiReportSeparator("\t"));
+        pReport->setSeparator("\t");
 
         // Header
         pReport->getHeaderAddr()->push_back(CCopasiObjectName("CN=Root,Vector=TaskList[Lyapunov Exponents],Object=Description"));
@@ -1700,7 +1700,7 @@ CReportDefinition * CCopasiDataModel::addReport(const CTaskEnum::Task & taskType
         pReport->setComment("Automatically generated report.");
         pReport->setIsTable(false);
         pReport->setTitle(false);
-        pReport->setSeparator(CCopasiReportSeparator("\t"));
+        pReport->setSeparator("\t");
 
         // Header
         pReport->getHeaderAddr()->push_back(CCopasiObjectName("CN=Root,Vector=TaskList[Metabolic Control Analysis],Object=Description"));
@@ -1717,7 +1717,7 @@ CReportDefinition * CCopasiDataModel::addReport(const CTaskEnum::Task & taskType
         pReport->setComment("Automatically generated report.");
         pReport->setIsTable(false);
         pReport->setTitle(false);
-        pReport->setSeparator(CCopasiReportSeparator("\t"));
+        pReport->setSeparator("\t");
 
         // Header
         pReport->getHeaderAddr()->push_back(CCopasiObjectName("CN=Root,Vector=TaskList[Linear Noise Approximation],Object=Description"));
@@ -1734,7 +1734,7 @@ CReportDefinition * CCopasiDataModel::addReport(const CTaskEnum::Task & taskType
         pReport->setComment("Automatically generated report.");
         pReport->setIsTable(false);
         pReport->setTitle(false);
-        pReport->setSeparator(CCopasiReportSeparator("\t"));
+        pReport->setSeparator("\t");
 
         // Header
         pReport->getHeaderAddr()->push_back(CCopasiObjectName("CN=Root,Vector=TaskList[Sensitivities],Object=Description"));
@@ -1751,7 +1751,7 @@ CReportDefinition * CCopasiDataModel::addReport(const CTaskEnum::Task & taskType
         pReport->setComment("Automatically generated report.");
         pReport->setIsTable(false);
         pReport->setTitle(false);
-        pReport->setSeparator(CCopasiReportSeparator("\t"));
+        pReport->setSeparator("\t");
 
         // Header
         pReport->getHeaderAddr()->push_back(CCopasiObjectName("CN=Root,Vector=TaskList[Time Scale Separation Analysis],Object=Description"));

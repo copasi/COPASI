@@ -101,7 +101,7 @@ int main(int argc, char *argv[])
       CReportDefinition* pReport = pReports->createReportDefinition("Report", "Output for batch run");
       pReport->setTaskType(CTaskEnum::timeCourse);
       pReport->setIsTable(false);
-      pReport->setSeparator(CCopasiReportSeparator(", "));
+      pReport->setSeparator(", ");
 
       std::vector<CRegisteredObjectName>* pHeader = pReport->getHeaderAddr();
       std::vector<CRegisteredObjectName>* pBody = pReport->getBodyAddr();

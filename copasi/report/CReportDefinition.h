@@ -160,7 +160,7 @@ public:
   /**
    *
    */
-  void setSeparator(const CCopasiReportSeparator & Separator);
+  void setSeparator(const std::string & separator);
 
   /**
    *
