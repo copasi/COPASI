@@ -1388,7 +1388,6 @@ CUnit::LengthUnit CModel::getLengthUnitEnum() const
 
 bool CModel::setTimeUnit(const std::string & name)
 {
-//  return setTimeUnit(toEnum(name.c_str(), CUnit::TimeUnitNames, CUnit::s));
   mTimeUnit = name;
   return true;
 }
@@ -1418,12 +1417,34 @@ CUnit::TimeUnit CModel::getTimeUnitEnum() const
 
 bool CModel::setQuantityUnit(const std::string & name)
 {
-  CUnit::QuantityUnit unit = toEnum(name.c_str(), CUnit::QuantityUnitNames, CUnit::OldXML);
+  const CUnitDefinition * pTmpCUnitDef = CCopasiRootContainer::getUnitDefFromSymbol(name);
 
-  if (unit == CUnit::OldXML)
-    unit = toEnum(name.c_str(), CUnit::QuantityUnitOldXMLNames, CUnit::mMol);
+  if (pTmpCUnitDef == NULL ||
+      !pTmpCUnitDef->isUnitType(CUnit::quantity))
+    return false;
 
-  return setQuantityUnit(unit);
+  mQuantityUnit = name;
+
+  // The first, dimentionless, component should have all the
+  // scale and mulitplier information
+  std::set< CUnitComponent >::const_iterator it = pTmpCUnitDef->getComponents().begin();
+
+  // Avogadro, if present, will be in the multiplier
+  mQuantity2NumberFactor = it->getMultiplier() * pow(10, it->getScale());
+
+  mNumber2QuantityFactor = 1.0 / mQuantity2NumberFactor;
+
+  //adapt particle numbers
+  size_t i, imax = mMetabolites.size();
+
+  for (i = 0; i < imax; ++i)
+    {
+      //update particle numbers
+      mMetabolites[i].setInitialConcentration(mMetabolites[i].getInitialConcentration());
+      mMetabolites[i].setConcentration(mMetabolites[i].getConcentration());
+    }
+
+  return true;
 }
 
 bool CModel::setQuantityUnit(const CUnit::QuantityUnit & unitEnum)
@@ -3836,11 +3857,11 @@ CCopasiObject::DataObjectSet CModel::getUnitSymbolUsage(std::string symbol) cons
     }
 
   //Is it used for any of the default model units?
-  if (CUnit(mVolumeUnit).getUsedSymbols().count(symbol) ||
-      CUnit(mAreaUnit).getUsedSymbols().count(symbol) ||
-      CUnit(mLengthUnit).getUsedSymbols().count(symbol) ||
-      CUnit(mTimeUnit).getUsedSymbols().count(symbol) ||
-      CUnit(mQuantityUnit).getUsedSymbols().count(symbol))
+  if (CCopasiRootContainer::getUnitDefFromSymbol(mVolumeUnit)->getUsedSymbols().count(symbol) ||
+      CCopasiRootContainer::getUnitDefFromSymbol(mAreaUnit)->getUsedSymbols().count(symbol) ||
+      CCopasiRootContainer::getUnitDefFromSymbol(mLengthUnit)->getUsedSymbols().count(symbol) ||
+      CCopasiRootContainer::getUnitDefFromSymbol(mTimeUnit)->getUsedSymbols().count(symbol) ||
+      CCopasiRootContainer::getUnitDefFromSymbol(mQuantityUnit)->getUsedSymbols().count(symbol))
     usages.insert(this);
 
   return usages;

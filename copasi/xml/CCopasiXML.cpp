@@ -272,7 +272,6 @@ void CCopasiXML::mergeUnitDefinitions(CUnitDefinitionDB * pUnitDefImportList)
       pCopasiUnitDefinitionList == NULL)
     return;
 
-  bool needSymbolUpdate = false;
   std::ostringstream name, symbol;
   CUnitDefinition * pUnitDefToAdd, * pUnitDefInRootContainer;
   std::set<CUnitDefinition *> unitDefsToAdd;
