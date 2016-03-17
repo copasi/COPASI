@@ -27,7 +27,7 @@
  */
 CLGlobalRenderInformation* CLRenderFlattener::flatten_render_information(const CLGlobalRenderInformation& globalRenderInformation, const CCopasiVector<CLGlobalRenderInformation>& globalList) throw(CLUnresolvedReferenceException)
 {
-  return dynamic_cast<CLGlobalRenderInformation*>(CLRenderFlattener::flatten(globalRenderInformation, globalList));
+  return dynamic_cast<CLGlobalRenderInformation*>(CLRenderFlattener::flatten(globalRenderInformation, globalList, CCopasiVector<CLLocalRenderInformation>()));
 }
 
 /**
