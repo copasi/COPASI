@@ -39,6 +39,8 @@ typedef std::vector<CCopasiObject*> ObjectStdVector;
 %ignore CUnit::QuantityUnitOldXMLNames;
 %ignore CUnit::QuantityUnitNames;
 %ignore CUnit::fromEnum;
+%ignore CUnit::getSymbolComponents;
+%ignore CUnit::SymbolComponent;
 %rename(mul)             CUnit::operator*;
 %rename(isEqual)         CUnit::operator==;
 %rename(isEqual)         CUnitComponent::operator==;
