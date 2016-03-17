@@ -262,7 +262,7 @@ void SEDMLImporter::readListOfPlotsFromSedMLOutput(
             def->setComment("Import from SED-ML");
 
             def->setIsTable(false);
-            def->setSeparator(CCopasiReportSeparator(", "));
+            def->setSeparator(", ");
 
             std::vector<CRegisteredObjectName>* pHeader = def->getHeaderAddr();
             std::vector<CRegisteredObjectName>* pBody = def->getBodyAddr();

@@ -591,7 +591,7 @@ bool CQReportDefinition::save()
 
   mpReportDefinition->setTaskType((CTaskEnum::Task) mpTaskBox->currentIndex());
 
-  CCopasiReportSeparator Separator;
+  std::string Separator;
 
   if (mpTabCheck->isChecked())
     Separator = "\t";
@@ -619,7 +619,7 @@ bool CQReportDefinition::save()
       for (i = 0, imax = mpHeaderList->count(); i < imax; i++)
         if (static_cast<CQReportListItem *>(mpHeaderList->item(i))->getCN().getObjectType()
             == "Separator")
-          pList->push_back(Separator.getCN());
+          pList->push_back(mpReportDefinition->getSeparator().getCN());
         else
           pList->push_back(static_cast<CQReportListItem *>(mpHeaderList->item(i))->getCN());
 
@@ -628,7 +628,7 @@ bool CQReportDefinition::save()
       for (i = 0, imax = mpBodyList->count(); i < imax; i++)
         if (static_cast<CQReportListItem *>(mpBodyList->item(i))->getCN().getObjectType()
             == "Separator")
-          pList->push_back(Separator.getCN());
+          pList->push_back(mpReportDefinition->getSeparator().getCN());
         else
           pList->push_back(static_cast<CQReportListItem *>(mpBodyList->item(i))->getCN());
 
@@ -637,7 +637,7 @@ bool CQReportDefinition::save()
       for (i = 0, imax = mpFooterList->count(); i < imax; i++)
         if (static_cast<CQReportListItem *>(mpFooterList->item(i))->getCN().getObjectType()
             == "Separator")
-          pList->push_back(Separator.getCN());
+          pList->push_back(mpReportDefinition->getSeparator().getCN());
         else
           pList->push_back(static_cast<CQReportListItem *>(mpFooterList->item(i))->getCN());
     }

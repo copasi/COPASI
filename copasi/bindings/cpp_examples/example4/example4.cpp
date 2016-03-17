@@ -70,7 +70,7 @@ int main()
   // we don't want a table
   pReport->setIsTable(false);
   // the entries in the output should be seperated by a ", "
-  pReport->setSeparator(CCopasiReportSeparator(", "));
+  pReport->setSeparator(", ");
 
   // we need a handle to the header and the body
   // the header will display the ids of the metabolites and "time" for

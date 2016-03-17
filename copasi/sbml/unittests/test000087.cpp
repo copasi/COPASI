@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -346,7 +346,7 @@ void test000087::test_simulate_reaction_flux_reference_1()
   CReportDefinition* pReport = pReports->createReportDefinition("Report", "Output for simulation");
   pReport->setTaskType(CCopasiTask::timeCourse);
   pReport->setIsTable(false);
-  pReport->setSeparator(CCopasiReportSeparator(", "));
+  pReport->setSeparator(", ");
 
   std::vector<CRegisteredObjectName>* pHeader = pReport->getHeaderAddr();
   std::vector<CRegisteredObjectName>* pBody = pReport->getBodyAddr();

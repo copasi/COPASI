@@ -8186,16 +8186,16 @@ void CCopasiXMLParser::LayoutElement::end(const XML_Char *pszName)
     {
       switch (mCurrentElement)
         {
-          //     case Layout:
-          //       if (strcmp(pszName, "Layout"))
-          //         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
-          //                        pszName, "Layout", mParser.getCurrentLineNumber());
-          //       mParser.popElementHandler();
-          //       mCurrentElement = START_ELEMENT;
-          //
-          //       /* Tell the parent element we are done. */
-          //       mParser.onEndElement(pszName);
-          //       break;
+            //     case Layout:
+            //       if (strcmp(pszName, "Layout"))
+            //         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+            //                        pszName, "Layout", mParser.getCurrentLineNumber());
+            //       mParser.popElementHandler();
+            //       mCurrentElement = START_ELEMENT;
+            //
+            //       /* Tell the parent element we are done. */
+            //       mParser.onEndElement(pszName);
+            //       break;
 
           case Dimensions:
 
@@ -9600,7 +9600,7 @@ void CCopasiXMLParser::ReportElement::start(const XML_Char *pszName,
         // create a new report
         mCommon.pReport = new CReportDefinition();
         mCommon.pReport->setTaskType(type);
-        mCommon.pReport->setSeparator(CCopasiReportSeparator(Separator));
+        mCommon.pReport->setSeparator(Separator);
         mCommon.pReport->setPrecision(strToUnsignedInt(Precision));
 
         {
@@ -12846,7 +12846,7 @@ void CCopasiXMLParser::GroupElement::start(const XML_Char * pszName,
         return;
         break;
 
-      // a group can have many different children
+        // a group can have many different children
       case GroupChild:
 
         // handle the possible children

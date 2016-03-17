@@ -172,8 +172,7 @@ int main(int argc, char *argv[])
       pReport->setTaskType(CTaskEnum::timeCourse);
       pReport->setIsTable(false);
 
-      CCopasiReportSeparator Separator(std::string(","));
-      pReport->setSeparator(Separator);
+      pReport->setSeparator(",");
 
       std::vector<CRegisteredObjectName> * pHeader = pReport->getHeaderAddr();
       std::vector<CRegisteredObjectName> * pBody = pReport->getBodyAddr();
@@ -187,8 +186,8 @@ int main(int argc, char *argv[])
 
       for (i = 0; i < iMax; ++i)
         {
-          pHeader->push_back(Separator.getCN());
-          pBody->push_back(Separator.getCN());
+          pHeader->push_back(pReport->getSeparator().getCN());
+          pBody->push_back(pReport->getSeparator().getCN());
 
           unsigned int j, jMax = metabolites.size();
 
