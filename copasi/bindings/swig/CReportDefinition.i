@@ -23,7 +23,16 @@
 %ignore CReportDefinition::getFooterAddr() const;
 %ignore CReportDefinition::getTableAddr() const;
 
-%include "report/CReportDefinition.h"
+%extend CReportDefinition{
 
+  void setSeparator(const CCopasiReportSeparator& separator)
+  {
+    self->setSeparator(separator.getStaticString());
+  }
+
+}
+
+
+%include "report/CReportDefinition.h"
 
 
