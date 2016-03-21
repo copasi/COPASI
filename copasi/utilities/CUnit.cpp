@@ -285,12 +285,14 @@ bool CUnit::isEquivalent(const CUnit & rightSide) const
 
   for (; it != end; ++it, ++itRhs)
     {
-      if (*it == *itRhs)
+      if ((it->getKind() == CBaseUnit::dimensionless &&
+           itRhs->getKind() == CBaseUnit::dimensionless) ||
+          *it == *itRhs)
         {
           continue;
         }
-      else
-        return false;
+
+      return false;
     }
 
   return true;

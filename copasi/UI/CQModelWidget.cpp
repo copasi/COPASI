@@ -287,110 +287,63 @@ CQModelWidget::changeValue(CCopasiUndoCommand::Type type, const QVariant& newVal
   return true;
 }
 
-struct symbol_compare
-{
-  bool operator()(const CUnitDefinition &a, const CUnitDefinition &b)
-  {
-    return a.getSymbol() < b.getSymbol();
-  }
-};
-
 void CQModelWidget::updateUnitComboBoxes()
 {
   QStringList ComboEntries;
+  std::set< CUnit >::const_iterator it, itEnd;
 
   // Take advantage of the implicit sorting in std::set
-  std::set< CUnitDefinition, symbol_compare > timeUnitDefSet,
-      quantityUnitDefSet,
-      volumeUnitDefSet,
-      areaUnitDefSet,
-      lengthUnitDefSet;
+  std::set< CUnit > ValidUnitSet =  CCopasiRootContainer::getUnitList()->getAllValidUnits("s", "1");
 
-  CUnitDefinitionDB::const_iterator it = CCopasiRootContainer::getUnitList()->begin(),
-                                    end = CCopasiRootContainer::getUnitList()->end();
-
-  // Grab the appropriate units
-  for (; it != end; ++it)
+  for (it = ValidUnitSet.begin(), itEnd = ValidUnitSet.end(); it != itEnd; ++it)
     {
-      const CUnitDefinition& orig = *it;
-
-      if (orig.isUnitType(CUnit::time))
-        timeUnitDefSet.insert(CUnitDefinition(orig, NULL));
-
-      if (orig.isUnitType(CUnit::quantity))
-        quantityUnitDefSet.insert(CUnitDefinition(orig, NULL));
-
-      if (orig.isUnitType(CUnit::volume))
-        volumeUnitDefSet.insert(CUnitDefinition(orig, NULL));
-
-      if (orig.isUnitType(CUnit::area))
-        areaUnitDefSet.insert(CUnitDefinition(orig, NULL));
-
-      if (orig.isUnitType(CUnit::length))
-        lengthUnitDefSet.insert(CUnitDefinition(orig, NULL));
-    }
-
-  std::set< CUnitDefinition >::const_iterator itDS = timeUnitDefSet.begin(),
-                                              endDS = timeUnitDefSet.end();
-
-  // Set time unit options
-  for (; itDS != endDS; ++itDS)
-    {
-      ComboEntries.push_back(QString::fromUtf8(itDS->getSymbol().c_str()));
+      ComboEntries.push_back(FROM_UTF8(it->getExpression()));
     }
 
   mpComboTimeUnit->clear();
   mpComboTimeUnit->insertItems(0, ComboEntries);
 
-  // Set quantity unit options
+  ValidUnitSet = CCopasiRootContainer::getUnitList()->getAllValidUnits("m", "3");
   ComboEntries.clear();
-  itDS = quantityUnitDefSet.begin();
-  endDS = quantityUnitDefSet.end();
 
-  for (; itDS != endDS; ++itDS)
+  for (it = ValidUnitSet.begin(), itEnd = ValidUnitSet.end(); it != itEnd; ++it)
     {
-      ComboEntries.push_back(QString::fromUtf8(itDS->getSymbol().c_str()));
-    }
-
-  mpComboQuantityUnit->clear();
-  mpComboQuantityUnit->insertItems(0, ComboEntries);
-
-  // Set volume unit options
-  ComboEntries.clear();
-  itDS = volumeUnitDefSet.begin();
-  endDS = volumeUnitDefSet.end();
-
-  for (; itDS != endDS; ++itDS)
-    {
-      ComboEntries.push_back(QString::fromUtf8(itDS->getSymbol().c_str()));
+      ComboEntries.push_back(FROM_UTF8(it->getExpression()));
     }
 
   mpComboVolumeUnit->clear();
   mpComboVolumeUnit->insertItems(0, ComboEntries);
 
-  // Set area unit options
+  ValidUnitSet = CCopasiRootContainer::getUnitList()->getAllValidUnits("m", "2");
   ComboEntries.clear();
-  itDS = areaUnitDefSet.begin();
-  endDS = areaUnitDefSet.end();
 
-  for (; itDS != endDS; ++itDS)
+  for (it = ValidUnitSet.begin(), itEnd = ValidUnitSet.end(); it != itEnd; ++it)
     {
-      ComboEntries.push_back(QString::fromUtf8(itDS->getSymbol().c_str()));
+      ComboEntries.push_back(FROM_UTF8(it->getExpression()));
     }
 
   mpComboAreaUnit->clear();
   mpComboAreaUnit->insertItems(0, ComboEntries);
 
-  // Set length unit options
+  ValidUnitSet = CCopasiRootContainer::getUnitList()->getAllValidUnits("m", "1");
   ComboEntries.clear();
-  itDS = lengthUnitDefSet.begin();
-  endDS = lengthUnitDefSet.end();
 
-  for (; itDS != endDS; ++itDS)
+  for (it = ValidUnitSet.begin(), itEnd = ValidUnitSet.end(); it != itEnd; ++it)
     {
-      ComboEntries.push_back(QString::fromUtf8(itDS->getSymbol().c_str()));
+      ComboEntries.push_back(FROM_UTF8(it->getExpression()));
     }
 
   mpComboLengthUnit->clear();
   mpComboLengthUnit->insertItems(0, ComboEntries);
+
+  ValidUnitSet = CCopasiRootContainer::getUnitList()->getAllValidUnits("#", "1");
+  ComboEntries.clear();
+
+  for (it = ValidUnitSet.begin(), itEnd = ValidUnitSet.end(); it != itEnd; ++it)
+    {
+      ComboEntries.push_back(FROM_UTF8(it->getExpression()));
+    }
+
+  mpComboQuantityUnit->clear();
+  mpComboQuantityUnit->insertItems(0, ComboEntries);
 }
