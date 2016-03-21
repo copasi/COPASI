@@ -287,12 +287,20 @@ CQModelWidget::changeValue(CCopasiUndoCommand::Type type, const QVariant& newVal
   return true;
 }
 
+struct symbol_compare
+{
+  bool operator()(const CUnitDefinition &a, const CUnitDefinition &b)
+  {
+    return a.getSymbol() < b.getSymbol();
+  }
+};
+
 void CQModelWidget::updateUnitComboBoxes()
 {
   QStringList ComboEntries;
 
   // Take advantage of the implicit sorting in std::set
-  std::set< CUnitDefinition > timeUnitDefSet,
+  std::set< CUnitDefinition, symbol_compare > timeUnitDefSet,
       quantityUnitDefSet,
       volumeUnitDefSet,
       areaUnitDefSet,
@@ -304,20 +312,22 @@ void CQModelWidget::updateUnitComboBoxes()
   // Grab the appropriate units
   for (; it != end; ++it)
     {
-      if (it->isUnitType(CUnit::time))
-        timeUnitDefSet.insert(CUnitDefinition(*it, NULL));
+      const CUnitDefinition& orig = *it;
 
-      if (it->isUnitType(CUnit::quantity))
-        quantityUnitDefSet.insert(CUnitDefinition(*it, NULL));
+      if (orig.isUnitType(CUnit::time))
+        timeUnitDefSet.insert(CUnitDefinition(orig, NULL));
 
-      if (it->isUnitType(CUnit::volume))
-        volumeUnitDefSet.insert(CUnitDefinition(*it, NULL));
+      if (orig.isUnitType(CUnit::quantity))
+        quantityUnitDefSet.insert(CUnitDefinition(orig, NULL));
 
-      if (it->isUnitType(CUnit::area))
-        areaUnitDefSet.insert(CUnitDefinition(*it, NULL));
+      if (orig.isUnitType(CUnit::volume))
+        volumeUnitDefSet.insert(CUnitDefinition(orig, NULL));
 
-      if (it->isUnitType(CUnit::length))
-        lengthUnitDefSet.insert(CUnitDefinition(*it, NULL));
+      if (orig.isUnitType(CUnit::area))
+        areaUnitDefSet.insert(CUnitDefinition(orig, NULL));
+
+      if (orig.isUnitType(CUnit::length))
+        lengthUnitDefSet.insert(CUnitDefinition(orig, NULL));
     }
 
   std::set< CUnitDefinition >::const_iterator itDS = timeUnitDefSet.begin(),
