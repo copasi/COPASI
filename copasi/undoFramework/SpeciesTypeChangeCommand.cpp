@@ -1,4 +1,4 @@
-// Copyright (C) 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2015 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -50,6 +50,8 @@ SpeciesTypeChangeCommand::redo()
     {
       mpSpeciesDetail->speciesTypeChanged(mpSpeciesData, mNewType);
     }
+
+  setAction("Change");
 }
 
 void

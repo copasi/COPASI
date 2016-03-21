@@ -78,6 +78,7 @@ ReactionDataChangeCommand::~ReactionDataChangeCommand()
 void ReactionDataChangeCommand::redo()
 {
   mpReactionDM->reactionDataChange(mIndex, mNew, mRole, mNewFunctionName, mCreatedObjects);
+  setAction("Change");
 }
 
 void ReactionDataChangeCommand::undo()
