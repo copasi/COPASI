@@ -103,6 +103,7 @@ void SpecieDataChangeCommand::redo()
 {
   mIndex = pathToIndex(mPathIndex, mpSpecieDM);
   mpSpecieDM->specieDataChange(mIndex, mNew, mRole);
+  setAction("Change");
 }
 
 void SpecieDataChangeCommand::undo()

@@ -50,6 +50,8 @@ void SpeciesInitialValueLostFocusCommand::redo()
     {
       mpSpecieDetail->speciesInitialValueLostFocus(mpSpeciesData);
     }
+
+  setAction("Change");
 }
 void SpeciesInitialValueLostFocusCommand::undo()
 {

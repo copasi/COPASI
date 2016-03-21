@@ -58,6 +58,7 @@ EventDataChangeCommand::EventDataChangeCommand(QModelIndex index, const QVariant
 void EventDataChangeCommand::redo()
 {
   mpEventDM->eventDataChange(mIndex, mNew, mRole);
+  setAction("Change");
 }
 
 void EventDataChangeCommand::undo()

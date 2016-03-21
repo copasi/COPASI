@@ -87,6 +87,7 @@ void GlobalQuantityDataChangeCommand::redo()
 
   CModelValue *pModelValue = pModelValue = &pModel->getModelValues()[mIndex.row()];
   setName(pModelValue->getObjectName());
+  setAction("Change");
 }
 
 void GlobalQuantityDataChangeCommand::undo()
