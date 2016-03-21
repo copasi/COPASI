@@ -32,9 +32,12 @@ public:
   virtual void remove(const std::string & name);
 
   bool containsSymbol(std::string symbol);
-  const CUnitDefinition * getUnitDefFromSymbol(std::string symbol);
+  const CUnitDefinition * getUnitDefFromSymbol(std::string symbol) const;
 
   bool changeSymbol(CUnitDefinition *pUnitDef, const std::string & symbol);
+
+  std::set< CUnit > getAllValidUnits(const std::string & expression,
+                                     const std::string & exponent) const;
 
 private:
 

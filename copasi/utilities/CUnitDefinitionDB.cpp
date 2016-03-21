@@ -101,7 +101,7 @@ bool CUnitDefinitionDB::containsSymbol(std::string symbol)
     return false;
 }
 
-const CUnitDefinition * CUnitDefinitionDB::getUnitDefFromSymbol(std::string symbol)
+const CUnitDefinition * CUnitDefinitionDB::getUnitDefFromSymbol(std::string symbol) const
 {
   std::map<std::string, CUnitDefinition *>::const_iterator found = mSymbolToUnitDefinitions.find(symbol);
 
@@ -137,4 +137,91 @@ bool CUnitDefinitionDB::changeSymbol(CUnitDefinition *pUnitDef, const std::strin
   mSymbolToUnitDefinitions.insert(std::make_pair(symbol, pUnitDef));
 
   return true;
+}
+
+std::set< CUnit > CUnitDefinitionDB::getAllValidUnits(const std::string & symbol,
+    const std::string & exponent) const
+{
+  std::set< CUnit > ValidUnits;
+
+  if (getUnitDefFromSymbol(symbol) == NULL)
+    {
+      ValidUnits;
+    }
+
+  std::string Exponent;
+
+  if (exponent == "1")
+    {
+      Exponent = "";
+    }
+  else if (exponent == "2")
+    {
+      Exponent = "\xc2\xb2";
+    }
+  else if (exponent == "3")
+    {
+      Exponent = "\xc2\xb3";
+    }
+  else
+    {
+      Exponent = "^" + exponent;
+    }
+
+  CUnit Base(symbol);
+  CUnit Power(symbol + Exponent);
+
+  // dimensionless is always valid
+  ValidUnits.insert(CUnit(CBaseUnit::dimensionless));
+
+  const_iterator it = begin();
+  const_iterator itEnd = end();
+
+  for (; it != itEnd; ++it)
+    {
+      if (it->isEquivalent(Power))
+        {
+          if ((it->getComponents().begin()->getMultiplier() == 1.0 ||
+               it->getComponents().begin()->getMultiplier() == CUnit::Avogadro ||
+               it->getSymbol() == "l") &&
+              !it->CUnit::operator==(CBaseUnit::item))
+            {
+              for (C_INT32 scale = -18; scale < 18; scale += 3)
+                {
+                  CUnit Scale;
+                  Scale.addComponent(CUnitComponent(CBaseUnit::dimensionless, 1.0, scale, 0));
+                  CUnit ScaledUnit = (Scale * CUnit(it->getSymbol()));
+                  ScaledUnit.buildExpression();
+                  ValidUnits.insert(ScaledUnit);
+                }
+            }
+          else
+            {
+              ValidUnits.insert(it->getSymbol());
+            }
+        }
+      else if (it->isEquivalent(Base))
+        {
+          if ((it->getComponents().begin()->getMultiplier() == 1.0 ||
+               it->getComponents().begin()->getMultiplier() == CUnit::Avogadro ||
+               it->getSymbol() == "l") &&
+              !it->CUnit::operator==(CBaseUnit::item))
+            {
+              for (C_INT32 scale = -18; scale < 18; scale += 3)
+                {
+                  CUnit Scale;
+                  Scale.addComponent(CUnitComponent(CBaseUnit::dimensionless, 1.0, scale, 0));
+                  CUnit ScaledUnit = (Scale * CUnit(it->getSymbol()));
+                  ScaledUnit.buildExpression();
+                  ValidUnits.insert(ScaledUnit.getExpression() + Exponent);
+                }
+            }
+          else
+            {
+              ValidUnits.insert(it->getSymbol());
+            }
+        }
+    }
+
+  return ValidUnits;
 }
