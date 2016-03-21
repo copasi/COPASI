@@ -32,11 +32,20 @@ SpeciesInitialValueLostFocusCommand::SpeciesInitialValueLostFocusCommand(
   setText(QString(": Species Initial Value Change for %1").arg(FROM_UTF8(sName)));
   setName(mpSpeciesData->getName());
 
-  setNewValue(TO_UTF8(mpSpecieDetail->mpEditInitialValue->text()));
-  std::ostringstream strs;
-  strs << mpSpecieDetail->mInitialConcentration;
-  std::string str = strs.str();
-  setOldValue(str);
+
+  {
+    double newValue = mpSpecieDetail->mpEditInitialValue->text().toDouble();
+    std::ostringstream strs;
+    strs << newValue;
+    std::string str = strs.str();
+    setNewValue(str);
+  }
+  {
+    std::ostringstream strs;
+    strs << mpSpecieDetail->mInitialConcentration;
+    std::string str = strs.str();
+    setOldValue(str);
+  }
   setProperty("Initial Value");
 }
 void SpeciesInitialValueLostFocusCommand::redo()
