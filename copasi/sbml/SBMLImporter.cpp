@@ -6551,11 +6551,11 @@ void SBMLImporter::importRule(const Rule* rule, CModelEntity::Status ruleType, s
                   {
                     if (ruleType == CModelEntity::ASSIGNMENT)
                       {
-                        CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 34 , "AssignmentRule", "Compartment", sbmlId.c_str());
+                        CCopasiMessage(CCopasiMessage::ERROR, MCSBML + 34 , "AssignmentRule", "Compartment", sbmlId.c_str());
                       }
                     else if (ruleType == CModelEntity::ODE)
                       {
-                        CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 34 , "RateRule", "Compartment", sbmlId.c_str());
+                        CCopasiMessage(CCopasiMessage::ERROR, MCSBML + 34 , "RateRule", "Compartment", sbmlId.c_str());
                       }
                     else
                       {
@@ -6586,11 +6586,11 @@ void SBMLImporter::importRule(const Rule* rule, CModelEntity::Status ruleType, s
                   {
                     if (ruleType == CModelEntity::ASSIGNMENT)
                       {
-                        CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 34 , "AssignmentRule", "Species", sbmlId.c_str());
+                        CCopasiMessage(CCopasiMessage::ERROR, MCSBML + 34 , "AssignmentRule", "Species", sbmlId.c_str());
                       }
                     else if (ruleType == CModelEntity::ODE)
                       {
-                        CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 34 , "RateRule", "Species", sbmlId.c_str());
+                        CCopasiMessage(CCopasiMessage::ERROR, MCSBML + 34 , "RateRule", "Species", sbmlId.c_str());
                       }
                     else
                       {
@@ -6622,11 +6622,11 @@ void SBMLImporter::importRule(const Rule* rule, CModelEntity::Status ruleType, s
                   {
                     if (ruleType == CModelEntity::ASSIGNMENT)
                       {
-                        CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 34 , "AssignmentRule", "Parameter", sbmlId.c_str());
+                        CCopasiMessage(CCopasiMessage::ERROR, MCSBML + 34 , "AssignmentRule", "Parameter", sbmlId.c_str());
                       }
                     else if (ruleType == CModelEntity::ODE)
                       {
-                        CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 34 , "RateRule", "Parameter", sbmlId.c_str());
+                        CCopasiMessage(CCopasiMessage::ERROR, MCSBML + 34 , "RateRule", "Parameter", sbmlId.c_str());
                       }
                     else
                       {
@@ -6702,11 +6702,11 @@ void SBMLImporter::importRule(const Rule* rule, CModelEntity::Status ruleType, s
       // issue a warning
       if (ruleType == CModelEntity::ASSIGNMENT)
         {
-          CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 32, "AssignmentRule" , sbmlId.c_str());
+          CCopasiMessage(CCopasiMessage::ERROR, MCSBML + 32, "AssignmentRule" , sbmlId.c_str());
         }
       else if (ruleType == CModelEntity::ODE)
         {
-          CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 32, "RateRule" , sbmlId.c_str());
+          CCopasiMessage(CCopasiMessage::ERROR, MCSBML + 32, "RateRule" , sbmlId.c_str());
         }
       else
         {
@@ -7275,7 +7275,7 @@ bool SBMLImporter::setInitialValues(CModel* pModel, const std::map<const CCopasi
               compartmentIt->getInitialExpressionPtr() == NULL)
             {
               this->mIncompleteModel = true;
-              CCopasiMessage(CCopasiMessage::ERROR, MCSBML + 45, pSBMLCompartment->getId().c_str());
+              CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 45, pSBMLCompartment->getId().c_str());
 
               compartmentIt->setInitialValue(1.0);
               mChangedObjects.insert(compartmentIt->getInitialValueReference());
@@ -7309,7 +7309,7 @@ bool SBMLImporter::setInitialValues(CModel* pModel, const std::map<const CCopasi
         {
           if (pSBMLSpecies->getHasOnlySubstanceUnits() == true)
             {
-              CCopasiMessage Message(CCopasiMessage::ERROR, MCSBML + 20, pSBMLSpecies->getId().c_str());
+              CCopasiMessage Message(CCopasiMessage::WARNING, MCSBML + 20, pSBMLSpecies->getId().c_str());
             }
 
           // set the initial value
@@ -7334,7 +7334,7 @@ bool SBMLImporter::setInitialValues(CModel* pModel, const std::map<const CCopasi
               metabIt->getInitialExpressionPtr() == NULL)
             {
               this->mIncompleteModel = true;
-              CCopasiMessage(CCopasiMessage::ERROR, MCSBML + 41, pSBMLSpecies->getId().c_str());
+              CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 41, pSBMLSpecies->getId().c_str());
 
               metabIt->setInitialConcentration(1.0);
               mChangedObjects.insert(metabIt->getInitialConcentrationReference());
@@ -7382,7 +7382,7 @@ bool SBMLImporter::setInitialValues(CModel* pModel, const std::map<const CCopasi
               mvIt->getInitialExpressionPtr() == NULL)
             {
               this->mIncompleteModel = true;
-              CCopasiMessage(CCopasiMessage::ERROR, MCSBML + 43, pSBMLParameter->getId().c_str());
+              CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 43, pSBMLParameter->getId().c_str());
 
               mvIt->setInitialValue(1.0);
               mChangedObjects.insert(mvIt->getInitialValueReference());
