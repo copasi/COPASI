@@ -240,38 +240,32 @@ bool CUnit::operator<(const CUnit & rightSide) const
 {
   std::set< CUnitComponent > RSComponents = rightSide.getComponents();
 
-  if (mComponents.size() == 0 && // both undefined
-      RSComponents.size() == 0)
-    return false;
-
-  if (mComponents.size() < RSComponents.size()) // RS has more components
-    return true;
-  else if (mComponents.size() > RSComponents.size())
-    return false;
+  if (mComponents.size() != RSComponents.size()) // RS has more components
+    return mComponents.size() < RSComponents.size();
 
   // same (non-zero) number of components
   std::set< CUnitComponent >::const_iterator itLS = mComponents.begin(),
                                              itRS = RSComponents.begin();
 
-  double LSMultiplier = itLS->getMultiplier(), // Prepare for scale tie-breaker
-         RSMultiplier = itRS->getMultiplier();
-
-  if (mComponents.size() > 1) // should always be true, b/c of consolodateDimensionless, but . . .
+  for (; itLS != mComponents.end(); ++itLS, ++itRS)
     {
-      ++itLS;
-      ++itRS;
-      LSMultiplier *= itLS->getMultiplier(); // a reasonable tie-breaker, which accounts
-      RSMultiplier *= itRS->getMultiplier(); // for the first two components
+      if (itLS->getKind() != itRS->getKind())
+        {
+          return itLS->getKind() < itRS->getKind();
+        }
+
+      if (itLS->getScale() != itRS->getScale())
+        {
+          return itLS->getScale() < itRS->getScale();
+        }
+
+      if (itLS->getMultiplier() != itRS->getMultiplier())
+        {
+          return itLS->getMultiplier() < itRS->getMultiplier();
+        }
     }
 
-  if (itLS->getScale() < itRS->getScale())
-    return true;
-  else if (itLS->getScale() > itRS->getScale())
-    return false;
-  else if (LSMultiplier < RSMultiplier) // Scales are equal, at this point.
-    return true;                        // Parser pushes multiplier to first
-  else                                  // (dimensionless) component.
-    return false;
+  return false;
 }
 
 bool CUnit::isEquivalent(const CUnit & rightSide) const
