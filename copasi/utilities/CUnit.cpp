@@ -240,9 +240,11 @@ bool CUnit::operator<(const CUnit & rightSide) const
 {
   std::set< CUnitComponent > RSComponents = rightSide.getComponents();
 
-  if ((mComponents.size() == 0 && // both undefined
-       RSComponents.size() == 0) ||
-      mComponents.size() < RSComponents.size()) // RS has more components
+  if (mComponents.size() == 0 && // both undefined
+      RSComponents.size() == 0)
+    return false;
+
+  if (mComponents.size() < RSComponents.size()) // RS has more components
     return true;
   else if (mComponents.size() > RSComponents.size())
     return false;
@@ -266,7 +268,7 @@ bool CUnit::operator<(const CUnit & rightSide) const
     return true;
   else if (itLS->getScale() > itRS->getScale())
     return false;
-  else if (LSMultiplier <= RSMultiplier) // Scales are equal, at this point.
+  else if (LSMultiplier < RSMultiplier) // Scales are equal, at this point.
     return true;                        // Parser pushes multiplier to first
   else                                  // (dimensionless) component.
     return false;
