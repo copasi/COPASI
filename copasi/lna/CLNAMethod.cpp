@@ -105,12 +105,12 @@ void CLNAMethod::resizeAllMatrices()
 {
   const CModel & Model = mpContainer->getModel();
 
-  mBMatrixReduced.resize(mpContainer->getCountIndependentSpecies(), mpContainer->getCountDependentSpecies());
+  mBMatrixReduced.resize(mpContainer->getCountIndependentSpecies(), mpContainer->getCountIndependentSpecies());
   mBMatrixReducedAnn->resize();
   mBMatrixReducedAnn->setCopasiVector(0, &Model.getMetabolitesX());
   mBMatrixReducedAnn->setCopasiVector(1, &Model.getMetabolitesX());
 
-  mCovarianceMatrixReduced.resize(mpContainer->getCountIndependentSpecies(), mpContainer->getCountDependentSpecies());
+  mCovarianceMatrixReduced.resize(mpContainer->getCountIndependentSpecies(), mpContainer->getCountIndependentSpecies());
   mCovarianceMatrixReducedAnn->resize();
   mCovarianceMatrixReducedAnn->setCopasiVector(0, &Model.getMetabolitesX());
   mCovarianceMatrixReducedAnn->setCopasiVector(1, &Model.getMetabolitesX());
@@ -282,11 +282,9 @@ int CLNAMethod::calculateCovarianceMatrixReduced()
   const C_FLOAT64 * pJacobian = mJacobianReduced.array();
   const C_FLOAT64 * pJacobianEnd = pJacobian + mJacobianReduced.size();
 
-  for (size_t i = 0; pJacobian != pJacobianEnd; i++)
+  for (size_t i = 0; i < mJacobianReduced.numRows(); ++i)
     {
-      const C_FLOAT64 * pJacobianRowEnd = pJacobian + mJacobianReduced.numCols();
-
-      for (size_t j = 0; pJacobian != pJacobianRowEnd; j++)
+      for (size_t j = 0; j < mJacobianReduced.numCols(); ++j)
         {
           C_FLOAT64 & at = At[j][i];
 
