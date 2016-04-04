@@ -43,6 +43,8 @@ CILDMModifiedMethod::~CILDMModifiedMethod()
 
 void CILDMModifiedMethod::initializeParameter()
 {
+  CTSSAMethod::initializeParameter();
+
   addObjectReference("Number of slow variables", mSlow, CCopasiObject::ValueInt);
   addMatrixReference("Contribution of Species to Slow Space", mVslow, CCopasiObject::ValueDbl);
 

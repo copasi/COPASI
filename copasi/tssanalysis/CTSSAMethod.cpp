@@ -174,6 +174,8 @@ void CTSSAMethod::start()
   mNumber2Concentration = Model.getNumber2QuantityFactor() / Model.getCompartments()[0].getInitialValue();
   mConcentration2Number =  Model.getQuantity2NumberFactor() * Model.getCompartments()[0].getInitialValue();
 
+  mpLsodaMethod->setMathContainer(mpContainer);
+
   return;
 }
 
