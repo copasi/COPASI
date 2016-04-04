@@ -53,6 +53,8 @@ CILDMMethod::~CILDMMethod()
 
 void CILDMMethod::initializeParameter()
 {
+  CTSSAMethod::initializeParameter();
+
   addObjectReference("Number of slow variables", mSlow, CCopasiObject::ValueInt);
   addMatrixReference("Contribution of Species to Slow Space", mVslow, CCopasiObject::ValueDbl);
 
@@ -229,7 +231,7 @@ void CILDMMethod::step(const double & deltaT)
   /* If complex eigenvalues */
 
   //BUG 873
-  if (mR(dim - 1, dim - 1) == mR(dim - 2 , dim - 2))
+  if (dim > 1 && mR(dim - 1, dim - 1) == mR(dim - 2 , dim - 2))
     if (dim == 2)
       {
         slow = dim;

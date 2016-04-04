@@ -58,6 +58,8 @@ CCSPMethod::~CCSPMethod()
 
 void CCSPMethod::initializeParameter()
 {
+  CTSSAMethod::initializeParameter();
+
   assertParameter("Integrate Reduced Model", CCopasiParameter::BOOL, (bool) false);//->getValue().pBOOL;
   assertParameter("Ratio of Modes Separation", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0e-2);
   assertParameter("Maximum Relative Error", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0e-5);
@@ -418,7 +420,8 @@ void CCSPMethod::cspstep(const double & /* deltaT */, C_INT & N, C_INT & M, CMat
 
   for (j = 0; j < N; j++, ++pSpeciesValue)
     {
-      const CMetab * pSpeciesObject = static_cast< const CMetab * >(mpContainer->getMathObject(pSpeciesValue)->getDataObject());
+      const CParticleReference* reference = static_cast<const CParticleReference*>(mpContainer->getMathObject(pSpeciesValue)->getDataObject());
+      const CMetab * pSpeciesObject = static_cast<const CMetab *>(reference->getObjectParent());
       const CCompartment* comp = pSpeciesObject->getCompartment();
 
       mYerror[j] = mRerror * y[j] + mAerror * comp->getInitialValue();
@@ -1763,7 +1766,7 @@ void CCSPMethod::predefineAnnotation()
     }
 
   CCopasiVector< CMetab >  metabs;
-  metabs.resize(N);
+  //metabs.resize(N);
 
   C_INT j;
 
@@ -2037,7 +2040,7 @@ bool CCSPMethod::setAnnotationM(size_t step)
 
   CCopasiVector< CMetab >  metabs;
   //FIXED :  metabs.resize(mDim);
-  metabs.resize(N);
+  //metabs.resize(N);
 
   C_INT j;
 

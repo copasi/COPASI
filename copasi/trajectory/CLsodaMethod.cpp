@@ -498,7 +498,7 @@ void CLsodaMethod::start()
   /* Reset lsoda */
   mLsodaStatus = 1;
 
-  mTask = mpProblem->getAutomaticStepSize() ? 5 : 1;
+  mTask = mpProblem == NULL ? 1 : mpProblem->getAutomaticStepSize() ? 5 : 1;
   mJType = 2;
   mErrorMsg.str("");
 
