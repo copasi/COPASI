@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -40,9 +40,11 @@ CQTSSATimeScaleWidget::CQTSSATimeScaleWidget(QWidget* parent, const char* name, 
 
   mpPaintWidget->setStyleSheet(QString(mpPaintWidget->metaObject()->className()) + " {background-color:" + QColor(Qt::white).name() + ";}");
   mpPaintWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-  mpSlider->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
+  mpSlider->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+  mpSlider->setToolTip("move slider to set focus on preferred time scale");  // <- helpful
 
-  mpSlider->setToolTip("move Slider to set focus on prefered time scale");  // <- helpful
+  mpVLayout->addSpacerItem(new QSpacerItem(0, 0, QSizePolicy::Fixed));
+
   connect(mpSlider, SIGNAL(valueChanged(int)), this, SLOT(changedInterval()));
 }
 
