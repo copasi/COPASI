@@ -277,7 +277,8 @@ void CQTaskMethodWidget::clearHistory()
     if (it->second != NULL)
       {
         it->second->setObjectParent(NULL);
-        delete it->second;
+        pdelete(it->second);
+
       }
 
   mMethodHistory.clear();

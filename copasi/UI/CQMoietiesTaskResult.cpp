@@ -156,37 +156,41 @@ void CQMoietiesTaskResult::load()
   mpMoieties->horizontalHeaderItem(COL_AMOUNT)->setText("Total Amount" + AmountUnits);
 
   // Fill the moieties table
-  CCopasiVector< CMoiety >::const_iterator it = pModel->getMoieties().begin();
-  CCopasiVector< CMoiety >::const_iterator end = pModel->getMoieties().end();
-  mpMoieties->setRowCount(end - it);
-
-  QTableWidgetItem * pItem;
   int i = 0;
 
-  for (; it != end; ++it, i++)
+  if (pModel->getMoieties().size() > 0)
     {
-      pItem = new QTableWidgetItem(FROM_UTF8(it->getObjectName()));
-      mpMoieties->setItem(i, COL_SPECIES, pItem);;
+      CCopasiVector< CMoiety >::const_iterator it = pModel->getMoieties().begin();
+      CCopasiVector< CMoiety >::const_iterator end = pModel->getMoieties().end();
+      mpMoieties->setRowCount(end - it);
 
-      pItem = new QTableWidgetItem(QVariant::Double);
-      pItem->setData(Qt::DisplayRole, it->getNumber());
-      mpMoieties->setItem(i, COL_NUMBER, pItem);
+      QTableWidgetItem * pItem;
 
-      it.constCast()->refreshAmount();
-      pItem = new QTableWidgetItem(QVariant::Double);
-      pItem->setData(Qt::DisplayRole, it->getAmount());
-      mpMoieties->setItem(i, COL_AMOUNT, pItem);
+      for (; it != end; ++it, i++)
+        {
+          pItem = new QTableWidgetItem(FROM_UTF8(it->getObjectName()));
+          mpMoieties->setItem(i, COL_SPECIES, pItem);;
 
-      pItem = new QTableWidgetItem("");
-      mpMoieties->setItem(i, COL_BTN, pItem);
+          pItem = new QTableWidgetItem(QVariant::Double);
+          pItem->setData(Qt::DisplayRole, it->getNumber());
+          mpMoieties->setItem(i, COL_NUMBER, pItem);
 
-      // Show the Button
-      pItem = mpMoieties->item(i, COL_BTN);
-      pItem->setFlags(pItem->flags() | Qt::ItemIsEditable | Qt::ItemIsEnabled);
-      mpMoieties->openPersistentEditor(pItem);
+          it.constCast()->refreshAmount();
+          pItem = new QTableWidgetItem(QVariant::Double);
+          pItem->setData(Qt::DisplayRole, it->getAmount());
+          mpMoieties->setItem(i, COL_AMOUNT, pItem);
 
-      pItem = new QTableWidgetItem(FROM_UTF8(it->getDescription(pModel)));
-      mpMoieties->setItem(i, COL_EQUATION, pItem);
+          pItem = new QTableWidgetItem("");
+          mpMoieties->setItem(i, COL_BTN, pItem);
+
+          // Show the Button
+          pItem = mpMoieties->item(i, COL_BTN);
+          pItem->setFlags(pItem->flags() | Qt::ItemIsEditable | Qt::ItemIsEnabled);
+          mpMoieties->openPersistentEditor(pItem);
+
+          pItem = new QTableWidgetItem(FROM_UTF8(it->getDescription(pModel)));
+          mpMoieties->setItem(i, COL_EQUATION, pItem);
+        }
     }
 
   mpTabWidget->setTabText(mpTabWidget->indexOf(mpMoieties), "Moieties (" + QString::number(i) + ")");
