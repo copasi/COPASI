@@ -336,13 +336,17 @@ bool CQMiriamWidget::enterProtected()
 
   if (mKeyToCopy != "")
     {
-      CAnnotation * pAnnotation = CAnnotation::castObject(dynamic_cast< CCopasiObject * >(CCopasiRootContainer::getKeyFactory()->get(mKeyToCopy)));
+      CAnnotation * pAnnotation = CAnnotation::castObject(dynamic_cast<CCopasiObject *>(CCopasiRootContainer::getKeyFactory()->get(mKeyToCopy)));
 
-      std::string pMiriamAnnotation = pAnnotation->getMiriamAnnotation();
+      if (pAnnotation != NULL)
+        {
+          std::string pMiriamAnnotation = pAnnotation->getMiriamAnnotation();
 
-      pAnnotation = CAnnotation::castObject(mpObject);
+          pAnnotation = CAnnotation::castObject(mpObject);
 
-      pAnnotation->setMiriamAnnotation(pMiriamAnnotation, mKey, mKeyToCopy);
+          pAnnotation->setMiriamAnnotation(pMiriamAnnotation, mKey, mKeyToCopy);
+
+        }
 
       mKeyToCopy = "";
     }

@@ -2233,7 +2233,7 @@ bool
 CModel::createEventsForTimeseries(CExperiment* experiment/* = NULL*/)
 {
 
-#pragma region   //find_experiment
+  #pragma region   //find_experiment
 
   if (experiment == NULL)
     {
@@ -2283,7 +2283,7 @@ CModel::createEventsForTimeseries(CExperiment* experiment/* = NULL*/)
       return createEventsForTimeseries(const_cast<CExperiment*>(theExperiment));
     }
 
-#pragma endregion //find_experiment
+  #pragma endregion //find_experiment
 
   if (experiment->getExperimentType() != CTaskEnum::timeCourse)
     {
@@ -3838,6 +3838,16 @@ CEvaluationNode* CModel::prepareElasticity(const CReaction * pReaction, const CM
   return tmp;
 }
 
+size_t getUsedSymbolCount(const std::string& unit, const std::string& symbol)
+{
+  const CUnitDefinition * unitDef = CCopasiRootContainer::getUnitDefFromSymbol(unit);
+
+  if (unitDef == NULL) return 0;
+
+  return unitDef->getUsedSymbols().count(symbol);
+
+}
+
 // Return a set of any COPASI object using this symbol.
 CCopasiObject::DataObjectSet CModel::getUnitSymbolUsage(std::string symbol) const
 {
@@ -3857,11 +3867,11 @@ CCopasiObject::DataObjectSet CModel::getUnitSymbolUsage(std::string symbol) cons
     }
 
   //Is it used for any of the default model units?
-  if (CCopasiRootContainer::getUnitDefFromSymbol(mVolumeUnit)->getUsedSymbols().count(symbol) ||
-      CCopasiRootContainer::getUnitDefFromSymbol(mAreaUnit)->getUsedSymbols().count(symbol) ||
-      CCopasiRootContainer::getUnitDefFromSymbol(mLengthUnit)->getUsedSymbols().count(symbol) ||
-      CCopasiRootContainer::getUnitDefFromSymbol(mTimeUnit)->getUsedSymbols().count(symbol) ||
-      CCopasiRootContainer::getUnitDefFromSymbol(mQuantityUnit)->getUsedSymbols().count(symbol))
+  if (getUsedSymbolCount(mVolumeUnit, symbol) ||
+      getUsedSymbolCount(mAreaUnit, symbol) ||
+      getUsedSymbolCount(mLengthUnit, symbol) ||
+      getUsedSymbolCount(mTimeUnit, symbol) ||
+      getUsedSymbolCount(mQuantityUnit, symbol))
     usages.insert(this);
 
   return usages;
