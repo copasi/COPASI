@@ -146,7 +146,7 @@ std::set< CUnit > CUnitDefinitionDB::getAllValidUnits(const std::string & symbol
 
   if (getUnitDefFromSymbol(symbol) == NULL)
     {
-      ValidUnits;
+      return ValidUnits;
     }
 
   std::string Exponent;
