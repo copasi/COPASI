@@ -122,12 +122,12 @@ void CQMathMatrixWidget::slotDerivButtonPressed()
 #ifdef _DERIV_TEST_
   std::cout << "Deriv" << std::endl;
 
-  CModel* pModel = &CCopasiRootContainer::getDatamodelList()->operator[](0).getModel();
-  CEvaluationNode* tmpnode = pModel->prepareElasticity(pModel->getReactions()[0],
-                             pModel->getMetabolites()[0], false);
+  CModel* pModel = CCopasiRootContainer::getDatamodelList()->operator[](0).getModel();
+  CEvaluationNode* tmpnode = pModel->prepareElasticity(&pModel->getReactions()[0],
+                             &pModel->getMetabolites()[0], false);
 
-  CEvaluationNode* tmpnode2 = pModel->prepareElasticity(pModel->getReactions()[0],
-                              pModel->getMetabolites()[0], true);
+  CEvaluationNode* tmpnode2 = pModel->prepareElasticity(&pModel->getReactions()[0],
+                              &pModel->getMetabolites()[0], true);
 
   //create empty environment. Variable nodes should not occur in an expression
   std::vector<std::vector<std::string> > env;
@@ -157,8 +157,8 @@ void CQMathMatrixWidget::slotDerivButtonPressed()
         //CEvaluationNode* tmpnode = pModel->prepareElasticity(pModel->getReactions()[j],
         //                                                     pModel->getMetabolites()[i], false);
 
-        CEvaluationNode* tmpnode2 = pModel->prepareElasticity(pModel->getReactions()[j],
-                                    pModel->getMetabolites()[i], true);
+        CEvaluationNode* tmpnode2 = pModel->prepareElasticity(&pModel->getReactions()[j],
+                                    &pModel->getMetabolites()[i], true);
 
         //evaluate
         CExpression * tmpExp = new CExpression("tmp expr", pModel);
