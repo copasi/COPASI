@@ -37,7 +37,7 @@ public:
   bool changeSymbol(CUnitDefinition *pUnitDef, const std::string & symbol);
 
   std::set< CUnit > getAllValidUnits(const std::string & expression,
-                                     const std::string & exponent) const;
+                                     const C_FLOAT64 & exponent) const;
 
 private:
 

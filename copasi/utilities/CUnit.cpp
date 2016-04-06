@@ -239,14 +239,12 @@ bool CUnit::operator==(const CUnit & rightSide) const
 
 bool CUnit::operator<(const CUnit & rightSide) const
 {
-  std::set< CUnitComponent > RSComponents = rightSide.getComponents();
-
-  if (mComponents.size() != RSComponents.size()) // RS has more components
-    return mComponents.size() < RSComponents.size();
+  if (mComponents.size() != rightSide.mComponents.size()) // RS has more components
+    return mComponents.size() < rightSide.mComponents.size();
 
   // same (non-zero) number of components
   std::set< CUnitComponent >::const_iterator itLS = mComponents.begin(),
-                                             itRS = RSComponents.begin();
+                                             itRS = rightSide.mComponents.begin();
 
   for (; itLS != mComponents.end(); ++itLS, ++itRS)
     {
@@ -255,18 +253,18 @@ bool CUnit::operator<(const CUnit & rightSide) const
           return itLS->getKind() < itRS->getKind();
         }
 
-      if (itLS->getScale() != itRS->getScale())
-        {
-          return itLS->getScale() < itRS->getScale();
-        }
-
       if (itLS->getMultiplier() != itRS->getMultiplier())
         {
           return itLS->getMultiplier() < itRS->getMultiplier();
         }
+
+      if (itLS->getScale() != itRS->getScale())
+        {
+          return itLS->getScale() < itRS->getScale();
+        }
     }
 
-  return false;
+  return mExpression < rightSide.mExpression;
 }
 
 bool CUnit::isEquivalent(const CUnit & rightSide) const
@@ -708,6 +706,9 @@ void CUnit::buildExpression()
     {
       mExpression += "/" + denominator.str();
     }
+
+  stringReplace(mExpression, "^2", "\xc2\xb2");
+  stringReplace(mExpression, "^3", "\xc2\xb3");
 }
 
 bool CUnit::isUnitType(UnitType type) const

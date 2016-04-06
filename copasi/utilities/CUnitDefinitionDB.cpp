@@ -140,7 +140,7 @@ bool CUnitDefinitionDB::changeSymbol(CUnitDefinition *pUnitDef, const std::strin
 }
 
 std::set< CUnit > CUnitDefinitionDB::getAllValidUnits(const std::string & symbol,
-    const std::string & exponent) const
+    const C_FLOAT64 & exponent) const
 {
   std::set< CUnit > ValidUnits;
 
@@ -149,27 +149,8 @@ std::set< CUnit > CUnitDefinitionDB::getAllValidUnits(const std::string & symbol
       return ValidUnits;
     }
 
-  std::string Exponent;
-
-  if (exponent == "1")
-    {
-      Exponent = "";
-    }
-  else if (exponent == "2")
-    {
-      Exponent = "\xc2\xb2";
-    }
-  else if (exponent == "3")
-    {
-      Exponent = "\xc2\xb3";
-    }
-  else
-    {
-      Exponent = "^" + exponent;
-    }
-
   CUnit Base(symbol);
-  CUnit Power(symbol + Exponent);
+  CUnit Power = Base.exponentiate(exponent);
 
   // dimensionless is always valid
   ValidUnits.insert(CUnit(CBaseUnit::dimensionless));
@@ -179,7 +160,8 @@ std::set< CUnit > CUnitDefinitionDB::getAllValidUnits(const std::string & symbol
 
   for (; it != itEnd; ++it)
     {
-      if (it->isEquivalent(Power))
+      if (it->isEquivalent(Power) ||
+          it->isEquivalent(Base))
         {
           if ((it->getComponents().begin()->getMultiplier() == 1.0 ||
                it->getComponents().begin()->getMultiplier() == CUnit::Avogadro ||
@@ -191,29 +173,14 @@ std::set< CUnit > CUnitDefinitionDB::getAllValidUnits(const std::string & symbol
                   CUnit Scale;
                   Scale.addComponent(CUnitComponent(CBaseUnit::dimensionless, 1.0, scale, 0));
                   CUnit ScaledUnit = (Scale * CUnit(it->getSymbol()));
+
+                  if (it->isEquivalent(Base))
+                    {
+                      ScaledUnit = ScaledUnit.exponentiate(exponent);
+                    }
+
                   ScaledUnit.buildExpression();
                   ValidUnits.insert(ScaledUnit);
-                }
-            }
-          else
-            {
-              ValidUnits.insert(it->getSymbol());
-            }
-        }
-      else if (it->isEquivalent(Base))
-        {
-          if ((it->getComponents().begin()->getMultiplier() == 1.0 ||
-               it->getComponents().begin()->getMultiplier() == CUnit::Avogadro ||
-               it->getSymbol() == "l") &&
-              !it->CUnit::operator==(CBaseUnit::item))
-            {
-              for (C_INT32 scale = -18; scale < 18; scale += 3)
-                {
-                  CUnit Scale;
-                  Scale.addComponent(CUnitComponent(CBaseUnit::dimensionless, 1.0, scale, 0));
-                  CUnit ScaledUnit = (Scale * CUnit(it->getSymbol()));
-                  ScaledUnit.buildExpression();
-                  ValidUnits.insert(ScaledUnit.getExpression() + Exponent);
                 }
             }
           else
