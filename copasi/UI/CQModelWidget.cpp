@@ -293,7 +293,7 @@ void CQModelWidget::updateUnitComboBoxes()
   std::set< CUnit >::const_iterator it, itEnd;
 
   // Take advantage of the implicit sorting in std::set
-  std::set< CUnit > ValidUnitSet =  CCopasiRootContainer::getUnitList()->getAllValidUnits("s", "1");
+  std::set< CUnit > ValidUnitSet =  CCopasiRootContainer::getUnitList()->getAllValidUnits("s", 1);
 
   for (it = ValidUnitSet.begin(), itEnd = ValidUnitSet.end(); it != itEnd; ++it)
     {
@@ -303,7 +303,7 @@ void CQModelWidget::updateUnitComboBoxes()
   mpComboTimeUnit->clear();
   mpComboTimeUnit->insertItems(0, ComboEntries);
 
-  ValidUnitSet = CCopasiRootContainer::getUnitList()->getAllValidUnits("m", "3");
+  ValidUnitSet = CCopasiRootContainer::getUnitList()->getAllValidUnits("m", 3);
   ComboEntries.clear();
 
   for (it = ValidUnitSet.begin(), itEnd = ValidUnitSet.end(); it != itEnd; ++it)
@@ -314,7 +314,7 @@ void CQModelWidget::updateUnitComboBoxes()
   mpComboVolumeUnit->clear();
   mpComboVolumeUnit->insertItems(0, ComboEntries);
 
-  ValidUnitSet = CCopasiRootContainer::getUnitList()->getAllValidUnits("m", "2");
+  ValidUnitSet = CCopasiRootContainer::getUnitList()->getAllValidUnits("m", 2);
   ComboEntries.clear();
 
   for (it = ValidUnitSet.begin(), itEnd = ValidUnitSet.end(); it != itEnd; ++it)
@@ -325,7 +325,7 @@ void CQModelWidget::updateUnitComboBoxes()
   mpComboAreaUnit->clear();
   mpComboAreaUnit->insertItems(0, ComboEntries);
 
-  ValidUnitSet = CCopasiRootContainer::getUnitList()->getAllValidUnits("m", "1");
+  ValidUnitSet = CCopasiRootContainer::getUnitList()->getAllValidUnits("m", 1);
   ComboEntries.clear();
 
   for (it = ValidUnitSet.begin(), itEnd = ValidUnitSet.end(); it != itEnd; ++it)
@@ -336,7 +336,7 @@ void CQModelWidget::updateUnitComboBoxes()
   mpComboLengthUnit->clear();
   mpComboLengthUnit->insertItems(0, ComboEntries);
 
-  ValidUnitSet = CCopasiRootContainer::getUnitList()->getAllValidUnits("#", "1");
+  ValidUnitSet = CCopasiRootContainer::getUnitList()->getAllValidUnits("#", 1);
   ComboEntries.clear();
 
   for (it = ValidUnitSet.begin(), itEnd = ValidUnitSet.end(); it != itEnd; ++it)
