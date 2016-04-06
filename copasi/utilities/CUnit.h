@@ -88,7 +88,8 @@ public:
    * Expression constructor
    * @param const CBaseUnit::Kind & kind
    */
-  CUnit(std::string expression);
+  CUnit(std::string expression,
+        const C_FLOAT64 & avogadro = Avogadro);
 
   /**
    * Copy constructor

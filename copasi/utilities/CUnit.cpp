@@ -68,12 +68,13 @@ CUnit::CUnit():
 }
 
 // expression
-CUnit::CUnit(std::string expression):
+CUnit::CUnit(std::string expression,
+             const C_FLOAT64 & avogadro):
   mExpression(""),
   mComponents(),
   mUsedSymbols()
 {
-  setExpression(expression, Avogadro);
+  setExpression(expression, avogadro);
 }
 
 // kind

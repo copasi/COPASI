@@ -61,11 +61,11 @@ CModel::CModel(CCopasiContainer* pParent):
   CModelEntity("New Model", pParent, "Model"),
   mStateTemplate(*this),
   mPhysicalDependencies(),
-  mVolumeUnit(""),
-  mAreaUnit(""),
-  mLengthUnit(""),
-  mTimeUnit(""),
-  mQuantityUnit(""),
+  mVolumeUnit("ml"),
+  mAreaUnit("m\xc2\xb2"),
+  mLengthUnit("m"),
+  mTimeUnit("s"),
+  mQuantityUnit("mol"),
   mType(deterministic),
   mCompartments("Compartments", this),
   mMetabolites("Metabolites", this),
@@ -91,8 +91,8 @@ CModel::CModel(CCopasiContainer* pParent):
   mpLinkMatrixAnnotation(NULL),
   mLView(mL),
   mAvogadro(CUnit::Avogadro),
-  mQuantity2NumberFactor(1.0),
-  mNumber2QuantityFactor(1.0),
+  mQuantity2NumberFactor(std::numeric_limits< C_FLOAT64 >::quiet_NaN()),
+  mNumber2QuantityFactor(std::numeric_limits< C_FLOAT64 >::quiet_NaN()),
   mpCompileHandler(NULL),
   mReorderNeeded(false),
   mIsAutonomous(true),
@@ -103,21 +103,15 @@ CModel::CModel(CCopasiContainer* pParent):
 
   setStatus(TIME);
   setUsed(true);
-
   mIValue = 0.0;
 
-  size_t i, imax = mSteps.size();
-
-  for (i = 0; i < imax; i++)
-    mSteps[i].compile(/*mCompartments*/);
+  setQuantityUnit(mQuantityUnit);
 
   initializeMetabolites();
 
   mpMathContainer = new CMathContainer(*this);
 
   forceCompile(NULL);
-
-  CONSTRUCTOR_TRACE;
 }
 
 // CModel::CModel(const CModel & src):
@@ -1417,21 +1411,16 @@ CUnit::TimeUnit CModel::getTimeUnitEnum() const
 
 bool CModel::setQuantityUnit(const std::string & name)
 {
-  const CUnitDefinition * pTmpCUnitDef = CCopasiRootContainer::getUnitDefFromSymbol(name);
-
-  if (pTmpCUnitDef == NULL ||
-      !pTmpCUnitDef->isUnitType(CUnit::quantity))
-    return false;
-
   mQuantityUnit = name;
 
-  // The first, dimentionless, component should have all the
-  // scale and mulitplier information
-  std::set< CUnitComponent >::const_iterator it = pTmpCUnitDef->getComponents().begin();
+  CUnit QuantityUnit(mQuantityUnit, mAvogadro);
+
+  // The first, dimensionless, component should have all the
+  // scale and multiplier information
+  std::set< CUnitComponent >::const_iterator it = QuantityUnit.getComponents().begin();
 
   // Avogadro, if present, will be in the multiplier
   mQuantity2NumberFactor = it->getMultiplier() * pow(10.0, it->getScale());
-
   mNumber2QuantityFactor = 1.0 / mQuantity2NumberFactor;
 
   //adapt particle numbers
@@ -1547,8 +1536,6 @@ void CModel::setAvogadro(const C_FLOAT64 & avogadro)
   mAvogadro = avogadro;
 
   setQuantityUnit(mQuantityUnit);
-
-  CUnitDefinition::updateSIUnitDefinitions(CCopasiRootContainer::getUnitList(), avogadro);  // TODO Eventually need to deal with case of more than one model (different Avogadro constants)
 }
 
 const C_FLOAT64 & CModel::getAvogadro() const
@@ -2233,7 +2220,7 @@ bool
 CModel::createEventsForTimeseries(CExperiment* experiment/* = NULL*/)
 {
 
-  #pragma region   //find_experiment
+#pragma region   //find_experiment
 
   if (experiment == NULL)
     {
@@ -2283,7 +2270,7 @@ CModel::createEventsForTimeseries(CExperiment* experiment/* = NULL*/)
       return createEventsForTimeseries(const_cast<CExperiment*>(theExperiment));
     }
 
-  #pragma endregion //find_experiment
+#pragma endregion //find_experiment
 
   if (experiment->getExperimentType() != CTaskEnum::timeCourse)
     {
@@ -3054,16 +3041,6 @@ void CModel::initObjects()
   mStateTemplate.add(this);
 
   // units
-
-  mVolumeUnit = "ml";
-
-  mAreaUnit = "m\xc2\xb2";
-
-  mLengthUnit = "m";
-
-  mTimeUnit = "s";
-
-  mQuantityUnit = "mol";
 
   mpIValueReference->setObjectName("Initial Time");
   mpValueReference->setObjectName("Time");
@@ -3845,7 +3822,6 @@ size_t getUsedSymbolCount(const std::string& unit, const std::string& symbol)
   if (unitDef == NULL) return 0;
 
   return unitDef->getUsedSymbols().count(symbol);
-
 }
 
 // Return a set of any COPASI object using this symbol.
