@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -120,7 +120,8 @@ bool CMIRIAMResourceObject::setURI(const std::string & URI)
 {
   mResource = getResource(URI);
 
-  if (mResource == C_INVALID_INDEX)
+  if (mResource == C_INVALID_INDEX &&
+      !URI.empty())
     {
       CCopasiMessage(CCopasiMessage::WARNING, MCAnnotation + 4, URI.c_str());
     }
