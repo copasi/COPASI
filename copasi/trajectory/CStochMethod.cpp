@@ -289,26 +289,30 @@ void CStochMethod::setupDependencyGraph()
 {
   mDG.clear();
 
-  CObjectInterface::ObjectSet Requested;
-  CObjectInterface::UpdateSequence UpdateSequence;
+  // We build the dependency graph based on the information in mUpdateSequences which
+  // includes time dependencies.
+  const CObjectInterface::UpdateSequence * pUpdateSequence = mUpdateSequences.array();
+  const CObjectInterface::UpdateSequence * pUpdateSequenceEnd = pUpdateSequence + mUpdateSequences.size();
 
-  const CMathReaction * pReaction = mReactions.array();
-  const CMathReaction * pReactionEnd = pReaction + mReactions.size();
   const CMathObject * pPropensity = mPropensityObjects.array();
   const CMathObject * pPropensityEnd = pPropensity + mPropensityObjects.size();
 
-  for (size_t i = 0; pReaction != pReactionEnd; ++pReaction, ++i)
+  for (size_t i = 0; pUpdateSequence < pUpdateSequenceEnd; ++pUpdateSequence, ++i)
     {
-      size_t j = 0;
       pPropensity = mPropensityObjects.array();
 
-      for (; pPropensity != pPropensityEnd; ++pPropensity, ++j)
+      for (size_t j = 0; pPropensity != pPropensityEnd; ++pPropensity, ++j)
         {
-          mpContainer->getTransientDependencies().getUpdateSequence(UpdateSequence, CMath::Default, pReaction->getChangedObjects(), Requested);
+          CObjectInterface::UpdateSequence::const_iterator it = pUpdateSequence->begin();
+          CObjectInterface::UpdateSequence::const_iterator end = pUpdateSequence->end();
 
-          if (UpdateSequence.size() > 0)
+          for (; it != end; ++it)
             {
-              mDG.addDependent(i, j);
+              if (*it == pPropensity)
+                {
+                  mDG.addDependent(i, j);
+                  break;
+                }
             }
         }
     }
