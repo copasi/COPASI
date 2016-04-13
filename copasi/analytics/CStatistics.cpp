@@ -19,6 +19,7 @@ CStatistics::CStatistics(const std::string & name,
 
 CStatistics::~CStatistics()
 {
+  pdelete(mpStatValueReference);
   DESTRUCTOR_TRACE;
 }
 

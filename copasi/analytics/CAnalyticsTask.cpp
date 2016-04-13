@@ -37,6 +37,8 @@ CAnalyticsTask::CAnalyticsTask(const CCopasiContainer * pParent,
   mIndex(-1),
   mStatVal(),
   mStatTime(),
+  pStats(NULL),
+  pStatsTime(NULL),
   mpSelectedObject(NULL),
   mStartTime(0.0),
   mNumCrossings(0),
@@ -73,6 +75,8 @@ CAnalyticsTask::CAnalyticsTask(const CAnalyticsTask & src,
   mIndex(-1),
   mStatVal(),
   mStatTime(),
+  pStats(NULL),
+  pStatsTime(NULL),
   mpSelectedObject(NULL),
   mStartTime(0.0),
   mNumCrossings(0),
@@ -223,6 +227,12 @@ bool CAnalyticsTask::process(const bool & useInitialValues)
   mAverageFreq = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
 
   //--- ETTORE start ---
+
+  /* Clear the vectors storing the time points recorded in the previous run of the task. */
+  mValues.clear();
+  mTimes.clear();
+  mValuesSeries.clear();
+
   /* Retrieve initial value of the selected variablevariables.
    * 'false' means I want the entire state, not the reduced one. */
   if (mIndex >= 0) // If an object was selected...
@@ -264,7 +274,7 @@ bool CAnalyticsTask::process(const bool & useInitialValues)
   else
     mOutputStartNumCrossings = 0;
 
-  output(COutputInterface::BEFORE);
+  //output(COutputInterface::BEFORE);
 
   bool flagProceed = true;
   mProgressFactor = 100.0 / (MaxDuration + mpAnalyticsProblem->getOutputStartTime());
@@ -339,6 +349,10 @@ void CAnalyticsTask::finish()
 void CAnalyticsTask::computeSelectedStatistics(std::vector< C_FLOAT64 > mValues, std::vector< C_FLOAT64 > mTimes)
 {
 
+  std::cout << mStatVal << std::endl;
+  std::cout << mStatTime << std::endl;
+  std::cout << "----------" << std::endl;
+
   int StatsIndex = mValues.size() - 1;
 
   mStatVal = mValues[mValues.size() - 1];
@@ -348,7 +362,7 @@ void CAnalyticsTask::computeSelectedStatistics(std::vector< C_FLOAT64 > mValues,
     {
       if (mpAnalyticsProblem->isPositiveDirection())     //Looking for minimum
         {
-          if (mValues[i] <= (mStatVal))
+          if (mValues[i] <= (mStatVal * (1 + 1e-6)))
             {
               mStatVal = mValues[i];
               mStatTime = mTimes[i];
@@ -357,7 +371,7 @@ void CAnalyticsTask::computeSelectedStatistics(std::vector< C_FLOAT64 > mValues,
         }
       else                                               //Looking for maximum
         {
-          if (mValues[i] >= (mStatVal))
+          if (mValues[i] >= (mStatVal * (1 - 1e-6)))
             {
               mStatVal = mValues[i];
               mStatTime = mTimes[i];
@@ -370,7 +384,15 @@ void CAnalyticsTask::computeSelectedStatistics(std::vector< C_FLOAT64 > mValues,
   // when the stats was reached...
   mpContainer->setState(mValuesSeries[StatsIndex]);
 
-  // Create the new statistics object to be added to the model.
+  //std::cout << "Variable's value: " << *(mpContainer->getState(false).array() + mIndex) << std::endl;
+  //std::cout << "System's time: " << (*mpContainerStateTime) << std::endl;
+
+  std::cout << mStatVal << std::endl;
+  std::cout << mStatTime << std::endl;
+  std::cout << "==================================" << std::endl;
+
+  // Create the new Statistics object to be added to the model.
+
   std::string nameStats = "";
   std::string nameStatsTime = "";
 
@@ -385,8 +407,13 @@ void CAnalyticsTask::computeSelectedStatistics(std::vector< C_FLOAT64 > mValues,
   const std::string & type = "Statistics";
   const unsigned C_INT32 & flag = CCopasiObject::ValueDbl;
 
-  mpStats = new CStatistics(nameStats, pParent, type, flag, mStatVal);
-  mpStatsTime = new CStatistics(nameStatsTime, pParent, type, flag, mStatTime);
+  pdelete(pStats);
+  pdelete(pStatsTime);
+  //if (pStats) {delete pStats; pStats = 0;}
+  //if (pStatsTime) {delete pStatsTime; pStatsTime = 0;}
+
+  pStats = new CStatistics(nameStats, pParent, type, flag, mStatVal);
+  pStatsTime = new CStatistics(nameStatsTime, pParent, type, flag, mStatTime);
 }
 
 bool CAnalyticsTask::restore()

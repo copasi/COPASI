@@ -498,18 +498,21 @@ void CQSimpleSelectionTree::populateTree(const CModel * pModel,
     {
       const CCopasiContainer::objectMap * pObjects = & task->getObjects();
       CCopasiContainer::objectMap::const_iterator its = pObjects->begin();
-      CArrayAnnotation *ann;
 
       for (; its != pObjects->end(); ++its)
         {
-          ann = dynamic_cast<CArrayAnnotation*>(its->second);
+          CCopasiObject *pObject = (CCopasiObject*)(its->second);
+          std::string name = pObject->getObjectName();
+          //std::cout << name << "   " << (name.find("Statistics") != std::string::npos) << std::endl;
 
-          if (!ann) continue;
+          if (!pObject) continue;
 
-          if (!ann->isEmpty() && filter(classes, ann))
+          if ((name.find("max") != std::string::npos  || name.find("min") != std::string::npos) && filter(classes, pObject)) \
+            //if ((name.find("Statistics") != std::string::npos) == 1 && filter(classes, pObject))
             {
-              pItem = new QTreeWidgetItem(this->mpResultAnalyticsSubtree, QStringList(FROM_UTF8(ann->getObjectName())));
-              treeItems[pItem] = ann;
+              std::cout << name << std::endl;
+              pItem = new QTreeWidgetItem(this->mpResultAnalyticsSubtree, QStringList(FROM_UTF8(name)));
+              treeItems[pItem] = pObject;
             }
         }
     }
