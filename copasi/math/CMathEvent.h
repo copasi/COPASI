@@ -310,6 +310,8 @@ public:
    */
   ~CMathEvent();
 
+  CMathEvent & operator = (const CMathEvent & rhs);
+
   static void allocate(CMathEvent & Event,
                        const CEvent * pDataEvent,
                        const CMathContainer & container);
