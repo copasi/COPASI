@@ -3562,7 +3562,7 @@ CMathEvent * CMathContainer::addAnalysisEvent(const CEvent & dataEvent)
       mTransientDependencies.addObject(p.pEventRootsObject + i);
     }
 
-  for (size_t i = OldSize.nAssignment; i != mSize.nEventRoots; ++i)
+  for (size_t i = OldSize.nAssignment; i != mSize.nAssignment; ++i)
     {
       mTransientDependencies.addObject(p.pEventAssignmentsObject + i);
     }
@@ -3766,7 +3766,7 @@ bool CMathContainer::removeAnalysisEvent(CMathEvent *& pMathEvent)
       mTransientDependencies.removeObject(p.pEventRootsObject + i);
     }
 
-  for (size_t i = Size.nAssignment; i != mSize.nEventRoots; ++i)
+  for (size_t i = Size.nAssignment; i != mSize.nAssignment; ++i)
     {
       mTransientDependencies.removeObject(p.pEventAssignmentsObject + i);
     }
