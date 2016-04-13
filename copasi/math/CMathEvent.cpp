@@ -1083,11 +1083,11 @@ CMathEvent::CMathEvent(const CMathEvent & src):
   mpTime(src.mpTime),
   mType(src.mType),
   mTrigger(src.mTrigger),
-  mAssignments(),
+  mAssignments(src.mAssignments),
   mpDelay(src.mpDelay),
   mpPriority(src.mpPriority),
   mpCallback(src.mpCallback),
-  mTargetValues(),
+  mTargetValues(src.mTargetValues.size(), const_cast< double * >(src.mTargetValues.array())),
   mTargetPointers(src.mTargetPointers),
   mEffectsSimulation(src.mEffectsSimulation),
   mDelaySequence(src.mDelaySequence),
@@ -1105,6 +1105,32 @@ CMathEvent::CMathEvent(const CMathEvent & src):
 CMathEvent::~CMathEvent()
 {
   pdelete(mpPendingAction);
+}
+
+CMathEvent & CMathEvent::operator = (const CMathEvent & rhs)
+{
+  if (this == &rhs) return * this;
+
+  mpContainer = rhs.mpContainer;
+  mpTime = rhs.mpTime;
+  mType = rhs.mType;
+  mTrigger = rhs.mTrigger;
+  mAssignments = rhs.mAssignments;
+  mpDelay = rhs.mpDelay;
+  mpPriority = rhs.mpPriority;
+  mpCallback = rhs.mpCallback;
+  mTargetValues.initialize(rhs.mTargetValues);
+  mTargetPointers = rhs.mTargetPointers;
+  mEffectsSimulation = rhs.mEffectsSimulation;
+  mDelaySequence = rhs.mDelaySequence;
+  mTargetValuesSequence = rhs.mTargetValuesSequence;
+  mPostAssignmentSequence = rhs.mPostAssignmentSequence;
+  mFireAtInitialTime = rhs.mFireAtInitialTime;
+  mTriggerIsPersistent = rhs.mTriggerIsPersistent;
+  mDelayExecution = rhs.mDelayExecution;
+  mpPendingAction = NULL;
+
+  return *this;
 }
 
 const CMathEvent::CTrigger & CMathEvent::getTrigger() const
