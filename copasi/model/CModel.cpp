@@ -3067,7 +3067,7 @@ void CModel::initObjects()
   mpStoiAnnotation->setDimensionDescription(0, "Species that are controlled by reactions");
   mpStoiAnnotation->setMode(1, CArrayAnnotation::VECTOR_ON_THE_FLY);
   mpStoiAnnotation->setDimensionDescription(1, "Reactions");
-  mpStoiAnnotation->setCopasiVector(1, &mSteps);
+  mpStoiAnnotation->setCopasiVector(1, mSteps);
 
   mpRedStoiAnnotation = new CArrayAnnotation("Reduced stoichiometry(ann)", this, new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mRedStoi), true);
   mpRedStoiAnnotation->setDescription("Reduced stoichiometry Matrix");
@@ -3075,7 +3075,7 @@ void CModel::initObjects()
   mpRedStoiAnnotation->setDimensionDescription(0, "Species (reduced system)");
   mpRedStoiAnnotation->setMode(1, CArrayAnnotation::VECTOR_ON_THE_FLY);
   mpRedStoiAnnotation->setDimensionDescription(1, "Reactions");
-  mpRedStoiAnnotation->setCopasiVector(1, &mSteps);
+  mpRedStoiAnnotation->setCopasiVector(1, mSteps);
 
   mpLinkMatrixAnnotation = new CArrayAnnotation("Link matrix(ann)", this, new CCopasiMatrixInterface<CLinkMatrixView>(&mLView), true);
   mpLinkMatrixAnnotation->setDescription("Link matrix");

@@ -33,7 +33,6 @@ CLNATask::CLNATask(const CCopasiContainer * pParent,
   mpProblem = new CLNAProblem(this);
 
   mpMethod = createMethod(CTaskEnum::linearNoiseApproximation);
-  this->add(mpMethod, true);
 }
 
 CLNATask::CLNATask(const CLNATask & src,
@@ -44,7 +43,6 @@ CLNATask::CLNATask(const CLNATask & src,
     new CLNAProblem(*(CLNAProblem *) src.mpProblem, this);
 
   mpMethod = createMethod(src.mpMethod->getSubType());
-  this->add(mpMethod, true);
 }
 
 CLNATask::~CLNATask()

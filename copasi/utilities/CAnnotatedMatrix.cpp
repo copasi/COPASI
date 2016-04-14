@@ -73,35 +73,6 @@ size_t CArrayAnnotation::dimensionality() const
   return mModes.size();
 }
 
-void CArrayAnnotation::setCopasiVector(size_t d, const CCopasiContainer* v)
-{
-  assert(d < dimensionality());
-  assert((mModes[d] == VECTOR) || (mModes[d] == VECTOR_ON_THE_FLY));
-
-  if (v == NULL || !(v->isVector() || v->isNameVector())) return;
-
-  //now we know we have a vector. A CCopasiVector[N/S], hopefully, so that the following cast is valid:
-  const CCopasiVector< CCopasiObject > * pVector = reinterpret_cast<const CCopasiVector< CCopasiObject > * >(v);
-
-  size_t i;
-
-  for (i = 0; i < mAnnotationsCN[d].size() && i < pVector->size(); ++i)
-    {
-      if (!&pVector->operator[](i))
-        {
-          mAnnotationsCN[d][i] = CRegisteredObjectName("String=???");
-          mAnnotationsString[d][i] = "???";
-
-          continue;
-        }
-
-      mAnnotationsCN[d][i] = pVector->operator[](i).getCN();
-      mAnnotationsString[d][i] = createDisplayName(mAnnotationsCN[d][i]);
-    }
-
-  return;
-}
-
 void CArrayAnnotation::setAnnotationCN(size_t d, size_t i, const std::string cn)
 {
   assert(d < dimensionality());

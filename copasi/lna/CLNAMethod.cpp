@@ -107,19 +107,19 @@ void CLNAMethod::resizeAllMatrices()
 
   mBMatrixReduced.resize(mpContainer->getCountIndependentSpecies(), mpContainer->getCountIndependentSpecies());
   mBMatrixReducedAnn->resize();
-  mBMatrixReducedAnn->setCopasiVector(0, &Model.getMetabolitesX());
-  mBMatrixReducedAnn->setCopasiVector(1, &Model.getMetabolitesX());
+  mBMatrixReducedAnn->setCopasiVector(0, Model.getMetabolitesX());
+  mBMatrixReducedAnn->setCopasiVector(1, Model.getMetabolitesX());
 
   mCovarianceMatrixReduced.resize(mpContainer->getCountIndependentSpecies(), mpContainer->getCountIndependentSpecies());
   mCovarianceMatrixReducedAnn->resize();
-  mCovarianceMatrixReducedAnn->setCopasiVector(0, &Model.getMetabolitesX());
-  mCovarianceMatrixReducedAnn->setCopasiVector(1, &Model.getMetabolitesX());
+  mCovarianceMatrixReducedAnn->setCopasiVector(0, Model.getMetabolitesX());
+  mCovarianceMatrixReducedAnn->setCopasiVector(1, Model.getMetabolitesX());
 
   mCovarianceMatrix.resize(mpContainer->getCountIndependentSpecies() + mpContainer->getCountDependentSpecies(),
                            mpContainer->getCountIndependentSpecies() + mpContainer->getCountDependentSpecies());
   mCovarianceMatrixAnn->resize();
-  mCovarianceMatrixAnn->setCopasiVector(0, &Model.getMetabolitesX());
-  mCovarianceMatrixAnn->setCopasiVector(1, &Model.getMetabolitesX());
+  mCovarianceMatrixAnn->setCopasiVector(0, Model.getMetabolitesX());
+  mCovarianceMatrixAnn->setCopasiVector(1, Model.getMetabolitesX());
 }
 
 int CLNAMethod::calculateCovarianceMatrixReduced()
@@ -156,6 +156,10 @@ int CLNAMethod::calculateCovarianceMatrixReduced()
   const CMathReaction * pReactionEnd = pReaction + Reactions.size();
   const C_FLOAT64 * pParticleFlux = ParticleFluxex.array();
 
+  size_t FirstReactionSpeciesIndex = mpContainer->getCountFixedEventTargets() + 1 + mpContainer->getCountODEs();
+  CMathObject * pFirstReactionSpecies = mpContainer->getMathObject(mpContainer->getState(false).array() + FirstReactionSpeciesIndex);
+  CMathObject * pSpecies;
+
   for (; pReaction != pReactionEnd; ++pReaction, ++pParticleFlux)
     {
       const CMathReaction::Balance & Balances = pReaction->getNumberBalance();
@@ -166,13 +170,20 @@ int CLNAMethod::calculateCovarianceMatrixReduced()
 
       for (pBalanceRow = Balances.array(); pBalanceRow != pBalanceEnd; ++pBalanceRow)
         {
-          if (mpContainer->getMathObject(pBalanceRow->first)->getSimulationType() == CMath::Independent)
+          pSpecies = mpContainer->getMathObject(pBalanceRow->first);
+
+          if (pSpecies->getSimulationType() == CMath::Independent)
             {
+              size_t i = pSpecies - pFirstReactionSpecies;
+
               for (pBalanceColumn = Balances.array(); pBalanceColumn != pBalanceEnd; ++pBalanceColumn)
                 {
-                  if (mpContainer->getMathObject(pBalanceColumn->first)->getSimulationType() == CMath::Independent)
+                  pSpecies = mpContainer->getMathObject(pBalanceColumn->first);
+
+                  if (pSpecies->getSimulationType() == CMath::Independent)
                     {
-                      * pBMatrixReduced += *pParticleFlux * pBalanceRow->second * pBalanceColumn->second;
+                      size_t j = pSpecies - pFirstReactionSpecies;
+                      mBMatrixReduced(i, j) += *pParticleFlux * pBalanceRow->second * pBalanceColumn->second;
                     }
                 }
             }
