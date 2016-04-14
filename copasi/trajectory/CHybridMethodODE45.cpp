@@ -598,8 +598,6 @@ void CHybridMethodODE45::fireReaction()
   // correctly calculated
   mRootValuesLeft = mRootValuesRight;
 
-  mpContainer->applyUpdateSequence(mPropensitiesUpdateSequence);
-
   CMathReaction * pReaction = getReactionToFire();
   pReaction->fire();
   mFireReaction = false;
