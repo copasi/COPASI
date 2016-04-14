@@ -931,8 +931,8 @@ bool CMathObject::compilePropensity(CMathContainer & container)
     }
   else
     {
-      // Propensity is the same as the flux.
-      Infix << pointerToString(container.getMathObject(pReaction->getParticleFluxReference())->getValuePointer());
+      // Propensity is the same as the flux, but it must now be negative.
+      Infix << "max(0," << pointerToString(container.getMathObject(pReaction->getParticleFluxReference())->getValuePointer());
 
       // Apply correction for deterministic models
       if (container.getModel().getModelType() == CModel::deterministic)
@@ -987,6 +987,8 @@ bool CMathObject::compilePropensity(CMathContainer & container)
               Infix << "/(" << Divisor.str() << ")";
             }
         }
+
+      Infix << ")";
     }
 
   CExpression E("PropensityExpression", &container);
