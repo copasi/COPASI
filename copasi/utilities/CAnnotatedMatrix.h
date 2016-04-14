@@ -28,6 +28,8 @@
 
 #include "copasi.h"
 
+#include "utilities/CCopasiVector.h"
+
 /**
  * This class contains the annotations to a n-dimensional array. Annotations can be provided
  * for the array as such, for each of the dimensions, and for each of the indices (rows,
@@ -125,7 +127,21 @@ public:
    * If the mode is VECTOR_ON_THE_FLY the CNs are generated when getAnnotationsCN()
    * or getAnnotationsString() is called.
    */
-  void setCopasiVector(size_t d, const CCopasiContainer* v);
+  template < class CType > void setCopasiVector(size_t d, const CCopasiVector< CType > & v)
+  {
+    assert(d < dimensionality());
+    assert((mModes[d] == VECTOR) || (mModes[d] == VECTOR_ON_THE_FLY));
+
+    size_t i;
+
+    for (i = 0; i < mAnnotationsCN[d].size() && i < v.size(); ++i)
+      {
+        mAnnotationsCN[d][i] = v[i].getCN();
+        mAnnotationsString[d][i] = createDisplayName(mAnnotationsCN[d][i]);
+      }
+
+    return;
+  }
 
   void setAnnotationCN(size_t d, size_t i, const std::string cn);
   void setAnnotationString(size_t d, size_t i, const std::string s);

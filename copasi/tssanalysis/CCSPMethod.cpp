@@ -1779,18 +1779,18 @@ void CCSPMethod::predefineAnnotation()
                              N);
 
   pImportanceIndexAnn->resize(); // fixed
-  pImportanceIndexAnn->setCopasiVector(0, &Model.getReactions());
-  pImportanceIndexAnn->setCopasiVector(1, &metabs);
+  pImportanceIndexAnn->setCopasiVector(0, Model.getReactions());
+  pImportanceIndexAnn->setCopasiVector(1, metabs);
 
   mFastParticipationIndexTab.resize(Model.getReactions().size(), 1);
   pFastParticipationIndexAnn->resize();
 
-  pFastParticipationIndexAnn->setCopasiVector(0, &Model.getReactions());
+  pFastParticipationIndexAnn->setCopasiVector(0, Model.getReactions());
 
   mSlowParticipationIndexTab.resize(Model.getReactions().size(), 1);
   pSlowParticipationIndexAnn->resize();
 
-  pSlowParticipationIndexAnn->setCopasiVector(0, &Model.getReactions());
+  pSlowParticipationIndexAnn->setCopasiVector(0, Model.getReactions());
 }
 
 /**
@@ -2050,7 +2050,7 @@ bool CCSPMethod::setAnnotationM(size_t step)
       metabs.add(static_cast< CMetab * >(const_cast< CModelEntity * >(Model.getStateTemplate().beginIndependent()[j])), false);
     }
 
-  pRadicalPointerAnn->setCopasiVector(0, &metabs);
+  pRadicalPointerAnn->setCopasiVector(0, metabs);
 
 #if 0
   std::cout << "metab.size " << mDim << std::endl;
@@ -2099,7 +2099,7 @@ bool CCSPMethod::setAnnotationM(size_t step)
       sstr.clear();
     }
 
-  pFastReactionPointerAnn->setCopasiVector(0, &Model.getReactions());
+  pFastReactionPointerAnn->setCopasiVector(0, Model.getReactions());
 
   // fill pFastReactionPointerNormedAnn
   mFastReactionPointerNormedTab.resize(mVec_mFastReactionPointerNormed[step].numCols(),
@@ -2123,7 +2123,7 @@ bool CCSPMethod::setAnnotationM(size_t step)
       sstr.clear();
     }
 
-  pFastReactionPointerNormedAnn->setCopasiVector(0, &Model.getReactions());
+  pFastReactionPointerNormedAnn->setCopasiVector(0, Model.getReactions());
 
   // fill pParticipationIndexAnn
   mParticipationIndexTab.resize(mVec_mParticipationIndex[step].numCols(),
@@ -2147,7 +2147,7 @@ bool CCSPMethod::setAnnotationM(size_t step)
       sstr.clear();
     }
 
-  pParticipationIndexAnn->setCopasiVector(0, &Model.getReactions());
+  pParticipationIndexAnn->setCopasiVector(0, Model.getReactions());
 
   // fill pParticipationIndexNormedColumnAnn
   mParticipationIndexNormedColumnTab.resize(mVec_mParticipationIndexNormedColumn[step].numCols(),
@@ -2171,7 +2171,7 @@ bool CCSPMethod::setAnnotationM(size_t step)
       sstr.clear();
     }
 
-  pParticipationIndexNormedColumnAnn->setCopasiVector(0, &Model.getReactions());
+  pParticipationIndexNormedColumnAnn->setCopasiVector(0, Model.getReactions());
 
   // fill pParticipationIndexNormedRowAnn
   mParticipationIndexNormedRowTab.resize(mVec_mParticipationIndexNormedRow[step].numCols(),
@@ -2195,7 +2195,7 @@ bool CCSPMethod::setAnnotationM(size_t step)
       sstr.clear();
     }
 
-  pParticipationIndexNormedRowAnn->setCopasiVector(0, &Model.getReactions());
+  pParticipationIndexNormedRowAnn->setCopasiVector(0, Model.getReactions());
 
   // fill pFastParticipationIndexAnn
 
@@ -2206,7 +2206,7 @@ bool CCSPMethod::setAnnotationM(size_t step)
   sstr << "   ";
   str = sstr.str();
   pFastParticipationIndexAnn->setAnnotationString(1, 0, str);
-  pFastParticipationIndexAnn->setCopasiVector(0, &Model.getReactions());
+  pFastParticipationIndexAnn->setCopasiVector(0, Model.getReactions());
 
   // fill pSlowParticipationIndexAnn
 
@@ -2225,16 +2225,16 @@ bool CCSPMethod::setAnnotationM(size_t step)
                              mVec_mImportanceIndex[step].numRows());
   mImportanceIndexTab = mVec_mImportanceIndex[step];
   pImportanceIndexAnn->resize(); // fixed
-  pImportanceIndexAnn->setCopasiVector(0, &Model.getReactions());
-  pImportanceIndexAnn->setCopasiVector(1, &metabs);
+  pImportanceIndexAnn->setCopasiVector(0, Model.getReactions());
+  pImportanceIndexAnn->setCopasiVector(1, metabs);
 
 // fill pmImportanceIndexNormedRowAnn
   mImportanceIndexNormedRowTab.resize(mVec_mImportanceIndexNormedRow[step].numCols(),
                                       mVec_mImportanceIndexNormedRow[step].numRows());
   mImportanceIndexNormedRowTab = mVec_mImportanceIndexNormedRow[step];
   pImportanceIndexNormedRowAnn->resize(); // fixed
-  pImportanceIndexNormedRowAnn->setCopasiVector(0, &Model.getReactions());
-  pImportanceIndexNormedRowAnn->setCopasiVector(1, &metabs);
+  pImportanceIndexNormedRowAnn->setCopasiVector(0, Model.getReactions());
+  pImportanceIndexNormedRowAnn->setCopasiVector(1, metabs);
 
   return true;
 }

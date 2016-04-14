@@ -164,37 +164,37 @@ void CMCAMethod::resizeAllMatrices()
   mUnscaledElasticities.resize(mpContainer->getReactions().size(),
                                mpContainer->getCountIndependentSpecies() + mpContainer->getCountDependentSpecies());
   mUnscaledElasticitiesAnn->resize();
-  mUnscaledElasticitiesAnn->setCopasiVector(0, &Model.getReactions());
-  mUnscaledElasticitiesAnn->setCopasiVector(1, &Model.getMetabolitesX());
+  mUnscaledElasticitiesAnn->setCopasiVector(0, Model.getReactions());
+  mUnscaledElasticitiesAnn->setCopasiVector(1, Model.getMetabolitesX());
 
   mUnscaledConcCC.resize(mpContainer->getCountIndependentSpecies() + mpContainer->getCountDependentSpecies(),
                          mpContainer->getReactions().size());
   mUnscaledConcCCAnn->resize();
-  mUnscaledConcCCAnn->setCopasiVector(0, &Model.getMetabolitesX());
-  mUnscaledConcCCAnn->setCopasiVector(1, &Model.getReactions());
+  mUnscaledConcCCAnn->setCopasiVector(0, Model.getMetabolitesX());
+  mUnscaledConcCCAnn->setCopasiVector(1, Model.getReactions());
 
   mUnscaledFluxCC.resize(mpContainer->getReactions().size(), mpContainer->getReactions().size());
   mUnscaledFluxCCAnn->resize();
-  mUnscaledFluxCCAnn->setCopasiVector(0, &Model.getReactions());
-  mUnscaledFluxCCAnn->setCopasiVector(1, &Model.getReactions());
+  mUnscaledFluxCCAnn->setCopasiVector(0, Model.getReactions());
+  mUnscaledFluxCCAnn->setCopasiVector(1, Model.getReactions());
 
   mScaledElasticities.resize(mUnscaledElasticities.numRows(), mUnscaledElasticities.numCols());
   mScaledElasticitiesAnn->resize();
-  mScaledElasticitiesAnn->setCopasiVector(0, &Model.getReactions());
-  mScaledElasticitiesAnn->setCopasiVector(1, &Model.getMetabolitesX());
+  mScaledElasticitiesAnn->setCopasiVector(0, Model.getReactions());
+  mScaledElasticitiesAnn->setCopasiVector(1, Model.getMetabolitesX());
 
   // Reactions are columns, species are rows
   mScaledConcCC.resize(mUnscaledConcCC.numRows(), mUnscaledConcCC.numCols() + 1);
   mScaledConcCCAnn->resize();
-  mScaledConcCCAnn->setCopasiVector(0, &Model.getMetabolitesX());
-  mScaledConcCCAnn->setCopasiVector(1, &Model.getReactions());
+  mScaledConcCCAnn->setCopasiVector(0, Model.getMetabolitesX());
+  mScaledConcCCAnn->setCopasiVector(1, Model.getReactions());
   mScaledConcCCAnn->setAnnotationString(1, mUnscaledConcCC.numCols(), "Summation Error");
 
   // Reactions are columns and rows
   mScaledFluxCC.resize(mUnscaledFluxCC.numRows(), mUnscaledFluxCC.numCols() + 1);
   mScaledFluxCCAnn->resize();
-  mScaledFluxCCAnn->setCopasiVector(0, &Model.getReactions());
-  mScaledFluxCCAnn->setCopasiVector(1, &Model.getReactions());
+  mScaledFluxCCAnn->setCopasiVector(0, Model.getReactions());
+  mScaledFluxCCAnn->setCopasiVector(1, Model.getReactions());
   mScaledFluxCCAnn->setAnnotationString(1, mUnscaledFluxCC.numCols(), "Summation Error");
 
   mElasticityDependencies.resize(mUnscaledElasticities.numRows(), mUnscaledElasticities.numCols());

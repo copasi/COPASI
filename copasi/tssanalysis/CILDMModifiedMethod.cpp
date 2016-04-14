@@ -1033,7 +1033,7 @@ bool CILDMModifiedMethod::setAnnotationM(size_t step)
   mVslowPrint.resize(mDim, mDim);
   mVslowPrint = mVec_mVslow[step];
   pVslowPrintAnn->resize();
-  pVslowPrintAnn->setCopasiVector(1, &Model.getMetabolitesX());
+  pVslowPrintAnn->setCopasiVector(1, Model.getMetabolitesX());
 
   for (i = 0; i < mDim; i++)
     {
@@ -1054,7 +1054,7 @@ bool CILDMModifiedMethod::setAnnotationM(size_t step)
   mVslowMetabPrint.resize(mDim, mDim);
   mVslowMetabPrint = mVec_mVslowMetab[step];
   pVslowMetabPrintAnn->resize();
-  pVslowMetabPrintAnn->setCopasiVector(0, &Model.getMetabolitesX());
+  pVslowMetabPrintAnn->setCopasiVector(0, Model.getMetabolitesX());
 
   for (i = 0; i < mDim; i++)
     {
@@ -1090,7 +1090,7 @@ bool CILDMModifiedMethod::setAnnotationM(size_t step)
     mVslowSpacePrint(i, 0) = mVec_mVslowSpace[step][i];
 
   pVslowSpacePrintAnn->resize();
-  pVslowSpacePrintAnn->setCopasiVector(0, &Model.getMetabolitesX());
+  pVslowSpacePrintAnn->setCopasiVector(0, Model.getMetabolitesX());
   pVslowSpacePrintAnn->setAnnotationString(1, 0, str);
 
   mVfastSpacePrint.resize(mDim, 1);
@@ -1099,7 +1099,7 @@ bool CILDMModifiedMethod::setAnnotationM(size_t step)
     mVfastSpacePrint(i, 0) = mVec_mVfastSpace[step][i];
 
   pVfastSpacePrintAnn->resize();
-  pVfastSpacePrintAnn->setCopasiVector(0, &Model.getMetabolitesX());
+  pVfastSpacePrintAnn->setCopasiVector(0, Model.getMetabolitesX());
   pVfastSpacePrintAnn->setAnnotationString(1, 0, str);
 
   return true;
