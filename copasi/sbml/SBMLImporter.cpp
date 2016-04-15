@@ -3266,9 +3266,9 @@ CModel* SBMLImporter::readSBML(std::string filename,
 bool SBMLImporter::checkValidityOfSourceDocument(SBMLDocument* sbmlDoc)
 {
   if (CCopasiRootContainer::getConfiguration()->validateUnits())
-    sbmlDoc->setApplicableValidators(AllChecksON);
+    sbmlDoc->setApplicableValidators(AllChecksON & SBOCheckOFF);
   else
-    sbmlDoc->setApplicableValidators(AllChecksON & UnitsCheckOFF);
+    sbmlDoc->setApplicableValidators(AllChecksON & UnitsCheckOFF & SBOCheckOFF);
 
 #if LIBSBML_VERSION > 50800
   // libSBML is validating comp models after 5.8.0 this would throw an
