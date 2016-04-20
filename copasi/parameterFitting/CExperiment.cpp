@@ -756,7 +756,8 @@ bool CExperiment::compile(const CMathContainer * pMathContainer)
 
   for (i = 0; i <= imax; i++)
     {
-      CObjectInterface * pObject = mpContainer->getMathObject(Objects[i]);
+      const CCopasiObject *currentObject = Objects[i];
+      CObjectInterface * pObject = mpContainer->getMathObject(currentObject);
 
       switch (mpObjectMap->getRole(i))
         {
@@ -765,9 +766,9 @@ bool CExperiment::compile(const CMathContainer * pMathContainer)
 
           case independent:
 
-            if (!Objects[i]->isValueDbl())
+            if (currentObject != NULL && !currentObject->isValueDbl())
               {
-                CCopasiMessage(CCopasiMessage::ERROR, MCFitting + 6, Objects[i]->getObjectDisplayName().c_str(), i + 1);
+                CCopasiMessage(CCopasiMessage::ERROR, MCFitting + 6, currentObject->getObjectDisplayName().c_str(), i + 1);
                 return false;
               }
 
@@ -785,9 +786,9 @@ bool CExperiment::compile(const CMathContainer * pMathContainer)
 
           case dependent:
 
-            if (!Objects[i]->isValueDbl())
+            if (currentObject != NULL && !currentObject->isValueDbl())
               {
-                CCopasiMessage(CCopasiMessage::ERROR, MCFitting + 6, Objects[i]->getObjectDisplayName().c_str(), i + 1);
+                CCopasiMessage(CCopasiMessage::ERROR, MCFitting + 6, currentObject->getObjectDisplayName().c_str(), i + 1);
                 return false;
               }
 
