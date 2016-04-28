@@ -104,7 +104,7 @@ class AutoProperty(type):
             mangled = mangle_name(name)
             if name:
                 if callable(v):
-                    if re_id.match(mangled) and mangled not in keyword.kwlist:
+                    if re_id.match(mangled) and mangled not in keyword.kwlist and name != 'Array':
                         if prefix == 'get':
                             get_methods.add(name)
                         elif prefix == 'set':
