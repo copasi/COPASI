@@ -35,15 +35,15 @@
                  CProcessReport* pProcessReport,
                  const bool & deleteOldData = true);
 
-%ignore CCopasiDataModel::saveModel(const std::string& fileName,CProcessReport* pProcessReport, bool overwriteFile=false , const bool& autoSave=false);
-%ignore CCopasiDataModel::newModel;
-%ignore CCopasiDataModel::importSBMLFromString(const std::string& sbmlDocumentText,CProcessReport* pImportHandler,
-                 const bool & deleteOldData = true);
-%ignore CCopasiDataModel::importSBML(const std::string& fileName,CProcessReport* pImportHandler,
-                 const bool & deleteOldData = true);
-%ignore CCopasiDataModel::exportSBML(const std::string& fileName,bool overwriteFile,int sbmlLevel, int sbmlVersion,bool exportIncomplete ,bool exportCOPASIMIRIAM=false,CProcessReport* pExportHandler = NULL );
-%ignore CCopasiDataModel::exportSBMLToString(CProcessReport* pExportHandler,int sbmlLevel, int sbmlVersion);
-%ignore CCopasiDataModel::exportMathModel(const std::string & fileName, CProcessReport* pProcessReport, const std::string & filter, bool overwriteFile = false);
+//%ignore CCopasiDataModel::saveModel(const std::string& fileName,CProcessReport* pProcessReport, bool overwriteFile=false , const bool& autoSave=false);
+//%ignore CCopasiDataModel::newModel;
+//%ignore CCopasiDataModel::importSBMLFromString(const std::string& sbmlDocumentText,CProcessReport* pImportHandler,
+//                 const bool & deleteOldData = true);
+//%ignore CCopasiDataModel::importSBML(const std::string& fileName,CProcessReport* pImportHandler,
+//                 const bool & deleteOldData = true);
+//%ignore CCopasiDataModel::exportSBML(const std::string& fileName,bool overwriteFile,int sbmlLevel, int sbmlVersion,bool exportIncomplete ,bool exportCOPASIMIRIAM=false,CProcessReport* pExportHandler = NULL );
+//%ignore CCopasiDataModel::exportSBMLToString(CProcessReport* pExportHandler,int sbmlLevel, int sbmlVersion);
+//%ignore CCopasiDataModel::exportMathModel(const std::string & fileName, CProcessReport* pProcessReport, const std::string & filter, bool overwriteFile = //false);
 %ignore CCopasiDataModel::exportMathModelToString(CProcessReport* pProcessReport, const std::string & filter);
 %ignore CCopasiDataModel::getModel() const;
 %ignore CCopasiDataModel::getTaskList() const;
@@ -56,7 +56,7 @@
 %ignore CCopasiDataModel::isChanged() const;
 %ignore CCopasiDataModel::changed(const bool & changed = true);
 %ignore CCopasiDataModel::getCurrentSBMLDocument();
-%ignore CCopasiDataModel::setSBMLFileName(const std::string & fileName);
+//%ignore CCopasiDataModel::setSBMLFileName(const std::string & fileName);
 %ignore CCopasiDataModel::getCopasi2SBMLMap();
 %ignore CCopasiDataModel::isSBMLCompatible(int sbmlLevel = 2, int sbmlVersion = 1) const;
 %ignore CCopasiDataModel::removeSBMLIdFromFunctions();
