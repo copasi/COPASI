@@ -216,7 +216,7 @@ $scanProblem->setSubtask($COPASI::CCopasiTask::timeCourse);
 
 # we just want to run the timecourse task a number of times, so we
 # create a repeat item with 100 repeats
-$scanProblem->createScanItem($COPASI::CScanProblem::SCAN_REPEAT, 100);
+$scanProblem->addScanItem($COPASI::CScanProblem::SCAN_REPEAT, 100);
 
 # we want the output from the trajectory task
 $scanProblem->setOutputInSubtask(1);

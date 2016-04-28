@@ -158,7 +158,7 @@ invisible(CScanProblem_setSubtask(scanProblem,"timeCourse"))
 
 # we just want to run the timecourse task a number of times, so we
 # create a repeat item with 100 repeats
-invisible(CScanProblem_createScanItem(scanProblem,"SCAN_REPEAT", 100))
+invisible(CScanProblem_addScanItem(scanProblem,"SCAN_REPEAT", 100))
 
 # we want the output from the trajectory task
 invisible(CScanProblem_setOutputInSubtask(scanProblem,TRUE))
