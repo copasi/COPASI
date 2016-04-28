@@ -95,6 +95,7 @@ def main():
       # since the rows and columns have the same annotation for the jacobian, it doesn't matter
       # for which dimension we get the annotations
       annotations = aj.getAnnotationsString(1)
+      array = aj.array()
       print ("Jacobian Matrix: ")
       print ("")
       row = "%7s" % (" ")
@@ -110,8 +111,7 @@ def main():
 
           for j in range(0,annotations.size()):
               index[1]=j
-              array=aj.array();
-              row = row + " %7.3f" % (array.get(index))
+              row = row + " %7.3f" % ( array.get(index))
           print (row)
   return
 
