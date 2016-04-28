@@ -71,7 +71,7 @@ class example8
         // it basically represents a relative delta value for the calculation of the derivatives
         // the third parameter is a boolean indicating whether the jacobian should
         // be calculated from the reduced (true) or full (false) system
-        model.getMathContainer().calculateJacobian(jacobian, 1e-12, true);
+        model.getMathContainer().calculateJacobian(jacobian, 1e-12, false);
         // now we print the result
         // the jacobian stores the values in the order they are
         // given in the user order in the state template so it is not really straight
@@ -107,6 +107,7 @@ class example8
         // we know the model
         System.Console.Out.NewLine = "";
         System.Console.WriteLine(System.String.Format("Jacobian Matrix:{0}",System.Environment.NewLine));
+        System.Console.WriteLine(System.String.Format("size:{0}x{1}{2}", jacobian.numRows(), jacobian.numCols(), System.Environment.NewLine));
         System.Console.WriteLine(System.String.Format("{0}", System.Environment.NewLine));
         System.Console.Out.WriteLine(System.String.Format("{0,7}"," "));
 
@@ -115,7 +116,7 @@ class example8
             System.Console.Out.WriteLine(System.String.Format("{0,7}",nameVector[i]));
         }
 
-        System.Console.WriteLine("");
+        System.Console.WriteLine(System.String.Format("{0}", System.Environment.NewLine));
 
         for (uint i = 0; i < nameVector.Count; ++i)
         {
@@ -136,13 +137,13 @@ class example8
         // and columns are ordered in the same way as the independent variables of the state temple
         System.Console.WriteLine(System.String.Format("{0}{0}",System.Environment.NewLine));
         System.Console.WriteLine(System.String.Format("Reduced Jacobian Matrix:{0}{0}", System.Environment.NewLine));
-        System.Console.Out.WriteLine(System.String.Format("{0:7}"," "));
+        System.Console.Out.WriteLine(System.String.Format("{0:6}"," "));
         
         uint iMax = stateTemplate.getNumIndependent();
         
         for (uint i=0;i<iMax;++i)
         {
-          System.Console.Out.WriteLine(System.String.Format("{0:7}",stateTemplate.getIndependent(i).getObjectName()));
+          System.Console.Out.WriteLine(System.String.Format("\t{0:7}",stateTemplate.getIndependent(i).getObjectName()));
         }
 
         System.Console.WriteLine(System.String.Format("{0}",System.Environment.NewLine));
