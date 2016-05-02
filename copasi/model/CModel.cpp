@@ -271,7 +271,31 @@ C_INT32 CModel::load(CReadConfig & configBuffer)
         throw Exception;
     }
 
-  setQuantityUnit(tmp); // set the factors
+  // We suppress all errors and warnings
+  size_t MessageSize = CCopasiMessage::size();
+
+  try
+    {
+      setQuantityUnit(tmp); // set the factors
+    }
+
+  catch (CCopasiException & Exception)
+    {
+      try
+        {
+          setQuantityUnit(tmp.substr(0, 1) + "mol");
+        }
+
+      catch (CCopasiException & Exception)
+        {
+          setQuantityUnit("mmol");
+        }
+    }
+
+  // Remove error messages created by the task initialization as this may fail
+  // due to incomplete task specification at this time.
+  while (CCopasiMessage::size() > MessageSize)
+    CCopasiMessage::getLastMessage();
 
   try
     {
