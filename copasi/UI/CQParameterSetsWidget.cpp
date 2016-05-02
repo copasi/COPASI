@@ -99,7 +99,7 @@ void CQParameterSetsWidget::deleteSelected()
 void CQParameterSetsWidget::slotBtnClearClicked()
 {
 
-  int ret = CQMessageBox::question(this, tr("Confirm Delete"), "Delete all Reports?",
+  int ret = CQMessageBox::question(this, tr("Confirm Delete"), "Delete all Parameter Sets?",
                                    QMessageBox::Yes | QMessageBox::No, QMessageBox::No);
 
   if (ret == QMessageBox::Yes)
