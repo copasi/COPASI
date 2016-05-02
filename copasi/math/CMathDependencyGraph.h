@@ -1,4 +1,4 @@
-// Copyright (C) 2011 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -73,16 +73,26 @@ public:
                          const CObjectInterface::ObjectSet & calculatedObjects = CObjectInterface::ObjectSet()) const;
 
   /**
-   * Construct a update sequence for the given context. Please note the calculated objects
-   * must be calculated based on the same changed values and context.
+   * Check whether the given object depends on the changed object in given context
    * @param const CObjectInterface * pObject
    * @param const CMath::SimulationContextFlag & context
-   * @param const const CObjectInterface * pChangedObject
+   * @param const CObjectInterface * pChangedObject
    * @return bool dependsOn
    */
   bool dependsOn(const CObjectInterface * pObject,
                  const CMath::SimulationContextFlag & context,
                  const CObjectInterface * pChangedObject) const;
+
+  /**
+   * Check whether the given object depends on any of the changed objects in given context
+   * @param const CObjectInterface * pObject
+   * @param const CMath::SimulationContextFlag & context
+   * @param const CObjectInterface::ObjectSet & changedObjects
+   * @return bool dependsOn
+   */
+  bool dependsOn(const CObjectInterface * pObject,
+                 const CMath::SimulationContextFlag & context,
+                 const CObjectInterface::ObjectSet & changedObjects) const;
 
   /**
    * Relocate the objects in the nodes of the graph.

@@ -1,4 +1,4 @@
-// Copyright (C) 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2014 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -74,6 +74,8 @@ const std::string CTaskEnum::MethodName[] =
   "Stochastic (Gibson + Bruck)",
   "Stochastic (\xcf\x84-Leap)",
   "Stochastic (Adaptive SSA/\xcf\x84-Leap)",
+  "Hybrid (Runge-Kutta)",
+  "Hybrid (LSODA)",
   "Hybrid (ODE45)",
   "Hybrid (DSA-LSODAR)",
   "ILDM (LSODA,Deuflhard)",
@@ -125,6 +127,8 @@ const char * CTaskEnum::MethodXML[] =
   "DirectMethod",
   "TauLeap",
   "AdaptiveSA",
+  "Hybrid",
+  "Hybrid (LSODA)",
   "Hybrid (DSA-ODE45)",
   "Hybrid (DSA-LSODAR)",
   "TimeScaleSeparation(ILDM,Deuflhard)",
