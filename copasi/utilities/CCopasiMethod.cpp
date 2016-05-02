@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -65,6 +65,8 @@
 #include "trajectory/CLsodaMethod.h"
 #include "trajectory/CStochDirectMethod.h"
 // #include "trajectory/CStochMethod.h"
+#include "trajectory/CHybridNextReactionRKMethod.h"
+#include "trajectory/CHybridNextReactionLSODAMethod.h"
 #include "trajectory/CStochNextReactionMethod.h"
 #include "trajectory/CTauLeapMethod.h"
 #include "trajectory/CTrajAdaptiveSA.h"
@@ -177,6 +179,14 @@ CCopasiMethod * CCopasiMethod::createMethod(const CCopasiContainer * pParent,
 
       case CTaskEnum::adaptiveSA:
         pMethod = new CTrajAdaptiveSA(pParent, methodType, taskType);
+        break;
+
+      case CTaskEnum::hybrid:
+        pMethod = new CHybridNextReactionRKMethod(pParent, methodType, taskType);
+        break;
+
+      case CTaskEnum::hybridLSODA:
+        pMethod = new CHybridNextReactionLSODAMethod(pParent, methodType, taskType);
         break;
 
       case CTaskEnum::hybridODE45:

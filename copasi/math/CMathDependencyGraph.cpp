@@ -1,4 +1,4 @@
-// Copyright (C) 2011 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -331,6 +331,23 @@ bool CMathDependencyGraph::dependsOn(const CObjectInterface * pObject,
     }
 
   getUpdateSequence(UpdateSequence, context, ChangedObjects, RequestedObjects);
+
+  return !UpdateSequence.empty();
+}
+
+bool CMathDependencyGraph::dependsOn(const CObjectInterface * pObject,
+                                     const CMath::SimulationContextFlag & context,
+                                     const CObjectInterface::ObjectSet & changedObjects) const
+{
+  CObjectInterface::UpdateSequence UpdateSequence;
+  CObjectInterface::ObjectSet RequestedObjects;
+
+  if (pObject != NULL)
+    {
+      RequestedObjects.insert(pObject);
+    }
+
+  getUpdateSequence(UpdateSequence, context, changedObjects, RequestedObjects);
 
   return !UpdateSequence.empty();
 }

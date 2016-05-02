@@ -58,18 +58,6 @@
 //Event Flag
 #define SLOW_REACT                  -1
 
-/* CLASSES *******************************************************************/
-class CMetab;
-class CTrajectoryProblem;
-class CState;
-class CModel;
-class CVersion;
-class CReaction;
-class CRandom;
-class CIndexedPriorityQueue;
-class CDependencyGraph;
-class CModelEntity;
-
 /**
  * A class to record whether a metab is slow or fast
  * @param fastReactions is applied to store which reactions this

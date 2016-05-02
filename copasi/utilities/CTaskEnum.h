@@ -76,6 +76,8 @@ public:
     stochastic,
     tauLeap,
     adaptiveSA,
+    hybrid,
+    hybridLSODA,
     hybridODE45,
     DsaLsodar,
     tssILDM,
