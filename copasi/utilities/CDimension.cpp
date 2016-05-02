@@ -1,16 +1,16 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-// and The University of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2006 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc. and EML Research, gGmbH. 
-// All rights reserved. 
+// Copyright (C) 2006 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 #include <sstream>
 #include "copasi/utilities/CDimension.h"
@@ -20,7 +20,7 @@
 #include "copasi/model/CChemEq.h"
 
 CDimension::CDimension()
-  : mD1(0), mD2(0), mD3(0), mD4(0), mD5(0),
+  : mQuantity(0), mVolume(0), mTime(0), mArea(0), mLength(0),
     mUnknown(true),
     mContradiction(false)
 {}
@@ -50,11 +50,11 @@ void CDimension::setDimension(const C_FLOAT64 & d1, const C_FLOAT64 & d2, const 
 {
   mUnknown = false;
   mContradiction = false;
-  mD1 = d1;
-  mD2 = d2;
-  mD3 = d3;
-  mD4 = d4;
-  mD5 = d5;
+  mQuantity = d1;
+  mVolume = d2;
+  mTime = d3;
+  mArea = d4;
+  mLength = d5;
 }
 
 //static
@@ -89,27 +89,27 @@ std::string CDimension::getDisplayString(const CModel * pModel) const
 
   //positive exponents
   std::string s1;
-  s1 = constructDisplayElement(quan, mD1);
+  s1 = constructDisplayElement(quan, mQuantity);
 
-  tmp = constructDisplayElement(vol, mD2);
-
-  if ((s1 != "") && (tmp != "")) s1 += "*";
-
-  s1 += tmp;
-
-  tmp = constructDisplayElement(time, mD3);
+  tmp = constructDisplayElement(vol, mVolume);
 
   if ((s1 != "") && (tmp != "")) s1 += "*";
 
   s1 += tmp;
 
-  tmp = constructDisplayElement(area, mD4);
+  tmp = constructDisplayElement(time, mTime);
 
   if ((s1 != "") && (tmp != "")) s1 += "*";
 
   s1 += tmp;
 
-  tmp = constructDisplayElement(len, mD5);
+  tmp = constructDisplayElement(area, mArea);
+
+  if ((s1 != "") && (tmp != "")) s1 += "*";
+
+  s1 += tmp;
+
+  tmp = constructDisplayElement(len, mLength);
 
   if ((s1 != "") && (tmp != "")) s1 += "*";
 
@@ -118,30 +118,30 @@ std::string CDimension::getDisplayString(const CModel * pModel) const
   //negative exponents
   std::string s2;
   bool parflag = false;
-  s2 = constructDisplayElement(quan, -mD1);
+  s2 = constructDisplayElement(quan, -mQuantity);
 
-  tmp = constructDisplayElement(vol, -mD2);
-
-  if ((s2 != "") && (tmp != ""))
-    {s2 += "*"; parflag = true;}
-
-  s2 += tmp;
-
-  tmp = constructDisplayElement(time, -mD3);
+  tmp = constructDisplayElement(vol, -mVolume);
 
   if ((s2 != "") && (tmp != ""))
     {s2 += "*"; parflag = true;}
 
   s2 += tmp;
 
-  tmp = constructDisplayElement(area, -mD4);
+  tmp = constructDisplayElement(time, -mTime);
 
   if ((s2 != "") && (tmp != ""))
     {s2 += "*"; parflag = true;}
 
   s2 += tmp;
 
-  tmp = constructDisplayElement(len, -mD5);
+  tmp = constructDisplayElement(area, -mArea);
+
+  if ((s2 != "") && (tmp != ""))
+    {s2 += "*"; parflag = true;}
+
+  s2 += tmp;
+
+  tmp = constructDisplayElement(len, -mLength);
 
   if ((s2 != "") && (tmp != ""))
     {s2 += "*"; parflag = true;}
@@ -167,11 +167,11 @@ bool CDimension::operator==(const CDimension & rhs) const
 {
   return (mUnknown == rhs.mUnknown)
          && (mContradiction == rhs.mContradiction)
-         && (mD1 == rhs.mD1)
-         && (mD2 == rhs.mD2)
-         && (mD3 == rhs.mD3)
-         && (mD4 == rhs.mD4)
-         && (mD5 == rhs.mD5);
+         && (mQuantity == rhs.mQuantity)
+         && (mVolume == rhs.mVolume)
+         && (mTime == rhs.mTime)
+         && (mArea == rhs.mArea)
+         && (mLength == rhs.mLength);
 }
 
 CDimension CDimension::operator+(const CDimension & rhs) const
@@ -183,7 +183,7 @@ CDimension CDimension::operator+(const CDimension & rhs) const
   else if (isUnknown() || rhs.isUnknown())
     result.setUnknown();
   else
-    result.setDimension(mD1 + rhs.mD1, mD2 + rhs.mD2, mD3 + rhs.mD3, mD4 + rhs.mD4, mD5 + rhs.mD5);
+    result.setDimension(mQuantity + rhs.mQuantity, mVolume + rhs.mVolume, mTime + rhs.mTime, mArea + rhs.mArea, mLength + rhs.mLength);
 
   return result;
 }
@@ -197,7 +197,7 @@ CDimension CDimension::operator-(const CDimension & rhs) const
   else if (isUnknown() || rhs.isUnknown())
     result.setUnknown();
   else
-    result.setDimension(mD1 - rhs.mD1, mD2 - rhs.mD2, mD3 - rhs.mD3, mD4 - rhs.mD4, mD5 - rhs.mD5);
+    result.setDimension(mQuantity - rhs.mQuantity, mVolume - rhs.mVolume, mTime - rhs.mTime, mArea - rhs.mArea, mLength - rhs.mLength);
 
   return result;
 }
@@ -211,7 +211,7 @@ CDimension CDimension::operator*(const C_FLOAT64 & rhs) const
   else if (isUnknown())
     result.setUnknown();
   else
-    result.setDimension(mD1 * rhs, mD2 * rhs, mD3 * rhs, mD4 * rhs, mD5 * rhs);
+    result.setDimension(mQuantity * rhs, mVolume * rhs, mTime * rhs, mArea * rhs, mLength * rhs);
 
   return result;
 }
@@ -253,8 +253,8 @@ std::string CDimension::print(const CModel* pModel) const
 
   if (this->mUnknown) os << "Dim: unknown";
   else if (this->mContradiction) os << "Dim: contradiction";
-  else os << "Dim: (" << this->mD1 << ", " << this->mD2 << ", " << this->mD3
-            << ", " << this->mD4 << ", " << this->mD5 << ")  "
+  else os << "Dim: (" << this->mQuantity << ", " << this->mVolume << ", " << this->mTime
+            << ", " << this->mArea << ", " << this->mLength << ")  "
             << this->getDisplayString(pModel);
 
   return os.str();
@@ -263,19 +263,19 @@ std::string CDimension::print(const CModel* pModel) const
 void CDimension::fixDimensionless(bool d1, bool d2, bool d3, bool d4, bool d5)
 {
   if (d1)
-    mD1 = 0;
+    mQuantity = 0;
 
   if (d2)
-    mD2 = 0;
+    mVolume = 0;
 
   if (d3)
-    mD3 = 0;
+    mTime = 0;
 
   if (d4)
-    mD4 = 0;
+    mArea = 0;
 
   if (d5)
-    mD5 = 0;
+    mLength = 0;
 }
 
 //*************************************************************************
@@ -287,7 +287,7 @@ CFindDimensions::CFindDimensions(const CFunction* function, bool d1, bool d2, bo
     mRootDimension(),
     mUseHeuristics(false),
     mM1(-1.0), mM2(-1.0),
-    mD1(d1), mD2(d2), mD3(d3), mD4(d4), mD5(d5)
+    mQuantity(d1), mVolume(d2), mTime(d3), mArea(d4), mLength(d5)
 {
   setupDimensions();
 }
@@ -311,7 +311,7 @@ void CFindDimensions::setupDimensions()
             break;
 
           case CFunctionParameter::VOLUME:
-            mDimensions[i].setUnknown(); // TODO Dimension(0, 1, 0); //volume
+            mDimensions[i].setDimension(0, 1, 0, 0, 0); // TODO Dimension(0, 1, 0); //volume
             break;
 
           case CFunctionParameter::TIME:
@@ -323,7 +323,7 @@ void CFindDimensions::setupDimensions()
             break;
         }
 
-      mDimensions[i].fixDimensionless(mD1, mD2, mD3, mD4, mD5);
+      mDimensions[i].fixDimensionless(mQuantity, mVolume, mTime, mArea, mLength);
     }
 }
 
@@ -350,7 +350,7 @@ void CFindDimensions::findDimensions(bool isMulticompartment)
   else
     mRootDimension.setDimension(1, -1, -1, 0, 0); //TODO !!! conc/time
 
-  mRootDimension.fixDimensionless(mD1, mD2, mD3, mD4, mD5);
+  mRootDimension.fixDimensionless(mQuantity, mVolume, mTime, mArea, mLength);
 
   findDimensions();
 }
@@ -433,8 +433,8 @@ void CFindDimensions::findDimensionsMassAction()
 
   CDimension conc; conc.setDimension(1.0, -1.0, 0.0, 0, 0); //TODO!!!
 
-  mRootDimension.fixDimensionless(mD1, mD2, mD3, mD4, mD5);
-  conc.fixDimensionless(mD1, mD2, mD3, mD4, mD5);
+  mRootDimension.fixDimensionless(mQuantity, mVolume, mTime, mArea, mLength);
+  conc.fixDimensionless(mQuantity, mVolume, mTime, mArea, mLength);
 
   if (mDimensions[0].isUnknown())
     {

@@ -1,16 +1,16 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-// and The University of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2006 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc. and EML Research, gGmbH. 
-// All rights reserved. 
+// Copyright (C) 2006 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 #ifndef COPASI_DIMENSION
 #define COPASI_DIMENSION
@@ -71,15 +71,15 @@ public:
 private:
 
   ///exponent of quantity base unit
-  C_FLOAT64 mD1;
+  C_FLOAT64 mQuantity;
   ///exponent of volume base unit
-  C_FLOAT64 mD2;
+  C_FLOAT64 mVolume;
   ///exponent of time base unit
-  C_FLOAT64 mD3;
+  C_FLOAT64 mTime;
   ///exponent of area base unit
-  C_FLOAT64 mD4;
+  C_FLOAT64 mArea;
   ///exponent of length base unit
-  C_FLOAT64 mD5;
+  C_FLOAT64 mLength;
 
   bool mUnknown;
   bool mContradiction;
@@ -168,11 +168,11 @@ private:
   C_FLOAT64 mM1;
   C_FLOAT64 mM2;
 
-  bool mD1;
-  bool mD2;
-  bool mD3;
-  bool mD4;
-  bool mD5;
+  bool mQuantity;
+  bool mVolume;
+  bool mTime;
+  bool mArea;
+  bool mLength;
 
   ///find dim for all parameters
   void findDimensions();
