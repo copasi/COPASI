@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -154,9 +154,6 @@ void CLyapWolfMethod::start(/*const CState * initialState*/)
 
   mSystemSize = mContainerState.size() - mpContainer->getCountFixedEventTargets() - 1;
 
-  //initialize the vector on which lsoda will work
-  mVariables.initialize(mSystemSize, mpContainerStateTime + 1);
-
   mpYdot = mpContainer->getRate(mReducedModel).array() + mpContainer->getCountFixedEventTargets() + 1;
 
   mNumExp = mpProblem->getExponentNumber();
@@ -167,6 +164,9 @@ void CLyapWolfMethod::start(/*const CState * initialState*/)
     mData.dim = (C_INT)(mSystemSize * (1 + mNumExp) + 1);
   else
     mData.dim = (C_INT)(mSystemSize * (1 + mNumExp));
+
+  //initialize the vector on which lsoda will work
+  mVariables.resize(mData.dim);
 
   //reserve space for exponents. The vectors in the task are resized by the task because they
   //need to have a minimum size defined in the task
@@ -241,8 +241,10 @@ void CLyapWolfMethod::evalF(const C_FLOAT64 * t, const C_FLOAT64 * y, C_FLOAT64 
   assert(y == mVariables.array());
 
   *mpContainerStateTime = *t;
+  memcpy(mpContainerStateTime + 1, mVariables.array(), mSystemSize * sizeof(C_FLOAT64));
+
   mpContainer->updateSimulatedValues(mReducedModel);
-  memcpy(ydot, mpYdot, mData.dim * sizeof(C_FLOAT64));
+  memcpy(ydot, mpYdot, mSystemSize * sizeof(C_FLOAT64));
 
   mpContainer->calculateJacobian(mJacobian, 1e-6, mReducedModel);
 

@@ -127,7 +127,7 @@ private:
   /**
    * the vector that contains the extended system
    */
-  CVectorCore< C_FLOAT64 > mVariables;
+  CVector< C_FLOAT64 > mVariables;
 
   const C_FLOAT64 * mpYdot;
 
