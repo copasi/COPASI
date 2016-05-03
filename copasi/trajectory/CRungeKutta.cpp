@@ -266,7 +266,17 @@ CRungeKutta::RKMethodStatus CRungeKutta::operator()(const size_t * pDim,
           C_FLOAT64 error = estimateError();
 
           //(iv) Update step size mh
-          if (error > 1.0) // Step Rejected
+          if (isnan(error))
+            {
+              {
+                mMethodStatus = ERROR;
+                mErrorMessage << "Failure at t=" << mTLeft << std::endl;
+                mErrorMessage << "NaN values encountered in simulation." << std::endl;
+
+                return mMethodStatus;
+              }
+            }
+          else if (error > 1.0) // Step Rejected
             {
               mhNoFailed = false;
               mRejectNum++;

@@ -581,6 +581,8 @@ bool CModelParameter::refreshFromModel(const bool & modifyExistence)
 
   if (mpObject != NULL)
     {
+      C_FLOAT64 Value;
+
       switch (mType)
         {
           case Model:
@@ -589,11 +591,11 @@ bool CModelParameter::refreshFromModel(const bool & modifyExistence)
 
             if (!pModel->isAutonomous())
               {
-                mValue = pModel->getInitialValue();
+                Value = pModel->getInitialValue();
               }
             else
               {
-                mValue = 0.0;
+                Value = 0.0;
               }
           }
           break;
@@ -604,14 +606,14 @@ bool CModelParameter::refreshFromModel(const bool & modifyExistence)
           {
             CModelEntity * pEntity = static_cast< CModelEntity * >(mpObject);
 
-            mValue = pEntity->getInitialValue();
+            Value = pEntity->getInitialValue();
           }
           break;
 
           case ReactionParameter:
           {
             CCopasiParameter * pParameter = static_cast< CCopasiParameter * >(mpObject);
-            mValue = pParameter->getValue< C_FLOAT64 >();
+            Value = pParameter->getValue< C_FLOAT64 >();
 
             // We need to update the mapping
             // Check whether this refers to a global quantity.
@@ -644,7 +646,7 @@ bool CModelParameter::refreshFromModel(const bool & modifyExistence)
 
                 if (pGlobalQuantity != NULL)
                   {
-                    mValue = pGlobalQuantity->getValue(ParticleNumbers);
+                    Value = pGlobalQuantity->getValue(ParticleNumbers);
                   }
               }
           }
@@ -654,6 +656,8 @@ bool CModelParameter::refreshFromModel(const bool & modifyExistence)
             success = false;
             break;
         }
+
+      setValue(Value, ParticleNumbers);
     }
 
   return success;

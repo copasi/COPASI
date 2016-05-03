@@ -137,7 +137,7 @@ std::string CMetab::getChildObjectUnits(const CCopasiObject * pObject) const
            pObject == mpConcReference)
     {
       CUnit QunatityUnit = (mpModel != NULL) ? CUnit(mpModel->getQuantityUnit()) : CUnit();
-      CUnit CompartmentUnit = (mpCompartment != NULL) ? mpCompartment->getUnits() : CUnit();
+      CUnit CompartmentUnit = (mpCompartment != NULL) ? mpCompartment->getInitialValueReference()->getUnits() : CUnit();
 
       if (!QunatityUnit.isUndefined() &&
           !CompartmentUnit.isUndefined())
