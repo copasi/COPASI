@@ -588,12 +588,14 @@ std::vector< CUnit::SymbolComponent > CUnit::getSymbolComponents() const
 
   if (itDimensionless != end)
     {
-      if (FirstNumeratorIndex != C_INVALID_INDEX)
+      if (FirstNumeratorIndex != C_INVALID_INDEX &&
+          SymbolComponents[FirstNumeratorIndex].symbol != "#")
         {
           SymbolComponents[FirstNumeratorIndex].multiplier = multiplier;
           SymbolComponents[FirstNumeratorIndex].scale = scale;
         }
-      else if (FirstDenominatorIndex != C_INVALID_INDEX)
+      else if (FirstDenominatorIndex != C_INVALID_INDEX &&
+               SymbolComponents[FirstDenominatorIndex].symbol != "#")
         {
           SymbolComponents[FirstDenominatorIndex].multiplier = multiplier;
           SymbolComponents[FirstDenominatorIndex].scale = -scale;

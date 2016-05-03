@@ -232,14 +232,39 @@ int CQParameterOverviewDM::rowCount(const QModelIndex & parent) const
 // virtual
 bool CQParameterOverviewDM::setData(const QModelIndex &_index, const QVariant &value, int role)
 {
-  if (role != Qt::EditRole) return false;
+  CModelParameter * pNode = nodeFromIndex(_index);
+  bool success = false;
 
-  if (_index.data(Qt::EditRole) == value)
-    return false;
-  else
-    mpUndoStack->push(new ParameterOverviewDataChangeCommand(_index, value, role, this));
+  if (pNode != NULL &&
+      role == Qt::EditRole)
+    {
+      switch (_index.column())
+        {
+          case COL_VALUE:
+            pNode->setValue(value.toDouble(), static_cast< CModelParameter::Framework >(mFramework));
+            success = true;
+            break;
 
-  return true;
+          case COL_ASSIGNMENT:
+          {
+            CModelParameter * pGlobalQuantity = pNode->getSet()->getModelParameter(TO_UTF8(value.toString()), CModelParameter::ModelValue);
+
+            if (pGlobalQuantity != NULL)
+              {
+                static_cast< CModelParameterReactionParameter * >(pNode)->setGlobalQuantityCN(pGlobalQuantity->getCN());
+              }
+            else
+              {
+                static_cast< CModelParameterReactionParameter * >(pNode)->setGlobalQuantityCN("");
+              }
+          }
+
+          success = true;
+          break;
+        }
+    }
+
+  return success;
 }
 
 void CQParameterOverviewDM::setModelParameterset(CModelParameterSet * pModelParameterSet)
