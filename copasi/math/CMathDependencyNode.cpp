@@ -54,11 +54,18 @@ void CMathDependencyNode::removePrerequisite(CMathDependencyNode * pNode)
   std::vector< CMathDependencyNode * >::iterator it = mPrerequisites.begin();
   std::vector< CMathDependencyNode * >::iterator end = mPrerequisites.end();
 
-  for (; it != end; ++it)
-    if (*it == pNode)
-      {
-        it = mPrerequisites.erase(it);
-      }
+  for (; it != end;)
+    {
+      if (*it == pNode)
+        {
+          it = mPrerequisites.erase(it);
+          end = mPrerequisites.end();
+        }
+      else
+        {
+          ++it;
+        }
+    }
 }
 
 std::vector< CMathDependencyNode * > & CMathDependencyNode::getPrerequisites()
@@ -76,11 +83,19 @@ void CMathDependencyNode::removeDependent(CMathDependencyNode * pNode)
   std::vector< CMathDependencyNode * >::iterator it = mDependents.begin();
   std::vector< CMathDependencyNode * >::iterator end = mDependents.end();
 
-  for (; it != end; ++it)
-    if (*it == pNode)
-      {
-        it = mDependents.erase(it);
-      }
+  for (; it != end;)
+    {
+
+      if (*it == pNode)
+        {
+          it = mDependents.erase(it);
+          end = mDependents.end();
+        }
+      else
+        {
+          ++it;
+        }
+    }
 }
 
 std::vector< CMathDependencyNode * > & CMathDependencyNode::getDependents()
