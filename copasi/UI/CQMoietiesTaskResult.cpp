@@ -162,7 +162,7 @@ void CQMoietiesTaskResult::load()
     {
       CCopasiVector< CMoiety >::const_iterator it = pModel->getMoieties().begin();
       CCopasiVector< CMoiety >::const_iterator end = pModel->getMoieties().end();
-      mpMoieties->setRowCount(end - it);
+      mpMoieties->setRowCount(pModel->getMoieties().size());
 
       QTableWidgetItem * pItem;
 
