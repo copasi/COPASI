@@ -80,8 +80,9 @@ bool CEFMTask::initialize(const OutputFlag & of,
 {
   CEFMMethod * pMethod = dynamic_cast<CEFMMethod *>(mpMethod);
 
-  bool success = (pMethod == NULL);
-  success &= mpMethod->isValidProblem(mpProblem);
+  if (pMethod == NULL) return false;
+
+  bool success = mpMethod->isValidProblem(mpProblem);
   success &= CCopasiTask::initialize(of, pOutputHandler, pOstream);
 
   return success;

@@ -31,7 +31,7 @@
 #include "crosssection/CCrossSectionMethod.h"
 #include "elementaryFluxModes/CBitPatternMethod.h"
 #include "elementaryFluxModes/CBitPatternTreeMethod.h"
-#include "elementaryFluxModes/CEFMMethod.h"
+#include "elementaryFluxModes/CEFMAlgorithm.h"
 // #include "elementaryFluxModes/CSSAMethod.h"
 #include "lna/CLNAMethod.h"
 // #include "lyap/CLyapMethod.h"
@@ -234,7 +234,7 @@ CCopasiMethod * CCopasiMethod::createMethod(const CCopasiContainer * pParent,
 #endif // COPASI_SSA
 
       case CTaskEnum::EFMAlgorithm:
-        pMethod = new CEFMMethod(pParent, methodType, taskType);
+        pMethod = new CEFMAlgorithm(pParent, methodType, taskType);
         break;
 
       case CTaskEnum::EFMBitPatternTreeAlgorithm:
