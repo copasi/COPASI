@@ -1,4 +1,4 @@
-// Copyright (C) 2011 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -57,7 +57,7 @@ void CMathDependencyNode::removePrerequisite(CMathDependencyNode * pNode)
   for (; it != end; ++it)
     if (*it == pNode)
       {
-        mPrerequisites.erase(it);
+        it = mPrerequisites.erase(it);
       }
 }
 
@@ -79,7 +79,7 @@ void CMathDependencyNode::removeDependent(CMathDependencyNode * pNode)
   for (; it != end; ++it)
     if (*it == pNode)
       {
-        mDependents.erase(it);
+        it = mDependents.erase(it);
       }
 }
 
