@@ -804,6 +804,9 @@ void CModel::updateMatrixAnnotations()
       mpStoiAnnotation->setAnnotationCN(0, j, CN);
       mpLinkMatrixAnnotation->setAnnotationCN(0, j, CN);
     }
+
+  mpStoiAnnotation->setCopasiVector(1, mSteps);
+  mpRedStoiAnnotation->setCopasiVector(1, mSteps);
 }
 
 void CModel::updateMoietyValues()
