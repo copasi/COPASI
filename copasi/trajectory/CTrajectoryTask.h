@@ -203,6 +203,7 @@ protected:
    */
   bool (*mpLess)(const C_FLOAT64 &, const C_FLOAT64 &);
 
+protected:
   /**
    * A Boolean flag indication whether to proceed with the integration
    */

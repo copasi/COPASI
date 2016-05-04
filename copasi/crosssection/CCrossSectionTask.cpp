@@ -219,7 +219,9 @@ bool CCrossSectionTask::process(const bool & useInitialValues)
 
   output(COutputInterface::BEFORE);
 
-  bool flagProceed = true;
+  mProceed = true;
+
+
   mProgressFactor = 100.0 / (MaxDuration + mpCrossSectionProblem->getOutputStartTime());
   mProgressValue = 0;
 
@@ -241,9 +243,9 @@ bool CCrossSectionTask::process(const bool & useInitialValues)
     {
       do
         {
-          flagProceed &= processStep(EndTime);
+          mProceed &= processStep(EndTime);
         }
-      while ((*mpContainerStateTime < CompareEndTime) && flagProceed);
+      while ((*mpContainerStateTime < CompareEndTime) && mProceed);
     }
 
   catch (int)
