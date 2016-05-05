@@ -2253,6 +2253,7 @@ void CCopasiXMLParser::CompartmentElement::start(const XML_Char *pszName,
   const char * simulationType;
   const char * Dimensionality;
   CModelEntity::Status SimulationType;
+  bool AddNoise;
 
   mpCurrentHandler = NULL;
   mCurrentElement = mLastKnownElement;
@@ -2274,6 +2275,7 @@ void CCopasiXMLParser::CompartmentElement::start(const XML_Char *pszName,
             simulationType = mParser.getAttributeValue("simulationType", papszAttrs, "fixed");
             SimulationType = toEnum(simulationType, CModelEntity::XMLStatus, CModel::FIXED);
             Dimensionality = mParser.getAttributeValue("dimensionality", papszAttrs, "3");
+            AddNoise = mParser.toBool(mParser.getAttributeValue("addNoise", papszAttrs, "false"));
 
             mpCompartment = new CCompartment();
             addFix(mKey, mpCompartment);
@@ -2281,6 +2283,7 @@ void CCopasiXMLParser::CompartmentElement::start(const XML_Char *pszName,
             mpCompartment->setObjectName(Name);
             mpCompartment->setStatus(SimulationType);
             mpCompartment->setDimensionality(strToUnsignedInt(Dimensionality));
+            mpCompartment->setAddNoise(AddNoise);
 
             mCommon.pModel->getCompartments().add(mpCompartment, true);
             mLastKnownElement = Compartment;
@@ -2317,6 +2320,13 @@ void CCopasiXMLParser::CompartmentElement::start(const XML_Char *pszName,
           case InitialExpression:
 
             if (!strcmp(pszName, "InitialExpression"))
+              mpCurrentHandler = &mParser.mCharacterDataElement;
+
+            break;
+
+          case NoiseExpression:
+
+            if (!strcmp(pszName, "NoiseExpression"))
               mpCurrentHandler = &mParser.mCharacterDataElement;
 
             break;
@@ -2415,6 +2425,25 @@ void CCopasiXMLParser::CompartmentElement::end(const XML_Char *pszName)
           size_t Size = CCopasiMessage::size();
 
           mpCompartment->setInitialExpression(mCommon.CharacterData);
+
+          // Remove error messages created by setExpression as this may fail
+          // due to incomplete model specification at this time.
+          while (CCopasiMessage::size() > Size)
+            CCopasiMessage::getLastMessage();
+        }
+
+        break;
+
+      case NoiseExpression:
+
+        if (strcmp(pszName, "NoiseExpression"))
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                         pszName, "NoiseExpression", mParser.getCurrentLineNumber());
+
+        {
+          size_t Size = CCopasiMessage::size();
+
+          mpCompartment->setNoiseExpression(mCommon.CharacterData);
 
           // Remove error messages created by setExpression as this may fail
           // due to incomplete model specification at this time.
@@ -2545,6 +2574,7 @@ void CCopasiXMLParser::MetaboliteElement::start(const XML_Char *pszName,
   CModelEntity::Status SimulationType;
   const char reactions[] = "reactions";
   const char * Compartment;
+  bool AddNoise;
 
   mpCurrentHandler = NULL;
   mCurrentElement = mLastKnownElement;
@@ -2579,11 +2609,13 @@ void CCopasiXMLParser::MetaboliteElement::start(const XML_Char *pszName,
 
             SimulationType = toEnum(simulationType, CModelEntity::XMLStatus, CModelEntity::REACTIONS);
             Compartment = mParser.getAttributeValue("compartment", papszAttrs);
+            AddNoise = mParser.toBool(mParser.getAttributeValue("addNoise", papszAttrs, "false"));
 
             mpMetabolite = new CMetab();
             addFix(mKey, mpMetabolite);
             mpMetabolite->setObjectName(Name);
             mpMetabolite->setStatus(SimulationType);
+            mpMetabolite->setAddNoise(AddNoise);
 
             pCompartment =
               dynamic_cast< CCompartment* >(mCommon.KeyMap.get(Compartment));
@@ -2630,6 +2662,13 @@ void CCopasiXMLParser::MetaboliteElement::start(const XML_Char *pszName,
           case InitialExpression:
 
             if (!strcmp(pszName, "InitialExpression"))
+              mpCurrentHandler = &mParser.mCharacterDataElement;
+
+            break;
+
+          case NoiseExpression:
+
+            if (!strcmp(pszName, "NoiseExpression"))
               mpCurrentHandler = &mParser.mCharacterDataElement;
 
             break;
@@ -2729,6 +2768,25 @@ void CCopasiXMLParser::MetaboliteElement::end(const XML_Char *pszName)
           size_t Size = CCopasiMessage::size();
 
           mpMetabolite->setInitialExpression(mCommon.CharacterData);
+
+          // Remove error messages created by setExpression as this may fail
+          // due to incomplete model specification at this time.
+          while (CCopasiMessage::size() > Size)
+            CCopasiMessage::getLastMessage();
+        }
+
+        break;
+
+      case NoiseExpression:
+
+        if (strcmp(pszName, "NoiseExpression"))
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                         pszName, "NoiseExpression", mParser.getCurrentLineNumber());
+
+        {
+          size_t Size = CCopasiMessage::size();
+
+          mpMetabolite->setNoiseExpression(mCommon.CharacterData);
 
           // Remove error messages created by setExpression as this may fail
           // due to incomplete model specification at this time.
@@ -2862,6 +2920,7 @@ void CCopasiXMLParser::ModelValueElement::start(const XML_Char *pszName,
   const char * Name;
   const char * simulationType;
   CModelEntity::Status SimulationType;
+  bool AddNoise;
 
   mpCurrentHandler = NULL;
   mCurrentElement = mLastKnownElement;
@@ -2892,11 +2951,13 @@ void CCopasiXMLParser::ModelValueElement::start(const XML_Char *pszName,
               }
 
             SimulationType = toEnum(simulationType, CModelEntity::XMLStatus, CModelEntity::FIXED);
+            AddNoise = mParser.toBool(mParser.getAttributeValue("addNoise", papszAttrs, "false"));
 
             mpMV = new CModelValue();
             addFix(mKey, mpMV);
             mpMV->setObjectName(Name);
             mpMV->setStatus(SimulationType);
+            mpMV->setAddNoise(AddNoise);
 
             mCommon.pModel->getModelValues().add(mpMV, true);
             mLastKnownElement = mCurrentElement;
@@ -2934,6 +2995,13 @@ void CCopasiXMLParser::ModelValueElement::start(const XML_Char *pszName,
           case InitialExpression:
 
             if (!strcmp(pszName, "InitialExpression"))
+              mpCurrentHandler = &mParser.mCharacterDataElement;
+
+            break;
+
+          case NoiseExpression:
+
+            if (!strcmp(pszName, "NoiseExpression"))
               mpCurrentHandler = &mParser.mCharacterDataElement;
 
             break;
@@ -3054,6 +3122,25 @@ void CCopasiXMLParser::ModelValueElement::end(const XML_Char *pszName)
           size_t Size = CCopasiMessage::size();
 
           mpMV->setInitialExpression(mCommon.CharacterData);
+
+          // Remove error messages created by setExpression as this may fail
+          // due to incomplete model specification at this time.
+          while (CCopasiMessage::size() > Size)
+            CCopasiMessage::getLastMessage();
+        }
+
+        break;
+
+      case NoiseExpression:
+
+        if (strcmp(pszName, "NoiseExpression"))
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                         pszName, "NoiseExpression", mParser.getCurrentLineNumber());
+
+        {
+          size_t Size = CCopasiMessage::size();
+
+          mpMV->setNoiseExpression(mCommon.CharacterData);
 
           // Remove error messages created by setExpression as this may fail
           // due to incomplete model specification at this time.
@@ -3782,6 +3869,7 @@ void CCopasiXMLParser::ReactionElement::start(const XML_Char *pszName,
   const char * fast;
   bool Fast;
   const char * SBMLId;
+  bool AddNoise;
 
   mCurrentElement = mLastKnownElement;
   mpCurrentHandler = NULL;
@@ -3809,11 +3897,15 @@ void CCopasiXMLParser::ReactionElement::start(const XML_Char *pszName,
             fast = mParser.getAttributeValue("fast", papszAttrs, "false");
             Fast = mParser.toBool(fast);
 
+            AddNoise = mParser.toBool(mParser.getAttributeValue("addNoise", papszAttrs, "false"));
+
             mCommon.pReaction = new CReaction();
             addFix(mKey, mCommon.pReaction);
             mCommon.pReaction->setObjectName(Name);
             mCommon.pReaction->setReversible(Reversible);
             mCommon.pReaction->setFast(Fast);
+            mCommon.pReaction->setAddNoise(AddNoise);
+
             SBMLId = mParser.getAttributeValue("sbmlid", papszAttrs, "");
 
             if (std::string(SBMLId) != std::string(""))
@@ -3926,6 +4018,13 @@ void CCopasiXMLParser::ReactionElement::start(const XML_Char *pszName,
 
             break;
 
+          case NoiseExpression:
+
+            if (!strcmp(pszName, "NoiseExpression"))
+              mpCurrentHandler = &mParser.mCharacterDataElement;
+
+            break;
+
           default:
             mCurrentElement = UNKNOWN_ELEMENT;
             mpCurrentHandler = &mParser.mUnknownElement;
@@ -4029,6 +4128,25 @@ void CCopasiXMLParser::ReactionElement::end(const XML_Char *pszName)
         if (strcmp(pszName, "KineticLaw"))
           CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
                          pszName, "KineticLaw", mParser.getCurrentLineNumber());
+
+        break;
+
+      case NoiseExpression:
+
+        if (strcmp(pszName, "NoiseExpression"))
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                         pszName, "NoiseExpression", mParser.getCurrentLineNumber());
+
+        {
+          size_t Size = CCopasiMessage::size();
+
+          mCommon.pReaction->setNoiseExpression(mCommon.CharacterData);
+
+          // Remove error messages created by setExpression as this may fail
+          // due to incomplete model specification at this time.
+          while (CCopasiMessage::size() > Size)
+            CCopasiMessage::getLastMessage();
+        }
 
         break;
 

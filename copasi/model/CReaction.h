@@ -341,9 +341,9 @@ public:
    *  rate function. The connection of the reaction and the function parameter mapping
    *  to the actual metabolites is established (before compile() the chemical equation
    *  and the reaction only hold the names of the metabolites).
-   *  @param "CCopasiVectorNS < CCompartment > &" compartments
+   *  @return bool success
    */
-  void compile();
+  bool compile();
 
   /**
    * Calculate the kinetic function and returns the flux
@@ -398,6 +398,50 @@ public:
    * @return const CCallParameters< C_FLOAT64 > & callParameters
    */
   const CCallParameters< C_FLOAT64 > & getCallParameters() const;
+
+  /**
+   * Set the expression for non FIXED model values
+   * @param const std::string & expression
+   * @return bool success
+   */
+  bool setNoiseExpression(const std::string & expression);
+
+  /**
+   * Retrieve the expression for non FIXED model values.
+   * @return std::string expression
+   */
+  std::string getNoiseExpression() const;
+
+  /**
+   * Set the noise expression for ODE model values
+   * @param CExpression*
+   * @return bool success
+   */
+  bool setNoiseExpressionPtr(CExpression* pExpression);
+
+  /**
+   * Retrieve the pointer to the expression for ODE model values.
+   * @return CExpression*
+   */
+  const CExpression* getNoiseExpressionPtr() const;
+
+  /**
+   * Retrieve the pointer to the expression for ODE model values.
+   * @return CExpression*
+   */
+  CExpression* getNoiseExpressionPtr();
+
+  /**
+   * Set whether to add noise to the reaction rate
+   * @param const bool & addNoise
+   */
+  void setAddNoise(const bool & addNoise);
+
+  /**
+   * Check whether noise is added to the reaction rate
+   * @return const bool & addNoise
+   */
+  const bool & addNoise() const;
 
 private:
   /**
@@ -565,6 +609,16 @@ private:
    *  A pointer to the rate function of the reaction
    */
   CFunction * mpFunction;
+
+  /**
+   * Optional noise term
+   */
+  CExpression * mpNoiseExpression;
+
+  /**
+   * A Boolean flag indicating whether to add noise to the reaction
+   */
+  bool mAddNoise;
 
   /**
    *  The flux of the reaction, as amount of substance/time

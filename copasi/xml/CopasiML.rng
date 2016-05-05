@@ -577,6 +577,12 @@
     <optional>
       <ref name="initialExpression.element"/>
     </optional>
+    <attribute name="addNoise">
+      <data type="boolean"/>
+    </attribute>
+    <optional>
+      <ref name="noiseExpression.element"/>
+    </optional>
   </define>
 
   <define name="listOfMetabolites.datatype">
@@ -614,6 +620,12 @@
     <optional>
       <ref name="initialExpression.element"/>
     </optional>
+    <attribute name="addNoise">
+      <data type="boolean"/>
+    </attribute>
+    <optional>
+      <ref name="noiseExpression.element"/>
+    </optional>
   </define>
 
   <define name="listOfModelValues.datatype">
@@ -644,6 +656,12 @@
     </optional>
     <optional>
       <ref name="initialExpression.element"/>
+    </optional>
+    <attribute name="addNoise">
+      <data type="boolean"/>
+    </attribute>
+    <optional>
+      <ref name="noiseExpression.element"/>
     </optional>
     <optional>
       <ref name="unit.element"/>
@@ -784,6 +802,12 @@
       <element name="KineticLaw">
         <ref name="kineticLaw.datatype"/>
       </element>
+    </optional>
+    <attribute name="addNoise">
+      <data type="boolean"/>
+    </attribute>
+    <optional>
+      <ref name="noiseExpression.element"/>
     </optional>
   </define>
 
@@ -1179,6 +1203,12 @@
     </element>
   </define>
 
+  <define name="noiseExpression.element">
+    <element name="NoiseExpression">
+      <ref name="expression.simpletype"/>
+    </element>
+  </define>
+  
   <define name="unit.element">
     <element name="Unit">
       <ref name="expression.simpletype"/>

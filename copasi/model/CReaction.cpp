@@ -54,6 +54,8 @@ CReaction::CReaction(const std::string & name,
   CAnnotation(),
   mChemEq("Chemical Equation", this),
   mpFunction(NULL),
+  mpNoiseExpression(NULL),
+  mAddNoise(false),
   mFlux(0),
   mpFluxReference(NULL),
   mParticleFlux(0),
@@ -79,6 +81,8 @@ CReaction::CReaction(const CReaction & src,
   CAnnotation(src),
   mChemEq(src.mChemEq, this),
   mpFunction(src.mpFunction),
+  mpNoiseExpression(src.mpNoiseExpression != NULL ? new CExpression(*src.mpNoiseExpression, this) : NULL),
+  mAddNoise(src.mAddNoise),
   mFlux(src.mFlux),
   mpFluxReference(NULL),
   mParticleFlux(src.mParticleFlux),
@@ -585,8 +589,10 @@ const CFunctionParameters & CReaction::getFunctionParameters() const
   return mMap.getFunctionParameters();
 }
 
-void CReaction::compile()
+bool CReaction::compile()
 {
+  bool success = true;
+
   clearDirectDependencies();
   std::set< const CCopasiObject * > Dependencies;
 
@@ -662,6 +668,19 @@ void CReaction::compile()
   mpParticleFluxReference->setDirectDependencies(Dependencies);
 
   setScalingFactor();
+
+  if (mAddNoise && mpNoiseExpression != NULL)
+    {
+      CObjectInterface::ContainerList listOfContainer;
+      CModel * pModel = static_cast< CModel * >(getObjectAncestor("Model"));
+
+      if (pModel != NULL)
+        listOfContainer.push_back(pModel);
+
+      success &= mpNoiseExpression->compile(listOfContainer);
+    }
+
+  return success;
 }
 
 bool CReaction::loadOneRole(CReadConfig & configbuffer,
@@ -1021,6 +1040,92 @@ bool CReaction::mustBeDeleted(const CCopasiObject::DataObjectSet & deletedObject
     }
 
   return MustBeDeleted;
+}
+
+bool CReaction::setNoiseExpression(const std::string & expression)
+{
+  CModel * pModel = static_cast< CModel * >(getObjectAncestor("Model"));
+
+  if (pModel != NULL)
+    pModel->setCompileFlag(true);
+
+  if (mpNoiseExpression == NULL)
+    {
+      mpNoiseExpression = new CExpression("NoiseExpression", this);
+    }
+
+  if (!mpNoiseExpression->setInfix(expression)) return false;
+
+  return compile();
+}
+
+std::string CReaction::getNoiseExpression() const
+{
+  if (mpNoiseExpression == NULL)
+    return "";
+
+  mpNoiseExpression->updateInfix();
+  return mpNoiseExpression->getInfix();
+}
+
+bool CReaction::setNoiseExpressionPtr(CExpression* pExpression)
+{
+  if (pExpression == mpNoiseExpression) return true;
+
+  if (pExpression == NULL) return false;
+
+  CModel * pModel = static_cast< CModel * >(getObjectAncestor("Model"));
+
+  if (pModel != NULL)
+    pModel->setCompileFlag(true);
+
+  CExpression * pOld = mpNoiseExpression;
+  mpNoiseExpression = pExpression;
+
+  mpNoiseExpression->setObjectName("NoiseExpression");
+  add(mpNoiseExpression, true);
+
+  if (compile())
+    {
+      pdelete(pOld);
+      return true;
+    }
+
+  // If compile fails we do not take ownership
+  // and we remove the object from the container
+  remove(mpNoiseExpression);
+  mpNoiseExpression->setObjectParent(NULL);
+  mpNoiseExpression = pOld;
+
+  return false;
+}
+
+CExpression* CReaction::getNoiseExpressionPtr()
+{
+  if (mpNoiseExpression != NULL) mpNoiseExpression->updateInfix();
+
+  return mpNoiseExpression;
+}
+
+const CExpression* CReaction::getNoiseExpressionPtr() const
+{
+  if (mpNoiseExpression != NULL) mpNoiseExpression->updateInfix();
+
+  return mpNoiseExpression;
+}
+
+void CReaction::setAddNoise(const bool & addNoise)
+{
+  mAddNoise = addNoise;
+}
+
+/**
+ * Check whether noise is added to the ODE
+ * @return const bool & addNoise
+ */
+const bool & CReaction::addNoise() const
+{
+  return mAddNoise;
 }
 
 std::ostream & operator<<(std::ostream &os, const CReaction & d)

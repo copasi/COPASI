@@ -1144,7 +1144,8 @@ private:
       ListOfProducts,
       ListOfModifiers,
       ListOfConstants,
-      KineticLaw
+      KineticLaw,
+      NoiseExpression
     };
 
     /**
@@ -1262,7 +1263,8 @@ private:
       Comment,
       ListOfUnsupportedAnnotations,
       Expression,
-      InitialExpression
+      InitialExpression,
+      NoiseExpression
     };
 
     // Operations
@@ -1361,7 +1363,8 @@ private:
       Comment,
       ListOfUnsupportedAnnotations,
       Expression,
-      InitialExpression
+      InitialExpression,
+      NoiseExpression
     };
 
     // Operations
@@ -1463,6 +1466,7 @@ private:
       ListOfUnsupportedAnnotations,
       Expression,
       InitialExpression,
+      NoiseExpression,
       MathML,
       Unit
     };
