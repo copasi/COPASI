@@ -426,7 +426,7 @@ CArrayAnnotation::name_index_type CArrayAnnotation::displayNamesToCN(const std::
 
           C_INT32 index = strToInt(it->c_str(), &pTail);
 
-          if (pTail != it->c_str() + it->size())
+          if (itCNs->empty() || pTail != it->c_str() + it->size())
             {
               *to = std::string("not found");
             }
