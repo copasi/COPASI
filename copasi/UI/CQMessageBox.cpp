@@ -151,12 +151,14 @@ QMessageBox::StandardButton CQMessageBox::confirmDelete(QWidget *parent,
   if (deletedObjects.size() == 0)
     return QMessageBox::Ok;
 
+  std::set< const CCopasiObject * > DeletedObjects = deletedObjects;
+
   // Determine the affected data model
-  const CCopasiDataModel * pDataModel = (*deletedObjects.begin())->getObjectDataModel();
+  const CCopasiDataModel * pDataModel = (*DeletedObjects.begin())->getObjectDataModel();
 
   // Determine the affected function DB
   CFunctionDB * pFunctionDB =
-    dynamic_cast< CFunctionDB * >((*deletedObjects.begin())->getObjectAncestor("FunctionDB"));
+    dynamic_cast< CFunctionDB * >((*DeletedObjects.begin())->getObjectAncestor("FunctionDB"));
 
   if (pDataModel == NULL &&
       pFunctionDB == NULL)
@@ -187,7 +189,7 @@ QMessageBox::StandardButton CQMessageBox::confirmDelete(QWidget *parent,
 
   if (pFunctionDB != NULL)
     {
-      Used |= pFunctionDB->appendDependentFunctions(deletedObjects, Functions);
+      Used |= pFunctionDB->appendDependentFunctions(DeletedObjects, Functions);
 
       if (Functions.size() > 0)
         {
@@ -198,6 +200,7 @@ QMessageBox::StandardButton CQMessageBox::confirmDelete(QWidget *parent,
 
           for (; it != end; ++it)
             {
+              DeletedObjects.insert(*it);
               msg.append(FROM_UTF8((*it)->getObjectName()));
               msg.append("\n  ");
             }
@@ -213,7 +216,7 @@ QMessageBox::StandardButton CQMessageBox::confirmDelete(QWidget *parent,
       pModel = pDataModel->getModel();
 
       // We need to check the tasks
-      Used |= pDataModel->appendDependentTasks(deletedObjects, Tasks);
+      Used |= pDataModel->appendDependentTasks(DeletedObjects, Tasks);
 
       if (Tasks.size() > 0)
         {
@@ -234,7 +237,7 @@ QMessageBox::StandardButton CQMessageBox::confirmDelete(QWidget *parent,
 
   if (pModel != NULL)
     {
-      Used |= pModel->appendDependentModelObjects(deletedObjects, Reactions, Metabolites,
+      Used |= pModel->appendDependentModelObjects(DeletedObjects, Reactions, Metabolites,
               Compartments, Values, Events);
 
       if (Reactions.size() > 0)
