@@ -1,4 +1,4 @@
-// Copyright (C) 2011 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -314,6 +314,9 @@ CEvaluationNode * CMathExpression::createMassActionPart(const C_FLOAT64 * pK,
 {
   CEvaluationNode * pPart = new CEvaluationNodeOperator(CEvaluationNodeOperator::MULTIPLY, "*");
   pPart->addChild(createNodeFromValue(pK));
+
+  if (pSpecies->size() == 0)
+    return NULL;
 
   CEvaluationNode * pNode = pPart;
   CCallParameters< C_FLOAT64 >::const_iterator itSpecies = pSpecies->begin();
