@@ -1,4 +1,4 @@
-// Copyright (C) 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2014 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -201,6 +201,7 @@ public:
   typedef std::pair < std::multimap< CKey, CAction >::iterator,
           std::multimap< CKey, CAction >::iterator > range;
 
+private:
   // Operations
   /**
    * Default constructor

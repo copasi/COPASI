@@ -193,7 +193,7 @@ bool CMathEventQueue::addAssignment(const C_FLOAT64 & executionTime,
                                     CMathEvent * pEvent)
 {
   // It is not possible to proceed backwards in time.
-  if (executionTime < *mpTime) return false;
+  if (mpTime == NULL || executionTime < *mpTime) return false;
 
   size_t CascadingLevel = mCascadingLevel;
 
@@ -214,7 +214,7 @@ bool CMathEventQueue::addCalculation(const C_FLOAT64 & executionTime,
                                      CMathEvent * pEvent)
 {
   // It is not possible to proceed backwards in time.
-  if (executionTime < *mpTime) return false;
+  if (mpTime == NULL || executionTime < *mpTime) return false;
 
   size_t CascadingLevel = mCascadingLevel;
 
@@ -265,7 +265,7 @@ void CMathEventQueue::start()
 
 CMath::StateChange CMathEventQueue::process(const bool & priorToOutput)
 {
-  if (mpTime != NULL && getProcessQueueExecutionTime() > *mpTime)
+  if (mpTime == NULL || getProcessQueueExecutionTime() > *mpTime)
     return CMath::NoChange;
 
   mEquality = priorToOutput;

@@ -4515,4 +4515,5 @@ void CMathContainer::relocate(CVectorCore< C_FLOAT64 > &oldValues,
   relocateVector(mDelays, size.nDelayLags, Relocations);
 
   mSize = size;
+  mpProcessQueue->start();
 }
