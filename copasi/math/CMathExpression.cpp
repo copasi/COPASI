@@ -90,31 +90,39 @@ CMathExpression::CMathExpression(const CFunction & src,
         // We build a mass action expression based on the call parameters.
         CCallParameters< C_FLOAT64 >::const_iterator it = callParameters.begin();
 
-        // We always have reactants
-        const C_FLOAT64 * pK = it->value;
-        ++it;
-        const CCallParameters< C_FLOAT64 > * pSpecies = it->vector;
-        ++it;
-
-        CEvaluationNode * pPart = createMassActionPart(pK, pSpecies);
-
-        if (it != callParameters.end())
+        // Handle the case we were have an invalid number of call parameters.
+        if (callParameters.size() < 2)
           {
-            mpRoot = new CEvaluationNodeOperator(CEvaluationNodeOperator::MINUS, "-");
-            mpRoot->addChild(pPart);
-
-            pK = it->value;
-            ++it;
-            pSpecies = it->vector;
-            ++it;
-
-            pPart = createMassActionPart(pK, pSpecies);
-
-            mpRoot->addChild(pPart);
+            mpRoot = NULL;
           }
         else
           {
-            mpRoot = pPart;
+            // We always have reactants
+            const C_FLOAT64 * pK = it->value;
+            ++it;
+            const CCallParameters< C_FLOAT64 > * pSpecies = it->vector;
+            ++it;
+
+            CEvaluationNode * pPart = createMassActionPart(pK, pSpecies);
+
+            if (callParameters.size() < 4)
+              {
+                mpRoot = pPart;
+              }
+            else
+              {
+                mpRoot = new CEvaluationNodeOperator(CEvaluationNodeOperator::MINUS, "-");
+                mpRoot->addChild(pPart);
+
+                pK = it->value;
+                ++it;
+                pSpecies = it->vector;
+                ++it;
+
+                pPart = createMassActionPart(pK, pSpecies);
+
+                mpRoot->addChild(pPart);
+              }
           }
       }
       break;
@@ -316,7 +324,7 @@ CEvaluationNode * CMathExpression::createMassActionPart(const C_FLOAT64 * pK,
   pPart->addChild(createNodeFromValue(pK));
 
   if (pSpecies->size() == 0)
-    return NULL;
+    return pPart;
 
   CEvaluationNode * pNode = pPart;
   CCallParameters< C_FLOAT64 >::const_iterator itSpecies = pSpecies->begin();

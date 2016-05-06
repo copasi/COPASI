@@ -1458,7 +1458,7 @@ CEvaluationNode * CMathContainer::copyBranch(const CEvaluationNode * pNode,
         }
     }
 
-  // assert(pCopy != NULL);
+  // It is save to return a NULL pointer
 
   return pCopy;
 }
