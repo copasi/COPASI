@@ -1,4 +1,4 @@
-// Copyright (C) 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2013 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -8,6 +8,7 @@
 
 #include <qlayout/CQEffectDescription.h>
 #include <qlayout/CQCopasiEffect.h>
+#include <qlayout/CQConnectionGraphicsItem.h>
 
 qreal linear(qreal a, qreal b, qreal t)
 {
@@ -115,6 +116,11 @@ void CQEffectDescription::applyToScene(CQLayoutScene& scene, qreal t)
 
   if (item == NULL)
     return;
+
+  CQConnectionGraphicsItem* connItem = dynamic_cast<CQConnectionGraphicsItem*>(item);
+
+  if (connItem)
+    connItem->setUseFullShape(true);
 
   switch (mMode)
     {
