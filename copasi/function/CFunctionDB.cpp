@@ -291,11 +291,24 @@ bool CFunctionDB::removeFunction(size_t index)
 {
   if (index == C_INVALID_INDEX) return false;
 
+  std::set< const CCopasiObject * > DeletedObjects = mLoadedFunctions[index].getDeletedObjects();
+
+  // We need to remove all dependent functions.
+  std::set< const CCopasiObject * > Functions;
+
+  appendDependentFunctions(DeletedObjects, Functions);
+
+  std::set< const CCopasiObject * >::const_iterator itFunction = Functions.begin();
+  std::set< const CCopasiObject * >::const_iterator endFunction = Functions.end();
+
+  for (; itFunction != endFunction; ++itFunction)
+    {
+      removeFunction((*itFunction)->getKey());
+    }
+
   // We need to delete all dependent objects in all data models.
   CCopasiVector< CCopasiDataModel >::iterator it = CCopasiRootContainer::getDatamodelList()->begin();
   CCopasiVector< CCopasiDataModel >::iterator end = CCopasiRootContainer::getDatamodelList()->end();
-
-  std::set< const CCopasiObject * > DeletedObjects = mLoadedFunctions[index].getDeletedObjects();
 
   for (; it != end; ++it)
     {
