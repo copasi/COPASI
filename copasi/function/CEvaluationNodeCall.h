@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -229,6 +229,8 @@ private:
   static bool
   verifyParameters(const std::vector<CEvaluationNode *> & vector,
                    const CFunctionParameters &functionParameters);
+
+  CUnit getUnit(const std::vector< CUnit > & /*units*/) const;
 
   // Attributes
 private:

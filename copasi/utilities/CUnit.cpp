@@ -63,7 +63,8 @@ std::string CUnit::replaceSymbol(const std::string & expression,
 CUnit::CUnit():
   mExpression(""),
   mComponents(),
-  mUsedSymbols()
+  mUsedSymbols(),
+  mConflict(false)
 {
 }
 
@@ -72,7 +73,8 @@ CUnit::CUnit(std::string expression,
              const C_FLOAT64 & avogadro):
   mExpression(""),
   mComponents(),
-  mUsedSymbols()
+  mUsedSymbols(),
+  mConflict(false)
 {
   setExpression(expression, avogadro);
 }
@@ -81,7 +83,8 @@ CUnit::CUnit(std::string expression,
 CUnit::CUnit(const CBaseUnit::Kind & kind):
   mExpression(CBaseUnit::getSymbol(kind)),
   mComponents(),
-  mUsedSymbols()
+  mUsedSymbols(),
+  mConflict(false)
 {
   mComponents.insert(CUnitComponent(kind));
   consolidateDimensionless();
@@ -821,4 +824,9 @@ std::ostream &operator<<(std::ostream &os, const CUnit & o)
     }
 
   return os;
+}
+
+void CUnit::setConflict(bool conflict)
+{
+  mConflict = conflict;
 }

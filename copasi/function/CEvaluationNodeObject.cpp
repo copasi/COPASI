@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -415,4 +415,12 @@ std::string CEvaluationNodeObject::getMMLString(const std::vector< std::string >
   out << CMathMl::getMMLName(pDataObject) << std::endl;
 
   return out.str();
+}
+
+CUnit CEvaluationNodeObject::getUnit(const std::vector< CUnit > & /*units*/) const
+{
+  if (mpObject != NULL)
+    return CUnit(mpObject->getDataObject()->getUnits());
+  else
+    return CUnit(CBaseUnit::undefined);
 }

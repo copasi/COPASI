@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -1244,8 +1244,8 @@ ASTNode* CEvaluationNodeFunction::toAST(const CCopasiDataModel* pDataModel) cons
         node->addChild(sibling->toAST(pDataModel));
       }
       break;
-      // :TODO: Bug 894: Implement me.
-      //fatalError();
+        // :TODO: Bug 894: Implement me.
+        //fatalError();
       break;
     }
 
@@ -1764,4 +1764,101 @@ std::string CEvaluationNodeFunction::getMMLString(const std::vector< std::string
   out << "</mrow>" << std::endl;
 
   return out.str();
+}
+
+CUnit CEvaluationNodeFunction::getUnit(const std::vector< CUnit > & units) const
+{
+  switch ((SubType)CEvaluationNode::subType(this->getType()))
+    {
+      case LOG:
+      case LOG10:
+      case EXP:
+      case SIN:
+      case COS:
+      case TAN:
+      case SEC:
+      case CSC:
+      case COT:
+      case SINH:
+      case COSH:
+      case TANH:
+      case SECH:
+      case CSCH:
+      case COTH:
+      case ARCSIN:
+      case ARCCOS:
+      case ARCTAN:
+      case ARCSEC:
+      case ARCCSC:
+      case ARCCOT:
+      case ARCSINH:
+      case ARCCOSH:
+      case ARCTANH:
+      case ARCSECH:
+      case ARCCSCH:
+      case ARCCOTH:
+      case FACTORIAL:
+      case NOT:
+        return CUnit(CBaseUnit::dimensionless);
+        break;
+
+      case MINUS:
+      case PLUS:
+      case FLOOR:
+      case CEIL:
+      case ABS:
+      case RPOISSON:
+        return units[0];
+        break;
+
+      case RGAMMA:
+        return units[1]; // the scale
+        break;
+
+      case RUNIFORM:
+      case RNORMAL:
+      case MAX:
+      case MIN:
+        if (units[0].isEquivalent(units[1]))
+          return units[0];
+        else
+          {
+            CUnit tmpUnit = CUnit(CBaseUnit::undefined);
+            tmpUnit.setConflict();
+            return tmpUnit;
+          }
+
+        break;
+
+      case SQRT:
+      {
+        // Exponentiate to 1/2.
+        // Test if each component's exponent
+        // is an integer. (don't want fractional exponents) by . . .
+        // modf(exp, NULL) =< std::numeric_limits::epsilon
+        CUnit candidateUnit = units[0];
+        candidateUnit.exponentiate(1.0 / 2.0);
+
+        std::set< CUnitComponent >::const_iterator  it = candidateUnit.getComponents().begin();
+        std::set< CUnitComponent >::const_iterator end = candidateUnit.getComponents().end();
+
+        for (; it != end; it++)
+          {
+            if (!(modf((*it).getExponent(), NULL) <= std::numeric_limits::epsilon()))
+              {
+                CUnit localUnit(CBaseUnit::undefined);
+                localUnit.setConflict();
+                return localUnit;
+              }
+          }
+
+        return candidateUnit;
+        break;
+      }
+
+      default:
+        return CUnit(CBaseUnit::undefined);
+//        fatalError();
+        break;
+    }
 }

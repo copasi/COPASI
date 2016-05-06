@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -222,6 +222,10 @@ public:
 
   CEvaluationNode * getLeft();
   const CEvaluationNode * getLeft() const;
+
+  // Try to return an appropriate unit, for the
+  // given function type.
+  CUnit getUnit(const std::vector<CUnit> & units) const;
 
 private:
   std::string handleSign(const std::string & str) const;

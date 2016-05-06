@@ -1598,3 +1598,39 @@ std::string CEvaluationNodeOperator::getMMLString(const std::vector< std::string
 
   return out.str();
 }
+
+//virtual
+CUnit CEvaluationNodeOperator::getUnit(const std::vector< CUnit > & units) const
+{
+  switch (mType & 0x00FFFFFF)
+    {
+      case POWER:
+        return units[0]; //TODO
+        break;
+
+      case MULTIPLY:
+        return units[0] * units[1];
+        break;
+
+      case DIVIDE:
+      case MODULUS:
+        return units[0] * units[1].exponentiate(-1);
+        break;
+
+      case PLUS:
+      case MINUS:
+        if (units[0].isEquivalent(units[1]))
+          return units[0];
+        else
+          {
+            CUnit tmpUnit = CUnit(CBaseUnit::undefined);
+            tmpUnit.setConflict();
+            return tmpUnit;
+          }
+
+        break;
+
+      default:
+        break;
+    }
+}

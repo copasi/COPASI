@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -672,4 +672,28 @@ bool CEvaluationNodeCall::isBoolean() const
     }
 
   return false;
+}
+
+CUnit CEvaluationNodeCall::getUnit(const std::vector< CUnit > & /*units*/) const
+{
+  switch (mType & 0x00FFFFFF)
+    {
+      case FUNCTION:
+      {
+        // TODO: Call CUnitValidator . . .
+        return CUnit(CBaseUnit::dimensionless);
+      }
+
+      break;
+
+      case EXPRESSION:
+      {
+        // TODO: Call CUnitValidator . . .
+        return CUnit(CBaseUnit::dimensionless);
+      }
+
+      default:
+        return CUnit(CBaseUnit::undefined);
+        break;
+    }
 }

@@ -200,6 +200,12 @@ public:
   CEvaluationNode * getRight();
   const CEvaluationNode * getRight() const;
 
+  /**
+   * Figure out the appropriate CUnit to use, base on the child nodes.
+   * This sets the default, appropriate for many cases, as Dimensionless
+   */
+  virtual CUnit getUnit(const std::vector< CUnit > & units) const;
+
   // Attributes
 private:
   CEvaluationNode * mpLeft;

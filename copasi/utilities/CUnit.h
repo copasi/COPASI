@@ -121,11 +121,17 @@ public:
   void buildExpression();
   std::vector< SymbolComponent > getSymbolComponents() const;
   bool isUnitType(UnitType type) const;
+  void setConflict(bool conflict = true);
 
 private:
   std::string mExpression;
   std::set< CUnitComponent > mComponents;
   std::set< std::string > mUsedSymbols;
+
+  // Set to true when combining units where the individual ones
+  // ought to be compatible (e.g. addition and subtraction in
+  // function expressions)
+  bool mConflict;
 
   // Consolodate any components with exponent == 0
   // into a/the single dimensionless component
