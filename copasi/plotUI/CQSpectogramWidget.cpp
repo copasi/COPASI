@@ -104,12 +104,18 @@ CQSpectogramWidget::LoadFromCurveSpec(const CPlotItem * pCurve)
 
   if (mpObjectX)
     mpEditX->setText(FROM_UTF8(mpObjectX->getObjectDisplayName()));
+  else
+    mpEditX->clear();
 
   if (mpObjectY)
     mpEditY->setText(FROM_UTF8(mpObjectY->getObjectDisplayName()));
+  else
+    mpEditY->clear();
 
   if (mpObjectZ)
     mpEditZ->setText(FROM_UTF8(mpObjectZ->getObjectDisplayName()));
+  else
+    mpEditZ->clear();
 
   CPlotItem* pItem = const_cast<CPlotItem*>(pCurve);
 
