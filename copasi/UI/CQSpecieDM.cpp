@@ -248,6 +248,16 @@ QVariant CQSpecieDM::data(const QModelIndex &index, int role) const
                 else
                   return QVariant(QString(""));
               }
+
+              case COL_NEXPRESSION_SPECIES:
+              {
+                const CExpression * pExpression = mpSpecies->getNoiseExpressionPtr();
+
+                if (pExpression != NULL)
+                  return QVariant(QString(FROM_UTF8(pExpression->getDisplayString())));
+                else
+                  return QVariant(QString(""));
+              }
             }
         }
     }
@@ -337,6 +347,9 @@ QVariant CQSpecieDM::headerData(int section, Qt::Orientation orientation,
 
           case COL_EXPRESSION_SPECIES:
             return QVariant("Expression" + ExpressionUnits);
+
+          case COL_NEXPRESSION_SPECIES:
+            return QVariant("Noise Expression");
 
           default:
             return QVariant();

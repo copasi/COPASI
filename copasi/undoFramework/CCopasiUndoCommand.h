@@ -133,10 +133,14 @@ public:
     COMPARTMENT_INITIAL_EXPRESSION_CHANGE, // change of compartment initial expression
     COMPARTMENT_EXPRESSION_CHANGE, // change of assignment / ode expression
     COMPARTMENT_SPATIAL_DIMENSION_CHANGE, // change of compartment spatial dimensions
+    COMPARTMENT_ADD_NOISE_CHANGE, // change the compartment add noise setting
+    COMPARTMENT_NOISE_EXPRESSION_CHANGE, // change the compartment noise expression
     GLOBALQUANTITY_INITAL_VALUE_CHANGE, // change of parameter initial value
     GLOBALQUANTITY_INITIAL_EXPRESSION_CHANGE, // change of parameter initial expression
     GLOBALQUANTITY_SIMULATION_TYPE_CHANGE, // change of parameter simulation type
     GLOBALQUANTITY_EXPRESSION_CHANGE, // change of parameter assignment / ode expression
+    GLOBALQUANTITY_ADD_NOISE_CHANGE, // change the parameter add noise setting
+    GLOBALQUANTITY_NOISE_EXPRESSION_CHANGE, // change the parameter noise expression
     GLOBALQUANTITY_UNIT_CHANGE, // change the unit
     EVENT_TRIGGER_EXPRESSION_CHANGE, // change of event trigger expression
     EVENT_TRIGGER_INITIALTIME_CHANGE, // change whether event can trigger at initial time
@@ -156,6 +160,8 @@ public:
     REACTION_MAPPING_VOLUME_CHANGE, // mapping of volume in kinetic law changed
     REACTION_MAPPING_SPECIES_CHANGE, // mapping of metabolite changed
     REACTION_MAPPING_PARAMETER_CHANGE, // mapping of local / global parameter changed
+    REACTION_ADD_NOISE_CHANGE, // change the reactions add noise setting
+    REACTION_NOISE_EXPRESSION_CHANGE, // change the reactions noise expression
     INVALID_TYPE
   };
 

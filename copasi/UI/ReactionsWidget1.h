@@ -60,6 +60,7 @@ protected slots:
   virtual void slotLineEditChanged();
   virtual void slotGotoFunction();
   virtual void slotNewFunction();
+  virtual void slotAddNoiseChanged(bool addNoise);
 
   //  public slots:
   virtual void slotTableChanged(int index, int sub, QString newValue);

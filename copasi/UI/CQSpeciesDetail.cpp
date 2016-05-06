@@ -42,9 +42,7 @@ CQSpeciesDetail::CQSpeciesDetail(QWidget* parent, const char* name) :
   mpCurrentCompartment(NULL),
   mItemToType(),
   mInitialNumber(0.0),
-  mInitialConcentration(0.0),
-  mExpressionValid(false),
-  mInitialExpressionValid(false)
+  mInitialConcentration(0.0)
 {
   setupUi(this);
 
@@ -67,8 +65,8 @@ CQSpeciesDetail::CQSpeciesDetail(QWidget* parent, const char* name) :
 //  mpLblValue->setMinimumWidth(Width);
 
   mpExpressionEMW->mpExpressionWidget->setExpressionType(CQExpressionWidget::TransientExpression);
-
   mpInitialExpressionEMW->mpExpressionWidget->setExpressionType(CQExpressionWidget::InitialExpression);
+  mpNoiseExpressionWidget->mpExpressionWidget->setExpressionType(CQExpressionWidget::TransientExpression);
 
   mpReactionTable->verticalHeader()->hide();
   mpReactionTable->verticalHeader()->setResizeMode(QHeaderView::ResizeToContents);
@@ -321,6 +319,11 @@ void CQSpeciesDetail::load()
   mpInitialExpressionEMW->mpExpressionWidget->setExpression(mpMetab->getInitialExpression());
   mpInitialExpressionEMW->updateWidget();
 
+  // Noise Expression
+  mpNoiseExpressionWidget->mpExpressionWidget->setExpression(mpMetab->getNoiseExpression());
+  mpNoiseExpressionWidget->updateWidget();
+  mpBoxAddNoise->setChecked(mpMetab->addNoise());
+
   // Type dependent display of values
   slotTypeChanged(mpComboBoxType->currentIndex());
 
@@ -440,6 +443,20 @@ void CQSpeciesDetail::save()
           mpMetab->setInitialExpression("");
           mChanged = true;
         }
+    }
+
+  // Add Noise
+  if (mpMetab->addNoise() != mpBoxAddNoise->isChecked())
+    {
+      mpMetab->setAddNoise(mpBoxAddNoise->isChecked());
+      mChanged = true;
+    }
+
+  // Noise Expression
+  if (mpMetab->getNoiseExpression() != mpNoiseExpressionWidget->mpExpressionWidget->getExpression())
+    {
+      mpMetab->setNoiseExpression(mpNoiseExpressionWidget->mpExpressionWidget->getExpression());
+      mChanged = true;
     }
 
   if (mChanged)
@@ -591,16 +608,6 @@ void CQSpeciesDetail::slotCompartmentChanged(int compartment)
   mpCurrentCompartment = pNewCompartment;
 }
 
-void CQSpeciesDetail::slotExpressionValid(bool valid)
-{
-  mExpressionValid = valid;
-}
-
-void CQSpeciesDetail::slotInitialExpressionValid(bool valid)
-{
-  mInitialExpressionValid = valid;
-}
-
 void CQSpeciesDetail::slotInitialTypeChanged(bool useInitialExpression)
 {
   if (useInitialExpression)
@@ -617,6 +624,21 @@ void CQSpeciesDetail::slotInitialTypeChanged(bool useInitialExpression)
       mpInitialExpressionEMW->hide();
 
       mpEditInitialValue->setEnabled((CModelEntity::Status) mItemToType[mpComboBoxType->currentIndex()] != CModelEntity::ASSIGNMENT);
+    }
+}
+
+void CQSpeciesDetail::slotAddNoiseChanged(bool addNoise)
+{
+  if (addNoise)
+    {
+      mpLblNoiseExpression->show();
+      mpNoiseExpressionWidget->show();
+      mpNoiseExpressionWidget->updateWidget();
+    }
+  else
+    {
+      mpLblNoiseExpression->hide();
+      mpNoiseExpressionWidget->hide();
     }
 }
 
@@ -782,6 +804,9 @@ void CQSpeciesDetail::speciesTypeChanged(int type)
 
         mpBoxUseInitialExpression->setEnabled(true);
         slotInitialTypeChanged(mpBoxUseInitialExpression->isChecked());
+
+        mpBoxAddNoise->hide();
+        slotAddNoiseChanged(false);
         break;
 
       case CModelEntity::ASSIGNMENT:
@@ -792,6 +817,9 @@ void CQSpeciesDetail::speciesTypeChanged(int type)
         slotInitialTypeChanged(false);
 
         mpExpressionEMW->updateWidget();
+
+        mpBoxAddNoise->hide();
+        slotAddNoiseChanged(false);
         break;
 
       case CModelEntity::ODE:
@@ -802,6 +830,9 @@ void CQSpeciesDetail::speciesTypeChanged(int type)
         slotInitialTypeChanged(mpBoxUseInitialExpression->isChecked());
 
         mpExpressionEMW->updateWidget();
+
+        mpBoxAddNoise->show();
+        slotAddNoiseChanged(mpBoxAddNoise->isChecked());
         break;
 
       case CModelEntity::REACTIONS:
@@ -810,6 +841,9 @@ void CQSpeciesDetail::speciesTypeChanged(int type)
 
         mpBoxUseInitialExpression->setEnabled(true);
         slotInitialTypeChanged(mpBoxUseInitialExpression->isChecked());
+
+        mpBoxAddNoise->hide();
+        slotAddNoiseChanged(false);
         break;
 
       default:

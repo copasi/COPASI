@@ -51,8 +51,6 @@ private:
   std::vector< int > mItemToType;
   double mInitialNumber;
   double mInitialConcentration;
-  bool mExpressionValid;
-  bool mInitialExpressionValid;
 
   void load();
   void save();
@@ -64,10 +62,9 @@ private slots:
   void slotBtnDelete();
   void slotCompartmentChanged(int compartment);
   void slotTypeChanged(int type);
+  void slotAddNoiseChanged(bool addNoise);
   void slotInitialTypeChanged(bool useInitialExpression);
   void slotNameLostFocus();
-  void slotExpressionValid(bool valid);
-  void slotInitialExpressionValid(bool valid);
   void slotSwitchToReaction(int row, int column);
   void slotInitialValueLostFocus();
 

@@ -50,9 +50,7 @@ CQCompartment::CQCompartment(QWidget* parent, const char* name):
   CopasiWidget(parent, name),
   mItemToType(),
   mpCompartment(NULL),
-  mChanged(false),
-  mExpressionValid(true),
-  mInitialExpressionValid(true)
+  mChanged(false)
 {
   setupUi(this);
 
@@ -66,11 +64,9 @@ CQCompartment::CQCompartment(QWidget* parent, const char* name):
 
   mpMetaboliteTable->horizontalHeader()->hide();
 
-  mExpressionValid = false;
   mpExpressionEMW->mpExpressionWidget->setExpressionType(CQExpressionWidget::TransientExpression);
-
-  mInitialExpressionValid = false;
   mpInitialExpressionEMW->mpExpressionWidget->setExpressionType(CQExpressionWidget::InitialExpression);
+  mpNoiseExpressionWidget->mpExpressionWidget->setExpressionType(CQExpressionWidget::TransientExpression);
 
 #ifdef COPASI_EXTUNIT
   mpLblDim->show();
@@ -218,6 +214,9 @@ void CQCompartment::slotTypeChanged(int type)
 
         mpBoxUseInitialExpression->setEnabled(true);
         slotInitialTypeChanged(mpBoxUseInitialExpression->isChecked());
+
+        mpBoxAddNoise->hide();
+        slotAddNoiseChanged(false);
         break;
 
       case CModelEntity::ASSIGNMENT:
@@ -237,6 +236,10 @@ void CQCompartment::slotTypeChanged(int type)
         slotInitialTypeChanged(false);
 
         mpExpressionEMW->updateWidget();
+
+        mpBoxAddNoise->hide();
+        slotAddNoiseChanged(false);
+
         break;
 
       case CModelEntity::ODE:
@@ -257,10 +260,28 @@ void CQCompartment::slotTypeChanged(int type)
 
         mpExpressionEMW->updateWidget();
 
+        mpBoxAddNoise->show();
+        slotAddNoiseChanged(mpBoxAddNoise->isChecked());
+
         break;
 
       default:
         break;
+    }
+}
+
+void CQCompartment::slotAddNoiseChanged(bool addNoise)
+{
+  if (addNoise)
+    {
+      mpLblNoiseExpression->show();
+      mpNoiseExpressionWidget->show();
+      mpNoiseExpressionWidget->updateWidget();
+    }
+  else
+    {
+      mpLblNoiseExpression->hide();
+      mpNoiseExpressionWidget->hide();
     }
 }
 
@@ -288,16 +309,6 @@ void CQCompartment::slotInitialTypeChanged(bool useInitialAssignment)
 
 /*!
  */
-
-void CQCompartment::slotExpressionValid(bool valid)
-{
-  mExpressionValid = valid;
-}
-
-void CQCompartment::slotInitialExpressionValid(bool valid)
-{
-  mInitialExpressionValid = valid;
-}
 
 bool CQCompartment::enterProtected()
 {
@@ -405,6 +416,11 @@ void CQCompartment::load()
   // Initial Expression
   mpInitialExpressionEMW->mpExpressionWidget->setExpression(mpCompartment->getInitialExpression());
   mpInitialExpressionEMW->updateWidget();
+
+  // Noise Expression
+  mpNoiseExpressionWidget->mpExpressionWidget->setExpression(mpCompartment->getNoiseExpression());
+  mpNoiseExpressionWidget->updateWidget();
+  mpBoxAddNoise->setChecked(mpCompartment->addNoise());
 
   // Type dependent display of values
   slotTypeChanged(mpComboBoxType->currentIndex());
@@ -518,6 +534,33 @@ void CQCompartment::save()
                             ));
           mChanged = true;
         }
+    }
+
+  // Add Noise
+  if (mpCompartment->addNoise() != mpBoxAddNoise->isChecked())
+    {
+      mpUndoStack->push(new CompartmentChangeCommand(
+                          CCopasiUndoCommand::COMPARTMENT_ADD_NOISE_CHANGE,
+                          mpCompartment->addNoise(),
+                          mpBoxAddNoise->isChecked(),
+                          mpCompartment,
+                          this
+                        ));
+
+      mChanged = true;
+    }
+
+  // Noise Expression
+  if (mpCompartment->getNoiseExpression() != mpNoiseExpressionWidget->mpExpressionWidget->getExpression())
+    {
+      mpUndoStack->push(new CompartmentChangeCommand(
+                          CCopasiUndoCommand::COMPARTMENT_NOISE_EXPRESSION_CHANGE,
+                          FROM_UTF8(mpCompartment->getNoiseExpression()),
+                          FROM_UTF8(mpNoiseExpressionWidget->mpExpressionWidget->getExpression()),
+                          mpCompartment,
+                          this
+                        ));
+      mChanged = true;
     }
 
   mIgnoreUpdates = false;
@@ -706,6 +749,14 @@ bool CQCompartment::changeValue(const std::string& key,
 
       case CCopasiUndoCommand::COMPARTMENT_SPATIAL_DIMENSION_CHANGE:
         mpCompartment->setDimensionality(newValue.toInt());
+        break;
+
+      case CCopasiUndoCommand::COMPARTMENT_ADD_NOISE_CHANGE:
+        mpCompartment->setAddNoise(newValue.toBool());
+        break;
+
+      case CCopasiUndoCommand::COMPARTMENT_NOISE_EXPRESSION_CHANGE:
+        mpCompartment->setNoiseExpression(TO_UTF8(newValue.toString()));
         break;
 
       default:

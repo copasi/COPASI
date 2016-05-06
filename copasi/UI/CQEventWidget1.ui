@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
-<comment> Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual </comment>
+<comment> Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual </comment>
 <comment> Properties, Inc., University of Heidelberg, and The University </comment>
 <comment> of Manchester. </comment>
 <comment> All rights reserved. </comment>
@@ -18,7 +18,7 @@
     <x>0</x>
     <y>0</y>
     <width>481</width>
-    <height>219</height>
+    <height>232</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -341,22 +341,6 @@
  <resources/>
  <connections>
   <connection>
-   <sender>mpBtnAddTarget</sender>
-   <signal>clicked()</signal>
-   <receiver>CQEventWidget1</receiver>
-   <slot>slotAddTarget()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>299</x>
-     <y>126</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
    <sender>mpBtnDeleteTarget</sender>
    <signal>clicked()</signal>
    <receiver>CQEventWidget1</receiver>
@@ -381,6 +365,22 @@
     <hint type="sourcelabel">
      <x>299</x>
      <y>108</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mpBtnAddTarget</sender>
+   <signal>clicked()</signal>
+   <receiver>CQEventWidget1</receiver>
+   <slot>slotAddTarget()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>299</x>
+     <y>126</y>
     </hint>
     <hint type="destinationlabel">
      <x>20</x>

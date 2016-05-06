@@ -34,6 +34,8 @@
 #include "CQMessageBox.h"
 #include "CQNameSelectionDialog.h"  // for Copy button compartment options
 
+#include "resourcesUI/CQIconResource.h"
+
 #include "utilities/CCopasiVector.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "report/CCopasiRootContainer.h"
@@ -72,6 +74,9 @@ ReactionsWidget1::ReactionsWidget1(QWidget *parent, const char * name, Qt::WFlag
 #ifndef COPASI_DEBUG
   mpFast->hide();
 #endif
+
+  mpBtnEditFunction->setIcon(CQIconResource::icon(CQIconResource::edit));
+  mpBtnAddFunction->setIcon(CQIconResource::icon(CQIconResource::editAdd));
 
   CopasiUI3Window *  pWindow = dynamic_cast<CopasiUI3Window * >(parent->parent());
   setUndoStack(pWindow->getUndoStack());
@@ -187,6 +192,33 @@ bool ReactionsWidget1::saveToReaction()
                           reac
                         ));
 
+      changed = true;
+    }
+
+  // Add Noise
+  if (reac->addNoise() != mpBoxAddNoise->isChecked())
+    {
+      mpUndoStack->push(new ReactionChangeCommand(
+                          CCopasiUndoCommand::REACTION_ADD_NOISE_CHANGE,
+                          reac->addNoise(),
+                          mpBoxAddNoise->isChecked(),
+                          this,
+                          reac
+                        ));
+
+      changed = true;
+    }
+
+  // Noise Expression
+  if (reac->getNoiseExpression() != mpNoiseExpressionWidget->mpExpressionWidget->getExpression())
+    {
+      mpUndoStack->push(new ReactionChangeCommand(
+                          CCopasiUndoCommand::REACTION_NOISE_EXPRESSION_CHANGE,
+                          FROM_UTF8(reac->getNoiseExpression()),
+                          FROM_UTF8(mpNoiseExpressionWidget->mpExpressionWidget->getExpression()),
+                          this,
+                          reac
+                        ));
       changed = true;
     }
 
@@ -433,6 +465,12 @@ void ReactionsWidget1::FillWidgetFromRI()
       ComboBox1->setCurrentIndex(0);
       table->initTable();
     }
+
+  // Noise Expression
+  mpNoiseExpressionWidget->mpExpressionWidget->setExpression(mpRi->getNoiseExpression());
+  mpNoiseExpressionWidget->updateWidget();
+  mpBoxAddNoise->setChecked(mpRi->addNoise());
+  slotAddNoiseChanged(mpRi->addNoise());
 }
 
 void ReactionsWidget1::slotTableChanged(int index, int sub, QString newValue)
@@ -552,12 +590,9 @@ void ReactionsWidget1::slotParameterStatusChanged(int index, bool local)
 
 void ReactionsWidget1::slotGotoFunction()
 {
-  CReaction * pReaction =
-    dynamic_cast< CReaction * >(CCopasiRootContainer::getKeyFactory()->get(mKey));
+  if (mpRi == NULL) return;
 
-  if (pReaction == NULL) return;
-
-  const CFunction * pFunc = pReaction->getFunction();
+  const CFunction * pFunc = mpRi->getFunction();
 
   if (pFunc == NULL) return;
 
@@ -588,6 +623,21 @@ void ReactionsWidget1::slotNewFunction()
   protectedNotify(ListViews::FUNCTION, ListViews::ADD, pFunc->getKey());
 
   mpListView->switchToOtherWidget(C_INVALID_INDEX, pFunc->getKey());
+}
+
+void ReactionsWidget1::slotAddNoiseChanged(bool addNoise)
+{
+  if (addNoise)
+    {
+      mpLblNoiseExpression->show();
+      mpNoiseExpressionWidget->show();
+      mpNoiseExpressionWidget->updateWidget();
+    }
+  else
+    {
+      mpLblNoiseExpression->hide();
+      mpNoiseExpressionWidget->hide();
+    }
 }
 
 bool ReactionsWidget1::update(ListViews::ObjectType objectType,
@@ -863,6 +913,16 @@ bool ReactionsWidget1::changeReaction(
       case CCopasiUndoCommand::REACTION_MAPPING_SPECIES_CHANGE:
         mpRi->setMapping(newSecondValue.toInt(), TO_UTF8(newValue.toString()));
         mpRi->writeBackToReaction(pReaction);
+        break;
+
+      case CCopasiUndoCommand::REACTION_ADD_NOISE_CHANGE:
+        mpRi->setAddNoise(newValue.toBool());
+        pReaction->setAddNoise(newValue.toBool());
+        break;
+
+      case CCopasiUndoCommand::REACTION_NOISE_EXPRESSION_CHANGE:
+        mpRi->setNoiseExpression(TO_UTF8(newValue.toString()));
+        pReaction->setNoiseExpression(TO_UTF8(newValue.toString()));
         break;
 
       default:

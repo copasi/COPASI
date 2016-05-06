@@ -137,6 +137,10 @@ void CReactionInterface::initFromReaction(const CReaction *rea)
     {
       setFunctionWithEmptyMapping("");
     }
+
+  mAddNoise = rea->addNoise();
+
+  mNoiseExpression = rea->getNoiseExpression();
 }
 
 bool CReactionInterface::loadMappingAndValues(const CReaction & rea)
@@ -338,6 +342,10 @@ bool CReactionInterface::writeBackToReaction(CReaction * rea)
             break;
         }
     }
+
+  rea->setAddNoise(mAddNoise);
+
+  rea->setNoiseExpression(mNoiseExpression);
 
   rea->compile();
   mpModel->setCompileFlag(); //TODO: check if really necessary
@@ -1100,6 +1108,26 @@ CReactionInterface::isValid() const
       return false;
 
   return true;
+}
+
+void CReactionInterface::setAddNoise(const bool & addNoise)
+{
+  mAddNoise = addNoise;
+}
+
+const bool & CReactionInterface::addNoise() const
+{
+  return mAddNoise;
+}
+
+bool CReactionInterface::setNoiseExpression(const std::string & expression)
+{
+  mNoiseExpression = expression;
+}
+
+const std::string & CReactionInterface::getNoiseExpression() const
+{
+  return mNoiseExpression;
 }
 
 #ifdef COPASI_DEBUG

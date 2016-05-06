@@ -1,4 +1,4 @@
-// Copyright (C) 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2015 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -56,6 +56,16 @@ GlobalQuantityChangeCommand::GlobalQuantityChangeCommand(CCopasiUndoCommand::Typ
         setText(": Changed global quantity unit");
         break;
 
+      case GLOBALQUANTITY_ADD_NOISE_CHANGE:
+        setText(": Changed adding noise");
+        setProperty("Function");
+        break;
+
+      case GLOBALQUANTITY_NOISE_EXPRESSION_CHANGE:
+        setText(": Changed noise expression");
+        setProperty("Function");
+        break;
+
       default:
         break;
     }
@@ -63,7 +73,6 @@ GlobalQuantityChangeCommand::GlobalQuantityChangeCommand(CCopasiUndoCommand::Typ
 
 GlobalQuantityChangeCommand::~GlobalQuantityChangeCommand()
 {
-
 }
 
 void GlobalQuantityChangeCommand::redo()

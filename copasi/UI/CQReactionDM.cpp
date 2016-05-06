@@ -116,6 +116,9 @@ QVariant CQReactionDM::data(const QModelIndex &index, int role) const
 
               case COL_PARTICLE_FLUX:
                 return QVariant(pRea->getParticleFlux());
+
+              case COL_NOISE_EXPRESSION:
+                return QVariant(QString(FROM_UTF8(pRea->getNoiseExpression())));
             }
         }
     }
@@ -178,6 +181,9 @@ QVariant CQReactionDM::headerData(int section, Qt::Orientation orientation,
 
             return QVariant("Flux" + FrequencyUnits);
           }
+
+          case COL_NOISE_EXPRESSION:
+            return QVariant("Noise Expression");
 
           default:
             return QVariant();

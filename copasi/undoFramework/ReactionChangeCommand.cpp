@@ -1,4 +1,4 @@
-// Copyright (C) 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2015 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -83,6 +83,16 @@ ReactionChangeCommand::ReactionChangeCommand(
 
       case REACTION_MAPPING_PARAMETER_CHANGE:
         setText(": Changed parameter mapping");
+        setProperty("Function");
+        break;
+
+      case REACTION_ADD_NOISE_CHANGE:
+        setText(": Changed adding noise");
+        setProperty("Function");
+        break;
+
+      case REACTION_NOISE_EXPRESSION_CHANGE:
+        setText(": Changed noise expression");
         setProperty("Function");
         break;
 

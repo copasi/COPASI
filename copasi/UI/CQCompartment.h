@@ -52,8 +52,6 @@ private:
   std::vector< int > mItemToType;
   CCompartment * mpCompartment;
   bool mChanged;
-  bool mExpressionValid;
-  bool mInitialExpressionValid;
 
   void init();
   void load();
@@ -66,9 +64,8 @@ private slots:
   void slotBtnCopy(); //dummy, to bypass warnings from TabWidget connections
   void slotBtnDelete();
   void slotTypeChanged(int type);
+  void slotAddNoiseChanged(bool addNoise);
   void slotInitialTypeChanged(bool useInitialAssignment);
-  void slotExpressionValid(bool valid);
-  void slotInitialExpressionValid(bool valid);
   void slotMetaboliteTableCurrentChanged(int row, int col);
 
   //additional functions for UNDO framework

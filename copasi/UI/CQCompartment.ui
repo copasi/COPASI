@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
-<comment> Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual </comment>
+<comment> Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual </comment>
 <comment> Properties, Inc., University of Heidelberg, and The University </comment>
 <comment> of Manchester. </comment>
 <comment> All rights reserved. </comment>
@@ -21,8 +21,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>430</width>
-    <height>330</height>
+    <width>400</width>
+    <height>334</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -54,36 +54,6 @@
      </property>
     </widget>
    </item>
-   <item row="0" column="1" colspan="3">
-    <widget class="QComboBox" name="mpComboBoxDim">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <item>
-      <property name="text">
-       <string>0 - dimensionless</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>1D - Length</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>2D - Area</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>3D - Volume</string>
-      </property>
-     </item>
-    </widget>
-   </item>
    <item row="1" column="0">
     <widget class="QLabel" name="mpLblType">
      <property name="sizePolicy">
@@ -103,20 +73,17 @@
      </property>
     </widget>
    </item>
-   <item row="1" column="1" colspan="3">
-    <widget class="QComboBox" name="mpComboBoxType">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
+   <item row="1" column="3">
+    <widget class="QCheckBox" name="mpBoxAddNoise">
+     <property name="text">
+      <string>Add Noise</string>
      </property>
     </widget>
    </item>
    <item row="2" column="0">
     <widget class="QLabel" name="mpLblExpression">
      <property name="sizePolicy">
-      <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+      <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
@@ -132,18 +99,18 @@
      </property>
     </widget>
    </item>
-   <item row="2" column="1" colspan="4">
+   <item row="2" column="1" colspan="3">
     <widget class="CQExpressionMmlStackedWidget" name="mpExpressionEMW">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
        <horstretch>0</horstretch>
-       <verstretch>1</verstretch>
+       <verstretch>0</verstretch>
       </sizepolicy>
      </property>
      <property name="minimumSize">
       <size>
        <width>300</width>
-       <height>45</height>
+       <height>30</height>
       </size>
      </property>
      <property name="currentIndex">
@@ -154,6 +121,47 @@
     </widget>
    </item>
    <item row="3" column="0">
+    <widget class="QLabel" name="mpLblNoiseExpression">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="text">
+      <string>Noise
+Expression</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTop|Qt::AlignTrailing</set>
+     </property>
+     <property name="wordWrap">
+      <bool>false</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="1" colspan="3">
+    <widget class="CQExpressionMmlStackedWidget" name="mpNoiseExpressionWidget">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="minimumSize">
+      <size>
+       <width>300</width>
+       <height>30</height>
+      </size>
+     </property>
+     <property name="currentIndex">
+      <number>1</number>
+     </property>
+     <widget class="QWidget" name="page_5"/>
+     <widget class="QWidget" name="page_6"/>
+    </widget>
+   </item>
+   <item row="4" column="0">
     <widget class="QLabel" name="mpLblInitialValue">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
@@ -172,24 +180,14 @@
      </property>
     </widget>
    </item>
-   <item row="3" column="1" colspan="3">
-    <widget class="QLineEdit" name="mpEditInitialVolume">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-    </widget>
-   </item>
-   <item row="3" column="4">
+   <item row="4" column="3">
     <widget class="QCheckBox" name="mpBoxUseInitialExpression">
      <property name="text">
       <string>Initial Expression</string>
      </property>
     </widget>
    </item>
-   <item row="4" column="0">
+   <item row="5" column="0">
     <widget class="QLabel" name="mpLblInitialExpression">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
@@ -198,7 +196,8 @@
       </sizepolicy>
      </property>
      <property name="text">
-      <string>Initial Expression</string>
+      <string>Initial
+Expression</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignRight|Qt::AlignTop|Qt::AlignTrailing</set>
@@ -208,7 +207,7 @@
      </property>
     </widget>
    </item>
-   <item row="4" column="1" colspan="4">
+   <item row="5" column="1" colspan="3">
     <widget class="CQExpressionMmlStackedWidget" name="mpInitialExpressionEMW">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
@@ -219,7 +218,7 @@
      <property name="minimumSize">
       <size>
        <width>300</width>
-       <height>45</height>
+       <height>30</height>
       </size>
      </property>
      <property name="currentIndex">
@@ -229,7 +228,7 @@
      <widget class="QWidget" name="page_4"/>
     </widget>
    </item>
-   <item row="5" column="0" colspan="5">
+   <item row="6" column="0" colspan="4">
     <widget class="Line" name="mpLine1">
      <property name="frameShape">
       <enum>QFrame::HLine</enum>
@@ -239,7 +238,7 @@
      </property>
     </widget>
    </item>
-   <item row="6" column="0">
+   <item row="7" column="0">
     <widget class="QLabel" name="mpLblVolume">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
@@ -258,20 +257,7 @@
      </property>
     </widget>
    </item>
-   <item row="6" column="1" colspan="3">
-    <widget class="QLineEdit" name="mpEditCurrentVolume">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="readOnly">
-      <bool>true</bool>
-     </property>
-    </widget>
-   </item>
-   <item row="7" column="0">
+   <item row="8" column="0">
     <widget class="QLabel" name="mpLblRate">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
@@ -290,20 +276,7 @@
      </property>
     </widget>
    </item>
-   <item row="7" column="1" colspan="3">
-    <widget class="QLineEdit" name="mpEditRate">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="readOnly">
-      <bool>true</bool>
-     </property>
-    </widget>
-   </item>
-   <item row="8" column="0">
+   <item row="9" column="0">
     <widget class="QLabel" name="mpLblMetabolites">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
@@ -312,7 +285,8 @@
       </sizepolicy>
      </property>
      <property name="text">
-      <string>Contained Species</string>
+      <string>Contained
+ Species</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignRight|Qt::AlignTop|Qt::AlignTrailing</set>
@@ -322,7 +296,7 @@
      </property>
     </widget>
    </item>
-   <item row="8" column="1" colspan="4">
+   <item row="9" column="1" colspan="3">
     <widget class="QTableWidget" name="mpMetaboliteTable">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
@@ -355,7 +329,7 @@
      </column>
     </widget>
    </item>
-   <item row="9" column="2">
+   <item row="10" column="2">
     <spacer name="mpVerticalSpacer">
      <property name="orientation">
       <enum>Qt::Vertical</enum>
@@ -367,6 +341,82 @@
       </size>
      </property>
     </spacer>
+   </item>
+   <item row="0" column="1" colspan="2">
+    <widget class="QComboBox" name="mpComboBoxDim">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <item>
+      <property name="text">
+       <string>0 - dimensionless</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>1D - Length</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>2D - Area</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>3D - Volume</string>
+      </property>
+     </item>
+    </widget>
+   </item>
+   <item row="1" column="1" colspan="2">
+    <widget class="QComboBox" name="mpComboBoxType">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="1" colspan="2">
+    <widget class="QLineEdit" name="mpEditInitialVolume">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+    </widget>
+   </item>
+   <item row="7" column="1" colspan="2">
+    <widget class="QLineEdit" name="mpEditCurrentVolume">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="readOnly">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="8" column="1" colspan="2">
+    <widget class="QLineEdit" name="mpEditRate">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="readOnly">
+      <bool>true</bool>
+     </property>
+    </widget>
    </item>
   </layout>
  </widget>
@@ -434,6 +484,22 @@
    <signal>cellDoubleClicked(int,int)</signal>
    <receiver>CQCompartment</receiver>
    <slot>slotMetaboliteTableCurrentChanged(int,int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>329</x>
+     <y>333</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>260</x>
+     <y>220</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mpBoxAddNoise</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>CQCompartment</receiver>
+   <slot>slotAddNoiseChanged(bool)</slot>
    <hints>
     <hint type="sourcelabel">
      <x>329</x>

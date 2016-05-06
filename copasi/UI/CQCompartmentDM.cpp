@@ -171,6 +171,16 @@ QVariant CQCompartmentDM::data(const QModelIndex &index, int role) const
                 else
                   return QVariant();
               }
+
+              case COL_NEXPRESSION_COMPARTMENTS:
+              {
+                pExpression = pComp->getNoiseExpressionPtr();
+
+                if (pExpression != NULL)
+                  return QVariant(QString(FROM_UTF8(pExpression->getDisplayString())));
+                else
+                  return QVariant();
+              }
             }
         }
     }
@@ -240,6 +250,9 @@ QVariant CQCompartmentDM::headerData(int section, Qt::Orientation orientation,
 
           case COL_EXPRESSION_COMPARTMENTS:
             return QVariant("Expression" + ExpressionUnits);
+
+          case COL_NEXPRESSION_COMPARTMENTS:
+            return QVariant("Noise Expression");
 
           default:
             return QVariant();

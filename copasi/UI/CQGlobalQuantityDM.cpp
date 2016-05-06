@@ -180,6 +180,16 @@ QVariant CQGlobalQuantityDM::data(const QModelIndex &index, int role) const
                 else
                   return QVariant();
               }
+
+              case COL_NEXPRESSION_GQ:
+              {
+                pExpression = pGQ->getNoiseExpressionPtr();
+
+                if (pExpression != NULL)
+                  return QVariant(QString(FROM_UTF8(pExpression->getDisplayString())));
+                else
+                  return QVariant();
+              }
             }
         }
     }
@@ -223,6 +233,9 @@ QVariant CQGlobalQuantityDM::headerData(int section, Qt::Orientation orientation
 
           case COL_EXPRESSION_GQ:
             return QVariant("Expression");
+
+          case COL_NEXPRESSION_GQ:
+            return QVariant("Noise Expression");
 
           default:
             return QVariant();
