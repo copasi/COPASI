@@ -228,6 +228,8 @@ public:
                         CCopasiAbstractArray::index_type & index,
                         const std::vector<std::vector<std::string> > & display) const;
 
+  void autoAnnotation(const size_t & d);
+
   /**
    * generate a display name for the array annotation.
    */
