@@ -2913,6 +2913,10 @@ bool CCopasiXML::saveUnitDefinitionList()
 
   if (!imax) return success;
 
+  // in case only the functionDB is exported, there will not be a model
+  // and no units being used, so we don't have to export them here
+  if (mpModel == NULL) return success;
+
   CXMLAttributeList Attributes;
   const CUnitDefinition * pUnitDef = NULL;
 
