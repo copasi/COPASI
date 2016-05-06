@@ -46,7 +46,16 @@ QSharedPointer<QPainterPath> CQConnectionGraphicsItem::getPath(const CLCurve& cu
 
 QPainterPath CQConnectionGraphicsItem::shape() const
 {
+  if (mUseFullShape)
+    return mFullShape;
+
   return mShape;
+}
+
+void
+CQConnectionGraphicsItem::setUseFullShape(bool useFullShape)
+{
+  mUseFullShape = useFullShape;
 }
 
 void CQConnectionGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
@@ -65,6 +74,7 @@ void CQConnectionGraphicsItem::mouseReleaseEvent(QGraphicsSceneMouseEvent *event
       QPointF currentPos = pos();
       currentScene->updatePosition(data(COPASI_LAYOUT_KEY).toString(), currentPos);
       mWasMoved = false;
+      mUseFullShape = false;
     }
   else
     {
@@ -87,6 +97,7 @@ QVariant CQConnectionGraphicsItem::itemChange(GraphicsItemChange change, const Q
 CQConnectionGraphicsItem::CQConnectionGraphicsItem(const CLGlyphWithCurve* curveGlyph, const CLRenderResolver* resolver)
   : CQCopasiGraphicsItem(resolver, resolver != NULL ? resolver->resolveStyle(curveGlyph) : NULL)
   , mWasMoved(false)
+  , mUseFullShape(false)
 {
   setFlag(QGraphicsItem::ItemIsMovable);
   setFlag(QGraphicsItem::ItemSendsGeometryChanges);
@@ -94,6 +105,7 @@ CQConnectionGraphicsItem::CQConnectionGraphicsItem(const CLGlyphWithCurve* curve
 
   QSharedPointer<QPainterPath> path = getPath(curveGlyph->getCurve());
   mShape.addPath(*path);
+  mFullShape.addPath(*path);
   QGraphicsPathItem* item;
   QGraphicsItemGroup* itemGroup;
 
@@ -123,7 +135,7 @@ CQConnectionGraphicsItem::CQConnectionGraphicsItem(const CLGlyphWithCurve* curve
           if (metab->getCurve().getNumCurveSegments() > 0)
             {
               path = getPath(metab->getCurve());
-              //mShape.addPath(*path);
+              mFullShape.addPath(*path);
 
               item = new QGraphicsPathItem(*path);
               itemGroup = new QGraphicsItemGroup();
@@ -150,7 +162,7 @@ CQConnectionGraphicsItem::CQConnectionGraphicsItem(const CLGlyphWithCurve* curve
           if (glyph ->getCurve().getNumCurveSegments() > 0)
             {
               path = getPath(glyph ->getCurve());
-              //mShape.addPath(*path);
+              mFullShape.addPath(*path);
 
               item = new QGraphicsPathItem(*path);
               itemGroup = new QGraphicsItemGroup();
