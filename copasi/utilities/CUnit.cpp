@@ -122,15 +122,19 @@ bool CUnit::compile(const C_FLOAT64 & avogadro)
   CUnitParser Parser(&buffer);
   Parser.setAvogadro(avogadro);
 
-  bool success = (Parser.yyparse() == 0);
-
-  if (success)
+  try
     {
-      mComponents = Parser.getComponents();
-      mUsedSymbols = Parser.getSymbols();
+      Parser.yyparse();
+    }
+  catch (CCopasiException & /*exception*/)
+    {
+      return false;
     }
 
-  return success;
+  mComponents = Parser.getComponents();
+  mUsedSymbols = Parser.getSymbols();
+
+  return true;
 }
 
 std::string CUnit::getExpression() const
