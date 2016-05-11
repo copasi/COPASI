@@ -1,7 +1,7 @@
-// Copyright (C) 2014 - 2016 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
+// Copyright (C) 2014 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
 #include "copasi/utilities/CBaseUnit.h"
 #include "copasi/utilities/CCopasiMessage.h"
@@ -128,7 +128,7 @@ std::string CBaseUnit::prefixFromScale(int scale)
         return "n";
 
       case micro:
-        return "u";
+        return "\xc2\xb5";
 
       case milli:
         return "m";
