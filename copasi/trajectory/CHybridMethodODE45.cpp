@@ -60,8 +60,8 @@
 // static
 std::string CHybridMethodODE45::PartitioningStrategy[] =
 {
-  "Deterministic Reaction Integration",
-  "Stochastic Reaction Integration",
+  "All Reactions Deterministic",
+  "All Reactions Stochastic",
   "User specified Partition",
   ""
 };
@@ -233,7 +233,7 @@ void CHybridMethodODE45::initializeParameter()
   mpRelativeTolerance = assertParameter("Relative Tolerance", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0e-006);
   mpAbsoluteTolerance = assertParameter("Absolute Tolerance", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0e-009);
   mpPartitioningStrategy = assertParameter("Partitioning Strategy", CCopasiParameter::STRING, PartitioningStrategy[1]);
-  mpFastReactions = assertGroup("Fast Reactions");
+  mpFastReactions = assertGroup("Deterministic Reactions");
   mpUseRandomSeed = assertParameter("Use Random Seed", CCopasiParameter::BOOL, (bool) USE_RANDOM_SEED);
   mpRandomSeed = assertParameter("Random Seed", CCopasiParameter::UINT, (unsigned C_INT32) RANDOM_SEED);
 
