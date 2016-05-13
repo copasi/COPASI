@@ -1,16 +1,16 @@
-// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
-// All rights reserved.
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+// and The University of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
-// All rights reserved.
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc. and EML Research, gGmbH. 
+// All rights reserved. 
 
 //
 
@@ -66,6 +66,7 @@ CModel::CModel(CCopasiContainer* pParent):
   mLengthUnit("m"),
   mTimeUnit("s"),
   mQuantityUnit("mol"),
+  mDimensionlessUnits(5),
   mType(deterministic),
   mCompartments("Compartments", this),
   mMetabolites("Metabolites", this),
@@ -1324,12 +1325,14 @@ void CModel::stateToIntialState()
 bool CModel::setVolumeUnit(const std::string & name)
 {
   mVolumeUnit = name;
+  mDimensionlessUnits[volume] = CUnit(mVolumeUnit).isDimensionless();
   return true;
 }
 
 bool CModel::setVolumeUnit(const CUnit::VolumeUnit & unitEnum)
 {
   mVolumeUnit = CUnit::VolumeUnitNames[unitEnum];
+  mDimensionlessUnits[volume] = CUnit(mVolumeUnit).isDimensionless();
   return true;
 }
 
@@ -1353,12 +1356,14 @@ CUnit::VolumeUnit CModel::getVolumeUnitEnum() const
 bool CModel::setAreaUnit(const std::string & name)
 {
   mAreaUnit = name;
+  mDimensionlessUnits[area] = CUnit(mAreaUnit).isDimensionless();
   return true;
 }
 
 bool CModel::setAreaUnit(const CUnit::AreaUnit & unitEnum)
 {
   mAreaUnit = CUnit::AreaUnitNames[unitEnum];
+  mDimensionlessUnits[area] = CUnit(mAreaUnit).isDimensionless();
   return true;
 }
 
@@ -1381,12 +1386,14 @@ CUnit::AreaUnit CModel::getAreaUnitEnum() const
 bool CModel::setLengthUnit(const std::string & name)
 {
   mLengthUnit = name;
+  mDimensionlessUnits[length] = CUnit(mLengthUnit).isDimensionless();
   return true;
 }
 
 bool CModel::setLengthUnit(const CUnit::LengthUnit & unitEnum)
 {
   mLengthUnit = CUnit::LengthUnitNames[unitEnum];
+  mDimensionlessUnits[length] = CUnit(mLengthUnit).isDimensionless();
   return true;
 }
 
@@ -1410,12 +1417,14 @@ CUnit::LengthUnit CModel::getLengthUnitEnum() const
 bool CModel::setTimeUnit(const std::string & name)
 {
   mTimeUnit = name;
+  mDimensionlessUnits[time] = CUnit(mTimeUnit).isDimensionless();
   return true;
 }
 
 bool CModel::setTimeUnit(const CUnit::TimeUnit & unitEnum)
 {
   mTimeUnit = CUnit::TimeUnitNames[unitEnum];
+  mDimensionlessUnits[time] = CUnit(mTimeUnit).isDimensionless();
   return true;
 }
 
@@ -1439,6 +1448,7 @@ CUnit::TimeUnit CModel::getTimeUnitEnum() const
 bool CModel::setQuantityUnit(const std::string & name)
 {
   mQuantityUnit = name;
+  mDimensionlessUnits[quantity] = CUnit(mQuantityUnit).isDimensionless();
 
   CUnit QuantityUnit(mQuantityUnit, mAvogadro);
 
@@ -1474,6 +1484,7 @@ bool CModel::setQuantityUnit(const CUnit::QuantityUnit & unitEnum)
   //     return true;
 
   mQuantityUnit = CUnit::QuantityUnitNames[unitEnum];
+  mDimensionlessUnits[quantity] = CUnit(mQuantityUnit).isDimensionless();
 
   bool success = true;
 
@@ -3111,6 +3122,12 @@ void CModel::initObjects()
   mpLinkMatrixAnnotation->setMode(1, CArrayAnnotation::OBJECTS);
   mpLinkMatrixAnnotation->setDimensionDescription(1, "Species (reduced system)");
 
+  mDimensionlessUnits[volume] = CUnit(mVolumeUnit).isDimensionless();
+  mDimensionlessUnits[area] = CUnit(mAreaUnit).isDimensionless();
+  mDimensionlessUnits[length] = CUnit(mLengthUnit).isDimensionless();
+  mDimensionlessUnits[time] = CUnit(mTimeUnit).isDimensionless();
+  mDimensionlessUnits[quantity] = CUnit(mQuantityUnit).isDimensionless();
+
   // mpMathModel = new CMathModel(this);
 }
 
@@ -3921,4 +3938,9 @@ std::map< std::string, CUnit > CModel::getUsedUnits() const
   UsedUnits[mQuantityUnit] = CUnit(mQuantityUnit);
 
   return UsedUnits;
+}
+
+bool CModel::isDimensionless(UnitType type) const
+{
+  return mDimensionlessUnits[type];
 }
