@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -54,6 +54,10 @@ CEvaluationNodeOperator::CEvaluationNodeOperator(const SubType & subType,
 
       case MINUS:
         mPrecedence = PRECEDENCE_OPERATOR_MINUS;
+        break;
+
+      case REMAINDER:
+        mPrecedence = PRECEDENCE_OPERATOR_REMAINDER;
         break;
 
       default:
@@ -146,6 +150,9 @@ std::string CEvaluationNodeOperator::getCCodeString(const std::vector< std::stri
       if (subType == MODULUS)
         DisplayString = "(int)";
 
+      if (subType == REMAINDER)
+        DisplayString = "fmod";
+
       if (*mpLeft < * (CEvaluationNode *)this)
         DisplayString += "(" + children[0] + ")";
       else
@@ -154,6 +161,7 @@ std::string CEvaluationNodeOperator::getCCodeString(const std::vector< std::stri
       switch (subType)
         {
           case POWER:
+          case REMAINDER:
             DisplayString += ",";
             break;
 
@@ -171,7 +179,8 @@ std::string CEvaluationNodeOperator::getCCodeString(const std::vector< std::stri
       else
         DisplayString += children[1];
 
-      if (subType == POWER)
+      if (subType == POWER ||
+          subType == REMAINDER)
         DisplayString += ")";
 
       return DisplayString;
