@@ -76,7 +76,7 @@ const std::string CTaskEnum::MethodName[] =
   "Stochastic (Adaptive SSA/\xcf\x84-Leap)",
   "Hybrid (Runge-Kutta)",
   "Hybrid (LSODA)",
-  "Hybrid (ODE45)",
+  "Hybrid (RK-45)",
   "Hybrid (DSA-LSODAR)",
   "ILDM (LSODA,Deuflhard)",
   "ILDM (LSODA,Modified)",
