@@ -185,7 +185,15 @@ std::set< CUnit > CUnitDefinitionDB::getAllValidUnits(const std::string & symbol
             }
           else
             {
-              ValidUnits.insert(it->getSymbol());
+              CUnit ScaledUnit = CUnit(it->getSymbol());
+
+              if (it->isEquivalent(Base))
+                {
+                  ScaledUnit = ScaledUnit.exponentiate(exponent);
+                }
+
+              ScaledUnit.buildExpression();
+              ValidUnits.insert(ScaledUnit);
             }
         }
     }
