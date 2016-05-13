@@ -1,13 +1,13 @@
-// Copyright (C) 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2014 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-/* A Bison parser, made by GNU Bison 2.6.5.  */
+/* A Bison parser, made by GNU Bison 3.0.2.  */
 
 /* Bison interface for Yacc-like parsers in C
 
-      Copyright (C) 1984, 1989-1990, 2000-2012 Free Software Foundation, Inc.
+   Copyright (C) 1984, 1989-1990, 2000-2013 Free Software Foundation, Inc.
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -37,7 +37,7 @@
 
 #ifndef YY_CEVALUATIONPARSER_CEVALUATIONPARSER_TAB_HPP_INCLUDED
 # define YY_CEVALUATIONPARSER_CEVALUATIONPARSER_TAB_HPP_INCLUDED
-/* Enabling traces.  */
+/* Debug traces.  */
 #ifndef YYDEBUG
 # define YYDEBUG 1
 #endif
@@ -45,11 +45,9 @@
 extern int CEvaluationParserdebug;
 #endif
 
-/* Tokens.  */
+/* Token type.  */
 #ifndef YYTOKENTYPE
 # define YYTOKENTYPE
-/* Put the tokens into the symbol table, so that GDB and other debuggers
-   know about them.  */
 enum yytokentype
 {
   TOKEN_NUMBER = 258,
@@ -61,48 +59,37 @@ enum yytokentype
   TOKEN_OPERATOR_POWER = 264,
   TOKEN_OPERATOR_MULTIPLY = 265,
   TOKEN_OPERATOR_MODULUS = 266,
-  TOKEN_OPERATOR_PLUS = 267,
-  TOKEN_LOGICAL_CHOICE = 268,
-  TOKEN_LOGICAL_VALUE = 269,
-  TOKEN_LOGICAL_NOT = 270,
-  TOKEN_LOGICAL_OR = 271,
-  TOKEN_LOGICAL_XOR = 272,
-  TOKEN_LOGICAL_AND = 273,
-  TOKEN_LOGICAL_EQ = 274,
-  TOKEN_LOGICAL_NE = 275,
-  TOKEN_LOGICAL_GT = 276,
-  TOKEN_LOGICAL_GE = 277,
-  TOKEN_LOGICAL_LT = 278,
-  TOKEN_LOGICAL_LE = 279,
-  TOKEN_STRUCTURE_OPEN = 280,
-  TOKEN_STRUCTURE_VECTOR_OPEN = 281,
-  TOKEN_STRUCTURE_COMMA = 282,
-  TOKEN_STRUCTURE_CLOSE = 283,
-  TOKEN_STRUCTURE_VECTOR_CLOSE = 284
+  TOKEN_OPERATOR_REMAINDER = 267,
+  TOKEN_OPERATOR_PLUS = 268,
+  TOKEN_LOGICAL_CHOICE = 269,
+  TOKEN_LOGICAL_VALUE = 270,
+  TOKEN_LOGICAL_NOT = 271,
+  TOKEN_LOGICAL_OR = 272,
+  TOKEN_LOGICAL_XOR = 273,
+  TOKEN_LOGICAL_AND = 274,
+  TOKEN_LOGICAL_EQ = 275,
+  TOKEN_LOGICAL_NE = 276,
+  TOKEN_LOGICAL_GT = 277,
+  TOKEN_LOGICAL_GE = 278,
+  TOKEN_LOGICAL_LT = 279,
+  TOKEN_LOGICAL_LE = 280,
+  TOKEN_STRUCTURE_OPEN = 281,
+  TOKEN_STRUCTURE_VECTOR_OPEN = 282,
+  TOKEN_STRUCTURE_COMMA = 283,
+  TOKEN_STRUCTURE_CLOSE = 284,
+  TOKEN_STRUCTURE_VECTOR_CLOSE = 285
 };
 #endif
 
+/* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 typedef int YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
-# define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1
 #endif
 
 extern YYSTYPE CEvaluationParserlval;
 
-#ifdef YYPARSE_PARAM
-#if defined __STDC__ || defined __cplusplus
-int CEvaluationParserparse(void *YYPARSE_PARAM);
-#else
-int CEvaluationParserparse();
-#endif
-#else /* ! YYPARSE_PARAM */
-#if defined __STDC__ || defined __cplusplus
 int CEvaluationParserparse(void);
-#else
-int CEvaluationParserparse();
-#endif
-#endif /* ! YYPARSE_PARAM */
 
 #endif /* !YY_CEVALUATIONPARSER_CEVALUATIONPARSER_TAB_HPP_INCLUDED  */
