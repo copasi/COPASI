@@ -695,6 +695,15 @@ void CMathContainer::updateInitialValues(const CModelParameter::Framework & fram
 
 void CMathContainer::applyInitialValues()
 {
+  // We need to reset any left over pending actions.
+  CMathEvent * pEvent = mEvents.array();
+  CMathEvent * pEventEnd = pEvent + mEvents.size();
+
+  for (; pEvent != pEventEnd; ++pEvent)
+    {
+      pEvent->removePendingAction();
+    }
+
 #ifdef DEBUG_OUTPUT
   std::cout << "Container Values: " << mValues << std::endl;
 #endif // DEBUG_OUTPUT
@@ -742,7 +751,7 @@ void CMathContainer::applyInitialValues()
   // Fire events which triggers are true and which may fire at the initial time
   C_FLOAT64 * pTrigger = mEventTriggers.array();
   C_FLOAT64 * pTriggerEnd = pTrigger + mEventTriggers.size();
-  CMathEvent * pEvent = mEvents.array();
+  pEvent = mEvents.array();
 
   for (; pTrigger != pTriggerEnd; ++pTrigger, ++pEvent)
     {
