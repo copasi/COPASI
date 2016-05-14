@@ -98,7 +98,17 @@ std::string CEvaluationNodeOperator::getInfix(const std::vector< std::string > &
       else
         Infix = children[0];
 
+      if (REMAINDER == (mType & 0x00FFFFFF))
+        {
+          Infix += " ";
+        }
+
       Infix += mData;
+
+      if (REMAINDER == (mType & 0x00FFFFFF))
+        {
+          Infix += " ";
+        }
 
       if (!(*(CEvaluationNode *)this < *mpRight))
         Infix += "(" + children[1] + ")";
@@ -123,7 +133,17 @@ std::string CEvaluationNodeOperator::getDisplayString(const std::vector< std::st
       else
         DisplayString = children[0];
 
+      if (REMAINDER == (mType & 0x00FFFFFF))
+        {
+          DisplayString += " ";
+        }
+
       DisplayString += mData;
+
+      if (REMAINDER == (mType & 0x00FFFFFF))
+        {
+          DisplayString += " ";
+        }
 
       if (!(*(CEvaluationNode *)this < *mpRight))
         DisplayString += "(" + children[1] + ")";
@@ -147,11 +167,11 @@ std::string CEvaluationNodeOperator::getCCodeString(const std::vector< std::stri
       if (subType == POWER)
         DisplayString = "pow(";
 
+      if (subType == REMAINDER)
+        DisplayString = "fmod(";
+
       if (subType == MODULUS)
         DisplayString = "(int)";
-
-      if (subType == REMAINDER)
-        DisplayString = "fmod";
 
       if (*mpLeft < * (CEvaluationNode *)this)
         DisplayString += "(" + children[0] + ")";
@@ -229,7 +249,8 @@ std::string CEvaluationNodeOperator::getXPPString(const std::vector< std::string
       Data DisplayString;
       SubType subType = (SubType)CEvaluationNode::subType(this->getType());
 
-      if (subType == MODULUS)
+      if (subType == MODULUS ||
+          subType == REMAINDER)
         DisplayString = "mod(";
 
       if (*mpLeft < * (CEvaluationNode *)this)
@@ -240,6 +261,7 @@ std::string CEvaluationNodeOperator::getXPPString(const std::vector< std::string
       switch (subType)
         {
           case MODULUS:
+          case REMAINDER:
             DisplayString += ",";
             break;
 
@@ -253,7 +275,8 @@ std::string CEvaluationNodeOperator::getXPPString(const std::vector< std::string
       else
         DisplayString += children[1];
 
-      if (subType == MODULUS)
+      if (subType == MODULUS ||
+          subType == REMAINDER)
         DisplayString += ")";
 
       return DisplayString;
@@ -430,6 +453,7 @@ ASTNode* CEvaluationNodeOperator::toAST(const CCopasiDataModel* pDataModel) cons
         break;
 
       case MODULUS:
+      case REMAINDER:
         // replace this with a more complex subtree
         CEvaluationNodeOperator::createModuloTree(this, node, pDataModel);
         break;
@@ -1536,6 +1560,31 @@ std::string CEvaluationNodeOperator::getMMLString(const std::vector< std::string
         out << "<mo>" << "%" << "</mo>" << std::endl;
 
         flag = true;
+
+        if (flag) out << "<mfenced>" << std::endl;
+
+        out << children[1];
+
+        if (flag) out << "</mfenced>" << std::endl;
+
+        out << "</mrow>" << std::endl;
+        break;
+
+      case REMAINDER:
+        out << "<mrow>" << std::endl;
+
+        //do we need "()" ?
+        flag = (*mpLeft < * (CEvaluationNode *)this);
+
+        if (flag) out << "<mfenced>" << std::endl;
+
+        out << children[0];
+
+        if (flag) out << "</mfenced>" << std::endl;
+
+        out << "<mo>" << "mod" << "</mo>" << std::endl;
+
+        flag = !(*(CEvaluationNode *)this < *mpRight);
 
         if (flag) out << "<mfenced>" << std::endl;
 
