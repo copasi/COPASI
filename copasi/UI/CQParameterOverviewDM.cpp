@@ -1,7 +1,7 @@
-// Copyright (C) 2012 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2012 - 2016 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 /*
  * CQParameterOverviewDM.cpp
@@ -493,12 +493,14 @@ QVariant CQParameterOverviewDM::unitData(const CModelParameter * pNode, int role
   if (role == Qt::DisplayRole)
     {
       QMap<const CModelParameter*, QVariant>::const_iterator it = mUnitCache.find(pNode);
-      if (it != mUnitCache.end())
-      {
+
+      if (it == mUnitCache.end())
+        {
           QVariant local(QString(FROM_UTF8(pNode->getUnit(static_cast< CModelParameter::Framework >(mFramework)))));
           mUnitCache.insert(pNode, local);
           return local;
-      }
+        }
+
       return it.value();
     }
 
