@@ -3782,6 +3782,7 @@ void CCopasiXMLParser::ReactionElement::start(const XML_Char *pszName,
   const char * fast;
   bool Fast;
   const char * SBMLId;
+  CReaction::KineticLawUnit KineticLawUnitType;
 
   mCurrentElement = mLastKnownElement;
   mpCurrentHandler = NULL;
@@ -3808,12 +3809,15 @@ void CCopasiXMLParser::ReactionElement::start(const XML_Char *pszName,
 
             fast = mParser.getAttributeValue("fast", papszAttrs, "false");
             Fast = mParser.toBool(fast);
+            KineticLawUnitType = toEnum(mParser.getAttributeValue("kineticLawUnitType", papszAttrs, "Default"), CReaction::KineticLawUnitTypeName, CReaction::Default);
 
             mCommon.pReaction = new CReaction();
             addFix(mKey, mCommon.pReaction);
             mCommon.pReaction->setObjectName(Name);
             mCommon.pReaction->setReversible(Reversible);
             mCommon.pReaction->setFast(Fast);
+            mCommon.pReaction->setKineticLawUnitType(KineticLawUnitType);
+
             SBMLId = mParser.getAttributeValue("sbmlid", papszAttrs, "");
 
             if (std::string(SBMLId) != std::string(""))

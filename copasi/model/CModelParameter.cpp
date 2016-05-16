@@ -1,7 +1,7 @@
-// Copyright (C) 2011 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2011 - 2016 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 #include <limits>
 
@@ -177,7 +177,7 @@ const std::string CModelParameter::getUnit(const Framework & framework) const
 
         Units.setChemicalEquation(&pReaction->getChemEq());
 
-        Units.findDimensions(pReaction->getCompartmentNumber() > 1);
+        Units.findDimensions(pReaction->getEffectiveKineticLawUnitType() == CReaction::AmountPerTime);
 
         return Units.getDimensions()[pReaction->getParameterIndex(getName())].getDisplayString(pModel);
       }

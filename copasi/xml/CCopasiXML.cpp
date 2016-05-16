@@ -257,6 +257,11 @@ bool CCopasiXML::load(std::istream & is,
       fixBuildBefore104();
     }
 
+  if (FileVersion.getVersionDevel() <= 113)
+    {
+      fixBuild113();
+    }
+
   if (!CVersion::VERSION.isCompatible(FileVersion))
     CCopasiMessage(CCopasiMessage::WARNING, MCXML + 9, FileVersion.getVersion().c_str());
 
@@ -702,6 +707,7 @@ bool CCopasiXML::saveModel()
       Attributes.add("name", "");
       Attributes.add("reversible", "");
       Attributes.add("fast", "");
+      Attributes.add("kineticLawUnitType", "");
 
       for (i = 0; i < imax; i++)
         {
@@ -711,6 +717,7 @@ bool CCopasiXML::saveModel()
           Attributes.setValue(1, pReaction->getObjectName());
           Attributes.setValue(2, pReaction->isReversible() ? "true" : "false");
           Attributes.setValue(3, pReaction->isFast() ? "true" : "false");
+          Attributes.setValue(4, CReaction::KineticLawUnitTypeName[pReaction->getKineticLawUnitType()]);
 
           if (pReaction->getSBMLId() != "")
             mSBMLReference[pReaction->getSBMLId()] = pReaction->getKey();
@@ -2050,6 +2057,40 @@ void CCopasiXML::fixBuildBefore104()
 
   if (mpModel->getTimeUnit() == "m")
     mpModel->setTimeUnit("min");
+}
+
+void CCopasiXML::fixBuild113()
+{
+  if (mpModel == NULL) return;
+
+  CCopasiVector< CReaction >::iterator it = mpModel->getReactions().begin();
+  CCopasiVector< CReaction >::iterator end = mpModel->getReactions().end();
+
+  for (; it != end; ++it)
+    {
+      if (it->getCompartmentNumber() > 1)
+        {
+          const CCompartment * pCompartment = NULL;
+          std::set< const CCompartment * > Compartments;
+
+          CCopasiVector < CChemEqElement >::const_iterator itBalance = it->getChemEq().getBalances().begin();
+          CCopasiVector < CChemEqElement >::const_iterator endBalance = it->getChemEq().getBalances().end();
+
+          for (; itBalance != endBalance; ++itBalance)
+            {
+              if (itBalance->getMetabolite() != NULL &&
+                  (pCompartment = itBalance->getMetabolite()->getCompartment()) != NULL)
+                {
+                  Compartments.insert(pCompartment);
+                }
+            }
+
+          if (Compartments.size() == 1)
+            {
+              it->setKineticLawUnitType(CReaction::ConcentrationPerTime);
+            }
+        }
+    }
 }
 
 /**

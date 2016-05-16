@@ -891,7 +891,8 @@ bool CMathObject::compileFlux(CMathContainer & container)
 
   std::set< const CCompartment * > Compartments = pReaction->getChemEq().getCompartments();
 
-  if (Compartments.size() == 1)
+  if (pReaction->getEffectiveKineticLawUnitType() == CReaction::ConcentrationPerTime &&
+      Compartments.size() > 0)
     {
       CExpression Tmp(mpExpression->getObjectName(), &container);
 

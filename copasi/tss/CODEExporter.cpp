@@ -1254,7 +1254,7 @@ bool CODEExporter::exportReacParamsAndFuncs(const CModel* copasiModel)
 
               jequation << KineticFunction2ODEmember(reac);
 
-              if (reac->getCompartmentNumber() == 1) jequation << "*" << NameMap[metabs[ode_size + j].getCompartment()->getKey()];
+              if (reac->getEffectiveKineticLawUnitType() == CReaction::ConcentrationPerTime) jequation << "*" << NameMap[metabs[ode_size + j].getCompartment()->getKey()];
 
               equations[metabs[ode_size + j].getKey()] += jequation.str();
             }

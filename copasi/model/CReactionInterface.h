@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -82,6 +82,8 @@ private:
    * values of the kinetic parameters
    */
   std::vector<bool> mIsLocal;
+
+  CReaction::KineticLawUnit mKineticLawUnitType;
 
 private:
   CReactionInterface();
@@ -261,6 +263,8 @@ public:
    * @return std::set< const CCopasiObject * > DeletedParameters
    */
   std::set< const CCopasiObject * > getDeletedParameters() const;
+
+  const CReaction::KineticLawUnit * getKineticLawUnitType() const;
 
 #ifdef COPASI_DEBUG
   void printDebug() const;

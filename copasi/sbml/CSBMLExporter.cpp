@@ -3483,7 +3483,6 @@ UnitDefinition *CSBMLExporter::createUnitDefinitionFor(const CUnit &unit)
             fatalError();
             break;
         }
-
     }
 
   return result;
@@ -3524,7 +3523,6 @@ void CSBMLExporter::exportAndAssignUnit(const CUnit &unit, SBase *sbmlElement)
       pCompartment->setUnits(pUnit->getId());
       return;
     }
-
 }
 
 /*
@@ -5198,7 +5196,7 @@ KineticLaw* CSBMLExporter::createKineticLaw(const CReaction& reaction, CCopasiDa
       delete pOrigNode;
       assert(pNode != NULL);
 
-      if (reaction.getCompartmentNumber() == 1)
+      if (reaction.getEffectiveKineticLawUnitType() == CReaction::ConcentrationPerTime)
         {
           const CCompartment& compartment = (reaction.getChemEq().getSubstrates().size() != 0) ? (*reaction.getChemEq().getSubstrates()[0].getMetabolite()->getCompartment()) : (*reaction.getChemEq().getProducts()[0].getMetabolite()->getCompartment());
 

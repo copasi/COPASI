@@ -397,6 +397,11 @@ private:
   void fixBuildBefore104();
 
   /**
+   * The default kinetic law unit type needs to be corrected in rare cases.
+   */
+  void fixBuild113();
+
+  /**
    * Saves the list of global render information objects.
    */
   void saveListOfGlobalRenderInformation(const CCopasiVector<CLGlobalRenderInformation>& list);
