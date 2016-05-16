@@ -346,6 +346,8 @@ bool CReactionInterface::writeBackToReaction(CReaction * rea)
         }
     }
 
+  rea->setKineticLawUnitType(mKineticLawUnitType);
+
   rea->compile();
   mpModel->setCompileFlag(); //TODO: check if really necessary
 
