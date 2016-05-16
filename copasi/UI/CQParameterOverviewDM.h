@@ -1,7 +1,7 @@
-// Copyright (C) 2012 - 2016 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
+// Copyright (C) 2012 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
 #ifndef COPASI_CQParameterOverviewDM
 #define COPASI_CQParameterOverviewDM
@@ -17,6 +17,7 @@ class CModelParameter;
 class QUndoStack;
 #include <QList>
 #include <QPair>
+#include <QMap>
 
 class CQParameterOverviewDM : public QAbstractItemModel
 {
@@ -83,6 +84,9 @@ private:
   int mFramework;
 
   QUndoStack *mpUndoStack;
+
+  // cache the unit strings, to make veiwing the parameter overview table faster
+  mutable QMap< const CModelParameter *, QVariant > mUnitCache;
 };
 
 #endif // COPASI_CQParameterOverviewDM
