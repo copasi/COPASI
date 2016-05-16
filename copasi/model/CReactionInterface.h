@@ -264,7 +264,11 @@ public:
    */
   std::set< const CCopasiObject * > getDeletedParameters() const;
 
-  const CReaction::KineticLawUnit * getKineticLawUnitType() const;
+  void setKineticLawUnitType(const CReaction::KineticLawUnit & kineticLawUnitType);
+  const CReaction::KineticLawUnit & getKineticLawUnitType() const;
+  CReaction::KineticLawUnit getEffectiveKineticLawUnitType() const;
+  std::string getConcentrationUnit() const;
+  std::string getAmountUnit() const;
 
 #ifdef COPASI_DEBUG
   void printDebug() const;
