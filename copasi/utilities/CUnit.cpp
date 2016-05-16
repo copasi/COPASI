@@ -604,8 +604,10 @@ std::vector< CUnit::SymbolComponent > CUnit::getSymbolComponents() const
           SymbolComponents[FirstDenominatorIndex].multiplier = multiplier;
           SymbolComponents[FirstDenominatorIndex].scale = -scale;
         }
-      else
+      else if (scale != 0 &&
+               fabs(multiplier - 1.0) < 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon())
         {
+          Component.symbol = "1";
           Component.multiplier = multiplier;
           Component.scale = scale;
           SymbolComponents.push_back(Component);
