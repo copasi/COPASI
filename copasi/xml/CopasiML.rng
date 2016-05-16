@@ -747,6 +747,13 @@
     <attribute name="fast">
       <data type="boolean"/>
     </attribute>
+    <attribute name="kineticLawUnitType">
+      <choice>
+        <value type="string">Default</value>
+        <value type="string">AmountPerTime</value>
+        <value type="string">ConcentrationPerTime</value>
+      </choice>
+    </attribute>
     <ref name="annotation.datatype"/>
     <optional>
       <element name="ListOfSubstrates">

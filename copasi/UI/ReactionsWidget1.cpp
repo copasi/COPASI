@@ -50,6 +50,7 @@
 #include "undoFramework/ReactionChangeCommand.h"
 #include "undoFramework/UndoReactionData.h"
 #include "copasiui3window.h"
+#include "resourcesUI/CQIconResource.h"
 /*
  *  Constructs a ReactionsWidget which is a child of 'parent', with the
  *  name 'name' and widget flags set to 'f'.
@@ -69,10 +70,8 @@ ReactionsWidget1::ReactionsWidget1(QWidget *parent, const char * name, Qt::WFlag
 
   LineEdit2->setValidator(new ChemEqValidator(LineEdit2));
 
-#ifndef COPASI_DEBUG
-  mpFast->hide();
-#endif
-
+  editKinetics->setIcon(CQIconResource::icon(CQIconResource::edit));
+  newKinetics->setIcon(CQIconResource::icon(CQIconResource::editAdd));
   CopasiUI3Window *  pWindow = dynamic_cast<CopasiUI3Window * >(parent->parent());
   setUndoStack(pWindow->getUndoStack());
 }
@@ -103,8 +102,6 @@ bool ReactionsWidget1::loadFromReaction(const CReaction* reaction)
   // update the widget.
   FillWidgetFromRI();
 
-  mpFast->setChecked(reaction->isFast());
-
   return true; //TODO: really check
 }
 
@@ -130,19 +127,6 @@ bool ReactionsWidget1::saveToReaction()
 
   mIgnoreUpdates = true;
   bool changed = false;
-
-  if (reac->isFast() != mpFast->isChecked())
-    {
-      mpUndoStack->push(new ReactionChangeCommand(
-                          CCopasiUndoCommand::REACTION_FAST_CHANGE,
-                          reac->isFast(),
-                          mpFast->isChecked(),
-                          this,
-                          reac
-                        ));
-
-      changed = true;
-    }
 
   if (reac->isReversible() != mpRi->isReversible())
     {
@@ -588,6 +572,22 @@ void ReactionsWidget1::slotNewFunction()
   protectedNotify(ListViews::FUNCTION, ListViews::ADD, pFunc->getKey());
 
   mpListView->switchToOtherWidget(C_INVALID_INDEX, pFunc->getKey());
+}
+
+void ReactionsWidget1::slotDefaultUnitChecked(const bool & checked)
+{
+  mpConcentrationUnit->setEnabled(!checked);
+  mpAmountUnit->setEnabled(!checked);
+}
+
+void ReactionsWidget1::slotConcentrationUnitChecked(const bool & checked)
+{
+  mpAmountUnit->setChecked(!checked);
+}
+
+void ReactionsWidget1::slotAmountUnitChecked(const bool & checked)
+{
+  mpConcentrationUnit->setChecked(!checked);
 }
 
 bool ReactionsWidget1::update(ListViews::ObjectType objectType,
