@@ -178,8 +178,8 @@ bool ReactionsWidget1::saveToReaction()
     {
       mpUndoStack->push(new ReactionChangeCommand(
                           CCopasiUndoCommand::REACTION_UNIT_CHANGE,
-                          reac->getKineticLawUnitType(),
-                          mpRi->getKineticLawUnitType(),
+                          CReaction::KineticLawUnitTypeName[reac->getKineticLawUnitType()],
+                          CReaction::KineticLawUnitTypeName[mpRi->getKineticLawUnitType()],
                           this,
                           reac
                         ));
@@ -879,7 +879,8 @@ bool ReactionsWidget1::changeReaction(
         break;
 
       case CCopasiUndoCommand::REACTION_UNIT_CHANGE:
-        pReaction->setKineticLawUnitType((CReaction::KineticLawUnit) newValue.toInt());
+        mpRi->setKineticLawUnitType(toEnum(newValue.toByteArray().data(), CReaction::KineticLawUnitTypeName, CReaction::Default));
+        mpRi->writeBackToReaction(pReaction);
         break;
 
       case CCopasiUndoCommand::REACTION_LOCAL_PARAMETER_VALUE_CHANGE:
