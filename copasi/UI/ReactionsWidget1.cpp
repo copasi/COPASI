@@ -174,6 +174,19 @@ bool ReactionsWidget1::saveToReaction()
       changed = true;
     }
 
+  if (reac->getKineticLawUnitType() != mpRi->getKineticLawUnitType())
+    {
+      mpUndoStack->push(new ReactionChangeCommand(
+                          CCopasiUndoCommand::REACTION_UNIT_CHANGE,
+                          reac->getKineticLawUnitType(),
+                          mpRi->getKineticLawUnitType(),
+                          this,
+                          reac
+                        ));
+
+      changed = true;
+    }
+
   mIgnoreUpdates = false;
 
   if (changed)
@@ -417,6 +430,14 @@ void ReactionsWidget1::FillWidgetFromRI()
       ComboBox1->setCurrentIndex(0);
       table->initTable();
     }
+
+  mpDefaultUnit->setChecked(mpRi->getKineticLawUnitType() == CReaction::Default);
+  mpConcentrationUnit->setChecked(mpRi->getEffectiveKineticLawUnitType() == CReaction::ConcentrationPerTime);
+  mpAmountUnit->setChecked(mpRi->getEffectiveKineticLawUnitType() == CReaction::AmountPerTime);
+
+  slotDefaultUnitChecked(mpDefaultUnit->isChecked());
+  mpConcentrationUnit->setText(FROM_UTF8(mpRi->getConcentrationUnit()));
+  mpAmountUnit->setText(FROM_UTF8(mpRi->getAmountUnit()));
 }
 
 void ReactionsWidget1::slotTableChanged(int index, int sub, QString newValue)
@@ -578,16 +599,38 @@ void ReactionsWidget1::slotDefaultUnitChecked(const bool & checked)
 {
   mpConcentrationUnit->setEnabled(!checked);
   mpAmountUnit->setEnabled(!checked);
+
+  if (checked)
+    {
+      mpRi->setKineticLawUnitType(CReaction::Default);
+      slotConcentrationUnitChecked(mpRi->getEffectiveKineticLawUnitType() == CReaction::ConcentrationPerTime);
+    }
+  else
+    {
+      mpRi->setKineticLawUnitType(mpRi->getEffectiveKineticLawUnitType());
+    }
 }
 
 void ReactionsWidget1::slotConcentrationUnitChecked(const bool & checked)
 {
+  mpConcentrationUnit->setChecked(checked);
   mpAmountUnit->setChecked(!checked);
+
+  if (mpRi->getKineticLawUnitType() != CReaction::Default)
+    {
+      mpRi->setKineticLawUnitType(checked ? CReaction::ConcentrationPerTime : CReaction::AmountPerTime);
+    }
 }
 
 void ReactionsWidget1::slotAmountUnitChecked(const bool & checked)
 {
   mpConcentrationUnit->setChecked(!checked);
+  mpAmountUnit->setChecked(checked);
+
+  if (mpRi->getKineticLawUnitType() != CReaction::Default)
+    {
+      mpRi->setKineticLawUnitType(checked ? CReaction::AmountPerTime : CReaction::ConcentrationPerTime);
+    }
 }
 
 bool ReactionsWidget1::update(ListViews::ObjectType objectType,
@@ -833,6 +876,10 @@ bool ReactionsWidget1::changeReaction(
       case CCopasiUndoCommand::REACTION_FUNCTION_CHANGE:
         mpRi->setFunctionAndDoMapping(TO_UTF8(newValue.toString()));
         mpRi->writeBackToReaction(pReaction);
+        break;
+
+      case CCopasiUndoCommand::REACTION_UNIT_CHANGE:
+        pReaction->setKineticLawUnitType((CReaction::KineticLawUnit) newValue.toInt());
         break;
 
       case CCopasiUndoCommand::REACTION_LOCAL_PARAMETER_VALUE_CHANGE:

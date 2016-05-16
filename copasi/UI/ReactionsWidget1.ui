@@ -21,8 +21,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>460</width>
-    <height>379</height>
+    <width>354</width>
+    <height>235</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -142,7 +142,7 @@
       </size>
      </property>
      <property name="toolTip">
-      <string>edit target</string>
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Add Rate Law&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="text">
       <string/>
@@ -158,7 +158,7 @@
       </size>
      </property>
      <property name="toolTip">
-      <string>edit target</string>
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Edit Rate Law&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="text">
       <string/>
@@ -356,8 +356,13 @@
   <tabstop>CheckBox</tabstop>
   <tabstop>mpMultiCompartment</tabstop>
   <tabstop>ComboBox1</tabstop>
-  <tabstop>LineEdit3</tabstop>
+  <tabstop>newKinetics</tabstop>
+  <tabstop>editKinetics</tabstop>
+  <tabstop>mpDefaultUnit</tabstop>
+  <tabstop>mpConcentrationUnit</tabstop>
+  <tabstop>mpAmountUnit</tabstop>
   <tabstop>table</tabstop>
+  <tabstop>LineEdit3</tabstop>
  </tabstops>
  <includes>
   <include location="global">string</include>
@@ -462,6 +467,38 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>newKinetics</sender>
+   <signal>clicked()</signal>
+   <receiver>ReactionsWidget1</receiver>
+   <slot>slotNewFunction()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>306</x>
+     <y>77</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>176</x>
+     <y>117</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>editKinetics</sender>
+   <signal>clicked()</signal>
+   <receiver>ReactionsWidget1</receiver>
+   <slot>slotGotoFunction()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>336</x>
+     <y>77</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>176</x>
+     <y>117</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>slotCheckBoxClicked()</slot>
@@ -469,5 +506,8 @@
   <slot>slotComboBoxSelectionChanged(QString)</slot>
   <slot>slotLineEditChanged()</slot>
   <slot>slotGotoFunction()</slot>
+  <slot>slotDefaultUnitChecked(bool)</slot>
+  <slot>slotConcentrationUnitChecked(bool)</slot>
+  <slot>slotAmountUnitChecked(bool)</slot>
  </slots>
 </ui>

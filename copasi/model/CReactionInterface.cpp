@@ -26,12 +26,17 @@
 
 CReactionInterface::CReactionInterface(CModel * pModel):
   mpModel(pModel),
+  emptyString(""),
+  mReactionReferenceKey(""),
   mChemEqI(pModel),
   mpFunction(NULL),
-  mpParameters(NULL)
+  mpParameters(NULL),
+  mNameMap(),
+  mValues(),
+  mIsLocal(),
+  mKineticLawUnitType(CReaction::Default)
 {
   assert(mpModel != NULL);
-  emptyString = "";
 }
 
 CReactionInterface::~CReactionInterface()
@@ -137,6 +142,8 @@ void CReactionInterface::initFromReaction(const CReaction *rea)
     {
       setFunctionWithEmptyMapping("");
     }
+
+  mKineticLawUnitType = rea->getKineticLawUnitType();
 }
 
 bool CReactionInterface::loadMappingAndValues(const CReaction & rea)
@@ -1100,6 +1107,45 @@ CReactionInterface::isValid() const
       return false;
 
   return true;
+}
+
+void CReactionInterface::setKineticLawUnitType(const CReaction::KineticLawUnit & kineticLawUnitType)
+{
+  mKineticLawUnitType = kineticLawUnitType;
+}
+
+const CReaction::KineticLawUnit & CReactionInterface::getKineticLawUnitType() const
+{
+  return mKineticLawUnitType;
+}
+
+CReaction::KineticLawUnit CReactionInterface::getEffectiveKineticLawUnitType() const
+{
+  CReaction::KineticLawUnit EffectiveUnit = mKineticLawUnitType;
+
+  if (EffectiveUnit == CReaction::Default)
+    {
+      if (isMulticompartment())
+        {
+          EffectiveUnit = CReaction::AmountPerTime;
+        }
+      else
+        {
+          EffectiveUnit = CReaction::ConcentrationPerTime;
+        }
+    }
+
+  return EffectiveUnit;
+}
+
+std::string CReactionInterface::getConcentrationUnit() const
+{
+  return mpModel->getConcentrationRateUnitsDisplayString();
+}
+
+std::string CReactionInterface::getAmountUnit() const
+{
+  return mpModel->getQuantityRateUnitsDisplayString();
 }
 
 #ifdef COPASI_DEBUG

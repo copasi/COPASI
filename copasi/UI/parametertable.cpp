@@ -175,7 +175,8 @@ void ParameterTable::updateTable(const CReactionInterface & ri, const CReaction 
   units.setUseHeuristics(true);
   units.setMolecularitiesForMassAction(ri.getChemEqInterface().getMolecularity(CFunctionParameter::SUBSTRATE),
                                        ri.getChemEqInterface().getMolecularity(CFunctionParameter::PRODUCT));
-  units.findDimensions(ri.isMulticompartment());
+
+  units.findDimensions(ri.getEffectiveKineticLawUnitType() == CReaction::AmountPerTime);
 
   CFunctionParameter::Role usage;
 

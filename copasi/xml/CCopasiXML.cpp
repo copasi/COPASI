@@ -257,7 +257,7 @@ bool CCopasiXML::load(std::istream & is,
       fixBuildBefore104();
     }
 
-  if (FileVersion.getVersionDevel() <= 113)
+  if (FileVersion.getVersionDevel() < 113)
     {
       fixBuild113();
     }
