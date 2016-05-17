@@ -12,6 +12,8 @@
 #include "copasi/report/CCopasiObject.h"
 #include "copasi/utilities/CVector.h"
 
+#include "math/CMathUpdateSequence.h"
+
 class CExpression;
 class CMathEvent;
 class CMathContainer;

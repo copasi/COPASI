@@ -14,6 +14,7 @@
 #include "copasi/math/CMathEnum.h"
 
 class CMathDependencyNode;
+class CMathContainer;
 
 class CMathDependencyGraph
 {
@@ -26,12 +27,12 @@ public:
   /**
    * Constructor
    */
-  CMathDependencyGraph();
+  CMathDependencyGraph(CMathContainer * pContainer = NULL);
 
   /**
    * Copy constructor
    */
-  CMathDependencyGraph(const CMathDependencyGraph & src);
+  CMathDependencyGraph(const CMathDependencyGraph & src, CMathContainer * pContainer = NULL);
 
   /**
    * Destructor
@@ -109,6 +110,8 @@ private:
   NodeMap mObjects2Nodes;
 
   mutable std::map< const CObjectInterface *, size_t > mObject2Index;
+
+  CMathContainer *mpContainer;
 };
 
 #endif // COPASI_CMathDependencyGraph

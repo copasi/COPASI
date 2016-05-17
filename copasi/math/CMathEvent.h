@@ -12,7 +12,8 @@
 #include "copasi/function/CExpression.h"
 #include "copasi/utilities/CVector.h"
 
-class CMathContainer;
+#include "math/CMathUpdateSequence.h"
+
 class CMathObject;
 
 class CMathEvent

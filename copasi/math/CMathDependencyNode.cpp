@@ -245,7 +245,7 @@ bool CMathDependencyNode::buildUpdateSequence(const CMath::SimulationContextFlag
             if (itNode->isChanged() && itNode->isRequested())
               {
                 const CObjectInterface * pObject = itNode->getObject();
-                const CMathObject * pMathObject = NULL;
+                const CMathObject * pMathObject = dynamic_cast< const CMathObject *>(pObject);
                 const CParticleReference * pParticleNumber = NULL;
 
                 // For an extensive transient value of a dependent species we have 2
@@ -258,7 +258,7 @@ bool CMathDependencyNode::buildUpdateSequence(const CMath::SimulationContextFlag
                 // is CMath::UseMoieties.
 
                 if (!(context & CMath::UseMoieties) ||
-                    ((pMathObject = dynamic_cast< const CMathObject *>(pObject)) == NULL &&
+                    (pMathObject == NULL &&
                      (pParticleNumber = dynamic_cast< const CParticleReference *>(pObject)) == NULL) ||
                     (pMathObject != NULL &&
                      pMathObject->getCorrespondingProperty() != static_cast< const CMathObject *>(mpObject) &&
@@ -267,7 +267,13 @@ bool CMathDependencyNode::buildUpdateSequence(const CMath::SimulationContextFlag
                     (pParticleNumber != NULL &&
                      !static_cast< const CMetab * >(pParticleNumber->getObjectParent())->isDependent()))
                   {
-                    updateSequence.push_back(const_cast< CObjectInterface * >(itNode->getObject()));
+                    // Only Math Objects with expressions can be updated.
+                    if (pMathObject != NULL &&
+                        pMathObject->getExpressionPtr() != NULL)
+                      {
+                        updateSequence.push_back(const_cast< CObjectInterface * >(itNode->getObject()));
+                      }
+
                     itNode->setChanged(false);
                   }
               }
