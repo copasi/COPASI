@@ -82,9 +82,6 @@ void CMathDelay::relocate(const std::vector< CMath::sRelocate > & relocations)
     {
       CMathContainer::relocateObject(*ppObject, relocations);
     }
-
-  CMathContainer::relocateUpdateSequence(mValueSequence, relocations);
-  CMathContainer::relocateUpdateSequence(mValueSequenceReduced, relocations);
 }
 
 void CMathDelay::createUpdateSequences()

@@ -1229,10 +1229,6 @@ void CMathEvent::relocate(const std::vector< CMath::sRelocate > & relocations)
     {
       CMathContainer::relocateValue(*ppTargetPointers, relocations);
     }
-
-  CMathContainer::relocateUpdateSequence(mDelaySequence, relocations);
-  CMathContainer::relocateUpdateSequence(mTargetValuesSequence, relocations);
-  CMathContainer::relocateUpdateSequence(mPostAssignmentSequence, relocations);
 }
 
 bool CMathEvent::compile(const CEvent * pDataEvent,

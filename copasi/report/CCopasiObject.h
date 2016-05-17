@@ -53,6 +53,7 @@ template <class CType> class CCopasiVector;
 #endif // WIN32
 
 class CRenameHandler;
+class CMathUpdateSequence;
 
 //********************************************************************************
 
@@ -60,7 +61,7 @@ class CObjectInterface
 {
 public:
   typedef std::set< const CObjectInterface * > ObjectSet;
-  typedef std::vector< CObjectInterface * > UpdateSequence;
+  typedef CMathUpdateSequence UpdateSequence;
   typedef std::vector< const CCopasiContainer * > ContainerList;
 
   static const CCopasiObject * DataObject(const CObjectInterface * pInterface);
