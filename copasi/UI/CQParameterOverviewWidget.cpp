@@ -527,8 +527,6 @@ void CQParameterOverviewWidget::slotOpenEditor(const QModelIndex & index)
     }
 
   mpTreeView->openPersistentEditor(mpParameterSetSortDM->mapFromSource(Tmp));
-
-  mpTreeView->expandAll();
 }
 
 void CQParameterOverviewWidget::slotCloseEditor(const QModelIndex & index)
