@@ -304,9 +304,9 @@ bool CTrajectoryTask::process(const bool & useInitialValues)
   C_FLOAT64 handlerFactor = 100.0 / Duration;
 
   C_FLOAT64 Percentage = 0;
-  size_t hProcess;
+  size_t hProcess = C_INVALID_INDEX;
 
-  if (mpCallBack != NULL && StepNumber >= 1.0)
+  if (mpCallBack != NULL && StepNumber > 1.0)
     {
       mpCallBack->setName("performing simulation...");
       C_FLOAT64 hundred = 100;
@@ -328,7 +328,7 @@ bool CTrajectoryTask::process(const bool & useInitialValues)
 
           flagProceed &= processStep(NextTimeToReport);
 
-          if (mpCallBack != NULL && StepNumber > 1.0)
+          if (hProcess != C_INVALID_INDEX)
             {
               Percentage = (*mpContainerStateTime - StartTime) * handlerFactor;
               flagProceed &= mpCallBack->progressItem(hProcess);
@@ -354,7 +354,7 @@ bool CTrajectoryTask::process(const bool & useInitialValues)
           output(COutputInterface::DURING);
         }
 
-      if (mpCallBack != NULL && StepNumber > 1.0) mpCallBack->finishItem(hProcess);
+      if (hProcess != C_INVALID_INDEX) mpCallBack->finishItem(hProcess);
 
       output(COutputInterface::AFTER);
 
@@ -373,14 +373,14 @@ bool CTrajectoryTask::process(const bool & useInitialValues)
           output(COutputInterface::DURING);
         }
 
-      if (mpCallBack != NULL && StepNumber > 1.0) mpCallBack->finishItem(hProcess);
+      if (hProcess != C_INVALID_INDEX) mpCallBack->finishItem(hProcess);
 
       output(COutputInterface::AFTER);
 
       throw CCopasiException(Exception.getMessage());
     }
 
-  if (mpCallBack != NULL && StepNumber > 1.0) mpCallBack->finishItem(hProcess);
+  if (hProcess != C_INVALID_INDEX) mpCallBack->finishItem(hProcess);
 
   output(COutputInterface::AFTER);
 
