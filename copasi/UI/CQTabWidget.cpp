@@ -26,6 +26,11 @@
 #include <copasi/undoFramework/EntityRenameCommand.h>
 #include <copasi/UI/copasiui3window.h>
 
+#ifdef COPASI_Provenance
+#include "CEntityProvenanceDialog.h"
+#include "versioning/CModelVersion.h"
+#endif
+
 CQTabWidget::CQTabWidget(const ListViews::ObjectType & objectType, CopasiWidget * pCopasiWidget,
                          QWidget * parent, Qt::WindowFlags f) :
   CopasiWidget(parent, NULL, f),
@@ -77,6 +82,18 @@ CQTabWidget::CQTabWidget(const ListViews::ObjectType & objectType, CopasiWidget 
 
   CopasiUI3Window *  pWindow = dynamic_cast<CopasiUI3Window * >(parent->parent());
   setUndoStack(pWindow->getUndoStack());
+
+#ifdef COPASI_Provenance
+
+  if ((FROM_UTF8(ListViews::ObjectTypeName[mObjectType]) == "Species") || (FROM_UTF8(ListViews::ObjectTypeName[mObjectType]) == "Compartment") || (FROM_UTF8(ListViews::ObjectTypeName[mObjectType]) == "Reaction") || (FROM_UTF8(ListViews::ObjectTypeName[mObjectType]) == "Event") || (FROM_UTF8(ListViews::ObjectTypeName[mObjectType]) == "Global Quantity"))
+    {
+      CEntityProvenanceDialog* pEntityProvenanceDialog = new CEntityProvenanceDialog(mpTabWidget, mpUndoStack, "New Compartment2", pWindow->getVersionHierarchy()->getPathFile(), pWindow->getVersionHierarchy()->getVersionsPathToCurrentModel()); //, QString(""));
+      mPages.push_back(pEntityProvenanceDialog);
+      mpTabWidget->addTab(pEntityProvenanceDialog, "Provenance");
+      //connect(this, SIGNAL(),EntityProvenanceDialog ,SLOT(EntityProvenanceDialog->exec()));
+    }
+
+#endif
 }
 
 CQTabWidget::~CQTabWidget()
