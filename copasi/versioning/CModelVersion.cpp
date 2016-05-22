@@ -610,3 +610,91 @@ int CModelVersion::readVersionXML()
 
   return(0);
 }
+
+#ifdef COPASI_Provenance
+QList<QString>  CModelVersion::getChildrenOfVersionForProvenanceXML(QString Version)
+{
+  int i;
+  QList<QString>  ChildrenVersions;
+
+  //Check if the Version has any child - add them to list
+  for (i = 0; i < mNRow; i++)
+    {
+      if ((QString::compare(mpModelVersionHierarchy->item(i, 1)->text(), Version, Qt::CaseInsensitive)) == 0)
+        {
+          ChildrenVersions.append(mpModelVersionHierarchy->item(i, 0)->text());
+        }
+    }
+
+  return(ChildrenVersions);
+}
+QList<QString>  CModelVersion::getVersionsPathToCurrentModel()
+{
+  QList<QString> ReversePath, DirectPath;
+
+// Fill the Version path to a QList from the current version to the root verison
+  ReversePath.append(mParentOfCurrentModel);
+  bool HasParent = true;
+  QString Version = mParentOfCurrentModel;
+  QString parentVersion;
+
+  while (HasParent)
+    {
+      int i = 0;
+      HasParent = false;
+
+      for (i = 0; i < mNRow; i++)
+        {
+          if ((QString::compare(mpModelVersionHierarchy->item(i, 0)->text(), Version, Qt::CaseInsensitive)) == 0)
+            {
+              parentVersion = mpModelVersionHierarchy->item(i, 1)->text();
+              HasParent = true;
+              break;
+            }
+        }
+
+      if (HasParent)
+        {
+          ReversePath.append(parentVersion);
+          Version = parentVersion;
+        }
+    }
+
+// Reverse the QList to have the Version path from root version to the current version
+  if (!ReversePath.isEmpty())
+    {
+      int j;
+
+      for (j = 0; j < ReversePath.size(); ++j)
+        {
+          DirectPath.append(ReversePath.at(ReversePath.size() - (j + 1)));
+        }
+    }
+
+  return(DirectPath);
+}
+
+#endif
+
+void CModelVersion::restoreLastSavedVersioningHierarchy(QString Version)
+{
+  mParentOfCurrentModel = Version;
+  updateVersionXML();
+}
+
+QString CModelVersion::getParentVersion(QString Version)
+{
+  int i;
+  QString ParentVersion = QString("");
+
+  for (i = 0; i < mNRow; i++)
+    {
+      if ((QString::compare(mpModelVersionHierarchy->item(i, 0)->text(), Version, Qt::CaseInsensitive)) == 0)
+        {
+          ParentVersion = mpModelVersionHierarchy->item(i, 1)->text();
+          break;
+        }
+    }
+
+  return(ParentVersion);
+}
