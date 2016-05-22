@@ -240,6 +240,10 @@ protected slots:
   void slotCreateVersion();
 #endif
 
+#ifdef COPASI_Provenance
+  void slotProvenance();
+#endif
+
   void slotLoadParameterEstimationProtocol();
 private:
   CopasiUI3Window();
@@ -352,6 +356,15 @@ private:
   QAction* mpaCreateVersion;
   QAction* mpaBrowseVersion;
   CModelVersion*  mpVersionHierarchy;
+  QString mLastSavedParentOfCurrentModel;
+#endif
+
+#ifdef COPASI_Provenance
+  QAction* mpaProvenance;
+  QString mProvenanceParentOfCurrentModel;
+  QString mProvenanceOrigionFileType;
+  QString mProvenanceOrigionTime;
+  QString mProvenanceOfOrigionOfFile;
 #endif
 
 #ifdef COPASI_SBW_INTEGRATION
