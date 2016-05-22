@@ -3518,6 +3518,7 @@ void CopasiUI3Window::slotCreateVersion() //Slot Version Create
                   mProvenanceParentOfCurrentModel = mpVersionHierarchy->getParentOfCurrentModel();
                   CProvenanceXMLWriter* ProvenanceXMLWriter = new CProvenanceXMLWriter(this, mpUndoStack, FROM_UTF8(CCopasiRootContainer::getConfiguration()->getWorkingDirectory()), mProvenanceOrigionFileType, mProvenanceOrigionTime, mProvenanceParentOfCurrentModel, mpVersionHierarchy->getParentOfCurrentModel(), mpVersionHierarchy->getVersionsPathToCurrentModel());
                   ProvenanceXMLWriter->updateVersionProvenanceXMLFile(CreateVersionDialog->getVersion());
+                  mpUndoStack->clear();
 #endif
                 }
             }
