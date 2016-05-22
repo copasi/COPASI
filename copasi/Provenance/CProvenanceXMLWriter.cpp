@@ -1495,10 +1495,20 @@ void CProvenanceXMLWriter::updateMainBodyProvenace()
 void CProvenanceXMLWriter::updateVersionProvenanceXMLFile(QString VersionName)
 {
   updateCurrentSessionProvenance();
-  updateMainBodyProvenace();
+  //First merge Main body and current session provenance in a temporary file
+
+  mergeProvenanceFiles("ProvenanceMainBody.xml", "ProvenanceCurrentSession.xml", "Temp.xml");
+
+  // Delete Main body and Current session Provenance and rename Temp to Current Session
   QDir destination;
   QString dataFile = mPathFile + "/ProvenanceMainBody.xml";
-  QString dataFile2 = mPathFile + "/" + VersionName + "/" + VersionName + "Provenance.xml";
+  destination.remove(dataFile);
+  dataFile = mPathFile + "/Temp.xml";
+  QString dataFile2 = mPathFile + "/ProvenanceMainBody.xml";
+  destination.rename(dataFile, dataFile2);
+
+  dataFile = mPathFile + "/ProvenanceMainBody.xml";
+  dataFile2 = mPathFile + "/" + VersionName + "/" + VersionName + "Provenance.xml";
   destination.rename(dataFile, dataFile2);
 }
 
