@@ -17,6 +17,10 @@
 #include "versioning/CModelVersion.h"
 #include "DataModelGUI.h"
 
+#ifdef COPASI_Provenance
+#include <QUndoStack>
+#endif
+
 namespace Ui
 {
 class CBrowseModelVersionDialog;
@@ -33,12 +37,30 @@ public:
    * Default constructor
    * Fetch Version Hierarchy Model data and show it in a table
    */
-  explicit CBrowseModelVersionDialog(QWidget *parent = 0, CModelVersion * ModelVersion = NULL, DataModelGUI * ModelGUI = NULL);
+  explicit CBrowseModelVersionDialog(QWidget *parent = 0, CModelVersion * ModelVersion = NULL, DataModelGUI * ModelGUI = NULL,   QString LastSavedParentOfCurrentModel = QString("")
+#ifdef COPASI_Provenance
+                                     , QUndoStack  *     UndoStack = NULL, QString PathProvenance = QString(""),  QString ProvenanceParentOfCurrentModel = QString("")
+#endif
+                                    );
 
   /**
    * Destructor
    */
   ~CBrowseModelVersionDialog();
+
+  /**
+   * Returns the last saved Parent of Current Model
+   * In delete case if the last saved Parrent of Current Model changes
+   * It is subtitued with its parrent
+   */
+  QString getLastSavedParentOfCurrentModel();
+
+#ifdef COPASI_Provenance
+  /**
+   * Returns the Provenance Parent of Current Model
+   */
+  QString getProvenanceParentOfCurrentModel();
+#endif
 
 private:
 
@@ -54,6 +76,17 @@ private:
    * It is used to load a .cps file
    */
   DataModelGUI * mpDataModelGUI;
+
+  /**
+   * The last created/resotored version at the last saving occasion
+   */
+  QString mLastSavedParentOfCurrentModel;
+
+#ifdef COPASI_Provenance
+  QUndoStack  *     mpUndoStack;
+  QString           mPathProvenance;
+  QString mProvenanceParentOfCurrentModel;
+#endif
 
 private slots:
 
