@@ -462,6 +462,13 @@ if(ENABLE_COPASI_Versioning)
   add_definitions(-DCOPASI_Versioning)
 endif(ENABLE_COPASI_Versioning)
 
+#Option for the COPASI support for Provenance Framework currently being developed by Peyman 
+option (ENABLE_COPASI_Provenance "Enables Provenance support." OFF)
+mark_as_advanced(ENABLE_COPASI_Provenance)
+if(ENABLE_COPASI_Provenance)
+  add_definitions(-DCOPASI_Provenance)
+endif(ENABLE_COPASI_Provenance)
+
 
 # if the MML widget is available, we need to enable "HAVE_MML"
 
@@ -761,6 +768,7 @@ message(STATUS "-----------------------------------------------------------
    GPROF support            = ${ENABLE_GPROF}
    UNDO framework           = ${ENABLE_COPASI_UNDO}
    Versioning framework     = ${ENABLE_COPASI_Versioning}
+   Provenance framework     = ${ENABLE_COPASI_Provenance}
    Analytics Task           = ${ENABLE_ANALYTICS}
    Additional Defines       = ${DirDefs}
 
