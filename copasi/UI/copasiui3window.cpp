@@ -3543,9 +3543,9 @@ void CopasiUI3Window::slotCreateVersion() //Slot Version Create
 }
 void CopasiUI3Window::slotBrowseVersion() // Slot Version Browse
 {
-  CBrowseModelVersionDialog* ModelVersionDialog = new  CBrowseModelVersionDialog(this, mpVersionHierarchy, mpDataModelGUI, mLastSavedParentOfCurrentModel
+  CBrowseModelVersionDialog* ModelVersionDialog = new  CBrowseModelVersionDialog(this, mpVersionHierarchy, mpDataModelGUI, mLastSavedParentOfCurrentModel, mpUndoStack
 #ifdef COPASI_Provenance
-      , mpUndoStack, FROM_UTF8(CCopasiRootContainer::getConfiguration()->getWorkingDirectory()), mProvenanceParentOfCurrentModel
+      , FROM_UTF8(CCopasiRootContainer::getConfiguration()->getWorkingDirectory()), mProvenanceParentOfCurrentModel
 #endif
                                                                                 );
   ModelVersionDialog->setWindowTitle("Model Versions");
