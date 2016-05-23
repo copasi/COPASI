@@ -262,7 +262,8 @@ bool CMathDependencyGraph::getUpdateSequence(CObjectInterface::UpdateSequence & 
           continue;
         }
 
-      success = false;
+      // This is not an error we may have objects which are not part of the dependency tree
+      // success = false;
     }
 
   if (!success) goto finish;
