@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., University of Heidelberg, and The University 
 // of Manchester. 
 // All rights reserved. 
@@ -36,6 +36,7 @@
 %}
     
 %ignore CReaction::load;
+%ignore CReaction::KineticLawUnitTypeName;
 %ignore CReaction::getSmallestCompartment() const; // not implemented
 %ignore CReaction::getParameterMappings() const; 
 %ignore CReaction::setFunctionFromExpressionTree(const CExpression & tree , std::map<CCopasiObject*, SBase*> & , CFunctionDB* );
