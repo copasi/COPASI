@@ -20,9 +20,9 @@
 #include "copasi/Provenance/CProvenanceXMLWriter.h"
 #endif
 
-CBrowseModelVersionDialog::CBrowseModelVersionDialog(QWidget *parent, CModelVersion  * ModelVersion, DataModelGUI * ModelGUI,   QString LastSavedParentOfCurrentModel
+CBrowseModelVersionDialog::CBrowseModelVersionDialog(QWidget *parent, CModelVersion  * ModelVersion, DataModelGUI * ModelGUI,   QString LastSavedParentOfCurrentModel, QUndoStack  *     UndoStack
 #ifdef COPASI_Provenance
-    , QUndoStack  *     UndoStack, QString PathProvenance,   QString ProvenanceParentOfCurrentModel
+    , QString PathProvenance,   QString ProvenanceParentOfCurrentModel
 #endif
                                                     ) :
   QDialog(parent),
