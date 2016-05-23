@@ -35,7 +35,7 @@ CQParameterOverviewDM::CQParameterOverviewDM(QObject * pParent)
   , mpModelParameterSet(NULL)
   , mFramework(0)
   , mpUndoStack(NULL)
-  , mParametersetKey()
+  , mParameterSetKey()
 {}
 
 // virtual
@@ -119,18 +119,18 @@ Qt::ItemFlags CQParameterOverviewDM::flags(const QModelIndex &index) const
     {
       if (pNode->getType() == CModelParameter::ReactionParameter)
         {
-          //emit signalOpenEditor(index);
+          emit signalOpenEditor(index);
 
           Qt::ItemFlags flags = QAbstractItemModel::flags(index)  | Qt::ItemIsEnabled;
 
           // only allow editing of assignments on parameter overview
-          if (mParametersetKey.empty())
+          if (mParameterSetKey.empty())
             flags |= Qt::ItemIsEditable;
 
           return flags;
         }
 
-      //emit signalCloseEditor(index);
+      emit signalCloseEditor(index);
     }
 
   return QAbstractItemModel::flags(index) & ~Qt::ItemIsEditable;
@@ -236,8 +236,7 @@ int CQParameterOverviewDM::rowCount(const QModelIndex & parent) const
   return 0;
 }
 
-
-void CQParameterOverviewDM::setModelParameterset(CModelParameterSet * pModelParameterSet)
+void CQParameterOverviewDM::setModelParameterSet(CModelParameterSet * pModelParameterSet)
 {
   if (mpModelParameterSet != pModelParameterSet)
     {
@@ -506,15 +505,14 @@ QVariant CQParameterOverviewDM::assignmentData(const CModelParameter * pNode, in
   return QVariant();
 }
 
-
-void CQParameterOverviewDM::setParametersetKey(const std::string & key)
+void CQParameterOverviewDM::setParameterSetKey(const std::string & key)
 {
-  mParametersetKey = key;
+  mParameterSetKey = key;
 }
 
-const std::string CQParameterOverviewDM::getParametersetKey() const
+const std::string CQParameterOverviewDM::getParameterSetKey() const
 {
-  return mParametersetKey;
+  return mParameterSetKey;
 }
 
 // virtual
@@ -526,11 +524,10 @@ CQParameterOverviewDM::setData(const QModelIndex &_index, const QVariant &value,
   if (pNode == NULL || role != Qt::EditRole)
     return false;
 
-
   if (_index.data(Qt::EditRole).toString() == value.toString())
     return false;
 
-  mpUndoStack->push(new ParameterOverviewDataChangeCommand(_index, pNode->getName(),  value, _index.data(Qt::EditRole), this, mParametersetKey));
+  mpUndoStack->push(new ParameterOverviewDataChangeCommand(_index, pNode->getName(),  value, _index.data(Qt::EditRole), this, mParameterSetKey));
 
   return true;
 
@@ -551,21 +548,20 @@ CQParameterOverviewDM::setData(const QModelIndex &_index, const QVariant &value,
   //    if (pGlobalQuantity != NULL)
   //    {
   //      static_cast<CModelParameterReactionParameter *>(pNode)->setGlobalQuantityCN(pGlobalQuantity->getCN());
-  //    }
+  //}
   //    else
   //    {
   //      static_cast<CModelParameterReactionParameter *>(pNode)->setGlobalQuantityCN("");
-  //    }
-  //  }
+  //}
+  //}
   //
   //  success = true;
   //  break;
-  //  }
+  //}
   //}
   //
   //return success;
 }
-
 
 bool
 CQParameterOverviewDM::parameterOverviewDataChange(
@@ -621,7 +617,6 @@ CQParameterOverviewDM::parameterOverviewDataChange(
 
   return true;
 }
-
 
 void CQParameterOverviewDM::setUndoStack(QUndoStack* undoStack)
 {

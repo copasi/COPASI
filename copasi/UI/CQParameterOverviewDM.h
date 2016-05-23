@@ -47,7 +47,7 @@ public:
   virtual bool setData(const QModelIndex &index, const QVariant &value,
                        int role = Qt::EditRole);
 
-  void setModelParameterset(CModelParameterSet * pModelParameterSet);
+  void setModelParameterSet(CModelParameterSet * pModelParameterSet);
 
   /**
    * Sets the key to the parameter set that is currently modified,
@@ -56,8 +56,8 @@ public:
    * @param key the key to the selected parameter set or empty to denote the
    *            current parameter overview
    */
-  void setParametersetKey(const std::string & key);
-  const std::string getParametersetKey() const;
+  void setParameterSetKey(const std::string & key);
+  const std::string getParameterSetKey() const;
 
   void setFramework(const int & framework);
 
@@ -101,8 +101,7 @@ private:
   mutable QMap< const CModelParameter *, QVariant > mUnitCache;
 
   // the key to the currently active parameter set
-  std::string mParametersetKey;
-
+  std::string mParameterSetKey;
 };
 
 #endif // COPASI_CQParameterOverviewDM
