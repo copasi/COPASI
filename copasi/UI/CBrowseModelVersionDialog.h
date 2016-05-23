@@ -16,10 +16,7 @@
 #include <QDialog>
 #include "versioning/CModelVersion.h"
 #include "DataModelGUI.h"
-
-#ifdef COPASI_Provenance
 #include <QUndoStack>
-#endif
 
 namespace Ui
 {
@@ -37,9 +34,9 @@ public:
    * Default constructor
    * Fetch Version Hierarchy Model data and show it in a table
    */
-  explicit CBrowseModelVersionDialog(QWidget *parent = 0, CModelVersion * ModelVersion = NULL, DataModelGUI * ModelGUI = NULL,   QString LastSavedParentOfCurrentModel = QString("")
+  explicit CBrowseModelVersionDialog(QWidget *parent = 0, CModelVersion * ModelVersion = NULL, DataModelGUI * ModelGUI = NULL,   QString LastSavedParentOfCurrentModel = QString("")   , QUndoStack  *     UndoStack = NULL
 #ifdef COPASI_Provenance
-                                     , QUndoStack  *     UndoStack = NULL, QString PathProvenance = QString(""),  QString ProvenanceParentOfCurrentModel = QString("")
+                                     , QString PathProvenance = QString(""),  QString ProvenanceParentOfCurrentModel = QString("")
 #endif
                                     );
 
@@ -82,8 +79,12 @@ private:
    */
   QString mLastSavedParentOfCurrentModel;
 
-#ifdef COPASI_Provenance
+  /**
+  *  Pointer to Undo Stack
+  */
   QUndoStack  *     mpUndoStack;
+
+#ifdef COPASI_Provenance
   QString           mPathProvenance;
   QString mProvenanceParentOfCurrentModel;
 #endif
