@@ -1,4 +1,4 @@
-// Copyright (C) 2014 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2014 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -17,34 +17,57 @@
 
 #include "ParameterOverviewDataChangeCommand.h"
 
-ParameterOverviewDataChangeCommand::ParameterOverviewDataChangeCommand(const QModelIndex &index, const QVariant &value, int role, CQParameterOverviewDM *pParameterOverviewDM)
+ParameterOverviewDataChangeCommand::ParameterOverviewDataChangeCommand(
+  const QModelIndex &index,
+  const std::string& name,
+  const QVariant &newValue,
+  const QVariant &oldValue,
+  CQParameterOverviewDM *pParameterOverviewDM,
+  const std::string& parametersetKey
+)
   : CCopasiUndoCommand()
-  , mNew(value)
-  , mOld(index.data(Qt::EditRole))
+  , mNew(newValue)
+  , mOld(oldValue)
   , mIndex(index)
   , mpParameterOverviewDM(pParameterOverviewDM)
-  , mRole(role)
   , mPathIndex(pathFromIndex(index))
-  , mFirstTime(true)
+  , mParametersetKey(parametersetKey)
 {
-  setText(QObject::tr(": Changed parameter overview data"));
-}
-
-void ParameterOverviewDataChangeCommand::redo()
-{
-  if (mFirstTime)
+  if (mParametersetKey.empty())
     {
-      mpParameterOverviewDM->parameterOverviewDataChange(mPathIndex, mNew, mRole);
-      mFirstTime = false;
+      setText(QObject::tr(": Changed parameter overview data"));
+      setEntityType("Parameter Overview");
     }
   else
     {
-      mpParameterOverviewDM->parameterOverviewDataChange(mPathIndex, mNew, mRole);
+      setText(QObject::tr(": Changed parameter set data"));
+      setEntityType("Parameter Set");
     }
+
+  if (index.column() == 3)
+    {
+      setProperty("Value");
+    }
+  else
+    {
+      setProperty("Assignment");
+    }
+
+  setAction("Change");
+  setName(name);
+  setOldValue(TO_UTF8(mOld.toString()));
+  setNewValue(TO_UTF8(mNew.toString()));
 }
+
+void
+ParameterOverviewDataChangeCommand::redo()
+{
+  mpParameterOverviewDM->parameterOverviewDataChange(mPathIndex, mNew, mParametersetKey);
+}
+
 void ParameterOverviewDataChangeCommand::undo()
 {
-  mpParameterOverviewDM->parameterOverviewDataChange(mPathIndex, mOld, mRole);
+  mpParameterOverviewDM->parameterOverviewDataChange(mPathIndex, mOld, mParametersetKey);
 }
 
 ParameterOverviewDataChangeCommand::~ParameterOverviewDataChangeCommand()

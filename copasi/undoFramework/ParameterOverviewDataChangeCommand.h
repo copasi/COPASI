@@ -1,4 +1,4 @@
-// Copyright (C) 2014 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2014 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -21,7 +21,12 @@ class CModelParameterGroup;
 class ParameterOverviewDataChangeCommand: public CCopasiUndoCommand
 {
 public:
-  ParameterOverviewDataChangeCommand(const QModelIndex &index, const QVariant &value, int role, CQParameterOverviewDM *pParameterOverviewDM);
+  ParameterOverviewDataChangeCommand(const QModelIndex &index,
+                                     const std::string& name,
+                                     const QVariant &newValue,
+                                     const QVariant &oldValue,
+                                     CQParameterOverviewDM *pParameterOverviewDM,
+                                     const std::string& parametersetKey);
   virtual ~ParameterOverviewDataChangeCommand();
 
   void redo();
@@ -31,9 +36,8 @@ private:
   QVariant mNew, mOld;
   QModelIndex mIndex;
   CQParameterOverviewDM *mpParameterOverviewDM;
-  int mRole;
   Path mPathIndex;
-  bool mFirstTime;
+  std::string mParametersetKey;
 };
 
 #endif /* PARAMETEROVERVIEWDATACHANGECOMMAND_H_ */

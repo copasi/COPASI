@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -61,7 +61,7 @@ void switchToWidget(size_t id, const std::string & key /*= ""*/)
 
   if (lv == NULL) return;
 
-  if (lv->getCurrentItemId() != id)
+  if (lv->getCurrentItemId() != id || (id == C_INVALID_INDEX && !key.empty()))
     lv->switchToOtherWidget(id, key);
 }
 
