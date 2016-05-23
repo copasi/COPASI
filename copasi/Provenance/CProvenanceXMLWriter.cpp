@@ -330,15 +330,16 @@ void CProvenanceXMLWriter::updateCurrentSessionProvenance()
 
       CConfigurationFile * configFile = CCopasiRootContainer::getConfiguration();
       QString Action;
-      QString EntityInfo[mpUndoStack->count() + 1][5];  // Information of each Entity in the model
-      QString EntityNameMap[mpUndoStack->count() + 1][2]; //Map name to Entity ID
-      QString ENtityActionMap[mpUndoStack->count() + 1][4];
+      const int EditNumber = mpUndoStack->count();
+      QString EntityInfo[ EditNumber + 1][5];  // Information of each Entity in the model
+      QString EntityNameMap[ EditNumber + 1][2]; //Map name to Entity ID
+      QString ENtityActionMap[ EditNumber + 1][4];
       int EntityCount = 0;
       int EntityIndexCount = 0;
       int EntityNamesCount = 0;
       int UndoTableSize = 0;
 
-      for (i = 0 ; i < mpUndoStack->count(); i ++)
+      for (i = 0 ; i <  EditNumber; i ++)
         {
           const QUndoCommand *cmd = mpUndoStack->command(i);
           const CCopasiUndoCommand *cCommand = dynamic_cast<const CCopasiUndoCommand*>(cmd);
@@ -1495,20 +1496,10 @@ void CProvenanceXMLWriter::updateMainBodyProvenace()
 void CProvenanceXMLWriter::updateVersionProvenanceXMLFile(QString VersionName)
 {
   updateCurrentSessionProvenance();
-  //First merge Main body and current session provenance in a temporary file
-
-  mergeProvenanceFiles("ProvenanceMainBody.xml", "ProvenanceCurrentSession.xml", "Temp.xml");
-
-  // Delete Main body and Current session Provenance and rename Temp to Current Session
+  updateMainBodyProvenace();
   QDir destination;
   QString dataFile = mPathFile + "/ProvenanceMainBody.xml";
-  destination.remove(dataFile);
-  dataFile = mPathFile + "/Temp.xml";
-  QString dataFile2 = mPathFile + "/ProvenanceMainBody.xml";
-  destination.rename(dataFile, dataFile2);
-
-  dataFile = mPathFile + "/ProvenanceMainBody.xml";
-  dataFile2 = mPathFile + "/" + VersionName + "/" + VersionName + "Provenance.xml";
+  QString dataFile2 = mPathFile + "/" + VersionName + "/" + VersionName + "Provenance.xml";
   destination.rename(dataFile, dataFile2);
 }
 
