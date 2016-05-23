@@ -12,8 +12,6 @@
 // Properties, Inc. and EML Research, gGmbH. 
 // All rights reserved. 
 
-
-
 %include "local-contrib.i"
 
 
@@ -207,6 +205,28 @@ CCopasiMessage.checkForMessage=_COPASI.CCopasiMessage_checkForMessage
 CCopasiMessage.size=_COPASI.CCopasiMessage_size
 
 %}
+
+%extend CCopasiObjectName
+{
+  %pythoncode
+  %{
+      def __str__(self):
+        return self.getString();
+      def __repr__(self):
+        return self.getString();
+  %}
+}
+
+%extend CRegisteredObjectName
+{
+  %pythoncode
+  %{
+      def __str__(self):
+        return self.getString();
+      def __repr__(self):
+        return self.getString();
+  %}
+}
 
 %extend CCopasiParameter
 {
