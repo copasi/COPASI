@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -80,6 +80,7 @@ void CQComboDelegate::updateEditorGeometry(QWidget *pEditor, const QStyleOptionV
 {
   QRect Rectangle = option.rect;
   Rectangle.setRight(Rectangle.left() + std::min(Rectangle.width(), std::max(pEditor->sizeHint().width(), Rectangle.height())));
+  Rectangle.setBottom(Rectangle.top() + std::max(pEditor->sizeHint().height(), Rectangle.height()));
   pEditor->setGeometry(Rectangle);
 }
 
@@ -128,20 +129,41 @@ void CQComboDelegate::slotEditorDeleted(QObject * pObject)
   mEditorToIndex.remove(static_cast< QWidget * >(pObject));
 }
 
-bool
-CQComboDelegate::isCommitOnSelect() const
+bool CQComboDelegate::isCommitOnSelect() const
 {
   return mCommitOnSelect;
 }
 
 QSize CQComboDelegate::sizeHint(const QStyleOptionViewItem & option, const QModelIndex & index) const
 {
-  QWidget * pEditor = mEditorToIndex.key(index, NULL);
+  QModelIndex  SourceIndex = index;
+  const QAbstractItemModel *pModel = index.model();
+
+  while (pModel->inherits("QSortFilterProxyModel"))
+    {
+      SourceIndex = static_cast< const QSortFilterProxyModel *>(pModel)->mapToSource(SourceIndex);
+      pModel = SourceIndex.model();
+    }
+
+  QWidget * pEditor = mEditorToIndex.key(SourceIndex, NULL);
 
   if (pEditor != NULL)
     return pEditor->sizeHint();
 
-  return QItemDelegate::sizeHint(option, index);
+  QComboBox *pTmp = new QComboBox();
+
+  pTmp->setAutoFillBackground(true);
+
+  if (!getItems(SourceIndex).empty())
+    {
+      pTmp->addItems(getItems(SourceIndex));
+    }
+
+  QSize SizeHint = pTmp->sizeHint();
+
+  delete pTmp;
+
+  return SizeHint; // QItemDelegate::sizeHint(option, index);
 }
 
 void CQComboDelegate::setCommitOnSelect(bool commitOnSelect)
