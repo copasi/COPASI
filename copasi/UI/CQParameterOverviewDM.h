@@ -1,7 +1,7 @@
-// Copyright (C) 2012 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2012 - 2016 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 #ifndef COPASI_CQParameterOverviewDM
 #define COPASI_CQParameterOverviewDM
@@ -49,13 +49,25 @@ public:
 
   void setModelParameterset(CModelParameterSet * pModelParameterSet);
 
+  /**
+   * Sets the key to the parameter set that is currently modified,
+   * this will be used by the UNDO framework to activate the correct control
+   *
+   * @param key the key to the selected parameter set or empty to denote the
+   *            current parameter overview
+   */
+  void setParametersetKey(const std::string & key);
+  const std::string getParametersetKey() const;
+
   void setFramework(const int & framework);
 
   static CModelParameter * nodeFromIndex(const QModelIndex & index);
 
   void setUndoStack(QUndoStack* undoStack);
   QUndoStack* getUndoStack();
-  bool parameterOverviewDataChange(const QList< QPair<int, int> > &path, const QVariant &value, int role);
+  bool parameterOverviewDataChange(const QList< QPair<int, int> > &path,
+                                   const QVariant &value,
+                                   const std::string& parameterSetKey);
 
 signals:
   void signalOpenEditor(const QModelIndex &) const;
@@ -85,8 +97,12 @@ private:
 
   QUndoStack *mpUndoStack;
 
-  // cache the unit strings, to make veiwing the parameter overview table faster
+  // cache the unit strings, to make viewing the parameter overview table faster
   mutable QMap< const CModelParameter *, QVariant > mUnitCache;
+
+  // the key to the currently active parameter set
+  std::string mParametersetKey;
+
 };
 
 #endif // COPASI_CQParameterOverviewDM

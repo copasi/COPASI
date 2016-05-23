@@ -30,11 +30,12 @@
 
 #define COLUMN_COUNT   6
 
-CQParameterOverviewDM::CQParameterOverviewDM(QObject * pParent):
-  QAbstractItemModel(pParent),
-  mpModelParameterSet(NULL),
-  mFramework(0)
+CQParameterOverviewDM::CQParameterOverviewDM(QObject * pParent)
+  : QAbstractItemModel(pParent)
+  , mpModelParameterSet(NULL)
+  , mFramework(0)
   , mpUndoStack(NULL)
+  , mParametersetKey()
 {}
 
 // virtual
@@ -118,12 +119,18 @@ Qt::ItemFlags CQParameterOverviewDM::flags(const QModelIndex &index) const
     {
       if (pNode->getType() == CModelParameter::ReactionParameter)
         {
-          emit signalOpenEditor(index);
+          //emit signalOpenEditor(index);
 
-          return QAbstractItemModel::flags(index)  | Qt::ItemIsEditable | Qt::ItemIsEnabled;
+          Qt::ItemFlags flags = QAbstractItemModel::flags(index)  | Qt::ItemIsEnabled;
+
+          // only allow editing of assignments on parameter overview
+          if (mParametersetKey.empty())
+            flags |= Qt::ItemIsEditable;
+
+          return flags;
         }
 
-      emit signalCloseEditor(index);
+      //emit signalCloseEditor(index);
     }
 
   return QAbstractItemModel::flags(index) & ~Qt::ItemIsEditable;
@@ -229,43 +236,6 @@ int CQParameterOverviewDM::rowCount(const QModelIndex & parent) const
   return 0;
 }
 
-// virtual
-bool CQParameterOverviewDM::setData(const QModelIndex &_index, const QVariant &value, int role)
-{
-  CModelParameter * pNode = nodeFromIndex(_index);
-  bool success = false;
-
-  if (pNode != NULL &&
-      role == Qt::EditRole)
-    {
-      switch (_index.column())
-        {
-          case COL_VALUE:
-            pNode->setValue(value.toDouble(), static_cast< CModelParameter::Framework >(mFramework));
-            success = true;
-            break;
-
-          case COL_ASSIGNMENT:
-          {
-            CModelParameter * pGlobalQuantity = pNode->getSet()->getModelParameter(TO_UTF8(value.toString()), CModelParameter::ModelValue);
-
-            if (pGlobalQuantity != NULL)
-              {
-                static_cast< CModelParameterReactionParameter * >(pNode)->setGlobalQuantityCN(pGlobalQuantity->getCN());
-              }
-            else
-              {
-                static_cast< CModelParameterReactionParameter * >(pNode)->setGlobalQuantityCN("");
-              }
-          }
-
-          success = true;
-          break;
-        }
-    }
-
-  return success;
-}
 
 void CQParameterOverviewDM::setModelParameterset(CModelParameterSet * pModelParameterSet)
 {
@@ -536,53 +506,122 @@ QVariant CQParameterOverviewDM::assignmentData(const CModelParameter * pNode, in
   return QVariant();
 }
 
-bool CQParameterOverviewDM::parameterOverviewDataChange(const QList< QPair<int, int> >& path, const QVariant &value, int role)
+
+void CQParameterOverviewDM::setParametersetKey(const std::string & key)
 {
-  switchToWidget(CCopasiUndoCommand::PARAMETER_OVERVIEW);
+  mParametersetKey = key;
+}
+
+const std::string CQParameterOverviewDM::getParametersetKey() const
+{
+  return mParametersetKey;
+}
+
+// virtual
+bool
+CQParameterOverviewDM::setData(const QModelIndex &_index, const QVariant &value, int role)
+{
+  CModelParameter * pNode = nodeFromIndex(_index);
+
+  if (pNode == NULL || role != Qt::EditRole)
+    return false;
+
+
+  if (_index.data(Qt::EditRole).toString() == value.toString())
+    return false;
+
+  mpUndoStack->push(new ParameterOverviewDataChangeCommand(_index, pNode->getName(),  value, _index.data(Qt::EditRole), this, mParametersetKey));
+
+  return true;
+
+  //bool success = false;
+  //if (pNode != NULL && role == Qt::EditRole)
+  //{
+  //  switch (_index.column())
+  //  {
+  //  case COL_VALUE:
+  //    pNode->setValue(value.toDouble(), static_cast<CModelParameter::Framework>(mFramework));
+  //    success = true;
+  //    break;
+  //
+  //  case COL_ASSIGNMENT:
+  //  {
+  //    CModelParameter * pGlobalQuantity = pNode->getSet()->getModelParameter(TO_UTF8(value.toString()), CModelParameter::ModelValue);
+  //
+  //    if (pGlobalQuantity != NULL)
+  //    {
+  //      static_cast<CModelParameterReactionParameter *>(pNode)->setGlobalQuantityCN(pGlobalQuantity->getCN());
+  //    }
+  //    else
+  //    {
+  //      static_cast<CModelParameterReactionParameter *>(pNode)->setGlobalQuantityCN("");
+  //    }
+  //  }
+  //
+  //  success = true;
+  //  break;
+  //  }
+  //}
+  //
+  //return success;
+}
+
+
+bool
+CQParameterOverviewDM::parameterOverviewDataChange(
+  const QList< QPair<int, int> >& path,
+  const QVariant &value,
+  const std::string &parameterSetKey)
+{
+  if (parameterSetKey.empty())
+    {
+      switchToWidget(CCopasiUndoCommand::PARAMETER_OVERVIEW);
+    }
+  else
+    {
+      switchToWidget(C_INVALID_INDEX, parameterSetKey);
+    }
+
   QModelIndex _index = CCopasiUndoCommand::pathToIndex(path, this);
   CModelParameter * pNode = nodeFromIndex(_index);
 
   bool success = false;
 
-  if (pNode != NULL &&
-      role == Qt::EditRole)
+  if (pNode == NULL) return false;
+
+  switch (_index.column())
     {
-      switch (_index.column())
-        {
-          case COL_VALUE:
-            pNode->setValue(value.toDouble(), static_cast<CModelParameter::Framework>(mFramework));
-            success = true;
-            break;
+      case COL_VALUE:
+        pNode->setValue(value.toDouble(), static_cast<CModelParameter::Framework>(mFramework));
+        success = true;
+        break;
 
-          case COL_ASSIGNMENT:
+      case COL_ASSIGNMENT:
+      {
+        CModelParameter * pGlobalQuantity = pNode->getSet()->getModelParameter(TO_UTF8(value.toString()), CModelParameter::ModelValue);
+
+        if (pGlobalQuantity != NULL)
           {
-            CModelParameter * pGlobalQuantity = pNode->getSet()->getModelParameter(TO_UTF8(value.toString()), CModelParameter::ModelValue);
-
-            if (pGlobalQuantity != NULL)
-              {
-                static_cast<CModelParameterReactionParameter *>(pNode)->setGlobalQuantityCN(pGlobalQuantity->getCN());
-              }
-            else
-              {
-                static_cast<CModelParameterReactionParameter *>(pNode)->setGlobalQuantityCN("");
-              }
+            static_cast<CModelParameterReactionParameter *>(pNode)->setGlobalQuantityCN(pGlobalQuantity->getCN());
+          }
+        else
+          {
+            static_cast<CModelParameterReactionParameter *>(pNode)->setGlobalQuantityCN("");
           }
 
-          success = true;
-          break;
+        success = true;
+        break;
+      }
 
-          default:
-            break;
-        }
-
-      if (success)
-        {
-          emit dataChanged(_index, _index);
-        }
+      default:
+        break;
     }
 
-  return success;
+  emit dataChanged(_index, _index);
+
+  return true;
 }
+
 
 void CQParameterOverviewDM::setUndoStack(QUndoStack* undoStack)
 {

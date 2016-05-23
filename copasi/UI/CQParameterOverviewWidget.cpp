@@ -198,9 +198,11 @@ bool CQParameterOverviewWidget::enterProtected()
   if (mpParameterSet->isActive())
     {
       mpTreeView->header()->hideSection(1);
+      mpParameterSetDM->setParametersetKey("");
     }
   else
     {
+      mpParameterSetDM->setParametersetKey(mpParameterSet->getKey());
       mpParameterSetCopy->compareWithModel(static_cast< CModelParameter::Framework >(mFramework));
       mpHeaderWidget->hide();
       mpBtnWidget->hide();
