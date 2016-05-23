@@ -19,6 +19,7 @@
 %{
 
 #include "model/CChemEq.h"
+#include "model/CChemEqInterface.h"
 
 %}
 
@@ -27,6 +28,7 @@
 %catches(CCopasiException) CChemEq::getLargestCompartment() const;
 
 %include "model/CChemEq.h"
+%include "model/CChemEqInterface.h"
 
 
 %extend CChemEq
