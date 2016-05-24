@@ -87,7 +87,7 @@ CQTabWidget::CQTabWidget(const ListViews::ObjectType & objectType, CopasiWidget 
 
   if ((FROM_UTF8(ListViews::ObjectTypeName[mObjectType]) == "Species") || (FROM_UTF8(ListViews::ObjectTypeName[mObjectType]) == "Compartment") || (FROM_UTF8(ListViews::ObjectTypeName[mObjectType]) == "Reaction") || (FROM_UTF8(ListViews::ObjectTypeName[mObjectType]) == "Event") || (FROM_UTF8(ListViews::ObjectTypeName[mObjectType]) == "Global Quantity"))
     {
-      CEntityProvenanceDialog* pEntityProvenanceDialog = new CEntityProvenanceDialog(mpTabWidget, mpUndoStack, "New Compartment2", pWindow->getVersionHierarchy()->getPathFile(), pWindow->getVersionHierarchy()->getVersionsPathToCurrentModel()); //, QString(""));
+      CEntityProvenanceDialog* pEntityProvenanceDialog = new CEntityProvenanceDialog(mpTabWidget, mpUndoStack, "New Compartment2", pWindow->getVersionHierarchy()->getPathFile(), pWindow->getVersionHierarchy()->getVersionsPathToCurrentModel(),  pWindow->getProvenanceParentOfCurrentVersion(), pWindow->getVersionHierarchy()->getParentOfCurrentModel());
       mPages.push_back(pEntityProvenanceDialog);
       mpTabWidget->addTab(pEntityProvenanceDialog, "Provenance");
       //connect(this, SIGNAL(),EntityProvenanceDialog ,SLOT(EntityProvenanceDialog->exec()));
