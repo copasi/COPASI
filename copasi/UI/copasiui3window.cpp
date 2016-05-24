@@ -3561,8 +3561,14 @@ void CopasiUI3Window::slotBrowseVersion() // Slot Version Browse
 #ifdef COPASI_Provenance
 void CopasiUI3Window::slotProvenance()
 {
-  CProvenanceDialog* ProvenanceDialog = new CProvenanceDialog(this, mpUndoStack, FROM_UTF8(CCopasiRootContainer::getConfiguration()->getWorkingDirectory()), mpVersionHierarchy->getVersionsPathToCurrentModel());
+  CProvenanceDialog* ProvenanceDialog = new CProvenanceDialog(this, mpUndoStack, FROM_UTF8(CCopasiRootContainer::getConfiguration()->getWorkingDirectory()), mpVersionHierarchy->getVersionsPathToCurrentModel(), mProvenanceParentOfCurrentModel, mpVersionHierarchy->getParentOfCurrentModel());
   ProvenanceDialog->setWindowTitle("Provenance");
   ProvenanceDialog->exec();
 }
+
+QString CopasiUI3Window::getProvenanceParentOfCurrentVersion()
+{
+  return(mProvenanceParentOfCurrentModel);
+}
+
 #endif
