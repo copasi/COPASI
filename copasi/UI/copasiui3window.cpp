@@ -3513,13 +3513,13 @@ void CopasiUI3Window::slotCreateVersion() //Slot Version Create
               if (PathForVersioningExists)
                 {
                   mpDataModelGUI->saveModel(dataFile.toStdString(), true);
-                  mpUndoStack->clear();
 #ifdef COPASI_Provenance
 //   Update Provenace and store it as provenance of the Version  - Clear Undo Stack
                   mProvenanceParentOfCurrentModel = mpVersionHierarchy->getParentOfCurrentModel();
                   CProvenanceXMLWriter* ProvenanceXMLWriter = new CProvenanceXMLWriter(this, mpUndoStack, FROM_UTF8(CCopasiRootContainer::getConfiguration()->getWorkingDirectory()), mProvenanceOrigionFileType, mProvenanceOrigionTime, mProvenanceParentOfCurrentModel, mpVersionHierarchy->getParentOfCurrentModel(), mpVersionHierarchy->getVersionsPathToCurrentModel());
                   ProvenanceXMLWriter->updateVersionProvenanceXMLFile(CreateVersionDialog->getVersion());
 #endif
+                  mpUndoStack->clear();
                 }
             }
         }
