@@ -34,7 +34,7 @@ public:
    * Default constructor
    * Fetch Version Hierarchy Model data and show it in a table
    */
-  explicit CBrowseModelVersionDialog(QWidget *parent = 0, CModelVersion * ModelVersion = NULL, DataModelGUI * ModelGUI = NULL,   QString LastSavedParentOfCurrentModel = QString("")   , QUndoStack  *     UndoStack = NULL
+  explicit CBrowseModelVersionDialog(QWidget *parent = 0, CModelVersion * ModelVersion = NULL, DataModelGUI * ModelGUI = NULL,   QUndoStack  *     UndoStack = NULL
 #ifdef COPASI_Provenance
                                      , QString PathProvenance = QString(""),  QString ProvenanceParentOfCurrentModel = QString("")
 #endif
@@ -50,7 +50,7 @@ public:
    * In delete case if the last saved Parrent of Current Model changes
    * It is subtitued with its parrent
    */
-  QString getLastSavedParentOfCurrentModel();
+  //QString getLastSavedParentOfCurrentModel();
 
 #ifdef COPASI_Provenance
   /**
@@ -77,7 +77,7 @@ private:
   /**
    * The last created/resotored version at the last saving occasion
    */
-  QString mLastSavedParentOfCurrentModel;
+  //QString mLastSavedParentOfCurrentModel;
 
   /**
   *  Pointer to Undo Stack
