@@ -139,6 +139,7 @@ void CBrowseModelVersionDialog::on_DeleteButton_clicked()
   QString Version = mpModelVersion->getModelVersionHierarchy()->item(selectedIndex.row(), 0)->text();
   QMessageBox::NoIcon;
   QMessageBox msgBox;
+  QString ParentOfCurrentModel = mpModelVersion->getParentOfCurrentModel();
   msgBox.setWindowTitle("Version Deletion Warning");
   msgBox.setText("Are you sure you want delete this version?");
   msgBox.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
@@ -159,7 +160,7 @@ void CBrowseModelVersionDialog::on_DeleteButton_clicked()
 #ifdef COPASI_Provenance
         bool isParrentOfCurrentVersion = false;
 
-        if (mpModelVersion->getParentOfCurrentModel() == Version)
+        if (ParentOfCurrentModel == Version)
           {
             isParrentOfCurrentVersion = true;
           }
@@ -206,7 +207,7 @@ void CBrowseModelVersionDialog::on_DeleteButton_clicked()
 
             destination.remove(dataFile);
 #ifdef COPASI_Provenance
-            CProvenanceXMLWriter* ProvenanceXMLWriter = new CProvenanceXMLWriter(this, mpUndoStack, mPathProvenance);//, mProvenanceOrigionFileType, mProvenanceOrigionTime, mProvenanceParentOfCurrentModel, mpVersionHierarchy->getParentOfCurrentModel());
+            CProvenanceXMLWriter* ProvenanceXMLWriter = new CProvenanceXMLWriter(this, mpUndoStack, mPathProvenance, QString(""), QString(""), mProvenanceParentOfCurrentModel, ParentOfCurrentModel);
 
             if (isParrentOfCurrentVersion)
               {
