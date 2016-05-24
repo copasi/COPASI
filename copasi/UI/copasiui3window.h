@@ -117,6 +117,10 @@ public:
   CModelVersion * getVersionHierarchy();
 #endif
 
+#ifdef COPASI_Provenance
+  QString getProvenanceParentOfCurrentVersion();
+#endif
+
   void addWindow(QMainWindow * pWindow);
   void removeWindow(QMainWindow * pWindow);
 
