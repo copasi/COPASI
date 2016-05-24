@@ -21,7 +21,7 @@ class CProvenanceDialog : public QDialog, public Ui::CProvenanceDialog
   Q_OBJECT
 
 public:
-  explicit CProvenanceDialog(QWidget *parent = 0 ,  QUndoStack * UndoStack = NULL, QString PathFile = "",  QList<QString> VersionsPathToCurrentModel = QList<QString> ());
+  explicit CProvenanceDialog(QWidget *parent = 0 ,  QUndoStack * UndoStack = NULL, QString PathFile = "",  QList<QString> VersionsPathToCurrentModel = QList<QString> (),  QString ProvenanceParentOfCurrentModel = "", QString VersioningParentOfCurrentModel = "");
 
   /**
    *  Destroys the object and frees any allocated resources
@@ -73,6 +73,17 @@ private:
   *  A list of Versions from the root to the Parent of Current Model
   */
   QList<QString> mVersionsPathToCurrentModel;
+
+  /**
+   * The last Provenance parent of current model version
+   */
+  QString mProvenanceParentOfCurrentModel;
+
+  /**
+   * The parent of current model version
+   * Last Created/Restored Version
+   */
+  QString mVersioningParentOfCurrentModel;
 
   /**
   *  Generate Provenance browsing tree
