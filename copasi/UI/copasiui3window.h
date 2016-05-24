@@ -356,7 +356,7 @@ private:
   QAction* mpaCreateVersion;
   QAction* mpaBrowseVersion;
   CModelVersion*  mpVersionHierarchy;
-  QString mLastSavedParentOfCurrentModel;
+//  QString mLastSavedParentOfCurrentModel;
 #endif
 
 #ifdef COPASI_Provenance
