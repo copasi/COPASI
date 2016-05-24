@@ -330,10 +330,31 @@ void CProvenanceXMLWriter::updateCurrentSessionProvenance()
 
       CConfigurationFile * configFile = CCopasiRootContainer::getConfiguration();
       QString Action;
-      const int EditNumber = mpUndoStack->count();
-      QString EntityInfo[ EditNumber + 1][5];  // Information of each Entity in the model
-      QString EntityNameMap[ EditNumber + 1][2]; //Map name to Entity ID
-      QString ENtityActionMap[ EditNumber + 1][4];
+      int EditNumber = mpUndoStack->count();
+      //QString EntityInfo[ EditNumber + 1][5];  // Information of each Entity in the model
+      //QString EntityNameMap[ EditNumber + 1][2]; //Map name to Entity ID
+      //QString ENtityActionMap[ EditNumber + 1][4];
+      QString **EntityInfo = new QString * [EditNumber + 1];
+
+      for (i = 0; i < EditNumber + 1; i++)
+        {
+          EntityInfo[i] = new QString [5];
+        }
+
+      QString **EntityNameMap = new QString * [EditNumber + 1];
+
+      for (i = 0; i < EditNumber + 1; i++)
+        {
+          EntityNameMap[i] = new QString [2];
+        }
+
+      QString **ENtityActionMap = new QString * [EditNumber + 1];
+
+      for (i = 0; i < EditNumber + 1; i++)
+        {
+          ENtityActionMap[i] = new QString [4];
+        }
+
       int EntityCount = 0;
       int EntityIndexCount = 0;
       int EntityNamesCount = 0;
@@ -1525,9 +1546,15 @@ void CProvenanceXMLWriter::combineVersionProvenance(QString ParentVersionName, Q
 
 void CProvenanceXMLWriter::deleteParentofCurrentVersionProvenance(QString VersionName)
 {
-  mergeProvenanceFiles(VersionName +  "/" + VersionName + "Provenance.xml", "ProvenanceMainBody.xml", "Temp.xml");
   QDir destination;
   QString dataFile = mPathFile + "/ProvenanceMainBody.xml";
+
+  if (mProvenanceParentOfCurrentModel != mVersioningParentOfCurrentModel)
+    {
+      destination.remove(dataFile);
+    }
+
+  mergeProvenanceFiles(VersionName +  "/" + VersionName + "Provenance.xml", "ProvenanceMainBody.xml", "Temp.xml");
   destination.remove(dataFile);
   dataFile = mPathFile + "/Temp.xml";
   QString dataFile2 = mPathFile +  "/ProvenanceMainBody.xml";
