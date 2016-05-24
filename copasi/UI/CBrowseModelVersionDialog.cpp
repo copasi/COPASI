@@ -20,7 +20,7 @@
 #include "copasi/Provenance/CProvenanceXMLWriter.h"
 #endif
 
-CBrowseModelVersionDialog::CBrowseModelVersionDialog(QWidget *parent, CModelVersion  * ModelVersion, DataModelGUI * ModelGUI,   QString LastSavedParentOfCurrentModel, QUndoStack  *     UndoStack
+CBrowseModelVersionDialog::CBrowseModelVersionDialog(QWidget *parent, CModelVersion  * ModelVersion, DataModelGUI * ModelGUI,   QUndoStack  *     UndoStack
 #ifdef COPASI_Provenance
     , QString PathProvenance,   QString ProvenanceParentOfCurrentModel
 #endif
@@ -29,7 +29,7 @@ CBrowseModelVersionDialog::CBrowseModelVersionDialog(QWidget *parent, CModelVers
   ui(new Ui::CBrowseModelVersionDialog)
 {
   ui->setupUi(this);
-  mLastSavedParentOfCurrentModel = LastSavedParentOfCurrentModel;
+  //mLastSavedParentOfCurrentModel = LastSavedParentOfCurrentModel;
   // set "the dialog table pointer" points to main table in the table of this dialog
 
   int NumberOfVersions = ModelVersion->getNumberOfVersions();
@@ -150,14 +150,12 @@ void CBrowseModelVersionDialog::on_DeleteButton_clicked()
       case QMessageBox::Ok:
       {
         int i;
-        bool isParrentOfLastSavedVersion = false;
-
-        if (mLastSavedParentOfCurrentModel == Version)
-          {
-            isParrentOfLastSavedVersion = true;
-            ParentVersion = mpModelVersion->getParentVersion(Version);
-          }
-
+        //bool isParrentOfLastSavedVersion = false;
+        //if(mLastSavedParentOfCurrentModel==Version)
+        //{
+        //    isParrentOfLastSavedVersion = true;
+        //    ParentVersion = mpModelVersion->getParentVersion(Version);
+        //}
 #ifdef COPASI_Provenance
         bool isParrentOfCurrentVersion = false;
 
@@ -189,10 +187,10 @@ void CBrowseModelVersionDialog::on_DeleteButton_clicked()
         // Delete the selected version from
         if (i == 0)
           {
-            if (isParrentOfLastSavedVersion)
-              {
-                mLastSavedParentOfCurrentModel = ParentVersion;
-              }
+            //if(isParrentOfLastSavedVersion)
+            //{
+            //        mLastSavedParentOfCurrentModel = ParentVersion;
+            //}
 
             QDir destination;
             QString dataFile;
@@ -296,7 +294,7 @@ QString CBrowseModelVersionDialog::getProvenanceParentOfCurrentModel()
 
 #endif
 
-QString CBrowseModelVersionDialog::getLastSavedParentOfCurrentModel()
-{
-  return(mLastSavedParentOfCurrentModel);
-}
+//QString CBrowseModelVersionDialog::getLastSavedParentOfCurrentModel()
+//{
+//    return(mLastSavedParentOfCurrentModel);
+//}
