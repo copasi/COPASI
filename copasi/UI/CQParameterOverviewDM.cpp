@@ -124,9 +124,11 @@ Qt::ItemFlags CQParameterOverviewDM::flags(const QModelIndex &index) const
 
           Qt::ItemFlags flags = QAbstractItemModel::flags(index)  | Qt::ItemIsEnabled;
 
-          // only allow editing of assignments on parameter overview
-          if (mParameterSetKey.empty())
-            flags |= Qt::ItemIsEditable;
+          // IMO only allow editing of assignments on parameter overview
+          // unfortunately there is disagreement, so making all items editable
+          // again
+          // if (mParameterSetKey.empty())
+          flags |= Qt::ItemIsEditable;
 
           return flags;
         }
