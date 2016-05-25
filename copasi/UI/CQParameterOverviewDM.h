@@ -10,6 +10,8 @@
 
 #include "copasi/UI/listviews.h"
 
+#include "copasi/undoFramework/ParameterOverviewDataChangeCommand.h"
+
 class CModelParameterSet;
 class CModelParameterGroup;
 class CModelParameter;
