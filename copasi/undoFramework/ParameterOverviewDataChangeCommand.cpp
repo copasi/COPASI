@@ -70,6 +70,23 @@ void ParameterOverviewDataChangeCommand::undo()
   mpParameterOverviewDM->parameterOverviewDataChange(mPathIndex, mOld, mParametersetKey);
 }
 
+bool ParameterOverviewDataChangeCommand::matches(
+  const QModelIndex &index,
+  const std::string& name,
+  const QVariant &newValue,
+  const QVariant &oldValue,
+  const std::string& parametersetKey) const
+{
+  if (newValue != mNew || oldValue != mOld
+      || name != getName()
+      || parametersetKey != mParametersetKey)
+    return false;
+
+  Path temp = pathFromIndex(index);
+
+  return temp == mPathIndex;
+}
+
 ParameterOverviewDataChangeCommand::~ParameterOverviewDataChangeCommand()
 {
 }
