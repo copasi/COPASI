@@ -32,6 +32,7 @@
 #include <QtGui/QTextEdit>
 #include <QtCore/QThread>
 #include <QtGui/QFontDialog>
+#include <QtCore/QDateTime>
 
 #include <vector>
 #include <sstream>
@@ -216,7 +217,7 @@ CopasiUI3Window::CopasiUI3Window():
 #ifdef COPASI_Provenance
   , mProvenanceParentOfCurrentModel(QString(""))
   , mProvenanceOrigionFileType(QString("Created"))
-  , mProvenanceOrigionTime(QDateTime::currentDateTime().toString())
+  , mProvenanceOrigionTime(QDateTime::currentDateTimeUtc().toString())
   , mProvenanceOfOrigionOfFile(QString(""))
 #endif
 {
@@ -3457,7 +3458,7 @@ void CopasiUI3Window::slotUndoHistory()
 #ifdef COPASI_Versioning
 CModelVersion * CopasiUI3Window::getVersionHierarchy()
 {
-  return(mpVersionHierarchy);
+  return (mpVersionHierarchy);
 }
 void CopasiUI3Window::slotCreateVersion() //Slot Version Create
 {
@@ -3568,7 +3569,7 @@ void CopasiUI3Window::slotProvenance()
 
 QString CopasiUI3Window::getProvenanceParentOfCurrentVersion()
 {
-  return(mProvenanceParentOfCurrentModel);
+  return (mProvenanceParentOfCurrentModel);
 }
 
 #endif
