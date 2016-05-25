@@ -3301,7 +3301,13 @@ bool SBMLImporter::checkValidityOfSourceDocument(SBMLDocument* sbmlDoc)
           // we check if the model contained a required package
           if (sbmlDoc->getLevel() > 2 && pSBMLError->getErrorId() == 99107)
             {
-              CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 96);
+              std::stringstream str;
+              str << sbmlDoc->getUnknownPackagePrefix(0);
+
+              for (int k = 1; k < sbmlDoc->getNumUnknownPackages(); ++k)
+                str << ", " << sbmlDoc->getUnknownPackagePrefix(k);
+
+              CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 96, str.str().c_str());
             }
 
           CCopasiMessage::Type messageType = CCopasiMessage::RAW;
@@ -3411,7 +3417,13 @@ bool SBMLImporter::checkValidityOfSourceDocument(SBMLDocument* sbmlDoc)
                     }
                   else
                     {
-                      CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 96);
+                      std::stringstream str;
+                      str << sbmlDoc->getUnknownPackagePrefix(0);
+
+                      for (int k = 1; k < sbmlDoc->getNumUnknownPackages(); ++k)
+                        str << ", " << sbmlDoc->getUnknownPackagePrefix(k);
+
+                      CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 96, str.str().c_str());
                     }
                 }
             }
