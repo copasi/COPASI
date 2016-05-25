@@ -35,6 +35,7 @@ CQParameterOverviewDM::CQParameterOverviewDM(QObject * pParent)
   , mpModelParameterSet(NULL)
   , mFramework(0)
   , mpUndoStack(NULL)
+  , mpLastCommand(NULL)
   , mParameterSetKey()
 {}
 
@@ -527,7 +528,13 @@ CQParameterOverviewDM::setData(const QModelIndex &_index, const QVariant &value,
   if (_index.data(Qt::EditRole).toString() == value.toString())
     return false;
 
-  mpUndoStack->push(new ParameterOverviewDataChangeCommand(_index, pNode->getName(),  value, _index.data(Qt::EditRole), this, mParameterSetKey));
+  if (mpLastCommand != NULL && mpLastCommand->matches(
+        _index, pNode->getName(), value, _index.data(Qt::EditRole), mParameterSetKey
+      ))
+    return false;
+
+  mpLastCommand = new ParameterOverviewDataChangeCommand(_index, pNode->getName(), value, _index.data(Qt::EditRole), this, mParameterSetKey);
+  mpUndoStack->push(mpLastCommand);
 
   return true;
 

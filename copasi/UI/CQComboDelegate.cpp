@@ -72,7 +72,10 @@ void CQComboDelegate::setModelData(QWidget *editor, QAbstractItemModel *model,
 {
   QComboBox *comboBox = static_cast<QComboBox*>(editor);
   QVariant value(comboBox->currentText());
-  model->setData(index, value, Qt::EditRole);
+  QVariant current = model->data(index, Qt::EditRole);
+
+  if (value != current)
+    model->setData(index, value, Qt::EditRole);
 }
 
 void CQComboDelegate::updateEditorGeometry(QWidget *pEditor, const QStyleOptionViewItem &option,

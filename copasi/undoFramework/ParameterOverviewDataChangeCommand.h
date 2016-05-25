@@ -32,6 +32,12 @@ public:
   void redo();
   void undo();
 
+  bool matches(const QModelIndex &index,
+               const std::string& name,
+               const QVariant &newValue,
+               const QVariant &oldValue,
+               const std::string& parametersetKey) const;
+
 private:
   QVariant mNew, mOld;
   QModelIndex mIndex;

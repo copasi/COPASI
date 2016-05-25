@@ -96,6 +96,7 @@ private:
   int mFramework;
 
   QUndoStack *mpUndoStack;
+  ParameterOverviewDataChangeCommand *mpLastCommand;
 
   // cache the unit strings, to make viewing the parameter overview table faster
   mutable QMap< const CModelParameter *, QVariant > mUnitCache;
