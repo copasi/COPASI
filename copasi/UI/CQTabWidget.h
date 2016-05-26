@@ -19,6 +19,10 @@
 
 #include <vector>
 
+#ifdef COPASI_Provenance
+#include "CEntityProvenanceDialog.h"
+#endif
+
 class CQTabWidget: public CopasiWidget, public Ui::CQTabWidget
 {
   Q_OBJECT
@@ -58,6 +62,11 @@ private:
   std::vector< CopasiWidget * > mPages;
   ListViews::ObjectType mObjectType;
   bool mIgnoreLeave;
+#ifdef COPASI_Provenance
+  CEntityProvenanceDialog* mpEntityProvenanceDialog;
+  QString mPathFile;
+  QList<QString> mVersionPathToCurrentModel;
+#endif
 };
 
 #endif // COPASI_CQTabWidget
