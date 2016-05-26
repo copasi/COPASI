@@ -29,6 +29,7 @@
 #ifdef COPASI_Provenance
 #include "CEntityProvenanceDialog.h"
 #include "versioning/CModelVersion.h"
+#include "commandline/CConfigurationFile.h"
 #endif
 
 CQTabWidget::CQTabWidget(const ListViews::ObjectType & objectType, CopasiWidget * pCopasiWidget,
@@ -87,9 +88,14 @@ CQTabWidget::CQTabWidget(const ListViews::ObjectType & objectType, CopasiWidget 
 
   if ((FROM_UTF8(ListViews::ObjectTypeName[mObjectType]) == "Species") || (FROM_UTF8(ListViews::ObjectTypeName[mObjectType]) == "Compartment") || (FROM_UTF8(ListViews::ObjectTypeName[mObjectType]) == "Reaction") || (FROM_UTF8(ListViews::ObjectTypeName[mObjectType]) == "Event") || (FROM_UTF8(ListViews::ObjectTypeName[mObjectType]) == "Global Quantity"))
     {
-      CEntityProvenanceDialog* pEntityProvenanceDialog = new CEntityProvenanceDialog(mpTabWidget, mpUndoStack, "New Compartment2", pWindow->getVersionHierarchy()->getPathFile(), pWindow->getVersionHierarchy()->getVersionsPathToCurrentModel(),  pWindow->getProvenanceParentOfCurrentVersion(), pWindow->getVersionHierarchy()->getParentOfCurrentModel());
-      mPages.push_back(pEntityProvenanceDialog);
-      mpTabWidget->addTab(pEntityProvenanceDialog, "Provenance");
+      //FROM_UTF8(mpObject->getObjectName())
+      //mpEntityProvenanceDialog = new CEntityProvenanceDialog(mpTabWidget, mpUndoStack, metaObject()->, pWindow->getVersionHierarchy()->getPathFile(), pWindow->getVersionHierarchy()->getVersionsPathToCurrentModel(),  pWindow->getProvenanceParentOfCurrentVersion(), pWindow->getVersionHierarchy()->getParentOfCurrentModel());
+      mpEntityProvenanceDialog = new CEntityProvenanceDialog(mpTabWidget);
+      mPathFile = pWindow->getVersionHierarchy()->getPathFile();
+      mVersionPathToCurrentModel = pWindow->getVersionHierarchy()->getVersionsPathToCurrentModel();
+      mPages.push_back(mpEntityProvenanceDialog);
+      mpTabWidget->addTab(mpEntityProvenanceDialog, "Provenance");
+      //connect(this, SIGNAL(activated()), this, SLOT(mpEntityProvenanceDialog->exec()));
       //connect(this, SIGNAL(),EntityProvenanceDialog ,SLOT(EntityProvenanceDialog->exec()));
     }
 
@@ -192,6 +198,16 @@ void CQTabWidget::load()
     {
       mpEditName->setText("");
     }
+
+#ifdef COPASI_Provenance
+
+  if ((FROM_UTF8(ListViews::ObjectTypeName[mObjectType]) == "Species") || (FROM_UTF8(ListViews::ObjectTypeName[mObjectType]) == "Compartment") || (FROM_UTF8(ListViews::ObjectTypeName[mObjectType]) == "Reaction") || (FROM_UTF8(ListViews::ObjectTypeName[mObjectType]) == "Event") || (FROM_UTF8(ListViews::ObjectTypeName[mObjectType]) == "Global Quantity"))
+    {
+
+      mpEntityProvenanceDialog->load(mpUndoStack, FROM_UTF8(mpObject->getObjectName()), FROM_UTF8(CCopasiRootContainer::getConfiguration()->getWorkingDirectory()), mVersionPathToCurrentModel);
+    }
+
+#endif
 }
 
 bool CQTabWidget::save()
