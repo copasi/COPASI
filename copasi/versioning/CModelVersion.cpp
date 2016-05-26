@@ -168,7 +168,7 @@ int CModelVersion::addNewVersion(QString Version, QString AuthorGivenName, QStri
 void CModelVersion::versionToTable(QString Version, QString DerivedFrom, QString AuthorGivenName, QString AuthorFamilyName, QString AuthorOrganization, QString AuthorEmail, QString Comments, QString Time)
 {
 
-  if (((mNRow + 100) % 10) == 0)
+  if (((mNRow + 1) % 100) == 0)
     {
       reallocateModelVersionHierarchyTable((mNRow + 101));
     }
