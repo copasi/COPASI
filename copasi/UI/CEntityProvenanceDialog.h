@@ -16,8 +16,11 @@ class CEntityProvenanceDialog :  public CopasiWidget,   public Ui::CEntityProven
   Q_OBJECT
 
 public:
-  CEntityProvenanceDialog(QWidget *parent = 0,  QUndoStack * UndoStack = NULL, QString EntityName = QString(""), QString PathFile = "",  QList<QString> VersionsPathToCurrentModel = QList<QString> (),  QString ProvenanceParentOfCurrentModel = "", QString VersioningParentOfCurrentModel = "", const char* name = 0);
+  //CEntityProvenanceDialog(QWidget *parent = 0,  QUndoStack * UndoStack = NULL, QString EntityName = QString(""), QString PathFile = "",  QList<QString> VersionsPathToCurrentModel = QList<QString> (),  QString ProvenanceParentOfCurrentModel = "", QString VersioningParentOfCurrentModel = "", const char* name = 0);
+  CEntityProvenanceDialog(QWidget *parent = 0,  QUndoStack * UndoStack = NULL, QString PathFile = "",  QList<QString> VersionsPathToCurrentModel = QList<QString> (),  QString ProvenanceParentOfCurrentModel = "", QString VersioningParentOfCurrentModel = "", const char* name = 0);
   ~CEntityProvenanceDialog();
+
+  void load(QUndoStack * UndoStack, QString EntityNameQString, QString PathFile,  QList<QString> VersionsPathToCurrentModel);
 
 private:
   Ui::CEntityProvenanceDialog *ui;
@@ -62,13 +65,13 @@ private:
   /**
    * The last Provenance parent of current model version
    */
-  QString mProvenanceParentOfCurrentModel;
+// QString mProvenanceParentOfCurrentModel;
 
   /**
    * The parent of current model version
    * Last Created/Restored Version
    */
-  QString mVersioningParentOfCurrentModel;
+  //QString mVersioningParentOfCurrentModel;
 
   /**
   *  Generate Provenance data from Undo History and append them to the provenance table
