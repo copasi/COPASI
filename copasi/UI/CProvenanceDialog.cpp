@@ -1384,7 +1384,7 @@ void CProvenanceDialog::reallocateProvenanceTable(int Nrow)
 
 void  CProvenanceDialog::versionToTable(QString EntityType, QString Name, QString Action, QString Property, QString NewValue, QString Time, QString Author)
 {
-  if (((mNRow + 10000) % 10) == 0)
+  if (((mNRow + 1) % 10000) == 0)
     {
       reallocateProvenanceTable((mNRow + 10001));
     }
