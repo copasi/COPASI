@@ -120,20 +120,8 @@ Qt::ItemFlags CQParameterOverviewDM::flags(const QModelIndex &index) const
     {
       if (pNode->getType() == CModelParameter::ReactionParameter)
         {
-          emit signalOpenEditor(index);
-
-          Qt::ItemFlags flags = QAbstractItemModel::flags(index)  | Qt::ItemIsEnabled;
-
-          // IMO only allow editing of assignments on parameter overview
-          // unfortunately there is disagreement, so making all items editable
-          // again
-          // if (mParameterSetKey.empty())
-          flags |= Qt::ItemIsEditable;
-
-          return flags;
+          return QAbstractItemModel::flags(index) | Qt::ItemIsEnabled | Qt::ItemIsEditable;
         }
-
-      emit signalCloseEditor(index);
     }
 
   return QAbstractItemModel::flags(index) & ~Qt::ItemIsEditable;
