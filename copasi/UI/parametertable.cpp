@@ -36,6 +36,9 @@ ParameterTable::ParameterTable(QWidget * parent)
   connect(this, SIGNAL(cellChanged(int, int)),
           this, SLOT(slotCellChanged(int, int)));
 
+  connect(this, SIGNAL(currentCellChanged(int, int, int, int)),
+          this, SLOT(slotCurrentCellChanged(int, int, int, int)));
+
   connect(this, SIGNAL(signalChanged(int, int, QString)),
           parent, SLOT(slotTableChanged(int, int, QString)));
 
@@ -354,7 +357,7 @@ void ParameterTable::updateTable(const CReactionInterface & ri, const CReaction 
                   mpComboDelegate->setItems(rowCounter, mModifiers);
                 }
 
-              openPersistentEditor(pItem);
+              //openPersistentEditor(pItem);
             }
 
           if (!ri.isVector(i))
@@ -412,7 +415,7 @@ void ParameterTable::updateTable(const CReactionInterface & ri, const CReaction 
               pItem->setText(paramText);
             }
 
-          openPersistentEditor(pItem);
+          //openPersistentEditor(pItem);
 
           // add item to Value column
           pItem = item((int) rowCounter, 3);
@@ -448,7 +451,7 @@ void ParameterTable::updateTable(const CReactionInterface & ri, const CReaction 
         {
           mpComboDelegate->setItems(rowCounter, mVolumes);
           pItem->setText(FROM_UTF8(ri.getMapping(i)));
-          openPersistentEditor(pItem);
+          //openPersistentEditor(pItem);
         }
       // if line is for time . . .
       else if (usage == CFunctionParameter::TIME)
@@ -522,4 +525,25 @@ void ParameterTable::slotCellChanged(int row, int col)
     }
 
   emit signalChanged((int) i, row - (int) mIndex2Line[i], newVal);
+}
+
+void ParameterTable::slotCurrentCellChanged(int currentRow, int currentColumn,
+    int previousRow, int previousColumn)
+{
+  if (currentColumn == previousColumn && currentRow == previousRow)
+    return;
+
+  if (previousColumn == 2)
+    {
+      QTableWidgetItem *pItem = item(previousRow, previousColumn);
+      closePersistentEditor(pItem);
+    }
+
+  if (currentColumn == 2)
+    {
+      QTableWidgetItem *pItem = item(currentRow, currentColumn);
+
+      if (mpComboDelegate->getItems(indexFromItem(pItem)).count() > 1)
+        openPersistentEditor(pItem);
+    }
 }
