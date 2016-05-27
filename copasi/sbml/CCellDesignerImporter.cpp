@@ -2504,7 +2504,7 @@ void CCellDesignerImporter::enforceSquare(const ConnectScheme& connectScheme,
   bool isFirst = directionCount == 0;
 
   if (connectScheme.mPolicy != POLICY_SQUARE ||
-      directionCount >= connectScheme.mLineDirections.size())
+      directionCount >= (int)connectScheme.mLineDirections.size())
     return;
 
   if (connectScheme.mLineDirections[directionCount].mValue == DIRECTION_HORIZONTAL)

@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -429,7 +429,7 @@ bool COptMethodGA::initialize()
       return false;
     }
 
-  mGenerations = getValue< C_FLOAT64 >("Number of Generations");
+  mGenerations = (unsigned C_INT32)getValue< C_FLOAT64 >("Number of Generations");
   mGeneration = 0;
 
   if (mpCallBack)
