@@ -185,16 +185,16 @@ const CCopasiObject * CArrayAnnotation::addElementReference(C_INT32 u, C_INT32 v
 {
   CArrayAnnotation::name_index_type CNIndex(2);
 
-  if (mAnnotationsCN[0].size() <= u &&
-      mpArray->size()[0] >= u)
+  if ((C_INT32)mAnnotationsCN[0].size() <= u &&
+      (C_INT32)mpArray->size()[0] >= u)
     {
       const_cast< CArrayAnnotation * >(this)->autoAnnotation(0);
     }
 
   CNIndex[0] = mAnnotationsCN[0][u];
 
-  if (mAnnotationsCN[1].size() <= v &&
-      mpArray->size()[1] >= v)
+  if ((C_INT32)mAnnotationsCN[1].size() <= v &&
+      (C_INT32)mpArray->size()[1] >= v)
     {
       const_cast< CArrayAnnotation * >(this)->autoAnnotation(1);
     }
@@ -208,8 +208,8 @@ const CCopasiObject * CArrayAnnotation::addElementReference(C_INT32 u) const
 {
   CArrayAnnotation::name_index_type CNIndex(1);
 
-  if (mAnnotationsCN[0].size() <= u &&
-      mpArray->size()[0] >= u)
+  if ((C_INT32)mAnnotationsCN[0].size() <= u &&
+      (C_INT32)mpArray->size()[0] >= u)
     {
       const_cast< CArrayAnnotation * >(this)->autoAnnotation(0);
     }

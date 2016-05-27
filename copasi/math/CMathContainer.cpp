@@ -3533,6 +3533,8 @@ bool CMathContainer::removeAnalysisObject(CMath::Entity< CMathObject > & mathObj
 
   // Create Update sequences
   createUpdateSequences();
+
+  return true;
 }
 
 CMathEvent * CMathContainer::addAnalysisEvent(const CEvent & dataEvent)

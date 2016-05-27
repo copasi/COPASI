@@ -142,7 +142,6 @@ CTrajectoryMethod::Status CHybridMethod::step(const double & deltaT)
 
   // check for possible overflows
   size_t i;
-  size_t imax;
 
   // do several steps
   C_FLOAT64 time = *mpContainerStateTime;
@@ -315,7 +314,6 @@ C_FLOAT64 CHybridMethod::doSingleStep(C_FLOAT64 currentTime, C_FLOAT64 endTime)
  */
 void CHybridMethod::calculateDerivative(CVectorCore< C_FLOAT64 > & deriv)
 {
-  size_t i;
   C_INT32 bal = 0;
   CHybridStochFlag * j;
 
@@ -373,7 +371,6 @@ void CHybridMethod::getStochTimeAndIndex(C_FLOAT64 & ds, size_t & rIndex)
 void CHybridMethod::updatePriorityQueue(size_t rIndex, C_FLOAT64 time)
 {
   C_FLOAT64 newTime;
-  size_t index;
 
   // Update all propensities depending on the current reaction (rIndex)
   if (rIndex != C_INVALID_INDEX)
@@ -570,7 +567,7 @@ void CHybridMethod::setupMetab2React()
  */
 void CHybridMethod::setupPartition()
 {
-  size_t i, j;
+  size_t i;
 
   // Initialize reactions flags.
 

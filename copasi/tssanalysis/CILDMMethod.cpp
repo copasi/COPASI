@@ -101,7 +101,7 @@ void CILDMMethod::step(const double & deltaT)
 
   const CMatrix<C_FLOAT64> & Stoichiom = mpContainer->getModel().getRedStoi();
 
-  size_t reacs_size = mpContainer->getReactions().size();
+  C_INT reacs_size = (C_INT)mpContainer->getReactions().size();
 
   /* the vector mY is the current state of the system*/
 
