@@ -400,10 +400,14 @@ void CQNotes::slotOpenUrl(const QUrl & url)
 
 void CQNotes::changeNotes(const std::string& key, const std::string& notes)
 {
+  if (key != mKey)
+    {
+      mpListView->switchToOtherWidget(C_INVALID_INDEX, key);
+      qApp->processEvents();
+    }
+
   mKey = key;
   load();
-  mpListView->switchToOtherWidget(C_INVALID_INDEX, mKey);
-  qApp->processEvents();
 
   CAnnotation * pAnnotation = CAnnotation::castObject(mpObject);
   CReportDefinition * pReportDefinition = static_cast< CReportDefinition * >(mpObject);
