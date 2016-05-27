@@ -51,8 +51,8 @@ CBrowseModelVersionDialog::CBrowseModelVersionDialog(QWidget *parent, CModelVers
   ui->RestoreButton->setEnabled(false);
   ui->CloseButton->setEnabled(true);
   ui->tableView->setEnabled(true);
-#ifdef COPASI_Provenance
   mpUndoStack = UndoStack;
+#ifdef COPASI_Provenance
   mPathProvenance = PathProvenance;
   mProvenanceParentOfCurrentModel =  ProvenanceParentOfCurrentModel;
 #endif
