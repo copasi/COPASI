@@ -334,62 +334,49 @@ void CQNotes::load()
 
 void CQNotes::save()
 {
-  if (mpObject != NULL &&
-      mValidity == QValidator::Acceptable)
+  if (mpObject == NULL ||
+      mValidity != QValidator::Acceptable)
+    return;
+
+
+  CAnnotation * pAnnotation = CAnnotation::castObject(mpObject);
+  CReportDefinition * pReportDefinition = static_cast<CReportDefinition *>(mpObject);
+
+  std::string notes;
+
+  if (pAnnotation != NULL)
     {
-
-      CAnnotation * pAnnotation = CAnnotation::castObject(mpObject);
-      CReportDefinition * pReportDefinition = static_cast< CReportDefinition * >(mpObject);
-
-      std::string notes;
-
-      if (pAnnotation != NULL)
-        {
-          notes = pAnnotation->getNotes();
-        }
-      else if (pReportDefinition != NULL)
-        {
-          notes = pReportDefinition->getComment();
-        }
-
-      QString qNotes(FROM_UTF8(notes));
-
-      if (mpEdit->toPlainText() != qNotes)
-        {
-          std::string PlainText = TO_UTF8(mpEdit->toPlainText());
-
-          if (mpValidatorXML->needsWrap())
-            {
-              // We wrap the HTML in a body element if it does not contain a top level html or body element.
-              PlainText = "<body xmlns=\"http://www.w3.org/1999/xhtml\">" + PlainText + "</body>";
-            }
-
-          if (mpUndoStack == NULL)
-            {
-              CopasiUI3Window *  pWindow = static_cast<CQCopasiApplication*>(qApp)->getMainWindow();
-
-              if (pWindow)
-                mpUndoStack = pWindow->getUndoStack();
-            }
-
-          mpUndoStack->push(new ChangeNotesCommand(mpObject, notes, PlainText, this));
-
-          mChanged = true;
-        }
+      notes = pAnnotation->getNotes();
+    }
+  else if (pReportDefinition != NULL)
+    {
+      notes = pReportDefinition->getComment();
     }
 
-  if (mChanged)
-    {
-      if (mpDataModel != NULL)
-        {
-          mpDataModel->changed();
-        }
+  std::string plainText = TO_UTF8(mpEdit->toPlainText());
 
-      protectedNotify(ListViews::MODEL, ListViews::CHANGE, mKey);
-      mChanged = false;
+  if (plainText == notes)
+    return;
+
+
+  if (mpValidatorXML->needsWrap())
+    {
+      // We wrap the HTML in a body element if it does not contain a top level html or body element.
+      plainText = "<body xmlns=\"http://www.w3.org/1999/xhtml\">" + plainText + "</body>";
     }
 
-  return;
+  if (mpUndoStack == NULL)
+    {
+      CopasiUI3Window *  pWindow = static_cast<CQCopasiApplication*>(qApp)->getMainWindow();
+
+      if (pWindow)
+        mpUndoStack = pWindow->getUndoStack();
+    }
+
+  mpUndoStack->push(new ChangeNotesCommand(mpObject, notes, plainText, this));
+
+
+
 }
 
 void CQNotes::slotOpenUrl(const QUrl & url)
@@ -400,7 +387,7 @@ void CQNotes::slotOpenUrl(const QUrl & url)
 
 void CQNotes::changeNotes(const std::string& key, const std::string& notes)
 {
-  if (key != mKey)
+  if (mpListView->getCurrentItemKey() != mKey || key != mKey)
     {
       mpListView->switchToOtherWidget(C_INVALID_INDEX, key);
       qApp->processEvents();
@@ -421,10 +408,18 @@ void CQNotes::changeNotes(const std::string& key, const std::string& notes)
       pReportDefinition->setComment(notes);
     }
 
+  mChanged = true;
+
+  if (mIgnoreUpdates)
+    return;
+
+
   if (mpDataModel != NULL)
     {
       mpDataModel->changed();
     }
 
   protectedNotify(ListViews::MODEL, ListViews::CHANGE, mKey);
+
+  mChanged = false;
 }

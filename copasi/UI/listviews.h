@@ -150,6 +150,8 @@ public:
   // return current widget - added 02.07.08
   CopasiWidget* getCurrentWidget();
 
+  const std::string& getCurrentItemKey() const;
+
   //TODO these are convenience methods used by SliderDialog. They should be
   //replaced by something more generic.
   CQTrajectoryWidget* getTrajectoryWidget();

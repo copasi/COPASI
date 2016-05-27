@@ -161,7 +161,7 @@ bool ReactionsWidget1::saveToReaction()
       changed = true;
     }
 
-  if (reac->getFunction()->getObjectName() != mpRi->getFunctionName())
+  if (reac->getFunction()->getObjectName() != mpRi->getFunctionName() && !mpRi->getFunctionName().empty())
     {
       mpUndoStack->push(new ReactionChangeCommand(
                           CCopasiUndoCommand::REACTION_FUNCTION_CHANGE,
