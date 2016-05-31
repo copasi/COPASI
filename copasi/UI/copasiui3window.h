@@ -117,10 +117,12 @@ public:
   CModelVersion * getVersionHierarchy();
 #endif
 
+// COMBINE Archive will take care of file management
+  /*
 #ifdef COPASI_Provenance
-  QString getProvenanceParentOfCurrentVersion();
+    QString getProvenanceParentOfCurrentVersion();
 #endif
-
+  */
   void addWindow(QMainWindow * pWindow);
   void removeWindow(QMainWindow * pWindow);
 
@@ -360,12 +362,14 @@ private:
   QAction* mpaCreateVersion;
   QAction* mpaBrowseVersion;
   CModelVersion*  mpVersionHierarchy;
+//  COMBINE Archive will take care of file management
 //  QString mLastSavedParentOfCurrentModel;
 #endif
 
 #ifdef COPASI_Provenance
   QAction* mpaProvenance;
-  QString mProvenanceParentOfCurrentModel;
+//  COMBINE Archive will take care of file management
+  //QString mProvenanceParentOfCurrentModel;
   QString mProvenanceOrigionFileType;
   QString mProvenanceOrigionTime;
   QString mProvenanceOfOrigionOfFile;
