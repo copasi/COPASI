@@ -17,7 +17,7 @@ class CEntityProvenanceDialog :  public CopasiWidget,   public Ui::CEntityProven
 
 public:
   //CEntityProvenanceDialog(QWidget *parent = 0,  QUndoStack * UndoStack = NULL, QString EntityName = QString(""), QString PathFile = "",  QList<QString> VersionsPathToCurrentModel = QList<QString> (),  QString ProvenanceParentOfCurrentModel = "", QString VersioningParentOfCurrentModel = "", const char* name = 0);
-  CEntityProvenanceDialog(QWidget *parent = 0,  QUndoStack * UndoStack = NULL, QString PathFile = "",  QList<QString> VersionsPathToCurrentModel = QList<QString> (),  QString ProvenanceParentOfCurrentModel = "", QString VersioningParentOfCurrentModel = "", const char* name = 0);
+  CEntityProvenanceDialog(QWidget *parent = 0,  QUndoStack * UndoStack = NULL, QString PathFile = "",  QList<QString> VersionsPathToCurrentModel = QList<QString> (), const char* name = 0);
   ~CEntityProvenanceDialog();
 
   void load(QUndoStack * UndoStack, QString EntityNameQString, QString PathFile,  QList<QString> VersionsPathToCurrentModel);
@@ -91,7 +91,7 @@ private:
   /**
    * Add one row to Provenance table with the given data
    */
-  void versionToTable(QString Action, QString Property, QString NewValue, QString Time, QString Author);
+  void AddOneLineToTable(QString Action, QString Property, QString NewValue, QString Time, QString Author);
 };
 
 #endif // CENTITYPROVENANCEDialog_H
