@@ -36,7 +36,8 @@ public:
    */
   explicit CBrowseModelVersionDialog(QWidget *parent = 0, CModelVersion * ModelVersion = NULL, DataModelGUI * ModelGUI = NULL,   QUndoStack  *     UndoStack = NULL
 #ifdef COPASI_Provenance
-                                     , QString PathProvenance = QString(""),  QString ProvenanceParentOfCurrentModel = QString("")
+//                                     , QString PathProvenance = QString(""),  QString ProvenanceParentOfCurrentModel = QString("")
+                                     ,  QString ProvenanceParentOfCurrentModel = QString("")
 #endif
                                     );
 
@@ -56,7 +57,7 @@ public:
   /**
    * Returns the Provenance Parent of Current Model
    */
-  QString getProvenanceParentOfCurrentModel();
+  //QString getProvenanceParentOfCurrentModel();
 #endif
 
 private:
@@ -86,7 +87,7 @@ private:
 
 #ifdef COPASI_Provenance
   QString           mPathProvenance;
-  QString mProvenanceParentOfCurrentModel;
+  //QString mProvenanceParentOfCurrentModel;
 #endif
 
 private slots:
