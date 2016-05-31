@@ -14,12 +14,13 @@
 #include "CProvenanceDialog.h"
 #include "ui_CProvenanceDialog.h"
 
-CProvenanceDialog::CProvenanceDialog(QWidget* parent, QUndoStack *undoStack, QString PathFile ,  QList<QString> VersionsPathToCurrentModel,  QString ProvenanceParentOfCurrentModel, QString VersioningParentOfCurrentModel)
+//CProvenanceDialog::CProvenanceDialog(QWidget* parent, QUndoStack *undoStack, QString PathFile ,  QList<QString> VersionsPathToCurrentModel,  QString ProvenanceParentOfCurrentModel, QString VersioningParentOfCurrentModel)
+CProvenanceDialog::CProvenanceDialog(QWidget* parent, QUndoStack *undoStack, QString PathFile ,  QList<QString> VersionsPathToCurrentModel)
   : QDialog(parent)
 {
   setupUi(this);
-  mProvenanceParentOfCurrentModel = ProvenanceParentOfCurrentModel;
-  mVersioningParentOfCurrentModel = VersioningParentOfCurrentModel;
+  //mProvenanceParentOfCurrentModel = ProvenanceParentOfCurrentModel;
+  //mVersioningParentOfCurrentModel = VersioningParentOfCurrentModel;
   mVersionsPathToCurrentModel = VersionsPathToCurrentModel;
   mPathFile = PathFile;
   mpUndoStack = undoStack;
@@ -167,7 +168,7 @@ void CProvenanceDialog::CurrentSessionEdits2ProvenanceTable()
       Property = QString(FROM_UTF8(cCommand->getProperty()));
       NewValue = QString(FROM_UTF8(cCommand->getNewValue()));
       Time = QString(FROM_UTF8(cCommand->getTime()));
-      versionToTable(EntityType, Name, Action, Property, NewValue, Time, Author);
+      AddOneLineToTable(EntityType, Name, Action, Property, NewValue, Time, Author);
     }
 }
 
@@ -292,7 +293,7 @@ void CProvenanceDialog::ProvXMLFiles2ProvenanceTable()
                   QString ActivityNewValue = QString::fromStdString(xmlEntity.getAttrValue("New_value"));
 
                   ActivityIDProvTableRow.insert(ActivityID, mNRow);
-                  versionToTable("", "", ActivityAction, ActivityProperty, ActivityNewValue, "", "");
+                  AddOneLineToTable("", "", ActivityAction, ActivityProperty, ActivityNewValue, "", "");
                 }
               else if (next.getName() == "agent")
                 {
@@ -647,7 +648,7 @@ void CProvenanceDialog::ProvXMLFiles2ProvenanceTable()
                       QString ActivityNewValue = QString::fromStdString(xmlEntity.getAttrValue("New_value"));
 
                       ActivityIDProvTableRow.insert(ActivityID, mNRow);
-                      versionToTable("", "", ActivityAction, ActivityProperty, ActivityNewValue, "", "");
+                      AddOneLineToTable("", "", ActivityAction, ActivityProperty, ActivityNewValue, "", "");
                     }
                   else if (next.getName() == "agent")
                     {
@@ -957,362 +958,363 @@ void CProvenanceDialog::ProvXMLFiles2ProvenanceTable()
     }
 
 // Provenance Current Model provenance to table
-  if (mProvenanceParentOfCurrentModel == mVersioningParentOfCurrentModel)
+//  if (mProvenanceParentOfCurrentModel == mVersioningParentOfCurrentModel)
+//    {
+  dataFile = mPathFile + "/ProvenanceMainBody.xml";
+
+  QFile Fout2(dataFile);
+
+  if (Fout2.exists())
     {
-      dataFile = mPathFile + "/ProvenanceMainBody.xml";
+      XMLErrorLog log1;
+      XMLInputStream stream(dataFile.toUtf8(), true, "", &log1);
 
-      QFile Fout2(dataFile);
-
-      if (Fout2.exists())
+      if ((stream.peek().isStart()) && (stream.peek().getName() == "document"))
         {
-          XMLErrorLog log1;
-          XMLInputStream stream(dataFile.toUtf8(), true, "", &log1);
+          XMLToken ProvenanceInformation = stream.next();
+          QHash<QString, QList<QString> > ENtityIDInformation;
+          QMap<QString, QString> AgentIDAuthor;
+          QHash<QString,  int> ActivityIDProvTableRow;
 
-          if ((stream.peek().isStart()) && (stream.peek().getName() == "document"))
+          while (stream.isGood())
             {
-              XMLToken ProvenanceInformation = stream.next();
-              QHash<QString, QList<QString> > ENtityIDInformation;
-              QMap<QString, QString> AgentIDAuthor;
-              QHash<QString,  int> ActivityIDProvTableRow;
+              stream.skipText();
+              //grab the next element
+              XMLToken next = stream.peek();
 
-              while (stream.isGood())
+              // if we reached the end table element, we stop
+              if (next.isEndFor(ProvenanceInformation))
+                break;
+
+              if (next.getName() == "entity")
                 {
-                  stream.skipText();
-                  //grab the next element
-                  XMLToken next = stream.peek();
+                  XMLToken xmlEntity = stream.next();
+                  QString EntityID = QString::fromStdString(xmlEntity.getAttrValue(0)); // The first attribute is prov:id
+                  QString EntityName = QString::fromStdString(xmlEntity.getAttrValue("Initial_name"));
+                  QString MainType = QString::fromStdString(xmlEntity.getAttrValue("Mian_Type"));
+                  QString EntityType = QString::fromStdString(xmlEntity.getAttrValue("Entity_Type"));
+                  QList<QString> EntityInformation;
+                  EntityInformation.append(EntityName);
+                  EntityInformation.append(MainType);
+                  EntityInformation.append(EntityType);
+                  ENtityIDInformation.insert(EntityID, EntityInformation);
+                }
+              else if (next.getName() == "activity")
+                {
+                  XMLToken xmlEntity = stream.next();
+                  QString ActivityID = QString::fromStdString(xmlEntity.getAttrValue(0)); // The first attribute is prov:id
+                  QString ActivityAction = QString::fromStdString(xmlEntity.getAttrValue("Action"));
+                  QString ActivityProperty = QString::fromStdString(xmlEntity.getAttrValue("Property"));
+                  QString ActivityNewValue = QString::fromStdString(xmlEntity.getAttrValue("New_value"));
 
-                  // if we reached the end table element, we stop
-                  if (next.isEndFor(ProvenanceInformation))
-                    break;
-
-                  if (next.getName() == "entity")
-                    {
-                      XMLToken xmlEntity = stream.next();
-                      QString EntityID = QString::fromStdString(xmlEntity.getAttrValue(0)); // The first attribute is prov:id
-                      QString EntityName = QString::fromStdString(xmlEntity.getAttrValue("Initial_name"));
-                      QString MainType = QString::fromStdString(xmlEntity.getAttrValue("Mian_Type"));
-                      QString EntityType = QString::fromStdString(xmlEntity.getAttrValue("Entity_Type"));
-                      QList<QString> EntityInformation;
-                      EntityInformation.append(EntityName);
-                      EntityInformation.append(MainType);
-                      EntityInformation.append(EntityType);
-                      ENtityIDInformation.insert(EntityID, EntityInformation);
-                    }
-                  else if (next.getName() == "activity")
-                    {
-                      XMLToken xmlEntity = stream.next();
-                      QString ActivityID = QString::fromStdString(xmlEntity.getAttrValue(0)); // The first attribute is prov:id
-                      QString ActivityAction = QString::fromStdString(xmlEntity.getAttrValue("Action"));
-                      QString ActivityProperty = QString::fromStdString(xmlEntity.getAttrValue("Property"));
-                      QString ActivityNewValue = QString::fromStdString(xmlEntity.getAttrValue("New_value"));
-
-                      ActivityIDProvTableRow.insert(ActivityID, mNRow);
-                      versionToTable("", "", ActivityAction, ActivityProperty, ActivityNewValue, "", "");
-                    }
-                  else if (next.getName() == "agent")
-                    {
-                      XMLToken xmlEntity = stream.next();
-                      QString AgentID = QString::fromStdString(xmlEntity.getAttrValue(0)); // The first attribute is prov:id
-                      QString AgentName = QString::fromStdString(xmlEntity.getAttrValue("GivenName"));
-                      QString AgentFamilyName = QString::fromStdString(xmlEntity.getAttrValue("FamilyName"));
+                  ActivityIDProvTableRow.insert(ActivityID, mNRow);
+                  AddOneLineToTable("", "", ActivityAction, ActivityProperty, ActivityNewValue, "", "");
+                }
+              else if (next.getName() == "agent")
+                {
+                  XMLToken xmlEntity = stream.next();
+                  QString AgentID = QString::fromStdString(xmlEntity.getAttrValue(0)); // The first attribute is prov:id
+                  QString AgentName = QString::fromStdString(xmlEntity.getAttrValue("GivenName"));
+                  QString AgentFamilyName = QString::fromStdString(xmlEntity.getAttrValue("FamilyName"));
 
 // We don't show Organizzation and Email in this Table
-                      //QString AgentOrganization = QString::fromStdString(xmlEntity.getAttrValue("Organization"));
-                      //QString AgentEmail = QString::fromStdString(xmlEntity.getAttrValue("Email"));
+                  //QString AgentOrganization = QString::fromStdString(xmlEntity.getAttrValue("Organization"));
+                  //QString AgentEmail = QString::fromStdString(xmlEntity.getAttrValue("Email"));
 
-                      AgentIDAuthor.insert(AgentID, (AgentName + " " + AgentFamilyName));
-                    }
+                  AgentIDAuthor.insert(AgentID, (AgentName + " " + AgentFamilyName));
+                }
 
-                  else if (next.getName() == "used")
+              else if (next.getName() == "used")
+                {
+                  XMLToken xmlEntity = stream.next();
+                  QString ActivityID, EntityID;
+                  bool ActivityExists = false;
+                  bool EntityExists = false;
+                  int TableRow;
+                  QList<QString> EntityInformation;
+
+                  while (stream.isGood())
                     {
-                      XMLToken xmlEntity = stream.next();
-                      QString ActivityID, EntityID;
-                      bool ActivityExists = false;
-                      bool EntityExists = false;
-                      int TableRow;
-                      QList<QString> EntityInformation;
+                      XMLToken child  = stream.next();
 
-                      while (stream.isGood())
+                      // if we reached the end element of the 'Version' element : add this data as a new version
+                      if (child.isEndFor(xmlEntity))
                         {
-                          XMLToken child  = stream.next();
-
-                          // if we reached the end element of the 'Version' element : add this data as a new version
-                          if (child.isEndFor(xmlEntity))
+                          //add here
+                          if ((ActivityExists)  && (EntityExists))
                             {
-                              //add here
-                              if ((ActivityExists)  && (EntityExists))
-                                {
-                                  // Add entity name
-                                  QModelIndex index = mpProvenanceTable->index(TableRow, 1, QModelIndex());
-                                  mpProvenanceTable->setData(index, QVariant(EntityInformation.at(0)));
-                                  // add Main Type: Model, Task, Document
-                                  index = mpProvenanceTable->index(TableRow, 7, QModelIndex());
-                                  mpProvenanceTable->setData(index, QVariant(EntityInformation.at(1)));
-                                  // add Entity Type
-                                  index = mpProvenanceTable->index(TableRow, 0, QModelIndex());
-                                  mpProvenanceTable->setData(index, QVariant(EntityInformation.at(2)));
-                                }
-
-                              break;
+                              // Add entity name
+                              QModelIndex index = mpProvenanceTable->index(TableRow, 1, QModelIndex());
+                              mpProvenanceTable->setData(index, QVariant(EntityInformation.at(0)));
+                              // add Main Type: Model, Task, Document
+                              index = mpProvenanceTable->index(TableRow, 7, QModelIndex());
+                              mpProvenanceTable->setData(index, QVariant(EntityInformation.at(1)));
+                              // add Entity Type
+                              index = mpProvenanceTable->index(TableRow, 0, QModelIndex());
+                              mpProvenanceTable->setData(index, QVariant(EntityInformation.at(2)));
                             }
 
-                          if (child.isStart())
+                          break;
+                        }
+
+                      if (child.isStart())
+                        {
+
+                          if (child.getName() == "activity")
                             {
 
-                              if (child.getName() == "activity")
+                              ActivityID = QString::fromStdString(child.getAttrValue(0)); // The first attrube is reference to activity ID
+
+                              if (ActivityIDProvTableRow.contains(ActivityID))
                                 {
-
-                                  ActivityID = QString::fromStdString(child.getAttrValue(0)); // The first attrube is reference to activity ID
-
-                                  if (ActivityIDProvTableRow.contains(ActivityID))
-                                    {
-                                      ActivityExists = true;
-                                      TableRow = ActivityIDProvTableRow.value(ActivityID);
-                                    }
+                                  ActivityExists = true;
+                                  TableRow = ActivityIDProvTableRow.value(ActivityID);
                                 }
+                            }
 
-                              if (child.getName() == "entity")
+                          if (child.getName() == "entity")
+                            {
+                              EntityID = QString::fromStdString(child.getAttrValue(0));
+
+                              if (ENtityIDInformation.contains(EntityID))
                                 {
-                                  EntityID = QString::fromStdString(child.getAttrValue(0));
-
-                                  if (ENtityIDInformation.contains(EntityID))
-                                    {
-                                      EntityExists = true;
-                                      EntityInformation = ENtityIDInformation.value(EntityID);
-                                    }
+                                  EntityExists = true;
+                                  EntityInformation = ENtityIDInformation.value(EntityID);
                                 }
                             }
                         }
                     }
+                }
 
-                  else if (next.getName() == "wasAttributedTo")
+              else if (next.getName() == "wasAttributedTo")
+                {
+                  XMLToken xmlEntity = stream.next();
+                  QString AgentID, EntityID;
+
+                  while (stream.isGood())
                     {
-                      XMLToken xmlEntity = stream.next();
-                      QString AgentID, EntityID;
+                      XMLToken child  = stream.next();
 
-                      while (stream.isGood())
+                      // if we reached the end element of the 'Version' element : add this data as a new version
+                      if (child.isEndFor(xmlEntity))
                         {
-                          XMLToken child  = stream.next();
+                          //add here
 
-                          // if we reached the end element of the 'Version' element : add this data as a new version
-                          if (child.isEndFor(xmlEntity))
+                          break;
+                        }
+
+                      if (child.isStart())
+                        {
+
+                          if (child.getName() == "agent")
                             {
-                              //add here
 
-                              break;
+                              AgentID = QString::fromStdString(child.getAttrValue(0)); // The first attrube is reference to activity ID
                             }
 
-                          if (child.isStart())
+                          if (child.getName() == "entity")
+                            {
+                              EntityID = QString::fromStdString(child.getAttrValue(0));
+                            }
+                        }
+                    }
+                }
+
+              else if (next.getName() == "wasAssociatedWith")
+                {
+                  XMLToken xmlEntity = stream.next();
+                  QString AgentID, ActivityID, Author;
+                  bool ActivityExists = false;
+                  bool AgentExists = false;
+                  int TableRow;
+
+                  while (stream.isGood())
+                    {
+                      XMLToken child  = stream.next();
+
+                      // if we reached the end element of the 'Version' element : add this data as a new version
+                      if (child.isEndFor(xmlEntity))
+                        {
+                          //add here
+                          if ((ActivityExists)  && (AgentExists))
+                            {
+                              QModelIndex index = mpProvenanceTable->index(TableRow, 6, QModelIndex());
+                              mpProvenanceTable->setData(index, QVariant(Author));
+                            }
+
+                          break;
+                        }
+
+                      if (child.isStart())
+                        {
+
+                          if (child.getName() == "agent")
                             {
 
-                              if (child.getName() == "agent")
-                                {
+                              AgentID = QString::fromStdString(child.getAttrValue(0)); // The first attrube is reference to activity ID
 
-                                  AgentID = QString::fromStdString(child.getAttrValue(0)); // The first attrube is reference to activity ID
+                              if (AgentIDAuthor.contains(AgentID))
+                                {
+                                  AgentExists = true;
+                                  Author =  AgentIDAuthor.value(AgentID);
                                 }
+                            }
 
-                              if (child.getName() == "entity")
+                          if (child.getName() == "activity")
+                            {
+                              ActivityID = QString::fromStdString(child.getAttrValue(0));
+
+                              if (ActivityIDProvTableRow.contains(ActivityID))
                                 {
-                                  EntityID = QString::fromStdString(child.getAttrValue(0));
+                                  ActivityExists = true;
+                                  TableRow = ActivityIDProvTableRow.value(ActivityID);
                                 }
                             }
                         }
                     }
+                }
+              else if (next.getName() == "wasGeneratedBy")
+                {
+                  XMLToken xmlEntity = stream.next();
+                  QString ActivityID, EntityID, Time;
+                  bool timeExists = false;
+                  bool activityExists = false;
 
-                  else if (next.getName() == "wasAssociatedWith")
+                  while (stream.isGood())
                     {
-                      XMLToken xmlEntity = stream.next();
-                      QString AgentID, ActivityID, Author;
-                      bool ActivityExists = false;
-                      bool AgentExists = false;
-                      int TableRow;
+                      XMLToken child  = stream.next();
 
-                      while (stream.isGood())
+                      // if we reached the end element of the 'Version' element : add this data as a new version
+                      if (child.isEndFor(xmlEntity))
                         {
-                          XMLToken child  = stream.next();
+                          //add here
 
-                          // if we reached the end element of the 'Version' element : add this data as a new version
-                          if (child.isEndFor(xmlEntity))
+                          if (activityExists)
                             {
-                              //add here
-                              if ((ActivityExists)  && (AgentExists))
-                                {
-                                  QModelIndex index = mpProvenanceTable->index(TableRow, 6, QModelIndex());
-                                  mpProvenanceTable->setData(index, QVariant(Author));
-                                }
-
-                              break;
                             }
 
-                          if (child.isStart())
+                          if (timeExists)
+                            {
+                            }
+
+                          break;
+                        }
+
+                      if (child.isStart())
+                        {
+
+                          if (child.getName() == "activity")
                             {
 
-                              if (child.getName() == "agent")
+                              ActivityID = QString::fromStdString(child.getAttrValue(0));
+                              activityExists = true;
+                            }
+
+                          if (child.getName() == "time")
+                            {
+
+                              Time = QString::fromStdString(stream.next().getCharacters());
+                              timeExists = true;
+                            }
+
+                          if (child.getName() == "entity")
+                            {
+                              EntityID = QString::fromStdString(child.getAttrValue(0));
+                            }
+                        }
+                    }
+                }
+              else if (next.getName() == "wasStartedBy")
+                {
+                  XMLToken xmlEntity = stream.next();
+                  QString ActivityID, Time;
+                  bool ActivityExists = false;
+                  bool TimeExists = false;
+                  int TableRow;
+
+                  while (stream.isGood())
+                    {
+                      XMLToken child  = stream.next();
+
+                      // if we reached the end element of the 'Version' element : add this data as a new version
+                      if (child.isEndFor(xmlEntity))
+                        {
+                          //add here
+                          if ((ActivityExists)  && (TimeExists))
+                            {
+                              QModelIndex index = mpProvenanceTable->index(TableRow, 5, QModelIndex());
+                              mpProvenanceTable->setData(index, QVariant(Time));
+                            }
+
+                          break;
+                        }
+
+                      if (child.isStart())
+                        {
+
+                          if (child.getName() == "time")
+                            {
+
+                              Time = QString::fromStdString(stream.next().getCharacters());
+                              TimeExists = true;
+                            }
+
+                          if (child.getName() == "activity")
+                            {
+                              ActivityID = QString::fromStdString(child.getAttrValue(0));
+
+                              if (ActivityIDProvTableRow.contains(ActivityID))
                                 {
-
-                                  AgentID = QString::fromStdString(child.getAttrValue(0)); // The first attrube is reference to activity ID
-
-                                  if (AgentIDAuthor.contains(AgentID))
-                                    {
-                                      AgentExists = true;
-                                      Author =  AgentIDAuthor.value(AgentID);
-                                    }
-                                }
-
-                              if (child.getName() == "activity")
-                                {
-                                  ActivityID = QString::fromStdString(child.getAttrValue(0));
-
-                                  if (ActivityIDProvTableRow.contains(ActivityID))
-                                    {
-                                      ActivityExists = true;
-                                      TableRow = ActivityIDProvTableRow.value(ActivityID);
-                                    }
+                                  ActivityExists = true;
+                                  TableRow = ActivityIDProvTableRow.value(ActivityID);
                                 }
                             }
                         }
                     }
-                  else if (next.getName() == "wasGeneratedBy")
+                }
+              else if (next.getName() == "wasEndedBy")
+                {
+                  XMLToken xmlEntity = stream.next();
+                  QString ActivityID, Time;
+
+                  while (stream.isGood())
                     {
-                      XMLToken xmlEntity = stream.next();
-                      QString ActivityID, EntityID, Time;
-                      bool timeExists = false;
-                      bool activityExists = false;
+                      XMLToken child  = stream.next();
 
-                      while (stream.isGood())
+                      // if we reached the end element of the 'Version' element : add this data as a new version
+                      if (child.isEndFor(xmlEntity))
                         {
-                          XMLToken child  = stream.next();
+                          //add here
 
-                          // if we reached the end element of the 'Version' element : add this data as a new version
-                          if (child.isEndFor(xmlEntity))
+                          break;
+                        }
+
+                      if (child.isStart())
+                        {
+
+                          if (child.getName() == "time")
                             {
-                              //add here
 
-                              if (activityExists)
-                                {
-                                }
-
-                              if (timeExists)
-                                {
-                                }
-
-                              break;
+                              Time = QString::fromStdString(stream.next().getCharacters());
                             }
 
-                          if (child.isStart())
+                          if (child.getName() == "activity")
                             {
-
-                              if (child.getName() == "activity")
-                                {
-
-                                  ActivityID = QString::fromStdString(child.getAttrValue(0));
-                                  activityExists = true;
-                                }
-
-                              if (child.getName() == "time")
-                                {
-
-                                  Time = QString::fromStdString(stream.next().getCharacters());
-                                  timeExists = true;
-                                }
-
-                              if (child.getName() == "entity")
-                                {
-                                  EntityID = QString::fromStdString(child.getAttrValue(0));
-                                }
+                              ActivityID = QString::fromStdString(child.getAttrValue(0));
                             }
                         }
                     }
-                  else if (next.getName() == "wasStartedBy")
-                    {
-                      XMLToken xmlEntity = stream.next();
-                      QString ActivityID, Time;
-                      bool ActivityExists = false;
-                      bool TimeExists = false;
-                      int TableRow;
+                }
 
-                      while (stream.isGood())
-                        {
-                          XMLToken child  = stream.next();
-
-                          // if we reached the end element of the 'Version' element : add this data as a new version
-                          if (child.isEndFor(xmlEntity))
-                            {
-                              //add here
-                              if ((ActivityExists)  && (TimeExists))
-                                {
-                                  QModelIndex index = mpProvenanceTable->index(TableRow, 5, QModelIndex());
-                                  mpProvenanceTable->setData(index, QVariant(Time));
-                                }
-
-                              break;
-                            }
-
-                          if (child.isStart())
-                            {
-
-                              if (child.getName() == "time")
-                                {
-
-                                  Time = QString::fromStdString(stream.next().getCharacters());
-                                  TimeExists = true;
-                                }
-
-                              if (child.getName() == "activity")
-                                {
-                                  ActivityID = QString::fromStdString(child.getAttrValue(0));
-
-                                  if (ActivityIDProvTableRow.contains(ActivityID))
-                                    {
-                                      ActivityExists = true;
-                                      TableRow = ActivityIDProvTableRow.value(ActivityID);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                  else if (next.getName() == "wasEndedBy")
-                    {
-                      XMLToken xmlEntity = stream.next();
-                      QString ActivityID, Time;
-
-                      while (stream.isGood())
-                        {
-                          XMLToken child  = stream.next();
-
-                          // if we reached the end element of the 'Version' element : add this data as a new version
-                          if (child.isEndFor(xmlEntity))
-                            {
-                              //add here
-
-                              break;
-                            }
-
-                          if (child.isStart())
-                            {
-
-                              if (child.getName() == "time")
-                                {
-
-                                  Time = QString::fromStdString(stream.next().getCharacters());
-                                }
-
-                              if (child.getName() == "activity")
-                                {
-                                  ActivityID = QString::fromStdString(child.getAttrValue(0));
-                                }
-                            }
-                        }
-                    }
-
-                  else
-                    {
-                      break;
-                    }
+              else
+                {
+                  break;
                 }
             }
         }
     }
+
+//}
 }
 
 void CProvenanceDialog::reallocateProvenanceTable(int Nrow)
@@ -1382,7 +1384,7 @@ void CProvenanceDialog::reallocateProvenanceTable(int Nrow)
     }
 }
 
-void  CProvenanceDialog::versionToTable(QString EntityType, QString Name, QString Action, QString Property, QString NewValue, QString Time, QString Author)
+void  CProvenanceDialog::AddOneLineToTable(QString EntityType, QString Name, QString Action, QString Property, QString NewValue, QString Time, QString Author)
 {
   if (((mNRow + 1) % 10000) == 0)
     {
