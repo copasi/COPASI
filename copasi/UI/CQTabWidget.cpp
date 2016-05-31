@@ -58,7 +58,7 @@ CQTabWidget::CQTabWidget(const ListViews::ObjectType & objectType, CopasiWidget 
         mpBtnNew->setText("Apply");
         mpBtnNew->setToolTip("Apply the current parameters to the model.");
 
-        // The break statement is intentionally missing
+      // The break statement is intentionally missing
 
       default:
         CQNotes* pNotes = new CQNotes(mpTabWidget);
@@ -201,9 +201,12 @@ void CQTabWidget::load()
 
 #ifdef COPASI_Provenance
 
-  if ((FROM_UTF8(ListViews::ObjectTypeName[mObjectType]) == "Species") || (FROM_UTF8(ListViews::ObjectTypeName[mObjectType]) == "Compartment") || (FROM_UTF8(ListViews::ObjectTypeName[mObjectType]) == "Reaction") || (FROM_UTF8(ListViews::ObjectTypeName[mObjectType]) == "Event") || (FROM_UTF8(ListViews::ObjectTypeName[mObjectType]) == "Global Quantity"))
+  if (mObjectType == ListViews::METABOLITE ||
+      mObjectType == ListViews::COMPARTMENT ||
+      mObjectType == ListViews::REACTION ||
+      mObjectType == ListViews::EVENT ||
+      mObjectType == ListViews::MODELVALUE)
     {
-
       mpEntityProvenanceDialog->load(mpUndoStack, FROM_UTF8(mpObject->getObjectName()), FROM_UTF8(CCopasiRootContainer::getConfiguration()->getWorkingDirectory()), mVersionPathToCurrentModel);
     }
 
