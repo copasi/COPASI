@@ -15,15 +15,16 @@
 #include "copasi/undoFramework/CCopasiUndoCommand.h"
 #include "CProvenanceXMLWriter.h"
 
-CProvenanceXMLWriter::CProvenanceXMLWriter(QWidget* parent, QUndoStack *undoStack, QString PathFile, QString ProvenanceOrigionFiletype, QString ProvenanceOrigionTime, QString ProvenanceParentOfCurrentModel, QString VersioningParentOfCurrentModel, QList<QString> VersionsPathToCurrentModel):
+//CProvenanceXMLWriter::CProvenanceXMLWriter(QWidget* parent, QUndoStack *undoStack, QString PathFile, QString ProvenanceOrigionFiletype, QString ProvenanceOrigionTime, QString ProvenanceParentOfCurrentModel, QString VersioningParentOfCurrentModel, QList<QString> VersionsPathToCurrentModel):
+CProvenanceXMLWriter::CProvenanceXMLWriter(QWidget* parent, QUndoStack *undoStack, QString PathFile, QString ProvenanceOrigionFiletype, QString ProvenanceOrigionTime, QList<QString> VersionsPathToCurrentModel):
   mProvenanceTotalEntityNumber(0)
   , mProvenanceTotalActionNumber(0)
   , mProvenanceTotalAgentNumber(0)
   , mProvenanceOrigionFileType(ProvenanceOrigionFiletype)
   , mProvenanceOrigionTime(ProvenanceOrigionTime)
   , mProvenanceAuthorNameMap()
-  , mProvenanceParentOfCurrentModel(ProvenanceParentOfCurrentModel)
-  , mVersioningParentOfCurrentModel(VersioningParentOfCurrentModel)
+  //, mProvenanceParentOfCurrentModel(ProvenanceParentOfCurrentModel)
+  //, mVersioningParentOfCurrentModel(VersioningParentOfCurrentModel)
   , mVersionsPathToCurrentModel(VersionsPathToCurrentModel)
 {
   mPathFile = PathFile;
@@ -304,15 +305,16 @@ void CProvenanceXMLWriter::updateCurrentSessionProvenance()
 {
 
 // If the parent of current model was changes, remove the main body of Provenance
-
-  if (mProvenanceParentOfCurrentModel != mVersioningParentOfCurrentModel)
-    {
-      mProvenanceParentOfCurrentModel = mVersioningParentOfCurrentModel;
-      QString dataFile = mPathFile + "/ProvenanceMainBody.xml";
-      QFile Fout(dataFile);
-      Fout.remove();
-    }
-
+// The file management will be done by COMBINE Archive
+  /*
+    if (mProvenanceParentOfCurrentModel != mVersioningParentOfCurrentModel)
+      {
+        mProvenanceParentOfCurrentModel = mVersioningParentOfCurrentModel;
+        QString dataFile = mPathFile + "/ProvenanceMainBody.xml";
+        QFile Fout(dataFile);
+        Fout.remove();
+      }
+  */
 // Update Current Session Provenance
   QHash<QString, QString> ProvenanceEntityNameMap = reconstructProvenanceEntityNameMap();
   QString dataFile = mPathFile + "/ProvenanceCurrentSession.xml";
@@ -1548,12 +1550,13 @@ void CProvenanceXMLWriter::deleteParentofCurrentVersionProvenance(QString Versio
 {
   QDir destination;
   QString dataFile = mPathFile + "/ProvenanceMainBody.xml";
-
-  if (mProvenanceParentOfCurrentModel != mVersioningParentOfCurrentModel)
-    {
-      destination.remove(dataFile);
-    }
-
+// The file management will be done by COMBINE Archive
+  /*
+    if (mProvenanceParentOfCurrentModel != mVersioningParentOfCurrentModel)
+      {
+        destination.remove(dataFile);
+      }
+  */
   mergeProvenanceFiles(VersionName +  "/" + VersionName + "Provenance.xml", "ProvenanceMainBody.xml", "Temp.xml");
   destination.remove(dataFile);
   dataFile = mPathFile + "/Temp.xml";
