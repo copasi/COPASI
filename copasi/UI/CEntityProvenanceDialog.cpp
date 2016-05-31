@@ -16,7 +16,7 @@
 #include <QDebug>
 
 //CEntityProvenanceDialog::CEntityProvenanceDialog(QWidget *parent,   QUndoStack *undoStack, QString EntityName, QString PathFile ,  QList<QString> VersionsPathToCurrentModeconst,  QString ProvenanceParentOfCurrentModel, QString VersioningParentOfCurrentModel, const char* name):
-CEntityProvenanceDialog::CEntityProvenanceDialog(QWidget *parent,   QUndoStack *undoStack, QString PathFile ,  QList<QString> VersionsPathToCurrentModeconst,  QString ProvenanceParentOfCurrentModel, QString VersioningParentOfCurrentModel, const char* name):
+CEntityProvenanceDialog::CEntityProvenanceDialog(QWidget *parent,   QUndoStack *undoStack, QString PathFile ,  QList<QString> VersionsPathToCurrentModeconst, const char* name):
   CopasiWidget(parent, name)
 {
   setupUi(this);
@@ -168,7 +168,7 @@ void CEntityProvenanceDialog::ProvXMLFiles2ProvenanceTable()
                               if (EntityName == mEntityName)
                                 {
                                   ActivityIDProvTableRow.insert(ActivityID, mNRow);
-                                  versionToTable(ActivityInformation.at(0), ActivityInformation.at(1), ActivityInformation.at(2), "", "");
+                                  AddOneLineToTable(ActivityInformation.at(0), ActivityInformation.at(1), ActivityInformation.at(2), "", "");
                                 }
                             }
 
@@ -517,7 +517,7 @@ void CEntityProvenanceDialog::ProvXMLFiles2ProvenanceTable()
                                   if (EntityName == mEntityName)
                                     {
                                       ActivityIDProvTableRow.insert(ActivityID, mNRow);
-                                      versionToTable(ActivityInformation.at(0), ActivityInformation.at(1), ActivityInformation.at(2), "", "");
+                                      AddOneLineToTable(ActivityInformation.at(0), ActivityInformation.at(1), ActivityInformation.at(2), "", "");
                                     }
                                 }
 
@@ -868,7 +868,7 @@ void CEntityProvenanceDialog::ProvXMLFiles2ProvenanceTable()
                               if (EntityName == mEntityName)
                                 {
                                   ActivityIDProvTableRow.insert(ActivityID, mNRow);
-                                  versionToTable(ActivityInformation.at(0), ActivityInformation.at(1), ActivityInformation.at(2), "", "");
+                                  AddOneLineToTable(ActivityInformation.at(0), ActivityInformation.at(1), ActivityInformation.at(2), "", "");
                                 }
                             }
 
@@ -1189,7 +1189,7 @@ void CEntityProvenanceDialog::CurrentSessionEdits2ProvenanceTable()
           Property = QString(FROM_UTF8(cCommand->getProperty()));
           NewValue = QString(FROM_UTF8(cCommand->getNewValue()));
           Time = QString(FROM_UTF8(cCommand->getTime()));
-          versionToTable(Action, Property, NewValue, Time, Author);
+          AddOneLineToTable(Action, Property, NewValue, Time, Author);
         }
     }
 }
@@ -1249,7 +1249,7 @@ void CEntityProvenanceDialog::reallocateProvenanceTable(int Nrow)
     }
 }
 
-void  CEntityProvenanceDialog::versionToTable(QString Action, QString Property, QString NewValue, QString Time, QString Author)
+void  CEntityProvenanceDialog::AddOneLineToTable(QString Action, QString Property, QString NewValue, QString Time, QString Author)
 {
   if (((mNRow + 1) % 100) == 0)
     {
