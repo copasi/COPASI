@@ -13,7 +13,6 @@
 #include "copasi/undoFramework/CCopasiUndoCommand.h"
 #include "CEntityProvenanceDialog.h"
 #include "ui_CEntityProvenanceDialog.h"
-#include <QDebug>
 
 //CEntityProvenanceDialog::CEntityProvenanceDialog(QWidget *parent,   QUndoStack *undoStack, QString EntityName, QString PathFile ,  QList<QString> VersionsPathToCurrentModeconst,  QString ProvenanceParentOfCurrentModel, QString VersioningParentOfCurrentModel, const char* name):
 CEntityProvenanceDialog::CEntityProvenanceDialog(QWidget *parent,   QUndoStack *undoStack, QString PathFile ,  QList<QString> VersionsPathToCurrentModeconst, const char* name):
@@ -25,7 +24,6 @@ CEntityProvenanceDialog::CEntityProvenanceDialog(QWidget *parent,   QUndoStack *
   //mVersioningParentOfCurrentModel = VersioningParentOfCurrentModel;
   mVersionsPathToCurrentModel = VersionsPathToCurrentModeconst;
   mPathFile = PathFile;
-  qDebug() << "PathFile is:" << mPathFile << "\n";
   mpUndoStack = undoStack;
   mEntityName = "";
   mNCol = 5; //total number of UNDO History column
@@ -1182,7 +1180,6 @@ void CEntityProvenanceDialog::CurrentSessionEdits2ProvenanceTable()
             }
           else
             {
-              //      qDebug() << "Action was:" << Action << "\n";
               break;
             }
 
@@ -1284,6 +1281,8 @@ void  CEntityProvenanceDialog::AddOneLineToTable(QString Action, QString Propert
         }
     }
 
+  mpEntityProvenanceView->setRowHidden(mNRow, false);
+
   mNRow++;
 }
 
@@ -1294,10 +1293,8 @@ void CEntityProvenanceDialog::load(QUndoStack * UndoStack, QString EntityNameQSt
   //mVersioningParentOfCurrentModel = VersioningParentOfCurrentModel;
   mVersionsPathToCurrentModel = VersionsPathToCurrentModel;
   mPathFile = PathFile;
-  qDebug() << "PathFile is:" << mPathFile << "\n";
   mpUndoStack = UndoStack;
   mEntityName = EntityNameQString;
-  qDebug() << "Entity Name is:" << mEntityName << "\n";
   mSelectedIndex = 0;
   //mpProvenanceTable = new QStandardItemModel(100, mNCol, parent);
   mNRow = 0;
@@ -1306,11 +1303,8 @@ void CEntityProvenanceDialog::load(QUndoStack * UndoStack, QString EntityNameQSt
 
   if (mpUndoStack != NULL)
     {
-      qDebug() << "PathFile is not empty" << "\n";
       CurrentSessionEdits2ProvenanceTable();
     }
-
-  qDebug() << "mNRow is:" <<  QString::number(mNRow) << "\n";
 
   int i;
 
