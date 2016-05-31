@@ -207,7 +207,13 @@ void CQTabWidget::load()
       mObjectType == ListViews::EVENT ||
       mObjectType == ListViews::MODELVALUE)
     {
-      mpEntityProvenanceDialog->load(mpUndoStack, FROM_UTF8(mpObject->getObjectName()), FROM_UTF8(CCopasiRootContainer::getConfiguration()->getWorkingDirectory()), mVersionPathToCurrentModel);
+      CopasiUI3Window *  pWindow = dynamic_cast<CopasiUI3Window * >(CopasiUI3Window::getMainWindow());
+
+      if (pWindow) //Probably could just assume the Main Window exists
+        {
+          QList<QString> VersioningPath = pWindow->getVersionHierarchy()->getVersionsPathToCurrentModel();
+          mpEntityProvenanceDialog->load(mpUndoStack, FROM_UTF8(mpObject->getObjectName()), FROM_UTF8(CCopasiRootContainer::getConfiguration()->getWorkingDirectory()), VersioningPath);
+        }
     }
 
 #endif
