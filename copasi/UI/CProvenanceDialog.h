@@ -21,7 +21,8 @@ class CProvenanceDialog : public QDialog, public Ui::CProvenanceDialog
   Q_OBJECT
 
 public:
-  explicit CProvenanceDialog(QWidget *parent = 0 ,  QUndoStack * UndoStack = NULL, QString PathFile = "",  QList<QString> VersionsPathToCurrentModel = QList<QString> (),  QString ProvenanceParentOfCurrentModel = "", QString VersioningParentOfCurrentModel = "");
+  //explicit CProvenanceDialog(QWidget *parent = 0 ,  QUndoStack * UndoStack = NULL, QString PathFile = "",  QList<QString> VersionsPathToCurrentModel = QList<QString> (),  QString ProvenanceParentOfCurrentModel = "", QString VersioningParentOfCurrentModel = "");
+  explicit CProvenanceDialog(QWidget *parent = 0 ,  QUndoStack * UndoStack = NULL, QString PathFile = "",  QList<QString> VersionsPathToCurrentModel = QList<QString> ());
 
   /**
    *  Destroys the object and frees any allocated resources
@@ -76,14 +77,15 @@ private:
 
   /**
    * The last Provenance parent of current model version
+   * Combine Archive will take care of File management
    */
-  QString mProvenanceParentOfCurrentModel;
+  //QString mProvenanceParentOfCurrentModel;
 
   /**
    * The parent of current model version
    * Last Created/Restored Version
    */
-  QString mVersioningParentOfCurrentModel;
+  //QString mVersioningParentOfCurrentModel;
 
   /**
   *  Generate Provenance browsing tree
@@ -109,7 +111,7 @@ private:
   /**
    * Add one row to Provenance table with the given data
    */
-  void versionToTable(QString EntityType, QString Name, QString Action, QString Property, QString NewValue, QString Time, QString Author);
+  void AddOneLineToTable(QString EntityType, QString Name, QString Action, QString Property, QString NewValue, QString Time, QString Author);
 };
 
 #endif // CProvenanceDialog_H
