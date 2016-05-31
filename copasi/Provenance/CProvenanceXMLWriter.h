@@ -17,7 +17,8 @@ class CProvenanceXMLWriter
 
 public:
 
-  explicit CProvenanceXMLWriter(QWidget *parent = 0 , QUndoStack * undoStack = NULL, QString PathFile = "", QString ProvenanceOrigionFiletype = "", QString ProvenanceOrigionTime = "", QString ProvenanceParentOfCurrentModel = "", QString VersioningParentOfCurrentModel = "", QList<QString> VersionsPathToCurrentModel = QList<QString> ());
+  //explicit CProvenanceXMLWriter(QWidget *parent = 0 , QUndoStack * undoStack = NULL, QString PathFile = "", QString ProvenanceOrigionFiletype = "", QString ProvenanceOrigionTime = "", QString ProvenanceParentOfCurrentModel = "", QString VersioningParentOfCurrentModel = "", QList<QString> VersionsPathToCurrentModel = QList<QString> ());
+  explicit CProvenanceXMLWriter(QWidget *parent = 0 , QUndoStack * undoStack = NULL, QString PathFile = "", QString ProvenanceOrigionFiletype = "", QString ProvenanceOrigionTime = "", QList<QString> VersionsPathToCurrentModel = QList<QString> ());
 
   ~CProvenanceXMLWriter();
 
@@ -89,14 +90,15 @@ private:
 
   /**
    * The last Provenance parent of current model version
+   * File save and ending a session will take care of by COMBINE Archive
    */
-  QString mProvenanceParentOfCurrentModel;
+  //QString mProvenanceParentOfCurrentModel;
 
   /**
    * The parent of current model version
    * Last Created/Restored Version
    */
-  QString mVersioningParentOfCurrentModel;
+  //QString mVersioningParentOfCurrentModel;
 
   /**
    * A map between Author provenance ID and their names
