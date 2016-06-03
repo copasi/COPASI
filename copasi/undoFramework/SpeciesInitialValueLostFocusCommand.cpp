@@ -33,7 +33,12 @@ SpeciesInitialValueLostFocusCommand::SpeciesInitialValueLostFocusCommand(
   setName(mpSpeciesData->getName());
 
   {
-    setNewValue(mpSpecieDetail->mpEditInitialValue->text().toStdString());
+    double newValue = mpSpecieDetail->mpEditInitialValue->text().toDouble();
+    strs.precision(std::numeric_limits<double>::max());
+    std::ostringstream strs;
+    strs << newValue;
+    std::string str = strs.str();
+    setNewValue(str)
   }
   {
     std::ostringstream strs;
