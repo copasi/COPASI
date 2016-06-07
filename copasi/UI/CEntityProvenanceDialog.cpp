@@ -79,9 +79,7 @@ CEntityProvenanceDialog::CEntityProvenanceDialog(QWidget *parent,   QUndoStack *
 }
 
 CEntityProvenanceDialog::~CEntityProvenanceDialog()
-{
-  delete ui;
-}
+{}
 
 void CEntityProvenanceDialog::ProvXMLFiles2ProvenanceTable()
 {

@@ -23,8 +23,6 @@ public:
   void load(QUndoStack * UndoStack, QString EntityNameQString, QString PathFile,  QList<QString> VersionsPathToCurrentModel);
 
 private:
-  Ui::CEntityProvenanceDialog *ui;
-
   /**
   *  Pointer to Undo Stack
   */
