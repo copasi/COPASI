@@ -34,15 +34,15 @@ SpeciesInitialValueLostFocusCommand::SpeciesInitialValueLostFocusCommand(
 
   {
     double newValue = mpSpecieDetail->mpEditInitialValue->text().toDouble();
-    strs.precision(std::numeric_limits<double>::max());
     std::ostringstream strs;
+    strs.precision(std::numeric_limits< double >::digits10);
     strs << newValue;
     std::string str = strs.str();
-    setNewValue(str)
+    setNewValue(str);
   }
   {
     std::ostringstream strs;
-    strs.precision(std::numeric_limits<double>::max());
+    strs.precision(std::numeric_limits< double >::digits10);
     strs << mpSpecieDetail->mInitialConcentration;
     std::string str = strs.str();
     setOldValue(str);
