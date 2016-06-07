@@ -160,24 +160,6 @@ bool CMCATask::process(const bool & useInitialValues)
   return success;
 }
 
-bool CMCATask::restore()
-{
-  bool success = CCopasiTask::restore();
-
-  CSteadyStateTask *pSubTask =
-    dynamic_cast<CMCAProblem *>(mpProblem)->getSubTask();
-
-  if (pSubTask)
-    {
-      bool update = pSubTask->isUpdateModel();
-      pSubTask->setUpdateModel(false);
-      success &= pSubTask->restore();
-      pSubTask->setUpdateModel(update);
-    }
-
-  return success;
-}
-
 // virtual
 const CTaskEnum::Method * CMCATask::getValidMethods() const
 {

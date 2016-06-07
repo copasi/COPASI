@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -206,21 +206,6 @@ bool CLyapTask::process(const bool & useInitialValues)
   mNumExponentsCalculated = mpLyapProblem->getExponentNumber();
 
   return true;
-}
-
-bool CLyapTask::restore()
-{
-  bool success = CCopasiTask::restore();
-
-  if (mUpdateModel)
-    {
-      mpContainer->updateSimulatedValues(true);
-      mpContainer->setInitialState(mpContainer->getState(false));
-      mpContainer->updateInitialValues(CModelParameter::ParticleNumbers);
-      mpContainer->pushInitialState();
-    }
-
-  return success;
 }
 
 // virtual

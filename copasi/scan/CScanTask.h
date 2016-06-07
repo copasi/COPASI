@@ -113,11 +113,6 @@ public:
    */
   virtual bool process(const bool & useInitialValues);
 
-  /**
-   * Perform necessary cleanup procedures
-   */
-  virtual bool restore();
-
 #ifndef SWIG
 
   /**

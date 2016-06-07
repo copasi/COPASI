@@ -105,15 +105,6 @@ bool CMoietiesTask::process(const bool & /* useInitialValues */)
 }
 
 // virtual
-bool CMoietiesTask::restore()
-{
-  mpContainer->updateInitialValues(CModelParameter::ParticleNumbers);
-  mpContainer->pushInitialState();
-
-  return true;
-}
-
-// virtual
 const CTaskEnum::Method * CMoietiesTask::getValidMethods() const
 {
   static const CTaskEnum::Method ValidMethods[] =
