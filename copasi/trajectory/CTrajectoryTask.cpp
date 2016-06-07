@@ -215,7 +215,6 @@ bool CTrajectoryTask::initialize(const OutputFlag & of,
 
       if (mpSteadyState != NULL)
         mpSteadyState->initialize(of, NULL, NULL);
-
     }
 
   success &= CCopasiTask::initialize(of, pOutputHandler, pOstream);
@@ -562,21 +561,6 @@ bool CTrajectoryTask::processStep(const C_FLOAT64 & endTime)
     }
 
   return mProceed;
-}
-
-bool CTrajectoryTask::restore()
-{
-  bool success = CCopasiTask::restore();
-
-  if (mUpdateModel)
-    {
-      mpContainer->updateSimulatedValues(true);
-      mpContainer->setInitialState(mpContainer->getState(false));
-      mpContainer->updateInitialValues(CModelParameter::ParticleNumbers);
-      mpContainer->pushInitialState();
-    }
-
-  return success;
 }
 
 // virtual

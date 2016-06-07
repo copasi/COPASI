@@ -221,7 +221,6 @@ bool CCrossSectionTask::process(const bool & useInitialValues)
 
   mProceed = true;
 
-
   mProgressFactor = 100.0 / (MaxDuration + mpCrossSectionProblem->getOutputStartTime());
   mProgressValue = 0;
 
@@ -284,7 +283,7 @@ void CCrossSectionTask::finish()
 
 bool CCrossSectionTask::restore()
 {
-  bool success = CTrajectoryTask::restore();
+  bool success = CCopasiTask::restore();
 
   removeEvent();
 

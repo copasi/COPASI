@@ -257,13 +257,21 @@ bool CCopasiTask::restore()
 {
   setCallBack(NULL);
 
-  if (!mUpdateModel)
+  if (mpContainer != NULL)
     {
-      if (mpContainer != NULL)
+      if (mUpdateModel &&
+          mpContainer->isStateValid())
+        {
+          mpContainer->updateSimulatedValues(false);
+          mpContainer->setInitialState(mpContainer->getState(false));
+        }
+      else
         {
           mpContainer->setInitialState(mInitialState);
-          mpContainer->updateInitialValues(CModelParameter::ParticleNumbers);
         }
+
+      mpContainer->updateInitialValues(CModelParameter::ParticleNumbers);
+      mpContainer->pushInitialState();
     }
 
   mpProblem->restore(mUpdateModel);

@@ -383,7 +383,7 @@ void CAnalyticsTask::computeSelectedStatistics(std::vector< C_FLOAT64 > mValues,
 
 bool CAnalyticsTask::restore()
 {
-  bool success = CTrajectoryTask::restore();
+  bool success = CCopasiTask::restore();
 
   removeEvent();
 
