@@ -796,6 +796,8 @@ C_FLOAT64 CNewtonMethod::solveJacobianXeqB(CVector< C_FLOAT64 > & X, const CVect
 
       for (; mpJT < mpJTEnd; mpJT += M, ++mpJ)
         {
+          if (isnan(*mpJ)) return std::numeric_limits< C_FLOAT64 >::infinity();
+
           *mpJT = *mpJ;
         }
     }
