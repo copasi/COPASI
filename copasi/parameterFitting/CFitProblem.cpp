@@ -60,7 +60,7 @@ CFitProblem::CFitProblem(const CTaskEnum::Task & type,
   mCrossValidationObjective(mWorstValue),
   mThresholdCounter(0),
   mpTrajectoryProblem(NULL),
-  mInitialState(),
+  mCompleteInitialState(),
   mpInitialStateTime(NULL),
   mResiduals(0),
   mRMS(std::numeric_limits<C_FLOAT64>::quiet_NaN()),
@@ -481,7 +481,7 @@ bool CFitProblem::initialize()
       mpTrajectory = NULL;
     }
 
-  mInitialState = mpContainer->getInitialState();
+  mCompleteInitialState = mpContainer->getCompleteInitialState();
   mpInitialStateTime = mpContainer->getInitialState().array() + mpContainer->getCountFixedEventTargets();
 
   success &= mpExperimentSet->compile(mpContainer);
@@ -489,12 +489,7 @@ bool CFitProblem::initialize()
   // Initialize the object set which the experiment independent objects.
   std::vector< CObjectInterface::ObjectSet > ObjectSet;
   ObjectSet.resize(mpExperimentSet->getExperimentCount());
-  size_t i, imax;
-
-  for (i = 0, imax = mpExperimentSet->getExperimentCount(); i < imax; i++)
-    {
-      ObjectSet[i] = mpExperimentSet->getExperiment(i)->getIndependentObjects();
-    }
+  size_t i, imax = mpExperimentSet->getExperimentCount();
 
   // Build a matrix of experiment and experiment local items.
   mExperimentValues.resize(mpExperimentSet->getExperimentCount(), mpOptItems->size());
@@ -799,9 +794,12 @@ bool CFitProblem::calculate()
 
   C_FLOAT64 * Residuals = mResiduals.array();
   C_FLOAT64 * DependentValues = mExperimentDependentValues.array();
+
   C_FLOAT64 ** pUpdate = mExperimentValues.array();
+
   std::vector<COptItem *>::iterator itItem;
   std::vector<COptItem *>::iterator endItem = mpOptItems->end();
+
   std::vector<COptItem *>::iterator itConstraint;
   std::vector<COptItem *>::iterator endConstraint = mpConstraintItems->end();
 
@@ -828,17 +826,20 @@ bool CFitProblem::calculate()
                 **pUpdate = static_cast<CFitItem *>(*itItem)->getLocalValue();
               }
 
+          mpContainer->applyUpdateSequence(mExperimentInitialUpdates[i]);
+
           kmax = pExp->getNumDataRows();
 
           switch (pExp->getExperimentType())
             {
               case CTaskEnum::steadyState:
+              {
+                CVector< C_FLOAT64 > CompleteExperimentInitialState = mpContainer->getCompleteInitialState();
 
                 // set independent data
                 for (j = 0; j < kmax && Continue; j++) // For each data row;
                   {
                     pExp->updateModelWithIndependentData(j);
-                    mpContainer->applyUpdateSequence(mExperimentInitialUpdates[i]);
 
                     Continue = mpSteadyState->process(true);
 
@@ -865,7 +866,10 @@ bool CFitProblem::calculate()
                       mCalculateValue += pExp->sumOfSquares(j, Residuals);
                   }
 
-                break;
+                // Restore the containers initial state to the current experimental initial conditions
+                mpContainer->setCompleteInitialState(CompleteExperimentInitialState);
+              }
+              break;
 
               case CTaskEnum::timeCourse:
 
@@ -906,7 +910,6 @@ bool CFitProblem::calculate()
                         // Set independent data. A time course only has one set of
                         // independent data.
                         pExp->updateModelWithIndependentData(0);
-                        mpContainer->applyUpdateSequence(mExperimentInitialUpdates[i]);
 
                         static_cast< CTrajectoryProblem * >(mpTrajectory->getProblem())->setStepNumber(1);
                         mpTrajectory->processStart(true);
@@ -946,8 +949,7 @@ bool CFitProblem::calculate()
             }
 
           // Restore the containers initial state. This includes all local reaction parameter
-          // Additionally this state is synchronized, i.e. nothing to compute.
-          mpContainer->setInitialState(mInitialState);
+          mpContainer->setCompleteInitialState(mCompleteInitialState);
         }
     }
 
@@ -961,7 +963,7 @@ bool CFitProblem::calculate()
 
       // Restore the containers initial state. This includes all local reaction parameter
       // Additionally this state is synchronized, i.e. nothing to compute.
-      mpContainer->setInitialState(mInitialState);
+      mpContainer->setCompleteInitialState(mCompleteInitialState);
     }
 
   catch (...)
@@ -971,7 +973,7 @@ bool CFitProblem::calculate()
 
       // Restore the containers initial state. This includes all local reaction parameter
       // Additionally this state is synchronized, i.e. nothing to compute.
-      mpContainer->setInitialState(mInitialState);
+      mpContainer->setCompleteInitialState(mCompleteInitialState);
     }
 
   if (isnan(mCalculateValue))
@@ -1035,7 +1037,7 @@ void CFitProblem::createParameterSets()
   if (!*mpCreateParameterSets) return;
 
   // Store the current initial state
-  CVector< C_FLOAT64 > CurrentInitialState = mpContainer->getInitialState();
+  CVector< C_FLOAT64 > CurrentCompleteInitialState = mpContainer->getCompleteInitialState();
 
   // We create an original parameter set and one for each experiment.
   // Restore the original data and create a parameter set
@@ -1070,19 +1072,20 @@ void CFitProblem::createParameterSets()
             **pUpdate = static_cast<CFitItem *>(*itItem)->getLocalValue();
           }
 
-      // Update the independent data.
-      pExp->updateModelWithIndependentData(0);
-
       // Synchronize the initial state.
       mpContainer->applyUpdateSequence(mExperimentInitialUpdates[i]);
+
+      // Update the independent data.
+      pExp->updateModelWithIndependentData(0);
 
       mpContainer->pushInitialState();
       createParameterSet(pExp->getObjectName());
     }
 
   // Restore the current initial state
-  mpContainer->setInitialState(CurrentInitialState);
+  mpContainer->setCompleteInitialState(CurrentCompleteInitialState);
 }
+
 void CFitProblem::print(std::ostream * ostream) const
 {*ostream << *this;}
 
@@ -1231,7 +1234,7 @@ std::ostream &operator<<(std::ostream &os, const CFitProblem & o)
 
 void CFitProblem::updateInitialState()
 {
-  mInitialState = mpContainer->getInitialState();
+  mCompleteInitialState = mpContainer->getCompleteInitialState();
 }
 
 bool CFitProblem::createObjectiveFunction()
@@ -1831,17 +1834,20 @@ bool CFitProblem::calculateCrossValidation()
                 }
             }
 
+          mpContainer->applyUpdateSequence(mCrossValidationInitialUpdates[i]);
+
           kmax = pExp->getNumDataRows();
 
           switch (pExp->getExperimentType())
             {
               case CTaskEnum::steadyState:
+              {
+                CVector< C_FLOAT64 > CompleteExperimentInitialState = mpContainer->getCompleteInitialState();
 
                 // set independent data
                 for (j = 0; j < kmax && Continue; j++) // For each data row;
                   {
                     pExp->updateModelWithIndependentData(j);
-                    mpContainer->applyUpdateSequence(mCrossValidationInitialUpdates[i]);
 
                     Continue &= mpSteadyState->process(true);
 
@@ -1867,7 +1873,10 @@ bool CFitProblem::calculateCrossValidation()
                       CalculateValue += pExp->sumOfSquares(j, Residuals);
                   }
 
-                break;
+                // Restore the containers initial state to the current experimental initial conditions
+                mpContainer->setCompleteInitialState(CompleteExperimentInitialState);
+              }
+              break;
 
               case CTaskEnum::timeCourse:
 
@@ -1952,7 +1961,7 @@ bool CFitProblem::calculateCrossValidation()
 
           // Restore the containers initial state. This includes all local reaction parameter
           // Additionally this state is synchronized, i.e. nothing to compute.
-          mpContainer->setInitialState(mInitialState);
+          mpContainer->setCompleteInitialState(mCompleteInitialState);
         }
     }
 
@@ -1966,7 +1975,7 @@ bool CFitProblem::calculateCrossValidation()
 
       // Restore the containers initial state. This includes all local reaction parameter
       // Additionally this state is synchronized, i.e. nothing to compute.
-      mpContainer->setInitialState(mInitialState);
+      mpContainer->setCompleteInitialState(mCompleteInitialState);
     }
 
   catch (...)
@@ -1976,7 +1985,7 @@ bool CFitProblem::calculateCrossValidation()
 
       // Restore the containers initial state. This includes all local reaction parameter
       // Additionally this state is synchronized, i.e. nothing to compute.
-      mpContainer->setInitialState(mInitialState);
+      mpContainer->setCompleteInitialState(mCompleteInitialState);
     }
 
   if (isnan(CalculateValue))
