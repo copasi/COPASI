@@ -648,6 +648,7 @@ private:
 
   CMathContainer * mpContainer;
 
+  CObjectInterface::UpdateSequence mIndependentUpdateSequence;
   CObjectInterface::UpdateSequence mDependentUpdateSequence;
 
   CObjectInterface::ObjectSet mIndependentObjects;

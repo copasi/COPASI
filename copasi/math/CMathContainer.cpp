@@ -199,6 +199,7 @@ CMathContainer::CMathContainer():
   mDelayLags(),
   mTransitionTimes(),
   mInitialState(),
+  mCompleteInitialState(),
   mState(),
   mStateReduced(),
   mHistory(),
@@ -279,6 +280,7 @@ CMathContainer::CMathContainer(CModel & model):
   mDelayLags(),
   mTransitionTimes(),
   mInitialState(),
+  mCompleteInitialState(),
   mState(),
   mStateReduced(),
   mHistory(),
@@ -364,6 +366,7 @@ CMathContainer::CMathContainer(const CMathContainer & src):
   mDelayValues(),
   mDelayLags(),
   mInitialState(),
+  mCompleteInitialState(),
   mState(),
   mStateReduced(),
   mHistory(src.mHistory),
@@ -514,6 +517,18 @@ void CMathContainer::setInitialState(const CVectorCore< C_FLOAT64 > & initialSta
     {
       memcpy(mInitialState.array() + mSize.nFixed, initialState.array(), initialState.size() * sizeof(C_FLOAT64));
     }
+}
+
+const CVectorCore< C_FLOAT64 > & CMathContainer::getCompleteInitialState() const
+{
+  return mCompleteInitialState;
+}
+
+void CMathContainer::setCompleteInitialState(const CVectorCore< C_FLOAT64 > & completeInitialState)
+{
+  assert(mCompleteInitialState.size() == completeInitialState.size());
+
+  memcpy(mCompleteInitialState.array(), completeInitialState.array(), completeInitialState.size() * sizeof(C_FLOAT64));
 }
 
 const CVectorCore< C_FLOAT64 > & CMathContainer::getState(const bool & reduced) const
@@ -4492,6 +4507,7 @@ void CMathContainer::relocate(CVectorCore< C_FLOAT64 > &oldValues,
   assert(pArray == mValues.array() + mValues.size());
 
   mInitialState.initialize(nExtensiveValues + size.nIntensiveValues,  mValues.array());
+  mCompleteInitialState.initialize(mExtensiveValues.array() - mValues.array(), mValues.array());
   mState.initialize(size.nFixedEventTargets + size.nTime + size.nODE + size.nReactionSpecies, mExtensiveValues.array() + size.nFixed);
   mStateReduced.initialize(mState.size() - size.nMoieties, mExtensiveValues.array() + size.nFixed);
   mRate.initialize(mState.size(), mExtensiveRates.array() + size.nFixed);

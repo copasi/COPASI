@@ -366,7 +366,7 @@ bool CSteadyStateTask::restore()
           mpContainer->isStateValid())
         {
           mpContainer->setState(mSteadyState);
-          mpContainer->updateSimulatedValues(false);
+          mpContainer->updateSimulatedValues(true);
           mpContainer->setInitialState(mpContainer->getState(false));
         }
       else

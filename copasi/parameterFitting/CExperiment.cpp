@@ -100,6 +100,7 @@ CExperiment::CExperiment(const CCopasiContainer * pParent,
   mDependentValues(0),
   mIndependentValues(0),
   mpContainer(NULL),
+  mIndependentUpdateSequence(),
   mDependentUpdateSequence(),
   mIndependentObjects(),
   mNumDataRows(0),
@@ -150,6 +151,7 @@ CExperiment::CExperiment(const CExperiment & src,
   mDependentValues(src.mDependentValues),
   mIndependentValues(src.mIndependentValues),
   mpContainer(src.mpContainer),
+  mIndependentUpdateSequence(src.mIndependentUpdateSequence),
   mDependentUpdateSequence(src.mDependentUpdateSequence),
   mIndependentObjects(src.mIndependentObjects),
   mNumDataRows(src.mNumDataRows),
@@ -201,6 +203,7 @@ CExperiment::CExperiment(const CCopasiParameterGroup & group,
   mDependentValues(0),
   mIndependentValues(0),
   mpContainer(NULL),
+  mIndependentUpdateSequence(),
   mDependentUpdateSequence(),
   mIndependentObjects(),
   mNumDataRows(0),
@@ -840,6 +843,7 @@ bool CExperiment::compile(const CMathContainer * pMathContainer)
   mColumnValidValueCount.resize(numCols);
   mColumnValidValueCount = std::numeric_limits<size_t>::quiet_NaN();
 
+  mpContainer->getInitialDependencies().getUpdateSequence(mIndependentUpdateSequence, CMath::UpdateMoieties, mIndependentObjects, mpContainer->getInitialStateObjects());
   mpContainer->getTransientDependencies().getUpdateSequence(mDependentUpdateSequence, CMath::Default, mpContainer->getStateObjects(false), DependentObjects, mpContainer->getSimulationUpToDateObjects());
 
   initializeScalingMatrix();
@@ -1201,6 +1205,8 @@ bool CExperiment::updateModelWithIndependentData(const size_t & index)
     {
       **ppValue = *pData;
     }
+
+  mpContainer->applyUpdateSequence(mIndependentUpdateSequence);
 
   return true;
 }

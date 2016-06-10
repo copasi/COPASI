@@ -181,6 +181,20 @@ public:
   void setInitialState(const CVectorCore< C_FLOAT64 > & initialState);
 
   /**
+   * Retrieves the complete initial state values, i.e., all initial values including
+   * all internal values.
+   * @return const CVectorCore< C_FLOAT64 > & initialState
+   */
+  const CVectorCore< C_FLOAT64 > & getCompleteInitialState() const;
+
+  /**
+   * Set the complete initial state values, i.e., all initial values including
+   * all internal values.
+   * @param const CVectorCore< C_FLOAT64 > & initialState
+   */
+  void setCompleteInitialState(const CVectorCore< C_FLOAT64 > & initialState);
+
+  /**
    * Retrieves the state values, i.e., all values of objects of
    * simulation type EventTarget, Time, ODE, Dependent, and Independent. It includes only
    * extensive values for species.
@@ -1011,6 +1025,11 @@ private:
    * The initial state contains also all fixed values
    */
   CVectorCore< C_FLOAT64 > mInitialState;
+
+  /**
+   * The initial state contains additionally all computed internal values
+   */
+  CVectorCore< C_FLOAT64 > mCompleteInitialState;
 
   /**
    * The state contains values of type EventTarget, Time, ODE, Independent, and Dependent
