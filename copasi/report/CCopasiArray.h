@@ -57,7 +57,7 @@ public:
   virtual data_type & operator[](const index_type & index);
   virtual const data_type & operator[](const index_type & index) const;
 
-  const index_type & size() const;
+  virtual const index_type & size() const;
 
   size_t dimensionality() const;
 
@@ -114,7 +114,7 @@ private:
   //std::vector<size_t> mFactors;
 
 public:
-  const index_type & size() const
+  virtual const index_type & size() const
   {
     CCopasiMatrixInterface * tmp = const_cast<CCopasiMatrixInterface*>(this);
     tmp->mSizes[0] = mMatrix->numRows();
@@ -167,7 +167,7 @@ private:
   mutable std::vector<size_t> mSizes;
 
 public:
-  const index_type & size() const
+  virtual const index_type & size() const
   {
     //CCopasiMatrixInterface * tmp = const_cast<CCopasiMatrixInterface*>(this);
     /*tmp->*/
