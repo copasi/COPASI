@@ -301,9 +301,9 @@ bool CCopasiObject::setObjectName(const std::string & name)
   else
     {mObjectName = Name;}
 
-  if (mpObjectParent)
+  if (mpObjectParent &&
+      mpObjectParent->CCopasiContainer::remove(this))
     {
-      mpObjectParent->CCopasiContainer::remove(this);
       mpObjectParent->CCopasiContainer::add(this, false);
     }
 
