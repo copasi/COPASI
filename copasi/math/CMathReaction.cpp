@@ -44,6 +44,8 @@ void CMathReaction::initialize(const CReaction * pReaction, CMathContainer & con
   mpFlux = container.getMathObject(mpReaction->getFluxReference());
   mpPropensity = container.getMathObject(mpReaction->getPropensityReference());
 
+  mObjectBalance.clear();
+  mChangedSpecies.clear();
   mNumberBalance.resize(mpReaction->getChemEq().getBalances().size());
   SpeciesBalance * pStepUpdate = mNumberBalance.array();
   CCopasiVector < CChemEqElement >::const_iterator it = mpReaction->getChemEq().getBalances().begin();
