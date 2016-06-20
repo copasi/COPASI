@@ -1,4 +1,4 @@
-// Copyright (C) 2014 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2014 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -18,6 +18,7 @@
 
 class CModel;
 class CCopasiObject;
+class CCopasiDataModel;
 class UndoGlobalQuantityData;
 class UndoReactionData;
 class UndoEventData;
@@ -35,7 +36,8 @@ class UndoData : public QObject
 public:
   UndoData(const std::string &key = "",
            const std::string &name = "",
-           const std::string &type = "");
+           const std::string &type = "",
+           const std::string &cn   = "");
 
   virtual ~UndoData();
 
@@ -82,6 +84,56 @@ public:
   bool hasKey() const;
 
   /**
+   * @return the cn of the object
+   */
+  const std::string &getCN() const;
+
+  /**
+   * sets the cn for the object
+   * @param cn the cn
+   */
+  void setCN(const std::string &cn);
+
+  /**
+   * @return true if cn is set, false otherwise.
+   */
+  bool hasCN() const;
+
+  /**
+   * @returns the resolved object (from CN) if found, NULL otherwise.
+   */
+  virtual const CCopasiObject * getObject() const;
+
+  /**
+   * @param pModel the model to use as base for the search
+   * @returns the resolved object (from CN) if found, NULL otherwise.
+   */
+  virtual const CCopasiObject * getObject(const CModel* pModel) const;
+
+  /**
+   * @param pModel the data model to use as base for the search
+   * @returns the resolved object (from CN) if found, NULL otherwise.
+   */
+  virtual const CCopasiObject * getObject(const CCopasiDataModel* pModel) const;
+
+  /**
+   * @returns the resolved object (from CN) if found, NULL otherwise.
+   */
+  virtual CCopasiObject * getObject();
+
+  /**
+   * @param pModel the model to use as base for the search
+   * @returns the resolved object (from CN) if found, NULL otherwise.
+   */
+  virtual CCopasiObject * getObject(CModel* pModel);
+
+  /**
+   * @param pModel the data model to use as base for the search
+   * @returns the resolved object (from CN) if found, NULL otherwise.
+   */
+  virtual CCopasiObject * getObject(CCopasiDataModel* pModel);
+
+  /**
    * @return the name of the object
    */
   const std::string &getName() const;
@@ -110,6 +162,7 @@ public:
 protected:
   UndoDependentData *mpData;
   std::string mKey;
+  std::string mCN;
   std::string mName;
   std::string mType;
 };

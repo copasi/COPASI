@@ -369,7 +369,7 @@ bool CQSpecieDM::setData(const QModelIndex &index, const QVariant &value,
     }
   else
     {
-      mpUndoStack->push(new SpecieDataChangeCommand(index, value, role, this));
+      mpUndoStack->push(new SpecieDataChangeCommand(mpSpecies, value, index.data(), index.column(), this));
     }
 
   return true;
@@ -423,49 +423,27 @@ bool CQSpecieDM::removeRows(QModelIndexList rows, const QModelIndex&)
   return true;
 }
 
-bool CQSpecieDM::specieDataChange(const QModelIndex &index, const QVariant &value, int role)
+bool CQSpecieDM::specieDataChange(
+  UndoSpeciesData *pUndoSpeciesData,
+  const QVariant &value,
+  int column)
 {
 
   switchToWidget(CCopasiUndoCommand::SPECIES);
 
-  if (!index.isValid() || role != Qt::EditRole)
-    return true;
-
   GET_MODEL_OR(pModel, return false);
 
-  bool defaultRow = isDefaultRow(index);
+  mpSpecies =
+    dynamic_cast<CMetab*>(pUndoSpeciesData->getObject(pModel));
 
-  if (defaultRow)
-    {
-      if (index.column() == COL_TYPE_SPECIES)
-        {
-          if (index.data().toString() == QString(FROM_UTF8(CModelEntity::StatusName[mItemToType[value.toInt()]])))
-            return false;
-        }
-      else if (index.column() == COL_COMPARTMENT && value == "")
-        {
-          return false;
-        }
-      else if (index.data() == value)
-        {
-          return false;
-        }
-
-      mNotify = false;
-
-      insertRow(rowCount(), index);
-      mNotify = true;
-    }
-  else
-    {
-      mpSpecies = &pModel->getMetabolites()[index.row()];
-    }
+  if (mpSpecies == NULL)
+    return false;
 
   const CCompartment * pCompartment = NULL;
 
-  if (index.column() == COL_COMPARTMENT ||
-      index.column() == COL_ICONCENTRATION ||
-      index.column() == COL_INUMBER)
+  if (column == COL_COMPARTMENT ||
+      column == COL_ICONCENTRATION ||
+      column == COL_INUMBER)
     {
       try
         {
@@ -474,9 +452,13 @@ bool CQSpecieDM::specieDataChange(const QModelIndex &index, const QVariant &valu
       catch (...) {}
     }
 
-  if (index.column() == COL_NAME_SPECIES)
-    mpSpecies->setObjectName(TO_UTF8(value.toString()));
-  else if (index.column() == COL_COMPARTMENT)
+
+  if (column == COL_NAME_SPECIES)
+    {
+      mpSpecies->setObjectName(TO_UTF8(value.toString()));
+      pUndoSpeciesData->setCN(mpSpecies->getCN());
+    }
+  else if (column == COL_COMPARTMENT)
     {
       // This must be set first for setInitialConcentration and
       // setInitialNumber to work correctly.
@@ -510,8 +492,8 @@ bool CQSpecieDM::specieDataChange(const QModelIndex &index, const QVariant &valu
                   C_FLOAT64 Factor = 1.0 / pCompartment->getInitialValue();
                   Factor *= pCompartment->getInitialValue();
 
-                  mpSpecies->setInitialValue(Factor * this->index(index.row(), COL_INUMBER).data().toDouble());
-                  mpSpecies->setValue(Factor * this->index(index.row(), COL_NUMBER).data().toDouble());
+                  mpSpecies->setInitialValue(Factor * pUndoSpeciesData->getINumber());
+                  mpSpecies->setValue(Factor * mpSpecies->getValue());
                 }
 
               emit notifyGUI(ListViews::METABOLITE, ListViews::CHANGE, mpSpecies->getKey());
@@ -519,9 +501,9 @@ bool CQSpecieDM::specieDataChange(const QModelIndex &index, const QVariant &valu
             }
         }
     }
-  else if (index.column() == COL_TYPE_SPECIES)
+  else if (column == COL_TYPE_SPECIES)
     mpSpecies->setStatus((CModelEntity::Status) mItemToType[value.toInt()]);
-  else if (index.column() == COL_ICONCENTRATION)
+  else if (column == COL_ICONCENTRATION)
     {
       if (mFlagConc)
         mpSpecies->setInitialConcentration(value.toDouble());
@@ -529,13 +511,13 @@ bool CQSpecieDM::specieDataChange(const QModelIndex &index, const QVariant &valu
       if (mpSpecies && pCompartment)
         {
           const C_FLOAT64 initialValue =
-            CMetab::convertToNumber(this->index(index.row(), COL_ICONCENTRATION).data().toDouble(),
+            CMetab::convertToNumber(pUndoSpeciesData->getIConc(),
                                     *pCompartment,
                                     *pModel);
           mpSpecies->setInitialValue(initialValue);
         }
     }
-  else if (index.column() == COL_INUMBER)
+  else if (column == COL_INUMBER)
     {
       if (!mFlagConc)
         mpSpecies->setInitialValue(value.toDouble());
@@ -543,28 +525,20 @@ bool CQSpecieDM::specieDataChange(const QModelIndex &index, const QVariant &valu
       if (mpSpecies && pCompartment)
         {
           mpSpecies->setInitialConcentration(
-            CMetab::convertToConcentration(this->index(index.row(), COL_INUMBER).data().toDouble(),
+            CMetab::convertToConcentration(pUndoSpeciesData->getINumber(),
                                            *pCompartment,
                                            *pModel)
           );
         }
     }
 
-  if (defaultRow && this->index(index.row(), COL_NAME_SPECIES).data().toString() == "species")
-    mpSpecies->setObjectName(TO_UTF8(createNewName("species", COL_NAME_SPECIES)));
+  // ask for refresh
+  QModelIndex index = getIndexFor(mpSpecies, column);
+  emit dataChanged(index, index);
 
   //Save Key
   std::string key = mpSpecies->getKey();
-  emit dataChanged(index, index);
-
-  if (defaultRow)
-    {
-      emit notifyGUI(ListViews::METABOLITE, ListViews::ADD, key);
-    }
-  else
-    {
-      emit notifyGUI(ListViews::METABOLITE, ListViews::CHANGE, key);
-    }
+  emit notifyGUI(ListViews::METABOLITE, ListViews::CHANGE, key);
 
   return true;
 }
@@ -752,6 +726,22 @@ bool CQSpecieDM::clear()
 {
   mpUndoStack->push(new RemoveAllSpecieRowsCommand(this, QModelIndex()));
   return true;
+}
+
+QModelIndex CQSpecieDM::getIndexFor(const CMetab *pMetab, int column) const
+{
+  int max = rowCount();
+
+  for (int i = 0; i < max; ++i)
+    {
+      QModelIndex current = index(i, COL_NAME_SPECIES);
+      QString name = data(current, Qt::DisplayRole).toString();
+
+      if (TO_UTF8(name) == pMetab->getObjectName())
+        return index(i, column);
+    }
+
+  return QModelIndex();
 }
 
 bool CQSpecieDM::removeAllSpecieRows()

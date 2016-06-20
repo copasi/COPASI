@@ -15,41 +15,39 @@
 #include "model/CModel.h"
 #include "CQSpecieDM.h"
 
+#include <copasi/undoFramework/UndoSpeciesData.h>
+
 #include "qtUtilities.h"
 
 #include "SpeciesDataChangeCommand.h"
 
 SpecieDataChangeCommand::SpecieDataChangeCommand(
-  const QModelIndex& index,
-  const QVariant& value,
-  int role,
+  const CMetab* pMetab,
+  const QVariant& newValue,
+  const QVariant &oldValue,
+  int column,
   CQSpecieDM *pSpecieDM)
   : CCopasiUndoCommand("Species", SPECIES_DATA_CHANGE)
-  , mNew(value)
-  , mOld(index.data(Qt::DisplayRole))
-  , mIndex(index)
+  , mpSpeciesData(new UndoSpeciesData(pMetab))
+  , mNew(newValue)
+  , mOld(oldValue)
+  , mColumn(column)
   , mpSpecieDM(pSpecieDM)
-  , mRole(role)
-  , mPathIndex(pathFromIndex(index))
 {
 
   //set the data for UNDO history
   GET_MODEL_OR_RETURN(pModel);
 
-  if (pModel->getMetabolites().size() <= (size_t)index.row())
-    {
-      return;
-    }
-
-  CMetab *pSpecies = &pModel->getMetabolites()[index.row()];
+  if (pMetab == NULL)
+    return;
 
   setAction("Change");
 
-  setName(pSpecies->getObjectName());
+  setName(pMetab->getObjectName());
   setOldValue(TO_UTF8(mOld.toString()));
   setNewValue(TO_UTF8(mNew.toString()));
 
-  switch (index.column())
+  switch (column)
     {
       case 0:
         setProperty("");
@@ -97,18 +95,17 @@ SpecieDataChangeCommand::SpecieDataChangeCommand(
 
 SpecieDataChangeCommand::~SpecieDataChangeCommand()
 {
+  pdelete(mpSpeciesData);
 }
 
 void SpecieDataChangeCommand::redo()
 {
-  mIndex = pathToIndex(mPathIndex, mpSpecieDM);
-  mpSpecieDM->specieDataChange(mIndex, mNew, mRole);
+  mpSpecieDM->specieDataChange(mpSpeciesData, mNew, mColumn);
   setAction("Change");
 }
 
 void SpecieDataChangeCommand::undo()
 {
-  mIndex = pathToIndex(mPathIndex, mpSpecieDM);
-  mpSpecieDM->specieDataChange(mIndex, mOld, mRole);
+  mpSpecieDM->specieDataChange(mpSpeciesData, mOld, mColumn);
   setAction("Undone change");
 }
