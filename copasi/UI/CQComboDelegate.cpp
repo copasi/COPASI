@@ -74,7 +74,7 @@ void CQComboDelegate::setModelData(QWidget *editor, QAbstractItemModel *model,
   QVariant value(comboBox->currentText());
   QVariant current = model->data(index, Qt::EditRole);
 
-  if (value != current)
+  if (value != current && model->rowCount() > 0)
     model->setData(index, value, Qt::EditRole);
 }
 
@@ -142,7 +142,7 @@ QSize CQComboDelegate::sizeHint(const QStyleOptionViewItem & option, const QMode
   QModelIndex  SourceIndex = index;
   const QAbstractItemModel *pModel = index.model();
 
-  while (pModel->inherits("QSortFilterProxyModel"))
+  while (pModel != NULL && pModel->inherits("QSortFilterProxyModel"))
     {
       SourceIndex = static_cast< const QSortFilterProxyModel *>(pModel)->mapToSource(SourceIndex);
       pModel = SourceIndex.model();
@@ -186,5 +186,7 @@ void CQIndexComboDelegate::setModelData(QWidget *editor, QAbstractItemModel *mod
 {
   QComboBox *comboBox = static_cast<QComboBox*>(editor);
   QVariant value(comboBox->currentIndex());
-  model->setData(index, value, Qt::EditRole);
+
+  if (model->data(index, Qt::EditRole) != value)
+    model->setData(index, value, Qt::EditRole);
 }
