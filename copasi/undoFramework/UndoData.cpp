@@ -1,4 +1,4 @@
-// Copyright (C) 2014 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2014 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -11,8 +11,6 @@
  */
 
 #include "UndoData.h"
-#include <copasi/UI/qtUtilities.h>
-#include <copasi/UI/listviews.h>
 
 #include <copasi/undoFramework/UndoCompartmentData.h>
 #include <copasi/undoFramework/UndoSpeciesData.h>
@@ -25,14 +23,23 @@
 #include <copasi/model/CReaction.h>
 #include <copasi/model/CReactionInterface.h>
 
+#include <copasi/CopasiDataModel/CCopasiDataModel.h>
+
 #include <copasi/function/CExpression.h>
+
+#include <copasi/report/CCopasiRootContainer.h>
+
+#include <copasi/UI/qtUtilities.h>
+#include <copasi/UI/listviews.h>
 
 UndoData::UndoData(const std::string &key  /*= ""*/,
                    const std::string &name /*= ""*/,
-                   const std::string &type /*= ""*/)
+                   const std::string &type /*= ""*/,
+                   const std::string &cn /*= ""*/)
   : QObject()
   , mpData(new UndoDependentData())
   , mKey(key)
+  , mCN(cn)
   , mName(name)
   , mType(type)
 {
@@ -118,3 +125,62 @@ UndoData::hasKey() const
   return mKey.empty();
 }
 
+const std::string &
+UndoData::getCN() const
+{
+  return mCN;
+}
+
+void
+UndoData::setCN(const std::string &cn)
+{
+  mCN = cn;
+}
+
+
+bool
+UndoData::hasCN() const
+{
+  return mCN.empty();
+}
+
+const CCopasiObject *UndoData::getObject() const
+{
+  GET_MODEL_OR(pModel, return NULL);
+  return getObject(pModel);
+}
+
+const CCopasiObject *UndoData::getObject(const CModel *pModel) const
+{
+  if (pModel == NULL) return NULL;
+
+  return getObject(pModel->getObjectDataModel());
+}
+
+const CCopasiObject *UndoData::getObject(const CCopasiDataModel *pModel) const
+{
+  if (pModel == NULL) return NULL;
+
+  return dynamic_cast<const CCopasiObject*>(pModel->getObject(getCN()));
+}
+
+CCopasiObject *UndoData::getObject()
+{
+  GET_MODEL_OR(pModel, return NULL);
+  return getObject(pModel);
+}
+
+CCopasiObject *UndoData::getObject(CModel *pModel)
+{
+  if (pModel == NULL) return NULL;
+
+  return getObject(pModel->getObjectDataModel());
+}
+
+CCopasiObject *UndoData::getObject(CCopasiDataModel *pModel)
+{
+  if (pModel == NULL) return NULL;
+
+  return const_cast<CCopasiObject*>(
+           dynamic_cast<const CCopasiObject*>(pModel->getObject(getCN())));
+}
