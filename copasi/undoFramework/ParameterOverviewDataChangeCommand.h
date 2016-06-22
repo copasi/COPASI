@@ -21,18 +21,20 @@ class CModelParameterGroup;
 class ParameterOverviewDataChangeCommand: public CCopasiUndoCommand
 {
 public:
-  ParameterOverviewDataChangeCommand(const QModelIndex &index,
+  ParameterOverviewDataChangeCommand(const std::string& cn,
                                      const std::string& name,
                                      const QVariant &newValue,
                                      const QVariant &oldValue,
                                      CQParameterOverviewDM *pParameterOverviewDM,
-                                     const std::string& parametersetKey);
+                                     const std::string& parametersetKey,
+                                     int column);
+
   virtual ~ParameterOverviewDataChangeCommand();
 
   void redo();
   void undo();
 
-  bool matches(const QModelIndex &index,
+  bool matches(const std::string &cn,
                const std::string& name,
                const QVariant &newValue,
                const QVariant &oldValue,
@@ -40,10 +42,10 @@ public:
 
 private:
   QVariant mNew, mOld;
-  QModelIndex mIndex;
+  std::string mCN;
   CQParameterOverviewDM *mpParameterOverviewDM;
-  Path mPathIndex;
   std::string mParametersetKey;
+  int mColumn;
 };
 
 #endif /* PARAMETEROVERVIEWDATACHANGECOMMAND_H_ */

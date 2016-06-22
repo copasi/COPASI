@@ -67,9 +67,18 @@ public:
 
   void setUndoStack(QUndoStack* undoStack);
   QUndoStack* getUndoStack();
-  bool parameterOverviewDataChange(const QList< QPair<int, int> > &path,
+  /**
+   * Helper functions going through all rows looking for the given CN
+   *
+   * @param cn the CN to look for
+   * @param column the column to return in the index (if found)
+   * @return the index for the CN with the given column if found, an
+   *         invalid index otherwise.
+   */
+  QModelIndex getIndexFor(const std::string& cn, int column) const;
+  bool parameterOverviewDataChange(const std::string& cn,
                                    const QVariant &value,
-                                   const std::string& parameterSetKey);
+                                   const std::string& parameterSetKey, int column);
 
 signals:
   void signalOpenEditor(const QModelIndex &) const;

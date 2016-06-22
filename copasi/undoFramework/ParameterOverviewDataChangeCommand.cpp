@@ -18,20 +18,20 @@
 #include "ParameterOverviewDataChangeCommand.h"
 
 ParameterOverviewDataChangeCommand::ParameterOverviewDataChangeCommand(
-  const QModelIndex &index,
+  const std::string& cn,
   const std::string& name,
   const QVariant &newValue,
   const QVariant &oldValue,
   CQParameterOverviewDM *pParameterOverviewDM,
-  const std::string& parametersetKey
-)
+  const std::string& parametersetKey,
+  int column)
   : CCopasiUndoCommand()
   , mNew(newValue)
   , mOld(oldValue)
-  , mIndex(index)
+  , mCN(cn)
   , mpParameterOverviewDM(pParameterOverviewDM)
-  , mPathIndex(pathFromIndex(index))
   , mParametersetKey(parametersetKey)
+  , mColumn(column)
 {
   if (mParametersetKey.empty())
     {
@@ -44,7 +44,7 @@ ParameterOverviewDataChangeCommand::ParameterOverviewDataChangeCommand(
       setEntityType("Parameter Set");
     }
 
-  if (index.column() == 3)
+  if (column == 3)
     {
       setProperty("Value");
     }
@@ -62,16 +62,16 @@ ParameterOverviewDataChangeCommand::ParameterOverviewDataChangeCommand(
 void
 ParameterOverviewDataChangeCommand::redo()
 {
-  mpParameterOverviewDM->parameterOverviewDataChange(mPathIndex, mNew, mParametersetKey);
+  mpParameterOverviewDM->parameterOverviewDataChange(mCN, mNew, mParametersetKey, mColumn);
 }
 
 void ParameterOverviewDataChangeCommand::undo()
 {
-  mpParameterOverviewDM->parameterOverviewDataChange(mPathIndex, mOld, mParametersetKey);
+  mpParameterOverviewDM->parameterOverviewDataChange(mCN, mOld, mParametersetKey, mColumn);
 }
 
 bool ParameterOverviewDataChangeCommand::matches(
-  const QModelIndex &index,
+  const std::string &cn,
   const std::string& name,
   const QVariant &newValue,
   const QVariant &oldValue,
@@ -82,9 +82,7 @@ bool ParameterOverviewDataChangeCommand::matches(
       || parametersetKey != mParametersetKey)
     return false;
 
-  Path temp = pathFromIndex(index);
-
-  return temp == mPathIndex;
+  return cn == mCN;
 }
 
 ParameterOverviewDataChangeCommand::~ParameterOverviewDataChangeCommand()

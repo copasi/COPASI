@@ -519,11 +519,11 @@ CQParameterOverviewDM::setData(const QModelIndex &_index, const QVariant &value,
     return false;
 
   if (mpLastCommand != NULL && mpLastCommand->matches(
-        _index, pNode->getName(), value, _index.data(Qt::EditRole), mParameterSetKey
+        pNode->getCN(), pNode->getName(), value, _index.data(Qt::EditRole), mParameterSetKey
       ))
     return false;
 
-  mpLastCommand = new ParameterOverviewDataChangeCommand(_index, pNode->getName(), value, _index.data(Qt::EditRole), this, mParameterSetKey);
+  mpLastCommand = new ParameterOverviewDataChangeCommand(pNode->getCN(), pNode->getName(), value, _index.data(Qt::EditRole), this, mParameterSetKey, _index.column());
   mpUndoStack->push(mpLastCommand);
 
   return true;
@@ -561,10 +561,10 @@ CQParameterOverviewDM::setData(const QModelIndex &_index, const QVariant &value,
 }
 
 bool
-CQParameterOverviewDM::parameterOverviewDataChange(
-  const QList< QPair<int, int> >& path,
-  const QVariant &value,
-  const std::string &parameterSetKey)
+CQParameterOverviewDM::parameterOverviewDataChange(const std::string &cn,
+    const QVariant &value,
+    const std::string &parameterSetKey,
+    int column)
 {
   if (parameterSetKey.empty())
     {
@@ -575,7 +575,7 @@ CQParameterOverviewDM::parameterOverviewDataChange(
       switchToWidget(C_INVALID_INDEX, parameterSetKey);
     }
 
-  QModelIndex _index = CCopasiUndoCommand::pathToIndex(path, this);
+  QModelIndex _index = getIndexFor(cn, column);
   CModelParameter * pNode = nodeFromIndex(_index);
 
   bool success = false;
@@ -623,4 +623,38 @@ void CQParameterOverviewDM::setUndoStack(QUndoStack* undoStack)
 QUndoStack* CQParameterOverviewDM::getUndoStack()
 {
   return mpUndoStack;
+}
+
+QModelIndex CQParameterOverviewDM::getIndexFor(const std::string &cn, int column) const
+{
+  int max = rowCount();
+
+  for (int i = 0; i < max; ++i)
+    {
+      QModelIndex current = index(i, 1);
+      CModelParameter* param = nodeFromIndex(current);
+
+      if (param == NULL) continue;
+
+      CModelParameterGroup* group = dynamic_cast<CModelParameterGroup*>(param);
+
+      if (group != NULL && hasChildren(current))
+        {
+          int currentMax = rowCount(current);
+
+          for (int j = 0; j < currentMax; ++j)
+            {
+              QModelIndex childIndex = current.child(j, 0);
+              CModelParameter* param1 = nodeFromIndex(childIndex);
+
+              if (param1->getCN() == cn)
+                return current.child(j, column);
+            }
+        }
+
+      if (param->getCN() == cn)
+        return index(i, column);
+    }
+
+  return QModelIndex();
 }
