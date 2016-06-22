@@ -50,7 +50,7 @@ CQSpeciesWidget::CQSpeciesWidget(QWidget* parent, const char* name)
   mpTblSpecies->setItemDelegateForColumn(COL_COMPARTMENT, mpCompartmentDelegate);
 
   //Setting values for Types comboBox
-  mpTypeDelegate = new CQIndexComboDelegate(this, mpSpecieDM->getTypes());
+  mpTypeDelegate = new CQIndexComboDelegate(this, mpSpecieDM->getTypes(), false);
   mpTblSpecies->setItemDelegateForColumn(COL_TYPE_SPECIES, mpTypeDelegate);
 
   mpTblSpecies->verticalHeader()->setResizeMode(QHeaderView::ResizeToContents);
