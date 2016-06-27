@@ -79,7 +79,8 @@ private slots:
   bool changeValue(const std::string& key,
                    CCopasiUndoCommand::Type type,
                    const QVariant& newValue,
-                   double iValue = std::numeric_limits<double>::quiet_NaN());
+                   double iValue = std::numeric_limits<double>::quiet_NaN(),
+                   UndoCompartmentData *pUndoData = NULL);
 };
 
 #endif // CQCOMPARTMENT_H
