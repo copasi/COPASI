@@ -1,4 +1,4 @@
-// Copyright (C) 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2015 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -12,6 +12,7 @@
 
 class CQCompartment;
 class CCopasiObject;
+class UndoCompartmentData;
 
 class CompartmentChangeCommand : public CCopasiUndoCommand
 {
@@ -24,6 +25,8 @@ public:
                            CQCompartment* pWidget,
                            double iValue = std::numeric_limits<double>::quiet_NaN());
 
+  ~CompartmentChangeCommand();
+
   virtual void undo();
   virtual void redo();
 
@@ -32,6 +35,7 @@ protected:
   double mIValue;
   CCopasiObject* mpObject;
   CQCompartment* mpWidget;
+  UndoCompartmentData* mpUndoData;
 };
 
 #endif // COPASI_COMPARTMENT_CHANGE_COMMAND_H

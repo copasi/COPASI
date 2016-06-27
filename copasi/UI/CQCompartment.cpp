@@ -669,7 +669,8 @@ void CQCompartment::addCompartment(UndoCompartmentData *pData)
 bool CQCompartment::changeValue(const std::string& key,
                                 CCopasiUndoCommand::Type type,
                                 const QVariant& newValue,
-                                double iValue)
+                                double iValue,
+                                UndoCompartmentData* pUndoData)
 {
   if (!mIgnoreUpdates)
     {
@@ -679,6 +680,7 @@ bool CQCompartment::changeValue(const std::string& key,
       load();
       switchToWidget(C_INVALID_INDEX, mKey);
     }
+
 
   switch (type)
     {
@@ -698,6 +700,13 @@ bool CQCompartment::changeValue(const std::string& key,
 
       case CCopasiUndoCommand::COMPARTMENT_INITIAL_VOLUME_CHANGE:
         mpCompartment->setInitialValue(newValue.toDouble());
+
+        if (pUndoData != NULL)
+          {
+            GET_MODEL_OR(pModel, return false);
+            pUndoData->fillDependentObjects(pModel);
+          }
+
         break;
 
       case CCopasiUndoCommand::COMPARTMENT_SIMULATION_TYPE_CHANGE:
