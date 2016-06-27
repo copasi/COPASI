@@ -17,6 +17,7 @@
 #include "qtUtilities.h"
 
 #include "CompartmentDataChangeCommand.h"
+#include "UndoCompartmentData.h"
 
 CompartmentDataChangeCommand::CompartmentDataChangeCommand(
   const QModelIndex& index,
@@ -30,6 +31,7 @@ CompartmentDataChangeCommand::CompartmentDataChangeCommand(
   , mpCompartmentDM(pCompartmentDM)
   , mRole(role)
   , mPathIndex()
+  , mpCompartmentUndoData(NULL)
 
 {
   //set the data for UNDO history
@@ -78,6 +80,9 @@ CompartmentDataChangeCommand::CompartmentDataChangeCommand(
 
       case 3:
         setProperty("Initial Volume");
+        // need to store additional undo data to be able to restore
+        // species initial concentrations / patricle numbers
+        mpCompartmentUndoData = new UndoCompartmentData(pCompartment);
         break;
     }
 
@@ -86,16 +91,17 @@ CompartmentDataChangeCommand::CompartmentDataChangeCommand(
 
 void CompartmentDataChangeCommand::redo()
 {
-  mpCompartmentDM->compartmentDataChange(mIndex, mNew);
+  mpCompartmentDM->compartmentDataChange(mIndex, mNew, NULL);
   setAction("Change");
 }
 
 void CompartmentDataChangeCommand::undo()
 {
-  mpCompartmentDM->compartmentDataChange(mIndex, mOld);
+  mpCompartmentDM->compartmentDataChange(mIndex, mOld, mpCompartmentUndoData);
   setAction("Undone change");
 }
 
 CompartmentDataChangeCommand::~CompartmentDataChangeCommand()
 {
+  pdelete(mpCompartmentUndoData);
 }

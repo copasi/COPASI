@@ -119,6 +119,7 @@ UndoSpeciesData::fillObject(CModel *)
   if (getStatus() != CModelEntity::ASSIGNMENT)
     {
       pSpecies->setInitialConcentration(getIConc());
+      pSpecies->setInitialValue(getINumber());
     }
 
   if (getStatus() == CModelEntity::ODE || getStatus() == CModelEntity::ASSIGNMENT)

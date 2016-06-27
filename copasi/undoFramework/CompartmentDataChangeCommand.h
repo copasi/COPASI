@@ -1,4 +1,4 @@
-// Copyright (C) 2014 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2014 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -16,6 +16,8 @@
 #include "CCopasiUndoCommand.h"
 
 class CQCompartmentDM;
+class UndoCompartmentData;
+
 class CompartmentDataChangeCommand: public CCopasiUndoCommand
 {
 public:
@@ -34,6 +36,7 @@ private:
   CQCompartmentDM *mpCompartmentDM;
   int mRole;
   Path mPathIndex;
+  UndoCompartmentData* mpCompartmentUndoData;
 };
 
 #endif /* COMPARTMENTDATACHANGECOMMAND_H_ */
