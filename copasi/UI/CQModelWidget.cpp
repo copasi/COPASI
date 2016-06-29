@@ -233,6 +233,12 @@ CQModelWidget::changeValue(CCopasiUndoCommand::Type type, const QVariant& newVal
   mpListView->switchToOtherWidget(C_INVALID_INDEX, mKey);
   qApp->processEvents();
 
+  if (mpModel == NULL)
+    {
+      GET_MODEL_OR(pModel, return false);
+      mpModel = pModel;
+    }
+
   if (type == CCopasiUndoCommand::MODEL_TIME_UNIT_CHANGE)
     {
       mpModel->setTimeUnit(TO_UTF8(newValue.toString()));
