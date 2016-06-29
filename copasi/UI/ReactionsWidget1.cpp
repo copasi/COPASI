@@ -833,8 +833,7 @@ bool ReactionsWidget1::changeReaction(
             pReaction->cleanup();
             pReaction->compile();
 
-            ReactionChangeCommand::removeCreatedObjects(previouslyCreatedObjects,
-                pReaction->getObjectDataModel()->getModel(), pReaction);
+            ReactionChangeCommand::removeCreatedObjects(previouslyCreatedObjects);
           }
 
         // set new

@@ -1,4 +1,4 @@
-// Copyright (C) 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2015 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -37,10 +37,9 @@ public:
   void redo();
   void undo();
 
-  static void removeCreatedObjects(const std::vector<std::string>& createdObjects,
-                                   CModel* model, CReaction* reaction);
+  static void removeCreatedObjects(const std::vector<std::string>& createdObjects);
 
-  const std::vector<std::string>& getCreatedObjects() const;
+  const std::vector< std::string >& getCreatedObjects() const;
   void setCreatedObjects(const std::vector<std::string>& createdObjects);
 
 private:
