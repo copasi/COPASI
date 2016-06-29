@@ -2151,7 +2151,8 @@ void CCopasiDataModel::commonAfterLoad(CProcessReport* pProcessReport,
 
 #endif
 
-  if (mData.pModel->isCompileNecessary())
+  if (mData.pModel->isCompileNecessary() &&
+      mData.pModel->compileIfNecessary(pProcessReport))
     {
       mData.pModel->getActiveModelParameterSet().updateModel();
     }
