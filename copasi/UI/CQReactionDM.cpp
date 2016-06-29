@@ -190,7 +190,8 @@ QVariant CQReactionDM::headerData(int section, Qt::Orientation orientation,
 bool CQReactionDM::setData(const QModelIndex &index, const QVariant &value,
                            int role)
 {
-  if (index.data() == value)
+  if (index.data() == value &&
+      role != Qt::EditRole)
     return false;
 
   bool defaultRow = isDefaultRow(index);
@@ -201,13 +202,13 @@ bool CQReactionDM::setData(const QModelIndex &index, const QVariant &value,
     }
   else
     {
-      mpUndoStack->push(new ReactionDataChangeCommand(index, value, role, this));
+      mpUndoStack->push(new ReactionDataChangeCommand(index, value, this));
     }
 
   return true;
 }
 
-void CQReactionDM::setEquation(const CReaction *pRea, const QModelIndex& index, const QVariant &value)
+void CQReactionDM::setEquation(const CReaction *pRea, const QVariant &value)
 {
   std::string objKey = pRea->getKey();
   mNewEquation = value.toString();
@@ -243,7 +244,7 @@ void CQReactionDM::setEquation(const CReaction *pRea, const QModelIndex& index, 
 
   if (DeletedParameters.size() != 0)
     {
-      QString ObjectType = "parameter(s) of reaction " + this->index(index.row(), COL_NAME_REACTIONS).data().toString();
+      QString ObjectType = "parameter(s) of reaction " + FROM_UTF8(pRea->getObjectName());
       QString Objects;
 
       std::set< const CCopasiObject * >::const_iterator itParameter, endParameter = DeletedParameters.end();
@@ -257,9 +258,7 @@ void CQReactionDM::setEquation(const CReaction *pRea, const QModelIndex& index, 
 
       Objects.remove(Objects.length() - 2, 2);
 
-      QMessageBox::StandardButton choice =
-        CQMessageBox::confirmDelete(NULL, ObjectType,
-                                    Objects, DeletedObjects);
+      QMessageBox::StandardButton choice = CQMessageBox::confirmDelete(NULL, ObjectType, Objects, DeletedObjects);
 
       switch (choice)
         {
@@ -358,40 +357,28 @@ bool CQReactionDM::removeRows(QModelIndexList rows, const QModelIndex&)
   return true;
 }
 
-bool CQReactionDM::reactionDataChange(const QModelIndex &index,
+bool CQReactionDM::reactionDataChange(const std::string & key,
                                       const QVariant &value,
-                                      int role,
+                                      int column,
                                       QString &funcName,
                                       std::vector<std::string>& createdObjects)
 {
   switchToWidget(CCopasiUndoCommand::REACTIONS);
 
-  if (!index.isValid() || role != Qt::EditRole)
-    return true;
+  CReaction * pRea = dynamic_cast< CReaction * >(CCopasiRootContainer::getKeyFactory()->get(key));
 
-  GET_MODEL_OR(pModel, return false);
-
-  bool defaultRow = isDefaultRow(index);
-
-  if (defaultRow)
-    {
-      if (index.data() != value)
-        insertRow(rowCount(), index);
-      else
-        return false;
-    }
+  if (pRea == NULL) return false;
 
   // this loads the reaction into a CReactionInterface object.
   // the gui works on this object and later writes back the changes to ri;
-  CReaction *pRea = &pModel->getReactions()[index.row()];
   bool refreshAll = false;
 
-  if (index.column() == COL_NAME_REACTIONS)
+  if (column == COL_NAME_REACTIONS)
     {
       pRea->setObjectName(TO_UTF8(value.toString()));
       emit notifyGUI(ListViews::REACTION, ListViews::RENAME, pRea->getKey());
     }
-  else if (index.column() == COL_EQUATION)
+  else if (column == COL_EQUATION)
     {
       mCreatedKeys.clear();
 
@@ -400,20 +387,18 @@ bool CQReactionDM::reactionDataChange(const QModelIndex &index,
           pRea->cleanup();
           pRea->compile();
 
-          ReactionChangeCommand::removeCreatedObjects(createdObjects,
-              pModel, pRea);
+          ReactionChangeCommand::removeCreatedObjects(createdObjects);
           refreshAll = true;
         }
 
-      setEquation(pRea, index, value);
+      setEquation(pRea, value);
       updateReactionWithFunctionName(pRea, funcName);
       createdObjects.assign(mCreatedKeys.begin(), mCreatedKeys.end());
     }
 
-  if (defaultRow && this->index(index.row(), COL_NAME_REACTIONS).data().toString() == "reaction")
-    pRea->setObjectName(TO_UTF8(createNewName("reaction", COL_NAME_REACTIONS)));
+  QModelIndex Index = this->index(static_cast< CModel * >(pRea->getObjectAncestor("Model"))->getReactions().getIndex(pRea->getObjectName()), column);
+  emit dataChanged(Index, Index);
 
-  emit dataChanged(index, index);
   emit notifyGUI(ListViews::REACTION, ListViews::CHANGE, pRea->getKey());
   emit notifyGUI(ListViews::REACTION, ListViews::CHANGE, "");
 
@@ -456,7 +441,7 @@ void CQReactionDM::insertNewReactionRow(InsertReactionRowsCommand* command)
 
       if (index.isValid() && column == COL_EQUATION)
         {
-          setEquation(pRea, index, value);
+          setEquation(pRea, value);
         }
 
       command->initializeUndoData(pRea, mCreatedKeys);
@@ -581,9 +566,9 @@ void CQReactionDM::deleteReactionRow(UndoReactionData * pData)
 
   beginRemoveRows(QModelIndex(), 1, 1);
   pModel->removeReaction(pReaction);
-  ReactionChangeCommand::removeCreatedObjects(pData->getAdditionalKeys(), pModel, NULL);
+  ReactionChangeCommand::removeCreatedObjects(pData->getAdditionalKeys());
   emit notifyGUI(ListViews::REACTION, ListViews::DELETE, key);
-  emit notifyGUI(ListViews::REACTION, ListViews::DELETE, "");//Refresh all as there may be dependencies.
+  emit notifyGUI(ListViews::REACTION, ListViews::DELETE, "");  //Refresh all as there may be dependencies.
   endRemoveRows();
 }
 

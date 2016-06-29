@@ -1,4 +1,4 @@
-// Copyright (C) 2014 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2014 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -25,7 +25,6 @@ class ReactionDataChangeCommand: public CCopasiUndoCommand
 public:
   ReactionDataChangeCommand(const QModelIndex& index,
                             const QVariant& value,
-                            int role,
                             CQReactionDM *pReactionDM);
   virtual ~ReactionDataChangeCommand();
 
@@ -34,9 +33,8 @@ public:
 
 private:
   QVariant mNew, mOld;
-  QModelIndex mIndex;
   CQReactionDM *mpReactionDM;
-  int mRole;
+  int mColumn;
   Path mPathIndex;
   QString mOldFunctionName, mNewFunctionName;
   std::vector<std::string> mCreatedObjects;

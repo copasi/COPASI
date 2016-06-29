@@ -19,14 +19,12 @@
 ReactionDataChangeCommand::ReactionDataChangeCommand(
   const QModelIndex& index,
   const QVariant& value,
-  int role,
   CQReactionDM *pReactionDM)
   : CCopasiUndoCommand("Reaction", REACTION_DATA_CHANGE, "Change")
   , mNew(value)
   , mOld(index.data(Qt::DisplayRole))
-  , mIndex(index)
   , mpReactionDM(pReactionDM)
-  , mRole(role)
+  , mColumn(index.column())
   , mPathIndex()
   , mOldFunctionName()
   , mNewFunctionName("")
@@ -50,10 +48,11 @@ ReactionDataChangeCommand::ReactionDataChangeCommand(
 
   //set the data for UNDO history
   setName(pRea->getObjectName());
+  setKey(pRea->getKey());
   setOldValue(TO_UTF8(mOld.toString()));
   setNewValue(TO_UTF8(mNew.toString()));
 
-  switch (index.column())
+  switch (mColumn)
     {
       case 0:
         setProperty("");
@@ -77,13 +76,13 @@ ReactionDataChangeCommand::~ReactionDataChangeCommand()
 
 void ReactionDataChangeCommand::redo()
 {
-  mpReactionDM->reactionDataChange(mIndex, mNew, mRole, mNewFunctionName, mCreatedObjects);
+  mpReactionDM->reactionDataChange(getKey(), mNew, mColumn, mNewFunctionName, mCreatedObjects);
   setAction("Change");
 }
 
 void ReactionDataChangeCommand::undo()
 {
   //mIndex = pathToIndex(mPathIndex, mpReactionDM);
-  mpReactionDM->reactionDataChange(mIndex, mOld, mRole, mOldFunctionName, mCreatedObjects);
+  mpReactionDM->reactionDataChange(getKey(), mOld, mColumn, mOldFunctionName, mCreatedObjects);
   setAction("Undone change");
 }

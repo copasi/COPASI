@@ -47,7 +47,7 @@ public:
   bool removeRows(QModelIndexList rows, const QModelIndex &index = QModelIndex());
 
   //TODO Undo
-  bool reactionDataChange(const QModelIndex &index,
+  bool reactionDataChange(const std::string & key,
                           const QVariant &value,
                           int role,
                           QString &funcName,
@@ -70,7 +70,7 @@ protected:
   virtual bool removeRows(int position, int rows);
 
 private:
-  void setEquation(const CReaction *pRea, const QModelIndex& index, const QVariant &value);
+  void setEquation(const CReaction *pRea, const QVariant &value);
 
   QString mNewEquation;
   std::vector<std::string> mCreatedKeys;
