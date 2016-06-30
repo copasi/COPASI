@@ -375,8 +375,8 @@ void CQEventWidget1::saveToEvent()
               FROM_UTF8(it->getExpression()),
               mpEvent,
               this,
-              OldAssignments[Found].getKey(),
-              OldAssignments[Found].getKey()
+              OldAssignments[Found].getObjectName(),
+              OldAssignments[Found].getObjectName()
             )
           );
 

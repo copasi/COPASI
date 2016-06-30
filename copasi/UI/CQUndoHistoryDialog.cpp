@@ -1,4 +1,4 @@
-// Copyright (C) 2014 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2014 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -37,18 +37,15 @@
 CQUndoHistoryDialog::CQUndoHistoryDialog(QWidget* parent, QUndoStack *undoStack, const char* name, bool modal, Qt::WindowFlags fl)
   : QDialog(parent, fl)
   , mpUndoStack(undoStack)
-  , mNCol(6) //total number of UNDO History columns
-  , mpModel(new QStandardItemModel(mpUndoStack->count() + 1, mNCol, parent))
+  , mNCol(7) //total number of UNDO History columns
+  , mpModel(new QStandardItemModel(mpUndoStack->count(), mNCol, parent))
   , mSelectedIndex(0)
 {
   setObjectName(QString::fromUtf8(name));
   setModal(modal);
   setupUi(this);
 
-  QPushButton* undo = new QPushButton("&Undo");
-  connect(undo, SIGNAL(clicked(bool)), this, SLOT(slotUndo()));
-
-  buttonBox->addButton(undo, QDialogButtonBox::ActionRole);
+  connect(buttonBox->button(QDialogButtonBox::Ok), SIGNAL(clicked(bool)), this, SLOT(slotUndo()));
 
   // attach the model to the view
   mpUndoHistoryView->setModel(mpModel);
@@ -74,9 +71,6 @@ CQUndoHistoryDialog::slotUndo()
 
   int currentIndex = mpUndoStack->index();
 
-  if (selectedRow == currentIndex)
-    return;
-
   if (selectedRow < currentIndex)
     {
 
@@ -97,44 +91,25 @@ CQUndoHistoryDialog::slotUndo()
 
       if (choice != QMessageBox::Yes)
         return;
+
+      selectedRow++;
     }
 
   mpUndoStack->setIndex(selectedRow);
+
   close();
 }
 
 void CQUndoHistoryDialog::generateUndoData(QUndoStack *undoStack, int commandCount, int nCol)
 {
   // set the table header data
-  for (int col = 0; col < nCol; ++col)
-    {
-      switch (col)
-        {
-          case 0:
-            mpModel->setHeaderData(0, Qt::Horizontal, QString("Entity Type"));
-            break;
-
-          case 1:
-            mpModel->setHeaderData(1, Qt::Horizontal, QString("Name"));
-            break;
-
-          case 2:
-            mpModel->setHeaderData(2, Qt::Horizontal, QString("Action"));
-            break;
-
-          case 3:
-            mpModel->setHeaderData(3, Qt::Horizontal, QString("Property"));
-            break;
-
-          case 4:
-            mpModel->setHeaderData(4, Qt::Horizontal, QString("New Value"));
-            break;
-
-          case 5:
-            mpModel->setHeaderData(5, Qt::Horizontal, QString("Old Value"));
-            break;
-        }
-    }
+  mpModel->setHeaderData(0, Qt::Horizontal, QString("Action"));
+  mpModel->setHeaderData(1, Qt::Horizontal, QString("Entity Type"));
+  mpModel->setHeaderData(2, Qt::Horizontal, QString("Name"));
+  mpModel->setHeaderData(3, Qt::Horizontal, QString("Action"));
+  mpModel->setHeaderData(4, Qt::Horizontal, QString("Property"));
+  mpModel->setHeaderData(5, Qt::Horizontal, QString("New Value"));
+  mpModel->setHeaderData(6, Qt::Horizontal, QString("Old Value"));
 
   for (int row = 0; row < commandCount; ++row)
     {
@@ -143,37 +118,14 @@ void CQUndoHistoryDialog::generateUndoData(QUndoStack *undoStack, int commandCou
 
       if (cCommand == NULL) continue;
 
-      for (int col = 0; col < 6; ++col)
-        {
-          QModelIndex index = mpModel->index(row, col, QModelIndex());
+      mpModel->setData(mpModel->index(row, 0, QModelIndex()), QVariant(row < mpUndoStack->index() ? "Undo" : "Redo"));
 
-          switch (col)
-            {
-              case 0:
-                mpModel->setData(index, QVariant(QString(FROM_UTF8(cCommand->getEntityType()))));
-                break;
-
-              case 1:
-                mpModel->setData(index, QVariant(QString(FROM_UTF8(cCommand->getName()))));
-                break;
-
-              case 2:
-                mpModel->setData(index, QVariant(QString(FROM_UTF8(cCommand->getAction()))));
-                break;
-
-              case 3:
-                mpModel->setData(index, QVariant(QString(FROM_UTF8(cCommand->getProperty()))));
-                break;
-
-              case 4:
-                mpModel->setData(index, QVariant(QString(FROM_UTF8(cCommand->getNewValue()))));
-                break;
-
-              case 5:
-                mpModel->setData(index, QVariant(QString(FROM_UTF8(cCommand->getOldValue()))));
-                break;
-            }
-        }
+      mpModel->setData(mpModel->index(row, 1, QModelIndex()), QVariant(FROM_UTF8(cCommand->getEntityType())));
+      mpModel->setData(mpModel->index(row, 2, QModelIndex()), QVariant(FROM_UTF8(cCommand->getName())));
+      mpModel->setData(mpModel->index(row, 3, QModelIndex()), QVariant(FROM_UTF8(cCommand->getAction())));
+      mpModel->setData(mpModel->index(row, 4, QModelIndex()), QVariant(FROM_UTF8(cCommand->getProperty())));
+      mpModel->setData(mpModel->index(row, 5, QModelIndex()), QVariant(FROM_UTF8(cCommand->getNewValue())));
+      mpModel->setData(mpModel->index(row, 6, QModelIndex()), QVariant(FROM_UTF8(cCommand->getOldValue())));
     }
 
   mpUndoHistoryView->selectRow(mpUndoStack->index());
