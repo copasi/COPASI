@@ -1304,14 +1304,14 @@ bool CModel::buildUserOrder()
 
 bool CModel::updateInitialValues(const CModelParameter::Framework & framework)
 {
-  compileIfNecessary(NULL);
+  bool success = compileIfNecessary(NULL);
 
   mpMathContainer->fetchInitialState();
   mpMathContainer->updateInitialValues(framework);
   mpMathContainer->pushInitialState();
   refreshActiveParameterSet();
 
-  return true;
+  return success;
 }
 
 void CModel::stateToIntialState()
@@ -2258,7 +2258,7 @@ bool
 CModel::createEventsForTimeseries(CExperiment* experiment/* = NULL*/)
 {
 
-  #pragma region   //find_experiment
+#pragma region   //find_experiment
 
   if (experiment == NULL)
     {
@@ -2308,7 +2308,7 @@ CModel::createEventsForTimeseries(CExperiment* experiment/* = NULL*/)
       return createEventsForTimeseries(const_cast<CExperiment*>(theExperiment));
     }
 
-  #pragma endregion //find_experiment
+#pragma endregion //find_experiment
 
   if (experiment->getExperimentType() != CTaskEnum::timeCourse)
     {

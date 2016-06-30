@@ -680,7 +680,13 @@ void DataModelGUI::refreshInitialValues()
 {
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   CModel * pModel = CCopasiRootContainer::getDatamodelList()->operator[](0).getModel();
-  pModel->updateInitialValues(static_cast< CModelParameter::Framework >(mFramework));
+
+  if (!pModel->updateInitialValues(static_cast< CModelParameter::Framework >(mFramework)))
+    {
+      CQMessageBox::warning(NULL, "Model Compile Warning",
+                            CCopasiMessage::getAllMessageText().c_str(),
+                            QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton);
+    }
 }
 
 void DataModelGUI::setFramework(int framework)
