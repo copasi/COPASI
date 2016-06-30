@@ -2371,10 +2371,20 @@ void CMathContainer::createUpdateSimulationValuesSequence()
   mTransientDependencies.getUpdateSequence(mSimulationValuesSequenceReduced, CMath::UseMoieties, mReducedStateValues, ReducedSimulationRequiredValues);
 
   // Determine whether the model is autonomous, i.e., no simulation required value depends on time.
+  // We need to additionally add the event assignments to the simulation required values as they may time dependent
+  CObjectInterface::ObjectSet TimeDependentValues = mSimulationRequiredValues;
+  pObject = getMathObject(mEventAssignments.array());
+  pObjectEnd = pObject + mEventAssignments.size();
+
+  for (; pObject != pObjectEnd; ++pObject)
+    {
+      TimeDependentValues.insert(pObject);
+    }
+
   CObjectInterface::ObjectSet TimeObject;
   TimeObject.insert(getMathObject(mState.array() + mSize.nFixedEventTargets));
   CObjectInterface::UpdateSequence TimeChange;
-  mTransientDependencies.getUpdateSequence(TimeChange, CMath::Default, TimeObject, mSimulationRequiredValues);
+  mTransientDependencies.getUpdateSequence(TimeChange, CMath::Default, TimeObject, TimeDependentValues);
   mIsAutonomous = (TimeChange.size() == 0);
 
   // Build the update sequence used to calculate the priorities in the event process queue.
