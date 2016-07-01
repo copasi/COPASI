@@ -675,7 +675,6 @@ CQEventWidget1::changeValue(const std::string &key,
       loadFromEvent();
 
       mpListView->switchToOtherWidget(C_INVALID_INDEX, mKey);
-      qApp->processEvents();
     }
 
   switch (type)

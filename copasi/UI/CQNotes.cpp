@@ -338,7 +338,6 @@ void CQNotes::save()
       mValidity != QValidator::Acceptable)
     return;
 
-
   CAnnotation * pAnnotation = CAnnotation::castObject(mpObject);
   CReportDefinition * pReportDefinition = static_cast<CReportDefinition *>(mpObject);
 
@@ -358,7 +357,6 @@ void CQNotes::save()
   if (plainText == notes)
     return;
 
-
   if (mpValidatorXML->needsWrap())
     {
       // We wrap the HTML in a body element if it does not contain a top level html or body element.
@@ -374,9 +372,6 @@ void CQNotes::save()
     }
 
   mpUndoStack->push(new ChangeNotesCommand(mpObject, notes, plainText, this));
-
-
-
 }
 
 void CQNotes::slotOpenUrl(const QUrl & url)
@@ -390,7 +385,6 @@ void CQNotes::changeNotes(const std::string& key, const std::string& notes)
   if (mpListView->getCurrentItemKey() != mKey || key != mKey)
     {
       mpListView->switchToOtherWidget(C_INVALID_INDEX, key);
-      qApp->processEvents();
     }
 
   mKey = key;
@@ -412,7 +406,6 @@ void CQNotes::changeNotes(const std::string& key, const std::string& notes)
 
   if (mIgnoreUpdates)
     return;
-
 
   if (mpDataModel != NULL)
     {

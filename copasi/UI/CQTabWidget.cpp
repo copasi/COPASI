@@ -282,7 +282,6 @@ bool CQTabWidget::renameEntity(const std::string& key, const std::string& newNam
   mKey = key;
   load();
   mpListView->switchToOtherWidget(C_INVALID_INDEX, mKey);
-  qApp->processEvents();
 
   if (!mpObject->setObjectName(newName))
     {

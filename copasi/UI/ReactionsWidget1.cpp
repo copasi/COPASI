@@ -809,7 +809,6 @@ bool ReactionsWidget1::changeReaction(
       loadFromReaction(dynamic_cast<CReaction*>(mpObject));
 
       mpListView->switchToOtherWidget(C_INVALID_INDEX, mKey);
-      qApp->processEvents();
     }
 
   CReaction* pReaction = dynamic_cast<CReaction*>(mpObject);
