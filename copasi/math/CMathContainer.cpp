@@ -4536,6 +4536,9 @@ void CMathContainer::relocate(CVectorCore< C_FLOAT64 > &oldValues,
   for (; itUpdateSequence != endUpdateSequence; ++itUpdateSequence)
     {
       relocateUpdateSequence(**itUpdateSequence, Relocations);
+
+      // The update sequence may contain pointer to deleted objects we sanitize here
+      (*itUpdateSequence)->sanitize(oldObjects, mObjects);
     }
 
   relocateObjectSet(mInitialStateValueExtensive, Relocations);
