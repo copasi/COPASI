@@ -231,7 +231,6 @@ bool
 CQModelWidget::changeValue(CCopasiUndoCommand::Type type, const QVariant& newValue)
 {
   mpListView->switchToOtherWidget(C_INVALID_INDEX, mKey);
-  qApp->processEvents();
 
   if (mpModel == NULL)
     {

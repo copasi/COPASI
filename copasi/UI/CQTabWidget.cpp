@@ -58,7 +58,7 @@ CQTabWidget::CQTabWidget(const ListViews::ObjectType & objectType, CopasiWidget 
         mpBtnNew->setText("Apply");
         mpBtnNew->setToolTip("Apply the current parameters to the model.");
 
-      // The break statement is intentionally missing
+        // The break statement is intentionally missing
 
       default:
         CQNotes* pNotes = new CQNotes(mpTabWidget);
@@ -324,7 +324,6 @@ bool CQTabWidget::renameEntity(const std::string& key, const std::string& newNam
   mKey = key;
   load();
   mpListView->switchToOtherWidget(C_INVALID_INDEX, mKey);
-  qApp->processEvents();
 
   if (!mpObject->setObjectName(newName))
     {
