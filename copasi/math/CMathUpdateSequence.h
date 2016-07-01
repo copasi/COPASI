@@ -9,8 +9,10 @@
 #include <vector>
 #include <cstddef>
 
+template <class CType> class CVectorCore;
 class CMathContainer;
 class CObjectInterface;
+class CMathObject;
 
 class CMathUpdateSequence : public std::vector< CObjectInterface * >
 {
@@ -44,6 +46,9 @@ public:
    * @param CMathContainer * pContainer
    */
   void setMathContainer(CMathContainer * pContainer);
+
+  void sanitize(const CVectorCore< CMathObject > & oldObjects,
+                const CVectorCore< CMathObject > & newObjects);
 
 private:
   CMathContainer * mpContainer;
