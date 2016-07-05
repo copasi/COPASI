@@ -452,7 +452,6 @@ bool CQSpecieDM::specieDataChange(
       catch (...) {}
     }
 
-
   if (column == COL_NAME_SPECIES)
     {
       mpSpecies->setObjectName(TO_UTF8(value.toString()));
@@ -532,13 +531,21 @@ bool CQSpecieDM::specieDataChange(
         }
     }
 
-  // ask for refresh
+  //Save Key
+  std::string key = mpSpecies->getKey();
+
+  // ask for refresh this may change the key!
   QModelIndex index = getIndexFor(mpSpecies, column);
   emit dataChanged(index, index);
 
-  //Save Key
-  std::string key = mpSpecies->getKey();
-  emit notifyGUI(ListViews::METABOLITE, ListViews::CHANGE, key);
+  if (column == COL_NAME_SPECIES)
+    {
+      emit notifyGUI(ListViews::METABOLITE, ListViews::RENAME, key);
+    }
+  else
+    {
+      emit notifyGUI(ListViews::METABOLITE, ListViews::CHANGE, key);
+    }
 
   return true;
 }
@@ -732,12 +739,11 @@ QModelIndex CQSpecieDM::getIndexFor(const CMetab *pMetab, int column) const
 {
   int max = rowCount();
 
-  for (int i = 0; i < max; ++i)
-    {
-      QModelIndex current = index(i, COL_NAME_SPECIES);
-      QString name = data(current, Qt::DisplayRole).toString();
+  CCopasiVector< CMetab >::const_iterator it = CCopasiRootContainer::getDatamodelList()->operator[](0).getModel()->getMetabolites().begin();
 
-      if (TO_UTF8(name) == pMetab->getObjectName())
+  for (int i = 0; i < max; ++i, ++it)
+    {
+      if (&*it == pMetab)
         return index(i, column);
     }
 
