@@ -42,7 +42,8 @@ CNewtonMethod::CNewtonMethod(const CCopasiContainer * pParent,
   CSteadyStateMethod(pParent, methodType, taskType),
   mIpiv(NULL),
   mpTrajectory(NULL),
-  mStartState()
+  mStartState(),
+  mCompartmentVolumes()
 {
   initializeParameter();
 }
@@ -52,7 +53,8 @@ CNewtonMethod::CNewtonMethod(const CNewtonMethod & src,
   CSteadyStateMethod(src, pParent),
   mIpiv(NULL),
   mpTrajectory(NULL),
-  mStartState()
+  mStartState(),
+  mCompartmentVolumes()
 {
   initializeParameter();
 }
@@ -603,6 +605,7 @@ C_FLOAT64 CNewtonMethod::targetFunction()
   mpContainer->applyUpdateSequence(mUpdateConcentrations);
 
   const CMathObject * pMathObject = mpContainer->getMathObject(mpContainerStateTime + 1);
+  C_FLOAT64 ** ppCompartmentVolume = mCompartmentVolumes.array();
   C_FLOAT64 Number2Quantity = mpContainer->getModel().getNumber2QuantityFactor();
 
   C_FLOAT64 AbsoluteDistance = 0.0; // Largest relative distance
@@ -622,7 +625,7 @@ C_FLOAT64 CNewtonMethod::targetFunction()
 
       if (pMathObject->getEntityType() == CMath::Species)
         {
-          tmp *= *(C_FLOAT64*)pMathObject->getCorrespondingProperty()->getValuePointer() / *(C_FLOAT64*)pMathObject->getValuePointer();
+          tmp /= mpContainer->getQuantity2NumberFactor() ***ppCompartmentVolume;
         }
 
       AbsoluteDistance += tmp * tmp;
@@ -719,6 +722,9 @@ bool CNewtonMethod::initialize(const CSteadyStateProblem * pProblem)
   mdxdt.initialize(mDimension, mpContainer->getRate(true).array() + mpContainer->getCountFixedEventTargets() + 1);
   mIpiv = new C_INT [mDimension];
 
+  mCompartmentVolumes.resize(mDimension);
+  mCompartmentVolumes = NULL;
+
   if (mUseIntegration || mUseBackIntegration)
     {
       // create an appropriate trajectory task
@@ -753,12 +759,14 @@ bool CNewtonMethod::initialize(const CSteadyStateProblem * pProblem)
   CObjectInterface::ObjectSet Requested;
   CMathObject * pMathObject = mpContainer->getMathObject(mpX);
   CMathObject * pMathObjectEnd = pMathObject + mDimension;
+  C_FLOAT64 ** ppCompartmentVolume = mCompartmentVolumes.array();
 
-  for (; pMathObject != pMathObjectEnd; ++pMathObject)
+  for (; pMathObject != pMathObjectEnd; ++pMathObject, ++ppCompartmentVolume)
     {
       if (pMathObject->getEntityType() == CMath::Species)
         {
           Requested.insert(pMathObject->getCorrespondingProperty());
+          *ppCompartmentVolume = (C_FLOAT64 *) mpContainer->getCompartment(pMathObject)->getValuePointer();
         }
     }
 
@@ -997,6 +1005,7 @@ C_FLOAT64 CNewtonMethod::solveJacobianXeqB(CVector< C_FLOAT64 > & X, const CVect
       mpContainer->applyUpdateSequence(mUpdateConcentrations);
 
       const CMathObject * pMathObject = mpContainer->getMathObject(mpContainerStateTime + 1);
+      C_FLOAT64 * const * ppCompartmentVolume = mCompartmentVolumes.array();
       C_FLOAT64 Number2Quantity = mpContainer->getModel().getNumber2QuantityFactor();
 
       C_FLOAT64 AbsoluteDistance = 0.0; // Largest relative distance
@@ -1014,7 +1023,7 @@ C_FLOAT64 CNewtonMethod::solveJacobianXeqB(CVector< C_FLOAT64 > & X, const CVect
 
           if (pMathObject->getEntityType() == CMath::Species)
             {
-              tmp *= *(C_FLOAT64*)pMathObject->getCorrespondingProperty()->getValuePointer() / *(C_FLOAT64*)pMathObject->getValuePointer();
+              tmp /= mpContainer->getQuantity2NumberFactor() ***ppCompartmentVolume;
             }
 
           AbsoluteDistance += tmp * tmp;
