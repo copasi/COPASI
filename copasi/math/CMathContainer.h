@@ -223,6 +223,12 @@ public:
   const bool & isAutonomous() const;
 
   /**
+   * Retrieve the Quantity to Number conversion factor
+   * @return C_FLOAT64 & quantity2NumberFactor
+   */
+  const C_FLOAT64 & getQuantity2NumberFactor() const;
+
+  /**
    * Retrieves the state values, i.e., all values of objects of
    * simulation type EventTarget, Time, ODE, Dependent, and Independent. It includes only
    * extensive values for species.

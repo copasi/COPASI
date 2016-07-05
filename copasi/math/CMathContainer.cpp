@@ -571,6 +571,11 @@ const bool & CMathContainer::isAutonomous() const
   return mIsAutonomous;
 }
 
+const C_FLOAT64 & CMathContainer::getQuantity2NumberFactor() const
+{
+  return *(C_FLOAT64*) mpQuantity2NumberFactor->getValuePointer();
+}
+
 const CMathHistoryCore & CMathContainer::getHistory(const bool & reduced) const
 {
   if (reduced)
