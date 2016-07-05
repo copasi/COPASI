@@ -860,7 +860,7 @@ void CModel::initializeMetabolites()
 {
   // Create a vector of pointers to all metabolites.
   // Note, the metabolites physically exist in the compartments.
-  mMetabolites.clear();
+  mMetabolitesX.clear();
 
   CCopasiVector< CCompartment >::iterator itCompartment = mCompartments.begin();
   CCopasiVector< CCompartment >::iterator endCompartment = mCompartments.end();
@@ -916,8 +916,8 @@ void CModel::initializeMetabolites()
   mNumMetabolitesAssignment = AssignmentMetabs.size();
   mNumMetabolitesUnused = FixedMetabs.size();
 
-  mMetabolites.resize(mNumMetabolitesODE + mNumMetabolitesReaction + mNumMetabolitesAssignment + mNumMetabolitesUnused);
-  itMetab = mMetabolites.begin();
+  mMetabolitesX.resize(mNumMetabolitesODE + mNumMetabolitesReaction + mNumMetabolitesAssignment + mNumMetabolitesUnused);
+  itMetab = mMetabolitesX.begin();
   std::vector< CMetab *>::const_iterator itSorted = ODEMetabs.begin();
   std::vector< CMetab *>::const_iterator endSorted = ODEMetabs.end();
 
@@ -942,7 +942,7 @@ void CModel::initializeMetabolites()
   for (; itSorted != endSorted; ++itSorted, ++itMetab)
     itMetab = *itSorted;
 
-  mMetabolitesX = mMetabolites;
+  // mMetabolitesX = mMetabolites;
 }
 
 //**********************************************************************
@@ -1027,7 +1027,7 @@ const CCopasiVectorN < CEvent > & CModel::getEvents() const
 //********
 
 size_t CModel::getNumMetabs() const
-{return mMetabolites.size();}
+{return mMetabolitesX.size();}
 
 size_t CModel::getNumVariableMetabs() const
 {return mNumMetabolitesODE + mNumMetabolitesReaction + mNumMetabolitesAssignment;}
@@ -1118,8 +1118,8 @@ const C_FLOAT64 & CModel::getTime() const
  */
 size_t CModel::findMetabByName(const std::string & name) const
 {
-  size_t i, imax = mMetabolites.size();
-  CCopasiVector< CMetab >::const_iterator Target = mMetabolites.begin();
+  size_t i, imax = mMetabolitesX.size();
+  CCopasiVector< CMetab >::const_iterator Target = mMetabolitesX.begin();
 
   std::string Name = unQuote(name);
 
@@ -1258,6 +1258,8 @@ bool CModel::buildStateTemplate()
 
 bool CModel::buildUserOrder()
 {
+  assert(mMetabolites.size() == mMetabolitesX.size());
+
   CVector< const CModelEntity * > UserEntities(mMetabolites.size() + mCompartments.size() + mValues.size());
   const CModelEntity ** ppEntity = UserEntities.array();
 
@@ -1461,13 +1463,13 @@ bool CModel::setQuantityUnit(const std::string & name)
   mNumber2QuantityFactor = 1.0 / mQuantity2NumberFactor;
 
   //adapt particle numbers
-  size_t i, imax = mMetabolites.size();
+  size_t i, imax = mMetabolitesX.size();
 
   for (i = 0; i < imax; ++i)
     {
       //update particle numbers
-      mMetabolites[i].setInitialConcentration(mMetabolites[i].getInitialConcentration());
-      mMetabolites[i].setConcentration(mMetabolites[i].getConcentration());
+      mMetabolitesX[i].setInitialConcentration(mMetabolitesX[i].getInitialConcentration());
+      mMetabolitesX[i].setConcentration(mMetabolitesX[i].getConcentration());
     }
 
   return true;
@@ -1531,13 +1533,13 @@ bool CModel::setQuantityUnit(const CUnit::QuantityUnit & unitEnum)
   mNumber2QuantityFactor = 1.0 / mQuantity2NumberFactor;
 
   //adapt particle numbers
-  size_t i, imax = mMetabolites.size();
+  size_t i, imax = mMetabolitesX.size();
 
   for (i = 0; i < imax; ++i)
     {
       //update particle numbers
-      mMetabolites[i].setInitialConcentration(mMetabolites[i].getInitialConcentration());
-      mMetabolites[i].setConcentration(mMetabolites[i].getConcentration());
+      mMetabolitesX[i].setInitialConcentration(mMetabolitesX[i].getInitialConcentration());
+      mMetabolitesX[i].setConcentration(mMetabolitesX[i].getConcentration());
     }
 
   return success;
