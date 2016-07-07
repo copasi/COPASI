@@ -15,6 +15,7 @@
 
 CQBaseDataModel::CQBaseDataModel(QObject *parent)
   : QAbstractTableModel(parent)
+  , mpUndoStack(NULL)
 {}
 
 Qt::ItemFlags CQBaseDataModel::flags(const QModelIndex &index) const
