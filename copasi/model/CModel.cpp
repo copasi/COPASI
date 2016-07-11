@@ -1118,8 +1118,8 @@ const C_FLOAT64 & CModel::getTime() const
  */
 size_t CModel::findMetabByName(const std::string & name) const
 {
-  size_t i, imax = mMetabolitesX.size();
-  CCopasiVector< CMetab >::const_iterator Target = mMetabolitesX.begin();
+  size_t i, imax = mMetabolites.size();
+  CCopasiVector< CMetab >::const_iterator Target = mMetabolites.begin();
 
   std::string Name = unQuote(name);
 
