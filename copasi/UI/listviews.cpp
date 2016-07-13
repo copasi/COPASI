@@ -1057,6 +1057,11 @@ bool ListViews::updateCurrentWidget(ObjectType objectType, Action action, const 
 CopasiWidget* ListViews::getCurrentWidget()
 {return this->mpCurrentWidget;}
 
+void ListViews::clearCurrentWidget()
+{
+    mpCurrentWidget = NULL;
+}
+
 const std::string& ListViews::getCurrentItemKey() const
 {
   return mCurrentItemKey;
