@@ -1,16 +1,16 @@
-// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-// and The University of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc. and EML Research, gGmbH. 
-// All rights reserved. 
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 #ifndef COPASI_CModel
 #define COPASI_CModel
@@ -61,7 +61,8 @@ public:
                  area,
                  length,
                  time,
-                 quantity};
+                 quantity
+                };
 
 private:
   /**
@@ -82,6 +83,13 @@ public:
    * Destructor
    */
   ~CModel();        // destructor (deallocation code here)
+
+  /**
+   * Set the object parent
+   * @param const CCopasiContainer * pParent
+   * @return bool success
+   */
+  virtual bool setObjectParent(const CCopasiContainer * pParent);
 
   /**
    * Retrieve the units of the child object.
