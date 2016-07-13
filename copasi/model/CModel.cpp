@@ -66,6 +66,7 @@ CModel::CModel(CCopasiContainer* pParent):
   mLengthUnit("m"),
   mTimeUnit("s"),
   mQuantityUnit("mol"),
+  mDimensionlessUnits(5),
   mType(deterministic),
   mCompartments("Compartments", this),
   mMetabolites("Metabolites", this),
@@ -279,14 +280,14 @@ C_INT32 CModel::load(CReadConfig & configBuffer)
       setQuantityUnit(tmp); // set the factors
     }
 
-  catch (CCopasiException & Exception)
+  catch (CCopasiException &)
     {
       try
         {
           setQuantityUnit(tmp.substr(0, 1) + "mol");
         }
 
-      catch (CCopasiException & Exception)
+      catch (CCopasiException &)
         {
           setQuantityUnit("mmol");
         }
@@ -859,7 +860,7 @@ void CModel::initializeMetabolites()
 {
   // Create a vector of pointers to all metabolites.
   // Note, the metabolites physically exist in the compartments.
-  mMetabolites.clear();
+  mMetabolitesX.clear();
 
   CCopasiVector< CCompartment >::iterator itCompartment = mCompartments.begin();
   CCopasiVector< CCompartment >::iterator endCompartment = mCompartments.end();
@@ -915,8 +916,8 @@ void CModel::initializeMetabolites()
   mNumMetabolitesAssignment = AssignmentMetabs.size();
   mNumMetabolitesUnused = FixedMetabs.size();
 
-  mMetabolites.resize(mNumMetabolitesODE + mNumMetabolitesReaction + mNumMetabolitesAssignment + mNumMetabolitesUnused);
-  itMetab = mMetabolites.begin();
+  mMetabolitesX.resize(mNumMetabolitesODE + mNumMetabolitesReaction + mNumMetabolitesAssignment + mNumMetabolitesUnused);
+  itMetab = mMetabolitesX.begin();
   std::vector< CMetab *>::const_iterator itSorted = ODEMetabs.begin();
   std::vector< CMetab *>::const_iterator endSorted = ODEMetabs.end();
 
@@ -941,7 +942,7 @@ void CModel::initializeMetabolites()
   for (; itSorted != endSorted; ++itSorted, ++itMetab)
     itMetab = *itSorted;
 
-  mMetabolitesX = mMetabolites;
+  // mMetabolitesX = mMetabolites;
 }
 
 //**********************************************************************
@@ -1026,7 +1027,7 @@ const CCopasiVectorN < CEvent > & CModel::getEvents() const
 //********
 
 size_t CModel::getNumMetabs() const
-{return mMetabolites.size();}
+{return mMetabolitesX.size();}
 
 size_t CModel::getNumVariableMetabs() const
 {return mNumMetabolitesODE + mNumMetabolitesReaction + mNumMetabolitesAssignment;}
@@ -1257,6 +1258,8 @@ bool CModel::buildStateTemplate()
 
 bool CModel::buildUserOrder()
 {
+  assert(mMetabolites.size() == mMetabolitesX.size());
+
   CVector< const CModelEntity * > UserEntities(mMetabolites.size() + mCompartments.size() + mValues.size());
   const CModelEntity ** ppEntity = UserEntities.array();
 
@@ -1303,14 +1306,14 @@ bool CModel::buildUserOrder()
 
 bool CModel::updateInitialValues(const CModelParameter::Framework & framework)
 {
-  compileIfNecessary(NULL);
+  bool success = compileIfNecessary(NULL);
 
   mpMathContainer->fetchInitialState();
   mpMathContainer->updateInitialValues(framework);
   mpMathContainer->pushInitialState();
   refreshActiveParameterSet();
 
-  return true;
+  return success;
 }
 
 void CModel::stateToIntialState()
@@ -1324,12 +1327,14 @@ void CModel::stateToIntialState()
 bool CModel::setVolumeUnit(const std::string & name)
 {
   mVolumeUnit = name;
+  mDimensionlessUnits[volume] = CUnit(mVolumeUnit).isDimensionless();
   return true;
 }
 
 bool CModel::setVolumeUnit(const CUnit::VolumeUnit & unitEnum)
 {
   mVolumeUnit = CUnit::VolumeUnitNames[unitEnum];
+  mDimensionlessUnits[volume] = CUnit(mVolumeUnit).isDimensionless();
   return true;
 }
 
@@ -1353,12 +1358,14 @@ CUnit::VolumeUnit CModel::getVolumeUnitEnum() const
 bool CModel::setAreaUnit(const std::string & name)
 {
   mAreaUnit = name;
+  mDimensionlessUnits[area] = CUnit(mAreaUnit).isDimensionless();
   return true;
 }
 
 bool CModel::setAreaUnit(const CUnit::AreaUnit & unitEnum)
 {
   mAreaUnit = CUnit::AreaUnitNames[unitEnum];
+  mDimensionlessUnits[area] = CUnit(mAreaUnit).isDimensionless();
   return true;
 }
 
@@ -1381,12 +1388,14 @@ CUnit::AreaUnit CModel::getAreaUnitEnum() const
 bool CModel::setLengthUnit(const std::string & name)
 {
   mLengthUnit = name;
+  mDimensionlessUnits[length] = CUnit(mLengthUnit).isDimensionless();
   return true;
 }
 
 bool CModel::setLengthUnit(const CUnit::LengthUnit & unitEnum)
 {
   mLengthUnit = CUnit::LengthUnitNames[unitEnum];
+  mDimensionlessUnits[length] = CUnit(mLengthUnit).isDimensionless();
   return true;
 }
 
@@ -1410,12 +1419,14 @@ CUnit::LengthUnit CModel::getLengthUnitEnum() const
 bool CModel::setTimeUnit(const std::string & name)
 {
   mTimeUnit = name;
+  mDimensionlessUnits[time] = CUnit(mTimeUnit).isDimensionless();
   return true;
 }
 
 bool CModel::setTimeUnit(const CUnit::TimeUnit & unitEnum)
 {
   mTimeUnit = CUnit::TimeUnitNames[unitEnum];
+  mDimensionlessUnits[time] = CUnit(mTimeUnit).isDimensionless();
   return true;
 }
 
@@ -1439,6 +1450,7 @@ CUnit::TimeUnit CModel::getTimeUnitEnum() const
 bool CModel::setQuantityUnit(const std::string & name)
 {
   mQuantityUnit = name;
+  mDimensionlessUnits[quantity] = CUnit(mQuantityUnit).isDimensionless();
 
   CUnit QuantityUnit(mQuantityUnit, mAvogadro);
 
@@ -1451,13 +1463,13 @@ bool CModel::setQuantityUnit(const std::string & name)
   mNumber2QuantityFactor = 1.0 / mQuantity2NumberFactor;
 
   //adapt particle numbers
-  size_t i, imax = mMetabolites.size();
+  size_t i, imax = mMetabolitesX.size();
 
   for (i = 0; i < imax; ++i)
     {
       //update particle numbers
-      mMetabolites[i].setInitialConcentration(mMetabolites[i].getInitialConcentration());
-      mMetabolites[i].setConcentration(mMetabolites[i].getConcentration());
+      mMetabolitesX[i].setInitialConcentration(mMetabolitesX[i].getInitialConcentration());
+      mMetabolitesX[i].setConcentration(mMetabolitesX[i].getConcentration());
     }
 
   return true;
@@ -1474,6 +1486,7 @@ bool CModel::setQuantityUnit(const CUnit::QuantityUnit & unitEnum)
   //     return true;
 
   mQuantityUnit = CUnit::QuantityUnitNames[unitEnum];
+  mDimensionlessUnits[quantity] = CUnit(mQuantityUnit).isDimensionless();
 
   bool success = true;
 
@@ -1520,13 +1533,13 @@ bool CModel::setQuantityUnit(const CUnit::QuantityUnit & unitEnum)
   mNumber2QuantityFactor = 1.0 / mQuantity2NumberFactor;
 
   //adapt particle numbers
-  size_t i, imax = mMetabolites.size();
+  size_t i, imax = mMetabolitesX.size();
 
   for (i = 0; i < imax; ++i)
     {
       //update particle numbers
-      mMetabolites[i].setInitialConcentration(mMetabolites[i].getInitialConcentration());
-      mMetabolites[i].setConcentration(mMetabolites[i].getConcentration());
+      mMetabolitesX[i].setInitialConcentration(mMetabolitesX[i].getInitialConcentration());
+      mMetabolitesX[i].setConcentration(mMetabolitesX[i].getConcentration());
     }
 
   return success;
@@ -3111,6 +3124,12 @@ void CModel::initObjects()
   mpLinkMatrixAnnotation->setMode(1, CArrayAnnotation::OBJECTS);
   mpLinkMatrixAnnotation->setDimensionDescription(1, "Species (reduced system)");
 
+  mDimensionlessUnits[volume] = CUnit(mVolumeUnit).isDimensionless();
+  mDimensionlessUnits[area] = CUnit(mAreaUnit).isDimensionless();
+  mDimensionlessUnits[length] = CUnit(mLengthUnit).isDimensionless();
+  mDimensionlessUnits[time] = CUnit(mTimeUnit).isDimensionless();
+  mDimensionlessUnits[quantity] = CUnit(mQuantityUnit).isDimensionless();
+
   // mpMathModel = new CMathModel(this);
 }
 
@@ -3921,4 +3940,9 @@ std::map< std::string, CUnit > CModel::getUsedUnits() const
   UsedUnits[mQuantityUnit] = CUnit(mQuantityUnit);
 
   return UsedUnits;
+}
+
+bool CModel::isDimensionless(UnitType type) const
+{
+  return mDimensionlessUnits[type];
 }

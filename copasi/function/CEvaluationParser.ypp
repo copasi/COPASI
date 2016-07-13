@@ -45,6 +45,7 @@ void setBooleanRequired(CEvaluationNode * pNode, const bool & booleanRequired)
 %token TOKEN_OPERATOR_POWER
 %token TOKEN_OPERATOR_MULTIPLY
 %token TOKEN_OPERATOR_MODULUS
+%token TOKEN_OPERATOR_REMAINDER
 %token TOKEN_OPERATOR_PLUS
 
 %token TOKEN_LOGICAL_CHOICE
@@ -79,6 +80,7 @@ void setBooleanRequired(CEvaluationNode * pNode, const bool & booleanRequired)
 %left TOKEN_LOGICAL_LE
 %left TOKEN_OPERATOR_PLUS
 %left TOKEN_OPERATOR_MODULUS
+%left TOKEN_OPERATOR_REMAINDER
 %left TOKEN_OPERATOR_MULTIPLY
 %right TOKEN_SIGN 
 %right TOKEN_OPERATOR_POWER
@@ -116,6 +118,13 @@ exp:      TOKEN_NUMBER
             mpRootNode = $$; 
           }
         | exp TOKEN_OPERATOR_MODULUS exp 
+          {
+            $$ = $2;
+            $$->addChild($1); 
+            $$->addChild($3);
+            mpRootNode = $$; 
+          }
+        | exp TOKEN_OPERATOR_REMAINDER exp 
           {
             $$ = $2;
             $$->addChild($1); 

@@ -457,8 +457,8 @@ bool COptProblem::restore(const bool & updateModel)
   if (mFailedCounter * 20 > mCounter) // > 5% failure rate
     CCopasiMessage(CCopasiMessage::WARNING, MCOptimization + 8, mFailedCounter, mCounter);
 
-  if (10 * mFailedConstraintCounter > 8 * mConstraintCounter) // > 80 % failure rate
-    CCopasiMessage(CCopasiMessage::WARNING, MCOptimization + 9, mFailedConstraintCounter, mConstraintCounter);
+  if (10 * mFailedConstraintCounter > 8 * (mConstraintCounter - 1)) // > 80 % failure rate
+    CCopasiMessage(CCopasiMessage::WARNING, MCOptimization + 9, mFailedConstraintCounter, mConstraintCounter - 1);
 
   return success;
 }

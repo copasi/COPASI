@@ -3301,7 +3301,13 @@ bool SBMLImporter::checkValidityOfSourceDocument(SBMLDocument* sbmlDoc)
           // we check if the model contained a required package
           if (sbmlDoc->getLevel() > 2 && pSBMLError->getErrorId() == 99107)
             {
-              CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 96);
+              std::stringstream str;
+              str << sbmlDoc->getUnknownPackagePrefix(0);
+
+              for (int k = 1; k < sbmlDoc->getNumUnknownPackages(); ++k)
+                str << ", " << sbmlDoc->getUnknownPackagePrefix(k);
+
+              CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 96, str.str().c_str());
             }
 
           CCopasiMessage::Type messageType = CCopasiMessage::RAW;
@@ -3411,7 +3417,13 @@ bool SBMLImporter::checkValidityOfSourceDocument(SBMLDocument* sbmlDoc)
                     }
                   else
                     {
-                      CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 96);
+                      std::stringstream str;
+                      str << sbmlDoc->getUnknownPackagePrefix(0);
+
+                      for (int k = 1; k < sbmlDoc->getNumUnknownPackages(); ++k)
+                        str << ", " << sbmlDoc->getUnknownPackagePrefix(k);
+
+                      CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 96, str.str().c_str());
                     }
                 }
             }
@@ -4489,7 +4501,6 @@ SBMLImporter::handleVolumeUnit(const UnitDefinition* uDef)
 
 CModelValue* SBMLImporter::createCModelValueFromParameter(const Parameter* sbmlParameter, CModel* copasiModel, std::map<const CCopasiObject*, SBase*>& copasi2sbmlmap)
 {
-
 
   std::string name = sbmlParameter->getName();
 
@@ -8520,7 +8531,6 @@ std::string SBMLImporter::createUnitExpressionFor(const UnitDefinition *pSBMLUni
           current->getMultiplier(),
           current->getScale()));
       copasiUnit = copasiUnit * tmp;
-
     }
 
   // construct expression
@@ -9712,10 +9722,7 @@ bool SBMLImporter::importMIRIAM(const SBase* pSBMLObject, CCopasiObject* pCOPASI
               bqBiol->setId(sboTerm);
               info.save();
             }
-
-
         }
-
     }
 
   return result;

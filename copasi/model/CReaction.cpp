@@ -47,6 +47,14 @@
 #include "sbml/SBMLImporter.h"
 
 C_FLOAT64 CReaction::mDefaultScalingFactor = 1.0;
+// static
+const char * CReaction::KineticLawUnitTypeName[] =
+{
+  "Default" ,
+  "AmountPerTime",
+  "ConcentrationPerTime",
+  NULL
+};
 
 CReaction::CReaction(const std::string & name,
                      const CCopasiContainer * pParent):
@@ -66,7 +74,8 @@ CReaction::CReaction(const std::string & name,
   mUnitScalingFactor(&mDefaultScalingFactor),
   mMetabKeyMap(),
   mParameters("Parameters", this),
-  mFast(false)
+  mFast(false),
+  mKineticLawUnit(CReaction::Default)
 {
   mKey = CCopasiRootContainer::getKeyFactory()->add(getObjectType(), this);
 
@@ -94,7 +103,8 @@ CReaction::CReaction(const CReaction & src,
   mMap(src.mMap),
   mMetabKeyMap(src.mMetabKeyMap),
   mParameters(src.mParameters, this),
-  mFast(src.mFast)
+  mFast(src.mFast),
+  mKineticLawUnit(src.mKineticLawUnit)
 {
   mKey = CCopasiRootContainer::getKeyFactory()->add(getObjectType(), this);
 
@@ -898,7 +908,7 @@ void CReaction::setScalingFactor()
 {
   const CCompartment * pCompartment = NULL;
 
-  if (1 == getCompartmentNumber())
+  if (getEffectiveKineticLawUnitType() == CReaction::ConcentrationPerTime)
     {
       const CMetab *pMetab = NULL;
 
@@ -1814,4 +1824,56 @@ void CReaction::setFast(const bool & fast)
 const bool & CReaction::isFast() const
 {
   return mFast;
+}
+
+/**
+ * Set the kinetic law unit type;
+ * @param const KineticLawUnit & kineticLawUnit
+ */
+void CReaction::setKineticLawUnitType(const CReaction::KineticLawUnit & kineticLawUnitType)
+{
+  mKineticLawUnit = kineticLawUnitType;
+}
+
+/**
+ * Retrieve the kinetic law unit type
+ * @return const KineticLawUnit & kineticLawUnitType
+ */
+const CReaction::KineticLawUnit & CReaction::getKineticLawUnitType() const
+{
+  return mKineticLawUnit;
+}
+
+CReaction::KineticLawUnit CReaction::getEffectiveKineticLawUnitType() const
+{
+  KineticLawUnit EffectiveUnit = mKineticLawUnit;
+
+  if (EffectiveUnit == Default)
+    {
+      if (mChemEq.getCompartmentNumber() > 1)
+        {
+          EffectiveUnit = AmountPerTime;
+        }
+      else
+        {
+          EffectiveUnit = ConcentrationPerTime;
+        }
+    }
+
+  return EffectiveUnit;
+}
+
+std::string CReaction::getKineticLawUnit() const
+{
+  const CModel * pModel =
+    dynamic_cast< const CModel * >(getObjectAncestor("Model"));
+
+  if (pModel == NULL) return "";
+
+  if (getEffectiveKineticLawUnitType() == AmountPerTime)
+    {
+      return pModel->getQuantityRateUnitsDisplayString();
+    }
+
+  return pModel->getConcentrationRateUnitsDisplayString();
 }

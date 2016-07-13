@@ -627,7 +627,6 @@ void * CModelEntity::getValuePointer() const
 
 void CModelEntity::initObjects()
 {
-  C_FLOAT64 Dummy;
 
   mpValueReference =
     static_cast<CCopasiObjectReference<C_FLOAT64> *>(addObjectReference("Value",

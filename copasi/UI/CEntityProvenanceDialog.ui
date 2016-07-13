@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+<comment> Copyright (C) 2016 by Pedro Mendes, Virginia Tech Intellectual </comment>
+<comment> Properties, Inc., University of Heidelberg, and The University </comment>
+<comment> of Manchester. </comment>
+<comment> All rights reserved. </comment>
+
+ <comment> All rights reserved. </comment>
+ <class>CEntityProvenanceDialog</class>
+ <widget class="CopasiWidget" name="CEntityProvenanceDialog">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>530</width>
+    <height>445</height>
+   </rect>
+  </property>
+  <property name="caption" stdset="0">
+   <string>MIRIAM Annotation</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="0" column="0">
+    <widget class="CQTableView" name="mpEntityProvenanceView">
+     <property name="editTriggers">
+      <set>QAbstractItemView::CurrentChanged|QAbstractItemView::EditKeyPressed|QAbstractItemView::SelectedClicked</set>
+     </property>
+     <property name="alternatingRowColors">
+      <bool>false</bool>
+     </property>
+     <property name="selectionMode">
+      <enum>QAbstractItemView::ExtendedSelection</enum>
+     </property>
+     <property name="selectionBehavior">
+      <enum>QAbstractItemView::SelectRows</enum>
+     </property>
+     <property name="horizontalScrollMode">
+      <enum>QAbstractItemView::ScrollPerPixel</enum>
+     </property>
+     <property name="sortingEnabled">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <layoutdefault spacing="6" margin="11"/>
+ <customwidgets>
+  <customwidget>
+   <class>CopasiWidget</class>
+   <extends>QWidget</extends>
+   <header>copasi/UI/copasiWidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>CQTableView</class>
+   <extends>QTableView</extends>
+   <header>copasi/UI/CQTableView.h</header>
+  </customwidget>
+ </customwidgets>
+ <tabstops>
+  <tabstop>mpEntityProvenanceView</tabstop>
+ </tabstops>
+ <includes>
+  <include location="global">vector</include>
+  <include location="local">copasi/UI/copasiWidget.h</include>
+ </includes>
+ <resources/>
+ <connections/>
+</ui>

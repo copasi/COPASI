@@ -145,7 +145,7 @@ public:
       }
 
     for (size_t i = 0; i < mEntries.size(); ++i)
-      scales.push_back(cnValueMap[mEntries[i]->getCN()]);
+      scales.push_back(cnValueMap[mEntries[i]->getCN()] == 0 ? 0.0 : 1.0);
   }
 
 protected:

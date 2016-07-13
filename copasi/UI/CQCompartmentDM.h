@@ -50,7 +50,10 @@ public:
   bool removeRows(QModelIndexList rows, const QModelIndex &index = QModelIndex());
 
   //TODO Undo
-  bool compartmentDataChange(const QModelIndex& index, const QVariant &value);
+  bool compartmentDataChange(const QModelIndex& index,
+                             const QVariant &value,
+                             UndoCompartmentData *pUndoData);
+
   void insertNewCompartmentRow(int position, int rows, const QModelIndex& index,
                                const QVariant& value);
   void addCompartmentRow(UndoCompartmentData *pCompartmentData);

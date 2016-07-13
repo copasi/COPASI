@@ -19,14 +19,17 @@
 // Uncomment this line below to get debug print out.
 // #define DEBUG_OUTPUT 1
 
-CMathDependencyGraph::CMathDependencyGraph():
+CMathDependencyGraph::CMathDependencyGraph(CMathContainer * pContainer):
   mObjects2Nodes(),
-  mObject2Index()
+  mObject2Index(),
+  mpContainer(pContainer)
 {}
 
-CMathDependencyGraph::CMathDependencyGraph(const CMathDependencyGraph & src):
+CMathDependencyGraph::CMathDependencyGraph(const CMathDependencyGraph & src,
+    CMathContainer * pContainer):
   mObjects2Nodes(),
-  mObject2Index()
+  mObject2Index(),
+  mpContainer(pContainer != NULL ? pContainer : src.mpContainer)
 {
   std::map< CMathDependencyNode *, CMathDependencyNode * > Src2New;
 
@@ -119,6 +122,7 @@ bool CMathDependencyGraph::getUpdateSequence(CObjectInterface::UpdateSequence & 
   const_iterator notFound = mObjects2Nodes.end();
 
   updateSequence.clear();
+  updateSequence.setMathContainer(mpContainer);
 
   CObjectInterface::ObjectSet::const_iterator it = changedObjects.begin();
   CObjectInterface::ObjectSet::const_iterator end = changedObjects.end();
@@ -258,7 +262,8 @@ bool CMathDependencyGraph::getUpdateSequence(CObjectInterface::UpdateSequence & 
           continue;
         }
 
-      success = false;
+      // This is not an error we may have objects which are not part of the dependency tree
+      // success = false;
     }
 
   if (!success) goto finish;

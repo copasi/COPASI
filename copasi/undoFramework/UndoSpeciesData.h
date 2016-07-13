@@ -1,4 +1,4 @@
-// Copyright (C) 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2015 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -39,6 +39,8 @@ public:
 
   virtual void fillObject(CModel* pModel);
 
+  virtual void createDependentObjects(CModel* pModel);
+
   const std::string& getCompartment() const;
   void setCompartment(const std::string& compartment);
 
@@ -57,9 +59,16 @@ public:
   double getINumber() const;
   void setINumber(double iNumber);
 
-
   bool getCreatedCompartment() const;
   void setCreatedCompartment(bool createdCompartment);
+
+  /**
+   * @param pModel the model to use as base for the search
+   * @returns the resolved object (from CN) if found,
+   *          if it is not found the index of the metabolite in the
+   *          models list of metabolites will be used, otherwise NULL is returned.
+   */
+  virtual CCopasiObject * getObject(CModel* pModel);
 
 private:
 
@@ -95,6 +104,10 @@ private:
 
   bool mCreatedCompartment;
 
+  /**
+   * @the index of this metabolite in the models list of metabolites mIndex
+   */
+  std::size_t mIndex;
 };
 
 #endif /* UNDOSPECIEDATA_H_ */

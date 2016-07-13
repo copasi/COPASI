@@ -375,8 +375,8 @@ void CQEventWidget1::saveToEvent()
               FROM_UTF8(it->getExpression()),
               mpEvent,
               this,
-              OldAssignments[Found].getKey(),
-              OldAssignments[Found].getKey()
+              OldAssignments[Found].getObjectName(),
+              OldAssignments[Found].getObjectName()
             )
           );
 
@@ -675,7 +675,6 @@ CQEventWidget1::changeValue(const std::string &key,
       loadFromEvent();
 
       mpListView->switchToOtherWidget(C_INVALID_INDEX, mKey);
-      qApp->processEvents();
     }
 
   switch (type)

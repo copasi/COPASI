@@ -53,6 +53,10 @@ UndoSpeciesData::UndoSpeciesData(const CMetab *metab
   , mExpression(metab->getExpression())
   , mCreatedCompartment(false)
 {
+  setCN(metab->getCN());
+
+  mIndex = metab->getModel()->getMetabolites().getIndex(metab);
+
   if (trackDependencies)
     mpData->initializeFrom(metab);
 }
@@ -115,6 +119,7 @@ UndoSpeciesData::fillObject(CModel *)
   if (getStatus() != CModelEntity::ASSIGNMENT)
     {
       pSpecies->setInitialConcentration(getIConc());
+      pSpecies->setInitialValue(getINumber());
     }
 
   if (getStatus() == CModelEntity::ODE || getStatus() == CModelEntity::ASSIGNMENT)
@@ -128,6 +133,16 @@ UndoSpeciesData::fillObject(CModel *)
     {
       pSpecies->setInitialExpression(getInitialExpression());
       pSpecies->getInitialExpressionPtr()->compile();
+    }
+}
+
+void UndoSpeciesData::createDependentObjects(CModel *pModel)
+{
+  UndoData::createDependentObjects(pModel);
+
+  if (mCreatedCompartment)
+    {
+      pModel->createCompartment(mCompartment);
     }
 }
 
@@ -212,4 +227,14 @@ bool UndoSpeciesData::getCreatedCompartment() const
 void UndoSpeciesData::setCreatedCompartment(bool createdCompartment)
 {
   mCreatedCompartment = createdCompartment;
+}
+
+CCopasiObject *UndoSpeciesData::getObject(CModel *pModel)
+{
+  CCopasiObject *result = UndoData::getObject(pModel);
+
+  if (result == NULL && mIndex < pModel->getNumMetabs())
+    return &pModel->getMetabolites()[mIndex];
+
+  return result;
 }

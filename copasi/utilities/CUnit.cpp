@@ -122,15 +122,19 @@ bool CUnit::compile(const C_FLOAT64 & avogadro)
   CUnitParser Parser(&buffer);
   Parser.setAvogadro(avogadro);
 
-  bool success = (Parser.yyparse() == 0);
-
-  if (success)
+  try
     {
-      mComponents = Parser.getComponents();
-      mUsedSymbols = Parser.getSymbols();
+      Parser.yyparse();
+    }
+  catch (CCopasiException & /*exception*/)
+    {
+      return false;
     }
 
-  return success;
+  mComponents = Parser.getComponents();
+  mUsedSymbols = Parser.getSymbols();
+
+  return true;
 }
 
 std::string CUnit::getExpression() const
@@ -203,7 +207,7 @@ CUnit CUnit::exponentiate(double exp) const
       CUnitComponent * pComponent = const_cast< CUnitComponent * >(&*it);
 
       pComponent->setMultiplier(pow(pComponent->getMultiplier(), exp));
-      pComponent->setScale(pComponent->getScale() * exp);
+      pComponent->setScale(int(pComponent->getScale() * exp));
 
       if (pComponent->getKind() != CBaseUnit::dimensionless)
         {
@@ -330,12 +334,12 @@ C_INT32 CUnit::getExponentOfSymbol(const std::string & symbol, CUnit & unit)
         {
           if (itNew->getKind() > itOld->getKind())
             {
-              improvement += fabs(itOld->getExponent());
+              improvement += (int)fabs(itOld->getExponent());
               ++itOld;
             }
           else if (itNew->getKind() < itOld->getKind())
             {
-              improvement -= fabs(itNew->getExponent());
+              improvement -= (int)fabs(itNew->getExponent());
               ++itNew;
             }
           else
@@ -349,7 +353,7 @@ C_INT32 CUnit::getExponentOfSymbol(const std::string & symbol, CUnit & unit)
                   improvement -= 100;
                 }
 
-              improvement += fabs(itOld->getExponent()) - fabs(itNew->getExponent());
+              improvement += (int)(fabs(itOld->getExponent()) - fabs(itNew->getExponent()));
               ++itOld;
               ++itNew;
             }
@@ -357,12 +361,12 @@ C_INT32 CUnit::getExponentOfSymbol(const std::string & symbol, CUnit & unit)
 
       for (; itNew != endNew; ++itNew)
         {
-          improvement -= fabs(itNew->getExponent());
+          improvement -= (int)fabs(itNew->getExponent());
         }
 
       for (; itOld != endOld; ++itOld)
         {
-          improvement += fabs(itOld->getExponent());
+          improvement += (int)fabs(itOld->getExponent());
         }
 
       if (improvement > 0)
@@ -405,12 +409,12 @@ C_INT32 CUnit::getExponentOfSymbol(const std::string & symbol, CUnit & unit)
         {
           if (itNew->getKind() > itOld->getKind())
             {
-              improvement += fabs(itOld->getExponent());
+              improvement += (int)fabs(itOld->getExponent());
               ++itOld;
             }
           else if (itNew->getKind() < itOld->getKind())
             {
-              improvement -= fabs(itNew->getExponent());
+              improvement -= (int)fabs(itNew->getExponent());
               ++itNew;
             }
           else
@@ -425,7 +429,7 @@ C_INT32 CUnit::getExponentOfSymbol(const std::string & symbol, CUnit & unit)
                 }
 
               // The kind is the same.
-              improvement += fabs(itOld->getExponent()) - fabs(itNew->getExponent());
+              improvement += (int)(fabs(itOld->getExponent()) - fabs(itNew->getExponent()));
               ++itOld;
               ++itNew;
             }
@@ -433,12 +437,12 @@ C_INT32 CUnit::getExponentOfSymbol(const std::string & symbol, CUnit & unit)
 
       for (; itNew != endNew; ++itNew)
         {
-          improvement -= fabs(itNew->getExponent());
+          improvement -= (int)fabs(itNew->getExponent());
         }
 
       for (; itOld != endOld; ++itOld)
         {
-          improvement += fabs(itOld->getExponent());
+          improvement += (int)fabs(itOld->getExponent());
         }
 
       if (improvement > 0)
@@ -530,7 +534,7 @@ std::vector< CUnit::SymbolComponent > CUnit::getSymbolComponents() const
           continue;
         }
 
-      C_INT32 Exponent = it->getExponent();
+      C_INT32 Exponent = (C_INT32)it->getExponent();
 
       Component.symbol = CBaseUnit::getSymbol(it->getKind());
       Component.exponent = Exponent;
@@ -600,8 +604,10 @@ std::vector< CUnit::SymbolComponent > CUnit::getSymbolComponents() const
           SymbolComponents[FirstDenominatorIndex].multiplier = multiplier;
           SymbolComponents[FirstDenominatorIndex].scale = -scale;
         }
-      else
+      else if (scale != 0 &&
+               fabs(multiplier - 1.0) < 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon())
         {
+          Component.symbol = "1";
           Component.multiplier = multiplier;
           Component.scale = scale;
           SymbolComponents.push_back(Component);

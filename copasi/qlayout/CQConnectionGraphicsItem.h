@@ -23,12 +23,15 @@ public:
   virtual ~CQConnectionGraphicsItem();
   static QSharedPointer<QPainterPath> getPath(const CLCurve& curve);
   virtual QPainterPath shape() const;
+  void setUseFullShape(bool useFullShape);
 protected:
   virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option = new QStyleOptionGraphicsItem() , QWidget *widget = 0);
   void mouseReleaseEvent(QGraphicsSceneMouseEvent* event);
   virtual QVariant itemChange(GraphicsItemChange change, const QVariant &value);
   bool mWasMoved;
+  bool mUseFullShape;
   QPainterPath mShape;
+  QPainterPath mFullShape;
 };
 
 #endif

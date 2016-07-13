@@ -101,11 +101,6 @@ public:
    */
   bool processStep(const C_FLOAT64 & nextTime);
 
-  /**
-   * Perform necessary cleanup procedures
-   */
-  virtual bool restore();
-
 #ifndef SWIG
 
   /**

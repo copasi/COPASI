@@ -46,6 +46,15 @@ class CFunctionDB;
 class CReaction : public CCopasiContainer, public CAnnotation
 {
 public:
+  enum KineticLawUnit
+  {
+    Default,
+    AmountPerTime,
+    ConcentrationPerTime
+  };
+
+  static const char * KineticLawUnitTypeName[];
+
   /**
    * Default constructor
    * @param const std::string & name (default: "NoName")
@@ -593,6 +602,31 @@ private:
    */
   std::string escapeId(const std::string& id);
 
+public:
+  /**
+   * Set the kinetic law unit type;
+   * @param const KineticLawUnit & kineticLawUnit
+   */
+  void setKineticLawUnitType(const KineticLawUnit & kineticLawUnitType);
+
+  /**
+   * Retrieve the kinetic law unit type
+   * @return const KineticLawUnit & kineticLawUnitType
+   */
+  const KineticLawUnit & getKineticLawUnitType() const;
+
+  /**
+   * Retrieve the effective kinetic law unit type
+   * @return KineticLawUnit kineticLawUnitType
+   */
+  KineticLawUnit getEffectiveKineticLawUnitType() const;
+
+  /**
+   * Retrieve the effective kinetic law unit
+   * @return std::string kineticLawUnit
+   */
+  std::string getKineticLawUnit() const;
+
   // Attributes
 private:
   /**
@@ -679,6 +713,11 @@ private:
    * is up to to the integration algorithm.
    */
   bool mFast;
+
+  /**
+   * This indicates what the units of the kinetic law are
+   */
+  KineticLawUnit mKineticLawUnit;
 };
 
 #endif // COPASI_CReaction

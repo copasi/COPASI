@@ -93,6 +93,10 @@ bool CMathEvent::CAssignment::compile(const CEventAssignment * pDataAssignment,
           mpTarget->setSimulationType(CMath::EventTarget);
         }
     }
+  else
+    {
+      success = false;
+    }
 
   CObjectInterface::ContainerList ListOfContainer;
 
@@ -1229,10 +1233,6 @@ void CMathEvent::relocate(const std::vector< CMath::sRelocate > & relocations)
     {
       CMathContainer::relocateValue(*ppTargetPointers, relocations);
     }
-
-  CMathContainer::relocateUpdateSequence(mDelaySequence, relocations);
-  CMathContainer::relocateUpdateSequence(mTargetValuesSequence, relocations);
-  CMathContainer::relocateUpdateSequence(mPostAssignmentSequence, relocations);
 }
 
 bool CMathEvent::compile(const CEvent * pDataEvent,
@@ -1274,7 +1274,11 @@ bool CMathEvent::compile(const CEvent * pDataEvent,
   for (; pAssignment != pAssignmentEnd && itAssignment != endAssignment; ++pAssignment, ++itAssignment, ++ppTarget)
     {
       success &= pAssignment->compile(itAssignment, container);
-      *ppTarget = (C_FLOAT64 *) pAssignment->getTarget()->getValuePointer();
+
+      if (pAssignment->getTarget() != NULL)
+        {
+          *ppTarget = (C_FLOAT64 *) pAssignment->getTarget()->getValuePointer();
+        }
     }
 
   // Discontinuities

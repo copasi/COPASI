@@ -117,6 +117,12 @@ public:
   CModelVersion * getVersionHierarchy();
 #endif
 
+// COMBINE Archive will take care of file management
+  /*
+#ifdef COPASI_Provenance
+    QString getProvenanceParentOfCurrentVersion();
+#endif
+  */
   void addWindow(QMainWindow * pWindow);
   void removeWindow(QMainWindow * pWindow);
 
@@ -240,6 +246,10 @@ protected slots:
   void slotCreateVersion();
 #endif
 
+#ifdef COPASI_Provenance
+  void slotProvenance();
+#endif
+
   void slotLoadParameterEstimationProtocol();
 private:
   CopasiUI3Window();
@@ -352,6 +362,17 @@ private:
   QAction* mpaCreateVersion;
   QAction* mpaBrowseVersion;
   CModelVersion*  mpVersionHierarchy;
+//  COMBINE Archive will take care of file management
+//  QString mLastSavedParentOfCurrentModel;
+#endif
+
+#ifdef COPASI_Provenance
+  QAction* mpaProvenance;
+//  COMBINE Archive will take care of file management
+  //QString mProvenanceParentOfCurrentModel;
+  QString mProvenanceOrigionFileType;
+  QString mProvenanceOrigionTime;
+  QString mProvenanceOfOrigionOfFile;
 #endif
 
 #ifdef COPASI_SBW_INTEGRATION

@@ -1,4 +1,4 @@
-// Copyright (C) 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2015 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -16,25 +16,26 @@
 #include "CCopasiUndoCommand.h"
 
 class CQSpecieDM;
+class CMetab;
+
 class SpecieDataChangeCommand: public CCopasiUndoCommand
 {
 public:
-  SpecieDataChangeCommand(const QModelIndex& index,
-                          const QVariant& value,
-                          int role,
+  SpecieDataChangeCommand(const CMetab* pMetab,
+                          const QVariant& newValue,
+                          const QVariant& oldValue,
+                          int column,
                           CQSpecieDM *pSpecieDM);
   virtual ~SpecieDataChangeCommand();
 
   void redo();
   void undo();
 
-
 private:
+  UndoSpeciesData* mpSpeciesData;
   QVariant mNew, mOld;
-  QModelIndex mIndex;
+  int mColumn;
   CQSpecieDM *mpSpecieDM;
-  int mRole;
-  Path mPathIndex;
 };
 
 #endif /* SPECIEDATACHANGECOMMAND_H_ */

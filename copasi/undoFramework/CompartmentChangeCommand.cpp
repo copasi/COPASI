@@ -16,6 +16,8 @@
 
 #include <copasi/UI/qtUtilities.h>
 
+#include <copasi/undoFramework/UndoCompartmentData.h>
+
 CompartmentChangeCommand::CompartmentChangeCommand(CCopasiUndoCommand::Type type,
     const QVariant& oldValue,
     const QVariant& newValue,
@@ -27,6 +29,7 @@ CompartmentChangeCommand::CompartmentChangeCommand(CCopasiUndoCommand::Type type
   , mNew(newValue)
   , mpWidget(pWidget)
   , mIValue(iValue)
+  , mpUndoData(NULL)
 {
   mKey = pObject->getKey();
 
@@ -45,6 +48,7 @@ CompartmentChangeCommand::CompartmentChangeCommand(CCopasiUndoCommand::Type type
       case COMPARTMENT_INITIAL_VOLUME_CHANGE:
         setProperty("Initial Volume");
         setText(": Changed compartment initial volume");
+        mpUndoData = new UndoCompartmentData(dynamic_cast<CCompartment*>(pObject));
         break;
 
       case COMPARTMENT_SIMULATION_TYPE_CHANGE:
@@ -72,12 +76,17 @@ CompartmentChangeCommand::CompartmentChangeCommand(CCopasiUndoCommand::Type type
     }
 }
 
+CompartmentChangeCommand::~CompartmentChangeCommand()
+{
+  pdelete(mpUndoData);
+}
+
 void CompartmentChangeCommand::redo()
 {
-  mpWidget->changeValue(mKey, mType, mNew, mIValue);
+  mpWidget->changeValue(mKey, mType, mNew, mIValue, NULL);
 }
 
 void CompartmentChangeCommand::undo()
 {
-  mpWidget->changeValue(mKey, mType, mOld, mIValue);
+  mpWidget->changeValue(mKey, mType, mOld, mIValue, mpUndoData);
 }

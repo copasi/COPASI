@@ -3870,6 +3870,7 @@ void CCopasiXMLParser::ReactionElement::start(const XML_Char *pszName,
   bool Fast;
   const char * SBMLId;
   bool AddNoise;
+  CReaction::KineticLawUnit KineticLawUnitType;
 
   mCurrentElement = mLastKnownElement;
   mpCurrentHandler = NULL;
@@ -3896,6 +3897,7 @@ void CCopasiXMLParser::ReactionElement::start(const XML_Char *pszName,
 
             fast = mParser.getAttributeValue("fast", papszAttrs, "false");
             Fast = mParser.toBool(fast);
+            KineticLawUnitType = toEnum(mParser.getAttributeValue("kineticLawUnitType", papszAttrs, "Default"), CReaction::KineticLawUnitTypeName, CReaction::Default);
 
             AddNoise = mParser.toBool(mParser.getAttributeValue("addNoise", papszAttrs, "false"));
 
@@ -3905,6 +3907,7 @@ void CCopasiXMLParser::ReactionElement::start(const XML_Char *pszName,
             mCommon.pReaction->setReversible(Reversible);
             mCommon.pReaction->setFast(Fast);
             mCommon.pReaction->setAddNoise(AddNoise);
+            mCommon.pReaction->setKineticLawUnitType(KineticLawUnitType);
 
             SBMLId = mParser.getAttributeValue("sbmlid", papszAttrs, "");
 

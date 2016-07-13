@@ -193,7 +193,7 @@ bool CMathEventQueue::addAssignment(const C_FLOAT64 & executionTime,
                                     CMathEvent * pEvent)
 {
   // It is not possible to proceed backwards in time.
-  if (executionTime < *mpTime) return false;
+  if (mpTime == NULL || executionTime < *mpTime) return false;
 
   size_t CascadingLevel = mCascadingLevel;
 
@@ -214,7 +214,7 @@ bool CMathEventQueue::addCalculation(const C_FLOAT64 & executionTime,
                                      CMathEvent * pEvent)
 {
   // It is not possible to proceed backwards in time.
-  if (executionTime < *mpTime) return false;
+  if (mpTime == NULL || executionTime < *mpTime) return false;
 
   size_t CascadingLevel = mCascadingLevel;
 
@@ -265,7 +265,7 @@ void CMathEventQueue::start()
 
 CMath::StateChange CMathEventQueue::process(const bool & priorToOutput)
 {
-  if (getProcessQueueExecutionTime() > *mpTime)
+  if (mpTime == NULL || getProcessQueueExecutionTime() > *mpTime)
     return CMath::NoChange;
 
   mEquality = priorToOutput;
@@ -348,6 +348,8 @@ CMath::StateChange CMathEventQueue::process(const bool & priorToOutput)
 
 CMathEventQueue::iterator CMathEventQueue::getAction()
 {
+  if (mpTime == NULL) return mActions.end();
+
   CKey Pending(*mpTime, mEquality, mCascadingLevel);
   range PendingActions = mActions.equal_range(Pending);
 
@@ -391,18 +393,18 @@ CMathEventQueue::iterator CMathEventQueue::getAction()
 
   switch (PriorityActions.size())
     {
-      // No prioritized actions
+        // No prioritized actions
       case 0:
         // We arbitrarily pick the first
         return PendingActions.first;
         break;
 
-      // One action has the highest priority
+        // One action has the highest priority
       case 1:
         return PriorityActions[0];
         break;
 
-      // Pick one randomly
+        // Pick one randomly
       default:
         return PriorityActions[mpContainer->getRandomGenerator().getRandomU(PriorityActions.size() - 1)];
         break;

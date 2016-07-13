@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -441,6 +441,7 @@ protected:
 
 #define PRECEDENCE_OPERATOR_MINUS CPrecedence(22, 23)
 #define PRECEDENCE_OPERATOR_PLUS CPrecedence(22, 23)
+#define PRECEDENCE_OPERATOR_REMAINDER CPrecedence(26, 27)
 #define PRECEDENCE_OPERATOR_MODULUS CPrecedence(26, 27)
 #define PRECEDENCE_OPERATOR_DIVIDE CPrecedence(28, 29)
 #define PRECEDENCE_OPERATOR_MULTIPLY CPrecedence(28, 29)

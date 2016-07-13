@@ -120,6 +120,31 @@ public:
    */
   int readVersionXML();
 
+  /**
+   * Restore the last saved Version as the parrent of current session before quiting the current session
+   * Also XML file must be updated
+   */
+  void restoreLastSavedVersioningHierarchy(QString Version);
+
+  /**
+   * Return Parent Version of a given Version
+   */
+  QString getParentVersion(QString Version);
+
+#ifdef COPASI_Provenance
+  /**
+   * Return all the children Versions of a given Version
+   * If this version is deleted, its provenance edits are added to its children provenance edits
+   */
+  QList<QString> getChildrenOfVersionForProvenanceXML(QString Version);
+
+  /**
+  *  Returns a list of Versions from the root to the Parent of Current Model
+  *  In provenance all the edits from begining to the current model is needed
+  */
+  QList<QString> getVersionsPathToCurrentModel();
+#endif
+
 private:
 
   /**

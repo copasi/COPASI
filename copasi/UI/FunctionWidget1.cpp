@@ -139,7 +139,9 @@ bool FunctionWidget1::loadParameterTable()
   QString qUsage;
 
   //C_INT32 noOffunctParams = functParam.size();
+  Table1->setRowCount(0);
   Table1->setRowCount((int) params.size());
+  Table1->blockSignals(true);
 
   for (j = 0; j < params.size(); j++)
     {
@@ -239,6 +241,7 @@ bool FunctionWidget1::loadParameterTable()
       Table1->item((int) j, COL_UNIT)->setBackground(QBrush(color));
     }
 
+  Table1->blockSignals(false);
   Table1->horizontalHeader()->setStretchLastSection(true);
   Table1->resizeColumnsToContents();
   Table1->resizeRowsToContents();
@@ -576,6 +579,8 @@ void FunctionWidget1::slotFcnDescriptionChanged(bool valid)
 
   isValid = valid;
 
+  std::string oldInfix = mpFunction->getInfix();
+
   if (isValid)
     {
       try
@@ -594,6 +599,9 @@ void FunctionWidget1::slotFcnDescriptionChanged(bool valid)
 
   if (isValid)
     {
+      if (oldInfix == mpFunction->getInfix())
+        return;
+
       flagChanged = true;
       //parameter table
       loadParameterTable();

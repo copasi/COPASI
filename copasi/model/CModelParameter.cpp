@@ -168,16 +168,16 @@ const std::string CModelParameter::getUnit(const Framework & framework) const
         const CModel * pModel = getModel();
 
         CFindDimensions Units(pReaction->getFunction(),
-                              CUnit(pModel->getQuantityUnit()).isDimensionless(),
-                              CUnit(pModel->getVolumeUnit()).isDimensionless(),
-                              CUnit(pModel->getTimeUnit()).isDimensionless(),
-                              CUnit(pModel->getAreaUnit()).isDimensionless(),
-                              CUnit(pModel->getLengthUnit()).isDimensionless());
+                              pModel->isDimensionless(CModel::quantity),
+                              pModel->isDimensionless(CModel::volume),
+                              pModel->isDimensionless(CModel::time),
+                              pModel->isDimensionless(CModel::area),
+                              pModel->isDimensionless(CModel::length));
         Units.setUseHeuristics(true);
 
         Units.setChemicalEquation(&pReaction->getChemEq());
 
-        Units.findDimensions(pReaction->getCompartmentNumber() > 1);
+        Units.findDimensions(pReaction->getEffectiveKineticLawUnitType() == CReaction::AmountPerTime);
 
         return Units.getDimensions()[pReaction->getParameterIndex(getName())].getDisplayString(pModel);
       }

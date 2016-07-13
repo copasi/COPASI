@@ -26,12 +26,17 @@
 
 CReactionInterface::CReactionInterface(CModel * pModel):
   mpModel(pModel),
+  emptyString(""),
+  mReactionReferenceKey(""),
   mChemEqI(pModel),
   mpFunction(NULL),
-  mpParameters(NULL)
+  mpParameters(NULL),
+  mNameMap(),
+  mValues(),
+  mIsLocal(),
+  mKineticLawUnitType(CReaction::Default)
 {
   assert(mpModel != NULL);
-  emptyString = "";
 }
 
 CReactionInterface::~CReactionInterface()
@@ -141,6 +146,7 @@ void CReactionInterface::initFromReaction(const CReaction *rea)
   mAddNoise = rea->addNoise();
 
   mNoiseExpression = rea->getNoiseExpression();
+  mKineticLawUnitType = rea->getKineticLawUnitType();
 }
 
 bool CReactionInterface::loadMappingAndValues(const CReaction & rea)
@@ -346,6 +352,7 @@ bool CReactionInterface::writeBackToReaction(CReaction * rea)
   rea->setAddNoise(mAddNoise);
 
   rea->setNoiseExpression(mNoiseExpression);
+  rea->setKineticLawUnitType(mKineticLawUnitType);
 
   rea->compile();
   mpModel->setCompileFlag(); //TODO: check if really necessary
@@ -1128,6 +1135,45 @@ bool CReactionInterface::setNoiseExpression(const std::string & expression)
 const std::string & CReactionInterface::getNoiseExpression() const
 {
   return mNoiseExpression;
+}
+
+void CReactionInterface::setKineticLawUnitType(const CReaction::KineticLawUnit & kineticLawUnitType)
+{
+  mKineticLawUnitType = kineticLawUnitType;
+}
+
+const CReaction::KineticLawUnit & CReactionInterface::getKineticLawUnitType() const
+{
+  return mKineticLawUnitType;
+}
+
+CReaction::KineticLawUnit CReactionInterface::getEffectiveKineticLawUnitType() const
+{
+  CReaction::KineticLawUnit EffectiveUnit = mKineticLawUnitType;
+
+  if (EffectiveUnit == CReaction::Default)
+    {
+      if (isMulticompartment())
+        {
+          EffectiveUnit = CReaction::AmountPerTime;
+        }
+      else
+        {
+          EffectiveUnit = CReaction::ConcentrationPerTime;
+        }
+    }
+
+  return EffectiveUnit;
+}
+
+std::string CReactionInterface::getConcentrationUnit() const
+{
+  return mpModel->getConcentrationRateUnitsDisplayString();
+}
+
+std::string CReactionInterface::getAmountUnit() const
+{
+  return mpModel->getQuantityRateUnitsDisplayString();
 }
 
 #ifdef COPASI_DEBUG

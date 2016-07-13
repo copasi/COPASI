@@ -32,6 +32,7 @@
 #include <QtGui/QTextEdit>
 #include <QtCore/QThread>
 #include <QtGui/QFontDialog>
+#include <QtCore/QDateTime>
 
 #include <vector>
 #include <sstream>
@@ -96,6 +97,12 @@
 #ifdef COPASI_Versioning
 #include "CBrowseModelVersionDialog.h"
 #include "CCreateModelVersionDialog.h"
+#endif
+
+#ifdef COPASI_Provenance
+#include "CProvenanceDialog.h"
+#include "Provenance/CProvenanceXMLWriter.h"
+#include "CEntityProvenanceDialog.h"
 #endif
 
 // static
@@ -207,6 +214,12 @@ CopasiUI3Window::CopasiUI3Window():
   , mpRecentSEDMLFilesActionGroup(NULL)
 #endif //COPASI_SEDML support
 
+#ifdef COPASI_Provenance
+  //, mProvenanceParentOfCurrentModel(QString(""))
+  , mProvenanceOrigionFileType(QString("Created"))
+  , mProvenanceOrigionTime(QDateTime::currentDateTimeUtc().toString())
+  , mProvenanceOfOrigionOfFile(QString(""))
+#endif
 {
   // set destructive close
   this->setAttribute(Qt::WA_DeleteOnClose);
@@ -229,6 +242,7 @@ CopasiUI3Window::CopasiUI3Window():
 #ifdef COPASI_Versioning
   //initialise Model Version Hierarchy
   mpVersionHierarchy = new CModelVersion(this);
+  //mLastSavedParentOfCurrentModel = QString("");
 #endif
 
   createActions();
@@ -384,6 +398,11 @@ void CopasiUI3Window::createActions()
   mpaUpdateMIRIAM = new QAction(CQIconResource::icon(CQIconResource::miriam), "Update MIRIAM", this);
   connect(mpaUpdateMIRIAM, SIGNAL(triggered()), this, SLOT(slotUpdateMIRIAM()));
 
+#ifdef COPASI_Provenance
+  mpaProvenance = new QAction("Provenance", this);
+  connect(mpaProvenance, SIGNAL(activated()), this, SLOT(slotProvenance()));
+#endif
+
   mpaApplyInitialState = new QAction(CQIconResource::icon(CQIconResource::isToS), "Apply initial state", this);
   connect(mpaApplyInitialState, SIGNAL(triggered()), this, SLOT(slotApplyInitialState()));
 
@@ -531,6 +550,10 @@ void CopasiUI3Window::createToolBar()
   tb->addAction(mpaUpdateInitialState);
   tb->addAction(mpaUpdateMIRIAM);
 
+#ifdef COPASI_Provenance
+  tb->addAction(mpaProvenance);
+#endif
+
 #ifdef WITH_MERGEMODEL
   tb->addAction(mpaAddModel);
   //tb->addAction(mpaMergeModels);
@@ -660,6 +683,10 @@ void CopasiUI3Window::createMenuBar()
   mpTools->addAction("&Preferences", this, SLOT(slotPreferences()));
   mpTools->addAction(mpaFontSelectionDialog);
 
+#ifdef COPASI_Provenance
+  mpTools->addAction(mpaProvenance);
+#endif
+
   //****** windows menu **************
   mpWindowsMenu =  menuBar()->addMenu("&Window");
   refreshWindowsMenu();
@@ -719,6 +746,17 @@ void CopasiUI3Window::slotFileSaveAs(QString str)
 
       connect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(slotFileSaveFinished(bool)));
       mpDataModelGUI->saveModel(TO_UTF8(tmp), true);
+#ifdef COPASI_Versioning
+      mpVersionHierarchy->setPathFile(FROM_UTF8(CCopasiRootContainer::getConfiguration()->getWorkingDirectory()));
+      //mLastSavedParentOfCurrentModel = mpVersionHierarchy->getParentOfCurrentModel();
+#endif
+#ifdef COPASI_Provenance
+      //CProvenanceXMLWriter* ProvenanceXMLWriter = new CProvenanceXMLWriter(this, mpUndoStack, FROM_UTF8(CCopasiRootContainer::getConfiguration()->getWorkingDirectory()), mProvenanceOrigionFileType, mProvenanceOrigionTime, mProvenanceParentOfCurrentModel, mpVersionHierarchy->getParentOfCurrentModel(), mpVersionHierarchy->getVersionsPathToCurrentModel());
+      CProvenanceXMLWriter* ProvenanceXMLWriter = new CProvenanceXMLWriter(this, mpUndoStack, FROM_UTF8(CCopasiRootContainer::getConfiguration()->getWorkingDirectory()), mProvenanceOrigionFileType, mProvenanceOrigionTime, mpVersionHierarchy->getVersionsPathToCurrentModel());
+      ProvenanceXMLWriter->updateCurrentSessionProvenance();
+      //mProvenanceParentOfCurrentModel = mpVersionHierarchy->getParentOfCurrentModel();
+      ProvenanceXMLWriter->updateOrigionOfProvenance(mProvenanceOfOrigionOfFile);
+#endif
     }
 }
 
@@ -818,6 +856,16 @@ void CopasiUI3Window::newDoc()
         }
     }
 
+#ifdef COPASI_Provenance
+  // Update Main Body Provenance
+  CProvenanceXMLWriter* ProvenanceXMLWriter = new CProvenanceXMLWriter(this, mpUndoStack, FROM_UTF8(CCopasiRootContainer::getConfiguration()->getWorkingDirectory()), mProvenanceOrigionFileType, mProvenanceOrigionTime);
+  ProvenanceXMLWriter->updateMainBodyProvenace();
+#endif
+
+//#ifdef COPASI_Versioning
+//   mpVersionHierarchy->restoreLastSavedVersioningHierarchy(mLastSavedParentOfCurrentModel);
+//#endif
+
   mpDataModelGUI->notify(ListViews::MODEL, ListViews::DELETE,
                          CCopasiRootContainer::getDatamodelList()->operator[](0).getModel()->getKey());
 
@@ -854,6 +902,14 @@ void CopasiUI3Window::newDoc()
   mpUndoStack->clear();
 #ifdef COPASI_Versioning
   mpVersionHierarchy->clear();
+  //mLastSavedParentOfCurrentModel = QString("");
+#endif
+
+#ifdef COPASI_Provenance
+  //mProvenanceParentOfCurrentModel = QString("");
+  mProvenanceOrigionFileType = QString("Created");
+  mProvenanceOfOrigionOfFile = QString("");
+  mProvenanceOrigionTime = QDateTime::currentDateTime().toString();
 #endif
 }
 
@@ -951,6 +1007,16 @@ void CopasiUI3Window::slotFileOpen(QString file)
             }
         }
 
+#ifdef COPASI_Provenance
+// Update Main Body Provenace
+      //CProvenanceXMLWriter* ProvenanceXMLWriter = new CProvenanceXMLWriter(this, mpUndoStack, FROM_UTF8(CCopasiRootContainer::getConfiguration()->getWorkingDirectory()), mProvenanceOrigionFileType, mProvenanceOrigionTime, mProvenanceParentOfCurrentModel, mpVersionHierarchy->getParentOfCurrentModel());
+      CProvenanceXMLWriter* ProvenanceXMLWriter = new CProvenanceXMLWriter(this, mpUndoStack, FROM_UTF8(CCopasiRootContainer::getConfiguration()->getWorkingDirectory()), mProvenanceOrigionFileType, mProvenanceOrigionTime);
+      ProvenanceXMLWriter->updateMainBodyProvenace();
+#endif
+
+//#ifdef COPASI_Versioning
+//mpVersionHierarchy->restoreLastSavedVersioningHierarchy(mLastSavedParentOfCurrentModel);
+//#endif
       mpDataModelGUI->notify(ListViews::MODEL, ListViews::DELETE,
                              CCopasiRootContainer::getDatamodelList()->operator[](0).getModel()->getKey());
 
@@ -975,6 +1041,7 @@ void CopasiUI3Window::slotFileOpenFinished(bool success)
 #ifdef COPASI_Versioning
   // Clear the previous Model Version Hierarchy
   mpVersionHierarchy->clear();
+  //mLastSavedParentOfCurrentModel = QString("");
   // Open the Model Verion Hierarchy for the current Model
   // First set the path to versioning folder
   mpVersionHierarchy->setPathFile(FROM_UTF8(CCopasiRootContainer::getConfiguration()->getWorkingDirectory()));
@@ -985,14 +1052,25 @@ void CopasiUI3Window::slotFileOpenFinished(bool success)
     {
       CQMessageBox::information(this, QString("Warning"), "Version XML File parsed, but some error(s) occured",
                                 QMessageBox::Ok, QMessageBox::Ok);
+      //mLastSavedParentOfCurrentModel = mpVersionHierarchy->getParentOfCurrentModel();
     }
 
-  if (i == 3)
+  else if (i == 3)
     {
       CQMessageBox::critical(this, QString("Error"), "Version XML File has error",
                              QMessageBox::Ok, QMessageBox::Ok);
     }
+  else
+    {
+      //mLastSavedParentOfCurrentModel = mpVersionHierarchy->getParentOfCurrentModel();
+    }
 
+#endif
+
+#ifdef COPASI_Provenance
+  //mProvenanceParentOfCurrentModel = mpVersionHierarchy->getParentOfCurrentModel();
+  mProvenanceOrigionFileType = QString("Opened");
+  mProvenanceOrigionTime = QDateTime::currentDateTime().toString();
 #endif
 
   disconnect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(slotFileOpenFinished(bool)));
@@ -1266,6 +1344,18 @@ void CopasiUI3Window::slotFileSave()
 
       connect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(slotFileSaveFinished(bool)));
       mpDataModelGUI->saveModel(FileName, true);
+#ifdef COPASI_Provenance
+      //update Current Session Provenance and Origion of Provenance
+      //CProvenanceXMLWriter* ProvenanceXMLWriter = new CProvenanceXMLWriter(this, mpUndoStack, FROM_UTF8(CCopasiRootContainer::getConfiguration()->getWorkingDirectory()), mProvenanceOrigionFileType, mProvenanceOrigionTime, mProvenanceParentOfCurrentModel, mpVersionHierarchy->getParentOfCurrentModel(), mpVersionHierarchy->getVersionsPathToCurrentModel());
+      CProvenanceXMLWriter* ProvenanceXMLWriter = new CProvenanceXMLWriter(this, mpUndoStack, FROM_UTF8(CCopasiRootContainer::getConfiguration()->getWorkingDirectory()), mProvenanceOrigionFileType, mProvenanceOrigionTime, mpVersionHierarchy->getVersionsPathToCurrentModel());
+      ProvenanceXMLWriter->updateCurrentSessionProvenance();
+      //mProvenanceParentOfCurrentModel = mpVersionHierarchy->getParentOfCurrentModel();
+      ProvenanceXMLWriter->updateOrigionOfProvenance(mProvenanceOfOrigionOfFile);
+#endif
+
+//#ifdef COPASI_Versioning
+//  mLastSavedParentOfCurrentModel = mpVersionHierarchy->getParentOfCurrentModel();
+//#endif
     }
 }
 
@@ -1314,6 +1404,16 @@ void CopasiUI3Window::slotQuit()
     {
       slotQuitFinished(true);
     }
+
+#ifdef COPASI_Provenance
+  //CProvenanceXMLWriter* ProvenanceXMLWriter = new CProvenanceXMLWriter(this, mpUndoStack, FROM_UTF8(CCopasiRootContainer::getConfiguration()->getWorkingDirectory()), mProvenanceOrigionFileType, mProvenanceOrigionTime, mProvenanceParentOfCurrentModel, mpVersionHierarchy->getParentOfCurrentModel());
+  CProvenanceXMLWriter* ProvenanceXMLWriter = new CProvenanceXMLWriter(this, mpUndoStack, FROM_UTF8(CCopasiRootContainer::getConfiguration()->getWorkingDirectory()), mProvenanceOrigionFileType, mProvenanceOrigionTime);
+  ProvenanceXMLWriter->updateMainBodyProvenace();
+#endif
+
+//#ifdef COPASI_Versioning
+//   mpVersionHierarchy->restoreLastSavedVersioningHierarchy(mLastSavedParentOfCurrentModel);
+//#endif
 }
 
 void CopasiUI3Window::slotQuitFinished(bool success)
@@ -1456,6 +1556,16 @@ void CopasiUI3Window::importSBMLFromString(const std::string& sbmlDocumentText)
             }
         }
 
+#ifdef COPASI_Provenance
+      //Update Main Body Provenance
+      //CProvenanceXMLWriter* ProvenanceXMLWriter = new CProvenanceXMLWriter(this, mpUndoStack, FROM_UTF8(CCopasiRootContainer::getConfiguration()->getWorkingDirectory()), mProvenanceOrigionFileType, mProvenanceOrigionTime, mProvenanceParentOfCurrentModel, mpVersionHierarchy->getParentOfCurrentModel());
+      CProvenanceXMLWriter* ProvenanceXMLWriter = new CProvenanceXMLWriter(this, mpUndoStack, FROM_UTF8(CCopasiRootContainer::getConfiguration()->getWorkingDirectory()), mProvenanceOrigionFileType, mProvenanceOrigionTime);
+      ProvenanceXMLWriter->updateMainBodyProvenace();
+#endif
+
+//#ifdef COPASI_Versioning
+//   mpVersionHierarchy->restoreLastSavedVersioningHierarchy(mLastSavedParentOfCurrentModel);
+//#endif
       mpDataModelGUI->notify(ListViews::MODEL, ListViews::DELETE,
                              CCopasiRootContainer::getDatamodelList()->operator[](0).getModel()->getKey());
 
@@ -1479,6 +1589,13 @@ void CopasiUI3Window::slotImportSBMLFromStringFinished(bool success)
 
 #ifdef COPASI_Versioning
   mpVersionHierarchy->clear();
+//  mLastSavedParentOfCurrentModel = QString("");
+#endif
+
+#ifdef COPASI_Provenance
+  //mProvenanceParentOfCurrentModel = QString("");
+  mProvenanceOrigionFileType = QString("Imported");
+  mProvenanceOrigionTime = QDateTime::currentDateTime().toString();
 #endif
 
   disconnect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(slotImportSBMLFromStringFinished(bool)));
@@ -1578,6 +1695,16 @@ void CopasiUI3Window::slotImportSBML(QString file)
             }
         }
 
+#ifdef COPASI_Provenance
+      // Update Main Body Provenance
+      //CProvenanceXMLWriter* ProvenanceXMLWriter = new CProvenanceXMLWriter(this, mpUndoStack, FROM_UTF8(CCopasiRootContainer::getConfiguration()->getWorkingDirectory()), mProvenanceOrigionFileType, mProvenanceOrigionTime, mProvenanceParentOfCurrentModel, mpVersionHierarchy->getParentOfCurrentModel());
+      CProvenanceXMLWriter* ProvenanceXMLWriter = new CProvenanceXMLWriter(this, mpUndoStack, FROM_UTF8(CCopasiRootContainer::getConfiguration()->getWorkingDirectory()), mProvenanceOrigionFileType, mProvenanceOrigionTime);
+      ProvenanceXMLWriter->updateMainBodyProvenace();
+#endif
+
+//#ifdef COPASI_Versioning
+//   mpVersionHierarchy->restoreLastSavedVersioningHierarchy(mLastSavedParentOfCurrentModel);
+//#endif
       mpDataModelGUI->notify(ListViews::MODEL, ListViews::DELETE,
                              CCopasiRootContainer::getDatamodelList()->operator[](0).getModel()->getKey());
 
@@ -1604,6 +1731,12 @@ void CopasiUI3Window::slotImportSBMLFinished(bool success)
 
 #ifdef COPASI_Versioning
   mpVersionHierarchy->clear();
+  //mLastSavedParentOfCurrentModel = QString("");
+#endif
+#ifdef COPASI_Provenance
+  //mProvenanceParentOfCurrentModel = QString("");
+  mProvenanceOrigionFileType = QString("Imported");
+  mProvenanceOrigionTime = QDateTime::currentDateTime().toString();
 #endif
 
   disconnect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(slotImportSBMLFinished(bool)));
@@ -1952,6 +2085,9 @@ void CopasiUI3Window::updateTitle()
     BaseName = CDirEntry::baseName(TO_UTF8(FileName)) + " - ";
 
   setWindowTitle(FROM_UTF8(BaseName) + FixedTitle + " " + FileName);
+#ifdef COPASI_Provenance
+  mProvenanceOfOrigionOfFile = FROM_UTF8(CDirEntry::baseName(TO_UTF8(FileName)));
+#endif
 }
 
 void CopasiUI3Window::autoSave()
@@ -2974,6 +3110,13 @@ void CopasiUI3Window::slotImportSEDMLFromStringFinished(bool success)
 
 #ifdef COPASI_Versioning
   mpVersionHierarchy->clear();
+  //mLastSavedParentOfCurrentModel = QString("");
+#endif
+
+#ifdef COPASI_Provenance
+  //mProvenanceParentOfCurrentModel = QString("");
+  mProvenanceOrigionFileType = QString("Imported");
+  mProvenanceOrigionTime = QDateTime::currentDateTime().toString();
 #endif
 
   disconnect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(slotImportSEDMLFromStringFinished(bool)));
@@ -3026,6 +3169,13 @@ void CopasiUI3Window::slotImportSEDMLFinished(bool success)
 
 #ifdef COPASI_Versioning
   mpVersionHierarchy->clear();
+// mLastSavedParentOfCurrentModel = QString("");
+#endif
+
+#ifdef COPASI_Provenance
+  //mProvenanceParentOfCurrentModel = QString("");
+  mProvenanceOrigionFileType = QString("Imported");
+  mProvenanceOrigionTime = QDateTime::currentDateTime().toString();
 #endif
 
   disconnect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(slotImportSEDMLFinished(bool)));
@@ -3121,6 +3271,16 @@ void CopasiUI3Window::slotImportSEDML(QString file)
             }
         }
 
+#ifdef COPASI_Provenance
+      //Update Main Body Provenance
+      //CProvenanceXMLWriter* ProvenanceXMLWriter = new CProvenanceXMLWriter(this, mpUndoStack, FROM_UTF8(CCopasiRootContainer::getConfiguration()->getWorkingDirectory()), mProvenanceOrigionFileType, mProvenanceOrigionTime, mProvenanceParentOfCurrentModel, mpVersionHierarchy->getParentOfCurrentModel());
+      CProvenanceXMLWriter* ProvenanceXMLWriter = new CProvenanceXMLWriter(this, mpUndoStack, FROM_UTF8(CCopasiRootContainer::getConfiguration()->getWorkingDirectory()), mProvenanceOrigionFileType, mProvenanceOrigionTime);
+      ProvenanceXMLWriter->updateMainBodyProvenace();
+#endif
+
+//#ifdef COPASI_Versioning
+//   mpVersionHierarchy->restoreLastSavedVersioningHierarchy(mLastSavedParentOfCurrentModel);
+//#endif
       mpDataModelGUI->notify(ListViews::MODEL, ListViews::DELETE,
                              CCopasiRootContainer::getDatamodelList()->operator[](0).getModel()->getKey());
 
@@ -3303,7 +3463,7 @@ void CopasiUI3Window::slotUndoHistory()
 #ifdef COPASI_Versioning
 CModelVersion * CopasiUI3Window::getVersionHierarchy()
 {
-  return(mpVersionHierarchy);
+  return (mpVersionHierarchy);
 }
 void CopasiUI3Window::slotCreateVersion() //Slot Version Create
 {
@@ -3314,7 +3474,11 @@ void CopasiUI3Window::slotCreateVersion() //Slot Version Create
       CreateVersionDialog->setWindowTitle("Create Version Information");
       CreateVersionDialog->exec();
 
-      if (CreateVersionDialog->isDataCaptured())
+      //if(mpVersionHierarchy->getPathFile() == QString(""))
+      //{
+      //    mpVersionHierarchy->setPathFile(FROM_UTF8(CCopasiRootContainer::getConfiguration()->getWorkingDirectory()));
+      //}
+      if ((CreateVersionDialog->isDataCaptured()) && (mpVersionHierarchy->getPathFile() != ""))
         {
           int i = mpVersionHierarchy->addNewVersion(CreateVersionDialog->getVersion(), CreateVersionDialog->getGivenName(),  CreateVersionDialog->getFamilyName(), CreateVersionDialog->getOrganization(), CreateVersionDialog->getEmail(), CreateVersionDialog->getComments());
 
@@ -3339,19 +3503,42 @@ void CopasiUI3Window::slotCreateVersion() //Slot Version Create
                 }
 
               QString dataFile;
+              bool PathForVersioningExists = false;
+              PathForVersioningExists = true;
+              // Make directory for Versioning
+              QString path =  mpVersionHierarchy->getPathFile() + "/" + CreateVersionDialog->getVersion();
+              QDir dir(path);
 
-              if (mpVersionHierarchy->getPathFile() == "")
+              if (!dir.exists())
                 {
-                  dataFile = CreateVersionDialog->getVersion();
-                }
-              else
-                {
-                  dataFile = mpVersionHierarchy->getPathFile() + "/" + CreateVersionDialog->getVersion();
+                  dir.mkpath(path);
+                  // Set the path for the Versioning XML
+                  dataFile = mpVersionHierarchy->getPathFile() + "/" + CreateVersionDialog->getVersion() + "/" + CreateVersionDialog->getVersion();
                 }
 
-              mpDataModelGUI->saveModel(dataFile.toStdString(), true);
+              if (PathForVersioningExists)
+                {
+                  mpDataModelGUI->saveModel(dataFile.toStdString(), true);
+#ifdef COPASI_Provenance
+//   Update Provenace and store it - Clear Undo Stack
+                  //mProvenanceParentOfCurrentModel = mpVersionHierarchy->getParentOfCurrentModel();
+                  //CProvenanceXMLWriter* ProvenanceXMLWriter = new CProvenanceXMLWriter(this, mpUndoStack, FROM_UTF8(CCopasiRootContainer::getConfiguration()->getWorkingDirectory()), mProvenanceOrigionFileType, mProvenanceOrigionTime, mProvenanceParentOfCurrentModel, mpVersionHierarchy->getParentOfCurrentModel(), mpVersionHierarchy->getVersionsPathToCurrentModel());
+                  CProvenanceXMLWriter* ProvenanceXMLWriter = new CProvenanceXMLWriter(this, mpUndoStack, FROM_UTF8(CCopasiRootContainer::getConfiguration()->getWorkingDirectory()), mProvenanceOrigionFileType, mProvenanceOrigionTime, mpVersionHierarchy->getVersionsPathToCurrentModel());
+                  ProvenanceXMLWriter->updateVersionProvenanceXMLFile(CreateVersionDialog->getVersion());
+                  mpUndoStack->clear();
+#endif
+                }
             }
         }
+      else
+        {
+          CQMessageBox::critical(this, QString("Error"), "Path and Directory for creating Version does not exist. Please save the file before creating versions",
+                                 QMessageBox::Ok, QMessageBox::Ok);
+        }
+
+      QDir destination;
+      QString dataFile = FROM_UTF8(CCopasiRootContainer::getConfiguration()->getWorkingDirectory()) + "/ProvenanceMainBody.xml";
+      destination.remove(dataFile);
 
       CreateVersionDialog->~CCreateModelVersionDialog();
     }
@@ -3363,9 +3550,35 @@ void CopasiUI3Window::slotCreateVersion() //Slot Version Create
 }
 void CopasiUI3Window::slotBrowseVersion() // Slot Version Browse
 {
-  CBrowseModelVersionDialog* ModelVersionDialog = new  CBrowseModelVersionDialog(this, mpVersionHierarchy, mpDataModelGUI);
+  CBrowseModelVersionDialog* ModelVersionDialog = new  CBrowseModelVersionDialog(this, mpVersionHierarchy, mpDataModelGUI, mpUndoStack
+#ifdef COPASI_Provenance
+//      , FROM_UTF8(CCopasiRootContainer::getConfiguration()->getWorkingDirectory()), mProvenanceParentOfCurrentModel
+      , FROM_UTF8(CCopasiRootContainer::getConfiguration()->getWorkingDirectory())
+#endif
+                                                                                );
   ModelVersionDialog->setWindowTitle("Model Versions");
   ModelVersionDialog->exec();
+// The end of session maintance will be done by COMBINE Archive
+//#ifdef COPASI_Provenance
+  //mProvenanceParentOfCurrentModel = ModelVersionDialog->getProvenanceParentOfCurrentModel();
+//#endif
+  //mLastSavedParentOfCurrentModel = ModelVersionDialog->getLastSavedParentOfCurrentModel();
   ModelVersionDialog->~CBrowseModelVersionDialog();
 }
+#endif
+
+#ifdef COPASI_Provenance
+void CopasiUI3Window::slotProvenance()
+{
+  //CProvenanceDialog* ProvenanceDialog = new CProvenanceDialog(this, mpUndoStack, FROM_UTF8(CCopasiRootContainer::getConfiguration()->getWorkingDirectory()), mpVersionHierarchy->getVersionsPathToCurrentModel(), mProvenanceParentOfCurrentModel, mpVersionHierarchy->getParentOfCurrentModel());
+  CProvenanceDialog* ProvenanceDialog = new CProvenanceDialog(this, mpUndoStack, FROM_UTF8(CCopasiRootContainer::getConfiguration()->getWorkingDirectory()), mpVersionHierarchy->getVersionsPathToCurrentModel());
+  ProvenanceDialog->setWindowTitle("Provenance");
+  ProvenanceDialog->exec();
+}
+
+//QString CopasiUI3Window::getProvenanceParentOfCurrentVersion()
+//{
+//  return (mProvenanceParentOfCurrentModel);
+//}
+
 #endif

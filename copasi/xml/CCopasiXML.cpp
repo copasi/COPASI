@@ -257,6 +257,11 @@ bool CCopasiXML::load(std::istream & is,
       fixBuildBefore104();
     }
 
+  if (FileVersion.getVersionDevel() < 113)
+    {
+      fixBuild113();
+    }
+
   if (!CVersion::VERSION.isCompatible(FileVersion))
     CCopasiMessage(CCopasiMessage::WARNING, MCXML + 9, FileVersion.getVersion().c_str());
 
@@ -735,6 +740,7 @@ bool CCopasiXML::saveModel()
       Attributes.add("name", "");
       Attributes.add("reversible", "");
       Attributes.add("fast", "");
+      Attributes.add("kineticLawUnitType", "");
       Attributes.add("addNoise", "");
 
       for (i = 0; i < imax; i++)
@@ -745,7 +751,8 @@ bool CCopasiXML::saveModel()
           Attributes.setValue(1, pReaction->getObjectName());
           Attributes.setValue(2, pReaction->isReversible() ? "true" : "false");
           Attributes.setValue(3, pReaction->isFast() ? "true" : "false");
-          Attributes.setValue(4, pReaction->addNoise() ? "true" : "false");
+          Attributes.setValue(4, CReaction::KineticLawUnitTypeName[pReaction->getKineticLawUnitType()]);
+          Attributes.setValue(5, pReaction->addNoise() ? "true" : "false");
 
           if (pReaction->getSBMLId() != "")
             mSBMLReference[pReaction->getSBMLId()] = pReaction->getKey();
@@ -2094,6 +2101,40 @@ void CCopasiXML::fixBuildBefore104()
     mpModel->setTimeUnit("min");
 }
 
+void CCopasiXML::fixBuild113()
+{
+  if (mpModel == NULL) return;
+
+  CCopasiVector< CReaction >::iterator it = mpModel->getReactions().begin();
+  CCopasiVector< CReaction >::iterator end = mpModel->getReactions().end();
+
+  for (; it != end; ++it)
+    {
+      if (it->getCompartmentNumber() > 1)
+        {
+          const CCompartment * pCompartment = NULL;
+          std::set< const CCompartment * > Compartments;
+
+          CCopasiVector < CChemEqElement >::const_iterator itBalance = it->getChemEq().getBalances().begin();
+          CCopasiVector < CChemEqElement >::const_iterator endBalance = it->getChemEq().getBalances().end();
+
+          for (; itBalance != endBalance; ++itBalance)
+            {
+              if (itBalance->getMetabolite() != NULL &&
+                  (pCompartment = itBalance->getMetabolite()->getCompartment()) != NULL)
+                {
+                  Compartments.insert(pCompartment);
+                }
+            }
+
+          if (Compartments.size() == 1)
+            {
+              it->setKineticLawUnitType(CReaction::ConcentrationPerTime);
+            }
+        }
+    }
+}
+
 /**
  * Saves the list of global render information objects.
  */
@@ -2954,6 +2995,10 @@ bool CCopasiXML::saveUnitDefinitionList()
   size_t i, imax = pUnitDefList->size();
 
   if (!imax) return success;
+
+  // in case only the functionDB is exported, there will not be a model
+  // and no units being used, so we don't have to export them here
+  if (mpModel == NULL) return success;
 
   CXMLAttributeList Attributes;
   const CUnitDefinition * pUnitDef = NULL;

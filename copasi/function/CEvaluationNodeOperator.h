@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeOperator.h,v $
-//   $Revision: 1.32 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/05/16 23:11:32 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2005 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -46,7 +38,8 @@ public:
     DIVIDE = 0x00000002,
     MODULUS = 0x00000003,
     PLUS = 0x00000004,
-    MINUS = 0x00000005
+    MINUS = 0x00000005,
+    REMAINDER = 0x00000006
   };
 
   // Operations
@@ -111,6 +104,10 @@ public:
 
         case MINUS:
           mValue = mpLeft->getValue() - mpRight->getValue();
+          break;
+
+        case REMAINDER:
+          mValue = fmod(mpLeft->getValue(), mpRight->getValue());
           break;
 
         default:

@@ -655,8 +655,7 @@ bool DataModelGUI::notify(ListViews::ObjectType objectType, ListViews::Action ac
 
   // update all initial value
   if (action != ListViews::RENAME && // not needed after rename
-      !(action == ListViews::ADD && objectType == ListViews::MODEL) && // not needed when model was loaded
-      !(objectType == ListViews::EVENT) // not needed when event is modified
+      !(action == ListViews::ADD && objectType == ListViews::MODEL) // not needed when model was loaded
      )
     refreshInitialValues();
 
@@ -681,7 +680,13 @@ void DataModelGUI::refreshInitialValues()
 {
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   CModel * pModel = CCopasiRootContainer::getDatamodelList()->operator[](0).getModel();
-  pModel->updateInitialValues(static_cast< CModelParameter::Framework >(mFramework));
+
+  if (!pModel->updateInitialValues(static_cast< CModelParameter::Framework >(mFramework)))
+    {
+      CQMessageBox::warning(NULL, "Model Compile Warning",
+                            CCopasiMessage::getAllMessageText().c_str(),
+                            QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton);
+    }
 }
 
 void DataModelGUI::setFramework(int framework)

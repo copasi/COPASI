@@ -171,23 +171,6 @@ bool CScanTask::process(const bool & useInitialValues)
   return success;
 }
 
-bool CScanTask::restore()
-{
-  bool success = true;
-
-  if (mpSubtask != NULL)
-    {
-      bool update = mpSubtask->isUpdateModel();
-      mpSubtask->setUpdateModel(false);
-      success &= mpSubtask->restore();
-      mpSubtask->setUpdateModel(update);
-    }
-
-  success = CCopasiTask::restore();
-
-  return success;
-}
-
 // virtual
 const CTaskEnum::Method * CScanTask::getValidMethods() const
 {

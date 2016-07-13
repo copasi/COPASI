@@ -623,7 +623,6 @@ CQModelValue::changeValue(const std::string& key,
     }
 
   mpListView->switchToOtherWidget(C_INVALID_INDEX, mKey);
-  qApp->processEvents();
 
   switch (type)
     {

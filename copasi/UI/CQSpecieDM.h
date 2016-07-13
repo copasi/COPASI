@@ -55,15 +55,28 @@ public:
   bool removeRows(QModelIndexList rows, const QModelIndex &index = QModelIndex());
 
   //TODO Undo
-  bool specieDataChange(const QModelIndex &index, const QVariant &value, int role);
+  bool specieDataChange(
+    UndoSpeciesData *pUndoSpeciesData,
+    const QVariant &value,
+    int column);
+
   QList <UndoSpeciesData *> insertNewSpecieRow(int position, int rows, const QModelIndex& index, const QVariant& value);
+
   void addSpecieRow(UndoSpeciesData *pSpecieData);
+
   void deleteSpecieRow(UndoSpeciesData *pSpecieData);
+
   bool removeSpecieRows(QModelIndexList rows, const QModelIndex&);
+
   bool insertSpecieRows(QList <UndoSpeciesData *>& pReaData);
+
   void deleteSpecieRows(QList <UndoSpeciesData *>& pReaData);
+
   bool removeAllSpecieRows();
+
   bool clear();
+
+  QModelIndex getIndexFor(const CMetab* pMetab, int column) const;
 
 protected:
   bool mFlagConc;

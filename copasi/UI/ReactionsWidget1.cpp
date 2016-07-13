@@ -71,10 +71,6 @@ ReactionsWidget1::ReactionsWidget1(QWidget *parent, const char * name, Qt::WFlag
 
   LineEdit2->setValidator(new ChemEqValidator(LineEdit2));
 
-#ifndef COPASI_DEBUG
-  mpFast->hide();
-#endif
-
   mpBtnEditFunction->setIcon(CQIconResource::icon(CQIconResource::edit));
   mpBtnAddFunction->setIcon(CQIconResource::icon(CQIconResource::editAdd));
 
@@ -108,8 +104,6 @@ bool ReactionsWidget1::loadFromReaction(const CReaction* reaction)
   // update the widget.
   FillWidgetFromRI();
 
-  mpFast->setChecked(reaction->isFast());
-
   return true; //TODO: really check
 }
 
@@ -135,19 +129,6 @@ bool ReactionsWidget1::saveToReaction()
 
   mIgnoreUpdates = true;
   bool changed = false;
-
-  if (reac->isFast() != mpFast->isChecked())
-    {
-      mpUndoStack->push(new ReactionChangeCommand(
-                          CCopasiUndoCommand::REACTION_FAST_CHANGE,
-                          reac->isFast(),
-                          mpFast->isChecked(),
-                          this,
-                          reac
-                        ));
-
-      changed = true;
-    }
 
   if (reac->isReversible() != mpRi->isReversible())
     {
@@ -182,12 +163,25 @@ bool ReactionsWidget1::saveToReaction()
       changed = true;
     }
 
-  if (reac->getFunction()->getObjectName() != mpRi->getFunctionName())
+  if (reac->getFunction()->getObjectName() != mpRi->getFunctionName() && !mpRi->getFunctionName().empty())
     {
       mpUndoStack->push(new ReactionChangeCommand(
                           CCopasiUndoCommand::REACTION_FUNCTION_CHANGE,
                           FROM_UTF8(reac->getFunction()->getObjectName()),
                           FROM_UTF8(mpRi->getFunctionName()),
+                          this,
+                          reac
+                        ));
+
+      changed = true;
+    }
+
+  if (reac->getKineticLawUnitType() != mpRi->getKineticLawUnitType())
+    {
+      mpUndoStack->push(new ReactionChangeCommand(
+                          CCopasiUndoCommand::REACTION_UNIT_CHANGE,
+                          CReaction::KineticLawUnitTypeName[reac->getKineticLawUnitType()],
+                          CReaction::KineticLawUnitTypeName[mpRi->getKineticLawUnitType()],
                           this,
                           reac
                         ));
@@ -471,6 +465,14 @@ void ReactionsWidget1::FillWidgetFromRI()
   mpNoiseExpressionWidget->updateWidget();
   mpBoxAddNoise->setChecked(mpRi->addNoise());
   slotAddNoiseChanged(mpRi->addNoise());
+
+  mpDefaultUnit->setChecked(mpRi->getKineticLawUnitType() == CReaction::Default);
+  mpConcentrationUnit->setChecked(mpRi->getEffectiveKineticLawUnitType() == CReaction::ConcentrationPerTime);
+  mpAmountUnit->setChecked(mpRi->getEffectiveKineticLawUnitType() == CReaction::AmountPerTime);
+
+  slotDefaultUnitChecked(mpDefaultUnit->isChecked());
+  mpConcentrationUnit->setText(FROM_UTF8(mpRi->getConcentrationUnit()));
+  mpAmountUnit->setText(FROM_UTF8(mpRi->getAmountUnit()));
 }
 
 void ReactionsWidget1::slotTableChanged(int index, int sub, QString newValue)
@@ -590,9 +592,12 @@ void ReactionsWidget1::slotParameterStatusChanged(int index, bool local)
 
 void ReactionsWidget1::slotGotoFunction()
 {
-  if (mpRi == NULL) return;
+  CReaction * pReaction =
+    dynamic_cast< CReaction * >(CCopasiRootContainer::getKeyFactory()->get(mKey));
 
-  const CFunction * pFunc = mpRi->getFunction();
+  if (pReaction == NULL) return;
+
+  const CFunction * pFunc = pReaction->getFunction();
 
   if (pFunc == NULL) return;
 
@@ -637,6 +642,44 @@ void ReactionsWidget1::slotAddNoiseChanged(bool addNoise)
     {
       mpLblNoiseExpression->hide();
       mpNoiseExpressionWidget->hide();
+    }
+}
+
+void ReactionsWidget1::slotDefaultUnitChecked(const bool & checked)
+{
+  mpConcentrationUnit->setEnabled(!checked);
+  mpAmountUnit->setEnabled(!checked);
+
+  if (checked)
+    {
+      mpRi->setKineticLawUnitType(CReaction::Default);
+      slotConcentrationUnitChecked(mpRi->getEffectiveKineticLawUnitType() == CReaction::ConcentrationPerTime);
+    }
+  else
+    {
+      mpRi->setKineticLawUnitType(mpRi->getEffectiveKineticLawUnitType());
+    }
+}
+
+void ReactionsWidget1::slotConcentrationUnitChecked(const bool & checked)
+{
+  mpConcentrationUnit->setChecked(checked);
+  mpAmountUnit->setChecked(!checked);
+
+  if (mpRi->getKineticLawUnitType() != CReaction::Default)
+    {
+      mpRi->setKineticLawUnitType(checked ? CReaction::ConcentrationPerTime : CReaction::AmountPerTime);
+    }
+}
+
+void ReactionsWidget1::slotAmountUnitChecked(const bool & checked)
+{
+  mpConcentrationUnit->setChecked(!checked);
+  mpAmountUnit->setChecked(checked);
+
+  if (mpRi->getKineticLawUnitType() != CReaction::Default)
+    {
+      mpRi->setKineticLawUnitType(checked ? CReaction::AmountPerTime : CReaction::ConcentrationPerTime);
     }
 }
 
@@ -816,7 +859,6 @@ bool ReactionsWidget1::changeReaction(
       loadFromReaction(dynamic_cast<CReaction*>(mpObject));
 
       mpListView->switchToOtherWidget(C_INVALID_INDEX, mKey);
-      qApp->processEvents();
     }
 
   CReaction* pReaction = dynamic_cast<CReaction*>(mpObject);
@@ -840,8 +882,7 @@ bool ReactionsWidget1::changeReaction(
             pReaction->cleanup();
             pReaction->compile();
 
-            ReactionChangeCommand::removeCreatedObjects(previouslyCreatedObjects,
-                pReaction->getObjectDataModel()->getModel(), pReaction);
+            ReactionChangeCommand::removeCreatedObjects(previouslyCreatedObjects);
           }
 
         // set new
@@ -882,6 +923,11 @@ bool ReactionsWidget1::changeReaction(
 
       case CCopasiUndoCommand::REACTION_FUNCTION_CHANGE:
         mpRi->setFunctionAndDoMapping(TO_UTF8(newValue.toString()));
+        mpRi->writeBackToReaction(pReaction);
+        break;
+
+      case CCopasiUndoCommand::REACTION_UNIT_CHANGE:
+        mpRi->setKineticLawUnitType(toEnum(newValue.toByteArray().data(), CReaction::KineticLawUnitTypeName, CReaction::Default));
         mpRi->writeBackToReaction(pReaction);
         break;
 

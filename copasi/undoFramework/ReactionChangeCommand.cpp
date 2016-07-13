@@ -114,32 +114,30 @@ ReactionChangeCommand::undo()
 }
 
 void
-ReactionChangeCommand::removeCreatedObjects(const std::vector<std::string>& createdObjects,
-    CModel *model, CReaction* reaction)
+ReactionChangeCommand::removeCreatedObjects(const std::vector< std::string > & createdObjects)
 {
   std::vector<std::string>::const_iterator it = createdObjects.begin();
 
   for (; it != createdObjects.end(); ++it)
     {
-
       const std::string& key = *it;
-      CCopasiObject* object = CCopasiRootContainer::getKeyFactory()->get(key);
+      CCopasiObject* pObject = CCopasiRootContainer::getKeyFactory()->get(key);
 
-      if (object == NULL) continue;
+      if (pObject == NULL) continue;
 
-      const std::string& objectType = object->getObjectType();
+      const std::string& objectType = pObject->getObjectType();
 
       if (objectType == "Compartment")
         {
-          model->removeCompartment(key, true);
+          static_cast< CModel * >(pObject->getObjectAncestor("Model"))->removeCompartment(key, true);
         }
       else if (objectType == "Metabolite")
         {
-          model->removeMetabolite(key, true);
+          static_cast< CModel * >(pObject->getObjectAncestor("Model"))->removeMetabolite(key, true);
         }
       else
         {
-          object->getObjectParent()->remove(object);
+          pObject->getObjectParent()->remove(pObject);
         }
     }
 }

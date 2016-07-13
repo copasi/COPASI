@@ -1,4 +1,4 @@
-// Copyright (C) 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2015 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -71,7 +71,7 @@ QVariant CQArrayAnnotationsWidgetDM::headerData(int section, Qt::Orientation ori
     {
       if (mRow == C_INVALID_INDEX ||
           section < 0 ||
-          mpArray->size()[mRow] <= section)
+          (C_INT32)mpArray->size()[mRow] <= section)
         {
           return QVariant();
         }
@@ -82,7 +82,7 @@ QVariant CQArrayAnnotationsWidgetDM::headerData(int section, Qt::Orientation ori
     {
       if (mColumn == C_INVALID_INDEX ||
           section < 0 ||
-          mpArray->size()[mColumn] <= section)
+          (C_INT32)mpArray->size()[mColumn] <= section)
         {
           return QVariant();
         }

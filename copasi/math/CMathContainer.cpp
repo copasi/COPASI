@@ -6,6 +6,7 @@
 #include "CMathContainer.h"
 #include "CMathExpression.h"
 #include "CMathEventQueue.h"
+#include "CMathUpdateSequence.h"
 
 #include "model/CModel.h"
 #include "model/CCompartment.h"
@@ -198,14 +199,15 @@ CMathContainer::CMathContainer():
   mDelayLags(),
   mTransitionTimes(),
   mInitialState(),
+  mCompleteInitialState(),
   mState(),
   mStateReduced(),
   mHistory(),
   mHistoryReduced(),
   mRate(),
   mRateReduced(),
-  mInitialDependencies(),
-  mTransientDependencies(),
+  mInitialDependencies(this),
+  mTransientDependencies(this),
   mSynchronizeInitialValuesSequenceExtensive(),
   mSynchronizeInitialValuesSequenceIntensive(),
   mApplyInitialValuesSequence(),
@@ -235,7 +237,8 @@ CMathContainer::CMathContainer():
   mTriggerInfix2Event(),
   mDelays(),
   mIsAutonomous(true),
-  mSize()
+  mSize(),
+  mUpdateSequences()
 {
   memset(&mSize, 0, sizeof(mSize));
 }
@@ -277,14 +280,15 @@ CMathContainer::CMathContainer(CModel & model):
   mDelayLags(),
   mTransitionTimes(),
   mInitialState(),
+  mCompleteInitialState(),
   mState(),
   mStateReduced(),
   mHistory(),
   mHistoryReduced(),
   mRate(),
   mRateReduced(),
-  mInitialDependencies(),
-  mTransientDependencies(),
+  mInitialDependencies(this),
+  mTransientDependencies(this),
   mSynchronizeInitialValuesSequenceExtensive(),
   mSynchronizeInitialValuesSequenceIntensive(),
   mApplyInitialValuesSequence(),
@@ -313,7 +317,8 @@ CMathContainer::CMathContainer(CModel & model):
   mTriggerInfix2Event(),
   mDelays(),
   mIsAutonomous(true),
-  mSize()
+  mSize(),
+  mUpdateSequences()
 {
   memset(&mSize, 0, sizeof(mSize));
 
@@ -361,14 +366,15 @@ CMathContainer::CMathContainer(const CMathContainer & src):
   mDelayValues(),
   mDelayLags(),
   mInitialState(),
+  mCompleteInitialState(),
   mState(),
   mStateReduced(),
   mHistory(src.mHistory),
   mHistoryReduced(),
   mRate(),
   mRateReduced(),
-  mInitialDependencies(src.mInitialDependencies),
-  mTransientDependencies(src.mTransientDependencies),
+  mInitialDependencies(src.mInitialDependencies, this),
+  mTransientDependencies(src.mTransientDependencies, this),
   mSynchronizeInitialValuesSequenceExtensive(src.mSynchronizeInitialValuesSequenceExtensive),
   mSynchronizeInitialValuesSequenceIntensive(src.mSynchronizeInitialValuesSequenceIntensive),
   mApplyInitialValuesSequence(src.mApplyInitialValuesSequence),
@@ -397,7 +403,8 @@ CMathContainer::CMathContainer(const CMathContainer & src):
   mTriggerInfix2Event(),
   mDelays(),
   mIsAutonomous(src.mIsAutonomous),
-  mSize()
+  mSize(),
+  mUpdateSequences()
 {
   // We do not want the model to know about the math container therefore we
   // do not use &model in the constructor of CCopasiContainer
@@ -463,6 +470,11 @@ CMathContainer::~CMathContainer()
   if (mReactions.array()) delete [] mReactions.array();
 
   if (mDelays.array()) delete [] mDelays.array();
+
+  while (mUpdateSequences.size())
+    {
+      deregisterUpdateSequence(*mUpdateSequences.begin());
+    }
 }
 
 const CVectorCore< C_FLOAT64 > & CMathContainer::getValues() const
@@ -507,6 +519,18 @@ void CMathContainer::setInitialState(const CVectorCore< C_FLOAT64 > & initialSta
     }
 }
 
+const CVectorCore< C_FLOAT64 > & CMathContainer::getCompleteInitialState() const
+{
+  return mCompleteInitialState;
+}
+
+void CMathContainer::setCompleteInitialState(const CVectorCore< C_FLOAT64 > & completeInitialState)
+{
+  assert(mCompleteInitialState.size() == completeInitialState.size());
+
+  memcpy(mCompleteInitialState.array(), completeInitialState.array(), completeInitialState.size() * sizeof(C_FLOAT64));
+}
+
 const CVectorCore< C_FLOAT64 > & CMathContainer::getState(const bool & reduced) const
 {
   if (reduced)
@@ -545,6 +569,11 @@ bool CMathContainer::isStateValid() const
 const bool & CMathContainer::isAutonomous() const
 {
   return mIsAutonomous;
+}
+
+const C_FLOAT64 & CMathContainer::getQuantity2NumberFactor() const
+{
+  return *(C_FLOAT64*) mpQuantity2NumberFactor->getValuePointer();
 }
 
 const CMathHistoryCore & CMathContainer::getHistory(const bool & reduced) const
@@ -695,6 +724,15 @@ void CMathContainer::updateInitialValues(const CModelParameter::Framework & fram
 
 void CMathContainer::applyInitialValues()
 {
+  // We need to reset any left over pending actions.
+  CMathEvent * pEvent = mEvents.array();
+  CMathEvent * pEventEnd = pEvent + mEvents.size();
+
+  for (; pEvent != pEventEnd; ++pEvent)
+    {
+      pEvent->removePendingAction();
+    }
+
 #ifdef DEBUG_OUTPUT
   std::cout << "Container Values: " << mValues << std::endl;
 #endif // DEBUG_OUTPUT
@@ -742,7 +780,7 @@ void CMathContainer::applyInitialValues()
   // Fire events which triggers are true and which may fire at the initial time
   C_FLOAT64 * pTrigger = mEventTriggers.array();
   C_FLOAT64 * pTriggerEnd = pTrigger + mEventTriggers.size();
-  CMathEvent * pEvent = mEvents.array();
+  pEvent = mEvents.array();
 
   for (; pTrigger != pTriggerEnd; ++pTrigger, ++pEvent)
     {
@@ -1432,6 +1470,7 @@ CEvaluationNode * CMathContainer::copyBranch(const CEvaluationNode * pNode,
           case (CEvaluationNode::FUNCTION | CEvaluationNodeFunction::FLOOR):
           case (CEvaluationNode::FUNCTION | CEvaluationNodeFunction::CEIL):
           case (CEvaluationNode::OPERATOR | CEvaluationNodeOperator::MODULUS):
+          case (CEvaluationNode::OPERATOR | CEvaluationNodeOperator::REMAINDER):
 
             if (replaceDiscontinuousNodes)
               {
@@ -1458,7 +1497,7 @@ CEvaluationNode * CMathContainer::copyBranch(const CEvaluationNode * pNode,
         }
     }
 
-  // assert(pCopy != NULL);
+  // It is save to return a NULL pointer
 
   return pCopy;
 }
@@ -1550,7 +1589,7 @@ CMathContainer::replaceDiscontinuousNode(const CEvaluationNode * pSrc,
 void CMathContainer::allocate()
 {
   // Allocations is always done from scratch
-
+#ifdef XXXX
   memset(&mSize, 0, sizeof(mSize));
 
   // Delete the old objects
@@ -1564,6 +1603,15 @@ void CMathContainer::allocate()
     {
       delete [] mObjects.array();
       mObjects.initialize(0, NULL);
+
+      // This makes all update sequences invalid, i.e., we need to clear them
+      std::set< CMathUpdateSequence * >::iterator itUpdateSequence = mUpdateSequences.begin();
+      std::set< CMathUpdateSequence * >::iterator endUpdateSequence = mUpdateSequences.end();
+
+      for (; itUpdateSequence != endUpdateSequence; ++itUpdateSequence)
+        {
+          (*itUpdateSequence)->clear();
+        }
     }
 
   if (mEvents.array())
@@ -1605,6 +1653,7 @@ void CMathContainer::allocate()
 
   mInitialDependencies.clear();
   mTransientDependencies.clear();
+#endif // XXXX
 
   sSize Size;
 
@@ -2327,10 +2376,20 @@ void CMathContainer::createUpdateSimulationValuesSequence()
   mTransientDependencies.getUpdateSequence(mSimulationValuesSequenceReduced, CMath::UseMoieties, mReducedStateValues, ReducedSimulationRequiredValues);
 
   // Determine whether the model is autonomous, i.e., no simulation required value depends on time.
+  // We need to additionally add the event assignments to the simulation required values as they may time dependent
+  CObjectInterface::ObjectSet TimeDependentValues = mSimulationRequiredValues;
+  pObject = getMathObject(mEventAssignments.array());
+  pObjectEnd = pObject + mEventAssignments.size();
+
+  for (; pObject != pObjectEnd; ++pObject)
+    {
+      TimeDependentValues.insert(pObject);
+    }
+
   CObjectInterface::ObjectSet TimeObject;
   TimeObject.insert(getMathObject(mState.array() + mSize.nFixedEventTargets));
   CObjectInterface::UpdateSequence TimeChange;
-  mTransientDependencies.getUpdateSequence(TimeChange, CMath::Default, TimeObject, mSimulationRequiredValues);
+  mTransientDependencies.getUpdateSequence(TimeChange, CMath::Default, TimeObject, TimeDependentValues);
   mIsAutonomous = (TimeChange.size() == 0);
 
   // Build the update sequence used to calculate the priorities in the event process queue.
@@ -3504,6 +3563,8 @@ bool CMathContainer::removeAnalysisObject(CMath::Entity< CMathObject > & mathObj
 
   // Create Update sequences
   createUpdateSequences();
+
+  return true;
 }
 
 CMathEvent * CMathContainer::addAnalysisEvent(const CEvent & dataEvent)
@@ -4006,6 +4067,7 @@ void CMathContainer::createDiscontinuityEvents(const CEvaluationTree * pTree)
           case (CEvaluationNode::FUNCTION | CEvaluationNodeFunction::FLOOR):
           case (CEvaluationNode::FUNCTION | CEvaluationNodeFunction::CEIL):
           case (CEvaluationNode::OPERATOR | CEvaluationNodeOperator::MODULUS):
+          case (CEvaluationNode::OPERATOR | CEvaluationNodeOperator::REMAINDER):
             createDiscontinuityDataEvent(*itNode);
             break;
 
@@ -4054,6 +4116,11 @@ std::string CMathContainer::createDiscontinuityTriggerInfix(const CEvaluationNod
       case (CEvaluationNode::OPERATOR | CEvaluationNodeOperator::MODULUS):
         TriggerInfix = "sin(PI*(" + static_cast< const CEvaluationNode * >(pNode->getChild())->buildInfix();
         TriggerInfix += ")) > 0 || sin(PI*(" + static_cast< const CEvaluationNode * >(pNode->getChild()->getSibling())->buildInfix() + ")) > 0";
+        break;
+
+      case (CEvaluationNode::OPERATOR | CEvaluationNodeOperator::REMAINDER):
+        TriggerInfix = "sin(PI*(" + static_cast< const CEvaluationNode * >(pNode->getChild())->buildInfix() + "/";
+        TriggerInfix += static_cast< const CEvaluationNode * >(pNode->getChild()->getSibling())->buildInfix() + ")) > 0";
         break;
 
       default:
@@ -4455,6 +4522,7 @@ void CMathContainer::relocate(CVectorCore< C_FLOAT64 > &oldValues,
   assert(pArray == mValues.array() + mValues.size());
 
   mInitialState.initialize(nExtensiveValues + size.nIntensiveValues,  mValues.array());
+  mCompleteInitialState.initialize(mExtensiveValues.array() - mValues.array(), mValues.array());
   mState.initialize(size.nFixedEventTargets + size.nTime + size.nODE + size.nReactionSpecies, mExtensiveValues.array() + size.nFixed);
   mStateReduced.initialize(mState.size() - size.nMoieties, mExtensiveValues.array() + size.nFixed);
   mRate.initialize(mState.size(), mExtensiveRates.array() + size.nFixed);
@@ -4467,13 +4535,16 @@ void CMathContainer::relocate(CVectorCore< C_FLOAT64 > &oldValues,
   mRootIsDiscrete.resize(size.nEventRoots, true);
   mRootIsTimeDependent.resize(size.nEventRoots, true);
 
-  relocateUpdateSequence(mSynchronizeInitialValuesSequenceExtensive, Relocations);
-  relocateUpdateSequence(mSynchronizeInitialValuesSequenceIntensive, Relocations);
-  relocateUpdateSequence(mApplyInitialValuesSequence, Relocations);
-  relocateUpdateSequence(mSimulationValuesSequence, Relocations);
-  relocateUpdateSequence(mSimulationValuesSequenceReduced, Relocations);
-  relocateUpdateSequence(mPrioritySequence, Relocations);
-  relocateUpdateSequence(mTransientDataObjectSequence, Relocations);
+  std::set< CMathUpdateSequence * >::iterator itUpdateSequence = mUpdateSequences.begin();
+  std::set< CMathUpdateSequence * >::iterator endUpdateSequence = mUpdateSequences.end();
+
+  for (; itUpdateSequence != endUpdateSequence; ++itUpdateSequence)
+    {
+      relocateUpdateSequence(**itUpdateSequence, Relocations);
+
+      // The update sequence may contain pointer to deleted objects we sanitize here
+      (*itUpdateSequence)->sanitize(oldObjects, mObjects);
+    }
 
   relocateObjectSet(mInitialStateValueExtensive, Relocations);
   relocateObjectSet(mInitialStateValueIntensive, Relocations);
@@ -4515,4 +4586,21 @@ void CMathContainer::relocate(CVectorCore< C_FLOAT64 > &oldValues,
   relocateVector(mDelays, size.nDelayLags, Relocations);
 
   mSize = size;
+  mpProcessQueue->start();
+}
+
+void CMathContainer::registerUpdateSequence(CMathUpdateSequence * pUpdateSequence)
+{
+  if (mUpdateSequences.insert(pUpdateSequence).second)
+    {
+      pUpdateSequence->setMathContainer(this);
+    }
+}
+
+void CMathContainer::deregisterUpdateSequence(CMathUpdateSequence * pUpdateSequence)
+{
+  if (mUpdateSequences.erase(pUpdateSequence))
+    {
+      pUpdateSequence->setMathContainer(NULL);
+    }
 }

@@ -312,7 +312,7 @@ void CMathObject::calculateValue()
   // Check for NaN
   if (isnan(*mpValue) && mpExpression->getInfix() != "")
     {
-      std::cout << "NaN Value for: " << getCN() << std::endl;
+      // std::cout << "NaN Value for: " << getCN() << std::endl;
     }
 
 #endif // COPASI_DEBUG
@@ -891,7 +891,8 @@ bool CMathObject::compileFlux(CMathContainer & container)
 
   std::set< const CCompartment * > Compartments = pReaction->getChemEq().getCompartments();
 
-  if (Compartments.size() == 1)
+  if (pReaction->getEffectiveKineticLawUnitType() == CReaction::ConcentrationPerTime &&
+      Compartments.size() > 0)
     {
       CExpression Tmp(mpExpression->getObjectName(), &container);
 
@@ -1395,21 +1396,24 @@ bool CMathObject::createExtensiveODERateExpression(const CMetab * pSpecies,
 {
   bool success = true;
 
+  std::ostringstream Infix;
+  Infix.imbue(std::locale::classic());
+  Infix.precision(16);
+
   /*
     mRate = mpModel->getQuantity2NumberFactor() *
       mpCompartment->getValue() * mpExpression->calcValue();
    */
 
-  std::ostringstream Infix;
-  Infix.imbue(std::locale::classic());
-  Infix.precision(16);
-
-  Infix << container.getModel().getQuantity2NumberFactor();
-  Infix << "*";
-  Infix << pointerToString(container.getMathObject(pSpecies->getCompartment()->getValueReference())->getValuePointer());
-  Infix << "*(";
-  Infix << pSpecies->getExpression();
-  Infix << ")";
+  if (!pSpecies->getExpression().empty())
+    {
+      Infix << container.getModel().getQuantity2NumberFactor();
+      Infix << "*";
+      Infix << pointerToString(container.getMathObject(pSpecies->getCompartment()->getValueReference())->getValuePointer());
+      Infix << "*(";
+      Infix << pSpecies->getExpression();
+      Infix << ")";
+    }
 
   CExpression E("ExtensiveODERateExpression", &container);
 

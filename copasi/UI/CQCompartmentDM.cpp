@@ -336,7 +336,9 @@ bool CQCompartmentDM::removeRows(QModelIndexList rows, const QModelIndex&)
   return true;
 }
 
-bool CQCompartmentDM::compartmentDataChange(const QModelIndex& index, const QVariant &value)
+bool CQCompartmentDM::compartmentDataChange(const QModelIndex& index,
+    const QVariant &value,
+    UndoCompartmentData* pUndoData)
 {
   GET_MODEL_OR(pModel, return false);
 
@@ -357,7 +359,14 @@ bool CQCompartmentDM::compartmentDataChange(const QModelIndex& index, const QVar
   else if (column == COL_TYPE_COMPARTMENTS)
     pComp->setStatus((CModelEntity::Status) mItemToType[value.toInt()]);
   else if (column == COL_IVOLUME)
-    pComp->setInitialValue(value.toDouble());
+    {
+      pComp->setInitialValue(value.toDouble());
+
+      if (pUndoData != NULL)
+        {
+          pUndoData->fillDependentObjects(pModel);
+        }
+    }
 
   emit dataChanged(index, index);
   emit notifyGUI(ListViews::COMPARTMENT, ListViews::CHANGE, pComp->getKey());

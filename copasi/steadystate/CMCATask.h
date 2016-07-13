@@ -109,11 +109,6 @@ public:
    */
   virtual bool process(const bool & useInitialValues);
 
-  /**
-   * Perform neccessary cleaup procedures
-   */
-  virtual bool restore();
-
 #ifndef SWIG
   /**
    * Retrieve the list of valid methods

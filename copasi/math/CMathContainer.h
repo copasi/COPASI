@@ -16,6 +16,7 @@
 #include "copasi/math/CMathReaction.h"
 #include "copasi/math/CMathDelay.h"
 #include "copasi/math/CMathHistory.h"
+#include "copasi/math/CMathUpdateSequence.h"
 
 #include "copasi/utilities/CVector.h"
 #include "copasi/utilities/CMatrix.h"
@@ -180,6 +181,20 @@ public:
   void setInitialState(const CVectorCore< C_FLOAT64 > & initialState);
 
   /**
+   * Retrieves the complete initial state values, i.e., all initial values including
+   * all internal values.
+   * @return const CVectorCore< C_FLOAT64 > & initialState
+   */
+  const CVectorCore< C_FLOAT64 > & getCompleteInitialState() const;
+
+  /**
+   * Set the complete initial state values, i.e., all initial values including
+   * all internal values.
+   * @param const CVectorCore< C_FLOAT64 > & initialState
+   */
+  void setCompleteInitialState(const CVectorCore< C_FLOAT64 > & initialState);
+
+  /**
    * Retrieves the state values, i.e., all values of objects of
    * simulation type EventTarget, Time, ODE, Dependent, and Independent. It includes only
    * extensive values for species.
@@ -206,6 +221,12 @@ public:
    * @return const bool &isAutonomous
    */
   const bool & isAutonomous() const;
+
+  /**
+   * Retrieve the Quantity to Number conversion factor
+   * @return C_FLOAT64 & quantity2NumberFactor
+   */
+  const C_FLOAT64 & getQuantity2NumberFactor() const;
 
   /**
    * Retrieves the state values, i.e., all values of objects of
@@ -718,6 +739,18 @@ public:
    */
   void compile();
 
+  /**
+   * Register and update sequence.
+   * @param CMathUpdateSequence * pUpdateSequence
+   */
+  void registerUpdateSequence(CMathUpdateSequence * pUpdateSequence);
+
+  /**
+   * Deregister and update sequence.
+   * @param CMathUpdateSequence * pUpdateSeqeunce
+   */
+  void deregisterUpdateSequence(CMathUpdateSequence * pUpdateSequence);
+
 private:
   /**
    * Allocate the memory for objects and values
@@ -1000,6 +1033,11 @@ private:
   CVectorCore< C_FLOAT64 > mInitialState;
 
   /**
+   * The initial state contains additionally all computed internal values
+   */
+  CVectorCore< C_FLOAT64 > mCompleteInitialState;
+
+  /**
    * The state contains values of type EventTarget, Time, ODE, Independent, and Dependent
    */
   CVectorCore< C_FLOAT64 > mState;
@@ -1203,6 +1241,11 @@ private:
    * Structure containing all the important size information
    */
   sSize mSize;
+
+  /**
+   * Pointers to all update sequences associated with this container;
+   */
+  std::set< CMathUpdateSequence * > mUpdateSequences;
 };
 
 #endif // COPASI_CMathContainer

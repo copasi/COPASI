@@ -84,9 +84,13 @@ bool Curve2DWidget::LoadFromCurveSpec(const CPlotItem * curve)
 
   if (mpObjectX)
     mpEditX->setText(FROM_UTF8(mpObjectX->getObjectDisplayName()));
+  else
+    mpEditX->clear();
 
   if (mpObjectY)
     mpEditY->setText(FROM_UTF8(mpObjectY->getObjectDisplayName()));
+  else
+    mpEditY->clear();
 
   //Type
   unsigned C_INT32 linetype = curve->getValue< unsigned C_INT32 >("Line type");

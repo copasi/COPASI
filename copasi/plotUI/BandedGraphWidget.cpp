@@ -103,12 +103,18 @@ BandedGraphWidget::LoadFromCurveSpec(const CPlotItem * pCurve)
 
   if (mpObjectX)
     mpEditX->setText(FROM_UTF8(mpObjectX->getObjectDisplayName()));
+  else
+    mpEditX->clear();
 
   if (mpObjectYone)
     mpEditYone->setText(FROM_UTF8(mpObjectYone->getObjectDisplayName()));
+  else
+    mpEditYone->clear();
 
   if (mpObjectYtwo)
     mpEditYtwo->setText(FROM_UTF8(mpObjectYtwo->getObjectDisplayName()));
+  else
+    mpEditYtwo->clear();
 
   mpCheckBefore->setChecked(pCurve->getActivity() & COutputInterface::BEFORE);
   mpCheckDuring->setChecked(pCurve->getActivity() & COutputInterface::DURING);

@@ -16,12 +16,21 @@
 #include "CBrowseModelVersionDialog.h"
 #include "ui_CBrowseModelVersionDialog.h"
 
-CBrowseModelVersionDialog::CBrowseModelVersionDialog(QWidget *parent, CModelVersion  * ModelVersion, DataModelGUI * ModelGUI) :
+#ifdef COPASI_Provenance
+#include "copasi/Provenance/CProvenanceXMLWriter.h"
+#endif
+
+CBrowseModelVersionDialog::CBrowseModelVersionDialog(QWidget *parent, CModelVersion  * ModelVersion, DataModelGUI * ModelGUI,   QUndoStack  *     UndoStack
+#ifdef COPASI_Provenance
+//                                                     , QString PathProvenance,   QString ProvenanceParentOfCurrentModel
+    , QString PathProvenance
+#endif
+                                                    ) :
   QDialog(parent),
   ui(new Ui::CBrowseModelVersionDialog)
 {
   ui->setupUi(this);
-
+  //mLastSavedParentOfCurrentModel = LastSavedParentOfCurrentModel;
   // set "the dialog table pointer" points to main table in the table of this dialog
 
   int NumberOfVersions = ModelVersion->getNumberOfVersions();
@@ -43,6 +52,11 @@ CBrowseModelVersionDialog::CBrowseModelVersionDialog(QWidget *parent, CModelVers
   ui->RestoreButton->setEnabled(false);
   ui->CloseButton->setEnabled(true);
   ui->tableView->setEnabled(true);
+  mpUndoStack = UndoStack;
+#ifdef COPASI_Provenance
+  mPathProvenance = PathProvenance;
+  //mProvenanceParentOfCurrentModel =  ProvenanceParentOfCurrentModel;
+#endif
 }
 
 CBrowseModelVersionDialog::~CBrowseModelVersionDialog()
@@ -84,11 +98,11 @@ void CBrowseModelVersionDialog::on_RestoreButton_clicked()
 
             if (mpModelVersion->getPathFile() == "")
               {
-                dataFile = Version;
+                dataFile = Version +  "/" + Version;
               }
             else
               {
-                dataFile = mpModelVersion->getPathFile() +  "/" + Version;
+                dataFile = mpModelVersion->getPathFile() +  "/" + Version +  "/" + Version;
               }
 
             QFile Fout(dataFile);
@@ -100,7 +114,15 @@ void CBrowseModelVersionDialog::on_RestoreButton_clicked()
             else
               {
                 mpDataModelGUI->loadModel(dataFile.toStdString());
+                mpUndoStack->clear();
               }
+
+#ifdef COPASI_Provenance
+            // After restore remove mainbody provenance
+            QDir destination;
+            dataFile = mpModelVersion->getPathFile() + "/ProvenanceMainBody.xml";
+            destination.remove(dataFile);
+#endif
           }
 
         ui->DeleteButton->setEnabled(false);
@@ -129,12 +151,31 @@ void CBrowseModelVersionDialog::on_DeleteButton_clicked()
   msgBox.setText("Are you sure you want delete this version?");
   msgBox.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
   int ret = msgBox.exec();
+  //QString ParentVersion;
 
   switch (ret)
     {
       case QMessageBox::Ok:
       {
         int i;
+        //bool isParrentOfLastSavedVersion = false;
+        //if(mLastSavedParentOfCurrentModel==Version)
+        //{
+        //    isParrentOfLastSavedVersion = true;
+        //    ParentVersion = mpModelVersion->getParentVersion(Version);
+        //}
+#ifdef COPASI_Provenance
+        bool isParrentOfCurrentVersion = false;
+        QString ParentOfCurrentModel = mpModelVersion->getParentOfCurrentModel();
+
+        if (ParentOfCurrentModel == Version)
+          {
+            isParrentOfCurrentVersion = true;
+          }
+
+        QList<QString> ChildrenVersions = mpModelVersion->getChildrenOfVersionForProvenanceXML(Version);
+#endif
+
         i = mpModelVersion->deleteVersion(Version);
 
         if (i == 1)
@@ -155,19 +196,54 @@ void CBrowseModelVersionDialog::on_DeleteButton_clicked()
         // Delete the selected version from
         if (i == 0)
           {
+            //if(isParrentOfLastSavedVersion)
+            //{
+            //        mLastSavedParentOfCurrentModel = ParentVersion;
+            //}
+
             QDir destination;
-            QString dataFile;// = mpModelVersionHierarchy->getPathFile() + QLatin1Char('/') + QString("VersionHierarchy.xml");
+            QString dataFile;
 
             if (mpModelVersion->getPathFile() == "")
               {
-                dataFile = Version;
+                dataFile = Version +  "/" + Version;
               }
             else
               {
-                dataFile = mpModelVersion->getPathFile() + "/" + Version;
+                dataFile = mpModelVersion->getPathFile() + "/" + Version +  "/" + Version;
               }
 
             destination.remove(dataFile);
+#ifdef COPASI_Provenance
+            //CProvenanceXMLWriter* ProvenanceXMLWriter = new CProvenanceXMLWriter(this, mpUndoStack, mPathProvenance, QString(""), QString(""), mProvenanceParentOfCurrentModel, ParentOfCurrentModel);
+            CProvenanceXMLWriter* ProvenanceXMLWriter = new CProvenanceXMLWriter(this, mpUndoStack, mPathProvenance);
+
+            if (isParrentOfCurrentVersion)
+              {
+                ProvenanceXMLWriter->deleteParentofCurrentVersionProvenance(Version);
+                //mProvenanceParentOfCurrentModel =  mpModelVersion->getParentOfCurrentModel();
+              }
+
+            if (!ChildrenVersions.isEmpty())
+              {
+                int j;
+
+                for (j = 0; j < ChildrenVersions.size(); ++j)
+                  {
+                    ProvenanceXMLWriter->combineVersionProvenance(Version, ChildrenVersions.at(j));
+                  }
+              }
+
+            ProvenanceXMLWriter->deleteVersionProvenance(Version);
+#endif
+// now remove the directory
+            QString path = mpModelVersion->getPathFile() + "/" + Version;
+            QDir dir(path);
+
+            if (dir.exists())
+              {
+                dir.rmdir(path);
+              }
           }
 
         int NumberOfVersions = mpModelVersion->getNumberOfVersions();
@@ -219,3 +295,16 @@ void CBrowseModelVersionDialog::on_tableView_doubleClicked(const QModelIndex &in
         }
     }
 }
+
+//#ifdef COPASI_Provenance
+//QString CBrowseModelVersionDialog::getProvenanceParentOfCurrentModel()
+//{
+//  return(mProvenanceParentOfCurrentModel);
+//}
+
+//#endif
+
+//QString CBrowseModelVersionDialog::getLastSavedParentOfCurrentModel()
+//{
+//    return(mLastSavedParentOfCurrentModel);
+//}

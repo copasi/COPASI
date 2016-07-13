@@ -128,7 +128,7 @@ std::string CBaseUnit::prefixFromScale(int scale)
         return "n";
 
       case micro:
-        return "u";
+        return "\xc2\xb5";
 
       case milli:
         return "m";

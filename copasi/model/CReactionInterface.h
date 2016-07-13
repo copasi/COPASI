@@ -86,6 +86,7 @@ private:
   bool mAddNoise;
 
   std::string mNoiseExpression;
+  CReaction::KineticLawUnit mKineticLawUnitType;
 
 private:
   CReactionInterface();
@@ -265,6 +266,12 @@ public:
    * @return std::set< const CCopasiObject * > DeletedParameters
    */
   std::set< const CCopasiObject * > getDeletedParameters() const;
+
+  void setKineticLawUnitType(const CReaction::KineticLawUnit & kineticLawUnitType);
+  const CReaction::KineticLawUnit & getKineticLawUnitType() const;
+  CReaction::KineticLawUnit getEffectiveKineticLawUnitType() const;
+  std::string getConcentrationUnit() const;
+  std::string getAmountUnit() const;
 
 #ifdef COPASI_DEBUG
   void printDebug() const;

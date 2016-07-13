@@ -512,7 +512,7 @@ void CLNAMethod::calculateCovarianceMatrixFull()
   // the covariance matrix of the reduced system by:
   // mL*mCovarianceMatrixReduced*mL^T, with mL the link matrix
 
-  C_INT i, j;
+  C_INT i;
 
   C_INT numIndependentMetabs = (C_INT) mpContainer->getCountIndependentSpecies();
   C_INT numDependentMetabs = (C_INT) mpContainer->getCountDependentSpecies();

@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -180,7 +180,7 @@ bool CSteadyStateMethod::allPositive()
   mpContainer->updateSimulatedValues(true);
 
   const C_FLOAT64 * pValue = mContainerState.array();
-  const C_FLOAT64 * pValueEnd = mpContainer->getRate(false).array();
+  const C_FLOAT64 * pValueEnd = pValue + mContainerState.size();
   const CMathObject * pValueObject = mpContainer->getMathObject(pValue);
 
   // We need to check that all metabolites have positive particle numbers

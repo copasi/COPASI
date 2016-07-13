@@ -140,8 +140,6 @@ CTrajectoryMethod::Status CStochMethod::step(const double & deltaT)
   //mpProblem->getModel()->setState(mpCurrentState); //?
 
   // check for possible overflows:
-  size_t i;
-  size_t imax;
 
   // do several steps:
   C_FLOAT64 time = *mpContainerStateTime;

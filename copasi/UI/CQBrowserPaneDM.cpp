@@ -267,8 +267,15 @@ void CQBrowserPaneDM::add(const size_t & id,
     }
 
   beginInsertRows(index(pParent), row, row);
-  new CNode(id, key, displayRole, pParent);
+  CNode * pNode = new CNode(id, key, displayRole, pParent);
   endInsertRows();
+
+  QModelIndex Index = index(pNode);
+
+  if (mEmitDataChanged)
+    {
+      emit dataChanged(Index, Index);
+    }
 }
 
 void CQBrowserPaneDM::setCopasiDM(const CCopasiDataModel * pDataModel)

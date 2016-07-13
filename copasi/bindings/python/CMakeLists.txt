@@ -67,7 +67,8 @@ ADD_CUSTOM_COMMAND(
           -DLIBSEDML_CPP_NAMESPACE_USE
           -DLIBSEDML_CPP_NAMESPACE_BEGIN
           -DLIBSEDML_CPP_NAMESPACE_END
-          ${SWIG_EXTRA_ARGS}		 
+          ${SWIG_EXTRA_ARGS}
+          -features autodoc,1
           -o ${CMAKE_CURRENT_BINARY_DIR}/copasi_wrapper.cpp 
           ${CMAKE_CURRENT_SOURCE_DIR}/python.i
 

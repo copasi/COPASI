@@ -10,6 +10,8 @@
 
 #include "copasi/UI/listviews.h"
 
+#include "copasi/undoFramework/ParameterOverviewDataChangeCommand.h"
+
 class CModelParameterSet;
 class CModelParameterGroup;
 class CModelParameter;
@@ -17,6 +19,7 @@ class CModelParameter;
 class QUndoStack;
 #include <QList>
 #include <QPair>
+#include <QMap>
 
 class CQParameterOverviewDM : public QAbstractItemModel
 {
@@ -46,7 +49,17 @@ public:
   virtual bool setData(const QModelIndex &index, const QVariant &value,
                        int role = Qt::EditRole);
 
-  void setModelParameterset(CModelParameterSet * pModelParameterSet);
+  void setModelParameterSet(CModelParameterSet * pModelParameterSet);
+
+  /**
+   * Sets the key to the parameter set that is currently modified,
+   * this will be used by the UNDO framework to activate the correct control
+   *
+   * @param key the key to the selected parameter set or empty to denote the
+   *            current parameter overview
+   */
+  void setParameterSetKey(const std::string & key);
+  const std::string getParameterSetKey() const;
 
   void setFramework(const int & framework);
 
@@ -54,7 +67,18 @@ public:
 
   void setUndoStack(QUndoStack* undoStack);
   QUndoStack* getUndoStack();
-  bool parameterOverviewDataChange(const QList< QPair<int, int> > &path, const QVariant &value, int role);
+  /**
+   * Helper functions going through all rows looking for the given CN
+   *
+   * @param cn the CN to look for
+   * @param column the column to return in the index (if found)
+   * @return the index for the CN with the given column if found, an
+   *         invalid index otherwise.
+   */
+  QModelIndex getIndexFor(const std::string& cn, int column) const;
+  bool parameterOverviewDataChange(const std::string& cn,
+                                   const QVariant &value,
+                                   const std::string& parameterSetKey, int column);
 
 signals:
   void signalOpenEditor(const QModelIndex &) const;
@@ -83,6 +107,13 @@ private:
   int mFramework;
 
   QUndoStack *mpUndoStack;
+  ParameterOverviewDataChangeCommand *mpLastCommand;
+
+  // cache the unit strings, to make viewing the parameter overview table faster
+  mutable QMap< const CModelParameter *, QVariant > mUnitCache;
+
+  // the key to the currently active parameter set
+  std::string mParameterSetKey;
 };
 
 #endif // COPASI_CQParameterOverviewDM

@@ -57,6 +57,13 @@ public:
 
   enum DependencyType {initial = 0, transient, physical};
 
+  enum UnitType {volume = 0,
+                 area,
+                 length,
+                 time,
+                 quantity
+                };
+
 private:
   /**
    *  Copy constructor
@@ -987,6 +994,9 @@ public:
    */
   std::vector< const CEvaluationTree * > getTreesWithDiscontinuities() const;
 
+  // Return if the particular unit is dimensionless
+  bool isDimensionless(UnitType type) const;
+
 private:
 
   bool compile();
@@ -1258,6 +1268,9 @@ private:
    * The container of the mathematical model.
    */
   CMathContainer * mpMathContainer;
+
+  // Cache if any model units are dimensionless
+  std::vector< bool > mDimensionlessUnits;
 
   // Operations
 public:

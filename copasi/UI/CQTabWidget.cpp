@@ -26,6 +26,12 @@
 #include <copasi/undoFramework/EntityRenameCommand.h>
 #include <copasi/UI/copasiui3window.h>
 
+#ifdef COPASI_Provenance
+#include "CEntityProvenanceDialog.h"
+#include "versioning/CModelVersion.h"
+#include "commandline/CConfigurationFile.h"
+#endif
+
 CQTabWidget::CQTabWidget(const ListViews::ObjectType & objectType, CopasiWidget * pCopasiWidget,
                          QWidget * parent, Qt::WindowFlags f) :
   CopasiWidget(parent, NULL, f),
@@ -77,6 +83,23 @@ CQTabWidget::CQTabWidget(const ListViews::ObjectType & objectType, CopasiWidget 
 
   CopasiUI3Window *  pWindow = dynamic_cast<CopasiUI3Window * >(parent->parent());
   setUndoStack(pWindow->getUndoStack());
+
+#ifdef COPASI_Provenance
+
+  if ((FROM_UTF8(ListViews::ObjectTypeName[mObjectType]) == "Species") || (FROM_UTF8(ListViews::ObjectTypeName[mObjectType]) == "Compartment") || (FROM_UTF8(ListViews::ObjectTypeName[mObjectType]) == "Reaction") || (FROM_UTF8(ListViews::ObjectTypeName[mObjectType]) == "Event") || (FROM_UTF8(ListViews::ObjectTypeName[mObjectType]) == "Global Quantity"))
+    {
+      //FROM_UTF8(mpObject->getObjectName())
+      //mpEntityProvenanceDialog = new CEntityProvenanceDialog(mpTabWidget, mpUndoStack, metaObject()->, pWindow->getVersionHierarchy()->getPathFile(), pWindow->getVersionHierarchy()->getVersionsPathToCurrentModel(),  pWindow->getProvenanceParentOfCurrentVersion(), pWindow->getVersionHierarchy()->getParentOfCurrentModel());
+      mpEntityProvenanceDialog = new CEntityProvenanceDialog(mpTabWidget);
+      mPathFile = pWindow->getVersionHierarchy()->getPathFile();
+      mVersionPathToCurrentModel = pWindow->getVersionHierarchy()->getVersionsPathToCurrentModel();
+      mPages.push_back(mpEntityProvenanceDialog);
+      mpTabWidget->addTab(mpEntityProvenanceDialog, "Provenance");
+      //connect(this, SIGNAL(activated()), this, SLOT(mpEntityProvenanceDialog->exec()));
+      //connect(this, SIGNAL(),EntityProvenanceDialog ,SLOT(EntityProvenanceDialog->exec()));
+    }
+
+#endif
 }
 
 CQTabWidget::~CQTabWidget()
@@ -175,6 +198,25 @@ void CQTabWidget::load()
     {
       mpEditName->setText("");
     }
+
+#ifdef COPASI_Provenance
+
+  if (mObjectType == ListViews::METABOLITE ||
+      mObjectType == ListViews::COMPARTMENT ||
+      mObjectType == ListViews::REACTION ||
+      mObjectType == ListViews::EVENT ||
+      mObjectType == ListViews::MODELVALUE)
+    {
+      CopasiUI3Window *  pWindow = dynamic_cast<CopasiUI3Window * >(CopasiUI3Window::getMainWindow());
+
+      if (pWindow) //Probably could just assume the Main Window exists
+        {
+          QList<QString> VersioningPath = pWindow->getVersionHierarchy()->getVersionsPathToCurrentModel();
+          mpEntityProvenanceDialog->load(mpUndoStack, FROM_UTF8(mpObject->getObjectName()), FROM_UTF8(CCopasiRootContainer::getConfiguration()->getWorkingDirectory()), VersioningPath);
+        }
+    }
+
+#endif
 }
 
 bool CQTabWidget::save()
@@ -282,7 +324,6 @@ bool CQTabWidget::renameEntity(const std::string& key, const std::string& newNam
   mKey = key;
   load();
   mpListView->switchToOtherWidget(C_INVALID_INDEX, mKey);
-  qApp->processEvents();
 
   if (!mpObject->setObjectName(newName))
     {

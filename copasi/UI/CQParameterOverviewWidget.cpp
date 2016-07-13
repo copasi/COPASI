@@ -44,6 +44,7 @@ CQParameterOverviewWidget::CQParameterOverviewWidget(QWidget* parent, const char
 
   mpTreeView->setModel(mpParameterSetSortDM);
   mpTreeView->sortByColumn(0, Qt::AscendingOrder);
+  mpTreeView->setUniformRowHeights(false);
 
   CQPushButtonDelegate * pPushButtonDelegate = new CQPushButtonDelegate(CQPushButtonDelegate::PushButton, this);
   mpTreeView->setItemDelegateForColumn(1, pPushButtonDelegate);
@@ -181,7 +182,7 @@ bool CQParameterOverviewWidget::enterProtected()
 
   if (!mpParameterSet)
     {
-      mpParameterSetDM->setModelParameterset(NULL);
+      mpParameterSetDM->setModelParameterSet(NULL);
       pdelete(mpParameterSetCopy);
 
       return false;
@@ -198,9 +199,11 @@ bool CQParameterOverviewWidget::enterProtected()
   if (mpParameterSet->isActive())
     {
       mpTreeView->header()->hideSection(1);
+      mpParameterSetDM->setParameterSetKey("");
     }
   else
     {
+      mpParameterSetDM->setParameterSetKey(mpParameterSet->getKey());
       mpParameterSetCopy->compareWithModel(static_cast< CModelParameter::Framework >(mFramework));
       mpHeaderWidget->hide();
       mpBtnWidget->hide();
@@ -208,7 +211,7 @@ bool CQParameterOverviewWidget::enterProtected()
 
   buildSelectionList();
 
-  mpParameterSetDM->setModelParameterset(mpParameterSetCopy);
+  mpParameterSetDM->setModelParameterSet(mpParameterSetCopy);
   pdelete(pOldParameterSet);
 
   mpTreeView->expandAll();
@@ -274,7 +277,7 @@ void CQParameterOverviewWidget::slotBtnDelete()
       return;
     }
 
-  mpParameterSetDM->setModelParameterset(NULL);
+  mpParameterSetDM->setModelParameterSet(NULL);
 
   pModel->getModelParameterSets().remove(mpParameterSet->getObjectName());
 
@@ -527,8 +530,6 @@ void CQParameterOverviewWidget::slotOpenEditor(const QModelIndex & index)
     }
 
   mpTreeView->openPersistentEditor(mpParameterSetSortDM->mapFromSource(Tmp));
-
-  mpTreeView->expandAll();
 }
 
 void CQParameterOverviewWidget::slotCloseEditor(const QModelIndex & index)

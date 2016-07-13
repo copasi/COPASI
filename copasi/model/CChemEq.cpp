@@ -117,15 +117,38 @@ std::set< const CCompartment * > CChemEq::getCompartments() const
   const CCompartment * pCompartment = NULL;
   std::set< const CCompartment * > Compartments;
 
-  CCopasiVector < CChemEqElement >::const_iterator it = mBalances.begin();
-  CCopasiVector < CChemEqElement >::const_iterator end = mBalances.end();
+  // We go through the substrates, products, and modifiers;
+  CCopasiVector < CChemEqElement >::const_iterator it = mSubstrates.begin();
+  CCopasiVector < CChemEqElement >::const_iterator end = mSubstrates.end();
 
   for (; it != end; ++it)
     {
-      if (it->getMetabolite() == NULL)
-        continue;
+      if (it->getMetabolite() != NULL &&
+          (pCompartment = it->getMetabolite()->getCompartment()) != NULL)
+        {
+          Compartments.insert(pCompartment);
+        }
+    }
 
-      if ((pCompartment = it->getMetabolite()->getCompartment()) != NULL)
+  it = mProducts.begin();
+  end = mProducts.end();
+
+  for (; it != end; ++it)
+    {
+      if (it->getMetabolite() != NULL &&
+          (pCompartment = it->getMetabolite()->getCompartment()) != NULL)
+        {
+          Compartments.insert(pCompartment);
+        }
+    }
+
+  it = mModifiers.begin();
+  end = mModifiers.end();
+
+  for (; it != end; ++it)
+    {
+      if (it->getMetabolite() != NULL &&
+          (pCompartment = it->getMetabolite()->getCompartment()) != NULL)
         {
           Compartments.insert(pCompartment);
         }

@@ -80,18 +80,18 @@
     result = false;\
     CCopasiMessage(CCopasiMessage::WARNING_FILTERED, str.str().c_str());\
   }\
-   
+
 #define COULD_NOT_CREATE(result)\
   {\
     FAIL_WITH_ERROR(result, "could not create element");\
   }\
-   
+
 #define FAIL_WITH_ERROR_AND_RETURN(result, message)\
   {\
     FAIL_WITH_ERROR(result, message);\
     return result;\
   }\
-   
+
 /**
  * Constructor that takes a pointer to an
  * SBMLDocument.
@@ -2384,7 +2384,6 @@ CCellDesignerImporter::convertReactionAnnotations()
   return result;
 }
 
-
 bool CCellDesignerImporter::createSubstrate(std::vector<Point>& reactantPoints,
     ReactionGlyph* pRGlyph,
     LocalStyle* pReactionStyle,
@@ -2458,7 +2457,6 @@ void CCellDesignerImporter::setProductStyle(const std::string &id, LocalStyle* p
     }
 
   productStyle->addId(id);
-
 }
 
 bool CCellDesignerImporter::createProduct(std::vector<Point>& productPoints,
@@ -2504,7 +2502,7 @@ void CCellDesignerImporter::enforceSquare(const ConnectScheme& connectScheme,
   bool isFirst = directionCount == 0;
 
   if (connectScheme.mPolicy != POLICY_SQUARE ||
-      directionCount >= connectScheme.mLineDirections.size())
+      directionCount >= (int)connectScheme.mLineDirections.size())
     return;
 
   if (connectScheme.mLineDirections[directionCount].mValue == DIRECTION_HORIZONTAL)
@@ -2523,7 +2521,6 @@ void CCellDesignerImporter::enforceSquare(const ConnectScheme& connectScheme,
         {
           current.setX(pEnd.x());
         }
-
     }
   else
     {
@@ -2543,7 +2540,6 @@ void CCellDesignerImporter::enforceSquare(const ConnectScheme& connectScheme,
     }
 
   ++directionCount;
-
 }
 
 bool
@@ -2617,7 +2613,6 @@ CCellDesignerImporter::createUniUniCurve(ReactionAnnotation& ranno,
                             directionCount,
                             (pointIt + 1) == pointsEnd,
                             points);
-
 
               points.push_back(p);
               ++pointIt;
@@ -3328,7 +3323,6 @@ CCellDesignerImporter::convertReactionAnnotation(Reaction* pReaction, const Mode
   LocalStyle* pReactionStyle = NULL;
 
   pReactionStyle = createStyleFromLine(ranno.mLine, pRGlyph->getId());
-
 
   // the reactionType element has a text element
   // that defines the type of reaction
@@ -5375,13 +5369,11 @@ bool CCellDesignerImporter::parseConnectScheme(const XMLNode* pNode, ConnectSche
   if (!attr.hasAttribute("connectPolicy"))
     return true;
 
-
   std::string s = attr.getValue("connectPolicy");
   scheme.mPolicy = CCellDesignerImporter::connectionPolicyToEnum(s);
 
   if (scheme.mPolicy == POLICY_UNDEFINED)
     return true;
-
 
   // reactangleIndex (optional)
   if (attr.hasAttribute("rectangleIndex"))
@@ -5405,7 +5397,6 @@ bool CCellDesignerImporter::parseConnectScheme(const XMLNode* pNode, ConnectSche
 
   if (pDirections == NULL)
     return true;
-
 
   // list of lineDirectionElements
   unsigned int i, iMax = pDirections->getNumChildren();

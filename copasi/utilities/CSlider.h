@@ -18,6 +18,8 @@
 #include "report/CCopasiContainer.h"
 #include "report/CCopasiObjectName.h"
 
+#include "math/CMathUpdateSequence.h"
+
 class CSlider : public CCopasiContainer
 {
 public:

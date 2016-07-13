@@ -357,18 +357,28 @@ bool CSteadyStateTask::process(const bool & useInitialValues)
 
 bool CSteadyStateTask::restore()
 {
-  bool success = CCopasiTask::restore();
+  setCallBack(NULL);
 
-  if (mUpdateModel)
+  if (mpContainer != NULL)
     {
-      mpContainer->setState(mSteadyState);
-      mpContainer->updateSimulatedValues(true);
-      mpContainer->setInitialState(mpContainer->getState(false));
+      if (mUpdateModel &&
+          mResult != CSteadyStateMethod::notFound &&
+          mpContainer->isStateValid())
+        {
+          mpContainer->setState(mSteadyState);
+          mpContainer->updateSimulatedValues(true);
+          mpContainer->setInitialState(mpContainer->getState(false));
+        }
+      else
+        {
+          mpContainer->setInitialState(mInitialState);
+        }
+
       mpContainer->updateInitialValues(CModelParameter::ParticleNumbers);
       mpContainer->pushInitialState();
     }
 
-  return success;
+  return true;
 }
 
 // virtual

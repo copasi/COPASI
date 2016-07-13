@@ -1,4 +1,4 @@
-// Copyright (C) 2014 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2014 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -17,34 +17,72 @@
 
 #include "ParameterOverviewDataChangeCommand.h"
 
-ParameterOverviewDataChangeCommand::ParameterOverviewDataChangeCommand(const QModelIndex &index, const QVariant &value, int role, CQParameterOverviewDM *pParameterOverviewDM)
+ParameterOverviewDataChangeCommand::ParameterOverviewDataChangeCommand(
+  const std::string& cn,
+  const std::string& name,
+  const QVariant &newValue,
+  const QVariant &oldValue,
+  CQParameterOverviewDM *pParameterOverviewDM,
+  const std::string& parametersetKey,
+  int column)
   : CCopasiUndoCommand()
-  , mNew(value)
-  , mOld(index.data(Qt::EditRole))
-  , mIndex(index)
+  , mNew(newValue)
+  , mOld(oldValue)
+  , mCN(cn)
   , mpParameterOverviewDM(pParameterOverviewDM)
-  , mRole(role)
-  , mPathIndex(pathFromIndex(index))
-  , mFirstTime(true)
+  , mParametersetKey(parametersetKey)
+  , mColumn(column)
 {
-  setText(QObject::tr(": Changed parameter overview data"));
-}
-
-void ParameterOverviewDataChangeCommand::redo()
-{
-  if (mFirstTime)
+  if (mParametersetKey.empty())
     {
-      mpParameterOverviewDM->parameterOverviewDataChange(mPathIndex, mNew, mRole);
-      mFirstTime = false;
+      setText(QObject::tr(": Changed parameter overview data"));
+      setEntityType("Parameter Overview");
     }
   else
     {
-      mpParameterOverviewDM->parameterOverviewDataChange(mPathIndex, mNew, mRole);
+      setText(QObject::tr(": Changed parameter set data"));
+      setEntityType("Parameter Set");
     }
+
+  if (column == 3)
+    {
+      setProperty("Value");
+    }
+  else
+    {
+      setProperty("Assignment");
+    }
+
+  setAction("Change");
+  setName(name);
+  setOldValue(TO_UTF8(mOld.toString()));
+  setNewValue(TO_UTF8(mNew.toString()));
 }
+
+void
+ParameterOverviewDataChangeCommand::redo()
+{
+  mpParameterOverviewDM->parameterOverviewDataChange(mCN, mNew, mParametersetKey, mColumn);
+}
+
 void ParameterOverviewDataChangeCommand::undo()
 {
-  mpParameterOverviewDM->parameterOverviewDataChange(mPathIndex, mOld, mRole);
+  mpParameterOverviewDM->parameterOverviewDataChange(mCN, mOld, mParametersetKey, mColumn);
+}
+
+bool ParameterOverviewDataChangeCommand::matches(
+  const std::string &cn,
+  const std::string& name,
+  const QVariant &newValue,
+  const QVariant &oldValue,
+  const std::string& parametersetKey) const
+{
+  if (newValue != mNew || oldValue != mOld
+      || name != getName()
+      || parametersetKey != mParametersetKey)
+    return false;
+
+  return cn == mCN;
 }
 
 ParameterOverviewDataChangeCommand::~ParameterOverviewDataChangeCommand()

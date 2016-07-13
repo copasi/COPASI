@@ -419,7 +419,7 @@ private:
   /**
    * The initial state of the model prior to any modification
    */
-  CVector< C_FLOAT64 > mInitialState;
+  CVector< C_FLOAT64 > mCompleteInitialState;
 
   /**
    * A pointer to the time of the container
