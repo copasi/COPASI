@@ -74,6 +74,10 @@ ReactionsWidget1::ReactionsWidget1(QWidget *parent, const char * name, Qt::WFlag
   mpBtnEditFunction->setIcon(CQIconResource::icon(CQIconResource::edit));
   mpBtnAddFunction->setIcon(CQIconResource::icon(CQIconResource::editAdd));
 
+#ifndef WITH_SDE_SUPPORT
+  mpBoxAddNoise->hide();
+#endif
+
   CopasiUI3Window *  pWindow = dynamic_cast<CopasiUI3Window * >(parent->parent());
   setUndoStack(pWindow->getUndoStack());
 }
@@ -464,7 +468,12 @@ void ReactionsWidget1::FillWidgetFromRI()
   mpNoiseExpressionWidget->mpExpressionWidget->setExpression(mpRi->getNoiseExpression());
   mpNoiseExpressionWidget->updateWidget();
   mpBoxAddNoise->setChecked(mpRi->addNoise());
+
+#ifdef WITH_SDE_SUPPORT
   slotAddNoiseChanged(mpRi->addNoise());
+#else
+  slotAddNoiseChanged(false);
+#endif
 
   mpDefaultUnit->setChecked(mpRi->getKineticLawUnitType() == CReaction::Default);
   mpConcentrationUnit->setChecked(mpRi->getEffectiveKineticLawUnitType() == CReaction::ConcentrationPerTime);

@@ -181,15 +181,19 @@ QVariant CQGlobalQuantityDM::data(const QModelIndex &index, int role) const
                   return QVariant();
               }
 
+#ifdef WITH_SDE_SUPPORT
+
               case COL_NEXPRESSION_GQ:
               {
                 pExpression = pGQ->getNoiseExpressionPtr();
 
-                if (pExpression != NULL)
+                if (pGQ->addNoise() && pExpression != NULL)
                   return QVariant(QString(FROM_UTF8(pExpression->getDisplayString())));
                 else
                   return QVariant();
               }
+
+#endif
             }
         }
     }
@@ -234,8 +238,11 @@ QVariant CQGlobalQuantityDM::headerData(int section, Qt::Orientation orientation
           case COL_EXPRESSION_GQ:
             return QVariant("Expression");
 
+#ifdef WITH_SDE_SUPPORT
+
           case COL_NEXPRESSION_GQ:
             return QVariant("Noise Expression");
+#endif
 
           default:
             return QVariant();

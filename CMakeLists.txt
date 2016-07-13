@@ -223,16 +223,19 @@ if (ENABLE_ANALYTICS)
 add_definitions(-DWITH_ANALYTICS)
 endif(ENABLE_ANALYTICS)
 
-
 option(ENABLE_PE_EVENT_CREATION "Enable Event Creation out of time series data" ON)
 if (ENABLE_PE_EVENT_CREATION)
   add_definitions(-DWITH_PE_EVENT_CREATION)
 endif(ENABLE_PE_EVENT_CREATION)
 
+option(ENABLE_SDE_SUPPORT "Enable the support of Stochastic Differential Equationa" OFF)
+if (ENABLE_SDE_SUPPORT)
+  add_definitions(-DWITH_SDE_SUPPORT)
+endif(ENABLE_SDE_SUPPORT)
 
 option (BUILD_GUI "Disable this if you do not want to build the COPASI GUI (CopasiUI)." ON)
 
-option(ENABLE_FLEX_BISON "Enable the use of fleex and bison to create parsers." OFF)
+option(ENABLE_FLEX_BISON "Enable the use of flex and bison to create parsers." OFF)
 if (ENABLE_FLEX_BISON)
   find_package(FLEX)
   find_package(BISON)
@@ -769,6 +772,7 @@ message(STATUS "-----------------------------------------------------------
    SBML Unit                = ${ENABLE_USE_SBMLUNIT}
    Model Merging            = ${ENABLE_WITH_MERGEMODEL}
    SEDML support            = ${ENABLE_COPASI_SEDML}
+   SDE support              = ${ENABLE_SDE_SUPPORT}
    GPROF support            = ${ENABLE_GPROF}
    UNDO framework           = ${ENABLE_COPASI_UNDO}
    Versioning framework     = ${ENABLE_VERSIONING}

@@ -25,8 +25,12 @@ class UndoReactionData;
 #define COL_RATE_COMPARTMENTS         5
 #define COL_IEXPRESSION_COMPARTMENTS  6
 #define COL_EXPRESSION_COMPARTMENTS   7
-#define COL_NEXPRESSION_COMPARTMENTS  8
-#define TOTAL_COLS_COMPARTMENTS       9
+#ifdef WITH_SDE_SUPPORT
+# define COL_NEXPRESSION_COMPARTMENTS  8
+# define TOTAL_COLS_COMPARTMENTS       9
+#else
+# define TOTAL_COLS_COMPARTMENTS       8
+#endif
 
 class CQCompartmentDM : public CQBaseDataModel
 {

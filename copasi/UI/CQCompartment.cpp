@@ -260,8 +260,13 @@ void CQCompartment::slotTypeChanged(int type)
 
         mpExpressionEMW->updateWidget();
 
+#ifdef WITH_SDE_SUPPORT
         mpBoxAddNoise->show();
         slotAddNoiseChanged(mpBoxAddNoise->isChecked());
+#else
+        mpBoxAddNoise->hide();
+        slotAddNoiseChanged(false);
+#endif
 
         break;
 

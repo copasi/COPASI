@@ -29,8 +29,12 @@ class UndoReactionData;
 #define COL_NRATE                 9
 #define COL_IEXPRESSION_SPECIES  10
 #define COL_EXPRESSION_SPECIES   11
-#define COL_NEXPRESSION_SPECIES  12
-#define TOTAL_COLS_SPECIES       13
+#ifdef WITH_SDE_SUPPORT
+# define COL_NEXPRESSION_SPECIES  12
+# define TOTAL_COLS_SPECIES       13
+#else
+# define TOTAL_COLS_SPECIES       12
+#endif
 
 class CQSpecieDM : public CQBaseDataModel
 {

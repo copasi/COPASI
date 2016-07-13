@@ -249,15 +249,19 @@ QVariant CQSpecieDM::data(const QModelIndex &index, int role) const
                   return QVariant(QString(""));
               }
 
+#ifdef WITH_SDE_SUPPORT
+
               case COL_NEXPRESSION_SPECIES:
               {
                 const CExpression * pExpression = mpSpecies->getNoiseExpressionPtr();
 
-                if (pExpression != NULL)
+                if (mpSpecies->addNoise() && pExpression != NULL)
                   return QVariant(QString(FROM_UTF8(pExpression->getDisplayString())));
                 else
                   return QVariant(QString(""));
               }
+
+#endif
             }
         }
     }
@@ -348,8 +352,11 @@ QVariant CQSpecieDM::headerData(int section, Qt::Orientation orientation,
           case COL_EXPRESSION_SPECIES:
             return QVariant("Expression" + ExpressionUnits);
 
+#ifdef WITH_SDE_SUPPORT
+
           case COL_NEXPRESSION_SPECIES:
             return QVariant("Noise Expression");
+#endif
 
           default:
             return QVariant();
