@@ -1036,6 +1036,7 @@ void CopasiUI3Window::slotFileOpen(QString file)
 //#endif
       mpDataModelGUI->notify(ListViews::MODEL, ListViews::DELETE,
                              CCopasiRootContainer::getDatamodelList()->operator[](0).getModel()->getKey());
+        mpListView->clearCurrentWidget();
 
       mpListView->switchToOtherWidget(0, "");
 
