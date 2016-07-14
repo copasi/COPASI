@@ -83,12 +83,13 @@ void CMathReaction::copy(const CMathReaction & src,
 void CMathReaction::moved()
 {}
 
-void CMathReaction::relocate(const std::vector< CMath::sRelocate > & relocations)
+void CMathReaction::relocate(const CMathContainer * pContainer,
+                             const std::vector< CMath::sRelocate > & relocations)
 {
-  CMathContainer::relocateObject(mpParticleFlux, relocations);
-  CMathContainer::relocateObject(mpFlux, relocations);
-  CMathContainer::relocateObject(mpPropensity, relocations);
-  CMathContainer::relocateObjectSet(mChangedSpecies, relocations);
+  pContainer->relocateObject(mpParticleFlux, relocations);
+  pContainer->relocateObject(mpFlux, relocations);
+  pContainer->relocateObject(mpPropensity, relocations);
+  pContainer->relocateObjectSet(mChangedSpecies, relocations);
 
   // std::set< std::pair < const CMathObject *, C_FLOAT64 > > ObjectBalance;
   ObjectBalance ObjectBalance;
@@ -98,7 +99,7 @@ void CMathReaction::relocate(const std::vector< CMath::sRelocate > & relocations
   for (; itObjectBalance != endObjectBalance; ++itObjectBalance)
     {
       const CMathObject * pObject = itObjectBalance->first;
-      CMathContainer::relocateObject(pObject, relocations);
+      pContainer->relocateObject(pObject, relocations);
 
       ObjectBalance.insert(std::make_pair(pObject, itObjectBalance->second));
     }
@@ -110,7 +111,7 @@ void CMathReaction::relocate(const std::vector< CMath::sRelocate > & relocations
 
   for (; pNumberBalance != pNumberBalanceEnd; ++pNumberBalance)
     {
-      CMathContainer::relocateValue(pNumberBalance->first, relocations);
+      pContainer->relocateValue(pNumberBalance->first, relocations);
     }
 }
 

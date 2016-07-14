@@ -73,9 +73,11 @@ public:
 
   /**
    * The objects and values are relocated
+   * @param const CMathContainer * pContainer
    * @param const std::vector< CMath::sRelocate > & relocations
    */
-  void relocate(const std::vector< CMath::sRelocate > & relocations);
+  void relocate(const CMathContainer * pContainer,
+                const std::vector< CMath::sRelocate > & relocations);
 
   /**
    * Create the update sequences required for event processing.

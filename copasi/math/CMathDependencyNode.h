@@ -1,4 +1,4 @@
-// Copyright (C) 2011 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -11,6 +11,8 @@
 
 #include "copasi/report/CCopasiObject.h"
 #include "copasi/math/CMathEnum.h"
+
+class CMathContainer;
 
 class CMathDependencyNode
 {
@@ -144,9 +146,11 @@ public:
 
   /**
    * Relocate the objects in the nodes of the graph.
+   * @param const CMathContainer * pContainer
    * @param std::vector< CMath::sRelocate > & relocations
    */
-  void relocate(const std::vector< CMath::sRelocate > & relocations);
+  void relocate(const CMathContainer * pContainer,
+                const std::vector< CMath::sRelocate > & relocations);
 
   void remove();
 

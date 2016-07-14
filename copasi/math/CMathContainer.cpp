@@ -66,22 +66,36 @@ void CMathContainer::createRelocation(const size_t & n, const size_t & o,
     }
 }
 
-// static
 void CMathContainer::relocateUpdateSequence(CObjectInterface::UpdateSequence & sequence,
-    const std::vector< CMath::sRelocate > & relocations)
+    const std::vector< CMath::sRelocate > & relocations) const
 {
   CObjectInterface::UpdateSequence::iterator it = sequence.begin();
   CObjectInterface::UpdateSequence::iterator end = sequence.end();
 
   for (; it != end; ++it)
     {
-      CMathContainer::relocateObject(*it, relocations);
+      relocateObject(*it, relocations);
     }
+
+  if (mOldObjects.array() == mObjects.array())
+    {
+      return;
+    }
+
+  std::vector< CObjectInterface * > Dirty(sequence);
+  it = Dirty.begin();
+  end = Dirty.end();
+  sequence.clear();
+
+  for (; it != end; ++it)
+    if (*it != NULL)
+      {
+        sequence.push_back(*it);
+      }
 }
 
-// static
 void CMathContainer::relocateObjectSet(CObjectInterface::ObjectSet & objectSet,
-                                       const std::vector< CMath::sRelocate > & relocations)
+                                       const std::vector< CMath::sRelocate > & relocations) const
 {
   CObjectInterface::ObjectSet ObjectSet;
   CObjectInterface::ObjectSet::iterator it = objectSet.begin();
@@ -90,16 +104,19 @@ void CMathContainer::relocateObjectSet(CObjectInterface::ObjectSet & objectSet,
   for (; it != end; ++it)
     {
       CObjectInterface * pObject = const_cast< CObjectInterface * >(*it);
-      CMathContainer::relocateObject(pObject, relocations);
-      ObjectSet.insert(pObject);
+      relocateObject(pObject, relocations);
+
+      if (pObject != NULL)
+        {
+          ObjectSet.insert(pObject);
+        }
     }
 
   objectSet = ObjectSet;
 }
 
-// static
 void CMathContainer::relocateValue(C_FLOAT64 *& pValue,
-                                   const std::vector< CMath::sRelocate > & relocations)
+                                   const std::vector< CMath::sRelocate > & relocations) const
 {
   std::vector< CMath::sRelocate >::const_iterator it = relocations.begin();
   std::vector< CMath::sRelocate >::const_iterator end = relocations.end();
@@ -108,19 +125,27 @@ void CMathContainer::relocateValue(C_FLOAT64 *& pValue,
     if (it->pValueStart <= pValue && pValue < it->pValueEnd)
       {
         pValue = it->pNewValue + (pValue - it->pOldValue) + it->offset;
-        break;
+        return;
       }
+
+  if (mOldValues.array() == mValues.array()) return;
+
+  const C_FLOAT64 * pBegin = mOldValues.array();
+  const C_FLOAT64 * pEnd = pBegin + mOldValues.size();
+
+  if (pBegin  <= pValue && pValue < pEnd)
+    {
+      pValue = NULL;
+    }
 }
 
-// static
-void CMathContainer::relocateValue(const C_FLOAT64 *& pValue, const std::vector< CMath::sRelocate > & relocations)
+void CMathContainer::relocateValue(const C_FLOAT64 *& pValue, const std::vector< CMath::sRelocate > & relocations) const
 {
   relocateValue(const_cast< C_FLOAT64 *& >(pValue), relocations);
 }
 
-// static
 void CMathContainer::relocateObject(CObjectInterface *& pObject,
-                                    const std::vector< CMath::sRelocate > & relocations)
+                                    const std::vector< CMath::sRelocate > & relocations) const
 {
   if (pObject == NULL ||
       pObject == pObject->getDataObject())
@@ -134,14 +159,12 @@ void CMathContainer::relocateObject(CObjectInterface *& pObject,
   pObject = pMathObject;
 }
 
-// static
-void CMathContainer::relocateObject(const CObjectInterface *& pObject, const std::vector< CMath::sRelocate > & relocations)
+void CMathContainer::relocateObject(const CObjectInterface *& pObject, const std::vector< CMath::sRelocate > & relocations) const
 {
   relocateObject(const_cast< CObjectInterface *& >(pObject), relocations);
 }
 
-// static
-void CMathContainer::relocateObject(CMathObject *& pObject, const std::vector< CMath::sRelocate > & relocations)
+void CMathContainer::relocateObject(CMathObject *& pObject, const std::vector< CMath::sRelocate > & relocations) const
 {
   if (pObject == NULL) return;
 
@@ -152,12 +175,21 @@ void CMathContainer::relocateObject(CMathObject *& pObject, const std::vector< C
     if (it->pObjectStart <= pObject && pObject < it->pObjectEnd)
       {
         pObject = it->pNewObject + (pObject - it->pOldObject) + it->offset;
-        break;
+        return;
       }
+
+  if (mOldObjects.array() == mObjects.array()) return;
+
+  const CMathObject * pBegin = mOldObjects.array();
+  const CMathObject * pEnd = pBegin + mOldObjects.size();
+
+  if (pBegin  <= pObject && pObject < pEnd)
+    {
+      pObject = NULL;
+    }
 }
 
-// static
-void CMathContainer::relocateObject(const CMathObject *& pObject, const std::vector< CMath::sRelocate > & relocations)
+void CMathContainer::relocateObject(const CMathObject *& pObject, const std::vector< CMath::sRelocate > & relocations) const
 {
   relocateObject(const_cast< CMathObject *& >(pObject), relocations);
 }
@@ -251,6 +283,7 @@ CMathContainer::CMathContainer(CModel & model):
   mpProcessQueue(new CMathEventQueue(*this)),
   mpRandomGenerator(CRandom::createGenerator()),
   mValues(),
+  mOldValues(),
   mpValuesBuffer(NULL),
   mInitialExtensiveValues(),
   mInitialIntensiveValues(),
@@ -303,6 +336,7 @@ CMathContainer::CMathContainer(CModel & model):
   mReducedStateValues(),
   mSimulationRequiredValues(),
   mObjects(),
+  mOldObjects(),
   mpObjectsBuffer(NULL),
   mEvents(),
   mReactions(),
@@ -338,6 +372,7 @@ CMathContainer::CMathContainer(const CMathContainer & src):
   mpProcessQueue(new CMathEventQueue(*this)),
   mpRandomGenerator(CRandom::createGenerator()),
   mValues(),
+  mOldValues(),
   mpValuesBuffer(NULL),
   mInitialExtensiveValues(),
   mInitialIntensiveValues(),
@@ -389,6 +424,7 @@ CMathContainer::CMathContainer(const CMathContainer & src):
   mReducedStateValues(src.mReducedStateValues),
   mSimulationRequiredValues(src.mSimulationRequiredValues),
   mObjects(),
+  mOldObjects(),
   mpObjectsBuffer(NULL),
   mEvents(),
   mReactions(),
@@ -412,6 +448,7 @@ CMathContainer::CMathContainer(const CMathContainer & src):
 
   memset(&mSize, 0, sizeof(mSize));
   sSize size = src.mSize;
+
   std::vector< CMath::sRelocate > Relocations = resize(size);
 
   mValues = src.mValues;
@@ -424,7 +461,7 @@ CMathContainer::CMathContainer(const CMathContainer & src):
   for (; pObject != pObjectEnd; ++pObject, ++pObjectSrc)
     {
       pObject->copy(*pObjectSrc, *this);
-      pObject->relocate(Relocations);
+      pObject->relocate(this, Relocations);
     }
 
   CMathEvent * pEvent = mEvents.array();
@@ -434,7 +471,7 @@ CMathContainer::CMathContainer(const CMathContainer & src):
   for (; pEvent != pEventEnd; ++pEvent, ++pEventSrc)
     {
       pEvent->copy(*pEventSrc, *this);
-      pEvent->relocate(Relocations);
+      pEvent->relocate(this, Relocations);
     }
 
   CMathReaction * pReaction = mReactions.array();
@@ -444,7 +481,7 @@ CMathContainer::CMathContainer(const CMathContainer & src):
   for (; pReaction != pReactionEnd; ++pReaction, ++pReactionSrc)
     {
       pReaction->copy(*pReactionSrc, *this);
-      pReaction->relocate(Relocations);
+      pReaction->relocate(this, Relocations);
     }
 
   CMathDelay * pDelay = mDelays.array();
@@ -454,8 +491,11 @@ CMathContainer::CMathContainer(const CMathContainer & src):
   for (; pDelay != pDelayEnd; ++pDelay, ++pDelaySrc)
     {
       pDelay->copy(*pDelaySrc, *this);
-      pDelay->relocate(Relocations);
+      pDelay->relocate(this, Relocations);
     }
+
+  mOldValues.initialize(mValues);
+  mOldObjects.initialize(mObjects);
 }
 
 CMathContainer::~CMathContainer()
@@ -1756,6 +1796,7 @@ void CMathContainer::allocate()
   Size.pObject = NULL;
 
   resize(Size);
+  finishResize();
 
   mValues = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
 }
@@ -3395,6 +3436,7 @@ CMath::Entity< CMathObject > CMathContainer::addAnalysisObject(const CMath::Enti
     }
 
   resize(Size);
+  finishResize();
 
   CExpression Expression("Source", this);
 
@@ -3560,6 +3602,7 @@ bool CMathContainer::removeAnalysisObject(CMath::Entity< CMathObject > & mathObj
 
   // Resize
   resize(Size);
+  finishResize();
 
   // Create Update sequences
   createUpdateSequences();
@@ -3580,6 +3623,7 @@ CMathEvent * CMathContainer::addAnalysisEvent(const CEvent & dataEvent)
   Size.nEventAssignments += Event.getAssignments().size();
 
   resize(Size);
+  finishResize();
 
   // The new event is the last in the list
   CMathEvent * pEvent = mEvents.array() + OldSize.nEvents;
@@ -3726,7 +3770,8 @@ CMathEvent * CMathContainer::addAnalysisEvent(const CEvent & dataEvent)
           Size = mSize;
           Size.nFixed--;
           Size.nFixedEventTargets++;
-          relocate(mValues, mObjects, Size, Relocations);
+
+          relocate(Size, Relocations);
 
           // Move the event target out of the save haven.
           Relocations.clear();
@@ -3777,7 +3822,8 @@ CMathEvent * CMathContainer::addAnalysisEvent(const CEvent & dataEvent)
           Relocations.push_back(RelocateTarget);
 
           Size = mSize;
-          relocate(mValues, mObjects, Size, Relocations);
+
+          relocate(Size, Relocations);
 
           pFixedEnd--;
         }
@@ -3837,6 +3883,7 @@ bool CMathContainer::removeAnalysisEvent(CMathEvent *& pMathEvent)
 
   // Resize
   resize(Size);
+  finishResize();
 
   CMathObject * pEventTarget = getMathObject(mExtensiveValues.array()) + mSize.nFixed;
   CMathObject * pEventTargetEnd = pEventTarget + mSize.nFixedEventTargets;
@@ -3918,7 +3965,8 @@ bool CMathContainer::removeAnalysisEvent(CMathEvent *& pMathEvent)
       Relocations.push_back(RelocateTarget);
 
       Size = mSize;
-      relocate(mValues, mObjects, Size, Relocations);
+
+      relocate(Size, Relocations);
 
       Relocations.clear();
 
@@ -4016,7 +4064,8 @@ bool CMathContainer::removeAnalysisEvent(CMathEvent *& pMathEvent)
       Size = mSize;
       Size.nFixed++;
       Size.nFixedEventTargets--;
-      relocate(mValues, mObjects, Size, Relocations);
+
+      relocate(Size, Relocations);
     }
 
   analyzeRoots();
@@ -4202,7 +4251,7 @@ void CMathContainer::createDelays()
 
       for (; itDelayValue != endDelayValue; ++itDelayValue)
         {
-          CMathContainer::relocateObject(itDelayValue->second.second, Relocations);
+          relocateObject(itDelayValue->second.second, Relocations);
         }
     }
 
@@ -4274,6 +4323,8 @@ void CMathContainer::createDelays()
           pDelay->modifyMathObject(itDelayValue, index);
         }
     }
+
+  finishResize();
 }
 
 void CMathContainer::createRelocations(const CMathContainer::sSize & size, std::vector< CMath::sRelocate > & relocations)
@@ -4393,15 +4444,11 @@ std::vector< CMath::sRelocate > CMathContainer::resize(CMathContainer::sSize & s
                        size.nIntensiveValues;
 
   // We need to preserve the old values and objects until they are properly relocated;
-  CVectorCore< C_FLOAT64 > OldValues;
-  OldValues.initialize(mValues);
   mpValuesBuffer = (ObjectCount > 0) ? new C_FLOAT64[ObjectCount] : NULL;
   mValues.initialize(ObjectCount, mpValuesBuffer);
   size.pValue = mValues.array();
   mValues = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
 
-  CVectorCore< CMathObject > OldObjects;
-  OldObjects.initialize(mObjects);
   mpObjectsBuffer = (ObjectCount > 0) ? new CMathObject[ObjectCount] : NULL;
   mObjects.initialize(ObjectCount, mpObjectsBuffer);
   size.pObject = mObjects.array();
@@ -4409,27 +4456,39 @@ std::vector< CMath::sRelocate > CMathContainer::resize(CMathContainer::sSize & s
   // Now we create the move information.
   createRelocations(size, Relocations);
 
-  relocate(OldValues, OldObjects, size, Relocations);
-
-  // Delete the old objects
-  if (OldValues.array() != NULL) delete [] OldValues.array();
-
-  if (OldObjects.array() != NULL) delete [] OldObjects.array();
+  relocate(size, Relocations);
 
   return Relocations;
 }
 
-void CMathContainer::relocate(CVectorCore< C_FLOAT64 > &oldValues,
-                              CVectorCore< CMathObject > &oldObjects,
-                              const sSize & size,
+void CMathContainer::finishResize()
+{
+  // Delete the old objects
+  if (mOldValues.array() != NULL &&
+      mOldValues.array() != mValues.array())
+    {
+      delete [] mOldValues.array();
+    }
+
+  if (mOldObjects.array() != NULL &&
+      mOldObjects.array() != mObjects.array())
+    {
+      delete [] mOldObjects.array();
+    }
+
+  mOldValues.initialize(mValues);
+  mOldObjects.initialize(mObjects);
+}
+
+void CMathContainer::relocate(const sSize & size,
                               const std::vector< CMath::sRelocate > & Relocations)
 {
   size_t nExtensiveValues = size.nFixed + size.nFixedEventTargets + size.nTime + size.nODE + size.nReactionSpecies + size.nAssignment;
 
   // Move the objects to the new location
-  C_FLOAT64 * pValue = oldValues.array();
-  C_FLOAT64 * pValueEnd = pValue + oldValues.size();
-  CMathObject * pObject = oldObjects.array();
+  C_FLOAT64 * pValue = mOldValues.array();
+  C_FLOAT64 * pValueEnd = pValue + mOldValues.size();
+  CMathObject * pObject = mOldObjects.array();
 
   for (; pValue != pValueEnd; ++pValue, ++pObject)
     {
@@ -4437,11 +4496,8 @@ void CMathContainer::relocate(CVectorCore< C_FLOAT64 > &oldValues,
       C_FLOAT64 * pNewValue = pValue;
       relocateValue(pNewValue, Relocations);
 
-      if (pValue != pNewValue)
-        {
-          *pNewValue = *pValue;
-        }
-      else
+      if (pNewValue != NULL &&
+          pNewValue != pValue)
         {
           *pNewValue = *pValue;
         }
@@ -4449,15 +4505,12 @@ void CMathContainer::relocate(CVectorCore< C_FLOAT64 > &oldValues,
       CMathObject * pNewObject = pObject;
       relocateObject(pNewObject, Relocations);
 
-      if (pObject != pNewObject)
+      if (pNewObject != NULL &&
+          pNewObject != pObject)
         {
           *pNewObject = *pObject;
-          pNewObject->relocate(Relocations);
+          pNewObject->relocate(this, Relocations);
           pObject->moved();
-        }
-      else
-        {
-          *pNewObject = *pObject;
         }
     }
 
@@ -4541,9 +4594,6 @@ void CMathContainer::relocate(CVectorCore< C_FLOAT64 > &oldValues,
   for (; itUpdateSequence != endUpdateSequence; ++itUpdateSequence)
     {
       relocateUpdateSequence(**itUpdateSequence, Relocations);
-
-      // The update sequence may contain pointer to deleted objects we sanitize here
-      (*itUpdateSequence)->sanitize(oldObjects, mObjects);
     }
 
   relocateObjectSet(mInitialStateValueExtensive, Relocations);
@@ -4573,8 +4623,8 @@ void CMathContainer::relocate(CVectorCore< C_FLOAT64 > &oldValues,
       itDataValue2MathObject->second = pObject;
     }
 
-  mInitialDependencies.relocate(Relocations);
-  mTransientDependencies.relocate(Relocations);
+  mInitialDependencies.relocate(this, Relocations);
+  mTransientDependencies.relocate(this, Relocations);
 
   // Relocate the Events
   relocateVector(mEvents, size.nEvents, Relocations);

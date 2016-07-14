@@ -53,9 +53,11 @@ public:
 
     /**
      * The objects and values are relocated
+     * @param const CMathContainer * pContainer
      * @param const std::vector< CMath::sRelocate > & relocations
      */
-    void relocate(const std::vector< CMath::sRelocate > & relocations);
+    void relocate(const CMathContainer * pContainer,
+                  const std::vector< CMath::sRelocate > & relocations);
 
     bool compile(const CEventAssignment * pDataAssignment,
                  CMathContainer & container);
@@ -149,9 +151,11 @@ public:
 
       /**
        * The objects and values are relocated
+       * @param const CMathContainer * pContainer
        * @param const std::vector< CMath::sRelocate > & relocations
        */
-      void relocate(const std::vector< CMath::sRelocate > & relocations);
+      void relocate(const CMathContainer * pContainer,
+                    const std::vector< CMath::sRelocate > & relocations);
 
       bool compile(CEvaluationNode * pRootNode,
                    const bool & equality,
@@ -212,9 +216,11 @@ public:
 
     /**
      * The objects and values are relocated
+     * @param const CMathContainer * pContainer
      * @param const std::vector< CMath::sRelocate > & relocations
      */
-    void relocate(const std::vector< CMath::sRelocate > & relocations);
+    void relocate(const CMathContainer * pContainer,
+                  const std::vector< CMath::sRelocate > & relocations);
 
     bool compile(const CEvent * pDataEvent,
                  CMathContainer & container);
@@ -333,9 +339,11 @@ public:
 
   /**
    * The objects and values are relocated
+   * @param const CMathContainer * pContainer
    * @param const std::vector< CMath::sRelocate > & relocations
    */
-  void relocate(const std::vector< CMath::sRelocate > & relocations);
+  void relocate(const CMathContainer * pContainer,
+                const std::vector< CMath::sRelocate > & relocations);
 
   bool compile(const CEvent * pDataEvent,
                CMathContainer & container);

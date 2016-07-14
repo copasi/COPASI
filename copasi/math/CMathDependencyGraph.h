@@ -97,9 +97,11 @@ public:
 
   /**
    * Relocate the objects in the nodes of the graph.
+   * @param const CMathContainer * pContainer
    * @param std::vector< CMath::sRelocate > & relocations
    */
-  void relocate(const std::vector< CMath::sRelocate > & relocations);
+  void relocate(const CMathContainer * pContainer,
+                const std::vector< CMath::sRelocate > & relocations);
 
   void exportDOTFormat(std::ostream & os, const std::string & name) const;
 

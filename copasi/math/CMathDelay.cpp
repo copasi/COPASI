@@ -71,16 +71,17 @@ void CMathDelay::copy(const CMathDelay & src, CMathContainer & container)
 void CMathDelay::moved()
 {}
 
-void CMathDelay::relocate(const std::vector< CMath::sRelocate > & relocations)
+void CMathDelay::relocate(const CMathContainer * pContainer,
+                          const std::vector< CMath::sRelocate > & relocations)
 {
-  CMathContainer::relocateObject(mpLagObject, relocations);
+  pContainer->relocateObject(mpLagObject, relocations);
 
   CMathObject **ppObject = mValueObjects.array();
   CMathObject **ppObjectEnd = ppObject + mValueObjects.size();
 
   for (; ppObject != ppObjectEnd; ++ppObject)
     {
-      CMathContainer::relocateObject(*ppObject, relocations);
+      pContainer->relocateObject(*ppObject, relocations);
     }
 }
 

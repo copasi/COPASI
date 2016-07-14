@@ -62,10 +62,11 @@ void CMathEvent::CAssignment::copy(const CMathEvent::CAssignment & src,
 void CMathEvent::CAssignment::moved()
 {}
 
-void CMathEvent::CAssignment::relocate(const std::vector< CMath::sRelocate > & relocations)
+void CMathEvent::CAssignment::relocate(const CMathContainer * pContainer,
+                                       const std::vector< CMath::sRelocate > & relocations)
 {
-  CMathContainer::relocateObject(mpTarget, relocations);
-  CMathContainer::relocateObject(mpAssignment, relocations);
+  pContainer->relocateObject(mpTarget, relocations);
+  pContainer->relocateObject(mpAssignment, relocations);
 }
 
 bool CMathEvent::CAssignment::compile(const CEventAssignment * pDataAssignment,
@@ -285,12 +286,13 @@ void CMathEvent::CTrigger::CRootProcessor::copy(const CMathEvent::CTrigger::CRoo
 void CMathEvent::CTrigger::CRootProcessor::moved()
 {}
 
-void CMathEvent::CTrigger::CRootProcessor::relocate(const std::vector< CMath::sRelocate > & relocations)
+void CMathEvent::CTrigger::CRootProcessor::relocate(const CMathContainer * pContainer,
+    const std::vector< CMath::sRelocate > & relocations)
 {
-  CMathContainer::relocateObject(mpRoot, relocations);
-  CMathContainer::relocateObject(mpRootState, relocations);
-  CMathContainer::relocateValue(mpRootValue, relocations);
-  CMathContainer::relocateValue(mpRootStateValue, relocations);
+  pContainer->relocateObject(mpRoot, relocations);
+  pContainer->relocateObject(mpRootState, relocations);
+  pContainer->relocateValue(mpRootValue, relocations);
+  pContainer->relocateValue(mpRootStateValue, relocations);
 }
 
 bool CMathEvent::CTrigger::CRootProcessor::compile(CEvaluationNode * pRootNode,
@@ -454,17 +456,18 @@ void CMathEvent::CTrigger::moved()
     }
 }
 
-void CMathEvent::CTrigger::relocate(const std::vector< CMath::sRelocate > & relocations)
+void CMathEvent::CTrigger::relocate(const CMathContainer * pContainer,
+                                    const std::vector< CMath::sRelocate > & relocations)
 {
-  CMathContainer::relocateObject(mpTrigger, relocations);
-  CMathContainer::relocateObject(mpInitialTrigger, relocations);
+  pContainer->relocateObject(mpTrigger, relocations);
+  pContainer->relocateObject(mpInitialTrigger, relocations);
 
   CRootProcessor * pRoot = mRoots.array();
   CRootProcessor * pRootEnd = pRoot + mRoots.size();
 
   for (; pRoot != pRootEnd; ++pRoot)
     {
-      pRoot->relocate(relocations);
+      pRoot->relocate(pContainer, relocations);
     }
 }
 
@@ -1199,18 +1202,19 @@ void CMathEvent::moved()
     }
 }
 
-void CMathEvent::relocate(const std::vector< CMath::sRelocate > & relocations)
+void CMathEvent::relocate(const CMathContainer * pContainer,
+                          const std::vector< CMath::sRelocate > & relocations)
 {
-  CMathContainer::relocateValue(mpTime, relocations);
+  pContainer->relocateValue(mpTime, relocations);
 
-  mTrigger.relocate(relocations);
+  mTrigger.relocate(pContainer, relocations);
 
   CAssignment * pAssignment = mAssignments.array();
   CAssignment * pAssignmentEnd = pAssignment + mAssignments.size();
 
   for (; pAssignment != pAssignmentEnd; ++pAssignment)
     {
-      pAssignment->relocate(relocations);
+      pAssignment->relocate(pContainer, relocations);
     }
 
   if (mAssignments.size() > 0)
@@ -1223,15 +1227,15 @@ void CMathEvent::relocate(const std::vector< CMath::sRelocate > & relocations)
       mTargetValues.initialize(0, NULL);
     }
 
-  CMathContainer::relocateObject(mpDelay, relocations);
-  CMathContainer::relocateObject(mpPriority, relocations);
+  pContainer->relocateObject(mpDelay, relocations);
+  pContainer->relocateObject(mpPriority, relocations);
 
   C_FLOAT64 ** ppTargetPointers = mTargetPointers.array();
   C_FLOAT64 ** ppTargetPointersEnd = ppTargetPointers + mTargetPointers.size();
 
   for (; ppTargetPointers != ppTargetPointersEnd; ++ppTargetPointers)
     {
-      CMathContainer::relocateValue(*ppTargetPointers, relocations);
+      pContainer->relocateValue(*ppTargetPointers, relocations);
     }
 }
 
