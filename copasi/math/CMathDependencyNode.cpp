@@ -316,9 +316,10 @@ void CMathDependencyNode::reset()
   mRequested = false;
 }
 
-void CMathDependencyNode::relocate(const std::vector< CMath::sRelocate > & relocations)
+void CMathDependencyNode::relocate(const CMathContainer * pContainer,
+                                   const std::vector< CMath::sRelocate > & relocations)
 {
-  CMathContainer::relocateObject(mpObject, relocations);
+  pContainer->relocateObject(mpObject, relocations);
 }
 
 void CMathDependencyNode::remove()
