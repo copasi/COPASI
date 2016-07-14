@@ -43,6 +43,11 @@ void CArrayElementReference::updateObjectName()
       ObjectName += "[" + ((pObject != NULL) ? CCopasiObjectName::escape(pObject->getObjectDisplayName()) : std::string("not found")) + "]";
     }
 
+  if (ObjectName.empty())
+    {
+      ObjectName = "[.]";
+    }
+
   setObjectName(ObjectName);
 
   mIgnoreUpdateObjectName = false;
