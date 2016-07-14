@@ -479,14 +479,19 @@ CArrayAnnotation::name_index_type CArrayAnnotation::displayNamesToCN(const std::
 CArrayAnnotation::index_type CArrayAnnotation::cnToIndex(const CArrayAnnotation::name_index_type & cnIndex) const
 {
   index_type Index(dimensionality(), C_INVALID_INDEX);
+
+  if (cnIndex.size() != Index.size())
+    {
+      return Index;
+    }
+
   index_type::iterator to = Index.begin();
-  index_type::iterator toEnd = Index.end();
   std::vector< CRegisteredObjectName >::const_iterator it = cnIndex.begin();
   std::vector< CRegisteredObjectName >::const_iterator itEnd = cnIndex.end();
   std::vector< std::vector<CRegisteredObjectName> >::const_iterator itCNs = mAnnotationsCN.begin();
   size_t index = 0;
 
-  for (; it != itEnd && to != toEnd; ++it, ++itCNs, ++to)
+  for (; it != itEnd; ++it, ++itCNs, ++to)
     {
       std::vector<CRegisteredObjectName>::const_iterator itCN = itCNs->begin();
       std::vector<CRegisteredObjectName>::const_iterator endCN = itCNs->end();
