@@ -232,6 +232,13 @@ public:
   bool removeParameter(const size_t & index);
 
   /**
+   * Remove a parameter or subgroup from the group
+   * @param const size_t & index
+   * @return bool success
+   */
+  bool removeParameter(CCopasiParameter * pParameter);
+
+  /**
    * Retrieve a parameter or subgroup from the group
    * @param const std::string & name
    * @return CCopasiParameter * parameter

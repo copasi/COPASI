@@ -103,7 +103,7 @@ CCopasiParameterGroup & CCopasiParameterGroup::operator = (const CCopasiParamete
   name_iterator itLHS = beginName();
   name_iterator endLHS = endName();
 
-  std::vector< std::string > ToBeRemoved;
+  std::vector< CCopasiParameter * > ToBeRemoved;
   std::vector< CCopasiParameter * > ToBeAdded;
 
   CCopasiParameter * pLHS;
@@ -126,13 +126,12 @@ CCopasiParameterGroup & CCopasiParameterGroup::operator = (const CCopasiParamete
         }
 
       const std::string & NameLHS = pLHS->getObjectName();
-
       const std::string & NameRHS = pRHS->getObjectName();
 
       // The LHS parameter is missing on the RHS thus we need to remove it
       if (NameLHS < NameRHS)
         {
-          ToBeRemoved.push_back(NameLHS);
+          ToBeRemoved.push_back(pLHS);
           ++itLHS;
           continue;
         }
@@ -156,7 +155,7 @@ CCopasiParameterGroup & CCopasiParameterGroup::operator = (const CCopasiParamete
     {
       // We only assign parameters
       if ((pLHS = dynamic_cast< CCopasiParameter * >(itLHS->second)) != NULL)
-        ToBeRemoved.push_back(pLHS->getObjectName());
+        ToBeRemoved.push_back(pLHS);
 
       ++itLHS;
     }
@@ -172,8 +171,8 @@ CCopasiParameterGroup & CCopasiParameterGroup::operator = (const CCopasiParamete
     }
 
   // We remove the parameters
-  std::vector< std::string >::const_iterator itToBeRemoved = ToBeRemoved.begin();
-  std::vector< std::string >::const_iterator endToBeRemoved = ToBeRemoved.end();
+  std::vector< CCopasiParameter * >::const_iterator itToBeRemoved = ToBeRemoved.begin();
+  std::vector< CCopasiParameter * >::const_iterator endToBeRemoved = ToBeRemoved.end();
 
   for (; itToBeRemoved != endToBeRemoved; ++itToBeRemoved)
     this->removeParameter(*itToBeRemoved);
@@ -351,6 +350,23 @@ bool CCopasiParameterGroup::removeParameter(const size_t & index)
 
       return true;
     }
+
+  return false;
+}
+
+bool CCopasiParameterGroup::removeParameter(CCopasiParameter * pParameter)
+{
+  index_iterator it = static_cast< elements * >(mpValue)->begin();
+  index_iterator end = static_cast< elements * >(mpValue)->begin();
+
+  for (; it != end; ++it)
+    if (*it == pParameter)
+      {
+        pdelete(*it);
+        static_cast< elements * >(mpValue)->erase(it, it + 1);
+
+        return true;
+      }
 
   return false;
 }

@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -328,11 +328,7 @@ void CSensProblem::addVariables(const CSensItem & item)
 
 bool CSensProblem::removeVariables()
 {
-  size_t imax = mpVariablesGroup->size();
-
-  for (size_t i = 0; i < imax; ++i)
-    mpVariablesGroup->removeParameter(0);
-
+  mpVariablesGroup->clear();
   return true;
 }
 
@@ -438,7 +434,7 @@ CSensProblem::getPossibleTargetFunctions(CSensProblem::SubTaskType type)
   //   getTargetFunctionName()
   switch (type)
     {
-      case(CSensProblem::Evaluation):
+      case (CSensProblem::Evaluation):
         list.push_back(CObjectLists::SINGLE_OBJECT);
         list.push_back(CObjectLists::REACTION_CONC_FLUXES);
         list.push_back(CObjectLists::REACTION_PART_FLUXES);
@@ -447,7 +443,7 @@ CSensProblem::getPossibleTargetFunctions(CSensProblem::SubTaskType type)
         list.push_back(CObjectLists::GLOBAL_PARAMETER_RATES);
         break;
 
-      case(CSensProblem::SteadyState):
+      case (CSensProblem::SteadyState):
         list.push_back(CObjectLists::SINGLE_OBJECT);
         list.push_back(CObjectLists::ALL_VARIABLES);
         list.push_back(CObjectLists::NON_CONST_METAB_CONCENTRATIONS);
@@ -461,7 +457,7 @@ CSensProblem::getPossibleTargetFunctions(CSensProblem::SubTaskType type)
         list.push_back(CObjectLists::REDUCED_JACOBIAN_EV_IM);
         break;
 
-      case(CSensProblem::TimeSeries):
+      case (CSensProblem::TimeSeries):
         list.push_back(CObjectLists::SINGLE_OBJECT);
         list.push_back(CObjectLists::ALL_VARIABLES);
         list.push_back(CObjectLists::NON_CONST_METAB_CONCENTRATIONS);
@@ -474,9 +470,9 @@ CSensProblem::getPossibleTargetFunctions(CSensProblem::SubTaskType type)
         //TODO all model variables
         break;
 
-      case(CSensProblem::ParameterEstimation):
-      case(CSensProblem::Optimization):
-      case(CSensProblem::CrossSection):
+      case (CSensProblem::ParameterEstimation):
+      case (CSensProblem::Optimization):
+      case (CSensProblem::CrossSection):
         list.push_back(CObjectLists::SINGLE_OBJECT);
         break;
 
@@ -506,7 +502,7 @@ CSensProblem::getPossibleVariables(CSensProblem::SubTaskType type)
   //   getVariableName()
   switch (type)
     {
-      case(Evaluation):
+      case (Evaluation):
         list.push_back(CObjectLists::SINGLE_OBJECT);
         list.push_back(CObjectLists::NON_CONST_METAB_CONCENTRATIONS);
         list.push_back(CObjectLists::METAB_CONCENTRATIONS);
@@ -517,7 +513,7 @@ CSensProblem::getPossibleVariables(CSensProblem::SubTaskType type)
         list.push_back(CObjectLists::ALL_PARAMETER_VALUES);
         break;
 
-      case(SteadyState):
+      case (SteadyState):
         list.push_back(CObjectLists::SINGLE_OBJECT);
         list.push_back(CObjectLists::ALL_LOCAL_PARAMETER_VALUES);
         list.push_back(CObjectLists::ALL_PARAMETER_VALUES);
@@ -525,7 +521,7 @@ CSensProblem::getPossibleVariables(CSensProblem::SubTaskType type)
         //TODO all const values, all model parameters
         break;
 
-      case(TimeSeries):
+      case (TimeSeries):
         list.push_back(CObjectLists::SINGLE_OBJECT);
         list.push_back(CObjectLists::ALL_LOCAL_PARAMETER_VALUES);
         list.push_back(CObjectLists::ALL_PARAMETER_VALUES);
@@ -534,8 +530,8 @@ CSensProblem::getPossibleVariables(CSensProblem::SubTaskType type)
         //TODO all const values, all model parameters, all initial values
         break;
 
-      case(CSensProblem::ParameterEstimation):
-      case(CSensProblem::Optimization):
+      case (CSensProblem::ParameterEstimation):
+      case (CSensProblem::Optimization):
         list.push_back(CObjectLists::SINGLE_OBJECT);
         list.push_back(CObjectLists::ALL_LOCAL_PARAMETER_VALUES);
         list.push_back(CObjectLists::ALL_PARAMETER_VALUES);
@@ -543,7 +539,7 @@ CSensProblem::getPossibleVariables(CSensProblem::SubTaskType type)
         list.push_back(CObjectLists::ALL_PARAMETER_AND_INITIAL_VALUES);
         break;
 
-      case(CSensProblem::CrossSection):
+      case (CSensProblem::CrossSection):
         list.push_back(CObjectLists::SINGLE_OBJECT);
         list.push_back(CObjectLists::ALL_LOCAL_PARAMETER_VALUES);
         list.push_back(CObjectLists::ALL_PARAMETER_VALUES);
