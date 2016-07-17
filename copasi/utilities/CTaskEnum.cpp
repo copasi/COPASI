@@ -19,8 +19,8 @@ const std::string CTaskEnum::TaskName[] =
   "Sensitivities",
   "Moieties",
   "Cross Section",
-  "Analytics",
   "Linear Noise Approximation",
+  "Analytics",
   "not specified",
   ""
 };
@@ -39,8 +39,8 @@ const char* CTaskEnum::TaskXML[] =
   "sensitivities",
   "moieties",
   "crosssection",
-  "analytics",
   "linearNoiseApproximation",
+  "analytics",
   "unset",
   NULL
 };
@@ -93,8 +93,8 @@ const std::string CTaskEnum::MethodName[] =
   "Bit Pattern Algorithm",
   "Householder Reduction",
   "Cross Section Finder",
-  "Analytics Finder"
   "Linear Noise Approximation",
+  "Analytics Finder"
   ""
 };
 
@@ -146,7 +146,7 @@ const char * CTaskEnum::MethodXML[] =
   "EFMBitPatternMethod",
   "Householder",
   "crossSectionMethod",
-  "analyticsMethod",
   "LinearNoiseApproximation",
+  "analyticsMethod",
   NULL
 };
