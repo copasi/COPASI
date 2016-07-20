@@ -42,7 +42,8 @@ CSteadyStateMethod::CSteadyStateMethod(const CCopasiContainer * pParent,
   mpProblem(NULL),
   mContainerState(),
   mContainerStateReduced(),
-  mpContainerStateTime(NULL)
+  mpContainerStateTime(NULL),
+  mCompartmentVolumes()
 {
   initializeParameter();
   CONSTRUCTOR_TRACE;
@@ -58,7 +59,8 @@ CSteadyStateMethod::CSteadyStateMethod(const CSteadyStateMethod & src,
   mpProblem(src.mpProblem),
   mContainerState(),
   mContainerStateReduced(),
-  mpContainerStateTime(NULL)
+  mpContainerStateTime(NULL),
+  mCompartmentVolumes()
 {
   initializeParameter();
   CONSTRUCTOR_TRACE;
@@ -181,13 +183,16 @@ bool CSteadyStateMethod::allPositive()
 
   const C_FLOAT64 * pValue = mContainerState.array();
   const C_FLOAT64 * pValueEnd = pValue + mContainerState.size();
+  pValue += mpContainer->getCountFixedEventTargets() + 1; // + 1 for time
+
   const CMathObject * pValueObject = mpContainer->getMathObject(pValue);
+  C_FLOAT64 ** ppCompartmentVolume = mCompartmentVolumes.array();
 
   // We need to check that all metabolites have positive particle numbers
   // with respect to the given resolution.
   C_FLOAT64 ParticleResolution = *mpDerivationResolution * mpContainer->getModel().getQuantity2NumberFactor();
 
-  for (; pValue != pValueEnd; ++pValue, ++pValueObject)
+  for (; pValue != pValueEnd; ++pValue, ++pValueObject, ++ppCompartmentVolume)
     {
       switch (pValueObject->getEntityType())
         {
@@ -202,7 +207,7 @@ bool CSteadyStateMethod::allPositive()
 
           case CMath::Species:
 
-            if (*pValue < - ParticleResolution)
+            if (*pValue < - ParticleResolution ***ppCompartmentVolume)
               {
                 return false;
               }

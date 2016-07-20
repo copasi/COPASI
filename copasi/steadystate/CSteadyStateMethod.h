@@ -89,6 +89,7 @@ protected:
   CVectorCore< C_FLOAT64 > mContainerStateReduced;
 
   C_FLOAT64 * mpContainerStateTime;
+  CVector< C_FLOAT64 * > mCompartmentVolumes;
 
   // Operations
 private:
