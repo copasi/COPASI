@@ -20,8 +20,10 @@
 
 #include "copasi.h"
 #include "utilities/CCopasiNode.h"
-#include "utilities/CUnit.h"
 #include "CFunctionAnalyzer.h"
+
+class CMathContainer;
+class CUnit;
 
 class CEvaluationTree;
 LIBSBML_CPP_NAMESPACE_BEGIN
@@ -331,7 +333,8 @@ public:
    * Figure out the appropriate CUnit to use, base on the child nodes.
    * This sets the default, appropriate for many cases, as Dimensionless
    */
-  virtual CUnit getUnit(const std::vector< CUnit > & /*units*/) const;
+  virtual CUnit getUnit(const CMathContainer &,
+                        const std::vector< CUnit > & units) const;
 
   // Attributes
 protected:

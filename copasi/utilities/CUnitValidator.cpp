@@ -5,30 +5,33 @@
 
 #include "copasi/utilities/CUnitValidator.h"
 
-CUnitValidator::CUnitValidator()
-{
-}
+//CUnitValidator::CUnitValidator():
+//  mMathContainer(),
+//  mTree(),
+//  mVariableUnits()
+//{
+//}
 
 CUnitValidator::CUnitValidator(const CMathContainer & math,
-                               const CFunction & function,
-                               const std::vector < CUnitValidator::~CUnit > & variableUnits):
-  mpMathContainer(&math),
-  mpTree(&function),
+                               const CEvaluationTree & function,
+                               const std::vector < CUnit > & variableUnits):
+  mMathContainer(math),
+  mTree(function),
   mVariableUnits(variableUnits)
 {
 }
 
-CUnitValidator::CUnitValidator(const CMathContainer * math, const CExpression * expression):
-  mpMathContainer(&math),
-  mpTree(&expression),
-  mVariableUnits(variableUnits)
+CUnitValidator::CUnitValidator(const CUnitValidator &src):
+  mMathContainer(src.mMathContainer),
+  mTree(src.mTree),
+  mVariableUnits(src.mVariableUnits)
 {
 }
 
-CUnitValidator::CUnitValidator(const CUnitValidator &src)
+CUnitValidator::~CUnitValidator()
 {
 }
 
-bool CUnitValidator::validateUnit(CUnit & unit)
+bool CUnitValidator::validateUnits(const CUnit & unit)
 {
 }

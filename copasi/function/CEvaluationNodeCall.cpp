@@ -23,6 +23,7 @@
 #include "CFunctionDB.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "utilities/utility.h"
+#include "utilities/CUnitValidator.h"
 #include "copasi/report/CCopasiRootContainer.h"
 
 CEvaluationNodeCall::CEvaluationNodeCall():
@@ -674,26 +675,33 @@ bool CEvaluationNodeCall::isBoolean() const
   return false;
 }
 
-CUnit CEvaluationNodeCall::getUnit(const std::vector< CUnit > & /*units*/) const
+CUnit CEvaluationNodeCall::getUnit(const CMathContainer & math,
+                                   const std::vector< CUnit > & units) const
 {
+  CUnit Unit(CBaseUnit::dimensionless);
+
   switch (mType & 0x00FFFFFF)
     {
       case FUNCTION:
       {
-        // TODO: Call CUnitValidator . . .
-        return CUnit(CBaseUnit::dimensionless);
+        CUnitValidator Validator(math, *mpFunction, units);
+        Unit.setConflict(!Validator.validateUnits());
       }
 
       break;
 
       case EXPRESSION:
       {
-        // TODO: Call CUnitValidator . . .
-        return CUnit(CBaseUnit::dimensionless);
+        CUnitValidator Validator(math, *mpExpression, units);
+        Unit.setConflict(!Validator.validateUnits());
       }
 
+      break;
+
       default:
-        return CUnit(CBaseUnit::undefined);
+        Unit.setConflict(true);
         break;
     }
+
+  return Unit;
 }

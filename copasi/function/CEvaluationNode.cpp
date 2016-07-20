@@ -20,6 +20,7 @@
 #include "sbml/util/List.h"
 
 #include "utilities/CNodeIterator.h"
+#include "utilities/CUnit.h"
 
 CEvaluationNode::CPrecedence::CPrecedence(const size_t & left,
     const size_t & right):
@@ -756,7 +757,8 @@ bool CEvaluationNode::operator<(const CEvaluationNode& right) const
 }
 
 //virtual
-CUnit CEvaluationNode::getUnit(const std::vector< CUnit > & /*units*/) const
+CUnit CEvaluationNode::getUnit(const CMathContainer & /* math */,
+                               const std::vector< CUnit > & /*units*/) const
 {
   return CUnit(CBaseUnit::dimensionless);
 }

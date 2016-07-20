@@ -16,28 +16,22 @@
 
 class CUnitValidator
 {
-
-public:
-
+private:
   // constructors
   /**
    * Default constructor
    */
   CUnitValidator();
 
+public:
+
   /**
    * Function constructor
    * @param
    */
   CUnitValidator(const CMathContainer & math,
-                 const CFunction & function,
+                 const CEvaluationTree & tree,
                  const std::vector< CUnit > & variableUnits = std::vector< CUnit >());
-
-  /**
-   * Expression constructor
-   * @param
-   */
-  CUnitValidator(const CMathContainer & math, const CExpression & expression);
 
   /**
    * Copy constructor
@@ -45,14 +39,16 @@ public:
    */
   CUnitValidator(const CUnitValidator & src);
 
-  ~CUnit();
+  ~CUnitValidator();
 
-  bool validateUnit(CUnit & unit = CUnit(CBaseUnit::undefined));
+  bool validateUnits(const CUnit & unit = CUnit(CBaseUnit::undefined));
+
+  const std::vector< CUnit > getVariableUnits() const;
 
 private:
 
-  CMathContainer * mpMathContainer;
-  CEvaluationTree * mpTree;
+  const CMathContainer & mMathContainer;
+  const CEvaluationTree & mTree;
   std::vector< CUnit > mVariableUnits;
   std::map < CEvaluationNode * , CUnit > nodeUnits;
 };

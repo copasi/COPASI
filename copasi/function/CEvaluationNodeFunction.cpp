@@ -1844,7 +1844,7 @@ CUnit CEvaluationNodeFunction::getUnit(const std::vector< CUnit > & units) const
 
         for (; it != end; it++)
           {
-            if (!(modf((*it).getExponent(), NULL) <= std::numeric_limits::epsilon()))
+            if (!(modf((*it).getExponent(), NULL) <= std::numeric_limits< C_FLOAT64 >::epsilon()))
               {
                 CUnit localUnit(CBaseUnit::undefined);
                 localUnit.setConflict();
