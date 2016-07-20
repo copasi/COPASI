@@ -66,7 +66,6 @@ private:
   CTrajectoryTask * mpTrajectory;
 
   CVector< C_FLOAT64 > mStartState;
-  CVector< C_FLOAT64 * > mCompartmentVolumes;
 
   CObjectInterface::UpdateSequence mUpdateConcentrations;
 
