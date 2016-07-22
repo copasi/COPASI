@@ -42,8 +42,7 @@ CNewtonMethod::CNewtonMethod(const CCopasiContainer * pParent,
   CSteadyStateMethod(pParent, methodType, taskType),
   mIpiv(NULL),
   mpTrajectory(NULL),
-  mStartState(),
-  mCompartmentVolumes()
+  mStartState()
 {
   initializeParameter();
 }
@@ -53,8 +52,7 @@ CNewtonMethod::CNewtonMethod(const CNewtonMethod & src,
   CSteadyStateMethod(src, pParent),
   mIpiv(NULL),
   mpTrajectory(NULL),
-  mStartState(),
-  mCompartmentVolumes()
+  mStartState()
 {
   initializeParameter();
 }
@@ -722,7 +720,7 @@ bool CNewtonMethod::initialize(const CSteadyStateProblem * pProblem)
   mdxdt.initialize(mDimension, mpContainer->getRate(true).array() + mpContainer->getCountFixedEventTargets() + 1);
   mIpiv = new C_INT [mDimension];
 
-  mCompartmentVolumes.resize(mDimension);
+  mCompartmentVolumes.resize(mDimension + mpContainer->getCountDependentSpecies());
   mCompartmentVolumes = NULL;
 
   if (mUseIntegration || mUseBackIntegration)
@@ -771,6 +769,17 @@ bool CNewtonMethod::initialize(const CSteadyStateProblem * pProblem)
     }
 
   mpContainer->getTransientDependencies().getUpdateSequence(mUpdateConcentrations, CMath::UseMoieties, mpContainer->getStateObjects(true), Requested, mpContainer->getSimulationUpToDateObjects());
+
+  // Determine the compartment volumes for dependent species;
+  pMathObjectEnd += mpContainer->getCountDependentSpecies();
+
+  for (; pMathObject != pMathObjectEnd; ++pMathObject, ++ppCompartmentVolume)
+    {
+      if (pMathObject->getEntityType() == CMath::Species)
+        {
+          *ppCompartmentVolume = (C_FLOAT64 *) mpContainer->getCompartment(pMathObject)->getValuePointer();
+        }
+    }
 
   return true;
 }

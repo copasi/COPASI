@@ -187,6 +187,12 @@ CModel::~CModel()
 }
 
 // virtual
+bool CModel::setObjectParent(const CCopasiContainer * pParent)
+{
+  return CCopasiContainer::setObjectParent(pParent);
+}
+
+// virtual
 std::string CModel::getChildObjectUnits(const CCopasiObject * pObject) const
 {
   if (pObject == mpRateReference)

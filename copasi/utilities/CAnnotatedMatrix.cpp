@@ -432,7 +432,8 @@ const CArrayAnnotation::data_type & CArrayAnnotation::operator[](const CArrayAnn
 
 CArrayAnnotation::name_index_type CArrayAnnotation::displayNamesToCN(const std::vector< std::string > & DisplayNames) const
 {
-  assert(DisplayNames.size() == dimensionality());
+  assert(DisplayNames.size() == dimensionality()
+         || dimensionality() == 0);
 
   name_index_type CNIndex(dimensionality());
   name_index_type::iterator to = CNIndex.begin();
@@ -441,7 +442,7 @@ CArrayAnnotation::name_index_type CArrayAnnotation::displayNamesToCN(const std::
   std::vector< std::vector<CRegisteredObjectName> >::const_iterator itCNs = mAnnotationsCN.begin();
   size_t index = 0;
 
-  for (; it != end; ++it, ++itCNs, ++index, ++to)
+  for (; it != end && index < dimensionality(); ++it, ++itCNs, ++index, ++to)
     {
       std::vector<CRegisteredObjectName>::const_iterator itCN = itCNs->begin();
       std::vector<CRegisteredObjectName>::const_iterator endCN = itCNs->end();
@@ -477,16 +478,20 @@ CArrayAnnotation::name_index_type CArrayAnnotation::displayNamesToCN(const std::
 
 CArrayAnnotation::index_type CArrayAnnotation::cnToIndex(const CArrayAnnotation::name_index_type & cnIndex) const
 {
-  assert(cnIndex.size() == dimensionality());
+  index_type Index(dimensionality(), C_INVALID_INDEX);
 
-  index_type Index(dimensionality());
+  if (cnIndex.size() != Index.size())
+    {
+      return Index;
+    }
+
   index_type::iterator to = Index.begin();
   std::vector< CRegisteredObjectName >::const_iterator it = cnIndex.begin();
-  std::vector< CRegisteredObjectName >::const_iterator end = cnIndex.end();
+  std::vector< CRegisteredObjectName >::const_iterator itEnd = cnIndex.end();
   std::vector< std::vector<CRegisteredObjectName> >::const_iterator itCNs = mAnnotationsCN.begin();
   size_t index = 0;
 
-  for (; it != end; ++it, ++itCNs, ++to)
+  for (; it != itEnd; ++it, ++itCNs, ++to)
     {
       std::vector<CRegisteredObjectName>::const_iterator itCN = itCNs->begin();
       std::vector<CRegisteredObjectName>::const_iterator endCN = itCNs->end();

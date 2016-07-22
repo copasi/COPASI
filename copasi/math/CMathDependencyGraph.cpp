@@ -357,21 +357,38 @@ bool CMathDependencyGraph::dependsOn(const CObjectInterface * pObject,
   return !UpdateSequence.empty();
 }
 
-void CMathDependencyGraph::relocate(const std::vector< CMath::sRelocate > & relocations)
+void CMathDependencyGraph::relocate(const CMathContainer * pContainer,
+                                    const std::vector< CMath::sRelocate > & relocations)
 {
   NodeMap Objects2Nodes;
+
   const_iterator it = mObjects2Nodes.begin();
   const_iterator end = mObjects2Nodes.end();
 
-  std::map< const CObjectInterface *, CMathDependencyNode * > m;
+  std::vector< const CObjectInterface * > ToBeRemoved;
 
   for (; it != end; ++it)
     {
       const CObjectInterface * pObject = it->first;
-      CMathContainer::relocateObject(pObject, relocations);
-      it->second->relocate(relocations);
+      pContainer->relocateObject(pObject, relocations);
 
-      Objects2Nodes.insert(std::make_pair(pObject, it->second));
+      if (pObject != NULL)
+        {
+          it->second->relocate(pContainer, relocations);
+          Objects2Nodes.insert(std::make_pair(pObject, it->second));
+        }
+      else
+        {
+          ToBeRemoved.push_back(pObject);
+        }
+    }
+
+  std::vector< const CObjectInterface * >::const_iterator itRemove = ToBeRemoved.begin();
+  std::vector< const CObjectInterface * >::const_iterator endRemove = ToBeRemoved.end();
+
+  for (; itRemove != endRemove; ++itRemove)
+    {
+      removeObject(*itRemove);
     }
 
   mObjects2Nodes = Objects2Nodes;

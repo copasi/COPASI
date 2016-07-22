@@ -59,26 +59,3 @@ void CMathUpdateSequence::setMathContainer(CMathContainer * pContainer)
       mpContainer->registerUpdateSequence(this);
     }
 }
-
-void CMathUpdateSequence::sanitize(const CVectorCore< CMathObject > & oldObjects,
-                                   const CVectorCore< CMathObject > & newObjects)
-{
-  if (oldObjects.array() == newObjects.array())
-    {
-      return;
-    }
-
-  const CMathObject * pBegin = oldObjects.array();
-  const CMathObject * pEnd = pBegin + oldObjects.size();
-
-  std::vector< CObjectInterface * > Dirty(*this);
-  std::vector< CObjectInterface * >::iterator it = Dirty.begin();
-  std::vector< CObjectInterface * >::iterator End = Dirty.end();
-  clear();
-
-  for (; it != End; ++it)
-    if (*it < pBegin || pEnd <= *it)
-      {
-        push_back(*it);
-      }
-}

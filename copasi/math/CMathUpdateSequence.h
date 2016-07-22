@@ -47,9 +47,6 @@ public:
    */
   void setMathContainer(CMathContainer * pContainer);
 
-  void sanitize(const CVectorCore< CMathObject > & oldObjects,
-                const CVectorCore< CMathObject > & newObjects);
-
 private:
   CMathContainer * mpContainer;
 };

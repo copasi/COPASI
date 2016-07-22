@@ -93,17 +93,18 @@ void CMathObject::copy(const CMathObject & src, CMathContainer & container)
     }
 }
 
-void CMathObject::relocate(const std::vector< CMath::sRelocate > & relocations)
+void CMathObject::relocate(const CMathContainer * pContainer,
+                           const std::vector< CMath::sRelocate > & relocations)
 {
-  CMathContainer::relocateValue(mpValue, relocations);
-  CMathContainer::relocateObject(mpCorrespondingProperty, relocations);
+  pContainer->relocateValue(mpValue, relocations);
+  pContainer->relocateObject(mpCorrespondingProperty, relocations);
 
   if (mpExpression != NULL)
     {
-      mpExpression->relocate(relocations);
+      mpExpression->relocate(pContainer, relocations);
     }
 
-  CMathContainer::relocateObjectSet(mPrerequisites, relocations);
+  pContainer->relocateObjectSet(mPrerequisites, relocations);
 }
 
 void CMathObject::moved()

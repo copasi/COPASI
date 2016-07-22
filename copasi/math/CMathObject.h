@@ -1,4 +1,4 @@
-// Copyright (C) 2011 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -48,9 +48,11 @@ public:
 
   /**
    * Relocate an existing object
+   * @param const CMathContainer * pContainer
    * @param const std::vector< CMath::sRelaocte > & relocations
    */
-  void relocate(const std::vector< CMath::sRelocate > & relocations);
+  void relocate(const CMathContainer * pContainer,
+                const std::vector< CMath::sRelocate > & relocations);
 
   /**
    * Notify an object that it has been moved;

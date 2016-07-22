@@ -85,6 +85,13 @@ public:
   ~CModel();        // destructor (deallocation code here)
 
   /**
+   * Set the object parent
+   * @param const CCopasiContainer * pParent
+   * @return bool success
+   */
+  virtual bool setObjectParent(const CCopasiContainer * pParent);
+
+  /**
    * Retrieve the units of the child object.
    * @return std::string units
    */

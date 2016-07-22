@@ -28,8 +28,8 @@ public:
     sens,
     moieties,
     crosssection,
-    analytics,
     lna,
+    analytics,
     UnsetTask
   };
 
@@ -95,8 +95,8 @@ public:
     EFMBitPatternAlgorithm,
     Householder,
     crossSectionMethod,
-    analyticsMethod,
-    linearNoiseApproximation
+    linearNoiseApproximation,
+    analyticsMethod
   };
 
   /**

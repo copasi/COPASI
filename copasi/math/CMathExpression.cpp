@@ -150,7 +150,8 @@ CMathExpression * CMathExpression::copy(const CMathExpression & src,
   return pExpression;
 }
 
-void CMathExpression::relocate(const std::vector< CMath::sRelocate > & relocations)
+void CMathExpression::relocate(const CMathContainer * pContainer,
+                               const std::vector< CMath::sRelocate > & relocations)
 {
   // Apply the relocations to all nodes of type POINTER
   CCopasiTree<CEvaluationNode>::iterator it = getRoot();
@@ -161,13 +162,13 @@ void CMathExpression::relocate(const std::vector< CMath::sRelocate > & relocatio
       if (it->getType() == (CEvaluationNode::OBJECT | CEvaluationNodeObject::POINTER))
         {
           C_FLOAT64 * pPointer = (C_FLOAT64 *) stringToPointer(it->getData());
-          CMathContainer::relocateValue(pPointer, relocations);
+          pContainer->relocateValue(pPointer, relocations);
           static_cast< CEvaluationNodeObject * >(&*it)->setObjectValuePtr(pPointer);
         }
     }
 
   mInfix = mpRoot->buildInfix();
-  CMathContainer::relocateObjectSet(mPrerequisites, relocations);
+  pContainer->relocateObjectSet(mPrerequisites, relocations);
 }
 
 const C_FLOAT64 & CMathExpression::value()

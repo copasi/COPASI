@@ -85,7 +85,7 @@ private:
         for (; pNew != pNewEnd; ++pNew, ++pOld)
           {
             *pNew = *pOld;
-            pNew->relocate(relocations);
+            pNew->relocate(this, relocations);
             pOld->moved();
           }
 
@@ -98,20 +98,20 @@ private:
 
         for (; pNew != pNewEnd; ++pNew)
           {
-            pNew->relocate(relocations);
+            pNew->relocate(this, relocations);
           }
       }
   }
 
 public:
-  static void relocateUpdateSequence(CObjectInterface::UpdateSequence & sequence, const std::vector< CMath::sRelocate > & relocations);
-  static void relocateObjectSet(CObjectInterface::ObjectSet & objectSet, const std::vector< CMath::sRelocate > & relocations);
-  static void relocateValue(C_FLOAT64 *& pValue, const std::vector< CMath::sRelocate > & relocations);
-  static void relocateValue(const C_FLOAT64 *& pValue, const std::vector< CMath::sRelocate > & relocations);
-  static void relocateObject(CObjectInterface *& pObject, const std::vector< CMath::sRelocate > & relocations);
-  static void relocateObject(const CObjectInterface *& pObject, const std::vector< CMath::sRelocate > & relocations);
-  static void relocateObject(CMathObject *& pObject, const std::vector< CMath::sRelocate > & relocations);
-  static void relocateObject(const CMathObject *& pObject, const std::vector< CMath::sRelocate > & relocations);
+  void relocateUpdateSequence(CObjectInterface::UpdateSequence & sequence, const std::vector< CMath::sRelocate > & relocations) const;
+  void relocateObjectSet(CObjectInterface::ObjectSet & objectSet, const std::vector< CMath::sRelocate > & relocations) const;
+  void relocateValue(C_FLOAT64 *& pValue, const std::vector< CMath::sRelocate > & relocations) const;
+  void relocateValue(const C_FLOAT64 *& pValue, const std::vector< CMath::sRelocate > & relocations) const;
+  void relocateObject(CObjectInterface *& pObject, const std::vector< CMath::sRelocate > & relocations) const;
+  void relocateObject(const CObjectInterface *& pObject, const std::vector< CMath::sRelocate > & relocations) const;
+  void relocateObject(CMathObject *& pObject, const std::vector< CMath::sRelocate > & relocations) const;
+  void relocateObject(const CMathObject *& pObject, const std::vector< CMath::sRelocate > & relocations) const;
 
 private:
   /**
@@ -772,16 +772,17 @@ private:
   std::vector< CMath::sRelocate > resize(sSize & size);
 
   /**
+   * Complete resize and release temporary objects
+   */
+  void finishResize();
+
+  /**
    * Relocate the objects.
    * This works only if you relocate objects down in the existing location or out of space.
-   * @param CVectorCore< C_FLOAT64 > &oldValues
-   * @param CVectorCore< CMathObject > &oldObjects
    * @param const sSize & size
    * @param const std::vector< CMath::sRelocate > & Relocations
    */
-  void relocate(CVectorCore< C_FLOAT64 > &oldValues,
-                CVectorCore< CMathObject > &oldObjects,
-                const sSize & size,
+  void relocate(const sSize & size,
                 const std::vector< CMath::sRelocate > & Relocations);
 
   /**
@@ -995,6 +996,7 @@ private:
   CRandom * mpRandomGenerator;
 
   CVectorCore< C_FLOAT64 > mValues;
+  CVectorCore< C_FLOAT64 > mOldValues;
   C_FLOAT64 * mpValuesBuffer;
 
   CVectorCore< C_FLOAT64 > mInitialExtensiveValues;
@@ -1156,6 +1158,7 @@ private:
    * A vector containing all math objects.
    */
   CVectorCore< CMathObject > mObjects;
+  CVectorCore< CMathObject > mOldObjects;
   CMathObject * mpObjectsBuffer;
 
   /**
