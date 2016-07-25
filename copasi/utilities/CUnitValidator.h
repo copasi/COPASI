@@ -50,7 +50,7 @@ private:
   const CMathContainer & mMathContainer;
   const CEvaluationTree & mTree;
   std::vector< CUnit > mVariableUnits;
-  std::map < CEvaluationNode * , CUnit > nodeUnits;
+  std::map < CEvaluationNode * , CUnit > mNodeUnits;
 };
 
 #endif // CUNIT_VALIDATOR_H
