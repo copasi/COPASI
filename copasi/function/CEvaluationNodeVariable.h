@@ -86,6 +86,16 @@ public:
   virtual void calculate();
 
   /**
+   * Figure out the appropriate CUnit to use, based on the child nodes.
+   * This sets the default, appropriate for many cases, as Dimensionless
+   * @param const CMathContainer & container
+   * @param const std::vector< CUnit > & units
+   * @return CUnit unit
+   */
+  virtual CUnit getUnit(const CMathContainer & container,
+                        const std::vector< CUnit > & units) const;
+
+  /**
    * Converts this node to an AST Node of type AST_NAME
    * @return ASTNode* the resulting ASTNode.
    */

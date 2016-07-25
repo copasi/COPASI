@@ -15,6 +15,7 @@
 #include "copasi.h"
 #include "CEvaluationNode.h"
 #include "CEvaluationTree.h"
+#include "utilities/CUnit.h"
 
 #include "sbml/math/ASTNode.h"
 
@@ -351,6 +352,16 @@ std::string CEvaluationNodeLogical::getXPPString(const std::vector< std::string 
     }
   else
     return "@"; //TODO
+}
+
+// virtual
+CUnit CEvaluationNodeLogical::getUnit(const CMathContainer & /* container */,
+                                     const std::vector< CUnit > & /* units */) const
+{
+  // TODO CRITICAL Implement me!
+  fatalError();
+
+  return CUnit();
 }
 
 // static

@@ -34,4 +34,5 @@ CUnitValidator::~CUnitValidator()
 
 bool CUnitValidator::validateUnits(const CUnit & unit)
 {
+  return false;
 }

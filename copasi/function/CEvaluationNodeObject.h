@@ -123,6 +123,16 @@ public:
   virtual std::string getXPPString(const std::vector< std::string > & children) const;
 
   /**
+   * Figure out the appropriate CUnit to use, based on the child nodes.
+   * This sets the default, appropriate for many cases, as Dimensionless
+   * @param const CMathContainer & container
+   * @param const std::vector< CUnit > & units
+   * @return CUnit unit
+   */
+  virtual CUnit getUnit(const CMathContainer & container,
+                        const std::vector< CUnit > & units) const;
+
+  /**
    * Creates a new CEvaluationNodeCall from an ASTNode and the given children
    * @param const ASTNode* pNode
    * @param const std::vector< CEvaluationNode * > & children
@@ -170,8 +180,6 @@ public:
   virtual std::string getMMLString(const std::vector< std::string > & children,
                                    bool expand,
                                    const std::vector< std::vector< std::string > > & variables) const;
-
-  CUnit getUnit(const std::vector< CUnit > & /*units*/) const;
 
   //Attributes
 private:

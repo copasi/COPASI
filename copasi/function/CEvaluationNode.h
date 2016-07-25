@@ -330,10 +330,13 @@ public:
   const CEvaluationNode* findTopMinus(const std::vector<CFunctionAnalyzer::CValue> & callParameters) const;
 
   /**
-   * Figure out the appropriate CUnit to use, base on the child nodes.
+   * Figure out the appropriate CUnit to use, based on the child nodes.
    * This sets the default, appropriate for many cases, as Dimensionless
+   * @param const CMathContainer & container
+   * @param const std::vector< CUnit > & units
+   * @return CUnit unit
    */
-  virtual CUnit getUnit(const CMathContainer &,
+  virtual CUnit getUnit(const CMathContainer & container,
                         const std::vector< CUnit > & units) const;
 
   // Attributes

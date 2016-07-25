@@ -11,6 +11,7 @@
 #include "CEvaluationTree.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "utilities/utility.h"
+#include "utilities/CUnit.h"
 #include "copasi/report/CCopasiRootContainer.h"
 
 CEvaluationNodeDelay::CEvaluationNodeDelay():
@@ -155,6 +156,16 @@ std::string CEvaluationNodeDelay::getXPPString(const std::vector< std::string > 
     }
 
   return "@";
+}
+
+// virtual
+CUnit CEvaluationNodeDelay::getUnit(const CMathContainer & /* container */,
+                                    const std::vector< CUnit > & /* units */) const
+{
+  // TODO CRITICAL Implement me!
+  fatalError();
+
+  return CUnit();
 }
 
 // static

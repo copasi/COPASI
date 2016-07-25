@@ -1766,7 +1766,9 @@ std::string CEvaluationNodeFunction::getMMLString(const std::vector< std::string
   return out.str();
 }
 
-CUnit CEvaluationNodeFunction::getUnit(const std::vector< CUnit > & units) const
+
+CUnit CEvaluationNodeFunction::getUnit(const CMathContainer & /* container */,
+                                       const std::vector< CUnit > & units) const
 {
   switch ((SubType)CEvaluationNode::subType(this->getType()))
     {

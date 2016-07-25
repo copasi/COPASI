@@ -417,9 +417,12 @@ std::string CEvaluationNodeObject::getMMLString(const std::vector< std::string >
   return out.str();
 }
 
-CUnit CEvaluationNodeObject::getUnit(const std::vector< CUnit > & /*units*/) const
+// virtual
+CUnit CEvaluationNodeObject::getUnit(const CMathContainer & /* container */,
+                                     const std::vector< CUnit > & /* units */) const
 {
-  if (mpObject != NULL)
+  if (mpObject != NULL &&
+      mpObject->getDataObject() != NULL)
     return CUnit(mpObject->getDataObject()->getUnits());
   else
     return CUnit(CBaseUnit::undefined);

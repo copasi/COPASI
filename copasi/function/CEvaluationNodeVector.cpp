@@ -24,6 +24,7 @@
 
 #include "CEvaluationNode.h"
 #include "CEvaluationTree.h"
+#include "utilities/CUnit.h"
 
 #include "sbml/math/ASTNode.h"
 
@@ -105,6 +106,16 @@ std::string CEvaluationNodeVector::getBerkeleyMadonnaString(const std::vector< s
 std::string CEvaluationNodeVector::getXPPString(const std::vector< std::string > & /* children */) const
 {
   return "@";
+}
+
+// virtual
+CUnit CEvaluationNodeVector::getUnit(const CMathContainer & /* container */,
+                                     const std::vector< CUnit > & /* units */) const
+{
+  // TODO CRITICAL Implement me!
+  fatalError();
+
+  return CUnit();
 }
 
 // static

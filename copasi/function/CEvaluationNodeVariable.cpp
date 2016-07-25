@@ -23,6 +23,7 @@
 #include "copasi.h"
 #include "CEvaluationNode.h"
 #include "CEvaluationTree.h"
+#include "utilities/CUnit.h"
 
 #include "sbml/math/ASTNode.h"
 
@@ -67,6 +68,16 @@ void CEvaluationNodeVariable::calculate()
 
 size_t CEvaluationNodeVariable::getIndex() const
 {return mIndex;}
+
+// virtual
+CUnit CEvaluationNodeVariable::getUnit(const CMathContainer & /* container */,
+                                     const std::vector< CUnit > & /* units */) const
+{
+  // TODO CRITICAL Implement me!
+  fatalError();
+
+  return CUnit();
+}
 
 ASTNode* CEvaluationNodeVariable::toAST(const CCopasiDataModel* /*pDataModel*/) const
 {

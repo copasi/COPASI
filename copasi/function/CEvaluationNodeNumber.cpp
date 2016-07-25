@@ -20,6 +20,7 @@
 #include "copasi.h"
 #include "CEvaluationNode.h"
 #include "utilities/utility.h"
+#include "utilities/CUnit.h"
 
 #include "sbml/math/ASTNode.h"
 
@@ -83,6 +84,16 @@ CEvaluationNodeNumber::CEvaluationNodeNumber(const CEvaluationNodeNumber & src):
 {}
 
 CEvaluationNodeNumber::~CEvaluationNodeNumber() {}
+
+// virtual
+CUnit CEvaluationNodeNumber::getUnit(const CMathContainer & /* container */,
+                                     const std::vector< CUnit > & /* units */) const
+{
+  // TODO CRITICAL Implement me!
+  fatalError();
+
+  return CUnit();
+}
 
 // static
 CEvaluationNode * CEvaluationNodeNumber::fromAST(const ASTNode * pASTNode, const std::vector< CEvaluationNode * > & children)
