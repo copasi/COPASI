@@ -177,16 +177,6 @@ std::string CEvaluationNodeConstant::getXPPString(const std::vector< std::string
   return data;
 }
 
-// virtual
-CUnit CEvaluationNodeConstant::getUnit(const CMathContainer & /* container */,
-                                       const std::vector< CUnit > & /* units */) const
-{
-  // TODO CRITICAL Implement me!
-  fatalError();
-
-  return CUnit();
-}
-
 // static
 CEvaluationNode * CEvaluationNodeConstant::fromAST(const ASTNode * pASTNode, const std::vector< CEvaluationNode * > & children)
 {

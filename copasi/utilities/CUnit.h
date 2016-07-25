@@ -122,6 +122,7 @@ public:
   std::vector< SymbolComponent > getSymbolComponents() const;
   bool isUnitType(UnitType type) const;
   void setConflict(bool conflict = true);
+  bool conflict() const;
 
 private:
   std::string mExpression;

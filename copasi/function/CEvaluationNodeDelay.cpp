@@ -10,6 +10,8 @@
 #include "CEvaluationNode.h"
 #include "CEvaluationTree.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
+#include "math/CMathContainer.h"
+#include "model/CModel.h"
 #include "utilities/utility.h"
 #include "utilities/CUnit.h"
 #include "copasi/report/CCopasiRootContainer.h"
@@ -159,13 +161,19 @@ std::string CEvaluationNodeDelay::getXPPString(const std::vector< std::string > 
 }
 
 // virtual
-CUnit CEvaluationNodeDelay::getUnit(const CMathContainer & /* container */,
-                                    const std::vector< CUnit > & /* units */) const
+CUnit CEvaluationNodeDelay::getUnit(const CMathContainer & container,
+                                    const std::vector< CUnit > & units) const
 {
-  // TODO CRITICAL Implement me!
-  fatalError();
+  // The units of the delay functions are the units of the delay value which is the first child
+  CUnit Unit = units[0];
 
-  return CUnit();
+  if (!Unit.conflict())
+    {
+      // The units for the delay lag must be the time unit of the model otherwise we need to indicate a conflict
+      Unit.setConflict(!(units[1] == CUnit(container.getModel().getTimeUnit())));
+    }
+
+  return Unit;
 }
 
 // static

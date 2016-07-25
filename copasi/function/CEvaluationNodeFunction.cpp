@@ -1770,6 +1770,8 @@ std::string CEvaluationNodeFunction::getMMLString(const std::vector< std::string
 CUnit CEvaluationNodeFunction::getUnit(const CMathContainer & /* container */,
                                        const std::vector< CUnit > & units) const
 {
+  CUnit Unit;
+
   switch ((SubType)CEvaluationNode::subType(this->getType()))
     {
       case LOG:
@@ -1801,33 +1803,46 @@ CUnit CEvaluationNodeFunction::getUnit(const CMathContainer & /* container */,
       case ARCCOTH:
       case FACTORIAL:
       case NOT:
-        return CUnit(CBaseUnit::dimensionless);
+        Unit = CUnit(CBaseUnit::dimensionless);
+
+        if (!Unit.conflict())
+          {
+            Unit.setConflict(!(units[0] == CUnit(CBaseUnit::dimensionless)));
+          }
+
         break;
 
       case MINUS:
       case PLUS:
+      case MAX:
+      case MIN:
+      case RUNIFORM:
+      case RNORMAL:
+        Unit = units[0];
+
+        if (!Unit.conflict())
+          {
+            Unit.setConflict(!(Unit == units[1]));
+          }
+
+        break;
+
       case FLOOR:
       case CEIL:
       case ABS:
       case RPOISSON:
-        return units[0];
+        Unit = units[0];
+
         break;
 
       case RGAMMA:
-        return units[1]; // the scale
-        break;
+        // The unit of the gamma distribution is the inverse of the scale parameter (units[1])
+        Unit = units[1].exponentiate(-1);
 
-      case RUNIFORM:
-      case RNORMAL:
-      case MAX:
-      case MIN:
-        if (units[0].isEquivalent(units[1]))
-          return units[0];
-        else
+        // The shape parameter must be dimensionless
+        if (!Unit.conflict())
           {
-            CUnit tmpUnit = CUnit(CBaseUnit::undefined);
-            tmpUnit.setConflict();
-            return tmpUnit;
+            Unit.setConflict(!(units[0] == CUnit(CBaseUnit::dimensionless)));
           }
 
         break;
@@ -1838,29 +1853,30 @@ CUnit CEvaluationNodeFunction::getUnit(const CMathContainer & /* container */,
         // Test if each component's exponent
         // is an integer. (don't want fractional exponents) by . . .
         // modf(exp, NULL) =< std::numeric_limits::epsilon
-        CUnit candidateUnit = units[0];
-        candidateUnit.exponentiate(1.0 / 2.0);
+        Unit = units[0];
+        Unit.exponentiate(1.0 / 2.0);
 
-        std::set< CUnitComponent >::const_iterator  it = candidateUnit.getComponents().begin();
-        std::set< CUnitComponent >::const_iterator end = candidateUnit.getComponents().end();
+        std::set< CUnitComponent >::const_iterator  it = Unit.getComponents().begin();
+        std::set< CUnitComponent >::const_iterator end = Unit.getComponents().end();
 
         for (; it != end; it++)
           {
-            if (!(modf((*it).getExponent(), NULL) <= std::numeric_limits< C_FLOAT64 >::epsilon()))
+            if (!(remainder((*it).getExponent(), 1.0) <= 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon()))
               {
-                CUnit localUnit(CBaseUnit::undefined);
-                localUnit.setConflict();
-                return localUnit;
+                Unit = CUnit(CBaseUnit::undefined);
+                Unit.setConflict(true);
+
+                break;
               }
           }
 
-        return candidateUnit;
         break;
       }
 
       default:
-        return CUnit(CBaseUnit::undefined);
-//        fatalError();
+        Unit = CUnit(CBaseUnit::undefined);
         break;
     }
+
+  return Unit;
 }

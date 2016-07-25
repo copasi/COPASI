@@ -830,3 +830,9 @@ void CUnit::setConflict(bool conflict)
 {
   mConflict = conflict;
 }
+
+bool CUnit::conflict() const
+{
+  return mConflict;
+}
+
