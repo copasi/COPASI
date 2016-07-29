@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -170,7 +170,7 @@ CUnit CEvaluationNodeDelay::getUnit(const CMathContainer & container,
   if (!Unit.conflict())
     {
       // The units for the delay lag must be the time unit of the model otherwise we need to indicate a conflict
-      Unit.setConflict(!(units[1] == CUnit(container.getModel().getTimeUnit())));
+      Unit.setConflict(!(units[1] == container.getModel().getTimeUnit()));
     }
 
   return Unit;

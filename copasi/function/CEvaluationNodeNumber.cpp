@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -84,16 +84,6 @@ CEvaluationNodeNumber::CEvaluationNodeNumber(const CEvaluationNodeNumber & src):
 {}
 
 CEvaluationNodeNumber::~CEvaluationNodeNumber() {}
-
-// virtual
-CUnit CEvaluationNodeNumber::getUnit(const CMathContainer & /* container */,
-                                     const std::vector< CUnit > & /* units */) const
-{
-  // TODO CRITICAL Implement me!
-  fatalError();
-
-  return CUnit();
-}
 
 // static
 CEvaluationNode * CEvaluationNodeNumber::fromAST(const ASTNode * pASTNode, const std::vector< CEvaluationNode * > & children)

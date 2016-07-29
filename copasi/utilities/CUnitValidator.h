@@ -43,7 +43,8 @@ public:
 
   bool validateUnits(const CUnit & unit = CUnit(CBaseUnit::undefined));
 
-  const std::vector< CUnit > getVariableUnits() const;
+  const std::vector< CUnit > & getVariableUnits() const;
+  const CUnit & getUnit() const;
 
 private:
   void getUnits();

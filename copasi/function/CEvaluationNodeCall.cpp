@@ -678,14 +678,15 @@ bool CEvaluationNodeCall::isBoolean() const
 CUnit CEvaluationNodeCall::getUnit(const CMathContainer & math,
                                    const std::vector< CUnit > & units) const
 {
-  CUnit Unit(CBaseUnit::dimensionless);
+  CUnit Unit;
 
   switch (mType & 0x00FFFFFF)
     {
       case FUNCTION:
       {
         CUnitValidator Validator(math, *mpFunction, units);
-        Unit.setConflict(!Validator.validateUnits());
+        Validator.validateUnits();
+        Unit = Validator.getUnit();
       }
 
       break;
@@ -693,7 +694,8 @@ CUnit CEvaluationNodeCall::getUnit(const CMathContainer & math,
       case EXPRESSION:
       {
         CUnitValidator Validator(math, *mpExpression, units);
-        Unit.setConflict(!Validator.validateUnits());
+        Validator.validateUnits();
+        Unit = Validator.getUnit();
       }
 
       break;

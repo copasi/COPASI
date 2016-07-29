@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -356,8 +356,36 @@ std::string CEvaluationNodeLogical::getXPPString(const std::vector< std::string 
 
 // virtual
 CUnit CEvaluationNodeLogical::getUnit(const CMathContainer & /* container */,
-                                     const std::vector< CUnit > & /* units */) const
+                                      const std::vector< CUnit > & units) const
 {
+  CUnit Unit(CBaseUnit::dimensionless);
+
+  switch (mType & 0x00FFFFFF)
+    {
+      case OR:
+      case XOR:
+      case AND:
+        if (!(units[0] == CBaseUnit::dimensionless) ||
+            !(units[1] == CBaseUnit::dimensionless))
+          {
+            Unit.setConflict(true);
+          }
+
+        break;
+
+      case EQ:
+      case NE:
+      case GT:
+      case GE:
+      case LT:
+      case LE:
+      {
+        CUnit Arguments = CUnit::merge(units[0], units[1]);
+        Unit.setConflict(Arguments.conflict());
+      }
+      break;
+    }
+
   // TODO CRITICAL Implement me!
   fatalError();
 

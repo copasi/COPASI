@@ -38,25 +38,34 @@ bool CUnitValidator::validateUnits(const CUnit & unit)
   getUnits();
   setUnits(unit);
 
+  bool conflict = false;
+
   std::map < CEvaluationNode * , CUnit >::const_iterator itMap = mNodeUnits.begin();
   std::map < CEvaluationNode * , CUnit >::const_iterator endMap = mNodeUnits.end();
 
-  for (; itMap != endMap; ++itMap)
+  for (; itMap != endMap && !conflict; ++itMap)
     if (itMap->second.conflict())
       {
-        return false;
+        conflict = true;
       }
 
   std::vector< CUnit >::const_iterator it = mVariableUnits.begin();
   std::vector< CUnit >::const_iterator end = mVariableUnits.end();
 
-  for (; it != end; ++it)
+  for (; it != end && !conflict; ++it)
     if (it->conflict())
       {
-        return false;
+        conflict = true;
       }
 
-  return true;
+  std::map < CEvaluationNode * , CUnit >::iterator found = mNodeUnits.find(const_cast< CEvaluationNode * >(mTree.getRoot()));
+
+  if (found != mNodeUnits.end())
+    {
+      found->second.setConflict(conflict);
+    }
+
+  return !conflict;
 }
 
 void CUnitValidator::getUnits()
@@ -136,4 +145,24 @@ void CUnitValidator::setUnits(const CUnit & unit)
             }
         }
     }
+}
+
+const std::vector< CUnit > & CUnitValidator::getVariableUnits() const
+{
+  return  mVariableUnits;
+}
+
+const CUnit & CUnitValidator::getUnit() const
+{
+  std::map < CEvaluationNode * , CUnit >::const_iterator found = mNodeUnits.find(const_cast< CEvaluationNode * >(mTree.getRoot()));
+
+  if (found != mNodeUnits.end())
+    {
+      return found->second;
+    }
+
+  static CUnit Unit;
+  Unit.setConflict(true);
+
+  return Unit;
 }
