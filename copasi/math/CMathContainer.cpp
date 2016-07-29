@@ -611,6 +611,37 @@ const bool & CMathContainer::isAutonomous() const
   return mIsAutonomous;
 }
 
+bool CMathContainer::areObjectsConstant(const CObjectInterface::ObjectSet & objects) const
+{
+  // Check whether all objects are constant, i.e., if they are state values or depend on any state value.
+  CObjectInterface::ObjectSet::const_iterator it1 = objects.begin();
+  CObjectInterface::ObjectSet::const_iterator end1 = objects.end();
+  CObjectInterface::ObjectSet::const_iterator it2 = mStateValues.begin();
+  CObjectInterface::ObjectSet::const_iterator end2 = mStateValues.end();
+
+  while (it1 != end1 && it2 != end2)
+    {
+      if (*it1 < *it2)
+        {
+          ++it1;
+        }
+      else if (*it2 < *it1)
+        {
+          ++it2;
+        }
+      else
+        {
+          return false;
+        }
+    }
+
+  CObjectInterface::UpdateSequence UpdateSequence;
+
+  mTransientDependencies.getUpdateSequence(UpdateSequence, CMath::UpdateMoieties | CMath::EventHandling, mStateValues, objects);
+
+  return UpdateSequence.empty();
+}
+
 const C_FLOAT64 & CMathContainer::getQuantity2NumberFactor() const
 {
   return *(C_FLOAT64*) mpQuantity2NumberFactor->getValuePointer();

@@ -1244,8 +1244,8 @@ ASTNode* CEvaluationNodeFunction::toAST(const CCopasiDataModel* pDataModel) cons
         node->addChild(sibling->toAST(pDataModel));
       }
       break;
-        // :TODO: Bug 894: Implement me.
-        //fatalError();
+      // :TODO: Bug 894: Implement me.
+      //fatalError();
       break;
     }
 
@@ -1766,7 +1766,6 @@ std::string CEvaluationNodeFunction::getMMLString(const std::vector< std::string
   return out.str();
 }
 
-
 CUnit CEvaluationNodeFunction::getUnit(const CMathContainer & /* container */,
                                        const std::vector< CUnit > & units) const
 {
@@ -1803,13 +1802,7 @@ CUnit CEvaluationNodeFunction::getUnit(const CMathContainer & /* container */,
       case ARCCOTH:
       case FACTORIAL:
       case NOT:
-        Unit = CUnit(CBaseUnit::dimensionless);
-
-        if (!Unit.conflict())
-          {
-            Unit.setConflict(!(units[0] == CUnit(CBaseUnit::dimensionless)));
-          }
-
+        Unit = CUnit::merge(CBaseUnit::dimensionless, units[0]);
         break;
 
       case MINUS:
@@ -1818,13 +1811,7 @@ CUnit CEvaluationNodeFunction::getUnit(const CMathContainer & /* container */,
       case MIN:
       case RUNIFORM:
       case RNORMAL:
-        Unit = units[0];
-
-        if (!Unit.conflict())
-          {
-            Unit.setConflict(!(Unit == units[1]));
-          }
-
+        Unit = CUnit::merge(units[0], units[1]);
         break;
 
       case FLOOR:

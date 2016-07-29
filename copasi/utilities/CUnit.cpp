@@ -58,6 +58,28 @@ std::string CUnit::replaceSymbol(const std::string & expression,
   return (Parser.yyparse() == 0) ? Parser.getReplacedExpression() : expression;
 }
 
+// static
+CUnit CUnit::merge(const CUnit & a, const CUnit & b)
+{
+  CUnit Merged(a);
+
+  if (a == CUnit(CBaseUnit::undefined))
+    {
+      Merged = b;
+      Merged.setConflict(a.conflict() || b.conflict());
+    }
+  else if (b == CUnit(CBaseUnit::undefined))
+    {
+      Merged.setConflict(a.conflict() || b.conflict());
+    }
+  else
+    {
+      Merged.setConflict(a.conflict() || b.conflict() || !(a == b));
+    }
+
+  return Merged;
+}
+
 // constructors
 // default
 CUnit::CUnit():
@@ -65,8 +87,7 @@ CUnit::CUnit():
   mComponents(),
   mUsedSymbols(),
   mConflict(false)
-{
-}
+{}
 
 // expression
 CUnit::CUnit(std::string expression,
@@ -81,23 +102,21 @@ CUnit::CUnit(std::string expression,
 
 // kind
 CUnit::CUnit(const CBaseUnit::Kind & kind):
-  mExpression(CBaseUnit::getSymbol(kind)),
+  mExpression(),
   mComponents(),
   mUsedSymbols(),
   mConflict(false)
 {
-  mComponents.insert(CUnitComponent(kind));
-  consolidateDimensionless();
+  setExpression(CBaseUnit::getSymbol(kind), CUnit::Avogadro);
 }
 
 // copy constructor
 CUnit::CUnit(const CUnit & src):
   mExpression(src.mExpression),
   mComponents(src.mComponents),
-  mUsedSymbols(src.mUsedSymbols)
-{
-  consolidateDimensionless();
-}
+  mUsedSymbols(src.mUsedSymbols),
+  mConflict(src.mConflict)
+{}
 
 CUnit::~CUnit()
 {}
@@ -235,13 +254,34 @@ CUnit  CUnit::operator*(const CUnit & rightSide) const
     }
 
   Unit.mUsedSymbols.insert(rightSide.mUsedSymbols.begin(), rightSide.mUsedSymbols.end());
+  Unit.mConflict = mConflict || rightSide.mConflict;
 
   return Unit; // The calling code might want to call simplifyComponents() on the returned unit.
 }
 
 bool CUnit::operator==(const CUnit & rightSide) const
 {
-  return (mExpression == rightSide.mExpression);
+  if (mComponents.size() != rightSide.mComponents.size())
+    {
+      return false;
+    }
+
+  std::set< CUnitComponent >::const_iterator it = mComponents.begin(),
+                                             end = mComponents.end(),
+                                             itRhs = rightSide.mComponents.begin();
+
+  for (; it != end; ++it, ++itRhs)
+    {
+      if (*it == *itRhs ||
+          fabs(it->getMultiplier() * pow(10.0, it->getScale()) / itRhs->getMultiplier() * pow(10.0, itRhs->getScale()) - 1) < 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon())
+        {
+          continue;
+        }
+
+      return false;
+    }
+
+  return true;
 }
 
 bool CUnit::operator<(const CUnit & rightSide) const
@@ -835,4 +875,3 @@ bool CUnit::conflict() const
 {
   return mConflict;
 }
-

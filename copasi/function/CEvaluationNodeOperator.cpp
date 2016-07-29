@@ -17,6 +17,9 @@
 #include <sstream>
 #include "CEvaluationTree.h"
 #include "sbml/math/ASTNode.h"
+#include "utilities/CNodeIterator.h"
+#include "math/CMathObject.h"
+#include "math/CMathContainer.h"
 
 CEvaluationNodeOperator::CEvaluationNodeOperator():
   CEvaluationNode(CEvaluationNode::INVALID, ""),
@@ -1600,13 +1603,63 @@ std::string CEvaluationNodeOperator::getMMLString(const std::vector< std::string
 }
 
 //virtual
-CUnit CEvaluationNodeOperator::getUnit(const std::vector< CUnit > & units) const
+CUnit CEvaluationNodeOperator::getUnit(const CMathContainer & container,
+                                       const std::vector< CUnit > & units) const
 {
   switch (mType & 0x00FFFFFF)
     {
       case POWER:
-        return units[0]; //TODO
-        break;
+      {
+        CUnit Unit(units[0]);
+        Unit.exponentiate(mpRight->getValue());
+
+        // We need to make sure that the value is fixed
+        CObjectInterface::ObjectSet Objects;
+        CNodeIterator< CEvaluationNode > itNode(mpRight);
+
+        while (itNode.next() != itNode.end())
+          {
+            if (*itNode != NULL &&
+                itNode->getType() == CEvaluationNode::OBJECT)
+              {
+                CMathObject * pObject = container.getMathObject(itNode->getValuePointer());
+
+                if (pObject != NULL &&
+                    !pObject->isInitialValue())
+                  {
+                    Objects.insert(pObject);
+                  }
+              }
+          }
+
+        bool fixed = container.areObjectsConstant(Objects);
+
+        std::set< CUnitComponent >::const_iterator  it = Unit.getComponents().begin();
+        std::set< CUnitComponent >::const_iterator end = Unit.getComponents().end();
+
+        for (; it != end; it++)
+          {
+            // Test if each component's exponent
+            // is an integer. (don't want fractional exponents) by . . .
+            if (!(remainder((*it).getExponent(), 1.0) <= 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon()))
+              {
+                Unit = CUnit(CBaseUnit::undefined);
+                Unit.setConflict(true);
+
+                break;
+              }
+          }
+
+        if (!fixed ||
+            !(units[1] == CBaseUnit::dimensionless))
+          {
+            Unit.setConflict(true);
+          }
+
+        return Unit;
+      }
+
+      break;
 
       case MULTIPLY:
         return units[0] * units[1];
@@ -1619,18 +1672,15 @@ CUnit CEvaluationNodeOperator::getUnit(const std::vector< CUnit > & units) const
 
       case PLUS:
       case MINUS:
-        if (units[0].isEquivalent(units[1]))
-          return units[0];
-        else
-          {
-            CUnit tmpUnit = CUnit(CBaseUnit::undefined);
-            tmpUnit.setConflict();
-            return tmpUnit;
-          }
-
+        return CUnit::merge(units[0], units[1]);
         break;
 
       default:
         break;
     }
+
+  CUnit tmpUnit = CUnit(CBaseUnit::undefined);
+  tmpUnit.setConflict(true);
+
+  return tmpUnit;
 }

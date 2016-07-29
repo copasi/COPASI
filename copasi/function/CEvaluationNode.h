@@ -17,6 +17,7 @@
 
 #include <iostream>
 #include <vector>
+#include <map>
 
 #include "copasi.h"
 #include "utilities/CCopasiNode.h"
@@ -338,6 +339,17 @@ public:
    */
   virtual CUnit getUnit(const CMathContainer & container,
                         const std::vector< CUnit > & units) const;
+
+  /**
+   * Set the unit for the node and return the resulting unit. The child node units are
+   * added to the map
+   * @param const CMathContainer & container
+   * @param const CUnit & target
+   * @param const CUnit & current
+   * @param std::map < CEvaluationNode * , CUnit > & map
+   * @return CUnit unit
+   */
+  virtual CUnit setUnit(const CMathContainer & container, const CUnit & target, const CUnit & current, std::map < CEvaluationNode * , CUnit > & map) const;
 
   // Attributes
 protected:

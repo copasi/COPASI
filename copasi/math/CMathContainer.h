@@ -223,6 +223,13 @@ public:
   const bool & isAutonomous() const;
 
   /**
+   * Check whether all objects are constant, i.e., do never change during simulation
+   * @param const CObjectInterface::ObjectSet & objects
+   * @return bool areObjectsConstant
+   */
+  bool areObjectsConstant(const CObjectInterface::ObjectSet & objects) const;
+
+  /**
    * Retrieve the Quantity to Number conversion factor
    * @return C_FLOAT64 & quantity2NumberFactor
    */

@@ -72,6 +72,8 @@ public:
                                    const std::string & oldSymbol,
                                    const std::string & newSymbol);
 
+  static CUnit merge(const CUnit & a, const CUnit & b);
+
   // constructors
   /**
    * Default constructor

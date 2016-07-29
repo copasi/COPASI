@@ -46,6 +46,9 @@ public:
   const std::vector< CUnit > getVariableUnits() const;
 
 private:
+  void getUnits();
+
+  void setUnits(const CUnit & unit);
 
   const CMathContainer & mMathContainer;
   const CEvaluationTree & mTree;

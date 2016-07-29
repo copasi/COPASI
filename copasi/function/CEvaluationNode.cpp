@@ -762,3 +762,20 @@ CUnit CEvaluationNode::getUnit(const CMathContainer & /* math */,
 {
   return CUnit(CBaseUnit::dimensionless);
 }
+
+// virtual
+CUnit CEvaluationNode::setUnit(const CMathContainer & /* container */,
+                               const CUnit & target,
+                               const CUnit & current,
+                               std::map < CEvaluationNode * , CUnit > & /* map */) const
+{
+  CUnit Result(target);
+
+  if (!(current == CUnit(CBaseUnit::undefined)) &&
+      !(current == target))
+    {
+      Result.setConflict(true);
+    }
+
+  return Result;
+}

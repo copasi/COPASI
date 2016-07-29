@@ -35,6 +35,32 @@ CUnitValidator::~CUnitValidator()
 
 bool CUnitValidator::validateUnits(const CUnit & unit)
 {
+  getUnits();
+  setUnits(unit);
+
+  std::map < CEvaluationNode * , CUnit >::const_iterator itMap = mNodeUnits.begin();
+  std::map < CEvaluationNode * , CUnit >::const_iterator endMap = mNodeUnits.end();
+
+  for (; itMap != endMap; ++itMap)
+    if (itMap->second.conflict())
+      {
+        return false;
+      }
+
+  std::vector< CUnit >::const_iterator it = mVariableUnits.begin();
+  std::vector< CUnit >::const_iterator end = mVariableUnits.end();
+
+  for (; it != end; ++it)
+    if (it->conflict())
+      {
+        return false;
+      }
+
+  return true;
+}
+
+void CUnitValidator::getUnits()
+{
   CUnit tmpUnit;
   CNodeContextIterator< CEvaluationNode, std::vector< CUnit > > it(const_cast< CEvaluationNode * >(mTree.getRoot()));
 
@@ -59,6 +85,55 @@ bool CUnitValidator::validateUnits(const CUnit & unit)
           mNodeUnits.insert(std::make_pair(*it, tmpUnit));
         }
     }
+}
 
-  return tmpUnit == unit;
+void CUnitValidator::setUnits(const CUnit & unit)
+{
+  CUnit tmpUnit;
+  std::map < CEvaluationNode * , CUnit > CurrentNodeUnits(mNodeUnits);
+  std::map < CEvaluationNode * , CUnit > TargetNodeUnits;
+  mNodeUnits.clear();
+
+  std::map < CEvaluationNode * , CUnit >::iterator found;
+
+  CNodeIterator< CEvaluationNode > it(const_cast< CEvaluationNode * >(mTree.getRoot()));
+  it.setProcessingModes(CNodeIteratorMode::Before);
+
+  TargetNodeUnits.insert(std::make_pair(*it, unit));
+
+  while (it.next() != it.end())
+    {
+      if (*it != NULL)
+        {
+          tmpUnit = it->setUnit(mMathContainer, TargetNodeUnits[*it], CurrentNodeUnits[*it], TargetNodeUnits);
+
+          if (it->getType() != CEvaluationNode::VARIABLE)
+            {
+              mNodeUnits.insert(std::make_pair(*it, tmpUnit));
+            }
+          else
+            {
+              size_t Index = static_cast< CEvaluationNodeVariable * >(*it)->getIndex();
+
+              if (Index >= mVariableUnits.size())
+                {
+                  CUnit Default;
+                  Default.setConflict(true);
+                  mVariableUnits.resize(Index, Default);
+                }
+
+              CUnit & VariableUnit = mVariableUnits[Index];
+
+              if (VariableUnit == CUnit(CBaseUnit::undefined))
+                {
+                  tmpUnit.setConflict(tmpUnit.conflict() || VariableUnit.conflict());
+                  VariableUnit = tmpUnit;
+                }
+              else if (!(VariableUnit == tmpUnit))
+                {
+                  VariableUnit.setConflict(true);
+                }
+            }
+        }
+    }
 }
