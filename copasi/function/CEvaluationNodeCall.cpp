@@ -675,35 +675,84 @@ bool CEvaluationNodeCall::isBoolean() const
   return false;
 }
 
-CUnit CEvaluationNodeCall::getUnit(const CMathContainer & math,
-                                   const std::vector< CUnit > & units) const
+CValidatedUnit CEvaluationNodeCall::getUnit(const CMathContainer & math,
+    const std::vector< CValidatedUnit > & units) const
 {
-  CUnit Unit;
+  CEvaluationTree * pTree = NULL;
 
   switch (mType & 0x00FFFFFF)
     {
       case FUNCTION:
-      {
-        CUnitValidator Validator(math, *mpFunction, units);
-        Validator.validateUnits();
-        Unit = Validator.getUnit();
-      }
-
-      break;
+        pTree = mpFunction;
+        break;
 
       case EXPRESSION:
-      {
-        CUnitValidator Validator(math, *mpExpression, units);
-        Validator.validateUnits();
-        Unit = Validator.getUnit();
-      }
-
-      break;
+        pTree = mpExpression;
+        break;
 
       default:
-        Unit.setConflict(true);
+        return CValidatedUnit();
         break;
     }
 
-  return Unit;
+  CUnitValidator Validator(math, *pTree, units);
+  Validator.validateUnits();
+
+  return Validator.getUnit();
+}
+
+// virtual
+CValidatedUnit CEvaluationNodeCall::setUnit(const CMathContainer & container,
+    const std::map < CEvaluationNode * , CValidatedUnit > & currentUnits,
+    std::map < CEvaluationNode * , CValidatedUnit > & targetUnits) const
+{
+  CEvaluationTree * pTree = NULL;
+
+  switch (mType & 0x00FFFFFF)
+    {
+      case FUNCTION:
+        pTree = mpFunction;
+        break;
+
+      case EXPRESSION:
+        pTree = mpExpression;
+        break;
+
+      default:
+        return CValidatedUnit();
+        break;
+    }
+
+  // Retrieve the current units of the variables
+  std::vector< CEvaluationNode * >::const_iterator it = mCallNodes.begin();
+  std::vector< CEvaluationNode * >::const_iterator end = mCallNodes.end();
+
+  std::vector< CValidatedUnit > CurrentVariableUnits(mCallNodes.size());
+  std::vector< CValidatedUnit >::iterator itUnit = CurrentVariableUnits.begin();
+
+  for (; it != end; ++it, ++itUnit)
+    {
+      *itUnit = currentUnits.find(const_cast< CEvaluationNode * >(*it))->second;
+    }
+
+  CUnitValidator Validator(container, *pTree, CurrentVariableUnits);
+
+  Validator.validateUnits(CValidatedUnit::merge(currentUnits.find(const_cast< CEvaluationNodeCall * >(this))->second,
+                          targetUnits[const_cast< CEvaluationNodeCall * >(this)]));
+
+  std::vector< CValidatedUnit >::const_iterator itValidatedVariableUnit = Validator.getVariableUnits().begin();
+
+  for (it = mCallNodes.begin(); it != end; ++it, ++itValidatedVariableUnit)
+    {
+      std::map < CEvaluationNode * , CValidatedUnit >::iterator found = targetUnits.find(const_cast< CEvaluationNode * >(*it));
+
+      if (found == targetUnits.end())
+        {
+          found = targetUnits.insert(std::make_pair(const_cast< CEvaluationNode * >(*it), CValidatedUnit(CBaseUnit::undefined, false))).first;
+        }
+
+      found->second = CValidatedUnit::merge(found->second, *itValidatedVariableUnit);
+    }
+
+  return Validator.getUnit();
 }

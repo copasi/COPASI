@@ -20,7 +20,7 @@
 #include "copasi.h"
 #include "CEvaluationNode.h"
 #include "utilities/utility.h"
-#include "utilities/CUnit.h"
+#include "utilities/CValidatedUnit.h"
 
 #include "sbml/math/ASTNode.h"
 

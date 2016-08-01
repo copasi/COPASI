@@ -72,8 +72,6 @@ public:
                                    const std::string & oldSymbol,
                                    const std::string & newSymbol);
 
-  static CUnit merge(const CUnit & a, const CUnit & b);
-
   // constructors
   /**
    * Default constructor
@@ -123,18 +121,11 @@ public:
   void buildExpression();
   std::vector< SymbolComponent > getSymbolComponents() const;
   bool isUnitType(UnitType type) const;
-  void setConflict(bool conflict = true);
-  bool conflict() const;
 
 private:
   std::string mExpression;
   std::set< CUnitComponent > mComponents;
   std::set< std::string > mUsedSymbols;
-
-  // Set to true when combining units where the individual ones
-  // ought to be compatible (e.g. addition and subtraction in
-  // function expressions)
-  bool mConflict;
 
   // Consolodate any components with exponent == 0
   // into a/the single dimensionless component

@@ -15,19 +15,34 @@
 
 CUnitValidator::CUnitValidator(const CMathContainer & math,
                                const CEvaluationTree & tree,
-                               const std::vector < CUnit > & variableUnits):
+                               const std::vector< CUnit > & variableUnits):
+  mMathContainer(math),
+  mTree(tree),
+  mVariableUnits(variableUnits.size())
+{
+  std::vector< CUnit >::const_iterator itSrc = variableUnits.begin();
+  std::vector< CUnit >::const_iterator endSrc = variableUnits.end();
+  std::vector< CValidatedUnit >::iterator itTarget = mVariableUnits.begin();
+
+  for (; itSrc != endSrc; ++itSrc, ++itTarget)
+    {
+      *itTarget = CValidatedUnit(*itSrc, false);
+    }
+}
+
+CUnitValidator::CUnitValidator(const CMathContainer & math,
+                               const CEvaluationTree & tree,
+                               const std::vector < CValidatedUnit > & variableUnits):
   mMathContainer(math),
   mTree(tree),
   mVariableUnits(variableUnits)
-{
-}
+{}
 
 CUnitValidator::CUnitValidator(const CUnitValidator &src):
   mMathContainer(src.mMathContainer),
   mTree(src.mTree),
   mVariableUnits(src.mVariableUnits)
-{
-}
+{}
 
 CUnitValidator::~CUnitValidator()
 {
@@ -35,13 +50,16 @@ CUnitValidator::~CUnitValidator()
 
 bool CUnitValidator::validateUnits(const CUnit & unit)
 {
-  getUnits();
-  setUnits(unit);
+  do
+    {
+      getUnits();
+    }
+  while (setUnits(unit));
 
   bool conflict = false;
 
-  std::map < CEvaluationNode * , CUnit >::const_iterator itMap = mNodeUnits.begin();
-  std::map < CEvaluationNode * , CUnit >::const_iterator endMap = mNodeUnits.end();
+  std::map < CEvaluationNode * , CValidatedUnit >::const_iterator itMap = mNodeUnits.begin();
+  std::map < CEvaluationNode * , CValidatedUnit >::const_iterator endMap = mNodeUnits.end();
 
   for (; itMap != endMap && !conflict; ++itMap)
     if (itMap->second.conflict())
@@ -49,8 +67,8 @@ bool CUnitValidator::validateUnits(const CUnit & unit)
         conflict = true;
       }
 
-  std::vector< CUnit >::const_iterator it = mVariableUnits.begin();
-  std::vector< CUnit >::const_iterator end = mVariableUnits.end();
+  std::vector< CValidatedUnit >::const_iterator it = mVariableUnits.begin();
+  std::vector< CValidatedUnit >::const_iterator end = mVariableUnits.end();
 
   for (; it != end && !conflict; ++it)
     if (it->conflict())
@@ -58,7 +76,7 @@ bool CUnitValidator::validateUnits(const CUnit & unit)
         conflict = true;
       }
 
-  std::map < CEvaluationNode * , CUnit >::iterator found = mNodeUnits.find(const_cast< CEvaluationNode * >(mTree.getRoot()));
+  std::map < CEvaluationNode * , CValidatedUnit >::iterator found = mNodeUnits.find(const_cast< CEvaluationNode * >(mTree.getRoot()));
 
   if (found != mNodeUnits.end())
     {
@@ -70,8 +88,8 @@ bool CUnitValidator::validateUnits(const CUnit & unit)
 
 void CUnitValidator::getUnits()
 {
-  CUnit tmpUnit;
-  CNodeContextIterator< CEvaluationNode, std::vector< CUnit > > it(const_cast< CEvaluationNode * >(mTree.getRoot()));
+  CValidatedUnit tmpUnit;
+  CNodeContextIterator< CEvaluationNode, std::vector< CValidatedUnit > > it(const_cast< CEvaluationNode * >(mTree.getRoot()));
 
   while (it.next() != it.end())
     {
@@ -96,25 +114,26 @@ void CUnitValidator::getUnits()
     }
 }
 
-void CUnitValidator::setUnits(const CUnit & unit)
+bool CUnitValidator::setUnits(const CUnit & unit)
 {
-  CUnit tmpUnit;
-  std::map < CEvaluationNode * , CUnit > CurrentNodeUnits(mNodeUnits);
-  std::map < CEvaluationNode * , CUnit > TargetNodeUnits;
+  bool VariableUnitDetermined = false;
+  CValidatedUnit tmpUnit;
+  std::map < CEvaluationNode * , CValidatedUnit > CurrentNodeUnits(mNodeUnits);
+  std::map < CEvaluationNode * , CValidatedUnit > TargetNodeUnits;
   mNodeUnits.clear();
 
-  std::map < CEvaluationNode * , CUnit >::iterator found;
+  std::map < CEvaluationNode * , CValidatedUnit >::iterator found;
 
   CNodeIterator< CEvaluationNode > it(const_cast< CEvaluationNode * >(mTree.getRoot()));
   it.setProcessingModes(CNodeIteratorMode::Before);
 
-  TargetNodeUnits.insert(std::make_pair(*it, unit));
+  TargetNodeUnits.insert(std::make_pair(*it, CValidatedUnit(unit, false)));
 
   while (it.next() != it.end())
     {
       if (*it != NULL)
         {
-          tmpUnit = it->setUnit(mMathContainer, TargetNodeUnits[*it], CurrentNodeUnits[*it], TargetNodeUnits);
+          tmpUnit = it->setUnit(mMathContainer, CurrentNodeUnits, TargetNodeUnits);
 
           if (it->getType() != CEvaluationNode::VARIABLE)
             {
@@ -126,43 +145,37 @@ void CUnitValidator::setUnits(const CUnit & unit)
 
               if (Index >= mVariableUnits.size())
                 {
-                  CUnit Default;
-                  Default.setConflict(true);
+                  CValidatedUnit Default;
                   mVariableUnits.resize(Index, Default);
                 }
 
-              CUnit & VariableUnit = mVariableUnits[Index];
+              bool Undefined = mVariableUnits[Index] == CBaseUnit::undefined;
 
-              if (VariableUnit == CUnit(CBaseUnit::undefined))
-                {
-                  tmpUnit.setConflict(tmpUnit.conflict() || VariableUnit.conflict());
-                  VariableUnit = tmpUnit;
-                }
-              else if (!(VariableUnit == tmpUnit))
-                {
-                  VariableUnit.setConflict(true);
-                }
+              mVariableUnits[Index] = CValidatedUnit::merge(mVariableUnits[Index], tmpUnit);
+
+              VariableUnitDetermined = Undefined && !(mVariableUnits[Index] == CBaseUnit::undefined);
             }
         }
     }
+
+  return VariableUnitDetermined;
 }
 
-const std::vector< CUnit > & CUnitValidator::getVariableUnits() const
+const std::vector< CValidatedUnit > & CUnitValidator::getVariableUnits() const
 {
   return  mVariableUnits;
 }
 
-const CUnit & CUnitValidator::getUnit() const
+const CValidatedUnit & CUnitValidator::getUnit() const
 {
-  std::map < CEvaluationNode * , CUnit >::const_iterator found = mNodeUnits.find(const_cast< CEvaluationNode * >(mTree.getRoot()));
+  std::map < CEvaluationNode * , CValidatedUnit >::const_iterator found = mNodeUnits.find(const_cast< CEvaluationNode * >(mTree.getRoot()));
 
   if (found != mNodeUnits.end())
     {
       return found->second;
     }
 
-  static CUnit Unit;
-  Unit.setConflict(true);
+  static CValidatedUnit Unit;
 
   return Unit;
 }

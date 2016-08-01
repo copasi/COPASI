@@ -129,8 +129,8 @@ public:
    * @param const std::vector< CUnit > & units
    * @return CUnit unit
    */
-  virtual CUnit getUnit(const CMathContainer & container,
-                        const std::vector< CUnit > & units) const;
+  virtual CValidatedUnit getUnit(const CMathContainer & container,
+                                 const std::vector< CValidatedUnit > & units) const;
 
   /**
    * Creates a new CEvaluationNodeCall from an ASTNode and the given children

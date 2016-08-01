@@ -12,12 +12,15 @@
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
-#include "copasi.h"
-#include "CEvaluationNode.h"
 #include <sstream>
+
+#include "copasi.h"
+
+#include "CEvaluationNode.h"
 #include "CEvaluationTree.h"
 #include "sbml/math/ASTNode.h"
 #include "utilities/CNodeIterator.h"
+#include "utilities/CValidatedUnit.h"
 #include "math/CMathObject.h"
 #include "math/CMathContainer.h"
 
@@ -1603,15 +1606,14 @@ std::string CEvaluationNodeOperator::getMMLString(const std::vector< std::string
 }
 
 //virtual
-CUnit CEvaluationNodeOperator::getUnit(const CMathContainer & container,
-                                       const std::vector< CUnit > & units) const
+CValidatedUnit CEvaluationNodeOperator::getUnit(const CMathContainer & container,
+    const std::vector< CValidatedUnit > & units) const
 {
   switch (mType & 0x00FFFFFF)
     {
       case POWER:
       {
-        CUnit Unit(units[0]);
-        Unit.exponentiate(mpRight->getValue());
+        CValidatedUnit Unit(units[0].exponentiate(mpRight->getValue()));
 
         // We need to make sure that the value is fixed
         CObjectInterface::ObjectSet Objects;
@@ -1643,8 +1645,7 @@ CUnit CEvaluationNodeOperator::getUnit(const CMathContainer & container,
             // is an integer. (don't want fractional exponents) by . . .
             if (!(remainder((*it).getExponent(), 1.0) <= 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon()))
               {
-                Unit = CUnit(CBaseUnit::undefined);
-                Unit.setConflict(true);
+                Unit = CValidatedUnit(CBaseUnit::undefined, true);
 
                 break;
               }
@@ -1672,15 +1673,72 @@ CUnit CEvaluationNodeOperator::getUnit(const CMathContainer & container,
 
       case PLUS:
       case MINUS:
-        return CUnit::merge(units[0], units[1]);
+        return CValidatedUnit::merge(units[0], units[1]);
         break;
 
       default:
         break;
     }
 
-  CUnit tmpUnit = CUnit(CBaseUnit::undefined);
-  tmpUnit.setConflict(true);
+  return CValidatedUnit(CBaseUnit::undefined, true);
+}
 
-  return tmpUnit;
+// virtual
+CValidatedUnit CEvaluationNodeOperator::setUnit(const CMathContainer & container,
+    const std::map < CEvaluationNode * , CValidatedUnit > & currentUnits,
+    std::map < CEvaluationNode * , CValidatedUnit > & targetUnits) const
+{
+  CValidatedUnit Result = CValidatedUnit::merge(currentUnits.find(const_cast< CEvaluationNodeOperator * >(this))->second,
+                          targetUnits[const_cast< CEvaluationNodeOperator * >(this)]);
+
+  switch (mType & 0x00FFFFFF)
+    {
+      case POWER:
+      {
+        CValidatedUnit Unit(Result.exponentiate(1.0 / mpRight->getValue()));
+
+        std::set< CUnitComponent >::const_iterator  it = Unit.getComponents().begin();
+        std::set< CUnitComponent >::const_iterator end = Unit.getComponents().end();
+
+        for (; it != end; it++)
+          {
+            // Test if each component's exponent
+            // is an integer. (don't want fractional exponents) by . . .
+            if (!(remainder((*it).getExponent(), 1.0) <= 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon()))
+              {
+                Unit = CValidatedUnit(CBaseUnit::undefined, true);
+
+                break;
+              }
+          }
+
+        targetUnits[mpLeft] = Unit;
+        targetUnits[mpRight] = CValidatedUnit(CBaseUnit::dimensionless, false);
+      }
+
+      break;
+
+      case MULTIPLY:
+        targetUnits[mpLeft] = Result * currentUnits.find(mpRight)->second.exponentiate(-1.0);
+        targetUnits[mpRight] = Result * currentUnits.find(mpLeft)->second.exponentiate(-1.0);
+        break;
+
+      case DIVIDE:
+      case MODULUS:
+        targetUnits[mpLeft] = Result * currentUnits.find(mpRight)->second;
+        targetUnits[mpRight] = Result.exponentiate(-1.0) * currentUnits.find(mpLeft)->second;
+        break;
+
+      case PLUS:
+      case MINUS:
+        targetUnits[mpLeft] = Result;
+        targetUnits[mpRight] = Result;
+        break;
+
+      default:
+        Result.setConflict(true);
+        break;
+    }
+
+  return Result;
 }

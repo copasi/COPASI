@@ -136,11 +136,23 @@ public:
    * Figure out the appropriate CUnit to use, based on the child nodes.
    * This sets the default, appropriate for many cases, as Dimensionless
    * @param const CMathContainer & container
-   * @param const std::vector< CUnit > & units
+   * @param const std::vector< CValidatedUnit > & units
+   * @return CValidatedUnit unit
+   */
+  virtual CValidatedUnit getUnit(const CMathContainer & container,
+                                 const std::vector< CValidatedUnit > & units) const;
+
+  /**
+   * Set the unit for the node and return the resulting unit. The child node units are
+   * added to the map
+   * @param const CMathContainer & container
+   * @param const std::map < CEvaluationNode * , CValidatedUnit > & currentUnits
+   * @param std::map < CEvaluationNode * , CValidatedUnit > & targetUnits
    * @return CUnit unit
    */
-  virtual CUnit getUnit(const CMathContainer & container,
-                        const std::vector< CUnit > & units) const;
+  virtual CValidatedUnit setUnit(const CMathContainer & container,
+                                 const std::map < CEvaluationNode * , CValidatedUnit > & currentUnits,
+                                 std::map < CEvaluationNode * , CValidatedUnit > & targetUnits) const;
 
   /**
    * Creates a new CEvaluationNodeCall from an ASTNode and the given children

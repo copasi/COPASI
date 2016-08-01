@@ -13,7 +13,7 @@
 #include "math/CMathContainer.h"
 #include "model/CModel.h"
 #include "utilities/utility.h"
-#include "utilities/CUnit.h"
+#include "utilities/CValidatedUnit.h"
 #include "copasi/report/CCopasiRootContainer.h"
 
 CEvaluationNodeDelay::CEvaluationNodeDelay():
@@ -161,19 +161,30 @@ std::string CEvaluationNodeDelay::getXPPString(const std::vector< std::string > 
 }
 
 // virtual
-CUnit CEvaluationNodeDelay::getUnit(const CMathContainer & container,
-                                    const std::vector< CUnit > & units) const
+CValidatedUnit CEvaluationNodeDelay::getUnit(const CMathContainer & container,
+    const std::vector< CValidatedUnit > & units) const
 {
   // The units of the delay functions are the units of the delay value which is the first child
-  CUnit Unit = units[0];
+  CValidatedUnit Delay = units[0];
+  CValidatedUnit Lag = CValidatedUnit::merge(CValidatedUnit(container.getModel().getTimeUnit(), false), units[1]);
 
-  if (!Unit.conflict())
-    {
-      // The units for the delay lag must be the time unit of the model otherwise we need to indicate a conflict
-      Unit.setConflict(!(units[1] == container.getModel().getTimeUnit()));
-    }
+  Delay.setConflict(Delay.conflict() || Lag.conflict());
 
-  return Unit;
+  return Delay;
+}
+
+// virtual
+CValidatedUnit CEvaluationNodeDelay::setUnit(const CMathContainer & container,
+    const std::map < CEvaluationNode * , CValidatedUnit > & currentUnits,
+    std::map < CEvaluationNode * , CValidatedUnit > & targetUnits) const
+{
+  CValidatedUnit Delay = CValidatedUnit::merge(currentUnits.find(const_cast< CEvaluationNodeDelay * >(this))->second,
+                         targetUnits[const_cast< CEvaluationNodeDelay * >(this)]);
+
+  targetUnits[mpDelayValue] = Delay;
+  targetUnits[mpDelayLag] = CValidatedUnit(container.getModel().getTimeUnit(), false);
+
+  return Delay;
 }
 
 // static

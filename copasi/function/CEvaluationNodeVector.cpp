@@ -16,7 +16,7 @@
 
 #include "CEvaluationNode.h"
 #include "CEvaluationTree.h"
-#include "utilities/CUnit.h"
+#include "utilities/CValidatedUnit.h"
 
 #include "sbml/math/ASTNode.h"
 
@@ -101,17 +101,17 @@ std::string CEvaluationNodeVector::getXPPString(const std::vector< std::string >
 }
 
 // virtual
-CUnit CEvaluationNodeVector::getUnit(const CMathContainer & /* container */,
-                                     const std::vector< CUnit > & units) const
+CValidatedUnit CEvaluationNodeVector::getUnit(const CMathContainer & /* container */,
+    const std::vector< CValidatedUnit > & units) const
 {
-  CUnit Unit;
+  CValidatedUnit Unit(CBaseUnit::undefined, false);
 
-  std::vector< CUnit >::const_iterator it = units.begin();
-  std::vector< CUnit >::const_iterator end = units.end();
+  std::vector< CValidatedUnit >::const_iterator it = units.begin();
+  std::vector< CValidatedUnit >::const_iterator end = units.end();
 
   for (; it != end; ++it)
     {
-      Unit = CUnit::merge(Unit, *it);
+      Unit = CValidatedUnit::merge(Unit, *it);
     }
 
   if (mVector.size() != units.size())
@@ -120,6 +120,25 @@ CUnit CEvaluationNodeVector::getUnit(const CMathContainer & /* container */,
     }
 
   return Unit;
+}
+
+// virtual
+CValidatedUnit CEvaluationNodeVector::setUnit(const CMathContainer & container,
+    const std::map < CEvaluationNode * , CValidatedUnit > & currentUnits,
+    std::map < CEvaluationNode * , CValidatedUnit > & targetUnits) const
+{
+  CValidatedUnit Result = CValidatedUnit::merge(currentUnits.find(const_cast< CEvaluationNodeVector * >(this))->second,
+                          targetUnits[const_cast< CEvaluationNodeVector * >(this)]);
+
+  std::vector< CEvaluationNode * >::const_iterator it = mVector.begin();
+  std::vector< CEvaluationNode * >::const_iterator end = mVector.end();
+
+  for (; it != end; ++it)
+    {
+      targetUnits[*it] = Result;
+    }
+
+  return Result;
 }
 
 // static

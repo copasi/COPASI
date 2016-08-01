@@ -23,6 +23,7 @@
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "math/CMathObject.h"
 #include "math/CMathContainer.h"
+#include "utilities/CValidatedUnit.h"
 
 #include "sbml/math/ASTNode.h"
 #include "sbml/SBase.h"
@@ -419,19 +420,16 @@ std::string CEvaluationNodeObject::getMMLString(const std::vector< std::string >
 }
 
 // virtual
-CUnit CEvaluationNodeObject::getUnit(const CMathContainer & container,
-                                     const std::vector< CUnit > & /* units */) const
+CValidatedUnit CEvaluationNodeObject::getUnit(const CMathContainer & container,
+    const std::vector< CValidatedUnit > & /* units */) const
 {
   const CObjectInterface * pObject = container.getMathObject(mpValue);
   const CCopasiObject * pDataObject = (pObject != NULL) ? pObject->getDataObject() : NULL;
 
   if (pDataObject != NULL)
     {
-      return CUnit(pDataObject->getUnits(), container.getModel().getAvogadro());
+      return CValidatedUnit(CUnit(pDataObject->getUnits(), container.getModel().getAvogadro()), false);
     }
 
-  CUnit Unit;
-  Unit.setConflict(true);
-
-  return Unit;
+  return CValidatedUnit();
 }

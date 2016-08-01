@@ -186,11 +186,23 @@ public:
    * Figure out the appropriate CUnit to use, based on the child nodes.
    * This sets the default, appropriate for many cases, as Dimensionless
    * @param const CMathContainer & container
-   * @param const std::vector< CUnit > & units
-   * @return CUnit unit
+   * @param const std::vector< CValidatedUnit > & units
+   * @return CValidatedUnit unit
    */
-  virtual CUnit getUnit(const CMathContainer & container,
-                        const std::vector< CUnit > & units) const;
+  virtual CValidatedUnit getUnit(const CMathContainer & container,
+                                 const std::vector< CValidatedUnit > & units) const;
+
+  /**
+   * Set the unit for the node and return the resulting unit. The child node units are
+   * added to the map
+   * @param const CMathContainer & container
+   * @param const std::map < CEvaluationNode * , CValidatedUnit > & currentUnits
+   * @param std::map < CEvaluationNode * , CValidatedUnit > & targetUnits
+   * @return CValidatedUnit unit
+   */
+  virtual CValidatedUnit setUnit(const CMathContainer & container,
+                                 const std::map < CEvaluationNode * , CValidatedUnit > & currentUnits,
+                                 std::map < CEvaluationNode * , CValidatedUnit > & targetUnits) const;
 
   /**
    * Creates a new CEvaluationNodeCall from an ASTNode and the given children
@@ -232,10 +244,6 @@ public:
 
   CEvaluationNode * getLeft();
   const CEvaluationNode * getLeft() const;
-
-  // Try to return an appropriate unit, for the
-  // given function type.
-  CUnit getUnit(const std::vector<CUnit> & units) const;
 
 private:
   std::string handleSign(const std::string & str) const;

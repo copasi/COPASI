@@ -20,7 +20,7 @@
 #include "sbml/util/List.h"
 
 #include "utilities/CNodeIterator.h"
-#include "utilities/CUnit.h"
+#include "utilities/CValidatedUnit.h"
 
 CEvaluationNode::CPrecedence::CPrecedence(const size_t & left,
     const size_t & right):
@@ -757,25 +757,17 @@ bool CEvaluationNode::operator<(const CEvaluationNode& right) const
 }
 
 //virtual
-CUnit CEvaluationNode::getUnit(const CMathContainer & /* math */,
-                               const std::vector< CUnit > & /*units*/) const
+CValidatedUnit CEvaluationNode::getUnit(const CMathContainer & /* math */,
+                                        const std::vector< CValidatedUnit > & /*units*/) const
 {
-  return CUnit(CBaseUnit::dimensionless);
+  return CValidatedUnit(CBaseUnit::dimensionless, false);
 }
 
 // virtual
-CUnit CEvaluationNode::setUnit(const CMathContainer & /* container */,
-                               const CUnit & target,
-                               const CUnit & current,
-                               std::map < CEvaluationNode * , CUnit > & /* map */) const
+CValidatedUnit CEvaluationNode::setUnit(const CMathContainer & /* container */,
+                                        const std::map < CEvaluationNode * , CValidatedUnit > & currentUnits,
+                                        std::map < CEvaluationNode * , CValidatedUnit > & targetUnits) const
 {
-  CUnit Result(target);
-
-  if (!(current == CUnit(CBaseUnit::undefined)) &&
-      !(current == target))
-    {
-      Result.setConflict(true);
-    }
-
-  return Result;
+  return CValidatedUnit::merge(currentUnits.find(const_cast< CEvaluationNode * >(this))->second,
+                               targetUnits[const_cast< CEvaluationNode * >(this)]);
 }
