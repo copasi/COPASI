@@ -139,10 +139,19 @@ bool CEvaluationNodeObject::compile(const CEvaluationTree * pTree)
 
       case POINTER:
         // We need to convert the data into a pointer
-      {
         mpValue = (const C_FLOAT64 *) stringToPointer(mData);
-      }
-      break;
+
+        if (pTree != NULL)
+          {
+            CMathContainer * pContainer = dynamic_cast< CMathContainer * >(pTree->getObjectAncestor("CMathContainer"));
+
+            if (pContainer != NULL)
+              {
+                mpObject = pContainer->getMathObject(mpValue);
+              }
+          }
+
+        break;
 
       case INVALID:
         break;

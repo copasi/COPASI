@@ -70,6 +70,12 @@ public:
   const std::vector< CValidatedUnit > & getVariableUnits() const;
 
   /**
+   * Retrieve the validated object units
+   * @return const std::map< CObjectInterface *, CValidatedUnit > & objectUnits
+   */
+  const std::map< CObjectInterface *, CValidatedUnit > & getObjectUnits() const;
+
+  /**
    * Retrieve the validated unit
    * @return const CValidatedUnit & unit
    */
@@ -83,6 +89,7 @@ private:
   const CMathContainer & mMathContainer;
   const CEvaluationTree & mTree;
   std::vector< CValidatedUnit > mVariableUnits;
+  std::map < CObjectInterface *, CValidatedUnit > mObjectUnits;
   std::map < CEvaluationNode * , CValidatedUnit > mNodeUnits;
 };
 
