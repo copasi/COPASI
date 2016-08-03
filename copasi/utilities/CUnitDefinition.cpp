@@ -32,10 +32,10 @@ SIUnit SIUnits[] =
   {"second",     "s",        "s"},
   {"ampere",     "A",        "A"},
   {"kelvin",     "K",        "K"},
-  {"mole",      "mol",      "mol"},
-  {"candela",   "cd",       "cd"},
+  {"candela",    "cd",       "cd"},
 
   //SI derived
+  {"Avogadro",   "Avogadro", "Avogadro"},
   {"becquerel",  "Bq",       "s^-1"},
   {"coulomb",    "C",        "s*A"},
   {"farad",      "F",        "m^-2*kg^-1*s^4*A^2"},
@@ -70,38 +70,27 @@ SIUnit SIUnits[] =
   // This must be the last element of the SI unit list! Do not delete!
   {NULL,         NULL,        NULL}
 };
+
 // static
-CUnit CUnitDefinition::getSIUnit(const std::string & symbol,
-                                 const C_FLOAT64 & avogadro)
+CUnit CUnitDefinition::getSIUnit(const std::string & symbol)
 {
+  CUnit SIunit = CUnit();
+
   SIUnit * pSIUnit = SIUnits;
 
-  while (pSIUnit->name && strcmp(pSIUnit->symbol, symbol.c_str()) != 0)
+  while (pSIUnit->symbol && strcmp(pSIUnit->symbol, symbol.c_str()) != 0)
     ++pSIUnit;
 
-  if (!pSIUnit->name)
-    fatalError();
-
-  std::ostringstream buffer;
-
-  if (strcmp(pSIUnit->symbol, "mol"))
+  if (pSIUnit->name)
     {
-      buffer << pSIUnit->expression;
+      SIunit.setExpression(pSIUnit->expression);
     }
-  else
-    {
-      buffer << CCopasiXMLInterface::DBL(avogadro) << "*#";
-    }
-
-  CUnit SIunit = CUnit();
-  SIunit.setExpression(buffer.str(), avogadro);
 
   return SIunit;
 }
 
 // static
-void CUnitDefinition::updateSIUnitDefinitions(CUnitDefinitionDB * Units,
-    const C_FLOAT64 & avogadro)
+void CUnitDefinition::updateSIUnitDefinitions(CUnitDefinitionDB * Units)
 {
   SIUnit * pSIUnit = SIUnits;
 
@@ -120,18 +109,7 @@ void CUnitDefinition::updateSIUnitDefinitions(CUnitDefinitionDB * Units,
           pUnitDef->setSymbol(pSIUnit->symbol);
         }
 
-      std::ostringstream buffer;
-
-      if (strcmp(pSIUnit->symbol, "mol"))
-        {
-          buffer << pSIUnit->expression;
-        }
-      else
-        {
-          buffer << CCopasiXMLInterface::DBL(avogadro) << "*#";
-        }
-
-      pUnitDef->setExpression(buffer.str(), avogadro);
+      pUnitDef->setExpression(pSIUnit->expression);
 
       pSIUnit++;
     }

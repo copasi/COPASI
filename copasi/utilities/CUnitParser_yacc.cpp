@@ -1421,7 +1421,7 @@ yyreduce:
       case 15:
 #line 148 "CUnitParser.ypp" /* yacc.c:1646  */
         {
-          (yyval).pUnit = new CUnit(CUnitDefinition::getSIUnit((yyvsp[0]).text, mAvogadro));
+          (yyval).pUnit = new CUnit(CUnitDefinition::getSIUnit((yyvsp[0]).text));
 
           mSymbols.insert((yyvsp[0]).text);
           mSymbols.insert((yyval).pUnit->getUsedSymbols().begin(), (yyval).pUnit->getUsedSymbols().end());

@@ -1458,7 +1458,7 @@ bool CModel::setQuantityUnit(const std::string & name)
   mQuantityUnit = name;
   mDimensionlessUnits[quantity] = CUnit(mQuantityUnit).isDimensionless();
 
-  CUnit QuantityUnit(mQuantityUnit, mAvogadro);
+  CUnit QuantityUnit(mQuantityUnit);
 
   // The first, dimensionless, component should have all the
   // scale and multiplier information
@@ -3888,7 +3888,7 @@ CCopasiObject::DataObjectSet CModel::getUnitSymbolUsage(std::string symbol) cons
 
   for (; it != end; ++it)
     {
-      unit.setExpression(it->getUnitExpression(), getAvogadro());
+      unit.setExpression(it->getUnitExpression());
 
       if (unit.getUsedSymbols().count(symbol))
         usages.insert(it);
@@ -3936,7 +3936,7 @@ std::map< std::string, CUnit > CModel::getUsedUnits() const
 
   for (; it != end; ++it)
     {
-      UsedUnits[it->getUnitExpression()] = it->getUnits();
+      UsedUnits[it->getUnitExpression()] = CUnit(it->getUnits());
     }
 
   UsedUnits[mVolumeUnit] = CUnit(mVolumeUnit);

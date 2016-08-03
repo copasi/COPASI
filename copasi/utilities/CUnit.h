@@ -86,10 +86,9 @@ public:
 
   /**
    * Expression constructor
-   * @param const CBaseUnit::Kind & kind
+   * @param const std::string & expression
    */
-  CUnit(std::string expression,
-        const C_FLOAT64 & avogadro = Avogadro);
+  CUnit(const std::string & expression);
 
   /**
    * Copy constructor
@@ -99,8 +98,7 @@ public:
 
   ~CUnit();
 
-  bool setExpression(const std::string & expression,
-                     const C_FLOAT64 & avogadro);
+  bool setExpression(const std::string & expression);
 
   std::string getExpression() const;
 
@@ -111,7 +109,7 @@ public:
   void addComponent(const CUnitComponent & component);
   const std::set< CUnitComponent > & getComponents() const;
 
-  bool compile(const C_FLOAT64 & avogadro = Avogadro);
+  bool compile();
 
   CUnit exponentiate(double exp) const;
   CUnit operator*(const CUnit & rightSide) const;

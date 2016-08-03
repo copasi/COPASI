@@ -10,7 +10,6 @@
 CUnitParserBase::CUnitParserBase():
   mPosition(0),
   mpUnit(NULL),
-  mAvogadro(CUnit::Avogadro),
   mSymbols(),
   mOldSymbol(),
   mNewSymbol(),
@@ -34,11 +33,6 @@ const std::set< CUnitComponent > & CUnitParserBase::getComponents() const
 const std::set< std::string > & CUnitParserBase::getSymbols() const
 {
   return mSymbols;
-}
-
-void CUnitParserBase::setAvogadro(const C_FLOAT64 & avogadro)
-{
-  mAvogadro = avogadro;
 }
 
 void CUnitParserBase::replaceSymbol(const std::string & oldSymbol, const std::string & newSymbol)

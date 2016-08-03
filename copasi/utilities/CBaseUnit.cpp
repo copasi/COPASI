@@ -1,7 +1,7 @@
-// Copyright (C) 2014 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2014 - 2016 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 #include "copasi/utilities/CBaseUnit.h"
 #include "copasi/utilities/CCopasiMessage.h"
@@ -17,6 +17,7 @@ const char * CBaseUnit::Name[] =
   "Kelvin",
   "item",
   "Candela",
+  "Avogadro",
   NULL
 };
 
@@ -49,9 +50,14 @@ const std::string CBaseUnit::getSymbol(Kind kind)
       case item:
         return "#";
 
-      default:
-        return "1";
+      case avogadro:
+        return "Avogadro";
+
+      case undefined:
+        return "";
     }
+
+  return "";
 }
 
 // static (because CBaseUnit is not meant to be constructed)
@@ -70,6 +76,8 @@ CBaseUnit::Kind CBaseUnit::fromSymbol(const std::string & symbol)
   if (symbol == "cd") return candela;
 
   if (symbol == "#") return item;
+
+  if (symbol == "Avogadro") return avogadro;
 
   if (symbol == "1") return dimensionless;
 

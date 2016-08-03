@@ -27,6 +27,7 @@ public:
     kelvin,
     item,  // mole can be derived with the current value of Avagadro's Number
     candela,
+    avogadro,
     undefined
   };
 

@@ -1511,7 +1511,9 @@ void CSBMLExporter::createParameter(const CModelValue& modelValue)
     }
 
   if (!modelValue.getUnitExpression().empty())
-    exportAndAssignUnit(CUnit(modelValue.getUnitExpression()), pParameter);
+    {
+      exportAndAssignUnit(CUnit(modelValue.getUnitExpression()), pParameter);
+    }
 
   if (pParameter != NULL)
     {

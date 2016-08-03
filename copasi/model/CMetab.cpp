@@ -137,7 +137,7 @@ std::string CMetab::getChildObjectUnits(const CCopasiObject * pObject) const
            pObject == mpConcReference)
     {
       CUnit QunatityUnit = (mpModel != NULL) ? CUnit(mpModel->getQuantityUnit()) : CUnit();
-      CUnit CompartmentUnit = (mpCompartment != NULL) ? mpCompartment->getInitialValueReference()->getUnits() : CUnit();
+      CUnit CompartmentUnit = (mpCompartment != NULL) ? CUnit(mpCompartment->getInitialValueReference()->getUnits()) : CUnit();
 
       if (!QunatityUnit.isUndefined() &&
           !CompartmentUnit.isUndefined())
@@ -147,7 +147,7 @@ std::string CMetab::getChildObjectUnits(const CCopasiObject * pObject) const
     }
   else if (pObject == mpConcRateReference)
     {
-      CUnit ConcentrationUnit = getChildObjectUnits(mpConcReference);
+      CUnit ConcentrationUnit = CUnit(getChildObjectUnits(mpConcReference));
       CUnit TimeUnit = (mpModel != NULL) ? CUnit(mpModel->getTimeUnit()) : CUnit();
 
       if (!ConcentrationUnit.isUndefined() &&

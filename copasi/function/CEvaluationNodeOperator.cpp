@@ -1645,14 +1645,14 @@ CValidatedUnit CEvaluationNodeOperator::getUnit(const CMathContainer & container
             // is an integer. (don't want fractional exponents) by . . .
             if (!(remainder((*it).getExponent(), 1.0) <= 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon()))
               {
-                Unit = CValidatedUnit(CBaseUnit::undefined, true);
+                Unit.setConflict(true);
 
                 break;
               }
           }
 
         if (!fixed ||
-            !(units[1] == CBaseUnit::dimensionless))
+            CValidatedUnit::merge(units[1], CValidatedUnit(CBaseUnit::dimensionless, false)).conflict())
           {
             Unit.setConflict(true);
           }
@@ -1706,7 +1706,7 @@ CValidatedUnit CEvaluationNodeOperator::setUnit(const CMathContainer & container
             // is an integer. (don't want fractional exponents) by . . .
             if (!(remainder((*it).getExponent(), 1.0) <= 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon()))
               {
-                Unit = CValidatedUnit(CBaseUnit::undefined, true);
+                Unit.setConflict(true);
 
                 break;
               }

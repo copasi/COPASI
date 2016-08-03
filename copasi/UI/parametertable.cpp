@@ -17,15 +17,17 @@
 #include <QtGui/QLineEdit>
 
 #include "parametertable.h"
+#include "CQComboDelegate.h"
 #include "resourcesUI/CQIconResource.h"
+#include "qtUtilities.h"
 
 #include "model/CReactionInterface.h"
 #include "model/CModel.h"
 #include "model/CMetabNameInterface.h"
-#include "qtUtilities.h"
 #include "utilities/CDimension.h"
-#include "copasi/report/CCopasiRootContainer.h"
-#include "CQComboDelegate.h"
+#include "utilities/CUnitValidator.h"
+#include "report/CCopasiRootContainer.h"
+#include "math/CMathExpression.h"
 
 ParameterTable::ParameterTable(QWidget * parent)
   : QTableWidget(parent),
@@ -168,7 +170,17 @@ void ParameterTable::updateTable(const CReactionInterface & ri, const CReaction 
 
   CModel * pModel = dynamic_cast< CModel * >(pReaction->getObjectAncestor("Model"));
 
+  // Handle units
+
+  CMathContainer & Container = pModel->getMathContainer();
+  const CCopasiObject * pFluxObject = pReaction->getFluxReference();
+  CMathObject * pObject = Container.getMathObject(pFluxObject);
+  CUnitValidator Validator(Container, *pObject->getExpressionPtr());
+
+  Validator.validateUnits(pFluxObject->getUnits());
+
   //first get the units strings
+  /*
   CFindDimensions units(ri.getFunction(), CUnit(pModel->getQuantityUnit()).isDimensionless(),
                         CUnit(pModel->getVolumeUnit()).isDimensionless(),
                         CUnit(pModel->getTimeUnit()).isDimensionless(),
@@ -180,6 +192,7 @@ void ParameterTable::updateTable(const CReactionInterface & ri, const CReaction 
                                        ri.getChemEqInterface().getMolecularity(CFunctionParameter::PRODUCT));
 
   units.findDimensions(ri.getEffectiveKineticLawUnitType() == CReaction::AmountPerTime);
+  */
 
   CFunctionParameter::Role usage;
 
@@ -312,11 +325,40 @@ void ParameterTable::updateTable(const CReactionInterface & ri, const CReaction 
       setItem((int) rowCounter, 1, pItem);
 
       // add units column
-      const CCopasiDataModel* pDataModel = pModel->getObjectDataModel();
+      CCopasiObject * pDataObject = CCopasiRootContainer::getKeyFactory()->get(pReaction->getParameterMapping(i)[0]);
+      CValidatedUnit Unit;
 
-      if (pDataModel == NULL) return;
+      switch (usage)
+        {
+          case CFunctionParameter::TIME:
+          case CFunctionParameter::VOLUME:
+            Unit = Validator.getObjectUnit(static_cast< CModelEntity * >(pDataObject)->getValueReference());
+            break;
 
-      QString theseUnits = FROM_UTF8(" " + units.getDimensions()[i].getDisplayString(pModel));
+          case CFunctionParameter::SUBSTRATE:
+          case CFunctionParameter::PRODUCT:
+          case CFunctionParameter::MODIFIER:
+            Unit = Validator.getObjectUnit(static_cast< CMetab * >(pDataObject)->getConcentrationReference());
+            break;
+
+          case CFunctionParameter::PARAMETER:
+
+            if (pReaction->isLocalParameter(i))
+              {
+                Unit = Validator.getObjectUnit(static_cast< CCopasiParameter * >(pDataObject)->getValueReference());
+              }
+            else
+              {
+                Unit = Validator.getObjectUnit(static_cast< CModelEntity * >(pDataObject)->getValueReference());
+              }
+
+            break;
+
+          case CFunctionParameter::VARIABLE:
+            break;
+        }
+
+      QString theseUnits = FROM_UTF8(" " + Unit.getExpression());
       pItem = new QTableWidgetItem(theseUnits);
       pItem->setBackgroundColor(color);
       pItem->setFlags(pItem->flags() & (~Qt::ItemIsEditable));

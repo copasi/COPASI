@@ -1,4 +1,4 @@
-// Copyright (C) 2014 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2014 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -21,8 +21,7 @@ public:
   CUnitComponent(CBaseUnit::Kind kind = CBaseUnit::item,
                  double multiplier = 1,
                  int scale = 0,
-                 double exponent = 1,
-                 bool isMultiplierAvogadro = false);
+                 double exponent = 1);
 
   /**
    * Copy constructor
@@ -51,7 +50,6 @@ private:
   double mMultiplier;
   int mScale;
   double mExponent;
-  bool mIsMultiplierAvogadro;
 };
 
 #endif // CUNITCOMPONENT_H

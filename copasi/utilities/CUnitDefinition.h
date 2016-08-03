@@ -14,7 +14,6 @@
 #define CUNIT_DEFINITION_H
 
 #include "copasi/utilities/CUnit.h"
-//#include "copasi/utilities/CUnitDefinitionDB.h"
 #include "copasi/report/CCopasiContainer.h"
 #include "model/CAnnotation.h"
 
@@ -54,11 +53,9 @@ public:
 
   virtual const std::string & getKey() const;
 
-  static CUnit getSIUnit(const std::string & symbol,
-                         const C_FLOAT64 & avogadro);
+  static CUnit getSIUnit(const std::string & symbol);
 
-  static void updateSIUnitDefinitions(CUnitDefinitionDB * Units,
-                                      const C_FLOAT64 & avogadro);
+  static void updateSIUnitDefinitions(CUnitDefinitionDB * Units);
 
   bool setSymbol(const std::string & symbol);
 

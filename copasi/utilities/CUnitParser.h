@@ -51,8 +51,6 @@ public:
 
   const std::set< std::string > & getSymbols() const;
 
-  void setAvogadro(const C_FLOAT64 & avogadro);
-
   void replaceSymbol(const std::string & oldSymbol, const std::string & newSymbol);
   const std::string & getReplacedExpression() const;
 
@@ -72,7 +70,6 @@ protected:
 
   CUnit *mpUnit;
   unsigned C_INT32 mPosition;
-  C_FLOAT64 mAvogadro;
   std::set< std::string > mSymbols;
   std::string mOldSymbol;
   std::string mNewSymbol;

@@ -126,7 +126,7 @@ void CCopasiRootContainer::initializeChildren()
   mpUndefined->compile();
 
   mpUnitDefinitionList = new CUnitDefinitionDB("Units list", this);
-  CUnitDefinition::updateSIUnitDefinitions(mpUnitDefinitionList, CUnit::Avogadro);
+  CUnitDefinition::updateSIUnitDefinitions(mpUnitDefinitionList);
 }
 
 // static

@@ -164,7 +164,6 @@ std::set< CUnit > CUnitDefinitionDB::getAllValidUnits(const std::string & symbol
           it->isEquivalent(Base))
         {
           if ((it->getComponents().begin()->getMultiplier() == 1.0 ||
-               it->getComponents().begin()->getMultiplier() == CUnit::Avogadro ||
                it->getSymbol() == "l") &&
               !it->CUnit::operator==(CBaseUnit::item))
             {
@@ -172,7 +171,7 @@ std::set< CUnit > CUnitDefinitionDB::getAllValidUnits(const std::string & symbol
                 {
                   CUnit Scale;
                   Scale.addComponent(CUnitComponent(CBaseUnit::dimensionless, 1.0, scale, 0));
-                  CUnit ScaledUnit = (Scale * CUnit(it->getSymbol()));
+                  CUnit ScaledUnit = Scale * CUnit(it->getSymbol());
 
                   if (it->isEquivalent(Base))
                     {

@@ -27,11 +27,11 @@ public:
 
   /**
    * Function constructor
-   * @param const CMathContainer & math
+   * @param CMathContainer & math
    * @param const CEvaluationTree & tree
-   * @param const std::vector< CUnit > & variableUnits = std::vector< CUnit >()
+   * @param const std::vector< CUnit > & variableUnits (default: std::vector< CUnit >)
    */
-  CUnitValidator(const CMathContainer & math,
+  CUnitValidator(CMathContainer & math,
                  const CEvaluationTree & tree,
                  const std::vector< CUnit > & variableUnits = std::vector< CUnit >());
 
@@ -39,11 +39,11 @@ public:
    * Function constructor
    * @param const CMathContainer & math
    * @param const CEvaluationTree & tree
-   * @param const std::vector< CValidatedUnit > & variableUnits = std::vector< CValidatedUnit >()
+   * @param const std::vector< CValidatedUnit > & variableUnits
    */
   CUnitValidator(const CMathContainer & math,
                  const CEvaluationTree & tree,
-                 const std::vector< CValidatedUnit > & variableUnits = std::vector< CValidatedUnit >());
+                 const std::vector< CValidatedUnit > & variableUnits);
 
   /**
    * Copy constructor
@@ -76,6 +76,13 @@ public:
   const std::map< CObjectInterface *, CValidatedUnit > & getObjectUnits() const;
 
   /**
+   * Retrieve the validated unit of the object units
+   * @param const CObjectInterface * pObject
+   * @return const CValidatedUnit & objectUnit
+   */
+  const CValidatedUnit & getObjectUnit(const CObjectInterface * pObject) const;
+
+  /**
    * Retrieve the validated unit
    * @return const CValidatedUnit & unit
    */
@@ -86,11 +93,13 @@ private:
 
   bool setUnits(const CUnit & unit);
 
-  const CMathContainer & mMathContainer;
+  CMathContainer & mMathContainer;
   const CEvaluationTree & mTree;
+  std::vector< CValidatedUnit > mProvidedVariableUnits;
   std::vector< CValidatedUnit > mVariableUnits;
   std::map < CObjectInterface *, CValidatedUnit > mObjectUnits;
   std::map < CEvaluationNode * , CValidatedUnit > mNodeUnits;
+  bool mApplyIntitialValue;
 };
 
 #endif // CUNIT_VALIDATOR_H

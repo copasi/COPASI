@@ -52,7 +52,6 @@ std::string CUnit::replaceSymbol(const std::string & expression,
   std::istringstream buffer(expression);
 
   CUnitParser Parser(&buffer);
-  Parser.setAvogadro(CUnit::Avogadro);
   Parser.replaceSymbol(oldSymbol, newSymbol);
 
   return (Parser.yyparse() == 0) ? Parser.getReplacedExpression() : expression;
@@ -67,22 +66,28 @@ CUnit::CUnit():
 {}
 
 // expression
-CUnit::CUnit(std::string expression,
-             const C_FLOAT64 & avogadro):
+CUnit::CUnit(const std::string & expression):
   mExpression(""),
   mComponents(),
   mUsedSymbols()
 {
-  setExpression(expression, avogadro);
+  setExpression(expression);
 }
 
 // kind
 CUnit::CUnit(const CBaseUnit::Kind & kind):
-  mExpression(),
+  mExpression(CBaseUnit::getSymbol(kind)),
   mComponents(),
   mUsedSymbols()
 {
-  setExpression(CBaseUnit::getSymbol(kind), CUnit::Avogadro);
+  // Base units must be created without calling setExpression
+  // as this would create an infinite loop.
+
+  if (kind != CBaseUnit::undefined)
+    {
+      mComponents.insert(CUnitComponent(kind));
+      consolidateDimensionless();
+    }
 }
 
 // copy constructor
@@ -95,8 +100,7 @@ CUnit::CUnit(const CUnit & src):
 CUnit::~CUnit()
 {}
 
-bool CUnit::setExpression(const std::string & expression,
-                          const C_FLOAT64 & avogadro)
+bool CUnit::setExpression(const std::string & expression)
 {
   mExpression = expression;
 
@@ -106,17 +110,16 @@ bool CUnit::setExpression(const std::string & expression,
       return true;
     }
 
-  return compile(avogadro);
+  return compile();
 }
 
-bool CUnit::compile(const C_FLOAT64 & avogadro)
+bool CUnit::compile()
 {
   mComponents.clear();
   mUsedSymbols.clear();
 
   std::istringstream buffer(mExpression);
   CUnitParser Parser(&buffer);
-  Parser.setAvogadro(avogadro);
 
   try
     {
@@ -215,10 +218,15 @@ CUnit CUnit::exponentiate(double exp) const
 }
 
 // Putting units next to each other implies multiplying them.
-CUnit  CUnit::operator*(const CUnit & rightSide) const
+CUnit CUnit::operator*(const CUnit & rightSide) const
 {
-  CUnit Unit(*this); // Make a copy of the first CUnit
+  if (*this == CBaseUnit::undefined ||
+      rightSide == CBaseUnit::undefined)
+    {
+      return CUnit();
+    }
 
+  CUnit Unit(*this);
   std::set< CUnitComponent >::const_iterator it = rightSide.mComponents.begin();
   std::set< CUnitComponent >::const_iterator end = rightSide.mComponents.end();
 
@@ -229,7 +237,7 @@ CUnit  CUnit::operator*(const CUnit & rightSide) const
 
   Unit.mUsedSymbols.insert(rightSide.mUsedSymbols.begin(), rightSide.mUsedSymbols.end());
 
-  return Unit; // The calling code might want to call simplifyComponents() on the returned unit.
+  return Unit;
 }
 
 bool CUnit::operator==(const CUnit & rightSide) const
@@ -246,7 +254,9 @@ bool CUnit::operator==(const CUnit & rightSide) const
   for (; it != end; ++it, ++itRhs)
     {
       if (*it == *itRhs ||
-          fabs(it->getMultiplier() * pow(10.0, it->getScale()) / itRhs->getMultiplier() * pow(10.0, itRhs->getScale()) - 1) < 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon())
+          (it->getKind() == CBaseUnit::dimensionless &&
+           itRhs->getKind() == CBaseUnit::dimensionless &&
+           fabs(it->getMultiplier() * pow(10.0, it->getScale()) / itRhs->getMultiplier() * pow(10.0, itRhs->getScale()) - 1) < 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon()))
         {
           continue;
         }
@@ -289,26 +299,36 @@ bool CUnit::operator<(const CUnit & rightSide) const
 
 bool CUnit::isEquivalent(const CUnit & rightSide) const
 {
-  if (mComponents.size() != rightSide.mComponents.size())
-    {
-      return false;
-    }
-
   std::set< CUnitComponent >::const_iterator it = mComponents.begin(),
                                              end = mComponents.end(),
-                                             itRhs = rightSide.mComponents.begin();
+                                             itRhs = rightSide.mComponents.begin(),
+                                             endRhs = rightSide.mComponents.end();
 
-  for (; it != end; ++it, ++itRhs)
+  while (it != end && itRhs != endRhs)
     {
       if ((it->getKind() == CBaseUnit::dimensionless &&
            itRhs->getKind() == CBaseUnit::dimensionless) ||
           *it == *itRhs)
         {
-          continue;
+          ++it;
+          ++itRhs;
         }
-
-      return false;
+      else if (it->getKind() == CBaseUnit::avogadro)
+        {
+          ++it;
+        }
+      else if (itRhs->getKind() == CBaseUnit::avogadro)
+        {
+          ++itRhs;
+        }
+      else
+        {
+          return false;
+        }
     }
+
+  if ((it != end && it->getKind() != CBaseUnit::avogadro) ||
+      (itRhs != endRhs && itRhs->getKind() != CBaseUnit::avogadro)) return false;
 
   return true;
 }
@@ -620,8 +640,7 @@ std::vector< CUnit::SymbolComponent > CUnit::getSymbolComponents() const
           SymbolComponents[FirstDenominatorIndex].multiplier = multiplier;
           SymbolComponents[FirstDenominatorIndex].scale = -scale;
         }
-      else if (scale != 0 &&
-               fabs(multiplier - 1.0) < 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon())
+      else
         {
           Component.symbol = "1";
           Component.multiplier = multiplier;

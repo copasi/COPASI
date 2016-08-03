@@ -316,7 +316,7 @@ void CCopasiXML::mergeUnitDefinitions(CUnitDefinitionDB * pUnitDefImportList)
 
       // By now we know we will add a copy of this one.
       pUnitDefToAdd = new CUnitDefinition(name.str(), NULL); // name should now not conflict
-      pUnitDefToAdd->setExpression(itIL->getExpression(), CUnit::Avogadro);
+      pUnitDefToAdd->setExpression(itIL->getExpression());
 
       // If necessary, generate, then set, a non-conflicting symbol.
       if (pCopasiUnitDefinitionList->containsSymbol(symbol.str()))
@@ -336,7 +336,7 @@ void CCopasiXML::mergeUnitDefinitions(CUnitDefinitionDB * pUnitDefImportList)
 
           for (; itChosen != endChosen; ++itChosen)
             {
-              (*itChosen)->setExpression(CUnit::replaceSymbol((*itChosen)->getExpression() , itIL->getSymbol(), pUnitDefToAdd->getSymbol()), CUnit::Avogadro);
+              (*itChosen)->setExpression(CUnit::replaceSymbol((*itChosen)->getExpression() , itIL->getSymbol(), pUnitDefToAdd->getSymbol()));
             }
 
           // for all the ones remaining in the Import List
@@ -344,7 +344,7 @@ void CCopasiXML::mergeUnitDefinitions(CUnitDefinitionDB * pUnitDefImportList)
 
           for (; itILrem != endIL; ++itILrem)
             {
-              itILrem->setExpression(CUnit::replaceSymbol(itILrem->getExpression() , itIL->getSymbol(), pUnitDefToAdd->getSymbol()), CUnit::Avogadro);
+              itILrem->setExpression(CUnit::replaceSymbol(itILrem->getExpression() , itIL->getSymbol(), pUnitDefToAdd->getSymbol()));
             }
 
           // for any units used in the model

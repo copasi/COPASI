@@ -146,7 +146,7 @@ unit:      KIND
            }
          | SI_UNIT
            {
-             $$.pUnit = new CUnit(CUnitDefinition::getSIUnit($1.text, mAvogadro));
+             $$.pUnit = new CUnit(CUnitDefinition::getSIUnit($1.text));
              
              mSymbols.insert($1.text);
              mSymbols.insert($$.pUnit->getUsedSymbols().begin(), $$.pUnit->getUsedSymbols().end());

@@ -430,15 +430,15 @@ std::string CEvaluationNodeObject::getMMLString(const std::vector< std::string >
 
 // virtual
 CValidatedUnit CEvaluationNodeObject::getUnit(const CMathContainer & container,
-    const std::vector< CValidatedUnit > & /* units */) const
+    const std::vector< CValidatedUnit > & units) const
 {
   const CObjectInterface * pObject = container.getMathObject(mpValue);
   const CCopasiObject * pDataObject = (pObject != NULL) ? pObject->getDataObject() : NULL;
 
   if (pDataObject != NULL)
     {
-      return CValidatedUnit(CUnit(pDataObject->getUnits(), container.getModel().getAvogadro()), false);
+      return CValidatedUnit::merge(units[0], CValidatedUnit(pDataObject->getUnits(), false));
     }
 
-  return CValidatedUnit();
+  return CValidatedUnit::merge(units[0], CValidatedUnit());
 }

@@ -13,18 +13,20 @@
 //{
 //}
 
-CUnitValidator::CUnitValidator(const CMathContainer & math,
+CUnitValidator::CUnitValidator(CMathContainer & math,
                                const CEvaluationTree & tree,
                                const std::vector< CUnit > & variableUnits):
   mMathContainer(math),
   mTree(tree),
-  mVariableUnits(variableUnits.size()),
+  mProvidedVariableUnits(variableUnits.size()),
+  mVariableUnits(),
   mObjectUnits(),
-  mNodeUnits()
+  mNodeUnits(),
+  mApplyIntitialValue(true)
 {
   std::vector< CUnit >::const_iterator itSrc = variableUnits.begin();
   std::vector< CUnit >::const_iterator endSrc = variableUnits.end();
-  std::vector< CValidatedUnit >::iterator itTarget = mVariableUnits.begin();
+  std::vector< CValidatedUnit >::iterator itTarget = mProvidedVariableUnits.begin();
 
   for (; itSrc != endSrc; ++itSrc, ++itTarget)
     {
@@ -35,27 +37,42 @@ CUnitValidator::CUnitValidator(const CMathContainer & math,
 CUnitValidator::CUnitValidator(const CMathContainer & math,
                                const CEvaluationTree & tree,
                                const std::vector < CValidatedUnit > & variableUnits):
-  mMathContainer(math),
+  mMathContainer(*const_cast< CMathContainer * >(&math)),
   mTree(tree),
-  mVariableUnits(variableUnits),
+  mProvidedVariableUnits(variableUnits),
+  mVariableUnits(),
   mObjectUnits(),
-  mNodeUnits()
+  mNodeUnits(),
+  mApplyIntitialValue(false)
 {}
 
 CUnitValidator::CUnitValidator(const CUnitValidator &src):
   mMathContainer(src.mMathContainer),
   mTree(src.mTree),
+  mProvidedVariableUnits(src.mProvidedVariableUnits),
   mVariableUnits(src.mVariableUnits),
   mObjectUnits(src.mObjectUnits),
-  mNodeUnits(src.mNodeUnits)
+  mNodeUnits(src.mNodeUnits),
+  mApplyIntitialValue(src.mApplyIntitialValue)
 {}
 
 CUnitValidator::~CUnitValidator()
-{
-}
+{}
 
 bool CUnitValidator::validateUnits(const CUnit & unit)
 {
+  CVector< C_FLOAT64 > CurrentValues;
+
+  if (mApplyIntitialValue)
+    {
+      CurrentValues = mMathContainer.getValues();
+      mMathContainer.applyInitialValues();
+    }
+
+  mVariableUnits = mProvidedVariableUnits;
+  mObjectUnits.clear();
+  mNodeUnits.clear();
+
   do
     {
       getUnits();
@@ -73,29 +90,42 @@ bool CUnitValidator::validateUnits(const CUnit & unit)
         conflict = true;
       }
 
-  std::map < CObjectInterface *, CValidatedUnit >::const_iterator itObject = mObjectUnits.begin();
-  std::map < CObjectInterface *, CValidatedUnit >::const_iterator endObject = mObjectUnits.end();
+  std::map < CObjectInterface *, CValidatedUnit >::iterator itObject = mObjectUnits.begin();
+  std::map < CObjectInterface *, CValidatedUnit >::iterator endObject = mObjectUnits.end();
 
-  for (; itObject != endObject && !conflict; ++itObject)
-    if (itObject->second.conflict())
-      {
-        conflict = true;
-      }
+  for (; itObject != endObject; ++itObject)
+    {
+      itObject->second.buildExpression();
 
-  std::vector< CValidatedUnit >::const_iterator it = mVariableUnits.begin();
-  std::vector< CValidatedUnit >::const_iterator end = mVariableUnits.end();
+      if (itObject->second.conflict())
+        {
+          conflict = true;
+        }
+    }
 
-  for (; it != end && !conflict; ++it)
-    if (it->conflict())
-      {
-        conflict = true;
-      }
+  std::vector< CValidatedUnit >::iterator it = mVariableUnits.begin();
+  std::vector< CValidatedUnit >::iterator end = mVariableUnits.end();
+
+  for (; it != end; ++it)
+    {
+      it->buildExpression();
+
+      if (it->conflict())
+        {
+          conflict = true;
+        }
+    }
 
   std::map < CEvaluationNode * , CValidatedUnit >::iterator found = mNodeUnits.find(const_cast< CEvaluationNode * >(mTree.getRoot()));
 
   if (found != mNodeUnits.end())
     {
       found->second.setConflict(conflict);
+    }
+
+  if (mApplyIntitialValue)
+    {
+      mMathContainer.setValues(CurrentValues);
     }
 
   return !conflict;
@@ -110,31 +140,36 @@ void CUnitValidator::getUnits()
     {
       if (*it != NULL)
         {
-          switch (it->getType())
+          switch (CEvaluationNode::type(it->getType()))
             {
               case CEvaluationNode::VARIABLE:
                 tmpUnit = it->getUnit(mMathContainer, mVariableUnits);
                 break;
 
               case CEvaluationNode::OBJECT:
-                tmpUnit = it->getUnit(mMathContainer, it.context());
+              {
+                CObjectInterface * pObject = const_cast< CObjectInterface * >(static_cast< CEvaluationNodeObject * >(*it)->getObjectInterfacePtr());
+                std::vector< CValidatedUnit > ObjectUnit;
 
-                {
-                  CObjectInterface * pObject = const_cast< CObjectInterface * >(static_cast< CEvaluationNodeObject * >(*it)->getObjectInterfacePtr());
+                if (pObject != NULL)
+                  {
+                    std::map < CObjectInterface *, CValidatedUnit >::iterator found = mObjectUnits.find(pObject);
 
-                  if (pObject != NULL)
-                    {
-                      std::map < CObjectInterface *, CValidatedUnit >::iterator found = mObjectUnits.find(pObject);
+                    if (found == mObjectUnits.end())
+                      {
+                        found = mObjectUnits.insert(std::make_pair(pObject, CValidatedUnit(CBaseUnit::undefined, false))).first;
+                      }
 
-                      if (found == mObjectUnits.end())
-                        {
-                          found = mObjectUnits.insert(std::make_pair(pObject, CValidatedUnit(CBaseUnit::undefined, false))).first;
-                        }
+                    ObjectUnit.push_back(found->second);
+                  }
+                else
+                  {
+                    ObjectUnit.push_back(CValidatedUnit(CBaseUnit::undefined, false));
+                  }
 
-                      found->second = CValidatedUnit::merge(found->second, tmpUnit);
-                    }
-                }
-                break;
+                tmpUnit = it->getUnit(mMathContainer, ObjectUnit);
+              }
+              break;
 
               default:
                 tmpUnit = it->getUnit(mMathContainer, it.context());
@@ -146,9 +181,14 @@ void CUnitValidator::getUnits()
               it.parentContextPtr()->push_back(tmpUnit);
             }
 
-          mNodeUnits.insert(std::make_pair(*it, tmpUnit));
+          // tmpUnit.buildExpression();
+          // std::cout << "getUnit: " << it->getData() << ", " << tmpUnit.getExpression() << std::endl;
+
+          mNodeUnits[*it] = tmpUnit;
         }
     }
+
+  std::cout << std::endl;
 }
 
 bool CUnitValidator::setUnits(const CUnit & unit)
@@ -171,8 +211,12 @@ bool CUnitValidator::setUnits(const CUnit & unit)
       if (*it != NULL)
         {
           tmpUnit = it->setUnit(mMathContainer, CurrentNodeUnits, TargetNodeUnits);
+          mNodeUnits[*it] = tmpUnit;
 
-          switch (it->getType())
+          // tmpUnit.buildExpression();
+          // std::cout << "setUnit: " << it->getData() << ", " << tmpUnit.getExpression() << std::endl;
+
+          switch (CEvaluationNode::type(it->getType()))
             {
               case CEvaluationNode::VARIABLE:
               {
@@ -188,40 +232,39 @@ bool CUnitValidator::setUnits(const CUnit & unit)
 
                 mVariableUnits[Index] = CValidatedUnit::merge(mVariableUnits[Index], tmpUnit);
 
-                UnitDetermined = Undefined && !(mVariableUnits[Index] == CBaseUnit::undefined);
+                UnitDetermined |= Undefined && !(mVariableUnits[Index] == CBaseUnit::undefined);
               }
               break;
 
               case CEvaluationNode::OBJECT:
-                mNodeUnits.insert(std::make_pair(*it, tmpUnit));
+              {
+                CObjectInterface * pObject = const_cast< CObjectInterface * >(static_cast< CEvaluationNodeObject * >(*it)->getObjectInterfacePtr());
 
-                {
-                  CObjectInterface * pObject = const_cast< CObjectInterface * >(static_cast< CEvaluationNodeObject * >(*it)->getObjectInterfacePtr());
+                if (pObject != NULL)
+                  {
+                    std::map < CObjectInterface *, CValidatedUnit >::iterator found = mObjectUnits.find(pObject);
 
-                  if (pObject != NULL)
-                    {
-                      std::map < CObjectInterface *, CValidatedUnit >::iterator found = mObjectUnits.find(pObject);
+                    if (found == mObjectUnits.end())
+                      {
+                        found = mObjectUnits.insert(std::make_pair(pObject, CValidatedUnit(CBaseUnit::undefined, false))).first;
+                      }
 
-                      if (found == mObjectUnits.end())
-                        {
-                          found = mObjectUnits.insert(std::make_pair(pObject, CValidatedUnit(CBaseUnit::undefined, false))).first;
-                        }
+                    bool Undefined = found->second == CBaseUnit::undefined;
 
-                      bool Undefined = found->second == CBaseUnit::undefined;
+                    found->second = CValidatedUnit::merge(found->second, tmpUnit);
 
-                      found->second = CValidatedUnit::merge(found->second, tmpUnit);
-
-                      UnitDetermined = Undefined && !(found->second == CBaseUnit::undefined);
-                    }
-                }
-                break;
+                    UnitDetermined |= Undefined && !(found->second == CBaseUnit::undefined);
+                  }
+              }
+              break;
 
               default:
-                mNodeUnits.insert(std::make_pair(*it, tmpUnit));
                 break;
             }
         }
     }
+
+  std::cout << std::endl;
 
   return UnitDetermined;
 }
@@ -234,6 +277,26 @@ const std::vector< CValidatedUnit > & CUnitValidator::getVariableUnits() const
 const std::map< CObjectInterface *, CValidatedUnit > & CUnitValidator::getObjectUnits() const
 {
   return  mObjectUnits;
+}
+
+const CValidatedUnit & CUnitValidator::getObjectUnit(const CObjectInterface * pObject) const
+{
+  std::map< CObjectInterface *, CValidatedUnit >::const_iterator found = mObjectUnits.find(const_cast< CObjectInterface * >(pObject));
+
+  if (found == mObjectUnits.end())
+    {
+      CMathObject * pMathObject = mMathContainer.getMathObject(pObject);
+
+      found = mObjectUnits.find(static_cast< CObjectInterface * >(pMathObject));
+    }
+
+  if (found == mObjectUnits.end())
+    {
+      static const CValidatedUnit Default;
+      return Default;
+    }
+
+  return found->second;
 }
 
 const CValidatedUnit & CUnitValidator::getUnit() const
