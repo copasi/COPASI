@@ -17,6 +17,19 @@
 
 #include "CCopasiException.h"
 
+bool SymbolCompare::operator()(const std::string & lhs, const std::string & rhs) const
+{
+  const CUnitDefinition *pLHS = CCopasiRootContainer::getUnitDefFromSymbol(lhs);
+  const CUnitDefinition *pRHS = CCopasiRootContainer::getUnitDefFromSymbol(rhs);
+
+  if (pLHS != NULL && pRHS != NULL)
+    {
+      return pLHS->operator <(*pRHS);
+    }
+
+  return lhs < rhs;
+}
+
 // static
 C_FLOAT64 CUnit::Avogadro(6.022140857e23); // http://physics.nist.gov/cgi-bin/cuu/Value?na (Thu Feb 11 09:57:27 EST 2016)
 
@@ -86,6 +99,7 @@ CUnit::CUnit(const CBaseUnit::Kind & kind):
   if (kind != CBaseUnit::undefined)
     {
       mComponents.insert(CUnitComponent(kind));
+      mUsedSymbols.insert(CBaseUnit::getSymbol(kind));
       consolidateDimensionless();
     }
 }
@@ -131,7 +145,7 @@ bool CUnit::compile()
     }
 
   mComponents = Parser.getComponents();
-  mUsedSymbols = Parser.getSymbols();
+  mUsedSymbols.insert(Parser.getSymbols().begin(), Parser.getSymbols().end());
 
   return true;
 }
@@ -344,6 +358,7 @@ C_INT32 CUnit::getExponentOfSymbol(const std::string & symbol, CUnit & unit)
   if (pUnitDef == NULL) return 0;
 
   C_INT32 Exponent = 0;
+  int improvement = 0;
 
   // First try multiplication
   while (true)
@@ -351,20 +366,12 @@ C_INT32 CUnit::getExponentOfSymbol(const std::string & symbol, CUnit & unit)
       CUnit Tmp = unit **pUnitDef;
 
       // Compare components to determine whether this simplified the unit
-      if (Tmp.getComponents().size() < unit.getComponents().size())
-        {
-          unit = Tmp;
-          Exponent++;
-
-          continue;
-        }
-
       std::set< CUnitComponent >::const_iterator itOld = unit.getComponents().begin();
       std::set< CUnitComponent >::const_iterator endOld = unit.getComponents().end();
       std::set< CUnitComponent >::const_iterator itNew = Tmp.getComponents().begin();
       std::set< CUnitComponent >::const_iterator endNew = Tmp.getComponents().end();
 
-      int improvement = 0;
+      improvement = 0;
 
       while (itOld != endOld && itNew != endNew)
         {
@@ -387,6 +394,13 @@ C_INT32 CUnit::getExponentOfSymbol(const std::string & symbol, CUnit & unit)
                   (itOld->getMultiplier() > 1.0 && itNew->getMultiplier() > itOld->getMultiplier()))
                 {
                   improvement -= 100;
+                }
+              else if ((fabs(1.0 - itNew->getMultiplier()) < 100 * std::numeric_limits< C_FLOAT64 >::epsilon() &&
+                        fabs(1.0 - itOld->getMultiplier()) >= 100 * std::numeric_limits< C_FLOAT64 >::epsilon()) ||
+                       (itNew->getMultiplier() < 1.0 && itOld->getMultiplier() < itNew->getMultiplier()) ||
+                       (itNew->getMultiplier() > 1.0 && itOld->getMultiplier() > itNew->getMultiplier()))
+                {
+                  improvement += 100;
                 }
 
               improvement += (int)(fabs(itOld->getExponent()) - fabs(itNew->getExponent()));
@@ -439,7 +453,7 @@ C_INT32 CUnit::getExponentOfSymbol(const std::string & symbol, CUnit & unit)
       std::set< CUnitComponent >::const_iterator itNew = Tmp.getComponents().begin();
       std::set< CUnitComponent >::const_iterator endNew = Tmp.getComponents().end();
 
-      int improvement = 0;
+      improvement = 0;
 
       while (itOld != endOld && itNew != endNew)
         {
@@ -462,6 +476,13 @@ C_INT32 CUnit::getExponentOfSymbol(const std::string & symbol, CUnit & unit)
                   (itOld->getMultiplier() > 1.0 && itNew->getMultiplier() > itOld->getMultiplier()))
                 {
                   improvement -= 100;
+                }
+              else if ((fabs(1.0 - itNew->getMultiplier()) < 100 * std::numeric_limits< C_FLOAT64 >::epsilon() &&
+                        fabs(1.0 - itOld->getMultiplier()) >= 100 * std::numeric_limits< C_FLOAT64 >::epsilon()) ||
+                       (itNew->getMultiplier() < 1.0 && itOld->getMultiplier() < itNew->getMultiplier()) ||
+                       (itNew->getMultiplier() > 1.0 && itOld->getMultiplier() > itNew->getMultiplier()))
+                {
+                  improvement += 100;
                 }
 
               // The kind is the same.
@@ -513,13 +534,14 @@ std::vector< CUnit::SymbolComponent > CUnit::getSymbolComponents() const
   CUnit Tmp(*this);
   Tmp.consolidateDimensionless();
 
-  std::set< std::string > UsedSymbols = mUsedSymbols;
+  SymbolSet UsedSymbols;
+  UsedSymbols.insert(mUsedSymbols.begin(), mUsedSymbols.end());
   size_t Index = 0;
 
   while (true)
     {
-      std::set< std::string >::const_iterator itSymbol = UsedSymbols.begin();
-      std::set< std::string >::const_iterator endSymbol = UsedSymbols.end();
+      SymbolSet::const_iterator itSymbol = UsedSymbols.begin();
+      SymbolSet::const_iterator endSymbol = UsedSymbols.end();
 
       for (; itSymbol != endSymbol; ++itSymbol)
         {
@@ -685,7 +707,7 @@ void CUnit::buildExpression()
               numerator << it->multiplier << "*";
             }
 
-          numerator << CBaseUnit::prefixFromScale(it->scale) << it->symbol;
+          numerator << CBaseUnit::prefixFromScale(it->scale) << CCopasiRootContainer::quoteUnitDefSymbol(it->symbol);
 
           if (it->exponent > 1.0)
             {
@@ -706,7 +728,7 @@ void CUnit::buildExpression()
               DenominatorCount++;
             }
 
-          denominator << CBaseUnit::prefixFromScale(it->scale) << it->symbol;
+          denominator << CBaseUnit::prefixFromScale(it->scale) << CCopasiRootContainer::quoteUnitDefSymbol(it->symbol);
 
           if (it->exponent < -1.0)
             {
@@ -722,7 +744,7 @@ void CUnit::buildExpression()
               numerator << it->multiplier << "*";
             }
 
-          numerator << CBaseUnit::prefixFromScale(it->scale) << it->symbol;
+          numerator << CBaseUnit::prefixFromScale(it->scale) << CCopasiRootContainer::quoteUnitDefSymbol(it->symbol);
           NumeratorCount++;
         }
     }

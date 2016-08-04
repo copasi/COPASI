@@ -103,7 +103,7 @@ bool CUnitDefinitionDB::containsSymbol(std::string symbol)
 
 const CUnitDefinition * CUnitDefinitionDB::getUnitDefFromSymbol(std::string symbol) const
 {
-  std::map<std::string, CUnitDefinition *>::const_iterator found = mSymbolToUnitDefinitions.find(symbol);
+  std::map<std::string, CUnitDefinition *>::const_iterator found = mSymbolToUnitDefinitions.find(unQuote(symbol));
 
   if (found != mSymbolToUnitDefinitions.end())
     {
@@ -137,6 +137,16 @@ bool CUnitDefinitionDB::changeSymbol(CUnitDefinition *pUnitDef, const std::strin
   mSymbolToUnitDefinitions.insert(std::make_pair(symbol, pUnitDef));
 
   return true;
+}
+
+std::string CUnitDefinitionDB::quoteSymbol(const std::string & symbol) const
+{
+  const CUnitDefinition * pUnitDef = getUnitDefFromSymbol(symbol);
+
+  if (pUnitDef == NULL ||
+      CUnit(symbol) == *pUnitDef) return symbol;
+
+  return quote(" " + symbol).erase(1, 1);
 }
 
 std::set< CUnit > CUnitDefinitionDB::getAllValidUnits(const std::string & symbol,

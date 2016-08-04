@@ -166,6 +166,12 @@ const CUnitDefinition * CCopasiRootContainer::getUnitDefFromSymbol(const std::st
 }
 
 // static
+std::string CCopasiRootContainer::quoteUnitDefSymbol(const std::string & symbol)
+{
+  return pRootContainer->mpUnitDefinitionList->quoteSymbol(symbol);
+}
+
+// static
 CCopasiDataModel * CCopasiRootContainer::addDatamodel()
 {
   CCopasiDataModel* pDataModel = new CCopasiDataModel(pRootContainer->mWithGUI);

@@ -34,8 +34,12 @@ SIUnit SIUnits[] =
   {"kelvin",     "K",        "K"},
   {"candela",    "cd",       "cd"},
 
-  //SI derived
+  // Additions of base terms for COPASI
   {"Avogadro",   "Avogadro", "Avogadro"},
+  {"dimensionless",     "1", "1"},
+  {"item",       "#",        "#"},
+
+  //SI derived
   {"becquerel",  "Bq",       "s^-1"},
   {"coulomb",    "C",        "s*A"},
   {"farad",      "F",        "m^-2*kg^-1*s^4*A^2"},
@@ -61,8 +65,6 @@ SIUnit SIUnits[] =
   {"weber",      "Wb",       "m^2*kg*s^-2*A^-1"},
 
   // Fill in some COPASI default unit options
-  {"dimensionless",     "1",                 "1"},
-  {"item",              "#",                 "#"},
   {"minute",            "min",               "60*s"},
   {"hour",              "h",                 "3600*s"},
   {"day",               "d",                 "86400*s"},
@@ -235,6 +237,19 @@ CUnitDefinition & CUnitDefinition::operator=(const CUnitDefinition & src)
   setSymbol(src.mSymbol);
 
   return *this;
+}
+
+bool CUnitDefinition::operator<(const CUnitDefinition & rightSide) const
+{
+  const std::set< std::string > & UsedSymbols = getUsedSymbols();
+
+  if (UsedSymbols.find(rightSide.mSymbol) != UsedSymbols.end()) return true;
+
+  const std::set< std::string > & RHSUsedSymbols = rightSide.getUsedSymbols();
+
+  if (RHSUsedSymbols.find(mSymbol) != RHSUsedSymbols.end()) return false;
+
+  return this->CUnit::operator <(rightSide);
 }
 
 //static

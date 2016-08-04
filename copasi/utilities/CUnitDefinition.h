@@ -63,6 +63,8 @@ public:
 
   CUnitDefinition & operator=(const CUnitDefinition & src);
 
+  bool operator<(const CUnitDefinition & rightSide) const;
+
   static bool isBuiltinUnitSymbol(std::string symbol);
 
   bool isReadOnly() const;

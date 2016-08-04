@@ -15,6 +15,11 @@
 #include "copasi/utilities/CUnitComponent.h"
 #include "copasi/utilities/CCopasiVector.h"
 
+struct SymbolCompare
+{
+  bool operator()(const std::string & lhs, const std::string & rhs) const;
+};
+
 class CUnit
 {
   friend std::ostream &operator<<(std::ostream &os, const CUnit & o);
@@ -28,6 +33,8 @@ class CUnit
   } SymbolComponent;
 
 public:
+
+  typedef std::set< std::string, SymbolCompare > SymbolSet;
 
   static C_FLOAT64 Avogadro;
 
