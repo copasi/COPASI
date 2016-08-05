@@ -149,10 +149,10 @@ std::string CUnitDefinitionDB::quoteSymbol(const std::string & symbol) const
   return quote(" " + symbol).erase(1, 1);
 }
 
-std::set< CUnit > CUnitDefinitionDB::getAllValidUnits(const std::string & symbol,
+std::vector< CUnit > CUnitDefinitionDB::getAllValidUnits(const std::string & symbol,
     const C_FLOAT64 & exponent) const
 {
-  std::set< CUnit > ValidUnits;
+  std::vector< CUnit > ValidUnits;
 
   if (getUnitDefFromSymbol(symbol) == NULL)
     {
@@ -163,7 +163,7 @@ std::set< CUnit > CUnitDefinitionDB::getAllValidUnits(const std::string & symbol
   CUnit Power = Base.exponentiate(exponent);
 
   // dimensionless is always valid
-  ValidUnits.insert(CUnit(CBaseUnit::dimensionless));
+  ValidUnits.push_back(CUnit(CBaseUnit::dimensionless));
 
   const_iterator it = begin();
   const_iterator itEnd = end();
@@ -181,7 +181,7 @@ std::set< CUnit > CUnitDefinitionDB::getAllValidUnits(const std::string & symbol
                 {
                   CUnit Scale;
                   Scale.addComponent(CUnitComponent(CBaseUnit::dimensionless, 1.0, scale, 0));
-                  CUnit ScaledUnit = Scale * CUnit(it->getSymbol());
+                  CUnit ScaledUnit(Scale * CUnit(it->getSymbol()));
 
                   if (it->isEquivalent(Base))
                     {
@@ -189,12 +189,12 @@ std::set< CUnit > CUnitDefinitionDB::getAllValidUnits(const std::string & symbol
                     }
 
                   ScaledUnit.buildExpression();
-                  ValidUnits.insert(ScaledUnit);
+                  ValidUnits.push_back(ScaledUnit);
                 }
             }
           else
             {
-              CUnit ScaledUnit = CUnit(it->getSymbol());
+              CUnit ScaledUnit(it->getSymbol());
 
               if (it->isEquivalent(Base))
                 {
@@ -202,7 +202,7 @@ std::set< CUnit > CUnitDefinitionDB::getAllValidUnits(const std::string & symbol
                 }
 
               ScaledUnit.buildExpression();
-              ValidUnits.insert(ScaledUnit);
+              ValidUnits.push_back(ScaledUnit);
             }
         }
     }

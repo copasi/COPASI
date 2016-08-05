@@ -239,19 +239,6 @@ CUnitDefinition & CUnitDefinition::operator=(const CUnitDefinition & src)
   return *this;
 }
 
-bool CUnitDefinition::operator<(const CUnitDefinition & rightSide) const
-{
-  const std::set< std::string > & UsedSymbols = getUsedSymbols();
-
-  if (UsedSymbols.find(rightSide.mSymbol) != UsedSymbols.end()) return true;
-
-  const std::set< std::string > & RHSUsedSymbols = rightSide.getUsedSymbols();
-
-  if (RHSUsedSymbols.find(mSymbol) != RHSUsedSymbols.end()) return false;
-
-  return this->CUnit::operator <(rightSide);
-}
-
 //static
 bool CUnitDefinition::isBuiltinUnitSymbol(std::string symbol)
 {

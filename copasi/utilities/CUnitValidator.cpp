@@ -13,10 +13,10 @@
 //{
 //}
 
-CUnitValidator::CUnitValidator(CMathContainer & math,
+CUnitValidator::CUnitValidator(const CMathContainer & math,
                                const CEvaluationTree & tree,
                                const std::vector< CUnit > & variableUnits):
-  mMathContainer(math),
+  mMathContainer(*const_cast< CMathContainer * >(&math)),
   mTree(tree),
   mProvidedVariableUnits(variableUnits.size()),
   mVariableUnits(),
@@ -181,7 +181,7 @@ void CUnitValidator::getUnits()
               it.parentContextPtr()->push_back(tmpUnit);
             }
 
-          // tmpUnit.buildExpression();
+          // tmpUnit.buildExpression(pretty);
           // std::cout << "getUnit: " << it->getData() << ", " << tmpUnit.getExpression() << std::endl;
 
           mNodeUnits[*it] = tmpUnit;
@@ -213,7 +213,7 @@ bool CUnitValidator::setUnits(const CUnit & unit)
           tmpUnit = it->setUnit(mMathContainer, CurrentNodeUnits, TargetNodeUnits);
           mNodeUnits[*it] = tmpUnit;
 
-          // tmpUnit.buildExpression();
+          // tmpUnit.buildExpression(pretty);
           // std::cout << "setUnit: " << it->getData() << ", " << tmpUnit.getExpression() << std::endl;
 
           switch (CEvaluationNode::type(it->getType()))

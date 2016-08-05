@@ -15,10 +15,7 @@
 #include "copasi/utilities/CUnitComponent.h"
 #include "copasi/utilities/CCopasiVector.h"
 
-struct SymbolCompare
-{
-  bool operator()(const std::string & lhs, const std::string & rhs) const;
-};
+class CUnitDefinition;
 
 class CUnit
 {
@@ -33,8 +30,6 @@ class CUnit
   } SymbolComponent;
 
 public:
-
-  typedef std::set< std::string, SymbolCompare > SymbolSet;
 
   static C_FLOAT64 Avogadro;
 
@@ -136,7 +131,7 @@ private:
   // into a/the single dimensionless component
   void consolidateDimensionless();
 
-  static C_INT32 getExponentOfSymbol(const std::string & symbol, CUnit & unit);
+  static C_INT32 getExponentOfSymbol(const CUnitDefinition * pDef, CUnit & unit);
 };
 
 #endif // CUNIT_H

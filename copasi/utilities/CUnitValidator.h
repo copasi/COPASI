@@ -27,11 +27,11 @@ public:
 
   /**
    * Function constructor
-   * @param CMathContainer & math
+   * @param const CMathContainer & math
    * @param const CEvaluationTree & tree
    * @param const std::vector< CUnit > & variableUnits (default: std::vector< CUnit >)
    */
-  CUnitValidator(CMathContainer & math,
+  CUnitValidator(const CMathContainer & math,
                  const CEvaluationTree & tree,
                  const std::vector< CUnit > & variableUnits = std::vector< CUnit >());
 

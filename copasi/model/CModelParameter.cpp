@@ -18,8 +18,9 @@
 #include "report/CCopasiRootContainer.h"
 #include "report/CKeyFactory.h"
 #include "report/CCopasiObject.h"
-#include "utilities/CDimension.h"
-#include "copasi/utilities/CUnit.h"
+#include "utilities/CUnitValidator.h"
+#include "utilities/CUnit.h"
+#include "math/CMathExpression.h"
 
 // static
 const char * CModelParameter::TypeNames[] =
@@ -160,26 +161,30 @@ const std::string CModelParameter::getUnit(const Framework & framework) const
       {
         const CReaction * pReaction = static_cast< const CModelParameterReactionParameter * >(this)->getReaction();
 
-        if (pReaction == NULL)
+        if (pReaction == NULL ||
+            mpObject == NULL)
           {
             return "";
           }
 
         const CModel * pModel = getModel();
 
-        CFindDimensions Units(pReaction->getFunction(),
-                              pModel->isDimensionless(CModel::quantity),
-                              pModel->isDimensionless(CModel::volume),
-                              pModel->isDimensionless(CModel::time),
-                              pModel->isDimensionless(CModel::area),
-                              pModel->isDimensionless(CModel::length));
-        Units.setUseHeuristics(true);
+        const CMathContainer & Container = pModel->getMathContainer();
+        const CCopasiObject * pFluxObject = pReaction->getFluxReference();
+        CMathObject * pObject = Container.getMathObject(pFluxObject);
+        CUnitValidator Validator(Container, *pObject->getExpressionPtr());
 
-        Units.setChemicalEquation(&pReaction->getChemEq());
+        Validator.validateUnits(pFluxObject->getUnits());
 
-        Units.findDimensions(pReaction->getEffectiveKineticLawUnitType() == CReaction::AmountPerTime);
-
-        return Units.getDimensions()[pReaction->getParameterIndex(getName())].getDisplayString(pModel);
+        if (pReaction->isLocalParameter(pReaction->getParameterIndex(getName())))
+          {
+            return Validator.getObjectUnit(static_cast< CCopasiParameter * >(mpObject)->getValueReference()).getExpression();
+          }
+        else
+          {
+            const CModelValue * pModelValue = static_cast< const CModelValue * >(Container.getObject(static_cast< const CModelParameterReactionParameter * >(this)->getGlobalQuantityCN()));
+            return Validator.getObjectUnit(pModelValue->getValueReference()).getExpression();
+          }
       }
       break;
 

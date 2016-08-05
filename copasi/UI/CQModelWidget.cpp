@@ -295,10 +295,10 @@ CQModelWidget::changeValue(CCopasiUndoCommand::Type type, const QVariant& newVal
 void CQModelWidget::updateUnitComboBoxes()
 {
   QStringList ComboEntries;
-  std::set< CUnit >::const_iterator it, itEnd;
+  std::vector< CUnit >::const_iterator it, itEnd;
 
   // Take advantage of the implicit sorting in std::set
-  std::set< CUnit > ValidUnitSet =  CCopasiRootContainer::getUnitList()->getAllValidUnits("s", 1);
+  std::vector< CUnit > ValidUnitSet =  CCopasiRootContainer::getUnitList()->getAllValidUnits("s", 1);
 
   for (it = ValidUnitSet.begin(), itEnd = ValidUnitSet.end(); it != itEnd; ++it)
     {

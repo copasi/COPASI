@@ -17,17 +17,32 @@
 
 #include "CCopasiException.h"
 
-bool SymbolCompare::operator()(const std::string & lhs, const std::string & rhs) const
+std::list< const CUnitDefinition * > sortSymbols(const std::set< std::string > symbols)
 {
-  const CUnitDefinition *pLHS = CCopasiRootContainer::getUnitDefFromSymbol(lhs);
-  const CUnitDefinition *pRHS = CCopasiRootContainer::getUnitDefFromSymbol(rhs);
+  std::list< const CUnitDefinition * > SortedList;
+  std::list< const CUnitDefinition * >::iterator itList;
+  std::list< const CUnitDefinition * >::iterator endList;
 
-  if (pLHS != NULL && pRHS != NULL)
+  std::set< std::string >::const_iterator it = symbols.begin();
+  std::set< std::string >::const_iterator end = symbols.end();
+
+  for (; it != end; ++it)
     {
-      return pLHS->operator <(*pRHS);
+      const CUnitDefinition * pUnitDef = CCopasiRootContainer::getUnitDefFromSymbol(*it);
+
+      if (pUnitDef == NULL) continue;
+
+      itList = SortedList.begin();
+      endList = SortedList.end();
+
+      for (; itList != endList; ++itList)
+        if ((*itList)->getUsedSymbols().count(*it)) break;
+
+      SortedList.insert(itList, pUnitDef);
     }
 
-  return lhs < rhs;
+  SortedList.reverse();
+  return SortedList;
 }
 
 // static
@@ -348,14 +363,10 @@ bool CUnit::isEquivalent(const CUnit & rightSide) const
 }
 
 // static
-C_INT32 CUnit::getExponentOfSymbol(const std::string & symbol, CUnit & unit)
+C_INT32 CUnit::getExponentOfSymbol(const CUnitDefinition * pUnitDef, CUnit & unit)
 {
   // We ignore base units
-  if (CBaseUnit::fromSymbol(symbol) != CBaseUnit::undefined) return 0;
-
-  const CUnitDefinition * pUnitDef = CCopasiRootContainer::getUnitDefFromSymbol(symbol);
-
-  if (pUnitDef == NULL) return 0;
+  if (CBaseUnit::fromSymbol(pUnitDef->getSymbol()) != CBaseUnit::undefined) return 0;
 
   C_INT32 Exponent = 0;
   int improvement = 0;
@@ -388,20 +399,31 @@ C_INT32 CUnit::getExponentOfSymbol(const std::string & symbol, CUnit & unit)
           else
             {
               // The kind is the same.
-              if ((fabs(1.0 - itOld->getMultiplier()) < 100 * std::numeric_limits< C_FLOAT64 >::epsilon() &&
-                   fabs(1.0 - itNew->getMultiplier()) >= 100 * std::numeric_limits< C_FLOAT64 >::epsilon()) ||
-                  (itOld->getMultiplier() < 1.0 && itNew->getMultiplier() < itOld->getMultiplier()) ||
-                  (itOld->getMultiplier() > 1.0 && itNew->getMultiplier() > itOld->getMultiplier()))
+              if (fabs(1.0 - itOld->getMultiplier()) < 100 * std::numeric_limits< C_FLOAT64 >::epsilon() &&
+                  fabs(1.0 - itNew->getMultiplier()) >= 100 * std::numeric_limits< C_FLOAT64 >::epsilon())
+                {
+                  improvement -= 10;
+                }
+              /*
+              else if ((itOld->getMultiplier() < 1.0 && itNew->getMultiplier() < itOld->getMultiplier()) ||
+                       (itOld->getMultiplier() > 1.0 && itNew->getMultiplier() > itOld->getMultiplier()))
                 {
                   improvement -= 100;
                 }
-              else if ((fabs(1.0 - itNew->getMultiplier()) < 100 * std::numeric_limits< C_FLOAT64 >::epsilon() &&
-                        fabs(1.0 - itOld->getMultiplier()) >= 100 * std::numeric_limits< C_FLOAT64 >::epsilon()) ||
-                       (itNew->getMultiplier() < 1.0 && itOld->getMultiplier() < itNew->getMultiplier()) ||
+               */
+              else if (fabs(1.0 - itNew->getMultiplier()) < 100 * std::numeric_limits< C_FLOAT64 >::epsilon() &&
+                       fabs(1.0 - itOld->getMultiplier()) >= 100 * std::numeric_limits< C_FLOAT64 >::epsilon())
+                {
+                  improvement += 10;
+                }
+
+              /*
+              else if ((itNew->getMultiplier() < 1.0 && itOld->getMultiplier() < itNew->getMultiplier()) ||
                        (itNew->getMultiplier() > 1.0 && itOld->getMultiplier() > itNew->getMultiplier()))
                 {
                   improvement += 100;
                 }
+              */
 
               improvement += (int)(fabs(itOld->getExponent()) - fabs(itNew->getExponent()));
               ++itOld;
@@ -439,15 +461,6 @@ C_INT32 CUnit::getExponentOfSymbol(const std::string & symbol, CUnit & unit)
     {
       CUnit Tmp = unit * Inverse;
 
-      // Compare symbols to determine whether this simplified the unit
-      if (Tmp.getComponents().size() < unit.getComponents().size())
-        {
-          unit = Tmp;
-          Exponent++;
-
-          continue;
-        }
-
       std::set< CUnitComponent >::const_iterator itOld = unit.getComponents().begin();
       std::set< CUnitComponent >::const_iterator endOld = unit.getComponents().end();
       std::set< CUnitComponent >::const_iterator itNew = Tmp.getComponents().begin();
@@ -470,20 +483,31 @@ C_INT32 CUnit::getExponentOfSymbol(const std::string & symbol, CUnit & unit)
           else
             {
               // The kind is the same.
-              if ((fabs(1.0 - itOld->getMultiplier()) < 100 * std::numeric_limits< C_FLOAT64 >::epsilon() &&
-                   fabs(1.0 - itNew->getMultiplier()) >= 100 * std::numeric_limits< C_FLOAT64 >::epsilon()) ||
-                  (itOld->getMultiplier() < 1.0 && itNew->getMultiplier() < itOld->getMultiplier()) ||
-                  (itOld->getMultiplier() > 1.0 && itNew->getMultiplier() > itOld->getMultiplier()))
+              if (fabs(1.0 - itOld->getMultiplier()) < 100 * std::numeric_limits< C_FLOAT64 >::epsilon() &&
+                  fabs(1.0 - itNew->getMultiplier()) >= 100 * std::numeric_limits< C_FLOAT64 >::epsilon())
+                {
+                  improvement -= 10;
+                }
+              /*
+              else if ((itOld->getMultiplier() < 1.0 && itNew->getMultiplier() < itOld->getMultiplier()) ||
+                       (itOld->getMultiplier() > 1.0 && itNew->getMultiplier() > itOld->getMultiplier()))
                 {
                   improvement -= 100;
                 }
-              else if ((fabs(1.0 - itNew->getMultiplier()) < 100 * std::numeric_limits< C_FLOAT64 >::epsilon() &&
-                        fabs(1.0 - itOld->getMultiplier()) >= 100 * std::numeric_limits< C_FLOAT64 >::epsilon()) ||
-                       (itNew->getMultiplier() < 1.0 && itOld->getMultiplier() < itNew->getMultiplier()) ||
+              */
+              else if (fabs(1.0 - itNew->getMultiplier()) < 100 * std::numeric_limits< C_FLOAT64 >::epsilon() &&
+                       fabs(1.0 - itOld->getMultiplier()) >= 100 * std::numeric_limits< C_FLOAT64 >::epsilon())
+                {
+                  improvement += 10;
+                }
+
+              /*
+              else if ((itNew->getMultiplier() < 1.0 && itOld->getMultiplier() < itNew->getMultiplier()) ||
                        (itNew->getMultiplier() > 1.0 && itOld->getMultiplier() > itNew->getMultiplier()))
                 {
                   improvement += 100;
                 }
+              */
 
               // The kind is the same.
               improvement += (int)(fabs(itOld->getExponent()) - fabs(itNew->getExponent()));
@@ -519,6 +543,7 @@ C_INT32 CUnit::getExponentOfSymbol(const std::string & symbol, CUnit & unit)
 std::vector< CUnit::SymbolComponent > CUnit::getSymbolComponents() const
 {
   std::vector< SymbolComponent > SymbolComponents;
+
   size_t FirstNumeratorIndex = C_INVALID_INDEX;
   size_t FirstDenominatorIndex = C_INVALID_INDEX;
   int FirstNumeratorExponent = 0;
@@ -532,24 +557,22 @@ std::vector< CUnit::SymbolComponent > CUnit::getSymbolComponents() const
   Component.exponent = 0;
 
   CUnit Tmp(*this);
-  Tmp.consolidateDimensionless();
 
-  SymbolSet UsedSymbols;
-  UsedSymbols.insert(mUsedSymbols.begin(), mUsedSymbols.end());
+  std::list< const CUnitDefinition * > UsedDefinitions = sortSymbols(mUsedSymbols);
   size_t Index = 0;
 
   while (true)
     {
-      SymbolSet::const_iterator itSymbol = UsedSymbols.begin();
-      SymbolSet::const_iterator endSymbol = UsedSymbols.end();
+      std::list< const CUnitDefinition * >::iterator itDef = UsedDefinitions.begin();
+      std::list< const CUnitDefinition * >::iterator endDef = UsedDefinitions.end();
 
-      for (; itSymbol != endSymbol; ++itSymbol)
+      for (; itDef != endDef; ++itDef)
         {
-          C_INT32 Exponent = getExponentOfSymbol(*itSymbol, Tmp);
+          C_INT32 Exponent = getExponentOfSymbol(*itDef, Tmp);
 
           if (Exponent == 0) continue;
 
-          Component.symbol = *itSymbol;
+          Component.symbol = (*itDef)->getSymbol();
           Component.exponent = Exponent;
 
           SymbolComponents.push_back(Component);
@@ -571,9 +594,9 @@ std::vector< CUnit::SymbolComponent > CUnit::getSymbolComponents() const
           break;
         }
 
-      if (itSymbol == endSymbol) break;
+      if (itDef == endDef) break;
 
-      UsedSymbols.erase(itSymbol);
+      UsedDefinitions.erase(itDef);
     }
 
   std::set< CUnitComponent >::const_iterator it = Tmp.getComponents().begin();
@@ -659,7 +682,17 @@ std::vector< CUnit::SymbolComponent > CUnit::getSymbolComponents() const
       else if (FirstDenominatorIndex != C_INVALID_INDEX &&
                SymbolComponents[FirstDenominatorIndex].symbol != "#")
         {
-          SymbolComponents[FirstDenominatorIndex].multiplier = multiplier;
+          SymbolComponents[FirstDenominatorIndex].multiplier = 1.0 / multiplier;
+          SymbolComponents[FirstDenominatorIndex].scale = -scale;
+        }
+      else if (FirstNumeratorIndex != C_INVALID_INDEX)
+        {
+          SymbolComponents[FirstNumeratorIndex].multiplier = multiplier;
+          SymbolComponents[FirstNumeratorIndex].scale = scale;
+        }
+      else if (FirstDenominatorIndex != C_INVALID_INDEX)
+        {
+          SymbolComponents[FirstDenominatorIndex].multiplier = 1.0 / multiplier;
           SymbolComponents[FirstDenominatorIndex].scale = -scale;
         }
       else
@@ -859,6 +892,29 @@ void CUnit::consolidateDimensionless()
       else
         ++it;
     }
+
+  C_FLOAT64 fractpart;
+  C_FLOAT64 DeltaScale;
+  C_FLOAT64 log = log10(tmpDimensionlessComponent.getMultiplier()) / 3.0;
+
+  fractpart = modf(log, &DeltaScale);
+
+  if (1.0 - fabs(fractpart) < 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon())
+    {
+      if (log < 0.0)
+        {
+          DeltaScale -= 1.0;
+        }
+      else
+        {
+          DeltaScale += 1.0;
+        }
+    }
+
+  DeltaScale *= 3.0;
+
+  tmpDimensionlessComponent.setMultiplier(tmpDimensionlessComponent.getMultiplier() * pow(10, -DeltaScale));
+  tmpDimensionlessComponent.setScale(tmpDimensionlessComponent.getScale() + DeltaScale);
 
   mComponents.insert(tmpDimensionlessComponent);
 }
