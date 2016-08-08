@@ -20,7 +20,7 @@ public:
 
   CUnitComponent(CBaseUnit::Kind kind = CBaseUnit::item,
                  double multiplier = 1,
-                 int scale = 0,
+                 double scale = 0,
                  double exponent = 1);
 
   /**
@@ -32,12 +32,12 @@ public:
 
   CBaseUnit::Kind getKind() const;
   double getMultiplier() const;
-  int getScale() const;
+  double getScale() const;
   double getExponent() const;
 
   void setKind(CBaseUnit::Kind kind);
   void setMultiplier(double multiplier);
-  void setScale(int scale);
+  void setScale(double scale);
   void setExponent(double exponent);
   bool operator<(const CUnitComponent& rightSide) const;
   bool operator==(const CUnitComponent& rightSide) const;
@@ -48,7 +48,7 @@ private:
 
   CBaseUnit::Kind mKind;
   double mMultiplier;
-  int mScale;
+  double mScale;
   double mExponent;
 };
 

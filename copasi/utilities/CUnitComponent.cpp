@@ -8,7 +8,7 @@
 
 CUnitComponent::CUnitComponent(CBaseUnit::Kind kind,
                                double multiplier,
-                               int scale,
+                               double scale,
                                double exponent):
   mKind(kind),
   mMultiplier(multiplier),
@@ -36,7 +36,7 @@ double CUnitComponent::getMultiplier() const
   return mMultiplier;
 }
 
-int CUnitComponent::getScale() const
+double CUnitComponent::getScale() const
 {
   return mScale;
 }
@@ -56,7 +56,7 @@ void CUnitComponent::setMultiplier(double multiplier)
   mMultiplier = multiplier;
 }
 
-void CUnitComponent::setScale(int scale)
+void CUnitComponent::setScale(double scale)
 {
   mScale = scale;
 }

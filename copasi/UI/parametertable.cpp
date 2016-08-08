@@ -24,7 +24,6 @@
 #include "model/CReactionInterface.h"
 #include "model/CModel.h"
 #include "model/CMetabNameInterface.h"
-#include "utilities/CDimension.h"
 #include "utilities/CUnitValidator.h"
 #include "report/CCopasiRootContainer.h"
 #include "math/CMathExpression.h"
@@ -178,21 +177,6 @@ void ParameterTable::updateTable(const CReactionInterface & ri, const CReaction 
   CUnitValidator Validator(Container, *pObject->getExpressionPtr());
 
   Validator.validateUnits(pFluxObject->getUnits());
-
-  //first get the units strings
-  /*
-  CFindDimensions units(ri.getFunction(), CUnit(pModel->getQuantityUnit()).isDimensionless(),
-                        CUnit(pModel->getVolumeUnit()).isDimensionless(),
-                        CUnit(pModel->getTimeUnit()).isDimensionless(),
-                        CUnit(pModel->getAreaUnit()).isDimensionless(),
-                        CUnit(pModel->getLengthUnit()).isDimensionless()
-                       );
-  units.setUseHeuristics(true);
-  units.setMolecularitiesForMassAction(ri.getChemEqInterface().getMolecularity(CFunctionParameter::SUBSTRATE),
-                                       ri.getChemEqInterface().getMolecularity(CFunctionParameter::PRODUCT));
-
-  units.findDimensions(ri.getEffectiveKineticLawUnitType() == CReaction::AmountPerTime);
-  */
 
   CFunctionParameter::Role usage;
 

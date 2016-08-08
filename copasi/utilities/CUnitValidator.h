@@ -32,18 +32,7 @@ public:
    * @param const std::vector< CUnit > & variableUnits (default: std::vector< CUnit >)
    */
   CUnitValidator(const CMathContainer & math,
-                 const CEvaluationTree & tree,
-                 const std::vector< CUnit > & variableUnits = std::vector< CUnit >());
-
-  /**
-   * Function constructor
-   * @param const CMathContainer & math
-   * @param const CEvaluationTree & tree
-   * @param const std::vector< CValidatedUnit > & variableUnits
-   */
-  CUnitValidator(const CMathContainer & math,
-                 const CEvaluationTree & tree,
-                 const std::vector< CValidatedUnit > & variableUnits);
+                 const CEvaluationTree & tree);
 
   /**
    * Copy constructor
@@ -59,9 +48,19 @@ public:
   /**
    * Validate the units in the tree and check whether the result matches the optional argument
    * @param const CUnit & unit (default: CBaseUnit::undefined)
+   * @param const std::vector< CUnit > & variableUnits (default: std::vector< CUnit >)
    * @return bool valid
    */
-  bool validateUnits(const CUnit & unit = CUnit(CBaseUnit::undefined));
+  bool validateUnits(const CUnit & unit = CUnit(CBaseUnit::undefined),
+                     const std::vector< CUnit > & variableUnits = std::vector< CUnit >());
+
+  /**
+   * Validate the units in the tree and check whether the result matches the optional argument
+   * @param const CUnit & unit (default: CBaseUnit::undefined)
+   * @return bool valid
+   */
+  bool validateUnits(const CValidatedUnit & unit,
+                     const std::vector< CValidatedUnit > & variableUnits);
 
   /**
    * Retrieve the validated variable units
@@ -89,12 +88,13 @@ public:
   const CValidatedUnit & getUnit() const;
 
 private:
+  bool validate();
   void getUnits();
-
-  bool setUnits(const CUnit & unit);
+  bool setUnits();
 
   CMathContainer & mMathContainer;
   const CEvaluationTree & mTree;
+  CValidatedUnit mTargetUnit;
   std::vector< CValidatedUnit > mProvidedVariableUnits;
   std::vector< CValidatedUnit > mVariableUnits;
   std::map < CObjectInterface *, CValidatedUnit > mObjectUnits;

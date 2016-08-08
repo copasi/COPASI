@@ -1613,7 +1613,14 @@ CValidatedUnit CEvaluationNodeOperator::getUnit(const CMathContainer & container
     {
       case POWER:
       {
-        CValidatedUnit Unit(units[0].exponentiate(mpRight->getValue()));
+        C_FLOAT64 Exponent = mpRight->getValue();
+
+        if (std::isnan(Exponent))
+          {
+            Exponent = M_E;
+          }
+
+        CValidatedUnit Unit(units[0].exponentiate(Exponent));
 
         // We need to make sure that the value is fixed
         CObjectInterface::ObjectSet Objects;
@@ -1695,7 +1702,14 @@ CValidatedUnit CEvaluationNodeOperator::setUnit(const CMathContainer & container
     {
       case POWER:
       {
-        CValidatedUnit Unit(Result.exponentiate(1.0 / mpRight->getValue()));
+        C_FLOAT64 Exponent = mpRight->getValue();
+
+        if (std::isnan(Exponent))
+          {
+            Exponent = M_E;
+          }
+
+        CValidatedUnit Unit(Result.exponentiate(1.0 / Exponent));
 
         std::set< CUnitComponent >::const_iterator  it = Unit.getComponents().begin();
         std::set< CUnitComponent >::const_iterator end = Unit.getComponents().end();

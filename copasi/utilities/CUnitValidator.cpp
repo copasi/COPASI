@@ -14,41 +14,21 @@
 //}
 
 CUnitValidator::CUnitValidator(const CMathContainer & math,
-                               const CEvaluationTree & tree,
-                               const std::vector< CUnit > & variableUnits):
+                               const CEvaluationTree & tree):
   mMathContainer(*const_cast< CMathContainer * >(&math)),
   mTree(tree),
-  mProvidedVariableUnits(variableUnits.size()),
+  mTargetUnit(),
+  mProvidedVariableUnits(),
   mVariableUnits(),
   mObjectUnits(),
   mNodeUnits(),
   mApplyIntitialValue(true)
-{
-  std::vector< CUnit >::const_iterator itSrc = variableUnits.begin();
-  std::vector< CUnit >::const_iterator endSrc = variableUnits.end();
-  std::vector< CValidatedUnit >::iterator itTarget = mProvidedVariableUnits.begin();
-
-  for (; itSrc != endSrc; ++itSrc, ++itTarget)
-    {
-      *itTarget = CValidatedUnit(*itSrc, false);
-    }
-}
-
-CUnitValidator::CUnitValidator(const CMathContainer & math,
-                               const CEvaluationTree & tree,
-                               const std::vector < CValidatedUnit > & variableUnits):
-  mMathContainer(*const_cast< CMathContainer * >(&math)),
-  mTree(tree),
-  mProvidedVariableUnits(variableUnits),
-  mVariableUnits(),
-  mObjectUnits(),
-  mNodeUnits(),
-  mApplyIntitialValue(false)
 {}
 
 CUnitValidator::CUnitValidator(const CUnitValidator &src):
   mMathContainer(src.mMathContainer),
   mTree(src.mTree),
+  mTargetUnit(src.mTargetUnit),
   mProvidedVariableUnits(src.mProvidedVariableUnits),
   mVariableUnits(src.mVariableUnits),
   mObjectUnits(src.mObjectUnits),
@@ -59,7 +39,33 @@ CUnitValidator::CUnitValidator(const CUnitValidator &src):
 CUnitValidator::~CUnitValidator()
 {}
 
-bool CUnitValidator::validateUnits(const CUnit & unit)
+bool CUnitValidator::validateUnits(const CUnit & unit,
+                                   const std::vector< CUnit > & variableUnits)
+{
+  mTargetUnit = CValidatedUnit(unit, false);
+  mProvidedVariableUnits.resize(variableUnits.size());
+  std::vector< CUnit >::const_iterator itSrc = variableUnits.begin();
+  std::vector< CUnit >::const_iterator endSrc = variableUnits.end();
+  std::vector< CValidatedUnit >::iterator itTarget = mProvidedVariableUnits.begin();
+
+  for (; itSrc != endSrc; ++itSrc, ++itTarget)
+    {
+      *itTarget = CValidatedUnit(*itSrc, false);
+    }
+
+  return validate();
+}
+
+bool CUnitValidator::validateUnits(const CValidatedUnit & unit,
+                                   const std::vector< CValidatedUnit > & variableUnits)
+{
+  mTargetUnit = unit;
+  mProvidedVariableUnits = variableUnits;
+
+  return validate();
+}
+
+bool CUnitValidator::validate()
 {
   CVector< C_FLOAT64 > CurrentValues;
 
@@ -77,7 +83,7 @@ bool CUnitValidator::validateUnits(const CUnit & unit)
     {
       getUnits();
     }
-  while (setUnits(unit));
+  while (setUnits());
 
   bool conflict = false;
 
@@ -187,11 +193,9 @@ void CUnitValidator::getUnits()
           mNodeUnits[*it] = tmpUnit;
         }
     }
-
-  std::cout << std::endl;
 }
 
-bool CUnitValidator::setUnits(const CUnit & unit)
+bool CUnitValidator::setUnits()
 {
   bool UnitDetermined = false;
   CValidatedUnit tmpUnit;
@@ -204,7 +208,7 @@ bool CUnitValidator::setUnits(const CUnit & unit)
   CNodeIterator< CEvaluationNode > it(const_cast< CEvaluationNode * >(mTree.getRoot()));
   it.setProcessingModes(CNodeIteratorMode::Before);
 
-  TargetNodeUnits.insert(std::make_pair(*it, CValidatedUnit(unit, false)));
+  TargetNodeUnits.insert(std::make_pair(*it, mTargetUnit));
 
   while (it.next() != it.end())
     {

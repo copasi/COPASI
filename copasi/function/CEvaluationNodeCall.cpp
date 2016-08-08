@@ -695,16 +695,16 @@ CValidatedUnit CEvaluationNodeCall::getUnit(const CMathContainer & math,
         break;
     }
 
-  CUnitValidator Validator(math, *pTree, units);
-  Validator.validateUnits();
+  CUnitValidator Validator(math, *pTree);
+  Validator.validateUnits(CValidatedUnit(CBaseUnit::undefined, false), units);
 
   return Validator.getUnit();
 }
 
 // virtual
 CValidatedUnit CEvaluationNodeCall::setUnit(const CMathContainer & container,
-    const std::map < CEvaluationNode * , CValidatedUnit > & currentUnits,
-    std::map < CEvaluationNode * , CValidatedUnit > & targetUnits) const
+    const std::map < CEvaluationNode *, CValidatedUnit > & currentUnits,
+    std::map < CEvaluationNode *, CValidatedUnit > & targetUnits) const
 {
   CEvaluationTree * pTree = NULL;
 
@@ -735,10 +735,11 @@ CValidatedUnit CEvaluationNodeCall::setUnit(const CMathContainer & container,
       *itUnit = currentUnits.find(const_cast< CEvaluationNode * >(*it))->second;
     }
 
-  CUnitValidator Validator(container, *pTree, CurrentVariableUnits);
+  CUnitValidator Validator(container, *pTree);
 
   Validator.validateUnits(CValidatedUnit::merge(currentUnits.find(const_cast< CEvaluationNodeCall * >(this))->second,
-                          targetUnits[const_cast< CEvaluationNodeCall * >(this)]));
+                          targetUnits[const_cast< CEvaluationNodeCall * >(this)]),
+                          CurrentVariableUnits);
 
   std::vector< CValidatedUnit >::const_iterator itValidatedVariableUnit = Validator.getVariableUnits().begin();
 

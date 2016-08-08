@@ -31,7 +31,7 @@
 #include "function/CFunctionDB.h"
 #include "function/CKinFunction.h"
 #include "report/CKeyFactory.h"
-#include "utilities/CDimension.h"
+#include "utilities/CUnitValidator.h"
 
 #include "CopasiFileDialog.h"
 
@@ -125,15 +125,73 @@ bool FunctionWidget1::loadParameterTable()
   CModel * pModel = pDataModel->getModel();
   assert(pModel != NULL);
 
-  CFindDimensions ddd(mpFunction, CUnit(pModel->getQuantityUnit()).isDimensionless(),
-                      CUnit(pModel->getVolumeUnit()).isDimensionless(),
-                      CUnit(pModel->getTimeUnit()).isDimensionless(),
-                      CUnit(pModel->getAreaUnit()).isDimensionless(),
-                      CUnit(pModel->getLengthUnit()).isDimensionless()
-                     );
+  // Determine the units of the variables depending on the type
+  std::vector< std::vector < CUnit > >Variables(4);
+  CUnit Time(pModel->getTimeUnit());
+  CUnit Volume(pModel->getVolumeUnit());
+  CUnit Area(pModel->getAreaUnit());
+  CUnit Length(pModel->getLengthUnit());
+  CUnit Quantity(pModel->getQuantityUnit());
 
-  ddd.setUseHeuristics(true);
-  std::vector<std::string> units = ddd.findDimensionsBoth(pModel);
+  for (i = 0; i < params.size(); ++i)
+    {
+      switch (params[i]->getUsage())
+        {
+          case CFunctionParameter::SUBSTRATE:
+          case CFunctionParameter::PRODUCT:
+          case CFunctionParameter::MODIFIER:
+            // These depend on the dimensions of the compartment
+            Variables[0].push_back(Quantity * Volume.exponentiate(-1.0)); // This is just to compare the results
+            Variables[1].push_back(Quantity * Length.exponentiate(-1.0));
+            Variables[2].push_back(Quantity * Area.exponentiate(-1.0));
+            Variables[3].push_back(Quantity * Volume.exponentiate(-1.0));
+            break;
+
+          case CFunctionParameter::PARAMETER:
+          case CFunctionParameter::VARIABLE:
+          case CFunctionParameter::TEMPORARY:
+            Variables[0].push_back(CUnit());
+            Variables[1].push_back(CUnit());
+            Variables[2].push_back(CUnit());
+            Variables[3].push_back(CUnit());
+            break;
+
+          case CFunctionParameter::VOLUME:
+            // These depend on the dimensions of the compartment
+            Variables[0].push_back(CUnit());
+            Variables[1].push_back(Length);
+            Variables[2].push_back(Area);
+            Variables[3].push_back(Volume);
+            break;
+
+          case CFunctionParameter::TIME:
+            Variables[0].push_back(Time);
+            Variables[1].push_back(Time);
+            Variables[2].push_back(Time);
+            Variables[3].push_back(Time);
+            break;
+        }
+    }
+
+  std::vector < CUnit > Target(4);
+  Target[0] = Quantity * Time.exponentiate(-1.0);
+  Target[1] = Quantity * Length.exponentiate(-1.0) * Time.exponentiate(-1.0);
+  Target[2] = Quantity * Area.exponentiate(-1.0) * Time.exponentiate(-1.0);
+  Target[3] = Quantity * Volume.exponentiate(-1.0) * Time.exponentiate(-1.0);
+
+  // Handle units
+  CMathContainer & Container = pModel->getMathContainer();
+  CUnitValidator Validator(Container, *mpFunction);
+
+  std::vector< std::vector < CValidatedUnit > > ValidatedVariables(4);
+  Validator.validateUnits(Target[0], Variables[0]);
+  ValidatedVariables[0] = Validator.getVariableUnits();
+  Validator.validateUnits(Target[1], Variables[1]);
+  ValidatedVariables[1] = Validator.getVariableUnits();
+  Validator.validateUnits(Target[2], Variables[2]);
+  ValidatedVariables[2] = Validator.getVariableUnits();
+  Validator.validateUnits(Target[3], Variables[3]);
+  ValidatedVariables[3] = Validator.getVariableUnits();
 
   CFunctionParameter::Role usage;
   QString qUsage;
@@ -227,7 +285,9 @@ bool FunctionWidget1::loadParameterTable()
       comboItem->setObjectName(QString::number(j));  // just need to save the row index
 
       //col. 2 (units)
-      QString strUnit = FROM_UTF8(units[j]);
+      QString strUnit = FROM_UTF8(ValidatedVariables[0][j] == ValidatedVariables[3][j] ?
+                                  ValidatedVariables[0][j].getExpression() :
+                                  ValidatedVariables[3][j].getExpression() + " or " + ValidatedVariables[0][j].getExpression());
 
       if (Table1->item((int) j, COL_UNIT) == NULL)
         {

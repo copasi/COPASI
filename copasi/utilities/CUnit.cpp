@@ -136,6 +136,8 @@ bool CUnit::setExpression(const std::string & expression)
   if (expression.empty())
     {
       mComponents.clear();
+      mUsedSymbols.clear();
+
       return true;
     }
 
@@ -235,7 +237,7 @@ CUnit CUnit::exponentiate(double exp) const
       CUnitComponent * pComponent = const_cast< CUnitComponent * >(&*it);
 
       pComponent->setMultiplier(pow(pComponent->getMultiplier(), exp));
-      pComponent->setScale(int(pComponent->getScale() * exp));
+      pComponent->setScale(pComponent->getScale() * exp);
 
       if (pComponent->getKind() != CBaseUnit::dimensionless)
         {
@@ -894,27 +896,28 @@ void CUnit::consolidateDimensionless()
     }
 
   C_FLOAT64 fractpart;
-  C_FLOAT64 DeltaScale;
-  C_FLOAT64 log = log10(tmpDimensionlessComponent.getMultiplier()) / 3.0;
+  C_FLOAT64 Scale;
+  C_FLOAT64 Multiplier = tmpDimensionlessComponent.getMultiplier() * pow(10.0, tmpDimensionlessComponent.getScale());
+  C_FLOAT64 log = log10(Multiplier) / 3.0;
 
-  fractpart = modf(log, &DeltaScale);
+  fractpart = modf(log, &Scale);
 
   if (1.0 - fabs(fractpart) < 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon())
     {
       if (log < 0.0)
         {
-          DeltaScale -= 1.0;
+          Scale -= 1.0;
         }
       else
         {
-          DeltaScale += 1.0;
+          Scale += 1.0;
         }
     }
 
-  DeltaScale *= 3.0;
+  Scale *= 3.0;
 
-  tmpDimensionlessComponent.setMultiplier(tmpDimensionlessComponent.getMultiplier() * pow(10, -DeltaScale));
-  tmpDimensionlessComponent.setScale(tmpDimensionlessComponent.getScale() + DeltaScale);
+  tmpDimensionlessComponent.setMultiplier(Multiplier * pow(10, -Scale));
+  tmpDimensionlessComponent.setScale(Scale);
 
   mComponents.insert(tmpDimensionlessComponent);
 }
