@@ -20,8 +20,8 @@
 C_FLOAT64 CMathObject::InvalidValue = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
 
 // static
-void CMathObject::initialize(CMathObject *& pObject,
-                             C_FLOAT64 *& pValue,
+void CMathObject::initialize(CMathObject * pObject,
+                             C_FLOAT64 * pValue,
                              const CMath::ValueType & valueType,
                              const CMath::EntityType & entityType,
                              const CMath::SimulationType & simulationType,
@@ -39,9 +39,6 @@ void CMathObject::initialize(CMathObject *& pObject,
 
   pdelete(pObject->mpExpression);
   pObject->mpCorrespondingProperty = NULL;
-
-  pObject++;
-  pValue++;
 }
 
 CMathObject::CMathObject():

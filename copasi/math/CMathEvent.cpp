@@ -47,7 +47,7 @@ void CMathEvent::CAssignment::initialize(CMath::sPointers & pointers)
 {
   // Initialize the assignment object
   mpAssignment = pointers.pEventAssignmentsObject;
-  CMathObject::initialize(pointers.pEventAssignmentsObject, pointers.pEventAssignments,
+  CMathObject::initialize(pointers.pEventAssignmentsObject++, pointers.pEventAssignments++,
                           CMath::EventAssignment, CMath::Event, CMath::SimulationTypeUndefined,
                           false, false, NULL);
 }
@@ -263,7 +263,7 @@ void CMathEvent::CTrigger::CRootProcessor::initialize(CMath::sPointers & pointer
   mpRoot = pointers.pEventRootsObject;
   mpRootValue = pointers.pEventRoots;
   *mpRootValue = 1.0;
-  CMathObject::initialize(pointers.pEventRootsObject, pointers.pEventRoots,
+  CMathObject::initialize(pointers.pEventRootsObject++, pointers.pEventRoots++,
                           CMath::EventRoot, CMath::Event, CMath::SimulationTypeUndefined,
                           false, false, NULL);
 
@@ -271,7 +271,7 @@ void CMathEvent::CTrigger::CRootProcessor::initialize(CMath::sPointers & pointer
   mpRootState = pointers.pEventRootStatesObject;
   mpRootStateValue = pointers.pEventRootStates;
   *mpRootStateValue = 1.0;
-  CMathObject::initialize(pointers.pEventRootStatesObject, pointers.pEventRootStates,
+  CMathObject::initialize(pointers.pEventRootStatesObject++, pointers.pEventRootStates++,
                           CMath::EventRootState, CMath::Event, CMath::SimulationTypeUndefined,
                           false, false, NULL);
 }
@@ -404,14 +404,14 @@ void CMathEvent::CTrigger::initialize(CMath::sPointers & pointers)
   // Initialize trigger object.
   mpTrigger = pointers.pEventTriggersObject;
   *pointers.pEventTriggers = 1.0;
-  CMathObject::initialize(pointers.pEventTriggersObject, pointers.pEventTriggers,
+  CMathObject::initialize(pointers.pEventTriggersObject++, pointers.pEventTriggers++,
                           CMath::EventTrigger, CMath::Event, CMath::SimulationTypeUndefined,
                           false, false, NULL);
 
   // Initialize initial trigger object.
   mpInitialTrigger = pointers.pInitialEventTriggersObject;
   *pointers.pInitialEventTriggers = 1.0;
-  CMathObject::initialize(pointers.pInitialEventTriggersObject, pointers.pInitialEventTriggers,
+  CMathObject::initialize(pointers.pInitialEventTriggersObject++, pointers.pInitialEventTriggers++,
                           CMath::EventTrigger, CMath::Event, CMath::SimulationTypeUndefined,
                           false, true, NULL);
 
@@ -1160,13 +1160,13 @@ void CMathEvent::initialize(CMath::sPointers & pointers)
 
   // Initialize delay object.
   mpDelay = pointers.pEventDelaysObject;
-  CMathObject::initialize(pointers.pEventDelaysObject, pointers.pEventDelays,
+  CMathObject::initialize(pointers.pEventDelaysObject++, pointers.pEventDelays++,
                           CMath::EventDelay, CMath::Event, CMath::SimulationTypeUndefined,
                           false, false, NULL);
 
   // Initialize priority object.
   mpPriority = pointers.pEventPrioritiesObject;
-  CMathObject::initialize(pointers.pEventPrioritiesObject, pointers.pEventPriorities,
+  CMathObject::initialize(pointers.pEventPrioritiesObject++, pointers.pEventPriorities++,
                           CMath::EventPriority, CMath::Event, CMath::SimulationTypeUndefined,
                           false, false, NULL);
 }
