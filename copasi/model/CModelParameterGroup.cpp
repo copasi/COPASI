@@ -1,4 +1,4 @@
-// Copyright (C) 2011 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -7,17 +7,22 @@
 #include <iostream>
 
 #include "CModelParameterGroup.h"
+#include "CModel.h"
+#include "utilities/CUnitValidator.h"
+#include "math/CMathExpression.h"
 
 CModelParameterGroup::CModelParameterGroup(CModelParameterGroup * pParent, const CModelParameter::Type & type):
   CModelParameter(pParent, type),
-  mModelParameters()
+  mModelParameters(),
+  mValidatedUnits()
 {}
 
 CModelParameterGroup::CModelParameterGroup(const CModelParameterGroup & src,
     CModelParameterGroup * pParent,
     const bool & createMissing):
   CModelParameter(src, pParent),
-  mModelParameters()
+  mModelParameters(),
+  mValidatedUnits()
 {
   assignGroupContent(src, createMissing);
 }
@@ -197,6 +202,8 @@ void CModelParameterGroup::compile()
     {
       (*it)->compile();
     }
+
+  mValidatedUnits.clear();
 }
 
 void CModelParameterGroup::clear()
@@ -432,4 +439,62 @@ const CModelParameter * CModelParameterGroup::getChild(const size_t & index) con
     }
 
   return NULL;
+}
+
+const CValidatedUnit & CModelParameterGroup::getObjectUnit(const CModelParameter * pModelParameter) const
+{
+  if (getType() == Reaction &&
+      mpObject != NULL)
+    {
+      const CModel * pModel = getModel();
+
+      if (pModel != NULL)
+        {
+          const CMathContainer & Container = pModel->getMathContainer();
+          CReaction * pReaction = static_cast< CReaction * >(mpObject);
+
+          if (mValidatedUnits.empty())
+            {
+              const CCopasiObject * pFluxObject = pReaction->getFluxReference();
+              CMathObject * pObject = Container.getMathObject(pFluxObject);
+              CUnitValidator Validator(Container, *pObject->getExpressionPtr());
+
+              Validator.validateUnits(pFluxObject->getUnits());
+              mValidatedUnits = Validator.getObjectUnits();
+            }
+
+          CObjectInterface * pValueReference = NULL;
+
+          if (pReaction->isLocalParameter(pReaction->getParameterIndex(pModelParameter->getName())))
+            {
+              pValueReference = static_cast< CCopasiParameter * >(pModelParameter->getObject())->getValueReference();
+            }
+          else
+            {
+              pValueReference = static_cast< const CModelValue * >(Container.getObject(static_cast< const CModelParameterReactionParameter * >(pModelParameter)->getGlobalQuantityCN()))->getValueReference();
+            }
+
+          std::map< CObjectInterface *, CValidatedUnit >::const_iterator found = mValidatedUnits.find(pValueReference);
+
+          if (found == mValidatedUnits.end() &&
+              mpObject != NULL)
+            {
+              const CModel * pModel = getModel();
+
+              if (pModel)
+                {
+                  CMathObject * pMathObject = pModel->getMathContainer().getMathObject(pValueReference);
+                  found = mValidatedUnits.find(static_cast< CObjectInterface * >(pMathObject));
+                }
+            }
+
+          if (found != mValidatedUnits.end())
+            {
+              return found->second;
+            }
+        }
+    }
+
+  static const CValidatedUnit Default;
+  return Default;
 }

@@ -74,6 +74,8 @@ public:
                                    const std::string & oldSymbol,
                                    const std::string & newSymbol);
 
+  static std::string prettyPrint(const std::string & expression);
+
   // constructors
   /**
    * Default constructor

@@ -122,8 +122,6 @@ std::string CMetab::getChildObjectUnits(const CCopasiObject * pObject) const
       return CModelEntity::getChildObjectUnits(pObject);
     }
 
-  CUnit unit;
-
   if (pObject == mpIValueReference ||
       pObject == mpValueReference)
     {
@@ -136,29 +134,27 @@ std::string CMetab::getChildObjectUnits(const CCopasiObject * pObject) const
   else if (pObject == mpIConcReference ||
            pObject == mpConcReference)
     {
-      CUnit QunatityUnit = (mpModel != NULL) ? CUnit(mpModel->getQuantityUnit()) : CUnit();
-      CUnit CompartmentUnit = (mpCompartment != NULL) ? CUnit(mpCompartment->getInitialValueReference()->getUnits()) : CUnit();
+      std::string QunatityUnit = (mpModel != NULL) ? mpModel->getQuantityUnit() : "";
+      std::string CompartmentUnit = (mpCompartment != NULL) ? mpCompartment->getInitialValueReference()->getUnits() : "";
 
-      if (!QunatityUnit.isUndefined() &&
-          !CompartmentUnit.isUndefined())
+      if (!QunatityUnit.empty() && !CompartmentUnit.empty())
         {
-          unit = QunatityUnit * CompartmentUnit.exponentiate(-1.0);
+          return  QunatityUnit + "/(" + CompartmentUnit + ")";
         }
     }
   else if (pObject == mpConcRateReference)
     {
-      CUnit ConcentrationUnit = CUnit(getChildObjectUnits(mpConcReference));
-      CUnit TimeUnit = (mpModel != NULL) ? CUnit(mpModel->getTimeUnit()) : CUnit();
+      std::string ConcentrationUnit = getChildObjectUnits(mpConcReference);
+      std::string TimeUnit = (mpModel != NULL) ? mpModel->getTimeUnit() : "";
 
-      if (!ConcentrationUnit.isUndefined() &&
-          !TimeUnit.isUndefined())
+      if (!ConcentrationUnit.empty() &&
+          !TimeUnit.empty())
         {
-          unit = ConcentrationUnit * TimeUnit.exponentiate(-1.0);
+          return  ConcentrationUnit + "/(" + TimeUnit + ")";
         }
     }
 
-  unit.buildExpression();
-  return unit.getExpression();
+  return "";
 }
 
 void CMetab::cleanup() {}

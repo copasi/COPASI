@@ -1228,12 +1228,14 @@ private:
    *  The Avogadro number used for this model.
    */
   C_FLOAT64 mAvogadro;
+  CCopasiObject * mpAvogadroReference;
 
   /**
    *  Factor to convert from quantity to particle number
    *  taking into account the unit for substance quantities
    */
   C_FLOAT64 mQuantity2NumberFactor;
+  CCopasiObject * mpQuantity2NumberFactorReference;
 
   /**
    *  Factor to convert from  particle number to quantity

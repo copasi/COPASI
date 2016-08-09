@@ -158,35 +158,8 @@ const std::string CModelParameter::getUnit(const Framework & framework) const
         break;
 
       case ReactionParameter:
-      {
-        const CReaction * pReaction = static_cast< const CModelParameterReactionParameter * >(this)->getReaction();
-
-        if (pReaction == NULL ||
-            mpObject == NULL)
-          {
-            return "";
-          }
-
-        const CModel * pModel = getModel();
-
-        const CMathContainer & Container = pModel->getMathContainer();
-        const CCopasiObject * pFluxObject = pReaction->getFluxReference();
-        CMathObject * pObject = Container.getMathObject(pFluxObject);
-        CUnitValidator Validator(Container, *pObject->getExpressionPtr());
-
-        Validator.validateUnits(pFluxObject->getUnits());
-
-        if (pReaction->isLocalParameter(pReaction->getParameterIndex(getName())))
-          {
-            return Validator.getObjectUnit(static_cast< CCopasiParameter * >(mpObject)->getValueReference()).getExpression();
-          }
-        else
-          {
-            const CModelValue * pModelValue = static_cast< const CModelValue * >(Container.getObject(static_cast< const CModelParameterReactionParameter * >(this)->getGlobalQuantityCN()));
-            return Validator.getObjectUnit(pModelValue->getValueReference()).getExpression();
-          }
-      }
-      break;
+        return mpParent->getObjectUnit(this).getExpression();
+        break;
 
       default:
         break;

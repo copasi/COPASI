@@ -1,4 +1,4 @@
-// Copyright (C) 2011 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -13,6 +13,7 @@
 #include "copasi/model/CModelParameter.h"
 
 class CModel;
+class CValidatedUnit;
 
 class CModelParameterGroup: public CModelParameter
 {
@@ -153,6 +154,13 @@ public:
   virtual size_t getNumChildren() const;
   virtual const CModelParameter * getChild(const size_t & index) const;
 
+  /**
+   * Retrieve the validated unit of the object units
+   * @param const CModelParameter * pModelParameter
+   * @return const CValidatedUnit & objectUnit
+   */
+  const CValidatedUnit & getObjectUnit(const CModelParameter * pModelParameter) const;
+
 protected:
   /**
    * Assign the content of the source group to this, i.e., copy all
@@ -177,6 +185,11 @@ private:
    * A vector of pointer to the contained parameters.
    */
   std::vector< CModelParameter * > mModelParameters;
+
+  /**
+   * A map of model objects and their validated units
+   */
+  mutable std::map< CObjectInterface *, CValidatedUnit > mValidatedUnits;
 };
 
 #endif // COPASI_CModelParameterGroup

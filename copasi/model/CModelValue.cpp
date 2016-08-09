@@ -378,23 +378,19 @@ const std::string & CModelEntity::getUnitExpression() const
 // virtual
 std::string CModelEntity::getChildObjectUnits(const CCopasiObject * pObject) const
 {
-  CUnit unit = CUnit(); //potentially manipulated, and returned at the end
-
   if (pObject == mpRateReference)
     {
-      CUnit ValueUnit = CUnit(getChildObjectUnits(mpValueReference));
-      CUnit TimeUnit = (mpModel != NULL) ? CUnit(mpModel->getTimeUnit()) : CUnit();
+      std::string ValueUnit = getChildObjectUnits(mpValueReference);
+      std::string TimeUnit = (mpModel != NULL) ? mpModel->getTimeUnit() : "";
 
-      if (!ValueUnit.isUndefined() &&
-          !TimeUnit.isUndefined())
+      if (!ValueUnit.empty() &&
+          !TimeUnit.empty())
         {
-          unit = ValueUnit * TimeUnit.exponentiate(-1.0);
+          return ValueUnit + "/(" + TimeUnit + ")";
         }
     }
 
-  unit.buildExpression();
-
-  return unit.getExpression();
+  return "";
 }
 
 /**

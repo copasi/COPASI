@@ -85,6 +85,15 @@ std::string CUnit::replaceSymbol(const std::string & expression,
   return (Parser.yyparse() == 0) ? Parser.getReplacedExpression() : expression;
 }
 
+// static
+std::string CUnit::prettyPrint(const std::string & expression)
+{
+  CUnit Unit(expression);
+  Unit.buildExpression();
+
+  return Unit.getExpression();
+}
+
 // constructors
 // default
 CUnit::CUnit():
