@@ -1140,14 +1140,14 @@ CReaction::KineticLawUnit CReactionInterface::getEffectiveKineticLawUnitType() c
   return EffectiveUnit;
 }
 
-std::string CReactionInterface::getConcentrationUnit() const
+std::string CReactionInterface::getConcentrationRateUnit() const
 {
-  return mpModel->getConcentrationRateUnitsDisplayString();
+  return mpModel->getQuantityUnit() + "/(" + mpModel->getVolumeUnit() + "*" + mpModel->getTimeUnit() + ")";
 }
 
-std::string CReactionInterface::getAmountUnit() const
+std::string CReactionInterface::getAmountRateUnit() const
 {
-  return mpModel->getQuantityRateUnitsDisplayString();
+  return mpModel->getQuantityUnit() + "/(" + mpModel->getTimeUnit() + ")";
 }
 
 #ifdef COPASI_DEBUG

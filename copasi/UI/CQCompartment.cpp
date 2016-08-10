@@ -221,12 +221,7 @@ void CQCompartment::slotTypeChanged(int type)
         break;
 
       case CModelEntity::ASSIGNMENT:
-
-        if (pModel)
-          Units = FROM_UTF8(pModel->getVolumeUnitsDisplayString());
-
-        if (!Units.isEmpty())
-          Units = " (" + Units + ")";
+        Units = " [" + ((pModel != NULL) ? FROM_UTF8(CUnit::prettyPrint(pModel->getVolumeUnit())) : "?") + "]";
 
         mpLblExpression->setText("Expression" + Units);
 
@@ -240,12 +235,7 @@ void CQCompartment::slotTypeChanged(int type)
         break;
 
       case CModelEntity::ODE:
-
-        if (pModel)
-          Units = FROM_UTF8(pModel->getVolumeRateUnitsDisplayString());
-
-        if (!Units.isEmpty())
-          Units = " (" + Units + ")";
+        Units = " [" + ((pModel != NULL) ? FROM_UTF8(CUnit::prettyPrint(pModel->getVolumeUnit() + "/(" + pModel->getTimeUnit() + ")")) : "?") + "]";
 
         mpLblExpression->setText("Expression" + Units);
 
@@ -361,21 +351,11 @@ void CQCompartment::load()
     pModel = dynamic_cast<const CModel *>(mpCompartment->getObjectAncestor("Model"));
 
   // Update the labels to reflect the model units
-  QString ValueUnits;
+  std::string ValueUnit = (pModel != NULL) ? CUnit::prettyPrint(pModel->getVolumeUnit()) : "?";
+  QString ValueUnits = " [" + FROM_UTF8(ValueUnit) + "]";
 
-  if (pModel)
-    ValueUnits = FROM_UTF8(pModel->getVolumeUnitsDisplayString());
-
-  if (!ValueUnits.isEmpty())
-    ValueUnits = " (" + ValueUnits + ")";
-
-  QString RateUnits;
-
-  if (pModel)
-    RateUnits = FROM_UTF8(pModel->getVolumeRateUnitsDisplayString());
-
-  if (!RateUnits.isEmpty())
-    RateUnits = " (" + RateUnits + ")";
+  std::string RateUnit = (pModel != NULL) ? CUnit::prettyPrint(pModel->getVolumeUnit() + "/(" + pModel->getTimeUnit() + ")") : "?";
+  QString RateUnits = " [" + FROM_UTF8(RateUnit) + "]";
 
   mpLblInitialValue->setText("Initial Volume" + ValueUnits);
   mpLblInitialExpression->setText("Initial Expression" + ValueUnits);
@@ -680,7 +660,6 @@ bool CQCompartment::changeValue(const std::string& key,
       load();
       switchToWidget(C_INVALID_INDEX, mKey);
     }
-
 
   switch (type)
     {

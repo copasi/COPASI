@@ -218,7 +218,7 @@ std::string CModel::getChildObjectUnits(const CCopasiObject * pObject) const
       return "#/(" + mQuantityUnit + ")";
     }
 
-  return "";
+  return "?";
 }
 
 C_INT32 CModel::load(CReadConfig & configBuffer)
@@ -1477,7 +1477,7 @@ bool CModel::setQuantityUnit(const std::string & name)
   std::set< CUnitComponent >::const_iterator it = QuantityUnit.getComponents().begin();
 
   // Avogadro, if present, will be in the multiplier
-  mQuantity2NumberFactor = it->getMultiplier() * pow(10.0, it->getScale());
+  mQuantity2NumberFactor = it->getMultiplier() * pow(10.0, it->getScale()) * mAvogadro;
   mNumber2QuantityFactor = 1.0 / mQuantity2NumberFactor;
 
   //adapt particle numbers
@@ -3473,132 +3473,6 @@ CVector< C_FLOAT64 > CModel::initializeAtolVector(const C_FLOAT64 & atol, const 
     }
 
   return Atol;
-}
-
-std::string CModel::getTimeUnitsDisplayString() const
-{
-  if (CUnit(mTimeUnit).isDimensionless())
-    return "";
-
-  return mTimeUnit;
-}
-
-std::string CModel::getFrequencyUnit() const
-{
-  CUnit frequencyCUnit = CUnit(getTimeUnit()).exponentiate(-1);
-  frequencyCUnit.buildExpression();
-  return frequencyCUnit.getExpression();
-}
-
-std::string CModel::getVolumeUnitsDisplayString() const
-{
-  return mVolumeUnit;
-}
-
-std::string CModel::getAreaUnitsDisplayString() const
-{
-  return mAreaUnit;
-}
-
-std::string CModel::getLengthUnitsDisplayString() const
-{
-  return mLengthUnit;
-}
-
-std::string CModel::getVolumeRateUnitsDisplayString() const
-{
-  if (getVolumeUnitEnum() == CUnit::dimensionlessVolume)
-    {
-      if (mTimeUnit.empty())
-        return "";
-
-      return "1/" + mTimeUnit;
-    }
-
-  if (mTimeUnit.empty())
-    return mVolumeUnit;
-
-  return mVolumeUnit + "/" + mTimeUnit;
-}
-
-std::string CModel::getConcentrationUnitsDisplayString() const
-{
-  if (mQuantityUnit.empty())
-    {
-      if (mVolumeUnit == "1")
-        return "";
-
-      return "1/" + mVolumeUnit;
-    }
-
-  if (mVolumeUnit == "1")
-    return mQuantityUnit;
-
-  return mQuantityUnit + "/" + mVolumeUnit;
-}
-
-std::string CModel::getConcentrationRateUnitsDisplayString() const
-{
-  if (mQuantityUnit.empty() ||
-      mVolumeUnit.empty() ||
-      mTimeUnit.empty())
-    return "";
-
-  if (mQuantityUnit == "1")
-    {
-      if (mVolumeUnit == "1")
-        {
-          if (mTimeUnit == "1")
-            return "1";
-
-          return "1/" + mTimeUnit;
-        }
-      else
-        {
-          if (mTimeUnit == "1")
-            return "1/" + mVolumeUnit;
-
-          return "1/(" + mVolumeUnit + "*" + mTimeUnit + ")";
-        }
-    }
-
-  if (mVolumeUnit == "1")
-    {
-      if (mTimeUnit == "1")
-        return mQuantityUnit;
-
-      return mQuantityUnit + "/" + mTimeUnit;
-    }
-
-  if (mTimeUnit == "1")
-    return mQuantityUnit + "/" + mVolumeUnit;
-
-  return mQuantityUnit + "/(" + mVolumeUnit + "*" + mTimeUnit + ")";
-}
-
-std::string CModel::getQuantityUnitsDisplayString() const
-{
-  return mQuantityUnit;
-}
-
-std::string CModel::getQuantityRateUnitsDisplayString() const
-{
-  if (mQuantityUnit.empty() ||
-      mTimeUnit.empty())
-    return "";
-
-  if (mQuantityUnit == "1")
-    {
-      if (mTimeUnit == "1")
-        return "1";
-
-      return std::string("1/") + mTimeUnit;
-    }
-
-  if (mTimeUnit == "1")
-    return mQuantityUnit;
-
-  return mQuantityUnit + "/" + mTimeUnit;
 }
 
 const CMathContainer & CModel::getMathContainer() const

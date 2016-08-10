@@ -132,16 +132,17 @@ std::string CReaction::getChildObjectUnits(const CCopasiObject * pObject) const
 
   const std::string & Name = pObject->getObjectName();
 
-  if (Name == "ParticleFlux")
-    return pModel->getFrequencyUnit();
+  if (Name == "ParticleFlux" ||
+      Name == "Propensity")
+    {
+      return "#/(" + pModel->getTimeUnit() + ")";
+    }
   else if (Name == "Flux")
     {
-      return pModel->getQuantityRateUnitsDisplayString();
+      return pModel->getQuantityUnit() + "/(" + pModel->getTimeUnit() + ")";
     }
-  else if (Name == "Propensity")
-    return pModel->getFrequencyUnit();
 
-  return "";
+  return "?";
 }
 
 void CReaction::cleanup()
@@ -1767,8 +1768,8 @@ std::string CReaction::getKineticLawUnit() const
 
   if (getEffectiveKineticLawUnitType() == AmountPerTime)
     {
-      return pModel->getQuantityRateUnitsDisplayString();
+      return pModel->getQuantityUnit() + "/(" + pModel->getTimeUnit() + ")";
     }
 
-  return pModel->getConcentrationRateUnitsDisplayString();
+  return pModel->getQuantityUnit() + "/(" + pModel->getVolumeUnit() + "*" + pModel->getTimeUnit() + ")";
 }

@@ -370,7 +370,6 @@ CMathContainer::CMathContainer(CModel & model):
                           CMath::Value, CMath::EntityTypeUndefined, CMath::Fixed, false, true,
                           pAvogadro);
   map(pAvogadro, &mAvogadroObject);
-  mDataValue2DataObject[(C_FLOAT64 *) pAvogadro->getValuePointer()] = const_cast< CCopasiObject * >(pAvogadro);
 
   const CCopasiObject * pQuantity2NumberFactor = mpModel->getObject(CCopasiObjectName("Reference=Quantity Conversion Factor"))->getDataObject();
   mQuantity2NumberFactorValue = *(C_FLOAT64 *)pQuantity2NumberFactor->getValuePointer();
@@ -379,7 +378,6 @@ CMathContainer::CMathContainer(CModel & model):
                           CMath::Value, CMath::EntityTypeUndefined, CMath::Fixed, false, true,
                           pQuantity2NumberFactor);
   map(pQuantity2NumberFactor, &mQuantity2NumberFactorObject);
-  mDataValue2DataObject[(C_FLOAT64 *) pQuantity2NumberFactor->getValuePointer()] = const_cast< CCopasiObject * >(pQuantity2NumberFactor);
 }
 
 CMathContainer::CMathContainer(const CMathContainer & src):
@@ -3455,7 +3453,10 @@ void CMathContainer::map(const CCopasiObject * pDataObject, CMathObject * pMathO
 
 C_FLOAT64 * CMathContainer::getInitialValuePointer(const C_FLOAT64 * pValue) const
 {
-  assert((mValues.array() <= pValue && pValue < mValues.array() + mValues.size()) || getDataObject(pValue) != NULL);
+  assert((mValues.array() <= pValue && pValue < mValues.array() + mValues.size()) ||
+         pValue == &mAvogadroValue ||
+         pValue == &mQuantity2NumberFactorValue ||
+         getDataObject(pValue) != NULL);
 
   const C_FLOAT64 * pInitialValue = pValue;
 

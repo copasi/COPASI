@@ -157,29 +157,14 @@ void CQSpeciesDetail::setFramework(int framework)
   if (mpMetab)
     pModel = mpMetab->getModel();
 
-  QString ValueUnits;
+  std::string ValueUnit = (pModel != NULL) ? CUnit::prettyPrint(pModel->getQuantityUnit() + "/(" + pModel->getVolumeUnit() + ")") : "?";
+  QString ValueUnits = " [" + FROM_UTF8(ValueUnit) + "]";
 
-  if (pModel)
-    ValueUnits = FROM_UTF8(pModel->getConcentrationUnitsDisplayString());
+  std::string RateUnit = (pModel != NULL) ? CUnit::prettyPrint(pModel->getQuantityUnit() + "/(" + pModel->getVolumeUnit() + "*" + pModel->getTimeUnit() + ")") : "?";
+  QString RateUnits = " [" + FROM_UTF8(RateUnit) + "]";
 
-  if (!ValueUnits.isEmpty())
-    ValueUnits = " (" + ValueUnits + ")";
-
-  QString RateUnits;
-
-  if (pModel)
-    RateUnits = FROM_UTF8(pModel->getConcentrationRateUnitsDisplayString());
-
-  if (!RateUnits.isEmpty())
-    RateUnits = " (" + RateUnits + ")";
-
-  QString FrequencyUnits;
-
-  if (pModel)
-    FrequencyUnits = FROM_UTF8(pModel->getFrequencyUnit());
-
-  if (FrequencyUnits != "none")
-    FrequencyUnits = " (" + FrequencyUnits + ")";
+  std::string FrequencyUnit = (pModel != NULL) ? CUnit::prettyPrint("1/(" + pModel->getTimeUnit() + ")") : "?";
+  QString FrequencyUnits = " [" + FROM_UTF8(FrequencyUnit) + "]";
 
   switch (mFramework)
     {
@@ -273,13 +258,8 @@ void CQSpeciesDetail::load()
   if (mpMetab)
     pModel = mpMetab->getModel();
 
-  QString TimeUnits;
-
-  if (pModel)
-    TimeUnits = FROM_UTF8(pModel->getTimeUnitsDisplayString());
-
-  if (!TimeUnits.isEmpty())
-    TimeUnits = " (" + TimeUnits + ")";
+  std::string TimeUnit = (pModel != NULL) ? CUnit::prettyPrint(pModel->getTimeUnit()) : "?";
+  QString TimeUnits = " [" + FROM_UTF8(TimeUnit) + "]";
 
   // Update the labels to reflect the model units
   mpLblTransitionTime->setText("Transition Time " + TimeUnits);

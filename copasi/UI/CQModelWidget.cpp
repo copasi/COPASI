@@ -59,11 +59,11 @@ void CQModelWidget::load()
 
   mpCheckStochasticCorrection->setChecked(mpModel->getModelType() == CModel::deterministic);
 
-  mpLblInitialTime->setText("Initial Time (" + mpComboTimeUnit->currentText() + ")");
+  mpLblInitialTime->setText("Initial Time [" + mpComboTimeUnit->currentText() + "]");
   mpEditInitialTime->setText(QString::number(mpModel->getInitialTime()));
   mpEditInitialTime->setReadOnly(mpModel->isAutonomous());
 
-  mpLblCurrentTime->setText("Time (" + mpComboTimeUnit->currentText() + ")");
+  mpLblCurrentTime->setText("Time [" + mpComboTimeUnit->currentText() + "]");
   mpEditCurrentTime->setText(QString::number(mpModel->getTime()));
 
   return;

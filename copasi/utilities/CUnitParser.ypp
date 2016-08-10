@@ -178,12 +178,16 @@ unit:      KIND
            }
 scaled_unit:  SCALE unit
            {
-             CUnitComponent component;
-             component.setKind(CBaseUnit::dimensionless);
-             component.setScale(CBaseUnit::scaleFromPrefix($1.text));
-             
              $$.pUnit = $2.pUnit;
-             $$.pUnit->addComponent(component);
+
+             if (!$$.pUnit->isUndefined())
+               {
+                 CUnitComponent component;
+                 component.setKind(CBaseUnit::dimensionless);
+                 component.setScale(CBaseUnit::scaleFromPrefix($1.text));
+
+                 $$.pUnit->addComponent(component);
+               }
            }
 
 multiplier:  NUMBER

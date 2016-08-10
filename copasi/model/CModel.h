@@ -936,66 +936,6 @@ public:
   std::string printParameterOverview();
 
   /**
-   * Retrieve the time units
-   * @return std::string timeUnits
-   */
-  std::string getTimeUnitsDisplayString() const;
-
-  /**
-   * Retrieve the frequency units
-   * @return std::string frequencyUnits
-   */
-  std::string getFrequencyUnit() const;
-
-  /**
-   * Retrieve the volume units
-   * @return std::string volumeUnits
-   */
-  std::string getVolumeUnitsDisplayString() const;
-
-  /**
-   * Retrieve the area units
-   * @return std::string volumeUnits
-   */
-  std::string getAreaUnitsDisplayString() const;
-
-  /**
-   * Retrieve the length units
-   * @return std::string volumeUnits
-   */
-  std::string getLengthUnitsDisplayString() const;
-
-  /**
-   * Retrieve the volume rate units
-   * @return std::string volumeRateUnits
-   */
-  std::string getVolumeRateUnitsDisplayString() const;
-
-  /**
-   * Retrieve the concentration units
-   * @return std::string concentrationUnits
-   */
-  std::string getConcentrationUnitsDisplayString() const;
-
-  /**
-   * Retrieve the concentration rate units
-   * @return std::string concentrationRateUnits
-   */
-  std::string getConcentrationRateUnitsDisplayString() const;
-
-  /**
-   * Retrieve the quantity units
-   * @return std::string quantityUnits
-   */
-  std::string getQuantityUnitsDisplayString() const;
-
-  /**
-   * Retrieve the quantity rate units
-   * @return std::string quantityRateUnits
-   */
-  std::string getQuantityRateUnitsDisplayString() const;
-
-  /**
    * List all trees which introduce discrete changes.
    * @return std::vector< const CEvaluationTree * > treesWithDiscontinuities
    */

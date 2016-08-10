@@ -54,10 +54,10 @@ const std::string CBaseUnit::getSymbol(Kind kind)
         return "Avogadro";
 
       case undefined:
-        return "";
+        return "?";
     }
 
-  return "";
+  return "?";
 }
 
 // static (because CBaseUnit is not meant to be constructed)

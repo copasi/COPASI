@@ -560,9 +560,9 @@ void CQCrossSectionTaskWidget::showUnits()
   if (mpDataModel != NULL &&
       (pModel = mpDataModel->getModel()) != NULL)
     {
-      TimeUnits = "(" + FROM_UTF8(pModel->getTimeUnitsDisplayString()) + ")";
+      TimeUnits = "(" + FROM_UTF8(CUnit::prettyPrint(pModel->getTimeUnit())) + ")";
     }
 
-  mpLblDurationLimit->setText("if detection time " + TimeUnits + " larger:");
-  mpCheckOutputDelay->setText("if time " + TimeUnits + " larger:");
+  mpLblDurationLimit->setText("if detection time " + TimeUnits + " larger");
+  mpCheckOutputDelay->setText("if time " + TimeUnits + " larger");
 }

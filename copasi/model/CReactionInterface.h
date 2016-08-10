@@ -267,8 +267,8 @@ public:
   void setKineticLawUnitType(const CReaction::KineticLawUnit & kineticLawUnitType);
   const CReaction::KineticLawUnit & getKineticLawUnitType() const;
   CReaction::KineticLawUnit getEffectiveKineticLawUnitType() const;
-  std::string getConcentrationUnit() const;
-  std::string getAmountUnit() const;
+  std::string getConcentrationRateUnit() const;
+  std::string getAmountRateUnit() const;
 
 #ifdef COPASI_DEBUG
   void printDebug() const;

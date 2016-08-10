@@ -93,12 +93,12 @@ std::string CCompartment::getChildObjectUnits(const CCopasiObject * pObject) con
             break;
 
           default:
-            return "";
+            return "?";
             break;
         }
     }
 
-  return "";
+  return "?";
 }
 
 void CCompartment::cleanup() {mMetabolites.cleanup();}

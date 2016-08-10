@@ -465,18 +465,9 @@ void CQModelValue::slotUnitChanged()
   CUnit Unit;
   Unit.setExpression(mpModelValue->getUnitExpression());
 
-  if (Unit.isUndefined())
-    {
-      mpLblInitialValue->setText("Initial Value");
-      mpLblValue->setText("Value");
-      mpLblRate->setText("Rate");
-    }
-  else
-    {
-      mpLblInitialValue->setText(FROM_UTF8("Initial Value (" + mpModelValue->getInitialValueReference()->getUnits()) + ")");
-      mpLblValue->setText(FROM_UTF8("Value (" + mpModelValue->getValueReference()->getUnits()) + ")");
-      mpLblRate->setText(FROM_UTF8("Rate (" + mpModelValue->getRateReference()->getUnits()) + ")");
-    }
+  mpLblInitialValue->setText(FROM_UTF8("Initial Value [" + CUnit::prettyPrint(mpModelValue->getInitialValueReference()->getUnits())) + "]");
+  mpLblValue->setText(FROM_UTF8("Value [" + CUnit::prettyPrint(mpModelValue->getValueReference()->getUnits())) + "]");
+  mpLblRate->setText(FROM_UTF8("Rate [" + CUnit::prettyPrint(mpModelValue->getRateReference()->getUnits())) + "]");
 
   mpModelValue->setUnitExpression(OldUnit);
 }

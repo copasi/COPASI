@@ -140,15 +140,14 @@ CUnit::~CUnit()
 
 bool CUnit::setExpression(const std::string & expression)
 {
-  mExpression = expression;
-
   if (expression.empty())
     {
-      mComponents.clear();
-      mUsedSymbols.clear();
+      *this = CBaseUnit::undefined;
 
       return true;
     }
+
+  mExpression = expression;
 
   return compile();
 }
@@ -724,7 +723,7 @@ void CUnit::buildExpression()
 
   if (Components.empty())
     {
-      mExpression = "";
+      mExpression = "?";
       return;
     }
 

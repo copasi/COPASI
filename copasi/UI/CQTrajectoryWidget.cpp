@@ -473,7 +473,7 @@ void CQTrajectoryWidget::showUnits()
   if (mpDataModel != NULL &&
       (pModel = mpDataModel->getModel()) != NULL)
     {
-      TimeUnits = " (" + FROM_UTF8(pModel->getTimeUnitsDisplayString()) + ")";
+      TimeUnits = " [" + FROM_UTF8(CUnit::prettyPrint(pModel->getTimeUnit())) + "]";
     }
 
   mpLblDuration->setText("Duration" + TimeUnits);

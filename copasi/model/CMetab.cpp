@@ -134,27 +134,20 @@ std::string CMetab::getChildObjectUnits(const CCopasiObject * pObject) const
   else if (pObject == mpIConcReference ||
            pObject == mpConcReference)
     {
-      std::string QunatityUnit = (mpModel != NULL) ? mpModel->getQuantityUnit() : "";
-      std::string CompartmentUnit = (mpCompartment != NULL) ? mpCompartment->getInitialValueReference()->getUnits() : "";
+      std::string QunatityUnit = (mpModel != NULL) ? mpModel->getQuantityUnit() : "?";
+      std::string CompartmentUnit = (mpCompartment != NULL) ? mpCompartment->getInitialValueReference()->getUnits() : "?";
 
-      if (!QunatityUnit.empty() && !CompartmentUnit.empty())
-        {
-          return  QunatityUnit + "/(" + CompartmentUnit + ")";
-        }
+      return  QunatityUnit + "/(" + CompartmentUnit + ")";
     }
   else if (pObject == mpConcRateReference)
     {
       std::string ConcentrationUnit = getChildObjectUnits(mpConcReference);
-      std::string TimeUnit = (mpModel != NULL) ? mpModel->getTimeUnit() : "";
+      std::string TimeUnit = (mpModel != NULL) ? mpModel->getTimeUnit() : "?";
 
-      if (!ConcentrationUnit.empty() &&
-          !TimeUnit.empty())
-        {
-          return  ConcentrationUnit + "/(" + TimeUnit + ")";
-        }
+      return  ConcentrationUnit + "/(" + TimeUnit + ")";
     }
 
-  return "";
+  return "?";
 }
 
 void CMetab::cleanup() {}

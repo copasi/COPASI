@@ -458,7 +458,7 @@ static const yytype_uint8 yytranslate[] =
 static const yytype_uint8 yyrline[] =
 {
   0,    61,    61,    66,    71,    79,    87,    95,   103,   111,
-  119,   124,   130,   136,   142,   147,   154,   179,   189,   198
+  119,   124,   130,   136,   142,   147,   154,   179,   193,   202
 };
 #endif
 
@@ -1463,19 +1463,23 @@ yyreduce:
       case 17:
 #line 180 "CUnitParser.ypp" /* yacc.c:1646  */
         {
-          CUnitComponent component;
-          component.setKind(CBaseUnit::dimensionless);
-          component.setScale(CBaseUnit::scaleFromPrefix((yyvsp[-1]).text));
-
           (yyval).pUnit = (yyvsp[0]).pUnit;
-          (yyval).pUnit->addComponent(component);
+
+          if (!(yyval).pUnit->isUndefined())
+            {
+              CUnitComponent component;
+              component.setKind(CBaseUnit::dimensionless);
+              component.setScale(CBaseUnit::scaleFromPrefix((yyvsp[-1]).text));
+
+              (yyval).pUnit->addComponent(component);
+            }
         }
 
-#line 1440 "CUnitParser_yacc.cpp" /* yacc.c:1646  */
+#line 1444 "CUnitParser_yacc.cpp" /* yacc.c:1646  */
         break;
 
       case 18:
-#line 190 "CUnitParser.ypp" /* yacc.c:1646  */
+#line 194 "CUnitParser.ypp" /* yacc.c:1646  */
         {
           CUnitComponent component;
           component.setKind(CBaseUnit::dimensionless);
@@ -1485,11 +1489,11 @@ yyreduce:
           (yyval).pUnit->addComponent(component);
         }
 
-#line 1453 "CUnitParser_yacc.cpp" /* yacc.c:1646  */
+#line 1457 "CUnitParser_yacc.cpp" /* yacc.c:1646  */
         break;
 
       case 19:
-#line 199 "CUnitParser.ypp" /* yacc.c:1646  */
+#line 203 "CUnitParser.ypp" /* yacc.c:1646  */
         {
           CUnitComponent component;
           component.setKind(CBaseUnit::dimensionless);
@@ -1499,10 +1503,10 @@ yyreduce:
           (yyval).pUnit->addComponent(component);
         }
 
-#line 1466 "CUnitParser_yacc.cpp" /* yacc.c:1646  */
+#line 1470 "CUnitParser_yacc.cpp" /* yacc.c:1646  */
         break;
 
-#line 1470 "CUnitParser_yacc.cpp" /* yacc.c:1646  */
+#line 1474 "CUnitParser_yacc.cpp" /* yacc.c:1646  */
 
       default: break;
     }
@@ -1741,4 +1745,4 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 208 "CUnitParser.ypp" /* yacc.c:1906  */
+#line 212 "CUnitParser.ypp" /* yacc.c:1906  */

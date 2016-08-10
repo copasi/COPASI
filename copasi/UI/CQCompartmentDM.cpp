@@ -186,34 +186,21 @@ QVariant CQCompartmentDM::headerData(int section, Qt::Orientation orientation,
 
   if (orientation == Qt::Horizontal)
     {
+      std::string ValueUnit, RateUnit, ExpressionUnit;
       QString ValueUnits, RateUnits, ExpressionUnits;
       assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
       const CModel * pModel = CCopasiRootContainer::getDatamodelList()->operator[](0).getModel();
 
-      if (pModel)
-        {
-          ValueUnits = FROM_UTF8(pModel->getVolumeUnitsDisplayString());
+      ValueUnit = (pModel != NULL) ? CUnit::prettyPrint(pModel->getVolumeUnit()) : "?";
+      ValueUnits = "\n[" + FROM_UTF8(ValueUnit) + "]";
 
-          if (!ValueUnits.isEmpty())
-            ValueUnits = "\n(" + ValueUnits + ")";
+      RateUnit = (pModel != NULL) ? CUnit::prettyPrint(pModel->getVolumeUnit() + "/(" + pModel->getTimeUnit() + ")") : "?";
+      RateUnits = "\n[" + FROM_UTF8(RateUnit) + "]";
 
-          RateUnits = FROM_UTF8(pModel->getVolumeRateUnitsDisplayString());
-
-          if (!RateUnits.isEmpty())
-            RateUnits = "\n(" + RateUnits + ")";
-
-          if (!ValueUnits.isEmpty() && !RateUnits.isEmpty())
-            {
-              if (ValueUnits == RateUnits)
-                ExpressionUnits = ValueUnits;
-              else
-                ExpressionUnits = "\n(" + FROM_UTF8(pModel->getVolumeUnitsDisplayString()) + " or " + FROM_UTF8(pModel->getVolumeRateUnitsDisplayString()) + ")";
-            }
-          else if (!ValueUnits.isEmpty())
-            ExpressionUnits = "\n(" + FROM_UTF8(pModel->getVolumeUnitsDisplayString()) + " or 1)";
-          else if (!RateUnits.isEmpty())
-            ExpressionUnits = "\n(1 or " + FROM_UTF8(pModel->getVolumeRateUnitsDisplayString()) + ")";
-        }
+      if (ValueUnit == RateUnit)
+        ExpressionUnits = ValueUnits;
+      else
+        ExpressionUnits = "\n[" + FROM_UTF8(ValueUnit) + "] or [" + FROM_UTF8(RateUnit) + "]";
 
       switch (section)
         {

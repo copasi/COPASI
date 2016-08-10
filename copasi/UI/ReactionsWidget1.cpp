@@ -436,8 +436,8 @@ void ReactionsWidget1::FillWidgetFromRI()
   mpAmountUnit->setChecked(mpRi->getEffectiveKineticLawUnitType() == CReaction::AmountPerTime);
 
   slotDefaultUnitChecked(mpDefaultUnit->isChecked());
-  mpConcentrationUnit->setText(FROM_UTF8(mpRi->getConcentrationUnit()));
-  mpAmountUnit->setText(FROM_UTF8(mpRi->getAmountUnit()));
+  mpConcentrationUnit->setText(FROM_UTF8(mpRi->getConcentrationRateUnit()));
+  mpAmountUnit->setText(FROM_UTF8(mpRi->getAmountRateUnit()));
 }
 
 void ReactionsWidget1::slotTableChanged(int index, int sub, QString newValue)
@@ -688,13 +688,7 @@ void ReactionsWidget1::setFramework(int framework)
   switch (mFramework)
     {
       case 0:
-
-        if (pModel)
-          Units = FROM_UTF8(pModel->getQuantityRateUnitsDisplayString());
-
-        if (!Units.isEmpty())
-          Units = " (" + Units + ")";
-
+        Units = " [" + ((pModel != NULL) ? FROM_UTF8(CUnit::prettyPrint(pModel->getQuantityUnit() + "/(" + pModel->getTimeUnit() + ")")) : "?") + "]";
         TextLabel8->setText("Flux" + Units);
 
         if (pReaction != NULL)
@@ -703,13 +697,7 @@ void ReactionsWidget1::setFramework(int framework)
         break;
 
       case 1:
-
-        if (pModel)
-          Units = FROM_UTF8(pModel->getFrequencyUnit());
-
-        if (Units != "none")
-          Units = " (" + Units + ")";
-
+        Units = " [" + ((pModel != NULL) ? FROM_UTF8(CUnit::prettyPrint("1/(" + pModel->getTimeUnit() + ")")) : "?") + "]";
         TextLabel8->setText("Particle Flux" + Units);
 
         if (pReaction != NULL)

@@ -242,8 +242,8 @@ bool CCopasiContainer::remove(CCopasiObject * pObject)
 
 // virtual
 const std::string CCopasiContainer::getUnits() const
-{return "";}
+{return "?";}
 
 // virtual
 std::string CCopasiContainer::getChildObjectUnits(const CCopasiObject * /* pObject */) const
-{return "";}
+{return "?";}

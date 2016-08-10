@@ -432,7 +432,7 @@ std::ostream &operator<<(std::ostream &os, const CSteadyStateTask &A)
   os << "Species" << "\t";
   os << "Concentration";
 
-  std::string Units = pModel->getConcentrationUnitsDisplayString();
+  std::string Units = CUnit::prettyPrint(pModel->getQuantityUnit() + "/(" + pModel->getVolumeUnit() + ")");
 
   if (Units != "")
     os << " (" << Units << ")";
@@ -440,7 +440,7 @@ std::ostream &operator<<(std::ostream &os, const CSteadyStateTask &A)
   os << "\t";
 
   os << "Concentration Rate";
-  Units = pModel->getConcentrationRateUnitsDisplayString();
+  Units =  CUnit::prettyPrint(Units + "/(" + pModel->getTimeUnit() + ")");
 
   if (Units != "")
     os << " (" << Units << ")";
@@ -450,7 +450,7 @@ std::ostream &operator<<(std::ostream &os, const CSteadyStateTask &A)
   os << "Particle Number" << "\t";
 
   os << "Particle Number Rate";
-  Units = pModel->getFrequencyUnit();
+  Units = CUnit::prettyPrint("1/(" + pModel->getTimeUnit() + ")");
 
   if (Units != "")
     os << " (" << Units << ")";
@@ -458,7 +458,7 @@ std::ostream &operator<<(std::ostream &os, const CSteadyStateTask &A)
   os << "\t";
 
   os << "Transition Time";
-  Units = pModel->getTimeUnitsDisplayString();
+  Units = CUnit::prettyPrint(pModel->getTimeUnit());
 
   if (Units != "")
     os << " (" << Units << ")";
@@ -487,7 +487,7 @@ std::ostream &operator<<(std::ostream &os, const CSteadyStateTask &A)
   os << "Reaction" << "\t";
 
   os << "Flux";
-  Units = pModel->getQuantityRateUnitsDisplayString();
+  Units = CUnit::prettyPrint(pModel->getQuantityUnit() + "/(" + pModel->getTimeUnit() + ")");
 
   if (Units != "")
     os << " (" << Units << ")";
@@ -495,7 +495,7 @@ std::ostream &operator<<(std::ostream &os, const CSteadyStateTask &A)
   os << "\t";
 
   os << "Particle Flux";
-  Units = pModel->getFrequencyUnit();
+  Units = CUnit::prettyPrint("#/(" + pModel->getTimeUnit() + ")");
 
   if (Units != "")
     os << " (" << Units << ")";

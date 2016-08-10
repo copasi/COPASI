@@ -381,16 +381,12 @@ std::string CModelEntity::getChildObjectUnits(const CCopasiObject * pObject) con
   if (pObject == mpRateReference)
     {
       std::string ValueUnit = getChildObjectUnits(mpValueReference);
-      std::string TimeUnit = (mpModel != NULL) ? mpModel->getTimeUnit() : "";
+      std::string TimeUnit = (mpModel != NULL) ? mpModel->getTimeUnit() : "?";
 
-      if (!ValueUnit.empty() &&
-          !TimeUnit.empty())
-        {
-          return ValueUnit + "/(" + TimeUnit + ")";
-        }
+      return ValueUnit + "/(" + TimeUnit + ")";
     }
 
-  return "";
+  return "?";
 }
 
 /**
@@ -676,7 +672,7 @@ std::string CModelValue::getChildObjectUnits(const CCopasiObject * pObject) cons
       return mUnitExpression;
     }
 
-  return "";
+  return "?";
 }
 
 std::ostream & operator<<(std::ostream &os, const CModelValue & d)

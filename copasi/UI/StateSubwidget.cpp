@@ -284,40 +284,13 @@ void StateSubwidget::showUnits()
 
   // Update the column titles
 
-  QString TimeUnits = FROM_UTF8(mpModel->getTimeUnitsDisplayString());
-
-  if (!TimeUnits.isEmpty())
-    TimeUnits = "\n(" + TimeUnits + ")";
-
-  QString FrequencyUnits = FROM_UTF8(mpModel->getFrequencyUnit());
-
-  if (FrequencyUnits != "none")
-    FrequencyUnits = "\n(" + FrequencyUnits + ")";
-
-  QString ConcentrationUnits = FROM_UTF8(mpModel->getConcentrationUnitsDisplayString());
-
-  if (!ConcentrationUnits.isEmpty())
-    ConcentrationUnits = "\n(" + ConcentrationUnits + ")";
-
-  QString ConcentrationRateUnits = FROM_UTF8(mpModel->getConcentrationRateUnitsDisplayString());
-
-  if (!ConcentrationRateUnits.isEmpty())
-    ConcentrationRateUnits = "\n(" + ConcentrationRateUnits + ")";
-
-  QString VolumeUnits = FROM_UTF8(mpModel->getVolumeUnitsDisplayString());
-
-  if (!VolumeUnits.isEmpty())
-    VolumeUnits = "\n(" + VolumeUnits + ")";
-
-  QString VolumeRateUnits = FROM_UTF8(mpModel->getVolumeRateUnitsDisplayString());
-
-  if (!VolumeRateUnits.isEmpty())
-    VolumeRateUnits = "\n(" + VolumeRateUnits + ")";
-
-  QString QuantityRateUnits = FROM_UTF8(mpModel->getQuantityRateUnitsDisplayString());
-
-  if (!QuantityRateUnits.isEmpty())
-    QuantityRateUnits = "\n(" + QuantityRateUnits + ")";
+  QString TimeUnits = "\n[" + FROM_UTF8(CUnit::prettyPrint(mpModel->getTimeUnit())) + "]";
+  QString FrequencyUnits = "\n[" + FROM_UTF8(CUnit::prettyPrint("1/(" + mpModel->getTimeUnit() + ")")) + "]";
+  QString ConcentrationUnits = "\n[" + FROM_UTF8(CUnit::prettyPrint(mpModel->getQuantityUnit() + "/(" + mpModel->getVolumeUnit() + ")")) + "]";
+  QString ConcentrationRateUnits = "\n[" + FROM_UTF8(CUnit::prettyPrint(mpModel->getQuantityUnit() + "/(" + mpModel->getVolumeUnit() + "*" + mpModel->getTimeUnit() + ")")) + "]";
+  QString VolumeUnits = "\n[" + FROM_UTF8(CUnit::prettyPrint(mpModel->getVolumeUnit())) + "]";
+  QString VolumeRateUnits = "\n[" + FROM_UTF8(CUnit::prettyPrint(mpModel->getVolumeUnit() + "/(" + mpModel->getTimeUnit() + ")")) + "]";
+  QString QuantityRateUnits = "\n[" + FROM_UTF8(CUnit::prettyPrint(mpModel->getQuantityUnit() + "/(" + mpModel->getTimeUnit() + ")")) + "]";
 
   mpTblCompartments->horizontalHeaderItem(2)->setText("Volume" + VolumeUnits);
   mpTblCompartments->horizontalHeaderItem(3)->setText("Rate" + VolumeRateUnits);

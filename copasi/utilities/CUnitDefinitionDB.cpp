@@ -95,10 +95,8 @@ void CUnitDefinitionDB::remove(const std::string & name)
 
 bool CUnitDefinitionDB::containsSymbol(std::string symbol)
 {
-  if (mSymbolToUnitDefinitions.count(symbol))
-    return true;
-  else
-    return false;
+  return (symbol == "?" ||
+          mSymbolToUnitDefinitions.count(symbol) > 0);
 }
 
 const CUnitDefinition * CUnitDefinitionDB::getUnitDefFromSymbol(std::string symbol) const
@@ -119,8 +117,9 @@ bool CUnitDefinitionDB::changeSymbol(CUnitDefinition *pUnitDef, const std::strin
 
   std::map<std::string, CUnitDefinition *>::iterator found = mSymbolToUnitDefinitions.find(symbol);
 
-  if (found != mSymbolToUnitDefinitions.end() &&
-      found->second != pUnitDef) return false;
+  if (found->second == pUnitDef) return true;
+
+  if (containsSymbol(symbol)) return false;
 
   found = mSymbolToUnitDefinitions.find(pUnitDef->getSymbol());
 

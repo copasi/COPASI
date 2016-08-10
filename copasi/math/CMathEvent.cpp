@@ -113,7 +113,7 @@ bool CMathEvent::CAssignment::compile(const CEventAssignment * pDataAssignment,
       Infix.imbue(std::locale::classic());
       Infix.precision(16);
 
-      Infix << container.getModel().getQuantity2NumberFactor();
+      Infix << pointerToString(&container.getQuantity2NumberFactor());
       Infix << "*<";
       Infix << pSpecies->getCompartment()->getValueReference()->getCN();
       Infix << ">*(";

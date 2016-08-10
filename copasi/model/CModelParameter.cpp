@@ -120,7 +120,7 @@ const std::string CModelParameter::getUnit(const Framework & framework) const
   switch (mType)
     {
       case Model:
-        return getModel()->getTimeUnitsDisplayString();
+        return CUnit::prettyPrint(getModel()->getTimeUnit());
         break;
 
       case Compartment:

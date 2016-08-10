@@ -850,7 +850,7 @@ bool CMathObject::compileParticleFlux(CMathContainer & container)
   Infix.imbue(std::locale::classic());
   Infix.precision(16);
 
-  Infix << container.getModel().getQuantity2NumberFactor();
+  Infix << pointerToString(&container.getQuantity2NumberFactor());
   Infix << "*";
   Infix << pointerToString(container.getMathObject(pReaction->getFluxReference())->getValuePointer());
 
@@ -930,7 +930,7 @@ bool CMathObject::compilePropensity(CMathContainer & container)
     }
   else
     {
-      // Propensity is the same as the flux, but it must now be negative.
+      // Propensity is the same as the flux, but it must not be negative.
       Infix << "max(0," << pointerToString(container.getMathObject(pReaction->getParticleFluxReference())->getValuePointer());
 
       // Apply correction for deterministic models
@@ -1335,7 +1335,7 @@ bool CMathObject::createExtensiveValueExpression(const CMetab * pSpecies,
   Infix.imbue(std::locale::classic());
   Infix.precision(16);
 
-  Infix << container.getModel().getQuantity2NumberFactor();
+  Infix << pointerToString(&container.getQuantity2NumberFactor());
   Infix << "*";
   Infix << pointerToString(container.getMathObject(pDensity)->getValuePointer());
   Infix << "*";
@@ -1405,7 +1405,7 @@ bool CMathObject::createExtensiveODERateExpression(const CMetab * pSpecies,
 
   if (!pSpecies->getExpression().empty())
     {
-      Infix << container.getModel().getQuantity2NumberFactor();
+      Infix << pointerToString(&container.getQuantity2NumberFactor());
       Infix << "*";
       Infix << pointerToString(container.getMathObject(pSpecies->getCompartment()->getValueReference())->getValuePointer());
       Infix << "*(";

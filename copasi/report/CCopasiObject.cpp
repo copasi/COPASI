@@ -605,7 +605,7 @@ const std::string CCopasiObject::getUnits() const
   if (mpObjectParent != NULL)
     return mpObjectParent->getChildObjectUnits(this);
 
-  return "";
+  return "?";
 }
 
 std::ostream &operator<<(std::ostream &os, const CCopasiObject & o)
