@@ -3276,7 +3276,7 @@ bool SBMLImporter::checkValidityOfSourceDocument(SBMLDocument* sbmlDoc)
   sbmlDoc->setLocationURI(mpDataModel->getReferenceDirectory());
 #endif
 
-  unsigned int checkResult = sbmlDoc->checkConsistency();
+  unsigned int checkResult = sbmlDoc->getNumErrors(LIBSBML_SEV_ERROR) + sbmlDoc->checkConsistency() ;
 
 #if LIBSBML_VERSION > 50800
 
@@ -3308,6 +3308,12 @@ bool SBMLImporter::checkValidityOfSourceDocument(SBMLDocument* sbmlDoc)
                 str << ", " << sbmlDoc->getUnknownPackagePrefix(k);
 
               CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 96, str.str().c_str());
+            }
+
+          // we check for unsupported SBML version
+          if (pSBMLError->getErrorId() == 99101)
+            {
+              CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 102, sbmlDoc->getLevel(), sbmlDoc->getVersion());
             }
 
           CCopasiMessage::Type messageType = CCopasiMessage::RAW;
