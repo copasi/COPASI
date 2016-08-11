@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -22,6 +22,7 @@
 #include "model/CModel.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "math/CMathObject.h"
+#include "math/CMathContainer.h"
 
 #include "sbml/math/ASTNode.h"
 #include "sbml/SBase.h"
@@ -137,10 +138,26 @@ bool CEvaluationNodeObject::compile(const CEvaluationTree * pTree)
 
       case POINTER:
         // We need to convert the data into a pointer
-      {
         mpValue = (const C_FLOAT64 *) stringToPointer(mData);
-      }
-      break;
+
+        if (pTree != NULL)
+          {
+            CMathContainer * pContainer = dynamic_cast< CMathContainer * >(pTree->getObjectAncestor("CMathContainer"));
+
+            if (pContainer != NULL)
+              {
+                mpObject = pContainer->getMathObject(mpValue);
+              }
+          }
+
+        if (mpValue == NULL)
+          {
+            mValue = std::numeric_limits<C_FLOAT64>::quiet_NaN();
+            mpValue = &mValue;
+            return false;
+          }
+
+        break;
 
       case INVALID:
         break;
@@ -380,8 +397,6 @@ const C_FLOAT64 * CEvaluationNodeObject::getObjectValuePtr() const
 
 void CEvaluationNodeObject::setObjectValuePtr(C_FLOAT64 * pObjectValue)
 {
-  assert(pObjectValue);
-
   switch ((int) subType(mType))
     {
       case CN:
@@ -393,6 +408,11 @@ void CEvaluationNodeObject::setObjectValuePtr(C_FLOAT64 * pObjectValue)
           {
             mpValue = pObjectValue;
             mData = pointerToString(mpValue);
+
+            if (mpValue == NULL)
+              {
+                mpValue = &mValue;
+              }
           }
 
         break;
