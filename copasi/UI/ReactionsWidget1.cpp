@@ -620,6 +620,8 @@ void ReactionsWidget1::slotConcentrationUnitChecked(const bool & checked)
     {
       mpRi->setKineticLawUnitType(checked ? CReaction::ConcentrationPerTime : CReaction::AmountPerTime);
     }
+
+  table->updateTable(*mpRi, dynamic_cast< CReaction * >(mpObject));
 }
 
 void ReactionsWidget1::slotAmountUnitChecked(const bool & checked)
@@ -631,6 +633,8 @@ void ReactionsWidget1::slotAmountUnitChecked(const bool & checked)
     {
       mpRi->setKineticLawUnitType(checked ? CReaction::AmountPerTime : CReaction::ConcentrationPerTime);
     }
+
+  table->updateTable(*mpRi, dynamic_cast< CReaction * >(mpObject));
 }
 
 bool ReactionsWidget1::update(ListViews::ObjectType objectType,

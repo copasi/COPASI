@@ -223,12 +223,10 @@ void ParameterTable::updateTable(const CReactionInterface & ri, const CReaction 
     }
 
   // TODO CRITICAL This depends on the effective kinetic law units.
-  CUnit Target = Quantity * Volume.exponentiate(-1.0) * Time.exponentiate(-1.0);
-
   CMathContainer & Container = pModel->getMathContainer();
   CUnitValidator Validator(Container, *ri.getFunction());
 
-  Validator.validateUnits(Target, Variables);
+  Validator.validateUnits(ri.getEffectiveKineticLawUnit(), Variables);
 
   CFunctionParameter::Role usage;
 

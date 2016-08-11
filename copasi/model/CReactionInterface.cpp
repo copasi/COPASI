@@ -860,6 +860,11 @@ CReactionInterface::getFunctionDescription() const
 const CFunction *
 CReactionInterface::getFunction() const
 {
+  if (mpFunction == NULL)
+    {
+      return CCopasiRootContainer::getUndefinedFunction();
+    }
+
   return mpFunction;
 }
 
@@ -1148,6 +1153,20 @@ std::string CReactionInterface::getConcentrationRateUnit() const
 std::string CReactionInterface::getAmountRateUnit() const
 {
   return mpModel->getQuantityUnit() + "/(" + mpModel->getTimeUnit() + ")";
+}
+
+std::string CReactionInterface::getEffectiveKineticLawUnit() const
+{
+  switch (getEffectiveKineticLawUnitType())
+    {
+      case CReaction::AmountPerTime:
+        return getAmountRateUnit();
+        break;
+
+      case CReaction::ConcentrationPerTime:
+        return getConcentrationRateUnit();
+        break;
+    }
 }
 
 #ifdef COPASI_DEBUG
