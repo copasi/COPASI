@@ -65,7 +65,7 @@ CModel::CModel(CCopasiContainer* pParent):
   mAreaUnit("m\xc2\xb2"),
   mLengthUnit("m"),
   mTimeUnit("s"),
-  mQuantityUnit("mol"),
+  mQuantityUnit("mmol"),
   mDimensionlessUnits(5),
   mType(deterministic),
   mCompartments("Compartments", this),
