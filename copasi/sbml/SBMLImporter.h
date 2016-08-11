@@ -110,6 +110,7 @@ protected:
 
   std::map<Species*, Compartment*> mSubstanceOnlySpecies;
   std::set<std::string> mFastReactions;
+  std::set<std::string> mReactions;
   std::set<std::string> mReactionsWithReplacedLocalParameters;
   std::set<std::string> mExplicitelyTimeDependentFunctionDefinitions;
   std::vector<std::string> mIgnoredParameterUnits;
@@ -151,6 +152,7 @@ protected:
 #endif // LIBSBML_VERSION >= 40100
 
   std::map<std::string, CCompartment*> mCompartmentMap;
+  std::map<std::string, CModelValue*> mParameterFluxMap;
   std::set<const CCopasiObject*> mChangedObjects;
 
   /**

@@ -1020,7 +1020,7 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
 
   CFunctionDB* pTmpFunctionDB = this->importFunctionDefinitions(sbmlModel, copasi2sbmlmap);
 
-  // try to find global parameters that represent avogadros number
+  // try to find global parameters that represent Avogadro's number
   this->findAvogadroConstant(sbmlModel, this->mpCopasiModel->getQuantity2NumberFactor());
 
   mCompartmentMap.clear();
@@ -1219,7 +1219,7 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
     }
 
   // the information that is collected here is used in the creation of the reactions to
-  // adjust the stoichiometry of substrates and products with the conversion factos from
+  // adjust the stoichiometry of substrates and products with the conversion factors from
   // the SBML model
 
   // now that all parameters have been imported, we can check if the model
@@ -1289,7 +1289,17 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
 
   this->mDivisionByCompartmentReactions.clear();
   this->mFastReactions.clear();
+  this->mReactions.clear();
   this->mReactionsWithReplacedLocalParameters.clear();
+  this->mParameterFluxMap.clear();
+
+  for (counter = 0; counter < num; counter++)
+    {
+      Reaction* current = sbmlModel->getReaction(counter);
+
+      if (current->isSetId())
+        mReactions.insert(current->getId());
+    }
 
   for (counter = 0; counter < num; counter++)
     {
@@ -1375,8 +1385,26 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
       CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 87, idList.c_str());
     }
 
+  if (!this->mParameterFluxMap.empty())
+    {
+      CCopasiVectorNS < CReaction >::iterator reactionIt = mpCopasiModel->getReactions().begin();
+
+      for (; reactionIt != mpCopasiModel->getReactions().end(); ++reactionIt)
+        {
+          CReaction& reaction = *reactionIt;
+          std::map < std::string, CModelValue* >::iterator it =
+            mParameterFluxMap.find(reaction.getSBMLId());
+
+          if (it == mParameterFluxMap.end())
+            continue;
+
+          it->second->setExpression("<" + reaction.getFluxReference()->getCN() + ">");
+
+        }
+    }
+
   // import the initial assignments
-  // we do this after the reactions since intial assignments can reference reaction ids.
+  // we do this after the reactions since initial assignments can reference reaction ids.
 
   if (createProgressStepOrStop(10, sbmlModel->getNumInitialAssignments(), "Importing initial assignments..."))
     return NULL;
@@ -2582,7 +2610,7 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
   /* in the newly created CFunction set the types for all parameters and
    * either a mapping or a value
    */
-  const KineticLaw* kLaw = sbmlReaction->getKineticLaw();
+  KineticLaw* kLaw = sbmlReaction->getKineticLaw();
 
   if (kLaw != NULL)
     {
@@ -2620,7 +2648,7 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
           else
             {
               // Set value to NaN and create a warning if it is the first time
-              // this happend
+              // this happened
               value = std::numeric_limits<C_FLOAT64>::quiet_NaN();
 
               if (!this->mIncompleteModel)
@@ -2633,7 +2661,7 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
           copasiReaction->getParameters().addParameter(id, CCopasiParameter::DOUBLE, value);
         }
 
-      const ASTNode* kLawMath = kLaw->getMath();
+      ASTNode* kLawMath = const_cast<ASTNode*>(kLaw->getMath());
 
       if (kLawMath == NULL || kLawMath->getType() == AST_UNKNOWN)
         {
@@ -2646,6 +2674,31 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
           if (!SBMLImporter::findIdInASTTree(kLawMath, this->mSBMLSpeciesReferenceIds).empty())
             {
               CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 95);
+            }
+
+          std::string reactionId;
+
+          while (!(reactionId = SBMLImporter::findIdInASTTree(kLawMath, mReactions)).empty())
+            {
+              std::string newParameterId = "rateOf_" + reactionId;
+
+              Parameter* sbmlParameter = pSBMLModel->createParameter();
+              sbmlParameter->setId(newParameterId);
+              sbmlParameter->setValue(0);
+
+
+              CModelValue* parameter = this->mpCopasiModel->createModelValue(newParameterId);
+              parameter->setSBMLId(newParameterId);
+              parameter->setStatus(CModelEntity::ASSIGNMENT);
+              parameter->setInitialExpression("0");
+
+              mParameterFluxMap[reactionId] = parameter;
+
+              copasi2sbmlmap[parameter] = sbmlParameter;
+
+              std::map<std::string, std::string> map;
+              map[reactionId] = newParameterId;
+              replace_name_nodes(kLawMath, map);
             }
 
           ConverterASTNode* node = new ConverterASTNode(*kLawMath);
@@ -3123,6 +3176,7 @@ SBMLImporter::SBMLImporter():
   mCurrentStepTotal(0),
   mSubstanceOnlySpecies(),
   mFastReactions(),
+  mReactions(),
   mReactionsWithReplacedLocalParameters(),
   mExplicitelyTimeDependentFunctionDefinitions(),
   mIgnoredParameterUnits(),
@@ -3147,6 +3201,7 @@ SBMLImporter::SBMLImporter():
   mConversionFactorFound(false),
 #endif // LIBSBML_VERSION >= 40100
   mCompartmentMap(),
+  mParameterFluxMap(),
   mChangedObjects(),
   mUnitExpressions()
 {
@@ -6915,14 +6970,8 @@ void SBMLImporter::checkRuleMathConsistency(const Rule* pRule, std::map<const CC
 
       if (pMath != NULL)
         {
-          std::set<std::string> reactionIds;
 
-          for (i = 0; i < sbmlModel->getListOfReactions()->size(); i++)
-            {
-              reactionIds.insert(sbmlModel->getReaction(i)->getId());
-            }
-
-          std::string id = SBMLImporter::findIdInASTTree(pMath, reactionIds);
+          std::string id = SBMLImporter::findIdInASTTree(pMath, mReactions);
 
           if (!id.empty())
             {
