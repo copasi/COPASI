@@ -289,6 +289,12 @@ bool FunctionWidget1::loadParameterTable()
                                   ValidatedVariables[0][j].getExpression() :
                                   ValidatedVariables[3][j].getExpression() + " or " + ValidatedVariables[0][j].getExpression());
 
+      if (mpFunction->getType() == CEvaluationTree::MassAction &&
+          j % 2 == 0)
+        {
+          strUnit = "?";
+        }
+
       if (Table1->item((int) j, COL_UNIT) == NULL)
         {
           QTableWidgetItem *newItem = new QTableWidgetItem(strUnit);

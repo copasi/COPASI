@@ -436,8 +436,8 @@ void ReactionsWidget1::FillWidgetFromRI()
   mpAmountUnit->setChecked(mpRi->getEffectiveKineticLawUnitType() == CReaction::AmountPerTime);
 
   slotDefaultUnitChecked(mpDefaultUnit->isChecked());
-  mpConcentrationUnit->setText(FROM_UTF8(mpRi->getConcentrationRateUnit()));
-  mpAmountUnit->setText(FROM_UTF8(mpRi->getAmountRateUnit()));
+  mpConcentrationUnit->setText(FROM_UTF8(CUnit::prettyPrint(mpRi->getConcentrationRateUnit())));
+  mpAmountUnit->setText(FROM_UTF8(CUnit::prettyPrint(mpRi->getAmountRateUnit())));
 }
 
 void ReactionsWidget1::slotTableChanged(int index, int sub, QString newValue)
