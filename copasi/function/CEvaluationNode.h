@@ -58,7 +58,8 @@ public:
     LOGICAL = 0x0b000000,
     MV_FUNCTION = 0x0c000000, // This not yet implemented
     VECTOR = 0x0d000000,
-    DELAY = 0x0e000000
+    DELAY = 0x0e000000,
+    UNIT = 0x0f000000
   };
 
   // Methods
@@ -108,7 +109,7 @@ public:
    * Unequal operator, compares two CEvaluationNode objects and return true if
    * they are equal.
    */
-  virtual bool operator!=(const CEvaluationNode& right) const;
+  bool operator!=(const CEvaluationNode& right) const;
 
   /**
    * Equals operator, compares two CEvaluationNode objects and return true if
@@ -494,5 +495,6 @@ protected:
 #include "CEvaluationNodeVariable.h"
 #include "CEvaluationNodeVector.h"
 #include "CEvaluationNodeWhiteSpace.h"
+#include "CEvaluationNodeUnit.h"
 
 #endif // COPASI_CEvaluationNode

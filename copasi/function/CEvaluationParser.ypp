@@ -36,6 +36,7 @@ void setBooleanRequired(CEvaluationNode * pNode, const bool & booleanRequired)
 /* yacc Declarations */
 %token TOKEN_NUMBER
 %token TOKEN_VARIABLE
+%token TOKEN_UNIT
 
 %token TOKEN_CALL
 %token TOKEN_FUNCTION
@@ -125,6 +126,13 @@ exp:      TOKEN_NUMBER
             mpRootNode = $$; 
           }
         | exp TOKEN_OPERATOR_REMAINDER exp 
+          {
+            $$ = $2;
+            $$->addChild($1); 
+            $$->addChild($3);
+            mpRootNode = $$; 
+          }
+        | exp TOKEN_OPERATOR_MULTIPLY TOKEN_UNIT
           {
             $$ = $2;
             $$->addChild($1); 

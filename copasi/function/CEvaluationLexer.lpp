@@ -170,6 +170,14 @@ ID       (\"([^\\\"]|\\.)*\"|[a-z_A-Z][a-z_A-Z0-9]*)
   return TOKEN_LOGICAL_OR;
 %}
 
+<INITIAL,sSIGNorVALUE,sVALUE>\[([^\\\]]|\\.)*\]  %{
+  BEGIN(sOPERATOR); 
+  mpNode = new CEvaluationNodeUnit(CEvaluationNodeUnit::DEFAULT,
+                                   yytext);
+  COMMON_ACTION;
+  return TOKEN_UNIT;
+%}
+
 <INITIAL,sSIGNorVALUE,sVALUE>\<([^\\\>]|\\.)*\>  %{
   BEGIN(sOPERATOR); 
   mpNode = new CEvaluationNodeObject(CEvaluationNodeObject::CN,

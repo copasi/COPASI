@@ -107,6 +107,11 @@ CEvaluationNode * CEvaluationNode::create(const Type & type,
                                               contents);
         break;
 
+      case CEvaluationNode::UNIT:
+        pNode = new CEvaluationNodeUnit((CEvaluationNodeUnit::SubType) subType(type),
+                                        contents);
+        break;
+
       case CEvaluationNode::INVALID:
         pNode = new CEvaluationNode();
         break;
