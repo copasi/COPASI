@@ -589,6 +589,16 @@ bool CCopasiDataModel::importSBMLFromString(const std::string& sbmlDocumentText,
       throw except;
     }
 
+  catch (...)
+    {
+      importer.deleteCopasiModel();
+      importer.restoreFunctionDB();
+      popData();
+      mRenameHandler.setEnabled(true);
+
+      throw;
+    }
+
   if (pModel == NULL)
     {
       importer.restoreFunctionDB();
@@ -678,6 +688,15 @@ bool CCopasiDataModel::importSBML(const std::string & fileName,
 
       mRenameHandler.setEnabled(true);
       throw except;
+    }
+  catch (...)
+    {
+      importer.deleteCopasiModel();
+      importer.restoreFunctionDB();
+      popData();
+      mRenameHandler.setEnabled(true);
+
+      throw;
     }
 
   if (pModel == NULL)
@@ -785,7 +804,7 @@ std::string CCopasiDataModel::exportSBMLToString(CProcessReport* pExportHandler,
 
   // only get the new model if it is not a Level 1 model
   // During export to Level 1 the function definitions have been deleted and therefore
-  // all information assiociated with the function definitions will be gone if the user exports
+  // all information associated with the function definitions will be gone if the user exports
   // to Level 2 after having exported to Level 1
   // This is actual vital to get around Bug 1086 as well.
   // Once I have a Level 1 model, all calls to setName on an
