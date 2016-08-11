@@ -171,12 +171,64 @@ void ParameterTable::updateTable(const CReactionInterface & ri, const CReaction 
 
   // Handle units
 
-  CMathContainer & Container = pModel->getMathContainer();
-  const CCopasiObject * pFluxObject = pReaction->getFluxReference();
-  CMathObject * pObject = Container.getMathObject(pFluxObject);
-  CUnitValidator Validator(Container, *pObject->getExpressionPtr());
+  // Determine the units of the variables depending on the type
+  std::vector < CUnit > Variables;
 
-  Validator.validateUnits(pFluxObject->getUnits());
+  CUnit Time(pModel->getTimeUnit());
+  CUnit Volume(pModel->getVolumeUnit());
+  CUnit Area(pModel->getAreaUnit());
+  CUnit Length(pModel->getLengthUnit());
+  CUnit Quantity(pModel->getQuantityUnit());
+
+  size_t i, imax = ri.size();
+  size_t j, jmax;
+
+  for (i = 0; i < imax; ++i)
+    {
+      switch (ri.getUsage(i))
+        {
+          case CFunctionParameter::SUBSTRATE:
+          case CFunctionParameter::PRODUCT:
+          case CFunctionParameter::MODIFIER:
+
+            // These depend on the dimensions of the compartment
+            // TODO CRITICAL This depends on the compartment dimensions of the species
+            if (ri.isVector(i))
+              for (j = 0, jmax = ri.getMappings(i).size(); j < jmax; ++j)
+                {
+                  Variables.push_back(Quantity * Volume.exponentiate(-1.0)); // This is just to compare the results
+                }
+            else
+              {
+                Variables.push_back(Quantity * Volume.exponentiate(-1.0)); // This is just to compare the results
+              }
+
+            break;
+
+          case CFunctionParameter::PARAMETER:
+          case CFunctionParameter::VARIABLE:
+          case CFunctionParameter::TEMPORARY:
+            Variables.push_back(CUnit());
+            break;
+
+          case CFunctionParameter::VOLUME:
+            // TODO CRITICAL These depend on the dimensions of the compartment
+            Variables.push_back(Volume);
+            break;
+
+          case CFunctionParameter::TIME:
+            Variables.push_back(Time);
+            break;
+        }
+    }
+
+  // TODO CRITICAL This depends on the effective kinetic law units.
+  CUnit Target = Quantity * Volume.exponentiate(-1.0) * Time.exponentiate(-1.0);
+
+  CMathContainer & Container = pModel->getMathContainer();
+  CUnitValidator Validator(Container, *ri.getFunction());
+
+  Validator.validateUnits(Target, Variables);
 
   CFunctionParameter::Role usage;
 
@@ -209,8 +261,6 @@ void ParameterTable::updateTable(const CReactionInterface & ri, const CReaction 
   mVolumes.clear();
   mVolumes = getListOfAllCompartmentNames(*pModel);
 
-  size_t i, imax = ri.size();
-  size_t j, jmax;
   size_t rowCounter = 0;
 
   QTableWidgetItem *pItem = NULL;
@@ -309,41 +359,7 @@ void ParameterTable::updateTable(const CReactionInterface & ri, const CReaction 
       setItem((int) rowCounter, 1, pItem);
 
       // add units column
-      CCopasiObject * pDataObject = CCopasiRootContainer::getKeyFactory()->get(pReaction->getParameterMapping(i)[0]);
-      CValidatedUnit Unit;
-
-      switch (usage)
-        {
-          case CFunctionParameter::TIME:
-          case CFunctionParameter::VOLUME:
-            Unit = Validator.getObjectUnit(static_cast< CModelEntity * >(pDataObject)->getValueReference());
-            break;
-
-          case CFunctionParameter::SUBSTRATE:
-          case CFunctionParameter::PRODUCT:
-          case CFunctionParameter::MODIFIER:
-            Unit = Validator.getObjectUnit(static_cast< CMetab * >(pDataObject)->getConcentrationReference());
-            break;
-
-          case CFunctionParameter::PARAMETER:
-
-            if (pReaction->isLocalParameter(i))
-              {
-                Unit = Validator.getObjectUnit(static_cast< CCopasiParameter * >(pDataObject)->getValueReference());
-              }
-            else
-              {
-                Unit = Validator.getObjectUnit(static_cast< CModelEntity * >(pDataObject)->getValueReference());
-              }
-
-            break;
-
-          case CFunctionParameter::VARIABLE:
-            break;
-        }
-
-      QString theseUnits = FROM_UTF8(" " + Unit.getExpression());
-      pItem = new QTableWidgetItem(theseUnits);
+      pItem = new QTableWidgetItem(FROM_UTF8(" " + Validator.getVariableUnits()[rowCounter].getExpression()));
       pItem->setBackgroundColor(color);
       pItem->setFlags(pItem->flags() & (~Qt::ItemIsEditable));
       setItem((int) rowCounter, 4, pItem);
@@ -417,7 +433,7 @@ void ParameterTable::updateTable(const CReactionInterface & ri, const CReaction 
                         }
 
                       item((int) rowCounter, 2)->setText(FROM_UTF8((*metabNames)[j]));
-                      item((int) rowCounter, 4)->setText(theseUnits);
+                      item((int) rowCounter, 4)->setText(FROM_UTF8(" " + Validator.getVariableUnits()[rowCounter].getExpression()));
                     }
                 }
             }

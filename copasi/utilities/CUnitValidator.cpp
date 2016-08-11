@@ -67,6 +67,40 @@ bool CUnitValidator::validateUnits(const CValidatedUnit & unit,
 
 bool CUnitValidator::validate()
 {
+  mVariableUnits = mProvidedVariableUnits;
+
+  if (mTree.getType() == CEvaluationTree::MassAction)
+    {
+      std::vector< CValidatedUnit >::iterator it = mVariableUnits.begin();
+      std::vector< CValidatedUnit >::iterator end = mVariableUnits.end();
+
+      CValidatedUnit & k1 = *it++;
+      k1 = mTargetUnit;
+
+      for (; it != end && !(*it == CBaseUnit::undefined); ++it)
+        {
+          it->buildExpression();
+          k1 = k1 * it->exponentiate(-1.0);
+        }
+
+      k1.buildExpression();
+
+      if (it == end) return k1.conflict();
+
+      CValidatedUnit & k2 = *it++;
+      k2 = mTargetUnit;
+
+      for (; it != end; ++it)
+        {
+          it->buildExpression();
+          k2 = k2 * it->exponentiate(-1.0);
+        }
+
+      k2.buildExpression();
+
+      if (it == end) return k1.conflict() || k2.conflict();
+    }
+
   CVector< C_FLOAT64 > CurrentValues;
 
   if (mApplyIntitialValue)
@@ -75,7 +109,6 @@ bool CUnitValidator::validate()
       mMathContainer.applyInitialValues();
     }
 
-  mVariableUnits = mProvidedVariableUnits;
   mObjectUnits.clear();
   mNodeUnits.clear();
 
