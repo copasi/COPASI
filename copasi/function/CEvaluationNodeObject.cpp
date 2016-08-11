@@ -151,6 +151,13 @@ bool CEvaluationNodeObject::compile(const CEvaluationTree * pTree)
               }
           }
 
+        if (mpValue == NULL)
+          {
+            mValue = std::numeric_limits<C_FLOAT64>::quiet_NaN();
+            mpValue = &mValue;
+            return false;
+          }
+
         break;
 
       case INVALID:
@@ -391,8 +398,6 @@ const C_FLOAT64 * CEvaluationNodeObject::getObjectValuePtr() const
 
 void CEvaluationNodeObject::setObjectValuePtr(C_FLOAT64 * pObjectValue)
 {
-  assert(pObjectValue);
-
   switch ((int) subType(mType))
     {
       case CN:
@@ -404,6 +409,11 @@ void CEvaluationNodeObject::setObjectValuePtr(C_FLOAT64 * pObjectValue)
           {
             mpValue = pObjectValue;
             mData = pointerToString(mpValue);
+
+            if (mpValue == NULL)
+              {
+                mpValue = &mValue;
+              }
           }
 
         break;
