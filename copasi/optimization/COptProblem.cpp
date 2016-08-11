@@ -454,6 +454,19 @@ bool COptProblem::restore(const bool & updateModel)
   mpContainer->applyUpdateSequence(mInitialRefreshSequence);
   mpContainer->pushInitialState();
 
+  // Update the start values
+  if (updateModel && mSolutionValue != mWorstValue)
+    {
+      std::vector< COptItem * >::iterator it = mpOptItems->begin();
+      std::vector< COptItem * >::iterator end = mpOptItems->end();
+      C_FLOAT64 * pSolution = mSolutionVariables.array();
+
+      for (; it != end; ++it, ++pSolution)
+        {
+          (*it)->setStartValue(*pSolution);
+        }
+    }
+
   if (mFailedCounter * 20 > mCounter) // > 5% failure rate
     CCopasiMessage(CCopasiMessage::WARNING, MCOptimization + 8, mFailedCounter, mCounter);
 
