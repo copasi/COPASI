@@ -281,6 +281,7 @@ void CEvaluationTree::buildCalculationSequence()
           case CEvaluationNode::NUMBER:
           case CEvaluationNode::CONSTANT:
           case CEvaluationNode::OBJECT:
+          case CEvaluationNode::UNIT:
             break;
 
           default:
