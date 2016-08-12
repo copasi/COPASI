@@ -128,10 +128,7 @@ private:
   std::string mExpression;
   std::set< CUnitComponent > mComponents;
   std::set< std::string > mUsedSymbols;
-
-  // Consolodate any components with exponent == 0
-  // into a/the single dimensionless component
-  void consolidateDimensionless();
+  CUnitComponent * mpDimensionless;
 
   static C_INT32 getExponentOfSymbol(const CUnitDefinition * pDef, CUnit & unit);
 };

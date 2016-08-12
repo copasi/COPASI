@@ -16,9 +16,12 @@ class CUnitComponent
 {
   friend std::ostream &operator<<(std::ostream &os, const CUnitComponent & o);
 
+private:
+  CUnitComponent();
+
 public:
 
-  CUnitComponent(CBaseUnit::Kind kind = CBaseUnit::item,
+  CUnitComponent(CBaseUnit::Kind kind,
                  double multiplier = 1,
                  double scale = 0,
                  double exponent = 1);

@@ -99,14 +99,16 @@ std::string CUnit::prettyPrint(const std::string & expression)
 CUnit::CUnit():
   mExpression(""),
   mComponents(),
-  mUsedSymbols()
+  mUsedSymbols(),
+  mpDimensionless(NULL)
 {}
 
 // expression
 CUnit::CUnit(const std::string & expression):
   mExpression(""),
   mComponents(),
-  mUsedSymbols()
+  mUsedSymbols(),
+  mpDimensionless(NULL)
 {
   setExpression(expression);
 }
@@ -115,16 +117,16 @@ CUnit::CUnit(const std::string & expression):
 CUnit::CUnit(const CBaseUnit::Kind & kind):
   mExpression(CBaseUnit::getSymbol(kind)),
   mComponents(),
-  mUsedSymbols()
+  mUsedSymbols(),
+  mpDimensionless(NULL)
 {
   // Base units must be created without calling setExpression
   // as this would create an infinite loop.
 
   if (kind != CBaseUnit::undefined)
     {
-      mComponents.insert(CUnitComponent(kind));
+      addComponent(CUnitComponent(kind));
       mUsedSymbols.insert(CBaseUnit::getSymbol(kind));
-      consolidateDimensionless();
     }
 }
 
@@ -132,8 +134,14 @@ CUnit::CUnit(const CBaseUnit::Kind & kind):
 CUnit::CUnit(const CUnit & src):
   mExpression(src.mExpression),
   mComponents(src.mComponents),
-  mUsedSymbols(src.mUsedSymbols)
-{}
+  mUsedSymbols(src.mUsedSymbols),
+  mpDimensionless(NULL)
+{
+  if (!mComponents.empty())
+    {
+      mpDimensionless = const_cast< CUnitComponent * >(&*mComponents.begin());
+    }
+}
 
 CUnit::~CUnit()
 {}
@@ -156,6 +164,7 @@ bool CUnit::compile()
 {
   mComponents.clear();
   mUsedSymbols.clear();
+  mpDimensionless = NULL;
 
   std::istringstream buffer(mExpression);
   CUnitParser Parser(&buffer);
@@ -172,6 +181,11 @@ bool CUnit::compile()
   mComponents = Parser.getComponents();
   mUsedSymbols.insert(Parser.getSymbols().begin(), Parser.getSymbols().end());
 
+  if (!mComponents.empty())
+    {
+      mpDimensionless = const_cast< CUnitComponent * >(&*mComponents.begin());
+    }
+
   return true;
 }
 
@@ -187,16 +201,8 @@ const std::set< std::string > & CUnit::getUsedSymbols() const
 
 bool CUnit::isDimensionless() const
 {
-  // Components are a set of unique Kinds.
-  // consolodateDimensionless() should ensure any zero-exponent
-  // components are integrated into a single, dimensionless, one.
-  // So the following should work to retrieve if a unit is dimensionless,
-  // but not undefined (no components).
-  if (mComponents.size() == 1 &&
-      (*mComponents.begin()).getKind() == CBaseUnit::dimensionless)
-    return true;
-  else
-    return false;
+  // The first component is always dimensionless
+  return mComponents.size() == 1;
 }
 
 bool CUnit::isUndefined() const
@@ -206,26 +212,54 @@ bool CUnit::isUndefined() const
 
 void CUnit::addComponent(const CUnitComponent & component)
 {
-  std::set< CUnitComponent >::iterator it = mComponents.find(component);
-
-  if (it != mComponents.end())
+  if (mpDimensionless == NULL)
     {
-      CUnitComponent * pComponent = const_cast< CUnitComponent * >(&*it);
+      mpDimensionless = const_cast< CUnitComponent * >(&*mComponents.insert(CUnitComponent(CBaseUnit::dimensionless, 1.0, 0.0, 0.0)).first);
+    }
 
-      pComponent->setScale(pComponent->getScale() + component.getScale());
-      pComponent->setMultiplier(pComponent->getMultiplier() * component.getMultiplier());
+  std::pair< std::set< CUnitComponent >::iterator, bool > it = mComponents.insert(component);
 
-      if (pComponent->getKind() != CBaseUnit::dimensionless)
+  mpDimensionless->setScale(mpDimensionless->getScale() + component.getScale());
+  mpDimensionless->setMultiplier(mpDimensionless->getMultiplier() * component.getMultiplier());
+
+  if (it.first->getKind() != CBaseUnit::dimensionless)
+    {
+      CUnitComponent * pComponent = const_cast< CUnitComponent * >(&*it.first);
+
+      if (!it.second)
         {
           pComponent->setExponent(pComponent->getExponent() + component.getExponent());
         }
-    }
-  else
-    {
-      mComponents.insert(component);
+
+      if (pComponent->getExponent() == 0.0)
+        {
+          mComponents.erase(it.first);
+        }
     }
 
-  consolidateDimensionless();
+  C_FLOAT64 fractpart;
+  C_FLOAT64 Scale;
+  C_FLOAT64 Multiplier = mpDimensionless->getMultiplier() * pow(10.0, mpDimensionless->getScale());
+  C_FLOAT64 log = log10(Multiplier) / 3.0;
+
+  fractpart = modf(log, &Scale);
+
+  if (1.0 - fabs(fractpart) < 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon())
+    {
+      if (log < 0.0)
+        {
+          Scale -= 1.0;
+        }
+      else
+        {
+          Scale += 1.0;
+        }
+    }
+
+  Scale *= 3.0;
+
+  mpDimensionless->setMultiplier(Multiplier * pow(10, -Scale));
+  mpDimensionless->setScale(Scale);
 }
 
 const std::set< CUnitComponent > & CUnit::getComponents() const
@@ -246,11 +280,7 @@ CUnit CUnit::exponentiate(double exp) const
 
       pComponent->setMultiplier(pow(pComponent->getMultiplier(), exp));
       pComponent->setScale(pComponent->getScale() * exp);
-
-      if (pComponent->getKind() != CBaseUnit::dimensionless)
-        {
-          pComponent->setExponent(pComponent->getExponent() * exp);
-        }
+      pComponent->setExponent(pComponent->getExponent() * exp);
     }
 
   return Unit;
@@ -867,67 +897,6 @@ bool CUnit::isUnitType(UnitType type) const
     return true;
   else // includes 0 exponents (undefined)
     return false;
-}
-
-void CUnit::consolidateDimensionless()
-{
-  // nothing to consolidate
-  if (mComponents.empty()) return;
-
-  std::set< CUnitComponent >::iterator it = mComponents.begin(),
-                                       itEnd; //initialized later
-
-  // logical default
-  CUnitComponent tmpDimensionlessComponent = CUnitComponent(CBaseUnit::dimensionless);
-
-  // If a dimensionless component already exists, it will be the first element
-  // (set is ordered by Kind) and we should copy that one to the temporary one.
-  if ((*it).getKind() == CBaseUnit::dimensionless)
-    {
-      tmpDimensionlessComponent = *it;
-      mComponents.erase(it); // can't modify in-place, so may as well erase now
-    }
-
-  it = mComponents.begin(); // in case the previous *it was erased
-  itEnd = mComponents.end();
-
-  while (it != itEnd)
-    {
-      if ((*it).getExponent() == 0)
-        {
-          tmpDimensionlessComponent.setScale(tmpDimensionlessComponent.getScale() + (*it).getScale());
-          tmpDimensionlessComponent.setMultiplier(tmpDimensionlessComponent.getMultiplier() * (*it).getMultiplier());
-          mComponents.erase(it++); // Increment after erasing current one. This should be safe (C++ Standard 23.1.2.8)
-        }
-      else
-        ++it;
-    }
-
-  C_FLOAT64 fractpart;
-  C_FLOAT64 Scale;
-  C_FLOAT64 Multiplier = tmpDimensionlessComponent.getMultiplier() * pow(10.0, tmpDimensionlessComponent.getScale());
-  C_FLOAT64 log = log10(Multiplier) / 3.0;
-
-  fractpart = modf(log, &Scale);
-
-  if (1.0 - fabs(fractpart) < 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon())
-    {
-      if (log < 0.0)
-        {
-          Scale -= 1.0;
-        }
-      else
-        {
-          Scale += 1.0;
-        }
-    }
-
-  Scale *= 3.0;
-
-  tmpDimensionlessComponent.setMultiplier(Multiplier * pow(10, -Scale));
-  tmpDimensionlessComponent.setScale(Scale);
-
-  mComponents.insert(tmpDimensionlessComponent);
 }
 
 // friend

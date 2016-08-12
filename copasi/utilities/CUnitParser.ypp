@@ -182,9 +182,7 @@ scaled_unit:  SCALE unit
 
              if (!$$.pUnit->isUndefined())
                {
-                 CUnitComponent component;
-                 component.setKind(CBaseUnit::dimensionless);
-                 component.setScale(CBaseUnit::scaleFromPrefix($1.text));
+                 CUnitComponent component(CBaseUnit::dimensionless, 1.0, CBaseUnit::scaleFromPrefix($1.text), 0.0);
 
                  $$.pUnit->addComponent(component);
                }
@@ -192,18 +190,14 @@ scaled_unit:  SCALE unit
 
 multiplier:  NUMBER
            {
-             CUnitComponent component;
-             component.setKind(CBaseUnit::dimensionless);
-             component.setMultiplier(strToDouble($1.text.c_str(), NULL));
+             CUnitComponent component(CBaseUnit::dimensionless, strToDouble($1.text.c_str(), NULL), 0.0, 0.0);
              
              $$.pUnit = new CUnit();
              $$.pUnit->addComponent(component);
            }
          | POWER_OF_TEN EXPONENT NUMBER
            {
-             CUnitComponent component;
-             component.setKind(CBaseUnit::dimensionless);
-             component.setMultiplier(pow(10.0, strToDouble($3.text.c_str(), NULL)));
+             CUnitComponent component(CBaseUnit::dimensionless, pow(10.0, strToDouble($3.text.c_str(), NULL)), 0.0, 0.0);
              
              $$.pUnit = new CUnit();
              $$.pUnit->addComponent(component);
