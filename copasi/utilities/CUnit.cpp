@@ -217,8 +217,8 @@ void CUnit::addComponent(const CUnitComponent & component)
       mpDimensionless = const_cast< CUnitComponent * >(&*mComponents.insert(CUnitComponent(CBaseUnit::dimensionless, 1.0, 0.0, 0.0)).first);
     }
 
-  mpDimensionless->setMultiplier(mpDimensionless->getMultiplier() * component.getMultiplier());
-  mpDimensionless->setScale(mpDimensionless->getScale() + component.getScale());
+  // Calculate the effective multiplier
+  C_FLOAT64 Multiplier = mpDimensionless->getMultiplier() * component.getMultiplier() * pow(10.0, mpDimensionless->getScale() + component.getScale());
 
   if (component.getKind() != CBaseUnit::dimensionless)
     {
@@ -245,11 +245,10 @@ void CUnit::addComponent(const CUnitComponent & component)
         }
     }
 
-  C_FLOAT64 fractpart;
-  C_FLOAT64 Scale;
-  C_FLOAT64 Multiplier = mpDimensionless->getMultiplier() * pow(10.0, mpDimensionless->getScale());
   C_FLOAT64 log = log10(Multiplier) / 3.0;
 
+  C_FLOAT64 fractpart;
+  C_FLOAT64 Scale;
   fractpart = modf(log, &Scale);
 
   if (1.0 - fabs(fractpart) < 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon())
