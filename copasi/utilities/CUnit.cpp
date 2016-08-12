@@ -217,20 +217,28 @@ void CUnit::addComponent(const CUnitComponent & component)
       mpDimensionless = const_cast< CUnitComponent * >(&*mComponents.insert(CUnitComponent(CBaseUnit::dimensionless, 1.0, 0.0, 0.0)).first);
     }
 
-  std::pair< std::set< CUnitComponent >::iterator, bool > it = mComponents.insert(component);
-
-  mpDimensionless->setScale(mpDimensionless->getScale() + component.getScale());
   mpDimensionless->setMultiplier(mpDimensionless->getMultiplier() * component.getMultiplier());
+  mpDimensionless->setScale(mpDimensionless->getScale() + component.getScale());
 
-  if (it.first->getKind() != CBaseUnit::dimensionless)
+  if (component.getKind() != CBaseUnit::dimensionless)
     {
+      std::pair< std::set< CUnitComponent >::iterator, bool > it = mComponents.insert(component);
       CUnitComponent * pComponent = const_cast< CUnitComponent * >(&*it.first);
 
-      if (!it.second)
+      // Check whether the new component was inserted.
+      if (it.second)
         {
+          // Multiplier and scale have been combined with the dimensionless component
+          pComponent->setMultiplier(1.0);
+          pComponent->setScale(0.0);
+        }
+      else
+        {
+          // We need to updated the exponent of the existing component
           pComponent->setExponent(pComponent->getExponent() + component.getExponent());
         }
 
+      // If the component has a zero exponent it can be removed
       if (pComponent->getExponent() == 0.0)
         {
           mComponents.erase(it.first);
