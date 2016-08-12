@@ -1351,9 +1351,7 @@ bool CModel::setVolumeUnit(const std::string & name)
 
 bool CModel::setVolumeUnit(const CUnit::VolumeUnit & unitEnum)
 {
-  mVolumeUnit = CUnit::VolumeUnitNames[unitEnum];
-  mDimensionlessUnits[volume] = CUnit(mVolumeUnit).isDimensionless();
-  return true;
+  return setVolumeUnit(CUnit::VolumeUnitNames[unitEnum]);
 }
 
 const std::string & CModel::getVolumeUnit() const
@@ -1382,9 +1380,7 @@ bool CModel::setAreaUnit(const std::string & name)
 
 bool CModel::setAreaUnit(const CUnit::AreaUnit & unitEnum)
 {
-  mAreaUnit = CUnit::AreaUnitNames[unitEnum];
-  mDimensionlessUnits[area] = CUnit(mAreaUnit).isDimensionless();
-  return true;
+  return setAreaUnit(CUnit::AreaUnitNames[unitEnum]);
 }
 
 const std::string & CModel::getAreaUnit() const
@@ -1412,9 +1408,7 @@ bool CModel::setLengthUnit(const std::string & name)
 
 bool CModel::setLengthUnit(const CUnit::LengthUnit & unitEnum)
 {
-  mLengthUnit = CUnit::LengthUnitNames[unitEnum];
-  mDimensionlessUnits[length] = CUnit(mLengthUnit).isDimensionless();
-  return true;
+  return setLengthUnit(CUnit::LengthUnitNames[unitEnum]);
 }
 
 const std::string & CModel::getLengthUnit() const
@@ -1443,9 +1437,7 @@ bool CModel::setTimeUnit(const std::string & name)
 
 bool CModel::setTimeUnit(const CUnit::TimeUnit & unitEnum)
 {
-  mTimeUnit = CUnit::TimeUnitNames[unitEnum];
-  mDimensionlessUnits[time] = CUnit(mTimeUnit).isDimensionless();
-  return true;
+  return setTimeUnit(CUnit::TimeUnitNames[unitEnum]);
 }
 
 const std::string & CModel::getTimeUnit() const
@@ -1472,12 +1464,18 @@ bool CModel::setQuantityUnit(const std::string & name)
 
   CUnit QuantityUnit(mQuantityUnit);
 
-  // The first, dimensionless, component should have all the
-  // scale and multiplier information
-  std::set< CUnitComponent >::const_iterator it = QuantityUnit.getComponents().begin();
+  // The dimensionless, component will have all the scale and multiplier information
+  std::set< CUnitComponent >::const_iterator dimensionless = QuantityUnit.getComponents().find(CBaseUnit::dimensionless);
+  mQuantity2NumberFactor = dimensionless->getMultiplier() * pow(10.0, dimensionless->getScale());
 
-  // Avogadro, if present, will be in the multiplier
-  mQuantity2NumberFactor = it->getMultiplier() * pow(10.0, it->getScale()) * mAvogadro;
+  // Avogadro is no longer stored in the multiplier it has its own component:
+  std::set< CUnitComponent >::const_iterator avogadro = QuantityUnit.getComponents().find(CBaseUnit::avogadro);
+
+  if (avogadro != QuantityUnit.getComponents().end())
+    {
+      mQuantity2NumberFactor *= pow(mAvogadro, avogadro->getExponent());
+    }
+
   mNumber2QuantityFactor = 1.0 / mQuantity2NumberFactor;
 
   //adapt particle numbers
@@ -1495,72 +1493,7 @@ bool CModel::setQuantityUnit(const std::string & name)
 
 bool CModel::setQuantityUnit(const CUnit::QuantityUnit & unitEnum)
 {
-  // TODO: Commented out the code below, to allow the quantity unit to be set again
-  //       but this needs to be solved correctly.
-  //
-  //   // if it is already there and set properly . . .
-  //   if (mpQuantityUnit != NULL) // &&
-  // //      *mpQuantityUnit == unitEnum) //create appropriate comparison operator
-  //     return true;
-
-  mQuantityUnit = CUnit::QuantityUnitNames[unitEnum];
-  mDimensionlessUnits[quantity] = CUnit(mQuantityUnit).isDimensionless();
-
-  bool success = true;
-
-  switch (unitEnum)
-    {
-      case CUnit::Mol:
-        mQuantity2NumberFactor = mAvogadro;
-        break;
-
-      case CUnit::mMol:
-        mQuantity2NumberFactor = mAvogadro * 1E-3;
-        break;
-
-      case CUnit::microMol:
-        mQuantity2NumberFactor = mAvogadro * 1E-6;
-        break;
-
-      case CUnit::nMol:
-        mQuantity2NumberFactor = mAvogadro * 1E-9;
-        break;
-
-      case CUnit::pMol:
-        mQuantity2NumberFactor = mAvogadro * 1E-12;
-        break;
-
-      case CUnit::fMol:
-        mQuantity2NumberFactor = mAvogadro * 1E-15;
-        break;
-
-      case CUnit::number:
-        mQuantity2NumberFactor = 1.0;
-        break;
-
-      case CUnit::dimensionlessQuantity:
-        mQuantity2NumberFactor = 1.0;
-        break;
-
-      default:
-        mQuantity2NumberFactor = 1.0;
-        success = false;
-        break;
-    }
-
-  mNumber2QuantityFactor = 1.0 / mQuantity2NumberFactor;
-
-  //adapt particle numbers
-  size_t i, imax = mMetabolitesX.size();
-
-  for (i = 0; i < imax; ++i)
-    {
-      //update particle numbers
-      mMetabolitesX[i].setInitialConcentration(mMetabolitesX[i].getInitialConcentration());
-      mMetabolitesX[i].setConcentration(mMetabolitesX[i].getConcentration());
-    }
-
-  return success;
+  return setQuantityUnit(CUnit::QuantityUnitNames[unitEnum]);
 }
 
 const std::string CModel::getQuantityUnit() const
