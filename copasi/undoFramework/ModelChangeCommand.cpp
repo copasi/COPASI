@@ -1,4 +1,4 @@
-// Copyright (C) 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2015 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -57,6 +57,11 @@ ModelChangeCommand::ModelChangeCommand(CCopasiUndoCommand::Type type,
         setText(": Changed model volume unit");
         break;
 
+      case MODEL_AVOGADRO_NUMBER_CHANGE:
+        setProperty("Avogadro's #");
+        setText(": Changed Avogadro's #");
+        break;
+
       case MODEL_STOCHASTIC_CORRECTION_CHANGE:
         setProperty("Stochastic Correction");
         setText(": Changed model stochastic correction");
@@ -69,7 +74,6 @@ ModelChangeCommand::ModelChangeCommand(CCopasiUndoCommand::Type type,
 
 ModelChangeCommand::~ModelChangeCommand()
 {
-
 }
 
 void ModelChangeCommand::redo()

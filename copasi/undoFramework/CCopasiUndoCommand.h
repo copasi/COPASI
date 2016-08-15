@@ -127,6 +127,7 @@ public:
     MODEL_VOLUME_UNIT_CHANGE, // change of model volume unit
     MODEL_AREA_UNIT_CHANGE, // change of model area unit
     MODEL_LENGTH_UNIT_CHANGE, // change of model length unit
+    MODEL_AVOGADRO_NUMBER_CHANGE, // change of the Avogadro number used in the model
     MODEL_STOCHASTIC_CORRECTION_CHANGE, // change of the stochastic correct on model
     COMPARTMENT_SIMULATION_TYPE_CHANGE, //change of compartment simulation type
     COMPARTMENT_INITIAL_VOLUME_CHANGE, // change of compartment initial volume

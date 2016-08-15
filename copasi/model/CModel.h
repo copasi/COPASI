@@ -580,7 +580,8 @@ public:
    * @param const std::string & name
    * @return bool success
    */
-  bool setQuantityUnit(const std::string & name);
+  bool setQuantityUnit(const std::string & name,
+                       const CModelParameter::Framework & frameWork);
 
   /**
    * Set the unit for quantities. If COPASI recognizes
@@ -589,7 +590,8 @@ public:
    * @param const CModel::QuantityUnit & unit
    * @return bool success
    */
-  bool setQuantityUnit(const CUnit::QuantityUnit & unitEnum);
+  bool setQuantityUnit(const CUnit::QuantityUnit & unitEnum,
+                       const CModelParameter::Framework & frameWork);
 
   /**
    * Get the current quantity unit of the model
@@ -626,7 +628,8 @@ public:
    * Set the Avogadro number used for the model.
    * @param const C_FLOAT64 & avogadro
    */
-  void setAvogadro(const C_FLOAT64 & avogadro);
+  void setAvogadro(const C_FLOAT64 & avogadro,
+                   const CModelParameter::Framework & frameWork);
 
   /**
    * Retrieve the Avogadro number.

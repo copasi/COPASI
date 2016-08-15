@@ -258,7 +258,7 @@ void SBMLImporter::importUnitsFromSBMLDocument(Model* sbmlModel)
   // for SBML L3 files the default units are defined on the model
   if (this->mLevel > 2)
     {
-      this->mpCopasiModel->setAvogadro(6.02214179e23);
+      this->mpCopasiModel->setAvogadro(6.02214179e23, CModelParameter::Concentration);
       this->mAvogadroSet = true;
 
       // we make copies of the unit definitions so that we do not have to remember
@@ -665,11 +665,11 @@ void SBMLImporter::importUnitsFromSBMLDocument(Model* sbmlModel)
           // the unit could not be handled, give an error message and
           // set the units to mole
           CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 66, "substance", "Mole");
-          this->mpCopasiModel->setQuantityUnit(CUnit::Mol);
+          this->mpCopasiModel->setQuantityUnit(CUnit::Mol, CModelParameter::Concentration);
         }
       else
         {
-          this->mpCopasiModel->setQuantityUnit(qUnit.first);
+          this->mpCopasiModel->setQuantityUnit(qUnit.first, CModelParameter::Concentration);
         }
 
       // check if the extends units are set and if they are equal to the substance units
@@ -945,7 +945,7 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
   this->mpCopasiModel->setAreaUnit(CUnit::m2);
   this->mpCopasiModel->setVolumeUnit(CUnit::l);
   this->mpCopasiModel->setTimeUnit(CUnit::s);
-  this->mpCopasiModel->setQuantityUnit(CUnit::Mol);
+  this->mpCopasiModel->setQuantityUnit(CUnit::Mol, CModelParameter::Concentration);
   this->mpCopasiModel->setSBMLId(sbmlModel->getId());
 
   mCurrentStepHandle = C_INVALID_INDEX;
@@ -1399,7 +1399,6 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
             continue;
 
           it->second->setExpression("<" + reaction.getFluxReference()->getCN() + ">");
-
         }
     }
 
@@ -2686,7 +2685,6 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
               sbmlParameter->setId(newParameterId);
               sbmlParameter->setValue(0);
 
-
               CModelValue* parameter = this->mpCopasiModel->createModelValue(newParameterId);
               parameter->setSBMLId(newParameterId);
               parameter->setStatus(CModelEntity::ASSIGNMENT);
@@ -3331,7 +3329,7 @@ bool SBMLImporter::checkValidityOfSourceDocument(SBMLDocument* sbmlDoc)
   sbmlDoc->setLocationURI(mpDataModel->getReferenceDirectory());
 #endif
 
-  unsigned int checkResult = sbmlDoc->getNumErrors(LIBSBML_SEV_ERROR) + sbmlDoc->checkConsistency() ;
+  unsigned int checkResult = sbmlDoc->getNumErrors(LIBSBML_SEV_ERROR) + sbmlDoc->checkConsistency();
 
 #if LIBSBML_VERSION > 50800
 
@@ -4562,7 +4560,6 @@ SBMLImporter::handleVolumeUnit(const UnitDefinition* uDef)
 
 CModelValue* SBMLImporter::createCModelValueFromParameter(const Parameter* sbmlParameter, CModel* copasiModel, std::map<const CCopasiObject*, SBase*>& copasi2sbmlmap)
 {
-
 
   std::string name = sbmlParameter->getName();
 
@@ -8587,7 +8584,6 @@ std::string SBMLImporter::createUnitExpressionFor(const UnitDefinition *pSBMLUni
           current->getMultiplier(),
           current->getScale()));
       copasiUnit = copasiUnit * tmp;
-
     }
 
   // construct expression
@@ -9779,10 +9775,7 @@ bool SBMLImporter::importMIRIAM(const SBase* pSBMLObject, CCopasiObject* pCOPASI
               bqBiol->setId(sboTerm);
               info.save();
             }
-
-
         }
-
     }
 
   return result;

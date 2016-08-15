@@ -39,6 +39,7 @@ public:
 protected slots:
   virtual void slotBtnRevertClicked();
   virtual void slotBtnOKClicked();
+  virtual void slotUpdateAvogadro();
 
 protected:
   virtual bool enterProtected();

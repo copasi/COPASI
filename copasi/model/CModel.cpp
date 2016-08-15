@@ -108,7 +108,7 @@ CModel::CModel(CCopasiContainer* pParent):
   setUsed(true);
   mIValue = 0.0;
 
-  setQuantityUnit(mQuantityUnit);
+  setQuantityUnit(mQuantityUnit, CModelParameter::ParticleNumbers);
 
   initializeMetabolites();
 
@@ -295,19 +295,19 @@ C_INT32 CModel::load(CReadConfig & configBuffer)
 
   try
     {
-      setQuantityUnit(tmp); // set the factors
+      setQuantityUnit(tmp, CModelParameter::Concentration); // set the factors
     }
 
   catch (CCopasiException &)
     {
       try
         {
-          setQuantityUnit(tmp.substr(0, 1) + "mol");
+          setQuantityUnit(tmp.substr(0, 1) + "mol", CModelParameter::Concentration);
         }
 
       catch (CCopasiException &)
         {
-          setQuantityUnit("mmol");
+          setQuantityUnit("mmol", CModelParameter::Concentration);
         }
     }
 
@@ -1457,7 +1457,8 @@ CUnit::TimeUnit CModel::getTimeUnitEnum() const
 
 //****
 
-bool CModel::setQuantityUnit(const std::string & name)
+bool CModel::setQuantityUnit(const std::string & name,
+                             const CModelParameter::Framework & frameWork)
 {
   mQuantityUnit = name;
   mDimensionlessUnits[quantity] = CUnit(mQuantityUnit).isDimensionless();
@@ -1481,19 +1482,37 @@ bool CModel::setQuantityUnit(const std::string & name)
   //adapt particle numbers
   size_t i, imax = mMetabolitesX.size();
 
-  for (i = 0; i < imax; ++i)
+  switch (frameWork)
     {
-      //update particle numbers
-      mMetabolitesX[i].setInitialConcentration(mMetabolitesX[i].getInitialConcentration());
-      mMetabolitesX[i].setConcentration(mMetabolitesX[i].getConcentration());
+      case CModelParameter::Concentration:
+        for (i = 0; i < imax; ++i)
+          {
+            //update particle numbers
+            mMetabolitesX[i].refreshInitialValue();
+            mMetabolitesX[i].refreshNumber();
+          }
+
+        break;
+
+      case CModelParameter::ParticleNumbers:
+        for (i = 0; i < imax; ++i)
+          {
+            //update particle numbers
+            mMetabolitesX[i].refreshInitialConcentration();
+            mMetabolitesX[i].refreshConcentration();
+          }
+
+        break;
     }
 
   return true;
 }
 
-bool CModel::setQuantityUnit(const CUnit::QuantityUnit & unitEnum)
+bool CModel::setQuantityUnit(const CUnit::QuantityUnit & unitEnum,
+                             const CModelParameter::Framework & frameWork)
 {
-  return setQuantityUnit(CUnit::QuantityUnitNames[unitEnum]);
+  return setQuantityUnit(CUnit::QuantityUnitNames[unitEnum],
+                         frameWork);
 }
 
 const std::string CModel::getQuantityUnit() const
@@ -1522,11 +1541,11 @@ void CModel::setModelType(const CModel::ModelType & modelType)
 const CModel::ModelType & CModel::getModelType() const
 {return mType;}
 
-void CModel::setAvogadro(const C_FLOAT64 & avogadro)
+void CModel::setAvogadro(const C_FLOAT64 & avogadro, const CModelParameter::Framework & frameWork)
 {
   mAvogadro = avogadro;
 
-  setQuantityUnit(mQuantityUnit);
+  setQuantityUnit(mQuantityUnit, frameWork);
 }
 
 const C_FLOAT64 & CModel::getAvogadro() const

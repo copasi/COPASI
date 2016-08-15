@@ -2002,17 +2002,17 @@ void CCopasiXML::fixBuild18()
   std::string quantityUnit = mpModel->getQuantityUnit();
 
   if (quantityUnit == "Mol")
-    mpModel->setQuantityUnit("mol");
+    mpModel->setQuantityUnit("mol", CModelParameter::ParticleNumbers);
   else if (quantityUnit == "mMol")
-    mpModel->setQuantityUnit("mmol");
+    mpModel->setQuantityUnit("mmol", CModelParameter::ParticleNumbers);
   else if (quantityUnit == "\xc2\xb5Mol")
-    mpModel->setQuantityUnit("\xc2\xb5mol");
+    mpModel->setQuantityUnit("\xc2\xb5mol", CModelParameter::ParticleNumbers);
   else if (quantityUnit == "nMol")
-    mpModel->setQuantityUnit("nmol");
+    mpModel->setQuantityUnit("nmol", CModelParameter::ParticleNumbers);
   else if (quantityUnit == "pMol")
-    mpModel->setQuantityUnit("pmol");
+    mpModel->setQuantityUnit("pmol", CModelParameter::ParticleNumbers);
   else if (quantityUnit == "fMol")
-    mpModel->setQuantityUnit("fmol");
+    mpModel->setQuantityUnit("fmol", CModelParameter::ParticleNumbers);
 
   return;
 }
