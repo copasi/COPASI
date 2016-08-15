@@ -17,28 +17,28 @@
 
 #include "CCopasiException.h"
 
-std::list< const CUnitDefinition * > sortSymbols(const std::set< std::string > symbols)
+std::list< std::pair< std::string, CUnit > > sortSymbols(const std::set< std::string > symbols)
 {
-  std::list< const CUnitDefinition * > SortedList;
-  std::list< const CUnitDefinition * >::iterator itList;
-  std::list< const CUnitDefinition * >::iterator endList;
+  std::list< std::pair< std::string, CUnit > > SortedList;
+  std::list< std::pair< std::string, CUnit > >::iterator itList;
+  std::list< std::pair< std::string, CUnit > >::iterator endList;
 
   std::set< std::string >::const_iterator it = symbols.begin();
   std::set< std::string >::const_iterator end = symbols.end();
 
   for (; it != end; ++it)
     {
-      const CUnitDefinition * pUnitDef = CCopasiRootContainer::getUnitDefFromSymbol(*it);
+      CUnit Unit(*it);
 
-      if (pUnitDef == NULL) continue;
+      if (Unit.isUndefined()) continue;
 
       itList = SortedList.begin();
       endList = SortedList.end();
 
       for (; itList != endList; ++itList)
-        if ((*itList)->getUsedSymbols().count(*it)) break;
+        if (itList->second.getUsedSymbols().count(*it)) break;
 
-      SortedList.insert(itList, pUnitDef);
+      SortedList.insert(itList, std::make_pair(*it, Unit));
     }
 
   SortedList.reverse();
@@ -410,10 +410,10 @@ bool CUnit::isEquivalent(const CUnit & rightSide) const
 }
 
 // static
-C_INT32 CUnit::getExponentOfSymbol(const CUnitDefinition * pUnitDef, CUnit & unit)
+C_INT32 CUnit::getExponentOfSymbol(const std::pair< std::string, CUnit > & SymbolDef, CUnit & unit)
 {
   // We ignore base units
-  if (CBaseUnit::fromSymbol(pUnitDef->getSymbol()) != CBaseUnit::undefined) return 0;
+  if (CBaseUnit::fromSymbol(SymbolDef.first) != CBaseUnit::undefined) return 0;
 
   C_INT32 Exponent = 0;
   int improvement = 0;
@@ -421,7 +421,7 @@ C_INT32 CUnit::getExponentOfSymbol(const CUnitDefinition * pUnitDef, CUnit & uni
   // First try multiplication
   while (true)
     {
-      CUnit Tmp = unit **pUnitDef;
+      CUnit Tmp = unit * SymbolDef.second;
 
       // Compare components to determine whether this simplified the unit
       std::set< CUnitComponent >::const_iterator itOld = unit.getComponents().begin();
@@ -502,7 +502,7 @@ C_INT32 CUnit::getExponentOfSymbol(const CUnitDefinition * pUnitDef, CUnit & uni
   if (Exponent > 0) return -Exponent;
 
   // Now try division
-  CUnit Inverse = pUnitDef->exponentiate(-1.0);
+  CUnit Inverse = SymbolDef.second.exponentiate(-1.0);
 
   while (true)
     {
@@ -605,13 +605,13 @@ std::vector< CUnit::SymbolComponent > CUnit::getSymbolComponents() const
 
   CUnit Tmp(*this);
 
-  std::list< const CUnitDefinition * > UsedDefinitions = sortSymbols(mUsedSymbols);
+  std::list< std::pair< std::string, CUnit > > UsedDefinitions = sortSymbols(mUsedSymbols);
   size_t Index = 0;
 
   while (true)
     {
-      std::list< const CUnitDefinition * >::iterator itDef = UsedDefinitions.begin();
-      std::list< const CUnitDefinition * >::iterator endDef = UsedDefinitions.end();
+      std::list< std::pair< std::string, CUnit > >::iterator itDef = UsedDefinitions.begin();
+      std::list< std::pair< std::string, CUnit > >::iterator endDef = UsedDefinitions.end();
 
       for (; itDef != endDef; ++itDef)
         {
@@ -619,7 +619,7 @@ std::vector< CUnit::SymbolComponent > CUnit::getSymbolComponents() const
 
           if (Exponent == 0) continue;
 
-          Component.symbol = (*itDef)->getSymbol();
+          Component.symbol = itDef->first;
           Component.exponent = Exponent;
 
           SymbolComponents.push_back(Component);

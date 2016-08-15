@@ -139,16 +139,18 @@ compound_unit: unit
              $$.pUnit = $1.pUnit;
              mpUnit = $$.pUnit;
            }
-unit:      KIND
+unit:    KIND
            {
              $$.pUnit = new CUnit(CBaseUnit::fromSymbol($1.text));
-             mSymbols.insert($1.text);
+             mCurrentSymbol = $1.text;
+             mSymbols.insert(mCurrentSymbol);
            }
          | SI_UNIT
            {
              $$.pUnit = new CUnit(CUnitDefinition::getSIUnit($1.text));
              
-             mSymbols.insert($1.text);
+             mCurrentSymbol = $1.text;
+             mSymbols.insert(mCurrentSymbol);
              mSymbols.insert($$.pUnit->getUsedSymbols().begin(), $$.pUnit->getUsedSymbols().end());
            }
          | USER_DEFINED_UNIT
@@ -172,10 +174,21 @@ unit:      KIND
              else
                {
                  $$.pUnit = new CUnit(*pUnitDefinition);
-                 mSymbols.insert(pUnitDefinition->getSymbol());
+
+                 if (pUnitDefinition->isReadOnly())
+                   {
+                     mCurrentSymbol = pUnitDefinition->getSymbol();
+                   }
+                 else
+                   {
+                     mCurrentSymbol = "\"" + pUnitDefinition->getSymbol() + "\"";
+                   }
+
+                 mSymbols.insert(mCurrentSymbol);
                  mSymbols.insert($$.pUnit->getUsedSymbols().begin(), $$.pUnit->getUsedSymbols().end());
                }
            }
+
 scaled_unit:  SCALE unit
            {
              $$.pUnit = $2.pUnit;
@@ -183,8 +196,8 @@ scaled_unit:  SCALE unit
              if (!$$.pUnit->isUndefined())
                {
                  CUnitComponent component(CBaseUnit::dimensionless, 1.0, CBaseUnit::scaleFromPrefix($1.text), 0.0);
-
                  $$.pUnit->addComponent(component);
+                 mSymbols.insert($1.text + mCurrentSymbol);
                }
            }
 

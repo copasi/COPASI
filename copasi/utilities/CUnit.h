@@ -130,7 +130,7 @@ private:
   std::set< std::string > mUsedSymbols;
   CUnitComponent * mpDimensionless;
 
-  static C_INT32 getExponentOfSymbol(const CUnitDefinition * pDef, CUnit & unit);
+  static C_INT32 getExponentOfSymbol(const std::pair< std::string, CUnit > & SymbolDef, CUnit & unit);
 };
 
 #endif // CUNIT_H

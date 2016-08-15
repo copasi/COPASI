@@ -10,6 +10,7 @@
 CUnitParserBase::CUnitParserBase():
   mPosition(0),
   mpUnit(NULL),
+  mCurrentSymbol(),
   mSymbols(),
   mOldSymbol(),
   mNewSymbol(),
