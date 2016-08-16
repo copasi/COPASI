@@ -658,6 +658,7 @@ void ReactionsWidget1::slotDefaultUnitChecked(const bool & checked)
   if (checked)
     {
       mpRi->setKineticLawUnitType(CReaction::Default);
+      mpComboBoxCompartment->setCurrentIndex(mpComboBoxCompartment->findText(FROM_UTF8(mpRi->getDefaultScalingCompartment())));
       slotConcentrationUnitChecked(mpRi->getEffectiveKineticLawUnitType() == CReaction::ConcentrationPerTime);
     }
   else
