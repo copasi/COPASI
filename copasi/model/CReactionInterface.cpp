@@ -34,7 +34,8 @@ CReactionInterface::CReactionInterface(CModel * pModel):
   mNameMap(),
   mValues(),
   mIsLocal(),
-  mKineticLawUnitType(CReaction::Default)
+  mKineticLawUnitType(CReaction::Default),
+  mScalingCompartment()
 {
   assert(mpModel != NULL);
 }
@@ -141,6 +142,13 @@ void CReactionInterface::initFromReaction(const CReaction *rea)
   else
     {
       setFunctionWithEmptyMapping("");
+    }
+
+  mScalingCompartment = "";
+
+  if (rea->getScalingCompartment() != NULL)
+    {
+      mScalingCompartment = rea->getScalingCompartment()->getObjectName();
     }
 
   mKineticLawUnitType = rea->getKineticLawUnitType();
@@ -347,6 +355,17 @@ bool CReactionInterface::writeBackToReaction(CReaction * rea)
     }
 
   rea->setKineticLawUnitType(mKineticLawUnitType);
+
+  std::string ScalingCompartmentCN;
+  size_t Index;
+
+  if (!mScalingCompartment.empty() &&
+      (Index = mpModel->getCompartments().getIndex(mScalingCompartment)) != C_INVALID_INDEX)
+    {
+      ScalingCompartmentCN = mpModel->getCompartments()[Index].getCN();
+    }
+
+  rea->setScalingCompartmentCN(ScalingCompartmentCN);
 
   rea->compile();
   mpModel->setCompileFlag(); //TODO: check if really necessary
@@ -1167,6 +1186,23 @@ std::string CReactionInterface::getEffectiveKineticLawUnit() const
         return getConcentrationRateUnit();
         break;
     }
+}
+
+void CReactionInterface::setScalingCompartment(const std::string & scalingCompartment)
+{
+  mScalingCompartment = scalingCompartment;
+}
+
+const std::string & CReactionInterface::getScalingCompartment() const
+{
+  return mScalingCompartment;
+}
+
+std::string CReactionInterface::getDefaultScalingCompartment() const
+{
+  if (!mScalingCompartment.empty()) return mScalingCompartment;
+
+  return mChemEqI.getDefaultCompartment();
 }
 
 #ifdef COPASI_DEBUG

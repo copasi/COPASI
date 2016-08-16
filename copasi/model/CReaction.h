@@ -355,18 +355,6 @@ public:
   void compile();
 
   /**
-   * Calculate the kinetic function and returns the flux
-   * @return const C_FLOAT64 & Flux
-   */
-  const C_FLOAT64 & calculateFlux();
-
-  /**
-   * Calculates the kinetic function and returns the particle flux
-   * @return const C_FLOAT64 & ParticleFlux
-   */
-  const C_FLOAT64 & calculateParticleFlux();
-
-  /**
    * Retrieve object referencing the particle flux
    * @return CCopasiObject * particleFluxReference
    */
@@ -408,24 +396,7 @@ public:
    */
   const CCallParameters< C_FLOAT64 > & getCallParameters() const;
 
-private:
-  /**
-   * Calculate the kinetic function
-   */
-  void calculate();
-
 public:
-  /**
-   * Calculate partial derivative of the flux
-   * @param C_FLOAT64 * pXi
-   * @param const C_FLOAT64 & derivationFactor
-   * @param const C_FLOAT64 & resolution (unscaled resolution)
-   * @return C_FLOAT64 partial
-   */
-  C_FLOAT64 calculatePartialDerivative(C_FLOAT64 * pXi,
-                                       const C_FLOAT64 & derivationFactor,
-                                       const C_FLOAT64 & resolution);
-
   /**
    *  Retrieves the number of compartments the reaction is acting in.
    *  @return "size_t" the compartment number
@@ -583,13 +554,26 @@ public:
    */
   std::string getKineticLawUnit() const;
 
+  /**
+   * Set the CN of the compartment used for scaling the kinetic function
+   * @param const std::string & compartmentCN
+   */
+  void setScalingCompartmentCN(const std::string & compartmentCN);
+
+  /**
+   * Set the compartment used for scaling the kinetic function
+   * @param const CCompartment * pCompartment
+   */
+  void setScalingCompartment(const CCompartment * pCompartment);
+
+  /**
+   * Retrieve the compartment used for scaling the kinetic function
+   * @return const CCompartment * scalingCompartment
+   */
+  const CCompartment * getScalingCompartment() const;
+
   // Attributes
 private:
-  /**
-   *  The default scaling factor of a reaction which is 1.
-   */
-  static C_FLOAT64 mDefaultScalingFactor;
-
   /**
    *  The chemical equation
    */
@@ -617,18 +601,6 @@ private:
    */
   C_FLOAT64 mPropensity;
   CCopasiObjectReference<C_FLOAT64> *mpPropensityReference;
-
-  /**
-   *  A pointer to the scaling factor for the flux to calculate the particle number
-   *  changes. For a single compartment reaction this is the volume of
-   *  the compartment
-   */
-  const C_FLOAT64 * mScalingFactor;
-
-  /**
-   *  The unit conversion factor
-   */
-  const C_FLOAT64 * mUnitScalingFactor;
 
   /**
    *  This describes the mapping of the species and parameters to the function parameters.
@@ -664,6 +636,16 @@ private:
    * This indicates what the units of the kinetic law are
    */
   KineticLawUnit mKineticLawUnit;
+
+  /**
+   *
+   */
+  CRegisteredObjectName mScalingCompartmentCN;
+
+  /**
+   *
+   */
+  const CCompartment * mpScalingCompartment;
 };
 
 #endif // COPASI_CReaction

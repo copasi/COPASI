@@ -707,7 +707,6 @@ bool CCopasiXML::saveModel()
       Attributes.add("name", "");
       Attributes.add("reversible", "");
       Attributes.add("fast", "");
-      Attributes.add("kineticLawUnitType", "");
 
       for (i = 0; i < imax; i++)
         {
@@ -717,7 +716,6 @@ bool CCopasiXML::saveModel()
           Attributes.setValue(1, pReaction->getObjectName());
           Attributes.setValue(2, pReaction->isReversible() ? "true" : "false");
           Attributes.setValue(3, pReaction->isFast() ? "true" : "false");
-          Attributes.setValue(4, CReaction::KineticLawUnitTypeName[pReaction->getKineticLawUnitType()]);
 
           if (pReaction->getSBMLId() != "")
             mSBMLReference[pReaction->getSBMLId()] = pReaction->getKey();
@@ -812,6 +810,13 @@ bool CCopasiXML::saveModel()
             {
               Attr.erase();
               Attr.add("function", pReaction->getFunction()->getKey());
+              Attr.add("unitType", CReaction::KineticLawUnitTypeName[pReaction->getKineticLawUnitType()]);
+
+              if (pReaction->getScalingCompartment() != NULL)
+                {
+                  Attr.add("scalingCompartment", pReaction->getScalingCompartment()->getCN());
+                }
+
               startSaveElement("KineticLaw", Attr);
 
               if ((jmax = pReaction->getFunctionParameters().size()))

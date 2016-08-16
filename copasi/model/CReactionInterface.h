@@ -85,6 +85,8 @@ private:
 
   CReaction::KineticLawUnit mKineticLawUnitType;
 
+  std::string mScalingCompartment;
+
 private:
   CReactionInterface();
 
@@ -270,6 +272,9 @@ public:
   std::string getConcentrationRateUnit() const;
   std::string getAmountRateUnit() const;
   std::string getEffectiveKineticLawUnit() const;
+  void setScalingCompartment(const std::string & scalingCompartment);
+  const std::string & getScalingCompartment() const;
+  std::string getDefaultScalingCompartment() const;
 
 #ifdef COPASI_DEBUG
   void printDebug() const;
