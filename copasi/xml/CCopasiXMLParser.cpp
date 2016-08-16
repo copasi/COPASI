@@ -3782,7 +3782,6 @@ void CCopasiXMLParser::ReactionElement::start(const XML_Char *pszName,
   const char * fast;
   bool Fast;
   const char * SBMLId;
-  CReaction::KineticLawUnit KineticLawUnitType;
 
   mCurrentElement = mLastKnownElement;
   mpCurrentHandler = NULL;
@@ -3809,14 +3808,12 @@ void CCopasiXMLParser::ReactionElement::start(const XML_Char *pszName,
 
             fast = mParser.getAttributeValue("fast", papszAttrs, "false");
             Fast = mParser.toBool(fast);
-            KineticLawUnitType = toEnum(mParser.getAttributeValue("kineticLawUnitType", papszAttrs, "Default"), CReaction::KineticLawUnitTypeName, CReaction::Default);
 
             mCommon.pReaction = new CReaction();
             addFix(mKey, mCommon.pReaction);
             mCommon.pReaction->setObjectName(Name);
             mCommon.pReaction->setReversible(Reversible);
             mCommon.pReaction->setFast(Fast);
-            mCommon.pReaction->setKineticLawUnitType(KineticLawUnitType);
 
             SBMLId = mParser.getAttributeValue("sbmlid", papszAttrs, "");
 
@@ -4747,6 +4744,8 @@ void CCopasiXMLParser::KineticLawElement::start(const XML_Char *pszName,
     const XML_Char **papszAttrs)
 {
   const char * Function;
+  CReaction::KineticLawUnit KineticLawUnitType;
+  std::string ScalingCompartment;
 
   mCurrentElement++; /* We should always be on the next element */
 
@@ -4759,6 +4758,8 @@ void CCopasiXMLParser::KineticLawElement::start(const XML_Char *pszName,
                          pszName, "KineticLaw", mParser.getCurrentLineNumber());
 
         Function = mParser.getAttributeValue("function", papszAttrs);
+        KineticLawUnitType = toEnum(mParser.getAttributeValue("unitType", papszAttrs, "Default"), CReaction::KineticLawUnitTypeName, CReaction::Default);
+        ScalingCompartment = mParser.getAttributeValue("scalingCompartment", papszAttrs, "");
 
         mCommon.pFunction =
           dynamic_cast< CFunction* >(mCommon.KeyMap.get(Function));
@@ -4770,6 +4771,9 @@ void CCopasiXMLParser::KineticLawElement::start(const XML_Char *pszName,
                            mParser.getCurrentLineNumber());
             mCommon.pFunction = CCopasiRootContainer::getUndefinedFunction();
           }
+
+        mCommon.pReaction->setKineticLawUnitType(KineticLawUnitType);
+        mCommon.pReaction->setScalingCompartmentCN(ScalingCompartment);
 
         // This must be deferred till the end since we need to check for consistency
         // of the parameters first (Bug 832)

@@ -890,14 +890,12 @@ bool CMathObject::compileFlux(CMathContainer & container)
                                      container,
                                      !mIsInitialValue);
 
-  std::set< const CCompartment * > Compartments = pReaction->getChemEq().getCompartments();
-
-  if (pReaction->getEffectiveKineticLawUnitType() == CReaction::ConcentrationPerTime &&
-      Compartments.size() > 0)
+  if (pReaction->getScalingCompartment() != NULL &&
+      pReaction->getEffectiveKineticLawUnitType() == CReaction::ConcentrationPerTime)
     {
       CExpression Tmp(mpExpression->getObjectName(), &container);
 
-      std::string Infix = pointerToString(container.getMathObject((*Compartments.begin())->getValueReference())->getValuePointer()) + "*(" + mpExpression->getInfix() + ")";
+      std::string Infix = pointerToString(container.getMathObject(pReaction->getScalingCompartment()->getValueReference())->getValuePointer()) + "*(" + mpExpression->getInfix() + ")";
       success &= Tmp.setInfix(Infix);
       success &= Tmp.compile();
 
