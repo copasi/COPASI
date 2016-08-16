@@ -1181,7 +1181,8 @@ const std::string & CReactionInterface::getScalingCompartment() const
 
 std::string CReactionInterface::getDefaultScalingCompartment() const
 {
-  if (!mScalingCompartment.empty()) return mScalingCompartment;
+  if (!mScalingCompartment.empty() &&
+      mKineticLawUnitType != CReaction::Default) return mScalingCompartment;
 
   return mChemEqI.getDefaultCompartment();
 }

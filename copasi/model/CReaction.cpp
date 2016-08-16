@@ -840,14 +840,15 @@ const CCompartment * CReaction::getLargestCompartment() const
 
 void CReaction::setScalingFactor()
 {
+  ContainerList Containers;
+  Containers.push_back(getObjectDataModel());
+
+  mpScalingCompartment = dynamic_cast< const CCompartment * >(GetObjectFromCN(Containers, mScalingCompartmentCN));
+
   if (getEffectiveKineticLawUnitType() == CReaction::ConcentrationPerTime)
     {
-      ContainerList Containers;
-      Containers.push_back(getObjectDataModel());
-
-      mpScalingCompartment = dynamic_cast< const CCompartment * >(GetObjectFromCN(Containers, mScalingCompartmentCN));
-
-      if (mpScalingCompartment == NULL)
+      if (mpScalingCompartment == NULL ||
+          mKineticLawUnit == Default)
         {
           const CMetab *pMetab = NULL;
 
