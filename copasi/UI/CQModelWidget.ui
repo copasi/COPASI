@@ -126,6 +126,9 @@
    </item>
    <item row="2" column="2">
     <widget class="QToolButton" name="mpBtnUpdateAvogadro">
+     <property name="toolTip">
+      <string>Adjust Avogadro's # number to the most recent definition.</string>
+     </property>
      <property name="text">
       <string>...</string>
      </property>
