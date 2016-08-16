@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -113,7 +113,8 @@ bool CQEFMResultWidget::update(ListViews::ObjectType objectType,
   switch (objectType)
     {
       case ListViews::MODEL:
-
+      case ListViews::REACTION:
+      case ListViews::METABOLITE:
         switch (action)
           {
             case ListViews::ADD:
