@@ -46,7 +46,6 @@
 #include "sbml/Compartment.h"
 #include "sbml/SBMLImporter.h"
 
-C_FLOAT64 CReaction::mDefaultScalingFactor = 1.0;
 // static
 const char * CReaction::KineticLawUnitTypeName[] =
 {
@@ -68,12 +67,12 @@ CReaction::CReaction(const std::string & name,
   mpParticleFluxReference(NULL),
   mPropensity(0),
   mpPropensityReference(NULL),
-  mScalingFactor(&mDefaultScalingFactor),
-  mUnitScalingFactor(&mDefaultScalingFactor),
   mMetabKeyMap(),
   mParameters("Parameters", this),
   mFast(false),
-  mKineticLawUnit(CReaction::Default)
+  mKineticLawUnit(CReaction::Default),
+  mScalingCompartmentCN(),
+  mpScalingCompartment(NULL)
 {
   mKey = CCopasiRootContainer::getKeyFactory()->add(getObjectType(), this);
 
@@ -94,13 +93,13 @@ CReaction::CReaction(const CReaction & src,
   mpParticleFluxReference(NULL),
   mPropensity(src.mPropensity),
   mpPropensityReference(NULL),
-  mScalingFactor(src.mScalingFactor),
-  mUnitScalingFactor(src.mUnitScalingFactor),
   mMap(src.mMap),
   mMetabKeyMap(src.mMetabKeyMap),
   mParameters(src.mParameters, this),
   mFast(src.mFast),
-  mKineticLawUnit(src.mKineticLawUnit)
+  mKineticLawUnit(src.mKineticLawUnit),
+  mScalingCompartmentCN(),
+  mpScalingCompartment(NULL)
 {
   mKey = CCopasiRootContainer::getKeyFactory()->add(getObjectType(), this);
 
@@ -113,6 +112,7 @@ CReaction::CReaction(const CReaction & src,
     }
 
   setMiriamAnnotation(src.getMiriamAnnotation(), mKey, src.mKey);
+  setScalingCompartmentCN(src.mScalingCompartmentCN);
 }
 
 CReaction::~CReaction()
@@ -832,53 +832,6 @@ C_INT32 CReaction::loadOld(CReadConfig & configbuffer)
   return Fail;
 }
 
-const C_FLOAT64 & CReaction::calculateFlux()
-{
-  calculate();
-  return mFlux;
-}
-
-const C_FLOAT64 & CReaction::calculateParticleFlux()
-{
-  if (mpFunction != CCopasiRootContainer::getUndefinedFunction())
-    calculate();
-
-  return mParticleFlux;
-}
-
-void CReaction::calculate()
-{
-  mFlux = *mScalingFactor * mpFunction->calcValue(mMap.getPointers());
-  mParticleFlux = *mUnitScalingFactor * mFlux;
-  return;
-}
-
-C_FLOAT64 CReaction::calculatePartialDerivative(C_FLOAT64 * pXi,
-    const C_FLOAT64 & derivationFactor,
-    const C_FLOAT64 & resolution)
-{
-  if (mpFunction->dependsOn(pXi, mMap.getPointers()))
-    {
-      C_FLOAT64 store = *pXi;
-      C_FLOAT64 f1, f2;
-      C_FLOAT64 tmp =
-        (store < resolution) ? resolution * (1.0 + derivationFactor) : store; //TODO: why assymmetric?
-
-      *pXi = tmp * (1.0 + derivationFactor);
-      f1 = mpFunction->calcValue(mMap.getPointers());
-
-      *pXi = tmp * (1.0 - derivationFactor);
-      f2 = mpFunction->calcValue(mMap.getPointers());
-
-      *pXi = store;
-
-      return *mScalingFactor * (f1 - f2) / (2.0 * tmp * derivationFactor);
-      //this is d(flow)/d(concentration)
-    }
-  else
-    return 0.0;
-}
-
 size_t CReaction::getCompartmentNumber() const
 {return mChemEq.getCompartmentNumber();}
 
@@ -887,68 +840,39 @@ const CCompartment * CReaction::getLargestCompartment() const
 
 void CReaction::setScalingFactor()
 {
-  const CCompartment * pCompartment = NULL;
-
   if (getEffectiveKineticLawUnitType() == CReaction::ConcentrationPerTime)
     {
-      const CMetab *pMetab = NULL;
+      ContainerList Containers;
+      Containers.push_back(getObjectDataModel());
 
-      if (mChemEq.getSubstrates().size())
-        pMetab = mChemEq.getSubstrates()[0].getMetabolite();
-      else if (mChemEq.getProducts().size())
-        pMetab = mChemEq.getProducts()[0].getMetabolite();
+      mpScalingCompartment = dynamic_cast< const CCompartment * >(GetObjectFromCN(Containers, mScalingCompartmentCN));
 
-      if (pMetab != NULL)
-        pCompartment = pMetab->getCompartment();
-    }
-
-  if (pCompartment != NULL)
-    {
-      mScalingFactor = (C_FLOAT64 *) pCompartment->getValuePointer();
-
-      std::set< const CCopasiObject * > Dependencies = mpFluxReference->getDirectDependencies();
-
-      Dependencies.insert(pCompartment->getValueReference());
-
-      mpFluxReference->setDirectDependencies(Dependencies);
-      mpParticleFluxReference->setDirectDependencies(Dependencies);
-    }
-  else
-    mScalingFactor = &mDefaultScalingFactor;
-
-#ifdef XXXX
-
-  if (mpFunctionCompartment)
-    {
-      // should propably check if the compartment appears in the chemical equation
-      mScalingFactor = & mpFunctionCompartment->getVolume();
-    }
-  else
-    {
-      try
-        {mScalingFactor = & mChemEq.CheckAndGetFunctionCompartment()->getVolume();}
-      catch (CCopasiException Exc)
+      if (mpScalingCompartment == NULL)
         {
-          size_t nr = Exc.getMessage().getNumber();
+          const CMetab *pMetab = NULL;
 
-          if ((MCChemEq + 2 == nr) || (MCChemEq + 3 == nr))
-            CCopasiMessage(CCopasiMessage::ERROR, MCReaction + 2, getObjectName().c_str());
+          if (mChemEq.getSubstrates().size())
+            pMetab = mChemEq.getSubstrates()[0].getMetabolite();
+          else if (mChemEq.getProducts().size())
+            pMetab = mChemEq.getProducts()[0].getMetabolite();
 
-          if (MCChemEq + 1 == nr)
-            CCopasiMessage(CCopasiMessage::ERROR, MCReaction + 3, getObjectName().c_str());
+          if (pMetab != NULL)
+            {
+              mpScalingCompartment = pMetab->getCompartment();
+              mScalingCompartmentCN = mpScalingCompartment->getCN();
+            }
+        }
 
-          throw;
+      if (mpScalingCompartment != NULL)
+        {
+          std::set< const CCopasiObject * > Dependencies = mpFluxReference->getDirectDependencies();
+
+          Dependencies.insert(mpScalingCompartment->getValueReference());
+
+          mpFluxReference->setDirectDependencies(Dependencies);
+          mpParticleFluxReference->setDirectDependencies(Dependencies);
         }
     }
-
-#endif // XXXX
-
-  CModel * pModel = (CModel *) getObjectAncestor("Model");
-
-  if (pModel)
-    mUnitScalingFactor = & pModel->getQuantity2NumberFactor();
-  else
-    mUnitScalingFactor = & mDefaultScalingFactor;
 }
 
 void CReaction::initObjects()
@@ -1048,16 +972,6 @@ std::ostream & operator<<(std::ostream &os, const CReaction & d)
 
   //os << "   mParameterDescription: " << std::endl << d.mParameterDescription;
   os << "   mFlux: " << d.mFlux << std::endl;
-
-  if (d.mScalingFactor)
-    os << "   *mScalingFactor " << *(d.mScalingFactor) << std::endl;
-  else
-    os << "   mScalingFactor == NULL " << std::endl;
-
-  if (d.mUnitScalingFactor)
-    os << "   *mUnitScalingFactor " << *(d.mUnitScalingFactor) << std::endl;
-  else
-    os << "   mUnitScalingFactor == NULL " << std::endl;
 
   os << "   parameter group:" << std::endl;
   os << d.mParameters;
@@ -1771,4 +1685,24 @@ std::string CReaction::getKineticLawUnit() const
     }
 
   return pModel->getConcentrationRateUnitsDisplayString();
+}
+
+void CReaction::setScalingCompartmentCN(const std::string & compartmentCN)
+{
+  mScalingCompartmentCN = compartmentCN;
+  ContainerList Containers;
+  Containers.push_back(getObjectDataModel());
+
+  mpScalingCompartment = dynamic_cast< const CCompartment * >(GetObjectFromCN(Containers, mScalingCompartmentCN));
+}
+
+void CReaction::setScalingCompartment(const CCompartment * pCompartment)
+{
+  mpScalingCompartment = pCompartment;
+  mScalingCompartmentCN = (mpScalingCompartment != NULL) ? mpScalingCompartment->getCN() : std::string();
+}
+
+const CCompartment * CReaction::getScalingCompartment() const
+{
+  return mpScalingCompartment;
 }

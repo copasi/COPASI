@@ -187,6 +187,22 @@ bool ReactionsWidget1::saveToReaction()
       changed = true;
     }
 
+  if ((reac->getScalingCompartment() != NULL &&
+       reac->getScalingCompartment()->getObjectName() != mpRi->getScalingCompartment()) ||
+      (reac->getScalingCompartment() == NULL &&
+       !mpRi->getScalingCompartment().empty()))
+    {
+      mpUndoStack->push(new ReactionChangeCommand(
+                          CCopasiUndoCommand::REACTION_SCALING_COMPARTMENT_CHANGE,
+                          FROM_UTF8(reac->getScalingCompartment() != NULL ? reac->getScalingCompartment()->getObjectName() : ""),
+                          FROM_UTF8(mpRi->getScalingCompartment()),
+                          this,
+                          reac
+                        ));
+
+      changed = true;
+    }
+
   mIgnoreUpdates = false;
 
   if (changed)
@@ -412,6 +428,44 @@ void ReactionsWidget1::FillWidgetFromRI()
   ComboBox1->clear();
   ComboBox1->insertItems(0, comboEntries);
 
+  // Initialize scaling compartment combobox
+  QMap<QString, QString> Compartments;
+
+  const CModel * pModel = static_cast< const CModel * >(mpObject->getObjectAncestor("Model"));
+
+  if (pModel != NULL)
+    {
+      CCopasiVector< CCompartment >::const_iterator it = pModel->getCompartments().begin();
+      CCopasiVector< CCompartment >::const_iterator end = pModel->getCompartments().end();
+
+      for (; it != end; ++it)
+        {
+          QString Name = FROM_UTF8(it->getObjectName());
+          Compartments.insertMulti(Name.toLower(), Name);
+        }
+    }
+
+  std::set< std::string > ReactionCompartments = mpRi->getChemEqInterface().getCompartments();
+  std::set< std::string >::const_iterator itReaComp = ReactionCompartments.begin();
+  std::set< std::string >::const_iterator endReaComp = ReactionCompartments.end();
+
+  for (; itReaComp != endReaComp; ++itReaComp)
+    {
+      QString Name = FROM_UTF8(*itReaComp);
+      QList< QString > Values = Compartments.values(Name.toLower());
+
+      if (!Values.contains(Name))
+        {
+          Compartments.insertMulti(Name.toLower(), Name);
+        }
+    }
+
+  mpComboBoxCompartment->blockSignals(true);
+  mpComboBoxCompartment->clear();
+  mpComboBoxCompartment->addItems(Compartments.values());
+  mpComboBoxCompartment->setCurrentIndex(mpComboBoxCompartment->findText(FROM_UTF8(mpRi->getDefaultScalingCompartment())));
+  mpComboBoxCompartment->blockSignals(false);
+
   // if there is a current function the parameter table is initialized
   if (mpRi->getFunctionName() != "")
     {
@@ -436,8 +490,8 @@ void ReactionsWidget1::FillWidgetFromRI()
   mpAmountUnit->setChecked(mpRi->getEffectiveKineticLawUnitType() == CReaction::AmountPerTime);
 
   slotDefaultUnitChecked(mpDefaultUnit->isChecked());
-  mpConcentrationUnit->setText(FROM_UTF8(mpRi->getConcentrationUnit()));
-  mpAmountUnit->setText(FROM_UTF8(mpRi->getAmountUnit()));
+  mpConcentrationUnit->setText(FROM_UTF8(mpRi->getConcentrationRateUnit()));
+  mpAmountUnit->setText(FROM_UTF8(mpRi->getAmountRateUnit()));
 }
 
 void ReactionsWidget1::slotTableChanged(int index, int sub, QString newValue)
@@ -599,6 +653,7 @@ void ReactionsWidget1::slotDefaultUnitChecked(const bool & checked)
 {
   mpConcentrationUnit->setEnabled(!checked);
   mpAmountUnit->setEnabled(!checked);
+  mpComboBoxCompartment->setEnabled(!checked && mpConcentrationUnit->isChecked());
 
   if (checked)
     {
@@ -615,6 +670,7 @@ void ReactionsWidget1::slotConcentrationUnitChecked(const bool & checked)
 {
   mpConcentrationUnit->setChecked(checked);
   mpAmountUnit->setChecked(!checked);
+  mpComboBoxCompartment->setEnabled(checked && !mpDefaultUnit->isChecked());
 
   if (mpRi->getKineticLawUnitType() != CReaction::Default)
     {
@@ -626,11 +682,18 @@ void ReactionsWidget1::slotAmountUnitChecked(const bool & checked)
 {
   mpConcentrationUnit->setChecked(!checked);
   mpAmountUnit->setChecked(checked);
+  mpComboBoxCompartment->setEnabled(!checked && !mpDefaultUnit->isChecked());
 
   if (mpRi->getKineticLawUnitType() != CReaction::Default)
     {
       mpRi->setKineticLawUnitType(checked ? CReaction::AmountPerTime : CReaction::ConcentrationPerTime);
     }
+}
+
+// virtual
+void ReactionsWidget1::slotCompartmentSelectionChanged(const QString & compartment)
+{
+  mpRi->setScalingCompartment(TO_UTF8(compartment));
 }
 
 bool ReactionsWidget1::update(ListViews::ObjectType objectType,
@@ -878,6 +941,11 @@ bool ReactionsWidget1::changeReaction(
 
       case CCopasiUndoCommand::REACTION_UNIT_CHANGE:
         mpRi->setKineticLawUnitType(toEnum(newValue.toByteArray().data(), CReaction::KineticLawUnitTypeName, CReaction::Default));
+        mpRi->writeBackToReaction(pReaction);
+        break;
+
+      case CCopasiUndoCommand::REACTION_SCALING_COMPARTMENT_CHANGE:
+        mpRi->setScalingCompartment(TO_UTF8(newValue.toString()));
         mpRi->writeBackToReaction(pReaction);
         break;
 

@@ -153,6 +153,7 @@ public:
     REACTION_FAST_CHANGE, // change of reaction fast flag
     REACTION_FUNCTION_CHANGE, // change of reaction kinetics
     REACTION_UNIT_CHANGE, // change of the units of the reaction kinetics
+    REACTION_SCALING_COMPARTMENT_CHANGE, // change of the scaling compartment for reaction kinetics
     REACTION_LOCAL_PARAMETER_VALUE_CHANGE, // change of a local parameter value
     REACTION_MAPPING_VOLUME_CHANGE, // mapping of volume in kinetic law changed
     REACTION_MAPPING_SPECIES_CHANGE, // mapping of metabolite changed

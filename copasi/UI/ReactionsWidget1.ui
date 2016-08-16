@@ -21,8 +21,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>354</width>
-    <height>235</height>
+    <width>432</width>
+    <height>238</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -302,13 +302,6 @@
       </widget>
      </item>
      <item>
-      <widget class="QRadioButton" name="mpConcentrationUnit">
-       <property name="text">
-        <string>Concentration</string>
-       </property>
-      </widget>
-     </item>
-     <item>
       <widget class="QRadioButton" name="mpAmountUnit">
        <property name="text">
         <string>Amount</string>
@@ -316,17 +309,21 @@
       </widget>
      </item>
      <item>
-      <spacer name="horizontalSpacer_2">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
+      <widget class="QRadioButton" name="mpConcentrationUnit">
+       <property name="text">
+        <string>Concentration</string>
        </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>40</width>
-         <height>20</height>
-        </size>
+      </widget>
+     </item>
+     <item>
+      <widget class="QComboBox" name="mpComboBoxCompartment">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
        </property>
-      </spacer>
+      </widget>
      </item>
     </layout>
    </item>
@@ -359,7 +356,6 @@
   <tabstop>newKinetics</tabstop>
   <tabstop>editKinetics</tabstop>
   <tabstop>mpDefaultUnit</tabstop>
-  <tabstop>mpConcentrationUnit</tabstop>
   <tabstop>mpAmountUnit</tabstop>
   <tabstop>table</tabstop>
   <tabstop>LineEdit3</tabstop>
@@ -499,6 +495,22 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>mpComboBoxCompartment</sender>
+   <signal>currentIndexChanged(QString)</signal>
+   <receiver>ReactionsWidget1</receiver>
+   <slot>slotCompartmentSelectionChanged(QString)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>387</x>
+     <y>106</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>215</x>
+     <y>118</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>slotCheckBoxClicked()</slot>
@@ -509,5 +521,6 @@
   <slot>slotDefaultUnitChecked(bool)</slot>
   <slot>slotConcentrationUnitChecked(bool)</slot>
   <slot>slotAmountUnitChecked(bool)</slot>
+  <slot>slotCompartmentSelectionChanged(QString)</slot>
  </slots>
 </ui>
