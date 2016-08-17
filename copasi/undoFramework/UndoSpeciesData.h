@@ -25,10 +25,6 @@ class CMetab;
 class UndoSpeciesData: public UndoData
 {
 public:
-  UndoSpeciesData(const std::string &key = "",
-                  const std::string &name = "",
-                  const std::string &type = "");
-
   UndoSpeciesData(const CMetab* metab, bool trackDependencies = true);
 
   virtual ~UndoSpeciesData();
@@ -59,7 +55,6 @@ public:
   double getINumber() const;
   void setINumber(double iNumber);
 
-
   bool getCreatedCompartment() const;
   void setCreatedCompartment(bool createdCompartment);
 
@@ -70,7 +65,6 @@ public:
    *          models list of metabolites will be used, otherwise NULL is returned.
    */
   virtual CCopasiObject * getObject(CModel* pModel);
-
 
 private:
 
@@ -110,7 +104,6 @@ private:
    * @the index of this metabolite in the models list of metabolites mIndex
    */
   std::size_t mIndex;
-
 };
 
 #endif /* UNDOSPECIEDATA_H_ */
