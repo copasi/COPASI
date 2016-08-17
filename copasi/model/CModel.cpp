@@ -1134,19 +1134,26 @@ const C_FLOAT64 & CModel::getTime() const
 /**
  *        Returns the index of the metab
  */
-size_t CModel::findMetabByName(const std::string & name) const
+CMetab * CModel::findMetabByName(const std::string & name) const
 {
-  size_t i, imax = mMetabolites.size();
-  CCopasiVector< CMetab >::const_iterator Target = mMetabolites.begin();
+  range Range = mMetabolites.getObjects().equal_range(unQuote(name));
+  CMetab * pSpecies = NULL;
 
-  std::string Name = unQuote(name);
+  for (; Range.first != Range.second; ++Range.first)
+    if ((pSpecies = dynamic_cast< CMetab * >(Range.first->second)) != NULL)
+      {
+        return pSpecies;
+      }
 
-  for (i = 0; i < imax; i++, Target++)
-    if (Target &&
-        (Target->getObjectName() == name ||
-         Target->getObjectName() == Name)) return i;
+  Range = mMetabolites.getObjects().equal_range(name);
 
-  return C_INVALID_INDEX;
+  for (; Range.first != Range.second; ++Range.first)
+    if ((pSpecies = dynamic_cast< CMetab * >(Range.first->second)) != NULL)
+      {
+        return pSpecies;
+      }
+
+  return pSpecies;
 }
 
 /**

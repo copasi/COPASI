@@ -593,24 +593,26 @@ void CQSpecieDM::deleteSpecieRow(UndoSpeciesData *pSpecieData)
 
   switchToWidget(CCopasiUndoCommand::SPECIES);
 
-  size_t index = pModel->findMetabByName(pSpecieData->getName());
+  CMetab * pSpecies = pModel->findMetabByName(pSpecieData->getName());
 
-  if (index == C_INVALID_INDEX) return;
+  if (pSpecies == NULL) return;
 
-  removeRow((int) index);
+  size_t Index = pModel->getMetabolites().getIndex(pSpecies);
+
+  removeRow((int) Index);
 
   if (!pSpecieData->getCreatedCompartment()) return;
 
-  index = pModel->getCompartments().getIndex(pSpecieData->getCompartment());
+  Index = pModel->getCompartments().getIndex(pSpecieData->getCompartment());
 
-  if (index == C_INVALID_INDEX) return;
+  if (Index == C_INVALID_INDEX) return;
 
-  CCompartment* pComp = &pModel->getCompartments()[index];
+  CCompartment* pComp = &pModel->getCompartments()[Index];
 
   if (pComp == NULL) return;
 
   std::string key = pComp->getKey();
-  pModel->removeCompartment(index);
+  pModel->removeCompartment(Index);
   emit notifyGUI(ListViews::COMPARTMENT, ListViews::DELETE, key);
 }
 

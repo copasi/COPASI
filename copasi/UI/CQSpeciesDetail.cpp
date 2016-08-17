@@ -725,9 +725,7 @@ void CQSpeciesDetail::deleteSpecies(UndoSpeciesData *pSData)
 
   switchToWidget(CCopasiUndoCommand::SPECIES);
 
-  size_t index = pModel->findMetabByName(pSData->getName());
-  CMetab *pSpecies = &pModel->getMetabolites()[index];
-  std::string key = pSpecies->getKey();
+  std::string key = pModel->findMetabByName(pSData->getName())->getKey();
   pModel->removeMetabolite(key);
 
 #undef DELETE
@@ -805,11 +803,10 @@ void CQSpeciesDetail::speciesTypeChanged(UndoSpeciesData *pSData, int type)
   GET_MODEL_OR_RETURN(pModel);
 
   //find the species of interest and switch to its widget
-  size_t index = pModel->findMetabByName(pSData->getName());
+  CMetab *pSpecie = pModel->findMetabByName(pSData->getName());
 
-  if (index != C_INVALID_INDEX)
+  if (pSpecie != NULL)
     {
-      CMetab *pSpecie = &pModel->getMetabolites()[index];
       std::string key = pSpecie->getKey();
       mpListView->switchToOtherWidget(C_INVALID_INDEX, key);
     }
@@ -860,11 +857,10 @@ void CQSpeciesDetail::speciesInitialValueLostFocus(UndoSpeciesData *pSData)
   GET_MODEL_OR_RETURN(pModel);
 
   //find the species of interest and switch to its widget
-  size_t index = pModel->findMetabByName(pSData->getName());
+  CMetab *pSpecie = pModel->findMetabByName(pSData->getName());
 
-  if (index != C_INVALID_INDEX)
+  if (pSpecie != NULL)
     {
-      CMetab *pSpecie = &pModel->getMetabolites()[index];
       std::string key = pSpecie->getKey();
       mpListView->switchToOtherWidget(C_INVALID_INDEX, key);
     }

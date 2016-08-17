@@ -389,11 +389,11 @@ public:
   const CCopasiVector < CMoiety > & getMoieties() const;
 
   /**
-   * Returns the index of the metab
-   * @param const std::string & Target
-   * @return index
+   * Returns the pointer to the species with the given name
+   * @param const std::string & name
+   * @return CMetab * pSpecies
    */
-  size_t findMetabByName(const std::string & Target) const;
+  CMetab * findMetabByName(const std::string & name) const;
 
   /**
    * Returns the index of the moiety
