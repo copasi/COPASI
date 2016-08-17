@@ -428,7 +428,6 @@ bool CQSpecieDM::specieDataChange(
   const QVariant &value,
   int column)
 {
-
   switchToWidget(CCopasiUndoCommand::SPECIES);
 
   GET_MODEL_OR(pModel, return false);
@@ -609,7 +608,7 @@ void CQSpecieDM::deleteSpecieRow(UndoSpeciesData *pSpecieData)
 
   switchToWidget(CCopasiUndoCommand::SPECIES);
 
-  CMetab * pSpecies = pModel->findMetabByName(pSpecieData->getName());
+  CMetab * pSpecies = dynamic_cast< CMetab * >(pSpecieData->getObject(pModel));
 
   if (pSpecies == NULL) return;
 
