@@ -717,7 +717,7 @@ bool CReaction::loadOneRole(CReadConfig & configbuffer,
           configbuffer.getVariable(name, "C_INT32", &index);
 
           metabName = (*pDataModel->pOldMetabolites)[index].getObjectName();
-          addParameterMapping(parName, Metabolites[pModel->findMetabByName(metabName)].getKey());
+          addParameterMapping(parName, pModel->findMetabByName(metabName)->getKey());
         }
     }
   else //no vector
@@ -752,12 +752,12 @@ bool CReaction::loadOneRole(CReadConfig & configbuffer,
             }
 
           parName = pParameter->getObjectName();
-          setParameterMapping(parName, Metabolites[pModel->findMetabByName(metabName)].getKey());
+          setParameterMapping(parName, pModel->findMetabByName(metabName)->getKey());
 
           // in the old files the chemical equation does not contain
           // information about modifiers. This has to be extracted from here.
           if (role == CFunctionParameter::MODIFIER)
-            mChemEq.addMetabolite(Metabolites[pModel->findMetabByName(metabName)].getKey(),
+            mChemEq.addMetabolite(pModel->findMetabByName(metabName)->getKey(),
                                   1, CChemEq::MODIFIER);
         }
 

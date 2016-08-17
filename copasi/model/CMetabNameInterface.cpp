@@ -120,53 +120,41 @@ CMetab * CMetabNameInterface::getMetabolite(const CModel* model,
       return NULL;
     }
 
-  Index = model->findMetabByName(metabolite);
-
-  if (Index != C_INVALID_INDEX)
-    return const_cast< CMetab * >(&model->getMetabolites()[Index]);
-
-  return NULL;
+  return model->findMetabByName(metabolite);
 }
 
 bool CMetabNameInterface::isUnique(const CModel* model, const std::string & name)
 {
-  bool unique = true;
-  size_t i;
-  const CCopasiVector< CMetab > & metabs = model->getMetabolites();
-  std::string metabName;
+  CCopasiContainer::range Range = model->getMetabolites().getObjects().equal_range(name);
+  CMetab * pSpecies = NULL;
+  bool Found = false;
 
-  for (i = 0; i < metabs.size(); i++)
-    {
-      metabName = metabs[i].getObjectName();
+  for (; Range.first != Range.second; ++Range.first)
+    if ((pSpecies = dynamic_cast< CMetab * >(Range.first->second)) != NULL)
+      {
+        if (Found) return false;
 
-      if (metabName == name)
-        {
-          if (unique)
-            unique = false;
-          else
-            return false; //return true
-        }
-    }
+        Found = true;
+      }
 
-  return true; //return unique;
+  return true;
 }
 
 bool CMetabNameInterface::doesExist(const CModel* model,
                                     const std::string & metabolite,
                                     const std::string & compartment)
 {
-  if (compartment != "")
-    {
-      size_t Index = model->getCompartments().getIndex(compartment);
+  CCopasiContainer::range Range = model->getMetabolites().getObjects().equal_range(metabolite);
+  CMetab * pSpecies = NULL;
 
-      if (Index == C_INVALID_INDEX) return false;
+  for (; Range.first != Range.second; ++Range.first)
+    if ((pSpecies = dynamic_cast< CMetab * >(Range.first->second)) != NULL)
+      {
+        if (compartment.empty() ||
+            pSpecies->getCompartment()->getObjectName() == compartment) return true;
+      }
 
-      Index = model->getCompartments()[Index].getMetabolites().getIndex(metabolite);
-
-      return (Index != C_INVALID_INDEX);
-    }
-  else
-    return (model->findMetabByName(metabolite) != C_INVALID_INDEX);
+  return false;
 }
 
 // static
