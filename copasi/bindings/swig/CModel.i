@@ -248,19 +248,7 @@ typedef std::vector<CCopasiObject*> ObjectStdVector;
    
    CMetab* getMetabolite(const std::string& name)
    {  
-   
-     try
-     {   
-       unsigned C_INT32 index = (unsigned C_INT32)$self->findMetabByName(name);
-       if (index >= self->getMetabolites().size())
-         return NULL;
-
-	    return &self->getMetabolites()[index];
-     }
-     catch (...)
-     {
-       return NULL;
-     }
+     return $self->findMetabByName(name);
    }
    
    CModelValue* getModelValue(unsigned C_INT32 index)
