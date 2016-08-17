@@ -725,7 +725,11 @@ void CQSpeciesDetail::deleteSpecies(UndoSpeciesData *pSData)
 
   switchToWidget(CCopasiUndoCommand::SPECIES);
 
-  std::string key = pModel->findMetabByName(pSData->getName())->getKey();
+  CMetab * pSpecies = dynamic_cast< CMetab * >(pSData->getObject(pModel));
+
+  if (pSpecies == NULL) return;
+
+  std::string key = pSpecies->getKey();
   pModel->removeMetabolite(key);
 
 #undef DELETE
