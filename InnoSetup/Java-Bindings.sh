@@ -1,5 +1,5 @@
 #!/bin/bash
-# Copyright (C) 2015 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2015 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and The University 
 # of Manchester. 
 # All rights reserved. 
@@ -32,7 +32,7 @@ chmod 644 copasi.jar
 # Copy copasi_gui.jar
 echo cp "${BUILD_ROOT}"/copasi/bindings/java/copasi-gui.jar  .
 cp "${BUILD_ROOT}"/copasi/bindings/java/copasi-gui.jar .
-chmod 644 copasi_gui.jar
+chmod 644 copasi-gui.jar
 
 # Copy CopasiJava.dll
 echo "${BUILD_ROOT}"/cp copasi/bindings/java/CopasiJava.dll  .
