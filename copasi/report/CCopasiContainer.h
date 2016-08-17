@@ -44,6 +44,7 @@ public:
   static const CObjectInterface::ContainerList EmptyList;
 
   typedef std::multimap<std::string, CCopasiObject * > objectMap;
+  typedef std::pair<objectMap::const_iterator, objectMap::const_iterator> range;
 
 protected:
   objectMap mObjects;
