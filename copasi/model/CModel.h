@@ -92,6 +92,12 @@ public:
   virtual bool setObjectParent(const CCopasiContainer * pParent);
 
   /**
+   * Retrieve the units of the object.
+   * @return std::string units
+   */
+  virtual const std::string getUnits() const;
+
+  /**
    * Retrieve the units of the child object.
    * @return std::string units
    */

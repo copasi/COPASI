@@ -115,29 +115,25 @@ CMetab::~CMetab()
 }
 
 // virtual
+const std::string CMetab::getUnits() const
+{
+  return "#";
+}
+
+// virtual
 std::string CMetab::getChildObjectUnits(const CCopasiObject * pObject) const
 {
-  if (pObject == mpRateReference)
-    {
-      return CModelEntity::getChildObjectUnits(pObject);
-    }
-
-  if (pObject == mpIValueReference ||
-      pObject == mpValueReference)
-    {
-      return mpModel->getQuantityUnit();
-    }
-  else if (pObject == mpTTReference)
+  if (pObject == mpTTReference)
     {
       return mpModel->getTimeUnit();
     }
   else if (pObject == mpIConcReference ||
            pObject == mpConcReference)
     {
-      std::string QunatityUnit = (mpModel != NULL) ? mpModel->getQuantityUnit() : "?";
+      std::string QuantityUnit = (mpModel != NULL) ? mpModel->getQuantityUnit() : "?";
       std::string CompartmentUnit = (mpCompartment != NULL) ? mpCompartment->getInitialValueReference()->getUnits() : "?";
 
-      return  QunatityUnit + "/(" + CompartmentUnit + ")";
+      return  QuantityUnit + "/(" + CompartmentUnit + ")";
     }
   else if (pObject == mpConcRateReference)
     {
@@ -147,7 +143,7 @@ std::string CMetab::getChildObjectUnits(const CCopasiObject * pObject) const
       return  ConcentrationUnit + "/(" + TimeUnit + ")";
     }
 
-  return "?";
+  return CModelEntity::getChildObjectUnits(pObject);
 }
 
 void CMetab::cleanup() {}
@@ -166,8 +162,6 @@ const C_FLOAT64 & CMetab::getConcentration() const {return mConc;}
 const C_FLOAT64 & CMetab::getInitialConcentration() const {return mIConc;}
 
 const CCompartment * CMetab::getCompartment() const {return mpCompartment;}
-
-const CModel * CMetab::getModel() const {return mpModel;}
 
 void CMetab::setTransitionTime(const C_FLOAT64 & transitionTime)
 {mTT = transitionTime;}

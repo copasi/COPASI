@@ -465,9 +465,13 @@ void CQModelValue::slotUnitChanged()
   CUnit Unit;
   Unit.setExpression(mpModelValue->getUnitExpression());
 
-  mpLblInitialValue->setText(FROM_UTF8("Initial Value [" + CUnit::prettyPrint(mpModelValue->getInitialValueReference()->getUnits())) + "]");
-  mpLblValue->setText(FROM_UTF8("Value [" + CUnit::prettyPrint(mpModelValue->getValueReference()->getUnits())) + "]");
-  mpLblRate->setText(FROM_UTF8("Rate [" + CUnit::prettyPrint(mpModelValue->getRateReference()->getUnits())) + "]");
+  // Update the labels to reflect the model units
+  QString ValueUnits = " [" + FROM_UTF8(CUnit::prettyPrint(mpModelValue->getValueReference()->getUnits())) + "]";
+  QString RateUnits = " [" + FROM_UTF8(CUnit::prettyPrint(CUnit::prettyPrint(mpModelValue->getRateReference()->getUnits()))) + "]";
+
+  mpLblInitialValue->setText("Initial Value" + ValueUnits);
+  mpLblValue->setText("Value" + ValueUnits);
+  mpLblRate->setText("Rate" + RateUnits);
 
   mpModelValue->setUnitExpression(OldUnit);
 }

@@ -197,17 +197,6 @@ bool CModel::setObjectParent(const CCopasiContainer * pParent)
 // virtual
 std::string CModel::getChildObjectUnits(const CCopasiObject * pObject) const
 {
-  if (pObject == mpRateReference)
-    {
-      return CModelEntity::getChildObjectUnits(pObject);
-    }
-
-  if (pObject == mpIValueReference ||
-      pObject == mpValueReference)
-    {
-      return mTimeUnit;
-    }
-
   if (pObject == mpAvogadroReference)
     {
       return "1";
@@ -218,7 +207,7 @@ std::string CModel::getChildObjectUnits(const CCopasiObject * pObject) const
       return "#/(" + mQuantityUnit + ")";
     }
 
-  return "?";
+  return CModelEntity::getChildObjectUnits(pObject);
 }
 
 C_INT32 CModel::load(CReadConfig & configBuffer)
@@ -1347,6 +1336,12 @@ void CModel::stateToIntialState()
   mpMathContainer->setInitialState(mpMathContainer->getState(false));
   mpMathContainer->updateInitialValues(CModelParameter::ParticleNumbers);
   mpMathContainer->pushInitialState();
+}
+
+// virtual
+const std::string CModel::getUnits() const
+{
+  return mTimeUnit;
 }
 
 bool CModel::setVolumeUnit(const std::string & name)

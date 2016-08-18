@@ -68,18 +68,16 @@ CCompartment::~CCompartment()
 }
 
 // virtual
-std::string CCompartment::getChildObjectUnits(const CCopasiObject * pObject) const
+const std::string CCompartment::getUnits() const
 {
-  if (pObject == mpRateReference)
-    {
-      return CModelEntity::getChildObjectUnits(pObject);
-    }
-
-  if (pObject == mpValueReference ||
-      pObject == mpIValueReference)
+  if (mpModel != NULL)
     {
       switch (mDimensionality)
         {
+          case 0:
+            return "1";
+            break;
+
           case 1:
             return mpModel->getLengthUnit();
             break;
@@ -90,10 +88,6 @@ std::string CCompartment::getChildObjectUnits(const CCopasiObject * pObject) con
 
           case 3:
             return mpModel->getVolumeUnit();
-            break;
-
-          default:
-            return "?";
             break;
         }
     }
@@ -185,24 +179,6 @@ bool CCompartment::setDimensionality(unsigned C_INT32 dim)
 unsigned C_INT32 CCompartment::getDimensionality() const
 {
   return mDimensionality;
-}
-
-std::string CCompartment::getUnitString() const
-{
-  if (mpModel == NULL ||
-      mDimensionality > 3 ||
-      mDimensionality < 1)
-    return "";
-
-  // Default; assumes mDimensionality == 1
-  std::string unitString = mpModel->getLengthUnit();
-
-  if (mDimensionality == 2)
-    unitString += "\xc2\xb2"; // Add superscript 2
-  else if (mDimensionality == 3)
-    unitString += "\xc2\xb3"; // Add superscript 3
-
-  return unitString;
 }
 
 void CCompartment::initObjects()

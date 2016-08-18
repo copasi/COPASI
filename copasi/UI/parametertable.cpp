@@ -174,12 +174,6 @@ void ParameterTable::updateTable(const CReactionInterface & ri, const CReaction 
   // Determine the units of the variables depending on the type
   std::vector < CUnit > Variables;
 
-  CUnit Time(pModel->getTimeUnit());
-  CUnit Volume(pModel->getVolumeUnit());
-  CUnit Area(pModel->getAreaUnit());
-  CUnit Length(pModel->getLengthUnit());
-  CUnit Quantity(pModel->getQuantityUnit());
-
   size_t i, imax = ri.size();
   size_t j, jmax;
 
@@ -191,16 +185,21 @@ void ParameterTable::updateTable(const CReactionInterface & ri, const CReaction 
           case CFunctionParameter::PRODUCT:
           case CFunctionParameter::MODIFIER:
 
-            // These depend on the dimensions of the compartment
-            // TODO CRITICAL This depends on the compartment dimensions of the species
             if (ri.isVector(i))
-              for (j = 0, jmax = ri.getMappings(i).size(); j < jmax; ++j)
-                {
-                  Variables.push_back(Quantity * Volume.exponentiate(-1.0)); // This is just to compare the results
-                }
+              {
+                std::vector< std::string > Units = ri.getUnitVector(i);
+
+                std::vector< std::string >::const_iterator it = Units.begin();
+                std::vector< std::string >::const_iterator end = Units.end();
+
+                for (; it != end; ++it)
+                  {
+                    Variables.push_back(*it);
+                  }
+              }
             else
               {
-                Variables.push_back(Quantity * Volume.exponentiate(-1.0)); // This is just to compare the results
+                Variables.push_back(ri.getUnit(i)); // This is just to compare the results
               }
 
             break;
@@ -208,16 +207,9 @@ void ParameterTable::updateTable(const CReactionInterface & ri, const CReaction 
           case CFunctionParameter::PARAMETER:
           case CFunctionParameter::VARIABLE:
           case CFunctionParameter::TEMPORARY:
-            Variables.push_back(CUnit());
-            break;
-
           case CFunctionParameter::VOLUME:
-            // TODO CRITICAL These depend on the dimensions of the compartment
-            Variables.push_back(Volume);
-            break;
-
           case CFunctionParameter::TIME:
-            Variables.push_back(Time);
+            Variables.push_back(ri.getUnit(i));
             break;
         }
     }

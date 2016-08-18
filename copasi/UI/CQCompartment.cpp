@@ -52,13 +52,18 @@ CQCompartment::CQCompartment(QWidget* parent, const char* name):
   mpCompartment(NULL),
   mChanged(false),
   mExpressionValid(true),
-  mInitialExpressionValid(true)
+  mInitialExpressionValid(true),
+  mValueUnits("?"),
+  mRateUnits("?")
+
 {
   setupUi(this);
 
+  mpComboBoxType->blockSignals(true);
   mpComboBoxType->insertItem(mpComboBoxType->count(), FROM_UTF8(CModelEntity::StatusName[CModelEntity::FIXED]));
   mpComboBoxType->insertItem(mpComboBoxType->count(), FROM_UTF8(CModelEntity::StatusName[CModelEntity::ASSIGNMENT]));
   mpComboBoxType->insertItem(mpComboBoxType->count(), FROM_UTF8(CModelEntity::StatusName[CModelEntity::ODE]));
+  mpComboBoxType->blockSignals(false);
 
   mItemToType.push_back(CModelEntity::FIXED);
   mItemToType.push_back(CModelEntity::ASSIGNMENT);
@@ -203,12 +208,7 @@ void CQCompartment::slotBtnDelete()
  */
 void CQCompartment::slotTypeChanged(int type)
 {
-  QString Units;
-
-  const CModel * pModel = NULL;
-
-  if (mpCompartment != NULL)
-    pModel = dynamic_cast<const CModel *>(mpCompartment->getObjectAncestor("Model"));
+  if (mpCompartment == NULL) return;
 
   switch ((CModelEntity::Status) mItemToType[type])
     {
@@ -221,9 +221,7 @@ void CQCompartment::slotTypeChanged(int type)
         break;
 
       case CModelEntity::ASSIGNMENT:
-        Units = " [" + ((pModel != NULL) ? FROM_UTF8(CUnit::prettyPrint(pModel->getVolumeUnit())) : "?") + "]";
-
-        mpLblExpression->setText("Expression" + Units);
+        mpLblExpression->setText("Expression" + mValueUnits);
 
         mpLblExpression->show();
         mpExpressionEMW->show();
@@ -235,9 +233,7 @@ void CQCompartment::slotTypeChanged(int type)
         break;
 
       case CModelEntity::ODE:
-        Units = " [" + ((pModel != NULL) ? FROM_UTF8(CUnit::prettyPrint(pModel->getVolumeUnit() + "/(" + pModel->getTimeUnit() + ")")) : "?") + "]";
-
-        mpLblExpression->setText("Expression" + Units);
+        mpLblExpression->setText("Expression" + mRateUnits);
 
         mpLblExpression->show();
         mpExpressionEMW->show();
@@ -343,28 +339,9 @@ void CQCompartment::load()
 {
   if (mpCompartment == NULL) return;
 
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-
-  const CModel * pModel = NULL;
-
-  if (mpCompartment != NULL)
-    pModel = dynamic_cast<const CModel *>(mpCompartment->getObjectAncestor("Model"));
-
-  // Update the labels to reflect the model units
-  std::string ValueUnit = (pModel != NULL) ? CUnit::prettyPrint(pModel->getVolumeUnit()) : "?";
-  QString ValueUnits = " [" + FROM_UTF8(ValueUnit) + "]";
-
-  std::string RateUnit = (pModel != NULL) ? CUnit::prettyPrint(pModel->getVolumeUnit() + "/(" + pModel->getTimeUnit() + ")") : "?";
-  QString RateUnits = " [" + FROM_UTF8(RateUnit) + "]";
-
-  mpLblInitialValue->setText("Initial Volume" + ValueUnits);
-  mpLblInitialExpression->setText("Initial Expression" + ValueUnits);
-  mpLblVolume->setText("Volume" + ValueUnits);
-  mpLblRate->setText("Rate" + RateUnits);
-
   //Dimensionality
   mpComboBoxDim->setCurrentIndex(mpCompartment->getDimensionality());
-  //this assumes the indices of the entries in the combobox correspond 1to1 to the values of dimensionality
+  // slotDimesionalityChanged(mpCompartment->getDimensionality());
 
   // Simulation Type
   mpComboBoxType->setCurrentIndex(mpComboBoxType->findText(FROM_UTF8(CModelEntity::StatusName[mpCompartment->getStatus()])));
@@ -539,6 +516,52 @@ void CQCompartment::slotMetaboliteTableCurrentChanged(int row, int col)
         if (s1 == s2)
           mpListView->switchToOtherWidget(C_INVALID_INDEX, it->second->getKey());
       }
+}
+
+void CQCompartment::slotDimesionalityChanged(int dim)
+{
+  // Update the labels to reflect the model units
+  QString Lable = "Value";
+  mValueUnits = "?";
+  mRateUnits = "?";
+
+  CModel * pModel = mpCompartment->getModel();
+
+  if (pModel != NULL)
+    {
+      std::string tmp;
+
+      switch (dim)
+        {
+          case 0:
+            Lable = "Value";
+            tmp = "1";
+            break;
+
+          case 1:
+            Lable = "Length";
+            tmp = pModel->getLengthUnit();
+            break;
+
+          case 2:
+            Lable = "Area";
+            tmp = pModel->getAreaUnit();
+            break;
+
+          case 3:
+            Lable = "Volume";
+            tmp = pModel->getVolumeUnit();
+            break;
+        }
+
+      mValueUnits = " [" + FROM_UTF8(CUnit::prettyPrint(tmp)) + "]";
+      mRateUnits = " [" + FROM_UTF8(CUnit::prettyPrint(tmp + "/(" + pModel->getTimeUnit() + ")")) + "]";
+    }
+
+  mpLblInitialValue->setText("Initial " + Lable + mValueUnits);
+  mpLblInitialExpression->setText("Initial Expression" + mValueUnits);
+  mpLblVolume->setText(Lable + mValueUnits);
+  mpLblRate->setText("Rate" + mRateUnits);
 }
 
 void CQCompartment::loadMetaboliteTable()

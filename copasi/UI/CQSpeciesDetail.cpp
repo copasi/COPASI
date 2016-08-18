@@ -152,82 +152,55 @@ void CQSpeciesDetail::setFramework(int framework)
 {
   CopasiWidget::setFramework(framework);
 
-  const CModel * pModel = NULL;
+  if (mpMetab == NULL) return;
 
-  if (mpMetab)
-    pModel = mpMetab->getModel();
+  const CModel * pModel = mpMetab->getModel();
 
-  std::string ValueUnit = (pModel != NULL) ? CUnit::prettyPrint(pModel->getQuantityUnit() + "/(" + pModel->getVolumeUnit() + ")") : "?";
-  QString ValueUnits = " [" + FROM_UTF8(ValueUnit) + "]";
-
-  std::string RateUnit = (pModel != NULL) ? CUnit::prettyPrint(pModel->getQuantityUnit() + "/(" + pModel->getVolumeUnit() + "*" + pModel->getTimeUnit() + ")") : "?";
-  QString RateUnits = " [" + FROM_UTF8(RateUnit) + "]";
-
-  std::string FrequencyUnit = (pModel != NULL) ? CUnit::prettyPrint("1/(" + pModel->getTimeUnit() + ")") : "?";
-  QString FrequencyUnits = " [" + FROM_UTF8(FrequencyUnit) + "]";
+  QString ParticleNumberUnits = "[" + FROM_UTF8(CUnit::prettyPrint(mpMetab->getValueReference()->getUnits())) + "]";
+  QString ParticleNumberRateUnits = "[" + FROM_UTF8(CUnit::prettyPrint(mpMetab->getRateReference()->getUnits())) + "]";
+  QString ConcentrationUnits = "[" + FROM_UTF8(CUnit::prettyPrint(mpMetab->getConcentrationReference()->getUnits())) + "]";
+  QString ConcentrationRateUnits = "[" + FROM_UTF8(CUnit::prettyPrint(mpMetab->getConcentrationRateReference()->getUnits())) + "]";
 
   switch (mFramework)
     {
       case 0:
-        mpLblValue->setText("Concentration" + ValueUnits);
+        mpLblInitialValue->setText("Initial Concentration\n" + ConcentrationUnits);
+        mpLblInitialExpression->setText("Initial Expression\n" + ConcentrationUnits);
 
         if (mpMetab != NULL &&
             (CModelEntity::Status) mItemToType[mpComboBoxType->currentIndex()] == CModelEntity::ASSIGNMENT)
-          mpLblExpression->setText("Expression" + ValueUnits);
+          mpLblExpression->setText("Expression " + ConcentrationUnits);
         else
-          mpLblExpression->setText("Expression" + RateUnits);
+          mpLblExpression->setText("Expression " + ConcentrationRateUnits);
 
-        mpLblRate->setText("Rate" + RateUnits);
-
-        ValueUnits.replace(0, 1, '\n'); // Line break instead of space
-        mpLblInitialValue->setText("Initial Concentration" + ValueUnits);
-        mpLblInitialExpression->setText("Initial Expression" + ValueUnits);
+        mpLblValue->setText("Concentration " + ConcentrationUnits);
+        mpLblRate->setText("Rate " + ConcentrationRateUnits);
 
         mpEditInitialValue->setText(QString::number(mInitialConcentration, 'g', 10));
+        mpEditInitialValue->setReadOnly(!mpMetab->isInitialConcentrationChangeAllowed());
 
-        if (mpMetab != NULL)
-          {
-            mpEditInitialValue->setReadOnly(!mpMetab->isInitialConcentrationChangeAllowed());
-            mpEditCurrentValue->setText(QString::number(mpMetab->getConcentration(), 'g', 10));
-            mpEditRate->setText(QString::number(mpMetab->getConcentrationRate(), 'g', 10));
-          }
-        else
-          {
-            mpEditInitialValue->setReadOnly(false);
-            mpEditCurrentValue->setText("");
-            mpEditRate->setText("");
-          }
+        mpEditCurrentValue->setText(QString::number(mpMetab->getConcentration(), 'g', 10));
+        mpEditRate->setText(QString::number(mpMetab->getConcentrationRate(), 'g', 10));
 
         break;
 
       case 1:
-        mpLblInitialValue->setText("Initial Particle Number");
+        mpLblInitialValue->setText("Initial Particle Number " + ParticleNumberUnits);
+        mpLblInitialExpression->setText("Initial Expression " + ConcentrationUnits);
 
-        ValueUnits.replace(0, 1, '\n'); // Line break instead of space
-        mpLblInitialExpression->setText("Initial Expression" + ValueUnits);
-
-        if (mpMetab != NULL &&
-            mpMetab->getStatus() == CModelEntity::ASSIGNMENT)
-          mpLblExpression->setText("Expression" + ValueUnits);
+        if (mpMetab->getStatus() == CModelEntity::ASSIGNMENT)
+          mpLblExpression->setText("Expression" + ConcentrationUnits);
         else
-          mpLblExpression->setText("Expression" + RateUnits);
+          mpLblExpression->setText("Expression" + ConcentrationRateUnits);
 
-        mpLblValue->setText("Particle Number");
-        mpLblRate->setText("Rate" + FrequencyUnits);
+        mpLblValue->setText("Particle Number " + ParticleNumberUnits);
+        mpLblRate->setText("Rate " + ParticleNumberRateUnits);
 
         mpEditInitialValue->setText(QString::number(mInitialNumber, 'g', 10));
         mpEditInitialValue->setReadOnly(false);
 
-        if (mpMetab != NULL)
-          {
-            mpEditCurrentValue->setText(QString::number(mpMetab->getValue(), 'g', 10));
-            mpEditRate->setText(QString::number(mpMetab->getRate(), 'g', 10));
-          }
-        else
-          {
-            mpEditCurrentValue->setText("");
-            mpEditRate->setText("");
-          }
+        mpEditCurrentValue->setText(QString::number(mpMetab->getValue(), 'g', 10));
+        mpEditRate->setText(QString::number(mpMetab->getRate(), 'g', 10));
 
         break;
     }

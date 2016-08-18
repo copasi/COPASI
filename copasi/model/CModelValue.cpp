@@ -386,6 +386,12 @@ std::string CModelEntity::getChildObjectUnits(const CCopasiObject * pObject) con
       return ValueUnit + "/(" + TimeUnit + ")";
     }
 
+  if (pObject == mpValueReference ||
+      pObject == mpIValueReference)
+    {
+      return getUnits();
+    }
+
   return "?";
 }
 
@@ -406,6 +412,10 @@ CCopasiObject * CModelEntity::getValueReference() const
 CCopasiObject * CModelEntity::getRateReference() const
 {return mpRateReference;}
 
+CModel * CModelEntity::getModel() const
+{
+  return mpModel;
+}
 //***********
 
 void CModelEntity::setValue(const C_FLOAT64 & value)
@@ -659,20 +669,9 @@ void CModelValue::initObjects()
 {}
 
 // virtual
-std::string CModelValue::getChildObjectUnits(const CCopasiObject * pObject) const
+const std::string CModelValue::getUnits() const
 {
-  if (pObject == mpRateReference)
-    {
-      return CModelEntity::getChildObjectUnits(pObject);
-    }
-
-  if (pObject == mpValueReference ||
-      pObject == mpIValueReference)
-    {
-      return mUnitExpression;
-    }
-
-  return "?";
+  return mUnitExpression;
 }
 
 std::ostream & operator<<(std::ostream &os, const CModelValue & d)

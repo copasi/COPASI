@@ -699,6 +699,8 @@ void ReactionsWidget1::slotAmountUnitChecked(const bool & checked)
 void ReactionsWidget1::slotCompartmentSelectionChanged(const QString & compartment)
 {
   mpRi->setScalingCompartment(TO_UTF8(compartment));
+  mpConcentrationUnit->setText(FROM_UTF8(CUnit::prettyPrint(mpRi->getConcentrationRateUnit())));
+  table->updateTable(*mpRi, dynamic_cast< CReaction * >(mpObject));
 }
 
 bool ReactionsWidget1::update(ListViews::ObjectType objectType,
