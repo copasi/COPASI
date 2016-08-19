@@ -45,6 +45,8 @@ CopasiWidget::CopasiWidget(QWidget * parent, const char * name, Qt::WFlags f)
     }
 
   assert(mpListView != NULL);
+
+  mpDataModel = mpListView->getDataModel();
 }
 
 bool CopasiWidget::update(ListViews::ObjectType C_UNUSED(objectType), ListViews::Action C_UNUSED(action), const std::string & C_UNUSED(key))
@@ -71,7 +73,7 @@ bool CopasiWidget::enter(const std::string & key)
     }
   else
     {
-      mpDataModel = NULL;
+      mpDataModel = mpListView->getDataModel();
     }
 
   return enterProtected();
@@ -92,7 +94,7 @@ bool CopasiWidget::protectedNotify(ListViews::ObjectType objectType, ListViews::
   if (!mIgnoreUpdates)
     {
       mIgnoreUpdates = true;
-      mpListView->getDataModel()->notify(objectType, action, key);
+      mpListView->getDataModelGUI()->notify(objectType, action, key);
       notifyRun = true;
     }
 

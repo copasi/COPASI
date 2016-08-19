@@ -81,9 +81,9 @@
 
 //*****************************************************************************
 
-DataModelGUI::DataModelGUI(QObject * parent):
+DataModelGUI::DataModelGUI(QObject * parent, CCopasiDataModel * pDataModel):
   QObject(parent),
-  mpApp(NULL),
+  mpDataModel(pDataModel),
   mOutputHandlerPlot(),
   mListViews(),
   mFramework(0),
@@ -110,16 +110,11 @@ DataModelGUI::DataModelGUI(QObject * parent):
 #endif
 
 {
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CCopasiRootContainer::getDatamodelList()->operator[](0).addInterface(&mOutputHandlerPlot);
-
-  //mpMathModel = NULL;
-  //mMathModelUpdateScheduled = false;
+  mpDataModel->addInterface(&mOutputHandlerPlot);
 }
 
 DataModelGUI::~DataModelGUI()
-{
-}
+{}
 
 //************************************************************
 
@@ -134,7 +129,7 @@ void DataModelGUI::linkDataModelToGUI()
 
   for (; it != end; ++it)
     {
-      (*it)->setDataModel(this);
+      (*it)->resetCache();
     }
 
   pDataModel->deleteOldData();
@@ -657,7 +652,9 @@ bool DataModelGUI::notify(ListViews::ObjectType objectType, ListViews::Action ac
   if (action != ListViews::RENAME && // not needed after rename
       !(action == ListViews::ADD && objectType == ListViews::MODEL) // not needed when model was loaded
      )
-    refreshInitialValues();
+    {
+      refreshInitialValues();
+    }
 
   emit notifyView(objectType, action, key);
 
@@ -666,26 +663,29 @@ bool DataModelGUI::notify(ListViews::ObjectType objectType, ListViews::Action ac
 
 void DataModelGUI::registerListView(ListViews * pListView)
 {
-  pListView->setDataModel(this);
   mListViews.insert(pListView);
 }
 
 void DataModelGUI::deregisterListView(ListViews * pListView)
 {
-  pListView->setDataModel(NULL);
   mListViews.erase(pListView);
 }
 
 void DataModelGUI::refreshInitialValues()
 {
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CModel * pModel = CCopasiRootContainer::getDatamodelList()->operator[](0).getModel();
+  std::set< ListViews * >::iterator it = mListViews.begin();
+  std::set< ListViews * >::iterator end = mListViews.end();
 
-  if (!pModel->updateInitialValues(static_cast< CModelParameter::Framework >(mFramework)))
+  for (; it != end; ++it)
     {
-      CQMessageBox::warning(NULL, "Model Compile Warning",
-                            CCopasiMessage::getAllMessageText().c_str(),
-                            QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton);
+      CModel * pModel = (*it)->getDataModel()->getModel();
+
+      if (!pModel->updateInitialValues(static_cast< CModelParameter::Framework >(mFramework)))
+        {
+          CQMessageBox::warning(NULL, "Model Compile Warning",
+                                CCopasiMessage::getAllMessageText().c_str(),
+                                QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton);
+        }
     }
 }
 

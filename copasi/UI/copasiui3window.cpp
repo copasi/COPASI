@@ -172,6 +172,7 @@ CopasiUI3Window * CopasiUI3Window::create()
 CopasiUI3Window::CopasiUI3Window():
   QMainWindow(),
   mpDataModelGUI(NULL),
+  mpDataModel(NULL),
   mpListView(NULL),
   mpBoxSelectFramework(NULL),
   mpSliders(NULL),
@@ -231,11 +232,6 @@ CopasiUI3Window::CopasiUI3Window():
   setWindowIcon(CQIconResource::icon(CQIconResource::copasi));
 #endif // not Darwin
 
-  // Set the window caption/title
-  FixedTitle = "COPASI ";
-  FixedTitle += FROM_UTF8(CVersion::VERSION.getVersion());
-  updateTitle();
-
   //initialise Undo stack
   mpUndoStack = new QUndoStack(this);
 
@@ -261,13 +257,14 @@ CopasiUI3Window::CopasiUI3Window():
   mpaExportSEDML->setEnabled(false);
 #endif
 
-  if (!mpDataModelGUI)
-    {
-      // create the data model
-      mpDataModelGUI = new DataModelGUI(this);
-    }
+  mpDataModel = CCopasiRootContainer::addDatamodel();
+  mpDataModelGUI = new DataModelGUI(this, mpDataModel);
+  mpListView = new ListViews(this, mpDataModelGUI, mpDataModel);
 
-  mpListView = new ListViews(this);
+  // Set the window caption/title
+  FixedTitle = "COPASI ";
+  FixedTitle += FROM_UTF8(CVersion::VERSION.getVersion());
+  updateTitle();
 
   connect(mpListView, SIGNAL(signalFolderChanged(const QModelIndex &)), this, SLOT(listViewsFolderChanged(const QModelIndex &)));
 
@@ -1571,11 +1568,6 @@ void CopasiUI3Window::importSBMLFromString(const std::string& sbmlDocumentText)
 
       mpListView->switchToOtherWidget(0, "");
 
-      if (!mpDataModelGUI)
-        {
-          mpDataModelGUI = new DataModelGUI(this); // create a new data model
-        }
-
       setCursor(Qt::WaitCursor);
       connect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(slotImportSBMLFromStringFinished(bool)));
 
@@ -1711,11 +1703,6 @@ void CopasiUI3Window::slotImportSBML(QString file)
       mpListView->switchToOtherWidget(0, "");
 
       if (this->mpSliders) this->mpSliders->reset();
-
-      if (!mpDataModelGUI)
-        {
-          mpDataModelGUI = new DataModelGUI(this); // create a new data model
-        }
 
       setCursor(Qt::WaitCursor);
       connect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(slotImportSBMLFinished(bool)));
@@ -2060,8 +2047,7 @@ void CopasiUI3Window::checkPendingMessages()
 
 void CopasiUI3Window::updateTitle()
 {
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  QString FileName = FROM_UTF8(CCopasiRootContainer::getDatamodelList()->operator[](0).getFileName());
+  QString FileName = FROM_UTF8(mpDataModel->getFileName());
 
 #ifdef WIN32 // Windows allows mixing of '/' and '\' as separator.
   FileName.replace("\\", "/");
@@ -2405,9 +2391,6 @@ void CopasiUI3Window::slotUpdateMIRIAM()
   bool success = true;
 
   CCopasiMessage::clearDeque();
-
-  if (!mpDataModelGUI)
-    mpDataModelGUI = new DataModelGUI(this); // create a new data model
 
   connect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(slotUpdateMIRIAMFinished(bool)));
 
@@ -3287,11 +3270,6 @@ void CopasiUI3Window::slotImportSEDML(QString file)
       mpListView->switchToOtherWidget(0, "");
 
       if (this->mpSliders) this->mpSliders->reset();
-
-      if (!mpDataModelGUI)
-        {
-          mpDataModelGUI = new DataModelGUI(this); // create a new data model
-        }
 
       setCursor(Qt::WaitCursor);
       connect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(slotImportSEDMLFinished(bool)));

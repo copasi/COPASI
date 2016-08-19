@@ -42,7 +42,7 @@
 
 CQCompartmentDM::CQCompartmentDM(QObject *parent)
   : CQBaseDataModel(parent)
-
+  , mpCompartments(NULL)
 {
   mTypes.push_back(FROM_UTF8(CModelEntity::StatusName[CModelEntity::FIXED]));
   mTypes.push_back(FROM_UTF8(CModelEntity::StatusName[CModelEntity::ASSIGNMENT]));
@@ -51,6 +51,11 @@ CQCompartmentDM::CQCompartmentDM(QObject *parent)
   mItemToType.push_back(CModelEntity::FIXED);
   mItemToType.push_back(CModelEntity::ASSIGNMENT);
   mItemToType.push_back(CModelEntity::ODE);
+
+  mUnits.append("?");
+  mUnits.append("?");
+  mUnits.append("?");
+  mUnits.append("?");
 }
 
 const QStringList& CQCompartmentDM::getTypes()
@@ -139,6 +144,9 @@ QVariant CQCompartmentDM::data(const QModelIndex &index, int role) const
               case COL_TYPE_COMPARTMENTS:
                 return QVariant(QString(FROM_UTF8(CModelEntity::StatusName[pComp->getStatus()])));
 
+              case COL_UNIT:
+                return QVariant(mUnits[pComp->getDimensionality()]);
+
               case COL_IVOLUME:
 
                 if (role == Qt::EditRole)
@@ -184,24 +192,13 @@ QVariant CQCompartmentDM::headerData(int section, Qt::Orientation orientation,
   if (role != Qt::DisplayRole)
     return QVariant();
 
+  std::string tmp = CUnit::prettyPrint("1/(" + static_cast< CModel * >(mpCompartments->getObjectAncestor("Model"))->getTimeUnit() + ")");
+
+  QString ValueUnit = "[Unit]";
+  QString RateUnit = (tmp != "?") ? "[Unit" + FROM_UTF8(tmp.substr(1)) + "]" : "[?]";
+
   if (orientation == Qt::Horizontal)
     {
-      std::string ValueUnit, RateUnit, ExpressionUnit;
-      QString ValueUnits, RateUnits, ExpressionUnits;
-      assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-      const CModel * pModel = CCopasiRootContainer::getDatamodelList()->operator[](0).getModel();
-
-      ValueUnit = (pModel != NULL) ? CUnit::prettyPrint(pModel->getVolumeUnit()) : "?";
-      ValueUnits = "\n[" + FROM_UTF8(ValueUnit) + "]";
-
-      RateUnit = (pModel != NULL) ? CUnit::prettyPrint(pModel->getVolumeUnit() + "/(" + pModel->getTimeUnit() + ")") : "?";
-      RateUnits = "\n[" + FROM_UTF8(RateUnit) + "]";
-
-      if (ValueUnit == RateUnit)
-        ExpressionUnits = ValueUnits;
-      else
-        ExpressionUnits = "\n[" + FROM_UTF8(ValueUnit) + "] or [" + FROM_UTF8(RateUnit) + "]";
-
       switch (section)
         {
           case COL_ROW_NUMBER:
@@ -213,20 +210,26 @@ QVariant CQCompartmentDM::headerData(int section, Qt::Orientation orientation,
           case COL_TYPE_COMPARTMENTS:
             return QVariant(QString("     Type     "));
 
+          case COL_UNIT:
+            return QVariant("Unit");
+
           case COL_IVOLUME:
-            return QVariant("Initial Volume" + ValueUnits);
+            return QVariant("Initial Size\n" + ValueUnit);
 
           case COL_VOLUME:
-            return QVariant("Volume" + ValueUnits);
+            return QVariant("Size\n" + ValueUnit);
 
           case COL_RATE_COMPARTMENTS:
-            return QVariant("Rate" + RateUnits);
+            return QVariant("Rate\n" + RateUnit);
 
           case COL_IEXPRESSION_COMPARTMENTS:
-            return QVariant("Initial Expression" + ValueUnits);
+            return QVariant("Initial Expression\n" + ValueUnit);
 
           case COL_EXPRESSION_COMPARTMENTS:
-            return QVariant("Expression" + ExpressionUnits);
+            if (ValueUnit == RateUnit)
+              return QVariant("Expression\n" + ValueUnit);
+            else
+              return QVariant("Expression\n" + ValueUnit + " or " + RateUnit);
 
           default:
             return QVariant();
@@ -259,6 +262,23 @@ bool CQCompartmentDM::setData(const QModelIndex &index, const QVariant &value,
     }
 
   return true;
+}
+
+// virtual
+void CQCompartmentDM::resetCache()
+{
+  assert(mpDataModel != NULL);
+
+  mpCompartments = dynamic_cast< CCopasiVectorNS < CCompartment > * >(&mpDataModel->getModel()->getCompartments());
+  assert(mpCompartments != NULL);
+
+  CModel * pModel = mpDataModel->getModel();
+  assert(pModel != NULL);
+
+  mUnits[0] = "1";
+  mUnits[1] = FROM_UTF8(CUnit::prettyPrint(pModel->getLengthUnit()));
+  mUnits[2] = FROM_UTF8(CUnit::prettyPrint(pModel->getAreaUnit()));
+  mUnits[3] = FROM_UTF8(CUnit::prettyPrint(pModel->getVolumeUnit()));
 }
 
 bool CQCompartmentDM::insertRows(int position, int rows, const QModelIndex&)

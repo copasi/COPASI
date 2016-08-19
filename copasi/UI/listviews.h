@@ -98,6 +98,7 @@ class CQMathMatrixWidget;
 class CQLayoutsWidget;
 
 class CQPlotSubwidget;
+class CCopasiDataModel;
 
 //********************************************************************************
 
@@ -110,7 +111,7 @@ class ListViews : public QSplitter
 public:
   static const std::string ObjectTypeName[];
 
-  ListViews(QWidget *parent = 0, const char *name = 0);
+  ListViews(QWidget * parent, DataModelGUI * pDataModelGUI, CCopasiDataModel * pDataModel);
   virtual ~ListViews();
 
 #ifdef DELETE
@@ -135,8 +136,11 @@ public:
                    , UNIT
                   };
 
-  void setDataModel(DataModelGUI* pDM);
-  DataModelGUI* getDataModel() {return mpDataModelGUI;};
+  DataModelGUI * getDataModelGUI();
+  CCopasiDataModel * getDataModel();
+
+  void resetCache();
+
   void setFramework(int framework);
 
   void updateMIRIAMResourceContents();
@@ -189,7 +193,9 @@ private:
                           Action action,
                           const std::string & key);
 
-  DataModelGUI* mpDataModelGUI;
+  DataModelGUI * mpDataModelGUI;
+  CCopasiDataModel * mpDataModel;
+
   CQBrowserPaneDM * mpTreeDM; // create the  object of the tree
   QSortFilterProxyModel * mpTreeSortDM;
   CMathModel *mpMathModel;

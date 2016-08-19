@@ -16,6 +16,7 @@
 #include "copasi/UI/listviews.h"
 
 class QUndoStack;
+class CCopasiDataModel;
 
 #define COL_ROW_NUMBER   0
 
@@ -34,9 +35,12 @@ public:
   bool insertRow(int position, const QModelIndex & source);
   bool removeRow(int position);
   virtual bool clear();
+  virtual void resetCache();
   virtual bool isDefaultRow(const QModelIndex& i) const;
+
   QString createNewName(const QString name, const int nameCol);
 
+  void setDataModel(CCopasiDataModel * pDataModel);
   void setUndoStack(QUndoStack* undoStack);
   QUndoStack* getUndoStack();
 
@@ -45,6 +49,7 @@ protected:
   virtual bool removeRows(int position, int rows) = 0;
 
   QUndoStack *mpUndoStack;
+  CCopasiDataModel * mpDataModel;
 
 signals:
   void notifyGUI(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key = "");
