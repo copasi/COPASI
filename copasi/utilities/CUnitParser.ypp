@@ -141,51 +141,30 @@ compound_unit: unit
            }
 unit:    KIND
            {
+             mpCurrentUnitDef = CCopasiRootContainer::getUnitDefFromSymbol($1.text);
              $$.pUnit = new CUnit(CBaseUnit::fromSymbol($1.text));
-             mCurrentSymbol = $1.text;
-             mSymbols.insert(mCurrentSymbol);
+             mSymbols.insert($1.text);
            }
          | SI_UNIT
            {
+             mpCurrentUnitDef = CCopasiRootContainer::getUnitDefFromSymbol($1.text);
              $$.pUnit = new CUnit(CUnitDefinition::getSIUnit($1.text));
-             
-             mCurrentSymbol = $1.text;
-             mSymbols.insert(mCurrentSymbol);
+             mSymbols.insert($1.text);
              mSymbols.insert($$.pUnit->getUsedSymbols().begin(), $$.pUnit->getUsedSymbols().end());
            }
          | USER_DEFINED_UNIT
            {
-             const CUnitDefinition * pUnitDefinition = CCopasiRootContainer::getUnitDefFromSymbol($1.text);
-
-             if (pUnitDefinition == NULL)
-               {
-                 size_t Index = CCopasiRootContainer::getUnitList()->getIndex($1.text);
-                 
-                 if (Index != C_INVALID_INDEX)
-                   {
-                     pUnitDefinition = CCopasiRootContainer::getUnitList()->begin() + Index;
-                   }
-               }
+             mpCurrentUnitDef = CCopasiRootContainer::getUnitDefFromSymbol($1.text);
              
-             if (pUnitDefinition == NULL)
+             if (mpCurrentUnitDef == NULL)
                {
                  yyerror($1.text);
                }
              else
                {
-                 $$.pUnit = new CUnit(*pUnitDefinition);
-
-                 if (pUnitDefinition->isReadOnly())
-                   {
-                     mCurrentSymbol = pUnitDefinition->getSymbol();
-                   }
-                 else
-                   {
-                     mCurrentSymbol = "\"" + pUnitDefinition->getSymbol() + "\"";
-                   }
-
-                 mSymbols.insert(mCurrentSymbol);
-                 mSymbols.insert($$.pUnit->getUsedSymbols().begin(), $$.pUnit->getUsedSymbols().end());
+                 $$.pUnit = new CUnit(*mpCurrentUnitDef);
+                 mSymbols.insert(mpCurrentUnitDef->getSymbol());
+                 mSymbols.insert(mpCurrentUnitDef->getUsedSymbols().begin(), mpCurrentUnitDef->getUsedSymbols().end());
                }
            }
 
@@ -195,9 +174,17 @@ scaled_unit:  SCALE unit
 
              if (!$$.pUnit->isUndefined())
                {
+                 assert(mpCurrentUnitDef != NULL);
+                 
                  CUnitComponent component(CBaseUnit::dimensionless, 1.0, CBaseUnit::scaleFromPrefix($1.text), 0.0);
                  $$.pUnit->addComponent(component);
-                 mSymbols.insert($1.text + mCurrentSymbol);
+
+                 if (mpCurrentUnitDef->isReadOnly())
+                   mSymbols.insert($1.text + mpCurrentUnitDef->getSymbol());
+                 else
+                   mSymbols.insert($1.text + "\"" + mpCurrentUnitDef->getSymbol() + "\"");
+                   
+                 mpCurrentUnitDef = NULL;
                }
            }
 

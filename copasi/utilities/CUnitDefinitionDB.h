@@ -42,6 +42,13 @@ public:
                                         const C_FLOAT64 & exponent) const;
 
 private:
+  /**
+   * Replace all old symbols with new symbols in the unit definition DB
+   * @param const std::string & oldSymbol
+   * @param const std::string & newSymbol
+   */
+  void replaceSymbol(const std::string & oldSymbol,
+                     const std::string & newSymbol);
 
   std::map<std::string, CUnitDefinition *> mSymbolToUnitDefinitions;
 };

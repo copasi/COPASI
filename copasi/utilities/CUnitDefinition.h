@@ -35,14 +35,6 @@ public:
                   const CCopasiContainer * pParent = NO_PARENT);
 
   /**
-   * Kind constructor
-   * @param const CBaseUnit::Kind & kind
-   * @param const CCopasiContainer * pParent (default: NULL)
-   */
-  CUnitDefinition(const CBaseUnit::Kind & kind,
-                  const CCopasiContainer * pParent = NO_PARENT);
-
-  /**
   * Copy constructor
   * @param const CUnitDefinition::& src
   * @param const CCopasiContainer * pParent
@@ -69,6 +61,7 @@ public:
 
 private:
   std::string mSymbol;
+  bool mReadOnly;
 
   void setup();
 };

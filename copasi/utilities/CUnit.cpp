@@ -74,7 +74,7 @@ std::string CUnit::replaceSymbol(const std::string & expression,
                                  const std::string & oldSymbol,
                                  const std::string & newSymbol)
 {
-  if (oldSymbol == newSymbol)
+  if (oldSymbol == newSymbol || expression.empty())
     return expression;
 
   std::istringstream buffer(expression);
@@ -82,7 +82,24 @@ std::string CUnit::replaceSymbol(const std::string & expression,
   CUnitParser Parser(&buffer);
   Parser.replaceSymbol(oldSymbol, newSymbol);
 
-  return (Parser.yyparse() == 0) ? Parser.getReplacedExpression() : expression;
+  bool success = true;
+
+  try
+    {
+      success = Parser.yyparse() == 0;
+    }
+  catch (CCopasiException & /*exception*/)
+    {
+      success = false;
+    }
+
+  return success ? Parser.getReplacedExpression() : expression;
+}
+
+void CUnit::replaceSymbol(const std::string & oldSymbol,
+                          const std::string & newSymbol)
+{
+  setExpression(replaceSymbol(mExpression, oldSymbol, newSymbol));
 }
 
 // static

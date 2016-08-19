@@ -109,6 +109,7 @@ void CUnitDefinition::updateSIUnitDefinitions(CUnitDefinitionDB * Units)
         {
           pUnitDef = new CUnitDefinition(pSIUnit->name, Units);
           pUnitDef->setSymbol(pSIUnit->symbol);
+          pUnitDef->mReadOnly = true;
         }
 
       pUnitDef->setExpression(pSIUnit->expression);
@@ -124,18 +125,8 @@ CUnitDefinition::CUnitDefinition(const std::string & name,
   CCopasiContainer(name, pParent, "Unit"),
   CUnit(),
   CAnnotation(),
-  mSymbol("symbol")
-{
-  setup();
-}
-
-// kind
-CUnitDefinition::CUnitDefinition(const CBaseUnit::Kind & kind,
-                                 const CCopasiContainer * pParent):
-  CCopasiContainer(CBaseUnit::Name[kind], pParent, "Unit"),
-  CUnit(kind),
-  CAnnotation(),
-  mSymbol(CBaseUnit::getSymbol(kind))
+  mSymbol("symbol"),
+  mReadOnly(false)
 {
   setup();
 }
@@ -146,7 +137,8 @@ CUnitDefinition::CUnitDefinition(const CUnitDefinition &src,
   CCopasiContainer(src, pParent),
   CUnit(src),
   CAnnotation(src),
-  mSymbol(src.mSymbol)
+  mSymbol(src.mSymbol),
+  mReadOnly(src.mReadOnly && src.getObjectParent() != pParent)
 {
   setup();
 }
@@ -198,11 +190,15 @@ bool CUnitDefinition::setSymbol(const std::string & symbol)
 {
   CUnitDefinitionDB * pUnitDefinitionDB = dynamic_cast < CUnitDefinitionDB * >(getObjectParent());
 
-  if (pUnitDefinitionDB == NULL ||
-      pUnitDefinitionDB->changeSymbol(this, symbol))
+  if (pUnitDefinitionDB == NULL)
     {
       mSymbol = symbol;
+      return true;
+    }
 
+  if (pUnitDefinitionDB->changeSymbol(this, symbol))
+    {
+      mSymbol = symbol;
       return true;
     }
 
@@ -252,12 +248,7 @@ bool CUnitDefinition::isBuiltinUnitSymbol(std::string symbol)
 
 bool CUnitDefinition::isReadOnly() const
 {
-  SIUnit * pSIUnit = SIUnits;
-
-  while (pSIUnit->name && getObjectName() != pSIUnit->name)
-    ++pSIUnit;
-
-  return (pSIUnit->name != NULL);
+  return mReadOnly;
 }
 
 // friend

@@ -70,7 +70,7 @@ protected:
 
   CUnit *mpUnit;
   unsigned C_INT32 mPosition;
-  std::string mCurrentSymbol;
+  const CUnitDefinition * mpCurrentUnitDef;
   std::set< std::string > mSymbols;
   std::string mOldSymbol;
   std::string mNewSymbol;

@@ -108,6 +108,9 @@ public:
 
   const std::set< std::string > & getUsedSymbols() const;
 
+  void replaceSymbol(const std::string & oldSymbol,
+                     const std::string & newSymbol);
+
   bool isDimensionless() const;
   bool isUndefined() const;
   void addComponent(const CUnitComponent & component);

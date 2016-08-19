@@ -12,16 +12,16 @@
 
 #include "CCopasiRootContainer.h"
 #include "ArtisticLicense.h"
-#include "copasi/function/CFunctionDB.h"
-#include "copasi/commandline/CConfigurationFile.h"
-#include "copasi/commandline/COptions.h"
-#include "copasi/function/CFunction.h"
-#include "copasi/function/CEvaluationNodeOperator.h"
-#include "copasi/function/CEvaluationNodeVariable.h"
-#include "copasi/function/CEvaluationNodeConstant.h"
-#include "copasi/utilities/CUnit.h"
-
-#include <copasi/layout/CLGlobalRenderInformation.h>
+#include "function/CFunctionDB.h"
+#include "commandline/CConfigurationFile.h"
+#include "commandline/COptions.h"
+#include "function/CFunction.h"
+#include "function/CEvaluationNodeOperator.h"
+#include "function/CEvaluationNodeVariable.h"
+#include "function/CEvaluationNodeConstant.h"
+#include "utilities/CUnit.h"
+#include "model/CModel.h"
+#include "layout/CLGlobalRenderInformation.h"
 
 extern CCopasiVector<CLGlobalRenderInformation>* DEFAULT_STYLES;
 
@@ -162,13 +162,39 @@ CUnitDefinitionDB *CCopasiRootContainer::getUnitList()
 // static
 const CUnitDefinition * CCopasiRootContainer::getUnitDefFromSymbol(const std::string symbol)
 {
-  return pRootContainer->mpUnitDefinitionList->getUnitDefFromSymbol(symbol);
+  const CUnitDefinition * pUnitDefinition = pRootContainer->mpUnitDefinitionList->getUnitDefFromSymbol(symbol);
+
+  if (pUnitDefinition == NULL)
+    {
+      // As a fall back we try to find the name this is needed  e.g. for ohm
+      size_t Index = pRootContainer->mpUnitDefinitionList->getIndex(symbol);
+
+      if (Index != C_INVALID_INDEX)
+        {
+          pUnitDefinition = CCopasiRootContainer::getUnitList()->begin() + Index;
+        }
+    }
+
+  return pUnitDefinition;
 }
 
 // static
 std::string CCopasiRootContainer::quoteUnitDefSymbol(const std::string & symbol)
 {
   return pRootContainer->mpUnitDefinitionList->quoteSymbol(symbol);
+}
+
+// static
+void CCopasiRootContainer::replaceSymbol(const std::string & oldSymbol,
+    const std::string & newSymbol)
+{
+  CCopasiVector< CCopasiDataModel >::iterator it = pRootContainer->mpDataModelList->begin();
+  CCopasiVector< CCopasiDataModel >::iterator end = pRootContainer->mpDataModelList->end();
+
+  for (; it != end; ++it)
+    {
+      it->getModel()->changeUnitExpressionSymbols(oldSymbol, newSymbol);
+    }
 }
 
 // static

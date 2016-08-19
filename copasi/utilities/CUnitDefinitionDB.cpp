@@ -6,13 +6,13 @@
 #include "utilities/CUnitDefinitionDB.h"
 #include "utilities/CUnitDefinition.h"
 #include "utilities/CCopasiMessage.h"
+#include "copasi/report/CCopasiRootContainer.h"
 
 CUnitDefinitionDB::CUnitDefinitionDB(const std::string & name,
                                      const CCopasiContainer * pParent):
   CCopasiVectorN< CUnitDefinition >(name, pParent),
   mSymbolToUnitDefinitions()
-{
-}
+{}
 
 //virtual
 bool CUnitDefinitionDB::add(const CUnitDefinition & src)
@@ -115,25 +115,39 @@ bool CUnitDefinitionDB::changeSymbol(CUnitDefinition *pUnitDef, const std::strin
 {
   if (pUnitDef->getObjectParent() != this) return true;
 
-  std::map<std::string, CUnitDefinition *>::iterator found = mSymbolToUnitDefinitions.find(symbol);
+  std::map<std::string, CUnitDefinition *>::iterator New = mSymbolToUnitDefinitions.find(symbol);
+  std::map<std::string, CUnitDefinition *>::iterator Old = mSymbolToUnitDefinitions.find(pUnitDef->getSymbol());
 
-  if (found->second == pUnitDef) return true;
-
-  if (containsSymbol(symbol)) return false;
-
-  found = mSymbolToUnitDefinitions.find(pUnitDef->getSymbol());
-
-  if (found != mSymbolToUnitDefinitions.end())
+  if (New == mSymbolToUnitDefinitions.end())
     {
-      if (pUnitDef->getSymbol() == symbol) return true;
-
-      if (found->second == pUnitDef)
+      if (New != Old)
         {
-          mSymbolToUnitDefinitions.erase(found);
+          mSymbolToUnitDefinitions.insert(std::make_pair(symbol, pUnitDef));
+          replaceSymbol(pUnitDef->getSymbol(), symbol);
+          mSymbolToUnitDefinitions.erase(Old);
+
+          return true;
+        }
+      else
+        {
+          mSymbolToUnitDefinitions.insert(std::make_pair(symbol, pUnitDef));
+
+          return true;
         }
     }
+  else
+    {
+      if (New == Old)
+        {
+          replaceSymbol(pUnitDef->getSymbol(), symbol);
 
-  mSymbolToUnitDefinitions.insert(std::make_pair(symbol, pUnitDef));
+          return true;
+        }
+      else
+        {
+          return false;
+        }
+    }
 
   return true;
 }
@@ -146,6 +160,23 @@ std::string CUnitDefinitionDB::quoteSymbol(const std::string & symbol) const
       CUnit(symbol) == *pUnitDef) return symbol;
 
   return quote(" " + symbol).erase(1, 1);
+}
+
+void CUnitDefinitionDB::replaceSymbol(const std::string & oldSymbol,
+                                      const std::string & newSymbol)
+{
+  iterator it = begin();
+  iterator end = this->end();
+
+  for (; it != end; ++it)
+    {
+      it->replaceSymbol(oldSymbol, newSymbol);
+    }
+
+  if (getObjectParent() == CCopasiRootContainer::getRoot())
+    {
+      CCopasiRootContainer::replaceSymbol(oldSymbol, newSymbol);
+    }
 }
 
 std::vector< CUnit > CUnitDefinitionDB::getAllValidUnits(const std::string & symbol,
