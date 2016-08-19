@@ -70,7 +70,7 @@ const std::vector< unsigned C_INT32 >& CQCompartmentDM::getItemToType()
 
 int CQCompartmentDM::rowCount(const QModelIndex&) const
 {
-  return CCopasiRootContainer::getDatamodelList()->operator[](0).getModel()->getCompartments().size() + 1;
+  return mpCompartments->size() + 1;
 }
 int CQCompartmentDM::columnCount(const QModelIndex&) const
 {
@@ -130,7 +130,7 @@ QVariant CQCompartmentDM::data(const QModelIndex &index, int role) const
         }
       else
         {
-          CCompartment *pComp = &CCopasiRootContainer::getDatamodelList()->operator[](0).getModel()->getCompartments()[index.row()];
+          CCompartment & Compartment = mpCompartments->operator[](index.row());
           const CExpression * pExpression = NULL;
 
           switch (index.column())
@@ -139,30 +139,30 @@ QVariant CQCompartmentDM::data(const QModelIndex &index, int role) const
                 return QVariant(index.row() + 1);
 
               case COL_NAME_COMPARTMENTS:
-                return QVariant(QString(FROM_UTF8(pComp->getObjectName())));
+                return QVariant(QString(FROM_UTF8(Compartment.getObjectName())));
 
               case COL_TYPE_COMPARTMENTS:
-                return QVariant(QString(FROM_UTF8(CModelEntity::StatusName[pComp->getStatus()])));
+                return QVariant(QString(FROM_UTF8(CModelEntity::StatusName[Compartment.getStatus()])));
 
               case COL_UNIT:
-                return QVariant(mUnits[pComp->getDimensionality()]);
+                return QVariant(mUnits[Compartment.getDimensionality()]);
 
               case COL_IVOLUME:
 
                 if (role == Qt::EditRole)
-                  return QVariant(QString::number(pComp->getInitialValue(), 'g', 10));
+                  return QVariant(QString::number(Compartment.getInitialValue(), 'g', 10));
                 else
-                  return QVariant(pComp->getInitialValue());
+                  return QVariant(Compartment.getInitialValue());
 
               case COL_VOLUME:
-                return QVariant(pComp->getValue());
+                return QVariant(Compartment.getValue());
 
               case COL_RATE_COMPARTMENTS:
-                return QVariant(pComp->getRate());
+                return QVariant(Compartment.getRate());
 
               case COL_IEXPRESSION_COMPARTMENTS:
               {
-                pExpression = pComp->getInitialExpressionPtr();
+                pExpression = Compartment.getInitialExpressionPtr();
 
                 if (pExpression != NULL)
                   return QVariant(QString(FROM_UTF8(pExpression->getDisplayString())));
@@ -172,7 +172,7 @@ QVariant CQCompartmentDM::data(const QModelIndex &index, int role) const
 
               case COL_EXPRESSION_COMPARTMENTS:
               {
-                pExpression = pComp->getExpressionPtr();
+                pExpression = Compartment.getExpressionPtr();
 
                 if (pExpression != NULL)
                   return QVariant(QString(FROM_UTF8(pExpression->getDisplayString())));
@@ -192,7 +192,7 @@ QVariant CQCompartmentDM::headerData(int section, Qt::Orientation orientation,
   if (role != Qt::DisplayRole)
     return QVariant();
 
-  std::string tmp = CUnit::prettyPrint("1/(" + static_cast< CModel * >(mpCompartments->getObjectAncestor("Model"))->getTimeUnit() + ")");
+  std::string tmp = CUnit::prettyPrint("1/(" + mpDataModel->getModel()->getTimeUnit() + ")");
 
   QString ValueUnit = "[Unit]";
   QString RateUnit = (tmp != "?") ? "[Unit" + FROM_UTF8(tmp.substr(1)) + "]" : "[?]";
@@ -295,15 +295,13 @@ bool CQCompartmentDM::removeRows(int position, int rows)
 
   beginRemoveRows(QModelIndex(), position, position + rows - 1);
 
-  CModel * pModel = CCopasiRootContainer::getDatamodelList()->operator[](0).getModel();
-
   std::vector< std::string > DeletedKeys;
   DeletedKeys.resize(rows);
 
   std::vector< std::string >::iterator itDeletedKey;
   std::vector< std::string >::iterator endDeletedKey = DeletedKeys.end();
 
-  CCopasiVector< CCompartment >::const_iterator itRow = pModel->getCompartments().begin() + position;
+  CCopasiVector< CCompartment >::const_iterator itRow = mpCompartments->begin() + position;
 
   for (itDeletedKey = DeletedKeys.begin(); itDeletedKey != endDeletedKey; ++itDeletedKey, ++itRow)
     {
@@ -312,7 +310,7 @@ bool CQCompartmentDM::removeRows(int position, int rows)
 
   for (itDeletedKey = DeletedKeys.begin(); itDeletedKey != endDeletedKey; ++itDeletedKey)
     {
-      CCopasiRootContainer::getDatamodelList()->operator[](0).getModel()->removeCompartment(*itDeletedKey);
+      mpDataModel->getModel()->removeCompartment(*itDeletedKey);
       emit notifyGUI(ListViews::COMPARTMENT, ListViews::DELETE, *itDeletedKey);
       emit notifyGUI(ListViews::COMPARTMENT, ListViews::DELETE, "");
       emit notifyGUI(ListViews::METABOLITE, ListViews::DELETE, ""); //Refresh all as there may be dependencies.
@@ -334,12 +332,9 @@ bool CQCompartmentDM::compartmentDataChange(const QModelIndex& index,
     const QVariant &value,
     UndoCompartmentData* pUndoData)
 {
-  GET_MODEL_OR(pModel, return false);
+  assert(index.row() < mpCompartments->size());
 
-  CCompartment *pComp = &pModel->getCompartments()[index.row()];
-
-  if (pComp == NULL)
-    return false;
+  CCompartment &Compartment = mpCompartments->operator [](index.row());
 
   switchToWidget(CCopasiUndoCommand::COMPARTMENTS);
 
@@ -347,23 +342,23 @@ bool CQCompartmentDM::compartmentDataChange(const QModelIndex& index,
 
   if (column == COL_NAME_COMPARTMENTS)
     {
-      pComp->setObjectName(TO_UTF8(value.toString()));
-      emit notifyGUI(ListViews::COMPARTMENT, ListViews::RENAME, pComp->getKey());
+      Compartment.setObjectName(TO_UTF8(value.toString()));
+      emit notifyGUI(ListViews::COMPARTMENT, ListViews::RENAME, Compartment.getKey());
     }
   else if (column == COL_TYPE_COMPARTMENTS)
-    pComp->setStatus((CModelEntity::Status) mItemToType[value.toInt()]);
+    Compartment.setStatus((CModelEntity::Status) mItemToType[value.toInt()]);
   else if (column == COL_IVOLUME)
     {
-      pComp->setInitialValue(value.toDouble());
+      Compartment.setInitialValue(value.toDouble());
 
       if (pUndoData != NULL)
         {
-          pUndoData->fillDependentObjects(pModel);
+          pUndoData->fillDependentObjects(mpDataModel->getModel());
         }
     }
 
   emit dataChanged(index, index);
-  emit notifyGUI(ListViews::COMPARTMENT, ListViews::CHANGE, pComp->getKey());
+  emit notifyGUI(ListViews::COMPARTMENT, ListViews::CHANGE, Compartment.getKey());
 
   return true;
 }
@@ -371,8 +366,6 @@ bool CQCompartmentDM::compartmentDataChange(const QModelIndex& index,
 void CQCompartmentDM::insertNewCompartmentRow(int position, int rows, const QModelIndex & index,
     const QVariant& value)
 {
-  GET_MODEL_OR_RETURN(pModel);
-
   beginInsertRows(QModelIndex(), position, position + rows - 1);
 
   int column = index.column();
@@ -381,7 +374,7 @@ void CQCompartmentDM::insertNewCompartmentRow(int position, int rows, const QMod
     {
       QString name = createNewName(index.isValid() && column == COL_NAME_COMPARTMENTS ? value.toString() : "compartment", COL_NAME_COMPARTMENTS);
 
-      CCompartment * pComp = pModel->createCompartment(TO_UTF8(name));
+      CCompartment * pComp = mpDataModel->getModel()->createCompartment(TO_UTF8(name));
 
       if (pComp == NULL)
         continue;
@@ -408,11 +401,9 @@ void CQCompartmentDM::insertNewCompartmentRow(int position, int rows, const QMod
 
 void CQCompartmentDM::deleteCompartmentRow(UndoCompartmentData *pCompartmentData)
 {
-  GET_MODEL_OR_RETURN(pModel);
-
   switchToWidget(CCopasiUndoCommand::COMPARTMENTS);
 
-  size_t index = pModel->getCompartments().getIndex(pCompartmentData->getName());
+  size_t index = mpCompartments->getIndex(pCompartmentData->getName());
 
   if (index == C_INVALID_INDEX)
     return;
@@ -422,13 +413,11 @@ void CQCompartmentDM::deleteCompartmentRow(UndoCompartmentData *pCompartmentData
 
 void CQCompartmentDM::addCompartmentRow(UndoCompartmentData *pCompartmentData)
 {
-  GET_MODEL_OR_RETURN(pModel);
-
   switchToWidget(CCopasiUndoCommand::COMPARTMENTS);
 
   beginInsertRows(QModelIndex(), 1, 1);
 
-  CCompartment *pCompartment = pCompartmentData->restoreObjectIn(pModel);
+  CCompartment *pCompartment = pCompartmentData->restoreObjectIn(mpDataModel->getModel());
 
   if (pCompartment != NULL)
     emit notifyGUI(ListViews::COMPARTMENT, ListViews::ADD, pCompartment->getKey());
