@@ -179,10 +179,13 @@ endif(CMAKE_BUILD_TYPE STREQUAL "Debug")
 # file system with trace files all over the place (or rather everywhere the
 # program is started)
 
+if (NOT WIN32)
 option(ENABLE_COPASI_DEBUG_TRACE "Enable COPASI Debug Tracing" ${DEFAULT_DEBUG_TRACING})
 if(ENABLE_COPASI_DEBUG_TRACE)
   add_definitions(-DCOPASI_DEBUG_TRACE)
 endif(ENABLE_COPASI_DEBUG_TRACE)
+mark_as_advanced(ENABLE_COPASI_DEBUG_TRACE)
+endif()
 
 # another option to create the COPASI SE library directly from the files, instead of first building an 
 # object library (necessary sometimes as the object library messes up debugging on VS2013)
@@ -229,6 +232,17 @@ if (ENABLE_PE_EVENT_CREATION)
   add_definitions(-DWITH_PE_EVENT_CREATION)
 endif(ENABLE_PE_EVENT_CREATION)
 
+option(ENABLE_COMBINE_ARCHIVE "Enable COMBINE Archive support" OFF)
+if (ENABLE_COMBINE_ARCHIVE)
+  add_definitions(-DWITH_COMBINE_ARCHIVE)
+
+  if (WIN32)
+    add_definitions(-DLIBCOMBINE_STATIC=1)
+  endif()
+
+  find_package(LIBCOMBINE REQUIRED)
+  include_directories(BEFORE ${COMBINE_INCLUDE_DIR})
+endif(ENABLE_COMBINE_ARCHIVE)
 
 option (BUILD_GUI "Disable this if you do not want to build the COPASI GUI (CopasiUI)." ON)
 
@@ -769,6 +783,7 @@ message(STATUS "-----------------------------------------------------------
    SBML Unit                = ${ENABLE_USE_SBMLUNIT}
    Model Merging            = ${ENABLE_WITH_MERGEMODEL}
    SEDML support            = ${ENABLE_COPASI_SEDML}
+   Combine Archive support  = ${ENABLE_COMBINE_ARCHIVE}
    GPROF support            = ${ENABLE_GPROF}
    UNDO framework           = ${ENABLE_COPASI_UNDO}
    Versioning framework     = ${ENABLE_VERSIONING}

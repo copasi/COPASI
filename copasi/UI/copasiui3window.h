@@ -1,16 +1,16 @@
-// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
-// All rights reserved.
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+// and The University of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2002 - 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
-// All rights reserved.
+// Copyright (C) 2002 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc. and EML Research, gGmbH. 
+// All rights reserved. 
 
 #include <string>
 
@@ -236,6 +236,13 @@ protected slots:
   void slotOpenRecentSEDMLFile(QAction * pAction);
 #endif
 
+#ifdef WITH_COMBINE_ARCHIVE
+  void slotImportCombine(QString file = QString::null);
+  void slotImportCombineFinished(bool success);
+  void slotExportCombine(QString str = QString::null);
+  void slotExportCombineFinished(bool success);
+#endif
+
 #ifdef COPASI_UNDO
   void slotUndoHistory();
   void slotClearUndoHistory();
@@ -294,6 +301,11 @@ private:
   QAction* mpaParameterEstimationResult;
 
   QAction* mpaCloseAllWindows;
+
+#ifdef WITH_COMBINE_ARCHIVE
+  QAction* mpaImportCombine;
+  QAction* mpaExportCombine;
+#endif
 
 #ifdef WITH_MERGEMODEL
   QAction* mpaAddModel;

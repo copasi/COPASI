@@ -1,16 +1,16 @@
-// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
-// All rights reserved.
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+// and The University of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2005 - 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
-// All rights reserved.
+// Copyright (C) 2005 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc. and EML Research, gGmbH. 
+// All rights reserved. 
 
 #define USE_LAYOUT 1
 
@@ -503,6 +503,46 @@ bool CCopasiDataModel::saveModel(const std::string & fileName, CProcessReport* p
     }
 
   return true;
+}
+
+std::string CCopasiDataModel::saveModelToString(CProcessReport * pProcessReport)
+{
+  CCopasiMessage::clearDeque();
+
+  std::string PWD;
+  COptions::getValue("PWD", PWD);
+
+  try
+  {
+    // We do not care whether the model compiles or not
+    // We just save as much as we can
+    mData.pModel->compileIfNecessary(pProcessReport);
+
+    // Assure that the parameter set reflects all changes made to the model.
+    mData.pModel->getActiveModelParameterSet().refreshFromModel(false);
+  }
+
+  catch (...)
+  {
+    return "";
+  }
+
+  CCopasiXML XML;
+
+  XML.setModel(mData.pModel);
+  XML.setTaskList(mData.pTaskList);
+  XML.setReportList(mData.pReportDefinitionList);
+  XML.setPlotList(mData.pPlotDefinitionList);
+  XML.setGUI(mData.pGUI);
+  XML.setLayoutList(*mData.pListOfLayouts);
+  XML.setDatamodel(this);
+
+  std::string TmpFileName;
+  COptions::getValue("Tmp", TmpFileName);
+  std::stringstream str;
+  XML.save(str, TmpFileName);
+  return str.str();
+
 }
 
 bool CCopasiDataModel::autoSave()
@@ -1110,6 +1150,142 @@ bool CCopasiDataModel::exportMathModel(const std::string & fileName, CProcessRep
 
   return pExporter->exportToStream(this, os);
 }
+
+#ifdef WITH_COMBINE_ARCHIVE
+
+#include <combine/combinearchive.h>
+#include <combine/knownformats.h>
+#include <omex/CaContent.h>
+
+bool CCopasiDataModel::exportCombineArchive(std::string fileName, bool includeCOPASI, bool includeSBML, bool includeData, bool includeSEDML, bool overwriteFile, CProcessReport * pProgressReport)
+{
+  CCopasiMessage::clearDeque();
+
+  std::string PWD;
+  COptions::getValue("PWD", PWD);
+
+  if (CDirEntry::isRelativePath(fileName) &&
+    !CDirEntry::makePathAbsolute(fileName, PWD))
+    fileName = CDirEntry::fileName(fileName);
+
+  if (CDirEntry::exist(fileName))
+  {
+    if (!overwriteFile)
+    {
+      CCopasiMessage(CCopasiMessage::ERROR,
+        MCDirEntry + 1,
+        fileName.c_str());
+      return false;
+    }
+
+    if (!CDirEntry::isWritable(fileName))
+    {
+      CCopasiMessage(CCopasiMessage::ERROR,
+        MCDirEntry + 2,
+        fileName.c_str());
+      return false;
+    }
+
+    // delete existing file
+    std::remove(fileName.c_str());
+  }
+
+  CombineArchive archive;
+
+
+  if (includeData)
+  {
+    // go through all experiments and find the files and add them to the archive
+    // alter COPASI file (temporarily) to reference those files
+
+  }
+
+
+  if (includeCOPASI)
+  {
+    
+    try
+    {
+      std::stringstream str; str << saveModelToString(pProgressReport);
+      archive.addFile(str, "./copasi/model.cps", KnownFormats::lookupFormat("copasi"), true);
+    }
+    catch (...)
+    {
+
+    }
+  }
+
+  if (includeSEDML)
+  {
+    // write SED-ML to disc, get SED-ML and SBML fileName add to archive
+    // remember files to delete after archive was written. 
+  }
+
+  if (includeSBML && !includeSEDML)
+  {
+    try
+    {
+      std::stringstream str; str << exportSBMLToString(pProgressReport, 2, 4);
+      archive.addFile(str, "./sbml/model.xml", KnownFormats::lookupFormat("sbml"), !includeCOPASI);
+    }
+    catch (...)
+    {
+
+    }
+  }
+
+
+  archive.writeToFile(fileName);
+
+  return false;
+}
+
+bool CCopasiDataModel::openCombineArchive(const std::string & fileName, 
+  CProcessReport * pProgressReport, 
+  const bool & deleteOldData)
+{
+  // TODO: figure out what to do with the archive, should we just extract all of it
+  //       at a certain location? if so when should it be deleted.
+
+  CombineArchive archive;
+  if (!archive.initializeFromArchive(fileName))
+    return false;
+  
+  // read the master file 
+  const CaContent* content = archive.getMasterFile();
+  // if we don't have one, or we have one we don't understand look for copasi file
+  if (content == NULL ||
+    (content->getFormat() != KnownFormats::lookupFormat("sbml") &&
+      content->getFormat() != KnownFormats::lookupFormat("copasi")))
+    content = archive.getEntryByFormat("copasi");
+  
+  // otherwise look for an sbml file
+  if (content == NULL)
+    content = archive.getEntryByFormat("sbml");
+  
+  if (content == NULL)
+    return false;
+
+  if (content->isFormat("copasi"))
+  {
+    std::stringstream str; 
+    if (!archive.extractEntryToStream(content->getLocation(), str))
+      return false;
+
+    std::string PWD;
+    COptions::getValue("PWD", PWD);
+
+    return  this->loadModel(str, PWD, pProgressReport, deleteOldData);
+  }
+  else if (content->isFormat("sbml"))
+  {
+    return this->importSBMLFromString(archive.extractEntryToString(content->getLocation()), pProgressReport, deleteOldData);
+  }
+
+  return false;
+}
+
+#endif
 
 //TODO SEDML
 #ifdef COPASI_SEDML

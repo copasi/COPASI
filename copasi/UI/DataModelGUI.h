@@ -1,16 +1,16 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
-// All rights reserved.
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+// and The University of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2004 - 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
-// All rights reserved.
+// Copyright (C) 2004 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc. and EML Research, gGmbH. 
+// All rights reserved. 
 
 #ifndef DATAMODELGUI_H
 #define DATAMODELGUI_H
@@ -60,6 +60,13 @@ public:
   void exportMathModel(const std::string & fileName, const std::string & filter, bool overwriteFile = false);
   void importCellDesigner();
 
+#ifdef WITH_COMBINE_ARCHIVE
+  void openCombineArchive(const std::string & fileName);
+  void exportCombineArchive(const std::string & fileName, bool overwriteFile = false);
+  void openCombineArchiveRun();
+  void exportCombineArchiveRun();
+#endif
+
   //TODO SEDML
 #ifdef COPASI_SEDML
   void exportSEDML(const std::string & fileName, bool overwriteFile , int sedmlLevel, int sedmlVersion, bool exportIncomplete, bool exportCOPASIMIRIAM = true);
@@ -89,6 +96,11 @@ public slots:
   void importSBMLFromStringFinished();
   void exportSBMLToStringFinished();
   void exportMathModelFinished();
+#ifdef WITH_COMBINE_ARCHIVE
+  void importCombineFinished();
+  void exportCombineFinished();
+
+#endif
 #ifdef WITH_MERGEMODEL
   void addModelFinished();
 #endif
