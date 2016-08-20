@@ -236,6 +236,13 @@ protected slots:
   void slotOpenRecentSEDMLFile(QAction * pAction);
 #endif
 
+#ifdef WITH_COMBINE_ARCHIVE
+  void slotImportCombine(QString file = QString::null);
+  void slotImportCombineFinished(bool success);
+  void slotExportCombine(QString str = QString::null);
+  void slotExportCombineFinished(bool success);
+#endif
+
 #ifdef COPASI_UNDO
   void slotUndoHistory();
   void slotClearUndoHistory();
@@ -296,6 +303,11 @@ private:
   QAction* mpaParameterEstimationResult;
 
   QAction* mpaCloseAllWindows;
+
+#ifdef WITH_COMBINE_ARCHIVE
+  QAction* mpaImportCombine;
+  QAction* mpaExportCombine;
+#endif
 
 #ifdef WITH_MERGEMODEL
   QAction* mpaAddModel;

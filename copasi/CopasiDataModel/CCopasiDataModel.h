@@ -188,6 +188,8 @@ public:
                  bool overwriteFile = false,
                  const bool & autoSave = false);
 
+  std::string saveModelToString(CProcessReport* pProcessReport = NULL);
+
   bool autoSave();
 
   bool newModel(CProcessReport* pProcessReport,
@@ -202,11 +204,28 @@ public:
                   const bool & deleteOldData = true);
 
   std::string exportSBMLToString(CProcessReport* pExportHandler, int sbmlLevel, int sbmlVersion);
+
   bool exportSBML(const std::string & fileName, bool overwriteFile = false, int sbmlLevel = 2, int sbmlVersion = 1, bool exportIncomplete = false, bool exportCOPASIMIRIAM = true, CProcessReport* pExportHandler = NULL);
 
   std::string exportMathModelToString(CProcessReport* pProcessReport, const std::string & filter);
+
   bool exportMathModel(const std::string & fileName, CProcessReport* pProcessReport,
                        const std::string & filter, bool overwriteFile = false);
+
+#ifdef WITH_COMBINE_ARCHIVE
+
+  bool exportCombineArchive(std::string fileName,
+                            bool includeCOPASI = true,
+                            bool includeSBML = true,
+                            bool includeData = true,
+                            bool includeSEDML = false,
+                            bool overwriteFile = false,
+                            CProcessReport* pProgressReport = NULL);
+
+  bool openCombineArchive(const std::string& fileName, CProcessReport* pProgressReport = NULL,
+                          const bool & deleteOldData = true);
+
+#endif
 
   void deleteOldData();
 

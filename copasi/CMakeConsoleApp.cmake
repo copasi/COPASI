@@ -1,4 +1,4 @@
-# Copyright (C) 2012 - 2015 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2012 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and The University 
 # of Manchester. 
 # All rights reserved. 
@@ -13,6 +13,13 @@ set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${CLAPACK_LINKER_FLAGS}")
 
 if(ENABLE_COPASI_SEDML)
   set(SE_EXTERNAL_LIBS ${SE_EXTERNAL_LIBS} ${LIBSEDML_LIBRARY})
+endif()
+
+if(ENABLE_COMBINE_ARCHIVE)
+  # this assumes that the libCombine archive uses the 
+  # Qt filesystem backend.
+  include(${QT_USE_FILE})
+  set(SE_EXTERNAL_LIBS ${SE_EXTERNAL_LIBS} ${COMBINE_LIBRARY} ${ZIPPER_LIBRARY} ${QT_QTCORE_LIBRARY})
 endif()
 
 set(SE_EXTERNAL_LIBS ${SE_EXTERNAL_LIBS} ${LIBSBML_LIBRARY})

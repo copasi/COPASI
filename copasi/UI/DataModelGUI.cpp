@@ -841,6 +841,89 @@ void DataModelGUI::importCellDesigner()
     }
 }
 
+#ifdef WITH_COMBINE_ARCHIVE
+
+void DataModelGUI::openCombineArchive(const std::string & fileName)
+{
+  mpProgressBar = CProgressBar::create();
+
+  mSuccess = true;
+  mFileName = fileName;
+  mpThread = new CQThread(this, &DataModelGUI::openCombineArchiveRun);
+  connect(mpThread, SIGNAL(finished()), this, SLOT(importCombineFinished()));
+  mpThread->start();
+}
+
+void DataModelGUI::exportCombineArchive(const std::string & fileName, bool overwriteFile)
+{
+  mpProgressBar = CProgressBar::create();
+
+  mSuccess = true;
+  mFileName = fileName;
+  mOverWrite = overwriteFile;
+
+  mpThread = new CQThread(this, &DataModelGUI::exportCombineArchiveRun);
+  connect(mpThread, SIGNAL(finished()), this, SLOT(exportCombineFinished()));
+  mpThread->start();
+}
+
+void DataModelGUI::openCombineArchiveRun()
+{
+  try
+    {
+      assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+      mSuccess = CCopasiRootContainer::getDatamodelList()->operator[](0).openCombineArchive(mFileName, mpProgressBar);
+    }
+
+  catch (...)
+    {
+      mSuccess = false;
+    }
+}
+
+void DataModelGUI::exportCombineArchiveRun()
+{
+  try
+    {
+      assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+      mSuccess = CCopasiRootContainer::getDatamodelList()->operator[](0).exportCombineArchive(mFileName,
+                 true,
+                 true,
+                 true,
+                 true,
+                 mOverWrite,
+                 mpProgressBar);
+    }
+
+  catch (...)
+    {
+      mSuccess = false;
+    }
+}
+
+void DataModelGUI::importCombineFinished()
+{
+  if (mSuccess)
+    {
+
+      mOutputHandlerPlot.setOutputDefinitionVector(CCopasiRootContainer::getDatamodelList()->operator[](0).getPlotDefinitionList());
+      linkDataModelToGUI();
+    }
+
+  disconnect(mpThread, SIGNAL(finished()), this, SLOT(importCombineFinished()));
+
+  threadFinished();
+}
+
+void DataModelGUI::exportCombineFinished()
+{
+
+  disconnect(mpThread, SIGNAL(finished()), this, SLOT(exportSBMLFinished()));
+
+  threadFinished();
+}
+
+#endif
 //TODO SEDML
 #ifdef COPASI_SEDML
 void DataModelGUI::importSEDMLFromString(const std::string & sedmlDocumentText)
