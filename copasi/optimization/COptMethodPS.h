@@ -1,16 +1,16 @@
-// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
-// All rights reserved.
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+// and The University of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2006 - 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
-// All rights reserved.
+// Copyright (C) 2006 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc. and EML Research, gGmbH. 
+// All rights reserved. 
 
 /**
  * COptMethodPS class
@@ -19,14 +19,14 @@
 #ifndef COPASI_COptMethodPS
 #define COPASI_COptMethodPS
 
-#include "optimization/COptMethod.h"
+#include "optimization/COptPopulationMethod.h"
 #include "utilities/CVector.h"
 #include "utilities/CMatrix.h"
 
 class CRandom;
 class CPermutation;
 
-class COptMethodPS : public COptMethod
+class COptMethodPS : public COptPopulationMethod
 {
   // Operations
 public:
@@ -114,50 +114,16 @@ private:
 
   // Attributes
 private:
-  /**
-   * maximal number of iterations
-   */
-  unsigned C_INT32 mIterationLimit;
 
-  /**
-   * size of the population
-   */
-  unsigned C_INT32 mSwarmSize;
+  // mIterationLimit -> mGenerations
+  // mSwarmsize -> population
+  // mIteration -> mCurrentGeneration
 
   /**
    * The variance acceptable for the solution
    */
   C_FLOAT64 mVariance;
 
-  /**
-   * a pointer to the random number generator.
-   */
-  CRandom * mpRandom;
-
-  /**
-   * current iterations
-   */
-  unsigned C_INT32 mIteration;
-
-  /**
-   * Handle to the process report item "Current Iteration"
-   */
-  size_t mhIteration;
-
-  /**
-   * number of parameters
-   */
-  size_t mVariableSize;
-
-  /**
-   * Matrix of individuals with candidate values for the parameters
-   */
-  CVector< CVector< C_FLOAT64 > > mIndividuals;
-
-  /**
-   * Vector of values of objective function of each individual
-   */
-  CVector< C_FLOAT64 > mValues;
 
   /**
    * Matrix of individual velocities

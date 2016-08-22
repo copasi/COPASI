@@ -1,16 +1,16 @@
-// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
-// All rights reserved.
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+// and The University of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2005 - 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
-// All rights reserved.
+// Copyright (C) 2005 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc. and EML Research, gGmbH. 
+// All rights reserved. 
 
 /**
  * COptMethodGASR class
@@ -21,13 +21,13 @@
 
 #include <limits>
 
-#include "optimization/COptMethod.h"
+#include "optimization/COptPopulationMethod.h"
 #include "utilities/CVector.h"
 
 class CRandom;
 class CPermutation;
 
-class COptMethodGASR : public COptMethod
+class COptMethodGASR : public COptPopulationMethod
 {
   // Operations
 public:
@@ -153,40 +153,11 @@ private:
 
   // Attributes
 private:
-  /**
-   * number of generations
-   */
-  unsigned C_INT32 mGenerations;
-
-  /**
-   * Handle to the process report item "Current Generation"
-   */
-  size_t mhGenerations;
-
-  /**
-   * size of the population
-   */
-  unsigned C_INT32 mPopulationSize;
-
-  /**
-   * a pointer to the randomnumber generator.
-   */
-  CRandom * mpRandom;
 
   /**
    * Probability value used for SR ****
    */
   C_FLOAT64 mPf;
-
-  /**
-   * number of parameters
-   */
-  size_t mVariableSize;
-
-  /**
-   * for array of individuals w/ candidate values for the parameters
-   */
-  std::vector< CVector < C_FLOAT64 > * > mIndividual;
 
   /**
    * For Stochastic Ranking.  Used for array of Phi values for the individuals
@@ -203,10 +174,6 @@ private:
    */
   CVector< bool > mCrossOver;
 
-  /**
-   * array of values of objective function f/ individuals
-   */
-  CVector< C_FLOAT64 > mValue;
 
   /**
    * A permutation of integers used to create the informants;
@@ -233,7 +200,6 @@ private:
    */
   C_FLOAT64 mBestValue;
   size_t mBestIndex;
-  unsigned C_INT32 mGeneration;
 };
 
 #endif  // COPASI_COptMethodGASR
