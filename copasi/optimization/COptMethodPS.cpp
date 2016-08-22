@@ -1,16 +1,16 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
-// All rights reserved.
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+// and The University of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2006 - 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
-// All rights reserved.
+// Copyright (C) 2006 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc. and EML Research, gGmbH. 
+// All rights reserved. 
 
 #include <cmath>
 
@@ -30,16 +30,8 @@
 COptMethodPS::COptMethodPS(const CCopasiContainer * pParent,
                            const CTaskEnum::Method & methodType,
                            const CTaskEnum::Task & taskType):
-  COptMethod(pParent, methodType, taskType),
-  mIterationLimit(0),
-  mSwarmSize(0),
+  COptPopulationMethod(pParent, methodType, taskType),
   mVariance(0.0),
-  mpRandom(NULL),
-  mIteration(0),
-  mhIteration(C_INVALID_INDEX),
-  mVariableSize(0),
-  mIndividuals(),
-  mValues(),
   mVelocities(),
   mBestValues(),
   mBestPositions(),
@@ -62,16 +54,8 @@ COptMethodPS::COptMethodPS(const CCopasiContainer * pParent,
 
 COptMethodPS::COptMethodPS(const COptMethodPS & src,
                            const CCopasiContainer * pParent):
-  COptMethod(src, pParent),
-  mIterationLimit(0),
-  mSwarmSize(0),
+  COptPopulationMethod(src, pParent),
   mVariance(0.0),
-  mpRandom(NULL),
-  mIteration(0),
-  mhIteration(C_INVALID_INDEX),
-  mVariableSize(0),
-  mIndividuals(),
-  mValues(),
   mVelocities(),
   mBestValues(),
   mBestPositions(),
@@ -96,7 +80,7 @@ const C_FLOAT64 & COptMethodPS::evaluate()
   // evaluate the fitness
   mContinue &= mpOptProblem->calculate();
 
-  // check wheter the functional constraints are fulfilled
+  // check whether the functional constraints are fulfilled
   if (!mpOptProblem->checkFunctionalConstraints())
     mEvaluationValue = std::numeric_limits<C_FLOAT64>::infinity();
   else
@@ -113,7 +97,7 @@ bool COptMethodPS::move(const size_t & index)
 
   bool Improved = false;
 
-  C_FLOAT64 * pIndividual = mIndividuals[index].array();
+  C_FLOAT64 * pIndividual = mIndividuals[index]->array();
   C_FLOAT64 * pEnd = pIndividual + mVariableSize;
   C_FLOAT64 * pVelocity = mVelocities[index];
   C_FLOAT64 * pBestPosition = mBestPositions[index];
@@ -175,14 +159,14 @@ bool COptMethodPS::move(const size_t & index)
 
       // Save the individually best value;
       mBestValues[index] = mEvaluationValue;
-      memcpy(mBestPositions[index], mIndividuals[index].array(), sizeof(C_FLOAT64) * mVariableSize);
+      memcpy(mBestPositions[index], mIndividuals[index]->array(), sizeof(C_FLOAT64) * mVariableSize);
 
       // Check if we improved globally
       if (mEvaluationValue < mBestValues[mBestIndex])
         {
           // and store that value
           mBestIndex = index;
-          mContinue &= mpOptProblem->setSolution(mBestValues[index], mIndividuals[index]);
+          mContinue &= mpOptProblem->setSolution(mBestValues[index], *mIndividuals[index]);
 
           // We found a new best value lets report it.
           mpParentTask->output(COutputInterface::DURING);
@@ -195,7 +179,7 @@ bool COptMethodPS::move(const size_t & index)
 // initialise an individual
 bool COptMethodPS::create(const size_t & index)
 {
-  C_FLOAT64 * pIndividual = mIndividuals[index].array();
+  C_FLOAT64 * pIndividual = mIndividuals[index]->array();
   C_FLOAT64 * pEnd = pIndividual + mVariableSize;
   C_FLOAT64 * pVelocity = mVelocities[index];
   C_FLOAT64 * pBestPosition = mBestPositions[index];
@@ -215,9 +199,9 @@ bool COptMethodPS::create(const size_t & index)
 
       try
         {
-          // First determine the location of the intervall
+          // First determine the location of the interval
           // Secondly determine whether to distribute the parameter linearly or not
-          // depending on the location and act uppon it.
+          // depending on the location and act upon it.
           if (0.0 <= mn) // the interval [mn, mx) is in [0, inf)
             {
               la = log10(mx) - log10(std::max(mn, std::numeric_limits< C_FLOAT64 >::min()));
@@ -312,7 +296,7 @@ bool COptMethodPS::create(const size_t & index)
     {
       // and store that value
       mBestIndex = index;
-      mContinue &= mpOptProblem->setSolution(mBestValues[index], mIndividuals[index]);
+      mContinue &= mpOptProblem->setSolution(mBestValues[index], *mIndividuals[index]);
 
       // We found a new best value lets report it.
       mpParentTask->output(COutputInterface::DURING);
@@ -323,57 +307,51 @@ bool COptMethodPS::create(const size_t & index)
 
 void COptMethodPS::initObjects()
 {
-  addObjectReference("Current Iteration", mIteration, CCopasiObject::ValueInt);
+  addObjectReference("Current Iteration", mCurrentGeneration, CCopasiObject::ValueInt);
 }
 
 bool COptMethodPS::initialize()
 {
   cleanup();
 
-  if (!COptMethod::initialize()) return false;
+  if (!COptPopulationMethod::initialize()) return false;
 
-  mIterationLimit = getValue< unsigned C_INT32 >("Iteration Limit");
-  mIteration = 0;
+  mGenerations = getValue< unsigned C_INT32 >("Iteration Limit");
+  mCurrentGeneration = 0;
 
   if (mpCallBack)
-    mhIteration =
+    mhGenerations =
       mpCallBack->addItem("Iteration Limit",
-                          mIteration,
-                          & mIterationLimit);
+                          mCurrentGeneration,
+                          & mGenerations);
 
-  mSwarmSize = getValue< unsigned C_INT32 >("Swarm Size");
+  mPopulationSize = getValue< unsigned C_INT32 >("Swarm Size");
 
-  if (mSwarmSize < 5)
+  if (mPopulationSize < 5)
     {
-      mSwarmSize = 5;
-      setValue("Swarm Size", mSwarmSize);
+    mPopulationSize = 5;
+      setValue("Swarm Size", mPopulationSize);
     }
 
   mVariance = getValue< C_FLOAT64 >("Std. Deviation");
   mVariance *= mVariance;
 
-  mpRandom =
-    CRandom::createGenerator((CRandom::Type) getValue< unsigned C_INT32 >("Random Number Generator"),
-                             getValue< unsigned C_INT32 >("Seed"));
-
-  mVariableSize = mpOptItem->size();
-
-  mIndividuals.resize(mSwarmSize);
+  mIndividuals.resize(mPopulationSize);
 
   size_t i;
 
-  for (i = 0; i < mSwarmSize; i++)
-    mIndividuals[i].resize(mVariableSize);
+  for (i = 0; i < mPopulationSize; i++)
+    mIndividuals[i] = new CVector< C_FLOAT64 >(mVariableSize);
 
-  mValues.resize(mSwarmSize);
-  mVelocities.resize(mSwarmSize, mVariableSize);
-  mBestValues.resize(mSwarmSize);
-  mBestPositions.resize(mSwarmSize, mVariableSize);
+  mValues.resize(mPopulationSize);
+  mVelocities.resize(mPopulationSize, mVariableSize);
+  mBestValues.resize(mPopulationSize);
+  mBestPositions.resize(mPopulationSize, mVariableSize);
 
-  mNumInformedMin = std::max<size_t>(mSwarmSize / 10, 5) - 1;
+  mNumInformedMin = std::max<size_t>(mPopulationSize / 10, 5) - 1;
   mNumInformed = mNumInformedMin;
 
-  mpPermutation = new CPermutation(mpRandom, mSwarmSize);
+  mpPermutation = new CPermutation(mpRandom, mPopulationSize);
 
   mContinue = true;
 
@@ -382,27 +360,26 @@ bool COptMethodPS::initialize()
 
 bool COptMethodPS::cleanup()
 {
-  pdelete(mpRandom);
   pdelete(mpPermutation);
 
-  return true;
+  return COptPopulationMethod::cleanup();
 }
 
 void COptMethodPS::buildInformants()
 {
-  if (mNumInformed < mSwarmSize)
+  if (mNumInformed < mPopulationSize)
     mNumInformed++;
   else
     return;
 
   mInformants.clear();
-  mInformants.resize(mSwarmSize);
+  mInformants.resize(mPopulationSize);
   mpPermutation->shuffle();
 
   size_t i, j;
   size_t Informant;
 
-  for (i = 0; i < mSwarmSize; i++)
+  for (i = 0; i < mPopulationSize; i++)
     {
       mInformants[i].insert(i);
 
@@ -429,7 +406,7 @@ bool COptMethodPS::reachedStdDeviation()
 
   // Check whether the swarm has settled
   C_FLOAT64 * pValue = mValues.array();
-  C_FLOAT64 * pEnd = pValue + mSwarmSize;
+  C_FLOAT64 * pEnd = pValue + mPopulationSize;
 
   C_FLOAT64 Delta;
 
@@ -461,8 +438,8 @@ bool COptMethodPS::reachedStdDeviation()
   FirstMoments = 0.0;
   SecondMoments = 0.0;
 
-  CVector< C_FLOAT64 > * pIndividual = mIndividuals.array();
-  CVector< C_FLOAT64 > * pIndividualEnd = pIndividual + mSwarmSize;
+  std::vector<CVector< C_FLOAT64 > *>::iterator pIndividual = mIndividuals.begin();
+  std::vector<CVector< C_FLOAT64 > *>::iterator pIndividualEnd = mIndividuals.end();
 
   C_FLOAT64 * pFirstMoment;
   C_FLOAT64 * pSecondMoment;
@@ -472,7 +449,7 @@ bool COptMethodPS::reachedStdDeviation()
     {
       pFirstMoment = FirstMoments.array();
       pSecondMoment = SecondMoments.array();
-      pValue = pIndividual->array();
+      pValue = (*pIndividual)->array();
 
       for (; pFirstMoment != pEnd; ++pFirstMoment, ++pSecondMoment, ++pValue)
         {
@@ -486,7 +463,7 @@ bool COptMethodPS::reachedStdDeviation()
 
   for (; pFirstMoment != pEnd; ++pFirstMoment, ++pSecondMoment)
     {
-      Variance = (*pSecondMoment - *pFirstMoment **pFirstMoment / mSwarmSize) / (mSwarmSize - 1);
+      Variance = (*pSecondMoment - *pFirstMoment **pFirstMoment / mPopulationSize) / (mPopulationSize - 1);
 
       if (Variance > mVariance) return false;
     }
@@ -501,12 +478,12 @@ bool COptMethodPS::optimise()
   if (!initialize())
     {
       if (mpCallBack)
-        mpCallBack->finishItem(mhIteration);
+        mpCallBack->finishItem(mhGenerations);
 
       return false;
     }
 
-  C_FLOAT64 * pIndividual = mIndividuals[0].array();
+  C_FLOAT64 * pIndividual = mIndividuals[0]->array();
   C_FLOAT64 * pEnd = pIndividual + mVariableSize;
   C_FLOAT64 * pVelocity = mVelocities[0];
   C_FLOAT64 * pBestPosition = mBestPositions[0];
@@ -547,13 +524,13 @@ bool COptMethodPS::optimise()
 
   // and store that value
   mBestIndex = 0;
-  mContinue &= mpOptProblem->setSolution(mBestValues[0], mIndividuals[0]);
+  mContinue &= mpOptProblem->setSolution(mBestValues[0], *mIndividuals[0]);
 
   // We found a new best value lets report it.
   mpParentTask->output(COutputInterface::DURING);
 
   // the others are random
-  for (i = 1; i < mSwarmSize && mContinue; i++)
+  for (i = 1; i < mPopulationSize && mContinue; i++)
     create(i);
 
   // create the informant list
@@ -561,11 +538,11 @@ bool COptMethodPS::optimise()
 
   bool Improved;
 
-  for (; mIteration < mIterationLimit && mContinue; mIteration++)
+  for (; mCurrentGeneration < mGenerations && mContinue; mCurrentGeneration++)
     {
       Improved = false;
 
-      for (i = 0; i < mSwarmSize && mContinue; i++)
+      for (i = 0; i < mPopulationSize && mContinue; i++)
         Improved |= move(i);
 
       if (!Improved)
@@ -574,11 +551,11 @@ bool COptMethodPS::optimise()
         break;
 
       if (mpCallBack)
-        mContinue &= mpCallBack->progressItem(mhIteration);
+        mContinue &= mpCallBack->progressItem(mhGenerations);
     }
 
   if (mpCallBack)
-    mpCallBack->finishItem(mhIteration);
+    mpCallBack->finishItem(mhGenerations);
 
   cleanup();
 
