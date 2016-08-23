@@ -23,6 +23,7 @@
 #
 ###############################################################################
 
+if (ENABLE_COPASI_SEDML)
 cmake_minimum_required (VERSION 2.6)
 project (exportSedML)
 
@@ -36,3 +37,4 @@ add_executable(exportSedML ${SOURCES} ${HEADERS})
 add_dependencies(exportSedML ${SE_DEPENDENCIES}) 
 target_link_libraries(exportSedML ${SE_LIBS} ${SE_EXTERNAL_LIBS})
 
+endif()
