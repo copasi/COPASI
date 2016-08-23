@@ -509,12 +509,12 @@ void CQCompartment::slotMetaboliteTableCurrentChanged(int row, int col)
     mpCompartment->getMetabolites().getObjects().end();
 
   for (; it != end; ++it)
-    if (dynamic_cast< CMetab * >(it->second) != NULL)
+    if (dynamic_cast< CMetab * >(*it) != NULL)
       {
-        s2 = it->second->getObjectName();
+        s2 = (*it)->getObjectName();
 
         if (s1 == s2)
-          mpListView->switchToOtherWidget(C_INVALID_INDEX, it->second->getKey());
+          mpListView->switchToOtherWidget(C_INVALID_INDEX, (*it)->getKey());
       }
 }
 
@@ -577,9 +577,9 @@ void CQCompartment::loadMetaboliteTable()
 
   for (int i = 0; it != end; ++it)
     {
-      if (dynamic_cast< CMetab * >(it->second) != NULL)
+      if (dynamic_cast< CMetab * >(*it) != NULL)
         {
-          mpMetaboliteTable->setItem(i++, 0, new QTableWidgetItem(FROM_UTF8(it->second->getObjectName())));
+          mpMetaboliteTable->setItem(i++, 0, new QTableWidgetItem(FROM_UTF8((*it)->getObjectName())));
         }
     }
 

@@ -470,10 +470,9 @@ bool CModel::compile()
   else
     {
       mCompileIsNecessary = false;
-      determineIsAutonomous();
     }
 
-  //writeDependenciesToDotFile();
+  // writeDependenciesToDotFile();
 
   buildDependencyGraphs();
 
@@ -481,6 +480,8 @@ bool CModel::compile()
   mpMathContainer->fetchInitialState();
   mpMathContainer->updateInitialValues(CModelParameterSet::ParticleNumbers);
   mpMathContainer->pushInitialState();
+
+  mIsAutonomous = mpMathContainer->isAutonomous();
 
   // CMathContainer CopyModel(MathModel);
 
@@ -1125,11 +1126,11 @@ const C_FLOAT64 & CModel::getTime() const
  */
 CMetab * CModel::findMetabByName(const std::string & name) const
 {
-  range Range = mMetabolites.getObjects().equal_range(unQuote(name));
+  objectMap::range Range = mMetabolites.getObjects().equal_range(unQuote(name));
   CMetab * pSpecies = NULL;
 
   for (; Range.first != Range.second; ++Range.first)
-    if ((pSpecies = dynamic_cast< CMetab * >(Range.first->second)) != NULL)
+    if ((pSpecies = dynamic_cast< CMetab * >(*Range.first)) != NULL)
       {
         return pSpecies;
       }
@@ -1137,7 +1138,7 @@ CMetab * CModel::findMetabByName(const std::string & name) const
   Range = mMetabolites.getObjects().equal_range(name);
 
   for (; Range.first != Range.second; ++Range.first)
-    if ((pSpecies = dynamic_cast< CMetab * >(Range.first->second)) != NULL)
+    if ((pSpecies = dynamic_cast< CMetab * >(*Range.first)) != NULL)
       {
         return pSpecies;
       }
@@ -3161,30 +3162,6 @@ void CModel::buildLinkZero()
 
 const bool & CModel::isAutonomous() const
 {return mIsAutonomous;}
-
-void CModel::determineIsAutonomous()
-{
-  mIsAutonomous = true;
-
-  // If the model is not empty we check whether anything depends on time
-  if (mCompartments.size() != 0 ||
-      mValues.size() != 0)
-    {
-      std::set< const CCopasiObject * > TimeDependent;
-
-      appendDependentReactions(getDeletedObjects(), TimeDependent);
-      appendDependentMetabolites(getDeletedObjects(), TimeDependent);
-      appendDependentCompartments(getDeletedObjects(), TimeDependent);
-      appendDependentModelValues(getDeletedObjects(), TimeDependent);
-      appendDependentEvents(getDeletedObjects(), TimeDependent);
-
-      mIsAutonomous = (TimeDependent.begin() == TimeDependent.end());
-    }
-
-  // An autonomous models always start simulation at T = 0
-  if (mIsAutonomous)
-    setInitialValue(0.0);
-}
 
 bool CModel::isStateVariable(const CCopasiObject * pObject) const
 {

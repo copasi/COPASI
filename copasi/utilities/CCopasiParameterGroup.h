@@ -30,10 +30,39 @@
  */
 class CCopasiParameterGroup: public CCopasiParameter
 {
+
 public:
   typedef std::vector< CCopasiParameter * > elements;
   typedef elements::iterator index_iterator;
-  typedef CCopasiContainer::objectMap::iterator name_iterator;
+
+  class name_iterator
+  {
+  public:
+    name_iterator();
+
+    name_iterator(const CCopasiParameterGroup & group,
+                  const bool & begin);
+
+    name_iterator(const name_iterator & src);
+
+    ~name_iterator();
+
+    CCopasiObject * operator*() const;
+
+    CCopasiObject * operator->() const;
+
+    name_iterator & operator++();
+
+    name_iterator operator++(int);
+
+    bool operator != (const name_iterator & rhs) const;
+
+  private:
+    const CCopasiParameterGroup * mpGroup;
+    std::map< std::string, std::set< CCopasiObject * > >::iterator mName;
+    std::set< CCopasiObject * >::iterator mObject;
+    std::vector< CCopasiParameter * >::iterator mParameter;
+  };
 
   // Operations
 protected:
@@ -83,18 +112,6 @@ public:
    * @return CCopasiParameterGroup & lhs
    */
   CCopasiParameterGroup & operator = (const CCopasiParameterGroup & rhs);
-
-  /**
-   * Retrieve the begin of an alphabetically sorted iterator
-   * @return name_iterator begin
-   */
-  name_iterator beginName() const;
-
-  /**
-   * Retrieve the end of an alphabetically sorted iterator
-   * @return name_iterator end
-   */
-  name_iterator endName() const;
 
   /**
    * Retrieve the begin of unsorted iterator

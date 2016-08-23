@@ -992,11 +992,6 @@ private:
   void updateMatrixAnnotations();
 
   /**
-   * Determine whether the model is autonomous
-   */
-  void determineIsAutonomous();
-
-  /**
    * Compile the events
    * @return bool success
    */
