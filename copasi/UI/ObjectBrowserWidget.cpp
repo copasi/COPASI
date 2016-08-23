@@ -538,7 +538,7 @@ void ObjectBrowserWidget::loadChild(ObjectBrowserItem* parent,
     {
       while (it != end)
         {
-          current = it->second;
+          current = *it;
 
           // Skip all strings
           if (dynamic_cast< const CCopasiStaticString * >(current))
@@ -600,7 +600,7 @@ void ObjectBrowserWidget::loadField(ObjectBrowserItem* parent, CCopasiVector <CC
 
   while (fieldIt != fieldEnd)
     {
-      currentFieldObject = fieldIt->second;
+      currentFieldObject = *fieldIt;
       ObjectBrowserItem* currentFieldItem = new ObjectBrowserItem(parent, lastFieldItem, NULL, objectItemList);
       currentFieldItem->attachKey();
       currentFieldItem->setObjectType(FIELDATTR);
@@ -723,8 +723,8 @@ CCopasiObject* ObjectBrowserWidget::getFieldCopasiObject(CCopasiContainer * pCur
       //          if (pResult)
       //            return pResult;
       //}
-      if (FROM_UTF8(it->second->getObjectName()) == name)
-        return it->second;
+      if (FROM_UTF8((*it)->getObjectName()) == name)
+        return *it;
 
       it++;
     }

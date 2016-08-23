@@ -241,8 +241,8 @@ void CArrayAnnotation::appendElementReferences(std::set< const CCopasiObject * >
   objectMap::const_iterator end = mObjects.end();
 
   for (; it != end; ++it)
-    if (dynamic_cast<const CArrayElementReference *>(it->second) != NULL)
-      objects.insert(it->second);
+    if (dynamic_cast<const CArrayElementReference *>(*it) != NULL)
+      objects.insert(*it);
 
   return;
 }
@@ -281,16 +281,13 @@ const CObjectInterface * CArrayAnnotation::getObject(const CCopasiObjectName & c
   const CCopasiObject* pObject = NULL; //this will contain the element reference
 
   //if the reference object already exists, its name will be identical to the index
-  std::pair< objectMap::const_iterator, objectMap::const_iterator > range =
-    mObjects.equal_range(ObjectName);
+  objectMap::range range = mObjects.equal_range(ObjectName);
 
-  objectMap::const_iterator it = range.first;
+  while (range.first != range.second && (*range.first)->getObjectType() != "ElementReference") ++range.first;
 
-  while (it != range.second && it->second->getObjectType() != "ElementReference") ++it;
-
-  if (it != range.second) //not found
+  if (range.first != range.second) //not found
     {
-      pObject = it->second;
+      pObject = *range.first;
     }
   else
     {
