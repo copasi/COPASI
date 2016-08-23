@@ -592,8 +592,12 @@ if(MSVC OR USING_INTEL)
     add_definitions( -D_MT)
     endif(WITH_STATIC_RUNTIME)
     
-    option(COPASI_USE_VLD "When running debug builds with MSVC use Visual Leak Detector." OFF)
+    # on VS enable multiprocessor build 
+    if (MSVC)
+        SET (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}" "/MP")      
+    endif()
     
+    option(COPASI_USE_VLD "When running debug builds with MSVC use Visual Leak Detector." OFF)    
     mark_as_advanced(COPASI_USE_VLD)
     
     if (COPASI_USE_VLD)
