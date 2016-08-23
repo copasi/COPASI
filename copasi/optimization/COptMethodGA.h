@@ -155,11 +155,6 @@ private:
 private:
 
   /**
-   * Handle to the process report item "Current Generation"
-   */
-  size_t mhGenerations;
-
-  /**
    * Vector used to initialize the crossover point to false
    */
   CVector< bool > mCrossOverFalse;
