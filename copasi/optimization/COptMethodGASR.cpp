@@ -412,6 +412,7 @@ bool COptMethodGASR::initialize()
   mCrossOver.resize(mVariableSize);
 
   mValues.resize(2 * mPopulationSize);
+  mValues = std::numeric_limits<double>::infinity();
 
   mpPermutation = new CPermutation(mpRandom, mPopulationSize);
 

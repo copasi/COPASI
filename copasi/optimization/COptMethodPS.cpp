@@ -344,6 +344,8 @@ bool COptMethodPS::initialize()
     mIndividuals[i] = new CVector< C_FLOAT64 >(mVariableSize);
 
   mValues.resize(mPopulationSize);
+  mValues = std::numeric_limits<double>::infinity();
+
   mVelocities.resize(mPopulationSize, mVariableSize);
   mBestValues.resize(mPopulationSize);
   mBestPositions.resize(mPopulationSize, mVariableSize);
