@@ -60,20 +60,23 @@ COptPopulationMethod::initialize()
 
   if (!COptMethod::initialize()) return false;
 
+  mCurrentGeneration = 0;
   mGenerations = 0;
 
-  if (mpCallBack   && (getSubType() != CTaskEnum::ParticleSwarm && getSubType() != CTaskEnum::ScatterSearch))
+  if (getParameter("Number of Generations") != NULL)
+    mGenerations = getValue< unsigned C_INT32 >("Number of Generations");
 
+  if (mpCallBack
+    && (getSubType() != CTaskEnum::ParticleSwarm && getSubType() != CTaskEnum::ScatterSearch))
+  {
     mhGenerations =
     mpCallBack->addItem("Current Generation",
       mCurrentGeneration,
       &mGenerations);
+  }
 
   mCurrentGeneration++;
 
-
-  if (getParameter("Number of Generations") != NULL)
-    mGenerations = getValue< unsigned C_INT32 >("Number of Generations");
 
 
   if (getParameter("Population Size") != NULL)
@@ -100,4 +103,28 @@ COptPopulationMethod::cleanup()
     pdelete(mIndividuals[i]);
   mIndividuals.clear();
   return true;
+}
+
+void COptPopulationMethod::print(std::ostream * ostream) const
+{
+  *ostream << *this;
+}
+
+
+std::ostream &operator<<(std::ostream &os, const COptPopulationMethod & o)
+{
+  os << "Population Information: " << std::endl;
+  os << "Population Size: " << o.mPopulationSize << std::endl;
+  os << "# Generations / Iterations: " << o.mGenerations << std::endl;
+  os << "Current Generation / Iteration: " << o.mCurrentGeneration << std::endl;
+  os << "Population Values: " << std::endl << "   " << o.mValues << std::endl << std::endl;
+  os << "Population:" << std::endl;
+  
+  std::vector< CVector < C_FLOAT64 > * >::const_iterator it = o.mIndividuals.begin();
+  for (; it != o.mIndividuals.end(); ++it)
+  {
+    os << "   " << **it << std::endl;
+  }
+
+  return os;
 }

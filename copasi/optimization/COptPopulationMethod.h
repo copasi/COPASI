@@ -63,6 +63,24 @@ public:
    */
   virtual bool cleanup();
 
+
+  /**
+  * This is the output method for any object. The default implementation
+  * provided with CCopasiObject uses the ostream operator<< of the object
+  * to print the object. To override this default behavior one needs to
+  * re implement the virtual print function.
+  * @param std::ostream * ostream
+  */
+  virtual void print(std::ostream * ostream) const;
+
+  /**
+  * Output stream operator
+  * @param ostream & os
+  * @param const COptProblem & A
+  * @return ostream & os
+  */
+  friend std::ostream &operator<<(std::ostream &os, const COptPopulationMethod & o);
+
 protected:
   /**
    * size of the population / swarm size

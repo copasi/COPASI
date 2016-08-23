@@ -505,7 +505,7 @@ bool COptMethodGA::optimise()
     }
 
   // the others are random
-  Continue &= creation(1, mPopulationSize);
+  Continue &= creation(1, 2* mPopulationSize);
 
 #ifdef DEBUG_OPT
   serializepop(0, mPopulationSize);

@@ -100,7 +100,7 @@ bool COptMethodSS::initialize()
     }
 
   // get total number of iterations
-  mhGenerations = getValue< unsigned C_INT32 >("Number of Iterations");
+  mGenerations = getValue< unsigned C_INT32 >("Number of Iterations");
   // set current iteration to zero
   mCurrentGeneration = 0;
 
