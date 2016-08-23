@@ -126,12 +126,7 @@ public:
   virtual bool optimise();
 
 private :
-  // variables
-
-  /**
-   * Handle to the process report item "Current Generation"
-   */
-  size_t mhGenerations;
+  // variables  
 
   size_t mBestIndex;
 
@@ -158,11 +153,6 @@ private :
    * for array of variances w/ variance values for the parameters
    */
   std::vector< CVector < C_FLOAT64 > * > mVariance;
-
-  /**
-   * The current iteration
-   */
-  unsigned C_INT32 mCurrentIteration;
 
   /**
    * Pivot vector used for sorting
