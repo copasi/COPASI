@@ -515,6 +515,8 @@ CMathContainer::~CMathContainer()
     {
       deregisterUpdateSequence(*mUpdateSequences.begin());
     }
+
+  setObjectParent(NULL);
 }
 
 const CVectorCore< C_FLOAT64 > & CMathContainer::getValues() const

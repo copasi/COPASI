@@ -125,12 +125,12 @@ CMetab * CMetabNameInterface::getMetabolite(const CModel* model,
 
 bool CMetabNameInterface::isUnique(const CModel* model, const std::string & name)
 {
-  CCopasiContainer::range Range = model->getMetabolites().getObjects().equal_range(name);
+  CCopasiContainer::objectMap::range Range = model->getMetabolites().getObjects().equal_range(name);
   CMetab * pSpecies = NULL;
   bool Found = false;
 
   for (; Range.first != Range.second; ++Range.first)
-    if ((pSpecies = dynamic_cast< CMetab * >(Range.first->second)) != NULL)
+    if ((pSpecies = dynamic_cast< CMetab * >(*Range.first)) != NULL)
       {
         if (Found) return false;
 
@@ -144,11 +144,11 @@ bool CMetabNameInterface::doesExist(const CModel* model,
                                     const std::string & metabolite,
                                     const std::string & compartment)
 {
-  CCopasiContainer::range Range = model->getMetabolites().getObjects().equal_range(metabolite);
+  CCopasiContainer::objectMap::range Range = model->getMetabolites().getObjects().equal_range(metabolite);
   CMetab * pSpecies = NULL;
 
   for (; Range.first != Range.second; ++Range.first)
-    if ((pSpecies = dynamic_cast< CMetab * >(Range.first->second)) != NULL)
+    if ((pSpecies = dynamic_cast< CMetab * >(*Range.first)) != NULL)
       {
         if (compartment.empty() ||
             pSpecies->getCompartment()->getObjectName() == compartment) return true;

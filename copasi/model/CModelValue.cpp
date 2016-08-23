@@ -335,13 +335,17 @@ bool CModelEntity::setInitialExpression(const std::string & expression)
 {
   if (mStatus == ASSIGNMENT) return false;
 
-  if (mpModel)
-    mpModel->setCompileFlag(true);
+  if ((mpInitialExpression == NULL &&
+       expression.empty()) ||
+      (mpInitialExpression != NULL &&
+       mpInitialExpression->getInfix() == expression)) return true;
 
   if (mpInitialExpression == NULL)
     {
       mpInitialExpression = new CExpression("InitialExpression", this);
     }
+
+  if (mpModel) mpModel->setCompileFlag(true);
 
   if (!mpInitialExpression->setInfix(expression)) return false;
 
