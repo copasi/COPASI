@@ -27,19 +27,22 @@ cmake_minimum_required (VERSION 2.6)
 
 project (cpp_examples)
 
-add_subdirectory(example1)
-add_subdirectory(example2)
-add_subdirectory(example3)
-add_subdirectory(example4)
-add_subdirectory(example5)
-add_subdirectory(example6)
-add_subdirectory(example7)
-add_subdirectory(example8)
-add_subdirectory(example9)
-add_subdirectory(example10)
+# discover all subdirectories that include a cmakelists file 
+MACRO(SUBDIRLIST result curdir)
+  FILE(GLOB children RELATIVE ${curdir} ${curdir}/*)
+  SET(dirlist "")
+  FOREACH(child ${children})
+    IF(IS_DIRECTORY ${curdir}/${child} AND EXISTS ${curdir}/${child}/CMakeLists.txt)
+      LIST(APPEND dirlist ${child})
+    ENDIF()
+  ENDFOREACH()
+  SET(${result} ${dirlist})
+ENDMACRO()
 
-if (ENABLE_COPASI_SEDML)
-  add_subdirectory(runSedML)
-  add_subdirectory(exportSedML)
-endif()
+# get the actual list
+SUBDIRLIST(SUBDIRS ${CMAKE_CURRENT_SOURCE_DIR})
 
+# and add the entries as sub directories
+FOREACH(subdir ${SUBDIRS})
+  add_subdirectory(${subdir})
+ENDFOREACH()
