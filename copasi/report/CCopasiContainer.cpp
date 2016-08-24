@@ -37,30 +37,33 @@
 #include "copasi/utilities/CUnit.h"
 #include "copasi/report/CCopasiRootContainer.h"
 
-#define  END_NAME (std::map< std::string, std::set< CCopasiObject * > >::iterator(NULL))
-#define  END_OBJECT (std::set< CCopasiObject * >::iterator(NULL))
-
 CCopasiContainer::CObjectMap::iterator::iterator():
   mpMap(NULL),
-  mName(END_NAME),
-  mObject(END_OBJECT)
+  mNameEnd(true),
+  mName(),
+  mObjectEnd(true),
+  mObject()
 {}
 
 CCopasiContainer::CObjectMap::iterator::iterator(const CObjectMap & map,
     const bool & begin):
   mpMap(&map),
-  mName(END_NAME),
-  mObject(END_OBJECT)
+  mNameEnd(true),
+  mName(),
+  mObjectEnd(true),
+  mObject()
 {
   if (mpMap != NULL &&
       mpMap->begin() != mpMap->end())
     {
       if (begin)
         {
+          mNameEnd = false;
           mName = const_cast< std::map< std::string, std::set< CCopasiObject * > > * >(mpMap)->begin();
 
           if (!mName->second.empty())
             {
+              mObjectEnd = false;
               mObject = mName->second.begin();
             }
         }
@@ -69,7 +72,9 @@ CCopasiContainer::CObjectMap::iterator::iterator(const CObjectMap & map,
 
 CCopasiContainer::CObjectMap::iterator::iterator(const CCopasiContainer::CObjectMap::iterator & src):
   mpMap(src.mpMap),
+  mNameEnd(src.mNameEnd),
   mName(src.mName),
+  mObjectEnd(src.mObjectEnd),
   mObject(src.mObject)
 {}
 
@@ -78,33 +83,40 @@ CCopasiContainer::CObjectMap::iterator::~iterator()
 
 CCopasiObject * CCopasiContainer::CObjectMap::iterator::operator*() const
 {
-  return *mObject;
+  if (!mObjectEnd)
+    return *mObject;
+
+  return NULL;
 }
 
 CCopasiObject * CCopasiContainer::CObjectMap::iterator::operator->() const
 {
-  return *mObject;
+  if (!mObjectEnd)
+    return *mObject;
+
+  return NULL;
 }
 
 CCopasiContainer::CObjectMap::iterator & CCopasiContainer::CObjectMap::iterator::operator++()
 {
   mObject++;
 
-  if (mObject == mName->second.end() || mObject == END_OBJECT)
+  if (mObject == mName->second.end() || mObjectEnd)
     {
-      if (mName != mpMap->end() && mName != END_NAME)
+      if (mName != mpMap->end() && !mNameEnd)
         {
           mName++;
         }
 
-      if (mName != mpMap->end() && mName != END_NAME)
+      if (mName != mpMap->end() && !mNameEnd)
         {
+          mObjectEnd = false;
           mObject = mName->second.begin();
         }
       else
         {
-          mName = END_NAME;
-          mObject = END_OBJECT;
+          mNameEnd = true;
+          mObjectEnd = true;
         }
     }
 
@@ -122,31 +134,39 @@ CCopasiContainer::CObjectMap::iterator CCopasiContainer::CObjectMap::iterator::o
 bool CCopasiContainer::CObjectMap::iterator::operator != (const iterator & rhs) const
 {
   return (mpMap != rhs.mpMap ||
-          mName != rhs.mName ||
-          mObject != rhs.mObject);
+          mNameEnd != rhs.mNameEnd ||
+          mObjectEnd != rhs.mObjectEnd ||
+          (!mNameEnd && mName != rhs.mName) ||
+          (!mObjectEnd && mObject != rhs.mObject));
 }
 
 CCopasiContainer::CObjectMap::const_iterator::const_iterator():
   mpMap(NULL),
-  mName(END_NAME),
-  mObject(END_OBJECT)
+  mNameEnd(true),
+  mName(),
+  mObjectEnd(true),
+  mObject()
 {}
 
 CCopasiContainer::CObjectMap::const_iterator::const_iterator(const CObjectMap & map,
     const bool & begin):
   mpMap(&map),
-  mName(END_NAME),
-  mObject(END_OBJECT)
+  mNameEnd(true),
+  mName(),
+  mObjectEnd(true),
+  mObject()
 {
   if (mpMap != NULL &&
       mpMap->begin() != mpMap->end())
     {
       if (begin)
         {
+          mNameEnd = false;
           mName = const_cast< std::map< std::string, std::set< CCopasiObject * > > * >(mpMap)->begin();
 
           if (!mName->second.empty())
             {
+              mObjectEnd = false;
               mObject = mName->second.begin();
             }
         }
@@ -155,7 +175,9 @@ CCopasiContainer::CObjectMap::const_iterator::const_iterator(const CObjectMap & 
 
 CCopasiContainer::CObjectMap::const_iterator::const_iterator(const CCopasiContainer::CObjectMap::const_iterator & src):
   mpMap(src.mpMap),
+  mNameEnd(src.mNameEnd),
   mName(src.mName),
+  mObjectEnd(src.mObjectEnd),
   mObject(src.mObject)
 {}
 
@@ -176,21 +198,22 @@ CCopasiContainer::CObjectMap::const_iterator & CCopasiContainer::CObjectMap::con
 {
   mObject++;
 
-  if (mObject == mName->second.end() || mObject == END_OBJECT)
+  if (mObject == mName->second.end() || mObjectEnd)
     {
-      if (mName != mpMap->end() && mName != END_NAME)
+      if (mName != mpMap->end() && !mNameEnd)
         {
           mName++;
         }
 
-      if (mName != mpMap->end() && mName != END_NAME)
+      if (mName != mpMap->end() && !mNameEnd)
         {
+          mObjectEnd = false;
           mObject = mName->second.begin();
         }
       else
         {
-          mName = END_NAME;
-          mObject = END_OBJECT;
+          mNameEnd = true;
+          mObjectEnd = true;
         }
     }
 
@@ -208,8 +231,10 @@ CCopasiContainer::CObjectMap::const_iterator CCopasiContainer::CObjectMap::const
 bool CCopasiContainer::CObjectMap::const_iterator::operator != (const const_iterator & rhs) const
 {
   return (mpMap != rhs.mpMap ||
-          mName != rhs.mName ||
-          mObject != rhs.mObject);
+          mNameEnd != rhs.mNameEnd ||
+          mObjectEnd != rhs.mObjectEnd ||
+          (!mNameEnd && mName != rhs.mName) ||
+          (!mObjectEnd && mObject != rhs.mObject));
 }
 
 CCopasiContainer::CObjectMap::CObjectMap():
@@ -227,7 +252,7 @@ std::pair< std::set< CCopasiObject * >::iterator, bool > CCopasiContainer::CObje
 {
   if (pObject == NULL)
     {
-      return std::make_pair(END_OBJECT, false);
+      return std::make_pair(std::set< CCopasiObject * >::iterator(), false);
     }
 
   std::map< std::string, std::set< CCopasiObject * > >::iterator itMap = data::find(pObject->getObjectName());
@@ -289,7 +314,7 @@ std::pair< std::set< CCopasiObject * >::const_iterator, std::set< CCopasiObject 
       return std::make_pair(itMap->second.begin(), itMap->second.end());
     }
 
-  return std::make_pair(END_OBJECT, END_OBJECT);
+  return std::make_pair(std::set< CCopasiObject * >::iterator(), std::set< CCopasiObject * >::iterator());
 }
 
 CCopasiContainer::CObjectMap::iterator CCopasiContainer::CObjectMap::begin()
@@ -338,7 +363,7 @@ CCopasiContainer::~CCopasiContainer()
   objectMap::iterator it = mObjects.begin();
   objectMap::iterator end = mObjects.end();
 
-  for (; it != end; it++)
+  for (; it != end; ++it)
     if (*it != NULL &&
         (*it)->getObjectParent() == this)
       {
