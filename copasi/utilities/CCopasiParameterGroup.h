@@ -59,8 +59,11 @@ public:
 
   private:
     const CCopasiParameterGroup * mpGroup;
+    bool mNameEnd;
     std::map< std::string, std::set< CCopasiObject * > >::iterator mName;
+    bool mObjectEnd;
     std::set< CCopasiObject * >::iterator mObject;
+    bool mParameterEnd;
     std::vector< CCopasiParameter * >::iterator mParameter;
   };
 
