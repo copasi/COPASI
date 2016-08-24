@@ -24,6 +24,7 @@
 #include "UI/CProgressBar.h"
 #include "UI/CQExperimentData.h"
 #include "UI/CQOptPopulation.h"
+#include "UI/CQCopasiApplication.h"
 
 #include <copasi/utilities/CCopasiMessage.h>
 #include <copasi/UI/CQMessageBox.h>
@@ -299,9 +300,10 @@ bool CQFittingWidget::runTask()
   if (!commonBeforeRunTask()) return false;
 
 
+//#define POP_DISPLAY
 #ifdef POP_DISPLAY
   //Preliminary: Create a Pop-Widget, should be controled somewhere else
-  CQOptPopulation* pPopWidget = new CQOptPopulation(&CCopasiRootContainer::getDatamodelList()->operator[](0), NULL);
+  CQOptPopulation* pPopWidget = new CQOptPopulation(&CCopasiRootContainer::getDatamodelList()->operator[](0), dynamic_cast<CQCopasiApplication*>(qApp)->getMainWindow());
   pPopWidget->setMethod(dynamic_cast<COptMethod*>(pTask->getMethod()));
   pPopWidget->show();
   CCopasiRootContainer::getDatamodelList()->operator[](0).addInterface(pPopWidget);

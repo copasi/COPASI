@@ -555,6 +555,7 @@ bool COptMethodPS::optimise()
       if (mpCallBack)
         mContinue &= mpCallBack->progressItem(mhGenerations);
     
+//#define POP_DISPLAY
 #ifdef POP_DISPLAY
       //use a different output channel. It will later get a proper enum name
       mpParentTask->output(COutputInterface::Activity(8));
