@@ -28,6 +28,7 @@
 #include "UI/CQMessageBox.h"
 #include "UI/qtUtilities.h"
 #include "resourcesUI/CQIconResource.h"
+#include "optimization/COptPopulationMethod.h"
 
 #ifdef DEBUG_UI
 #include <QtCore/QtDebug>
@@ -64,6 +65,7 @@ CQOptPopulation::CQOptPopulation(COutputHandler * pHandler, CopasiUI3Window * pM
   mpWindowMenu(NULL),
   mpToolBar(NULL),
   mpaCloseWindow(NULL),
+  mCounter(0),
   initializing(false)
 {
   this->resize(640, 480);
@@ -84,6 +86,9 @@ CQOptPopulation::CQOptPopulation(COutputHandler * pHandler, CopasiUI3Window * pM
   initializing = false;
 
   addToMainWindow(mpMainWindow);
+  
+  connect(this, SIGNAL(updateSignal()), this, SLOT(update()));
+
 }
 
 void CQOptPopulation::createMenus()
@@ -136,6 +141,13 @@ bool CQOptPopulation::initFromSpec()
   return false;
 }
 
+void CQOptPopulation::setMethod(COptMethod* pMethod)
+{
+  mpSourceMethod = pMethod;
+  mpPopulationMethod = dynamic_cast<COptPopulationMethod*>(pMethod);
+}
+
+
 void CQOptPopulation::saveToFile(const QString& fileName) const
 {
 }
@@ -170,6 +182,14 @@ bool CQOptPopulation::compile(CObjectInterface::ContainerList listOfContainer)
 
 void CQOptPopulation::output(const Activity & activity)
 {
+  //dummy code for now
+  mData.resize(10);
+  mData[0]=9.0;
+ 
+  mCounter++;
+ 
+  emit updateSignal();
+ 
 }
 
 void CQOptPopulation::separate(const Activity & activity)
@@ -196,5 +216,42 @@ void CQOptPopulation::closeEvent(QCloseEvent *closeEvent)
 {
   mpMainWindow->removeWindow(this);
   mpHandler->removeInterface(this);
+}
+
+void CQOptPopulation::update()
+{
+ 
+ std::cout << "output in main thread" << std::endl;
+ 
+ /*  if (mNextPlotTime < CCopasiTimeVariable::getCurrentWallTime())
+    {
+      // skip rendering when shift is pressed
+      Qt::KeyboardModifiers mods = QApplication::keyboardModifiers();
+
+      if (((int)mods & (int)Qt::ShiftModifier) == (int)Qt::ShiftModifier &&
+          !mNextPlotTime.isZero())
+        {
+          mReplotFinished = true;
+          return;
+        }
+
+      CCopasiTimeVariable Delta = CCopasiTimeVariable::getCurrentWallTime();
+
+      {
+        QMutexLocker Locker(&mMutex);
+        updateCurves(C_INVALID_INDEX);
+      }
+
+      QwtPlot::replot();
+
+      Delta = CCopasiTimeVariable::getCurrentWallTime() - Delta;
+
+      if (!mSpectogramMap.empty())
+        mNextPlotTime = CCopasiTimeVariable::getCurrentWallTime() + 10 * Delta.getMicroSeconds();
+      else
+        mNextPlotTime = CCopasiTimeVariable::getCurrentWallTime() + 3 * Delta.getMicroSeconds();
+    }
+
+  mReplotFinished = true;*/
 }
 

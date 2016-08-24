@@ -26,6 +26,8 @@ class CCopasiContainer;
 class CopasiUI3Window;
 class QMenu;
 class QAction;
+class COptMethod;
+class COptPopulationMethod;
 
 class CQOptPopulation : public CWindowInterface, public COutputInterface
 {
@@ -39,6 +41,13 @@ private:
 
   QToolBar * mpToolBar;
   QAction *mpaCloseWindow;
+  
+  COptMethod * mpSourceMethod;
+  COptPopulationMethod * mpPopulationMethod;
+  
+  C_INT32 mCounter;
+  
+  std::vector<C_FLOAT64> mData;
 
   bool initializing;
 
@@ -53,6 +62,8 @@ public:
 
   bool initFromSpec();
 
+  ///set the method that is the data source
+  void setMethod(COptMethod* pMethod);
 
   /**
    *
@@ -104,7 +115,14 @@ private slots:
   void slotSaveData();
   void slotCloseWindow();
 
+public slots:
+  virtual void update();
+
 
 protected:
   virtual void closeEvent(QCloseEvent *closeEvent);
+  
+signals:
+  void updateSignal();
+  
 };
