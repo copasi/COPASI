@@ -216,9 +216,9 @@ bool COptProblem::elevateChildren()
 
           removeParameter("ObjectiveFunction");
         }
-
-      setObjectiveFunction(*mpParmObjectiveExpression);
     }
+
+  setObjectiveFunction(*mpParmObjectiveExpression);
 
   mpGrpItems =
     elevate<CCopasiParameterGroup, CCopasiParameterGroup>(mpGrpItems);
@@ -470,9 +470,8 @@ bool COptProblem::restore(const bool & updateModel)
   if (mFailedCounter * 20 > mCounter) // > 5% failure rate
     CCopasiMessage(CCopasiMessage::WARNING, MCOptimization + 8, mFailedCounter, mCounter);
 
-
-  if (10 * mFailedConstraintCounter > 8 * (mConstraintCounter-1)) // > 80 % failure rate
-    CCopasiMessage(CCopasiMessage::WARNING, MCOptimization + 9, mFailedConstraintCounter, mConstraintCounter-1);
+  if (10 * mFailedConstraintCounter > 8 * (mConstraintCounter - 1)) // > 80 % failure rate
+    CCopasiMessage(CCopasiMessage::WARNING, MCOptimization + 9, mFailedConstraintCounter, mConstraintCounter - 1);
 
   return success;
 }
@@ -722,6 +721,8 @@ CVectorCore< C_FLOAT64 * > & COptProblem::getContainerVariables() const
 
 bool COptProblem::setObjectiveFunction(const std::string & infix)
 {
+  if (mpParmObjectiveExpression == NULL) return false;
+
   *mpParmObjectiveExpression = infix;
 
   if (mpObjectiveExpression == NULL)
@@ -732,6 +733,12 @@ bool COptProblem::setObjectiveFunction(const std::string & infix)
 
 const std::string COptProblem::getObjectiveFunction()
 {
+  if (mpObjectiveExpression != NULL)
+    {
+      mpObjectiveExpression->updateInfix();
+      *mpParmObjectiveExpression = mpObjectiveExpression->getInfix();
+    }
+
   return *mpParmObjectiveExpression;
 }
 

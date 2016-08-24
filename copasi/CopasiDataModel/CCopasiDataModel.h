@@ -69,7 +69,8 @@ public:
    * Enable and disable the rename handler
    * @param const bool & enabled
    */
-  void setEnabled(const bool & enabled);
+  virtual void setEnabled(const bool & enabled);
+  virtual bool isEnabled() const;
 
 private:
   /**
