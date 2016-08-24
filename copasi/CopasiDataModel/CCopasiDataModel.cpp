@@ -110,11 +110,17 @@ void CDataModelRenameHandler::handle(const std::string & oldCN, const std::strin
   return;
 }
 
+// virtual
 void CDataModelRenameHandler::setEnabled(const bool & enabled)
 {
   mEnabled = enabled;
 }
 
+// virtual
+bool CDataModelRenameHandler::isEnabled() const
+{
+  return mEnabled;
+}
 //********************************************************************
 
 CCopasiDataModel::CCopasiDataModel(const bool withGUI):
@@ -584,7 +590,9 @@ bool CCopasiDataModel::newModel(CProcessReport* pProcessReport,
   //deal with the CModel
   pushData();
 
+  mRenameHandler.setEnabled(false);
   commonAfterLoad(pProcessReport, deleteOldData);
+  mRenameHandler.setEnabled(true);
 
   return true;
 }

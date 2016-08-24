@@ -361,9 +361,11 @@ C_INT32 CModel::load(CReadConfig & configBuffer)
 bool CModel::compile()
 {
   bool success = true;
+  bool RenameHandlerEnabled = false;
 
   if (CCopasiObject::smpRenameHandler != NULL)
     {
+      RenameHandlerEnabled = CCopasiObject::smpRenameHandler->isEnabled();
       CCopasiObject::smpRenameHandler->setEnabled(false);
     }
 
@@ -494,7 +496,7 @@ finish:
   // on consistency between the stoichiometry matrix, reduced stoichiometry matrix and the Link matrix..
   mL.clearPivoting();
 
-  if (CCopasiObject::smpRenameHandler != NULL)
+  if (RenameHandlerEnabled)
     {
       CCopasiObject::smpRenameHandler->setEnabled(true);
     }
