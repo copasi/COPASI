@@ -17,8 +17,15 @@ CQArrayAnnotationsWidgetDM::CQArrayAnnotationsWidgetDM(QObject *parent):
   mpArray(NULL),
   mIndex(),
   mRow(C_INVALID_INDEX),
-  mColumn(C_INVALID_INDEX)
+  mColumn(C_INVALID_INDEX),
+  mHeaderData(new QStringList[3])
 {}
+
+// We need 3 since
+// enum Orientation {
+//     Horizontal = 0x1,
+//     Vertical = 0x2
+// };
 
 CQArrayAnnotationsWidgetDM::~CQArrayAnnotationsWidgetDM()
 {}
@@ -76,7 +83,7 @@ QVariant CQArrayAnnotationsWidgetDM::headerData(int section, Qt::Orientation ori
           return QVariant();
         }
 
-      return QVariant(FROM_UTF8(mpArray->getAnnotationsString(mRow)[section]));
+      return QVariant(mHeaderData[orientation][section]);
     }
   else
     {
@@ -89,10 +96,10 @@ QVariant CQArrayAnnotationsWidgetDM::headerData(int section, Qt::Orientation ori
 
       if (role == Qt::DisplayRole)
         {
-          return QVariant(FROM_UTF8(mpArray->getAnnotationsString(mColumn)[section]).replace("; {", "\n{"));
+          return QVariant(QString(mHeaderData[orientation][section]).replace("; {", "\n{"));
         }
 
-      return QVariant(FROM_UTF8(mpArray->getAnnotationsString(mColumn)[section]));
+      return QVariant(mHeaderData[orientation][section]);
     }
 
   return QVariant();
@@ -143,6 +150,28 @@ void CQArrayAnnotationsWidgetDM::setContext(const CColorScale * pColorScale,
       mIndex = index;
       mRow = row;
       mColumn = column;
+
+      mHeaderData[Qt::Horizontal].clear();
+      mHeaderData[Qt::Vertical].clear();
+
+      if (mpArray != NULL)
+        {
+          const std::vector< std::string > & Horizontal = mpArray->getAnnotationsString(mColumn);
+
+          std::vector< std::string >::const_iterator it = Horizontal.begin();
+          std::vector< std::string >::const_iterator end = Horizontal.end();
+
+          for (; it != end; ++it)
+            mHeaderData[Qt::Horizontal].append(FROM_UTF8(*it));
+
+          const std::vector< std::string > & Vertical = mpArray->getAnnotationsString(mRow);
+
+          it = Vertical.begin();
+          end = Vertical.end();
+
+          for (; it != end; ++it)
+            mHeaderData[Qt::Vertical].append(FROM_UTF8(*it));
+        }
 
       endResetModel();
     }
