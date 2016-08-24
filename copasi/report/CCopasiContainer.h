@@ -67,7 +67,9 @@ public:
 
     private:
       const std::map< std::string, std::set< CCopasiObject * > > * mpMap;
+      bool mNameEnd;
       std::map< std::string, std::set< CCopasiObject * > >::iterator mName;
+      bool mObjectEnd;
       std::set< CCopasiObject * >::iterator mObject;
     };
 
@@ -95,7 +97,9 @@ public:
 
     private:
       const std::map< std::string, std::set< CCopasiObject * > > * mpMap;
+      bool mNameEnd;
       std::map< std::string, std::set< CCopasiObject * > >::iterator mName;
+      bool mObjectEnd;
       std::set< CCopasiObject * >::iterator mObject;
     };
 

@@ -29,37 +29,42 @@
 
 #include "utilities/utility.h"
 
-#define  END_NAME (std::map< std::string, std::set< CCopasiObject * > >::iterator(NULL))
-#define  END_OBJECT (std::set< CCopasiObject * >::iterator(NULL))
-#define  END_PARAMETER (std::vector< CCopasiParameter * >::iterator(NULL))
-
 CCopasiParameterGroup::name_iterator::name_iterator():
   mpGroup(NULL),
-  mName(END_NAME),
-  mObject(END_OBJECT),
-  mParameter(END_PARAMETER)
+  mNameEnd(true),
+  mName(),
+  mObjectEnd(true),
+  mObject(),
+  mParameterEnd(true),
+  mParameter()
 {}
 
 CCopasiParameterGroup::name_iterator::name_iterator(const CCopasiParameterGroup & group,
     const bool & begin):
   mpGroup(&group),
-  mName(END_NAME),
-  mObject(END_OBJECT),
-  mParameter(END_PARAMETER)
+  mNameEnd(true),
+  mName(),
+  mObjectEnd(true),
+  mObject(),
+  mParameterEnd(true),
+  mParameter()
 {
   if (mpGroup != NULL &&
       mpGroup->mObjects.begin() != mpGroup->mObjects.end())
     {
       if (begin)
         {
+          mNameEnd = false;
           mName = reinterpret_cast< objectMap::data * >(const_cast< objectMap * >(&mpGroup->mObjects))->begin();
 
           if (!mName->second.empty())
             {
+              mObjectEnd = false;
               mObject = mName->second.begin();
 
               if (mName->second.size() > 1)
                 {
+                  mParameterEnd = false;
                   mParameter = mpGroup->beginIndex();
 
                   while (mParameter != mpGroup->endIndex() &&
@@ -67,7 +72,7 @@ CCopasiParameterGroup::name_iterator::name_iterator(const CCopasiParameterGroup 
                     ++mParameter;
 
                   if (mParameter == mpGroup->endIndex())
-                    mParameter = END_PARAMETER;
+                    mParameterEnd = true;
                 }
             }
         }
@@ -76,8 +81,11 @@ CCopasiParameterGroup::name_iterator::name_iterator(const CCopasiParameterGroup 
 
 CCopasiParameterGroup::name_iterator::name_iterator(const CCopasiParameterGroup::name_iterator & src):
   mpGroup(src.mpGroup),
+  mNameEnd(src.mNameEnd),
   mName(src.mName),
+  mObjectEnd(src.mObjectEnd),
   mObject(src.mObject),
+  mParameterEnd(src.mParameterEnd),
   mParameter(src.mParameter)
 {}
 
@@ -86,24 +94,30 @@ CCopasiParameterGroup::name_iterator::~name_iterator()
 
 CCopasiObject * CCopasiParameterGroup::name_iterator::operator*() const
 {
-  if (mParameter != END_PARAMETER)
+  if (!mParameterEnd)
     return *mParameter;
 
-  return *mObject;
+  if (!mObjectEnd)
+    return *mObject;
+
+  return NULL;
 }
 
 CCopasiObject * CCopasiParameterGroup::name_iterator::operator->() const
 {
-  if (mParameter != END_PARAMETER)
+  if (!mParameterEnd)
     return *mParameter;
 
-  return *mObject;
+  if (!mObjectEnd)
+    return *mObject;
+
+  return NULL;
 }
 
 CCopasiParameterGroup::name_iterator & CCopasiParameterGroup::name_iterator::operator++()
 {
   // We first advance through all parameters
-  if (mParameter != END_PARAMETER)
+  if (!mParameterEnd)
     {
       ++mParameter;
 
@@ -115,17 +129,17 @@ CCopasiParameterGroup::name_iterator & CCopasiParameterGroup::name_iterator::ope
       if (mParameter != mpGroup->endIndex())
         return *this;
 
-      mParameter = END_PARAMETER;
+      mParameterEnd = true;
     }
-  else if (mObject != END_OBJECT)
+  else if (!mObjectEnd)
     {
       ++mObject;
 
       if (mObject == mName->second.end())
-        mObject = END_OBJECT;
+        mObjectEnd = true;
     }
 
-  if (mObject != END_OBJECT)
+  if (!mObjectEnd)
     {
       // We need to skip the parameters which have been handled above;
       while (mObject != mName->second.end() &&
@@ -135,19 +149,21 @@ CCopasiParameterGroup::name_iterator & CCopasiParameterGroup::name_iterator::ope
       if (mObject != mName->second.end())
         return *this;
 
-      mObject = END_OBJECT;
+      mObjectEnd = true;
     }
 
-  if (mName != END_NAME)
+  if (!mNameEnd)
     {
       ++mName;
 
       if (mName != reinterpret_cast< objectMap::data * >(const_cast< objectMap * >(&mpGroup->mObjects))->end())
         {
+          mObjectEnd = false;
           mObject = mName->second.begin();
 
           if (mName->second.size() > 1)
             {
+              mParameterEnd = false;
               mParameter = mpGroup->beginIndex();
 
               while (mParameter != mpGroup->endIndex() &&
@@ -155,12 +171,12 @@ CCopasiParameterGroup::name_iterator & CCopasiParameterGroup::name_iterator::ope
                 ++mParameter;
 
               if (mParameter == mpGroup->endIndex())
-                mParameter = END_PARAMETER;
+                mParameterEnd = true;
             }
         }
       else
         {
-          mName = END_NAME;
+          mNameEnd = true;
         }
     }
 
@@ -178,9 +194,12 @@ CCopasiParameterGroup::name_iterator CCopasiParameterGroup::name_iterator::opera
 bool CCopasiParameterGroup::name_iterator::operator != (const CCopasiParameterGroup::name_iterator & rhs) const
 {
   return (mpGroup != rhs.mpGroup ||
-          mName != rhs.mName ||
-          mObject != rhs.mObject ||
-          mParameter != rhs.mParameter);
+          mNameEnd != rhs.mNameEnd ||
+          mObjectEnd != rhs.mObjectEnd ||
+          mParameterEnd != rhs.mParameterEnd ||
+          (!mNameEnd && mName != rhs.mName) ||
+          (!mObjectEnd && mObject != rhs.mObject) ||
+          (!mParameterEnd && mParameter != rhs.mParameter));
 }
 
 CCopasiParameterGroup::CCopasiParameterGroup():
