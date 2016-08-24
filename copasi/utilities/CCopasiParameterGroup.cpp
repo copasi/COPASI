@@ -167,7 +167,7 @@ CCopasiParameterGroup::name_iterator & CCopasiParameterGroup::name_iterator::ope
               mParameter = mpGroup->beginIndex();
 
               while (mParameter != mpGroup->endIndex() &&
-                     (*mParameter)->getObjectName() == mName->first)
+                     (*mParameter)->getObjectName() != mName->first)
                 ++mParameter;
 
               if (mParameter == mpGroup->endIndex())
