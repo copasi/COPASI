@@ -314,7 +314,8 @@ std::pair< std::set< CCopasiObject * >::const_iterator, std::set< CCopasiObject 
       return std::make_pair(itMap->second.begin(), itMap->second.end());
     }
 
-  return std::make_pair(std::set< CCopasiObject * >::iterator(), std::set< CCopasiObject * >::iterator());
+  static std::set< CCopasiObject * > Set;
+  return std::make_pair(Set.begin(), Set.end());
 }
 
 CCopasiContainer::CObjectMap::iterator CCopasiContainer::CObjectMap::begin()
