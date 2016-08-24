@@ -733,7 +733,8 @@ bool CEvaluationTree::hasDiscontinuity() const
           case (CEvaluationNode::CALL | CEvaluationNodeCall::EXPRESSION):
 
             // If the called tree has a discontinuity so do we.
-            if (static_cast< CEvaluationNodeCall * >(*it)->getCalledTree()->hasDiscontinuity())
+            if (static_cast< CEvaluationNodeCall * >(*it)->getCalledTree() != NULL &&
+                static_cast< CEvaluationNodeCall * >(*it)->getCalledTree()->hasDiscontinuity())
               {
                 return true;
               }
