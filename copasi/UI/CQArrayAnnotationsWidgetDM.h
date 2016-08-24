@@ -1,10 +1,12 @@
-// Copyright (C) 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2015 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
 #ifndef COPASI_CQArrayAnnotationsWidgetDM
 #define COPASI_CQArrayAnnotationsWidgetDM
+
+#include <QStringList>
 
 #include <QAbstractTableModel>
 #include <vector>
@@ -38,6 +40,7 @@ private:
   mutable std::vector< size_t > mIndex;
   size_t mRow;
   size_t mColumn;
+  QStringList * mHeaderData;
 };
 
 #endif // COPASI_CQArrayAnnotationsWidgetDM
