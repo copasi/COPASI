@@ -1,22 +1,13 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
-// All rights reserved.
-
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
-// All rights reserved.
-
-// Copyright (C) 2003 - 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
 #include <fstream>
 #include <string>
 #include <vector>
 #include <QtGui/QToolButton>
-#include <QTGui/QGraphicsScene>
+#include <QtGui/QGraphicsScene>
 
 #include "copasi/copasi.h"
 #include "copasi/UI/CopasiFileDialog.h"
@@ -42,32 +33,29 @@ private:
 
   QToolBar * mpToolBar;
   QAction *mpaCloseWindow;
-  
+
   COptMethod * mpSourceMethod;
   COptPopulationMethod * mpPopulationMethod;
-  
+
   C_INT32 mCounter;
-  
+
   std::vector< CVector < C_FLOAT64 > * > mPopulation;
   CVector<C_FLOAT64> mObjectiveValues;
-  
+
   bool mDataInitialized;
   bool mGraphInitialized;
-  
 
   bool initializing;
-  
+
   C_INT32 mNumParameters;
   std::vector<C_FLOAT64> mRangeMin;
   std::vector<C_FLOAT64> mRangeMax;
   std::vector<bool> mIsLog;
-  
-  
+
   std::vector< std::vector<C_FLOAT64> > mScaledData;
 
   QGraphicsScene * mpGS;
   QGraphicsView * mpGV;
-  
 
   void createToolBar();
   void createMenus();
@@ -136,11 +124,9 @@ private slots:
 public slots:
   virtual void update();
 
-
 protected:
   virtual void closeEvent(QCloseEvent *closeEvent);
-  
+
 signals:
   void updateSignal();
-  
 };
