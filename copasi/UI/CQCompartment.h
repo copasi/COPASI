@@ -54,6 +54,8 @@ private:
   bool mChanged;
   bool mExpressionValid;
   bool mInitialExpressionValid;
+  QString mValueUnits;
+  QString mRateUnits;
 
   void init();
   void load();
@@ -70,6 +72,7 @@ private slots:
   void slotExpressionValid(bool valid);
   void slotInitialExpressionValid(bool valid);
   void slotMetaboliteTableCurrentChanged(int row, int col);
+  void slotDimesionalityChanged(int);
 
   //additional functions for UNDO framework
   void deleteCompartment();

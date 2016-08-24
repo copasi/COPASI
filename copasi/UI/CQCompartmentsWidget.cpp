@@ -35,6 +35,7 @@ CQCompartmentsWidget::CQCompartmentsWidget(QWidget* parent, const char* name)
 
   //Create Source Data Model.
   mpCompartmentDM = new CQCompartmentDM(this);
+  mpCompartmentDM->setDataModel(mpDataModel);
 
   //Create the Proxy Model for sorting/filtering and set its properties.
   mpProxyModel = new CQSortFilterProxyModel();
@@ -143,14 +144,16 @@ bool CQCompartmentsWidget::enterProtected()
                  this, SLOT(slotSelectionChanged(const QItemSelection&, const QItemSelection&)));
     }
 
+  mpCompartmentDM->setDataModel(mpDataModel);
   mpProxyModel->setSourceModel(mpCompartmentDM);
-  //Set Model for the TableView
   mpTblCompartments->setModel(NULL);
   mpTblCompartments->setModel(mpProxyModel);
+  mpTblCompartments->resizeColumnsToContents();
+
   connect(mpTblCompartments->selectionModel(), SIGNAL(selectionChanged(const QItemSelection&, const QItemSelection&)),
           this, SLOT(slotSelectionChanged(const QItemSelection&, const QItemSelection&)));
+
   updateDeleteBtns();
-  mpTblCompartments->resizeColumnsToContents();
 
   return true;
 }

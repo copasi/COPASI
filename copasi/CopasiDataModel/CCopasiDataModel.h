@@ -215,13 +215,13 @@ public:
 
 #ifdef WITH_COMBINE_ARCHIVE
 
-  bool exportCombineArchive(std::string fileName, 
-                              bool includeCOPASI=true, 
-                              bool includeSBML=true, 
-                              bool includeData=true, 
-                              bool includeSEDML=false, 
-                              bool overwriteFile = false,
-                              CProcessReport* pProgressReport = NULL);
+  bool exportCombineArchive(std::string fileName,
+                            bool includeCOPASI = true,
+                            bool includeSBML = true,
+                            bool includeData = true,
+                            bool includeSEDML = false,
+                            bool overwriteFile = false,
+                            CProcessReport* pProgressReport = NULL);
 
   bool openCombineArchive(const std::string& fileName, CProcessReport* pProgressReport = NULL,
                           const bool & deleteOldData = true);

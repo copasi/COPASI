@@ -170,13 +170,7 @@ bool CReactionInterface::loadMappingAndValues(const CReaction & rea)
   SubList.resize(1);
   SubList[0] = "unknown";
 
-  mNameMap.resize(size());
-
-  for (i = 0; i != size(); ++i)
-    {
-      mNameMap[i] = SubList;
-    }
-
+  mNameMap.resize(size(), std::vector< std::string >(1, "unknown"));
   mValues.resize(size(), 0.1);
   mIsLocal.resize(size(), false);
 
@@ -879,6 +873,11 @@ CReactionInterface::getFunctionDescription() const
 const CFunction *
 CReactionInterface::getFunction() const
 {
+  if (mpFunction == NULL)
+    {
+      return CCopasiRootContainer::getUndefinedFunction();
+    }
+
   return mpFunction;
 }
 
@@ -966,6 +965,120 @@ CReactionInterface::getMapping(size_t index) const
 {
   assert(!isVector(index));
   return mNameMap[index][0];
+}
+
+std::vector< std::string > CReactionInterface::getUnitVector(size_t index) const
+{
+  std::vector< std::string > Units;
+
+  switch (getUsage(index))
+    {
+      case CFunctionParameter::SUBSTRATE:
+      case CFunctionParameter::PRODUCT:
+      case CFunctionParameter::MODIFIER:
+      {
+        std::vector< std::string >::const_iterator it = mNameMap[index].begin();
+        std::vector< std::string >::const_iterator end = mNameMap[index].end();
+
+        for (; it != end; ++it)
+          {
+            std::pair< std::string, std::string > Names = CMetabNameInterface::splitDisplayName(*it);
+            size_t Index = mpModel->getCompartments().getIndex(Names.second);
+
+            if (Index != C_INVALID_INDEX)
+              {
+                Units.push_back(mpModel->getQuantityUnit() + "/(" + mpModel->getCompartments()[Index].getUnits() + ")");
+              }
+            else
+              {
+                Units.push_back(mpModel->getQuantityUnit() + "/(" + mpModel->getVolumeUnit() + ")");
+              }
+          }
+      }
+      break;
+
+      case CFunctionParameter::PARAMETER:
+      case CFunctionParameter::VARIABLE:
+      case CFunctionParameter::TEMPORARY:
+      case CFunctionParameter::VOLUME:
+      case CFunctionParameter::TIME:
+        break;
+    }
+
+  return Units;
+}
+
+std::string CReactionInterface::getUnit(size_t index) const
+{
+  assert(!isVector(index));
+
+  switch (getUsage(index))
+    {
+      case CFunctionParameter::SUBSTRATE:
+      case CFunctionParameter::PRODUCT:
+      case CFunctionParameter::MODIFIER:
+      {
+        std::pair< std::string, std::string > Names = CMetabNameInterface::splitDisplayName(mNameMap[index][0]);
+        size_t Index = mpModel->getCompartments().getIndex(Names.second);
+
+        if (Index != C_INVALID_INDEX)
+          {
+            return mpModel->getQuantityUnit() + "/(" + mpModel->getCompartments()[Index].getUnits() + ")";
+          }
+        else
+          {
+            return mpModel->getQuantityUnit() + "/(" + mpModel->getVolumeUnit() + ")";
+          }
+      }
+      break;
+
+      case CFunctionParameter::PARAMETER:
+
+        if (isLocalValue(index))
+          {
+            return "?";
+          }
+        else
+          {
+            size_t Index = mpModel->getModelValues().getIndex(mNameMap[index][0]);
+
+            if (Index != C_INVALID_INDEX)
+              {
+                return mpModel->getModelValues()[Index].getUnits();
+              }
+            else
+              {
+                return "?";
+              }
+          }
+
+        break;
+
+      case CFunctionParameter::VARIABLE:
+      case CFunctionParameter::TEMPORARY:
+        return "?";
+
+      case CFunctionParameter::VOLUME:
+      {
+        size_t Index = mpModel->getCompartments().getIndex(mNameMap[index][0]);
+
+        if (Index != C_INVALID_INDEX)
+          {
+            return mpModel->getCompartments()[Index].getUnits();
+          }
+        else
+          {
+            return mpModel->getVolumeUnit();
+          }
+      }
+      break;
+
+      case CFunctionParameter::TIME:
+        return mpModel->getUnits();
+        break;
+    }
+
+  return "?";
 }
 
 void
@@ -1161,12 +1274,35 @@ CReaction::KineticLawUnit CReactionInterface::getEffectiveKineticLawUnitType() c
 
 std::string CReactionInterface::getConcentrationRateUnit() const
 {
-  return mpModel->getConcentrationRateUnitsDisplayString();
+  size_t Index = mpModel->getCompartments().getIndex(getDefaultScalingCompartment());
+
+  if (Index == C_INVALID_INDEX)
+    {
+      return mpModel->getQuantityUnit() + "/(" + mpModel->getVolumeUnit() + "*" + mpModel->getTimeUnit() + ")";
+    }
+
+  CCompartment & Compartment = mpModel->getCompartments()[Index];
+
+  return mpModel->getQuantityUnit() + "/(" + Compartment.getUnits() + "*" + mpModel->getTimeUnit() + ")";
 }
 
 std::string CReactionInterface::getAmountRateUnit() const
 {
-  return mpModel->getQuantityRateUnitsDisplayString();
+  return mpModel->getQuantityUnit() + "/(" + mpModel->getTimeUnit() + ")";
+}
+
+std::string CReactionInterface::getEffectiveKineticLawUnit() const
+{
+  switch (getEffectiveKineticLawUnitType())
+    {
+      case CReaction::AmountPerTime:
+        return getAmountRateUnit();
+        break;
+
+      case CReaction::ConcentrationPerTime:
+        return getConcentrationRateUnit();
+        break;
+    }
 }
 
 void CReactionInterface::setScalingCompartment(const std::string & scalingCompartment)

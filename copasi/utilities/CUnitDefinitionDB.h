@@ -36,10 +36,19 @@ public:
 
   bool changeSymbol(CUnitDefinition *pUnitDef, const std::string & symbol);
 
-  std::set< CUnit > getAllValidUnits(const std::string & expression,
-                                     const C_FLOAT64 & exponent) const;
+  std::string quoteSymbol(const std::string & symbol) const;
+
+  std::vector< CUnit > getAllValidUnits(const std::string & expression,
+                                        const C_FLOAT64 & exponent) const;
 
 private:
+  /**
+   * Replace all old symbols with new symbols in the unit definition DB
+   * @param const std::string & oldSymbol
+   * @param const std::string & newSymbol
+   */
+  void replaceSymbol(const std::string & oldSymbol,
+                     const std::string & newSymbol);
 
   std::map<std::string, CUnitDefinition *> mSymbolToUnitDefinitions;
 };

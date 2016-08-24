@@ -65,10 +65,10 @@ public:
   virtual ~CCompartment();
 
   /**
-   * Retrieve the units of the child object.
+   * Retrieve the units of the object.
    * @return std::string units
    */
-  virtual std::string getChildObjectUnits(const CCopasiObject * pObject) const;
+  virtual const std::string getUnits() const;
 
   /**
    * Cleanup
@@ -130,10 +130,6 @@ public:
    *  Get the dimensionality of the compartment
    */
   unsigned C_INT32 getDimensionality() const;
-
-  // Return the compartment unit string, based
-  // on the model length unit, and dimensionality
-  std::string getUnitString() const;
 
   /**
    * Friend declaration for ostream operator <<

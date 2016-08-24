@@ -125,8 +125,8 @@ public:
 
   /**
    * Initialize a single mathematical object and advance relevant pointers
-   * @param CMathObject *& pObject
-   * @param C_FLOAT64 *& pValue
+   * @param CMathObject * pObject
+   * @param C_FLOAT64 * pValue
    * @param const CMath::Value & valueType
    * @param const CMath::EntityType & entityType
    * @param const CMath::SimulationType & simulationType
@@ -134,8 +134,8 @@ public:
    * @param const bool & isInitialValue
    * @param const CCopasiObject * pDataObject
    */
-  static void initialize(CMathObject *& pObject,
-                         C_FLOAT64 *& pValue,
+  static void initialize(CMathObject * pObject,
+                         C_FLOAT64 * pValue,
                          const CMath::ValueType & valueType,
                          const CMath::EntityType & entityType,
                          const CMath::SimulationType & simulationType,

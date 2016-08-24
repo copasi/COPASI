@@ -18,8 +18,9 @@
 #include "report/CCopasiRootContainer.h"
 #include "report/CKeyFactory.h"
 #include "report/CCopasiObject.h"
-#include "utilities/CDimension.h"
-#include "copasi/utilities/CUnit.h"
+#include "utilities/CUnitValidator.h"
+#include "utilities/CUnit.h"
+#include "math/CMathExpression.h"
 
 // static
 const char * CModelParameter::TypeNames[] =
@@ -119,7 +120,7 @@ const std::string CModelParameter::getUnit(const Framework & framework) const
   switch (mType)
     {
       case Model:
-        return getModel()->getTimeUnitsDisplayString();
+        return CUnit::prettyPrint(getModel()->getTimeUnit());
         break;
 
       case Compartment:
@@ -157,31 +158,8 @@ const std::string CModelParameter::getUnit(const Framework & framework) const
         break;
 
       case ReactionParameter:
-      {
-        const CReaction * pReaction = static_cast< const CModelParameterReactionParameter * >(this)->getReaction();
-
-        if (pReaction == NULL)
-          {
-            return "";
-          }
-
-        const CModel * pModel = getModel();
-
-        CFindDimensions Units(pReaction->getFunction(),
-                              pModel->isDimensionless(CModel::quantity),
-                              pModel->isDimensionless(CModel::volume),
-                              pModel->isDimensionless(CModel::time),
-                              pModel->isDimensionless(CModel::area),
-                              pModel->isDimensionless(CModel::length));
-        Units.setUseHeuristics(true);
-
-        Units.setChemicalEquation(&pReaction->getChemEq());
-
-        Units.findDimensions(pReaction->getEffectiveKineticLawUnitType() == CReaction::AmountPerTime);
-
-        return Units.getDimensions()[pReaction->getParameterIndex(getName())].getDisplayString(pModel);
-      }
-      break;
+        return mpParent->getObjectUnit(this).getExpression();
+        break;
 
       default:
         break;

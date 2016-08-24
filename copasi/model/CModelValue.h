@@ -325,6 +325,12 @@ public:
    */
   CCopasiObject * getRateReference() const;
 
+  /**
+   * Retrieve a pointer to the model the entity belongs too
+   * @return CModel * pModel
+   */
+  CModel * getModel() const;
+
 protected:
   /**
    * Pointer to the value of the model entity.
@@ -372,7 +378,7 @@ protected:
   CCopasiObjectReference<C_FLOAT64> *mpIValueReference;
   CCopasiObjectReference<C_FLOAT64> *mpValueReference;
   CCopasiObjectReference<C_FLOAT64> *mpRateReference;
-  CModel * mpModel;
+  mutable CModel * mpModel;
 
 private:
   /**
@@ -457,10 +463,10 @@ public:
   ~CModelValue();
 
   /**
-   * Retrieve the units of the child object.
-   * @return const & CUnit units
+   * Retrieve the units of the object.
+   * @return std::string units
    */
-  virtual std::string getChildObjectUnits(const CCopasiObject * pObject) const;
+  virtual const std::string getUnits() const;
 
   /**
    * insert operator

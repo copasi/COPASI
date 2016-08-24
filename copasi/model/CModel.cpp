@@ -92,7 +92,9 @@ CModel::CModel(CCopasiContainer* pParent):
   mpLinkMatrixAnnotation(NULL),
   mLView(mL),
   mAvogadro(CUnit::Avogadro),
+  mpAvogadroReference(new CCopasiObjectReference< C_FLOAT64 >("Avogadro Constant", this, mAvogadro, CCopasiObject::ValueDbl)),
   mQuantity2NumberFactor(std::numeric_limits< C_FLOAT64 >::quiet_NaN()),
+  mpQuantity2NumberFactorReference(new CCopasiObjectReference< C_FLOAT64 >("Quantity Conversion Factor", this, mQuantity2NumberFactor, CCopasiObject::ValueDbl)),
   mNumber2QuantityFactor(std::numeric_limits< C_FLOAT64 >::quiet_NaN()),
   mpCompileHandler(NULL),
   mReorderNeeded(false),
@@ -106,7 +108,7 @@ CModel::CModel(CCopasiContainer* pParent):
   setUsed(true);
   mIValue = 0.0;
 
-  setQuantityUnit(mQuantityUnit);
+  setQuantityUnit(mQuantityUnit, CModelParameter::ParticleNumbers);
 
   initializeMetabolites();
 
@@ -195,18 +197,17 @@ bool CModel::setObjectParent(const CCopasiContainer * pParent)
 // virtual
 std::string CModel::getChildObjectUnits(const CCopasiObject * pObject) const
 {
-  if (pObject == mpRateReference)
+  if (pObject == mpAvogadroReference)
     {
-      return CModelEntity::getChildObjectUnits(pObject);
+      return "1";
     }
 
-  if (pObject == mpIValueReference ||
-      pObject == mpValueReference)
+  if (pObject == mpQuantity2NumberFactorReference)
     {
-      return getTimeUnit();
+      return "#/(" + mQuantityUnit + ")";
     }
 
-  return "";
+  return CModelEntity::getChildObjectUnits(pObject);
 }
 
 C_INT32 CModel::load(CReadConfig & configBuffer)
@@ -283,19 +284,19 @@ C_INT32 CModel::load(CReadConfig & configBuffer)
 
   try
     {
-      setQuantityUnit(tmp); // set the factors
+      setQuantityUnit(tmp, CModelParameter::Concentration); // set the factors
     }
 
   catch (CCopasiException &)
     {
       try
         {
-          setQuantityUnit(tmp.substr(0, 1) + "mol");
+          setQuantityUnit(tmp.substr(0, 1) + "mol", CModelParameter::Concentration);
         }
 
       catch (CCopasiException &)
         {
-          setQuantityUnit("mmol");
+          setQuantityUnit("mmol", CModelParameter::Concentration);
         }
     }
 
@@ -1340,6 +1341,12 @@ void CModel::stateToIntialState()
   mpMathContainer->pushInitialState();
 }
 
+// virtual
+const std::string CModel::getUnits() const
+{
+  return mTimeUnit;
+}
+
 bool CModel::setVolumeUnit(const std::string & name)
 {
   mVolumeUnit = name;
@@ -1349,9 +1356,7 @@ bool CModel::setVolumeUnit(const std::string & name)
 
 bool CModel::setVolumeUnit(const CUnit::VolumeUnit & unitEnum)
 {
-  mVolumeUnit = CUnit::VolumeUnitNames[unitEnum];
-  mDimensionlessUnits[volume] = CUnit(mVolumeUnit).isDimensionless();
-  return true;
+  return setVolumeUnit(CUnit::VolumeUnitNames[unitEnum]);
 }
 
 const std::string & CModel::getVolumeUnit() const
@@ -1380,9 +1385,7 @@ bool CModel::setAreaUnit(const std::string & name)
 
 bool CModel::setAreaUnit(const CUnit::AreaUnit & unitEnum)
 {
-  mAreaUnit = CUnit::AreaUnitNames[unitEnum];
-  mDimensionlessUnits[area] = CUnit(mAreaUnit).isDimensionless();
-  return true;
+  return setAreaUnit(CUnit::AreaUnitNames[unitEnum]);
 }
 
 const std::string & CModel::getAreaUnit() const
@@ -1410,9 +1413,7 @@ bool CModel::setLengthUnit(const std::string & name)
 
 bool CModel::setLengthUnit(const CUnit::LengthUnit & unitEnum)
 {
-  mLengthUnit = CUnit::LengthUnitNames[unitEnum];
-  mDimensionlessUnits[length] = CUnit(mLengthUnit).isDimensionless();
-  return true;
+  return setLengthUnit(CUnit::LengthUnitNames[unitEnum]);
 }
 
 const std::string & CModel::getLengthUnit() const
@@ -1441,9 +1442,7 @@ bool CModel::setTimeUnit(const std::string & name)
 
 bool CModel::setTimeUnit(const CUnit::TimeUnit & unitEnum)
 {
-  mTimeUnit = CUnit::TimeUnitNames[unitEnum];
-  mDimensionlessUnits[time] = CUnit(mTimeUnit).isDimensionless();
-  return true;
+  return setTimeUnit(CUnit::TimeUnitNames[unitEnum]);
 }
 
 const std::string & CModel::getTimeUnit() const
@@ -1463,102 +1462,62 @@ CUnit::TimeUnit CModel::getTimeUnitEnum() const
 
 //****
 
-bool CModel::setQuantityUnit(const std::string & name)
+bool CModel::setQuantityUnit(const std::string & name,
+                             const CModelParameter::Framework & frameWork)
 {
   mQuantityUnit = name;
   mDimensionlessUnits[quantity] = CUnit(mQuantityUnit).isDimensionless();
 
-  CUnit QuantityUnit(mQuantityUnit, mAvogadro);
+  CUnit QuantityUnit(mQuantityUnit);
 
-  // The first, dimensionless, component should have all the
-  // scale and multiplier information
-  std::set< CUnitComponent >::const_iterator it = QuantityUnit.getComponents().begin();
+  // The dimensionless, component will have all the scale and multiplier information
+  std::set< CUnitComponent >::const_iterator dimensionless = QuantityUnit.getComponents().find(CBaseUnit::dimensionless);
+  mQuantity2NumberFactor = dimensionless->getMultiplier() * pow(10.0, dimensionless->getScale());
 
-  // Avogadro, if present, will be in the multiplier
-  mQuantity2NumberFactor = it->getMultiplier() * pow(10.0, it->getScale());
+  // Avogadro is no longer stored in the multiplier it has its own component:
+  std::set< CUnitComponent >::const_iterator avogadro = QuantityUnit.getComponents().find(CBaseUnit::avogadro);
+
+  if (avogadro != QuantityUnit.getComponents().end())
+    {
+      mQuantity2NumberFactor *= pow(mAvogadro, avogadro->getExponent());
+    }
+
   mNumber2QuantityFactor = 1.0 / mQuantity2NumberFactor;
 
   //adapt particle numbers
   size_t i, imax = mMetabolitesX.size();
 
-  for (i = 0; i < imax; ++i)
+  switch (frameWork)
     {
-      //update particle numbers
-      mMetabolitesX[i].setInitialConcentration(mMetabolitesX[i].getInitialConcentration());
-      mMetabolitesX[i].setConcentration(mMetabolitesX[i].getConcentration());
+      case CModelParameter::Concentration:
+        for (i = 0; i < imax; ++i)
+          {
+            //update particle numbers
+            mMetabolitesX[i].refreshInitialValue();
+            mMetabolitesX[i].refreshNumber();
+          }
+
+        break;
+
+      case CModelParameter::ParticleNumbers:
+        for (i = 0; i < imax; ++i)
+          {
+            //update particle numbers
+            mMetabolitesX[i].refreshInitialConcentration();
+            mMetabolitesX[i].refreshConcentration();
+          }
+
+        break;
     }
 
   return true;
 }
 
-bool CModel::setQuantityUnit(const CUnit::QuantityUnit & unitEnum)
+bool CModel::setQuantityUnit(const CUnit::QuantityUnit & unitEnum,
+                             const CModelParameter::Framework & frameWork)
 {
-  // TODO: Commented out the code below, to allow the quantity unit to be set again
-  //       but this needs to be solved correctly.
-  //
-  //   // if it is already there and set properly . . .
-  //   if (mpQuantityUnit != NULL) // &&
-  // //      *mpQuantityUnit == unitEnum) //create appropriate comparison operator
-  //     return true;
-
-  mQuantityUnit = CUnit::QuantityUnitNames[unitEnum];
-  mDimensionlessUnits[quantity] = CUnit(mQuantityUnit).isDimensionless();
-
-  bool success = true;
-
-  switch (unitEnum)
-    {
-      case CUnit::Mol:
-        mQuantity2NumberFactor = mAvogadro;
-        break;
-
-      case CUnit::mMol:
-        mQuantity2NumberFactor = mAvogadro * 1E-3;
-        break;
-
-      case CUnit::microMol:
-        mQuantity2NumberFactor = mAvogadro * 1E-6;
-        break;
-
-      case CUnit::nMol:
-        mQuantity2NumberFactor = mAvogadro * 1E-9;
-        break;
-
-      case CUnit::pMol:
-        mQuantity2NumberFactor = mAvogadro * 1E-12;
-        break;
-
-      case CUnit::fMol:
-        mQuantity2NumberFactor = mAvogadro * 1E-15;
-        break;
-
-      case CUnit::number:
-        mQuantity2NumberFactor = 1.0;
-        break;
-
-      case CUnit::dimensionlessQuantity:
-        mQuantity2NumberFactor = 1.0;
-        break;
-
-      default:
-        mQuantity2NumberFactor = 1.0;
-        success = false;
-        break;
-    }
-
-  mNumber2QuantityFactor = 1.0 / mQuantity2NumberFactor;
-
-  //adapt particle numbers
-  size_t i, imax = mMetabolitesX.size();
-
-  for (i = 0; i < imax; ++i)
-    {
-      //update particle numbers
-      mMetabolitesX[i].setInitialConcentration(mMetabolitesX[i].getInitialConcentration());
-      mMetabolitesX[i].setConcentration(mMetabolitesX[i].getConcentration());
-    }
-
-  return success;
+  return setQuantityUnit(CUnit::QuantityUnitNames[unitEnum],
+                         frameWork);
 }
 
 const std::string CModel::getQuantityUnit() const
@@ -1587,11 +1546,11 @@ void CModel::setModelType(const CModel::ModelType & modelType)
 const CModel::ModelType & CModel::getModelType() const
 {return mType;}
 
-void CModel::setAvogadro(const C_FLOAT64 & avogadro)
+void CModel::setAvogadro(const C_FLOAT64 & avogadro, const CModelParameter::Framework & frameWork)
 {
   mAvogadro = avogadro;
 
-  setQuantityUnit(mQuantityUnit);
+  setQuantityUnit(mQuantityUnit, frameWork);
 }
 
 const C_FLOAT64 & CModel::getAvogadro() const
@@ -3111,11 +3070,7 @@ void CModel::initObjects()
 
   addMatrixReference("Stoichiometry", mStoi, CCopasiObject::ValueDbl);
   addMatrixReference("Reduced Model Stoichiometry", mRedStoi, CCopasiObject::ValueDbl);
-
   addMatrixReference("Link Matrix"   , mLView, CCopasiObject::ValueDbl);
-  addObjectReference("Quantity Unit", mQuantityUnit);
-  addObjectReference("Quantity Conversion Factor", mQuantity2NumberFactor, CCopasiObject::ValueDbl);
-  addObjectReference("Avogadro Constant", mAvogadro, CCopasiObject::ValueDbl);
 
   mpStoiAnnotation = new CArrayAnnotation("Stoichiometry(ann)", this, new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mStoi), true);
   mpStoiAnnotation->setDescription("Stoichiometry Matrix");
@@ -3453,273 +3408,6 @@ CVector< C_FLOAT64 > CModel::initializeAtolVector(const C_FLOAT64 & atol, const 
   return Atol;
 }
 
-#include "utilities/CDimension.h"
-
-std::string CModel::printParameterOverview()
-{
-  std::ostringstream oss;
-  CModel* model = this;
-
-  oss << "Initial time: " << model->getInitialTime() << " " << model->getTimeUnitName() << std::endl;
-
-  oss << std::endl;
-
-  size_t i, imax, j, jmax;
-
-  //Compartments
-  const CCopasiVector< CCompartment > & comps = model->getCompartments();
-  imax = comps.size();
-
-  if (imax)
-    {
-      oss << "Initial volumes:\n\n";
-
-      for (i = 0; i < imax; ++i)
-        oss << comps[i].getObjectName() << " \t" << comps[i].getInitialValue()
-            << " " << model->getVolumeUnitsDisplayString() << "\n";
-
-      oss << "\n";
-    }
-
-  //Species
-  const CCopasiVector< CMetab > & metabs = model->getMetabolites();
-  imax = metabs.size();
-
-  if (imax)
-    {
-      oss << "Initial concentrations:\n\n";
-
-      for (i = 0; i < imax; ++i)
-        oss << CMetabNameInterface::getDisplayName(model, metabs[i], false) << " \t"
-            << metabs[i].getInitialConcentration() << " "
-            << model->getConcentrationUnitsDisplayString() << "\n";
-
-      oss << "\n";
-    }
-
-  //global Parameters
-  const CCopasiVector< CModelValue > & params = model->getModelValues();
-  imax = params.size();
-
-  if (imax)
-    {
-      oss << "Initial values of global quantities:\n\n";
-
-      for (i = 0; i < imax; ++i)
-        oss << params[i].getObjectName() << " \t"
-            << params[i].getInitialValue() << "\n";
-
-      oss << "\n";
-    }
-
-  //Reactions
-  const CCopasiVector< CReaction > & reacs = model->getReactions();
-  imax = reacs.size();
-
-  if (imax)
-    {
-      oss << "Reaction parameters:\n\n";
-      const CReaction* reac;
-
-      for (i = 0; i < imax; ++i)
-        {
-          reac = &reacs[i];
-          oss << reac->getObjectName() << "\n";
-
-          //calculate units
-          CFindDimensions units(reac->getFunction(), CUnit(getQuantityUnit()).isDimensionless(),
-                                CUnit(getVolumeUnit()).isDimensionless(),
-                                CUnit(getTimeUnit()).isDimensionless(),
-                                CUnit(getAreaUnit()).isDimensionless(),
-                                CUnit(getLengthUnit()).isDimensionless());
-          units.setUseHeuristics(true);
-          units.setChemicalEquation(&reac->getChemEq());
-          units.findDimensions(reac->getCompartmentNumber() > 1);
-
-          const CFunctionParameters & params = reac->getFunctionParameters();
-          jmax = params.size();
-
-          for (j = 0; j < jmax; ++j)
-            if (params[j]->getUsage() == CFunctionParameter::PARAMETER)
-              {
-                CCopasiObject * obj = CCopasiRootContainer::getKeyFactory()->get(reac->getParameterMappings()[j][0]);
-
-                if (!obj) continue;
-
-                if (reac->isLocalParameter(j))
-                  {
-                    CCopasiParameter * par = dynamic_cast<CCopasiParameter*>(obj); //must be a CCopasiParameter
-
-                    if (!par) continue; //or rather fatal error?
-
-                    oss << "    " << params[j]->getObjectName() << " \t"
-                        << par->getValue< C_FLOAT64 >() << " "
-                        << units.getDimensions()[j].getDisplayString(this) << "\n";
-                  }
-                else
-                  {
-                    CModelValue * par = dynamic_cast<CModelValue*>(obj); //must be a CModelValue
-
-                    if (!par) continue; //or rather fatal error?
-
-                    oss << "    " << params[j]->getObjectName() << " \t"
-                        << "-> " + par->getObjectName()
-                        << " (" << units.getDimensions()[j].getDisplayString(this) << ")\n";
-                  }
-              }
-
-          oss << "\n";
-        }
-    }
-
-  return oss.str();
-}
-
-std::string CModel::getTimeUnitsDisplayString() const
-{
-  if (CUnit(mTimeUnit).isDimensionless())
-    return "";
-
-  return mTimeUnit;
-}
-
-std::string CModel::getFrequencyUnit() const
-{
-  CUnit frequencyCUnit = CUnit(getTimeUnit()).exponentiate(-1);
-  frequencyCUnit.buildExpression();
-  return frequencyCUnit.getExpression();
-}
-
-std::string CModel::getVolumeUnitsDisplayString() const
-{
-  if (CUnit(getVolumeUnit()).isDimensionless())
-    return "";
-
-  return mVolumeUnit;
-}
-
-std::string CModel::getAreaUnitsDisplayString() const
-{
-  if (CUnit(mAreaUnit).isDimensionless())
-    return "";
-
-  return mAreaUnit;
-}
-
-std::string CModel::getLengthUnitsDisplayString() const
-{
-  if (CUnit(mLengthUnit).isDimensionless())
-    return "";
-
-  return mLengthUnit;
-}
-
-std::string CModel::getVolumeRateUnitsDisplayString() const
-{
-  if (getVolumeUnitEnum() == CUnit::dimensionlessVolume)
-    {
-      if (CUnit(mTimeUnit).isDimensionless())
-        return "";
-
-      return std::string("1/") + mTimeUnit;
-    }
-
-  if (CUnit(mTimeUnit).isDimensionless())
-    return mVolumeUnit;
-
-  return mVolumeUnit + "/" + mTimeUnit;
-}
-
-std::string CModel::getConcentrationUnitsDisplayString() const
-{
-  std::string Units;
-
-  if (CUnit(mQuantityUnit).isDimensionless())
-    {
-      if (getVolumeUnitEnum() == CUnit::dimensionlessVolume)
-        return "";
-
-      return std::string("1/") + mVolumeUnit;
-    }
-
-  Units = mQuantityUnit;
-
-  if (getVolumeUnitEnum() == CUnit::dimensionlessVolume)
-    return Units;
-
-  return Units + "/" + mVolumeUnit;
-}
-
-std::string CModel::getConcentrationRateUnitsDisplayString() const
-{
-  std::string Units;
-
-  if (CUnit(mQuantityUnit).isDimensionless())
-    {
-      Units = "1";
-
-      if (getVolumeUnitEnum() == CUnit::dimensionlessVolume)
-        {
-          if (CUnit(mTimeUnit).isDimensionless())
-            return "";
-
-          return Units + "/" + mTimeUnit;
-        }
-      else
-        {
-          if (CUnit(mTimeUnit).isDimensionless())
-            return Units + "/" + mVolumeUnit;
-
-          return Units + "/(" + mVolumeUnit + "*" + mTimeUnit + ")";
-        }
-    }
-
-  Units = mQuantityUnit;
-
-  if (getVolumeUnitEnum() == CUnit::dimensionlessVolume)
-    {
-      if (CUnit(mTimeUnit).isDimensionless())
-        return Units;
-
-      return Units + "/" + mTimeUnit;
-    }
-
-  if (CUnit(mTimeUnit).isDimensionless())
-    return Units + "/" + mVolumeUnit;
-
-  return Units + "/(" + mVolumeUnit + "*" + mTimeUnit + ")";
-}
-
-std::string CModel::getQuantityUnitsDisplayString() const
-{
-  if (CUnit(mQuantityUnit).isDimensionless())
-    {
-      return "";
-    }
-
-  return mQuantityUnit;
-}
-
-std::string CModel::getQuantityRateUnitsDisplayString() const
-{
-  std::string Units;
-
-  if (CUnit(mQuantityUnit).isDimensionless())
-    {
-      if (CUnit(mTimeUnit).isDimensionless())
-        return "";
-
-      return std::string("1/") + mTimeUnit;
-    }
-
-  Units = mQuantityUnit;
-
-  if (CUnit(mTimeUnit).isDimensionless())
-    return Units;
-
-  return Units + "/" + mTimeUnit;
-}
-
 const CMathContainer & CModel::getMathContainer() const
 {return *mpMathContainer;}
 
@@ -3874,7 +3562,7 @@ CCopasiObject::DataObjectSet CModel::getUnitSymbolUsage(std::string symbol) cons
 
   for (; it != end; ++it)
     {
-      unit.setExpression(it->getUnitExpression(), getAvogadro());
+      unit.setExpression(it->getUnitExpression());
 
       if (unit.getUsedSymbols().count(symbol))
         usages.insert(it);
@@ -3922,7 +3610,7 @@ std::map< std::string, CUnit > CModel::getUsedUnits() const
 
   for (; it != end; ++it)
     {
-      UsedUnits[it->getUnitExpression()] = it->getUnits();
+      UsedUnits[it->getUnitExpression()] = CUnit(it->getUnits());
     }
 
   UsedUnits[mVolumeUnit] = CUnit(mVolumeUnit);

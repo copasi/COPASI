@@ -272,6 +272,8 @@ private:
   void setApplicationFont();
 
   DataModelGUI* mpDataModelGUI; // to keep track of the data model..
+  CCopasiDataModel* mpDataModel;
+
   ListViews *mpListView;
   QComboBox * mpBoxSelectFramework;
 

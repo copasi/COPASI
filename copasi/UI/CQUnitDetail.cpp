@@ -98,15 +98,7 @@ void CQUnitDetail::slotBtnCopy()
 
   CUnitDefinition * pUnitDef = new CUnitDefinition(name, unitList);
 
-  C_FLOAT64 Avogadro = CUnit::Avogadro;
-  const CModel * pModel = static_cast<const CModel *>(mpUnitDefinition->getObjectAncestor("Model"));
-
-  if (pModel != NULL)
-    {
-      Avogadro = pModel->getAvogadro();
-    }
-
-  pUnitDef->setExpression(mpUnitDefinition->getExpression(), Avogadro);
+  pUnitDef->setExpression(mpUnitDefinition->getExpression());
 
   unitList->add(pUnitDef, true);
 
@@ -467,7 +459,7 @@ void CQUnitDetail::save()
 
   if (mpUnitDefinition->getExpression() != TO_UTF8(mpEditExpression->text()))
     {
-      mpUnitDefinition->setExpression(TO_UTF8(mpEditExpression->text()), CUnit::Avogadro);
+      mpUnitDefinition->setExpression(TO_UTF8(mpEditExpression->text()));
       mChanged = true;
     }
 

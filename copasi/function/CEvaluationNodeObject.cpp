@@ -23,6 +23,7 @@
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "math/CMathObject.h"
 #include "math/CMathContainer.h"
+#include "utilities/CValidatedUnit.h"
 
 #include "sbml/math/ASTNode.h"
 #include "sbml/SBase.h"
@@ -435,4 +436,19 @@ std::string CEvaluationNodeObject::getMMLString(const std::vector< std::string >
   out << CMathMl::getMMLName(pDataObject) << std::endl;
 
   return out.str();
+}
+
+// virtual
+CValidatedUnit CEvaluationNodeObject::getUnit(const CMathContainer & container,
+    const std::vector< CValidatedUnit > & units) const
+{
+  const CObjectInterface * pObject = container.getMathObject(mpValue);
+  const CCopasiObject * pDataObject = (pObject != NULL) ? pObject->getDataObject() : NULL;
+
+  if (pDataObject != NULL)
+    {
+      return CValidatedUnit::merge(units[0], CValidatedUnit(pDataObject->getUnits(), false));
+    }
+
+  return CValidatedUnit::merge(units[0], CValidatedUnit());
 }

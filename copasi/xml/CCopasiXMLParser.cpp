@@ -1694,9 +1694,9 @@ void CCopasiXMLParser::ModelElement::start(const XML_Char *pszName,
         mCommon.pModel->setVolumeUnit(volumeUnit);
         mCommon.pModel->setAreaUnit(areaUnit);
         mCommon.pModel->setLengthUnit(lengthUnit);
-        mCommon.pModel->setQuantityUnit(quantityUnit);
+        mCommon.pModel->setQuantityUnit(quantityUnit, CModelParameter::ParticleNumbers);
         mCommon.pModel->setModelType(ModelType);
-        mCommon.pModel->setAvogadro(Avogadro);
+        mCommon.pModel->setAvogadro(Avogadro, CModelParameter::ParticleNumbers);
 
         return;
         break;

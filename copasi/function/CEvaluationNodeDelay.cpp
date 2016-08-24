@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -10,7 +10,10 @@
 #include "CEvaluationNode.h"
 #include "CEvaluationTree.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
+#include "math/CMathContainer.h"
+#include "model/CModel.h"
 #include "utilities/utility.h"
+#include "utilities/CValidatedUnit.h"
 #include "copasi/report/CCopasiRootContainer.h"
 
 CEvaluationNodeDelay::CEvaluationNodeDelay():
@@ -155,6 +158,33 @@ std::string CEvaluationNodeDelay::getXPPString(const std::vector< std::string > 
     }
 
   return "@";
+}
+
+// virtual
+CValidatedUnit CEvaluationNodeDelay::getUnit(const CMathContainer & container,
+    const std::vector< CValidatedUnit > & units) const
+{
+  // The units of the delay functions are the units of the delay value which is the first child
+  CValidatedUnit Delay = units[0];
+  CValidatedUnit Lag = CValidatedUnit::merge(CValidatedUnit(container.getModel().getTimeUnit(), false), units[1]);
+
+  Delay.setConflict(Delay.conflict() || Lag.conflict());
+
+  return Delay;
+}
+
+// virtual
+CValidatedUnit CEvaluationNodeDelay::setUnit(const CMathContainer & container,
+    const std::map < CEvaluationNode * , CValidatedUnit > & currentUnits,
+    std::map < CEvaluationNode * , CValidatedUnit > & targetUnits) const
+{
+  CValidatedUnit Delay = CValidatedUnit::merge(currentUnits.find(const_cast< CEvaluationNodeDelay * >(this))->second,
+                         targetUnits[const_cast< CEvaluationNodeDelay * >(this)]);
+
+  targetUnits[mpDelayValue] = Delay;
+  targetUnits[mpDelayLag] = CValidatedUnit(container.getModel().getTimeUnit(), false);
+
+  return Delay;
 }
 
 // static

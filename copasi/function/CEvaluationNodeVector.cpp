@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeVector.cpp,v $
-//   $Revision: 1.14 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/05/16 17:00:57 $
-// End CVS Header
-
-// Copyright (C) 2012 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2005 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -24,18 +16,19 @@
 
 #include "CEvaluationNode.h"
 #include "CEvaluationTree.h"
+#include "utilities/CValidatedUnit.h"
 
 #include "sbml/math/ASTNode.h"
 
 CEvaluationNodeVector::CEvaluationNodeVector():
-    CEvaluationNode((Type)(CEvaluationNode::VECTOR), ""),
-    mVector()
+  CEvaluationNode((Type)(CEvaluationNode::VECTOR), ""),
+  mVector()
 {mPrecedence = PRECEDENCE_FUNCTION;}
 
 CEvaluationNodeVector::CEvaluationNodeVector(const SubType & subType,
     const Data & data):
-    CEvaluationNode((Type)(CEvaluationNode::VECTOR | subType), data),
-    mVector()
+  CEvaluationNode((Type)(CEvaluationNode::VECTOR | subType), data),
+  mVector()
 {
   switch (subType)
     {
@@ -51,8 +44,8 @@ CEvaluationNodeVector::CEvaluationNodeVector(const SubType & subType,
 }
 
 CEvaluationNodeVector::CEvaluationNodeVector(const CEvaluationNodeVector & src):
-    CEvaluationNode(src),
-    mVector(src.mVector)
+  CEvaluationNode(src),
+  mVector(src.mVector)
 {}
 
 CEvaluationNodeVector::~CEvaluationNodeVector() {}
@@ -105,6 +98,47 @@ std::string CEvaluationNodeVector::getBerkeleyMadonnaString(const std::vector< s
 std::string CEvaluationNodeVector::getXPPString(const std::vector< std::string > & /* children */) const
 {
   return "@";
+}
+
+// virtual
+CValidatedUnit CEvaluationNodeVector::getUnit(const CMathContainer & /* container */,
+    const std::vector< CValidatedUnit > & units) const
+{
+  CValidatedUnit Unit(CBaseUnit::undefined, false);
+
+  std::vector< CValidatedUnit >::const_iterator it = units.begin();
+  std::vector< CValidatedUnit >::const_iterator end = units.end();
+
+  for (; it != end; ++it)
+    {
+      Unit = CValidatedUnit::merge(Unit, *it);
+    }
+
+  if (mVector.size() != units.size())
+    {
+      Unit.setConflict(true);
+    }
+
+  return Unit;
+}
+
+// virtual
+CValidatedUnit CEvaluationNodeVector::setUnit(const CMathContainer & container,
+    const std::map < CEvaluationNode * , CValidatedUnit > & currentUnits,
+    std::map < CEvaluationNode * , CValidatedUnit > & targetUnits) const
+{
+  CValidatedUnit Result = CValidatedUnit::merge(currentUnits.find(const_cast< CEvaluationNodeVector * >(this))->second,
+                          targetUnits[const_cast< CEvaluationNodeVector * >(this)]);
+
+  std::vector< CEvaluationNode * >::const_iterator it = mVector.begin();
+  std::vector< CEvaluationNode * >::const_iterator end = mVector.end();
+
+  for (; it != end; ++it)
+    {
+      targetUnits[*it] = Result;
+    }
+
+  return Result;
 }
 
 // static

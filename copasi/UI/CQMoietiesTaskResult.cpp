@@ -148,10 +148,7 @@ void CQMoietiesTaskResult::load()
   if (pModel == NULL) return;
 
   // Set the units for the amount column
-  QString AmountUnits = FROM_UTF8(pModel->getQuantityUnitsDisplayString());
-
-  if (!AmountUnits.isEmpty())
-    AmountUnits = "\n(" + AmountUnits + ")";
+  QString AmountUnits = "\n[" + FROM_UTF8(CUnit::prettyPrint(pModel->getQuantityUnit())) + "]";
 
   mpMoieties->horizontalHeaderItem(COL_AMOUNT)->setText("Total Amount" + AmountUnits);
 

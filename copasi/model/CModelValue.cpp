@@ -382,23 +382,21 @@ const std::string & CModelEntity::getUnitExpression() const
 // virtual
 std::string CModelEntity::getChildObjectUnits(const CCopasiObject * pObject) const
 {
-  CUnit unit = CUnit(); //potentially manipulated, and returned at the end
-
   if (pObject == mpRateReference)
     {
-      CUnit ValueUnit = CUnit(getChildObjectUnits(mpValueReference));
-      CUnit TimeUnit = (mpModel != NULL) ? CUnit(mpModel->getTimeUnit()) : CUnit();
+      std::string ValueUnit = getChildObjectUnits(mpValueReference);
+      std::string TimeUnit = (mpModel != NULL) ? mpModel->getTimeUnit() : "?";
 
-      if (!ValueUnit.isUndefined() &&
-          !TimeUnit.isUndefined())
-        {
-          unit = ValueUnit * TimeUnit.exponentiate(-1.0);
-        }
+      return ValueUnit + "/(" + TimeUnit + ")";
     }
 
-  unit.buildExpression();
+  if (pObject == mpValueReference ||
+      pObject == mpIValueReference)
+    {
+      return getUnits();
+    }
 
-  return unit.getExpression();
+  return "?";
 }
 
 /**
@@ -418,6 +416,10 @@ CCopasiObject * CModelEntity::getValueReference() const
 CCopasiObject * CModelEntity::getRateReference() const
 {return mpRateReference;}
 
+CModel * CModelEntity::getModel() const
+{
+  return mpModel;
+}
 //***********
 
 void CModelEntity::setValue(const C_FLOAT64 & value)
@@ -671,20 +673,9 @@ void CModelValue::initObjects()
 {}
 
 // virtual
-std::string CModelValue::getChildObjectUnits(const CCopasiObject * pObject) const
+const std::string CModelValue::getUnits() const
 {
-  if (pObject == mpRateReference)
-    {
-      return CModelEntity::getChildObjectUnits(pObject);
-    }
-
-  if (pObject == mpValueReference ||
-      pObject == mpIValueReference)
-    {
-      return mUnitExpression;
-    }
-
-  return "";
+  return mUnitExpression;
 }
 
 std::ostream & operator<<(std::ostream &os, const CModelValue & d)

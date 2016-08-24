@@ -519,19 +519,19 @@ std::string CCopasiDataModel::saveModelToString(CProcessReport * pProcessReport)
   COptions::getValue("PWD", PWD);
 
   try
-  {
-    // We do not care whether the model compiles or not
-    // We just save as much as we can
-    mData.pModel->compileIfNecessary(pProcessReport);
+    {
+      // We do not care whether the model compiles or not
+      // We just save as much as we can
+      mData.pModel->compileIfNecessary(pProcessReport);
 
-    // Assure that the parameter set reflects all changes made to the model.
-    mData.pModel->getActiveModelParameterSet().refreshFromModel(false);
-  }
+      // Assure that the parameter set reflects all changes made to the model.
+      mData.pModel->getActiveModelParameterSet().refreshFromModel(false);
+    }
 
   catch (...)
-  {
-    return "";
-  }
+    {
+      return "";
+    }
 
   CCopasiXML XML;
 
@@ -548,7 +548,6 @@ std::string CCopasiDataModel::saveModelToString(CProcessReport * pProcessReport)
   std::stringstream str;
   XML.save(str, TmpFileName);
   return str.str();
-
 }
 
 bool CCopasiDataModel::autoSave()
@@ -1173,122 +1172,119 @@ bool CCopasiDataModel::exportCombineArchive(std::string fileName, bool includeCO
   COptions::getValue("PWD", PWD);
 
   if (CDirEntry::isRelativePath(fileName) &&
-    !CDirEntry::makePathAbsolute(fileName, PWD))
+      !CDirEntry::makePathAbsolute(fileName, PWD))
     fileName = CDirEntry::fileName(fileName);
 
   if (CDirEntry::exist(fileName))
-  {
-    if (!overwriteFile)
     {
-      CCopasiMessage(CCopasiMessage::ERROR,
-        MCDirEntry + 1,
-        fileName.c_str());
-      return false;
-    }
+      if (!overwriteFile)
+        {
+          CCopasiMessage(CCopasiMessage::ERROR,
+                         MCDirEntry + 1,
+                         fileName.c_str());
+          return false;
+        }
 
-    if (!CDirEntry::isWritable(fileName))
-    {
-      CCopasiMessage(CCopasiMessage::ERROR,
-        MCDirEntry + 2,
-        fileName.c_str());
-      return false;
-    }
+      if (!CDirEntry::isWritable(fileName))
+        {
+          CCopasiMessage(CCopasiMessage::ERROR,
+                         MCDirEntry + 2,
+                         fileName.c_str());
+          return false;
+        }
 
-    // delete existing file
-    std::remove(fileName.c_str());
-  }
+      // delete existing file
+      std::remove(fileName.c_str());
+    }
 
   CombineArchive archive;
 
-
   if (includeData)
-  {
-    // go through all experiments and find the files and add them to the archive
-    // alter COPASI file (temporarily) to reference those files
-
-  }
-
+    {
+      // go through all experiments and find the files and add them to the archive
+      // alter COPASI file (temporarily) to reference those files
+    }
 
   if (includeCOPASI)
-  {
-    
-    try
-    {
-      std::stringstream str; str << saveModelToString(pProgressReport);
-      archive.addFile(str, "./copasi/model.cps", KnownFormats::lookupFormat("copasi"), true);
-    }
-    catch (...)
     {
 
+      try
+        {
+          std::stringstream str; str << saveModelToString(pProgressReport);
+          archive.addFile(str, "./copasi/model.cps", KnownFormats::lookupFormat("copasi"), true);
+        }
+      catch (...)
+        {
+        }
     }
-  }
 
   if (includeSEDML)
-  {
-    // write SED-ML to disc, get SED-ML and SBML fileName add to archive
-    // remember files to delete after archive was written. 
-  }
+    {
+      // write SED-ML to disc, get SED-ML and SBML fileName add to archive
+      // remember files to delete after archive was written.
+    }
 
   if (includeSBML && !includeSEDML)
-  {
-    try
     {
-      std::stringstream str; str << exportSBMLToString(pProgressReport, 2, 4);
-      archive.addFile(str, "./sbml/model.xml", KnownFormats::lookupFormat("sbml"), !includeCOPASI);
+      try
+        {
+          std::stringstream str; str << exportSBMLToString(pProgressReport, 2, 4);
+          archive.addFile(str, "./sbml/model.xml", KnownFormats::lookupFormat("sbml"), !includeCOPASI);
+        }
+      catch (...)
+        {
+        }
     }
-    catch (...)
-    {
-
-    }
-  }
-
 
   archive.writeToFile(fileName);
 
   return false;
 }
 
-bool CCopasiDataModel::openCombineArchive(const std::string & fileName, 
-  CProcessReport * pProgressReport, 
-  const bool & deleteOldData)
+bool CCopasiDataModel::openCombineArchive(const std::string & fileName,
+    CProcessReport * pProgressReport,
+    const bool & deleteOldData)
 {
   // TODO: figure out what to do with the archive, should we just extract all of it
   //       at a certain location? if so when should it be deleted.
 
   CombineArchive archive;
+
   if (!archive.initializeFromArchive(fileName))
     return false;
-  
-  // read the master file 
+
+  // read the master file
   const CaContent* content = archive.getMasterFile();
+
   // if we don't have one, or we have one we don't understand look for copasi file
   if (content == NULL ||
-    (content->getFormat() != KnownFormats::lookupFormat("sbml") &&
-      content->getFormat() != KnownFormats::lookupFormat("copasi")))
+      (content->getFormat() != KnownFormats::lookupFormat("sbml") &&
+       content->getFormat() != KnownFormats::lookupFormat("copasi")))
     content = archive.getEntryByFormat("copasi");
-  
+
   // otherwise look for an sbml file
   if (content == NULL)
     content = archive.getEntryByFormat("sbml");
-  
+
   if (content == NULL)
     return false;
 
   if (content->isFormat("copasi"))
-  {
-    std::stringstream str; 
-    if (!archive.extractEntryToStream(content->getLocation(), str))
-      return false;
+    {
+      std::stringstream str;
 
-    std::string PWD;
-    COptions::getValue("PWD", PWD);
+      if (!archive.extractEntryToStream(content->getLocation(), str))
+        return false;
 
-    return  this->loadModel(str, PWD, pProgressReport, deleteOldData);
-  }
+      std::string PWD;
+      COptions::getValue("PWD", PWD);
+
+      return  this->loadModel(str, PWD, pProgressReport, deleteOldData);
+    }
   else if (content->isFormat("sbml"))
-  {
-    return this->importSBMLFromString(archive.extractEntryToString(content->getLocation()), pProgressReport, deleteOldData);
-  }
+    {
+      return this->importSBMLFromString(archive.extractEntryToString(content->getLocation()), pProgressReport, deleteOldData);
+    }
 
   return false;
 }

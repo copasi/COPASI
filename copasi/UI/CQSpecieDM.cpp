@@ -267,38 +267,22 @@ QVariant CQSpecieDM::headerData(int section, Qt::Orientation orientation,
 
       if (pModel == NULL) return QVariant();
 
+      std::string ValueUnit, RateUnit, FrequencyUnit, ExpressionUnit;
       QString ValueUnits, RateUnits, FrequencyUnits, ExpressionUnits;
 
-      if (pModel)
-        ValueUnits = FROM_UTF8(pModel->getConcentrationUnitsDisplayString());
+      ValueUnit = (pModel != NULL) ? CUnit::prettyPrint(pModel->getQuantityUnit() + "/(" + pModel->getVolumeUnit() + ")") : "?";
+      ValueUnits = "\n[" + FROM_UTF8(ValueUnit) + "]";
 
-      if (!ValueUnits.isEmpty())
-        ValueUnits = "\n(" + ValueUnits + ")";
+      RateUnit = (pModel != NULL) ? CUnit::prettyPrint(pModel->getQuantityUnit() + "/(" + pModel->getVolumeUnit() + "*" + pModel->getTimeUnit() + ")") : "?";
+      RateUnits = "\n[" + FROM_UTF8(RateUnit) + "]";
 
-      if (pModel)
-        RateUnits = FROM_UTF8(pModel->getConcentrationRateUnitsDisplayString());
+      FrequencyUnit = (pModel != NULL) ? CUnit::prettyPrint("1/(" + pModel->getTimeUnit() + ")") : "?";
+      FrequencyUnits = "\n[" + FROM_UTF8(FrequencyUnit) + "]";
 
-      if (!RateUnits.isEmpty())
-        RateUnits = "\n(" + RateUnits + ")";
-
-      if (pModel)
-        FrequencyUnits = FROM_UTF8(pModel->getFrequencyUnit());
-
-      if (FrequencyUnits != "none")
-        FrequencyUnits = "\n(" + FrequencyUnits + ")";
-
-      if (!ValueUnits.isEmpty() && !RateUnits.isEmpty())
-        {
-          if (ValueUnits == RateUnits)
-            ExpressionUnits = ValueUnits;
-          else
-            ExpressionUnits = "\n(" + FROM_UTF8(pModel->getConcentrationUnitsDisplayString())
-                              + " or " + FROM_UTF8(pModel->getConcentrationRateUnitsDisplayString()) + ")";
-        }
-      else if (!ValueUnits.isEmpty())
-        ExpressionUnits = "\n(" + FROM_UTF8(pModel->getConcentrationUnitsDisplayString()) + " or 1)";
-      else if (!RateUnits.isEmpty())
-        ExpressionUnits = "\n(1 or " + FROM_UTF8(pModel->getConcentrationRateUnitsDisplayString()) + ")";
+      if (ValueUnit == RateUnit)
+        ExpressionUnits = ValueUnits;
+      else
+        ExpressionUnits = "\n[" + FROM_UTF8(ValueUnit) + "] or [" + FROM_UTF8(RateUnit) + "]";
 
       switch (section)
         {

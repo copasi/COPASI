@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -91,9 +91,6 @@ int main(int argc, char *argv[])
 
   QApplication::setLibraryPaths(QStringList(FROM_UTF8(PluginDir)));
 #endif // Darwin
-
-  // Create the global data model.
-  CCopasiRootContainer::addDatamodel();
 
   // Create the main application window.
   CopasiUI3Window *pWindow = CopasiUI3Window::create();

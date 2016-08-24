@@ -16,6 +16,7 @@
 CQBaseDataModel::CQBaseDataModel(QObject *parent)
   : QAbstractTableModel(parent)
   , mpUndoStack(NULL)
+  , mpDataModel(NULL)
 {}
 
 Qt::ItemFlags CQBaseDataModel::flags(const QModelIndex &index) const
@@ -44,8 +45,13 @@ bool CQBaseDataModel::removeRow(int position)
 
 bool CQBaseDataModel::clear()
 {
+  resetCache();
   return removeRows(0, rowCount() - 1);
 }
+
+// virtual
+void CQBaseDataModel::resetCache()
+{}
 
 bool CQBaseDataModel::isDefaultRow(const QModelIndex& i) const
 {
@@ -75,6 +81,12 @@ QString CQBaseDataModel::createNewName(const QString name, const int nameCol)
     }
 
   return nname;
+}
+
+void CQBaseDataModel::setDataModel(CCopasiDataModel * pDataModel)
+{
+  mpDataModel = pDataModel;
+  resetCache();
 }
 
 void CQBaseDataModel::setUndoStack(QUndoStack* undoStack)

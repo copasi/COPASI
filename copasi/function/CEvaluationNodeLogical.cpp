@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -15,6 +15,7 @@
 #include "copasi.h"
 #include "CEvaluationNode.h"
 #include "CEvaluationTree.h"
+#include "utilities/CValidatedUnit.h"
 
 #include "sbml/math/ASTNode.h"
 
@@ -351,6 +352,78 @@ std::string CEvaluationNodeLogical::getXPPString(const std::vector< std::string 
     }
   else
     return "@"; //TODO
+}
+
+// virtual
+CValidatedUnit CEvaluationNodeLogical::getUnit(const CMathContainer & /* container */,
+    const std::vector< CValidatedUnit > & units) const
+{
+  CValidatedUnit Unit(CBaseUnit::dimensionless, false);
+
+  switch (mType & 0x00FFFFFF)
+    {
+      case OR:
+      case XOR:
+      case AND:
+        if (!(units[0] == CBaseUnit::dimensionless) ||
+            !(units[1] == CBaseUnit::dimensionless))
+          {
+            Unit.setConflict(true);
+          }
+
+        break;
+
+      case EQ:
+      case NE:
+      case GT:
+      case GE:
+      case LT:
+      case LE:
+      {
+        CValidatedUnit Arguments = CValidatedUnit::merge(units[0], units[1]);
+        Unit.setConflict(Arguments.conflict());
+      }
+      break;
+    }
+
+  return Unit;
+}
+
+// virtual
+CValidatedUnit CEvaluationNodeLogical::setUnit(const CMathContainer & container,
+    const std::map < CEvaluationNode * , CValidatedUnit > & currentUnits,
+    std::map < CEvaluationNode * , CValidatedUnit > & targetUnits) const
+{
+  CValidatedUnit Result = CValidatedUnit::merge(currentUnits.find(const_cast< CEvaluationNodeLogical * >(this))->second,
+                          targetUnits[const_cast< CEvaluationNodeLogical * >(this)]);
+
+  switch (mType & 0x00FFFFFF)
+    {
+      case OR:
+      case XOR:
+      case AND:
+        targetUnits[mpLeft] = CValidatedUnit(CBaseUnit::dimensionless, false);
+        targetUnits[mpRight] = CValidatedUnit(CBaseUnit::dimensionless, false);
+        break;
+
+      case EQ:
+      case NE:
+      case GT:
+      case GE:
+      case LT:
+      case LE:
+      {
+
+        CValidatedUnit Arguments = CValidatedUnit::merge(currentUnits.find(const_cast< CEvaluationNode * >(mpLeft))->second,
+                                   currentUnits.find(const_cast< CEvaluationNode * >(mpRight))->second);
+
+        targetUnits[mpLeft] = Arguments;
+        targetUnits[mpRight] = Arguments;
+      }
+      break;
+    }
+
+  return Result;
 }
 
 // static

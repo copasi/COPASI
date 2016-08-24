@@ -12,11 +12,17 @@
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
-#include "copasi.h"
-#include "CEvaluationNode.h"
 #include <sstream>
+
+#include "copasi.h"
+
+#include "CEvaluationNode.h"
 #include "CEvaluationTree.h"
 #include "sbml/math/ASTNode.h"
+#include "utilities/CNodeIterator.h"
+#include "utilities/CValidatedUnit.h"
+#include "math/CMathObject.h"
+#include "math/CMathContainer.h"
 
 CEvaluationNodeOperator::CEvaluationNodeOperator():
   CEvaluationNode(CEvaluationNode::INVALID, ""),
@@ -1597,4 +1603,156 @@ std::string CEvaluationNodeOperator::getMMLString(const std::vector< std::string
     }
 
   return out.str();
+}
+
+//virtual
+CValidatedUnit CEvaluationNodeOperator::getUnit(const CMathContainer & container,
+    const std::vector< CValidatedUnit > & units) const
+{
+  switch (mType & 0x00FFFFFF)
+    {
+      case POWER:
+      {
+        C_FLOAT64 Exponent = mpRight->getValue();
+
+        if (std::isnan(Exponent))
+          {
+            Exponent = M_E;
+          }
+
+        CValidatedUnit Unit(units[0].exponentiate(Exponent));
+
+        // We need to make sure that the value is fixed
+        CObjectInterface::ObjectSet Objects;
+        CNodeIterator< CEvaluationNode > itNode(mpRight);
+
+        while (itNode.next() != itNode.end())
+          {
+            if (*itNode != NULL &&
+                itNode->getType() == CEvaluationNode::OBJECT)
+              {
+                CMathObject * pObject = container.getMathObject(itNode->getValuePointer());
+
+                if (pObject != NULL &&
+                    !pObject->isInitialValue())
+                  {
+                    Objects.insert(pObject);
+                  }
+              }
+          }
+
+        bool fixed = container.areObjectsConstant(Objects);
+
+        std::set< CUnitComponent >::const_iterator  it = Unit.getComponents().begin();
+        std::set< CUnitComponent >::const_iterator end = Unit.getComponents().end();
+
+        for (; it != end; it++)
+          {
+            // Test if each component's exponent
+            // is an integer. (don't want fractional exponents) by . . .
+            if (!(remainder((*it).getExponent(), 1.0) <= 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon()))
+              {
+                Unit.setConflict(true);
+
+                break;
+              }
+          }
+
+        if (!fixed ||
+            CValidatedUnit::merge(units[1], CValidatedUnit(CBaseUnit::dimensionless, false)).conflict())
+          {
+            Unit.setConflict(true);
+          }
+
+        return Unit;
+      }
+
+      break;
+
+      case MULTIPLY:
+        return units[0] * units[1];
+        break;
+
+      case DIVIDE:
+      case MODULUS:
+        return units[0] * units[1].exponentiate(-1);
+        break;
+
+      case PLUS:
+      case MINUS:
+        return CValidatedUnit::merge(units[0], units[1]);
+        break;
+
+      default:
+        break;
+    }
+
+  return CValidatedUnit(CBaseUnit::undefined, true);
+}
+
+// virtual
+CValidatedUnit CEvaluationNodeOperator::setUnit(const CMathContainer & container,
+    const std::map < CEvaluationNode * , CValidatedUnit > & currentUnits,
+    std::map < CEvaluationNode * , CValidatedUnit > & targetUnits) const
+{
+  CValidatedUnit Result = CValidatedUnit::merge(currentUnits.find(const_cast< CEvaluationNodeOperator * >(this))->second,
+                          targetUnits[const_cast< CEvaluationNodeOperator * >(this)]);
+
+  switch (mType & 0x00FFFFFF)
+    {
+      case POWER:
+      {
+        C_FLOAT64 Exponent = mpRight->getValue();
+
+        if (std::isnan(Exponent))
+          {
+            Exponent = M_E;
+          }
+
+        CValidatedUnit Unit(Result.exponentiate(1.0 / Exponent));
+
+        std::set< CUnitComponent >::const_iterator  it = Unit.getComponents().begin();
+        std::set< CUnitComponent >::const_iterator end = Unit.getComponents().end();
+
+        for (; it != end; it++)
+          {
+            // Test if each component's exponent
+            // is an integer. (don't want fractional exponents) by . . .
+            if (!(remainder((*it).getExponent(), 1.0) <= 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon()))
+              {
+                Unit.setConflict(true);
+
+                break;
+              }
+          }
+
+        targetUnits[mpLeft] = Unit;
+        targetUnits[mpRight] = CValidatedUnit(CBaseUnit::dimensionless, false);
+      }
+
+      break;
+
+      case MULTIPLY:
+        targetUnits[mpLeft] = Result * currentUnits.find(mpRight)->second.exponentiate(-1.0);
+        targetUnits[mpRight] = Result * currentUnits.find(mpLeft)->second.exponentiate(-1.0);
+        break;
+
+      case DIVIDE:
+      case MODULUS:
+        targetUnits[mpLeft] = Result * currentUnits.find(mpRight)->second;
+        targetUnits[mpRight] = Result.exponentiate(-1.0) * currentUnits.find(mpLeft)->second;
+        break;
+
+      case PLUS:
+      case MINUS:
+        targetUnits[mpLeft] = Result;
+        targetUnits[mpRight] = Result;
+        break;
+
+      default:
+        Result.setConflict(true);
+        break;
+    }
+
+  return Result;
 }

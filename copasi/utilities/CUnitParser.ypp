@@ -139,67 +139,65 @@ compound_unit: unit
              $$.pUnit = $1.pUnit;
              mpUnit = $$.pUnit;
            }
-unit:      KIND
+unit:    KIND
            {
+             mpCurrentUnitDef = CCopasiRootContainer::getUnitDefFromSymbol($1.text);
              $$.pUnit = new CUnit(CBaseUnit::fromSymbol($1.text));
              mSymbols.insert($1.text);
            }
          | SI_UNIT
            {
-             $$.pUnit = new CUnit(CUnitDefinition::getSIUnit($1.text, mAvogadro));
-             
+             mpCurrentUnitDef = CCopasiRootContainer::getUnitDefFromSymbol($1.text);
+             $$.pUnit = new CUnit(CUnitDefinition::getSIUnit($1.text));
              mSymbols.insert($1.text);
              mSymbols.insert($$.pUnit->getUsedSymbols().begin(), $$.pUnit->getUsedSymbols().end());
            }
          | USER_DEFINED_UNIT
            {
-             const CUnitDefinition * pUnitDefinition = CCopasiRootContainer::getUnitDefFromSymbol($1.text);
-
-             if (pUnitDefinition == NULL)
-               {
-                 size_t Index = CCopasiRootContainer::getUnitList()->getIndex($1.text);
-                 
-                 if (Index != C_INVALID_INDEX)
-                   {
-                     pUnitDefinition = CCopasiRootContainer::getUnitList()->begin() + Index;
-                   }
-               }
+             mpCurrentUnitDef = CCopasiRootContainer::getUnitDefFromSymbol($1.text);
              
-             if (pUnitDefinition == NULL)
+             if (mpCurrentUnitDef == NULL)
                {
                  yyerror($1.text);
                }
              else
                {
-                 $$.pUnit = new CUnit(*pUnitDefinition);
-                 mSymbols.insert(pUnitDefinition->getSymbol());
-                 mSymbols.insert($$.pUnit->getUsedSymbols().begin(), $$.pUnit->getUsedSymbols().end());
+                 $$.pUnit = new CUnit(*mpCurrentUnitDef);
+                 mSymbols.insert(mpCurrentUnitDef->getSymbol());
+                 mSymbols.insert(mpCurrentUnitDef->getUsedSymbols().begin(), mpCurrentUnitDef->getUsedSymbols().end());
                }
            }
+
 scaled_unit:  SCALE unit
            {
-             CUnitComponent component;
-             component.setKind(CBaseUnit::dimensionless);
-             component.setScale(CBaseUnit::scaleFromPrefix($1.text));
-             
              $$.pUnit = $2.pUnit;
-             $$.pUnit->addComponent(component);
+
+             if (!$$.pUnit->isUndefined())
+               {
+                 assert(mpCurrentUnitDef != NULL);
+                 
+                 CUnitComponent component(CBaseUnit::dimensionless, 1.0, CBaseUnit::scaleFromPrefix($1.text), 0.0);
+                 $$.pUnit->addComponent(component);
+
+                 if (mpCurrentUnitDef->isReadOnly())
+                   mSymbols.insert($1.text + mpCurrentUnitDef->getSymbol());
+                 else
+                   mSymbols.insert($1.text + "\"" + mpCurrentUnitDef->getSymbol() + "\"");
+                   
+                 mpCurrentUnitDef = NULL;
+               }
            }
 
 multiplier:  NUMBER
            {
-             CUnitComponent component;
-             component.setKind(CBaseUnit::dimensionless);
-             component.setMultiplier(strToDouble($1.text.c_str(), NULL));
+             CUnitComponent component(CBaseUnit::dimensionless, strToDouble($1.text.c_str(), NULL), 0.0, 0.0);
              
              $$.pUnit = new CUnit();
              $$.pUnit->addComponent(component);
            }
          | POWER_OF_TEN EXPONENT NUMBER
            {
-             CUnitComponent component;
-             component.setKind(CBaseUnit::dimensionless);
-             component.setMultiplier(pow(10.0, strToDouble($3.text.c_str(), NULL)));
+             CUnitComponent component(CBaseUnit::dimensionless, pow(10.0, strToDouble($3.text.c_str(), NULL)), 0.0, 0.0);
              
              $$.pUnit = new CUnit();
              $$.pUnit->addComponent(component);

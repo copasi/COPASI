@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -12,11 +12,13 @@
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
+#include <sstream>
+
 #include "copasi.h"
 
 #include "CEvaluationNode.h"
-#include <sstream>
 #include "CEvaluationTree.h"
+#include "utilities/CValidatedUnit.h"
 
 #include "randomGenerator/CRandom.h"
 
@@ -1764,4 +1766,181 @@ std::string CEvaluationNodeFunction::getMMLString(const std::vector< std::string
   out << "</mrow>" << std::endl;
 
   return out.str();
+}
+
+CValidatedUnit CEvaluationNodeFunction::getUnit(const CMathContainer & /* container */,
+    const std::vector< CValidatedUnit > & units) const
+{
+  CValidatedUnit Unit(CBaseUnit::dimensionless, false);
+
+  switch ((SubType)CEvaluationNode::subType(this->getType()))
+    {
+      case LOG:
+      case LOG10:
+      case EXP:
+      case SIN:
+      case COS:
+      case TAN:
+      case SEC:
+      case CSC:
+      case COT:
+      case SINH:
+      case COSH:
+      case TANH:
+      case SECH:
+      case CSCH:
+      case COTH:
+      case ARCSIN:
+      case ARCCOS:
+      case ARCTAN:
+      case ARCSEC:
+      case ARCCSC:
+      case ARCCOT:
+      case ARCSINH:
+      case ARCCOSH:
+      case ARCTANH:
+      case ARCSECH:
+      case ARCCSCH:
+      case ARCCOTH:
+      case FACTORIAL:
+      case NOT:
+        Unit = CValidatedUnit::merge(Unit, units[0]);
+        break;
+
+      case MINUS:
+      case PLUS:
+      case MAX:
+      case MIN:
+      case RUNIFORM:
+      case RNORMAL:
+        Unit = CValidatedUnit::merge(units[0], units[1]);
+        break;
+
+      case FLOOR:
+      case CEIL:
+      case ABS:
+      case RPOISSON:
+        Unit = units[0];
+
+        break;
+
+      case RGAMMA:
+        // The unit of the gamma distribution is the inverse of the scale parameter (units[1])
+        Unit = units[1].exponentiate(-1);
+
+        // The shape parameter must be dimensionless
+        if (!Unit.conflict())
+          {
+            Unit.setConflict(!(units[0] == CUnit(CBaseUnit::dimensionless)));
+          }
+
+        break;
+
+      case SQRT:
+      {
+        // Exponentiate to 1/2.
+        // Test if each component's exponent
+        // is an integer. (don't want fractional exponents) by . . .
+        // modf(exp, NULL) =< std::numeric_limits::epsilon
+        Unit = units[0].exponentiate(1.0 / 2.0);
+
+        std::set< CUnitComponent >::const_iterator  it = Unit.getComponents().begin();
+        std::set< CUnitComponent >::const_iterator end = Unit.getComponents().end();
+
+        for (; it != end; it++)
+          {
+            if (!(remainder((*it).getExponent(), 1.0) <= 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon()))
+              {
+                Unit = CValidatedUnit(CBaseUnit::undefined, true);
+
+                break;
+              }
+          }
+
+        break;
+      }
+
+      default:
+        Unit.setConflict(true);
+        break;
+    }
+
+  return Unit;
+}
+
+// virtual
+CValidatedUnit CEvaluationNodeFunction::setUnit(const CMathContainer & container,
+    const std::map < CEvaluationNode * , CValidatedUnit > & currentUnits,
+    std::map < CEvaluationNode * , CValidatedUnit > & targetUnits) const
+{
+  CValidatedUnit Result = CValidatedUnit::merge(currentUnits.find(const_cast< CEvaluationNodeFunction * >(this))->second,
+                          targetUnits[const_cast< CEvaluationNodeFunction * >(this)]);
+
+  switch ((SubType)CEvaluationNode::subType(this->getType()))
+    {
+      case LOG:
+      case LOG10:
+      case EXP:
+      case SIN:
+      case COS:
+      case TAN:
+      case SEC:
+      case CSC:
+      case COT:
+      case SINH:
+      case COSH:
+      case TANH:
+      case SECH:
+      case CSCH:
+      case COTH:
+      case ARCSIN:
+      case ARCCOS:
+      case ARCTAN:
+      case ARCSEC:
+      case ARCCSC:
+      case ARCCOT:
+      case ARCSINH:
+      case ARCCOSH:
+      case ARCTANH:
+      case ARCSECH:
+      case ARCCSCH:
+      case ARCCOTH:
+      case FACTORIAL:
+      case NOT:
+        targetUnits[mpArg1] = CValidatedUnit(CBaseUnit::dimensionless, false);
+        break;
+
+      case MINUS:
+      case PLUS:
+      case MAX:
+      case MIN:
+      case RUNIFORM:
+      case RNORMAL:
+        targetUnits[mpArg1] = Result;
+        targetUnits[mpArg2] = Result;
+        break;
+
+      case FLOOR:
+      case CEIL:
+      case ABS:
+      case RPOISSON:
+        targetUnits[mpArg1] = Result;
+        break;
+
+      case RGAMMA:
+        targetUnits[mpArg1] = CValidatedUnit(CBaseUnit::dimensionless, false);
+        targetUnits[mpArg2] = Result.exponentiate(-1);
+
+        break;
+
+      case SQRT:
+        targetUnits[mpArg1] = Result.exponentiate(2.0);
+        break;
+
+      default:
+        Result.setConflict(true);
+        break;
+    }
+
+  return Result;
 }

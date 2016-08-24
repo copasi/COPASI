@@ -14,7 +14,6 @@
 #define CUNIT_DEFINITION_H
 
 #include "copasi/utilities/CUnit.h"
-//#include "copasi/utilities/CUnitDefinitionDB.h"
 #include "copasi/report/CCopasiContainer.h"
 #include "model/CAnnotation.h"
 
@@ -36,14 +35,6 @@ public:
                   const CCopasiContainer * pParent = NO_PARENT);
 
   /**
-   * Kind constructor
-   * @param const CBaseUnit::Kind & kind
-   * @param const CCopasiContainer * pParent (default: NULL)
-   */
-  CUnitDefinition(const CBaseUnit::Kind & kind,
-                  const CCopasiContainer * pParent = NO_PARENT);
-
-  /**
   * Copy constructor
   * @param const CUnitDefinition::& src
   * @param const CCopasiContainer * pParent
@@ -54,11 +45,9 @@ public:
 
   virtual const std::string & getKey() const;
 
-  static CUnit getSIUnit(const std::string & symbol,
-                         const C_FLOAT64 & avogadro);
+  static CUnit getSIUnit(const std::string & symbol);
 
-  static void updateSIUnitDefinitions(CUnitDefinitionDB * Units,
-                                      const C_FLOAT64 & avogadro);
+  static void updateSIUnitDefinitions(CUnitDefinitionDB * Units);
 
   bool setSymbol(const std::string & symbol);
 
@@ -72,6 +61,7 @@ public:
 
 private:
   std::string mSymbol;
+  bool mReadOnly;
 
   void setup();
 };

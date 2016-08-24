@@ -1,7 +1,7 @@
-// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
@@ -30,6 +30,7 @@ class CQThread;
 class CProgressBar;
 class CQBrowserPaneDM;
 class QNetworkReply;
+class CCopasiDataModel;
 
 class DataModelGUI: public QObject
 {
@@ -38,7 +39,7 @@ private:
   void linkDataModelToGUI();
 
 public:
-  DataModelGUI(QObject * parent);
+  DataModelGUI(QObject * parent, CCopasiDataModel * pDataModel);
   virtual ~DataModelGUI();
 
   bool createModel();
@@ -144,7 +145,7 @@ signals:
   void finished(bool success);
 
 private:
-  QApplication *mpApp;
+  CCopasiDataModel * mpDataModel;
   COutputHandlerPlot mOutputHandlerPlot;
   std::set< ListViews * > mListViews;
   int mFramework;

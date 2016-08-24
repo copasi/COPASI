@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -20,6 +20,7 @@
 #include "sbml/util/List.h"
 
 #include "utilities/CNodeIterator.h"
+#include "utilities/CValidatedUnit.h"
 
 CEvaluationNode::CPrecedence::CPrecedence(const size_t & left,
     const size_t & right):
@@ -104,6 +105,11 @@ CEvaluationNode * CEvaluationNode::create(const Type & type,
       case CEvaluationNode::WHITESPACE:
         pNode = new CEvaluationNodeWhiteSpace((CEvaluationNodeWhiteSpace::SubType) subType(type),
                                               contents);
+        break;
+
+      case CEvaluationNode::UNIT:
+        pNode = new CEvaluationNodeUnit((CEvaluationNodeUnit::SubType) subType(type),
+                                        contents);
         break;
 
       case CEvaluationNode::INVALID:
@@ -753,4 +759,20 @@ bool CEvaluationNode::operator<(const CEvaluationNode& right) const
     }
 
   return result;
+}
+
+//virtual
+CValidatedUnit CEvaluationNode::getUnit(const CMathContainer & /* math */,
+                                        const std::vector< CValidatedUnit > & /*units*/) const
+{
+  return CValidatedUnit(CBaseUnit::dimensionless, false);
+}
+
+// virtual
+CValidatedUnit CEvaluationNode::setUnit(const CMathContainer & /* container */,
+                                        const std::map < CEvaluationNode * , CValidatedUnit > & currentUnits,
+                                        std::map < CEvaluationNode * , CValidatedUnit > & targetUnits) const
+{
+  return CValidatedUnit::merge(currentUnits.find(const_cast< CEvaluationNode * >(this))->second,
+                               targetUnits[const_cast< CEvaluationNode * >(this)]);
 }

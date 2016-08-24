@@ -179,6 +179,10 @@ public:
 
   const std::string & getMapping(size_t index) const;
 
+  std::vector< std::string > getUnitVector(size_t index) const;
+
+  std::string getUnit(size_t index) const;
+
   void setLocalValue(size_t index, C_FLOAT64 value);
 
   void setLocal(size_t index);

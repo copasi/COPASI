@@ -316,7 +316,7 @@ void CCopasiXML::mergeUnitDefinitions(CUnitDefinitionDB * pUnitDefImportList)
 
       // By now we know we will add a copy of this one.
       pUnitDefToAdd = new CUnitDefinition(name.str(), NULL); // name should now not conflict
-      pUnitDefToAdd->setExpression(itIL->getExpression(), CUnit::Avogadro);
+      pUnitDefToAdd->setExpression(itIL->getExpression());
 
       // If necessary, generate, then set, a non-conflicting symbol.
       if (pCopasiUnitDefinitionList->containsSymbol(symbol.str()))
@@ -336,7 +336,7 @@ void CCopasiXML::mergeUnitDefinitions(CUnitDefinitionDB * pUnitDefImportList)
 
           for (; itChosen != endChosen; ++itChosen)
             {
-              (*itChosen)->setExpression(CUnit::replaceSymbol((*itChosen)->getExpression() , itIL->getSymbol(), pUnitDefToAdd->getSymbol()), CUnit::Avogadro);
+              (*itChosen)->setExpression(CUnit::replaceSymbol((*itChosen)->getExpression() , itIL->getSymbol(), pUnitDefToAdd->getSymbol()));
             }
 
           // for all the ones remaining in the Import List
@@ -344,7 +344,7 @@ void CCopasiXML::mergeUnitDefinitions(CUnitDefinitionDB * pUnitDefImportList)
 
           for (; itILrem != endIL; ++itILrem)
             {
-              itILrem->setExpression(CUnit::replaceSymbol(itILrem->getExpression() , itIL->getSymbol(), pUnitDefToAdd->getSymbol()), CUnit::Avogadro);
+              itILrem->setExpression(CUnit::replaceSymbol(itILrem->getExpression() , itIL->getSymbol(), pUnitDefToAdd->getSymbol()));
             }
 
           // for any units used in the model
@@ -2007,17 +2007,17 @@ void CCopasiXML::fixBuild18()
   std::string quantityUnit = mpModel->getQuantityUnit();
 
   if (quantityUnit == "Mol")
-    mpModel->setQuantityUnit("mol");
+    mpModel->setQuantityUnit("mol", CModelParameter::ParticleNumbers);
   else if (quantityUnit == "mMol")
-    mpModel->setQuantityUnit("mmol");
+    mpModel->setQuantityUnit("mmol", CModelParameter::ParticleNumbers);
   else if (quantityUnit == "\xc2\xb5Mol")
-    mpModel->setQuantityUnit("\xc2\xb5mol");
+    mpModel->setQuantityUnit("\xc2\xb5mol", CModelParameter::ParticleNumbers);
   else if (quantityUnit == "nMol")
-    mpModel->setQuantityUnit("nmol");
+    mpModel->setQuantityUnit("nmol", CModelParameter::ParticleNumbers);
   else if (quantityUnit == "pMol")
-    mpModel->setQuantityUnit("pmol");
+    mpModel->setQuantityUnit("pmol", CModelParameter::ParticleNumbers);
   else if (quantityUnit == "fMol")
-    mpModel->setQuantityUnit("fmol");
+    mpModel->setQuantityUnit("fmol", CModelParameter::ParticleNumbers);
 
   return;
 }

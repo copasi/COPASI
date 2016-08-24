@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -23,6 +23,7 @@
 #include "CFunctionDB.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "utilities/utility.h"
+#include "utilities/CUnitValidator.h"
 #include "copasi/report/CCopasiRootContainer.h"
 
 CEvaluationNodeCall::CEvaluationNodeCall():
@@ -672,4 +673,87 @@ bool CEvaluationNodeCall::isBoolean() const
     }
 
   return false;
+}
+
+CValidatedUnit CEvaluationNodeCall::getUnit(const CMathContainer & math,
+    const std::vector< CValidatedUnit > & units) const
+{
+  CEvaluationTree * pTree = NULL;
+
+  switch (mType & 0x00FFFFFF)
+    {
+      case FUNCTION:
+        pTree = mpFunction;
+        break;
+
+      case EXPRESSION:
+        pTree = mpExpression;
+        break;
+
+      default:
+        return CValidatedUnit();
+        break;
+    }
+
+  CUnitValidator Validator(math, *pTree);
+  Validator.validateUnits(CValidatedUnit(CBaseUnit::undefined, false), units);
+
+  return Validator.getUnit();
+}
+
+// virtual
+CValidatedUnit CEvaluationNodeCall::setUnit(const CMathContainer & container,
+    const std::map < CEvaluationNode *, CValidatedUnit > & currentUnits,
+    std::map < CEvaluationNode *, CValidatedUnit > & targetUnits) const
+{
+  CEvaluationTree * pTree = NULL;
+
+  switch (mType & 0x00FFFFFF)
+    {
+      case FUNCTION:
+        pTree = mpFunction;
+        break;
+
+      case EXPRESSION:
+        pTree = mpExpression;
+        break;
+
+      default:
+        return CValidatedUnit();
+        break;
+    }
+
+  // Retrieve the current units of the variables
+  std::vector< CEvaluationNode * >::const_iterator it = mCallNodes.begin();
+  std::vector< CEvaluationNode * >::const_iterator end = mCallNodes.end();
+
+  std::vector< CValidatedUnit > CurrentVariableUnits(mCallNodes.size());
+  std::vector< CValidatedUnit >::iterator itUnit = CurrentVariableUnits.begin();
+
+  for (; it != end; ++it, ++itUnit)
+    {
+      *itUnit = currentUnits.find(const_cast< CEvaluationNode * >(*it))->second;
+    }
+
+  CUnitValidator Validator(container, *pTree);
+
+  Validator.validateUnits(CValidatedUnit::merge(currentUnits.find(const_cast< CEvaluationNodeCall * >(this))->second,
+                          targetUnits[const_cast< CEvaluationNodeCall * >(this)]),
+                          CurrentVariableUnits);
+
+  std::vector< CValidatedUnit >::const_iterator itValidatedVariableUnit = Validator.getVariableUnits().begin();
+
+  for (it = mCallNodes.begin(); it != end; ++it, ++itValidatedVariableUnit)
+    {
+      std::map < CEvaluationNode * , CValidatedUnit >::iterator found = targetUnits.find(const_cast< CEvaluationNode * >(*it));
+
+      if (found == targetUnits.end())
+        {
+          found = targetUnits.insert(std::make_pair(const_cast< CEvaluationNode * >(*it), CValidatedUnit(CBaseUnit::undefined, false))).first;
+        }
+
+      found->second = CValidatedUnit::merge(found->second, *itValidatedVariableUnit);
+    }
+
+  return Validator.getUnit();
 }

@@ -17,10 +17,14 @@
 
 #include <iostream>
 #include <vector>
+#include <map>
 
 #include "copasi.h"
 #include "utilities/CCopasiNode.h"
 #include "CFunctionAnalyzer.h"
+
+class CMathContainer;
+class CValidatedUnit;
 
 class CEvaluationTree;
 LIBSBML_CPP_NAMESPACE_BEGIN
@@ -54,7 +58,8 @@ public:
     LOGICAL = 0x0b000000,
     MV_FUNCTION = 0x0c000000, // This not yet implemented
     VECTOR = 0x0d000000,
-    DELAY = 0x0e000000
+    DELAY = 0x0e000000,
+    UNIT = 0x0f000000
   };
 
   // Methods
@@ -104,7 +109,7 @@ public:
    * Unequal operator, compares two CEvaluationNode objects and return true if
    * they are equal.
    */
-  virtual bool operator!=(const CEvaluationNode& right) const;
+  bool operator!=(const CEvaluationNode& right) const;
 
   /**
    * Equals operator, compares two CEvaluationNode objects and return true if
@@ -326,6 +331,28 @@ public:
    */
   const CEvaluationNode* findTopMinus(const std::vector<CFunctionAnalyzer::CValue> & callParameters) const;
 
+  /**
+   * Figure out the appropriate CUnit to use, based on the child nodes.
+   * This sets the default, appropriate for many cases, as Dimensionless
+   * @param const CMathContainer & container
+   * @param const std::vector< CValidatedUnit > & units
+   * @return CUnit unit
+   */
+  virtual CValidatedUnit getUnit(const CMathContainer & container,
+                                 const std::vector< CValidatedUnit > & units) const;
+
+  /**
+   * Set the unit for the node and return the resulting unit. The child node units are
+   * added to the map
+   * @param const CMathContainer & container
+   * @param const std::map < CEvaluationNode * , CValidatedUnit > & currentUnits
+   * @param std::map < CEvaluationNode * , CValidatedUnit > & targetUnits
+   * @return CUnit unit
+   */
+  virtual CValidatedUnit setUnit(const CMathContainer & container,
+                                 const std::map < CEvaluationNode * , CValidatedUnit > & currentUnits,
+                                 std::map < CEvaluationNode * , CValidatedUnit > & targetUnits) const;
+
   // Attributes
 protected:
   /**
@@ -468,5 +495,6 @@ protected:
 #include "CEvaluationNodeVariable.h"
 #include "CEvaluationNodeVector.h"
 #include "CEvaluationNodeWhiteSpace.h"
+#include "CEvaluationNodeUnit.h"
 
 #endif // COPASI_CEvaluationNode
