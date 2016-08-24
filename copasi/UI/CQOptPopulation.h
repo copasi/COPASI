@@ -16,12 +16,13 @@
 #include <string>
 #include <vector>
 #include <QtGui/QToolButton>
+#include <QTGui/QGraphicsScene>
 
 #include "copasi/copasi.h"
 #include "copasi/UI/CopasiFileDialog.h"
 #include "copasi/UI/CWindowInterface.h"
 #include "copasi/utilities/COutputHandler.h"
-
+#include "copasi/utilities/CVector.h"
 class CCopasiContainer;
 class CopasiUI3Window;
 class QMenu;
@@ -47,9 +48,26 @@ private:
   
   C_INT32 mCounter;
   
-  std::vector<C_FLOAT64> mData;
+  std::vector< CVector < C_FLOAT64 > * > mPopulation;
+  CVector<C_FLOAT64> mObjectiveValues;
+  
+  bool mDataInitialized;
+  bool mGraphInitialized;
+  
 
   bool initializing;
+  
+  C_INT32 mNumParameters;
+  std::vector<C_FLOAT64> mRangeMin;
+  std::vector<C_FLOAT64> mRangeMax;
+  std::vector<bool> mIsLog;
+  
+  
+  std::vector< std::vector<C_FLOAT64> > mScaledData;
+
+  QGraphicsScene * mpGS;
+  QGraphicsView * mpGV;
+  
 
   void createToolBar();
   void createMenus();

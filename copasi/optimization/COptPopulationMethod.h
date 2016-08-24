@@ -62,8 +62,16 @@ public:
    * @return bool success
    */
   virtual bool cleanup();
-
-
+  
+  C_INT32 getPopulationSize();
+  C_INT32 getNumGenerations();
+  C_INT32 getCurrentGeneration();
+  
+  const std::vector< CVector < C_FLOAT64 > * >& getPopulation();
+  const CVector< C_FLOAT64 >& getObjectiveValues();
+  
+  
+  
   /**
   * This is the output method for any object. The default implementation
   * provided with CCopasiObject uses the ostream operator<< of the object

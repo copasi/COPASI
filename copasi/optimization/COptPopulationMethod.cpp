@@ -105,6 +105,34 @@ COptPopulationMethod::cleanup()
   return true;
 }
 
+C_INT32 COptPopulationMethod::getPopulationSize()
+{
+  return mPopulationSize;
+}
+
+C_INT32 COptPopulationMethod::getNumGenerations()
+{
+  return mGenerations;
+}
+
+C_INT32 COptPopulationMethod::getCurrentGeneration()
+{
+  return mCurrentGeneration;
+}
+
+const std::vector< CVector < C_FLOAT64 > * >& COptPopulationMethod::getPopulation()
+{
+  return mIndividuals;
+}
+
+const CVector< C_FLOAT64 >& COptPopulationMethod::getObjectiveValues()
+{
+  return mValues;
+}
+
+
+
+
 void COptPopulationMethod::print(std::ostream * ostream) const
 {
   COptMethod::print(ostream);

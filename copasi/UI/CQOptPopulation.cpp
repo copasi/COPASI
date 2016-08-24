@@ -29,6 +29,9 @@
 #include "UI/qtUtilities.h"
 #include "resourcesUI/CQIconResource.h"
 #include "optimization/COptPopulationMethod.h"
+#include "optimization/COptTask.h"
+#include "optimization/COptProblem.h"
+#include "optimization/COptItem.h"
 
 #ifdef DEBUG_UI
 #include <QtCore/QtDebug>
@@ -66,10 +69,13 @@ CQOptPopulation::CQOptPopulation(COutputHandler * pHandler, CopasiUI3Window * pM
   mpToolBar(NULL),
   mpaCloseWindow(NULL),
   mCounter(0),
-  initializing(false)
+  mDataInitialized(false),
+  mGraphInitialized(false),
+  initializing(false),
+  mNumParameters(0)
 {
   this->resize(640, 480);
-  this->setWindowTitle("");
+  this->setWindowTitle("Population Visualisation");
 
 #ifndef Darwin
   setWindowIcon(CQIconResource::icon(CQIconResource::copasi));
@@ -180,17 +186,6 @@ bool CQOptPopulation::compile(CObjectInterface::ContainerList listOfContainer)
   return success;
 };
 
-void CQOptPopulation::output(const Activity & activity)
-{
-  //dummy code for now
-  mData.resize(10);
-  mData[0]=9.0;
- 
-  mCounter++;
- 
-  emit updateSignal();
- 
-}
 
 void CQOptPopulation::separate(const Activity & activity)
 {
@@ -218,10 +213,99 @@ void CQOptPopulation::closeEvent(QCloseEvent *closeEvent)
   mpHandler->removeInterface(this);
 }
 
+
+void CQOptPopulation::output(const Activity & activity)
+{
+  if (activity != COutputInterface::Activity(0x08) )
+    return;
+  
+  if (!mDataInitialized)
+  {
+    CCopasiTask* pTask = dynamic_cast<CCopasiTask*>(mpSourceMethod->getObjectParent());
+    if (!pTask)
+      return;
+    COptProblem* pProblem = dynamic_cast<COptProblem*>(pTask->getProblem());
+    if(!pProblem)
+      return;
+    
+    //now that we have access to the problem we can retrieve the range information for the parameters.
+    mNumParameters = pProblem->getOptItemList().size();
+    mRangeMax.resize(mNumParameters);
+    mRangeMin.resize(mNumParameters);
+    mIsLog.resize(mNumParameters);
+    
+    unsigned C_INT32 i;
+    for (i=0; i<mNumParameters; ++i)
+    {
+      COptItem* pOI = pProblem->getOptItemList()[i];
+      mRangeMax[i]=*pOI->getUpperBoundValue();
+      mRangeMin[i]=*pOI->getLowerBoundValue();
+
+      //guess if log scaling should be used. This could also be retrieved from the method?
+      if (mRangeMin[i]>0.0 && mRangeMax[i]>0.0 && mRangeMax[i]/mRangeMin[i]>1000)
+        mIsLog[i]=true;
+      else
+        mIsLog[i]=false;
+      
+    }
+    
+    mDataInitialized=true;
+  }
+  
+  //copy the data
+  mPopulation = mpPopulationMethod->getPopulation();
+  mObjectiveValues = mpPopulationMethod->getObjectiveValues();
+  
+  
+  mCounter++;
+  
+  emit updateSignal();
+  
+}
+
+
 void CQOptPopulation::update()
 {
  
- std::cout << "output in main thread" << std::endl;
+  if (!mGraphInitialized)
+  {
+ 
+    mpGS = new QGraphicsScene(this);
+    mpGV = new QGraphicsView(mpGS, this);
+    this->setCentralWidget(mpGV);
+    
+    
+    mpGS->addRect(-3,-3,6,6);
+    //mpGV->fitInView(-4,-4,8,8);
+    mpGV->resetMatrix();
+    mpGV->scale(10,10);
+    mpGV->setDragMode(QGraphicsView::ScrollHandDrag);
+    
+    mGraphInitialized=true;
+  }
+  
+  unsigned C_INT32 i;
+  for (i=0; i<mPopulation.size(); ++i)
+  {
+    std::cout <<mPopulation[i]->operator[](0) << "  " << mPopulation[i]->operator[](1) << std::endl;
+    
+    double xx =0;
+    if (mIsLog[0])
+      xx = log(mPopulation[i]->operator[](0));
+    else
+      xx = mPopulation[i]->operator[](0);
+    double yy =0;
+    if (mIsLog[1])
+      yy = log(mPopulation[i]->operator[](1));
+    else
+      yy = mPopulation[i]->operator[](1);
+    
+   mpGS->addEllipse(xx,
+                    yy,
+                    0.1,0.1);
+  }
+  
+ //®std::cout << "output in main thread" << std::endl;
  
  /*  if (mNextPlotTime < CCopasiTimeVariable::getCurrentWallTime())
     {
