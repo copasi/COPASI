@@ -137,7 +137,9 @@ public:
     for (i = 0; i < mAnnotationsCN[d].size() && i < v.size(); ++i)
       {
         mAnnotationsCN[d][i] = v[i].getCN();
-        mAnnotationsString[d][i] = createDisplayName(mAnnotationsCN[d][i]);
+
+        // The annotation string is always updated when retrieved since objects may be renamed
+        // Thus we do not update them here
       }
 
     return;
