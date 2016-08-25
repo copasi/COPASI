@@ -854,12 +854,13 @@ bool CMathObject::compileParticleFlux(CMathContainer & container)
   Infix << "*";
   Infix << pointerToString(container.getMathObject(pReaction->getFluxReference())->getValuePointer());
 
-  CExpression E("ParticleFluxExpression", &container);
+  if (mpExpression == NULL)
+    {
+      mpExpression = new CMathExpression("ParticleFluxExpression", container);
+    }
 
-  success &= E.setInfix(Infix.str());
-
-  pdelete(mpExpression);
-  mpExpression = new CMathExpression(E, container, !mIsInitialValue);
+  success &= mpExpression->setInfix(Infix.str());
+  success &= mpExpression->compile();
   compileExpression();
 
   return success;
@@ -988,12 +989,13 @@ bool CMathObject::compilePropensity(CMathContainer & container)
       Infix << ")";
     }
 
-  CExpression E("PropensityExpression", &container);
+  if (mpExpression == NULL)
+    {
+      mpExpression = new CMathExpression("PropensityExpression", container);
+    }
 
-  success &= E.setInfix(Infix.str());
-
-  pdelete(mpExpression);
-  mpExpression = new CMathExpression(E, container, !mIsInitialValue);
+  success &= mpExpression->setInfix(Infix.str());
+  success &= mpExpression->compile();
   compileExpression();
 
   return success;
@@ -1038,12 +1040,13 @@ bool CMathObject::compileTotalMass(CMathContainer & container)
       Infix << pointerToString(container.getMathObject(it->second->getValueReference())->getValuePointer());
     }
 
-  CExpression E("TotalMass", &container);
+  if (mpExpression == NULL)
+    {
+      mpExpression = new CMathExpression("TotalMass", container);
+    }
 
-  success &= E.setInfix(Infix.str());
-
-  pdelete(mpExpression);
-  mpExpression = new CMathExpression(E, container, !mIsInitialValue);
+  success &= mpExpression->setInfix(Infix.str());
+  success &= mpExpression->compile();
   compileExpression();
 
   return success;
@@ -1096,12 +1099,13 @@ bool CMathObject::compileDependentMass(CMathContainer & container)
       Infix << pointerToString(container.getMathObject(it->second->getValueReference())->getValuePointer());
     }
 
-  CExpression E("DependentMass", &container);
+  if (mpExpression == NULL)
+    {
+      mpExpression = new CMathExpression("DependentMass", container);
+    }
 
-  success &= E.setInfix(Infix.str());
-
-  pdelete(mpExpression);
-  mpExpression = new CMathExpression(E, container, !mIsInitialValue);
+  success &= mpExpression->setInfix(Infix.str());
+  success &= mpExpression->compile();
   compileExpression();
 
   return success;
@@ -1217,12 +1221,13 @@ bool CMathObject::compileTransitionTime(CMathContainer & container)
         break;
     }
 
-  CExpression E("TransitionTimeExpression", &container);
+  if (mpExpression == NULL)
+    {
+      mpExpression = new CMathExpression("TransitionTimeExpression", container);
+    }
 
-  success &= E.setInfix(Infix.str());
-
-  pdelete(mpExpression);
-  mpExpression = new CMathExpression(E, container, false);
+  success &= mpExpression->setInfix(Infix.str());
+  success &= mpExpression->compile();
   compileExpression();
 
   return success;
@@ -1272,7 +1277,7 @@ bool CMathObject::createIntensiveValueExpression(const CMetab * pSpecies,
 {
   bool success = true;
 
-  // mConc = *mpValue / mpCompartment->getValue() * mpModel->getNumber2QuantityFactor();
+  // mConc = *mpValue / (mpModel->getQuantity2NumberFactor() * mpCompartment->getValue());
   CObjectInterface * pNumber = NULL;
   CObjectInterface * pCompartment = NULL;
 
@@ -1291,18 +1296,20 @@ bool CMathObject::createIntensiveValueExpression(const CMetab * pSpecies,
   Infix.imbue(std::locale::classic());
   Infix.precision(16);
 
-  Infix << container.getModel().getNumber2QuantityFactor();
-  Infix << "*";
   Infix << pointerToString(container.getMathObject(pNumber)->getValuePointer());
-  Infix << "/";
-  Infix << pointerToString(container.getMathObject(pCompartment)->getValuePointer());;
+  Infix << "/(";
+  Infix << pointerToString(&container.getQuantity2NumberFactor());
+  Infix << "*";
+  Infix << pointerToString(container.getMathObject(pCompartment)->getValuePointer());
+  Infix << ")";
 
-  CExpression E("IntensiveValueExpression", &container);
+  if (mpExpression == NULL)
+    {
+      mpExpression = new CMathExpression("IntensiveValueExpression", container);
+    }
 
-  success &= E.setInfix(Infix.str());
-
-  pdelete(mpExpression);
-  mpExpression = new CMathExpression(E, container, !mIsInitialValue);
+  success &= mpExpression->setInfix(Infix.str());
+  success &= mpExpression->compile();
   compileExpression();
 
   return success;
@@ -1315,17 +1322,17 @@ bool CMathObject::createExtensiveValueExpression(const CMetab * pSpecies,
 
   // mConc * mpCompartment->getValue() * mpModel->getQuantity2NumberFactor();
 
-  CObjectInterface * pDensity = NULL;
+  CObjectInterface * pIntensiveValue = NULL;
   CObjectInterface * pCompartment = NULL;
 
   if (mIsInitialValue)
     {
-      pDensity = pSpecies->getInitialConcentrationReference();
+      pIntensiveValue = pSpecies->getInitialConcentrationReference();
       pCompartment = pSpecies->getCompartment()->getInitialValueReference();
     }
   else
     {
-      pDensity = pSpecies->getConcentrationReference();
+      pIntensiveValue = pSpecies->getConcentrationReference();
       pCompartment = pSpecies->getCompartment()->getValueReference();
     }
 
@@ -1335,16 +1342,17 @@ bool CMathObject::createExtensiveValueExpression(const CMetab * pSpecies,
 
   Infix << pointerToString(&container.getQuantity2NumberFactor());
   Infix << "*";
-  Infix << pointerToString(container.getMathObject(pDensity)->getValuePointer());
+  Infix << pointerToString(container.getMathObject(pIntensiveValue)->getValuePointer());
   Infix << "*";
   Infix << pointerToString(container.getMathObject(pCompartment)->getValuePointer());
 
-  CExpression E("ExtensiveValueExpression", &container);
+  if (mpExpression == NULL)
+    {
+      mpExpression = new CMathExpression("ExtensiveValueExpression", container);
+    }
 
-  success &= E.setInfix(Infix.str());
-
-  pdelete(mpExpression);
-  mpExpression = new CMathExpression(E, container, !mIsInitialValue);
+  success &= mpExpression->setInfix(Infix.str());
+  success &= mpExpression->compile();
   compileExpression();
 
   return success;
@@ -1357,7 +1365,7 @@ bool CMathObject::createIntensiveRateExpression(const CMetab * pSpecies,
 
   /*
     mConcRate =
-      (mRate * mpModel->getNumber2QuantityFactor() - mConc * mpCompartment->getRate())
+      (mRate * mpModel->getQuantity2NumberFactor() - mConc * mpCompartment->getRate())
       / mpCompartment->getValue();
    */
 
@@ -1367,8 +1375,8 @@ bool CMathObject::createIntensiveRateExpression(const CMetab * pSpecies,
 
   Infix << "(";
   Infix << pointerToString(container.getMathObject(pSpecies->getRateReference())->getValuePointer());
-  Infix << "*";
-  Infix << container.getModel().getNumber2QuantityFactor();
+  Infix << "/";
+  Infix << pointerToString(&container.getQuantity2NumberFactor());
   Infix << "-";
   Infix << pointerToString(container.getMathObject(pSpecies->getCompartment()->getValueReference())->getValuePointer());
   Infix << "*";
@@ -1376,12 +1384,13 @@ bool CMathObject::createIntensiveRateExpression(const CMetab * pSpecies,
   Infix << ")/";
   Infix << pointerToString(container.getMathObject(pSpecies->getCompartment()->getValueReference())->getValuePointer());
 
-  CExpression E("IntensiveRateExpression", &container);
+  if (mpExpression == NULL)
+    {
+      mpExpression = new CMathExpression("IntensiveRateExpression", container);
+    }
 
-  success &= E.setInfix(Infix.str());
-
-  pdelete(mpExpression);
-  mpExpression = new CMathExpression(E, container, !mIsInitialValue);
+  success &= mpExpression->setInfix(Infix.str());
+  success &= mpExpression->compile();
   compileExpression();
 
   return success;
@@ -1486,12 +1495,13 @@ bool CMathObject::createExtensiveReactionRateExpression(const CMetab * pSpecies,
         }
     }
 
-  CExpression E("ExtensiveReactionExpression", &container);
+  if (mpExpression == NULL)
+    {
+      mpExpression = new CMathExpression("ExtensiveReactionExpression", container);
+    }
 
-  success &= E.setInfix(Infix.str());
-
-  pdelete(mpExpression);
-  mpExpression = new CMathExpression(E, container, !mIsInitialValue);
+  success &= mpExpression->setInfix(Infix.str());
+  success &= mpExpression->compile();
   compileExpression();
 
   return success;
