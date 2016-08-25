@@ -278,9 +278,30 @@ void CQOptPopulation::update()
     mpGS->addRect(-3,-3,6,6);
     //mpGV->fitInView(-4,-4,8,8);
     mpGV->resetMatrix();
-    mpGV->scale(10,10);
+    mpGV->scale(30,30);
     mpGV->setDragMode(QGraphicsView::ScrollHandDrag);
+  
+    mGraphicItems.resize(mPopulation.size());
+  
+    unsigned C_INT32 i;
+    for (i=0; i<mPopulation.size(); ++i)
+    {
     
+      double xx =0;
+      if (mIsLog[0])
+        xx = log(mPopulation[i]->operator[](0));
+      else
+        xx = mPopulation[i]->operator[](0);
+      double yy =0;
+      if (mIsLog[1])
+        yy = log(mPopulation[i]->operator[](1));
+      else
+        yy = mPopulation[i]->operator[](1);
+    
+      mGraphicItems[i]=mpGS->addEllipse(xx, yy, 0.1,0.1);
+  }
+
+  
     mGraphInitialized=true;
   }
   
@@ -300,9 +321,9 @@ void CQOptPopulation::update()
     else
       yy = mPopulation[i]->operator[](1);
     
-   mpGS->addEllipse(xx,
-                    yy,
-                    0.1,0.1);
+    QGraphicsEllipseItem* gie = dynamic_cast<QGraphicsEllipseItem*>(mGraphicItems[i]);
+    if (gie)
+      gie->setRect(xx, yy, 0.1, 0.1);
   }
   
  //®std::cout << "output in main thread" << std::endl;

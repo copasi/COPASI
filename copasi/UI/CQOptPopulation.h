@@ -56,6 +56,8 @@ private:
 
   QGraphicsScene * mpGS;
   QGraphicsView * mpGV;
+  
+  std::vector<QGraphicsItem *> mGraphicItems;
 
   void createToolBar();
   void createMenus();
