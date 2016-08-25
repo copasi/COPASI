@@ -910,26 +910,13 @@ public:
    */
   virtual const CObjectInterface * getObject(const CCopasiObjectName &name) const
   {
-    size_t Index = getIndex(name.getElementName(0));
+    CCopasiContainer::objectMap::range Range = CCopasiContainer::getObjects().equal_range(name.getElementName(0));
 
-    if (Index == C_INVALID_INDEX) return NULL;
-
-    CCopasiObject * pObject = *(std::vector< CType * >::begin() + Index);
-
-    if (name.getObjectType() == pObject->getObjectType())
-      return pObject; //exact match of type and name
-
-    if (name.getObjectName() == "")
-      return pObject; //cn contains no "="; type cannot be checked
-
-#ifdef COPASI_DEBUG
-    std::cout << "CCopasiVector::getObject: Vector contains object of right name but wrong type" << std::endl;
-    std::cout << "  CN            " << name << std::endl;
-    std::cout << "  CN.getName(0) " << name.getElementName(0) << std::endl;
-    std::cout << "  Index         " << Index << std::endl;
-    std::cout << "  CN.getObjName " << name.getObjectName() << std::endl;
-    std::cout << "  CN.getObjType " << name.getObjectType() << std::endl << std::endl;
-#endif // COPASI_DEBUG
+    for (; Range.first != Range.second; ++Range.first)
+      {
+        if (dynamic_cast< CType * >(*Range.first) != NULL)
+          return *Range.first;
+      }
 
     return NULL;
   }
