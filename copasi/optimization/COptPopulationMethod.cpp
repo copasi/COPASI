@@ -107,7 +107,9 @@ COptPopulationMethod::cleanup()
 
 void COptPopulationMethod::print(std::ostream * ostream) const
 {
-  *ostream << *this;
+  COptMethod::print(ostream);
+
+  *ostream << std::endl << *this;
 }
 
 
