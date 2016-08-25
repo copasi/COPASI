@@ -357,8 +357,10 @@ void CQModelWidget::updateUnitComboBoxes()
       ComboEntries.push_back(FROM_UTF8(it->getExpression()));
     }
 
+  mpComboTimeUnit->blockSignals(true);
   mpComboTimeUnit->clear();
   mpComboTimeUnit->insertItems(0, ComboEntries);
+  mpComboTimeUnit->blockSignals(false);
 
   ValidUnitSet = CCopasiRootContainer::getUnitList()->getAllValidUnits("m", 3);
   ComboEntries.clear();
@@ -368,8 +370,10 @@ void CQModelWidget::updateUnitComboBoxes()
       ComboEntries.push_back(FROM_UTF8(it->getExpression()));
     }
 
+  mpComboVolumeUnit->blockSignals(true);
   mpComboVolumeUnit->clear();
   mpComboVolumeUnit->insertItems(0, ComboEntries);
+  mpComboVolumeUnit->blockSignals(false);
 
   ValidUnitSet = CCopasiRootContainer::getUnitList()->getAllValidUnits("m", 2);
   ComboEntries.clear();
@@ -379,8 +383,10 @@ void CQModelWidget::updateUnitComboBoxes()
       ComboEntries.push_back(FROM_UTF8(it->getExpression()));
     }
 
+  mpComboAreaUnit->blockSignals(true);
   mpComboAreaUnit->clear();
   mpComboAreaUnit->insertItems(0, ComboEntries);
+  mpComboAreaUnit->blockSignals(false);
 
   ValidUnitSet = CCopasiRootContainer::getUnitList()->getAllValidUnits("m", 1);
   ComboEntries.clear();
@@ -390,8 +396,10 @@ void CQModelWidget::updateUnitComboBoxes()
       ComboEntries.push_back(FROM_UTF8(it->getExpression()));
     }
 
+  mpComboLengthUnit->blockSignals(true);
   mpComboLengthUnit->clear();
   mpComboLengthUnit->insertItems(0, ComboEntries);
+  mpComboLengthUnit->blockSignals(false);
 
   ValidUnitSet = CCopasiRootContainer::getUnitList()->getAllValidUnits("#", 1);
   ComboEntries.clear();
@@ -401,8 +409,10 @@ void CQModelWidget::updateUnitComboBoxes()
       ComboEntries.push_back(FROM_UTF8(it->getExpression()));
     }
 
+  mpComboQuantityUnit->blockSignals(true);
   mpComboQuantityUnit->clear();
   mpComboQuantityUnit->insertItems(0, ComboEntries);
+  mpComboQuantityUnit->blockSignals(false);
 }
 
 // virtual
