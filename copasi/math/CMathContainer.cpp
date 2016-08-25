@@ -662,6 +662,12 @@ bool CMathContainer::areObjectsConstant(const CObjectInterface::ObjectSet & obje
   return UpdateSequence.empty();
 }
 
+void CMathContainer::quantityConversionChanged()
+{
+  mAvogadroValue = *(C_FLOAT64 *)mAvogadroObject.getDataObject()->getValuePointer();
+  mQuantity2NumberFactorValue = *(C_FLOAT64 *)mQuantity2NumberFactorObject.getDataObject()->getValuePointer();
+}
+
 const C_FLOAT64 & CMathContainer::getQuantity2NumberFactor() const
 {
   return mQuantity2NumberFactorValue;
@@ -2035,6 +2041,9 @@ void CMathContainer::initializeEvents(CMath::sPointers & p)
 bool CMathContainer::compileObjects()
 {
   bool success = true;
+
+  // Assure that Avogadro's number and the quantity conversion are up to date.
+  quantityConversionChanged();
 
   CMathObject *pObject = mObjects.array();
   CMathObject *pObjectEnd = pObject + mObjects.size();

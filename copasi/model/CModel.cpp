@@ -100,7 +100,7 @@ CModel::CModel(CCopasiContainer* pParent):
   mReorderNeeded(false),
   mIsAutonomous(true),
   mBuildInitialSequence(true),
-  mpMathContainer(NULL)
+  mpMathContainer(new CMathContainer(*this))
 {
   initObjects();
 
@@ -111,8 +111,6 @@ CModel::CModel(CCopasiContainer* pParent):
   setQuantityUnit(mQuantityUnit, CModelParameter::ParticleNumbers);
 
   initializeMetabolites();
-
-  mpMathContainer = new CMathContainer(*this);
 
   forceCompile(NULL);
 }
@@ -1509,6 +1507,8 @@ bool CModel::setQuantityUnit(const std::string & name,
 
         break;
     }
+
+  mpMathContainer->quantityConversionChanged();
 
   return true;
 }
