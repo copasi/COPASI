@@ -119,6 +119,25 @@
     items->erase(items->begin() + index);
   }
 
+  void addHeaderItem(std::string item)
+  {
+    self->getHeaderAddr()->push_back(CRegisteredObjectName(item));
+  }
+  
+  void addFooterItem(std::string item)
+  {
+    self->getFooterAddr()->push_back(CRegisteredObjectName(item));
+  }
+  
+  void addBodyItem(std::string item)
+  {
+    self->getBodyAddr()->push_back(CRegisteredObjectName(item));
+  }
+  
+  void addTableItem(std::string item)
+  {
+    self->getTableAddr()->push_back(CRegisteredObjectName(item));
+  }
   
 
 }
