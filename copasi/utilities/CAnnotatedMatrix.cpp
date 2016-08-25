@@ -102,13 +102,26 @@ const std::vector<std::string> & CArrayAnnotation::getAnnotationsString(size_t d
 {
   assert(d < mModes.size());
 
-  std::vector<CRegisteredObjectName>::const_iterator itCN = mAnnotationsCN[d].begin();
-  std::vector<CRegisteredObjectName>::const_iterator endCN = mAnnotationsCN[d].end();
   std::vector< std::string >::iterator itName = mAnnotationsString[d].begin();
+  std::vector< std::string >::iterator endName = mAnnotationsString[d].end();
 
-  for (; itCN != endCN; ++itCN, ++itName)
+  if (mModes[d] == NUMBERS)
     {
-      *itName = createDisplayName(*itCN);
+      size_t Index = 1;
+
+      for (; itName != endName; ++Index, ++itName)
+        {
+          *itName = StringPrint("%d", Index);
+        }
+    }
+  else
+    {
+      std::vector<CRegisteredObjectName>::const_iterator itCN = mAnnotationsCN[d].begin();
+
+      for (; itName != endName; ++itCN, ++itName)
+        {
+          *itName = createDisplayName(*itCN);
+        }
     }
 
   return mAnnotationsString[d];
