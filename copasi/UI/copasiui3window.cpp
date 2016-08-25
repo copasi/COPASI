@@ -3512,10 +3512,6 @@ void CopasiUI3Window::slotImportCombine(QString file)
 
       if (this->mpSliders) this->mpSliders->reset();
 
-      if (!mpDataModelGUI)
-        {
-          mpDataModelGUI = new DataModelGUI(this); // create a new data model
-        }
 
       setCursor(Qt::WaitCursor);
       connect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(slotImportCombineFinished(bool)));
