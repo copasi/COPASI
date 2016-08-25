@@ -54,5 +54,15 @@ public:
 	{
 		return dynamic_cast<CCopasiObject*>($self);
 	}
+  
+  std::string printToString()
+  {
+    CCopasiObject* obj = dynamic_cast<CCopasiObject*>($self);
+    if (obj == NULL)
+      return "";
+    std::stringstream str; 
+    obj->print(&str);
+    return str.str();
+  }
 
 }
