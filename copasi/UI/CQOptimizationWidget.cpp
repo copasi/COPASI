@@ -25,6 +25,8 @@
 #include "UI/CCopasiSelectionDialog.h"
 #include "UI/qtUtilities.h"
 #include "UI/CQExpressionWidget.h"
+#include "UI/CQOptPopulation.h"
+#include "UI/CQCopasiApplication.h"
 
 #include "report/CKeyFactory.h"
 #include "optimization/COptTask.h"
@@ -171,6 +173,16 @@ bool CQOptimizationWidget::runTask()
 
   if (!commonBeforeRunTask()) return false;
 
+//#define POP_DISPLAY
+#ifdef POP_DISPLAY
+  //Preliminary: Create a Pop-Widget, should be controled somewhere else
+  CQOptPopulation* pPopWidget = new CQOptPopulation(&CCopasiRootContainer::getDatamodelList()->operator[](0), dynamic_cast<CQCopasiApplication*>(qApp)->getMainWindow());
+  pPopWidget->setMethod(dynamic_cast<COptMethod*>(pTask->getMethod()));
+  pPopWidget->show();
+  CCopasiRootContainer::getDatamodelList()->operator[](0).addInterface(pPopWidget);
+#endif
+  
+  
   return commonRunTask();
 }
 
