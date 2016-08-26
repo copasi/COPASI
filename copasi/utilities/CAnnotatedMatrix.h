@@ -197,12 +197,6 @@ public:
   const CCopasiObject * addElementReference(C_INT32 u) const;
 
   /**
-   * Appends all element references to the set of objects
-   * @param std::set< const CCopasiObject * > & objects
-   */
-  void appendElementReferences(std::set< const CCopasiObject * > & objects) const;
-
-  /**
    * Resolve a cn. Since this is an array, the CN can start with an index like "[2][3]".
    * Since this is also a container, this is not necessarily the case.
    */
@@ -229,8 +223,6 @@ public:
   void printRecursively(std::ostream & ostream, size_t level,
                         CCopasiAbstractArray::index_type & index,
                         const std::vector<std::vector<std::string> > & display) const;
-
-  void autoAnnotation(const size_t & d);
 
   /**
    * generate a display name for the array annotation.
