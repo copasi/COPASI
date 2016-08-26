@@ -308,7 +308,18 @@ void CQOptPopulation::update()
   unsigned C_INT32 i;
   for (i=0; i<mPopulation.size(); ++i)
   {
-    std::cout <<mPopulation[i]->operator[](0) << "  " << mPopulation[i]->operator[](1) << std::endl;
+    //std::cout <<mPopulation[i]->operator[](0) << "  " << mPopulation[i]->operator[](1) << std::endl;
+    
+    /*C_INT32 j;
+    for (j=0; j<2; ++j)
+    {
+      double scaled_value;
+      if (mIsLog[j])
+        scaled_value = log(mPopulation[i]->operator[](j));
+      else
+        scaled_value = mPopulation[i]->operator[](j);
+      
+    }*/
     
     double xx =0;
     if (mIsLog[0])
