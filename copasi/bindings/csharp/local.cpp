@@ -1,10 +1,29 @@
-// Copyright (C) 2011 - 2016 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
+// Copyright (C) 2011 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
 #include "../common/local_common.cpp"
 #include "plot/CPlotSpecification.h"
+
+#include <copasi/optimization/COptMethodCoranaWalk.h>
+#include <copasi/optimization/COptMethodDE.h>
+#include <copasi/optimization/COptMethodEP.h>
+#include <copasi/optimization/COptMethodGA.h>
+#include <copasi/optimization/COptMethodGASR.h>
+#include <copasi/optimization/COptMethodHookeJeeves.h>
+#include <copasi/optimization/COptMethodLevenbergMarquardt.h>
+#include <copasi/optimization/COptMethodNelderMead.h>
+#include <copasi/optimization/COptMethodPraxis.h>
+#include <copasi/optimization/COptMethodPS.h>
+#include <copasi/optimization/COptMethodSA.h>
+#include <copasi/optimization/COptMethodSRES.h>
+#include <copasi/optimization/COptMethodSS.h>
+#include <copasi/optimization/COptMethodStatistics.h>
+#include <copasi/optimization/COptMethodSteepestDescent.h>
+#include <copasi/optimization/CRandomSearch.h>
+#include <copasi/optimization/COptMethodTruncatedNewton.h>
+
 // Now we specify the definitions
 // for the type determination methods
 
@@ -384,10 +403,7 @@ int GetType_CCopasiMethod(CCopasiMethod* pPointer)
         }
       else if (dynamic_cast<COptMethod*>(pPointer))
         {
-          // If we are not to specific here, the typecasting code in csharp.i
-          // actually gets a lot easier to maintain.
-          result = COptMethod_Type;
-          //result = GetType_COptMethod((COptMethod*)pPointer);
+          result = (CLASS_TYPE)GetType_COptMethod((COptMethod*)pPointer);
         }
       else if (dynamic_cast<CLyapMethod*>(pPointer))
         {
@@ -491,8 +507,7 @@ int GetType_CCopasiParameterGroup(CCopasiParameterGroup* pPointer)
         {
           // If we are not to specific here, the typecasting code in csharp.i
           // actually gets a lot easier to maintain.
-          result = CCopasiMethod_Type;
-          //result = GetType_CCopasiMethod((CCopasiMethod*)pPointer);
+          result = (CLASS_TYPE)GetType_CCopasiMethod((CCopasiMethod*)pPointer);
         }
       else if (dynamic_cast<CCopasiProblem*>(pPointer))
         {
@@ -747,8 +762,40 @@ int GetType_COptItem(COptItem* pPointer)
 }
 
 // Determine type for COptMethod
-int GetType_COptMethod(COptMethod* pPointer)
+int GetType_COptMethod(COptMethod* optMethod)
 {
+  if (dynamic_cast<COptMethodCoranaWalk*>(optMethod))
+    return COptMethodCoranaWalk_Type;
+  if (dynamic_cast<COptMethodDE*>(optMethod))
+    return COptMethodDE_Type;
+  if (dynamic_cast<COptMethodEP*>(optMethod))
+    return COptMethodEP_Type;
+  if (dynamic_cast<COptMethodGA*>(optMethod))
+    return COptMethodGA_Type;
+  if (dynamic_cast<COptMethodGASR*>(optMethod))
+    return COptMethodGASR_Type;
+  if (dynamic_cast<COptMethodHookeJeeves*>(optMethod))
+    return COptMethodHookeJeeves_Type;
+  if (dynamic_cast<COptMethodLevenbergMarquardt*>(optMethod))
+    return COptMethodLevenbergMarquardt_Type;
+  if (dynamic_cast<COptMethodNelderMead*>(optMethod))
+    return COptMethodNelderMead_Type;
+  if (dynamic_cast<COptMethodPraxis*>(optMethod))
+    return COptMethodPraxis_Type;
+  if (dynamic_cast<COptMethodSA*>(optMethod))
+    return COptMethodSA_Type;
+  if (dynamic_cast<COptMethodSRES*>(optMethod))
+    return COptMethodSRES_Type;
+  if (dynamic_cast<COptMethodSS*>(optMethod))
+    return COptMethodSS_Type;
+  if (dynamic_cast<COptMethodStatistics*>(optMethod))
+    return COptMethodStatistics_Type;
+  if (dynamic_cast<COptMethodSteepestDescent*>(optMethod))
+    return COptMethodSteepestDescent_Type;
+  if (dynamic_cast<CRandomSearch*>(optMethod))
+    return CRandomSearch_Type;
+  if (dynamic_cast<COptMethodTruncatedNewton*>(optMethod))
+    return COptMethodTruncatedNewton_Type;
   return COptMethod_Type;
 }
 
