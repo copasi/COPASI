@@ -40,7 +40,24 @@ void CArrayElementReference::updateObjectName()
     {
       const CCopasiObject * pObject = CObjectInterface::DataObject(getObjectFromCN(*it));
 
-      ObjectName += "[" + ((pObject != NULL) ? CCopasiObjectName::escape(pObject->getObjectDisplayName()) : std::string("not found")) + "]";
+      if (pObject != NULL)
+        {
+          ObjectName += "[" + CCopasiObjectName::escape(pObject->getObjectDisplayName()) + "]";
+        }
+      else
+        {
+          const char * pTail = NULL;
+          strToInt(it->c_str(), &pTail);
+
+          if (pTail != it->c_str() + it->size())
+            {
+              ObjectName += "[" + std::string("not found") + "]";
+            }
+          else
+            {
+              ObjectName += "[" + *it + "]";
+            }
+        }
     }
 
   if (ObjectName.empty())

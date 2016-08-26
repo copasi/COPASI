@@ -180,15 +180,19 @@ const CCopasiObject * CArrayAnnotation::addElementReference(const CArrayAnnotati
 const CCopasiObject * CArrayAnnotation::addElementReference(const CArrayAnnotation::index_type & index) const
 {
   CArrayAnnotation::name_index_type CNIndex(index.size());
-
+  CArrayAnnotation::name_index_type::iterator to = CNIndex.begin();
   CArrayAnnotation::index_type::const_iterator it = index.begin();
   CArrayAnnotation::index_type::const_iterator end = index.end();
   std::vector< std::vector<CRegisteredObjectName> >::const_iterator itCN = mAnnotationsCN.begin();
-  CArrayAnnotation::name_index_type::iterator to = CNIndex.begin();
 
-  for (; it != end; ++it, ++itCN, ++to)
+  for (; it != end; ++it, ++to)
     {
       *to = itCN->operator [](*it);
+
+      if (to->empty())
+        {
+          *to = StringPrint("%d", *it);
+        }
     }
 
   return addElementReference(CNIndex);
@@ -196,68 +200,21 @@ const CCopasiObject * CArrayAnnotation::addElementReference(const CArrayAnnotati
 
 const CCopasiObject * CArrayAnnotation::addElementReference(C_INT32 u, C_INT32 v) const
 {
-  CArrayAnnotation::name_index_type CNIndex(2);
+  CArrayAnnotation::index_type CIndex(2);
 
-  if ((C_INT32)mAnnotationsCN[0].size() <= u &&
-      (C_INT32)mpArray->size()[0] >= u)
-    {
-      const_cast< CArrayAnnotation * >(this)->autoAnnotation(0);
-    }
+  CIndex[0] = u;
+  CIndex[1] = v;
 
-  CNIndex[0] = mAnnotationsCN[0][u];
-
-  if ((C_INT32)mAnnotationsCN[1].size() <= v &&
-      (C_INT32)mpArray->size()[1] >= v)
-    {
-      const_cast< CArrayAnnotation * >(this)->autoAnnotation(1);
-    }
-
-  CNIndex[1] = mAnnotationsCN[1][v];
-
-  return addElementReference(CNIndex);
+  return addElementReference(CIndex);
 }
 
 const CCopasiObject * CArrayAnnotation::addElementReference(C_INT32 u) const
 {
-  CArrayAnnotation::name_index_type CNIndex(1);
+  CArrayAnnotation::index_type CIndex(1);
 
-  if ((C_INT32)mAnnotationsCN[0].size() <= u &&
-      (C_INT32)mpArray->size()[0] >= u)
-    {
-      const_cast< CArrayAnnotation * >(this)->autoAnnotation(0);
-    }
+  CIndex[0] = u;
 
-  CNIndex[0] = mAnnotationsCN[0][u];
-
-  return addElementReference(CNIndex);
-}
-
-void CArrayAnnotation::autoAnnotation(const size_t & d)
-{
-  resizeOneDimension(d);
-
-  size_t i;
-
-  for (i = 0; i < mAnnotationsCN[d].size(); ++i)
-    {
-      std::stringstream I;
-      I << i;
-
-      mAnnotationsCN[d][i] = CCopasiObjectName("String=" + I.str());
-      mAnnotationsString[d][i] = createDisplayName(mAnnotationsCN[d][i]);
-    }
-}
-
-void CArrayAnnotation::appendElementReferences(std::set< const CCopasiObject * > & objects) const
-{
-  objectMap::const_iterator it = mObjects.begin();
-  objectMap::const_iterator end = mObjects.end();
-
-  for (; it != end; ++it)
-    if (dynamic_cast<const CArrayElementReference *>(*it) != NULL)
-      objects.insert(*it);
-
-  return;
+  return addElementReference(CIndex);
 }
 
 const CObjectInterface * CArrayAnnotation::getObject(const CCopasiObjectName & cn) const
@@ -472,9 +429,12 @@ CArrayAnnotation::name_index_type CArrayAnnotation::displayNamesToCN(const std::
 
           C_INT32 index = strToInt(it->c_str(), &pTail);
 
-          if (itCNs->empty() || pTail != it->c_str() + it->size())
+          if (itCNs->empty())
             {
-              *to = std::string("not found");
+              if (pTail != it->c_str() + it->size())
+                *to = std::string("not found");
+              else
+                *to = *it;
             }
           else
             {
