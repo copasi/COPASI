@@ -168,6 +168,7 @@ set (DEFAULT_HYBRIDODE45 OFF)
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
   # for the debug version we need to enable
   # COPASI_DEBUG
+  add_definitions(-D_DEBUG)
   add_definitions(-DCOPASI_DEBUG)
   set (DEFAULT_HYBRIDODE45 ON)  
   set (DEFAULT_EXTUNIT ON)
