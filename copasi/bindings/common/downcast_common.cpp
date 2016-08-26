@@ -1,7 +1,7 @@
-// Copyright (C) 2011 - 2016 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
+// Copyright (C) 2011 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
 // These are the downcast rules for the non Java languages
 // Out of some reason, Java does it differently
@@ -9,7 +9,26 @@
 // here we add the declaration in alphabetic order so that we can use all function in
 // other functions below without having to worry about the order
 
+
 #include <copasi/plot/CPlotItem.h>
+#include <copasi/optimization/COptMethodCoranaWalk.h>
+#include <copasi/optimization/COptMethodDE.h>
+#include <copasi/optimization/COptMethodEP.h>
+#include <copasi/optimization/COptMethodGA.h>
+#include <copasi/optimization/COptMethodGASR.h>
+#include <copasi/optimization/COptMethodHookeJeeves.h>
+#include <copasi/optimization/COptMethodLevenbergMarquardt.h>
+#include <copasi/optimization/COptMethodNelderMead.h>
+#include <copasi/optimization/COptMethodPraxis.h>
+#include <copasi/optimization/COptMethodPS.h>
+#include <copasi/optimization/COptMethodSA.h>
+#include <copasi/optimization/COptMethodSRES.h>
+#include <copasi/optimization/COptMethodSS.h>
+#include <copasi/optimization/COptMethodStatistics.h>
+#include <copasi/optimization/COptMethodSteepestDescent.h>
+#include <copasi/optimization/CRandomSearch.h>
+#include <copasi/optimization/COptMethodTruncatedNewton.h>
+
 
 // CCopasiAbstractArray
 struct swig_type_info*
@@ -608,6 +627,38 @@ GetDowncastSwigTypeForCOptItem(COptItem* optItem)
 struct swig_type_info*
 GetDowncastSwigTypeForCOptMethod(COptMethod* optMethod)
 {
+  if (dynamic_cast<COptMethodCoranaWalk*>(optMethod))
+    return SWIGTYPE_p_COptMethodCoranaWalk;
+  if (dynamic_cast<COptMethodDE*>(optMethod))
+    return SWIGTYPE_p_COptMethodDE;
+  if (dynamic_cast<COptMethodEP*>(optMethod))
+    return SWIGTYPE_p_COptMethodEP;
+  if (dynamic_cast<COptMethodGA*>(optMethod))
+    return SWIGTYPE_p_COptMethodGA;
+  if (dynamic_cast<COptMethodGASR*>(optMethod))
+    return SWIGTYPE_p_COptMethodGASR;
+  if (dynamic_cast<COptMethodHookeJeeves*>(optMethod))
+    return SWIGTYPE_p_COptMethodHookeJeeves;
+  if (dynamic_cast<COptMethodLevenbergMarquardt*>(optMethod))
+    return SWIGTYPE_p_COptMethodLevenbergMarquardt;
+  if (dynamic_cast<COptMethodNelderMead*>(optMethod))
+    return SWIGTYPE_p_COptMethodNelderMead;
+  if (dynamic_cast<COptMethodPraxis*>(optMethod))
+    return SWIGTYPE_p_COptMethodPraxis;
+  if (dynamic_cast<COptMethodSA*>(optMethod))
+    return SWIGTYPE_p_COptMethodSA;
+  if (dynamic_cast<COptMethodSRES*>(optMethod))
+    return SWIGTYPE_p_COptMethodSRES;
+  if (dynamic_cast<COptMethodSS*>(optMethod))
+    return SWIGTYPE_p_COptMethodSS;
+  if (dynamic_cast<COptMethodStatistics*>(optMethod))
+    return SWIGTYPE_p_COptMethodStatistics;
+  if (dynamic_cast<COptMethodSteepestDescent*>(optMethod))
+    return SWIGTYPE_p_COptMethodSteepestDescent;
+  if (dynamic_cast<CRandomSearch*>(optMethod))
+    return SWIGTYPE_p_CRandomSearch;
+  if (dynamic_cast<COptMethodTruncatedNewton*>(optMethod))
+    return SWIGTYPE_p_COptMethodTruncatedNewton;
   return SWIGTYPE_p_COptMethod;
 }
 
@@ -617,6 +668,9 @@ GetDowncastSwigTypeForCOptMethod(COptMethod* optMethod)
 struct swig_type_info*
 GetDowncastSwigTypeForCOptProblem(COptProblem* optProblem)
 {
+  if (dynamic_cast<CFitProblem*>(optProblem))
+    return SWIGTYPE_p_CFitProblem;
+  
   return SWIGTYPE_p_COptProblem;
 }
 
@@ -637,3 +691,4 @@ GetDowncastSwigTypeForCOptTask(COptTask* optTask)
 
   return pInfo;
 }
+

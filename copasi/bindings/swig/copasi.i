@@ -234,6 +234,54 @@ size_t INVALID_INDEX();
 %include <copasi/tssanalysis/CTSSAProblem.h>
 %include <copasi/tssanalysis/CTSSAMethod.h>
 
+
+%ignore COptMethodPS::COptMethodPS(const COptMethodPS&);
+%ignore COptMethodPS::COptMethodPS(const CCopasiContainer *);
+%ignore COptMethodPS::COptMethodPS(const CCopasiContainer *,const CTaskEnum::Method &,const CTaskEnum::Task &);
+
+%ignore COptMethodEP::COptMethodEP(const COptMethodEP&);
+%ignore COptMethodEP::COptMethodEP(const CCopasiContainer *);
+%ignore COptMethodEP::COptMethodEP(const CCopasiContainer *,const CTaskEnum::Method &,const CTaskEnum::Task &);
+
+%ignore COptMethodGASR::COptMethodGASR(const COptMethodGASR&);
+%ignore COptMethodGASR::COptMethodGASR(const CCopasiContainer *);
+%ignore COptMethodGASR::COptMethodGASR(const CCopasiContainer *,const CTaskEnum::Method &,const CTaskEnum::Task &);
+
+%ignore COptMethodHookeJeeves::COptMethodHookeJeeves(const COptMethodHookeJeeves&);
+%ignore COptMethodHookeJeeves::COptMethodHookeJeeves(const CCopasiContainer *);
+%ignore COptMethodHookeJeeves::COptMethodHookeJeeves(const CCopasiContainer *,const CTaskEnum::Method &,const CTaskEnum::Task &);
+
+%ignore COptMethodPS::COptMethodPS(const COptMethodPS&);
+%ignore COptMethodPS::COptMethodPS(const CCopasiContainer *);
+%ignore COptMethodPS::COptMethodPS(const CCopasiContainer *,const CTaskEnum::Method &,const CTaskEnum::Task &);
+
+%ignore COptMethodPraxis::COptMethodPraxis(const COptMethodPraxis&);
+%ignore COptMethodPraxis::COptMethodPraxis(const CCopasiContainer *);
+%ignore COptMethodPraxis::COptMethodPraxis(const CCopasiContainer *,const CTaskEnum::Method &,const CTaskEnum::Task &);
+
+
+%include <copasi/plot/CPlotItem.h>
+%ignore COptMethodCoranaWalk(const COptMethodCoranaWalk&);
+%include <copasi/optimization/COptMethod.h>
+%include <copasi/optimization/COptPopulationMethod.h>
+%include <copasi/optimization/COptMethodCoranaWalk.h>
+%include <copasi/optimization/COptMethodDE.h>
+%include <copasi/optimization/COptMethodEP.h>
+%include <copasi/optimization/COptMethodGA.h>
+%include <copasi/optimization/COptMethodGASR.h>
+%include <copasi/optimization/COptMethodHookeJeeves.h>
+%include <copasi/optimization/COptMethodLevenbergMarquardt.h>
+%include <copasi/optimization/COptMethodNelderMead.h>
+%include <copasi/optimization/COptMethodPraxis.h>
+%include <copasi/optimization/COptMethodPS.h>
+%include <copasi/optimization/COptMethodSA.h>
+%include <copasi/optimization/COptMethodSRES.h>
+%include <copasi/optimization/COptMethodSS.h>
+%include <copasi/optimization/COptMethodStatistics.h>
+%include <copasi/optimization/COptMethodSteepestDescent.h>
+%include <copasi/optimization/CRandomSearch.h>
+%include <copasi/optimization/COptMethodTruncatedNewton.h>
+
 %{
 
 
@@ -257,6 +305,25 @@ size_t INVALID_INDEX();
 #include <copasi/tssanalysis/CTSSATask.h>
 #include <copasi/tssanalysis/CTSSAProblem.h>
 #include <copasi/tssanalysis/CTSSAMethod.h>
+
+#include <copasi/plot/CPlotItem.h>
+#include <copasi/optimization/COptMethodCoranaWalk.h>
+#include <copasi/optimization/COptMethodDE.h>
+#include <copasi/optimization/COptMethodEP.h>
+#include <copasi/optimization/COptMethodGA.h>
+#include <copasi/optimization/COptMethodGASR.h>
+#include <copasi/optimization/COptMethodHookeJeeves.h>
+#include <copasi/optimization/COptMethodLevenbergMarquardt.h>
+#include <copasi/optimization/COptMethodNelderMead.h>
+#include <copasi/optimization/COptMethodPraxis.h>
+#include <copasi/optimization/COptMethodPS.h>
+#include <copasi/optimization/COptMethodSA.h>
+#include <copasi/optimization/COptMethodSRES.h>
+#include <copasi/optimization/COptMethodSS.h>
+#include <copasi/optimization/COptMethodStatistics.h>
+#include <copasi/optimization/COptMethodSteepestDescent.h>
+#include <copasi/optimization/CRandomSearch.h>
+#include <copasi/optimization/COptMethodTruncatedNewton.h>
 
 %}
 

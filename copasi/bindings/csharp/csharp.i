@@ -116,6 +116,22 @@ enum CLASS_TYPE
   , OutputDefinitionVector_Type
   , TaskVectorN_Type
   , TaskVector_Type
+  , COptMethodCoranaWalk_Type
+  , COptMethodDE_Type
+  , COptMethodEP_Type
+  , COptMethodGA_Type
+  , COptMethodGASR_Type
+  , COptMethodHookeJeeves_Type
+  , COptMethodLevenbergMarquardt_Type
+  , COptMethodNelderMead_Type
+  , COptMethodPraxis_Type
+  , COptMethodSA_Type
+  , COptMethodSRES_Type
+  , COptMethodSS_Type
+  , COptMethodStatistics_Type
+  , COptMethodSteepestDescent_Type
+  , CRandomSearch_Type
+  , COptMethodTruncatedNewton_Type
 };
 
 class CCompartment;
@@ -347,7 +363,45 @@ int GetType_COptTask(COptTask* pPointer);
 
         if (cPtr != IntPtr.Zero)
         {
-				    ret = new COptMethod(cPtr,owner);
+            int type = $modulePINVOKE.GetType_COptMethod(new HandleRef(null, cPtr));
+            switch(type)
+            {
+                case COPASI.COptMethodCoranaWalk_Type:
+                  return new COptMethodCoranaWalk(cPtr,owner);
+                case COPASI.COptMethodDE_Type:
+                  return new COptMethodDE(cPtr,owner);
+                case COPASI.COptMethodEP_Type:
+                  return new COptMethodEP(cPtr,owner);
+                case COPASI.COptMethodGA_Type:
+                  return new COptMethodGA(cPtr,owner);
+                case COPASI.COptMethodGASR_Type:
+                  return new COptMethodGASR(cPtr,owner);
+                case COPASI.COptMethodHookeJeeves_Type:
+                  return new COptMethodHookeJeeves(cPtr,owner);
+                case COPASI.COptMethodLevenbergMarquardt_Type:
+                  return new COptMethodLevenbergMarquardt(cPtr,owner);
+                case COPASI.COptMethodNelderMead_Type:
+                  return new COptMethodNelderMead(cPtr,owner);
+                case COPASI.COptMethodPraxis_Type:
+                  return new COptMethodPraxis(cPtr,owner);
+                case COPASI.COptMethodSA_Type:
+                  return new COptMethodSA(cPtr,owner);
+                case COPASI.COptMethodSRES_Type:
+                  return new COptMethodSRES(cPtr,owner);
+                case COPASI.COptMethodSS_Type:
+                  return new COptMethodSS(cPtr,owner);
+                case COPASI.COptMethodStatistics_Type:
+                  return new COptMethodStatistics(cPtr,owner);
+                case COPASI.COptMethodSteepestDescent_Type:
+                  return new COptMethodSteepestDescent(cPtr,owner);
+                case COPASI.CRandomSearch_Type:
+                  return new CRandomSearch(cPtr,owner);
+                case COPASI.COptMethodTruncatedNewton_Type:
+                  return new COptMethodTruncatedNewton(cPtr,owner);
+                default:
+                  ret = new COptMethod(cPtr,owner);
+                  break;
+             }
         }
 
         return ret;
@@ -692,6 +746,22 @@ int GetType_COptTask(COptTask* pPointer);
                     // return a CScanMethod
                     ret = new CScanMethod(cPtr,owner);
                     break;
+                case COPASI.COptMethodCoranaWalk_Type:
+                case COPASI.COptMethodDE_Type:
+                case COPASI.COptMethodEP_Type:
+                case COPASI.COptMethodGA_Type:
+                case COPASI.COptMethodGASR_Type:
+                case COPASI.COptMethodHookeJeeves_Type:
+                case COPASI.COptMethodLevenbergMarquardt_Type:
+                case COPASI.COptMethodNelderMead_Type:
+                case COPASI.COptMethodPraxis_Type:
+                case COPASI.COptMethodSA_Type:
+                case COPASI.COptMethodSRES_Type:
+                case COPASI.COptMethodSS_Type:
+                case COPASI.COptMethodStatistics_Type:
+                case COPASI.COptMethodSteepestDescent_Type:
+                case COPASI.CRandomSearch_Type:
+                case COPASI.COptMethodTruncatedNewton_Type:
                 case COPASI.COptMethod_Type:
                     ret = InstantiateConcrete_COptMethod(cPtr,owner);
                     break;
@@ -951,17 +1021,17 @@ int GetType_COptTask(COptTask* pPointer);
         return ret;
     }
 
-	public static CObjectInterface DowncastCObjectInterface(IntPtr cPtr, bool owner)
+  public static CObjectInterface DowncastCObjectInterface(IntPtr cPtr, bool owner)
     {
       if (cPtr == IntPtr.Zero) return null;
-	  
+    
       CObjectInterface temp = new CObjectInterface(cPtr, false);
-	  CCopasiObject co = temp.toObject();
-	  if (co != null)
-	  	return InstantiateConcrete_CCopasiObject(cPtr, owner);	
-	  return new CObjectInterface(cPtr, owner);	
+    CCopasiObject co = temp.toObject();
+    if (co != null)
+      return InstantiateConcrete_CCopasiObject(cPtr, owner);	
+    return new CObjectInterface(cPtr, owner);	
     }
-	
+  
 %}
 
 
