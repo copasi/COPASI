@@ -156,21 +156,27 @@ void CQArrayAnnotationsWidgetDM::setContext(const CColorScale * pColorScale,
 
       if (mpArray != NULL)
         {
-          const std::vector< std::string > & Horizontal = mpArray->getAnnotationsString(mColumn);
+          if (mColumn != C_INVALID_INDEX)
+            {
+              const std::vector< std::string > & Horizontal = mpArray->getAnnotationsString(mColumn);
 
-          std::vector< std::string >::const_iterator it = Horizontal.begin();
-          std::vector< std::string >::const_iterator end = Horizontal.end();
+              std::vector< std::string >::const_iterator it = Horizontal.begin();
+              std::vector< std::string >::const_iterator end = Horizontal.end();
 
-          for (; it != end; ++it)
-            mHeaderData[Qt::Horizontal].append(FROM_UTF8(*it));
+              for (; it != end; ++it)
+                mHeaderData[Qt::Horizontal].append(FROM_UTF8(*it));
+            }
 
-          const std::vector< std::string > & Vertical = mpArray->getAnnotationsString(mRow);
+          if (mRow != C_INVALID_INDEX)
+            {
+              const std::vector< std::string > & Vertical = mpArray->getAnnotationsString(mRow);
 
-          it = Vertical.begin();
-          end = Vertical.end();
+              std::vector< std::string >::const_iterator it = Vertical.begin();
+              std::vector< std::string >::const_iterator end = Vertical.end();
 
-          for (; it != end; ++it)
-            mHeaderData[Qt::Vertical].append(FROM_UTF8(*it));
+              for (; it != end; ++it)
+                mHeaderData[Qt::Vertical].append(FROM_UTF8(*it));
+            }
         }
 
       endResetModel();
