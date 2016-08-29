@@ -1,16 +1,16 @@
-// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
-// All rights reserved.
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+// and The University of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2005 - 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
-// All rights reserved.
+// Copyright (C) 2005 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc. and EML Research, gGmbH. 
+// All rights reserved. 
 
 #define USE_LAYOUT 1
 
@@ -1164,6 +1164,11 @@ bool CCopasiDataModel::exportMathModel(const std::string & fileName, CProcessRep
 #include <combine/knownformats.h>
 #include <omex/CaContent.h>
 
+#include <copasi/parameterFitting/CFitProblem.h>
+#include <copasi/parameterFitting/CExperimentSet.h>
+#include <copasi/parameterFitting/CExperiment.h>
+
+
 bool CCopasiDataModel::exportCombineArchive(std::string fileName, bool includeCOPASI, bool includeSBML, bool includeData, bool includeSEDML, bool overwriteFile, CProcessReport * pProgressReport)
 {
   CCopasiMessage::clearDeque();
@@ -1199,13 +1204,70 @@ bool CCopasiDataModel::exportCombineArchive(std::string fileName, bool includeCO
 
   CombineArchive archive;
 
+  std::map<std::string, std::string> renamedExperiments;
+  std::map<std::string, std::string>::iterator renameIt;
+  CFitProblem *problem = NULL;
+
   if (includeData)
+  {
+    // go through all experiments and find the files and add them to the archive
+    // alter COPASI file (temporarily) to reference those files
+    problem = dynamic_cast<CFitProblem*>((*getTaskList())[CTaskEnum::parameterFitting].getProblem());
+    CExperimentSet& experiments = const_cast<CExperimentSet&>(problem->getExperiementSet());
+
+    std::vector<std::string> fileNames = experiments.getFileNames();
+    std::vector<std::string>::iterator it = fileNames.begin();
+
+    for (; it != fileNames.end(); ++it)
     {
-      // go through all experiments and find the files and add them to the archive
-      // alter COPASI file (temporarily) to reference those files
+      renamedExperiments[*it] = "./data/" + CDirEntry::fileName(*it);
+      archive.addFile(*it, "./data/" + CDirEntry::fileName(*it), KnownFormats::guessFormat(*it), false);
     }
 
-  if (includeCOPASI)
+    // rename files temporarily
+    for (renameIt = renamedExperiments.begin(); renameIt != renamedExperiments.end(); ++renameIt)
+    {
+     for (size_t i = 0; i < experiments.getExperimentCount(); ++i)
+     {
+       CExperiment* current = experiments.getExperiment(i);
+       if (current->getFileName() == renameIt->first)
+       {
+         current->setFileName("." + renameIt->second);
+       }
+     
+     }
+    }
+
+    if (includeCOPASI)
+    {
+      try
+      {
+        std::stringstream str; str << saveModelToString(pProgressReport);
+        archive.addFile(str, "./copasi/model.cps", KnownFormats::lookupFormat("copasi"), true);
+      }
+      catch (...)
+      {
+      }
+
+    }
+
+    // restore filenames
+    for (renameIt = renamedExperiments.begin(); renameIt != renamedExperiments.end(); ++renameIt)
+    {
+      for (size_t i = 0; i < experiments.getExperimentCount(); ++i)
+      {
+        CExperiment* current = experiments.getExperiment(i);
+        if (current->getFileNameOnly() == "." + renameIt->second)
+        {
+          current->setFileName(renameIt->first);
+        }
+
+      }
+    }
+
+  }
+
+  if (includeCOPASI && !includeData)
     {
 
       try
@@ -1218,23 +1280,25 @@ bool CCopasiDataModel::exportCombineArchive(std::string fileName, bool includeCO
         }
     }
 
+
+  if (includeSBML)
+  {
+    try
+    {
+      std::stringstream str; str << exportSBMLToString(pProgressReport, 2, 4);
+      archive.addFile(str, "./sbml/model.xml", KnownFormats::lookupFormat("sbml"), !includeCOPASI);
+    }
+    catch (...)
+    {
+    }
+  }
+
   if (includeSEDML)
     {
-      // write SED-ML to disc, get SED-ML and SBML fileName add to archive
-      // remember files to delete after archive was written.
+      std::stringstream str; str << exportSEDMLToString(pProgressReport, 1, 2, "../sbml/model.xml");
+      archive.addFile(str, "./sedml/simulation.xml", KnownFormats::lookupFormat("sedml"), !includeCOPASI);    
     }
 
-  if (includeSBML && !includeSEDML)
-    {
-      try
-        {
-          std::stringstream str; str << exportSBMLToString(pProgressReport, 2, 4);
-          archive.addFile(str, "./sbml/model.xml", KnownFormats::lookupFormat("sbml"), !includeCOPASI);
-        }
-      catch (...)
-        {
-        }
-    }
 
   archive.writeToFile(fileName);
 
@@ -1506,7 +1570,9 @@ std::map<CCopasiObject*, SedBase*>& CCopasiDataModel::getCopasi2SEDMLMap()
   return mData.mCopasi2SEDMLMap;
 }
 
-std::string CCopasiDataModel::exportSEDMLToString(CProcessReport* pExportHandler, int sedmlLevel, int sedmlVersion)
+std::string CCopasiDataModel::exportSEDMLToString(CProcessReport* pExportHandler, 
+                              int sedmlLevel, int sedmlVersion, 
+                              const std::string& modelLocation)
 {
   CCopasiMessage::clearDeque();
   SedDocument* pOrigSEDMLDocument = NULL;
@@ -1534,8 +1600,7 @@ std::string CCopasiDataModel::exportSEDMLToString(CProcessReport* pExportHandler
     }
 
   CSEDMLExporter exporter;
-  std::string sbmlDocument = this->exportSBMLToString(pExportHandler, 2, 4);
-  std::string str = exporter.exportModelAndTasksToString(*this, sbmlDocument, sedmlLevel, sedmlVersion);
+  std::string str = exporter.exportModelAndTasksToString(*this, modelLocation, sedmlLevel, sedmlVersion);
 
   // if we have saved the original SEDML model somewhere
   // we have to reset it

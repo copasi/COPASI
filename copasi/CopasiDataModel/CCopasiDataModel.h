@@ -283,7 +283,24 @@ public:
                    CProcessReport* pImportHandler = NULL,
                    const bool & deleteOldData = true);
 
-  std::string exportSEDMLToString(CProcessReport* pExportHandler, int sedmlLevel, int sedmlVersion);
+  /**
+   * exports the SED-ML with given level and version to a string. NOTE: the 
+   * SBML model will not be exported, instead it is assumed to be available 
+   * at the location provided in modelLocation
+   *
+   * @param pExportHandler export handler
+   * @param sedmlLevel the level to export
+   * @param sedmlVersion the version to export
+   * @param modelLocation the location where the SBML file has been written, 
+   *                      defaults to 'model.xml'
+   * 
+   * @return the SED-ML string.
+   */
+  std::string exportSEDMLToString(CProcessReport* pExportHandler, 
+                                  int sedmlLevel, int sedmlVersion,
+                                  const std::string& modelLocation = "model.xml"
+                                  );
+
   bool exportSEDML(const std::string & fileName, bool overwriteFile = false, int sedmlLevel = 1, int sedmlVersion = 1, bool exportIncomplete = false, bool exportCOPASIMIRIAM = true, CProcessReport* pExportHandler = NULL);
 
   SedDocument* getCurrentSEDMLDocument();
