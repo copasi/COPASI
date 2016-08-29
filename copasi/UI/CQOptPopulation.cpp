@@ -275,10 +275,10 @@ void CQOptPopulation::update()
     this->setCentralWidget(mpGV);
     
     
-    mpGS->addRect(-3,-3,6,6);
+    mpGS->addRect(-0,-0,1,1);
     //mpGV->fitInView(-4,-4,8,8);
     mpGV->resetMatrix();
-    mpGV->scale(30,30);
+    mpGV->scale(200,200);
     mpGV->setDragMode(QGraphicsView::ScrollHandDrag);
   
     mGraphicItems.resize(mPopulation.size());
@@ -287,19 +287,8 @@ void CQOptPopulation::update()
     for (i=0; i<mPopulation.size(); ++i)
     {
     
-      double xx =0;
-      if (mIsLog[0])
-        xx = log(mPopulation[i]->operator[](0));
-      else
-        xx = mPopulation[i]->operator[](0);
-      double yy =0;
-      if (mIsLog[1])
-        yy = log(mPopulation[i]->operator[](1));
-      else
-        yy = mPopulation[i]->operator[](1);
-    
-      mGraphicItems[i]=mpGS->addEllipse(xx, yy, 0.1,0.1);
-  }
+      mGraphicItems[i]=mpGS->addEllipse(0, 0, 0.1,0.1);
+    }
 
   
     mGraphInitialized=true;
@@ -310,31 +299,22 @@ void CQOptPopulation::update()
   {
     //std::cout <<mPopulation[i]->operator[](0) << "  " << mPopulation[i]->operator[](1) << std::endl;
     
-    /*C_INT32 j;
+    std::vector<double> scaled_values; scaled_values.resize(mPopulation.size());
+    C_INT32 j;
     for (j=0; j<2; ++j)
     {
-      double scaled_value;
+    
       if (mIsLog[j])
-        scaled_value = log(mPopulation[i]->operator[](j));
+        scaled_values[j] = (log(mPopulation[i]->operator[](j))-log(mRangeMin[j]))/(log(mRangeMax[j])-log(mRangeMin[j])) ;
       else
-        scaled_value = mPopulation[i]->operator[](j);
+        scaled_values[j] = (mPopulation[i]->operator[](j)-mRangeMin[j])/(mRangeMax[j]-mRangeMin[j]);
       
-    }*/
+    }
     
-    double xx =0;
-    if (mIsLog[0])
-      xx = log(mPopulation[i]->operator[](0));
-    else
-      xx = mPopulation[i]->operator[](0);
-    double yy =0;
-    if (mIsLog[1])
-      yy = log(mPopulation[i]->operator[](1));
-    else
-      yy = mPopulation[i]->operator[](1);
-    
+  
     QGraphicsEllipseItem* gie = dynamic_cast<QGraphicsEllipseItem*>(mGraphicItems[i]);
     if (gie)
-      gie->setRect(xx, yy, 0.1, 0.1);
+      gie->setRect(scaled_values[0]-0.025, scaled_values[1]-0.025, 0.05, 0.05);
   }
   
  //®std::cout << "output in main thread" << std::endl;
