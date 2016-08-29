@@ -1,16 +1,16 @@
-// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
-// All rights reserved.
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+// and The University of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
-// All rights reserved.
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc. and EML Research, gGmbH. 
+// All rights reserved. 
 
 // CReaction
 //
@@ -1310,7 +1310,6 @@ CFunction * CReaction::setFunctionFromExpressionTree(const CExpression & express
           CFunctionParameter* pFunPar = it->second.second;
           std::string id = it->first;
           setParameterMapping(pFunPar->getObjectName(), it->second.first->getKey());
-          delete pFunPar;
           ++it;
         }
 
@@ -1339,6 +1338,17 @@ CFunction * CReaction::setFunctionFromExpressionTree(const CExpression & express
 
               pdelete(pTmpFunction);
 
+              // we still need to do the mapping, otherwise global parameters might not be mapped
+              it = replacementMap.begin();
+              while (it != replacementMap.end())
+              {
+                CFunctionParameter* pFunPar = it->second.second;
+                std::string id = it->first;
+                setParameterMapping(pFunPar->getObjectName(), it->second.first->getKey());
+                delete pFunPar;
+                ++it;
+              }
+
               return NULL;
             }
 
@@ -1347,6 +1357,15 @@ CFunction * CReaction::setFunctionFromExpressionTree(const CExpression & express
           numberStream << "_" << counter;
           appendix = numberStream.str();
         }
+
+      // if we got here we didn't find a used function so we can clear the list
+      it = replacementMap.begin();
+      while (it != replacementMap.end())
+      {
+        CFunctionParameter* pFunPar = it->second.second;
+        delete pFunPar;
+        ++it;
+      }
 
       pTmpFunction->setObjectName(functionName + appendix);
     }
