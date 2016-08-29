@@ -878,13 +878,22 @@ public:
    */
   CType & operator[](const std::string & name)
   {
-    size_t Index = getIndex(name);
+    CCopasiContainer::objectMap::range Range = CCopasiContainer::getObjects().equal_range(name);
 
-    if (Index == C_INVALID_INDEX)
-      CCopasiMessage ex(CCopasiMessage::EXCEPTION,
-                        MCCopasiVector + 1, name.c_str());
+    CType * pType = NULL;
 
-    return **(std::vector< CType *>::begin() + Index);
+    for (; Range.first != Range.second && pType == NULL; ++Range.first)
+      {
+        pType = dynamic_cast< CType * >(*Range.first);
+      }
+
+    if (pType == NULL)
+      {
+        CCopasiMessage ex(CCopasiMessage::EXCEPTION,
+                          MCCopasiVector + 1, name.c_str());
+      }
+
+    return *pType;
   }
 
   /**
@@ -894,13 +903,22 @@ public:
    */
   const CType & operator[](const std::string &name) const
   {
-    size_t Index = getIndex(name);
+    CCopasiContainer::objectMap::range Range = CCopasiContainer::getObjects().equal_range(name);
 
-    if (Index == C_INVALID_INDEX)
-      CCopasiMessage ex(CCopasiMessage::EXCEPTION,
-                        MCCopasiVector + 1, name.c_str());
+    CType * pType = NULL;
 
-    return **(std::vector< CType *>::begin() + Index);
+    for (; Range.first != Range.second && pType == NULL; ++Range.first)
+      {
+        pType = dynamic_cast< CType * >(*Range.first);
+      }
+
+    if (pType == NULL)
+      {
+        CCopasiMessage ex(CCopasiMessage::EXCEPTION,
+                          MCCopasiVector + 1, name.c_str());
+      }
+
+    return *pType;
   }
 
   /**
@@ -950,7 +968,7 @@ private:
    * @return bool insertAllowed
    */
   virtual bool isInsertAllowed(const CType * src)
-  {return (getIndex(src->getObjectName()) == C_INVALID_INDEX);}
+  {return (getObject(src->getObjectName()) == NULL);}
 };
 
 template < class CType > class CCopasiVectorNS: public CCopasiVectorN < CType >
