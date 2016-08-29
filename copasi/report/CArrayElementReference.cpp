@@ -46,16 +46,15 @@ void CArrayElementReference::updateObjectName()
         }
       else
         {
-          const char * pTail = NULL;
-          strToInt(it->c_str(), &pTail);
+          size_t Index;
 
-          if (pTail != it->c_str() + it->size())
+          if (strToIndex(*it, Index))
             {
-              ObjectName += "[" + std::string("not found") + "]";
+              ObjectName += "[" + *it + "]";
             }
           else
             {
-              ObjectName += "[" + *it + "]";
+              ObjectName += "[" + std::string("not found") + "]";
             }
         }
     }
