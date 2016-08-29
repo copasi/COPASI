@@ -274,8 +274,11 @@ void CQOptPopulation::update()
     mpGV = new QGraphicsView(mpGS, this);
     this->setCentralWidget(mpGV);
     
+    mpGV->setRenderHints(QPainter::Antialiasing|QPainter::TextAntialiasing| QPainter::SmoothPixmapTransform	);
     
-    mpGS->addRect(-0,-0,1,1);
+    
+    QGraphicsRectItem* rect = mpGS->addRect(-0,-0,1,1);
+    rect->setBrush(QColor(200,200,200));
     //mpGV->fitInView(-4,-4,8,8);
     mpGV->resetMatrix();
     mpGV->scale(200,200);
@@ -286,8 +289,11 @@ void CQOptPopulation::update()
     unsigned C_INT32 i;
     for (i=0; i<mPopulation.size(); ++i)
     {
-    
-      mGraphicItems[i]=mpGS->addEllipse(0, 0, 0.1,0.1);
+      QGraphicsEllipseItem* ei = mpGS->addEllipse(0, 0, 0.05,0.05);
+      mGraphicItems[i]= ei;
+      ei->setOpacity(0.2);
+      ei->setBrush(QColor(10,100,10));
+      ei->setPen(QPen(QColor(0,0,0)));
     }
 
   
@@ -314,7 +320,11 @@ void CQOptPopulation::update()
   
     QGraphicsEllipseItem* gie = dynamic_cast<QGraphicsEllipseItem*>(mGraphicItems[i]);
     if (gie)
-      gie->setRect(scaled_values[0]-0.025, scaled_values[1]-0.025, 0.05, 0.05);
+    {
+      //gie->setRect(scaled_values[0]-0.025, scaled_values[1]-0.025, 0.05, 0.05);
+      gie->setX(scaled_values[0]-0.025);
+      gie->setY(scaled_values[1]-0.025);
+    }
   }
   
  //®std::cout << "output in main thread" << std::endl;
