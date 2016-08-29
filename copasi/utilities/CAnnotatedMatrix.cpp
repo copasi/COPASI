@@ -425,16 +425,14 @@ CArrayAnnotation::name_index_type CArrayAnnotation::displayNamesToCN(const std::
 
       if (itCN == endCN)
         {
-          const char * pTail = NULL;
-
-          C_INT32 index = strToInt(it->c_str(), &pTail);
+          size_t index;
 
           if (itCNs->empty())
             {
-              if (pTail != it->c_str() + it->size())
-                *to = std::string("not found");
-              else
+              if (strToIndex(*it, index))
                 *to = *it;
+              else
+                *to = std::string("not found");
             }
           else
             {
@@ -463,14 +461,15 @@ CArrayAnnotation::index_type CArrayAnnotation::cnToIndex(const CArrayAnnotation:
 
   for (; it != itEnd; ++it, ++itCNs, ++to)
     {
-      std::vector<CRegisteredObjectName>::const_iterator itCN = itCNs->begin();
-      std::vector<CRegisteredObjectName>::const_iterator endCN = itCNs->end();
-
-      size_t index = 0;
-
-      for (; itCN != endCN; ++itCN, ++index)
+      if (!strToIndex(*it, index))
         {
-          if (*it == *itCN) break;
+          std::vector<CRegisteredObjectName>::const_iterator itCN = itCNs->begin();
+          std::vector<CRegisteredObjectName>::const_iterator endCN = itCNs->end();
+
+          for (index = 0; itCN != endCN; ++itCN, ++index)
+            {
+              if (*it == *itCN) break;
+            }
         }
 
       *to = index;

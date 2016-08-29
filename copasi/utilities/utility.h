@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -164,6 +164,15 @@ C_INT32 strToInt(const char * str,
  */
 unsigned C_INT32 strToUnsignedInt(const char * str,
                                   char const ** pTail = NULL);
+
+/**
+ * Convert a string to a size_t index. Returns true if the conversion
+ * is successful, i.e., the whole string has been converted.
+ * @param const std::string & str
+ * @param size_t & index
+ * @return bool success
+ */
+bool strToIndex(const std::string & str, size_t & index);
 
 /**
  * Convert a character sequence to a void pointer
