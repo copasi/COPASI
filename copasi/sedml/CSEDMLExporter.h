@@ -1,7 +1,7 @@
-// Copyright (C) 2013 - 2014 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
+// Copyright (C) 2013 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
 /*
  * CSEDMLExporter.h
@@ -55,10 +55,12 @@ public:
 
   /**
    * Export the model and Task to SEDML.
-   * The SEDML document is returned as a string and SBML model is copied to sbmldocument parameter. In case of an error, an
-   * empty string is returned.
+   * The SEDML document is returned as a string the model is not exported, instead the 
+   * provided modelLocation will be referenced.
    */
-  const std::string exportModelAndTasksToString(CCopasiDataModel& dataModel, std::string &sbmldocument, unsigned int sedmlLevel, unsigned int sedmlVersion);
+  const std::string exportModelAndTasksToString(CCopasiDataModel& dataModel, 
+        const std::string &modelLocation, 
+        unsigned int sedmlLevel, unsigned int sedmlVersion);
 
   /**
    * Export the model and Task to SEDML.
