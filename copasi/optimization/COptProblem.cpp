@@ -39,6 +39,7 @@
 #include "trajectory/CTrajectoryProblem.h"
 
 #include "math/CMathContainer.h"
+#include "math/CMathExpression.h"
 #include "model/CModel.h"
 #include "model/CCompartment.h"
 
@@ -80,6 +81,7 @@ COptProblem::COptProblem(const CTaskEnum::Task & type,
   mpConstraintItems(NULL),
   mpSubtask(NULL),
   mpObjectiveExpression(NULL),
+  mpMathObjectiveExpression(NULL),
   mInitialRefreshSequence(),
   mUpdateObjectiveFunction(),
   mUpdateConstraints(),
@@ -119,6 +121,7 @@ COptProblem::COptProblem(const COptProblem& src,
   mpConstraintItems(NULL),
   mpSubtask(NULL),
   mpObjectiveExpression(NULL),
+  mpMathObjectiveExpression(NULL),
   mInitialRefreshSequence(),
   mUpdateObjectiveFunction(),
   mUpdateConstraints(),
@@ -421,6 +424,10 @@ bool COptProblem::initialize()
       return false;
     }
 
+  pdelete(mpMathObjectiveExpression);
+
+  mpMathObjectiveExpression = new CMathExpression(*mpObjectiveExpression, *mpContainer, false);
+  Objects = mpMathObjectiveExpression->getPrerequisites();
   mpContainer->getTransientDependencies().getUpdateSequence(mUpdateObjectiveFunction, CMath::Default, mpContainer->getStateObjects(false), Objects, mpContainer->getSimulationUpToDateObjects());
 
   return success;
@@ -542,7 +549,7 @@ bool COptProblem::calculate()
       mpContainer->applyUpdateSequence(mUpdateObjectiveFunction);
 
       // TODO CRITICAL PARRELIZATION We need to point to the created container objective function
-      mCalculateValue = *mpParmMaximize ? -mpObjectiveExpression->calcValue() : mpObjectiveExpression->calcValue();
+      mCalculateValue = *mpParmMaximize ? -mpMathObjectiveExpression->value() : mpMathObjectiveExpression->value();
     }
 
   catch (CCopasiException & /*Exception*/)
