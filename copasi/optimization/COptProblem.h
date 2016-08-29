@@ -39,6 +39,7 @@
 class CSteadyStateTask;
 class CTrajectoryTask;
 class COptItem;
+class CMathExpression;
 
 enum ProblemType
 {
@@ -439,6 +440,11 @@ protected:
    * The objective function which should be minimized or maximized.
    */
   CExpression * mpObjectiveExpression;
+
+  /**
+   * The objective function which should be minimized or maximized.
+   */
+  CMathExpression * mpMathObjectiveExpression;
 
   /**
    * A vector of refresh methods which need to be called update all initial
