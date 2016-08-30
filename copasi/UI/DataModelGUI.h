@@ -3,14 +3,14 @@
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-// and The University of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2004 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc. and EML Research, gGmbH. 
-// All rights reserved. 
+// Copyright (C) 2004 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 #ifndef DATAMODELGUI_H
 #define DATAMODELGUI_H
@@ -20,7 +20,6 @@
 #include <QtCore/QObject>
 #include <QtGui/QApplication>
 
-#include "copasi/plotUI/COutputHandlerPlot.h"
 #include "copasi/UI/listviews.h"
 
 //class CMathModel;
@@ -30,6 +29,8 @@ class CQThread;
 class CProgressBar;
 class CQBrowserPaneDM;
 class QNetworkReply;
+class COutputDefinitionVector;
+class COutputHandlerPlot;
 class CCopasiDataModel;
 
 class DataModelGUI: public QObject
@@ -146,7 +147,7 @@ signals:
 
 private:
   CCopasiDataModel * mpDataModel;
-  COutputHandlerPlot mOutputHandlerPlot;
+  COutputHandlerPlot * mpOutputHandlerPlot;
   std::set< ListViews * > mListViews;
   int mFramework;
 

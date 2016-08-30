@@ -217,7 +217,7 @@ bool CMathDependencyNode::updateCalculatedState(const CMath::SimulationContextFl
 }
 
 bool CMathDependencyNode::buildUpdateSequence(const CMath::SimulationContextFlag & context,
-    CObjectInterface::UpdateSequence & updateSequence)
+    std::vector < CObjectInterface * > & updateSequence)
 {
   if (!mChanged || !mRequested)
     return true;
