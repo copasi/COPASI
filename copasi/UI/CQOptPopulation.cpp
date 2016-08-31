@@ -80,7 +80,20 @@ CQOptPopulation::CQOptPopulation(COutputHandler * pHandler, CopasiUI3Window * pM
   //setCentralWidget(mpPlot);
 
   initializing  = true;
+
+  mpGS = new QGraphicsScene(this);
+  mpGV = new QGraphicsView(mpGS, this);
+  this->setCentralWidget(mpGV);
+
+  mpGV->setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing | QPainter::SmoothPixmapTransform);
+
+
+
+
   initializing = false;
+
+
+
 
   addToMainWindow(mpMainWindow);
 
@@ -267,13 +280,7 @@ void CQOptPopulation::update()
 
   if (!mGraphInitialized)
     {
-
-      mpGS = new QGraphicsScene(this);
-      mpGV = new QGraphicsView(mpGS, this);
-      this->setCentralWidget(mpGV);
-
-      mpGV->setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing | QPainter::SmoothPixmapTransform);
-
+      mpGS->clear();
 
       QGraphicsRectItem* rect = mpGS->addRect(-0, -0, 1, 1);
       rect->setBrush(QColor(200, 200, 200));
