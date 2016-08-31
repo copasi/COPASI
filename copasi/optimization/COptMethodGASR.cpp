@@ -1,16 +1,16 @@
-// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-// and The University of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2005 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc. and EML Research, gGmbH. 
-// All rights reserved. 
+// Copyright (C) 2005 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 #include <cmath>
 
@@ -191,9 +191,9 @@ bool COptMethodGASR::replicate()
   // reproduce in consecutive pairs
   for (i = 0; i < mPopulationSize / 2; i++)
     crossover(*mIndividuals[mpPermutation->next()],
-      *mIndividuals[mpPermutation->next()],
-      *mIndividuals[mPopulationSize + i * 2],
-      *mIndividuals[mPopulationSize + i * 2 + 1]);
+              *mIndividuals[mpPermutation->next()],
+              *mIndividuals[mPopulationSize + i * 2],
+              *mIndividuals[mPopulationSize + i * 2 + 1]);
 
   // check if there is one left over and just copy it
   if (mPopulationSize % 2 > 0)
@@ -495,8 +495,8 @@ bool COptMethodGASR::optimise()
 
   // ITERATE FOR gener GENERATIONS
   for (mCurrentGeneration = 2;
-    mCurrentGeneration <= mGenerations && Continue;
-    mCurrentGeneration++, Stalled++, Stalled10++, Stalled30++, Stalled50++)
+       mCurrentGeneration <= mGenerations && Continue;
+       mCurrentGeneration++, Stalled++, Stalled10++, Stalled30++, Stalled50++)
     {
       // perturb the population if we have stalled for a while
       if (Stalled > 50 && Stalled50 > 50)
@@ -541,11 +541,11 @@ bool COptMethodGASR::optimise()
 
       if (mpCallBack)
         Continue = mpCallBack->progressItem(mhGenerations);
-      
-#ifdef POP_DISPLAY
+
+#ifdef COPASI_PE_POPULATION_DISPLAY
       //use a different output channel. It will later get a proper enum name
       mpParentTask->output(COutputInterface::Activity(8));
-#endif
+#endif // COPASI_PE_POPULATION_DISPLAY
 
     }
 

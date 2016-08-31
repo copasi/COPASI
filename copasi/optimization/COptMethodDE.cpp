@@ -1,7 +1,7 @@
-// Copyright (C) 2012 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2012 - 2016 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 #include <limits>
 #include <string>
@@ -307,7 +307,7 @@ bool COptMethodDE::creation(size_t first, size_t last)
 
 void COptMethodDE::initObjects()
 {
- 
+
 }
 
 bool COptMethodDE::initialize()
@@ -435,8 +435,8 @@ bool COptMethodDE::optimise()
 
   // ITERATE FOR gener GENERATIONS
   for (mCurrentGeneration = 2;
-    mCurrentGeneration <= mGenerations && Continue;
-    mCurrentGeneration++, Stalled++)
+       mCurrentGeneration <= mGenerations && Continue;
+       mCurrentGeneration++, Stalled++)
     {
       if (Stalled > 10)
         {
@@ -466,11 +466,11 @@ bool COptMethodDE::optimise()
 
       if (mpCallBack)
         Continue &= mpCallBack->progressItem(mhGenerations);
-      
-#ifdef POP_DISPLAY
+
+#ifdef COPASI_PE_POPULATION_DISPLAY
       //use a different output channel. It will later get a proper enum name
       mpParentTask->output(COutputInterface::Activity(8));
-#endif
+#endif // COPASI_PE_POPULATION_DISPLAY
 
     }
 

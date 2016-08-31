@@ -1,7 +1,7 @@
-// Copyright (C) 2013 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2013 - 2016 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // DEBUG_OPT allows doing debug output only on this class and is preferable
 // to using COPASI_DEBUG, which would make this output on for any debug version
@@ -1188,12 +1188,12 @@ bool COptMethodSS::optimise()
 
       if (mpCallBack)
         Running &= mpCallBack->progressItem(mhGenerations);
-      
-#ifdef POP_DISPLAY
+
+#ifdef COPASI_PE_POPULATION_DISPLAY
       //use a different output channel. It will later get a proper enum name
       mpParentTask->output(COutputInterface::Activity(8));
-#endif
-      
+#endif // COPASI_PE_POPULATION_DISPLAY
+
     }
 
   // end of loop for iterations

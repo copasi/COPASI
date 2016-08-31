@@ -1,16 +1,16 @@
-// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-// and The University of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2005 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc. and EML Research, gGmbH. 
-// All rights reserved. 
+// Copyright (C) 2005 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 #include <cmath>
 
@@ -46,11 +46,11 @@ COptMethodEP::COptMethodEP(const CCopasiContainer * pParent,
 COptMethodEP::COptMethodEP(const COptMethodEP & src,
                            const CCopasiContainer * pParent)
   : COptPopulationMethod(src, pParent),
-  mBestIndex(C_INVALID_INDEX),
-  mLosses(0),
-  mBestValue(std::numeric_limits< C_FLOAT64 >::max()),
-  mEvaluationValue(std::numeric_limits< C_FLOAT64 >::max()),
-  mVariance(0)
+    mBestIndex(C_INVALID_INDEX),
+    mLosses(0),
+    mBestValue(std::numeric_limits< C_FLOAT64 >::max()),
+    mEvaluationValue(std::numeric_limits< C_FLOAT64 >::max()),
+    mVariance(0)
 {initObjects();}
 
 COptMethodEP::~COptMethodEP()
@@ -121,11 +121,11 @@ bool COptMethodEP::optimise()
 
       if (mpCallBack)
         Continue = mpCallBack->progressItem(mhGenerations);
-      
-#ifdef POP_DISPLAY
+
+#ifdef COPASI_PE_POPULATION_DISPLAY
       //use a different output channel. It will later get a proper enum name
       mpParentTask->output(COutputInterface::Activity(8));
-#endif
+#endif // COPASI_PE_POPULATION_DISPLAY
 
     }
 
@@ -141,7 +141,7 @@ bool COptMethodEP::cleanup()
 {
 
   size_t i;
-  
+
   for (i = 0; i < mVariance.size(); i++)
     {
       pdelete(mVariance[i]);
@@ -157,7 +157,7 @@ bool COptMethodEP::initialize()
   size_t i;
 
   if (!COptPopulationMethod::initialize()) return false;
-  
+
   mIndividuals.resize(2 * mPopulationSize);
   mVariance.resize(2 * mPopulationSize);
 

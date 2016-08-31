@@ -1,16 +1,16 @@
-// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-// and The University of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2006 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc. and EML Research, gGmbH. 
-// All rights reserved. 
+// Copyright (C) 2006 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 #include <cmath>
 
@@ -498,7 +498,7 @@ bool COptMethodSRES::initialize()
       setValue("Pf", mPf);
     }
 
-  
+
   mIndividuals.resize(childrate * mPopulationSize);
 
   for (i = 0; i < childrate * mPopulationSize; i++)
@@ -653,8 +653,8 @@ bool COptMethodSRES::optimise()
 #ifdef RANDOMIZE
 
   for (mCurrentGeneration = 2;
-    mCurrentGeneration <= mGenerations && Continue;
-    mCurrentGeneration++, Stalled10++, Stalled20++, Stalled40++, Stalled80++)
+       mCurrentGeneration <= mGenerations && Continue;
+       mCurrentGeneration++, Stalled10++, Stalled20++, Stalled40++, Stalled80++)
     {
       // perturb the population if we have stalled for a while
       if (Stalled80 > 80)
@@ -709,11 +709,11 @@ bool COptMethodSRES::optimise()
 
       if (mpCallBack)
         Continue = mpCallBack->progressItem(mhGenerations);
-      
-#ifdef POP_DISPLAY
+
+#ifdef COPASI_PE_POPULATION_DISPLAY
       //use a different output channel. It will later get a proper enum name
       mpParentTask->output(COutputInterface::Activity(8));
-#endif
+#endif // COPASI_PE_POPULATION_DISPLAY
 
     }
 

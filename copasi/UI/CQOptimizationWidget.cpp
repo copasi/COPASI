@@ -173,16 +173,15 @@ bool CQOptimizationWidget::runTask()
 
   if (!commonBeforeRunTask()) return false;
 
-//#define POP_DISPLAY
-#ifdef POP_DISPLAY
-  //Preliminary: Create a Pop-Widget, should be controled somewhere else
+#ifdef COPASI_PE_POPULATION_DISPLAY
+  //Preliminary: Create a Pop-Widget, should be controlled somewhere else
   CQOptPopulation* pPopWidget = new CQOptPopulation(&CCopasiRootContainer::getDatamodelList()->operator[](0), dynamic_cast<CQCopasiApplication*>(qApp)->getMainWindow());
   pPopWidget->setMethod(dynamic_cast<COptMethod*>(pTask->getMethod()));
   pPopWidget->show();
   CCopasiRootContainer::getDatamodelList()->operator[](0).addInterface(pPopWidget);
-#endif
-  
-  
+#endif // COPASI_PE_POPULATION_DISPLAY
+
+
   return commonRunTask();
 }
 

@@ -1,16 +1,16 @@
-// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-// and The University of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2004 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc. and EML Research, gGmbH. 
-// All rights reserved. 
+// Copyright (C) 2004 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 #include <cmath>
 #include <limits>
@@ -414,7 +414,7 @@ bool COptMethodGA::initialize()
       return false;
     }
 
-  
+
   mIndividuals.resize(2 * mPopulationSize);
 
   for (i = 0; i < 2 * mPopulationSize; i++)
@@ -505,7 +505,7 @@ bool COptMethodGA::optimise()
     }
 
   // the others are random
-  Continue &= creation(1, 2* mPopulationSize);
+  Continue &= creation(1, 2 * mPopulationSize);
 
 #ifdef DEBUG_OPT
   serializepop(0, mPopulationSize);
@@ -537,8 +537,8 @@ bool COptMethodGA::optimise()
 
   // ITERATE FOR gener GENERATIONS
   for (mCurrentGeneration = 2;
-    mCurrentGeneration <= mGenerations && Continue;
-    mCurrentGeneration++, Stalled++, Stalled10++, Stalled30++, Stalled50++)
+       mCurrentGeneration <= mGenerations && Continue;
+       mCurrentGeneration++, Stalled++, Stalled10++, Stalled30++, Stalled50++)
     {
       // perturb the population if we have stalled for a while
       if (Stalled > 50 && Stalled50 > 50)
@@ -584,12 +584,12 @@ bool COptMethodGA::optimise()
 
       if (mpCallBack)
         Continue &= mpCallBack->progressItem(mhGenerations);
-      
-#ifdef POP_DISPLAY
+
+#ifdef COPASI_PE_POPULATION_DISPLAY
       //use a different output channel. It will later get a proper enum name
       mpParentTask->output(COutputInterface::Activity(8));
-#endif
-      
+#endif // COPASI_PE_POPULATION_DISPLAY
+
 
 #ifdef DEBUG_OPT
       serializepop(0, mPopulationSize);
