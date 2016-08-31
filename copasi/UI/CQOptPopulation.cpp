@@ -160,7 +160,10 @@ void CQOptPopulation::setMethod(COptMethod* pMethod)
   mpPopulationMethod = dynamic_cast<COptPopulationMethod*>(pMethod);
 
   if (mpPopulationMethod == NULL)
+  {
     mGraphInitialized = false;
+    mDataInitialized = false;
+  }
 }
 
 
@@ -231,6 +234,9 @@ void CQOptPopulation::output(const Activity & activity)
 
   if (!mDataInitialized)
     {
+      if (!mpSourceMethod)
+        return;
+      
       CCopasiTask* pTask = dynamic_cast<CCopasiTask*>(mpSourceMethod->getObjectParent());
 
       if (!pTask)
