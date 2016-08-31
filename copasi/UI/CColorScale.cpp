@@ -159,8 +159,9 @@ QColor CColorScaleAdvanced::getColor(const C_FLOAT64 & number) const
   int r = (int)(mColorMin.red() * (1 - tmp) + mColorMax.red() * tmp);
   int g = (int)(mColorMin.green() * (1 - tmp) + mColorMax.green() * tmp);
   int b = (int)(mColorMin.blue() * (1 - tmp) + mColorMax.blue() * tmp);
+  int a = (int)(mColorMin.alpha() * (1 - tmp) + mColorMax.alpha() * tmp);
 
-  QColor color(r, g, b);
+  QColor color(r, g, b, a);
   return color;
 }
 
@@ -169,8 +170,8 @@ QColor CColorScaleAdvanced::getColor(const C_FLOAT64 & number) const
 CColorScaleAuto::CColorScaleAuto()
 : CColorScaleAdvanced()
 {
-  mColorMax = QColor(255, 0, 0);
-  mColorMin = QColor(0, 255, 0);
+  mColorMax = QColor(255, 0, 0, 50);
+  mColorMin = QColor(0, 255, 0, 50);
 }
 
 //virtual
