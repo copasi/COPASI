@@ -18,6 +18,8 @@
 #include "UI/copasiui3window.h"
 #include "UI/CQMessageBox.h"
 #include "UI/qtUtilities.h"
+#include "qlayout/CQZoomableView.h"
+
 #include "resourcesUI/CQIconResource.h"
 #include "optimization/COptPopulationMethod.h"
 #include "optimization/COptTask.h"
@@ -66,13 +68,24 @@ CQOptPopulation::CQOptPopulation(COutputHandler * pHandler, CopasiUI3Window * pM
   mNumParameters(0)
 {
   this->resize(640, 480);
-  this->setWindowTitle("Population Visualisation");
+  this->setWindowTitle("Population Visualization");
 
 #ifndef Darwin
   setWindowIcon(CQIconResource::icon(CQIconResource::copasi));
 #endif // not Darwin
 
+
+
   // set up the GUI - the toolbar
+
+  mpGS = new QGraphicsScene(this);
+  mpGV = new CQZoomableView(this);
+  mpGV->setScene(mpGS);
+  this->setCentralWidget(mpGV);
+
+  mpGV->setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing | QPainter::SmoothPixmapTransform);
+
+
   createActions();
   createMenus();
   createToolBar();
@@ -80,19 +93,7 @@ CQOptPopulation::CQOptPopulation(COutputHandler * pHandler, CopasiUI3Window * pM
   //setCentralWidget(mpPlot);
 
   initializing  = true;
-
-  mpGS = new QGraphicsScene(this);
-  mpGV = new QGraphicsView(mpGS, this);
-  this->setCentralWidget(mpGV);
-
-  mpGV->setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing | QPainter::SmoothPixmapTransform);
-
-
-
-
   initializing = false;
-
-
 
 
   addToMainWindow(mpMainWindow);
@@ -109,6 +110,7 @@ void CQOptPopulation::createMenus()
   QMenu *viewMenu = menuBar()->addMenu("&View");
 //  viewMenu->addAction(mpaShowAll);
 //  viewMenu->addSeparator();
+  static_cast<CQZoomableView*>(mpGV)->fillZoomMenu(viewMenu);
 
   // add a place holder menu, to be filled by the main window
   mpWindowMenu = menuBar()->addMenu("&Window");
@@ -142,6 +144,7 @@ void CQOptPopulation::createToolBar()
   mpToolBar->addAction(mpaCloseWindow);
 
   //TODO button icons...
+  static_cast<CQZoomableView*>(mpGV)->fillZoomTooBar(mpToolBar);
 
   setUnifiedTitleAndToolBarOnMac(true);
 }
@@ -284,10 +287,11 @@ void CQOptPopulation::update()
 
       QGraphicsRectItem* rect = mpGS->addRect(-0, -0, 1, 1);
       rect->setBrush(QColor(200, 200, 200));
+      static_cast<CQZoomableView*>(mpGV)->slotFitOnScreen();
       //mpGV->fitInView(-4,-4,8,8);
-      mpGV->resetMatrix();
-      mpGV->scale(200, 200);
-      mpGV->setDragMode(QGraphicsView::ScrollHandDrag);
+      //mpGV->resetMatrix();
+      //mpGV->scale(200, 200);
+      //mpGV->setDragMode(QGraphicsView::ScrollHandDrag);
 
       mGraphicItems.resize(mPopulation.size());
 
