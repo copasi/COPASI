@@ -209,4 +209,28 @@ protected:
   C_INT32 mInt;
 };
 
+
+/**
+ * This scaler automatically decides to use log scaling or not.
+ */
+class CColorScaleAuto : public CColorScaleAdvanced
+{
+public:
+  
+  CColorScaleAuto();
+  
+  //virtual QColor getColor(const C_FLOAT64 & number) const;
+  
+  //void setColorMin(QColor col);
+  //void setColorMax(QColor col);
+
+  virtual void finishAutomaticParameterCalculation();
+
+  
+protected:
+  
+};
+
+
+
 #endif

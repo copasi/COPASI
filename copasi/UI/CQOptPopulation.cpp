@@ -19,7 +19,7 @@
 #include "UI/CQMessageBox.h"
 #include "UI/qtUtilities.h"
 #include "qlayout/CQZoomableView.h"
-
+#include "UI/CColorScale.h"
 #include "resourcesUI/CQIconResource.h"
 #include "optimization/COptPopulationMethod.h"
 #include "optimization/COptTask.h"
@@ -306,71 +306,42 @@ void CQOptPopulation::update()
           ei->setPen(QPen(QColor(0, 0, 0)));
         }
 
-
       mGraphInitialized = true;
     }
 
   unsigned C_INT32 i;
 
-  for (i = 0; i < mPopulation.size(); ++i)
+  //Color scaling
+  CColorScaleAuto cs;
+  cs.startAutomaticParameterCalculation();
+  for (i = 0; i<mPopulation.size(); ++i)
+  {
+    cs.passValue(mObjectiveValues[i]);
+    //std::cout << mObjectiveValues[i] << "   " ;
+  }
+  cs.finishAutomaticParameterCalculation();
+  //std::cout << std::endl;
+
+  for (i=0; i<mPopulation.size(); ++i)
+  {
+    std::vector<double> scaled_values; scaled_values.resize(mPopulation.size());
+    C_INT32 j;
+    for (j=0; j<2; ++j)
     {
-      //std::cout <<mPopulation[i]->operator[](0) << "  " << mPopulation[i]->operator[](1) << std::endl;
-
-      std::vector<double> scaled_values; scaled_values.resize(mPopulation.size());
-      C_INT32 j;
-
-      for (j = 0; j < 2; ++j)
-        {
-
-          if (mIsLog[j])
-            scaled_values[j] = (log(mPopulation[i]->operator[](j)) - log(mRangeMin[j])) / (log(mRangeMax[j]) - log(mRangeMin[j])) ;
-          else
-            scaled_values[j] = (mPopulation[i]->operator[](j) - mRangeMin[j]) / (mRangeMax[j] - mRangeMin[j]);
-
-        }
-
-
-      QGraphicsEllipseItem* gie = dynamic_cast<QGraphicsEllipseItem*>(mGraphicItems[i]);
-
-      if (gie)
-        {
-          //gie->setRect(scaled_values[0]-0.025, scaled_values[1]-0.025, 0.05, 0.05);
-          gie->setX(scaled_values[0] - 0.025);
-          gie->setY(scaled_values[1] - 0.025);
-        }
+      if (mIsLog[j])
+        scaled_values[j] = (log(mPopulation[i]->operator[](j))-log(mRangeMin[j]))/(log(mRangeMax[j])-log(mRangeMin[j])) ;
+      else
+        scaled_values[j] = (mPopulation[i]->operator[](j)-mRangeMin[j])/(mRangeMax[j]-mRangeMin[j]);
     }
-
-//®std::cout << "output in main thread" << std::endl;
-
-  /*  if (mNextPlotTime < CCopasiTimeVariable::getCurrentWallTime())
-     {
-       // skip rendering when shift is pressed
-       Qt::KeyboardModifiers mods = QApplication::keyboardModifiers();
-
-       if (((int)mods & (int)Qt::ShiftModifier) == (int)Qt::ShiftModifier &&
-           !mNextPlotTime.isZero())
-         {
-           mReplotFinished = true;
-           return;
-         }
-
-       CCopasiTimeVariable Delta = CCopasiTimeVariable::getCurrentWallTime();
-
-       {
-         QMutexLocker Locker(&mMutex);
-         updateCurves(C_INVALID_INDEX);
-       }
-
-       QwtPlot::replot();
-
-       Delta = CCopasiTimeVariable::getCurrentWallTime() - Delta;
-
-       if (!mSpectogramMap.empty())
-         mNextPlotTime = CCopasiTimeVariable::getCurrentWallTime() + 10 * Delta.getMicroSeconds();
-       else
-         mNextPlotTime = CCopasiTimeVariable::getCurrentWallTime() + 3 * Delta.getMicroSeconds();
-     }
-
-   mReplotFinished = true;*/
+    
+    QGraphicsEllipseItem* gie = dynamic_cast<QGraphicsEllipseItem*>(mGraphicItems[i]);
+    if (gie)
+    {
+      gie->setX(scaled_values[0]-0.025);
+      gie->setY(scaled_values[1]-0.025);
+      gie->setBrush(cs.getColor(mObjectiveValues[i]));
+    }
+  }
+  
 }
 
