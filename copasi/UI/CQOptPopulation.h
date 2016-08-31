@@ -57,7 +57,16 @@ private:
   QGraphicsScene * mpGS;
   QGraphicsView * mpGV;
   
-  std::vector<QGraphicsItem *> mGraphicItems;
+  //list of list of graphics items. The outer list allows for several projections simultaniously
+  //the inner list enumerates graphical representations of the individual parameter sets in the population
+  std::vector< std::vector<QGraphicsItem *> > mGraphicItems;
+  
+  //These are coordinate shifts that specify where on the plane the different projections are located
+  std::vector<double> mShiftX;
+  std::vector<double> mShiftY;
+  
+  std::vector<C_INT32> mXIndex;
+  std::vector<C_INT32> mYIndex;
 
   void createToolBar();
   void createMenus();

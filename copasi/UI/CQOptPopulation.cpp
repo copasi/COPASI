@@ -287,21 +287,39 @@ void CQOptPopulation::update()
 
       QGraphicsRectItem* rect = mpGS->addRect(-0, -0, 1, 1);
       rect->setBrush(QColor(220, 220, 220));
-      static_cast<CQZoomableView*>(mpGV)->slotFitOnScreen();
 
-      mGraphicItems.resize(mPopulation.size());
 
-      unsigned C_INT32 i;
+      C_INT32 numProjections = (mNumParameters+1) / 2;
+      mShiftX.resize(numProjections);
+      mShiftY.resize(numProjections);
+      mXIndex.resize(numProjections);
+      mYIndex.resize(numProjections);
+      mGraphicItems.resize(numProjections);
 
-      for (i = 0; i < mPopulation.size(); ++i)
+      C_INT32 j;
+      for (j=0; j<numProjections; ++j)
+      {
+        mShiftX[j] = (double)j*1.1;
+        mShiftY[j] = 0 ;
+        mXIndex[j] = j*2;
+        mYIndex[j] = (j*2+1) % mNumParameters;
+        QGraphicsRectItem* rect = mpGS->addRect(mShiftX[j], mShiftY[j], 1, 1);
+        rect->setBrush(QColor(220, 220, 220));
+
+        mGraphicItems[j].resize(mPopulation.size());
+      
+        unsigned C_INT32 i;
+        for (i = 0; i < mPopulation.size(); ++i)
         {
-          QGraphicsEllipseItem* ei = mpGS->addEllipse(0, 0, 0.05, 0.05);
-          mGraphicItems[i] = ei;
-          //ei->setOpacity(0.2);
+          
+          QGraphicsEllipseItem* ei = mpGS->addEllipse(mShiftX[j], mShiftY[j], 0.05, 0.05);
+          mGraphicItems[j][i] = ei;
           ei->setBrush(QColor(10, 100, 10));
           ei->setPen(QPen(QColor(0, 0, 0)));
         }
-
+      }
+      
+      static_cast<CQZoomableView*>(mpGV)->slotFitOnScreen();
       mGraphInitialized = true;
     }
 
@@ -350,16 +368,19 @@ void CQOptPopulation::update()
     }
     
     //now update the graph
-    QGraphicsEllipseItem* gie = dynamic_cast<QGraphicsEllipseItem*>(mGraphicItems[i]);
-    if (gie)
+    for (j=0; j<mGraphicItems.size(); ++j) //loop over the different projections
     {
-      //gie->setX(scaled_values[0]-0.025);
-      //gie->setY(scaled_values[1]-0.025);
-      gie->setX(p0-0.025);
-      gie->setY(p1-0.025);
-      gie->setBrush(cs.getColor(mObjectiveValues[i]));
-      //highlight parameters on the border of the allowed space
-      gie->setPen(isOnBorder ? QColor(200,0,0,230) : QColor(0,0,0,30));
+      QGraphicsEllipseItem* gie = dynamic_cast<QGraphicsEllipseItem*>(mGraphicItems[j][i]);
+      if (gie)
+      {
+        gie->setX(scaled_values[mXIndex[j]]-0.025);
+        gie->setY(scaled_values[mYIndex[j]]-0.025);
+        //gie->setX(p0-0.025);
+        //gie->setY(p1-0.025);
+        gie->setBrush(cs.getColor(mObjectiveValues[i]));
+        //highlight parameters on the border of the allowed space
+        gie->setPen(isOnBorder ? QColor(200,0,0,230) : QColor(0,0,0,30));
+      }
     }
   }
   
