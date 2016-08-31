@@ -23,8 +23,6 @@
 #include "UI/CQFittingItemWidget.h"
 #include "UI/CProgressBar.h"
 #include "UI/CQExperimentData.h"
-#include "UI/CQOptPopulation.h"
-#include "UI/CQCopasiApplication.h"
 
 #include <copasi/utilities/CCopasiMessage.h>
 #include <copasi/UI/CQMessageBox.h>
@@ -298,15 +296,6 @@ bool CQFittingWidget::runTask()
   mnParamterSetsBeforeRun = pTask->getObjectDataModel()->getModel()->getModelParameterSets().size();
 
   if (!commonBeforeRunTask()) return false;
-
-
-#ifdef COPASI_PE_POPULATION_DISPLAY
-  //Preliminary: Create a Pop-Widget, should be controlled somewhere else
-  CQOptPopulation* pPopWidget = new CQOptPopulation(&CCopasiRootContainer::getDatamodelList()->operator[](0), dynamic_cast<CQCopasiApplication*>(qApp)->getMainWindow());
-  pPopWidget->setMethod(dynamic_cast<COptMethod*>(pTask->getMethod()));
-  pPopWidget->show();
-  CCopasiRootContainer::getDatamodelList()->operator[](0).addInterface(pPopWidget);
-#endif // COPASI_PE_POPULATION_DISPLAY
 
   bool success = commonRunTask();
 

@@ -1,16 +1,19 @@
-// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-// and The University of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2002 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc. and EML Research, gGmbH. 
-// All rights reserved. 
+// Copyright (C) 2002 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
+
+#ifndef COPASI_UI3_WINDOW_H
+#define COPASI_UI3_WINDOW_H
 
 #include <string>
 
@@ -54,6 +57,10 @@ class QUndoStack;
 #ifdef COPASI_Versioning
 class CModelVersion;
 #endif
+
+#ifdef COPASI_PE_POPULATION_DISPLAY
+class CQOptPopulation;
+#endif // COPASI_PE_POPULATION_DISPLAY
 
 class CopasiUI3Window : public QMainWindow
 #ifdef COPASI_SBW_INTEGRATION
@@ -119,10 +126,16 @@ public:
 
 // COMBINE Archive will take care of file management
   /*
-#ifdef COPASI_Provenance
+  #ifdef COPASI_Provenance
     QString getProvenanceParentOfCurrentVersion();
-#endif
+  #endif
   */
+
+#ifdef COPASI_PE_POPULATION_DISPLAY
+  CQOptPopulation* getPopulationDisplay();
+  void setPopulationDisplay(CQOptPopulation* display);
+#endif // COPASI_PE_POPULATION_DISPLAY
+
   void addWindow(QMainWindow * pWindow);
   void removeWindow(QMainWindow * pWindow);
 
@@ -389,6 +402,10 @@ private:
   QString mProvenanceOfOrigionOfFile;
 #endif
 
+#ifdef COPASI_PE_POPULATION_DISPLAY
+  CQOptPopulation* mpPopulationDisplay;
+#endif // COPASI_PE_POPULATION_DISPLAY
+
 #ifdef COPASI_SBW_INTEGRATION
 public:
   /**
@@ -535,3 +552,5 @@ private:
 
 #endif // COPASI_SBW_INTEGRATION
 };
+
+#endif //COPASI_UI3_WINDOW_H

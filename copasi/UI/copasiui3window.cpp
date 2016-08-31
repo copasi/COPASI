@@ -1,16 +1,16 @@
-// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-// and The University of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2002 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc. and EML Research, gGmbH. 
-// All rights reserved. 
+// Copyright (C) 2002 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 #include <sbml/SBMLDocument.h>
 
@@ -83,6 +83,10 @@
 #ifdef COPASI_SEDML
 #include "CQSEDMLFileDialog.h"
 #endif
+
+#ifdef COPASI_PE_POPULATION_DISPLAY
+#include <copasi/ui/CQOptPopulation.h>
+#endif // COPASI_PE_POPULATION_DISPLAY
 
 #include <copasi/UI/CQParameterEstimationResult.h>
 
@@ -221,6 +225,9 @@ CopasiUI3Window::CopasiUI3Window():
   , mProvenanceOrigionTime(QDateTime::currentDateTimeUtc().toString())
   , mProvenanceOfOrigionOfFile(QString(""))
 #endif
+#ifdef COPASI_PE_POPULATION_DISPLAY
+  , mpPopulationDisplay(NULL)
+#endif // COPASI_PE_POPULATION_DISPLAY
 {
   // set destructive close
   this->setAttribute(Qt::WA_DeleteOnClose);
@@ -1032,7 +1039,7 @@ void CopasiUI3Window::slotFileOpen(QString file)
 //#endif
       mpDataModelGUI->notify(ListViews::MODEL, ListViews::DELETE,
                              CCopasiRootContainer::getDatamodelList()->operator[](0).getModel()->getKey());
-        mpListView->clearCurrentWidget();
+      mpListView->clearCurrentWidget();
 
       mpListView->switchToOtherWidget(0, "");
 
@@ -2235,6 +2242,27 @@ const QList< QPointer<QMainWindow> >& CopasiUI3Window::getWindows() const
 {
   return mWindows;
 }
+
+#ifdef COPASI_PE_POPULATION_DISPLAY
+
+CQOptPopulation *
+CopasiUI3Window::getPopulationDisplay()
+{
+  if (mpPopulationDisplay == NULL)
+    {
+      mpPopulationDisplay = new CQOptPopulation(&CCopasiRootContainer::getDatamodelList()->operator[](0), this);
+    }
+
+  return mpPopulationDisplay;
+}
+
+void CopasiUI3Window::setPopulationDisplay(CQOptPopulation * display)
+{
+  mpPopulationDisplay = display;
+}
+
+
+#endif // COPASI_PE_POPULATION_DISPLAY
 
 void CopasiUI3Window::addWindow(QMainWindow * pWindow)
 {

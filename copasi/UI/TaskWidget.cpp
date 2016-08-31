@@ -22,6 +22,8 @@
 #include "TaskWidget.h"
 #include "qtUtilities.h"
 
+#include <copasi/UI/copasiui3window.h>
+
 #include "listviews.h"
 #include "DataModelGUI.h"
 #include "CQMessageBox.h"
@@ -45,6 +47,12 @@
 #include "UI/CQTaskThread.h"
 #include "plotUI/CopasiPlot.h"
 #include "plotUI/plotwindow.h"
+
+#include "UI/CQOptPopulation.h"
+#include <copasi/optimization/COptTask.h>
+#include <copasi/optimization/COptPopulationMethod.h>
+#include <copasi/parameterFitting/CFitTask.h>
+
 
 /*
  *  Constructs a TaskWidget which is a child of 'parent', with the
@@ -256,12 +264,51 @@ bool TaskWidget::commonBeforeRunTask()
   mpTask->setCallBack(mProgressBar);
 
   CCopasiMessage::clearDeque();
+
+  // create population display if needed
+#ifdef COPASI_PE_POPULATION_DISPLAY
+
+  if (dynamic_cast<COptTask*>(mpTask) != NULL || dynamic_cast<CFitTask*>(mpTask) != NULL)
+    {
+      CopasiUI3Window* pWindow = CopasiUI3Window::getMainWindow();
+      CQOptPopulation* pPopWidget = pWindow->getPopulationDisplay();
+      COptPopulationMethod* pMethod = dynamic_cast<COptPopulationMethod*>(mpTask->getMethod());
+      pPopWidget->setMethod(pMethod);
+
+      if (pMethod != NULL)
+        {
+          pPopWidget->show();
+          CCopasiRootContainer::getDatamodelList()->operator[](0).addInterface(pPopWidget);
+        }
+    }
+
+#endif // COPASI_PE_POPULATION_DISPLAY
+
+
   return true;
 }
 
 bool TaskWidget::commonAfterRunTask()
 {
   if (!mpTask) return false;
+
+#ifdef COPASI_PE_POPULATION_DISPLAY
+
+  if (dynamic_cast<COptTask*>(mpTask) != NULL || dynamic_cast<CFitTask*>(mpTask) != NULL)
+    {
+      CopasiUI3Window* pWindow = CopasiUI3Window::getMainWindow();
+      CQOptPopulation* pPopWidget = pWindow->getPopulationDisplay();
+      COptPopulationMethod* pMethod = dynamic_cast<COptPopulationMethod*>(mpTask->getMethod());
+      pPopWidget->setMethod(NULL);
+
+      if (pMethod != NULL)
+        {
+          CCopasiRootContainer::getDatamodelList()->operator[](0).removeInterface(pPopWidget);
+        }
+    }
+
+#endif // COPASI_PE_POPULATION_DISPLAY
+
 
   if (mProgressBar != NULL)
     {

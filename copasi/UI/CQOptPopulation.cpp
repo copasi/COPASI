@@ -1,15 +1,6 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
-// All rights reserved.
-
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
-// All rights reserved.
-
-// Copyright (C) 2003 - 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
 // the window containing the plot and buttons for supported operations
@@ -92,7 +83,7 @@ CQOptPopulation::CQOptPopulation(COutputHandler * pHandler, CopasiUI3Window * pM
   initializing = false;
 
   addToMainWindow(mpMainWindow);
-  
+
   connect(this, SIGNAL(updateSignal()), this, SLOT(update()));
 
 }
@@ -151,6 +142,9 @@ void CQOptPopulation::setMethod(COptMethod* pMethod)
 {
   mpSourceMethod = pMethod;
   mpPopulationMethod = dynamic_cast<COptPopulationMethod*>(pMethod);
+
+  if (mpPopulationMethod == NULL)
+    mGraphInitialized = false;
 }
 
 
@@ -216,148 +210,156 @@ void CQOptPopulation::closeEvent(QCloseEvent *closeEvent)
 
 void CQOptPopulation::output(const Activity & activity)
 {
-  if (activity != COutputInterface::Activity(0x08) )
+  if (activity != COutputInterface::Activity(0x08))
     return;
-  
-  if (!mDataInitialized)
-  {
-    CCopasiTask* pTask = dynamic_cast<CCopasiTask*>(mpSourceMethod->getObjectParent());
-    if (!pTask)
-      return;
-    COptProblem* pProblem = dynamic_cast<COptProblem*>(pTask->getProblem());
-    if(!pProblem)
-      return;
-    
-    //now that we have access to the problem we can retrieve the range information for the parameters.
-    mNumParameters = pProblem->getOptItemList().size();
-    mRangeMax.resize(mNumParameters);
-    mRangeMin.resize(mNumParameters);
-    mIsLog.resize(mNumParameters);
-    
-    unsigned C_INT32 i;
-    for (i=0; i<mNumParameters; ++i)
-    {
-      COptItem* pOI = pProblem->getOptItemList()[i];
-      mRangeMax[i]=*pOI->getUpperBoundValue();
-      mRangeMin[i]=*pOI->getLowerBoundValue();
 
-      //guess if log scaling should be used. This could also be retrieved from the method?
-      if (mRangeMin[i]>0.0 && mRangeMax[i]>0.0 && mRangeMax[i]/mRangeMin[i]>1000)
-        mIsLog[i]=true;
-      else
-        mIsLog[i]=false;
-      
+  if (!mDataInitialized)
+    {
+      CCopasiTask* pTask = dynamic_cast<CCopasiTask*>(mpSourceMethod->getObjectParent());
+
+      if (!pTask)
+        return;
+
+      COptProblem* pProblem = dynamic_cast<COptProblem*>(pTask->getProblem());
+
+      if (!pProblem)
+        return;
+
+      //now that we have access to the problem we can retrieve the range information for the parameters.
+      mNumParameters = pProblem->getOptItemList().size();
+      mRangeMax.resize(mNumParameters);
+      mRangeMin.resize(mNumParameters);
+      mIsLog.resize(mNumParameters);
+
+      unsigned C_INT32 i;
+
+      for (i = 0; i < mNumParameters; ++i)
+        {
+          COptItem* pOI = pProblem->getOptItemList()[i];
+          mRangeMax[i] = *pOI->getUpperBoundValue();
+          mRangeMin[i] = *pOI->getLowerBoundValue();
+
+          //guess if log scaling should be used. This could also be retrieved from the method?
+          if (mRangeMin[i] > 0.0 && mRangeMax[i] > 0.0 && mRangeMax[i] / mRangeMin[i] > 1000)
+            mIsLog[i] = true;
+          else
+            mIsLog[i] = false;
+
+        }
+
+      mDataInitialized = true;
     }
-    
-    mDataInitialized=true;
-  }
-  
+
   //copy the data
   mPopulation = mpPopulationMethod->getPopulation();
   mObjectiveValues = mpPopulationMethod->getObjectiveValues();
-  
-  
+
+
   mCounter++;
-  
+
   emit updateSignal();
-  
+
 }
 
 
 void CQOptPopulation::update()
 {
- 
+
   if (!mGraphInitialized)
-  {
- 
-    mpGS = new QGraphicsScene(this);
-    mpGV = new QGraphicsView(mpGS, this);
-    this->setCentralWidget(mpGV);
-    
-    mpGV->setRenderHints(QPainter::Antialiasing|QPainter::TextAntialiasing| QPainter::SmoothPixmapTransform	);
-    
-    
-    QGraphicsRectItem* rect = mpGS->addRect(-0,-0,1,1);
-    rect->setBrush(QColor(200,200,200));
-    //mpGV->fitInView(-4,-4,8,8);
-    mpGV->resetMatrix();
-    mpGV->scale(200,200);
-    mpGV->setDragMode(QGraphicsView::ScrollHandDrag);
-  
-    mGraphicItems.resize(mPopulation.size());
-  
-    unsigned C_INT32 i;
-    for (i=0; i<mPopulation.size(); ++i)
     {
-      QGraphicsEllipseItem* ei = mpGS->addEllipse(0, 0, 0.05,0.05);
-      mGraphicItems[i]= ei;
-      ei->setOpacity(0.2);
-      ei->setBrush(QColor(10,100,10));
-      ei->setPen(QPen(QColor(0,0,0)));
-    }
 
-  
-    mGraphInitialized=true;
-  }
-  
-  unsigned C_INT32 i;
-  for (i=0; i<mPopulation.size(); ++i)
-  {
-    //std::cout <<mPopulation[i]->operator[](0) << "  " << mPopulation[i]->operator[](1) << std::endl;
-    
-    std::vector<double> scaled_values; scaled_values.resize(mPopulation.size());
-    C_INT32 j;
-    for (j=0; j<2; ++j)
-    {
-    
-      if (mIsLog[j])
-        scaled_values[j] = (log(mPopulation[i]->operator[](j))-log(mRangeMin[j]))/(log(mRangeMax[j])-log(mRangeMin[j])) ;
-      else
-        scaled_values[j] = (mPopulation[i]->operator[](j)-mRangeMin[j])/(mRangeMax[j]-mRangeMin[j]);
-      
-    }
-    
-  
-    QGraphicsEllipseItem* gie = dynamic_cast<QGraphicsEllipseItem*>(mGraphicItems[i]);
-    if (gie)
-    {
-      //gie->setRect(scaled_values[0]-0.025, scaled_values[1]-0.025, 0.05, 0.05);
-      gie->setX(scaled_values[0]-0.025);
-      gie->setY(scaled_values[1]-0.025);
-    }
-  }
-  
- //®std::cout << "output in main thread" << std::endl;
- 
- /*  if (mNextPlotTime < CCopasiTimeVariable::getCurrentWallTime())
-    {
-      // skip rendering when shift is pressed
-      Qt::KeyboardModifiers mods = QApplication::keyboardModifiers();
+      mpGS = new QGraphicsScene(this);
+      mpGV = new QGraphicsView(mpGS, this);
+      this->setCentralWidget(mpGV);
 
-      if (((int)mods & (int)Qt::ShiftModifier) == (int)Qt::ShiftModifier &&
-          !mNextPlotTime.isZero())
+      mpGV->setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing | QPainter::SmoothPixmapTransform);
+
+
+      QGraphicsRectItem* rect = mpGS->addRect(-0, -0, 1, 1);
+      rect->setBrush(QColor(200, 200, 200));
+      //mpGV->fitInView(-4,-4,8,8);
+      mpGV->resetMatrix();
+      mpGV->scale(200, 200);
+      mpGV->setDragMode(QGraphicsView::ScrollHandDrag);
+
+      mGraphicItems.resize(mPopulation.size());
+
+      unsigned C_INT32 i;
+
+      for (i = 0; i < mPopulation.size(); ++i)
         {
-          mReplotFinished = true;
-          return;
+          QGraphicsEllipseItem* ei = mpGS->addEllipse(0, 0, 0.05, 0.05);
+          mGraphicItems[i] = ei;
+          ei->setOpacity(0.2);
+          ei->setBrush(QColor(10, 100, 10));
+          ei->setPen(QPen(QColor(0, 0, 0)));
         }
 
-      CCopasiTimeVariable Delta = CCopasiTimeVariable::getCurrentWallTime();
 
-      {
-        QMutexLocker Locker(&mMutex);
-        updateCurves(C_INVALID_INDEX);
-      }
-
-      QwtPlot::replot();
-
-      Delta = CCopasiTimeVariable::getCurrentWallTime() - Delta;
-
-      if (!mSpectogramMap.empty())
-        mNextPlotTime = CCopasiTimeVariable::getCurrentWallTime() + 10 * Delta.getMicroSeconds();
-      else
-        mNextPlotTime = CCopasiTimeVariable::getCurrentWallTime() + 3 * Delta.getMicroSeconds();
+      mGraphInitialized = true;
     }
 
-  mReplotFinished = true;*/
+  unsigned C_INT32 i;
+
+  for (i = 0; i < mPopulation.size(); ++i)
+    {
+      //std::cout <<mPopulation[i]->operator[](0) << "  " << mPopulation[i]->operator[](1) << std::endl;
+
+      std::vector<double> scaled_values; scaled_values.resize(mPopulation.size());
+      C_INT32 j;
+
+      for (j = 0; j < 2; ++j)
+        {
+
+          if (mIsLog[j])
+            scaled_values[j] = (log(mPopulation[i]->operator[](j)) - log(mRangeMin[j])) / (log(mRangeMax[j]) - log(mRangeMin[j])) ;
+          else
+            scaled_values[j] = (mPopulation[i]->operator[](j) - mRangeMin[j]) / (mRangeMax[j] - mRangeMin[j]);
+
+        }
+
+
+      QGraphicsEllipseItem* gie = dynamic_cast<QGraphicsEllipseItem*>(mGraphicItems[i]);
+
+      if (gie)
+        {
+          //gie->setRect(scaled_values[0]-0.025, scaled_values[1]-0.025, 0.05, 0.05);
+          gie->setX(scaled_values[0] - 0.025);
+          gie->setY(scaled_values[1] - 0.025);
+        }
+    }
+
+//®std::cout << "output in main thread" << std::endl;
+
+  /*  if (mNextPlotTime < CCopasiTimeVariable::getCurrentWallTime())
+     {
+       // skip rendering when shift is pressed
+       Qt::KeyboardModifiers mods = QApplication::keyboardModifiers();
+
+       if (((int)mods & (int)Qt::ShiftModifier) == (int)Qt::ShiftModifier &&
+           !mNextPlotTime.isZero())
+         {
+           mReplotFinished = true;
+           return;
+         }
+
+       CCopasiTimeVariable Delta = CCopasiTimeVariable::getCurrentWallTime();
+
+       {
+         QMutexLocker Locker(&mMutex);
+         updateCurves(C_INVALID_INDEX);
+       }
+
+       QwtPlot::replot();
+
+       Delta = CCopasiTimeVariable::getCurrentWallTime() - Delta;
+
+       if (!mSpectogramMap.empty())
+         mNextPlotTime = CCopasiTimeVariable::getCurrentWallTime() + 10 * Delta.getMicroSeconds();
+       else
+         mNextPlotTime = CCopasiTimeVariable::getCurrentWallTime() + 3 * Delta.getMicroSeconds();
+     }
+
+   mReplotFinished = true;*/
 }
 
