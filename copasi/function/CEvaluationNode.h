@@ -62,6 +62,10 @@ public:
     T_UNIT = 0x0f000000
   };
 
+#ifdef S_FALSE
+# undef S_FALSE
+#endif
+
   enum SubType
   {
     S_DEFAULT = 0x00000000,
