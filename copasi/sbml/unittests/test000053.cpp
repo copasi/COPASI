@@ -1,17 +1,9 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000053.cpp,v $
-//   $Revision: 1.8 $
-//   $Name:  $
-//   $Author: bergmann $
-//   $Date: 2012/05/16 06:24:49 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
@@ -76,39 +68,39 @@ void test000053::test1_bug1000()
   CPPUNIT_ASSERT(pExpr != NULL);
   const CEvaluationNode* pRoot = pExpr->getRoot();
   CPPUNIT_ASSERT(pRoot != NULL);
-  CPPUNIT_ASSERT(CEvaluationNode::type(pRoot->getType()) == CEvaluationNode::CHOICE);
+  CPPUNIT_ASSERT(pRoot->mainType() == CEvaluationNode::T_CHOICE);
   const CEvaluationNodeChoice* pChoiceNode = dynamic_cast<const CEvaluationNodeChoice*>(pRoot);
   CPPUNIT_ASSERT(pChoiceNode != NULL);
   const CEvaluationNode* pChild1 = dynamic_cast<const CEvaluationNode*>(pChoiceNode->getChild());
   CPPUNIT_ASSERT(pChild1 != NULL);
   const CEvaluationNode* pChild2 = dynamic_cast<const CEvaluationNode*>(pChild1->getSibling());
   CPPUNIT_ASSERT(pChild2 != NULL);
-  CPPUNIT_ASSERT(CEvaluationNode::type(pChild2->getType()) == CEvaluationNode::NUMBER);
-  CPPUNIT_ASSERT(((CEvaluationNodeNumber::SubType)CEvaluationNode::subType(pChild2->getType())) == CEvaluationNodeNumber::DOUBLE);
+  CPPUNIT_ASSERT(pChild2->mainType() == CEvaluationNode::T_NUMBER);
+  CPPUNIT_ASSERT((pChild2->subType()) == CEvaluationNode::S_DOUBLE);
   const CEvaluationNodeNumber* pNumberNode = dynamic_cast<const CEvaluationNodeNumber*>(pChild2);
   CPPUNIT_ASSERT(pNumberNode != NULL);
   CPPUNIT_ASSERT(fabs((pNumberNode->getValue() - 0.5) / 0.5) < 1e-6);
   const CEvaluationNode* pChild3 = dynamic_cast<const CEvaluationNode*>(pChild2->getSibling());
   CPPUNIT_ASSERT(pChild3 != NULL);
-  CPPUNIT_ASSERT(CEvaluationNode::type(pChild3->getType()) == CEvaluationNode::NUMBER);
-  CPPUNIT_ASSERT(((CEvaluationNodeNumber::SubType)CEvaluationNode::subType(pChild3->getType())) == CEvaluationNodeNumber::DOUBLE);
+  CPPUNIT_ASSERT(pChild3->mainType() == CEvaluationNode::T_NUMBER);
+  CPPUNIT_ASSERT((pChild3->subType()) == CEvaluationNode::S_DOUBLE);
   pNumberNode = dynamic_cast<const CEvaluationNodeNumber*>(pChild3);
   CPPUNIT_ASSERT(pNumberNode != NULL);
   CPPUNIT_ASSERT(fabs((pNumberNode->getValue() - 1.5) / 1.5) < 1e-6);
   CPPUNIT_ASSERT(pChild3->getSibling() == NULL);
-  CPPUNIT_ASSERT(CEvaluationNode::type(pChild1->getType()) == CEvaluationNode::LOGICAL);
-  CPPUNIT_ASSERT(((CEvaluationNodeLogical::SubType)CEvaluationNode::subType(pChild1->getType())) == CEvaluationNodeLogical::GT);
+  CPPUNIT_ASSERT(pChild1->mainType() == CEvaluationNode::T_LOGICAL);
+  CPPUNIT_ASSERT((pChild1->subType()) == CEvaluationNode::S_GT);
   pChild1 = dynamic_cast<const CEvaluationNode*>(pChild1->getChild());
   CPPUNIT_ASSERT(pChild1 != NULL);
-  CPPUNIT_ASSERT(CEvaluationNode::type(pChild1->getType()) == CEvaluationNode::NUMBER);
-  CPPUNIT_ASSERT(((CEvaluationNodeNumber::SubType)CEvaluationNode::subType(pChild1->getType())) == CEvaluationNodeNumber::DOUBLE);
+  CPPUNIT_ASSERT(pChild1->mainType() == CEvaluationNode::T_NUMBER);
+  CPPUNIT_ASSERT((pChild1->subType()) == CEvaluationNode::S_DOUBLE);
   pNumberNode = dynamic_cast<const CEvaluationNodeNumber*>(pChild1);
   CPPUNIT_ASSERT(pNumberNode != NULL);
   CPPUNIT_ASSERT(fabs((pNumberNode->getValue() - 3.0) / 3.0) < 1e-6);
   pChild2 = dynamic_cast<const CEvaluationNode*>(pChild1->getSibling());
   CPPUNIT_ASSERT(pChild2 != NULL);
-  CPPUNIT_ASSERT(CEvaluationNode::type(pChild2->getType()) == CEvaluationNode::NUMBER);
-  CPPUNIT_ASSERT(((CEvaluationNodeNumber::SubType)CEvaluationNode::subType(pChild2->getType())) == CEvaluationNodeNumber::DOUBLE);
+  CPPUNIT_ASSERT(pChild2->mainType() == CEvaluationNode::T_NUMBER);
+  CPPUNIT_ASSERT((pChild2->subType()) == CEvaluationNode::S_DOUBLE);
   pNumberNode = dynamic_cast<const CEvaluationNodeNumber*>(pChild2);
   CPPUNIT_ASSERT(pNumberNode != NULL);
   CPPUNIT_ASSERT(fabs((pNumberNode->getValue() - 4.0) / 4.0) < 1e-6);
@@ -180,10 +172,10 @@ void test000053::test2_bug1000()
   CPPUNIT_ASSERT(pExpr != NULL);
   const CEvaluationNode* pRoot = pExpr->getRoot();
   CPPUNIT_ASSERT(pRoot != NULL);
-  CPPUNIT_ASSERT(CEvaluationNode::type(pRoot->getType()) == CEvaluationNode::CONSTANT);
+  CPPUNIT_ASSERT(pRoot->mainType() == CEvaluationNode::T_CONSTANT);
   const CEvaluationNodeConstant* pConstantNode = dynamic_cast<const CEvaluationNodeConstant*>(pRoot);
   CPPUNIT_ASSERT(pConstantNode != NULL);
-  CPPUNIT_ASSERT(((CEvaluationNodeConstant::SubType)CEvaluationNode::subType(pConstantNode->getType())) == CEvaluationNodeConstant::_NaN);
+  CPPUNIT_ASSERT((pConstantNode->subType()) == CEvaluationNode::S_NAN);
 }
 
 const char* test000053::MODEL_STRING_2 =
@@ -241,33 +233,33 @@ void test000053::test3_bug1000()
   CPPUNIT_ASSERT(pExpr != NULL);
   const CEvaluationNode* pRoot = pExpr->getRoot();
   CPPUNIT_ASSERT(pRoot != NULL);
-  CPPUNIT_ASSERT(CEvaluationNode::type(pRoot->getType()) == CEvaluationNode::CHOICE);
+  CPPUNIT_ASSERT(pRoot->mainType() == CEvaluationNode::T_CHOICE);
   const CEvaluationNodeChoice* pChoiceNode = dynamic_cast<const CEvaluationNodeChoice*>(pRoot);
   CPPUNIT_ASSERT(pChoiceNode != NULL);
   const CEvaluationNode* pChild1 = dynamic_cast<const CEvaluationNode*>(pChoiceNode->getChild());
   CPPUNIT_ASSERT(pChild1 != NULL);
   const CEvaluationNode* pChild2 = dynamic_cast<const CEvaluationNode*>(pChild1->getSibling());
   CPPUNIT_ASSERT(pChild2 != NULL);
-  CPPUNIT_ASSERT(CEvaluationNode::type(pChild2->getType()) == CEvaluationNode::NUMBER);
-  CPPUNIT_ASSERT(((CEvaluationNodeNumber::SubType)CEvaluationNode::subType(pChild2->getType())) == CEvaluationNodeNumber::DOUBLE);
+  CPPUNIT_ASSERT(pChild2->mainType() == CEvaluationNode::T_NUMBER);
+  CPPUNIT_ASSERT((pChild2->subType()) == CEvaluationNode::S_DOUBLE);
   const CEvaluationNodeNumber* pNumberNode = dynamic_cast<const CEvaluationNodeNumber*>(pChild2);
   CPPUNIT_ASSERT(pNumberNode != NULL);
   CPPUNIT_ASSERT(fabs((pNumberNode->getValue() - 0.5) / 0.5) < 1e-6);
   const CEvaluationNode* pChild3 = dynamic_cast<const CEvaluationNode*>(pChild2->getSibling());
   CPPUNIT_ASSERT(pChild3 != NULL);
-  CPPUNIT_ASSERT(CEvaluationNode::type(pChild3->getType()) == CEvaluationNode::CONSTANT);
-  CPPUNIT_ASSERT(((CEvaluationNodeConstant::SubType)CEvaluationNode::subType(pChild3->getType())) == CEvaluationNodeConstant::_NaN);
+  CPPUNIT_ASSERT(pChild3->mainType() == CEvaluationNode::T_CONSTANT);
+  CPPUNIT_ASSERT((pChild3->subType()) == CEvaluationNode::S_NAN);
   pChild1 = dynamic_cast<const CEvaluationNode*>(pChild1->getChild());
   CPPUNIT_ASSERT(pChild1 != NULL);
-  CPPUNIT_ASSERT(CEvaluationNode::type(pChild1->getType()) == CEvaluationNode::NUMBER);
-  CPPUNIT_ASSERT(((CEvaluationNodeNumber::SubType)CEvaluationNode::subType(pChild1->getType())) == CEvaluationNodeNumber::DOUBLE);
+  CPPUNIT_ASSERT(pChild1->mainType() == CEvaluationNode::T_NUMBER);
+  CPPUNIT_ASSERT((pChild1->subType()) == CEvaluationNode::S_DOUBLE);
   pNumberNode = dynamic_cast<const CEvaluationNodeNumber*>(pChild1);
   CPPUNIT_ASSERT(pNumberNode != NULL);
   CPPUNIT_ASSERT(fabs((pNumberNode->getValue() - 3.0) / 3.0) < 1e-6);
   pChild2 = dynamic_cast<const CEvaluationNode*>(pChild1->getSibling());
   CPPUNIT_ASSERT(pChild2 != NULL);
-  CPPUNIT_ASSERT(CEvaluationNode::type(pChild2->getType()) == CEvaluationNode::NUMBER);
-  CPPUNIT_ASSERT(((CEvaluationNodeNumber::SubType)CEvaluationNode::subType(pChild2->getType())) == CEvaluationNodeNumber::DOUBLE);
+  CPPUNIT_ASSERT(pChild2->mainType() == CEvaluationNode::T_NUMBER);
+  CPPUNIT_ASSERT((pChild2->subType()) == CEvaluationNode::S_DOUBLE);
   pNumberNode = dynamic_cast<const CEvaluationNodeNumber*>(pChild2);
   CPPUNIT_ASSERT(pNumberNode != NULL);
   CPPUNIT_ASSERT(fabs((pNumberNode->getValue() - 4.0) / 4.0) < 1e-6);
@@ -336,8 +328,8 @@ void test000053::test4_bug1000()
   CPPUNIT_ASSERT(pExpr != NULL);
   const CEvaluationNode* pRoot = pExpr->getRoot();
   CPPUNIT_ASSERT(pRoot != NULL);
-  CPPUNIT_ASSERT(CEvaluationNode::type(pRoot->getType()) == CEvaluationNode::NUMBER);
-  CPPUNIT_ASSERT(((CEvaluationNodeNumber::SubType)CEvaluationNode::subType(pRoot->getType())) == CEvaluationNodeNumber::DOUBLE);
+  CPPUNIT_ASSERT(pRoot->mainType() == CEvaluationNode::T_NUMBER);
+  CPPUNIT_ASSERT((pRoot->subType()) == CEvaluationNode::S_DOUBLE);
   const CEvaluationNodeNumber* pNumberNode = dynamic_cast<const CEvaluationNodeNumber*>(pRoot);
   CPPUNIT_ASSERT(pNumberNode != NULL);
   CPPUNIT_ASSERT(fabs((pNumberNode->getValue() - 1.5) / 1.5) < 1e-6);
@@ -401,36 +393,36 @@ void test000053::test5_bug1000()
   CPPUNIT_ASSERT(pExpr != NULL);
   const CEvaluationNode* pRoot = pExpr->getRoot();
   CPPUNIT_ASSERT(pRoot != NULL);
-  CPPUNIT_ASSERT(CEvaluationNode::type(pRoot->getType()) == CEvaluationNode::CHOICE);
+  CPPUNIT_ASSERT(pRoot->mainType() == CEvaluationNode::T_CHOICE);
   const CEvaluationNodeChoice* pChoiceNode = dynamic_cast<const CEvaluationNodeChoice*>(pRoot);
   CPPUNIT_ASSERT(pChoiceNode != NULL);
   const CEvaluationNode* pChild1 = dynamic_cast<const CEvaluationNode*>(pChoiceNode->getChild());
   CPPUNIT_ASSERT(pChild1 != NULL);
   const CEvaluationNode* pChild2 = dynamic_cast<const CEvaluationNode*>(pChild1->getSibling());
   CPPUNIT_ASSERT(pChild2 != NULL);
-  CPPUNIT_ASSERT(CEvaluationNode::type(pChild2->getType()) == CEvaluationNode::NUMBER);
-  CPPUNIT_ASSERT(((CEvaluationNodeNumber::SubType)CEvaluationNode::subType(pChild2->getType())) == CEvaluationNodeNumber::DOUBLE);
+  CPPUNIT_ASSERT(pChild2->mainType() == CEvaluationNode::T_NUMBER);
+  CPPUNIT_ASSERT((pChild2->subType()) == CEvaluationNode::S_DOUBLE);
   const CEvaluationNodeNumber* pNumberNode = dynamic_cast<const CEvaluationNodeNumber*>(pChild2);
   CPPUNIT_ASSERT(pNumberNode != NULL);
   CPPUNIT_ASSERT(fabs((pNumberNode->getValue() - 0.1) / 0.1) < 1e-6);
   const CEvaluationNode* pChild3 = dynamic_cast<const CEvaluationNode*>(pChild2->getSibling());
   CPPUNIT_ASSERT(pChild3 != NULL);
-  CPPUNIT_ASSERT(CEvaluationNode::type(pChild3->getType()) == CEvaluationNode::CHOICE);
+  CPPUNIT_ASSERT(pChild3->mainType() == CEvaluationNode::T_CHOICE);
   pChoiceNode = dynamic_cast<const CEvaluationNodeChoice*>(pChild3);
   CPPUNIT_ASSERT(pChoiceNode);
-  CPPUNIT_ASSERT(CEvaluationNode::type(pChild1->getType()) == CEvaluationNode::LOGICAL);
-  CPPUNIT_ASSERT(((CEvaluationNodeLogical::SubType)CEvaluationNode::subType(pChild1->getType())) == CEvaluationNodeLogical::LT);
+  CPPUNIT_ASSERT(pChild1->mainType() == CEvaluationNode::T_LOGICAL);
+  CPPUNIT_ASSERT((pChild1->subType()) == CEvaluationNode::S_LT);
   pChild1 = dynamic_cast<const CEvaluationNode*>(pChild1->getChild());
   CPPUNIT_ASSERT(pChild1 != NULL);
-  CPPUNIT_ASSERT(CEvaluationNode::type(pChild1->getType()) == CEvaluationNode::NUMBER);
-  CPPUNIT_ASSERT(((CEvaluationNodeNumber::SubType)CEvaluationNode::subType(pChild1->getType())) == CEvaluationNodeNumber::DOUBLE);
+  CPPUNIT_ASSERT(pChild1->mainType() == CEvaluationNode::T_NUMBER);
+  CPPUNIT_ASSERT((pChild1->subType()) == CEvaluationNode::S_DOUBLE);
   pNumberNode = dynamic_cast<const CEvaluationNodeNumber*>(pChild1);
   CPPUNIT_ASSERT(pNumberNode != NULL);
   CPPUNIT_ASSERT(fabs((pNumberNode->getValue() - 3.0) / 3.0) < 1e-6);
   pChild2 = dynamic_cast<const CEvaluationNode*>(pChild1->getSibling());
   CPPUNIT_ASSERT(pChild2 != NULL);
-  CPPUNIT_ASSERT(CEvaluationNode::type(pChild2->getType()) == CEvaluationNode::NUMBER);
-  CPPUNIT_ASSERT(((CEvaluationNodeNumber::SubType)CEvaluationNode::subType(pChild2->getType())) == CEvaluationNodeNumber::DOUBLE);
+  CPPUNIT_ASSERT(pChild2->mainType() == CEvaluationNode::T_NUMBER);
+  CPPUNIT_ASSERT((pChild2->subType()) == CEvaluationNode::S_DOUBLE);
   pNumberNode = dynamic_cast<const CEvaluationNodeNumber*>(pChild2);
   CPPUNIT_ASSERT(pNumberNode != NULL);
   CPPUNIT_ASSERT(fabs((pNumberNode->getValue() - 4.0) / 4.0) < 1e-6);
@@ -440,29 +432,29 @@ void test000053::test5_bug1000()
   CPPUNIT_ASSERT(pChild1 != NULL);
   pChild2 = dynamic_cast<const CEvaluationNode*>(pChild1->getSibling());
   CPPUNIT_ASSERT(pChild2 != NULL);
-  CPPUNIT_ASSERT(CEvaluationNode::type(pChild2->getType()) == CEvaluationNode::NUMBER);
-  CPPUNIT_ASSERT(((CEvaluationNodeNumber::SubType)CEvaluationNode::subType(pChild2->getType())) == CEvaluationNodeNumber::DOUBLE);
+  CPPUNIT_ASSERT(pChild2->mainType() == CEvaluationNode::T_NUMBER);
+  CPPUNIT_ASSERT((pChild2->subType()) == CEvaluationNode::S_DOUBLE);
   pNumberNode = dynamic_cast<const CEvaluationNodeNumber*>(pChild2);
   CPPUNIT_ASSERT(pNumberNode != NULL);
   CPPUNIT_ASSERT(fabs((pNumberNode->getValue() - 0.2) / 0.2) < 1e-6);
   pChild3 = dynamic_cast<const CEvaluationNode*>(pChild2->getSibling());
   CPPUNIT_ASSERT(pChild3 != NULL);
-  CPPUNIT_ASSERT(CEvaluationNode::type(pChild3->getType()) == CEvaluationNode::CHOICE);
+  CPPUNIT_ASSERT(pChild3->mainType() == CEvaluationNode::T_CHOICE);
   pChoiceNode = dynamic_cast<const CEvaluationNodeChoice*>(pChild3);
   CPPUNIT_ASSERT(pChoiceNode);
-  CPPUNIT_ASSERT(CEvaluationNode::type(pChild1->getType()) == CEvaluationNode::LOGICAL);
-  CPPUNIT_ASSERT(((CEvaluationNodeLogical::SubType)CEvaluationNode::subType(pChild1->getType())) == CEvaluationNodeLogical::GT);
+  CPPUNIT_ASSERT(pChild1->mainType() == CEvaluationNode::T_LOGICAL);
+  CPPUNIT_ASSERT((pChild1->subType()) == CEvaluationNode::S_GT);
   pChild1 = dynamic_cast<const CEvaluationNode*>(pChild1->getChild());
   CPPUNIT_ASSERT(pChild1 != NULL);
-  CPPUNIT_ASSERT(CEvaluationNode::type(pChild1->getType()) == CEvaluationNode::NUMBER);
-  CPPUNIT_ASSERT(((CEvaluationNodeNumber::SubType)CEvaluationNode::subType(pChild1->getType())) == CEvaluationNodeNumber::DOUBLE);
+  CPPUNIT_ASSERT(pChild1->mainType() == CEvaluationNode::T_NUMBER);
+  CPPUNIT_ASSERT((pChild1->subType()) == CEvaluationNode::S_DOUBLE);
   pNumberNode = dynamic_cast<const CEvaluationNodeNumber*>(pChild1);
   CPPUNIT_ASSERT(pNumberNode != NULL);
   CPPUNIT_ASSERT(fabs((pNumberNode->getValue() - 3.0) / 3.0) < 1e-6);
   pChild2 = dynamic_cast<const CEvaluationNode*>(pChild1->getSibling());
   CPPUNIT_ASSERT(pChild2 != NULL);
-  CPPUNIT_ASSERT(CEvaluationNode::type(pChild2->getType()) == CEvaluationNode::NUMBER);
-  CPPUNIT_ASSERT(((CEvaluationNodeNumber::SubType)CEvaluationNode::subType(pChild2->getType())) == CEvaluationNodeNumber::DOUBLE);
+  CPPUNIT_ASSERT(pChild2->mainType() == CEvaluationNode::T_NUMBER);
+  CPPUNIT_ASSERT((pChild2->subType()) == CEvaluationNode::S_DOUBLE);
   pNumberNode = dynamic_cast<const CEvaluationNodeNumber*>(pChild2);
   CPPUNIT_ASSERT(pNumberNode != NULL);
   CPPUNIT_ASSERT(fabs((pNumberNode->getValue() - 4.0) / 4.0) < 1e-6);
@@ -472,29 +464,29 @@ void test000053::test5_bug1000()
   CPPUNIT_ASSERT(pChild1 != NULL);
   pChild2 = dynamic_cast<const CEvaluationNode*>(pChild1->getSibling());
   CPPUNIT_ASSERT(pChild2 != NULL);
-  CPPUNIT_ASSERT(CEvaluationNode::type(pChild2->getType()) == CEvaluationNode::NUMBER);
-  CPPUNIT_ASSERT(((CEvaluationNodeNumber::SubType)CEvaluationNode::subType(pChild2->getType())) == CEvaluationNodeNumber::DOUBLE);
+  CPPUNIT_ASSERT(pChild2->mainType() == CEvaluationNode::T_NUMBER);
+  CPPUNIT_ASSERT((pChild2->subType()) == CEvaluationNode::S_DOUBLE);
   pNumberNode = dynamic_cast<const CEvaluationNodeNumber*>(pChild2);
   CPPUNIT_ASSERT(pNumberNode != NULL);
   CPPUNIT_ASSERT(fabs((pNumberNode->getValue() - 0.3) / 0.3) < 1e-6);
   pChild3 = dynamic_cast<const CEvaluationNode*>(pChild2->getSibling());
   CPPUNIT_ASSERT(pChild3 != NULL);
-  CPPUNIT_ASSERT(CEvaluationNode::type(pChild3->getType()) == CEvaluationNode::CHOICE);
+  CPPUNIT_ASSERT(pChild3->mainType() == CEvaluationNode::T_CHOICE);
   pChoiceNode = dynamic_cast<const CEvaluationNodeChoice*>(pChild3);
   CPPUNIT_ASSERT(pChoiceNode);
-  CPPUNIT_ASSERT(CEvaluationNode::type(pChild1->getType()) == CEvaluationNode::LOGICAL);
-  CPPUNIT_ASSERT(((CEvaluationNodeLogical::SubType)CEvaluationNode::subType(pChild1->getType())) == CEvaluationNodeLogical::LE);
+  CPPUNIT_ASSERT(pChild1->mainType() == CEvaluationNode::T_LOGICAL);
+  CPPUNIT_ASSERT((pChild1->subType()) == CEvaluationNode::S_LE);
   pChild1 = dynamic_cast<const CEvaluationNode*>(pChild1->getChild());
   CPPUNIT_ASSERT(pChild1 != NULL);
-  CPPUNIT_ASSERT(CEvaluationNode::type(pChild1->getType()) == CEvaluationNode::NUMBER);
-  CPPUNIT_ASSERT(((CEvaluationNodeNumber::SubType)CEvaluationNode::subType(pChild1->getType())) == CEvaluationNodeNumber::DOUBLE);
+  CPPUNIT_ASSERT(pChild1->mainType() == CEvaluationNode::T_NUMBER);
+  CPPUNIT_ASSERT((pChild1->subType()) == CEvaluationNode::S_DOUBLE);
   pNumberNode = dynamic_cast<const CEvaluationNodeNumber*>(pChild1);
   CPPUNIT_ASSERT(pNumberNode != NULL);
   CPPUNIT_ASSERT(fabs((pNumberNode->getValue() - 3.0) / 3.0) < 1e-6);
   pChild2 = dynamic_cast<const CEvaluationNode*>(pChild1->getSibling());
   CPPUNIT_ASSERT(pChild2 != NULL);
-  CPPUNIT_ASSERT(CEvaluationNode::type(pChild2->getType()) == CEvaluationNode::NUMBER);
-  CPPUNIT_ASSERT(((CEvaluationNodeNumber::SubType)CEvaluationNode::subType(pChild2->getType())) == CEvaluationNodeNumber::DOUBLE);
+  CPPUNIT_ASSERT(pChild2->mainType() == CEvaluationNode::T_NUMBER);
+  CPPUNIT_ASSERT((pChild2->subType()) == CEvaluationNode::S_DOUBLE);
   pNumberNode = dynamic_cast<const CEvaluationNodeNumber*>(pChild2);
   CPPUNIT_ASSERT(pNumberNode != NULL);
   CPPUNIT_ASSERT(fabs((pNumberNode->getValue() - 4.0) / 4.0) < 1e-6);
@@ -504,33 +496,33 @@ void test000053::test5_bug1000()
   CPPUNIT_ASSERT(pChild1 != NULL);
   pChild2 = dynamic_cast<const CEvaluationNode*>(pChild1->getSibling());
   CPPUNIT_ASSERT(pChild2 != NULL);
-  CPPUNIT_ASSERT(CEvaluationNode::type(pChild2->getType()) == CEvaluationNode::NUMBER);
-  CPPUNIT_ASSERT(((CEvaluationNodeNumber::SubType)CEvaluationNode::subType(pChild2->getType())) == CEvaluationNodeNumber::DOUBLE);
+  CPPUNIT_ASSERT(pChild2->mainType() == CEvaluationNode::T_NUMBER);
+  CPPUNIT_ASSERT((pChild2->subType()) == CEvaluationNode::S_DOUBLE);
   pNumberNode = dynamic_cast<const CEvaluationNodeNumber*>(pChild2);
   CPPUNIT_ASSERT(pNumberNode != NULL);
   CPPUNIT_ASSERT(fabs((pNumberNode->getValue() - 0.4) / 0.4) < 1e-6);
   pChild3 = dynamic_cast<const CEvaluationNode*>(pChild2->getSibling());
   CPPUNIT_ASSERT(pChild3 != NULL);
   // the third child of the fourth choice level must be the otherwise element
-  CPPUNIT_ASSERT(CEvaluationNode::type(pChild3->getType()) == CEvaluationNode::NUMBER);
-  CPPUNIT_ASSERT(((CEvaluationNodeNumber::SubType)CEvaluationNode::subType(pChild3->getType())) == CEvaluationNodeNumber::DOUBLE);
+  CPPUNIT_ASSERT(pChild3->mainType() == CEvaluationNode::T_NUMBER);
+  CPPUNIT_ASSERT((pChild3->subType()) == CEvaluationNode::S_DOUBLE);
   pNumberNode = dynamic_cast<const CEvaluationNodeNumber*>(pChild3);
   CPPUNIT_ASSERT(pNumberNode != NULL);
   CPPUNIT_ASSERT(fabs((pNumberNode->getValue() - 1.5) / 1.5) < 1e-6);
   CPPUNIT_ASSERT(pChild3->getSibling() == NULL);
-  CPPUNIT_ASSERT(CEvaluationNode::type(pChild1->getType()) == CEvaluationNode::LOGICAL);
-  CPPUNIT_ASSERT(((CEvaluationNodeLogical::SubType)CEvaluationNode::subType(pChild1->getType())) == CEvaluationNodeLogical::EQ);
+  CPPUNIT_ASSERT(pChild1->mainType() == CEvaluationNode::T_LOGICAL);
+  CPPUNIT_ASSERT((pChild1->subType()) == CEvaluationNode::S_EQ);
   pChild1 = dynamic_cast<const CEvaluationNode*>(pChild1->getChild());
   CPPUNIT_ASSERT(pChild1 != NULL);
-  CPPUNIT_ASSERT(CEvaluationNode::type(pChild1->getType()) == CEvaluationNode::NUMBER);
-  CPPUNIT_ASSERT(((CEvaluationNodeNumber::SubType)CEvaluationNode::subType(pChild1->getType())) == CEvaluationNodeNumber::DOUBLE);
+  CPPUNIT_ASSERT(pChild1->mainType() == CEvaluationNode::T_NUMBER);
+  CPPUNIT_ASSERT((pChild1->subType()) == CEvaluationNode::S_DOUBLE);
   pNumberNode = dynamic_cast<const CEvaluationNodeNumber*>(pChild1);
   CPPUNIT_ASSERT(pNumberNode != NULL);
   CPPUNIT_ASSERT(fabs((pNumberNode->getValue() - 3.0) / 3.0) < 1e-6);
   pChild2 = dynamic_cast<const CEvaluationNode*>(pChild1->getSibling());
   CPPUNIT_ASSERT(pChild2 != NULL);
-  CPPUNIT_ASSERT(CEvaluationNode::type(pChild2->getType()) == CEvaluationNode::NUMBER);
-  CPPUNIT_ASSERT(((CEvaluationNodeNumber::SubType)CEvaluationNode::subType(pChild2->getType())) == CEvaluationNodeNumber::DOUBLE);
+  CPPUNIT_ASSERT(pChild2->mainType() == CEvaluationNode::T_NUMBER);
+  CPPUNIT_ASSERT((pChild2->subType()) == CEvaluationNode::S_DOUBLE);
   pNumberNode = dynamic_cast<const CEvaluationNodeNumber*>(pChild2);
   CPPUNIT_ASSERT(pNumberNode != NULL);
   CPPUNIT_ASSERT(fabs((pNumberNode->getValue() - 4.0) / 4.0) < 1e-6);

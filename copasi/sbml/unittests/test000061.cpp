@@ -1,17 +1,9 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000061.cpp,v $
-//   $Revision: 1.6 $
-//   $Name:  $
-//   $Author: gauges $
-//   $Date: 2010/03/11 11:52:00 $
-// End CVS Header
-
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
@@ -63,7 +55,7 @@ void test000061::test_bug_1044()
   CPPUNIT_ASSERT(pModelValue->getExpressionPtr() != NULL);
   const CEvaluationNode* pRoot = pModelValue->getExpressionPtr()->getRoot();
   CPPUNIT_ASSERT(pRoot != NULL);
-  CPPUNIT_ASSERT(CEvaluationNode::type(pRoot->getType()) == CEvaluationNode::INVALID);
+  CPPUNIT_ASSERT(pRoot->mainType() == CEvaluationNode::T_INVALID);
   const SBMLDocument* pDocument = pDataModel->getCurrentSBMLDocument();
   CPPUNIT_ASSERT(pDocument == NULL);
   // export the model to SBML

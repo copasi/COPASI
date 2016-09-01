@@ -1,17 +1,9 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000055.cpp,v $
-//   $Revision: 1.7 $
-//   $Name:  $
-//   $Author: gauges $
-//   $Date: 2010/03/11 11:52:00 $
-// End CVS Header
-
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
@@ -225,19 +217,19 @@ void test000055::test_bug1004()
   CPPUNIT_ASSERT(pMV3 != NULL);
   CPPUNIT_ASSERT(pMV4 != NULL);
   CPPUNIT_ASSERT(pMV5 != NULL);
-  CEvaluationNodeObject* pObjectNode = new CEvaluationNodeObject(CEvaluationNodeObject::CN, "<" + pMV3->getCN() + ",Reference=Value>");
+  CEvaluationNodeObject* pObjectNode = new CEvaluationNodeObject(CEvaluationNode::S_CN, "<" + pMV3->getCN() + ",Reference=Value>");
   CExpression* pExpr = new CExpression;
   pExpr->setRoot(pObjectNode);
   pMV1->setExpressionPtr(pExpr);
-  pObjectNode = new CEvaluationNodeObject(CEvaluationNodeObject::CN, "<" + pMV2->getCN() + ",Reference=Value>");
+  pObjectNode = new CEvaluationNodeObject(CEvaluationNode::S_CN, "<" + pMV2->getCN() + ",Reference=Value>");
   pExpr = new CExpression;
   pExpr->setRoot(pObjectNode);
   pMV3->setExpressionPtr(pExpr);
-  pObjectNode = new CEvaluationNodeObject(CEvaluationNodeObject::CN, "<" + pMV5->getCN() + ",Reference=Value>");
+  pObjectNode = new CEvaluationNodeObject(CEvaluationNode::S_CN, "<" + pMV5->getCN() + ",Reference=Value>");
   pExpr = new CExpression;
   pExpr->setRoot(pObjectNode);
   pMV4->setExpressionPtr(pExpr);
-  pObjectNode = new CEvaluationNodeObject(CEvaluationNodeObject::CN, "<" + pMV4->getCN() + ",Reference=Value>");
+  pObjectNode = new CEvaluationNodeObject(CEvaluationNode::S_CN, "<" + pMV4->getCN() + ",Reference=Value>");
   pExpr = new CExpression;
   pExpr->setRoot(pObjectNode);
   pMV2->setExpressionPtr(pExpr);

@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -20,7 +20,7 @@
 #include "sbml/math/ASTNode.h"
 
 CEvaluationNodeChoice::CEvaluationNodeChoice():
-  CEvaluationNode(CEvaluationNode::INVALID, ""),
+  CEvaluationNode(T_CHOICE, S_INVALID, ""),
   mpIf(NULL),
   mpTrue(NULL),
   mpFalse(NULL)
@@ -28,14 +28,14 @@ CEvaluationNodeChoice::CEvaluationNodeChoice():
 
 CEvaluationNodeChoice::CEvaluationNodeChoice(const SubType & subType,
     const Data & data):
-  CEvaluationNode((Type)(CEvaluationNode::CHOICE | subType), data),
+  CEvaluationNode(T_CHOICE, subType, data),
   mpIf(NULL),
   mpTrue(NULL),
   mpFalse(NULL)
 {
   switch (subType)
     {
-      case IF:
+      case S_IF:
         break;
 
       default:
@@ -140,7 +140,7 @@ CEvaluationNode * CEvaluationNodeChoice::fromAST(const ASTNode * pASTNode, const
   if (iMax == 0)
     {
       // create a NaN node
-      return new CEvaluationNodeConstant(CEvaluationNodeConstant::_NaN, "NAN");
+      return new CEvaluationNodeConstant(S_NAN, "NAN");
     }
 
   if (iMax == 1)
@@ -159,12 +159,12 @@ CEvaluationNode * CEvaluationNodeChoice::fromAST(const ASTNode * pASTNode, const
   switch (pASTNode->getType())
     {
       case AST_FUNCTION_PIECEWISE:
-        subType = IF;
+        subType = S_IF;
         data = "if";
         break;
 
       default:
-        subType = INVALID;
+        subType = S_INVALID;
         break;
     }
 
@@ -185,7 +185,7 @@ CEvaluationNode * CEvaluationNodeChoice::fromAST(const ASTNode * pASTNode, const
         {
           case 0:
             // We are missing the false value
-            pCurrent->addChild(new CEvaluationNodeConstant(CEvaluationNodeConstant::_NaN, "NAN"));
+            pCurrent->addChild(new CEvaluationNodeConstant(S_NAN, "NAN"));
             break;
 
           case 1:

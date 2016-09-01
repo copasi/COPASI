@@ -465,7 +465,7 @@ void CFindDimensions::findDimension(size_t index)
 
   for (it = allnodes.begin(); it != itEnd; ++it)
     {
-      if ((*it)->getType() == CEvaluationNode::VARIABLE)
+      if ((*it)->mainType() == CEvaluationNode::T_VARIABLE)
         if (dynamic_cast<const CEvaluationNodeVariable*>(*it)->getIndex() == index)
           {
             nodes.push_back(*it);
@@ -526,10 +526,10 @@ CDimension CFindDimensions::findDimension(const CEvaluationNode * node,
     {
       assert(requestingNode); //should not be called from outside
 
-      switch (opnode->getType() & 0x00FFFFFF)
+      switch (opnode->subType())
         {
-          case CEvaluationNodeOperator::PLUS:
-          case CEvaluationNodeOperator::MINUS:
+          case CEvaluationNode::S_PLUS:
+          case CEvaluationNode::S_MINUS:
           {
             CDimension r1, r2;
 
@@ -568,7 +568,7 @@ CDimension CFindDimensions::findDimension(const CEvaluationNode * node,
           }
           break;
 
-          case CEvaluationNodeOperator::MULTIPLY:
+          case CEvaluationNode::S_MULTIPLY:
           {
             CDimension r1, r2;
 
@@ -599,7 +599,7 @@ CDimension CFindDimensions::findDimension(const CEvaluationNode * node,
           }
           break;
 
-          case CEvaluationNodeOperator::DIVIDE:
+          case CEvaluationNode::S_DIVIDE:
           {
             CDimension r1, r2;
 

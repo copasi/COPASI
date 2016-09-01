@@ -276,11 +276,11 @@ void CEvaluationTree::buildCalculationSequence()
 
   while (itNode.next() != itNode.end())
     {
-      switch (CEvaluationNode::type(itNode->getType()))
+      switch (itNode->mainType())
         {
-          case CEvaluationNode::NUMBER:
-          case CEvaluationNode::CONSTANT:
-          case CEvaluationNode::OBJECT:
+          case CEvaluationNode::T_NUMBER:
+          case CEvaluationNode::T_CONSTANT:
+          case CEvaluationNode::T_OBJECT:
             break;
 
           default:
@@ -366,9 +366,9 @@ bool CEvaluationTree::compileNodes()
       const CObjectInterface * pObject;
 
       for (it = mpNodeList->begin(); it != end; ++it)
-        switch ((*it)->getType() & 0xFF000000)
+        switch ((*it)->mainType())
           {
-            case CEvaluationNode::OBJECT:
+            case CEvaluationNode::T_OBJECT:
             {
               if (mType == Expression &&
                   (pObject = static_cast< CEvaluationNodeObject *>(*it)->getObjectInterfacePtr()) != NULL)
@@ -379,7 +379,7 @@ bool CEvaluationTree::compileNodes()
             }
             break;
 
-            case CEvaluationNode::CALL:
+            case CEvaluationNode::T_CALL:
               addDirectDependency(static_cast< CEvaluationNodeCall *>(*it)->getCalledTree());
               break;
 
@@ -675,7 +675,7 @@ bool CEvaluationTree::dependsOnTree(const std::string & name) const
   std::vector< CEvaluationNode * >::const_iterator end = mpNodeList->end();
 
   for (; it != end; ++it)
-    if (((*it)->getType() & 0xFF000000) == CEvaluationNode::CALL &&
+    if (((*it)->mainType()) == CEvaluationNode::T_CALL &&
         (*it)->getData() == name)
       return true;
 
@@ -695,7 +695,7 @@ bool CEvaluationTree::calls(std::set< std::string > & list) const
   std::vector< CEvaluationNode * >::iterator end = mpNodeList->end();
 
   for (it = mpNodeList->begin(); it != end; ++it)
-    if (((*it)->getType() & 0xFF000000) == CEvaluationNode::CALL &&
+    if (((*it)->mainType()) == CEvaluationNode::T_CALL &&
         dynamic_cast<CEvaluationNodeCall *>(*it)->calls(list))
       {
         Calls = true;
@@ -717,19 +717,19 @@ bool CEvaluationTree::hasDiscontinuity() const
 
   for (; it != end; ++it)
     {
-      switch ((int)(*it)->getType())
+      switch ((*it)->mainType() | (*it)->subType())
         {
-          case (CEvaluationNode::CHOICE | CEvaluationNodeChoice::IF):
-          case (CEvaluationNode::FUNCTION | CEvaluationNodeFunction::FLOOR):
-          case (CEvaluationNode::FUNCTION | CEvaluationNodeFunction::CEIL):
-          case (CEvaluationNode::OPERATOR | CEvaluationNodeOperator::MODULUS):
-          case (CEvaluationNode::OPERATOR | CEvaluationNodeOperator::REMAINDER):
+          case (CEvaluationNode::T_CHOICE | CEvaluationNode::S_IF):
+          case (CEvaluationNode::T_FUNCTION | CEvaluationNode::S_FLOOR):
+          case (CEvaluationNode::T_FUNCTION | CEvaluationNode::S_CEIL):
+          case (CEvaluationNode::T_OPERATOR | CEvaluationNode::S_MODULUS):
+          case (CEvaluationNode::T_OPERATOR | CEvaluationNode::S_REMAINDER):
             // We found a discontinuity.
             return true;
             break;
 
-          case (CEvaluationNode::CALL | CEvaluationNodeCall::FUNCTION):
-          case (CEvaluationNode::CALL | CEvaluationNodeCall::EXPRESSION):
+          case (CEvaluationNode::T_CALL | CEvaluationNode::S_FUNCTION):
+          case (CEvaluationNode::T_CALL | CEvaluationNode::S_EXPRESSION):
 
             // If the called tree has a discontinuity so do we.
             if (static_cast< CEvaluationNodeCall * >(*it)->getCalledTree() != NULL &&

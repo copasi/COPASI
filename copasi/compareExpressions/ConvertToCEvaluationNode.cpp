@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/ConvertToCEvaluationNode.cpp,v $
-//   $Revision: 1.41 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/05/15 15:56:21 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -73,7 +65,7 @@ CEvaluationNode* convertToCEvaluationNode(const CNormalFraction& fraction)
     }
   else
     {
-      CEvaluationNodeOperator* pDivision = new CEvaluationNodeOperator(CEvaluationNodeOperator::DIVIDE, "/");
+      CEvaluationNodeOperator* pDivision = new CEvaluationNodeOperator(CEvaluationNode::S_DIVIDE, "/");
       CEvaluationNode* pChild = convertToCEvaluationNode(fraction.getNumerator());
       pDivision->addChild(pChild);
       pChild = convertToCEvaluationNode(fraction.getDenominator());
@@ -87,7 +79,7 @@ CEvaluationNode* convertToCEvaluationNode(const CNormalFraction& fraction)
 CEvaluationNode* convertToCEvaluationNode(const CNormalItem& item)
 {
   CEvaluationNode* pNode = NULL;
-  CEvaluationNode::Type type = CEvaluationNode::INVALID;
+  CEvaluationNode::SubType type = CEvaluationNode::S_INVALID;
 
   switch (item.getType())
     {
@@ -96,34 +88,35 @@ CEvaluationNode* convertToCEvaluationNode(const CNormalItem& item)
         // create a CEvaluationNodeNumber
         if (item.getName() == "pi" || item.getName() == "PI")
           {
-            type = (CEvaluationNode::Type)(CEvaluationNodeConstant::PI);
+            type = (CEvaluationNode::S_PI);
           }
         else if (item.getName() == "EXPONENTIALE" || item.getName() == "exponentiale")
           {
-            type = (CEvaluationNode::Type)(CEvaluationNodeConstant::EXPONENTIALE);
+            type = (CEvaluationNode::S_EXPONENTIALE);
           }
         else if (item.getName() == "TRUE" || item.getName() == "true")
           {
-            type = (CEvaluationNode::Type)(CEvaluationNodeConstant::TRUE);
+            type = (CEvaluationNode::S_TRUE);
           }
         else if (item.getName() == "FALSE" || item.getName() == "false")
           {
-            type = (CEvaluationNode::Type)(CEvaluationNodeConstant::FALSE);
+            type = (CEvaluationNode::S_FALSE);
           }
         else if (item.getName() == "INFINITY" || item.getName() == "infinity")
           {
-            type = (CEvaluationNode::Type)(CEvaluationNodeConstant::_INFINITY);
+            type = (CEvaluationNode::S_INFINITY);
           }
         else if (item.getName() == "NAN" || item.getName() == "nan" || item.getName() == "Nan")
           {
-            type = (CEvaluationNode::Type)(CEvaluationNodeConstant::_NaN);
+            type = (CEvaluationNode::S_NAN);
           }
 
-        pNode = new CEvaluationNodeConstant((CEvaluationNodeConstant::SubType)type, item.getName());
+        pNode = new CEvaluationNodeConstant(type, item.getName());
         break;
+
       case CNormalItem::VARIABLE:
         // create a CEvaluationNodeVariable
-        pNode = new CEvaluationNodeVariable(CEvaluationNodeVariable::ANY, item.getName());
+        pNode = new CEvaluationNodeVariable(CEvaluationNode::S_DEFAULT, item.getName());
         break;
     }
 
@@ -142,11 +135,11 @@ CEvaluationNode* convertToCEvaluationNode(const CNormalItemPower& itemPower)
   else
     {
       std::ostringstream sstream;
-      CEvaluationNodeOperator* pPowerNode = new CEvaluationNodeOperator(CEvaluationNodeOperator::POWER, "^");
+      CEvaluationNodeOperator* pPowerNode = new CEvaluationNodeOperator(CEvaluationNode::S_POWER, "^");
       CEvaluationNode* pChild = convertToCEvaluationNode(itemPower.getItem());
       pPowerNode->addChild(pChild);
       sstream << itemPower.getExp();
-      pPowerNode->addChild(new CEvaluationNodeNumber(CEvaluationNodeNumber::DOUBLE, sstream.str()));
+      pPowerNode->addChild(new CEvaluationNodeNumber(CEvaluationNode::S_DOUBLE, sstream.str()));
       pResult = pPowerNode;
     }
 
@@ -159,14 +152,14 @@ CEvaluationNode* convertToCEvaluationNode(const CNormalLcm& lcm)
   const std::set<CNormalItemPower*, compareItemPowers >& itemPowers = lcm.getItemPowers();
   std::set<CNormalItemPower*, compareItemPowers >::const_iterator it = itemPowers.begin();
   std::set<CNormalItemPower*, compareItemPowers >::const_iterator itEnd = itemPowers.end();
-  CEvaluationNodeOperator* pMult = new CEvaluationNodeOperator(CEvaluationNodeOperator::MULTIPLY, "*");
+  CEvaluationNodeOperator* pMult = new CEvaluationNodeOperator(CEvaluationNode::S_MULTIPLY, "*");
   pResult = pMult;
   CEvaluationNode* pChild = NULL;
 
   while (it != itEnd)
     {
       assert(pMult != NULL);
-      pChild = new CEvaluationNodeOperator(CEvaluationNodeOperator::MULTIPLY, "*");
+      pChild = new CEvaluationNodeOperator(CEvaluationNode::S_MULTIPLY, "*");
       pMult->addChild(pChild);
       pChild = convertToCEvaluationNode(**it);
       pMult->addChild(pChild);
@@ -183,7 +176,7 @@ CEvaluationNode* convertToCEvaluationNode(const CNormalLcm& lcm)
   while (it2 != itEnd2)
     {
       assert(pMult != NULL);
-      pChild = new CEvaluationNodeOperator(CEvaluationNodeOperator::MULTIPLY, "*");
+      pChild = new CEvaluationNodeOperator(CEvaluationNode::S_MULTIPLY, "*");
       pMult->addChild(pChild);
       pChild = convertToCEvaluationNode(**it);
       pMult->addChild(pChild);
@@ -221,7 +214,7 @@ CEvaluationNode* convertToCEvaluationNode(const CNormalProduct& product)
     {
       sstream.precision(18);
       sstream << product.getFactor();
-      pResult = new CEvaluationNodeNumber(CEvaluationNodeNumber::DOUBLE, sstream.str());
+      pResult = new CEvaluationNodeNumber(CEvaluationNode::S_DOUBLE, sstream.str());
     }
   else
     {
@@ -242,7 +235,7 @@ CEvaluationNode* convertToCEvaluationNode(const CNormalProduct& product)
         {
           sstream.precision(18);
           sstream << product.getFactor();
-          products.push_back(new CEvaluationNodeNumber(CEvaluationNodeNumber::DOUBLE, sstream.str()));
+          products.push_back(new CEvaluationNodeNumber(CEvaluationNode::S_DOUBLE, sstream.str()));
         }
 
       pResult = CNormalTranslation::createChain(&CNormalTranslation::TIMES_NODE, &CNormalTranslation::ONE_NODE, products);
@@ -310,7 +303,8 @@ CNormalFraction* createFraction(const CEvaluationNode* node)
   CNormalFraction* pFraction = new CNormalFraction();
 
   if (node->getData() == "/")
-    {// always executed except on root node possibly not
+    {
+      // always executed except on root node possibly not
       // find a product chain and create new temporary nodes for the
       // numerator and denominator which are then converted to sums
       std::vector<const CEvaluationNode*> multiplications, divisions;
@@ -351,7 +345,8 @@ CNormalFraction* createFraction(const CEvaluationNode* node)
       delete pDenom;
     }
   else
-    {// only possible for root node
+    {
+      // only possible for root node
       CNormalSum* pNum = createSum(node);
       CNormalSum* pDenom = new CNormalSum();
       CNormalProduct* pProduct = new CNormalProduct();
@@ -375,18 +370,20 @@ CNormalItem* createItem(const CEvaluationNode* pNode)
 {
   CNormalItem* pItem = NULL;
 
-  switch (CEvaluationNode::type(pNode->getType()))
+  switch (pNode->mainType())
     {
-      case CEvaluationNode::VARIABLE:
+      case CEvaluationNode::T_VARIABLE:
         pItem = new CNormalItem(pNode->buildInfix(), CNormalItem::VARIABLE);
         break;
-      case CEvaluationNode::CONSTANT:
+
+      case CEvaluationNode::T_CONSTANT:
         pItem = new CNormalItem(pNode->buildInfix(), CNormalItem::CONSTANT);
         break;
+
         /*
-        case CEvaluationNode::OPERATOR:
-        if (((CEvaluationNodeOperator::SubType)CEvaluationNode::subType(pNode->getType()))==CEvaluationNodeOperator::POWER
-            || ((CEvaluationNodeOperator::SubType)CEvaluationNode::subType(pNode->getType()))==CEvaluationNodeOperator::MODULUS)
+        case CEvaluationNode::T_OPERATOR:
+        if ((pNode->subType())==CEvaluationNode::S_POWER
+            || (pNode->subType())==CEvaluationNode::S_MODULUS)
         {
             // calling createItem will add the wrong pNode for the
             // string into the lookup table
@@ -413,11 +410,11 @@ CNormalItem* createItem(const CEvaluationNode* pNode)
             std::map<std::string,const CEvaluationNode*>::const_iterator pos=str2eval.find(tmp.str());
             if(pos==str2eval.end())
             {
-                CEvaluationNodeOperator::SubType type=CEvaluationNodeOperator::POWER;
+                CEvaluationNode::SubType type=CEvaluationNode::S_POWER;
                 std::string s("^");
                 if(pNode->getData()=="%")
                 {
-                    type=CEvaluationNodeOperator::MODULUS;
+                    type=CEvaluationNode::S_MODULUS;
                     s="%";
                 }
                 CEvaluationNodeOperator* pNode=new CEvaluationNodeOperator(type,s);
@@ -469,18 +466,18 @@ CNormalItemPower * createItemPower(const CEvaluationNode* node)
   // make sure we create the correct item for the given node
   CNormalItemPower * pItemPower = new CNormalItemPower();
 
-  if (CEvaluationNode::type(node->getType()) == CEvaluationNode::OPERATOR && (CEvaluationNodeOperator::SubType)CEvaluationNode::subType(node->getType()) == CEvaluationNodeOperator::POWER)
+  if (node->mainType() == CEvaluationNode::T_OPERATOR && node->subType() == CEvaluationNode::S_POWER)
     {
       // check if the second child is a number
-      if (CEvaluationNode::type(dynamic_cast<const CEvaluationNode*>(node->getChild()->getSibling())->getType()) == CEvaluationNode::NUMBER)
+      if (dynamic_cast<const CEvaluationNode*>(node->getChild()->getSibling())->mainType() == CEvaluationNode::T_NUMBER)
         {
           // we set the exponent to that number
           pItemPower->setExp((C_FLOAT64)dynamic_cast<const CEvaluationNodeNumber*>(node->getChild()->getSibling())->getValue());
           // check if we can create a CNormalItem object for the fist child, else we
           // create a general power with exponent 1
-          CEvaluationNode::Type type = CEvaluationNode::type(dynamic_cast<const CEvaluationNode*>(node->getChild())->getType());
+          CEvaluationNode::MainType type = dynamic_cast<const CEvaluationNode*>(node->getChild())->mainType();
 
-          if (type == CEvaluationNode::CONSTANT || type == CEvaluationNode::OBJECT || type == CEvaluationNode::VARIABLE || type == CEvaluationNode::FUNCTION || type == CEvaluationNode::CHOICE || type == CEvaluationNode::CALL || type == CEvaluationNode::LOGICAL)
+          if (type == CEvaluationNode::T_CONSTANT || type == CEvaluationNode::T_OBJECT || type == CEvaluationNode::T_VARIABLE || type == CEvaluationNode::T_FUNCTION || type == CEvaluationNode::T_CHOICE || type == CEvaluationNode::T_CALL || type == CEvaluationNode::T_LOGICAL)
             {
               CNormalBase* pItem = createItemPowerItem(dynamic_cast<const CEvaluationNode*>(node->getChild()));
               assert(pItem != NULL);
@@ -506,14 +503,14 @@ CNormalItemPower * createItemPower(const CEvaluationNode* node)
           delete pGeneralPower;
         }
     }
-  else if (CEvaluationNode::type(node->getType()) == CEvaluationNode::FUNCTION)
+  else if (node->mainType() == CEvaluationNode::T_FUNCTION)
     {
-      if (((CEvaluationNodeFunction::SubType)CEvaluationNode::subType(node->getType())) == CEvaluationNodeFunction::MINUS)
+      if ((node->subType()) == CEvaluationNode::S_MINUS)
         {
           // multiply the second node by -1 and call createItempower with the
           // result
-          CEvaluationNodeNumber* pNumberNode = new CEvaluationNodeNumber(CEvaluationNodeNumber::DOUBLE, "-1.0");
-          CEvaluationNodeOperator* pOperatorNode = new CEvaluationNodeOperator(CEvaluationNodeOperator::MULTIPLY, "*");
+          CEvaluationNodeNumber* pNumberNode = new CEvaluationNodeNumber(CEvaluationNode::S_DOUBLE, "-1.0");
+          CEvaluationNodeOperator* pOperatorNode = new CEvaluationNodeOperator(CEvaluationNode::S_MULTIPLY, "*");
           pOperatorNode->addChild(pNumberNode);
           pOperatorNode->addChild(dynamic_cast<const CEvaluationNode*>(node->getChild())->copyBranch());
           // delete the old item power object
@@ -533,7 +530,7 @@ CNormalItemPower * createItemPower(const CEvaluationNode* node)
           pItemPower->setExp(1.0);
         }
     }
-  else if (CEvaluationNode::type(node->getType()) == CEvaluationNode::CALL || CEvaluationNode::type(node->getType()) == CEvaluationNode::DELAY)
+  else if (node->mainType() == CEvaluationNode::T_CALL || node->mainType() == CEvaluationNode::T_DELAY)
     {
       CNormalCall* pCall = createCall(node);
       assert(pCall != NULL);
@@ -541,7 +538,7 @@ CNormalItemPower * createItemPower(const CEvaluationNode* node)
       delete pCall;
       pItemPower->setExp(1.0);
     }
-  else if (CEvaluationNode::type(node->getType()) == CEvaluationNode::CHOICE)
+  else if (node->mainType() == CEvaluationNode::T_CHOICE)
     {
       CNormalChoice* pChoice = createChoice(node);
       assert(pChoice != NULL);
@@ -549,7 +546,7 @@ CNormalItemPower * createItemPower(const CEvaluationNode* node)
       delete pChoice;
       pItemPower->setExp(1.0);
     }
-  else if (CEvaluationNode::type(node->getType()) == CEvaluationNode::CONSTANT || CEvaluationNode::type(node->getType()) == CEvaluationNode::OBJECT || CEvaluationNode::type(node->getType()) == CEvaluationNode::VARIABLE)
+  else if (node->mainType() == CEvaluationNode::T_CONSTANT || node->mainType() == CEvaluationNode::T_OBJECT || node->mainType() == CEvaluationNode::T_VARIABLE)
     {
       CNormalItem* pItem = createItem(node);
       assert(pItem != NULL);
@@ -557,7 +554,7 @@ CNormalItemPower * createItemPower(const CEvaluationNode* node)
       delete pItem;
       pItemPower->setExp(1.0);
     }
-  else if (CEvaluationNode::type(node->getType()) == CEvaluationNode::LOGICAL)
+  else if (node->mainType() == CEvaluationNode::T_LOGICAL)
     {
       CNormalBase* pItem = createItemPowerItem(node);
       assert(pItem != NULL);
@@ -586,7 +583,7 @@ CNormalProduct * createProduct(const CEvaluationNode* node)
 {
   CNormalProduct * pProduct = new CNormalProduct();
 
-  if (CEvaluationNode::type(node->getType()) == CEvaluationNode::OPERATOR && (CEvaluationNodeOperator::SubType)CEvaluationNode::subType(node->getType()) == CEvaluationNodeOperator::MULTIPLY)
+  if (node->mainType() == CEvaluationNode::T_OPERATOR && node->subType() == CEvaluationNode::S_MULTIPLY)
     {
       // find the product chain, if there are divisions, we have to create a
       // general power, else we create a product with as many items as the
@@ -605,7 +602,7 @@ CNormalProduct * createProduct(const CEvaluationNode* node)
               // check if the node is a pure number
               // if so, use it to update the factor
               // instead of creating an item for it
-              if (CEvaluationNode::type((*it)->getType()) == CEvaluationNode::NUMBER)
+              if ((*it)->mainType() == CEvaluationNode::T_NUMBER)
                 {
                   factor *= dynamic_cast<const CEvaluationNodeNumber*>(*it)->getValue();
                 }
@@ -622,7 +619,7 @@ CNormalProduct * createProduct(const CEvaluationNode* node)
         }
       else
         {
-          CEvaluationNodeOperator* pTmpOperator = new CEvaluationNodeOperator(CEvaluationNodeOperator::DIVIDE, "/");
+          CEvaluationNodeOperator* pTmpOperator = new CEvaluationNodeOperator(CEvaluationNode::S_DIVIDE, "/");
           std::vector<CEvaluationNode*> tmp;
           std::vector<const CEvaluationNode*>::const_iterator it = multiplications.begin(), endit = multiplications.end();
           // check if the multiplications and divisions contain only numbers
@@ -634,7 +631,7 @@ CNormalProduct * createProduct(const CEvaluationNode* node)
               // check if the node is a pure number
               // if so, use it to update the factor
               // instead of adding it to the factor
-              if (CEvaluationNode::type((*it)->getType()) == CEvaluationNode::NUMBER)
+              if ((*it)->mainType() == CEvaluationNode::T_NUMBER)
                 {
                   factor *= dynamic_cast<const CEvaluationNodeNumber*>(*it)->getValue();
                 }
@@ -671,7 +668,7 @@ CNormalProduct * createProduct(const CEvaluationNode* node)
               // check if the node is a pure number
               // if so, use it to update the factor
               // instead of adding it to the vector
-              if (CEvaluationNode::type((*it)->getType()) == CEvaluationNode::NUMBER)
+              if ((*it)->mainType() == CEvaluationNode::T_NUMBER)
                 {
                   factor /= dynamic_cast<const CEvaluationNodeNumber*>(*it)->getValue();
                 }
@@ -711,7 +708,7 @@ CNormalProduct * createProduct(const CEvaluationNode* node)
 
       pProduct->setFactor(factor);
     }
-  else if (CEvaluationNode::type(node->getType()) == CEvaluationNode::NUMBER)
+  else if (node->mainType() == CEvaluationNode::T_NUMBER)
     {
       double factor = dynamic_cast<const CEvaluationNodeNumber*>(node)->getValue();
       // set the factor
@@ -737,13 +734,13 @@ CNormalProduct * createProduct(const CEvaluationNode* node)
 //{
 //  CNormalProduct * product = new CNormalProduct();
 //  CNormalChoice * pChoice = NULL;
-//  switch (CEvaluationNode::type(node->getType()))
+//  switch (node->mainType())
 //    {
-//    case CEvaluationNode::OPERATOR: // PLUS(->createSum), MINUS(translated as +(-..)) and DIVIDE(->createFraction) do not occur.
+//    case CEvaluationNode::T_OPERATOR: // PLUS(->createSum), MINUS(translated as +(-..)) and DIVIDE(->createFraction) do not occur.
 //      if (node->getData() == "^")
 //        {
-//          if (CEvaluationNode::type(static_cast<const CEvaluationNode*>(node->getChild()->getSibling())->getType()) == CEvaluationNode::NUMBER &&
-//              (node->getChild()->getChild() == NULL || CEvaluationNode::type(static_cast<const CEvaluationNode*>(node->getChild())->getType()) == CEvaluationNode::CHOICE || CEvaluationNode::type(static_cast<const CEvaluationNode*>(node->getChild())->getType()) == CEvaluationNode::FUNCTION))
+//          if (CEvaluationNode::type(static_cast<const CEvaluationNode*>(node->getChild()->getSibling())->getType()) == CEvaluationNode::T_NUMBER &&
+//              (node->getChild()->getChild() == NULL || CEvaluationNode::type(static_cast<const CEvaluationNode*>(node->getChild())->getType()) == CEvaluationNode::T_CHOICE || CEvaluationNode::type(static_cast<const CEvaluationNode*>(node->getChild())->getType()) == CEvaluationNode::T_FUNCTION))
 //            {
 //              CNormalItemPower* power = createItemPower(node);
 //              product->multiply(*power);
@@ -792,11 +789,11 @@ CNormalProduct * createProduct(const CEvaluationNode* node)
 //          product = NULL;
 //}
 //      break;
-//    case CEvaluationNode::NUMBER:
+//    case CEvaluationNode::T_NUMBER:
 //      product->multiply(node->value());
 //      break;
-//    case CEvaluationNode::FUNCTION:
-//      if (((CEvaluationNodeFunction::SubType)CEvaluationNode::subType(node->getType())) == CEvaluationNodeFunction::MINUS)
+//    case CEvaluationNode::T_FUNCTION:
+//      if ((node->subType()) == CEvaluationNode::S_MINUS)
 //        {
 //          product->multiply(-1.0);
 //          CNormalProduct * product2 = createProduct(dynamic_cast<const CEvaluationNode*>(node->getChild()));
@@ -804,7 +801,7 @@ CNormalProduct * createProduct(const CEvaluationNode* node)
 //          product->multiply(*product2);
 //          delete product2;
 //}
-//      else if (((CEvaluationNodeFunction::SubType)CEvaluationNode::subType(node->getType())) == CEvaluationNodeFunction::PLUS)
+//      else if ((node->subType()) == CEvaluationNode::S_PLUS)
 //        {
 //          CNormalProduct * product2 = createProduct(dynamic_cast<const CEvaluationNode*>(node->getChild()));
 //          assert(product2 != NULL);
@@ -818,10 +815,10 @@ CNormalProduct * createProduct(const CEvaluationNode* node)
 //          delete item;
 //}
 //      break;
-//    case CEvaluationNode::LOGICAL:
+//    case CEvaluationNode::T_LOGICAL:
 //      throw std::exception(/*"Error. Logical Nodes are not allowed here."*/);
 //      break;
-//    case CEvaluationNode::CHOICE:
+//    case CEvaluationNode::T_CHOICE:
 //      pChoice = createChoice(dynamic_cast<const CEvaluationNode*>(node));
 //      product->multiply(*pChoice);
 //      delete pChoice;
@@ -843,7 +840,7 @@ CNormalSum* createSum(const CEvaluationNode* node)
 {
   CNormalSum* pSum = new CNormalSum();
 
-  if (CEvaluationNode::type(node->getType()) == CEvaluationNode::OPERATOR && ((CEvaluationNodeOperator::SubType)CEvaluationNode::subType(node->getType()) == CEvaluationNodeOperator::MINUS || (CEvaluationNodeOperator::SubType)CEvaluationNode::subType(node->getType()) == CEvaluationNodeOperator::PLUS))
+  if (node->mainType() == CEvaluationNode::T_OPERATOR && (node->subType() == CEvaluationNode::S_MINUS || node->subType() == CEvaluationNode::S_PLUS))
     {
       // find a summation chain and create a product node for each addition and
       // subtraction node
@@ -1061,21 +1058,22 @@ CNormalFraction * createNormalRepresentation(const CEvaluationNode* node)
       pTmp2 = pTmp;
     }
 
-  CEvaluationNode::Type type = CEvaluationNode::type(pTmp2->getType());
+  CEvaluationNode::MainType type = pTmp2->mainType();
 
   switch (type)
     {
-      case CEvaluationNode::NUMBER:
-      case CEvaluationNode::OPERATOR:
-      case CEvaluationNode::CONSTANT:
-      case CEvaluationNode::VARIABLE:
-      case CEvaluationNode::CHOICE:
-      case CEvaluationNode::LOGICAL:
-      case CEvaluationNode::FUNCTION:
-      case CEvaluationNode::CALL:
-      case CEvaluationNode::DELAY:
+      case CEvaluationNode::T_NUMBER:
+      case CEvaluationNode::T_OPERATOR:
+      case CEvaluationNode::T_CONSTANT:
+      case CEvaluationNode::T_VARIABLE:
+      case CEvaluationNode::T_CHOICE:
+      case CEvaluationNode::T_LOGICAL:
+      case CEvaluationNode::T_FUNCTION:
+      case CEvaluationNode::T_CALL:
+      case CEvaluationNode::T_DELAY:
         pFrac = createFraction(pTmp2);
         break;
+
       default:
         assert(false);
         break;
@@ -1144,11 +1142,13 @@ CEvaluationNode* convertToCEvaluationNode(const CNormalGeneralPower& pow)
   switch (pow.getType())
     {
       case CNormalGeneralPower::POWER:
-        pResult = new CEvaluationNodeOperator(CEvaluationNodeOperator::POWER, "^");
+        pResult = new CEvaluationNodeOperator(CEvaluationNode::S_POWER, "^");
         break;
+
       case CNormalGeneralPower::MODULO:
-        pResult = new CEvaluationNodeOperator(CEvaluationNodeOperator::MODULUS, "%");
+        pResult = new CEvaluationNodeOperator(CEvaluationNode::S_MODULUS, "%");
         break;
+
       case CNormalGeneralPower::INVALID:
         break;
     }
@@ -1179,19 +1179,22 @@ CEvaluationNode* convertToCEvaluationNode(const CNormalCall& call)
   // check if the name contains any non-whitespace characters at all
   if (call.getName().find_first_not_of("\t\r\n ") != std::string::npos)
     {
-      CEvaluationNodeCall::SubType type = CEvaluationNodeCall::INVALID;
+      CEvaluationNode::SubType type = CEvaluationNode::S_INVALID;
 
       switch (call.getType())
         {
           case CNormalCall::EXPRESSION:
-            type = CEvaluationNodeCall::EXPRESSION;
+            type = CEvaluationNode::S_EXPRESSION;
             break;
+
           case CNormalCall::FUNCTION:
-            type = CEvaluationNodeCall::FUNCTION;
+            type = CEvaluationNode::S_FUNCTION;
             break;
+
           case CNormalCall::DELAY:
-            pCall = new CEvaluationNodeDelay(CEvaluationNodeDelay::DELAY, "delay");
+            pCall = new CEvaluationNodeDelay(CEvaluationNode::S_DELAY, "delay");
             break;
+
           case CNormalCall::INVALID:
             break;
         }
@@ -1221,138 +1224,170 @@ CEvaluationNode* convertToCEvaluationNode(const CNormalFunction& fun)
 {
   CEvaluationNode* pResult = NULL;
   std::string data;
-  CEvaluationNodeFunction::SubType subType = CEvaluationNodeFunction::INVALID;
+  CEvaluationNode::SubType subType = CEvaluationNode::S_INVALID;
 
   switch (fun.getType())
     {
       case CNormalFunction::LOG:
-        subType = CEvaluationNodeFunction::LOG;
+        subType = CEvaluationNode::S_LOG;
         data = CNormalFunction::NAMES[fun.getType()];
         break;
+
       case CNormalFunction::LOG10:
-        subType = CEvaluationNodeFunction::LOG10;
+        subType = CEvaluationNode::S_LOG10;
         data = CNormalFunction::NAMES[fun.getType()];
         break;
+
       case CNormalFunction::EXP:
-        subType = CEvaluationNodeFunction::EXP;
+        subType = CEvaluationNode::S_EXP;
         data = CNormalFunction::NAMES[fun.getType()];
         break;
+
       case CNormalFunction::SIN:
-        subType = CEvaluationNodeFunction::SIN;
+        subType = CEvaluationNode::S_SIN;
         data = CNormalFunction::NAMES[fun.getType()];
         break;
+
       case CNormalFunction:: COS:
-        subType = CEvaluationNodeFunction::COS;
+        subType = CEvaluationNode::S_COS;
         data = CNormalFunction::NAMES[fun.getType()];
         break;
+
       case CNormalFunction::TAN:
-        subType = CEvaluationNodeFunction::TAN;
+        subType = CEvaluationNode::S_TAN;
         data = CNormalFunction::NAMES[fun.getType()];
         break;
+
       case CNormalFunction::SEC:
-        subType = CEvaluationNodeFunction::SEC;
+        subType = CEvaluationNode::S_SEC;
         data = CNormalFunction::NAMES[fun.getType()];
         break;
+
       case CNormalFunction::CSC:
-        subType = CEvaluationNodeFunction::CSC;
+        subType = CEvaluationNode::S_CSC;
         data = CNormalFunction::NAMES[fun.getType()];
         break;
+
       case CNormalFunction::COT:
-        subType = CEvaluationNodeFunction::COT;
+        subType = CEvaluationNode::S_COT;
         data = CNormalFunction::NAMES[fun.getType()];
         break;
+
       case CNormalFunction::SINH:
-        subType = CEvaluationNodeFunction::SINH;
+        subType = CEvaluationNode::S_SINH;
         data = CNormalFunction::NAMES[fun.getType()];
         break;
+
       case CNormalFunction::COSH:
-        subType = CEvaluationNodeFunction::COSH;
+        subType = CEvaluationNode::S_COSH;
         data = CNormalFunction::NAMES[fun.getType()];
         break;
+
       case CNormalFunction::TANH:
-        subType = CEvaluationNodeFunction::TANH;
+        subType = CEvaluationNode::S_TANH;
         data = CNormalFunction::NAMES[fun.getType()];
         break;
+
       case CNormalFunction::SECH:
-        subType = CEvaluationNodeFunction::SECH;
+        subType = CEvaluationNode::S_SECH;
         data = CNormalFunction::NAMES[fun.getType()];
         break;
+
       case CNormalFunction::CSCH:
-        subType = CEvaluationNodeFunction::CSCH;
+        subType = CEvaluationNode::S_CSCH;
         data = CNormalFunction::NAMES[fun.getType()];
         break;
+
       case CNormalFunction::COTH:
-        subType = CEvaluationNodeFunction::COTH;
+        subType = CEvaluationNode::S_COTH;
         data = CNormalFunction::NAMES[fun.getType()];
         break;
+
       case CNormalFunction::ARCSIN:
-        subType = CEvaluationNodeFunction::ARCSIN;
+        subType = CEvaluationNode::S_ARCSIN;
         data = CNormalFunction::NAMES[fun.getType()];
         break;
+
       case CNormalFunction::ARCCOS:
-        subType = CEvaluationNodeFunction::ARCCOS;
+        subType = CEvaluationNode::S_ARCCOS;
         data = CNormalFunction::NAMES[fun.getType()];
         break;
+
       case CNormalFunction::ARCTAN:
-        subType = CEvaluationNodeFunction::ARCTAN;
+        subType = CEvaluationNode::S_ARCTAN;
         data = CNormalFunction::NAMES[fun.getType()];
         break;
+
       case CNormalFunction::ARCSEC:
-        subType = CEvaluationNodeFunction::ARCSEC;
+        subType = CEvaluationNode::S_ARCSEC;
         data = CNormalFunction::NAMES[fun.getType()];
         break;
+
       case CNormalFunction::ARCCSC:
-        subType = CEvaluationNodeFunction::ARCCSC;
+        subType = CEvaluationNode::S_ARCCSC;
         data = CNormalFunction::NAMES[fun.getType()];
         break;
+
       case CNormalFunction::ARCCOT:
-        subType = CEvaluationNodeFunction::ARCCOT;
+        subType = CEvaluationNode::S_ARCCOT;
         data = CNormalFunction::NAMES[fun.getType()];
         break;
+
       case CNormalFunction::ARCSINH:
-        subType = CEvaluationNodeFunction::ARCSINH;
+        subType = CEvaluationNode::S_ARCSINH;
         data = CNormalFunction::NAMES[fun.getType()];
         break;
+
       case CNormalFunction::ARCCOSH:
-        subType = CEvaluationNodeFunction::ARCCOSH;
+        subType = CEvaluationNode::S_ARCCOSH;
         data = CNormalFunction::NAMES[fun.getType()];
         break;
+
       case CNormalFunction::ARCTANH:
-        subType = CEvaluationNodeFunction::ARCTANH;
+        subType = CEvaluationNode::S_ARCTANH;
         data = CNormalFunction::NAMES[fun.getType()];
         break;
+
       case CNormalFunction::ARCSECH:
-        subType = CEvaluationNodeFunction::ARCSECH;
+        subType = CEvaluationNode::S_ARCSECH;
         data = CNormalFunction::NAMES[fun.getType()];
         break;
+
       case CNormalFunction::ARCCSCH:
-        subType = CEvaluationNodeFunction::ARCCSCH;
+        subType = CEvaluationNode::S_ARCCSCH;
         data = CNormalFunction::NAMES[fun.getType()];
         break;
+
       case CNormalFunction::ARCCOTH:
-        subType = CEvaluationNodeFunction::ARCCOTH;
+        subType = CEvaluationNode::S_ARCCOTH;
         data = CNormalFunction::NAMES[fun.getType()];
         break;
+
       case CNormalFunction::SQRT:
-        subType = CEvaluationNodeFunction::SQRT;
+        subType = CEvaluationNode::S_SQRT;
         data = CNormalFunction::NAMES[fun.getType()];
         break;
+
       case CNormalFunction::ABS:
-        subType = CEvaluationNodeFunction::ABS;
+        subType = CEvaluationNode::S_ABS;
         data = CNormalFunction::NAMES[fun.getType()];
         break;
+
       case CNormalFunction::FLOOR:
-        subType = CEvaluationNodeFunction::FLOOR;
+        subType = CEvaluationNode::S_FLOOR;
         data = CNormalFunction::NAMES[fun.getType()];
         break;
+
       case CNormalFunction::CEIL:
-        subType = CEvaluationNodeFunction::CEIL;
+        subType = CEvaluationNode::S_CEIL;
         data = CNormalFunction::NAMES[fun.getType()];
         break;
+
       case CNormalFunction::FACTORIAL:
-        subType = CEvaluationNodeFunction::FACTORIAL;
+        subType = CEvaluationNode::S_FACTORIAL;
         data = CNormalFunction::NAMES[fun.getType()];
         break;
+
       case CNormalFunction::INVALID:
         data = "@";
         break;
@@ -1360,7 +1395,7 @@ CEvaluationNode* convertToCEvaluationNode(const CNormalFunction& fun)
 
   pResult = new CEvaluationNodeFunction(subType, data);
 
-  if (subType != CEvaluationNodeFunction::INVALID)
+  if (subType != CEvaluationNode::S_INVALID)
     {
       CEvaluationNode* pChild = convertToCEvaluationNode(fun.getFraction());
       pResult->addChild(pChild);
@@ -1381,14 +1416,14 @@ CNormalGeneralPower * createGeneralPower(const CEvaluationNode* node)
 
   if (node != NULL)
     {
-      if (CEvaluationNode::type(node->getType()) == CEvaluationNode::OPERATOR)
+      if (node->mainType() == CEvaluationNode::T_OPERATOR)
         {
-          if (((CEvaluationNodeOperator::SubType)CEvaluationNode::subType(node->getType())) == CEvaluationNodeOperator::POWER)
+          if ((node->subType()) == CEvaluationNode::S_POWER)
             {
               pPow = new CNormalGeneralPower();
               pPow->setType(CNormalGeneralPower::POWER);
             }
-          else if (((CEvaluationNodeOperator::SubType)CEvaluationNode::subType(node->getType())) == CEvaluationNodeOperator::MODULUS)
+          else if ((node->subType()) == CEvaluationNode::S_MODULUS)
             {
               pPow = new CNormalGeneralPower();
               pPow->setType(CNormalGeneralPower::MODULO);
@@ -1412,7 +1447,7 @@ CNormalGeneralPower * createGeneralPower(const CEvaluationNode* node)
               pPow = new CNormalGeneralPower();
               pPow->setType(CNormalGeneralPower::POWER);
               CNormalFraction* pBase = createNormalRepresentation(dynamic_cast<const CEvaluationNode*>(node));
-              CEvaluationNode* pTmpNode = new CEvaluationNodeNumber(CEvaluationNodeNumber::DOUBLE, "1.0");
+              CEvaluationNode* pTmpNode = new CEvaluationNodeNumber(CEvaluationNode::S_DOUBLE, "1.0");
               CNormalFraction* pExponent = createNormalRepresentation(pTmpNode);
               delete pTmpNode;
               assert(pBase != NULL);
@@ -1429,7 +1464,7 @@ CNormalGeneralPower * createGeneralPower(const CEvaluationNode* node)
           pPow = new CNormalGeneralPower();
           pPow->setType(CNormalGeneralPower::POWER);
           CNormalFraction* pBase = createNormalRepresentation(dynamic_cast<const CEvaluationNode*>(node));
-          CEvaluationNode* pTmpNode = new CEvaluationNodeNumber(CEvaluationNodeNumber::DOUBLE, "1.0");
+          CEvaluationNode* pTmpNode = new CEvaluationNodeNumber(CEvaluationNode::S_DOUBLE, "1.0");
           CNormalFraction* pExponent = createNormalRepresentation(pTmpNode);
           delete pTmpNode;
           assert(pBase != NULL);
@@ -1451,9 +1486,9 @@ CNormalGeneralPower * createGeneralPower(const CEvaluationNode* node)
 CNormalCall * createCall(const CEvaluationNode* node)
 {
   CNormalCall* pCall = NULL;
-  CEvaluationNode::Type type = CEvaluationNode::type(node->getType());
+  CEvaluationNode::MainType type = node->mainType();
 
-  if (type == CEvaluationNode::CALL || type == CEvaluationNode::DELAY)
+  if (type == CEvaluationNode::T_CALL || type == CEvaluationNode::T_DELAY)
     {
       // create a call object and add all children
       pCall = new CNormalCall();
@@ -1470,23 +1505,25 @@ CNormalCall * createCall(const CEvaluationNode* node)
           pChild = dynamic_cast<const CEvaluationNode*>(pChild->getSibling());
         }
 
-      if (type == CEvaluationNode::DELAY)
+      if (type == CEvaluationNode::T_DELAY)
         {
           pCall->setType(CNormalCall::DELAY);
         }
       else
         {
-          CEvaluationNodeCall::SubType subType = (CEvaluationNodeCall::SubType)CEvaluationNode::subType(node->getType());
+          CEvaluationNode::SubType subType = node->subType();
 
           switch (subType)
             {
-              case CEvaluationNodeCall::EXPRESSION:
+              case CEvaluationNode::S_EXPRESSION:
                 pCall->setType(CNormalCall::EXPRESSION);
                 break;
-              case CEvaluationNodeCall::FUNCTION:
+
+              case CEvaluationNode::S_FUNCTION:
                 pCall->setType(CNormalCall::FUNCTION);
                 break;
-              case CEvaluationNodeCall::INVALID:
+
+              case CEvaluationNode::S_INVALID:
                 pCall->setType(CNormalCall::INVALID);
                 break;
             }
@@ -1503,111 +1540,143 @@ CNormalCall * createCall(const CEvaluationNode* node)
 CNormalFunction * createFunction(const CEvaluationNode* node)
 {
   CNormalFunction* pFun = NULL;
-  CEvaluationNode::Type type = CEvaluationNode::type(node->getType());
+  CEvaluationNode::MainType type = node->mainType();
 
-  if (type == CEvaluationNode::FUNCTION)
+  if (type == CEvaluationNode::T_FUNCTION)
     {
       CNormalFunction::Type type = CNormalFunction::INVALID;
 
-      switch ((CEvaluationNodeFunction::SubType)CEvaluationNode::subType(node->getType()))
+      switch (node->subType())
         {
-          case CEvaluationNodeFunction::LOG:
+          case CEvaluationNode::S_LOG:
             type = CNormalFunction::LOG;
             break;
-          case CEvaluationNodeFunction::LOG10:
+
+          case CEvaluationNode::S_LOG10:
             type = CNormalFunction::LOG10;
             break;
-          case CEvaluationNodeFunction::EXP:
+
+          case CEvaluationNode::S_EXP:
             type = CNormalFunction::EXP;
             break;
-          case CEvaluationNodeFunction::SIN:
+
+          case CEvaluationNode::S_SIN:
             type = CNormalFunction::SIN;
             break;
-          case CEvaluationNodeFunction:: COS:
+
+          case CEvaluationNode::S_COS:
             type = CNormalFunction::COS;
             break;
-          case CEvaluationNodeFunction::TAN:
+
+          case CEvaluationNode::S_TAN:
             type = CNormalFunction::TAN;
             break;
-          case CEvaluationNodeFunction::SEC:
+
+          case CEvaluationNode::S_SEC:
             type = CNormalFunction::SEC;
             break;
-          case CEvaluationNodeFunction::CSC:
+
+          case CEvaluationNode::S_CSC:
             type = CNormalFunction::CSC;
             break;
-          case CEvaluationNodeFunction::COT:
+
+          case CEvaluationNode::S_COT:
             type = CNormalFunction::COT;
             break;
-          case CEvaluationNodeFunction::SINH:
+
+          case CEvaluationNode::S_SINH:
             type = CNormalFunction::SINH;
             break;
-          case CEvaluationNodeFunction::COSH:
+
+          case CEvaluationNode::S_COSH:
             type = CNormalFunction::COSH;
             break;
-          case CEvaluationNodeFunction::TANH:
+
+          case CEvaluationNode::S_TANH:
             type = CNormalFunction::TANH;
             break;
-          case CEvaluationNodeFunction::SECH:
+
+          case CEvaluationNode::S_SECH:
             type = CNormalFunction::SECH;
             break;
-          case CEvaluationNodeFunction::CSCH:
+
+          case CEvaluationNode::S_CSCH:
             type = CNormalFunction::CSCH;
             break;
-          case CEvaluationNodeFunction::COTH:
+
+          case CEvaluationNode::S_COTH:
             type = CNormalFunction::COTH;
             break;
-          case CEvaluationNodeFunction::ARCSIN:
+
+          case CEvaluationNode::S_ARCSIN:
             type = CNormalFunction::ARCSIN;
             break;
-          case CEvaluationNodeFunction::ARCCOS:
+
+          case CEvaluationNode::S_ARCCOS:
             type = CNormalFunction::ARCCOS;
             break;
-          case CEvaluationNodeFunction::ARCTAN:
+
+          case CEvaluationNode::S_ARCTAN:
             type = CNormalFunction::ARCTAN;
             break;
-          case CEvaluationNodeFunction::ARCSEC:
+
+          case CEvaluationNode::S_ARCSEC:
             type = CNormalFunction::ARCSEC;
             break;
-          case CEvaluationNodeFunction::ARCCSC:
+
+          case CEvaluationNode::S_ARCCSC:
             type = CNormalFunction::ARCCSC;
             break;
-          case CEvaluationNodeFunction::ARCCOT:
+
+          case CEvaluationNode::S_ARCCOT:
             type = CNormalFunction::ARCCOT;
             break;
-          case CEvaluationNodeFunction::ARCSINH:
+
+          case CEvaluationNode::S_ARCSINH:
             type = CNormalFunction::ARCSINH;
             break;
-          case CEvaluationNodeFunction::ARCCOSH:
+
+          case CEvaluationNode::S_ARCCOSH:
             type = CNormalFunction::ARCCOSH;
             break;
-          case CEvaluationNodeFunction::ARCTANH:
+
+          case CEvaluationNode::S_ARCTANH:
             type = CNormalFunction::ARCTANH;
             break;
-          case CEvaluationNodeFunction::ARCSECH:
+
+          case CEvaluationNode::S_ARCSECH:
             type = CNormalFunction::ARCSECH;
             break;
-          case CEvaluationNodeFunction::ARCCSCH:
+
+          case CEvaluationNode::S_ARCCSCH:
             type = CNormalFunction::ARCCSCH;
             break;
-          case CEvaluationNodeFunction::ARCCOTH:
+
+          case CEvaluationNode::S_ARCCOTH:
             type = CNormalFunction::ARCCOTH;
             break;
-          case CEvaluationNodeFunction::SQRT:
+
+          case CEvaluationNode::S_SQRT:
             type = CNormalFunction::SQRT;
             break;
-          case CEvaluationNodeFunction::ABS:
+
+          case CEvaluationNode::S_ABS:
             type = CNormalFunction::ABS;
             break;
-          case CEvaluationNodeFunction::FLOOR:
+
+          case CEvaluationNode::S_FLOOR:
             type = CNormalFunction::FLOOR;
             break;
-          case CEvaluationNodeFunction::CEIL:
+
+          case CEvaluationNode::S_CEIL:
             type = CNormalFunction::CEIL;
             break;
-          case CEvaluationNodeFunction::FACTORIAL:
+
+          case CEvaluationNode::S_FACTORIAL:
             type = CNormalFunction::FACTORIAL;
             break;
-          case CEvaluationNodeFunction::INVALID:
+
+          case CEvaluationNode::S_INVALID:
           default:
             assert(false);
             break;
@@ -1635,11 +1704,11 @@ bool isLogical(const CEvaluationNode* pNode)
   bool result = false;
 
   // go through the tree until one of the following is encountered:
-  // CEvaluationNodeLogical, CEvaluationNodeFunction::NOT or
-  // CEvaluationNodeConstant::(TRUE|FALSE)
-  if ((CEvaluationNode::type(pNode->getType()) == CEvaluationNode::LOGICAL) ||
-      ((CEvaluationNode::type(pNode->getType()) == CEvaluationNode::FUNCTION && ((CEvaluationNodeFunction::SubType)CEvaluationNode::subType(pNode->getType())) == CEvaluationNodeFunction::NOT)) ||
-      (CEvaluationNode::type(pNode->getType()) == CEvaluationNode::CONSTANT && ((((CEvaluationNodeConstant::SubType)CEvaluationNode::subType(pNode->getType())) == CEvaluationNodeConstant::TRUE) || (((CEvaluationNodeConstant::SubType)CEvaluationNode::subType(pNode->getType())) == CEvaluationNodeConstant::FALSE)))
+  // CEvaluationNodeLogical, CEvaluationNode::S_NOT or
+  // CEvaluationNode::S_(TRUE|FALSE)
+  if ((pNode->mainType() == CEvaluationNode::T_LOGICAL) ||
+      ((pNode->mainType() == CEvaluationNode::T_FUNCTION && (pNode->subType()) == CEvaluationNode::S_NOT)) ||
+      (pNode->mainType() == CEvaluationNode::T_CONSTANT && (((pNode->subType()) == CEvaluationNode::S_TRUE) || ((pNode->subType()) == CEvaluationNode::S_FALSE)))
      )
 
     {
@@ -1660,17 +1729,17 @@ bool isLogical(const CEvaluationNode* pNode)
 CNormalBase* createItemPowerItem(const CEvaluationNode* pNode)
 {
   CNormalBase* pResult = NULL;
-  CEvaluationNode::Type type = CEvaluationNode::type(pNode->getType());
-  CEvaluationNodeOperator::SubType subType;
+  CEvaluationNode::MainType type = pNode->mainType();
+  CEvaluationNode::SubType subType;
 
   switch (type)
     {
-      case CEvaluationNode::OPERATOR:
-        subType = (CEvaluationNodeOperator::SubType)CEvaluationNode::subType(pNode->getType());
+      case CEvaluationNode::T_OPERATOR:
+        subType = pNode->subType();
 
-        if (subType == CEvaluationNodeOperator::POWER)
+        if (subType == CEvaluationNode::S_POWER)
           {
-            if ((CEvaluationNode::type(dynamic_cast<const CEvaluationNode*>(pNode->getChild()->getSibling())->getType())) == CEvaluationNode::NUMBER)
+            if (dynamic_cast<const CEvaluationNode*>(pNode->getChild()->getSibling())->mainType() == CEvaluationNode::T_NUMBER)
               {
                 pResult = createItemPower(pNode);
               }
@@ -1679,7 +1748,7 @@ CNormalBase* createItemPowerItem(const CEvaluationNode* pNode)
                 pResult = createGeneralPower(pNode);
               }
           }
-        else if (CEvaluationNodeOperator::MODULUS)
+        else if (CEvaluationNode::S_MODULUS)
           {
             pResult = createGeneralPower(pNode);
           }
@@ -1689,27 +1758,35 @@ CNormalBase* createItemPowerItem(const CEvaluationNode* pNode)
           }
 
         break;
-      case CEvaluationNode::NUMBER:
+
+      case CEvaluationNode::T_NUMBER:
         pResult = createItem(pNode);
         break;
-      case CEvaluationNode::FUNCTION:
+
+      case CEvaluationNode::T_FUNCTION:
         pResult = createFunction(pNode);
         break;
-      case CEvaluationNode::CALL:
+
+      case CEvaluationNode::T_CALL:
         pResult = createCall(pNode);
         break;
-      case CEvaluationNode::CHOICE:
+
+      case CEvaluationNode::T_CHOICE:
         pResult = createChoice(pNode);
         break;
-      case CEvaluationNode::LOGICAL:
+
+      case CEvaluationNode::T_LOGICAL:
         pResult = createLogical(pNode);
         break;
-      case CEvaluationNode::VARIABLE:
+
+      case CEvaluationNode::T_VARIABLE:
         pResult = createItem(pNode);
         break;
-      case CEvaluationNode::CONSTANT:
+
+      case CEvaluationNode::T_CONSTANT:
         pResult = createItem(pNode);
         break;
+
       default:
         break;
     }
@@ -1734,7 +1811,7 @@ CEvaluationNode* convertToCEvaluationNode(const CNormalChoice& choice)
 
           if (pChild3 != NULL)
             {
-              pChoiceNode = new CEvaluationNodeChoice(CEvaluationNodeChoice::IF, "IF");
+              pChoiceNode = new CEvaluationNodeChoice(CEvaluationNode::S_IF, "IF");
               pChoiceNode->addChild(pChild1);
               pChoiceNode->addChild(pChild2);
               pChoiceNode->addChild(pChild3);
@@ -1762,7 +1839,7 @@ CEvaluationNode* convertToCEvaluationNode(const CNormalChoiceLogical& choice)
 
           if (pChild3 != NULL)
             {
-              pChoiceNode = new CEvaluationNodeChoice(CEvaluationNodeChoice::IF, "IF");
+              pChoiceNode = new CEvaluationNodeChoice(CEvaluationNode::S_IF, "IF");
               pChoiceNode->addChild(pChild1);
               pChoiceNode->addChild(pChild2);
               pChoiceNode->addChild(pChild3);
@@ -1780,31 +1857,39 @@ CEvaluationNode* convertToCEvaluationNode(const CNormalLogicalItem& item)
   switch (item.getType())
     {
       case CNormalLogicalItem::TRUE:
-        pLogicalNode = new CEvaluationNodeConstant(CEvaluationNodeConstant::TRUE, "TRUE");
+        pLogicalNode = new CEvaluationNodeConstant(CEvaluationNode::S_TRUE, "TRUE");
         pLogicalNode->compile(NULL);
         break;
+
       case CNormalLogicalItem::FALSE:
-        pLogicalNode = new CEvaluationNodeConstant(CEvaluationNodeConstant::FALSE, "FALSE");
+        pLogicalNode = new CEvaluationNodeConstant(CEvaluationNode::S_FALSE, "FALSE");
         pLogicalNode->compile(NULL);
         break;
+
       case CNormalLogicalItem::EQ:
-        pLogicalNode = new CEvaluationNodeLogical(CEvaluationNodeLogical::EQ, "==");
+        pLogicalNode = new CEvaluationNodeLogical(CEvaluationNode::S_EQ, "==");
         break;
+
       case CNormalLogicalItem::NE:
-        pLogicalNode = new CEvaluationNodeLogical(CEvaluationNodeLogical::NE, "!=");
+        pLogicalNode = new CEvaluationNodeLogical(CEvaluationNode::S_NE, "!=");
         break;
+
       case CNormalLogicalItem::LT:
-        pLogicalNode = new CEvaluationNodeLogical(CEvaluationNodeLogical::LT, "<");
+        pLogicalNode = new CEvaluationNodeLogical(CEvaluationNode::S_LT, "<");
         break;
+
       case CNormalLogicalItem::GT:
-        pLogicalNode = new CEvaluationNodeLogical(CEvaluationNodeLogical::GT, ">");
+        pLogicalNode = new CEvaluationNodeLogical(CEvaluationNode::S_GT, ">");
         break;
+
       case CNormalLogicalItem::GE:
-        pLogicalNode = new CEvaluationNodeLogical(CEvaluationNodeLogical::GE, ">=");
+        pLogicalNode = new CEvaluationNodeLogical(CEvaluationNode::S_GE, ">=");
         break;
+
       case CNormalLogicalItem::LE:
-        pLogicalNode = new CEvaluationNodeLogical(CEvaluationNodeLogical::LE, "<=");
+        pLogicalNode = new CEvaluationNodeLogical(CEvaluationNode::S_LE, "<=");
         break;
+
       case CNormalLogicalItem::INVALID:
         break;
     }
@@ -1848,8 +1933,8 @@ CEvaluationNode* convertToCEvaluationNode(const CNormalLogical& logical)
   // combine the two results with OR
   CEvaluationNode* pNotNode = NULL;
   CEvaluationNode* pNode = NULL;
-  CEvaluationNode* pOrNode = new CEvaluationNodeLogical(CEvaluationNodeLogical::OR, "OR");
-  CEvaluationNode* pAndNode = new CEvaluationNodeLogical(CEvaluationNodeLogical::AND, "AND");
+  CEvaluationNode* pOrNode = new CEvaluationNodeLogical(CEvaluationNode::S_OR, "OR");
+  CEvaluationNode* pAndNode = new CEvaluationNodeLogical(CEvaluationNode::S_AND, "AND");
   std::vector<CEvaluationNode*> andElements;
   std::vector<CEvaluationNode*> orElements;
   CNormalLogical::ChoiceSetOfSets::const_iterator cIt = logical.getChoices().begin(), cEndit = logical.getChoices().end();
@@ -1869,7 +1954,7 @@ CEvaluationNode* convertToCEvaluationNode(const CNormalLogical& logical)
               // element
               if (*pNode != CNormalTranslation::NEUTRAL_ELEMENT_OR)
                 {
-                  pNotNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::NOT, "NOT");
+                  pNotNode = new CEvaluationNodeFunction(CEvaluationNode::S_NOT, "NOT");
                   pNotNode->addChild(pNode);
                   pNode = pNotNode;
                 }
@@ -1901,7 +1986,7 @@ CEvaluationNode* convertToCEvaluationNode(const CNormalLogical& logical)
           // neutral element
           if (*pNode != CNormalTranslation::NEUTRAL_ELEMENT_AND)
             {
-              pNotNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::NOT, "NOT");
+              pNotNode = new CEvaluationNodeFunction(CEvaluationNode::S_NOT, "NOT");
               pNode->addChild(pNode);
               pNode = pNotNode;
             }
@@ -1949,7 +2034,7 @@ CEvaluationNode* convertToCEvaluationNode(const CNormalLogical& logical)
               // element
               if (*pNode != CNormalTranslation::NEUTRAL_ELEMENT_OR)
                 {
-                  pNotNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::NOT, "NOT");
+                  pNotNode = new CEvaluationNodeFunction(CEvaluationNode::S_NOT, "NOT");
                   pNotNode->addChild(pNode);
                   pNode = pNotNode;
                 }
@@ -1982,7 +2067,7 @@ CEvaluationNode* convertToCEvaluationNode(const CNormalLogical& logical)
           // create a not node if it does not result in the neutral node
           if (*pNode != CNormalTranslation::NEUTRAL_ELEMENT_AND)
             {
-              pNotNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::NOT, "NOT");
+              pNotNode = new CEvaluationNodeFunction(CEvaluationNode::S_NOT, "NOT");
               pNotNode->addChild(pNode);
               pNode = pNotNode;
             }
@@ -2034,7 +2119,7 @@ CEvaluationNode* convertToCEvaluationNode(const CNormalLogical& logical)
   // check if mNot is set
   if (logical.isNegated() == true)
     {
-      pNotNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::NOT, "NOT");
+      pNotNode = new CEvaluationNodeFunction(CEvaluationNode::S_NOT, "NOT");
       pNode->addChild(pResult);
       pResult = pNotNode;
     }
@@ -2063,7 +2148,7 @@ CEvaluationNode* convertToCEvaluationNode(const CNormalLogical& logical)
           pTmpResult = convertToCEvaluationNode(*(*(*it).first.begin()).first);
           if ((*(*it).first.begin()).second == true)
             {
-              pNot = new CEvaluationNodeFunction(CEvaluationNodeFunction::NOT, "NOT");
+              pNot = new CEvaluationNodeFunction(CEvaluationNode::S_NOT, "NOT");
               pNot->addChild(pTmpResult);
               pTmpResult = pNot;
             }
@@ -2072,7 +2157,7 @@ CEvaluationNode* convertToCEvaluationNode(const CNormalLogical& logical)
         {
           CNormalLogical::ItemSet::const_iterator innerit = (*it).first.begin(), innerendit = (*it).first.end();
           // create the not
-          CEvaluationNode* pOrNode = new CEvaluationNodeLogical(CEvaluationNodeLogical::OR, "OR");
+          CEvaluationNode* pOrNode = new CEvaluationNodeLogical(CEvaluationNode::S_OR, "OR");
           pTmpResult = pOrNode;
           while (innerit != innerendit && error == false)
             {
@@ -2081,12 +2166,12 @@ CEvaluationNode* convertToCEvaluationNode(const CNormalLogical& logical)
                 {
                   if ((*innerit).second == true)
                     {
-                      pNot = new CEvaluationNodeFunction(CEvaluationNodeFunction::NOT, "NOT");
+                      pNot = new CEvaluationNodeFunction(CEvaluationNode::S_NOT, "NOT");
                       pNot->addChild(pItem);
                       pItem = pNot;
                     }
                   pOrNode->addChild(pItem);
-                  pOrNode->addChild(new CEvaluationNodeLogical(CEvaluationNodeLogical::OR, "OR"));
+                  pOrNode->addChild(new CEvaluationNodeLogical(CEvaluationNode::S_OR, "OR"));
                   pOrNode = dynamic_cast<CEvaluationNodeLogical*>(pOrNode->getChild()->getSibling());
                 }
               else
@@ -2113,7 +2198,7 @@ CEvaluationNode* convertToCEvaluationNode(const CNormalLogical& logical)
         {
           if ((*it).second == true)
             {
-              pNot = new CEvaluationNodeFunction(CEvaluationNodeFunction::NOT, "NOT");
+              pNot = new CEvaluationNodeFunction(CEvaluationNode::S_NOT, "NOT");
               pNot->addChild(pTmpResult);
             }
           andItems.push_back(pTmpResult);
@@ -2129,7 +2214,7 @@ CEvaluationNode* convertToCEvaluationNode(const CNormalLogical& logical)
           pTmpResult = convertToCEvaluationNode(*(*(*it2).first.begin()).first);
           if ((*(*it2).first.begin()).second == true)
             {
-              pNot = new CEvaluationNodeFunction(CEvaluationNodeFunction::NOT, "NOT");
+              pNot = new CEvaluationNodeFunction(CEvaluationNode::S_NOT, "NOT");
               pNot->addChild(pTmpResult);
               pTmpResult = pNot;
             }
@@ -2138,7 +2223,7 @@ CEvaluationNode* convertToCEvaluationNode(const CNormalLogical& logical)
         {
           CNormalLogical::ChoiceSet::const_iterator innerit = (*it2).first.begin(), innerendit = (*it2).first.end();
           // create the not
-          CEvaluationNode* pOrNode = new CEvaluationNodeLogical(CEvaluationNodeLogical::OR, "OR");
+          CEvaluationNode* pOrNode = new CEvaluationNodeLogical(CEvaluationNode::S_OR, "OR");
           pTmpResult = pOrNode;
           while (innerit != innerendit && error != true)
             {
@@ -2147,12 +2232,12 @@ CEvaluationNode* convertToCEvaluationNode(const CNormalLogical& logical)
                 {
                   if ((*innerit).second == true)
                     {
-                      pNot = new CEvaluationNodeFunction(CEvaluationNodeFunction::NOT, "NOT");
+                      pNot = new CEvaluationNodeFunction(CEvaluationNode::S_NOT, "NOT");
                       pNot->addChild(pItem);
                       pItem = pNot;
                     }
                   pOrNode->addChild(pItem);
-                  pOrNode->addChild(new CEvaluationNodeLogical(CEvaluationNodeLogical::OR, "OR"));
+                  pOrNode->addChild(new CEvaluationNodeLogical(CEvaluationNode::S_OR, "OR"));
                   pOrNode = dynamic_cast<CEvaluationNodeLogical*>(pOrNode->getChild()->getSibling());
                 }
               else
@@ -2179,7 +2264,7 @@ CEvaluationNode* convertToCEvaluationNode(const CNormalLogical& logical)
         {
           if ((*it2).second == true)
             {
-              pNot = new CEvaluationNodeFunction(CEvaluationNodeFunction::NOT, "NOT");
+              pNot = new CEvaluationNodeFunction(CEvaluationNode::S_NOT, "NOT");
               pNot->addChild(pTmpResult);
             }
           andItems.push_back(pTmpResult);
@@ -2197,12 +2282,12 @@ CEvaluationNode* convertToCEvaluationNode(const CNormalLogical& logical)
           else
             {
               std::vector<CEvaluationNode*>::iterator andit = andItems.begin(), andendit = andItems.end();
-              CEvaluationNode* pAndNode = new CEvaluationNodeLogical(CEvaluationNodeLogical::AND, "AND");
+              CEvaluationNode* pAndNode = new CEvaluationNodeLogical(CEvaluationNode::S_AND, "AND");
               pResult = pAndNode;
               while (andit != andendit)
                 {
                   pAndNode->addChild(*andit);
-                  pAndNode->addChild(new CEvaluationNodeLogical(CEvaluationNodeLogical::AND, "AND"));
+                  pAndNode->addChild(new CEvaluationNodeLogical(CEvaluationNode::S_AND, "AND"));
                   pAndNode = dynamic_cast<CEvaluationNodeLogical*>(pAndNode->getChild()->getSibling());
                   ++andit;
                 }
@@ -2232,7 +2317,7 @@ CEvaluationNode* convertToCEvaluationNode(const CNormalLogical& logical)
     {
       if (logical.isNegated() == true)
         {
-          pNot = new CEvaluationNodeFunction(CEvaluationNodeFunction::NOT, "NOT");
+          pNot = new CEvaluationNodeFunction(CEvaluationNode::S_NOT, "NOT");
           pNot->addChild(pResult);
           pResult = pNot;
         }
@@ -2246,7 +2331,7 @@ CNormalChoice* createChoice(const CEvaluationNode* pNode)
 {
   CNormalChoice* pResult = NULL;
 
-  if (pNode != NULL && CEvaluationNode::type(pNode->getType()) == CEvaluationNode::CHOICE)
+  if (pNode != NULL && pNode->mainType() == CEvaluationNode::T_CHOICE)
     {
       CNormalLogical* pLogical = createLogical(dynamic_cast<const CEvaluationNode*>(pNode->getChild()));
 
@@ -2296,7 +2381,7 @@ CNormalChoiceLogical* createLogicalChoice(const CEvaluationNode* pNode)
 {
   CNormalChoiceLogical* pResult = NULL;
 
-  if (pNode != NULL && CEvaluationNode::type(pNode->getType()) == CEvaluationNode::CHOICE)
+  if (pNode != NULL && pNode->mainType() == CEvaluationNode::T_CHOICE)
     {
       CNormalLogical* pLogical = createLogical(dynamic_cast<const CEvaluationNode*>(pNode->getChild()));
 
@@ -2348,11 +2433,12 @@ CNormalLogical* createLogical(const CEvaluationNode* pNode)
 
   if (pNode != NULL)
     {
-      CEvaluationNode::Type type = pNode->getType();
+      CEvaluationNode::MainType mainType = pNode->mainType();
+      CEvaluationNode::SubType subType = pNode->subType();
 
-      if (CEvaluationNode::type(type) == CEvaluationNode::CONSTANT)
+      if (mainType == CEvaluationNode::T_CONSTANT)
         {
-          if (((CEvaluationNodeConstant::SubType)CEvaluationNode::subType(type)) == CEvaluationNodeConstant::TRUE || ((CEvaluationNodeConstant::SubType)CEvaluationNode::subType(type)) == CEvaluationNodeConstant::FALSE)
+          if (subType == CEvaluationNode::S_TRUE || subType == CEvaluationNode::S_FALSE)
             {
               CNormalLogicalItem* pLogicalItem = createLogicalItem(pNode);
 
@@ -2365,7 +2451,7 @@ CNormalLogical* createLogical(const CEvaluationNode* pNode)
                 }
             }
         }
-      else if (CEvaluationNode::type(type) == CEvaluationNode::LOGICAL)
+      else if (mainType == CEvaluationNode::T_LOGICAL)
         {
           CNormalLogicalItem* pLogicalItem = NULL;
           CEvaluationNode* pOrNode = NULL;
@@ -2377,14 +2463,14 @@ CNormalLogical* createLogical(const CEvaluationNode* pNode)
           CNormalLogical::ChoiceSetOfSets::const_iterator it, endit;
           CNormalLogical::ItemSetOfSets::const_iterator it2, endit2;
 
-          switch ((CEvaluationNodeLogical::SubType)CEvaluationNode::subType(type))
+          switch (subType)
             {
-              case CEvaluationNodeLogical::EQ:
-              case CEvaluationNodeLogical::NE:
-              case CEvaluationNodeLogical::GT:
-              case CEvaluationNodeLogical::LT:
-              case CEvaluationNodeLogical::GE:
-              case CEvaluationNodeLogical::LE:
+              case CEvaluationNode::S_EQ:
+              case CEvaluationNode::S_NE:
+              case CEvaluationNode::S_GT:
+              case CEvaluationNode::S_LT:
+              case CEvaluationNode::S_GE:
+              case CEvaluationNode::S_LE:
                 pLogicalItem = createLogicalItem(pNode);
 
                 if (pLogicalItem != NULL)
@@ -2396,25 +2482,27 @@ CNormalLogical* createLogical(const CEvaluationNode* pNode)
                   }
 
                 break;
-              case CEvaluationNodeLogical::XOR:
+
+              case CEvaluationNode::S_XOR:
                 // replace A xor B by A OR B AND NOT(A AND B)
                 pA = dynamic_cast<const CEvaluationNode*>(pNode->getChild());
                 pB = dynamic_cast<const CEvaluationNode*>(pA->getSibling());
-                pAndNode = new CEvaluationNodeLogical(CEvaluationNodeLogical::AND, "AND");
+                pAndNode = new CEvaluationNodeLogical(CEvaluationNode::S_AND, "AND");
                 pAndNode->addChild(pA->copyBranch());
                 pAndNode->addChild(pB->copyBranch());
-                pNotNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::NOT, "NOT");
+                pNotNode = new CEvaluationNodeFunction(CEvaluationNode::S_NOT, "NOT");
                 pNotNode->addChild(pAndNode);
-                pOrNode = new CEvaluationNodeLogical(CEvaluationNodeLogical::OR, "OR");
+                pOrNode = new CEvaluationNodeLogical(CEvaluationNode::S_OR, "OR");
                 pOrNode->addChild(pA->copyBranch());
                 pOrNode->addChild(pB->copyBranch());
-                pAndNode = new CEvaluationNodeLogical(CEvaluationNodeLogical::AND, "AND");
+                pAndNode = new CEvaluationNodeLogical(CEvaluationNode::S_AND, "AND");
                 pAndNode->addChild(pOrNode);
                 pAndNode->addChild(pNotNode);
                 pResult = createLogical(pAndNode);
                 delete pAndNode;
                 break;
-              case CEvaluationNodeLogical::AND:
+
+              case CEvaluationNode::S_AND:
                 pLeftLogical = createLogical(dynamic_cast<const CEvaluationNode*>(pNode->getChild()));
 
                 if (pLeftLogical != NULL)
@@ -2520,7 +2608,8 @@ CNormalLogical* createLogical(const CEvaluationNode* pNode)
                   }
 
                 break;
-              case CEvaluationNodeLogical::OR:
+
+              case CEvaluationNode::S_OR:
                 // 1. create two logicals, one for the left side and one for the
                 //    right side
                 pResult = createLogical(dynamic_cast<const CEvaluationNode*>(pNode->getChild()));
@@ -2549,11 +2638,12 @@ CNormalLogical* createLogical(const CEvaluationNode* pNode)
 
                 delete pLeftLogical;
                 break;
+
               default:
                 break;
             }
         }
-      else if (CEvaluationNode::type(type) == CEvaluationNode::FUNCTION && ((CEvaluationNodeFunction::SubType)CEvaluationNode::subType(type)) == CEvaluationNodeFunction::NOT)
+      else if (mainType == CEvaluationNode::T_FUNCTION &&  subType == CEvaluationNode::S_NOT)
         {
           pResult = createLogical(dynamic_cast<const CEvaluationNode*>(pNode->getChild()));
 
@@ -2562,7 +2652,7 @@ CNormalLogical* createLogical(const CEvaluationNode* pNode)
               pResult->negate();
             }
         }
-      else if (CEvaluationNode::type(type) == CEvaluationNode::CHOICE)
+      else if (mainType == CEvaluationNode::T_CHOICE)
         {
           CNormalChoiceLogical* pLogicalChoice = createLogicalChoice(pNode);
 
@@ -2585,30 +2675,31 @@ CNormalLogicalItem* createLogicalItem(const CEvaluationNode* pNode)
 
   if (pNode != NULL)
     {
-      CEvaluationNode::Type type = pNode->getType();
+      CEvaluationNode::MainType mainType = pNode->mainType();
+      CEvaluationNode::SubType subType = pNode->subType();
 
-      if (CEvaluationNode::type(type) == CEvaluationNode::CONSTANT)
+      if (mainType == CEvaluationNode::T_CONSTANT)
         {
-          if (((CEvaluationNodeConstant::SubType)CEvaluationNode::subType(type)) == CEvaluationNodeConstant::FALSE)
+          if (subType == CEvaluationNode::S_FALSE)
             {
               pResult = new CNormalLogicalItem();
               pResult->setType(CNormalLogicalItem::FALSE);
             }
-          else if (((CEvaluationNodeConstant::SubType)CEvaluationNode::subType(type)) == CEvaluationNodeConstant::TRUE)
+          else if (subType == CEvaluationNode::S_TRUE)
             {
               pResult = new CNormalLogicalItem();
               pResult->setType(CNormalLogicalItem::TRUE);
             }
         }
 
-      if (CEvaluationNode::type(type) == CEvaluationNode::LOGICAL)
+      if (mainType == CEvaluationNode::T_LOGICAL)
         {
           CNormalFraction* pFrac1 = NULL;
           CNormalFraction* pFrac2 = NULL;
 
-          switch ((CEvaluationNodeLogical::SubType)CEvaluationNode::subType(type))
+          switch (subType)
             {
-              case CEvaluationNodeLogical::EQ:
+              case CEvaluationNode::S_EQ:
                 pResult = new CNormalLogicalItem();
                 pResult->setType(CNormalLogicalItem::EQ);
                 pFrac1 = createNormalRepresentation(dynamic_cast<const CEvaluationNode*>(pNode->getChild()));
@@ -2632,7 +2723,8 @@ CNormalLogicalItem* createLogicalItem(const CEvaluationNode* pNode)
                   }
 
                 break;
-              case CEvaluationNodeLogical::NE:
+
+              case CEvaluationNode::S_NE:
                 pResult = new CNormalLogicalItem();
                 pResult->setType(CNormalLogicalItem::NE);
                 pFrac1 = createNormalRepresentation(dynamic_cast<const CEvaluationNode*>(pNode->getChild()));
@@ -2656,7 +2748,8 @@ CNormalLogicalItem* createLogicalItem(const CEvaluationNode* pNode)
                   }
 
                 break;
-              case CEvaluationNodeLogical::GT:
+
+              case CEvaluationNode::S_GT:
                 pResult = new CNormalLogicalItem();
                 pResult->setType(CNormalLogicalItem::GT);
                 pFrac1 = createNormalRepresentation(dynamic_cast<const CEvaluationNode*>(pNode->getChild()));
@@ -2680,7 +2773,8 @@ CNormalLogicalItem* createLogicalItem(const CEvaluationNode* pNode)
                   }
 
                 break;
-              case CEvaluationNodeLogical::LT:
+
+              case CEvaluationNode::S_LT:
                 pResult = new CNormalLogicalItem();
                 pResult->setType(CNormalLogicalItem::LT);
                 pFrac1 = createNormalRepresentation(dynamic_cast<const CEvaluationNode*>(pNode->getChild()));
@@ -2704,7 +2798,8 @@ CNormalLogicalItem* createLogicalItem(const CEvaluationNode* pNode)
                   }
 
                 break;
-              case CEvaluationNodeLogical::GE:
+
+              case CEvaluationNode::S_GE:
                 pResult = new CNormalLogicalItem();
                 pResult->setType(CNormalLogicalItem::GE);
                 pFrac1 = createNormalRepresentation(dynamic_cast<const CEvaluationNode*>(pNode->getChild()));
@@ -2728,7 +2823,8 @@ CNormalLogicalItem* createLogicalItem(const CEvaluationNode* pNode)
                   }
 
                 break;
-              case CEvaluationNodeLogical::LE:
+
+              case CEvaluationNode::S_LE:
                 pResult = new CNormalLogicalItem();
                 pResult->setType(CNormalLogicalItem::LE);
                 pFrac1 = createNormalRepresentation(dynamic_cast<const CEvaluationNode*>(pNode->getChild()));
@@ -2752,6 +2848,7 @@ CNormalLogicalItem* createLogicalItem(const CEvaluationNode* pNode)
                   }
 
                 break;
+
               default:
                 break;
             }

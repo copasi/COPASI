@@ -88,16 +88,16 @@ bool CFunction::setInfix(const std::string & infix, bool compile)
 
   for (; it != end; ++it)
     {
-      switch (CEvaluationNode::type((*it)->getType()))
+      switch ((*it)->mainType())
         {
-          case CEvaluationNode::OBJECT:
-          case CEvaluationNode::DELAY:
+          case CEvaluationNode::T_OBJECT:
+          case CEvaluationNode::T_DELAY:
             return false;
             break;
 
-          case CEvaluationNode::CALL:
+          case CEvaluationNode::T_CALL:
 
-            if ((CEvaluationNodeCall::SubType) CEvaluationNode::subType((*it)->getType()) == CEvaluationNodeCall::EXPRESSION)
+            if ((*it)->subType() == CEvaluationNode::S_EXPRESSION)
               {
                 return false;
               }
@@ -247,7 +247,7 @@ bool CFunction::initVariables()
       std::vector< CEvaluationNode * >::iterator end = mpNodeList->end();
 
       for (; it != end; ++it)
-        if (CEvaluationNode::type((*it)->getType()) == CEvaluationNode::VARIABLE)
+        if ((*it)->mainType() == CEvaluationNode::T_VARIABLE)
           {
             mVariables.add((*it)->getData(),
                            CFunctionParameter::FLOAT64,
@@ -339,7 +339,7 @@ bool CFunction::completeFunctionList(std::vector< const CFunction * > & list,
 
       for (it = pTree->getNodeList().begin(), end = pTree->getNodeList().end(); it != end; ++it)
         {
-          if (((*it)->getType() & 0xFF000000) == CEvaluationNode::CALL &&
+          if ((*it)->mainType() == CEvaluationNode::T_CALL &&
               (Index = Functions.getIndex((*it)->getData())) != C_INVALID_INDEX &&
               list.end() == std::find(list.begin(), list.end(), &Functions[Index]))
             {

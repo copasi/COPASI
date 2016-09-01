@@ -109,7 +109,7 @@ void test000087::test_import_reaction_flux_reference_2()
   CPPUNIT_ASSERT(pExpr != NULL);
   const CEvaluationNode* pRoot = pExpr->getRoot();
   CPPUNIT_ASSERT(pRoot != NULL);
-  CPPUNIT_ASSERT(CEvaluationNode::type(pRoot->getType()) == CEvaluationNode::OBJECT);
+  CPPUNIT_ASSERT(pRoot->mainType() == CEvaluationNode::T_OBJECT);
   const CEvaluationNodeObject* pObjectNode = dynamic_cast<const CEvaluationNodeObject*>(pRoot);
   CPPUNIT_ASSERT(pObjectNode != NULL);
   const CRegisteredObjectName cn = pObjectNode->getObjectCN();
@@ -326,7 +326,7 @@ void test000087::test_simulate_reaction_flux_reference_1()
   CPPUNIT_ASSERT(pExpression != NULL);
   const CEvaluationNode* pRoot = pExpression->getRoot();
   CPPUNIT_ASSERT(pRoot != NULL);
-  CPPUNIT_ASSERT(CEvaluationNode::type(pRoot->getType()) == CEvaluationNode::OBJECT);
+  CPPUNIT_ASSERT(pRoot->mainType() == CEvaluationNode::T_OBJECT);
   const CEvaluationNodeObject* pObjectNode = dynamic_cast<const CEvaluationNodeObject*>(pRoot);
   CPPUNIT_ASSERT(pObjectNode != NULL);
   const CRegisteredObjectName cn = pObjectNode->getObjectCN();

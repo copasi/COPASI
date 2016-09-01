@@ -970,7 +970,7 @@ do_action:  /* This label is used only to access EOF actions. */
 #line 37 "function/CEvaluationLexer.lpp"
 
           BEGIN(sOPERATOR);
-          mpNode = new CEvaluationNodeNumber(CEvaluationNodeNumber::DOUBLE,
+          mpNode = new CEvaluationNodeNumber(CEvaluationNode::S_DOUBLE,
                                              yytext);
           COMMON_ACTION;
           return TOKEN_NUMBER;
@@ -982,7 +982,7 @@ do_action:  /* This label is used only to access EOF actions. */
 #line 45 "function/CEvaluationLexer.lpp"
 
           BEGIN(sOPERATOR);
-          mpNode = new CEvaluationNodeConstant(CEvaluationNodeConstant::EXPONENTIALE,
+          mpNode = new CEvaluationNodeConstant(CEvaluationNode::S_EXPONENTIALE,
                                                yytext);
           COMMON_ACTION;
           return TOKEN_NUMBER;
@@ -994,7 +994,7 @@ do_action:  /* This label is used only to access EOF actions. */
 #line 53 "function/CEvaluationLexer.lpp"
 
           BEGIN(sOPERATOR);
-          mpNode = new CEvaluationNodeConstant(CEvaluationNodeConstant::PI,
+          mpNode = new CEvaluationNodeConstant(CEvaluationNode::S_PI,
                                                yytext);
           COMMON_ACTION;
           return TOKEN_NUMBER;
@@ -1006,7 +1006,7 @@ do_action:  /* This label is used only to access EOF actions. */
 #line 61 "function/CEvaluationLexer.lpp"
 
           BEGIN(sOPERATOR);
-          mpNode = new CEvaluationNodeConstant(CEvaluationNodeConstant::TRUE,
+          mpNode = new CEvaluationNodeConstant(CEvaluationNode::S_TRUE,
                                                yytext);
           COMMON_ACTION;
           return TOKEN_LOGICAL_VALUE;
@@ -1018,7 +1018,7 @@ do_action:  /* This label is used only to access EOF actions. */
 #line 69 "function/CEvaluationLexer.lpp"
 
           BEGIN(sOPERATOR);
-          mpNode = new CEvaluationNodeConstant(CEvaluationNodeConstant::FALSE,
+          mpNode = new CEvaluationNodeConstant(CEvaluationNode::S_FALSE,
                                                yytext);
           COMMON_ACTION;
           return TOKEN_LOGICAL_VALUE;
@@ -1030,7 +1030,7 @@ do_action:  /* This label is used only to access EOF actions. */
 #line 77 "function/CEvaluationLexer.lpp"
 
           BEGIN(sOPERATOR);
-          mpNode = new CEvaluationNodeConstant(CEvaluationNodeConstant::_INFINITY,
+          mpNode = new CEvaluationNodeConstant(CEvaluationNode::S_INFINITY,
                                                yytext);
           COMMON_ACTION;
           return TOKEN_NUMBER;
@@ -1042,7 +1042,7 @@ do_action:  /* This label is used only to access EOF actions. */
 #line 85 "function/CEvaluationLexer.lpp"
 
           BEGIN(sOPERATOR);
-          mpNode = new CEvaluationNodeConstant(CEvaluationNodeConstant::_NaN,
+          mpNode = new CEvaluationNodeConstant(CEvaluationNode::S_NAN,
                                                yytext);
           COMMON_ACTION;
           return TOKEN_NUMBER;
@@ -1054,7 +1054,7 @@ do_action:  /* This label is used only to access EOF actions. */
 #line 93 "function/CEvaluationLexer.lpp"
 
           BEGIN(sVALUE);
-          mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::NOT,
+          mpNode = new CEvaluationNodeFunction(CEvaluationNode::S_NOT,
                                                yytext);
           COMMON_ACTION;
           return TOKEN_LOGICAL_NOT;
@@ -1066,7 +1066,7 @@ do_action:  /* This label is used only to access EOF actions. */
 #line 101 "function/CEvaluationLexer.lpp"
 
           BEGIN(sSIGNorVALUE);
-          mpNode = new CEvaluationNodeLogical(CEvaluationNodeLogical::LE,
+          mpNode = new CEvaluationNodeLogical(CEvaluationNode::S_LE,
                                               yytext);
           COMMON_ACTION;
           return TOKEN_LOGICAL_LE;
@@ -1078,7 +1078,7 @@ do_action:  /* This label is used only to access EOF actions. */
 #line 109 "function/CEvaluationLexer.lpp"
 
           BEGIN(sSIGNorVALUE);
-          mpNode = new CEvaluationNodeLogical(CEvaluationNodeLogical::LT,
+          mpNode = new CEvaluationNodeLogical(CEvaluationNode::S_LT,
                                               yytext);
           COMMON_ACTION;
           return TOKEN_LOGICAL_LT;
@@ -1090,7 +1090,7 @@ do_action:  /* This label is used only to access EOF actions. */
 #line 117 "function/CEvaluationLexer.lpp"
 
           BEGIN(sSIGNorVALUE);
-          mpNode = new CEvaluationNodeLogical(CEvaluationNodeLogical::GE,
+          mpNode = new CEvaluationNodeLogical(CEvaluationNode::S_GE,
                                               yytext);
           COMMON_ACTION;
           return TOKEN_LOGICAL_GE;
@@ -1102,7 +1102,7 @@ do_action:  /* This label is used only to access EOF actions. */
 #line 125 "function/CEvaluationLexer.lpp"
 
           BEGIN(sSIGNorVALUE);
-          mpNode = new CEvaluationNodeLogical(CEvaluationNodeLogical::GT,
+          mpNode = new CEvaluationNodeLogical(CEvaluationNode::S_GT,
                                               yytext);
           COMMON_ACTION;
           return TOKEN_LOGICAL_GT;
@@ -1114,7 +1114,7 @@ do_action:  /* This label is used only to access EOF actions. */
 #line 133 "function/CEvaluationLexer.lpp"
 
           BEGIN(sSIGNorVALUE);
-          mpNode = new CEvaluationNodeLogical(CEvaluationNodeLogical::NE,
+          mpNode = new CEvaluationNodeLogical(CEvaluationNode::S_NE,
                                               yytext);
           COMMON_ACTION;
           return TOKEN_LOGICAL_NE;
@@ -1126,7 +1126,7 @@ do_action:  /* This label is used only to access EOF actions. */
 #line 141 "function/CEvaluationLexer.lpp"
 
           BEGIN(sSIGNorVALUE);
-          mpNode = new CEvaluationNodeLogical(CEvaluationNodeLogical::EQ,
+          mpNode = new CEvaluationNodeLogical(CEvaluationNode::S_EQ,
                                               yytext);
           COMMON_ACTION;
           return TOKEN_LOGICAL_EQ;
@@ -1138,7 +1138,7 @@ do_action:  /* This label is used only to access EOF actions. */
 #line 149 "function/CEvaluationLexer.lpp"
 
           BEGIN(sSIGNorVALUE);
-          mpNode = new CEvaluationNodeLogical(CEvaluationNodeLogical::AND,
+          mpNode = new CEvaluationNodeLogical(CEvaluationNode::S_AND,
                                               yytext);
           COMMON_ACTION;
           return TOKEN_LOGICAL_AND;
@@ -1150,7 +1150,7 @@ do_action:  /* This label is used only to access EOF actions. */
 #line 157 "function/CEvaluationLexer.lpp"
 
           BEGIN(sSIGNorVALUE);
-          mpNode = new CEvaluationNodeLogical(CEvaluationNodeLogical::XOR,
+          mpNode = new CEvaluationNodeLogical(CEvaluationNode::S_XOR,
                                               yytext);
           COMMON_ACTION;
           return TOKEN_LOGICAL_XOR;
@@ -1162,7 +1162,7 @@ do_action:  /* This label is used only to access EOF actions. */
 #line 165 "function/CEvaluationLexer.lpp"
 
           BEGIN(sSIGNorVALUE);
-          mpNode = new CEvaluationNodeLogical(CEvaluationNodeLogical::OR,
+          mpNode = new CEvaluationNodeLogical(CEvaluationNode::S_OR,
                                               yytext);
           COMMON_ACTION;
           return TOKEN_LOGICAL_OR;
@@ -1175,7 +1175,7 @@ do_action:  /* This label is used only to access EOF actions. */
 #line 173 "function/CEvaluationLexer.lpp"
 
           BEGIN(sOPERATOR);
-          mpNode = new CEvaluationNodeObject(CEvaluationNodeObject::CN,
+          mpNode = new CEvaluationNodeObject(CEvaluationNode::S_CN,
                                              yytext);
           COMMON_ACTION;
           return TOKEN_NUMBER;
@@ -1187,7 +1187,7 @@ do_action:  /* This label is used only to access EOF actions. */
 #line 181 "function/CEvaluationLexer.lpp"
 
           BEGIN(sOPERATOR);
-          mpNode = new CEvaluationNodeObject(CEvaluationNodeObject::POINTER,
+          mpNode = new CEvaluationNodeObject(CEvaluationNode::S_POINTER,
                                              yytext);
           COMMON_ACTION;
           return TOKEN_NUMBER;
@@ -1201,7 +1201,7 @@ do_action:  /* This label is used only to access EOF actions. */
           YY_RULE_SETUP
 #line 189 "function/CEvaluationLexer.lpp"
 
-          mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::LOG,
+          mpNode = new CEvaluationNodeFunction(CEvaluationNode::S_LOG,
                                                yytext);
           COMMON_ACTION;
           return TOKEN_FUNCTION;
@@ -1215,7 +1215,7 @@ do_action:  /* This label is used only to access EOF actions. */
           YY_RULE_SETUP
 #line 196 "function/CEvaluationLexer.lpp"
 
-          mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::LOG10,
+          mpNode = new CEvaluationNodeFunction(CEvaluationNode::S_LOG10,
                                                yytext);
           COMMON_ACTION;
           return TOKEN_FUNCTION;
@@ -1229,7 +1229,7 @@ do_action:  /* This label is used only to access EOF actions. */
           YY_RULE_SETUP
 #line 203 "function/CEvaluationLexer.lpp"
 
-          mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::EXP,
+          mpNode = new CEvaluationNodeFunction(CEvaluationNode::S_EXP,
                                                yytext);
           COMMON_ACTION;
           return TOKEN_FUNCTION;
@@ -1243,7 +1243,7 @@ do_action:  /* This label is used only to access EOF actions. */
           YY_RULE_SETUP
 #line 210 "function/CEvaluationLexer.lpp"
 
-          mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::SIN,
+          mpNode = new CEvaluationNodeFunction(CEvaluationNode::S_SIN,
                                                yytext);
           COMMON_ACTION;
           return TOKEN_FUNCTION;
@@ -1257,7 +1257,7 @@ do_action:  /* This label is used only to access EOF actions. */
           YY_RULE_SETUP
 #line 217 "function/CEvaluationLexer.lpp"
 
-          mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::COS,
+          mpNode = new CEvaluationNodeFunction(CEvaluationNode::S_COS,
                                                yytext);
           COMMON_ACTION;
           return TOKEN_FUNCTION;
@@ -1271,7 +1271,7 @@ do_action:  /* This label is used only to access EOF actions. */
           YY_RULE_SETUP
 #line 224 "function/CEvaluationLexer.lpp"
 
-          mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::TAN,
+          mpNode = new CEvaluationNodeFunction(CEvaluationNode::S_TAN,
                                                yytext);
           COMMON_ACTION;
           return TOKEN_FUNCTION;
@@ -1285,7 +1285,7 @@ do_action:  /* This label is used only to access EOF actions. */
           YY_RULE_SETUP
 #line 231 "function/CEvaluationLexer.lpp"
 
-          mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::SEC,
+          mpNode = new CEvaluationNodeFunction(CEvaluationNode::S_SEC,
                                                yytext);
           COMMON_ACTION;
           return TOKEN_FUNCTION;
@@ -1299,7 +1299,7 @@ do_action:  /* This label is used only to access EOF actions. */
           YY_RULE_SETUP
 #line 238 "function/CEvaluationLexer.lpp"
 
-          mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::CSC,
+          mpNode = new CEvaluationNodeFunction(CEvaluationNode::S_CSC,
                                                yytext);
           COMMON_ACTION;
           return TOKEN_FUNCTION;
@@ -1313,7 +1313,7 @@ do_action:  /* This label is used only to access EOF actions. */
           YY_RULE_SETUP
 #line 245 "function/CEvaluationLexer.lpp"
 
-          mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::COT,
+          mpNode = new CEvaluationNodeFunction(CEvaluationNode::S_COT,
                                                yytext);
           COMMON_ACTION;
           return TOKEN_FUNCTION;
@@ -1327,7 +1327,7 @@ do_action:  /* This label is used only to access EOF actions. */
           YY_RULE_SETUP
 #line 252 "function/CEvaluationLexer.lpp"
 
-          mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::SINH,
+          mpNode = new CEvaluationNodeFunction(CEvaluationNode::S_SINH,
                                                yytext);
           COMMON_ACTION;
           return TOKEN_FUNCTION;
@@ -1341,7 +1341,7 @@ do_action:  /* This label is used only to access EOF actions. */
           YY_RULE_SETUP
 #line 259 "function/CEvaluationLexer.lpp"
 
-          mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::COSH,
+          mpNode = new CEvaluationNodeFunction(CEvaluationNode::S_COSH,
                                                yytext);
           COMMON_ACTION;
           return TOKEN_FUNCTION;
@@ -1355,7 +1355,7 @@ do_action:  /* This label is used only to access EOF actions. */
           YY_RULE_SETUP
 #line 266 "function/CEvaluationLexer.lpp"
 
-          mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::TANH,
+          mpNode = new CEvaluationNodeFunction(CEvaluationNode::S_TANH,
                                                yytext);
           COMMON_ACTION;
           return TOKEN_FUNCTION;
@@ -1369,7 +1369,7 @@ do_action:  /* This label is used only to access EOF actions. */
           YY_RULE_SETUP
 #line 273 "function/CEvaluationLexer.lpp"
 
-          mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::SECH,
+          mpNode = new CEvaluationNodeFunction(CEvaluationNode::S_SECH,
                                                yytext);
           COMMON_ACTION;
           return TOKEN_FUNCTION;
@@ -1383,7 +1383,7 @@ do_action:  /* This label is used only to access EOF actions. */
           YY_RULE_SETUP
 #line 280 "function/CEvaluationLexer.lpp"
 
-          mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::CSCH,
+          mpNode = new CEvaluationNodeFunction(CEvaluationNode::S_CSCH,
                                                yytext);
           COMMON_ACTION;
           return TOKEN_FUNCTION;
@@ -1397,7 +1397,7 @@ do_action:  /* This label is used only to access EOF actions. */
           YY_RULE_SETUP
 #line 287 "function/CEvaluationLexer.lpp"
 
-          mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::COTH,
+          mpNode = new CEvaluationNodeFunction(CEvaluationNode::S_COTH,
                                                yytext);
           COMMON_ACTION;
           return TOKEN_FUNCTION;
@@ -1411,7 +1411,7 @@ do_action:  /* This label is used only to access EOF actions. */
           YY_RULE_SETUP
 #line 294 "function/CEvaluationLexer.lpp"
 
-          mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::ARCSIN,
+          mpNode = new CEvaluationNodeFunction(CEvaluationNode::S_ARCSIN,
                                                yytext);
           COMMON_ACTION;
           return TOKEN_FUNCTION;
@@ -1425,7 +1425,7 @@ do_action:  /* This label is used only to access EOF actions. */
           YY_RULE_SETUP
 #line 301 "function/CEvaluationLexer.lpp"
 
-          mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::ARCCOS,
+          mpNode = new CEvaluationNodeFunction(CEvaluationNode::S_ARCCOS,
                                                yytext);
           COMMON_ACTION;
           return TOKEN_FUNCTION;
@@ -1439,7 +1439,7 @@ do_action:  /* This label is used only to access EOF actions. */
           YY_RULE_SETUP
 #line 308 "function/CEvaluationLexer.lpp"
 
-          mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::ARCTAN,
+          mpNode = new CEvaluationNodeFunction(CEvaluationNode::S_ARCTAN,
                                                yytext);
           COMMON_ACTION;
           return TOKEN_FUNCTION;
@@ -1453,7 +1453,7 @@ do_action:  /* This label is used only to access EOF actions. */
           YY_RULE_SETUP
 #line 315 "function/CEvaluationLexer.lpp"
 
-          mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::ARCSEC,
+          mpNode = new CEvaluationNodeFunction(CEvaluationNode::S_ARCSEC,
                                                yytext);
           COMMON_ACTION;
           return TOKEN_FUNCTION;
@@ -1467,7 +1467,7 @@ do_action:  /* This label is used only to access EOF actions. */
           YY_RULE_SETUP
 #line 322 "function/CEvaluationLexer.lpp"
 
-          mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::ARCCSC,
+          mpNode = new CEvaluationNodeFunction(CEvaluationNode::S_ARCCSC,
                                                yytext);
           COMMON_ACTION;
           return TOKEN_FUNCTION;
@@ -1481,7 +1481,7 @@ do_action:  /* This label is used only to access EOF actions. */
           YY_RULE_SETUP
 #line 329 "function/CEvaluationLexer.lpp"
 
-          mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::ARCCOT,
+          mpNode = new CEvaluationNodeFunction(CEvaluationNode::S_ARCCOT,
                                                yytext);
           COMMON_ACTION;
           return TOKEN_FUNCTION;
@@ -1495,7 +1495,7 @@ do_action:  /* This label is used only to access EOF actions. */
           YY_RULE_SETUP
 #line 336 "function/CEvaluationLexer.lpp"
 
-          mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::ARCSINH,
+          mpNode = new CEvaluationNodeFunction(CEvaluationNode::S_ARCSINH,
                                                yytext);
           COMMON_ACTION;
           return TOKEN_FUNCTION;
@@ -1509,7 +1509,7 @@ do_action:  /* This label is used only to access EOF actions. */
           YY_RULE_SETUP
 #line 343 "function/CEvaluationLexer.lpp"
 
-          mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::ARCCOSH,
+          mpNode = new CEvaluationNodeFunction(CEvaluationNode::S_ARCCOSH,
                                                yytext);
           COMMON_ACTION;
           return TOKEN_FUNCTION;
@@ -1523,7 +1523,7 @@ do_action:  /* This label is used only to access EOF actions. */
           YY_RULE_SETUP
 #line 350 "function/CEvaluationLexer.lpp"
 
-          mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::ARCTANH,
+          mpNode = new CEvaluationNodeFunction(CEvaluationNode::S_ARCTANH,
                                                yytext);
           COMMON_ACTION;
           return TOKEN_FUNCTION;
@@ -1537,7 +1537,7 @@ do_action:  /* This label is used only to access EOF actions. */
           YY_RULE_SETUP
 #line 357 "function/CEvaluationLexer.lpp"
 
-          mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::ARCSECH,
+          mpNode = new CEvaluationNodeFunction(CEvaluationNode::S_ARCSECH,
                                                yytext);
           COMMON_ACTION;
           return TOKEN_FUNCTION;
@@ -1551,7 +1551,7 @@ do_action:  /* This label is used only to access EOF actions. */
           YY_RULE_SETUP
 #line 364 "function/CEvaluationLexer.lpp"
 
-          mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::ARCCSCH,
+          mpNode = new CEvaluationNodeFunction(CEvaluationNode::S_ARCCSCH,
                                                yytext);
           COMMON_ACTION;
           return TOKEN_FUNCTION;
@@ -1565,7 +1565,7 @@ do_action:  /* This label is used only to access EOF actions. */
           YY_RULE_SETUP
 #line 371 "function/CEvaluationLexer.lpp"
 
-          mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::ARCCOTH,
+          mpNode = new CEvaluationNodeFunction(CEvaluationNode::S_ARCCOTH,
                                                yytext);
           COMMON_ACTION;
           return TOKEN_FUNCTION;
@@ -1579,7 +1579,7 @@ do_action:  /* This label is used only to access EOF actions. */
           YY_RULE_SETUP
 #line 378 "function/CEvaluationLexer.lpp"
 
-          mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::SQRT,
+          mpNode = new CEvaluationNodeFunction(CEvaluationNode::S_SQRT,
                                                yytext);
           COMMON_ACTION;
           return TOKEN_FUNCTION;
@@ -1593,7 +1593,7 @@ do_action:  /* This label is used only to access EOF actions. */
           YY_RULE_SETUP
 #line 385 "function/CEvaluationLexer.lpp"
 
-          mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::ABS,
+          mpNode = new CEvaluationNodeFunction(CEvaluationNode::S_ABS,
                                                yytext);
           COMMON_ACTION;
           return TOKEN_FUNCTION;
@@ -1607,7 +1607,7 @@ do_action:  /* This label is used only to access EOF actions. */
           YY_RULE_SETUP
 #line 392 "function/CEvaluationLexer.lpp"
 
-          mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::FLOOR,
+          mpNode = new CEvaluationNodeFunction(CEvaluationNode::S_FLOOR,
                                                yytext);
           COMMON_ACTION;
           return TOKEN_FUNCTION;
@@ -1621,7 +1621,7 @@ do_action:  /* This label is used only to access EOF actions. */
           YY_RULE_SETUP
 #line 399 "function/CEvaluationLexer.lpp"
 
-          mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::CEIL,
+          mpNode = new CEvaluationNodeFunction(CEvaluationNode::S_CEIL,
                                                yytext);
           COMMON_ACTION;
           return TOKEN_FUNCTION;
@@ -1635,7 +1635,7 @@ do_action:  /* This label is used only to access EOF actions. */
           YY_RULE_SETUP
 #line 406 "function/CEvaluationLexer.lpp"
 
-          mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::FACTORIAL,
+          mpNode = new CEvaluationNodeFunction(CEvaluationNode::S_FACTORIAL,
                                                yytext);
           COMMON_ACTION;
           return TOKEN_FUNCTION;
@@ -1649,7 +1649,7 @@ do_action:  /* This label is used only to access EOF actions. */
           YY_RULE_SETUP
 #line 413 "function/CEvaluationLexer.lpp"
 
-          mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::RUNIFORM,
+          mpNode = new CEvaluationNodeFunction(CEvaluationNode::S_RUNIFORM,
                                                yytext);
           COMMON_ACTION;
           return TOKEN_FUNCTION_2;
@@ -1663,7 +1663,7 @@ do_action:  /* This label is used only to access EOF actions. */
           YY_RULE_SETUP
 #line 420 "function/CEvaluationLexer.lpp"
 
-          mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::RGAMMA,
+          mpNode = new CEvaluationNodeFunction(CEvaluationNode::S_RGAMMA,
                                                yytext);
           COMMON_ACTION;
           return TOKEN_FUNCTION_2;
@@ -1677,7 +1677,7 @@ do_action:  /* This label is used only to access EOF actions. */
           YY_RULE_SETUP
 #line 427 "function/CEvaluationLexer.lpp"
 
-          mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::RPOISSON,
+          mpNode = new CEvaluationNodeFunction(CEvaluationNode::S_RPOISSON,
                                                yytext);
           COMMON_ACTION;
           return TOKEN_FUNCTION;
@@ -1691,7 +1691,7 @@ do_action:  /* This label is used only to access EOF actions. */
           YY_RULE_SETUP
 #line 434 "function/CEvaluationLexer.lpp"
 
-          mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::RNORMAL,
+          mpNode = new CEvaluationNodeFunction(CEvaluationNode::S_RNORMAL,
                                                yytext);
           COMMON_ACTION;
           return TOKEN_FUNCTION_2;
@@ -1705,7 +1705,7 @@ do_action:  /* This label is used only to access EOF actions. */
           YY_RULE_SETUP
 #line 441 "function/CEvaluationLexer.lpp"
 
-          mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::MAX,
+          mpNode = new CEvaluationNodeFunction(CEvaluationNode::S_MAX,
                                                yytext);
           COMMON_ACTION;
           return TOKEN_FUNCTION_2;
@@ -1719,7 +1719,7 @@ do_action:  /* This label is used only to access EOF actions. */
           YY_RULE_SETUP
 #line 448 "function/CEvaluationLexer.lpp"
 
-          mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::MIN,
+          mpNode = new CEvaluationNodeFunction(CEvaluationNode::S_MIN,
                                                yytext);
           COMMON_ACTION;
           return TOKEN_FUNCTION_2;
@@ -1733,7 +1733,7 @@ do_action:  /* This label is used only to access EOF actions. */
           YY_RULE_SETUP
 #line 455 "function/CEvaluationLexer.lpp"
 
-          mpNode = new CEvaluationNodeDelay(CEvaluationNodeDelay::DELAY,
+          mpNode = new CEvaluationNodeDelay(CEvaluationNode::S_DELAY,
                                             yytext);
           COMMON_ACTION;
           return TOKEN_FUNCTION_2;
@@ -1747,7 +1747,7 @@ do_action:  /* This label is used only to access EOF actions. */
           YY_RULE_SETUP
 #line 462 "function/CEvaluationLexer.lpp"
 
-          mpNode = new CEvaluationNodeChoice(CEvaluationNodeChoice::IF,
+          mpNode = new CEvaluationNodeChoice(CEvaluationNode::S_IF,
                                              yytext);
           COMMON_ACTION;
           return TOKEN_LOGICAL_CHOICE;
@@ -1764,7 +1764,7 @@ do_action:  /* This label is used only to access EOF actions. */
 
           {
             std::string tmp(yytext);
-            mpNode = new CEvaluationNodeCall(CEvaluationNodeCall::EXPRESSION,
+            mpNode = new CEvaluationNodeCall(CEvaluationNode::S_EXPRESSION,
             tmp.substr(0, tmp.length() - 1));
           }
           COMMON_ACTION;
@@ -1779,7 +1779,7 @@ do_action:  /* This label is used only to access EOF actions. */
 
           {
             std::string tmp(yytext);
-            mpNode = new CEvaluationNodeCall(CEvaluationNodeCall::FUNCTION,
+            mpNode = new CEvaluationNodeCall(CEvaluationNode::S_FUNCTION,
             tmp.substr(0, tmp.length() - 1));
           }
           COMMON_ACTION;
@@ -1792,7 +1792,7 @@ do_action:  /* This label is used only to access EOF actions. */
 #line 489 "function/CEvaluationLexer.lpp"
 
           BEGIN(sVALUE);
-          mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::MINUS,
+          mpNode = new CEvaluationNodeFunction(CEvaluationNode::S_MINUS,
                                                yytext);
           COMMON_ACTION;
           return TOKEN_SIGN;
@@ -1804,7 +1804,7 @@ do_action:  /* This label is used only to access EOF actions. */
 #line 497 "function/CEvaluationLexer.lpp"
 
           BEGIN(sVALUE);
-          mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::PLUS,
+          mpNode = new CEvaluationNodeFunction(CEvaluationNode::S_PLUS,
                                                yytext);
           COMMON_ACTION;
           return TOKEN_SIGN;
@@ -1816,7 +1816,7 @@ do_action:  /* This label is used only to access EOF actions. */
 #line 505 "function/CEvaluationLexer.lpp"
 
           BEGIN(sSIGNorVALUE);
-          mpNode = new CEvaluationNodeOperator(CEvaluationNodeOperator::POWER,
+          mpNode = new CEvaluationNodeOperator(CEvaluationNode::S_POWER,
                                                yytext);
           COMMON_ACTION;
           return TOKEN_OPERATOR_POWER;
@@ -1828,7 +1828,7 @@ do_action:  /* This label is used only to access EOF actions. */
 #line 513 "function/CEvaluationLexer.lpp"
 
           BEGIN(sSIGNorVALUE);
-          mpNode = new CEvaluationNodeOperator(CEvaluationNodeOperator::MULTIPLY,
+          mpNode = new CEvaluationNodeOperator(CEvaluationNode::S_MULTIPLY,
                                                yytext);
           COMMON_ACTION;
           return TOKEN_OPERATOR_MULTIPLY;
@@ -1840,7 +1840,7 @@ do_action:  /* This label is used only to access EOF actions. */
 #line 521 "function/CEvaluationLexer.lpp"
 
           BEGIN(sSIGNorVALUE);
-          mpNode = new CEvaluationNodeOperator(CEvaluationNodeOperator::DIVIDE,
+          mpNode = new CEvaluationNodeOperator(CEvaluationNode::S_DIVIDE,
                                                yytext);
           COMMON_ACTION;
           return TOKEN_OPERATOR_MULTIPLY;
@@ -1852,7 +1852,7 @@ do_action:  /* This label is used only to access EOF actions. */
 #line 529 "function/CEvaluationLexer.lpp"
 
           BEGIN(sSIGNorVALUE);
-          mpNode = new CEvaluationNodeOperator(CEvaluationNodeOperator::MODULUS,
+          mpNode = new CEvaluationNodeOperator(CEvaluationNode::S_MODULUS,
                                                yytext);
           COMMON_ACTION;
           return TOKEN_OPERATOR_MODULUS;
@@ -1864,7 +1864,7 @@ do_action:  /* This label is used only to access EOF actions. */
 #line 537 "function/CEvaluationLexer.lpp"
 
           BEGIN(sSIGNorVALUE);
-          mpNode = new CEvaluationNodeOperator(CEvaluationNodeOperator::REMAINDER,
+          mpNode = new CEvaluationNodeOperator(CEvaluationNode::S_REMAINDER,
                                                yytext);
           COMMON_ACTION;
           return TOKEN_OPERATOR_REMAINDER;
@@ -1876,7 +1876,7 @@ do_action:  /* This label is used only to access EOF actions. */
 #line 545 "function/CEvaluationLexer.lpp"
 
           BEGIN(sSIGNorVALUE);
-          mpNode = new CEvaluationNodeOperator(CEvaluationNodeOperator::PLUS,
+          mpNode = new CEvaluationNodeOperator(CEvaluationNode::S_PLUS,
                                                yytext);
           COMMON_ACTION;
           return TOKEN_OPERATOR_PLUS;
@@ -1888,7 +1888,7 @@ do_action:  /* This label is used only to access EOF actions. */
 #line 553 "function/CEvaluationLexer.lpp"
 
           BEGIN(sSIGNorVALUE);
-          mpNode = new CEvaluationNodeOperator(CEvaluationNodeOperator::MINUS,
+          mpNode = new CEvaluationNodeOperator(CEvaluationNode::S_MINUS,
                                                yytext);
           COMMON_ACTION;
           return TOKEN_OPERATOR_PLUS;
@@ -1901,7 +1901,7 @@ do_action:  /* This label is used only to access EOF actions. */
 
           BEGIN(sSIGNorVALUE);
           mPosition += yyleng;
-          // mpNode = new CEvaluationNodeStructure(CEvaluationNodeStructure::OPEN,
+          // mpNode = new CEvaluationNodeStructure(CEvaluationNode::S_OPEN,
           //                                       yytext);
           // COMMON_ACTION;
           return TOKEN_STRUCTURE_OPEN;
@@ -1914,7 +1914,7 @@ do_action:  /* This label is used only to access EOF actions. */
 
           BEGIN(sSIGNorVALUE);
           mPosition += yyleng;
-          // mpNode = new CEvaluationNodeStructure(CEvaluationNodeStructure::VECTOR_OPEN,
+          // mpNode = new CEvaluationNodeStructure(CEvaluationNode::S_VECTOR_OPEN,
           //                                       yytext);
           // COMMON_ACTION;
           return TOKEN_STRUCTURE_VECTOR_OPEN;
@@ -1927,7 +1927,7 @@ do_action:  /* This label is used only to access EOF actions. */
 
           BEGIN(sSIGNorVALUE);
           mPosition += yyleng;
-          // mpNode = new CEvaluationNodeStructure(CEvaluationNodeStructure::COMMA,
+          // mpNode = new CEvaluationNodeStructure(CEvaluationNode::S_COMMA,
           //                                       yytext);
           // COMMON_ACTION;
           return TOKEN_STRUCTURE_COMMA;
@@ -1940,7 +1940,7 @@ do_action:  /* This label is used only to access EOF actions. */
 
           BEGIN(sOPERATOR);
           mPosition += yyleng;
-          // mpNode = new CEvaluationNodeStructure(CEvaluationNodeStructure::CLOSE,
+          // mpNode = new CEvaluationNodeStructure(CEvaluationNode::S_CLOSE,
           //                                       yytext);
           // COMMON_ACTION;
           return TOKEN_STRUCTURE_CLOSE;
@@ -1953,7 +1953,7 @@ do_action:  /* This label is used only to access EOF actions. */
 
           BEGIN(sOPERATOR);
           mPosition += yyleng;
-          // mpNode = new CEvaluationNodeStructure(CEvaluationNodeStructure::VECTOR_CLOSE,
+          // mpNode = new CEvaluationNodeStructure(CEvaluationNode::S_VECTOR_CLOSE,
           //                                       yytext);
           // COMMON_ACTION;
           return TOKEN_STRUCTURE_VECTOR_CLOSE;
@@ -1966,7 +1966,7 @@ do_action:  /* This label is used only to access EOF actions. */
 #line 606 "function/CEvaluationLexer.lpp"
 
           BEGIN(sOPERATOR);
-          mpNode = new CEvaluationNodeVariable(CEvaluationNodeVariable::ANY,
+          mpNode = new CEvaluationNodeVariable(CEvaluationNode::S_DEFAULT,
                                                yytext);
           COMMON_ACTION;
           return TOKEN_VARIABLE;
@@ -1979,7 +1979,7 @@ do_action:  /* This label is used only to access EOF actions. */
 #line 614 "function/CEvaluationLexer.lpp"
 
           mPosition += yyleng;
-          // mpNode = new CEvaluationNodeWhiteSpace(CEvaluationNodeWhiteSpace::ANY,
+          // mpNode = new CEvaluationNodeWhiteSpace(CEvaluationNode::S_DEFAULT,
           //                                        yytext);
           // COMMON_ACTION;
 

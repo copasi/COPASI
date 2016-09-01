@@ -33,27 +33,27 @@
 #include "sbml/Reaction.h"
 
 CEvaluationNodeObject::CEvaluationNodeObject():
-  CEvaluationNode(CEvaluationNode::INVALID, ""),
+  CEvaluationNode(T_OBJECT, S_INVALID, ""),
   mpObject(NULL),
   mRegisteredObjectCN("")
 {mPrecedence = PRECEDENCE_NUMBER;}
 
 CEvaluationNodeObject::CEvaluationNodeObject(const SubType & subType,
     const Data & data):
-  CEvaluationNode((Type)(CEvaluationNode::OBJECT | subType), data),
+  CEvaluationNode(T_OBJECT, subType, data),
   mpObject(NULL),
   mRegisteredObjectCN()
 {
   switch (subType)
     {
-      case INVALID:
+      case S_INVALID:
         break;
 
-      case CN:
+      case S_CN:
         mRegisteredObjectCN = data.substr(1, data.length() - 2);
         break;
 
-      case POINTER:
+      case S_POINTER:
         mpValue = (const C_FLOAT64 *) stringToPointer(data);
         break;
     }
@@ -62,7 +62,7 @@ CEvaluationNodeObject::CEvaluationNodeObject(const SubType & subType,
 }
 
 CEvaluationNodeObject::CEvaluationNodeObject(const C_FLOAT64 * pValue):
-  CEvaluationNode((Type)(CEvaluationNode::OBJECT | POINTER), "pointer"),
+  CEvaluationNode(T_OBJECT, S_POINTER, "pointer"),
   mpObject(NULL),
   mRegisteredObjectCN("")
 {
@@ -86,9 +86,9 @@ bool CEvaluationNodeObject::compile(const CEvaluationTree * pTree)
   mpObject = NULL;
   mpValue = NULL;
 
-  switch ((int) subType(mType))
+  switch (mSubType)
     {
-      case CN:
+      case S_CN:
       {
         const CExpression * pExpression = dynamic_cast< const CExpression * >(pTree);
 
@@ -136,7 +136,7 @@ bool CEvaluationNodeObject::compile(const CEvaluationTree * pTree)
       }
       break;
 
-      case POINTER:
+      case S_POINTER:
         // We need to convert the data into a pointer
         mpValue = (const C_FLOAT64 *) stringToPointer(mData);
 
@@ -159,7 +159,7 @@ bool CEvaluationNodeObject::compile(const CEvaluationTree * pTree)
 
         break;
 
-      case INVALID:
+      case S_INVALID:
         break;
     }
 
@@ -170,13 +170,13 @@ const CEvaluationNode::Data & CEvaluationNodeObject::getData() const
 {
   static std::string data;
 
-  switch ((int) subType(mType))
+  switch (mSubType)
     {
-      case CN:
+      case S_CN:
         return data = "<" + mRegisteredObjectCN + ">";
         break;
 
-      case POINTER:
+      case S_POINTER:
         return mData;
         break;
     }
@@ -188,7 +188,7 @@ bool CEvaluationNodeObject::setData(const Data & data)
 {
   mData = data;
 
-  if ((int) subType(mType) == (int) CN)
+  if (mSubType == S_CN)
     mRegisteredObjectCN = data.substr(1, data.length() - 2);
 
   return true;
@@ -197,13 +197,13 @@ bool CEvaluationNodeObject::setData(const Data & data)
 // virtual
 std::string CEvaluationNodeObject::getInfix(const std::vector< std::string > & /* children */) const
 {
-  switch ((int) subType(mType))
+  switch (mSubType)
     {
-      case CN:
+      case S_CN:
         return "<" + mRegisteredObjectCN + ">";
         break;
 
-      case POINTER:
+      case S_POINTER:
         return mData;
         break;
     }
@@ -268,7 +268,7 @@ CEvaluationNode * CEvaluationNodeObject::fromAST(const ASTNode * pASTNode, const
       case AST_NAME_AVOGADRO:
       case AST_NAME_TIME:
       case AST_NAME:
-        pNode = new CEvaluationNodeObject(CN, CCopasiObjectName(std::string("<") + pASTNode->getName() + std::string(">")));
+        pNode = new CEvaluationNodeObject(S_CN, CCopasiObjectName(std::string("<") + pASTNode->getName() + std::string(">")));
         break;
 
       default:
@@ -397,12 +397,12 @@ const C_FLOAT64 * CEvaluationNodeObject::getObjectValuePtr() const
 
 void CEvaluationNodeObject::setObjectValuePtr(C_FLOAT64 * pObjectValue)
 {
-  switch ((int) subType(mType))
+  switch (mSubType)
     {
-      case CN:
+      case S_CN:
         break;
 
-      case POINTER:
+      case S_POINTER:
 
         if (mpValue != pObjectValue)
           {

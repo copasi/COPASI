@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -77,7 +77,7 @@ void test000047::test_delay()
   CPPUNIT_ASSERT(pObject->getObjectParent() == pB);
   const CEvaluationNodeNumber* pNumberNode = dynamic_cast<const CEvaluationNodeNumber*>(pObjectNode->getSibling());
   CPPUNIT_ASSERT(pNumberNode != NULL);
-  CPPUNIT_ASSERT(((CEvaluationNodeNumber::SubType)CEvaluationNode::subType(pNumberNode->getType())) == CEvaluationNodeNumber::DOUBLE);
+  CPPUNIT_ASSERT((pNumberNode->subType()) == CEvaluationNode::S_DOUBLE);
   CPPUNIT_ASSERT(fabs((pNumberNode->getValue() - 0.5) / 0.5) < 1e-3);
 
   CPPUNIT_ASSERT(pNumberNode->getSibling() == NULL);

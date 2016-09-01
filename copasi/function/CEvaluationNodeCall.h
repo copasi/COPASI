@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -29,17 +29,6 @@ class CCopasiDataModel;
  */
 class CEvaluationNodeCall : public CEvaluationNode
 {
-public:
-  /**
-   * Enumeration of possible node types.
-   */
-  enum SubType
-  {
-    INVALID = 0x00FFFFFF,
-    FUNCTION = 0x00000000,
-    EXPRESSION = 0x00000001
-  };
-
   // Operations
 private:
   /**

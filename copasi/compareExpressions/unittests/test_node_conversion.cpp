@@ -1,17 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/unittests/test_node_conversion.cpp,v $
-//   $Revision: 1.6 $
-//   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/07/02 17:57:53 $
-// End CVS Header
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -56,7 +53,7 @@ void test_node_conversion::test_0001()
   CEvaluationNode* pResultNode = convertToCEvaluationNode(pSum);
   CEvaluationNodeOperator* pOperator = dynamic_cast<CEvaluationNodeOperator*>(pResultNode);
   CPPUNIT_ASSERT(pOperator != NULL);
-  CPPUNIT_ASSERT(((CEvaluationNodeOperator::SubType)CEvaluationNode::subType(pOperator->getType())) == CEvaluationNodeOperator::PLUS);
+  CPPUNIT_ASSERT((pOperator->subType()) == CEvaluationNode::S_PLUS);
   CEvaluationNodeVariable* pVariable = NULL;
 
   if (dynamic_cast<CEvaluationNodeOperator*>(pOperator->getChild()))
@@ -110,17 +107,17 @@ void test_node_conversion::test_0002()
   CEvaluationNode* pResultNode = convertToCEvaluationNode(pSum);
   CEvaluationNodeOperator* pOperator = dynamic_cast<CEvaluationNodeOperator*>(pResultNode);
   CPPUNIT_ASSERT(pOperator != NULL);
-  CPPUNIT_ASSERT(((CEvaluationNodeOperator::SubType)CEvaluationNode::subType(pOperator->getType())) == CEvaluationNodeOperator::PLUS);
+  CPPUNIT_ASSERT((pOperator->subType()) == CEvaluationNode::S_PLUS);
   pOperator = dynamic_cast<CEvaluationNodeOperator*>(pOperator->getChild());
   CPPUNIT_ASSERT(pOperator != NULL);
-  CPPUNIT_ASSERT(((CEvaluationNodeOperator::SubType)CEvaluationNode::subType(pOperator->getType())) == CEvaluationNodeOperator::MULTIPLY);
+  CPPUNIT_ASSERT((pOperator->subType()) == CEvaluationNode::S_MULTIPLY);
   CEvaluationNodeVariable* pVariable = dynamic_cast<CEvaluationNodeVariable*>(pOperator->getChild());
   CPPUNIT_ASSERT(pVariable != NULL);
   pVariable = dynamic_cast<CEvaluationNodeVariable*>(pVariable->getSibling());
   CPPUNIT_ASSERT(pVariable != NULL);
   pOperator = dynamic_cast<CEvaluationNodeOperator*>(pOperator->getSibling());
   CPPUNIT_ASSERT(pOperator != NULL);
-  CPPUNIT_ASSERT(((CEvaluationNodeOperator::SubType)CEvaluationNode::subType(pOperator->getType())) == CEvaluationNodeOperator::MULTIPLY);
+  CPPUNIT_ASSERT((pOperator->subType()) == CEvaluationNode::S_MULTIPLY);
   pVariable = dynamic_cast<CEvaluationNodeVariable*>(pOperator->getChild());
   CPPUNIT_ASSERT(pVariable != NULL);
   pVariable = dynamic_cast<CEvaluationNodeVariable*>(pVariable->getSibling());

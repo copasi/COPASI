@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -42,59 +42,6 @@ class CCopasiDataModel;
  */
 class CEvaluationNodeFunction : public CEvaluationNode
 {
-public:
-  /**
-   * Enumeration of possible node types.
-   */
-  enum SubType
-  {
-    INVALID = 0x00FFFFFF,
-    LOG = 0x00000000,
-    LOG10 = 0x00000001,
-    EXP = 0x00000002,
-    SIN = 0x00000003,
-    COS = 0x00000004,
-    TAN = 0x00000005,
-#ifdef SEC
-# undef SEC
-#endif
-    SEC = 0x00000006,
-    CSC = 0x00000007,
-    COT = 0x00000008,
-    SINH = 0x00000009,
-    COSH = 0x0000000a,
-    TANH = 0x0000000b,
-    SECH = 0x0000000c,
-    CSCH = 0x0000000d,
-    COTH = 0x0000000e,
-    ARCSIN = 0x0000000f,
-    ARCCOS = 0x00000010,
-    ARCTAN = 0x00000011,
-    ARCSEC = 0x00000012,
-    ARCCSC = 0x00000013,
-    ARCCOT = 0x00000014,
-    ARCSINH = 0x00000015,
-    ARCCOSH = 0x00000016,
-    ARCTANH = 0x00000017,
-    ARCSECH = 0x00000018,
-    ARCCSCH = 0x00000019,
-    ARCCOTH = 0x0000001a,
-    SQRT = 0x0000001b,
-    ABS = 0x0000001c,
-    FLOOR = 0x0000001d,
-    CEIL = 0x0000001e,
-    FACTORIAL = 0x0000001f,
-    MINUS = 0x00000020,
-    PLUS = 0x00000021,
-    NOT = 0x00000022,
-    RUNIFORM = 0x00000023,
-    RNORMAL = 0x00000024,
-    MAX = 0x00000025,
-    MIN =  0x00000026,
-    RGAMMA = 0x00000027,
-    RPOISSON = 0x00000028
-  };
-
   // Operations
 private:
   /**

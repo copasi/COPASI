@@ -1,12 +1,4 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/unittests/test_depth_first_iterator.cpp,v $
-//   $Revision: 1.4 $
-//   $Name:  $
-//   $Author: bergmann $
-//   $Date: 2012/05/16 06:24:48 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -50,7 +42,7 @@ void test_depth_first_iterator::test_dfi()
   // 7
   pNode = *it;
   CPPUNIT_ASSERT(pNode != NULL);
-  CPPUNIT_ASSERT(CEvaluationNode::type(pNode->getType()) == CEvaluationNode::NUMBER);
+  CPPUNIT_ASSERT(pNode->mainType() == CEvaluationNode::T_NUMBER);
   pNumberNode = dynamic_cast<CEvaluationNodeNumber*>(pNode);
   CPPUNIT_ASSERT(pNumberNode != NULL);
   CPPUNIT_ASSERT((fabs(pNumberNode->getValue() - 7) / 7.0) <= std::numeric_limits<double>::min());
@@ -59,7 +51,7 @@ void test_depth_first_iterator::test_dfi()
   CPPUNIT_ASSERT(it.isValid() == true);
   pNode = *it;
   CPPUNIT_ASSERT(pNode != NULL);
-  CPPUNIT_ASSERT(CEvaluationNode::type(pNode->getType()) == CEvaluationNode::NUMBER);
+  CPPUNIT_ASSERT(pNode->mainType() == CEvaluationNode::T_NUMBER);
   pNumberNode = dynamic_cast<CEvaluationNodeNumber*>(pNode);
   CPPUNIT_ASSERT(pNumberNode != NULL);
   CPPUNIT_ASSERT((fabs(pNumberNode->getValue() - 3) / 3.0) <= std::numeric_limits<double>::min());
@@ -68,7 +60,7 @@ void test_depth_first_iterator::test_dfi()
   CPPUNIT_ASSERT(it.isValid() == true);
   pNode = *it;
   CPPUNIT_ASSERT(pNode != NULL);
-  CPPUNIT_ASSERT(CEvaluationNode::type(pNode->getType()) == CEvaluationNode::NUMBER);
+  CPPUNIT_ASSERT(pNode->mainType() == CEvaluationNode::T_NUMBER);
   pNumberNode = dynamic_cast<CEvaluationNodeNumber*>(pNode);
   CPPUNIT_ASSERT(pNumberNode != NULL);
   CPPUNIT_ASSERT((fabs(pNumberNode->getValue() - 4) / 4.0) <= std::numeric_limits<double>::min());
@@ -77,7 +69,7 @@ void test_depth_first_iterator::test_dfi()
   CPPUNIT_ASSERT(it.isValid() == true);
   pNode = *it;
   CPPUNIT_ASSERT(pNode != NULL);
-  CPPUNIT_ASSERT(CEvaluationNode::type(pNode->getType()) == CEvaluationNode::NUMBER);
+  CPPUNIT_ASSERT(pNode->mainType() == CEvaluationNode::T_NUMBER);
   pNumberNode = dynamic_cast<CEvaluationNodeNumber*>(pNode);
   CPPUNIT_ASSERT(pNumberNode != NULL);
   CPPUNIT_ASSERT((fabs(pNumberNode->getValue() - 6) / 6.0) <= std::numeric_limits<double>::min());
@@ -86,34 +78,34 @@ void test_depth_first_iterator::test_dfi()
   CPPUNIT_ASSERT(it.isValid() == true);
   pNode = *it;
   CPPUNIT_ASSERT(pNode != NULL);
-  CPPUNIT_ASSERT(CEvaluationNode::type(pNode->getType()) == CEvaluationNode::OPERATOR);
+  CPPUNIT_ASSERT(pNode->mainType() == CEvaluationNode::T_OPERATOR);
   pOperatorNode = dynamic_cast<CEvaluationNodeOperator*>(pNode);
   CPPUNIT_ASSERT(pOperatorNode != NULL);
-  CPPUNIT_ASSERT((CEvaluationNodeOperator::SubType)CEvaluationNode::subType(pOperatorNode->getType()) == CEvaluationNodeOperator::MINUS);
+  CPPUNIT_ASSERT(pOperatorNode->subType() == CEvaluationNode::S_MINUS);
   // +
   ++it;
   CPPUNIT_ASSERT(it.isValid() == true);
   pNode = *it;
   CPPUNIT_ASSERT(pNode != NULL);
-  CPPUNIT_ASSERT(CEvaluationNode::type(pNode->getType()) == CEvaluationNode::OPERATOR);
+  CPPUNIT_ASSERT(pNode->mainType() == CEvaluationNode::T_OPERATOR);
   pOperatorNode = dynamic_cast<CEvaluationNodeOperator*>(pNode);
   CPPUNIT_ASSERT(pOperatorNode != NULL);
-  CPPUNIT_ASSERT((CEvaluationNodeOperator::SubType)CEvaluationNode::subType(pOperatorNode->getType()) == CEvaluationNodeOperator::PLUS);
+  CPPUNIT_ASSERT(pOperatorNode->subType() == CEvaluationNode::S_PLUS);
   // -
   ++it;
   CPPUNIT_ASSERT(it.isValid() == true);
   pNode = *it;
   CPPUNIT_ASSERT(pNode != NULL);
-  CPPUNIT_ASSERT(CEvaluationNode::type(pNode->getType()) == CEvaluationNode::OPERATOR);
+  CPPUNIT_ASSERT(pNode->mainType() == CEvaluationNode::T_OPERATOR);
   pOperatorNode = dynamic_cast<CEvaluationNodeOperator*>(pNode);
   CPPUNIT_ASSERT(pOperatorNode != NULL);
-  CPPUNIT_ASSERT((CEvaluationNodeOperator::SubType)CEvaluationNode::subType(pOperatorNode->getType()) == CEvaluationNodeOperator::MINUS);
+  CPPUNIT_ASSERT(pOperatorNode->subType() == CEvaluationNode::S_MINUS);
   // 1
   ++it;
   CPPUNIT_ASSERT(it.isValid() == true);
   pNode = *it;
   CPPUNIT_ASSERT(pNode != NULL);
-  CPPUNIT_ASSERT(CEvaluationNode::type(pNode->getType()) == CEvaluationNode::NUMBER);
+  CPPUNIT_ASSERT(pNode->mainType() == CEvaluationNode::T_NUMBER);
   pNumberNode = dynamic_cast<CEvaluationNodeNumber*>(pNode);
   CPPUNIT_ASSERT(pNumberNode != NULL);
   CPPUNIT_ASSERT((fabs(pNumberNode->getValue() - 1) / 1.0) <= std::numeric_limits<double>::min());
@@ -122,7 +114,7 @@ void test_depth_first_iterator::test_dfi()
   CPPUNIT_ASSERT(it.isValid() == true);
   pNode = *it;
   CPPUNIT_ASSERT(pNode != NULL);
-  CPPUNIT_ASSERT(CEvaluationNode::type(pNode->getType()) == CEvaluationNode::NUMBER);
+  CPPUNIT_ASSERT(pNode->mainType() == CEvaluationNode::T_NUMBER);
   pNumberNode = dynamic_cast<CEvaluationNodeNumber*>(pNode);
   CPPUNIT_ASSERT(pNumberNode != NULL);
   CPPUNIT_ASSERT((fabs(pNumberNode->getValue() - 8) / 8.0) <= std::numeric_limits<double>::min());
@@ -131,19 +123,19 @@ void test_depth_first_iterator::test_dfi()
   CPPUNIT_ASSERT(it.isValid() == true);
   pNode = *it;
   CPPUNIT_ASSERT(pNode != NULL);
-  CPPUNIT_ASSERT(CEvaluationNode::type(pNode->getType()) == CEvaluationNode::OPERATOR);
+  CPPUNIT_ASSERT(pNode->mainType() == CEvaluationNode::T_OPERATOR);
   pOperatorNode = dynamic_cast<CEvaluationNodeOperator*>(pNode);
   CPPUNIT_ASSERT(pOperatorNode != NULL);
-  CPPUNIT_ASSERT((CEvaluationNodeOperator::SubType)CEvaluationNode::subType(pOperatorNode->getType()) == CEvaluationNodeOperator::MULTIPLY);
+  CPPUNIT_ASSERT(pOperatorNode->subType() == CEvaluationNode::S_MULTIPLY);
   // +
   ++it;
   CPPUNIT_ASSERT(it.isValid() == true);
   pNode = *it;
   CPPUNIT_ASSERT(pNode != NULL);
-  CPPUNIT_ASSERT(CEvaluationNode::type(pNode->getType()) == CEvaluationNode::OPERATOR);
+  CPPUNIT_ASSERT(pNode->mainType() == CEvaluationNode::T_OPERATOR);
   pOperatorNode = dynamic_cast<CEvaluationNodeOperator*>(pNode);
   CPPUNIT_ASSERT(pOperatorNode != NULL);
-  CPPUNIT_ASSERT((CEvaluationNodeOperator::SubType)CEvaluationNode::subType(pOperatorNode->getType()) == CEvaluationNodeOperator::PLUS);
+  CPPUNIT_ASSERT(pOperatorNode->subType() == CEvaluationNode::S_PLUS);
 
   ++it;
   CPPUNIT_ASSERT(it.isValid() == false);
@@ -151,4 +143,3 @@ void test_depth_first_iterator::test_dfi()
 
   delete pTree;
 }
-

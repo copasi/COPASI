@@ -3760,15 +3760,15 @@ CEvaluationNode* CModel::prepareElasticity(const CReaction * pReaction, const CM
       prod.push_back(pReaction->getMap().getObjects()[0].value); //k1
 
       if (prod.size() == 1)
-        tmp_ma = new CEvaluationNodeObject(CEvaluationNodeObject::CN, "<" + prod[0]->getCN() + ">");
+        tmp_ma = new CEvaluationNodeObject(CEvaluationNode::S_CN, "<" + prod[0]->getCN() + ">");
       else
         {
-          tmp_ma = CDerive::multiply(new CEvaluationNodeObject(CEvaluationNodeObject::CN, "<" + prod[0]->getCN() + ">"),
-                                     new CEvaluationNodeObject(CEvaluationNodeObject::CN, "<" + prod[1]->getCN() + ">"), simplify);
+          tmp_ma = CDerive::multiply(new CEvaluationNodeObject(CEvaluationNode::S_CN, "<" + prod[0]->getCN() + ">"),
+                                     new CEvaluationNodeObject(CEvaluationNode::S_CN, "<" + prod[1]->getCN() + ">"), simplify);
 
           for (j = 2; j < prod.size(); ++j)
             tmp_ma = CDerive::multiply(tmp_ma,
-                                       new CEvaluationNodeObject(CEvaluationNodeObject::CN, "<" + prod[j]->getCN() + ">"), simplify);
+                                       new CEvaluationNodeObject(CEvaluationNode::S_CN, "<" + prod[j]->getCN() + ">"), simplify);
         }
 
       //backwards part
@@ -3786,18 +3786,18 @@ CEvaluationNode* CModel::prepareElasticity(const CReaction * pReaction, const CM
           prod.push_back(pReaction->getMap().getObjects()[2].value); //k2
 
           if (prod.size() == 1)
-            tt2 = new CEvaluationNodeObject(CEvaluationNodeObject::CN, "<" + prod[0]->getCN() + ">");
+            tt2 = new CEvaluationNodeObject(CEvaluationNode::S_CN, "<" + prod[0]->getCN() + ">");
           else
             {
-              tt2 = CDerive::multiply(new CEvaluationNodeObject(CEvaluationNodeObject::CN, "<" + prod[0]->getCN() + ">"),
-                                      new CEvaluationNodeObject(CEvaluationNodeObject::CN, "<" + prod[1]->getCN() + ">"), simplify);
+              tt2 = CDerive::multiply(new CEvaluationNodeObject(CEvaluationNode::S_CN, "<" + prod[0]->getCN() + ">"),
+                                      new CEvaluationNodeObject(CEvaluationNode::S_CN, "<" + prod[1]->getCN() + ">"), simplify);
 
               for (j = 2; j < prod.size(); ++j)
                 tt2 = CDerive::multiply(tt2,
-                                        new CEvaluationNodeObject(CEvaluationNodeObject::CN, "<" + prod[j]->getCN() + ">"), simplify);
+                                        new CEvaluationNodeObject(CEvaluationNode::S_CN, "<" + prod[j]->getCN() + ">"), simplify);
             }
 
-          tmp_ma = new CEvaluationNodeOperator(CEvaluationNodeOperator::MINUS, "-");
+          tmp_ma = new CEvaluationNodeOperator(CEvaluationNode::S_MINUS, "-");
           tmp_ma->addChild(ttt);
           tmp_ma->addChild(tt2);
         }
@@ -3831,7 +3831,7 @@ CEvaluationNode* CModel::prepareElasticity(const CReaction * pReaction, const CM
             tmpObj = tmpMetab->getConcentrationReference();
 
           std::string tmpstr = tmpObj ? "<" + tmpObj->getCN() + ">" : "<>";
-          CEvaluationNodeObject* tmpENO = new CEvaluationNodeObject(CEvaluationNodeObject::CN, tmpstr);
+          CEvaluationNodeObject* tmpENO = new CEvaluationNodeObject(CEvaluationNode::S_CN, tmpstr);
           env[i] = tmpENO;
           tmpENO->compile(derivExp); //this uses derivExp as a dummy expression (so that the node has a context for the compile()
         }
